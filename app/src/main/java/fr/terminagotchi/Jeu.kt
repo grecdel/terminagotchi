@@ -28,7 +28,9 @@ object Regles {
 
     val CATEGORIES: Map<String, Set<String>> = mapOf(
         "Intelligence" to setOf("git", "python", "python3", "sh", "bash", "alias", "vi", "nano", "awk", "sed"),
-        "Agilité" to setOf("ping", "curl", "wget", "ip", "ifconfig", "netstat", "nslookup", "am", "pm"),
+        "Agilité" to setOf("ping", "curl", "wget", "ip", "ifconfig", "netstat", "nslookup", "am", "pm",
+            "applis", "ouvre", "web", "carte", "appelle", "sms", "partage", "lampe", "vibre", "batterie", "dis",
+            "reglages"),
         "Force" to setOf("top", "ps", "kill", "df", "du", "free", "uname", "whoami", "date", "id", "getprop",
             "dumpsys", "uptime"),
         "Endurance" to setOf("ls", "cd", "cp", "mv", "rm", "mkdir", "rmdir", "cat", "touch", "find", "grep",
@@ -96,37 +98,63 @@ object Regles {
         l.trim().split(Regex("\\s+")).firstOrNull()?.lowercase()?.substringAfterLast('/') ?: ""
 
     /** Le lexique : toutes les commandes utiles du terminal Android, avec leur explication. */
-    val LEXIQUE: List<Pair<String, String>> = listOf(
-        "pwd" to "affiche le dossier où tu te trouves",
-        "ls" to "liste le contenu du dossier (ls -a : avec les cachés, ls -l : avec les détails)",
-        "cd" to "change de dossier (cd nom, cd .. pour remonter, cd ~ pour rentrer)",
-        "mkdir" to "crée un dossier",
-        "touch" to "crée un fichier vide",
-        "echo" to "affiche un texte (echo texte > fichier : l'écrit dans un fichier)",
-        "cat" to "affiche le contenu d'un fichier",
-        "head" to "affiche le début d'un fichier",
-        "tail" to "affiche la fin d'un fichier",
-        "grep" to "cherche un mot dans un fichier",
-        "find" to "trouve des fichiers par leur nom (find . -name \"*.txt\")",
-        "wc" to "compte les lignes, mots et caractères d'un fichier",
-        "sort" to "trie les lignes d'un fichier",
-        "cp" to "copie un fichier (cp -r : un dossier)",
-        "mv" to "déplace ou renomme",
-        "rm" to "supprime un fichier, sans corbeille ! (rm -r : un dossier)",
-        "rmdir" to "supprime un dossier vide",
-        "chmod" to "change les droits (chmod 444 : lecture seule)",
-        "stat" to "affiche tous les détails d'un fichier",
-        "date" to "affiche la date et l'heure",
-        "whoami" to "affiche ton nom d'utilisateur (sur Android, celui de l'appli)",
-        "id" to "affiche ton identité et tes groupes",
-        "uptime" to "depuis quand le téléphone est allumé",
-        "uname" to "infos sur le système (uname -a : tout)",
-        "df" to "espace libre sur le stockage (df -h : lisible)",
-        "du" to "taille d'un dossier (du -sh dossier)",
-        "ps" to "programmes en cours",
-        "ping" to "teste la connexion (ping -c 3 example.com)",
-        "clear" to "efface l'écran du terminal",
-    )
+    val LEXIQUE: List<Triple<String, String, String>> = run {
+        val f = "🗂 Fichiers et dossiers"
+        val l = "🔎 Lire et chercher"
+        val y = "⚙ Système"
+        val t = "📱 Ton téléphone (commandes de l'appli)"
+        val c = "🐾 Ta créature"
+        listOf(
+            Triple("pwd", "affiche le dossier où tu te trouves", f),
+            Triple("ls", "liste le contenu (ls -a : avec les cachés, ls -l : les détails)", f),
+            Triple("cd", "change de dossier (cd nom, cd .. pour remonter, cd ~ pour rentrer)", f),
+            Triple("mkdir", "crée un dossier", f),
+            Triple("touch", "crée un fichier vide", f),
+            Triple("echo", "affiche un texte (echo texte > fichier : l'écrit dedans)", f),
+            Triple("cp", "copie un fichier (cp -r : un dossier)", f),
+            Triple("mv", "déplace ou renomme", f),
+            Triple("rm", "supprime, sans corbeille ! (rm -r : un dossier)", f),
+            Triple("rmdir", "supprime un dossier vide", f),
+            Triple("chmod", "change les droits (chmod 444 : lecture seule)", f),
+            Triple("cat", "affiche le contenu d'un fichier", l),
+            Triple("head", "affiche le début d'un fichier", l),
+            Triple("tail", "affiche la fin d'un fichier", l),
+            Triple("grep", "cherche un mot dans un fichier", l),
+            Triple("find", "trouve des fichiers par leur nom (find . -name \"*.txt\")", l),
+            Triple("wc", "compte lignes, mots et caractères", l),
+            Triple("sort", "trie les lignes d'un fichier", l),
+            Triple("stat", "tous les détails d'un fichier", l),
+            Triple("date", "la date et l'heure", y),
+            Triple("whoami", "ton nom d'utilisateur (sur Android, celui de l'appli)", y),
+            Triple("id", "ton identité et tes groupes", y),
+            Triple("uptime", "depuis quand le téléphone est allumé", y),
+            Triple("uname", "infos sur le système (uname -a : tout)", y),
+            Triple("df", "espace libre sur le stockage (df -h : lisible)", y),
+            Triple("du", "taille d'un dossier (du -sh dossier)", y),
+            Triple("ps", "programmes en cours", y),
+            Triple("ping", "teste la connexion (ping -c 3 example.com)", y),
+            Triple("clear", "efface l'écran du terminal", y),
+            Triple("applis", "liste tes applis (applis what : filtre)", t),
+            Triple("ouvre", "lance une appli : ouvre whatsapp", t),
+            Triple("web", "ouvre un site ou une recherche : web météo paris", t),
+            Triple("carte", "cherche un lieu : carte tour eiffel", t),
+            Triple("appelle", "prépare un appel (sans appeler) : appelle 0612345678", t),
+            Triple("sms", "prépare un SMS : sms 0612345678 coucou", t),
+            Triple("partage", "envoie un texte via l'appli de ton choix : partage salut !", t),
+            Triple("lampe", "lampe torche : lampe on / lampe off", t),
+            Triple("vibre", "fait vibrer : vibre 500", t),
+            Triple("batterie", "niveau de batterie", t),
+            Triple("dis", "le téléphone parle : dis bonjour", t),
+            Triple("reglages", "ouvre les réglages : reglages wifi (bluetooth, son, ecran…)", t),
+            Triple("caresse", "un câlin pour ta créature", c),
+            Triple("danse", "elle danse pour toi", c),
+            Triple("parle", "elle te dit ce qu'elle pense", c),
+            Triple("joue", "pierre-feuille-ciseaux : joue pierre", c),
+            Triple("devine", "devine son nombre (1 à 20) : devine 10", c),
+            Triple("etat", "sa fiche complète", c),
+            Triple("renomme", "change son nom : renomme Pixel", c),
+        )
+    }
 
     fun barre(v: Double, max: Double, n: Int): String {
         val k = ((v / max) * n).toInt().coerceIn(0, n)
@@ -156,6 +184,7 @@ class Jeu(ctx: Context) {
     var bulle = ""
     var bulleFin = 0L
     var colles = 0
+    private val dernierJeu = mutableMapOf<String, Long>()
 
     private fun r(p: String) = Regex(p, RegexOption.IGNORE_CASE)
 
@@ -326,6 +355,15 @@ class Jeu(ctx: Context) {
             stats[stat] = (stats[stat] ?: 0) + 1
             gain += 1
             msg += " +${Regles.COURT[stat]}"
+        }
+        if (cmd in Commandes.CREATURE) {
+            val maintenant = System.currentTimeMillis()
+            if (maintenant - (dernierJeu[cmd] ?: 0L) < 60_000) {
+                faim = (faim + 1).coerceAtMost(100.0)
+                log("$msg (déjà joué il y a peu : pas d'XP)")
+                return true
+            }
+            dernierJeu[cmd] = maintenant
         }
         if (vus.add(cmd)) {
             gain += 5

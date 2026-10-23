@@ -37,6 +37,7 @@ import kotlin.random.Random
 class TerminalActivity : Activity() {
     private lateinit var jeu: Jeu
     private lateinit var shell: Shell
+    private lateinit var commandes: Commandes
     private lateinit var creature: ImageView
     private lateinit var titre: TextView
     private lateinit var faim: TextView
@@ -72,6 +73,7 @@ class TerminalActivity : Activity() {
 
         jeu = Jeu(this)
         shell = Shell(jeu.home)
+        commandes = Commandes(this, jeu)
         creature = findViewById(R.id.creature)
         titre = findViewById(R.id.titre)
         faim = findViewById(R.id.faim)
@@ -137,6 +139,7 @@ class TerminalActivity : Activity() {
     override fun onDestroy() {
         handler.removeCallbacksAndMessages(null)
         exec.shutdown()
+        commandes.fermer()
         super.onDestroy()
     }
 
@@ -193,11 +196,23 @@ class TerminalActivity : Activity() {
             "quitter", "exit" -> { finish(); return }
             "aide" -> {
                 ecrire("Ce terminal exécute de vraies commandes Android : ls, cd, mkdir, cat, grep, cp, mv, rm, ping…\n" +
-                    "Chaque commande tapée me nourrit. Les commandes collées ne comptent pas !\n" +
+                    "📱 Téléphone : ouvre, applis, web, carte, appelle, sms, partage, lampe, vibre, batterie, dis, reglages\n" +
+                    "🐾 Avec moi : caresse, danse, parle, joue, devine, etat, renomme\n" +
+                    "Tout est expliqué dans 📖 Lexique. Chaque commande tapée me nourrit (pas les collées !).\n" +
                     "clear = effacer · quitter = fermer")
                 return
             }
         }
+        // Commandes intégrées (téléphone, créature) : réponse immédiate
+        val interne = commandes.executer(ligne)
+        if (interne != null) {
+            ecrire(interne.texte, interne.couleur)
+            if (lexiqueVue.visibility == View.VISIBLE) basculerLexique()
+            apresCommande(ligne, etaitColle)
+            if (interne.saut > saut) saut = interne.saut
+            return
+        }
+
         enCours = true
         invite.alpha = 0.4f
         exec.execute {
@@ -209,17 +224,21 @@ class TerminalActivity : Activity() {
                 if (resultat.isEmpty() && !change) {
                     ecrire("✓ Fait. (Pas de message = tout s'est bien passé.)", 0xFF9A9AB0.toInt())
                 }
-                jeu.tick()
-                val mange = jeu.manger(ligne, etaitColle)
-                jeu.leconTick(ligne, etaitColle)
-                jeu.sauver()
-                WidgetCreature.majTous(this)
-                if (mange) saut = 4
+                apresCommande(ligne, etaitColle)
                 enCours = false
                 invite.alpha = 1f
-                rafraichir()
             }
         }
+    }
+
+    private fun apresCommande(ligne: String, etaitColle: Boolean) {
+        jeu.tick()
+        val mange = jeu.manger(ligne, etaitColle)
+        jeu.leconTick(ligne, etaitColle)
+        jeu.sauver()
+        WidgetCreature.majTous(this)
+        if (mange) saut = 4
+        rafraichir()
     }
 
     private fun ecrire(texte: String, couleur: Int? = null) {
@@ -253,7 +272,15 @@ class TerminalActivity : Activity() {
         val entete = "Goûtées : $connues/${Regles.LEXIQUE.size}  ·  blanc = déjà tapée, gris = à découvrir\n"
         sb.append(entete)
         sb.setSpan(ForegroundColorSpan(0xFFFF87FF.toInt()), 0, entete.length, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
-        for ((cmd, desc) in Regles.LEXIQUE) {
+        var section = ""
+        for ((cmd, desc, sec) in Regles.LEXIQUE) {
+            if (sec != section) {
+                section = sec
+                val d = sb.length
+                sb.append("\n$sec\n")
+                sb.setSpan(ForegroundColorSpan(0xFFAFAFFF.toInt()), d, sb.length, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
+                sb.setSpan(StyleSpan(Typeface.BOLD), d, sb.length, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
+            }
             val goutee = cmd in jeu.vus
             val debut = sb.length
             sb.append(if (goutee) "● " else "○ ")
