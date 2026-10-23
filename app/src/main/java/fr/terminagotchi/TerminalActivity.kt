@@ -58,6 +58,9 @@ class TerminalActivity : Activity() {
     private val handler = Handler(Looper.getMainLooper())
     private val exec = Executors.newSingleThreadExecutor()
     private var colle = false
+    private var programme = false        // texte inséré par l'appli (↑, Tab) : pas un collage
+    private var rappel: String? = null   // commande rappelée avec ↑
+    private var posHisto = -1
     private var enCours = false
     private var frame = 0
     private var cligne = 0
@@ -104,7 +107,7 @@ class TerminalActivity : Activity() {
         saisie.addTextChangedListener(object : TextWatcher {
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-                if (count - before >= 4) colle = true
+                if (!programme && count - before >= 4) colle = true
             }
             override fun afterTextChanged(s: Editable?) {
                 if (s.isNullOrEmpty()) colle = false
@@ -147,7 +150,7 @@ class TerminalActivity : Activity() {
     private fun creerTouches() {
         val rangee = findViewById<LinearLayout>(R.id.touches)
         val dp = resources.displayMetrics.density
-        for (t in listOf("~", "/", "-", ".", "|", ">", ">>", "*", "\"", "'", "$", "&", "_", "=")) {
+        for (t in listOf("↑", "↓", "⇥ Tab", "~", "/", "-", ".", "|", ">", ">>", "*", "\"", "'", "$", "&", "_", "=")) {
             val b = TextView(this)
             b.text = t
             b.textSize = 15f
@@ -161,6 +164,11 @@ class TerminalActivity : Activity() {
             lp.marginEnd = (6 * dp).toInt()
             b.layoutParams = lp
             b.setOnClickListener {
+                when (t) {
+                    "↑" -> { rappeler(-1); return@setOnClickListener }
+                    "↓" -> { rappeler(1); return@setOnClickListener }
+                    "⇥ Tab" -> { completer(); return@setOnClickListener }
+                }
                 val debut = saisie.selectionStart.coerceAtLeast(0)
                 for (c in t) {               // un caractère à la fois : ce n'est pas un collage
                     saisie.text.insert(saisie.selectionStart.coerceAtLeast(debut), c.toString())
@@ -172,10 +180,105 @@ class TerminalActivity : Activity() {
     }
 
     // ------------------------------------------------------------ commandes
+    // ------------------------------------------------------------ historique (↑ ↓) et complétion (Tab)
+    private fun remplacerSaisie(texte: String) {
+        programme = true
+        saisie.setText(texte)
+        saisie.setSelection(texte.length)
+        programme = false
+    }
+
+    private fun rappeler(sens: Int) {
+        val h = jeu.historique
+        if (h.isEmpty()) {
+            ecrire("(historique vide : tape d'abord une commande)", 0xFF9A9AB0.toInt())
+            return
+        }
+        posHisto = (if (posHisto < 0) h.size else posHisto) + sens
+        if (posHisto >= h.size) {
+            posHisto = -1
+            rappel = null
+            remplacerSaisie("")
+            return
+        }
+        posHisto = posHisto.coerceIn(0, h.size - 1)
+        rappel = h[posHisto]
+        remplacerSaisie(h[posHisto])
+    }
+
+    /** Complète le dernier mot : un nom de commande (1er mot) ou un fichier/dossier. */
+    private fun completer() {
+        val texte = saisie.text.toString()
+        val debutMot = texte.lastIndexOf(' ') + 1
+        val mot = texte.substring(debutMot)
+        val candidats: List<String>
+        if (debutMot == 0) {
+            candidats = Regles.LEXIQUE.map { it.first }.filter { it.startsWith(mot) }.distinct()
+        } else {
+            val dossierMot = mot.substringBeforeLast('/', "")
+            val prefixe = mot.substringAfterLast('/')
+            val base = when {
+                dossierMot.isEmpty() && mot.startsWith("/") -> File("/")
+                dossierMot.isEmpty() -> shell.dossier
+                dossierMot.startsWith("~") -> File(jeu.home, dossierMot.removePrefix("~").removePrefix("/"))
+                dossierMot.startsWith("/") -> File(dossierMot)
+                else -> File(shell.dossier, dossierMot)
+            }
+            val avant = if (mot.contains('/')) mot.substringBeforeLast('/') + "/" else ""
+            candidats = (base.listFiles()?.toList() ?: emptyList())
+                .filter { it.name.startsWith(prefixe) && (prefixe.startsWith(".") || !it.name.startsWith(".")) }
+                .sortedBy { it.name }
+                .map { avant + it.name + if (it.isDirectory) "/" else "" }
+        }
+        when {
+            candidats.isEmpty() -> ecrire("(Tab : rien ne commence par « $mot » ici)", 0xFF9A9AB0.toInt())
+            candidats.size == 1 -> {
+                val fin = if (candidats[0].endsWith("/")) "" else " "
+                remplacerSaisie(texte.substring(0, debutMot) + candidats[0] + fin)
+            }
+            else -> {
+                val commun = candidats.reduce { a, b -> a.commonPrefixWith(b) }
+                if (commun.length > mot.length) remplacerSaisie(texte.substring(0, debutMot) + commun)
+                ecrire("Tab : " + candidats.joinToString("   "), 0xFFAFAFFF.toInt())
+            }
+        }
+    }
+
+    /** La créature traduit les messages d'erreur les plus courants. */
+    private fun expliquer(sortie: String, ligne: String): String? {
+        val s = sortie.lowercase()
+        return when {
+            "no such file" in s || "dossier introuvable" in s ->
+                "🤔 Ce fichier ou dossier n'existe pas ici. Vérifie le nom avec ls (majuscules, accents, espaces) ou utilise Tab."
+            "permission denied" in s ->
+                "🔒 Accès refusé : soit le fichier est protégé (chmod), soit c'est une zone d'Android interdite à l'appli."
+            "read-only file system" in s -> "🔒 Cette partie du téléphone est en lecture seule : on ne peut rien y écrire."
+            "not found" in s && Regles.premierMot(ligne).isNotEmpty() ->
+                "❓ Je ne connais pas la commande « ${Regles.premierMot(ligne)} ». Regarde dans 📖 Lexique (ou fais Tab)."
+            "file exists" in s -> "📦 Ça existe déjà : choisis un autre nom, ou regarde avec ls."
+            "is a directory" in s -> "📁 C'est un dossier, pas un fichier : utilise ls pour voir dedans (ou rm -r pour le supprimer)."
+            "not a directory" in s -> "📄 C'est un fichier, pas un dossier : on ne peut pas entrer dedans."
+            "not empty" in s -> "📦 Le dossier n'est pas vide : vide-le d'abord, ou utilise rm -r (prudence, c'est définitif)."
+            "missing" in s || "needs " in s || "usage:" in s ->
+                "✍ Il manque quelque chose après la commande. Regarde l'exemple dans 📖 Lexique."
+            "unknown option" in s || "invalid option" in s || "bad option" in s ->
+                "⚙ Option inconnue (ce qui commence par -). Vérifie l'orthographe dans 📖 Lexique."
+            "operation not permitted" in s -> "⛔ Opération interdite par Android pour une appli."
+            else -> null
+        }
+    }
+
     private fun valider() {
         val ligne = saisie.text.toString().trim()
         val etaitColle = colle
         colle = false
+        val etaitRappel = rappel != null && ligne == rappel
+        rappel = null
+        posHisto = -1
+        if (ligne.isNotEmpty() && jeu.existe && jeu.historique.lastOrNull() != ligne) {
+            jeu.historique.add(ligne)
+            while (jeu.historique.size > 50) jeu.historique.removeAt(0)
+        }
         saisie.setText("")
         if (ligne.isEmpty() || enCours) return
 
@@ -208,7 +311,7 @@ class TerminalActivity : Activity() {
         if (interne != null) {
             ecrire(interne.texte, interne.couleur)
             if (lexiqueVue.visibility == View.VISIBLE) basculerLexique()
-            apresCommande(ligne, etaitColle)
+            apresCommande(ligne, etaitColle, etaitRappel)
             if (interne.saut > saut) saut = interne.saut
             return
         }
@@ -219,21 +322,22 @@ class TerminalActivity : Activity() {
             val resultat = shell.executer(ligne)
             handler.post {
                 if (resultat.isNotEmpty()) ecrire(resultat)
+                expliquer(resultat, ligne)?.let { ecrire(it, 0xFFFFAF5F.toInt()) }
                 val change = majObservatoire(ligne)
                 if (lexiqueVue.visibility == View.VISIBLE) basculerLexique()
                 if (resultat.isEmpty() && !change) {
                     ecrire("✓ Fait. (Pas de message = tout s'est bien passé.)", 0xFF9A9AB0.toInt())
                 }
-                apresCommande(ligne, etaitColle)
+                apresCommande(ligne, etaitColle, etaitRappel)
                 enCours = false
                 invite.alpha = 1f
             }
         }
     }
 
-    private fun apresCommande(ligne: String, etaitColle: Boolean) {
+    private fun apresCommande(ligne: String, etaitColle: Boolean, etaitRappel: Boolean = false) {
         jeu.tick()
-        val mange = jeu.manger(ligne, etaitColle)
+        val mange = jeu.manger(ligne, etaitColle, etaitRappel)
         jeu.leconTick(ligne, etaitColle)
         jeu.sauver()
         WidgetCreature.majTous(this)

@@ -185,6 +185,7 @@ class Jeu(ctx: Context) {
     var bulleFin = 0L
     var colles = 0
     private val dernierJeu = mutableMapOf<String, Long>()
+    val historique = mutableListOf<String>()
 
     private fun r(p: String) = Regex(p, RegexOption.IGNORE_CASE)
 
@@ -257,6 +258,7 @@ class Jeu(ctx: Context) {
             o.optJSONArray("vus")?.let { a -> for (i in 0 until a.length()) vus.add(a.getString(i)) }
             o.optJSONArray("journal")?.let { a -> for (i in 0 until a.length()) journal.add(a.getString(i)) }
             o.optJSONArray("skills")?.let { a -> for (i in 0 until a.length()) skills.add(a.getString(i)) }
+            o.optJSONArray("historique")?.let { a -> for (i in 0 until a.length()) historique.add(a.getString(i)) }
             lecon = o.optInt("lecon")
             etape = o.optInt("etape")
             forme = if (o.has("forme") && !o.isNull("forme")) o.getString("forme") else null
@@ -280,6 +282,7 @@ class Jeu(ctx: Context) {
         o.put("vus", JSONArray(vus.toList()))
         o.put("journal", JSONArray(journal))
         o.put("skills", JSONArray(skills))
+        o.put("historique", JSONArray(historique))
         o.put("lecon", lecon)
         o.put("etape", etape)
         o.put("forme", forme ?: JSONObject.NULL)
@@ -338,7 +341,7 @@ class Jeu(ctx: Context) {
     }
 
     /** Mange une commande. Renvoie false si elle a été refusée (collée). */
-    fun manger(ligne: String, colle: Boolean): Boolean {
+    fun manger(ligne: String, colle: Boolean, rappel: Boolean = false): Boolean {
         if (colle || Regles.estColle(ligne)) {
             colles++
             log("✖ copier-coller détecté : pas de nourriture")
@@ -347,6 +350,10 @@ class Jeu(ctx: Context) {
         }
         val cmd = Regles.premierMot(ligne)
         if (cmd.isEmpty()) return false
+        if (rappel) {
+            log("a revu « $cmd » (rappel ↑ : pas d'XP)")
+            return false
+        }
         total++
         var gain = 1
         var msg = "a mangé « $cmd »"
