@@ -30,7 +30,9 @@ jobs:
           gradle-version: "8.9"
 
       - name: Compiler
-        run: gradle assembleRelease --no-daemon
+        run: |
+          set -o pipefail
+          gradle assembleRelease --no-daemon 2>&1 | tee build.log
 
       - name: Jouer une partie et prendre des captures
         uses: reactivecircus/android-emulator-runner@v2
@@ -51,6 +53,8 @@ jobs:
       - name: Ranger les captures dans la branche « captures »
         if: always()
         run: |
+          mkdir -p captures
+          grep -E "^e: |error:|What went wrong|AAPT|\.xml:" build.log > captures/erreurs_compilation.txt 2>/dev/null || true
           cd captures
           git init -q
           git checkout -q -b captures
