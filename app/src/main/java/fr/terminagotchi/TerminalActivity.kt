@@ -2,7 +2,12 @@ package fr.terminagotchi
 
 import android.app.Activity
 import android.content.Context
+import android.graphics.Paint
+import android.graphics.drawable.GradientDrawable
 import android.os.Bundle
+import android.text.SpannableString
+import android.text.Spanned
+import android.text.style.ForegroundColorSpan
 import android.os.Handler
 import android.os.Looper
 import android.text.Editable
@@ -18,6 +23,7 @@ import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.ScrollView
 import android.widget.TextView
+import java.io.File
 import java.util.concurrent.Executors
 import kotlin.random.Random
 
@@ -39,6 +45,8 @@ class TerminalActivity : Activity() {
     private lateinit var sortie: TextView
     private lateinit var invite: TextView
     private lateinit var saisie: EditText
+    private lateinit var chemin: TextView
+    private lateinit var contenu: LinearLayout
 
     private val handler = Handler(Looper.getMainLooper())
     private val exec = Executors.newSingleThreadExecutor()
@@ -75,6 +83,9 @@ class TerminalActivity : Activity() {
         findViewById<View>(R.id.fermer).setOnClickListener { finish() }
         findViewById<View>(R.id.envoyer).setOnClickListener { valider() }
         creerTouches()
+        chemin = findViewById(R.id.chemin)
+        contenu = findViewById(R.id.contenu)
+        majObservatoire(null)
 
         // Anti copier-coller : un bloc de plusieurs caractères arrivé d'un coup = collage.
         // (Les suggestions du clavier sont désactivées sur ce champ, donc la frappe arrive lettre par lettre.)
@@ -166,7 +177,7 @@ class TerminalActivity : Activity() {
             return
         }
 
-        ecrire("${shell.chemin()} $ $ligne")
+        ecrire("${shell.chemin()} $ $ligne", 0xFF5FD787.toInt())
         when (Regles.premierMot(ligne)) {
             "clear" -> { sortie.text = ""; return }
             "quitter", "exit" -> { finish(); return }
@@ -183,6 +194,10 @@ class TerminalActivity : Activity() {
             val resultat = shell.executer(ligne)
             handler.post {
                 if (resultat.isNotEmpty()) ecrire(resultat)
+                val change = majObservatoire(ligne)
+                if (resultat.isEmpty() && !change) {
+                    ecrire("✓ Fait. (Pas de message = tout s'est bien passé.)", 0xFF9A9AB0.toInt())
+                }
                 jeu.tick()
                 val mange = jeu.manger(ligne, etaitColle)
                 jeu.leconTick(ligne, etaitColle)
@@ -196,11 +211,100 @@ class TerminalActivity : Activity() {
         }
     }
 
-    private fun ecrire(texte: String) {
-        val avant = sortie.text
-        sortie.text = if (avant.isNullOrEmpty()) texte else "$avant\n$texte"
-        if (sortie.text.length > 15000) sortie.text = sortie.text.takeLast(12000)
+    private fun ecrire(texte: String, couleur: Int? = null) {
+        val s = SpannableString(texte)
+        if (couleur != null) s.setSpan(ForegroundColorSpan(couleur), 0, s.length, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
+        if (sortie.length() > 0) sortie.append("\n")
+        sortie.append(s)
+        if (sortie.length() > 15000) sortie.text = sortie.text.subSequence(sortie.length() - 12000, sortie.length())
         defile.post { defile.scrollTo(0, sortie.bottom) }
+    }
+
+    // ------------------------------------------------------------ fenêtre d'observation
+    private var dernierDossier: File? = null
+    private var derniersNoms: Set<String> = emptySet()
+
+    private fun icone(): String = when (jeu.stade) {
+        0 -> "🥚"
+        1 -> "🐣"
+        2 -> "🐥"
+        else -> "🐲"
+    }
+
+    private fun chip(texte: String, fond: Int, couleurTexte: Int, barre: Boolean = false) {
+        val dp = resources.displayMetrics.density
+        val t = TextView(this)
+        t.text = texte
+        t.textSize = 12f
+        t.setTextColor(couleurTexte)
+        val g = GradientDrawable()
+        g.cornerRadius = 10 * dp
+        g.setColor(fond)
+        t.background = g
+        t.setPadding((9 * dp).toInt(), (5 * dp).toInt(), (9 * dp).toInt(), (5 * dp).toInt())
+        if (barre) t.paintFlags = t.paintFlags or Paint.STRIKE_THRU_TEXT_FLAG
+        val lp = LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT)
+        lp.marginEnd = (6 * dp).toInt()
+        t.layoutParams = lp
+        contenu.addView(t)
+    }
+
+    /**
+     * Montre la « pièce » où l'on se trouve et ce qui vient de changer.
+     * Renvoie true si quelque chose de visible a changé (pour savoir s'il faut dire « ✓ Fait »).
+     */
+    private fun majObservatoire(commande: String?): Boolean {
+        val d = shell.dossier
+        val elements = (d.listFiles()?.toList() ?: emptyList())
+            .sortedWith(compareBy<File>({ !it.isDirectory }, { it.name.lowercase() }))
+        val visibles = elements.filter { !it.name.startsWith(".") }
+        val noms = elements.map { it.name }.toSet()
+        val memePiece = d == dernierDossier
+        val nouveaux = if (commande != null && memePiece) noms - derniersNoms else emptySet()
+        val partis = if (commande != null && memePiece) derniersNoms - noms else emptySet()
+
+        val morceaux = shell.chemin().removePrefix("~").split("/").filter { it.isNotEmpty() }
+        val racine = if (shell.chemin().startsWith("~")) "🏠 maison" else "📂 /"
+        chemin.text = (listOf(racine) + morceaux).joinToString(" › ") + "  " + icone()
+
+        contenu.removeAllViews()
+        for (f in visibles) {
+            val nouveau = f.name in nouveaux
+            val protege = f.isFile && !f.canWrite()
+            val ico = (if (nouveau) "✨" else "") + (if (f.isDirectory) "📁 " else "📄 ") + (if (protege) "🔒" else "")
+            when {
+                nouveau -> chip(ico + f.name, 0xFF1F4D33.toInt(), 0xFF5FD787.toInt())
+                f.isDirectory -> chip(ico + f.name, 0xFF2E3A5C.toInt(), 0xFFAFD7FF.toInt())
+                else -> chip(ico + f.name, 0xFF2E2E48.toInt(), 0xFFE6E6E6.toInt())
+            }
+        }
+        for (n in partis.filter { !it.startsWith(".") }) chip("🗑 $n", 0xFF4D1F25.toInt(), 0xFFFF5F5F.toInt(), barre = true)
+        if (visibles.isEmpty() && partis.isEmpty()) chip("(dossier vide)", 0xFF26263A.toInt(), 0xFF9A9AB0.toInt())
+        val caches = elements.size - visibles.size
+        if (caches > 0) chip("+$caches caché(s) · ls -a", 0xFF26263A.toInt(), 0xFF9A9AB0.toInt())
+
+        var change = false
+        if (commande != null) {
+            if (dernierDossier != null && !memePiece) {
+                ecrire("🚶 Tu entres dans ${shell.chemin()}", 0xFFAF87FF.toInt())
+                change = true
+            } else if (Regles.premierMot(commande) == "cd") {
+                ecrire("📍 Tu es déjà dans ${shell.chemin()}", 0xFFAF87FF.toInt())
+                change = true
+            }
+            for (n in nouveaux.filter { !it.startsWith(".") }) {
+                val dossier = File(d, n).isDirectory
+                ecrire(if (dossier) "📁 Nouveau dossier : $n" else "📄 Nouveau fichier : $n", 0xFF5FD787.toInt())
+                change = true
+            }
+            for (n in partis.filter { !it.startsWith(".") }) {
+                ecrire("🗑 A disparu d'ici : $n", 0xFFFF5F5F.toInt())
+                change = true
+            }
+        }
+        dernierDossier = d
+        derniersNoms = noms
+        return change
     }
 
     // ------------------------------------------------------------ affichage
