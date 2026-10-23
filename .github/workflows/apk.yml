@@ -1,0 +1,41 @@
+name: Fabriquer l'APK
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  apk:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: "17"
+
+      - uses: gradle/actions/setup-gradle@v4
+        with:
+          gradle-version: "8.9"
+
+      - name: Compiler
+        run: gradle assembleRelease --stacktrace --no-daemon
+
+      - name: Préparer l'APK
+        run: cp app/build/outputs/apk/release/app-release.apk terminagotchi.apk
+
+      - name: Publier dans les Releases
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: v0.1.${{ github.run_number }}
+          name: Terminagotchi 0.1.${{ github.run_number }}
+          body: |
+            Télécharge **terminagotchi.apk** ci-dessous et ouvre-le sur ton téléphone pour l'installer.
+            (Android te demandera d'autoriser l'installation depuis ton navigateur : c'est normal.)
+          files: terminagotchi.apk
+          make_latest: true

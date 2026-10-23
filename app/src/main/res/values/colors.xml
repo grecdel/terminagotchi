@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="fond">#1e1e2e</color>
+    <color name="fond_terminal">#11111b</color>
+    <color name="texte">#e6e6e6</color>
+    <color name="texte_doux">#9a9ab0</color>
+    <color name="vert">#5fd787</color>
+    <color name="rose">#ff87ff</color>
+    <color name="bulle">#f5f0e6</color>
+    <color name="violet">#5f5fd7</color>
+</resources>

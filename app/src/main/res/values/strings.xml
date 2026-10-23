@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Terminagotchi</string>
+    <string name="widget_desc">Ta créature du terminal, toujours sous les yeux</string>
+    <string name="saisie_indice">tape une commande…</string>
+    <string name="bouton_terminal">⌨  Terminal</string>
+</resources>

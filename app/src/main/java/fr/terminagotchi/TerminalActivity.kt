@@ -1,0 +1,217 @@
+package fr.terminagotchi
+
+import android.app.Activity
+import android.content.Context
+import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
+import android.text.Editable
+import android.text.TextWatcher
+import android.view.KeyEvent
+import android.view.View
+import android.view.WindowManager
+import android.view.inputmethod.EditorInfo
+import android.view.inputmethod.InputMethodManager
+import android.widget.EditText
+import android.widget.ImageView
+import android.widget.ScrollView
+import android.widget.TextView
+import java.util.concurrent.Executors
+import kotlin.random.Random
+
+/**
+ * Le panneau qui « sort » du widget : créature en haut, terminal au milieu,
+ * ligne de saisie en bas, juste au-dessus du clavier.
+ */
+class TerminalActivity : Activity() {
+    private lateinit var jeu: Jeu
+    private lateinit var shell: Shell
+    private lateinit var creature: ImageView
+    private lateinit var titre: TextView
+    private lateinit var faim: TextView
+    private lateinit var xp: TextView
+    private lateinit var stats: TextView
+    private lateinit var bulle: TextView
+    private lateinit var lecon: TextView
+    private lateinit var defile: ScrollView
+    private lateinit var sortie: TextView
+    private lateinit var invite: TextView
+    private lateinit var saisie: EditText
+
+    private val handler = Handler(Looper.getMainLooper())
+    private val exec = Executors.newSingleThreadExecutor()
+    private var colle = false
+    private var enCours = false
+    private var frame = 0
+    private var cligne = 0
+    private var saut = 0
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setContentView(R.layout.activity_terminal)
+        window.setSoftInputMode(
+            WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_VISIBLE or
+                WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE
+        )
+
+        jeu = Jeu(this)
+        shell = Shell(jeu.home)
+        creature = findViewById(R.id.creature)
+        titre = findViewById(R.id.titre)
+        faim = findViewById(R.id.faim)
+        xp = findViewById(R.id.xp)
+        stats = findViewById(R.id.stats)
+        bulle = findViewById(R.id.bulle)
+        lecon = findViewById(R.id.lecon)
+        defile = findViewById(R.id.defile)
+        sortie = findViewById(R.id.sortie)
+        invite = findViewById(R.id.invite)
+        saisie = findViewById(R.id.saisie)
+
+        findViewById<View>(R.id.fond).setOnClickListener { finish() }
+        findViewById<View>(R.id.panneau).setOnClickListener { saisie.requestFocus() }
+        findViewById<View>(R.id.fermer).setOnClickListener { finish() }
+        findViewById<View>(R.id.envoyer).setOnClickListener { valider() }
+
+        // Anti copier-coller : un bloc de plusieurs caractères arrivé d'un coup = collage.
+        // (Les suggestions du clavier sont désactivées sur ce champ, donc la frappe arrive lettre par lettre.)
+        saisie.addTextChangedListener(object : TextWatcher {
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+                if (count - before >= 4) colle = true
+            }
+            override fun afterTextChanged(s: Editable?) {
+                if (s.isNullOrEmpty()) colle = false
+            }
+        })
+        saisie.setOnEditorActionListener { _, actionId, event ->
+            if (actionId == EditorInfo.IME_ACTION_SEND || actionId == EditorInfo.IME_ACTION_DONE ||
+                (event != null && event.keyCode == KeyEvent.KEYCODE_ENTER && event.action == KeyEvent.ACTION_DOWN)
+            ) {
+                valider()
+                true
+            } else false
+        }
+
+        jeu.tick()
+        if (!jeu.existe) {
+            ecrire("Un œuf est apparu sur ton écran !\nComment s'appelle ta créature ?")
+        } else {
+            jeu.parlerSiSilencieux()
+            ecrire("Tape tes commandes ici : je les mange au fur et à mesure !\n« aide » pour l'aide.")
+        }
+        jeu.sauver()
+        rafraichir()
+        saisie.requestFocus()
+        handler.postDelayed({
+            (getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager)
+                .showSoftInput(saisie, InputMethodManager.SHOW_IMPLICIT)
+        }, 200)
+        animer()
+    }
+
+    override fun onDestroy() {
+        handler.removeCallbacksAndMessages(null)
+        exec.shutdown()
+        super.onDestroy()
+    }
+
+    // ------------------------------------------------------------ commandes
+    private fun valider() {
+        val ligne = saisie.text.toString().trim()
+        val etaitColle = colle
+        colle = false
+        saisie.setText("")
+        if (ligne.isEmpty() || enCours) return
+
+        if (!jeu.existe) {
+            jeu.nom = ligne.take(16)
+            jeu.log("Un œuf est apparu… il a l'air ${jeu.trait}.")
+            jeu.dire("*toc toc* … nourris-moi avec des commandes !", 10)
+            jeu.sauver()
+            WidgetCreature.majTous(this)
+            ecrire("Bienvenue, ${jeu.nom} !\nEssaie une première commande, par exemple : ls")
+            rafraichir()
+            return
+        }
+
+        ecrire("${shell.chemin()} $ $ligne")
+        when (Regles.premierMot(ligne)) {
+            "clear" -> { sortie.text = ""; return }
+            "quitter", "exit" -> { finish(); return }
+            "aide" -> {
+                ecrire("Ce terminal exécute de vraies commandes Android : ls, cd, mkdir, cat, grep, cp, mv, rm, ping…\n" +
+                    "Chaque commande tapée me nourrit. Les commandes collées ne comptent pas !\n" +
+                    "clear = effacer · quitter = fermer")
+                return
+            }
+        }
+        enCours = true
+        invite.alpha = 0.4f
+        exec.execute {
+            val resultat = shell.executer(ligne)
+            handler.post {
+                if (resultat.isNotEmpty()) ecrire(resultat)
+                jeu.tick()
+                val mange = jeu.manger(ligne, etaitColle)
+                jeu.leconTick(ligne, etaitColle)
+                jeu.sauver()
+                WidgetCreature.majTous(this)
+                if (mange) saut = 4
+                enCours = false
+                invite.alpha = 1f
+                rafraichir()
+            }
+        }
+    }
+
+    private fun ecrire(texte: String) {
+        val avant = sortie.text
+        sortie.text = if (avant.isNullOrEmpty()) texte else "$avant\n$texte"
+        if (sortie.text.length > 15000) sortie.text = sortie.text.takeLast(12000)
+        defile.post { defile.scrollTo(0, sortie.bottom) }
+    }
+
+    // ------------------------------------------------------------ affichage
+    private fun rafraichir() {
+        titre.text = if (jeu.existe) jeu.titre() else "Œuf mystérieux"
+        faim.text = jeu.texteFaim()
+        xp.text = jeu.texteXp()
+        stats.text = jeu.texteStats()
+        invite.text = if (jeu.existe) "${shell.chemin()} $" else "nom ?"
+        val b = jeu.bulleActive()
+        bulle.visibility = if (b.isEmpty()) View.GONE else View.VISIBLE
+        bulle.text = b
+        val l = if (jeu.existe) jeu.texteLecon() else null
+        lecon.visibility = if (l == null) View.GONE else View.VISIBLE
+        lecon.text = l ?: ""
+        creature.setImageBitmap(Sprites.bitmap(jeu, 12, cligne > 0))
+    }
+
+    private fun animer() {
+        frame++
+        val dp = resources.displayMetrics.density
+        creature.translationY = when {
+            saut > 0 -> { saut--; -10f * dp * (if (saut % 2 == 0) 1f else 0.6f) }
+            frame % 2 == 0 -> -2f * dp
+            else -> 0f
+        }
+        if (cligne > 0) {
+            cligne--
+            if (cligne == 0) creature.setImageBitmap(Sprites.bitmap(jeu, 12, false))
+        } else if (Random.nextInt(12) == 0) {
+            cligne = 1
+            creature.setImageBitmap(Sprites.bitmap(jeu, 12, true))
+        }
+        if (frame % 12 == 0 && !enCours) {        // toutes les ~5 s : la faim, les bulles, les leçons « fichiers »
+            jeu.tick()
+            jeu.leconTick(null, false)
+            if (Random.nextInt(4) == 0) jeu.parlerSiSilencieux()
+            jeu.sauver()
+            rafraichir()
+        } else if (bulle.visibility == View.VISIBLE && jeu.bulleActive().isEmpty()) {
+            rafraichir()
+        }
+        handler.postDelayed({ animer() }, 420)
+    }
+}
