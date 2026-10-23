@@ -119,12 +119,29 @@ class TerminalActivity : Activity() {
             }
         })
         saisie.setOnEditorActionListener { _, actionId, event ->
-            if (actionId == EditorInfo.IME_ACTION_SEND || actionId == EditorInfo.IME_ACTION_DONE ||
-                (event != null && event.keyCode == KeyEvent.KEYCODE_ENTER && event.action == KeyEvent.ACTION_DOWN)
-            ) {
-                valider()
+            when {
+                event != null && event.keyCode == KeyEvent.KEYCODE_ENTER -> {
+                    // clavier physique : on valide à l'appui et on garde aussi le relâchement,
+                    // sinon Android déplace le focus vers un autre élément de l'écran
+                    if (event.action == KeyEvent.ACTION_DOWN) valider()
+                    true
+                }
+                actionId == EditorInfo.IME_ACTION_SEND || actionId == EditorInfo.IME_ACTION_DONE -> {
+                    valider()
+                    true
+                }
+                else -> false
+            }
+        }
+        saisie.setOnKeyListener { _, code, ev ->
+            if (code == KeyEvent.KEYCODE_ENTER || code == KeyEvent.KEYCODE_NUMPAD_ENTER) {
+                if (ev.action == KeyEvent.ACTION_UP) valider()
                 true
             } else false
+        }
+        // Seule la ligne de saisie peut avoir le focus : la touche Entrée ne « clique » jamais ailleurs.
+        for (id in listOf(R.id.fond, R.id.panneau, R.id.fermer, R.id.envoyer, R.id.lexique_btn)) {
+            findViewById<View>(id).isFocusable = false
         }
 
         jeu.tick()
@@ -189,6 +206,7 @@ class TerminalActivity : Activity() {
                 }
                 saisie.requestFocus()
             }
+            b.isFocusable = false
             rangee.addView(b)
         }
     }
