@@ -204,7 +204,8 @@ object Regles {
 
 /** L'état de la créature, sauvegardé en JSON dans le stockage privé de l'appli. */
 class Jeu(ctx: Context) {
-    val home: File = File(ctx.filesDir, "maison").apply { mkdirs() }
+    // chemin « canonique » : /data/user/0 et /data/data désignent le même dossier sur Android
+    val home: File = File(ctx.filesDir, "maison").apply { mkdirs() }.canonicalFile
     val terrain: File get() = File(home, "terrain_terminagotchi")
     private val fichier = File(ctx.filesDir, "sauvegarde.json")
 

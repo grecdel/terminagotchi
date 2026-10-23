@@ -139,6 +139,10 @@ class TerminalActivity : Activity() {
                 true
             } else false
         }
+        // Garde-fou : si la ligne de saisie perd le focus, elle le reprend aussitôt.
+        saisie.setOnFocusChangeListener { _, aLeFocus ->
+            if (!aLeFocus && hasWindowFocus()) saisie.post { saisie.requestFocus() }
+        }
         // Seule la ligne de saisie peut avoir le focus : la touche Entrée ne « clique » jamais ailleurs.
         for (id in listOf(R.id.fond, R.id.panneau, R.id.fermer, R.id.envoyer, R.id.lexique_btn)) {
             findViewById<View>(id).isFocusable = false
@@ -301,6 +305,7 @@ class TerminalActivity : Activity() {
     }
 
     private fun valider() {
+        if (enCours) return                 // une commande tourne encore : on garde ce qui est tapé
         val ligne = saisie.text.toString().trim()
         val etaitColle = colle
         colle = false

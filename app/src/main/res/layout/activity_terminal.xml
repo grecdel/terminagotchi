@@ -144,6 +144,8 @@
                 android:textStyle="bold" />
 
             <HorizontalScrollView
+            android:focusable="false"
+            android:descendantFocusability="blockDescendants"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="6dp"
@@ -163,6 +165,8 @@
             android:layout_marginTop="8dp">
 
             <ScrollView
+            android:focusable="false"
+            android:descendantFocusability="blockDescendants"
                 android:id="@+id/defile"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
@@ -180,6 +184,8 @@
             </ScrollView>
 
             <ScrollView
+            android:focusable="false"
+            android:descendantFocusability="blockDescendants"
                 android:id="@+id/lexique_vue"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
@@ -199,6 +205,8 @@
         </FrameLayout>
 
         <HorizontalScrollView
+            android:focusable="false"
+            android:descendantFocusability="blockDescendants"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
