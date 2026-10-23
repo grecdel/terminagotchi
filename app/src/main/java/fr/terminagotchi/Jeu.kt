@@ -95,6 +95,39 @@ object Regles {
     fun premierMot(l: String): String =
         l.trim().split(Regex("\\s+")).firstOrNull()?.lowercase()?.substringAfterLast('/') ?: ""
 
+    /** Le lexique : toutes les commandes utiles du terminal Android, avec leur explication. */
+    val LEXIQUE: List<Pair<String, String>> = listOf(
+        "pwd" to "affiche le dossier où tu te trouves",
+        "ls" to "liste le contenu du dossier (ls -a : avec les cachés, ls -l : avec les détails)",
+        "cd" to "change de dossier (cd nom, cd .. pour remonter, cd ~ pour rentrer)",
+        "mkdir" to "crée un dossier",
+        "touch" to "crée un fichier vide",
+        "echo" to "affiche un texte (echo texte > fichier : l'écrit dans un fichier)",
+        "cat" to "affiche le contenu d'un fichier",
+        "head" to "affiche le début d'un fichier",
+        "tail" to "affiche la fin d'un fichier",
+        "grep" to "cherche un mot dans un fichier",
+        "find" to "trouve des fichiers par leur nom (find . -name \"*.txt\")",
+        "wc" to "compte les lignes, mots et caractères d'un fichier",
+        "sort" to "trie les lignes d'un fichier",
+        "cp" to "copie un fichier (cp -r : un dossier)",
+        "mv" to "déplace ou renomme",
+        "rm" to "supprime un fichier, sans corbeille ! (rm -r : un dossier)",
+        "rmdir" to "supprime un dossier vide",
+        "chmod" to "change les droits (chmod 444 : lecture seule)",
+        "stat" to "affiche tous les détails d'un fichier",
+        "date" to "affiche la date et l'heure",
+        "whoami" to "affiche ton nom d'utilisateur (sur Android, celui de l'appli)",
+        "id" to "affiche ton identité et tes groupes",
+        "uptime" to "depuis quand le téléphone est allumé",
+        "uname" to "infos sur le système (uname -a : tout)",
+        "df" to "espace libre sur le stockage (df -h : lisible)",
+        "du" to "taille d'un dossier (du -sh dossier)",
+        "ps" to "programmes en cours",
+        "ping" to "teste la connexion (ping -c 3 example.com)",
+        "clear" to "efface l'écran du terminal",
+    )
+
     fun barre(v: Double, max: Double, n: Int): String {
         val k = ((v / max) * n).toInt().coerceIn(0, n)
         return "▰".repeat(k) + "▱".repeat(n - k)
@@ -136,7 +169,7 @@ class Jeu(ctx: Context) {
                 "~ veut dire « mon dossier perso ». Tu sais naviguer !", re = r("^cd(\\s+~/?)?\\s*$"),
                 astuce = "Le ~ est dans la rangée de touches au-dessus du clavier. (« cd » tout seul marche aussi !)"),
         )),
-        Lecon("Construire mon nid", "Bâtisseur", 3, listOf(
+        Lecon("Construire mon nid", "Bâtisseur", 1, listOf(
             Etape("Il me faut un terrain de jeu. Crée-le depuis ton dossier perso.", "mkdir terrain_terminagotchi",
                 "mkdir = « make directory » : créer un dossier.", fs = { it.terrain.isDirectory }),
             Etape("Entrons dedans.", "cd terrain_terminagotchi", "On est chez nous maintenant.",
@@ -144,7 +177,7 @@ class Jeu(ctx: Context) {
             Etape("Construis-moi un nid !", "mkdir nid", "Il est parfait, merci !",
                 fs = { File(it.terrain, "nid").isDirectory }),
         )),
-        Lecon("Le garde-manger", "Inspecteur", 4, listOf(
+        Lecon("Le garde-manger", "Inspecteur", 1, listOf(
             Etape("J'ai faim… mets une pomme dans mon garde-manger.", "echo pomme > nid/repas.txt",
                 "« > » envoie le texte dans un fichier (et l'écrase s'il existe !).",
                 fs = { File(it.terrain, "nid/repas.txt").isFile }),
@@ -153,7 +186,7 @@ class Jeu(ctx: Context) {
             Etape("Cherche le mot « pomme » dans le fichier.", "grep pomme nid/repas.txt",
                 "Chercher un mot dans des fichiers : super-pouvoir débloqué.", re = r("^grep\\b.*pomme")),
         )),
-        Lecon("Le bouclier", "Gardien", 5, listOf(
+        Lecon("Le bouclier", "Gardien", 1, listOf(
             Etape("Qui a le droit de toucher à mon repas ?", "ls -l nid",
                 "r = lire, w = écrire, x = exécuter.", re = r("^(ls\\s+-\\w*l|stat)\\b")),
             Etape("Protège-le pour que personne ne l'abîme !", "chmod 444 nid/repas.txt",
@@ -162,7 +195,7 @@ class Jeu(ctx: Context) {
             Etape("Essaie d'y ajouter une poire, pour voir…", "echo poire >> nid/repas.txt",
                 "Refusé ! « >> » ajoute à la fin, mais le bouclier tient.", re = r(">>.*repas")),
         )),
-        Lecon("Grand ménage", "Nettoyeur", 6, listOf(
+        Lecon("Grand ménage", "Nettoyeur", 1, listOf(
             Etape("Fais une copie de secours de mon repas.", "cp nid/repas.txt nid/secours.txt",
                 "cp = copier. L'original ne bouge pas.", fs = { File(it.terrain, "nid/secours.txt").isFile }),
             Etape("Déplace la copie dans le terrain, sous le nom reserve.txt.", "mv nid/secours.txt reserve.txt",
@@ -382,7 +415,11 @@ class Jeu(ctx: Context) {
 
     fun texteLecon(): String? {
         val l = leconCourante() ?: return null
-        if (niveau < l.niveau) return "Prochaine leçon au niveau ${l.niveau}"
+        if (niveau < l.niveau) {
+            val manque = 10 * (l.niveau - 1) * (l.niveau - 1) - xp
+            return "Prochaine leçon au niveau ${l.niveau} : il me manque $manque XP.\n" +
+                "Nourris-moi avec des commandes jamais goûtées (📖 Lexique) !"
+        }
         val e = l.etapes[etape]
         val astuce = if (e.astuce != null) "\n${e.astuce}" else ""
         return "${l.titre} (${etape + 1}/${l.etapes.size}) · ${e.dit}\n➜ ${Regles.piege(e.cmd)}$astuce"

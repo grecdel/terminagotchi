@@ -5,7 +5,10 @@ import android.content.Context
 import android.graphics.Paint
 import android.graphics.drawable.GradientDrawable
 import android.os.Bundle
+import android.graphics.Typeface
 import android.text.SpannableString
+import android.text.SpannableStringBuilder
+import android.text.style.StyleSpan
 import android.text.Spanned
 import android.text.style.ForegroundColorSpan
 import android.os.Handler
@@ -46,6 +49,9 @@ class TerminalActivity : Activity() {
     private lateinit var invite: TextView
     private lateinit var saisie: EditText
     private lateinit var chemin: TextView
+    private lateinit var lexiqueBtn: TextView
+    private lateinit var lexiqueVue: ScrollView
+    private lateinit var lexiqueTexte: TextView
     private lateinit var contenu: LinearLayout
 
     private val handler = Handler(Looper.getMainLooper())
@@ -82,6 +88,10 @@ class TerminalActivity : Activity() {
         findViewById<View>(R.id.panneau).setOnClickListener { saisie.requestFocus() }
         findViewById<View>(R.id.fermer).setOnClickListener { finish() }
         findViewById<View>(R.id.envoyer).setOnClickListener { valider() }
+        lexiqueBtn = findViewById(R.id.lexique_btn)
+        lexiqueVue = findViewById(R.id.lexique_vue)
+        lexiqueTexte = findViewById(R.id.lexique_texte)
+        lexiqueBtn.setOnClickListener { basculerLexique() }
         creerTouches()
         chemin = findViewById(R.id.chemin)
         contenu = findViewById(R.id.contenu)
@@ -195,6 +205,7 @@ class TerminalActivity : Activity() {
             handler.post {
                 if (resultat.isNotEmpty()) ecrire(resultat)
                 val change = majObservatoire(ligne)
+                if (lexiqueVue.visibility == View.VISIBLE) basculerLexique()
                 if (resultat.isEmpty() && !change) {
                     ecrire("✓ Fait. (Pas de message = tout s'est bien passé.)", 0xFF9A9AB0.toInt())
                 }
@@ -218,6 +229,42 @@ class TerminalActivity : Activity() {
         sortie.append(s)
         if (sortie.length() > 15000) sortie.text = sortie.text.subSequence(sortie.length() - 12000, sortie.length())
         defile.post { defile.scrollTo(0, sortie.bottom) }
+    }
+
+    // ------------------------------------------------------------ lexique
+    private fun basculerLexique() {
+        if (lexiqueVue.visibility == View.VISIBLE) {
+            lexiqueVue.visibility = View.GONE
+            defile.visibility = View.VISIBLE
+            lexiqueBtn.text = "📖 Lexique"
+        } else {
+            remplirLexique()
+            lexiqueVue.visibility = View.VISIBLE
+            defile.visibility = View.GONE
+            lexiqueBtn.text = "⌨ Terminal"
+            lexiqueVue.scrollTo(0, 0)
+        }
+    }
+
+    /** Commandes déjà goûtées en blanc, jamais tapées en gris. */
+    private fun remplirLexique() {
+        val connues = Regles.LEXIQUE.count { it.first in jeu.vus }
+        val sb = SpannableStringBuilder()
+        val entete = "Goûtées : $connues/${Regles.LEXIQUE.size}  ·  blanc = déjà tapée, gris = à découvrir\n"
+        sb.append(entete)
+        sb.setSpan(ForegroundColorSpan(0xFFFF87FF.toInt()), 0, entete.length, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
+        for ((cmd, desc) in Regles.LEXIQUE) {
+            val goutee = cmd in jeu.vus
+            val debut = sb.length
+            sb.append(if (goutee) "● " else "○ ")
+            val debutCmd = sb.length
+            sb.append(cmd)
+            sb.setSpan(StyleSpan(Typeface.BOLD), debutCmd, sb.length, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
+            sb.append("  $desc\n")
+            val couleur = if (goutee) 0xFFFFFFFF.toInt() else 0xFF6A6A85.toInt()
+            sb.setSpan(ForegroundColorSpan(couleur), debut, sb.length, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
+        }
+        lexiqueTexte.text = sb
     }
 
     // ------------------------------------------------------------ fenêtre d'observation
