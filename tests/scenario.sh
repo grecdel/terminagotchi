@@ -4,6 +4,7 @@ set -u
 mkdir -p captures
 APK=app/build/outputs/apk/release/app-release.apk
 adb install -r "$APK"
+adb shell pm grant fr.terminagotchi android.permission.POST_NOTIFICATIONS || true
 adb logcat -c
 n=0
 capture() { n=$((n+1)); sleep "${2:-2}"; adb exec-out screencap -p > "captures/$(printf %02d $n)_$1.png"; }
