@@ -36,15 +36,15 @@ class DoomActivity : Activity() {
         vue = DoomVue(this, jeu, File(d, "carte.txt").readText(), Doom.lireReglages(File(d, "reglages.txt").readText()))
 
         val dp = resources.displayMetrics.density
-        val racine = LinearLayout(this)
-        racine.orientation = LinearLayout.VERTICAL
-        racine.setBackgroundColor(0xFF0B0B12.toInt())
-        racine.addView(vue, LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, 0, 1f))
+        val cadre = FrameLayout(this)
+        cadre.setBackgroundColor(0xFF000000.toInt())
+        cadre.addView(vue, FrameLayout.LayoutParams(FrameLayout.LayoutParams.MATCH_PARENT, FrameLayout.LayoutParams.MATCH_PARENT))
 
-        val commandes = LinearLayout(this)
-        commandes.orientation = LinearLayout.HORIZONTAL
-        commandes.gravity = Gravity.CENTER
-        commandes.setPadding(0, (8 * dp).toInt(), 0, (16 * dp).toInt())
+        // flèches en bas à gauche, tir en bas à droite (sous les pouces)
+        val fleches = LinearLayout(this)
+        fleches.orientation = LinearLayout.HORIZONTAL
+        val tir = LinearLayout(this)
+        tir.orientation = LinearLayout.HORIZONTAL
         fun bouton(texte: String, action: (Boolean) -> Unit): TextView {
             val b = TextView(this)
             b.text = texte
@@ -52,6 +52,7 @@ class DoomActivity : Activity() {
             b.gravity = Gravity.CENTER
             b.setTextColor(Color.WHITE)
             b.setBackgroundResource(R.drawable.touche)
+            b.alpha = 0.8f
             val lp = LinearLayout.LayoutParams((64 * dp).toInt(), (64 * dp).toInt())
             lp.marginStart = (5 * dp).toInt()
             lp.marginEnd = (5 * dp).toInt()
@@ -65,15 +66,16 @@ class DoomActivity : Activity() {
             }
             return b
         }
-        commandes.addView(bouton("⟲") { vue.gauche = it })
-        commandes.addView(bouton("▲") { vue.avant = it })
-        commandes.addView(bouton("▼") { vue.arriere = it })
-        commandes.addView(bouton("⟳") { vue.droite = it })
-        commandes.addView(bouton("🔥") { if (it) vue.tirer() })
-        racine.addView(commandes)
-
-        val cadre = FrameLayout(this)
-        cadre.addView(racine)
+        fleches.addView(bouton("⟲") { vue.gauche = it })
+        fleches.addView(bouton("▲") { vue.avant = it })
+        fleches.addView(bouton("▼") { vue.arriere = it })
+        fleches.addView(bouton("⟳") { vue.droite = it })
+        tir.addView(bouton("🔥") { if (it) vue.tirer() })
+        val marge = (16 * dp).toInt()
+        cadre.addView(fleches, FrameLayout.LayoutParams(FrameLayout.LayoutParams.WRAP_CONTENT,
+            FrameLayout.LayoutParams.WRAP_CONTENT, Gravity.BOTTOM or Gravity.START).apply { setMargins(marge, 0, 0, marge) })
+        cadre.addView(tir, FrameLayout.LayoutParams(FrameLayout.LayoutParams.WRAP_CONTENT,
+            FrameLayout.LayoutParams.WRAP_CONTENT, Gravity.BOTTOM or Gravity.END).apply { setMargins(0, 0, marge, marge) })
         setContentView(cadre)
     }
 }
@@ -81,8 +83,8 @@ class DoomActivity : Activity() {
 class DoomVue(ctx: Context, private val jeu: Jeu, carteTexte: String, reglages: Map<String, String>) : View(ctx) {
     private class Ennemi(var x: Double, var y: Double, val couleur: Int, var pv: Int = 2)
 
-    private val L = 200          // résolution interne (pixels)
-    private val H = 125
+    private val L = 240          // résolution interne (pixels), format paysage
+    private val H = 110
     private val tampon = Bitmap.createBitmap(L, H, Bitmap.Config.ARGB_8888)
     private val pixels = IntArray(L * H)
     private val zbuf = DoubleArray(L)
