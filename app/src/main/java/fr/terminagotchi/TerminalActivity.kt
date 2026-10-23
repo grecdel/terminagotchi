@@ -7,6 +7,7 @@ import android.os.Handler
 import android.os.Looper
 import android.text.Editable
 import android.text.TextWatcher
+import android.view.Gravity
 import android.view.KeyEvent
 import android.view.View
 import android.view.WindowManager
@@ -14,6 +15,7 @@ import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
 import android.widget.EditText
 import android.widget.ImageView
+import android.widget.LinearLayout
 import android.widget.ScrollView
 import android.widget.TextView
 import java.util.concurrent.Executors
@@ -72,6 +74,7 @@ class TerminalActivity : Activity() {
         findViewById<View>(R.id.panneau).setOnClickListener { saisie.requestFocus() }
         findViewById<View>(R.id.fermer).setOnClickListener { finish() }
         findViewById<View>(R.id.envoyer).setOnClickListener { valider() }
+        creerTouches()
 
         // Anti copier-coller : un bloc de plusieurs caractères arrivé d'un coup = collage.
         // (Les suggestions du clavier sont désactivées sur ce champ, donc la frappe arrive lettre par lettre.)
@@ -116,6 +119,34 @@ class TerminalActivity : Activity() {
         super.onDestroy()
     }
 
+    /** Rangée de touches spéciales, difficiles à trouver sur un clavier de téléphone. */
+    private fun creerTouches() {
+        val rangee = findViewById<LinearLayout>(R.id.touches)
+        val dp = resources.displayMetrics.density
+        for (t in listOf("~", "/", "-", ".", "|", ">", ">>", "*", "\"", "'", "$", "&", "_", "=")) {
+            val b = TextView(this)
+            b.text = t
+            b.textSize = 15f
+            b.typeface = android.graphics.Typeface.MONOSPACE
+            b.setTextColor(0xFFE6E6E6.toInt())
+            b.gravity = Gravity.CENTER
+            b.minWidth = (40 * dp).toInt()
+            b.setPadding((10 * dp).toInt(), (6 * dp).toInt(), (10 * dp).toInt(), (6 * dp).toInt())
+            b.setBackgroundResource(R.drawable.touche)
+            val lp = LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT)
+            lp.marginEnd = (6 * dp).toInt()
+            b.layoutParams = lp
+            b.setOnClickListener {
+                val debut = saisie.selectionStart.coerceAtLeast(0)
+                for (c in t) {               // un caractère à la fois : ce n'est pas un collage
+                    saisie.text.insert(saisie.selectionStart.coerceAtLeast(debut), c.toString())
+                }
+                saisie.requestFocus()
+            }
+            rangee.addView(b)
+        }
+    }
+
     // ------------------------------------------------------------ commandes
     private fun valider() {
         val ligne = saisie.text.toString().trim()
@@ -130,7 +161,7 @@ class TerminalActivity : Activity() {
             jeu.dire("*toc toc* … nourris-moi avec des commandes !", 10)
             jeu.sauver()
             WidgetCreature.majTous(this)
-            ecrire("Bienvenue, ${jeu.nom} !\nEssaie une première commande, par exemple : ls")
+            ecrire("Bienvenue, ${jeu.nom} !\nSuis la leçon en rose juste au-dessus : tape la commande indiquée.")
             rafraichir()
             return
         }

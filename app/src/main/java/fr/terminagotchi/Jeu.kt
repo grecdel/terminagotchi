@@ -127,13 +127,14 @@ class Jeu(ctx: Context) {
     private fun r(p: String) = Regex(p, RegexOption.IGNORE_CASE)
 
     val lecons: List<Lecon> = listOf(
-        Lecon("Où suis-je ?", "Boussole", 2, listOf(
+        Lecon("Où suis-je ?", "Boussole", 1, listOf(
             Etape("Coucou ! Première question : où sommes-nous ?", "pwd",
                 "pwd = « print working directory » : le dossier où tu te trouves.", re = r("^pwd\\b")),
             Etape("Regarde ce qu'il y a autour de nous.", "ls",
                 "Voilà les fichiers et dossiers d'ici !", re = r("^ls\\b")),
             Etape("Rentrons à la maison (ton dossier perso).", "cd ~",
-                "~ veut dire « mon dossier perso ». Tu sais naviguer !", re = r("^cd(\\s+~/?)?\\s*$")),
+                "~ veut dire « mon dossier perso ». Tu sais naviguer !", re = r("^cd(\\s+~/?)?\\s*$"),
+                astuce = "Le ~ est dans la rangée de touches au-dessus du clavier. (« cd » tout seul marche aussi !)"),
         )),
         Lecon("Construire mon nid", "Bâtisseur", 3, listOf(
             Etape("Il me faut un terrain de jeu. Crée-le depuis ton dossier perso.", "mkdir terrain_terminagotchi",
