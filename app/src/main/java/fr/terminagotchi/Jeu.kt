@@ -43,6 +43,20 @@ object Regles {
         "Inspecteur" to setOf("cat", "grep", "head", "tail", "find", "more", "less"),
         "Gardien" to setOf("chmod"),
         "Nettoyeur" to setOf("cp", "mv", "rm"),
+        "Télécommande" to setOf("lampe", "vibre", "batterie"),
+        "Portier" to setOf("ouvre", "applis", "web", "carte"),
+        "Messager" to setOf("dis", "partage", "sms", "appelle"),
+        "Vigie" to setOf("whoami", "id", "ps"),
+        "Intendant" to setOf("df", "du", "uptime"),
+        "Détective" to setOf("uname", "getprop", "find"),
+        "Plombier" to setOf("wc", "sort"),
+        "Tamiseur" to setOf("grep"),
+        "Cuistot" to setOf("sh"),
+        "Inventeur" to setOf("echo"),
+        "Créateur" to setOf("for", "if", "while"),
+        "Apprenti" to setOf("doom"),
+        "Architecte" to setOf("edite"),
+        "Ingénieur" to setOf("doom", "edite"),
     )
 
     val STADES = listOf("Œuf", "Bébé", "Ado", "Adulte")
@@ -104,6 +118,8 @@ object Regles {
         val y = "⚙ Système"
         val t = "📱 Ton téléphone (commandes de l'appli)"
         val c = "🐾 Ta créature"
+        val j = "🎮 Jeux, aventures et progression"
+        val p = "💻 Sur ordinateur ou en mode Linux complet (pas ici)"
         listOf(
             Triple("pwd", "affiche le dossier où tu te trouves", f),
             Triple("ls", "liste le contenu (ls -a : avec les cachés, ls -l : les détails)", f),
@@ -153,6 +169,30 @@ object Regles {
             Triple("devine", "devine son nombre (1 à 20) : devine 10", c),
             Triple("etat", "sa fiche complète", c),
             Triple("renomme", "change son nom : renomme Pixel", c),
+            Triple("arbre", "l'arbre de compétences : arbre (puis arbre scripts…)", j),
+            Triple("cherche", "trouve la bonne commande : cherche supprimer un dossier", j),
+            Triple("collection", "tes bestioles capturées", j),
+            Triple("defi", "lance un défi éclair (defi records : tes records)", j),
+            Triple("donjon", "entre dans le donjon aléatoire (donjon nouveau : recommencer)", j),
+            Triple("plan", "la carte de l'étage du donjon", j),
+            Triple("quetes", "tes quêtes et tes points de vie", j),
+            Triple("attaque", "combat le monstre caché dans la salle", j),
+            Triple("sac", "ton inventaire", j),
+            Triple("equipe", "s'équiper d'un objet du sac : equipe epee_rouillee", j),
+            Triple("bois", "boire une potion : bois potion_de_soin", j),
+            Triple("ctf", "le capture the flag (épreuves de hacker)", j),
+            Triple("drapeau", "valider un drapeau : drapeau TG{…}", j),
+            Triple("indice", "un indice pour une épreuve : indice 1", j),
+            Triple("edite", "éditeur de texte (comme nano) : edite notes.txt", j),
+            Triple("doom", "lance TON Doom-like (niveau dans ~/terrain_terminagotchi/jeu)", j),
+            Triple("notifs", "notifications on / off", j),
+            Triple("sudo", "agir en administrateur (impossible dans le bac à sable du téléphone)", p),
+            Triple("apt", "installer des logiciels (Linux / Termux, ou mode Linux complet)", p),
+            Triple("nano", "éditeur de texte du terminal (ici : edite)", p),
+            Triple("git", "garder l'historique de ses fichiers (version PC)", p),
+            Triple("python3", "programmer en Python (version PC / mode Linux complet)", p),
+            Triple("top", "programmes en direct, plein écran (version PC)", p),
+            Triple("ssh", "se connecter à une autre machine (version PC)", p),
         )
     }
 
@@ -186,6 +226,14 @@ class Jeu(ctx: Context) {
     var colles = 0
     private val dernierJeu = mutableMapOf<String, Long>()
     val historique = mutableListOf<String>()
+
+    /** Données des modules (arbre, exploration, donjon, ctf, défis…), sauvegardées telles quelles. */
+    var extra = JSONObject()
+
+    /** Sous-objet d'un module, créé à la demande. */
+    fun module(nom: String): JSONObject = extra.optJSONObject(nom) ?: JSONObject().also { extra.put(nom, it) }
+
+    val branches: Map<String, Branche> by lazy { Arbre.creer(this) }
 
     private fun r(p: String) = Regex(p, RegexOption.IGNORE_CASE)
 
@@ -245,6 +293,17 @@ class Jeu(ctx: Context) {
     val stade: Int get() = Regles.stade(niveau)
 
     // ------------------------------------------------------------ sauvegarde
+    /** Relit la sauvegarde (une autre partie de l'appli, comme le Doom, a pu la modifier). */
+    fun recharger() {
+        vus.clear()
+        journal.clear()
+        skills.clear()
+        historique.clear()
+        extra = JSONObject()
+        Regles.STATS.forEach { stats[it] = 0 }
+        charger()
+    }
+
     private fun charger() {
         if (!fichier.exists()) return
         try {
@@ -266,6 +325,7 @@ class Jeu(ctx: Context) {
             bulle = o.optString("bulle")
             bulleFin = o.optLong("bulleFin")
             colles = o.optInt("colles")
+            extra = o.optJSONObject("extra") ?: JSONObject()
         } catch (e: Exception) {
             // sauvegarde illisible : on repart de zéro plutôt que de planter
         }
@@ -290,6 +350,7 @@ class Jeu(ctx: Context) {
         o.put("bulle", bulle)
         o.put("bulleFin", bulleFin)
         o.put("colles", colles)
+        o.put("extra", extra)
         val tmp = File(fichier.parentFile, "sauvegarde.tmp")
         tmp.writeText(o.toString())
         tmp.renameTo(fichier)
@@ -386,7 +447,27 @@ class Jeu(ctx: Context) {
         return true
     }
 
-    fun leconCourante(): Lecon? = if (lecon < lecons.size) lecons[lecon] else null
+    val troncFini: Boolean get() = lecon >= lecons.size
+
+    fun brancheActive(): String? = module("arbre").optString("active", "").ifEmpty { null }
+
+    fun progresBranche(b: String): Int = module("arbre").optJSONObject("progres")?.optInt(b) ?: 0
+
+    fun choisirBranche(b: String) {
+        val a = module("arbre")
+        if (a.optString("active") != b) {
+            a.put("active", b)
+            etape = 0
+        }
+    }
+
+    fun leconCourante(): Lecon? {
+        if (lecon < lecons.size) return lecons[lecon]
+        val b = brancheActive() ?: return null
+        val ls = branches[b]?.lecons ?: return null
+        val i = progresBranche(b)
+        return if (i < ls.size) ls[i] else null
+    }
 
     fun etapeCourante(): Etape? {
         val l = leconCourante() ?: return null
@@ -403,13 +484,31 @@ class Jeu(ctx: Context) {
             return true
         }
         etape = 0
-        lecon++
         if (l.skill !in skills) skills.add(l.skill)
         log("🎓 « ${l.titre} » finie → ${l.skill} !")
+        var msg = "Leçon finie ! J'ai appris « ${l.skill} » grâce à toi."
+        if (!troncFini) {
+            lecon++
+            if (troncFini) msg = "Tronc commun terminé, bravo ! L'arbre de compétences est ouvert : tape « arbre »."
+        } else {
+            val b = brancheActive()
+            if (b != null) {
+                val a = module("arbre")
+                val p = a.optJSONObject("progres") ?: JSONObject().also { a.put("progres", it) }
+                p.put(b, p.optInt(b) + 1)
+                val br = branches[b]
+                if (br != null) {
+                    stats[br.stat] = (stats[br.stat] ?: 0) + 5
+                    if (p.optInt(b) >= br.lecons.size) {
+                        a.put("active", "")
+                        log("🌳 Branche ${br.nom} maîtrisée !")
+                        msg = "Branche ${br.nom} maîtrisée ! Tape « arbre » pour en choisir une autre."
+                    }
+                }
+            }
+        }
         ajouterXp(20)
-        dire(if (lecon >= lecons.size)
-            "Tronc commun terminé, bravo ! La suite (branche Android) arrive dans la prochaine version."
-        else "Leçon finie ! J'ai appris « ${l.skill} » grâce à toi.", 14)
+        dire(msg, 14)
         return false
     }
 
@@ -459,7 +558,8 @@ class Jeu(ctx: Context) {
     fun texteStats() = Regles.STATS.joinToString("  ") { "${Regles.COURT[it]} ${stats[it]}" }
 
     fun texteLecon(): String? {
-        val l = leconCourante() ?: return null
+        val l = leconCourante() ?: return if (troncFini && brancheActive() == null)
+            "🌳 Choisis ta prochaine branche d'apprentissage : tape  arbre" else null
         if (niveau < l.niveau) {
             val manque = 10 * (l.niveau - 1) * (l.niveau - 1) - xp
             return "Prochaine leçon au niveau ${l.niveau} : il me manque $manque XP.\n" +

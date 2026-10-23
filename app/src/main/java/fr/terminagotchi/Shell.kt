@@ -32,7 +32,9 @@ class Shell(private val home: File) {
         }
         if (!dossier.isDirectory) dossier = home
         return try {
-            val pb = ProcessBuilder("/system/bin/sh", "-c", ligne)
+            val pb = ProcessBuilder("/system/bin/sh", "-c",
+                // ~/.tgrc est chargé avant chaque commande : on peut y créer ses propres commandes
+                "[ -f \"\$HOME/.tgrc\" ] && . \"\$HOME/.tgrc\" >/dev/null 2>&1\n" + ligne)
                 .directory(dossier)
                 .redirectErrorStream(true)
             pb.environment()["HOME"] = home.absolutePath

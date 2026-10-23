@@ -76,7 +76,12 @@ class TerminalActivity : Activity() {
 
         jeu = Jeu(this)
         shell = Shell(jeu.home)
-        commandes = Commandes(this, jeu)
+        commandes = Commandes(this, jeu) { shell.dossier }
+        Rappels.programmer(this)
+        if (android.os.Build.VERSION.SDK_INT >= 33 &&
+            checkSelfPermission("android.permission.POST_NOTIFICATIONS") != android.content.pm.PackageManager.PERMISSION_GRANTED) {
+            requestPermissions(arrayOf("android.permission.POST_NOTIFICATIONS"), 1)
+        }
         creature = findViewById(R.id.creature)
         titre = findViewById(R.id.titre)
         faim = findViewById(R.id.faim)
@@ -137,6 +142,15 @@ class TerminalActivity : Activity() {
                 .showSoftInput(saisie, InputMethodManager.SHOW_IMPLICIT)
         }, 200)
         animer()
+    }
+
+    override fun onResume() {
+        super.onResume()
+        if (::jeu.isInitialized && !enCours) {
+            jeu.recharger()        // le Doom ou l'éditeur ont pu changer des choses
+            rafraichir()
+            if (::contenu.isInitialized) majObservatoire(null)
+        }
     }
 
     override fun onDestroy() {
@@ -301,6 +315,8 @@ class TerminalActivity : Activity() {
                 ecrire("Ce terminal exécute de vraies commandes Android : ls, cd, mkdir, cat, grep, cp, mv, rm, ping…\n" +
                     "📱 Téléphone : ouvre, applis, web, carte, appelle, sms, partage, lampe, vibre, batterie, dis, reglages\n" +
                     "🐾 Avec moi : caresse, danse, parle, joue, devine, etat, renomme\n" +
+                    "🎮 Jeux : donjon, plan, quetes, attaque, sac, equipe · ctf, drapeau, indice · doom, edite\n" +
+                    "🌳 Progresser : arbre, collection, defi, cherche <ce que tu veux faire>\n" +
                     "Tout est expliqué dans 📖 Lexique. Chaque commande tapée me nourrit (pas les collées !).\n" +
                     "clear = effacer · quitter = fermer")
                 return
@@ -311,6 +327,10 @@ class TerminalActivity : Activity() {
         if (interne != null) {
             ecrire(interne.texte, interne.couleur)
             if (lexiqueVue.visibility == View.VISIBLE) basculerLexique()
+            interne.aller?.let {
+                shell.dossier = it
+                majObservatoire(ligne)
+            }
             apresCommande(ligne, etaitColle, etaitRappel)
             if (interne.saut > saut) saut = interne.saut
             return
@@ -339,9 +359,15 @@ class TerminalActivity : Activity() {
         jeu.tick()
         val mange = jeu.manger(ligne, etaitColle, etaitRappel)
         jeu.leconTick(ligne, etaitColle)
+        if (!etaitColle && !etaitRappel) Defis.verifier(jeu, ligne)?.let { ecrire(it, 0xFFFFD75F.toInt()); saut = 8 }
+        Explo.verifier(jeu)?.let { ecrire(it, 0xFFFF87FF.toInt()) }
+        Donjon.verifier(jeu, shell.dossier, ligne)?.let { r ->
+            ecrire(r.texte, 0xFFFFD787.toInt())
+            r.aller?.let { shell.dossier = it; majObservatoire(null) }
+        }
         jeu.sauver()
         WidgetCreature.majTous(this)
-        if (mange) saut = 4
+        if (mange) saut = maxOf(saut, 4)
         rafraichir()
     }
 
@@ -371,7 +397,7 @@ class TerminalActivity : Activity() {
 
     /** Commandes déjà goûtées en blanc, jamais tapées en gris. */
     private fun remplirLexique() {
-        val connues = Regles.LEXIQUE.count { it.first in jeu.vus }
+        val connues = Regles.LEXIQUE.count { it.first in jeu.vus && !it.third.startsWith("💻") }
         val sb = SpannableStringBuilder()
         val entete = "Goûtées : $connues/${Regles.LEXIQUE.size}  ·  blanc = déjà tapée, gris = à découvrir\n"
         sb.append(entete)
@@ -385,14 +411,15 @@ class TerminalActivity : Activity() {
                 sb.setSpan(ForegroundColorSpan(0xFFAFAFFF.toInt()), d, sb.length, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
                 sb.setSpan(StyleSpan(Typeface.BOLD), d, sb.length, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
             }
-            val goutee = cmd in jeu.vus
+            val pc = sec.startsWith("💻")
+            val goutee = cmd in jeu.vus && !pc
             val debut = sb.length
-            sb.append(if (goutee) "● " else "○ ")
+            sb.append(if (pc) "🔒 " else if (goutee) "● " else "○ ")
             val debutCmd = sb.length
             sb.append(cmd)
             sb.setSpan(StyleSpan(Typeface.BOLD), debutCmd, sb.length, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
             sb.append("  $desc\n")
-            val couleur = if (goutee) 0xFFFFFFFF.toInt() else 0xFF6A6A85.toInt()
+            val couleur = if (pc) 0xFF45455A.toInt() else if (goutee) 0xFFFFFFFF.toInt() else 0xFF6A6A85.toInt()
             sb.setSpan(ForegroundColorSpan(couleur), debut, sb.length, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
         }
         lexiqueTexte.text = sb
@@ -449,7 +476,15 @@ class TerminalActivity : Activity() {
         for (f in visibles) {
             val nouveau = f.name in nouveaux
             val protege = f.isFile && !f.canWrite()
-            val ico = (if (nouveau) "✨" else "") + (if (f.isDirectory) "📁 " else "📄 ") + (if (protege) "🔒" else "")
+            val type = when {
+                f.isDirectory && f.name == "escalier" -> "🪜 "
+                f.isDirectory && !f.canExecute() -> "🔒📁 "
+                f.isDirectory -> "📁 "
+                f.name.endsWith(".objet") -> "💎 "
+                f.name == "LISEZMOI.txt" -> "📜 "
+                else -> "📄 "
+            }
+            val ico = (if (nouveau) "✨" else "") + type + (if (protege) "🔒" else "")
             when {
                 nouveau -> chip(ico + f.name, 0xFF1F4D33.toInt(), 0xFF5FD787.toInt())
                 f.isDirectory -> chip(ico + f.name, 0xFF2E3A5C.toInt(), 0xFFAFD7FF.toInt())
@@ -495,7 +530,9 @@ class TerminalActivity : Activity() {
         val b = jeu.bulleActive()
         bulle.visibility = if (b.isEmpty()) View.GONE else View.VISIBLE
         bulle.text = b
-        val l = if (jeu.existe) jeu.texteLecon() else null
+        val defi = Defis.actif(jeu)
+        val l = if (defi != null) "⚡ DÉFI ÉCLAIR : tape « ${Regles.piege(defi)} » — ${Defis.resteSecondes(jeu)} s"
+            else if (jeu.existe) jeu.texteLecon() else null
         lecon.visibility = if (l == null) View.GONE else View.VISIBLE
         lecon.text = l ?: ""
         creature.setImageBitmap(Sprites.bitmap(jeu, 12, cligne > 0))
@@ -519,9 +556,15 @@ class TerminalActivity : Activity() {
         if (frame % 12 == 0 && !enCours) {        // toutes les ~5 s : la faim, les bulles, les leçons « fichiers »
             jeu.tick()
             jeu.leconTick(null, false)
+            Defis.verifier(jeu, null)
+            if (jeu.existe && jeu.stade >= 1 && Defis.actif(jeu) == null && Random.nextInt(60) == 0) Defis.lancer(jeu)
+            if (Explo.debloquee(jeu) && Random.nextInt(96) == 0) Explo.spawn(jeu)
+            Explo.verifier(jeu)?.let { ecrire(it, 0xFFFF87FF.toInt()) }
             if (Random.nextInt(4) == 0) jeu.parlerSiSilencieux()
             jeu.sauver()
             rafraichir()
+        } else if (Defis.actif(jeu) != null && frame % 2 == 0) {
+            rafraichir()                          // compte à rebours du défi
         } else if (bulle.visibility == View.VISIBLE && jeu.bulleActive().isEmpty()) {
             rafraichir()
         }

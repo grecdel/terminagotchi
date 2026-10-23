@@ -12,6 +12,7 @@ import android.os.VibrationEffect
 import android.os.Vibrator
 import android.provider.Settings
 import android.speech.tts.TextToSpeech
+import java.io.File
 import java.util.Locale
 
 /**
@@ -20,9 +21,10 @@ import java.util.Locale
  *  - 🐾 jouer avec la créature (caresse, joue, devine…)
  * Comme les commandes « termux-… » de Termux : des outils du terminal propres à cette appli.
  */
-class Commandes(private val act: Activity, private val jeu: Jeu) {
+class Commandes(private val act: Activity, private val jeu: Jeu, private val dossier: () -> File) {
 
-    class Reponse(val texte: String, val saut: Int = 0, val couleur: Int? = null)
+    /** aller : dossier où emmener le joueur après la commande (donjon, ctf…). */
+    class Reponse(val texte: String, val saut: Int = 0, val couleur: Int? = null, val aller: File? = null)
 
     private var tts: TextToSpeech? = null
     private var ttsPret = false
@@ -65,6 +67,25 @@ class Commandes(private val act: Activity, private val jeu: Jeu) {
             "devine" -> devine(mots.getOrNull(1))
             "etat" -> etat()
             "renomme" -> renomme(reste)
+            // ---------------------------------------------------- progression et jeux
+            "arbre" -> arbre(reste)
+            "collection" -> Reponse(Explo.texteCollection(jeu), couleur = ROSE)
+            "cherche" -> Reponse(Recherche.chercher(reste), couleur = BLEU)
+            "defi" -> if (reste == "records") Reponse(Defis.texteRecords(jeu))
+                else { Defis.lancer(jeu); Reponse("⚡ Défi lancé : regarde la bulle !", saut = 2, couleur = JAUNE) }
+            "donjon" -> Donjon.entrer(jeu, reste).let { Reponse(it.texte, saut = 2, couleur = JAUNE, aller = it.aller) }
+            "plan" -> Reponse(Donjon.plan(jeu, dossier()), couleur = JAUNE)
+            "quetes" -> Reponse(Donjon.texteQuetes(jeu), couleur = JAUNE)
+            "sac" -> Reponse(Donjon.texteSac(jeu), couleur = JAUNE)
+            "equipe" -> Reponse(Donjon.equipe(jeu, reste), saut = 2, couleur = JAUNE)
+            "bois" -> Reponse(Donjon.bois(jeu, reste), saut = 2, couleur = JAUNE)
+            "attaque" -> Donjon.attaque(jeu, dossier()).let { Reponse(it.texte, saut = 6, couleur = JAUNE, aller = it.aller) }
+            "ctf" -> Ctf.ouvrir(jeu, reste).let { Reponse(it.first, couleur = VERT, aller = it.second) }
+            "drapeau" -> Reponse(Ctf.valider(jeu, reste), saut = 4, couleur = VERT)
+            "indice" -> Reponse(Ctf.indice(jeu, reste), couleur = VERT)
+            "edite" -> edite(reste)
+            "doom" -> doom()
+            "notifs" -> notifs(reste)
             else -> null
         }
     }
@@ -201,6 +222,52 @@ class Commandes(private val act: Activity, private val jeu: Jeu) {
         return lancer(Intent(action), "⚙ J'ouvre les réglages ${quoi ?: ""}".trim(), "")
     }
 
+    // ---------------------------------------------------------------- progression et jeux
+    private fun arbre(choix: String): Reponse {
+        if (choix.isEmpty()) return Reponse(Arbre.texte(jeu), couleur = ROSE)
+        if (!jeu.troncFini) return Reponse("Termine d'abord le tronc commun (la leçon en rose) !", couleur = ORANGE)
+        val cle = choix.lowercase().replace("é", "e").replace("è", "e")
+        val b = jeu.branches[cle] ?: return Reponse("Branches : ${Arbre.ORDRE.joinToString(", ")}", couleur = ORANGE)
+        if (jeu.progresBranche(cle) >= b.lecons.size) return Reponse("Tu maîtrises déjà ${b.nom} !", couleur = ROSE)
+        jeu.choisirBranche(cle)
+        jeu.dire("Branche ${b.nom} ! Suis la leçon en rose.", 10)
+        return Reponse("${b.icone} Branche ${b.nom} choisie : ${b.desc}.", saut = 3, couleur = ROSE)
+    }
+
+    private fun edite(nom: String): Reponse {
+        if (nom.isEmpty()) return Reponse("Quel fichier ? Exemple : edite notes.txt", couleur = ORANGE)
+        val f = when {
+            nom.startsWith("~/") -> File(jeu.home, nom.removePrefix("~/"))
+            nom.startsWith("/") -> File(nom)
+            else -> File(dossier(), nom)
+        }
+        if (!f.canonicalPath.startsWith(jeu.home.canonicalPath)) {
+            return Reponse("Je ne peux modifier que les fichiers de ta maison (~).", couleur = ORANGE)
+        }
+        if (f.isDirectory) return Reponse("${f.name} est un dossier, pas un fichier.", couleur = ORANGE)
+        act.startActivity(Intent(act, EditeurActivity::class.java).putExtra("chemin", f.absolutePath))
+        return Reponse("✏ J'ouvre l'éditeur sur ${f.name}… (comme nano sur un ordinateur)")
+    }
+
+    private fun doom(): Reponse {
+        if (!File(jeu.terrain, "nid").isDirectory) {
+            return Reponse("Le jeu s'ouvre après la leçon « Construire mon nid ».", couleur = ORANGE)
+        }
+        Doom.preparer(jeu)
+        act.startActivity(Intent(act, DoomActivity::class.java))
+        return Reponse("🎮 Lancement… Ton niveau : ~/terrain_terminagotchi/jeu/carte.txt", saut = 4)
+    }
+
+    private fun notifs(choix: String): Reponse {
+        val n = jeu.module("notifs")
+        when (choix.lowercase()) {
+            "on" -> n.put("actives", true)
+            "off" -> n.put("actives", false)
+            else -> return Reponse("Notifications : ${if (n.optBoolean("actives", true)) "activées" else "coupées"}  (notifs on / notifs off)")
+        }
+        return Reponse(if (n.optBoolean("actives")) "🔔 Je te préviendrai quand j'aurai faim." else "🔕 Plus de notifications.")
+    }
+
     // ---------------------------------------------------------------- créature
     private fun joue(coup: String?): Reponse {
         val coups = listOf("pierre", "feuille", "ciseaux")
@@ -254,6 +321,9 @@ class Commandes(private val act: Activity, private val jeu: Jeu) {
 
     companion object {
         val ROSE = 0xFFFF87FF.toInt()
+        val BLEU = 0xFF87AFFF.toInt()
+        val JAUNE = 0xFFFFD787.toInt()
+        val VERT = 0xFF87FFAF.toInt()
         val ORANGE = 0xFFFFAF5F.toInt()
         val CREATURE = setOf("caresse", "danse", "parle", "joue", "devine", "etat", "renomme")
         val TELEPHONE = setOf("applis", "ouvre", "web", "carte", "appelle", "sms", "partage", "lampe", "vibre",
