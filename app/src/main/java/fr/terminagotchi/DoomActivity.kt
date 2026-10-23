@@ -368,12 +368,13 @@ class DoomVue(ctx: Context, private val jeu: Jeu, carteTexte: String, reglages: 
         val haut = (height - h) / 2
         canvas.drawBitmap(tampon, Rect(0, 0, L, H), Rect(0, haut, w, haut + h), pinceau)
         // HUD : portrait de la créature, vies, bestioles restantes
-        val p = (w / 6)
-        canvas.drawBitmap(portrait, Rect(0, 0, portrait.width, portrait.height), Rect(8, haut + h - p, 8 + p, haut + h), pinceau)
+        // HUD en haut à gauche (le bas est réservé aux boutons)
+        val p = (height / 5).coerceAtMost(w / 6)
+        canvas.drawBitmap(portrait, Rect(0, 0, portrait.width, portrait.height), Rect(16, haut + 12, 16 + p, haut + 12 + p), pinceau)
         val restants = ennemis.count { it.pv > 0 }
-        canvas.drawText("❤ $vie   👾 $restants", (p + 20).toFloat(), (haut + h - 20).toFloat(), texte)
+        canvas.drawText("❤ $vie   👾 $restants", (p + 32).toFloat(), (haut + 12 + p / 2 + 12).toFloat(), texte)
         if (System.currentTimeMillis() < messageFin || fini) {
-            canvas.drawText(message, 20f, (haut + 50).toFloat(), texte)
+            canvas.drawText(message, (p + 32).toFloat(), (haut + 12 + p).toFloat(), texte)
         }
         postInvalidateOnAnimation()
     }
