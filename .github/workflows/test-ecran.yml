@@ -5,6 +5,9 @@ on:
   push:
     branches: [main]
 
+permissions:
+  contents: write
+
 jobs:
   test:
     runs-on: ubuntu-latest
@@ -44,3 +47,13 @@ jobs:
         with:
           name: captures
           path: captures/
+
+      - name: Ranger les captures dans la branche « captures »
+        if: always()
+        run: |
+          cd captures
+          git init -q
+          git checkout -q -b captures
+          git add -A
+          git -c user.name="test-auto" -c user.email="test@terminagotchi" commit -q -m "Captures du test ${{ github.run_number }}"
+          git push -q -f "https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}" captures
