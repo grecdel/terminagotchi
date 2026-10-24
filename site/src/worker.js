@@ -452,13 +452,13 @@ pre{padding:12px;overflow-x:auto}
 @media (max-width:600px){h1{font-size:22px}td,th{padding:6px 3px;font-size:14px}}
 `;
 
-function page(titre, contenu, description = "Terminagotchi : la créature qui se nourrit de tes commandes et t'apprend le terminal.") {
+function page(titre, contenu, description = "Terminagotchi : la créature qui se nourrit de tes commandes et t'apprend le terminal.", statut = 200) {
   return new Response(`<!doctype html><html lang="fr"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>${echapper(titre)} · Terminagotchi</title><meta name="description" content="${echapper(description)}">
 <style>${CSS}</style></head><body>
 <header><nav><a class="logo" href="/">▞ Terminagotchi</a><a href="/classement">Classement</a><a href="/ctf">CTF web</a><a href="/#telecharger">Télécharger</a></nav></header>
-<main>${contenu}</main></body></html>`, { headers: { "content-type": "text/html; charset=utf-8" } });
+<main>${contenu}</main></body></html>`, { status: statut, headers: { "content-type": "text/html; charset=utf-8" } });
 }
 
 function ligneClassement(j, i) {
@@ -600,7 +600,7 @@ export default {
       if (m) return await pageBadge(env, m[1]);
       m = chemin.match(/^\/ctf\/([^/]+)\/(\d)(?:\/(\w+))?$/);
       if (m) return await ctf(requete, env, decodeURIComponent(m[1]), Number(m[2]), m[3]);
-      return page("Introuvable", `<h1>404</h1><p>Cette page n'existe pas. <a href="/">Retour à l'accueil</a></p>`);
+      return page("Introuvable", `<h1>404</h1><p>Cette page n'existe pas. <a href="/">Retour à l'accueil</a></p>`, undefined, 404);
     } catch (e) {
       console.error(e);
       return chemin.startsWith("/api/") ? erreur("Erreur du serveur : " + e.message, 500) : texte("Erreur du serveur.\n", 500);

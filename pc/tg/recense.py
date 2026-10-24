@@ -239,7 +239,7 @@ def commande(args):
         return (f"🔑 Code de liaison : {r['code']}  (valable 10 minutes)\n"
                 f"Sur ton téléphone, dans le terminal de l'appli : compte lier {r['code']}")
     if action == "oublier":
-        core.modifier(lambda s: s.__setitem__("compte", {}))
+        core.modifier(lambda s: s.__setitem__("compte", {k: v for k, v in compte(s).items() if k == "serveur"}))
         return "Ce PC n'est plus relié au compte (le compte, lui, existe toujours)."
     dernier = c.get("dernier", 0)
     quand = time.strftime("%H:%M", time.localtime(dernier)) if dernier else "jamais"

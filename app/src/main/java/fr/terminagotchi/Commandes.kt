@@ -308,7 +308,8 @@ class Commandes(
                 return Reponse("⏳ Liaison au compte…", couleur = BLEU)
             }
             "oublier" -> {
-                jeu.extra.remove("compte")
+                val serveur = c.optString("serveur")        // on garde l'adresse du site
+                jeu.extra.put("compte", org.json.JSONObject().apply { if (serveur.isNotEmpty()) put("serveur", serveur) })
                 return Reponse("Ce téléphone n'est plus relié au compte (le compte, lui, existe toujours).", couleur = BLEU)
             }
         }

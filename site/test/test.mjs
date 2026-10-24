@@ -139,7 +139,7 @@ r = await appel("GET", "/badge/0123456789abcdef");
 verifier(r.t.includes("faux"), "un faux badge est signalé");
 for (const p of ["/", "/classement", "/joueur/Grec", "/ctf", "/nimporte"]) {
   r = await appel("GET", p);
-  verifier(r.statut === 200 && r.t.startsWith("<!doctype html>"), "page " + p);
+  verifier(r.statut === (p === "/nimporte" ? 404 : 200) && r.t.startsWith("<!doctype html>"), "page " + p);
 }
 r = await appel("GET", "/joueur/Grec");
 verifier(r.t.includes("<svg") && r.t.includes("Pixel") && r.t.includes("✔ CTF web"), "profil : créature dessinée + badges");
