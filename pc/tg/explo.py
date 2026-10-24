@@ -2,13 +2,14 @@
 
 Des bestioles sauvages (150 espèces, voir bestiaire.py) s'y cachent en fichiers cachés.
 Chaque famille a son habitat (archives, forêt, grotte…) ; plus elle est rare, plus elle se
-cache profond (recoin → cachette → sanctuaire). Pour la capturer : la trouver (ls -a),
-la lire (cat), puis la ramener au nid (mv). Chaque capture est un individu unique.
+cache profond (recoin → cachette → sanctuaire). Pour l'apprivoiser : la trouver (ls -a),
+la lire (cat), puis réussir son dressage (voir dressage.py). Chaque bestiole est unique.
 """
 import random
 
 from . import bestiaire as B
 from . import core
+from . import dressage
 from .plateforme import BOLD, DIM, IS_WIN, RESET, fg, piege
 
 T = core.TERRAIN
@@ -34,6 +35,9 @@ def spawn(state):
     if len(state["sauvages"]) >= MAX_SAUVAGES:
         return
     e, shiny = B.tirer()
+    legendaires = sum(1 for n, k in state["collection"].items() if k and (B.espece(n) or {}).get("rarete") == "légendaire")
+    if legendaires >= 3 and random.random() < 1 / 15 and not state["collection"].get("Abyssor"):
+        e = B.espece("Abyssor")                 # la légendaire secrète #151
     zone = e["zone"]
     dossier = T / zone
     dossier.mkdir(parents=True, exist_ok=True)
@@ -43,10 +47,11 @@ def spawn(state):
     eclat = "\n✨ Elle brille étrangement… une bestiole shiny ?!\n" if shiny else ""
     (dossier / fichier).write_text(
         f"#{e['numero']:03d} {e['nom']} sauvage se cache ici ! ({e['rarete']}, famille {e['famille']})\n"
-        f"« {e['description']} »{eclat}\n"
-        f"Pour la capturer, ramène-la dans le nid de {state['name']} :\n"
-        f"   {piege(f'mv {fichier} {retour}')}\n\n"
-        f"(Tape la commande toi-même : un copier-coller la ferait fuir !)\n",
+        f"« {e['description']} »{eclat}\n\n"
+        f"En me lisant, tu viens de commencer mon DRESSAGE.\n"
+        f"Regarde l'écran de {state['name']} : je vais te demander quelques commandes.\n"
+        f"Réussis-les à temps et je rejoindrai ton équipe.\n\n"
+        f"(Tape les commandes toi-même : un copier-coller ne compte pas !)\n",
         encoding="utf-8")
     state["sauvages"].append({"f": f"{zone}/{fichier}", "e": e["nom"], "zone": zone, "shiny": shiny})
     voir = piege("dir -Force" if IS_WIN else "ls -a")
@@ -57,30 +62,6 @@ def spawn(state):
 
 def check(state):
     nid = T / "nid"
-    if nid.is_dir():
-        for f in list(nid.glob(".bestiole_*")):
-            sauvage = next((s for s in state["sauvages"] if s["f"].endswith("/" + f.name)), None)
-            if not sauvage:
-                continue
-            e = B.espece(sauvage["e"])
-            state["sauvages"].remove(sauvage)
-            try:
-                f.unlink()
-            except OSError:
-                pass
-            if e is None:
-                continue
-            shiny = sauvage.get("shiny", False)
-            ind = B.individu(e, shiny, sauvage.get("zone", ""))
-            state["captures"].append(ind)
-            state["collection"][e["nom"]] = state["collection"].get(e["nom"], 0) + 1
-            titre = e["nom"] + (" ✨ SHINY" if shiny else "")
-            core.log(state, f"🎯 {titre} capturé ! ({e['rarete']})")
-            core.say(state, f"Bienvenue au nid, {e['nom']}{' ✨' if shiny else ''} ! Signe particulier : "
-                            f"{ind['marque']}. ([c] pour ta collection)", 14)
-            st = e.get("stat") or random.choice(list(state["stats"]))
-            state["stats"][st] = state["stats"].get(st, 0) + 2
-            core.add_xp(state, B.XP_RARETE[e["rarete"]] * (3 if shiny else 1))
     for s in list(state["sauvages"]):
         p = T / s["f"]
         if p.exists():
@@ -91,6 +72,8 @@ def check(state):
             s["zone"] = ailleurs[0].parent.relative_to(T).as_posix()
         else:
             state["sauvages"].remove(s)
+            if (state.get("dressage") or {}).get("sauvage") == s["f"]:
+                dressage.abandonner(state)
             core.log(state, f"💨 {le(s['e'])[0].upper() + le(s['e'])[1:]} s'est enfuie (fichier effacé ?)")
             core.say(state, f"Oh non, {le(s['e'])} a disparu… un rm de trop ?", 10)
 
@@ -102,6 +85,8 @@ def tick(state, spontane, proba=1.5 / 480):
         state["explo"] = True
         core.log(state, "🌲 Exploration débloquée !")
         spawn(state)
+    elif state.get("dressage"):
+        pass                                          # pas de nouvelle bestiole pendant un dressage
     elif spontane and random.random() < proba:      # ~1 bestiole toutes les 8 min
         spawn(state)
     check(state)
@@ -111,7 +96,7 @@ def _carte_individu(ind):
     e = B.espece(ind["espece"])
     if e is None:
         return []
-    sp = B.dessin(e, ind.get("shiny"))
+    sp = B.dessin(e, ind.get("shiny"), grand=True)
     infos = [
         f"{B.nom_affiche(e, ind.get('shiny'))} {DIM}#{e['numero']:03d} · {e['rarete']} · {e['famille']}{RESET}",
         f"{DIM}signe particulier :{RESET} {ind.get('marque', '?')}",
@@ -132,14 +117,16 @@ def ecran_collection(state):
     caps = state.get("captures", [])
     especes_vues = {n for n, k in state["collection"].items() if k}
     par_rarete = {}
-    for e in B.especes():
+    for e in B.publiques():
         r = e["rarete"]
         vu, tot = par_rarete.get(r, (0, 0))
         par_rarete[r] = (vu + (e["nom"] in especes_vues), tot + 1)
     lignes.append(" Espèces découvertes : " + BOLD + f"{len(especes_vues)}/150" + RESET + "   " + "  ".join(
         f"{B.fg24(B.COULEUR_RARETE[r])}{r} {v}/{t}{RESET}" for r, (v, t) in par_rarete.items()))
     shinies = sum(1 for c in caps if c.get("shiny"))
-    lignes.append(f" Captures : {len(caps)}" + (f" · dont {B.arc_en_ciel(f'{shinies} shiny')}" if shinies else ""))
+    lignes.append(f" Bestioles dressées : {len(caps)}" + (f" · dont {B.arc_en_ciel(f'{shinies} shiny')}" if shinies else ""))
+    if state["collection"].get("Abyssor"):
+        lignes.append(" " + B.arc_en_ciel("★ Espèce secrète #151 découverte : Abyssor"))
     lignes.append("")
     if caps:
         lignes.append(f" {DIM}Tes dernières captures :{RESET}")
@@ -147,7 +134,7 @@ def ecran_collection(state):
             lignes += _carte_individu(ind)
             lignes.append("")
     else:
-        lignes.append(f" {DIM}Aucune capture pour l'instant.{RESET}")
+        lignes.append(f" {DIM}Aucune bestiole dressée pour l'instant.{RESET}")
     if not state["explo"]:
         lignes.append(f" {DIM}L'exploration s'ouvre avec la leçon « Construire mon nid ».{RESET}")
     else:
@@ -167,9 +154,9 @@ def fiche(state, nom):
         return [" Tes espèces : " + ", ".join(f"#{e['numero']:03d} {e['nom']}" for e in vues),
                 f" {DIM}Fiche : tg bestiaire <nom>{RESET}"]
     e = B.espece(nom)
-    if e is None:
+    connue = e is not None and state["collection"].get(e["nom"], 0) > 0
+    if e is None or (e.get("secrete") and not connue):
         return [f" Aucune espèce ne s'appelle « {nom} ». Les 150 sont sur le site : tg site bestiaire"]
-    connue = state["collection"].get(e["nom"], 0) > 0
     entete = f" {BOLD}#{e['numero']:03d}{RESET} {B.nom_affiche(e) if connue else '???'}  " \
              f"{B.fg24(B.COULEUR_RARETE[e['rarete']])}{e['rarete']}{RESET} · {e['icone']} {e['famille']}"
     lignes = [entete, ""]
@@ -178,13 +165,13 @@ def fiche(state, nom):
                    f"  Habitat : {lieu(e['zone'])}  ({e['zone']})",
                    f"  Elle se montre {e['frequence']}, attirée par la commande « {e['attiree_par']} »."]
         return lignes
-    sp = B.dessin(e)
+    sp = B.dessin(e, grand=True)
     texte = [e["description"], e["comportement"],
              f"Capacité : {e['capacite']} · stat favorite : {e['stat']}",
              f"Taille ~{e['taille_cm']} cm · poids ~{e['poids_ko']} Ko",
              "  ".join(f"{k} {v}" for k, v in e["stats"].items()),
              f"Habitat : {lieu(e['zone'])} · attirée par « {e['attiree_par']} »",
-             f"Tu en as capturé {state['collection'][e['nom']]}."]
+             f"Tu en as dressé {state['collection'][e['nom']]}."]
     for i in range(max(len(sp), len(texte))):
         g = sp[i] if i < len(sp) else " " * len(e["sprite"][0])
         d = texte[i] if i < len(texte) else ""

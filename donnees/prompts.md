@@ -1251,18 +1251,18 @@ Pour la forme évoluée : donner l'image de base au générateur comme **image d
 
 ## #151 Abyssor — légendaire secrète (donner l'image d'Abyssor comme référence)
 
-### Abyssou (bébé)  →  `151_abyssor_bébé.png`
+### Abyssor — enfant  →  `151_abyssor_enfant.png`
 
-16-bit pixel art game sprite, SNES style, crisp pixel edges, clean dark outline, rich shading, limited palette. a tiny baby version of the demon in the reference image: round chubby body, big round yellow eyes, tiny horn buds instead of horns, two small fangs, very small soft wings, no spikes and no claws, cute but mischievous, crimson red. Full body, front view, standing in a symmetrical pose facing the viewer, arms and legs held slightly away from the body, wings spread wide if it has wings, head and eyes clearly visible, nothing hiding the body, the whole creature visible with empty margin around it, centered. Plain solid pure green #00FF00 background, no scenery, no ground, no shadow, no text, no border, no watermark.
+16-bit pixel art game sprite, SNES style, crisp pixel edges, clean dark outline, rich shading, limited palette. a tiny child version of the demon in the reference image: round chubby body, big round yellow eyes, tiny horn buds instead of horns, two small fangs, very small soft wings, no spikes and no claws, cute but mischievous, crimson red. Full body, front view, standing in a symmetrical pose facing the viewer, arms and legs held slightly away from the body, wings spread wide if it has wings, head and eyes clearly visible, nothing hiding the body, the whole creature visible with empty margin around it, centered. Plain solid pure green #00FF00 background, no scenery, no ground, no shadow, no text, no border, no watermark.
 
-### Abyssard (jeune)  →  `151_abyssor_jeune.png`
+### Abyssor — ado  →  `151_abyssor_ado.png`
 
 16-bit pixel art game sprite, SNES style, crisp pixel edges, clean dark outline, rich shading, limited palette. a teenage version of the demon in the reference image: lean body, short curved horns, small fangs, medium wings, a few shoulder spikes, short claws, cocky expression, crimson red. Full body, front view, standing in a symmetrical pose facing the viewer, arms and legs held slightly away from the body, wings spread wide if it has wings, head and eyes clearly visible, nothing hiding the body, the whole creature visible with empty margin around it, centered. Plain solid pure green #00FF00 background, no scenery, no ground, no shadow, no text, no border, no watermark.
 
-### Abyssor (adulte)  →  `151_abyssor_adulte.png`
+### Abyssor — adulte  →  `151_abyssor_adulte.png`
 
 16-bit pixel art game sprite, SNES style, crisp pixel edges, clean dark outline, rich shading, limited palette. a massive horned red demon with bat wings, curved beige horns, a fanged roaring mouth, spiked shoulders, long beige claws, a ridged beige belly and a spiked tail (this is the reference image). Full body, front view, standing in a symmetrical pose facing the viewer, arms and legs held slightly away from the body, wings spread wide if it has wings, head and eyes clearly visible, nothing hiding the body, the whole creature visible with empty margin around it, centered. Plain solid pure green #00FF00 background, no scenery, no ground, no shadow, no text, no border, no watermark.
 
-### Abyssor (forme finale) (finale)  →  `151_abyssor_finale.png`
+### Abyssor — finale  →  `151_abyssor_finale.png`
 
 16-bit pixel art game sprite, SNES style, crisp pixel edges, clean dark outline, rich shading, limited palette. the ultimate form of the demon in the reference image: four horns, molten lava cracks glowing across its skin, bone shoulder armor, a third cyan eye on its forehead, glowing cyan eyes, giant wings, a flaming tail tip, a fiery aura. Full body, front view, standing in a symmetrical pose facing the viewer, arms and legs held slightly away from the body, wings spread wide if it has wings, head and eyes clearly visible, nothing hiding the body, the whole creature visible with empty margin around it, centered. Plain solid pure green #00FF00 background, no scenery, no ground, no shadow, no text, no border, no watermark.

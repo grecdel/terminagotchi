@@ -540,6 +540,14 @@ HUMEURS = ["joyeuse", "timide", "têtue", "curieuse", "paresseuse", "fougueuse",
            "bavarde", "gourmande", "courageuse"]
 
 
+def ajouter_secretes(donnees):
+    """Les espèces secrètes (#151…) faites à partir de vraies images : voir secretes.py."""
+    f = RACINE / "donnees" / "secretes.json"
+    if f.exists():
+        donnees["especes"] += json.loads(f.read_text(encoding="utf-8"))
+    return donnees
+
+
 def ecrire(donnees):
     texte = json.dumps(donnees, ensure_ascii=False, separators=(",", ":"))
     (RACINE / "donnees").mkdir(exist_ok=True)
@@ -554,6 +562,6 @@ def ecrire(donnees):
 
 
 if __name__ == "__main__":
-    d = generer()
+    d = ajouter_secretes(generer())
     ecrire(d)
     print(f"{len(d['especes'])} espèces écrites.")

@@ -6,7 +6,7 @@ import time
 
 import subprocess
 
-from . import compagnon, core, explo, lecons, lexique, notif, recense, registre, sprites
+from . import compagnon, core, dressage, explo, lecons, lexique, notif, recense, registre, sprites
 from .bestiaire import arc_en_ciel
 
 SYNC_AUTO = False   # synchro en fond, seulement pour les modes qui restent ouverts
@@ -54,8 +54,12 @@ def render(state, frame, interactif):
         reste = max(0, core.defi_duree(state) - (time.time() - d["start"]))
         lines.append(title_line(f"⚡ DÉFI ÉCLAIR : tape « {piege(d['cmd'])} » — {reste:.0f} s", 226))
 
+    lines += dressage.lignes_ecran(state)
+
     les, etiquette = lecons.lecon_courante(state)
-    if les:
+    if state.get("dressage"):
+        pass
+    elif les:
         if lvl < les["niveau"]:
             lines.append(title_line(f"{etiquette} : niveau {les['niveau']} requis"))
             lines.append(f" {DIM}Continue à me nourrir, je dois encore grandir…{RESET}")
@@ -100,6 +104,7 @@ def boucle_jeu(state, lines, spontane=True, rythme=1.5, defis=True):
     for line in lines:
         core.feed(state, line)
     lecons.tick(state, lines)
+    dressage.tick(state, lines)
     explo.tick(state, spontane, proba=rythme / 480)
     core.defi_tick(state, lines, spontaneous=spontane and defis, proba=rythme / 300)
     core.idle_talk(state, proba=min(1.0, 0.08 * rythme / 1.5))

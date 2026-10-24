@@ -15,6 +15,7 @@ const FORMES = { Intelligence: "Hacker", Force: "Titan", "Agilité": "Éclair", 
 const ESPECES = BESTIAIRE.especes.map((e) => e.nom);
 const PAR_NOM = Object.fromEntries(BESTIAIRE.especes.map((e) => [e.nom, e]));
 const PAR_ID = Object.fromEntries(BESTIAIRE.especes.map((e) => [e.id, e]));
+const PUBLIQUES = BESTIAIRE.especes.filter((e) => !e.secrete);   // les espèces secrètes ne figurent pas au bestiaire
 const MARQUES = new Set(BESTIAIRE.marques);
 const HUMEURS = new Set(BESTIAIRE.humeurs);
 const COULEUR_RARETE = { commune: "#b0b0c0", "peu commune": "#5fd787", rare: "#5fafff", "légendaire": "#ffaf00" };
@@ -636,7 +637,7 @@ function etiquetteRarete(r) {
 function pageBestiaire(url) {
   const famille = url.searchParams.get("famille") || "";
   const rarete = url.searchParams.get("rarete") || "";
-  const liste = BESTIAIRE.especes.filter((e) => (!famille || e.famille === famille) && (!rarete || e.rarete === rarete));
+  const liste = PUBLIQUES.filter((e) => (!famille || e.famille === famille) && (!rarete || e.rarete === rarete));
   const lien = (k, v, t) => {
     const p = new URLSearchParams({ famille, rarete, [k]: v });
     for (const [a, b] of [...p]) if (!b) p.delete(a);
@@ -658,10 +659,10 @@ réparties en 15 familles. Plus une bestiole est rare, plus elle se cache profon
 
 function pageEspece(id) {
   const e = PAR_ID[id];
-  if (!e) return page("Inconnue", `<h1>Espèce inconnue</h1><p><a href="/bestiaire">Retour au bestiaire</a></p>`, undefined, 404);
+  if (!e || e.secrete) return page("Inconnue", `<h1>Espèce inconnue</h1><p><a href="/bestiaire">Retour au bestiaire</a></p>`, undefined, 404);
   const i = e.numero - 1;
-  const prec = BESTIAIRE.especes[(i + 149) % 150];
-  const suiv = BESTIAIRE.especes[(i + 1) % 150];
+  const prec = PUBLIQUES[(i + 149) % 150];
+  const suiv = PUBLIQUES[(i + 1) % 150];
   const stats = Object.entries(e.stats).map(([k, v]) => `<div><div class="doux" style="font-size:12px">${k}</div><b>${v}</b></div>`).join("");
   return page(e.nom, `<p><a href="/bestiaire">← Bestiaire</a></p>
 <section class="hero">

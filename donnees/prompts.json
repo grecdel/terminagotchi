@@ -1803,16 +1803,16 @@
  ],
  "abyssor": [
   {
-   "nom": "Abyssou",
-   "stade": "bébé",
-   "fichier": "151_abyssor_bébé.png",
+   "nom": "Abyssor",
+   "stade": "enfant",
+   "fichier": "151_abyssor_enfant.png",
    "fond": "#00FF00",
-   "prompt": "16-bit pixel art game sprite, SNES style, crisp pixel edges, clean dark outline, rich shading, limited palette. a tiny baby version of the demon in the reference image: round chubby body, big round yellow eyes, tiny horn buds instead of horns, two small fangs, very small soft wings, no spikes and no claws, cute but mischievous, crimson red. Full body, front view, standing in a symmetrical pose facing the viewer, arms and legs held slightly away from the body, wings spread wide if it has wings, head and eyes clearly visible, nothing hiding the body, the whole creature visible with empty margin around it, centered. Plain solid pure green #00FF00 background, no scenery, no ground, no shadow, no text, no border, no watermark."
+   "prompt": "16-bit pixel art game sprite, SNES style, crisp pixel edges, clean dark outline, rich shading, limited palette. a tiny child version of the demon in the reference image: round chubby body, big round yellow eyes, tiny horn buds instead of horns, two small fangs, very small soft wings, no spikes and no claws, cute but mischievous, crimson red. Full body, front view, standing in a symmetrical pose facing the viewer, arms and legs held slightly away from the body, wings spread wide if it has wings, head and eyes clearly visible, nothing hiding the body, the whole creature visible with empty margin around it, centered. Plain solid pure green #00FF00 background, no scenery, no ground, no shadow, no text, no border, no watermark."
   },
   {
-   "nom": "Abyssard",
-   "stade": "jeune",
-   "fichier": "151_abyssor_jeune.png",
+   "nom": "Abyssor",
+   "stade": "ado",
+   "fichier": "151_abyssor_ado.png",
    "fond": "#00FF00",
    "prompt": "16-bit pixel art game sprite, SNES style, crisp pixel edges, clean dark outline, rich shading, limited palette. a teenage version of the demon in the reference image: lean body, short curved horns, small fangs, medium wings, a few shoulder spikes, short claws, cocky expression, crimson red. Full body, front view, standing in a symmetrical pose facing the viewer, arms and legs held slightly away from the body, wings spread wide if it has wings, head and eyes clearly visible, nothing hiding the body, the whole creature visible with empty margin around it, centered. Plain solid pure green #00FF00 background, no scenery, no ground, no shadow, no text, no border, no watermark."
   },
@@ -1824,7 +1824,7 @@
    "prompt": "16-bit pixel art game sprite, SNES style, crisp pixel edges, clean dark outline, rich shading, limited palette. a massive horned red demon with bat wings, curved beige horns, a fanged roaring mouth, spiked shoulders, long beige claws, a ridged beige belly and a spiked tail (this is the reference image). Full body, front view, standing in a symmetrical pose facing the viewer, arms and legs held slightly away from the body, wings spread wide if it has wings, head and eyes clearly visible, nothing hiding the body, the whole creature visible with empty margin around it, centered. Plain solid pure green #00FF00 background, no scenery, no ground, no shadow, no text, no border, no watermark."
   },
   {
-   "nom": "Abyssor (forme finale)",
+   "nom": "Abyssor",
    "stade": "finale",
    "fichier": "151_abyssor_finale.png",
    "fond": "#00FF00",

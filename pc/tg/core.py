@@ -224,7 +224,7 @@ def new_state(name):
 def migrate(state):
     defaults = {"trait": random.choice(list(TRAITS)), "skills": [], "lesson": 0, "step": 0,
                 "bubble": None, "defi": None, "records": {}, "offsets": {}, "arbre": {},
-                "branche": None, "cherche": {}, "sauvages": [], "collection": {}, "explo": False,
+                "branche": None, "cherche": {}, "sauvages": [], "collection": {}, "explo": False, "dressage": None,
                 "explo_n": 0, "annonce": None, "colles": 0, "notifs": [], "nlog": 0,
                 "prompt_vu": 0, "config": {}, "compte": {}, "repas_t": 0, "captures": [], "shiny": False}
     for k, v in defaults.items():

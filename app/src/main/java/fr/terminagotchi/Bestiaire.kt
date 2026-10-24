@@ -19,6 +19,7 @@ object Bestiaire {
         val tailleCm: Double, val poidsKo: Int, val stats: LinkedHashMap<String, Int>,
         val sprite: List<String>, val spriteShiny: List<String>,
         val palette: Map<Char, Int>, val paletteShiny: Map<Char, Int>,
+        val secrete: Boolean = false,
     )
 
     val HABITATS = mapOf(
@@ -72,6 +73,7 @@ object Bestiaire {
                     e.getString("attiree_par"), e.getString("frequence"), e.getDouble("taille_cm"), e.getInt("poids_ko"),
                     LinkedHashMap(st.keys().asSequence().associateWith { st.getInt(it) }),
                     lignes("sprite"), lignes("sprite_shiny"), pal("palette"), pal("palette_shiny"),
+                    e.optBoolean("secrete"),
                 )
             }
         }
@@ -95,7 +97,7 @@ object Bestiaire {
             t -= poids[r] ?: 0
             if (t < 0) { rarete = r; break }
         }
-        val e = especes.filter { it.rarete == rarete }.random()
+        val e = especes.filter { it.rarete == rarete && !it.secrete }.random()
         return e to (Random.nextInt(chanceShiny) == 0)
     }
 

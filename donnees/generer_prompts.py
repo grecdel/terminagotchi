@@ -60,13 +60,13 @@ def prompt_evolue(visuel, fond):
 
 # La lignée secrète d'Abyssor (#151) : l'image d'origine fournie par le joueur est le stade 3.
 ABYSSOR = [
-    ("Abyssou", "bébé", "a tiny baby version of the demon in the reference image: round chubby body, big round yellow eyes, "
+    ("Abyssor", "enfant", "a tiny child version of the demon in the reference image: round chubby body, big round yellow eyes, "
      "tiny horn buds instead of horns, two small fangs, very small soft wings, no spikes and no claws, cute but mischievous, crimson red"),
-    ("Abyssard", "jeune", "a teenage version of the demon in the reference image: lean body, short curved horns, small fangs, "
+    ("Abyssor", "ado", "a teenage version of the demon in the reference image: lean body, short curved horns, small fangs, "
      "medium wings, a few shoulder spikes, short claws, cocky expression, crimson red"),
     ("Abyssor", "adulte", "a massive horned red demon with bat wings, curved beige horns, a fanged roaring mouth, "
      "spiked shoulders, long beige claws, a ridged beige belly and a spiked tail (this is the reference image)"),
-    ("Abyssor (forme finale)", "finale", "the ultimate form of the demon in the reference image: four horns, molten lava cracks "
+    ("Abyssor", "finale", "the ultimate form of the demon in the reference image: four horns, molten lava cracks "
      "glowing across its skin, bone shoulder armor, a third cyan eye on its forehead, glowing cyan eyes, giant wings, "
      "a flaming tail tip, a fiery aura"),
 ]
@@ -74,7 +74,7 @@ ABYSSOR = [
 
 def main():
     bestiaire = json.loads((ICI / "bestiaire.json").read_text(encoding="utf-8"))
-    especes = bestiaire["especes"]
+    especes = [e for e in bestiaire["especes"] if not e.get("secrete")]
     manque = [e["nom"] for e in especes if e["nom"] not in VISUELS]
     if manque:
         raise SystemExit("Apparence manquante pour : " + ", ".join(manque))
@@ -106,7 +106,7 @@ def main():
                    f"*Forme évoluée* → `{p['fichier_evolue']}`", "", p["prompt_evolue"], ""]
     lignes += ["", "## #151 Abyssor — légendaire secrète (donner l'image d'Abyssor comme référence)", ""]
     for p in lignee:
-        lignes += [f"### {p['nom']} ({p['stade']})  →  `{p['fichier']}`", "", p["prompt"], ""]
+        lignes += [f"### {p['nom']} — {p['stade']}  →  `{p['fichier']}`", "", p["prompt"], ""]
     (ICI / "prompts.md").write_text("\n".join(lignes), encoding="utf-8")
     print(f"{len(sortie)} espèces + {len(lignee)} stades d'Abyssor → prompts.json, prompts.md")
 

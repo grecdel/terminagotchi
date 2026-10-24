@@ -36,6 +36,11 @@ def especes():
     return donnees()["especes"]
 
 
+def publiques():
+    """Les 150 espèces du bestiaire (sans les secrètes)."""
+    return [e for e in especes() if not e.get("secrete")]
+
+
 def _simple(t):
     t = unicodedata.normalize("NFD", t.lower())
     return "".join(c for c in t if unicodedata.category(c) != "Mn")
@@ -59,7 +64,7 @@ def tirer(rnd=random):
     d = donnees()
     raretes = d["raretes"]
     rarete = rnd.choices(raretes, [d["poids"][r] for r in raretes])[0]
-    e = rnd.choice([x for x in especes() if x["rarete"] == rarete])
+    e = rnd.choice([x for x in publiques() if x["rarete"] == rarete])
     shiny = rnd.randrange(d["chance_shiny"]) == 0
     return e, shiny
 
@@ -98,10 +103,15 @@ def bg24(h):
     return f"\033[48;2;{r};{g};{b}m"
 
 
-def dessin(e, shiny=False):
-    """La bestiole en pixel art pour le terminal (2 pixels verticaux par caractère)."""
-    rows = e["sprite_shiny"] if shiny else e["sprite"]
-    pal = e["palette_shiny"] if shiny else e["palette"]
+def dessin(e, shiny=False, grand=False):
+    """La bestiole en pixel art pour le terminal (2 pixels verticaux par caractère).
+    grand=True : version détaillée (48 px) pour les espèces qui en ont une."""
+    if grand and e.get("sprite_grand"):
+        rows = e["sprite_grand"]
+        pal = e["palette_grand_shiny"] if shiny else e["palette_grand"]
+    else:
+        rows = e["sprite_shiny"] if shiny else e["sprite"]
+        pal = e["palette_shiny"] if shiny else e["palette"]
     w = max(len(r) for r in rows)
     rows = [r.ljust(w, ".") for r in rows]
     if len(rows) % 2:
