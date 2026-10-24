@@ -42,22 +42,12 @@ def spawn(state):
     dossier = T / zone
     dossier.mkdir(parents=True, exist_ok=True)
     state["explo_n"] += 1
-    fichier = f".bestiole_{e['id']}_{state['explo_n']}"
-    retour = "../" * (zone.count("/") + 1) + "nid/"
-    eclat = "\n✨ Elle brille étrangement… une bestiole shiny ?!\n" if shiny else ""
-    (dossier / fichier).write_text(
-        f"#{e['numero']:03d} {e['nom']} sauvage se cache ici ! ({e['rarete']}, famille {e['famille']})\n"
-        f"« {e['description']} »{eclat}\n\n"
-        f"En me lisant, tu viens de commencer mon DRESSAGE.\n"
-        f"Regarde l'écran de {state['name']} : je vais te demander quelques commandes.\n"
-        f"Réussis-les à temps et je rejoindrai ton équipe.\n\n"
-        f"(Tape les commandes toi-même : un copier-coller ne compte pas !)\n",
-        encoding="utf-8")
-    state["sauvages"].append({"f": f"{zone}/{fichier}", "e": e["nom"], "zone": zone, "shiny": shiny})
-    voir = piege("dir -Force" if IS_WIN else "ls -a")
-    core.log(state, f"🐾 Quelque chose bouge dans {lieu(zone)}…")
-    core.say(state, f"Je sens une présence dans {lieu(zone)} ({zone}) ! "
-                    f"Les bestioles se cachent : essaie « {voir} ».", 15)
+    if state.get("dressage"):
+        return
+    s = {"f": dressage.fiche(e["nom"]).name, "e": e["nom"], "zone": zone, "shiny": shiny}
+    state["sauvages"].append(s)
+    core.log(state, f"⚔ Un {e['nom']} sauvage apparaît !")
+    dressage.commencer(state, s)
 
 
 def check(state):
@@ -78,7 +68,8 @@ def check(state):
             core.say(state, f"Oh non, {le(s['e'])} a disparu… un rm de trop ?", 10)
 
 
-def tick(state, spontane, proba=1.5 / 480):
+def tick(state, spontane, proba=1.5 / 480, jeu=0):
+    """jeu = nombre de commandes tapées à la main : les monstres n'apparaissent qu'en jouant."""
     if not debloque(state):
         return
     if not state["explo"]:
@@ -86,8 +77,8 @@ def tick(state, spontane, proba=1.5 / 480):
         core.log(state, "🌲 Exploration débloquée !")
         spawn(state)
     elif state.get("dressage"):
-        pass                                          # pas de nouvelle bestiole pendant un dressage
-    elif spontane and random.random() < proba:      # ~1 bestiole toutes les 8 min
+        pass                                          # pas de nouveau monstre pendant un dressage
+    elif jeu and random.random() < min(0.5, 0.04 * jeu):   # ~1 monstre toutes les 25 commandes
         spawn(state)
     check(state)
 

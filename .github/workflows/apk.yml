@@ -29,7 +29,7 @@ jobs:
       - name: Préparer l'APK et la version PC
         run: |
           cp app/build/outputs/apk/release/app-release.apk terminagotchi.apk
-          python3 -m zipapp pc -o terminagotchi.pyz -p "/usr/bin/env python3"
+          python3 -m zipapp pc -c -o terminagotchi.pyz -p "/usr/bin/env python3"
 
       - name: Publier dans les Releases
         uses: softprops/action-gh-release@v2

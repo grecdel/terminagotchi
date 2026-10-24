@@ -6,7 +6,7 @@ import time
 
 import subprocess
 
-from . import compagnon, core, dressage, explo, lecons, lexique, notif, recense, registre, sprites
+from . import compagnon, core, dressage, equipe, explo, lecons, lexique, notif, recense, registre, sprites
 from .bestiaire import arc_en_ciel
 
 SYNC_AUTO = False   # synchro en fond, seulement pour les modes qui restent ouverts
@@ -26,13 +26,13 @@ def render(state, frame, interactif):
 
     forme = core.STAGES[st] + (f" {core.FORMES[state['branch']]}" if st >= 2 and state.get("branch") else "")
     lo, hi = 10 * (lvl - 1) ** 2, 10 * lvl ** 2
-    stats = "  ".join(f"{v['short']} {state['stats'][v['stat']]}" for v in core.CATEGORIES.values())
+    stats = "  ".join(f"{fg(v['color'])}{v['short']}{RESET} {BOLD}{state['stats'][v['stat']]}{RESET}" for v in core.CATEGORIES.values())
     nb_sk = len(state["skills"])
     right = [
         (arc_en_ciel(state["name"] + " ✨") if state.get("shiny") else f"{BOLD}{state['name']}{RESET}") + f" · {forme} · niv. {lvl}",
         f"{DIM}caractère : {state['trait']}{RESET}",
         f"XP   {sprites.bar(state['xp'] - lo, hi - lo)} {state['xp']}/{hi}",
-        f"Faim {sprites.bar(state['hunger'], 100)} {core.mood(state['hunger'])}",
+        f"Faim {dressage.jauge(state['hunger'], 100, 10)} {core.mood(state['hunger'])}",
         stats,
         f"Compétences {nb_sk} · Bestioles {sum(state['collection'].values())}",
     ]
@@ -77,9 +77,10 @@ def render(state, frame, interactif):
         lines.append(title_line("Arbre de compétences ouvert", 213))
         lines.append(" Choisis la branche que je vais t'apprendre : touche [a]")
 
-    lines.append(title_line(f"Ce que je digère ({DISTRO or OS_NAMES[OSK]})"))
-    for k, v in core.CATEGORIES.items():
-        lines.append(f" {fg(v['color'])}{v['stat']:<13}{RESET}{core.EXAMPLES[OSK][k]}")
+    if not state.get("dressage"):
+        lines.append(title_line(f"Ce que je digère ({DISTRO or OS_NAMES[OSK]})"))
+        for k, v in core.CATEGORIES.items():
+            lines.append(f" {fg(v['color'])}{v['stat']:<13}{RESET}{core.EXAMPLES[OSK][k]}")
 
     lines.append(title_line("Journal"))
     if state["total"] == 0:
@@ -89,7 +90,7 @@ def render(state, frame, interactif):
         elif not compagnon.est_installe():
             lines.append(f" {fg(226)}Astuce : appuie sur [o] puis 3 pour que je voie")
             lines.append(f" tes commandes en direct (sinon, seulement à la fermeture du terminal).{RESET}")
-    lines += [" " + l for l in state["log"][-4:]]
+    lines += [" " + l for l in state["log"][-(2 if state.get("dressage") else 4):]]
     if interactif:
         lines.append(f"{fg(244)} [/] chercher [l] lexique [a] arbre [c] collection [o] options [q] quitter{RESET}")
     else:
@@ -105,7 +106,8 @@ def boucle_jeu(state, lines, spontane=True, rythme=1.5, defis=True):
         core.feed(state, line)
     lecons.tick(state, lines)
     dressage.tick(state, lines)
-    explo.tick(state, spontane, proba=rythme / 480)
+    equipe.tick(state, lines)
+    explo.tick(state, spontane, proba=rythme / 480, jeu=sum(1 for l in lines if not core.est_colle(l)))
     core.defi_tick(state, lines, spontaneous=spontane and defis, proba=rythme / 300)
     core.idle_talk(state, proba=min(1.0, 0.08 * rythme / 1.5))
 
@@ -383,6 +385,9 @@ AIDE = """Terminagotchi — utilisation :
   tg sync                      synchronise ta créature (PC ↔ téléphone)
   tg site [bestiaire|captures] ouvre le site du recensement (ton profil par défaut)
   tg collection · tg bestiaire <nom>   tes bestioles · la fiche d'une espèce
+  tg equipe [nom]              ton équipe et ses stades · choisir la bestiole active (elle grandit)
+  tg anime <nom> [animation]   la voir bouger : statique, mange, attaque, salut, parle, dort, content,
+                               affame, confus, colere, victoire, ko, evolution
   tg compte partage on|off     montrer (ou non) tes captures dans la galerie du site
   tg drapeau TG{…}             valide un drapeau du CTF web
   Options : --une-fois (affiche et quitte) · --defi (défi immédiat)"""
@@ -409,9 +414,17 @@ def main():
         faits = compagnon.desinstaller()
         print("Retiré de :\n  " + "\n  ".join(faits) if faits else "Rien à retirer.")
         return
-    if mode in ("compte", "sync", "drapeau", "lexique", "site", "bestiaire", "collection"):
+    if mode in ("compte", "sync", "drapeau", "lexique", "site", "bestiaire", "collection", "equipe", "anime"):
         creer_si_besoin()
-        if mode == "site":
+        if mode == "equipe":
+            if len(args) > 1:
+                with core.verrou():
+                    st = core.load(); print(equipe.choisir(st, " ".join(args[1:]))); core.save(st)
+            else:
+                print("\n".join(equipe.ecran_equipe(core.load())))
+        elif mode == "anime":
+            equipe.jouer(core.load(), args[1:])
+        elif mode == "site":
             print(recense.site(args[1:]))
         elif mode == "bestiaire":
             print("\n".join(explo.fiche(core.load(), " ".join(args[1:]))))

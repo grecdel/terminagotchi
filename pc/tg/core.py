@@ -259,6 +259,7 @@ def add_xp(state, n):
 def tick(state):
     now = time.time()
     rate = 720 if "Gardien" in state["skills"] else 360   # secondes par point de faim
+    rate *= 1 + min(1.0, state["stats"].get("Endurance", 0) / 100)   # l'Endurance fait durer le repas
     avant = state["hunger"]
     state["hunger"] = max(0.0, state["hunger"] - (now - state["last_tick"]) / rate)
     if avant >= 30 > state["hunger"]:

@@ -219,6 +219,12 @@ E = lambda i, n, but, indice, ok, prep=None, posix=False: \
     {"id": i, "niveau": n, "but": but, "indice": indice, "ok": ok, "prep": prep, "posix": posix}
 
 EPREUVES = {
+    "Rencontre": [
+        E("examiner", 1, "Examine-le : lis sa fiche pour voir ses stats.", "cat",
+          lambda c, l: a_tape(l, r"^\s*(cat|less|more|head|bat|type|get-content|gc)\b.*monstre_" + re.escape(c["nom"].lower()))),
+        E("repaire", 1, "D'où vient-il ? Trouve son repaire dans le terrain de jeu.", "find",
+          lambda c, l: a_tape(l, r"^\s*(find|get-childitem|gci|dir|ls)\b.*repaire")),
+    ],
     "Fichiers": [
         E("enclos", 1, "Construis-moi un enclos : un dossier « enclos » ici.", "mkdir", _enclos),
         E("gamelle", 1, "Pose une gamelle (un fichier « gamelle ») dans mon enclos.", "touch / New-Item", _gamelle),
@@ -358,17 +364,54 @@ def _plus_frequents(lignes):
 
 # ================================================================ déroulé
 
-def lieu_dossier(sauvage):
-    return T / sauvage["zone"]
+def repaire(nom):
+    return f"repaire_{B._simple(nom)}"
+
+
+def fiche(nom):
+    return T / f"monstre_{B._simple(nom)}.txt"
+
+
+# ---------------------------------------------------------------- les stats du familier servent au dressage
+def bonus(state):
+    st = state.get("stats", {})
+    i, a, f, e = (st.get(k, 0) for k in ("Intelligence", "Agilité", "Force", "Endurance"))
+    return {
+        "exemple": 0.5 + min(0.4, i / 100),        # Intelligence : l'exemple apparaît plus tôt
+        "temps": min(60, a // 2),                  # Agilité : secondes en plus
+        "mefiance": min(30, f // 2),               # Force : le monstre se méfie moins au départ
+        "seconde_chance": e >= 20,                 # Endurance : +60 s une fois au lieu de s'enfuir
+    }
+
+
+def ecrire_fiche(e, shiny, zone):
+    st = "  ".join(f"{k} {v}" for k, v in e["stats"].items())
+    fiche(e["nom"]).write_text(
+        f"══════════ FICHE DE MONSTRE ══════════\n"
+        f"  Nom     : {e['nom']}{' ✨ (shiny !)' if shiny else ''}\n"
+        f"  Numéro  : #{e['numero']:03d}\n"
+        f"  Rareté  : {e['rarete']}\n"
+        f"  Famille : {e['famille']}\n"
+        f"  Stats   : {st}\n"
+        f"  Taille  : ~{e['taille_cm']} cm   Poids : ~{e['poids_ko']} Ko\n\n"
+        f"  « {e['description']} »\n"
+        f"  {e['comportement']}\n\n"
+        f"  Il vient d'un endroit appelé « {repaire(e['nom'])} »… quelque part dans le terrain de jeu.\n",
+        encoding="utf-8")
 
 
 def choisir_epreuves(e, premiere):
+    return EPREUVES["Rencontre"] + _epreuves_famille(e, premiere)
+
+
+def _epreuves_famille(e, premiere):
     fam = e["famille"]
     pool = [x for x in EPREUVES.get(fam, []) if not (x["posix"] and IS_WIN)]
     nmax = NIVEAU_MAX[e["rarete"]]
     n = NB_TACHES[e["rarete"]]
     if e["rarete"] == "légendaire":           # l'épreuve ultime : sa famille + des épreuves d'ailleurs
-        autres = [x for f, v in EPREUVES.items() if f != fam for x in v if not (x["posix"] and IS_WIN) and x["niveau"] >= 2]
+        autres = [x for f, v in EPREUVES.items() if f not in (fam, "Rencontre") for x in v
+                  if not (x["posix"] and IS_WIN) and x["niveau"] >= 2]
         random.shuffle(autres)
         choix = sorted(pool, key=lambda x: x["niveau"])[-3:] + autres[:3]
     else:
@@ -389,10 +432,11 @@ def _par_id(fid):
 
 def contexte(state):
     d = state["dressage"]
-    return {"d": T / d["zone"], "nom": d["espece"], "x": d["x"]}
+    return {"d": T / d["zone"] / repaire(d["espece"]), "nom": d["espece"], "x": d["x"]}
 
 
 def commencer(state, sauvage):
+    """Un monstre vient d'apparaître : le dressage commence tout de suite."""
     e = B.espece(sauvage["e"])
     if e is None:
         return
@@ -403,16 +447,19 @@ def commencer(state, sauvage):
     familles = state.setdefault("dressage_familles", [])
     premiere = e["famille"] not in familles
     taches = choisir_epreuves(e, premiere)
+    bo = bonus(state)
     fam_de = {id(x): f for f, v in EPREUVES.items() for x in v}
     state["dressage"] = {
         "sauvage": sauvage["f"], "espece": e["nom"], "shiny": sauvage.get("shiny", False), "zone": sauvage["zone"],
         "taches": [f"{fam_de[id(x)]}:{x['id']}" for x in taches], "faites": [], "lignes": [],
-        "debut": time.time(), "duree": None if premiere else DUREE[e["rarete"]], "x": {}, "lecon": premiere,
+        "debut": time.time(), "duree": None if premiere else DUREE[e["rarete"]] + bo["temps"], "x": {}, "lecon": premiere,
+        "mefiance": 100 - bo["mefiance"], "seconde": bo["seconde_chance"], "examine": False,
     }
     if e["rarete"] == "légendaire":
         state["dressage_essais"][e["nom"]] = jour
     c = contexte(state)
     c["d"].mkdir(parents=True, exist_ok=True)
+    ecrire_fiche(e, sauvage.get("shiny"), sauvage["zone"])
     preparees = set()
     for fid in state["dressage"]["taches"]:
         x = _par_id(fid)
@@ -421,11 +468,12 @@ def commencer(state, sauvage):
             preparees.add(cle)
             x["prep"](c)
     eclat = " ✨" if sauvage.get("shiny") else ""
+    core.notif(state, f"⚔ Un monstre sauvage apparaît : {e['nom']}{eclat} !")
     if premiere:
-        core.say(state, f"{e['nom']}{eclat} te regarde, curieux. Première rencontre avec la famille {e['famille']} : "
-                        f"prends ton temps, je t'explique tout !", 14)
+        core.say(state, f"Un {e['nom']}{eclat} sauvage ! Première rencontre avec la famille {e['famille']} : "
+                        f"pas de chrono, je t'explique tout.", 14)
     else:
-        core.say(state, f"{e['nom']}{eclat} se méfie… Tu as {DUREE[e['rarete']]} s pour gagner sa confiance !", 12)
+        core.say(state, f"Un {e['nom']}{eclat} sauvage apparaît ! Gagne sa confiance avant la fin du temps.", 12)
     core.log(state, f"🎓 Dressage de {e['nom']} commencé ({len(taches)} épreuves)")
 
 
@@ -479,11 +527,18 @@ def tick(state, lignes):
         return
     if progres:
         n = len(d["faites"])
+        if any(f.endswith(":examiner") for f in d["faites"]):
+            d["examine"] = True
         core.say(state, random.choice(["Il remue la queue !", "Il s'approche un peu…", "Il a l'air impressionné !",
                                        "Il ronronne en binaire."]) + f" ({n}/{len(d['taches'])})", 6)
     r = reste(state)
     if r is not None and r <= 0:
-        echouer(state)
+        if d.get("seconde"):
+            d["seconde"] = False
+            d["duree"] += 60
+            core.say(state, f"Ton familier retient {d['espece']} par la queue ! Endurance : +60 s, vite !", 10)
+        else:
+            echouer(state)
 
 
 def reussir(state):
@@ -491,11 +546,15 @@ def reussir(state):
     e = B.espece(d["espece"])
     state["sauvages"] = [s for s in state["sauvages"] if s["f"] != d["sauvage"]]
     try:
-        (T / d["sauvage"]).unlink()
+        fiche(d["espece"]).unlink()
     except OSError:
         pass
     ind = B.individu(e, d["shiny"], d["zone"])
     ind["dresse"] = round(time.time() - d["debut"])
+    ind["stade"], ind["xp"] = "enfant", 0               # il grandira en gardant son nom
+    if d["shiny"]:
+        ind["teinte"] = round(random.uniform(0.15, 0.85), 3)   # couleur shiny propre à cet individu
+    state["active"] = ind["id"]
     state["captures"].append(ind)
     state["collection"][e["nom"]] = state["collection"].get(e["nom"], 0) + 1
     fams = state.setdefault("dressage_familles", [])
@@ -520,8 +579,13 @@ def reste_depuis(d):
 
 def echouer(state):
     d, state["dressage"] = state["dressage"], None
-    core.log(state, f"💨 {d['espece']} a perdu patience et s'est caché plus loin…")
-    core.say(state, f"Trop tard ! {d['espece']} s'est enfui. Il se cache encore dans {d['zone']} : relis-le pour réessayer.", 12)
+    state["sauvages"] = [s for s in state["sauvages"] if s["f"] != d["sauvage"]]
+    try:
+        fiche(d["espece"]).unlink()
+    except OSError:
+        pass
+    core.log(state, f"💨 {d['espece']} a perdu patience et s'est enfui…")
+    core.say(state, f"Trop tard ! {d['espece']} s'est enfui. Continue de jouer : il reviendra peut-être.", 12)
 
 
 def abandonner(state):
@@ -530,42 +594,86 @@ def abandonner(state):
         core.log(state, f"🏳 Dressage de {d['espece']} abandonné")
 
 
-def lignes_ecran(state, largeur=60):
-    """Le panneau de dressage affiché sous la créature."""
+COUL_STAT = {"PV": 203, "ATK": 208, "DEF": 75, "VIT": 120, "INT": 141}
+
+
+def jauge(valeur, maxi, largeur, inverse=False):
+    """Barre colorée : verte quand ça va bien, puis jaune, orange, rouge."""
+    from .plateforme import RESET, fg
+    f = max(0.0, min(1.0, valeur / maxi)) if maxi else 0
+    bien = 1 - f if inverse else f
+    coul = 120 if bien > 0.66 else 226 if bien > 0.4 else 208 if bien > 0.2 else 196
+    n = round(largeur * f)
+    return f"{fg(coul)}{'█' * n}{fg(238)}{'░' * (largeur - n)}{RESET}"
+
+
+def petit_dessin(e, shiny):
+    """Le monstre en 24 px (12 lignes) : version détaillée réduite si elle existe."""
+    if e.get("sprite_grand"):
+        g = dict(e)
+        g["sprite_grand"] = [r[::2] for r in e["sprite_grand"][::2]]
+        return B.dessin(g, shiny, grand=True)
+    return B.dessin(e, shiny)
+
+
+def lignes_ecran(state, largeur=62):
+    """La carte du monstre, puis une seule étape à la fois."""
     from .plateforme import BOLD, DIM, RESET, fg, piege
     d = state.get("dressage")
     if not d:
         return []
     e = B.espece(d["espece"])
+    if not e:
+        return []
+    n_total = len(d["taches"])
+    n_fait = len(d["faites"])
+    mef = d.get("mefiance", 100) * (1 - n_fait / n_total)
     r = reste(state)
-    if r is None:
-        chrono = f"{fg(147)}leçon : pas de chrono{RESET}"
+    sp = petit_dessin(e, d["shiny"])
+    w = max(len(B.dessin(e)[0]) if not e.get("sprite_grand") else 24, 16)
+    titre = f"{BOLD}{B.nom_affiche(e, d['shiny'])}{RESET}  {DIM}#{e['numero']:03d}{RESET}  " \
+            f"{B.fg24(B.COULEUR_RARETE[e['rarete']])}{e['rarete']}{RESET}  {DIM}{e['famille']}{RESET}"
+    if d.get("examine"):
+        stats = "  ".join(f"{fg(COUL_STAT.get(k, 250))}{k}{RESET} {BOLD}{v}{RESET}" for k, v in e["stats"].items())
     else:
-        plein = int(20 * r / d["duree"])
-        coul = 120 if r > d["duree"] / 2 else 214 if r > d["duree"] / 5 else 196
-        chrono = f"{fg(coul)}{'█' * plein}{'░' * (20 - plein)}{RESET} {r:.0f} s"
-    nom = B.nom_affiche(e, d["shiny"]) if e else d["espece"]
-    out = [fg(213) + "── 🎓 DRESSAGE " + RESET + nom + f"  {chrono}"]
-    c = contexte(state)
-    for fid in d["taches"]:
-        x = _par_id(fid)
-        but = x["but"].format(nom_min=d["espece"].lower(), nom=d["espece"])
-        if fid in d["faites"]:
-            out.append(f"  {fg(120)}✔{RESET} {DIM}{but}{RESET}")
-        elif x is tache_courante(state):
-            out.append(f"  {fg(226)}➜{RESET} {BOLD}{but}{RESET}")
-            expl, ex = aide(fid, d["espece"])
-            if expl:
-                for l in textwrap.wrap("💡 " + expl, largeur):
-                    out.append(f"     {fg(153)}{l}{RESET}")
-            r_ = reste(state)
-            if ex and (r_ is None or r_ < d["duree"] / 2):
-                out.append(f"     {fg(226)}Exemple : {piege(ex)}{RESET}")
-            elif ex:
-                out.append(f"     {DIM}(un exemple apparaîtra à la moitié du temps){RESET}")
-            out.append(f"     {DIM}où : cd ~/{T.name}/{d['zone']}  ·  pour aller plus loin : lexique [l]{RESET}")
+        stats = f"{DIM}stats : ??? (examine-le d'abord){RESET}"
+    infos = [titre, stats, "",
+             f"{fg(213)}Méfiance{RESET} {jauge(mef, 100, 20, inverse=True)} {mef:3.0f} %",
+             (f"{fg(153)}Temps   {RESET} {jauge(r, d['duree'], 20)} {r:3.0f} s" if r is not None
+              else f"{fg(153)}Temps   {RESET} {fg(147)}pas de chrono : c'est une leçon{RESET}"),
+             "",
+             f"{DIM}Étape {min(n_fait + 1, n_total)}/{n_total}{RESET}  " + " ".join(
+                 f"{fg(120)}●{RESET}" if f in d["faites"] else f"{fg(226)}◉{RESET}" if _par_id(f) is tache_courante(state)
+                 else f"{fg(240)}○{RESET}" for f in d["taches"])]
+    out = ["", f" {fg(196)}{BOLD}⚔ UN MONSTRE SAUVAGE !{RESET}", ""]
+    h = max(len(sp), len(infos))
+    for k in range(h):
+        g = sp[k] if k < len(sp) else " " * w
+        out.append("  " + g + "  " + (infos[k] if k < len(infos) else ""))
+    x = tache_courante(state)
+    if x is None:
+        return out
+    fid = next(f for f in d["taches"] if _par_id(f) is x)
+    but = x["but"].format(nom_min=d["espece"].lower(), nom=d["espece"])
+    expl, ex = aide(fid, d["espece"])
+    out += ["", f" {fg(226)}{BOLD}Il veut   {RESET}{BOLD}{but}{RESET}"]
+    if expl:
+        for k, l in enumerate(textwrap.wrap(expl, largeur)):
+            out.append(f" {fg(117)}{'Comment  ' if k == 0 else '         '}{RESET} {l}")
+    if ex:
+        seuil = d["duree"] * (1 - bonus(state)["exemple"]) if d["duree"] else None
+        if r is None or fid.startswith("Rencontre:") or r <= d["duree"] - seuil:
+            out.append(f" {fg(120)}{BOLD}Tape     {RESET} {fg(120)}{piege(ex)}{RESET}")
         else:
-            out.append(f"  {DIM}○ …{RESET}")
+            out.append(f" {fg(120)}Tape     {RESET} {DIM}l'exemple s'affiche dans {r - (d['duree'] - seuil):.0f} s "
+                       f"(cherche d'abord dans le lexique : touche l){RESET}")
+    if fid.startswith("Rencontre:examiner"):
+        ou = "~/terrain_terminagotchi"
+    elif fid.startswith("Rencontre:"):
+        ou = "n'importe où"
+    else:
+        ou = f"~/{T.name}/{d['zone']}/{repaire(d['espece'])}"
+    out.append(f" {fg(246)}Où       {RESET} {DIM}{ou}{RESET}")
     return out
 
 
@@ -573,6 +681,12 @@ def lignes_ecran(state, largeur=60):
 # Pour chaque épreuve : ce que fait la commande (en clair) et un exemple complet à adapter.
 # (exemple PC/Mac/Linux, exemple Windows PowerShell si différent)
 AIDES = {
+    "Rencontre:examiner": ("cat affiche le contenu d'un fichier. La fiche du monstre est dans ton terrain de jeu.",
+                           "cat ~/terrain_terminagotchi/monstre_{nom_min}.txt", "cat ~/terrain_terminagotchi/monstre_{nom_min}.txt"),
+    "Rencontre:repaire": ("find cherche un fichier ou un dossier par son nom, dans un dossier et tous ses sous-dossiers. "
+                          "Il affiche le chemin complet : c'est là que vit le monstre.",
+                          "find ~/terrain_terminagotchi -name repaire_{nom_min}",
+                          "Get-ChildItem ~/terrain_terminagotchi -Recurse -Filter repaire_{nom_min}"),
     "Fichiers:enclos": ("mkdir crée un dossier (« make directory »).", "mkdir enclos", "mkdir enclos"),
     "Fichiers:gamelle": ("touch crée un fichier vide. Le / sépare le dossier du fichier.", "touch enclos/gamelle",
                          "New-Item enclos/gamelle"),
