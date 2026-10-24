@@ -670,6 +670,10 @@ class TerminalActivity : Activity() {
         // le panneau du dressage ne doit pas manger tout l'écran : il défile s'il est trop haut
         lecon.maxHeight = if (panneau != null) (resources.displayMetrics.heightPixels * 0.40).toInt() else Int.MAX_VALUE
         if (lecon.movementMethod == null) lecon.movementMethod = android.text.method.ScrollingMovementMethod()
+        // le panneau défile au doigt mais ne prend JAMAIS le focus : sinon ce qu'on tape partirait dans le vide
+        lecon.isFocusable = false
+        lecon.isFocusableInTouchMode = false
+        if (!saisie.hasFocus() && hasWindowFocus() && lexiqueVue.visibility != View.VISIBLE) saisie.requestFocus()
         // pendant un dressage, le familier est déjà dans le face-à-face : on allège l'en-tête
         val vis = if (panneau != null) View.GONE else View.VISIBLE
         creature.visibility = vis; faim.visibility = vis; xp.visibility = vis; stats.visibility = vis
