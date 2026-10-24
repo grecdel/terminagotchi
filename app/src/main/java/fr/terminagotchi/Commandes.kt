@@ -90,6 +90,8 @@ class Commandes(
             "ctf" -> Ctf.ouvrir(jeu, reste).let { Reponse(it.first, couleur = VERT, aller = it.second) }
             "drapeau" -> drapeau(reste)
             "compte" -> compte(reste)
+            "site" -> site(reste)
+            "bestiaire" -> Reponse(Explo.fiche(jeu, reste), couleur = ROSE)
             "sync" -> sync()
             "indice" -> Reponse(Ctf.indice(jeu, reste), couleur = VERT)
             "edite" -> edite(reste)
@@ -307,6 +309,19 @@ class Commandes(
                 }
                 return Reponse("⏳ Liaison au compte…", couleur = BLEU)
             }
+            "partage" -> {
+                val choix = mots.getOrNull(1)?.lowercase()
+                if (choix != "on" && choix != "off") {
+                    val etat = if (c.optJSONObject("partage")?.optBoolean("actif") == true) "activé" else "désactivé"
+                    return Reponse("Partage de tes captures dans la galerie publique du site : $etat.\n" +
+                        "  compte partage on  → tes bestioles apparaissent sur le site (avec ton pseudo)\n" +
+                        "  compte partage off → elles restent privées", couleur = BLEU)
+                }
+                c.put("partage", JSONObject().put("actif", choix == "on").put("date", System.currentTimeMillis()))
+                if (Recensement.aUnCompte(jeu)) sync(forcer = true)
+                return Reponse(if (choix == "on") "✔ Tes captures seront visibles dans la galerie du site (site captures)."
+                    else "✔ Tes captures ne sont plus visibles dans la galerie.", couleur = BLEU)
+            }
             "oublier" -> {
                 val serveur = c.optString("serveur")        // on garde l'adresse du site
                 jeu.extra.put("compte", org.json.JSONObject().apply { if (serveur.isNotEmpty()) put("serveur", serveur) })
@@ -334,6 +349,32 @@ class Commandes(
         val url = c.optString("serveur")
         return Reponse("🌍 Compte : ${c.optString("pseudo")} · dernière synchro : $quand\nProfil : $url/joueur/${c.optString("pseudo")}\n" +
             "CTF web (badges vérifiés) : $url/ctf\n  compte code → relier un autre appareil · sync → synchroniser", couleur = BLEU)
+    }
+
+    /** site [bestiaire|captures|classement|ctf] : ouvre le site du recensement dans le navigateur. */
+    private fun site(reste: String): Reponse {
+        val c = Recensement.compte(jeu)
+        val chemins = mapOf("bestiaire" to "/bestiaire", "captures" to "/captures", "classement" to "/classement", "ctf" to "/ctf")
+        val page = reste.trim().lowercase()
+        val pseudo = c.optString("pseudo")
+        val suite = chemins[page] ?: if (pseudo.isNotEmpty()) "/joueur/$pseudo" else ""
+        val connu = c.optString("serveur")
+        Thread {
+            val url = Recensement.serveur(connu)
+            act.runOnUiThread {
+                if (url.isEmpty()) {
+                    plusTard("Le site du recensement n'est pas joignable pour l'instant.", ORANGE)
+                } else {
+                    try {
+                        act.startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(url + suite)).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK))
+                        plusTard("🌍 $url$suite", BLEU)
+                    } catch (e: ActivityNotFoundException) {
+                        plusTard("🌍 $url$suite  (aucun navigateur trouvé)", BLEU)
+                    }
+                }
+            }
+        }.start()
+        return Reponse("⏳ J'ouvre le site…", couleur = BLEU)
     }
 
     private fun drapeau(proposition: String): Reponse {

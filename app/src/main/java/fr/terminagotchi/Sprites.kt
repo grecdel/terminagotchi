@@ -107,8 +107,10 @@ object Sprites {
         return Regles.COULEUR.getValue(jeu.dominant())
     }
 
+    private val SHINY = mapOf(39 to 220, 78 to 51, 203 to 129, 221 to 255, 141 to 219)
+
     private fun palette(jeu: Jeu, cligne: Boolean): Map<Char, Int> {
-        val corps = couleurCorps(jeu)
+        val corps = couleurCorps(jeu).let { if (jeu.shiny) SHINY[it] ?: 219 else it }
         return mapOf('b' to corps, 'e' to (if (cligne) corps else 16), 'k' to 211,
             'm' to (if (jeu.faim >= 30) 52 else 16), 'h' to 180, 'w' to 230, 's' to 180, 'c' to 136,
             'a' to 250, 'l' to 51)

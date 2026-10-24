@@ -325,6 +325,7 @@ class TerminalActivity : Activity() {
 
         if (!jeu.existe) {
             jeu.nom = ligne.take(16)
+            jeu.shiny = Random.nextInt(64) == 0
             jeu.log("Un œuf est apparu… il a l'air ${jeu.trait}.")
             jeu.dire("*toc toc* … nourris-moi avec des commandes !", 10)
             jeu.sauver()
@@ -402,9 +403,61 @@ class TerminalActivity : Activity() {
         }
     }
 
+    /**
+     * Mise en forme spéciale : ¤id¤ / ¤id*¤ = dessin d'une bestiole (normale / shiny),
+     * §texte§ = écriture arc-en-ciel (RGB).
+     */
+    private fun miseEnForme(texte: String, couleur: Int?): SpannableStringBuilder {
+        val sb = SpannableStringBuilder()
+        val motif = Regex("¤([a-z0-9]+)(\\*?)¤|§([^§]*)§")
+        var i = 0
+        for (m in motif.findAll(texte)) {
+            sb.append(texte, i, m.range.first)
+            if (m.groupValues[1].isNotEmpty()) {
+                val e = Bestiaire.espece(m.groupValues[1])
+                if (e != null) {
+                    val debut = sb.length
+                    sb.append("\uFFFC")
+                    val d = android.graphics.drawable.BitmapDrawable(resources, Bestiaire.bitmap(e, m.groupValues[2] == "*", 4))
+                    val px = (40 * resources.displayMetrics.density).toInt()
+                    d.setBounds(0, 0, px, px)
+                    sb.setSpan(android.text.style.ImageSpan(d, android.text.style.DynamicDrawableSpan.ALIGN_BOTTOM),
+                        debut, debut + 1, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
+                }
+            } else {
+                arcEnCiel(sb, m.groupValues[3])
+            }
+            i = m.range.last + 1
+        }
+        sb.append(texte, i, texte.length)
+        if (couleur != null) {
+            // la couleur de base ne recouvre pas l'arc-en-ciel déjà posé
+            val base = ForegroundColorSpan(couleur)
+            sb.setSpan(base, 0, sb.length, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
+            for (sp in sb.getSpans(0, sb.length, ForegroundColorSpan::class.java)) {
+                if (sp !== base) {
+                    val a = sb.getSpanStart(sp)
+                    val b = sb.getSpanEnd(sp)
+                    sb.removeSpan(sp)
+                    sb.setSpan(sp, a, b, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
+                }
+            }
+        }
+        return sb
+    }
+
+    private fun arcEnCiel(sb: SpannableStringBuilder, t: String) {
+        val n = t.length.coerceAtLeast(1)
+        t.forEachIndexed { k, c ->
+            val debut = sb.length
+            sb.append(c)
+            val coul = android.graphics.Color.HSVToColor(floatArrayOf(360f * k / (n + 4), 0.6f, 1f))
+            sb.setSpan(ForegroundColorSpan(coul), debut, debut + 1, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
+        }
+    }
+
     private fun ecrire(texte: String, couleur: Int? = null) {
-        val s = SpannableString(texte)
-        if (couleur != null) s.setSpan(ForegroundColorSpan(couleur), 0, s.length, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
+        val s = miseEnForme(texte, couleur)
         if (sortie.length() > 0) sortie.append("\n")
         sortie.append(s)
         if (sortie.length() > 15000) sortie.text = sortie.text.subSequence(sortie.length() - 12000, sortie.length())
@@ -553,7 +606,7 @@ class TerminalActivity : Activity() {
 
     // ------------------------------------------------------------ affichage
     private fun rafraichir() {
-        titre.text = if (jeu.existe) jeu.titre() else "Œuf mystérieux"
+        titre.text = if (!jeu.existe) "Œuf mystérieux" else if (jeu.shiny) miseEnForme("§${jeu.titre()}§", null) else jeu.titre()
         faim.text = jeu.texteFaim()
         xp.text = jeu.texteXp()
         stats.text = jeu.texteStats()

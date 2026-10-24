@@ -6,34 +6,12 @@ import java.io.File
 
 /**
  * Exploration : les zones sont de vrais dossiers du terrain de jeu.
- * Des bestioles s'y cachent (fichiers cachés) : on les trouve avec ls -a,
- * on les lit avec cat, et on les capture en les déplaçant dans le nid avec mv.
+ * Les 150 espèces du bestiaire s'y cachent en fichiers cachés, chacune dans l'habitat de sa famille ;
+ * plus elle est rare, plus elle est profonde (recoin → cachette → sanctuaire).
+ * On la trouve avec ls -a, on la lit avec cat, on la capture en la déplaçant dans le nid avec mv.
+ * Chaque capture est un individu unique (marque, humeur, taille, potentiel… et parfois shiny ✨).
  */
 object Explo {
-    class Espece(val nom: String, val rarete: String, val couleur: Int, val desc: String)
-
-    val ESPECES = listOf(
-        Espece("Glitchou", "commune", 213, "Petit bug grésillant qui adore les fichiers temporaires."),
-        Espece("Octobit", "commune", 39, "Pieuvre à 8 bits, range tout par octets."),
-        Espece("Pixelard", "commune", 221, "Raconte des blagues en 16 couleurs."),
-        Espece("Segfaulte", "commune", 203, "Se plante partout, mais toujours avec le sourire."),
-        Espece("Kernelou", "rare", 78, "Vit au cœur du système, d'un calme absolu."),
-        Espece("Daemonet", "rare", 141, "Travaille en arrière-plan sans jamais dormir."),
-        Espece("Bugzilla", "rare", 160, "Énorme, mais personne n'arrive à le reproduire."),
-        Espece("Cronosaure", "légendaire", 51, "N'apparaît qu'à heure fixe, réglé comme une horloge."),
-        Espece("Rootkitsune", "légendaire", 208, "Renarde à neuf queues, maîtresse des droits root."),
-    )
-    private val ZONES = mapOf(
-        "commune" to listOf("foret", "marais"),
-        "rare" to listOf("grotte", "marais/bourbier"),
-        "légendaire" to listOf("grotte/profondeurs/abysses"),
-    )
-    private val NOM_ZONE = mapOf("foret" to "la forêt", "marais" to "le marais", "grotte" to "la grotte",
-        "marais/bourbier" to "le bourbier du marais", "grotte/profondeurs/abysses" to "les abysses de la grotte")
-    private val XP = mapOf("commune" to 15, "rare" to 40, "légendaire" to 100)
-
-    fun espece(nom: String) = ESPECES.firstOrNull { it.nom == nom }
-
     private fun etat(jeu: Jeu) = jeu.module("explo")
 
     private fun sauvages(jeu: Jeu): JSONArray =
@@ -41,6 +19,9 @@ object Explo {
 
     fun collection(jeu: Jeu): JSONObject =
         etat(jeu).optJSONObject("collection") ?: JSONObject().also { etat(jeu).put("collection", it) }
+
+    fun captures(jeu: Jeu): JSONArray =
+        etat(jeu).optJSONArray("captures") ?: JSONArray().also { etat(jeu).put("captures", it) }
 
     fun nbCaptures(jeu: Jeu): Int {
         val c = collection(jeu)
@@ -52,24 +33,24 @@ object Explo {
     fun spawn(jeu: Jeu) {
         val s = sauvages(jeu)
         if (s.length() >= 3) return
-        val tirage = (1..100).random()
-        val rarete = if (tirage <= 70) "commune" else if (tirage <= 95) "rare" else "légendaire"
-        val esp = ESPECES.filter { it.rarete == rarete }.random()
-        val zone = ZONES.getValue(rarete).random()
+        val (e, shiny) = Bestiaire.tirer()
+        val zone = e.zone
         val dossier = File(jeu.terrain, zone)
         dossier.mkdirs()
         val n = etat(jeu).optInt("n") + 1
         etat(jeu).put("n", n)
-        val nomFichier = ".bestiole_${esp.nom.lowercase()}_$n"
+        val nomFichier = ".bestiole_${e.id}_$n"
         val retour = "../".repeat(zone.count { it == '/' } + 1) + "nid/"
+        val eclat = if (shiny) "\n✨ Elle brille étrangement… une bestiole shiny ?!\n" else ""
         File(dossier, nomFichier).writeText(
-            "Un ${esp.nom} sauvage se cache ici ! (${esp.rarete})\n« ${esp.desc} »\n\n" +
-                "Pour le capturer, ramène-le dans le nid de ${jeu.nom} :\n" +
+            "#%03d ${e.nom} sauvage se cache ici ! (${e.rarete}, famille ${e.famille})\n".format(e.numero) +
+                "« ${e.description} »$eclat\n" +
+                "Pour la capturer, ramène-la dans le nid de ${jeu.nom} :\n" +
                 "   ${Regles.piege("mv $nomFichier $retour")}\n\n" +
-                "(Tape la commande toi-même : un copier-coller le ferait fuir !)\n")
-        s.put(JSONObject().put("f", "$zone/$nomFichier").put("e", esp.nom).put("zone", zone))
-        jeu.log("🐾 Quelque chose bouge dans ${NOM_ZONE[zone]}…")
-        jeu.dire("Je sens une présence dans ${NOM_ZONE[zone]} ($zone) ! Les bestioles se cachent : essaie ${Regles.piege("ls -a")}", 15)
+                "(Tape la commande toi-même : un copier-coller la ferait fuir !)\n")
+        s.put(JSONObject().put("f", "$zone/$nomFichier").put("e", e.nom).put("zone", zone).put("shiny", shiny))
+        jeu.log("🐾 Quelque chose bouge dans ${Bestiaire.lieu(zone)}…")
+        jeu.dire("Je sens une présence dans ${Bestiaire.lieu(zone)} ($zone) ! Les bestioles se cachent : essaie ${Regles.piege("ls -a")}", 15)
     }
 
     /** Captures (bestiole déposée dans le nid) et fuites (fichier effacé). Renvoie un message ou null. */
@@ -90,19 +71,22 @@ object Explo {
             val b = s.getJSONObject(i)
             val nomFichier = b.getString("f").substringAfterLast('/')
             val dansNid = File(nid, nomFichier)
-            val nomEsp = b.getString("e")
+            val esp = Bestiaire.espece(b.getString("e"))
             when {
                 dansNid.exists() -> {
                     dansNid.delete()
+                    if (esp == null) continue
+                    val shiny = b.optBoolean("shiny")
+                    val ind = Bestiaire.individu(esp, shiny, b.optString("zone"))
+                    captures(jeu).put(ind)
                     val c = collection(jeu)
-                    c.put(nomEsp, c.optInt(nomEsp) + 1)
-                    val rarete = espece(nomEsp)?.rarete ?: "commune"
-                    jeu.log("🎯 $nomEsp capturé ! ($rarete)")
-                    jeu.dire("Bienvenue au nid, $nomEsp ! (tape « collection »)", 12)
-                    val st = Regles.STATS.random()
-                    jeu.stats[st] = (jeu.stats[st] ?: 0) + 2
-                    jeu.ajouterXp(XP[rarete] ?: 15)
-                    message = "🎯 $nomEsp capturé ! Il rejoint ta collection."
+                    c.put(esp.nom, c.optInt(esp.nom) + 1)
+                    val titre = esp.nom + if (shiny) " ✨ SHINY" else ""
+                    jeu.log("🎯 $titre capturé ! (${esp.rarete})")
+                    jeu.dire("Bienvenue au nid, ${esp.nom}${if (shiny) " ✨" else ""} ! Signe particulier : ${ind.getString("marque")}.", 14)
+                    jeu.stats[esp.stat] = (jeu.stats[esp.stat] ?: 0) + 2
+                    jeu.ajouterXp((Bestiaire.XP[esp.rarete] ?: 15) * if (shiny) 3 else 1)
+                    message = "🎯 ${carte(ind)}\nElle rejoint ta collection (tape « collection »)."
                 }
                 File(jeu.terrain, b.getString("f")).exists() -> garder.put(b)
                 else -> {
@@ -111,8 +95,9 @@ object Explo {
                         b.put("f", ailleurs.relativeTo(jeu.terrain).path)
                         garder.put(b)
                     } else {
-                        jeu.log("💨 $nomEsp s'est enfui (fichier effacé ?)")
-                        message = "💨 $nomEsp a disparu… un rm de trop ?"
+                        val nom = b.getString("e")
+                        jeu.log("💨 $nom s'est enfuie (fichier effacé ?)")
+                        message = "💨 $nom a disparu… un rm de trop ?"
                     }
                 }
             }
@@ -121,22 +106,68 @@ object Explo {
         return message
     }
 
+    /**
+     * Texte d'une capture. ¤id¤ (ou ¤id*¤ pour shiny) = dessin de la bestiole,
+     * §texte§ = écriture arc-en-ciel : le terminal de l'appli les remplace à l'affichage.
+     */
+    fun carte(ind: JSONObject): String {
+        val e = Bestiaire.espece(ind.optString("espece")) ?: return ind.optString("espece")
+        val shiny = ind.optBoolean("shiny")
+        val nom = e.nom + if (shiny) " ✨" else ""
+        val titre = if (shiny || e.rarete == "légendaire") "§$nom§" else nom
+        return "¤${e.id}${if (shiny) "*" else ""}¤ $titre  #%03d · ${e.rarete} · ${e.famille}\n".format(e.numero) +
+            "   signe particulier : §${ind.optString("marque")}§\n" +
+            "   humeur ${ind.optString("humeur")} · ${ind.optDouble("taille")} cm · potentiel ${ind.optInt("potentiel")} %"
+    }
+
     fun texteCollection(jeu: Jeu): String {
-        val c = collection(jeu)
+        val coll = collection(jeu)
+        val vues = Bestiaire.especes.filter { coll.optInt(it.nom) > 0 }
+        val caps = captures(jeu)
         val sb = StringBuilder("🐾 Collection de ${jeu.nom}\n")
-        for (esp in ESPECES) {
-            val n = c.optInt(esp.nom)
-            sb.append(if (n > 0) "● ${esp.nom} ×$n (${esp.rarete}) — ${esp.desc}\n" else "○ ??? (${esp.rarete})\n")
+        sb.append("Espèces découvertes : ${vues.size}/150\n")
+        for (r in listOf("commune", "peu commune", "rare", "légendaire")) {
+            val tot = Bestiaire.especes.count { it.rarete == r }
+            sb.append("   $r : ${vues.count { it.rarete == r }}/$tot\n")
         }
-        sb.append("\nEspèces : ${c.length()}/${ESPECES.size} · captures : ${nbCaptures(jeu)}\n")
+        val shinies = (0 until caps.length()).count { caps.getJSONObject(it).optBoolean("shiny") }
+        sb.append("Captures : ${caps.length()}" + (if (shinies > 0) " · dont §$shinies shiny§" else "") + "\n")
+        if (caps.length() > 0) {
+            sb.append("\nTes dernières captures :\n")
+            for (i in caps.length() - 1 downTo maxOf(0, caps.length() - 5)) sb.append(carte(caps.getJSONObject(i))).append("\n\n")
+        }
         if (!debloquee(jeu)) {
             sb.append("L'exploration s'ouvre avec la leçon « Construire mon nid ».")
         } else {
             val s = sauvages(jeu)
-            val zones = (0 until s.length()).map { NOM_ZONE[s.getJSONObject(it).getString("zone")] ?: "?" }.distinct()
+            val zones = (0 until s.length()).map { Bestiaire.lieu(s.getJSONObject(it).getString("zone")) }.distinct()
             sb.append("Présences signalées : " + (if (zones.isEmpty()) "aucune pour l'instant" else zones.joinToString(", ")))
+            sb.append("\nFiche d'une espèce : bestiaire <nom> · les 150 : site bestiaire")
         }
         return sb.toString()
+    }
+
+    /** bestiaire <nom> : fiche complète seulement si l'espèce a déjà été capturée. */
+    fun fiche(jeu: Jeu, nom: String): String {
+        val coll = collection(jeu)
+        if (nom.isBlank()) {
+            val vues = Bestiaire.especes.filter { coll.optInt(it.nom) > 0 }
+            if (vues.isEmpty()) return "Tu n'as encore capturé aucune bestiole. Exemple : bestiaire Glitchou"
+            return "Tes espèces : " + vues.joinToString(", ") { "#%03d ${it.nom}".format(it.numero) } + "\nFiche : bestiaire <nom>"
+        }
+        val e = Bestiaire.espece(nom) ?: return "Aucune espèce ne s'appelle « $nom ». Les 150 sont sur le site : site bestiaire"
+        val connue = coll.optInt(e.nom) > 0
+        val entete = "#%03d ".format(e.numero) + (if (!connue) "???" else if (e.rarete == "légendaire") "§${e.nom}§" else e.nom) +
+            " · ${e.rarete} · ${e.icone} ${e.famille}"
+        if (!connue) {
+            return "$entete\nTu ne l'as pas encore capturée.\nHabitat : ${Bestiaire.lieu(e.zone)} (${e.zone})\n" +
+                "Elle se montre ${e.frequence}, attirée par la commande « ${e.attireePar} »."
+        }
+        return "¤${e.id}¤ $entete\n${e.description}\n${e.comportement}\n" +
+            "Capacité : ${e.capacite} · stat favorite : ${e.stat}\n" +
+            "Taille ~${e.tailleCm} cm · poids ~${e.poidsKo} Ko\n" +
+            e.stats.entries.joinToString("  ") { "${it.key} ${it.value}" } + "\n" +
+            "Habitat : ${Bestiaire.lieu(e.zone)} · attirée par « ${e.attireePar} »\nTu en as capturé ${coll.optInt(e.nom)}."
     }
 }
 

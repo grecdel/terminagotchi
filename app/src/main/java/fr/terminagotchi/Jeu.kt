@@ -189,6 +189,8 @@ object Regles {
             Triple("notifs", "notifications on / off", j),
             Triple("compte", "recensement en ligne : même créature sur PC et téléphone", w),
             Triple("sync", "synchronise ta créature maintenant", w),
+            Triple("site", "ouvre le site : ton profil (site bestiaire, site captures…)", w),
+            Triple("bestiaire", "la fiche d'une espèce : bestiaire Glitchou", j),
             Triple("sudo", "agir en administrateur (impossible dans le bac à sable du téléphone)", p),
             Triple("apt", "installer des logiciels (Linux / Termux, ou mode Linux complet)", p),
             Triple("nano", "éditeur de texte du terminal (ici : edite)", p),
@@ -207,6 +209,10 @@ object Regles {
 
 /** L'état de la créature, sauvegardé en JSON dans le stockage privé de l'appli. */
 class Jeu(ctx: Context) {
+    init {
+        Bestiaire.charger(ctx.applicationContext)
+    }
+
     // chemin « canonique » : /data/user/0 et /data/data désignent le même dossier sur Android
     val home: File = File(ctx.filesDir, "maison").apply { mkdirs() }.canonicalFile
     val terrain: File get() = File(home, "terrain_terminagotchi")
@@ -228,6 +234,8 @@ class Jeu(ctx: Context) {
     var bulle = ""
     var bulleFin = 0L
     var colles = 0
+    /** créature shiny (1 chance sur 64 à la naissance) */
+    var shiny = false
     private val dernierJeu = mutableMapOf<String, Long>()
     val historique = mutableListOf<String>()
 
@@ -329,6 +337,7 @@ class Jeu(ctx: Context) {
             bulle = o.optString("bulle")
             bulleFin = o.optLong("bulleFin")
             colles = o.optInt("colles")
+            shiny = o.optBoolean("shiny")
             extra = o.optJSONObject("extra") ?: JSONObject()
         } catch (e: Exception) {
             // sauvegarde illisible : on repart de zéro plutôt que de planter
@@ -354,6 +363,7 @@ class Jeu(ctx: Context) {
         o.put("bulle", bulle)
         o.put("bulleFin", bulleFin)
         o.put("colles", colles)
+        o.put("shiny", shiny)
         o.put("extra", extra)
         val tmp = File(fichier.parentFile, "sauvegarde.tmp")
         tmp.writeText(o.toString())
@@ -549,7 +559,7 @@ class Jeu(ctx: Context) {
     fun titre(): String {
         val fo = forme
         val f = if (stade >= 2 && fo != null) " ${Regles.FORMES[fo]}" else ""
-        return "$nom · ${Regles.STADES[stade]}$f · niv. $niveau"
+        return "$nom${if (shiny) " ✨" else ""} · ${Regles.STADES[stade]}$f · niv. $niveau"
     }
 
     fun texteXp(): String {

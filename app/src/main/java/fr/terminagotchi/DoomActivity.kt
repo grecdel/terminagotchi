@@ -81,7 +81,7 @@ class DoomActivity : Activity() {
 }
 
 class DoomVue(ctx: Context, private val jeu: Jeu, carteTexte: String, reglages: Map<String, String>) : View(ctx) {
-    private class Ennemi(var x: Double, var y: Double, val couleur: Int, var pv: Int = 2)
+    private class Ennemi(var x: Double, var y: Double, val e: Bestiaire.Espece, var pv: Int = 2)
 
     private val L = 240          // résolution interne (pixels), format paysage
     private val H = 110
@@ -125,12 +125,13 @@ class DoomVue(ctx: Context, private val jeu: Jeu, carteTexte: String, reglages: 
         carte = if (lignes.isEmpty()) listOf("###", "#C#", "###") else lignes
         // couleurs des ennemis : celles des bestioles capturées, sinon des couleurs par défaut
         val col = Explo.collection(jeu)
-        val couleursBestioles = Explo.ESPECES.filter { col.optInt(it.nom) > 0 }.map { Sprites.x256(it.couleur) }
-            .ifEmpty { listOf(0xFFFF5FAF.toInt(), 0xFF5FD7FF.toInt(), 0xFFFFD75F.toInt()) }
+        // les ennemis sont tes bestioles capturées (sinon des communes au hasard)
+        val bestioles = Bestiaire.especes.filter { col.optInt(it.nom) > 0 }
+            .ifEmpty { Bestiaire.especes.filter { it.rarete == "commune" }.shuffled().take(4) }
         for ((y, l) in carte.withIndex()) for ((x, c) in l.withIndex()) {
             when (c) {
                 'C', 'c' -> { px = x + 0.5; py = y + 0.5 }
-                'B', 'b' -> ennemis.add(Ennemi(x + 0.5, y + 0.5, couleursBestioles.random()))
+                'B', 'b' -> ennemis.add(Ennemi(x + 0.5, y + 0.5, bestioles.random()))
                 'X', 'x' -> { sortieX = x; sortieY = y }
             }
         }
@@ -300,7 +301,7 @@ class DoomVue(ctx: Context, private val jeu: Jeu, carteTexte: String, reglages: 
         // sprites : sortie + ennemis, du plus loin au plus proche
         val sprites = mutableListOf<Triple<Double, Double, Int>>()
         if (sortieX >= 0) sprites.add(Triple(sortieX + 0.5, sortieY + 0.5, -1))
-        ennemis.filter { it.pv > 0 }.forEach { sprites.add(Triple(it.x, it.y, it.couleur)) }
+        ennemis.forEachIndexed { i, en -> if (en.pv > 0) sprites.add(Triple(en.x, en.y, i)) }
         sprites.sortByDescending { (it.first - px) * (it.first - px) + (it.second - py) * (it.second - py) }
         val inv = 1.0 / (planX * dY - dX * planY)
         for ((sxp, syp, coul) in sprites) {
@@ -324,13 +325,8 @@ class DoomVue(ctx: Context, private val jeu: Jeu, carteTexte: String, reglages: 
                         val r = sqrt((u - 0.5) * (u - 0.5) + (v - 0.5) * (v - 0.5))
                         if (r < 0.48 && r > 0.25) 0xFF5FFF87.toInt() else if (r <= 0.25) 0xFF1F6F3F.toInt() else 0
                     } else {
-                        // bestiole : corps rond, deux yeux
-                        val r = sqrt((u - 0.5) * (u - 0.5) + (v - 0.55) * (v - 0.55) * 1.3)
-                        when {
-                            r > 0.47 -> 0
-                            (abs(u - 0.33) < 0.07 || abs(u - 0.67) < 0.07) && abs(v - 0.42) < 0.08 -> Color.BLACK
-                            else -> coul
-                        }
+                        // la vraie bestiole du bestiaire, en pixel art
+                        Bestiaire.pixel(ennemis[coul].e, u, v)
                     }
                     if (c != 0) pixels[sy * L + sx] = assombrir(c, 1.3 / (1 + ty * 0.2))
                 }

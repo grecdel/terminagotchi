@@ -90,9 +90,11 @@ object Recensement {
             .put("skills", JSONArray(jeu.skills))
             .put("collection", Explo.collection(jeu))
             .put("records", records(jeu))
+            .put("captures", Explo.captures(jeu))
+            .put("partage", c.optJSONObject("partage") ?: JSONObject().put("actif", false).put("date", 0))
             .put("valeurs", JSONObject()
                 .put("nom", jeu.nom).put("nomDate", c.optLong("nomDate"))
-                .put("trait", jeu.trait).put("forme", jeu.forme ?: JSONObject.NULL)
+                .put("trait", jeu.trait).put("forme", jeu.forme ?: JSONObject.NULL).put("shiny", jeu.shiny)
                 .put("faim", jeu.faim).put("faimDate", c.optLong("repas")))
         enCours = true
         return Preparation(cle, c.optString("serveur"), charge, snap)
@@ -133,6 +135,18 @@ object Recensement {
         srv.optJSONObject("records")?.let { o ->
             for (k in o.keys()) if (!rec.has(k) || o.optDouble(k) < rec.optDouble(k)) rec.put(k, o.optDouble(k))
         }
+        val caps = Explo.captures(jeu)
+        val connus = (0 until caps.length()).map { caps.getJSONObject(it).optString("id") }.toMutableSet()
+        srv.optJSONArray("captures")?.let { a ->
+            for (i in 0 until a.length()) {
+                val ind = a.getJSONObject(i)
+                if (connus.add(ind.optString("id"))) caps.put(ind)
+            }
+        }
+        srv.optJSONObject("partage")?.let { pa ->
+            if (pa.optLong("date") >= (c.optJSONObject("partage")?.optLong("date") ?: 0L)) c.put("partage", pa)
+        }
+        if (srv.has("shiny")) jeu.shiny = srv.optBoolean("shiny")
         val nom = srv.optString("nom")
         if (nom.isNotEmpty()) {
             jeu.nom = nom
