@@ -48,6 +48,8 @@ def spawn(state):
     state["sauvages"].append(s)
     core.log(state, f"⚔ Un {e['nom']} sauvage apparaît !")
     dressage.commencer(state, s)
+    from . import fenetre
+    fenetre.ouvrir_dressage(state)              # le face-à-face s'ouvre dans une nouvelle fenêtre
 
 
 def check(state):

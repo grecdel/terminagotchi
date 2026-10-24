@@ -39,29 +39,31 @@ capture jeux_creature
 tape "collection"
 capture collection
 # ---- dressage d'un monstre (on force l'apparition d'Abyssor) puis animations de l'équipe
-adb shell am start -S -n fr.terminagotchi/.TerminalActivity --es essai_dressage abyssor
+adb shell am start -n fr.terminagotchi/.TerminalActivity --es essai_dressage abyssor
 capture dressage_rencontre 5
 tape "cat ~/terrain_terminagotchi/monstre_abyssor.txt" 2
 capture dressage_examine
 tape "find ~/terrain_terminagotchi -name repaire_abyssor" 2
 capture dressage_repaire
 tape "dressage abandon"
-adb shell am start -S -n fr.terminagotchi/.TerminalActivity --es essai_equipe abyssor:adulte
+adb shell am start -n fr.terminagotchi/.TerminalActivity --es essai_equipe abyssor:adulte
 sleep 5
 tape "equipe" 2
 capture equipe
+tape "bestiaire abyssor" 2
+capture fiche_abyssor
 tape "anime abyssor attaque" 1
 capture anime_attaque 0.6
 adb shell input keyevent 4
 tape "anime abyssor confus" 1
 capture anime_confus 0.8
 adb shell input keyevent 4
-adb shell am start -S -n fr.terminagotchi/.TerminalActivity --es essai_equipe abyssor:finale
+adb shell am start -n fr.terminagotchi/.TerminalActivity --es essai_equipe abyssor:finale
 sleep 5
 tape "anime abyssor statique" 1
 capture anime_finale 0.6
 adb shell input keyevent 4
-adb shell am start -S -n fr.terminagotchi/.TerminalActivity --es essai_equipe abyssor:enfant
+adb shell am start -n fr.terminagotchi/.TerminalActivity --es essai_equipe abyssor:enfant
 sleep 5
 tape "anime abyssor content" 1
 capture anime_enfant 0.6

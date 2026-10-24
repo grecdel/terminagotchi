@@ -213,6 +213,8 @@ def exporter(rendus):
     pc["evolution_vers"] = index["evolution_vers"]
     (RACINE / "pc/tg/anim").mkdir(parents=True, exist_ok=True)
     (RACINE / "pc/tg/anim/abyssor.json").write_text(json.dumps(pc, separators=(",", ":")), encoding="utf-8")
+    # l'appli garde les gros pixels pour le jeu (la version détaillée sert aux fiches)
+    (RACINE / "app/src/main/assets/anim/abyssor/pixels.json").write_text(json.dumps(pc, separators=(",", ":")), encoding="utf-8")
     print(f"PC : {(RACINE / 'pc/tg/anim/abyssor.json').stat().st_size // 1024} Ko · bandes WebP : {poids // 2048} Ko par plateforme")
 
 

@@ -385,6 +385,13 @@ class TerminalActivity : Activity() {
         }
     }
 
+    override fun onNewIntent(intent: android.content.Intent) {
+        super.onNewIntent(intent)
+        essais(intent)
+        rafraichir()
+        saisie.requestFocus()
+    }
+
     /**
      * Réglages réservés aux tests automatiques (lancés par adb, impossibles depuis l'appli) :
      *   --es essai_dressage abyssor        fait apparaître ce monstre
@@ -441,7 +448,7 @@ class TerminalActivity : Activity() {
      */
     private fun miseEnForme(texte: String, couleur: Int?): SpannableStringBuilder {
         val sb = SpannableStringBuilder()
-        val motif = Regex("¤([a-z0-9]+)(\\*?)¤|§([^§]*)§")
+        val motif = Regex("¤([a-z0-9]+)([*+]?)¤|§([^§]*)§")
         var i = 0
         for (m in motif.findAll(texte)) {
             sb.append(texte, i, m.range.first)
@@ -450,8 +457,9 @@ class TerminalActivity : Activity() {
                 if (e != null) {
                     val debut = sb.length
                     sb.append("\uFFFC")
-                    val d = android.graphics.drawable.BitmapDrawable(resources, Bestiaire.bitmap(e, m.groupValues[2] == "*", 4))
-                    val px = (40 * resources.displayMetrics.density).toInt()
+                    val detail = if (m.groupValues[2] == "+") Animations.detaille(e.id) else null
+                    val d = android.graphics.drawable.BitmapDrawable(resources, detail ?: Bestiaire.bitmap(e, m.groupValues[2] == "*", 4))
+                    val px = ((if (detail != null) 160 else 40) * resources.displayMetrics.density).toInt()
                     d.setBounds(0, 0, px, px)
                     sb.setSpan(android.text.style.ImageSpan(d, android.text.style.DynamicDrawableSpan.ALIGN_BOTTOM),
                         debut, debut + 1, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
@@ -652,6 +660,9 @@ class TerminalActivity : Activity() {
             else if (jeu.existe) jeu.texteLecon() else null
         lecon.visibility = if (l == null) View.GONE else View.VISIBLE
         lecon.text = l ?: ""
+        // pendant un dressage, le familier est déjà dans le face-à-face : on allège l'en-tête
+        val vis = if (panneau != null) View.GONE else View.VISIBLE
+        creature.visibility = vis; faim.visibility = vis; xp.visibility = vis; stats.visibility = vis
         creature.setImageBitmap(Sprites.bitmap(jeu, 12, cligne > 0))
     }
 
@@ -674,7 +685,7 @@ class TerminalActivity : Activity() {
             jeu.tick()
             jeu.leconTick(null, false)
             Defis.verifier(jeu, null)
-            if (jeu.existe && jeu.stade >= 1 && Defis.actif(jeu) == null && Random.nextInt(60) == 0) Defis.lancer(jeu)
+            if (jeu.existe && jeu.stade >= 1 && Defis.actif(jeu) == null && !Dressage.actif(jeu) && Random.nextInt(60) == 0) Defis.lancer(jeu)
             Explo.verifier(jeu)?.let { ecrire(it, 0xFFFF87FF.toInt()) }
             Dressage.verifier(jeu, null, false)?.let { ecrire(it, 0xFFFF87FF.toInt()) }
             if (Random.nextInt(4) == 0) jeu.parlerSiSilencieux()

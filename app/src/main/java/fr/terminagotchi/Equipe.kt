@@ -99,6 +99,31 @@ object Animations {
 
     fun dispo(id: String) = index(id) != null
 
+    // ---- gros pixels (48 px, comme dans le terminal PC) : pour le jeu
+    private val pixelsJson = HashMap<String, JSONObject?>()
+    private fun pixelsDe(id: String): JSONObject? = pixelsJson.getOrPut(id) {
+        try { JSONObject(ctxApp!!.assets.open("anim/$id/pixels.json").bufferedReader().use { it.readText() }) } catch (e: Exception) { null }
+    }
+
+    /** Les images en gros pixels d'une animation, agrandies sans lissage. */
+    fun pixels(id: String, stade: String, anim: String, echelle: Int = 5): List<Bitmap>? {
+        val d = pixelsDe(id) ?: return null
+        val a = d.optJSONObject("anims")?.optJSONObject(stade)?.optJSONObject(anim) ?: return null
+        val n = d.optInt("taille", 48)
+        val pal = a.getJSONArray("palette").let { p -> IntArray(p.length() + 1) { if (it == 0) 0 else android.graphics.Color.parseColor(p.getString(it - 1)) } }
+        val imgs = a.getJSONArray("images")
+        return (0 until imgs.length()).map { k ->
+            val brut = android.util.Base64.decode(imgs.getString(k), android.util.Base64.DEFAULT)
+            val octets = java.util.zip.Inflater().run { setInput(brut); val o = ByteArray(n * n); inflate(o); end(); o }
+            val px = IntArray(n * n) { pal[octets[it].toInt() and 0xFF] }
+            val b = Bitmap.createBitmap(px, n, n, Bitmap.Config.ARGB_8888)
+            Bitmap.createScaledBitmap(b, n * echelle, n * echelle, false)
+        }
+    }
+
+    /** La version détaillée (pour les fiches) : première image de l'animation au repos. */
+    fun detaille(id: String, stade: String = "adulte"): Bitmap? = images(id, stade, "statique")?.firstOrNull()
+
     fun images(id: String, stade: String, anim: String): List<Bitmap>? {
         val ix = index(id) ?: return null
         val n = ix.optJSONObject("anims")?.optJSONObject(stade)?.optInt(anim) ?: 0
@@ -133,7 +158,7 @@ object Animations {
             if (i <= 0) return "${e.nom} est encore enfant : il n'a pas encore évolué."
             stade = Equipe.STADES[i - 1]
         }
-        val imgs = images(e.id, stade, anim) ?: return "Pas d'image pour $anim."
+        val imgs = pixels(e.id, stade, anim) ?: return "Pas d'image pour $anim."
         val dp = act.resources.displayMetrics.density
         val vue = ImageView(act).apply {
             layoutParams = LinearLayout.LayoutParams((260 * dp).toInt(), (260 * dp).toInt())

@@ -100,6 +100,38 @@ def render(state, frame, interactif):
     return "\n".join(lines) + "\n"
 
 
+def vue_dressage():
+    """tg dressage : la fenêtre du face-à-face, qui se met à jour toute seule pendant que tu tapes ailleurs."""
+    sys.stdout.write("\033[?25l")
+    try:
+        fini = None
+        while True:
+            state = etape(spontane=False, defis=False)
+            if state is None:
+                return
+            if state.get("dressage"):
+                clear()
+                sys.stdout.write(render_dressage(state, False))
+                sys.stdout.write(f"{DIM} Tape tes commandes dans ton autre terminal · Ctrl+C pour fermer cette fenêtre{RESET}\n")
+                sys.stdout.flush()
+            else:
+                if fini is None:
+                    fini = time.time()
+                    clear()
+                    b = state.get("bubble")
+                    print("\n  " + (b[0] if b else "Le dressage est terminé."))
+                    act = equipe.active(state)
+                    if act and equipe.anime(act["espece"]):
+                        equipe.jouer(state, [act["espece"], "content"])
+                if time.time() - fini > 6:
+                    return
+            time.sleep(0.7)
+    except KeyboardInterrupt:
+        pass
+    finally:
+        sys.stdout.write("\033[?25h")
+
+
 def render_dressage(state, interactif):
     """Pendant un dressage : le face-à-face seulement (plus la bulle et les deux dernières lignes du journal)."""
     lines = dressage.lignes_ecran(state)
@@ -401,6 +433,7 @@ AIDE = """Terminagotchi — utilisation :
   tg site [bestiaire|captures] ouvre le site du recensement (ton profil par défaut)
   tg collection · tg bestiaire <nom>   tes bestioles · la fiche d'une espèce
   tg equipe [nom]              ton équipe et ses stades · choisir la bestiole active (elle grandit)
+  tg dressage                  la fenêtre du face-à-face (s'ouvre toute seule quand un monstre apparaît)
   tg anime <nom> [animation]   la voir bouger : statique, mange, attaque, salut, parle, dort, content,
                                affame, confus, colere, victoire, ko, evolution
   tg compte partage on|off     montrer (ou non) tes captures dans la galerie du site
@@ -457,6 +490,9 @@ def main():
     global SYNC_AUTO
     SYNC_AUTO = True
     creer_si_besoin()
+    if mode == "dressage":
+        vue_dressage()
+        return
     if mode == "mini":
         from . import mini
         mini.lancer(etape)

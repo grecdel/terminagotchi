@@ -385,7 +385,7 @@ object Dressage {
         }
         image(Sprites.bitmap(jeu, 6, false))
         sb.texte("   VS   ", 0xFFFF5050.toInt(), true, 1.3f)
-        image(Bestiaire.bitmap(e, d.optBoolean("shiny"), 5))
+        image(Animations.pixels(e.id, "adulte", "statique", 3)?.firstOrNull() ?: Bestiaire.bitmap(e, d.optBoolean("shiny"), 5))
         sb.append("\n")
         val COUL_FAM = mapOf("Intelligence" to 0xFF00AFFF.toInt(), "Agilité" to 0xFF5FD787.toInt(),
             "Force" to 0xFFFF5F5F.toInt(), "Endurance" to 0xFFFFD75F.toInt())
