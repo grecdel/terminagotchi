@@ -14,6 +14,7 @@ import os
 import random
 import re
 import stat
+import textwrap
 import time
 from datetime import date
 
@@ -553,7 +554,132 @@ def lignes_ecran(state, largeur=60):
             out.append(f"  {fg(120)}✔{RESET} {DIM}{but}{RESET}")
         elif x is tache_courante(state):
             out.append(f"  {fg(226)}➜{RESET} {BOLD}{but}{RESET}")
-            out.append(f"     {DIM}où : cd ~/{T.name}/{d['zone']}  ·  indice : {piege(x['indice'])} (cherche dans le lexique [l]){RESET}")
+            expl, ex = aide(fid, d["espece"])
+            if expl:
+                for l in textwrap.wrap("💡 " + expl, largeur):
+                    out.append(f"     {fg(153)}{l}{RESET}")
+            r_ = reste(state)
+            if ex and (r_ is None or r_ < d["duree"] / 2):
+                out.append(f"     {fg(226)}Exemple : {piege(ex)}{RESET}")
+            elif ex:
+                out.append(f"     {DIM}(un exemple apparaîtra à la moitié du temps){RESET}")
+            out.append(f"     {DIM}où : cd ~/{T.name}/{d['zone']}  ·  pour aller plus loin : lexique [l]{RESET}")
         else:
             out.append(f"  {DIM}○ …{RESET}")
     return out
+
+
+# ================================================================ explications pour débutants
+# Pour chaque épreuve : ce que fait la commande (en clair) et un exemple complet à adapter.
+# (exemple PC/Mac/Linux, exemple Windows PowerShell si différent)
+AIDES = {
+    "Fichiers:enclos": ("mkdir crée un dossier (« make directory »).", "mkdir enclos", "mkdir enclos"),
+    "Fichiers:gamelle": ("touch crée un fichier vide. Le / sépare le dossier du fichier.", "touch enclos/gamelle",
+                         "New-Item enclos/gamelle"),
+    "Fichiers:doudou": ("cp copie un fichier : d'abord ce qu'on copie, puis où on le met. L'original reste en place.",
+                        "cp doudou.txt enclos/", "copy doudou.txt enclos/"),
+    "Fichiers:renomme": ("mv déplace un fichier ; si on garde le même dossier, ça le renomme.",
+                         "mv vieux_nom.txt {nom_min}.txt", "move vieux_nom.txt {nom_min}.txt"),
+    "Fichiers:archive": ("tar range tout un dossier dans un seul fichier compressé : c = créer, z = compresser, f = nom du fichier.",
+                         "tar -czf enclos.tar.gz enclos", "Compress-Archive enclos enclos.zip"),
+    "Réseau:ping": ("ping envoie de petits messages à une machine et mesure s'ils reviennent. localhost = ta propre machine. "
+                    "-c 3 = s'arrêter après 3 envois.", "ping -c 3 localhost", "ping localhost"),
+    "Réseau:hote": ("hostname affiche le nom de ton ordinateur sur le réseau.", "hostname", "hostname"),
+    "Réseau:ip": ("Chaque machine connectée a une adresse IP, comme une adresse postale. ip a les affiche toutes.",
+                  "ip a", "ipconfig"),
+    "Réseau:dns": ("Le DNS est l'annuaire d'internet : il traduit un nom de site en adresse IP. nslookup l'interroge.",
+                   "nslookup example.com", "nslookup example.com"),
+    "Réseau:page": ("curl télécharge une page web ; -o choisit le fichier où l'enregistrer.",
+                    "curl -o page.html https://example.com", "curl.exe -o page.html https://example.com"),
+    "Processus:ps": ("Un processus = un programme qui tourne. ps aux les liste tous (a = tous les utilisateurs, x = même sans terminal).",
+                     "ps aux", "Get-Process"),
+    "Processus:heure": ("date affiche la date et l'heure de la machine.", "date", "Get-Date"),
+    "Processus:fond": ("sleep 120 attend 120 secondes. Le & à la fin le lance « en arrière-plan » : tu gardes la main.",
+                       "sleep 120 &", None),
+    "Processus:jobs": ("jobs liste les programmes que tu as lancés en arrière-plan dans ce terminal, avec leur numéro.",
+                       "jobs", None),
+    "Processus:kill": ("kill arrête un programme. %1 = le programme numéro 1 de la liste jobs.", "kill %1", None),
+    "Mémoire:place": ("df montre l'espace libre de tes disques ; -h écrit les tailles en Go/Mo lisibles.", "df -h", "Get-PSDrive"),
+    "Mémoire:ram": ("free montre la mémoire vive (RAM) utilisée et libre ; -h pour des tailles lisibles.", "free -h", None),
+    "Mémoire:poids": ("du mesure ce que pèse un dossier ; -s = juste le total, -h = taille lisible.",
+                      "du -sh ~/terrain_terminagotchi/nid", None),
+    "Mémoire:sac": ("ls sac liste le contenu du sac. Le | (tuyau) envoie ce résultat à wc -l, qui compte les lignes. "
+                    "Ensuite tu réponds avec echo suivi du nombre.", "ls sac | wc -l    puis    echo 7",
+                    "(ls sac).Count    puis    echo 7"),
+    "Sécurité:cage": ("touch crée un fichier vide (dans le dossier enclos, crée-le avant avec mkdir si besoin).",
+                      "mkdir -p enclos ; touch enclos/cage", "New-Item enclos/cage"),
+    "Sécurité:cachette": ("Un fichier dont le nom commence par un point est caché : ls ne le montre pas, ls -a si.",
+                          "touch enclos/.secret", "New-Item enclos/.secret"),
+    "Sécurité:prive": ("chmod change les droits d'un fichier. 600 = toi seul peux lire et écrire, personne d'autre.",
+                       "chmod 600 enclos/cage", "attrib +r enclos/cage"),
+    "Sécurité:empreinte": ("sha256sum calcule l'empreinte d'un fichier : une suite de lettres et de chiffres unique, qui change "
+                           "si le fichier change d'un seul caractère. Recopie les 8 premiers avec echo.",
+                           "sha256sum collier.txt    puis    echo 1a2b3c4d", "Get-FileHash collier.txt    puis    echo 1a2b3c4d"),
+    "Code:chant": ("echo affiche un texte. Le > envoie ce texte dans un fichier au lieu de l'écran.",
+                   "echo {nom} > chant.txt", "echo {nom} > chant.txt"),
+    "Code:script": ("Un script est un fichier de commandes. On l'écrit, puis chmod +x le rend exécutable (lançable avec ./tour.sh).",
+                    "echo 'echo hop' > tour.sh ; chmod +x tour.sh", "echo 'echo hop' > tour.ps1"),
+    "Code:compte": ("Une boucle for répète une commande pour chaque valeur. Tout ce qui est affiché finit dans le fichier grâce au >.",
+                    "for i in 1 2 3 4 5; do echo $i; done > compte.txt", "1..5 > compte.txt"),
+    "Matériel:machine": ("uname affiche des infos sur le système ; -m donne le type de processeur (x86_64, arm64…).",
+                         "uname -m", "systeminfo"),
+    "Matériel:coeurs": ("nproc donne le nombre de cœurs du processeur (combien de tâches il fait en même temps). "
+                        "Réponds ensuite avec echo.", "nproc    puis    echo 8", "$env:NUMBER_OF_PROCESSORS    puis    echo 8"),
+    "Matériel:disques": ("lsblk liste les disques et leurs partitions.", "lsblk", "Get-Disk"),
+    "Bugs:erreurs": ("grep cherche un mot dans un fichier et affiche les lignes qui le contiennent.",
+                     "grep ERROR bug.log", "Select-String ERROR bug.log"),
+    "Bugs:combien": ("grep -c compte les lignes qui contiennent le mot, au lieu de les afficher.",
+                     "grep -c ERROR bug.log    puis    echo 3", "(Select-String ERROR bug.log).Count    puis    echo 3"),
+    "Bugs:corrige": ("grep -v garde au contraire les lignes qui NE contiennent PAS le mot ; > les écrit dans un nouveau fichier.",
+                     "grep -v ERROR bug.log > corrige.log", "Select-String -NotMatch ERROR bug.log > corrige.log"),
+    "Nuage:nuage": ("mkdir crée un dossier.", "mkdir nuage", "mkdir nuage"),
+    "Nuage:photos": ("touch peut créer plusieurs fichiers d'un coup : il suffit de les écrire à la suite.",
+                     "touch nuage/photo1.jpg nuage/photo2.jpg nuage/photo3.jpg", "New-Item nuage/photo1.jpg, nuage/photo2.jpg, nuage/photo3.jpg"),
+    "Nuage:copie": ("cp -r copie un dossier entier avec tout ce qu'il contient (r = récursif).",
+                    "cp -r nuage nuage_copie", "Copy-Item -Recurse nuage nuage_copie"),
+    "Données:debut": ("head affiche seulement les premières lignes d'un fichier (10 par défaut).",
+                      "head croquettes.txt", "Get-Content croquettes.txt -Head 10"),
+    "Données:lignes": ("wc -l compte les lignes d'un fichier. Réponds ensuite avec echo.",
+                       "wc -l croquettes.txt    puis    echo 12", "(Get-Content croquettes.txt).Count    puis    echo 12"),
+    "Données:trie": ("sort trie les lignes par ordre alphabétique ; > écrit le résultat dans un fichier.",
+                     "sort croquettes.txt > trie.txt", "Get-Content croquettes.txt | Sort-Object > trie.txt"),
+    "Données:differentes": ("sort trie, uniq enlève les doublons qui se suivent, wc -l compte. Les | enchaînent les trois.",
+                            "sort croquettes.txt | uniq | wc -l    puis    echo 5",
+                            "(Get-Content croquettes.txt | Sort-Object -Unique).Count    puis    echo 5"),
+    "Crypto:lire": ("cat affiche le contenu d'un fichier.", "cat message.b64", "Get-Content message.b64"),
+    "Crypto:decode": ("Le base64 transforme un texte en lettres codées. base64 -d le décode (d = décoder).",
+                      "base64 -d message.b64    puis    echo motsecret", None),
+    "Crypto:empreinte": ("sha256sum calcule l'empreinte unique d'un fichier. Recopie les 8 premiers caractères avec echo.",
+                         "sha256sum collier.txt    puis    echo 1a2b3c4d", "Get-FileHash collier.txt    puis    echo 1a2b3c4d"),
+    "IA:bonjour": ("echo affiche le texte qu'on lui donne.", "echo bonjour {nom}", "echo bonjour {nom}"),
+    "IA:chat": ("grep -c compte les lignes qui contiennent un mot.", "grep -c chat croquettes.txt    puis    echo 2",
+                "(Select-String chat croquettes.txt).Count    puis    echo 2"),
+    "IA:frequent": ("uniq -c compte chaque mot (après sort), puis sort -n trie par nombre : le dernier est le plus fréquent.",
+                    "sort croquettes.txt | uniq -c | sort -n", None),
+    "Rétro:calendrier": ("cal affiche le calendrier du mois.", "cal", "Get-Date"),
+    "Rétro:record": ("sort -n trie des nombres du plus petit au plus grand ; tail -1 garde la dernière ligne (le plus grand).",
+                     "sort -n scores.txt | tail -1    puis    echo 9876", None),
+    "Rétro:top3": ("sort -nr trie du plus grand au plus petit (r = à l'envers), head -3 garde les 3 premiers, > écrit le fichier.",
+                   "sort -nr scores.txt | head -3 > top3.txt", None),
+    "Glitch:voir": ("cat affiche le contenu d'un fichier.", "cat corrompu.txt", "Get-Content corrompu.txt"),
+    "Glitch:repare": ("rev retourne chaque ligne (la dernière lettre devient la première) ; > écrit le résultat.",
+                      "rev corrompu.txt > repare.txt", None),
+    "Glitch:chuchote": ("tr remplace des lettres par d'autres : ici chaque majuscule (A-Z) par sa minuscule (a-z). "
+                        "Le < donne le fichier à lire.", "tr A-Z a-z < cri.txt > chuchote.txt", None),
+    "Système:qui": ("whoami (« qui suis-je ») affiche ton nom d'utilisateur.", "whoami", "whoami"),
+    "Système:systeme": ("uname -a affiche tout sur le système : son nom, sa version, le type de machine.", "uname -a", "systeminfo"),
+    "Système:alias": ("Un alias est un surnom : tu choisis un mot court qui lancera une commande plus longue. "
+                      "Ensuite, tape le surnom pour essayer !", "alias {nom_min}='echo GRRR'", "Set-Alias {nom_min} Get-Date"),
+    "Système:variable": ("Une variable d'environnement est une petite mémoire du terminal : un nom qui contient une valeur. "
+                         "export la crée ; echo $BESTIOLE la relit.", "export BESTIOLE={nom}", "$env:BESTIOLE = '{nom}'"),
+}
+
+
+def aide(fid, nom):
+    a = AIDES.get(fid)
+    if not a:
+        return None, None
+    expl, ex, ex_win = a
+    ex = ex_win if IS_WIN and ex_win else ex
+    f = {"nom": nom, "nom_min": nom.lower()}
+    return expl.format(**f), ex.format(**f)
