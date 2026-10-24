@@ -41,6 +41,8 @@ capture collection
 # ---- dressage d'un monstre (on force l'apparition d'Abyssor) puis animations de l'équipe
 adb shell am start -n fr.terminagotchi/.TerminalActivity --es essai_dressage abyssor
 capture dressage_rencontre 5
+adb shell dumpsys window | grep -E "mCurrentFocus|mFocusedApp" > captures/focus.txt
+adb shell dumpsys input_method | grep -E "mServedView|mCurFocusedWindow|mInputShown" >> captures/focus.txt
 tape "cat ~/terrain_terminagotchi/monstre_abyssor.txt" 2
 capture dressage_examine
 tape "find ~/terrain_terminagotchi -name repaire_abyssor" 2

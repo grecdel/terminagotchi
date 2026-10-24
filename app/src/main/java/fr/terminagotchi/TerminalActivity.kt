@@ -138,6 +138,7 @@ class TerminalActivity : Activity() {
             }
         }
         saisie.setOnKeyListener { _, code, ev ->
+            if (code == KeyEvent.KEYCODE_ENTER) android.util.Log.i("TG", "Entrée sur la saisie (texte : « ${saisie.text} »)")
             if (code == KeyEvent.KEYCODE_ENTER || code == KeyEvent.KEYCODE_NUMPAD_ENTER) {
                 if (ev.action == KeyEvent.ACTION_UP) valider()
                 true
@@ -689,6 +690,9 @@ class TerminalActivity : Activity() {
         } else if (Random.nextInt(12) == 0) {
             cligne = 1
             creature.setImageBitmap(Sprites.bitmap(jeu, 12, true))
+        }
+        if (frame % 12 == 0 && Dressage.actif(jeu)) {
+            android.util.Log.i("TG", "focus=${currentFocus?.javaClass?.simpleName}#${currentFocus?.id} saisie=${saisie.hasFocus()} enCours=$enCours")
         }
         if (frame % 12 == 0 && !enCours) {        // toutes les ~5 s : la faim, les bulles, les leçons « fichiers »
             jeu.tick()
