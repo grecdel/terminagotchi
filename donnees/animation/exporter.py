@@ -197,7 +197,10 @@ def exporter(rendus):
     cadre = cadre_commun([im for v in rendus.values() for im in v])
     rendus = {k: [im.crop(cadre) for im in v] for k, v in rendus.items()}
     # terminal : chaque stade est cadré sur lui-même (un enfant tout petit serait illisible en 48 px)
-    cadres = {s: cadre_commun([im for (s2, _), v in bruts.items() if s2 == s for im in v]) for s in ORDRE}
+    def elargi(b, f=0.18):
+        m = int((b[2] - b[0]) * f)
+        return (b[0] - m, b[1] - m, b[2] + m, b[3] + m)
+    cadres = {s: elargi(cadre_commun(bruts[(s, "statique")])) for s in ORDRE}
 
     pc = {"espece": "Abyssor", "taille": TERM, "ips": 8, "format": "zlib", "stades": ORDRE, "anims": {}}
     poids = 0
