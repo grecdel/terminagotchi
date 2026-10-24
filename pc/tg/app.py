@@ -7,6 +7,7 @@ import time
 import subprocess
 
 from . import compagnon, core, explo, lecons, lexique, notif, recense, registre, sprites
+from .bestiaire import arc_en_ciel
 
 SYNC_AUTO = False   # synchro en fond, seulement pour les modes qui restent ouverts
 from .plateforme import (BOLD, DIM, DISTRO, IS_WIN, OS_NAMES, OSK, RESET, Clavier, clear, fg, piege)
@@ -28,7 +29,7 @@ def render(state, frame, interactif):
     stats = "  ".join(f"{v['short']} {state['stats'][v['stat']]}" for v in core.CATEGORIES.values())
     nb_sk = len(state["skills"])
     right = [
-        f"{BOLD}{state['name']}{RESET} · {forme} · niv. {lvl}",
+        (arc_en_ciel(state["name"] + " ✨") if state.get("shiny") else f"{BOLD}{state['name']}{RESET}") + f" · {forme} · niv. {lvl}",
         f"{DIM}caractère : {state['trait']}{RESET}",
         f"XP   {sprites.bar(state['xp'] - lo, hi - lo)} {state['xp']}/{hi}",
         f"Faim {sprites.bar(state['hunger'], 100)} {core.mood(state['hunger'])}",
@@ -375,6 +376,9 @@ AIDE = """Terminagotchi — utilisation :
   tg lexique                   toutes les commandes, par chapitres
   tg compte                    recensement en ligne : compte creer Pseudo · compte code · compte lier CODE
   tg sync                      synchronise ta créature (PC ↔ téléphone)
+  tg site [bestiaire|captures] ouvre le site du recensement (ton profil par défaut)
+  tg collection · tg bestiaire <nom>   tes bestioles · la fiche d'une espèce
+  tg compte partage on|off     montrer (ou non) tes captures dans la galerie du site
   tg drapeau TG{…}             valide un drapeau du CTF web
   Options : --une-fois (affiche et quitte) · --defi (défi immédiat)"""
 
@@ -400,9 +404,15 @@ def main():
         faits = compagnon.desinstaller()
         print("Retiré de :\n  " + "\n  ".join(faits) if faits else "Rien à retirer.")
         return
-    if mode in ("compte", "sync", "drapeau", "lexique"):
+    if mode in ("compte", "sync", "drapeau", "lexique", "site", "bestiaire", "collection"):
         creer_si_besoin()
-        if mode == "compte":
+        if mode == "site":
+            print(recense.site(args[1:]))
+        elif mode == "bestiaire":
+            print("\n".join(explo.fiche(core.load(), " ".join(args[1:]))))
+        elif mode == "collection":
+            print("\n".join(explo.ecran_collection(core.load())))
+        elif mode == "compte":
             print(recense.commande(args[1:]))
         elif mode == "sync":
             print(recense.synchroniser(forcer=True) or "Rien à synchroniser.")

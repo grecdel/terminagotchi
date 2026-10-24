@@ -75,7 +75,10 @@ def _charge(state):
         "appareil": APPAREIL, "deltas": deltas,
         "vus": list(state["seen"])[-3000:], "skills": list(state["skills"]),
         "collection": state.get("collection", {}), "records": state.get("records", {}),
+        "captures": state.get("captures", [])[-3000:],
+        "partage": c.get("partage", {"actif": False, "date": 0}),
         "valeurs": {"nom": state["name"], "nomDate": c.get("nomDate", 0), "trait": state.get("trait", ""),
+                    "shiny": bool(state.get("shiny")),
                     "forme": state.get("branch"), "faim": state["hunger"],
                     "faimDate": int(state.get("repas_t", 0) * 1000)},
     }
@@ -110,6 +113,14 @@ def _appliquer(state, srv, snap):
         state["trait"] = srv["trait"]
     if srv.get("forme"):
         state["branch"] = srv["forme"]
+    connus = {x.get("id") for x in state.setdefault("captures", [])}
+    for ind in srv.get("captures", []):
+        if ind.get("id") not in connus:
+            state["captures"].append(ind)
+    if "partage" in srv and srv["partage"].get("date", 0) >= c.get("partage", {}).get("date", 0):
+        c["partage"] = srv["partage"]
+    if "shiny" in srv:
+        state["shiny"] = bool(srv["shiny"])
     if srv.get("faimDate", 0) > state.get("repas_t", 0) * 1000:
         state["hunger"] = float(srv.get("faim", state["hunger"]))
         state["repas_t"] = srv["faimDate"] / 1000
@@ -238,6 +249,18 @@ def commande(args):
             return "⚠ " + r.get("erreur", "impossible d'obtenir un code")
         return (f"🔑 Code de liaison : {r['code']}  (valable 10 minutes)\n"
                 f"Sur ton téléphone, dans le terminal de l'appli : compte lier {r['code']}")
+    if action == "partage":
+        choix = (args[1].lower() if len(args) > 1 else "")
+        if choix not in ("on", "off"):
+            etat = "activé" if c.get("partage", {}).get("actif") else "désactivé"
+            return (f"Partage de tes captures dans la galerie publique : {etat}.\n"
+                    "  compte partage on   → tes bestioles apparaissent sur le site (avec ton pseudo)\n"
+                    "  compte partage off  → elles restent privées")
+        actif = choix == "on"
+        core.modifier(lambda s: compte(s).update(partage={"actif": actif, "date": int(time.time() * 1000)}))
+        msg = synchroniser(forcer=True) or ""
+        return ("✔ Tes captures seront visibles dans la galerie : " + f"{url}/captures" if actif
+                else "✔ Tes captures ne sont plus visibles dans la galerie.") + ("\n" + msg if msg else "")
     if action == "oublier":
         core.modifier(lambda s: s.__setitem__("compte", {k: v for k, v in compte(s).items() if k == "serveur"}))
         return "Ce PC n'est plus relié au compte (le compte, lui, existe toujours)."
@@ -247,6 +270,29 @@ def commande(args):
             f"Profil public : {url}/joueur/{c['pseudo']}\n"
             f"CTF web (badges vérifiés) : {url}/ctf\n"
             "  compte code   → relier un autre appareil\n  sync          → synchroniser maintenant")
+
+
+def site(args):
+    """tg site [bestiaire|captures|classement] : ouvre le site du recensement."""
+    st = core.load()
+    c = compte(st) if st else {}
+    url = serveur(st) if st else ""
+    if not url:
+        return "Le site du recensement n'est pas joignable pour l'instant."
+    page = (args[0].lower() if args else "")
+    chemins = {"bestiaire": "/bestiaire", "captures": "/captures", "classement": "/classement", "ctf": "/ctf"}
+    if page in chemins:
+        lien = url + chemins[page]
+    elif c.get("pseudo"):
+        lien = f"{url}/joueur/{c['pseudo']}"
+    else:
+        lien = url
+    try:
+        import webbrowser
+        ouvert = webbrowser.open(lien)
+    except Exception:
+        ouvert = False
+    return f"🌍 {lien}" + ("  (ouvert dans ton navigateur)" if ouvert else "")
 
 
 def drapeau(proposition):

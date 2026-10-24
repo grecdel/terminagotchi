@@ -25,6 +25,17 @@ for (const [pseudo, nom, xp, forme] of demo) {
   await appel("POST", "/api/sync", { appareil: "android", deltas: { xp, total: Math.round(xp / 3), stats: { [forme || "Endurance"]: Math.round(xp / 20), Endurance: 8 } },
     vus: ["ls", "cd", "pwd", "mkdir"], skills: ["Boussole", "Bâtisseur", "Inspecteur"], collection: { Glitchou: 2, Kernelou: 1 },
     valeurs: { nom, nomDate: 1, trait: "curieux", forme } }, cle);
+  {
+    const B = (await import("../src/bestiaire.js")).default;
+    const caps = [];
+    for (let i = 0; i < 9; i++) {
+      const e = B.especes[(i * 37 + pseudo.length * 11) % 150];
+      caps.push({ id: (pseudo.length.toString(16) + "c0ffee" + i).padEnd(10, "0"), espece: e.nom, shiny: i === 2 && pseudo !== "Momo",
+        date: 1761300000000 + i * 3600000, marque: B.marques[(i * 5 + pseudo.length) % B.marques.length],
+        humeur: B.humeurs[i % B.humeurs.length], taille: 6 + i, potentiel: 40 + ((i * 17) % 60), stats: e.stats, zone: e.zone });
+    }
+    await appel("POST", "/api/sync", { appareil: "android", captures: caps, partage: { actif: pseudo !== "Zed", date: 1 } }, cle);
+  }
   if (pseudo === "Grec") {
     const { code } = await appel("POST", "/api/code", {}, cle);
     const pc = await appel("POST", "/api/lier", { code, appareil: "pc" });

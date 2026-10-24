@@ -1,108 +1,97 @@
 """Exploration : les zones sont de vrais dossiers du terrain de jeu.
-Des bestioles sauvages s'y cachent (fichiers cachés). Pour les capturer,
-il faut les trouver (ls -a), les lire (cat) puis les ramener au nid (mv).
+
+Des bestioles sauvages (150 espèces, voir bestiaire.py) s'y cachent en fichiers cachés.
+Chaque famille a son habitat (archives, forêt, grotte…) ; plus elle est rare, plus elle se
+cache profond (recoin → cachette → sanctuaire). Pour la capturer : la trouver (ls -a),
+la lire (cat), puis la ramener au nid (mv). Chaque capture est un individu unique.
 """
 import random
 
+from . import bestiaire as B
 from . import core
-from .plateforme import DIM, IS_WIN, RESET, fg, piege
+from .plateforme import BOLD, DIM, IS_WIN, RESET, fg, piege
 
 T = core.TERRAIN
-
-ESPECES = [
-    # nom, rareté, couleur, description
-    ("Glitchou",    "commune",    213, "Petit bug grésillant qui adore les fichiers temporaires."),
-    ("Octobit",     "commune",    39,  "Pieuvre à 8 bits, range tout par octets."),
-    ("Pixelard",    "commune",    221, "Raconte des blagues en 16 couleurs."),
-    ("Segfaulte",   "commune",    203, "Se plante partout, mais toujours avec le sourire."),
-    ("Kernelou",    "rare",       78,  "Vit au cœur du système, d'un calme absolu."),
-    ("Daemonet",    "rare",       141, "Travaille en arrière-plan sans jamais dormir."),
-    ("Bugzilla",    "rare",       160, "Énorme, mais personne n'arrive à le reproduire."),
-    ("Cronosaure",  "légendaire", 51,  "N'apparaît qu'à heure fixe, réglé comme une horloge."),
-    ("Rootkitsune", "légendaire", 208, "Renarde à neuf queues, maîtresse des droits root."),
-]
-RARETE = {"commune": (70, 15), "rare": (25, 40), "légendaire": (5, 100)}   # (chance %, XP)
-ZONES = {
-    "commune":    ["foret", "marais"],
-    "rare":       ["grotte", "marais/bourbier"],
-    "légendaire": ["grotte/profondeurs/abysses"],
-}
-NOM_ZONE = {"foret": "la forêt", "marais": "le marais", "grotte": "la grotte",
-            "marais/bourbier": "le bourbier du marais", "grotte/profondeurs/abysses": "les abysses de la grotte"}
 MAX_SAUVAGES = 3
 
 
 def le(nom):
-    return ("l'" if nom[0] in "AEIOUÉ" else "le ") + nom
+    return ("l'" if nom[0] in "AEIOUÉÈ" else "le ") + nom
+
+
+def lieu(zone):
+    base = zone.split("/")[0]
+    nom = B.HABITATS.get(base, base)
+    prof = zone.count("/")
+    return nom + ["", " (un recoin)", " (une cachette)", " (le sanctuaire)"][min(prof, 3)]
 
 
 def debloque(state):
     return "Bâtisseur" in state["skills"] and (T / "nid").is_dir()
 
 
-def _espece(nom):
-    return next(e for e in ESPECES if e[0] == nom)
-
-
 def spawn(state):
     if len(state["sauvages"]) >= MAX_SAUVAGES:
         return
-    rarete = random.choices(list(RARETE), [v[0] for v in RARETE.values()])[0]
-    nom = random.choice([e for e in ESPECES if e[1] == rarete])[0]
-    zone = random.choice(ZONES[rarete])
+    e, shiny = B.tirer()
+    zone = e["zone"]
     dossier = T / zone
     dossier.mkdir(parents=True, exist_ok=True)
     state["explo_n"] += 1
-    fichier = f".bestiole_{nom.lower()}_{state['explo_n']}"
+    fichier = f".bestiole_{e['id']}_{state['explo_n']}"
     retour = "../" * (zone.count("/") + 1) + "nid/"
-    desc = _espece(nom)[3]
+    eclat = "\n✨ Elle brille étrangement… une bestiole shiny ?!\n" if shiny else ""
     (dossier / fichier).write_text(
-        f"Un {nom} sauvage se cache ici ! ({rarete})\n"
-        f"« {desc} »\n\n"
-        f"Pour le capturer, ramène-le dans le nid de {state['name']} :\n"
+        f"#{e['numero']:03d} {e['nom']} sauvage se cache ici ! ({e['rarete']}, famille {e['famille']})\n"
+        f"« {e['description']} »{eclat}\n"
+        f"Pour la capturer, ramène-la dans le nid de {state['name']} :\n"
         f"   {piege(f'mv {fichier} {retour}')}\n\n"
-        f"(Tape la commande toi-même : un copier-coller le ferait fuir !)\n",
+        f"(Tape la commande toi-même : un copier-coller la ferait fuir !)\n",
         encoding="utf-8")
-    state["sauvages"].append({"f": f"{zone}/{fichier}", "e": nom, "zone": zone})
+    state["sauvages"].append({"f": f"{zone}/{fichier}", "e": e["nom"], "zone": zone, "shiny": shiny})
     voir = piege("dir -Force" if IS_WIN else "ls -a")
-    core.log(state, f"🐾 Quelque chose bouge dans {NOM_ZONE[zone]}…")
-    core.say(state, f"Je sens une présence dans {NOM_ZONE[zone]} ({zone}) ! "
+    core.log(state, f"🐾 Quelque chose bouge dans {lieu(zone)}…")
+    core.say(state, f"Je sens une présence dans {lieu(zone)} ({zone}) ! "
                     f"Les bestioles se cachent : essaie « {voir} ».", 15)
 
 
 def check(state):
     nid = T / "nid"
-    # captures : bestiole déposée dans le nid
     if nid.is_dir():
         for f in list(nid.glob(".bestiole_*")):
             sauvage = next((s for s in state["sauvages"] if s["f"].endswith("/" + f.name)), None)
             if not sauvage:
                 continue
-            nom = sauvage["e"]
-            rarete = _espece(nom)[1]
+            e = B.espece(sauvage["e"])
             state["sauvages"].remove(sauvage)
-            state["collection"][nom] = state["collection"].get(nom, 0) + 1
             try:
                 f.unlink()
             except OSError:
                 pass
-            core.log(state, f"🎯 {nom} capturé ! ({rarete})")
-            core.say(state, f"Bienvenue au nid, {nom} ! Ta collection grandit ([c] pour la voir).", 12)
-            state["stats"][random.choice(list(state["stats"]))] += 2
-            core.add_xp(state, RARETE[rarete][1])
-    # bestioles déplacées ailleurs ou supprimées
+            if e is None:
+                continue
+            shiny = sauvage.get("shiny", False)
+            ind = B.individu(e, shiny, sauvage.get("zone", ""))
+            state["captures"].append(ind)
+            state["collection"][e["nom"]] = state["collection"].get(e["nom"], 0) + 1
+            titre = e["nom"] + (" ✨ SHINY" if shiny else "")
+            core.log(state, f"🎯 {titre} capturé ! ({e['rarete']})")
+            core.say(state, f"Bienvenue au nid, {e['nom']}{' ✨' if shiny else ''} ! Signe particulier : "
+                            f"{ind['marque']}. ([c] pour ta collection)", 14)
+            st = e.get("stat") or random.choice(list(state["stats"]))
+            state["stats"][st] = state["stats"].get(st, 0) + 2
+            core.add_xp(state, B.XP_RARETE[e["rarete"]] * (3 if shiny else 1))
     for s in list(state["sauvages"]):
         p = T / s["f"]
         if p.exists():
             continue
-        nom_f = p.name
-        ailleurs = [x for x in T.rglob(nom_f) if x.parent != nid] if T.is_dir() else []
+        ailleurs = [x for x in T.rglob(p.name) if x.parent != nid] if T.is_dir() else []
         if ailleurs:
             s["f"] = ailleurs[0].relative_to(T).as_posix()
             s["zone"] = ailleurs[0].parent.relative_to(T).as_posix()
         else:
             state["sauvages"].remove(s)
-            core.log(state, f"💨 {le(s['e'])[0].upper() + le(s['e'])[1:]} s'est enfui (fichier effacé ?)")
+            core.log(state, f"💨 {le(s['e'])[0].upper() + le(s['e'])[1:]} s'est enfuie (fichier effacé ?)")
             core.say(state, f"Oh non, {le(s['e'])} a disparu… un rm de trop ?", 10)
 
 
@@ -118,25 +107,86 @@ def tick(state, spontane, proba=1.5 / 480):
     check(state)
 
 
+def _carte_individu(ind):
+    e = B.espece(ind["espece"])
+    if e is None:
+        return []
+    sp = B.dessin(e, ind.get("shiny"))
+    infos = [
+        f"{B.nom_affiche(e, ind.get('shiny'))} {DIM}#{e['numero']:03d} · {e['rarete']} · {e['famille']}{RESET}",
+        f"{DIM}signe particulier :{RESET} {ind.get('marque', '?')}",
+        f"{DIM}humeur {ind.get('humeur', '?')} · {ind.get('taille', '?')} cm · potentiel {ind.get('potentiel', '?')} %{RESET}",
+    ]
+    hauteur = max(len(sp), len(infos))
+    w = len(e["sprite"][0])
+    lignes = []
+    for i in range(hauteur):
+        gauche = sp[i] if i < len(sp) else " " * w
+        droite = infos[i] if i < len(infos) else ""
+        lignes.append("  " + gauche + "  " + droite)
+    return lignes
+
+
 def ecran_collection(state):
-    from .sprites import bestiole
-    lignes = [f" {fg(213)}── Collection de {state['name']} ──{RESET}", ""]
-    total = sum(state["collection"].values())
-    for i, (nom, rarete, coul, desc) in enumerate(ESPECES):
-        n = state["collection"].get(nom, 0)
-        if n:
-            sp = bestiole(i, coul)
-            lignes.append(f"  {sp[0]}  {fg(coul)}{nom}{RESET} ×{n}  {DIM}{rarete}{RESET}")
-            lignes.append(f"  {sp[1]}  {DIM}{desc}{RESET}")
-            lignes.append(f"  {sp[2]}")
-        else:
-            lignes.append(f"  {DIM}········  ??? ({rarete}){RESET}")
+    lignes = [f" {fg(213)}── 🐾 Collection de {state['name']} ──{RESET}", ""]
+    caps = state.get("captures", [])
+    especes_vues = {n for n, k in state["collection"].items() if k}
+    par_rarete = {}
+    for e in B.especes():
+        r = e["rarete"]
+        vu, tot = par_rarete.get(r, (0, 0))
+        par_rarete[r] = (vu + (e["nom"] in especes_vues), tot + 1)
+    lignes.append(" Espèces découvertes : " + BOLD + f"{len(especes_vues)}/150" + RESET + "   " + "  ".join(
+        f"{B.fg24(B.COULEUR_RARETE[r])}{r} {v}/{t}{RESET}" for r, (v, t) in par_rarete.items()))
+    shinies = sum(1 for c in caps if c.get("shiny"))
+    lignes.append(f" Captures : {len(caps)}" + (f" · dont {B.arc_en_ciel(f'{shinies} shiny')}" if shinies else ""))
     lignes.append("")
-    lignes.append(f" Espèces : {len(state['collection'])}/{len(ESPECES)} · captures : {total}")
+    if caps:
+        lignes.append(f" {DIM}Tes dernières captures :{RESET}")
+        for ind in caps[-6:][::-1]:
+            lignes += _carte_individu(ind)
+            lignes.append("")
+    else:
+        lignes.append(f" {DIM}Aucune capture pour l'instant.{RESET}")
     if not state["explo"]:
         lignes.append(f" {DIM}L'exploration s'ouvre avec la leçon « Construire mon nid ».{RESET}")
     else:
-        zones = sorted({NOM_ZONE.get(s['zone'], s['zone']) for s in state["sauvages"]})
+        zones = sorted({lieu(s["zone"]) for s in state["sauvages"]})
         lignes.append(" Présences signalées : " + (", ".join(zones) if zones else "aucune pour l'instant"))
-        lignes.append(f" {DIM}Zones : dossiers de ~/terrain_terminagotchi · indice : {piege('cat')} sur une bestiole{RESET}")
+        lignes.append(f" {DIM}Fiche d'une espèce : tg bestiaire <nom> · tout le bestiaire : tg site bestiaire{RESET}")
+    return lignes
+
+
+def fiche(state, nom):
+    """tg bestiaire <nom> : fiche détaillée (complète seulement si tu l'as déjà capturée)."""
+    if not nom:
+        vues = sorted((B.espece(n) for n, k in state["collection"].items() if k and B.espece(n)),
+                      key=lambda e: e["numero"])
+        if not vues:
+            return [" Tu n'as encore capturé aucune bestiole. Exemple : tg bestiaire Glitchou"]
+        return [" Tes espèces : " + ", ".join(f"#{e['numero']:03d} {e['nom']}" for e in vues),
+                f" {DIM}Fiche : tg bestiaire <nom>{RESET}"]
+    e = B.espece(nom)
+    if e is None:
+        return [f" Aucune espèce ne s'appelle « {nom} ». Les 150 sont sur le site : tg site bestiaire"]
+    connue = state["collection"].get(e["nom"], 0) > 0
+    entete = f" {BOLD}#{e['numero']:03d}{RESET} {B.nom_affiche(e) if connue else '???'}  " \
+             f"{B.fg24(B.COULEUR_RARETE[e['rarete']])}{e['rarete']}{RESET} · {e['icone']} {e['famille']}"
+    lignes = [entete, ""]
+    if not connue:
+        lignes += [f"  {DIM}Tu ne l'as pas encore capturée.{RESET}",
+                   f"  Habitat : {lieu(e['zone'])}  ({e['zone']})",
+                   f"  Elle se montre {e['frequence']}, attirée par la commande « {e['attiree_par']} »."]
+        return lignes
+    sp = B.dessin(e)
+    texte = [e["description"], e["comportement"],
+             f"Capacité : {e['capacite']} · stat favorite : {e['stat']}",
+             f"Taille ~{e['taille_cm']} cm · poids ~{e['poids_ko']} Ko",
+             "  ".join(f"{k} {v}" for k, v in e["stats"].items()),
+             f"Habitat : {lieu(e['zone'])} · attirée par « {e['attiree_par']} »",
+             f"Tu en as capturé {state['collection'][e['nom']]}."]
+    for i in range(max(len(sp), len(texte))):
+        g = sp[i] if i < len(sp) else " " * len(e["sprite"][0])
+        d = texte[i] if i < len(texte) else ""
+        lignes.append("  " + g + "  " + d)
     return lignes

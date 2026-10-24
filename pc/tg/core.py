@@ -216,7 +216,7 @@ def dominant(state):
 
 def new_state(name):
     now = time.time()
-    return {"name": name, "born": now, "last_tick": now, "xp": 0, "hunger": 80.0, "total": 0,
+    return {"name": name, "shiny": random.randrange(64) == 0, "born": now, "last_tick": now, "xp": 0, "hunger": 80.0, "total": 0,
             "stats": {v["stat"]: 0 for v in CATEGORIES.values()}, "seen": [], "log": [],
             "offsets": {}, "version": VERSION}
 
@@ -226,7 +226,7 @@ def migrate(state):
                 "bubble": None, "defi": None, "records": {}, "offsets": {}, "arbre": {},
                 "branche": None, "cherche": {}, "sauvages": [], "collection": {}, "explo": False,
                 "explo_n": 0, "annonce": None, "colles": 0, "notifs": [], "nlog": 0,
-                "prompt_vu": 0, "config": {}, "compte": {}, "repas_t": 0}
+                "prompt_vu": 0, "config": {}, "compte": {}, "repas_t": 0, "captures": [], "shiny": False}
     for k, v in defaults.items():
         state.setdefault(k, v)
     if stage(level(state["xp"])) >= 2 and not state.get("branch"):

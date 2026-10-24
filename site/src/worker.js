@@ -4,13 +4,20 @@
  * et les pages du site. Données dans Cloudflare D1 (SQLite).
  */
 
+import BESTIAIRE from "./bestiaire.js";
+
 const DEPOT = "https://github.com/grecdel/terminagotchi-android";
 const STATS = ["Intelligence", "Agilité", "Force", "Endurance"];
 const COURT = { Intelligence: "INT", "Agilité": "AGI", Force: "FOR", Endurance: "END" };
 const COULEUR = { Intelligence: 39, "Agilité": 78, Force: 203, Endurance: 221 };
 const STADES = ["Œuf", "Bébé", "Ado", "Adulte"];
 const FORMES = { Intelligence: "Hacker", Force: "Titan", "Agilité": "Éclair", Endurance: "Carapace" };
-const ESPECES = ["Glitchou", "Octobit", "Pixelard", "Segfaulte", "Kernelou", "Daemonet", "Bugzilla", "Cronosaure", "Rootkitsune"];
+const ESPECES = BESTIAIRE.especes.map((e) => e.nom);
+const PAR_NOM = Object.fromEntries(BESTIAIRE.especes.map((e) => [e.nom, e]));
+const PAR_ID = Object.fromEntries(BESTIAIRE.especes.map((e) => [e.id, e]));
+const MARQUES = new Set(BESTIAIRE.marques);
+const HUMEURS = new Set(BESTIAIRE.humeurs);
+const COULEUR_RARETE = { commune: "#b0b0c0", "peu commune": "#5fd787", rare: "#5fafff", "légendaire": "#ffaf00" };
 const APPAREILS = ["android", "pc"];
 
 // ====================================================================== outils
@@ -167,7 +174,28 @@ function fusionner(etat, envoi, appareil) {
       e.records[k] = Math.round(t * 10) / 10;
     }
   }
+  // captures individuelles : union par identifiant, chaque champ vérifié
+  const connues = new Set((e.captures || []).map((c) => c.id));
+  e.captures = Array.isArray(e.captures) ? e.captures : [];
+  for (const c of Array.isArray(envoi.captures) ? envoi.captures : []) {
+    if (e.captures.length >= 3000) break;
+    const ok = c && typeof c.id === "string" && /^[0-9a-f]{6,20}$/.test(c.id) && !connues.has(c.id)
+      && PAR_NOM[c.espece] && MARQUES.has(c.marque) && HUMEURS.has(c.humeur);
+    if (!ok) continue;
+    const st = {};
+    for (const k of ["PV", "ATK", "DEF", "VIT", "INT"]) st[k] = entier(c.stats?.[k], 200);
+    e.captures.push({
+      id: c.id, espece: c.espece, shiny: c.shiny === true, date: entier(c.date, 4e12), marque: c.marque,
+      humeur: c.humeur, taille: Math.max(0, Math.min(1000, Number(c.taille) || 0)), potentiel: entier(c.potentiel, 100),
+      stats: st, zone: typeof c.zone === "string" && /^[a-z/]{0,60}$/.test(c.zone) ? c.zone : "",
+    });
+    connues.add(c.id);
+  }
+  if (envoi.partage && typeof envoi.partage === "object" && (Number(envoi.partage.date) || 0) >= (e.partage?.date || 0)) {
+    e.partage = { actif: envoi.partage.actif === true, date: Number(envoi.partage.date) || 0 };
+  }
   const v = envoi.valeurs || {};
+  if (e.shiny === undefined && typeof v.shiny === "boolean") e.shiny = v.shiny;
   // le nom : celui du compte reste, sauf renommage plus récent (un appareil fraîchement relié ne l'écrase pas)
   if (typeof v.nom === "string" && v.nom.trim() && (!e.nom || (Number(v.nomDate) || 0) > e.nomDate)) {
     e.nom = v.nom.trim().slice(0, 16);
@@ -315,6 +343,7 @@ async function profilPublic(env, pseudo) {
     commandes: e.total || 0, gouts: (e.vus || []).length, competences: e.skills || [],
     collection: e.collection || {}, records: e.records || {},
     appareils: Object.keys(e.appareils || {}), inscrit: new Date(j.cree).toISOString(),
+    shiny: e.shiny === true, captures: (e.captures || []).length, partage: e.partage?.actif === true,
     badges: b.results.map((x) => ({ ...x, lien: "/badge/" + x.id })),
   };
 }
@@ -402,7 +431,9 @@ function x256(n) {
   return "#" + g + g + g;
 }
 
-function svgCreature(niveau, forme, stats, taille = 8) {
+const SHINY_JOUEUR = { 39: 220, 78: 51, 203: 129, 221: 255, 141: 219 };
+
+function svgCreature(niveau, forme, stats, taille = 8, shiny = false) {
   const st = stadeDe(niveau);
   const dominant = Object.values(stats || {}).some((v) => v > 0)
     ? Object.entries(stats).sort((a, b) => b[1] - a[1])[0][0] : null;
@@ -411,7 +442,8 @@ function svgCreature(niveau, forme, stats, taille = 8) {
   const rows = st === 0 ? SPRITES.oeuf : st === 1 ? SPRITES.bebe
     : st === 2 ? [...SPRITES.adoTete[f], ...over(SPRITES.ado, SPRITES.adoCorps[f])]
       : [...SPRITES.adulteTete[f], ...over(SPRITES.adulte, SPRITES.adulteCorps[f])];
-  const corps = st >= 2 && forme ? COULEUR[forme] : dominant ? COULEUR[dominant] : 141;
+  let corps = st >= 2 && forme ? COULEUR[forme] : dominant ? COULEUR[dominant] : 141;
+  if (shiny) corps = SHINY_JOUEUR[corps] ?? 219;
   const pal = { b: corps, e: 16, k: 211, m: 52, h: 180, w: 230, s: 180, c: 136, a: 250, l: 51 };
   const w = Math.max(...rows.map((r) => r.length));
   let rects = "";
@@ -449,6 +481,22 @@ code,pre{background:#11111b;border-radius:8px}
 code{padding:2px 6px}
 pre{padding:12px;overflow-x:auto}
 .creature{image-rendering:pixelated;max-width:100%;height:auto}
+.rgb{background:linear-gradient(90deg,#ff5f5f,#ffd75f,#5fd787,#5fd7ff,#af87ff,#ff87ff,#ff5f5f);background-size:200% auto;
+ -webkit-background-clip:text;background-clip:text;color:transparent;animation:rgb 4s linear infinite;font-weight:bold}
+@keyframes rgb{to{background-position:200% center}}
+@media (prefers-reduced-motion:reduce){.rgb{animation:none}}
+.grille-b{display:grid;gap:10px;grid-template-columns:repeat(auto-fill,minmax(150px,1fr))}
+.bestiole{background:var(--carte);border:1px solid var(--bord);border-radius:14px;padding:10px;text-align:center;text-decoration:none;color:var(--texte);display:block}
+.bestiole:hover{border-color:#5f5fd7}
+.bestiole svg{width:96px;height:96px}
+.bestiole .num{color:var(--doux);font-size:12px}
+.rar{font-size:12px;border-radius:999px;padding:1px 8px;border:1px solid currentColor;display:inline-block;margin-top:4px}
+.capture{text-align:left}
+.capture.shiny{border-color:#ffd75f;box-shadow:0 0 18px #ffd75f44}
+.capture .marque{font-size:14px;margin:6px 0}
+.filtres a{margin-right:10px;font-size:14px}
+.stats-b{display:grid;grid-template-columns:repeat(5,1fr);gap:6px;text-align:center}
+.stats-b div{background:#26263a;border-radius:8px;padding:6px 0}
 @media (max-width:600px){h1{font-size:22px}td,th{padding:6px 3px;font-size:14px}}
 `;
 
@@ -457,7 +505,7 @@ function page(titre, contenu, description = "Terminagotchi : la créature qui se
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>${echapper(titre)} · Terminagotchi</title><meta name="description" content="${echapper(description)}">
 <style>${CSS}</style></head><body>
-<header><nav><a class="logo" href="/">▞ Terminagotchi</a><a href="/classement">Classement</a><a href="/ctf">CTF web</a><a href="/#telecharger">Télécharger</a></nav></header>
+<header><nav><a class="logo" href="/">▞ Terminagotchi</a><a href="/classement">Classement</a><a href="/bestiaire">Bestiaire</a><a href="/captures">Captures</a><a href="/ctf">CTF web</a><a href="/#telecharger">Télécharger</a></nav></header>
 <main>${contenu}</main></body></html>`, { status: statut, headers: { "content-type": "text/html; charset=utf-8" } });
 }
 
@@ -525,17 +573,20 @@ async function pageJoueur(env, pseudo) {
   const stats = STATS.map((s) => `<div>${COURT[s]} <b>${p.stats[s]}</b></div>`).join("");
   const badges = p.badges.map((b) => `<a class="badge verifie" href="${b.lien}">✔ ${echapper(b.titre)}</a>`).join("")
     || `<span class="doux">Aucun badge vérifié pour l'instant.</span>`;
-  const coll = ESPECES.map((e) => (p.collection[e] ? `<span class="badge">🐾 ${e} ×${p.collection[e]}</span>` : "")).join("")
-    || `<span class="doux">Aucune bestiole capturée.</span>`;
+  const coll = BESTIAIRE.especes.filter((e) => p.collection[e.nom]).map((e) =>
+    `<a class="bestiole" href="/bestiaire/${e.id}">${svgBestiole(e)}<div class="num">#${String(e.numero).padStart(3, "0")}</div>
+     <div>${echapper(e.nom)} ×${p.collection[e.nom]}</div></a>`).join("");
+  const collHtml = coll ? `<p class="doux">${Object.keys(p.collection).filter((k) => p.collection[k]).length}/150 espèces</p><div class="grille-b">${coll}</div>`
+    : `<span class="doux">Aucune bestiole capturée.</span>`;
   const comp = p.competences.map((c) => `<span class="badge">◇ ${echapper(c)}</span>`).join("")
     || `<span class="doux">Aucune.</span>`;
   const forme = p.forme && p.niveau >= 5 ? FORMES[p.forme] : "";
   const appareils = p.appareils.map((a) => (a === "android" ? "📱 téléphone" : "💻 PC")).join(" + ") || "—";
   return page(p.pseudo, `
 <section class="hero">
-  <div class="carte">${svgCreature(p.niveau, p.forme, p.stats, 10)}</div>
+  <div class="carte">${svgCreature(p.niveau, p.forme, p.stats, 10, p.shiny)}</div>
   <div style="flex:1;min-width:260px">
-    <h1>${echapper(p.nom)}</h1>
+    <h1>${p.shiny ? `<span class="rgb">${echapper(p.nom)} ✨</span>` : echapper(p.nom)}</h1>
     <p class="doux">créature de <b>${echapper(p.pseudo)}</b> · ${echapper(p.stade)} ${echapper(forme)} · caractère ${echapper(p.trait || "?")}</p>
     <p>Niveau <b>${p.niveau}</b> · ${p.xp} XP · <b>#${p.rang}</b> au classement</p>
     <div class="barre"><i style="width:${pct}%"></i></div>
@@ -545,7 +596,8 @@ async function pageJoueur(env, pseudo) {
 </section>
 <h2>Badges vérifiés par le serveur</h2><div>${badges}</div>
 <h2>Compétences <span class="doux" style="font-size:14px">(déclarées par l'appli)</span></h2><div>${comp}</div>
-<h2>Collection</h2><div>${coll}</div>
+<h2>Collection</h2>${collHtml}
+${p.partage ? `<p><a href="/captures?joueur=${encodeURIComponent(p.pseudo)}">Voir ses captures uniques →</a></p>` : ""}
 <p class="doux" style="margin-top:32px">Inscrit le ${new Date(p.inscrit).toLocaleDateString("fr-FR")} ·
 <a href="/api/profil/${encodeURIComponent(p.pseudo)}">données publiques (JSON)</a></p>`, `La créature ${p.nom} de ${p.pseudo}, niveau ${p.niveau}.`);
 }
@@ -560,6 +612,128 @@ async function pageBadge(env, id) {
 <p style="color:var(--vert)">✔ Vérifié : ce badge est enregistré par le serveur du recensement Terminagotchi.</p>
 <p class="doux">Identifiant : <code>${echapper(b.id)}</code> · <a href="/api/badge/${echapper(b.id)}">preuve (JSON)</a></p></div>`,
   `Badge « ${b.titre} » de ${b.pseudo}.`);
+}
+
+// ---------------------------------------------------------------- bestioles
+function svgBestiole(e, shiny = false, taille = 6) {
+  const rows = shiny ? e.sprite_shiny : e.sprite;
+  const pal = shiny ? e.palette_shiny : e.palette;
+  const n = 16;
+  const ox = (n - rows[0].length) / 2;
+  const oy = (n - rows.length) / 2;
+  let r = "";
+  rows.forEach((l, y) => [...l].forEach((c, x) => {
+    if (pal[c]) r += `<rect x="${x + ox}" y="${y + oy}" width="1.02" height="1.02" fill="${pal[c]}"/>`;
+  }));
+  return `<svg viewBox="0 0 ${n} ${n}" width="${n * taille}" height="${n * taille}" shape-rendering="crispEdges" role="img" aria-label="${echapper(e.nom)}">${r}</svg>`;
+}
+
+function etiquetteRarete(r) {
+  return `<span class="rar" style="color:${COULEUR_RARETE[r]}">${echapper(r)}</span>`;
+}
+
+/** Le glossaire classique des 150 espèces (apparence normale, sans variantes ni shiny). */
+function pageBestiaire(url) {
+  const famille = url.searchParams.get("famille") || "";
+  const rarete = url.searchParams.get("rarete") || "";
+  const liste = BESTIAIRE.especes.filter((e) => (!famille || e.famille === famille) && (!rarete || e.rarete === rarete));
+  const lien = (k, v, t) => {
+    const p = new URLSearchParams({ famille, rarete, [k]: v });
+    for (const [a, b] of [...p]) if (!b) p.delete(a);
+    const actif = (k === "famille" ? famille : rarete) === v;
+    return `<a href="/bestiaire${p.toString() ? "?" + p : ""}"${actif ? ' style="color:var(--jaune)"' : ""}>${t}</a>`;
+  };
+  const filtresF = [lien("famille", "", "toutes"), ...BESTIAIRE.familles.map((f) => lien("famille", f.nom, f.icone + " " + f.nom))].join(" ");
+  const filtresR = [lien("rarete", "", "toutes"), ...BESTIAIRE.raretes.map((r) => lien("rarete", r, r))].join(" ");
+  const cartes = liste.map((e) => `<a class="bestiole" href="/bestiaire/${e.id}">${svgBestiole(e)}
+    <div class="num">#${String(e.numero).padStart(3, "0")} · ${e.icone} ${echapper(e.famille)}</div>
+    <div><b>${echapper(e.nom)}</b></div>${etiquetteRarete(e.rarete)}</a>`).join("");
+  return page("Bestiaire", `<h1>📖 Bestiaire</h1>
+<p>Les 150 espèces de bestioles qui se cachent dans le terrain de jeu : 75 communes, 45 peu communes, 20 rares et 10 légendaires,
+réparties en 15 familles. Plus une bestiole est rare, plus elle se cache profond (recoin → cachette → sanctuaire).</p>
+<div class="carte filtres"><div><span class="doux">Famille :</span> ${filtresF}</div><div style="margin-top:6px"><span class="doux">Rareté :</span> ${filtresR}</div></div>
+<p class="doux">${liste.length} espèce${liste.length > 1 ? "s" : ""}</p>
+<div class="grille-b">${cartes}</div>`, "Le bestiaire des 150 bestioles de Terminagotchi.");
+}
+
+function pageEspece(id) {
+  const e = PAR_ID[id];
+  if (!e) return page("Inconnue", `<h1>Espèce inconnue</h1><p><a href="/bestiaire">Retour au bestiaire</a></p>`, undefined, 404);
+  const i = e.numero - 1;
+  const prec = BESTIAIRE.especes[(i + 149) % 150];
+  const suiv = BESTIAIRE.especes[(i + 1) % 150];
+  const stats = Object.entries(e.stats).map(([k, v]) => `<div><div class="doux" style="font-size:12px">${k}</div><b>${v}</b></div>`).join("");
+  return page(e.nom, `<p><a href="/bestiaire">← Bestiaire</a></p>
+<section class="hero">
+  <div class="carte">${svgBestiole(e, false, 14)}</div>
+  <div style="flex:1;min-width:260px">
+    <p class="doux">#${String(e.numero).padStart(3, "0")} · ${e.icone} famille ${echapper(e.famille)}</p>
+    <h1>${e.rarete === "légendaire" ? `<span class="rgb">${echapper(e.nom)}</span>` : echapper(e.nom)}</h1>
+    ${etiquetteRarete(e.rarete)}
+    <p>${echapper(e.description)}</p>
+    <p class="doux">${echapper(e.comportement)}</p>
+    <div class="stats-b">${stats}</div>
+  </div>
+</section>
+<h2>Fiche</h2>
+<div class="carte"><table>
+<tr><td class="doux">Capacité</td><td>${echapper(e.capacite)}</td></tr>
+<tr><td class="doux">Stat favorite</td><td>${echapper(e.stat)}</td></tr>
+<tr><td class="doux">Taille / poids</td><td>~${e.taille_cm} cm · ~${e.poids_ko} Ko</td></tr>
+<tr><td class="doux">Habitat</td><td><code>~/terrain_terminagotchi/${echapper(e.zone)}</code></td></tr>
+<tr><td class="doux">Apparition</td><td>${echapper(e.frequence)} · attirée par la commande <code>${echapper(e.attiree_par)}</code></td></tr>
+</table></div>
+<p style="margin-top:24px"><a href="/bestiaire/${prec.id}">← #${String(prec.numero).padStart(3, "0")} ${echapper(prec.nom)}</a>
+ · <a href="/bestiaire/${suiv.id}">#${String(suiv.numero).padStart(3, "0")} ${echapper(suiv.nom)} →</a></p>`,
+  `${e.nom}, bestiole ${e.rarete} de la famille ${e.famille}.`);
+}
+
+/** La galerie des captures : seulement les joueurs qui ont dit oui (compte partage on). */
+async function pageCaptures(env, url) {
+  const filtre = url.searchParams.get("joueur") || "";
+  const shinySeul = url.searchParams.get("shiny") === "1";
+  const rarete = url.searchParams.get("rarete") || "";
+  const r = await env.DB.prepare("SELECT pseudo, etat FROM joueurs ORDER BY maj DESC LIMIT 500").all();
+  let caps = [];
+  let joueurs = 0;
+  for (const j of r.results) {
+    const e = lireEtat(j);
+    if (e.partage?.actif !== true) continue;
+    if (filtre && j.pseudo.toLowerCase() !== filtre.toLowerCase()) continue;
+    joueurs++;
+    for (const c of e.captures || []) caps.push({ ...c, pseudo: j.pseudo });
+  }
+  caps = caps.filter((c) => PAR_NOM[c.espece] && (!shinySeul || c.shiny) && (!rarete || PAR_NOM[c.espece].rarete === rarete));
+  caps.sort((a, b) => (b.shiny - a.shiny) || (b.date - a.date));
+  const total = caps.length;
+  caps = caps.slice(0, 120);
+  const cartes = caps.map((c) => {
+    const e = PAR_NOM[c.espece];
+    const date = new Date(c.date).toLocaleDateString("fr-FR");
+    const nom = c.shiny || e.rarete === "légendaire" ? `<span class="rgb">${echapper(e.nom)}${c.shiny ? " ✨" : ""}</span>` : `<b>${echapper(e.nom)}</b>`;
+    return `<div class="bestiole capture${c.shiny ? " shiny" : ""}">
+      <div style="text-align:center">${svgBestiole(e, c.shiny)}</div>
+      <div>${nom} <span class="num">#${String(e.numero).padStart(3, "0")}</span></div>
+      ${etiquetteRarete(e.rarete)}
+      <div class="marque">« <span class="rgb">${echapper(c.marque)}</span> »</div>
+      <div class="doux" style="font-size:13px">humeur ${echapper(c.humeur)} · ${c.taille} cm<br>potentiel <b style="color:var(--vert)">${c.potentiel} %</b></div>
+      <div class="doux" style="font-size:12px;margin-top:6px">par <a href="/joueur/${encodeURIComponent(c.pseudo)}">${echapper(c.pseudo)}</a> · ${date}</div>
+    </div>`;
+  }).join("");
+  const lienR = (v, t) => `<a href="/captures?${new URLSearchParams({ ...(filtre && { joueur: filtre }), ...(shinySeul && { shiny: "1" }), ...(v && { rarete: v }) })}">${t}</a>`;
+  return page("Captures", `<h1>✨ Les captures</h1>
+<p>Chaque bestiole capturée est <b>unique</b> : sa marque, son humeur, sa taille et son potentiel sont tirés au sort au moment de la capture.
+${filtre ? `Captures de <b>${echapper(filtre)}</b>. <a href="/captures">Voir tout le monde</a>` : ""}</p>
+<div class="carte filtres">${lienR("", "toutes")} ${BESTIAIRE.raretes.map((x) => lienR(x, x)).join(" ")}
+ · <a href="/captures?${new URLSearchParams({ ...(filtre && { joueur: filtre }), ...(!shinySeul && { shiny: "1" }) })}">${shinySeul ? "toutes (pas que les shiny)" : "<span class=\"rgb\">shiny seulement</span>"}</a></div>
+<p class="doux">${total} capture${total > 1 ? "s" : ""} partagée${total > 1 ? "s" : ""} par ${joueurs} joueur${joueurs > 1 ? "s" : ""}${total > 120 ? " (les 120 plus récentes)" : ""}.</p>
+${cartes ? `<div class="grille-b" style="grid-template-columns:repeat(auto-fill,minmax(220px,1fr))">${cartes}</div>`
+    : `<div class="carte"><p class="doux">Aucune capture partagée pour l'instant.</p></div>`}
+<h2>Apparaître dans la galerie</h2>
+<div class="carte"><p>La galerie ne montre que les joueurs qui l'ont <b>accepté</b>. Pour y montrer tes bestioles, tape dans le jeu :
+<code>compte partage on</code> (sur PC : <code>tg compte partage on</code>). Pour les retirer : <code>compte partage off</code>.</p>
+<p class="doux">Les captures sont déclarées par l'appli ; seuls les badges marqués ✔ sont vérifiés par le serveur.</p></div>`,
+  "La galerie des bestioles capturées par les joueurs de Terminagotchi.");
 }
 
 function pageCtf(origine) {
@@ -591,6 +765,10 @@ export default {
       if (chemin === "/") return await pageAccueil(env);
       if (chemin === "/classement") return await pageClassement(env);
       if (chemin === "/ctf") return pageCtf(url.origin);
+      if (chemin === "/bestiaire") return pageBestiaire(url);
+      if (chemin === "/captures") return await pageCaptures(env, url);
+      const mb = chemin.match(/^\/bestiaire\/([a-z0-9]+)$/);
+      if (mb) return pageEspece(mb[1]);
       if (chemin === "/robots.txt") {
         return texte("User-agent: *\n# Les robots ne doivent pas fouiller les cachettes du CTF…\nDisallow: /ctf/*/2/cachette\n");
       }

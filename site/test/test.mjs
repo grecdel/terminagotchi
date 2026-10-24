@@ -148,5 +148,35 @@ await appel("POST", "/api/sync", { cle: cleTel, corps: { valeurs: { nom: "<img s
 r = await appel("GET", "/joueur/Grec");
 verifier(!r.t.includes("<img src=x") && r.t.includes("&lt;img"), "le nom est échappé (pas d'injection HTML)");
 
+console.log("Bestiaire et galerie des captures");
+const capt = (id, extra = {}) => ({ id, espece: "Glitchou", shiny: false, date: 1700000000000, marque: "une étoile sur le front",
+  humeur: "joyeuse", taille: 7.5, potentiel: 77, stats: { PV: 40, ATK: 41, DEF: 30, VIT: 35, INT: 33 }, zone: "faille", ...extra });
+r = await appel("POST", "/api/sync", { cle: cleTel, corps: { appareil: "android", captures: [
+  capt("aaaaaa0001"), capt("aaaaaa0002", { shiny: true, espece: "Rootkitsune" }), capt("aaaaaa0001"),
+  capt("bbbbbb0001", { marque: "<script>alert(1)</script>" }), capt("bbbbbb0002", { espece: "Inconnu" }),
+], partage: { actif: false, date: 10 } } });
+verifier(r.j.etat.captures.length === 2, "captures : doublons et captures invalides refusés (2 gardées)");
+r = await appel("GET", "/captures");
+verifier(r.statut === 200 && !r.t.includes("une étoile sur le front"), "galerie : rien sans l'accord du joueur");
+r = await appel("POST", "/api/sync", { cle: clePc, corps: { appareil: "pc", partage: { actif: true, date: 20 } } });
+verifier(r.j.etat.partage.actif === true, "accord de partage enregistré");
+r = await appel("GET", "/captures");
+verifier(r.t.includes("une étoile sur le front") && r.t.includes("Rootkitsune") && r.t.includes("class=\"rgb\""), "galerie : captures visibles, écriture RGB");
+r = await appel("GET", "/captures?shiny=1");
+verifier(r.t.includes("Rootkitsune") && !r.t.includes(">Glitchou<"), "galerie : filtre shiny");
+r = await appel("POST", "/api/sync", { cle: cleTel, corps: { appareil: "android", partage: { actif: false, date: 5 } } });
+verifier(r.j.etat.partage.actif === true, "un vieux réglage de partage n'écrase pas le plus récent");
+r = await appel("GET", "/bestiaire");
+verifier(r.statut === 200 && (r.t.match(/class="bestiole"/g) || []).length === 150, "glossaire : 150 espèces");
+verifier(!r.t.includes("✨"), "glossaire classique : aucune variante shiny");
+r = await appel("GET", "/bestiaire?rarete=l%C3%A9gendaire");
+verifier((r.t.match(/class="bestiole"/g) || []).length === 10, "glossaire : filtre des 10 légendaires");
+r = await appel("GET", "/bestiaire/glitchou");
+verifier(r.statut === 200 && r.t.includes("Glitchou") && r.t.includes("terrain_terminagotchi/faille"), "fiche d'espèce");
+r = await appel("GET", "/bestiaire/zzz");
+verifier(r.statut === 404, "espèce inconnue : 404");
+r = await appel("GET", "/joueur/Grec");
+verifier(r.t.includes("/bestiaire/glitchou") && r.t.includes("Voir ses captures uniques"), "profil : collection dessinée + lien vers ses captures");
+
 console.log(`\n${ok} réussis, ${ko} échoués`);
 process.exit(ko ? 1 : 0);

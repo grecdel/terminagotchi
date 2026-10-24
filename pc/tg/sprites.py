@@ -133,8 +133,13 @@ def body_color(state):
     return core.STAT_COLOR[core.dominant(state)]
 
 
+SHINY = {39: 220, 78: 51, 203: 129, 221: 255, 141: 219}   # couleur normale → couleur shiny
+
+
 def palette(state, blink=False):
     body = body_color(state)
+    if state.get("shiny"):
+        body = SHINY.get(body, 219)
     return {"b": body, "e": body if blink else 16, "k": 211, "m": 52 if state["hunger"] >= 30 else 16,
             "h": 180, "w": 230, "s": 180, "c": 136, "a": 250, "l": 51}
 
