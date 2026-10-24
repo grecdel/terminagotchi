@@ -1,0 +1,84 @@
+name: Mettre le site en ligne
+
+on:
+  push:
+    branches: [main]
+    paths: ["site/**", ".github/workflows/site.yml"]
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  site:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: site
+    env:
+      CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+      CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+      WRANGLER_SEND_METRICS: "false"
+      CI: "true"
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+
+      - name: Tester la logique du site
+        run: node --no-warnings test/test.mjs | tee ../test-site.log
+
+      - name: Tester avec l'outil officiel de Cloudflare (en local)
+        run: |
+          npx --yes wrangler@3 d1 execute terminagotchi --local --file=schema.sql
+          (npx wrangler@3 dev --local --port 8787 > dev.log 2>&1 &)
+          for i in $(seq 1 60); do curl -sf localhost:8787/api/classement > /dev/null && break; sleep 2; done
+          curl -sf -X POST localhost:8787/api/inscription -H 'content-type: application/json' -d '{"pseudo":"TestCI"}' | grep -q '"cle"'
+          curl -sf localhost:8787/ | grep -q Terminagotchi
+          curl -sfI localhost:8787/ctf/TestCI/1 | grep -qi x-drapeau
+          echo "✔ le site fonctionne avec wrangler"
+
+      - name: Vérifier les secrets Cloudflare
+        id: secrets
+        run: |
+          if [ -n "$CLOUDFLARE_API_TOKEN" ] && [ -n "$CLOUDFLARE_ACCOUNT_ID" ]; then
+            echo "ok=1" >> "$GITHUB_OUTPUT"
+          else
+            echo "::notice::Secrets Cloudflare absents : le site est testé mais pas mis en ligne."
+          fi
+
+      - name: Préparer la base de données
+        if: steps.secrets.outputs.ok == '1'
+        run: |
+          npx wrangler@3 d1 list --json > d1.json || true
+          ID=$(node -e 'try{const l=JSON.parse(require("fs").readFileSync("d1.json","utf8"));const d=l.find(x=>x.name==="terminagotchi");console.log(d?(d.uuid||d.id||""):"")}catch(e){console.log("")}')
+          if [ -z "$ID" ]; then
+            npx wrangler@3 d1 create terminagotchi | tee create.log
+            ID=$(grep -oE '[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}' create.log | head -1)
+          fi
+          echo "Base : $ID"
+          sed -i "s/00000000-0000-0000-0000-000000000000/$ID/" wrangler.toml
+          npx wrangler@3 d1 execute terminagotchi --remote --file=schema.sql
+
+      - name: Mettre en ligne
+        if: steps.secrets.outputs.ok == '1'
+        run: |
+          npx wrangler@3 deploy 2>&1 | tee deploy.log
+          grep -oE 'https://[a-z0-9.-]+\.workers\.dev' deploy.log | head -1 > url.txt
+          echo "Adresse du site : $(cat url.txt)"
+          test -s url.txt
+
+      - name: Publier l'adresse du site (branche site-info)
+        if: always()
+        run: |
+          mkdir -p /tmp/info && cd /tmp/info
+          cp "$GITHUB_WORKSPACE/site/url.txt" . 2>/dev/null || true
+          cp "$GITHUB_WORKSPACE/test-site.log" . 2>/dev/null || true
+          cp "$GITHUB_WORKSPACE/site/deploy.log" . 2>/dev/null || true
+          cp "$GITHUB_WORKSPACE/site/dev.log" . 2>/dev/null || true
+          git init -q && git checkout -q -b site-info
+          git add -A
+          git -c user.name="deploiement" -c user.email="deploiement@terminagotchi" commit -q -m "Site : run ${{ github.run_number }}" --allow-empty
+          git push -q -f "https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}" site-info

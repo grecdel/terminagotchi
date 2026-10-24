@@ -1,0 +1,5 @@
+node_modules/
+.wrangler/
+*.log
+d1.json
+url.txt

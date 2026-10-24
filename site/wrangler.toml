@@ -1,0 +1,10 @@
+name = "terminagotchi"
+main = "src/worker.js"
+compatibility_date = "2024-09-23"
+workers_dev = true
+
+[[d1_databases]]
+binding = "DB"
+database_name = "terminagotchi"
+# Rempli automatiquement par le déploiement GitHub (ne pas modifier à la main)
+database_id = "00000000-0000-0000-0000-000000000000"
