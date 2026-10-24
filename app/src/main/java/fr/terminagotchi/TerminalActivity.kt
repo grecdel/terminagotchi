@@ -310,7 +310,7 @@ class TerminalActivity : Activity() {
     }
 
     private fun valider() {
-        if (enCours) return                 // une commande tourne encore : on garde ce qui est tapé
+        if (enCours) { android.util.Log.i("TG", "commande ignorée : une autre tourne encore"); return }
         val ligne = saisie.text.toString().trim()
         val etaitColle = colle
         colle = false
@@ -361,15 +361,16 @@ class TerminalActivity : Activity() {
                 shell.dossier = it
                 majObservatoire(ligne)
             }
-            apresCommande(ligne, etaitColle, etaitRappel)
+            try { apresCommande(ligne, etaitColle, etaitRappel) } catch (e: Exception) { android.util.Log.e("TG", "après « $ligne »", e) }
             if (interne.saut > saut) saut = interne.saut
             return
         }
 
         enCours = true
         invite.alpha = 0.4f
+        android.util.Log.i("TG", "commande : $ligne")
         exec.execute {
-            val resultat = shell.executer(ligne)
+            val resultat = try { shell.executer(ligne) } catch (e: Exception) { android.util.Log.e("TG", "shell", e); "erreur : ${e.message}" }
             handler.post {
                 if (resultat.isNotEmpty()) ecrire(resultat)
                 expliquer(resultat, ligne)?.let { ecrire(it, 0xFFFFAF5F.toInt()) }
@@ -378,9 +379,14 @@ class TerminalActivity : Activity() {
                 if (resultat.isEmpty() && !change) {
                     ecrire("✓ Fait. (Pas de message = tout s'est bien passé.)", 0xFF9A9AB0.toInt())
                 }
-                apresCommande(ligne, etaitColle, etaitRappel)
-                enCours = false
-                invite.alpha = 1f
+                try {
+                    apresCommande(ligne, etaitColle, etaitRappel)
+                } catch (e: Exception) {
+                    android.util.Log.e("TG", "après la commande « $ligne »", e)
+                } finally {
+                    enCours = false
+                    invite.alpha = 1f
+                }
             }
         }
     }
@@ -660,6 +666,9 @@ class TerminalActivity : Activity() {
             else if (jeu.existe) jeu.texteLecon() else null
         lecon.visibility = if (l == null) View.GONE else View.VISIBLE
         lecon.text = l ?: ""
+        // le panneau du dressage ne doit pas manger tout l'écran : il défile s'il est trop haut
+        lecon.maxHeight = if (panneau != null) (resources.displayMetrics.heightPixels * 0.40).toInt() else Int.MAX_VALUE
+        if (lecon.movementMethod == null) lecon.movementMethod = android.text.method.ScrollingMovementMethod()
         // pendant un dressage, le familier est déjà dans le face-à-face : on allège l'en-tête
         val vis = if (panneau != null) View.GONE else View.VISIBLE
         creature.visibility = vis; faim.visibility = vis; xp.visibility = vis; stats.visibility = vis

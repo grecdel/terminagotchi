@@ -432,7 +432,7 @@ AIDE = """Terminagotchi — utilisation :
   tg sync                      synchronise ta créature (PC ↔ téléphone)
   tg site [bestiaire|captures] ouvre le site du recensement (ton profil par défaut)
   tg collection · tg bestiaire <nom>   tes bestioles · la fiche d'une espèce
-  tg equipe [nom]              ton équipe et ses stades · choisir la bestiole active (elle grandit)
+  tg troupe [nom]              ta troupe et ses stades · choisir la bestiole active (elle grandit)
   tg dressage                  la fenêtre du face-à-face (s'ouvre toute seule quand un monstre apparaît)
   tg anime <nom> [animation]   la voir bouger : statique, mange, attaque, salut, parle, dort, content,
                                affame, confus, colere, victoire, ko, evolution
@@ -462,9 +462,9 @@ def main():
         faits = compagnon.desinstaller()
         print("Retiré de :\n  " + "\n  ".join(faits) if faits else "Rien à retirer.")
         return
-    if mode in ("compte", "sync", "drapeau", "lexique", "site", "bestiaire", "collection", "equipe", "anime"):
+    if mode in ("compte", "sync", "drapeau", "lexique", "site", "bestiaire", "collection", "troupe", "anime"):
         creer_si_besoin()
-        if mode == "equipe":
+        if mode == "troupe":
             if len(args) > 1:
                 with core.verrou():
                     st = core.load(); print(equipe.choisir(st, " ".join(args[1:]))); core.save(st)

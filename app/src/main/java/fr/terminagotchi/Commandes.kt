@@ -77,7 +77,7 @@ class Commandes(
             // ---------------------------------------------------- progression et jeux
             "arbre" -> arbre(reste)
             "collection" -> Reponse(Explo.texteCollection(jeu), couleur = ROSE)
-            "equipe" -> Reponse(if (reste.isBlank()) Equipe.texte(jeu) else Equipe.choisir(jeu, reste), couleur = ROSE)
+            "troupe" -> Reponse(if (reste.isBlank()) Equipe.texte(jeu) else Equipe.choisir(jeu, reste), couleur = ROSE)
             "anime" -> {
                 val m = reste.split(Regex("\\s+")).filter { it.isNotEmpty() }
                 val e = m.getOrNull(0)?.let { Bestiaire.espece(it) }

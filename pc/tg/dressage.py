@@ -562,9 +562,9 @@ def reussir(state):
         fams.append(e["famille"])
     titre = e["nom"] + (" ✨ SHINY" if d["shiny"] else "")
     core.log(state, f"🎓 {titre} dressé en {ind['dresse']} s ! ({e['rarete']})")
-    core.say(state, f"{e['nom']}{' ✨' if d['shiny'] else ''} te fait confiance et rejoint ton équipe ! "
+    core.say(state, f"{e['nom']}{' ✨' if d['shiny'] else ''} te fait confiance et rejoint ta troupe ! "
                     f"Signe particulier : {ind['marque']}. ([c] pour ta collection)", 14)
-    core.notif(state, f"🎓 {titre} a rejoint ton équipe !")
+    core.notif(state, f"🎓 {titre} a rejoint ta troupe !")
     st = e.get("stat")
     if st not in state["stats"]:
         st = random.choice(list(state["stats"]))

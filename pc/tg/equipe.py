@@ -1,7 +1,7 @@
 """L'équipe : les bestioles dressées grandissent (enfant → ado → adulte → forme finale) en gardant
 leur nom, et s'animent dans le terminal.
 
-La bestiole « active » (tg equipe <nom>) gagne de l'expérience à chaque commande que tu tapes.
+La bestiole « active » (tg troupe <nom>) gagne de l'expérience à chaque commande que tu tapes.
 Les animations détaillées existent pour les espèces qui ont un dessin complet (Abyssor pour
 l'instant) ; les autres gardent leur petit sprite.
 """
@@ -132,9 +132,9 @@ def tick(state, lignes):
 def ecran_equipe(state):
     caps = state.get("captures", [])
     if not caps:
-        return [" Ton équipe est vide : dresse ta première bestiole en explorant le terrain de jeu !"]
+        return [" Ta troupe est vide : dresse ta première bestiole en explorant le terrain de jeu !"]
     act = active(state)
-    lignes = [f" {fg(213)}── 🐾 Équipe de {state['name']} ──{RESET}", ""]
+    lignes = [f" {fg(213)}── 🐾 Troupe de {state['name']} ──{RESET}", ""]
     for c in caps[-12:][::-1]:
         e = B.espece(c["espece"])
         if not e:
@@ -145,7 +145,7 @@ def ecran_equipe(state):
         marque = f"{fg(226)}★ active{RESET} " if c is act else "         "
         lignes.append(f" {marque}{B.nom_affiche(e, c.get('shiny'))} {DIM}· {NOM_STADE[s]} · {barre}"
                       f"{' · animé' if anime(e['nom']) else ''}{RESET}")
-    lignes += ["", f" {DIM}Choisir l'active : tg equipe <nom> · la voir bouger : tg anime <nom> [animation]{RESET}"]
+    lignes += ["", f" {DIM}Choisir l'active : tg troupe <nom> · la voir bouger : tg anime <nom> [animation]{RESET}"]
     return lignes
 
 
@@ -168,7 +168,7 @@ def jouer(state, args):
     else:
         ind = active(state)
     if not ind:
-        print(" Aucune bestiole de ce nom dans ton équipe. (tg equipe pour la liste)")
+        print(" Aucune bestiole de ce nom dans ton équipe. (tg troupe pour la liste)")
         return
     quoi = (args[1] if len(args) > 1 else "statique").lower().replace("é", "e").replace("è", "e")
     s = stade(ind)

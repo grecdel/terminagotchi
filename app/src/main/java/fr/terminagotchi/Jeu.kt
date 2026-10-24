@@ -191,7 +191,7 @@ object Regles {
             Triple("sync", "synchronise ta créature maintenant", w),
             Triple("site", "ouvre le site : ton profil (site bestiaire, site captures…)", w),
             Triple("bestiaire", "la fiche d'une espèce : bestiaire Glitchou", j),
-            Triple("equipe", "ton équipe : stades et bestiole active (equipe <nom>)", j),
+            Triple("troupe", "ta troupe de bestioles : stades et bestiole active (troupe <nom>)", j),
             Triple("anime", "voir bouger une bestiole : anime abyssor attaque", j),
             Triple("sudo", "agir en administrateur (impossible dans le bac à sable du téléphone)", p),
             Triple("apt", "installer des logiciels (Linux / Termux, ou mode Linux complet)", p),

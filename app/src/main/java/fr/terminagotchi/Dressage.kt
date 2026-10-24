@@ -326,8 +326,8 @@ object Dressage {
         jeu.ajouterXp((Bestiaire.XP[e.rarete] ?: 15) * if (shiny) 3 else 1)
         val titre = e.nom + if (shiny) " ✨ SHINY" else ""
         jeu.log("🎓 $titre dressé ! (${e.rarete})")
-        jeu.dire("${e.nom} te fait confiance et rejoint ton équipe ! Signe particulier : ${ind.getString("marque")}.", 14)
-        return "🎓 ${Explo.carte(ind)}\nIl rejoint ton équipe (tape « equipe »)."
+        jeu.dire("${e.nom} te fait confiance et rejoint ta troupe ! Signe particulier : ${ind.getString("marque")}.", 14)
+        return "🎓 ${Explo.carte(ind)}\nIl rejoint ta troupe (tape « troupe »)."
     }
 
     private fun echouer(jeu: Jeu, d: JSONObject): String {

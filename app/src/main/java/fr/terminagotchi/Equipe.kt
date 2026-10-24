@@ -54,9 +54,9 @@ object Equipe {
 
     fun texte(jeu: Jeu): String {
         val caps = Explo.captures(jeu)
-        if (caps.length() == 0) return "Ton équipe est vide : joue avec ton familier, un monstre finira par apparaître !"
+        if (caps.length() == 0) return "Ta troupe est vide : joue avec ton familier, un monstre finira par apparaître !"
         val act = active(jeu)
-        val sb = StringBuilder("🐾 Équipe de ${jeu.nom}\n")
+        val sb = StringBuilder("🐾 Troupe de ${jeu.nom}\n")
         for (i in caps.length() - 1 downTo maxOf(0, caps.length() - 12)) {
             val c = caps.getJSONObject(i)
             val e = Bestiaire.espece(c.optString("espece")) ?: continue
@@ -68,7 +68,7 @@ object Equipe {
                 .append(if (seuil != null) "${c.optInt("xp")}/$seuil XP" else "stade maximal")
                 .append(if (Animations.dispo(e.id)) " · animé" else "").append("\n")
         }
-        sb.append("\nChoisir l'active : equipe <nom> · la voir bouger : anime <nom> [animation]")
+        sb.append("\nChoisir l'active : troupe <nom> · la voir bouger : anime <nom> [animation]")
         return sb.toString()
     }
 

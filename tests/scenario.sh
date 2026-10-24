@@ -48,8 +48,8 @@ capture dressage_repaire
 tape "dressage abandon"
 adb shell am start -n fr.terminagotchi/.TerminalActivity --es essai_equipe abyssor:adulte
 sleep 5
-tape "equipe" 2
-capture equipe
+tape "troupe" 2
+capture troupe
 tape "bestiaire abyssor" 2
 capture fiche_abyssor
 tape "anime abyssor attaque" 1
@@ -109,6 +109,7 @@ capture retour
 adb shell am force-stop fr.terminagotchi
 sleep 1
 adb logcat -d > captures/logcat.txt
+adb logcat -d -s TG:V > captures/tg.log
 if grep -q "FATAL EXCEPTION" captures/logcat.txt; then
   grep -A 25 "FATAL EXCEPTION" captures/logcat.txt > captures/PLANTAGE.txt
   echo "PLANTAGE DÉTECTÉ"; cat captures/PLANTAGE.txt
