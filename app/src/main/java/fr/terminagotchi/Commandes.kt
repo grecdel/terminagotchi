@@ -77,6 +77,17 @@ class Commandes(
             // ---------------------------------------------------- progression et jeux
             "arbre" -> arbre(reste)
             "collection" -> Reponse(Explo.texteCollection(jeu), couleur = ROSE)
+            "equipe" -> Reponse(if (reste.isBlank()) Equipe.texte(jeu) else Equipe.choisir(jeu, reste), couleur = ROSE)
+            "anime" -> {
+                val m = reste.split(Regex("\\s+")).filter { it.isNotEmpty() }
+                val e = m.getOrNull(0)?.let { Bestiaire.espece(it) }
+                val caps = Explo.captures(jeu)
+                val ind = if (e == null) Equipe.active(jeu) else (caps.length() - 1 downTo 0).map { caps.getJSONObject(it) }
+                    .firstOrNull { it.optString("espece") == e.nom }
+                if (ind == null) Reponse("Aucune bestiole de ce nom dans ton équipe (tape « equipe »).", couleur = ORANGE)
+                else Reponse(Animations.jouer(act, ind, m.getOrNull(1) ?: ""), couleur = ROSE)
+            }
+            "dressage" -> Reponse(if (reste.trim() == "abandon") Dressage.abandonner(jeu) else "Pour abandonner un dressage : dressage abandon", couleur = ROSE)
             "cherche" -> Reponse(Recherche.chercher(reste), couleur = BLEU)
             "defi" -> if (reste == "records") Reponse(Defis.texteRecords(jeu))
                 else { Defis.lancer(jeu); Reponse("⚡ Défi lancé : regarde la bulle !", saut = 2, couleur = JAUNE) }

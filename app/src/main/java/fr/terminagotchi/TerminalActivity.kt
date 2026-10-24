@@ -81,6 +81,7 @@ class TerminalActivity : Activity() {
             rafraichir()
         }
         Rappels.programmer(this)
+        essais(intent)
         if (android.os.Build.VERSION.SDK_INT >= 33 &&
             checkSelfPermission("android.permission.POST_NOTIFICATIONS") != android.content.pm.PackageManager.PERMISSION_GRANTED) {
             requestPermissions(arrayOf("android.permission.POST_NOTIFICATIONS"), 1)
@@ -384,12 +385,43 @@ class TerminalActivity : Activity() {
         }
     }
 
+    /**
+     * Réglages réservés aux tests automatiques (lancés par adb, impossibles depuis l'appli) :
+     *   --es essai_dressage abyssor        fait apparaître ce monstre
+     *   --es essai_equipe abyssor:adulte   donne une bestiole dressée à ce stade
+     */
+    private fun essais(i: android.content.Intent?) {
+        if (i == null || !jeu.existe) return
+        i.getStringExtra("essai_dressage")?.let { nom ->
+            Bestiaire.espece(nom)?.let { e ->
+                jeu.module("dressage").remove("en_cours")
+                java.io.File(jeu.terrain, e.zone).mkdirs()
+                Dressage.commencer(jeu, e, false)
+            }
+        }
+        i.getStringExtra("essai_equipe")?.let { v ->
+            val (nom, stade) = (v.split(":") + "enfant").let { it[0] to it[1] }
+            Bestiaire.espece(nom)?.let { e ->
+                val ind = Bestiaire.individu(e, false, e.zone).put("stade", stade).put("xp", 0)
+                Explo.captures(jeu).put(ind)
+                Explo.collection(jeu).put(e.nom, Explo.collection(jeu).optInt(e.nom) + 1)
+                jeu.module("equipe").put("active", ind.getString("id"))
+            }
+        }
+        jeu.sauver()
+    }
+
     private fun apresCommande(ligne: String, etaitColle: Boolean, etaitRappel: Boolean = false) {
         jeu.tick()
         val mange = jeu.manger(ligne, etaitColle, etaitRappel)
         jeu.leconTick(ligne, etaitColle)
         if (!etaitColle && !etaitRappel) Defis.verifier(jeu, ligne)?.let { ecrire(it, 0xFFFFD75F.toInt()); saut = 8 }
         Explo.verifier(jeu)?.let { ecrire(it, 0xFFFF87FF.toInt()) }
+        Dressage.verifier(jeu, ligne, etaitColle)?.let { ecrire(it, 0xFFFF87FF.toInt()); saut = 8 }
+        Equipe.apresCommande(jeu, etaitColle || etaitRappel)?.let { ecrire(it, 0xFFFFAF00.toInt()) }
+        if (!etaitColle && !etaitRappel && Explo.debloquee(jeu) && !Dressage.actif(jeu) && Random.nextInt(25) == 0) {
+            Explo.spawn(jeu)                       // en jouant, un monstre peut surgir
+        }
         Donjon.verifier(jeu, shell.dossier, ligne)?.let { r ->
             ecrire(r.texte, 0xFFFFD787.toInt())
             r.aller?.let { shell.dossier = it; majObservatoire(null) }
@@ -615,7 +647,8 @@ class TerminalActivity : Activity() {
         bulle.visibility = if (b.isEmpty()) View.GONE else View.VISIBLE
         bulle.text = b
         val defi = Defis.actif(jeu)
-        val l = if (defi != null) "⚡ DÉFI ÉCLAIR : tape « ${Regles.piege(defi)} » — ${Defis.resteSecondes(jeu)} s"
+        val panneau = Dressage.panneau(jeu, resources)
+        val l: CharSequence? = panneau ?: if (defi != null) "⚡ DÉFI ÉCLAIR : tape « ${Regles.piege(defi)} » — ${Defis.resteSecondes(jeu)} s"
             else if (jeu.existe) jeu.texteLecon() else null
         lecon.visibility = if (l == null) View.GONE else View.VISIBLE
         lecon.text = l ?: ""
@@ -642,13 +675,14 @@ class TerminalActivity : Activity() {
             jeu.leconTick(null, false)
             Defis.verifier(jeu, null)
             if (jeu.existe && jeu.stade >= 1 && Defis.actif(jeu) == null && Random.nextInt(60) == 0) Defis.lancer(jeu)
-            if (Explo.debloquee(jeu) && Random.nextInt(96) == 0) Explo.spawn(jeu)
             Explo.verifier(jeu)?.let { ecrire(it, 0xFFFF87FF.toInt()) }
+            Dressage.verifier(jeu, null, false)?.let { ecrire(it, 0xFFFF87FF.toInt()) }
             if (Random.nextInt(4) == 0) jeu.parlerSiSilencieux()
             jeu.sauver()
             rafraichir()
-        } else if (Defis.actif(jeu) != null && frame % 2 == 0) {
-            rafraichir()                          // compte à rebours du défi
+        } else if ((Defis.actif(jeu) != null || Dressage.actif(jeu)) && frame % 2 == 0) {
+            if (Dressage.actif(jeu)) Dressage.verifier(jeu, null, false)?.let { ecrire(it, 0xFFFF87FF.toInt()) }
+            rafraichir()                          // compte à rebours du défi ou du dressage
         } else if (bulle.visibility == View.VISIBLE && jeu.bulleActive().isEmpty()) {
             rafraichir()
         }

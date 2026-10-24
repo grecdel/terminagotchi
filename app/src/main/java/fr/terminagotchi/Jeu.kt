@@ -191,6 +191,8 @@ object Regles {
             Triple("sync", "synchronise ta créature maintenant", w),
             Triple("site", "ouvre le site : ton profil (site bestiaire, site captures…)", w),
             Triple("bestiaire", "la fiche d'une espèce : bestiaire Glitchou", j),
+            Triple("equipe", "ton équipe : stades et bestiole active (equipe <nom>)", j),
+            Triple("anime", "voir bouger une bestiole : anime abyssor attaque", j),
             Triple("sudo", "agir en administrateur (impossible dans le bac à sable du téléphone)", p),
             Triple("apt", "installer des logiciels (Linux / Termux, ou mode Linux complet)", p),
             Triple("nano", "éditeur de texte du terminal (ici : edite)", p),
@@ -211,6 +213,7 @@ object Regles {
 class Jeu(ctx: Context) {
     init {
         Bestiaire.charger(ctx.applicationContext)
+        Animations.init(ctx)
     }
 
     // chemin « canonique » : /data/user/0 et /data/data désignent le même dossier sur Android
