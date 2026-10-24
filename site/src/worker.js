@@ -15,7 +15,11 @@ const FORMES = { Intelligence: "Hacker", Force: "Titan", "Agilité": "Éclair", 
 const ESPECES = BESTIAIRE.especes.map((e) => e.nom);
 const PAR_NOM = Object.fromEntries(BESTIAIRE.especes.map((e) => [e.nom, e]));
 const PAR_ID = Object.fromEntries(BESTIAIRE.especes.map((e) => [e.id, e]));
-const PUBLIQUES = BESTIAIRE.especes.filter((e) => !e.secrete);   // les espèces secrètes ne figurent pas au bestiaire
+const PUBLIQUES = BESTIAIRE.especes.filter((e) => !e.secrete);
+// espèces qui ont un dessin complet animé (bandes d'images dans public/anim/<id>/<stade>/<animation>.webp)
+const ANIMEES = new Set(["abyssor"]);
+const STADES_B = ["enfant", "ado", "adulte", "finale"];
+const NOM_STADE = { enfant: "enfant", ado: "ado", adulte: "adulte", finale: "forme finale" };   // les espèces secrètes ne figurent pas au bestiaire
 const MARQUES = new Set(BESTIAIRE.marques);
 const HUMEURS = new Set(BESTIAIRE.humeurs);
 const COULEUR_RARETE = { commune: "#b0b0c0", "peu commune": "#5fd787", rare: "#5fafff", "légendaire": "#ffaf00" };
@@ -189,8 +193,16 @@ function fusionner(etat, envoi, appareil) {
       id: c.id, espece: c.espece, shiny: c.shiny === true, date: entier(c.date, 4e12), marque: c.marque,
       humeur: c.humeur, taille: Math.max(0, Math.min(1000, Number(c.taille) || 0)), potentiel: entier(c.potentiel, 100),
       stats: st, zone: typeof c.zone === "string" && /^[a-z/]{0,60}$/.test(c.zone) ? c.zone : "",
+      stade: STADES_B.includes(c.stade) ? c.stade : "enfant",
+      teinte: Math.max(0, Math.min(1, Number(c.teinte) || 0)),
     });
     connues.add(c.id);
+  }
+  // une bestiole déjà connue a pu grandir depuis : on garde le stade le plus avancé
+  const parId = Object.fromEntries(e.captures.map((c) => [c.id, c]));
+  for (const c of Array.isArray(envoi.captures) ? envoi.captures : []) {
+    const ancienne = c && parId[c.id];
+    if (ancienne && STADES_B.indexOf(c.stade) > STADES_B.indexOf(ancienne.stade || "enfant")) ancienne.stade = c.stade;
   }
   if (envoi.partage && typeof envoi.partage === "object" && (Number(envoi.partage.date) || 0) >= (e.partage?.date || 0)) {
     e.partage = { actif: envoi.partage.actif === true, date: Number(envoi.partage.date) || 0 };
@@ -494,6 +506,9 @@ pre{padding:12px;overflow-x:auto}
 .rar{font-size:12px;border-radius:999px;padding:1px 8px;border:1px solid currentColor;display:inline-block;margin-top:4px}
 .capture{text-align:left}
 .capture.shiny{border-color:#ffd75f;box-shadow:0 0 18px #ffd75f44}
+.anime{background-size:auto 100%;background-repeat:no-repeat;image-rendering:pixelated;animation:anime 1.2s steps(12) infinite}
+@keyframes anime{from{background-position:0 0}to{background-position:calc(var(--px) * -12) 0}}
+@media (prefers-reduced-motion:reduce){.anime{animation:none}}
 .capture .marque{font-size:14px;margin:6px 0}
 .filtres a{margin-right:10px;font-size:14px}
 .stats-b{display:grid;grid-template-columns:repeat(5,1fr);gap:6px;text-align:center}
@@ -575,7 +590,7 @@ async function pageJoueur(env, pseudo) {
   const badges = p.badges.map((b) => `<a class="badge verifie" href="${b.lien}">✔ ${echapper(b.titre)}</a>`).join("")
     || `<span class="doux">Aucun badge vérifié pour l'instant.</span>`;
   const coll = BESTIAIRE.especes.filter((e) => p.collection[e.nom]).map((e) =>
-    `<a class="bestiole" href="/bestiaire/${e.id}">${svgBestiole(e)}<div class="num">#${String(e.numero).padStart(3, "0")}</div>
+    `<a class="bestiole" href="${e.secrete ? `/captures?joueur=${encodeURIComponent(p.pseudo)}` : `/bestiaire/${e.id}`}"><div style="display:flex;justify-content:center">${visuel(e)}</div><div class="num">#${String(e.numero).padStart(3, "0")}</div>
      <div>${echapper(e.nom)} ×${p.collection[e.nom]}</div></a>`).join("");
   const collHtml = coll ? `<p class="doux">${Object.keys(p.collection).filter((k) => p.collection[k]).length}/150 espèces</p><div class="grille-b">${coll}</div>`
     : `<span class="doux">Aucune bestiole capturée.</span>`;
@@ -616,6 +631,16 @@ async function pageBadge(env, id) {
 }
 
 // ---------------------------------------------------------------- bestioles
+/** Le dessin d'une bestiole : animé (stade, teinte shiny) si son espèce a un dessin complet, sinon le petit sprite. */
+function visuel(e, c = {}, taille = 6, anim = "statique") {
+  if (!ANIMEES.has(e.id)) return svgBestiole(e, c.shiny, taille);
+  const stade = STADES_B.includes(c.stade) ? c.stade : "adulte";
+  const px = 16 * taille;
+  const filtre = c.shiny ? `filter:hue-rotate(${Math.round((c.teinte || 0.5) * 360)}deg);` : "";
+  return `<div class="anime" role="img" aria-label="${echapper(e.nom)} (${NOM_STADE[stade]})"
+    style="width:${px}px;height:${px}px;background-image:url(/anim/${e.id}/${stade}/${anim}.webp);--px:${px}px;${filtre}"></div>`;
+}
+
 function svgBestiole(e, shiny = false, taille = 6) {
   const rows = shiny ? e.sprite_shiny : e.sprite;
   const pal = shiny ? e.palette_shiny : e.palette;
@@ -713,7 +738,8 @@ async function pageCaptures(env, url) {
     const date = new Date(c.date).toLocaleDateString("fr-FR");
     const nom = c.shiny || e.rarete === "légendaire" ? `<span class="rgb">${echapper(e.nom)}${c.shiny ? " ✨" : ""}</span>` : `<b>${echapper(e.nom)}</b>`;
     return `<div class="bestiole capture${c.shiny ? " shiny" : ""}">
-      <div style="text-align:center">${svgBestiole(e, c.shiny)}</div>
+      <div style="text-align:center;display:flex;justify-content:center">${visuel(e, c)}</div>
+      ${ANIMEES.has(e.id) ? `<div class="doux" style="font-size:12px">${NOM_STADE[c.stade] || "enfant"}</div>` : ""}
       <div>${nom} <span class="num">#${String(e.numero).padStart(3, "0")}</span></div>
       ${etiquetteRarete(e.rarete)}
       <div class="marque">« <span class="rgb">${echapper(c.marque)}</span> »</div>
