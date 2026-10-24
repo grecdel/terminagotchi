@@ -26,8 +26,10 @@ jobs:
       - name: Compiler
         run: gradle assembleRelease --stacktrace --no-daemon
 
-      - name: Préparer l'APK
-        run: cp app/build/outputs/apk/release/app-release.apk terminagotchi.apk
+      - name: Préparer l'APK et la version PC
+        run: |
+          cp app/build/outputs/apk/release/app-release.apk terminagotchi.apk
+          python3 -m zipapp pc -o terminagotchi.pyz -p "/usr/bin/env python3"
 
       - name: Publier dans les Releases
         uses: softprops/action-gh-release@v2
@@ -35,7 +37,9 @@ jobs:
           tag_name: v0.1.${{ github.run_number }}
           name: Terminagotchi 0.1.${{ github.run_number }}
           body: |
-            Télécharge **terminagotchi.apk** ci-dessous et ouvre-le sur ton téléphone pour l'installer.
-            (Android te demandera d'autoriser l'installation depuis ton navigateur : c'est normal.)
-          files: terminagotchi.apk
+            📱 **terminagotchi.apk** : à ouvrir sur ton téléphone (Android te demandera d'autoriser l'installation : c'est normal).
+            💻 **terminagotchi.pyz** : la version PC, à lancer avec `python3 terminagotchi.pyz`.
+          files: |
+            terminagotchi.apk
+            terminagotchi.pyz
           make_latest: true

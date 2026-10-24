@@ -76,15 +76,19 @@ r = await appel("POST", "/api/sync", { cle: clePc, corps: {
   valeurs: { nom: "AutreNom", nomDate: 500, trait: "farceur", faim: 90, faimDate: 2000 },
 } });
 const e = r.j.etat;
+const badgesPc = r.j.badges;
 verifier(e.xp === 200, "XP additionnée des deux appareils (200)");
 verifier(e.stats.Endurance === 12 && e.stats.Intelligence === 9, "stats additionnées");
 verifier(["ls", "cd", "pwd", "git"].every((x) => e.vus.includes(x)) && e.vus.length === 4, "commandes goûtées : union");
 verifier(e.collection.Glitchou === 1 && e.collection.Octobit === 2, "collection : maximum par espèce");
 verifier(e.records.pwd === 3.1 && e.records.ls === 2, "records : meilleur temps");
-verifier(e.nom === "Pixel", "nom : le plus récent gagne (le vieux renommage est ignoré)");
+verifier(e.nom === "Pixel", "nom : un appareil relié n'écrase pas le nom du compte");
+r = await appel("POST", "/api/sync", { cle: clePc, corps: { appareil: "pc", valeurs: { nom: "Pixou", nomDate: 3000 } } });
+verifier(r.j.etat.nom === "Pixou", "nom : un renommage plus récent gagne");
+await appel("POST", "/api/sync", { cle: cleTel, corps: { appareil: "android", valeurs: { nom: "Pixel", nomDate: 4000 } } });
 verifier(e.trait === "curieux", "caractère : le premier reste");
 verifier(e.faim === 90, "faim : la valeur la plus récente");
-verifier(r.j.badges.some((b) => b.type === "multi"), "badge Multi-plateforme délivré");
+verifier(badgesPc.some((b) => b.type === "multi"), "badge Multi-plateforme délivré");
 r = await appel("POST", "/api/sync", { cle: clePc, corps: { appareil: "pc", deltas: { xp: -500, total: 1e9 } } });
 verifier(r.j.etat.xp === 200 && r.j.etat.total === 20050, "valeurs négatives ignorées, gros nombres plafonnés");
 

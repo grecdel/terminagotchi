@@ -168,7 +168,8 @@ function fusionner(etat, envoi, appareil) {
     }
   }
   const v = envoi.valeurs || {};
-  if (typeof v.nom === "string" && v.nom.trim() && (Number(v.nomDate) || 0) >= e.nomDate) {
+  // le nom : celui du compte reste, sauf renommage plus récent (un appareil fraîchement relié ne l'écrase pas)
+  if (typeof v.nom === "string" && v.nom.trim() && (!e.nom || (Number(v.nomDate) || 0) > e.nomDate)) {
     e.nom = v.nom.trim().slice(0, 16);
     e.nomDate = Number(v.nomDate) || 0;
   }
