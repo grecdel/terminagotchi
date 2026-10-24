@@ -17,18 +17,33 @@ import android.app.Notification
  */
 class Rappels : BroadcastReceiver() {
     override fun onReceive(context: Context, intent: Intent) {
-        val jeu = Jeu(context)
-        if (!jeu.existe) return
-        jeu.tick()
-        val n = jeu.module("notifs")
-        val actives = n.optBoolean("actives", true)
-        val maintenant = System.currentTimeMillis()
-        if (actives && jeu.faim < 30 && maintenant - n.optLong("faim", 0) > 3 * 3600_000L) {
-            n.put("faim", maintenant)
-            notifier(context, "${jeu.nom} a faim !", Regles.FAIM.random() + " (touche pour ouvrir le terminal)")
-        }
-        jeu.sauver()
-        WidgetCreature.majTous(context)
+        // Tout se fait sur un fil séparé : le réseau (synchro) est interdit sur le fil principal.
+        val attente = goAsync()
+        Thread {
+            try {
+                val jeu = Jeu(context)
+                if (jeu.existe) {
+                    jeu.tick()
+                    if (Recensement.aUnCompte(jeu)) {
+                        try {
+                            Recensement.synchroniserBloquant(jeu)
+                        } catch (e: Exception) {
+                            Recensement.abandonner()       // on réessaiera à la prochaine alarme
+                        }
+                    }
+                    val n = jeu.module("notifs")
+                    val maintenant = System.currentTimeMillis()
+                    if (n.optBoolean("actives", true) && jeu.faim < 30 && maintenant - n.optLong("faim", 0) > 3 * 3600_000L) {
+                        n.put("faim", maintenant)
+                        notifier(context, "${jeu.nom} a faim !", Regles.FAIM.random() + " (touche pour ouvrir le terminal)")
+                    }
+                    jeu.sauver()
+                    WidgetCreature.majTous(context)
+                }
+            } finally {
+                attente.finish()
+            }
+        }.start()
     }
 
     companion object {

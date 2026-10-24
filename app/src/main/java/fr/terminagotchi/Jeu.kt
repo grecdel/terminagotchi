@@ -120,6 +120,7 @@ object Regles {
         val c = "🐾 Ta créature"
         val j = "🎮 Jeux, aventures et progression"
         val p = "💻 Sur ordinateur ou en mode Linux complet (pas ici)"
+        val w = "🌍 Recensement (sur tous tes appareils)"
         listOf(
             Triple("pwd", "affiche le dossier où tu te trouves", f),
             Triple("ls", "liste le contenu (ls -a : avec les cachés, ls -l : les détails)", f),
@@ -186,6 +187,8 @@ object Regles {
             Triple("edite", "éditeur de texte (comme nano) : edite notes.txt", j),
             Triple("doom", "lance TON Doom-like (niveau dans ~/terrain_terminagotchi/jeu)", j),
             Triple("notifs", "notifications on / off", j),
+            Triple("compte", "recensement en ligne : même créature sur PC et téléphone", w),
+            Triple("sync", "synchronise ta créature maintenant", w),
             Triple("sudo", "agir en administrateur (impossible dans le bac à sable du téléphone)", p),
             Triple("apt", "installer des logiciels (Linux / Termux, ou mode Linux complet)", p),
             Triple("nano", "éditeur de texte du terminal (ici : edite)", p),
@@ -443,6 +446,7 @@ class Jeu(ctx: Context) {
             msg += " ×2"
         }
         faim = (faim + 3).coerceAtMost(100.0)
+        module("compte").put("repas", System.currentTimeMillis())
         log(msg)
         ajouterXp(gain)
         return true

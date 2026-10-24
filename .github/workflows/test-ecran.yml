@@ -34,6 +34,10 @@ jobs:
           set -o pipefail
           gradle assembleRelease --no-daemon 2>&1 | tee build.log
 
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+
       - name: Jouer une partie et prendre des captures
         uses: reactivecircus/android-emulator-runner@v2
         with:

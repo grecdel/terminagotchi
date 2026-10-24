@@ -12,6 +12,7 @@ import android.os.VibrationEffect
 import android.os.Vibrator
 import android.provider.Settings
 import android.speech.tts.TextToSpeech
+import org.json.JSONObject
 import java.io.File
 import java.util.Locale
 
@@ -21,7 +22,13 @@ import java.util.Locale
  *  - 🐾 jouer avec la créature (caresse, joue, devine…)
  * Comme les commandes « termux-… » de Termux : des outils du terminal propres à cette appli.
  */
-class Commandes(private val act: Activity, private val jeu: Jeu, private val dossier: () -> File) {
+class Commandes(
+    private val act: Activity,
+    private val jeu: Jeu,
+    private val dossier: () -> File,
+    /** pour les réponses qui arrivent plus tard (réseau) */
+    private val plusTard: (String, Int?) -> Unit = { _, _ -> },
+) {
 
     /** aller : dossier où emmener le joueur après la commande (donjon, ctf…). */
     class Reponse(val texte: String, val saut: Int = 0, val couleur: Int? = null, val aller: File? = null)
@@ -81,7 +88,9 @@ class Commandes(private val act: Activity, private val jeu: Jeu, private val dos
             "bois" -> Reponse(Donjon.bois(jeu, reste), saut = 2, couleur = JAUNE)
             "attaque" -> Donjon.attaque(jeu, dossier()).let { Reponse(it.texte, saut = 6, couleur = JAUNE, aller = it.aller) }
             "ctf" -> Ctf.ouvrir(jeu, reste).let { Reponse(it.first, couleur = VERT, aller = it.second) }
-            "drapeau" -> Reponse(Ctf.valider(jeu, reste), saut = 4, couleur = VERT)
+            "drapeau" -> drapeau(reste)
+            "compte" -> compte(reste)
+            "sync" -> sync()
             "indice" -> Reponse(Ctf.indice(jeu, reste), couleur = VERT)
             "edite" -> edite(reste)
             "doom" -> doom()
@@ -222,6 +231,139 @@ class Commandes(private val act: Activity, private val jeu: Jeu, private val dos
         return lancer(Intent(action), "⚙ J'ouvre les réglages ${quoi ?: ""}".trim(), "")
     }
 
+    // ---------------------------------------------------------------- recensement (en ligne)
+    /** Lance un appel réseau hors de l'écran, puis affiche le résultat dans le terminal. */
+    private fun enLigne(travail: () -> JSONObject, ensuite: (JSONObject) -> String) {
+        Thread {
+            val r = travail()
+            act.runOnUiThread {
+                val msg = ensuite(r)
+                jeu.sauver()
+                plusTard(msg, BLEU)
+            }
+        }.start()
+    }
+
+    private fun adresse(): String = Recensement.serveur(Recensement.compte(jeu).optString("serveur"))
+
+    fun sync(forcer: Boolean = true, silencieux: Boolean = false): Reponse {
+        val p = Recensement.preparer(jeu, forcer)
+            ?: return Reponse(if (Recensement.aUnCompte(jeu)) "Synchro déjà en cours…" else
+                "Pas encore de compte : compte creer TonPseudo  (ou : compte lier CODE)", couleur = BLEU)
+        Thread {
+            val (r, url) = Recensement.envoyer(p)
+            act.runOnUiThread {
+                val msg = Recensement.appliquer(jeu, p, r, url)
+                jeu.sauver()
+                // synchro automatique : on ne parle que s'il y a du nouveau (XP venue d'ailleurs, badge)
+                val nouveau = msg.contains("XP venus") || msg.contains("🏅")
+                if (!silencieux || nouveau) plusTard(msg, BLEU)
+            }
+        }.start()
+        return Reponse(if (silencieux) "" else "⏳ Synchronisation…", couleur = BLEU)
+    }
+
+    private fun compte(reste: String): Reponse {
+        val mots = reste.split(Regex("\\s+")).filter { it.isNotEmpty() }
+        val c = Recensement.compte(jeu)
+        val action = mots.firstOrNull()?.lowercase() ?: ""
+        when (action) {
+            "serveur" -> {
+                val u = mots.getOrNull(1) ?: return Reponse("Adresse actuelle : ${c.optString("serveur").ifEmpty { "(automatique)" }}")
+                c.put("serveur", u.trimEnd('/'))
+                return Reponse("Adresse du recensement réglée sur $u", couleur = BLEU)
+            }
+            "creer" -> {
+                if (Recensement.aUnCompte(jeu)) return Reponse("Tu as déjà un compte : ${c.optString("pseudo")}.", couleur = ORANGE)
+                val pseudo = mots.getOrNull(1) ?: return Reponse("Exemple : compte creer TonPseudo  (3 à 20 lettres sans accent, chiffres, - ou _)", couleur = ORANGE)
+                var url = ""
+                enLigne({
+                    url = adresse()
+                    if (url.isEmpty()) JSONObject().put("erreur", "le site n'est pas encore en ligne")
+                    else Recensement.requete("$url/api/inscription", "POST",
+                        JSONObject().put("pseudo", pseudo).put("appareil", Recensement.APPAREIL))
+                }) { r ->
+                    if (!r.has("cle")) return@enLigne "⚠ ${r.optString("erreur", "inscription impossible")}"
+                    Recensement.enregistrer(jeu, r.getString("pseudo"), r.getString("cle"), url)
+                    sync(forcer = true)
+                    "🌍 Bienvenue au recensement, ${r.getString("pseudo")} !\nTon profil : $url/joueur/${r.getString("pseudo")}\n" +
+                        "Pour la même créature sur ton PC : compte code"
+                }
+                return Reponse("⏳ Inscription au recensement…", couleur = BLEU)
+            }
+            "lier" -> {
+                val code = mots.getOrNull(1) ?: return Reponse("Exemple : compte lier AB3K9Z  (code obtenu sur l'autre appareil : compte code)", couleur = ORANGE)
+                var url = ""
+                enLigne({
+                    url = adresse()
+                    if (url.isEmpty()) JSONObject().put("erreur", "le site n'est pas encore en ligne")
+                    else Recensement.requete("$url/api/lier", "POST",
+                        JSONObject().put("code", code).put("appareil", Recensement.APPAREIL))
+                }) { r ->
+                    if (!r.has("cle")) return@enLigne "⚠ ${r.optString("erreur", "liaison impossible")}"
+                    Recensement.enregistrer(jeu, r.getString("pseudo"), r.getString("cle"), url)
+                    sync(forcer = true)
+                    "🔗 Ce téléphone est relié au compte ${r.getString("pseudo")} ! Ta progression d'ici s'y ajoute."
+                }
+                return Reponse("⏳ Liaison au compte…", couleur = BLEU)
+            }
+            "oublier" -> {
+                jeu.extra.remove("compte")
+                return Reponse("Ce téléphone n'est plus relié au compte (le compte, lui, existe toujours).", couleur = BLEU)
+            }
+        }
+        if (!Recensement.aUnCompte(jeu)) {
+            return Reponse("🌍 Le recensement : la même créature sur ton téléphone et ton PC, un classement, des badges vérifiés.\n" +
+                "  compte creer TonPseudo  → créer ton compte\n  compte lier CODE        → rejoindre le compte de ton PC", couleur = BLEU)
+        }
+        val cle = c.optString("cle")
+        if (action == "code") {
+            enLigne({
+                val url = adresse()
+                if (url.isEmpty()) JSONObject().put("erreur", "le site n'est pas encore en ligne")
+                else Recensement.requete("$url/api/code", "POST", JSONObject(), cle)
+            }) { r ->
+                if (!r.has("code")) "⚠ ${r.optString("erreur", "impossible d'obtenir un code")}"
+                else "🔑 Code de liaison : ${r.getString("code")}  (valable 10 minutes)\nSur ton PC : tg compte lier ${r.getString("code")}"
+            }
+            return Reponse("⏳ Demande d'un code…", couleur = BLEU)
+        }
+        val dernier = c.optLong("dernier")
+        val quand = if (dernier > 0) java.text.SimpleDateFormat("HH:mm", java.util.Locale.FRANCE).format(java.util.Date(dernier)) else "jamais"
+        val url = c.optString("serveur")
+        return Reponse("🌍 Compte : ${c.optString("pseudo")} · dernière synchro : $quand\nProfil : $url/joueur/${c.optString("pseudo")}\n" +
+            "CTF web (badges vérifiés) : $url/ctf\n  compte code → relier un autre appareil · sync → synchroniser", couleur = BLEU)
+    }
+
+    private fun drapeau(proposition: String): Reponse {
+        val local = Ctf.valider(jeu, proposition)
+        if (!local.startsWith("❌") || !Recensement.aUnCompte(jeu) || !proposition.trim().startsWith("TG{")) {
+            return Reponse(local, saut = 4, couleur = VERT)
+        }
+        val cle = Recensement.compte(jeu).optString("cle")
+        enLigne({
+            val url = adresse()
+            Recensement.requete("$url/api/drapeau", "POST", JSONObject().put("drapeau", proposition.trim()), cle)
+                .put("_url", url)
+        }) { r ->
+            if (!r.optBoolean("ok")) return@enLigne "❌ ${r.optString("message", r.optString("erreur", "drapeau refusé"))}"
+            val url = r.optString("_url")
+            if (r.optBoolean("nouveau")) {
+                jeu.ajouterXp(40)
+                jeu.stats["Intelligence"] = (jeu.stats["Intelligence"] ?: 0) + 3
+                jeu.log("🚩 Drapeau web validé : ${r.optString("titre")} !")
+            }
+            buildString {
+                append("🚩 Drapeau web validé : ${r.optString("titre")} (${r.optInt("score")}/${r.optInt("sur")})")
+                if (!r.optBoolean("nouveau")) append(" — déjà validé")
+                append("\n📐 ${r.optString("lecon")}")
+                if (!r.isNull("badge") && r.optString("badge").isNotEmpty()) append("\n🏅 Badge vérifié : $url${r.optString("badge")}")
+                if (!r.isNull("badgeFinal") && r.optString("badgeFinal").isNotEmpty()) append("\n🏆 TOUS LES DRAPEAUX ! $url${r.optString("badgeFinal")}")
+            }
+        }
+        return Reponse("⏳ Ce n'est pas un drapeau du CTF de l'appli… je demande au serveur (CTF web).", couleur = VERT)
+    }
+
     // ---------------------------------------------------------------- progression et jeux
     private fun arbre(choix: String): Reponse {
         if (choix.isEmpty()) return Reponse(Arbre.texte(jeu), couleur = ROSE)
@@ -316,6 +458,7 @@ class Commandes(private val act: Activity, private val jeu: Jeu, private val dos
         if (nom.isEmpty()) return Reponse("Exemple : renomme Pixel", couleur = ORANGE)
         val ancien = jeu.nom
         jeu.nom = nom.take(16)
+        Recensement.compte(jeu).put("nomDate", System.currentTimeMillis())
         return Reponse("Je ne m'appelle plus $ancien… je suis ${jeu.nom} !", saut = 3, couleur = ROSE)
     }
 

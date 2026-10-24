@@ -76,7 +76,10 @@ class TerminalActivity : Activity() {
 
         jeu = Jeu(this)
         shell = Shell(jeu.home)
-        commandes = Commandes(this, jeu) { shell.dossier }
+        commandes = Commandes(this, jeu, { shell.dossier }) { texte, couleur ->
+            if (texte.isNotEmpty()) ecrire(texte, couleur)
+            rafraichir()
+        }
         Rappels.programmer(this)
         if (android.os.Build.VERSION.SDK_INT >= 33 &&
             checkSelfPermission("android.permission.POST_NOTIFICATIONS") != android.content.pm.PackageManager.PERMISSION_GRANTED) {
@@ -170,6 +173,7 @@ class TerminalActivity : Activity() {
         if (::jeu.isInitialized && !enCours) {
             jeu.recharger()        // le Doom ou l'éditeur ont pu changer des choses
             rafraichir()
+            if (::commandes.isInitialized && Recensement.aUnCompte(jeu)) commandes.sync(forcer = false, silencieux = true)
             if (::contenu.isInitialized) majObservatoire(null)
         }
     }
@@ -340,6 +344,7 @@ class TerminalActivity : Activity() {
                     "🐾 Avec moi : caresse, danse, parle, joue, devine, etat, renomme\n" +
                     "🎮 Jeux : donjon, plan, quetes, attaque, sac, equipe · ctf, drapeau, indice · doom, edite\n" +
                     "🌳 Progresser : arbre, collection, defi, cherche <ce que tu veux faire>\n" +
+                    "🌍 En ligne : compte, compte creer Pseudo, compte code, compte lier CODE, sync\n" +
                     "Tout est expliqué dans 📖 Lexique. Chaque commande tapée me nourrit (pas les collées !).\n" +
                     "clear = effacer · quitter = fermer")
                 return
@@ -392,6 +397,9 @@ class TerminalActivity : Activity() {
         WidgetCreature.majTous(this)
         if (mange) saut = maxOf(saut, 4)
         rafraichir()
+        if (Recensement.aUnCompte(jeu) && Regles.premierMot(ligne) !in setOf("sync", "compte")) {
+            commandes.sync(forcer = false, silencieux = true)
+        }
     }
 
     private fun ecrire(texte: String, couleur: Int? = null) {
