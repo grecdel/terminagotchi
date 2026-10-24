@@ -675,8 +675,20 @@ class TerminalActivity : Activity() {
             else if (jeu.existe) jeu.texteLecon() else null
         lecon.visibility = if (l == null) View.GONE else View.VISIBLE
         lecon.text = l ?: ""
-        // le panneau du dressage ne doit pas manger tout l'écran : il défile s'il est trop haut
-        lecon.maxHeight = if (panneau != null) (resources.displayMetrics.heightPixels * 0.40).toInt() else Int.MAX_VALUE
+        // le panneau du dressage ne doit pas écraser la ligne de saisie (un champ sans hauteur ne peut plus recevoir
+        // ce qu'on tape) : on cache la fenêtre d'observation, on réduit la sortie, et le panneau défile s'il est trop haut
+        val dp = resources.displayMetrics.density
+        val observatoire = chemin.parent as View
+        val boiteSortie = defile.parent as View
+        observatoire.visibility = if (panneau != null) View.GONE else View.VISIBLE
+        val hSortie = ((if (panneau != null) 100 else 140) * dp).toInt()
+        if (boiteSortie.layoutParams.height != hSortie) { boiteSortie.layoutParams.height = hSortie; boiteSortie.requestLayout() }
+        if (panneau != null) {
+            val fondH = findViewById<View>(R.id.fond).height.takeIf { it > 0 } ?: resources.displayMetrics.heightPixels
+            val entete = (titre.parent.parent as View).height
+            val hBulle = if (bulle.visibility == View.VISIBLE) bulle.height + (6 * dp).toInt() else 0
+            lecon.maxHeight = maxOf((70 * dp).toInt(), fondH - entete - hBulle - hSortie - ((44 + 52 + 40) * dp).toInt())
+        } else lecon.maxHeight = Int.MAX_VALUE
         if (lecon.movementMethod == null) lecon.movementMethod = android.text.method.ScrollingMovementMethod()
         // rien d'autre que la ligne de saisie ne doit pouvoir prendre le focus (sinon ce qu'on tape part dans le vide)
         verrouillerFocus(findViewById(R.id.panneau))
