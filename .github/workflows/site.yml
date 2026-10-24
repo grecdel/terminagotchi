@@ -49,6 +49,21 @@ jobs:
             echo "::notice::Secrets Cloudflare absents : le site est testé mais pas mis en ligne."
           fi
 
+      - name: Diagnostic de la clé Cloudflare
+        if: steps.secrets.outputs.ok == '1'
+        run: |
+          A="https://api.cloudflare.com/client/v4"
+          H="Authorization: Bearer $CLOUDFLARE_API_TOKEN"
+          resume() { node -e 'let s="";process.stdin.on("data",d=>s+=d).on("end",()=>{try{const j=JSON.parse(s);console.log(j.success?"OK":"REFUSÉ "+JSON.stringify(j.errors))}catch(e){console.log("réponse illisible")}})'; }
+          {
+            echo "jeton valide ?          $(curl -s -H "$H" $A/user/tokens/verify | resume)"
+            echo "comptes visibles :"
+            curl -s -H "$H" "$A/accounts" | node -e 'let s="";process.stdin.on("data",d=>s+=d).on("end",()=>{try{const j=JSON.parse(s);for(const a of j.result||[])console.log("   - "+a.name+(a.id===process.env.CLOUDFLARE_ACCOUNT_ID?"   ← correspond à CLOUDFLARE_ACCOUNT_ID":""));if(!(j.result||[]).length)console.log("   (aucun)")}catch(e){console.log("   illisible")}})'
+            echo "ID de compte (longueur) : ${#CLOUDFLARE_ACCOUNT_ID} caractères"
+            echo "accès Workers ?         $(curl -s -H "$H" $A/accounts/$CLOUDFLARE_ACCOUNT_ID/workers/scripts | resume)"
+            echo "accès D1 ?              $(curl -s -H "$H" $A/accounts/$CLOUDFLARE_ACCOUNT_ID/d1/database | resume)"
+          } 2>&1 | tee diag.log
+
       - name: Préparer la base de données
         if: steps.secrets.outputs.ok == '1'
         run: |
@@ -84,6 +99,7 @@ jobs:
           cp "$GITHUB_WORKSPACE/site/deploy.log" . 2>/dev/null || true
           cp "$GITHUB_WORKSPACE/site/dev.log" . 2>/dev/null || true
           sed -E 's/[A-Za-z0-9_-]{40}/[masqué]/g' "$GITHUB_WORKSPACE/site/db.log" > db.log 2>/dev/null || true
+          cp "$GITHUB_WORKSPACE/site/diag.log" . 2>/dev/null || true
           git init -q && git checkout -q -b site-info
           git add -A
           git -c user.name="deploiement" -c user.email="deploiement@terminagotchi" commit -q -m "Site : run ${{ github.run_number }}" --allow-empty
