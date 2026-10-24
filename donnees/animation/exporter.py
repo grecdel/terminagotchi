@@ -147,7 +147,7 @@ def terminal(images, palette_imgs=None):
     bande = Image.new("RGBA", (TERM * len(petites), TERM))
     for i, p in enumerate(petites):
         bande.paste(p, (i * TERM, 0))
-    alpha = bande.getchannel("A").point(lambda v: 255 if v > 100 else 0)
+    alpha = bande.getchannel("A").point(lambda v: 255 if v > 200 else 0)   # l'aura lumineuse ne compte pas
     q = bande.convert("RGB").quantize(63, method=Image.MEDIANCUT)
     pal = q.getpalette()[:63 * 3]
     octets = bytearray()
@@ -193,13 +193,16 @@ def main():
 
 
 def exporter(rendus):
+    bruts = rendus
     cadre = cadre_commun([im for v in rendus.values() for im in v])
     rendus = {k: [im.crop(cadre) for im in v] for k, v in rendus.items()}
+    # terminal : chaque stade est cadré sur lui-même (un enfant tout petit serait illisible en 48 px)
+    cadres = {s: cadre_commun([im for (s2, _), v in bruts.items() if s2 == s for im in v]) for s in ORDRE}
 
     pc = {"espece": "Abyssor", "taille": TERM, "ips": 8, "format": "zlib", "stades": ORDRE, "anims": {}}
     poids = 0
     for (s, nom), imgs in rendus.items():
-        pc["anims"].setdefault(s, {})[nom] = terminal(imgs)
+        pc["anims"].setdefault(s, {})[nom] = terminal([im.crop(cadres[s]) for im in bruts[(s, nom)]])
         for dossier in (RACINE / "app/src/main/assets/anim/abyssor", RACINE / "site/public/anim/abyssor"):
             poids += bande_webp(imgs, dossier / s / f"{nom}.webp")
     index = {"espece": "Abyssor", "taille": GRAND, "ips": 10, "stades": ORDRE,

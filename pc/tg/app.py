@@ -18,6 +18,8 @@ def title_line(text, color=244):
 
 
 def render(state, frame, interactif):
+    if state.get("dressage"):
+        return render_dressage(state, interactif)
     lvl = core.level(state["xp"])
     st = core.stage(lvl)
     sprite, w = sprites.creature(state)
@@ -95,6 +97,19 @@ def render(state, frame, interactif):
         lines.append(f"{fg(244)} [/] chercher [l] lexique [a] arbre [c] collection [o] options [q] quitter{RESET}")
     else:
         lines.append(f"{DIM} il digère même fermé{RESET}")
+    return "\n".join(lines) + "\n"
+
+
+def render_dressage(state, interactif):
+    """Pendant un dressage : le face-à-face seulement (plus la bulle et les deux dernières lignes du journal)."""
+    lines = dressage.lignes_ecran(state)
+    b = state["bubble"]
+    if b and time.time() < b[1]:
+        lines += ["", f"  {BOLD}» {textwrap.shorten(b[0], 90)}{RESET}"]
+    lines.append(title_line("Journal"))
+    lines += [" " + l for l in state["log"][-2:]]
+    if interactif:
+        lines.append(f"{fg(244)} [l] lexique [/] chercher [q] quitter{RESET}")
     return "\n".join(lines) + "\n"
 
 

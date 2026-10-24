@@ -616,8 +616,32 @@ def petit_dessin(e, shiny):
     return B.dessin(e, shiny)
 
 
+_ANSI = re.compile(r"\x1b\[[0-9;]*m")
+
+
+def _largeur(t):
+    return len(_ANSI.sub("", t))
+
+
+def _pad(t, n):
+    return t + " " * max(0, n - _largeur(t))
+
+
+def _cote_a_cote(gauche, droite, lg, milieu=None):
+    h = max(len(gauche), len(droite))
+    gauche = [""] * ((h - len(gauche)) // 2) + gauche
+    droite = [""] * ((h - len(droite)) // 2) + droite
+    out = []
+    for k in range(h):
+        m = milieu if (milieu and k == h // 2) else " " * _largeur(milieu or "")
+        out.append("  " + _pad(gauche[k] if k < len(gauche) else "", lg) + m + (droite[k] if k < len(droite) else ""))
+    return out
+
+
 def lignes_ecran(state, largeur=62):
-    """La carte du monstre, puis une seule étape à la fois."""
+    """Face-à-face : ton familier à gauche, le monstre à droite, les stats sous chacun ; puis une seule étape."""
+    from . import core as C
+    from . import sprites
     from .plateforme import BOLD, DIM, RESET, fg, piege
     d = state.get("dressage")
     if not d:
@@ -629,27 +653,32 @@ def lignes_ecran(state, largeur=62):
     n_fait = len(d["faites"])
     mef = d.get("mefiance", 100) * (1 - n_fait / n_total)
     r = reste(state)
-    sp = petit_dessin(e, d["shiny"])
-    w = max(len(B.dessin(e)[0]) if not e.get("sprite_grand") else 24, 16)
-    titre = f"{BOLD}{B.nom_affiche(e, d['shiny'])}{RESET}  {DIM}#{e['numero']:03d}{RESET}  " \
-            f"{B.fg24(B.COULEUR_RARETE[e['rarete']])}{e['rarete']}{RESET}  {DIM}{e['famille']}{RESET}"
+    LG = 34                                     # largeur de la colonne de gauche
+    # ---- le familier
+    sp_f, _ = sprites.creature(state)
+    lvl = C.level(state["xp"])
+    st_f = "  ".join(f"{fg(v['color'])}{v['short']}{RESET} {BOLD}{state['stats'][v['stat']]}{RESET}" for v in C.CATEGORIES.values())
+    nom_f = B.arc_en_ciel(state["name"]) if state.get("shiny") else f"{BOLD}{state['name']}{RESET}"
+    gauche_txt = [f"{nom_f} {DIM}· niv. {lvl}{RESET}", st_f,
+                  f"{fg(250)}Faim{RESET}     {jauge(state['hunger'], 100, 12)}"]
+    # ---- le monstre
+    sp_m = petit_dessin(e, d["shiny"])
     if d.get("examine"):
-        stats = "  ".join(f"{fg(COUL_STAT.get(k, 250))}{k}{RESET} {BOLD}{v}{RESET}" for k, v in e["stats"].items())
+        st_m = "  ".join(f"{fg(COUL_STAT.get(k, 250))}{k}{RESET} {BOLD}{v}{RESET}" for k, v in e["stats"].items())
     else:
-        stats = f"{DIM}stats : ??? (examine-le d'abord){RESET}"
-    infos = [titre, stats, "",
-             f"{fg(213)}Méfiance{RESET} {jauge(mef, 100, 20, inverse=True)} {mef:3.0f} %",
-             (f"{fg(153)}Temps   {RESET} {jauge(r, d['duree'], 20)} {r:3.0f} s" if r is not None
-              else f"{fg(153)}Temps   {RESET} {fg(147)}pas de chrono : c'est une leçon{RESET}"),
-             "",
-             f"{DIM}Étape {min(n_fait + 1, n_total)}/{n_total}{RESET}  " + " ".join(
-                 f"{fg(120)}●{RESET}" if f in d["faites"] else f"{fg(226)}◉{RESET}" if _par_id(f) is tache_courante(state)
-                 else f"{fg(240)}○{RESET}" for f in d["taches"])]
+        st_m = f"{DIM}stats : ??? (examine-le){RESET}"
+    droite_txt = [f"{BOLD}{B.nom_affiche(e, d['shiny'])}{RESET} {DIM}#{e['numero']:03d}{RESET} "
+                  f"{B.fg24(B.COULEUR_RARETE[e['rarete']])}{e['rarete']}{RESET}", st_m,
+                  f"{fg(213)}Méfiance{RESET} {jauge(mef, 100, 12, inverse=True)} {mef:3.0f} %"]
     out = ["", f" {fg(196)}{BOLD}⚔ UN MONSTRE SAUVAGE !{RESET}", ""]
-    h = max(len(sp), len(infos))
-    for k in range(h):
-        g = sp[k] if k < len(sp) else " " * w
-        out.append("  " + g + "  " + (infos[k] if k < len(infos) else ""))
+    out += _cote_a_cote(sp_f, sp_m, LG, milieu=f"{fg(196)}{BOLD}  VS  {RESET}")
+    out += _cote_a_cote(gauche_txt, droite_txt, LG, milieu="      ")
+    out.append("")
+    chrono = (f"{fg(153)}Temps{RESET} {jauge(r, d['duree'], 30)} {r:3.0f} s" if r is not None
+              else f"{fg(153)}Temps{RESET} {fg(147)}pas de chrono : c'est une leçon{RESET}")
+    pastilles = " ".join(f"{fg(120)}●{RESET}" if f in d["faites"] else f"{fg(226)}◉{RESET}" if _par_id(f) is tache_courante(state)
+                         else f"{fg(240)}○{RESET}" for f in d["taches"])
+    out.append(f"  {chrono}    {DIM}Étape {min(n_fait + 1, n_total)}/{n_total}{RESET} {pastilles}")
     x = tache_courante(state)
     if x is None:
         return out

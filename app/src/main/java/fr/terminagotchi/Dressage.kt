@@ -374,18 +374,30 @@ object Dressage {
         val e = Bestiaire.espece(d.getString("espece")) ?: return null
         val sb = SpannableStringBuilder()
         sb.texte("⚔ UN MONSTRE SAUVAGE !\n", 0xFFFF5050.toInt(), true, 1.1f)
-        val a = sb.length
-        sb.append("￼")
-        val img = BitmapDrawable(res, Bestiaire.bitmap(e, d.optBoolean("shiny"), 5))
-        val px = (64 * res.displayMetrics.density).toInt()
-        img.setBounds(0, 0, px, px)
-        sb.setSpan(ImageSpan(img, DynamicDrawableSpan.ALIGN_BOTTOM), a, a + 1, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
-        sb.texte(" ${e.nom}", Bestiaire.COULEUR_RARETE[e.rarete] ?: -1, true, 1.15f)
-        sb.texte("  #%03d · ${e.rarete} · ${e.famille}\n".format(e.numero), 0xFF9090A8.toInt())
+        // face-à-face : ton familier à gauche, le monstre à droite
+        val px = (72 * res.displayMetrics.density).toInt()
+        fun image(b: android.graphics.Bitmap) {
+            val a = sb.length
+            sb.append("\uFFFC")
+            val img = BitmapDrawable(res, b)
+            img.setBounds(0, 0, px, px)
+            sb.setSpan(ImageSpan(img, DynamicDrawableSpan.ALIGN_BOTTOM), a, a + 1, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
+        }
+        image(Sprites.bitmap(jeu, 6, false))
+        sb.texte("   VS   ", 0xFFFF5050.toInt(), true, 1.3f)
+        image(Bestiaire.bitmap(e, d.optBoolean("shiny"), 5))
+        sb.append("\n")
+        val COUL_FAM = mapOf("Intelligence" to 0xFF00AFFF.toInt(), "Agilité" to 0xFF5FD787.toInt(),
+            "Force" to 0xFFFF5F5F.toInt(), "Endurance" to 0xFFFFD75F.toInt())
+        sb.texte("◀ ${jeu.nom}  ", 0xFFFFFFFF.toInt(), true)
+        for ((k, v) in jeu.stats) { sb.texte(k.take(3).uppercase(), COUL_FAM[k] ?: -1, true); sb.texte(" $v  ", 0xFFE0E0F0.toInt()) }
+        sb.append("\n")
+        sb.texte("▶ ${e.nom}", Bestiaire.COULEUR_RARETE[e.rarete] ?: -1, true)
+        sb.texte("  #%03d ${e.rarete}  ".format(e.numero), 0xFF9090A8.toInt())
         if (d.optBoolean("examine")) {
             for ((k, v) in e.stats) { sb.texte(k, COUL_STAT[k] ?: -1, true); sb.texte(" $v  ", 0xFFE0E0F0.toInt()) }
             sb.append("\n")
-        } else sb.texte("stats : ??? (examine-le d'abord)\n", 0xFF808098.toInt())
+        } else sb.texte("stats ??? (examine-le)\n", 0xFF808098.toInt())
         val nTot = d.getJSONArray("taches").length()
         val nFait = d.getJSONArray("faites").length()
         val mef = d.optInt("mefiance", 100) * (1 - nFait.toDouble() / nTot)
