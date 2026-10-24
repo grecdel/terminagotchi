@@ -52,15 +52,20 @@ jobs:
       - name: Préparer la base de données
         if: steps.secrets.outputs.ok == '1'
         run: |
-          npx wrangler@3 d1 list --json > d1.json || true
+          set -o pipefail
+          {
+            echo "== wrangler whoami"; npx wrangler@3 whoami || true
+            echo "== d1 list"; npx wrangler@3 d1 list --json > d1.json; cat d1.json
+          } 2>&1 | tee db.log
           ID=$(node -e 'try{const l=JSON.parse(require("fs").readFileSync("d1.json","utf8"));const d=l.find(x=>x.name==="terminagotchi");console.log(d?(d.uuid||d.id||""):"")}catch(e){console.log("")}')
           if [ -z "$ID" ]; then
-            npx wrangler@3 d1 create terminagotchi | tee create.log
-            ID=$(grep -oE '[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}' create.log | head -1)
+            npx wrangler@3 d1 create terminagotchi 2>&1 | tee -a db.log
+            ID=$(grep -oE '[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}' db.log | tail -1)
           fi
-          echo "Base : $ID"
+          echo "Base : $ID" | tee -a db.log
+          test -n "$ID"
           sed -i "s/00000000-0000-0000-0000-000000000000/$ID/" wrangler.toml
-          npx wrangler@3 d1 execute terminagotchi --remote --file=schema.sql
+          npx wrangler@3 d1 execute terminagotchi --remote --file=schema.sql 2>&1 | tee -a db.log
 
       - name: Mettre en ligne
         if: steps.secrets.outputs.ok == '1'
@@ -78,6 +83,7 @@ jobs:
           cp "$GITHUB_WORKSPACE/test-site.log" . 2>/dev/null || true
           cp "$GITHUB_WORKSPACE/site/deploy.log" . 2>/dev/null || true
           cp "$GITHUB_WORKSPACE/site/dev.log" . 2>/dev/null || true
+          sed -E 's/[A-Za-z0-9_-]{40}/[masqué]/g' "$GITHUB_WORKSPACE/site/db.log" > db.log 2>/dev/null || true
           git init -q && git checkout -q -b site-info
           git add -A
           git -c user.name="deploiement" -c user.email="deploiement@terminagotchi" commit -q -m "Site : run ${{ github.run_number }}" --allow-empty
