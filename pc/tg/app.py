@@ -1,5 +1,7 @@
 """Écran principal, menus (recherche, arbre, collection) et boucle de jeu."""
 import os
+import random
+import re
 import sys
 import textwrap
 import time
@@ -18,15 +20,24 @@ def title_line(text, color=244):
     return fg(color) + "── " + text + " " + "─" * max(3, 44 - len(text)) + RESET
 
 
-def render(state, frame, interactif):
+_ANSI = re.compile(r"\x1b\[[0-9;]*m")
+
+
+def render(state, frame, interactif, anim=None):
+    """anim : les lignes d'une image d'animation à afficher à la place du dessin habituel."""
     d = state.get("dressage")
     if d and not d.get("fenetre"):          # pas de fenêtre possible (pas d'écran graphique) : on l'affiche ici
         return render_dressage(state, interactif)
     lvl = core.level(state["xp"])
     st = core.stage(lvl)
-    sprite, w = sprites.creature(state)
-    sprite = ([" " * w] + sprite) if frame % 2 else (sprite + [" " * w])
-    left = ["  " + line + " " * (20 - w) for line in sprite]
+    if anim:
+        w = max(len(_ANSI.sub("", l)) for l in anim)
+        sprite = list(anim)
+    else:
+        sprite, w = sprites.creature(state)
+        sprite = ([" " * w] + sprite) if frame % 2 else (sprite + [" " * w])
+    lg = max(20, w)
+    left = ["  " + line + " " * (lg - w) for line in sprite]
 
     forme = core.STAGES[st] + (f" {core.FORMES[state['branch']]}" if st >= 2 and state.get("branch") else "")
     lo, hi = 10 * (lvl - 1) ** 2, 10 * lvl ** 2
@@ -41,7 +52,7 @@ def render(state, frame, interactif):
         f"Compétences {nb_sk} · Bestioles {sum(state['collection'].values())}",
     ]
     n = max(len(left), len(right))
-    left += [" " * 22] * (n - len(left))
+    left += [" " * (lg + 2)] * (n - len(left))
     right += [""] * (n - len(right))
     lines = [l + r for l, r in zip(left, right)]
 
@@ -112,11 +123,13 @@ def vue_dressage():
     sys.stdout.write("\033[?25l")
     try:
         fini = None
+        vu = None                                 # le dernier face-à-face affiché (pour l'animation de fin)
         while True:
             state = etape(spontane=False, defis=False)
             if state is None:
                 return
             if state.get("dressage"):
+                vu = dict(state["dressage"])
                 clear()
                 sys.stdout.write(render_dressage(state, False))
                 sys.stdout.write(f"{DIM} Tape tes commandes dans ton autre terminal · Ctrl+C pour fermer cette fenêtre{RESET}\n")
@@ -127,9 +140,13 @@ def vue_dressage():
                     clear()
                     b = state.get("bubble")
                     print("\n  " + (b[0] if b else "Le dressage est terminé."))
-                    act = equipe.active(state)
-                    if act:
-                        equipe.jouer(state, [act["espece"], "victoire" if b and "🎓" not in b[0] else "content"], tours=2)
+                    ind = (vu or {}).get("ind")
+                    if ind:
+                        pris = next((c for c in state.get("captures", []) if c.get("id") == ind.get("id")), None)
+                        bete = pris or dict(ind, espece=vu["espece"], shiny=vu.get("shiny"))
+                        r = equipe.animation(bete, "victoire" if pris else "ko")
+                        if r:
+                            equipe.derouler(r[0], r[1], 2)
                 if time.time() - fini > 6:
                     return
             time.sleep(0.7)
@@ -381,25 +398,79 @@ def creer_si_besoin():
             core.save(state)
 
 
+RYTHME = 1.5          # secondes entre deux étapes de jeu
+AMBIANCE = 25         # secondes entre deux petites animations d'ambiance (sommeil la nuit, faim)
+
+
+def _nuit():
+    h = time.localtime().tm_hour
+    return h >= 21 or h < 7
+
+
+def _preparer_anim(state, nom):
+    """[images, ips, image courante, nombre d'images à jouer] : court (≈ 3 s), jamais bloquant."""
+    try:
+        frames, ips = sprites.animation(state, nom)
+    except Exception:
+        return None
+    n = len(frames) if nom == "evolution" else min(2 * len(frames), max(len(frames), int(3 * ips)))
+    return [frames, ips, 0, n]
+
+
+def _ecran(texte):
+    """Redessine sans tout effacer d'abord (pas de clignotement pendant les animations)."""
+    sys.stdout.write("\033[H" + texte.replace("\n", "\033[K\n") + "\033[J")
+    sys.stdout.flush()
+
+
 def fenetre(once):
     if "--defi" in sys.argv:
         core.modifier(core.defi_start)
     frame = 0
     clav = Clavier()
     interactif = clav.ok and not once
+    anim = None
+    vu_anim = time.time()                 # on ne rejoue pas les événements d'avant l'ouverture
+    ambiance = time.time() + AMBIANCE
+    dernier = 0
+    state = None
     try:
         with clav:
+            clear()
             while True:
-                state = etape(spontane=not once)
-                clear()
-                sys.stdout.write(render(state, frame, interactif))
-                sys.stdout.flush()
+                now = time.time()
+                if state is None or now - dernier >= RYTHME:
+                    state = etape(spontane=not once)
+                    dernier = now
+                    frame += 1
+                    evt = state.get("anim")
+                    if not once and evt and evt[1] > vu_anim:
+                        vu_anim = evt[1]
+                        if now - evt[1] < 15:
+                            anim = _preparer_anim(state, evt[0]) or anim
+                    elif not once and anim is None and now >= ambiance:
+                        ambiance = now + AMBIANCE
+                        if _nuit():
+                            anim = _preparer_anim(state, "dort")
+                        elif state["hunger"] < 30:
+                            anim = _preparer_anim(state, "affame")
+                        elif random.random() < 0.3:
+                            anim = _preparer_anim(state, random.choice(["statique", "salut", "content"]))
+                image = anim[0][anim[2] % len(anim[0])] if anim else None
+                _ecran(render(state, frame, interactif, image))
                 if once:
                     break
-                frame += 1
-                k = clav.touche(1.5)
+                if anim:
+                    k = clav.touche(1 / anim[1])
+                    anim[2] += 1
+                    if anim[2] >= anim[3]:
+                        anim = None
+                else:
+                    k = clav.touche(max(0.05, RYTHME - (time.time() - dernier)))
                 if not k:
                     continue
+                anim = None
+                clear()
                 k = k.lower()
                 if k in ("/", "r", "?"):
                     menu_recherche(state, clav)
