@@ -18,7 +18,8 @@ def title_line(text, color=244):
 
 
 def render(state, frame, interactif):
-    if state.get("dressage"):
+    d = state.get("dressage")
+    if d and not d.get("fenetre"):          # pas de fenêtre possible (pas d'écran graphique) : on l'affiche ici
         return render_dressage(state, interactif)
     lvl = core.level(state["xp"])
     st = core.stage(lvl)
@@ -56,12 +57,12 @@ def render(state, frame, interactif):
         reste = max(0, core.defi_duree(state) - (time.time() - d["start"]))
         lines.append(title_line(f"⚡ DÉFI ÉCLAIR : tape « {piege(d['cmd'])} » — {reste:.0f} s", 226))
 
-    lines += dressage.lignes_ecran(state)
+    if d:
+        lines.append(f" {fg(196)}{BOLD}⚔ Un {d['espece']} sauvage est apparu dans sa propre fenêtre !{RESET} "
+                     f"{DIM}(fermée par erreur ? tg dressage){RESET}")
 
     les, etiquette = lecons.lecon_courante(state)
-    if state.get("dressage"):
-        pass
-    elif les:
+    if les:
         if lvl < les["niveau"]:
             lines.append(title_line(f"{etiquette} : niveau {les['niveau']} requis"))
             lines.append(f" {DIM}Continue à me nourrir, je dois encore grandir…{RESET}")
@@ -79,10 +80,9 @@ def render(state, frame, interactif):
         lines.append(title_line("Arbre de compétences ouvert", 213))
         lines.append(" Choisis la branche que je vais t'apprendre : touche [a]")
 
-    if not state.get("dressage"):
-        lines.append(title_line(f"Ce que je digère ({DISTRO or OS_NAMES[OSK]})"))
-        for k, v in core.CATEGORIES.items():
-            lines.append(f" {fg(v['color'])}{v['stat']:<13}{RESET}{core.EXAMPLES[OSK][k]}")
+    lines.append(title_line(f"Ce que je digère ({DISTRO or OS_NAMES[OSK]})"))
+    for k, v in core.CATEGORIES.items():
+        lines.append(f" {fg(v['color'])}{v['stat']:<13}{RESET}{core.EXAMPLES[OSK][k]}")
 
     lines.append(title_line("Journal"))
     if state["total"] == 0:
@@ -92,7 +92,7 @@ def render(state, frame, interactif):
         elif not compagnon.est_installe():
             lines.append(f" {fg(226)}Astuce : appuie sur [o] puis 3 pour que je voie")
             lines.append(f" tes commandes en direct (sinon, seulement à la fermeture du terminal).{RESET}")
-    lines += [" " + l for l in state["log"][-(2 if state.get("dressage") else 4):]]
+    lines += [" " + l for l in state["log"][-4:]]
     if interactif:
         lines.append(f"{fg(244)} [/] chercher [l] lexique [a] arbre [c] collection [o] options [q] quitter{RESET}")
     else:

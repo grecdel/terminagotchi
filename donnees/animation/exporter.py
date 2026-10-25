@@ -36,22 +36,119 @@ GRAND = 128
 COU = A.PIV["tete"]
 
 
-def jeu_stade(base, tete, ailes):
-    out = dict(base)
-    if tete != 1:
-        out["tete"] = A.mise_echelle(base["tete"], COU, tete)
-    for k in ("aile_g", "aile_d"):
-        if ailes != 1:
-            out[k] = A.mise_echelle(base[k], A.PIV[k], ailes)
-    return out
+PIED = (313, 592)
+BASE = {"PIV": dict(A.PIV), "YEUX": list(A.YEUX), "TETE": A.TETE, "MOUCHE": A.MOUCHE, "QUEUE": G.QUEUE}
 
+
+def affine(im, P, sx, sy, Pp):
+    """Agrandit l'image autour du point P (sx, sy), puis amène P en Pp."""
+    a, d = 1 / sx, 1 / sy
+    return im.transform(im.size, Image.AFFINE, (a, 0, P[0] - Pp[0] * a, 0, d, P[1] - Pp[1] * d), resample=Image.BICUBIC)
+
+
+def morphologie(base, corps=(1, 1), tete=1.0, ailes=1.0, sans_ailes=False):
+    """Un vrai changement de corps : proportions du tronc et des membres, taille de la tête, ailes ou pas.
+    Renvoie les calques et les repères (articulations, yeux, bouche…) qui vont avec."""
+    sx, sy = corps
+    T = lambda p: (PIED[0] + (p[0] - PIED[0]) * sx, PIED[1] + (p[1] - PIED[1]) * sy)
+    out, piv = {}, dict(BASE["PIV"])
+    out["corps"] = affine(base["corps"], PIED, sx, sy, PIED)
+    out["bras"] = affine(base["bras"], PIED, sx, sy, PIED)
+    piv["bras"] = T(BASE["PIV"]["bras"])
+    for k in ("aile_g", "aile_d"):
+        if sans_ailes:
+            out[k] = Image.new("RGBA", base[k].size)
+        else:
+            out[k] = affine(base[k], BASE["PIV"][k], ailes, ailes, T(BASE["PIV"][k]))
+        piv[k] = T(BASE["PIV"][k])
+    cou = T(COU)
+    out["tete"] = affine(base["tete"], COU, tete, tete, cou)
+    piv["tete"] = cou
+    rep = lambda p: (cou[0] + (p[0] - COU[0]) * tete, cou[1] + (p[1] - COU[1]) * tete)
+    reperes = {
+        "PIV": piv,
+        "YEUX": [rep(y) for y in BASE["YEUX"]],
+        "TETE": (A.PAD + rep((BASE["TETE"][0] - A.PAD, BASE["TETE"][1] - A.PAD))[0],
+                 A.PAD + rep((BASE["TETE"][0] - A.PAD, BASE["TETE"][1] - A.PAD))[1]),
+        "MOUCHE": rep(BASE["MOUCHE"]),
+        "QUEUE": T(BASE["QUEUE"]),
+    }
+    return out, reperes
+
+
+def tete_enfant():
+    """Tête d'enfant : ni cornes ni crête, pas de crocs, grands yeux ronds, petite bouche."""
+    im = G.sans_pointes(G.cornes_echelle(G.sans_crocs(A.L["tete"]), 0), A.H)
+    im = G.crete(im)
+    G.yeux_mignons(im)
+    G.bouche_mignonne(im)
+    return G.variante(1.12, 0.82, 0.12)(im)
+
+
+def sans_restes_d_ailes(corps):
+    """Le corps de l'enfant sans les bouts de membrane collés aux épaules."""
+    import numpy as np
+    from scipy import ndimage
+    a = np.asarray(corps).copy()
+    ailes = (np.asarray(A.L["aile_g"])[..., 3] > 0) | (np.asarray(A.L["aile_d"])[..., 3] > 0)
+    a[..., 3][ndimage.binary_dilation(ailes, iterations=2)] = 0
+    lab, n = ndimage.label(a[..., 3] > 0)                     # on garde le corps, pas les miettes
+    if n > 1:
+        t = ndimage.sum(np.ones_like(lab), lab, range(1, n + 1))
+        a[..., 3][~np.isin(lab, 1 + np.where(t > t.max() * 0.02)[0])] = 0
+    return G.boucher(Image.fromarray(a, "RGBA"))
+
+
+def tete_ronde(tete, centre=(313, 181), rx=66, ry=69):
+    """Ne garde que le visage, dans un ovale bien net (fini les bouts d'épaules autour)."""
+    import numpy as np
+    from scipy import ndimage
+    a = np.asarray(tete).copy()
+    yy, xx = np.mgrid[0:a.shape[0], 0:a.shape[1]]
+    ovale = ((xx - centre[0]) / rx) ** 2 + ((yy - centre[1]) / ry) ** 2 <= 1
+    garde = ovale & (a[..., 3] > 0)
+    a[..., 3][~garde] = 0
+    a = np.asarray(G.boucher(Image.fromarray(a, "RGBA"))).copy()
+    bord = (a[..., 3] > 0) & ~ndimage.binary_erosion(a[..., 3] > 0, iterations=3)
+    a[..., 0][bord], a[..., 1][bord], a[..., 2][bord] = 45, 10, 18            # contour sombre, comme du pixel art
+    return Image.fromarray(a, "RGBA")
+
+
+def crane_lisse(tete, y_haut=100):
+    """Rien au-dessus du crâne : ni cornes, ni crête, ni éclats."""
+    import numpy as np
+    a = np.asarray(tete).copy()
+    a[:y_haut, :, 3] = 0
+    return Image.fromarray(a, "RGBA")
+
+
+_enf = dict(G.B)
+_enf["corps"] = sans_restes_d_ailes(G.B["corps"])
+_enf["tete"] = tete_ronde(crane_lisse(tete_enfant()))
+_c_enf, _r_enf = morphologie(_enf, corps=(1.04, 0.8), tete=1.6, sans_ailes=True)
+_c_ado, _r_ado = morphologie(G.J, corps=(0.95, 0.9), tete=1.12, ailes=0.55)
+_c_adu, _r_adu = morphologie(A.L)
+_c_fin, _r_fin = morphologie(G.E, corps=(1.06, 1.04), tete=1.0)
 
 STADES = {
-    "enfant": {"calques": jeu_stade(G.B, 1.35, 0.42), "taille": 0.6},
-    "ado": {"calques": jeu_stade(G.J, 1.12, 0.66), "taille": 0.8},
-    "adulte": {"calques": A.L, "taille": 1.0},
-    "finale": {"calques": G.E, "taille": 1.0, "aura": True},
+    "enfant": {"calques": _c_enf, "reperes": _r_enf, "taille": 0.85},
+    "ado": {"calques": _c_ado, "reperes": _r_ado, "taille": 0.93},
+    "adulte": {"calques": _c_adu, "reperes": _r_adu, "taille": 1.0},
+    "finale": {"calques": _c_fin, "reperes": _r_fin, "taille": 1.0, "aura": True},
 }
+
+
+def appliquer_stade(stade):
+    """Met en place les repères du stade (articulations, yeux, bouche…) utilisés par les animations."""
+    r = STADES[stade]["reperes"]
+    A.PIV.clear(); A.PIV.update(r["PIV"])
+    A.YEUX[:] = r["YEUX"]
+    A.TETE = r["TETE"]
+    A.MOUCHE = r["MOUCHE"]
+    G.QUEUE = r["QUEUE"]
+    COURANT["stade"] = stade
+
+
 ORDRE = ["enfant", "ado", "adulte", "finale"]
 
 _compo = A.compo
@@ -92,7 +189,7 @@ def taille_finale(img, f):
 
 
 def rendre(stade, fn, n):
-    COURANT["stade"] = stade
+    appliquer_stade(stade)
     images = []
     for i in range(n):
         COURANT["t"] = i / n
@@ -106,13 +203,13 @@ def evolution(de, vers):
     for i in range(NB_EVO):
         t = i / NB_EVO
         if t < 0.55:
-            COURANT["stade"], COURANT["t"] = de, t
+            appliquer_stade(de); COURANT["t"] = t
             f = (math.sin(t ** 2 * 70) * 0.5 + 0.5) * min(1, t / 0.35)
             im = A.compo({"post": lambda c, f=f: A.teinte(c, (255, 255, 255), f), "secousse": (math.sin(t * 90) * 4 * min(1, t / 0.4), 0)})
             im = taille_finale(im, STADES[de]["taille"])
         else:
             u = (t - 0.55) / 0.45
-            COURANT["stade"], COURANT["t"] = vers, t
+            appliquer_stade(vers); COURANT["t"] = t
             f = max(0, 1 - u * 2.2)
 
             def eclat(c, u=u):
@@ -197,10 +294,11 @@ def exporter(rendus):
     cadre = cadre_commun([im for v in rendus.values() for im in v])
     rendus = {k: [im.crop(cadre) for im in v] for k, v in rendus.items()}
     # terminal : chaque stade est cadré sur lui-même (un enfant tout petit serait illisible en 48 px)
-    def elargi(b, f=0.18):
+    def elargi(b, f=0.08):
         m = int((b[2] - b[0]) * f)
         return (b[0] - m, b[1] - m, b[2] + m, b[3] + m)
-    cadres = {s: elargi(cadre_commun(bruts[(s, "statique")])) for s in ORDRE}
+    commun = elargi(cadre_commun([im for s in ORDRE for im in bruts[(s, "statique")]]))
+    cadres = {s: commun for s in ORDRE}     # même cadre partout : l'évolution aboutit exactement à la forme suivante
 
     pc = {"espece": "Abyssor", "taille": TERM, "ips": 8, "format": "zlib", "stades": ORDRE, "anims": {}}
     poids = 0
