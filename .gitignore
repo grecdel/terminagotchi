@@ -5,3 +5,4 @@ local.properties
 *.iml
 .idea/
 donnees/portraits/_planche.png
+__pycache__/
