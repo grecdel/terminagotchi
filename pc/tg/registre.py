@@ -307,9 +307,21 @@ _CJK = re.compile(r"[\u3040-\u30ff\u3400-\u4dbf\u4e00-\u9fff\uac00-\ud7af\uf900-
 def mots(texte):
     """Mots en minuscules sans accents ; pour le chinois/japonais : caractères et paires de caractères."""
     t_ = unicodedata.normalize("NFD", texte.lower())
-    t_ = "".join(c for c in t_ if unicodedata.category(c) != "Mn")
+    # Accents retirés seulement sur l'alphabet latin, grec ou cyrillique : en hindi,
+    # bengali, ourdou ou arabe, les signes combinants font partie des lettres.
+    garde, prec = [], ""
+    for c in t_:
+        cat = unicodedata.category(c)
+        if cat == "Mn" and prec and ord(prec) < 0x530:
+            continue
+        if cat[0] == "M" or c.isalnum() or c == "_":
+            garde.append(c)
+        else:
+            garde.append(" ")
+        if cat[0] != "M":
+            prec = c
     out = []
-    for m in re.findall(r"\w+", t_):
+    for m in "".join(garde).split():
         if _CJK.search(m):
             car = [c for c in m if _CJK.match(c)]
             out += car + [a + b for a, b in zip(car, car[1:])]
