@@ -585,6 +585,13 @@ def main():
         faits = compagnon.desinstaller()
         print(t("app.retire", liste="\n  " + "\n  ".join(faits)) if faits else t("app.rien_a_retirer"))
         return
+    if mode == "partie":                       # tg partie nouvelle | charger [n]
+        from . import accueil
+        if core.load() is None:
+            creer_si_besoin()
+        else:
+            print(accueil.commande(args[1:]))
+        return
     if mode in ("compte", "sync", "drapeau", "lexique", "site", "bestiaire", "collection", "troupe", "anime"):
         creer_si_besoin()
         if mode == "troupe":
@@ -612,6 +619,18 @@ def main():
         return
     global SYNC_AUTO
     SYNC_AUTO = True
+    from . import accueil, parties
+    once = "--une-fois" in sys.argv
+    # le menu des parties : seulement au lancement interactif de `tg` (ou `tg parties`), jamais au premier
+    # lancement (on va directement à « nouvelle partie »), ni pour --une-fois, le prompt ou les sous-commandes
+    if (mode == "parties" or (not mode and not once and sys.stdin.isatty() and sys.stdout.isatty())) \
+            and not parties.aucune():
+        if not accueil.menu():
+            print(t("app.a_bientot"))
+            return
+        mode = ""
+    if mode == "parties":
+        mode = ""
     creer_si_besoin()
     if mode == "dressage":
         vue_dressage()
@@ -629,4 +648,4 @@ def main():
     elif mode:
         print(t("app.mode_inconnu", mode=mode))
     else:
-        fenetre("--une-fois" in sys.argv)
+        fenetre(once)

@@ -74,7 +74,7 @@ def _charge(state):
     deltas = {k: max(0, snap[k] - base.get(k, 0)) for k in COMPTEURS}
     deltas["stats"] = {s: max(0, v - base.get("stats", {}).get(s, 0)) for s, v in snap["stats"].items()}
     charge = {
-        "appareil": APPAREIL, "deltas": deltas,
+        "appareil": APPAREIL, "partie": str(state.get("partie") or "1"), "deltas": deltas,
         "vus": list(state["seen"])[-3000:], "skills": list(state["skills"]),
         "collection": state.get("collection", {}), "records": state.get("records", {}),
         "captures": state.get("captures", [])[-3000:],
@@ -153,12 +153,17 @@ def synchroniser(forcer=False):
         charge, snap = _charge(st)
         core.save(st)
     url = serveur(st)
-    r = requete(url + "/api/sync", "POST", charge, c["cle"]) if url else {"erreur": t("rec.err.adresse")}
+    # partie 1 (celle d'avant les parties multiples) : l'adresse d'origine ; les autres ont la leur,
+    # qu'un site pas encore à jour refuse au lieu de mélanger deux créatures
+    route = "/api/sync" if charge["partie"] == "1" else "/api/sync/" + charge["partie"]
+    r = requete(url + route, "POST", charge, c["cle"]) if url else {"erreur": t("rec.err.adresse")}
     resultat = []
 
     def finir(s):
         cc = compte(s)
         cc["en_cours"] = 0
+        if str(s.get("partie") or "1") != charge["partie"]:
+            return                                 # on a changé de partie pendant la synchro
         if "etat" not in r:
             resultat.append(t("rec.sync.impossible", erreur=r.get("erreur", t("rec.err.inconnue"))))
             return
@@ -200,14 +205,18 @@ def _sans_erreur(f):
 def _enregistrer(pseudo, cle, url):
     def f(s):
         c = compte(s)
+        base = c.get("base")
+        meme = (c.get("base_de") or (c.get("pseudo") if base else "")) == pseudo and base
         c.update(cle=cle, pseudo=pseudo, serveur=url, base={"xp": 0, "total": 0, "colles": 0, "stats": {}},
-                 dernier=0, en_cours=0)
+                 dernier=0, en_cours=0, base_de=pseudo)
+        if meme:
+            c["base"] = base                       # cette partie connaît déjà ce compte : pas de double envoi
         core.log(s, t("rec.recense.log", pseudo=pseudo))
     core.modifier(f)
 
 
 def commande(args):
-    """tg compte [creer P | lier CODE | code | serveur URL | oublier]"""
+    """tg compte [creer P | lier TG-XXXX-XX | secours TG-… | code | site | serveur URL | oublier]"""
     st = core.load()
     if st is None:
         return t("rec.pas_de_creature")
@@ -220,7 +229,7 @@ def commande(args):
         core.modifier(lambda s: compte(s).update(serveur=args[1].rstrip("/")))
         return t("rec.adresse.reglee", url=args[1])
     url = serveur(st)
-    if not url and action in ("creer", "lier", "code", ""):
+    if not url and action in ("creer", "lier", "secours", "code", "site", ""):
         return t("rec.hors_ligne")
     if action == "creer":
         if c.get("cle"):
@@ -232,11 +241,13 @@ def commande(args):
             return "⚠ " + r.get("erreur", t("rec.err.inscription"))
         _enregistrer(r["pseudo"], r["cle"], url)
         msg = synchroniser(forcer=True) or ""
-        return t("rec.bienvenue", pseudo=r["pseudo"], msg=msg, url=f"{url}/joueur/{r['pseudo']}")
-    if action == "lier":
+        secours = ("\n\n" + t("rec.secours.donne", code=r["secours"])) if r.get("secours") else ""
+        return t("rec.bienvenue", pseudo=r["pseudo"], msg=msg, url=f"{url}/joueur/{r['pseudo']}") + secours
+    if action in ("lier", "secours"):
         if len(args) < 2:
-            return t("rec.lier.exemple")
-        r = requete(url + "/api/lier", "POST", {"code": args[1], "appareil": APPAREIL})
+            return t("rec.lier.exemple" if action == "lier" else "rec.secours.exemple")
+        route = "/api/lier" if action == "lier" else "/api/secours/recuperer"
+        r = requete(url + route, "POST", {"code": args[1], "appareil": APPAREIL})
         if "cle" not in r:
             return "⚠ " + r.get("erreur", t("rec.err.liaison"))
         _enregistrer(r["pseudo"], r["cle"], url)
@@ -248,7 +259,18 @@ def commande(args):
         r = requete(url + "/api/code", "POST", {}, c["cle"])
         if "code" not in r:
             return "⚠ " + r.get("erreur", t("rec.err.code"))
-        return t("rec.code", code=r["code"])
+        return t("rec.code", code=r.get("jeton") or r["code"])
+    if action == "site":
+        r = requete(url + "/api/lien-site", "POST", {}, c["cle"])
+        if not r.get("lien"):
+            return "⚠ " + r.get("erreur", t("rec.err.code"))
+        lien = url + r["lien"]
+        try:
+            import webbrowser
+            webbrowser.open(lien)
+        except Exception:
+            pass
+        return t("rec.lien_site", lien=lien)
     if action == "partage":
         choix = (args[1].lower() if len(args) > 1 else "")
         if choix not in ("on", "off"):
@@ -259,8 +281,10 @@ def commande(args):
         msg = synchroniser(forcer=True) or ""
         return (t("rec.partage.on", url=f"{url}/captures") if actif
                 else t("rec.partage.off")) + ("\n" + msg if msg else "")
-    if action == "oublier":
-        core.modifier(lambda s: s.__setitem__("compte", {k: v for k, v in compte(s).items() if k == "serveur"}))
+    if action in ("oublier", "deconnexion", "sortir"):
+        requete(url + "/api/deconnexion", "POST", {}, c["cle"], delai=4)   # le site oublie la clé de ce PC (si en ligne)
+        from . import parties
+        parties.oublier_compte()              # dans toutes les parties ; le point de synchro de chacune reste
         return t("rec.oublie")
     dernier = c.get("dernier", 0)
     quand = time.strftime("%H:%M", time.localtime(dernier)) if dernier else t("rec.jamais")
