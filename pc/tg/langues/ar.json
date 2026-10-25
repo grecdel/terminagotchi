@@ -339,7 +339,7 @@
  "app.rec.code.invite": "الرمز الظاهر على هاتفك:",
  "app.nom_creature": "ما اسم مخلوقك؟",
  "app.a_bientot": "إلى اللقاء! شغّل «tg» متى شئت.",
- "app.oeuf_apparu": "ظهرت بيضة… يبدو أنها {trait}.",
+ "app.oeuf_apparu": "ظهرت بيضة… طبعها يبدو: {trait}.",
  "app.a_plus_tard": "أراك لاحقًا! (سأواصل هضم سجلك)",
  "app.veille": "Terminagotchi في وضع الاستعداد (Ctrl+C للإيقاف)…",
  "app.veille.ligne": "{nom} · مستوى {n} · جوع {faim}%",
