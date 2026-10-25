@@ -38,6 +38,12 @@ MOTS = ["octet", "pixel", "bug", "shell", "noyau", "cache", "paquet", "script", 
 
 # ================================================================ outils de vérification
 
+def nom_fichier(nom):
+    """Le nom d'une bestiole tel qu'il apparaît dans les fichiers : minuscules, sans accents
+    (« Étincelot » → « etincelot »). Le même partout : fiche, repaire, renommage, exemples."""
+    return B._simple(nom)
+
+
 def a_tape(lignes, motif):
     r = re.compile(motif, re.I)
     return any(r.search(l) for l in lignes)
@@ -83,7 +89,7 @@ def _prep_vieux(c):
 
 
 def _renomme(c, l):
-    return not (c["d"] / "vieux_nom.txt").exists() and (c["d"] / f"{c['nom'].lower()}.txt").exists()
+    return not (c["d"] / "vieux_nom.txt").exists() and (c["d"] / f"{nom_fichier(c['nom'])}.txt").exists()
 
 
 def _archive(c, l):
@@ -190,7 +196,7 @@ def _cage_privee(c, l):
 
 def _chant(c, l):
     t = lire(c["d"] / "chant.txt")
-    return t is not None and c["nom"].lower() in t.lower()
+    return t is not None and nom_fichier(c["nom"]) in B._simple(t)
 
 
 def _compte(c, l):
@@ -226,7 +232,7 @@ E = lambda i, n, but, indice, ok, prep=None, posix=False: \
 EPREUVES = {
     "Rencontre": [
         E("examiner", 1, "ep.rencontre.examiner", "cat",
-          lambda c, l: a_tape(l, r"^\s*(cat|less|more|head|bat|type|get-content|gc)\b.*monstre_" + re.escape(c["nom"].lower()))),
+          lambda c, l: a_tape(l, r"^\s*(cat|less|more|head|bat|type|get-content|gc)\b.*monstre_" + re.escape(nom_fichier(c["nom"])))),
         E("repaire", 1, "ep.rencontre.repaire", "find",
           lambda c, l: a_tape(l, r"^\s*(find|get-childitem|gci|dir|ls)\b.*repaire")),
     ],
@@ -706,7 +712,7 @@ def lignes_ecran(state, largeur_txt=62):
     if x is None:
         return out
     fid = next(f for f in d["taches"] if _par_id(f) is x)
-    but = t(x["but"], **termes(p), nom_min=d["espece"].lower(), nom=d["espece"])
+    but = t(x["but"], **termes(p), nom_min=nom_fichier(d["espece"]), nom=d["espece"])
     expl, ex = aide(fid, d["espece"], p)
     etiq = {k: t("dress.col." + k) for k in ("mission", "comment", "tape", "dabord", "ou")}
     lc = max(largeur(v) for v in etiq.values()) + 1
@@ -846,6 +852,6 @@ def aide(fid, nom, p=0):
         return None, None
     expl, ex, ex_win = a
     ex = ex_win if IS_WIN and ex_win else ex
-    f = dict(termes(p), nom=nom, nom_min=nom.lower())
+    f = dict(termes(p), nom=nom, nom_min=nom_fichier(nom))
     ex = ex.format(**f).replace("    puis    ", "    " + t("dress.puis") + "    ")
     return t(expl, **f), ex
