@@ -11,6 +11,7 @@ import time
 from pathlib import Path
 
 from . import core, lecons, sprites
+from .langue import t
 from .plateforme import BOLD, DIM, IS_WIN, OSK, RESET, fg, piege
 
 DEBUT = "# >>> terminagotchi >>>"
@@ -38,17 +39,17 @@ def ligne(state):
     coul = sprites.body_color(state)
     faim = sprites.bar(state["hunger"], 100, 5).replace("█", "▰").replace("░", "▱")
     faim_c = 78 if state["hunger"] >= 60 else 221 if state["hunger"] >= 30 else 203
-    tete = f"{fg(coul)}{visage(state)}{RESET} {BOLD}{state['name']}{RESET} {DIM}niv.{lvl} {pct}%{RESET} {fg(faim_c)}{faim}{RESET}"
+    tete = f"{fg(coul)}{visage(state)}{RESET} {BOLD}{state['name']}{RESET} {DIM}{t('dress.niv', n=lvl)} {pct}%{RESET} {fg(faim_c)}{faim}{RESET}"
 
     nouveaux = state.get("nlog", 0) - state.get("prompt_vu", 0)
     if nouveaux > 0:
         msgs = [m[6:] for m in state["log"][-min(nouveaux, 2):]]
         return f"{tete}  {' · '.join(msgs)}"
     if state["defi"]:
-        return f"{tete}  {fg(226)}⚡ tape « {piege(state['defi']['cmd'])} » vite !{RESET}"
+        return f"{tete}  {fg(226)}" + t("comp.defi", cmd=piege(state["defi"]["cmd"])) + RESET
     les, _ = lecons.lecon_courante(state)
     if les and lvl >= les["niveau"]:
-        return f"{tete}  {DIM}leçon ➜ {piege(les['steps'][state['step']]['cmd'])}{RESET}"
+        return f"{tete}  {DIM}" + t("comp.lecon", cmd=piege(les["steps"][state["step"]]["cmd"])) + RESET
     return tete
 
 

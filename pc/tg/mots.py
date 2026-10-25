@@ -5,7 +5,8 @@
    Mots élidés : de, que, le, la, je, me, te, se, ne, ce, lorsque, puisque, jusque.
    Le genre des espèces n'est pas connu : les phrases modèles utilisent des tournures neutres
    (« Un monstre sauvage : {nom} ! », « {nom} rejoint ta troupe »).
-   Chaque phrase reste ENTIÈRE dans le modèle (prête à être traduite plus tard).
+   Chaque phrase reste ENTIÈRE dans le modèle : elle est traduite dans langues/xx.json
+   (voir langue.py) ; l'élision n'est appliquée qu'en français.
 
 2) terme(cle, palier) : le jargon arrive progressivement.
    palier 0 = l'image seule          « la mémoire de la maison »
@@ -28,46 +29,31 @@ def voyelle(mot):
     return bool(mot) and mot[0].lower() in VOYELLES
 
 
-def accorder(modele, **valeurs):
-    """« Dressage de {nom} » + nom=Inodin → « Dressage d'Inodin »."""
+def elider(modele, valeurs):
+    """« de {nom} » → « d'{nom} » quand la valeur commence par une voyelle (le modèle n'est pas rempli)."""
     def elide(m):
         mot, cle = m.group(1), m.group(2)
         return mot[:-1] + "'{" + cle + "}" if voyelle(valeurs.get(cle)) else m.group(0)
-    return _MOTIF.sub(elide, modele).format(**valeurs)
+    return _MOTIF.sub(elide, modele)
+
+
+def accorder(modele, **valeurs):
+    """« Dressage de {nom} » + nom=Inodin → « Dressage d'Inodin »."""
+    return elider(modele, valeurs).format(**valeurs)
 
 
 # ---------------------------------------------------------------- vocabulaire progressif
 SEUIL_NIVEAU = (7, 12)       # niveau de la créature pour passer au palier 1, puis 2
 SEUIL_LECONS = (8, 14)       # nombre de leçons terminées pour passer au palier 1, puis 2
 
-# clé : (image seule, image + vrai mot, vrai mot seul)
-TERMES = {
-    "mefiance":     ("Peur", "Méfiance (il a peur de toi)", "Méfiance"),
-    "pv":           ("cœurs", "cœurs (PV)", "PV"),
-    "atk":          ("force", "force (ATK)", "ATK"),
-    "def":          ("bouclier", "bouclier (DEF)", "DEF"),
-    "vit":          ("vitesse", "vitesse (VIT)", "VIT"),
-    "int":          ("astuce", "astuce (INT)", "INT"),
-    "stats":        ("forces", "forces (stats)", "stats"),
-    "ram":          ("la mémoire de la maison", "la mémoire de la maison (la RAM)", "la RAM"),
-    "processeur":   ("le cerveau de la maison", "le cerveau de la maison (le processeur)", "le processeur"),
-    "executable":   ("qui sait faire quelque chose", "qui sait faire quelque chose (exécutable)", "exécutable"),
-    "ctf":          ("la chasse au trésor", "la chasse au trésor (CTF)", "le CTF"),
-    "dossier":      ("pièce", "pièce (dossier)", "dossier"),
-    "dossiers":     ("pièces", "pièces (dossiers)", "dossiers"),
-    "fichier":      ("feuille", "feuille (fichier)", "fichier"),
-    "fichiers":     ("feuilles", "feuilles (fichiers)", "fichiers"),
-    "un_dossier":   ("une pièce", "une pièce (un dossier)", "un dossier"),
-    "un_fichier":   ("une feuille", "une feuille (un fichier)", "un fichier"),
-    "rendre_executable": ("autorise-la à cuisiner toute seule", "autorise-la à cuisiner toute seule (rends-la exécutable)",
-                          "rends-la exécutable"),
-    "processus":    ("programme réveillé", "programme réveillé (processus)", "processus"),
-    "disque":       ("les placards", "les placards (le disque)", "le disque"),
-    "dns":          ("l'annuaire des maisons", "l'annuaire des maisons (DNS)", "le DNS"),
-    "ip":           ("l'adresse de la maison", "l'adresse de la maison (adresse IP)", "l'adresse IP"),
-    "arborescence": ("le plan de la maison", "le plan de la maison (l'arborescence)", "l'arborescence"),
-    "terrain":      ("ta salle de jeu", "ta salle de jeu (terrain_terminagotchi)", "terrain_terminagotchi"),
-}
+# Les mots eux-mêmes sont dans les fichiers de langue (langues/xx.json), clés « terme.<clé> » :
+# [image seule, image + vrai mot, vrai mot seul]. Exemple en français :
+#   "terme.ram": ["la mémoire de la maison", "la mémoire de la maison (la RAM)", "la RAM"]
+
+
+def _cles():
+    from . import langue
+    return [k[6:] for k in langue._charger(langue.DEFAUT) if k.startswith("terme.")]
 
 
 def palier_de(niveau, lecons=0):
@@ -83,15 +69,17 @@ def palier(state):
 
 
 def terme(cle, p=0, majuscule=False):
-    """Le mot à afficher pour ce palier (0, 1 ou 2)."""
-    t = TERMES[cle][max(0, min(2, p))]
-    return t[0].upper() + t[1:] if majuscule else t
+    """Le mot à afficher pour ce palier (0, 1 ou 2), dans la langue courante."""
+    from . import langue
+    v = langue.brut("terme." + cle) or [cle] * 3
+    t = v[max(0, min(2, p))]
+    return t[0].upper() + t[1:] if majuscule and t else t
 
 
 def termes(p=0):
     """Tous les termes d'un palier, pour remplir des modèles : « {ram} », « {Processeur} » (majuscule)…
     Attention au genre : « pièce » est féminin mais « dossier » masculin ; les modèles évitent
     donc les adjectifs accordés et utilisent les formes avec article (« {un_dossier} »)."""
-    t = {k: terme(k, p) for k in TERMES}
-    t.update({k[0].upper() + k[1:]: terme(k, p, majuscule=True) for k in TERMES})
+    t = {k: terme(k, p) for k in _cles()}
+    t.update({k[0].upper() + k[1:]: terme(k, p, majuscule=True) for k in _cles()})
     return t

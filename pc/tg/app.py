@@ -10,14 +10,16 @@ import subprocess
 
 from . import compagnon, core, dressage, equipe, explo, lecons, lexique, notif, recense, registre, sprites
 from .bestiaire import arc_en_ciel
-from .mots import accorder, palier, terme
+from . import langue
+from .langue import ajuster, envelopper, largeur, raccourcir, t
+from .mots import palier, terme
 
 SYNC_AUTO = False   # synchro en fond, seulement pour les modes qui restent ouverts
 from .plateforme import (BOLD, DIM, DISTRO, IS_WIN, OS_NAMES, OSK, RESET, Clavier, clear, fg, piege)
 
 
 def title_line(text, color=244):
-    return fg(color) + "── " + text + " " + "─" * max(3, 44 - len(text)) + RESET
+    return fg(color) + "── " + text + " " + "─" * max(3, 44 - largeur(text)) + RESET
 
 
 _ANSI = re.compile(r"\x1b\[[0-9;]*m")
@@ -39,17 +41,21 @@ def render(state, frame, interactif, anim=None):
     lg = max(20, w)
     left = ["  " + line + " " * (lg - w) for line in sprite]
 
-    forme = core.STAGES[st] + (f" {core.FORMES[state['branch']]}" if st >= 2 and state.get("branch") else "")
+    forme = core.forme(state, lvl)
     lo, hi = 10 * (lvl - 1) ** 2, 10 * lvl ** 2
-    stats = "  ".join(f"{fg(v['color'])}{v['short']}{RESET} {BOLD}{state['stats'][v['stat']]}{RESET}" for v in core.CATEGORIES.values())
+    stats = "  ".join(f"{fg(v['color'])}{core.nom_stat(v['stat'], court=True)}{RESET} {BOLD}{state['stats'][v['stat']]}{RESET}"
+                      for v in core.CATEGORIES.values())
     nb_sk = len(state["skills"])
+    xp_l, faim_l = t("app.xp"), t("app.faim")
+    lj = max(largeur(xp_l), largeur(faim_l))
     right = [
-        (arc_en_ciel(state["name"] + " ✨") if state.get("shiny") else f"{BOLD}{state['name']}{RESET}") + f" · {forme} · niv. {lvl}",
-        f"{DIM}caractère : {state['trait']}{RESET}",
-        f"XP   {sprites.bar(state['xp'] - lo, hi - lo)} {state['xp']}/{hi}",
-        f"Faim {dressage.jauge(state['hunger'], 100, 10)} {core.mood(state['hunger'])}",
+        (arc_en_ciel(state["name"] + " ✨") if state.get("shiny") else f"{BOLD}{state['name']}{RESET}")
+        + " · " + t("app.forme_niveau", forme=forme, n=lvl),
+        f"{DIM}" + t("app.caractere", trait=core.nom_trait(state["trait"])) + RESET,
+        f"{ajuster(xp_l, lj)} {sprites.bar(state['xp'] - lo, hi - lo)} {state['xp']}/{hi}",
+        f"{ajuster(faim_l, lj)} {dressage.jauge(state['hunger'], 100, 10)} {core.mood(state['hunger'])}",
         stats,
-        f"Compétences {nb_sk} · Bestioles {sum(state['collection'].values())}",
+        t("app.competences_bestioles", n=nb_sk, b=sum(state["collection"].values())),
     ]
     n = max(len(left), len(right))
     left += [" " * (lg + 2)] * (n - len(left))
@@ -58,7 +64,7 @@ def render(state, frame, interactif, anim=None):
 
     b = core.bulle_courante(state)
     if b:
-        wrapped = textwrap.wrap(b[0], 52)
+        wrapped = envelopper(b[0], 52)
         lines.append(f"  {BOLD}» {wrapped[0]}{RESET}")
         lines += [f"    {BOLD}{x}{RESET}" for x in wrapped[1:]]
     else:
@@ -67,54 +73,56 @@ def render(state, frame, interactif, anim=None):
     d = state["defi"]
     if d:
         reste = max(0, core.defi_duree(state) - (time.time() - d["start"]))
-        lines.append(title_line(f"⚡ DÉFI ÉCLAIR : tape « {piege(d['cmd'])} » — {reste:.0f} s", 226))
+        lines.append(title_line(t("app.defi", cmd=piege(d["cmd"]), s=f"{reste:.0f}"), 226))
 
     d = state.get("dressage")
     if d:
-        lines.append(f" {fg(196)}{BOLD}" + accorder("⚔ Un monstre sauvage, {nom}, t'attend dans sa propre fenêtre !",
-                                                     nom=d["espece"]) + f"{RESET} "
-                     f"{DIM}(fermée par erreur ? tg dressage){RESET}")
+        lines.append(f" {fg(196)}{BOLD}" + t("app.monstre_fenetre", nom=d["espece"]) + f"{RESET} "
+                     f"{DIM}" + t("app.monstre_fenetre.fermee") + RESET)
 
     les, etiquette = lecons.lecon_courante(state)
     if les:
         if lvl < les["niveau"]:
-            lines.append(title_line(f"{etiquette} : niveau {les['niveau']} requis"))
+            lines.append(title_line(t("app.lecon.niveau_requis", etiquette=etiquette, n=les["niveau"])))
             idees, n = core.faim_d_apprendre(state, les["niveau"])
-            lines.append(f" J'ai encore faim ! Tape une de ces commandes : {fg(226)}{'   '.join(idees)}{RESET}")
-            lines.append(f" {DIM}Il m'en faut encore environ {n} (chaque nouvelle commande me fait grandir).{RESET}")
+            lines.append(" " + t("app.lecon.faim", cmds=f"{fg(226)}{'   '.join(idees)}{RESET}"))
+            lines.append(f" {DIM}" + t("app.lecon.encore", n=n) + RESET)
         else:
             step = les["steps"][state["step"]]
-            lines.append(title_line(f"{etiquette} : {les['titre']} ({state['step'] + 1}/{len(les['steps'])})", 213))
-            lines.append(f" {step['dit']}")
+            lines.append(title_line(t("app.lecon.titre", etiquette=etiquette, titre=lecons.tx(les["titre"]),
+                                      n=state["step"] + 1, total=len(les["steps"])), 213))
+            for x in envelopper(lecons.tx(step["dit"]), 78):
+                lines.append(f" {x}")
             lines.append(f"   {fg(226)}➜ {piege(step['cmd'])}{RESET}")
             if "nid/" in step["cmd"] or step["cmd"].endswith(" nid") or "reserve.txt" in step["cmd"]:
-                lines.append(f"   {DIM}📁 à taper depuis {terme('terrain', palier(state))} "
-                             f"(pour y passer : cd ~/{core.TERRAIN.name}){RESET}")
+                lines.append(f"   {DIM}" + t("app.lecon.depuis", terrain=terme("terrain", palier(state)),
+                                            cmd=f"cd ~/{core.TERRAIN.name}") + RESET)
             if step.get("astuce"):
-                lines.append(f"   {DIM}{step['astuce']}{RESET}")
+                lines.append(f"   {DIM}{lecons.tx(step['astuce'])}{RESET}")
     elif all(state["arbre"].get(b, 0) >= len(v["lecons"]) for b, v in lecons.ARBRE.items() if lecons.branche_dispo(b)):
-        lines.append(title_line("Arbre entièrement maîtrisé !", 213))
-        lines.append(f" {DIM}Tu es un vrai maître du terminal. D'autres branches viendront.{RESET}")
+        lines.append(title_line(t("app.arbre.maitrise"), 213))
+        lines.append(f" {DIM}" + t("app.arbre.maitrise.suite") + RESET)
     else:
-        lines.append(title_line("Arbre de compétences ouvert", 213))
-        lines.append(" Choisis la branche que je vais t'apprendre : touche [a]")
+        lines.append(title_line(t("app.arbre.ouvert"), 213))
+        lines.append(" " + t("app.arbre.choisis"))
 
-    lines.append(title_line(f"Ce que je digère ({DISTRO or OS_NAMES[OSK]})"))
+    lines.append(title_line(t("app.digere", os=DISTRO or OS_NAMES[OSK])))
+    lc = max(largeur(core.nom_stat(v["stat"])) for v in core.CATEGORIES.values()) + 2
     for k, v in core.CATEGORIES.items():
-        lines.append(f" {fg(v['color'])}{v['stat']:<13}{RESET}{core.EXAMPLES[OSK][k]}")
+        lines.append(f" {fg(v['color'])}{ajuster(core.nom_stat(v['stat']), lc)}{RESET}{core.EXAMPLES[OSK][k]}")
 
-    lines.append(title_line("Journal"))
+    lines.append(title_line(t("app.journal")))
     if state["total"] == 0:
-        lines.append(" Ouvre une deuxième fenêtre noire (un autre Terminal) et tapes-y des commandes !")
+        lines.append(" " + t("app.journal.vide"))
         if IS_WIN:
-            lines.append(" (utilise PowerShell : cmd.exe ne garde pas d'historique)")
+            lines.append(" " + t("app.journal.powershell"))
         elif not compagnon.est_installe():
-            lines.append(f" {fg(226)}Pour que je mange tout de suite : appuie sur la touche o, puis sur 3.{RESET}")
+            lines.append(f" {fg(226)}" + t("app.journal.compagnon") + RESET)
     lines += [" " + l for l in state["log"][-4:]]
     if interactif:
-        lines.append(f"{fg(244)} [/] chercher [l] lexique [a] arbre [c] collection [o] options [q] quitter{RESET}")
+        lines.append(f"{fg(244)} " + t("app.touches") + RESET)
     else:
-        lines.append(f"{DIM} il digère même fermé{RESET}")
+        lines.append(f"{DIM} " + t("app.digere_ferme") + RESET)
     return "\n".join(lines) + "\n"
 
 
@@ -132,14 +140,14 @@ def vue_dressage():
                 vu = dict(state["dressage"])
                 clear()
                 sys.stdout.write(render_dressage(state, False))
-                sys.stdout.write(f"{DIM} Tape tes commandes dans ton autre terminal · Ctrl+C pour fermer cette fenêtre{RESET}\n")
+                sys.stdout.write(f"{DIM} " + t("app.dressage.pied") + f"{RESET}\n")
                 sys.stdout.flush()
             else:
                 if fini is None:
                     fini = time.time()
                     clear()
                     b = state.get("bubble")
-                    print("\n  " + (b[0] if b else "Le dressage est terminé."))
+                    print("\n  " + (b[0] if b else t("app.dressage.fini")))
                     ind = (vu or {}).get("ind")
                     if ind:
                         pris = next((c for c in state.get("captures", []) if c.get("id") == ind.get("id")), None)
@@ -161,11 +169,11 @@ def render_dressage(state, interactif):
     lines = dressage.lignes_ecran(state)
     b = core.bulle_courante(state)
     if b:
-        lines += ["", f"  {BOLD}» {textwrap.shorten(b[0], 90)}{RESET}"]
-    lines.append(title_line("Journal"))
+        lines += ["", f"  {BOLD}» {raccourcir(' '.join(b[0].split()), 90)}{RESET}"]
+    lines.append(title_line(t("app.journal")))
     lines += [" " + l for l in state["log"][-2:]]
     if interactif:
-        lines.append(f"{fg(244)} [l] lexique [/] chercher [q] quitter{RESET}")
+        lines.append(f"{fg(244)} " + t("app.dressage.touches") + RESET)
     return "\n".join(lines) + "\n"
 
 
@@ -214,9 +222,9 @@ def menu_recherche(state, clav):
     historique = []
     while True:
         clear()
-        print(f" {fg(213)}── 🔎 Demande à {state['name']} ──{RESET}")
-        print(f" {DIM}Un nom de commande (grep, mkdir…) ou ce que tu veux faire")
-        print(f" (« supprimer un dossier », « voir les fichiers cachés »).{RESET}\n")
+        print(f" {fg(213)}── 🔎 " + t("app.recherche.titre", nom=state["name"]) + f" ──{RESET}")
+        print(f" {DIM}" + t("app.recherche.aide1"))
+        print(" " + t("app.recherche.aide2") + f"{RESET}\n")
         for l in historique:
             print(l)
         q = clav.demander(f" {BOLD}> {RESET}").strip()
@@ -224,39 +232,40 @@ def menu_recherche(state, clav):
             return
         res = registre.chercher(q)
         core.modifier(lambda s: registre.memoriser(s, res))
-        historique = [f" {DIM}Tu as demandé : {q}{RESET}", ""] + registre.afficher(res, state["name"])
+        historique = [f" {DIM}" + t("app.recherche.demande", q=q) + RESET, ""] + registre.afficher(res, state["name"])
         if res:
-            historique.append(f" {DIM}Tape-la toi-même dans ton terminal (le copier-coller ne nourrit pas) :")
-            historique.append(f" bonus « bien retenu » si tu l'utilises dans les 15 min !{RESET}")
-        historique.append(f" {DIM}(Entrée vide = retour){RESET}\n")
+            historique.append(f" {DIM}" + t("app.recherche.tape1"))
+            historique.append(" " + t("app.recherche.tape2") + RESET)
+        historique.append(f" {DIM}" + t("app.recherche.retour") + f"{RESET}\n")
 
 
 def menu_arbre(state, clav):
     noms = list(lecons.ARBRE)
     while True:
         clear()
-        print(f" {fg(213)}── 🌳 Arbre de compétences ──{RESET}\n")
+        print(f" {fg(213)}── 🌳 " + t("app.arbre.titre") + f" ──{RESET}\n")
         if not lecons.tronc_fini(state):
-            print(f" Termine d'abord le tronc commun ({state['lesson']}/{len(lecons.TRONC)} leçons).\n")
+            print(" " + t("app.arbre.tronc_dabord", n=state["lesson"], total=len(lecons.TRONC)) + "\n")
         for i, b in enumerate(noms, 1):
             br = lecons.ARBRE[b]
             fait = state["arbre"].get(b, 0)
             tot = len(br["lecons"])
-            etat = "✔ maîtrisée" if fait >= tot else ("◀ en cours" if state.get("branche") == b else "")
+            etat = t("app.arbre.maitrisee") if fait >= tot else (t("app.arbre.en_cours") if state.get("branche") == b else "")
             if not lecons.branche_dispo(b):
-                etat = "réservée à Android (Termux)"
-            print(f" {BOLD}{i}. {br['icone']} {b}{RESET} ({fait}/{tot}) {fg(78)}{etat}{RESET}")
-            print(f"    {DIM}{br['desc']} · nourrit {br['stat']}{RESET}")
+                etat = t("app.arbre.android")
+            print(f" {BOLD}{i}. {br['icone']} {lecons.nom_branche(b)}{RESET} ({fait}/{tot}) {fg(78)}{etat}{RESET}")
+            print(f"    {DIM}" + t("app.arbre.desc", desc=lecons.tx(br["desc"]), stat=core.nom_stat(br["stat"])) + RESET)
             for j, les in enumerate(br["lecons"]):
                 marque = "■" if j < fait else "□"
-                sk = core.SKILLS[les["skill"]]["desc"]
-                print(f"    {marque} {les['titre']} → {les['skill']} {DIM}({sk}, niv. {les['niveau']}){RESET}")
+                print(f"    {marque} {lecons.tx(les['titre'])} → {core.nom_skill(les['skill'])} {DIM}("
+                      + t("app.arbre.skill", desc=t("skill." + les["skill"] + ".desc"), n=les["niveau"]) + f"){RESET}")
             print()
-        print(f" Compétences : {', '.join(state['skills']) or 'aucune'}\n")
+        print(" " + t("app.arbre.competences", liste=", ".join(core.nom_skill(x) for x in state["skills"])
+                      or t("app.arbre.aucune")) + "\n")
         if not lecons.tronc_fini(state):
-            clav.demander(f" {DIM}Entrée pour revenir{RESET}")
+            clav.demander(f" {DIM}" + t("app.entree_retour") + RESET)
             return
-        r = clav.demander(" Numéro de la branche à suivre (Entrée = retour) : ").strip()
+        r = clav.demander(" " + t("app.arbre.numero") + " ").strip()
         if not r:
             return
         if r.isdigit() and 1 <= int(r) <= len(noms):
@@ -271,7 +280,7 @@ def menu_collection(state, clav):
     clear()
     for l in explo.ecran_collection(state):
         print(l)
-    clav.demander(f"\n {DIM}Entrée pour revenir{RESET}")
+    clav.demander(f"\n {DIM}" + t("app.entree_retour") + RESET)
 
 
 def menu_lexique(state, clav):
@@ -279,7 +288,7 @@ def menu_lexique(state, clav):
     st = core.load() or state
     for l in lexique.lignes(st):
         print(l)
-    clav.demander(f"\n {DIM}Entrée pour revenir{RESET}")
+    clav.demander(f"\n {DIM}" + t("app.entree_retour") + RESET)
 
 
 def lancer_detache(mode):
@@ -304,26 +313,30 @@ def menu_options(state, clav):
         cfg = st["config"]
         moteur = notif.systeme()
         installe = compagnon.est_installe()
-        onoff = lambda b: f"{fg(78)}ON{RESET}" if b else f"{fg(203)}OFF{RESET}"
+        onoff = lambda b: f"{fg(78)}{t('app.on')}{RESET}" if b else f"{fg(203)}{t('app.off')}{RESET}"
         clear()
-        print(f" {fg(213)}── ⚙ Options ──{RESET}\n")
-        print(f" 1. Notifications : {onoff(cfg['notifs'])}  {DIM}({moteur or 'aucun système détecté'}){RESET}")
+        print(f" {fg(213)}── ⚙ " + t("app.options.titre") + f" ──{RESET}\n")
+        print(" 1. " + t("app.options.notifs", etat=onoff(cfg["notifs"]))
+              + f"  {DIM}({moteur or t('app.options.aucun_systeme')}){RESET}")
         if moteur == "android":
-            print(f" 2. Notification permanente : {onoff(cfg['permanente'])}")
+            print(" 2. " + t("app.options.permanente", etat=onoff(cfg["permanente"])))
         else:
-            print(f" 2. Notification permanente : {DIM}Android uniquement (sur PC : compagnon de bureau){RESET}")
-        print(f" 3. Compagnon dans le terminal : {onoff(installe)}")
-        print(f" 4. Style du compagnon : {BOLD}{cfg['compagnon']}{RESET} {DIM}(ligne / coin){RESET}")
-        print(" 5. Envoyer une notification de test")
-        print(f" 6. Ouvrir le compagnon de bureau {DIM}(PC){RESET}")
+            print(" 2. " + t("app.options.permanente", etat=f"{DIM}{t('app.options.permanente.pc')}{RESET}"))
+        print(" 3. " + t("app.options.compagnon", etat=onoff(installe)))
+        print(" 4. " + t("app.options.style", style=f"{BOLD}{t('app.style.' + cfg['compagnon'])}{RESET}")
+              + f" {DIM}({t('app.style.ligne')} / {t('app.style.coin')}){RESET}")
+        print(" 5. " + t("app.options.test"))
+        print(" 6. " + t("app.options.bureau") + f" {DIM}(PC){RESET}")
         c = st.get("compte", {})
-        print(f" 7. Recensement en ligne : {BOLD}{c.get('pseudo') or 'pas de compte'}{RESET} "
-              f"{DIM}(même créature sur PC et téléphone){RESET}")
-        print(f"\n {DIM}Mini-terminal toujours visible : lance « … terminagotchi.pyz mini »")
-        print(f" (sur Android, dans Termux:Float){RESET}")
+        print(" 7. " + t("app.options.recensement", pseudo=f"{BOLD}{c.get('pseudo') or t('app.options.pas_de_compte')}{RESET}")
+              + f" {DIM}" + t("app.options.recensement.meme") + RESET)
+        print(" 8. " + t("app.options.langue", langue=f"{BOLD}{langue.LANGUES[langue.courante()]}{RESET}")
+              + f" {DIM}(tg langue xx){RESET}")
+        print(f"\n {DIM}" + t("app.options.mini1"))
+        print(" " + t("app.options.mini2") + RESET)
         if msg:
             print(f"\n {msg}")
-        r = clav.demander("\n Choix (Entrée = retour) : ").strip()
+        r = clav.demander("\n " + t("app.choix") + " ").strip()
         msg = ""
         if not r:
             return
@@ -334,50 +347,81 @@ def menu_options(state, clav):
             notif.permanente(core.load())
         elif r == "3":
             faits = compagnon.desinstaller() if installe else compagnon.installer()
-            verbe = "Retiré de" if installe else "Installé dans"
-            msg = (f"{verbe} : " + ", ".join(faits) + ("" if installe else
-                   "\n Ouvre un NOUVEAU terminal pour voir ta créature dans l'invite.")) if faits \
-                else "Aucun fichier de configuration de shell trouvé."
+            msg = (t("app.retire" if installe else "app.installe", liste=", ".join(faits))
+                   + ("" if installe else "\n " + t("app.options.nouveau_terminal"))) if faits \
+                else t("app.options.aucun_shell")
         elif r == "4":
             core.modifier(lambda s: s["config"].update(compagnon="coin" if s["config"]["compagnon"] == "ligne" else "ligne"))
         elif r == "5":
-            ok = notif.envoyer(st, [f"Coucou ! Ceci est une notification de test de {st['name']}."], forcer=True)
-            msg = "Notification envoyée !" if ok else "Échec : aucun système de notification disponible."
+            ok = notif.envoyer(st, [t("app.options.test.texte", nom=st["name"])], forcer=True)
+            msg = t("app.options.test.ok") if ok else t("app.options.test.echec")
             if moteur == "android":
                 notif.permanente(st)
         elif r == "6":
-            msg = "Compagnon de bureau lancé !" if lancer_detache("bureau") else "Impossible de le lancer."
+            msg = t("app.options.bureau.ok") if lancer_detache("bureau") else t("app.options.bureau.echec")
         elif r == "7":
             menu_recensement(clav)
+        elif r == "8":
+            msg = menu_langue(clav)
+
+
+def changer_langue(code):
+    """tg langue xx : enregistre la langue dans la sauvegarde. Renvoie le message à afficher."""
+    c = langue.code_valide(code)
+    if not c:
+        return t("app.langue.inconnue", code=code) + "\n" + liste_langues()
+    core.modifier(lambda s: s.__setitem__("langue", c))
+    langue.definir(c)
+    return t("app.langue.ok", langue=langue.LANGUES[c])
+
+
+def liste_langues():
+    return "\n".join(f"  {code}  {nom}" for code, nom in langue.LANGUES.items())
+
+
+def menu_langue(clav):
+    clear()
+    print(f" {fg(213)}── 🌐 " + t("app.langue.titre") + f" ──{RESET}\n")
+    codes = list(langue.LANGUES)
+    for i, code in enumerate(codes, 1):
+        marque = f"{fg(78)}●{RESET}" if code == langue.courante() else " "
+        print(f" {marque} {i:>2}. {code}  {langue.LANGUES[code]}")
+    print(f"\n {DIM}" + t("app.langue.rtl") + RESET)
+    r = clav.demander("\n " + t("app.choix") + " ").strip().lower()
+    if not r:
+        return ""
+    if r.isdigit() and 1 <= int(r) <= len(codes):
+        r = codes[int(r) - 1]
+    return changer_langue(r)
 
 
 def menu_recensement(clav):
     msg = recense.commande([])
     while True:
         clear()
-        print(f" {fg(213)}── 🌍 Recensement ──{RESET}\n")
+        print(f" {fg(213)}── 🌍 " + t("app.rec.titre") + f" ──{RESET}\n")
         print(" " + msg.replace("\n", "\n ") + "\n")
         st = core.load()
         a_compte = bool(st and st.get("compte", {}).get("cle"))
         if a_compte:
-            print(" 1. Obtenir un code pour relier un autre appareil\n 2. Synchroniser maintenant\n"
-                  f" 3. Valider un drapeau ({terme('ctf', palier(st))} du site)")
+            print(" 1. " + t("app.rec.code") + "\n 2. " + t("app.rec.sync") + "\n 3. "
+                  + t("app.rec.drapeau", ctf=terme("ctf", palier(st))))
         else:
-            print(" 1. Créer mon compte\n 2. Relier ce PC au compte de mon téléphone (code)")
-        r = clav.demander("\n Choix (Entrée = retour) : ").strip()
+            print(" 1. " + t("app.rec.creer") + "\n 2. " + t("app.rec.lier"))
+        r = clav.demander("\n " + t("app.choix") + " ").strip()
         if not r:
             return
         if a_compte:
             if r == "1":
                 msg = recense.commande(["code"])
             elif r == "2":
-                msg = recense.synchroniser(forcer=True) or "Rien à synchroniser."
+                msg = recense.synchroniser(forcer=True) or t("app.rien_a_synchroniser")
             elif r == "3":
-                msg = recense.drapeau(clav.demander(" Drapeau (TG{…}) : "))
+                msg = recense.drapeau(clav.demander(" " + t("app.rec.drapeau.invite") + " "))
         elif r == "1":
-            msg = recense.commande(["creer", clav.demander(" Pseudo (3 à 20 lettres, chiffres, - ou _) : ").strip()])
+            msg = recense.commande(["creer", clav.demander(" " + t("app.rec.pseudo.invite") + " ").strip()])
         elif r == "2":
-            msg = recense.commande(["lier", clav.demander(" Code affiché sur ton téléphone : ").strip()])
+            msg = recense.commande(["lier", clav.demander(" " + t("app.rec.code.invite") + " ").strip()])
 
 
 # ================================================================ modes
@@ -387,13 +431,16 @@ def creer_si_besoin():
         state = core.load()
         if state is None:
             try:
-                name = input("Comment s'appelle ta créature ? ").strip()[:16] or "Pixel"
+                code = langue.detecter()          # premier lancement : la langue du système
+                langue.definir(code)
+                name = input(t("app.nom_creature") + " ").strip()[:16] or "Pixel"
             except (KeyboardInterrupt, EOFError):
-                print("\nÀ bientôt ! Relance « tg » quand tu veux.")
+                print("\n" + t("app.a_bientot"))
                 raise SystemExit(0)
-            state = core.migrate(core.new_state(name))
+            state = core.migrate(core.new_state(name, code))
             core.read_new_lines(state)   # mémorise où on en est, sans manger l'ancien historique
-            core.log(state, f"Un œuf est apparu… il a l'air {state['trait']}.")
+            core.log(state, t("app.oeuf_apparu", trait=core.nom_trait(state["trait"])))
+            core.animer(state, "salut")
             state["notifs"] = []
             core.save(state)
 
@@ -486,47 +533,32 @@ def fenetre(once):
                     break
     except KeyboardInterrupt:
         pass
-    print(RESET + "\nÀ plus tard ! (je continue de digérer ton historique)")
+    print(RESET + "\n" + t("app.a_plus_tard"))
 
 
 def veille():
     """Fait vivre la créature en arrière-plan : faim, bestioles, notifications."""
-    print("Terminagotchi en veille (Ctrl+C pour arrêter)…")
+    print(t("app.veille"))
     try:
         while True:
             st = etape(spontane=True, rythme=30, defis=False)
             if st:
-                print(f"\r{time.strftime('%H:%M')} {st['name']} · niv. {core.level(st['xp'])} · "
-                      f"faim {int(st['hunger'])}%   ", end="", flush=True)
+                print(f"\r{time.strftime('%H:%M')} " + t("app.veille.ligne", nom=st["name"], n=core.level(st["xp"]),
+                                                         faim=int(st["hunger"])) + "   ", end="", flush=True)
             time.sleep(30)
     except KeyboardInterrupt:
         print()
 
 
-AIDE = """Terminagotchi — utilisation :
-  terminagotchi.pyz            fenêtre principale
-  terminagotchi.pyz mini       mini-terminal : créature + ligne de commande (Termux:Float)
-  terminagotchi.pyz bureau     compagnon de bureau flottant (PC)
-  terminagotchi.pyz veille     vit en arrière-plan (notifications)
-  terminagotchi.pyz installer  ajoute la créature à l'invite de ton terminal (+ le raccourci « tg »)
-  terminagotchi.pyz desinstaller
-  tg lexique                   toutes les commandes, par chapitres
-  tg compte                    recensement en ligne : compte creer Pseudo · compte code · compte lier CODE
-  tg sync                      synchronise ta créature (PC ↔ téléphone)
-  tg site [bestiaire|captures] ouvre le site du recensement (ton profil par défaut)
-  tg collection · tg bestiaire <nom>   tes bestioles · la fiche d'une espèce
-  tg troupe [nom]              ta troupe et ses stades · choisir la bestiole active (elle grandit)
-  tg dressage                  la fenêtre du face-à-face (s'ouvre toute seule quand un monstre apparaît)
-  tg anime <nom> [animation]   la voir bouger : statique, mange, attaque, salut, parle, dort, content,
-                               affame, confus, colere, victoire, ko, evolution
-  tg compte partage on|off     montrer (ou non) tes captures dans la galerie du site
-  tg drapeau TG{…}             valide un drapeau de la chasse au trésor du site (CTF web)
-  Options : --une-fois (affiche et quitte) · --defi (défi immédiat)"""
+def aide():
+    return "\n".join(langue.remplir(l, {}) for l in langue.liste("app.aide"))
 
 
 def main():
     args = [a for a in sys.argv[1:] if not a.startswith("--")]
     mode = args[0].lower() if args else ""
+    if core.load() is None:                    # pas encore de sauvegarde : la langue du système
+        langue.definir(langue.detecter())
     if mode == "prompt":                       # appelé par le shell : ne doit jamais gêner
         try:
             compagnon.prompt(etape)
@@ -534,16 +566,24 @@ def main():
             pass
         return
     if mode in ("aide", "help", "-h"):
-        print(AIDE)
+        print(aide())
+        return
+    if mode == "langue":
+        if len(args) > 1:
+            if core.load() is None:
+                creer_si_besoin()
+            print(changer_langue(args[1]))
+        else:
+            print(t("app.langue.actuelle", langue=langue.LANGUES[langue.courante()]) + "\n" + liste_langues())
         return
     if mode == "installer":
         faits = compagnon.installer()
-        print("Installé dans :\n  " + "\n  ".join(faits) if faits else "Aucun shell trouvé.")
-        print("Ouvre un nouveau terminal pour voir ta créature.")
+        print(t("app.installe", liste="\n  " + "\n  ".join(faits)) if faits else t("app.aucun_shell"))
+        print(t("app.nouveau_terminal"))
         return
     if mode == "desinstaller":
         faits = compagnon.desinstaller()
-        print("Retiré de :\n  " + "\n  ".join(faits) if faits else "Rien à retirer.")
+        print(t("app.retire", liste="\n  " + "\n  ".join(faits)) if faits else t("app.rien_a_retirer"))
         return
     if mode in ("compte", "sync", "drapeau", "lexique", "site", "bestiaire", "collection", "troupe", "anime"):
         creer_si_besoin()
@@ -564,9 +604,9 @@ def main():
         elif mode == "compte":
             print(recense.commande(args[1:]))
         elif mode == "sync":
-            print(recense.synchroniser(forcer=True) or "Rien à synchroniser.")
+            print(recense.synchroniser(forcer=True) or t("app.rien_a_synchroniser"))
         elif mode == "drapeau":
-            print(recense.drapeau(" ".join(args[1:])) if len(args) > 1 else "Exemple : tg drapeau TG{abc123}")
+            print(recense.drapeau(" ".join(args[1:])) if len(args) > 1 else t("app.drapeau.exemple"))
         else:
             print("\n".join(lexique.lignes(core.load())))
         return
@@ -587,6 +627,6 @@ def main():
     elif mode in ("combat", "monstre", "monstres"):
         vue_dressage()
     elif mode:
-        print(f"Je ne connais pas « tg {mode} ». Essaie : tg  (la fenêtre), tg dressage, tg troupe, tg aide")
+        print(t("app.mode_inconnu", mode=mode))
     else:
         fenetre("--une-fois" in sys.argv)

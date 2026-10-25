@@ -309,5 +309,21 @@ def texte_stats(stats, p=0):
     return "  ".join(f"{nom_stat(k, p)} {v}" for k, v in stats.items())
 
 
+def nom_rarete(r):
+    """« commune », « légendaire »… dans la langue choisie (la clé interne reste en français)."""
+    from .langue import t
+    return t("rarete." + r) if r in COULEUR_RARETE else r
+
+
+def nom_stade(s):
+    from .langue import t
+    return t("stade_bestiole." + ("ancien" if s == "finale" else s))
+
+
+def nom_frequence(f):
+    from .langue import t
+    return t("frequence." + f)
+
+
 def libelle_rarete(r):
-    return fg24(COULEUR_RARETE.get(r, "#ffffff")) + r + RESET
+    return fg24(COULEUR_RARETE.get(r, "#ffffff")) + nom_rarete(r) + RESET

@@ -14,6 +14,8 @@ import time
 from pathlib import Path
 
 from . import core, lecons, sprites
+from . import langue
+from .langue import envelopper, largeur, t
 from .plateforme import BOLD, DIM, IS_WIN, RESET, Clavier, clear, fg, piege
 
 ANSI = re.compile(r"\x1b\[[0-9;?]*[A-Za-z]")
@@ -24,20 +26,23 @@ DELAI = 30
 
 
 def visible(s):
-    return len(ANSI.sub("", s))
+    return largeur(s)
 
 
 def couper(s, n):
-    """Coupe une ligne colorée à n caractères visibles."""
+    """Coupe une ligne colorée à n colonnes visibles (les caractères chinois/japonais en prennent 2)."""
     out, vu, i = "", 0, 0
-    while i < len(s) and vu < n:
+    while i < len(s):
         m = ANSI.match(s, i)
         if m:
             out += m.group()
             i = m.end()
             continue
+        lc = langue.largeur_car(s[i])
+        if vu + lc > n:
+            break
         out += s[i]
-        vu += 1
+        vu += lc
         i += 1
     return out + RESET
 
@@ -56,8 +61,7 @@ class Mini:
         self.etape = etape
         self.clav = Clavier()
         self.tampon = ""
-        self.sortie = [f"{DIM}Tape tes commandes ici : je les mange au fur et à mesure !",
-                       f"« aide » pour l'aide, « quitter » pour sortir.{RESET}"]
+        self.sortie = [f"{DIM}" + t("mini.accueil1"), t("mini.accueil2") + RESET]
         self.frame = 0
         self.state = None
         self.dernier_jeu = 0
@@ -73,16 +77,13 @@ class Mini:
         if premier in ("clear", "cls"):
             self.sortie = []
         elif premier == "aide":
-            self.sortie += [f"{DIM}Ce mini-terminal exécute de vraies commandes.",
-                            "cd, ls, mkdir… tout marche, et je mange tout.",
-                            "Éditeurs et programmes plein écran s'ouvrent puis reviennent ici.",
-                            f"quitter = sortir · clear = effacer l'écran{RESET}"]
+            self.sortie += [f"{DIM}" + l for l in langue.liste("mini.aide")] + [RESET]
         elif premier in ("cd", "set-location", "sl"):
             cible = os.path.expandvars(os.path.expanduser(" ".join(mots[1:]) or "~"))
             try:
                 os.chdir(Path(cible))
             except OSError:
-                self.sortie.append(f"{fg(203)}cd : dossier introuvable : {cible}{RESET}")
+                self.sortie.append(f"{fg(203)}" + t("mini.cd_introuvable", cible=cible) + RESET)
         elif premier in PLEIN_ECRAN:
             self.clav.normal()
             clear()
@@ -99,7 +100,7 @@ class Mini:
                 texte = (r.stdout or "") + (r.stderr or "")
             except subprocess.TimeoutExpired as e:
                 texte = (e.stdout or b"").decode("utf-8", "replace") if isinstance(e.stdout, bytes) else (e.stdout or "")
-                texte += f"\n(arrêté après {DELAI} s : utilise par exemple ping -c 3)"
+                texte += "\n" + t("mini.arrete", s=DELAI)
             except OSError as e:
                 texte = str(e)
             for l in texte.rstrip("\n").splitlines():
@@ -145,9 +146,11 @@ class Mini:
             lvl = core.level(st["xp"])
             lo, hi = 10 * (lvl - 1) ** 2, 10 * lvl ** 2
             faim_c = 78 if st["hunger"] >= 60 else 221 if st["hunger"] >= 30 else 203
-            droite = [f"{BOLD}{st['name']}{RESET} niv.{lvl}",
-                      f"{fg(faim_c)}faim {sprites.bar(st['hunger'], 100, 6)}{RESET}",
-                      f"{DIM}xp   {sprites.bar(st['xp'] - lo, hi - lo, 6)}{RESET}",
+            lf, lx = t("app.faim").lower(), t("app.xp").lower()
+            lj = max(largeur(lf), largeur(lx))
+            droite = [f"{BOLD}{st['name']}{RESET} " + t("dress.niv", n=lvl),
+                      f"{fg(faim_c)}{langue.ajuster(lf, lj)} {sprites.bar(st['hunger'], 100, 6)}{RESET}",
+                      f"{DIM}{langue.ajuster(lx, lj)} {sprites.bar(st['xp'] - lo, hi - lo, 6)}{RESET}",
                       f"{DIM}{core.mood(st['hunger'])}{RESET}"]
             if cols >= w + 18:
                 droite = [""] + droite
@@ -159,15 +162,15 @@ class Mini:
                 haut = [" " + a for a in sp] + [" " + droite[0]]
             b = st.get("bubble")
             if st["defi"]:
-                haut.append(f" {fg(226)}⚡ tape « {piege(st['defi']['cmd'])} » vite !{RESET}")
+                haut.append(f" {fg(226)}" + t("comp.defi", cmd=piege(st["defi"]["cmd"])) + RESET)
             elif b and time.time() < b[1]:
-                for l in textwrap.wrap(b[0], max(20, cols - 4))[:3]:
+                for l in envelopper(b[0], max(20, cols - 4))[:3]:
                     haut.append(f" {BOLD}» {l}{RESET}")
             les, _ = lecons.lecon_courante(st)
             if les and lvl >= les["niveau"]:
-                haut.append(f" {fg(213)}leçon ➜ {piege(les['steps'][st['step']]['cmd'])}{RESET}")
+                haut.append(f" {fg(213)}" + t("comp.lecon", cmd=piege(les["steps"][st["step"]]["cmd"])) + RESET)
         else:
-            haut = [" (pas encore de créature)"]
+            haut = [" " + t("mini.pas_de_creature")]
         haut.append(fg(238) + "─" * cols + RESET)
 
         place = max(1, rows - len(haut) - 1)
@@ -211,11 +214,11 @@ class Mini:
         except KeyboardInterrupt:
             pass
         clear()
-        print("À plus tard !")
+        print(t("mini.a_plus_tard"))
 
 
 def lancer(etape):
     if not sys.stdin.isatty():
-        print("Le mini-terminal doit être lancé dans un vrai terminal.")
+        print(t("mini.pas_de_terminal"))
         return
     Mini(etape).boucle()

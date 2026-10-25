@@ -16,12 +16,11 @@ import zlib
 from . import anim_auto
 from . import bestiaire as B
 from . import core
-from .mots import accorder
+from .langue import largeur, t
 from .plateforme import BOLD, DIM, RESET, fg
 
 STADES = ["bebe", "enfant", "ado", "adulte", "ancien"]
-NOM_STADE = {"bebe": "bébé", "enfant": "enfant", "ado": "ado", "adulte": "adulte", "ancien": "ancien",
-             "finale": "ancien"}
+
 SEUILS = {"bebe": 100, "enfant": 250, "ado": 600, "adulte": 1500}  # XP pour passer au stade suivant
 # Abyssor (animations détaillées faites à la main) garde ses noms de stades d'origine
 STADES_ABYSSOR = {"bebe": "enfant", "enfant": "enfant", "ado": "ado", "adulte": "adulte", "ancien": "finale"}
@@ -116,11 +115,9 @@ def gagner(state, ind, xp):
         ind["stade"] = STADES[STADES.index(s) + 1]
         ind["xp"] = 0
         ind["evolue"] = time.time()
-        core.log(state, accorder("🌟 {nom} évolue : {stade} !", nom=ind["espece"], stade=NOM_STADE[ind["stade"]]))
-        core.notif(state, accorder("🌟 {nom} devient {stade} ! (tg anime {nom} evolution)",
-                                   nom=ind["espece"], stade=NOM_STADE[ind["stade"]]))
-        core.say(state, accorder("Oh ! {nom} brille… et devient {stade} ! Regarde : tg anime {nom_min} evolution",
-                                 nom=ind["espece"], stade=NOM_STADE[ind["stade"]], nom_min=ind["espece"].lower()), 14)
+        core.log(state, t("eq.evolue.log", nom=ind["espece"], stade=B.nom_stade(ind["stade"])))
+        core.notif(state, t("eq.evolue.notif", nom=ind["espece"], stade=B.nom_stade(ind["stade"]), nom_min=ind["espece"].lower()))
+        core.say(state, t("eq.evolue.dit", nom=ind["espece"], stade=B.nom_stade(ind["stade"]), nom_min=ind["espece"].lower()), 14)
         return ind["stade"]
     return None
 
@@ -138,21 +135,23 @@ def tick(state, lignes):
 def ecran_equipe(state):
     caps = state.get("captures", [])
     if not caps:
-        return [" Ta troupe est vide : dresse ta première bestiole en explorant le terrain de jeu !"]
+        return [" " + t("eq.vide")]
     act = active(state)
-    lignes = [f" {fg(213)}── 🐾 Troupe de {state['name']} ──{RESET}", ""]
+    lignes = [f" {fg(213)}── 🐾 " + t("eq.titre", nom=state["name"]) + f" ──{RESET}", ""]
     for c in caps[-12:][::-1]:
         e = B.espece(c["espece"])
         if not e:
             continue
         s = stade(c)
         seuil = SEUILS.get(s)
-        barre = f"{c.get('xp', 0)}/{seuil} XP" if seuil else "stade maximal"
-        marque = f"{fg(226)}★ active{RESET} " if c is act else "         "
+        barre = f"{c.get('xp', 0)}/{seuil} XP" if seuil else t("eq.stade_max")
+        mot = t("eq.active")
+        lm = largeur(mot) + 3
+        marque = f"{fg(226)}★ {mot}{RESET} " if c is act else " " * lm
         var = c.get("variante", "classique")
-        lignes.append(f" {marque}{B.nom_affiche(e, c.get('shiny'), B.rarete_de(c))} {DIM}· {NOM_STADE[s]}"
-                      f"{' · ' + var if var != 'classique' else ''} · {B.rarete_de(c)} · {barre}{RESET}")
-    lignes += ["", f" {DIM}Choisir l'active : tg troupe <nom> · la voir bouger : tg anime <nom> [animation]{RESET}"]
+        lignes.append(f" {marque}{B.nom_affiche(e, c.get('shiny'), B.rarete_de(c))} {DIM}· {B.nom_stade(s)}"
+                      f"{' · ' + var if var != 'classique' else ''} · {B.nom_rarete(B.rarete_de(c))} · {barre}{RESET}")
+    lignes += ["", f" {DIM}" + t("eq.pied") + RESET]
     return lignes
 
 
@@ -160,10 +159,9 @@ def choisir(state, nom):
     e = B.espece(nom)
     caps = [c for c in state.get("captures", []) if e and c["espece"] == e["nom"]]
     if not caps:
-        return accorder(" Pas encore de « {nom} » dans ta troupe.", nom=nom)
+        return " " + t("eq.pas_dans_troupe", nom=nom)
     state["active"] = caps[-1]["id"]
-    return accorder(" ★ {nom} est maintenant ta bestiole active : elle grandit à chaque commande que tu tapes.",
-                    nom=caps[-1]["espece"])
+    return " " + t("eq.choisie", nom=caps[-1]["espece"])
 
 
 # ---------------------------------------------------------------- tg anime
@@ -214,25 +212,25 @@ def jouer(state, args, tours=None):
     else:
         ind = active(state)
     if not ind:
-        print(" Aucune bestiole de ce nom dans ta troupe. (tg troupe pour la liste)")
+        print(" " + t("eq.aucune"))
         return
     quoi = (args[1] if len(args) > 1 else "statique").lower().replace("é", "e").replace("è", "e")
     if quoi not in ANIMS:
-        print(f" Animations : {', '.join(ANIMS)}")
+        print(" " + t("eq.animations", liste=", ".join(ANIMS)))
         return
     if quoi == "evolution" and stade(ind) == "bebe":
-        print(accorder(" {nom} est encore bébé : pas encore d'évolution à revoir.", nom=ind["espece"]))
+        print(" " + t("eq.encore_bebe", nom=ind["espece"]))
         return
     r = animation(ind, quoi)
     if r is None:
         print("\n".join(B.dessin(B.espece(ind["espece"]), ind.get("shiny"), stade=stade(ind),
                                  vid=ind.get("variante", "classique"), teinte=ind.get("teinte", 0.5))))
-        print(f" {DIM}" + accorder("Pas d'image pour {nom} : impossible de l'animer.", nom=ind["espece"]) + RESET)
+        print(f" {DIM}" + t("eq.pas_d_image", nom=ind["espece"]) + RESET)
         return
     frames, ips = r
     if tours is None:
         tours = 1 if quoi == "evolution" else 3
-    titre = f" {B.nom_affiche(B.espece(ind['espece']), ind.get('shiny'), B.rarete_de(ind))} {DIM}· {NOM_STADE[stade(ind)]} · {quoi}{RESET}"
+    titre = f" {B.nom_affiche(B.espece(ind['espece']), ind.get('shiny'), B.rarete_de(ind))} {DIM}· {B.nom_stade(stade(ind))} · {quoi}{RESET}"
     derouler(frames, ips, tours, titre)
     if quoi == "evolution":
-        print(f" {BOLD}" + accorder("{nom} : nouvelle forme, {stade} !", nom=ind["espece"], stade=NOM_STADE[stade(ind)]) + RESET)
+        print(f" {BOLD}" + t("eq.nouvelle_forme", nom=ind["espece"], stade=B.nom_stade(stade(ind))) + RESET)

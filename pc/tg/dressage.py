@@ -20,7 +20,8 @@ from datetime import date
 
 from . import bestiaire as B
 from . import core
-from .mots import accorder, palier, terme, termes
+from .langue import ajuster, au_hasard, envelopper, largeur, liste, t
+from .mots import palier, terme, termes
 from .plateforme import IS_WIN
 
 T = core.TERRAIN
@@ -71,14 +72,14 @@ def _gamelle(c, l): return (c["d"] / "enclos" / "gamelle").exists()
 
 
 def _prep_doudou(c):
-    (c["d"] / "doudou.txt").write_text(f"Le doudou préféré de {c['nom']}.\n", encoding="utf-8")
+    (c["d"] / "doudou.txt").write_text(t("dress.fichier.doudou", nom=c["nom"]) + "\n", encoding="utf-8")
 
 
 def _doudou(c, l): return (c["d"] / "doudou.txt").exists() and (c["d"] / "enclos" / "doudou.txt").exists()
 
 
 def _prep_vieux(c):
-    (c["d"] / "vieux_nom.txt").write_text("Renomme-moi !\n", encoding="utf-8")
+    (c["d"] / "vieux_nom.txt").write_text(t("dress.fichier.renomme") + "\n", encoding="utf-8")
 
 
 def _renomme(c, l):
@@ -110,7 +111,8 @@ def _prep_lignes(nom, n_min=8, n_max=15, doublons=True):
 
 def _prep_bug(c):
     n = random.randint(2, 5)
-    lignes = [f"INFO tout va bien {i}" for i in range(6)] + [f"ERROR la bestiole a mordu le câble {i}" for i in range(n)]
+    lignes = ["INFO " + t("dress.fichier.bug.info", i=i) for i in range(6)] + \
+             ["ERROR " + t("dress.fichier.bug.erreur", i=i) for i in range(n)]
     random.shuffle(lignes)
     (c["d"] / "bug.log").write_text("\n".join(lignes) + "\n", encoding="utf-8")
     c["x"]["bug"] = n
@@ -139,8 +141,7 @@ def _prep_message(c):
 
 
 def _prep_corrompu(c):
-    phrase = random.choice(["je suis ton ami", "merci pour la gamelle", "le terminal est mon jardin",
-                            "on part en exploration"])
+    phrase = random.choice(liste("dress.fichier.corrompu"))
     (c["d"] / "corrompu.txt").write_text(phrase[::-1] + "\n", encoding="utf-8")
     c["x"]["phrase"] = phrase
 
@@ -151,7 +152,8 @@ def _repare(c, l):
 
 
 def _prep_cri(c):
-    phrase = random.choice(["JE VEUX JOUER", "OU EST MA GAMELLE", "RACONTE MOI UNE HISTOIRE"])
+    # tr A-Z a-z ne connaît que les lettres latines sans accent : ces phrases restent en MAJUSCULES ASCII
+    phrase = random.choice([x for x in liste("dress.fichier.cri") if x.isascii()] or ["JE VEUX JOUER"])
     (c["d"] / "cri.txt").write_text(phrase + "\n", encoding="utf-8")
     c["x"]["cri"] = phrase
 
@@ -223,136 +225,136 @@ E = lambda i, n, but, indice, ok, prep=None, posix=False: \
 
 EPREUVES = {
     "Rencontre": [
-        E("examiner", 1, "Lis sa fiche à voix haute pour voir ses {stats}.", "cat",
+        E("examiner", 1, "ep.rencontre.examiner", "cat",
           lambda c, l: a_tape(l, r"^\s*(cat|less|more|head|bat|type|get-content|gc)\b.*monstre_" + re.escape(c["nom"].lower()))),
-        E("repaire", 1, "D'où vient {nom} ? Cherche son repaire dans toutes les pièces de {terrain}.", "find",
+        E("repaire", 1, "ep.rencontre.repaire", "find",
           lambda c, l: a_tape(l, r"^\s*(find|get-childitem|gci|dir|ls)\b.*repaire")),
     ],
     "Fichiers": [
-        E("enclos", 1, "Construis-moi un enclos : {un_dossier} « enclos », ici.", "mkdir", _enclos),
-        E("gamelle", 1, "Pose une gamelle dans mon enclos : {un_fichier} « gamelle ».", "touch / New-Item", _gamelle),
-        E("doudou", 2, "Fais une photocopie de mon doudou.txt dans l'enclos (je veux le garder ici aussi).", "cp / copy",
+        E("enclos", 1, "ep.fichiers.enclos", "mkdir", _enclos),
+        E("gamelle", 1, "ep.fichiers.gamelle", "touch / New-Item", _gamelle),
+        E("doudou", 2, "ep.fichiers.doudou", "cp / copy",
           lambda c, l: _enclos(c, l) and _doudou(c, l), _prep_doudou),
-        E("renomme", 2, "Change l'étiquette de vieux_nom.txt : mets mon nom en minuscules, {nom_min}.txt", "mv / move", _renomme, _prep_vieux),
-        E("archive", 3, "Range tout mon enclos dans une valise : l'archive « enclos.tar.gz » (ou enclos.zip).", "tar", _archive),
+        E("renomme", 2, "ep.fichiers.renomme", "mv / move", _renomme, _prep_vieux),
+        E("archive", 3, "ep.fichiers.archive", "tar", _archive),
     ],
     "Réseau": [
-        E("ping", 1, "Crie « Ohé ! » vers ta propre maison (localhost) et écoute l'écho.", "ping",
+        E("ping", 1, "ep.reseau.ping", "ping",
           lambda c, l: a_tape(l, r"^\s*ping\b.*(localhost|127\.0\.0\.1|::1)")),
-        E("hote", 1, "Comment s'appelle ta maison sur le réseau ?", "hostname", lambda c, l: a_tape(l, r"^\s*hostname\b")),
-        E("ip", 2, "Montre-moi {ip}.", "ip a / ipconfig",
+        E("hote", 1, "ep.reseau.hote", "hostname", lambda c, l: a_tape(l, r"^\s*hostname\b")),
+        E("ip", 2, "ep.reseau.ip", "ip a / ipconfig",
           lambda c, l: a_tape(l, r"^\s*(ip\s+(a|addr|address)\b|ifconfig\b|ipconfig\b|hostname\s+-I)")),
-        E("dns", 2, "Trouve l'adresse d'un site dans {dns}.", "nslookup",
+        E("dns", 2, "ep.reseau.dns", "nslookup",
           lambda c, l: a_tape(l, r"^\s*(nslookup|dig|host)\s+\S+")),
-        E("page", 3, "Envoie le facteur me rapporter une page web dans « page.html ».", "curl -o",
+        E("page", 3, "ep.reseau.page", "curl -o",
           lambda c, l: (c["d"] / "page.html").exists() and (c["d"] / "page.html").stat().st_size > 0),
     ],
     "Processus": [
-        E("ps", 1, "Montre-moi qui est réveillé dans la maison : chaque {processus}.", "ps / Get-Process",
+        E("ps", 1, "ep.processus.ps", "ps / Get-Process",
           lambda c, l: a_tape(l, r"^\s*(ps|top|htop|tasklist|get-process|gps)\b")),
-        E("heure", 1, "Quelle heure est-il ? Regarde l'horloge de la maison.", "date / Get-Date",
+        E("heure", 1, "ep.processus.heure", "date / Get-Date",
           lambda c, l: a_tape(l, r"^\s*(date|get-date)\b")),
-        E("fond", 2, "Envoie un « sleep 120 » faire la sieste au fond de la maison (avec &).", "sleep … &",
+        E("fond", 2, "ep.processus.fond", "sleep … &",
           lambda c, l: a_tape(l, r"^\s*sleep\s+\d+\s*&"), posix=True),
-        E("jobs", 2, "Retrouve le programme qui fait la sieste au fond.", "jobs", lambda c, l: a_tape(l, r"^\s*jobs\b"), posix=True),
-        E("kill", 3, "Envoie ce programme se coucher pour de bon.", "kill %1", lambda c, l: a_tape(l, r"^\s*kill\s+"), posix=True),
+        E("jobs", 2, "ep.processus.jobs", "jobs", lambda c, l: a_tape(l, r"^\s*jobs\b"), posix=True),
+        E("kill", 3, "ep.processus.kill", "kill %1", lambda c, l: a_tape(l, r"^\s*kill\s+"), posix=True),
     ],
     "Mémoire": [
-        E("place", 1, "Combien de place reste-t-il dans {disque} ?", "df -h / Get-PSDrive",
+        E("place", 1, "ep.memoire.place", "df -h / Get-PSDrive",
           lambda c, l: a_tape(l, r"^\s*(df|get-psdrive|gdr)\b")),
-        E("ram", 1, "Et {ram}, il en reste ?", "free -h",
+        E("ram", 1, "ep.memoire.ram", "free -h",
           lambda c, l: a_tape(l, r"^\s*(free|vmstat)\b"), posix=True),
-        E("poids", 2, "Combien pèse mon nid, avec tout ce qu'il contient ?", "du -sh",
+        E("poids", 2, "ep.memoire.poids", "du -sh",
           lambda c, l: a_tape(l, r"^\s*du\b"), posix=True),
-        E("sac", 3, "J'ai caché des objets dans mon sac/. Combien ? Réponds-moi avec echo.", "ls … | wc -l",
+        E("sac", 3, "ep.memoire.sac", "ls … | wc -l",
           lambda c, l: a_repondu(l, c["x"]["sac"]), _prep_sac),
     ],
     "Sécurité": [
-        E("cage", 1, "Fabrique-moi une cage : {un_fichier} « cage » dans mon enclos.", "mkdir + touch",
+        E("cage", 1, "ep.securite.cage", "mkdir + touch",
           lambda c, l: (c["d"] / "enclos" / "cage").exists()),
-        E("cachette", 1, "Cache un secret dans mon enclos : {un_fichier} dont le nom commence par un point.", "touch .nom",
+        E("cachette", 1, "ep.securite.cachette", "touch .nom",
           _cachette),
-        E("prive", 2, "Mets un cadenas sur ma cage : personne d'autre que toi ne doit y toucher.", "chmod 600 / attrib +r",
+        E("prive", 2, "ep.securite.prive", "chmod 600 / attrib +r",
           _cage_privee),
-        E("empreinte", 3, "Donne-moi l'empreinte de collier.txt (ses 8 premiers caractères, avec echo).", "sha256sum",
+        E("empreinte", 3, "ep.securite.empreinte", "sha256sum",
           _empreinte, _prep_collier),
     ],
     "Code": [
-        E("chant", 1, "Verse mon nom dans {un_fichier} « chant.txt ».", "echo … > fichier", _chant),
-        E("script", 2, "Écris-moi une petite recette tour.sh qui fait un echo, puis {rendre_executable}.", "nano + chmod +x",
+        E("chant", 1, "ep.code.chant", "echo … > fichier", _chant),
+        E("script", 2, "ep.code.script", "nano + chmod +x",
           _script),
-        E("compte", 3, "Écris les nombres de 1 à 5, un par ligne, dans compte.txt (avec une boucle !).", "for i in …",
+        E("compte", 3, "ep.code.compte", "for i in …",
           _compte),
     ],
     "Matériel": [
-        E("machine", 1, "C'est quoi, comme maison ? Regarde {processeur}.", "uname -m",
+        E("machine", 1, "ep.materiel.machine", "uname -m",
           lambda c, l: a_tape(l, r"^\s*(uname|arch|lscpu|systeminfo)\b")),
-        E("coeurs", 2, "{Processeur} a combien de cœurs ? Réponds avec echo.", "nproc",
+        E("coeurs", 2, "ep.materiel.coeurs", "nproc",
           lambda c, l: a_repondu(l, os.cpu_count() or 1)),
-        E("disques", 2, "Montre-moi {disque} de ta maison.", "lsblk / df",
+        E("disques", 2, "ep.materiel.disques", "lsblk / df",
           lambda c, l: a_tape(l, r"^\s*(lsblk|df|get-disk|fdisk\s+-l)\b")),
     ],
     "Bugs": [
-        E("erreurs", 1, "Trouve les lignes ERROR dans bug.log.", "grep", lambda c, l: a_tape(l, r"grep.*error|select-string.*error"),
+        E("erreurs", 1, "ep.bugs.erreurs", "grep", lambda c, l: a_tape(l, r"grep.*error|select-string.*error"),
           _prep_bug),
-        E("combien", 2, "Combien y a-t-il d'erreurs dans bug.log ? Réponds avec echo.", "grep -c",
+        E("combien", 2, "ep.bugs.combien", "grep -c",
           lambda c, l: a_repondu(l, c["x"]["bug"]), _prep_bug),
-        E("corrige", 3, "Fais-moi un corrige.log avec toutes les lignes SAUF les erreurs.", "grep -v … >", _corrige, _prep_bug),
+        E("corrige", 3, "ep.bugs.corrige", "grep -v … >", _corrige, _prep_bug),
     ],
     "Nuage": [
-        E("nuage", 1, "Fais-moi un nuage : {un_dossier} « nuage ».", "mkdir", lambda c, l: (c["d"] / "nuage").is_dir()),
-        E("photos", 2, "Mets trois photos dedans (photo1.jpg, photo2.jpg, photo3.jpg).", "touch", _photos),
-        E("copie", 3, "Fais une photocopie de tout le nuage dans « nuage_copie ».", "cp -r", _nuage_copie),
+        E("nuage", 1, "ep.nuage.nuage", "mkdir", lambda c, l: (c["d"] / "nuage").is_dir()),
+        E("photos", 2, "ep.nuage.photos", "touch", _photos),
+        E("copie", 3, "ep.nuage.copie", "cp -r", _nuage_copie),
     ],
     "Données": [
-        E("debut", 1, "Lis-moi juste le haut de croquettes.txt.", "head",
+        E("debut", 1, "ep.donnees.debut", "head",
           lambda c, l: a_tape(l, r"^\s*(head|get-content.*-head|gc.*-head)\b.*croquettes"), _prep_lignes("croquettes.txt")),
-        E("lignes", 2, "Combien de lignes dans croquettes.txt ? Réponds avec echo.", "wc -l",
+        E("lignes", 2, "ep.donnees.lignes", "wc -l",
           lambda c, l: a_repondu(l, len(c["x"]["croquettes.txt"])), _prep_lignes("croquettes.txt")),
-        E("trie", 2, "Range croquettes.txt dans l'ordre, dans {un_fichier} trie.txt.", "sort … >", _trie, _prep_lignes("croquettes.txt")),
-        E("differentes", 3, "Combien de sortes de croquettes différentes ? Réponds avec echo.", "sort | uniq | wc -l",
+        E("trie", 2, "ep.donnees.trie", "sort … >", _trie, _prep_lignes("croquettes.txt")),
+        E("differentes", 3, "ep.donnees.differentes", "sort | uniq | wc -l",
           lambda c, l: a_repondu(l, len(set(c["x"]["croquettes.txt"]))), _prep_lignes("croquettes.txt")),
     ],
     "Crypto": [
-        E("lire", 1, "Lis mon message codé, message.b64.", "cat",
+        E("lire", 1, "ep.crypto.lire", "cat",
           lambda c, l: a_tape(l, r"^\s*(cat|type|get-content|gc|less|more)\b.*message"), _prep_message),
-        E("decode", 2, "Décode message.b64 et dis-moi le mot secret avec echo.", "base64 -d",
+        E("decode", 2, "ep.crypto.decode", "base64 -d",
           lambda c, l: a_repondu(l, c["x"]["secret"]), _prep_message),
-        E("empreinte", 3, "Donne-moi l'empreinte de collier.txt (ses 8 premiers caractères, avec echo).", "sha256sum",
+        E("empreinte", 3, "ep.crypto.empreinte", "sha256sum",
           _empreinte, _prep_collier),
     ],
     "IA": [
-        E("bonjour", 1, "Dis-moi bonjour avec mon nom (avec echo).", "echo",
+        E("bonjour", 1, "ep.ia.bonjour", "echo",
           lambda c, l: a_tape(l, r"^\s*(echo|write-output)\b.*" + re.escape(c["nom"]))),
-        E("chat", 2, "Combien de lignes contiennent « chat » dans croquettes.txt ? Réponds avec echo.", "grep -c",
+        E("chat", 2, "ep.ia.chat", "grep -c",
           lambda c, l: a_repondu(l, sum(1 for x in c["x"]["croquettes.txt"] if "chat" in x)),
           _prep_lignes("croquettes.txt")),
-        E("frequent", 3, "Quel est le mot le plus fréquent dans croquettes.txt ? Réponds avec echo.", "sort | uniq -c | sort -n",
+        E("frequent", 3, "ep.ia.frequent", "sort | uniq -c | sort -n",
           lambda c, l: any(a_repondu(l, m) for m in _plus_frequents(c["x"]["croquettes.txt"])), _prep_lignes("croquettes.txt")),
     ],
     "Rétro": [
-        E("calendrier", 1, "Montre-moi le calendrier du mois.", "cal",
+        E("calendrier", 1, "ep.retro.calendrier", "cal",
           lambda c, l: a_tape(l, r"^\s*(cal|ncal|get-date)\b")),
-        E("record", 2, "Quel est le meilleur score de scores.txt ? Réponds avec echo.", "sort -n | tail -1",
+        E("record", 2, "ep.retro.record", "sort -n | tail -1",
           lambda c, l: a_repondu(l, max(c["x"]["scores"])), _prep_scores),
-        E("top3", 3, "Écris les 3 meilleurs scores, du plus grand au plus petit, dans top3.txt.", "sort -nr | head -3 >",
+        E("top3", 3, "ep.retro.top3", "sort -nr | head -3 >",
           _top3, _prep_scores),
     ],
     "Glitch": [
-        E("voir", 1, "Regarde corrompu.txt… mes mots sont à l'envers !", "cat",
+        E("voir", 1, "ep.glitch.voir", "cat",
           lambda c, l: a_tape(l, r"^\s*(cat|type|get-content|gc|less|more)\b.*corrompu"), _prep_corrompu),
-        E("repare", 2, "Remets corrompu.txt à l'endroit dans repare.txt.", "rev … >", _repare, _prep_corrompu, posix=True),
-        E("chuchote", 3, "Je crie trop fort (cri.txt) : écris-le en minuscules dans chuchote.txt.", "tr A-Z a-z",
+        E("repare", 2, "ep.glitch.repare", "rev … >", _repare, _prep_corrompu, posix=True),
+        E("chuchote", 3, "ep.glitch.chuchote", "tr A-Z a-z",
           _minuscules, _prep_cri, posix=True),
     ],
     "Système": [
-        E("qui", 1, "Qui es-tu pour la maison ? Demande ton nom d'habitant.", "whoami",
+        E("qui", 1, "ep.systeme.qui", "whoami",
           lambda c, l: a_tape(l, r"^\s*whoami\b")),
-        E("systeme", 1, "Comment s'appelle la maison où nous vivons (le système) ?", "uname -a",
+        E("systeme", 1, "ep.systeme.systeme", "uname -a",
           lambda c, l: a_tape(l, r"^\s*(uname|systeminfo|get-computerinfo)\b")),
-        E("alias", 2, "Donne-moi un surnom de commande, à mon nom, avec alias.", "alias nom='…'",
+        E("alias", 2, "ep.systeme.alias", "alias nom='…'",
           lambda c, l: a_tape(l, r"^\s*(alias\s+\w+=|set-alias\s+)")),
-        E("variable", 3, "Range mon nom dans une boîte à étiquette BESTIOLE (une variable d'environnement).", "export",
+        E("variable", 3, "ep.systeme.variable", "export",
           lambda c, l: a_tape(l, r"^\s*(export\s+BESTIOLE=|\$env:BESTIOLE\s*=)")),
     ],
 }
@@ -391,20 +393,21 @@ def ecrire_fiche(e, shiny, zone, ind=None, p=0):
     ind = ind or B.individu(e, shiny, zone)
     st = B.texte_stats(ind["stats"], p)
     var = ind.get("variante", "classique")
+    champs = [(t("dress.fiche.nom"), e["nom"] + (" ✨ " + t("dress.fiche.shiny") if shiny else "")),
+              (t("dress.fiche.numero"), f"#{e['numero']:03d}"),
+              (t("dress.fiche.rarete"), t("dress.fiche.rarete.val", rarete=B.nom_rarete(ind["rarete"]), note=ind["note"])),
+              (t("dress.fiche.variante"), var),
+              (t("dress.fiche.age"), B.nom_stade(ind.get("stade", "bebe"))),
+              (t("dress.fiche.famille"), e["famille"]),
+              (terme("stats", p, majuscule=True), st),
+              (t("dress.fiche.taille"), t("dress.fiche.taille.val", cm=e["taille_cm"], ko=e["poids_ko"]))]
+    lc = max(largeur(k) for k, _ in champs)
     fiche(e["nom"]).write_text(
-        f"══════════ FICHE DE MONSTRE ══════════\n"
-        f"  Nom     : {e['nom']}{' ✨ (shiny !)' if shiny else ''}\n"
-        f"  Numéro  : #{e['numero']:03d}\n"
-        f"  Rareté  : {ind['rarete']}  (note {ind['note']}/100)\n"
-        f"  Variante: {var}\n"
-        f"  Âge     : {ind.get('stade', 'bebe').replace('bebe', 'bébé')}\n"
-        f"  Famille : {e['famille']}\n"
-        f"  {terme('stats', p, majuscule=True):<8}: {st}\n"
-        f"  Taille  : ~{e['taille_cm']} cm   Poids : ~{e['poids_ko']} Ko\n\n"
+        "══════════ " + t("dress.fiche.titre") + " ══════════\n"
+        + "".join(f"  {ajuster(k, lc)} : {v}\n" for k, v in champs) + "\n"
         f"  « {e['description']} »\n"
         f"  {e['comportement']}\n\n"
-        + accorder("  Son repaire s'appelle « {repaire} »… caché quelque part dans {terrain}.\n",
-                   repaire=repaire(e["nom"]), terrain=terme("terrain", p)),
+        "  " + t("dress.fiche.repaire", repaire=repaire(e["nom"]), terrain=terme("terrain", p)) + "\n",
         encoding="utf-8")
 
 
@@ -455,8 +458,7 @@ def commencer(state, sauvage):
     rar = ind["rarete"]
     jour = date.today().isoformat()
     if rar in ULTIMES and state.setdefault("dressage_essais", {}).get(e["nom"]) == jour:
-        core.say(state, accorder("{nom} t'ignore… les légendaires n'acceptent qu'un essai par jour. Reviens demain !",
-                                 nom=e["nom"]), 12)
+        core.say(state, t("dress.un_essai", nom=e["nom"]), 12)
         return
     familles = state.setdefault("dressage_familles", [])
     premiere = e["famille"] not in familles
@@ -483,14 +485,12 @@ def commencer(state, sauvage):
             preparees.add(cle)
             x["prep"](c)
     eclat = " ✨" if sauvage.get("shiny") else ""
-    core.notif(state, accorder("⚔ Un monstre sauvage apparaît : {nom}{eclat} !", nom=e["nom"], eclat=eclat))
+    core.notif(state, t("dress.apparait", nom=e["nom"], eclat=eclat))
     if premiere:
-        core.say(state, accorder("Un monstre sauvage : {nom}{eclat} ! Première rencontre avec la famille {famille} : "
-                                 "pas de chrono, je t'explique tout.", nom=e["nom"], eclat=eclat, famille=e["famille"]), 14)
+        core.say(state, t("dress.premiere", nom=e["nom"], eclat=eclat, famille=e["famille"]), 14)
     else:
-        core.say(state, accorder("Un monstre sauvage : {nom}{eclat} ! Gagne sa confiance avant la fin du temps.",
-                                 nom=e["nom"], eclat=eclat), 12)
-    core.log(state, accorder("🎓 Dressage de {nom} commencé ({n} épreuves)", nom=e["nom"], n=len(taches)))
+        core.say(state, t("dress.debut", nom=e["nom"], eclat=eclat), 12)
+    core.log(state, t("dress.commence.log", nom=e["nom"], n=len(taches)))
 
 
 def tache_courante(state):
@@ -545,16 +545,13 @@ def tick(state, lignes):
         n = len(d["faites"])
         if any(f.endswith(":examiner") for f in d["faites"]):
             d["examine"] = True
-        modele = random.choice(["{nom} remue la queue ! ({n}/{total})", "{nom} s'approche un peu… ({n}/{total})",
-                                "{nom} a l'air d'aimer ça ! ({n}/{total})", "{nom} ronronne en binaire. ({n}/{total})"])
-        core.say(state, accorder(modele, nom=d["espece"], n=n, total=len(d["taches"])), 6)
+        core.say(state, au_hasard("dress.progres", nom=d["espece"], n=n, total=len(d["taches"])), 6)
     r = reste(state)
     if r is not None and r <= 0:
         if d.get("seconde"):
             d["seconde"] = False
             d["duree"] += 60
-            core.say(state, accorder("Ton familier retient {nom} par la queue ! Endurance : +60 s, vite !",
-                                     nom=d["espece"]), 10)
+            core.say(state, t("dress.seconde_chance", nom=d["espece"]), 10)
         else:
             echouer(state)
 
@@ -580,12 +577,9 @@ def reussir(state):
     if e["famille"] not in fams:
         fams.append(e["famille"])
     titre = e["nom"] + (" ✨ SHINY" if d["shiny"] else "")
-    core.log(state, accorder("🎓 Dressage réussi : {titre} en {s} s ! ({rarete})", titre=titre, s=ind["dresse"],
-                             rarete=ind["rarete"]))
-    core.say(state, accorder("{nom}{eclat} te fait confiance et rejoint ta troupe ! Signe particulier : {marque}. "
-                             "([c] pour ta collection)", nom=e["nom"], eclat=" ✨" if d["shiny"] else "",
-                             marque=ind["marque"]), 14)
-    core.notif(state, accorder("🎓 {titre} rejoint ta troupe !", titre=titre))
+    core.log(state, t("dress.reussi.log", titre=titre, s=ind["dresse"], rarete=B.nom_rarete(ind["rarete"])))
+    core.say(state, t("dress.reussi.dit", nom=e["nom"], eclat=" ✨" if d["shiny"] else "", marque=ind["marque"]), 14)
+    core.notif(state, t("dress.reussi.notif", titre=titre))
     core.animer(state, "victoire")
     st = e.get("stat")
     if st not in state["stats"]:
@@ -606,16 +600,15 @@ def echouer(state):
         fiche(d["espece"]).unlink()
     except OSError:
         pass
-    core.log(state, accorder("💨 {nom} a perdu patience et a filé…", nom=d["espece"]))
-    core.say(state, accorder("Trop tard ! {nom} a filé. Continue de jouer : une autre chance viendra peut-être.",
-                             nom=d["espece"]), 12)
+    core.log(state, t("dress.echec.log", nom=d["espece"]))
+    core.say(state, t("dress.echec.dit", nom=d["espece"]), 12)
     core.animer(state, "ko")
 
 
 def abandonner(state):
     if state.get("dressage"):
         d, state["dressage"] = state["dressage"], None
-        core.log(state, accorder("🏳 Dressage de {nom} abandonné", nom=d["espece"]))
+        core.log(state, t("dress.abandon.log", nom=d["espece"]))
 
 
 COUL_STAT = {"PV": 203, "ATK": 208, "DEF": 75, "VIT": 120, "INT": 141}
@@ -643,15 +636,12 @@ def petit_dessin(e, shiny, ind=None):
     return B.dessin(e, shiny)
 
 
-_ANSI = re.compile(r"\x1b\[[0-9;]*m")
+def _largeur(texte):
+    return largeur(texte)
 
 
-def _largeur(t):
-    return len(_ANSI.sub("", t))
-
-
-def _pad(t, n):
-    return t + " " * max(0, n - _largeur(t))
+def _pad(texte, n):
+    return ajuster(texte, n)
 
 
 def _cote_a_cote(gauche, droite, lg, milieu=None):
@@ -665,7 +655,7 @@ def _cote_a_cote(gauche, droite, lg, milieu=None):
     return out
 
 
-def lignes_ecran(state, largeur=62):
+def lignes_ecran(state, largeur_txt=62):
     """Face-à-face : ton familier à gauche, le monstre à droite, les stats sous chacun ; puis une seule étape."""
     from . import core as C
     from . import sprites
@@ -685,10 +675,11 @@ def lignes_ecran(state, largeur=62):
     # ---- le familier
     sp_f, _ = sprites.creature(state)
     lvl = C.level(state["xp"])
-    st_f = "  ".join(f"{fg(v['color'])}{v['short']}{RESET} {BOLD}{state['stats'][v['stat']]}{RESET}" for v in C.CATEGORIES.values())
+    st_f = "  ".join(f"{fg(v['color'])}{C.nom_stat(v['stat'], court=True)}{RESET} {BOLD}{state['stats'][v['stat']]}{RESET}"
+                     for v in C.CATEGORIES.values())
     nom_f = B.arc_en_ciel(state["name"]) if state.get("shiny") else f"{BOLD}{state['name']}{RESET}"
-    gauche_txt = [f"{nom_f} {DIM}· niv. {lvl}{RESET}", st_f,
-                  f"{fg(250)}Faim{RESET}     {jauge(state['hunger'], 100, 12)}"]
+    gauche_txt = [f"{nom_f} {DIM}· " + t("dress.niv", n=lvl) + RESET, st_f,
+                  f"{fg(250)}{ajuster(t('app.faim'), 8)}{RESET} {jauge(state['hunger'], 100, 12)}"]
     # ---- le monstre
     ind = d.get("ind") or {}
     sp_m = petit_dessin(e, d["shiny"], ind)
@@ -696,49 +687,54 @@ def lignes_ecran(state, largeur=62):
         st_m = "  ".join(f"{fg(COUL_STAT.get(k, 250))}{B.nom_stat(k, p)}{RESET} {BOLD}{v}{RESET}"
                          for k, v in (ind.get("stats") or e["stats"]).items())
     else:
-        st_m = f"{DIM}{terme('stats', p)} : ??? (lis sa fiche){RESET}"
+        st_m = f"{DIM}" + t("dress.stats_cachees", stats=terme("stats", p)) + RESET
     rar = d.get("rarete") or "commune"
     droite_txt = [f"{BOLD}{B.nom_affiche(e, d['shiny'], rar if d.get('examine') else None)}{RESET} "
                   f"{DIM}#{e['numero']:03d}{RESET} "
-                  + (B.libelle_rarete(rar) if d.get("examine") else f"{DIM}rareté ???{RESET}"), st_m,
+                  + (B.libelle_rarete(rar) if d.get("examine") else f"{DIM}" + t("dress.rarete_cachee") + RESET), st_m,
                   f"{fg(213)}{terme('mefiance', p)}{RESET} {jauge(mef, 100, 12, inverse=True)} {mef:3.0f} %"]
-    out = ["", f" {fg(196)}{BOLD}⚔ UN MONSTRE SAUVAGE !{RESET}", ""]
+    out = ["", f" {fg(196)}{BOLD}⚔ " + t("dress.titre") + RESET, ""]
     out += _cote_a_cote(sp_f, sp_m, LG, milieu=f"{fg(196)}{BOLD}  VS  {RESET}")
     out += _cote_a_cote(gauche_txt, droite_txt, LG, milieu="      ")
     out.append("")
-    chrono = (f"{fg(153)}Temps{RESET} {jauge(r, d['duree'], 30)} {r:3.0f} s" if r is not None
-              else f"{fg(153)}Temps{RESET} {fg(147)}pas de chrono : c'est une leçon{RESET}")
+    chrono = (f"{fg(153)}{t('dress.temps')}{RESET} {jauge(r, d['duree'], 30)} {r:3.0f} s" if r is not None
+              else f"{fg(153)}{t('dress.temps')}{RESET} {fg(147)}{t('dress.pas_de_chrono')}{RESET}")
     pastilles = " ".join(f"{fg(120)}●{RESET}" if f in d["faites"] else f"{fg(226)}◉{RESET}" if _par_id(f) is tache_courante(state)
                          else f"{fg(240)}○{RESET}" for f in d["taches"])
-    out.append(f"  {chrono}    {DIM}Étape {min(n_fait + 1, n_total)}/{n_total}{RESET} {pastilles}")
+    out.append(f"  {chrono}    {DIM}" + t("dress.etape", n=min(n_fait + 1, n_total), total=n_total) + f"{RESET} {pastilles}")
     x = tache_courante(state)
     if x is None:
         return out
     fid = next(f for f in d["taches"] if _par_id(f) is x)
-    but = x["but"].format(**termes(p), nom_min=d["espece"].lower(), nom=d["espece"])
+    but = t(x["but"], **termes(p), nom_min=d["espece"].lower(), nom=d["espece"])
     expl, ex = aide(fid, d["espece"], p)
-    out += ["", f" {fg(226)}{BOLD}Mission  {RESET}{BOLD}{but}{RESET}"]
+    etiq = {k: t("dress.col." + k) for k in ("mission", "comment", "tape", "dabord", "ou")}
+    lc = max(largeur(v) for v in etiq.values()) + 1
+    col = {k: ajuster(v, lc) for k, v in etiq.items()}
+    vide = " " * lc
+    out += [""]
+    for k, l in enumerate(envelopper(but, largeur_txt)):
+        out.append(f" {fg(226)}{BOLD}{col['mission'] if k == 0 else vide}{RESET}{BOLD}{l}{RESET}")
     if expl:
-        for k, l in enumerate(textwrap.wrap(expl, largeur)):
-            out.append(f" {fg(117)}{'Comment  ' if k == 0 else '         '}{RESET} {l}")
+        for k, l in enumerate(envelopper(expl, largeur_txt)):
+            out.append(f" {fg(117)}{col['comment'] if k == 0 else vide}{RESET}{l}")
     if ex:
         seuil = d["duree"] * (1 - bonus(state)["exemple"]) if d["duree"] else None
         if r is None or fid.startswith("Rencontre:") or r <= d["duree"] - seuil:
-            out.append(f" {fg(120)}{BOLD}Tape     {RESET} {fg(120)}{piege(ex)}{RESET}")
+            out.append(f" {fg(120)}{BOLD}{col['tape']}{RESET}{fg(120)}{piege(ex)}{RESET}")
         else:
-            out.append(f" {fg(120)}Tape     {RESET} {DIM}l'exemple s'affiche dans {r - (d['duree'] - seuil):.0f} s "
-                       f"(cherche d'abord dans le lexique : touche l){RESET}")
+            out.append(f" {fg(120)}{col['tape']}{RESET}{DIM}"
+                       + t("dress.exemple_dans", s=f"{r - (d['duree'] - seuil):.0f}") + RESET)
     if fid.startswith("Rencontre:examiner"):
         ou = "~/terrain_terminagotchi"
     elif fid.startswith("Rencontre:"):
-        ou = "n'importe où"
+        ou = t("dress.nimporte_ou")
     else:
         ou = f"~/{T.name}/{d['zone']}/{repaire(d['espece'])}"
     if ou.startswith("~/") and not fid.startswith("Rencontre:"):
-        out.append(f" {fg(246)}D'abord  {RESET} passe la porte de son repaire (si ce n'est pas déjà fait) : "
-                   f"{fg(120)}cd {ou}{RESET}")
+        out.append(f" {fg(246)}{col['dabord']}{RESET}" + t("dress.passe_porte", cmd=f"{fg(120)}cd {ou}{RESET}"))
     else:
-        out.append(f" {fg(246)}Où       {RESET} {DIM}{ou}{RESET}")
+        out.append(f" {fg(246)}{col['ou']}{RESET}{DIM}{ou}{RESET}")
     return out
 
 
@@ -746,116 +742,100 @@ def lignes_ecran(state, largeur=62):
 # Pour chaque épreuve : ce que fait la commande (en clair) et un exemple complet à adapter.
 # (exemple PC/Mac/Linux, exemple Windows PowerShell si différent)
 AIDES = {
-    "Rencontre:examiner": ("cat lit {un_fichier} à voix haute. La fiche du monstre est posée dans {terrain}.",
+    "Rencontre:examiner": ("aide.rencontre.examiner",
                            "cat ~/terrain_terminagotchi/monstre_{nom_min}.txt", "cat ~/terrain_terminagotchi/monstre_{nom_min}.txt"),
-    "Rencontre:repaire": ("find cherche un objet dans toutes les pièces, même les plus petites (chaque {dossier} et ses "
-                          "sous-dossiers). Il te donne le chemin complet : c'est là que vit le monstre.",
+    "Rencontre:repaire": ("aide.rencontre.repaire",
                           "find ~/terrain_terminagotchi -name repaire_{nom_min}",
                           "Get-ChildItem ~/terrain_terminagotchi -Recurse -Filter repaire_{nom_min}"),
-    "Fichiers:enclos": ("mkdir construit une nouvelle pièce (« make directory » : créer un dossier).", "mkdir enclos", "mkdir enclos"),
-    "Fichiers:gamelle": ("touch pose une feuille blanche (un fichier vide). Le / sépare la pièce de la feuille.",
+    "Fichiers:enclos": ("aide.fichiers.enclos", "mkdir enclos", "mkdir enclos"),
+    "Fichiers:gamelle": ("aide.fichiers.gamelle",
                          "touch enclos/gamelle", "New-Item enclos/gamelle"),
-    "Fichiers:doudou": ("cp fait une photocopie : d'abord la feuille à copier, puis la pièce où la mettre. L'original ne bouge pas.",
+    "Fichiers:doudou": ("aide.fichiers.doudou",
                         "cp doudou.txt enclos/", "copy doudou.txt enclos/"),
-    "Fichiers:renomme": ("mv porte une feuille ailleurs ; si elle reste dans la même pièce, ça change juste son étiquette (son nom).",
+    "Fichiers:renomme": ("aide.fichiers.renomme",
                          "mv vieux_nom.txt {nom_min}.txt", "move vieux_nom.txt {nom_min}.txt"),
-    "Fichiers:archive": ("tar range toute une pièce dans une seule valise bien tassée (une archive) : c = créer, "
-                         "z = tasser (compresser), f = nom de la valise.",
+    "Fichiers:archive": ("aide.fichiers.archive",
                          "tar -czf enclos.tar.gz enclos", "Compress-Archive enclos enclos.zip"),
-    "Réseau:ping": ("ping crie « Ohé ! » à une maison et attend l'écho. localhost = ta propre maison. "
-                    "-c 3 = crier 3 fois, puis s'arrêter.", "ping -c 3 localhost", "ping localhost"),
-    "Réseau:hote": ("hostname dit le nom de ta maison sur le réseau.", "hostname", "hostname"),
-    "Réseau:ip": ("Chaque maison branchée au réseau a une adresse, comme une adresse postale : {ip}. ip a les montre toutes.",
+    "Réseau:ping": ("aide.reseau.ping", "ping -c 3 localhost", "ping localhost"),
+    "Réseau:hote": ("aide.reseau.hote", "hostname", "hostname"),
+    "Réseau:ip": ("aide.reseau.ip",
                   "ip a", "ipconfig"),
-    "Réseau:dns": ("nslookup ouvre {dns} : il change le nom d'un site en adresse.",
+    "Réseau:dns": ("aide.reseau.dns",
                    "nslookup example.com", "nslookup example.com"),
-    "Réseau:page": ("curl est un facteur : il va chercher une page sur un site. -o choisit la boîte où la ranger.",
+    "Réseau:page": ("aide.reseau.page",
                     "curl -o page.html https://example.com", "curl.exe -o page.html https://example.com"),
-    "Processus:ps": ("ps montre qui est réveillé : chaque {processus}. ps aux les montre tous, même ceux des autres habitants.",
+    "Processus:ps": ("aide.processus.ps",
                      "ps aux", "Get-Process"),
-    "Processus:heure": ("date lit l'horloge de la maison.", "date", "Get-Date"),
-    "Processus:fond": ("sleep 120 attend 120 secondes. Le & l'envoie faire la sieste au fond de la maison (en arrière-plan) : "
-                       "tu gardes la main.", "sleep 120 &", None),
-    "Processus:jobs": ("jobs montre les programmes que tu as envoyés au fond, avec leur numéro.", "jobs", None),
-    "Processus:kill": ("kill envoie un programme se coucher (il l'arrête). %1 = le programme numéro 1 de la liste jobs.",
+    "Processus:heure": ("aide.processus.heure", "date", "Get-Date"),
+    "Processus:fond": ("aide.processus.fond", "sleep 120 &", None),
+    "Processus:jobs": ("aide.processus.jobs", "jobs", None),
+    "Processus:kill": ("aide.processus.kill",
                        "kill %1", None),
-    "Mémoire:place": ("df montre la place libre dans {disque} ; -h écrit les tailles comme pour les humains (Go, Mo).",
+    "Mémoire:place": ("aide.memoire.place",
                       "df -h", "Get-PSDrive"),
-    "Mémoire:ram": ("free montre {ram} : un grand plan de travail où les programmes posent leurs affaires. "
-                    "-h = tailles lisibles.", "free -h", None),
-    "Mémoire:poids": ("du pèse une pièce et tout ce qu'elle contient ; -s = juste le total, -h = taille lisible.",
+    "Mémoire:ram": ("aide.memoire.ram", "free -h", None),
+    "Mémoire:poids": ("aide.memoire.poids",
                       "du -sh ~/terrain_terminagotchi/nid", None),
-    "Mémoire:sac": ("ls sac regarde dans le sac. Le | est un tuyau : il verse la liste dans wc -l, qui compte les lignes. "
-                    "Ensuite, dis le nombre avec echo.", "ls sac | wc -l    puis    echo 7",
+    "Mémoire:sac": ("aide.memoire.sac", "ls sac | wc -l    puis    echo 7",
                     "(ls sac).Count    puis    echo 7"),
-    "Sécurité:cage": ("touch pose une feuille blanche (construis l'enclos avant avec mkdir s'il manque).",
+    "Sécurité:cage": ("aide.securite.cage",
                       "mkdir -p enclos ; touch enclos/cage", "New-Item enclos/cage"),
-    "Sécurité:cachette": ("Une feuille dont le nom commence par un point se cache sous le tapis : ls ne la voit pas, ls -a si.",
+    "Sécurité:cachette": ("aide.securite.cachette",
                           "touch enclos/.secret", "New-Item enclos/.secret"),
-    "Sécurité:prive": ("chmod pose un cadenas (il change les droits). 600 = toi seul peux lire et écrire, personne d'autre.",
+    "Sécurité:prive": ("aide.securite.prive",
                        "chmod 600 enclos/cage", "attrib +r enclos/cage"),
-    "Sécurité:empreinte": ("sha256sum prend l'empreinte digitale d'une feuille : une suite de lettres et de chiffres qui change "
-                           "si on modifie une seule lettre. Recopie les 8 premiers avec echo.",
+    "Sécurité:empreinte": ("aide.securite.empreinte",
                            "sha256sum collier.txt    puis    echo 1a2b3c4d", "Get-FileHash collier.txt    puis    echo 1a2b3c4d"),
-    "Code:chant": ("echo dit un texte. L'entonnoir > le verse dans une feuille au lieu de l'écran.",
+    "Code:chant": ("aide.code.chant",
                    "echo {nom} > chant.txt", "echo {nom} > chant.txt"),
-    "Code:script": ("Une recette (un script), c'est une feuille de commandes. Écris-la, puis chmod +x l'autorise à cuisiner "
-                    "toute seule : elle devient {executable} (on la lance avec ./tour.sh).",
+    "Code:script": ("aide.code.script",
                     "echo 'echo hop' > tour.sh ; chmod +x tour.sh", "echo 'echo hop' > tour.ps1"),
-    "Code:compte": ("Une boucle for répète une commande pour chaque nombre. Tout ce qui est dit tombe dans la feuille "
-                    "grâce à l'entonnoir >.", "for i in 1 2 3 4 5; do echo $i; done > compte.txt", "1..5 > compte.txt"),
-    "Matériel:machine": ("uname -m dit quel genre de cerveau a la maison : {processeur} (x86_64, arm64…).",
+    "Code:compte": ("aide.code.compte", "for i in 1 2 3 4 5; do echo $i; done > compte.txt", "1..5 > compte.txt"),
+    "Matériel:machine": ("aide.materiel.machine",
                          "uname -m", "systeminfo"),
-    "Matériel:coeurs": ("nproc compte les cœurs de {processeur} : combien de choses il fait en même temps. "
-                        "Réponds ensuite avec echo.", "nproc    puis    echo 8", "$env:NUMBER_OF_PROCESSORS    puis    echo 8"),
-    "Matériel:disques": ("lsblk montre {disque} et leurs étagères (les partitions).", "lsblk", "Get-Disk"),
-    "Bugs:erreurs": ("grep est la loupe du détective : elle montre les lignes qui contiennent le mot.",
+    "Matériel:coeurs": ("aide.materiel.coeurs", "nproc    puis    echo 8", "$env:NUMBER_OF_PROCESSORS    puis    echo 8"),
+    "Matériel:disques": ("aide.materiel.disques", "lsblk", "Get-Disk"),
+    "Bugs:erreurs": ("aide.bugs.erreurs",
                      "grep ERROR bug.log", "Select-String ERROR bug.log"),
-    "Bugs:combien": ("grep -c compte les lignes trouvées par la loupe, au lieu de les montrer.",
+    "Bugs:combien": ("aide.bugs.combien",
                      "grep -c ERROR bug.log    puis    echo 3", "(Select-String ERROR bug.log).Count    puis    echo 3"),
-    "Bugs:corrige": ("grep -v garde au contraire les lignes SANS le mot ; l'entonnoir > les verse dans une nouvelle feuille.",
+    "Bugs:corrige": ("aide.bugs.corrige",
                      "grep -v ERROR bug.log > corrige.log", "Select-String -NotMatch ERROR bug.log > corrige.log"),
-    "Nuage:nuage": ("mkdir construit une nouvelle pièce.", "mkdir nuage", "mkdir nuage"),
-    "Nuage:photos": ("touch peut poser plusieurs feuilles d'un coup : écris leurs noms à la suite.",
+    "Nuage:nuage": ("aide.nuage.nuage", "mkdir nuage", "mkdir nuage"),
+    "Nuage:photos": ("aide.nuage.photos",
                      "touch nuage/photo1.jpg nuage/photo2.jpg nuage/photo3.jpg", "New-Item nuage/photo1.jpg, nuage/photo2.jpg, nuage/photo3.jpg"),
-    "Nuage:copie": ("cp -r photocopie une pièce entière, avec tout ce qu'elle contient (r = récursif).",
+    "Nuage:copie": ("aide.nuage.copie",
                     "cp -r nuage nuage_copie", "Copy-Item -Recurse nuage nuage_copie"),
-    "Données:debut": ("head lit seulement le haut de la feuille (10 lignes).",
+    "Données:debut": ("aide.donnees.debut",
                       "head croquettes.txt", "Get-Content croquettes.txt -Head 10"),
-    "Données:lignes": ("wc -l compte les lignes d'une feuille. Réponds ensuite avec echo.",
+    "Données:lignes": ("aide.donnees.lignes",
                        "wc -l croquettes.txt    puis    echo 12", "(Get-Content croquettes.txt).Count    puis    echo 12"),
-    "Données:trie": ("sort range les lignes comme un dictionnaire ; l'entonnoir > verse le résultat dans une feuille.",
+    "Données:trie": ("aide.donnees.trie",
                      "sort croquettes.txt > trie.txt", "Get-Content croquettes.txt | Sort-Object > trie.txt"),
-    "Données:differentes": ("sort range, uniq enlève les jumeaux qui se suivent, wc -l compte. Les tuyaux | les branchent "
-                            "l'un après l'autre.",
+    "Données:differentes": ("aide.donnees.differentes",
                             "sort croquettes.txt | uniq | wc -l    puis    echo 5",
                             "(Get-Content croquettes.txt | Sort-Object -Unique).Count    puis    echo 5"),
-    "Crypto:lire": ("cat lit une feuille à voix haute.", "cat message.b64", "Get-Content message.b64"),
-    "Crypto:decode": ("Le base64 déguise un texte en lettres bizarres (il l'encode). base64 -d enlève le déguisement "
-                      "(d = décoder).", "base64 -d message.b64    puis    echo motsecret", None),
-    "Crypto:empreinte": ("sha256sum prend l'empreinte digitale unique d'une feuille. Recopie les 8 premiers caractères avec echo.",
+    "Crypto:lire": ("aide.crypto.lire", "cat message.b64", "Get-Content message.b64"),
+    "Crypto:decode": ("aide.crypto.decode", "base64 -d message.b64    puis    echo motsecret", None),
+    "Crypto:empreinte": ("aide.crypto.empreinte",
                          "sha256sum collier.txt    puis    echo 1a2b3c4d", "Get-FileHash collier.txt    puis    echo 1a2b3c4d"),
-    "IA:bonjour": ("echo dit le texte qu'on lui donne.", "echo bonjour {nom}", "echo bonjour {nom}"),
-    "IA:chat": ("grep -c compte les lignes où la loupe trouve le mot.", "grep -c chat croquettes.txt    puis    echo 2",
+    "IA:bonjour": ("aide.ia.bonjour", "echo bonjour {nom}", "echo bonjour {nom}"),
+    "IA:chat": ("aide.ia.chat", "grep -c chat croquettes.txt    puis    echo 2",
                 "(Select-String chat croquettes.txt).Count    puis    echo 2"),
-    "IA:frequent": ("sort range, uniq -c compte chaque mot, puis sort -n range par nombre : le dernier est le champion.",
+    "IA:frequent": ("aide.ia.frequent",
                     "sort croquettes.txt | uniq -c | sort -n", None),
-    "Rétro:calendrier": ("cal affiche le calendrier accroché dans la cuisine.", "cal", "Get-Date"),
-    "Rétro:record": ("sort -n range les nombres du plus petit au plus grand ; tail -1 garde le dernier (le plus grand).",
+    "Rétro:calendrier": ("aide.retro.calendrier", "cal", "Get-Date"),
+    "Rétro:record": ("aide.retro.record",
                      "sort -n scores.txt | tail -1    puis    echo 9876", None),
-    "Rétro:top3": ("sort -nr range du plus grand au plus petit (r = à l'envers), head -3 garde les 3 premiers, "
-                   "l'entonnoir > les verse dans la feuille.", "sort -nr scores.txt | head -3 > top3.txt", None),
-    "Glitch:voir": ("cat lit une feuille à voix haute.", "cat corrompu.txt", "Get-Content corrompu.txt"),
-    "Glitch:repare": ("rev retourne chaque ligne, comme dans un miroir ; l'entonnoir > verse le résultat dans une feuille.",
+    "Rétro:top3": ("aide.retro.top3", "sort -nr scores.txt | head -3 > top3.txt", None),
+    "Glitch:voir": ("aide.glitch.voir", "cat corrompu.txt", "Get-Content corrompu.txt"),
+    "Glitch:repare": ("aide.glitch.repare",
                       "rev corrompu.txt > repare.txt", None),
-    "Glitch:chuchote": ("tr change des lettres en d'autres : ici chaque majuscule (A-Z) en minuscule (a-z). "
-                        "Le < lui tend la feuille à lire.", "tr A-Z a-z < cri.txt > chuchote.txt", None),
-    "Système:qui": ("whoami (« qui suis-je ? ») dit ton nom d'habitant : ton nom d'utilisateur.", "whoami", "whoami"),
-    "Système:systeme": ("uname -a lit la fiche de la maison : son nom, sa version, son genre de cerveau.", "uname -a", "systeminfo"),
-    "Système:alias": ("Un alias est un surnom : un mot court qui lance une commande plus longue. "
-                      "Ensuite, tape le surnom pour essayer !", "alias {nom_min}='echo GRRR'", "Set-Alias {nom_min} Get-Date"),
-    "Système:variable": ("Une variable d'environnement est une petite boîte avec une étiquette, que tout le terminal peut ouvrir. "
-                         "export la remplit ; echo $BESTIOLE la relit.", "export BESTIOLE={nom}", "$env:BESTIOLE = '{nom}'"),
+    "Glitch:chuchote": ("aide.glitch.chuchote", "tr A-Z a-z < cri.txt > chuchote.txt", None),
+    "Système:qui": ("aide.systeme.qui", "whoami", "whoami"),
+    "Système:systeme": ("aide.systeme.systeme", "uname -a", "systeminfo"),
+    "Système:alias": ("aide.systeme.alias", "alias {nom_min}='echo GRRR'", "Set-Alias {nom_min} Get-Date"),
+    "Système:variable": ("aide.systeme.variable", "export BESTIOLE={nom}", "$env:BESTIOLE = '{nom}'"),
 }
 
 
@@ -867,4 +847,5 @@ def aide(fid, nom, p=0):
     expl, ex, ex_win = a
     ex = ex_win if IS_WIN and ex_win else ex
     f = dict(termes(p), nom=nom, nom_min=nom.lower())
-    return expl.format(**f), ex.format(**f)
+    ex = ex.format(**f).replace("    puis    ", "    " + t("dress.puis") + "    ")
+    return t(expl, **f), ex

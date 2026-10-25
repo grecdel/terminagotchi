@@ -17,7 +17,8 @@ def piege_ansi(t):
 from . import bestiaire as B
 from . import core
 from . import dressage
-from .mots import accorder, palier, terme
+from .langue import largeur, t
+from .mots import palier, terme
 from .plateforme import BOLD, DIM, IS_WIN, RESET, fg, piege
 
 T = core.TERRAIN
@@ -28,7 +29,7 @@ def lieu(zone):
     base = zone.split("/")[0]
     nom = B.HABITATS.get(base, base)
     prof = zone.count("/")
-    return nom + ["", " (un recoin)", " (une cachette)", " (le sanctuaire)"][min(prof, 3)]
+    return nom + ["", " " + t("exp.recoin"), " " + t("exp.cachette"), " " + t("exp.sanctuaire")][min(prof, 3)]
 
 
 def debloque(state):
@@ -55,7 +56,7 @@ def spawn(state):
         ind["teinte"] = round(random.uniform(0.15, 0.85), 3)   # couleur shiny propre à cet individu
     s = {"f": dressage.fiche(e["nom"]).name, "e": e["nom"], "zone": zone, "shiny": shiny, "v": vid, "ind": ind}
     state["sauvages"].append(s)
-    core.log(state, accorder("⚔ Un monstre sauvage apparaît : {nom} !", nom=e["nom"]))
+    core.log(state, t("dress.apparait", nom=e["nom"], eclat=""))
     core.animer(state, "attaque")
     dressage.commencer(state, s)
     from . import fenetre
@@ -76,8 +77,8 @@ def check(state):
             state["sauvages"].remove(s)
             if (state.get("dressage") or {}).get("sauvage") == s["f"]:
                 dressage.abandonner(state)
-            core.log(state, accorder("💨 {nom} a disparu (fiche effacée ?)", nom=s["e"]))
-            core.say(state, accorder("Oh non, {nom} a disparu… la broyeuse rm est passée par là ?", nom=s["e"]), 10)
+            core.log(state, t("exp.disparu.log", nom=s["e"]))
+            core.say(state, t("exp.disparu.dit", nom=s["e"]), 10)
             core.animer(state, "ko")
 
 
@@ -87,7 +88,7 @@ def tick(state, spontane, proba=1.5 / 480, jeu=0):
         return
     if not state["explo"]:
         state["explo"] = True
-        core.log(state, "🌲 Exploration débloquée !")
+        core.log(state, t("exp.debloquee"))
         spawn(state)
     elif state.get("dressage"):
         pass                                          # pas de nouveau monstre pendant un dressage
@@ -107,8 +108,8 @@ def _carte_individu(ind):
     infos = [
         f"{B.nom_affiche(e, ind.get('shiny'), r)} {DIM}#{e['numero']:03d} · {RESET}{B.libelle_rarete(r)}"
         f"{DIM} · {e['famille']}{' · ' + var if var != 'classique' else ''}{RESET}",
-        f"{DIM}signe particulier :{RESET} {ind.get('marque', '?')}",
-        f"{DIM}humeur {ind.get('humeur', '?')} · {ind.get('taille', '?')} cm · potentiel {ind.get('potentiel', '?')} %{RESET}",
+        f"{DIM}" + t("exp.signe") + f"{RESET} {ind.get('marque', '?')}",
+        f"{DIM}" + t("exp.humeur", humeur=ind.get("humeur", "?"), cm=ind.get("taille", "?"), pot=ind.get("potentiel", "?")) + RESET,
     ]
     hauteur = max(len(sp), len(infos))
     w = max((len(piege_ansi(x)) for x in sp), default=0)
@@ -121,33 +122,34 @@ def _carte_individu(ind):
 
 
 def ecran_collection(state):
-    lignes = [f" {fg(213)}── 🐾 Collection de {state['name']} ──{RESET}", ""]
+    lignes = [f" {fg(213)}── 🐾 " + t("exp.collection.titre", nom=state["name"]) + f" ──{RESET}", ""]
     caps = state.get("captures", [])
     especes_vues = {n for n, k in state["collection"].items() if k}
     par_rarete = {}
     for c in caps:
         r = B.rarete_de(c)
         par_rarete[r] = par_rarete.get(r, 0) + 1
-    lignes.append(" Espèces découvertes : " + BOLD + f"{len(especes_vues)}/150" + RESET + "   " + "  ".join(
+    lignes.append(" " + t("exp.especes", n=BOLD + f"{len(especes_vues)}/150" + RESET) + "   " + "  ".join(
         f"{B.libelle_rarete(r)} {par_rarete[r]}" for r in B.COULEUR_RARETE if r in par_rarete))
     shinies = sum(1 for c in caps if c.get("shiny"))
-    lignes.append(f" Bestioles dressées : {len(caps)}" + (f" · dont {B.arc_en_ciel(f'{shinies} shiny')}" if shinies else ""))
+    lignes.append(" " + t("exp.dressees", n=len(caps))
+                  + (" · " + t("exp.dont_shiny", shiny=B.arc_en_ciel(f"{shinies} shiny")) if shinies else ""))
     if state["collection"].get("Abyssor"):
-        lignes.append(" " + B.arc_en_ciel("★ Espèce secrète #151 découverte : Abyssor"))
+        lignes.append(" " + B.arc_en_ciel(t("exp.abyssor")))
     lignes.append("")
     if caps:
-        lignes.append(f" {DIM}Tes dernières captures :{RESET}")
+        lignes.append(f" {DIM}" + t("exp.dernieres") + RESET)
         for ind in caps[-6:][::-1]:
             lignes += _carte_individu(ind)
             lignes.append("")
     else:
-        lignes.append(f" {DIM}Aucune bestiole dressée pour l'instant.{RESET}")
+        lignes.append(f" {DIM}" + t("exp.aucune_dressee") + RESET)
     if not state["explo"]:
-        lignes.append(f" {DIM}L'exploration s'ouvre avec la leçon « Construire mon nid ».{RESET}")
+        lignes.append(f" {DIM}" + t("exp.s_ouvre", lecon=t("lec.t1.titre")) + RESET)
     else:
         zones = sorted({lieu(s["zone"]) for s in state["sauvages"]})
-        lignes.append(" Présences signalées : " + (", ".join(zones) if zones else "aucune pour l'instant"))
-        lignes.append(f" {DIM}Fiche d'une espèce : tg bestiaire <nom> · tout le bestiaire : tg site bestiaire{RESET}")
+        lignes.append(" " + t("exp.presences", liste=", ".join(zones) if zones else t("exp.aucune_presence")))
+        lignes.append(f" {DIM}" + t("exp.pied") + RESET)
     return lignes
 
 
@@ -157,30 +159,30 @@ def fiche(state, nom):
         vues = sorted((B.espece(n) for n, k in state["collection"].items() if k and B.espece(n)),
                       key=lambda e: e["numero"])
         if not vues:
-            return [" Tu n'as encore capturé aucune bestiole. Exemple : tg bestiaire Glitchou"]
-        return [" Tes espèces : " + ", ".join(f"#{e['numero']:03d} {e['nom']}" for e in vues),
-                f" {DIM}Fiche : tg bestiaire <nom>{RESET}"]
+            return [" " + t("exp.fiche.aucune")]
+        return [" " + t("exp.fiche.tes_especes", liste=", ".join(f"#{e['numero']:03d} {e['nom']}" for e in vues)),
+                f" {DIM}" + t("exp.fiche.aide") + RESET]
     e = B.espece(nom)
     connue = e is not None and state["collection"].get(e["nom"], 0) > 0
     if e is None or (e.get("secrete") and not connue):
-        return [f" Aucune espèce ne s'appelle « {nom} ». Les 150 sont sur le site : tg site bestiaire"]
+        return [" " + t("exp.fiche.inconnue", nom=nom)]
     entete = f" {BOLD}#{e['numero']:03d}{RESET} {B.nom_affiche(e) if connue else '???'}  " \
-             f"{DIM}se montre {e['frequence']}{RESET} · {e['icone']} {e['famille']}"
+             f"{DIM}" + t("exp.fiche.se_montre", frequence=B.nom_frequence(e["frequence"])) + f"{RESET} · {e['icone']} {e['famille']}"
     lignes = [entete, ""]
     if not connue:
-        lignes += [f"  {DIM}Pas encore dans ta troupe.{RESET}",
-                   f"  Habitat : {lieu(e['zone'])}  ({e['zone']})",
-                   f"  Cette espèce se montre {e['frequence']}, attirée par la commande « {e['attiree_par']} »."]
+        lignes += [f"  {DIM}" + t("exp.fiche.pas_encore") + RESET,
+                   "  " + t("exp.fiche.habitat", lieu=lieu(e["zone"])) + f"  ({e['zone']})",
+                   "  " + t("exp.fiche.attiree", frequence=B.nom_frequence(e["frequence"]), cmd=e["attiree_par"])]
         return lignes
     sp = B.dessin(e, grand=True)
     vars_ = [v["nom"] for v in e.get("variantes", [])[1:]]
     texte = [e["description"], e["comportement"],
-             f"Capacité : {e['capacite']} · point fort : {e['stat']}",
-             f"Taille ~{e['taille_cm']} cm · poids ~{e['poids_ko']} Ko",
+             t("exp.fiche.capacite", capacite=e["capacite"], stat=core.nom_stat(e["stat"])),
+             t("exp.fiche.taille", cm=e["taille_cm"], ko=e["poids_ko"]),
              B.texte_stats(e["stats"], palier(state)),
-             f"Habitat : {lieu(e['zone'])} · attirée par « {e['attiree_par']} »",
-             (f"Variantes : {', '.join(vars_)}" if vars_ else ""),
-             f"Tu en as dressé {state['collection'][e['nom']]}."]
+             t("exp.fiche.habitat_attiree", lieu=lieu(e["zone"]), cmd=e["attiree_par"]),
+             (t("exp.fiche.variantes", liste=", ".join(vars_)) if vars_ else ""),
+             t("exp.fiche.dresses", n=state["collection"][e["nom"]])]
     for i in range(max(len(sp), len(texte))):
         lg = max((len(piege_ansi(x)) for x in sp), default=0)
         g = (sp[i] + " " * (lg - len(piege_ansi(sp[i])))) if i < len(sp) else " " * lg

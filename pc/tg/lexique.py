@@ -10,6 +10,7 @@ suit le palier de vocabulaire (voir mots.py) : l'image seule, puis l'image et la
 technique côte à côte, puis la technique avec l'image en petit rappel.
 Les mêmes phrases existent dans l'appli Android (Regles.LEXIQUE dans Jeu.kt).
 """
+from .langue import t
 from .mots import palier
 from .plateforme import BOLD, DIM, RESET, C, OS_NAMES, OSK, fg, installer
 
@@ -20,85 +21,74 @@ TEL = "telephone"
 def _entrees():
     inst = installer("nom")
     return [
-        ("🗂 Fichiers et dossiers", ICI, [
-            ("pwd", "le point rouge « vous êtes ici » sur le plan de la maison",
-             "affiche le dossier où tu te trouves"),
-            (C("ls", "dir"), "j'ouvre les yeux et je regarde dans la pièce ("
-             + C("ls -a", "dir -Force") + " : même sous le tapis)",
-             "liste le contenu (" + C("ls -a : avec les cachés", "dir -Force : avec les cachés") + ")"),
-            ("cd", "je passe une porte (cd .. : je recule d'une pièce, cd ~ : je rentre dans ma chambre)",
-             "change de dossier (cd nom, cd .. pour remonter, cd ~ pour rentrer)"),
-            ("mkdir", "je construis une nouvelle pièce", "crée un dossier"),
-            (C("touch", "New-Item"), "je pose une feuille blanche sur la table", "crée un fichier vide"),
-            (C("cp", "copy"), "je fais une photocopie d'une feuille", "copie un fichier"),
-            (C("mv", "move"), "je porte une feuille ailleurs, ou je change son étiquette", "déplace ou renomme"),
-            (C("rm", "del"), "la broyeuse : pas de poubelle, c'est perdu pour toujours !", "supprime, sans corbeille !"),
-            (C("chmod", "attrib"), "un cadenas sur la boîte", "change les droits / protège un fichier"),
-            ("tree", "le plan de toute la maison", "affiche l'arborescence des dossiers"),
+        (t("lex.ch.fichiers"), ICI, [
+            ("pwd", t("lex.pwd.i"), t("lex.pwd.t")),
+            (C("ls", "dir"), t("lex.ls.i", opt=C("ls -a", "dir -Force")), t("lex.ls.t", opt=C("ls -a", "dir -Force"))),
+            ("cd", t("lex.cd.i"), t("lex.cd.t")),
+            ("mkdir", t("lex.mkdir.i"), t("lex.mkdir.t")),
+            (C("touch", "New-Item"), t("lex.touch.i"), t("lex.touch.t")),
+            (C("cp", "copy"), t("lex.cp.i"), t("lex.cp.t")),
+            (C("mv", "move"), t("lex.mv.i"), t("lex.mv.t")),
+            (C("rm", "del"), t("lex.rm.i"), t("lex.rm.t")),
+            (C("chmod", "attrib"), t("lex.chmod.i"), t("lex.chmod.t")),
+            ("tree", t("lex.tree.i"), t("lex.tree.t")),
         ]),
-        ("🔎 Lire et chercher", ICI, [
-            (C("cat", "type"), "je lis la lettre à voix haute", "affiche le contenu d'un fichier"),
-            (C("less", "more"), "je lis un gros livre, page après page", "lit un long fichier page par page"),
-            (C("head", "Get-Content"), "je lis juste le haut de la lettre", "affiche le début d'un fichier"),
-            (C("grep", "Select-String"), "la loupe du détective : elle trouve un mot dans les lettres",
-             "cherche un mot dans des fichiers"),
-            (C("find", "Get-ChildItem"), "je cherche un objet dans toutes les pièces", "trouve des fichiers par leur nom"),
-            (C("wc", "Measure-Object"), "je compte les lignes et les mots de la lettre", "compte lignes et mots"),
-            (C("sort", "Sort-Object"), "je range les lignes dans l'ordre, comme un dictionnaire", "trie des lignes"),
+        (t("lex.ch.lire"), ICI, [
+            (C("cat", "type"), t("lex.cat.i"), t("lex.cat.t")),
+            (C("less", "more"), t("lex.less.i"), t("lex.less.t")),
+            (C("head", "Get-Content"), t("lex.head.i"), t("lex.head.t")),
+            (C("grep", "Select-String"), t("lex.grep.i"), t("lex.grep.t")),
+            (C("find", "Get-ChildItem"), t("lex.find.i"), t("lex.find.t")),
+            (C("wc", "Measure-Object"), t("lex.wc.i"), t("lex.wc.t")),
+            (C("sort", "Sort-Object"), t("lex.sort.i"), t("lex.sort.t")),
         ]),
-        ("⚙ Système", ICI, [
-            ("whoami", "mon prénom d'habitant de la maison", "ton nom d'utilisateur"),
-            (C("date", "Get-Date"), "je regarde l'horloge de la maison", "la date et l'heure"),
-            (C("ps", "Get-Process"), "qui est réveillé dans la maison ?", "les programmes en cours (processus)"),
-            (C("htop", "tasklist", mac="top"), "qui est réveillé, en direct, comme une caméra",
-             "les programmes en direct"),
-            (C("kill", "Stop-Process"), "j'envoie un programme se coucher", "arrête un programme"),
-            (C("df", "Get-PSDrive"), "la place qui reste dans les placards", "l'espace disque libre"),
-            (C("du", "Measure-Object"), "je pèse une pièce et tout ce qu'elle contient", "la taille d'un dossier"),
-            (C("sudo", "winget"), "la clé du gardien, pour les gros travaux comme installer : " + inst,
-             "agir en administrateur / installer : " + inst),
+        (t("lex.ch.systeme"), ICI, [
+            ("whoami", t("lex.whoami.i"), t("lex.whoami.t")),
+            (C("date", "Get-Date"), t("lex.date.i"), t("lex.date.t")),
+            (C("ps", "Get-Process"), t("lex.ps.i"), t("lex.ps.t")),
+            (C("htop", "tasklist", mac="top"), t("lex.htop.i"), t("lex.htop.t")),
+            (C("kill", "Stop-Process"), t("lex.kill.i"), t("lex.kill.t")),
+            (C("df", "Get-PSDrive"), t("lex.df.i"), t("lex.df.t")),
+            (C("du", "Measure-Object"), t("lex.du.i"), t("lex.du.t")),
+            (C("sudo", "winget"), t("lex.sudo.i", cmd=inst), t("lex.sudo.t", cmd=inst)),
         ]),
-        ("🌐 Réseau", ICI, [
-            ("ping", "je crie « Ohé ! » et j'attends l'écho", "teste la connexion"),
-            (C("curl", "curl.exe"), "le facteur qui va chercher une lettre sur un site",
-             "parle aux sites web (la base du CTF web !)"),
-            (C("ip", "ipconfig", mac="ifconfig"), "l'adresse de la maison", "ton adresse IP"),
-            ("nslookup", "l'annuaire des maisons d'internet", "l'annuaire d'internet (DNS)"),
-            ("ssh", "un tunnel secret vers une autre maison", "se connecter à une autre machine"),
+        (t("lex.ch.reseau"), ICI, [
+            ("ping", t("lex.ping.i"), t("lex.ping.t")),
+            (C("curl", "curl.exe"), t("lex.curl.i"), t("lex.curl.t")),
+            (C("ip", "ipconfig", mac="ifconfig"), t("lex.ip.i"), t("lex.ip.t")),
+            ("nslookup", t("lex.nslookup.i"), t("lex.nslookup.t")),
+            ("ssh", t("lex.ssh.i"), t("lex.ssh.t")),
         ]),
-        ("🌿 Git et 🧪 scripts", ICI, [
-            ("git", "un appareil photo qui garde une photo de tes fichiers à chaque étape",
-             "garde l'historique de tes fichiers"),
-            (C("bash", "powershell"), "une recette que la maison sait suivre toute seule", "lance un script"),
-            (C("alias", "function"), "je donne un surnom à une commande", "crée ta propre commande"),
-            (C("python3", "python"), "j'apprends une nouvelle langue à la maison : Python", "programme en Python"),
-            (C("nano", "notepad"), "mon cahier pour écrire dans une feuille", "édite un fichier texte"),
+        (t("lex.ch.git"), ICI, [
+            ("git", t("lex.git.i"), t("lex.git.t")),
+            (C("bash", "powershell"), t("lex.bash.i"), t("lex.bash.t")),
+            (C("alias", "function"), t("lex.alias.i"), t("lex.alias.t")),
+            (C("python3", "python"), t("lex.python3.i"), t("lex.python3.t")),
+            (C("nano", "notepad"), t("lex.nano.i"), t("lex.nano.t")),
         ]),
-        ("🌍 Recensement (sur tous tes appareils)", ICI, [
-            ("tg", "le registre de la maison : tg compte · tg sync · tg drapeau TG{…} · tg lexique",
-             "tg compte · tg sync · tg drapeau TG{…} · tg lexique"),
-            ("tg site", "la vitrine de ta maison sur internet : tg site bestiaire · tg site captures",
-             "ouvre le site (ton profil) · tg site bestiaire · tg site captures"),
-            ("tg collection", "l'album de tes bestioles (et leurs signes uniques)",
-             "tes bestioles capturées (et leurs signes uniques)"),
-            ("tg bestiaire", "le grand livre des espèces : tg bestiaire Glitchou", "la fiche d'une espèce : tg bestiaire Glitchou"),
+        (t("lex.ch.recensement"), ICI, [
+            ("tg", t("lex.tg.i"), t("lex.tg.t")),
+            ("tg site", t("lex.tg_site.i"), t("lex.tg_site.t")),
+            ("tg collection", t("lex.tg_collection.i"), t("lex.tg_collection.t")),
+            ("tg bestiaire", t("lex.tg_bestiaire.i"), t("lex.tg_bestiaire.t")),
+            ("tg langue", t("lex.tg_langue.i"), t("lex.tg_langue.t")),
         ]),
-        ("📱 Ton téléphone (appli Android)", TEL, [
-            ("ouvre", "j'allume une appli, comme on allume la télé : ouvre whatsapp", "lance une appli : ouvre whatsapp"),
-            ("applis", "la liste de toutes les applis qui habitent le téléphone", "liste tes applis"),
-            ("sms", "j'écris un petit mot, tu n'as plus qu'à l'envoyer", "prépare un SMS"),
-            ("lampe", "l'interrupteur de la lampe de poche", "lampe torche on/off"),
-            ("dis", "le téléphone lit ta phrase à voix haute", "le téléphone parle"),
-            ("web", "j'ouvre la fenêtre sur un site", "ouvre un site"),
-            ("carte", "je déplie la carte du monde pour trouver un lieu", "cherche un lieu"),
+        (t("lex.ch.telephone"), TEL, [
+            ("ouvre", t("lex.ouvre.i"), t("lex.ouvre.t")),
+            ("applis", t("lex.applis.i"), t("lex.applis.t")),
+            ("sms", t("lex.sms.i"), t("lex.sms.t")),
+            ("lampe", t("lex.lampe.i"), t("lex.lampe.t")),
+            ("dis", t("lex.dis.i"), t("lex.dis.t")),
+            ("web", t("lex.web.i"), t("lex.web.t")),
+            ("carte", t("lex.carte.i"), t("lex.carte.t")),
         ]),
-        ("🎮 Jeux de l'appli Android", TEL, [
-            ("donjon", "une cave aux mille pièces, pleine de trésors", "donjon aléatoire dans de vrais dossiers"),
-            ("ctf", "la chasse au trésor : 7 énigmes de détective", "7 épreuves de hacker hors ligne (CTF)"),
-            ("doom", "un labyrinthe en 3D que tu dessines toi-même", "ton Doom-like en 3D"),
-            ("edite", "mon cahier pour écrire dans une feuille", "l'éditeur de texte de l'appli"),
-            ("caresse", "un câlin pour ta créature", "un câlin pour ta créature"),
-            ("joue", "pierre-feuille-ciseaux", "pierre-feuille-ciseaux"),
+        (t("lex.ch.jeux"), TEL, [
+            ("donjon", t("lex.donjon.i"), t("lex.donjon.t")),
+            ("ctf", t("lex.ctf.i"), t("lex.ctf.t")),
+            ("doom", t("lex.doom.i"), t("lex.doom.t")),
+            ("edite", t("lex.edite.i"), t("lex.edite.t")),
+            ("caresse", t("lex.caresse.i"), t("lex.caresse.t")),
+            ("joue", t("lex.joue.i"), t("lex.joue.t")),
         ]),
     ]
 
@@ -122,7 +112,7 @@ def lignes(state):
     for titre, univers, commandes in _entrees():
         autre = univers == TEL and OSK != "android"
         sortie.append("")
-        sortie.append(f"{fg(147)}{BOLD}{titre}{RESET}" + (f" {DIM}(pas ici sur {ici}){RESET}" if autre else ""))
+        sortie.append(f"{fg(147)}{BOLD}{titre}{RESET}" + (f" {DIM}" + t("lex.pas_ici", ici=ici) + RESET if autre else ""))
         for cmd, image, technique in commandes:
             mot = cmd.split()[0].lower()
             gout = mot in vus
@@ -136,8 +126,8 @@ def lignes(state):
                 sortie.append(f"  {fg(255)}● {BOLD}{cmd:<15}{RESET}{fg(255)} {desc}{RESET}")
             else:
                 sortie.append(f"  {fg(244)}○ {cmd:<15} {desc}{RESET}")
-    entete = [f" {fg(213)}── 📖 Lexique ({ici}) ── goûtées : {goutees}/{total}{RESET}",
-              f" {DIM}blanc = déjà tapée (sur n'importe quel appareil) · gris = à découvrir · 🔒 = autre univers{RESET}"]
+    entete = [f" {fg(213)}── 📖 " + t("lex.titre", ici=ici, n=goutees, total=total) + RESET,
+              f" {DIM}" + t("lex.legende") + RESET]
     return entete + sortie
 
 

@@ -14,6 +14,7 @@ import urllib.error
 import urllib.request
 
 from . import core
+from .langue import t
 
 INFO = "https://raw.githubusercontent.com/grecdel/terminagotchi-android/site-info/url.txt"
 APPAREIL = "pc"
@@ -40,9 +41,9 @@ def requete(url, methode="GET", corps=None, cle=None, delai=10):
         try:
             return json.loads(e.read().decode("utf-8"))
         except (ValueError, OSError):
-            return {"erreur": f"le serveur répond {e.code}"}
+            return {"erreur": t("rec.err.serveur", code=e.code)}
     except (OSError, ValueError) as e:
-        return {"erreur": f"pas de connexion au recensement ({str(e)[:70]})"}
+        return {"erreur": t("rec.err.connexion", detail=str(e)[:70])}
 
 
 def serveur(state):
@@ -132,11 +133,11 @@ def synchroniser(forcer=False):
     with core.verrou():
         st = core.load()
         if st is None:
-            return "Pas encore de créature : lance d'abord le jeu."
+            return t("rec.pas_de_creature")
         core.migrate(st)
         c = compte(st)
         if not c.get("cle"):
-            return None if not forcer else "Pas de compte : tape  compte creer TonPseudo"
+            return None if not forcer else t("rec.pas_de_compte")
         maintenant = time.time()
         if c.get("en_cours", 0) > maintenant - 30:
             return None
@@ -147,14 +148,14 @@ def synchroniser(forcer=False):
         charge, snap = _charge(st)
         core.save(st)
     url = serveur(st)
-    r = requete(url + "/api/sync", "POST", charge, c["cle"]) if url else {"erreur": "adresse du site inconnue"}
+    r = requete(url + "/api/sync", "POST", charge, c["cle"]) if url else {"erreur": t("rec.err.adresse")}
     resultat = []
 
     def finir(s):
         cc = compte(s)
         cc["en_cours"] = 0
         if "etat" not in r:
-            resultat.append("⚠ Synchro impossible : " + r.get("erreur", "erreur inconnue"))
+            resultat.append(t("rec.sync.impossible", erreur=r.get("erreur", t("rec.err.inconnue"))))
             return
         if url and not cc.get("serveur"):
             cc["serveur"] = url
@@ -162,11 +163,11 @@ def synchroniser(forcer=False):
         _appliquer(s, r["etat"], snap)
         gagne = s["xp"] - avant
         if gagne > 0:
-            core.log(s, f"🔄 Synchro : +{gagne} XP venus de ton autre appareil")
+            core.log(s, t("rec.sync.xp", n=gagne))
         for b in r.get("badges", []):
-            core.log(s, f"🏅 Badge vérifié : {b['titre']}")
-            core.notif(s, f"🏅 Nouveau badge : {b['titre']}")
-        resultat.append(f"✔ Synchronisé avec le recensement ({cc.get('pseudo', '?')})")
+            core.log(s, t("rec.badge.log", titre=b["titre"]))
+            core.notif(s, t("rec.badge.notif", titre=b["titre"]))
+        resultat.append(t("rec.sync.ok", pseudo=cc.get("pseudo", "?")))
 
     core.modifier(finir)
     return resultat[0] if resultat else None
@@ -195,7 +196,7 @@ def _enregistrer(pseudo, cle, url):
         c = compte(s)
         c.update(cle=cle, pseudo=pseudo, serveur=url, base={"xp": 0, "total": 0, "colles": 0, "stats": {}},
                  dernier=0, en_cours=0)
-        core.log(s, f"🌍 Recensé sous le pseudo {pseudo} !")
+        core.log(s, t("rec.recense.log", pseudo=pseudo))
     core.modifier(f)
 
 
@@ -203,73 +204,61 @@ def commande(args):
     """tg compte [creer P | lier CODE | code | serveur URL | oublier]"""
     st = core.load()
     if st is None:
-        return "Pas encore de créature : lance d'abord le jeu."
+        return t("rec.pas_de_creature")
     core.migrate(st)
     c = compte(st)
     action = args[0].lower() if args else ""
     if action == "serveur":
         if len(args) < 2:
-            return f"Adresse actuelle : {serveur(st) or '(inconnue)'}"
+            return t("rec.adresse", url=serveur(st) or t("rec.inconnue"))
         core.modifier(lambda s: compte(s).update(serveur=args[1].rstrip("/")))
-        return f"Adresse du recensement réglée sur {args[1]}"
+        return t("rec.adresse.reglee", url=args[1])
     url = serveur(st)
     if not url and action in ("creer", "lier", "code", ""):
-        return ("Le site du recensement n'est pas encore en ligne (ou pas de connexion).\n"
-                "Réessaie plus tard, ou règle l'adresse : compte serveur https://…")
+        return t("rec.hors_ligne")
     if action == "creer":
         if c.get("cle"):
-            return f"Tu as déjà un compte : {c['pseudo']}. (compte oublier pour en changer)"
+            return t("rec.deja_compte", pseudo=c["pseudo"])
         if len(args) < 2:
-            return "Exemple : compte creer TonPseudo  (3 à 20 lettres sans accent, chiffres, - ou _)"
+            return t("rec.creer.exemple")
         r = requete(url + "/api/inscription", "POST", {"pseudo": args[1], "appareil": APPAREIL})
         if "cle" not in r:
-            return "⚠ " + r.get("erreur", "inscription impossible")
+            return "⚠ " + r.get("erreur", t("rec.err.inscription"))
         _enregistrer(r["pseudo"], r["cle"], url)
         msg = synchroniser(forcer=True) or ""
-        return (f"🌍 Bienvenue au recensement, {r['pseudo']} !\n{msg}\n"
-                f"Ton profil public : {url}/joueur/{r['pseudo']}\n"
-                f"Pour avoir la même créature sur ton téléphone : compte code")
+        return t("rec.bienvenue", pseudo=r["pseudo"], msg=msg, url=f"{url}/joueur/{r['pseudo']}")
     if action == "lier":
         if len(args) < 2:
-            return "Exemple : compte lier AB3K9Z  (le code s'obtient sur l'autre appareil avec : compte code)"
+            return t("rec.lier.exemple")
         r = requete(url + "/api/lier", "POST", {"code": args[1], "appareil": APPAREIL})
         if "cle" not in r:
-            return "⚠ " + r.get("erreur", "liaison impossible")
+            return "⚠ " + r.get("erreur", t("rec.err.liaison"))
         _enregistrer(r["pseudo"], r["cle"], url)
         msg = synchroniser(forcer=True) or ""
-        return (f"🔗 Ce PC est relié au compte {r['pseudo']} !\n{msg}\n"
-                "Ta progression d'ici s'ajoute à celle de ton autre appareil.")
+        return t("rec.relie", pseudo=r["pseudo"], msg=msg)
     if not c.get("cle"):
-        return ("Tu n'as pas encore de compte.\n"
-                "  compte creer TonPseudo   → créer ton compte\n"
-                "  compte lier CODE         → rejoindre le compte de ton téléphone")
+        return t("rec.sans_compte")
     if action == "code":
         r = requete(url + "/api/code", "POST", {}, c["cle"])
         if "code" not in r:
-            return "⚠ " + r.get("erreur", "impossible d'obtenir un code")
-        return (f"🔑 Code de liaison : {r['code']}  (valable 10 minutes)\n"
-                f"Sur ton téléphone, dans le terminal de l'appli : compte lier {r['code']}")
+            return "⚠ " + r.get("erreur", t("rec.err.code"))
+        return t("rec.code", code=r["code"])
     if action == "partage":
         choix = (args[1].lower() if len(args) > 1 else "")
         if choix not in ("on", "off"):
-            etat = "activé" if c.get("partage", {}).get("actif") else "désactivé"
-            return (f"Partage de tes captures dans la galerie publique : {etat}.\n"
-                    "  compte partage on   → tes bestioles apparaissent sur le site (avec ton pseudo)\n"
-                    "  compte partage off  → elles restent privées")
+            etat = t("rec.active") if c.get("partage", {}).get("actif") else t("rec.desactive")
+            return t("rec.partage.etat", etat=etat)
         actif = choix == "on"
         core.modifier(lambda s: compte(s).update(partage={"actif": actif, "date": int(time.time() * 1000)}))
         msg = synchroniser(forcer=True) or ""
-        return ("✔ Tes captures seront visibles dans la galerie : " + f"{url}/captures" if actif
-                else "✔ Tes captures ne sont plus visibles dans la galerie.") + ("\n" + msg if msg else "")
+        return (t("rec.partage.on", url=f"{url}/captures") if actif
+                else t("rec.partage.off")) + ("\n" + msg if msg else "")
     if action == "oublier":
         core.modifier(lambda s: s.__setitem__("compte", {k: v for k, v in compte(s).items() if k == "serveur"}))
-        return "Ce PC n'est plus relié au compte (le compte, lui, existe toujours)."
+        return t("rec.oublie")
     dernier = c.get("dernier", 0)
-    quand = time.strftime("%H:%M", time.localtime(dernier)) if dernier else "jamais"
-    return (f"🌍 Compte : {c['pseudo']} · dernière synchro : {quand}\n"
-            f"Profil public : {url}/joueur/{c['pseudo']}\n"
-            f"Chasse au trésor du site (CTF web, badges vérifiés) : {url}/ctf\n"
-            "  compte code   → relier un autre appareil\n  sync          → synchroniser maintenant")
+    quand = time.strftime("%H:%M", time.localtime(dernier)) if dernier else t("rec.jamais")
+    return t("rec.resume", pseudo=c["pseudo"], quand=quand, profil=f"{url}/joueur/{c['pseudo']}", ctf=f"{url}/ctf")
 
 
 def site(args):
@@ -278,7 +267,7 @@ def site(args):
     c = compte(st) if st else {}
     url = serveur(st) if st else ""
     if not url:
-        return "Le site du recensement n'est pas joignable pour l'instant."
+        return t("rec.site.injoignable")
     page = (args[0].lower() if args else "")
     chemins = {"bestiaire": "/bestiaire", "captures": "/captures", "classement": "/classement", "ctf": "/ctf"}
     if page in chemins:
@@ -292,17 +281,17 @@ def site(args):
         ouvert = webbrowser.open(lien)
     except Exception:
         ouvert = False
-    return f"🌍 {lien}" + ("  (ouvert dans ton navigateur)" if ouvert else "")
+    return f"🌍 {lien}" + ("  " + t("rec.site.ouvert") if ouvert else "")
 
 
 def drapeau(proposition):
     st = core.load()
     if st is None:
-        return "Pas encore de créature."
+        return t("rec.drapeau.pas_de_creature")
     core.migrate(st)
     c = compte(st)
     if not c.get("cle"):
-        return "Il faut un compte pour valider un drapeau de la chasse au trésor du site : compte creer TonPseudo"
+        return t("rec.drapeau.compte")
     url = serveur(st)
     r = requete(url + "/api/drapeau", "POST", {"drapeau": proposition.strip()}, c["cle"])
     if r.get("ok"):
@@ -310,13 +299,14 @@ def drapeau(proposition):
             if r.get("nouveau"):
                 s["stats"]["Intelligence"] += 3
                 core.add_xp(s, 40)
-                core.log(s, f"🚩 Drapeau web validé : {r['titre']} !")
+                core.log(s, t("rec.drapeau.log", titre=r["titre"]))
         core.modifier(f)
-        lignes = [f"🚩 Drapeau validé : {r['titre']} ({r['score']}/{r['sur']})" + ("" if r.get("nouveau") else " — déjà validé"),
+        lignes = [t("rec.drapeau.ok", titre=r["titre"], score=r["score"], sur=r["sur"])
+                  + ("" if r.get("nouveau") else t("rec.drapeau.deja")),
                   f"📐 {r['lecon']}"]
         if r.get("badge"):
-            lignes.append(f"🏅 Badge vérifié : {url}{r['badge']}")
+            lignes.append(t("rec.badge.log", titre=f"{url}{r['badge']}"))
         if r.get("badgeFinal"):
-            lignes.append(f"🏆 TOUS LES DRAPEAUX ! Badge final : {url}{r['badgeFinal']}")
+            lignes.append(t("rec.drapeau.final", url=f"{url}{r['badgeFinal']}"))
         return "\n".join(lignes)
-    return "❌ " + r.get("message", r.get("erreur", "drapeau refusé"))
+    return "❌ " + r.get("message", r.get("erreur", t("rec.drapeau.refuse")))

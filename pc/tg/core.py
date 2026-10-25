@@ -6,6 +6,8 @@ import time
 from contextlib import contextmanager
 from pathlib import Path
 
+from .langue import au_hasard, t
+from .langue import t as tr
 from .plateforme import GEST, IS_WIN, est_colle, piege
 
 VERSION = "0.4"
@@ -54,32 +56,32 @@ EXAMPLES = {
 # Compétences : chacune double l'XP de ses commandes (sauf effets spéciaux)
 SKILLS = {
     # tronc commun
-    "Boussole":    {"desc": "navigation ×2", "cmds": {"cd", "ls", "dir", "pwd", "gci", "get-childitem", "set-location", "tree"}},
-    "Bâtisseur":   {"desc": "création ×2 · ouvre l'exploration", "cmds": {"mkdir", "touch", "new-item", "echo"}},
-    "Inspecteur":  {"desc": "lecture/recherche ×2", "cmds": {"cat", "type", "less", "more", "head", "tail", "grep", "find", "select-string", "get-content"}},
-    "Gardien":     {"desc": "2× moins faim", "cmds": {"chmod", "chown", "attrib", "icacls"}},
-    "Nettoyeur":   {"desc": "copie/déplacement ×2", "cmds": {"cp", "mv", "rm", "copy", "move", "del", "copy-item", "move-item", "remove-item"}},
+    "Boussole":    {"cmds": {"cd", "ls", "dir", "pwd", "gci", "get-childitem", "set-location", "tree"}},
+    "Bâtisseur":   {"cmds": {"mkdir", "touch", "new-item", "echo"}},
+    "Inspecteur":  {"cmds": {"cat", "type", "less", "more", "head", "tail", "grep", "find", "select-string", "get-content"}},
+    "Gardien":     {"cmds": {"chmod", "chown", "attrib", "icacls"}},
+    "Nettoyeur":   {"cmds": {"cp", "mv", "rm", "copy", "move", "del", "copy-item", "move-item", "remove-item"}},
     # branche Réseau
-    "Radar":       {"desc": "ping/ip ×2", "cmds": {"ping", "ip", "ifconfig", "ipconfig", "test-connection"}},
-    "Facteur":     {"desc": "curl/wget ×2", "cmds": {"curl", "curl.exe", "wget", "invoke-webrequest", "iwr"}},
-    "Cartographe": {"desc": "dns/traceroute ×2", "cmds": {"nslookup", "dig", "traceroute", "tracert", "tracepath", "mtr"}},
+    "Radar":       {"cmds": {"ping", "ip", "ifconfig", "ipconfig", "test-connection"}},
+    "Facteur":     {"cmds": {"curl", "curl.exe", "wget", "invoke-webrequest", "iwr"}},
+    "Cartographe": {"cmds": {"nslookup", "dig", "traceroute", "tracert", "tracepath", "mtr"}},
     # branche Git
-    "Archiviste":  {"desc": "git ×2", "cmds": {"git"}},
-    "Mémoire":     {"desc": "+1 XP par commande git", "cmds": set()},
-    "Chronomancien": {"desc": "défis éclair +50% de temps", "cmds": set()},
+    "Archiviste":  {"cmds": {"git"}},
+    "Mémoire":     {"cmds": set()},
+    "Chronomancien": {"cmds": set()},
     # branche Scripts
-    "Cuistot":     {"desc": "scripts ×2", "cmds": {"sh", "bash", "zsh", "powershell", "pwsh"}},
-    "Inventeur":   {"desc": "alias/function ×2", "cmds": {"alias", "function"}},
-    "Créateur":    {"desc": "TES commandes inventées ×3", "cmds": set()},
+    "Cuistot":     {"cmds": {"sh", "bash", "zsh", "powershell", "pwsh"}},
+    "Inventeur":   {"cmds": {"alias", "function"}},
+    "Créateur":    {"cmds": set()},
     # branche Système
-    "Vigie":       {"desc": "processus ×2", "cmds": {"ps", "top", "htop", "get-process", "tasklist", "whoami"}},
-    "Intendant":   {"desc": "espace disque ×2", "cmds": {"df", "du", "free", "get-psdrive"}},
-    "Chasseur":    {"desc": "kill/jobs ×2", "cmds": {"kill", "killall", "jobs", "stop-process", "taskkill", "start-process"}},
+    "Vigie":       {"cmds": {"ps", "top", "htop", "get-process", "tasklist", "whoami"}},
+    "Intendant":   {"cmds": {"df", "du", "free", "get-psdrive"}},
+    "Chasseur":    {"cmds": {"kill", "killall", "jobs", "stop-process", "taskkill", "start-process"}},
     # branche Android
-    "Télécommande": {"desc": "toast/vibreur/lampe ×2", "cmds": {"termux-toast", "termux-vibrate", "termux-torch"}},
-    "Portier":     {"desc": "ouvrir sites et liens ×2", "cmds": {"termux-open-url", "termux-open", "am"}},
-    "Lanceur":     {"desc": "lancer des applis ×2", "cmds": {"am", "pm", "ouvre"}},
-    "Majordome":   {"desc": "outils du quotidien ×2", "cmds": {"termux-battery-status", "termux-tts-speak",
+    "Télécommande": {"cmds": {"termux-toast", "termux-vibrate", "termux-torch"}},
+    "Portier":     {"cmds": {"termux-open-url", "termux-open", "am"}},
+    "Lanceur":     {"cmds": {"am", "pm", "ouvre"}},
+    "Majordome":   {"cmds": {"termux-battery-status", "termux-tts-speak",
                     "termux-clipboard-get", "termux-clipboard-set", "termux-volume", "termux-brightness"}},
 }
 
@@ -157,23 +159,7 @@ def read_new_lines(state):
 
 # ================================================================ caractère
 
-TRAITS = {
-    "curieux": ["Qu'est-ce qu'il y a dans ce dossier ?", "Apprends-moi une nouvelle commande !",
-                "Je me demande ce que fait « sudo »…", "Et si on explorait la grotte ?"],
-    "farceur": ["Et si on renommait tous tes fichiers ? Je plaisante !", "rm -rf ? Jamais de la vie, hihi.",
-                "Tu tapes vite… pour un humain.", "J'ai caché un fichier quelque part. Ou pas."],
-    "gourmand": ["Une petite commande, juste une ?", "Les « git » sont mes préférés, croustillants !",
-                 "J'ai un creux de 512 octets.", "Miam, un « ls » bien frais."],
-    "philosophe": ["Sommes-nous tous dans le sous-dossier de quelqu'un ?",
-                   "Un fichier supprimé existe-t-il encore dans nos cœurs ?",
-                   "pwd… mais où suis-je VRAIMENT ?", "Le terminal est noir, mais l'avenir est clair."],
-}
-HUNGRY = ["J'ai faim… tape quelque chose !", "Mon ventre fait « segmentation fault ».",
-          "Même un petit « pwd » me ferait du bien…"]
-EGG = ["…", "*toc toc*", "*l'œuf bouge un peu*", "*crac ?*"]
-COLLE = ["Hé ! Tu as copié-collé… tape-la toi-même, sinon ça ne rentre pas dans ma tête !",
-         "Copier-coller détecté : ça n'a aucun goût. Avec tes doigts, s'il te plaît !",
-         "Bien essayé ! Mais je ne mange que les commandes tapées à la main."]
+TRAITS = ("curieux", "farceur", "gourmand", "philosophe")   # phrases : langues/xx.json, « trait.<nom>.phrases »
 
 
 def say(state, text, secs=8):
@@ -228,8 +214,31 @@ def log(state, msg):
 
 # ================================================================ progression
 
-STAGES = ["Œuf", "Bébé", "Ado", "Adulte"]
+STAGES = ["Œuf", "Bébé", "Ado", "Adulte"]                  # noms internes (affichés : « stade.0 » à « stade.3 »)
 FORMES = {"Intelligence": "Hacker", "Force": "Titan", "Agilité": "Éclair", "Endurance": "Carapace"}
+
+
+def nom_stat(stat, court=False):
+    """Intelligence/Force… (ou INT/FOR…) dans la langue choisie."""
+    return t(("stat.court." if court else "stat.") + stat)
+
+
+def nom_skill(skill):
+    return t("skill." + skill)
+
+
+def nom_trait(trait):
+    return t("trait." + trait)
+
+
+def forme(state, lvl=None):
+    """« Bébé », « Ado Hacker »… : le stade et la forme de la créature, traduits."""
+    lvl = level(state["xp"]) if lvl is None else lvl
+    st = stage(lvl)
+    nom = t(f"stade.{st}")
+    if st >= 2 and state.get("branch"):
+        nom = t("forme.stade", stade=nom, forme=t("forme." + state["branch"]))
+    return nom
 
 
 REPAS_FACILES = ["date", "whoami", "pwd", "ls", "echo coucou", "cal", "uptime", "hostname", "uname", "id", "df", "which ls"]
@@ -258,15 +267,15 @@ def dominant(state):
     return max(st, key=st.get)
 
 
-def new_state(name):
+def new_state(name, langue_code="fr"):
     now = time.time()
-    return {"name": name, "shiny": random.randrange(64) == 0, "born": now, "last_tick": now, "xp": 0, "hunger": 80.0, "total": 0,
+    return {"name": name, "langue": langue_code, "shiny": random.randrange(64) == 0, "born": now, "last_tick": now, "xp": 0, "hunger": 80.0, "total": 0,
             "stats": {v["stat"]: 0 for v in CATEGORIES.values()}, "seen": [], "log": [],
             "offsets": {}, "version": VERSION}
 
 
 def migrate(state):
-    defaults = {"trait": random.choice(list(TRAITS)), "skills": [], "lesson": 0, "step": 0,
+    defaults = {"trait": random.choice(TRAITS), "langue": "fr", "skills": [], "lesson": 0, "step": 0,
                 "bubble": None, "defi": None, "records": {}, "offsets": {}, "arbre": {},
                 "branche": None, "cherche": {}, "sauvages": [], "collection": {}, "explo": False, "dressage": None,
                 "explo_n": 0, "annonce": None, "colles": 0, "notifs": [], "nlog": 0,
@@ -290,15 +299,15 @@ def add_xp(state, n):
     animer(state, "evolution" if stage(new) > stage(old) else "content")
     if stage(new) > stage(old):
         if stage(new) == 1:
-            log(state, "✨ L'œuf a éclos !")
-            say(state, "Bonjour le monde ! … C'est comme ça qu'on dit, non ?", 10)
+            log(state, t("core.eclot.log"))
+            say(state, t("core.eclot.dit"), 10)
         else:
             if not state.get("branch"):
                 state["branch"] = dominant(state)
-            log(state, f"✨ ÉVOLUTION → {STAGES[stage(new)]} {FORMES[state['branch']]} !")
-            say(state, "Waouh… je me sens différent !", 10)
+            log(state, t("core.evolution.log", forme=forme(state, new)))
+            say(state, t("core.evolution.dit"), 10)
     else:
-        log(state, f"⬆ Niveau {new} !")
+        log(state, t("core.niveau.log", n=new))
 
 
 def tick(state):
@@ -308,9 +317,9 @@ def tick(state):
     avant = state["hunger"]
     state["hunger"] = max(0.0, state["hunger"] - (now - state["last_tick"]) / rate)
     if avant >= 30 > state["hunger"]:
-        notif(state, "🍽 J'ai faim… tape quelques commandes pour me nourrir !")
+        notif(state, t("core.notif.faim"))
     elif avant > 0 == state["hunger"]:
-        notif(state, "😵 Je suis à bout de forces… nourris-moi vite !")
+        notif(state, t("core.notif.epuise"))
     state["last_tick"] = now
 
 
@@ -339,8 +348,8 @@ def commande_proche(cmd):
 def feed(state, line):
     if est_colle(line):
         state["colles"] += 1
-        log(state, "✖ copier-coller détecté : pas de nourriture")
-        say(state, random.choice(COLLE), 10)
+        log(state, t("core.colle.log"))
+        say(state, au_hasard("core.colle"), 10)
         animer(state, "colere")
         return
     cmd = first_word(line)
@@ -349,27 +358,27 @@ def feed(state, line):
     cat = next((k for k, v in CATEGORIES.items() if cmd in v["cmds"]), None)
     if not cat and not cmd.startswith(("termux-", "./", "/")) and not commande_existe(cmd):
         proche = commande_proche(cmd)
-        say(state, (f"« {cmd} » n'est pas une commande… tu voulais dire « {proche} » ?" if proche
-                    else f"« {cmd} » n'est pas une commande. Essaie : ls, pwd, cd"), 8)
-        log(state, f"✖ « {cmd} » : commande inconnue, pas de nourriture")
+        say(state, (t("core.inconnue.proche", cmd=cmd, proche=proche) if proche
+                    else t("core.inconnue", cmd=cmd)), 8)
+        log(state, t("core.inconnue.log", cmd=cmd))
         animer(state, "confus")
         return
     state["total"] += 1
-    gain, msg = 1, f"a mangé « {cmd} »"
+    gain, msg = 1, t("core.mange", cmd=cmd)
     if not cat and cmd.startswith("termux-"):
         cat = "reseau"
     if cat:
         state["stats"][CATEGORIES[cat]["stat"]] += 1
         gain += 1
-        msg += f" +{CATEGORIES[cat]['short']}"
+        msg += " +" + nom_stat(CATEGORIES[cat]["stat"], court=True)
     if cmd not in state["seen"]:
         state["seen"].append(cmd)
         gain += 5
-        msg += " ★ nouveau goût"
-    t = state["cherche"].pop(cmd, None)
-    if t and time.time() - t < 900:
+        msg += t("core.mange.nouveau")
+    vu_t = state["cherche"].pop(cmd, None)
+    if vu_t and time.time() - vu_t < 900:
         gain += 5
-        msg += " ★ bien retenu"
+        msg += t("core.mange.retenu")
     if cmd == "git" and "Mémoire" in state["skills"]:
         gain += 1
     if any(cmd in SKILLS[s]["cmds"] for s in state["skills"] if s in SKILLS):
@@ -378,7 +387,7 @@ def feed(state, line):
     elif ("Créateur" in state["skills"] and not cat and cmd not in NOMS_CONNUS
           and not cmd.startswith(("./", ".\\"))):
         gain *= 3
-        msg += " ×3 création"
+        msg += t("core.mange.creation")
     state["hunger"] = min(100.0, state["hunger"] + 3)
     state["repas_t"] = time.time()
     log(state, msg)
@@ -397,8 +406,8 @@ def defi_duree(state):
 def defi_start(state):
     cmd = random.choice(DEFI_POOL)
     state["defi"] = {"cmd": cmd, "start": time.time()}
-    say(state, f"DÉFI ÉCLAIR ! Tape « {piege(cmd)} » vite !", defi_duree(state))
-    notif(state, f"⚡ Défi éclair ! Tape « {piege(cmd)} » dans les {defi_duree(state)} s !")
+    say(state, t("core.defi.dit", cmd=piege(cmd)), defi_duree(state))
+    notif(state, t("core.defi.notif", cmd=piege(cmd), s=defi_duree(state)))
 
 
 def defi_tick(state, lines, spontaneous, proba=1.5 / 300):
@@ -412,17 +421,17 @@ def defi_tick(state, lines, spontaneous, proba=1.5 / 300):
             t = time.time() - d["start"]
             best = state["records"].get(d["cmd"])
             state["records"][d["cmd"]] = t if best is None else min(best, t)
-            rec = " NOUVEAU RECORD !" if best is None or t < best else ""
-            log(state, f"⚡ Défi « {d['cmd']} » réussi en {t:.1f} s{rec}")
-            say(state, f"Trop rapide ! {t:.1f} s.{rec}", 8)
+            rec = tr("core.defi.record") if best is None or t < best else ""
+            log(state, tr("core.defi.reussi.log", cmd=d["cmd"], s=f"{t:.1f}", record=rec))
+            say(state, tr("core.defi.reussi.dit", s=f"{t:.1f}", record=rec), 8)
             state["stats"]["Agilité"] += 2
             state["defi"] = None
             animer(state, "victoire")
             add_xp(state, 10)
             return
     if time.time() - d["start"] > defi_duree(state):
-        log(state, f"⚡ Défi « {d['cmd']} » raté…")
-        say(state, "Trop lent ! On réessaiera.", 6)
+        log(state, t("core.defi.rate.log", cmd=d["cmd"]))
+        say(state, t("core.defi.rate.dit"), 6)
         animer(state, "confus")
         state["defi"] = None
 
@@ -436,21 +445,21 @@ def idle_talk(state, proba=0.08):
         return
     st = stage(level(state["xp"]))
     if st == 0:
-        say(state, random.choice(EGG))
+        say(state, au_hasard("core.oeuf"))
     elif state["hunger"] < 30:
-        say(state, random.choice(HUNGRY))
+        say(state, au_hasard("core.faim"))
     else:
-        say(state, random.choice(TRAITS[state["trait"]]))
+        say(state, au_hasard("trait." + state["trait"] + ".phrases"))
 
 
 def mood(h):
     if h >= 60:
-        return "repu"
+        return t("humeur.repu")
     if h >= 30:
-        return "petit creux"
+        return t("humeur.creux")
     if h > 0:
-        return "affamé !"
-    return "NOURRIS-MOI…"
+        return t("humeur.affame")
+    return t("humeur.vide")
 
 # ================================================================ sauvegarde
 
@@ -501,7 +510,8 @@ def load():
         state = json.loads(SAVE_FILE.read_text(encoding="utf-8"))
     except (OSError, ValueError):
         return None
-    from . import bestiaire
+    from . import bestiaire, langue
+    langue.appliquer(state)                 # la langue choisie est rangée dans la sauvegarde
     return bestiaire.migrer(state)
 
 

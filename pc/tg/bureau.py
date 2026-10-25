@@ -10,6 +10,8 @@ import random
 import time
 
 from . import core, lecons, sprites
+from . import langue
+from .langue import t
 from .plateforme import IS_WIN, OSK, piege
 
 PX = 7                 # taille d'un pixel de la créature à l'écran
@@ -74,11 +76,11 @@ class Bureau:
         self.cv.bind("<Button-3>", self._menu)
         self.cv.bind("<Button-2>", self._menu)          # clic droit sur macOS
         self.menu = tk.Menu(root, tearoff=0)
-        self.menu.add_command(label="Fiche détaillée", command=self._basculer_details)
-        self.menu.add_command(label="Bulle on/off", command=self._basculer_bulle)
-        self.menu.add_command(label="Au premier plan on/off", command=self._basculer_dessus)
+        self.menu.add_command(label=t("bur.fiche"), command=self._basculer_details)
+        self.menu.add_command(label=t("bur.bulle"), command=self._basculer_bulle)
+        self.menu.add_command(label=t("bur.dessus"), command=self._basculer_dessus)
         self.menu.add_separator()
-        self.menu.add_command(label="Fermer le compagnon", command=root.destroy)
+        self.menu.add_command(label=t("bur.fermer"), command=root.destroy)
 
         self._jeu()
         self._anim()
@@ -111,7 +113,7 @@ class Bureau:
         if st:
             if self.total is not None and st["total"] > self.total:
                 self.saut = [-6, -12, -15, -12, -6, 0]
-                self.flottants.append([random.choice(["+miam", "miam !", "+XP", "crunch"]), 0])
+                self.flottants.append([random.choice(langue.liste("bur.miam")), 0])
             self.total = st["total"]
             self.state = st
         self.root.after(1500, self._jeu)
@@ -143,7 +145,7 @@ class Bureau:
         cv, st = self.cv, self.state
         cv.delete("all")
         if not st:
-            cv.create_text(W // 2, H // 2, text="(pas encore de créature :\nlance d'abord le jeu)",
+            cv.create_text(W // 2, H // 2, text=t("bur.pas_de_creature"),
                            fill="#bbbbbb", font=("TkDefaultFont", 9))
             return
         if self.carte:
@@ -179,7 +181,7 @@ class Bureau:
 
         # nom, niveau, faim
         lvl = core.level(st["xp"])
-        cv.create_text(W // 2, H - 22, text=f"{st['name']} · niv. {lvl}", fill="#e6e6e6",
+        cv.create_text(W // 2, H - 22, text=f"{st['name']} · " + t("dress.niv", n=lvl), fill="#e6e6e6",
                        font=("TkDefaultFont", 9, "bold"))
         jx, jy = W // 2 - 40, H - 10
         coul = "#5fd787" if st["hunger"] >= 60 else "#ffd75f" if st["hunger"] >= 30 else "#ff5f5f"
@@ -193,18 +195,17 @@ class Bureau:
             if self.bulle and b and time.time() < b[1]:
                 self._bulle(b[0], y0)
             elif st["defi"]:
-                self._bulle(f"⚡ Tape « {piege(st['defi']['cmd'])} » vite !", y0)
+                self._bulle(t("comp.defi", cmd=piege(st["defi"]["cmd"])), y0)
 
     def _fiche(self, st):
         lvl = core.level(st["xp"])
-        stade = core.stage(lvl)
-        forme = core.STAGES[stade] + (f" {core.FORMES[st['branch']]}" if stade >= 2 and st.get("branch") else "")
-        lignes = [f"{forme} · {st['xp']} XP", f"caractère : {st['trait']}",
-                  "  ".join(f"{v['short']} {st['stats'][v['stat']]}" for v in core.CATEGORIES.values()),
-                  f"compétences : {len(st['skills'])} · bestioles : {sum(st['collection'].values())}"]
+        forme = core.forme(st, lvl)
+        lignes = [f"{forme} · {st['xp']} XP", t("app.caractere", trait=core.nom_trait(st["trait"])),
+                  "  ".join(f"{core.nom_stat(v['stat'], court=True)} {st['stats'][v['stat']]}" for v in core.CATEGORIES.values()),
+                  t("app.competences_bestioles", n=len(st["skills"]), b=sum(st["collection"].values()))]
         les, etiq = lecons.lecon_courante(st)
         if les and lvl >= les["niveau"]:
-            lignes.append(f"leçon ➜ {piege(les['steps'][st['step']]['cmd'])}")
+            lignes.append(t("comp.lecon", cmd=piege(les["steps"][st["step"]]["cmd"])))
         self.cv.create_rectangle(8, 8, W - 8, 92, fill="#2a2a40", outline="#5f5f87")
         self.cv.create_text(16, 14, text="\n".join(lignes), fill="#e6e6e6", anchor="nw",
                             font=("TkDefaultFont", 8), width=W - 30)
@@ -214,12 +215,12 @@ def lancer(etape):
     try:
         import tkinter as tk
     except ImportError:
-        print("Le compagnon de bureau a besoin de tkinter.")
+        print(t("bur.tkinter"))
         from .plateforme import installer
         print(" Linux :", installer("python3-tk", {"dnf": "python3-tkinter", "pacman": "tk", "zypper": "python3-tk"}))
-        print(" macOS / Windows : réinstalle Python depuis python.org (tkinter est inclus).")
+        print(" " + t("bur.tkinter.autres"))
         return
     try:
         Bureau(tk, etape).root.mainloop()
     except tk.TclError as e:
-        print("Impossible d'ouvrir une fenêtre (pas d'écran graphique ?) :", e)
+        print(t("bur.pas_d_ecran", erreur=e))

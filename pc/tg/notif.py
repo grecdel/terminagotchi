@@ -4,6 +4,7 @@ import shutil
 import subprocess
 
 from . import core, lecons, sprites
+from .langue import t
 from .plateforme import IS_WIN, OSK
 
 IMAGE = core.SAVE_DIR / "creature.png"
@@ -89,14 +90,13 @@ def resume(state):
     """Texte de la notification permanente."""
     lvl = core.level(state["xp"])
     st = core.stage(lvl)
-    forme = core.STAGES[st] + (f" {core.FORMES[state['branch']]}" if st >= 2 and state.get("branch") else "")
-    titre = f"{state['name']} · {forme} · niv. {lvl}"
-    lignes = [f"Faim {sprites.bar(state['hunger'], 100, 8)}  {core.mood(state['hunger'])}"]
+    titre = f"{state['name']} · " + t("app.forme_niveau", forme=core.forme(state, lvl), n=lvl)
+    lignes = [f"{t('app.faim')} {sprites.bar(state['hunger'], 100, 8)}  {core.mood(state['hunger'])}"]
     les, etiq = lecons.lecon_courante(state)
     if les and lvl >= les["niveau"]:
-        lignes.append(f"Leçon : {les['titre']}")
+        lignes.append(t("notif.lecon", titre=lecons.tx(les["titre"])))
     if state["sauvages"]:
-        lignes.append(f"🐾 {len(state['sauvages'])} bestiole(s) sauvage(s) dans le terrain")
+        lignes.append(t("notif.sauvages", n=len(state["sauvages"])))
     if state["log"]:
         lignes.append(state["log"][-1][6:])
     return titre, "\n".join(lignes)
