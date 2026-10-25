@@ -1,0 +1,33 @@
+{
+ "poids": {
+  "stats": 60,
+  "variante": 25,
+  "puissance": 15,
+  "bonus_shiny": 10
+ },
+ "paliers": [
+  [
+   0,
+   "commune"
+  ],
+  [
+   55,
+   "peu commune"
+  ],
+  [
+   75,
+   "rare"
+  ],
+  [
+   88,
+   "épique"
+  ],
+  [
+   96,
+   "légendaire"
+  ]
+ ],
+ "speciales": {
+  "abyssor": "mythique"
+ }
+}

@@ -111,6 +111,18 @@ def prompt_variante(e, hab):
     )
 
 
+# Rareté d'un INDIVIDU, calculée à son apparition (stats tirées par le serveur) :
+#   note = 60 % qualité des stats + 25 % variante (selon sa chance d'apparition) + 15 % puissance de l'espèce
+#          (+10 si shiny), plafonnée à 100.
+RARETE = {
+    "poids": {"stats": 60, "variante": 25, "puissance": 15, "bonus_shiny": 10},
+    "paliers": [[0, "commune"], [55, "peu commune"], [75, "rare"], [88, "épique"], [96, "légendaire"]],
+    "speciales": {"abyssor": "mythique"},        # Abyssor est toujours mythique, quelles que soient ses stats
+}
+# Fréquence d'apparition de l'espèce (ex-rareté) : le seigneur de chaque famille reste dur à croiser
+FREQUENCE = {"commune": "souvent", "peu commune": "parfois", "rare": "rarement", "légendaire": "très rarement"}
+
+
 def chances(n):
     """Chances d'apparition : la classique est la plus fréquente, puis de plus en plus rare."""
     poids = [30] + [round(24 / (k + 1.6), 1) for k in range(n)]
@@ -139,8 +151,10 @@ def main():
             variantes = [{"id": "classique", "nom": "classique", "chance": ch[0]}]
             variantes += [{"id": h.replace(" ", "_").replace("é", "e").replace("è", "e"), "nom": h, "chance": c}
                           for h, c in zip(choix, ch[1:])]
-            fiche = {k: e[k] for k in ("nom", "id", "rarete", "posture", "taille_finale", "fiche", "caractere")}
-            fiche.update(numero=numero, famille=famille, epreuves=epreuves, variantes=variantes)
+            fiche = {k: e[k] for k in ("nom", "id", "posture", "taille_finale", "fiche", "caractere")}
+            # la rareté n'est plus fixée par l'espèce : elle se calcule pour chaque individu (voir RARETE)
+            fiche.update(numero=numero, famille=famille, epreuves=epreuves, variantes=variantes,
+                         puissance=e["rang"], frequence=FREQUENCE[e["rarete"]])
             especes.append(fiche)
             base = f"{numero:03d}_{e['id']}"
             code, p = prompt_classique(e)
@@ -149,6 +163,7 @@ def main():
                 code, p = prompt_variante(e, v["nom"])
                 prompts.append({"fichier": f"{base}_{v['id']}", "fond": code, "prompt": p, "nouvelle_conversation": False})
     (ICI / "bestiaire.json").write_text(json.dumps(especes, ensure_ascii=False, indent=1), encoding="utf-8")
+    (ICI / "rarete.json").write_text(json.dumps(RARETE, ensure_ascii=False, indent=1), encoding="utf-8")
     (ICI / "prompts.json").write_text(json.dumps(prompts, ensure_ascii=False, indent=1), encoding="utf-8")
     md = ["# Prompts du nouveau bestiaire", ""]
     for p in prompts:

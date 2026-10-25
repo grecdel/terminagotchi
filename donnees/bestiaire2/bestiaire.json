@@ -2,7 +2,6 @@
  {
   "nom": "Braisillon",
   "id": "braisillon",
-  "rarete": "commune",
   "posture": "bipède",
   "taille_finale": "petite",
   "fiche": "Petit diablotin né d'une braise tombée, il hante les foyers des volcans et les cheminées abandonnées.",
@@ -39,12 +38,13 @@
     "nom": "canyon",
     "chance": 7.9
    }
-  ]
+  ],
+  "puissance": 1,
+  "frequence": "souvent"
  },
  {
   "nom": "Cornichaud",
   "id": "cornichaud",
-  "rarete": "commune",
   "posture": "quadrupède",
   "taille_finale": "moyenne",
   "fiche": "Chiot infernal aux cornes brûlantes qui garde les entrées des grottes volcaniques et des ruines calcinées.",
@@ -91,12 +91,13 @@
     "nom": "ombre",
     "chance": 4.9
    }
-  ]
+  ],
+  "puissance": 2,
+  "frequence": "souvent"
  },
  {
   "nom": "Flamouche",
   "id": "flamouche",
-  "rarete": "commune",
   "posture": "volant",
   "taille_finale": "petite",
   "fiche": "Insecte démoniaque attiré par toutes les flammes, il bourdonne en essaims au-dessus des coulées de lave.",
@@ -133,12 +134,13 @@
     "nom": "marais",
     "chance": 7.9
    }
-  ]
+  ],
+  "puissance": 3,
+  "frequence": "souvent"
  },
  {
   "nom": "Cendrouille",
   "id": "cendrouille",
-  "rarete": "commune",
   "posture": "rampant",
   "taille_finale": "moyenne",
   "fiche": "Salamandre démoniaque couverte de cendres, elle se terre sous les braises refroidies des anciens incendies.",
@@ -180,12 +182,13 @@
     "nom": "crypte",
     "chance": 6.1
    }
-  ]
+  ],
+  "puissance": 4,
+  "frequence": "souvent"
  },
  {
   "nom": "Ricanombre",
   "id": "ricanombre",
-  "rarete": "commune",
   "posture": "flottant",
   "taille_finale": "petite",
   "fiche": "Esprit démoniaque fait d'ombre et d'un sourire lumineux, il ricane dans les recoins sombres des cryptes.",
@@ -217,12 +220,13 @@
     "nom": "arcane",
     "chance": 11.0
    }
-  ]
+  ],
+  "puissance": 5,
+  "frequence": "souvent"
  },
  {
   "nom": "Sulfurette",
   "id": "sulfurette",
-  "rarete": "commune",
   "posture": "serpentin",
   "taille_finale": "moyenne",
   "fiche": "Serpent démoniaque qui exhale du soufre, il ondule dans les fissures fumantes autour des cratères.",
@@ -269,12 +273,13 @@
     "nom": "désert",
     "chance": 4.9
    }
-  ]
+  ],
+  "puissance": 6,
+  "frequence": "souvent"
  },
  {
   "nom": "Tisonnier",
   "id": "tisonnier",
-  "rarete": "peu commune",
   "posture": "bipède",
   "taille_finale": "moyenne",
   "fiche": "Forgeron des enfers aux bras en tisonniers, il martèle ses armes au cœur des forges volcaniques.",
@@ -316,12 +321,13 @@
     "nom": "lave",
     "chance": 6.1
    }
-  ]
+  ],
+  "puissance": 7,
+  "frequence": "parfois"
  },
  {
   "nom": "Chaudronne",
   "id": "chaudronne",
-  "rarete": "peu commune",
   "posture": "amorphe",
   "taille_finale": "moyenne",
   "fiche": "Masse de magma vivant qui bouillonne dans un chaudron fêlé, elle mijote dans les marais sulfureux.",
@@ -373,12 +379,13 @@
     "nom": "brume",
     "chance": 4.1
    }
-  ]
+  ],
+  "puissance": 8,
+  "frequence": "parfois"
  },
  {
   "nom": "Infernaille",
   "id": "infernaille",
-  "rarete": "peu commune",
   "posture": "multipattes",
   "taille_finale": "grande",
   "fiche": "Mille-pattes démoniaque fait de maillons de fer chauffés à blanc, il serpente dans les ruines et les forges oubliées.",
@@ -425,12 +432,13 @@
     "nom": "crypte",
     "chance": 4.9
    }
-  ]
+  ],
+  "puissance": 9,
+  "frequence": "parfois"
  },
  {
   "nom": "Gargouflamme",
   "id": "gargouflamme",
-  "rarete": "peu commune",
   "posture": "volant",
   "taille_finale": "grande",
   "fiche": "Gargouille démoniaque de pierre volcanique qui veille, immobile, sur les tours en ruine avant de s'envoler en flammes.",
@@ -472,12 +480,13 @@
     "nom": "montagne",
     "chance": 6.1
    }
-  ]
+  ],
+  "puissance": 10,
+  "frequence": "parfois"
  },
  {
   "nom": "Ombrachne",
   "id": "ombrachne",
-  "rarete": "rare",
   "posture": "multipattes",
   "taille_finale": "grande",
   "fiche": "Araignée démoniaque tissant des toiles d'ombre et de feu violet au fond des cryptes et des gouffres.",
@@ -509,12 +518,13 @@
     "nom": "ruines",
     "chance": 11.0
    }
-  ]
+  ],
+  "puissance": 11,
+  "frequence": "rarement"
  },
  {
   "nom": "Pyrodrac",
   "id": "pyrodrac",
-  "rarete": "rare",
   "posture": "volant",
   "taille_finale": "grande",
   "fiche": "Dragon démoniaque au souffle de soufre, il niche sur les cheminées des volcans en éruption.",
@@ -566,12 +576,13 @@
     "nom": "canyon",
     "chance": 4.1
    }
-  ]
+  ],
+  "puissance": 12,
+  "frequence": "rarement"
  },
  {
   "nom": "Cauchemarre",
   "id": "cauchemarre",
-  "rarete": "rare",
   "posture": "quadrupède",
   "taille_finale": "grande",
   "fiche": "Destrier démoniaque aux sabots enflammés qui galope dans les brumes nocturnes et hante les rêves.",
@@ -618,12 +629,13 @@
     "nom": "aurore",
     "chance": 4.9
    }
-  ]
+  ],
+  "puissance": 13,
+  "frequence": "rarement"
  },
  {
   "nom": "Volcarnage",
   "id": "volcarnage",
-  "rarete": "rare",
   "posture": "bipède",
   "taille_finale": "colossale",
   "fiche": "Colosse démoniaque dont le dos est un volcan actif, il écrase tout sur son passage dans les plaines de lave.",
@@ -675,12 +687,13 @@
     "nom": "canyon",
     "chance": 4.1
    }
-  ]
+  ],
+  "puissance": 14,
+  "frequence": "rarement"
  },
  {
   "nom": "Infernarque",
   "id": "infernarque",
-  "rarete": "légendaire",
   "posture": "bipède",
   "taille_finale": "colossale",
   "fiche": "Seigneur suprême des démons, il règne depuis un trône de lave au plus profond des ténèbres infernales.",
@@ -737,12 +750,13 @@
     "nom": "crypte",
     "chance": 3.5
    }
-  ]
+  ],
+  "puissance": 15,
+  "frequence": "très rarement"
  },
  {
   "nom": "Étincelot",
   "id": "etincelot",
-  "rarete": "commune",
   "posture": "rampant",
   "taille_finale": "petite",
   "fiche": "Une larve de charbon tiède qui rampe dans les cendres des volcans et grignote les braises oubliées.",
@@ -774,12 +788,13 @@
     "nom": "canyon",
     "chance": 11.0
    }
-  ]
+  ],
+  "puissance": 1,
+  "frequence": "souvent"
  },
  {
   "nom": "Givrichon",
   "id": "givrichon",
-  "rarete": "commune",
   "posture": "quadrupède",
   "taille_finale": "petite",
   "fiche": "Une petite boule de neige à pattes dont les piquants de glace poussent pendant les nuits de blizzard.",
@@ -826,12 +841,13 @@
     "nom": "montagne",
     "chance": 4.9
    }
-  ]
+  ],
+  "puissance": 2,
+  "frequence": "souvent"
  },
  {
   "nom": "Gouttelin",
   "id": "gouttelin",
-  "rarete": "commune",
   "posture": "amorphe",
   "taille_finale": "petite",
   "fiche": "Une goutte d'eau vivante qui saute de flaque en flaque et adore les sources pétillantes.",
@@ -883,12 +899,13 @@
     "nom": "prairie",
     "chance": 4.1
    }
-  ]
+  ],
+  "puissance": 3,
+  "frequence": "souvent"
  },
  {
   "nom": "Zapiot",
   "id": "zapiot",
-  "rarete": "commune",
   "posture": "flottant",
   "taille_finale": "petite",
   "fiche": "Une étincelle curieuse qui flotte dans les nuages d'orage et grésille quand elle est contente.",
@@ -925,12 +942,13 @@
     "nom": "montagne",
     "chance": 7.9
    }
-  ]
+  ],
+  "puissance": 4,
+  "frequence": "souvent"
  },
  {
   "nom": "Cailloute",
   "id": "cailloute",
-  "rarete": "commune",
   "posture": "bipède",
   "taille_finale": "moyenne",
   "fiche": "Un petit caillou têtu qui se met debout au bord des sentiers de montagne pour regarder passer les voyageurs.",
@@ -967,12 +985,13 @@
     "nom": "désert",
     "chance": 7.9
    }
-  ]
+  ],
+  "puissance": 5,
+  "frequence": "souvent"
  },
  {
   "nom": "Bourrasquet",
   "id": "bourrasquet",
-  "rarete": "commune",
   "posture": "volant",
   "taille_finale": "petite",
   "fiche": "Un petit oiseau de courant d'air qui siffle en virevoltant au-dessus des prairies venteuses.",
@@ -1009,12 +1028,13 @@
     "nom": "canyon",
     "chance": 7.9
    }
-  ]
+  ],
+  "puissance": 6,
+  "frequence": "souvent"
  },
  {
   "nom": "Fumerole",
   "id": "fumerole",
-  "rarete": "peu commune",
   "posture": "serpentin",
   "taille_finale": "moyenne",
   "fiche": "Un serpent de fumée et de flammes qui se glisse entre les fissures brûlantes des volcans.",
@@ -1046,12 +1066,13 @@
     "nom": "montagne",
     "chance": 11.0
    }
-  ]
+  ],
+  "puissance": 7,
+  "frequence": "parfois"
  },
  {
   "nom": "Écumane",
   "id": "ecumane",
-  "rarete": "peu commune",
   "posture": "quadrupède",
   "taille_finale": "grande",
   "fiche": "Un cheval d'écume qui galope sur les vagues des lagons et disparaît dans les embruns.",
@@ -1098,12 +1119,13 @@
     "nom": "lune",
     "chance": 4.9
    }
-  ]
+  ],
+  "puissance": 8,
+  "frequence": "parfois"
  },
  {
   "nom": "Galetard",
   "id": "galetard",
-  "rarete": "peu commune",
   "posture": "multipattes",
   "taille_finale": "grande",
   "fiche": "Une longue chenille de galets qui creuse lentement des tunnels sous les canyons.",
@@ -1145,12 +1167,13 @@
     "nom": "crypte",
     "chance": 6.1
    }
-  ]
+  ],
+  "puissance": 9,
+  "frequence": "parfois"
  },
  {
   "nom": "Givrarde",
   "id": "givrarde",
-  "rarete": "peu commune",
   "posture": "bipède",
   "taille_finale": "grande",
   "fiche": "Une gardienne des glaciers qui sculpte des tempêtes de neige avec ses longues mains de givre.",
@@ -1192,12 +1215,13 @@
     "nom": "aurore",
     "chance": 6.1
    }
-  ]
+  ],
+  "puissance": 10,
+  "frequence": "parfois"
  },
  {
   "nom": "Fulgurox",
   "id": "fulgurox",
-  "rarete": "rare",
   "posture": "quadrupède",
   "taille_finale": "grande",
   "fiche": "Un bœuf d'orage qui charge à travers les plaines quand le tonnerre gronde et fait tomber la foudre avec ses cornes.",
@@ -1234,12 +1258,13 @@
     "nom": "montagne",
     "chance": 7.9
    }
-  ]
+  ],
+  "puissance": 11,
+  "frequence": "rarement"
  },
  {
   "nom": "Cyclonaute",
   "id": "cyclonaute",
-  "rarete": "rare",
   "posture": "flottant",
   "taille_finale": "grande",
   "fiche": "Un voyageur des hautes altitudes qui vit au cœur des tornades et les guide à travers le ciel.",
@@ -1296,12 +1321,13 @@
     "nom": "sable",
     "chance": 3.5
    }
-  ]
+  ],
+  "puissance": 12,
+  "frequence": "rarement"
  },
  {
   "nom": "Magmastodonte",
   "id": "magmastodonte",
-  "rarete": "rare",
   "posture": "quadrupède",
   "taille_finale": "colossale",
   "fiche": "Un pachyderme de roche en fusion dont chaque pas laisse une coulée de lave dans les plaines volcaniques.",
@@ -1348,12 +1374,13 @@
     "nom": "montagne",
     "chance": 4.9
    }
-  ]
+  ],
+  "puissance": 13,
+  "frequence": "rarement"
  },
  {
   "nom": "Tsunamir",
   "id": "tsunamir",
-  "rarete": "rare",
   "posture": "serpentin",
   "taille_finale": "colossale",
   "fiche": "Un grand dragon des marées qui dort au fond des abysses et soulève les vagues géantes en se réveillant.",
@@ -1385,12 +1412,13 @@
     "nom": "ruines",
     "chance": 11.0
    }
-  ]
+  ],
+  "puissance": 14,
+  "frequence": "rarement"
  },
  {
   "nom": "Tellurion",
   "id": "tellurion",
-  "rarete": "légendaire",
   "posture": "bipède",
   "taille_finale": "colossale",
   "fiche": "Le seigneur des éléments, un titan de roche vivante dont le corps porte une montagne et les six forces de la nature.",
@@ -1432,12 +1460,13 @@
     "nom": "lagon",
     "chance": 6.1
    }
-  ]
+  ],
+  "puissance": 15,
+  "frequence": "très rarement"
  },
  {
   "nom": "Osselet",
   "id": "osselet",
-  "rarete": "commune",
   "posture": "quadrupède",
   "taille_finale": "petite",
   "fiche": "Un petit chien-squelette joueur qui enterre ses propres os dans les ossuaires et les cimetières oubliés.",
@@ -1468,12 +1497,13 @@
     "nom": "forêt",
     "chance": 11.0
    }
-  ]
+  ],
+  "puissance": 1,
+  "frequence": "souvent"
  },
  {
   "nom": "Drapouille",
   "id": "drapouille",
-  "rarete": "commune",
   "posture": "flottant",
   "taille_finale": "petite",
   "fiche": "Un fantôme-drap espiègle qui flotte dans les greniers des ruines et adore faire « bouh » aux voyageurs.",
@@ -1499,12 +1529,13 @@
     "nom": "nuage",
     "chance": 17.0
    }
-  ]
+  ],
+  "puissance": 2,
+  "frequence": "souvent"
  },
  {
   "nom": "Goulichon",
   "id": "goulichon",
-  "rarete": "commune",
   "posture": "bipède",
   "taille_finale": "moyenne",
   "fiche": "Une petite goule gourmande qui fouille les tombes des marais à la recherche de vieux biscuits oubliés.",
@@ -1530,12 +1561,13 @@
     "nom": "champignonnière",
     "chance": 17.0
    }
-  ]
+  ],
+  "puissance": 3,
+  "frequence": "souvent"
  },
  {
   "nom": "Crânard",
   "id": "cranard",
-  "rarete": "commune",
   "posture": "rampant",
   "taille_finale": "petite",
   "fiche": "Un bernard-l'ermite des catacombes qui se cache dans un vieux crâne et le change quand il grandit.",
@@ -1581,12 +1613,13 @@
     "nom": "ruines",
     "chance": 4.9
    }
-  ]
+  ],
+  "puissance": 4,
+  "frequence": "souvent"
  },
  {
   "nom": "Follanterne",
   "id": "follanterne",
-  "rarete": "commune",
   "posture": "flottant",
   "taille_finale": "petite",
   "fiche": "Un feu follet logé dans une vieille lanterne, qui guide (ou égare) les promeneurs dans la brume des marais.",
@@ -1637,12 +1670,13 @@
     "nom": "crypte",
     "chance": 4.1
    }
-  ]
+  ],
+  "puissance": 5,
+  "frequence": "souvent"
  },
  {
   "nom": "Vertébrine",
   "id": "vertebrine",
-  "rarete": "commune",
   "posture": "serpentin",
   "taille_finale": "moyenne",
   "fiche": "Un serpent fait de vertèbres qui ondule entre les dunes et les tombeaux ensablés du désert.",
@@ -1668,12 +1702,13 @@
     "nom": "sable",
     "chance": 17.0
    }
-  ]
+  ],
+  "puissance": 6,
+  "frequence": "souvent"
  },
  {
   "nom": "Momiaou",
   "id": "momiaou",
-  "rarete": "peu commune",
   "posture": "quadrupède",
   "taille_finale": "moyenne",
   "fiche": "Un chat momifié gardien des tombeaux du désert, qui ronronne sous ses bandelettes.",
@@ -1714,12 +1749,13 @@
     "nom": "soleil",
     "chance": 6.1
    }
-  ]
+  ],
+  "puissance": 7,
+  "frequence": "parfois"
  },
  {
   "nom": "Corbouh",
   "id": "corbouh",
-  "rarete": "peu commune",
   "posture": "volant",
   "taille_finale": "moyenne",
   "fiche": "Un corbeau fantôme qui tournoie au-dessus des vieux cimetières en criant « bouh » au lieu de croasser.",
@@ -1770,12 +1806,13 @@
     "nom": "ombre",
     "chance": 4.1
    }
-  ]
+  ],
+  "puissance": 8,
+  "frequence": "parfois"
  },
  {
   "nom": "Heaumbre",
   "id": "heaumbre",
-  "rarete": "peu commune",
   "posture": "bipède",
   "taille_finale": "grande",
   "fiche": "Une armure de chevalier maudit habitée par une ombre, qui monte la garde dans les forteresses en ruine.",
@@ -1811,12 +1848,13 @@
     "nom": "crypte",
     "chance": 7.9
    }
-  ]
+  ],
+  "puissance": 9,
+  "frequence": "parfois"
  },
  {
   "nom": "Tibiarachne",
   "id": "tibiarachne",
-  "rarete": "peu commune",
   "posture": "multipattes",
   "taille_finale": "moyenne",
   "fiche": "Une araignée d'os qui tisse des toiles d'ectoplasme dans les recoins des ossuaires.",
@@ -1842,12 +1880,13 @@
     "nom": "crypte",
     "chance": 17.0
    }
-  ]
+  ],
+  "puissance": 10,
+  "frequence": "parfois"
  },
  {
   "nom": "Hurlombre",
   "id": "hurlombre",
-  "rarete": "rare",
   "posture": "flottant",
   "taille_finale": "grande",
   "fiche": "Un spectre hurleur aux longs cheveux de brume qui chante des complaintes glacées dans la toundra.",
@@ -1888,12 +1927,13 @@
     "nom": "ombre",
     "chance": 6.1
    }
-  ]
+  ],
+  "puissance": 11,
+  "frequence": "rarement"
  },
  {
   "nom": "Brumaleine",
   "id": "brumaleine",
-  "rarete": "rare",
   "posture": "flottant",
   "taille_finale": "colossale",
   "fiche": "Une baleine squelette qui nage dans le brouillard au-dessus des mers mortes et des nuages.",
@@ -1924,12 +1964,13 @@
     "nom": "cosmique",
     "chance": 11.0
    }
-  ]
+  ],
+  "puissance": 12,
+  "frequence": "rarement"
  },
  {
   "nom": "Ectoplouf",
   "id": "ectoplouf",
-  "rarete": "rare",
   "posture": "amorphe",
   "taille_finale": "grande",
   "fiche": "Une flaque d'ectoplasme vivante qui avale les vieux objets hantés et les garde flottant dans son corps.",
@@ -1955,12 +1996,13 @@
     "nom": "toxique",
     "chance": 17.0
    }
-  ]
+  ],
+  "puissance": 13,
+  "frequence": "rarement"
  },
  {
   "nom": "Drakosse",
   "id": "drakosse",
-  "rarete": "rare",
   "posture": "volant",
   "taille_finale": "colossale",
   "fiche": "Un dragon squelette réveillé par la nécromancie qui veille sur les montagnes de cendres et les grands ossuaires.",
@@ -1996,12 +2038,13 @@
     "nom": "crypte",
     "chance": 7.9
    }
-  ]
+  ],
+  "puissance": 14,
+  "frequence": "rarement"
  },
  {
   "nom": "Lichonarque",
   "id": "lichonarque",
-  "rarete": "légendaire",
   "posture": "bipède",
   "taille_finale": "grande",
   "fiche": "Le roi-liche des morts-vivants, un sorcier squelette couronné qui règne sur toutes les cryptes depuis son trône d'os.",
@@ -2032,12 +2075,13 @@
     "nom": "cristal",
     "chance": 11.0
    }
-  ]
+  ],
+  "puissance": 15,
+  "frequence": "très rarement"
  },
  {
   "nom": "Groinfer",
   "id": "groinfer",
-  "rarete": "commune",
   "posture": "quadrupède",
   "taille_finale": "moyenne",
   "fiche": "Un sanglier têtu dont la peau durcit en plaques de fer, qui fouille les sous-bois et les prairies à la recherche de racines.",
@@ -2069,12 +2113,13 @@
     "nom": "rouille",
     "chance": 11.0
    }
-  ]
+  ],
+  "puissance": 1,
+  "frequence": "souvent"
  },
  {
   "nom": "Chauvecroc",
   "id": "chauvecroc",
-  "rarete": "commune",
   "posture": "volant",
   "taille_finale": "petite",
   "fiche": "Une chauve-souris aux crocs démesurés qui niche par colonies dans les grottes, les cryptes et les canyons.",
@@ -2101,12 +2146,13 @@
     "nom": "montagne",
     "chance": 17.0
    }
-  ]
+  ],
+  "puissance": 2,
+  "frequence": "souvent"
  },
  {
   "nom": "Fouinroc",
   "id": "fouinroc",
-  "rarete": "commune",
   "posture": "rampant",
   "taille_finale": "petite",
   "fiche": "Une taupe fouisseuse aux griffes de pierre qui creuse des galeries sous les déserts et les montagnes.",
@@ -2143,12 +2189,13 @@
     "nom": "canyon",
     "chance": 7.9
    }
-  ]
+  ],
+  "puissance": 3,
+  "frequence": "souvent"
  },
  {
   "nom": "Louvacier",
   "id": "louvacier",
-  "rarete": "commune",
   "posture": "quadrupède",
   "taille_finale": "moyenne",
   "fiche": "Un loup cuirassé de plaques d'acier naturel qui chasse en meute dans la toundra et les forêts enneigées.",
@@ -2190,12 +2237,13 @@
     "nom": "montagne",
     "chance": 6.1
    }
-  ]
+  ],
+  "puissance": 4,
+  "frequence": "souvent"
  },
  {
   "nom": "Ricanos",
   "id": "ricanos",
-  "rarete": "commune",
   "posture": "quadrupède",
   "taille_finale": "moyenne",
   "fiche": "Une hyène charognarde qui ricane la nuit en rongeant les os des ossuaires et des déserts.",
@@ -2232,12 +2280,13 @@
     "nom": "canyon",
     "chance": 7.9
    }
-  ]
+  ],
+  "puissance": 5,
+  "frequence": "souvent"
  },
  {
   "nom": "Serpelage",
   "id": "serpelage",
-  "rarete": "commune",
   "posture": "serpentin",
   "taille_finale": "moyenne",
   "fiche": "Un long furet-serpent au pelage soyeux qui se faufile dans les jungles et les marais pour voler des œufs.",
@@ -2289,12 +2338,13 @@
     "nom": "ruines",
     "chance": 4.1
    }
-  ]
+  ],
+  "puissance": 6,
+  "frequence": "souvent"
  },
  {
   "nom": "Félicorne",
   "id": "felicorne",
-  "rarete": "peu commune",
   "posture": "quadrupède",
   "taille_finale": "grande",
   "fiche": "Un grand félin aux cornes recourbées qui guette ses proies du haut des falaises et des canyons.",
@@ -2336,12 +2386,13 @@
     "nom": "désert",
     "chance": 6.1
    }
-  ]
+  ],
+  "puissance": 7,
+  "frequence": "parfois"
  },
  {
   "nom": "Milgriffe",
   "id": "milgriffe",
-  "rarete": "peu commune",
   "posture": "multipattes",
   "taille_finale": "moyenne",
   "fiche": "Un blaireau à six pattes griffues qui creuse ses terriers dans les forêts sombres et les champignonnières.",
@@ -2388,12 +2439,13 @@
     "nom": "ombre",
     "chance": 4.9
    }
-  ]
+  ],
+  "puissance": 8,
+  "frequence": "parfois"
  },
  {
   "nom": "Simiosse",
   "id": "simiosse",
-  "rarete": "peu commune",
   "posture": "bipède",
   "taille_finale": "grande",
   "fiche": "Un grand singe qui se façonne une armure avec les os de ses proies et règne sur les jungles et les ruines.",
@@ -2445,12 +2497,13 @@
     "nom": "canyon",
     "chance": 4.1
    }
-  ]
+  ],
+  "puissance": 9,
+  "frequence": "parfois"
  },
  {
   "nom": "Tatoublind",
   "id": "tatoublind",
-  "rarete": "peu commune",
   "posture": "quadrupède",
   "taille_finale": "moyenne",
   "fiche": "Un tatou blindé qui se roule en boule pour dévaler les dunes et les pentes des volcans.",
@@ -2482,12 +2535,13 @@
     "nom": "prairie",
     "chance": 11.0
    }
-  ]
+  ],
+  "puissance": 10,
+  "frequence": "parfois"
  },
  {
   "nom": "Hibourreau",
   "id": "hibourreau",
-  "rarete": "rare",
   "posture": "volant",
   "taille_finale": "grande",
   "fiche": "Un hibou-lynx nocturne aux serres immenses qui fond en silence sur ses proies dans la brume des forêts.",
@@ -2544,12 +2598,13 @@
     "nom": "crypte",
     "chance": 3.5
    }
-  ]
+  ],
+  "puissance": 11,
+  "frequence": "rarement"
  },
  {
   "nom": "Oursomont",
   "id": "oursomont",
-  "rarete": "rare",
   "posture": "bipède",
   "taille_finale": "colossale",
   "fiche": "Un ours géant au dos couvert de roches qui se dresse sur ses pattes arrière pour défendre sa montagne.",
@@ -2581,12 +2636,13 @@
     "nom": "cristal",
     "chance": 11.0
    }
-  ]
+  ],
+  "puissance": 12,
+  "frequence": "rarement"
  },
  {
   "nom": "Trigueule",
   "id": "trigueule",
-  "rarete": "rare",
   "posture": "quadrupède",
   "taille_finale": "grande",
   "fiche": "Une chimère à trois têtes de lion, de bouc et de chacal qui rôde dans les ruines arcaniques et les canyons.",
@@ -2643,12 +2699,13 @@
     "nom": "désert",
     "chance": 3.5
    }
-  ]
+  ],
+  "puissance": 13,
+  "frequence": "rarement"
  },
  {
   "nom": "Mammouroc",
   "id": "mammouroc",
-  "rarete": "rare",
   "posture": "quadrupède",
   "taille_finale": "colossale",
   "fiche": "Un mammouth colossal aux défenses de pierre qui migre lentement à travers la toundra et les glaciers.",
@@ -2680,12 +2737,13 @@
     "nom": "montagne",
     "chance": 11.0
    }
-  ]
+  ],
+  "puissance": 14,
+  "frequence": "rarement"
  },
  {
   "nom": "Rugissire",
   "id": "rugissire",
-  "rarete": "légendaire",
   "posture": "quadrupède",
   "taille_finale": "colossale",
   "fiche": "Le seigneur des bêtes, un fauve colossal couronné d'os dont le rugissement fait trembler toutes les terres sauvages.",
@@ -2732,12 +2790,13 @@
     "nom": "soleil",
     "chance": 4.9
    }
-  ]
+  ],
+  "puissance": 15,
+  "frequence": "très rarement"
  },
  {
   "nom": "Glandouille",
   "id": "glandouille",
-  "rarete": "commune",
   "posture": "bipède",
   "taille_finale": "petite",
   "fiche": "Un gland paresseux qui s'est réveillé un jour avec des jambes et passe ses siestes au pied des chênes de la forêt.",
@@ -2763,12 +2822,13 @@
     "nom": "ruines",
     "chance": 17.0
    }
-  ]
+  ],
+  "puissance": 1,
+  "frequence": "souvent"
  },
  {
   "nom": "Sporichon",
   "id": "sporichon",
-  "rarete": "commune",
   "posture": "bipède",
   "taille_finale": "petite",
   "fiche": "Un petit champignon guerrier qui défend les cercles de fées des sous-bois humides avec un courage démesuré.",
@@ -2814,12 +2874,13 @@
     "nom": "brume",
     "chance": 4.9
    }
-  ]
+  ],
+  "puissance": 2,
+  "frequence": "souvent"
  },
  {
   "nom": "Pétalouette",
   "id": "petalouette",
-  "rarete": "commune",
   "posture": "volant",
   "taille_finale": "petite",
   "fiche": "Une créature-fleur qui volette de prairie en prairie en battant de ses pétales comme des ailes.",
@@ -2850,12 +2911,13 @@
     "nom": "forêt",
     "chance": 11.0
    }
-  ]
+  ],
+  "puissance": 3,
+  "frequence": "souvent"
  },
  {
   "nom": "Mousselin",
   "id": "mousselin",
-  "rarete": "commune",
   "posture": "amorphe",
   "taille_finale": "moyenne",
   "fiche": "Une boule de mousse vivante qui s'étale sur les pierres humides des sous-bois et absorbe la rosée.",
@@ -2906,12 +2968,13 @@
     "nom": "marais",
     "chance": 4.1
    }
-  ]
+  ],
+  "puissance": 4,
+  "frequence": "souvent"
  },
  {
   "nom": "Ronceau",
   "id": "ronceau",
-  "rarete": "commune",
   "posture": "quadrupède",
   "taille_finale": "moyenne",
   "fiche": "Un renardeau fait de ronces entrelacées qui chaparde les baies dans les haies des lisières.",
@@ -2937,12 +3000,13 @@
     "nom": "prairie",
     "chance": 17.0
    }
-  ]
+  ],
+  "puissance": 5,
+  "frequence": "souvent"
  },
  {
   "nom": "Racinelle",
   "id": "racinelle",
-  "rarete": "commune",
   "posture": "flottant",
   "taille_finale": "petite",
   "fiche": "Un esprit des racines qui flotte sous la terre et remonte la nuit pour veiller sur les jeunes pousses.",
@@ -2988,12 +3052,13 @@
     "nom": "crypte",
     "chance": 4.9
    }
-  ]
+  ],
+  "puissance": 6,
+  "frequence": "souvent"
  },
  {
   "nom": "Croquefleur",
   "id": "croquefleur",
-  "rarete": "peu commune",
   "posture": "rampant",
   "taille_finale": "moyenne",
   "fiche": "Une plante carnivore affamée qui rampe sur ses racines dans les marais et happe tout ce qui bourdonne.",
@@ -3039,12 +3104,13 @@
     "nom": "forêt",
     "chance": 4.9
    }
-  ]
+  ],
+  "puissance": 7,
+  "frequence": "parfois"
  },
  {
   "nom": "Lampignon",
   "id": "lampignon",
-  "rarete": "peu commune",
   "posture": "flottant",
   "taille_finale": "moyenne",
   "fiche": "Un champignon lumineux qui flotte dans les grottes et les forêts nocturnes pour guider les voyageurs égarés.",
@@ -3085,12 +3151,13 @@
     "nom": "marais",
     "chance": 6.1
    }
-  ]
+  ],
+  "puissance": 8,
+  "frequence": "parfois"
  },
  {
   "nom": "Lianaconda",
   "id": "lianaconda",
-  "rarete": "peu commune",
   "posture": "serpentin",
   "taille_finale": "grande",
   "fiche": "Un serpent de lianes qui s'enroule autour des grands arbres de la jungle et se confond avec la végétation.",
@@ -3121,12 +3188,13 @@
     "nom": "marais",
     "chance": 11.0
    }
-  ]
+  ],
+  "puissance": 9,
+  "frequence": "parfois"
  },
  {
   "nom": "Écorcerf",
   "id": "ecorcerf",
-  "rarete": "peu commune",
   "posture": "quadrupède",
   "taille_finale": "grande",
   "fiche": "Un cerf à la peau d'écorce dont les bois sont de vraies branches feuillues qui changent avec les saisons.",
@@ -3152,12 +3220,13 @@
     "nom": "brume",
     "chance": 17.0
    }
-  ]
+  ],
+  "puissance": 10,
+  "frequence": "parfois"
  },
  {
   "nom": "Nénuphage",
   "id": "nenuphage",
-  "rarete": "rare",
   "posture": "quadrupède",
   "taille_finale": "grande",
   "fiche": "Un batracien végétal qui se cache sous un nénuphar géant dans les marais et engloutit tout ce qui s'y pose.",
@@ -3188,12 +3257,13 @@
     "nom": "lagon",
     "chance": 11.0
    }
-  ]
+  ],
+  "puissance": 11,
+  "frequence": "rarement"
  },
  {
   "nom": "Ambrelune",
   "id": "ambrelune",
-  "rarete": "rare",
   "posture": "volant",
   "taille_finale": "moyenne",
   "fiche": "Une créature de sève et d'ambre aux ailes de feuilles translucides qui ne sort que les nuits de pleine lune.",
@@ -3234,12 +3304,13 @@
     "nom": "lune",
     "chance": 6.1
    }
-  ]
+  ],
+  "puissance": 12,
+  "frequence": "rarement"
  },
  {
   "nom": "Mycélix",
   "id": "mycelix",
-  "rarete": "rare",
   "posture": "multipattes",
   "taille_finale": "grande",
   "fiche": "Un mille-pattes de mycélium qui tisse des réseaux souterrains entre les racines de toute une forêt.",
@@ -3275,12 +3346,13 @@
     "nom": "ruines",
     "chance": 7.9
    }
-  ]
+  ],
+  "puissance": 13,
+  "frequence": "rarement"
  },
  {
   "nom": "Chêneroc",
   "id": "cheneroc",
-  "rarete": "rare",
   "posture": "bipède",
   "taille_finale": "colossale",
   "fiche": "Un arbre animé mi-chêne mi-rocher qui garde les cols des montagnes boisées depuis des siècles.",
@@ -3321,12 +3393,13 @@
     "nom": "montagne",
     "chance": 6.1
    }
-  ]
+  ],
+  "puissance": 14,
+  "frequence": "rarement"
  },
  {
   "nom": "Sylvarque",
   "id": "sylvarque",
-  "rarete": "légendaire",
   "posture": "bipède",
   "taille_finale": "colossale",
   "fiche": "Le seigneur de toutes les forêts, un arbre-roi millénaire dont chaque pas fait germer une prairie fleurie.",
@@ -3372,12 +3445,13 @@
     "nom": "jungle",
     "chance": 4.9
    }
-  ]
+  ],
+  "puissance": 15,
+  "frequence": "très rarement"
  },
  {
   "nom": "Scarabouille",
   "id": "scarabouille",
-  "rarete": "commune",
   "posture": "quadrupède",
   "taille_finale": "moyenne",
   "fiche": "Petit scarabée joufflu qui roule des boulettes de terre dans les prairies et les sous-bois.",
@@ -3409,12 +3483,13 @@
     "nom": "champignonnière",
     "chance": 11.0
    }
-  ]
+  ],
+  "puissance": 1,
+  "frequence": "souvent"
  },
  {
   "nom": "Pucerise",
   "id": "pucerise",
-  "rarete": "commune",
   "posture": "rampant",
   "taille_finale": "petite",
   "fiche": "Puceron rond comme une cerise qui sirote la sève des plantes dans les jardins sauvages.",
@@ -3441,12 +3516,13 @@
     "nom": "eau pétillante",
     "chance": 17.0
    }
-  ]
+  ],
+  "puissance": 2,
+  "frequence": "souvent"
  },
  {
   "nom": "Fourmidable",
   "id": "fourmidable",
-  "rarete": "commune",
   "posture": "bipède",
   "taille_finale": "moyenne",
   "fiche": "Fourmi ouvrière qui marche debout et porte des charges dix fois plus lourdes qu'elle dans les canyons.",
@@ -3473,12 +3549,13 @@
     "nom": "ruines",
     "chance": 17.0
    }
-  ]
+  ],
+  "puissance": 3,
+  "frequence": "souvent"
  },
  {
   "nom": "Papillombre",
   "id": "papillombre",
-  "rarete": "commune",
   "posture": "volant",
   "taille_finale": "moyenne",
   "fiche": "Papillon de nuit aux ailes de velours sombre qui danse autour des lumières dans la brume.",
@@ -3525,12 +3602,13 @@
     "nom": "forêt",
     "chance": 4.9
    }
-  ]
+  ],
+  "puissance": 4,
+  "frequence": "souvent"
  },
  {
   "nom": "Clopinou",
   "id": "clopinou",
-  "rarete": "commune",
   "posture": "multipattes",
   "taille_finale": "petite",
   "fiche": "Cloporte câlin qui se roule en boule sous les pierres humides des ruines et des cryptes.",
@@ -3562,12 +3640,13 @@
     "nom": "forêt",
     "chance": 11.0
    }
-  ]
+  ],
+  "puissance": 5,
+  "frequence": "souvent"
  },
  {
   "nom": "Tiquetac",
   "id": "tiquetac",
-  "rarete": "commune",
   "posture": "flottant",
   "taille_finale": "moyenne",
   "fiche": "Tique gonflée comme un ballon qui flotte lentement dans les marais en faisant tic-tac.",
@@ -3594,12 +3673,13 @@
     "nom": "forêt",
     "chance": 17.0
    }
-  ]
+  ],
+  "puissance": 6,
+  "frequence": "souvent"
  },
  {
   "nom": "Araignoir",
   "id": "araignoir",
-  "rarete": "peu commune",
   "posture": "multipattes",
   "taille_finale": "grande",
   "fiche": "Araignée noire qui tisse des toiles de soie sombre dans les cryptes et les ruines oubliées.",
@@ -3641,12 +3721,13 @@
     "nom": "canyon",
     "chance": 6.1
    }
-  ]
+  ],
+  "puissance": 7,
+  "frequence": "parfois"
  },
  {
   "nom": "Mantelame",
   "id": "mantelame",
-  "rarete": "peu commune",
   "posture": "bipède",
   "taille_finale": "grande",
   "fiche": "Mante religieuse escrimeuse aux bras en lames qui guette ses proies immobile dans la jungle.",
@@ -3683,12 +3764,13 @@
     "nom": "prairie",
     "chance": 7.9
    }
-  ]
+  ],
+  "puissance": 8,
+  "frequence": "parfois"
  },
  {
   "nom": "Scorpiquant",
   "id": "scorpiquant",
-  "rarete": "peu commune",
   "posture": "multipattes",
   "taille_finale": "grande",
   "fiche": "Scorpion des dunes au dard brûlant qui se cache sous le sable chaud du désert.",
@@ -3735,12 +3817,13 @@
     "nom": "ruines",
     "chance": 4.9
    }
-  ]
+  ],
+  "puissance": 9,
+  "frequence": "parfois"
  },
  {
   "nom": "Millepince",
   "id": "millepince",
-  "rarete": "peu commune",
   "posture": "serpentin",
   "taille_finale": "grande",
   "fiche": "Mille-pattes géant aux crochets venimeux qui serpente dans les galeries humides et les champignonnières.",
@@ -3772,12 +3855,13 @@
     "nom": "forêt",
     "chance": 11.0
    }
-  ]
+  ],
+  "puissance": 10,
+  "frequence": "parfois"
  },
  {
   "nom": "Bourdonjon",
   "id": "bourdonjon",
-  "rarete": "rare",
   "posture": "volant",
   "taille_finale": "grande",
   "fiche": "Bourdon bâtisseur qui porte sur son dos une ruche-forteresse où vivent ses petites ouvrières.",
@@ -3809,12 +3893,13 @@
     "nom": "nuage",
     "chance": 11.0
    }
-  ]
+  ],
+  "puissance": 11,
+  "frequence": "rarement"
  },
  {
   "nom": "Libellance",
   "id": "libellance",
-  "rarete": "rare",
   "posture": "volant",
   "taille_finale": "grande",
   "fiche": "Libellule chevalier à la queue en lance qui patrouille au-dessus des lagons et des orages.",
@@ -3866,12 +3951,13 @@
     "nom": "orage",
     "chance": 4.1
    }
-  ]
+  ],
+  "puissance": 12,
+  "frequence": "rarement"
  },
  {
   "nom": "Cigalarme",
   "id": "cigalarme",
-  "rarete": "rare",
   "posture": "quadrupède",
   "taille_finale": "colossale",
   "fiche": "Cigale géante dont le chant assourdissant résonne comme une sirène au sommet des volcans.",
@@ -3908,12 +3994,13 @@
     "nom": "forêt",
     "chance": 7.9
    }
-  ]
+  ],
+  "puissance": 13,
+  "frequence": "rarement"
  },
  {
   "nom": "Cocondor",
   "id": "cocondor",
-  "rarete": "rare",
   "posture": "amorphe",
   "taille_finale": "grande",
   "fiche": "Cocon vivant de soie dorée qui se métamorphose sans fin au cœur des grottes de cristal.",
@@ -3950,12 +4037,13 @@
     "nom": "forêt",
     "chance": 7.9
    }
-  ]
+  ],
+  "puissance": 14,
+  "frequence": "rarement"
  },
  {
   "nom": "Essaimpereur",
   "id": "essaimpereur",
-  "rarete": "légendaire",
   "posture": "quadrupède",
   "taille_finale": "colossale",
   "fiche": "Souverain colossal de tous les insectes, dont la carapace-couronne abrite un essaim entier.",
@@ -3992,12 +4080,13 @@
     "nom": "désert",
     "chance": 7.9
    }
-  ]
+  ],
+  "puissance": 15,
+  "frequence": "très rarement"
  },
  {
   "nom": "Plouftin",
   "id": "plouftin",
-  "rarete": "commune",
   "posture": "flottant",
   "taille_finale": "petite",
   "fiche": "Petit poisson-bulle qui gonfle quand il a peur, il dérive en bancs dans les lagons tièdes et les coraux peu profonds.",
@@ -4043,12 +4132,13 @@
     "nom": "brume",
     "chance": 4.9
    }
-  ]
+  ],
+  "puissance": 1,
+  "frequence": "souvent"
  },
  {
   "nom": "Tritonnet",
   "id": "tritonnet",
-  "rarete": "commune",
   "posture": "bipède",
   "taille_finale": "petite",
   "fiche": "Petit amphibien des récifs qui marche sur ses nageoires arrière et collectionne les coquillages échoués.",
@@ -4079,12 +4169,13 @@
     "nom": "marais",
     "chance": 11.0
    }
-  ]
+  ],
+  "puissance": 2,
+  "frequence": "souvent"
  },
  {
   "nom": "Krillou",
   "id": "krillou",
-  "rarete": "commune",
   "posture": "multipattes",
   "taille_finale": "petite",
   "fiche": "Minuscule crevette translucide qui vit en nuées scintillantes et éclaire l'eau froide la nuit.",
@@ -4130,12 +4221,13 @@
     "nom": "aurore",
     "chance": 4.9
    }
-  ]
+  ],
+  "puissance": 3,
+  "frequence": "souvent"
  },
  {
   "nom": "Anguillon",
   "id": "anguillon",
-  "rarete": "commune",
   "posture": "serpentin",
   "taille_finale": "moyenne",
   "fiche": "Anguille électrique qui se cache dans les épaves et grésille quand on la caresse.",
@@ -4171,12 +4263,13 @@
     "nom": "corail",
     "chance": 7.9
    }
-  ]
+  ],
+  "puissance": 4,
+  "frequence": "souvent"
  },
  {
   "nom": "Crabouille",
   "id": "crabouille",
-  "rarete": "commune",
   "posture": "multipattes",
   "taille_finale": "moyenne",
   "fiche": "Crabe bagarreur qui se fabrique une armure avec tout ce qu'il ramasse sur le fond marin.",
@@ -4212,12 +4305,13 @@
     "nom": "abyssal",
     "chance": 7.9
    }
-  ]
+  ],
+  "puissance": 5,
+  "frequence": "souvent"
  },
  {
   "nom": "Poulpiot",
   "id": "poulpiot",
-  "rarete": "commune",
   "posture": "rampant",
   "taille_finale": "moyenne",
   "fiche": "Petit poulpe malin qui change de couleur et vole les objets brillants des plongeurs.",
@@ -4258,12 +4352,13 @@
     "nom": "néon",
     "chance": 6.1
    }
-  ]
+  ],
+  "puissance": 6,
+  "frequence": "souvent"
  },
  {
   "nom": "Lampiotte",
   "id": "lampiotte",
-  "rarete": "peu commune",
   "posture": "flottant",
   "taille_finale": "moyenne",
   "fiche": "Poisson des grandes profondeurs qui attire ses proies avec la petite lanterne qui pend devant sa bouche.",
@@ -4294,12 +4389,13 @@
     "nom": "ombre",
     "chance": 11.0
    }
-  ]
+  ],
+  "puissance": 7,
+  "frequence": "parfois"
  },
  {
   "nom": "Bavonge",
   "id": "bavonge",
-  "rarete": "peu commune",
   "posture": "amorphe",
   "taille_finale": "grande",
   "fiche": "Éponge vivante et gluante qui filtre l'eau des grottes sous-marines et absorbe tout ce qu'elle touche.",
@@ -4335,12 +4431,13 @@
     "nom": "toxique",
     "chance": 7.9
    }
-  ]
+  ],
+  "puissance": 8,
+  "frequence": "parfois"
  },
  {
   "nom": "Nautiloque",
   "id": "nautiloque",
-  "rarete": "peu commune",
   "posture": "flottant",
   "taille_finale": "moyenne",
   "fiche": "Céphalopode à coquille spirale qui monte et descend dans l'eau comme un sous-marin et parle par éclats de lumière.",
@@ -4381,12 +4478,13 @@
     "nom": "lune",
     "chance": 6.1
    }
-  ]
+  ],
+  "puissance": 9,
+  "frequence": "parfois"
  },
  {
   "nom": "Raiyon",
   "id": "raiyon",
-  "rarete": "peu commune",
   "posture": "volant",
   "taille_finale": "grande",
   "fiche": "Raie géante qui plane dans les courants comme un oiseau et bondit parfois hors de l'eau sous la lune.",
@@ -4432,12 +4530,13 @@
     "nom": "sable",
     "chance": 4.9
    }
-  ]
+  ],
+  "puissance": 10,
+  "frequence": "parfois"
  },
  {
   "nom": "Homardeur",
   "id": "homardeur",
-  "rarete": "rare",
   "posture": "bipède",
   "taille_finale": "grande",
   "fiche": "Homard chevalier qui se dresse sur ses pattes arrière pour défendre les épaves où il a établi son fief.",
@@ -4488,12 +4587,13 @@
     "nom": "mécanique",
     "chance": 4.1
    }
-  ]
+  ],
+  "puissance": 11,
+  "frequence": "rarement"
  },
  {
   "nom": "Calmarée",
   "id": "calmaree",
-  "rarete": "rare",
   "posture": "flottant",
   "taille_finale": "colossale",
   "fiche": "Calmar géant des fosses obscures qui fait monter les marées en battant de ses immenses bras.",
@@ -4529,12 +4629,13 @@
     "nom": "lune",
     "chance": 7.9
    }
-  ]
+  ],
+  "puissance": 12,
+  "frequence": "rarement"
  },
  {
   "nom": "Récifort",
   "id": "recifort",
-  "rarete": "rare",
   "posture": "quadrupède",
   "taille_finale": "colossale",
   "fiche": "Tortue colossale dont la carapace porte un récif de corail entier, abri de milliers de petits poissons.",
@@ -4575,12 +4676,13 @@
     "nom": "sable",
     "chance": 6.1
    }
-  ]
+  ],
+  "puissance": 13,
+  "frequence": "rarement"
  },
  {
   "nom": "Ondulame",
   "id": "ondulame",
-  "rarete": "rare",
   "posture": "serpentin",
   "taille_finale": "colossale",
   "fiche": "Serpent de mer aux nageoires tranchantes qui fend les vagues des tempêtes et coule les navires imprudents.",
@@ -4621,12 +4723,13 @@
     "nom": "ruines",
     "chance": 6.1
    }
-  ]
+  ],
+  "puissance": 14,
+  "frequence": "rarement"
  },
  {
   "nom": "Noctilune",
   "id": "noctilune",
-  "rarete": "légendaire",
   "posture": "flottant",
   "taille_finale": "colossale",
   "fiche": "Reine des abysses, immense méduse couronnée dont la lumière guide toutes les créatures des profondeurs.",
@@ -4657,12 +4760,13 @@
     "nom": "cosmique",
     "chance": 11.0
    }
-  ]
+  ],
+  "puissance": 15,
+  "frequence": "très rarement"
  },
  {
   "nom": "Lumignon",
   "id": "lumignon",
-  "rarete": "commune",
   "posture": "flottant",
   "taille_finale": "petite",
   "fiche": "Petite flamme de lumière pure qui flotte au-dessus des sanctuaires oubliés et des sommets nocturnes.",
@@ -4704,12 +4808,13 @@
     "nom": "cosmique",
     "chance": 6.1
    }
-  ]
+  ],
+  "puissance": 1,
+  "frequence": "souvent"
  },
  {
   "nom": "Étoilapin",
   "id": "etoilapin",
-  "rarete": "commune",
   "posture": "quadrupède",
   "taille_finale": "petite",
   "fiche": "Lapin constellé qui bondit dans les prairies au clair de lune en semant des étincelles d'étoiles.",
@@ -4736,12 +4841,13 @@
     "nom": "cosmique",
     "chance": 17.0
    }
-  ]
+  ],
+  "puissance": 2,
+  "frequence": "souvent"
  },
  {
   "nom": "Plumange",
   "id": "plumange",
-  "rarete": "commune",
   "posture": "volant",
   "taille_finale": "petite",
   "fiche": "Oisillon ailé aux plumes d'or qui veille sur les clochers en ruine et les nids des falaises.",
@@ -4793,12 +4899,13 @@
     "nom": "ruines",
     "chance": 4.1
    }
-  ]
+  ],
+  "puissance": 3,
+  "frequence": "souvent"
  },
  {
   "nom": "Nébuline",
   "id": "nebuline",
-  "rarete": "commune",
   "posture": "amorphe",
   "taille_finale": "petite",
   "fiche": "Petit nuage de poussière d'étoiles vivant qui dérive dans le ciel nocturne et les grottes de cristal.",
@@ -4825,12 +4932,13 @@
     "nom": "brume",
     "chance": 17.0
    }
-  ]
+  ],
+  "puissance": 4,
+  "frequence": "souvent"
  },
  {
   "nom": "Filcomète",
   "id": "filcomete",
-  "rarete": "commune",
   "posture": "serpentin",
   "taille_finale": "moyenne",
   "fiche": "Serpent céleste dont la queue laisse une traînée lumineuse comme une comète au-dessus des déserts nocturnes.",
@@ -4862,12 +4970,13 @@
     "nom": "nuage",
     "chance": 11.0
    }
-  ]
+  ],
+  "puissance": 5,
+  "frequence": "souvent"
  },
  {
   "nom": "Auréolin",
   "id": "aureolin",
-  "rarete": "commune",
   "posture": "bipède",
   "taille_finale": "petite",
   "fiche": "Petit moine de lumière à auréole qui garde les temples des montagnes et allume les lanternes à l'aube.",
@@ -4899,12 +5008,13 @@
     "nom": "cristal",
     "chance": 11.0
    }
-  ]
+  ],
+  "puissance": 6,
+  "frequence": "souvent"
  },
  {
   "nom": "Lunacorne",
   "id": "lunacorne",
-  "rarete": "peu commune",
   "posture": "quadrupède",
   "taille_finale": "grande",
   "fiche": "Chèvre sacrée aux cornes en croissant de lune qui escalade les pics enneigés les nuits de pleine lune.",
@@ -4941,12 +5051,13 @@
     "nom": "glace",
     "chance": 7.9
    }
-  ]
+  ],
+  "puissance": 7,
+  "frequence": "parfois"
  },
  {
   "nom": "Scintipède",
   "id": "scintipede",
-  "rarete": "peu commune",
   "posture": "multipattes",
   "taille_finale": "moyenne",
   "fiche": "Long mille-pattes de lumière dont chaque segment brille comme une étoile, il serpente dans les grottes de cristal.",
@@ -4993,12 +5104,13 @@
     "nom": "montagne",
     "chance": 4.9
    }
-  ]
+  ],
+  "puissance": 8,
+  "frequence": "parfois"
  },
  {
   "nom": "Séraphibou",
   "id": "seraphibou",
-  "rarete": "peu commune",
   "posture": "volant",
   "taille_finale": "moyenne",
   "fiche": "Hibou à six ailes qui veille la nuit sur les tours célestes et lit les étoiles.",
@@ -5045,12 +5157,13 @@
     "nom": "arcane",
     "chance": 4.9
    }
-  ]
+  ],
+  "puissance": 9,
+  "frequence": "parfois"
  },
  {
   "nom": "Éclipsard",
   "id": "eclipsard",
-  "rarete": "peu commune",
   "posture": "flottant",
   "taille_finale": "moyenne",
   "fiche": "Masque flottant mi-soleil mi-lune qui n'apparaît que pendant les éclipses au-dessus des ruines.",
@@ -5082,12 +5195,13 @@
     "nom": "ombre",
     "chance": 11.0
    }
-  ]
+  ],
+  "puissance": 10,
+  "frequence": "parfois"
  },
  {
   "nom": "Rugisoleil",
   "id": "rugisoleil",
-  "rarete": "rare",
   "posture": "quadrupède",
   "taille_finale": "grande",
   "fiche": "Lion sacré à crinière de flammes dorées, gardien des temples solaires du désert.",
@@ -5114,12 +5228,13 @@
     "nom": "canyon",
     "chance": 17.0
    }
-  ]
+  ],
+  "puissance": 11,
+  "frequence": "rarement"
  },
  {
   "nom": "Astralame",
   "id": "astralame",
-  "rarete": "rare",
   "posture": "bipède",
   "taille_finale": "grande",
   "fiche": "Chevalier de lumière qui manie une lame forgée dans une étoile, il garde les portes du ciel.",
@@ -5156,12 +5271,13 @@
     "nom": "arcane",
     "chance": 7.9
    }
-  ]
+  ],
+  "puissance": 12,
+  "frequence": "rarement"
  },
  {
   "nom": "Zénithéon",
   "id": "zenitheon",
-  "rarete": "rare",
   "posture": "serpentin",
   "taille_finale": "colossale",
   "fiche": "Grand serpent ailé des hautes altitudes qui ondule entre les aurores boréales.",
@@ -5198,12 +5314,13 @@
     "nom": "cosmique",
     "chance": 7.9
    }
-  ]
+  ],
+  "puissance": 13,
+  "frequence": "rarement"
  },
  {
   "nom": "Tortunivers",
   "id": "tortunivers",
-  "rarete": "rare",
   "posture": "rampant",
   "taille_finale": "colossale",
   "fiche": "Tortue cosmique colossale qui porte une galaxie sur sa carapace et dort sur les rives des lacs gelés.",
@@ -5255,12 +5372,13 @@
     "nom": "lagon",
     "chance": 4.1
    }
-  ]
+  ],
+  "puissance": 14,
+  "frequence": "rarement"
  },
  {
   "nom": "Empyria",
   "id": "empyria",
-  "rarete": "légendaire",
   "posture": "volant",
   "taille_finale": "colossale",
   "fiche": "Reine céleste aux ailes immenses qui règne sur le firmament et fait se lever les étoiles.",
@@ -5297,12 +5415,13 @@
     "nom": "nuage",
     "chance": 7.9
    }
-  ]
+  ],
+  "puissance": 15,
+  "frequence": "très rarement"
  },
  {
   "nom": "Boulonnet",
   "id": "boulonnet",
-  "rarete": "commune",
   "posture": "bipède",
   "taille_finale": "petite",
   "fiche": "Petit automate de bronze né d'un boulon oublié, il trottine dans les ateliers abandonnés en quête de vis à serrer.",
@@ -5354,12 +5473,13 @@
     "nom": "néon",
     "chance": 4.1
    }
-  ]
+  ],
+  "puissance": 1,
+  "frequence": "souvent"
  },
  {
   "nom": "Rouillot",
   "id": "rouillot",
-  "rarete": "commune",
   "posture": "quadrupède",
   "taille_finale": "petite",
   "fiche": "Chiot de ferraille rouillée qui fouille les décharges et ronge les vieilles chaînes comme des os.",
@@ -5396,12 +5516,13 @@
     "nom": "canyon",
     "chance": 7.9
    }
-  ]
+  ],
+  "puissance": 2,
+  "frequence": "souvent"
  },
  {
   "nom": "Pantinou",
   "id": "pantinou",
-  "rarete": "commune",
   "posture": "bipède",
   "taille_finale": "moyenne",
   "fiche": "Marionnette de bois enchantée qui danse seule dans les théâtres en ruine, ses fils reliés à rien.",
@@ -5448,12 +5569,13 @@
     "nom": "brume",
     "chance": 4.9
    }
-  ]
+  ],
+  "puissance": 3,
+  "frequence": "souvent"
  },
  {
   "nom": "Ressortine",
   "id": "ressortine",
-  "rarete": "commune",
   "posture": "serpentin",
   "taille_finale": "moyenne",
   "fiche": "Serpent d'acier fait d'un ressort enchanté, il rebondit entre les rochers des canyons en sifflant comme une bouilloire.",
@@ -5480,12 +5602,13 @@
     "nom": "mécanique",
     "chance": 17.0
    }
-  ]
+  ],
+  "puissance": 4,
+  "frequence": "souvent"
  },
  {
   "nom": "Pavegarde",
   "id": "pavegarde",
-  "rarete": "commune",
   "posture": "quadrupède",
   "taille_finale": "moyenne",
   "fiche": "Petit gardien de pierre taillée qui veille sur les entrées des temples et dort la journée en se faisant passer pour une statue.",
@@ -5512,12 +5635,13 @@
     "nom": "montagne",
     "chance": 17.0
    }
-  ]
+  ],
+  "puissance": 5,
+  "frequence": "souvent"
  },
  {
   "nom": "Lanternix",
   "id": "lanternix",
-  "rarete": "commune",
   "posture": "flottant",
   "taille_finale": "petite",
   "fiche": "Lanterne de cuivre animée qui flotte dans les galeries sombres pour guider les voyageurs égarés.",
@@ -5544,12 +5668,13 @@
     "nom": "ossuaire",
     "chance": 17.0
    }
-  ]
+  ],
+  "puissance": 6,
+  "frequence": "souvent"
  },
  {
   "nom": "Engrenaille",
   "id": "engrenaille",
-  "rarete": "peu commune",
   "posture": "multipattes",
   "taille_finale": "grande",
   "fiche": "Mille-pattes d'engrenages qui ronronne dans les machineries des usines oubliées et répare tout ce qu'il traverse.",
@@ -5576,12 +5701,13 @@
     "nom": "néon",
     "chance": 17.0
    }
-  ]
+  ],
+  "puissance": 7,
+  "frequence": "parfois"
  },
  {
   "nom": "Heaumeur",
   "id": "heaumeur",
-  "rarete": "peu commune",
   "posture": "bipède",
   "taille_finale": "grande",
   "fiche": "Armure vivante habitée par un vent ensorcelé, elle garde les salles d'armes des forteresses et change d'humeur selon son heaume.",
@@ -5633,12 +5759,13 @@
     "nom": "ossuaire",
     "chance": 4.1
    }
-  ]
+  ],
+  "puissance": 8,
+  "frequence": "parfois"
  },
  {
   "nom": "Horlogrif",
   "id": "horlogrif",
-  "rarete": "peu commune",
   "posture": "volant",
   "taille_finale": "grande",
   "fiche": "Griffon mécanique à rouages d'horloge qui survole les clochers et tient le temps pour les cités des montagnes.",
@@ -5675,12 +5802,13 @@
     "nom": "lune",
     "chance": 7.9
    }
-  ]
+  ],
+  "puissance": 9,
+  "frequence": "parfois"
  },
  {
   "nom": "Fondelin",
   "id": "fondelin",
-  "rarete": "peu commune",
   "posture": "amorphe",
   "taille_finale": "moyenne",
   "fiche": "Flaque de métal en fusion animée par une étincelle de magie, elle rampe dans les forges et se façonne selon ses envies.",
@@ -5717,12 +5845,13 @@
     "nom": "volcan",
     "chance": 7.9
    }
-  ]
+  ],
+  "puissance": 10,
+  "frequence": "parfois"
  },
  {
   "nom": "Runodrake",
   "id": "runodrake",
-  "rarete": "rare",
   "posture": "volant",
   "taille_finale": "grande",
   "fiche": "Machine runique en forme de drake, forgée par des mages oubliés pour patrouiller le ciel au-dessus des tours d'arcane.",
@@ -5769,12 +5898,13 @@
     "nom": "orage",
     "chance": 4.9
    }
-  ]
+  ],
+  "puissance": 11,
+  "frequence": "rarement"
  },
  {
   "nom": "Golemmur",
   "id": "golemmur",
-  "rarete": "rare",
   "posture": "bipède",
   "taille_finale": "colossale",
   "fiche": "Golem colossal bâti à partir d'un rempart entier, il protège les vallées et peut rester immobile des siècles.",
@@ -5821,12 +5951,13 @@
     "nom": "canyon",
     "chance": 4.9
    }
-  ]
+  ],
+  "puissance": 12,
+  "frequence": "rarement"
  },
  {
   "nom": "Chaudrogre",
   "id": "chaudrogre",
-  "rarete": "rare",
   "posture": "quadrupède",
   "taille_finale": "grande",
   "fiche": "Machine à vapeur bestiale à chaudière vivante, elle arpente les terres volcaniques et souffle des nuages brûlants.",
@@ -5853,12 +5984,13 @@
     "nom": "mécanique",
     "chance": 17.0
    }
-  ]
+  ],
+  "puissance": 13,
+  "frequence": "rarement"
  },
  {
   "nom": "Marionnoire",
   "id": "marionnoire",
-  "rarete": "rare",
   "posture": "flottant",
   "taille_finale": "grande",
   "fiche": "Marionnettiste de porcelaine noire qui flotte dans les théâtres hantés, tirant les fils de petites poupées à son service.",
@@ -5895,12 +6027,13 @@
     "nom": "ruines",
     "chance": 7.9
    }
-  ]
+  ],
+  "puissance": 14,
+  "frequence": "rarement"
  },
  {
   "nom": "Forgerain",
   "id": "forgerain",
-  "rarete": "légendaire",
   "posture": "bipède",
   "taille_finale": "colossale",
   "fiche": "Souverain de tous les constructs, ce titan-forge vit au cœur des volcans éteints et donne vie à chaque machine d'un coup de marteau.",
@@ -5957,12 +6090,13 @@
     "nom": "cosmique",
     "chance": 3.5
    }
-  ]
+  ],
+  "puissance": 15,
+  "frequence": "très rarement"
  },
  {
   "nom": "Zyeuton",
   "id": "zyeuton",
-  "rarete": "commune",
   "posture": "flottant",
   "taille_finale": "petite",
   "fiche": "Un petit œil flottant et curieux qui hante les brumes et les ruines pour tout observer.",
@@ -6008,12 +6142,13 @@
     "nom": "marais",
     "chance": 4.9
    }
-  ]
+  ],
+  "puissance": 1,
+  "frequence": "souvent"
  },
  {
   "nom": "Gloupi",
   "id": "gloupi",
-  "rarete": "commune",
   "posture": "amorphe",
   "taille_finale": "moyenne",
   "fiche": "Une gelée vivante gourmande qui avale tout ce qui brille dans les marais toxiques.",
@@ -6054,12 +6189,13 @@
     "nom": "rouille",
     "chance": 6.1
    }
-  ]
+  ],
+  "puissance": 2,
+  "frequence": "souvent"
  },
  {
   "nom": "Tentaclou",
   "id": "tentaclou",
-  "rarete": "commune",
   "posture": "rampant",
   "taille_finale": "petite",
   "fiche": "Un petit rampeur à tentacules qui se fixe sous les pierres des grottes humides.",
@@ -6090,12 +6226,13 @@
     "nom": "ruines",
     "chance": 11.0
    }
-  ]
+  ],
+  "puissance": 3,
+  "frequence": "souvent"
  },
  {
   "nom": "Parasouris",
   "id": "parasouris",
-  "rarete": "commune",
   "posture": "quadrupède",
   "taille_finale": "petite",
   "fiche": "Une souris habitée par un minuscule parasite lumineux qui lui pousse sur le dos, cachée dans les recoins rouillés.",
@@ -6146,12 +6283,13 @@
     "nom": "ombre",
     "chance": 4.1
    }
-  ]
+  ],
+  "puissance": 4,
+  "frequence": "souvent"
  },
  {
   "nom": "Mutaloupe",
   "id": "mutaloupe",
-  "rarete": "commune",
   "posture": "multipattes",
   "taille_finale": "moyenne",
   "fiche": "Une créature à pattes fines dont l'œil unique grossit tout comme une loupe, rôdant dans les cristaux.",
@@ -6177,12 +6315,13 @@
     "nom": "arcane",
     "chance": 17.0
    }
-  ]
+  ],
+  "puissance": 5,
+  "frequence": "souvent"
  },
  {
   "nom": "Bavouille",
   "id": "bavouille",
-  "rarete": "commune",
   "posture": "rampant",
   "taille_finale": "moyenne",
   "fiche": "Une grosse limace iridescente qui laisse derrière elle une traînée lumineuse dans les forêts humides.",
@@ -6233,12 +6372,13 @@
     "nom": "brume",
     "chance": 4.1
    }
-  ]
+  ],
+  "puissance": 6,
+  "frequence": "souvent"
  },
  {
   "nom": "Greffon",
   "id": "greffon",
-  "rarete": "peu commune",
   "posture": "bipède",
   "taille_finale": "moyenne",
   "fiche": "Un petit être dont les bras sont des créatures indépendantes qui ont chacune leur avis, vivant dans les ruines.",
@@ -6279,12 +6419,13 @@
     "nom": "forêt",
     "chance": 6.1
    }
-  ]
+  ],
+  "puissance": 7,
+  "frequence": "parfois"
  },
  {
   "nom": "Ciliacle",
   "id": "ciliacle",
-  "rarete": "peu commune",
   "posture": "serpentin",
   "taille_finale": "grande",
   "fiche": "Un long serpent couvert de cils ondulants qui nage dans les eaux pétillantes et toxiques.",
@@ -6335,12 +6476,13 @@
     "nom": "corail",
     "chance": 4.1
    }
-  ]
+  ],
+  "puissance": 8,
+  "frequence": "parfois"
  },
  {
   "nom": "Miroeil",
   "id": "miroeil",
-  "rarete": "peu commune",
   "posture": "volant",
   "taille_finale": "moyenne",
   "fiche": "Un papillon étrange dont les ailes reflètent un autre monde, voletant au cœur des aurores.",
@@ -6381,12 +6523,13 @@
     "nom": "brume",
     "chance": 6.1
    }
-  ]
+  ],
+  "puissance": 9,
+  "frequence": "parfois"
  },
  {
   "nom": "Mixtrouille",
   "id": "mixtrouille",
-  "rarete": "peu commune",
   "posture": "quadrupède",
   "taille_finale": "grande",
   "fiche": "Une bête faite de morceaux qui ne vont pas ensemble, née d'une expérience ratée dans un laboratoire en ruine.",
@@ -6412,12 +6555,13 @@
     "nom": "toxique",
     "chance": 17.0
    }
-  ]
+  ],
+  "puissance": 10,
+  "frequence": "parfois"
  },
  {
   "nom": "Pupillarque",
   "id": "pupillarque",
-  "rarete": "rare",
   "posture": "flottant",
   "taille_finale": "grande",
   "fiche": "Un sage aux mille regards qui flotte dans les ruines arcaniques et voit à travers les murs.",
@@ -6463,12 +6607,13 @@
     "nom": "ombre",
     "chance": 4.9
    }
-  ]
+  ],
+  "puissance": 11,
+  "frequence": "rarement"
  },
  {
   "nom": "Ventouzar",
   "id": "ventouzar",
-  "rarete": "rare",
   "posture": "volant",
   "taille_finale": "grande",
   "fiche": "Une pieuvre céleste qui nage dans les nuages d'orage en se tenant par ses ventouses aux éclairs.",
@@ -6519,12 +6664,13 @@
     "nom": "cosmique",
     "chance": 4.1
    }
-  ]
+  ],
+  "puissance": 12,
+  "frequence": "rarement"
  },
  {
   "nom": "Fractalis",
   "id": "fractalis",
-  "rarete": "rare",
   "posture": "multipattes",
   "taille_finale": "grande",
   "fiche": "Une créature géométrique dont chaque patte se divise en pattes plus petites, née au cœur des cristaux.",
@@ -6570,12 +6716,13 @@
     "nom": "néon",
     "chance": 4.9
    }
-  ]
+  ],
+  "puissance": 13,
+  "frequence": "rarement"
  },
  {
   "nom": "Torsillon",
   "id": "torsillon",
-  "rarete": "rare",
   "posture": "serpentin",
   "taille_finale": "grande",
   "fiche": "Un serpent tordu en boucle sans fin qui se mord la queue et apparaît là où l'espace se plie.",
@@ -6601,12 +6748,13 @@
     "nom": "brume",
     "chance": 17.0
    }
-  ]
+  ],
+  "puissance": 14,
+  "frequence": "rarement"
  },
  {
   "nom": "Chaosmère",
   "id": "chaosmere",
-  "rarete": "légendaire",
   "posture": "amorphe",
   "taille_finale": "colossale",
   "fiche": "La reine des aberrations, une masse vivante d'où naissent toutes les mutations, endormie au fond des ombres cosmiques.",
@@ -6647,6 +6795,8 @@
     "nom": "arcane",
     "chance": 6.1
    }
-  ]
+  ],
+  "puissance": 15,
+  "frequence": "très rarement"
  }
 ]

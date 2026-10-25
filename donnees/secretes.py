@@ -50,7 +50,7 @@ def abyssor():
     petit, pal_p = pixels(img, 16, 14)
     grand, pal_g = pixels(img, 48, 48)
     return {
-        "id": "abyssor", "numero": 151, "nom": "Abyssor", "famille": "Système", "icone": "⚙", "rarete": "légendaire",
+        "id": "abyssor", "numero": 151, "nom": "Abyssor", "famille": "Système", "icone": "⚙", "rarete": "mythique",
         "secrete": True, "stat": "Force",
         "description": "Le démon des abysses du système. On dit qu'il est né d'un rm -rf / tapé à minuit.",
         "comportement": "Il dort tout au fond de la grotte et ne se montre qu'aux maîtres qui ont déjà dressé trois légendaires.",
