@@ -268,7 +268,7 @@ def commande(args):
     quand = time.strftime("%H:%M", time.localtime(dernier)) if dernier else "jamais"
     return (f"🌍 Compte : {c['pseudo']} · dernière synchro : {quand}\n"
             f"Profil public : {url}/joueur/{c['pseudo']}\n"
-            f"CTF web (badges vérifiés) : {url}/ctf\n"
+            f"Chasse au trésor du site (CTF web, badges vérifiés) : {url}/ctf\n"
             "  compte code   → relier un autre appareil\n  sync          → synchroniser maintenant")
 
 
@@ -302,7 +302,7 @@ def drapeau(proposition):
     core.migrate(st)
     c = compte(st)
     if not c.get("cle"):
-        return "Il faut un compte pour valider un drapeau du CTF web : compte creer TonPseudo"
+        return "Il faut un compte pour valider un drapeau de la chasse au trésor du site : compte creer TonPseudo"
     url = serveur(st)
     r = requete(url + "/api/drapeau", "POST", {"drapeau": proposition.strip()}, c["cle"])
     if r.get("ok"):

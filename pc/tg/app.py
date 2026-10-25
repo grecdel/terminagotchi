@@ -8,6 +8,7 @@ import subprocess
 
 from . import compagnon, core, dressage, equipe, explo, lecons, lexique, notif, recense, registre, sprites
 from .bestiaire import arc_en_ciel
+from .mots import accorder, palier, terme
 
 SYNC_AUTO = False   # synchro en fond, seulement pour les modes qui restent ouverts
 from .plateforme import (BOLD, DIM, DISTRO, IS_WIN, OS_NAMES, OSK, RESET, Clavier, clear, fg, piege)
@@ -59,7 +60,8 @@ def render(state, frame, interactif):
 
     d = state.get("dressage")
     if d:
-        lines.append(f" {fg(196)}{BOLD}⚔ Un {d['espece']} sauvage est apparu dans sa propre fenêtre !{RESET} "
+        lines.append(f" {fg(196)}{BOLD}" + accorder("⚔ Un monstre sauvage, {nom}, t'attend dans sa propre fenêtre !",
+                                                     nom=d["espece"]) + f"{RESET} "
                      f"{DIM}(fermée par erreur ? tg dressage){RESET}")
 
     les, etiquette = lecons.lecon_courante(state)
@@ -75,7 +77,8 @@ def render(state, frame, interactif):
             lines.append(f" {step['dit']}")
             lines.append(f"   {fg(226)}➜ {piege(step['cmd'])}{RESET}")
             if "nid/" in step["cmd"] or step["cmd"].endswith(" nid") or "reserve.txt" in step["cmd"]:
-                lines.append(f"   {DIM}📁 à taper depuis ton terrain de jeu (pour y aller : cd ~/{core.TERRAIN.name}){RESET}")
+                lines.append(f"   {DIM}📁 à taper depuis {terme('terrain', palier(state))} "
+                             f"(pour y passer : cd ~/{core.TERRAIN.name}){RESET}")
             if step.get("astuce"):
                 lines.append(f"   {DIM}{step['astuce']}{RESET}")
     elif all(state["arbre"].get(b, 0) >= len(v["lecons"]) for b, v in lecons.ARBRE.items() if lecons.branche_dispo(b)):
@@ -340,7 +343,8 @@ def menu_recensement(clav):
         st = core.load()
         a_compte = bool(st and st.get("compte", {}).get("cle"))
         if a_compte:
-            print(" 1. Obtenir un code pour relier un autre appareil\n 2. Synchroniser maintenant\n 3. Valider un drapeau du CTF web")
+            print(" 1. Obtenir un code pour relier un autre appareil\n 2. Synchroniser maintenant\n"
+                  f" 3. Valider un drapeau ({terme('ctf', palier(st))} du site)")
         else:
             print(" 1. Créer mon compte\n 2. Relier ce PC au compte de mon téléphone (code)")
         r = clav.demander("\n Choix (Entrée = retour) : ").strip()
@@ -445,7 +449,7 @@ AIDE = """Terminagotchi — utilisation :
   tg anime <nom> [animation]   la voir bouger : statique, mange, attaque, salut, parle, dort, content,
                                affame, confus, colere, victoire, ko, evolution
   tg compte partage on|off     montrer (ou non) tes captures dans la galerie du site
-  tg drapeau TG{…}             valide un drapeau du CTF web
+  tg drapeau TG{…}             valide un drapeau de la chasse au trésor du site (CTF web)
   Options : --une-fois (affiche et quitte) · --defi (défi immédiat)"""
 
 

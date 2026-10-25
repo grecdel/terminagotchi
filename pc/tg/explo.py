@@ -17,14 +17,11 @@ def piege_ansi(t):
 from . import bestiaire as B
 from . import core
 from . import dressage
+from .mots import accorder, palier, terme
 from .plateforme import BOLD, DIM, IS_WIN, RESET, fg, piege
 
 T = core.TERRAIN
 MAX_SAUVAGES = 3
-
-
-def le(nom):
-    return ("l'" if nom[0] in "AEIOUÉÈ" else "le ") + nom
 
 
 def lieu(zone):
@@ -58,7 +55,7 @@ def spawn(state):
         ind["teinte"] = round(random.uniform(0.15, 0.85), 3)   # couleur shiny propre à cet individu
     s = {"f": dressage.fiche(e["nom"]).name, "e": e["nom"], "zone": zone, "shiny": shiny, "v": vid, "ind": ind}
     state["sauvages"].append(s)
-    core.log(state, f"⚔ Un {e['nom']} sauvage apparaît !")
+    core.log(state, accorder("⚔ Un monstre sauvage apparaît : {nom} !", nom=e["nom"]))
     dressage.commencer(state, s)
     from . import fenetre
     fenetre.ouvrir_dressage(state)              # le face-à-face s'ouvre dans une nouvelle fenêtre
@@ -78,8 +75,8 @@ def check(state):
             state["sauvages"].remove(s)
             if (state.get("dressage") or {}).get("sauvage") == s["f"]:
                 dressage.abandonner(state)
-            core.log(state, f"💨 {le(s['e'])[0].upper() + le(s['e'])[1:]} s'est enfuie (fichier effacé ?)")
-            core.say(state, f"Oh non, {le(s['e'])} a disparu… un rm de trop ?", 10)
+            core.log(state, accorder("💨 {nom} a disparu (fiche effacée ?)", nom=s["e"]))
+            core.say(state, accorder("Oh non, {nom} a disparu… la broyeuse rm est passée par là ?", nom=s["e"]), 10)
 
 
 def tick(state, spontane, proba=1.5 / 480, jeu=0):
@@ -169,16 +166,16 @@ def fiche(state, nom):
              f"{DIM}se montre {e['frequence']}{RESET} · {e['icone']} {e['famille']}"
     lignes = [entete, ""]
     if not connue:
-        lignes += [f"  {DIM}Tu ne l'as pas encore capturée.{RESET}",
+        lignes += [f"  {DIM}Pas encore dans ta troupe.{RESET}",
                    f"  Habitat : {lieu(e['zone'])}  ({e['zone']})",
-                   f"  Elle se montre {e['frequence']}, attirée par la commande « {e['attiree_par']} »."]
+                   f"  Cette espèce se montre {e['frequence']}, attirée par la commande « {e['attiree_par']} »."]
         return lignes
     sp = B.dessin(e, grand=True)
     vars_ = [v["nom"] for v in e.get("variantes", [])[1:]]
     texte = [e["description"], e["comportement"],
-             f"Capacité : {e['capacite']} · stat favorite : {e['stat']}",
+             f"Capacité : {e['capacite']} · point fort : {e['stat']}",
              f"Taille ~{e['taille_cm']} cm · poids ~{e['poids_ko']} Ko",
-             "  ".join(f"{k} {v}" for k, v in e["stats"].items()),
+             B.texte_stats(e["stats"], palier(state)),
              f"Habitat : {lieu(e['zone'])} · attirée par « {e['attiree_par']} »",
              (f"Variantes : {', '.join(vars_)}" if vars_ else ""),
              f"Tu en as dressé {state['collection'][e['nom']]}."]

@@ -110,14 +110,14 @@ object Explo {
         val entete = "#%03d ".format(e.numero) + (if (!connue) "???" else if (e.rarete == "légendaire") "§${e.nom}§" else e.nom) +
             " · ${e.rarete} · ${e.icone} ${e.famille}"
         if (!connue) {
-            return "$entete\nTu ne l'as pas encore dressée.\nHabitat : ${Bestiaire.lieu(e.zone)} (${e.zone})\n" +
-                "Elle se montre ${e.frequence}, attirée par la commande « ${e.attireePar} »."
+            return "$entete\nPas encore dans ta troupe.\nHabitat : ${Bestiaire.lieu(e.zone)} (${e.zone})\n" +
+                "Cette espèce se montre ${e.frequence}, attirée par la commande « ${e.attireePar} »."
         }
         val dessin = if (Animations.dispo(e.id)) "¤${e.id}+¤\n" else "¤${e.id}¤ "     // version détaillée pour la fiche
         return "$dessin$entete\n${e.description}\n${e.comportement}\n" +
-            "Capacité : ${e.capacite} · stat favorite : ${e.stat}\n" +
+            "Capacité : ${e.capacite} · point fort : ${e.stat}\n" +
             "Taille ~${e.tailleCm} cm · poids ~${e.poidsKo} Ko\n" +
-            e.stats.entries.joinToString("  ") { "${it.key} ${it.value}" } + "\n" +
+            Mots.texteStats(e.stats, Mots.palier(jeu)) + "\n" +
             "Habitat : ${Bestiaire.lieu(e.zone)} · attirée par « ${e.attireePar} »\nTu en as dressé ${coll.optInt(e.nom)}."
     }
 }

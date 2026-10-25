@@ -15,6 +15,7 @@ import zlib
 
 from . import bestiaire as B
 from . import core
+from .mots import accorder
 from .plateforme import BOLD, DIM, RESET, fg
 
 STADES = ["bebe", "enfant", "ado", "adulte", "ancien"]
@@ -115,10 +116,11 @@ def gagner(state, ind, xp):
         ind["stade"] = STADES[STADES.index(s) + 1]
         ind["xp"] = 0
         ind["evolue"] = time.time()
-        core.log(state, f"🌟 {ind['espece']} évolue : {NOM_STADE[ind['stade']]} !")
-        core.notif(state, f"🌟 {ind['espece']} évolue en {NOM_STADE[ind['stade']]} ! (tg anime {ind['espece']} evolution)")
-        core.say(state, f"Oh ! {ind['espece']} brille… il évolue en {NOM_STADE[ind['stade']]} ! "
-                        f"Regarde : tg anime {ind['espece'].lower()} evolution", 14)
+        core.log(state, accorder("🌟 {nom} évolue : {stade} !", nom=ind["espece"], stade=NOM_STADE[ind["stade"]]))
+        core.notif(state, accorder("🌟 {nom} devient {stade} ! (tg anime {nom} evolution)",
+                                   nom=ind["espece"], stade=NOM_STADE[ind["stade"]]))
+        core.say(state, accorder("Oh ! {nom} brille… et devient {stade} ! Regarde : tg anime {nom_min} evolution",
+                                 nom=ind["espece"], stade=NOM_STADE[ind["stade"]], nom_min=ind["espece"].lower()), 14)
         return ind["stade"]
     return None
 
@@ -159,9 +161,10 @@ def choisir(state, nom):
     e = B.espece(nom)
     caps = [c for c in state.get("captures", []) if e and c["espece"] == e["nom"]]
     if not caps:
-        return f" Tu n'as pas encore dressé de « {nom} »."
+        return accorder(" Pas encore de « {nom} » dans ta troupe.", nom=nom)
     state["active"] = caps[-1]["id"]
-    return f" ★ {caps[-1]['espece']} est maintenant ta bestiole active : elle grandit à chaque commande que tu tapes."
+    return accorder(" ★ {nom} est maintenant ta bestiole active : elle grandit à chaque commande que tu tapes.",
+                    nom=caps[-1]["espece"])
 
 
 # ---------------------------------------------------------------- tg anime
@@ -181,7 +184,7 @@ def jouer(state, args):
     if quoi == "evolution":                  # on rejoue l'évolution qui a mené au stade actuel
         i = STADES.index(s)
         if i == 0:
-            print(f" {ind['espece']} est encore bébé : il n'a pas encore évolué.")
+            print(accorder(" {nom} est encore bébé : pas encore d'évolution à revoir.", nom=ind["espece"]))
             return
         s = STADES[i - 1]
     teinte = ind.get("teinte", 0.5) if ind.get("shiny") else 0.0
@@ -190,7 +193,7 @@ def jouer(state, args):
         if not anime(ind["espece"]):
             print("\n".join(B.dessin(B.espece(ind["espece"]), ind.get("shiny"), stade=stade(ind),
                                      vid=ind.get("variante", "classique"), teinte=ind.get("teinte", 0.5))))
-            print(f" {DIM}{ind['espece']} n'a pas encore d'animation détaillée.{RESET}")
+            print(f" {DIM}" + accorder("{nom} n'a pas encore d'animation détaillée.", nom=ind["espece"]) + RESET)
         else:
             print(f" Animations : {', '.join(a for a in ANIMS)}")
         return
@@ -212,4 +215,4 @@ def jouer(state, args):
     finally:
         sys.stdout.write("\033[?25h")
     if quoi == "evolution":
-        print(f" {BOLD}{ind['espece']} est devenu {NOM_STADE[stade(ind)]} !{RESET}")
+        print(f" {BOLD}" + accorder("{nom} : nouvelle forme, {stade} !", nom=ind["espece"], stade=NOM_STADE[stade(ind)]) + RESET)

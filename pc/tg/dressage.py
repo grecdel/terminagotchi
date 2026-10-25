@@ -387,9 +387,9 @@ def bonus(state):
     }
 
 
-def ecrire_fiche(e, shiny, zone, ind=None):
+def ecrire_fiche(e, shiny, zone, ind=None, p=0):
     ind = ind or B.individu(e, shiny, zone)
-    st = "  ".join(f"{k} {v}" for k, v in ind["stats"].items())
+    st = B.texte_stats(ind["stats"], p)
     var = ind.get("variante", "classique")
     fiche(e["nom"]).write_text(
         f"══════════ FICHE DE MONSTRE ══════════\n"
@@ -399,11 +399,12 @@ def ecrire_fiche(e, shiny, zone, ind=None):
         f"  Variante: {var}\n"
         f"  Âge     : {ind.get('stade', 'bebe').replace('bebe', 'bébé')}\n"
         f"  Famille : {e['famille']}\n"
-        f"  Stats   : {st}\n"
+        f"  {terme('stats', p, majuscule=True):<8}: {st}\n"
         f"  Taille  : ~{e['taille_cm']} cm   Poids : ~{e['poids_ko']} Ko\n\n"
         f"  « {e['description']} »\n"
         f"  {e['comportement']}\n\n"
-        f"  Il vient d'un endroit appelé « {repaire(e['nom'])} »… quelque part dans le terrain de jeu.\n",
+        + accorder("  Son repaire s'appelle « {repaire} »… caché quelque part dans {terrain}.\n",
+                   repaire=repaire(e["nom"]), terrain=terme("terrain", p)),
         encoding="utf-8")
 
 
@@ -454,7 +455,8 @@ def commencer(state, sauvage):
     rar = ind["rarete"]
     jour = date.today().isoformat()
     if rar in ULTIMES and state.setdefault("dressage_essais", {}).get(e["nom"]) == jour:
-        core.say(state, f"{e['nom']} t'ignore… les légendaires n'acceptent qu'un essai par jour. Reviens demain !", 12)
+        core.say(state, accorder("{nom} t'ignore… les légendaires n'acceptent qu'un essai par jour. Reviens demain !",
+                                 nom=e["nom"]), 12)
         return
     familles = state.setdefault("dressage_familles", [])
     premiere = e["famille"] not in familles
@@ -472,7 +474,7 @@ def commencer(state, sauvage):
         state.setdefault("dressage_essais", {})[e["nom"]] = jour
     c = contexte(state)
     c["d"].mkdir(parents=True, exist_ok=True)
-    ecrire_fiche(e, sauvage.get("shiny"), sauvage["zone"], ind)
+    ecrire_fiche(e, sauvage.get("shiny"), sauvage["zone"], ind, palier(state))
     preparees = set()
     for fid in state["dressage"]["taches"]:
         x = _par_id(fid)
@@ -481,13 +483,14 @@ def commencer(state, sauvage):
             preparees.add(cle)
             x["prep"](c)
     eclat = " ✨" if sauvage.get("shiny") else ""
-    core.notif(state, f"⚔ Un monstre sauvage apparaît : {e['nom']}{eclat} !")
+    core.notif(state, accorder("⚔ Un monstre sauvage apparaît : {nom}{eclat} !", nom=e["nom"], eclat=eclat))
     if premiere:
-        core.say(state, f"Un {e['nom']}{eclat} sauvage ! Première rencontre avec la famille {e['famille']} : "
-                        f"pas de chrono, je t'explique tout.", 14)
+        core.say(state, accorder("Un monstre sauvage : {nom}{eclat} ! Première rencontre avec la famille {famille} : "
+                                 "pas de chrono, je t'explique tout.", nom=e["nom"], eclat=eclat, famille=e["famille"]), 14)
     else:
-        core.say(state, f"Un {e['nom']}{eclat} sauvage apparaît ! Gagne sa confiance avant la fin du temps.", 12)
-    core.log(state, f"🎓 Dressage de {e['nom']} commencé ({len(taches)} épreuves)")
+        core.say(state, accorder("Un monstre sauvage : {nom}{eclat} ! Gagne sa confiance avant la fin du temps.",
+                                 nom=e["nom"], eclat=eclat), 12)
+    core.log(state, accorder("🎓 Dressage de {nom} commencé ({n} épreuves)", nom=e["nom"], n=len(taches)))
 
 
 def tache_courante(state):
@@ -542,14 +545,16 @@ def tick(state, lignes):
         n = len(d["faites"])
         if any(f.endswith(":examiner") for f in d["faites"]):
             d["examine"] = True
-        core.say(state, random.choice(["Il remue la queue !", "Il s'approche un peu…", "Il a l'air impressionné !",
-                                       "Il ronronne en binaire."]) + f" ({n}/{len(d['taches'])})", 6)
+        modele = random.choice(["{nom} remue la queue ! ({n}/{total})", "{nom} s'approche un peu… ({n}/{total})",
+                                "{nom} a l'air d'aimer ça ! ({n}/{total})", "{nom} ronronne en binaire. ({n}/{total})"])
+        core.say(state, accorder(modele, nom=d["espece"], n=n, total=len(d["taches"])), 6)
     r = reste(state)
     if r is not None and r <= 0:
         if d.get("seconde"):
             d["seconde"] = False
             d["duree"] += 60
-            core.say(state, f"Ton familier retient {d['espece']} par la queue ! Endurance : +60 s, vite !", 10)
+            core.say(state, accorder("Ton familier retient {nom} par la queue ! Endurance : +60 s, vite !",
+                                     nom=d["espece"]), 10)
         else:
             echouer(state)
 
@@ -575,10 +580,12 @@ def reussir(state):
     if e["famille"] not in fams:
         fams.append(e["famille"])
     titre = e["nom"] + (" ✨ SHINY" if d["shiny"] else "")
-    core.log(state, f"🎓 {titre} dressé en {ind['dresse']} s ! ({ind['rarete']})")
-    core.say(state, f"{e['nom']}{' ✨' if d['shiny'] else ''} te fait confiance et rejoint ta troupe ! "
-                    f"Signe particulier : {ind['marque']}. ([c] pour ta collection)", 14)
-    core.notif(state, f"🎓 {titre} a rejoint ta troupe !")
+    core.log(state, accorder("🎓 Dressage réussi : {titre} en {s} s ! ({rarete})", titre=titre, s=ind["dresse"],
+                             rarete=ind["rarete"]))
+    core.say(state, accorder("{nom}{eclat} te fait confiance et rejoint ta troupe ! Signe particulier : {marque}. "
+                             "([c] pour ta collection)", nom=e["nom"], eclat=" ✨" if d["shiny"] else "",
+                             marque=ind["marque"]), 14)
+    core.notif(state, accorder("🎓 {titre} rejoint ta troupe !", titre=titre))
     st = e.get("stat")
     if st not in state["stats"]:
         st = random.choice(list(state["stats"]))
@@ -598,14 +605,15 @@ def echouer(state):
         fiche(d["espece"]).unlink()
     except OSError:
         pass
-    core.log(state, f"💨 {d['espece']} a perdu patience et s'est enfui…")
-    core.say(state, f"Trop tard ! {d['espece']} s'est enfui. Continue de jouer : il reviendra peut-être.", 12)
+    core.log(state, accorder("💨 {nom} a perdu patience et a filé…", nom=d["espece"]))
+    core.say(state, accorder("Trop tard ! {nom} a filé. Continue de jouer : une autre chance viendra peut-être.",
+                             nom=d["espece"]), 12)
 
 
 def abandonner(state):
     if state.get("dressage"):
         d, state["dressage"] = state["dressage"], None
-        core.log(state, f"🏳 Dressage de {d['espece']} abandonné")
+        core.log(state, accorder("🏳 Dressage de {nom} abandonné", nom=d["espece"]))
 
 
 COUL_STAT = {"PV": 203, "ATK": 208, "DEF": 75, "VIT": 120, "INT": 141}
@@ -670,6 +678,7 @@ def lignes_ecran(state, largeur=62):
     n_fait = len(d["faites"])
     mef = d.get("mefiance", 100) * (1 - n_fait / n_total)
     r = reste(state)
+    p = palier(state)
     LG = 34                                     # largeur de la colonne de gauche
     # ---- le familier
     sp_f, _ = sprites.creature(state)
@@ -682,15 +691,15 @@ def lignes_ecran(state, largeur=62):
     ind = d.get("ind") or {}
     sp_m = petit_dessin(e, d["shiny"], ind)
     if d.get("examine"):
-        st_m = "  ".join(f"{fg(COUL_STAT.get(k, 250))}{k}{RESET} {BOLD}{v}{RESET}"
+        st_m = "  ".join(f"{fg(COUL_STAT.get(k, 250))}{B.nom_stat(k, p)}{RESET} {BOLD}{v}{RESET}"
                          for k, v in (ind.get("stats") or e["stats"]).items())
     else:
-        st_m = f"{DIM}stats : ??? (examine-le){RESET}"
+        st_m = f"{DIM}{terme('stats', p)} : ??? (lis sa fiche){RESET}"
     rar = d.get("rarete") or "commune"
     droite_txt = [f"{BOLD}{B.nom_affiche(e, d['shiny'], rar if d.get('examine') else None)}{RESET} "
                   f"{DIM}#{e['numero']:03d}{RESET} "
                   + (B.libelle_rarete(rar) if d.get("examine") else f"{DIM}rareté ???{RESET}"), st_m,
-                  f"{fg(213)}Méfiance{RESET} {jauge(mef, 100, 12, inverse=True)} {mef:3.0f} %"]
+                  f"{fg(213)}{terme('mefiance', p)}{RESET} {jauge(mef, 100, 12, inverse=True)} {mef:3.0f} %"]
     out = ["", f" {fg(196)}{BOLD}⚔ UN MONSTRE SAUVAGE !{RESET}", ""]
     out += _cote_a_cote(sp_f, sp_m, LG, milieu=f"{fg(196)}{BOLD}  VS  {RESET}")
     out += _cote_a_cote(gauche_txt, droite_txt, LG, milieu="      ")
@@ -704,9 +713,9 @@ def lignes_ecran(state, largeur=62):
     if x is None:
         return out
     fid = next(f for f in d["taches"] if _par_id(f) is x)
-    but = x["but"].format(nom_min=d["espece"].lower(), nom=d["espece"])
-    expl, ex = aide(fid, d["espece"])
-    out += ["", f" {fg(226)}{BOLD}Il veut   {RESET}{BOLD}{but}{RESET}"]
+    but = x["but"].format(**termes(p), nom_min=d["espece"].lower(), nom=d["espece"])
+    expl, ex = aide(fid, d["espece"], p)
+    out += ["", f" {fg(226)}{BOLD}Mission  {RESET}{BOLD}{but}{RESET}"]
     if expl:
         for k, l in enumerate(textwrap.wrap(expl, largeur)):
             out.append(f" {fg(117)}{'Comment  ' if k == 0 else '         '}{RESET} {l}")
@@ -724,7 +733,8 @@ def lignes_ecran(state, largeur=62):
     else:
         ou = f"~/{T.name}/{d['zone']}/{repaire(d['espece'])}"
     if ou.startswith("~/") and not fid.startswith("Rencontre:"):
-        out.append(f" {fg(246)}D'abord  {RESET} va chez lui (si ce n'est pas déjà fait) : {fg(120)}cd {ou}{RESET}")
+        out.append(f" {fg(246)}D'abord  {RESET} passe la porte de son repaire (si ce n'est pas déjà fait) : "
+                   f"{fg(120)}cd {ou}{RESET}")
     else:
         out.append(f" {fg(246)}Où       {RESET} {DIM}{ou}{RESET}")
     return out
@@ -734,119 +744,125 @@ def lignes_ecran(state, largeur=62):
 # Pour chaque épreuve : ce que fait la commande (en clair) et un exemple complet à adapter.
 # (exemple PC/Mac/Linux, exemple Windows PowerShell si différent)
 AIDES = {
-    "Rencontre:examiner": ("cat affiche le contenu d'un fichier. La fiche du monstre est dans ton terrain de jeu.",
+    "Rencontre:examiner": ("cat lit une {fichier} à voix haute. La fiche du monstre est posée dans {terrain}.",
                            "cat ~/terrain_terminagotchi/monstre_{nom_min}.txt", "cat ~/terrain_terminagotchi/monstre_{nom_min}.txt"),
-    "Rencontre:repaire": ("find cherche un fichier ou un dossier par son nom, dans un dossier et tous ses sous-dossiers. "
-                          "Il affiche le chemin complet : c'est là que vit le monstre.",
+    "Rencontre:repaire": ("find cherche un objet dans toutes les pièces, même les plus petites (chaque {dossier} et ses "
+                          "sous-dossiers). Il te donne le chemin complet : c'est là que vit le monstre.",
                           "find ~/terrain_terminagotchi -name repaire_{nom_min}",
                           "Get-ChildItem ~/terrain_terminagotchi -Recurse -Filter repaire_{nom_min}"),
-    "Fichiers:enclos": ("mkdir crée un dossier (« make directory »).", "mkdir enclos", "mkdir enclos"),
-    "Fichiers:gamelle": ("touch crée un fichier vide. Le / sépare le dossier du fichier.", "touch enclos/gamelle",
-                         "New-Item enclos/gamelle"),
-    "Fichiers:doudou": ("cp copie un fichier : d'abord ce qu'on copie, puis où on le met. L'original reste en place.",
+    "Fichiers:enclos": ("mkdir construit une nouvelle pièce (« make directory » : créer un dossier).", "mkdir enclos", "mkdir enclos"),
+    "Fichiers:gamelle": ("touch pose une feuille blanche (un fichier vide). Le / sépare la pièce de la feuille.",
+                         "touch enclos/gamelle", "New-Item enclos/gamelle"),
+    "Fichiers:doudou": ("cp fait une photocopie : d'abord la feuille à copier, puis la pièce où la mettre. L'original ne bouge pas.",
                         "cp doudou.txt enclos/", "copy doudou.txt enclos/"),
-    "Fichiers:renomme": ("mv déplace un fichier ; si on garde le même dossier, ça le renomme.",
+    "Fichiers:renomme": ("mv porte une feuille ailleurs ; si elle reste dans la même pièce, ça change juste son étiquette (son nom).",
                          "mv vieux_nom.txt {nom_min}.txt", "move vieux_nom.txt {nom_min}.txt"),
-    "Fichiers:archive": ("tar range tout un dossier dans un seul fichier compressé : c = créer, z = compresser, f = nom du fichier.",
+    "Fichiers:archive": ("tar range toute une pièce dans une seule valise bien tassée (une archive) : c = créer, "
+                         "z = tasser (compresser), f = nom de la valise.",
                          "tar -czf enclos.tar.gz enclos", "Compress-Archive enclos enclos.zip"),
-    "Réseau:ping": ("ping envoie de petits messages à une machine et mesure s'ils reviennent. localhost = ta propre machine. "
-                    "-c 3 = s'arrêter après 3 envois.", "ping -c 3 localhost", "ping localhost"),
-    "Réseau:hote": ("hostname affiche le nom de ton ordinateur sur le réseau.", "hostname", "hostname"),
-    "Réseau:ip": ("Chaque machine connectée a une adresse IP, comme une adresse postale. ip a les affiche toutes.",
+    "Réseau:ping": ("ping crie « Ohé ! » à une maison et attend l'écho. localhost = ta propre maison. "
+                    "-c 3 = crier 3 fois, puis s'arrêter.", "ping -c 3 localhost", "ping localhost"),
+    "Réseau:hote": ("hostname dit le nom de ta maison sur le réseau.", "hostname", "hostname"),
+    "Réseau:ip": ("Chaque maison branchée au réseau a une adresse, comme une adresse postale : {ip}. ip a les montre toutes.",
                   "ip a", "ipconfig"),
-    "Réseau:dns": ("Le DNS est l'annuaire d'internet : il traduit un nom de site en adresse IP. nslookup l'interroge.",
+    "Réseau:dns": ("nslookup ouvre {dns} : il change le nom d'un site en adresse.",
                    "nslookup example.com", "nslookup example.com"),
-    "Réseau:page": ("curl télécharge une page web ; -o choisit le fichier où l'enregistrer.",
+    "Réseau:page": ("curl est un facteur : il va chercher une page sur un site. -o choisit la boîte où la ranger.",
                     "curl -o page.html https://example.com", "curl.exe -o page.html https://example.com"),
-    "Processus:ps": ("Un processus = un programme qui tourne. ps aux les liste tous (a = tous les utilisateurs, x = même sans terminal).",
+    "Processus:ps": ("ps montre qui est réveillé : chaque {processus}. ps aux les montre tous, même ceux des autres habitants.",
                      "ps aux", "Get-Process"),
-    "Processus:heure": ("date affiche la date et l'heure de la machine.", "date", "Get-Date"),
-    "Processus:fond": ("sleep 120 attend 120 secondes. Le & à la fin le lance « en arrière-plan » : tu gardes la main.",
-                       "sleep 120 &", None),
-    "Processus:jobs": ("jobs liste les programmes que tu as lancés en arrière-plan dans ce terminal, avec leur numéro.",
-                       "jobs", None),
-    "Processus:kill": ("kill arrête un programme. %1 = le programme numéro 1 de la liste jobs.", "kill %1", None),
-    "Mémoire:place": ("df montre l'espace libre de tes disques ; -h écrit les tailles en Go/Mo lisibles.", "df -h", "Get-PSDrive"),
-    "Mémoire:ram": ("free montre la mémoire vive (RAM) utilisée et libre ; -h pour des tailles lisibles.", "free -h", None),
-    "Mémoire:poids": ("du mesure ce que pèse un dossier ; -s = juste le total, -h = taille lisible.",
+    "Processus:heure": ("date lit l'horloge de la maison.", "date", "Get-Date"),
+    "Processus:fond": ("sleep 120 attend 120 secondes. Le & l'envoie faire la sieste au fond de la maison (en arrière-plan) : "
+                       "tu gardes la main.", "sleep 120 &", None),
+    "Processus:jobs": ("jobs montre les programmes que tu as envoyés au fond, avec leur numéro.", "jobs", None),
+    "Processus:kill": ("kill envoie un programme se coucher (il l'arrête). %1 = le programme numéro 1 de la liste jobs.",
+                       "kill %1", None),
+    "Mémoire:place": ("df montre la place libre dans {disque} ; -h écrit les tailles comme pour les humains (Go, Mo).",
+                      "df -h", "Get-PSDrive"),
+    "Mémoire:ram": ("free montre {ram} : un grand plan de travail où les programmes posent leurs affaires. "
+                    "-h = tailles lisibles.", "free -h", None),
+    "Mémoire:poids": ("du pèse une pièce et tout ce qu'elle contient ; -s = juste le total, -h = taille lisible.",
                       "du -sh ~/terrain_terminagotchi/nid", None),
-    "Mémoire:sac": ("ls sac liste le contenu du sac. Le | (tuyau) envoie ce résultat à wc -l, qui compte les lignes. "
-                    "Ensuite tu réponds avec echo suivi du nombre.", "ls sac | wc -l    puis    echo 7",
+    "Mémoire:sac": ("ls sac regarde dans le sac. Le | est un tuyau : il verse la liste dans wc -l, qui compte les lignes. "
+                    "Ensuite, dis le nombre avec echo.", "ls sac | wc -l    puis    echo 7",
                     "(ls sac).Count    puis    echo 7"),
-    "Sécurité:cage": ("touch crée un fichier vide (dans le dossier enclos, crée-le avant avec mkdir si besoin).",
+    "Sécurité:cage": ("touch pose une feuille blanche (construis l'enclos avant avec mkdir s'il manque).",
                       "mkdir -p enclos ; touch enclos/cage", "New-Item enclos/cage"),
-    "Sécurité:cachette": ("Un fichier dont le nom commence par un point est caché : ls ne le montre pas, ls -a si.",
+    "Sécurité:cachette": ("Une feuille dont le nom commence par un point se cache sous le tapis : ls ne la voit pas, ls -a si.",
                           "touch enclos/.secret", "New-Item enclos/.secret"),
-    "Sécurité:prive": ("chmod change les droits d'un fichier. 600 = toi seul peux lire et écrire, personne d'autre.",
+    "Sécurité:prive": ("chmod pose un cadenas (il change les droits). 600 = toi seul peux lire et écrire, personne d'autre.",
                        "chmod 600 enclos/cage", "attrib +r enclos/cage"),
-    "Sécurité:empreinte": ("sha256sum calcule l'empreinte d'un fichier : une suite de lettres et de chiffres unique, qui change "
-                           "si le fichier change d'un seul caractère. Recopie les 8 premiers avec echo.",
+    "Sécurité:empreinte": ("sha256sum prend l'empreinte digitale d'une feuille : une suite de lettres et de chiffres qui change "
+                           "si on modifie une seule lettre. Recopie les 8 premiers avec echo.",
                            "sha256sum collier.txt    puis    echo 1a2b3c4d", "Get-FileHash collier.txt    puis    echo 1a2b3c4d"),
-    "Code:chant": ("echo affiche un texte. Le > envoie ce texte dans un fichier au lieu de l'écran.",
+    "Code:chant": ("echo dit un texte. L'entonnoir > le verse dans une feuille au lieu de l'écran.",
                    "echo {nom} > chant.txt", "echo {nom} > chant.txt"),
-    "Code:script": ("Un script est un fichier de commandes. On l'écrit, puis chmod +x le rend exécutable (lançable avec ./tour.sh).",
+    "Code:script": ("Une recette (un script), c'est une feuille de commandes. Écris-la, puis chmod +x l'autorise à cuisiner "
+                    "toute seule : elle devient {executable} (on la lance avec ./tour.sh).",
                     "echo 'echo hop' > tour.sh ; chmod +x tour.sh", "echo 'echo hop' > tour.ps1"),
-    "Code:compte": ("Une boucle for répète une commande pour chaque valeur. Tout ce qui est affiché finit dans le fichier grâce au >.",
-                    "for i in 1 2 3 4 5; do echo $i; done > compte.txt", "1..5 > compte.txt"),
-    "Matériel:machine": ("uname affiche des infos sur le système ; -m donne le type de processeur (x86_64, arm64…).",
+    "Code:compte": ("Une boucle for répète une commande pour chaque nombre. Tout ce qui est dit tombe dans la feuille "
+                    "grâce à l'entonnoir >.", "for i in 1 2 3 4 5; do echo $i; done > compte.txt", "1..5 > compte.txt"),
+    "Matériel:machine": ("uname -m dit quel genre de cerveau a la maison : {processeur} (x86_64, arm64…).",
                          "uname -m", "systeminfo"),
-    "Matériel:coeurs": ("nproc donne le nombre de cœurs du processeur (combien de tâches il fait en même temps). "
+    "Matériel:coeurs": ("nproc compte les cœurs de {processeur} : combien de choses il fait en même temps. "
                         "Réponds ensuite avec echo.", "nproc    puis    echo 8", "$env:NUMBER_OF_PROCESSORS    puis    echo 8"),
-    "Matériel:disques": ("lsblk liste les disques et leurs partitions.", "lsblk", "Get-Disk"),
-    "Bugs:erreurs": ("grep cherche un mot dans un fichier et affiche les lignes qui le contiennent.",
+    "Matériel:disques": ("lsblk montre {disque} et leurs étagères (les partitions).", "lsblk", "Get-Disk"),
+    "Bugs:erreurs": ("grep est la loupe du détective : elle montre les lignes qui contiennent le mot.",
                      "grep ERROR bug.log", "Select-String ERROR bug.log"),
-    "Bugs:combien": ("grep -c compte les lignes qui contiennent le mot, au lieu de les afficher.",
+    "Bugs:combien": ("grep -c compte les lignes trouvées par la loupe, au lieu de les montrer.",
                      "grep -c ERROR bug.log    puis    echo 3", "(Select-String ERROR bug.log).Count    puis    echo 3"),
-    "Bugs:corrige": ("grep -v garde au contraire les lignes qui NE contiennent PAS le mot ; > les écrit dans un nouveau fichier.",
+    "Bugs:corrige": ("grep -v garde au contraire les lignes SANS le mot ; l'entonnoir > les verse dans une nouvelle feuille.",
                      "grep -v ERROR bug.log > corrige.log", "Select-String -NotMatch ERROR bug.log > corrige.log"),
-    "Nuage:nuage": ("mkdir crée un dossier.", "mkdir nuage", "mkdir nuage"),
-    "Nuage:photos": ("touch peut créer plusieurs fichiers d'un coup : il suffit de les écrire à la suite.",
+    "Nuage:nuage": ("mkdir construit une nouvelle pièce.", "mkdir nuage", "mkdir nuage"),
+    "Nuage:photos": ("touch peut poser plusieurs feuilles d'un coup : écris leurs noms à la suite.",
                      "touch nuage/photo1.jpg nuage/photo2.jpg nuage/photo3.jpg", "New-Item nuage/photo1.jpg, nuage/photo2.jpg, nuage/photo3.jpg"),
-    "Nuage:copie": ("cp -r copie un dossier entier avec tout ce qu'il contient (r = récursif).",
+    "Nuage:copie": ("cp -r photocopie une pièce entière, avec tout ce qu'elle contient (r = récursif).",
                     "cp -r nuage nuage_copie", "Copy-Item -Recurse nuage nuage_copie"),
-    "Données:debut": ("head affiche seulement les premières lignes d'un fichier (10 par défaut).",
+    "Données:debut": ("head lit seulement le haut de la feuille (10 lignes).",
                       "head croquettes.txt", "Get-Content croquettes.txt -Head 10"),
-    "Données:lignes": ("wc -l compte les lignes d'un fichier. Réponds ensuite avec echo.",
+    "Données:lignes": ("wc -l compte les lignes d'une feuille. Réponds ensuite avec echo.",
                        "wc -l croquettes.txt    puis    echo 12", "(Get-Content croquettes.txt).Count    puis    echo 12"),
-    "Données:trie": ("sort trie les lignes par ordre alphabétique ; > écrit le résultat dans un fichier.",
+    "Données:trie": ("sort range les lignes comme un dictionnaire ; l'entonnoir > verse le résultat dans une feuille.",
                      "sort croquettes.txt > trie.txt", "Get-Content croquettes.txt | Sort-Object > trie.txt"),
-    "Données:differentes": ("sort trie, uniq enlève les doublons qui se suivent, wc -l compte. Les | enchaînent les trois.",
+    "Données:differentes": ("sort range, uniq enlève les jumeaux qui se suivent, wc -l compte. Les tuyaux | les branchent "
+                            "l'un après l'autre.",
                             "sort croquettes.txt | uniq | wc -l    puis    echo 5",
                             "(Get-Content croquettes.txt | Sort-Object -Unique).Count    puis    echo 5"),
-    "Crypto:lire": ("cat affiche le contenu d'un fichier.", "cat message.b64", "Get-Content message.b64"),
-    "Crypto:decode": ("Le base64 transforme un texte en lettres codées. base64 -d le décode (d = décoder).",
-                      "base64 -d message.b64    puis    echo motsecret", None),
-    "Crypto:empreinte": ("sha256sum calcule l'empreinte unique d'un fichier. Recopie les 8 premiers caractères avec echo.",
+    "Crypto:lire": ("cat lit une feuille à voix haute.", "cat message.b64", "Get-Content message.b64"),
+    "Crypto:decode": ("Le base64 déguise un texte en lettres bizarres (il l'encode). base64 -d enlève le déguisement "
+                      "(d = décoder).", "base64 -d message.b64    puis    echo motsecret", None),
+    "Crypto:empreinte": ("sha256sum prend l'empreinte digitale unique d'une feuille. Recopie les 8 premiers caractères avec echo.",
                          "sha256sum collier.txt    puis    echo 1a2b3c4d", "Get-FileHash collier.txt    puis    echo 1a2b3c4d"),
-    "IA:bonjour": ("echo affiche le texte qu'on lui donne.", "echo bonjour {nom}", "echo bonjour {nom}"),
-    "IA:chat": ("grep -c compte les lignes qui contiennent un mot.", "grep -c chat croquettes.txt    puis    echo 2",
+    "IA:bonjour": ("echo dit le texte qu'on lui donne.", "echo bonjour {nom}", "echo bonjour {nom}"),
+    "IA:chat": ("grep -c compte les lignes où la loupe trouve le mot.", "grep -c chat croquettes.txt    puis    echo 2",
                 "(Select-String chat croquettes.txt).Count    puis    echo 2"),
-    "IA:frequent": ("uniq -c compte chaque mot (après sort), puis sort -n trie par nombre : le dernier est le plus fréquent.",
+    "IA:frequent": ("sort range, uniq -c compte chaque mot, puis sort -n range par nombre : le dernier est le champion.",
                     "sort croquettes.txt | uniq -c | sort -n", None),
-    "Rétro:calendrier": ("cal affiche le calendrier du mois.", "cal", "Get-Date"),
-    "Rétro:record": ("sort -n trie des nombres du plus petit au plus grand ; tail -1 garde la dernière ligne (le plus grand).",
+    "Rétro:calendrier": ("cal affiche le calendrier accroché dans la cuisine.", "cal", "Get-Date"),
+    "Rétro:record": ("sort -n range les nombres du plus petit au plus grand ; tail -1 garde le dernier (le plus grand).",
                      "sort -n scores.txt | tail -1    puis    echo 9876", None),
-    "Rétro:top3": ("sort -nr trie du plus grand au plus petit (r = à l'envers), head -3 garde les 3 premiers, > écrit le fichier.",
-                   "sort -nr scores.txt | head -3 > top3.txt", None),
-    "Glitch:voir": ("cat affiche le contenu d'un fichier.", "cat corrompu.txt", "Get-Content corrompu.txt"),
-    "Glitch:repare": ("rev retourne chaque ligne (la dernière lettre devient la première) ; > écrit le résultat.",
+    "Rétro:top3": ("sort -nr range du plus grand au plus petit (r = à l'envers), head -3 garde les 3 premiers, "
+                   "l'entonnoir > les verse dans la feuille.", "sort -nr scores.txt | head -3 > top3.txt", None),
+    "Glitch:voir": ("cat lit une feuille à voix haute.", "cat corrompu.txt", "Get-Content corrompu.txt"),
+    "Glitch:repare": ("rev retourne chaque ligne, comme dans un miroir ; l'entonnoir > verse le résultat dans une feuille.",
                       "rev corrompu.txt > repare.txt", None),
-    "Glitch:chuchote": ("tr remplace des lettres par d'autres : ici chaque majuscule (A-Z) par sa minuscule (a-z). "
-                        "Le < donne le fichier à lire.", "tr A-Z a-z < cri.txt > chuchote.txt", None),
-    "Système:qui": ("whoami (« qui suis-je ») affiche ton nom d'utilisateur.", "whoami", "whoami"),
-    "Système:systeme": ("uname -a affiche tout sur le système : son nom, sa version, le type de machine.", "uname -a", "systeminfo"),
-    "Système:alias": ("Un alias est un surnom : tu choisis un mot court qui lancera une commande plus longue. "
+    "Glitch:chuchote": ("tr change des lettres en d'autres : ici chaque majuscule (A-Z) en minuscule (a-z). "
+                        "Le < lui tend la feuille à lire.", "tr A-Z a-z < cri.txt > chuchote.txt", None),
+    "Système:qui": ("whoami (« qui suis-je ? ») dit ton nom d'habitant : ton nom d'utilisateur.", "whoami", "whoami"),
+    "Système:systeme": ("uname -a lit la fiche de la maison : son nom, sa version, son genre de cerveau.", "uname -a", "systeminfo"),
+    "Système:alias": ("Un alias est un surnom : un mot court qui lance une commande plus longue. "
                       "Ensuite, tape le surnom pour essayer !", "alias {nom_min}='echo GRRR'", "Set-Alias {nom_min} Get-Date"),
-    "Système:variable": ("Une variable d'environnement est une petite mémoire du terminal : un nom qui contient une valeur. "
-                         "export la crée ; echo $BESTIOLE la relit.", "export BESTIOLE={nom}", "$env:BESTIOLE = '{nom}'"),
+    "Système:variable": ("Une variable d'environnement est une petite boîte avec une étiquette, que tout le terminal peut ouvrir. "
+                         "export la remplit ; echo $BESTIOLE la relit.", "export BESTIOLE={nom}", "$env:BESTIOLE = '{nom}'"),
 }
 
 
-def aide(fid, nom):
+def aide(fid, nom, p=0):
+    """(explication, exemple) d'une épreuve ; p = palier de vocabulaire (voir mots.py)."""
     a = AIDES.get(fid)
     if not a:
         return None, None
     expl, ex, ex_win = a
     ex = ex_win if IS_WIN and ex_win else ex
-    f = {"nom": nom, "nom_min": nom.lower()}
+    f = dict(termes(p), nom=nom, nom_min=nom.lower())
     return expl.format(**f), ex.format(**f)

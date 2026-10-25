@@ -47,9 +47,10 @@ object Equipe {
         val nouveau = STADES[STADES.indexOf(s) + 1]
         ind.put("stade", nouveau).put("xp", 0).put("evolue", System.currentTimeMillis())
         val nom = ind.optString("espece")
-        jeu.log("🌟 $nom évolue : ${nomStade(nouveau)} !")
-        jeu.dire("Oh ! $nom brille… il évolue en ${nomStade(nouveau)} ! Regarde : anime $nom evolution", 14)
-        return "🌟 $nom évolue en ${nomStade(nouveau)} ! (anime $nom evolution)"
+        jeu.log(Mots.accorder("🌟 {nom} évolue : {stade} !", "nom" to nom, "stade" to nomStade(nouveau)))
+        jeu.dire(Mots.accorder("Oh ! {nom} brille… et devient {stade} ! Regarde : anime {nom} evolution",
+            "nom" to nom, "stade" to nomStade(nouveau)), 14)
+        return Mots.accorder("🌟 {nom} devient {stade} ! (anime {nom} evolution)", "nom" to nom, "stade" to nomStade(nouveau))
     }
 
     fun texte(jeu: Jeu): String {
@@ -73,16 +74,17 @@ object Equipe {
     }
 
     fun choisir(jeu: Jeu, nom: String): String {
-        val e = Bestiaire.espece(nom) ?: return "Tu n'as pas encore dressé de « $nom »."
+        val e = Bestiaire.espece(nom) ?: return Mots.accorder("Pas encore de « {nom} » dans ta troupe.", "nom" to nom)
         val caps = Explo.captures(jeu)
         for (i in caps.length() - 1 downTo 0) {
             val c = caps.getJSONObject(i)
             if (c.optString("espece") == e.nom) {
                 jeu.module("equipe").put("active", c.optString("id"))
-                return "★ ${e.nom} est maintenant ta bestiole active : elle grandit à chaque commande que tu tapes."
+                return Mots.accorder("★ {nom} est maintenant ta bestiole active : elle grandit à chaque commande que tu tapes.",
+                    "nom" to e.nom)
             }
         }
-        return "Tu n'as pas encore dressé de « $nom »."
+        return Mots.accorder("Pas encore de « {nom} » dans ta troupe.", "nom" to nom)
     }
 }
 
@@ -149,13 +151,13 @@ object Animations {
     /** anime <nom> [animation] : une petite fenêtre qui joue l'animation. */
     fun jouer(act: Activity, ind: JSONObject, animDemandee: String): String {
         val e = Bestiaire.espece(ind.optString("espece")) ?: return "Espèce inconnue."
-        if (!dispo(e.id)) return "${e.nom} n'a pas encore d'animation détaillée."
+        if (!dispo(e.id)) return Mots.accorder("{nom} n'a pas encore d'animation détaillée.", "nom" to e.nom)
         var stade = ind.optString("stade", "enfant")
         val anim = animDemandee.lowercase().replace("é", "e").replace("è", "e").ifEmpty { "statique" }
         if (anim !in Equipe.ANIMS) return "Animations : " + Equipe.ANIMS.joinToString(", ")
         if (anim == "evolution") {
             val i = Equipe.STADES.indexOf(stade)
-            if (i <= 0) return "${e.nom} est encore enfant : il n'a pas encore évolué."
+            if (i <= 0) return Mots.accorder("{nom} est encore enfant : pas encore d'évolution à revoir.", "nom" to e.nom)
             stade = Equipe.STADES[i - 1]
         }
         val imgs = pixels(e.id, stade, anim) ?: return "Pas d'image pour $anim."

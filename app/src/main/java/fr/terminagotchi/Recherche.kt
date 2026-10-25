@@ -7,7 +7,8 @@ import java.text.Normalizer
  * Aucune IA en ligne : synonymes + racines de mots + score, 100 % hors ligne.
  */
 object Recherche {
-    private class Entree(val titre: String, val etapes: List<Pair<String, String>>, val cles: Set<String>, val noms: Set<String>)
+    private class Entree(val titre: String, val etapes: List<Pair<String, String>>, val cles: Set<String>, val noms: Set<String>,
+                         val image: String? = null)
 
     private val SYNONYMES = mapOf(
         "dossier" to "dossier repertoire folder rep",
@@ -77,44 +78,47 @@ object Recherche {
     private fun concepts(t: String): Set<String> =
         mots(t).filter { it !in STOP }.map { RACINE_CONCEPT[racine(it)] ?: racine(it) }.toSet()
 
-    private fun cmd(c: String, desc: String, kw: String) =
-        Entree(desc, listOf(c to ""), concepts("$desc $kw"), setOf(c.split(" ").first()))
+    private fun cmd(c: String, desc: String, kw: String, image: String? = null) =
+        Entree(desc, listOf(c to ""), concepts("$desc $kw"), setOf(c.split(" ").first()), image)
+
+    private fun image(c: String) = Regles.LEXIQUE.firstOrNull { it.cmd == c.split(" ").first() }?.image
 
     private fun recette(titre: String, kw: String, vararg etapes: Pair<String, String>) =
         Entree(titre, etapes.toList(), concepts("$titre $kw"), emptySet())
 
     private val ENTREES: List<Entree> by lazy {
-        Regles.LEXIQUE.map { (c, desc, _) -> cmd(c, desc, "") } + listOf(
-            cmd("ls -a", "voir les fichiers cachés", "cache invisible"),
-            cmd("cd ..", "remonter au dossier parent", "revenir retour"),
-            cmd("rm -r dossier", "supprimer un dossier et tout son contenu", "supprimer dossier tout"),
-            cmd("ls | wc -l", "compter les fichiers d'un dossier", "compter combien"),
+        Regles.LEXIQUE.map { m -> cmd(m.cmd, m.technique, m.image, m.image) } + listOf(
+            cmd("ls -a", "voir les fichiers cachés", "cache invisible tapis", "je regarde même sous le tapis"),
+            cmd("cd ..", "remonter au dossier parent", "revenir retour", "je recule d'une pièce"),
+            cmd("rm -r dossier", "supprimer un dossier et tout son contenu", "supprimer dossier tout",
+                "la broyeuse avale toute la pièce : c'est perdu pour toujours !"),
+            cmd("ls | wc -l", "compter les fichiers d'un dossier", "compter combien", "un tuyau : ls verse sa liste dans wc, qui compte"),
             recette("Créer un dossier et entrer dedans", "creer dossier entrer",
                 "mkdir projet" to "crée le dossier", "cd projet" to "entre dedans"),
             recette("Renommer un fichier en sécurité", "renommer fichier",
-                "ls" to "vérifie le nom exact (ou Tab)", "mv ancien.txt nouveau.txt" to "renomme", "ls" to "vérifie"),
+                "ls" to "regarde l'étiquette exacte (ou Tab)", "mv ancien.txt nouveau.txt" to "change l'étiquette", "ls" to "vérifie"),
             recette("Faire une sauvegarde avant de modifier", "copier sauvegarde",
-                "cp fichier.txt fichier.txt.bak" to "copie de secours", "edite fichier.txt" to "modifie tranquillement"),
+                "cp fichier.txt fichier.txt.bak" to "photocopie de secours", "edite fichier.txt" to "modifie tranquillement"),
             recette("Supprimer un dossier sans faire de bêtise", "supprimer dossier securite",
-                "ls dossier" to "regarde ce qu'il contient", "rm -r dossier" to "supprime (définitif !)", "ls" to "vérifie"),
+                "ls dossier" to "regarde ce qu'il y a dans la pièce", "rm -r dossier" to "la broyeuse (définitif !)", "ls" to "vérifie"),
             recette("Retrouver un fichier perdu et le lire", "chercher trouver fichier perdu lire",
-                "find ~ -name \"*nom*\"" to "cherche partout chez toi", "cat chemin/trouvé" to "affiche-le"),
+                "find ~ -name \"*nom*\"" to "cherche dans toutes les pièces", "cat chemin/trouvé" to "lis-le à voix haute"),
             recette("Protéger un fichier important", "proteger fichier",
-                "chmod 444 fichier" to "lecture seule", "ls -l fichier" to "vérifie (r--r--r--)"),
+                "chmod 444 fichier" to "ferme le cadenas (lecture seule)", "ls -l fichier" to "vérifie (r--r--r--)"),
             recette("Lancer une appli dont je ne connais pas le nom", "lancer ouvrir application trouver",
-                "applis" to "liste tes applis", "ouvre nom" to "lance celle que tu veux"),
+                "applis" to "liste tes applis", "ouvre nom" to "allume celle que tu veux"),
             recette("Envoyer un message à quelqu'un", "envoyer message sms whatsapp",
                 "partage Coucou !" to "choisis WhatsApp, mail…", "sms 0612345678 coucou" to "ou prépare un SMS"),
             recette("Créer ma propre commande", "creer commande",
-                "echo 'salut() { echo Salut !; }' >> ~/.tgrc" to "enregistre-la", "salut" to "utilise-la"),
+                "echo 'salut() { echo Salut !; }' >> ~/.tgrc" to "écris-la dans le carnet de la maison", "salut" to "utilise-la"),
             recette("Créer et lancer un script", "creer script lancer",
-                "echo 'echo Bonjour' > script.sh" to "écris le script", "sh script.sh" to "lance-le"),
+                "echo 'echo Bonjour' > script.sh" to "écris la recette", "sh script.sh" to "la maison la suit toute seule"),
             recette("Partir à l'aventure", "jouer donjon aventure",
                 "donjon" to "crée un donjon", "plan" to "regarde la carte", "quetes" to "lis tes quêtes"),
-            recette("Jouer au hacker (capture the flag)", "jouer drapeau ctf hacker",
-                "ctf" to "prépare les épreuves", "cd ~/terrain_terminagotchi/ctf" to "va les voir", "drapeau TG{…}" to "valide un drapeau"),
+            recette("Jouer à la chasse au trésor (ctf)", "jouer drapeau ctf hacker tresor chasse",
+                "ctf" to "cache les trésors", "cd ~/terrain_terminagotchi/ctf" to "passe la porte des énigmes", "drapeau TG{…}" to "montre le trésor trouvé"),
             recette("Capturer une bestiole", "capturer bestiole",
-                "ls -a" to "trouve les fichiers cachés", "cat .bestiole_…" to "lis l'indice", "mv .bestiole_… ../nid/" to "ramène-la au nid"),
+                "ls -a" to "regarde sous le tapis", "cat .bestiole_…" to "lis l'indice à voix haute", "mv .bestiole_… ../nid/" to "ramène-la au nid"),
             recette("Créer mon propre niveau de jeu", "creer jeu niveau modifier",
                 "doom" to "prépare l'atelier", "edite ~/terrain_terminagotchi/jeu/carte.txt" to "dessine", "doom" to "teste"),
         )
@@ -146,6 +150,7 @@ object Recherche {
             if (s < seuil) continue
             if (e.etapes.size == 1) {
                 sb.append("• ${e.titre}\n   ➜ ${Regles.piege(e.etapes[0].first)}\n")
+                (e.image ?: image(e.etapes[0].first))?.takeIf { it != e.titre }?.let { sb.append("   🏠 $it\n") }
             } else {
                 sb.append("• Recette : ${e.titre}\n")
                 e.etapes.forEachIndexed { i, (c, expl) -> sb.append("   ${i + 1}. ${Regles.piege(c)}   ($expl)\n") }
