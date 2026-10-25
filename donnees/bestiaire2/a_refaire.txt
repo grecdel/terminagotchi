@@ -1,1 +1,0 @@
-102_calmaree : adulte/ancien qui se chevauchent -> découpe imparfaite, à regénérer avec plus d'espace
