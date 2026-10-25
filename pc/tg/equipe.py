@@ -149,8 +149,10 @@ def ecran_equipe(state):
         lm = largeur(mot) + 3
         marque = f"{fg(226)}★ {mot}{RESET} " if c is act else " " * lm
         var = c.get("variante", "classique")
+        dort = c.get("repos", 0) > time.time()            # KO au combat : elle se repose (voir combat.py)
+        repos = f" {fg(117)}" + t("eq.repos", min=max(1, round((c["repos"] - time.time()) / 60))) + RESET if dort else ""
         lignes.append(f" {marque}{B.nom_affiche(e, c.get('shiny'), B.rarete_de(c))} {DIM}· {B.nom_stade(s)}"
-                      f"{' · ' + var if var != 'classique' else ''} · {B.nom_rarete(B.rarete_de(c))} · {barre}{RESET}")
+                      f"{' · ' + var if var != 'classique' else ''} · {B.nom_rarete(B.rarete_de(c))} · {barre}{RESET}{repos}")
     lignes += ["", f" {DIM}" + t("eq.pied") + RESET]
     return lignes
 

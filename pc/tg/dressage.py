@@ -7,6 +7,15 @@ lexique est permis ; le copier-coller, non (il ne compte pas).
 
 Déroulé : on trouve la bestiole (ls -a), on la lit (cat) → le dressage commence.
 Le premier dressage de chaque famille se fait sans chrono : c'est une leçon.
+
+Difficulté progressive (selon le nombre de bestioles déjà dressées, voir plafond()) :
+  - le tout premier dressage : 2 épreuves simples (lire sa fiche, puis une commande d'un seul mot
+    ou presque : pas de boucle for, pas de guillemets imbriqués, pas de tuyau) ;
+  - puis le nombre d'épreuves et leur niveau montent peu à peu, jusqu'aux règles normales
+    (selon la rareté de l'individu) à partir de 12 bestioles dressées.
+Quand une épreuve est PRESQUE réussie (faute de frappe, fichier au mauvais endroit, script sans
+echo, boucle for sans « ; »…), une bulle donne un indice clair (voir indice()).
+Si tu as déjà une troupe, un mini-combat a lieu d'abord (voir combat.py).
 """
 import hashlib
 import base64
@@ -19,6 +28,7 @@ import time
 from datetime import date
 
 from . import bestiaire as B
+from . import combat
 from . import core
 from .langue import ajuster, au_hasard, envelopper, largeur, liste, t
 from .mots import palier, terme, termes
@@ -417,16 +427,54 @@ def ecrire_fiche(e, shiny, zone, ind=None, p=0):
         encoding="utf-8")
 
 
-def choisir_epreuves(e, premiere, rarete="commune"):
-    return EPREUVES["Rencontre"] + _epreuves_famille(e, premiere, rarete)
+# Le tout premier dressage : des épreuves d'une seule commande courte, dans cet ordre de préférence
+# (pas de boucle for, pas de guillemets imbriqués, pas de tuyau |, pas de « ; »).
+SIMPLES = ["Système:qui", "Réseau:hote", "Processus:heure", "Matériel:machine", "Rétro:calendrier",
+           "Système:systeme", "Mémoire:place", "Fichiers:enclos", "Nuage:nuage", "Crypto:lire", "Glitch:voir",
+           "Données:debut", "Bugs:erreurs", "IA:bonjour", "Code:chant"]
+# (nombre de bestioles dressées en dessous duquel s'applique le plafond, (épreuves de famille, niveau max))
+PALIERS = [(3, (1, 1)), (5, (2, 1)), (8, (3, 2)), (12, (4, 3))]
+TEMPS_DEBUTANT = 60            # secondes en plus tant que tu as moins de 5 bestioles
 
 
-def _epreuves_famille(e, premiere, rarete="commune"):
+def plafond(n_captures):
+    """(épreuves de famille au plus, niveau au plus) selon le nombre de bestioles dressées, ou None."""
+    if n_captures is None:
+        return None
+    for seuil, cap in PALIERS:
+        if n_captures < seuil:
+            return cap
+    return None
+
+
+def choisir_epreuves(e, premiere, rarete="commune", n_captures=None):
+    """Les épreuves d'un dressage. n_captures = bestioles déjà dressées (None : pas de plafond)."""
+    if n_captures == 0:                       # le tout premier dressage : lire sa fiche + 1 épreuve simple
+        return [EPREUVES["Rencontre"][0]] + _premiere_epreuve(e)
+    return EPREUVES["Rencontre"] + _epreuves_famille(e, premiere, rarete, plafond(n_captures))
+
+
+def _fid(x):
+    return next(f"{f}:{y['id']}" for f, v in EPREUVES.items() for y in v if y is x)
+
+
+def _premiere_epreuve(e):
+    fams = e.get("epreuves") or [e["famille"]]
+    pool = {_fid(x): x for f in fams for x in EPREUVES.get(f, []) if not (x["posix"] and IS_WIN)}
+    for fid in SIMPLES:
+        if fid in pool:
+            return [pool[fid]]
+    return [EPREUVES["Rencontre"][1]]
+
+
+def _epreuves_famille(e, premiere, rarete="commune", cap=None):
     fams = e.get("epreuves") or [e["famille"]]           # les commandes que cette famille aime
     pool = [x for f in fams for x in EPREUVES.get(f, []) if not (x["posix"] and IS_WIN)]
     nmax = NIVEAU_MAX[rarete]
     n = NB_TACHES[rarete]
-    if rarete in ULTIMES:                     # l'épreuve ultime : sa famille + des épreuves d'ailleurs
+    if cap:                                   # débutant : moins d'épreuves, plus faciles
+        n, nmax = min(n, cap[0]), min(nmax, cap[1])
+    if rarete in ULTIMES and not cap:         # l'épreuve ultime : sa famille + des épreuves d'ailleurs
         autres = [x for f, v in EPREUVES.items() if f not in fams and f != "Rencontre" for x in v
                   if not (x["posix"] and IS_WIN) and x["niveau"] >= 2]
         random.shuffle(autres)
@@ -468,13 +516,15 @@ def commencer(state, sauvage):
         return
     familles = state.setdefault("dressage_familles", [])
     premiere = e["famille"] not in familles
-    taches = choisir_epreuves(e, premiere, rar)
+    n_caps = len(state.get("captures", []))
+    taches = choisir_epreuves(e, premiere, rar, n_caps)
     bo = bonus(state)
+    debutant = TEMPS_DEBUTANT if n_caps < 5 else 0
     fam_de = {id(x): f for f, v in EPREUVES.items() for x in v}
     state["dressage"] = {
         "sauvage": sauvage["f"], "espece": e["nom"], "shiny": sauvage.get("shiny", False), "zone": sauvage["zone"],
         "taches": [f"{fam_de[id(x)]}:{x['id']}" for x in taches], "faites": [], "lignes": [],
-        "debut": time.time(), "duree": None if premiere else DUREE[rar] + bo["temps"], "x": {}, "lecon": premiere,
+        "debut": time.time(), "duree": None if premiere else DUREE[rar] + bo["temps"] + debutant, "x": {}, "lecon": premiere,
         "ind": ind, "rarete": rar, "variante": ind.get("variante", "classique"),
         "mefiance": 100 - bo["mefiance"], "seconde": bo["seconde_chance"], "examine": False,
     }
@@ -497,6 +547,7 @@ def commencer(state, sauvage):
     else:
         core.say(state, t("dress.debut", nom=e["nom"], eclat=eclat), 12)
     core.log(state, t("dress.commence.log", nom=e["nom"], n=len(taches)))
+    combat.preparer(state)                     # ta troupe affronte d'abord le monstre (si tu en as une)
 
 
 def tache_courante(state):
@@ -529,6 +580,11 @@ def tick(state, lignes):
                     commencer(state, s)
                     return
         return
+    if combat.en_cours(state):                  # le combat d'abord : chaque commande tapée est un coup
+        for l in tapees:
+            if combat.coup(state, l):
+                break
+        return
     d["lignes"] = (d["lignes"] + tapees)[-200:]
     c = contexte(state)
     progres = False
@@ -549,9 +605,16 @@ def tick(state, lignes):
         return
     if progres:
         n = len(d["faites"])
+        d["indice"] = None
         if any(f.endswith(":examiner") for f in d["faites"]):
             d["examine"] = True
         core.say(state, au_hasard("dress.progres", nom=d["espece"], n=n, total=len(d["taches"])), 6)
+    elif tapees:
+        conseil = indice(state, c, tapees)
+        if conseil and conseil != d.get("indice"):
+            d["indice"] = conseil
+            core.say(state, "💡 " + conseil, 12)
+            core.animer(state, "parle")
     r = reste(state)
     if r is not None and r <= 0:
         if d.get("seconde"):
@@ -678,18 +741,32 @@ def lignes_ecran(state, largeur_txt=62):
     r = reste(state)
     p = palier(state)
     LG = 34                                     # largeur de la colonne de gauche
-    # ---- le familier
-    sp_f, _ = sprites.creature(state)
-    lvl = C.level(state["xp"])
-    st_f = "  ".join(f"{fg(v['color'])}{C.nom_stat(v['stat'], court=True)}{RESET} {BOLD}{state['stats'][v['stat']]}{RESET}"
-                     for v in C.CATEGORIES.values())
-    nom_f = B.arc_en_ciel(state["name"]) if state.get("shiny") else f"{BOLD}{state['name']}{RESET}"
-    gauche_txt = [f"{nom_f} {DIM}· " + t("dress.niv", n=lvl) + RESET, st_f,
-                  f"{fg(250)}{ajuster(t('app.faim'), 8)}{RESET} {jauge(state['hunger'], 100, 12)}"]
+    cb = d.get("combat") if combat.en_cours(state) else None
+    bete = combat._ind(state) if cb else None
+    if bete and B.espece(bete["espece"]):
+        # ---- la bestiole de ta troupe qui combat
+        eb = B.espece(bete["espece"])
+        sp_f = petit_dessin(eb, bete.get("shiny"), bete)
+        pc = 0 if p < 2 else 2                  # colonne étroite : l'image seule, ou le vrai mot court
+        sb = bete.get("stats") or eb["stats"]
+        st_f = "  ".join(f"{fg(COUL_STAT.get(k, 250))}{B.nom_stat(k, pc)}{RESET} {BOLD}{sb[k]}{RESET}"
+                         for k in ("ATK", "DEF", "VIT") if k in sb)
+        gauche_txt = [f"{BOLD}{B.nom_affiche(eb, bete.get('shiny'), B.rarete_de(bete))}{RESET} {DIM}· "
+                      + B.nom_stade(bete.get("stade", "bebe")) + RESET, st_f,
+                      f"{fg(250)}{ajuster(terme('pv', pc, majuscule=True), 8)}{RESET} " + combat.coeurs(*cb["moi"])]
+    else:
+        # ---- le familier
+        sp_f, _ = sprites.creature(state)
+        lvl = C.level(state["xp"])
+        st_f = "  ".join(f"{fg(v['color'])}{C.nom_stat(v['stat'], court=True)}{RESET} {BOLD}{state['stats'][v['stat']]}{RESET}"
+                         for v in C.CATEGORIES.values())
+        nom_f = B.arc_en_ciel(state["name"]) if state.get("shiny") else f"{BOLD}{state['name']}{RESET}"
+        gauche_txt = [f"{nom_f} {DIM}· " + t("dress.niv", n=lvl) + RESET, st_f,
+                      f"{fg(250)}{ajuster(t('app.faim'), 8)}{RESET} {jauge(state['hunger'], 100, 12)}"]
     # ---- le monstre
     ind = d.get("ind") or {}
     sp_m = petit_dessin(e, d["shiny"], ind)
-    if d.get("examine"):
+    if d.get("examine") or (cb and cb.get("vu")):
         st_m = "  ".join(f"{fg(COUL_STAT.get(k, 250))}{B.nom_stat(k, p)}{RESET} {BOLD}{v}{RESET}"
                          for k, v in (ind.get("stats") or e["stats"]).items())
     else:
@@ -699,10 +776,15 @@ def lignes_ecran(state, largeur_txt=62):
                   f"{DIM}#{e['numero']:03d}{RESET} "
                   + (B.libelle_rarete(rar) if d.get("examine") else f"{DIM}" + t("dress.rarete_cachee") + RESET), st_m,
                   f"{fg(213)}{terme('mefiance', p)}{RESET} {jauge(mef, 100, 12, inverse=True)} {mef:3.0f} %"]
+    if cb:
+        droite_txt.append(f"{fg(250)}{ajuster(terme('pv', 0 if p < 2 else 2, majuscule=True), 8)}{RESET} "
+                          + combat.coeurs(*cb["lui"]))
     out = ["", f" {fg(196)}{BOLD}⚔ " + t("dress.titre") + RESET, ""]
     out += _cote_a_cote(sp_f, sp_m, LG, milieu=f"{fg(196)}{BOLD}  VS  {RESET}")
     out += _cote_a_cote(gauche_txt, droite_txt, LG, milieu="      ")
     out.append("")
+    if cb:
+        return out + _lignes_combat(cb, largeur_txt)
     chrono = (f"{fg(153)}{t('dress.temps')}{RESET} {jauge(r, d['duree'], 30)} {r:3.0f} s" if r is not None
               else f"{fg(153)}{t('dress.temps')}{RESET} {fg(147)}{t('dress.pas_de_chrono')}{RESET}")
     pastilles = " ".join(f"{fg(120)}●{RESET}" if f in d["faites"] else f"{fg(226)}◉{RESET}" if _par_id(f) is tache_courante(state)
@@ -726,11 +808,14 @@ def lignes_ecran(state, largeur_txt=62):
             out.append(f" {fg(117)}{col['comment'] if k == 0 else vide}{RESET}{l}")
     if ex:
         seuil = d["duree"] * (1 - bonus(state)["exemple"]) if d["duree"] else None
-        if r is None or fid.startswith("Rencontre:") or r <= d["duree"] - seuil:
+        if r is None or fid.startswith("Rencontre:") or d.get("exemple_tout_de_suite") or r <= d["duree"] - seuil:
             out.append(f" {fg(120)}{BOLD}{col['tape']}{RESET}{fg(120)}{piege(ex)}{RESET}")
         else:
             out.append(f" {fg(120)}{col['tape']}{RESET}{DIM}"
                        + t("dress.exemple_dans", s=f"{r - (d['duree'] - seuil):.0f}") + RESET)
+    if d.get("indice"):
+        for k, l in enumerate(envelopper(d["indice"], largeur_txt)):
+            out.append(f" {fg(214)}{BOLD}{ajuster('💡 ' + t('dress.col.indice'), lc) if k == 0 else vide}{RESET}{fg(214)}{l}{RESET}")
     if fid.startswith("Rencontre:examiner"):
         ou = "~/terrain_terminagotchi"
     elif fid.startswith("Rencontre:"):
@@ -741,6 +826,24 @@ def lignes_ecran(state, largeur_txt=62):
         out.append(f" {fg(246)}{col['dabord']}{RESET}" + t("dress.passe_porte", cmd=f"{fg(120)}cd {ou}{RESET}"))
     else:
         out.append(f" {fg(246)}{col['ou']}{RESET}{DIM}{ou}{RESET}")
+    return out
+
+
+def _lignes_combat(cb, largeur_txt=62):
+    """Le panneau du mini-combat : le tour, ce qui vient de se passer, les trois coups possibles."""
+    from .plateforme import BOLD, DIM, RESET, fg, piege
+    out = [f" {fg(196)}{BOLD}⚔ " + t("dress.combat.titre", n=min(cb["tour"] + 1, combat.TOURS_MAX), total=combat.TOURS_MAX) + RESET]
+    for j in cb.get("journal", [])[-3:]:
+        for k, l in enumerate(envelopper(j, largeur_txt)):
+            out.append(f"   {DIM}{'»' if k == 0 else ' '}{RESET} {l}")
+    out += ["", " " + t("dress.combat.coups")]
+    coups = [(cb["special"], t("dress.combat.special.aide"), 213)] if cb["special"] and cb["special"] not in combat.OBSERVER else []
+    coups += [("ls", t("dress.combat.observer.aide") + (" · " + t("dress.combat.special.aide") if cb["special"] in combat.OBSERVER else ""), 117),
+              (t("dress.combat.autre"), t("dress.combat.attaque.aide"), 250)]
+    lc = max(largeur(c) for c, _, _ in coups) + 2
+    for c, expl, coul in coups:
+        out.append(f"   {fg(coul)}{BOLD}{piege(ajuster(c, lc)) if c != coups[-1][0] else ajuster(c, lc)}{RESET}→ {expl}")
+    out.append(f" {DIM}" + t("dress.combat.ensuite") + RESET)
     return out
 
 
@@ -855,3 +958,207 @@ def aide(fid, nom, p=0):
     f = dict(termes(p), nom=nom, nom_min=nom_fichier(nom))
     ex = ex.format(**f).replace("    puis    ", "    " + t("dress.puis") + "    ")
     return t(expl, **f), ex
+
+
+# ================================================================ « presque ! » : des indices clairs
+# Quand l'épreuve en cours n'est pas réussie après une commande, on cherche si elle l'est PRESQUE :
+# un indice propre à l'épreuve, un fichier créé au mauvais endroit, ou une faute de frappe par
+# rapport à l'exemple. Le texte est traduit (clés « dress.indice.* »).
+
+def _fichier_script():
+    return "tour.ps1" if IS_WIN else "tour.sh"
+
+
+def _i_script(c, l):
+    p = c["d"] / _fichier_script()
+    texte = lire(p)
+    if texte is None:
+        return None
+    if "echo" not in texte.lower() and "write-" not in texte.lower():
+        return t("dress.indice.script_echo", fichier=p.name)
+    if not IS_WIN and not os.access(p, os.X_OK):
+        return t("dress.indice.script_chmod", fichier=p.name)
+    return None
+
+
+def _i_compte(c, l):
+    for x in l:
+        m = x.strip()
+        if re.match(r"^for\s", m) and (";" not in m or not re.search(r"\bdo\b", m) or not re.search(r"\bdone\b", m)):
+            return t("dress.indice.for")
+    if lignes_de(c["d"] / "compte.txt") is not None:
+        return t("dress.indice.compte")
+    return None
+
+
+def _i_chant(c, l):
+    if lire(c["d"] / "chant.txt") is not None:
+        return t("dress.indice.chant", nom=nom_fichier(c["nom"]))
+    return None
+
+
+def _i_gamelle(c, l):
+    if (c["d"] / "gamelle").exists():
+        return t("dress.indice.dans_enclos", fichier="gamelle")
+    if not (c["d"] / "enclos").is_dir() and a_tape(l, r"enclos[/\\]gamelle"):
+        return t("dress.indice.enclos_dabord")
+    return None
+
+
+def _i_doudou(c, l):
+    if (c["d"] / "enclos" / "doudou.txt").exists() and not (c["d"] / "doudou.txt").exists():
+        return t("dress.indice.cp_pas_mv")
+    if not (c["d"] / "enclos").is_dir() and a_tape(l, r"^\s*(cp|copy)\b"):
+        return t("dress.indice.enclos_dabord")
+    return None
+
+
+def _i_renomme(c, l):
+    if not (c["d"] / "vieux_nom.txt").exists() and not (c["d"] / f"{nom_fichier(c['nom'])}.txt").exists():
+        return t("dress.indice.nom_min", nom_min=nom_fichier(c["nom"]))
+    return None
+
+
+def _i_dans_enclos(nom):
+    def f(c, l):
+        if (c["d"] / nom).exists() and not (c["d"] / "enclos" / nom).exists():
+            return t("dress.indice.dans_enclos", fichier=nom)
+        if not (c["d"] / "enclos").is_dir() and a_tape(l, r"enclos[/\\]"):
+            return t("dress.indice.enclos_dabord")
+        return None
+    return f
+
+
+def _i_cachette(c, l):
+    if not (c["d"] / "enclos").is_dir():
+        return t("dress.indice.enclos_dabord") if a_tape(l, r"enclos[/\\]") else None
+    if any(p.is_file() and not p.name.startswith(".") for p in (c["d"] / "enclos").iterdir()) and a_tape(l, r"^\s*(touch|new-item)\b"):
+        return t("dress.indice.point")
+    return None
+
+
+def _i_prive(c, l):
+    return t("dress.indice.prive") if (c["d"] / "enclos" / "cage").exists() else None
+
+
+def _i_nombre(c, l):
+    if any(re.match(r"^\s*(echo|write-output)\s+[\"']?\d+[\"']?\s*$", x, re.I) for x in l):
+        return t("dress.indice.nombre")
+    return None
+
+
+def _i_reponse(c, l):
+    if any(re.match(r"^\s*(echo|write-output)\s+\S", x, re.I) for x in l):
+        return t("dress.indice.reponse")
+    return None
+
+
+def _i_contenu(nom):
+    def f(c, l):
+        return t("dress.indice.fichier", fichier=nom) if (c["d"] / nom).exists() else None
+    return f
+
+
+def _i_photos(c, l):
+    d = c["d"] / "nuage"
+    if d.is_dir() and 0 < len(list(d.glob("photo*"))) < 3:
+        return t("dress.indice.photos", n=len(list(d.glob("photo*"))))
+    return None
+
+
+INDICES = {
+    "Code:script": _i_script, "Code:compte": _i_compte, "Code:chant": _i_chant,
+    "Fichiers:gamelle": _i_gamelle, "Fichiers:doudou": _i_doudou, "Fichiers:renomme": _i_renomme,
+    "Sécurité:cage": _i_dans_enclos("cage"), "Sécurité:cachette": _i_cachette, "Sécurité:prive": _i_prive,
+    "Mémoire:sac": _i_nombre, "Matériel:coeurs": _i_nombre, "Bugs:combien": _i_nombre, "Données:lignes": _i_nombre,
+    "Données:differentes": _i_nombre, "IA:chat": _i_nombre, "Rétro:record": _i_nombre,
+    "Crypto:decode": _i_reponse, "Sécurité:empreinte": _i_reponse, "Crypto:empreinte": _i_reponse,
+    "IA:frequent": _i_reponse,
+    "Données:trie": _i_contenu("trie.txt"), "Rétro:top3": _i_contenu("top3.txt"), "Bugs:corrige": _i_contenu("corrige.log"),
+    "Glitch:repare": _i_contenu("repare.txt"), "Glitch:chuchote": _i_contenu("chuchote.txt"),
+    "Nuage:photos": _i_photos,
+}
+
+# ce que l'épreuve doit créer dans le repaire (pour repérer un fichier créé ailleurs)
+ATTENDUS = {"Fichiers:enclos": "enclos", "Code:chant": "chant.txt", "Code:script": _fichier_script(),
+            "Code:compte": "compte.txt", "Nuage:nuage": "nuage", "Données:trie": "trie.txt", "Rétro:top3": "top3.txt",
+            "Glitch:repare": "repare.txt", "Glitch:chuchote": "chuchote.txt", "Bugs:corrige": "corrige.log",
+            "Réseau:page": "page.html", "Fichiers:archive": "enclos.tar.gz", "Sécurité:cage": "enclos"}
+
+
+def _ailleurs(c, nom):
+    """Le fichier attendu, trouvé hors du repaire (dans le dossier personnel ou le terrain), ou None."""
+    ici = c["d"] / nom
+    if ici.exists():
+        return None
+    from pathlib import Path
+    for base in (Path.home(), T, c["d"].parent):
+        p = base / nom
+        if p.exists():
+            return p
+    if T.is_dir():
+        for p in T.rglob(nom.split("/")[-1]):
+            if p != ici and c["d"] not in p.parents:
+                return p
+    return None
+
+
+def _mots(ligne):
+    """Les mots d'une commande, chemins réduits à leur dernier morceau (~/x/monstre_a.txt → monstre_a.txt)."""
+    out = []
+    for m in ligne.replace("'", " ").replace('"', " ").split():
+        m = m.rstrip("/\\")
+        out.append(re.split(r"[/\\]", m)[-1] if ("/" in m or "\\" in m) else m)
+    return [m for m in out if m]
+
+
+def faute_de_frappe(lignes, modele, chiffres=False):
+    """(mot tapé, mot attendu) si une ligne ressemble à la commande modèle avec un mot mal écrit.
+    chiffres=True : les nombres comptent aussi (chmod 44 au lieu de chmod 444)."""
+    import difflib
+    attendus = _mots(modele.split("    ")[0])
+    if not attendus:
+        return None
+    for l in lignes:
+        mots = _mots(l)
+        if not mots or mots[0].lower() != attendus[0].lower():
+            continue
+        for m in mots[1:]:
+            if chiffres and m.isdigit() and m not in attendus:
+                nombres = [a for a in attendus[1:] if a.isdigit()]
+                proche = difflib.get_close_matches(m, nombres, n=1, cutoff=0.6)
+                if proche:
+                    return m, proche[0]
+            if m in attendus or m.startswith("-") or m.isdigit() or len(m) < 3:
+                continue
+            cibles = [a for a in attendus[1:] if not a.startswith("-") and not a.isdigit() and len(a) >= 3]
+            proche = difflib.get_close_matches(m, cibles, n=1, cutoff=0.75)
+            if proche and proche[0] != m:
+                return m, proche[0]
+    return None
+
+
+def indice(state, c, lignes):
+    """L'indice pour l'épreuve en cours quand elle est presque réussie, ou None."""
+    d = state["dressage"]
+    x = tache_courante(state)
+    if x is None:
+        return None
+    fid = next(f for f in d["taches"] if _par_id(f) is x)
+    try:
+        f = INDICES.get(fid)
+        r = f(c, lignes) if f else None
+        if r:
+            return r
+        nom = ATTENDUS.get(fid)
+        if nom and _ailleurs(c, nom) is not None:
+            return t("dress.indice.mauvais_endroit", fichier=nom,
+                     cmd=f"cd ~/{T.name}/{d['zone']}/{repaire(d['espece'])}")
+    except (OSError, KeyError, ValueError):
+        pass
+    _expl, ex = aide(fid, d["espece"], palier(state))
+    if ex:
+        ff = faute_de_frappe(lignes, ex)
+        if ff:
+            return t("dress.indice.faute", tape=ff[0], attendu=ff[1])
+    return None

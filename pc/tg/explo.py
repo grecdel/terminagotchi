@@ -4,9 +4,19 @@ Des bestioles sauvages (150 espèces, voir bestiaire.py) s'y cachent en fichiers
 Chaque famille a son habitat (archives, forêt, grotte…) ; plus elle est rare, plus elle se
 cache profond (recoin → cachette → sanctuaire). Pour l'apprivoiser : la trouver (ls -a),
 la lire (cat), puis réussir son dressage (voir dressage.py). Chaque bestiole est unique.
+
+Attirance : chaque famille est « attirée par » une commande (chmod pour les Démons, ls pour les
+Sylvestres…, champ attiree_par). La taper attire cette famille : la prochaine apparition (dans les
+10 minutes) a environ 3 fois plus de chances d'en être une. La famille entre dans le tirage signé
+(voir tirage.py) : le serveur peut toujours le refaire.
+
+Le tout premier monstre (aucune bestiole dressée) est une espèce courante, de rareté commune :
+on passe aux compteurs suivants de la graine jusqu'à en trouver une (chaque compteur reste
+vérifiable par le serveur ; le tirage lui-même ne change pas).
 """
 import random
 import re
+import time
 
 _ANSI = re.compile(r"\x1b\[[0-9;]*m")
 
@@ -24,6 +34,55 @@ from .plateforme import BOLD, DIM, IS_WIN, RESET, fg, piege
 
 T = core.TERRAIN
 MAX_SAUVAGES = 3
+DUREE_ATTIRANCE = 600            # secondes : la commande attire la prochaine apparition pendant 10 min
+ESSAIS_PREMIER = 30              # compteurs essayés au plus pour un premier monstre facile
+
+
+def _icone(famille):
+    return next((e["icone"] for e in B.publiques() if e["famille"] == famille), "")
+
+
+def attirer(state, lignes):
+    """Une commande « attiree_par » tapée à la main attire sa famille (la dernière tapée gagne)."""
+    par_cmd = {c: f for f, c in B.familles().items()}
+    for l in lignes:
+        if core.est_colle(l):
+            continue
+        cmd = core.first_word(l) or ""
+        f = par_cmd.get(cmd)
+        if not f or cmd not in state.get("seen", []):     # le serveur exige une commande vraiment goûtée
+            continue
+        avant = attirance(state)
+        state["attirance"] = {"famille": f, "cmd": cmd, "t": time.time()}
+        if avant != f and not state.get("dressage"):
+            core.log(state, t("exp.attire.log", cmd=cmd, famille=f))
+            core.say(state, t("exp.attire.dit", cmd=cmd, famille=f, icone=_icone(f)), 8)
+
+
+def attirance(state):
+    """La famille attirée en ce moment, ou None."""
+    a = state.get("attirance") or {}
+    if a.get("famille") in B.familles() and time.time() - a.get("t", 0) < DUREE_ATTIRANCE:
+        return a["famille"]
+    return None
+
+
+def facile(e, ind):
+    """Un premier monstre facile : espèce courante (« souvent ») et individu de rareté commune."""
+    return e.get("frequence") == "souvent" and B.rarete_de(ind) == "commune"
+
+
+def _au_hasard(zone_de, abyssor_permis, attire):
+    """Sans graine (pas de compte, hors ligne longtemps) : tirage local, « non vérifié » sur le site."""
+    e, shiny, vid = B.tirer(attire=attire)
+    if abyssor_permis and random.random() < 1 / 15:
+        e, vid = B.espece("Abyssor"), "classique"
+    # l'individu est tiré dès son apparition : stats, rareté et stade sont lisibles sur sa fiche (cat)
+    ind = B.individu(e, shiny, zone_de(e, vid), vid)
+    ind["stade"] = random.choices(B.STADES[:4], [35, 35, 20, 10])[0]
+    if shiny:
+        ind["teinte"] = round(random.uniform(0.15, 0.85), 3)   # couleur shiny propre à cet individu
+    return e, ind
 
 
 def lieu(zone):
@@ -38,33 +97,27 @@ def debloque(state):
 
 
 def spawn(state):
-    if len(state["sauvages"]) >= MAX_SAUVAGES:
-        return
+    if len(state["sauvages"]) >= MAX_SAUVAGES or state.get("dressage"):
+        return                                    # pas de nouveau monstre pendant un dressage
     legendaires = sum(1 for c in state.get("captures", []) if B.rarete_de(c) == "légendaire")
     abyssor_permis = legendaires >= 3 and not state["collection"].get("Abyssor")   # la mythique secrète #151
     zone_de = lambda e_, v_: B.variante(e_, v_).get("zone", e_["zone"])  # noqa: E731
-    # anti-triche : tirage vérifiable par le serveur si une graine du jour est en cache (voir tirage.py)
-    verifiable = None if state.get("dressage") else tirage.apparition(state, zone_de, abyssor_permis)
-    if verifiable:
-        e, ind = verifiable
-        shiny, vid = ind["shiny"], ind["variante"]
-    else:                                         # sans graine : au hasard, « non vérifié » sur le site
-        e, shiny, vid = B.tirer()
-        if abyssor_permis and random.random() < 1 / 15:
-            e, vid = B.espece("Abyssor"), "classique"
-        ind = None
+    attire = attirance(state)
+    premier = not state.get("captures")             # le tout premier monstre : facile
+    e = ind = None
+    for _ in range(ESSAIS_PREMIER if premier else 1):
+        # anti-triche : tirage vérifiable par le serveur si une graine du jour est en cache (voir tirage.py)
+        r = tirage.apparition(state, zone_de, abyssor_permis and not premier, attire)
+        e, ind = r or _au_hasard(zone_de, abyssor_permis and not premier, attire)
+        if not premier or facile(e, ind):
+            break
+    if attire:
+        state["attirance"] = None                   # une commande attire UNE apparition
+    shiny, vid = ind["shiny"], ind["variante"]
     zone = zone_de(e, vid)
     dossier = T / zone
     dossier.mkdir(parents=True, exist_ok=True)
     state["explo_n"] += 1
-    if state.get("dressage"):
-        return
-    if ind is None:
-        # l'individu est tiré dès son apparition : stats, rareté et stade sont lisibles sur sa fiche (cat)
-        ind = B.individu(e, shiny, zone, vid)
-        ind["stade"] = random.choices(B.STADES[:4], [35, 35, 20, 10])[0]
-        if shiny:
-            ind["teinte"] = round(random.uniform(0.15, 0.85), 3)   # couleur shiny propre à cet individu
     s = {"f": dressage.fiche(e["nom"]).name, "e": e["nom"], "zone": zone, "shiny": shiny, "v": vid, "ind": ind}
     state["sauvages"].append(s)
     core.log(state, t("dress.apparait", nom=e["nom"], eclat=""))
@@ -93,8 +146,9 @@ def check(state):
             core.animer(state, "ko")
 
 
-def tick(state, spontane, proba=1.5 / 480, jeu=0):
+def tick(state, spontane, proba=1.5 / 480, jeu=0, lignes=()):
     """jeu = nombre de commandes tapées à la main : les monstres n'apparaissent qu'en jouant."""
+    attirer(state, lignes)
     if not debloque(state):
         return
     if not state["explo"]:
@@ -160,6 +214,9 @@ def ecran_collection(state):
     else:
         zones = sorted({lieu(s["zone"]) for s in state["sauvages"]})
         lignes.append(" " + t("exp.presences", liste=", ".join(zones) if zones else t("exp.aucune_presence")))
+        f = attirance(state)
+        lignes.append(" " + (t("exp.attirance", icone=_icone(f), famille=f, cmd=B.familles()[f]) if f
+                             else t("exp.attirance.aucune")))
         lignes.append(f" {DIM}" + t("exp.pied") + RESET)
     return lignes
 

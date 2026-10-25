@@ -32,10 +32,24 @@ def _commit_fait():
 
 MIAM = T / "nid" / ("miam.ps1" if IS_WIN else "miam.sh")
 
+
+def _contient(p, mot):
+    """Le fichier contient ce mot (UTF-8, ou UTF-16 comme l'écrit echo … > dans Windows PowerShell)."""
+    try:
+        brut = p.read_bytes()
+    except OSError:
+        return False
+    for enc in ("utf-16", "utf-8") if brut[:2] in (b"\xff\xfe", b"\xfe\xff") else ("utf-8",):
+        try:
+            return mot in brut.decode(enc, errors="replace").lower()
+        except LookupError:
+            pass
+    return False
+
 FS = {
     "terrain":  lambda: T.is_dir(),
     "nid":      lambda: (T / "nid").is_dir(),
-    "repas":    lambda: (T / "nid" / "repas.txt").is_file(),
+    "repas":    lambda: (T / "nid" / "repas.txt").is_file() and _contient(T / "nid" / "repas.txt", "pomme"),
     "protege":  lambda: _protected(T / "nid" / "repas.txt"),
     "secours":  lambda: (T / "nid" / "secours.txt").is_file(),
     "reserve":  lambda: (T / "reserve.txt").is_file(),
@@ -353,6 +367,33 @@ def avancer(state, les):
     return False
 
 
+# ---------------------------------------------------------------- « presque ! »
+# Ce que crée une étape « fs » (pour repérer une bonne commande tapée au mauvais endroit).
+CREE = {"nid": "nid", "repas": "nid/repas.txt", "secours": "nid/secours.txt", "reserve": "reserve.txt",
+        "colis": "colis.html", "carnet": "carnet", "journal": "carnet/journal.txt"}
+
+
+def indice(step, lignes):
+    """Une étape PRESQUE réussie : le texte d'un indice clair, ou None."""
+    from . import dressage
+    from pathlib import Path
+    cmd = step["cmd"]
+    ff = dressage.faute_de_frappe(lignes, cmd, chiffres=True)
+    if ff:
+        return t("dress.indice.faute", tape=ff[0], attendu=ff[1])
+    premier = cmd.split()[0].lower()
+    tapee = any(l.split() and l.split()[0].lower() == premier for l in lignes)
+    if step.get("fs") == "repas" and (T / "nid" / "repas.txt").is_file():
+        return t("lec.indice.pomme", cmd=cmd)
+    rel = CREE.get(step.get("fs"))
+    if tapee and rel and not FS[step["fs"]]():
+        nom = rel.split("/")[-1]
+        if (Path.home() / nom).exists() or (Path.home() / rel).exists() or (T.is_dir() and any(
+                p for p in T.rglob(nom) if p != T / rel)):
+            return t("lec.indice.endroit", cmd=f"cd ~/{T.name}")
+    return None
+
+
 def tick(state, lines):
     les, _ = lecon_courante(state)
     if not les or core.level(state["xp"]) < les["niveau"]:
@@ -361,11 +402,21 @@ def tick(state, lines):
         state["annonce"] = les["titre"]
         core.say(state, t("lec.annonce"), 10)
         core.animer(state, "parle")
-    for line in (l for l in lines if not est_colle(l)):
+    tapees = [l for l in lines if not est_colle(l)]
+    avant = (state["lesson"], state["step"], state.get("branche"), dict(state.get("arbre", {})))
+    for line in tapees:
         step = les["steps"][state["step"]]
         if "re" in step and re.search(step["re"], line, re.I):
             if not avancer(state, les):
+                state["indice_lecon"] = None
                 return
     step = les["steps"][state["step"]]
     if "fs" in step and FS[step["fs"]]():
         avancer(state, les)
+    if avant != (state["lesson"], state["step"], state.get("branche"), dict(state.get("arbre", {}))):
+        state["indice_lecon"] = None
+    elif tapees:
+        conseil = indice(step, tapees)
+        if conseil and conseil != state.get("indice_lecon"):
+            state["indice_lecon"] = conseil
+            core.say(state, "💡 " + conseil, 12)

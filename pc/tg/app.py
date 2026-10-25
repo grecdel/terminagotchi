@@ -8,7 +8,7 @@ import time
 
 import subprocess
 
-from . import compagnon, core, dressage, equipe, explo, lecons, lexique, notif, recense, registre, sprites
+from . import compagnon, core, dressage, equipe, explo, lecons, lexique, notif, recense, registre, sprites, terrain
 from .bestiaire import arc_en_ciel
 from . import langue
 from .langue import ajuster, envelopper, largeur, raccourcir, t
@@ -29,7 +29,7 @@ def render(state, frame, interactif, anim=None):
     """anim : les lignes d'une image d'animation à afficher à la place du dessin habituel."""
     d = state.get("dressage")
     if d and not d.get("fenetre"):          # pas de fenêtre possible (pas d'écran graphique) : on l'affiche ici
-        return render_dressage(state, interactif)
+        return render_dressage(state, interactif, anim)
     lvl = core.level(state["xp"])
     st = core.stage(lvl)
     if anim:
@@ -80,6 +80,12 @@ def render(state, frame, interactif, anim=None):
         lines.append(f" {fg(196)}{BOLD}" + t("app.monstre_fenetre", nom=d["espece"]) + f"{RESET} "
                      f"{DIM}" + t("app.monstre_fenetre.fermee") + RESET)
 
+    perdu = state.get("terrain_perdu")
+    if perdu:                                 # le terrain a été effacé : la commande pour le reconstruire
+        lines.append(title_line(t("app.terrain.titre"), 196))
+        lines.append(f"   {fg(226)}➜ {piege(perdu['cmd'])}{RESET}")
+        for x in envelopper(t("app.terrain.pourquoi"), 78):
+            lines.append(f"   {DIM}{x}{RESET}")
     les, etiquette = lecons.lecon_courante(state)
     if les:
         if lvl < les["niveau"]:
@@ -99,6 +105,9 @@ def render(state, frame, interactif, anim=None):
                                             cmd=f"cd ~/{core.TERRAIN.name}") + RESET)
             if step.get("astuce"):
                 lines.append(f"   {DIM}{lecons.tx(step['astuce'])}{RESET}")
+            if state.get("indice_lecon"):
+                for x in envelopper("💡 " + state["indice_lecon"], 76):
+                    lines.append(f"   {fg(214)}{x}{RESET}")
     elif all(state["arbre"].get(b, 0) >= len(v["lecons"]) for b, v in lecons.ARBRE.items() if lecons.branche_dispo(b)):
         lines.append(title_line(t("app.arbre.maitrise"), 213))
         lines.append(f" {DIM}" + t("app.arbre.maitrise.suite") + RESET)
@@ -132,10 +141,17 @@ def vue_dressage():
     try:
         fini = None
         vu = None                                 # le dernier face-à-face affiché (pour l'animation de fin)
+        vu_troupe = time.time()                   # les animations du combat (attaque, victoire, ko)
         while True:
             state = etape(spontane=False, defis=False)
             if state is None:
                 return
+            at = state.get("anim_troupe")
+            if at and at.get("t", 0) > vu_troupe:
+                vu_troupe = at["t"]
+                if time.time() - at["t"] < 20:
+                    jouer_anim_troupe(state, at)
+                    continue
             if state.get("dressage"):
                 vu = dict(state["dressage"])
                 clear()
@@ -164,9 +180,36 @@ def vue_dressage():
         sys.stdout.write("\033[?25h")
 
 
-def render_dressage(state, interactif):
-    """Pendant un dressage : le face-à-face seulement (plus la bulle et les deux dernières lignes du journal)."""
-    lines = dressage.lignes_ecran(state)
+def anim_troupe(state, at):
+    """(images, ips) de l'animation d'une bestiole de la troupe demandée par le combat, ou None."""
+    ind = next((c for c in state.get("captures", []) if c.get("id") == at.get("id")), None)
+    try:
+        return equipe.animation(ind, at["nom"]) if ind else None
+    except Exception:
+        return None
+
+
+def jouer_anim_troupe(state, at):
+    """Dans la fenêtre du face-à-face : l'animation (ko : puis elle s'endort pour se reposer)."""
+    r = anim_troupe(state, at)
+    if not r:
+        return
+    ind = next((c for c in state.get("captures", []) if c.get("id") == at.get("id")), {})
+    clear()
+    b = core.bulle_courante(state)
+    titre = f"\n  {BOLD}{b[0] if b else ind.get('espece', '')}{RESET}\n"
+    equipe.derouler(r[0], r[1], 1 if at["nom"] == "attaque" else 2, titre)
+    if at["nom"] == "ko":
+        r = anim_troupe(state, dict(at, nom="dort"))
+        if r:
+            clear()
+            equipe.derouler(r[0], r[1], 1, titre)
+
+
+def render_dressage(state, interactif, anim=None):
+    """Pendant un dressage : le face-à-face seulement (plus la bulle et les deux dernières lignes du journal).
+    anim : les lignes d'une image d'animation (combat) à montrer au-dessus."""
+    lines = (["", *("  " + l for l in anim), ""] if anim else []) + dressage.lignes_ecran(state)
     b = core.bulle_courante(state)
     if b:
         lines += ["", f"  {BOLD}» {raccourcir(' '.join(b[0].split()), 90)}{RESET}"]
@@ -183,10 +226,11 @@ def boucle_jeu(state, lines, spontane=True, rythme=1.5, defis=True):
     core.tick(state)
     for line in lines:
         core.feed(state, line)
+    terrain.tick(state, lines)                # terrain effacé : le reconstruire, reprendre la leçon
     lecons.tick(state, lines)
     dressage.tick(state, lines)
     equipe.tick(state, lines)
-    explo.tick(state, spontane, proba=rythme / 480, jeu=sum(1 for l in lines if not core.est_colle(l)))
+    explo.tick(state, spontane, proba=rythme / 480, jeu=sum(1 for l in lines if not core.est_colle(l)), lignes=lines)
     core.defi_tick(state, lines, spontaneous=spontane and defis, proba=rythme / 300)
     core.idle_talk(state, proba=min(1.0, 0.08 * rythme / 1.5))
 
@@ -478,6 +522,7 @@ def fenetre(once):
     interactif = clav.ok and not once
     anim = None
     vu_anim = time.time()                 # on ne rejoue pas les événements d'avant l'ouverture
+    vu_troupe = vu_anim
     ambiance = time.time() + AMBIANCE
     dernier = 0
     state = None
@@ -491,7 +536,14 @@ def fenetre(once):
                     dernier = now
                     frame += 1
                     evt = state.get("anim")
-                    if not once and evt and evt[1] > vu_anim:
+                    at = state.get("anim_troupe")
+                    d_ici = state.get("dressage") and not state["dressage"].get("fenetre")
+                    if not once and d_ici and at and at.get("t", 0) > vu_troupe:
+                        vu_troupe = at["t"]                    # combat affiché ici (pas de fenêtre à part)
+                        r = anim_troupe(state, at)
+                        if r and now - at["t"] < 15:
+                            anim = [r[0], r[1], 0, min(2 * len(r[0]), max(len(r[0]), int(3 * r[1])))]
+                    elif not once and evt and evt[1] > vu_anim:
                         vu_anim = evt[1]
                         if now - evt[1] < 15:
                             anim = _preparer_anim(state, evt[0]) or anim
