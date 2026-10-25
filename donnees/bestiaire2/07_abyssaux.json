@@ -1,287 +1,405 @@
 [
-  {
-    "rang": 1,
-    "nom": "Plouftin",
-    "id": "plouftin",
-    "rarete": "commune",
-    "posture": "flottant",
-    "taille_finale": "petite",
-    "fiche": "Petit poisson-bulle qui gonfle quand il a peur, il dérive en bancs dans les lagons tièdes et les coraux peu profonds.",
-    "caractere": "peureux et joueur",
-    "apparence": "Round puffer-like fish with smooth skin, short fins and a soft glowing belly; turquoise, deep blue and pale cyan.",
-    "stades": {
-      "bebe": "A tiny round turquoise ball with huge shiny eyes, two stubby fins and a little bubble above its head.",
-      "enfant": "A small tail fin and a pair of side fins appear, and soft rounded spikes bud along its back.",
-      "ado": "Its body becomes egg-shaped with longer frilly fins, and its spikes grow into flexible cyan quills.",
-      "adulte": "A plump fish able to inflate into a spiky blue sphere, with a glowing cyan belly and wide fan-shaped fins.",
-      "ancien": "A heavy old pufferfish with faded barnacle-covered quills, long whisker barbels like a beard and a ring of tiny bubbles orbiting it."
-    },
-    "habitats": ["lagon", "corail", "eau pétillante", "abyssal", "marais", "brume"]
+ {
+  "rang": 1,
+  "nom": "Plouftin",
+  "id": "plouftin",
+  "rarete": "commune",
+  "posture": "flottant",
+  "taille_finale": "petite",
+  "fiche": "Petit poisson-bulle qui gonfle quand il a peur, il dérive en bancs dans les lagons tièdes et les coraux peu profonds.",
+  "caractere": "peureux et joueur",
+  "apparence": "Round puffer-like fish with smooth skin, short fins and a soft glowing belly; turquoise, deep blue and pale cyan.",
+  "stades": {
+   "bebe": "A tiny round turquoise ball with huge shiny eyes, two stubby fins and a little bubble above its head.",
+   "enfant": "A small tail fin and a pair of side fins appear, and soft rounded spikes bud along its back.",
+   "ado": "Its body becomes egg-shaped with longer frilly fins, and its spikes grow into flexible cyan quills.",
+   "adulte": "A plump fish able to inflate into a spiky blue sphere, with a glowing cyan belly and wide fan-shaped fins.",
+   "ancien": "A heavy old pufferfish with faded barnacle-covered quills, long whisker barbels like a beard and a ring of tiny bubbles orbiting it."
   },
-  {
-    "rang": 2,
-    "nom": "Tritonnet",
-    "id": "tritonnet",
-    "rarete": "commune",
-    "posture": "bipède",
-    "taille_finale": "petite",
-    "fiche": "Petit amphibien des récifs qui marche sur ses nageoires arrière et collectionne les coquillages échoués.",
-    "caractere": "curieux et bavard",
-    "apparence": "Small upright fish-amphibian with webbed limbs, gill frills and a finned tail; teal, navy blue and violet.",
-    "stades": {
-      "bebe": "A round teal tadpole with big eyes, a tiny tail and no limbs, wearing a small shell on its head.",
-      "enfant": "Two stubby webbed legs and short arms sprout, and small pink gill frills appear on its cheeks.",
-      "ado": "It stands upright on longer legs, its tail grows a violet fin and a dorsal crest rises along its spine.",
-      "adulte": "A slender standing fish-person with large webbed hands, flowing gill frills, a sail-like crest and a spiral shell shoulder guard.",
-      "ancien": "An old hunched fish-sage leaning on a driftwood staff, with long drooping gill whiskers and shells encrusted on its back."
-    },
-    "habitats": ["lagon", "corail", "marais", "sable", "ruines", "prairie", "brume"]
+  "habitats": [
+   "lagon",
+   "corail",
+   "eau pétillante",
+   "abyssal",
+   "marais",
+   "brume"
+  ]
+ },
+ {
+  "rang": 2,
+  "nom": "Tritonnet",
+  "id": "tritonnet",
+  "rarete": "commune",
+  "posture": "bipède",
+  "taille_finale": "petite",
+  "fiche": "Petit amphibien des récifs qui marche sur ses nageoires arrière et collectionne les coquillages échoués.",
+  "caractere": "curieux et bavard",
+  "apparence": "Small upright fish-amphibian with webbed limbs, gill frills and a finned tail; teal, navy blue and violet.",
+  "stades": {
+   "bebe": "A round teal tadpole with big eyes, a tiny tail and no limbs, wearing a small shell on its head.",
+   "enfant": "Two stubby webbed legs and short arms sprout, and small pink gill frills appear on its cheeks.",
+   "ado": "It stands upright on longer legs, its tail grows a violet fin and a dorsal crest rises along its spine.",
+   "adulte": "A slender standing fish-person with large webbed hands, flowing gill frills, a sail-like crest and a spiral shell shoulder guard.",
+   "ancien": "An old hunched fish-sage leaning on a driftwood staff, with long drooping gill whiskers and shells encrusted on its back."
   },
-  {
-    "rang": 3,
-    "nom": "Krillou",
-    "id": "krillou",
-    "rarete": "commune",
-    "posture": "multipattes",
-    "taille_finale": "petite",
-    "fiche": "Minuscule crevette translucide qui vit en nuées scintillantes et éclaire l'eau froide la nuit.",
-    "caractere": "grégaire et étourdi",
-    "apparence": "Translucent shrimp with many thin legs, long antennae and glowing dots along the body; pale cyan, light violet and deep blue.",
-    "stades": {
-      "bebe": "A tiny see-through bean shape with two big black eyes and a single glowing cyan dot inside.",
-      "enfant": "A curled tail and a row of tiny legs appear, with two short antennae on its head.",
-      "ado": "Its body lengthens into segments, the antennae grow very long and a line of glowing dots runs down its sides.",
-      "adulte": "A large translucent shrimp with fan-shaped tail, many feathery swimming legs and bright cyan light spots pulsing along its armor.",
-      "ancien": "An elder shrimp with cloudy armor plates covered in tiny barnacles, drooping antennae like a long mustache and a soft halo of drifting light specks."
-    },
-    "habitats": ["abyssal", "glace", "lagon", "corail", "aurore", "eau pétillante", "néon"]
+  "habitats": [
+   "lagon",
+   "corail",
+   "marais",
+   "sable",
+   "ruines",
+   "prairie",
+   "brume"
+  ]
+ },
+ {
+  "rang": 3,
+  "nom": "Krillou",
+  "id": "krillou",
+  "rarete": "commune",
+  "posture": "multipattes",
+  "taille_finale": "petite",
+  "fiche": "Minuscule crevette translucide qui vit en nuées scintillantes et éclaire l'eau froide la nuit.",
+  "caractere": "grégaire et étourdi",
+  "apparence": "Translucent shrimp with many thin legs, long antennae and glowing dots along the body; pale cyan, light violet and deep blue.",
+  "stades": {
+   "bebe": "A tiny see-through bean shape with two big black eyes and a single glowing cyan dot inside.",
+   "enfant": "A curled tail and a row of tiny legs appear, with two short antennae on its head.",
+   "ado": "Its body lengthens into segments, the antennae grow very long and a line of glowing dots runs down its sides.",
+   "adulte": "A large translucent shrimp with fan-shaped tail, many feathery swimming legs and bright cyan light spots pulsing along its armor.",
+   "ancien": "An elder shrimp with cloudy armor plates covered in tiny barnacles, drooping antennae like a long mustache and a soft halo of drifting light specks."
   },
-  {
-    "rang": 4,
-    "nom": "Anguillon",
-    "id": "anguillon",
-    "rarete": "commune",
-    "posture": "serpentin",
-    "taille_finale": "moyenne",
-    "fiche": "Anguille électrique qui se cache dans les épaves et grésille quand on la caresse.",
-    "caractere": "nerveux et taquin",
-    "apparence": "Long eel body with a ribbon fin and electric markings; dark navy blue, electric cyan and a little yellow.",
-    "stades": {
-      "bebe": "A short chubby navy worm shape with big eyes and a tiny spark on the tip of its tail.",
-      "enfant": "Its body stretches longer, a thin ribbon fin grows along its back and small cyan stripes appear.",
-      "ado": "A pair of small pectoral fins and twin whisker-like feelers appear, and its stripes start to crackle with sparks.",
-      "adulte": "A long powerful eel with a wide flowing fin, glowing lightning-shaped cyan stripes and crackling arcs around its jaws.",
-      "ancien": "A very long old eel with scarred skin, long white feelers like a beard and a faint ring of static floating over its head."
-    },
-    "habitats": ["abyssal", "ruines", "marais", "orage", "corail", "mécanique", "rouille"]
+  "habitats": [
+   "abyssal",
+   "glace",
+   "lagon",
+   "corail",
+   "aurore",
+   "eau pétillante",
+   "néon"
+  ]
+ },
+ {
+  "rang": 4,
+  "nom": "Anguillon",
+  "id": "anguillon",
+  "rarete": "commune",
+  "posture": "serpentin",
+  "taille_finale": "moyenne",
+  "fiche": "Anguille électrique qui se cache dans les épaves et grésille quand on la caresse.",
+  "caractere": "nerveux et taquin",
+  "apparence": "Long eel body with a ribbon fin and electric markings; dark navy blue, electric cyan and a little yellow.",
+  "stades": {
+   "bebe": "A short chubby navy worm shape with big eyes and a tiny spark on the tip of its tail.",
+   "enfant": "Its body stretches longer, a thin ribbon fin grows along its back and small cyan stripes appear.",
+   "ado": "A pair of small pectoral fins and twin whisker-like feelers appear, and its stripes start to crackle with sparks.",
+   "adulte": "A long powerful eel with a wide flowing fin, glowing lightning-shaped cyan stripes and crackling arcs around its jaws.",
+   "ancien": "A very long old eel with scarred skin, long white feelers like a beard and a faint ring of static floating over its head."
   },
-  {
-    "rang": 5,
-    "nom": "Crabouille",
-    "id": "crabouille",
-    "rarete": "commune",
-    "posture": "multipattes",
-    "taille_finale": "moyenne",
-    "fiche": "Crabe bagarreur qui se fabrique une armure avec tout ce qu'il ramasse sur le fond marin.",
-    "caractere": "têtu et costaud",
-    "apparence": "Wide crab with a round shell, eight legs and two claws; deep blue shell, purple joints and turquoise claw tips.",
-    "stades": {
-      "bebe": "A tiny round blue shell with two big eyes on stalks and two little pincers, no visible legs.",
-      "enfant": "Short stubby walking legs appear and one claw grows bigger than the other.",
-      "ado": "Its shell widens and gets spiky edges, and both claws become large and jagged.",
-      "adulte": "A broad armored crab with massive hammer-shaped claws, a spiked shell plated with pieces of scrap and shells, and thick purple legs.",
-      "ancien": "An old giant crab with a cracked shell overgrown by sea moss and small corals, and a sea anemone growing on its back like a hat."
-    },
-    "habitats": ["sable", "corail", "lagon", "rouille", "ruines", "abyssal", "canyon"]
+  "habitats": [
+   "abyssal",
+   "ruines",
+   "marais",
+   "orage",
+   "corail",
+   "mécanique",
+   "rouille"
+  ]
+ },
+ {
+  "rang": 5,
+  "nom": "Crabouille",
+  "id": "crabouille",
+  "rarete": "commune",
+  "posture": "multipattes",
+  "taille_finale": "moyenne",
+  "fiche": "Crabe bagarreur qui se fabrique une armure avec tout ce qu'il ramasse sur le fond marin.",
+  "caractere": "têtu et costaud",
+  "apparence": "Wide crab with a round shell, eight legs and two claws; deep blue shell, purple joints and turquoise claw tips.",
+  "stades": {
+   "bebe": "A tiny round blue shell with two big eyes on stalks and two little pincers, no visible legs.",
+   "enfant": "Short stubby walking legs appear and one claw grows bigger than the other.",
+   "ado": "Its shell widens and gets spiky edges, and both claws become large and jagged.",
+   "adulte": "A broad armored crab with massive hammer-shaped claws, a spiked shell plated with pieces of scrap and shells, and thick purple legs.",
+   "ancien": "An old giant crab with a cracked shell overgrown by sea moss and small corals, and a sea anemone growing on its back like a hat."
   },
-  {
-    "rang": 6,
-    "nom": "Poulpiot",
-    "id": "poulpiot",
-    "rarete": "commune",
-    "posture": "rampant",
-    "taille_finale": "moyenne",
-    "fiche": "Petit poulpe malin qui change de couleur et vole les objets brillants des plongeurs.",
-    "caractere": "malicieux et gourmand",
-    "apparence": "Soft octopus with a round head and curling tentacles; violet, deep blue and turquoise spots.",
-    "stades": {
-      "bebe": "A round violet head blob with huge eyes and four tiny nub tentacles.",
-      "enfant": "It grows eight short curly tentacles with little suction cups and turquoise spots on its head.",
-      "ado": "Its head becomes taller and pointed, tentacles lengthen and a frilly web of skin forms between them.",
-      "adulte": "A large octopus with long patterned tentacles, glowing turquoise rings that flash, and a wide skin cape between its arms.",
-      "ancien": "An old octopus with a wrinkled head, faded rings, tentacles holding a pearl and a broken shell monocle on one eye."
-    },
-    "habitats": ["corail", "lagon", "ruines", "abyssal", "sable", "ombre", "néon"]
+  "habitats": [
+   "sable",
+   "corail",
+   "lagon",
+   "rouille",
+   "ruines",
+   "abyssal",
+   "canyon"
+  ]
+ },
+ {
+  "rang": 6,
+  "nom": "Poulpiot",
+  "id": "poulpiot",
+  "rarete": "commune",
+  "posture": "rampant",
+  "taille_finale": "moyenne",
+  "fiche": "Petit poulpe malin qui change de couleur et vole les objets brillants des plongeurs.",
+  "caractere": "malicieux et gourmand",
+  "apparence": "Soft octopus with a round head and curling tentacles; violet, deep blue and turquoise spots.",
+  "stades": {
+   "bebe": "A round violet head blob with huge eyes and four tiny nub tentacles.",
+   "enfant": "It grows eight short curly tentacles with little suction cups and turquoise spots on its head.",
+   "ado": "Its head becomes taller and pointed, tentacles lengthen and a frilly web of skin forms between them.",
+   "adulte": "A large octopus with long patterned tentacles, glowing turquoise rings that flash, and a wide skin cape between its arms.",
+   "ancien": "An old octopus with a wrinkled head, faded rings, tentacles holding a pearl and a broken shell monocle on one eye."
   },
-  {
-    "rang": 7,
-    "nom": "Lampiotte",
-    "id": "lampiotte",
-    "rarete": "peu commune",
-    "posture": "flottant",
-    "taille_finale": "moyenne",
-    "fiche": "Poisson des grandes profondeurs qui attire ses proies avec la petite lanterne qui pend devant sa bouche.",
-    "caractere": "solitaire et rusé",
-    "apparence": "Dark deep-sea fish with a huge mouth, needle teeth and a glowing lure on a stalk; black-blue, violet and bright cyan light.",
-    "stades": {
-      "bebe": "A small round dark blue fish with big eyes and a tiny glowing bulb on its forehead.",
-      "enfant": "The bulb rises on a short stalk, its mouth widens and small fins appear.",
-      "ado": "Its jaw grows large with rows of thin teeth, the stalk lengthens and glowing spots appear along its sides.",
-      "adulte": "A big deep-sea fish with an enormous fanged mouth, a long curved lure shining bright cyan and spiny dark fins.",
-      "ancien": "An ancient lure-fish with cracked dark skin, a lure that has become a crystal lantern and long thread-like fins trailing like robes."
-    },
-    "habitats": ["abyssal", "ombre", "brume", "cristal", "crypte", "néon"]
+  "habitats": [
+   "corail",
+   "lagon",
+   "ruines",
+   "abyssal",
+   "sable",
+   "ombre",
+   "néon"
+  ]
+ },
+ {
+  "rang": 7,
+  "nom": "Lampiotte",
+  "id": "lampiotte",
+  "rarete": "peu commune",
+  "posture": "flottant",
+  "taille_finale": "moyenne",
+  "fiche": "Poisson des grandes profondeurs qui attire ses proies avec la petite lanterne qui pend devant sa bouche.",
+  "caractere": "solitaire et rusé",
+  "apparence": "Dark deep-sea fish with a huge mouth, needle teeth and a glowing lure on a stalk; black-blue, violet and bright cyan light.",
+  "stades": {
+   "bebe": "A small round dark blue fish with big eyes and a tiny glowing bulb on its forehead.",
+   "enfant": "The bulb rises on a short stalk, its mouth widens and small fins appear.",
+   "ado": "Its jaw grows large with rows of thin teeth, the stalk lengthens and glowing spots appear along its sides.",
+   "adulte": "A big deep-sea fish with an enormous fanged mouth, a long curved lure shining bright cyan and spiny dark fins.",
+   "ancien": "An ancient lure-fish with cracked dark skin, a lure that has become a crystal lantern and long thread-like fins trailing like robes."
   },
-  {
-    "rang": 8,
-    "nom": "Bavonge",
-    "id": "bavonge",
-    "rarete": "peu commune",
-    "posture": "amorphe",
-    "taille_finale": "grande",
-    "fiche": "Éponge vivante et gluante qui filtre l'eau des grottes sous-marines et absorbe tout ce qu'elle touche.",
-    "caractere": "placide et glouton",
-    "apparence": "Porous sponge blob with holes and soft tubes, dripping slime; turquoise, purple and pale yellow.",
-    "stades": {
-      "bebe": "A small soft turquoise lump full of tiny holes, with two big eyes and a smiling mouth.",
-      "enfant": "Short hollow tubes sprout from its top like chimneys and puff little bubbles.",
-      "ado": "Its body grows lumpy and wider, the tubes get longer and purple slimy tendrils hang from its sides.",
-      "adulte": "A large spongy mass with many tall chimney tubes, wide pores glowing inside and thick slime arms that can grab things.",
-      "ancien": "An enormous old sponge mound covered in moss and tiny shells, with a crown of hardened white tubes like a coral crown."
-    },
-    "habitats": ["corail", "abyssal", "marais", "toxique", "champignonnière", "lagon", "ruines"]
+  "habitats": [
+   "abyssal",
+   "ombre",
+   "brume",
+   "cristal",
+   "crypte",
+   "néon"
+  ]
+ },
+ {
+  "rang": 8,
+  "nom": "Bavonge",
+  "id": "bavonge",
+  "rarete": "peu commune",
+  "posture": "amorphe",
+  "taille_finale": "grande",
+  "fiche": "Éponge vivante et gluante qui filtre l'eau des grottes sous-marines et absorbe tout ce qu'elle touche.",
+  "caractere": "placide et glouton",
+  "apparence": "Porous sponge blob with holes and soft tubes, dripping slime; turquoise, purple and pale yellow.",
+  "stades": {
+   "bebe": "A small soft turquoise lump full of tiny holes, with two big eyes and a smiling mouth.",
+   "enfant": "Short hollow tubes sprout from its top like chimneys and puff little bubbles.",
+   "ado": "Its body grows lumpy and wider, the tubes get longer and purple slimy tendrils hang from its sides.",
+   "adulte": "A large spongy mass with many tall chimney tubes, wide pores glowing inside and thick slime arms that can grab things.",
+   "ancien": "An enormous old sponge mound covered in moss and tiny shells, with a crown of hardened white tubes like a coral crown."
   },
-  {
-    "rang": 9,
-    "nom": "Nautiloque",
-    "id": "nautiloque",
-    "rarete": "peu commune",
-    "posture": "flottant",
-    "taille_finale": "moyenne",
-    "fiche": "Céphalopode à coquille spirale qui monte et descend dans l'eau comme un sous-marin et parle par éclats de lumière.",
-    "caractere": "sage et bavard",
-    "apparence": "Coiled spiral shell with a tentacled face poking out; pearl white shell with deep blue stripes, violet tentacles and cyan eyes.",
-    "stades": {
-      "bebe": "A small round shell like a snail with a cute face and two tiny tentacles peeking out.",
-      "enfant": "The shell starts to coil into a spiral with blue stripes, and a ring of short tentacles appears around its face.",
-      "ado": "The spiral shell grows ridged and larger, a hood plate covers its head and glowing cyan eyes appear.",
-      "adulte": "A large spiral shell with sharp ridges and spikes, a crown of many long tentacles and bright cyan light pulsing from its shell chambers.",
-      "ancien": "An ancient nautilus with a fossil-like cracked shell covered in runes and barnacles, and long white beard-like tentacles."
-    },
-    "habitats": ["abyssal", "corail", "ruines", "lagon", "cristal", "arcane", "lune"]
+  "habitats": [
+   "corail",
+   "abyssal",
+   "marais",
+   "toxique",
+   "champignonnière",
+   "lagon",
+   "ruines"
+  ]
+ },
+ {
+  "rang": 9,
+  "nom": "Nautiloque",
+  "id": "nautiloque",
+  "rarete": "peu commune",
+  "posture": "flottant",
+  "taille_finale": "moyenne",
+  "fiche": "Céphalopode à coquille spirale qui monte et descend dans l'eau comme un sous-marin et parle par éclats de lumière.",
+  "caractere": "sage et bavard",
+  "apparence": "Coiled spiral shell with a tentacled face poking out; pearl white shell with deep blue stripes, violet tentacles and cyan eyes.",
+  "stades": {
+   "bebe": "A small round shell like a snail with a cute face and two tiny tentacles peeking out.",
+   "enfant": "The shell starts to coil into a spiral with blue stripes, and a ring of short tentacles appears around its face.",
+   "ado": "The spiral shell grows ridged and larger, a hood plate covers its head and glowing cyan eyes appear.",
+   "adulte": "A large spiral shell with sharp ridges and spikes, a crown of many long tentacles and bright cyan light pulsing from its shell chambers.",
+   "ancien": "An ancient nautilus with a fossil-like cracked shell covered in runes and barnacles, and long white beard-like tentacles."
   },
-  {
-    "rang": 10,
-    "nom": "Raiyon",
-    "id": "raiyon",
-    "rarete": "peu commune",
-    "posture": "volant",
-    "taille_finale": "grande",
-    "fiche": "Raie géante qui plane dans les courants comme un oiseau et bondit parfois hors de l'eau sous la lune.",
-    "caractere": "libre et gracieux",
-    "apparence": "Flat diamond-shaped ray with wide wing fins and a whip tail; deep blue back, white belly and glowing turquoise patterns.",
-    "stades": {
-      "bebe": "A small flat round pancake shape with big eyes on top and two tiny wing nubs.",
-      "enfant": "Its sides stretch into small triangular wing fins and a short thin tail appears.",
-      "ado": "Its wings grow wide and pointed, two curled head fins appear and turquoise star patterns cover its back.",
-      "adulte": "A huge gliding ray with vast wing fins, a long whip tail with a glowing tip and shining turquoise patterns like constellations.",
-      "ancien": "An ancient ray with frayed wing edges, barnacles and remoras clinging to it, and its glowing patterns turned silvery like a halo."
-    },
-    "habitats": ["lagon", "abyssal", "corail", "lune", "nuage", "aurore", "sable"]
+  "habitats": [
+   "abyssal",
+   "corail",
+   "ruines",
+   "lagon",
+   "cristal",
+   "arcane",
+   "lune"
+  ]
+ },
+ {
+  "rang": 10,
+  "nom": "Raiyon",
+  "id": "raiyon",
+  "rarete": "peu commune",
+  "posture": "volant",
+  "taille_finale": "grande",
+  "fiche": "Raie géante qui plane dans les courants comme un oiseau et bondit parfois hors de l'eau sous la lune.",
+  "caractere": "libre et gracieux",
+  "apparence": "Flat diamond-shaped ray with wide wing fins and a whip tail; deep blue back, white belly and glowing turquoise patterns.",
+  "stades": {
+   "bebe": "A small flat round pancake shape with big eyes on top and two tiny wing nubs.",
+   "enfant": "Its sides stretch into small triangular wing fins and a short thin tail appears.",
+   "ado": "Its wings grow wide and pointed, two curled head fins appear and turquoise star patterns cover its back.",
+   "adulte": "A huge gliding ray with vast wing fins, a long whip tail with a glowing tip and shining turquoise patterns like constellations.",
+   "ancien": "An ancient ray with frayed wing edges, barnacles and remoras clinging to it, and its glowing patterns turned silvery like a halo."
   },
-  {
-    "rang": 11,
-    "nom": "Homardeur",
-    "id": "homardeur",
-    "rarete": "rare",
-    "posture": "bipède",
-    "taille_finale": "grande",
-    "fiche": "Homard chevalier qui se dresse sur ses pattes arrière pour défendre les épaves où il a établi son fief.",
-    "caractere": "fier et loyal",
-    "apparence": "Upright armored lobster knight with segmented plates, long antennae and two huge claws; dark blue, purple and turquoise highlights.",
-    "stades": {
-      "bebe": "A small curled blue larva with big eyes, a fan tail and two tiny soft claws.",
-      "enfant": "Its claws harden and grow, segmented armor plates form and short antennae sprout.",
-      "ado": "It starts to stand upright on its back legs, one claw grows into a shield shape and the other into a pincer blade.",
-      "adulte": "A tall lobster knight standing upright, with a shield claw, a sword-like pincer claw, layered purple armor and long whip antennae.",
-      "ancien": "An old lobster knight with scratched armor covered in coral, broken antennae and a tattered seaweed cape hanging from its shoulders."
-    },
-    "habitats": ["ruines", "abyssal", "rouille", "corail", "sable", "canyon", "mécanique"]
+  "habitats": [
+   "lagon",
+   "abyssal",
+   "corail",
+   "lune",
+   "nuage",
+   "aurore",
+   "sable"
+  ]
+ },
+ {
+  "rang": 11,
+  "nom": "Homardeur",
+  "id": "homardeur",
+  "rarete": "rare",
+  "posture": "bipède",
+  "taille_finale": "grande",
+  "fiche": "Homard chevalier qui se dresse sur ses pattes arrière pour défendre les épaves où il a établi son fief.",
+  "caractere": "fier et loyal",
+  "apparence": "Upright armored lobster knight with segmented plates, long antennae and two huge claws; dark blue, purple and turquoise highlights.",
+  "stades": {
+   "bebe": "A small curled blue larva with big eyes, a fan tail and two tiny soft claws.",
+   "enfant": "Its claws harden and grow, segmented armor plates form and short antennae sprout.",
+   "ado": "It starts to stand upright on its back legs, one claw grows into a shield shape and the other into a pincer blade.",
+   "adulte": "A tall lobster knight standing upright, with a shield claw, a sword-like pincer claw, layered purple armor and long whip antennae.",
+   "ancien": "An old lobster knight with scratched armor covered in coral, broken antennae and a tattered brown kelp cape hanging from its shoulders."
   },
-  {
-    "rang": 12,
-    "nom": "Calmarée",
-    "id": "calmaree",
-    "rarete": "rare",
-    "posture": "flottant",
-    "taille_finale": "colossale",
-    "fiche": "Calmar géant des fosses obscures qui fait monter les marées en battant de ses immenses bras.",
-    "caractere": "mystérieux et colérique",
-    "apparence": "Long torpedo squid with triangular head fins, giant eyes and many arms; deep violet, navy blue and bright cyan photophores.",
-    "stades": {
-      "bebe": "A tiny violet capsule shape with two enormous eyes and a fringe of very short arms.",
-      "enfant": "A pair of small triangular fins appears on its head and its arms grow longer with suckers.",
-      "ado": "Its body stretches into a torpedo, two long hunting tentacles with club tips appear and cyan light dots form along its mantle.",
-      "adulte": "A giant squid with a huge glowing eye, wide arrow-shaped fins, a mass of long arms with hooked suckers and rows of bright cyan lights.",
-      "ancien": "A colossal elder squid with scarred mantle, white whale-tooth trophies stuck in its skin and a pale ghostly halo of light around its head."
-    },
-    "habitats": ["abyssal", "ombre", "orage", "brume", "glace", "crypte", "lune"]
+  "habitats": [
+   "ruines",
+   "abyssal",
+   "rouille",
+   "corail",
+   "sable",
+   "canyon",
+   "mécanique"
+  ]
+ },
+ {
+  "rang": 12,
+  "nom": "Calmarée",
+  "id": "calmaree",
+  "rarete": "rare",
+  "posture": "flottant",
+  "taille_finale": "colossale",
+  "fiche": "Calmar géant des fosses obscures qui fait monter les marées en battant de ses immenses bras.",
+  "caractere": "mystérieux et colérique",
+  "apparence": "Long torpedo squid with triangular head fins, giant eyes and many arms; deep violet, navy blue and bright cyan photophores.",
+  "stades": {
+   "bebe": "A tiny violet capsule shape with two enormous eyes and a fringe of very short arms.",
+   "enfant": "A pair of small triangular fins appears on its head and its arms grow longer with suckers.",
+   "ado": "Its body stretches into a torpedo, two long hunting tentacles with club tips appear and cyan light dots form along its mantle.",
+   "adulte": "A giant squid with a huge glowing eye, wide arrow-shaped fins, a mass of long arms with hooked suckers and rows of bright cyan lights.",
+   "ancien": "A colossal elder squid with scarred mantle, white whale-tooth trophies stuck in its skin and a pale ghostly halo of light around its head."
   },
-  {
-    "rang": 13,
-    "nom": "Récifort",
-    "id": "recifort",
-    "rarete": "rare",
-    "posture": "quadrupède",
-    "taille_finale": "colossale",
-    "fiche": "Tortue colossale dont la carapace porte un récif de corail entier, abri de milliers de petits poissons.",
-    "caractere": "patient et protecteur",
-    "apparence": "Massive sea turtle with flipper legs and a coral reef growing on its shell; turquoise skin, deep blue shell and pink and violet corals.",
-    "stades": {
-      "bebe": "A small round turtle with a smooth blue shell, big eyes and four tiny flippers.",
-      "enfant": "Small coral buds sprout on its shell and its flippers grow longer with claws.",
-      "ado": "Its shell becomes ridged and wide, coral branches grow taller and a sharp beak forms.",
-      "adulte": "A huge four-legged turtle with thick armored flipper-legs, a beaked head and a full colorful coral reef with anemones on its shell.",
-      "ancien": "An ancient turtle with a deeply cracked shell carrying a reef with tiny sunken ruins, long seaweed beard and calm glowing eyes."
-    },
-    "habitats": ["corail", "lagon", "abyssal", "sable", "ruines", "montagne"]
+  "habitats": [
+   "abyssal",
+   "ombre",
+   "orage",
+   "brume",
+   "glace",
+   "crypte",
+   "lune"
+  ]
+ },
+ {
+  "rang": 13,
+  "nom": "Récifort",
+  "id": "recifort",
+  "rarete": "rare",
+  "posture": "quadrupède",
+  "taille_finale": "colossale",
+  "fiche": "Tortue colossale dont la carapace porte un récif de corail entier, abri de milliers de petits poissons.",
+  "caractere": "patient et protecteur",
+  "apparence": "Massive sea turtle with flipper legs and a coral reef growing on its shell; turquoise skin, deep blue shell and pink and violet corals.",
+  "stades": {
+   "bebe": "A small round turtle with a smooth blue shell, big eyes and four tiny flippers.",
+   "enfant": "Small coral buds sprout on its shell and its flippers grow longer with claws.",
+   "ado": "Its shell becomes ridged and wide, coral branches grow taller and a sharp beak forms.",
+   "adulte": "A huge four-legged turtle with thick armored flipper-legs, a beaked head and a full colorful coral reef with anemones on its shell.",
+   "ancien": "An ancient turtle with a deeply cracked shell carrying a reef with tiny sunken ruins, long white beard and calm glowing eyes."
   },
-  {
-    "rang": 14,
-    "nom": "Ondulame",
-    "id": "ondulame",
-    "rarete": "rare",
-    "posture": "serpentin",
-    "taille_finale": "colossale",
-    "fiche": "Serpent de mer aux nageoires tranchantes qui fend les vagues des tempêtes et coule les navires imprudents.",
-    "caractere": "farouche et orgueilleux",
-    "apparence": "Very long sea serpent with blade-like fins and scaled body; deep blue, turquoise fins and silver blade edges.",
-    "stades": {
-      "bebe": "A short round little sea snake with big eyes and a tiny frilly fin on its head.",
-      "enfant": "Its body lengthens with visible scales and a small fin crest appears along its back.",
-      "ado": "The back fins turn into sharp blade-shaped spines and two long frill fins open behind its head.",
-      "adulte": "A gigantic coiling sea serpent with a row of silver-edged blade fins, a wide fan frill around its head and glowing cyan eyes.",
-      "ancien": "An ancient serpent with chipped blade fins, barnacle-crusted scales, a long kelp mane and an old anchor chain wrapped around its body."
-    },
-    "habitats": ["abyssal", "orage", "lagon", "corail", "brume", "glace", "ruines"]
+  "habitats": [
+   "corail",
+   "lagon",
+   "abyssal",
+   "sable",
+   "ruines",
+   "montagne"
+  ]
+ },
+ {
+  "rang": 14,
+  "nom": "Ondulame",
+  "id": "ondulame",
+  "rarete": "rare",
+  "posture": "serpentin",
+  "taille_finale": "colossale",
+  "fiche": "Serpent de mer aux nageoires tranchantes qui fend les vagues des tempêtes et coule les navires imprudents.",
+  "caractere": "farouche et orgueilleux",
+  "apparence": "Very long sea serpent with blade-like fins and scaled body; deep blue, turquoise fins and silver blade edges.",
+  "stades": {
+   "bebe": "A short round little sea snake with big eyes and a tiny frilly fin on its head.",
+   "enfant": "Its body lengthens with visible scales and a small fin crest appears along its back.",
+   "ado": "The back fins turn into sharp blade-shaped spines and two long frill fins open behind its head.",
+   "adulte": "A gigantic coiling sea serpent with a row of silver-edged blade fins, a wide fan frill around its head and glowing cyan eyes.",
+   "ancien": "An ancient serpent with chipped blade fins, barnacle-crusted scales, a long kelp mane and an old anchor chain wrapped around its body."
   },
-  {
-    "rang": 15,
-    "nom": "Noctilune",
-    "id": "noctilune",
-    "rarete": "légendaire",
-    "posture": "flottant",
-    "taille_finale": "colossale",
-    "fiche": "Reine des abysses, immense méduse couronnée dont la lumière guide toutes les créatures des profondeurs.",
-    "caractere": "majestueuse et sereine",
-    "apparence": "Giant crowned jellyfish with a translucent bell, glowing veins and endless ribbon tentacles; violet, deep blue and luminous cyan.",
-    "stades": {
-      "bebe": "A tiny translucent violet bell with big eyes and a single short glowing tentacle.",
-      "enfant": "A ring of thin tentacles appears under its bell and soft cyan veins light up inside it.",
-      "ado": "Its bell becomes tall and scalloped, frilly ribbon arms grow under it and a small spiky crest rises on top.",
-      "adulte": "A colossal glowing jellyfish queen with a scalloped bell, a crown of light spikes, long trailing ribbon arms and hundreds of shining tentacles.",
-      "ancien": "An ancient queen jellyfish with a larger star-shaped crown, a halo of floating pearls and tiny moons, and tentacles flowing like a royal train."
-    },
-    "habitats": ["abyssal", "lune", "aurore", "cosmique", "cristal", "néon", "arcane", "brume"]
-  }
+  "habitats": [
+   "abyssal",
+   "orage",
+   "lagon",
+   "corail",
+   "brume",
+   "glace",
+   "ruines"
+  ]
+ },
+ {
+  "rang": 15,
+  "nom": "Noctilune",
+  "id": "noctilune",
+  "rarete": "légendaire",
+  "posture": "flottant",
+  "taille_finale": "colossale",
+  "fiche": "Reine des abysses, immense méduse couronnée dont la lumière guide toutes les créatures des profondeurs.",
+  "caractere": "majestueuse et sereine",
+  "apparence": "Giant crowned jellyfish with a translucent bell, glowing veins and endless ribbon tentacles; violet, deep blue and luminous cyan.",
+  "stades": {
+   "bebe": "A tiny translucent violet bell with big eyes and a single short glowing tentacle.",
+   "enfant": "A ring of thin tentacles appears under its bell and soft cyan veins light up inside it.",
+   "ado": "Its bell becomes tall and scalloped, frilly ribbon arms grow under it and a small spiky crest rises on top.",
+   "adulte": "A colossal glowing jellyfish queen with a scalloped bell, a crown of light spikes, long trailing ribbon arms and hundreds of shining tentacles.",
+   "ancien": "An ancient queen jellyfish with a larger star-shaped crown, a halo of floating pearls and tiny moons, and tentacles flowing like a royal train."
+  },
+  "habitats": [
+   "abyssal",
+   "lune",
+   "aurore",
+   "cosmique",
+   "cristal",
+   "néon",
+   "arcane",
+   "brume"
+  ]
+ }
 ]
