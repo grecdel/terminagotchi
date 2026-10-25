@@ -12,7 +12,9 @@ c.paste(a, (0, 0)); c.paste(b, (a.width, 0))
 (ICI / "images").mkdir(exist_ok=True)
 tmp = ICI / "images" / f"_{nom}.png"; c.save(tmp)
 env = dict(os.environ, TOL="80", TROU="40")
-if c.getpixel((2, 2))[1] > 150: env["VERT"] = "1"
+fond = c.getpixel((2, 2))
+if fond[1] > 150: env["VERT"] = "1"
+elif fond[2] > 150 and fond[0] < 100: env["FOND"] = ",".join(map(str, fond))
 subprocess.run([sys.executable, str(ICI.parent / "animation" / "decoupe_bande.py"), str(tmp), str(ICI / "images" / nom),
                 "bebe", "enfant", "ado", "adulte", "ancien"], env=env, check=True)
 tmp.unlink()

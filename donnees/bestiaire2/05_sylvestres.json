@@ -1,287 +1,404 @@
 [
-  {
-    "rang": 1,
-    "nom": "Glandouille",
-    "id": "glandouille",
-    "rarete": "commune",
-    "posture": "bipède",
-    "taille_finale": "petite",
-    "fiche": "Un gland paresseux qui s'est réveillé un jour avec des jambes et passe ses siestes au pied des chênes de la forêt.",
-    "caractere": "paresseux et câlin",
-    "apparence": "Acorn-shaped creature with a wooden shell body and a textured cap; colors: warm brown, moss green, amber.",
-    "stades": {
-      "bebe": "A round acorn with huge sleepy eyes, a tiny cap and no limbs, rolling on the ground.",
-      "enfant": "Two stubby twig legs and small leaf hands sprout from the acorn body.",
-      "ado": "The body stretches into an oval, the cap grows a curly stem antenna and the arms become thin branches.",
-      "adulte": "A sturdy acorn knight with a thick spiky cap like a helmet, bark-plated arms and a hazelnut shield.",
-      "ancien": "An elder acorn with a cracked shell, a long moss beard, a tiny sapling growing from its cap and a twig cane."
-    },
-    "habitats": ["forêt", "prairie", "jungle", "montagne", "ruines", "champignonnière"]
+ {
+  "rang": 1,
+  "nom": "Glandouille",
+  "id": "glandouille",
+  "rarete": "commune",
+  "posture": "bipède",
+  "taille_finale": "petite",
+  "fiche": "Un gland paresseux qui s'est réveillé un jour avec des jambes et passe ses siestes au pied des chênes de la forêt.",
+  "caractere": "paresseux et câlin",
+  "apparence": "Acorn-shaped creature with a wooden shell body and a textured cap; colors: warm brown, moss green, amber.",
+  "stades": {
+   "bebe": "A round acorn with huge sleepy eyes, a tiny cap and no limbs, rolling on the ground.",
+   "enfant": "Two stubby twig legs and small leaf hands sprout from the acorn body.",
+   "ado": "The body stretches into an oval, the cap grows a curly stem antenna and the arms become thin branches.",
+   "adulte": "A sturdy acorn knight with a thick spiky cap like a helmet, bark-plated arms and a hazelnut shield.",
+   "ancien": "An elder acorn with a cracked shell, a long moss beard, a tiny sapling growing from its cap and a twig cane."
   },
-  {
-    "rang": 2,
-    "nom": "Sporichon",
-    "id": "sporichon",
-    "rarete": "commune",
-    "posture": "bipède",
-    "taille_finale": "petite",
-    "fiche": "Un petit champignon guerrier qui défend les cercles de fées des sous-bois humides avec un courage démesuré.",
-    "caractere": "téméraire et bavard",
-    "apparence": "Mushroom warrior with a spotted cap, pale fleshy stem body and gills; colors: red, cream white, moss green.",
-    "stades": {
-      "bebe": "A tiny round button mushroom with big eyes and a red spotted cap, no arms.",
-      "enfant": "Little stubby arms appear and it carries a pine needle like a sword.",
-      "ado": "The stem lengthens into a lean body, the cap widens into a wide-brimmed hat and a gill skirt forms.",
-      "adulte": "A muscular mushroom fighter with a hard armored cap, a bark breastplate and a sharpened thorn spear.",
-      "ancien": "A veteran mushroom with a sagging wrinkled cap, glowing spores drifting around it, a lichen beard and a mossy staff."
-    },
-    "habitats": ["champignonnière", "forêt", "marais", "brume", "jungle", "crypte", "ruines"]
+  "habitats": [
+   "forêt",
+   "prairie",
+   "jungle",
+   "montagne",
+   "ruines",
+   "champignonnière"
+  ]
+ },
+ {
+  "rang": 2,
+  "nom": "Sporichon",
+  "id": "sporichon",
+  "rarete": "commune",
+  "posture": "bipède",
+  "taille_finale": "petite",
+  "fiche": "Un petit champignon guerrier qui défend les cercles de fées des sous-bois humides avec un courage démesuré.",
+  "caractere": "téméraire et bavard",
+  "apparence": "Mushroom warrior with a spotted cap, pale fleshy stem body and gills; colors: red, cream white, moss green.",
+  "stades": {
+   "bebe": "A tiny round button mushroom with big eyes and a red spotted cap, no arms.",
+   "enfant": "Little stubby arms appear and it carries a pine needle like a sword.",
+   "ado": "The stem lengthens into a lean body, the cap widens into a wide-brimmed hat and a gill skirt forms.",
+   "adulte": "A muscular mushroom fighter with a hard armored cap, a bark breastplate and a sharpened thorn spear.",
+   "ancien": "A veteran mushroom with a sagging wrinkled cap, glowing spores drifting around it, a lichen beard and a mossy staff."
   },
-  {
-    "rang": 3,
-    "nom": "Pétalouette",
-    "id": "petalouette",
-    "rarete": "commune",
-    "posture": "volant",
-    "taille_finale": "petite",
-    "fiche": "Une créature-fleur qui volette de prairie en prairie en battant de ses pétales comme des ailes.",
-    "caractere": "joyeuse et étourdie",
-    "apparence": "Flower creature with petal wings, a pollen-yellow fuzzy core and stem tail; colors: pink, sunny yellow, leaf green.",
-    "stades": {
-      "bebe": "A closed round flower bud with big eyes and two tiny leaf flaps.",
-      "enfant": "The bud half-opens into four petal wings and a short curly stem tail appears.",
-      "ado": "The petals become long butterfly-like wings, two stamen antennae sprout and the body turns slender.",
-      "adulte": "A graceful flying blossom with six layered glowing petal wings, a pollen mane and a long trailing vine tail.",
-      "ancien": "An elder bloom with faded silvery petals, seed puffs floating like a halo and drooping wise stamen whiskers."
-    },
-    "habitats": ["prairie", "forêt", "jungle", "montagne", "soleil", "lagon", "nuage"]
+  "habitats": [
+   "champignonnière",
+   "forêt",
+   "marais",
+   "brume",
+   "jungle",
+   "crypte",
+   "ruines"
+  ]
+ },
+ {
+  "rang": 3,
+  "nom": "Pétalouette",
+  "id": "petalouette",
+  "rarete": "commune",
+  "posture": "volant",
+  "taille_finale": "petite",
+  "fiche": "Une créature-fleur qui volette de prairie en prairie en battant de ses pétales comme des ailes.",
+  "caractere": "joyeuse et étourdie",
+  "apparence": "Flower creature with petal wings, a pollen-yellow fuzzy core and stem tail; colors: pink, sunny yellow, leaf green.",
+  "stades": {
+   "bebe": "A closed round flower bud with big eyes and two tiny leaf flaps.",
+   "enfant": "The bud half-opens into four petal wings and a short curly stem tail appears.",
+   "ado": "The petals become long butterfly-like wings, two stamen antennae sprout and the body turns slender.",
+   "adulte": "A graceful flying blossom with six layered glowing petal wings, a pollen mane and a long trailing vine tail.",
+   "ancien": "An elder bloom with faded silvery petals, seed puffs floating like a halo and drooping wise stamen whiskers."
   },
-  {
-    "rang": 4,
-    "nom": "Mousselin",
-    "id": "mousselin",
-    "rarete": "commune",
-    "posture": "amorphe",
-    "taille_finale": "moyenne",
-    "fiche": "Une boule de mousse vivante qui s'étale sur les pierres humides des sous-bois et absorbe la rosée.",
-    "caractere": "doux et rêveur",
-    "apparence": "Soft blob made of thick fluffy moss with tiny sprouts and dewdrops; colors: moss green, dark green, dew blue.",
-    "stades": {
-      "bebe": "A small round moss puff with two shiny eyes and a single dewdrop on top.",
-      "enfant": "The blob flattens a little and grows tiny fern fronds like ears and a few clover sprouts.",
-      "ado": "It becomes a wide wobbly moss mound with pseudopod lumps and small pebbles stuck inside.",
-      "adulte": "A large shaggy moss mass with long dangling moss tendrils, embedded stones and glowing dewdrop eyes.",
-      "ancien": "An ancient moss hill with tiny flowers and a miniature tree growing on its back and lichen patterns like wrinkles."
-    },
-    "habitats": ["forêt", "marais", "brume", "ruines", "champignonnière", "montagne", "jungle"]
+  "habitats": [
+   "prairie",
+   "forêt",
+   "jungle",
+   "montagne",
+   "soleil",
+   "lagon",
+   "nuage"
+  ]
+ },
+ {
+  "rang": 4,
+  "nom": "Mousselin",
+  "id": "mousselin",
+  "rarete": "commune",
+  "posture": "amorphe",
+  "taille_finale": "moyenne",
+  "fiche": "Une boule de mousse vivante qui s'étale sur les pierres humides des sous-bois et absorbe la rosée.",
+  "caractere": "doux et rêveur",
+  "apparence": "Soft blob made of thick fluffy moss with tiny sprouts and dewdrops; colors: moss green, dark green, dew blue.",
+  "stades": {
+   "bebe": "A small round moss puff with two shiny eyes and a single dewdrop on top.",
+   "enfant": "The blob flattens a little and grows tiny fern fronds like ears and a few clover sprouts.",
+   "ado": "It becomes a wide wobbly moss mound with pseudopod lumps and small pebbles stuck inside.",
+   "adulte": "A large shaggy moss mass with long dangling moss tendrils, embedded stones and glowing dewdrop eyes.",
+   "ancien": "An ancient moss hill with tiny flowers and a miniature tree growing on its back and lichen patterns like wrinkles."
   },
-  {
-    "rang": 5,
-    "nom": "Ronceau",
-    "id": "ronceau",
-    "rarete": "commune",
-    "posture": "quadrupède",
-    "taille_finale": "moyenne",
-    "fiche": "Un renardeau fait de ronces entrelacées qui chaparde les baies dans les haies des lisières.",
-    "caractere": "malicieux et gourmand",
-    "apparence": "Fox-like quadruped woven from bramble vines with thorns and berries; colors: dark green, bramble brown, berry purple.",
-    "stades": {
-      "bebe": "A round ball of soft vines with big eyes, two leaf ears and a single blackberry nose.",
-      "enfant": "Four little vine legs and a bushy leafy tail appear.",
-      "ado": "The body lengthens like a fox, thorns grow along the back and berry clusters hang from the tail.",
-      "adulte": "A sleek bramble fox with a mane of sharp thorns, claw-like thorn paws and a whip-like thorny tail.",
-      "ancien": "An old bramble fox with dried silver-grey vines, a white flower crown and berries like glowing beads."
-    },
-    "habitats": ["forêt", "prairie", "jungle", "ruines", "montagne", "marais"]
+  "habitats": [
+   "forêt",
+   "marais",
+   "brume",
+   "ruines",
+   "champignonnière",
+   "montagne",
+   "jungle"
+  ]
+ },
+ {
+  "rang": 5,
+  "nom": "Ronceau",
+  "id": "ronceau",
+  "rarete": "commune",
+  "posture": "quadrupède",
+  "taille_finale": "moyenne",
+  "fiche": "Un renardeau fait de ronces entrelacées qui chaparde les baies dans les haies des lisières.",
+  "caractere": "malicieux et gourmand",
+  "apparence": "Fox-like quadruped woven from bramble vines with thorns and berries; colors: dark green, bramble brown, dark red.",
+  "stades": {
+   "bebe": "A round ball of soft vines with big eyes, two leaf ears and a single blackberry nose.",
+   "enfant": "Four little vine legs and a bushy leafy tail appear.",
+   "ado": "The body lengthens like a fox, thorns grow along the back and berry clusters hang from the tail.",
+   "adulte": "A sleek bramble fox with a mane of sharp thorns, claw-like thorn paws and a whip-like thorny tail.",
+   "ancien": "An old bramble fox with dried silver-grey vines, a white flower crown and berries like glowing beads."
   },
-  {
-    "rang": 6,
-    "nom": "Racinelle",
-    "id": "racinelle",
-    "rarete": "commune",
-    "posture": "flottant",
-    "taille_finale": "petite",
-    "fiche": "Un esprit des racines qui flotte sous la terre et remonte la nuit pour veiller sur les jeunes pousses.",
-    "caractere": "timide et attentionnée",
-    "apparence": "Floating root spirit with a bulb head, trailing root tendrils and soft inner glow; colors: pale beige, amber, glowing green.",
-    "stades": {
-      "bebe": "A small round bulb like a radish with big glowing eyes and a single sprout on its head.",
-      "enfant": "Thin root tendrils dangle beneath it and two leaf arms appear.",
-      "ado": "The bulb becomes a teardrop shape, the roots grow long and braided and a glowing core lights up inside.",
-      "adulte": "A tall floating root spirit with a hood of leaves, many writhing luminous roots and amber lantern eyes.",
-      "ancien": "An elder spirit with gnarled knotted roots like a long beard, a halo of floating soil motes and cracked glowing bark."
-    },
-    "habitats": ["forêt", "champignonnière", "ombre", "crypte", "ruines", "brume", "marais"]
+  "habitats": [
+   "forêt",
+   "prairie",
+   "jungle",
+   "ruines",
+   "montagne",
+   "marais"
+  ]
+ },
+ {
+  "rang": 6,
+  "nom": "Racinelle",
+  "id": "racinelle",
+  "rarete": "commune",
+  "posture": "flottant",
+  "taille_finale": "petite",
+  "fiche": "Un esprit des racines qui flotte sous la terre et remonte la nuit pour veiller sur les jeunes pousses.",
+  "caractere": "timide et attentionnée",
+  "apparence": "Floating root spirit with a bulb head, trailing root tendrils and soft inner glow; colors: pale beige, amber, glowing green.",
+  "stades": {
+   "bebe": "A small round bulb like a radish with big glowing eyes and a single sprout on its head.",
+   "enfant": "Thin root tendrils dangle beneath it and two leaf arms appear.",
+   "ado": "The bulb becomes a teardrop shape, the roots grow long and braided and a glowing core lights up inside.",
+   "adulte": "A tall floating root spirit with a hood of leaves, many writhing luminous roots and amber lantern eyes.",
+   "ancien": "An elder spirit with gnarled knotted roots like a long beard, a halo of floating soil motes and cracked glowing bark."
   },
-  {
-    "rang": 7,
-    "nom": "Croquefleur",
-    "id": "croquefleur",
-    "rarete": "peu commune",
-    "posture": "rampant",
-    "taille_finale": "moyenne",
-    "fiche": "Une plante carnivore affamée qui rampe sur ses racines dans les marais et happe tout ce qui bourdonne.",
-    "caractere": "vorace et joueur",
-    "apparence": "Carnivorous plant with a trap-jaw head lined with soft teeth, leafy body and root feet; colors: lime green, crimson, yellow.",
-    "stades": {
-      "bebe": "A round closed pod with big eyes and a tiny smiling seam, sitting on a root nub.",
-      "enfant": "The pod opens into a small trap mouth with soft spikes and two leaf arms sprout.",
-      "ado": "The stem lengthens into a neck, root legs spread for crawling and red dotted lures grow on the jaws.",
-      "adulte": "A big crawling flytrap with a huge crimson jaw full of thorn teeth, several snapping side pods and thick root tentacles.",
-      "ancien": "An ancient trap plant with a woody cracked jaw, drooping vine whiskers, glowing nectar drops and a crown of pale flowers."
-    },
-    "habitats": ["marais", "jungle", "toxique", "forêt", "lagon", "brume"]
+  "habitats": [
+   "forêt",
+   "champignonnière",
+   "ombre",
+   "crypte",
+   "ruines",
+   "brume",
+   "marais"
+  ]
+ },
+ {
+  "rang": 7,
+  "nom": "Croquefleur",
+  "id": "croquefleur",
+  "rarete": "peu commune",
+  "posture": "rampant",
+  "taille_finale": "moyenne",
+  "fiche": "Une plante carnivore affamée qui rampe sur ses racines dans les marais et happe tout ce qui bourdonne.",
+  "caractere": "vorace et joueur",
+  "apparence": "Carnivorous plant with a trap-jaw head lined with soft teeth, leafy body and root feet; colors: lime green, crimson, yellow.",
+  "stades": {
+   "bebe": "A round closed pod with big eyes and a tiny smiling seam, sitting on a root nub.",
+   "enfant": "The pod opens into a small trap mouth with soft spikes and two leaf arms sprout.",
+   "ado": "The stem lengthens into a neck, root legs spread for crawling and red dotted lures grow on the jaws.",
+   "adulte": "A big crawling flytrap with a huge crimson jaw full of thorn teeth, several snapping side pods and thick root tentacles.",
+   "ancien": "An ancient trap plant with a woody cracked jaw, drooping vine whiskers, glowing nectar drops and a crown of pale flowers."
   },
-  {
-    "rang": 8,
-    "nom": "Lampignon",
-    "id": "lampignon",
-    "rarete": "peu commune",
-    "posture": "flottant",
-    "taille_finale": "moyenne",
-    "fiche": "Un champignon lumineux qui flotte dans les grottes et les forêts nocturnes pour guider les voyageurs égarés.",
-    "caractere": "serviable et curieux",
-    "apparence": "Floating bioluminescent mushroom with a lantern-like cap and dangling glowing filaments; colors: teal glow, deep blue, amber.",
-    "stades": {
-      "bebe": "A tiny round glowing mushroom cap with big eyes, floating like a bubble.",
-      "enfant": "A short stem appears below the cap with two tiny dangling glowing threads.",
-      "ado": "The cap widens into a bell shape, more glowing filaments hang like a jellyfish and small leaf fins appear.",
-      "adulte": "A large floating lantern mushroom with a luminous ribbed cap, a cage of bark around a light core and long trailing glow filaments.",
-      "ancien": "An elder lantern with a cracked glowing cap, a curtain of hanging moss, tiny baby mushrooms orbiting it and a soft halo."
-    },
-    "habitats": ["champignonnière", "ombre", "forêt", "brume", "crypte", "cristal", "marais"]
+  "habitats": [
+   "marais",
+   "jungle",
+   "toxique",
+   "forêt",
+   "lagon",
+   "brume"
+  ]
+ },
+ {
+  "rang": 8,
+  "nom": "Lampignon",
+  "id": "lampignon",
+  "rarete": "peu commune",
+  "posture": "flottant",
+  "taille_finale": "moyenne",
+  "fiche": "Un champignon lumineux qui flotte dans les grottes et les forêts nocturnes pour guider les voyageurs égarés.",
+  "caractere": "serviable et curieux",
+  "apparence": "Floating bioluminescent mushroom with a lantern-like cap and dangling glowing filaments; colors: teal glow, deep blue, amber.",
+  "stades": {
+   "bebe": "A tiny round glowing mushroom cap with big eyes, floating like a bubble.",
+   "enfant": "A short stem appears below the cap with two tiny dangling glowing threads.",
+   "ado": "The cap widens into a bell shape, more glowing filaments hang like a jellyfish and small leaf fins appear.",
+   "adulte": "A large floating lantern mushroom with a luminous ribbed cap, a cage of bark around a light core and long trailing glow filaments.",
+   "ancien": "An elder lantern with a cracked glowing cap, a curtain of hanging moss, tiny baby mushrooms orbiting it and a soft halo."
   },
-  {
-    "rang": 9,
-    "nom": "Lianaconda",
-    "id": "lianaconda",
-    "rarete": "peu commune",
-    "posture": "serpentin",
-    "taille_finale": "grande",
-    "fiche": "Un serpent de lianes qui s'enroule autour des grands arbres de la jungle et se confond avec la végétation.",
-    "caractere": "patient et rusé",
-    "apparence": "Snake made of twisted jungle vines with leaf scales and orchid flowers; colors: jungle green, bark brown, orchid magenta.",
-    "stades": {
-      "bebe": "A short round vine coil with a cute bud head and big eyes.",
-      "enfant": "The body lengthens into a small snake and leaf scales start to cover it.",
-      "ado": "The vines braid into a thicker body, tendril whiskers sprout and orchid buds grow along the spine.",
-      "adulte": "A huge coiling vine serpent with a hooded head of broad leaves, blooming orchids and thorny constricting coils.",
-      "ancien": "An ancient vine serpent with a woody hardened body, hanging aerial roots like a beard and a crown of glowing orchids."
-    },
-    "habitats": ["jungle", "forêt", "marais", "ruines", "lagon", "brume", "toxique"]
+  "habitats": [
+   "champignonnière",
+   "ombre",
+   "forêt",
+   "brume",
+   "crypte",
+   "cristal",
+   "marais"
+  ]
+ },
+ {
+  "rang": 9,
+  "nom": "Lianaconda",
+  "id": "lianaconda",
+  "rarete": "peu commune",
+  "posture": "serpentin",
+  "taille_finale": "grande",
+  "fiche": "Un serpent de lianes qui s'enroule autour des grands arbres de la jungle et se confond avec la végétation.",
+  "caractere": "patient et rusé",
+  "apparence": "Snake made of twisted jungle vines with leaf scales and orchid flowers; colors: jungle green, bark brown, orchid orange.",
+  "stades": {
+   "bebe": "A short round vine coil with a cute bud head and big eyes.",
+   "enfant": "The body lengthens into a small snake and leaf scales start to cover it.",
+   "ado": "The vines braid into a thicker body, tendril whiskers sprout and orchid buds grow along the spine.",
+   "adulte": "A huge coiling vine serpent with a hooded head of broad leaves, blooming orange orchids and thorny constricting coils.",
+   "ancien": "An ancient vine serpent with a woody hardened body, hanging aerial roots like a beard and a crown of glowing orange orchids."
   },
-  {
-    "rang": 10,
-    "nom": "Écorcerf",
-    "id": "ecorcerf",
-    "rarete": "peu commune",
-    "posture": "quadrupède",
-    "taille_finale": "grande",
-    "fiche": "Un cerf à la peau d'écorce dont les bois sont de vraies branches feuillues qui changent avec les saisons.",
-    "caractere": "noble et méfiant",
-    "apparence": "Deer-like quadruped with bark skin, branch antlers and leafy tufts; colors: bark brown, leaf green, autumn amber.",
-    "stades": {
-      "bebe": "A round fawn-shaped seedling with big eyes, tiny legs and two little sprouts on its head.",
-      "enfant": "Its legs lengthen like twigs and the sprouts grow into small forked branches.",
-      "ado": "The body becomes slender and bark-plated, the antlers grow wide and leaves sprout on them.",
-      "adulte": "A majestic bark stag with huge branching antlers full of amber leaves, a mossy chest mane and hooves like roots.",
-      "ancien": "An elder stag with enormous bare antlers hung with lichen and birds' nests, a deep-cracked bark hide and a moss beard."
-    },
-    "habitats": ["forêt", "montagne", "prairie", "brume", "toundra", "ruines", "aurore"]
+  "habitats": [
+   "jungle",
+   "forêt",
+   "marais",
+   "ruines",
+   "lagon",
+   "brume",
+   "toxique"
+  ]
+ },
+ {
+  "rang": 10,
+  "nom": "Écorcerf",
+  "id": "ecorcerf",
+  "rarete": "peu commune",
+  "posture": "quadrupède",
+  "taille_finale": "grande",
+  "fiche": "Un cerf à la peau d'écorce dont les bois sont de vraies branches feuillues qui changent avec les saisons.",
+  "caractere": "noble et méfiant",
+  "apparence": "Deer-like quadruped with bark skin, branch antlers and leafy tufts; colors: bark brown, leaf green, autumn amber.",
+  "stades": {
+   "bebe": "A round fawn-shaped seedling with big eyes, tiny legs and two little sprouts on its head.",
+   "enfant": "Its legs lengthen like twigs and the sprouts grow into small forked branches.",
+   "ado": "The body becomes slender and bark-plated, the antlers grow wide and leaves sprout on them.",
+   "adulte": "A majestic bark stag with huge branching antlers full of amber leaves, a mossy chest mane and hooves like roots.",
+   "ancien": "An elder stag with enormous bare antlers hung with lichen and birds' nests, a deep-cracked bark hide and a moss beard."
   },
-  {
-    "rang": 11,
-    "nom": "Nénuphage",
-    "id": "nenuphage",
-    "rarete": "rare",
-    "posture": "quadrupède",
-    "taille_finale": "grande",
-    "fiche": "Un batracien végétal qui se cache sous un nénuphar géant dans les marais et engloutit tout ce qui s'y pose.",
-    "caractere": "placide et glouton",
-    "apparence": "Frog-like swamp plant creature with a giant lily pad back and a wide lotus mouth; colors: swamp green, lotus pink, murky teal.",
-    "stades": {
-      "bebe": "A round green seed pod with big eyes floating on a tiny lily pad.",
-      "enfant": "Four little webbed leaf legs appear and the lily pad grows on its back like a shell.",
-      "ado": "The body flattens like a toad, the mouth widens into a lotus-petal maw and reed spines grow on its sides.",
-      "adulte": "A huge crouching swamp beast with a massive lily pad carapace, a blooming lotus on its head and a gaping petal-lined jaw.",
-      "ancien": "An ancient swamp lord with a cracked lily pad covered in smaller pads and flowers, dangling algae whiskers and glowing lotus eyes."
-    },
-    "habitats": ["marais", "lagon", "jungle", "brume", "eau pétillante", "toxique"]
+  "habitats": [
+   "forêt",
+   "montagne",
+   "prairie",
+   "brume",
+   "toundra",
+   "ruines",
+   "aurore"
+  ]
+ },
+ {
+  "rang": 11,
+  "nom": "Nénuphage",
+  "id": "nenuphage",
+  "rarete": "rare",
+  "posture": "quadrupède",
+  "taille_finale": "grande",
+  "fiche": "Un batracien végétal qui se cache sous un nénuphar géant dans les marais et engloutit tout ce qui s'y pose.",
+  "caractere": "placide et glouton",
+  "apparence": "Frog-like swamp plant creature with a giant lily pad back and a wide lotus mouth; colors: swamp green, lotus white and yellow, murky teal.",
+  "stades": {
+   "bebe": "A round green seed pod with big eyes floating on a tiny lily pad.",
+   "enfant": "Four little webbed leaf legs appear and the lily pad grows on its back like a shell.",
+   "ado": "The body flattens like a toad, the mouth widens into a lotus-petal maw and reed spines grow on its sides.",
+   "adulte": "A huge crouching swamp beast with a massive lily pad carapace, a blooming lotus on its head and a gaping petal-lined jaw.",
+   "ancien": "An ancient swamp lord with a cracked lily pad covered in smaller pads and flowers, dangling algae whiskers and glowing lotus eyes."
   },
-  {
-    "rang": 12,
-    "nom": "Ambrelune",
-    "id": "ambrelune",
-    "rarete": "rare",
-    "posture": "volant",
-    "taille_finale": "moyenne",
-    "fiche": "Une créature de sève et d'ambre aux ailes de feuilles translucides qui ne sort que les nuits de pleine lune.",
-    "caractere": "mystérieuse et calme",
-    "apparence": "Moth-like flyer made of hardened amber resin with translucent leaf wings and a seed core; colors: amber, pale gold, night blue.",
-    "stades": {
-      "bebe": "A round drop of amber resin with big eyes and a tiny seed visible inside.",
-      "enfant": "Two small translucent leaf wings and feathery leaf antennae appear.",
-      "ado": "The body becomes an elongated amber segment and the wings grow large with glowing vein patterns.",
-      "adulte": "A large amber moth with four huge veined leaf wings glowing under moonlight, crystal resin claws and feathery antennae.",
-      "ancien": "An elder amber moth with ancient insects and leaves trapped in its resin body, a crescent moon halo and frayed golden wings."
-    },
-    "habitats": ["forêt", "lune", "brume", "cristal", "ombre", "aurore", "montagne"]
+  "habitats": [
+   "marais",
+   "lagon",
+   "jungle",
+   "brume",
+   "eau pétillante",
+   "toxique"
+  ]
+ },
+ {
+  "rang": 12,
+  "nom": "Ambrelune",
+  "id": "ambrelune",
+  "rarete": "rare",
+  "posture": "volant",
+  "taille_finale": "moyenne",
+  "fiche": "Une créature de sève et d'ambre aux ailes de feuilles translucides qui ne sort que les nuits de pleine lune.",
+  "caractere": "mystérieuse et calme",
+  "apparence": "Moth-like flyer made of hardened amber resin with translucent leaf wings and a seed core; colors: amber, pale gold, night blue.",
+  "stades": {
+   "bebe": "A round drop of amber resin with big eyes and a tiny seed visible inside.",
+   "enfant": "Two small translucent leaf wings and feathery leaf antennae appear.",
+   "ado": "The body becomes an elongated amber segment and the wings grow large with glowing vein patterns.",
+   "adulte": "A large amber moth with four huge veined leaf wings glowing under moonlight, crystal resin claws and feathery antennae.",
+   "ancien": "An elder amber moth with ancient insects and leaves trapped in its resin body, a crescent moon halo and frayed golden wings."
   },
-  {
-    "rang": 13,
-    "nom": "Mycélix",
-    "id": "mycelix",
-    "rarete": "rare",
-    "posture": "multipattes",
-    "taille_finale": "grande",
-    "fiche": "Un mille-pattes de mycélium qui tisse des réseaux souterrains entre les racines de toute une forêt.",
-    "caractere": "discret et intelligent",
-    "apparence": "Many-legged creature made of white fungal threads with mushroom-cap segments; colors: ivory white, mushroom brown, glowing violet.",
-    "stades": {
-      "bebe": "A small round fuzzy ball of white threads with big eyes and two tiny mushroom caps on top.",
-      "enfant": "The body splits into three segments with short thread legs underneath.",
-      "ado": "It grows many segments, each topped with a small mushroom cap, and thread antennae appear.",
-      "adulte": "A long multi-legged fungal crawler with dozens of fiber legs, a shelf-fungus armor on each segment and glowing violet spore vents.",
-      "ancien": "An elder mycelium centipede trailing a web of threads, with huge old bracket fungi plating and a halo of drifting glowing spores."
-    },
-    "habitats": ["champignonnière", "forêt", "crypte", "ombre", "ossuaire", "marais", "ruines", "toxique"]
+  "habitats": [
+   "forêt",
+   "lune",
+   "brume",
+   "cristal",
+   "ombre",
+   "aurore",
+   "montagne"
+  ]
+ },
+ {
+  "rang": 13,
+  "nom": "Mycélix",
+  "id": "mycelix",
+  "rarete": "rare",
+  "posture": "multipattes",
+  "taille_finale": "grande",
+  "fiche": "Un mille-pattes de mycélium qui tisse des réseaux souterrains entre les racines de toute une forêt.",
+  "caractere": "discret et intelligent",
+  "apparence": "Many-legged creature made of white fungal threads with mushroom-cap segments; colors: ivory white, mushroom brown, glowing cyan.",
+  "stades": {
+   "bebe": "A small round fuzzy ball of white threads with big eyes and two tiny mushroom caps on top.",
+   "enfant": "The body splits into three segments with short thread legs underneath.",
+   "ado": "It grows many segments, each topped with a small mushroom cap, and thread antennae appear.",
+   "adulte": "A long multi-legged fungal crawler with dozens of fiber legs, a shelf-fungus armor on each segment and glowing cyan spore vents.",
+   "ancien": "An elder mycelium centipede trailing a web of threads, with huge old bracket fungi plating and a halo of drifting glowing spores."
   },
-  {
-    "rang": 14,
-    "nom": "Chêneroc",
-    "id": "cheneroc",
-    "rarete": "rare",
-    "posture": "bipède",
-    "taille_finale": "colossale",
-    "fiche": "Un arbre animé mi-chêne mi-rocher qui garde les cols des montagnes boisées depuis des siècles.",
-    "caractere": "lent et protecteur",
-    "apparence": "Walking tree giant with oak bark body fused with boulders, root feet and a leafy crown; colors: oak brown, stone grey, moss green.",
-    "stades": {
-      "bebe": "A round stone with a tiny oak sapling on top, big eyes and no limbs.",
-      "enfant": "Two short root legs and twig arms grow from the stone.",
-      "ado": "The sapling thickens into a trunk body, the stone becomes a chest plate and a leafy crown appears.",
-      "adulte": "A massive oak giant with boulder fists, rock-plated shoulders, thick root legs and a wide crown of leaves.",
-      "ancien": "A colossal elder oak with deep-cracked bark, a long hanging moss beard, birds nesting in its crown and runes glowing in the stones."
-    },
-    "habitats": ["forêt", "montagne", "ruines", "canyon", "prairie", "brume"]
+  "habitats": [
+   "champignonnière",
+   "forêt",
+   "crypte",
+   "ombre",
+   "ossuaire",
+   "marais",
+   "ruines",
+   "toxique"
+  ]
+ },
+ {
+  "rang": 14,
+  "nom": "Chêneroc",
+  "id": "cheneroc",
+  "rarete": "rare",
+  "posture": "bipède",
+  "taille_finale": "colossale",
+  "fiche": "Un arbre animé mi-chêne mi-rocher qui garde les cols des montagnes boisées depuis des siècles.",
+  "caractere": "lent et protecteur",
+  "apparence": "Walking tree giant with oak bark body fused with boulders, root feet and a leafy crown; colors: oak brown, stone grey, moss green.",
+  "stades": {
+   "bebe": "A round stone with a tiny oak sapling on top, big eyes and no limbs.",
+   "enfant": "Two short root legs and twig arms grow from the stone.",
+   "ado": "The sapling thickens into a trunk body, the stone becomes a chest plate and a leafy crown appears.",
+   "adulte": "A massive oak giant with boulder fists, rock-plated shoulders, thick root legs and a wide crown of leaves.",
+   "ancien": "A colossal elder oak with deep-cracked bark, a long hanging moss beard, birds nesting in its crown and runes glowing in the stones."
   },
-  {
-    "rang": 15,
-    "nom": "Sylvarque",
-    "id": "sylvarque",
-    "rarete": "légendaire",
-    "posture": "bipède",
-    "taille_finale": "colossale",
-    "fiche": "Le seigneur de toutes les forêts, un arbre-roi millénaire dont chaque pas fait germer une prairie fleurie.",
-    "caractere": "sage et majestueux",
-    "apparence": "Regal tree lord with a white bark body, golden sap veins, a crown of branches and glowing flowers; colors: silver-white bark, gold amber, luminous green.",
-    "stades": {
-      "bebe": "A round glowing seed with big eyes and a single golden leaf on its head.",
-      "enfant": "Two root legs and slim twig arms sprout, with a tiny circlet of buds on its head.",
-      "ado": "The body grows into a slender white-bark sapling with golden veins and a cape of hanging leaves.",
-      "adulte": "A towering tree king with a branching crown full of glowing flowers, golden sap armor, a bark cape and a living staff of vines.",
-      "ancien": "An immortal elder tree lord with a vast canopy crown, flowing moss beard, ancient relic stones in its bark and a radiant halo of pollen light."
-    },
-    "habitats": ["forêt", "prairie", "jungle", "montagne", "soleil", "arcane", "ruines", "aurore"]
-  }
+  "habitats": [
+   "forêt",
+   "montagne",
+   "ruines",
+   "canyon",
+   "prairie",
+   "brume"
+  ]
+ },
+ {
+  "rang": 15,
+  "nom": "Sylvarque",
+  "id": "sylvarque",
+  "rarete": "légendaire",
+  "posture": "bipède",
+  "taille_finale": "colossale",
+  "fiche": "Le seigneur de toutes les forêts, un arbre-roi millénaire dont chaque pas fait germer une prairie fleurie.",
+  "caractere": "sage et majestueux",
+  "apparence": "Regal tree lord with a white bark body, golden sap veins, a crown of branches and glowing flowers; colors: silver-white bark, gold amber, luminous green.",
+  "stades": {
+   "bebe": "A round glowing seed with big eyes and a single golden leaf on its head.",
+   "enfant": "Two root legs and slim twig arms sprout, with a tiny circlet of buds on its head.",
+   "ado": "The body grows into a slender white-bark sapling with golden veins and a cape of hanging leaves.",
+   "adulte": "A towering tree king with a branching crown full of glowing flowers, golden sap armor, a bark cape and a living staff of vines.",
+   "ancien": "An immortal elder tree lord with a vast canopy crown, flowing moss beard, ancient relic stones in its bark and a radiant halo of pollen light."
+  },
+  "habitats": [
+   "forêt",
+   "prairie",
+   "jungle",
+   "montagne",
+   "soleil",
+   "arcane",
+   "ruines",
+   "aurore"
+  ]
+ }
 ]
