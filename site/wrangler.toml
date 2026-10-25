@@ -7,6 +7,11 @@ workers_dev = true
 [assets]
 directory = "./public"
 
+# Anti-triche : secret qui signe les graines des apparitions (voir src/tirage.js).
+# À régler UNE fois, il n'est jamais écrit dans le dépôt :   npx wrangler secret put SECRET_GRAINES
+# (taper une longue valeur au hasard, par exemple la sortie de  openssl rand -hex 32).
+# Sans lui, le site marche mais ne distribue aucune graine : toutes les captures restent « non vérifiées ».
+
 [[d1_databases]]
 binding = "DB"
 database_name = "terminagotchi"

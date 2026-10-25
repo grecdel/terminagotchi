@@ -240,6 +240,10 @@ def main():
             im2.save(base / eid / f"{vid}_{s}.webp", "WEBP", quality=88, method=6)
     print(f"{len(especes)} espèces + {len(secretes)} secrète(s), {len(sprites)} espèces-variantes dessinées")
     print(f"bestiaire.json {len(texte)//1024} Ko, sprites.bin {len(bin_)//1024} Ko, paliers {seuils}")
+    # anti-triche : données du tirage pour le site et vecteurs de test communs (Python / Kotlin / JS)
+    import subprocess
+    import sys
+    subprocess.run([sys.executable, str(RACINE / "donnees/anti_triche/generer.py")], check=True)
 
 
 if __name__ == "__main__":
