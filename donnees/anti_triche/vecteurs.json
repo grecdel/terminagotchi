@@ -1,0 +1,6613 @@
+{
+ "version": 1,
+ "note": "graines factices ; spécification dans pc/tg/tirage.py",
+ "splitmix": [
+  {
+   "valeur": "0000000000000000000000000000000000000000000000000000000000000000",
+   "n": 0,
+   "sorties": [
+    "3246858695411730098",
+    "8468297219712610898",
+    "9688575142214063535",
+    "6637542407642977434",
+    "10154796026202157014",
+    "14067877552498750107"
+   ]
+  },
+  {
+   "valeur": "ffffffffffffffff000000000000000000000000000000000000000000000000",
+   "n": 0,
+   "sorties": [
+    "7664177944472012958",
+    "618443957809618515",
+    "829641632076684202",
+    "3411827949887918533",
+    "8315304166170634348",
+    "12672863847112057010"
+   ]
+  }
+ ],
+ "tirages": [
+  {
+   "valeur": "0000000000000000000000000000000000000000000000000000000000000000",
+   "n": 0,
+   "abyssor": false,
+   "attendu": {
+    "espece": "Heaumbre",
+    "variante": "ombre",
+    "shiny": false,
+    "marque": "un museau qui sent le café",
+    "humeur": "paresseuse",
+    "taille": 196.9,
+    "qualite": 0.685,
+    "potentiel": 77,
+    "stats": {
+     "PV": 55,
+     "ATK": 49,
+     "DEF": 50,
+     "VIT": 46,
+     "INT": 50
+    },
+    "note": 69.1,
+    "rarete": "rare",
+    "stade": "ado"
+   }
+  },
+  {
+   "valeur": "0000000000000000000000000000000000000000000000000000000000000000",
+   "n": 1,
+   "abyssor": false,
+   "attendu": {
+    "espece": "Scintipède",
+    "variante": "classique",
+    "shiny": false,
+    "marque": "des rayures comme un code-barres",
+    "humeur": "bavarde",
+    "taille": 76.9,
+    "qualite": 0.128,
+    "potentiel": 13,
+    "stats": {
+     "PV": 36,
+     "ATK": 43,
+     "DEF": 42,
+     "VIT": 46,
+     "INT": 23
+    },
+    "note": 15.2,
+    "rarete": "commune",
+    "stade": "bebe"
+   }
+  },
+  {
+   "valeur": "0000000000000000000000000000000000000000000000000000000000000000",
+   "n": 2,
+   "abyssor": false,
+   "attendu": {
+    "espece": "Racinelle",
+    "variante": "forêt",
+    "shiny": false,
+    "marque": "un œil qui clignote en binaire",
+    "humeur": "curieuse",
+    "taille": 36.2,
+    "qualite": 0.468,
+    "potentiel": 49,
+    "stats": {
+     "PV": 39,
+     "ATK": 29,
+     "DEF": 34,
+     "VIT": 33,
+     "INT": 64
+    },
+    "note": 45.9,
+    "rarete": "commune",
+    "stade": "enfant"
+   }
+  },
+  {
+   "valeur": "0000000000000000000000000000000000000000000000000000000000000000",
+   "n": 3,
+   "abyssor": false,
+   "attendu": {
+    "espece": "Osselet",
+    "variante": "classique",
+    "shiny": false,
+    "marque": "des rayures comme un code-barres",
+    "humeur": "têtue",
+    "taille": 25.5,
+    "qualite": 0.767,
+    "potentiel": 80,
+    "stats": {
+     "PV": 39,
+     "ATK": 40,
+     "DEF": 36,
+     "VIT": 37,
+     "INT": 27
+    },
+    "note": 46.0,
+    "rarete": "commune",
+    "stade": "bebe"
+   }
+  },
+  {
+   "valeur": "0000000000000000000000000000000000000000000000000000000000000000",
+   "n": 4,
+   "abyssor": false,
+   "attendu": {
+    "espece": "Bourrasquet",
+    "variante": "montagne",
+    "shiny": false,
+    "marque": "une plume de pixel derrière l'oreille",
+    "humeur": "timide",
+    "taille": 27.8,
+    "qualite": 0.397,
+    "potentiel": 39,
+    "stats": {
+     "PV": 31,
+     "ATK": 42,
+     "DEF": 25,
+     "VIT": 55,
+     "INT": 41
+    },
+    "note": 48.6,
+    "rarete": "peu commune",
+    "stade": "bebe"
+   }
+  },
+  {
+   "valeur": "0000000000000000000000000000000000000000000000000000000000000000",
+   "n": 5,
+   "abyssor": false,
+   "attendu": {
+    "espece": "Follanterne",
+    "variante": "marais",
+    "shiny": false,
+    "marque": "des yeux de deux couleurs",
+    "humeur": "gourmande",
+    "taille": 34.7,
+    "qualite": 0.545,
+    "potentiel": 59,
+    "stats": {
+     "PV": 35,
+     "ATK": 28,
+     "DEF": 38,
+     "VIT": 42,
+     "INT": 57
+    },
+    "note": 49.5,
+    "rarete": "peu commune",
+    "stade": "enfant"
+   }
+  },
+  {
+   "valeur": "0000000000000000000000000000000000000000000000000000000000000000",
+   "n": 6,
+   "abyssor": false,
+   "attendu": {
+    "espece": "Pucerise",
+    "variante": "classique",
+    "shiny": false,
+    "marque": "des oreilles légèrement pixelisées",
+    "humeur": "têtue",
+    "taille": 29.3,
+    "qualite": 0.083,
+    "potentiel": 12,
+    "stats": {
+     "PV": 34,
+     "ATK": 23,
+     "DEF": 34,
+     "VIT": 16,
+     "INT": 30
+    },
+    "note": 6.1,
+    "rarete": "commune",
+    "stade": "enfant"
+   }
+  },
+  {
+   "valeur": "0000000000000000000000000000000000000000000000000000000000000000",
+   "n": 7,
+   "abyssor": false,
+   "attendu": {
+    "espece": "Engrenaille",
+    "variante": "classique",
+    "shiny": false,
+    "marque": "une plume de pixel derrière l'oreille",
+    "humeur": "paresseuse",
+    "taille": 210.8,
+    "qualite": 0.4,
+    "potentiel": 41,
+    "stats": {
+     "PV": 41,
+     "ATK": 44,
+     "DEF": 46,
+     "VIT": 46,
+     "INT": 25
+    },
+    "note": 30.4,
+    "rarete": "commune",
+    "stade": "enfant"
+   }
+  },
+  {
+   "valeur": "0000000000000000000000000000000000000000000000000000000000000000",
+   "n": 8,
+   "abyssor": false,
+   "attendu": {
+    "espece": "Auréolin",
+    "variante": "classique",
+    "shiny": false,
+    "marque": "une marque en forme de flèche →",
+    "humeur": "têtue",
+    "taille": 30.2,
+    "qualite": 0.788,
+    "potentiel": 78,
+    "stats": {
+     "PV": 42,
+     "ATK": 48,
+     "DEF": 42,
+     "VIT": 44,
+     "INT": 47
+    },
+    "note": 52.6,
+    "rarete": "peu commune",
+    "stade": "enfant"
+   }
+  },
+  {
+   "valeur": "0000000000000000000000000000000000000000000000000000000000000000",
+   "n": 9,
+   "abyssor": false,
+   "attendu": {
+    "espece": "Miroeil",
+    "variante": "brume",
+    "shiny": false,
+    "marque": "une voix qui résonne comme dans une grotte",
+    "humeur": "taquine",
+    "taille": 86.6,
+    "qualite": 0.256,
+    "potentiel": 24,
+    "stats": {
+     "PV": 30,
+     "ATK": 36,
+     "DEF": 30,
+     "VIT": 67,
+     "INT": 47
+    },
+    "note": 45.4,
+    "rarete": "commune",
+    "stade": "bebe"
+   }
+  },
+  {
+   "valeur": "0000000000000000000000000000000000000000000000000000000000000000",
+   "n": 10,
+   "abyssor": false,
+   "attendu": {
+    "espece": "Millepince",
+    "variante": "classique",
+    "shiny": false,
+    "marque": "des yeux de deux couleurs",
+    "humeur": "têtue",
+    "taille": 264.4,
+    "qualite": 0.004,
+    "potentiel": 5,
+    "stats": {
+     "PV": 43,
+     "ATK": 46,
+     "DEF": 35,
+     "VIT": 53,
+     "INT": 25
+    },
+    "note": 9.9,
+    "rarete": "commune",
+    "stade": "enfant"
+   }
+  },
+  {
+   "valeur": "0000000000000000000000000000000000000000000000000000000000000000",
+   "n": 11,
+   "abyssor": false,
+   "attendu": {
+    "espece": "Bavouille",
+    "variante": "classique",
+    "shiny": false,
+    "marque": "des pattes de longueur différente",
+    "humeur": "calme",
+    "taille": 80.5,
+    "qualite": 0.456,
+    "potentiel": 42,
+    "stats": {
+     "PV": 50,
+     "ATK": 31,
+     "DEF": 45,
+     "VIT": 28,
+     "INT": 42
+    },
+    "note": 32.7,
+    "rarete": "commune",
+    "stade": "enfant"
+   }
+  },
+  {
+   "valeur": "0000000000000000000000000000000000000000000000000000000000000000",
+   "n": 12,
+   "abyssor": false,
+   "attendu": {
+    "espece": "Miroeil",
+    "variante": "ombre",
+    "shiny": false,
+    "marque": "un ventre qui affiche l'heure",
+    "humeur": "bavarde",
+    "taille": 105.0,
+    "qualite": 0.834,
+    "potentiel": 82,
+    "stats": {
+     "PV": 40,
+     "ATK": 48,
+     "DEF": 38,
+     "VIT": 74,
+     "INT": 55
+    },
+    "note": 79.3,
+    "rarete": "épique",
+    "stade": "ado"
+   }
+  },
+  {
+   "valeur": "0000000000000000000000000000000000000000000000000000000000000000",
+   "n": 13,
+   "abyssor": false,
+   "attendu": {
+    "espece": "Golemmur",
+    "variante": "prairie",
+    "shiny": false,
+    "marque": "une crête en forme d'accolade {",
+    "humeur": "taquine",
+    "taille": 554.4,
+    "qualite": 0.656,
+    "potentiel": 68,
+    "stats": {
+     "PV": 48,
+     "ATK": 61,
+     "DEF": 56,
+     "VIT": 51,
+     "INT": 54
+    },
+    "note": 72.6,
+    "rarete": "rare",
+    "stade": "adulte"
+   }
+  },
+  {
+   "valeur": "0000000000000000000000000000000000000000000000000000000000000000",
+   "n": 14,
+   "abyssor": false,
+   "attendu": {
+    "espece": "Corbouh",
+    "variante": "classique",
+    "shiny": false,
+    "marque": "un ronronnement à 440 Hz",
+    "humeur": "têtue",
+    "taille": 81.3,
+    "qualite": 0.09,
+    "potentiel": 10,
+    "stats": {
+     "PV": 26,
+     "ATK": 39,
+     "DEF": 29,
+     "VIT": 56,
+     "INT": 39
+    },
+    "note": 12.9,
+    "rarete": "commune",
+    "stade": "ado"
+   }
+  },
+  {
+   "valeur": "0000000000000000000000000000000000000000000000000000000000000000",
+   "n": 15,
+   "abyssor": false,
+   "attendu": {
+    "espece": "Horlogrif",
+    "variante": "classique",
+    "shiny": false,
+    "marque": "une queue en forme de tilde ~",
+    "humeur": "têtue",
+    "taille": 219.1,
+    "qualite": 0.836,
+    "potentiel": 81,
+    "stats": {
+     "PV": 39,
+     "ATK": 55,
+     "DEF": 37,
+     "VIT": 67,
+     "INT": 54
+    },
+    "note": 58.7,
+    "rarete": "peu commune",
+    "stade": "adulte"
+   }
+  },
+  {
+   "valeur": "0000000000000000000000000000000000000000000000000000000000000000",
+   "n": 16,
+   "abyssor": false,
+   "attendu": {
+    "espece": "Givrichon",
+    "variante": "glace",
+    "shiny": false,
+    "marque": "un grain de beauté en forme de #",
+    "humeur": "timide",
+    "taille": 34.2,
+    "qualite": 0.934,
+    "potentiel": 89,
+    "stats": {
+     "PV": 45,
+     "ATK": 42,
+     "DEF": 38,
+     "VIT": 42,
+     "INT": 29
+    },
+    "note": 69.6,
+    "rarete": "rare",
+    "stade": "bebe"
+   }
+  },
+  {
+   "valeur": "0000000000000000000000000000000000000000000000000000000000000000",
+   "n": 17,
+   "abyssor": false,
+   "attendu": {
+    "espece": "Plouftin",
+    "variante": "classique",
+    "shiny": false,
+    "marque": "un grain de beauté en forme de #",
+    "humeur": "taquine",
+    "taille": 35.8,
+    "qualite": 0.855,
+    "potentiel": 85,
+    "stats": {
+     "PV": 35,
+     "ATK": 28,
+     "DEF": 29,
+     "VIT": 36,
+     "INT": 55
+    },
+    "note": 51.3,
+    "rarete": "peu commune",
+    "stade": "ado"
+   }
+  },
+  {
+   "valeur": "0000000000000000000000000000000000000000000000000000000000000000",
+   "n": 18,
+   "abyssor": false,
+   "attendu": {
+    "espece": "Tritonnet",
+    "variante": "classique",
+    "shiny": false,
+    "marque": "un œil qui clignote en binaire",
+    "humeur": "taquine",
+    "taille": 24.2,
+    "qualite": 0.737,
+    "potentiel": 71,
+    "stats": {
+     "PV": 33,
+     "ATK": 41,
+     "DEF": 35,
+     "VIT": 32,
+     "INT": 41
+    },
+    "note": 45.3,
+    "rarete": "commune",
+    "stade": "ado"
+   }
+  },
+  {
+   "valeur": "0000000000000000000000000000000000000000000000000000000000000000",
+   "n": 19,
+   "abyssor": false,
+   "attendu": {
+    "espece": "Crabouille",
+    "variante": "classique",
+    "shiny": false,
+    "marque": "une tache en forme de @ sur le dos",
+    "humeur": "taquine",
+    "taille": 95.0,
+    "qualite": 0.885,
+    "potentiel": 88,
+    "stats": {
+     "PV": 42,
+     "ATK": 47,
+     "DEF": 49,
+     "VIT": 51,
+     "INT": 34
+    },
+    "note": 57.4,
+    "rarete": "peu commune",
+    "stade": "enfant"
+   }
+  },
+  {
+   "valeur": "0000000000000000000000000000000000000000000000000000000000000000",
+   "n": 20,
+   "abyssor": false,
+   "attendu": {
+    "espece": "Raiyon",
+    "variante": "aurore",
+    "shiny": false,
+    "marque": "une tache en forme de @ sur le dos",
+    "humeur": "timide",
+    "taille": 246.2,
+    "qualite": 0.873,
+    "potentiel": 83,
+    "stats": {
+     "PV": 41,
+     "ATK": 54,
+     "DEF": 42,
+     "VIT": 70,
+     "INT": 56
+    },
+    "note": 81.4,
+    "rarete": "épique",
+    "stade": "ado"
+   }
+  },
+  {
+   "valeur": "0000000000000000000000000000000000000000000000000000000000000000",
+   "n": 21,
+   "abyssor": false,
+   "attendu": {
+    "espece": "Libellance",
+    "variante": "orage",
+    "shiny": false,
+    "marque": "une plume de pixel derrière l'oreille",
+    "humeur": "rêveuse",
+    "taille": 186.1,
+    "qualite": 0.362,
+    "potentiel": 32,
+    "stats": {
+     "PV": 38,
+     "ATK": 43,
+     "DEF": 37,
+     "VIT": 76,
+     "INT": 49
+    },
+    "note": 55.9,
+    "rarete": "peu commune",
+    "stade": "bebe"
+   }
+  },
+  {
+   "valeur": "0000000000000000000000000000000000000000000000000000000000000000",
+   "n": 21,
+   "abyssor": true,
+   "attendu": {
+    "espece": "Abyssor",
+    "variante": "classique",
+    "shiny": false,
+    "marque": "une plume de pixel derrière l'oreille",
+    "humeur": "rêveuse",
+    "taille": 203.0,
+    "qualite": 0.362,
+    "potentiel": 32,
+    "stats": {
+     "PV": 99,
+     "ATK": 97,
+     "DEF": 83,
+     "VIT": 67,
+     "INT": 88
+    },
+    "note": 61.7,
+    "rarete": "mythique",
+    "stade": "bebe"
+   }
+  },
+  {
+   "valeur": "0000000000000000000000000000000000000000000000000000000000000000",
+   "n": 22,
+   "abyssor": false,
+   "attendu": {
+    "espece": "Mantelame",
+    "variante": "jungle",
+    "shiny": false,
+    "marque": "des yeux de deux couleurs",
+    "humeur": "rêveuse",
+    "taille": 184.8,
+    "qualite": 0.771,
+    "potentiel": 76,
+    "stats": {
+     "PV": 52,
+     "ATK": 46,
+     "DEF": 48,
+     "VIT": 43,
+     "INT": 51
+    },
+    "note": 66.3,
+    "rarete": "rare",
+    "stade": "enfant"
+   }
+  },
+  {
+   "valeur": "0000000000000000000000000000000000000000000000000000000000000000",
+   "n": 23,
+   "abyssor": false,
+   "attendu": {
+    "espece": "Bourrasquet",
+    "variante": "montagne",
+    "shiny": false,
+    "marque": "un œil qui clignote en binaire",
+    "humeur": "taquine",
+    "taille": 25.9,
+    "qualite": 0.444,
+    "potentiel": 46,
+    "stats": {
+     "PV": 32,
+     "ATK": 42,
+     "DEF": 29,
+     "VIT": 55,
+     "INT": 41
+    },
+    "note": 51.4,
+    "rarete": "peu commune",
+    "stade": "ado"
+   }
+  },
+  {
+   "valeur": "0000000000000000000000000000000000000000000000000000000000000000",
+   "n": 24,
+   "abyssor": false,
+   "attendu": {
+    "espece": "Bavouille",
+    "variante": "classique",
+    "shiny": false,
+    "marque": "une marque en forme de flèche →",
+    "humeur": "têtue",
+    "taille": 96.9,
+    "qualite": 0.828,
+    "potentiel": 85,
+    "stats": {
+     "PV": 57,
+     "ATK": 37,
+     "DEF": 51,
+     "VIT": 34,
+     "INT": 50
+    },
+    "note": 55.0,
+    "rarete": "peu commune",
+    "stade": "bebe"
+   }
+  },
+  {
+   "valeur": "0000000000000000000000000000000000000000000000000000000000000000",
+   "n": 24,
+   "abyssor": true,
+   "attendu": {
+    "espece": "Abyssor",
+    "variante": "classique",
+    "shiny": false,
+    "marque": "une marque en forme de flèche →",
+    "humeur": "têtue",
+    "taille": 258.5,
+    "qualite": 0.828,
+    "potentiel": 85,
+    "stats": {
+     "PV": 108,
+     "ATK": 104,
+     "DEF": 89,
+     "VIT": 73,
+     "INT": 100
+    },
+    "note": 89.7,
+    "rarete": "mythique",
+    "stade": "bebe"
+   }
+  },
+  {
+   "valeur": "0000000000000000000000000000000000000000000000000000000000000000",
+   "n": 25,
+   "abyssor": false,
+   "attendu": {
+    "espece": "Drapouille",
+    "variante": "classique",
+    "shiny": false,
+    "marque": "une antenne qui capte la radio",
+    "humeur": "paresseuse",
+    "taille": 35.0,
+    "qualite": 0.992,
+    "potentiel": 94,
+    "stats": {
+     "PV": 36,
+     "ATK": 32,
+     "DEF": 35,
+     "VIT": 38,
+     "INT": 59
+    },
+    "note": 60.6,
+    "rarete": "peu commune",
+    "stade": "bebe"
+   }
+  },
+  {
+   "valeur": "0000000000000000000000000000000000000000000000000000000000000000",
+   "n": 26,
+   "abyssor": false,
+   "attendu": {
+    "espece": "Lampiotte",
+    "variante": "crypte",
+    "shiny": false,
+    "marque": "des empreintes en forme de 0 et de 1",
+    "humeur": "rêveuse",
+    "taille": 109.2,
+    "qualite": 0.13,
+    "potentiel": 12,
+    "stats": {
+     "PV": 32,
+     "ATK": 27,
+     "DEF": 25,
+     "VIT": 37,
+     "INT": 60
+    },
+    "note": 31.6,
+    "rarete": "commune",
+    "stade": "adulte"
+   }
+  },
+  {
+   "valeur": "0000000000000000000000000000000000000000000000000000000000000000",
+   "n": 27,
+   "abyssor": false,
+   "attendu": {
+    "espece": "Mutaloupe",
+    "variante": "cristal",
+    "shiny": false,
+    "marque": "des taches disposées comme une constellation",
+    "humeur": "rêveuse",
+    "taille": 101.8,
+    "qualite": 0.631,
+    "potentiel": 63,
+    "stats": {
+     "PV": 37,
+     "ATK": 41,
+     "DEF": 49,
+     "VIT": 46,
+     "INT": 29
+    },
+    "note": 54.6,
+    "rarete": "peu commune",
+    "stade": "bebe"
+   }
+  },
+  {
+   "valeur": "0000000000000000000000000000000000000000000000000000000000000000",
+   "n": 27,
+   "abyssor": true,
+   "attendu": {
+    "espece": "Abyssor",
+    "variante": "classique",
+    "shiny": false,
+    "marque": "des taches disposées comme une constellation",
+    "humeur": "rêveuse",
+    "taille": 271.4,
+    "qualite": 0.631,
+    "potentiel": 63,
+    "stats": {
+     "PV": 104,
+     "ATK": 102,
+     "DEF": 89,
+     "VIT": 68,
+     "INT": 94
+    },
+    "note": 77.9,
+    "rarete": "mythique",
+    "stade": "bebe"
+   }
+  },
+  {
+   "valeur": "0000000000000000000000000000000000000000000000000000000000000000",
+   "n": 28,
+   "abyssor": false,
+   "attendu": {
+    "espece": "Pucerise",
+    "variante": "prairie",
+    "shiny": false,
+    "marque": "une voix qui résonne comme dans une grotte",
+    "humeur": "courageuse",
+    "taille": 32.0,
+    "qualite": 0.207,
+    "potentiel": 25,
+    "stats": {
+     "PV": 37,
+     "ATK": 24,
+     "DEF": 31,
+     "VIT": 21,
+     "INT": 33
+    },
+    "note": 26.0,
+    "rarete": "commune",
+    "stade": "bebe"
+   }
+  },
+  {
+   "valeur": "0000000000000000000000000000000000000000000000000000000000000000",
+   "n": 29,
+   "abyssor": false,
+   "attendu": {
+    "espece": "Tatoublind",
+    "variante": "classique",
+    "shiny": false,
+    "marque": "des yeux de deux couleurs",
+    "humeur": "taquine",
+    "taille": 72.3,
+    "qualite": 0.977,
+    "potentiel": 95,
+    "stats": {
+     "PV": 64,
+     "ATK": 57,
+     "DEF": 52,
+     "VIT": 61,
+     "INT": 39
+    },
+    "note": 68.3,
+    "rarete": "rare",
+    "stade": "enfant"
+   }
+  },
+  {
+   "valeur": "0000000000000000000000000000000000000000000000000000000000000000",
+   "n": 30,
+   "abyssor": false,
+   "attendu": {
+    "espece": "Pavegarde",
+    "variante": "classique",
+    "shiny": false,
+    "marque": "une marque en forme de flèche →",
+    "humeur": "curieuse",
+    "taille": 80.3,
+    "qualite": 0.592,
+    "potentiel": 56,
+    "stats": {
+     "PV": 46,
+     "ATK": 41,
+     "DEF": 35,
+     "VIT": 45,
+     "INT": 29
+    },
+    "note": 39.8,
+    "rarete": "commune",
+    "stade": "ado"
+   }
+  },
+  {
+   "valeur": "0000000000000000000000000000000000000000000000000000000000000000",
+   "n": 31,
+   "abyssor": false,
+   "attendu": {
+    "espece": "Pantinou",
+    "variante": "classique",
+    "shiny": false,
+    "marque": "une tache en forme de @ sur le dos",
+    "humeur": "bavarde",
+    "taille": 78.5,
+    "qualite": 0.089,
+    "potentiel": 12,
+    "stats": {
+     "PV": 30,
+     "ATK": 32,
+     "DEF": 31,
+     "VIT": 23,
+     "INT": 27
+    },
+    "note": 7.5,
+    "rarete": "commune",
+    "stade": "ado"
+   }
+  },
+  {
+   "valeur": "0000000000000000000000000000000000000000000000000000000000000000",
+   "n": 32,
+   "abyssor": false,
+   "attendu": {
+    "espece": "Magmastodonte",
+    "variante": "classique",
+    "shiny": false,
+    "marque": "une petite cicatrice en forme de point-virgule",
+    "humeur": "paresseuse",
+    "taille": 666.0,
+    "qualite": 0.104,
+    "potentiel": 12,
+    "stats": {
+     "PV": 54,
+     "ATK": 56,
+     "DEF": 54,
+     "VIT": 48,
+     "INT": 24
+    },
+    "note": 19.1,
+    "rarete": "commune",
+    "stade": "bebe"
+   }
+  },
+  {
+   "valeur": "0000000000000000000000000000000000000000000000000000000000000000",
+   "n": 33,
+   "abyssor": false,
+   "attendu": {
+    "espece": "Givrichon",
+    "variante": "classique",
+    "shiny": false,
+    "marque": "des taches disposées comme une constellation",
+    "humeur": "timide",
+    "taille": 36.0,
+    "qualite": 0.328,
+    "potentiel": 28,
+    "stats": {
+     "PV": 35,
+     "ATK": 30,
+     "DEF": 31,
+     "VIT": 32,
+     "INT": 21
+    },
+    "note": 20.8,
+    "rarete": "commune",
+    "stade": "enfant"
+   }
+  },
+  {
+   "valeur": "0000000000000000000000000000000000000000000000000000000000000000",
+   "n": 34,
+   "abyssor": false,
+   "attendu": {
+    "espece": "Nébuline",
+    "variante": "classique",
+    "shiny": false,
+    "marque": "une voix qui résonne comme dans une grotte",
+    "humeur": "gourmande",
+    "taille": 28.4,
+    "qualite": 0.568,
+    "potentiel": 57,
+    "stats": {
+     "PV": 51,
+     "ATK": 35,
+     "DEF": 40,
+     "VIT": 24,
+     "INT": 39
+    },
+    "note": 37.3,
+    "rarete": "commune",
+    "stade": "ado"
+   }
+  },
+  {
+   "valeur": "0000000000000000000000000000000000000000000000000000000000000000",
+   "n": 35,
+   "abyssor": false,
+   "attendu": {
+    "espece": "Serpelage",
+    "variante": "lagon",
+    "shiny": false,
+    "marque": "une voix qui résonne comme dans une grotte",
+    "humeur": "joyeuse",
+    "taille": 92.6,
+    "qualite": 0.213,
+    "potentiel": 23,
+    "stats": {
+     "PV": 38,
+     "ATK": 40,
+     "DEF": 35,
+     "VIT": 44,
+     "INT": 23
+    },
+    "note": 39.5,
+    "rarete": "commune",
+    "stade": "adulte"
+   }
+  },
+  {
+   "valeur": "0000000000000000000000000000000000000000000000000000000000000000",
+   "n": 36,
+   "abyssor": false,
+   "attendu": {
+    "espece": "Ectoplouf",
+    "variante": "classique",
+    "shiny": false,
+    "marque": "une ombre qui a un pixel de retard",
+    "humeur": "timide",
+    "taille": 181.1,
+    "qualite": 0.757,
+    "potentiel": 81,
+    "stats": {
+     "PV": 81,
+     "ATK": 45,
+     "DEF": 70,
+     "VIT": 33,
+     "INT": 59
+    },
+    "note": 58.3,
+    "rarete": "peu commune",
+    "stade": "enfant"
+   }
+  },
+  {
+   "valeur": "0000000000000000000000000000000000000000000000000000000000000000",
+   "n": 37,
+   "abyssor": false,
+   "attendu": {
+    "espece": "Ricanombre",
+    "variante": "classique",
+    "shiny": false,
+    "marque": "une antenne qui capte la radio",
+    "humeur": "joyeuse",
+    "taille": 34.0,
+    "qualite": 0.763,
+    "potentiel": 70,
+    "stats": {
+     "PV": 40,
+     "ATK": 29,
+     "DEF": 32,
+     "VIT": 41,
+     "INT": 65
+    },
+    "note": 50.1,
+    "rarete": "peu commune",
+    "stade": "enfant"
+   }
+  },
+  {
+   "valeur": "0000000000000000000000000000000000000000000000000000000000000000",
+   "n": 38,
+   "abyssor": false,
+   "attendu": {
+    "espece": "Racinelle",
+    "variante": "classique",
+    "shiny": false,
+    "marque": "un museau qui sent le café",
+    "humeur": "taquine",
+    "taille": 32.8,
+    "qualite": 0.748,
+    "potentiel": 75,
+    "stats": {
+     "PV": 42,
+     "ATK": 32,
+     "DEF": 39,
+     "VIT": 40,
+     "INT": 67
+    },
+    "note": 50.2,
+    "rarete": "peu commune",
+    "stade": "ado"
+   }
+  },
+  {
+   "valeur": "0000000000000000000000000000000000000000000000000000000000000000",
+   "n": 39,
+   "abyssor": false,
+   "attendu": {
+    "espece": "Glandouille",
+    "variante": "classique",
+    "shiny": false,
+    "marque": "une plume de pixel derrière l'oreille",
+    "humeur": "têtue",
+    "taille": 34.2,
+    "qualite": 0.026,
+    "potentiel": 8,
+    "stats": {
+     "PV": 27,
+     "ATK": 23,
+     "DEF": 24,
+     "VIT": 21,
+     "INT": 29
+    },
+    "note": 1.6,
+    "rarete": "commune",
+    "stade": "enfant"
+   }
+  },
+  {
+   "valeur": "0000000000000000000000000000000000000000000000000000000000000000",
+   "n": 40,
+   "abyssor": false,
+   "attendu": {
+    "espece": "Braisillon",
+    "variante": "classique",
+    "shiny": false,
+    "marque": "des taches disposées comme une constellation",
+    "humeur": "taquine",
+    "taille": 25.3,
+    "qualite": 0.66,
+    "potentiel": 66,
+    "stats": {
+     "PV": 33,
+     "ATK": 35,
+     "DEF": 35,
+     "VIT": 31,
+     "INT": 35
+    },
+    "note": 39.6,
+    "rarete": "commune",
+    "stade": "bebe"
+   }
+  },
+  {
+   "valeur": "0000000000000000000000000000000000000000000000000000000000000000",
+   "n": 41,
+   "abyssor": false,
+   "attendu": {
+    "espece": "Bourrasquet",
+    "variante": "orage",
+    "shiny": false,
+    "marque": "une crête en forme d'accolade {",
+    "humeur": "courageuse",
+    "taille": 27.6,
+    "qualite": 0.203,
+    "potentiel": 17,
+    "stats": {
+     "PV": 25,
+     "ATK": 39,
+     "DEF": 23,
+     "VIT": 52,
+     "INT": 37
+    },
+    "note": 34.9,
+    "rarete": "commune",
+    "stade": "enfant"
+   }
+  },
+  {
+   "valeur": "0000000000000000000000000000000000000000000000000000000000000000",
+   "n": 41,
+   "abyssor": true,
+   "attendu": {
+    "espece": "Abyssor",
+    "variante": "classique",
+    "shiny": false,
+    "marque": "une crête en forme d'accolade {",
+    "humeur": "courageuse",
+    "taille": 221.0,
+    "qualite": 0.203,
+    "potentiel": 17,
+    "stats": {
+     "PV": 96,
+     "ATK": 96,
+     "DEF": 80,
+     "VIT": 63,
+     "INT": 87
+    },
+    "note": 52.2,
+    "rarete": "mythique",
+    "stade": "enfant"
+   }
+  },
+  {
+   "valeur": "0000000000000000000000000000000000000000000000000000000000000000",
+   "n": 42,
+   "abyssor": false,
+   "attendu": {
+    "espece": "Glandouille",
+    "variante": "ruines",
+    "shiny": false,
+    "marque": "des oreilles légèrement pixelisées",
+    "humeur": "bavarde",
+    "taille": 26.1,
+    "qualite": 0.874,
+    "potentiel": 88,
+    "stats": {
+     "PV": 40,
+     "ATK": 38,
+     "DEF": 37,
+     "VIT": 33,
+     "INT": 38
+    },
+    "note": 69.8,
+    "rarete": "rare",
+    "stade": "ado"
+   }
+  },
+  {
+   "valeur": "0000000000000000000000000000000000000000000000000000000000000000",
+   "n": 43,
+   "abyssor": false,
+   "attendu": {
+    "espece": "Infernaille",
+    "variante": "volcan",
+    "shiny": false,
+    "marque": "un ventre qui affiche l'heure",
+    "humeur": "bavarde",
+    "taille": 262.5,
+    "qualite": 0.255,
+    "potentiel": 28,
+    "stats": {
+     "PV": 38,
+     "ATK": 47,
+     "DEF": 47,
+     "VIT": 50,
+     "INT": 29
+    },
+    "note": 43.2,
+    "rarete": "commune",
+    "stade": "enfant"
+   }
+  },
+  {
+   "valeur": "0000000000000000000000000000000000000000000000000000000000000000",
+   "n": 44,
+   "abyssor": false,
+   "attendu": {
+    "espece": "Crânard",
+    "variante": "crypte",
+    "shiny": false,
+    "marque": "des oreilles légèrement pixelisées",
+    "humeur": "têtue",
+    "taille": 28.2,
+    "qualite": 0.13,
+    "potentiel": 14,
+    "stats": {
+     "PV": 35,
+     "ATK": 24,
+     "DEF": 42,
+     "VIT": 22,
+     "INT": 32
+    },
+    "note": 31.7,
+    "rarete": "commune",
+    "stade": "bebe"
+   }
+  },
+  {
+   "valeur": "0000000000000000000000000000000000000000000000000000000000000000",
+   "n": 44,
+   "abyssor": true,
+   "attendu": {
+    "espece": "Abyssor",
+    "variante": "classique",
+    "shiny": false,
+    "marque": "des oreilles légèrement pixelisées",
+    "humeur": "têtue",
+    "taille": 225.4,
+    "qualite": 0.13,
+    "potentiel": 14,
+    "stats": {
+     "PV": 96,
+     "ATK": 94,
+     "DEF": 81,
+     "VIT": 62,
+     "INT": 86
+    },
+    "note": 47.8,
+    "rarete": "mythique",
+    "stade": "bebe"
+   }
+  },
+  {
+   "valeur": "0000000000000000000000000000000000000000000000000000000000000000",
+   "n": 45,
+   "abyssor": false,
+   "attendu": {
+    "espece": "Louvacier",
+    "variante": "toundra",
+    "shiny": false,
+    "marque": "un museau qui sent le café",
+    "humeur": "timide",
+    "taille": 82.4,
+    "qualite": 0.512,
+    "potentiel": 43,
+    "stats": {
+     "PV": 42,
+     "ATK": 45,
+     "DEF": 32,
+     "VIT": 36,
+     "INT": 24
+    },
+    "note": 46.4,
+    "rarete": "commune",
+    "stade": "enfant"
+   }
+  },
+  {
+   "valeur": "0000000000000000000000000000000000000000000000000000000000000000",
+   "n": 46,
+   "abyssor": false,
+   "attendu": {
+    "espece": "Scarabouille",
+    "variante": "classique",
+    "shiny": false,
+    "marque": "une antenne qui capte la radio",
+    "humeur": "courageuse",
+    "taille": 77.8,
+    "qualite": 0.473,
+    "potentiel": 55,
+    "stats": {
+     "PV": 34,
+     "ATK": 37,
+     "DEF": 35,
+     "VIT": 36,
+     "INT": 19
+    },
+    "note": 28.4,
+    "rarete": "commune",
+    "stade": "adulte"
+   }
+  },
+  {
+   "valeur": "0000000000000000000000000000000000000000000000000000000000000000",
+   "n": 47,
+   "abyssor": false,
+   "attendu": {
+    "espece": "Zyeuton",
+    "variante": "brume",
+    "shiny": false,
+    "marque": "une tache en forme de @ sur le dos",
+    "humeur": "curieuse",
+    "taille": 31.0,
+    "qualite": 0.539,
+    "potentiel": 55,
+    "stats": {
+     "PV": 34,
+     "ATK": 27,
+     "DEF": 25,
+     "VIT": 30,
+     "INT": 44
+    },
+    "note": 44.8,
+    "rarete": "commune",
+    "stade": "bebe"
+   }
+  },
+  {
+   "valeur": "0000000000000000000000000000000000000000000000000000000000000000",
+   "n": 48,
+   "abyssor": false,
+   "attendu": {
+    "espece": "Cornichaud",
+    "variante": "ruines",
+    "shiny": false,
+    "marque": "des yeux de deux couleurs",
+    "humeur": "rêveuse",
+    "taille": 107.1,
+    "qualite": 0.589,
+    "potentiel": 53,
+    "stats": {
+     "PV": 37,
+     "ATK": 37,
+     "DEF": 33,
+     "VIT": 33,
+     "INT": 27
+    },
+    "note": 53.8,
+    "rarete": "peu commune",
+    "stade": "adulte"
+   }
+  },
+  {
+   "valeur": "0000000000000000000000000000000000000000000000000000000000000000",
+   "n": 49,
+   "abyssor": false,
+   "attendu": {
+    "espece": "Drapouille",
+    "variante": "classique",
+    "shiny": false,
+    "marque": "un ronronnement à 440 Hz",
+    "humeur": "courageuse",
+    "taille": 26.3,
+    "qualite": 0.11,
+    "potentiel": 10,
+    "stats": {
+     "PV": 23,
+     "ATK": 19,
+     "DEF": 22,
+     "VIT": 24,
+     "INT": 47
+    },
+    "note": 7.7,
+    "rarete": "commune",
+    "stade": "ado"
+   }
+  },
+  {
+   "valeur": "0000000000000000000000000000000000000000000000000000000000000000",
+   "n": 50,
+   "abyssor": false,
+   "attendu": {
+    "espece": "Zapiot",
+    "variante": "orage",
+    "shiny": false,
+    "marque": "des empreintes en forme de 0 et de 1",
+    "humeur": "taquine",
+    "taille": 37.4,
+    "qualite": 0.388,
+    "potentiel": 45,
+    "stats": {
+     "PV": 32,
+     "ATK": 28,
+     "DEF": 33,
+     "VIT": 37,
+     "INT": 50
+    },
+    "note": 39.0,
+    "rarete": "commune",
+    "stade": "enfant"
+   }
+  },
+  {
+   "valeur": "0000000000000000000000000000000000000000000000000000000000000000",
+   "n": 51,
+   "abyssor": false,
+   "attendu": {
+    "espece": "Filcomète",
+    "variante": "nuage",
+    "shiny": false,
+    "marque": "des pattes de longueur différente",
+    "humeur": "calme",
+    "taille": 90.5,
+    "qualite": 0.685,
+    "potentiel": 70,
+    "stats": {
+     "PV": 42,
+     "ATK": 49,
+     "DEF": 36,
+     "VIT": 50,
+     "INT": 29
+    },
+    "note": 64.8,
+    "rarete": "rare",
+    "stade": "enfant"
+   }
+  },
+  {
+   "valeur": "0000000000000000000000000000000000000000000000000000000000000000",
+   "n": 52,
+   "abyssor": false,
+   "attendu": {
+    "espece": "Pupillarque",
+    "variante": "classique",
+    "shiny": false,
+    "marque": "une antenne qui capte la radio",
+    "humeur": "paresseuse",
+    "taille": 248.6,
+    "qualite": 0.257,
+    "potentiel": 19,
+    "stats": {
+     "PV": 40,
+     "ATK": 32,
+     "DEF": 34,
+     "VIT": 45,
+     "INT": 70
+    },
+    "note": 26.1,
+    "rarete": "commune",
+    "stade": "adulte"
+   }
+  },
+  {
+   "valeur": "0000000000000000000000000000000000000000000000000000000000000000",
+   "n": 53,
+   "abyssor": false,
+   "attendu": {
+    "espece": "Bourrasquet",
+    "variante": "classique",
+    "shiny": false,
+    "marque": "une petite cicatrice en forme de point-virgule",
+    "humeur": "timide",
+    "taille": 36.2,
+    "qualite": 0.578,
+    "potentiel": 63,
+    "stats": {
+     "PV": 32,
+     "ATK": 46,
+     "DEF": 29,
+     "VIT": 58,
+     "INT": 46
+    },
+    "note": 40.0,
+    "rarete": "commune",
+    "stade": "bebe"
+   }
+  },
+  {
+   "valeur": "0000000000000000000000000000000000000000000000000000000000000000",
+   "n": 54,
+   "abyssor": false,
+   "attendu": {
+    "espece": "Sulfurette",
+    "variante": "sable",
+    "shiny": false,
+    "marque": "des rayures comme un code-barres",
+    "humeur": "gourmande",
+    "taille": 101.9,
+    "qualite": 0.016,
+    "potentiel": 3,
+    "stats": {
+     "PV": 36,
+     "ATK": 38,
+     "DEF": 30,
+     "VIT": 42,
+     "INT": 21
+    },
+    "note": 23.7,
+    "rarete": "commune",
+    "stade": "bebe"
+   }
+  },
+  {
+   "valeur": "0000000000000000000000000000000000000000000000000000000000000000",
+   "n": 55,
+   "abyssor": false,
+   "attendu": {
+    "espece": "Fumerole",
+    "variante": "volcan",
+    "shiny": false,
+    "marque": "une marque en forme de flèche →",
+    "humeur": "courageuse",
+    "taille": 75.4,
+    "qualite": 0.102,
+    "potentiel": 16,
+    "stats": {
+     "PV": 41,
+     "ATK": 43,
+     "DEF": 34,
+     "VIT": 40,
+     "INT": 25
+    },
+    "note": 25.1,
+    "rarete": "commune",
+    "stade": "ado"
+   }
+  },
+  {
+   "valeur": "0000000000000000000000000000000000000000000000000000000000000000",
+   "n": 56,
+   "abyssor": false,
+   "attendu": {
+    "espece": "Greffon",
+    "variante": "classique",
+    "shiny": false,
+    "marque": "une étoile sur le front",
+    "humeur": "paresseuse",
+    "taille": 93.7,
+    "qualite": 0.186,
+    "potentiel": 9,
+    "stats": {
+     "PV": 33,
+     "ATK": 42,
+     "DEF": 40,
+     "VIT": 30,
+     "INT": 34
+    },
+    "note": 17.6,
+    "rarete": "commune",
+    "stade": "bebe"
+   }
+  },
+  {
+   "valeur": "0000000000000000000000000000000000000000000000000000000000000000",
+   "n": 57,
+   "abyssor": false,
+   "attendu": {
+    "espece": "Cauchemarre",
+    "variante": "ombre",
+    "shiny": false,
+    "marque": "des oreilles légèrement pixelisées",
+    "humeur": "paresseuse",
+    "taille": 227.9,
+    "qualite": 0.038,
+    "potentiel": 5,
+    "stats": {
+     "PV": 48,
+     "ATK": 57,
+     "DEF": 48,
+     "VIT": 54,
+     "INT": 24
+    },
+    "note": 34.5,
+    "rarete": "commune",
+    "stade": "enfant"
+   }
+  },
+  {
+   "valeur": "0000000000000000000000000000000000000000000000000000000000000000",
+   "n": 58,
+   "abyssor": false,
+   "attendu": {
+    "espece": "Nénuphage",
+    "variante": "classique",
+    "shiny": false,
+    "marque": "une plume de pixel derrière l'oreille",
+    "humeur": "fougueuse",
+    "taille": 199.5,
+    "qualite": 0.211,
+    "potentiel": 24,
+    "stats": {
+     "PV": 44,
+     "ATK": 57,
+     "DEF": 41,
+     "VIT": 55,
+     "INT": 28
+    },
+    "note": 23.4,
+    "rarete": "commune",
+    "stade": "enfant"
+   }
+  },
+  {
+   "valeur": "0000000000000000000000000000000000000000000000000000000000000000",
+   "n": 59,
+   "abyssor": false,
+   "attendu": {
+    "espece": "Milgriffe",
+    "variante": "ruines",
+    "shiny": false,
+    "marque": "un hoquet en code Morse",
+    "humeur": "timide",
+    "taille": 73.9,
+    "qualite": 0.554,
+    "potentiel": 54,
+    "stats": {
+     "PV": 38,
+     "ATK": 55,
+     "DEF": 50,
+     "VIT": 49,
+     "INT": 32
+    },
+    "note": 58.1,
+    "rarete": "peu commune",
+    "stade": "bebe"
+   }
+  },
+  {
+   "valeur": "ffffffffffffffff000000000000000000000000000000000000000000000000",
+   "n": 0,
+   "abyssor": false,
+   "attendu": {
+    "espece": "Séraphibou",
+    "variante": "nuage",
+    "shiny": false,
+    "marque": "un grain de beauté en forme de #",
+    "humeur": "calme",
+    "taille": 104.6,
+    "qualite": 0.716,
+    "potentiel": 73,
+    "stats": {
+     "PV": 44,
+     "ATK": 49,
+     "DEF": 38,
+     "VIT": 69,
+     "INT": 46
+    },
+    "note": 64.0,
+    "rarete": "rare",
+    "stade": "bebe"
+   }
+  },
+  {
+   "valeur": "ffffffffffffffff000000000000000000000000000000000000000000000000",
+   "n": 1,
+   "abyssor": false,
+   "attendu": {
+    "espece": "Écorcerf",
+    "variante": "brume",
+    "shiny": false,
+    "marque": "des oreilles légèrement pixelisées",
+    "humeur": "rêveuse",
+    "taille": 255.6,
+    "qualite": 0.43,
+    "potentiel": 45,
+    "stats": {
+     "PV": 45,
+     "ATK": 57,
+     "DEF": 45,
+     "VIT": 58,
+     "INT": 28
+    },
+    "note": 52.8,
+    "rarete": "peu commune",
+    "stade": "enfant"
+   }
+  },
+  {
+   "valeur": "ffffffffffffffff000000000000000000000000000000000000000000000000",
+   "n": 2,
+   "abyssor": false,
+   "attendu": {
+    "espece": "Krillou",
+    "variante": "glace",
+    "shiny": false,
+    "marque": "une tache en forme de @ sur le dos",
+    "humeur": "paresseuse",
+    "taille": 28.5,
+    "qualite": 0.124,
+    "potentiel": 13,
+    "stats": {
+     "PV": 25,
+     "ATK": 32,
+     "DEF": 34,
+     "VIT": 36,
+     "INT": 20
+    },
+    "note": 29.0,
+    "rarete": "commune",
+    "stade": "adulte"
+   }
+  },
+  {
+   "valeur": "ffffffffffffffff000000000000000000000000000000000000000000000000",
+   "n": 3,
+   "abyssor": false,
+   "attendu": {
+    "espece": "Crabouille",
+    "variante": "sable",
+    "shiny": false,
+    "marque": "une petite cicatrice en forme de point-virgule",
+    "humeur": "timide",
+    "taille": 93.9,
+    "qualite": 0.979,
+    "potentiel": 92,
+    "stats": {
+     "PV": 42,
+     "ATK": 47,
+     "DEF": 47,
+     "VIT": 54,
+     "INT": 35
+    },
+    "note": 75.5,
+    "rarete": "épique",
+    "stade": "enfant"
+   }
+  },
+  {
+   "valeur": "ffffffffffffffff000000000000000000000000000000000000000000000000",
+   "n": 4,
+   "abyssor": false,
+   "attendu": {
+    "espece": "Pavegarde",
+    "variante": "classique",
+    "shiny": false,
+    "marque": "des taches disposées comme une constellation",
+    "humeur": "joyeuse",
+    "taille": 80.1,
+    "qualite": 0.28,
+    "potentiel": 30,
+    "stats": {
+     "PV": 43,
+     "ATK": 38,
+     "DEF": 32,
+     "VIT": 40,
+     "INT": 23
+    },
+    "note": 21.1,
+    "rarete": "commune",
+    "stade": "bebe"
+   }
+  },
+  {
+   "valeur": "ffffffffffffffff000000000000000000000000000000000000000000000000",
+   "n": 5,
+   "abyssor": false,
+   "attendu": {
+    "espece": "Cendrouille",
+    "variante": "classique",
+    "shiny": false,
+    "marque": "une voix qui résonne comme dans une grotte",
+    "humeur": "joyeuse",
+    "taille": 102.1,
+    "qualite": 0.622,
+    "potentiel": 63,
+    "stats": {
+     "PV": 47,
+     "ATK": 33,
+     "DEF": 46,
+     "VIT": 28,
+     "INT": 39
+    },
+    "note": 40.5,
+    "rarete": "commune",
+    "stade": "ado"
+   }
+  },
+  {
+   "valeur": "ffffffffffffffff000000000000000000000000000000000000000000000000",
+   "n": 5,
+   "abyssor": true,
+   "attendu": {
+    "espece": "Abyssor",
+    "variante": "classique",
+    "shiny": false,
+    "marque": "une voix qui résonne comme dans une grotte",
+    "humeur": "joyeuse",
+    "taille": 272.2,
+    "qualite": 0.622,
+    "potentiel": 63,
+    "stats": {
+     "PV": 104,
+     "ATK": 102,
+     "DEF": 89,
+     "VIT": 70,
+     "INT": 93
+    },
+    "note": 77.3,
+    "rarete": "mythique",
+    "stade": "ado"
+   }
+  },
+  {
+   "valeur": "ffffffffffffffff000000000000000000000000000000000000000000000000",
+   "n": 6,
+   "abyssor": false,
+   "attendu": {
+    "espece": "Éclipsard",
+    "variante": "classique",
+    "shiny": false,
+    "marque": "un ronronnement à 440 Hz",
+    "humeur": "bavarde",
+    "taille": 75.2,
+    "qualite": 0.83,
+    "potentiel": 78,
+    "stats": {
+     "PV": 52,
+     "ATK": 38,
+     "DEF": 46,
+     "VIT": 46,
+     "INT": 79
+    },
+    "note": 59.4,
+    "rarete": "peu commune",
+    "stade": "bebe"
+   }
+  },
+  {
+   "valeur": "ffffffffffffffff000000000000000000000000000000000000000000000000",
+   "n": 7,
+   "abyssor": false,
+   "attendu": {
+    "espece": "Givrichon",
+    "variante": "aurore",
+    "shiny": false,
+    "marque": "des empreintes en forme de 0 et de 1",
+    "humeur": "paresseuse",
+    "taille": 30.0,
+    "qualite": 0.385,
+    "potentiel": 36,
+    "stats": {
+     "PV": 35,
+     "ATK": 33,
+     "DEF": 30,
+     "VIT": 35,
+     "INT": 22
+    },
+    "note": 41.5,
+    "rarete": "commune",
+    "stade": "ado"
+   }
+  },
+  {
+   "valeur": "ffffffffffffffff000000000000000000000000000000000000000000000000",
+   "n": 8,
+   "abyssor": false,
+   "attendu": {
+    "espece": "Cailloute",
+    "variante": "canyon",
+    "shiny": true,
+    "marque": "des empreintes en forme de 0 et de 1",
+    "humeur": "gourmande",
+    "taille": 79.0,
+    "qualite": 0.375,
+    "potentiel": 34,
+    "stats": {
+     "PV": 35,
+     "ATK": 38,
+     "DEF": 37,
+     "VIT": 36,
+     "INT": 33
+    },
+    "note": 54.1,
+    "rarete": "peu commune",
+    "stade": "ado",
+    "teinte": 0.629
+   }
+  },
+  {
+   "valeur": "ffffffffffffffff000000000000000000000000000000000000000000000000",
+   "n": 9,
+   "abyssor": false,
+   "attendu": {
+    "espece": "Golemmur",
+    "variante": "forêt",
+    "shiny": false,
+    "marque": "une étoile sur le front",
+    "humeur": "paresseuse",
+    "taille": 707.4,
+    "qualite": 0.111,
+    "potentiel": 12,
+    "stats": {
+     "PV": 39,
+     "ATK": 52,
+     "DEF": 45,
+     "VIT": 43,
+     "INT": 47
+    },
+    "note": 35.8,
+    "rarete": "commune",
+    "stade": "enfant"
+   }
+  },
+  {
+   "valeur": "ffffffffffffffff000000000000000000000000000000000000000000000000",
+   "n": 10,
+   "abyssor": false,
+   "attendu": {
+    "espece": "Ricanos",
+    "variante": "desert",
+    "shiny": false,
+    "marque": "une étoile sur le front",
+    "humeur": "courageuse",
+    "taille": 81.0,
+    "qualite": 0.659,
+    "potentiel": 69,
+    "stats": {
+     "PV": 48,
+     "ATK": 50,
+     "DEF": 39,
+     "VIT": 43,
+     "INT": 29
+    },
+    "note": 56.3,
+    "rarete": "peu commune",
+    "stade": "enfant"
+   }
+  },
+  {
+   "valeur": "ffffffffffffffff000000000000000000000000000000000000000000000000",
+   "n": 11,
+   "abyssor": false,
+   "attendu": {
+    "espece": "Tiquetac",
+    "variante": "forêt",
+    "shiny": false,
+    "marque": "une voix qui résonne comme dans une grotte",
+    "humeur": "bavarde",
+    "taille": 83.6,
+    "qualite": 0.702,
+    "potentiel": 68,
+    "stats": {
+     "PV": 41,
+     "ATK": 31,
+     "DEF": 35,
+     "VIT": 48,
+     "INT": 61
+    },
+    "note": 64.8,
+    "rarete": "rare",
+    "stade": "bebe"
+   }
+  },
+  {
+   "valeur": "ffffffffffffffff000000000000000000000000000000000000000000000000",
+   "n": 12,
+   "abyssor": false,
+   "attendu": {
+    "espece": "Pétalouette",
+    "variante": "forêt",
+    "shiny": false,
+    "marque": "un reflet arc-en-ciel sur le pelage",
+    "humeur": "gourmande",
+    "taille": 32.4,
+    "qualite": 0.049,
+    "potentiel": 5,
+    "stats": {
+     "PV": 21,
+     "ATK": 30,
+     "DEF": 18,
+     "VIT": 43,
+     "INT": 27
+    },
+    "note": 24.5,
+    "rarete": "commune",
+    "stade": "enfant"
+   }
+  },
+  {
+   "valeur": "ffffffffffffffff000000000000000000000000000000000000000000000000",
+   "n": 13,
+   "abyssor": false,
+   "attendu": {
+    "espece": "Lanternix",
+    "variante": "ombre",
+    "shiny": false,
+    "marque": "une plume de pixel derrière l'oreille",
+    "humeur": "paresseuse",
+    "taille": 35.9,
+    "qualite": 0.796,
+    "potentiel": 74,
+    "stats": {
+     "PV": 43,
+     "ATK": 33,
+     "DEF": 40,
+     "VIT": 46,
+     "INT": 58
+    },
+    "note": 65.6,
+    "rarete": "rare",
+    "stade": "bebe"
+   }
+  },
+  {
+   "valeur": "ffffffffffffffff000000000000000000000000000000000000000000000000",
+   "n": 14,
+   "abyssor": false,
+   "attendu": {
+    "espece": "Plumange",
+    "variante": "aurore",
+    "shiny": false,
+    "marque": "des yeux de deux couleurs",
+    "humeur": "timide",
+    "taille": 34.9,
+    "qualite": 0.869,
+    "potentiel": 88,
+    "stats": {
+     "PV": 34,
+     "ATK": 38,
+     "DEF": 36,
+     "VIT": 54,
+     "INT": 43
+    },
+    "note": 75.0,
+    "rarete": "épique",
+    "stade": "bebe"
+   }
+  },
+  {
+   "valeur": "ffffffffffffffff000000000000000000000000000000000000000000000000",
+   "n": 15,
+   "abyssor": false,
+   "attendu": {
+    "espece": "Gouttelin",
+    "variante": "forêt",
+    "shiny": false,
+    "marque": "des yeux de deux couleurs",
+    "humeur": "paresseuse",
+    "taille": 24.8,
+    "qualite": 0.886,
+    "potentiel": 88,
+    "stats": {
+     "PV": 56,
+     "ATK": 32,
+     "DEF": 47,
+     "VIT": 28,
+     "INT": 41
+    },
+    "note": 74.7,
+    "rarete": "épique",
+    "stade": "bebe"
+   }
+  },
+  {
+   "valeur": "ffffffffffffffff000000000000000000000000000000000000000000000000",
+   "n": 16,
+   "abyssor": false,
+   "attendu": {
+    "espece": "Trigueule",
+    "variante": "ossuaire",
+    "shiny": false,
+    "marque": "un hoquet en code Morse",
+    "humeur": "paresseuse",
+    "taille": 268.4,
+    "qualite": 0.054,
+    "potentiel": 10,
+    "stats": {
+     "PV": 44,
+     "ATK": 61,
+     "DEF": 46,
+     "VIT": 56,
+     "INT": 27
+    },
+    "note": 36.8,
+    "rarete": "commune",
+    "stade": "ado"
+   }
+  },
+  {
+   "valeur": "ffffffffffffffff000000000000000000000000000000000000000000000000",
+   "n": 17,
+   "abyssor": false,
+   "attendu": {
+    "espece": "Momiaou",
+    "variante": "desert",
+    "shiny": false,
+    "marque": "un ronronnement à 440 Hz",
+    "humeur": "têtue",
+    "taille": 101.2,
+    "qualite": 0.398,
+    "potentiel": 43,
+    "stats": {
+     "PV": 42,
+     "ATK": 47,
+     "DEF": 41,
+     "VIT": 47,
+     "INT": 27
+    },
+    "note": 42.8,
+    "rarete": "commune",
+    "stade": "enfant"
+   }
+  },
+  {
+   "valeur": "ffffffffffffffff000000000000000000000000000000000000000000000000",
+   "n": 18,
+   "abyssor": false,
+   "attendu": {
+    "espece": "Auréolin",
+    "variante": "classique",
+    "shiny": false,
+    "marque": "un éternuement qui fait des étincelles",
+    "humeur": "timide",
+    "taille": 34.0,
+    "qualite": 0.193,
+    "potentiel": 19,
+    "stats": {
+     "PV": 31,
+     "ATK": 39,
+     "DEF": 34,
+     "VIT": 36,
+     "INT": 38
+    },
+    "note": 16.9,
+    "rarete": "commune",
+    "stade": "bebe"
+   }
+  },
+  {
+   "valeur": "ffffffffffffffff000000000000000000000000000000000000000000000000",
+   "n": 19,
+   "abyssor": false,
+   "attendu": {
+    "espece": "Groinfer",
+    "variante": "classique",
+    "shiny": false,
+    "marque": "un œil qui clignote en binaire",
+    "humeur": "bavarde",
+    "taille": 80.8,
+    "qualite": 0.08,
+    "potentiel": 3,
+    "stats": {
+     "PV": 27,
+     "ATK": 29,
+     "DEF": 22,
+     "VIT": 28,
+     "INT": 15
+    },
+    "note": 4.8,
+    "rarete": "commune",
+    "stade": "enfant"
+   }
+  },
+  {
+   "valeur": "ffffffffffffffff000000000000000000000000000000000000000000000000",
+   "n": 20,
+   "abyssor": false,
+   "attendu": {
+    "espece": "Tentaclou",
+    "variante": "classique",
+    "shiny": false,
+    "marque": "des rayures comme un code-barres",
+    "humeur": "taquine",
+    "taille": 25.5,
+    "qualite": 0.459,
+    "potentiel": 46,
+    "stats": {
+     "PV": 42,
+     "ATK": 29,
+     "DEF": 41,
+     "VIT": 21,
+     "INT": 39
+    },
+    "note": 29.7,
+    "rarete": "commune",
+    "stade": "enfant"
+   }
+  },
+  {
+   "valeur": "ffffffffffffffff000000000000000000000000000000000000000000000000",
+   "n": 21,
+   "abyssor": false,
+   "attendu": {
+    "espece": "Bourrasquet",
+    "variante": "classique",
+    "shiny": false,
+    "marque": "des oreilles légèrement pixelisées",
+    "humeur": "gourmande",
+    "taille": 26.9,
+    "qualite": 0.792,
+    "potentiel": 82,
+    "stats": {
+     "PV": 37,
+     "ATK": 46,
+     "DEF": 34,
+     "VIT": 62,
+     "INT": 47
+    },
+    "note": 52.9,
+    "rarete": "peu commune",
+    "stade": "enfant"
+   }
+  },
+  {
+   "valeur": "ffffffffffffffff000000000000000000000000000000000000000000000000",
+   "n": 22,
+   "abyssor": false,
+   "attendu": {
+    "espece": "Tortunivers",
+    "variante": "classique",
+    "shiny": false,
+    "marque": "des oreilles légèrement pixelisées",
+    "humeur": "taquine",
+    "taille": 483.6,
+    "qualite": 0.251,
+    "potentiel": 25,
+    "stats": {
+     "PV": 60,
+     "ATK": 39,
+     "DEF": 67,
+     "VIT": 37,
+     "INT": 52
+    },
+    "note": 29.0,
+    "rarete": "commune",
+    "stade": "enfant"
+   }
+  },
+  {
+   "valeur": "ffffffffffffffff000000000000000000000000000000000000000000000000",
+   "n": 23,
+   "abyssor": false,
+   "attendu": {
+    "espece": "Plouftin",
+    "variante": "eau_petillante",
+    "shiny": false,
+    "marque": "une plume de pixel derrière l'oreille",
+    "humeur": "gourmande",
+    "taille": 26.4,
+    "qualite": 0.341,
+    "potentiel": 41,
+    "stats": {
+     "PV": 31,
+     "ATK": 22,
+     "DEF": 24,
+     "VIT": 30,
+     "INT": 43
+    },
+    "note": 41.1,
+    "rarete": "commune",
+    "stade": "adulte"
+   }
+  },
+  {
+   "valeur": "ffffffffffffffff000000000000000000000000000000000000000000000000",
+   "n": 24,
+   "abyssor": false,
+   "attendu": {
+    "espece": "Fourmidable",
+    "variante": "classique",
+    "shiny": false,
+    "marque": "des rayures comme un code-barres",
+    "humeur": "rêveuse",
+    "taille": 80.5,
+    "qualite": 0.306,
+    "potentiel": 31,
+    "stats": {
+     "PV": 32,
+     "ATK": 32,
+     "DEF": 28,
+     "VIT": 32,
+     "INT": 35
+    },
+    "note": 20.5,
+    "rarete": "commune",
+    "stade": "bebe"
+   }
+  },
+  {
+   "valeur": "ffffffffffffffff000000000000000000000000000000000000000000000000",
+   "n": 25,
+   "abyssor": false,
+   "attendu": {
+    "espece": "Pyrodrac",
+    "variante": "montagne",
+    "shiny": false,
+    "marque": "un hoquet en code Morse",
+    "humeur": "taquine",
+    "taille": 237.6,
+    "qualite": 0.128,
+    "potentiel": 10,
+    "stats": {
+     "PV": 38,
+     "ATK": 43,
+     "DEF": 33,
+     "VIT": 69,
+     "INT": 40
+    },
+    "note": 40.9,
+    "rarete": "commune",
+    "stade": "enfant"
+   }
+  },
+  {
+   "valeur": "ffffffffffffffff000000000000000000000000000000000000000000000000",
+   "n": 26,
+   "abyssor": false,
+   "attendu": {
+    "espece": "Plouftin",
+    "variante": "classique",
+    "shiny": false,
+    "marque": "une plume de pixel derrière l'oreille",
+    "humeur": "timide",
+    "taille": 24.0,
+    "qualite": 0.825,
+    "potentiel": 86,
+    "stats": {
+     "PV": 37,
+     "ATK": 29,
+     "DEF": 31,
+     "VIT": 38,
+     "INT": 50
+    },
+    "note": 49.5,
+    "rarete": "peu commune",
+    "stade": "bebe"
+   }
+  },
+  {
+   "valeur": "ffffffffffffffff000000000000000000000000000000000000000000000000",
+   "n": 27,
+   "abyssor": false,
+   "attendu": {
+    "espece": "Engrenaille",
+    "variante": "neon",
+    "shiny": false,
+    "marque": "un ronronnement à 440 Hz",
+    "humeur": "rêveuse",
+    "taille": 220.0,
+    "qualite": 0.565,
+    "potentiel": 58,
+    "stats": {
+     "PV": 41,
+     "ATK": 48,
+     "DEF": 53,
+     "VIT": 45,
+     "INT": 29
+    },
+    "note": 57.7,
+    "rarete": "peu commune",
+    "stade": "bebe"
+   }
+  },
+  {
+   "valeur": "ffffffffffffffff000000000000000000000000000000000000000000000000",
+   "n": 28,
+   "abyssor": false,
+   "attendu": {
+    "espece": "Nautiloque",
+    "variante": "classique",
+    "shiny": false,
+    "marque": "un ventre qui affiche l'heure",
+    "humeur": "fougueuse",
+    "taille": 83.3,
+    "qualite": 0.063,
+    "potentiel": 5,
+    "stats": {
+     "PV": 36,
+     "ATK": 29,
+     "DEF": 32,
+     "VIT": 41,
+     "INT": 57
+    },
+    "note": 12.4,
+    "rarete": "commune",
+    "stade": "ado"
+   }
+  },
+  {
+   "valeur": "ffffffffffffffff000000000000000000000000000000000000000000000000",
+   "n": 29,
+   "abyssor": false,
+   "attendu": {
+    "espece": "Gloupi",
+    "variante": "classique",
+    "shiny": false,
+    "marque": "une antenne qui capte la radio",
+    "humeur": "têtue",
+    "taille": 101.7,
+    "qualite": 0.755,
+    "potentiel": 72,
+    "stats": {
+     "PV": 55,
+     "ATK": 30,
+     "DEF": 40,
+     "VIT": 22,
+     "INT": 35
+    },
+    "note": 46.4,
+    "rarete": "commune",
+    "stade": "ado"
+   }
+  },
+  {
+   "valeur": "ffffffffffffffff000000000000000000000000000000000000000000000000",
+   "n": 30,
+   "abyssor": false,
+   "attendu": {
+    "espece": "Heaumeur",
+    "variante": "classique",
+    "shiny": false,
+    "marque": "une voix qui résonne comme dans une grotte",
+    "humeur": "timide",
+    "taille": 272.6,
+    "qualite": 0.01,
+    "potentiel": 8,
+    "stats": {
+     "PV": 43,
+     "ATK": 38,
+     "DEF": 37,
+     "VIT": 29,
+     "INT": 40
+    },
+    "note": 8.1,
+    "rarete": "commune",
+    "stade": "bebe"
+   }
+  },
+  {
+   "valeur": "ffffffffffffffff000000000000000000000000000000000000000000000000",
+   "n": 31,
+   "abyssor": false,
+   "attendu": {
+    "espece": "Crânard",
+    "variante": "ombre",
+    "shiny": false,
+    "marque": "une plume de pixel derrière l'oreille",
+    "humeur": "paresseuse",
+    "taille": 32.4,
+    "qualite": 0.754,
+    "potentiel": 78,
+    "stats": {
+     "PV": 47,
+     "ATK": 34,
+     "DEF": 49,
+     "VIT": 31,
+     "INT": 44
+    },
+    "note": 65.8,
+    "rarete": "rare",
+    "stade": "enfant"
+   }
+  },
+  {
+   "valeur": "ffffffffffffffff000000000000000000000000000000000000000000000000",
+   "n": 32,
+   "abyssor": false,
+   "attendu": {
+    "espece": "Flamouche",
+    "variante": "classique",
+    "shiny": false,
+    "marque": "une crête en forme d'accolade {",
+    "humeur": "calme",
+    "taille": 25.4,
+    "qualite": 0.935,
+    "potentiel": 89,
+    "stats": {
+     "PV": 36,
+     "ATK": 37,
+     "DEF": 35,
+     "VIT": 57,
+     "INT": 40
+    },
+    "note": 58.2,
+    "rarete": "peu commune",
+    "stade": "enfant"
+   }
+  },
+  {
+   "valeur": "ffffffffffffffff000000000000000000000000000000000000000000000000",
+   "n": 33,
+   "abyssor": false,
+   "attendu": {
+    "espece": "Tibiarachne",
+    "variante": "classique",
+    "shiny": false,
+    "marque": "une queue en forme de tilde ~",
+    "humeur": "taquine",
+    "taille": 93.5,
+    "qualite": 0.045,
+    "potentiel": 10,
+    "stats": {
+     "PV": 36,
+     "ATK": 46,
+     "DEF": 47,
+     "VIT": 52,
+     "INT": 24
+    },
+    "note": 12.3,
+    "rarete": "commune",
+    "stade": "ado"
+   }
+  },
+  {
+   "valeur": "ffffffffffffffff000000000000000000000000000000000000000000000000",
+   "n": 34,
+   "abyssor": false,
+   "attendu": {
+    "espece": "Écorcerf",
+    "variante": "brume",
+    "shiny": false,
+    "marque": "un hoquet en code Morse",
+    "humeur": "joyeuse",
+    "taille": 265.1,
+    "qualite": 0.968,
+    "potentiel": 90,
+    "stats": {
+     "PV": 52,
+     "ATK": 65,
+     "DEF": 53,
+     "VIT": 64,
+     "INT": 34
+    },
+    "note": 85.0,
+    "rarete": "légendaire",
+    "stade": "ado"
+   }
+  },
+  {
+   "valeur": "ffffffffffffffff000000000000000000000000000000000000000000000000",
+   "n": 35,
+   "abyssor": false,
+   "attendu": {
+    "espece": "Tiquetac",
+    "variante": "classique",
+    "shiny": false,
+    "marque": "une tache en forme de @ sur le dos",
+    "humeur": "timide",
+    "taille": 93.2,
+    "qualite": 0.151,
+    "potentiel": 9,
+    "stats": {
+     "PV": 32,
+     "ATK": 22,
+     "DEF": 27,
+     "VIT": 36,
+     "INT": 53
+    },
+    "note": 14.4,
+    "rarete": "commune",
+    "stade": "bebe"
+   }
+  },
+  {
+   "valeur": "ffffffffffffffff000000000000000000000000000000000000000000000000",
+   "n": 35,
+   "abyssor": true,
+   "attendu": {
+    "espece": "Abyssor",
+    "variante": "classique",
+    "shiny": false,
+    "marque": "une tache en forme de @ sur le dos",
+    "humeur": "timide",
+    "taille": 248.6,
+    "qualite": 0.151,
+    "potentiel": 9,
+    "stats": {
+     "PV": 97,
+     "ATK": 92,
+     "DEF": 80,
+     "VIT": 60,
+     "INT": 87
+    },
+    "note": 49.1,
+    "rarete": "mythique",
+    "stade": "bebe"
+   }
+  },
+  {
+   "valeur": "ffffffffffffffff000000000000000000000000000000000000000000000000",
+   "n": 36,
+   "abyssor": false,
+   "attendu": {
+    "espece": "Pétalouette",
+    "variante": "prairie",
+    "shiny": false,
+    "marque": "une plume de pixel derrière l'oreille",
+    "humeur": "paresseuse",
+    "taille": 34.0,
+    "qualite": 0.562,
+    "potentiel": 54,
+    "stats": {
+     "PV": 29,
+     "ATK": 39,
+     "DEF": 25,
+     "VIT": 49,
+     "INT": 35
+    },
+    "note": 48.4,
+    "rarete": "peu commune",
+    "stade": "adulte"
+   }
+  },
+  {
+   "valeur": "ffffffffffffffff000000000000000000000000000000000000000000000000",
+   "n": 37,
+   "abyssor": false,
+   "attendu": {
+    "espece": "Scarabouille",
+    "variante": "classique",
+    "shiny": false,
+    "marque": "une antenne qui capte la radio",
+    "humeur": "curieuse",
+    "taille": 100.9,
+    "qualite": 0.747,
+    "potentiel": 78,
+    "stats": {
+     "PV": 37,
+     "ATK": 42,
+     "DEF": 37,
+     "VIT": 36,
+     "INT": 26
+    },
+    "note": 44.8,
+    "rarete": "commune",
+    "stade": "enfant"
+   }
+  },
+  {
+   "valeur": "ffffffffffffffff000000000000000000000000000000000000000000000000",
+   "n": 38,
+   "abyssor": false,
+   "attendu": {
+    "espece": "Cendrouille",
+    "variante": "classique",
+    "shiny": false,
+    "marque": "des pattes de longueur différente",
+    "humeur": "timide",
+    "taille": 103.5,
+    "qualite": 0.701,
+    "potentiel": 75,
+    "stats": {
+     "PV": 49,
+     "ATK": 35,
+     "DEF": 46,
+     "VIT": 31,
+     "INT": 41
+    },
+    "note": 45.3,
+    "rarete": "commune",
+    "stade": "enfant"
+   }
+  },
+  {
+   "valeur": "ffffffffffffffff000000000000000000000000000000000000000000000000",
+   "n": 39,
+   "abyssor": false,
+   "attendu": {
+    "espece": "Louvacier",
+    "variante": "montagne",
+    "shiny": false,
+    "marque": "un œil qui clignote en binaire",
+    "humeur": "paresseuse",
+    "taille": 72.9,
+    "qualite": 0.08,
+    "potentiel": 6,
+    "stats": {
+     "PV": 37,
+     "ATK": 38,
+     "DEF": 29,
+     "VIT": 30,
+     "INT": 16
+    },
+    "note": 29.4,
+    "rarete": "commune",
+    "stade": "ado"
+   }
+  },
+  {
+   "valeur": "ffffffffffffffff000000000000000000000000000000000000000000000000",
+   "n": 40,
+   "abyssor": false,
+   "attendu": {
+    "espece": "Anguillon",
+    "variante": "classique",
+    "shiny": false,
+    "marque": "une étoile sur le front",
+    "humeur": "fougueuse",
+    "taille": 96.2,
+    "qualite": 0.812,
+    "potentiel": 83,
+    "stats": {
+     "PV": 44,
+     "ATK": 43,
+     "DEF": 40,
+     "VIT": 46,
+     "INT": 35
+    },
+    "note": 51.9,
+    "rarete": "peu commune",
+    "stade": "enfant"
+   }
+  },
+  {
+   "valeur": "ffffffffffffffff000000000000000000000000000000000000000000000000",
+   "n": 41,
+   "abyssor": false,
+   "attendu": {
+    "espece": "Pyrodrac",
+    "variante": "canyon",
+    "shiny": false,
+    "marque": "une petite cicatrice en forme de point-virgule",
+    "humeur": "joyeuse",
+    "taille": 206.4,
+    "qualite": 0.586,
+    "potentiel": 61,
+    "stats": {
+     "PV": 45,
+     "ATK": 49,
+     "DEF": 42,
+     "VIT": 78,
+     "INT": 49
+    },
+    "note": 69.3,
+    "rarete": "rare",
+    "stade": "enfant"
+   }
+  },
+  {
+   "valeur": "ffffffffffffffff000000000000000000000000000000000000000000000000",
+   "n": 42,
+   "abyssor": false,
+   "attendu": {
+    "espece": "Ricanombre",
+    "variante": "classique",
+    "shiny": false,
+    "marque": "des empreintes en forme de 0 et de 1",
+    "humeur": "timide",
+    "taille": 36.3,
+    "qualite": 0.603,
+    "potentiel": 61,
+    "stats": {
+     "PV": 39,
+     "ATK": 29,
+     "DEF": 29,
+     "VIT": 41,
+     "INT": 62
+    },
+    "note": 40.5,
+    "rarete": "commune",
+    "stade": "bebe"
+   }
+  },
+  {
+   "valeur": "ffffffffffffffff000000000000000000000000000000000000000000000000",
+   "n": 43,
+   "abyssor": false,
+   "attendu": {
+    "espece": "Givrichon",
+    "variante": "glace",
+    "shiny": false,
+    "marque": "des empreintes en forme de 0 et de 1",
+    "humeur": "bavarde",
+    "taille": 36.2,
+    "qualite": 0.897,
+    "potentiel": 92,
+    "stats": {
+     "PV": 44,
+     "ATK": 43,
+     "DEF": 39,
+     "VIT": 41,
+     "INT": 31
+    },
+    "note": 67.4,
+    "rarete": "rare",
+    "stade": "bebe"
+   }
+  },
+  {
+   "valeur": "ffffffffffffffff000000000000000000000000000000000000000000000000",
+   "n": 44,
+   "abyssor": false,
+   "attendu": {
+    "espece": "Zapiot",
+    "variante": "classique",
+    "shiny": false,
+    "marque": "un museau qui sent le café",
+    "humeur": "joyeuse",
+    "taille": 32.2,
+    "qualite": 0.536,
+    "potentiel": 52,
+    "stats": {
+     "PV": 36,
+     "ATK": 27,
+     "DEF": 34,
+     "VIT": 40,
+     "INT": 49
+    },
+    "note": 35.4,
+    "rarete": "commune",
+    "stade": "enfant"
+   }
+  },
+  {
+   "valeur": "ffffffffffffffff000000000000000000000000000000000000000000000000",
+   "n": 45,
+   "abyssor": false,
+   "attendu": {
+    "espece": "Filcomète",
+    "variante": "classique",
+    "shiny": false,
+    "marque": "une tache en forme de @ sur le dos",
+    "humeur": "timide",
+    "taille": 92.9,
+    "qualite": 0.202,
+    "potentiel": 23,
+    "stats": {
+     "PV": 38,
+     "ATK": 37,
+     "DEF": 31,
+     "VIT": 42,
+     "INT": 22
+    },
+    "note": 16.4,
+    "rarete": "commune",
+    "stade": "bebe"
+   }
+  },
+  {
+   "valeur": "ffffffffffffffff000000000000000000000000000000000000000000000000",
+   "n": 46,
+   "abyssor": false,
+   "attendu": {
+    "espece": "Pucerise",
+    "variante": "classique",
+    "shiny": false,
+    "marque": "un œil qui clignote en binaire",
+    "humeur": "timide",
+    "taille": 24.7,
+    "qualite": 0.289,
+    "potentiel": 26,
+    "stats": {
+     "PV": 38,
+     "ATK": 24,
+     "DEF": 34,
+     "VIT": 19,
+     "INT": 33
+    },
+    "note": 18.4,
+    "rarete": "commune",
+    "stade": "enfant"
+   }
+  },
+  {
+   "valeur": "ffffffffffffffff000000000000000000000000000000000000000000000000",
+   "n": 47,
+   "abyssor": false,
+   "attendu": {
+    "espece": "Croquefleur",
+    "variante": "classique",
+    "shiny": false,
+    "marque": "un reflet arc-en-ciel sur le pelage",
+    "humeur": "calme",
+    "taille": 111.5,
+    "qualite": 0.624,
+    "potentiel": 64,
+    "stats": {
+     "PV": 53,
+     "ATK": 36,
+     "DEF": 56,
+     "VIT": 29,
+     "INT": 47
+    },
+    "note": 43.9,
+    "rarete": "commune",
+    "stade": "enfant"
+   }
+  },
+  {
+   "valeur": "ffffffffffffffff000000000000000000000000000000000000000000000000",
+   "n": 48,
+   "abyssor": false,
+   "attendu": {
+    "espece": "Krillou",
+    "variante": "classique",
+    "shiny": false,
+    "marque": "des yeux de deux couleurs",
+    "humeur": "calme",
+    "taille": 27.4,
+    "qualite": 0.499,
+    "potentiel": 51,
+    "stats": {
+     "PV": 32,
+     "ATK": 38,
+     "DEF": 41,
+     "VIT": 42,
+     "INT": 23
+    },
+    "note": 32.1,
+    "rarete": "commune",
+    "stade": "enfant"
+   }
+  },
+  {
+   "valeur": "ffffffffffffffff000000000000000000000000000000000000000000000000",
+   "n": 49,
+   "abyssor": false,
+   "attendu": {
+    "espece": "Tibiarachne",
+    "variante": "classique",
+    "shiny": false,
+    "marque": "un grain de beauté en forme de #",
+    "humeur": "timide",
+    "taille": 107.6,
+    "qualite": 0.783,
+    "potentiel": 79,
+    "stats": {
+     "PV": 47,
+     "ATK": 57,
+     "DEF": 59,
+     "VIT": 63,
+     "INT": 33
+    },
+    "note": 56.6,
+    "rarete": "peu commune",
+    "stade": "ado"
+   }
+  },
+  {
+   "valeur": "ffffffffffffffff000000000000000000000000000000000000000000000000",
+   "n": 50,
+   "abyssor": false,
+   "attendu": {
+    "espece": "Zyeuton",
+    "variante": "arcane",
+    "shiny": false,
+    "marque": "une crête en forme d'accolade {",
+    "humeur": "têtue",
+    "taille": 25.1,
+    "qualite": 0.3,
+    "potentiel": 20,
+    "stats": {
+     "PV": 31,
+     "ATK": 18,
+     "DEF": 19,
+     "VIT": 26,
+     "INT": 39
+    },
+    "note": 35.4,
+    "rarete": "commune",
+    "stade": "enfant"
+   }
+  },
+  {
+   "valeur": "ffffffffffffffff000000000000000000000000000000000000000000000000",
+   "n": 51,
+   "abyssor": false,
+   "attendu": {
+    "espece": "Goulichon",
+    "variante": "marais",
+    "shiny": false,
+    "marque": "une ombre qui a un pixel de retard",
+    "humeur": "timide",
+    "taille": 85.9,
+    "qualite": 0.81,
+    "potentiel": 82,
+    "stats": {
+     "PV": 36,
+     "ATK": 45,
+     "DEF": 39,
+     "VIT": 40,
+     "INT": 39
+    },
+    "note": 63.2,
+    "rarete": "rare",
+    "stade": "ado"
+   }
+  },
+  {
+   "valeur": "ffffffffffffffff000000000000000000000000000000000000000000000000",
+   "n": 52,
+   "abyssor": false,
+   "attendu": {
+    "espece": "Étincelot",
+    "variante": "classique",
+    "shiny": false,
+    "marque": "un reflet arc-en-ciel sur le pelage",
+    "humeur": "joyeuse",
+    "taille": 31.2,
+    "qualite": 0.503,
+    "potentiel": 49,
+    "stats": {
+     "PV": 35,
+     "ATK": 24,
+     "DEF": 42,
+     "VIT": 23,
+     "INT": 31
+    },
+    "note": 30.2,
+    "rarete": "commune",
+    "stade": "ado"
+   }
+  },
+  {
+   "valeur": "ffffffffffffffff000000000000000000000000000000000000000000000000",
+   "n": 53,
+   "abyssor": false,
+   "attendu": {
+    "espece": "Greffon",
+    "variante": "ruines",
+    "shiny": false,
+    "marque": "des empreintes en forme de 0 et de 1",
+    "humeur": "calme",
+    "taille": 97.3,
+    "qualite": 0.593,
+    "potentiel": 61,
+    "stats": {
+     "PV": 41,
+     "ATK": 51,
+     "DEF": 46,
+     "VIT": 39,
+     "INT": 41
+    },
+    "note": 54.5,
+    "rarete": "peu commune",
+    "stade": "ado"
+   }
+  },
+  {
+   "valeur": "ffffffffffffffff000000000000000000000000000000000000000000000000",
+   "n": 54,
+   "abyssor": false,
+   "attendu": {
+    "espece": "Krillou",
+    "variante": "glace",
+    "shiny": false,
+    "marque": "une queue en forme de tilde ~",
+    "humeur": "bavarde",
+    "taille": 25.2,
+    "qualite": 0.343,
+    "potentiel": 30,
+    "stats": {
+     "PV": 27,
+     "ATK": 34,
+     "DEF": 39,
+     "VIT": 39,
+     "INT": 21
+    },
+    "note": 42.1,
+    "rarete": "commune",
+    "stade": "bebe"
+   }
+  },
+  {
+   "valeur": "ffffffffffffffff000000000000000000000000000000000000000000000000",
+   "n": 55,
+   "abyssor": false,
+   "attendu": {
+    "espece": "Galetard",
+    "variante": "classique",
+    "shiny": false,
+    "marque": "des taches disposées comme une constellation",
+    "humeur": "joyeuse",
+    "taille": 201.3,
+    "qualite": 0.858,
+    "potentiel": 80,
+    "stats": {
+     "PV": 42,
+     "ATK": 59,
+     "DEF": 58,
+     "VIT": 59,
+     "INT": 33
+    },
+    "note": 60.1,
+    "rarete": "peu commune",
+    "stade": "bebe"
+   }
+  },
+  {
+   "valeur": "ffffffffffffffff000000000000000000000000000000000000000000000000",
+   "n": 56,
+   "abyssor": false,
+   "attendu": {
+    "espece": "Pucerise",
+    "variante": "eau_petillante",
+    "shiny": false,
+    "marque": "un ventre qui affiche l'heure",
+    "humeur": "bavarde",
+    "taille": 26.9,
+    "qualite": 0.124,
+    "potentiel": 10,
+    "stats": {
+     "PV": 37,
+     "ATK": 19,
+     "DEF": 33,
+     "VIT": 17,
+     "INT": 30
+    },
+    "note": 25.8,
+    "rarete": "commune",
+    "stade": "bebe"
+   }
+  },
+  {
+   "valeur": "ffffffffffffffff000000000000000000000000000000000000000000000000",
+   "n": 57,
+   "abyssor": false,
+   "attendu": {
+    "espece": "Crabouille",
+    "variante": "sable",
+    "shiny": false,
+    "marque": "une antenne qui capte la radio",
+    "humeur": "courageuse",
+    "taille": 80.1,
+    "qualite": 0.422,
+    "potentiel": 46,
+    "stats": {
+     "PV": 33,
+     "ATK": 41,
+     "DEF": 44,
+     "VIT": 44,
+     "INT": 28
+    },
+    "note": 42.1,
+    "rarete": "commune",
+    "stade": "adulte"
+   }
+  },
+  {
+   "valeur": "ffffffffffffffff000000000000000000000000000000000000000000000000",
+   "n": 57,
+   "abyssor": true,
+   "attendu": {
+    "espece": "Abyssor",
+    "variante": "classique",
+    "shiny": false,
+    "marque": "une antenne qui capte la radio",
+    "humeur": "courageuse",
+    "taille": 213.6,
+    "qualite": 0.422,
+    "potentiel": 46,
+    "stats": {
+     "PV": 101,
+     "ATK": 100,
+     "DEF": 87,
+     "VIT": 65,
+     "INT": 92
+    },
+    "note": 65.3,
+    "rarete": "mythique",
+    "stade": "adulte"
+   }
+  },
+  {
+   "valeur": "ffffffffffffffff000000000000000000000000000000000000000000000000",
+   "n": 58,
+   "abyssor": false,
+   "attendu": {
+    "espece": "Braisillon",
+    "variante": "cendres",
+    "shiny": false,
+    "marque": "un grain de beauté en forme de #",
+    "humeur": "paresseuse",
+    "taille": 30.3,
+    "qualite": 0.778,
+    "potentiel": 81,
+    "stats": {
+     "PV": 37,
+     "ATK": 39,
+     "DEF": 36,
+     "VIT": 34,
+     "INT": 35
+    },
+    "note": 66.1,
+    "rarete": "rare",
+    "stade": "enfant"
+   }
+  },
+  {
+   "valeur": "ffffffffffffffff000000000000000000000000000000000000000000000000",
+   "n": 59,
+   "abyssor": false,
+   "attendu": {
+    "espece": "Ciliacle",
+    "variante": "eau_petillante",
+    "shiny": false,
+    "marque": "des yeux de deux couleurs",
+    "humeur": "gourmande",
+    "taille": 180.2,
+    "qualite": 0.365,
+    "potentiel": 36,
+    "stats": {
+     "PV": 47,
+     "ATK": 44,
+     "DEF": 35,
+     "VIT": 54,
+     "INT": 29
+    },
+    "note": 41.9,
+    "rarete": "commune",
+    "stade": "ado"
+   }
+  },
+  {
+   "valeur": "9e3779b97f4a7c15f39cc0605cedc8341082276bf3a27251f86c6a11d0c18e95",
+   "n": 0,
+   "abyssor": false,
+   "attendu": {
+    "espece": "Clopinou",
+    "variante": "classique",
+    "shiny": false,
+    "marque": "une crête en forme d'accolade {",
+    "humeur": "taquine",
+    "taille": 31.1,
+    "qualite": 0.882,
+    "potentiel": 87,
+    "stats": {
+     "PV": 42,
+     "ATK": 44,
+     "DEF": 56,
+     "VIT": 48,
+     "INT": 31
+    },
+    "note": 57.2,
+    "rarete": "peu commune",
+    "stade": "ado"
+   }
+  },
+  {
+   "valeur": "9e3779b97f4a7c15f39cc0605cedc8341082276bf3a27251f86c6a11d0c18e95",
+   "n": 1,
+   "abyssor": false,
+   "attendu": {
+    "espece": "Scarabouille",
+    "variante": "classique",
+    "shiny": false,
+    "marque": "une voix qui résonne comme dans une grotte",
+    "humeur": "courageuse",
+    "taille": 96.2,
+    "qualite": 0.249,
+    "potentiel": 23,
+    "stats": {
+     "PV": 28,
+     "ATK": 33,
+     "DEF": 28,
+     "VIT": 31,
+     "INT": 15
+    },
+    "note": 14.9,
+    "rarete": "commune",
+    "stade": "enfant"
+   }
+  },
+  {
+   "valeur": "9e3779b97f4a7c15f39cc0605cedc8341082276bf3a27251f86c6a11d0c18e95",
+   "n": 2,
+   "abyssor": false,
+   "attendu": {
+    "espece": "Papillombre",
+    "variante": "classique",
+    "shiny": false,
+    "marque": "des oreilles légèrement pixelisées",
+    "humeur": "timide",
+    "taille": 75.4,
+    "qualite": 0.905,
+    "potentiel": 85,
+    "stats": {
+     "PV": 32,
+     "ATK": 45,
+     "DEF": 34,
+     "VIT": 57,
+     "INT": 42
+    },
+    "note": 57.5,
+    "rarete": "peu commune",
+    "stade": "enfant"
+   }
+  },
+  {
+   "valeur": "9e3779b97f4a7c15f39cc0605cedc8341082276bf3a27251f86c6a11d0c18e95",
+   "n": 3,
+   "abyssor": false,
+   "attendu": {
+    "espece": "Fourmidable",
+    "variante": "classique",
+    "shiny": false,
+    "marque": "une ombre qui a un pixel de retard",
+    "humeur": "paresseuse",
+    "taille": 72.1,
+    "qualite": 0.193,
+    "potentiel": 19,
+    "stats": {
+     "PV": 31,
+     "ATK": 30,
+     "DEF": 28,
+     "VIT": 29,
+     "INT": 33
+    },
+    "note": 13.7,
+    "rarete": "commune",
+    "stade": "adulte"
+   }
+  },
+  {
+   "valeur": "9e3779b97f4a7c15f39cc0605cedc8341082276bf3a27251f86c6a11d0c18e95",
+   "n": 4,
+   "abyssor": false,
+   "attendu": {
+    "espece": "Pucerise",
+    "variante": "classique",
+    "shiny": false,
+    "marque": "une queue en forme de tilde ~",
+    "humeur": "fougueuse",
+    "taille": 36.6,
+    "qualite": 0.573,
+    "potentiel": 61,
+    "stats": {
+     "PV": 45,
+     "ATK": 28,
+     "DEF": 39,
+     "VIT": 24,
+     "INT": 39
+    },
+    "note": 35.5,
+    "rarete": "commune",
+    "stade": "enfant"
+   }
+  },
+  {
+   "valeur": "9e3779b97f4a7c15f39cc0605cedc8341082276bf3a27251f86c6a11d0c18e95",
+   "n": 5,
+   "abyssor": false,
+   "attendu": {
+    "espece": "Vertébrine",
+    "variante": "classique",
+    "shiny": false,
+    "marque": "un reflet arc-en-ciel sur le pelage",
+    "humeur": "fougueuse",
+    "taille": 98.6,
+    "qualite": 0.498,
+    "potentiel": 48,
+    "stats": {
+     "PV": 41,
+     "ATK": 47,
+     "DEF": 34,
+     "VIT": 47,
+     "INT": 31
+    },
+    "note": 35.2,
+    "rarete": "commune",
+    "stade": "enfant"
+   }
+  },
+  {
+   "valeur": "9e3779b97f4a7c15f39cc0605cedc8341082276bf3a27251f86c6a11d0c18e95",
+   "n": 6,
+   "abyssor": false,
+   "attendu": {
+    "espece": "Engrenaille",
+    "variante": "classique",
+    "shiny": false,
+    "marque": "une tache en forme de @ sur le dos",
+    "humeur": "courageuse",
+    "taille": 212.7,
+    "qualite": 0.161,
+    "potentiel": 14,
+    "stats": {
+     "PV": 37,
+     "ATK": 42,
+     "DEF": 41,
+     "VIT": 39,
+     "INT": 22
+    },
+    "note": 16.1,
+    "rarete": "commune",
+    "stade": "bebe"
+   }
+  },
+  {
+   "valeur": "9e3779b97f4a7c15f39cc0605cedc8341082276bf3a27251f86c6a11d0c18e95",
+   "n": 7,
+   "abyssor": false,
+   "attendu": {
+    "espece": "Flamouche",
+    "variante": "classique",
+    "shiny": false,
+    "marque": "un éternuement qui fait des étincelles",
+    "humeur": "bavarde",
+    "taille": 25.7,
+    "qualite": 0.21,
+    "potentiel": 25,
+    "stats": {
+     "PV": 29,
+     "ATK": 29,
+     "DEF": 24,
+     "VIT": 45,
+     "INT": 29
+    },
+    "note": 14.7,
+    "rarete": "commune",
+    "stade": "ado"
+   }
+  },
+  {
+   "valeur": "9e3779b97f4a7c15f39cc0605cedc8341082276bf3a27251f86c6a11d0c18e95",
+   "n": 8,
+   "abyssor": false,
+   "attendu": {
+    "espece": "Mixtrouille",
+    "variante": "classique",
+    "shiny": false,
+    "marque": "une antenne qui capte la radio",
+    "humeur": "timide",
+    "taille": 189.2,
+    "qualite": 0.927,
+    "potentiel": 90,
+    "stats": {
+     "PV": 54,
+     "ATK": 64,
+     "DEF": 53,
+     "VIT": 58,
+     "INT": 38
+    },
+    "note": 65.3,
+    "rarete": "rare",
+    "stade": "adulte"
+   }
+  },
+  {
+   "valeur": "9e3779b97f4a7c15f39cc0605cedc8341082276bf3a27251f86c6a11d0c18e95",
+   "n": 9,
+   "abyssor": false,
+   "attendu": {
+    "espece": "Tritonnet",
+    "variante": "marais",
+    "shiny": false,
+    "marque": "des empreintes en forme de 0 et de 1",
+    "humeur": "paresseuse",
+    "taille": 25.4,
+    "qualite": 0.713,
+    "potentiel": 73,
+    "stats": {
+     "PV": 34,
+     "ATK": 41,
+     "DEF": 34,
+     "VIT": 33,
+     "INT": 40
+    },
+    "note": 63.3,
+    "rarete": "rare",
+    "stade": "enfant"
+   }
+  },
+  {
+   "valeur": "9e3779b97f4a7c15f39cc0605cedc8341082276bf3a27251f86c6a11d0c18e95",
+   "n": 10,
+   "abyssor": false,
+   "attendu": {
+    "espece": "Milgriffe",
+    "variante": "forêt",
+    "shiny": false,
+    "marque": "un grain de beauté en forme de #",
+    "humeur": "rêveuse",
+    "taille": 91.0,
+    "qualite": 0.121,
+    "potentiel": 11,
+    "stats": {
+     "PV": 32,
+     "ATK": 47,
+     "DEF": 42,
+     "VIT": 42,
+     "INT": 27
+    },
+    "note": 27.2,
+    "rarete": "commune",
+    "stade": "enfant"
+   }
+  },
+  {
+   "valeur": "9e3779b97f4a7c15f39cc0605cedc8341082276bf3a27251f86c6a11d0c18e95",
+   "n": 11,
+   "abyssor": false,
+   "attendu": {
+    "espece": "Cauchemarre",
+    "variante": "ombre",
+    "shiny": false,
+    "marque": "un museau qui sent le café",
+    "humeur": "têtue",
+    "taille": 183.0,
+    "qualite": 0.752,
+    "potentiel": 69,
+    "stats": {
+     "PV": 57,
+     "ATK": 67,
+     "DEF": 57,
+     "VIT": 65,
+     "INT": 33
+    },
+    "note": 77.4,
+    "rarete": "épique",
+    "stade": "adulte"
+   }
+  },
+  {
+   "valeur": "9e3779b97f4a7c15f39cc0605cedc8341082276bf3a27251f86c6a11d0c18e95",
+   "n": 12,
+   "abyssor": false,
+   "attendu": {
+    "espece": "Miroeil",
+    "variante": "classique",
+    "shiny": false,
+    "marque": "des taches disposées comme une constellation",
+    "humeur": "curieuse",
+    "taille": 99.0,
+    "qualite": 0.101,
+    "potentiel": 8,
+    "stats": {
+     "PV": 27,
+     "ATK": 37,
+     "DEF": 27,
+     "VIT": 64,
+     "INT": 42
+    },
+    "note": 14.6,
+    "rarete": "commune",
+    "stade": "bebe"
+   }
+  },
+  {
+   "valeur": "9e3779b97f4a7c15f39cc0605cedc8341082276bf3a27251f86c6a11d0c18e95",
+   "n": 13,
+   "abyssor": false,
+   "attendu": {
+    "espece": "Lampiotte",
+    "variante": "abyssal",
+    "shiny": false,
+    "marque": "une antenne qui capte la radio",
+    "humeur": "timide",
+    "taille": 77.8,
+    "qualite": 0.635,
+    "potentiel": 69,
+    "stats": {
+     "PV": 42,
+     "ATK": 37,
+     "DEF": 34,
+     "VIT": 43,
+     "INT": 70
+    },
+    "note": 57.1,
+    "rarete": "peu commune",
+    "stade": "adulte"
+   }
+  },
+  {
+   "valeur": "9e3779b97f4a7c15f39cc0605cedc8341082276bf3a27251f86c6a11d0c18e95",
+   "n": 14,
+   "abyssor": false,
+   "attendu": {
+    "espece": "Serpelage",
+    "variante": "classique",
+    "shiny": false,
+    "marque": "une crête en forme d'accolade {",
+    "humeur": "taquine",
+    "taille": 86.7,
+    "qualite": 0.343,
+    "potentiel": 31,
+    "stats": {
+     "PV": 40,
+     "ATK": 43,
+     "DEF": 36,
+     "VIT": 43,
+     "INT": 25
+    },
+    "note": 25.9,
+    "rarete": "commune",
+    "stade": "bebe"
+   }
+  },
+  {
+   "valeur": "9e3779b97f4a7c15f39cc0605cedc8341082276bf3a27251f86c6a11d0c18e95",
+   "n": 15,
+   "abyssor": false,
+   "attendu": {
+    "espece": "Lunacorne",
+    "variante": "lune",
+    "shiny": false,
+    "marque": "des yeux de deux couleurs",
+    "humeur": "taquine",
+    "taille": 255.2,
+    "qualite": 0.298,
+    "potentiel": 27,
+    "stats": {
+     "PV": 38,
+     "ATK": 48,
+     "DEF": 35,
+     "VIT": 46,
+     "INT": 27
+    },
+    "note": 41.7,
+    "rarete": "commune",
+    "stade": "ado"
+   }
+  },
+  {
+   "valeur": "9e3779b97f4a7c15f39cc0605cedc8341082276bf3a27251f86c6a11d0c18e95",
+   "n": 16,
+   "abyssor": false,
+   "attendu": {
+    "espece": "Tritonnet",
+    "variante": "lagon",
+    "shiny": false,
+    "marque": "une plume de pixel derrière l'oreille",
+    "humeur": "têtue",
+    "taille": 33.6,
+    "qualite": 0.856,
+    "potentiel": 84,
+    "stats": {
+     "PV": 34,
+     "ATK": 42,
+     "DEF": 35,
+     "VIT": 36,
+     "INT": 44
+    },
+    "note": 65.0,
+    "rarete": "rare",
+    "stade": "ado"
+   }
+  },
+  {
+   "valeur": "9e3779b97f4a7c15f39cc0605cedc8341082276bf3a27251f86c6a11d0c18e95",
+   "n": 17,
+   "abyssor": false,
+   "attendu": {
+    "espece": "Tentaclou",
+    "variante": "marais",
+    "shiny": false,
+    "marque": "un éternuement qui fait des étincelles",
+    "humeur": "têtue",
+    "taille": 37.4,
+    "qualite": 0.423,
+    "potentiel": 38,
+    "stats": {
+     "PV": 41,
+     "ATK": 25,
+     "DEF": 43,
+     "VIT": 18,
+     "INT": 38
+    },
+    "note": 40.0,
+    "rarete": "commune",
+    "stade": "enfant"
+   }
+  },
+  {
+   "valeur": "9e3779b97f4a7c15f39cc0605cedc8341082276bf3a27251f86c6a11d0c18e95",
+   "n": 17,
+   "abyssor": true,
+   "attendu": {
+    "espece": "Abyssor",
+    "variante": "classique",
+    "shiny": false,
+    "marque": "un éternuement qui fait des étincelles",
+    "humeur": "têtue",
+    "taille": 298.8,
+    "qualite": 0.423,
+    "potentiel": 38,
+    "stats": {
+     "PV": 102,
+     "ATK": 95,
+     "DEF": 86,
+     "VIT": 64,
+     "INT": 91
+    },
+    "note": 65.4,
+    "rarete": "mythique",
+    "stade": "enfant"
+   }
+  },
+  {
+   "valeur": "9e3779b97f4a7c15f39cc0605cedc8341082276bf3a27251f86c6a11d0c18e95",
+   "n": 18,
+   "abyssor": false,
+   "attendu": {
+    "espece": "Mycélix",
+    "variante": "classique",
+    "shiny": false,
+    "marque": "des rayures comme un code-barres",
+    "humeur": "paresseuse",
+    "taille": 270.2,
+    "qualite": 0.99,
+    "potentiel": 98,
+    "stats": {
+     "PV": 56,
+     "ATK": 68,
+     "DEF": 64,
+     "VIT": 72,
+     "INT": 40
+    },
+    "note": 72.3,
+    "rarete": "rare",
+    "stade": "enfant"
+   }
+  },
+  {
+   "valeur": "9e3779b97f4a7c15f39cc0605cedc8341082276bf3a27251f86c6a11d0c18e95",
+   "n": 19,
+   "abyssor": false,
+   "attendu": {
+    "espece": "Ambrelune",
+    "variante": "classique",
+    "shiny": false,
+    "marque": "une queue en forme de tilde ~",
+    "humeur": "rêveuse",
+    "taille": 75.1,
+    "qualite": 0.613,
+    "potentiel": 68,
+    "stats": {
+     "PV": 45,
+     "ATK": 47,
+     "DEF": 41,
+     "VIT": 80,
+     "INT": 56
+    },
+    "note": 48.6,
+    "rarete": "peu commune",
+    "stade": "bebe"
+   }
+  },
+  {
+   "valeur": "9e3779b97f4a7c15f39cc0605cedc8341082276bf3a27251f86c6a11d0c18e95",
+   "n": 20,
+   "abyssor": false,
+   "attendu": {
+    "espece": "Engrenaille",
+    "variante": "classique",
+    "shiny": false,
+    "marque": "une voix qui résonne comme dans une grotte",
+    "humeur": "fougueuse",
+    "taille": 259.8,
+    "qualite": 0.715,
+    "potentiel": 68,
+    "stats": {
+     "PV": 44,
+     "ATK": 49,
+     "DEF": 51,
+     "VIT": 49,
+     "INT": 31
+    },
+    "note": 49.3,
+    "rarete": "peu commune",
+    "stade": "adulte"
+   }
+  },
+  {
+   "valeur": "9e3779b97f4a7c15f39cc0605cedc8341082276bf3a27251f86c6a11d0c18e95",
+   "n": 21,
+   "abyssor": false,
+   "attendu": {
+    "espece": "Vertébrine",
+    "variante": "classique",
+    "shiny": false,
+    "marque": "des oreilles légèrement pixelisées",
+    "humeur": "timide",
+    "taille": 83.5,
+    "qualite": 0.325,
+    "potentiel": 28,
+    "stats": {
+     "PV": 35,
+     "ATK": 43,
+     "DEF": 31,
+     "VIT": 46,
+     "INT": 29
+    },
+    "note": 24.9,
+    "rarete": "commune",
+    "stade": "ado"
+   }
+  },
+  {
+   "valeur": "9e3779b97f4a7c15f39cc0605cedc8341082276bf3a27251f86c6a11d0c18e95",
+   "n": 22,
+   "abyssor": false,
+   "attendu": {
+    "espece": "Racinelle",
+    "variante": "classique",
+    "shiny": false,
+    "marque": "une ombre qui a un pixel de retard",
+    "humeur": "curieuse",
+    "taille": 30.9,
+    "qualite": 0.504,
+    "potentiel": 54,
+    "stats": {
+     "PV": 37,
+     "ATK": 30,
+     "DEF": 37,
+     "VIT": 36,
+     "INT": 64
+    },
+    "note": 35.6,
+    "rarete": "commune",
+    "stade": "bebe"
+   }
+  },
+  {
+   "valeur": "9e3779b97f4a7c15f39cc0605cedc8341082276bf3a27251f86c6a11d0c18e95",
+   "n": 23,
+   "abyssor": false,
+   "attendu": {
+    "espece": "Filcomète",
+    "variante": "desert",
+    "shiny": false,
+    "marque": "un grain de beauté en forme de #",
+    "humeur": "rêveuse",
+    "taille": 93.0,
+    "qualite": 0.133,
+    "potentiel": 11,
+    "stats": {
+     "PV": 36,
+     "ATK": 36,
+     "DEF": 27,
+     "VIT": 40,
+     "INT": 22
+    },
+    "note": 29.6,
+    "rarete": "commune",
+    "stade": "enfant"
+   }
+  },
+  {
+   "valeur": "9e3779b97f4a7c15f39cc0605cedc8341082276bf3a27251f86c6a11d0c18e95",
+   "n": 23,
+   "abyssor": true,
+   "attendu": {
+    "espece": "Abyssor",
+    "variante": "classique",
+    "shiny": false,
+    "marque": "un grain de beauté en forme de #",
+    "humeur": "rêveuse",
+    "taille": 247.9,
+    "qualite": 0.133,
+    "potentiel": 11,
+    "stats": {
+     "PV": 99,
+     "ATK": 92,
+     "DEF": 78,
+     "VIT": 61,
+     "INT": 87
+    },
+    "note": 48.0,
+    "rarete": "mythique",
+    "stade": "enfant"
+   }
+  },
+  {
+   "valeur": "9e3779b97f4a7c15f39cc0605cedc8341082276bf3a27251f86c6a11d0c18e95",
+   "n": 24,
+   "abyssor": false,
+   "attendu": {
+    "espece": "Fourmidable",
+    "variante": "canyon",
+    "shiny": false,
+    "marque": "un grain de beauté en forme de #",
+    "humeur": "courageuse",
+    "taille": 79.3,
+    "qualite": 0.138,
+    "potentiel": 21,
+    "stats": {
+     "PV": 29,
+     "ATK": 31,
+     "DEF": 26,
+     "VIT": 31,
+     "INT": 35
+    },
+    "note": 22.9,
+    "rarete": "commune",
+    "stade": "enfant"
+   }
+  },
+  {
+   "valeur": "9e3779b97f4a7c15f39cc0605cedc8341082276bf3a27251f86c6a11d0c18e95",
+   "n": 25,
+   "abyssor": false,
+   "attendu": {
+    "espece": "Bavonge",
+    "variante": "classique",
+    "shiny": false,
+    "marque": "une plume de pixel derrière l'oreille",
+    "humeur": "curieuse",
+    "taille": 188.8,
+    "qualite": 0.465,
+    "potentiel": 39,
+    "stats": {
+     "PV": 58,
+     "ATK": 35,
+     "DEF": 52,
+     "VIT": 23,
+     "INT": 42
+    },
+    "note": 35.4,
+    "rarete": "commune",
+    "stade": "ado"
+   }
+  },
+  {
+   "valeur": "9e3779b97f4a7c15f39cc0605cedc8341082276bf3a27251f86c6a11d0c18e95",
+   "n": 26,
+   "abyssor": false,
+   "attendu": {
+    "espece": "Fourmidable",
+    "variante": "ruines",
+    "shiny": false,
+    "marque": "une voix qui résonne comme dans une grotte",
+    "humeur": "curieuse",
+    "taille": 83.9,
+    "qualite": 0.448,
+    "potentiel": 48,
+    "stats": {
+     "PV": 36,
+     "ATK": 34,
+     "DEF": 30,
+     "VIT": 33,
+     "INT": 40
+    },
+    "note": 46.3,
+    "rarete": "commune",
+    "stade": "bebe"
+   }
+  },
+  {
+   "valeur": "9e3779b97f4a7c15f39cc0605cedc8341082276bf3a27251f86c6a11d0c18e95",
+   "n": 27,
+   "abyssor": false,
+   "attendu": {
+    "espece": "Fondelin",
+    "variante": "classique",
+    "shiny": false,
+    "marque": "un ronronnement à 440 Hz",
+    "humeur": "têtue",
+    "taille": 101.3,
+    "qualite": 0.546,
+    "potentiel": 62,
+    "stats": {
+     "PV": 65,
+     "ATK": 40,
+     "DEF": 60,
+     "VIT": 31,
+     "INT": 51
+    },
+    "note": 42.4,
+    "rarete": "commune",
+    "stade": "ado"
+   }
+  },
+  {
+   "valeur": "9e3779b97f4a7c15f39cc0605cedc8341082276bf3a27251f86c6a11d0c18e95",
+   "n": 28,
+   "abyssor": false,
+   "attendu": {
+    "espece": "Momiaou",
+    "variante": "desert",
+    "shiny": false,
+    "marque": "une tache en forme de @ sur le dos",
+    "humeur": "fougueuse",
+    "taille": 84.6,
+    "qualite": 0.933,
+    "potentiel": 95,
+    "stats": {
+     "PV": 48,
+     "ATK": 55,
+     "DEF": 50,
+     "VIT": 56,
+     "INT": 36
+    },
+    "note": 74.9,
+    "rarete": "épique",
+    "stade": "bebe"
+   }
+  },
+  {
+   "valeur": "9e3779b97f4a7c15f39cc0605cedc8341082276bf3a27251f86c6a11d0c18e95",
+   "n": 29,
+   "abyssor": false,
+   "attendu": {
+    "espece": "Braisillon",
+    "variante": "volcan",
+    "shiny": false,
+    "marque": "une marque en forme de flèche →",
+    "humeur": "curieuse",
+    "taille": 36.9,
+    "qualite": 0.966,
+    "potentiel": 93,
+    "stats": {
+     "PV": 39,
+     "ATK": 39,
+     "DEF": 39,
+     "VIT": 36,
+     "INT": 36
+    },
+    "note": 70.5,
+    "rarete": "rare",
+    "stade": "bebe"
+   }
+  },
+  {
+   "valeur": "9e3779b97f4a7c15f39cc0605cedc8341082276bf3a27251f86c6a11d0c18e95",
+   "n": 30,
+   "abyssor": false,
+   "attendu": {
+    "espece": "Pétalouette",
+    "variante": "classique",
+    "shiny": false,
+    "marque": "un museau qui sent le café",
+    "humeur": "rêveuse",
+    "taille": 24.8,
+    "qualite": 0.52,
+    "potentiel": 45,
+    "stats": {
+     "PV": 28,
+     "ATK": 37,
+     "DEF": 24,
+     "VIT": 48,
+     "INT": 34
+    },
+    "note": 33.3,
+    "rarete": "commune",
+    "stade": "bebe"
+   }
+  },
+  {
+   "valeur": "9e3779b97f4a7c15f39cc0605cedc8341082276bf3a27251f86c6a11d0c18e95",
+   "n": 31,
+   "abyssor": false,
+   "attendu": {
+    "espece": "Crânard",
+    "variante": "ossuaire",
+    "shiny": false,
+    "marque": "une plume de pixel derrière l'oreille",
+    "humeur": "fougueuse",
+    "taille": 34.0,
+    "qualite": 0.136,
+    "potentiel": 8,
+    "stats": {
+     "PV": 37,
+     "ATK": 22,
+     "DEF": 40,
+     "VIT": 20,
+     "INT": 33
+    },
+    "note": 23.8,
+    "rarete": "commune",
+    "stade": "enfant"
+   }
+  },
+  {
+   "valeur": "9e3779b97f4a7c15f39cc0605cedc8341082276bf3a27251f86c6a11d0c18e95",
+   "n": 32,
+   "abyssor": false,
+   "attendu": {
+    "espece": "Gargouflamme",
+    "variante": "orage",
+    "shiny": false,
+    "marque": "des empreintes en forme de 0 et de 1",
+    "humeur": "paresseuse",
+    "taille": 233.2,
+    "qualite": 0.218,
+    "potentiel": 23,
+    "stats": {
+     "PV": 30,
+     "ATK": 45,
+     "DEF": 35,
+     "VIT": 58,
+     "INT": 49
+    },
+    "note": 42.1,
+    "rarete": "commune",
+    "stade": "enfant"
+   }
+  },
+  {
+   "valeur": "9e3779b97f4a7c15f39cc0605cedc8341082276bf3a27251f86c6a11d0c18e95",
+   "n": 33,
+   "abyssor": false,
+   "attendu": {
+    "espece": "Crânard",
+    "variante": "sable",
+    "shiny": false,
+    "marque": "une plume de pixel derrière l'oreille",
+    "humeur": "curieuse",
+    "taille": 30.1,
+    "qualite": 0.549,
+    "potentiel": 58,
+    "stats": {
+     "PV": 45,
+     "ATK": 28,
+     "DEF": 49,
+     "VIT": 28,
+     "INT": 40
+    },
+    "note": 55.5,
+    "rarete": "peu commune",
+    "stade": "ado"
+   }
+  },
+  {
+   "valeur": "9e3779b97f4a7c15f39cc0605cedc8341082276bf3a27251f86c6a11d0c18e95",
+   "n": 34,
+   "abyssor": false,
+   "attendu": {
+    "espece": "Mutaloupe",
+    "variante": "classique",
+    "shiny": false,
+    "marque": "une crête en forme d'accolade {",
+    "humeur": "timide",
+    "taille": 83.6,
+    "qualite": 0.711,
+    "potentiel": 70,
+    "stats": {
+     "PV": 37,
+     "ATK": 45,
+     "DEF": 47,
+     "VIT": 48,
+     "INT": 32
+    },
+    "note": 46.9,
+    "rarete": "peu commune",
+    "stade": "bebe"
+   }
+  },
+  {
+   "valeur": "9e3779b97f4a7c15f39cc0605cedc8341082276bf3a27251f86c6a11d0c18e95",
+   "n": 35,
+   "abyssor": false,
+   "attendu": {
+    "espece": "Lanternix",
+    "variante": "classique",
+    "shiny": false,
+    "marque": "un éternuement qui fait des étincelles",
+    "humeur": "courageuse",
+    "taille": 26.9,
+    "qualite": 0.39,
+    "potentiel": 36,
+    "stats": {
+     "PV": 40,
+     "ATK": 29,
+     "DEF": 34,
+     "VIT": 39,
+     "INT": 49
+    },
+    "note": 28.8,
+    "rarete": "commune",
+    "stade": "enfant"
+   }
+  },
+  {
+   "valeur": "9e3779b97f4a7c15f39cc0605cedc8341082276bf3a27251f86c6a11d0c18e95",
+   "n": 35,
+   "abyssor": true,
+   "attendu": {
+    "espece": "Abyssor",
+    "variante": "classique",
+    "shiny": false,
+    "marque": "un éternuement qui fait des étincelles",
+    "humeur": "courageuse",
+    "taille": 215.3,
+    "qualite": 0.39,
+    "potentiel": 36,
+    "stats": {
+     "PV": 102,
+     "ATK": 98,
+     "DEF": 83,
+     "VIT": 64,
+     "INT": 90
+    },
+    "note": 63.4,
+    "rarete": "mythique",
+    "stade": "enfant"
+   }
+  },
+  {
+   "valeur": "9e3779b97f4a7c15f39cc0605cedc8341082276bf3a27251f86c6a11d0c18e95",
+   "n": 36,
+   "abyssor": false,
+   "attendu": {
+    "espece": "Goulichon",
+    "variante": "classique",
+    "shiny": false,
+    "marque": "des yeux de deux couleurs",
+    "humeur": "gourmande",
+    "taille": 96.8,
+    "qualite": 0.694,
+    "potentiel": 71,
+    "stats": {
+     "PV": 35,
+     "ATK": 46,
+     "DEF": 36,
+     "VIT": 37,
+     "INT": 37
+    },
+    "note": 43.8,
+    "rarete": "commune",
+    "stade": "enfant"
+   }
+  },
+  {
+   "valeur": "9e3779b97f4a7c15f39cc0605cedc8341082276bf3a27251f86c6a11d0c18e95",
+   "n": 37,
+   "abyssor": false,
+   "attendu": {
+    "espece": "Fondelin",
+    "variante": "lave",
+    "shiny": false,
+    "marque": "un éternuement qui fait des étincelles",
+    "humeur": "timide",
+    "taille": 106.5,
+    "qualite": 0.329,
+    "potentiel": 33,
+    "stats": {
+     "PV": 60,
+     "ATK": 35,
+     "DEF": 54,
+     "VIT": 26,
+     "INT": 48
+    },
+    "note": 41.9,
+    "rarete": "commune",
+    "stade": "enfant"
+   }
+  },
+  {
+   "valeur": "9e3779b97f4a7c15f39cc0605cedc8341082276bf3a27251f86c6a11d0c18e95",
+   "n": 38,
+   "abyssor": false,
+   "attendu": {
+    "espece": "Plumange",
+    "variante": "soleil",
+    "shiny": false,
+    "marque": "des pattes de longueur différente",
+    "humeur": "taquine",
+    "taille": 35.1,
+    "qualite": 0.477,
+    "potentiel": 44,
+    "stats": {
+     "PV": 28,
+     "ATK": 33,
+     "DEF": 27,
+     "VIT": 46,
+     "INT": 36
+    },
+    "note": 48.1,
+    "rarete": "peu commune",
+    "stade": "enfant"
+   }
+  },
+  {
+   "valeur": "9e3779b97f4a7c15f39cc0605cedc8341082276bf3a27251f86c6a11d0c18e95",
+   "n": 39,
+   "abyssor": false,
+   "attendu": {
+    "espece": "Crabouille",
+    "variante": "canyon",
+    "shiny": false,
+    "marque": "une crête en forme d'accolade {",
+    "humeur": "bavarde",
+    "taille": 104.8,
+    "qualite": 0.297,
+    "potentiel": 30,
+    "stats": {
+     "PV": 32,
+     "ATK": 37,
+     "DEF": 39,
+     "VIT": 44,
+     "INT": 25
+    },
+    "note": 39.5,
+    "rarete": "commune",
+    "stade": "ado"
+   }
+  },
+  {
+   "valeur": "9e3779b97f4a7c15f39cc0605cedc8341082276bf3a27251f86c6a11d0c18e95",
+   "n": 40,
+   "abyssor": false,
+   "attendu": {
+    "espece": "Lanternix",
+    "variante": "ossuaire",
+    "shiny": false,
+    "marque": "un éternuement qui fait des étincelles",
+    "humeur": "bavarde",
+    "taille": 24.7,
+    "qualite": 0.858,
+    "potentiel": 75,
+    "stats": {
+     "PV": 45,
+     "ATK": 34,
+     "DEF": 43,
+     "VIT": 45,
+     "INT": 54
+    },
+    "note": 74.2,
+    "rarete": "rare",
+    "stade": "ado"
+   }
+  },
+  {
+   "valeur": "9e3779b97f4a7c15f39cc0605cedc8341082276bf3a27251f86c6a11d0c18e95",
+   "n": 41,
+   "abyssor": false,
+   "attendu": {
+    "espece": "Ricanombre",
+    "variante": "classique",
+    "shiny": false,
+    "marque": "un reflet arc-en-ciel sur le pelage",
+    "humeur": "timide",
+    "taille": 34.3,
+    "qualite": 0.642,
+    "potentiel": 63,
+    "stats": {
+     "PV": 40,
+     "ATK": 30,
+     "DEF": 30,
+     "VIT": 39,
+     "INT": 64
+    },
+    "note": 42.8,
+    "rarete": "commune",
+    "stade": "enfant"
+   }
+  },
+  {
+   "valeur": "9e3779b97f4a7c15f39cc0605cedc8341082276bf3a27251f86c6a11d0c18e95",
+   "n": 42,
+   "abyssor": false,
+   "attendu": {
+    "espece": "Tiquetac",
+    "variante": "classique",
+    "shiny": false,
+    "marque": "une plume de pixel derrière l'oreille",
+    "humeur": "paresseuse",
+    "taille": 100.7,
+    "qualite": 0.015,
+    "potentiel": 3,
+    "stats": {
+     "PV": 30,
+     "ATK": 23,
+     "DEF": 26,
+     "VIT": 36,
+     "INT": 51
+    },
+    "note": 6.3,
+    "rarete": "commune",
+    "stade": "adulte"
+   }
+  },
+  {
+   "valeur": "9e3779b97f4a7c15f39cc0605cedc8341082276bf3a27251f86c6a11d0c18e95",
+   "n": 43,
+   "abyssor": false,
+   "attendu": {
+    "espece": "Ressortine",
+    "variante": "mecanique",
+    "shiny": false,
+    "marque": "une marque en forme de flèche →",
+    "humeur": "paresseuse",
+    "taille": 90.0,
+    "qualite": 0.168,
+    "potentiel": 12,
+    "stats": {
+     "PV": 31,
+     "ATK": 34,
+     "DEF": 30,
+     "VIT": 35,
+     "INT": 24
+    },
+    "note": 30.6,
+    "rarete": "commune",
+    "stade": "ado"
+   }
+  },
+  {
+   "valeur": "9e3779b97f4a7c15f39cc0605cedc8341082276bf3a27251f86c6a11d0c18e95",
+   "n": 44,
+   "abyssor": false,
+   "attendu": {
+    "espece": "Étoilapin",
+    "variante": "cosmique",
+    "shiny": false,
+    "marque": "une tache en forme de @ sur le dos",
+    "humeur": "joyeuse",
+    "taille": 24.6,
+    "qualite": 0.923,
+    "potentiel": 94,
+    "stats": {
+     "PV": 41,
+     "ATK": 45,
+     "DEF": 39,
+     "VIT": 41,
+     "INT": 32
+    },
+    "note": 73.8,
+    "rarete": "rare",
+    "stade": "enfant"
+   }
+  },
+  {
+   "valeur": "9e3779b97f4a7c15f39cc0605cedc8341082276bf3a27251f86c6a11d0c18e95",
+   "n": 45,
+   "abyssor": false,
+   "attendu": {
+    "espece": "Magmastodonte",
+    "variante": "classique",
+    "shiny": false,
+    "marque": "des taches disposées comme une constellation",
+    "humeur": "paresseuse",
+    "taille": 555.0,
+    "qualite": 0.972,
+    "potentiel": 96,
+    "stats": {
+     "PV": 67,
+     "ATK": 68,
+     "DEF": 66,
+     "VIT": 61,
+     "INT": 39
+    },
+    "note": 71.2,
+    "rarete": "rare",
+    "stade": "ado"
+   }
+  },
+  {
+   "valeur": "9e3779b97f4a7c15f39cc0605cedc8341082276bf3a27251f86c6a11d0c18e95",
+   "n": 46,
+   "abyssor": false,
+   "attendu": {
+    "espece": "Fouinroc",
+    "variante": "sable",
+    "shiny": false,
+    "marque": "des rayures comme un code-barres",
+    "humeur": "timide",
+    "taille": 36.8,
+    "qualite": 0.505,
+    "potentiel": 52,
+    "stats": {
+     "PV": 40,
+     "ATK": 30,
+     "DEF": 44,
+     "VIT": 26,
+     "INT": 36
+    },
+    "note": 49.8,
+    "rarete": "peu commune",
+    "stade": "ado"
+   }
+  },
+  {
+   "valeur": "9e3779b97f4a7c15f39cc0605cedc8341082276bf3a27251f86c6a11d0c18e95",
+   "n": 47,
+   "abyssor": false,
+   "attendu": {
+    "espece": "Mantelame",
+    "variante": "classique",
+    "shiny": false,
+    "marque": "des yeux de deux couleurs",
+    "humeur": "courageuse",
+    "taille": 187.7,
+    "qualite": 0.069,
+    "potentiel": 10,
+    "stats": {
+     "PV": 41,
+     "ATK": 37,
+     "DEF": 37,
+     "VIT": 31,
+     "INT": 42
+    },
+    "note": 11.6,
+    "rarete": "commune",
+    "stade": "enfant"
+   }
+  },
+  {
+   "valeur": "9e3779b97f4a7c15f39cc0605cedc8341082276bf3a27251f86c6a11d0c18e95",
+   "n": 48,
+   "abyssor": false,
+   "attendu": {
+    "espece": "Ressortine",
+    "variante": "classique",
+    "shiny": false,
+    "marque": "une ombre qui a un pixel de retard",
+    "humeur": "gourmande",
+    "taille": 111.3,
+    "qualite": 0.818,
+    "potentiel": 86,
+    "stats": {
+     "PV": 45,
+     "ATK": 44,
+     "DEF": 43,
+     "VIT": 48,
+     "INT": 32
+    },
+    "note": 52.3,
+    "rarete": "peu commune",
+    "stade": "bebe"
+   }
+  },
+  {
+   "valeur": "9e3779b97f4a7c15f39cc0605cedc8341082276bf3a27251f86c6a11d0c18e95",
+   "n": 49,
+   "abyssor": false,
+   "attendu": {
+    "espece": "Heaumbre",
+    "variante": "ruines",
+    "shiny": false,
+    "marque": "une marque en forme de flèche →",
+    "humeur": "bavarde",
+    "taille": 179.5,
+    "qualite": 0.262,
+    "potentiel": 28,
+    "stats": {
+     "PV": 48,
+     "ATK": 42,
+     "DEF": 43,
+     "VIT": 36,
+     "INT": 42
+    },
+    "note": 36.8,
+    "rarete": "commune",
+    "stade": "ado"
+   }
+  },
+  {
+   "valeur": "9e3779b97f4a7c15f39cc0605cedc8341082276bf3a27251f86c6a11d0c18e95",
+   "n": 50,
+   "abyssor": false,
+   "attendu": {
+    "espece": "Pantinou",
+    "variante": "ruines",
+    "shiny": false,
+    "marque": "un museau qui sent le café",
+    "humeur": "rêveuse",
+    "taille": 92.3,
+    "qualite": 0.357,
+    "potentiel": 32,
+    "stats": {
+     "PV": 32,
+     "ATK": 38,
+     "DEF": 32,
+     "VIT": 28,
+     "INT": 30
+    },
+    "note": 36.0,
+    "rarete": "commune",
+    "stade": "ado"
+   }
+  },
+  {
+   "valeur": "9e3779b97f4a7c15f39cc0605cedc8341082276bf3a27251f86c6a11d0c18e95",
+   "n": 51,
+   "abyssor": false,
+   "attendu": {
+    "espece": "Horlogrif",
+    "variante": "mecanique",
+    "shiny": false,
+    "marque": "une crête en forme d'accolade {",
+    "humeur": "taquine",
+    "taille": 215.4,
+    "qualite": 0.335,
+    "potentiel": 39,
+    "stats": {
+     "PV": 36,
+     "ATK": 48,
+     "DEF": 30,
+     "VIT": 60,
+     "INT": 46
+    },
+    "note": 46.0,
+    "rarete": "commune",
+    "stade": "bebe"
+   }
+  },
+  {
+   "valeur": "9e3779b97f4a7c15f39cc0605cedc8341082276bf3a27251f86c6a11d0c18e95",
+   "n": 52,
+   "abyssor": false,
+   "attendu": {
+    "espece": "Tatoublind",
+    "variante": "classique",
+    "shiny": false,
+    "marque": "une marque en forme de flèche →",
+    "humeur": "calme",
+    "taille": 111.8,
+    "qualite": 0.355,
+    "potentiel": 30,
+    "stats": {
+     "PV": 55,
+     "ATK": 45,
+     "DEF": 41,
+     "VIT": 52,
+     "INT": 29
+    },
+    "note": 30.9,
+    "rarete": "commune",
+    "stade": "enfant"
+   }
+  },
+  {
+   "valeur": "9e3779b97f4a7c15f39cc0605cedc8341082276bf3a27251f86c6a11d0c18e95",
+   "n": 53,
+   "abyssor": false,
+   "attendu": {
+    "espece": "Plouftin",
+    "variante": "marais",
+    "shiny": false,
+    "marque": "une ombre qui a un pixel de retard",
+    "humeur": "taquine",
+    "taille": 34.6,
+    "qualite": 0.646,
+    "potentiel": 66,
+    "stats": {
+     "PV": 35,
+     "ATK": 25,
+     "DEF": 27,
+     "VIT": 32,
+     "INT": 50
+    },
+    "note": 56.1,
+    "rarete": "peu commune",
+    "stade": "bebe"
+   }
+  },
+  {
+   "valeur": "9e3779b97f4a7c15f39cc0605cedc8341082276bf3a27251f86c6a11d0c18e95",
+   "n": 54,
+   "abyssor": false,
+   "attendu": {
+    "espece": "Tiquetac",
+    "variante": "marais",
+    "shiny": false,
+    "marque": "un ronronnement à 440 Hz",
+    "humeur": "gourmande",
+    "taille": 104.2,
+    "qualite": 0.32,
+    "potentiel": 25,
+    "stats": {
+     "PV": 34,
+     "ATK": 26,
+     "DEF": 28,
+     "VIT": 40,
+     "INT": 54
+    },
+    "note": 37.1,
+    "rarete": "commune",
+    "stade": "bebe"
+   }
+  },
+  {
+   "valeur": "9e3779b97f4a7c15f39cc0605cedc8341082276bf3a27251f86c6a11d0c18e95",
+   "n": 55,
+   "abyssor": false,
+   "attendu": {
+    "espece": "Mantelame",
+    "variante": "classique",
+    "shiny": false,
+    "marque": "un hoquet en code Morse",
+    "humeur": "paresseuse",
+    "taille": 199.8,
+    "qualite": 0.21,
+    "potentiel": 21,
+    "stats": {
+     "PV": 43,
+     "ATK": 39,
+     "DEF": 38,
+     "VIT": 34,
+     "INT": 42
+    },
+    "note": 20.1,
+    "rarete": "commune",
+    "stade": "enfant"
+   }
+  },
+  {
+   "valeur": "9e3779b97f4a7c15f39cc0605cedc8341082276bf3a27251f86c6a11d0c18e95",
+   "n": 56,
+   "abyssor": false,
+   "attendu": {
+    "espece": "Drapouille",
+    "variante": "classique",
+    "shiny": false,
+    "marque": "une queue en forme de tilde ~",
+    "humeur": "joyeuse",
+    "taille": 24.1,
+    "qualite": 0.27,
+    "potentiel": 29,
+    "stats": {
+     "PV": 25,
+     "ATK": 22,
+     "DEF": 25,
+     "VIT": 30,
+     "INT": 48
+    },
+    "note": 17.3,
+    "rarete": "commune",
+    "stade": "adulte"
+   }
+  },
+  {
+   "valeur": "9e3779b97f4a7c15f39cc0605cedc8341082276bf3a27251f86c6a11d0c18e95",
+   "n": 57,
+   "abyssor": false,
+   "attendu": {
+    "espece": "Cendrouille",
+    "variante": "cendres",
+    "shiny": false,
+    "marque": "un ventre qui affiche l'heure",
+    "humeur": "calme",
+    "taille": 88.0,
+    "qualite": 0.151,
+    "potentiel": 8,
+    "stats": {
+     "PV": 38,
+     "ATK": 26,
+     "DEF": 35,
+     "VIT": 20,
+     "INT": 31
+    },
+    "note": 24.8,
+    "rarete": "commune",
+    "stade": "adulte"
+   }
+  },
+  {
+   "valeur": "9e3779b97f4a7c15f39cc0605cedc8341082276bf3a27251f86c6a11d0c18e95",
+   "n": 58,
+   "abyssor": false,
+   "attendu": {
+    "espece": "Gloupi",
+    "variante": "classique",
+    "shiny": false,
+    "marque": "une tache en forme de @ sur le dos",
+    "humeur": "têtue",
+    "taille": 91.9,
+    "qualite": 0.363,
+    "potentiel": 37,
+    "stats": {
+     "PV": 48,
+     "ATK": 26,
+     "DEF": 35,
+     "VIT": 18,
+     "INT": 29
+    },
+    "note": 22.9,
+    "rarete": "commune",
+    "stade": "enfant"
+   }
+  },
+  {
+   "valeur": "9e3779b97f4a7c15f39cc0605cedc8341082276bf3a27251f86c6a11d0c18e95",
+   "n": 59,
+   "abyssor": false,
+   "attendu": {
+    "espece": "Scarabouille",
+    "variante": "classique",
+    "shiny": false,
+    "marque": "des empreintes en forme de 0 et de 1",
+    "humeur": "bavarde",
+    "taille": 84.4,
+    "qualite": 0.278,
+    "potentiel": 28,
+    "stats": {
+     "PV": 30,
+     "ATK": 31,
+     "DEF": 30,
+     "VIT": 31,
+     "INT": 17
+    },
+    "note": 16.7,
+    "rarete": "commune",
+    "stade": "adulte"
+   }
+  },
+  {
+   "valeur": "8000000000000001fac71cefac71cefac71cefac71cefac71cefac71ce00",
+   "n": 0,
+   "abyssor": false,
+   "attendu": {
+    "espece": "Félicorne",
+    "variante": "soleil",
+    "shiny": false,
+    "marque": "des empreintes en forme de 0 et de 1",
+    "humeur": "taquine",
+    "taille": 191.4,
+    "qualite": 0.796,
+    "potentiel": 79,
+    "stats": {
+     "PV": 51,
+     "ATK": 52,
+     "DEF": 47,
+     "VIT": 51,
+     "INT": 33
+    },
+    "note": 73.6,
+    "rarete": "rare",
+    "stade": "adulte"
+   }
+  },
+  {
+   "valeur": "8000000000000001fac71cefac71cefac71cefac71cefac71cefac71ce00",
+   "n": 1,
+   "abyssor": false,
+   "attendu": {
+    "espece": "Heaumbre",
+    "variante": "classique",
+    "shiny": false,
+    "marque": "des rayures comme un code-barres",
+    "humeur": "bavarde",
+    "taille": 200.4,
+    "qualite": 0.595,
+    "potentiel": 59,
+    "stats": {
+     "PV": 52,
+     "ATK": 45,
+     "DEF": 46,
+     "VIT": 44,
+     "INT": 48
+    },
+    "note": 44.3,
+    "rarete": "commune",
+    "stade": "bebe"
+   }
+  },
+  {
+   "valeur": "8000000000000001fac71cefac71cefac71cefac71cefac71cefac71ce00",
+   "n": 2,
+   "abyssor": false,
+   "attendu": {
+    "espece": "Ricanombre",
+    "variante": "classique",
+    "shiny": false,
+    "marque": "des rayures comme un code-barres",
+    "humeur": "têtue",
+    "taille": 24.1,
+    "qualite": 0.334,
+    "potentiel": 32,
+    "stats": {
+     "PV": 36,
+     "ATK": 23,
+     "DEF": 26,
+     "VIT": 38,
+     "INT": 56
+    },
+    "note": 24.3,
+    "rarete": "commune",
+    "stade": "bebe"
+   }
+  },
+  {
+   "valeur": "8000000000000001fac71cefac71cefac71cefac71cefac71cefac71ce00",
+   "n": 3,
+   "abyssor": false,
+   "attendu": {
+    "espece": "Heaumbre",
+    "variante": "montagne",
+    "shiny": false,
+    "marque": "une antenne qui capte la radio",
+    "humeur": "timide",
+    "taille": 191.4,
+    "qualite": 0.519,
+    "potentiel": 51,
+    "stats": {
+     "PV": 54,
+     "ATK": 44,
+     "DEF": 43,
+     "VIT": 40,
+     "INT": 48
+    },
+    "note": 57.1,
+    "rarete": "peu commune",
+    "stade": "ado"
+   }
+  },
+  {
+   "valeur": "8000000000000001fac71cefac71cefac71cefac71cefac71cefac71ce00",
+   "n": 4,
+   "abyssor": false,
+   "attendu": {
+    "espece": "Ricanos",
+    "variante": "classique",
+    "shiny": false,
+    "marque": "des yeux de deux couleurs",
+    "humeur": "joyeuse",
+    "taille": 112.3,
+    "qualite": 0.466,
+    "potentiel": 48,
+    "stats": {
+     "PV": 44,
+     "ATK": 45,
+     "DEF": 36,
+     "VIT": 41,
+     "INT": 26
+    },
+    "note": 32.2,
+    "rarete": "commune",
+    "stade": "enfant"
+   }
+  },
+  {
+   "valeur": "8000000000000001fac71cefac71cefac71cefac71cefac71cefac71ce00",
+   "n": 5,
+   "abyssor": false,
+   "attendu": {
+    "espece": "Lunacorne",
+    "variante": "classique",
+    "shiny": false,
+    "marque": "des taches disposées comme une constellation",
+    "humeur": "gourmande",
+    "taille": 217.6,
+    "qualite": 0.133,
+    "potentiel": 11,
+    "stats": {
+     "PV": 35,
+     "ATK": 45,
+     "DEF": 32,
+     "VIT": 45,
+     "INT": 24
+    },
+    "note": 14.4,
+    "rarete": "commune",
+    "stade": "enfant"
+   }
+  },
+  {
+   "valeur": "8000000000000001fac71cefac71cefac71cefac71cefac71cefac71ce00",
+   "n": 6,
+   "abyssor": false,
+   "attendu": {
+    "espece": "Nébuline",
+    "variante": "brume",
+    "shiny": false,
+    "marque": "une ombre qui a un pixel de retard",
+    "humeur": "gourmande",
+    "taille": 35.4,
+    "qualite": 0.507,
+    "potentiel": 57,
+    "stats": {
+     "PV": 51,
+     "ATK": 36,
+     "DEF": 40,
+     "VIT": 23,
+     "INT": 39
+    },
+    "note": 51.0,
+    "rarete": "peu commune",
+    "stade": "enfant"
+   }
+  },
+  {
+   "valeur": "8000000000000001fac71cefac71cefac71cefac71cefac71cefac71ce00",
+   "n": 7,
+   "abyssor": false,
+   "attendu": {
+    "espece": "Mammouroc",
+    "variante": "toundra",
+    "shiny": false,
+    "marque": "des oreilles légèrement pixelisées",
+    "humeur": "joyeuse",
+    "taille": 546.0,
+    "qualite": 0.359,
+    "potentiel": 39,
+    "stats": {
+     "PV": 62,
+     "ATK": 63,
+     "DEF": 49,
+     "VIT": 56,
+     "INT": 35
+    },
+    "note": 48.0,
+    "rarete": "peu commune",
+    "stade": "enfant"
+   }
+  },
+  {
+   "valeur": "8000000000000001fac71cefac71cefac71cefac71cefac71cefac71ce00",
+   "n": 8,
+   "abyssor": false,
+   "attendu": {
+    "espece": "Parasouris",
+    "variante": "classique",
+    "shiny": false,
+    "marque": "des rayures comme un code-barres",
+    "humeur": "calme",
+    "taille": 30.8,
+    "qualite": 0.793,
+    "potentiel": 83,
+    "stats": {
+     "PV": 49,
+     "ATK": 46,
+     "DEF": 41,
+     "VIT": 43,
+     "INT": 29
+    },
+    "note": 50.8,
+    "rarete": "peu commune",
+    "stade": "adulte"
+   }
+  },
+  {
+   "valeur": "8000000000000001fac71cefac71cefac71cefac71cefac71cefac71ce00",
+   "n": 9,
+   "abyssor": false,
+   "attendu": {
+    "espece": "Tsunamir",
+    "variante": "classique",
+    "shiny": false,
+    "marque": "des taches disposées comme une constellation",
+    "humeur": "joyeuse",
+    "taille": 747.6,
+    "qualite": 0.453,
+    "potentiel": 46,
+    "stats": {
+     "PV": 51,
+     "ATK": 67,
+     "DEF": 44,
+     "VIT": 72,
+     "INT": 37
+    },
+    "note": 41.1,
+    "rarete": "commune",
+    "stade": "enfant"
+   }
+  },
+  {
+   "valeur": "8000000000000001fac71cefac71cefac71cefac71cefac71cefac71ce00",
+   "n": 10,
+   "abyssor": false,
+   "attendu": {
+    "espece": "Ricanombre",
+    "variante": "ombre",
+    "shiny": false,
+    "marque": "une tache en forme de @ sur le dos",
+    "humeur": "bavarde",
+    "taille": 30.8,
+    "qualite": 0.516,
+    "potentiel": 48,
+    "stats": {
+     "PV": 38,
+     "ATK": 26,
+     "DEF": 28,
+     "VIT": 40,
+     "INT": 58
+    },
+    "note": 47.8,
+    "rarete": "peu commune",
+    "stade": "bebe"
+   }
+  },
+  {
+   "valeur": "8000000000000001fac71cefac71cefac71cefac71cefac71cefac71ce00",
+   "n": 11,
+   "abyssor": false,
+   "attendu": {
+    "espece": "Zapiot",
+    "variante": "classique",
+    "shiny": false,
+    "marque": "des yeux de deux couleurs",
+    "humeur": "taquine",
+    "taille": 25.9,
+    "qualite": 0.787,
+    "potentiel": 78,
+    "stats": {
+     "PV": 37,
+     "ATK": 32,
+     "DEF": 38,
+     "VIT": 44,
+     "INT": 55
+    },
+    "note": 50.4,
+    "rarete": "peu commune",
+    "stade": "bebe"
+   }
+  },
+  {
+   "valeur": "8000000000000001fac71cefac71cefac71cefac71cefac71cefac71ce00",
+   "n": 12,
+   "abyssor": false,
+   "attendu": {
+    "espece": "Hibourreau",
+    "variante": "montagne",
+    "shiny": false,
+    "marque": "un museau qui sent le café",
+    "humeur": "paresseuse",
+    "taille": 190.7,
+    "qualite": 0.918,
+    "potentiel": 88,
+    "stats": {
+     "PV": 48,
+     "ATK": 57,
+     "DEF": 46,
+     "VIT": 72,
+     "INT": 52
+    },
+    "note": 86.5,
+    "rarete": "légendaire",
+    "stade": "ado"
+   }
+  },
+  {
+   "valeur": "8000000000000001fac71cefac71cefac71cefac71cefac71cefac71ce00",
+   "n": 13,
+   "abyssor": false,
+   "attendu": {
+    "espece": "Fourmidable",
+    "variante": "canyon",
+    "shiny": false,
+    "marque": "une voix qui résonne comme dans une grotte",
+    "humeur": "courageuse",
+    "taille": 93.7,
+    "qualite": 0.362,
+    "potentiel": 35,
+    "stats": {
+     "PV": 33,
+     "ATK": 31,
+     "DEF": 30,
+     "VIT": 31,
+     "INT": 38
+    },
+    "note": 36.4,
+    "rarete": "commune",
+    "stade": "enfant"
+   }
+  },
+  {
+   "valeur": "8000000000000001fac71cefac71cefac71cefac71cefac71cefac71ce00",
+   "n": 14,
+   "abyssor": false,
+   "attendu": {
+    "espece": "Krillou",
+    "variante": "corail",
+    "shiny": false,
+    "marque": "un reflet arc-en-ciel sur le pelage",
+    "humeur": "curieuse",
+    "taille": 35.6,
+    "qualite": 0.043,
+    "potentiel": 7,
+    "stats": {
+     "PV": 24,
+     "ATK": 31,
+     "DEF": 36,
+     "VIT": 35,
+     "INT": 16
+    },
+    "note": 22.1,
+    "rarete": "commune",
+    "stade": "enfant"
+   }
+  },
+  {
+   "valeur": "8000000000000001fac71cefac71cefac71cefac71cefac71cefac71ce00",
+   "n": 15,
+   "abyssor": false,
+   "attendu": {
+    "espece": "Forgerain",
+    "variante": "ruines",
+    "shiny": false,
+    "marque": "un ventre qui affiche l'heure",
+    "humeur": "têtue",
+    "taille": 710.4,
+    "qualite": 0.56,
+    "potentiel": 55,
+    "stats": {
+     "PV": 61,
+     "ATK": 62,
+     "DEF": 50,
+     "VIT": 53,
+     "INT": 60
+    },
+    "note": 68.0,
+    "rarete": "rare",
+    "stade": "bebe"
+   }
+  },
+  {
+   "valeur": "8000000000000001fac71cefac71cefac71cefac71cefac71cefac71ce00",
+   "n": 16,
+   "abyssor": false,
+   "attendu": {
+    "espece": "Groinfer",
+    "variante": "forêt",
+    "shiny": true,
+    "marque": "des taches disposées comme une constellation",
+    "humeur": "timide",
+    "taille": 86.4,
+    "qualite": 0.971,
+    "potentiel": 96,
+    "stats": {
+     "PV": 42,
+     "ATK": 41,
+     "DEF": 36,
+     "VIT": 43,
+     "INT": 30
+    },
+    "note": 80.8,
+    "rarete": "épique",
+    "stade": "bebe",
+    "teinte": 0.501
+   }
+  },
+  {
+   "valeur": "8000000000000001fac71cefac71cefac71cefac71cefac71cefac71ce00",
+   "n": 17,
+   "abyssor": false,
+   "attendu": {
+    "espece": "Givrarde",
+    "variante": "brume",
+    "shiny": false,
+    "marque": "des rayures comme un code-barres",
+    "humeur": "calme",
+    "taille": 186.8,
+    "qualite": 0.123,
+    "potentiel": 16,
+    "stats": {
+     "PV": 48,
+     "ATK": 51,
+     "DEF": 39,
+     "VIT": 35,
+     "INT": 38
+    },
+    "note": 37.7,
+    "rarete": "commune",
+    "stade": "bebe"
+   }
+  },
+  {
+   "valeur": "8000000000000001fac71cefac71cefac71cefac71cefac71cefac71ce00",
+   "n": 18,
+   "abyssor": false,
+   "attendu": {
+    "espece": "Goulichon",
+    "variante": "classique",
+    "shiny": false,
+    "marque": "un éternuement qui fait des étincelles",
+    "humeur": "courageuse",
+    "taille": 91.4,
+    "qualite": 0.713,
+    "potentiel": 72,
+    "stats": {
+     "PV": 39,
+     "ATK": 42,
+     "DEF": 36,
+     "VIT": 36,
+     "INT": 40
+    },
+    "note": 44.9,
+    "rarete": "commune",
+    "stade": "enfant"
+   }
+  },
+  {
+   "valeur": "8000000000000001fac71cefac71cefac71cefac71cefac71cefac71ce00",
+   "n": 19,
+   "abyssor": false,
+   "attendu": {
+    "espece": "Follanterne",
+    "variante": "classique",
+    "shiny": false,
+    "marque": "une plume de pixel derrière l'oreille",
+    "humeur": "joyeuse",
+    "taille": 29.1,
+    "qualite": 0.783,
+    "potentiel": 81,
+    "stats": {
+     "PV": 38,
+     "ATK": 35,
+     "DEF": 39,
+     "VIT": 44,
+     "INT": 61
+    },
+    "note": 51.3,
+    "rarete": "peu commune",
+    "stade": "adulte"
+   }
+  },
+  {
+   "valeur": "8000000000000001fac71cefac71cefac71cefac71cefac71cefac71ce00",
+   "n": 20,
+   "abyssor": false,
+   "attendu": {
+    "espece": "Volcarnage",
+    "variante": "lave",
+    "shiny": false,
+    "marque": "un grain de beauté en forme de #",
+    "humeur": "calme",
+    "taille": 695.4,
+    "qualite": 0.763,
+    "potentiel": 78,
+    "stats": {
+     "PV": 57,
+     "ATK": 67,
+     "DEF": 55,
+     "VIT": 55,
+     "INT": 61
+    },
+    "note": 72.2,
+    "rarete": "rare",
+    "stade": "adulte"
+   }
+  },
+  {
+   "valeur": "8000000000000001fac71cefac71cefac71cefac71cefac71cefac71ce00",
+   "n": 21,
+   "abyssor": false,
+   "attendu": {
+    "espece": "Plouftin",
+    "variante": "abyssal",
+    "shiny": false,
+    "marque": "une tache en forme de @ sur le dos",
+    "humeur": "calme",
+    "taille": 31.4,
+    "qualite": 0.205,
+    "potentiel": 25,
+    "stats": {
+     "PV": 27,
+     "ATK": 19,
+     "DEF": 21,
+     "VIT": 28,
+     "INT": 42
+    },
+    "note": 31.7,
+    "rarete": "commune",
+    "stade": "enfant"
+   }
+  },
+  {
+   "valeur": "8000000000000001fac71cefac71cefac71cefac71cefac71cefac71ce00",
+   "n": 22,
+   "abyssor": false,
+   "attendu": {
+    "espece": "Gouttelin",
+    "variante": "classique",
+    "shiny": false,
+    "marque": "une antenne qui capte la radio",
+    "humeur": "joyeuse",
+    "taille": 25.5,
+    "qualite": 0.36,
+    "potentiel": 35,
+    "stats": {
+     "PV": 47,
+     "ATK": 25,
+     "DEF": 38,
+     "VIT": 19,
+     "INT": 35
+    },
+    "note": 23.7,
+    "rarete": "commune",
+    "stade": "ado"
+   }
+  },
+  {
+   "valeur": "8000000000000001fac71cefac71cefac71cefac71cefac71cefac71ce00",
+   "n": 23,
+   "abyssor": false,
+   "attendu": {
+    "espece": "Mantelame",
+    "variante": "classique",
+    "shiny": false,
+    "marque": "une tache en forme de @ sur le dos",
+    "humeur": "têtue",
+    "taille": 267.1,
+    "qualite": 0.108,
+    "potentiel": 10,
+    "stats": {
+     "PV": 41,
+     "ATK": 36,
+     "DEF": 35,
+     "VIT": 35,
+     "INT": 42
+    },
+    "note": 14.0,
+    "rarete": "commune",
+    "stade": "bebe"
+   }
+  },
+  {
+   "valeur": "8000000000000001fac71cefac71cefac71cefac71cefac71cefac71ce00",
+   "n": 24,
+   "abyssor": false,
+   "attendu": {
+    "espece": "Tiquetac",
+    "variante": "classique",
+    "shiny": false,
+    "marque": "une queue en forme de tilde ~",
+    "humeur": "têtue",
+    "taille": 112.3,
+    "qualite": 0.173,
+    "potentiel": 16,
+    "stats": {
+     "PV": 33,
+     "ATK": 24,
+     "DEF": 27,
+     "VIT": 39,
+     "INT": 52
+    },
+    "note": 15.7,
+    "rarete": "commune",
+    "stade": "bebe"
+   }
+  },
+  {
+   "valeur": "8000000000000001fac71cefac71cefac71cefac71cefac71cefac71ce00",
+   "n": 25,
+   "abyssor": false,
+   "attendu": {
+    "espece": "Marionnoire",
+    "variante": "ombre",
+    "shiny": false,
+    "marque": "un museau qui sent le café",
+    "humeur": "paresseuse",
+    "taille": 188.1,
+    "qualite": 0.49,
+    "potentiel": 44,
+    "stats": {
+     "PV": 54,
+     "ATK": 42,
+     "DEF": 45,
+     "VIT": 57,
+     "INT": 70
+    },
+    "note": 55.8,
+    "rarete": "peu commune",
+    "stade": "bebe"
+   }
+  },
+  {
+   "valeur": "8000000000000001fac71cefac71cefac71cefac71cefac71cefac71ce00",
+   "n": 26,
+   "abyssor": false,
+   "attendu": {
+    "espece": "Engrenaille",
+    "variante": "classique",
+    "shiny": false,
+    "marque": "des rayures comme un code-barres",
+    "humeur": "bavarde",
+    "taille": 182.2,
+    "qualite": 0.96,
+    "potentiel": 95,
+    "stats": {
+     "PV": 48,
+     "ATK": 54,
+     "DEF": 55,
+     "VIT": 53,
+     "INT": 34
+    },
+    "note": 64.0,
+    "rarete": "rare",
+    "stade": "bebe"
+   }
+  },
+  {
+   "valeur": "8000000000000001fac71cefac71cefac71cefac71cefac71cefac71ce00",
+   "n": 27,
+   "abyssor": false,
+   "attendu": {
+    "espece": "Mutaloupe",
+    "variante": "arcane",
+    "shiny": false,
+    "marque": "un grain de beauté en forme de #",
+    "humeur": "curieuse",
+    "taille": 105.0,
+    "qualite": 0.212,
+    "potentiel": 24,
+    "stats": {
+     "PV": 32,
+     "ATK": 33,
+     "DEF": 43,
+     "VIT": 41,
+     "INT": 24
+    },
+    "note": 34.3,
+    "rarete": "commune",
+    "stade": "adulte"
+   }
+  },
+  {
+   "valeur": "8000000000000001fac71cefac71cefac71cefac71cefac71cefac71ce00",
+   "n": 28,
+   "abyssor": false,
+   "attendu": {
+    "espece": "Boulonnet",
+    "variante": "rouille",
+    "shiny": false,
+    "marque": "des pattes de longueur différente",
+    "humeur": "curieuse",
+    "taille": 31.1,
+    "qualite": 0.368,
+    "potentiel": 33,
+    "stats": {
+     "PV": 30,
+     "ATK": 30,
+     "DEF": 30,
+     "VIT": 26,
+     "INT": 27
+    },
+    "note": 42.8,
+    "rarete": "commune",
+    "stade": "bebe"
+   }
+  },
+  {
+   "valeur": "8000000000000001fac71cefac71cefac71cefac71cefac71cefac71ce00",
+   "n": 29,
+   "abyssor": false,
+   "attendu": {
+    "espece": "Braisillon",
+    "variante": "classique",
+    "shiny": false,
+    "marque": "une étoile sur le front",
+    "humeur": "têtue",
+    "taille": 33.9,
+    "qualite": 0.188,
+    "potentiel": 20,
+    "stats": {
+     "PV": 26,
+     "ATK": 29,
+     "DEF": 29,
+     "VIT": 22,
+     "INT": 27
+    },
+    "note": 11.3,
+    "rarete": "commune",
+    "stade": "bebe"
+   }
+  },
+  {
+   "valeur": "8000000000000001fac71cefac71cefac71cefac71cefac71cefac71ce00",
+   "n": 30,
+   "abyssor": false,
+   "attendu": {
+    "espece": "Tritonnet",
+    "variante": "classique",
+    "shiny": false,
+    "marque": "une tache en forme de @ sur le dos",
+    "humeur": "courageuse",
+    "taille": 36.0,
+    "qualite": 0.91,
+    "potentiel": 86,
+    "stats": {
+     "PV": 37,
+     "ATK": 42,
+     "DEF": 35,
+     "VIT": 37,
+     "INT": 42
+    },
+    "note": 55.7,
+    "rarete": "peu commune",
+    "stade": "enfant"
+   }
+  },
+  {
+   "valeur": "8000000000000001fac71cefac71cefac71cefac71cefac71cefac71ce00",
+   "n": 31,
+   "abyssor": false,
+   "attendu": {
+    "espece": "Parasouris",
+    "variante": "classique",
+    "shiny": false,
+    "marque": "des rayures comme un code-barres",
+    "humeur": "taquine",
+    "taille": 31.3,
+    "qualite": 0.476,
+    "potentiel": 42,
+    "stats": {
+     "PV": 42,
+     "ATK": 37,
+     "DEF": 37,
+     "VIT": 38,
+     "INT": 23
+    },
+    "note": 31.8,
+    "rarete": "commune",
+    "stade": "ado"
+   }
+  },
+  {
+   "valeur": "8000000000000001fac71cefac71cefac71cefac71cefac71cefac71ce00",
+   "n": 32,
+   "abyssor": false,
+   "attendu": {
+    "espece": "Pavegarde",
+    "variante": "classique",
+    "shiny": false,
+    "marque": "un ventre qui affiche l'heure",
+    "humeur": "calme",
+    "taille": 80.2,
+    "qualite": 0.995,
+    "potentiel": 96,
+    "stats": {
+     "PV": 52,
+     "ATK": 48,
+     "DEF": 42,
+     "VIT": 51,
+     "INT": 34
+    },
+    "note": 64.0,
+    "rarete": "rare",
+    "stade": "enfant"
+   }
+  },
+  {
+   "valeur": "8000000000000001fac71cefac71cefac71cefac71cefac71cefac71ce00",
+   "n": 33,
+   "abyssor": false,
+   "attendu": {
+    "espece": "Crabouille",
+    "variante": "classique",
+    "shiny": false,
+    "marque": "un éternuement qui fait des étincelles",
+    "humeur": "joyeuse",
+    "taille": 72.3,
+    "qualite": 0.728,
+    "potentiel": 74,
+    "stats": {
+     "PV": 38,
+     "ATK": 44,
+     "DEF": 45,
+     "VIT": 50,
+     "INT": 33
+    },
+    "note": 48.0,
+    "rarete": "peu commune",
+    "stade": "ado"
+   }
+  },
+  {
+   "valeur": "8000000000000001fac71cefac71cefac71cefac71cefac71cefac71ce00",
+   "n": 34,
+   "abyssor": false,
+   "attendu": {
+    "espece": "Zyeuton",
+    "variante": "classique",
+    "shiny": false,
+    "marque": "un museau qui sent le café",
+    "humeur": "gourmande",
+    "taille": 28.0,
+    "qualite": 0.647,
+    "potentiel": 68,
+    "stats": {
+     "PV": 33,
+     "ATK": 29,
+     "DEF": 26,
+     "VIT": 35,
+     "INT": 48
+    },
+    "note": 38.8,
+    "rarete": "commune",
+    "stade": "bebe"
+   }
+  },
+  {
+   "valeur": "8000000000000001fac71cefac71cefac71cefac71cefac71cefac71ce00",
+   "n": 35,
+   "abyssor": false,
+   "attendu": {
+    "espece": "Papillombre",
+    "variante": "ombre",
+    "shiny": false,
+    "marque": "un œil qui clignote en binaire",
+    "humeur": "gourmande",
+    "taille": 85.0,
+    "qualite": 0.898,
+    "potentiel": 90,
+    "stats": {
+     "PV": 34,
+     "ATK": 44,
+     "DEF": 36,
+     "VIT": 57,
+     "INT": 44
+    },
+    "note": 78.5,
+    "rarete": "épique",
+    "stade": "ado"
+   }
+  },
+  {
+   "valeur": "8000000000000001fac71cefac71cefac71cefac71cefac71cefac71ce00",
+   "n": 36,
+   "abyssor": false,
+   "attendu": {
+    "espece": "Fouinroc",
+    "variante": "sable",
+    "shiny": false,
+    "marque": "un reflet arc-en-ciel sur le pelage",
+    "humeur": "fougueuse",
+    "taille": 26.6,
+    "qualite": 0.443,
+    "potentiel": 48,
+    "stats": {
+     "PV": 40,
+     "ATK": 28,
+     "DEF": 44,
+     "VIT": 26,
+     "INT": 36
+    },
+    "note": 46.1,
+    "rarete": "commune",
+    "stade": "enfant"
+   }
+  },
+  {
+   "valeur": "8000000000000001fac71cefac71cefac71cefac71cefac71cefac71ce00",
+   "n": 37,
+   "abyssor": false,
+   "attendu": {
+    "espece": "Pavegarde",
+    "variante": "classique",
+    "shiny": false,
+    "marque": "un éternuement qui fait des étincelles",
+    "humeur": "curieuse",
+    "taille": 76.1,
+    "qualite": 0.316,
+    "potentiel": 36,
+    "stats": {
+     "PV": 42,
+     "ATK": 39,
+     "DEF": 33,
+     "VIT": 42,
+     "INT": 25
+    },
+    "note": 23.2,
+    "rarete": "commune",
+    "stade": "bebe"
+   }
+  },
+  {
+   "valeur": "8000000000000001fac71cefac71cefac71cefac71cefac71cefac71ce00",
+   "n": 38,
+   "abyssor": false,
+   "attendu": {
+    "espece": "Plouftin",
+    "variante": "classique",
+    "shiny": false,
+    "marque": "une petite cicatrice en forme de point-virgule",
+    "humeur": "fougueuse",
+    "taille": 28.1,
+    "qualite": 0.358,
+    "potentiel": 37,
+    "stats": {
+     "PV": 31,
+     "ATK": 18,
+     "DEF": 22,
+     "VIT": 29,
+     "INT": 46
+    },
+    "note": 21.5,
+    "rarete": "commune",
+    "stade": "adulte"
+   }
+  },
+  {
+   "valeur": "8000000000000001fac71cefac71cefac71cefac71cefac71cefac71ce00",
+   "n": 39,
+   "abyssor": false,
+   "attendu": {
+    "espece": "Papillombre",
+    "variante": "classique",
+    "shiny": false,
+    "marque": "des taches disposées comme une constellation",
+    "humeur": "rêveuse",
+    "taille": 109.9,
+    "qualite": 0.973,
+    "potentiel": 99,
+    "stats": {
+     "PV": 35,
+     "ATK": 45,
+     "DEF": 38,
+     "VIT": 59,
+     "INT": 44
+    },
+    "note": 61.6,
+    "rarete": "peu commune",
+    "stade": "bebe"
+   }
+  },
+  {
+   "valeur": "8000000000000001fac71cefac71cefac71cefac71cefac71cefac71ce00",
+   "n": 39,
+   "abyssor": true,
+   "attendu": {
+    "espece": "Abyssor",
+    "variante": "classique",
+    "shiny": false,
+    "marque": "des taches disposées comme une constellation",
+    "humeur": "rêveuse",
+    "taille": 293.0,
+    "qualite": 0.973,
+    "potentiel": 99,
+    "stats": {
+     "PV": 110,
+     "ATK": 107,
+     "DEF": 93,
+     "VIT": 75,
+     "INT": 100
+    },
+    "note": 98.4,
+    "rarete": "mythique",
+    "stade": "bebe"
+   }
+  },
+  {
+   "valeur": "8000000000000001fac71cefac71cefac71cefac71cefac71cefac71ce00",
+   "n": 40,
+   "abyssor": false,
+   "attendu": {
+    "espece": "Goulichon",
+    "variante": "marais",
+    "shiny": false,
+    "marque": "un œil qui clignote en binaire",
+    "humeur": "calme",
+    "taille": 104.0,
+    "qualite": 0.319,
+    "potentiel": 32,
+    "stats": {
+     "PV": 27,
+     "ATK": 38,
+     "DEF": 30,
+     "VIT": 31,
+     "INT": 34
+    },
+    "note": 33.8,
+    "rarete": "commune",
+    "stade": "bebe"
+   }
+  },
+  {
+   "valeur": "8000000000000001fac71cefac71cefac71cefac71cefac71cefac71ce00",
+   "n": 40,
+   "abyssor": true,
+   "attendu": {
+    "espece": "Abyssor",
+    "variante": "classique",
+    "shiny": false,
+    "marque": "un œil qui clignote en binaire",
+    "humeur": "calme",
+    "taille": 277.4,
+    "qualite": 0.319,
+    "potentiel": 32,
+    "stats": {
+     "PV": 97,
+     "ATK": 97,
+     "DEF": 83,
+     "VIT": 65,
+     "INT": 91
+    },
+    "note": 59.1,
+    "rarete": "mythique",
+    "stade": "bebe"
+   }
+  },
+  {
+   "valeur": "8000000000000001fac71cefac71cefac71cefac71cefac71cefac71ce00",
+   "n": 41,
+   "abyssor": false,
+   "attendu": {
+    "espece": "Fouinroc",
+    "variante": "desert",
+    "shiny": false,
+    "marque": "une tache en forme de @ sur le dos",
+    "humeur": "curieuse",
+    "taille": 30.5,
+    "qualite": 0.06,
+    "potentiel": 6,
+    "stats": {
+     "PV": 33,
+     "ATK": 22,
+     "DEF": 38,
+     "VIT": 18,
+     "INT": 30
+    },
+    "note": 18.2,
+    "rarete": "commune",
+    "stade": "enfant"
+   }
+  },
+  {
+   "valeur": "8000000000000001fac71cefac71cefac71cefac71cefac71cefac71ce00",
+   "n": 42,
+   "abyssor": false,
+   "attendu": {
+    "espece": "Scintipède",
+    "variante": "lune",
+    "shiny": false,
+    "marque": "une crête en forme d'accolade {",
+    "humeur": "bavarde",
+    "taille": 93.6,
+    "qualite": 0.078,
+    "potentiel": 10,
+    "stats": {
+     "PV": 35,
+     "ATK": 45,
+     "DEF": 41,
+     "VIT": 45,
+     "INT": 23
+    },
+    "note": 31.6,
+    "rarete": "commune",
+    "stade": "bebe"
+   }
+  },
+  {
+   "valeur": "8000000000000001fac71cefac71cefac71cefac71cefac71cefac71ce00",
+   "n": 43,
+   "abyssor": false,
+   "attendu": {
+    "espece": "Galetard",
+    "variante": "canyon",
+    "shiny": true,
+    "marque": "une petite cicatrice en forme de point-virgule",
+    "humeur": "têtue",
+    "taille": 248.4,
+    "qualite": 0.176,
+    "potentiel": 20,
+    "stats": {
+     "PV": 34,
+     "ATK": 50,
+     "DEF": 49,
+     "VIT": 48,
+     "INT": 24
+    },
+    "note": 41.6,
+    "rarete": "commune",
+    "stade": "adulte",
+    "teinte": 0.583
+   }
+  },
+  {
+   "valeur": "8000000000000001fac71cefac71cefac71cefac71cefac71cefac71ce00",
+   "n": 44,
+   "abyssor": false,
+   "attendu": {
+    "espece": "Ciliacle",
+    "variante": "eau_petillante",
+    "shiny": false,
+    "marque": "un éternuement qui fait des étincelles",
+    "humeur": "curieuse",
+    "taille": 259.2,
+    "qualite": 0.328,
+    "potentiel": 33,
+    "stats": {
+     "PV": 45,
+     "ATK": 46,
+     "DEF": 35,
+     "VIT": 54,
+     "INT": 26
+    },
+    "note": 39.7,
+    "rarete": "commune",
+    "stade": "enfant"
+   }
+  },
+  {
+   "valeur": "8000000000000001fac71cefac71cefac71cefac71cefac71cefac71ce00",
+   "n": 44,
+   "abyssor": true,
+   "attendu": {
+    "espece": "Abyssor",
+    "variante": "classique",
+    "shiny": false,
+    "marque": "un éternuement qui fait des étincelles",
+    "humeur": "curieuse",
+    "taille": 282.7,
+    "qualite": 0.328,
+    "potentiel": 33,
+    "stats": {
+     "PV": 98,
+     "ATK": 98,
+     "DEF": 84,
+     "VIT": 66,
+     "INT": 88
+    },
+    "note": 59.7,
+    "rarete": "mythique",
+    "stade": "enfant"
+   }
+  },
+  {
+   "valeur": "8000000000000001fac71cefac71cefac71cefac71cefac71cefac71ce00",
+   "n": 45,
+   "abyssor": false,
+   "attendu": {
+    "espece": "Crânard",
+    "variante": "ossuaire",
+    "shiny": false,
+    "marque": "une antenne qui capte la radio",
+    "humeur": "curieuse",
+    "taille": 34.2,
+    "qualite": 0.393,
+    "potentiel": 41,
+    "stats": {
+     "PV": 41,
+     "ATK": 28,
+     "DEF": 43,
+     "VIT": 26,
+     "INT": 38
+    },
+    "note": 39.3,
+    "rarete": "commune",
+    "stade": "bebe"
+   }
+  },
+  {
+   "valeur": "8000000000000001fac71cefac71cefac71cefac71cefac71cefac71ce00",
+   "n": 45,
+   "abyssor": true,
+   "attendu": {
+    "espece": "Abyssor",
+    "variante": "classique",
+    "shiny": false,
+    "marque": "une antenne qui capte la radio",
+    "humeur": "curieuse",
+    "taille": 273.6,
+    "qualite": 0.393,
+    "potentiel": 41,
+    "stats": {
+     "PV": 102,
+     "ATK": 98,
+     "DEF": 82,
+     "VIT": 66,
+     "INT": 92
+    },
+    "note": 63.6,
+    "rarete": "mythique",
+    "stade": "bebe"
+   }
+  },
+  {
+   "valeur": "8000000000000001fac71cefac71cefac71cefac71cefac71cefac71ce00",
+   "n": 46,
+   "abyssor": false,
+   "attendu": {
+    "espece": "Corbouh",
+    "variante": "crypte",
+    "shiny": false,
+    "marque": "des yeux de deux couleurs",
+    "humeur": "curieuse",
+    "taille": 75.6,
+    "qualite": 0.489,
+    "potentiel": 53,
+    "stats": {
+     "PV": 33,
+     "ATK": 45,
+     "DEF": 35,
+     "VIT": 62,
+     "INT": 46
+    },
+    "note": 49.4,
+    "rarete": "peu commune",
+    "stade": "enfant"
+   }
+  },
+  {
+   "valeur": "8000000000000001fac71cefac71cefac71cefac71cefac71cefac71ce00",
+   "n": 47,
+   "abyssor": false,
+   "attendu": {
+    "espece": "Goulichon",
+    "variante": "classique",
+    "shiny": false,
+    "marque": "un ventre qui affiche l'heure",
+    "humeur": "curieuse",
+    "taille": 110.3,
+    "qualite": 0.626,
+    "potentiel": 66,
+    "stats": {
+     "PV": 34,
+     "ATK": 45,
+     "DEF": 34,
+     "VIT": 37,
+     "INT": 38
+    },
+    "note": 39.7,
+    "rarete": "commune",
+    "stade": "adulte"
+   }
+  },
+  {
+   "valeur": "8000000000000001fac71cefac71cefac71cefac71cefac71cefac71ce00",
+   "n": 48,
+   "abyssor": false,
+   "attendu": {
+    "espece": "Lianaconda",
+    "variante": "marais",
+    "shiny": false,
+    "marque": "une ombre qui a un pixel de retard",
+    "humeur": "paresseuse",
+    "taille": 230.1,
+    "qualite": 0.24,
+    "potentiel": 23,
+    "stats": {
+     "PV": 43,
+     "ATK": 47,
+     "DEF": 37,
+     "VIT": 49,
+     "INT": 31
+    },
+    "note": 42.4,
+    "rarete": "commune",
+    "stade": "bebe"
+   }
+  },
+  {
+   "valeur": "8000000000000001fac71cefac71cefac71cefac71cefac71cefac71ce00",
+   "n": 49,
+   "abyssor": false,
+   "attendu": {
+    "espece": "Gargouflamme",
+    "variante": "ruines",
+    "shiny": false,
+    "marque": "un museau qui sent le café",
+    "humeur": "gourmande",
+    "taille": 262.2,
+    "qualite": 0.262,
+    "potentiel": 24,
+    "stats": {
+     "PV": 31,
+     "ATK": 42,
+     "DEF": 36,
+     "VIT": 58,
+     "INT": 50
+    },
+    "note": 37.9,
+    "rarete": "commune",
+    "stade": "ado"
+   }
+  },
+  {
+   "valeur": "8000000000000001fac71cefac71cefac71cefac71cefac71cefac71ce00",
+   "n": 50,
+   "abyssor": false,
+   "attendu": {
+    "espece": "Pucerise",
+    "variante": "classique",
+    "shiny": false,
+    "marque": "une étoile sur le front",
+    "humeur": "têtue",
+    "taille": 30.5,
+    "qualite": 0.909,
+    "potentiel": 92,
+    "stats": {
+     "PV": 48,
+     "ATK": 32,
+     "DEF": 45,
+     "VIT": 29,
+     "INT": 45
+    },
+    "note": 55.6,
+    "rarete": "peu commune",
+    "stade": "enfant"
+   }
+  },
+  {
+   "valeur": "8000000000000001fac71cefac71cefac71cefac71cefac71cefac71ce00",
+   "n": 51,
+   "abyssor": false,
+   "attendu": {
+    "espece": "Scorpiquant",
+    "variante": "classique",
+    "shiny": false,
+    "marque": "une queue en forme de tilde ~",
+    "humeur": "curieuse",
+    "taille": 252.6,
+    "qualite": 0.722,
+    "potentiel": 77,
+    "stats": {
+     "PV": 46,
+     "ATK": 58,
+     "DEF": 56,
+     "VIT": 54,
+     "INT": 37
+    },
+    "note": 51.9,
+    "rarete": "peu commune",
+    "stade": "bebe"
+   }
+  },
+  {
+   "valeur": "8000000000000001fac71cefac71cefac71cefac71cefac71cefac71ce00",
+   "n": 52,
+   "abyssor": false,
+   "attendu": {
+    "espece": "Lampiotte",
+    "variante": "abyssal",
+    "shiny": false,
+    "marque": "une queue en forme de tilde ~",
+    "humeur": "curieuse",
+    "taille": 89.1,
+    "qualite": 0.395,
+    "potentiel": 36,
+    "stats": {
+     "PV": 36,
+     "ATK": 33,
+     "DEF": 28,
+     "VIT": 38,
+     "INT": 66
+    },
+    "note": 42.7,
+    "rarete": "commune",
+    "stade": "ado"
+   }
+  },
+  {
+   "valeur": "8000000000000001fac71cefac71cefac71cefac71cefac71cefac71ce00",
+   "n": 53,
+   "abyssor": false,
+   "attendu": {
+    "espece": "Fondelin",
+    "variante": "lave",
+    "shiny": false,
+    "marque": "des pattes de longueur différente",
+    "humeur": "têtue",
+    "taille": 79.5,
+    "qualite": 0.58,
+    "potentiel": 56,
+    "stats": {
+     "PV": 66,
+     "ATK": 38,
+     "DEF": 58,
+     "VIT": 29,
+     "INT": 50
+    },
+    "note": 56.9,
+    "rarete": "peu commune",
+    "stade": "adulte"
+   }
+  },
+  {
+   "valeur": "8000000000000001fac71cefac71cefac71cefac71cefac71cefac71ce00",
+   "n": 54,
+   "abyssor": false,
+   "attendu": {
+    "espece": "Golemmur",
+    "variante": "classique",
+    "shiny": false,
+    "marque": "un éternuement qui fait des étincelles",
+    "humeur": "curieuse",
+    "taille": 653.4,
+    "qualite": 0.086,
+    "potentiel": 12,
+    "stats": {
+     "PV": 38,
+     "ATK": 53,
+     "DEF": 49,
+     "VIT": 41,
+     "INT": 45
+    },
+    "note": 16.9,
+    "rarete": "commune",
+    "stade": "ado"
+   }
+  },
+  {
+   "valeur": "8000000000000001fac71cefac71cefac71cefac71cefac71cefac71ce00",
+   "n": 55,
+   "abyssor": false,
+   "attendu": {
+    "espece": "Pucerise",
+    "variante": "eau_petillante",
+    "shiny": false,
+    "marque": "des taches disposées comme une constellation",
+    "humeur": "fougueuse",
+    "taille": 34.1,
+    "qualite": 0.254,
+    "potentiel": 27,
+    "stats": {
+     "PV": 39,
+     "ATK": 21,
+     "DEF": 34,
+     "VIT": 20,
+     "INT": 34
+    },
+    "note": 33.6,
+    "rarete": "commune",
+    "stade": "enfant"
+   }
+  },
+  {
+   "valeur": "8000000000000001fac71cefac71cefac71cefac71cefac71cefac71ce00",
+   "n": 55,
+   "abyssor": true,
+   "attendu": {
+    "espece": "Abyssor",
+    "variante": "classique",
+    "shiny": false,
+    "marque": "des taches disposées comme une constellation",
+    "humeur": "fougueuse",
+    "taille": 273.1,
+    "qualite": 0.254,
+    "potentiel": 27,
+    "stats": {
+     "PV": 100,
+     "ATK": 94,
+     "DEF": 82,
+     "VIT": 64,
+     "INT": 89
+    },
+    "note": 55.2,
+    "rarete": "mythique",
+    "stade": "enfant"
+   }
+  },
+  {
+   "valeur": "8000000000000001fac71cefac71cefac71cefac71cefac71cefac71ce00",
+   "n": 56,
+   "abyssor": false,
+   "attendu": {
+    "espece": "Rouillot",
+    "variante": "classique",
+    "shiny": false,
+    "marque": "des pattes de longueur différente",
+    "humeur": "fougueuse",
+    "taille": 37.2,
+    "qualite": 0.075,
+    "potentiel": 6,
+    "stats": {
+     "PV": 27,
+     "ATK": 31,
+     "DEF": 26,
+     "VIT": 31,
+     "INT": 17
+    },
+    "note": 5.6,
+    "rarete": "commune",
+    "stade": "enfant"
+   }
+  },
+  {
+   "valeur": "8000000000000001fac71cefac71cefac71cefac71cefac71cefac71ce00",
+   "n": 57,
+   "abyssor": false,
+   "attendu": {
+    "espece": "Raiyon",
+    "variante": "sable",
+    "shiny": false,
+    "marque": "un reflet arc-en-ciel sur le pelage",
+    "humeur": "joyeuse",
+    "taille": 242.0,
+    "qualite": 0.382,
+    "potentiel": 38,
+    "stats": {
+     "PV": 37,
+     "ATK": 46,
+     "DEF": 33,
+     "VIT": 64,
+     "INT": 49
+    },
+    "note": 54.5,
+    "rarete": "peu commune",
+    "stade": "bebe"
+   }
+  },
+  {
+   "valeur": "8000000000000001fac71cefac71cefac71cefac71cefac71cefac71ce00",
+   "n": 57,
+   "abyssor": true,
+   "attendu": {
+    "espece": "Abyssor",
+    "variante": "classique",
+    "shiny": false,
+    "marque": "un reflet arc-en-ciel sur le pelage",
+    "humeur": "joyeuse",
+    "taille": 264.0,
+    "qualite": 0.382,
+    "potentiel": 38,
+    "stats": {
+     "PV": 103,
+     "ATK": 97,
+     "DEF": 84,
+     "VIT": 66,
+     "INT": 89
+    },
+    "note": 62.9,
+    "rarete": "mythique",
+    "stade": "bebe"
+   }
+  },
+  {
+   "valeur": "8000000000000001fac71cefac71cefac71cefac71cefac71cefac71ce00",
+   "n": 58,
+   "abyssor": false,
+   "attendu": {
+    "espece": "Goulichon",
+    "variante": "marais",
+    "shiny": false,
+    "marque": "une crête en forme d'accolade {",
+    "humeur": "fougueuse",
+    "taille": 73.1,
+    "qualite": 0.432,
+    "potentiel": 43,
+    "stats": {
+     "PV": 29,
+     "ATK": 41,
+     "DEF": 32,
+     "VIT": 33,
+     "INT": 34
+    },
+    "note": 40.6,
+    "rarete": "commune",
+    "stade": "bebe"
+   }
+  },
+  {
+   "valeur": "8000000000000001fac71cefac71cefac71cefac71cefac71cefac71ce00",
+   "n": 59,
+   "abyssor": false,
+   "attendu": {
+    "espece": "Mycélix",
+    "variante": "toxique",
+    "shiny": false,
+    "marque": "une marque en forme de flèche →",
+    "humeur": "fougueuse",
+    "taille": 235.6,
+    "qualite": 0.355,
+    "potentiel": 32,
+    "stats": {
+     "PV": 47,
+     "ATK": 59,
+     "DEF": 54,
+     "VIT": 62,
+     "INT": 27
+    },
+    "note": 51.5,
+    "rarete": "peu commune",
+    "stade": "bebe"
+   }
+  },
+  {
+   "valeur": "9e3779b97f4a7c15f39cc0605cedc8341082276bf3a27251f86c6a11d0c18e95",
+   "n": 80,
+   "abyssor": false,
+   "attendu": {
+    "espece": "Greffon",
+    "variante": "ruines",
+    "shiny": true,
+    "marque": "une plume de pixel derrière l'oreille",
+    "humeur": "paresseuse",
+    "taille": 97.9,
+    "qualite": 0.673,
+    "potentiel": 65,
+    "stats": {
+     "PV": 42,
+     "ATK": 51,
+     "DEF": 47,
+     "VIT": 40,
+     "INT": 42
+    },
+    "note": 69.3,
+    "rarete": "rare",
+    "stade": "enfant",
+    "teinte": 0.373
+   }
+  },
+  {
+   "valeur": "9e3779b97f4a7c15f39cc0605cedc8341082276bf3a27251f86c6a11d0c18e95",
+   "n": 99,
+   "abyssor": false,
+   "attendu": {
+    "espece": "Serpelage",
+    "variante": "marais",
+    "shiny": true,
+    "marque": "un ronronnement à 440 Hz",
+    "humeur": "courageuse",
+    "taille": 95.0,
+    "qualite": 0.764,
+    "potentiel": 77,
+    "stats": {
+     "PV": 47,
+     "ATK": 48,
+     "DEF": 43,
+     "VIT": 52,
+     "INT": 32
+    },
+    "note": 81.9,
+    "rarete": "épique",
+    "stade": "bebe",
+    "teinte": 0.598
+   }
+  },
+  {
+   "valeur": "9e3779b97f4a7c15f39cc0605cedc8341082276bf3a27251f86c6a11d0c18e95",
+   "n": 177,
+   "abyssor": false,
+   "attendu": {
+    "espece": "Serpelage",
+    "variante": "marais",
+    "shiny": true,
+    "marque": "une marque en forme de flèche →",
+    "humeur": "gourmande",
+    "taille": 72.5,
+    "qualite": 0.224,
+    "potentiel": 25,
+    "stats": {
+     "PV": 40,
+     "ATK": 41,
+     "DEF": 33,
+     "VIT": 43,
+     "INT": 24
+    },
+    "note": 49.5,
+    "rarete": "peu commune",
+    "stade": "enfant",
+    "teinte": 0.534
+   }
+  },
+  {
+   "valeur": "9e3779b97f4a7c15f39cc0605cedc8341082276bf3a27251f86c6a11d0c18e95",
+   "n": 245,
+   "abyssor": false,
+   "attendu": {
+    "espece": "Séraphibou",
+    "variante": "arcane",
+    "shiny": false,
+    "marque": "un éternuement qui fait des étincelles",
+    "humeur": "calme",
+    "taille": 73.2,
+    "qualite": 0.925,
+    "potentiel": 92,
+    "stats": {
+     "PV": 49,
+     "ATK": 51,
+     "DEF": 42,
+     "VIT": 70,
+     "INT": 50
+    },
+    "note": 86.0,
+    "rarete": "légendaire",
+    "stade": "adulte"
+   }
+  },
+  {
+   "valeur": "9e3779b97f4a7c15f39cc0605cedc8341082276bf3a27251f86c6a11d0c18e95",
+   "n": 389,
+   "abyssor": false,
+   "attendu": {
+    "espece": "Parasouris",
+    "variante": "champignonniere",
+    "shiny": false,
+    "marque": "un ventre qui affiche l'heure",
+    "humeur": "fougueuse",
+    "taille": 33.6,
+    "qualite": 0.987,
+    "potentiel": 97,
+    "stats": {
+     "PV": 51,
+     "ATK": 47,
+     "DEF": 45,
+     "VIT": 46,
+     "INT": 30
+    },
+    "note": 84.4,
+    "rarete": "légendaire",
+    "stade": "ado"
+   }
+  },
+  {
+   "valeur": "9e3779b97f4a7c15f39cc0605cedc8341082276bf3a27251f86c6a11d0c18e95",
+   "n": 422,
+   "abyssor": false,
+   "attendu": {
+    "espece": "Libellance",
+    "variante": "prairie",
+    "shiny": false,
+    "marque": "des taches disposées comme une constellation",
+    "humeur": "gourmande",
+    "taille": 249.0,
+    "qualite": 0.956,
+    "potentiel": 95,
+    "stats": {
+     "PV": 49,
+     "ATK": 53,
+     "DEF": 46,
+     "VIT": 82,
+     "INT": 61
+    },
+    "note": 88.5,
+    "rarete": "légendaire",
+    "stade": "bebe"
+   }
+  }
+ ]
+}
