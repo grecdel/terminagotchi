@@ -28,7 +28,7 @@ jobs:
           node-version: "22"
 
       - name: Tester la logique du site
-        run: node --no-warnings test/test.mjs | tee ../test-site.log
+        run: (node --no-warnings test/test.mjs && node --no-warnings test/tirage.mjs) 2>&1 | tee ../test-site.log; test ${PIPESTATUS[0]} -eq 0
 
       - name: Tester avec l'outil officiel de Cloudflare (en local)
         run: |
