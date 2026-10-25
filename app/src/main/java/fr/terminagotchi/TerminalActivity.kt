@@ -716,8 +716,8 @@ class TerminalActivity : Activity() {
             for (n in nouveaux.filter { !it.startsWith(".") }) {
                 val dossier = File(d, n).isDirectory
                 val p = Mots.palier(jeu)
-                ecrire(if (dossier) t("term.apparu.dossier", "quoi" to Mots.terme("un_dossier", p, true), "n" to n)
-                    else t("term.apparu.fichier", "quoi" to Mots.terme("un_fichier", p, true), "n" to n),
+                ecrire(if (dossier) t("term.apparu.dossier", "Quoi" to Mots.terme("un_dossier", p, true), "quoi" to Mots.terme("un_dossier", p), "n" to n)
+                    else t("term.apparu.fichier", "Quoi" to Mots.terme("un_fichier", p, true), "quoi" to Mots.terme("un_fichier", p), "n" to n),
                     0xFF5FD787.toInt())
                 change = true
             }
