@@ -260,11 +260,15 @@ class Jeu(ctx: Context) {
         Animations.init(ctx)
     }
 
+    private val app: Context = ctx.applicationContext ?: ctx
+
     // chemin « canonique » : /data/user/0 et /data/data désignent le même dossier sur Android
     val home: File = File(ctx.filesDir, "maison").apply { mkdirs() }.canonicalFile
+    /** le terrain de la partie ACTIVE (chaque partie a le sien, voir Parties.kt) */
     val terrain: File get() = File(home, "terrain_terminagotchi")
-    private val fichier = File(ctx.filesDir, "sauvegarde.json")
 
+    /** identifiant de la partie (« 1 » = la sauvegarde d'avant les parties multiples, voir Parties.kt) */
+    var partie = Parties.active(app)
     var nom = ""
     var xp = 0
     var faim = 80.0
@@ -360,21 +364,43 @@ class Jeu(ctx: Context) {
     val stade: Int get() = Regles.stade(niveau)
 
     // ------------------------------------------------------------ sauvegarde
-    /** Relit la sauvegarde (une autre partie de l'appli, comme le Doom, a pu la modifier). */
+    /**
+     * Relit la sauvegarde active (une autre partie de l'appli, comme le Doom, a pu la modifier,
+     * ou l'écran d'accueil a changé de partie) : tout repart des valeurs de départ, puis du fichier.
+     */
     fun recharger() {
+        nom = ""
+        xp = 0
+        faim = 80.0
+        total = 0
+        dernierTick = System.currentTimeMillis()
         vus.clear()
         journal.clear()
         skills.clear()
         historique.clear()
+        lecon = 0
+        etape = 0
+        forme = null
+        trait = Regles.TRAITS.keys.random()
+        bulle = ""
+        bulleFin = 0L
+        bulles.clear()
+        anim = null
+        colles = 0
+        shiny = false
+        dernierJeu.clear()
         extra = JSONObject()
         Regles.STATS.forEach { stats[it] = 0 }
+        partie = Parties.active(app)
         charger()
     }
 
     private fun charger() {
+        val fichier = Parties.fichierActif(app)
         if (!fichier.exists()) return
         try {
             val o = JSONObject(fichier.readText())
+            partie = o.optString("partie").ifEmpty { partie }
             nom = o.optString("nom")
             xp = o.optInt("xp")
             faim = o.optDouble("faim", 80.0)
@@ -428,7 +454,12 @@ class Jeu(ctx: Context) {
         o.put("colles", colles)
         o.put("shiny", shiny)
         o.put("extra", extra)
-        val tmp = File(fichier.parentFile, "sauvegarde.tmp")
+        o.put("partie", partie)
+        o.put("maj", System.currentTimeMillis())
+        // si l'écran d'accueil a changé de partie entre-temps (rappel en arrière-plan…),
+        // cette créature s'enregistre dans SON rangement et n'écrase pas la nouvelle partie active
+        val fichier = Parties.fichierDe(app, partie)
+        val tmp = File(fichier.parentFile, fichier.name.removeSuffix(".json") + ".tmp")
         tmp.writeText(o.toString())
         tmp.renameTo(fichier)
     }
