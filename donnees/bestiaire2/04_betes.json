@@ -1,0 +1,287 @@
+[
+  {
+    "rang": 1,
+    "nom": "Groinfer",
+    "id": "groinfer",
+    "rarete": "commune",
+    "posture": "quadrupède",
+    "taille_finale": "moyenne",
+    "fiche": "Un sanglier têtu dont la peau durcit en plaques de fer, qui fouille les sous-bois et les prairies à la recherche de racines.",
+    "caractere": "têtu et glouton",
+    "apparence": "Stocky boar body with bristly fur and riveted iron-like hide plates, flat snout, curved tusks; dominant colors rust brown, ochre, dark gray.",
+    "stades": {
+      "bebe": "A round striped piglet ball with stubby legs, a pink flat snout and huge shiny eyes.",
+      "enfant": "Short tusk nubs sprout and a first small gray plate appears on its forehead.",
+      "ado": "Body lengthens, a bristly mane runs down the spine and iron plates cover the shoulders.",
+      "adulte": "A heavy boar fully armored in overlapping rusty plates, with long hooked tusks and a spiked ridge along its back.",
+      "ancien": "Massive grizzled boar with a white bristly beard, chipped tusks capped with bronze rings and moss growing in the seams of its armor."
+    },
+    "habitats": ["forêt", "prairie", "marais", "montagne", "ruines", "rouille", "champignonnière"]
+  },
+  {
+    "rang": 2,
+    "nom": "Chauvecroc",
+    "id": "chauvecroc",
+    "rarete": "commune",
+    "posture": "volant",
+    "taille_finale": "petite",
+    "fiche": "Une chauve-souris aux crocs démesurés qui niche par colonies dans les grottes, les cryptes et les canyons.",
+    "caractere": "nerveux et curieux",
+    "apparence": "Small furry bat creature with leathery wings, oversized ears and prominent fangs; dominant colors dusty gray, ochre, bone white.",
+    "stades": {
+      "bebe": "A fluffy gray fur ball with two giant ears, tiny wing stubs and big round eyes.",
+      "enfant": "Small leathery wings unfold and two little white fangs poke out of its mouth.",
+      "ado": "Wings grow wider with a hooked claw at each tip and the fangs reach its chin.",
+      "adulte": "A sleek bat with broad tattered wings, a bony crest between its ears and long saber-like fangs.",
+      "ancien": "Elder bat with silver-tipped fur, a scarred wing membrane mended with stitches and fangs adorned with tiny bone charms."
+    },
+    "habitats": ["canyon", "crypte", "ruines", "ombre", "ossuaire", "montagne", "forêt", "brume"]
+  },
+  {
+    "rang": 3,
+    "nom": "Fouinroc",
+    "id": "fouinroc",
+    "rarete": "commune",
+    "posture": "rampant",
+    "taille_finale": "petite",
+    "fiche": "Une taupe fouisseuse aux griffes de pierre qui creuse des galeries sous les déserts et les montagnes.",
+    "caractere": "timide et bosseur",
+    "apparence": "Low, elongated mole body with velvety fur, enormous shovel claws made of stone, pointed nose; dominant colors sandy ochre, brown, slate gray.",
+    "stades": {
+      "bebe": "A plump velvet bean with a pink star-shaped nose, tiny paws and big sleepy eyes.",
+      "enfant": "Its front paws widen into small gray stone shovels.",
+      "ado": "Body stretches long and low, stone plates appear on its back like a pebbled shell.",
+      "adulte": "A long crawling digger with huge rocky claws, a drill-like horned nose and a back covered in jagged stones.",
+      "ancien": "Ancient mole with a long white whisker beard, crystal veins in its stone claws and tiny glasses-like lenses of quartz over its eyes."
+    },
+    "habitats": ["désert", "sable", "montagne", "canyon", "cristal", "prairie", "ruines"]
+  },
+  {
+    "rang": 4,
+    "nom": "Louvacier",
+    "id": "louvacier",
+    "rarete": "commune",
+    "posture": "quadrupède",
+    "taille_finale": "moyenne",
+    "fiche": "Un loup cuirassé de plaques d'acier naturel qui chasse en meute dans la toundra et les forêts enneigées.",
+    "caractere": "loyal et fier",
+    "apparence": "Lean wolf body with thick fur and natural steel-like armor plates on the head, shoulders and tail; dominant colors steel gray, brown, bone white.",
+    "stades": {
+      "bebe": "A chubby gray puppy with floppy ears, an oversized head and big bright eyes.",
+      "enfant": "A small shiny plate forms on its forehead and its ears stand pointed.",
+      "ado": "Long legs, a thick neck ruff, and steel plates spreading over the shoulders and along the tail.",
+      "adulte": "A powerful wolf wearing a full steel helmet-like skull plate, armored flanks and a bladed tail tip.",
+      "ancien": "Grand old wolf with a snowy beard-like ruff, dented and polished armor and a halo of frost breath around its muzzle."
+    },
+    "habitats": ["toundra", "forêt", "glace", "montagne", "prairie", "aurore", "ruines"]
+  },
+  {
+    "rang": 5,
+    "nom": "Ricanos",
+    "id": "ricanos",
+    "rarete": "commune",
+    "posture": "quadrupède",
+    "taille_finale": "moyenne",
+    "fiche": "Une hyène charognarde qui ricane la nuit en rongeant les os des ossuaires et des déserts.",
+    "caractere": "moqueur et malin",
+    "apparence": "Hunched hyena body with sloped back, spotted coarse fur and bone growths; dominant colors ochre, dark brown, bone white.",
+    "stades": {
+      "bebe": "A round spotted pup with huge round ears, a goofy grin and big eyes.",
+      "enfant": "Its front legs grow longer than the back ones and a tiny bone nub appears on its nose.",
+      "ado": "A spiky mane rises along the sloped back and bone spurs poke out of its elbows.",
+      "adulte": "A hulking hyena with a bone mask fused to its face, massive jaws and a row of rib-like spikes on its back.",
+      "ancien": "Elder hyena with a gray grizzled mane, a cracked bone mask hung with trinkets and a necklace of old teeth."
+    },
+    "habitats": ["désert", "ossuaire", "sable", "canyon", "prairie", "ruines", "cendres", "crypte"]
+  },
+  {
+    "rang": 6,
+    "nom": "Serpelage",
+    "id": "serpelage",
+    "rarete": "commune",
+    "posture": "serpentin",
+    "taille_finale": "moyenne",
+    "fiche": "Un long furet-serpent au pelage soyeux qui se faufile dans les jungles et les marais pour voler des œufs.",
+    "caractere": "espiègle et voleur",
+    "apparence": "Very long weasel-like serpentine body covered in sleek fur, short legs and a fluffy tail; dominant colors chestnut brown, cream, gray.",
+    "stades": {
+      "bebe": "A short fluffy sausage with a cream belly, a tiny pointed face and big black eyes, no legs yet.",
+      "enfant": "Four tiny paws appear and its body doubles in length.",
+      "ado": "The body becomes long and wavy with a striped back and a bushy tail tip shaped like a brush.",
+      "adulte": "A huge coiling fur serpent with small clawed legs, a bony ridge down its spine and a tail ending in a bone club.",
+      "ancien": "Elder serpent with long silky silver fur, wise whiskers like a mustache and a tail wrapped in ancient leather bands."
+    },
+    "habitats": ["jungle", "marais", "forêt", "lagon", "prairie", "ruines", "champignonnière"]
+  },
+  {
+    "rang": 7,
+    "nom": "Félicorne",
+    "id": "felicorne",
+    "rarete": "peu commune",
+    "posture": "quadrupède",
+    "taille_finale": "grande",
+    "fiche": "Un grand félin aux cornes recourbées qui guette ses proies du haut des falaises et des canyons.",
+    "caractere": "fier et solitaire",
+    "apparence": "Muscular big cat body with short fur, curved ram-like horns and a long tail; dominant colors golden ochre, dark brown, bone white.",
+    "stades": {
+      "bebe": "A round fuzzy kitten with oversized paws, a tiny tail and huge amber eyes.",
+      "enfant": "Two little horn buds sprout above its ears and faint stripes appear.",
+      "ado": "Long legs, a lean body and horns that start to curl backward.",
+      "adulte": "A powerful horned panther with spiraling horns, bony knuckle spikes and a tail tipped with a bone blade.",
+      "ancien": "Majestic old cat with a gray mane, horns engraved with runes and carved rings, and scars across its muzzle."
+    },
+    "habitats": ["canyon", "montagne", "désert", "prairie", "jungle", "ruines", "soleil"]
+  },
+  {
+    "rang": 8,
+    "nom": "Milgriffe",
+    "id": "milgriffe",
+    "rarete": "peu commune",
+    "posture": "multipattes",
+    "taille_finale": "moyenne",
+    "fiche": "Un blaireau à six pattes griffues qui creuse ses terriers dans les forêts sombres et les champignonnières.",
+    "caractere": "grognon et protecteur",
+    "apparence": "Low, wide badger body with six clawed legs, coarse striped fur and a bony back plate; dominant colors black, gray, bone white.",
+    "stades": {
+      "bebe": "A round black-and-white furball with a striped face, four stubby paws and big eyes.",
+      "enfant": "A third pair of tiny legs appears in the middle of its body.",
+      "ado": "Body widens and flattens, all six legs grow long hooked claws and a bony plate forms on its back.",
+      "adulte": "A wide armored badger running on six heavy clawed legs, with a ridged bone shell and a snarling striped face.",
+      "ancien": "Grizzled elder badger with a white beard, a cracked bone shell overgrown with mushrooms and worn golden claws."
+    },
+    "habitats": ["forêt", "champignonnière", "prairie", "montagne", "marais", "ombre", "ruines"]
+  },
+  {
+    "rang": 9,
+    "nom": "Simiosse",
+    "id": "simiosse",
+    "rarete": "peu commune",
+    "posture": "bipède",
+    "taille_finale": "grande",
+    "fiche": "Un grand singe qui se façonne une armure avec les os de ses proies et règne sur les jungles et les ruines.",
+    "caractere": "bagarreur et rusé",
+    "apparence": "Upright ape body with long arms, shaggy fur and bone armor pieces fused to the skin; dominant colors dark brown, ochre, bone white.",
+    "stades": {
+      "bebe": "A round fuzzy baby monkey with a big head, a tiny curled tail and huge eyes.",
+      "enfant": "Its arms grow longer than its legs and a small bone ring appears on each wrist.",
+      "ado": "It stands upright, with a broad chest, a shaggy mane and bone plates on its forearms.",
+      "adulte": "A towering ape with massive arms, a bone helmet with tusks, bone shoulder guards and huge knuckles.",
+      "ancien": "Ancient silver-backed ape with a long white beard, a cracked bone crown and a staff carved from a giant femur."
+    },
+    "habitats": ["jungle", "ruines", "forêt", "montagne", "ossuaire", "marais", "canyon"]
+  },
+  {
+    "rang": 10,
+    "nom": "Tatoublind",
+    "id": "tatoublind",
+    "rarete": "peu commune",
+    "posture": "quadrupède",
+    "taille_finale": "moyenne",
+    "fiche": "Un tatou blindé qui se roule en boule pour dévaler les dunes et les pentes des volcans.",
+    "caractere": "placide et costaud",
+    "apparence": "Armadillo body with banded shell plates like a tank, short legs and a pointed snout; dominant colors ochre, slate gray, rust brown.",
+    "stades": {
+      "bebe": "A small round shell ball with a pink pointy snout, tiny feet and big eyes.",
+      "enfant": "Its shell splits into three neat bands and a small horn appears on its nose.",
+      "ado": "The shell grows more bands with spiky edges and its tail becomes armored.",
+      "adulte": "A heavy armored beast with thick riveted bands, a spiked back, a horned snout and a mace-like tail.",
+      "ancien": "Elder armadillo with a weathered shell covered in sand-carved patterns, a white whiskered snout and a glowing amber stone on its brow."
+    },
+    "habitats": ["désert", "sable", "canyon", "volcan", "cendres", "prairie", "montagne"]
+  },
+  {
+    "rang": 11,
+    "nom": "Hibourreau",
+    "id": "hibourreau",
+    "rarete": "rare",
+    "posture": "volant",
+    "taille_finale": "grande",
+    "fiche": "Un hibou-lynx nocturne aux serres immenses qui fond en silence sur ses proies dans la brume des forêts.",
+    "caractere": "silencieux et implacable",
+    "apparence": "Owl head on a lynx-like feline body with large feathered wings and talons; dominant colors brown, gray, bone white.",
+    "stades": {
+      "bebe": "A round fluffy owlet ball with enormous round eyes, a tiny beak and kitten paws.",
+      "enfant": "Small feathered wings and tufted lynx ears appear.",
+      "ado": "Its body lengthens like a cat, wings grow broad and feathered, and the front paws become talons.",
+      "adulte": "A great winged owl-cat with a sharp hooked beak, huge sickle talons and a bony mask around its eyes.",
+      "ancien": "Ancient owl-beast with silver feathers, a beard of long plumes, and a rune-carved bone mask glowing faintly."
+    },
+    "habitats": ["forêt", "brume", "ombre", "lune", "montagne", "ruines", "crypte", "toundra"]
+  },
+  {
+    "rang": 12,
+    "nom": "Oursomont",
+    "id": "oursomont",
+    "rarete": "rare",
+    "posture": "bipède",
+    "taille_finale": "colossale",
+    "fiche": "Un ours géant au dos couvert de roches qui se dresse sur ses pattes arrière pour défendre sa montagne.",
+    "caractere": "calme mais redoutable",
+    "apparence": "Huge bear body able to stand upright, thick fur and boulders growing from its back and shoulders; dominant colors brown, slate gray, ochre.",
+    "stades": {
+      "bebe": "A round teddy-like cub with a tiny pebble on its back, round ears and big eyes.",
+      "enfant": "The pebble becomes a row of small stones along its spine and its claws darken.",
+      "ado": "It starts walking upright, its shoulders swell with rocky lumps and its claws turn stony.",
+      "adulte": "A colossal standing bear with a mountain-like ridge of boulders on its back, granite forearms and huge claws.",
+      "ancien": "Ancient bear with snowy fur, moss and small pine trees growing on its stone back, and a necklace of carved rocks."
+    },
+    "habitats": ["montagne", "forêt", "toundra", "glace", "canyon", "cristal", "prairie"]
+  },
+  {
+    "rang": 13,
+    "nom": "Trigueule",
+    "id": "trigueule",
+    "rarete": "rare",
+    "posture": "quadrupède",
+    "taille_finale": "grande",
+    "fiche": "Une chimère à trois têtes de lion, de bouc et de chacal qui rôde dans les ruines arcaniques et les canyons.",
+    "caractere": "imprévisible et vorace",
+    "apparence": "Chimera with a lion body, three heads (lion, goat, jackal) and a long tail ending in a bony spike; dominant colors ochre, brown, gray.",
+    "stades": {
+      "bebe": "A round cub with one cute face, two tiny bumps on its shoulders and big eyes.",
+      "enfant": "The shoulder bumps become two small extra heads, a baby goat and a baby jackal.",
+      "ado": "All three heads grow with their own features: goat horns, jackal ears, and a budding lion mane.",
+      "adulte": "A fearsome three-headed beast with a full lion mane, curved goat horns, a snarling jackal head and a spiked bone tail.",
+      "ancien": "Elder chimera with graying manes, the goat head wearing a long beard, scarred horns and bone rings on its tail."
+    },
+    "habitats": ["ruines", "canyon", "arcane", "désert", "montagne", "volcan", "cendres", "ossuaire"]
+  },
+  {
+    "rang": 14,
+    "nom": "Mammouroc",
+    "id": "mammouroc",
+    "rarete": "rare",
+    "posture": "quadrupède",
+    "taille_finale": "colossale",
+    "fiche": "Un mammouth colossal aux défenses de pierre qui migre lentement à travers la toundra et les glaciers.",
+    "caractere": "paisible et inébranlable",
+    "apparence": "Colossal mammoth body with long shaggy fur, curved stone tusks and a bony armored forehead; dominant colors dark brown, ochre, bone white.",
+    "stades": {
+      "bebe": "A round woolly calf with a tiny trunk, floppy ears and big eyes.",
+      "enfant": "Two small tusk tips appear and its fur grows long and shaggy.",
+      "ado": "Long curving tusks, a high domed head and a hump of thick fur on its shoulders.",
+      "adulte": "A gigantic mammoth with massive spiraling stone tusks, a bone armor plate on its brow and pillar-like legs.",
+      "ancien": "Ancient mammoth with frost-white fur, cracked tusks bound with ropes and relics, and snow piled on its back."
+    },
+    "habitats": ["toundra", "glace", "montagne", "prairie", "aurore", "ossuaire", "brume"]
+  },
+  {
+    "rang": 15,
+    "nom": "Rugissire",
+    "id": "rugissire",
+    "rarete": "légendaire",
+    "posture": "quadrupède",
+    "taille_finale": "colossale",
+    "fiche": "Le seigneur des bêtes, un fauve colossal couronné d'os dont le rugissement fait trembler toutes les terres sauvages.",
+    "caractere": "noble et indomptable",
+    "apparence": "Colossal beast-king with a lion-bear body, an enormous mane, bone antler crown and bone armor; dominant colors golden ochre, dark brown, bone white.",
+    "stades": {
+      "bebe": "A round fluffy cub with a tuft of mane on its head, big paws and huge golden eyes.",
+      "enfant": "A small bone circlet with three points forms on its forehead and its mane thickens.",
+      "ado": "A bear-like broad chest, a long flowing mane and antler-like bone branches growing from the crown.",
+      "adulte": "A colossal lion-bear king with a huge mane, a towering bone antler crown, bone shoulder plates and massive claws.",
+      "ancien": "Ancient beast-king with a silver mane like a long beard, a crown of antlers hung with relics, and a faint golden halo."
+    },
+    "habitats": ["montagne", "prairie", "forêt", "ruines", "canyon", "toundra", "soleil", "ossuaire"]
+  }
+]

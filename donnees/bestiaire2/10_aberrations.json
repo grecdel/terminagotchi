@@ -1,0 +1,287 @@
+[
+  {
+    "rang": 1,
+    "nom": "Zyeuton",
+    "id": "zyeuton",
+    "rarete": "commune",
+    "posture": "flottant",
+    "taille_finale": "petite",
+    "fiche": "Un petit œil flottant et curieux qui hante les brumes et les ruines pour tout observer.",
+    "caractere": "curieux et indiscret",
+    "apparence": "A floating eyeball creature with soft rubbery skin and wispy fins; dominant colors violet, magenta and glossy black.",
+    "stades": {
+      "bebe": "A round violet ball that is one huge shiny eye with tiny stubby fins.",
+      "enfant": "Two short wiggly feelers sprout on top and a pair of small fin-wings appear on the sides.",
+      "ado": "The body becomes teardrop-shaped with a frilled magenta eyelid crest and a trailing tail fin.",
+      "adulte": "A large eye-orb ringed by four floating mini-eyes on thin stalks, with a sweeping eyelid crest and wide fin-wings.",
+      "ancien": "The eye wears a cracked crystal monocle, its eyelid crest droops like bushy brows, and a faint iridescent halo circles it."
+    },
+    "habitats": ["brume", "ruines", "ombre", "arcane", "crypte", "marais", "lune"]
+  },
+  {
+    "rang": 2,
+    "nom": "Gloupi",
+    "id": "gloupi",
+    "rarete": "commune",
+    "posture": "amorphe",
+    "taille_finale": "moyenne",
+    "fiche": "Une gelée vivante gourmande qui avale tout ce qui brille dans les marais toxiques.",
+    "caractere": "glouton et câlin",
+    "apparence": "A translucent jelly blob with floating objects visible inside its body; dominant colors toxic green, violet and black.",
+    "stades": {
+      "bebe": "A small round green jelly drop with two big dot eyes and a single bubble inside.",
+      "enfant": "Two stubby jelly arms bulge out and a wide smiling mouth appears.",
+      "ado": "The blob grows a wobbly crown of jelly spikes and a violet core glowing inside it.",
+      "adulte": "A huge sloshing mass with four thick pseudopod arms, a wide mouth and swirling trinkets suspended inside.",
+      "ancien": "The jelly turns murky with a mossy crust on top, an old lantern and coins drifting inside, and a long drooping jelly beard."
+    },
+    "habitats": ["marais", "toxique", "champignonnière", "ruines", "rouille", "eau pétillante", "brume"]
+  },
+  {
+    "rang": 3,
+    "nom": "Tentaclou",
+    "id": "tentaclou",
+    "rarete": "commune",
+    "posture": "rampant",
+    "taille_finale": "petite",
+    "fiche": "Un petit rampeur à tentacules qui se fixe sous les pierres des grottes humides.",
+    "caractere": "timide et collant",
+    "apparence": "A low crawling creature made of soft tentacles under a dome-shaped head; dominant colors magenta, violet and pale pink.",
+    "stades": {
+      "bebe": "A round magenta dome with big eyes and three tiny nub tentacles underneath.",
+      "enfant": "The nubs lengthen into six curly tentacles with little suction cups.",
+      "ado": "The dome flattens into a hood with bony ridges and two longer front tentacles ending in clamps.",
+      "adulte": "A wide hooded crawler with eight strong tentacles, ridged studs on its hood and glowing violet spots.",
+      "ancien": "The hood is crusted with tiny barnacles and crystals, two tentacles curl like a long mustache, and it leans on a twisted root cane."
+    },
+    "habitats": ["marais", "corail", "ruines", "crypte", "champignonnière", "ombre", "lagon"]
+  },
+  {
+    "rang": 4,
+    "nom": "Parasouris",
+    "id": "parasouris",
+    "rarete": "commune",
+    "posture": "quadrupède",
+    "taille_finale": "petite",
+    "fiche": "Une souris habitée par un minuscule parasite lumineux qui lui pousse sur le dos, cachée dans les recoins rouillés.",
+    "caractere": "nerveux et malin",
+    "apparence": "A small rodent with a glowing fungal parasite growing out of its back; dominant colors black fur, toxic green and magenta.",
+    "stades": {
+      "bebe": "A round black mouse with huge ears and a tiny green bud on its back.",
+      "enfant": "The bud opens into a small glowing green sprout with one eye at its tip.",
+      "ado": "The sprout grows into a stalk with three eyes and the mouse's tail splits into two.",
+      "adulte": "A sleek mouse carrying a tall branching parasite stalk with glowing eye-bulbs and a split tail ending in green lights.",
+      "ancien": "The parasite becomes a gnarled mini-tree with a halo of glowing spores, and the mouse has a white whiskered beard."
+    },
+    "habitats": ["rouille", "ruines", "toxique", "mécanique", "champignonnière", "ombre", "néon"]
+  },
+  {
+    "rang": 5,
+    "nom": "Mutaloupe",
+    "id": "mutaloupe",
+    "rarete": "commune",
+    "posture": "multipattes",
+    "taille_finale": "moyenne",
+    "fiche": "Une créature à pattes fines dont l'œil unique grossit tout comme une loupe, rôdant dans les cristaux.",
+    "caractere": "méticuleux et fouineur",
+    "apparence": "A multi-legged critter with a single lens-shaped glassy eye on its body; dominant colors violet, glassy cyan-green and black.",
+    "stades": {
+      "bebe": "A round black bean body with one big glass-lens eye and four tiny legs.",
+      "enfant": "Two extra pairs of thin legs appear and the lens eye gets a violet rim.",
+      "ado": "The body elongates into segments and two antenna-like eyestalks grow beside the main lens.",
+      "adulte": "A long segmented walker on twelve legs, its main lens huge and ringed by brass-like plates, with two eyestalks.",
+      "ancien": "Its lens is cracked like old glass, its legs are tipped with crystals, and spectacle-shaped plates sit over the eyestalks."
+    },
+    "habitats": ["cristal", "arcane", "ruines", "canyon", "mécanique", "désert", "ombre"]
+  },
+  {
+    "rang": 6,
+    "nom": "Bavouille",
+    "id": "bavouille",
+    "rarete": "commune",
+    "posture": "rampant",
+    "taille_finale": "moyenne",
+    "fiche": "Une grosse limace iridescente qui laisse derrière elle une traînée lumineuse dans les forêts humides.",
+    "caractere": "lent et rêveur",
+    "apparence": "A slug-like creature with an iridescent oily shell plate and glowing slime trail; dominant colors iridescent black, magenta and toxic green.",
+    "stades": {
+      "bebe": "A plump little slug with two eye-stalks and a shimmering pink belly.",
+      "enfant": "A small iridescent shell plate appears on its back and the eye-stalks multiply to four.",
+      "ado": "The shell becomes a spiral with green glowing vents and frilled skirts grow along the sides.",
+      "adulte": "A long slug with a tall spiral iridescent shell, wavy side frills and a crown of six eye-stalks.",
+      "ancien": "The shell is covered in moss and tiny mushrooms, and its drooping eye-stalks wear little glowing beads like a wise elder."
+    },
+    "habitats": ["forêt", "marais", "jungle", "champignonnière", "toxique", "brume", "prairie"]
+  },
+  {
+    "rang": 7,
+    "nom": "Greffon",
+    "id": "greffon",
+    "rarete": "peu commune",
+    "posture": "bipède",
+    "taille_finale": "moyenne",
+    "fiche": "Un petit être dont les bras sont des créatures indépendantes qui ont chacune leur avis, vivant dans les ruines.",
+    "caractere": "indécis et bavard",
+    "apparence": "A bipedal creature whose arms are separate little creatures with their own faces; dominant colors violet skin, magenta and dark green.",
+    "stades": {
+      "bebe": "A round violet body on two stubby feet with two tiny smiling bumps on its shoulders.",
+      "enfant": "The shoulder bumps grow into short arms ending in small faces with eyes and mouths.",
+      "ado": "The arm-faces lengthen into snake-like limbs and a ridged crest grows on its head.",
+      "adulte": "A tall upright creature with long arm-creatures that have jaws and eyes, a ridged crest and armored green belly plates.",
+      "ancien": "Its crest is cracked like old stone, the arm-creatures sport little beards, and it wears a frayed patchwork cloak."
+    },
+    "habitats": ["ruines", "arcane", "crypte", "toxique", "ombre", "brume", "forêt"]
+  },
+  {
+    "rang": 8,
+    "nom": "Ciliacle",
+    "id": "ciliacle",
+    "rarete": "peu commune",
+    "posture": "serpentin",
+    "taille_finale": "grande",
+    "fiche": "Un long serpent couvert de cils ondulants qui nage dans les eaux pétillantes et toxiques.",
+    "caractere": "gracieux et chatouilleux",
+    "apparence": "A long serpentine body covered in waving hair-like cilia that shimmer; dominant colors toxic green, violet and iridescent black.",
+    "stades": {
+      "bebe": "A short round worm with big eyes and a fuzzy ring of cilia around its middle.",
+      "enfant": "The body lengthens and cilia spread along it, with a small fringe collar around the head.",
+      "ado": "Two feathery cilia fins grow at the neck and the tail splits into a fringed fork.",
+      "adulte": "A long sinuous serpent covered in rippling glowing cilia, with a large frilled collar and four feathery fins.",
+      "ancien": "Its cilia turn silver-white like a flowing mane and beard, with crystal beads tangled in them."
+    },
+    "habitats": ["eau pétillante", "toxique", "marais", "lagon", "abyssal", "jungle", "brume", "corail"]
+  },
+  {
+    "rang": 9,
+    "nom": "Miroeil",
+    "id": "miroeil",
+    "rarete": "peu commune",
+    "posture": "volant",
+    "taille_finale": "moyenne",
+    "fiche": "Un papillon étrange dont les ailes reflètent un autre monde, voletant au cœur des aurores.",
+    "caractere": "mystérieux et coquet",
+    "apparence": "A moth-like flyer whose wings are mirror-like panels with eye patterns showing swirling other-world reflections; dominant colors magenta, violet and silver-black.",
+    "stades": {
+      "bebe": "A round fuzzy caterpillar with one big eye and two tiny mirror buds on its back.",
+      "enfant": "The buds open into two small round mirror wings and feathery antennae appear.",
+      "ado": "A second pair of wings grows, each showing a painted eye, and the body slims into a moth shape.",
+      "adulte": "A large moth with four tall mirror wings showing swirling starry reflections and big eye patterns, with plumed antennae.",
+      "ancien": "Its mirror wings are cracked with golden repairs, its antennae droop like long brows, and a shimmering halo floats behind it."
+    },
+    "habitats": ["aurore", "brume", "arcane", "cristal", "nuage", "lune", "ombre", "néon"]
+  },
+  {
+    "rang": 10,
+    "nom": "Mixtrouille",
+    "id": "mixtrouille",
+    "rarete": "peu commune",
+    "posture": "quadrupède",
+    "taille_finale": "grande",
+    "fiche": "Une bête faite de morceaux qui ne vont pas ensemble, née d'une expérience ratée dans un laboratoire en ruine.",
+    "caractere": "maladroit et joyeux",
+    "apparence": "A patchwork quadruped built from mismatched animal parts held by glowing stitches; dominant colors violet, toxic green and black.",
+    "stades": {
+      "bebe": "A round body with mismatched ears, one big eye and one small eye, on four tiny different legs.",
+      "enfant": "A crab claw replaces one front paw and a feathered tail appears, held by green glowing stitches.",
+      "ado": "A single curved horn and a bat wing sprout on one side, and its back grows a row of shell plates.",
+      "adulte": "A hulking beast with a crab claw, a hoof, a paw and a tentacle leg, one horn, one wing and a shell-plated back.",
+      "ancien": "Its stitches glow like golden scars, moss covers its shell plates, and an old brass bolt crown sits on its head."
+    },
+    "habitats": ["ruines", "toxique", "mécanique", "rouille", "arcane", "néon", "ossuaire"]
+  },
+  {
+    "rang": 11,
+    "nom": "Pupillarque",
+    "id": "pupillarque",
+    "rarete": "rare",
+    "posture": "flottant",
+    "taille_finale": "grande",
+    "fiche": "Un sage aux mille regards qui flotte dans les ruines arcaniques et voit à travers les murs.",
+    "caractere": "hautain et érudit",
+    "apparence": "A floating stone-and-flesh sphere covered in eyelids, surrounded by orbiting rune rings; dominant colors deep violet, magenta and gold-flecked black.",
+    "stades": {
+      "bebe": "A small round sphere with three closed sleepy eyelids and a tiny rune ring floating above.",
+      "enfant": "The three eyes open and two small stone hands float beside its body.",
+      "ado": "More eyes open across the sphere and a rocky collar with rune carvings forms around it.",
+      "adulte": "A massive sphere studded with many eyes, a central giant eye, floating stone hands and three orbiting rune rings.",
+      "ancien": "Its rocky collar is cracked and mossy, its central eye wears heavy lids like brows, and a book of runes orbits with the rings."
+    },
+    "habitats": ["arcane", "ruines", "cristal", "crypte", "cosmique", "ombre", "lune"]
+  },
+  {
+    "rang": 12,
+    "nom": "Ventouzar",
+    "id": "ventouzar",
+    "rarete": "rare",
+    "posture": "volant",
+    "taille_finale": "grande",
+    "fiche": "Une pieuvre céleste qui nage dans les nuages d'orage en se tenant par ses ventouses aux éclairs.",
+    "caractere": "farceur et vif",
+    "apparence": "A flying octopus-like creature with a balloon mantle and membrane-webbed tentacles; dominant colors magenta, violet and crackling toxic green.",
+    "stades": {
+      "bebe": "A round magenta balloon head with big eyes and four short floppy tentacles.",
+      "enfant": "The tentacles multiply to six and thin membranes appear between them like little wings.",
+      "ado": "The mantle grows fins on top and green sparks crackle along its tentacle tips.",
+      "adulte": "A large sky octopus with a finned balloon mantle, eight long tentacles webbed into gliding wings and glowing suckers.",
+      "ancien": "Its mantle is wrinkled with lightning-shaped scars, long tentacles curl into a beard, and a ring of tiny storm clouds circles it."
+    },
+    "habitats": ["orage", "nuage", "aurore", "brume", "néon", "montagne", "cosmique"]
+  },
+  {
+    "rang": 13,
+    "nom": "Fractalis",
+    "id": "fractalis",
+    "rarete": "rare",
+    "posture": "multipattes",
+    "taille_finale": "grande",
+    "fiche": "Une créature géométrique dont chaque patte se divise en pattes plus petites, née au cœur des cristaux.",
+    "caractere": "calme et calculateur",
+    "apparence": "A crystalline multi-legged creature whose body repeats itself in smaller copies, with faceted iridescent shell; dominant colors iridescent black, violet and magenta.",
+    "stades": {
+      "bebe": "A round faceted gem body with two big eyes on three tiny crystal legs.",
+      "enfant": "Six legs appear, each tipped with a smaller copy of its gem body.",
+      "ado": "The legs branch into forked segments and a triangular crest of crystal plates rises on its back.",
+      "adulte": "A towering spidery walker whose legs branch again and again into smaller legs, with a spiral crystal crest and a glowing core.",
+      "ancien": "Its facets are clouded and veined like marble, its crest forms a halo of tiny repeating crystals, and dust settles on its joints."
+    },
+    "habitats": ["cristal", "arcane", "cosmique", "canyon", "glace", "ruines", "néon"]
+  },
+  {
+    "rang": 14,
+    "nom": "Torsillon",
+    "id": "torsillon",
+    "rarete": "rare",
+    "posture": "serpentin",
+    "taille_finale": "grande",
+    "fiche": "Un serpent tordu en boucle sans fin qui se mord la queue et apparaît là où l'espace se plie.",
+    "caractere": "énigmatique et patient",
+    "apparence": "A twisted ribbon-like serpent whose body loops into an endless twisted band, with a face at both ends; dominant colors violet, magenta and starry iridescent black.",
+    "stades": {
+      "bebe": "A short round worm with a cute face on each end curled into a tiny ring.",
+      "enfant": "The body flattens into a ribbon with a half twist and small fin frills grow along its edges.",
+      "ado": "The ribbon lengthens into a figure-eight loop and both heads grow little curved horns.",
+      "adulte": "A long twisted ribbon serpent looping endlessly, both heads horned, its band showing starry patterns and glowing edges.",
+      "ancien": "Its band is etched with ancient runes and cracks, both heads have long whiskers, and a ring of floating stars orbits the loop."
+    },
+    "habitats": ["cosmique", "arcane", "ombre", "lune", "aurore", "ruines", "brume"]
+  },
+  {
+    "rang": 15,
+    "nom": "Chaosmère",
+    "id": "chaosmere",
+    "rarete": "légendaire",
+    "posture": "amorphe",
+    "taille_finale": "colossale",
+    "fiche": "La reine des aberrations, une masse vivante d'où naissent toutes les mutations, endormie au fond des ombres cosmiques.",
+    "caractere": "maternelle et insondable",
+    "apparence": "A colossal living mass of shifting iridescent matter with eyes, tentacles and a glowing heart; dominant colors deep violet, magenta and toxic green.",
+    "stades": {
+      "bebe": "A small round iridescent blob with one big gentle eye and a tiny glowing heart inside.",
+      "enfant": "Short tentacles ripple from its base and two more eyes open beside the first.",
+      "ado": "The mass rises into a tall dome with a crown of thin spires and many small eyes blinking across it.",
+      "adulte": "A colossal shifting mass with a spired crown, dozens of eyes, many long tentacles and a radiant green heart in its chest.",
+      "ancien": "Its spired crown becomes a halo of floating crystals, its surface is veined like old marble, and tiny baby aberrations cling to it."
+    },
+    "habitats": ["cosmique", "ombre", "abyssal", "toxique", "arcane", "brume", "lune", "cristal"]
+  }
+]

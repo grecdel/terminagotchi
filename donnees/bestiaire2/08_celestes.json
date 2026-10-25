@@ -1,0 +1,408 @@
+[
+  {
+    "rang": 1,
+    "nom": "Lumignon",
+    "id": "lumignon",
+    "rarete": "commune",
+    "posture": "flottant",
+    "taille_finale": "petite",
+    "fiche": "Petite flamme de lumière pure qui flotte au-dessus des sanctuaires oubliés et des sommets nocturnes.",
+    "caractere": "doux et curieux",
+    "apparence": "Floating teardrop-shaped spirit made of soft glowing light with a white-gold core; colors white, pale gold, sky blue.",
+    "stades": {
+      "bebe": "A round glowing white orb with big sky-blue eyes and a tiny gold flicker on top.",
+      "enfant": "The orb stretches into a teardrop and grows two tiny stubby light-arms and a small gold ring circling its head.",
+      "ado": "The body becomes a tall candle-flame shape with longer arms, a wispy flowing tail and two orbiting silver sparks.",
+      "adulte": "A tall radiant flame-spirit with long graceful arms, a crown of three gold flames and a ring of orbiting silver stars.",
+      "ancien": "A wide calm flame-spirit with a long white wispy beard of light, a cracked gold halo and a small floating silver lantern."
+    },
+    "habitats": [
+      "soleil",
+      "nuage",
+      "aurore",
+      "ruines",
+      "montagne",
+      "cosmique",
+      "arcane"
+    ]
+  },
+  {
+    "rang": 2,
+    "nom": "Étoilapin",
+    "id": "etoilapin",
+    "rarete": "commune",
+    "posture": "quadrupède",
+    "taille_finale": "petite",
+    "fiche": "Lapin constellé qui bondit dans les prairies au clair de lune en semant des étincelles d'étoiles.",
+    "caractere": "joueur et rêveur",
+    "apparence": "Small rabbit with dark-blue velvety fur speckled with glowing star dots linked by thin silver lines; colors midnight blue, silver, white.",
+    "stades": {
+      "bebe": "A round fluffy midnight-blue bunny ball with huge silver eyes, tiny ears and three white star freckles.",
+      "enfant": "Long ears grow with glowing star tips, small legs appear and the star freckles connect into a little silver constellation on its back.",
+      "ado": "The body becomes lean and leggy, the ears stretch into crescent shapes and a fluffy comet-like white tail appears.",
+      "adulte": "A graceful hare with long crescent-moon ears, a full glowing constellation pattern over the body and silver star-shaped hind paws.",
+      "ancien": "An elder hare with drooping crescent ears, a long white silky beard, faded constellation spots and a tiny floating silver moon above its head."
+    },
+    "habitats": [
+      "prairie",
+      "lune",
+      "cosmique",
+      "aurore",
+      "montagne",
+      "nuage",
+      "forêt"
+    ]
+  },
+  {
+    "rang": 3,
+    "nom": "Plumange",
+    "id": "plumange",
+    "rarete": "commune",
+    "posture": "volant",
+    "taille_finale": "petite",
+    "fiche": "Oisillon ailé aux plumes d'or qui veille sur les clochers en ruine et les nids des falaises.",
+    "caractere": "protecteur et fier",
+    "apparence": "Small angelic bird with white feathers, gold-tipped wings and a tiny halo; colors white, gold, sky blue.",
+    "stades": {
+      "bebe": "A round white fluffy chick with big blue eyes, a tiny gold beak and two little stubby wings.",
+      "enfant": "Wings lengthen with gold tips, a small thin gold halo appears above the head and a short fan tail grows.",
+      "ado": "The bird gets a slender neck, a second smaller pair of wings near the tail and long sky-blue crest feathers.",
+      "adulte": "A noble four-winged bird with a gleaming gold halo, long sweeping white-and-gold tail plumes and armored gold talons.",
+      "ancien": "An elder four-winged bird with a fluffy white feather beard, a cracked ancient halo and frayed silver-tipped wings."
+    },
+    "habitats": [
+      "nuage",
+      "montagne",
+      "ruines",
+      "soleil",
+      "prairie",
+      "orage",
+      "aurore"
+    ]
+  },
+  {
+    "rang": 4,
+    "nom": "Nébuline",
+    "id": "nebuline",
+    "rarete": "commune",
+    "posture": "amorphe",
+    "taille_finale": "petite",
+    "fiche": "Petit nuage de poussière d'étoiles vivant qui dérive dans le ciel nocturne et les grottes de cristal.",
+    "caractere": "rêveur et câlin",
+    "apparence": "Soft amorphous blob of swirling nebula gas with embedded tiny stars; colors lavender-blue, white, silver.",
+    "stades": {
+      "bebe": "A small round puff of pale blue mist with two big shiny eyes and a few sparkling specks inside.",
+      "enfant": "The puff grows little drooping mist-tendrils underneath and a swirling spiral pattern appears in its body.",
+      "ado": "The body spreads into a wider cloud shape with a bright star core visible in the chest and drifting silver star particles.",
+      "adulte": "A large swirling nebula mass with several glowing star cores, long trailing mist-arms and a ring of orbiting silver dust.",
+      "ancien": "An elder nebula blob, darker and denser, with a long drooping mist beard and tiny ancient planets circling it."
+    },
+    "habitats": [
+      "cosmique",
+      "nuage",
+      "brume",
+      "aurore",
+      "cristal",
+      "lune",
+      "arcane"
+    ]
+  },
+  {
+    "rang": 5,
+    "nom": "Filcomète",
+    "id": "filcomete",
+    "rarete": "commune",
+    "posture": "serpentin",
+    "taille_finale": "moyenne",
+    "fiche": "Serpent céleste dont la queue laisse une traînée lumineuse comme une comète au-dessus des déserts nocturnes.",
+    "caractere": "vif et espiègle",
+    "apparence": "Long slender serpent with an icy white head and a glowing trailing comet tail; colors white, icy blue, gold.",
+    "stades": {
+      "bebe": "A tiny round white head with big blue eyes and a short glowing stubby tail like a little spark.",
+      "enfant": "The body lengthens into a short worm shape, the tail becomes a wispy gold trail and two small fin-ridges appear on the head.",
+      "ado": "The serpent stretches long and coiled, grows a crest of icy crystal spikes and the tail splits into three glowing streamers.",
+      "adulte": "A long majestic sky-serpent with a crystal-crowned head, a blazing gold-and-blue comet tail and silver scales along its spine.",
+      "ancien": "An elder sky-serpent with chipped crystal crest, long white whiskers, faded tail streamers and small orbiting rock fragments."
+    },
+    "habitats": [
+      "cosmique",
+      "désert",
+      "nuage",
+      "glace",
+      "orage",
+      "aurore",
+      "canyon"
+    ]
+  },
+  {
+    "rang": 6,
+    "nom": "Auréolin",
+    "id": "aureolin",
+    "rarete": "commune",
+    "posture": "bipède",
+    "taille_finale": "petite",
+    "fiche": "Petit moine de lumière à auréole qui garde les temples des montagnes et allume les lanternes à l'aube.",
+    "caractere": "sage et gourmand",
+    "apparence": "Small round humanoid in a hooded white robe with a gold halo and a glowing face; colors white, gold, silver.",
+    "stades": {
+      "bebe": "A round white blob with stubby feet, huge gold eyes and a tiny wobbly halo.",
+      "enfant": "Tiny arms appear holding a little silver bell and the body gains a small hood over the head.",
+      "ado": "Taller with a full white robe, sleeves with gold trim, a wider halo and a short silver staff.",
+      "adulte": "A dignified robed guardian with a large radiant double halo, glowing hands and a tall silver staff topped with a sun disc.",
+      "ancien": "An elder robed monk with a long white beard, cracked halo, hunched shoulders and a twisted silver cane with hanging bells."
+    },
+    "habitats": [
+      "montagne",
+      "ruines",
+      "soleil",
+      "nuage",
+      "arcane",
+      "cristal",
+      "prairie"
+    ]
+  },
+  {
+    "rang": 7,
+    "nom": "Lunacorne",
+    "id": "lunacorne",
+    "rarete": "peu commune",
+    "posture": "quadrupède",
+    "taille_finale": "grande",
+    "fiche": "Chèvre sacrée aux cornes en croissant de lune qui escalade les pics enneigés les nuits de pleine lune.",
+    "caractere": "calme et têtu",
+    "apparence": "Mountain goat with silver-white fur and moon-crescent horns that glow; colors silver, pale blue, white.",
+    "stades": {
+      "bebe": "A round fluffy white kid with big silver eyes, tiny hooves and two small nub horns.",
+      "enfant": "Small crescent-shaped horns grow, the legs lengthen and a pale blue moon spot appears on its forehead.",
+      "ado": "The horns curve into wide glowing crescents, a long shaggy mane grows and silver hooves become hard and shiny.",
+      "adulte": "A powerful mountain goat with huge double crescent horns, a glowing full-moon disc on its chest and flowing silver mane.",
+      "ancien": "An elder goat with a long braided white beard, cracked mossy horns with tiny hanging star charms and a faint lunar halo."
+    },
+    "habitats": [
+      "montagne",
+      "lune",
+      "glace",
+      "toundra",
+      "aurore",
+      "ruines",
+      "cosmique"
+    ]
+  },
+  {
+    "rang": 8,
+    "nom": "Scintipède",
+    "id": "scintipede",
+    "rarete": "peu commune",
+    "posture": "multipattes",
+    "taille_finale": "moyenne",
+    "fiche": "Long mille-pattes de lumière dont chaque segment brille comme une étoile, il serpente dans les grottes de cristal.",
+    "caractere": "discret et lumineux",
+    "apparence": "Long segmented centipede made of translucent glowing star-orbs joined by silver rings; colors silver, white, sky blue.",
+    "stades": {
+      "bebe": "A short chain of three round glowing white orbs with a cute face on the first and tiny nub legs.",
+      "enfant": "Two more orb segments appear, each with pairs of thin silver legs, and short antennae with star tips grow.",
+      "ado": "The body becomes long with many segments, the legs sharpen into silver needles and the head gains crescent mandibles.",
+      "adulte": "A long radiant centipede with dozens of star-orb segments, gold-plated head armor and glowing crescent mandibles.",
+      "ancien": "An elder centipede with dimmed cracked segments, crystal growths along its back and long drooping white antenna-whiskers."
+    },
+    "habitats": [
+      "cristal",
+      "cosmique",
+      "ruines",
+      "lune",
+      "arcane",
+      "ombre",
+      "montagne"
+    ]
+  },
+  {
+    "rang": 9,
+    "nom": "Séraphibou",
+    "id": "seraphibou",
+    "rarete": "peu commune",
+    "posture": "volant",
+    "taille_finale": "moyenne",
+    "fiche": "Hibou à six ailes qui veille la nuit sur les tours célestes et lit les étoiles.",
+    "caractere": "savant et vigilant",
+    "apparence": "Owl with six white wings, gold eye markings and a silver feather crest; colors white, gold, sky blue.",
+    "stades": {
+      "bebe": "A round white owlet puff with enormous gold eyes and two tiny wings.",
+      "enfant": "A second pair of small wings sprouts and gold eye-ring markings appear around its eyes.",
+      "ado": "A third pair of wings grows, the body slims, silver ear-tufts become long crest feathers.",
+      "adulte": "A majestic six-winged owl with gold-edged feathers, eye-shaped patterns on every wing and gleaming silver talons.",
+      "ancien": "An elder six-winged owl with tiny round spectacles of crystal, a white feather beard and a floating open star-map scroll."
+    },
+    "habitats": [
+      "nuage",
+      "ruines",
+      "arcane",
+      "lune",
+      "cosmique",
+      "montagne",
+      "forêt"
+    ]
+  },
+  {
+    "rang": 10,
+    "nom": "Éclipsard",
+    "id": "eclipsard",
+    "rarete": "peu commune",
+    "posture": "flottant",
+    "taille_finale": "moyenne",
+    "fiche": "Masque flottant mi-soleil mi-lune qui n'apparaît que pendant les éclipses au-dessus des ruines.",
+    "caractere": "mystérieux et taquin",
+    "apparence": "Floating round mask split half gold sun, half silver moon, with a flowing light cape; colors gold, silver, deep blue.",
+    "stades": {
+      "bebe": "A small round disc face, half gold and half silver, with two big blinking eyes.",
+      "enfant": "A thin ring of light appears around the disc and two small floating gloved hands materialize beside it.",
+      "ado": "The disc gains a pointed sun-ray crown on the gold side and a crescent horn on the silver side, plus a short deep blue cape.",
+      "adulte": "A large floating eclipse mask with a blazing corona of rays, long flowing deep blue cape and four floating hands holding orbs.",
+      "ancien": "An elder eclipse mask with cracked weathered face, a corona of faded rays and tattered cape decorated with old silver runes."
+    },
+    "habitats": [
+      "soleil",
+      "lune",
+      "ruines",
+      "ombre",
+      "cosmique",
+      "arcane",
+      "désert"
+    ]
+  },
+  {
+    "rang": 11,
+    "nom": "Rugisoleil",
+    "id": "rugisoleil",
+    "rarete": "rare",
+    "posture": "quadrupède",
+    "taille_finale": "grande",
+    "fiche": "Lion sacré à crinière de flammes dorées, gardien des temples solaires du désert.",
+    "caractere": "noble et fougueux",
+    "apparence": "Large lion with white fur and a radiant golden sun-ray mane; colors white, gold, sky blue.",
+    "stades": {
+      "bebe": "A round white cub with big blue eyes and a small fluffy gold tuft of mane.",
+      "enfant": "The legs grow sturdy, the mane tuft spreads into short pointed gold rays and a gold sun mark appears on the forehead.",
+      "ado": "The body becomes lean and muscular, the mane forms a full ring of rays and gold armor bands appear on its forelegs.",
+      "adulte": "A mighty lion with a blazing circular sun-ray mane, gold armored shoulders and a tail ending in a small sun orb.",
+      "ancien": "An elder lion with a thick white flowing mane-beard, chipped gold armor, and a faint glowing halo of rays behind its head."
+    },
+    "habitats": [
+      "désert",
+      "soleil",
+      "ruines",
+      "montagne",
+      "canyon",
+      "prairie",
+      "sable"
+    ]
+  },
+  {
+    "rang": 12,
+    "nom": "Astralame",
+    "id": "astralame",
+    "rarete": "rare",
+    "posture": "bipède",
+    "taille_finale": "grande",
+    "fiche": "Chevalier de lumière qui manie une lame forgée dans une étoile, il garde les portes du ciel.",
+    "caractere": "loyal et solennel",
+    "apparence": "Humanoid knight of light with silver armor and a glowing star blade; colors silver, white, sky blue.",
+    "stades": {
+      "bebe": "A small round silver helmet with big glowing blue eyes in the visor and tiny stubby legs.",
+      "enfant": "Short arms appear, one holding a tiny star-shaped dagger, and a small white cape grows on its back.",
+      "ado": "Taller and slim, with full silver armor plates, a sword of light and two small feather wings on the helmet.",
+      "adulte": "A towering armored knight with a long radiant star blade, a shield shaped like a constellation and luminous wing-shaped pauldrons.",
+      "ancien": "An elder knight with weathered dented armor, a long white beard flowing out of the helmet and a cracked star blade used as a cane."
+    },
+    "habitats": [
+      "nuage",
+      "ruines",
+      "montagne",
+      "cosmique",
+      "soleil",
+      "arcane",
+      "cristal"
+    ]
+  },
+  {
+    "rang": 13,
+    "nom": "Zénithéon",
+    "id": "zenitheon",
+    "rarete": "rare",
+    "posture": "serpentin",
+    "taille_finale": "colossale",
+    "fiche": "Grand serpent ailé des hautes altitudes qui ondule entre les aurores boréales.",
+    "caractere": "majestueux et distant",
+    "apparence": "Long feathered sky serpent with pale blue scales, white feather fins and an aurora-colored crest; colors sky blue, white, silver.",
+    "stades": {
+      "bebe": "A round sky-blue hatchling coil with big eyes and two tiny feather tufts on the head.",
+      "enfant": "The body lengthens and small white feather fins grow along its sides.",
+      "ado": "Two pairs of feathered wings appear along the long body and a shimmering aurora crest grows on the head.",
+      "adulte": "A colossal winged serpent with four feathered wings, a long rippling aurora crest and silver star scales along its belly.",
+      "ancien": "An elder winged serpent with long white whiskers, frayed old wings, and tiny floating ice crystals drifting around it."
+    },
+    "habitats": [
+      "aurore",
+      "nuage",
+      "glace",
+      "toundra",
+      "montagne",
+      "orage",
+      "cosmique"
+    ]
+  },
+  {
+    "rang": 14,
+    "nom": "Tortunivers",
+    "id": "tortunivers",
+    "rarete": "rare",
+    "posture": "rampant",
+    "taille_finale": "colossale",
+    "fiche": "Tortue cosmique colossale qui porte une galaxie sur sa carapace et dort sur les rives des lacs gelés.",
+    "caractere": "patient et bienveillant",
+    "apparence": "Huge turtle with a dark-blue domed shell containing a swirling starry galaxy; colors deep blue, silver, gold.",
+    "stades": {
+      "bebe": "A tiny round turtle with a soft blue shell holding a single sparkling star and big sleepy eyes.",
+      "enfant": "The shell hardens and a small spiral of stars appears inside it, and gold claw tips grow on its stubby legs.",
+      "ado": "The shell grows tall and domed with a crystal rim, showing a small swirling galaxy and orbiting moonlets.",
+      "adulte": "A colossal turtle carrying a vast glowing galaxy dome on its back, silver-plated legs and a gold crown-like head crest.",
+      "ancien": "An elder turtle with a mossy cracked crystal shell, a long white chin beard and tiny planets orbiting its head."
+    },
+    "habitats": [
+      "cosmique",
+      "lune",
+      "glace",
+      "lagon",
+      "cristal",
+      "toundra",
+      "arcane"
+    ]
+  },
+  {
+    "rang": 15,
+    "nom": "Empyria",
+    "id": "empyria",
+    "rarete": "légendaire",
+    "posture": "volant",
+    "taille_finale": "colossale",
+    "fiche": "Reine céleste aux ailes immenses qui règne sur le firmament et fait se lever les étoiles.",
+    "caractere": "souveraine et bienveillante",
+    "apparence": "Regal winged deer-like celestial being with white fur, gold antlers shaped like a crown and starry wings; colors white, gold, sky blue.",
+    "stades": {
+      "bebe": "A small round white fawn with big gold eyes, a tiny star on its forehead and two little feather wings.",
+      "enfant": "Tiny gold antler buds grow, the wings become longer with sky-blue tips and small star spots appear on its back.",
+      "ado": "The deer grows long legs, branching gold antlers forming a crown and a second pair of wings appears.",
+      "adulte": "A colossal regal winged deer with a gold crown of antlers, four vast wings full of constellations and a radiant halo.",
+      "ancien": "An ancient queen deer with antlers draped in silver chains and relics, a long white mane-beard and wings scattered with glowing old stars."
+    },
+    "habitats": [
+      "cosmique",
+      "soleil",
+      "nuage",
+      "aurore",
+      "lune",
+      "montagne",
+      "arcane",
+      "cristal"
+    ]
+  }
+]

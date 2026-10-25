@@ -1,0 +1,287 @@
+[
+  {
+    "rang": 1,
+    "nom": "Braisillon",
+    "id": "braisillon",
+    "rarete": "commune",
+    "posture": "rampant",
+    "taille_finale": "petite",
+    "fiche": "Une larve de charbon tiède qui rampe dans les cendres des volcans et grignote les braises oubliées.",
+    "caractere": "frileux et gourmand",
+    "apparence": "Segmented crawling grub made of charcoal plates with glowing cracks; colors: charcoal black, ember orange, ash grey.",
+    "stades": {
+      "bebe": "A round charcoal pebble-grub with two big glowing orange eyes and a tiny ember spark on its back.",
+      "enfant": "The body stretches into three charcoal segments and grows six stubby ash legs.",
+      "ado": "Glowing orange cracks spread along longer segments and a small flame crest appears on the head.",
+      "adulte": "A long armored charcoal crawler whose back plates open like a brazier, releasing a row of steady flames.",
+      "ancien": "Its plates turn ash-white with deep glowing fissures, a crown of smoldering embers and a trail of smoke like a long beard."
+    },
+    "habitats": ["cendres", "volcan", "lave", "ruines", "canyon", "désert", "montagne"]
+  },
+  {
+    "rang": 2,
+    "nom": "Givrichon",
+    "id": "givrichon",
+    "rarete": "commune",
+    "posture": "quadrupède",
+    "taille_finale": "petite",
+    "fiche": "Une petite boule de neige à pattes dont les piquants de glace poussent pendant les nuits de blizzard.",
+    "caractere": "timide et câlin",
+    "apparence": "Small round quadruped covered in snow fluff and icicle spines; colors: snow white, pale ice blue, frost silver.",
+    "stades": {
+      "bebe": "A fluffy snowball with big dark eyes, a tiny blue nose and no visible legs.",
+      "enfant": "Four short paws appear and small soft frost spikes sprout on its back.",
+      "ado": "The spikes grow into clear icicles and a frosty tail with a crystal tip appears.",
+      "adulte": "A sturdy snow beast with a back covered in long sharp ice spines that fan out like a shield.",
+      "ancien": "Its fluff becomes a thick frosted mane, its spines turn opaque and cracked, and a small ring of floating snowflakes circles its head."
+    },
+    "habitats": ["glace", "toundra", "montagne", "aurore", "cristal", "brume", "forêt"]
+  },
+  {
+    "rang": 3,
+    "nom": "Gouttelin",
+    "id": "gouttelin",
+    "rarete": "commune",
+    "posture": "amorphe",
+    "taille_finale": "petite",
+    "fiche": "Une goutte d'eau vivante qui saute de flaque en flaque et adore les sources pétillantes.",
+    "caractere": "joyeux et bavard",
+    "apparence": "Translucent water droplet body with bubbles floating inside; colors: clear aqua, deep blue, white foam.",
+    "stades": {
+      "bebe": "A single round water droplet with two big shiny eyes and one bubble inside.",
+      "enfant": "Two little splashing arm-like ripples form on its sides and a curl of water rises on top.",
+      "ado": "The body becomes a taller wobbly blob with a foam collar and several swirling bubbles inside.",
+      "adulte": "A large living wave-shaped mass with foam-capped crest and strong water tendrils for arms.",
+      "ancien": "Its water turns calm and deep blue, with pebbles and tiny shells drifting inside like relics and a long foam beard."
+    },
+    "habitats": ["eau pétillante", "lagon", "marais", "prairie", "forêt", "brume", "corail"]
+  },
+  {
+    "rang": 4,
+    "nom": "Zapiot",
+    "id": "zapiot",
+    "rarete": "commune",
+    "posture": "flottant",
+    "taille_finale": "petite",
+    "fiche": "Une étincelle curieuse qui flotte dans les nuages d'orage et grésille quand elle est contente.",
+    "caractere": "hyperactif et farceur",
+    "apparence": "Floating spark orb with crackling zigzag appendages; colors: electric yellow, white, violet.",
+    "stades": {
+      "bebe": "A tiny glowing yellow orb with two wide eyes and a single crackling spark on top.",
+      "enfant": "Two small zigzag lightning arms appear and a violet static halo surrounds it.",
+      "ado": "The orb gains a thin crackling tail and three jagged spikes on its head.",
+      "adulte": "A bright floating core inside a cage of four orbiting lightning bolts, with sharp zigzag arms.",
+      "ancien": "Its core dims to a deep violet with branching white crackle-cracks and a slow ring of orbiting sparks like a halo."
+    },
+    "habitats": ["orage", "nuage", "montagne", "néon", "mécanique", "aurore"]
+  },
+  {
+    "rang": 5,
+    "nom": "Cailloute",
+    "id": "cailloute",
+    "rarete": "commune",
+    "posture": "bipède",
+    "taille_finale": "moyenne",
+    "fiche": "Un petit caillou têtu qui se met debout au bord des sentiers de montagne pour regarder passer les voyageurs.",
+    "caractere": "têtu et loyal",
+    "apparence": "Stacked rock body with pebble limbs and moss patches; colors: slate grey, sandy brown, moss green.",
+    "stades": {
+      "bebe": "A round grey pebble with big eyes and two tiny pebble feet.",
+      "enfant": "Two small pebble arms appear and a flat stone forms a little hat on its head.",
+      "ado": "The body stacks into two boulders with chunky stone fists and a pointed rocky crest.",
+      "adulte": "A sturdy stone golem of stacked boulders with huge slab fists and stone plate shoulders.",
+      "ancien": "Its stones are cracked and covered in thick moss and lichen, with a long stalactite beard and a stone walking cane."
+    },
+    "habitats": ["montagne", "canyon", "ruines", "prairie", "désert", "cristal", "forêt"]
+  },
+  {
+    "rang": 6,
+    "nom": "Bourrasquet",
+    "id": "bourrasquet",
+    "rarete": "commune",
+    "posture": "volant",
+    "taille_finale": "petite",
+    "fiche": "Un petit oiseau de courant d'air qui siffle en virevoltant au-dessus des prairies venteuses.",
+    "caractere": "insouciant et rapide",
+    "apparence": "Small bird made of swirling air ribbons and feather-like gusts; colors: pale mint, white, sky blue.",
+    "stades": {
+      "bebe": "A round puff of white air with big eyes, a tiny beak and a single swirl on its belly.",
+      "enfant": "Two small ribbon wings appear and a spiral tuft of wind curls on its head.",
+      "ado": "The body slims, the wings lengthen into flowing air streamers and a forked gust tail forms.",
+      "adulte": "A swift bird whose wings are sharp layered wind blades and whose tail is a spinning mini whirlwind.",
+      "ancien": "Its feathers become long pale silver wisps like a flowing beard and mantle, with a slow ring of leaves orbiting it."
+    },
+    "habitats": ["prairie", "nuage", "montagne", "canyon", "toundra", "orage", "désert"]
+  },
+  {
+    "rang": 7,
+    "nom": "Fumerole",
+    "id": "fumerole",
+    "rarete": "peu commune",
+    "posture": "serpentin",
+    "taille_finale": "moyenne",
+    "fiche": "Un serpent de fumée et de flammes qui se glisse entre les fissures brûlantes des volcans.",
+    "caractere": "sournois et curieux",
+    "apparence": "Serpent body of dark smoke wrapped around a flaming core; colors: smoke grey, flame orange, deep red.",
+    "stades": {
+      "bebe": "A small round puff of grey smoke with a glowing orange heart and two big bright eyes.",
+      "enfant": "The puff stretches into a short smoky worm with a flickering flame tip on its tail.",
+      "ado": "Its body lengthens, red scales of embers appear along the spine and a flame frill grows behind the head.",
+      "adulte": "A long coiling serpent of thick smoke with a blazing frill hood and a burning tail whip.",
+      "ancien": "Its smoke turns pale ash with drifting cinders, its frill becomes a crown of slow dark flames and long smoky whiskers hang from its jaw."
+    },
+    "habitats": ["volcan", "cendres", "lave", "canyon", "brume", "ruines", "montagne"]
+  },
+  {
+    "rang": 8,
+    "nom": "Écumane",
+    "id": "ecumane",
+    "rarete": "peu commune",
+    "posture": "quadrupède",
+    "taille_finale": "grande",
+    "fiche": "Un cheval d'écume qui galope sur les vagues des lagons et disparaît dans les embruns.",
+    "caractere": "fier et libre",
+    "apparence": "Horse-like quadruped of flowing water with a foam mane and coral hooves; colors: turquoise, white foam, deep sea blue.",
+    "stades": {
+      "bebe": "A round water foal with stubby legs, big eyes and a tiny foam tuft on its head.",
+      "enfant": "Its legs lengthen with small coral hooves and a short foam mane appears.",
+      "ado": "The body becomes slender and translucent with fish-fin ears and a wavy water tail.",
+      "adulte": "A powerful water stallion with a crashing wave mane, coral hooves and fin-like crests on its legs.",
+      "ancien": "Its mane becomes a long white foam beard, shells and barnacles cover its hooves and a soft ring of droplets floats above its head."
+    },
+    "habitats": ["lagon", "corail", "eau pétillante", "brume", "abyssal", "marais", "lune"]
+  },
+  {
+    "rang": 9,
+    "nom": "Galetard",
+    "id": "galetard",
+    "rarete": "peu commune",
+    "posture": "multipattes",
+    "taille_finale": "grande",
+    "fiche": "Une longue chenille de galets qui creuse lentement des tunnels sous les canyons.",
+    "caractere": "patient et grognon",
+    "apparence": "Segmented centipede-like body of round stones linked by clay, with many stony legs; colors: river-stone grey, ochre, rust brown.",
+    "stades": {
+      "bebe": "A single round smooth pebble with big eyes and four tiny stone legs.",
+      "enfant": "A second pebble segment attaches behind it with four more legs and small stone mandibles.",
+      "ado": "It grows into a chain of five stone segments with sharper legs and a flat rock shield on the head.",
+      "adulte": "A long armored boulder centipede with dozens of pointed stone legs and a heavy drill-shaped rock head.",
+      "ancien": "Its stones are worn smooth and veined with quartz, covered in moss and fossils, with long stalactite antennae."
+    },
+    "habitats": ["canyon", "montagne", "désert", "sable", "ruines", "cristal", "crypte", "ossuaire"]
+  },
+  {
+    "rang": 10,
+    "nom": "Givrarde",
+    "id": "givrarde",
+    "rarete": "peu commune",
+    "posture": "bipède",
+    "taille_finale": "grande",
+    "fiche": "Une gardienne des glaciers qui sculpte des tempêtes de neige avec ses longues mains de givre.",
+    "caractere": "froide et protectrice",
+    "apparence": "Tall bipedal figure with a body of packed snow and a cloak of icicles; colors: glacier blue, white, frost violet.",
+    "stades": {
+      "bebe": "A small round snow mound with big eyes and a tiny icicle sprouting on top like a hair tuft.",
+      "enfant": "Two short legs and mitten-like snowy arms appear, plus a hood of frost.",
+      "ado": "The body grows tall and thin, fingers become long icicles and a short cape of ice shards forms.",
+      "adulte": "A tall snow guardian with a flowing cloak of hanging icicles, long ice-blade fingers and a crystal crown.",
+      "ancien": "Her snow body is cracked like old glacier ice, with a long frozen beard of icicles, a frost cane and an aurora halo."
+    },
+    "habitats": ["glace", "toundra", "montagne", "aurore", "cristal", "brume", "lune", "ruines"]
+  },
+  {
+    "rang": 11,
+    "nom": "Fulgurox",
+    "id": "fulgurox",
+    "rarete": "rare",
+    "posture": "quadrupède",
+    "taille_finale": "grande",
+    "fiche": "Un bœuf d'orage qui charge à travers les plaines quand le tonnerre gronde et fait tomber la foudre avec ses cornes.",
+    "caractere": "impulsif et courageux",
+    "apparence": "Bulky bovine quadruped with storm-cloud fur and lightning-shaped horns; colors: storm grey, electric yellow, cobalt blue.",
+    "stades": {
+      "bebe": "A round grey cloud-calf with stubby legs, huge eyes and two tiny spark nubs on its head.",
+      "enfant": "Short zigzag horns grow and small yellow spark stripes appear on its fluffy cloud coat.",
+      "ado": "Its shoulders bulk up, horns branch like lightning bolts and a crackling tail tuft forms.",
+      "adulte": "A massive storm bull with a dark thundercloud hump, huge branching lightning horns and glowing hooves.",
+      "ancien": "Its cloud fur turns white like old rain clouds, its horns are scarred and crackling, with a long stormy beard and a ring of rumbling clouds."
+    },
+    "habitats": ["orage", "prairie", "nuage", "montagne", "toundra", "désert", "canyon"]
+  },
+  {
+    "rang": 12,
+    "nom": "Cyclonaute",
+    "id": "cyclonaute",
+    "rarete": "rare",
+    "posture": "flottant",
+    "taille_finale": "grande",
+    "fiche": "Un voyageur des hautes altitudes qui vit au cœur des tornades et les guide à travers le ciel.",
+    "caractere": "rêveur et imprévisible",
+    "apparence": "Floating funnel-shaped body of spinning wind with a calm eye at its center; colors: storm teal, white, pale grey.",
+    "stades": {
+      "bebe": "A small spinning swirl of air with one big calm eye in the middle and two tiny gust puffs.",
+      "enfant": "The swirl becomes a little funnel and two ribbon arms of wind curl from its sides.",
+      "ado": "The funnel grows taller with a wide spinning cap and debris like leaves orbits around it.",
+      "adulte": "A towering tornado being with a crowned spinning cap, four long whip-like wind arms and rocks orbiting its body.",
+      "ancien": "Its winds turn slow and silver-grey, carrying ancient ruins fragments in orbit, with a long trailing mist beard."
+    },
+    "habitats": ["nuage", "orage", "désert", "prairie", "canyon", "montagne", "sable", "aurore"]
+  },
+  {
+    "rang": 13,
+    "nom": "Magmastodonte",
+    "id": "magmastodonte",
+    "rarete": "rare",
+    "posture": "quadrupède",
+    "taille_finale": "colossale",
+    "fiche": "Un pachyderme de roche en fusion dont chaque pas laisse une coulée de lave dans les plaines volcaniques.",
+    "caractere": "calme mais terrible",
+    "apparence": "Heavy mammoth-like quadruped with cooled basalt armor over flowing lava; colors: basalt black, lava orange, molten yellow.",
+    "stades": {
+      "bebe": "A round black basalt calf with glowing orange cracks, big eyes and a tiny trunk.",
+      "enfant": "Its trunk lengthens and two small glowing tusks appear, with magma dripping from its feet.",
+      "ado": "Basalt armor plates form on its back and a small smoking vent opens between its shoulders.",
+      "adulte": "A colossal lava mammoth with huge curved molten tusks, thick basalt armor and two volcanic chimneys erupting on its back.",
+      "ancien": "Its armor is grey and deeply fissured, its tusks are cracked obsidian, and long strands of cooled lava hang like a beard."
+    },
+    "habitats": ["volcan", "lave", "cendres", "montagne", "canyon", "désert", "ruines"]
+  },
+  {
+    "rang": 14,
+    "nom": "Tsunamir",
+    "id": "tsunamir",
+    "rarete": "rare",
+    "posture": "serpentin",
+    "taille_finale": "colossale",
+    "fiche": "Un grand dragon des marées qui dort au fond des abysses et soulève les vagues géantes en se réveillant.",
+    "caractere": "majestueux et rancunier",
+    "apparence": "Long sea-dragon body of living water with pearl scales and fin crests; colors: deep ocean blue, pearl white, turquoise.",
+    "stades": {
+      "bebe": "A round water bubble with a tiny curled tail inside, big eyes and two little fin ears.",
+      "enfant": "It stretches into a small eel shape with pearl scales and a short fin along its back.",
+      "ado": "The body lengthens, two small front flippers and branching coral horns appear.",
+      "adulte": "A colossal coiling water dragon with a crest shaped like a breaking wave, coral horns and a whirlpool at its tail.",
+      "ancien": "Its scales are covered in barnacles and pearls, its horns are old twisted coral, and long foam whiskers trail from its snout."
+    },
+    "habitats": ["abyssal", "lagon", "corail", "orage", "brume", "lune", "ruines"]
+  },
+  {
+    "rang": 15,
+    "nom": "Tellurion",
+    "id": "tellurion",
+    "rarete": "légendaire",
+    "posture": "bipède",
+    "taille_finale": "colossale",
+    "fiche": "Le seigneur des éléments, un titan de roche vivante dont le corps porte une montagne et les six forces de la nature.",
+    "caractere": "sage et implacable",
+    "apparence": "Colossal stone titan with a mountain on its back and six glowing elemental gems embedded in its body; colors: granite grey, crystal gold, multicolor elemental glow.",
+    "stades": {
+      "bebe": "A round boulder with big glowing eyes and one tiny shining gem on its forehead.",
+      "enfant": "Stubby rock arms and legs appear and two more gems, red and blue, glow on its chest.",
+      "ado": "It grows tall with rock plate shoulders, a small peak forming on its back and six colored gems on its body.",
+      "adulte": "A colossal granite titan carrying a snowy mountain peak on its back, with lava veins, ice shoulders, lightning-crackling fists and wind swirling around its crown.",
+      "ancien": "Its granite is covered in forests and ancient ruins, a waterfall flows like a beard from its jaw and a halo of six elemental lights orbits its head."
+    },
+    "habitats": ["montagne", "volcan", "glace", "orage", "cristal", "ruines", "canyon", "lagon", "nuage", "arcane"]
+  }
+]
