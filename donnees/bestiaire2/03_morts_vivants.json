@@ -1,0 +1,287 @@
+[
+  {
+    "rang": 1,
+    "nom": "Osselet",
+    "id": "osselet",
+    "rarete": "commune",
+    "posture": "quadrupède",
+    "taille_finale": "petite",
+    "fiche": "Un petit chien-squelette joueur qui enterre ses propres os dans les ossuaires et les cimetières oubliés.",
+    "caractere": "joueur et fidèle",
+    "apparence": "Small skeletal dog made of smooth rounded bones, glowing eye sockets; colors: ivory bone, spectral green, charcoal black.",
+    "stades": {
+      "bebe": "A round ivory skull with stubby bone nubs for legs, a tiny wagging tail bone and big glowing green eye sockets.",
+      "enfant": "A small ribcage and four thin bone legs appear behind the skull, plus floppy ear bones.",
+      "ado": "The body lengthens into a full puppy skeleton with a longer segmented tail and a faint green glow inside the ribs.",
+      "adulte": "A sturdy hound skeleton with thick paw bones, a spiked bone collar and green ghost flames trailing from its tail tip.",
+      "ancien": "An elder hound skeleton with chipped, moss-covered bones, a wise drooping jaw and a small floating green lantern-flame above its head."
+    },
+    "habitats": ["ossuaire", "crypte", "ruines", "brume", "ombre", "prairie", "forêt"]
+  },
+  {
+    "rang": 2,
+    "nom": "Drapouille",
+    "id": "drapouille",
+    "rarete": "commune",
+    "posture": "flottant",
+    "taille_finale": "petite",
+    "fiche": "Un fantôme-drap espiègle qui flotte dans les greniers des ruines et adore faire « bouh » aux voyageurs.",
+    "caractere": "espiègle et farceur",
+    "apparence": "Small sheet ghost made of floating tattered cloth with a hollow glowing face; colors: pale white, cold blue, soft black.",
+    "stades": {
+      "bebe": "A tiny round handkerchief ghost with two big black eyes and a little wavy tail, no arms.",
+      "enfant": "Two short cloth arms sprout from the sides and a small frayed hood forms on top.",
+      "ado": "The sheet grows longer with ragged edges, a wide grinning mouth hole and a pale blue glow underneath.",
+      "adulte": "A large billowing shroud ghost with long flowing sleeve-arms, a deep hood and cold blue light pouring from its face.",
+      "ancien": "An old patched shroud ghost sewn with mismatched fabric squares, holding a tiny candle, its hood drooping like a wizard's cap."
+    },
+    "habitats": ["ruines", "brume", "crypte", "ombre", "lune", "nuage"]
+  },
+  {
+    "rang": 3,
+    "nom": "Goulichon",
+    "id": "goulichon",
+    "rarete": "commune",
+    "posture": "bipède",
+    "taille_finale": "moyenne",
+    "fiche": "Une petite goule gourmande qui fouille les tombes des marais à la recherche de vieux biscuits oubliés.",
+    "caractere": "gourmand et maladroit",
+    "apparence": "Hunched ghoul creature with grey-green skin, big ears and a wide toothy grin; colors: ashen green, bone white, black.",
+    "stades": {
+      "bebe": "A round grey-green blob with huge yellow eyes, tiny pointed ears and two little stubby feet.",
+      "enfant": "Thin arms with three long fingers appear and the ears grow long and floppy.",
+      "ado": "The body stretches into a hunched biped with a long tongue, bony knees and a torn cloth belt.",
+      "adulte": "A tall lanky ghoul with long clawed arms, a wide jaw of square teeth and a bone-necklace over its shoulders.",
+      "ancien": "An elder ghoul with a long white beard, round spectacles made of wire, a gnarled bone cane and a lantern at its belt."
+    },
+    "habitats": ["marais", "crypte", "ossuaire", "ruines", "brume", "champignonnière", "ombre"]
+  },
+  {
+    "rang": 4,
+    "nom": "Crânard",
+    "id": "cranard",
+    "rarete": "commune",
+    "posture": "rampant",
+    "taille_finale": "petite",
+    "fiche": "Un bernard-l'ermite des catacombes qui se cache dans un vieux crâne et le change quand il grandit.",
+    "caractere": "timide et collectionneur",
+    "apparence": "Hermit-crab-like creature living in a skull shell, with pale crustacean legs; colors: ivory bone, spectral green, dark slate.",
+    "stades": {
+      "bebe": "A tiny round pale creature with big shy eyes peeking out of a small mouse skull.",
+      "enfant": "Six little jointed legs and two small pincers appear under the skull shell.",
+      "ado": "It moves into a larger cracked skull, its pincers grow uneven and green glow leaks from the eye sockets.",
+      "adulte": "A big crab-like creature carrying a huge horned skull shell, with heavy bone-plated pincers and glowing green eyes.",
+      "ancien": "An old crab carrying an enormous mossy skull covered in tiny candles and trinkets, with a long whisker-like antenna beard."
+    },
+    "habitats": ["ossuaire", "crypte", "ruines", "sable", "marais", "ombre"]
+  },
+  {
+    "rang": 5,
+    "nom": "Follanterne",
+    "id": "follanterne",
+    "rarete": "commune",
+    "posture": "flottant",
+    "taille_finale": "petite",
+    "fiche": "Un feu follet logé dans une vieille lanterne, qui guide (ou égare) les promeneurs dans la brume des marais.",
+    "caractere": "curieux et taquin",
+    "apparence": "Floating ghost flame living inside an iron lantern; colors: spectral green flame, rusty black iron, pale blue.",
+    "stades": {
+      "bebe": "A tiny round green flame with two dot eyes and a happy smile, no lantern yet.",
+      "enfant": "A small iron lantern cage forms around the flame, with a little ring handle on top.",
+      "ado": "The lantern grows glass panes and two wispy flame arms reach out through its sides.",
+      "adulte": "A large ornate lantern with a crown-like top, its big green flame face glaring out and long fire-wisp arms swirling around.",
+      "ancien": "An old rusted lantern with cracked glass, dangling chains and keys, its flame turned pale blue and calm with a wise face."
+    },
+    "habitats": ["marais", "brume", "forêt", "crypte", "ruines", "ombre", "toxique"]
+  },
+  {
+    "rang": 6,
+    "nom": "Vertébrine",
+    "id": "vertebrine",
+    "rarete": "commune",
+    "posture": "serpentin",
+    "taille_finale": "moyenne",
+    "fiche": "Un serpent fait de vertèbres qui ondule entre les dunes et les tombeaux ensablés du désert.",
+    "caractere": "calme et sournois",
+    "apparence": "Skeletal snake made of a chain of vertebrae with a snake skull; colors: sand-ivory bone, spectral green, black.",
+    "stades": {
+      "bebe": "A short round worm made of three chubby vertebrae and a cute round skull with big green eye sockets.",
+      "enfant": "The spine lengthens into a small snake and tiny rib hooks appear along its sides.",
+      "ado": "Long curved ribs grow like a cage along the body and two short fangs appear in the skull.",
+      "adulte": "A long serpent skeleton with a wide hooded skull of fanned bone plates and green spectral venom dripping from its fangs.",
+      "ancien": "An ancient bone serpent with sun-bleached cracked vertebrae, golden tomb rings around its spine and a faint green halo."
+    },
+    "habitats": ["désert", "sable", "ossuaire", "ruines", "canyon", "crypte"]
+  },
+  {
+    "rang": 7,
+    "nom": "Momiaou",
+    "id": "momiaou",
+    "rarete": "peu commune",
+    "posture": "quadrupède",
+    "taille_finale": "moyenne",
+    "fiche": "Un chat momifié gardien des tombeaux du désert, qui ronronne sous ses bandelettes.",
+    "caractere": "fier et paresseux",
+    "apparence": "Mummified cat wrapped in linen bandages with glowing eyes and gold accents; colors: dusty beige linen, gold, cold blue glow.",
+    "stades": {
+      "bebe": "A round bandaged kitten ball with one big blue glowing eye peeking out and tiny pointed ears.",
+      "enfant": "Four short bandaged legs and a loose dangling bandage tail appear.",
+      "ado": "The cat grows slender with a gold collar, long ears and loose bandage strips floating around it.",
+      "adulte": "A tall elegant mummy cat with a golden headdress, sharp claws poking through the wraps and floating bandage ribbons like wings.",
+      "ancien": "An elder mummy cat with faded, sand-worn bandages, a cracked golden mask, a long linen beard and floating sacred scarab charms."
+    },
+    "habitats": ["désert", "crypte", "ruines", "sable", "soleil", "ossuaire", "canyon"]
+  },
+  {
+    "rang": 8,
+    "nom": "Corbouh",
+    "id": "corbouh",
+    "rarete": "peu commune",
+    "posture": "volant",
+    "taille_finale": "moyenne",
+    "fiche": "Un corbeau fantôme qui tournoie au-dessus des vieux cimetières en criant « bouh » au lieu de croasser.",
+    "caractere": "bavard et moqueur",
+    "apparence": "Ghost crow with see-through feathers over a bird skeleton; colors: translucent black, cold blue, bone white.",
+    "stades": {
+      "bebe": "A round fluffy ghost chick with a tiny bone beak, big eyes and no wings, just two small feather tufts.",
+      "enfant": "Small bony wings with a few ghostly feathers appear, and thin skeletal legs.",
+      "ado": "The wings grow wide with ragged translucent feathers and a bone skull mask forms over its face.",
+      "adulte": "A large spectral crow with huge tattered wings trailing blue mist, a sharp bone beak and long tail feathers like smoke.",
+      "ancien": "An old ghost crow with a crooked beak, a monocle, a little bone crown and faded silver-blue feathers drifting like ash."
+    },
+    "habitats": ["crypte", "brume", "ombre", "lune", "ruines", "forêt", "nuage"]
+  },
+  {
+    "rang": 9,
+    "nom": "Heaumbre",
+    "id": "heaumbre",
+    "rarete": "peu commune",
+    "posture": "bipède",
+    "taille_finale": "grande",
+    "fiche": "Une armure de chevalier maudit habitée par une ombre, qui monte la garde dans les forteresses en ruine.",
+    "caractere": "loyal et solennel",
+    "apparence": "Cursed knight armor animated by a shadow, with glowing eyes in the visor; colors: dark tarnished steel, black shadow, spectral green.",
+    "stades": {
+      "bebe": "A round little helmet with a dark shadow inside and two big green glowing eyes, bouncing on tiny shadow feet.",
+      "enfant": "A small breastplate and two gauntlet hands attach below the helmet, linked by wisps of shadow.",
+      "ado": "Full armored legs and shoulder pads appear, plus a short broken sword held in one gauntlet.",
+      "adulte": "A tall cursed knight with spiked pauldrons, a tattered black cape of shadow, a large rusty greatsword and green fire in its visor.",
+      "ancien": "An ancient knight with dented, moss-covered armor, a torn banner on its back, a long shadow beard flowing from the visor and its sword used as a cane."
+    },
+    "habitats": ["ruines", "crypte", "ombre", "brume", "montagne", "rouille", "ossuaire"]
+  },
+  {
+    "rang": 10,
+    "nom": "Tibiarachne",
+    "id": "tibiarachne",
+    "rarete": "peu commune",
+    "posture": "multipattes",
+    "taille_finale": "moyenne",
+    "fiche": "Une araignée d'os qui tisse des toiles d'ectoplasme dans les recoins des ossuaires.",
+    "caractere": "patiente et méticuleuse",
+    "apparence": "Spider made of skeletal bones with ghostly web threads; colors: ivory bone, spectral green silk, black.",
+    "stades": {
+      "bebe": "A round little skull with four stubby finger-bone legs and big green eyes.",
+      "enfant": "Eight thin bone legs appear and a small ribcage abdomen grows behind the skull.",
+      "ado": "The legs lengthen with sharp joints and glowing green silk threads drip from the ribcage abdomen.",
+      "adulte": "A large bone spider with a crowned skull, eight long tibia legs, a big ribcage abdomen glowing green and ghost-silk webs around it.",
+      "ancien": "An old bone spider with dusty cracked legs, cobwebs draped like a cloak, several tiny candle stubs on its back and wise squinting eyes."
+    },
+    "habitats": ["ossuaire", "crypte", "ombre", "ruines", "forêt", "champignonnière"]
+  },
+  {
+    "rang": 11,
+    "nom": "Hurlombre",
+    "id": "hurlombre",
+    "rarete": "rare",
+    "posture": "flottant",
+    "taille_finale": "grande",
+    "fiche": "Un spectre hurleur aux longs cheveux de brume qui chante des complaintes glacées dans la toundra.",
+    "caractere": "mélancolique et dramatique",
+    "apparence": "Wailing specter with long misty hair and a flowing ghostly gown, no legs; colors: icy blue, pale white, deep black.",
+    "stades": {
+      "bebe": "A small round icy-blue wisp with a big round open mouth and two closed sleepy eyes.",
+      "enfant": "Two tiny misty arms and a short tuft of floating white hair appear.",
+      "ado": "The body stretches into a gown-like tail, the hair grows long and wavy, and frost forms on its fingertips.",
+      "adulte": "A tall specter with enormous flowing mist hair, long clawed hands, a ragged ice-blue gown and visible sound rings coming from its wailing mouth.",
+      "ancien": "An ancient specter with silver hair reaching the ground, a crown of icicles, a cracked frost veil and a calm, wise face."
+    },
+    "habitats": ["toundra", "glace", "brume", "aurore", "lune", "ruines", "ombre", "montagne"]
+  },
+  {
+    "rang": 12,
+    "nom": "Brumaleine",
+    "id": "brumaleine",
+    "rarete": "rare",
+    "posture": "flottant",
+    "taille_finale": "colossale",
+    "fiche": "Une baleine squelette qui nage dans le brouillard au-dessus des mers mortes et des nuages.",
+    "caractere": "paisible et rêveur",
+    "apparence": "Floating whale skeleton wrapped in ghostly mist; colors: bone white, cold blue mist, spectral teal glow.",
+    "stades": {
+      "bebe": "A round baby whale skull with big gentle eyes and a tiny puff of blue mist behind it.",
+      "enfant": "A short spine with small rib arches and two little flipper bones appear behind the skull.",
+      "ado": "The ribcage widens, a forked tail fin of bone grows and blue mist fills the body like a ghost skin.",
+      "adulte": "A huge whale skeleton swimming in the air, with a long ribcage glowing teal inside, wide bone flippers and a misty translucent body outline.",
+      "ancien": "An enormous ancient whale skeleton covered in barnacles and hanging lanterns, with tiny ghost fish swimming through its ribs."
+    },
+    "habitats": ["brume", "nuage", "abyssal", "lune", "aurore", "glace", "cosmique"]
+  },
+  {
+    "rang": 13,
+    "nom": "Ectoplouf",
+    "id": "ectoplouf",
+    "rarete": "rare",
+    "posture": "amorphe",
+    "taille_finale": "grande",
+    "fiche": "Une flaque d'ectoplasme vivante qui avale les vieux objets hantés et les garde flottant dans son corps.",
+    "caractere": "glouton et câlin",
+    "apparence": "Wobbly blob of glowing ectoplasm with haunted objects floating inside; colors: spectral green, translucent teal, black.",
+    "stades": {
+      "bebe": "A small round drop of glowing green slime with two big eyes and a tiny smile.",
+      "enfant": "Little dripping pseudopod arms form and a small bone floats inside its body.",
+      "ado": "The blob grows wider with several eyes, drooling tendrils and a few floating keys and skulls inside.",
+      "adulte": "A large towering slime mound with many eyes, long dripping arms, a wide grinning mouth and a whole floating coffin visible inside.",
+      "ancien": "An ancient calm slime mass with a crusty dark-green skin, a halo of tiny floating bones and a tiny tombstone sitting on its head like a hat."
+    },
+    "habitats": ["crypte", "toxique", "marais", "ossuaire", "champignonnière", "ombre", "arcane"]
+  },
+  {
+    "rang": 14,
+    "nom": "Drakosse",
+    "id": "drakosse",
+    "rarete": "rare",
+    "posture": "volant",
+    "taille_finale": "colossale",
+    "fiche": "Un dragon squelette réveillé par la nécromancie qui veille sur les montagnes de cendres et les grands ossuaires.",
+    "caractere": "orgueilleux et protecteur",
+    "apparence": "Skeletal dragon with bone wings covered in torn ghostly membranes; colors: ivory bone, spectral green fire, black.",
+    "stades": {
+      "bebe": "A round dragon-skull hatchling inside a cracked eggshell, with two stubby horns and big green eyes.",
+      "enfant": "Four short bone legs and two tiny bone wing frames without membranes appear.",
+      "ado": "The neck and tail lengthen, ghostly green membranes stretch across the wings and a row of spikes grows along the spine.",
+      "adulte": "A massive dragon skeleton with huge wings of tattered green spectral membrane, a horned skull breathing green ghost fire and a spiked bone tail.",
+      "ancien": "An ancient bone dragon with blackened cracked bones, crystal growths on its horns, chains and relics hanging from its ribs and a glowing rune halo."
+    },
+    "habitats": ["montagne", "ossuaire", "cendres", "ruines", "canyon", "volcan", "crypte"]
+  },
+  {
+    "rang": 15,
+    "nom": "Lichonarque",
+    "id": "lichonarque",
+    "rarete": "légendaire",
+    "posture": "bipède",
+    "taille_finale": "grande",
+    "fiche": "Le roi-liche des morts-vivants, un sorcier squelette couronné qui règne sur toutes les cryptes depuis son trône d'os.",
+    "caractere": "sage et majestueux",
+    "apparence": "Skeletal sorcerer-king in royal robes with a crown and a magic staff; colors: deep black and purple-blue robes, bone ivory, spectral green magic.",
+    "stades": {
+      "bebe": "A tiny round skull wearing an oversized crown, with two big green eyes and a tiny cape around its neck.",
+      "enfant": "A small skeletal body with short arms appears under the cape, holding a little twig wand.",
+      "ado": "Long dark robes and a hood grow, the wand becomes a staff topped with a glowing green gem and a spell book floats nearby.",
+      "adulte": "A tall lich king with a tall spiked crown, flowing black robes with bone trim, a big skull-topped staff and green magic runes orbiting around it.",
+      "ancien": "An ancient lich with a long ghostly white beard, a cracked crown with floating gems, a tattered royal mantle and a wide halo of spectral runes."
+    },
+    "habitats": ["crypte", "ossuaire", "arcane", "ruines", "ombre", "lune", "brume", "cristal"]
+  }
+]
