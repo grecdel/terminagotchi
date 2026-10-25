@@ -128,8 +128,8 @@ def vue_dressage():
                     b = state.get("bubble")
                     print("\n  " + (b[0] if b else "Le dressage est terminé."))
                     act = equipe.active(state)
-                    if act and equipe.anime(act["espece"]):
-                        equipe.jouer(state, [act["espece"], "content"])
+                    if act:
+                        equipe.jouer(state, [act["espece"], "victoire" if b and "🎓" not in b[0] else "content"], tours=2)
                 if time.time() - fini > 6:
                     return
             time.sleep(0.7)

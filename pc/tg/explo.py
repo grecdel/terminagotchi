@@ -56,6 +56,7 @@ def spawn(state):
     s = {"f": dressage.fiche(e["nom"]).name, "e": e["nom"], "zone": zone, "shiny": shiny, "v": vid, "ind": ind}
     state["sauvages"].append(s)
     core.log(state, accorder("⚔ Un monstre sauvage apparaît : {nom} !", nom=e["nom"]))
+    core.animer(state, "attaque")
     dressage.commencer(state, s)
     from . import fenetre
     fenetre.ouvrir_dressage(state)              # le face-à-face s'ouvre dans une nouvelle fenêtre
@@ -77,6 +78,7 @@ def check(state):
                 dressage.abandonner(state)
             core.log(state, accorder("💨 {nom} a disparu (fiche effacée ?)", nom=s["e"]))
             core.say(state, accorder("Oh non, {nom} a disparu… la broyeuse rm est passée par là ?", nom=s["e"]), 10)
+            core.animer(state, "ko")
 
 
 def tick(state, spontane, proba=1.5 / 480, jeu=0):

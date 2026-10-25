@@ -311,6 +311,7 @@ def avancer(state, les):
     core.log(state, f"✔ {step['cmd']}")
     core.say(state, step["bravo"], 12)
     state["step"] += 1
+    core.animer(state, "content")
     if state["step"] < len(les["steps"]):
         core.add_xp(state, 5)
         return True
@@ -343,6 +344,7 @@ def tick(state, lines):
     if state.get("annonce") != les["titre"]:
         state["annonce"] = les["titre"]
         core.say(state, "J'ai quelque chose à t'apprendre !", 10)
+        core.animer(state, "parle")
     for line in (l for l in lines if not est_colle(l)):
         step = les["steps"][state["step"]]
         if "re" in step and re.search(step["re"], line, re.I):

@@ -2,8 +2,8 @@
 leur nom, et s'animent dans le terminal.
 
 La bestiole « active » (tg troupe <nom>) gagne de l'expérience à chaque commande que tu tapes.
-Les animations détaillées existent pour les espèces qui ont un dessin complet (Abyssor pour
-l'instant) ; les autres gardent leur petit sprite.
+Toutes les espèces jouent les 13 animations (moteur anim_auto, à leur stade, dans leur variante,
+avec leur teinte shiny) ; Abyssor garde ses animations faites main (dossier anim/).
 """
 import base64
 import colorsys
@@ -13,6 +13,7 @@ import sys
 import time
 import zlib
 
+from . import anim_auto
 from . import bestiaire as B
 from . import core
 from .mots import accorder
@@ -24,8 +25,7 @@ NOM_STADE = {"bebe": "bébé", "enfant": "enfant", "ado": "ado", "adulte": "adul
 SEUILS = {"bebe": 100, "enfant": 250, "ado": 600, "adulte": 1500}  # XP pour passer au stade suivant
 # Abyssor (animations détaillées faites à la main) garde ses noms de stades d'origine
 STADES_ABYSSOR = {"bebe": "enfant", "enfant": "enfant", "ado": "ado", "adulte": "adulte", "ancien": "finale"}
-ANIMS = ["statique", "mange", "attaque", "salut", "parle", "dort", "content", "affame", "confus", "colere",
-         "victoire", "ko", "evolution"]
+ANIMS = anim_auto.ANIMS
 _CACHE = {}
 
 
@@ -151,8 +151,7 @@ def ecran_equipe(state):
         marque = f"{fg(226)}★ active{RESET} " if c is act else "         "
         var = c.get("variante", "classique")
         lignes.append(f" {marque}{B.nom_affiche(e, c.get('shiny'), B.rarete_de(c))} {DIM}· {NOM_STADE[s]}"
-                      f"{' · ' + var if var != 'classique' else ''} · {B.rarete_de(c)} · {barre}"
-                      f"{' · animé' if anime(e['nom']) else ''}{RESET}")
+                      f"{' · ' + var if var != 'classique' else ''} · {B.rarete_de(c)} · {barre}{RESET}")
     lignes += ["", f" {DIM}Choisir l'active : tg troupe <nom> · la voir bouger : tg anime <nom> [animation]{RESET}"]
     return lignes
 
@@ -168,7 +167,45 @@ def choisir(state, nom):
 
 
 # ---------------------------------------------------------------- tg anime
-def jouer(state, args):
+def animation(ind, quoi):
+    """(images, ips) d'une bestiole de la troupe : à son stade, dans sa variante, avec sa teinte shiny.
+    Abyssor garde ses animations faites main ; toutes les autres espèces passent par anim_auto."""
+    s = stade(ind)
+    if anime(ind["espece"]):
+        avant = s
+        if quoi == "evolution":              # le fichier fait main range l'évolution au stade de départ
+            i = STADES.index(s)
+            avant = STADES[i - 1] if i else s
+        r = images(ind["espece"], avant, quoi, ind.get("teinte", 0.5) if ind.get("shiny") else 0.0)
+        if r:
+            return r
+    e = B.espece(ind["espece"])
+    if not e:
+        return None
+    teinte = ind.get("teinte", 0.5) if ind.get("shiny") else None
+    return anim_auto.lignes(e, s, ind.get("variante", "classique"), quoi, teinte)
+
+
+def derouler(frames, ips, tours, titre=None):
+    """Joue les images sur place (le curseur remonte à chaque image)."""
+    sys.stdout.write("\033[?25l")
+    try:
+        h = len(frames[0])
+        if titre:
+            print(titre)
+        for t in range(tours * len(frames)):
+            if t:
+                sys.stdout.write(f"\033[{h}F")
+            sys.stdout.write("\n".join(frames[t % len(frames)]) + "\n")
+            sys.stdout.flush()
+            time.sleep(1 / ips)
+    except KeyboardInterrupt:
+        pass
+    finally:
+        sys.stdout.write("\033[?25h")
+
+
+def jouer(state, args, tours=None):
     nom = args[0] if args else None
     ind = None
     if nom:
@@ -180,39 +217,22 @@ def jouer(state, args):
         print(" Aucune bestiole de ce nom dans ta troupe. (tg troupe pour la liste)")
         return
     quoi = (args[1] if len(args) > 1 else "statique").lower().replace("é", "e").replace("è", "e")
-    s = stade(ind)
-    if quoi == "evolution":                  # on rejoue l'évolution qui a mené au stade actuel
-        i = STADES.index(s)
-        if i == 0:
-            print(accorder(" {nom} est encore bébé : pas encore d'évolution à revoir.", nom=ind["espece"]))
-            return
-        s = STADES[i - 1]
-    teinte = ind.get("teinte", 0.5) if ind.get("shiny") else 0.0
-    r = images(ind["espece"], s, quoi, teinte)
+    if quoi not in ANIMS:
+        print(f" Animations : {', '.join(ANIMS)}")
+        return
+    if quoi == "evolution" and stade(ind) == "bebe":
+        print(accorder(" {nom} est encore bébé : pas encore d'évolution à revoir.", nom=ind["espece"]))
+        return
+    r = animation(ind, quoi)
     if r is None:
-        if not anime(ind["espece"]):
-            print("\n".join(B.dessin(B.espece(ind["espece"]), ind.get("shiny"), stade=stade(ind),
-                                     vid=ind.get("variante", "classique"), teinte=ind.get("teinte", 0.5))))
-            print(f" {DIM}" + accorder("{nom} n'a pas encore d'animation détaillée.", nom=ind["espece"]) + RESET)
-        else:
-            print(f" Animations : {', '.join(a for a in ANIMS)}")
+        print("\n".join(B.dessin(B.espece(ind["espece"]), ind.get("shiny"), stade=stade(ind),
+                                 vid=ind.get("variante", "classique"), teinte=ind.get("teinte", 0.5))))
+        print(f" {DIM}" + accorder("Pas d'image pour {nom} : impossible de l'animer.", nom=ind["espece"]) + RESET)
         return
     frames, ips = r
-    tours = 1 if quoi == "evolution" else 3
+    if tours is None:
+        tours = 1 if quoi == "evolution" else 3
     titre = f" {B.nom_affiche(B.espece(ind['espece']), ind.get('shiny'), B.rarete_de(ind))} {DIM}· {NOM_STADE[stade(ind)]} · {quoi}{RESET}"
-    sys.stdout.write("\033[?25l")
-    try:
-        h = len(frames[0])
-        print(titre)
-        for t in range(tours * len(frames)):
-            if t:
-                sys.stdout.write(f"\033[{h}F")
-            sys.stdout.write("\n".join(frames[t % len(frames)]) + "\n")
-            sys.stdout.flush()
-            time.sleep(1 / ips)
-    except KeyboardInterrupt:
-        pass
-    finally:
-        sys.stdout.write("\033[?25h")
+    derouler(frames, ips, tours, titre)
     if quoi == "evolution":
         print(f" {BOLD}" + accorder("{nom} : nouvelle forme, {stade} !", nom=ind["espece"], stade=NOM_STADE[stade(ind)]) + RESET)

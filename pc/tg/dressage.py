@@ -586,6 +586,7 @@ def reussir(state):
                              "([c] pour ta collection)", nom=e["nom"], eclat=" ✨" if d["shiny"] else "",
                              marque=ind["marque"]), 14)
     core.notif(state, accorder("🎓 {titre} rejoint ta troupe !", titre=titre))
+    core.animer(state, "victoire")
     st = e.get("stat")
     if st not in state["stats"]:
         st = random.choice(list(state["stats"]))
@@ -608,6 +609,7 @@ def echouer(state):
     core.log(state, accorder("💨 {nom} a perdu patience et a filé…", nom=d["espece"]))
     core.say(state, accorder("Trop tard ! {nom} a filé. Continue de jouer : une autre chance viendra peut-être.",
                              nom=d["espece"]), 12)
+    core.animer(state, "ko")
 
 
 def abandonner(state):

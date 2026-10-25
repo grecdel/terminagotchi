@@ -205,6 +205,21 @@ def notif(state, texte):
     state["notifs"] = (state.get("notifs", []) + [texte])[-5:]
 
 
+# Courtes animations de la fenêtre principale : un événement daté, rangé dans la sauvegarde
+# (n'importe quel processus — invite, veille, fenêtre — peut le déclencher ; la fenêtre le joue).
+PRIORITE_ANIM = {"evolution": 9, "victoire": 8, "ko": 7, "colere": 6, "attaque": 6, "content": 5, "confus": 4,
+                 "mange": 3, "salut": 2, "parle": 1}
+
+
+def animer(state, nom):
+    """Demande une courte animation de la créature (la plus importante gagne si plusieurs arrivent ensemble)."""
+    now = time.time()
+    a = state.get("anim")
+    if a and now - a[1] < 2 and PRIORITE_ANIM.get(a[0], 0) > PRIORITE_ANIM.get(nom, 0):
+        return
+    state["anim"] = [nom, now]
+
+
 def log(state, msg):
     state["log"] = (state["log"] + [time.strftime("%H:%M ") + msg])[-6:]
     state["nlog"] = state.get("nlog", 0) + 1
@@ -272,6 +287,7 @@ def add_xp(state, n):
     new = level(state["xp"])
     if new <= old:
         return
+    animer(state, "evolution" if stage(new) > stage(old) else "content")
     if stage(new) > stage(old):
         if stage(new) == 1:
             log(state, "✨ L'œuf a éclos !")
@@ -325,6 +341,7 @@ def feed(state, line):
         state["colles"] += 1
         log(state, "✖ copier-coller détecté : pas de nourriture")
         say(state, random.choice(COLLE), 10)
+        animer(state, "colere")
         return
     cmd = first_word(line)
     if not cmd:
@@ -335,6 +352,7 @@ def feed(state, line):
         say(state, (f"« {cmd} » n'est pas une commande… tu voulais dire « {proche} » ?" if proche
                     else f"« {cmd} » n'est pas une commande. Essaie : ls, pwd, cd"), 8)
         log(state, f"✖ « {cmd} » : commande inconnue, pas de nourriture")
+        animer(state, "confus")
         return
     state["total"] += 1
     gain, msg = 1, f"a mangé « {cmd} »"
@@ -364,6 +382,7 @@ def feed(state, line):
     state["hunger"] = min(100.0, state["hunger"] + 3)
     state["repas_t"] = time.time()
     log(state, msg)
+    animer(state, "mange")
     add_xp(state, gain)
 
 # ================================================================ défis éclair
@@ -398,11 +417,13 @@ def defi_tick(state, lines, spontaneous, proba=1.5 / 300):
             say(state, f"Trop rapide ! {t:.1f} s.{rec}", 8)
             state["stats"]["Agilité"] += 2
             state["defi"] = None
+            animer(state, "victoire")
             add_xp(state, 10)
             return
     if time.time() - d["start"] > defi_duree(state):
         log(state, f"⚡ Défi « {d['cmd']} » raté…")
         say(state, "Trop lent ! On réessaiera.", 6)
+        animer(state, "confus")
         state["defi"] = None
 
 

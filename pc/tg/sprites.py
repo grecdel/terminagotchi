@@ -91,8 +91,10 @@ def overlay(base, ovl):
     return rows
 
 
-def get_sprite(state):
-    st = core.stage(core.level(state["xp"]))
+def get_sprite(state, st=None):
+    """Le dessin de la créature (à son stade actuel, ou au stade st, pour rejouer une évolution)."""
+    if st is None:
+        st = core.stage(core.level(state["xp"]))
     if st == 0:
         return EGG_SPRITE
     if st == 1:
@@ -189,6 +191,65 @@ def png(path, rows, pal, echelle=12, marge=2):
 
 def bestiole(index, couleur):
     return render_sprite(BESTIOLES[index % len(BESTIOLES)], {"b": couleur, "e": 16})[0]
+
+
+def _indexer(rows, pal):
+    """Lignes de caractères + palette xterm → (largeur, hauteur, octets, palette en entiers 0xRRGGBB)."""
+    w = max(len(r) for r in rows)
+    codes, octets = [], bytearray()
+    for r in rows:
+        for ch in r.ljust(w, "."):
+            c = pal.get(ch)
+            if c is None:
+                octets.append(0)
+                continue
+            if c not in codes:
+                codes.append(c)
+            octets.append(codes.index(c) + 1)
+    rgb = [(lambda t: (t[0] << 16) | (t[1] << 8) | t[2])(x256(c)) for c in codes]
+    return w, len(rows), bytes(octets), rgb
+
+
+def _recadrer(W, H, frames):
+    """Coupe les bords vides communs à toutes les images (hauteur gardée paire pour les demi-blocs)."""
+    x0, y0, x1, y1 = W, H, -1, -1
+    for f in frames:
+        for y in range(H):
+            ligne = f[y * W:(y + 1) * W]
+            if any(ligne):
+                y0, y1 = min(y0, y), max(y1, y)
+                for x in range(W):
+                    if ligne[x]:
+                        x0, x1 = min(x0, x), max(x1, x)
+    if x1 < 0:
+        return W, H, frames
+    y0 -= y0 % 2
+    nw, nh = x1 - x0 + 1, y1 - y0 + 1
+    nh += nh % 2
+    out = []
+    for f in frames:
+        b = bytearray(nw * nh)
+        for y in range(nh):
+            if y0 + y < H:
+                b[y * nw:(y + 1) * nw] = f[(y0 + y) * W + x0:(y0 + y) * W + x0 + nw]
+        out.append(bytes(b))
+    return nw, nh, out
+
+
+def animation(state, nom):
+    """La créature principale joue une animation automatique (moteur anim_auto) : (lignes par image, ips)."""
+    from . import anim_auto
+    from .bestiaire import lignes_image
+    pal = palette(state)
+    st = core.stage(core.level(state["xp"]))
+    w, h, o, p = _indexer(get_sprite(state, st), pal)
+    de = None
+    if nom == "evolution" and st > 0:
+        de = _indexer(get_sprite(state, st - 1), pal)
+    W, H, frames, pal2, _ = anim_auto._calculer(w, h, o, p, nom, de)
+    W, H, frames = _recadrer(W, H, frames)
+    hexa = ["#%06x" % c for c in pal2]
+    return [lignes_image(W, H, f, hexa) for f in frames], anim_auto.IPS
 
 
 def bar(value, maximum, width=10):
