@@ -48,3 +48,15 @@ CREATE TABLE IF NOT EXISTS config (
   cle TEXT PRIMARY KEY,
   valeur TEXT NOT NULL
 );
+
+-- Anti-triche : chaque (graine, compteur) ne sert qu'à UNE capture vérifiée.
+-- (graine = « AAAA-MM-JJ.poste », voir site/src/tirage.js ; le secret vient de `wrangler secret put SECRET_GRAINES`)
+CREATE TABLE IF NOT EXISTS apparitions (
+  graine TEXT NOT NULL,
+  n INTEGER NOT NULL,
+  joueur TEXT NOT NULL,
+  capture TEXT NOT NULL,
+  date INTEGER NOT NULL,
+  PRIMARY KEY (graine, n)
+);
+CREATE INDEX IF NOT EXISTS apparitions_joueur ON apparitions (joueur);

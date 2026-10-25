@@ -20,7 +20,9 @@ function faireD1() {
   return { prepare: preparer };
 }
 
-const env = { DB: faireD1() };
+// valeur FACTICE : le vrai secret se règle avec `wrangler secret put SECRET_GRAINES`, jamais dans le dépôt
+const SECRET_FACTICE = "secret-factice-des-tests";
+const env = { DB: faireD1(), SECRET_GRAINES: SECRET_FACTICE };
 const ORIGINE = "https://terminagotchi.exemple.workers.dev";
 let ok = 0;
 let ko = 0;
@@ -241,6 +243,59 @@ for (const l of LANGUES) if (l !== "fr") {
   }
 }
 verifier(problemes.length === 0, "dictionnaires cohérents" + (problemes.length ? " : " + problemes.slice(0, 5).join(", ") : ""));
+
+console.log("Anti-triche : graines et captures vérifiées");
+{
+  const { tirer } = await import("../src/tirage.js");
+  r = await appel("POST", "/api/sync", { cle: cleTel, corps: { appareil: "android" } });
+  const gr = r.j.graines || [];
+  verifier(gr.length === 8 && gr.every((g) => /^\d{4}-\d{2}-\d{2}\.[0-9a-f]{12}$/.test(g.id) && /^[0-9a-f]{64}$/.test(g.valeur)),
+    "la synchro donne 8 graines signées (hier → dans 6 jours)");
+  verifier(!r.t.includes(SECRET_FACTICE), "le secret n'apparaît jamais dans la réponse");
+  const auj = new Date().toISOString().slice(0, 10);
+  const g = gr.find((x) => x.id.startsWith(auj));
+  const r2 = await appel("POST", "/api/sync", { cle: clePc, corps: { appareil: "pc" } });
+  const gPc = r2.j.graines.find((x) => x.id.startsWith(auj));
+  verifier(gPc.id !== g.id && gPc.valeur !== g.valeur, "chaque appareil a sa propre graine");
+  const autre = await appel("POST", "/api/inscription", { corps: { pseudo: "Voisin", appareil: "pc" }, entetes: { "cf-connecting-ip": "10.9.8.7" } });
+  const gAutre = (await appel("POST", "/api/sync", { cle: autre.j.cle, corps: { appareil: "pc" } })).j.graines.find((x) => x.id.startsWith(auj));
+  const maintenant = Date.now();
+  const capt2 = (id, n, extra = {}, graine = g) => {
+    const t = tirer(graine.valeur, n).champs;
+    return { id, ...t, stats: { ...t.stats }, graine: graine.id, n, date: maintenant, zone: "volcan", ...extra };
+  };
+  const honnete = capt2("dddddd0001", 0);
+  const triche = capt2("dddddd0002", 1);
+  triche.stats.ATK += 9; triche.shiny = true; triche.rarete = "légendaire";
+  const ancienne = (() => { const t = tirer(g.valeur, 5).champs; return { id: "dddddd0003", ...t, date: maintenant, zone: "volcan" }; })();
+  r = await appel("POST", "/api/sync", { cle: cleTel, corps: { appareil: "android", captures: [
+    honnete, triche, capt2("dddddd0004", 0), capt2("dddddd0005", 999), capt2("dddddd0006", 2, {}, gAutre), ancienne,
+    capt2("dddddd0007", 3, { stade: "ancien" }), capt2("dddddd0008", 4, { stade: "ancien", date: maintenant - 3 * 3600_000 }),
+  ] } });
+  const par = Object.fromEntries(r.j.etat.captures.map((c) => [c.id, c]));
+  verifier(par.dddddd0001?.verifie === true && par.dddddd0001.stats.ATK === honnete.stats.ATK, "capture honnête : vérifiée");
+  verifier(par.dddddd0002?.verifie === false && par.dddddd0002.raison === "ne correspond pas au tirage", "stats gonflées / faux shiny : non vérifiée");
+  verifier(par.dddddd0004?.verifie === false && par.dddddd0004.raison === "graine déjà utilisée", "même (graine, compteur) une 2e fois : non vérifiée");
+  verifier(par.dddddd0005?.verifie === false && par.dddddd0005.raison === "graine ou compteur invalide", `compteur ≥ ${200} : non vérifiée`);
+  verifier(par.dddddd0006?.verifie === false && par.dddddd0006.raison === "graine d'un autre joueur", "graine d'un autre joueur : non vérifiée");
+  verifier(par.dddddd0003?.verifie === false && !par.dddddd0003.raison, "capture sans graine (ancienne sauvegarde) : gardée, non vérifiée");
+  const s7 = tirer(g.valeur, 3).champs.stade;
+  verifier(par.dddddd0007?.verifie === true && par.dddddd0007.stade === s7, `évolution instantanée refusée (reste ${s7})`);
+  verifier(par.dddddd0008?.stade === "ancien", "évolution en 3 h : acceptée");
+  r = await appel("POST", "/api/sync", { cle: cleTel, corps: { appareil: "android", captures: [{ ...honnete, stade: "ancien", stats: { ...honnete.stats, PV: 999 } }] } });
+  const h2 = r.j.etat.captures.find((c) => c.id === "dddddd0001");
+  verifier(h2.stats.PV === honnete.stats.PV && h2.stade === honnete.stade, "une capture vérifiée ne change ni de stats ni de stade trop vite");
+  r = await appel("GET", "/api/profil/Grec");
+  verifier(r.j.capturesVerifiees === 3, "profil : 3 captures vérifiées comptées à part");
+  r = await appel("GET", "/captures");
+  verifier(r.t.includes("✔ vérifiée") && r.t.includes("non vérifiée") && r.t.includes("/portraits/"), "galerie : vérifiées (✔) et non vérifiées affichées");
+  const sansSecret = { DB: env.DB };
+  const rs = await worker.fetch(new Request(ORIGINE + "/api/sync", { method: "POST", headers: { authorization: "Bearer " + cleTel },
+    body: JSON.stringify({ appareil: "android", captures: [capt2("dddddd0009", 7)] }) }), sansSecret);
+  const js = await rs.json();
+  verifier(js.graines.length === 0 && js.etat.captures.find((c) => c.id === "dddddd0009")?.verifie === false,
+    "sans SECRET_GRAINES : aucune graine, rien n'est vérifié");
+}
 
 // chaque page dans chaque langue
 const pages = ["/", "/classement", "/bestiaire", "/bestiaire/glitchou", "/captures", "/captures?shiny=1", "/joueur/Grec", "/joueur/Personne", lienBadge, "/badge/0123456789abcdef", "/ctf", "/nimporte"];

@@ -5,6 +5,7 @@
  */
 
 import BESTIAIRE from "./bestiaire.js";
+import { tirer, differences, stadePlausible, MAX_APPARITIONS, PAR_NOM_T, TIRAGE } from "./tirage.js";
 import { LANGUES, NOMS_LANGUES, LOCALES, RTL, choisirLangue, cookieLangue, textes, libelle } from "./i18n.js";
 
 const DEPOT = "https://github.com/grecdel/terminagotchi-android";
@@ -20,7 +21,8 @@ const ANIMEES = new Set(["abyssor"]);
 const STADES_B = ["enfant", "ado", "adulte", "finale"];
 const MARQUES = new Set(BESTIAIRE.marques);
 const HUMEURS = new Set(BESTIAIRE.humeurs);
-const COULEUR_RARETE = { commune: "#b0b0c0", "peu commune": "#5fd787", rare: "#5fafff", "légendaire": "#ffaf00" };
+const COULEUR_RARETE = { commune: "#b0b0c0", "peu commune": "#5fd787", rare: "#5fafff", "épique": "#c77dff", "légendaire": "#ffaf00",
+  mythique: "#ff5f87" };
 const APPAREILS = ["android", "pc"];
 
 // ====================================================================== outils
@@ -109,7 +111,7 @@ async function authentifier(requete, env) {
   if (!/^[0-9a-f]{64}$/.test(cle)) return null;
   const empreinte = await sha256(cle);
   return env.DB.prepare(
-    "SELECT j.* FROM cles c JOIN joueurs j ON j.id = c.joueur WHERE c.empreinte = ?",
+    "SELECT j.*, c.empreinte AS empreinte_cle FROM cles c JOIN joueurs j ON j.id = c.joueur WHERE c.empreinte = ?",
   ).bind(empreinte).first();
 }
 
@@ -136,6 +138,81 @@ async function donnerBadge(env, joueur, type, titre) {
   return (r.meta?.changes ?? 0) > 0 ? { id, type, titre } : null;
 }
 
+// ====================================================================== anti-triche : graines
+
+/*
+ * Chaque appareil (chaque clé) reçoit une graine par jour, signée avec le secret SECRET_GRAINES
+ * (wrangler secret put SECRET_GRAINES — jamais écrit dans le dépôt ni renvoyé tel quel).
+ * Le jeu tire ses apparitions de (graine, compteur) ; le serveur refait le tirage pour vérifier.
+ * Identifiant d'une graine : « AAAA-MM-JJ.poste » (poste = 12 premiers caractères de l'empreinte de la clé).
+ */
+const JOURS_AVANT = 1;
+const JOURS_APRES = 6;
+const JOUR_MS = 86_400_000;
+
+function jourUTC(t) {
+  return new Date(t).toISOString().slice(0, 10);
+}
+
+async function valeurGraine(env, joueurId, poste, jour) {
+  return hmac(env.SECRET_GRAINES, `graine|${joueurId}|${poste}|${jour}`);
+}
+
+/** Les graines de cet appareil, d'hier à dans 6 jours (le jeu les garde pour jouer hors ligne). */
+async function graines(env, joueur) {
+  if (!env.SECRET_GRAINES || !joueur.empreinte_cle) return [];
+  const poste = joueur.empreinte_cle.slice(0, 12);
+  const out = [];
+  for (let d = -JOURS_AVANT; d <= JOURS_APRES; d++) {
+    const jour = jourUTC(Date.now() + d * JOUR_MS);
+    out.push({ id: `${jour}.${poste}`, valeur: await valeurGraine(env, joueur.id, poste, jour) });
+  }
+  return out;
+}
+
+/**
+ * Vérifie les NOUVELLES captures qui annoncent une graine : refait le tirage, compare, contrôle que
+ * (graine, compteur) ne sert qu'une fois et que le stade est plausible. Renvoie Map(id → verdict).
+ */
+async function verifierCaptures(env, joueur, etat, envoyees) {
+  const verdicts = new Map();
+  const connues = new Set((etat.captures || []).map((c) => c.id));
+  const postes = new Map();
+  const maintenant = Date.now();
+  for (const c of Array.isArray(envoyees) ? envoyees : []) {
+    if (!c || typeof c.id !== "string" || connues.has(c.id) || verdicts.has(c.id)) continue;
+    if (c.graine === undefined && c.n === undefined) continue;          // ancienne capture : non vérifiée
+    const non = (raison) => verdicts.set(c.id, { verifie: false, raison });
+    const m = typeof c.graine === "string" && c.graine.match(/^(\d{4}-\d{2}-\d{2})\.([0-9a-f]{12})$/);
+    const n = c.n;
+    if (!env.SECRET_GRAINES) { non("vérification indisponible"); continue; }
+    if (!m || !Number.isInteger(n) || n < 0 || n >= MAX_APPARITIONS) { non("graine ou compteur invalide"); continue; }
+    const [, jour, poste] = m;
+    const debutJour = Date.parse(jour + "T00:00:00Z");
+    if (!Number.isFinite(debutJour) || debutJour > maintenant + JOUR_MS) { non("graine d'un jour futur"); continue; }
+    if (!postes.has(poste)) {
+      const r = await env.DB.prepare("SELECT 1 AS ok FROM cles WHERE joueur = ? AND substr(empreinte, 1, 12) = ?")
+        .bind(joueur.id, poste).first();
+      postes.set(poste, !!r);
+    }
+    if (!postes.get(poste)) { non("graine d'un autre joueur"); continue; }
+    const { champs } = tirer(await valeurGraine(env, joueur.id, poste, jour), n, c.espece === "Abyssor");
+    if (differences(c, champs).length) { non("ne correspond pas au tirage"); continue; }
+    const i0 = TIRAGE.stades.indexOf(champs.stade);
+    const voulu = TIRAGE.stades.includes(c.stade) ? c.stade : champs.stade;
+    if (TIRAGE.stades.indexOf(voulu) < i0) { non("stade impossible"); continue; }
+    // l'évolution : bornée par le temps écoulé depuis l'apparition (au plus tôt la veille du jour de la graine)
+    const depuis = Math.min(maintenant, Math.max(Number(c.date) || 0, debutJour - JOUR_MS));
+    const stade = stadePlausible(champs.stade, voulu, (maintenant - depuis) / 1000);
+    const r = await env.DB.prepare(
+      "INSERT OR IGNORE INTO apparitions (graine, n, joueur, capture, date) VALUES (?, ?, ?, ?, ?)",
+    ).bind(c.graine, n, joueur.id, c.id, maintenant).run();
+    if ((r.meta?.changes ?? 0) === 0) { non("graine déjà utilisée"); continue; }
+    verdicts.set(c.id, { verifie: true, champs, stade, depuis });
+  }
+  return verdicts;
+}
+
 // ====================================================================== synchro
 
 /**
@@ -145,7 +222,7 @@ async function donnerBadge(env, joueur, type, titre) {
  *  - collection : maximum par espèce · records : meilleur temps
  *  - nom, faim : la valeur la plus récente gagne · caractère, forme : la première gagne
  */
-function fusionner(etat, envoi, appareil) {
+function fusionner(etat, envoi, appareil, verdicts = new Map()) {
   const e = {
     nom: "", nomDate: 0, trait: "", forme: null, xp: 0, total: 0, colles: 0, stats: {}, vus: [], skills: [],
     collection: {}, records: {}, faim: 80, faimDate: 0, appareils: {}, ...etat,
@@ -183,16 +260,31 @@ function fusionner(etat, envoi, appareil) {
   for (const c of Array.isArray(envoi.captures) ? envoi.captures : []) {
     if (e.captures.length >= 3000) break;
     const ok = c && typeof c.id === "string" && /^[0-9a-f]{6,20}$/.test(c.id) && !connues.has(c.id)
-      && PAR_NOM[c.espece] && MARQUES.has(c.marque) && HUMEURS.has(c.humeur);
+      && (PAR_NOM[c.espece] || PAR_NOM_T[c.espece]) && MARQUES.has(c.marque) && HUMEURS.has(c.humeur);
     if (!ok) continue;
+    const zone = typeof c.zone === "string" && /^[a-z/_]{0,60}$/.test(c.zone) ? c.zone : "";
+    const v = verdicts.get(c.id);
+    if (v?.verifie) {
+      // tirage refait par le serveur : ce sont SES valeurs qui sont gardées
+      const t = v.champs;
+      e.captures.push({
+        id: c.id, espece: t.espece, variante: t.variante, shiny: t.shiny, date: entier(c.date, 4e12), marque: t.marque,
+        humeur: t.humeur, taille: t.taille, qualite: t.qualite, potentiel: t.potentiel, stats: t.stats, note: t.note,
+        rarete: t.rarete, zone, stade: v.stade, stade0: t.stade, depuis: v.depuis, teinte: t.teinte ?? 0,
+        graine: c.graine, n: c.n, verifie: true,
+      });
+      connues.add(c.id);
+      continue;
+    }
     const st = {};
     for (const k of ["PV", "ATK", "DEF", "VIT", "INT"]) st[k] = entier(c.stats?.[k], 200);
     e.captures.push({
       id: c.id, espece: c.espece, shiny: c.shiny === true, date: entier(c.date, 4e12), marque: c.marque,
       humeur: c.humeur, taille: Math.max(0, Math.min(1000, Number(c.taille) || 0)), potentiel: entier(c.potentiel, 100),
-      stats: st, zone: typeof c.zone === "string" && /^[a-z/]{0,60}$/.test(c.zone) ? c.zone : "",
+      stats: st, zone,
       stade: STADES_B.includes(c.stade) ? c.stade : "enfant",
       teinte: Math.max(0, Math.min(1, Number(c.teinte) || 0)),
+      verifie: false, ...(v?.raison && { raison: v.raison }),
     });
     connues.add(c.id);
   }
@@ -200,7 +292,12 @@ function fusionner(etat, envoi, appareil) {
   const parId = Object.fromEntries(e.captures.map((c) => [c.id, c]));
   for (const c of Array.isArray(envoi.captures) ? envoi.captures : []) {
     const ancienne = c && parId[c.id];
-    if (ancienne && STADES_B.indexOf(c.stade) > STADES_B.indexOf(ancienne.stade || "enfant")) ancienne.stade = c.stade;
+    if (!ancienne) continue;
+    if (ancienne.verifie === true) {
+      // bestiole vérifiée : elle ne grandit pas plus vite que le temps écoulé ne le permet
+      const s = stadePlausible(ancienne.stade0, c.stade, (Date.now() - ancienne.depuis) / 1000);
+      if (TIRAGE.stades.indexOf(s) > TIRAGE.stades.indexOf(ancienne.stade)) ancienne.stade = s;
+    } else if (STADES_B.indexOf(c.stade) > STADES_B.indexOf(ancienne.stade || "enfant")) ancienne.stade = c.stade;
   }
   if (envoi.partage && typeof envoi.partage === "object" && (Number(envoi.partage.date) || 0) >= (e.partage?.date || 0)) {
     e.partage = { actif: envoi.partage.actif === true, date: Number(envoi.partage.date) || 0 };
@@ -306,7 +403,8 @@ async function api(requete, env, chemin) {
     const b = await corps(requete);
     if (!b) return erreur("Données illisibles.");
     const appareil = APPAREILS.includes(b.appareil) ? b.appareil : "pc";
-    const e = fusionner(lireEtat(joueur), b, appareil);
+    const avant = lireEtat(joueur);
+    const e = fusionner(avant, b, appareil, await verifierCaptures(env, joueur, avant, b.captures));
     await env.DB.prepare("UPDATE joueurs SET etat = ?, xp = ?, niveau = ?, maj = ? WHERE id = ?")
       .bind(JSON.stringify(e), e.xp, niveauDe(e.xp), Date.now(), joueur.id).run();
     const nouveaux = [];
@@ -314,7 +412,7 @@ async function api(requete, env, chemin) {
       const bd = await donnerBadge(env, joueur.id, "multi", "Multi-plateforme : PC + téléphone");
       if (bd) nouveaux.push(bd);
     }
-    return json({ etat: e, badges: nouveaux });
+    return json({ etat: e, badges: nouveaux, graines: await graines(env, joueur) });
   }
 
   if (chemin === "/api/drapeau" && m === "POST") {
@@ -354,7 +452,8 @@ async function profilPublic(env, pseudo) {
     commandes: e.total || 0, gouts: (e.vus || []).length, competences: e.skills || [],
     collection: e.collection || {}, records: e.records || {},
     appareils: Object.keys(e.appareils || {}), inscrit: new Date(j.cree).toISOString(),
-    shiny: e.shiny === true, captures: (e.captures || []).length, partage: e.partage?.actif === true,
+    shiny: e.shiny === true, captures: (e.captures || []).length,
+    capturesVerifiees: (e.captures || []).filter((c) => c.verifie === true).length, partage: e.partage?.actif === true,
     badges: b.results.map((x) => ({ ...x, lien: "/badge/" + x.id })),
   };
 }
@@ -792,13 +891,33 @@ async function pageCaptures(env, L, url) {
     joueurs++;
     for (const c of e.captures || []) caps.push({ ...c, pseudo: j.pseudo });
   }
-  caps = caps.filter((c) => PAR_NOM[c.espece] && (!shinySeul || c.shiny) && (!rarete || PAR_NOM[c.espece].rarete === rarete));
-  caps.sort((a, b) => (b.shiny - a.shiny) || (b.date - a.date));
+  // rareté : celle de l'individu (nouveau bestiaire), sinon celle de l'espèce (ancien)
+  const rareteDe = (c) => c.rarete || PAR_NOM[c.espece]?.rarete;
+  caps = caps.filter((c) => (PAR_NOM[c.espece] || PAR_NOM_T[c.espece]) && (!shinySeul || c.shiny) && (!rarete || rareteDe(c) === rarete));
+  caps.sort((a, b) => (b.shiny - a.shiny) || ((b.verifie === true) - (a.verifie === true)) || (b.date - a.date));
   const total = caps.length;
   caps = caps.slice(0, 120);
   const cartes = caps.map((c) => {
-    const e = PAR_NOM[c.espece];
     const date = new Date(c.date).toLocaleDateString(L.locale);
+    // anti-triche : seules les bestioles dont le serveur a refait le tirage sont « vérifiées »
+    const verif = `<div class="doux" style="font-size:12px">${c.verifie === true ? `<span style="color:var(--vert)">✔ ${K.verifiee}</span>` : K.nonVerifiee}</div>`;
+    if (!PAR_NOM[c.espece] || c.verifie === true) {
+      const t = PAR_NOM_T[c.espece];
+      const stade = TIRAGE.stades.includes(c.stade) ? c.stade : "adulte";
+      const vid = t.variantes.some((v) => v.id === c.variante) ? c.variante : "classique";
+      const filtre = c.shiny ? ` style="filter:hue-rotate(${Math.round((c.teinte || 0.5) * 360)}deg)"` : "";
+      const nom = c.shiny || ["légendaire", "mythique"].includes(c.rarete) ? `<span class="rgb">${bdi(t.nom)}${c.shiny ? " ✨" : ""}</span>` : `<b>${bdi(t.nom)}</b>`;
+      return `<div class="bestiole capture${c.shiny ? " shiny" : ""}">
+      <div style="text-align:center"><img src="/portraits/${t.id}/${vid}_${stade}.webp" alt="${echapper(t.nom)}" width="96" height="96" loading="lazy"${filtre}></div>
+      <div>${nom}</div>
+      ${COULEUR_RARETE[c.rarete] ? etiquetteRarete(L, c.rarete) : ""}
+      <div class="marque" lang="fr" dir="ltr">« <span class="rgb">${echapper(c.marque)}</span> »</div>
+      <div class="doux" style="font-size:13px">${echapper(K.humeur(lib(L, "humeurs", c.humeur)))} · <bdi>${c.taille} cm</bdi><br>${K.potentiel} <b style="color:var(--vert)"><bdi>${c.potentiel} %</bdi></b></div>
+      ${verif}
+      <div class="doux" style="font-size:12px;margin-top:6px">${K.par(`<a href="/joueur/${encodeURIComponent(c.pseudo)}">${bdi(c.pseudo)}</a>`, `<bdi>${echapper(date)}</bdi>`)}</div>
+    </div>`;
+    }
+    const e = PAR_NOM[c.espece];
     const nom = c.shiny || e.rarete === "légendaire" ? `<span class="rgb">${bdi(e.nom)}${c.shiny ? " ✨" : ""}</span>` : `<b>${bdi(e.nom)}</b>`;
     return `<div class="bestiole capture${c.shiny ? " shiny" : ""}">
       <div style="text-align:center;display:flex;justify-content:center">${visuel(L, e, c)}</div>
@@ -807,6 +926,7 @@ async function pageCaptures(env, L, url) {
       ${etiquetteRarete(L, e.rarete)}
       <div class="marque" lang="fr" dir="ltr">« <span class="rgb">${echapper(c.marque)}</span> »</div>
       <div class="doux" style="font-size:13px">${echapper(K.humeur(lib(L, "humeurs", c.humeur)))} · <bdi>${c.taille} cm</bdi><br>${K.potentiel} <b style="color:var(--vert)"><bdi>${c.potentiel} %</bdi></b></div>
+      ${verif}
       <div class="doux" style="font-size:12px;margin-top:6px">${K.par(`<a href="/joueur/${encodeURIComponent(c.pseudo)}">${bdi(c.pseudo)}</a>`, `<bdi>${echapper(date)}</bdi>`)}</div>
     </div>`;
   }).join("");
