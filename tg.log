@@ -1,0 +1,21 @@
+--------- beginning of main
+10-25 18:21:23.052  3365  3365 I TG      : commande : pwd
+10-25 18:21:25.390  3365  3365 I TG      : commande : ls
+10-25 18:21:27.801  3365  3365 I TG      : commande : cd
+10-25 18:21:33.249  3365  3365 I TG      : commande : mkdir terrain_terminagotchi
+10-25 18:21:38.567  3365  3365 I TG      : commande : cd terrain_terminagotchi
+10-25 18:21:41.738  3365  3365 I TG      : commande : mkdir nid
+10-25 18:21:50.577  3365  3365 I TG      : commande : echo pomme > nid/repas.txt
+10-25 18:21:54.459  3365  3365 I TG      : commande : cat nid/repas.txt
+10-25 18:21:58.972  3365  3365 I TG      : commande : grep pomme nid/repas.txt
+10-25 18:22:01.827  3365  3365 I TG      : commande : ls -l nid
+10-25 18:22:06.685  3365  3365 I TG      : commande : chmod 444 nid/repas.txt
+10-25 18:22:12.628  3365  3365 I TG      : commande : echo poire >> nid/repas.txt
+10-25 18:22:16.744  3365  3365 I TG      : commande : cp nid/repas.txt nid/secours.txt
+10-25 18:22:22.627  3365  3365 I TG      : commande : mv nid/secours.txt reserve.txt
+10-25 18:22:26.371  3365  3365 I TG      : commande : rm reserve.txt
+10-25 18:22:50.862  3365  3365 I TG      : commande : fichier_inexistant
+10-25 18:23:24.325  3365  3365 I TG      : commande : cat ~/terrain_terminagotchi/monstre_abyssor.txt
+10-25 18:23:36.287  3365  3365 I TG      : commande : find ~/terrain_terminagotchi -name repaire_abyssor
+10-25 18:25:02.570  3365  3365 I TG      : commande : cd 01_cache
+10-25 18:25:04.842  3365  3365 I TG      : commande : ls -a

@@ -1,0 +1,2 @@
+inscription depuis le téléphone : OK 362 ['android']
+liaison + synchro PC <-> téléphone : OK 864 ['pc', 'android'] CreaturePC

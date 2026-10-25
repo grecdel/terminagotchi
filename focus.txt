@@ -1,0 +1,8 @@
+  mCurrentFocus=Window{2b285c4 u0 fr.terminagotchi/fr.terminagotchi.TerminalActivity}
+  mFocusedApp=ActivityRecord{e19c2c4 u0 fr.terminagotchi/.TerminalActivity} t9}
+    inputContext=RemoteInputConnectionImpl{connection=android.view.inputmethod.BaseInputConnection@946a210 finished=false mParentInputMethodManager.isActive()=false mServedView=null}
+  mCurFocusedWindow=android.os.BinderProxy@5558d7 softInputMode=STATE_ALWAYS_VISIBLE|ADJUST_RESIZE|IS_FORWARD_NAVIGATION client=ClientState{c536e42 uid=10174 pid=3365 displayId=0}
+  mShowRequested=true mShowExplicitlyRequested=false mShowForced=false mInputShown=true
+  mFallbackInputConnection=RemoteInputConnectionImpl{connection=android.view.inputmethod.BaseInputConnection@7d42bb9 finished=false mParentInputMethodManager.isActive()=true mServedView=null}
+  mServedView=android.widget.EditText{5152223 VFED..CL. .F...... 516,16-895,62 #7f03000f app:id/saisie aid=1073741824}
+  mServedInputConnection=RemoteInputConnectionImpl{connection=com.android.internal.inputmethod.EditableInputConnection@977edac finished=false mParentInputMethodManager.isActive()=true mServedView=android.widget.EditText{5152223 VFED..CL. .F...... 516,16-895,62 #7f03000f app:id/saisie aid=1073741824}}
