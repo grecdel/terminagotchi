@@ -124,6 +124,7 @@ class TerminalActivity : Activity() {
         lexiqueVue = findViewById(R.id.lexique_vue)
         lexiqueTexte = findViewById(R.id.lexique_texte)
         lexiqueBtn.setOnClickListener { basculerLexique() }
+        textesFixes()
         creerTouches()
         chemin = findViewById(R.id.chemin)
         contenu = findViewById(R.id.contenu)
@@ -174,10 +175,10 @@ class TerminalActivity : Activity() {
         if (lanceur(intent) && !Parties.aucune(this)) {
             ecrire(menu.ouvrir(), Commandes.ROSE)       // lancé depuis l'icône : le menu des parties
         } else if (!jeu.existe) {
-            ecrire("Un œuf est apparu sur ton écran !\nComment s'appelle ta créature ?")
+            ecrire(t("term.oeuf"))
         } else {
             jeu.parlerSiSilencieux()
-            ecrire("Tape tes commandes ici : je les mange au fur et à mesure !\n« aide » pour l'aide.")
+            ecrire(t("mini.accueil1") + "\n" + t("term.aide_pour_aide"))
         }
         jeu.sauver()
         rafraichir()
@@ -252,7 +253,7 @@ class TerminalActivity : Activity() {
     private fun rappeler(sens: Int) {
         val h = jeu.historique
         if (h.isEmpty()) {
-            ecrire("(historique vide : tape d'abord une commande)", 0xFF9A9AB0.toInt())
+            ecrire(t("term.historique_vide"), 0xFF9A9AB0.toInt())
             return
         }
         posHisto = (if (posHisto < 0) h.size else posHisto) + sens
@@ -292,7 +293,7 @@ class TerminalActivity : Activity() {
                 .map { avant + it.name + if (it.isDirectory) "/" else "" }
         }
         when {
-            candidats.isEmpty() -> ecrire("(Tab : rien ne commence par « $mot » ici)", 0xFF9A9AB0.toInt())
+            candidats.isEmpty() -> ecrire(t("term.tab_rien", "mot" to mot), 0xFF9A9AB0.toInt())
             candidats.size == 1 -> {
                 val fin = if (candidats[0].endsWith("/")) "" else " "
                 remplacerSaisie(texte.substring(0, debutMot) + candidats[0] + fin)
@@ -309,24 +310,24 @@ class TerminalActivity : Activity() {
     private fun expliquer(sortie: String, ligne: String): String? {
         val s = sortie.lowercase()
         return when {
-            "no such file" in s || "dossier introuvable" in s ->
-                "🤔 Cette feuille ou cette pièce n'existe pas ici (fichier ou dossier introuvable). Regarde les noms avec ls (majuscules, accents, espaces) ou utilise Tab."
+            "no such file" in s || "dossier introuvable" in s || (Regles.premierMot(ligne) == "cd" && s.isNotBlank()) ->
+                t("term.err.introuvable")
             "permission denied" in s ->
-                "🔒 Accès refusé : soit il y a un cadenas (chmod), soit c'est une pièce d'Android interdite à l'appli."
-            "read-only file system" in s -> "🔒 Cette partie de la maison est en lecture seule : on peut regarder, pas écrire."
+                t("term.err.refuse")
+            "read-only file system" in s -> t("term.err.lecture_seule")
             "not found" in s && Regles.premierMot(ligne).isNotEmpty() -> {
                 jeu.animer("confus")
-                "❓ Je ne connais pas la commande « ${Regles.premierMot(ligne)} ». Regarde dans 📖 Lexique (ou fais Tab)."
+                t("term.err.inconnue", "cmd" to Regles.premierMot(ligne))
             }
-            "file exists" in s -> "📦 Ça existe déjà : choisis une autre étiquette, ou regarde avec ls."
-            "is a directory" in s -> "📁 C'est une pièce (un dossier), pas une feuille : regarde dedans avec ls (ou rm -r pour la broyer, prudence !)."
-            "not a directory" in s -> "📄 C'est une feuille (un fichier), pas une pièce : on ne peut pas passer sa porte."
-            "not empty" in s -> "📦 La pièce n'est pas vide : vide-la d'abord, ou utilise rm -r (la broyeuse : c'est définitif)."
+            "file exists" in s -> t("term.err.existe")
+            "is a directory" in s -> t("term.err.est_dossier")
+            "not a directory" in s -> t("term.err.pas_dossier")
+            "not empty" in s -> t("term.err.pas_vide")
             "missing" in s || "needs " in s || "usage:" in s ->
-                "✍ Il manque quelque chose après la commande. Regarde l'exemple dans 📖 Lexique."
+                t("term.err.manque")
             "unknown option" in s || "invalid option" in s || "bad option" in s ->
-                "⚙ Option inconnue (ce qui commence par -). Vérifie l'orthographe dans 📖 Lexique."
-            "operation not permitted" in s -> "⛔ Opération interdite par Android pour une appli."
+                t("term.err.option")
+            "operation not permitted" in s -> t("term.err.interdit")
             else -> null
         }
     }
@@ -360,11 +361,11 @@ class TerminalActivity : Activity() {
         if (!jeu.existe) {
             jeu.nom = ligne.take(16)
             jeu.shiny = Random.nextInt(64) == 0
-            jeu.log("Un œuf est apparu… il a l'air ${jeu.trait}.")
-            jeu.dire("*toc toc* … nourris-moi avec des commandes !", 10)
+            jeu.log(t("app.oeuf_apparu", "trait" to Regles.nomTrait(jeu.trait)))
+            jeu.dire(t("term.toc_toc"), 10)
             jeu.sauver()
             WidgetCreature.majTous(this)
-            ecrire("Bienvenue, ${jeu.nom} !\nSuis la leçon en rose juste au-dessus : tape la commande indiquée.")
+            ecrire(t("term.bienvenue", "nom" to jeu.nom))
             rafraichir()
             return
         }
@@ -374,17 +375,10 @@ class TerminalActivity : Activity() {
             "clear" -> { sortie.text = ""; return }
             "quitter", "exit" -> { finish(); return }
             "parties" -> { ecrire(menu.ouvrir(), Commandes.ROSE); return }
+            "langue" -> { ecrire(langue(ligne.trim().split(Regex("\\s+")).getOrNull(1)), Commandes.ROSE); return }
             "partie" -> { ecrire(menu.commande(ligne.substringAfter(' ', "")), Commandes.ROSE); rafraichir(); return }
             "aide" -> {
-                ecrire("Ce terminal est la porte de la maison du téléphone : tape de vraies commandes Android (ls, cd, mkdir, cat, grep, cp, mv, rm, ping…)\n" +
-                    "📱 Téléphone : ouvre, applis, web, carte, appelle, sms, partage, lampe, vibre, batterie, dis, reglages\n" +
-                    "🐾 Avec moi : caresse, danse, parle, joue, devine, etat, renomme\n" +
-                    "🎮 Jeux : donjon, plan, quetes, attaque, sac, equipe · " + Mots.terme("ctf", Mots.palier(jeu)) + " : ctf, drapeau, indice · doom, edite\n" +
-                    "🌳 Progresser : arbre, collection, defi, cherche <ce que tu veux faire>\n" +
-                    "🏠 Parties : parties (le menu), partie nouvelle, partie charger 2\n" +
-                    "🌍 En ligne : compte, compte creer Pseudo, compte lier TG-XXXX-XX, compte code, compte site, compte secours TG-…, sync\n" +
-                    "Chaque commande a son image dans 📖 Lexique. Chaque commande tapée me nourrit (pas les collées !).\n" +
-                    "clear = effacer · quitter = fermer")
+                ecrire(t("term.aide", "ctf" to Mots.terme("ctf", Mots.palier(jeu), true)))
                 return
             }
         }
@@ -406,14 +400,14 @@ class TerminalActivity : Activity() {
         invite.alpha = 0.4f
         android.util.Log.i("TG", "commande : $ligne")
         exec.execute {
-            val resultat = try { shell.executer(ligne) } catch (e: Exception) { android.util.Log.e("TG", "shell", e); "erreur : ${e.message}" }
+            val resultat = try { shell.executer(ligne) } catch (e: Exception) { android.util.Log.e("TG", "shell", e); t("term.erreur", "msg" to e.message) }
             handler.post {
                 if (resultat.isNotEmpty()) ecrire(resultat)
                 expliquer(resultat, ligne)?.let { ecrire(it, 0xFFFFAF5F.toInt()) }
                 val change = majObservatoire(ligne)
                 if (lexiqueVue.visibility == View.VISIBLE) basculerLexique()
                 if (resultat.isEmpty() && !change) {
-                    ecrire("✓ Fait. (Pas de message = tout s'est bien passé.)", 0xFF9A9AB0.toInt())
+                    ecrire(t("term.fait"), 0xFF9A9AB0.toInt())
                 }
                 try {
                     apresCommande(ligne, etaitColle, etaitRappel)
@@ -569,27 +563,48 @@ class TerminalActivity : Activity() {
         defile.post { defile.scrollTo(0, sortie.bottom) }
     }
 
+    // ------------------------------------------------------------ langue
+    /** Les textes de l'écran qui ne viennent pas du jeu (bouton du lexique, indice de la ligne de saisie). */
+    private fun textesFixes() {
+        lexiqueBtn.text = if (lexiqueVue.visibility == View.VISIBLE) t("term.btn.terminal") else t("term.btn.lexique")
+        saisie.setHint(t("term.saisie"))
+    }
+
+    /** langue · langue xx : la liste des langues, ou changer de langue (enregistrée dans la sauvegarde). */
+    private fun langue(code: String?): String {
+        val liste = Langue.LANGUES.entries.joinToString("\n") { (k, v) -> "  langue $k   $v" + if (k == Langue.courante) "  ◀" else "" }
+        if (code == null) return t("term.langue.actuelle", "langue" to (Langue.LANGUES[Langue.courante] ?: "")) + "\n" + liste
+        val c = Langue.codeValide(code) ?: return t("app.langue.inconnue", "code" to code) + "\n" + liste
+        jeu.changerLangue(c)
+        jeu.sauver()
+        textesFixes()
+        WidgetCreature.majTous(this)
+        if (lexiqueVue.visibility == View.VISIBLE) remplirLexique()
+        rafraichir()
+        return t("app.langue.ok", "langue" to (Langue.LANGUES[c] ?: c))
+    }
+
     // ------------------------------------------------------------ lexique
     private fun basculerLexique() {
         if (lexiqueVue.visibility == View.VISIBLE) {
             lexiqueVue.visibility = View.GONE
             defile.visibility = View.VISIBLE
-            lexiqueBtn.text = "📖 Lexique"
+            lexiqueBtn.text = t("term.btn.lexique")
         } else {
             remplirLexique()
             lexiqueVue.visibility = View.VISIBLE
             defile.visibility = View.GONE
-            lexiqueBtn.text = "⌨ Terminal"
+            lexiqueBtn.text = t("term.btn.terminal")
             lexiqueVue.scrollTo(0, 0)
         }
     }
 
     /** Commandes déjà goûtées en blanc, jamais tapées en gris. */
     private fun remplirLexique() {
-        val connues = Regles.LEXIQUE.count { it.cmd in jeu.vus && !it.section.startsWith("💻") }
+        val connues = Regles.LEXIQUE.count { it.cmd in jeu.vus && !it.pc }
         val palier = Mots.palier(jeu)
         val sb = SpannableStringBuilder()
-        val entete = "Goûtées : $connues/${Regles.LEXIQUE.size}  ·  blanc = déjà tapée, gris = à découvrir\n"
+        val entete = t("term.lexique.entete", "n" to connues, "total" to Regles.LEXIQUE.size) + "\n"
         sb.append(entete)
         sb.setSpan(ForegroundColorSpan(0xFFFF87FF.toInt()), 0, entete.length, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
         var section = ""
@@ -604,7 +619,7 @@ class TerminalActivity : Activity() {
                 sb.setSpan(ForegroundColorSpan(0xFFAFAFFF.toInt()), d, sb.length, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
                 sb.setSpan(StyleSpan(Typeface.BOLD), d, sb.length, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
             }
-            val pc = sec.startsWith("💻")
+            val pc = m.pc
             val goutee = cmd in jeu.vus && !pc
             val debut = sb.length
             sb.append(if (pc) "🔒 " else if (goutee) "● " else "○ ")
@@ -662,7 +677,7 @@ class TerminalActivity : Activity() {
         val partis = if (commande != null && memePiece) derniersNoms - noms else emptySet()
 
         val morceaux = shell.chemin().removePrefix("~").split("/").filter { it.isNotEmpty() }
-        val racine = if (shell.chemin().startsWith("~")) "🏠 maison" else "📂 /"
+        val racine = if (shell.chemin().startsWith("~")) t("term.maison") else "📂 /"
         chemin.text = (listOf(racine) + morceaux).joinToString(" › ") + "  " + icone()
 
         contenu.removeAllViews()
@@ -685,29 +700,29 @@ class TerminalActivity : Activity() {
             }
         }
         for (n in partis.filter { !it.startsWith(".") }) chip("🗑 $n", 0xFF4D1F25.toInt(), 0xFFFF5F5F.toInt(), barre = true)
-        if (visibles.isEmpty() && partis.isEmpty()) chip("(dossier vide)", 0xFF26263A.toInt(), 0xFF9A9AB0.toInt())
+        if (visibles.isEmpty() && partis.isEmpty()) chip(t("term.dossier_vide"), 0xFF26263A.toInt(), 0xFF9A9AB0.toInt())
         val caches = elements.size - visibles.size
-        if (caches > 0) chip("+$caches caché(s) · ls -a", 0xFF26263A.toInt(), 0xFF9A9AB0.toInt())
+        if (caches > 0) chip(t("term.caches", "n" to caches), 0xFF26263A.toInt(), 0xFF9A9AB0.toInt())
 
         var change = false
         if (commande != null) {
             if (dernierDossier != null && !memePiece) {
-                ecrire("🚶 Tu passes la porte : ${shell.chemin()}", 0xFFAF87FF.toInt())
+                ecrire(t("term.porte", "chemin" to shell.chemin()), 0xFFAF87FF.toInt())
                 change = true
             } else if (Regles.premierMot(commande) == "cd") {
-                ecrire("📍 Tu es déjà dans ${shell.chemin()}", 0xFFAF87FF.toInt())
+                ecrire(t("term.deja_dans", "chemin" to shell.chemin()), 0xFFAF87FF.toInt())
                 change = true
             }
             for (n in nouveaux.filter { !it.startsWith(".") }) {
                 val dossier = File(d, n).isDirectory
                 val p = Mots.palier(jeu)
-                ecrire(if (dossier) Mots.accorder("📁 {quoi} vient d'apparaître : {n}", "quoi" to Mots.terme("un_dossier", p, true), "n" to n)
-                    else Mots.accorder("📄 {quoi} vient d'apparaître : {n}", "quoi" to Mots.terme("un_fichier", p, true), "n" to n),
+                ecrire(if (dossier) t("term.apparu.dossier", "quoi" to Mots.terme("un_dossier", p, true), "n" to n)
+                    else t("term.apparu.fichier", "quoi" to Mots.terme("un_fichier", p, true), "n" to n),
                     0xFF5FD787.toInt())
                 change = true
             }
             for (n in partis.filter { !it.startsWith(".") }) {
-                ecrire("🗑 A disparu d'ici : $n", 0xFFFF5F5F.toInt())
+                ecrire(t("term.disparu", "n" to n), 0xFFFF5F5F.toInt())
                 change = true
             }
         }
@@ -718,17 +733,17 @@ class TerminalActivity : Activity() {
 
     // ------------------------------------------------------------ affichage
     private fun rafraichir() {
-        titre.text = if (!jeu.existe) "Œuf mystérieux" else if (jeu.shiny) miseEnForme("§${jeu.titre()}§", null) else jeu.titre()
+        titre.text = if (!jeu.existe) t("term.oeuf_mysterieux") else if (jeu.shiny) miseEnForme("§${jeu.titre()}§", null) else jeu.titre()
         faim.text = jeu.texteFaim()
         xp.text = jeu.texteXp()
         stats.text = jeu.texteStats()
-        invite.text = if (::menu.isInitialized && menu.ouvert) ">" else if (jeu.existe) "${shell.chemin()} $" else "nom ?"
+        invite.text = if (::menu.isInitialized && menu.ouvert) ">" else if (jeu.existe) "${shell.chemin()} $" else t("term.invite_nom")
         val b = jeu.bulleActive()
         bulle.visibility = if (b.isEmpty()) View.GONE else View.VISIBLE
         bulle.text = b
         val defi = Defis.actif(jeu)
         val panneau = Dressage.panneau(jeu, resources)
-        val l: CharSequence? = panneau ?: if (defi != null) "⚡ DÉFI ÉCLAIR : tape « ${Regles.piege(defi)} » — ${Defis.resteSecondes(jeu)} s"
+        val l: CharSequence? = panneau ?: if (defi != null) t("app.defi", "cmd" to Regles.piege(defi), "s" to Defis.resteSecondes(jeu))
             else if (jeu.existe) jeu.texteLecon() else null
         lecon.visibility = if (l == null) View.GONE else View.VISIBLE
         lecon.text = l ?: ""

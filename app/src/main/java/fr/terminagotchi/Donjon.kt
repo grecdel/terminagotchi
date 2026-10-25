@@ -14,17 +14,24 @@ import java.io.File
 object Donjon {
     class Res(val texte: String, val aller: File? = null)
 
-    private class Objet(val nom: String, val type: String, val bonus: Int, val desc: String)
+    private class Objet(val nom: String, val type: String, val bonus: Int, private val descCle: String) {
+        val desc: String get() = t(descCle)
+        /** arme, armure, potion : dans la langue choisie */
+        val nomType: String get() = t("donjon.type.$type")
+        /** le contenu du fichier .objet (lu avec cat) */
+        fun fiche() = "$nomType : $nom (+$bonus)\n$desc\n"
+    }
+    private val TYPES = listOf("donjon.type.arme", "donjon.type.armure", "donjon.type.potion")
 
     private val OBJETS = listOf(
-        Objet("dague", "arme", 1, "Une petite lame rapide."),
-        Objet("epee_rouillee", "arme", 2, "Elle a connu des jours meilleurs."),
-        Objet("hache_de_combat", "arme", 3, "Lourde mais redoutable."),
-        Objet("epee_runique", "arme", 5, "Des runes de code brillent sur la lame."),
-        Objet("tunique_epaisse", "armure", 1, "Mieux que rien."),
-        Objet("cotte_de_mailles", "armure", 2, "Cliquette à chaque pas."),
-        Objet("armure_de_plaques", "armure", 4, "Le top de la protection."),
-        Objet("potion_de_soin", "potion", 10, "Rend 10 cœurs."),
+        Objet("dague", "arme", 1, "donjon.obj.dague"),
+        Objet("epee_rouillee", "arme", 2, "donjon.obj.epee_rouillee"),
+        Objet("hache_de_combat", "arme", 3, "donjon.obj.hache_de_combat"),
+        Objet("epee_runique", "arme", 5, "donjon.obj.epee_runique"),
+        Objet("tunique_epaisse", "armure", 1, "donjon.obj.tunique_epaisse"),
+        Objet("cotte_de_mailles", "armure", 2, "donjon.obj.cotte_de_mailles"),
+        Objet("armure_de_plaques", "armure", 4, "donjon.obj.armure_de_plaques"),
+        Objet("potion_de_soin", "potion", 10, "donjon.obj.potion_de_soin"),
     )
     private val SALLES = listOf("salle_des_torches", "crypte", "armurerie", "bibliotheque", "cachot", "cuisine",
         "chapelle", "galerie", "puits", "forge", "jardin_souterrain", "salle_du_trone", "catacombes",
@@ -32,12 +39,13 @@ object Donjon {
     private val MONSTRES = listOf("rat_des_cables", "gobelin_glitch", "slime_binaire", "squelette_zombie",
         "chauve_souris_404", "araignee_du_web", "fantome_du_cache")
     private val QUETES = mapOf(
-        "objet" to "Ramasse un objet : mv objet ~/terrain_terminagotchi/donjon/sac/",
-        "monstre" to "Bats un monstre caché (trouve-le avec ls -a, puis : attaque)",
-        "verrou" to "Ouvre la salle verrouillée 🔒 (indice : chmod 755 nom_de_la_salle)",
-        "parchemin" to "Lis le parchemin caché (indice : ls -a puis cat)",
-        "escalier" to "Trouve l'escalier 🪜 et descends (cd escalier)",
+        "objet" to "donjon.quete.objet",
+        "monstre" to "donjon.quete.monstre",
+        "verrou" to "donjon.quete.verrou",
+        "parchemin" to "donjon.quete.parchemin",
+        "escalier" to "donjon.quete.escalier",
     )
+    private fun quete(id: String) = QUETES[id]?.let { t(it) } ?: id
 
     fun racine(jeu: Jeu) = File(jeu.terrain, "donjon")
     private fun etageDir(jeu: Jeu) = File(racine(jeu), "etage")
@@ -89,23 +97,23 @@ object Donjon {
         // objets
         repeat((2..4).random()) {
             val o = OBJETS.filter { it.type != "arme" || it.bonus <= 2 + numero }.random()
-            File(salles.random(), "${o.nom}.objet").writeText("${o.type} : ${o.nom} (+${o.bonus})\n${o.desc}\n")
+            File(salles.random(), "${o.nom}.objet").writeText(o.fiche())
         }
         // monstres cachés
         salles.shuffled().take((2..3).random()).forEach { s ->
             val m = MONSTRES.random()
-            File(s, ".monstre_$m").writeText("${m.replace('_', ' ')}\nCœurs (PV) : ${6 + numero * 3}\nForce (ATTAQUE) : ${2 + numero}\n")
+            // 2e ligne : ses cœurs, 3e ligne : sa force (le combat lit le nombre en fin de ligne)
+            File(s, ".monstre_$m").writeText("${m.replace('_', ' ')}\n" + t("donjon.monstre.pv", "n" to 6 + numero * 3) + "\n" +
+                t("donjon.monstre.force", "n" to 2 + numero) + "\n")
         }
         // parchemin caché
         File(salles.random(), ".parchemin").writeText(
-            "📜 Parchemin ancien :\n« Celui qui maîtrise ls -a voit l'invisible.\n" +
-                "Celui qui maîtrise chmod ouvre toutes les portes.\n" +
-                "Celui qui maîtrise find trouve toujours l'escalier. »\n")
+            t("donjon.parchemin") + "\n")
         // salle verrouillée avec un trésor
         val verrou = File(salles.random(), "tresor_scelle")
         verrou.mkdirs()
         val tresor = OBJETS.filter { it.type != "potion" }.maxByOrNull { if (it.bonus <= 3 + numero) it.bonus else 0 }!!
-        File(verrou, "${tresor.nom}.objet").writeText("${tresor.type} : ${tresor.nom} (+${tresor.bonus})\n${tresor.desc}\n")
+        File(verrou, "${tresor.nom}.objet").writeText(tresor.fiche())
         verrou.setExecutable(false, false)
         verrou.setReadable(false, false)
         // escalier dans la salle la plus profonde
@@ -125,23 +133,21 @@ object Donjon {
     fun entrer(jeu: Jeu, arg: String): Res {
         val e = etat(jeu)
         if (!File(jeu.terrain, "nid").isDirectory) {
-            return Res("Le donjon s'ouvre après la leçon « Construire mon nid ».")
+            return Res(t("donjon.ferme", "lecon" to t("lec.t1.titre")))
         }
         val nouveau = arg == "nouveau" || !etageDir(jeu).isDirectory
         if (nouveau) {
             val d = generer(jeu, 1)
-            jeu.log("🏰 Un donjon est apparu !")
-            return Res("🏰 Tu entres dans le donjon (étage 1) !\n" +
-                "Commandes : ls, ls -a, cd, cat · plan · quetes · attaque · sac · equipe · bois\n" +
-                "Tes objets vont dans ~/terrain_terminagotchi/donjon/sac/\n\n" + texteQuetes(jeu), d)
+            jeu.log(t("donjon.apparu.log"))
+            return Res(t("donjon.entree") + "\n\n" + texteQuetes(jeu), d)
         }
-        return Res("🏰 Retour au donjon, étage ${e.optInt("etage", 1)}. (« donjon nouveau » pour recommencer)", etageDir(jeu))
+        return Res(t("donjon.retour", "n" to e.optInt("etage", 1)), etageDir(jeu))
     }
 
     fun plan(jeu: Jeu, ici: File): String {
         val dir = etageDir(jeu)
-        if (!dir.isDirectory) return "Pas de donjon : tape « donjon »."
-        val sb = StringBuilder("🗺 Étage ${etat(jeu).optInt("etage", 1)}\n")
+        if (!dir.isDirectory) return t("donjon.aucun")
+        val sb = StringBuilder("🗺 " + t("donjon.etage", "n" to etat(jeu).optInt("etage", 1)) + "\n")
         fun dessiner(d: File, prefixe: String) {
             val enfants = (d.listFiles()?.filter { it.isDirectory && !it.name.startsWith(".") } ?: emptyList()).sortedBy { it.name }
             enfants.forEachIndexed { i, c ->
@@ -153,23 +159,23 @@ object Donjon {
                 }
                 val nbObj = c.listFiles()?.count { it.name.endsWith(".objet") } ?: 0
                 val obj = if (nbObj > 0) " 💎×$nbObj" else ""
-                val toi = if (c.absolutePath == ici.absolutePath) "  ◀ toi" else ""
+                val toi = if (c.absolutePath == ici.absolutePath) "  ◀ " + t("donjon.toi") else ""
                 sb.append("$prefixe${if (dernier) "└─ " else "├─ "}$ico${c.name}$obj$toi\n")
                 if (c.canExecute()) dessiner(c, prefixe + if (dernier) "   " else "│  ")
             }
         }
-        sb.append("🚪 entrée" + (if (ici.absolutePath == dir.absolutePath) "  ◀ toi" else "") + "\n")
+        sb.append("🚪 " + t("donjon.entree.plan") + (if (ici.absolutePath == dir.absolutePath) "  ◀ " + t("donjon.toi") else "") + "\n")
         dessiner(dir, "")
-        sb.append("(les monstres 👾 sont cachés : ls -a dans chaque salle)")
+        sb.append(t("donjon.plan.pied"))
         return sb.toString()
     }
 
     fun texteQuetes(jeu: Jeu): String {
-        val q = etat(jeu).optJSONArray("quetes") ?: return "Pas de quête : tape « donjon »."
-        val sb = StringBuilder("📜 Quêtes de l'étage ${etat(jeu).optInt("etage", 1)}\n")
+        val q = etat(jeu).optJSONArray("quetes") ?: return t("donjon.aucune_quete")
+        val sb = StringBuilder("📜 " + t("donjon.quetes", "n" to etat(jeu).optInt("etage", 1)) + "\n")
         for (i in 0 until q.length()) {
             val o = q.getJSONObject(i)
-            sb.append(if (o.optBoolean("fait")) "  ✅ " else "  ⬜ ").append(QUETES[o.getString("id")]).append('\n')
+            sb.append(if (o.optBoolean("fait")) "  ✅ " else "  ⬜ ").append(quete(o.getString("id"))).append('\n')
         }
         sb.append("❤ ${etat(jeu).optInt("pv", pvMax(jeu))}/${pvMax(jeu)} · ${texteEquipement(jeu)}")
         return sb.toString()
@@ -179,7 +185,8 @@ object Donjon {
         val e = etat(jeu)
         val a = e.optString("arme", "")
         val p = e.optString("armure", "")
-        return "arme : ${a.ifEmpty { "poings" }} · armure : ${p.ifEmpty { "aucune" }}"
+        return t("donjon.equipement", "arme" to a.ifEmpty { t("donjon.poings") },
+            "armure" to p.ifEmpty { t("app.arbre.aucune") })
     }
 
     private fun lireObjet(f: File): Objet? {
@@ -189,30 +196,31 @@ object Donjon {
 
     fun texteSac(jeu: Jeu): String {
         val objets = sac(jeu).listFiles()?.filter { it.name.endsWith(".objet") } ?: emptyList()
-        if (objets.isEmpty()) return "🎒 Sac vide. Ramasse des objets : mv objet ~/terrain_terminagotchi/donjon/sac/\n${texteEquipement(jeu)}"
-        return "🎒 Sac :\n" + objets.joinToString("\n") { f ->
+        if (objets.isEmpty()) return t("donjon.sac.vide") + "\n${texteEquipement(jeu)}"
+        return t("donjon.sac") + "\n" + objets.joinToString("\n") { f ->
             val o = lireObjet(f)
-            "  • ${f.name.removeSuffix(".objet")}" + (o?.let { " (${it.type} +${it.bonus})" } ?: "")
-        } + "\n${texteEquipement(jeu)}\n(equipe nom · bois potion_de_soin)"
+            "  • ${f.name.removeSuffix(".objet")}" + (o?.let { " (${it.nomType} +${it.bonus})" } ?: "")
+        } + "\n${texteEquipement(jeu)}\n" + t("donjon.sac.pied")
     }
 
     fun equipe(jeu: Jeu, nom: String): String {
         val f = File(sac(jeu), "${nom.removeSuffix(".objet")}.objet")
-        if (!f.isFile) return "Ce n'est pas dans ton sac. Regarde avec : sac"
-        val o = lireObjet(f) ?: return "Objet inconnu."
-        if (o.type == "potion") return "Une potion se boit : bois ${o.nom}"
+        if (!f.isFile) return t("donjon.pas_dans_sac")
+        val o = lireObjet(f) ?: return t("donjon.objet_inconnu")
+        if (o.type == "potion") return t("donjon.potion_se_boit", "nom" to o.nom)
         etat(jeu).put(o.type, o.nom)
-        return "⚔ ${jeu.nom} s'équipe : ${o.nom} (+${o.bonus} ${if (o.type == "arme") "force" else "bouclier"})"
+        return t("donjon.equipe", "nom" to jeu.nom, "objet" to o.nom, "bonus" to o.bonus,
+            "quoi" to if (o.type == "arme") t("donjon.force") else t("donjon.bouclier"))
     }
 
     fun bois(jeu: Jeu, nom: String): String {
         val f = File(sac(jeu), "${nom.ifEmpty { "potion_de_soin" }.removeSuffix(".objet")}.objet")
         val o = if (f.isFile) lireObjet(f) else null
-        if (o == null || o.type != "potion") return "Pas de potion dans le sac."
+        if (o == null || o.type != "potion") return t("donjon.pas_de_potion")
         f.delete()
         val e = etat(jeu)
         e.put("pv", (e.optInt("pv", pvMax(jeu)) + o.bonus).coerceAtMost(pvMax(jeu)))
-        return "🧪 Glou glou… ❤ ${e.optInt("pv")}/${pvMax(jeu)}"
+        return t("donjon.glou") + " ❤ ${e.optInt("pv")}/${pvMax(jeu)}"
     }
 
     private fun bonus(type: String, jeu: Jeu): Int {
@@ -221,30 +229,33 @@ object Donjon {
     }
 
     fun attaque(jeu: Jeu, ici: File): Res {
-        if (!dedans(jeu, ici)) return Res("Il n'y a pas de monstre ici : les monstres vivent dans le donjon (tape « donjon »).")
+        if (!dedans(jeu, ici)) return Res(t("donjon.pas_ici"))
         val m = ici.listFiles()?.firstOrNull { it.name.startsWith(".monstre_") }
-            ?: return Res("Aucun monstre dans cette salle. As-tu bien regardé avec ls -a ?")
+            ?: return Res(t("donjon.salle_vide"))
         val lignes = m.readLines()
-        val nomM = lignes.firstOrNull() ?: "monstre"
-        var pvM = lignes.firstOrNull { it.startsWith("PV") || it.startsWith("Cœurs") }?.substringAfter(':')?.trim()?.toIntOrNull() ?: 8
-        val atkM = lignes.firstOrNull { it.startsWith("ATTAQUE") || it.startsWith("Force") }?.substringAfter(':')?.trim()?.toIntOrNull() ?: 3
+        val nomM = lignes.firstOrNull() ?: m.name.removePrefix(".monstre_")
+        // le nombre en fin de 2e ligne (cœurs) et de 3e ligne (force), quelle que soit la langue du fichier
+        fun nombre(i: Int) = lignes.getOrNull(i)?.let { Regex("(\\d+)\\D*$").find(it)?.groupValues?.get(1)?.toIntOrNull() }
+        var pvM = nombre(1) ?: 8
+        val atkM = nombre(2) ?: 3
         val e = etat(jeu)
         var pv = e.optInt("pv", pvMax(jeu))
         val atk = 2 + (jeu.stats["Force"] ?: 0) / 4 + bonus("arme", jeu)
         val def = bonus("armure", jeu) + (jeu.stats["Endurance"] ?: 0) / 8
-        val sb = StringBuilder("⚔ Combat contre $nomM ! (toi : ❤ $pv, force $atk, bouclier $def)\n")
+        val sb = StringBuilder(t("donjon.combat", "monstre" to nomM,
+            "pv" to pv, "atk" to atk, "def" to def) + "\n")
         var tour = 0
         while (pvM > 0 && pv > 0 && tour < 30) {
             tour++
             val coup = (atk + (0..2).random()).coerceAtLeast(1)
             pvM -= coup
-            if (tour <= 3) sb.append("  Tour $tour : ${jeu.nom} frappe ($coup)")
+            if (tour <= 3) sb.append("  " + t("donjon.tour", "n" to tour, "nom" to jeu.nom, "coup" to coup))
             if (pvM <= 0) { if (tour <= 3) sb.append('\n'); break }
             val subi = (atkM + (0..1).random() - def).coerceAtLeast(1)
             pv -= subi
-            if (tour <= 3) sb.append(", le monstre riposte ($subi)\n")
+            if (tour <= 3) sb.append(t("donjon.riposte", "n" to subi) + "\n")
         }
-        if (tour > 3) sb.append("  … $tour tours de combat …\n")
+        if (tour > 3) sb.append("  " + t("donjon.tours", "n" to tour) + "\n")
         if (pv > 0) {
             m.delete()
             e.put("pv", pv)
@@ -255,16 +266,16 @@ object Donjon {
             jeu.stats["Force"] = (jeu.stats["Force"] ?: 0) + 1
             if ((1..3).random() == 1) {
                 val butin = OBJETS.filter { it.type == "potion" || it.bonus <= 2 }.random()
-                File(ici, "${butin.nom}.objet").writeText("${butin.type} : ${butin.nom} (+${butin.bonus})\n${butin.desc}\n")
-                sb.append("💎 Il a laissé tomber : ${butin.nom}.objet\n")
+                File(ici, "${butin.nom}.objet").writeText(butin.fiche())
+                sb.append(t("donjon.butin", "objet" to "${butin.nom}.objet") + "\n")
             }
-            jeu.log("⚔ $nomM vaincu !")
-            sb.append("🏆 Victoire ! +$gain XP · ❤ restants : $pv/${pvMax(jeu)}")
+            jeu.log(t("donjon.vaincu.log", "monstre" to nomM))
+            sb.append(t("donjon.victoire", "xp" to gain, "pv" to pv, "max" to pvMax(jeu)))
             return Res(sb.toString())
         }
         e.put("pv", pvMax(jeu))
-        jeu.log("💫 ${jeu.nom} est KO…")
-        sb.append("💫 KO… ${jeu.nom} se réveille à l'entrée de l'étage, soigné. Équipe-toi mieux (sac, equipe) !")
+        jeu.log(t("donjon.ko.log", "nom" to jeu.nom))
+        sb.append(t("donjon.ko", "nom" to jeu.nom))
         return Res(sb.toString(), etageDir(jeu))
     }
 
@@ -282,11 +293,11 @@ object Donjon {
             val reste = (0 until q.length()).count { !q.getJSONObject(it).optBoolean("fait") }
             if (reste == 0) {
                 jeu.ajouterXp(30)
-                msgs.add("🌟 Toutes les quêtes de l'étage terminées ! +30 XP")
+                msgs.add(t("donjon.quetes_finies"))
             }
             aller = generer(jeu, n)
-            jeu.log("🪜 Étage $n atteint !")
-            msgs.add("🪜 Tu descends à l'étage $n… les monstres sont plus forts ici !\n" + texteQuetes(jeu))
+            jeu.log(t("donjon.etage.log", "n" to n))
+            msgs.add(t("donjon.descend", "n" to n) + "\n" + texteQuetes(jeu))
             return Res(msgs.joinToString("\n"), aller)
         }
         for (i in 0 until q.length()) {
@@ -302,7 +313,7 @@ object Donjon {
             if (ok) {
                 o.put("fait", true)
                 jeu.ajouterXp(15)
-                msgs.add("✅ Quête accomplie : ${QUETES[o.getString("id")]} (+15 XP)")
+                msgs.add(t("donjon.quete.faite", "quete" to quete(o.getString("id"))))
             }
         }
         return if (msgs.isEmpty()) null else Res(msgs.joinToString("\n"), aller)

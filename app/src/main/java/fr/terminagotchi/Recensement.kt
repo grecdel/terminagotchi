@@ -17,6 +17,8 @@ object Recensement {
 
     @Volatile
     private var enCours = false
+    /** la dernière synchro a apporté du nouveau (XP venue d'un autre appareil, badge) : on l'annonce */
+    @Volatile var nouveau = false
 
     class Preparation(val cle: String, val serveurConnu: String, val charge: JSONObject, val snap: JSONObject)
 
@@ -43,10 +45,10 @@ object Recensement {
             try {
                 JSONObject(texte.ifEmpty { "{}" })
             } catch (e: Exception) {
-                JSONObject().put("erreur", "réponse illisible (${c.responseCode})")
+                JSONObject().put("erreur", t("reca.err.illisible", "code" to c.responseCode))
             }
         } catch (e: Exception) {
-            JSONObject().put("erreur", "pas de connexion au recensement")
+            JSONObject().put("erreur", t("reca.err.connexion"))
         }
     }
 
@@ -104,7 +106,7 @@ object Recensement {
     /** Fait l'appel réseau (à lancer hors de l'écran). Renvoie la réponse + l'adresse utilisée. */
     fun envoyer(p: Preparation): Pair<JSONObject, String> {
         val url = serveur(p.serveurConnu)
-        if (url.isEmpty()) return JSONObject().put("erreur", "le site n'est pas encore en ligne") to ""
+        if (url.isEmpty()) return JSONObject().put("erreur", t("reca.err.pas_en_ligne")) to ""
         // partie 1 (celle d'avant les parties multiples) : l'adresse d'origine ; les autres ont la leur,
         // qu'un site pas encore mis à jour refuse (au lieu de mélanger deux créatures)
         val partie = p.charge.optString("partie", "1")
@@ -115,7 +117,8 @@ object Recensement {
     /** Recopie la créature commune, en gardant ce qui a été gagné ici PENDANT la synchro. */
     fun appliquer(jeu: Jeu, p: Preparation, r: JSONObject, url: String): String {
         enCours = false
-        val srv = r.optJSONObject("etat") ?: return "⚠ Synchro impossible : ${r.optString("erreur", "erreur inconnue")}"
+        nouveau = false
+        val srv = r.optJSONObject("etat") ?: return t("rec.sync.impossible", "erreur" to r.optString("erreur", t("rec.err.inconnue")))
         val c = compte(jeu)
         if (c.optString("serveur").isEmpty() && url.isNotEmpty()) c.put("serveur", url)
         val snap = p.snap
@@ -171,17 +174,19 @@ object Recensement {
             c.put("repas", srv.optLong("faimDate"))
             jeu.dernierTick = System.currentTimeMillis()
         }
-        val lignes = mutableListOf("🔄 Synchronisé avec le recensement (${c.optString("pseudo")})")
+        val lignes = mutableListOf(t("reca.sync.ok", "pseudo" to c.optString("pseudo")))
         val gagne = jeu.xp - avant
         if (gagne > 0) {
-            jeu.log("🔄 +$gagne XP venus de ton autre appareil")
-            lignes.add("   +$gagne XP venus de ton autre appareil !")
+            nouveau = true
+            jeu.log(t("rec.sync.xp", "n" to gagne))
+            lignes.add("   " + t("reca.sync.xp", "n" to gagne))
         }
         r.optJSONArray("badges")?.let { a ->
             for (i in 0 until a.length()) {
-                val t = a.getJSONObject(i).optString("titre")
-                jeu.log("🏅 Badge vérifié : $t")
-                lignes.add("🏅 Nouveau badge vérifié : $t")
+                val titre = a.getJSONObject(i).optString("titre")
+                nouveau = true
+                jeu.log(t("rec.badge.log", "titre" to titre))
+                lignes.add(t("reca.badge.nouveau", "titre" to titre))
             }
         }
         return lignes.joinToString("\n")
@@ -202,6 +207,6 @@ object Recensement {
         val c = compte(jeu)
         c.put("cle", cle).put("pseudo", pseudo).put("serveur", url).put("dernier", 0)
         c.put("base", JSONObject().put("xp", 0).put("total", 0).put("colles", 0).put("stats", JSONObject()))
-        jeu.log("🌍 Recensé sous le pseudo $pseudo !")
+        jeu.log(t("rec.recense.log", "pseudo" to pseudo))
     }
 }

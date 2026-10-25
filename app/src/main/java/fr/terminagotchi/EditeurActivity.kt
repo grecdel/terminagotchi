@@ -27,14 +27,15 @@ class EditeurActivity : Activity() {
         racine.setPadding((10 * dp).toInt(), (10 * dp).toInt(), (10 * dp).toInt(), (10 * dp).toInt())
 
         val titre = TextView(this)
-        titre.text = "✏ ${fichier.name}" + if (fichier.exists()) "" else "  (nouveau fichier)"
+        Langue.init(this)
+        titre.text = "✏ ${fichier.name}" + if (fichier.exists()) "" else "  " + t("edite.nouveau")
         titre.setTextColor(0xFFFF87FF.toInt())
         titre.textSize = 16f
         titre.typeface = Typeface.DEFAULT_BOLD
         racine.addView(titre)
 
         val aide = TextView(this)
-        aide.text = if (fichier.name == "carte.txt") Doom.LEGENDE else "Modifie le texte puis Enregistrer."
+        aide.text = if (fichier.name == "carte.txt") Doom.legende() else t("edite.aide")
         aide.setTextColor(0xFF9A9AB0.toInt())
         aide.textSize = 12f
         racine.addView(aide)
@@ -77,15 +78,15 @@ class EditeurActivity : Activity() {
             b.setOnClickListener { action() }
             barre.addView(b)
         }
-        bouton("Annuler") { finish() }
-        bouton("💾 Enregistrer") {
+        bouton(t("edite.annuler")) { finish() }
+        bouton(t("edite.enregistrer")) {
             try {
                 fichier.parentFile?.mkdirs()
                 fichier.writeText(zone.text.toString())
-                Toast.makeText(this, "Enregistré : ${fichier.name}", Toast.LENGTH_SHORT).show()
+                Toast.makeText(this, t("edite.enregistre", "nom" to fichier.name), Toast.LENGTH_SHORT).show()
                 finish()
             } catch (e: Exception) {
-                Toast.makeText(this, "Impossible d'enregistrer : ${e.message}", Toast.LENGTH_LONG).show()
+                Toast.makeText(this, t("edite.echec", "msg" to e.message), Toast.LENGTH_LONG).show()
             }
         }
         racine.addView(barre)

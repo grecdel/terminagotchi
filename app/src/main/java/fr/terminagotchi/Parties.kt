@@ -37,11 +37,8 @@ object Parties {
         val id: String, val nom: String, val niveau: Int, val stade: Int, val forme: String?,
         val shiny: Boolean, val date: Long, val active: Boolean,
     ) {
-        /** « Bébé », « Ado Hacker »… */
-        val espece: String get() {
-            val f = if (stade >= 2 && forme != null) " ${Regles.FORMES[forme] ?: ""}" else ""
-            return (Regles.STADES[stade] + f).trim()
-        }
+        /** « Bébé », « Ado Hacker »… (dans la langue choisie) */
+        val espece: String get() = Regles.espece(stade, forme)
         val icone: String get() = when (stade) { 0 -> "🥚"; 1 -> "🐣"; 2 -> "🐥"; else -> "🐲" }
     }
 
@@ -198,7 +195,8 @@ object Parties {
     fun nouvelle(ctx: Context): String? {
         if (pleine(ctx)) return null
         val id = nouvelId(ctx)
-        val o = JSONObject().put("nom", "").put("partie", id).put("maj", System.currentTimeMillis())
+        // la langue choisie suit le joueur dans sa nouvelle partie
+        val o = JSONObject().put("nom", "").put("partie", id).put("maj", System.currentTimeMillis()).put("langue", Langue.courante)
         return if (basculer(ctx, id, o)) id else null
     }
 
@@ -206,6 +204,7 @@ object Parties {
     fun depuisCompte(ctx: Context, id: String, nom: String): Boolean {
         if (pleine(ctx) || liste(ctx).any { it.id == id }) return false
         val o = JSONObject().put("nom", nom.ifEmpty { "?" }).put("partie", id).put("maj", System.currentTimeMillis())
+            .put("langue", Langue.courante)
         return basculer(ctx, id, o)
     }
 

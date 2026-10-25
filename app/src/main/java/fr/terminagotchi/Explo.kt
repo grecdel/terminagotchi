@@ -56,7 +56,7 @@ object Explo {
         }
         File(jeu.terrain, ind.optString("zone")).mkdirs()
         etat(jeu).put("explo_n", etat(jeu).optInt("explo_n") + 1)
-        jeu.log(Mots.accorder("⚔ Un monstre sauvage apparaît : {nom} !", "nom" to e.nom))
+        jeu.log(t("dress.apparait", "nom" to e.nom, "eclat" to ""))
         jeu.animer("attaque")
         Dressage.commencer(jeu, e, ind)
     }
@@ -67,9 +67,9 @@ object Explo {
         val e = etat(jeu)
         if (!e.optBoolean("ouverte")) {
             e.put("ouverte", true)
-            jeu.log("🌲 Exploration débloquée !")
+            jeu.log(t("exp.debloquee"))
             spawn(jeu)
-            return "🌲 L'exploration est ouverte : en jouant, des monstres sauvages vont apparaître !"
+            return t("expa.ouverte")
         }
         return null
     }
@@ -83,9 +83,10 @@ object Explo {
         val r = Bestiaire.rareteDe(ind)
         val v = ind.optString("variante", "classique")
         return Bestiaire.balise(ind) + " " + Bestiaire.nomAffiche(e, ind.optBoolean("shiny"), r) +
-            "  #%03d · $r · ${e.famille}".format(e.numero) + (if (v != "classique") " · $v" else "") + "\n" +
-            "   signe particulier : ${ind.optString("marque", "?")}\n" +
-            "   humeur ${ind.optString("humeur", "?")} · ${ind.opt("taille") ?: "?"} cm · potentiel ${ind.opt("potentiel") ?: "?"} %"
+            "  #%03d · ".format(e.numero) + Bestiaire.nomRarete(r) + " · ${e.famille}" + (if (v != "classique") " · $v" else "") + "\n" +
+            "   " + t("exp.signe") + " ${ind.optString("marque", "?")}\n" +
+            "   " + t("exp.humeur", "humeur" to ind.optString("humeur", "?"),
+                "cm" to (ind.opt("taille") ?: "?"), "pot" to (ind.opt("potentiel") ?: "?"))
     }
 
     fun texteCollection(jeu: Jeu): String {
@@ -94,22 +95,23 @@ object Explo {
         val caps = captures(jeu)
         val parRarete = LinkedHashMap<String, Int>()
         for (i in 0 until caps.length()) Bestiaire.rareteDe(caps.getJSONObject(i)).let { parRarete[it] = (parRarete[it] ?: 0) + 1 }
-        val sb = StringBuilder("🐾 Collection de ${jeu.nom}\n")
-        sb.append("Espèces découvertes : ${vues.size}/150   ")
-            .append(Bestiaire.RARETES.filter { it in parRarete }.joinToString("  ") { "$it ${parRarete[it]}" }).append("\n")
+        val sb = StringBuilder("🐾 " + t("exp.collection.titre", "nom" to jeu.nom) + "\n")
+        sb.append(t("exp.especes", "n" to "${vues.size}/150") + "   ")
+            .append(Bestiaire.RARETES.filter { it in parRarete }.joinToString("  ") { "${Bestiaire.nomRarete(it)} ${parRarete[it]}" }).append("\n")
         val shinies = (0 until caps.length()).count { caps.getJSONObject(it).optBoolean("shiny") }
-        sb.append("Bestioles dressées : ${caps.length()}" + (if (shinies > 0) " · dont §$shinies shiny§" else "") + "\n")
-        if (coll.optInt("Abyssor") > 0) sb.append("§★ Espèce secrète #151 découverte : Abyssor§\n")
+        sb.append(t("exp.dressees", "n" to caps.length()) +
+            (if (shinies > 0) " · " + t("exp.dont_shiny", "shiny" to "§$shinies shiny§") else "") + "\n")
+        if (coll.optInt("Abyssor") > 0) sb.append("§" + t("exp.abyssor") + "§\n")
         sb.append("\n")
         if (caps.length() > 0) {
-            sb.append("Tes dernières captures :\n")
+            sb.append(t("exp.dernieres") + "\n")
             for (i in caps.length() - 1 downTo maxOf(0, caps.length() - 6)) sb.append(carte(caps.getJSONObject(i))).append("\n\n")
-        } else sb.append("Aucune bestiole dressée pour l'instant.\n")
+        } else sb.append(t("exp.aucune_dressee") + "\n")
         if (!debloquee(jeu)) {
-            sb.append("L'exploration s'ouvre avec la leçon « Construire mon nid ».")
+            sb.append(t("exp.s_ouvre", "lecon" to t("lec.t1.titre")))
         } else {
-            sb.append("Joue avec ton familier : des monstres sauvages finiront par apparaître.")
-            sb.append("\nTa troupe : troupe · fiche d'une espèce : bestiaire <nom> · les 150 : site bestiaire")
+            sb.append(t("expa.joue"))
+            sb.append("\n" + t("expa.pied"))
         }
         return sb.toString()
     }
@@ -120,26 +122,29 @@ object Explo {
         if (nom.isBlank()) {
             val vues = coll.keys().asSequence().filter { coll.optInt(it) > 0 }.mapNotNull { Bestiaire.espece(it) }
                 .sortedBy { it.numero }.toList()
-            if (vues.isEmpty()) return "Tu n'as encore capturé aucune bestiole. Exemple : bestiaire Braisillon"
-            return "Tes espèces : " + vues.joinToString(", ") { "#%03d ${it.nom}".format(it.numero) } + "\nFiche : bestiaire <nom>"
+            if (vues.isEmpty()) return t("expa.fiche.aucune")
+            return t("exp.fiche.tes_especes", "liste" to vues.joinToString(", ") { "#%03d ${it.nom}".format(it.numero) }) +
+                "\n" + t("expa.fiche.aide")
         }
         val e = Bestiaire.espece(nom)
         val connue = e != null && coll.optInt(e.nom) > 0
-        if (e == null || (e.secrete && !connue)) return "Aucune espèce ne s'appelle « $nom ». Les 150 sont sur le site : site bestiaire"
+        if (e == null || (e.secrete && !connue)) return t("expa.fiche.inconnue", "nom" to nom)
+        val freq = Bestiaire.nomFrequence(e.frequence)
         val entete = "#%03d ".format(e.numero) + (if (connue) Bestiaire.nomAffiche(e) else "???") +
-            "  se montre ${e.frequence} · ${e.icone} ${e.famille}"
+            "  " + t("exp.fiche.se_montre", "frequence" to freq) + " · ${e.icone} ${e.famille}"
         if (!connue) {
-            return "$entete\nPas encore dans ta troupe.\nHabitat : ${Bestiaire.lieu(e.zone)}  (${e.zone})\n" +
-                "Cette espèce se montre ${e.frequence}, attirée par la commande « ${e.attireePar} »."
+            return entete + "\n" + t("exp.fiche.pas_encore") + "\n" +
+                t("exp.fiche.habitat", "lieu" to Bestiaire.lieu(e.zone)) + "  (${e.zone})\n" +
+                t("exp.fiche.attiree", "frequence" to freq, "cmd" to e.attireePar)
         }
         val vars = e.variantes.drop(1).map { it.nom }
         return Bestiaire.balise(e, grand = true) + "\n$entete\n${e.description}\n${e.comportement}\n" +
-            "Capacité : ${e.capacite} · point fort : ${e.stat}\n" +
-            "Taille ~${e.tailleCm} cm · poids ~${e.poidsKo} Ko\n" +
+            t("exp.fiche.capacite", "capacite" to e.capacite, "stat" to Regles.nomStat(e.stat)) + "\n" +
+            t("exp.fiche.taille", "cm" to e.tailleCm, "ko" to e.poidsKo) + "\n" +
             Mots.texteStats(e.stats, Mots.palier(jeu)) + "\n" +
-            "Habitat : ${Bestiaire.lieu(e.zone)} · attirée par « ${e.attireePar} »\n" +
-            (if (vars.isNotEmpty()) "Variantes : ${vars.joinToString(", ")}\n" else "") +
-            "Tu en as dressé ${coll.optInt(e.nom)}."
+            t("exp.fiche.habitat_attiree", "lieu" to Bestiaire.lieu(e.zone), "cmd" to e.attireePar) + "\n" +
+            (if (vars.isNotEmpty()) t("exp.fiche.variantes", "liste" to vars.joinToString(", ")) + "\n" else "") +
+            t("exp.fiche.dresses", "n" to coll.optInt(e.nom))
     }
 }
 
@@ -153,7 +158,7 @@ object Defis {
     fun lancer(jeu: Jeu) {
         val cmd = POOL.random()
         jeu.module("defi").put("cmd", cmd).put("debut", System.currentTimeMillis())
-        jeu.dire("⚡ DÉFI ÉCLAIR ! Tape « ${Regles.piege(cmd)} » en moins de 20 s !", 20)
+        jeu.dire(t("defi.dit", "cmd" to Regles.piege(cmd)), 20)
     }
 
     fun resteSecondes(jeu: Jeu): Long {
@@ -176,23 +181,23 @@ object Defis {
             jeu.stats["Agilité"] = (jeu.stats["Agilité"] ?: 0) + 2
             jeu.animer("victoire")
             jeu.ajouterXp(10)
-            val m = "⚡ Défi réussi en ${"%.1f".format(t)} s" + if (nouveau) " — NOUVEAU RECORD !" else ""
+            val m = t("defi.reussi", "s" to "%.1f".format(t)) + if (nouveau) t("defi.record") else ""
             jeu.log(m)
             jeu.dire(m, 8)
             return m
         }
         if (ecoule > DUREE) {
             d.put("cmd", "")
-            jeu.log("⚡ Défi « $cmd » raté…")
-            jeu.dire("Trop lent ! On réessaiera.", 6)
+            jeu.log(t("core.defi.rate.log", "cmd" to cmd))
+            jeu.dire(t("core.defi.rate.dit"), 6)
             jeu.animer("confus")
         }
         return null
     }
 
     fun texteRecords(jeu: Jeu): String {
-        val rec = jeu.module("defi").optJSONObject("records") ?: return "Aucun record pour l'instant : tape « defi » !"
-        if (rec.length() == 0) return "Aucun record pour l'instant : tape « defi » !"
-        return "⚡ Tes records :\n" + rec.keys().asSequence().joinToString("\n") { "  $it : ${"%.1f".format(rec.optDouble(it))} s" }
+        val rec = jeu.module("defi").optJSONObject("records") ?: return t("defi.aucun_record")
+        if (rec.length() == 0) return t("defi.aucun_record")
+        return t("defi.records") + "\n" + rec.keys().asSequence().joinToString("\n") { "  $it : ${"%.1f".format(rec.optDouble(it))} s" }
     }
 }

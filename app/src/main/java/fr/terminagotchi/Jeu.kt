@@ -9,25 +9,50 @@ import java.util.Date
 import java.util.Locale
 import kotlin.math.sqrt
 
+/** Une étape de leçon : les textes sont des clés de langue (traduits au moment de l'affichage). */
 class Etape(
-    val dit: String,
+    private val ditCle: String,
     val cmd: String,
-    val bravo: String,
+    private val bravoCle: String,
     val re: Regex? = null,
     val fs: ((Jeu) -> Boolean)? = null,
-    val astuce: String? = null,
-)
+    private val astuceCle: String? = null,
+) {
+    val dit: String get() = t(ditCle)
+    val bravo: String get() = t(bravoCle)
+    val astuce: String? get() = astuceCle?.let { t(it) }
+}
 
-/** Une commande du lexique : son image (la maison), son explication technique, sa section. */
-class Mot(val cmd: String, val image: String, val technique: String, val section: String)
+/** Une commande du lexique : son image (la maison), son explication technique, sa section (clés de langue). */
+class Mot(val cmd: String, private val imageCle: String, private val techniqueCle: String, val sectionCle: String) {
+    val image: String get() = t(imageCle)
+    val technique: String get() = t(techniqueCle)
+    val section: String get() = t(sectionCle)
+    /** commande d'ordinateur, absente du téléphone */
+    val pc: Boolean get() = sectionCle == Regles.SECTION_PC
+    /** les textes en français (la recherche les comprend toujours) et dans la langue choisie */
+    fun textes(code: String) = listOfNotNull(Langue.brut(imageCle, code)?.toString(), Langue.brut(techniqueCle, code)?.toString())
+}
 
-class Lecon(val titre: String, val skill: String, val niveau: Int, val etapes: List<Etape>)
+class Lecon(private val titreCle: String, val skill: String, val niveau: Int, val etapes: List<Etape>) {
+    val titre: String get() = t(titreCle)
+}
 
 /** Règles communes : catégories, compétences, textes, piège anti copier-coller. */
 object Regles {
+    /** identifiants des stats (en français dans la sauvegarde) ; à l'écran : t("stat.<id>") */
     val STATS = listOf("Intelligence", "Agilité", "Force", "Endurance")
-    val COURT = mapOf("Intelligence" to "INT", "Agilité" to "AGI", "Force" to "FOR", "Endurance" to "END")
     val COULEUR = mapOf("Intelligence" to 39, "Agilité" to 78, "Force" to 203, "Endurance" to 221)
+
+    fun nomStat(s: String) = Langue.ou("stat.$s", s)
+    fun court(s: String) = Langue.ou("stat.court.$s", s.take(3).uppercase())
+    fun nomSkill(s: String) = Langue.ou("skill.$s", s)
+    fun nomTrait(s: String) = Langue.ou("trait.$s", s)
+    fun nomStade(n: Int) = t("stade.$n")
+    fun nomForme(f: String?) = if (f == null) "" else Langue.ou("forme.$f", f)
+    /** « Bébé », « Ado Hacker »… */
+    fun espece(stade: Int, forme: String?) =
+        if (stade >= 2 && forme != null) t("forme.stade", "stade" to nomStade(stade), "forme" to nomForme(forme)) else nomStade(stade)
 
     val CATEGORIES: Map<String, Set<String>> = mapOf(
         "Intelligence" to setOf("git", "python", "python3", "sh", "bash", "alias", "vi", "nano", "awk", "sed"),
@@ -62,26 +87,19 @@ object Regles {
         "Ingénieur" to setOf("doom", "edite"),
     )
 
-    val STADES = listOf("Œuf", "Bébé", "Ado", "Adulte")
-    val FORMES = mapOf("Intelligence" to "Hacker", "Force" to "Titan", "Agilité" to "Éclair", "Endurance" to "Carapace")
-
+    /** les caractères (identifiants) et la clé de leurs phrases (Langue.liste) */
     val TRAITS = mapOf(
-        "curieux" to listOf("Qu'est-ce qu'il y a dans ce dossier ?", "Apprends-moi une nouvelle commande !",
-            "Je me demande ce que fait « ls -l »…", "Et si on explorait un peu ?"),
-        "farceur" to listOf("Et si on renommait tous tes fichiers ? Je plaisante !", "rm -rf ? Jamais de la vie, hihi.",
-            "Tu tapes vite… pour un humain.", "J'ai caché un fichier quelque part. Ou pas."),
-        "gourmand" to listOf("Une petite commande, juste une ?", "J'ai un creux de 512 octets.",
-            "Miam, un « ls » bien frais.", "Les « grep » sont mes préférés, croustillants !"),
-        "philosophe" to listOf("Sommes-nous tous dans le sous-dossier de quelqu'un ?",
-            "Un fichier supprimé existe-t-il encore dans nos cœurs ?", "pwd… mais où suis-je VRAIMENT ?",
-            "Le terminal est noir, mais l'avenir est clair."),
+        "curieux" to "trait.curieux.phrases.tel",
+        "farceur" to "trait.farceur.phrases",
+        "gourmand" to "trait.gourmand.phrases.tel",
+        "philosophe" to "trait.philosophe.phrases",
     )
-    val FAIM = listOf("J'ai faim… tape quelque chose !", "Mon ventre fait « segmentation fault ».",
-        "Même un petit « pwd » me ferait du bien…")
-    val OEUF = listOf("…", "*toc toc*", "*l'œuf bouge un peu*", "*crac ?*")
-    val COLLE = listOf("Hé ! Tu as collé du texte… tape-la toi-même, sinon ça ne rentre pas dans ma tête !",
-        "Copier-coller détecté : ça n'a aucun goût. Avec tes doigts, s'il te plaît !",
-        "Bien essayé ! Mais je ne mange que les commandes tapées à la main.")
+    val FAIM = "core.faim"
+    val OEUF = "core.oeuf"
+    val COLLE = "core.colle.tel"
+
+    /** Une phrase au hasard d'une liste de la langue choisie. */
+    fun auHasard(cle: String) = Langue.liste(cle).random()
 
     // Lettres cyrilliques identiques à l'œil : une commande affichée puis collée ne fonctionne pas.
     private val HOMO = mapOf('a' to 'а', 'c' to 'с', 'e' to 'е', 'o' to 'о', 'p' to 'р', 'x' to 'х',
@@ -120,117 +138,97 @@ object Regles {
      * et une explication technique ; l'affichage suit le palier de vocabulaire (voir Mots.kt).
      * Les mêmes phrases existent sur PC (pc/tg/lexique.py).
      */
+    const val SECTION_PC = "lexa.ch.pc"
+
     val LEXIQUE: List<Mot> = run {
-        val f = "🗂 Fichiers et dossiers"
-        val l = "🔎 Lire et chercher"
-        val y = "⚙ Système"
-        val t = "📱 Ton téléphone (commandes de l'appli)"
-        val c = "🐾 Ta créature"
-        val j = "🎮 Jeux, aventures et progression"
-        val p = "💻 Sur ordinateur ou en mode Linux complet (pas ici)"
-        val w = "🌍 Recensement (sur tous tes appareils)"
+        val f = "lex.ch.fichiers"
+        val l = "lex.ch.lire"
+        val y = "lex.ch.systeme"
+        val tel = "lexa.ch.telephone"
+        val c = "lexa.ch.creature"
+        val j = "lexa.ch.jeux"
+        val p = "lexa.ch.pc"
+        val w = "lex.ch.recensement"
         listOf(
-            Mot("pwd", "le point rouge « vous êtes ici » sur le plan de la maison", "affiche le dossier où tu te trouves", f),
-            Mot("ls", "j'ouvre les yeux et je regarde dans la pièce (ls -a : même sous le tapis, ls -l : avec les détails)",
-                "liste le contenu (ls -a : avec les cachés, ls -l : les détails)", f),
-            Mot("cd", "je passe une porte (cd .. : je recule d'une pièce, cd ~ : je rentre dans ma chambre)",
-                "change de dossier (cd nom, cd .. pour remonter, cd ~ pour rentrer)", f),
-            Mot("mkdir", "je construis une nouvelle pièce", "crée un dossier", f),
-            Mot("touch", "je pose une feuille blanche sur la table", "crée un fichier vide", f),
-            Mot("echo", "je dis une phrase (avec > : l'entonnoir la verse dans une boîte)",
-                "affiche un texte (echo texte > fichier : l'écrit dedans)", f),
-            Mot("cp", "je fais une photocopie d'une feuille (cp -r : de toute une pièce)", "copie un fichier (cp -r : un dossier)", f),
-            Mot("mv", "je porte une feuille ailleurs, ou je change son étiquette", "déplace ou renomme", f),
-            Mot("rm", "la broyeuse : pas de poubelle, c'est perdu pour toujours ! (rm -r : toute une pièce)",
-                "supprime, sans corbeille ! (rm -r : un dossier)", f),
-            Mot("rmdir", "je démonte une pièce vide", "supprime un dossier vide", f),
-            Mot("chmod", "un cadenas sur la boîte (chmod 444 : on peut lire, plus écrire)",
-                "change les droits (chmod 444 : lecture seule)", f),
-            Mot("cat", "je lis la lettre à voix haute", "affiche le contenu d'un fichier", l),
-            Mot("head", "je lis juste le haut de la lettre", "affiche le début d'un fichier", l),
-            Mot("tail", "je lis juste le bas de la lettre", "affiche la fin d'un fichier", l),
-            Mot("grep", "la loupe du détective : elle trouve un mot dans les lettres", "cherche un mot dans un fichier", l),
-            Mot("find", "je cherche un objet dans toutes les pièces (find . -name \"*.txt\")",
-                "trouve des fichiers par leur nom (find . -name \"*.txt\")", l),
-            Mot("wc", "je compte les lignes et les mots de la lettre", "compte lignes, mots et caractères", l),
-            Mot("sort", "je range les lignes dans l'ordre, comme un dictionnaire", "trie les lignes d'un fichier", l),
-            Mot("stat", "la carte d'identité d'une feuille", "tous les détails d'un fichier", l),
-            Mot("date", "je regarde l'horloge de la maison", "la date et l'heure", y),
-            Mot("whoami", "mon prénom d'habitant de la maison (sur Android, celui de l'appli)",
-                "ton nom d'utilisateur (sur Android, celui de l'appli)", y),
-            Mot("id", "ma carte d'habitant et mes clubs", "ton identité et tes groupes", y),
-            Mot("uptime", "depuis quand la maison est réveillée", "depuis quand le téléphone est allumé", y),
-            Mot("uname", "la fiche de la maison : son nom, sa version (uname -a : tout)", "infos sur le système (uname -a : tout)", y),
-            Mot("df", "la place qui reste dans les placards (df -h : en Go, Mo)", "espace libre sur le stockage (df -h : lisible)", y),
-            Mot("du", "je pèse une pièce et tout ce qu'elle contient (du -sh dossier)", "taille d'un dossier (du -sh dossier)", y),
-            Mot("ps", "qui est réveillé dans la maison ?", "programmes en cours (processus)", y),
-            Mot("ping", "je crie « Ohé ! » et j'attends l'écho (ping -c 3 example.com)",
-                "teste la connexion (ping -c 3 example.com)", y),
-            Mot("clear", "je range la table : l'écran redevient tout propre", "efface l'écran du terminal", y),
-            Mot("applis", "la liste de toutes les applis qui habitent le téléphone (applis what : filtre)",
-                "liste tes applis (applis what : filtre)", t),
-            Mot("ouvre", "j'allume une appli, comme on allume la télé : ouvre whatsapp", "lance une appli : ouvre whatsapp", t),
-            Mot("web", "j'ouvre la fenêtre sur un site : web météo paris", "ouvre un site ou une recherche : web météo paris", t),
-            Mot("carte", "je déplie la carte du monde pour trouver un lieu : carte tour eiffel", "cherche un lieu : carte tour eiffel", t),
-            Mot("appelle", "je compose le numéro, c'est toi qui appuies sur Appeler : appelle 0612345678",
-                "prépare un appel (sans appeler) : appelle 0612345678", t),
-            Mot("sms", "j'écris un petit mot, tu n'as plus qu'à l'envoyer : sms 0612345678 coucou",
-                "prépare un SMS : sms 0612345678 coucou", t),
-            Mot("partage", "je glisse ton message dans la boîte aux lettres de ton choix : partage salut !",
-                "envoie un texte via l'appli de ton choix : partage salut !", t),
-            Mot("lampe", "l'interrupteur de la lampe de poche : lampe on / lampe off", "lampe torche : lampe on / lampe off", t),
-            Mot("vibre", "le téléphone frissonne : vibre 500", "fait vibrer : vibre 500", t),
-            Mot("batterie", "combien il reste à manger dans le ventre du téléphone", "niveau de batterie", t),
-            Mot("dis", "le téléphone lit ta phrase à voix haute : dis bonjour", "le téléphone parle : dis bonjour", t),
-            Mot("reglages", "le tableau des boutons de la maison : reglages wifi (bluetooth, son, ecran…)",
-                "ouvre les réglages : reglages wifi (bluetooth, son, ecran…)", t),
-            Mot("caresse", "un câlin pour ta créature", "un câlin pour ta créature", c),
-            Mot("danse", "elle danse pour toi", "elle danse pour toi", c),
-            Mot("parle", "elle te dit ce qu'elle pense", "elle te dit ce qu'elle pense", c),
-            Mot("joue", "pierre-feuille-ciseaux : joue pierre", "pierre-feuille-ciseaux : joue pierre", c),
-            Mot("devine", "devine son nombre (1 à 20) : devine 10", "devine son nombre (1 à 20) : devine 10", c),
-            Mot("etat", "sa fiche complète", "sa fiche complète", c),
-            Mot("renomme", "change son nom : renomme Pixel", "change son nom : renomme Pixel", c),
-            Mot("arbre", "l'arbre de ce que tu peux apprendre : arbre (puis arbre scripts…)",
-                "l'arbre de compétences : arbre (puis arbre scripts…)", j),
-            Mot("cherche", "demande à ta créature la bonne commande : cherche supprimer un dossier",
-                "trouve la bonne commande : cherche supprimer un dossier", j),
-            Mot("collection", "l'album de tes bestioles", "tes bestioles capturées", j),
-            Mot("defi", "un défi éclair (defi records : tes records)", "lance un défi éclair (defi records : tes records)", j),
-            Mot("donjon", "une cave aux mille pièces, pleine de trésors (donjon nouveau : recommencer)",
-                "entre dans le donjon aléatoire (donjon nouveau : recommencer)", j),
-            Mot("plan", "le plan de l'étage du donjon", "la carte de l'étage du donjon", j),
-            Mot("quetes", "tes quêtes et tes cœurs", "tes quêtes et tes points de vie (PV)", j),
-            Mot("attaque", "combat le monstre caché dans la pièce", "combat le monstre caché dans la salle", j),
-            Mot("sac", "ce que tu portes sur ton dos", "ton inventaire", j),
-            Mot("equipe", "prends un objet du sac en main : equipe epee_rouillee", "s'équiper d'un objet du sac : equipe epee_rouillee", j),
-            Mot("bois", "bois une potion : bois potion_de_soin", "boire une potion : bois potion_de_soin", j),
-            Mot("ctf", "la chasse au trésor : 7 énigmes de détective", "le capture the flag (CTF, épreuves de hacker)", j),
-            Mot("drapeau", "montre le trésor trouvé : drapeau TG{…}", "valider un drapeau : drapeau TG{…}", j),
-            Mot("indice", "un coup de pouce pour une énigme : indice 1", "un indice pour une épreuve : indice 1", j),
-            Mot("edite", "mon cahier pour écrire dans une feuille : edite notes.txt", "éditeur de texte (comme nano) : edite notes.txt", j),
-            Mot("doom", "un labyrinthe en 3D que tu dessines toi-même (dans ~/terrain_terminagotchi/jeu)",
-                "lance TON Doom-like (niveau dans ~/terrain_terminagotchi/jeu)", j),
-            Mot("notifs", "je te préviens quand j'ai faim : notifs on / off", "notifications on / off", j),
-            Mot("compte", "le registre de la maison : même créature sur PC et téléphone",
-                "recensement en ligne : même créature sur PC et téléphone", w),
-            Mot("sync", "je mets à jour le registre maintenant", "synchronise ta créature maintenant", w),
-            Mot("site", "la vitrine de ta maison sur internet (site bestiaire, site captures…)",
-                "ouvre le site : ton profil (site bestiaire, site captures…)", w),
-            Mot("bestiaire", "le grand livre des espèces : bestiaire Glitchou", "la fiche d'une espèce : bestiaire Glitchou", j),
-            Mot("troupe", "ta troupe de bestioles et celle qui t'accompagne (troupe <nom>)",
-                "ta troupe de bestioles : stades et bestiole active (troupe <nom>)", j),
-            Mot("anime", "regarde une bestiole bouger : anime abyssor attaque", "voir bouger une bestiole : anime abyssor attaque", j),
-            Mot("sudo", "la clé du gardien, pour les gros travaux (pas de clé dans la chambre fermée du téléphone)",
-                "agir en administrateur (impossible dans le bac à sable du téléphone)", p),
-            Mot("apt", "le magasin de la maison : on y installe des logiciels", "installer des logiciels (Linux / Termux, ou mode Linux complet)", p),
-            Mot("nano", "mon cahier pour écrire dans une feuille (ici : edite)", "éditeur de texte du terminal (ici : edite)", p),
-            Mot("git", "un appareil photo qui garde une photo de tes fichiers à chaque étape (version PC)",
-                "garder l'historique de ses fichiers (version PC)", p),
-            Mot("python3", "j'apprends une nouvelle langue à la maison : Python (version PC)",
-                "programmer en Python (version PC / mode Linux complet)", p),
-            Mot("top", "qui est réveillé, en direct, comme une caméra (version PC)", "programmes en direct, plein écran (version PC)", p),
-            Mot("ssh", "un tunnel secret vers une autre maison (version PC)", "se connecter à une autre machine (version PC)", p),
+            Mot("pwd", "lex.pwd.i", "lex.pwd.t", f),
+            Mot("ls", "lexa.ls.i", "lexa.ls.t", f),
+            Mot("cd", "lex.cd.i", "lex.cd.t", f),
+            Mot("mkdir", "lex.mkdir.i", "lex.mkdir.t", f),
+            Mot("touch", "lex.touch.i", "lex.touch.t", f),
+            Mot("echo", "reg.img.echo", "lexa.echo.t", f),
+            Mot("cp", "lexa.cp.i", "lexa.cp.t", f),
+            Mot("mv", "lex.mv.i", "lex.mv.t", f),
+            Mot("rm", "lexa.rm.i", "lexa.rm.t", f),
+            Mot("rmdir", "reg.img.rmdir", "lexa.rmdir.t", f),
+            Mot("chmod", "lexa.chmod.i", "lexa.chmod.t", f),
+            Mot("cat", "lex.cat.i", "lex.cat.t", l),
+            Mot("head", "lex.head.i", "lex.head.t", l),
+            Mot("tail", "reg.img.tail", "lexa.tail.t", l),
+            Mot("grep", "lex.grep.i", "lexa.grep.t", l),
+            Mot("find", "lexa.find.i", "lexa.find.t", l),
+            Mot("wc", "lex.wc.i", "lexa.wc.t", l),
+            Mot("sort", "lex.sort.i", "lexa.sort.t", l),
+            Mot("stat", "lexa.stat.i", "lexa.stat.t", l),
+            Mot("date", "lex.date.i", "lex.date.t", y),
+            Mot("whoami", "lexa.whoami.i", "lexa.whoami.t", y),
+            Mot("id", "lexa.id.i", "lexa.id.t", y),
+            Mot("uptime", "lexa.uptime.i", "lexa.uptime.t", y),
+            Mot("uname", "lexa.uname.i", "lexa.uname.t", y),
+            Mot("df", "lexa.df.i", "lexa.df.t", y),
+            Mot("du", "lexa.du.i", "lexa.du.t", y),
+            Mot("ps", "lex.ps.i", "lexa.ps.t", y),
+            Mot("ping", "lexa.ping.i", "lexa.ping.t", y),
+            Mot("clear", "reg.img.clear", "lexa.clear.t", y),
+            Mot("applis", "lexa.applis.i", "lexa.applis.t", tel),
+            Mot("ouvre", "lex.ouvre.i", "lex.ouvre.t", tel),
+            Mot("web", "lexa.web.i", "lexa.web.t", tel),
+            Mot("carte", "lexa.carte.i", "lexa.carte.t", tel),
+            Mot("appelle", "lexa.appelle.i", "lexa.appelle.t", tel),
+            Mot("sms", "lexa.sms.i", "lexa.sms.t", tel),
+            Mot("partage", "lexa.partage.i", "lexa.partage.t", tel),
+            Mot("lampe", "lexa.lampe.i", "lexa.lampe.t", tel),
+            Mot("vibre", "lexa.vibre.i", "lexa.vibre.t", tel),
+            Mot("batterie", "reg.img.termux-battery-status", "lexa.batterie.t", tel),
+            Mot("dis", "lexa.dis.i", "lexa.dis.t", tel),
+            Mot("reglages", "lexa.reglages.i", "lexa.reglages.t", tel),
+            Mot("caresse", "lex.caresse.i", "lex.caresse.i", c),
+            Mot("danse", "lexa.danse.i", "lexa.danse.t", c),
+            Mot("parle", "lexa.parle.i", "lexa.parle.t", c),
+            Mot("joue", "lexa.joue.i", "lexa.joue.t", c),
+            Mot("devine", "lexa.devine.i", "lexa.devine.t", c),
+            Mot("etat", "lexa.etat.i", "lexa.etat.t", c),
+            Mot("renomme", "lexa.renomme.i", "lexa.renomme.t", c),
+            Mot("arbre", "lexa.arbre.i", "lexa.arbre.t", j),
+            Mot("cherche", "lexa.cherche.i", "lexa.cherche.t", j),
+            Mot("collection", "lexa.collection.i", "lexa.collection.t", j),
+            Mot("defi", "lexa.defi.i", "lexa.defi.t", j),
+            Mot("donjon", "lexa.donjon.i", "lexa.donjon.t", j),
+            Mot("plan", "lexa.plan.i", "lexa.plan.t", j),
+            Mot("quetes", "lexa.quetes.i", "lexa.quetes.t", j),
+            Mot("attaque", "lexa.attaque.i", "lexa.attaque.t", j),
+            Mot("sac", "lexa.sac.i", "lexa.sac.t", j),
+            Mot("equipe", "lexa.equipe.i", "lexa.equipe.t", j),
+            Mot("bois", "lexa.bois.i", "lexa.bois.t", j),
+            Mot("ctf", "lex.ctf.i", "lexa.ctf.t", j),
+            Mot("drapeau", "lexa.drapeau.i", "lexa.drapeau.t", j),
+            Mot("indice", "lexa.indice.i", "lexa.indice.t", j),
+            Mot("edite", "lexa.edite.i", "lexa.edite.t", j),
+            Mot("doom", "lexa.doom.i", "lexa.doom.t", j),
+            Mot("langue", "lexa.langue.i", "lex.tg_langue.t", j),
+            Mot("notifs", "lexa.notifs.i", "lexa.notifs.t", j),
+            Mot("compte", "lexa.compte.i", "lexa.compte.t", w),
+            Mot("sync", "lexa.sync.i", "lexa.sync.t", w),
+            Mot("site", "lexa.site.i", "lexa.site.t", w),
+            Mot("bestiaire", "lexa.bestiaire.i", "lexa.bestiaire.t", j),
+            Mot("troupe", "lexa.troupe.i", "lexa.troupe.t", j),
+            Mot("anime", "lexa.anime.i", "lexa.anime.t", j),
+            Mot("sudo", "lexa.sudo.i", "lexa.sudo.t", p),
+            Mot("apt", "lexa.apt.i", "lexa.apt.t", p),
+            Mot("nano", "lexa.nano.i", "lexa.nano.t", p),
+            Mot("git", "lexa.git.i", "lexa.git.t", p),
+            Mot("python3", "lexa.python3.i", "lexa.python3.t", p),
+            Mot("top", "lexa.top.i", "lexa.top.t", p),
+            Mot("ssh", "lexa.ssh.i", "lexa.ssh.t", p),
         )
     }
 
@@ -250,12 +248,16 @@ object Regles {
 /** L'état de la créature, sauvegardé en JSON dans le stockage privé de l'appli. */
 class Jeu(ctx: Context) {
     companion object {
+        /** langue choisie sur cet appareil (pour une nouvelle partie, qui n'a pas encore de sauvegarde) */
+        @Volatile private var DEJA: String? = null
+
         /** quelle animation l'emporte quand plusieurs arrivent en même temps (comme core.PRIORITE_ANIM sur PC) */
         val PRIORITE_ANIM = mapOf("evolution" to 9, "victoire" to 8, "ko" to 7, "colere" to 6, "content" to 5,
             "confus" to 4, "mange" to 3, "salut" to 2, "parle" to 1)
     }
 
     init {
+        Langue.init(ctx)
         Bestiaire.charger(ctx.applicationContext)
         Animations.init(ctx)
     }
@@ -291,6 +293,8 @@ class Jeu(ctx: Context) {
     var colles = 0
     /** créature shiny (1 chance sur 64 à la naissance) */
     var shiny = false
+    /** langue de l'interface (enregistrée dans la sauvegarde ; au premier lancement : celle du téléphone) */
+    var langue = Langue.courante
     private val dernierJeu = mutableMapOf<String, Long>()
     val historique = mutableListOf<String>()
 
@@ -305,52 +309,50 @@ class Jeu(ctx: Context) {
     private fun r(p: String) = Regex(p, RegexOption.IGNORE_CASE)
 
     val lecons: List<Lecon> = listOf(
-        Lecon("Où suis-je ?", "Boussole", 1, listOf(
-            Etape("Coucou ! On visite la maison ensemble. Où est le point rouge « vous êtes ici » ?", "pwd",
-                "Trouvé, voilà notre point rouge ! Les grands appellent ça « le dossier où tu es » (pwd).", re = r("^pwd\\b")),
-            Etape("Ouvre les yeux : qu'est-ce qu'il y a dans cette pièce ?", "ls",
-                "Tout ce qu'il y a dans la pièce ! Les grands disent « lister le dossier ».", re = r("^ls\\b")),
-            Etape("Allez, on rentre dans ta chambre !", "cd ~",
-                "Te revoilà dans ta chambre ! Les grands disent « ton dossier perso » ; son petit nom, c'est ~.", re = r("^cd(\\s+~/?)?\\s*$"),
-                astuce = "Le ~ est dans la rangée de touches au-dessus du clavier. (« cd » tout seul marche aussi !)"),
+        Lecon("lec.t0.titre", "Boussole", 1, listOf(
+            Etape("lec.t0.0.dit", "pwd",
+                "lec.t0.0.bravo", re = r("^pwd\\b")),
+            Etape("lec.t0.1.dit", "ls",
+                "lec.t0.1.bravo", re = r("^ls\\b")),
+            Etape("lec.t0.2.dit", "cd ~",
+                "lec.t0.2.bravo", re = r("^cd(\\s+~/?)?\\s*$"),
+                astuceCle = "leca.t0.2.astuce"),
         )),
-        Lecon("Construire mon nid", "Bâtisseur", 1, listOf(
-            Etape("Il me faut une salle de jeu. Depuis ta chambre, construis une nouvelle pièce !", "mkdir terrain_terminagotchi",
-                "Une pièce toute neuve ! Les grands disent « créer un dossier ».", fs = { it.terrain.isDirectory }),
-            Etape("Passe la porte de la salle de jeu.", "cd terrain_terminagotchi",
-                "On est dans notre salle de jeu ! Passer une porte, les grands disent « changer de dossier ».",
+        Lecon("lec.t1.titre", "Bâtisseur", 1, listOf(
+            Etape("lec.t1.0.dit", "mkdir terrain_terminagotchi",
+                "lec.t1.0.bravo", fs = { it.terrain.isDirectory }),
+            Etape("lec.t1.1.dit", "cd terrain_terminagotchi",
+                "lec.t1.1.bravo",
                 re = r("^cd\\s+.*terrain_terminagotchi")),
-            Etape("Construis-moi un petit nid dans cette pièce !", "mkdir nid",
-                "Il est parfait ! Une pièce dans une pièce : les grands disent « un sous-dossier ». Et j'entends du bruit dehors…",
+            Etape("lec.t1.2.dit", "mkdir nid",
+                "lec.t1.2.bravo",
                 fs = { File(it.terrain, "nid").isDirectory }),
         )),
-        Lecon("Le garde-manger", "Inspecteur", 1, listOf(
-            Etape("J'ai faim ! Prends l'entonnoir « > » et verse une pomme dans la boîte repas.txt de mon nid.",
-                "echo pomme > nid/repas.txt",
-                "Miam ! Attention : l'entonnoir vide la boîte avant de verser. Les grands disent « écrire dans un fichier ».",
+        Lecon("lec.t2.titre", "Inspecteur", 1, listOf(
+            Etape("lec.t2.0.dit", "echo pomme > nid/repas.txt",
+                "lec.t2.0.bravo",
                 fs = { File(it.terrain, "nid/repas.txt").isFile }),
-            Etape("Lis-moi la lettre repas.txt à voix haute.", "cat nid/repas.txt",
-                "Une pomme, parfait ! Les grands disent « afficher un fichier ». Toujours vérifier avant d'agir !", re = r("^(cat|more|less|head)\\b.*repas")),
-            Etape("Prends la loupe du détective : cherche le mot « pomme » dans la lettre.", "grep pomme nid/repas.txt",
-                "La loupe l'a trouvé ! Les grands disent « chercher dans un fichier ».", re = r("^grep\\b.*pomme")),
+            Etape("lec.t2.1.dit", "cat nid/repas.txt",
+                "lec.t2.1.bravo", re = r("^(cat|more|less|head)\\b.*repas")),
+            Etape("lec.t2.2.dit", "grep pomme nid/repas.txt",
+                "lec.t2.2.bravo", re = r("^grep\\b.*pomme")),
         )),
-        Lecon("Le bouclier", "Gardien", 1, listOf(
-            Etape("Qui a le droit de toucher à mon repas ? Regarde les cadenas.", "ls -l nid",
-                "r = lire, w = écrire, x = faire marcher. Les grands disent « les droits ».", re = r("^(ls\\s+-\\w*l|stat)\\b")),
-            Etape("Mets un cadenas sur la boîte, que personne ne l'abîme !", "chmod 444 nid/repas.txt",
-                "Clic ! On peut lire, mais plus écrire. Les grands disent « lecture seule ».",
+        Lecon("lec.t3.titre", "Gardien", 1, listOf(
+            Etape("lec.t3.0.dit", "ls -l nid",
+                "lec.t3.0.bravo", re = r("^(ls\\s+-\\w*l|stat)\\b")),
+            Etape("lec.t3.1.dit", "chmod 444 nid/repas.txt",
+                "lec.t3.1.bravo",
                 fs = { val f = File(it.terrain, "nid/repas.txt"); f.isFile && !f.canWrite() }),
-            Etape("Essaie de glisser une poire au fond de la boîte, pour voir…", "echo poire >> nid/repas.txt",
-                "Refusé ! « >> » ajoute au fond sans rien vider… mais le cadenas tient bon. Les grands disent « ajouter à la fin ».", re = r(">>.*repas")),
+            Etape("lec.t3.2.dit", "echo poire >> nid/repas.txt",
+                "lec.t3.2.bravo", re = r(">>.*repas")),
         )),
-        Lecon("Grand ménage", "Nettoyeur", 1, listOf(
-            Etape("Fais une photocopie de mon repas, au cas où.", "cp nid/repas.txt nid/secours.txt",
-                "Deux feuilles pareilles, et l'original n'a pas bougé ! Les grands disent « copier ».", fs = { File(it.terrain, "nid/secours.txt").isFile }),
-            Etape("Porte la copie dans la salle de jeu et colle-lui une nouvelle étiquette : reserve.txt.",
-                "mv nid/secours.txt reserve.txt",
-                "Déménagée et renommée d'un coup ! Les grands disent « déplacer » et « renommer ».", fs = { File(it.terrain, "reserve.txt").isFile }),
-            Etape("On n'en a plus besoin. Attention : c'est la broyeuse, pas la poubelle !", "rm reserve.txt",
-                "Broyée pour toujours : pas de poubelle pour la rattraper. Les grands disent « supprimer ». Vérifie toujours avant !",
+        Lecon("lec.t4.titre", "Nettoyeur", 1, listOf(
+            Etape("lec.t4.0.dit", "cp nid/repas.txt nid/secours.txt",
+                "lec.t4.0.bravo", fs = { File(it.terrain, "nid/secours.txt").isFile }),
+            Etape("lec.t4.1.dit", "mv nid/secours.txt reserve.txt",
+                "lec.t4.1.bravo", fs = { File(it.terrain, "reserve.txt").isFile }),
+            Etape("lec.t4.2.dit", "rm reserve.txt",
+                "lec.t4.2.bravo",
                 fs = { !File(it.terrain, "reserve.txt").exists() }),
         )),
     )
@@ -392,12 +394,13 @@ class Jeu(ctx: Context) {
         extra = JSONObject()
         Regles.STATS.forEach { stats[it] = 0 }
         partie = Parties.active(app)
+        langue = Langue.courante
         charger()
     }
 
     private fun charger() {
         val fichier = Parties.fichierActif(app)
-        if (!fichier.exists()) return
+        if (!fichier.exists()) { choisirLangue(null); return }
         try {
             val o = JSONObject(fichier.readText())
             partie = o.optString("partie").ifEmpty { partie }
@@ -426,13 +429,36 @@ class Jeu(ctx: Context) {
             shiny = o.optBoolean("shiny")
             extra = o.optJSONObject("extra") ?: JSONObject()
             Bestiaire.migrer(extra)          // anciennes espèces → nouveau bestiaire, « finale » → « ancien »
+            choisirLangue(o.optString("langue").ifEmpty { null })
         } catch (e: Exception) {
             // sauvegarde illisible : on repart de zéro plutôt que de planter
+            choisirLangue(null)
         }
     }
 
+    /**
+     * La langue de cette partie : celle de la sauvegarde ; sinon (premier lancement, nouvelle partie) celle déjà
+     * choisie sur l'appareil, sinon celle du téléphone.
+     */
+    private fun choisirLangue(enregistree: String?) {
+        langue = Langue.definir(enregistree ?: dejaChoisie ?: Langue.detecter())
+        dejaChoisie = langue
+    }
+
+    /** Change la langue (commande « langue xx ») : elle est enregistrée dans la sauvegarde. */
+    fun changerLangue(code: String) {
+        langue = Langue.definir(code)
+        dejaChoisie = langue
+        app.getSharedPreferences("terminagotchi", Context.MODE_PRIVATE).edit().putString("langue", langue).apply()
+    }
+
+    private var dejaChoisie: String?
+        get() = DEJA ?: try { app.getSharedPreferences("terminagotchi", Context.MODE_PRIVATE).getString("langue", null) } catch (e: Exception) { null }
+        set(v) { DEJA = v }
+
     fun sauver() {
         val o = JSONObject()
+        o.put("langue", langue)
         o.put("nom", nom)
         o.put("xp", xp)
         o.put("faim", faim)
@@ -521,56 +547,56 @@ class Jeu(ctx: Context) {
         animer(if (Regles.stade(apres) > Regles.stade(avant)) "evolution" else "content")
         if (Regles.stade(apres) > Regles.stade(avant)) {
             if (Regles.stade(apres) == 1) {
-                log("✨ L'œuf a éclos !")
-                dire("Bonjour le monde ! … C'est comme ça qu'on dit, non ?", 10)
+                log(t("core.eclot.log"))
+                dire(t("core.eclot.dit"), 10)
             } else {
                 if (forme == null) forme = dominant()
-                log("✨ ÉVOLUTION → ${Regles.STADES[Regles.stade(apres)]} ${Regles.FORMES[forme ?: ""] ?: ""} !")
-                dire("Waouh… je me sens différent !", 10)
+                log(t("core.evolution.log", "forme" to Regles.espece(Regles.stade(apres), forme)))
+                dire(t("core.evolution.dit"), 10)
             }
         } else {
-            log("⬆ Niveau $apres !")
+            log(t("core.niveau.log", "n" to apres))
         }
         val l = leconCourante()
-        if (l != null && l.niveau == apres) { dire("J'ai quelque chose à t'apprendre !", 10); animer("parle") }
+        if (l != null && l.niveau == apres) { dire(t("lec.annonce"), 10); animer("parle") }
     }
 
     /** Mange une commande. Renvoie false si elle a été refusée (collée). */
     fun manger(ligne: String, colle: Boolean, rappel: Boolean = false): Boolean {
         if (colle || Regles.estColle(ligne)) {
             colles++
-            log("✖ copier-coller détecté : pas de nourriture")
-            dire(Regles.COLLE.random(), 10)
+            log(t("core.colle.log"))
+            dire(Regles.auHasard(Regles.COLLE), 10)
             animer("colere")
             return false
         }
         val cmd = Regles.premierMot(ligne)
         if (cmd.isEmpty()) return false
         if (rappel) {
-            log("a revu « $cmd » (rappel ↑ : pas d'XP)")
+            log(t("jeu.mange.rappel", "cmd" to cmd))
             return false
         }
         total++
         var gain = 1
-        var msg = "a mangé « $cmd »"
+        var msg = t("core.mange", "cmd" to cmd)
         val stat = Regles.CATEGORIES.entries.firstOrNull { cmd in it.value }?.key
         if (stat != null) {
             stats[stat] = (stats[stat] ?: 0) + 1
             gain += 1
-            msg += " +${Regles.COURT[stat]}"
+            msg += " +${Regles.court(stat)}"
         }
         if (cmd in Commandes.CREATURE) {
             val maintenant = System.currentTimeMillis()
             if (maintenant - (dernierJeu[cmd] ?: 0L) < 60_000) {
                 faim = (faim + 1).coerceAtMost(100.0)
-                log("$msg (déjà joué il y a peu : pas d'XP)")
+                log(msg + t("jeu.mange.deja_joue"))
                 return true
             }
             dernierJeu[cmd] = maintenant
         }
         if (vus.add(cmd)) {
             gain += 5
-            msg += " ★ nouveau goût"
+            msg += t("core.mange.nouveau")
         }
         if (skills.any { Regles.SKILLS[it]?.contains(cmd) == true }) {
             gain *= 2
@@ -623,11 +649,11 @@ class Jeu(ctx: Context) {
         }
         etape = 0
         if (l.skill !in skills) skills.add(l.skill)
-        log("🎓 « ${l.titre} » finie → ${l.skill} !")
-        var msg = "Leçon finie ! J'ai appris « ${l.skill} » grâce à toi."
+        log(t("lec.finie.log", "titre" to l.titre, "skill" to Regles.nomSkill(l.skill)))
+        var msg = t("lec.finie.dit", "skill" to Regles.nomSkill(l.skill))
         if (!troncFini) {
             lecon++
-            if (troncFini) msg = "Tronc commun terminé, bravo ! L'arbre de compétences est ouvert : tape « arbre »."
+            if (troncFini) msg = t("leca.tronc_fini")
         } else {
             val b = brancheActive()
             if (b != null) {
@@ -639,8 +665,8 @@ class Jeu(ctx: Context) {
                     stats[br.stat] = (stats[br.stat] ?: 0) + 5
                     if (p.optInt(b) >= br.lecons.size) {
                         a.put("active", "")
-                        log("🌳 Branche ${br.nom} maîtrisée !")
-                        msg = "Branche ${br.nom} maîtrisée ! Tape « arbre » pour en choisir une autre."
+                        log(t("lec.branche.maitrisee.log", "branche" to br.nom))
+                        msg = t("leca.branche.maitrisee", "branche" to br.nom)
                     }
                 }
             }
@@ -665,43 +691,41 @@ class Jeu(ctx: Context) {
     fun parlerSiSilencieux() {
         if (bulleActive().isNotEmpty()) return
         when {
-            stade == 0 -> dire(Regles.OEUF.random())
-            faim < 30 -> dire(Regles.FAIM.random())
-            else -> dire(Regles.TRAITS[trait]?.random() ?: "…")
+            stade == 0 -> dire(Regles.auHasard(Regles.OEUF))
+            faim < 30 -> dire(Regles.auHasard(Regles.FAIM))
+            else -> dire(Regles.TRAITS[trait]?.let { Regles.auHasard(it) } ?: "…")
         }
     }
 
     // ------------------------------------------------------------ textes affichés
     fun humeur() = when {
-        faim >= 60 -> "repu"
-        faim >= 30 -> "petit creux"
-        faim > 0 -> "affamé !"
-        else -> "NOURRIS-MOI…"
+        faim >= 60 -> t("humeur.repu")
+        faim >= 30 -> t("humeur.creux")
+        faim > 0 -> t("humeur.affame")
+        else -> t("humeur.vide")
     }
 
     fun titre(): String {
-        val fo = forme
-        val f = if (stade >= 2 && fo != null) " ${Regles.FORMES[fo]}" else ""
-        return "$nom${if (shiny) " ✨" else ""} · ${Regles.STADES[stade]}$f · niv. $niveau"
+        return "$nom${if (shiny) " ✨" else ""} · " + t("app.forme_niveau", "forme" to Regles.espece(stade, forme), "n" to niveau)
     }
 
     fun texteXp(): String {
         val lo = 10 * (niveau - 1) * (niveau - 1)
         val hi = 10 * niveau * niveau
-        return "xp   ${Regles.barre((xp - lo).toDouble(), (hi - lo).toDouble(), 8)}  $xp/$hi"
+        return Langue.ajuster(t("app.xp"), 5) + "${Regles.barre((xp - lo).toDouble(), (hi - lo).toDouble(), 8)}  $xp/$hi"
     }
 
-    fun texteFaim() = "faim ${Regles.barre(faim, 100.0, 8)}  ${humeur()}"
+    fun texteFaim() = Langue.ajuster(t("app.faim"), 5) + "${Regles.barre(faim, 100.0, 8)}  ${humeur()}"
 
-    fun texteStats() = Regles.STATS.joinToString("  ") { "${Regles.COURT[it]} ${stats[it]}" }
+    fun texteStats() = Regles.STATS.joinToString("  ") { "${Regles.court(it)} ${stats[it]}" }
 
     fun texteLecon(): String? {
         val l = leconCourante() ?: return if (troncFini && brancheActive() == null)
-            "🌳 Choisis ta prochaine branche d'apprentissage : tape  arbre" else null
+            t("leca.choisis_branche") else null
         if (niveau < l.niveau) {
             val manque = 10 * (l.niveau - 1) * (l.niveau - 1) - xp
-            return "Prochaine leçon au niveau ${l.niveau} : il me manque $manque XP.\n" +
-                "Nourris-moi avec des commandes jamais goûtées (📖 Lexique) !"
+            return t("leca.prochaine",
+                "n" to l.niveau, "xp" to manque)
         }
         val e = l.etapes[etape]
         val astuce = if (e.astuce != null) "\n${e.astuce}" else ""
@@ -712,7 +736,7 @@ class Jeu(ctx: Context) {
         val b = bulleActive()
         if (b.isNotEmpty()) return "« $b »"
         val e = etapeCourante()
-        if (e != null) return "Leçon ➜ ${Regles.piege(e.cmd)}"
-        return journal.lastOrNull()?.drop(6) ?: "Touche le bouton pour me nourrir !"
+        if (e != null) return t("widget.lecon", "cmd" to Regles.piege(e.cmd))
+        return journal.lastOrNull()?.drop(6) ?: t("widget.nourris")
     }
 }

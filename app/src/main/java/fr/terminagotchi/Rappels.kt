@@ -35,7 +35,8 @@ class Rappels : BroadcastReceiver() {
                     val maintenant = System.currentTimeMillis()
                     if (n.optBoolean("actives", true) && jeu.faim < 30 && maintenant - n.optLong("faim", 0) > 3 * 3600_000L) {
                         n.put("faim", maintenant)
-                        notifier(context, "${jeu.nom} a faim !", Regles.FAIM.random() + " (touche pour ouvrir le terminal)")
+                        notifier(context, t("rappel.faim.titre", "nom" to jeu.nom),
+                            Regles.auHasard(Regles.FAIM) + " " + t("rappel.toucher"))
                     }
                     jeu.sauver()
                     WidgetCreature.majTous(context)
@@ -60,7 +61,7 @@ class Rappels : BroadcastReceiver() {
         fun notifier(ctx: Context, titre: String, texte: String) {
             val nm = ctx.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
             if (Build.VERSION.SDK_INT >= 26 && nm.getNotificationChannel(CANAL) == null) {
-                nm.createNotificationChannel(NotificationChannel(CANAL, "Ta créature", NotificationManager.IMPORTANCE_DEFAULT))
+                nm.createNotificationChannel(NotificationChannel(CANAL, t("rappel.canal"), NotificationManager.IMPORTANCE_DEFAULT))
             }
             val ouvrir = PendingIntent.getActivity(ctx, 2,
                 Intent(ctx, TerminalActivity::class.java).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK),

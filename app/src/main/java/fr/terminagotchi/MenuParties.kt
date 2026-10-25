@@ -16,7 +16,8 @@ import java.util.Locale
  *   3  charger
  *   4  compte       (non connecté)
  *
- * On répond par le chiffre ou le mot. Une autre commande ferme le menu et part au terminal.
+ * On répond par le chiffre ou le mot, en français ou dans la langue choisie (clés part.mots.*), et « oui » se dit
+ * dans n'importe laquelle des 14 langues (part.oui). Une autre commande ferme le menu et part au terminal.
  * Commandes utilisables à tout moment : parties · partie nouvelle · partie charger [n].
  * Les parties elles-mêmes sont rangées par Parties.kt.
  */
@@ -42,40 +43,66 @@ class MenuParties(
 
     val ouvert: Boolean get() = etat != null
 
-    private fun espece(stade: Int, forme: String?) =
-        Regles.STADES[stade] + if (stade >= 2 && forme != null) " ${Regles.FORMES[forme] ?: ""}" else ""
+    private fun espece(stade: Int, forme: String?) = Regles.espece(stade, forme)
+
+    companion object {
+        private fun norm(s: String) = java.text.Normalizer.normalize(s.trim().lowercase(), java.text.Normalizer.Form.NFC)
+
+        /** Les mots acceptés pour une action du menu : ceux de la langue choisie, et toujours ceux du français. */
+        fun mots(cle: String): Set<String> =
+            (Langue.valeurs(cle, Langue.courante) + Langue.valeurs(cle, Langue.DEFAUT)).map { norm(it) }.toSet()
+
+        /** « oui » dans n'importe laquelle des 14 langues (oui, yes, sí, ja, да, はい, 是, हाँ, نعم…). */
+        fun oui(reponse: String): Boolean {
+            val r = norm(reponse)
+            return r.isNotEmpty() && Langue.LANGUES.keys.any { code -> Langue.valeurs("part.oui", code).any { norm(it) == r } }
+        }
+
+        /** L'action du menu que désigne une réponse (chiffre ou mot) : continuer, nouvelle, charger, compte, ou null. */
+        fun action(reponse: String): String? {
+            val r = norm(reponse)
+            return when {
+                r == "" || r == "1" || r in mots("part.mots.continuer") -> "continuer"
+                r == "2" || r in mots("part.mots.nouvelle") -> "nouvelle"
+                r == "3" || r in mots("part.mots.charger") -> "charger"
+                r == "4" || r in mots("part.mots.compte") -> "compte"
+                else -> null
+            }
+        }
+    }
 
     fun ouvrir(): String {
         etat = "menu"
         val c = Recensement.compte(jeu)
-        val qui = if (jeu.existe) "${jeu.nom}${if (jeu.shiny) " ✨" else ""} · ${espece(jeu.stade, jeu.forme)} niv. ${jeu.niveau}"
-            else "(un œuf attend son nom)"
-        val compte = if (Recensement.aUnCompte(jeu)) c.optString("pseudo") else "(non connecté)"
+        val qui = if (jeu.existe) t("part.qui", "nom" to jeu.nom + (if (jeu.shiny) " ✨" else ""),
+                "espece" to espece(jeu.stade, jeu.forme), "n" to jeu.niveau)
+            else t("part.oeuf_sans_nom")
+        val compte = if (Recensement.aUnCompte(jeu)) c.optString("pseudo") else t("part.non_connecte")
         return "┌ Terminagotchi ┐\n" +
-            "1  continuer    $qui\n" +
-            "2  nouvelle partie\n" +
-            "3  charger\n" +
-            "4  compte       $compte\n" +
-            "(tape un chiffre ou le mot)"
+            "1  " + t("part.m.continuer") + "    " + qui + "\n" +
+            "2  " + t("part.m.nouvelle") + "\n" +
+            "3  " + t("part.m.charger") + "\n" +
+            "4  " + t("part.m.compte") + "       " + compte + "\n" +
+            t("part.m.aide.tel")
     }
 
     /** Une ligne tapée pendant que le menu est ouvert. null : ce n'est pas pour le menu (il se ferme). */
     fun repondre(ligne: String): String? {
         val l = ligne.trim().lowercase()
         when (etat) {
-            "menu" -> return when (l) {
-                "1", "continuer", "c", "" -> { etat = null; continuer() }
-                "2", "nouvelle", "nouvelle partie", "n" -> nouvelle()
-                "3", "charger" -> charger()
-                "4", "compte" -> { etat = null; texteCompte() }
+            "menu" -> return when (action(l)) {
+                "continuer" -> { etat = null; continuer() }
+                "nouvelle" -> nouvelle()
+                "charger" -> charger()
+                "compte" -> { etat = null; texteCompte() }
                 else -> { etat = null; null }
             }
             "nouvelle" -> {
-                if (l in setOf("oui", "o", "yes", "y")) return creer()
-                return "D'accord, on ne touche à rien.\n" + ouvrir()
+                if (oui(l)) return creer()
+                return t("part.n.rien") + "\n" + ouvrir()
             }
             "charger" -> {
-                if (l.isEmpty() || l == "retour") return ouvrir()
+                if (l.isEmpty() || norm(l) in mots("part.mots.retour")) return ouvrir()
                 val n = l.toIntOrNull() ?: return null.also { etat = null }
                 return choisir(n)
             }
@@ -92,48 +119,49 @@ class MenuParties(
                 val n = m.getOrNull(1)?.toIntOrNull()
                 if (n == null) charger() else { lister(false); choisir(n) }
             }
-            else -> "partie nouvelle · partie charger · partie charger 2 · parties (le menu)"
+            else -> t("part.aide.tel")
         }
     }
 
     private fun continuer(): String =
-        if (jeu.existe) "▶ On continue avec ${jeu.nom} !" else "🥚 Comment s'appelle ta créature ?"
+        if (jeu.existe) t("part.continuer", "nom" to jeu.nom) else "🥚 " + t("app.nom_creature")
 
     // ---------------------------------------------------------------- nouvelle partie
     private fun nouvelle(): String {
-        if (!jeu.existe) { etat = null; return "🥚 Un œuf tout neuf attend déjà son nom : comment s'appelle ta créature ?" }
+        if (!jeu.existe) { etat = null; return t("part.n.attend") }
         if (Parties.pleine(act)) {
             etat = "menu"
-            return "Toutes les chambres de la maison sont occupées (${Parties.MAX} créatures). Continue avec l'une d'elles : charger."
+            return t("part.plein", "n" to Parties.MAX)
         }
         etat = "nouvelle"
-        return "${jeu.nom} va dormir dans sa chambre : rien n'est effacé, tu la retrouveras avec « charger ».\n" +
-            "Un nouvel œuf ?  oui / non"
+        return t("part.n.confirmer", "nom" to jeu.nom) +
+            "  " + t("part.oui_non")
     }
 
     private fun creer(): String {
         etat = null
         jeu.sauver()
-        if (Parties.nouvelle(act) == null) return "⚠ Je n'ai pas pu ranger la partie actuelle : rien n'a changé."
+        if (Parties.nouvelle(act) == null) return t("part.n.echec")
         jeu.recharger()
         apresChangement()
-        return "🥚 Un œuf tout neuf est apparu !\nComment s'appelle ta nouvelle créature ?"
+        return t("part.n.ok.tel")
     }
 
     // ---------------------------------------------------------------- charger
     private fun lister(avecCompte: Boolean): String {
         choix.clear()
-        val sb = StringBuilder("┌ parties ┐")
+        val sb = StringBuilder("┌ " + t("part.l.titre") + " ┐")
         for (r in Parties.liste(act)) {
             choix.add(r.id to null)
-            sb.append("\n${choix.size}  ${r.nom.ifEmpty { "(œuf sans nom)" }} · ${r.espece} niv. ${r.niveau} · ${format.format(Date(r.date))}")
-            if (r.active) sb.append("  ← en cours")
+            sb.append("\n${choix.size}  " + t("part.l.ligne", "nom" to r.nom.ifEmpty { t("part.oeuf_sans_nom") },
+                "espece" to r.espece, "n" to r.niveau, "date" to format.format(Date(r.date))))
+            if (r.active) sb.append("  " + t("part.l.en_cours"))
         }
         if (avecCompte && Recensement.aUnCompte(jeu)) {
             // d'abord ce qu'on sait déjà (cache local, marche hors ligne), puis un coup d'œil rapide au site, en fond
             val cache = Recensement.compte(jeu).optJSONArray("parties_cache") ?: JSONArray()
             val deja = ajouterCompte(cache)
-            sb.append(if (deja.isEmpty()) "\n☁ ton compte : je regarde…" else "\n☁ sur ton compte :$deja")
+            sb.append(if (deja.isEmpty()) "\n☁ " + t("part.l.je_regarde") else "\n☁ " + t("part.l.sur_compte") + deja)
             rafraichirCompte()
         }
         return sb.toString()
@@ -141,7 +169,7 @@ class MenuParties(
 
     private fun charger(): String {
         etat = "charger"
-        return lister(true) + "\nnuméro ? (Entrée = retour)"
+        return lister(true) + "\n" + t("part.l.numero")
     }
 
     /** Ajoute aux numéros les parties du compte qui ne sont pas encore listées ; renvoie leurs lignes. */
@@ -154,7 +182,8 @@ class MenuParties(
             if (id.isEmpty() || id in ici) continue
             val niv = p.optInt("niveau", 1)
             choix.add(id to p.optString("nom"))
-            sb.append("\n${choix.size}  ${p.optString("nom")} · ${espece(Regles.stade(niv), if (p.isNull("forme")) null else p.optString("forme"))} niv. $niv")
+            sb.append("\n${choix.size}  " + t("part.qui", "nom" to p.optString("nom"),
+                "espece" to espece(Regles.stade(niv), if (p.isNull("forme")) null else p.optString("forme")), "n" to niv))
         }
         return sb.toString()
     }
@@ -181,25 +210,26 @@ class MenuParties(
             act.runOnUiThread {
                 if (a != null && Recensement.compte(jeu).optString("cle") == cle) Recensement.compte(jeu).put("parties_cache", a)
                 if (etat != "charger") return@runOnUiThread
-                if (a == null) { plusTard("☁ (hors ligne) : les parties de ton compte s'afficheront avec internet"); return@runOnUiThread }
+                if (a == null) { plusTard("☁ " + t("part.l.hors_ligne.tel")); return@runOnUiThread }
                 val nouvelles = ajouterCompte(a)
-                if (nouvelles.isNotEmpty()) plusTard("☁ sur ton compte :$nouvelles")
+                if (nouvelles.isNotEmpty()) plusTard("☁ " + t("part.l.sur_compte") + nouvelles)
             }
         }.start()
     }
 
     private fun choisir(n: Int): String {
-        val (id, duCompte) = choix.getOrNull(n - 1) ?: return "Il n'y a pas de numéro $n. Tape un numéro de la liste (Entrée = retour)."
+        val (id, duCompte) = choix.getOrNull(n - 1) ?: return t("part.l.pas_de_numero", "n" to n) + " " +
+            t("part.l.tape_numero")
         etat = null
         if (id == jeu.partie) return continuer()
         jeu.sauver()
         val ok = if (duCompte != null) Parties.depuisCompte(act, id, duCompte) else Parties.charger(act, id)
-        if (!ok) return if (Parties.pleine(act)) "Toutes les chambres sont occupées (${Parties.MAX} créatures)."
-            else "⚠ Je n'ai pas pu ouvrir cette chambre : rien n'a changé."
+        if (!ok) return if (Parties.pleine(act)) t("part.plein.court", "n" to Parties.MAX)
+            else t("part.l.echec")
         jeu.recharger()
         apresChangement()
         if (Recensement.aUnCompte(jeu)) synchroniser()
-        return if (duCompte != null) "☁ $duCompte arrive de ton compte… (elle se remplit à la prochaine synchro, dès qu'il y a internet)"
-            else "📂 Te revoilà avec ${jeu.nom} ! ${espece(jeu.stade, jeu.forme)} niv. ${jeu.niveau}"
+        return if (duCompte != null) t("part.l.depuis_compte", "nom" to duCompte)
+            else t("part.l.ok", "qui" to t("part.qui", "nom" to jeu.nom, "espece" to espece(jeu.stade, jeu.forme), "n" to jeu.niveau))
     }
 }

@@ -29,10 +29,11 @@ class WidgetCreature : AppWidgetProvider() {
                 v.setTextViewText(R.id.w_faim, jeu.texteFaim())
                 v.setTextViewText(R.id.w_info, jeu.infoWidget())
             } else {
-                v.setTextViewText(R.id.w_titre, "Un œuf mystérieux…")
+                v.setTextViewText(R.id.w_titre, t("widget.oeuf"))
                 v.setTextViewText(R.id.w_faim, "")
-                v.setTextViewText(R.id.w_info, "Touche le bouton pour le faire éclore !")
+                v.setTextViewText(R.id.w_info, t("widget.eclore"))
             }
+            v.setTextViewText(R.id.w_bouton, t("widget.bouton"))
             jeu.sauver()                 // après infoWidget : la bulle suivante de la file a pu être prise
             val intent = Intent(ctx, TerminalActivity::class.java)
                 .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TOP)

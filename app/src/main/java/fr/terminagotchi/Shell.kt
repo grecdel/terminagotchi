@@ -27,7 +27,7 @@ class Shell(private val home: File) {
                 dossier = cible
                 ""
             } else {
-                "cd : dossier introuvable : $arg"
+                t("mini.cd_introuvable", "cible" to arg)
             }
         }
         if (!dossier.isDirectory) dossier = home
@@ -60,9 +60,9 @@ class Shell(private val home: File) {
             if (!fini) p.destroy()
             lecteur.join(1000)
             val out = synchronized(sb) { sb.toString() }.trimEnd()
-            if (fini) out else "$out\n(arrêté après 20 s : essaie par exemple ping -c 3)"
+            if (fini) out else out + "\n" + t("shell.arrete")
         } catch (e: Exception) {
-            "Erreur : ${e.message}"
+            t("shell.erreur", "msg" to e.message)
         }
     }
 }

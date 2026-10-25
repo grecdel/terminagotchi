@@ -8,7 +8,7 @@ package fr.terminagotchi
  *    Le genre des espèces n'est pas connu : les phrases modèles restent neutres
  *    (« Un monstre sauvage : {nom} ! », « {nom} rejoint ta troupe »). Chaque phrase est entière : prête à traduire.
  *
- * 2) terme("ram", palier) : le jargon arrive progressivement.
+ * 2) terme("ram", palier) : le jargon arrive progressivement, dans la langue choisie (clés « terme.xxx »).
  *    palier 0 = l'image seule (« la mémoire de la maison »), 1 = l'image et le vrai mot
  *    (« la mémoire de la maison (la RAM) »), 2 = le vrai mot seul (« la RAM »).
  *    palier(niveau, lecons) : niveau < 7 → 0, 7 à 11 → 1, 12 et plus → 2 ;
@@ -39,34 +39,10 @@ object Mots {
     val SEUIL_NIVEAU = listOf(7, 12)
     val SEUIL_LECONS = listOf(8, 14)
 
-    /** clé → (image seule, image + vrai mot, vrai mot seul) */
-    val TERMES: Map<String, List<String>> = mapOf(
-        "mefiance" to listOf("Peur", "Méfiance (il a peur de toi)", "Méfiance"),
-        "pv" to listOf("cœurs", "cœurs (PV)", "PV"),
-        "atk" to listOf("force", "force (ATK)", "ATK"),
-        "def" to listOf("bouclier", "bouclier (DEF)", "DEF"),
-        "vit" to listOf("vitesse", "vitesse (VIT)", "VIT"),
-        "int" to listOf("astuce", "astuce (INT)", "INT"),
-        "stats" to listOf("forces", "forces (stats)", "stats"),
-        "ram" to listOf("la mémoire de la maison", "la mémoire de la maison (la RAM)", "la RAM"),
-        "processeur" to listOf("le cerveau de la maison", "le cerveau de la maison (le processeur)", "le processeur"),
-        "executable" to listOf("qui sait faire quelque chose", "qui sait faire quelque chose (exécutable)", "exécutable"),
-        "ctf" to listOf("la chasse au trésor", "la chasse au trésor (CTF)", "le CTF"),
-        "dossier" to listOf("pièce", "pièce (dossier)", "dossier"),
-        "dossiers" to listOf("pièces", "pièces (dossiers)", "dossiers"),
-        "fichier" to listOf("feuille", "feuille (fichier)", "fichier"),
-        "fichiers" to listOf("feuilles", "feuilles (fichiers)", "fichiers"),
-        "un_dossier" to listOf("une pièce", "une pièce (un dossier)", "un dossier"),
-        "un_fichier" to listOf("une feuille", "une feuille (un fichier)", "un fichier"),
-        "rendre_executable" to listOf("autorise-la à cuisiner toute seule",
-            "autorise-la à cuisiner toute seule (rends-la exécutable)", "rends-la exécutable"),
-        "processus" to listOf("programme réveillé", "programme réveillé (processus)", "processus"),
-        "disque" to listOf("les placards", "les placards (le disque)", "le disque"),
-        "dns" to listOf("l'annuaire des maisons", "l'annuaire des maisons (DNS)", "le DNS"),
-        "ip" to listOf("l'adresse de la maison", "l'adresse de la maison (adresse IP)", "l'adresse IP"),
-        "arborescence" to listOf("le plan de la maison", "le plan de la maison (l'arborescence)", "l'arborescence"),
-        "terrain" to listOf("ta salle de jeu", "ta salle de jeu (terrain_terminagotchi)", "terrain_terminagotchi"),
-    )
+    /** Les clés du vocabulaire progressif (« terme.<clé> » dans assets/langues/xx.json : 3 paliers). */
+    val CLES = listOf("mefiance", "pv", "atk", "def", "vit", "int", "stats", "ram", "processeur", "executable", "ctf",
+        "dossier", "dossiers", "fichier", "fichiers", "un_dossier", "un_fichier", "rendre_executable", "processus",
+        "disque", "dns", "ip", "arborescence", "terrain")
 
     fun palier(niveau: Int, lecons: Int = 0): Int {
         val p = if (niveau >= SEUIL_NIVEAU[1]) 2 else if (niveau >= SEUIL_NIVEAU[0]) 1 else 0
@@ -77,14 +53,15 @@ object Mots {
     fun palier(jeu: Jeu): Int = palier(jeu.niveau, jeu.skills.size)
 
     fun terme(cle: String, p: Int = 0, majuscule: Boolean = false): String {
-        val t = TERMES[cle]?.get(p.coerceIn(0, 2)) ?: cle
+        val v = Langue.brut("terme.$cle")
+        val t = (v as? org.json.JSONArray)?.optString(p.coerceIn(0, 2))?.ifEmpty { null } ?: cle
         return if (majuscule) t.replaceFirstChar { it.uppercaseChar() } else t
     }
 
     /** Tous les termes d'un palier ({ram}, et {Ram} avec majuscule) pour remplir un modèle. */
     fun termes(p: Int): Map<String, String> {
         val m = HashMap<String, String>()
-        for (k in TERMES.keys) {
+        for (k in CLES) {
             m[k] = terme(k, p)
             m[k.replaceFirstChar { it.uppercaseChar() }] = terme(k, p, true)
         }

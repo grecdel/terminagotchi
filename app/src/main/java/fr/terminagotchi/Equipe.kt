@@ -19,15 +19,15 @@ import org.json.JSONObject
  */
 object Equipe {
     val STADES = listOf("bebe", "enfant", "ado", "adulte", "ancien")
-    private val NOM = mapOf("bebe" to "bébé", "enfant" to "enfant", "ado" to "ado", "adulte" to "adulte",
-        "ancien" to "ancien", "finale" to "ancien")
+
     /** XP pour passer au stade suivant */
     val SEUILS = mapOf("bebe" to 100, "enfant" to 250, "ado" to 600, "adulte" to 1500)
     /** Abyssor (animations détaillées faites à la main) garde ses noms de stades d'origine */
     val STADES_ABYSSOR = mapOf("bebe" to "enfant", "enfant" to "enfant", "ado" to "ado", "adulte" to "adulte", "ancien" to "finale")
     val ANIMS = AnimAuto.ANIMS
 
-    fun nomStade(s: String) = NOM[s] ?: s
+    /** bébé, enfant, ado, adulte, ancien : dans la langue choisie */
+    fun nomStade(s: String) = Langue.ou("stade_bestiole." + (if (s == "finale") "ancien" else s), s)
 
     /** Le stade d'une bestiole (les anciennes sauvegardes disaient « finale »). */
     fun stade(ind: JSONObject): String {
@@ -52,10 +52,10 @@ object Equipe {
         val nouveau = STADES[STADES.indexOf(s) + 1]
         ind.put("stade", nouveau).put("xp", 0).put("evolue", System.currentTimeMillis())
         val nom = ind.optString("espece")
-        jeu.log(Mots.accorder("🌟 {nom} évolue : {stade} !", "nom" to nom, "stade" to nomStade(nouveau)))
-        jeu.dire(Mots.accorder("Oh ! {nom} brille… et devient {stade} ! Regarde : anime {nom_min} evolution",
+        jeu.log(t("eq.evolue.log", "nom" to nom, "stade" to nomStade(nouveau)))
+        jeu.dire(t("eq.evolue.dit.tel",
             "nom" to nom, "stade" to nomStade(nouveau), "nom_min" to nom.lowercase()), 14)
-        return Mots.accorder("🌟 {nom} devient {stade} ! (anime {nom} evolution)", "nom" to nom, "stade" to nomStade(nouveau))
+        return t("eq.evolue.tel", "nom" to nom, "stade" to nomStade(nouveau))
     }
 
     /** Chaque commande tapée fait grandir la bestiole active. Renvoie un message si elle évolue. */
@@ -67,9 +67,9 @@ object Equipe {
 
     fun texte(jeu: Jeu): String {
         val caps = Explo.captures(jeu)
-        if (caps.length() == 0) return "Ta troupe est vide : joue avec ton familier, un monstre finira par apparaître !"
+        if (caps.length() == 0) return t("eq.vide.tel")
         val act = active(jeu)
-        val sb = StringBuilder("🐾 Troupe de ${jeu.nom}\n")
+        val sb = StringBuilder("🐾 " + t("eq.titre", "nom" to jeu.nom) + "\n")
         for (i in caps.length() - 1 downTo maxOf(0, caps.length() - 12)) {
             val c = caps.getJSONObject(i)
             val e = Bestiaire.espece(c.optString("espece")) ?: continue
@@ -80,26 +80,26 @@ object Equipe {
             sb.append(if (c.optString("id") == act?.optString("id")) "★ " else "   ")
                 .append(Bestiaire.balise(c)).append(" ")
                 .append(Bestiaire.nomAffiche(e, c.optBoolean("shiny"), r)).append(" · ${nomStade(s)}")
-                .append(if (v != "classique") " · $v" else "").append(" · $r · ")
-                .append(if (seuil != null) "${c.optInt("xp")}/$seuil XP" else "stade maximal")
-                .append(if (Animations.dispo(e.id)) " · animé" else "").append("\n")
+                .append(if (v != "classique") " · $v" else "").append(" · ${Bestiaire.nomRarete(r)} · ")
+                .append(if (seuil != null) "${c.optInt("xp")}/$seuil XP" else t("eq.stade_max"))
+                .append(if (Animations.dispo(e.id)) " · " + t("eq.anime") else "").append("\n")
         }
-        sb.append("\nChoisir l'active : troupe <nom> · la voir bouger : anime <nom> [animation]")
+        sb.append("\n" + t("eq.pied.tel"))
         return sb.toString()
     }
 
     fun choisir(jeu: Jeu, nom: String): String {
-        val e = Bestiaire.espece(nom) ?: return Mots.accorder("Pas encore de « {nom} » dans ta troupe.", "nom" to nom)
+        val e = Bestiaire.espece(nom) ?: return t("eq.pas_dans_troupe", "nom" to nom)
         val caps = Explo.captures(jeu)
         for (i in caps.length() - 1 downTo 0) {
             val c = caps.getJSONObject(i)
             if (c.optString("espece") == e.nom) {
                 jeu.module("equipe").put("active", c.optString("id"))
-                return Mots.accorder("★ {nom} est maintenant ta bestiole active : elle grandit à chaque commande que tu tapes.",
+                return t("eq.choisie",
                     "nom" to e.nom)
             }
         }
-        return Mots.accorder("Pas encore de « {nom} » dans ta troupe.", "nom" to nom)
+        return t("eq.pas_dans_troupe", "nom" to nom)
     }
 }
 
@@ -196,17 +196,17 @@ object Animations {
 
     /** anime <nom> [animation] : une petite fenêtre qui joue l'animation. */
     fun jouer(act: Activity, ind: JSONObject, animDemandee: String): String {
-        val e = Bestiaire.espece(ind.optString("espece")) ?: return "Espèce inconnue."
+        val e = Bestiaire.espece(ind.optString("espece")) ?: return t("eq.espece_inconnue")
         var stade = Equipe.stade(ind)
         val anim = animDemandee.lowercase().replace("é", "e").replace("è", "e").ifEmpty { "statique" }
-        if (anim !in Equipe.ANIMS) return "Animations : " + Equipe.ANIMS.joinToString(", ")
+        if (anim !in Equipe.ANIMS) return t("eq.animations", "liste" to Equipe.ANIMS.joinToString(", "))
         if (anim == "evolution") {                 // on rejoue l'évolution qui a mené au stade actuel
             val i = Equipe.STADES.indexOf(stade)
-            if (i <= 0) return Mots.accorder("{nom} est encore bébé : pas encore d'évolution à revoir.", "nom" to e.nom)
+            if (i <= 0) return t("eq.encore_bebe", "nom" to e.nom)
             if (dispo(e.id)) stade = Equipe.STADES[i - 1]       // les animations faites main partent du stade d'avant
         }
-        val (imgs, ips) = pour(ind, anim, stade, if (dispo(e.id)) 5 else 6) ?: return "Pas d'image pour $anim."
-        if (imgs.isEmpty()) return "Pas d'image pour $anim."
+        val (imgs, ips) = pour(ind, anim, stade, if (dispo(e.id)) 5 else 6) ?: return t("eq.pas_d_image", "nom" to anim)
+        if (imgs.isEmpty()) return t("eq.pas_d_image", "nom" to anim)
         val dp = act.resources.displayMetrics.density
         val vue = ImageView(act).apply {
             layoutParams = LinearLayout.LayoutParams((260 * dp).toInt(), (260 * dp).toInt())
@@ -240,7 +240,7 @@ object Animations {
         }
         dlg.setOnShowListener { h.postDelayed(pas, pause) }
         dlg.show()
-        return if (anim == "evolution") Mots.accorder("▶ {nom} : nouvelle forme, {stade} !", "nom" to e.nom, "stade" to Equipe.nomStade(Equipe.stade(ind)))
+        return if (anim == "evolution") "▶ " + t("eq.nouvelle_forme", "nom" to e.nom, "stade" to Equipe.nomStade(Equipe.stade(ind)))
         else "▶ ${e.nom} : $anim"
     }
 }

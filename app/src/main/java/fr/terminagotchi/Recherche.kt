@@ -7,8 +7,23 @@ import java.text.Normalizer
  * Aucune IA en ligne : synonymes + racines de mots + score, 100 % hors ligne.
  */
 object Recherche {
-    private class Entree(val titre: String, val etapes: List<Pair<String, String>>, val cles: Set<String>, val noms: Set<String>,
-                         val image: String? = null)
+    /**
+     * Une entrée : son titre, ses étapes (commande, explication), et de quoi la retrouver.
+     * Les textes sont des clés de langue : on cherche dans le français (toujours) et dans la langue choisie.
+     */
+    private class Entree(private val titreCle: String?, val etapes: List<Pair<String, String?>>, val kwCle: String?, val noms: Set<String>,
+                         private val imageCle: String? = null, val mot: Mot? = null) {
+        val titre: String get() = mot?.technique ?: t(titreCle!!)
+        val image: String? get() = mot?.image ?: imageCle?.let { t(it) }
+        fun explication(i: Int): String = etapes[i].second?.let { t(it) } ?: ""
+        /** les textes où chercher, en français et dans la langue choisie */
+        fun textes(): List<String> {
+            val codes = setOf(Langue.DEFAUT, Langue.courante)
+            if (mot != null) return codes.flatMap { mot.textes(it) }
+            return codes.flatMap { c -> listOfNotNull(titreCle, kwCle, imageCle).mapNotNull { Langue.brut(it, c)?.toString() } +
+                etapes.mapNotNull { e -> e.second?.let { Langue.brut(it, c)?.toString() } } }
+        }
+    }
 
     private val SYNONYMES = mapOf(
         "dossier" to "dossier repertoire folder rep",
@@ -58,11 +73,41 @@ object Recherche {
     )
     private val STOP = ("le la les l un une des de du d pour comment je j veux voudrais faire fais mon ma mes " +
         "ton ta tes son sa ses a au aux et en sur dans quel quelle est ce c que qu il y on me m te t se s avec " +
-        "par plus peux peut dois faut ca cela").split(" ").toSet()
+        "par plus peux peut dois faut ca cela the an of to in on my me i want how do can is it").split(" ").toSet()
 
+    private val CJK = Regex("[\u3040-\u30ff\u3400-\u4dbf\u4e00-\u9fff\uac00-\ud7af\uf900-\ufaff]")
+
+    /**
+     * Mots en minuscules sans accents (comme pc/tg/registre.py) : les accents sont retirés seulement sur l'alphabet
+     * latin, grec ou cyrillique (en hindi, bengali, ourdou ou arabe, les signes font partie des lettres) ;
+     * pour le chinois et le japonais (pas d'espaces) : chaque caractère et chaque paire de caractères.
+     */
     private fun mots(t: String): List<String> {
-        val n = Normalizer.normalize(t.lowercase(), Normalizer.Form.NFD).replace(Regex("\\p{Mn}+"), "")
-        return Regex("[a-z0-9]+").findAll(n).map { it.value }.toList()
+        val n = Normalizer.normalize(t.lowercase(), Normalizer.Form.NFD)
+        val sb = StringBuilder()
+        var prec = 0
+        var i = 0
+        while (i < n.length) {
+            val cp = n.codePointAt(i)
+            val type = Character.getType(cp)
+            val marque = type == Character.NON_SPACING_MARK.toInt() || type == Character.COMBINING_SPACING_MARK.toInt() ||
+                type == Character.ENCLOSING_MARK.toInt()
+            if (!(type == Character.NON_SPACING_MARK.toInt() && prec != 0 && prec < 0x530)) {
+                if (marque || Character.isLetterOrDigit(cp) || cp == '_'.code) sb.appendCodePoint(cp) else sb.append(' ')
+            }
+            if (!marque) prec = cp
+            i += Character.charCount(cp)
+        }
+        val out = mutableListOf<String>()
+        for (m in sb.toString().split(' ').filter { it.isNotEmpty() }) {
+            if (CJK.containsMatchIn(m)) {
+                val car = m.filter { CJK.matches(it.toString()) }.map { it.toString() }
+                out += car
+                out += car.zipWithNext { x, y -> x + y }
+                out += CJK.replace(m, " ").split(' ').filter { it.isNotEmpty() }
+            } else out += m
+        }
+        return out
     }
 
     private fun racine(m: String): String {
@@ -78,55 +123,68 @@ object Recherche {
     private fun concepts(t: String): Set<String> =
         mots(t).filter { it !in STOP }.map { RACINE_CONCEPT[racine(it)] ?: racine(it) }.toSet()
 
-    private fun cmd(c: String, desc: String, kw: String, image: String? = null) =
-        Entree(desc, listOf(c to ""), concepts("$desc $kw"), setOf(c.split(" ").first()), image)
+    /** Une commande : clé de sa description, clé de ses mots-clés, clé de son image (la maison). */
+    private fun cmd(c: String, descCle: String, kwCle: String, imageCle: String? = null) =
+        Entree(descCle, listOf(c to null), kwCle, setOf(c.split(" ").first()), imageCle)
 
     private fun image(c: String) = Regles.LEXIQUE.firstOrNull { it.cmd == c.split(" ").first() }?.image
 
-    private fun recette(titre: String, kw: String, vararg etapes: Pair<String, String>) =
-        Entree(titre, etapes.toList(), concepts("$titre $kw"), emptySet())
+    private fun recette(titreCle: String, kwCle: String, vararg etapes: Pair<String, String>) =
+        Entree(titreCle, etapes.toList(), kwCle, emptySet())
 
     private val ENTREES: List<Entree> by lazy {
-        Regles.LEXIQUE.map { m -> cmd(m.cmd, m.technique, m.image, m.image) } + listOf(
-            cmd("ls -a", "voir les fichiers cachés", "cache invisible tapis", "je regarde même sous le tapis"),
-            cmd("cd ..", "remonter au dossier parent", "revenir retour", "je recule d'une pièce"),
-            cmd("rm -r dossier", "supprimer un dossier et tout son contenu", "supprimer dossier tout",
-                "la broyeuse avale toute la pièce : c'est perdu pour toujours !"),
-            cmd("ls | wc -l", "compter les fichiers d'un dossier", "compter combien", "un tuyau : ls verse sa liste dans wc, qui compte"),
-            recette("Créer un dossier et entrer dedans", "creer dossier entrer",
-                "mkdir projet" to "crée le dossier", "cd projet" to "entre dedans"),
-            recette("Renommer un fichier en sécurité", "renommer fichier",
-                "ls" to "regarde l'étiquette exacte (ou Tab)", "mv ancien.txt nouveau.txt" to "change l'étiquette", "ls" to "vérifie"),
-            recette("Faire une sauvegarde avant de modifier", "copier sauvegarde",
-                "cp fichier.txt fichier.txt.bak" to "photocopie de secours", "edite fichier.txt" to "modifie tranquillement"),
-            recette("Supprimer un dossier sans faire de bêtise", "supprimer dossier securite",
-                "ls dossier" to "regarde ce qu'il y a dans la pièce", "rm -r dossier" to "la broyeuse (définitif !)", "ls" to "vérifie"),
-            recette("Retrouver un fichier perdu et le lire", "chercher trouver fichier perdu lire",
-                "find ~ -name \"*nom*\"" to "cherche dans toutes les pièces", "cat chemin/trouvé" to "lis-le à voix haute"),
-            recette("Protéger un fichier important", "proteger fichier",
-                "chmod 444 fichier" to "ferme le cadenas (lecture seule)", "ls -l fichier" to "vérifie (r--r--r--)"),
-            recette("Lancer une appli dont je ne connais pas le nom", "lancer ouvrir application trouver",
-                "applis" to "liste tes applis", "ouvre nom" to "allume celle que tu veux"),
-            recette("Envoyer un message à quelqu'un", "envoyer message sms whatsapp",
-                "partage Coucou !" to "choisis WhatsApp, mail…", "sms 0612345678 coucou" to "ou prépare un SMS"),
-            recette("Créer ma propre commande", "creer commande",
-                "echo 'salut() { echo Salut !; }' >> ~/.tgrc" to "écris-la dans le carnet de la maison", "salut" to "utilise-la"),
-            recette("Créer et lancer un script", "creer script lancer",
-                "echo 'echo Bonjour' > script.sh" to "écris la recette", "sh script.sh" to "la maison la suit toute seule"),
-            recette("Partir à l'aventure", "jouer donjon aventure",
-                "donjon" to "crée un donjon", "plan" to "regarde la carte", "quetes" to "lis tes quêtes"),
-            recette("Jouer à la chasse au trésor (ctf)", "jouer drapeau ctf hacker tresor chasse",
-                "ctf" to "cache les trésors", "cd ~/terrain_terminagotchi/ctf" to "passe la porte des énigmes", "drapeau TG{…}" to "montre le trésor trouvé"),
-            recette("Capturer une bestiole", "capturer bestiole",
-                "ls -a" to "regarde sous le tapis", "cat .bestiole_…" to "lis l'indice à voix haute", "mv .bestiole_… ../nid/" to "ramène-la au nid"),
-            recette("Créer mon propre niveau de jeu", "creer jeu niveau modifier",
-                "doom" to "prépare l'atelier", "edite ~/terrain_terminagotchi/jeu/carte.txt" to "dessine", "doom" to "teste"),
+        Regles.LEXIQUE.map { m -> Entree(null, listOf(m.cmd to null), null, setOf(m.cmd), mot = m) } + listOf(
+            cmd("ls -a", "rech.ls_a", "rech.ls_a.kw", "rech.ls_a.img"),
+            cmd("cd ..", "rech.cd_parent", "rech.cd_parent.kw", "rech.cd_parent.img"),
+            cmd("rm -r dossier", "rech.rm_r", "rech.rm_r.kw",
+                "rech.rm_r.img"),
+            cmd("ls | wc -l", "rech.compter", "rech.compter.kw",
+                "rech.compter.img"),
+            recette("reg.r.creer_dossier_entrer", "rech.r.dossier.kw",
+                "mkdir projet" to "reg.r.creer_dossier_entrer.0", "cd projet" to "reg.r.creer_dossier_entrer.1"),
+            recette("reg.r.renommer_fichier_securite", "rech.r.renommer.kw",
+                "ls" to "rech.r.renommer.1", "mv ancien.txt nouveau.txt" to "rech.r.renommer.2",
+                "ls" to "rech.verifie"),
+            recette("reg.r.faire_sauvegarde_avant", "rech.r.sauvegarde.kw",
+                "cp fichier.txt fichier.txt.bak" to "reg.r.faire_sauvegarde_avant.0", "edite fichier.txt" to "rech.r.sauvegarde.2"),
+            recette("reg.r.supprimer_dossier_sans", "rech.r.supprimer.kw",
+                "ls dossier" to "rech.r.supprimer.1", "rm -r dossier" to "rech.r.supprimer.2",
+                "ls" to "rech.verifie"),
+            recette("reg.r.retrouver_fichier_perdu", "reg.r.retrouver_fichier_perdu.kw",
+                "find ~ -name \"*nom*\"" to "rech.r.retrouver.1", "cat chemin/trouvé" to "rech.r.retrouver.2"),
+            recette("reg.r.proteger_fichier_important", "rech.r.proteger.kw",
+                "chmod 444 fichier" to "rech.r.proteger.1", "ls -l fichier" to "rech.r.proteger.2"),
+            recette("reg.r.lancer_appli_dont", "rech.r.appli.kw",
+                "applis" to "lex.applis.t", "ouvre nom" to "rech.r.appli.2"),
+            recette("rech.r.message", "rech.r.message.kw",
+                "partage Coucou !" to "rech.r.message.1", "sms 0612345678 coucou" to "rech.r.message.2"),
+            recette("rech.r.commande", "reg.creer_propre_commande_raccourci.kw",
+                "echo 'salut() { echo Salut !; }' >> ~/.tgrc" to "rech.r.commande.1", "salut" to "rech.r.commande.2"),
+            recette("reg.r.creer_lancer_script", "rech.r.script.kw",
+                "echo 'echo Bonjour' > script.sh" to "reg.r.creer_lancer_script.0", "sh script.sh" to "reg.r.creer_lancer_script.2"),
+            recette("rech.r.aventure", "rech.r.aventure.kw",
+                "donjon" to "rech.r.aventure.1", "plan" to "rech.r.aventure.2", "quetes" to "rech.r.aventure.3"),
+            recette("rech.r.ctf", "rech.r.ctf.kw",
+                "ctf" to "rech.r.ctf.1", "cd ~/terrain_terminagotchi/ctf" to "rech.r.ctf.2",
+                "drapeau TG{…}" to "rech.r.ctf.3"),
+            recette("rech.r.capturer", "rech.r.capturer.kw",
+                "ls -a" to "rech.r.capturer.1", "cat .bestiole_…" to "rech.r.capturer.2",
+                "mv .bestiole_… ../nid/" to "rech.r.capturer.3"),
+            recette("rech.r.niveau", "rech.r.niveau.kw",
+                "doom" to "rech.r.niveau.1", "edite ~/terrain_terminagotchi/jeu/carte.txt" to "rech.r.niveau.2",
+                "doom" to "rech.r.niveau.3"),
         )
+    }
+
+    /** Les concepts d'une entrée, calculés une fois par langue. */
+    private val index = HashMap<Pair<Int, String>, Set<String>>()
+    private fun cles(i: Int, e: Entree): Set<String> = synchronized(index) {
+        index.getOrPut(i to Langue.courante) { concepts(e.textes().joinToString(" ")) }
     }
 
     fun chercher(requete: String): String {
         val q = requete.trim().lowercase()
-        if (q.isEmpty()) return "Exemple : cherche supprimer un dossier  (ou : cherche grep)"
+        if (q.isEmpty()) return t("rech.exemple")
         val premier = q.split(" ").first()
         val qc = concepts(q)
         val scores = ENTREES.mapIndexed { i, e ->
@@ -134,16 +192,17 @@ object Recherche {
             if (premier in e.noms) {
                 s = 100.0 - i * 0.01
             } else if (qc.isNotEmpty()) {
-                val commun = (qc intersect e.cles).size
+                val ec = cles(i, e)
+                val commun = (qc intersect ec).size
                 if (commun > 0) {
-                    s = commun * 10.0 - (e.cles - qc).size * 0.5
-                    if (e.cles.containsAll(qc)) s += 5
+                    s = commun * 10.0 - (ec - qc).size * 0.5
+                    if (ec.containsAll(qc)) s += 5
                     if (e.etapes.size > 1 && commun >= 2) s += 4
                 }
             }
             s to e
         }.filter { it.first > 0 }.sortedByDescending { it.first }
-        if (scores.isEmpty()) return "Je me gratte la tête… essaie d'autres mots (« supprimer fichier », « ouvrir appli »)."
+        if (scores.isEmpty()) return t("rech.rien")
         val seuil = scores.first().first * 0.5
         val sb = StringBuilder()
         for ((s, e) in scores.take(3)) {
@@ -152,11 +211,11 @@ object Recherche {
                 sb.append("• ${e.titre}\n   ➜ ${Regles.piege(e.etapes[0].first)}\n")
                 (e.image ?: image(e.etapes[0].first))?.takeIf { it != e.titre }?.let { sb.append("   🏠 $it\n") }
             } else {
-                sb.append("• Recette : ${e.titre}\n")
-                e.etapes.forEachIndexed { i, (c, expl) -> sb.append("   ${i + 1}. ${Regles.piege(c)}   ($expl)\n") }
+                sb.append("• " + t("reg.recette", "titre" to e.titre) + "\n")
+                e.etapes.forEachIndexed { i, (c, _) -> sb.append("   ${i + 1}. ${Regles.piege(c)}   (${e.explication(i)})\n") }
             }
         }
-        sb.append("Tape-la toi-même : c'est comme ça qu'on retient !")
+        sb.append(t("rech.tape"))
         return sb.toString()
     }
 }

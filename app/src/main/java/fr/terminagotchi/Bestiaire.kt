@@ -461,8 +461,13 @@ object Bestiaire {
     fun lieu(zone: String): String {
         val base = zone.substringBefore('/')
         val prof = zone.count { it == '/' }.coerceAtMost(3)
-        return (habitats[base] ?: base) + listOf("", " (un recoin)", " (une cachette)", " (le sanctuaire)")[prof]
+        return (habitats[base] ?: base) + listOf("", " " + t("exp.recoin"), " " + t("exp.cachette"),
+            " " + t("exp.sanctuaire"))[prof]
     }
+
+    /** Le nom d'une rareté, d'une fréquence, dans la langue choisie (identifiants en français dans les données). */
+    fun nomRarete(r: String) = Langue.ou("rarete.$r", r)
+    fun nomFrequence(f: String) = Langue.ou("frequence.$f", f)
 
     /**
      * Balise de dessin pour le terminal de l'appli : ¤id:variante:stade*teinte+¤
