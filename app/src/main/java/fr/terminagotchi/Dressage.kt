@@ -81,14 +81,14 @@ object Dressage {
     }
     private fun prepCorrompu(c: Ctx) {
         if (c.x.has("phrase")) return
-        val p = Regles.auHasard("dress.fichier.corrompu")
+        val p = Langue.brutes("dress.fichier.corrompu").random()
         c.x.put("phrase", p)
         File(c.d, "corrompu.txt").writeText(p.reversed() + "\n")
     }
     private fun prepCri(c: Ctx) {
         if (c.x.has("cri")) return
         // en MAJUSCULES ASCII : la commande « tr A-Z a-z » doit pouvoir les chuchoter
-        val p = Regles.auHasard("dress.fichier.cri")
+        val p = Langue.brutes("dress.fichier.cri").random()
         c.x.put("cri", p)
         File(c.d, "cri.txt").writeText(p + "\n")
     }

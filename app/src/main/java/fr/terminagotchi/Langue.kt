@@ -113,6 +113,9 @@ object Langue {
         return if (v is JSONArray) (0 until v.length()).map { v.optString(it) } else listOf(v.toString())
     }
 
+    /** Les valeurs brutes dans la langue choisie, sinon en français : pour les données écrites dans des fichiers. */
+    fun brutes(cle: String): List<String> = valeurs(cle, courante).ifEmpty { valeurs(cle, DEFAUT) }
+
     fun auHasard(cle: String, vararg params: Pair<String, Any?>): String {
         val v = brut(cle) ?: return cle
         val l = if (v is JSONArray) (0 until v.length()).map { v.optString(it) } else listOf(v.toString())

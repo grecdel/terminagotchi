@@ -449,7 +449,7 @@ class Jeu(ctx: Context) {
     fun changerLangue(code: String) {
         langue = Langue.definir(code)
         dejaChoisie = langue
-        app.getSharedPreferences("terminagotchi", Context.MODE_PRIVATE).edit().putString("langue", langue).apply()
+        try { app.getSharedPreferences("terminagotchi", Context.MODE_PRIVATE).edit().putString("langue", langue).apply() } catch (e: Exception) { }
     }
 
     private var dejaChoisie: String?
