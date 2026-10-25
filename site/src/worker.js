@@ -5,13 +5,12 @@
  */
 
 import BESTIAIRE from "./bestiaire.js";
+import { LANGUES, NOMS_LANGUES, LOCALES, RTL, choisirLangue, cookieLangue, textes, libelle } from "./i18n.js";
 
 const DEPOT = "https://github.com/grecdel/terminagotchi-android";
 const STATS = ["Intelligence", "Agilité", "Force", "Endurance"];
-const COURT = { Intelligence: "INT", "Agilité": "AGI", Force: "FOR", Endurance: "END" };
 const COULEUR = { Intelligence: 39, "Agilité": 78, Force: 203, Endurance: 221 };
 const STADES = ["Œuf", "Bébé", "Ado", "Adulte"];
-const FORMES = { Intelligence: "Hacker", Force: "Titan", "Agilité": "Éclair", Endurance: "Carapace" };
 const ESPECES = BESTIAIRE.especes.map((e) => e.nom);
 const PAR_NOM = Object.fromEntries(BESTIAIRE.especes.map((e) => [e.nom, e]));
 const PAR_ID = Object.fromEntries(BESTIAIRE.especes.map((e) => [e.id, e]));
@@ -19,7 +18,6 @@ const PUBLIQUES = BESTIAIRE.especes.filter((e) => !e.secrete);
 // espèces qui ont un dessin complet animé (bandes d'images dans public/anim/<id>/<stade>/<animation>.webp)
 const ANIMEES = new Set(["abyssor"]);
 const STADES_B = ["enfant", "ado", "adulte", "finale"];
-const NOM_STADE = { enfant: "enfant", ado: "ado", adulte: "adulte", finale: "forme finale" };   // les espèces secrètes ne figurent pas au bestiaire
 const MARQUES = new Set(BESTIAIRE.marques);
 const HUMEURS = new Set(BESTIAIRE.humeurs);
 const COULEUR_RARETE = { commune: "#b0b0c0", "peu commune": "#5fd787", rare: "#5fafff", "légendaire": "#ffaf00" };
@@ -376,42 +374,41 @@ async function drapeauDe(secret, joueurId, n) {
   return "TG{" + (await hmac(secret, joueurId + ":ctf:" + n)).slice(0, 14) + "}";
 }
 
-async function ctf(requete, env, pseudo, n, suite) {
+async function ctf(requete, env, pseudo, n, suite, L) {
+  const T = L.t.ctfTexte;
   const j = await env.DB.prepare("SELECT id, pseudo FROM joueurs WHERE pseudo = ?").bind(pseudo).first();
-  if (!j) return texte("Joueur inconnu. Inscris-toi d'abord depuis l'appli ou le jeu PC (commande : compte creer).\n", 404);
+  if (!j) return texte(T.inconnu, 404);
   const secret = await secretServeur(env);
   const f = await drapeauDe(secret, j.id, n);
   const base = `/ctf/${j.pseudo}`;
-  const valider = `\nQuand tu l'as : drapeau ${"TG{…}"}  (dans le jeu, sur PC ou téléphone)\n`;
+  const titre = (k) => T.epreuve(k, L.t.ctf.epreuves[k - 1]) + "\n";
   switch (n) {
     case 1:
-      return texte(`🚩 Épreuve 1 : L'en-tête caché\nLe drapeau n'est PAS dans cette page.\nUne réponse web contient aussi des « en-têtes » invisibles…\nIndice : curl -I <adresse de cette page>\n${valider}`,
-        200, { "x-drapeau": f });
+      return texte(titre(1) + T.e1 + T.valider, 200, { "x-drapeau": f });
     case 2:
-      if (suite === "cachette") return texte(`Bien joué, petit robot ! Ton drapeau : ${f}\n`);
-      return texte(`🚩 Épreuve 2 : Le fichier des robots\nLes sites disent aux robots où ils n'ont PAS le droit d'aller.\nCe fichier s'appelle toujours robots.txt, à la racine du site.\nIndice : curl <adresse du site>/robots.txt\n${valider}`);
+      if (suite === "cachette") return texte(T.e2ok(f));
+      return texte(titre(2) + T.e2 + T.valider);
     case 3:
       if (requete.method === "POST") {
         const t = await requete.text();
         const mot = new URLSearchParams(t).get("mot");
-        if (mot && mot.toLowerCase() === "terminal") return texte(`Le guichet s'ouvre ! Ton drapeau : ${f}\n`);
-        return texte("Le guichet reste fermé : mauvais mot.\n", 403);
+        if (mot && mot.toLowerCase() === "terminal") return texte(T.e3ok(f));
+        return texte(T.e3non, 403);
       }
-      return texte(`🚩 Épreuve 3 : Le guichet\nCe guichet n'accepte pas les visites : il faut lui ENVOYER (POST) le bon mot.\nLe mot est écrit à l'envers : lanimret\nIndice : curl -d "mot=..." <adresse de cette page>\n${valider}`);
+      return texte(titre(3) + T.e3 + T.valider);
     case 4: {
       const cookie = requete.headers.get("cookie") || "";
-      if (/(^|;\s*)role=admin(\s*;|$)/.test(cookie)) return texte(`Bienvenue, « admin »… (le serveur t'a cru !) Ton drapeau : ${f}\n`);
-      return texte(`🚩 Épreuve 4 : Le cookie de confiance\nTu es un simple « visiteur » : regarde le cookie que je t'envoie (curl -i).\nSeuls les « admin » voient le drapeau…\nIndice : curl -b "role=..." <adresse de cette page>\n${valider}`,
-        200, { "set-cookie": "role=visiteur; Path=" + base + "/4" });
+      if (/(^|;\s*)role=admin(\s*;|$)/.test(cookie)) return texte(T.e4ok(f));
+      return texte(titre(4) + T.e4 + T.valider, 200, { "set-cookie": "role=visiteur; Path=" + base + "/4" });
     }
     case 5:
       return json({
-        epreuve: "5 : La boîte JSON",
-        aide: "Le drapeau est rangé quelque part là-dedans. Astuce sur PC : curl <adresse> | python3 -m json.tool",
+        epreuve: T.epreuve(5, L.t.ctf.epreuves[4]),
+        aide: T.e5,
         tiroirs: { haut: { vide: true }, milieu: { chaussettes: 12, boite: { couvercle: "rouge", contenu: { secret: f } } }, bas: [] },
       });
     default:
-      return texte("Il n'y a que 5 épreuves.\n", 404);
+      return texte(T.cinq, 404);
   }
 }
 
@@ -446,7 +443,7 @@ function x256(n) {
 
 const SHINY_JOUEUR = { 39: 220, 78: 51, 203: 129, 221: 255, 141: 219 };
 
-function svgCreature(niveau, forme, stats, taille = 8, shiny = false) {
+function svgCreature(niveau, forme, stats, taille = 8, shiny = false, etiquette = "créature") {
   const st = stadeDe(niveau);
   const dominant = Object.values(stats || {}).some((v) => v > 0)
     ? Object.entries(stats).sort((a, b) => b[1] - a[1])[0][0] : null;
@@ -463,36 +460,55 @@ function svgCreature(niveau, forme, stats, taille = 8, shiny = false) {
   rows.forEach((r, y) => [...r].forEach((c, x) => {
     if (pal[c] !== undefined) rects += `<rect x="${x}" y="${y}" width="1.02" height="1.02" fill="${x256(pal[c])}"/>`;
   }));
-  return `<svg class="creature" viewBox="0 0 ${w} ${rows.length}" width="${w * taille}" height="${rows.length * taille}" shape-rendering="crispEdges" role="img" aria-label="créature">${rects}</svg>`;
+  return `<svg class="creature" viewBox="0 0 ${w} ${rows.length}" width="${w * taille}" height="${rows.length * taille}" shape-rendering="crispEdges" role="img" aria-label="${echapper(etiquette)}">${rects}</svg>`;
 }
+
+// polices : la police à chasse fixe d'abord, puis une police de repli par écriture (CJK, devanagari, bengali, arabe, nastaliq)
+const MONO = `ui-monospace,SFMono-Regular,Menlo,Consolas,"Liberation Mono","DejaVu Sans Mono"`;
+const POLICES = {
+  zh: `${MONO},"Noto Sans Mono CJK SC","Noto Sans CJK SC","Source Han Sans SC","PingFang SC","Microsoft YaHei","WenQuanYi Micro Hei",sans-serif`,
+  ja: `${MONO},"Noto Sans Mono CJK JP","Noto Sans CJK JP","Source Han Sans JP","Hiragino Sans","Hiragino Kaku Gothic ProN","Yu Gothic","Meiryo",sans-serif`,
+  hi: `${MONO},"Noto Sans Devanagari","Nirmala UI","Mangal","Lohit Devanagari","Kohinoor Devanagari",sans-serif`,
+  bn: `${MONO},"Noto Sans Bengali","Nirmala UI","Vrinda","Lohit Bengali","Kohinoor Bangla",sans-serif`,
+  // arabe et ourdou : la police de l'écriture d'abord (les lettres arabes en chasse fixe sont peu lisibles)
+  ar: `"Noto Sans Arabic","Noto Naskh Arabic","Segoe UI","Tahoma","Geeza Pro","DejaVu Sans",${MONO},sans-serif`,
+  ur: `"Noto Nastaliq Urdu","Jameel Noori Nastaliq","Urdu Typesetting","Noto Naskh Arabic","Noto Sans Arabic","Segoe UI","Tahoma",${MONO},sans-serif`,
+};
 
 const CSS = `
 :root{--fond:#14141f;--carte:#1e1e2e;--bord:#3a3a55;--texte:#e6e6e6;--doux:#9a9ab0;--vert:#5fd787;--rose:#ff87ff;--jaune:#ffd75f;--bleu:#87afff}
 *{box-sizing:border-box}
-body{margin:0;background:var(--fond);color:var(--texte);font:16px/1.5 ui-monospace,SFMono-Regular,Menlo,Consolas,"Liberation Mono",monospace}
+body{margin:0;background:var(--fond);color:var(--texte);font:16px/1.5 ${MONO},monospace}
+${Object.entries(POLICES).map(([l, p]) => `body:lang(${l}){font-family:${p}}`).join("\n")}
+body:lang(ur){line-height:2.1}
+body:lang(ar){line-height:1.8}
 a{color:var(--bleu)}
 header{border-bottom:1px solid var(--bord);background:#181826}
 nav{max-width:960px;margin:0 auto;padding:12px 16px;display:flex;gap:18px;align-items:center;flex-wrap:wrap}
 nav .logo{color:var(--rose);font-weight:bold;text-decoration:none;font-size:18px}
 nav a{text-decoration:none}
+.langues{margin-inline-start:auto;display:flex;gap:6px;align-items:center}
+.langues select{background:var(--carte);color:var(--texte);border:1px solid var(--bord);border-radius:10px;padding:4px 8px;font:inherit;font-size:14px;max-width:12em}
+.langues button{background:#5f5fd7;color:#fff;border:0;border-radius:8px;padding:4px 10px;font:inherit}
 main{max-width:960px;margin:0 auto;padding:24px 16px 64px}
 h1{font-size:28px;margin:8px 0 4px}h2{font-size:20px;margin:32px 0 12px;color:var(--jaune)}
 .doux{color:var(--doux)}
 .carte{background:var(--carte);border:1px solid var(--bord);border-radius:16px;padding:18px}
 .grille{display:grid;gap:14px;grid-template-columns:repeat(auto-fit,minmax(240px,1fr))}
 .hero{display:flex;gap:24px;align-items:center;flex-wrap:wrap}
-.btn{display:inline-block;background:#5f5fd7;color:#fff;text-decoration:none;padding:10px 16px;border-radius:12px;margin:6px 8px 6px 0}
+.btn{display:inline-block;background:#5f5fd7;color:#fff;text-decoration:none;padding:10px 16px;border-radius:12px;margin-block:6px;margin-inline:0 8px}
 .btn.vert{background:#2f7d50}
 table{width:100%;border-collapse:collapse}
-td,th{padding:8px 6px;border-bottom:1px solid var(--bord);text-align:left}
+td,th{padding:8px 6px;border-bottom:1px solid var(--bord);text-align:start}
 th{color:var(--doux);font-weight:normal;font-size:13px}
-td.num{text-align:right}
-.badge{display:inline-flex;gap:8px;align-items:center;background:#26263a;border:1px solid var(--bord);border-radius:999px;padding:6px 12px;margin:4px 6px 4px 0;text-decoration:none;color:var(--texte)}
+td.num{text-align:end}
+.badge{display:inline-flex;gap:8px;align-items:center;background:#26263a;border:1px solid var(--bord);border-radius:999px;padding:6px 12px;margin-block:4px;margin-inline:0 6px;text-decoration:none;color:var(--texte)}
 .badge.verifie{border-color:#2f7d50}
 .barre{height:8px;background:#33334a;border-radius:4px;overflow:hidden}.barre>i{display:block;height:100%;background:var(--vert)}
-code,pre{background:#11111b;border-radius:8px}
-code{padding:2px 6px}
-pre{padding:12px;overflow-x:auto}
+code,pre{background:#11111b;border-radius:8px;font-family:${MONO},monospace;direction:ltr;unicode-bidi:isolate}
+code{padding:2px 6px;line-height:1.5}
+pre{padding:12px;overflow-x:auto;text-align:left}
+.ltr{direction:ltr;unicode-bidi:isolate}
 .creature{image-rendering:pixelated;max-width:100%;height:auto}
 .rgb{background:linear-gradient(90deg,#ff5f5f,#ffd75f,#5fd787,#5fd7ff,#af87ff,#ff87ff,#ff5f5f);background-size:200% auto;
  -webkit-background-clip:text;background-clip:text;color:transparent;animation:rgb 4s linear infinite;font-weight:bold}
@@ -504,140 +520,181 @@ pre{padding:12px;overflow-x:auto}
 .bestiole svg{width:96px;height:96px}
 .bestiole .num{color:var(--doux);font-size:12px}
 .rar{font-size:12px;border-radius:999px;padding:1px 8px;border:1px solid currentColor;display:inline-block;margin-top:4px}
-.capture{text-align:left}
+.capture{text-align:start}
 .capture.shiny{border-color:#ffd75f;box-shadow:0 0 18px #ffd75f44}
-.anime{background-size:auto 100%;background-repeat:no-repeat;image-rendering:pixelated;animation:anime 1.2s steps(12) infinite}
+.anime{direction:ltr;background-size:auto 100%;background-repeat:no-repeat;image-rendering:pixelated;animation:anime 1.2s steps(12) infinite}
 @keyframes anime{from{background-position:0 0}to{background-position:calc(var(--px) * -12) 0}}
 @media (prefers-reduced-motion:reduce){.anime{animation:none}}
 .capture .marque{font-size:14px;margin:6px 0}
-.filtres a{margin-right:10px;font-size:14px}
+.filtres a{margin-inline-end:10px;font-size:14px}
 .stats-b{display:grid;grid-template-columns:repeat(5,1fr);gap:6px;text-align:center}
 .stats-b div{background:#26263a;border-radius:8px;padding:6px 0}
-@media (max-width:600px){h1{font-size:22px}td,th{padding:6px 3px;font-size:14px}}
+@media (max-width:600px){h1{font-size:22px}td,th{padding:6px 3px;font-size:14px}.langues{margin-inline-start:0}}
 `;
 
-function page(titre, contenu, description = "Terminagotchi : la créature qui se nourrit de tes commandes et t'apprend le terminal.", statut = 200) {
-  return new Response(`<!doctype html><html lang="fr"><head><meta charset="utf-8">
+/** Le contexte de langue d'une requête : langue, textes, sens d'écriture, format des dates. */
+function contexteLangue(requete, url) {
+  const { lang, demandee } = choisirLangue(requete, url);
+  return { lang, demandee, t: textes(lang), url, dir: RTL.has(lang) ? "rtl" : "ltr", locale: LOCALES[lang] };
+}
+
+/** Un nom venu des données ou d'un joueur (bestiole, pseudo…) : isolé pour ne pas se mélanger au sens d'écriture. */
+const bdi = (s) => `<bdi>${echapper(s)}</bdi>`;
+const numero = (e) => `<bdi>#${String(e.numero).padStart(3, "0")}</bdi>`;
+const lib = (L, table, cle) => libelle(L.t[table], cle);
+
+function selecteurLangue(L) {
+  const caches = [...L.url.searchParams].filter(([k]) => k !== "lang")
+    .map(([k, v]) => `<input type="hidden" name="${echapper(k)}" value="${echapper(v)}">`).join("");
+  const options = LANGUES.map((l) => `<option value="${l}" lang="${l}" dir="${RTL.has(l) ? "rtl" : "ltr"}"${l === L.lang ? " selected" : ""}>${NOMS_LANGUES[l]}</option>`).join("");
+  return `<form class="langues" method="get" action="${echapper(L.url.pathname)}">${caches}<span aria-hidden="true">🌐</span>`
+    + `<select name="lang" aria-label="${echapper(L.t.nav.langue)}" onchange="this.form.submit()">${options}</select>`
+    + `<noscript><button type="submit">OK</button></noscript></form>`;
+}
+
+function page(L, titre, contenu, description = L.t.description, statut = 200) {
+  const n = L.t.nav;
+  return new Response(`<!doctype html><html lang="${L.lang}" dir="${L.dir}"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>${echapper(titre)} · Terminagotchi</title><meta name="description" content="${echapper(description)}">
 <style>${CSS}</style></head><body>
-<header><nav><a class="logo" href="/">▞ Terminagotchi</a><a href="/classement">Classement</a><a href="/bestiaire">Bestiaire</a><a href="/captures">Captures</a><a href="/ctf">CTF web</a><a href="/#telecharger">Télécharger</a></nav></header>
-<main>${contenu}</main></body></html>`, { status: statut, headers: { "content-type": "text/html; charset=utf-8" } });
+<header><nav><a class="logo" href="/"><bdi>▞ Terminagotchi</bdi></a><a href="/classement">${n.classement}</a><a href="/bestiaire">${n.bestiaire}</a><a href="/captures">${n.captures}</a><a href="/ctf">${n.ctf}</a><a href="/#telecharger">${n.telecharger}</a>${selecteurLangue(L)}</nav></header>
+<main>${contenu}</main></body></html>`, {
+    status: statut,
+    headers: { "content-type": "text/html; charset=utf-8", "content-language": L.lang, vary: "Accept-Language, Cookie" },
+  });
 }
 
-function ligneClassement(j, i) {
-  const forme = j.forme ? FORMES[j.forme] : "";
-  return `<tr><td>${i + 1}</td><td><a href="/joueur/${encodeURIComponent(j.pseudo)}">${echapper(j.pseudo)}</a></td>
-<td>${echapper(j.nom)} <span class="doux">${echapper(STADES[stadeDe(j.niveau)])} ${echapper(forme)}</span></td>
-<td class="num">niv. ${j.niveau}</td><td class="num">${j.xp} XP</td></tr>`;
+/** Titre d'un badge dans la langue choisie (le serveur l'enregistre en français). */
+function titreBadge(L, b) {
+  const T = L.t.badges;
+  if (!T) return b.titre;
+  if (b.type === "recense") return T.recense;
+  if (b.type === "multi") return T.multi;
+  if (b.type === "ctf_web_tout") return T.ctfTout;
+  const m = /^ctf_web_(\d)$/.exec(b.type || "");
+  const ep = m && L.t.ctf.epreuves[Number(m[1]) - 1];
+  return ep ? T.ctf(ep) : b.titre;
 }
 
-async function pageAccueil(env) {
+function ligneClassement(L, j, i) {
+  const forme = j.forme ? lib(L, "formes", j.forme) : "";
+  return `<tr><td>${i + 1}</td><td><a href="/joueur/${encodeURIComponent(j.pseudo)}">${bdi(j.pseudo)}</a></td>
+<td>${bdi(j.nom)} <span class="doux">${echapper(L.t.stades[stadeDe(j.niveau)])} ${echapper(forme)}</span></td>
+<td class="num">${echapper(L.t.niv(j.niveau))}</td><td class="num"><bdi>${j.xp} XP</bdi></td></tr>`;
+}
+
+function tableClassement(L, lignes) {
+  return `<table><tr><th>#</th><th>${L.t.thJoueur}</th><th>${L.t.thCreature}</th><th></th><th></th></tr>${lignes}</table>`;
+}
+
+async function pageAccueil(env, L) {
+  const A = L.t.accueil;
   const top = await env.DB.prepare("SELECT pseudo, etat, xp, niveau FROM joueurs ORDER BY xp DESC, cree ASC LIMIT 10").all();
   const n = (await env.DB.prepare("SELECT COUNT(*) AS n FROM joueurs").first()).n;
   const lignes = top.results.map((j, i) => {
     const e = lireEtat(j);
-    return ligneClassement({ pseudo: j.pseudo, nom: e.nom || j.pseudo, niveau: j.niveau, xp: j.xp, forme: e.forme }, i);
+    return ligneClassement(L, { pseudo: j.pseudo, nom: e.nom || j.pseudo, niveau: j.niveau, xp: j.xp, forme: e.forme }, i);
   }).join("");
-  return page("Accueil", `
+  return page(L, A.titre, `
 <section class="hero">
-  <div>${svgCreature(12, "Agilité", {}, 10)}</div>
+  <div>${svgCreature(12, "Agilité", {}, 10, false, L.t.creature)}</div>
   <div style="flex:1;min-width:260px">
-    <h1>La créature qui mange tes commandes</h1>
-    <p>Chaque commande tapée dans le terminal la nourrit. En grandissant, elle t'apprend à naviguer, créer, protéger…
-    puis à explorer des donjons, jouer au hacker et coder ton propre jeu.</p>
-    <p class="doux">${n} créature${n > 1 ? "s" : ""} recensée${n > 1 ? "s" : ""}.</p>
+    <h1>${A.heroTitre}</h1>
+    <p>${A.heroTexte}</p>
+    <p class="doux">${A.recensees(n)}</p>
   </div>
 </section>
-<h2 id="telecharger">Télécharger</h2>
+<h2 id="telecharger">${A.telecharger}</h2>
 <div class="grille">
-  <div class="carte"><b>📱 Android</b><p class="doux">Widget + terminal intégré, donjon, CTF, Doom-like.</p>
-    <a class="btn vert" href="${DEPOT}/releases/latest/download/terminagotchi.apk">terminagotchi.apk</a></div>
-  <div class="carte"><b>💻 PC (Linux, Mac, Windows)</b><p class="doux">Vit dans ton vrai terminal. Il faut Python 3.</p>
-    <a class="btn" href="${DEPOT}/releases/latest/download/terminagotchi.pyz">terminagotchi.pyz</a>
-    <p class="doux">Puis : <code>python3 terminagotchi.pyz</code></p></div>
-  <div class="carte"><b>🔗 La même créature partout</b><p class="doux">Dans le jeu : <code>compte creer TonPseudo</code>,
-    puis <code>compte code</code> pour obtenir un code, et sur l'autre appareil <code>compte lier CODE</code>.</p></div>
+  <div class="carte"><b>📱 Android</b><p class="doux">${A.android}</p>
+    <a class="btn vert" href="${DEPOT}/releases/latest/download/terminagotchi.apk"><bdi>terminagotchi.apk</bdi></a></div>
+  <div class="carte"><b>💻 ${A.pcTitre}</b><p class="doux">${A.pc}</p>
+    <a class="btn" href="${DEPOT}/releases/latest/download/terminagotchi.pyz"><bdi>terminagotchi.pyz</bdi></a>
+    <p class="doux">${A.puis} <code>python3 terminagotchi.pyz</code></p></div>
+  <div class="carte"><b>🔗 ${A.partoutTitre}</b><p class="doux">${A.partout}</p></div>
 </div>
-<h2>Classement</h2>
-<div class="carte">${lignes ? `<table><tr><th>#</th><th>Joueur</th><th>Créature</th><th></th><th></th></tr>${lignes}</table>`
-    : `<p class="doux">Personne pour l'instant… sois la première créature recensée !</p>`}
-<p><a href="/classement">Voir tout le classement →</a></p></div>
-<h2>Des preuves, pas des promesses</h2>
-<div class="carte"><p>Les badges marqués <b>✔ vérifié</b> sont délivrés par le serveur lui-même : par exemple, chaque
-drapeau du <a href="/ctf">CTF web</a> est personnel et contrôlé ici. Chaque badge a sa page publique, que tu peux partager.</p>
-<p class="doux">Le reste du profil (niveau, compétences…) est déclaré par l'appli et affiché comme tel.</p></div>`);
+<h2>${A.classement}</h2>
+<div class="carte">${lignes ? tableClassement(L, lignes) : `<p class="doux">${A.personne}</p>`}
+<p><a href="/classement">${A.voirTout}</a></p></div>
+<h2>${A.preuvesTitre}</h2>
+<div class="carte"><p>${A.preuves}</p>
+<p class="doux">${A.preuvesDoux}</p></div>`);
 }
 
-async function pageClassement(env) {
+async function pageClassement(env, L) {
+  const C = L.t.classement;
   const r = await env.DB.prepare("SELECT pseudo, etat, xp, niveau FROM joueurs ORDER BY xp DESC, cree ASC LIMIT 100").all();
   const lignes = r.results.map((j, i) => {
     const e = lireEtat(j);
-    return ligneClassement({ pseudo: j.pseudo, nom: e.nom || j.pseudo, niveau: j.niveau, xp: j.xp, forme: e.forme }, i);
+    return ligneClassement(L, { pseudo: j.pseudo, nom: e.nom || j.pseudo, niveau: j.niveau, xp: j.xp, forme: e.forme }, i);
   }).join("");
-  return page("Classement", `<h1>🏆 Classement</h1><p class="doux">Les 100 créatures les plus expérimentées.</p>
-<div class="carte">${lignes ? `<table><tr><th>#</th><th>Joueur</th><th>Créature</th><th></th><th></th></tr>${lignes}</table>`
-    : `<p class="doux">Personne pour l'instant.</p>`}</div>`);
+  return page(L, C.titre, `<h1>${C.h1}</h1><p class="doux">${C.sous}</p>
+<div class="carte">${lignes ? tableClassement(L, lignes) : `<p class="doux">${C.personne}</p>`}</div>`);
 }
 
-async function pageJoueur(env, pseudo) {
+async function pageJoueur(env, L, pseudo) {
+  const J = L.t.joueur;
   const p = await profilPublic(env, pseudo);
-  if (!p) return page("Inconnu", `<h1>Joueur inconnu</h1><p><a href="/classement">Retour au classement</a></p>`);
+  if (!p) return page(L, J.inconnuTitre, `<h1>${J.inconnu}</h1><p><a href="/classement">${J.retour}</a></p>`);
   const lo = 10 * (p.niveau - 1) ** 2;
   const hi = 10 * p.niveau ** 2;
   const pct = Math.round((100 * (p.xp - lo)) / Math.max(1, hi - lo));
-  const stats = STATS.map((s) => `<div>${COURT[s]} <b>${p.stats[s]}</b></div>`).join("");
-  const badges = p.badges.map((b) => `<a class="badge verifie" href="${b.lien}">✔ ${echapper(b.titre)}</a>`).join("")
-    || `<span class="doux">Aucun badge vérifié pour l'instant.</span>`;
+  const stats = STATS.map((s) => `<div title="${echapper(lib(L, "stats", s))}">${echapper(L.t.court[s])} <b>${p.stats[s]}</b></div>`).join("");
+  const badges = p.badges.map((b) => `<a class="badge verifie" href="${b.lien}">✔ ${echapper(titreBadge(L, b))}</a>`).join("")
+    || `<span class="doux">${J.aucunBadge}</span>`;
   const coll = BESTIAIRE.especes.filter((e) => p.collection[e.nom]).map((e) =>
-    `<a class="bestiole" href="${e.secrete ? `/captures?joueur=${encodeURIComponent(p.pseudo)}` : `/bestiaire/${e.id}`}"><div style="display:flex;justify-content:center">${visuel(e)}</div><div class="num">#${String(e.numero).padStart(3, "0")}</div>
-     <div>${echapper(e.nom)} ×${p.collection[e.nom]}</div></a>`).join("");
-  const collHtml = coll ? `<p class="doux">${Object.keys(p.collection).filter((k) => p.collection[k]).length}/150 espèces</p><div class="grille-b">${coll}</div>`
-    : `<span class="doux">Aucune bestiole capturée.</span>`;
-  const comp = p.competences.map((c) => `<span class="badge">◇ ${echapper(c)}</span>`).join("")
-    || `<span class="doux">Aucune.</span>`;
-  const forme = p.forme && p.niveau >= 5 ? FORMES[p.forme] : "";
-  const appareils = p.appareils.map((a) => (a === "android" ? "📱 téléphone" : "💻 PC")).join(" + ") || "—";
-  return page(p.pseudo, `
+    `<a class="bestiole" href="${e.secrete ? `/captures?joueur=${encodeURIComponent(p.pseudo)}` : `/bestiaire/${e.id}`}"><div style="display:flex;justify-content:center">${visuel(L, e)}</div><div class="num">${numero(e)}</div>
+     <div>${bdi(e.nom)} <bdi>×${p.collection[e.nom]}</bdi></div></a>`).join("");
+  const collHtml = coll ? `<p class="doux">${J.nbEspeces(Object.keys(p.collection).filter((k) => p.collection[k]).length)}</p><div class="grille-b">${coll}</div>`
+    : `<span class="doux">${J.aucuneBestiole}</span>`;
+  const comp = p.competences.map((c) => `<span class="badge">◇ ${bdi(c)}</span>`).join("")
+    || `<span class="doux">${J.aucune}</span>`;
+  const forme = p.forme && p.niveau >= 5 ? lib(L, "formes", p.forme) : "";
+  const appareils = p.appareils.map((a) => (a === "android" ? J.telephone : J.pc)).join(" + ") || "—";
+  const stade = L.t.stades[stadeDe(p.niveau)];
+  return page(L, p.pseudo, `
 <section class="hero">
-  <div class="carte">${svgCreature(p.niveau, p.forme, p.stats, 10, p.shiny)}</div>
+  <div class="carte">${svgCreature(p.niveau, p.forme, p.stats, 10, p.shiny, L.t.creature)}</div>
   <div style="flex:1;min-width:260px">
-    <h1>${p.shiny ? `<span class="rgb">${echapper(p.nom)} ✨</span>` : echapper(p.nom)}</h1>
-    <p class="doux">créature de <b>${echapper(p.pseudo)}</b> · ${echapper(p.stade)} ${echapper(forme)} · caractère ${echapper(p.trait || "?")}</p>
-    <p>Niveau <b>${p.niveau}</b> · ${p.xp} XP · <b>#${p.rang}</b> au classement</p>
+    <h1>${p.shiny ? `<span class="rgb">${bdi(p.nom)} ✨</span>` : bdi(p.nom)}</h1>
+    <p class="doux">${J.ligneCreature(bdi(p.pseudo), echapper(stade), echapper(forme), bdi(p.trait || "?"))}</p>
+    <p>${J.ligneNiveau(p.niveau, p.xp, p.rang)}</p>
     <div class="barre"><i style="width:${pct}%"></i></div>
     <div class="grille" style="grid-template-columns:repeat(4,1fr);margin-top:12px">${stats}</div>
-    <p class="doux">${p.commandes} commandes mangées · ${p.gouts} goûts découverts · joue sur ${appareils}</p>
+    <p class="doux">${J.ligneActivite(p.commandes, p.gouts, appareils)}</p>
   </div>
 </section>
-<h2>Badges vérifiés par le serveur</h2><div>${badges}</div>
-<h2>Compétences <span class="doux" style="font-size:14px">(déclarées par l'appli)</span></h2><div>${comp}</div>
-<h2>Collection</h2>${collHtml}
-${p.partage ? `<p><a href="/captures?joueur=${encodeURIComponent(p.pseudo)}">Voir ses captures uniques →</a></p>` : ""}
-<p class="doux" style="margin-top:32px">Inscrit le ${new Date(p.inscrit).toLocaleDateString("fr-FR")} ·
-<a href="/api/profil/${encodeURIComponent(p.pseudo)}">données publiques (JSON)</a></p>`, `La créature ${p.nom} de ${p.pseudo}, niveau ${p.niveau}.`);
+<h2>${J.badges}</h2><div>${badges}</div>
+<h2>${J.competences} <span class="doux" style="font-size:14px">${J.declarees}</span></h2><div>${comp}</div>
+<h2>${J.collection}</h2>${collHtml}
+${p.partage ? `<p><a href="/captures?joueur=${encodeURIComponent(p.pseudo)}">${J.voirCaptures}</a></p>` : ""}
+<p class="doux" style="margin-top:32px">${J.inscrit(new Date(p.inscrit).toLocaleDateString(L.locale))} ·
+<a href="/api/profil/${encodeURIComponent(p.pseudo)}">${J.json}</a></p>`, J.description(p.nom, p.pseudo, p.niveau));
 }
 
-async function pageBadge(env, id) {
+async function pageBadge(env, L, id) {
+  const B = L.t.badge;
   const b = await env.DB.prepare("SELECT b.*, j.pseudo FROM badges b JOIN joueurs j ON j.id = b.joueur WHERE b.id = ?").bind(id).first();
-  if (!b) return page("Badge inconnu", `<h1>Badge inconnu</h1><p class="doux">Ce badge n'existe pas : il est peut-être faux.</p>`);
-  const date = new Date(b.date).toLocaleString("fr-FR", { timeZone: "Europe/Paris" });
-  return page(b.titre, `<div class="carte" style="max-width:560px;margin:24px auto;text-align:center">
-<div style="font-size:56px">🏅</div><h1>${echapper(b.titre)}</h1>
-<p>délivré à <a href="/joueur/${encodeURIComponent(b.pseudo)}"><b>${echapper(b.pseudo)}</b></a> le ${echapper(date)}</p>
-<p style="color:var(--vert)">✔ Vérifié : ce badge est enregistré par le serveur du recensement Terminagotchi.</p>
-<p class="doux">Identifiant : <code>${echapper(b.id)}</code> · <a href="/api/badge/${echapper(b.id)}">preuve (JSON)</a></p></div>`,
-  `Badge « ${b.titre} » de ${b.pseudo}.`);
+  if (!b) return page(L, B.inconnuTitre, `<h1>${B.inconnuTitre}</h1><p class="doux">${B.faux}</p>`);
+  const date = new Date(b.date).toLocaleString(L.locale, { timeZone: "Europe/Paris" });
+  const titre = titreBadge(L, b);
+  return page(L, titre, `<div class="carte" style="max-width:560px;margin:24px auto;text-align:center">
+<div style="font-size:56px">🏅</div><h1>${echapper(titre)}</h1>
+<p>${B.delivre(`<a href="/joueur/${encodeURIComponent(b.pseudo)}"><b>${bdi(b.pseudo)}</b></a>`, `<bdi>${echapper(date)}</bdi>`)}</p>
+<p style="color:var(--vert)">${B.verifie}</p>
+<p class="doux">${B.identifiant} : <code>${echapper(b.id)}</code> · <a href="/api/badge/${echapper(b.id)}">${B.preuve}</a></p></div>`,
+  B.description(titre, b.pseudo));
 }
 
 // ---------------------------------------------------------------- bestioles
 /** Le dessin d'une bestiole : animé (stade, teinte shiny) si son espèce a un dessin complet, sinon le petit sprite. */
-function visuel(e, c = {}, taille = 6, anim = "statique") {
+function visuel(L, e, c = {}, taille = 6, anim = "statique") {
   if (!ANIMEES.has(e.id)) return svgBestiole(e, c.shiny, taille);
   const stade = STADES_B.includes(c.stade) ? c.stade : "adulte";
   const px = 16 * taille;
   const filtre = c.shiny ? `filter:hue-rotate(${Math.round((c.teinte || 0.5) * 360)}deg);` : "";
-  return `<div class="anime" role="img" aria-label="${echapper(e.nom)} (${NOM_STADE[stade]})"
+  return `<div class="anime" role="img" aria-label="${echapper(e.nom)} (${echapper(lib(L, "stadesB", stade))})"
     style="width:${px}px;height:${px}px;background-image:url(/anim/${e.id}/${stade}/${anim}.webp);--px:${px}px;${filtre}"></div>`;
 }
 
@@ -654,12 +711,13 @@ function svgBestiole(e, shiny = false, taille = 6) {
   return `<svg viewBox="0 0 ${n} ${n}" width="${n * taille}" height="${n * taille}" shape-rendering="crispEdges" role="img" aria-label="${echapper(e.nom)}">${r}</svg>`;
 }
 
-function etiquetteRarete(r) {
-  return `<span class="rar" style="color:${COULEUR_RARETE[r]}">${echapper(r)}</span>`;
+function etiquetteRarete(L, r) {
+  return `<span class="rar" style="color:${COULEUR_RARETE[r]}">${echapper(lib(L, "raretes", r))}</span>`;
 }
 
 /** Le glossaire classique des 150 espèces (apparence normale, sans variantes ni shiny). */
-function pageBestiaire(url) {
+function pageBestiaire(L, url) {
+  const B = L.t.bestiaire;
   const famille = url.searchParams.get("famille") || "";
   const rarete = url.searchParams.get("rarete") || "";
   const liste = PUBLIQUES.filter((e) => (!famille || e.famille === famille) && (!rarete || e.rarete === rarete));
@@ -669,53 +727,57 @@ function pageBestiaire(url) {
     const actif = (k === "famille" ? famille : rarete) === v;
     return `<a href="/bestiaire${p.toString() ? "?" + p : ""}"${actif ? ' style="color:var(--jaune)"' : ""}>${t}</a>`;
   };
-  const filtresF = [lien("famille", "", "toutes"), ...BESTIAIRE.familles.map((f) => lien("famille", f.nom, f.icone + " " + f.nom))].join(" ");
-  const filtresR = [lien("rarete", "", "toutes"), ...BESTIAIRE.raretes.map((r) => lien("rarete", r, r))].join(" ");
+  const filtresF = [lien("famille", "", B.toutes), ...BESTIAIRE.familles.map((f) => lien("famille", f.nom, f.icone + " " + echapper(lib(L, "familles", f.nom))))].join(" ");
+  const filtresR = [lien("rarete", "", B.toutes), ...BESTIAIRE.raretes.map((r) => lien("rarete", r, echapper(lib(L, "raretes", r))))].join(" ");
   const cartes = liste.map((e) => `<a class="bestiole" href="/bestiaire/${e.id}">${svgBestiole(e)}
-    <div class="num">#${String(e.numero).padStart(3, "0")} · ${e.icone} ${echapper(e.famille)}</div>
-    <div><b>${echapper(e.nom)}</b></div>${etiquetteRarete(e.rarete)}</a>`).join("");
-  return page("Bestiaire", `<h1>📖 Bestiaire</h1>
-<p>Les 150 espèces de bestioles qui se cachent dans le terrain de jeu : 75 communes, 45 peu communes, 20 rares et 10 légendaires,
-réparties en 15 familles. Plus une bestiole est rare, plus elle se cache profond (recoin → cachette → sanctuaire).</p>
-<div class="carte filtres"><div><span class="doux">Famille :</span> ${filtresF}</div><div style="margin-top:6px"><span class="doux">Rareté :</span> ${filtresR}</div></div>
-<p class="doux">${liste.length} espèce${liste.length > 1 ? "s" : ""}</p>
-<div class="grille-b">${cartes}</div>`, "Le bestiaire des 150 bestioles de Terminagotchi.");
+    <div class="num">${numero(e)} · ${e.icone} ${echapper(lib(L, "familles", e.famille))}</div>
+    <div><b>${bdi(e.nom)}</b></div>${etiquetteRarete(L, e.rarete)}</a>`).join("");
+  return page(L, B.titre, `<h1>${B.h1}</h1>
+<p>${B.intro}</p>
+<div class="carte filtres"><div><span class="doux">${B.famille}</span> ${filtresF}</div><div style="margin-top:6px"><span class="doux">${B.rarete}</span> ${filtresR}</div></div>
+<p class="doux">${B.nb(liste.length)}</p>
+<div class="grille-b">${cartes}</div>`, B.description);
 }
 
-function pageEspece(id) {
+function pageEspece(L, id) {
+  const E = L.t.espece;
   const e = PAR_ID[id];
-  if (!e || e.secrete) return page("Inconnue", `<h1>Espèce inconnue</h1><p><a href="/bestiaire">Retour au bestiaire</a></p>`, undefined, 404);
+  if (!e || e.secrete) return page(L, E.inconnueTitre, `<h1>${E.inconnue}</h1><p><a href="/bestiaire">${E.retour}</a></p>`, undefined, 404);
   const i = e.numero - 1;
   const prec = PUBLIQUES[(i + 149) % 150];
   const suiv = PUBLIQUES[(i + 1) % 150];
-  const stats = Object.entries(e.stats).map(([k, v]) => `<div><div class="doux" style="font-size:12px">${k}</div><b>${v}</b></div>`).join("");
-  return page(e.nom, `<p><a href="/bestiaire">← Bestiaire</a></p>
+  const [fp, fs] = L.t.fleches;
+  const stats = Object.entries(e.stats).map(([k, v]) => `<div><div class="doux" style="font-size:12px">${echapper(lib(L, "statsB", k))}</div><b>${v}</b></div>`).join("");
+  const fam = lib(L, "familles", e.famille);
+  const rar = lib(L, "raretes", e.rarete);
+  return page(L, e.nom, `<p><a href="/bestiaire">${E.retourCourt}</a></p>
 <section class="hero">
   <div class="carte">${svgBestiole(e, false, 14)}</div>
   <div style="flex:1;min-width:260px">
-    <p class="doux">#${String(e.numero).padStart(3, "0")} · ${e.icone} famille ${echapper(e.famille)}</p>
-    <h1>${e.rarete === "légendaire" ? `<span class="rgb">${echapper(e.nom)}</span>` : echapper(e.nom)}</h1>
-    ${etiquetteRarete(e.rarete)}
-    <p>${echapper(e.description)}</p>
-    <p class="doux">${echapper(e.comportement)}</p>
+    <p class="doux">${numero(e)} · ${e.icone} ${echapper(E.famille(fam))}</p>
+    <h1>${e.rarete === "légendaire" ? `<span class="rgb">${bdi(e.nom)}</span>` : bdi(e.nom)}</h1>
+    ${etiquetteRarete(L, e.rarete)}
+    <p lang="fr" dir="ltr">${echapper(e.description)}</p>
+    <p class="doux" lang="fr" dir="ltr">${echapper(e.comportement)}</p>
     <div class="stats-b">${stats}</div>
   </div>
 </section>
-<h2>Fiche</h2>
+<h2>${E.fiche}</h2>
 <div class="carte"><table>
-<tr><td class="doux">Capacité</td><td>${echapper(e.capacite)}</td></tr>
-<tr><td class="doux">Stat favorite</td><td>${echapper(e.stat)}</td></tr>
-<tr><td class="doux">Taille / poids</td><td>~${e.taille_cm} cm · ~${e.poids_ko} Ko</td></tr>
-<tr><td class="doux">Habitat</td><td><code>~/terrain_terminagotchi/${echapper(e.zone)}</code></td></tr>
-<tr><td class="doux">Apparition</td><td>${echapper(e.frequence)} · attirée par la commande <code>${echapper(e.attiree_par)}</code></td></tr>
+<tr><td class="doux">${E.capacite}</td><td><bdi lang="fr">${echapper(e.capacite)}</bdi></td></tr>
+<tr><td class="doux">${E.statFavorite}</td><td>${echapper(lib(L, "stats", e.stat))}</td></tr>
+<tr><td class="doux">${E.taillePoids}</td><td><bdi>~${e.taille_cm} cm · ~${e.poids_ko} ${E.ko}</bdi></td></tr>
+<tr><td class="doux">${E.habitat}</td><td>${echapper(lib(L, "habitats", e.habitat))} · <code>~/terrain_terminagotchi/${echapper(e.zone)}</code></td></tr>
+<tr><td class="doux">${E.apparition}</td><td>${echapper(lib(L, "frequences", e.frequence))} · ${E.attiree(`<code>${echapper(e.attiree_par)}</code>`)}</td></tr>
 </table></div>
-<p style="margin-top:24px"><a href="/bestiaire/${prec.id}">← #${String(prec.numero).padStart(3, "0")} ${echapper(prec.nom)}</a>
- · <a href="/bestiaire/${suiv.id}">#${String(suiv.numero).padStart(3, "0")} ${echapper(suiv.nom)} →</a></p>`,
-  `${e.nom}, bestiole ${e.rarete} de la famille ${e.famille}.`);
+<p style="margin-top:24px"><a href="/bestiaire/${prec.id}">${fp} ${numero(prec)} ${bdi(prec.nom)}</a>
+ · <a href="/bestiaire/${suiv.id}">${numero(suiv)} ${bdi(suiv.nom)} ${fs}</a></p>`,
+  E.description(e.nom, rar, fam));
 }
 
 /** La galerie des captures : seulement les joueurs qui ont dit oui (compte partage on). */
-async function pageCaptures(env, url) {
+async function pageCaptures(env, L, url) {
+  const K = L.t.captures;
   const filtre = url.searchParams.get("joueur") || "";
   const shinySeul = url.searchParams.get("shiny") === "1";
   const rarete = url.searchParams.get("rarete") || "";
@@ -735,50 +797,67 @@ async function pageCaptures(env, url) {
   caps = caps.slice(0, 120);
   const cartes = caps.map((c) => {
     const e = PAR_NOM[c.espece];
-    const date = new Date(c.date).toLocaleDateString("fr-FR");
-    const nom = c.shiny || e.rarete === "légendaire" ? `<span class="rgb">${echapper(e.nom)}${c.shiny ? " ✨" : ""}</span>` : `<b>${echapper(e.nom)}</b>`;
+    const date = new Date(c.date).toLocaleDateString(L.locale);
+    const nom = c.shiny || e.rarete === "légendaire" ? `<span class="rgb">${bdi(e.nom)}${c.shiny ? " ✨" : ""}</span>` : `<b>${bdi(e.nom)}</b>`;
     return `<div class="bestiole capture${c.shiny ? " shiny" : ""}">
-      <div style="text-align:center;display:flex;justify-content:center">${visuel(e, c)}</div>
-      ${ANIMEES.has(e.id) ? `<div class="doux" style="font-size:12px">${NOM_STADE[c.stade] || "enfant"}</div>` : ""}
-      <div>${nom} <span class="num">#${String(e.numero).padStart(3, "0")}</span></div>
-      ${etiquetteRarete(e.rarete)}
-      <div class="marque">« <span class="rgb">${echapper(c.marque)}</span> »</div>
-      <div class="doux" style="font-size:13px">humeur ${echapper(c.humeur)} · ${c.taille} cm<br>potentiel <b style="color:var(--vert)">${c.potentiel} %</b></div>
-      <div class="doux" style="font-size:12px;margin-top:6px">par <a href="/joueur/${encodeURIComponent(c.pseudo)}">${echapper(c.pseudo)}</a> · ${date}</div>
+      <div style="text-align:center;display:flex;justify-content:center">${visuel(L, e, c)}</div>
+      ${ANIMEES.has(e.id) ? `<div class="doux" style="font-size:12px">${echapper(lib(L, "stadesB", c.stade || "enfant"))}</div>` : ""}
+      <div>${nom} <span class="num">${numero(e)}</span></div>
+      ${etiquetteRarete(L, e.rarete)}
+      <div class="marque" lang="fr" dir="ltr">« <span class="rgb">${echapper(c.marque)}</span> »</div>
+      <div class="doux" style="font-size:13px">${echapper(K.humeur(lib(L, "humeurs", c.humeur)))} · <bdi>${c.taille} cm</bdi><br>${K.potentiel} <b style="color:var(--vert)"><bdi>${c.potentiel} %</bdi></b></div>
+      <div class="doux" style="font-size:12px;margin-top:6px">${K.par(`<a href="/joueur/${encodeURIComponent(c.pseudo)}">${bdi(c.pseudo)}</a>`, `<bdi>${echapper(date)}</bdi>`)}</div>
     </div>`;
   }).join("");
   const lienR = (v, t) => `<a href="/captures?${new URLSearchParams({ ...(filtre && { joueur: filtre }), ...(shinySeul && { shiny: "1" }), ...(v && { rarete: v }) })}">${t}</a>`;
-  return page("Captures", `<h1>✨ Les captures</h1>
-<p>Chaque bestiole capturée est <b>unique</b> : sa marque, son humeur, sa taille et son potentiel sont tirés au sort au moment de la capture.
-${filtre ? `Captures de <b>${echapper(filtre)}</b>. <a href="/captures">Voir tout le monde</a>` : ""}</p>
-<div class="carte filtres">${lienR("", "toutes")} ${BESTIAIRE.raretes.map((x) => lienR(x, x)).join(" ")}
- · <a href="/captures?${new URLSearchParams({ ...(filtre && { joueur: filtre }), ...(!shinySeul && { shiny: "1" }) })}">${shinySeul ? "toutes (pas que les shiny)" : "<span class=\"rgb\">shiny seulement</span>"}</a></div>
-<p class="doux">${total} capture${total > 1 ? "s" : ""} partagée${total > 1 ? "s" : ""} par ${joueurs} joueur${joueurs > 1 ? "s" : ""}${total > 120 ? " (les 120 plus récentes)" : ""}.</p>
+  return page(L, K.titre, `<h1>${K.h1}</h1>
+<p>${K.intro}
+${filtre ? `${K.de(bdi(filtre))} <a href="/captures">${K.voirTous}</a>` : ""}</p>
+<div class="carte filtres">${lienR("", K.toutes)} ${BESTIAIRE.raretes.map((x) => lienR(x, echapper(lib(L, "raretes", x)))).join(" ")}
+ · <a href="/captures?${new URLSearchParams({ ...(filtre && { joueur: filtre }), ...(!shinySeul && { shiny: "1" }) })}">${shinySeul ? K.pasQueShiny : `<span class="rgb">${K.shinySeul}</span>`}</a></div>
+<p class="doux">${K.resume(total, joueurs, total > 120)}</p>
 ${cartes ? `<div class="grille-b" style="grid-template-columns:repeat(auto-fill,minmax(220px,1fr))">${cartes}</div>`
-    : `<div class="carte"><p class="doux">Aucune capture partagée pour l'instant.</p></div>`}
-<h2>Apparaître dans la galerie</h2>
-<div class="carte"><p>La galerie ne montre que les joueurs qui l'ont <b>accepté</b>. Pour y montrer tes bestioles, tape dans le jeu :
-<code>compte partage on</code> (sur PC : <code>tg compte partage on</code>). Pour les retirer : <code>compte partage off</code>.</p>
-<p class="doux">Les captures sont déclarées par l'appli ; seuls les badges marqués ✔ sont vérifiés par le serveur.</p></div>`,
-  "La galerie des bestioles capturées par les joueurs de Terminagotchi.");
+    : `<div class="carte"><p class="doux">${K.aucune}</p></div>`}
+<h2>${K.apparaitre}</h2>
+<div class="carte"><p>${K.apparaitreTexte}</p>
+<p class="doux">${K.declarees}</p></div>`,
+  K.description);
 }
 
-function pageCtf(origine) {
-  const liste = EPREUVES.map((e) => `<li><b>${e.n}. ${echapper(e.titre)}</b> — <code>curl ${origine}/ctf/TonPseudo/${e.n}</code></li>`).join("");
-  return page("CTF web", `<h1>🚩 Capture the flag — édition web</h1>
-<p>5 épreuves qui apprennent comment fonctionne le web, avec la commande <code>curl</code>.
-Chaque drapeau est <b>personnel</b> : remplace <code>TonPseudo</code> par ton pseudo de recensement.</p>
-<div class="carte"><ol style="padding-left:20px">${liste}</ol></div>
-<h2>Comment valider</h2>
-<div class="carte"><p>Dans le jeu (PC ou téléphone) : <code>drapeau TG{…}</code>. Le serveur vérifie et te délivre un badge vérifié.</p>
-<p class="doux">Sur PC, <code>curl</code> est déjà installé (Linux, Mac, Windows 10+). Sur Android, utilise Termux
-(<code>pkg install curl</code>).</p></div>
-<h2>Pourquoi c'est légal et éthique</h2>
-<div class="carte"><p class="doux">Ces épreuves sont faites pour être « attaquées ». S'entraîner sur des systèmes dont
-on n'a pas l'autorisation est illégal : les vrais hackers éthiques ne testent que ce qu'on leur permet de tester.</p></div>`);
+function pageCtf(L, origine) {
+  const C = L.t.ctf;
+  const liste = EPREUVES.map((e) => `<li><b>${e.n}. ${echapper(C.epreuves[e.n - 1])}</b> — <code>curl ${origine}/ctf/${C.pseudo}/${e.n}</code></li>`).join("");
+  return page(L, C.titre, `<h1>${C.h1}</h1>
+<p>${C.intro(C.pseudo)}</p>
+<div class="carte"><ol style="padding-inline-start:20px">${liste}</ol></div>
+<h2>${C.valider}</h2>
+<div class="carte"><p>${C.validerTexte}</p>
+<p class="doux">${C.curl}</p></div>
+<h2>${C.pourquoi}</h2>
+<div class="carte"><p class="doux">${C.pourquoiTexte}</p></div>`);
 }
 
 // ====================================================================== aiguillage
+
+async function aiguiller(requete, env, url, chemin, L) {
+  if (chemin === "/") return pageAccueil(env, L);
+  if (chemin === "/classement") return pageClassement(env, L);
+  if (chemin === "/ctf") return pageCtf(L, url.origin);
+  if (chemin === "/bestiaire") return pageBestiaire(L, url);
+  if (chemin === "/captures") return pageCaptures(env, L, url);
+  const mb = chemin.match(/^\/bestiaire\/([a-z0-9]+)$/);
+  if (mb) return pageEspece(L, mb[1]);
+  if (chemin === "/robots.txt") {
+    return texte("User-agent: *\n# Les robots ne doivent pas fouiller les cachettes du CTF…\nDisallow: /ctf/*/2/cachette\n");
+  }
+  let m = chemin.match(/^\/joueur\/([^/]+)$/);
+  if (m) return pageJoueur(env, L, decodeURIComponent(m[1]));
+  m = chemin.match(/^\/badge\/([0-9a-f]{16})$/);
+  if (m) return pageBadge(env, L, m[1]);
+  m = chemin.match(/^\/ctf\/([^/]+)\/(\d)(?:\/(\w+))?$/);
+  if (m) return ctf(requete, env, decodeURIComponent(m[1]), Number(m[2]), m[3], L);
+  return page(L, L.t.introuvable.titre, `<h1>404</h1><p>${L.t.introuvable.texte}</p>`, undefined, 404);
+}
 
 export default {
   async fetch(requete, env) {
@@ -788,24 +867,14 @@ export default {
       if (requete.method === "OPTIONS") {
         return new Response(null, { headers: { "access-control-allow-origin": "*", "access-control-allow-headers": "authorization, content-type", "access-control-allow-methods": "GET, POST" } });
       }
+      // l'API reste en français : c'est l'appli et le jeu PC qui la lisent
       if (chemin.startsWith("/api/")) return await api(requete, env, chemin);
-      if (chemin === "/") return await pageAccueil(env);
-      if (chemin === "/classement") return await pageClassement(env);
-      if (chemin === "/ctf") return pageCtf(url.origin);
-      if (chemin === "/bestiaire") return pageBestiaire(url);
-      if (chemin === "/captures") return await pageCaptures(env, url);
-      const mb = chemin.match(/^\/bestiaire\/([a-z0-9]+)$/);
-      if (mb) return pageEspece(mb[1]);
-      if (chemin === "/robots.txt") {
-        return texte("User-agent: *\n# Les robots ne doivent pas fouiller les cachettes du CTF…\nDisallow: /ctf/*/2/cachette\n");
-      }
-      let m = chemin.match(/^\/joueur\/([^/]+)$/);
-      if (m) return await pageJoueur(env, decodeURIComponent(m[1]));
-      m = chemin.match(/^\/badge\/([0-9a-f]{16})$/);
-      if (m) return await pageBadge(env, m[1]);
-      m = chemin.match(/^\/ctf\/([^/]+)\/(\d)(?:\/(\w+))?$/);
-      if (m) return await ctf(requete, env, decodeURIComponent(m[1]), Number(m[2]), m[3]);
-      return page("Introuvable", `<h1>404</h1><p>Cette page n'existe pas. <a href="/">Retour à l'accueil</a></p>`, undefined, 404);
+      const L = contexteLangue(requete, url);
+      const r = await aiguiller(requete, env, url, chemin, L);
+      // ?lang=xx : on retient le choix dans un cookie pour les pages suivantes
+      if (L.demandee) r.headers.append("set-cookie", cookieLangue(L.demandee));
+      if (!r.headers.has("vary")) r.headers.set("vary", "Accept-Language, Cookie");
+      return r;
     } catch (e) {
       console.error(e);
       return chemin.startsWith("/api/") ? erreur("Erreur du serveur : " + e.message, 500) : texte("Erreur du serveur.\n", 500);
