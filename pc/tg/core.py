@@ -61,6 +61,9 @@ SKILLS = {
     "Inspecteur":  {"cmds": {"cat", "type", "less", "more", "head", "tail", "grep", "find", "select-string", "get-content"}},
     "Gardien":     {"cmds": {"chmod", "chown", "attrib", "icacls"}},
     "Nettoyeur":   {"cmds": {"cp", "mv", "rm", "copy", "move", "del", "copy-item", "move-item", "remove-item"}},
+    # l'histoire « La Maison endormie » (histoire.py)
+    "Explorateur": {"cmds": {"tree", "find"}},
+    "Héros":       {"cmds": {"rev", "wc", "sort", "uniq"}},
     # branche Réseau
     "Radar":       {"cmds": {"ping", "ip", "ifconfig", "ipconfig", "test-connection"}},
     "Facteur":     {"cmds": {"curl", "curl.exe", "wget", "invoke-webrequest", "iwr"}},
@@ -325,7 +328,8 @@ def tick(state):
 
 BUILTINS = {"cd", "echo", "export", "alias", "history", "type", "source", ".", "exit", "for", "if", "while",
             "set", "unset", "read", "test", "[", "pushd", "popd", "jobs", "fg", "bg", "kill", "umask", "ulimit",
-            "true", "false", "printf", "wait", "trap", "exec", "eval", "help", "tg", "clear"}
+            "true", "false", "printf", "wait", "trap", "exec", "eval", "help", "tg", "clear",
+            "carte", "quetes"}          # carte, quetes : les raccourcis du jeu (tg carte, tg quetes)
 
 
 def commande_existe(cmd):

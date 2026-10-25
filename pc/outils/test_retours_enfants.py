@@ -1,10 +1,11 @@
-"""Partie scriptée (PC) pour les retours des simulations d'enfants de 7 ans.
+"""Partie scriptée (PC) pour les retours des simulations d'enfants de 7 ans (dans « La Maison endormie »).
 
     python3 pc/outils/test_retours_enfants.py          (crée son propre HOME temporaire)
 
 De vraies commandes sont lancées avec bash et écrites dans ~/.bash_history, puis le jeu fait une
 étape (app.etape), comme le compagnon du terminal :
-  1. leçons : « pome » au lieu de « pomme » → indice clair, la leçon attend la bonne commande ;
+  1. leçons (chapitres 1-2, puis la bibliothèque et la cave choisies librement) : « pome » au lieu de
+     « pomme » → indice clair, la leçon attend la bonne commande ;
   2. terrain effacé (rm -rf) → bulle + commande à taper ; reconstruit → la leçon reprend au bon
      endroit (repas.txt remis) ; si l'enfant n'y arrive pas, le jeu reconstruit lui-même ;
   3. premier dressage : un monstre courant et commun, 2 épreuves simples, indices « presque »,
@@ -28,7 +29,7 @@ os.environ.pop("HISTFILE", None)
 RACINE = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(RACINE / "pc"))
 
-from tg import app, bestiaire as B, combat, core, dressage, equipe, explo, langue, lecons, tirage  # noqa: E402
+from tg import app, bestiaire as B, combat, core, dressage, equipe, explo, histoire, langue, lecons, tirage  # noqa: E402
 
 HOME = Path.home()
 T = core.TERRAIN
@@ -80,32 +81,47 @@ modifier(lambda s: (s["config"].__setitem__("fenetre_dressage", False), s.__seti
 niveau(2)
 for c in ("pwd", "ls", "cd ~"):
     tape(c)
-niveau(3)
-for c in ("mkdir terrain_terminagotchi", "cd terrain_terminagotchi"):
+for c in ("cd terrain_terminagotchi", "ls", "cd vestibule", "ls"):     # chapitre 1 : la vieille porte, l'œuf
     tape(c)
-tape("mkdir nid", T)
+niveau(3)
+for c in ("cd ..", "mkdir nid", "touch nid/lit.txt"):                  # chapitre 2 : le nid
+    tape(c, T)
 st = core.load()
-verifier(st["lesson"] == 2 and "Bâtisseur" in st["skills"], "tronc commun : leçon 1 finie (terrain et nid construits)")
+verifier("nid0" in st["histoire"]["faits"] and "Bâtisseur" in st["skills"], "chapitres 1-2 : terrain, œuf et nid construits")
+
+
+def lec(st):
+    les, _ = histoire.lecon_courante(st)
+    return (les["id"] if les else None), st["step"]
+
 
 print("1. Leçons : un indice quand c'est presque ça")
 niveau(4)
 st = tape("echo pome > nid/repas.txt", T)
-verifier(st["lesson"] == 2 and st["step"] == 0, "« pome » : la leçon attend encore la bonne commande")
+verifier(lec(st) == ("nid1", 0), "« pome » : la leçon attend encore la bonne commande")
 verifier("pome" in (st.get("indice_lecon") or "") and "pomme" in st["indice_lecon"], f"indice : {st.get('indice_lecon')}")
-ecran = texte(app.render(st, 0, True))
+ecran = texte(app.render(dict(st, dressage=None), 0, True))
 verifier("💡 Presque" in ecran, "l'indice s'affiche sous la leçon")
 if "💡 Presque" not in ecran:
     print(ecran)
 st = tape("echo pomme > nid/repas.txt", T)
-verifier(st["step"] == 1 and not st.get("indice_lecon"), "« pomme » : étape réussie, l'indice disparaît")
+verifier(lec(st) == ("nid1", 1) and not st.get("indice_lecon"), "« pomme » : étape réussie, l'indice disparaît")
 st = tape("cat nid/repas.txt", T)
-st = tape("grep pome nid/repas.txt", T)
-verifier(st["step"] == 2 and "« pome »" in (st.get("indice_lecon") or ""), "grep pome : indice, pas de silence")
-st = tape("grep pomme nid/repas.txt", T)
-verifier(st["lesson"] == 3, "leçon 2 finie")
+verifier(histoire.fini(st, "nid"), "chapitre 2 fini : la maison est libre")
 niveau(5)
+for c in ("cd bibliotheque", 'find . -name "*abysses*"', "less etagere_c/coin_poussiereux/livre_des_abysses.txt"):
+    st = tape(c, T / "bibliotheque" if c.startswith(("find", "less")) else T)
+verifier(lec(st) == ("biblio1", 0), "la bibliothèque : le livre est retrouvé, on passe à la loupe")
+st = tape("cd ..")
+st = tape("grep pome nid/repas.txt", T)
+verifier(lec(st) == ("biblio1", 0) and "« pome »" in (st.get("indice_lecon") or ""), "grep pome : indice, pas de silence")
+st = tape("grep pomme nid/repas.txt", T)
+verifier(lec(st) == ("biblio1", 1), "grep pomme : réussi")
+core.modifier(lambda s: histoire.choisir(s, "cave"))                  # on change d'aile (l'étape est gardée)
+for c in ("cd cave", "whoami", "sudo -h", "cd .."):
+    st = tape(c, T)
 st = tape("ls -l nid", T)
-verifier(st["lesson"] == 3 and st["step"] == 1, "leçon 3 (droits) : on en est à chmod 444 nid/repas.txt")
+verifier(lec(st) == ("t3", 1), "la cave (droits) : on en est à chmod 444 nid/repas.txt")
 st = tape("chmod 444 nid/repas.tx", T)
 verifier("repas.tx »" in (st.get("indice_lecon") or ""), f"chmod 444 nid/repas.tx : {st.get('indice_lecon')}")
 
@@ -114,31 +130,35 @@ st = tape("rm -rf ~/terrain_terminagotchi")
 p = st.get("terrain_perdu") or {}
 verifier(p.get("cmd") == "mkdir -p ~/terrain_terminagotchi/nid", f"détecté : la commande proposée est « {p.get('cmd')} »")
 verifier("mkdir -p ~/terrain_terminagotchi/nid" in bulles(st), "une bulle claire donne la commande")
-verifier("➜ mk" in texte(app.render(st, 0, True)) and "~/terrain_terminagotchi/nid" in texte(app.render(st, 0, True)),
+verifier("➜ mk" in texte(app.render(dict(st, dressage=None), 0, True)) and "~/terrain_terminagotchi/nid" in texte(app.render(dict(st, dressage=None), 0, True)),
          "le bandeau (avec la commande) reste sur l'écran principal")
 verifier(not explo.debloque(st), "pas de monstre tant que le nid n'existe pas")
 st = tape("mkdir -p ~/terrain_terminagotchi/nid")
 verifier(not st.get("terrain_perdu"), "reconstruit : plus d'alerte")
 verifier((T / "nid" / "repas.txt").is_file(), "repas.txt remis pour que la leçon continue")
-verifier(st["lesson"] == 3 and st["step"] == 1, "la leçon reprend au bon endroit (chmod 444)")
+verifier(lec(st) == ("t3", 1), "la leçon reprend au bon endroit (chmod 444)")
+verifier((T / "cave").is_dir() and (T / "grenier").is_dir(), "les portes des ailes sont reposées")
 st = tape("chmod 444 nid/repas.txt", T)
-verifier(st["lesson"] == 3 and st["step"] == 2, "chmod 444 : réussi après la reconstruction")
+verifier(lec(st) == ("t3", 2), "chmod 444 : réussi après la reconstruction")
 st = tape("rm -rf ~/terrain_terminagotchi")
 for i in range(terrain_aide := 12):
     st = tape(["date", "whoami", "ls", "pwd"][i % 4])
 verifier(not st.get("terrain_perdu") and (T / "nid" / "repas.txt").is_file(),
          f"l'enfant n'y arrive pas : reconstruit tout seul après {terrain_aide} commandes")
 st = tape("echo poire >> nid/repas.txt", T)
-verifier(st["lesson"] == 4, "leçon 3 finie malgré deux effacements")
-st = core.load()
-verifier(st["lesson"] == 4 and st["step"] == 0, "leçon 4 (copie) : on commence")
+verifier(histoire.fini(st, "cave"), "la cave est réveillée malgré deux effacements")
+st = tape("cd ~/terrain_terminagotchi/grenier")
+verifier(st["histoire"]["chap"] == "grenier", "entrer dans le grenier le choisit")
+st = tape("ls -R", T / "grenier")
+st = tape("mv fouillis/ours_en_peluche.txt ../nid/", T / "grenier")
+verifier(lec(st) == ("t4", 0), "grenier (copie) : on commence (l'ours a été remis après l'effacement)")
 st = tape("cp nid/repas.txt nid/secours.txt", T)
 subprocess.run(["rm", "-rf", str(T / "nid" / "secours.txt")])
 st = tape("ls", T)
 verifier(st["step"] == 0 and "étape d'avant" in bulles(st), "secours.txt effacé avant le mv : on refait l'étape d'avant")
 for c in ("cp nid/repas.txt nid/secours.txt", "mv nid/secours.txt reserve.txt", "rm reserve.txt"):
     st = tape(c, T)
-verifier(lecons.tronc_fini(st), "tronc commun fini")
+verifier(histoire.fini(st, "grenier") and histoire.chapitre_courant(st) is None, "le grenier est réveillé")
 
 print("3. Premier dressage facile")
 st = modifier(explo.spawn)

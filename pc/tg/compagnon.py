@@ -50,6 +50,10 @@ def ligne(state):
     les, _ = lecons.lecon_courante(state)
     if les and lvl >= les["niveau"]:
         return f"{tete}  {DIM}" + t("comp.lecon", cmd=piege(les["steps"][state["step"]]["cmd"])) + RESET
+    from . import quetes
+    suivie = quetes.ligne_suivie(state)
+    if suivie:
+        return f"{tete}  {DIM}{suivie}{RESET}"
     return tete
 
 
@@ -80,7 +84,11 @@ def prompt(etape):
         sortie.append(s)
         state["prompt_vu"] = state.get("nlog", 0)
 
-    etape(spontane=True, rythme=8, defis=True, avant_save=rendre)
+    try:
+        ici = os.getcwd()                      # le dossier du terminal : la carte de la maison le suit
+    except OSError:
+        ici = None
+    etape(spontane=True, rythme=8, defis=True, avant_save=rendre, cwd=ici)
     if sortie:
         sys.stdout.write(sortie[0] + RESET + "\n")
         sys.stdout.flush()
@@ -104,17 +112,20 @@ def _blocs():
     if not IS_WIN and (shell.endswith("bash") or bashrc.exists() or OSK == "android"):
         blocs[bashrc] = (f'__tg_prompt() {{ history -a; "{exe}" "{app}" prompt; }}\n'
                          'PROMPT_COMMAND="__tg_prompt${PROMPT_COMMAND:+; $PROMPT_COMMAND}"\n'
-                         f"alias tg='\"{exe}\" \"{app}\"'")
+                         f"alias tg='\"{exe}\" \"{app}\"'\n"
+                         "alias carte='tg carte'; alias quetes='tg quetes'")
     if not IS_WIN and (shell.endswith("zsh") or zshrc.exists() or OSK == "mac"):
         blocs[zshrc] = ("setopt INC_APPEND_HISTORY\n"
                         f'__tg_prompt() {{ "{exe}" "{app}" prompt }}\n'
                         "autoload -Uz add-zsh-hook && add-zsh-hook precmd __tg_prompt\n"
-                        f"alias tg='\"{exe}\" \"{app}\"'")
+                        f"alias tg='\"{exe}\" \"{app}\"'\n"
+                        "alias carte='tg carte'; alias quetes='tg quetes'")
     fish = home / ".config" / "fish"
     if not IS_WIN and fish.is_dir():
         blocs[fish / "conf.d" / "terminagotchi.fish"] = (
             f'function __tg_prompt --on-event fish_prompt\n    "{exe}" "{app}" prompt\nend\n'
-            f'function tg\n    "{exe}" "{app}" $argv\nend')
+            f'function tg\n    "{exe}" "{app}" $argv\nend\n'
+            'function carte\n    tg carte\nend\nfunction quetes\n    tg quetes $argv\nend')
     for ps in ("powershell", "pwsh"):
         if shutil.which(ps):
             try:
@@ -126,7 +137,8 @@ def _blocs():
             if chemin:
                 blocs[Path(chemin)] = ("$__tgPrompt = $function:prompt\n"
                                        f'function prompt {{ & "{exe}" "{app}" prompt; & $__tgPrompt }}\n'
-                                       f'function tg {{ & "{exe}" "{app}" @args }}')
+                                       f'function tg {{ & "{exe}" "{app}" @args }}\n'
+                                       'function carte { tg carte }\nfunction quetes { tg quetes @args }')
     return blocs
 
 

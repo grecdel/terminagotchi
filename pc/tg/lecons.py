@@ -291,11 +291,31 @@ ARBRE["Android"] = {"stat": "Agilité", "icone": "📱", "desc": "lec.android.de
 ]}
 
 
+# Toutes les leçons du catalogue, par identifiant (t0…t4, reseau0…, git0…, scripts0…, systeme0…, android0…).
+# histoire.py les range en chapitres (« La Maison endormie ») et ajoute les siennes.
+PAR_ID = {f"t{i}": les for i, les in enumerate(TRONC)}
+for _b, _pre in (("Réseau", "reseau"), ("Git", "git"), ("Scripts", "scripts"), ("Système", "systeme"),
+                 ("Android", "android")):
+    for _i, _l in enumerate(ARBRE[_b]["lecons"]):
+        PAR_ID[f"{_pre}{_i}"] = _l
+PALIER = [0]          # le palier de vocabulaire de la partie en cours (mis à jour par histoire.lecon_courante)
+
+
 def tx(v):
-    """Traduit un texte de leçon : une clé, ou (clé, paramètres)."""
+    """Traduit un texte de leçon : une clé, ou (clé, paramètres). Le jargon du palier ({dossier},
+    {processus}…) et le nom des pièces ({piece}) sont remplis."""
+    from .mots import termes
     if isinstance(v, (tuple, list)):
-        return t(v[0], **v[1])
-    return t(v) if v else ""
+        cle, p = v[0], dict(v[1])
+    else:
+        cle, p = v, {}
+    if not cle:
+        return ""
+    if "piece" in p:
+        p["piece"] = t("carte.piece." + p["piece"])
+    d = termes(PALIER[0])
+    d.update(p)
+    return t(cle, **d)
 
 
 def nom_branche(b):
@@ -312,59 +332,20 @@ for _b in ARBRE.values():
 
 
 def tronc_fini(state):
-    return state["lesson"] >= len(TRONC)
+    """(compatibilité) les deux premiers chapitres sont finis : la maison est libre."""
+    from . import histoire
+    return histoire.fini(state, "nid")
 
 
 def lecon_courante(state):
-    """(leçon, étiquette) ou (None, None)."""
-    if not tronc_fini(state):
-        return TRONC[state["lesson"]], t("lec.etiquette.tronc", n=state["lesson"] + 1, total=len(TRONC))
-    b = state.get("branche")
-    if b:
-        i = state["arbre"].get(b, 0)
-        les = ARBRE[b]["lecons"]
-        if i < len(les):
-            return les[i], t("lec.etiquette.branche", branche=nom_branche(b), n=i + 1, total=len(les))
-    return None, None
+    """(leçon, étiquette) ou (None, None) : la leçon du chapitre en cours (voir histoire.py)."""
+    from . import histoire
+    return histoire.lecon_courante(state)
 
 
-def choisir_branche(state, b):
-    if state.get("branche") != b:
-        state["branche"] = b
-        state["step"] = 0
-        state["annonce"] = None
-        core.say(state, t("lec.branche.choisie", branche=nom_branche(b)), 8)
-
-
-def avancer(state, les):
-    step = les["steps"][state["step"]]
-    core.log(state, f"✔ {step['cmd']}")
-    core.say(state, tx(step["bravo"]), 12)
-    state["step"] += 1
-    core.animer(state, "content")
-    if state["step"] < len(les["steps"]):
-        core.add_xp(state, 5)
-        return True
-    state["step"] = 0
-    if les["skill"] not in state["skills"]:
-        state["skills"].append(les["skill"])
-    core.log(state, t("lec.finie.log", titre=tx(les["titre"]), skill=core.nom_skill(les["skill"])))
-    msg = t("lec.finie.dit", skill=core.nom_skill(les["skill"]))
-    if not tronc_fini(state):
-        state["lesson"] += 1
-        if tronc_fini(state):
-            msg += " " + t("lec.arbre_ouvert")
-    else:
-        b = state["branche"]
-        state["arbre"][b] = state["arbre"].get(b, 0) + 1
-        state["stats"][ARBRE[b]["stat"]] += 5
-        if state["arbre"][b] >= len(ARBRE[b]["lecons"]):
-            core.log(state, t("lec.branche.maitrisee.log", branche=nom_branche(b)))
-            msg += " " + t("lec.branche.maitrisee.dit", branche=nom_branche(b))
-            state["branche"] = None
-    core.add_xp(state, 20)
-    core.say(state, msg, 14)
-    return False
+def tick(state, lines, cwd=None):
+    from . import histoire
+    histoire.tick(state, lines, cwd)
 
 
 # ---------------------------------------------------------------- « presque ! »
@@ -394,29 +375,3 @@ def indice(step, lignes):
     return None
 
 
-def tick(state, lines):
-    les, _ = lecon_courante(state)
-    if not les or core.level(state["xp"]) < les["niveau"]:
-        return
-    if state.get("annonce") != les["titre"]:
-        state["annonce"] = les["titre"]
-        core.say(state, t("lec.annonce"), 10)
-        core.animer(state, "parle")
-    tapees = [l for l in lines if not est_colle(l)]
-    avant = (state["lesson"], state["step"], state.get("branche"), dict(state.get("arbre", {})))
-    for line in tapees:
-        step = les["steps"][state["step"]]
-        if "re" in step and re.search(step["re"], line, re.I):
-            if not avancer(state, les):
-                state["indice_lecon"] = None
-                return
-    step = les["steps"][state["step"]]
-    if "fs" in step and FS[step["fs"]]():
-        avancer(state, les)
-    if avant != (state["lesson"], state["step"], state.get("branche"), dict(state.get("arbre", {}))):
-        state["indice_lecon"] = None
-    elif tapees:
-        conseil = indice(step, tapees)
-        if conseil and conseil != state.get("indice_lecon"):
-            state["indice_lecon"] = conseil
-            core.say(state, "💡 " + conseil, 12)

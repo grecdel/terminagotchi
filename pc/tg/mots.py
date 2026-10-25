@@ -14,7 +14,9 @@
    palier 2 = le vrai mot seul       « la RAM »
    palier_de(niveau, lecons) choisit le palier (mêmes seuils sur PC et Android) :
      - par le niveau de la créature : < 7 → 0, 7 à 11 → 1, 12 et plus → 2 ;
-     - par les leçons terminées : 8 leçons (tronc commun + 3) → au moins 1, 14 → 2.
+     - par les leçons terminées : 8 leçons → au moins 1, 14 → 2 (les leçons de l'histoire,
+       histoire.py, ou à défaut les compétences des anciennes sauvegardes).
+   Les chapitres de l'histoire remplissent leurs textes avec termes(palier) : {dossier}, {processus}…
 """
 import re
 
@@ -65,7 +67,8 @@ def palier_de(niveau, lecons=0):
 def palier(state):
     """Le palier de vocabulaire d'une partie (niveau de la créature, leçons terminées)."""
     from . import core
-    return palier_de(core.level(state.get("xp", 0)), len(state.get("skills", [])))
+    faits = len((state.get("histoire") or {}).get("faits", []))
+    return palier_de(core.level(state.get("xp", 0)), max(faits, len(state.get("skills", []))))
 
 
 def terme(cle, p=0, majuscule=False):

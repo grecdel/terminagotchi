@@ -8,7 +8,8 @@ import time
 
 import subprocess
 
-from . import compagnon, core, dressage, equipe, explo, lecons, lexique, notif, recense, registre, sprites, terrain
+from . import (compagnon, core, dressage, equipe, explo, histoire, lecons, lexique, maison, notif, quetes, recense,
+               registre, sprites, terrain)
 from .bestiaire import arc_en_ciel
 from . import langue
 from .langue import ajuster, envelopper, largeur, raccourcir, t
@@ -88,6 +89,9 @@ def render(state, frame, interactif, anim=None):
             lines.append(f"   {DIM}{x}{RESET}")
     les, etiquette = lecons.lecon_courante(state)
     if les:
+        ch = histoire.PAR_CHAP[les["chap"]]
+        lines.append(title_line(t("hist.ecran.chapitre", icone=maison.ICONES.get(ch["piece"], "📖"),
+                                  chapitre=histoire.nom_chapitre(ch["id"]), n=ch["n"]), 213))
         if lvl < les["niveau"]:
             lines.append(title_line(t("app.lecon.niveau_requis", etiquette=etiquette, n=les["niveau"])))
             idees, n = core.faim_d_apprendre(state, les["niveau"])
@@ -95,12 +99,13 @@ def render(state, frame, interactif, anim=None):
             lines.append(f" {DIM}" + t("app.lecon.encore", n=n) + RESET)
         else:
             step = les["steps"][state["step"]]
-            lines.append(title_line(t("app.lecon.titre", etiquette=etiquette, titre=lecons.tx(les["titre"]),
-                                      n=state["step"] + 1, total=len(les["steps"])), 213))
+            lines.append(f" {fg(213)}{BOLD}" + t("app.lecon.titre", etiquette=etiquette, titre=lecons.tx(les["titre"]),
+                                                n=state["step"] + 1, total=len(les["steps"])) + RESET)
             for x in envelopper(lecons.tx(step["dit"]), 78):
                 lines.append(f" {x}")
             lines.append(f"   {fg(226)}➜ {piege(step['cmd'])}{RESET}")
-            if "nid/" in step["cmd"] or step["cmd"].endswith(" nid") or "reserve.txt" in step["cmd"]:
+            if "nid/" in step["cmd"] or step["cmd"].endswith(" nid") or "reserve.txt" in step["cmd"] \
+                    or step["cmd"].startswith(("cat coeur", "chmod 444 coeur", "echo ? > coeur", "cp -r grenier")):
                 lines.append(f"   {DIM}" + t("app.lecon.depuis", terrain=terme("terrain", palier(state)),
                                             cmd=f"cd ~/{core.TERRAIN.name}") + RESET)
             if step.get("astuce"):
@@ -108,12 +113,15 @@ def render(state, frame, interactif, anim=None):
             if state.get("indice_lecon"):
                 for x in envelopper("💡 " + state["indice_lecon"], 76):
                     lines.append(f"   {fg(214)}{x}{RESET}")
-    elif all(state["arbre"].get(b, 0) >= len(v["lecons"]) for b, v in lecons.ARBRE.items() if lecons.branche_dispo(b)):
-        lines.append(title_line(t("app.arbre.maitrise"), 213))
-        lines.append(f" {DIM}" + t("app.arbre.maitrise.suite") + RESET)
     else:
-        lines.append(title_line(t("app.arbre.ouvert"), 213))
-        lines.append(" " + t("app.arbre.choisis"))
+        b = histoire.bandeau(state)
+        if b:
+            lines.append(title_line(b[0], 213))
+            for x in envelopper(b[1], 78):
+                lines.append(f" {x}")
+    suivie = quetes.ligne_suivie(state)
+    if suivie:
+        lines.append(f" {fg(214)}{suivie}{RESET}")
 
     lines.append(title_line(t("app.digere", os=DISTRO or OS_NAMES[OSK])))
     lc = max(largeur(core.nom_stat(v["stat"])) for v in core.CATEGORIES.values()) + 2
@@ -129,7 +137,7 @@ def render(state, frame, interactif, anim=None):
             lines.append(f" {fg(226)}" + t("app.journal.compagnon") + RESET)
     lines += [" " + l for l in state["log"][-4:]]
     if interactif:
-        lines.append(f"{fg(244)} " + t("app.touches") + RESET)
+        lines.append(f"{fg(244)} " + t("app.touches.histoire") + RESET)
     else:
         lines.append(f"{DIM} " + t("app.digere_ferme") + RESET)
     return "\n".join(lines) + "\n"
@@ -222,12 +230,12 @@ def render_dressage(state, interactif, anim=None):
 
 # ================================================================ étape de jeu (partagée par tous les modes)
 
-def boucle_jeu(state, lines, spontane=True, rythme=1.5, defis=True):
+def boucle_jeu(state, lines, spontane=True, rythme=1.5, defis=True, cwd=None):
     core.tick(state)
     for line in lines:
         core.feed(state, line)
     terrain.tick(state, lines)                # terrain effacé : le reconstruire, reprendre la leçon
-    lecons.tick(state, lines)
+    histoire.tick(state, lines, cwd)          # la Maison endormie : visites, chapitres, quêtes
     dressage.tick(state, lines)
     equipe.tick(state, lines)
     explo.tick(state, spontane, proba=rythme / 480, jeu=sum(1 for l in lines if not core.est_colle(l)), lignes=lines)
@@ -235,8 +243,9 @@ def boucle_jeu(state, lines, spontane=True, rythme=1.5, defis=True):
     core.idle_talk(state, proba=min(1.0, 0.08 * rythme / 1.5))
 
 
-def etape(spontane=True, rythme=1.5, defis=True, avant_save=None, extra=None):
-    """Charge, fait vivre la créature, sauvegarde, puis envoie les notifications."""
+def etape(spontane=True, rythme=1.5, defis=True, avant_save=None, extra=None, cwd=None):
+    """Charge, fait vivre la créature, sauvegarde, puis envoie les notifications.
+    cwd : le dossier courant du terminal (donné par l'invite du shell), pour la carte de la maison."""
     with core.verrou():
         state = core.load()
         if state is None:
@@ -244,7 +253,7 @@ def etape(spontane=True, rythme=1.5, defis=True, avant_save=None, extra=None):
         core.migrate(state)
         lines = core.read_new_lines(state) + list(extra or [])
         avant = state["total"]
-        boucle_jeu(state, lines, spontane, rythme, defis)
+        boucle_jeu(state, lines, spontane, rythme, defis, cwd)
         state["_vient_de_manger"] = state["total"] > avant
         if avant_save:
             avant_save(state)
@@ -284,40 +293,51 @@ def menu_recherche(state, clav):
 
 
 def menu_arbre(state, clav):
-    noms = list(lecons.ARBRE)
+    """Les ailes de la maison : choisir celle qu'on réveille (l'ordre est libre après le chapitre 2)."""
+    msg = ""
     while True:
+        st = core.load() or state
+        core.migrate(st)
         clear()
-        print(f" {fg(213)}── 🌳 " + t("app.arbre.titre") + f" ──{RESET}\n")
-        if not lecons.tronc_fini(state):
-            print(" " + t("app.arbre.tronc_dabord", n=state["lesson"], total=len(lecons.TRONC)) + "\n")
-        for i, b in enumerate(noms, 1):
-            br = lecons.ARBRE[b]
-            fait = state["arbre"].get(b, 0)
-            tot = len(br["lecons"])
-            etat = t("app.arbre.maitrisee") if fait >= tot else (t("app.arbre.en_cours") if state.get("branche") == b else "")
-            if not lecons.branche_dispo(b):
-                etat = t("app.arbre.android")
-            print(f" {BOLD}{i}. {br['icone']} {lecons.nom_branche(b)}{RESET} ({fait}/{tot}) {fg(78)}{etat}{RESET}")
-            print(f"    {DIM}" + t("app.arbre.desc", desc=lecons.tx(br["desc"]), stat=core.nom_stat(br["stat"])) + RESET)
-            for j, les in enumerate(br["lecons"]):
-                marque = "■" if j < fait else "□"
-                print(f"    {marque} {lecons.tx(les['titre'])} → {core.nom_skill(les['skill'])} {DIM}("
-                      + t("app.arbre.skill", desc=t("skill." + les["skill"] + ".desc"), n=les["niveau"]) + f"){RESET}")
-            print()
-        print(" " + t("app.arbre.competences", liste=", ".join(core.nom_skill(x) for x in state["skills"])
+        for l in histoire.lignes_ailes(st):
+            print(l)
+        print(" " + t("app.arbre.competences", liste=", ".join(core.nom_skill(x) for x in st["skills"])
                       or t("app.arbre.aucune")) + "\n")
-        if not lecons.tronc_fini(state):
-            clav.demander(f" {DIM}" + t("app.entree_retour") + RESET)
-            return
-        r = clav.demander(" " + t("app.arbre.numero") + " ").strip()
+        if msg:
+            print(f" {msg}\n")
+        r = clav.demander(" " + t("hist.menu.numero") + " ").strip()
         if not r:
             return
-        if r.isdigit() and 1 <= int(r) <= len(noms):
-            b = noms[int(r) - 1]
-            if state["arbre"].get(b, 0) >= len(lecons.ARBRE[b]["lecons"]) or not lecons.branche_dispo(b):
-                continue
-            core.modifier(lambda s: lecons.choisir_branche(s, b))
+        cid = histoire.chercher_chapitre(r)
+        if not cid:
+            msg = t("hist.aile.inconnue", nom=r)
+            continue
+        res = []
+        core.modifier(lambda s: res.append(histoire.choisir(s, cid)))
+        msg = res[0] if res else ""
+
+
+def menu_carte(state, clav):
+    clear()
+    for l in maison.carte(core.load() or state):
+        print(l)
+    clav.demander(f"\n {DIM}" + t("app.entree_retour") + RESET)
+
+
+def menu_quetes(state, clav):
+    msg = ""
+    while True:
+        clear()
+        for l in quetes.journal(core.load() or state):
+            print(l)
+        if msg:
+            print(f"\n {msg}")
+        r = clav.demander("\n " + t("qu.journal.numero") + " ").strip()
+        if not r:
             return
+        res = []
+        core.modifier(lambda s: res.append(quetes.suivre(s, r)))
+        msg = res[0] if res else ""
 
 
 def menu_collection(state, clav):
@@ -581,6 +601,10 @@ def fenetre(once):
                     menu_options(state, clav)
                 elif k == "l":
                     menu_lexique(state, clav)
+                elif k == "m":
+                    menu_carte(state, clav)
+                elif k == "j":
+                    menu_quetes(state, clav)
                 elif k == "q":
                     break
     except KeyboardInterrupt:
@@ -603,7 +627,29 @@ def veille():
 
 
 def aide():
-    return "\n".join(langue.remplir(l, {}) for l in langue.liste("app.aide"))
+    return "\n".join(langue.remplir(l, {}) for l in langue.liste("app.aide") + langue.liste("app.aide.histoire"))
+
+
+def commande_histoire(mode, args):
+    """tg carte · tg quetes [suivre N] · tg aile [nom] : sans ouvrir la fenêtre."""
+    if mode == "carte":
+        st = core.modifier(lambda s: histoire.h_(s))
+        return "\n".join(maison.carte(st))
+    if mode in ("quetes", "quete", "journal"):
+        if len(args) >= 2 and args[0].lower() in ("suivre", "follow", "s"):
+            res = []
+            core.modifier(lambda s: res.append(quetes.suivre(s, args[1])))
+            return res[0] if res else ""
+        st = core.modifier(lambda s: histoire.h_(s))
+        return "\n".join(quetes.journal(st))
+    if args:
+        cid = histoire.chercher_chapitre(" ".join(args))
+        if not cid:
+            return t("hist.aile.inconnue", nom=" ".join(args)) + "\n" + "\n".join(histoire.lignes_ailes(core.load()))
+        res = []
+        core.modifier(lambda s: res.append(histoire.choisir(s, cid, dit=False)))
+        return res[0] if res else ""
+    return "\n".join(histoire.lignes_ailes(core.modifier(lambda s: histoire.h_(s))))
 
 
 def main():
@@ -643,6 +689,10 @@ def main():
             creer_si_besoin()
         else:
             print(accueil.commande(args[1:]))
+        return
+    if mode in ("carte", "quetes", "quete", "journal", "aile", "ailes", "histoire"):
+        creer_si_besoin()
+        print(commande_histoire(mode, args[1:]))
         return
     if mode in ("compte", "sync", "drapeau", "lexique", "site", "bestiaire", "collection", "troupe", "anime"):
         creer_si_besoin()

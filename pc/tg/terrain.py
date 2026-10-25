@@ -1,7 +1,7 @@
 """Le terrain effacé : si l'enfant fait rm -rf ~/terrain_terminagotchi (ou efface le nid), on le
 remarque et on l'aide à reconstruire, puis la leçon reprend au bon endroit.
 
-  1. Détection : la partie a déjà construit son terrain (leçon « Bâtisseur » finie) mais le dossier
+  1. Détection : la partie a déjà construit son terrain (leçon « Construire mon nid » finie) mais le dossier
      ~/terrain_terminagotchi ou son nid n'existe plus. (Une nouvelle partie démarre sans terrain :
      parties.py range le terrain de chaque partie ; tant que la leçon 1 n'est pas finie, rien ne
      manque.) Même chose pour le carnet git pendant la branche Git.
@@ -33,25 +33,34 @@ def _lecons():
     return lecons
 
 
+def _h(state):
+    from . import histoire
+    return histoire.h_(state)
+
+
+def _lid(state):
+    from . import histoire
+    return histoire.lecon_id(state)
+
+
 def a_construit(state):
-    """Vrai si la partie a déjà son terrain et son nid (leçon « Bâtisseur » finie)."""
-    return state.get("lesson", 0) >= 2 or "Bâtisseur" in state.get("skills", [])
+    """Vrai si la partie a déjà son terrain et son nid (leçon « Construire mon nid » finie)."""
+    return "nid0" in _h(state)["faits"] or "Bâtisseur" in state.get("skills", [])
 
 
 def _git_en_cours(state):
     """La leçon Git en cours a besoin du carnet (leçons 2 et 3 de la branche)."""
-    return state.get("branche") == "Git" and 1 <= state.get("arbre", {}).get("Git", 0) < 3 \
-        and _lecons().tronc_fini(state)
+    return _lid(state) in ("git1", "git2")
 
 
 def manque(state):
     """Ce qui a disparu et que l'enfant doit reconstruire : sous-ensemble de terrain, nid, carnet."""
     m = []
-    if a_construit(state):
+    if a_construit(state) or "reveil1" in _h(state)["faits"]:
         if not T().is_dir():
             m.append("terrain")
-        if not (T() / "nid").is_dir():
-            m.append("nid")
+    if a_construit(state) and not (T() / "nid").is_dir():
+        m.append("nid")
     if not m and _git_en_cours(state) and not (T() / "carnet" / ".git").is_dir():
         m.append("carnet")
     return m
@@ -96,39 +105,34 @@ def reparer_lecon(state):
             state["step"] = vers
             recule = True
 
-    if not les.tronc_fini(state):
-        n = state.get("lesson", 0)
-        if n == 1 and step >= 1 and not fs["terrain"]():
-            reculer(0)                                          # cd terrain : il faut d'abord le refaire
-        elif n == 2 and step >= 1 and not fs["repas"]():
-            reculer(0)                                          # cat / grep : on réécrit le repas
-        elif n == 3 and nid.is_dir() and not (nid / "repas.txt").is_file():
-            _ecrire(nid / "repas.txt", "pomme\n")                # la leçon des droits a besoin du repas
+    lid = _lid(state)
+    if lid == "nid0" and step >= 2 and not fs["nid"]():
+        reculer(1)                                              # le lit va dans le nid : il faut le refaire
+    elif lid == "nid1" and step >= 1 and not fs["repas"]():
+        reculer(0)                                              # cat : on réécrit le repas
+    elif lid in ("t3", "biblio1") and nid.is_dir() and not (nid / "repas.txt").is_file() and \
+            (lid == "t3" or step == 0):
+        _ecrire(nid / "repas.txt", "pomme\n")                    # les droits (et la loupe) ont besoin du repas
+        remis.append("nid/repas.txt")
+    elif lid == "t4" and nid.is_dir():
+        if step == 0 and not (nid / "repas.txt").is_file():
+            _ecrire(nid / "repas.txt", "pomme\n")
             remis.append("nid/repas.txt")
-        elif n == 4 and nid.is_dir():
-            if step == 0 and not (nid / "repas.txt").is_file():
+        elif step == 1 and not fs["secours"]() and not fs["reserve"]():
+            reculer(0)
+            if not (nid / "repas.txt").is_file():
                 _ecrire(nid / "repas.txt", "pomme\n")
                 remis.append("nid/repas.txt")
-            elif step == 1 and not fs["secours"]() and not fs["reserve"]():
-                reculer(0)
-                if not (nid / "repas.txt").is_file():
-                    _ecrire(nid / "repas.txt", "pomme\n")
-                    remis.append("nid/repas.txt")
-        return remis, recule
-    b = state.get("branche")
-    i = state.get("arbre", {}).get(b, 0) if b else 0
-    if b == "Git":
-        if i == 0 and step >= 1 and not fs["carnet"]():
-            reculer(0)
-        elif i == 1 and step >= 1 and not fs["journal"]():
-            reculer(0)
-    elif b == "Scripts" and nid.is_dir():
-        if i == 0 and step >= 1 and not fs["miam"]():
-            reculer(0)
-        elif i >= 1 and not fs["miam"]():
-            _ecrire(les.MIAM, C('echo "Miam !"\n', 'Write-Output "Miam !"\n'), executable=i >= 2)
-            remis.append("nid/" + les.MIAM.name)
-    elif b == "Réseau" and i == 1 and step >= 2 and not fs["colis"]():
+    elif lid == "git0" and step >= 1 and not fs["carnet"]():
+        reculer(0)
+    elif lid == "git1" and step >= 1 and not fs["journal"]():
+        reculer(0)
+    elif lid == "scripts0" and nid.is_dir() and step >= 1 and not fs["miam"]():
+        reculer(0)
+    elif lid == "scripts1" and nid.is_dir() and not fs["miam"]():
+        _ecrire(les.MIAM, C('echo "Miam !"\n', 'Write-Output "Miam !"\n'), executable=False)
+        remis.append("nid/" + les.MIAM.name)
+    elif lid == "reseau1" and step >= 2 and not fs["colis"]():
         reculer(1)
     return remis, recule
 

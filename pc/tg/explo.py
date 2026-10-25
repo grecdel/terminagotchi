@@ -7,7 +7,9 @@ la lire (cat), puis réussir son dressage (voir dressage.py). Chaque bestiole es
 
 Attirance : chaque famille est « attirée par » une commande (chmod pour les Démons, ls pour les
 Sylvestres…, champ attiree_par). La taper attire cette famille : la prochaine apparition (dans les
-10 minutes) a environ 3 fois plus de chances d'en être une. La famille entre dans le tirage signé
+10 minutes) a environ 3 fois plus de chances d'en être une. Pendant un chapitre de l'histoire
+(« La Maison endormie », histoire.py), la famille de l'aile en cours est attirée de la même façon
+(si sa commande a déjà été goûtée : le serveur le vérifie). La famille entre dans le tirage signé
 (voir tirage.py) : le serveur peut toujours le refaire.
 
 Le tout premier monstre (aucune bestiole dressée) est une espèce courante, de rareté commune :
@@ -103,6 +105,9 @@ def spawn(state):
     abyssor_permis = legendaires >= 3 and not state["collection"].get("Abyssor")   # la mythique secrète #151
     zone_de = lambda e_, v_: B.variante(e_, v_).get("zone", e_["zone"])  # noqa: E731
     attire = attirance(state)
+    if not attire:                                  # le chapitre en cours attire sa famille (histoire.py)
+        from . import histoire
+        attire = histoire.famille_attiree(state)
     premier = not state.get("captures")             # le tout premier monstre : facile
     e = ind = None
     for _ in range(ESSAIS_PREMIER if premier else 1):

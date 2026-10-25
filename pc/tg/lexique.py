@@ -1,4 +1,7 @@
-"""Le lexique : toutes les commandes, rangées par chapitres et par univers.
+"""Le lexique, devenu le « carnet d'aventure » : toutes les commandes, rangées par chapitres et par
+univers, chacune avec le moment de l'histoire où on l'a apprise (histoire.noter : « Le grenier des
+Sylvestres », « avant l'histoire », « en liberté »…), puis les souvenirs (chapitres réveillés,
+quêtes, titres, objets).
 
   blanc     = déjà goûtée (sur n'importe lequel de tes appareils)
   gris      = à découvrir ici
@@ -32,6 +35,7 @@ def _entrees():
             (C("rm", "del"), t("lex.rm.i"), t("lex.rm.t")),
             (C("chmod", "attrib"), t("lex.chmod.i"), t("lex.chmod.t")),
             ("tree", t("lex.tree.i"), t("lex.tree.t")),
+            ("rev", t("lex.rev.i"), t("lex.rev.t")),
         ]),
         (t("lex.ch.lire"), ICI, [
             (C("cat", "type"), t("lex.cat.i"), t("lex.cat.t")),
@@ -50,6 +54,8 @@ def _entrees():
             (C("kill", "Stop-Process"), t("lex.kill.i"), t("lex.kill.t")),
             (C("df", "Get-PSDrive"), t("lex.df.i"), t("lex.df.t")),
             (C("du", "Measure-Object"), t("lex.du.i"), t("lex.du.t")),
+            ("free", t("lex.free.i"), t("lex.free.t")),
+            ("uptime", t("lex.uptime.i"), t("lex.uptime.t")),
             (C("sudo", "winget"), t("lex.sudo.i", cmd=inst), t("lex.sudo.t", cmd=inst)),
         ]),
         (t("lex.ch.reseau"), ICI, [
@@ -65,6 +71,11 @@ def _entrees():
             (C("alias", "function"), t("lex.alias.i"), t("lex.alias.t")),
             (C("python3", "python"), t("lex.python3.i"), t("lex.python3.t")),
             (C("nano", "notepad"), t("lex.nano.i"), t("lex.nano.t")),
+        ]),
+        (t("lex.ch.maison"), ICI, [
+            ("tg carte", t("lex.tg_carte.i"), t("lex.tg_carte.t")),
+            ("tg quetes", t("lex.tg_quetes.i"), t("lex.tg_quetes.t")),
+            ("tg aile", t("lex.tg_aile.i"), t("lex.tg_aile.t")),
         ]),
         (t("lex.ch.recensement"), ICI, [
             ("tg", t("lex.tg.i"), t("lex.tg.t")),
@@ -102,6 +113,34 @@ def explication(image, technique, p):
     return f"{technique} {DIM}({image}){RESET}"
 
 
+def quand(state, mot):
+    """Le moment de l'histoire où la commande a été apprise (carnet d'aventure), ou « »."""
+    ou = ((state.get("histoire") or {}).get("carnet") or {}).get(mot)
+    if not ou:
+        return ""
+    if ou in ("avant", "libre"):
+        return t("hist.carnet." + ou)
+    return t(f"hist.{ou}.court")
+
+
+def souvenirs(state):
+    """Les souvenirs du carnet : chapitres réveillés, quêtes finies, titres, objets."""
+    from . import histoire, quetes
+    q = quetes.q_(state)
+    h = histoire.h_(state)
+    out = ["", f"{fg(147)}{BOLD}" + t("lex.souvenirs") + RESET]
+    for cid in h["ailes"]:
+        out.append(f"  {fg(78)}✓{RESET} " + histoire.nom_chapitre(cid))
+    if not h["ailes"]:
+        out.append(f"  {DIM}" + t("lex.souvenirs.aucun") + RESET)
+    out.append("  " + t("lex.souvenirs.quetes", n=len(q["finies"])))
+    if q["titres"]:
+        out.append("  " + t("lex.souvenirs.titres", liste=", ".join(t("qu.titre." + x) for x in q["titres"])))
+    if q["objets"]:
+        out.append("  " + t("lex.souvenirs.objets", liste=", ".join(t("qu.objet." + x) for x in q["objets"][-12:])))
+    return out
+
+
 def lignes(state):
     vus = {c.lower() for c in state.get("seen", [])}
     ici = OS_NAMES.get(OSK, "PC")
@@ -123,12 +162,15 @@ def lignes(state):
             goutees += gout
             desc = explication(image, technique, p)
             if gout:
-                sortie.append(f"  {fg(255)}● {BOLD}{cmd:<15}{RESET}{fg(255)} {desc}{RESET}")
+                moment = quand(state, mot)
+                moment = f" {fg(213)}· 📖 {moment}{RESET}" if moment else ""
+                sortie.append(f"  {fg(255)}● {BOLD}{cmd:<15}{RESET}{fg(255)} {desc}{RESET}{moment}")
             else:
                 sortie.append(f"  {fg(244)}○ {cmd:<15} {desc}{RESET}")
-    entete = [f" {fg(213)}── 📖 " + t("lex.titre", ici=ici, n=goutees, total=total) + RESET,
+    entete = [f" {fg(213)}── 📖 " + t("lex.carnet.titre", nom=state.get("name", "")) + RESET,
+              f" {DIM}" + t("lex.titre", ici=ici, n=goutees, total=total) + RESET,
               f" {DIM}" + t("lex.legende") + RESET]
-    return entete + sortie
+    return entete + sortie + souvenirs(state)
 
 
 def images():
