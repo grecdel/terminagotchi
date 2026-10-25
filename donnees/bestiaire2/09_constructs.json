@@ -89,12 +89,12 @@
   "taille_finale": "moyenne",
   "fiche": "Serpent d'acier fait d'un ressort enchanté, il rebondit entre les rochers des canyons en sifflant comme une bouilloire.",
   "caractere": "nerveux et rapide",
-  "apparence": "Snake construct made of a coiled steel spring body with a polished copper head and a pink energy crystal in the forehead; steel, copper and magenta crystal.",
+  "apparence": "Snake construct made of a coiled steel spring body with a polished copper head and a orange energy crystal in the forehead; steel, copper and orange crystal.",
   "stades": {
    "bebe": "A short fat coil of steel spring with a round copper head, big eyes and a tiny crystal dot on the forehead.",
    "enfant": "The coil gets longer and a hinged copper jaw with two small rivet fangs appears.",
    "ado": "Copper fin plates grow along the spring body and the tail ends in a sharp drill tip.",
-   "adulte": "A long powerful spring serpent with an armored copper cobra hood, a large magenta crystal on its brow and a spinning drill tail.",
+   "adulte": "A long powerful spring serpent with an armored copper cobra hood, a large orange crystal on its brow and a spinning drill tail.",
    "ancien": "An ancient spring serpent with green patina on its hood, a frayed copper whisker beard and small crystals growing along its coils."
   },
   "habitats": [
