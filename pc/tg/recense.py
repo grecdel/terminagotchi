@@ -14,6 +14,7 @@ import urllib.error
 import urllib.request
 
 from . import core
+from . import tirage
 from .langue import t
 
 INFO = "https://raw.githubusercontent.com/grecdel/terminagotchi-android/site-info/url.txt"
@@ -114,10 +115,14 @@ def _appliquer(state, srv, snap):
         state["trait"] = srv["trait"]
     if srv.get("forme"):
         state["branch"] = srv["forme"]
-    connus = {x.get("id") for x in state.setdefault("captures", [])}
+    ici = {x.get("id"): x for x in state.setdefault("captures", [])}
     for ind in srv.get("captures", []):
-        if ind.get("id") not in connus:
+        if ind.get("id") in ici:
+            if "verifie" in ind:                    # anti-triche : le verdict du serveur
+                ici[ind["id"]]["verifie"] = bool(ind["verifie"])
+        else:
             state["captures"].append(ind)
+            ici[ind.get("id")] = ind
     if "partage" in srv and srv["partage"].get("date", 0) >= c.get("partage", {}).get("date", 0):
         c["partage"] = srv["partage"]
     if "shiny" in srv:
@@ -161,6 +166,7 @@ def synchroniser(forcer=False):
             cc["serveur"] = url
         avant = s["xp"]
         _appliquer(s, r["etat"], snap)
+        tirage.ranger_graines(s, r.get("graines"))   # graines des prochains jours (jeu hors ligne)
         gagne = s["xp"] - avant
         if gagne > 0:
             core.log(s, t("rec.sync.xp", n=gagne))

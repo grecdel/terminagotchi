@@ -17,6 +17,7 @@ def piege_ansi(t):
 from . import bestiaire as B
 from . import core
 from . import dressage
+from . import tirage
 from .langue import largeur, t
 from .mots import palier, terme
 from .plateforme import BOLD, DIM, IS_WIN, RESET, fg, piege
@@ -39,21 +40,31 @@ def debloque(state):
 def spawn(state):
     if len(state["sauvages"]) >= MAX_SAUVAGES:
         return
-    e, shiny, vid = B.tirer()
     legendaires = sum(1 for c in state.get("captures", []) if B.rarete_de(c) == "légendaire")
-    if legendaires >= 3 and random.random() < 1 / 15 and not state["collection"].get("Abyssor"):
-        e, vid = B.espece("Abyssor"), "classique"   # la mythique secrète #151
-    zone = B.variante(e, vid).get("zone", e["zone"])
+    abyssor_permis = legendaires >= 3 and not state["collection"].get("Abyssor")   # la mythique secrète #151
+    zone_de = lambda e_, v_: B.variante(e_, v_).get("zone", e_["zone"])  # noqa: E731
+    # anti-triche : tirage vérifiable par le serveur si une graine du jour est en cache (voir tirage.py)
+    verifiable = None if state.get("dressage") else tirage.apparition(state, zone_de, abyssor_permis)
+    if verifiable:
+        e, ind = verifiable
+        shiny, vid = ind["shiny"], ind["variante"]
+    else:                                         # sans graine : au hasard, « non vérifié » sur le site
+        e, shiny, vid = B.tirer()
+        if abyssor_permis and random.random() < 1 / 15:
+            e, vid = B.espece("Abyssor"), "classique"
+        ind = None
+    zone = zone_de(e, vid)
     dossier = T / zone
     dossier.mkdir(parents=True, exist_ok=True)
     state["explo_n"] += 1
     if state.get("dressage"):
         return
-    # l'individu est tiré dès son apparition : stats, rareté et stade sont lisibles sur sa fiche (cat)
-    ind = B.individu(e, shiny, zone, vid)
-    ind["stade"] = random.choices(B.STADES[:4], [35, 35, 20, 10])[0]
-    if shiny:
-        ind["teinte"] = round(random.uniform(0.15, 0.85), 3)   # couleur shiny propre à cet individu
+    if ind is None:
+        # l'individu est tiré dès son apparition : stats, rareté et stade sont lisibles sur sa fiche (cat)
+        ind = B.individu(e, shiny, zone, vid)
+        ind["stade"] = random.choices(B.STADES[:4], [35, 35, 20, 10])[0]
+        if shiny:
+            ind["teinte"] = round(random.uniform(0.15, 0.85), 3)   # couleur shiny propre à cet individu
     s = {"f": dressage.fiche(e["nom"]).name, "e": e["nom"], "zone": zone, "shiny": shiny, "v": vid, "ind": ind}
     state["sauvages"].append(s)
     core.log(state, t("dress.apparait", nom=e["nom"], eclat=""))
