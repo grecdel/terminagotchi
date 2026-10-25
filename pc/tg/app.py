@@ -57,6 +57,7 @@ def render(state, frame, interactif):
         reste = max(0, core.defi_duree(state) - (time.time() - d["start"]))
         lines.append(title_line(f"⚡ DÉFI ÉCLAIR : tape « {piege(d['cmd'])} » — {reste:.0f} s", 226))
 
+    d = state.get("dressage")
     if d:
         lines.append(f" {fg(196)}{BOLD}⚔ Un {d['espece']} sauvage est apparu dans sa propre fenêtre !{RESET} "
                      f"{DIM}(fermée par erreur ? tg dressage){RESET}")

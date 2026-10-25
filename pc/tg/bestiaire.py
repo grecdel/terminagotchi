@@ -68,6 +68,34 @@ def espece(nom):
     return None
 
 
+def migrer(state):
+    """Sauvegardes d'avant le nouveau bestiaire : chaque ancienne espèce devient la nouvelle de même numéro."""
+    anciens = donnees().get("anciens", {})
+    if not state or not anciens:
+        return state
+
+    def nouveau(nom):
+        if nom is None or espece(nom):
+            return nom
+        n = anciens.get(nom)
+        e = next((x for x in especes() if x["numero"] == n), None)
+        return e["nom"] if e else nom
+    for c in state.get("captures", []):
+        c["espece"] = nouveau(c.get("espece"))
+        if c.get("stade") == "finale":
+            c["stade"] = "ancien"
+    col = {}
+    for n, k in state.get("collection", {}).items():
+        col[nouveau(n)] = col.get(nouveau(n), 0) + k
+    if "collection" in state:
+        state["collection"] = col
+    for s_ in state.get("sauvages", []):
+        s_["e"] = nouveau(s_.get("e"))
+    if state.get("dressage"):
+        state["dressage"]["espece"] = nouveau(state["dressage"].get("espece"))
+    return state
+
+
 def tirer(rnd=random):
     """Une apparition : l'espèce (selon sa fréquence), sa variante (selon son habitat), shiny ou pas."""
     d = donnees()

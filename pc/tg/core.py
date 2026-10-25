@@ -420,9 +420,11 @@ def modifier(fn):
 
 def load():
     try:
-        return json.loads(SAVE_FILE.read_text(encoding="utf-8"))
+        state = json.loads(SAVE_FILE.read_text(encoding="utf-8"))
     except (OSError, ValueError):
         return None
+    from . import bestiaire
+    return bestiaire.migrer(state)
 
 
 def save(state):

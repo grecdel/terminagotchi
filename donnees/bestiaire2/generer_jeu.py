@@ -208,7 +208,7 @@ def main():
     regles["paliers"] = seuils
     regles["qualite"] = "tirée au hasard entre 0 et 1 par le serveur à l'apparition ; les stats en découlent"
     # Abyssor, la secrète, garde ses données d'origine (mythique)
-    ancien = json.loads((RACINE / "pc/tg/bestiaire.json").read_text(encoding="utf-8"))
+    ancien = json.loads((ICI / "ancien_bestiaire_v1.json").read_text(encoding="utf-8"))
     secretes = [x for x in ancien["especes"] if x.get("secrete")]
     for x in secretes:
         x["rarete"], x["frequence"], x["puissance"] = "mythique", "presque jamais", 15
@@ -222,6 +222,8 @@ def main():
         "habitats": {slug(h): ARTICLES.get(h, "le " + h) for h in A.HABITATS},
         "marques": ancien["marques"], "humeurs": ancien["humeurs"],
         "stades": STADES, "especes": especes + secretes,
+        # les anciennes espèces (bestiaire v1) deviennent la nouvelle espèce de même numéro
+        "anciens": {x["nom"]: x["numero"] for x in ancien["especes"] if not x.get("secrete")},
     }
     texte = json.dumps(donnees, ensure_ascii=False, separators=(",", ":"))
     bin_ = zlib.compress(json.dumps(sprites, separators=(",", ":")).encode(), 9)
