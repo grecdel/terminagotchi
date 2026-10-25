@@ -31,7 +31,7 @@ object Parties {
     /** nombre maximum de parties sur l'appareil */
     const val MAX = 10
     /** ce qui suit le joueur d'une partie à l'autre : son compte (pas la progression de la partie) */
-    private val IDENTITE = listOf("cle", "pseudo", "serveur")
+    private val IDENTITE = listOf("cle", "pseudo", "serveur", "parties_cache")
 
     class Resume(
         val id: String, val nom: String, val niveau: Int, val stade: Int, val forme: String?,

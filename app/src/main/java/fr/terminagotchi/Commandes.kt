@@ -359,6 +359,7 @@ class Commandes(
                 Parties.baseDe(c).takeIf { it.isNotEmpty() }?.let { c.put("base_de", it) }
                 c.remove("cle")
                 c.remove("pseudo")
+                c.remove("parties_cache")
                 return Reponse("Ce téléphone n'est plus relié au compte (le compte, lui, existe toujours).\n" +
                     "Pour revenir : compte lier TG-…  ou  compte secours TG-…", couleur = BLEU)
             }

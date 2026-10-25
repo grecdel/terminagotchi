@@ -1,6 +1,7 @@
 package fr.terminagotchi
 
 import android.app.Activity
+import org.json.JSONArray
 import org.json.JSONObject
 import java.text.SimpleDateFormat
 import java.util.Date
@@ -129,8 +130,11 @@ class MenuParties(
             if (r.active) sb.append("  ← en cours")
         }
         if (avecCompte && Recensement.aUnCompte(jeu)) {
-            sb.append("\n☁ ton compte : je regarde…")
-            listerCompte()
+            // d'abord ce qu'on sait déjà (cache local, marche hors ligne), puis un coup d'œil rapide au site, en fond
+            val cache = Recensement.compte(jeu).optJSONArray("parties_cache") ?: JSONArray()
+            val deja = ajouterCompte(cache)
+            sb.append(if (deja.isEmpty()) "\n☁ ton compte : je regarde…" else "\n☁ sur ton compte :$deja")
+            rafraichirCompte()
         }
         return sb.toString()
     }
@@ -140,36 +144,46 @@ class MenuParties(
         return lister(true) + "\nnuméro ? (Entrée = retour)"
     }
 
-    /** Les parties du compte en ligne qui ne sont pas sur ce téléphone : elles s'ajoutent aux numéros. */
-    private fun listerCompte() {
+    /** Ajoute aux numéros les parties du compte qui ne sont pas encore listées ; renvoie leurs lignes. */
+    private fun ajouterCompte(a: JSONArray): String {
+        val sb = StringBuilder()
+        val ici = choix.map { it.first }.toSet()
+        for (i in 0 until a.length()) {
+            val p = a.optJSONObject(i) ?: continue
+            val id = p.optString("partie")
+            if (id.isEmpty() || id in ici) continue
+            val niv = p.optInt("niveau", 1)
+            choix.add(id to p.optString("nom"))
+            sb.append("\n${choix.size}  ${p.optString("nom")} · ${espece(Regles.stade(niv), if (p.isNull("forme")) null else p.optString("forme"))} niv. $niv")
+        }
+        return sb.toString()
+    }
+
+    /** En fond, avec un délai court : la liste du compte en ligne (gardée en cache pour le hors-ligne). */
+    private fun rafraichirCompte() {
         val c = Recensement.compte(jeu)
         val cle = c.optString("cle")
-        val connu = c.optString("serveur")
+        val serveur = c.optString("serveur")
         Thread {
-            val r = try {
-                val url = Recensement.serveur(connu)
-                if (url.isEmpty()) JSONObject().put("erreur", "site injoignable")
-                else Recensement.requete("$url/api/parties", "GET", null, cle)
+            val a = try {
+                if (serveur.isEmpty()) null else {
+                    val cx = java.net.URL("$serveur/api/parties").openConnection() as java.net.HttpURLConnection
+                    cx.connectTimeout = 3000
+                    cx.readTimeout = 4000
+                    cx.setRequestProperty("authorization", "Bearer $cle")
+                    cx.setRequestProperty("user-agent", "terminagotchi-android")
+                    if (cx.responseCode != 200) null
+                    else JSONObject(cx.inputStream.bufferedReader().use { it.readText() }).optJSONArray("parties")
+                }
             } catch (e: Exception) {
-                JSONObject().put("erreur", "pas de connexion")
+                null
             }
             act.runOnUiThread {
+                if (a != null && Recensement.compte(jeu).optString("cle") == cle) Recensement.compte(jeu).put("parties_cache", a)
                 if (etat != "charger") return@runOnUiThread
-                val a = r.optJSONArray("parties")
-                if (a == null) { plusTard("☁ ton compte : ${r.optString("erreur", "le site doit être mis à jour")}"); return@runOnUiThread }
-                val ici = choix.map { it.first }.toSet()
-                val sb = StringBuilder("☁ sur ton compte :")
-                var n = 0
-                for (i in 0 until a.length()) {
-                    val p = a.getJSONObject(i)
-                    val id = p.optString("partie")
-                    if (id in ici) continue
-                    val niv = p.optInt("niveau", 1)
-                    choix.add(id to p.optString("nom"))
-                    n++
-                    sb.append("\n${choix.size}  ${p.optString("nom")} · ${espece(Regles.stade(niv), if (p.isNull("forme")) null else p.optString("forme"))} niv. $niv")
-                }
-                plusTard(if (n == 0) "☁ ton compte : rien de plus (tout est déjà ici)" else sb.toString())
+                if (a == null) { plusTard("☁ (hors ligne) : les parties de ton compte s'afficheront avec internet"); return@runOnUiThread }
+                val nouvelles = ajouterCompte(a)
+                if (nouvelles.isNotEmpty()) plusTard("☁ sur ton compte :$nouvelles")
             }
         }.start()
     }
@@ -185,7 +199,7 @@ class MenuParties(
         jeu.recharger()
         apresChangement()
         if (Recensement.aUnCompte(jeu)) synchroniser()
-        return if (duCompte != null) "☁ $duCompte arrive de ton compte… synchronisation !"
+        return if (duCompte != null) "☁ $duCompte arrive de ton compte… (elle se remplit à la prochaine synchro, dès qu'il y a internet)"
             else "📂 Te revoilà avec ${jeu.nom} ! ${espece(jeu.stade, jeu.forme)} niv. ${jeu.niveau}"
     }
 }
