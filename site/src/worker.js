@@ -468,9 +468,10 @@ const MONO = `ui-monospace,SFMono-Regular,Menlo,Consolas,"Liberation Mono","Deja
 const POLICES = {
   zh: `${MONO},"Noto Sans Mono CJK SC","Noto Sans CJK SC","Source Han Sans SC","PingFang SC","Microsoft YaHei","WenQuanYi Micro Hei",sans-serif`,
   ja: `${MONO},"Noto Sans Mono CJK JP","Noto Sans CJK JP","Source Han Sans JP","Hiragino Sans","Hiragino Kaku Gothic ProN","Yu Gothic","Meiryo",sans-serif`,
-  hi: `${MONO},"Noto Sans Devanagari","Nirmala UI","Mangal","Lohit Devanagari","Kohinoor Devanagari",sans-serif`,
-  bn: `${MONO},"Noto Sans Bengali","Nirmala UI","Vrinda","Lohit Bengali","Kohinoor Bangla",sans-serif`,
-  // arabe et ourdou : la police de l'écriture d'abord (les lettres arabes en chasse fixe sont peu lisibles)
+  // hindi, bengali, arabe, ourdou : la police de l'écriture d'abord (en chasse fixe, ces écritures sont peu lisibles
+  // et les espaces trop larges) ; le code et les commandes gardent la chasse fixe (règle code,pre)
+  hi: `"Noto Sans Devanagari","Nirmala UI","Mangal","Lohit Devanagari","Kohinoor Devanagari",${MONO},sans-serif`,
+  bn: `"Noto Sans Bengali","Nirmala UI","Vrinda","Lohit Bengali","Kohinoor Bangla",${MONO},sans-serif`,
   ar: `"Noto Sans Arabic","Noto Naskh Arabic","Segoe UI","Tahoma","Geeza Pro","DejaVu Sans",${MONO},sans-serif`,
   ur: `"Noto Nastaliq Urdu","Jameel Noori Nastaliq","Urdu Typesetting","Noto Naskh Arabic","Noto Sans Arabic","Segoe UI","Tahoma",${MONO},sans-serif`,
 };

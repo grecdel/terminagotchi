@@ -178,5 +178,83 @@ verifier(r.statut === 404, "espèce inconnue : 404");
 r = await appel("GET", "/joueur/Grec");
 verifier(r.t.includes("/bestiaire/glitchou") && r.t.includes("Voir ses captures uniques"), "profil : collection dessinée + lien vers ses captures");
 
+console.log("Langues de l'interface");
+const { LANGUES, NOMS_LANGUES, DICTIONNAIRES, depuisAcceptLanguage } = await import("../src/i18n.js");
+verifier(LANGUES.length === 14, "14 langues : " + LANGUES.join(" "));
+const langDe = (t) => t.match(/<html lang="([a-z]+)" dir="(ltr|rtl)">/)?.slice(1).join("/");
+r = await appel("GET", "/");
+verifier(langDe(r.t) === "fr/ltr" && !r.h.get("set-cookie"), "par défaut : français, sans cookie");
+verifier(r.h.get("content-type") === "text/html; charset=utf-8" && r.t.includes('<meta charset="utf-8">'), "UTF-8 annoncé (en-tête + meta)");
+r = await appel("GET", "/?lang=en");
+verifier(langDe(r.t) === "en/ltr" && r.t.includes("Leaderboard"), "?lang=en : page en anglais");
+verifier(/^lang=en; Path=\/;/.test(r.h.get("set-cookie") || ""), "?lang=en pose le cookie lang=en");
+r = await appel("GET", "/classement", { entetes: { cookie: "lang=de" } });
+verifier(langDe(r.t) === "de/ltr" && r.t.includes("Rangliste"), "cookie lang=de : allemand");
+r = await appel("GET", "/classement", { entetes: { "accept-language": "pt-BR,pt;q=0.9,en;q=0.8" } });
+verifier(langDe(r.t) === "pt/ltr", "Accept-Language pt-BR : portugais");
+r = await appel("GET", "/?lang=it", { entetes: { cookie: "lang=de", "accept-language": "es" } });
+verifier(langDe(r.t) === "it/ltr", "priorité : ?lang avant cookie avant Accept-Language");
+r = await appel("GET", "/", { entetes: { cookie: "lang=ja", "accept-language": "es" } });
+verifier(langDe(r.t) === "ja/ltr", "priorité : cookie avant Accept-Language");
+r = await appel("GET", "/?lang=zz", { entetes: { "accept-language": "xx,ru;q=0.5" } });
+verifier(langDe(r.t) === "ru/ltr" && !r.h.get("set-cookie"), "langue inconnue ignorée, puis Accept-Language");
+verifier(depuisAcceptLanguage("en;q=0,de;q=0.3") === "de" && depuisAcceptLanguage("") === null && depuisAcceptLanguage("zh-CN") === "zh",
+  "lecture d'Accept-Language (q=0 ignoré, région ignorée)");
+r = await appel("GET", "/?lang=ar");
+verifier(langDe(r.t) === "ar/rtl" && r.t.includes("الترتيب"), "arabe : dir=rtl");
+r = await appel("GET", "/?lang=ur");
+verifier(langDe(r.t) === "ur/rtl", "ourdou : dir=rtl");
+verifier(LANGUES.every((l) => r.t.includes(`<option value="${l}"`) && r.t.includes(NOMS_LANGUES[l])) && ["中文", "Русский", "日本語", "العربية", "हिन्दी", "বাংলা", "اردو"].every((n) => r.t.includes(n)),
+  "sélecteur : les 14 langues, chacune écrite dans sa langue");
+r = await appel("GET", "/bestiaire/glitchou?lang=en");
+verifier(r.t.includes("Glitchou") && r.t.includes("terrain_terminagotchi/faille") && r.t.includes("Bestiary") && r.t.includes("crack"),
+  "fiche en anglais : interface traduite, habitat traduit, chemin inchangé");
+const glitchou = (await import("../src/bestiaire.js")).default.especes.find((e) => e.id === "glitchou");
+verifier(r.t.includes(glitchou.description.replace(/'/g, "&#39;")), "les descriptions des bestioles restent en français");
+r = await appel("GET", "/bestiaire?rarete=l%C3%A9gendaire&lang=es");
+verifier((r.t.match(/class="bestiole"/g) || []).length === 10 && r.t.includes("legendaria"), "filtres : valeurs françaises dans l'URL, libellés traduits");
+r = await appel("GET", "/joueur/Grec?lang=en");
+verifier(r.t.includes("Web hacker (full CTF)") && r.t.includes("Leaderboard"), "badges : titre traduit selon leur type");
+r = await appel("GET", "/ctf/Grec/1?lang=en");
+verifier(r.t.includes("Challenge 1") && !r.t.includes(r.h.get("x-drapeau")), "CTF en texte : traduit, drapeau toujours caché dans l'en-tête");
+r = await appel("POST", "/api/inscription", { corps: { pseudo: "x" }, entetes: { "accept-language": "en" } });
+verifier(r.j?.erreur?.startsWith("Le pseudo"), "l'API reste en français (lue par l'appli)");
+
+// cohérence des dictionnaires : mêmes clés, mêmes paramètres, mêmes balises HTML qu'en français
+const fr = DICTIONNAIRES.fr;
+const problemes = [];
+const balises = (s) => (s.match(/<\/?(code|b|a)(\s[^>]*)?>/g) || []).length;
+const comparer = (a, b, ch, l) => {
+  for (const [k, x] of Object.entries(a)) {
+    const y = b?.[k];
+    if (y === undefined) { if (!["fleches"].includes(k) && x !== null && !(typeof x === "object" && !Object.keys(x).length)) problemes.push(`${l} ${ch}${k} manque`); continue; }
+    if (typeof x === "function") { if (typeof y !== "function" || y.length !== x.length) problemes.push(`${l} ${ch}${k} paramètres`); }
+    else if (Array.isArray(x)) { if (!Array.isArray(y) || y.length !== x.length) problemes.push(`${l} ${ch}${k} longueur`); }
+    else if (x && typeof x === "object") comparer(x, y, ch + k + ".", l);
+    else if (typeof x === "string" && balises(x) !== balises(y)) problemes.push(`${l} ${ch}${k} balises`);
+  }
+};
+for (const l of LANGUES) if (l !== "fr") comparer(fr, DICTIONNAIRES[l], "", l);
+for (const l of LANGUES) if (l !== "fr") {
+  for (const t of ["stats", "statsB", "raretes", "familles", "habitats", "frequences", "humeurs", "formes", "stadesB", "court"]) {
+    for (const k of Object.keys(DICTIONNAIRES.en[t])) if (!DICTIONNAIRES[l][t]?.[k]) problemes.push(`${l} ${t}.${k} manque`);
+  }
+}
+verifier(problemes.length === 0, "dictionnaires cohérents" + (problemes.length ? " : " + problemes.slice(0, 5).join(", ") : ""));
+
+// chaque page dans chaque langue
+const pages = ["/", "/classement", "/bestiaire", "/bestiaire/glitchou", "/captures", "/captures?shiny=1", "/joueur/Grec", "/joueur/Personne", lienBadge, "/badge/0123456789abcdef", "/ctf", "/nimporte"];
+let rendues = 0;
+const rates = [];
+for (const l of LANGUES) {
+  for (const p of pages) {
+    r = await appel("GET", p + (p.includes("?") ? "&" : "?") + "lang=" + l);
+    const bon = r.t.startsWith("<!doctype html>") && langDe(r.t) === `${l}/${["ar", "ur"].includes(l) ? "rtl" : "ltr"}`
+      && !/undefined|\[object |NaN|function \(|=>/.test(r.t.replace(/<style>[\s\S]*?<\/style>/, ""));
+    if (bon) rendues++; else rates.push(l + p);
+  }
+}
+verifier(rates.length === 0, `${rendues} pages rendues sans trou (${LANGUES.length} langues × ${pages.length} pages)` + (rates.length ? " ; ratées : " + rates.slice(0, 5).join(", ") : ""));
+
 console.log(`\n${ok} réussis, ${ko} échoués`);
 process.exit(ko ? 1 : 0);
