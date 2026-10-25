@@ -365,7 +365,11 @@ def creer_si_besoin():
     with core.verrou():
         state = core.load()
         if state is None:
-            name = input("Comment s'appelle ta créature ? ").strip() or "Pixel"
+            try:
+                name = input("Comment s'appelle ta créature ? ").strip()[:16] or "Pixel"
+            except (KeyboardInterrupt, EOFError):
+                print("\nÀ bientôt ! Relance « tg » quand tu veux.")
+                raise SystemExit(0)
             state = core.migrate(core.new_state(name))
             core.read_new_lines(state)   # mémorise où on en est, sans manger l'ancien historique
             core.log(state, f"Un œuf est apparu… il a l'air {state['trait']}.")
@@ -505,5 +509,9 @@ def main():
         bureau.lancer(etape)
     elif mode == "veille":
         veille()
+    elif mode in ("combat", "monstre", "monstres"):
+        vue_dressage()
+    elif mode:
+        print(f"Je ne connais pas « tg {mode} ». Essaie : tg  (la fenêtre), tg dressage, tg troupe, tg aide")
     else:
         fenetre("--une-fois" in sys.argv)

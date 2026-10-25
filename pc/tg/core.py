@@ -298,6 +298,28 @@ def tick(state):
     state["last_tick"] = now
 
 
+BUILTINS = {"cd", "echo", "export", "alias", "history", "type", "source", ".", "exit", "for", "if", "while",
+            "set", "unset", "read", "test", "[", "pushd", "popd", "jobs", "fg", "bg", "kill", "umask", "ulimit",
+            "true", "false", "printf", "wait", "trap", "exec", "eval", "help", "tg", "clear"}
+
+
+def commande_existe(cmd):
+    import shutil
+    return cmd in BUILTINS or shutil.which(cmd) is not None
+
+
+def commande_proche(cmd):
+    import difflib
+    if cmd.startswith("cd") and len(cmd) > 2:                      # cd~ → cd ~
+        return "cd " + cmd[2:]
+    for c in ("ls", "cd", "pwd", "cat", "cp", "mv", "rm", "free", "grep", "mkdir", "touch"):
+        if sorted(cmd) == sorted(c):                                # lettres inversées : sl → ls, pdw → pwd
+            return c
+    connues = sorted(BUILTINS | {c for v in CATEGORIES.values() for c in v["cmds"]})
+    m = difflib.get_close_matches(cmd, connues, n=1, cutoff=0.65)
+    return m[0] if m else None
+
+
 def feed(state, line):
     if est_colle(line):
         state["colles"] += 1
@@ -307,9 +329,15 @@ def feed(state, line):
     cmd = first_word(line)
     if not cmd:
         return
+    cat = next((k for k, v in CATEGORIES.items() if cmd in v["cmds"]), None)
+    if not cat and not cmd.startswith(("termux-", "./", "/")) and not commande_existe(cmd):
+        proche = commande_proche(cmd)
+        say(state, (f"« {cmd} » n'est pas une commande… tu voulais dire « {proche} » ?" if proche
+                    else f"« {cmd} » n'est pas une commande. Essaie : ls, pwd, cd"), 8)
+        log(state, f"✖ « {cmd} » : commande inconnue, pas de nourriture")
+        return
     state["total"] += 1
     gain, msg = 1, f"a mangé « {cmd} »"
-    cat = next((k for k, v in CATEGORIES.items() if cmd in v["cmds"]), None)
     if not cat and cmd.startswith("termux-"):
         cat = "reseau"
     if cat:
