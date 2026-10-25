@@ -263,9 +263,12 @@ class Commandes(
         val p = Recensement.preparer(jeu, forcer)
             ?: return Reponse(if (Recensement.aUnCompte(jeu)) "Synchro déjà en cours…" else
                 "Pas encore de compte : compte creer TonPseudo  (ou : compte lier CODE)", couleur = BLEU)
+        val partie = jeu.partie
         Thread {
             val (r, url) = Recensement.envoyer(p)
             act.runOnUiThread {
+                // on a changé de partie pendant la synchro : la réponse n'est pas pour celle-ci
+                if (jeu.partie != partie) { Recensement.abandonner(); return@runOnUiThread }
                 val msg = Recensement.appliquer(jeu, p, r, url)
                 jeu.sauver()
                 // synchro automatique : on ne parle que s'il y a du nouveau (XP venue d'ailleurs, badge)
@@ -297,15 +300,14 @@ class Commandes(
                         JSONObject().put("pseudo", pseudo).put("appareil", Recensement.APPAREIL))
                 }) { r ->
                     if (!r.has("cle")) return@enLigne "⚠ ${r.optString("erreur", "inscription impossible")}"
-                    Recensement.enregistrer(jeu, r.getString("pseudo"), r.getString("cle"), url)
-                    sync(forcer = true)
+                    relier(r, url)
                     "🌍 Bienvenue au recensement, ${r.getString("pseudo")} !\nTon profil : $url/joueur/${r.getString("pseudo")}\n" +
-                        "Pour la même créature sur ton PC : compte code"
+                        "Pour la même créature sur ton PC : compte code" + texteSecours(r)
                 }
                 return Reponse("⏳ Inscription au recensement…", couleur = BLEU)
             }
             "lier" -> {
-                val code = mots.getOrNull(1) ?: return Reponse("Exemple : compte lier AB3K9Z  (code obtenu sur l'autre appareil : compte code)", couleur = ORANGE)
+                val code = mots.getOrNull(1) ?: return Reponse("Exemple : compte lier TG-7KQ2-M9  (jeton donné par le site ou par l'autre appareil : compte code)", couleur = ORANGE)
                 var url = ""
                 enLigne({
                     url = adresse()
@@ -314,11 +316,25 @@ class Commandes(
                         JSONObject().put("code", code).put("appareil", Recensement.APPAREIL))
                 }) { r ->
                     if (!r.has("cle")) return@enLigne "⚠ ${r.optString("erreur", "liaison impossible")}"
-                    Recensement.enregistrer(jeu, r.getString("pseudo"), r.getString("cle"), url)
-                    sync(forcer = true)
-                    "🔗 Ce téléphone est relié au compte ${r.getString("pseudo")} ! Ta progression d'ici s'y ajoute."
+                    relier(r, url)
+                    "🔗 Ce téléphone est relié au compte ${r.getString("pseudo")} !\nTes autres créatures du compte : parties → charger."
                 }
                 return Reponse("⏳ Liaison au compte…", couleur = BLEU)
+            }
+            "secours" -> {
+                val code = mots.getOrNull(1) ?: return Reponse("Exemple : compte secours TG-XXXX-XXXX-XXXX  (le code de secours noté sur ton papier)", couleur = ORANGE)
+                var url = ""
+                enLigne({
+                    url = adresse()
+                    if (url.isEmpty()) JSONObject().put("erreur", "le site n'est pas encore en ligne")
+                    else Recensement.requete("$url/api/secours/recuperer", "POST",
+                        JSONObject().put("code", code).put("appareil", Recensement.APPAREIL))
+                }) { r ->
+                    if (!r.has("cle")) return@enLigne "⚠ ${r.optString("erreur", "code de secours refusé")}"
+                    relier(r, url)
+                    "🆘 Compte retrouvé : te revoilà, ${r.getString("pseudo")} !\nTes créatures du compte : parties → charger."
+                }
+                return Reponse("⏳ Je cherche ton compte avec le code de secours…", couleur = BLEU)
             }
             "partage" -> {
                 val choix = mots.getOrNull(1)?.lowercase()
@@ -333,15 +349,25 @@ class Commandes(
                 return Reponse(if (choix == "on") "✔ Tes captures seront visibles dans la galerie du site (site captures)."
                     else "✔ Tes captures ne sont plus visibles dans la galerie.", couleur = BLEU)
             }
-            "oublier" -> {
-                val serveur = c.optString("serveur")        // on garde l'adresse du site
-                jeu.extra.put("compte", org.json.JSONObject().apply { if (serveur.isNotEmpty()) put("serveur", serveur) })
-                return Reponse("Ce téléphone n'est plus relié au compte (le compte, lui, existe toujours).", couleur = BLEU)
+            "oublier", "deconnexion", "sortir" -> {
+                val cle = c.optString("cle")
+                if (cle.isNotEmpty()) Thread {             // le site oublie la clé de ce téléphone
+                    try { adresse().takeIf { it.isNotEmpty() }?.let { Recensement.requete("$it/api/deconnexion", "POST", JSONObject(), cle) } }
+                    catch (e: Exception) { }
+                }.start()
+                // on garde l'adresse du site et le point de synchro de cette partie (pas de double envoi si on revient)
+                Parties.baseDe(c).takeIf { it.isNotEmpty() }?.let { c.put("base_de", it) }
+                c.remove("cle")
+                c.remove("pseudo")
+                return Reponse("Ce téléphone n'est plus relié au compte (le compte, lui, existe toujours).\n" +
+                    "Pour revenir : compte lier TG-…  ou  compte secours TG-…", couleur = BLEU)
             }
         }
         if (!Recensement.aUnCompte(jeu)) {
             return Reponse("🌍 Le recensement : la même créature sur ton téléphone et ton PC, un classement, des badges vérifiés.\n" +
-                "  compte creer TonPseudo  → créer ton compte\n  compte lier CODE        → rejoindre le compte de ton PC", couleur = BLEU)
+                "  compte creer TonPseudo       → créer ton compte (juste un pseudo, pas ton vrai nom)\n" +
+                "  compte lier TG-XXXX-XX       → relier ce téléphone (jeton du site ou d'un autre appareil)\n" +
+                "  compte secours TG-XXXX-…     → retrouver ton compte avec ton code de secours", couleur = BLEU)
         }
         val cle = c.optString("cle")
         if (action == "code") {
@@ -350,16 +376,58 @@ class Commandes(
                 if (url.isEmpty()) JSONObject().put("erreur", "le site n'est pas encore en ligne")
                 else Recensement.requete("$url/api/code", "POST", JSONObject(), cle)
             }) { r ->
+                val jeton = r.optString("jeton", r.optString("code"))
                 if (!r.has("code")) "⚠ ${r.optString("erreur", "impossible d'obtenir un code")}"
-                else "🔑 Code de liaison : ${r.getString("code")}  (valable 10 minutes)\nSur ton PC : tg compte lier ${r.getString("code")}"
+                else "🔑 Jeton de liaison : $jeton  (valable 10 minutes)\nSur l'autre appareil : compte lier $jeton  (sur PC : tg compte lier $jeton)"
             }
-            return Reponse("⏳ Demande d'un code…", couleur = BLEU)
+            return Reponse("⏳ Demande d'un jeton…", couleur = BLEU)
+        }
+        if (action == "site") {
+            enLigne({
+                val url = adresse()
+                if (url.isEmpty()) JSONObject().put("erreur", "le site n'est pas encore en ligne")
+                else Recensement.requete("$url/api/lien-site", "POST", JSONObject(), cle).put("_url", url)
+            }) { r ->
+                val lien = r.optString("lien")
+                if (lien.isEmpty()) return@enLigne "⚠ ${r.optString("erreur", "impossible d'obtenir le lien")}"
+                val complet = r.optString("_url") + lien
+                try {
+                    act.startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(complet)).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK))
+                } catch (e: ActivityNotFoundException) {
+                }
+                "🌍 Ton lien de connexion au site (une seule fois, 10 minutes) :\n$complet\nNe le donne à personne : il ouvre TON compte."
+            }
+            return Reponse("⏳ Je prépare ton lien vers le site…", couleur = BLEU)
         }
         val dernier = c.optLong("dernier")
         val quand = if (dernier > 0) java.text.SimpleDateFormat("HH:mm", java.util.Locale.FRANCE).format(java.util.Date(dernier)) else "jamais"
         val url = c.optString("serveur")
         return Reponse("🌍 Compte : ${c.optString("pseudo")} · dernière synchro : $quand\nProfil : $url/joueur/${c.optString("pseudo")}\n" +
-            "Chasse au trésor du site (CTF web, badges vérifiés) : $url/ctf\n  compte code → relier un autre appareil · sync → synchroniser", couleur = BLEU)
+            "Chasse au trésor du site (CTF web, badges vérifiés) : $url/ctf\n" +
+            "  compte code → jeton pour relier un autre appareil · compte site → te connecter au site\n" +
+            "  sync → synchroniser · compte oublier → te déconnecter", couleur = BLEU)
+    }
+
+    /** Le compte arrive dans la partie active (il suivra le joueur dans ses autres parties, voir Parties.kt). */
+    private fun relier(r: JSONObject, url: String) {
+        val pseudo = r.getString("pseudo")
+        val c = Recensement.compte(jeu)
+        val base = c.optJSONObject("base")
+        val avant = Parties.baseDe(c)
+        Recensement.enregistrer(jeu, pseudo, r.getString("cle"), url)
+        // cette partie était déjà synchronisée avec CE compte : on n'envoie pas deux fois la même progression
+        if (avant == pseudo && base != null) Recensement.compte(jeu).put("base", base)
+        Recensement.compte(jeu).put("base_de", pseudo)
+        jeu.sauver()
+        sync(forcer = true)
+    }
+
+    private fun texteSecours(r: JSONObject): String {
+        val s = r.optString("secours")
+        if (s.isEmpty()) return ""
+        return "\n\n🆘 TON CODE DE SECOURS :  $s\n" +
+            "✏ Écris-le sur un papier, maintenant, et range-le (demande à un grand). Il ne sera plus jamais affiché.\n" +
+            "Si tu perds ton téléphone : compte secours $s  te rend ton compte. Ne le donne à personne !"
     }
 
     /** site [bestiaire|captures|classement|ctf] : ouvre le site du recensement dans le navigateur. */

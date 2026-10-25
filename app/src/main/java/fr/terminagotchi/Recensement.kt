@@ -85,6 +85,7 @@ object Recensement {
             .put("stats", JSONObject(Regles.STATS.associateWith { maxOf(0, (jeu.stats[it] ?: 0) - baseStats.optInt(it)) }))
         val charge = JSONObject()
             .put("appareil", APPAREIL)
+            .put("partie", jeu.partie)
             .put("deltas", deltas)
             .put("vus", JSONArray(jeu.vus.toList().takeLast(3000)))
             .put("skills", JSONArray(jeu.skills))
@@ -104,7 +105,11 @@ object Recensement {
     fun envoyer(p: Preparation): Pair<JSONObject, String> {
         val url = serveur(p.serveurConnu)
         if (url.isEmpty()) return JSONObject().put("erreur", "le site n'est pas encore en ligne") to ""
-        return requete("$url/api/sync", "POST", p.charge, p.cle) to url
+        // partie 1 (celle d'avant les parties multiples) : l'adresse d'origine ; les autres ont la leur,
+        // qu'un site pas encore mis à jour refuse (au lieu de mélanger deux créatures)
+        val partie = p.charge.optString("partie", "1")
+        val route = if (partie == "1") "/api/sync" else "/api/sync/$partie"
+        return requete("$url$route", "POST", p.charge, p.cle) to url
     }
 
     /** Recopie la créature commune, en gardant ce qui a été gagné ici PENDANT la synchro. */

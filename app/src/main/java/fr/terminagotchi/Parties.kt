@@ -31,7 +31,7 @@ object Parties {
     /** nombre maximum de parties sur l'appareil */
     const val MAX = 10
     /** ce qui suit le joueur d'une partie à l'autre : son compte (pas la progression de la partie) */
-    private val IDENTITE = listOf("cle", "pseudo", "serveur", "multi")
+    private val IDENTITE = listOf("cle", "pseudo", "serveur")
 
     class Resume(
         val id: String, val nom: String, val niveau: Int, val stade: Int, val forme: String?,
@@ -168,6 +168,8 @@ object Parties {
             if (!deplacer(terrainActif(ctx), terrainRange(ctx, act))) {
                 android.util.Log.w("TG", "terrain de la partie $act laissé en place")
             }
+        } else {
+            ids.remove(act)                      // un œuf qui n'avait pas encore de nom : rien à ranger
         }
         // 2. installer l'autre (sauvegarde puis terrain)
         arrivee.put("partie", id)

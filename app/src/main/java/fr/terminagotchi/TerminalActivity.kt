@@ -38,6 +38,7 @@ class TerminalActivity : Activity() {
     private lateinit var jeu: Jeu
     private lateinit var shell: Shell
     private lateinit var commandes: Commandes
+    private lateinit var menu: MenuParties
     private lateinit var creature: ImageView
     private lateinit var titre: TextView
     private lateinit var faim: TextView
@@ -86,6 +87,17 @@ class TerminalActivity : Activity() {
             if (texte.isNotEmpty()) ecrire(texte, couleur)
             rafraichir()
         }
+        menu = MenuParties(this, jeu,
+            apresChangement = {
+                shell.dossier = jeu.home            // l'ancien terrain a été rangé avec son ancienne partie
+                animJouee = System.currentTimeMillis()
+                WidgetCreature.majTous(this)
+                if (::contenu.isInitialized) majObservatoire(null)
+                rafraichir()
+            },
+            synchroniser = { commandes.sync(forcer = true) },
+            texteCompte = { commandes.executer("compte")?.texte ?: "" },
+            plusTard = { ecrire(it, Commandes.BLEU) })
         Rappels.programmer(this)
         essais(intent)
         if (android.os.Build.VERSION.SDK_INT >= 33 &&
@@ -159,7 +171,9 @@ class TerminalActivity : Activity() {
         }
 
         jeu.tick()
-        if (!jeu.existe) {
+        if (lanceur(intent) && !Parties.aucune(this)) {
+            ecrire(menu.ouvrir(), Commandes.ROSE)       // lancé depuis l'icône : le menu des parties
+        } else if (!jeu.existe) {
             ecrire("Un œuf est apparu sur ton écran !\nComment s'appelle ta créature ?")
         } else {
             jeu.parlerSiSilencieux()
@@ -325,6 +339,17 @@ class TerminalActivity : Activity() {
         val etaitRappel = rappel != null && ligne == rappel
         rappel = null
         posHisto = -1
+        if (menu.ouvert && !enCours) {              // une réponse au menu des parties (rien n'est mangé)
+            saisie.setText("")
+            ecrire("> $ligne", 0xFF5FD787.toInt())
+            val r = menu.repondre(ligne)
+            if (r != null) {
+                ecrire(r, Commandes.ROSE)
+                rafraichir()
+                return
+            }
+            if (ligne.isEmpty()) return
+        }
         if (ligne.isNotEmpty() && jeu.existe && jeu.historique.lastOrNull() != ligne) {
             jeu.historique.add(ligne)
             while (jeu.historique.size > 50) jeu.historique.removeAt(0)
@@ -348,13 +373,16 @@ class TerminalActivity : Activity() {
         when (Regles.premierMot(ligne)) {
             "clear" -> { sortie.text = ""; return }
             "quitter", "exit" -> { finish(); return }
+            "parties" -> { ecrire(menu.ouvrir(), Commandes.ROSE); return }
+            "partie" -> { ecrire(menu.commande(ligne.substringAfter(' ', "")), Commandes.ROSE); rafraichir(); return }
             "aide" -> {
                 ecrire("Ce terminal est la porte de la maison du téléphone : tape de vraies commandes Android (ls, cd, mkdir, cat, grep, cp, mv, rm, ping…)\n" +
                     "📱 Téléphone : ouvre, applis, web, carte, appelle, sms, partage, lampe, vibre, batterie, dis, reglages\n" +
                     "🐾 Avec moi : caresse, danse, parle, joue, devine, etat, renomme\n" +
                     "🎮 Jeux : donjon, plan, quetes, attaque, sac, equipe · " + Mots.terme("ctf", Mots.palier(jeu)) + " : ctf, drapeau, indice · doom, edite\n" +
                     "🌳 Progresser : arbre, collection, defi, cherche <ce que tu veux faire>\n" +
-                    "🌍 En ligne : compte, compte creer Pseudo, compte code, compte lier CODE, sync\n" +
+                    "🏠 Parties : parties (le menu), partie nouvelle, partie charger 2\n" +
+                    "🌍 En ligne : compte, compte creer Pseudo, compte lier TG-XXXX-XX, compte code, compte site, compte secours TG-…, sync\n" +
                     "Chaque commande a son image dans 📖 Lexique. Chaque commande tapée me nourrit (pas les collées !).\n" +
                     "clear = effacer · quitter = fermer")
                 return
@@ -407,8 +435,13 @@ class TerminalActivity : Activity() {
         if (v is android.view.ViewGroup) for (i in 0 until v.childCount) verrouillerFocus(v.getChildAt(i))
     }
 
+    /** Lancé depuis l'icône de l'appli (pas depuis le widget ni une notification). */
+    private fun lanceur(i: android.content.Intent?): Boolean =
+        i?.action == android.content.Intent.ACTION_MAIN && i.hasCategory(android.content.Intent.CATEGORY_LAUNCHER)
+
     override fun onNewIntent(intent: android.content.Intent) {
         super.onNewIntent(intent)
+        if (lanceur(intent) && !menu.ouvert && !Parties.aucune(this)) ecrire(menu.ouvrir(), Commandes.ROSE)
         essais(intent)
         rafraichir()
         saisie.requestFocus()
@@ -689,7 +722,7 @@ class TerminalActivity : Activity() {
         faim.text = jeu.texteFaim()
         xp.text = jeu.texteXp()
         stats.text = jeu.texteStats()
-        invite.text = if (jeu.existe) "${shell.chemin()} $" else "nom ?"
+        invite.text = if (::menu.isInitialized && menu.ouvert) ">" else if (jeu.existe) "${shell.chemin()} $" else "nom ?"
         val b = jeu.bulleActive()
         bulle.visibility = if (b.isEmpty()) View.GONE else View.VISIBLE
         bulle.text = b
