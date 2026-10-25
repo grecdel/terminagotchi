@@ -11,10 +11,10 @@
  * soit une fonction qui reçoit des morceaux déjà échappés. Une clé absente retombe sur le français.
  */
 
-export const LANGUES = ["fr", "en", "es", "de", "it", "pt"];
+export const LANGUES = ["fr", "en", "es", "de", "it", "pt", "zh", "ru", "ja"];
 export const LANGUE_DEFAUT = "fr";
-export const NOMS_LANGUES = { fr: "Français", en: "English", es: "Español", de: "Deutsch", it: "Italiano", pt: "Português" };
-export const LOCALES = { fr: "fr-FR", en: "en-GB", es: "es-ES", de: "de-DE", it: "it-IT", pt: "pt-PT" };
+export const NOMS_LANGUES = { fr: "Français", en: "English", es: "Español", de: "Deutsch", it: "Italiano", pt: "Português", zh: "中文", ru: "Русский", ja: "日本語" };
+export const LOCALES = { fr: "fr-FR", en: "en-GB", es: "es-ES", de: "de-DE", it: "it-IT", pt: "pt-PT", zh: "zh-CN", ru: "ru-RU", ja: "ja-JP" };
 export const COOKIE_LANGUE = "lang";
 
 const valide = (x) => (typeof x === "string" && LANGUES.includes(x.trim().toLowerCase()) ? x.trim().toLowerCase() : null);
@@ -58,6 +58,12 @@ export function cookieLangue(lang) {
 
 const pl = (n, un, plusieurs) => (n > 1 ? plusieurs : un);
 const plEn = (n, un, plusieurs) => (n === 1 ? un : plusieurs);
+/** Pluriel russe : 1 / 2-4 / 5+ (21 → un, 22 → few, 11-14 → many). */
+const plRu = (n, un, peu, beaucoup) => {
+  const a = n % 10;
+  const b = n % 100;
+  return a === 1 && b !== 11 ? un : a >= 2 && a <= 4 && (b < 12 || b > 14) ? peu : beaucoup;
+};
 
 // ====================================================================== français (langue de référence)
 
@@ -79,7 +85,7 @@ const fr = {
   humeurs: {},
   badges: null, // en français, on garde le titre enregistré par le serveur
 
-  niv: "niv.",
+  niv: (n) => `niv. ${n}`,
   accueil: {
     titre: "Accueil",
     heroTitre: "La créature qui mange tes commandes",
@@ -247,7 +253,7 @@ const en = {
   },
   badges: { recense: "Counted in", multi: "Multi-device: PC + phone", ctf: (t) => `Web CTF: ${t}`, ctfTout: "Web hacker (full CTF)" },
 
-  niv: "lvl",
+  niv: (n) => `lvl ${n}`,
   accueil: {
     titre: "Home",
     heroTitre: "The creature that eats your commands",
@@ -414,7 +420,7 @@ const es = {
   },
   badges: { recense: "Censado", multi: "Multiplataforma: PC + móvil", ctf: (t) => `CTF web: ${t}`, ctfTout: "Hacker de la web (CTF completo)" },
 
-  niv: "niv.",
+  niv: (n) => `niv. ${n}`,
   accueil: {
     titre: "Inicio",
     heroTitre: "La criatura que se come tus comandos",
@@ -581,7 +587,7 @@ const de = {
   },
   badges: { recense: "Gezählt", multi: "Überall dabei: PC + Handy", ctf: (t) => `Web-CTF: ${t}`, ctfTout: "Web-Hacker (ganzes CTF)" },
 
-  niv: "Stufe",
+  niv: (n) => `Stufe ${n}`,
   accueil: {
     titre: "Start",
     heroTitre: "Das Wesen, das deine Befehle frisst",
@@ -748,7 +754,7 @@ const it = {
   },
   badges: { recense: "Censito", multi: "Multipiattaforma: PC + telefono", ctf: (t) => `CTF web: ${t}`, ctfTout: "Hacker del web (CTF completo)" },
 
-  niv: "liv.",
+  niv: (n) => `liv. ${n}`,
   accueil: {
     titre: "Home",
     heroTitre: "La creatura che mangia i tuoi comandi",
@@ -915,7 +921,7 @@ const pt = {
   },
   badges: { recense: "Recenseado", multi: "Multiplataforma: PC + telemóvel", ctf: (t) => `CTF web: ${t}`, ctfTout: "Hacker da web (CTF completo)" },
 
-  niv: "nív.",
+  niv: (n) => `nív. ${n}`,
   accueil: {
     titre: "Início",
     heroTitre: "A criatura que come os teus comandos",
@@ -1052,7 +1058,8 @@ const pt = {
   },
 };
 
-export const DICTIONNAIRES = { fr, en, es, de, it, pt };
+__NOUVEAUX__
+export const DICTIONNAIRES = { fr, en, es, de, it, pt, zh, ru, ja };
 
 /** Fusion profonde : ce qui manque dans une langue est pris en français. */
 function fusion(base, sur) {

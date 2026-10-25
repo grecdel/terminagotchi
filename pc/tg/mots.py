@@ -57,6 +57,10 @@ TERMES = {
     "dossiers":     ("pièces", "pièces (dossiers)", "dossiers"),
     "fichier":      ("feuille", "feuille (fichier)", "fichier"),
     "fichiers":     ("feuilles", "feuilles (fichiers)", "fichiers"),
+    "un_dossier":   ("une pièce", "une pièce (un dossier)", "un dossier"),
+    "un_fichier":   ("une feuille", "une feuille (un fichier)", "un fichier"),
+    "rendre_executable": ("autorise-la à cuisiner toute seule", "autorise-la à cuisiner toute seule (rends-la exécutable)",
+                          "rends-la exécutable"),
     "processus":    ("programme réveillé", "programme réveillé (processus)", "processus"),
     "disque":       ("les placards", "les placards (le disque)", "le disque"),
     "dns":          ("l'annuaire des maisons", "l'annuaire des maisons (DNS)", "le DNS"),
@@ -85,5 +89,9 @@ def terme(cle, p=0, majuscule=False):
 
 
 def termes(p=0):
-    """Tous les termes d'un palier, pour remplir des modèles : « {ram} », « {processeur} »…"""
-    return {k: terme(k, p) for k in TERMES}
+    """Tous les termes d'un palier, pour remplir des modèles : « {ram} », « {Processeur} » (majuscule)…
+    Attention au genre : « pièce » est féminin mais « dossier » masculin ; les modèles évitent
+    donc les adjectifs accordés et utilisent les formes avec article (« {un_dossier} »)."""
+    t = {k: terme(k, p) for k in TERMES}
+    t.update({k[0].upper() + k[1:]: terme(k, p, majuscule=True) for k in TERMES})
+    return t
