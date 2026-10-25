@@ -40,14 +40,15 @@ CATEGORIES = {
 STAT_COLOR = {v["stat"]: v["color"] for v in CATEGORIES.values()}
 
 EXAMPLES = {
-    "linux":   {"fichiers": "ls  cd  cp  grep", "reseau": "ping  curl  ssh",
-                "code": "git  python3  nano", "systeme": f"htop  sudo {GEST or 'apt'}  df"},
-    "mac":     {"fichiers": "ls  cd  cp  grep", "reseau": "ping  curl  ssh",
-                "code": "git  python3  nano", "systeme": "top  brew  df"},
+    # (que des commandes qui rendent la main tout de suite : pas d'éditeur ni de mot de passe)
+    "linux":   {"fichiers": "ls  cd  cp  grep", "reseau": "ping -c 3  hostname  curl",
+                "code": "git  echo  which", "systeme": "date  whoami  df"},
+    "mac":     {"fichiers": "ls  cd  cp  grep", "reseau": "ping -c 3  hostname  curl",
+                "code": "git  echo  which", "systeme": "date  whoami  df"},
     "windows": {"fichiers": "dir  cd  copy  Get-ChildItem", "reseau": "ping  ipconfig  Test-Connection",
                 "code": "git  python  notepad", "systeme": "tasklist  winget  Get-Process"},
-    "android": {"fichiers": "ls  cd  cp  grep", "reseau": "ping  curl  ssh",
-                "code": "git  python  nano", "systeme": "top  pkg  df"},
+    "android": {"fichiers": "ls  cd  cp  grep", "reseau": "ping -c 3  hostname  curl",
+                "code": "git  echo  which", "systeme": "date  whoami  df"},
 }
 
 # Compétences : chacune double l'XP de ses commandes (sauf effets spéciaux)
@@ -176,7 +177,24 @@ COLLE = ["Hé ! Tu as copié-collé… tape-la toi-même, sinon ça ne rentre pa
 
 
 def say(state, text, secs=8):
+    """La créature parle. Si elle parle déjà, la phrase attend son tour (rien n'est écrasé)."""
+    b = state.get("bubble")
+    if b and time.time() < b[1] and b[0] != text:
+        file = state.setdefault("bulles", [])
+        if text not in (x[0] for x in file):
+            file.append([text, secs])
+            del file[:-4]
+        return
     state["bubble"] = [text, time.time() + secs]
+
+
+def bulle_courante(state):
+    """La phrase à afficher maintenant (passe à la suivante de la file quand la précédente est lue)."""
+    b = state.get("bubble")
+    if (not b or time.time() >= b[1]) and state.get("bulles"):
+        texte, secs = state["bulles"].pop(0)
+        state["bubble"] = b = [texte, time.time() + secs]
+    return b if b and time.time() < b[1] else None
 
 
 NOTIF_PREFIX = ("✨", "⬆", "🎓", "🌳", "🎯", "🐾", "💨", "🌲", "⚡")
@@ -197,6 +215,17 @@ def log(state, msg):
 
 STAGES = ["Œuf", "Bébé", "Ado", "Adulte"]
 FORMES = {"Intelligence": "Hacker", "Force": "Titan", "Agilité": "Éclair", "Endurance": "Carapace"}
+
+
+REPAS_FACILES = ["date", "whoami", "pwd", "ls", "echo coucou", "cal", "uptime", "hostname", "uname", "id", "df", "which ls"]
+
+
+def faim_d_apprendre(state, niveau):
+    """« J'ai encore faim » + 4 commandes sûres pas encore goûtées + combien il en faut environ."""
+    manque = max(0, 10 * (niveau - 1) ** 2 - state["xp"])
+    vues = set(state.get("seen", []))
+    idees = [c for c in REPAS_FACILES if c.split()[0] not in vues][:4] or REPAS_FACILES[:4]
+    return idees, max(1, -(-manque // 6))
 
 
 def level(xp):

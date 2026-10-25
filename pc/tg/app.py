@@ -44,8 +44,8 @@ def render(state, frame, interactif):
     right += [""] * (n - len(right))
     lines = [l + r for l, r in zip(left, right)]
 
-    b = state["bubble"]
-    if b and time.time() < b[1]:
+    b = core.bulle_courante(state)
+    if b:
         wrapped = textwrap.wrap(b[0], 52)
         lines.append(f"  {BOLD}» {wrapped[0]}{RESET}")
         lines += [f"    {BOLD}{x}{RESET}" for x in wrapped[1:]]
@@ -66,12 +66,16 @@ def render(state, frame, interactif):
     if les:
         if lvl < les["niveau"]:
             lines.append(title_line(f"{etiquette} : niveau {les['niveau']} requis"))
-            lines.append(f" {DIM}Continue à me nourrir, je dois encore grandir…{RESET}")
+            idees, n = core.faim_d_apprendre(state, les["niveau"])
+            lines.append(f" J'ai encore faim ! Tape une de ces commandes : {fg(226)}{'   '.join(idees)}{RESET}")
+            lines.append(f" {DIM}Il m'en faut encore environ {n} (chaque nouvelle commande me fait grandir).{RESET}")
         else:
             step = les["steps"][state["step"]]
             lines.append(title_line(f"{etiquette} : {les['titre']} ({state['step'] + 1}/{len(les['steps'])})", 213))
             lines.append(f" {step['dit']}")
             lines.append(f"   {fg(226)}➜ {piege(step['cmd'])}{RESET}")
+            if "nid/" in step["cmd"] or step["cmd"].endswith(" nid") or "reserve.txt" in step["cmd"]:
+                lines.append(f"   {DIM}📁 à taper depuis ton terrain de jeu (pour y aller : cd ~/{core.TERRAIN.name}){RESET}")
             if step.get("astuce"):
                 lines.append(f"   {DIM}{step['astuce']}{RESET}")
     elif all(state["arbre"].get(b, 0) >= len(v["lecons"]) for b, v in lecons.ARBRE.items() if lecons.branche_dispo(b)):
@@ -87,12 +91,11 @@ def render(state, frame, interactif):
 
     lines.append(title_line("Journal"))
     if state["total"] == 0:
-        lines.append(" Ouvre un AUTRE terminal et tape des commandes !")
+        lines.append(" Ouvre une deuxième fenêtre noire (un autre Terminal) et tapes-y des commandes !")
         if IS_WIN:
             lines.append(" (utilise PowerShell : cmd.exe ne garde pas d'historique)")
         elif not compagnon.est_installe():
-            lines.append(f" {fg(226)}Astuce : appuie sur [o] puis 3 pour que je voie")
-            lines.append(f" tes commandes en direct (sinon, seulement à la fermeture du terminal).{RESET}")
+            lines.append(f" {fg(226)}Pour que je mange tout de suite : appuie sur la touche o, puis sur 3.{RESET}")
     lines += [" " + l for l in state["log"][-4:]]
     if interactif:
         lines.append(f"{fg(244)} [/] chercher [l] lexique [a] arbre [c] collection [o] options [q] quitter{RESET}")
@@ -136,8 +139,8 @@ def vue_dressage():
 def render_dressage(state, interactif):
     """Pendant un dressage : le face-à-face seulement (plus la bulle et les deux dernières lignes du journal)."""
     lines = dressage.lignes_ecran(state)
-    b = state["bubble"]
-    if b and time.time() < b[1]:
+    b = core.bulle_courante(state)
+    if b:
         lines += ["", f"  {BOLD}» {textwrap.shorten(b[0], 90)}{RESET}"]
     lines.append(title_line("Journal"))
     lines += [" " + l for l in state["log"][-2:]]

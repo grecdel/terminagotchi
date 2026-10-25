@@ -722,7 +722,10 @@ def lignes_ecran(state, largeur=62):
         ou = "n'importe où"
     else:
         ou = f"~/{T.name}/{d['zone']}/{repaire(d['espece'])}"
-    out.append(f" {fg(246)}Où       {RESET} {DIM}{ou}{RESET}")
+    if ou.startswith("~/") and not fid.startswith("Rencontre:"):
+        out.append(f" {fg(246)}D'abord  {RESET} va chez lui (si ce n'est pas déjà fait) : {fg(120)}cd {ou}{RESET}")
+    else:
+        out.append(f" {fg(246)}Où       {RESET} {DIM}{ou}{RESET}")
     return out
 
 
