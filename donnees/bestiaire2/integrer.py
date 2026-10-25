@@ -7,6 +7,9 @@ ICI = Path(__file__).resolve().parent
 g, d, nom = sys.argv[1:4]
 a, b = [Image.open(x).convert("RGB") for x in (g, d)]
 a, b = [x.crop((0, 4, x.width, x.height - 4)) for x in (a, b)]   # bords : la bande grise du cadre
+from PIL import ImageDraw
+for x in (a, b):                     # efface le curseur de souris éventuel (coin haut)
+    ImageDraw.Draw(x).rectangle((0, 0, x.width, 28), fill=x.getpixel((x.width // 2, 2)))
 c = Image.new("RGB", (a.width + b.width, max(a.height, b.height)), a.getpixel((2, 2)))
 c.paste(a, (0, 0)); c.paste(b, (a.width, 0))
 (ICI / "images").mkdir(exist_ok=True)
