@@ -135,9 +135,9 @@ object Langue {
     private const val PDI = "⁩"
     private const val RLM = "‏"
     // un morceau de code : commence et finit par un caractère « de code », contient une lettre latine ou un chiffre
-    private const val LAT = "A-Za-z0-9аседорхуіѕԁһј"
+    private const val LAT = "A-Za-z0-9À-ÖØ-öø-ɏаседорхуіѕԁһј"
     private val CODE = Regex("[$LAT~./_\\-$\\[{\"'<>|&*#(@%]" +
-        "(?:[\\x20-\\x7E …аседорхуіѕԁһј]*[$LAT/_}\\]\"'*…~>)%])?")
+        "(?:[\\x20-\\x7E …À-ÖØ-öø-ɏаседорхуіѕԁһј]*[$LAT/_}\\]\"'*…~>)%])?")
     private val LETTRE = Regex("[$LAT]")
     private val ARABE = Regex("[؀-ۿݐ-ݿﭐ-﷿ﹰ-﻿]")
     private val BALISE = Regex("¤[^¤]*¤")
@@ -158,7 +158,7 @@ object Langue {
             i = b.range.last + 1
         }
         sb.append(isoler(s.substring(i)))
-        return sb.toString().split("\n").joinToString("\n") { l -> if (ARABE.containsMatchIn(l)) RLM + l else l }
+        return sb.toString().split("\n").joinToString("\n") { l -> if (ARABE.containsMatchIn(l) && !l.startsWith(RLM)) RLM + l else l }.replace(RLM + RLM, RLM)
     }
 
     // ---------------------------------------------------------------- largeur d'affichage
