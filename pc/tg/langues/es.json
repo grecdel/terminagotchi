@@ -1285,5 +1285,32 @@
  "part.l.ok": "📂 ¡Ya estás de vuelta con {qui}!",
  "part.l.depuis_compte": "☁ {nom} llega desde tu cuenta… (se completa en la próxima sincronización, en cuanto haya internet)",
  "part.l.astuce": "tg partie charger 2 → retomar la partida n.º 2 · tg partie nouvelle → un huevo nuevo",
- "part.aide": "tg partie nouvelle · tg partie charger · tg partie charger 2 · tg parties (el menú)"
+ "part.aide": "tg partie nouvelle · tg partie charger · tg partie charger 2 · tg parties (el menú)",
+ "part.oui": [
+  "sí",
+  "si",
+  "s"
+ ],
+ "part.non": [
+  "no"
+ ],
+ "part.mots.continuer": [
+  "continuar"
+ ],
+ "part.mots.nouvelle": [
+  "nueva",
+  "nueva partida"
+ ],
+ "part.mots.charger": [
+  "cargar"
+ ],
+ "part.mots.compte": [
+  "cuenta"
+ ],
+ "part.mots.quitter": [
+  "salir"
+ ],
+ "part.mots.retour": [
+  "volver"
+ ]
 }

@@ -1285,5 +1285,38 @@
  "part.l.ok": "📂 তুমি আবার {qui}-এর সাথে!",
  "part.l.depuis_compte": "☁ {nom} তোমার অ্যাকাউন্ট থেকে আসছে… (পরের সিঙ্কে ভরে যাবে, ইন্টারনেট পেলেই)",
  "part.l.astuce": "tg partie charger 2 → ২ নম্বর খেলা আবার শুরু · tg partie nouvelle → নতুন ডিম",
- "part.aide": "tg partie nouvelle · tg partie charger · tg partie charger 2 · tg parties (মেনু)"
+ "part.aide": "tg partie nouvelle · tg partie charger · tg partie charger 2 · tg parties (মেনু)",
+ "part.oui": [
+  "হ্যাঁ",
+  "হাঁ",
+  "হ্যা",
+  "ha",
+  "haan"
+ ],
+ "part.non": [
+  "না",
+  "na"
+ ],
+ "part.mots.continuer": [
+  "চালিয়ে যাও",
+  "চালিয়ে"
+ ],
+ "part.mots.nouvelle": [
+  "নতুন খেলা",
+  "নতুন"
+ ],
+ "part.mots.charger": [
+  "লোড করো",
+  "লোড"
+ ],
+ "part.mots.compte": [
+  "অ্যাকাউন্ট"
+ ],
+ "part.mots.quitter": [
+  "বেরোও"
+ ],
+ "part.mots.retour": [
+  "ফিরে যাও",
+  "ফিরে"
+ ]
 }

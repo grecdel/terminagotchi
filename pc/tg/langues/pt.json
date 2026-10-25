@@ -1285,5 +1285,32 @@
  "part.l.ok": "📂 Você voltou com {qui}!",
  "part.l.depuis_compte": "☁ {nom} está vindo da sua conta… (completa na próxima sincronização, assim que tiver internet)",
  "part.l.astuce": "tg partie charger 2 → retomar o jogo nº 2 · tg partie nouvelle → um ovo novo",
- "part.aide": "tg partie nouvelle · tg partie charger · tg partie charger 2 · tg parties (o menu)"
+ "part.aide": "tg partie nouvelle · tg partie charger · tg partie charger 2 · tg parties (o menu)",
+ "part.oui": [
+  "sim",
+  "s"
+ ],
+ "part.non": [
+  "não",
+  "nao"
+ ],
+ "part.mots.continuer": [
+  "continuar"
+ ],
+ "part.mots.nouvelle": [
+  "novo",
+  "novo jogo"
+ ],
+ "part.mots.charger": [
+  "carregar"
+ ],
+ "part.mots.compte": [
+  "conta"
+ ],
+ "part.mots.quitter": [
+  "sair"
+ ],
+ "part.mots.retour": [
+  "voltar"
+ ]
 }

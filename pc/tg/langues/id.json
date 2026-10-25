@@ -1285,5 +1285,34 @@
  "part.l.ok": "📂 Kamu kembali bersama {qui}!",
  "part.l.depuis_compte": "☁ {nom} datang dari akunmu… (akan terisi pada sinkronisasi berikutnya, begitu ada internet)",
  "part.l.astuce": "tg partie charger 2 → lanjutkan permainan no. 2 · tg partie nouvelle → telur baru",
- "part.aide": "tg partie nouvelle · tg partie charger · tg partie charger 2 · tg parties (menunya)"
+ "part.aide": "tg partie nouvelle · tg partie charger · tg partie charger 2 · tg parties (menunya)",
+ "part.oui": [
+  "ya",
+  "iya",
+  "y"
+ ],
+ "part.non": [
+  "tidak",
+  "nggak",
+  "gak"
+ ],
+ "part.mots.continuer": [
+  "lanjut"
+ ],
+ "part.mots.nouvelle": [
+  "baru",
+  "permainan baru"
+ ],
+ "part.mots.charger": [
+  "muat"
+ ],
+ "part.mots.compte": [
+  "akun"
+ ],
+ "part.mots.quitter": [
+  "keluar"
+ ],
+ "part.mots.retour": [
+  "kembali"
+ ]
 }

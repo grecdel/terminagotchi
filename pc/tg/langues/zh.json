@@ -1285,5 +1285,38 @@
  "part.l.ok": "📂 你又和{qui}在一起了！",
  "part.l.depuis_compte": "☁ {nom}正从你的账号赶来……（下次同步时补全，有网就行）",
  "part.l.astuce": "tg partie charger 2 → 继续 2 号存档 · tg partie nouvelle → 一颗新蛋",
- "part.aide": "tg partie nouvelle · tg partie charger · tg partie charger 2 · tg parties（菜单）"
+ "part.aide": "tg partie nouvelle · tg partie charger · tg partie charger 2 · tg parties（菜单）",
+ "part.oui": [
+  "是",
+  "是的",
+  "好",
+  "对",
+  "要",
+  "shi"
+ ],
+ "part.non": [
+  "否",
+  "不",
+  "不是",
+  "不要"
+ ],
+ "part.mots.continuer": [
+  "继续"
+ ],
+ "part.mots.nouvelle": [
+  "新游戏",
+  "新"
+ ],
+ "part.mots.charger": [
+  "读取"
+ ],
+ "part.mots.compte": [
+  "账号"
+ ],
+ "part.mots.quitter": [
+  "退出"
+ ],
+ "part.mots.retour": [
+  "返回"
+ ]
 }

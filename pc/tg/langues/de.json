@@ -1285,5 +1285,32 @@
  "part.l.ok": "📂 Da bist du wieder mit {qui}!",
  "part.l.depuis_compte": "☁ {nom} kommt von deinem Konto… (es wird beim nächsten Abgleich gefüllt, sobald es Internet gibt)",
  "part.l.astuce": "tg partie charger 2 → Spielstand Nr. 2 fortsetzen · tg partie nouvelle → ein neues Ei",
- "part.aide": "tg partie nouvelle · tg partie charger · tg partie charger 2 · tg parties (das Menü)"
+ "part.aide": "tg partie nouvelle · tg partie charger · tg partie charger 2 · tg parties (das Menü)",
+ "part.oui": [
+  "ja",
+  "j"
+ ],
+ "part.non": [
+  "nein"
+ ],
+ "part.mots.continuer": [
+  "weiter"
+ ],
+ "part.mots.nouvelle": [
+  "neu",
+  "neues spiel"
+ ],
+ "part.mots.charger": [
+  "laden"
+ ],
+ "part.mots.compte": [
+  "konto"
+ ],
+ "part.mots.quitter": [
+  "beenden"
+ ],
+ "part.mots.retour": [
+  "zurück",
+  "zuruck"
+ ]
 }

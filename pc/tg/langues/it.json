@@ -1285,5 +1285,32 @@
  "part.l.ok": "📂 Eccoti di nuovo con {qui}!",
  "part.l.depuis_compte": "☁ {nom} arriva dal tuo account… (si completa alla prossima sincronizzazione, appena c'è internet)",
  "part.l.astuce": "tg partie charger 2 → riprendi la partita n. 2 · tg partie nouvelle → un uovo nuovo",
- "part.aide": "tg partie nouvelle · tg partie charger · tg partie charger 2 · tg parties (il menu)"
+ "part.aide": "tg partie nouvelle · tg partie charger · tg partie charger 2 · tg parties (il menu)",
+ "part.oui": [
+  "sì",
+  "si",
+  "s"
+ ],
+ "part.non": [
+  "no"
+ ],
+ "part.mots.continuer": [
+  "continua"
+ ],
+ "part.mots.nouvelle": [
+  "nuova",
+  "nuova partita"
+ ],
+ "part.mots.charger": [
+  "carica"
+ ],
+ "part.mots.compte": [
+  "account"
+ ],
+ "part.mots.quitter": [
+  "esci"
+ ],
+ "part.mots.retour": [
+  "indietro"
+ ]
 }

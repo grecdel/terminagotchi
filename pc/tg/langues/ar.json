@@ -1285,5 +1285,37 @@
  "part.l.ok": "📂 ها أنت مع {qui} من جديد!",
  "part.l.depuis_compte": "☁ {nom} قادم من حسابك… (يكتمل في المزامنة القادمة، عند توفر الإنترنت)",
  "part.l.astuce": "tg partie charger 2 → استئناف اللعبة رقم 2 · tg partie nouvelle → بيضة جديدة",
- "part.aide": "tg partie nouvelle · tg partie charger · tg partie charger 2 · tg parties (القائمة)"
+ "part.aide": "tg partie nouvelle · tg partie charger · tg partie charger 2 · tg parties (القائمة)",
+ "part.oui": [
+  "نعم",
+  "أجل",
+  "اجل",
+  "ايوه",
+  "na3am"
+ ],
+ "part.non": [
+  "لا",
+  "كلا"
+ ],
+ "part.mots.continuer": [
+  "متابعة",
+  "تابع"
+ ],
+ "part.mots.nouvelle": [
+  "لعبة جديدة",
+  "جديدة"
+ ],
+ "part.mots.charger": [
+  "تحميل"
+ ],
+ "part.mots.compte": [
+  "الحساب",
+  "حساب"
+ ],
+ "part.mots.quitter": [
+  "خروج"
+ ],
+ "part.mots.retour": [
+  "رجوع"
+ ]
 }

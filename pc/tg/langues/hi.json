@@ -1285,5 +1285,41 @@
  "part.l.ok": "📂 तुम फिर से {qui} के साथ हो!",
  "part.l.depuis_compte": "☁ {nom} तुम्हारे खाते से आ रहा है… (अगले सिंक में भर जाएगा, इंटरनेट मिलते ही)",
  "part.l.astuce": "tg partie charger 2 → खेल नंबर 2 फिर शुरू करो · tg partie nouvelle → नया अंडा",
- "part.aide": "tg partie nouvelle · tg partie charger · tg partie charger 2 · tg parties (मेन्यू)"
+ "part.aide": "tg partie nouvelle · tg partie charger · tg partie charger 2 · tg parties (मेन्यू)",
+ "part.oui": [
+  "हाँ",
+  "हां",
+  "हा",
+  "जी",
+  "haan",
+  "han",
+  "ha"
+ ],
+ "part.non": [
+  "नहीं",
+  "ना",
+  "nahi",
+  "nahin"
+ ],
+ "part.mots.continuer": [
+  "जारी रखो",
+  "जारी"
+ ],
+ "part.mots.nouvelle": [
+  "नया खेल",
+  "नया"
+ ],
+ "part.mots.charger": [
+  "लोड करो",
+  "लोड"
+ ],
+ "part.mots.compte": [
+  "खाता"
+ ],
+ "part.mots.quitter": [
+  "बाहर"
+ ],
+ "part.mots.retour": [
+  "वापस"
+ ]
 }

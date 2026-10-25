@@ -1285,5 +1285,37 @@
  "part.l.ok": "📂 Te revoilà avec {qui} !",
  "part.l.depuis_compte": "☁ {nom} arrive de ton compte… (elle se remplit à la prochaine synchro, dès qu'il y a internet)",
  "part.l.astuce": "tg partie charger 2 → reprendre la partie n° 2 · tg partie nouvelle → un nouvel œuf",
- "part.aide": "tg partie nouvelle · tg partie charger · tg partie charger 2 · tg parties (le menu)"
+ "part.aide": "tg partie nouvelle · tg partie charger · tg partie charger 2 · tg parties (le menu)",
+ "part.oui": [
+  "oui",
+  "o",
+  "ouais",
+  "y"
+ ],
+ "part.non": [
+  "non",
+  "n"
+ ],
+ "part.mots.continuer": [
+  "continuer",
+  "c"
+ ],
+ "part.mots.nouvelle": [
+  "nouvelle",
+  "nouvelle partie",
+  "n"
+ ],
+ "part.mots.charger": [
+  "charger"
+ ],
+ "part.mots.compte": [
+  "compte"
+ ],
+ "part.mots.quitter": [
+  "quitter",
+  "q"
+ ],
+ "part.mots.retour": [
+  "retour"
+ ]
 }

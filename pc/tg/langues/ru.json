@@ -1285,5 +1285,33 @@
  "part.l.ok": "📂 Ты снова с {qui}!",
  "part.l.depuis_compte": "☁ {nom} приходит из твоего аккаунта… (заполнится при следующей синхронизации, когда будет интернет)",
  "part.l.astuce": "tg partie charger 2 → продолжить игру № 2 · tg partie nouvelle → новое яйцо",
- "part.aide": "tg partie nouvelle · tg partie charger · tg partie charger 2 · tg parties (меню)"
+ "part.aide": "tg partie nouvelle · tg partie charger · tg partie charger 2 · tg parties (меню)",
+ "part.oui": [
+  "да",
+  "д",
+  "da"
+ ],
+ "part.non": [
+  "нет",
+  "н"
+ ],
+ "part.mots.continuer": [
+  "продолжить"
+ ],
+ "part.mots.nouvelle": [
+  "новая",
+  "новая игра"
+ ],
+ "part.mots.charger": [
+  "загрузить"
+ ],
+ "part.mots.compte": [
+  "аккаунт"
+ ],
+ "part.mots.quitter": [
+  "выйти"
+ ],
+ "part.mots.retour": [
+  "назад"
+ ]
 }

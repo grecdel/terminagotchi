@@ -1285,5 +1285,39 @@
  "part.l.ok": "📂 تم پھر سے {qui} کے ساتھ ہو!",
  "part.l.depuis_compte": "☁ {nom} تمہارے اکاؤنٹ سے آ رہا ہے… (اگلی سنک میں بھر جائے گا، انٹرنیٹ ملتے ہی)",
  "part.l.astuce": "tg partie charger 2 → کھیل نمبر 2 پھر سے · tg partie nouvelle → نیا انڈا",
- "part.aide": "tg partie nouvelle · tg partie charger · tg partie charger 2 · tg parties (مینیو)"
+ "part.aide": "tg partie nouvelle · tg partie charger · tg partie charger 2 · tg parties (مینیو)",
+ "part.oui": [
+  "ہاں",
+  "ہان",
+  "جی",
+  "haan",
+  "han",
+  "ji"
+ ],
+ "part.non": [
+  "نہیں",
+  "نا",
+  "nahi"
+ ],
+ "part.mots.continuer": [
+  "جاری رکھو",
+  "جاری"
+ ],
+ "part.mots.nouvelle": [
+  "نیا کھیل",
+  "نیا"
+ ],
+ "part.mots.charger": [
+  "لوڈ کرو",
+  "لوڈ"
+ ],
+ "part.mots.compte": [
+  "اکاؤنٹ"
+ ],
+ "part.mots.quitter": [
+  "باہر"
+ ],
+ "part.mots.retour": [
+  "واپس"
+ ]
 }

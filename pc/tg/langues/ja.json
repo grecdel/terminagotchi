@@ -1285,5 +1285,40 @@
  "part.l.ok": "📂 {qui}と また いっしょ！",
  "part.l.depuis_compte": "☁ {nom}が アカウントから やってくるよ…（つぎの どうきで うまるよ、インターネットが あればすぐ）",
  "part.l.astuce": "tg partie charger 2 → 2ばんの ゲームを つづける · tg partie nouvelle → あたらしい たまご",
- "part.aide": "tg partie nouvelle · tg partie charger · tg partie charger 2 · tg parties（メニュー）"
+ "part.aide": "tg partie nouvelle · tg partie charger · tg partie charger 2 · tg parties（メニュー）",
+ "part.oui": [
+  "はい",
+  "うん",
+  "ええ",
+  "hai"
+ ],
+ "part.non": [
+  "いいえ",
+  "いや",
+  "ううん"
+ ],
+ "part.mots.continuer": [
+  "つづける",
+  "続ける"
+ ],
+ "part.mots.nouvelle": [
+  "あたらしく はじめる",
+  "あたらしく",
+  "新しく"
+ ],
+ "part.mots.charger": [
+  "よみこむ",
+  "読み込む"
+ ],
+ "part.mots.compte": [
+  "アカウント"
+ ],
+ "part.mots.quitter": [
+  "おわる",
+  "終わる"
+ ],
+ "part.mots.retour": [
+  "もどる",
+  "戻る"
+ ]
 }

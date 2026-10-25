@@ -9,16 +9,62 @@
 Affiché seulement au lancement interactif de `tg` et par `tg parties` (jamais par le mode « prompt »
 du shell, `tg --une-fois` ni les sous-commandes). Tout marche hors ligne : les parties du compte
 viennent d'un cache local, rafraîchi en fond avec un délai court.
+
+On répond par le chiffre ou par le mot, en français (toujours) ou dans la langue choisie :
+clés part.mots.continuer / nouvelle / charger / compte / quitter des fichiers de langue. Le « oui »
+d'une confirmation se dit dans n'importe laquelle des 14 langues (clé part.oui : oui, yes, sí, ja,
+да, はい, 是, हाँ, نعم, হ্যাঁ, ya, ہاں…). Même règle sur Android (MenuParties.kt).
 """
 import json
 import threading
+import unicodedata
 import urllib.request
 
 from . import core, langue, parties, recense, sprites
 from .langue import t
 from .plateforme import BOLD, DIM, RESET, fg
 
-OUI = {"oui", "o", "yes", "y", "si", "sí", "ja", "да"}
+def _norm(texte):
+    return unicodedata.normalize("NFC", (texte or "").strip().lower())
+
+
+def mots(cle):
+    """Les mots acceptés pour une action du menu : ceux de la langue choisie, et toujours ceux du français."""
+    out = set()
+    for code in {langue.courante(), langue.DEFAUT}:
+        v = langue._charger(code).get(cle) or []
+        out |= {_norm(x) for x in (v if isinstance(v, list) else [v])}
+    return out
+
+
+def oui(reponse):
+    """Vrai si la réponse est « oui » dans l'une des 14 langues (le reste compte comme non)."""
+    r = _norm(reponse)
+    if not r:
+        return False
+    for code in langue.LANGUES:
+        v = langue._charger(code).get("part.oui") or []
+        if r in {_norm(x) for x in v}:
+            return True
+    return False
+
+
+def action(reponse):
+    """L'action du menu désignée par une réponse (chiffre ou mot) : continuer, nouvelle, charger, compte,
+    quitter, ou None."""
+    r = _norm(reponse)
+    if r in ("", "1") or r in mots("part.mots.continuer"):
+        return "continuer"
+    if r in ("q", "0") or r in mots("part.mots.quitter"):
+        return "quitter"
+    if r == "2" or r in mots("part.mots.nouvelle"):
+        return "nouvelle"
+    if r == "3" or r in mots("part.mots.charger"):
+        return "charger"
+    if r == "4" or r in mots("part.mots.compte"):
+        return "compte"
+    return None
+
 _rafraichi = {"ok": None}         # None : pas encore de réponse · True / False : en ligne / hors ligne
 
 
@@ -110,7 +156,7 @@ def nouvelle(demander, confirmer=True):
         return t("part.plein", n=parties.MAX)
     if st and st.get("name") and confirmer:
         print(t("part.n.confirmer", nom=st["name"]))
-        if demander("  " + t("part.oui_non") + " ").strip().lower() not in OUI:
+        if not oui(demander("  " + t("part.oui_non") + " ")):
             return t("part.n.rien")
     nom = demander(t("app.nom_creature") + " ").strip()[:16] or "Pixel"
     i = parties.nouvelle(nom, langue.courante(), _message_oeuf)
@@ -182,21 +228,22 @@ def menu(demander=input):
             return False
         rl = r.lower()
         msg = ""
-        if rl in ("", "1", "continuer", "c"):
+        quoi = action(r)
+        if quoi == "continuer":
             if st and st.get("name"):
                 print("\n".join(sprites.creature(st)[0]))
             return True
-        if rl in ("q", "quitter", "0"):
+        if quoi == "quitter":
             return False
         try:
-            if rl in ("2", "nouvelle", "nouvelle partie", "n"):
+            if quoi == "nouvelle":
                 msg = nouvelle(demander)
-            elif rl in ("3", "charger"):
+            elif quoi == "charger":
                 choix, texte = lignes_parties(st)
                 print(texte)
                 n = demander(t("part.l.numero") + " ").strip()
                 msg = charger(int(n), choix) if n.isdigit() else ""
-            elif rl in ("4", "compte"):
+            elif quoi == "compte":
                 msg = texte_compte(st)
             elif rl.split()[0] in ("compte", "partie"):
                 mots = r.split()[1:]

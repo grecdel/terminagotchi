@@ -1285,5 +1285,37 @@
  "part.l.ok": "📂 You're back with {qui}!",
  "part.l.depuis_compte": "☁ {nom} is coming from your account… (it fills in at the next sync, as soon as there's internet)",
  "part.l.astuce": "tg partie charger 2 → resume game no. 2 · tg partie nouvelle → a new egg",
- "part.aide": "tg partie nouvelle · tg partie charger · tg partie charger 2 · tg parties (the menu)"
+ "part.aide": "tg partie nouvelle · tg partie charger · tg partie charger 2 · tg parties (the menu)",
+ "part.oui": [
+  "yes",
+  "y",
+  "yeah",
+  "yep",
+  "ok"
+ ],
+ "part.non": [
+  "no",
+  "n",
+  "nope"
+ ],
+ "part.mots.continuer": [
+  "continue"
+ ],
+ "part.mots.nouvelle": [
+  "new",
+  "new game"
+ ],
+ "part.mots.charger": [
+  "load"
+ ],
+ "part.mots.compte": [
+  "account"
+ ],
+ "part.mots.quitter": [
+  "quit",
+  "exit"
+ ],
+ "part.mots.retour": [
+  "back"
+ ]
 }
