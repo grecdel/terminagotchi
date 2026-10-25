@@ -21,6 +21,15 @@ import kotlin.random.Random
  * pour gagner sa confiance il faut réussir une suite de vraies commandes avant la fin du temps.
  * Le jeu vérifie le RÉSULTAT (dossier créé, fichier trié, bonne réponse donnée avec echo…).
  * Étapes 1 et 2 toujours : l'examiner (cat sa fiche), trouver son repaire (find).
+ *
+ * Difficulté progressive (selon le nombre de bestioles déjà dressées, voir plafond(), comme sur PC) :
+ *  - le tout premier dressage : 2 épreuves simples (lire sa fiche, puis une commande d'un seul mot ou presque :
+ *    pas de boucle for, pas de guillemets imbriqués, pas de tuyau) ;
+ *  - puis le nombre d'épreuves et leur niveau montent peu à peu, jusqu'aux règles normales (selon la rareté de
+ *    l'individu) à partir de 12 bestioles dressées ; +1 minute tant que tu as moins de 5 bestioles.
+ * Quand une épreuve est PRESQUE réussie (faute de frappe, fichier au mauvais endroit, script sans echo, boucle
+ * for sans « ; »…), une bulle donne un indice clair (voir indice()).
+ * Si tu as déjà une troupe, un mini-combat a lieu d'abord (voir Combat.kt).
  */
 object Dressage {
     // la difficulté dépend de la rareté de L'INDIVIDU (ses stats, sa variante…), pas de l'espèce
@@ -295,6 +304,7 @@ object Dressage {
     )
 
     private fun parCle(k: String) = EPREUVES.first { it.cle == k }
+    fun epreuve(k: String): Epreuve? = EPREUVES.firstOrNull { it.cle == k }
 
     /** Fin du dernier dressage, pour l'écran : le monstre joue « victoire » (capturé) ou « ko » (enfui). */
     @Volatile var finale: Pair<JSONObject, String>? = null
@@ -315,19 +325,52 @@ object Dressage {
     private fun bonusMefiance(jeu: Jeu) = minOf(30, (jeu.stats["Force"] ?: 0) / 2)
     private fun partExemple(jeu: Jeu) = 0.5 + minOf(0.4, (jeu.stats["Intelligence"] ?: 0) / 100.0)
 
+    /** Le tout premier dressage : des épreuves d'une seule commande courte, dans cet ordre de préférence
+     *  (pas de boucle for, pas de guillemets imbriqués, pas de tuyau |, pas de « ; »). */
+    val SIMPLES = listOf("Système:qui", "Réseau:hote", "Processus:heure", "Matériel:machine", "Rétro:calendrier",
+        "Système:systeme", "Mémoire:place", "Fichiers:enclos", "Nuage:nuage", "Crypto:lire", "Glitch:voir",
+        "Données:debut", "Bugs:erreurs", "IA:bonjour", "Code:chant")
+    /** (nombre de bestioles dressées en dessous duquel s'applique le plafond) → (épreuves de famille, niveau max) */
+    val PALIERS = listOf(3 to (1 to 1), 5 to (2 to 1), 8 to (3 to 2), 12 to (4 to 3))
+    /** secondes en plus tant que tu as moins de 5 bestioles */
+    const val TEMPS_DEBUTANT = 60
+
+    /** (épreuves de famille au plus, niveau au plus) selon le nombre de bestioles dressées, ou null. */
+    fun plafond(nCaptures: Int?): Pair<Int, Int>? {
+        if (nCaptures == null) return null
+        for ((seuil, cap) in PALIERS) if (nCaptures < seuil) return cap
+        return null
+    }
+
+    /** Les épreuves d'un dressage. nCaptures = bestioles déjà dressées (null : pas de plafond). */
+    fun choisirEpreuves(e: Bestiaire.Espece, premiere: Boolean, rarete: String, nCaptures: Int? = null): List<Epreuve> {
+        val rencontre = EPREUVES.filter { it.fam == "Rencontre" }
+        if (nCaptures == 0) return listOf(rencontre[0]) + premiereEpreuve(e)   // lire sa fiche + 1 épreuve simple
+        return rencontre + epreuvesFamille(e, premiere, rarete, plafond(nCaptures))
+    }
+
+    private fun premiereEpreuve(e: Bestiaire.Espece): List<Epreuve> {
+        val fams = e.epreuves.ifEmpty { listOf(e.famille) }
+        val pool = fams.flatMap { f -> EPREUVES.filter { it.fam == f } }.associateBy { it.cle }
+        for (k in SIMPLES) pool[k]?.let { return listOf(it) }
+        return listOf(EPREUVES.filter { it.fam == "Rencontre" }[1])
+    }
+
     /** Les épreuves de la famille (e.epreuves : les commandes que cette famille aime), selon la rareté de l'individu. */
-    fun choisirEpreuves(e: Bestiaire.Espece, premiere: Boolean, rarete: String): List<Epreuve> {
+    private fun epreuvesFamille(e: Bestiaire.Espece, premiere: Boolean, rarete: String, cap: Pair<Int, Int>?): List<Epreuve> {
         val fams = e.epreuves.ifEmpty { listOf(e.famille) }
         val pool = fams.flatMap { f -> EPREUVES.filter { it.fam == f } }
-        val n = NB[rarete] ?: 2
-        val choix = if (rarete in ULTIMES) {        // l'épreuve ultime : sa famille + des épreuves d'ailleurs
+        var n = NB[rarete] ?: 2
+        var nmax = NIV[rarete] ?: 1
+        if (cap != null) { n = minOf(n, cap.first); nmax = minOf(nmax, cap.second) }   // débutant : moins d'épreuves, plus faciles
+        val choix = if (rarete in ULTIMES && cap == null) {        // l'épreuve ultime : sa famille + des épreuves d'ailleurs
             val autres = EPREUVES.filter { it.fam !in fams && it.fam != "Rencontre" && it.niveau >= 2 }.shuffled()
             pool.sortedBy { it.niveau }.takeLast(3) + autres.take(3)
         } else {
-            val ok = pool.filter { it.niveau <= (NIV[rarete] ?: 1) }.sortedBy { it.niveau }
+            val ok = pool.filter { it.niveau <= nmax }.sortedBy { it.niveau }
             if (premiere) ok.take(n) else ok.shuffled().take(minOf(n, ok.size)).sortedBy { it.niveau }
         }
-        return EPREUVES.filter { it.fam == "Rencontre" } + choix.distinctBy { it.id }    // pas deux fois la même épreuve
+        return choix.distinctBy { it.id }    // pas deux fois la même épreuve
     }
 
     /** Un monstre vient d'apparaître : le dressage commence tout de suite. Renvoie false s'il t'ignore. */
@@ -345,12 +388,14 @@ object Dressage {
         }
         val faites = m.optJSONArray("familles") ?: JSONArray().also { m.put("familles", it) }
         val premiere = (0 until faites.length()).none { faites.getString(it) == e.famille }
-        val taches = choisirEpreuves(e, premiere, rar)
+        val nCaps = Explo.captures(jeu).length()
+        val taches = choisirEpreuves(e, premiere, rar, nCaps)
+        val debutant = if (nCaps < 5) TEMPS_DEBUTANT else 0
         val zone = ind.optString("zone").ifEmpty { e.zone }
         val d = JSONObject().put("espece", e.nom).put("shiny", shiny).put("zone", zone)
             .put("taches", JSONArray(taches.map { it.cle })).put("faites", JSONArray()).put("lignes", JSONArray())
             .put("debut", System.currentTimeMillis()).put("x", JSONObject())
-            .put("duree", if (premiere) 0 else (DUREE[rar] ?: 90) + bonusTemps(jeu))
+            .put("duree", if (premiere) 0 else (DUREE[rar] ?: 90) + bonusTemps(jeu) + debutant)
             .put("mefiance", 100 - bonusMefiance(jeu)).put("seconde", (jeu.stats["Endurance"] ?: 0) >= 20)
             .put("ind", ind).put("rarete", rar).put("variante", ind.optString("variante", "classique")).put("examine", false)
         if (rar in ULTIMES) essais.put(e.nom, jour)
@@ -364,6 +409,7 @@ object Dressage {
             else t("dress.debut",
                 "nom" to e.nom, "eclat" to eclat), 12)
         jeu.log(t("dress.commence.log", "nom" to e.nom, "n" to taches.size))
+        Combat.preparer(jeu)                        // ta troupe affronte d'abord le monstre (si tu en as une)
         return true
     }
 
@@ -409,6 +455,10 @@ object Dressage {
     /** Après chaque commande (ou périodiquement si ligne == null). Renvoie un message à afficher, ou null. */
     fun verifier(jeu: Jeu, ligne: String?, colle: Boolean): String? {
         val d = etat(jeu) ?: return null
+        if (Combat.enCours(jeu)) {                  // le combat d'abord : chaque commande tapée est un coup
+            if (ligne != null && !colle && !Regles.estColle(ligne)) Combat.coup(jeu, ligne)
+            return null
+        }
         if (ligne != null && !colle) {
             val l = d.getJSONArray("lignes")
             l.put(ligne)
@@ -434,8 +484,16 @@ object Dressage {
             } else return echouer(jeu, d)
         }
         if (progres) {
+            d.remove("indice")
             jeu.dire(Langue.auHasard("dress.progres", "nom" to d.getString("espece"),
                 "n" to d.getJSONArray("faites").length(), "total" to d.getJSONArray("taches").length()), 6)
+        } else if (ligne != null && !colle && !Regles.estColle(ligne)) {
+            val conseil = indice(jeu, d, c, listOf(ligne))
+            if (conseil != null && conseil != d.optString("indice")) {
+                d.put("indice", conseil)
+                jeu.dire("💡 $conseil", 12)
+                jeu.animer("parle")
+            }
         }
         return null
     }
@@ -489,6 +547,138 @@ object Dressage {
         return t("dress.abandon.log", "nom" to d.getString("espece")) + "."
     }
 
+    // ---------------------------------------------------------------- « presque ! » : des indices clairs
+    // Quand l'épreuve en cours n'est pas réussie après une commande, on cherche si elle l'est PRESQUE :
+    // un indice propre à l'épreuve, un fichier créé au mauvais endroit, ou une faute de frappe par rapport
+    // à l'exemple (comme dressage.indice sur PC ; textes : clés « dress.indice.* »).
+    private fun aTape(l: List<String>, motif: String) = Regex(motif, RegexOption.IGNORE_CASE).let { r -> l.any { r.containsMatchIn(it) } }
+
+    private fun iScript(c: Ctx, l: List<String>): String? {
+        val f = File(c.d, "tour.sh")
+        val texte = lire(f) ?: return null
+        if ("echo" !in texte.lowercase()) return t("dress.indice.script_echo", "fichier" to f.name)
+        if (!f.canExecute()) return t("dress.indice.script_chmod", "fichier" to f.name)
+        return null
+    }
+
+    private fun iCompte(c: Ctx, l: List<String>): String? {
+        for (x in l) {
+            val m = x.trim()
+            if (Regex("^for\\s").containsMatchIn(m) && (";" !in m || !Regex("\\bdo\\b").containsMatchIn(m) || !Regex("\\bdone\\b").containsMatchIn(m)))
+                return t("dress.indice.for")
+        }
+        return if (lignesDe(File(c.d, "compte.txt")) != null) t("dress.indice.compte") else null
+    }
+
+    private fun iChant(c: Ctx, l: List<String>) =
+        if (lire(File(c.d, "chant.txt")) != null) t("dress.indice.chant", "nom" to c.nom) else null
+
+    private fun iGamelle(c: Ctx, l: List<String>): String? {
+        if (File(c.d, "gamelle").exists()) return t("dress.indice.dans_enclos", "fichier" to "gamelle")
+        if (!File(c.d, "enclos").isDirectory && aTape(l, "enclos[/\\\\]gamelle")) return t("dress.indice.enclos_dabord")
+        return null
+    }
+
+    private fun iDoudou(c: Ctx, l: List<String>): String? {
+        if (File(c.d, "enclos/doudou.txt").exists() && !File(c.d, "doudou.txt").exists()) return t("dress.indice.cp_pas_mv")
+        if (!File(c.d, "enclos").isDirectory && aTape(l, "^\\s*(cp|copy)\\b")) return t("dress.indice.enclos_dabord")
+        return null
+    }
+
+    private fun iRenomme(c: Ctx, l: List<String>): String? {
+        val nomMin = Bestiaire.espece(c.nom)?.id ?: Bestiaire.simple(c.nom)
+        if (!File(c.d, "vieux_nom.txt").exists() && !File(c.d, "$nomMin.txt").exists() && !File(c.d, Bestiaire.simple(c.nom) + ".txt").exists())
+            return t("dress.indice.nom_min", "nom_min" to nomMin)
+        return null
+    }
+
+    private fun iDansEnclos(nom: String): (Ctx, List<String>) -> String? = { c, l ->
+        if (File(c.d, nom).exists() && !File(c.d, "enclos/$nom").exists()) t("dress.indice.dans_enclos", "fichier" to nom)
+        else if (!File(c.d, "enclos").isDirectory && aTape(l, "enclos[/\\\\]")) t("dress.indice.enclos_dabord")
+        else null
+    }
+
+    private fun iCachette(c: Ctx, l: List<String>): String? {
+        val enclos = File(c.d, "enclos")
+        if (!enclos.isDirectory) return if (aTape(l, "enclos[/\\\\]")) t("dress.indice.enclos_dabord") else null
+        if (enclos.listFiles()?.any { it.isFile && !it.name.startsWith(".") } == true && aTape(l, "^\\s*(touch|new-item)\\b"))
+            return t("dress.indice.point")
+        return null
+    }
+
+    private fun iPrive(c: Ctx, l: List<String>) = if (File(c.d, "enclos/cage").exists()) t("dress.indice.prive") else null
+
+    private fun iNombre(c: Ctx, l: List<String>) =
+        if (l.any { Regex("^\\s*(echo|write-output)\\s+[\"']?\\d+[\"']?\\s*$", RegexOption.IGNORE_CASE).matches(it) }) t("dress.indice.nombre") else null
+
+    private fun iReponse(c: Ctx, l: List<String>) =
+        if (l.any { Regex("^\\s*(echo|write-output)\\s+\\S", RegexOption.IGNORE_CASE).containsMatchIn(it) }) t("dress.indice.reponse") else null
+
+    private fun iContenu(nom: String): (Ctx, List<String>) -> String? = { c, _ ->
+        if (File(c.d, nom).exists()) t("dress.indice.fichier", "fichier" to nom) else null
+    }
+
+    private fun iPhotos(c: Ctx, l: List<String>): String? {
+        val n = File(c.d, "nuage").listFiles()?.count { it.name.startsWith("photo") } ?: return null
+        return if (n in 1..2) t("dress.indice.photos", "n" to n) else null
+    }
+
+    private val INDICES: Map<String, (Ctx, List<String>) -> String?> = mapOf(
+        "Code:script" to ::iScript, "Code:compte" to ::iCompte, "Code:chant" to ::iChant,
+        "Fichiers:gamelle" to ::iGamelle, "Fichiers:doudou" to ::iDoudou, "Fichiers:renomme" to ::iRenomme,
+        "Sécurité:cage" to iDansEnclos("cage"), "Sécurité:cachette" to ::iCachette, "Sécurité:prive" to ::iPrive,
+        "Mémoire:sac" to ::iNombre, "Matériel:coeurs" to ::iNombre, "Bugs:combien" to ::iNombre, "Données:lignes" to ::iNombre,
+        "Données:differentes" to ::iNombre, "IA:chat" to ::iNombre, "Rétro:record" to ::iNombre,
+        "Crypto:decode" to ::iReponse, "Sécurité:empreinte" to ::iReponse, "IA:frequent" to ::iReponse,
+        "Données:trie" to iContenu("trie.txt"), "Rétro:top3" to iContenu("top3.txt"), "Bugs:corrige" to iContenu("corrige.log"),
+        "Glitch:repare" to iContenu("repare.txt"), "Glitch:chuchote" to iContenu("chuchote.txt"),
+        "Nuage:photos" to ::iPhotos,
+    )
+
+    /** ce que l'épreuve doit créer dans le repaire (pour repérer un fichier créé ailleurs) */
+    private val ATTENDUS = mapOf("Fichiers:enclos" to "enclos", "Code:chant" to "chant.txt", "Code:script" to "tour.sh",
+        "Code:compte" to "compte.txt", "Nuage:nuage" to "nuage", "Données:trie" to "trie.txt", "Rétro:top3" to "top3.txt",
+        "Glitch:repare" to "repare.txt", "Glitch:chuchote" to "chuchote.txt", "Bugs:corrige" to "corrige.log",
+        "Fichiers:archive" to "enclos.tar.gz", "Sécurité:cage" to "enclos")
+
+    /** Le fichier attendu, trouvé hors du repaire (dans la maison ou le terrain), ou null. */
+    private fun ailleurs(jeu: Jeu, c: Ctx, nom: String): File? {
+        val ici = File(c.d, nom)
+        if (ici.exists()) return null
+        for (base in listOf(jeu.home, c.terrain, c.d.parentFile)) {
+            val f = File(base, nom)
+            if (f.exists()) return f
+        }
+        if (c.terrain.isDirectory) {
+            val dernier = nom.split("/").last()
+            val dans = c.d.absolutePath + File.separator
+            return c.terrain.walkTopDown().firstOrNull { it.name == dernier && it != ici && !it.absolutePath.startsWith(dans) }
+        }
+        return null
+    }
+
+    /** L'exemple de l'épreuve, rempli (nom du monstre, vocabulaire du palier). */
+    fun exemple(jeu: Jeu, ep: Epreuve, nom: String): String {
+        val e = Bestiaire.espece(nom)
+        return Mots.remplir(ep.exemple, Mots.termes(Mots.palier(jeu)) + mapOf("nom_min" to (e?.id ?: nom.lowercase()), "nom" to nom))
+    }
+
+    /** L'indice pour l'épreuve en cours quand elle est presque réussie, ou null. */
+    private fun indice(jeu: Jeu, d: JSONObject, c: Ctx, lignes: List<String>): String? {
+        val ep = courante(d) ?: return null
+        try {
+            INDICES[ep.cle]?.invoke(c, lignes)?.let { return it }
+            val nom = ATTENDUS[ep.cle]
+            if (nom != null && ailleurs(jeu, c, nom) != null)
+                return t("dress.indice.mauvais_endroit", "fichier" to nom,
+                    "cmd" to "cd ~/${jeu.terrain.name}/${d.getString("zone")}/${repaire(d.getString("espece"))}")
+        } catch (x: Exception) {
+            // fichier illisible : pas d'indice de ce côté
+        }
+        val ff = Indices.fauteDeFrappe(lignes, exemple(jeu, ep, d.getString("espece"))) ?: return null
+        return t("dress.indice.faute", "tape" to ff.first, "attendu" to ff.second)
+    }
+
     // ---------------------------------------------------------------- l'écran
     private val COUL_STAT = mapOf("PV" to 0xFFFF5F5F.toInt(), "ATK" to 0xFFFF8700.toInt(), "DEF" to 0xFF5FAFFF.toInt(),
         "VIT" to 0xFF87FF87.toInt(), "INT" to 0xFFAF87FF.toInt())
@@ -513,14 +703,27 @@ object Dressage {
         return texte("░".repeat(14 - n), 0xFF44445A.toInt())
     }
 
-    /** Le panneau affiché pendant un dressage : la carte du monstre, puis une seule étape. */
-    fun panneau(jeu: Jeu, res: Resources): CharSequence? {
+    private fun SpannableStringBuilder.coeurs(a: org.json.JSONArray): SpannableStringBuilder {
+        val n = a.optInt(0); val maxi = a.optInt(1)
+        texte("❤".repeat(maxOf(0, n)), 0xFFFF3030.toInt())
+        return texte("♡".repeat(maxOf(0, maxi - n)), 0xFF585858.toInt())
+    }
+
+    /**
+     * Le panneau affiché pendant un dressage : la carte du monstre, puis une seule étape.
+     * Pendant le mini-combat : la bestiole de ta troupe à gauche (gauche = l'image en cours de son animation,
+     * sinon son dessin), les cœurs des deux côtés, puis le tour, ce qui vient de se passer et les trois coups.
+     */
+    fun panneau(jeu: Jeu, res: Resources, gauche: android.graphics.Bitmap? = null): CharSequence? {
         val d = etat(jeu) ?: return null
         val e = Bestiaire.espece(d.getString("espece")) ?: return null
         val p = Mots.palier(jeu)
+        val cb = if (Combat.enCours(jeu)) d.optJSONObject("combat") else null
+        val bete = if (cb != null) Combat.ind(jeu) else null
+        val eb = bete?.let { Bestiaire.espece(it.optString("espece")) }
         val sb = SpannableStringBuilder()
         sb.texte("⚔ " + t("dress.titre") + "\n", 0xFFFF5050.toInt(), true, 1.1f)
-        // face-à-face : ton familier à gauche, le monstre à droite
+        // face-à-face : ton familier (ou la bestiole de ta troupe qui combat) à gauche, le monstre à droite
         val px = (72 * res.displayMetrics.density).toInt()
         fun image(b: android.graphics.Bitmap) {
             val a = sb.length
@@ -529,7 +732,11 @@ object Dressage {
             img.setBounds(0, 0, px, px)
             sb.setSpan(ImageSpan(img, DynamicDrawableSpan.ALIGN_BOTTOM), a, a + 1, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
         }
-        image(Sprites.bitmap(jeu, 6, false))
+        if (bete != null && eb != null) {
+            val sB = Equipe.stade(bete)
+            image(gauche ?: (if (Animations.dispo(eb.id)) Animations.pixels(eb.id, sB, "statique", 3)?.firstOrNull() else null)
+                ?: Bestiaire.bitmap(eb, bete.optBoolean("shiny"), 3, sB, bete.optString("variante", "classique"), bete.optDouble("teinte", 0.5)))
+        } else image(gauche ?: Sprites.bitmap(jeu, 6, false))
         sb.texte("   VS   ", 0xFFFF5050.toInt(), true, 1.3f)
         val ind = d.optJSONObject("ind")
         val stadeM = ind?.let { Equipe.stade(it) } ?: "adulte"
@@ -539,15 +746,24 @@ object Dressage {
         sb.append("\n")
         val COUL_FAM = mapOf("Intelligence" to 0xFF00AFFF.toInt(), "Agilité" to 0xFF5FD787.toInt(),
             "Force" to 0xFFFF5F5F.toInt(), "Endurance" to 0xFFFFD75F.toInt())
-        sb.texte("◀ ${jeu.nom}  ", 0xFFFFFFFF.toInt(), true)
-        for ((k, v) in jeu.stats) { sb.texte(Regles.court(k), COUL_FAM[k] ?: -1, true); sb.texte(" $v  ", 0xFFE0E0F0.toInt()) }
-        sb.append("\n")
+        val pc = if (p < 2) 0 else 2               // les cœurs : l'image seule, ou le vrai mot court
+        if (bete != null && eb != null && cb != null) {
+            val r = Bestiaire.rareteDe(bete)
+            sb.texte("◀ " + Bestiaire.nomAffiche(eb, bete.optBoolean("shiny"), r) + " · " + Equipe.nomStade(Equipe.stade(bete)) + "  ", 0xFFFFFFFF.toInt(), true)
+            val st = bete.optJSONObject("stats")?.let { o -> o.keys().asSequence().associateWith { o.optInt(it) } } ?: eb.stats
+            for (k in listOf("ATK", "DEF", "VIT")) st[k]?.let { v -> sb.texte(Mots.nomStat(k, pc), COUL_STAT[k] ?: -1, true); sb.texte(" $v  ", 0xFFE0E0F0.toInt()) }
+            sb.texte(Mots.terme("pv", pc, true) + " ", 0xFFBCBCBC.toInt()).coeurs(cb.getJSONArray("moi")).append("\n")
+        } else {
+            sb.texte("◀ ${jeu.nom}  ", 0xFFFFFFFF.toInt(), true)
+            for ((k, v) in jeu.stats) { sb.texte(Regles.court(k), COUL_FAM[k] ?: -1, true); sb.texte(" $v  ", 0xFFE0E0F0.toInt()) }
+            sb.append("\n")
+        }
         val rar = d.optString("rarete").ifEmpty { "commune" }
         val examine = d.optBoolean("examine")
         sb.texte("▶ ${e.nom}${if (shinyM) " ✨" else ""}", if (examine) Bestiaire.COULEUR_RARETE[rar] ?: -1 else 0xFFFFFFFF.toInt(), true)
         sb.texte("  #%03d ".format(e.numero) + (if (examine) Bestiaire.nomRarete(rar) else t("dress.rarete_cachee")) + " · ${Equipe.nomStade(stadeM)}  ", 0xFF9090A8.toInt())
         val statsM = ind?.optJSONObject("stats")?.let { o -> LinkedHashMap(o.keys().asSequence().associateWith { o.optInt(it) }) } ?: e.stats
-        if (examine) {
+        if (examine || cb?.optBoolean("vu") == true) {
             for ((k, v) in statsM) { sb.texte(Mots.nomStat(k, p), COUL_STAT[k] ?: -1, true); sb.texte(" $v  ", 0xFFE0E0F0.toInt()) }
             sb.append("\n")
         } else sb.texte(t("dress.stats_cachees", "stats" to Mots.terme("stats", p)) + "\n", 0xFF808098.toInt())
@@ -555,10 +771,14 @@ object Dressage {
         val nFait = d.getJSONArray("faites").length()
         val mef = d.optInt("mefiance", 100) * (1 - nFait.toDouble() / nTot)
         sb.texte(Mots.terme("mefiance", p) + " ", 0xFFFF87FF.toInt()).jauge(mef / 100, true).texte(" %.0f %%\n".format(mef), 0xFFE0E0F0.toInt())
+        if (cb != null) {
+            sb.texte(Mots.terme("pv", pc, true) + " ", 0xFFBCBCBC.toInt()).coeurs(cb.getJSONArray("lui")).append("\n")
+            return combat(sb, cb)
+        }
         // les étiquettes (Temps, Mission, Comment, Tape, Où) alignées en colonnes d'écran, quelle que soit la langue
         val et = listOf(t("dress.temps"), t("dress.col.mission"), t("dress.col.comment"),
-            t("dress.col.tape"), t("dress.col.ou"))
-        val n = et.maxOf { Langue.largeur(it) } + 2
+            t("dress.col.tape"), t("dress.col.ou"), "💡 " + t("dress.col.indice"))
+        val n = et.dropLast(1).maxOf { Langue.largeur(it) } + 2     // (l'étiquette de l'indice, rare, peut dépasser)
         fun col(i: Int) = Langue.ajuster(et[i], n)
         val r = reste(jeu)
         if (r == null) sb.texte(col(0) + t("dress.pas_de_chrono") + "\n", 0xFFAFAFFF.toInt())
@@ -578,16 +798,39 @@ object Dressage {
         sb.texte("\n" + col(1), 0xFFFFFF5F.toInt(), true).texte(f(ep.but) + "\n", 0xFFFFFFFF.toInt(), true)
         sb.texte(col(2), 0xFF87D7FF.toInt(), true).texte(f(ep.explication) + "\n", 0xFFD0D0E0.toInt())
         val duree = d.optInt("duree")
-        val montre = r == null || ep.fam == "Rencontre" || r <= duree * (1 - partExemple(jeu))
+        val montre = r == null || ep.fam == "Rencontre" || d.optBoolean("exemple_tout_de_suite") || r <= duree * (1 - partExemple(jeu))
         if (montre) sb.texte(col(3), 0xFF87FF87.toInt(), true).texte(Regles.piege(Mots.remplir(ep.exemple, valeurs)) + "\n", 0xFF87FF87.toInt())
         else sb.texte(col(3), 0xFF87FF87.toInt(), true)
             .texte(t("dressa.exemple_dans", "s" to r!! - (duree * (1 - partExemple(jeu))).toInt()) + "\n", 0xFF808098.toInt())
+        d.optString("indice").ifEmpty { null }?.let { sb.texte(col(5), 0xFFFFAF00.toInt(), true).texte(it + "\n", 0xFFFFAF00.toInt()) }
         val ou = when (ep.cle) {
             "Rencontre:examiner" -> "~/terrain_terminagotchi"
             "Rencontre:repaire" -> t("dress.nimporte_ou")
             else -> "~/terrain_terminagotchi/${d.getString("zone")}/${repaire(nom)}"
         }
         sb.texte(col(4), 0xFFA0A0B8.toInt(), true).texte(ou, 0xFFA0A0B8.toInt())
+        return sb
+    }
+
+    /** Le panneau du mini-combat : le tour, ce qui vient de se passer, les trois coups possibles. */
+    private fun combat(sb: SpannableStringBuilder, cb: JSONObject): SpannableStringBuilder {
+        sb.texte("\n⚔ " + t("dress.combat.titre", "n" to minOf(cb.optInt("tour") + 1, Combat.TOURS_MAX), "total" to Combat.TOURS_MAX) + "\n",
+            0xFFFF5050.toInt(), true)
+        val j = cb.optJSONArray("journal") ?: org.json.JSONArray()
+        for (i in maxOf(0, j.length() - 3) until j.length()) sb.texte("» ", 0xFF808098.toInt()).texte(j.getString(i) + "\n", 0xFFE0E0F0.toInt())
+        sb.texte("\n" + t("dress.combat.coups") + "\n", 0xFFFFFFFF.toInt())
+        val special = cb.optString("special")
+        val coups = mutableListOf<Triple<String, String, Int>>()
+        if (special.isNotEmpty() && special !in Combat.OBSERVER) coups.add(Triple(special, t("dress.combat.special.aide"), 0xFFFF87FF.toInt()))
+        coups.add(Triple("ls", t("dress.combat.observer.aide") + (if (special in Combat.OBSERVER) " · " + t("dress.combat.special.aide") else ""), 0xFF87D7FF.toInt()))
+        coups.add(Triple(t("dress.combat.autre"), t("dress.combat.attaque.aide"), 0xFFBCBCBC.toInt()))
+        val n = coups.maxOf { Langue.largeur(it.first) } + 2
+        for ((k, coup) in coups.withIndex()) {
+            val (c, expl, coul) = coup
+            val mot = Langue.ajuster(c, n)
+            sb.texte("  " + (if (k < coups.size - 1) Regles.piege(mot) else mot), coul, true).texte("→ $expl\n", 0xFFD0D0E0.toInt())
+        }
+        sb.texte(t("dress.combat.ensuite"), 0xFF808098.toInt())
         return sb
     }
 }

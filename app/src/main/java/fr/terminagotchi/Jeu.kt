@@ -17,6 +17,8 @@ class Etape(
     val re: Regex? = null,
     val fs: ((Jeu) -> Boolean)? = null,
     private val astuceCle: String? = null,
+    /** ce que crée l'étape (chemin dans le terrain) : pour repérer une bonne commande tapée au mauvais endroit */
+    val cree: String? = null,
 ) {
     val dit: String get() = t(ditCle)
     val bravo: String get() = t(bravoCle)
@@ -326,12 +328,12 @@ class Jeu(ctx: Context) {
                 re = r("^cd\\s+.*terrain_terminagotchi")),
             Etape("lec.t1.2.dit", "mkdir nid",
                 "lec.t1.2.bravo",
-                fs = { File(it.terrain, "nid").isDirectory }),
+                fs = { File(it.terrain, "nid").isDirectory }, cree = "nid"),
         )),
         Lecon("lec.t2.titre", "Inspecteur", 1, listOf(
             Etape("lec.t2.0.dit", "echo pomme > nid/repas.txt",
                 "lec.t2.0.bravo",
-                fs = { File(it.terrain, "nid/repas.txt").isFile }),
+                fs = { Indices.contient(File(it.terrain, "nid/repas.txt"), "pomme") }, cree = "nid/repas.txt"),
             Etape("lec.t2.1.dit", "cat nid/repas.txt",
                 "lec.t2.1.bravo", re = r("^(cat|more|less|head)\\b.*repas")),
             Etape("lec.t2.2.dit", "grep pomme nid/repas.txt",
@@ -348,9 +350,9 @@ class Jeu(ctx: Context) {
         )),
         Lecon("lec.t4.titre", "Nettoyeur", 1, listOf(
             Etape("lec.t4.0.dit", "cp nid/repas.txt nid/secours.txt",
-                "lec.t4.0.bravo", fs = { File(it.terrain, "nid/secours.txt").isFile }),
+                "lec.t4.0.bravo", fs = { File(it.terrain, "nid/secours.txt").isFile }, cree = "nid/secours.txt"),
             Etape("lec.t4.1.dit", "mv nid/secours.txt reserve.txt",
-                "lec.t4.1.bravo", fs = { File(it.terrain, "reserve.txt").isFile }),
+                "lec.t4.1.bravo", fs = { File(it.terrain, "reserve.txt").isFile }, cree = "reserve.txt"),
             Etape("lec.t4.2.dit", "rm reserve.txt",
                 "lec.t4.2.bravo",
                 fs = { !File(it.terrain, "reserve.txt").exists() }),
@@ -676,16 +678,36 @@ class Jeu(ctx: Context) {
         return false
     }
 
+    /** l'indice « presque ! » de l'étape en cours (affiché sous la leçon), ou null */
+    var indiceLecon: String?
+        get() = module("lecons").optString("indice").ifEmpty { null }
+        set(v) { if (v == null) module("lecons").remove("indice") else module("lecons").put("indice", v) }
+
+    private fun positionLecon() = listOf(lecon, etape, brancheActive(), progresBranche(brancheActive() ?: ""))
+
     fun leconTick(ligne: String?, colle: Boolean) {
         val l = leconCourante() ?: return
         if (niveau < l.niveau) return
+        val avant = positionLecon()
         val e = l.etapes[etape]
-        if (ligne != null && !colle && !Regles.estColle(ligne) && e.re?.containsMatchIn(ligne.trim()) == true) {
-            if (!avancer(l)) return
+        val tapee = ligne != null && !colle && !Regles.estColle(ligne)
+        var finie = false
+        if (tapee && e.re?.containsMatchIn(ligne!!.trim()) == true) {
+            if (!avancer(l)) finie = true
         }
-        val l2 = leconCourante() ?: return
-        if (l2 !== l || niveau < l2.niveau) return
-        if (l2.etapes[etape].fs?.invoke(this) == true) avancer(l2)
+        if (!finie) {
+            val l2 = leconCourante()
+            if (l2 === l && niveau >= l2.niveau && l2.etapes[etape].fs?.invoke(this) == true) avancer(l2)
+        }
+        if (avant != positionLecon()) indiceLecon = null
+        else if (tapee) {
+            // presque réussie ? un indice clair (faute de frappe, mauvais endroit, « pome »…)
+            val conseil = Indices.lecon(this, e, listOf(ligne!!))
+            if (conseil != null && conseil != indiceLecon) {
+                indiceLecon = conseil
+                dire("💡 $conseil", 12)
+            }
+        }
     }
 
     fun parlerSiSilencieux() {
@@ -729,7 +751,8 @@ class Jeu(ctx: Context) {
         }
         val e = l.etapes[etape]
         val astuce = if (e.astuce != null) "\n${e.astuce}" else ""
-        return "${l.titre} (${etape + 1}/${l.etapes.size}) · ${e.dit}\n➜ ${Regles.piege(e.cmd)}$astuce"
+        val indice = indiceLecon?.let { "\n💡 $it" } ?: ""
+        return "${l.titre} (${etape + 1}/${l.etapes.size}) · ${e.dit}\n➜ ${Regles.piege(e.cmd)}$astuce$indice"
     }
 
     fun infoWidget(): String {

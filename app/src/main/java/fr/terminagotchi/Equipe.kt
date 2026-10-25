@@ -82,7 +82,9 @@ object Equipe {
                 .append(Bestiaire.nomAffiche(e, c.optBoolean("shiny"), r)).append(" · ${nomStade(s)}")
                 .append(if (v != "classique") " · $v" else "").append(" · ${Bestiaire.nomRarete(r)} · ")
                 .append(if (seuil != null) "${c.optInt("xp")}/$seuil XP" else t("eq.stade_max"))
-                .append(if (Animations.dispo(e.id)) " · " + t("eq.anime") else "").append("\n")
+                .append(if (Animations.dispo(e.id)) " · " + t("eq.anime") else "")
+                .append(if (Combat.repose(c)) " " + t("eq.repos", "min" to Combat.minutesDeRepos(c)) else "")   // KO au combat
+                .append("\n")
         }
         sb.append("\n" + t("eq.pied.tel"))
         return sb.toString()

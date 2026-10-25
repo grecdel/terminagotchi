@@ -167,10 +167,18 @@ object Bestiaire {
     // ---------------------------------------------------------------- apparition, note, rareté
     class Tirage(val espece: Espece, val shiny: Boolean, val variante: String)
 
-    /** Une apparition : l'espèce (selon sa fréquence), sa variante (selon son habitat), shiny ou pas. */
-    fun tirer(rnd: kotlin.random.Random = kotlin.random.Random): Tirage {
+    /** {famille: commande qui l'attire} (une commande par famille, champ « attiree_par »), comme B.familles() sur PC. */
+    fun familles(): Map<String, String> {
+        val out = LinkedHashMap<String, String>()
+        for (e in publiques()) if (e.famille !in out) out[e.famille] = e.attireePar
+        return out
+    }
+
+    /** Une apparition : l'espèce (selon sa fréquence, et la famille attirée), sa variante (selon son habitat),
+     *  shiny ou pas. Sans graine (non vérifiable) ; même pondération que Tirage.poidsEspeces. */
+    fun tirer(rnd: kotlin.random.Random = kotlin.random.Random, attire: String? = null): Tirage {
         val pub = publiques()
-        val e = choisir(pub, pub.map { poidsFrequence[it.frequence] ?: 1.0 }, rnd)
+        val e = choisir(pub, fr.terminagotchi.Tirage.poidsEspeces(pub, attire).map { it.toDouble() }, rnd)
         val v = choisir(e.variantes, e.variantes.map { it.chance }, rnd)
         val shiny = rnd.nextInt(chanceShiny) == 0
         return Tirage(e, shiny, v.id)

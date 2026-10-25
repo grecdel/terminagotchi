@@ -396,6 +396,15 @@ class TerminalActivity : Activity() {
             return
         }
 
+        // pendant un mini-combat, une commande absente du téléphone ou qui ne s'arrête pas seule (ping sans -c, git…)
+        // compte comme un coup sans être lancée
+        val mot = Regles.premierMot(ligne)
+        if (Combat.enCours(jeu) && mot in Combat.SANS_SHELL) {
+            ecrire(t("dressa.combat.coup", "cmd" to mot), 0xFF9A9AB0.toInt())
+            try { apresCommande(ligne, etaitColle, etaitRappel) } catch (e: Exception) { android.util.Log.e("TG", "après « $ligne »", e) }
+            return
+        }
+
         enCours = true
         invite.alpha = 0.4f
         android.util.Log.i("TG", "commande : $ligne")
@@ -468,16 +477,11 @@ class TerminalActivity : Activity() {
     }
 
     private fun apresCommande(ligne: String, etaitColle: Boolean, etaitRappel: Boolean = false) {
-        jeu.tick()
-        val mange = jeu.manger(ligne, etaitColle, etaitRappel)
-        jeu.leconTick(ligne, etaitColle)
-        if (!etaitColle && !etaitRappel) Defis.verifier(jeu, ligne)?.let { ecrire(it, 0xFFFFD75F.toInt()); saut = 8 }
-        Explo.verifier(jeu)?.let { ecrire(it, 0xFFFF87FF.toInt()) }
-        Dressage.verifier(jeu, ligne, etaitColle)?.let { ecrire(it, 0xFFFF87FF.toInt()); saut = 8 }
-        Equipe.apresCommande(jeu, etaitColle || etaitRappel)?.let { ecrire(it, 0xFFFFAF00.toInt()) }
-        if (!etaitColle && !etaitRappel && Explo.debloquee(jeu) && !Dressage.actif(jeu) && Random.nextInt(25) == 0) {
-            Explo.spawn(jeu)                       // en jouant, un monstre peut surgir
-        }
+        // le tour de jeu (créature, terrain, leçons, défi, dressage et combat, troupe, attirance, monstres) : voir Tour.kt
+        val tour = Tour.apresCommande(jeu, ligne, etaitColle, etaitRappel)
+        val mange = tour.mange
+        for ((m, c) in tour.messages) ecrire(m, c)
+        if (tour.saut > saut) saut = tour.saut
         Donjon.verifier(jeu, shell.dossier, ligne)?.let { r ->
             ecrire(r.texte, 0xFFFFD787.toInt())
             r.aller?.let { shell.dossier = it; majObservatoire(null) }
@@ -742,9 +746,10 @@ class TerminalActivity : Activity() {
         bulle.visibility = if (b.isEmpty()) View.GONE else View.VISIBLE
         bulle.text = b
         val defi = Defis.actif(jeu)
-        val panneau = Dressage.panneau(jeu, resources)
+        val panneau = Dressage.panneau(jeu, resources, imageCombat)
+        // terrain effacé : le bandeau avec la commande à taper reste au-dessus de la leçon
         val l: CharSequence? = panneau ?: if (defi != null) t("app.defi", "cmd" to Regles.piege(defi), "s" to Defis.resteSecondes(jeu))
-            else if (jeu.existe) jeu.texteLecon() else null
+            else if (jeu.existe) listOfNotNull(Terrain.bandeau(jeu), jeu.texteLecon()).joinToString("\n\n").ifEmpty { null } else null
         lecon.visibility = if (l == null) View.GONE else View.VISIBLE
         lecon.text = l ?: ""
         // le panneau du dressage ne doit pas écraser la ligne de saisie (un champ sans hauteur ne peut plus recevoir
@@ -777,6 +782,10 @@ class TerminalActivity : Activity() {
      * À la fin d'un dressage, c'est d'abord le monstre qui joue « victoire » (capturé) ou « ko » (enfui).
      */
     private fun lancerAnimation() {
+        Combat.animTroupe?.let { (ind, nom) ->     // le mini-combat : la bestiole de la troupe attaque, gagne ou tombe KO
+            Combat.animTroupe = null
+            jouerTroupe(ind, nom)
+        }
         Dressage.finale?.let { (ind, nom) ->
             Dressage.finale = null
             jeu.anim?.let { animJouee = maxOf(animJouee, it.second) }
@@ -787,6 +796,35 @@ class TerminalActivity : Activity() {
         if (a.second <= animJouee || System.currentTimeMillis() - a.second > 4000) return
         animJouee = a.second
         jouerCreature(a.first)
+    }
+
+    // ------------------------------------------------------------ animations du mini-combat (dans le face-à-face)
+    private var imageCombat: android.graphics.Bitmap? = null
+    private var animCombat = 0                            // numéro de l'animation en cours (une seule boucle à la fois)
+
+    /** La bestiole de la troupe joue une animation (moteur AnimAuto) à gauche du face-à-face ; après « ko », elle s'endort. */
+    private fun jouerTroupe(ind: org.json.JSONObject, nom: String) {
+        val r = try { Animations.pour(ind, nom, Equipe.stade(ind), 3) } catch (e: Exception) { null }
+        if (r == null || r.first.isEmpty()) return
+        val imgs = r.first
+        val n = if (nom == "attaque" || nom == "dort") imgs.size else 2 * imgs.size
+        if (!Dressage.actif(jeu)) { demarrer(imgs, r.second, n); return }     // plus de face-à-face : dans l'en-tête
+        val numero = ++animCombat
+        val pause = 1000L / maxOf(1, r.second)
+        var k = 0
+        fun pas() {
+            if (numero != animCombat) return
+            if (k >= n || !Dressage.actif(jeu)) {
+                imageCombat = null
+                if (nom == "ko" && Dressage.actif(jeu)) jouerTroupe(ind, "dort") else rafraichir()
+                return
+            }
+            imageCombat = imgs[k % imgs.size]
+            k++
+            Dressage.panneau(jeu, resources, imageCombat)?.let { lecon.text = it }
+            handler.postDelayed({ pas() }, pause)
+        }
+        pas()
     }
 
     /** La créature joue une animation automatique, courte (≈ 3 s) et sans bloquer la saisie. */
@@ -858,13 +896,8 @@ class TerminalActivity : Activity() {
             cligne = 1
             creature.setImageBitmap(Sprites.bitmap(jeu, 12, true))
         }
-        if (frame % 12 == 0 && !enCours) {        // toutes les ~5 s : la faim, les bulles, les leçons « fichiers »
-            jeu.tick()
-            jeu.leconTick(null, false)
-            Defis.verifier(jeu, null)
-            if (jeu.existe && jeu.stade >= 1 && Defis.actif(jeu) == null && !Dressage.actif(jeu) && Random.nextInt(60) == 0) Defis.lancer(jeu)
-            Explo.verifier(jeu)?.let { ecrire(it, 0xFFFF87FF.toInt()) }
-            Dressage.verifier(jeu, null, false)?.let { ecrire(it, 0xFFFF87FF.toInt()) }
+        if (frame % 12 == 0 && !enCours) {        // toutes les ~5 s : la faim, le terrain, les bulles, les leçons « fichiers »
+            for ((m, c) in Tour.periodique(jeu)) ecrire(m, c)
             if (Random.nextInt(4) == 0) jeu.parlerSiSilencieux()
             ambiance()
             jeu.sauver()
