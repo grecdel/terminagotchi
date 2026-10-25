@@ -1,287 +1,412 @@
 [
-  {
-    "rang": 1,
-    "nom": "Boulonnet",
-    "id": "boulonnet",
-    "rarete": "commune",
-    "posture": "bipède",
-    "taille_finale": "petite",
-    "fiche": "Petit automate de bronze né d'un boulon oublié, il trottine dans les ateliers abandonnés en quête de vis à serrer.",
-    "caractere": "serviable et curieux",
-    "apparence": "Small round clockwork automaton with a riveted bronze shell, a single glowing crystal eye and a wind-up key on its back; bronze, steel grey and cyan crystal glow.",
-    "stades": {
-      "bebe": "A round bronze bolt-head body with one huge cyan crystal eye, tiny stub feet and a little wind-up key on top.",
-      "enfant": "Short jointed steel arms with pincer hands sprout from the sides and the wind-up key moves to its back.",
-      "ado": "The body stretches into an egg shape with longer piston legs, a wrench-shaped right hand and a riveted chest plate.",
-      "adulte": "A sturdy bronze automaton with broad gear shoulders, a wrench arm and a screwdriver arm, and a cyan crystal core glowing through a chest grille.",
-      "ancien": "A stooped bronze automaton with green patina, a monocle lens over its eye, a cane made of a long bolt and a slowly turning brass key."
-    },
-    "habitats": ["mécanique", "rouille", "ruines", "montagne", "canyon", "cristal", "néon"]
+ {
+  "rang": 1,
+  "nom": "Boulonnet",
+  "id": "boulonnet",
+  "rarete": "commune",
+  "posture": "bipède",
+  "taille_finale": "petite",
+  "fiche": "Petit automate de bronze né d'un boulon oublié, il trottine dans les ateliers abandonnés en quête de vis à serrer.",
+  "caractere": "serviable et curieux",
+  "apparence": "Small round clockwork automaton with a riveted bronze shell, a single glowing crystal eye and a wind-up key on its back; bronze, steel grey and cyan crystal glow.",
+  "stades": {
+   "bebe": "A round bronze bolt-head body with one huge cyan crystal eye, tiny stub feet and a little wind-up key on top.",
+   "enfant": "Short jointed steel arms with pincer hands sprout from the sides and the wind-up key moves to its back.",
+   "ado": "The body stretches into an egg shape with longer piston legs, a wrench-shaped right hand and a riveted chest plate.",
+   "adulte": "A sturdy bronze automaton with broad gear shoulders, a wrench arm and a screwdriver arm, and a cyan crystal core glowing through a chest grille.",
+   "ancien": "A stooped bronze automaton with green patina, a monocle lens over its eye, a cane made of a long bolt and a slowly turning brass key."
   },
-  {
-    "rang": 2,
-    "nom": "Rouillot",
-    "id": "rouillot",
-    "rarete": "commune",
-    "posture": "quadrupède",
-    "taille_finale": "petite",
-    "fiche": "Chiot de ferraille rouillée qui fouille les décharges et ronge les vieilles chaînes comme des os.",
-    "caractere": "joueur et gourmand",
-    "apparence": "Dog-like scrap-metal construct made of rusty plates, chains and a tin-can head with a glowing amber grille mouth; rust orange, dull iron and amber glow.",
-    "stades": {
-      "bebe": "A round tin can with big amber lamp eyes, four tiny spring legs and a short bolt tail.",
-      "enfant": "Floppy sheet-metal ears and a hinged jaw with a grille mouth appear, and the tail becomes a little chain.",
-      "ado": "The body lengthens into a barrel torso with jointed iron legs, a padlock collar and a spiky gear on its back.",
-      "adulte": "A muscular scrap hound with overlapping rusty armor plates, a heavy vice-grip jaw, gear spines along the back and a long whipping chain tail.",
-      "ancien": "An old scrap hound covered in moss and flaking rust, with a drooping metal moustache, a lantern hanging from its collar and polished veteran rivets."
-    },
-    "habitats": ["rouille", "mécanique", "ruines", "désert", "sable", "marais", "canyon"]
+  "habitats": [
+   "mécanique",
+   "rouille",
+   "ruines",
+   "montagne",
+   "canyon",
+   "cristal",
+   "néon"
+  ]
+ },
+ {
+  "rang": 2,
+  "nom": "Rouillot",
+  "id": "rouillot",
+  "rarete": "commune",
+  "posture": "quadrupède",
+  "taille_finale": "petite",
+  "fiche": "Chiot de ferraille rouillée qui fouille les décharges et ronge les vieilles chaînes comme des os.",
+  "caractere": "joueur et gourmand",
+  "apparence": "Dog-like scrap-metal construct made of rusty plates, chains and a tin-can head with a glowing amber grille mouth; rust orange, dull iron and amber glow.",
+  "stades": {
+   "bebe": "A round tin can with big amber lamp eyes, four tiny spring legs and a short bolt tail.",
+   "enfant": "Floppy sheet-metal ears and a hinged jaw with a grille mouth appear, and the tail becomes a little chain.",
+   "ado": "The body lengthens into a barrel torso with jointed iron legs, a padlock collar and a spiky gear on its back.",
+   "adulte": "A muscular scrap hound with overlapping rusty armor plates, a heavy vice-grip jaw, gear spines along the back and a long whipping chain tail.",
+   "ancien": "An old scrap hound covered in moss and flaking rust, with a drooping metal moustache, a lantern hanging from its collar and polished veteran rivets."
   },
-  {
-    "rang": 3,
-    "nom": "Pantinou",
-    "id": "pantinou",
-    "rarete": "commune",
-    "posture": "bipède",
-    "taille_finale": "moyenne",
-    "fiche": "Marionnette de bois enchantée qui danse seule dans les théâtres en ruine, ses fils reliés à rien.",
-    "caractere": "farceur et théâtral",
-    "apparence": "Enchanted wooden puppet with ball joints, painted face and loose golden strings floating upward from its limbs; varnished wood, crimson paint and gold thread.",
-    "stades": {
-      "bebe": "A round wooden ball head with big painted eyes, rosy cheeks and a tiny peg body hanging from one golden string.",
-      "enfant": "Jointed wooden arms and legs on visible ball joints appear, each tied to a floating golden thread.",
-      "ado": "The puppet grows a slender body with a crimson painted jacket, a pointed jester collar and a hinged smiling jaw.",
-      "adulte": "A tall graceful puppet knight with carved wooden armor, a thin wooden rapier, a crimson cape and many golden strings rising like a crown.",
-      "ancien": "An old cracked puppet with faded paint, a long carved wooden beard, patched joints and a glowing halo of tangled golden threads."
-    },
-    "habitats": ["ruines", "arcane", "crypte", "ombre", "brume", "forêt", "néon"]
+  "habitats": [
+   "rouille",
+   "mécanique",
+   "ruines",
+   "désert",
+   "sable",
+   "marais",
+   "canyon"
+  ]
+ },
+ {
+  "rang": 3,
+  "nom": "Pantinou",
+  "id": "pantinou",
+  "rarete": "commune",
+  "posture": "bipède",
+  "taille_finale": "moyenne",
+  "fiche": "Marionnette de bois enchantée qui danse seule dans les théâtres en ruine, ses fils reliés à rien.",
+  "caractere": "farceur et théâtral",
+  "apparence": "Enchanted wooden puppet with ball joints, painted face and loose golden strings floating upward from its limbs; varnished wood, crimson paint and gold thread.",
+  "stades": {
+   "bebe": "A round wooden ball head with big painted eyes, rosy cheeks and a tiny peg body hanging from one golden string.",
+   "enfant": "Jointed wooden arms and legs on visible ball joints appear, each tied to a floating golden thread.",
+   "ado": "The puppet grows a slender body with a crimson painted jacket, a pointed jester collar and a hinged smiling jaw.",
+   "adulte": "A tall graceful puppet knight with carved wooden armor, a thin wooden rapier, a crimson cape and many golden strings rising like a crown.",
+   "ancien": "An old cracked puppet with faded paint, a long carved wooden beard, patched joints and a glowing halo of tangled golden threads."
   },
-  {
-    "rang": 4,
-    "nom": "Ressortine",
-    "id": "ressortine",
-    "rarete": "commune",
-    "posture": "serpentin",
-    "taille_finale": "moyenne",
-    "fiche": "Serpent d'acier fait d'un ressort enchanté, il rebondit entre les rochers des canyons en sifflant comme une bouilloire.",
-    "caractere": "nerveux et rapide",
-    "apparence": "Snake construct made of a coiled steel spring body with a polished copper head and a pink energy crystal in the forehead; steel, copper and magenta crystal.",
-    "stades": {
-      "bebe": "A short fat coil of steel spring with a round copper head, big eyes and a tiny crystal dot on the forehead.",
-      "enfant": "The coil gets longer and a hinged copper jaw with two small rivet fangs appears.",
-      "ado": "Copper fin plates grow along the spring body and the tail ends in a sharp drill tip.",
-      "adulte": "A long powerful spring serpent with an armored copper cobra hood, a large magenta crystal on its brow and a spinning drill tail.",
-      "ancien": "An ancient spring serpent with green patina on its hood, a frayed copper whisker beard and small crystals growing along its coils."
-    },
-    "habitats": ["canyon", "mécanique", "désert", "montagne", "rouille", "cristal", "sable", "orage"]
+  "habitats": [
+   "ruines",
+   "arcane",
+   "crypte",
+   "ombre",
+   "brume",
+   "forêt",
+   "néon"
+  ]
+ },
+ {
+  "rang": 4,
+  "nom": "Ressortine",
+  "id": "ressortine",
+  "rarete": "commune",
+  "posture": "serpentin",
+  "taille_finale": "moyenne",
+  "fiche": "Serpent d'acier fait d'un ressort enchanté, il rebondit entre les rochers des canyons en sifflant comme une bouilloire.",
+  "caractere": "nerveux et rapide",
+  "apparence": "Snake construct made of a coiled steel spring body with a polished copper head and a pink energy crystal in the forehead; steel, copper and magenta crystal.",
+  "stades": {
+   "bebe": "A short fat coil of steel spring with a round copper head, big eyes and a tiny crystal dot on the forehead.",
+   "enfant": "The coil gets longer and a hinged copper jaw with two small rivet fangs appears.",
+   "ado": "Copper fin plates grow along the spring body and the tail ends in a sharp drill tip.",
+   "adulte": "A long powerful spring serpent with an armored copper cobra hood, a large magenta crystal on its brow and a spinning drill tail.",
+   "ancien": "An ancient spring serpent with green patina on its hood, a frayed copper whisker beard and small crystals growing along its coils."
   },
-  {
-    "rang": 5,
-    "nom": "Caillouteux",
-    "id": "caillouteux",
-    "rarete": "commune",
-    "posture": "quadrupède",
-    "taille_finale": "moyenne",
-    "fiche": "Petit gardien de pierre taillée qui veille sur les entrées des temples et dort la journée en se faisant passer pour une statue.",
-    "caractere": "loyal et têtu",
-    "apparence": "Turtle-like stone guardian made of carved grey blocks held by bronze bands, with glowing blue rune lines; grey stone, bronze and blue rune glow.",
-    "stades": {
-      "bebe": "A round pebble with two big glowing blue eyes and four tiny stone nub feet.",
-      "enfant": "A carved stone shell with one blue rune appears on its back, and a small square head pokes out.",
-      "ado": "The shell becomes stacked stone blocks bound by bronze bands, and the legs become thick carved pillars.",
-      "adulte": "A heavy stone guardian with a temple-roof shell covered in blue runes, a lion-like carved stone face and pillar legs.",
-      "ancien": "A weathered stone guardian with moss and small flowers on its shell, a cracked stone beard and a tiny shrine bell hanging from its jaw."
-    },
-    "habitats": ["ruines", "montagne", "crypte", "arcane", "canyon", "forêt", "désert"]
+  "habitats": [
+   "canyon",
+   "mécanique",
+   "désert",
+   "montagne",
+   "rouille",
+   "cristal",
+   "sable",
+   "orage"
+  ]
+ },
+ {
+  "rang": 5,
+  "nom": "Pavegarde",
+  "id": "pavegarde",
+  "rarete": "commune",
+  "posture": "quadrupède",
+  "taille_finale": "moyenne",
+  "fiche": "Petit gardien de pierre taillée qui veille sur les entrées des temples et dort la journée en se faisant passer pour une statue.",
+  "caractere": "loyal et têtu",
+  "apparence": "Turtle-like stone guardian made of carved grey blocks held by bronze bands, with glowing blue rune lines; grey stone, bronze and blue rune glow.",
+  "stades": {
+   "bebe": "A round pebble with two big glowing blue eyes and four tiny stone nub feet.",
+   "enfant": "A carved stone shell with one blue rune appears on its back, and a small square head pokes out.",
+   "ado": "The shell becomes stacked stone blocks bound by bronze bands, and the legs become thick carved pillars.",
+   "adulte": "A heavy stone guardian with a temple-roof shell covered in blue runes, a lion-like carved stone face and pillar legs.",
+   "ancien": "A weathered stone guardian with moss and small flowers on its shell, a cracked stone beard and a tiny shrine bell hanging from its jaw."
   },
-  {
-    "rang": 6,
-    "nom": "Lanternix",
-    "id": "lanternix",
-    "rarete": "commune",
-    "posture": "flottant",
-    "taille_finale": "petite",
-    "fiche": "Lanterne de cuivre animée qui flotte dans les galeries sombres pour guider les voyageurs égarés.",
-    "caractere": "doux et veilleur",
-    "apparence": "Floating copper lantern construct with glass panes and a living flame crystal inside; copper, smoked glass and warm yellow glow.",
-    "stades": {
-      "bebe": "A tiny round copper lamp with a single glass window showing two big glowing eyes and a small hanging ring on top.",
-      "enfant": "Two small copper handle arms appear on the sides and the flame inside gets a happy face.",
-      "ado": "The lamp grows into a hexagonal lantern with tinted glass panes and a chain tail dangling below.",
-      "adulte": "A large ornate copper lantern with spiked crown top, four glowing glass panes, chain arms ending in hooks and a bright crystal flame heart.",
-      "ancien": "An old dented lantern with soot-stained glass, a curling copper beard of melted metal and a soft halo of floating sparks."
-    },
-    "habitats": ["ombre", "crypte", "ruines", "brume", "mécanique", "champignonnière", "ossuaire"]
+  "habitats": [
+   "ruines",
+   "montagne",
+   "crypte",
+   "arcane",
+   "canyon",
+   "forêt",
+   "désert"
+  ]
+ },
+ {
+  "rang": 6,
+  "nom": "Lanternix",
+  "id": "lanternix",
+  "rarete": "commune",
+  "posture": "flottant",
+  "taille_finale": "petite",
+  "fiche": "Lanterne de cuivre animée qui flotte dans les galeries sombres pour guider les voyageurs égarés.",
+  "caractere": "doux et veilleur",
+  "apparence": "Floating copper lantern construct with glass panes and a living flame crystal inside; copper, smoked glass and warm yellow glow.",
+  "stades": {
+   "bebe": "A tiny round copper lamp with a single glass window showing two big glowing eyes and a small hanging ring on top.",
+   "enfant": "Two small copper handle arms appear on the sides and the flame inside gets a happy face.",
+   "ado": "The lamp grows into a hexagonal lantern with tinted glass panes and a chain tail dangling below.",
+   "adulte": "A large ornate copper lantern with spiked crown top, four glowing glass panes, chain arms ending in hooks and a bright crystal flame heart.",
+   "ancien": "An old dented lantern with soot-stained glass, a curling copper beard of melted metal and a soft halo of floating sparks."
   },
-  {
-    "rang": 7,
-    "nom": "Engrenaille",
-    "id": "engrenaille",
-    "rarete": "peu commune",
-    "posture": "multipattes",
-    "taille_finale": "grande",
-    "fiche": "Mille-pattes d'engrenages qui ronronne dans les machineries des usines oubliées et répare tout ce qu'il traverse.",
-    "caractere": "méthodique et bavard",
-    "apparence": "Centipede construct made of linked brass gears with needle legs and a lens-eyed head; brass, black iron and green crystal glow.",
-    "stades": {
-      "bebe": "A single round brass gear with big lens eyes and four tiny needle legs underneath.",
-      "enfant": "Two more gear segments link behind the head and small antennae made of springs appear.",
-      "ado": "The body grows to many turning gear segments with pairs of iron needle legs and a jaw of tiny cogs.",
-      "adulte": "A long armored gear centipede with spiked cog plates, many sharp iron legs, saw-blade mandibles and green crystal lights between segments.",
-      "ancien": "An ancient gear centipede with worn and rusted cogs, oil-stain markings, a long wire whisker beard and a slow-spinning brass halo above its head."
-    },
-    "habitats": ["mécanique", "rouille", "ruines", "canyon", "cristal", "néon", "cendres"]
+  "habitats": [
+   "ombre",
+   "crypte",
+   "ruines",
+   "brume",
+   "mécanique",
+   "champignonnière",
+   "ossuaire"
+  ]
+ },
+ {
+  "rang": 7,
+  "nom": "Engrenaille",
+  "id": "engrenaille",
+  "rarete": "peu commune",
+  "posture": "multipattes",
+  "taille_finale": "grande",
+  "fiche": "Mille-pattes d'engrenages qui ronronne dans les machineries des usines oubliées et répare tout ce qu'il traverse.",
+  "caractere": "méthodique et bavard",
+  "apparence": "Centipede construct made of linked brass gears with needle legs and a lens-eyed head; brass, black iron and green crystal glow.",
+  "stades": {
+   "bebe": "A single round brass gear with big lens eyes and four tiny needle legs underneath.",
+   "enfant": "Two more gear segments link behind the head and small antennae made of springs appear.",
+   "ado": "The body grows to many turning gear segments with pairs of iron needle legs and a jaw of tiny cogs.",
+   "adulte": "A long armored gear centipede with spiked cog plates, many sharp iron legs, saw-blade mandibles and green crystal lights between segments.",
+   "ancien": "An ancient gear centipede with worn and rusted cogs, oil-stain markings, a long wire whisker beard and a slow-spinning brass halo above its head."
   },
-  {
-    "rang": 8,
-    "nom": "Heaumeur",
-    "id": "heaumeur",
-    "rarete": "peu commune",
-    "posture": "bipède",
-    "taille_finale": "grande",
-    "fiche": "Armure vivante habitée par un vent ensorcelé, elle garde les salles d'armes des forteresses et change d'humeur selon son heaume.",
-    "caractere": "fier et lunatique",
-    "apparence": "Empty suit of living steel armor with a glowing blue mist inside visible through the visor and joints; polished steel, deep blue and gold trim.",
-    "stades": {
-      "bebe": "A round little helmet with a blue mist face of two big glowing eyes peeking through the visor slit.",
-      "enfant": "Small floating gauntlets and boots appear around the helmet, connected by wisps of blue mist.",
-      "ado": "A breastplate joins the pieces into a lanky armored body with a short plume on the helmet.",
-      "adulte": "A towering full plate knight with gold-trimmed pauldrons, a tower shield, a long halberd and blue mist streaming from every joint.",
-      "ancien": "An ancient battered knight armor with dents and moss, a broken plume, a long mist beard flowing from the visor and a halberd used as a cane."
-    },
-    "habitats": ["ruines", "crypte", "arcane", "montagne", "brume", "ossuaire", "ombre"]
+  "habitats": [
+   "mécanique",
+   "rouille",
+   "ruines",
+   "canyon",
+   "cristal",
+   "néon",
+   "cendres"
+  ]
+ },
+ {
+  "rang": 8,
+  "nom": "Heaumeur",
+  "id": "heaumeur",
+  "rarete": "peu commune",
+  "posture": "bipède",
+  "taille_finale": "grande",
+  "fiche": "Armure vivante habitée par un vent ensorcelé, elle garde les salles d'armes des forteresses et change d'humeur selon son heaume.",
+  "caractere": "fier et lunatique",
+  "apparence": "Empty suit of living steel armor with a glowing blue mist inside visible through the visor and joints; polished steel, deep blue and gold trim.",
+  "stades": {
+   "bebe": "A round little helmet with a blue mist face of two big glowing eyes peeking through the visor slit.",
+   "enfant": "Small floating gauntlets and boots appear around the helmet, connected by wisps of blue mist.",
+   "ado": "A breastplate joins the pieces into a lanky armored body with a short plume on the helmet.",
+   "adulte": "A towering full plate knight with gold-trimmed pauldrons, a tower shield, a long halberd and blue mist streaming from every joint.",
+   "ancien": "An ancient battered knight armor with dents and moss, a broken plume, a long mist beard flowing from the visor and a halberd used as a cane."
   },
-  {
-    "rang": 9,
-    "nom": "Horlogrif",
-    "id": "horlogrif",
-    "rarete": "peu commune",
-    "posture": "volant",
-    "taille_finale": "grande",
-    "fiche": "Griffon mécanique à rouages d'horloge qui survole les clochers et tient le temps pour les cités des montagnes.",
-    "caractere": "ponctuel et sévère",
-    "apparence": "Clockwork griffin with a brass eagle head, a clock face on the chest and wings made of thin steel feathers; brass, steel silver and white clock face.",
-    "stades": {
-      "bebe": "A round brass pocket watch with big eyes, a tiny beak and two little winding-crown feet.",
-      "enfant": "Two small folding steel wings and a pair of clawed brass legs appear.",
-      "ado": "The body becomes a feline torso with four legs, a brass eagle head and wings of overlapping steel feathers.",
-      "adulte": "A majestic clockwork griffin with a large ticking clock face on the chest, wide blade-feather wings, pendulum tail and sharp brass talons.",
-      "ancien": "An ancient clockwork griffin with cracked clock glass, tarnished feathers, a white-metal beard tuft and floating clock hands circling its head."
-    },
-    "habitats": ["montagne", "nuage", "orage", "mécanique", "ruines", "lune", "canyon"]
+  "habitats": [
+   "ruines",
+   "crypte",
+   "arcane",
+   "montagne",
+   "brume",
+   "ossuaire",
+   "ombre"
+  ]
+ },
+ {
+  "rang": 9,
+  "nom": "Horlogrif",
+  "id": "horlogrif",
+  "rarete": "peu commune",
+  "posture": "volant",
+  "taille_finale": "grande",
+  "fiche": "Griffon mécanique à rouages d'horloge qui survole les clochers et tient le temps pour les cités des montagnes.",
+  "caractere": "ponctuel et sévère",
+  "apparence": "Clockwork griffin with a brass eagle head, a clock face on the chest and wings made of thin steel feathers; brass, steel silver and white clock face.",
+  "stades": {
+   "bebe": "A round brass pocket watch with big eyes, a tiny beak and two little winding-crown feet.",
+   "enfant": "Two small folding steel wings and a pair of clawed brass legs appear.",
+   "ado": "The body becomes a feline torso with four legs, a brass eagle head and wings of overlapping steel feathers.",
+   "adulte": "A majestic clockwork griffin with a large ticking clock face on the chest, wide blade-feather wings, pendulum tail and sharp brass talons.",
+   "ancien": "An ancient clockwork griffin with cracked clock glass, tarnished feathers, a white-metal beard tuft and floating clock hands circling its head."
   },
-  {
-    "rang": 10,
-    "nom": "Fondelin",
-    "id": "fondelin",
-    "rarete": "peu commune",
-    "posture": "amorphe",
-    "taille_finale": "moyenne",
-    "fiche": "Flaque de métal en fusion animée par une étincelle de magie, elle rampe dans les forges et se façonne selon ses envies.",
-    "caractere": "malléable et chaleureux",
-    "apparence": "Blob of molten liquid metal that shapes itself into tools, with a floating forge crystal at its core; glowing orange copper, dark iron crust and red crystal.",
-    "stades": {
-      "bebe": "A small round droplet of glowing copper with two big eyes and a cooled dark crust cap on top.",
-      "enfant": "Two stubby molten arms pull out of the blob and a red crystal glows in its center.",
-      "ado": "The blob grows taller and forms one arm into a hammer shape, with dark iron crust plates floating on its surface.",
-      "adulte": "A large molten metal mass with hammer and blade arms that reshape at will, a crust armor shell and a blazing red crystal core.",
-      "ancien": "An old molten blob mostly cooled into dark iron, with a dripping metal beard, glowing cracks and an anvil-shaped crown."
-    },
-    "habitats": ["lave", "volcan", "mécanique", "cendres", "rouille", "canyon", "cristal"]
+  "habitats": [
+   "montagne",
+   "nuage",
+   "orage",
+   "mécanique",
+   "ruines",
+   "lune",
+   "canyon"
+  ]
+ },
+ {
+  "rang": 10,
+  "nom": "Fondelin",
+  "id": "fondelin",
+  "rarete": "peu commune",
+  "posture": "amorphe",
+  "taille_finale": "moyenne",
+  "fiche": "Flaque de métal en fusion animée par une étincelle de magie, elle rampe dans les forges et se façonne selon ses envies.",
+  "caractere": "malléable et chaleureux",
+  "apparence": "Blob of molten liquid metal that shapes itself into tools, with a floating forge crystal at its core; glowing orange copper, dark iron crust and red crystal.",
+  "stades": {
+   "bebe": "A small round droplet of glowing copper with two big eyes and a cooled dark crust cap on top.",
+   "enfant": "Two stubby molten arms pull out of the blob and a red crystal glows in its center.",
+   "ado": "The blob grows taller and forms one arm into a hammer shape, with dark iron crust plates floating on its surface.",
+   "adulte": "A large molten metal mass with hammer and blade arms that reshape at will, a crust armor shell and a blazing red crystal core.",
+   "ancien": "An old molten blob mostly cooled into dark iron, with a dripping metal beard, glowing cracks and an anvil-shaped crown."
   },
-  {
-    "rang": 11,
-    "nom": "Runodrake",
-    "id": "runodrake",
-    "rarete": "rare",
-    "posture": "volant",
-    "taille_finale": "grande",
-    "fiche": "Machine runique en forme de drake, forgée par des mages oubliés pour patrouiller le ciel au-dessus des tours d'arcane.",
-    "caractere": "orgueilleux et vigilant",
-    "apparence": "Drake-shaped runic machine of dark steel plates engraved with glowing violet runes and crystal-sail wings; dark steel, violet rune glow and copper.",
-    "stades": {
-      "bebe": "A round steel egg with a tiny horned head, big violet eyes and a single glowing rune on its belly.",
-      "enfant": "Four short clawed legs and a little segmented tail appear, with runes lining its back.",
-      "ado": "Two copper frame wings with thin violet crystal panels unfold and copper horns sweep backward.",
-      "adulte": "A sleek runic drake with armored steel plates, wide crystal-sail wings, a rune-carved jaw breathing violet light and a bladed tail.",
-      "ancien": "An ancient runic drake with faded runes, copper patina, chipped crystal wings and a floating ring of glowing rune glyphs around its neck."
-    },
-    "habitats": ["arcane", "nuage", "orage", "ruines", "montagne", "cristal", "aurore", "cosmique"]
+  "habitats": [
+   "lave",
+   "volcan",
+   "mécanique",
+   "cendres",
+   "rouille",
+   "canyon",
+   "cristal"
+  ]
+ },
+ {
+  "rang": 11,
+  "nom": "Runodrake",
+  "id": "runodrake",
+  "rarete": "rare",
+  "posture": "volant",
+  "taille_finale": "grande",
+  "fiche": "Machine runique en forme de drake, forgée par des mages oubliés pour patrouiller le ciel au-dessus des tours d'arcane.",
+  "caractere": "orgueilleux et vigilant",
+  "apparence": "Drake-shaped runic machine of dark steel plates engraved with glowing violet runes and crystal-sail wings; dark steel, violet rune glow and copper.",
+  "stades": {
+   "bebe": "A round steel egg with a tiny horned head, big violet eyes and a single glowing rune on its belly.",
+   "enfant": "Four short clawed legs and a little segmented tail appear, with runes lining its back.",
+   "ado": "Two copper frame wings with thin violet crystal panels unfold and copper horns sweep backward.",
+   "adulte": "A sleek runic drake with armored steel plates, wide crystal-sail wings, a rune-carved jaw breathing violet light and a bladed tail.",
+   "ancien": "An ancient runic drake with faded runes, copper patina, chipped crystal wings and a floating ring of glowing rune glyphs around its neck."
   },
-  {
-    "rang": 12,
-    "nom": "Golemmur",
-    "id": "golemmur",
-    "rarete": "rare",
-    "posture": "bipède",
-    "taille_finale": "colossale",
-    "fiche": "Golem colossal bâti à partir d'un rempart entier, il protège les vallées et peut rester immobile des siècles.",
-    "caractere": "patient et protecteur",
-    "apparence": "Giant golem built of fortress wall bricks and battlements, bound by iron chains, with a glowing amber crystal heart; sandstone, iron black and amber.",
-    "stades": {
-      "bebe": "A single round brick with big amber eyes, two pebble feet and a tiny battlement crown.",
-      "enfant": "Stacked stone arms appear on the sides and an iron chain wraps its waist.",
-      "ado": "The body grows into a tower of bricks with thick pillar legs, an iron gate mouth and an amber crystal in the chest.",
-      "adulte": "A colossal walking rampart with tower shoulders, battlement crown, huge brick fists wrapped in iron chains and a blazing amber crystal heart.",
-      "ancien": "An ancient fortress golem overgrown with ivy and moss, crumbling battlements, a beard of hanging vines and tiny birds nesting on its shoulders."
-    },
-    "habitats": ["montagne", "ruines", "canyon", "désert", "prairie", "forêt", "toundra"]
+  "habitats": [
+   "arcane",
+   "nuage",
+   "orage",
+   "ruines",
+   "montagne",
+   "cristal",
+   "aurore",
+   "cosmique"
+  ]
+ },
+ {
+  "rang": 12,
+  "nom": "Golemmur",
+  "id": "golemmur",
+  "rarete": "rare",
+  "posture": "bipède",
+  "taille_finale": "colossale",
+  "fiche": "Golem colossal bâti à partir d'un rempart entier, il protège les vallées et peut rester immobile des siècles.",
+  "caractere": "patient et protecteur",
+  "apparence": "Giant golem built of fortress wall bricks and battlements, bound by iron chains, with a glowing amber crystal heart; sandstone, iron black and amber.",
+  "stades": {
+   "bebe": "A single round brick with big amber eyes, two pebble feet and a tiny battlement crown.",
+   "enfant": "Stacked stone arms appear on the sides and an iron chain wraps its waist.",
+   "ado": "The body grows into a tower of bricks with thick pillar legs, an iron gate mouth and an amber crystal in the chest.",
+   "adulte": "A colossal walking rampart with tower shoulders, battlement crown, huge brick fists wrapped in iron chains and a blazing amber crystal heart.",
+   "ancien": "An ancient fortress golem overgrown with ivy and moss, crumbling battlements, a beard of hanging vines and tiny birds nesting on its shoulders."
   },
-  {
-    "rang": 13,
-    "nom": "Chaudrogre",
-    "id": "chaudrogre",
-    "rarete": "rare",
-    "posture": "quadrupède",
-    "taille_finale": "grande",
-    "fiche": "Machine à vapeur bestiale à chaudière vivante, elle arpente les terres volcaniques et souffle des nuages brûlants.",
-    "caractere": "colérique et infatigable",
-    "apparence": "Rhino-like steam engine construct with a riveted boiler body, chimney horns and piston legs; copper, black iron and white steam with orange furnace glow.",
-    "stades": {
-      "bebe": "A small round copper kettle with big eyes, a spout nose puffing steam and four tiny wheel feet.",
-      "enfant": "Short piston legs replace the wheels and a little chimney horn appears on its head.",
-      "ado": "The body becomes a riveted boiler barrel with a glowing furnace door mouth and two chimney horns.",
-      "adulte": "A massive steam beast with a riveted boiler body, triple chimney horns blasting steam, heavy piston legs and a roaring furnace jaw.",
-      "ancien": "An old steam beast with soot-blackened copper, a beard of dripping condensation pipes, patched rivets and a gentle steam halo."
-    },
-    "habitats": ["volcan", "cendres", "mécanique", "rouille", "lave", "canyon", "désert", "toundra"]
+  "habitats": [
+   "montagne",
+   "ruines",
+   "canyon",
+   "désert",
+   "prairie",
+   "forêt",
+   "toundra"
+  ]
+ },
+ {
+  "rang": 13,
+  "nom": "Chaudrogre",
+  "id": "chaudrogre",
+  "rarete": "rare",
+  "posture": "quadrupède",
+  "taille_finale": "grande",
+  "fiche": "Machine à vapeur bestiale à chaudière vivante, elle arpente les terres volcaniques et souffle des nuages brûlants.",
+  "caractere": "colérique et infatigable",
+  "apparence": "Rhino-like steam engine construct with a riveted boiler body, chimney horns and piston legs; copper, black iron and white steam with orange furnace glow.",
+  "stades": {
+   "bebe": "A small round copper kettle with big eyes, a spout nose puffing steam and four tiny wheel feet.",
+   "enfant": "Short piston legs replace the wheels and a little chimney horn appears on its head.",
+   "ado": "The body becomes a riveted boiler barrel with a glowing furnace door mouth and two chimney horns.",
+   "adulte": "A massive steam beast with a riveted boiler body, triple chimney horns blasting steam, heavy piston legs and a roaring furnace jaw.",
+   "ancien": "An old steam beast with soot-blackened copper, a beard of dripping condensation pipes, patched rivets and a gentle steam halo."
   },
-  {
-    "rang": 14,
-    "nom": "Marionnoire",
-    "id": "marionnoire",
-    "rarete": "rare",
-    "posture": "flottant",
-    "taille_finale": "grande",
-    "fiche": "Marionnettiste de porcelaine noire qui flotte dans les théâtres hantés, tirant les fils de petites poupées à son service.",
-    "caractere": "mystérieux et manipulateur",
-    "apparence": "Floating black porcelain doll construct with a cracked mask face and many silver strings controlling tiny puppets; black porcelain, silver and violet crystal.",
-    "stades": {
-      "bebe": "A round black porcelain head with a white smiling mask, big violet eyes and one silver string above it.",
-      "enfant": "A small floating dress body and two thin porcelain hands holding a tiny wooden control cross appear.",
-      "ado": "Four slender arms appear, each holding a control cross with a small dangling puppet on silver strings.",
-      "adulte": "A tall elegant floating marionettist with a flowing black porcelain gown, six arms with silver strings, three dancing puppets and a violet crystal in its mask.",
-      "ancien": "An ancient cracked porcelain marionettist with golden repair seams, a long silver veil like a beard, and a halo of crossed control bars."
-    },
-    "habitats": ["ombre", "crypte", "ruines", "brume", "arcane", "lune", "ossuaire"]
+  "habitats": [
+   "volcan",
+   "cendres",
+   "mécanique",
+   "rouille",
+   "lave",
+   "canyon",
+   "désert",
+   "toundra"
+  ]
+ },
+ {
+  "rang": 14,
+  "nom": "Marionnoire",
+  "id": "marionnoire",
+  "rarete": "rare",
+  "posture": "flottant",
+  "taille_finale": "grande",
+  "fiche": "Marionnettiste de porcelaine noire qui flotte dans les théâtres hantés, tirant les fils de petites poupées à son service.",
+  "caractere": "mystérieux et manipulateur",
+  "apparence": "Floating black porcelain doll construct with a cracked mask face and many silver strings controlling tiny puppets; black porcelain, silver and violet crystal.",
+  "stades": {
+   "bebe": "A round black porcelain head with a white smiling mask, big violet eyes and one silver string above it.",
+   "enfant": "A small floating dress body and two thin porcelain hands holding a tiny wooden control cross appear.",
+   "ado": "Four slender arms appear, each holding a control cross with a small dangling puppet on silver strings.",
+   "adulte": "A tall elegant floating marionettist with a flowing black porcelain gown, six arms with silver strings, three dancing puppets and a violet crystal in its mask.",
+   "ancien": "An ancient cracked porcelain marionettist with golden repair seams, a long silver veil like a beard, and a halo of crossed control bars."
   },
-  {
-    "rang": 15,
-    "nom": "Forgerain",
-    "id": "forgerain",
-    "rarete": "légendaire",
-    "posture": "bipède",
-    "taille_finale": "colossale",
-    "fiche": "Souverain de tous les constructs, ce titan-forge vit au cœur des volcans éteints et donne vie à chaque machine d'un coup de marteau.",
-    "caractere": "sage et imposant",
-    "apparence": "Colossal titan of bronze and steel with a living forge in its chest, an anvil crown and floating energy crystals; bronze, steel and bright cyan crystal glow with orange forge fire.",
-    "stades": {
-      "bebe": "A small round bronze anvil with big cyan eyes, a tiny hammer tail and a flickering fire spark on its head.",
-      "enfant": "Short steel arms appear, one holding a little hammer, and a small furnace window opens on its belly.",
-      "ado": "The body grows into a broad bronze knight shape with bellows shoulders, a glowing forge chest and three small floating crystals.",
-      "adulte": "A colossal bronze titan with an open roaring forge in its chest, an anvil crown, a giant runic hammer and a ring of cyan energy crystals orbiting its shoulders.",
-      "ancien": "An ancient forge titan with deep cracks glowing orange, a long beard of braided copper cables, relic tools hanging from its belt and a radiant crystal halo."
-    },
-    "habitats": ["volcan", "mécanique", "lave", "cristal", "arcane", "montagne", "cendres", "ruines", "cosmique"]
-  }
+  "habitats": [
+   "ombre",
+   "crypte",
+   "ruines",
+   "brume",
+   "arcane",
+   "lune",
+   "ossuaire"
+  ]
+ },
+ {
+  "rang": 15,
+  "nom": "Forgerain",
+  "id": "forgerain",
+  "rarete": "légendaire",
+  "posture": "bipède",
+  "taille_finale": "colossale",
+  "fiche": "Souverain de tous les constructs, ce titan-forge vit au cœur des volcans éteints et donne vie à chaque machine d'un coup de marteau.",
+  "caractere": "sage et imposant",
+  "apparence": "Colossal titan of bronze and steel with a living forge in its chest, an anvil crown and floating energy crystals; bronze, steel and bright cyan crystal glow with orange forge fire.",
+  "stades": {
+   "bebe": "A small round bronze anvil with big cyan eyes, a tiny hammer tail and a flickering fire spark on its head.",
+   "enfant": "Short steel arms appear, one holding a little hammer, and a small furnace window opens on its belly.",
+   "ado": "The body grows into a broad bronze knight shape with bellows shoulders, a glowing forge chest and three small floating crystals.",
+   "adulte": "A colossal bronze titan with an open roaring forge in its chest, an anvil crown, a giant runic hammer and a ring of cyan energy crystals orbiting its shoulders.",
+   "ancien": "An ancient forge titan with deep cracks glowing orange, a long beard of braided copper cables, relic tools hanging from its belt and a radiant crystal halo."
+  },
+  "habitats": [
+   "volcan",
+   "mécanique",
+   "lave",
+   "cristal",
+   "arcane",
+   "montagne",
+   "cendres",
+   "ruines",
+   "cosmique"
+  ]
+ }
 ]

@@ -1,0 +1,6652 @@
+[
+ {
+  "nom": "Braisillon",
+  "id": "braisillon",
+  "rarete": "commune",
+  "posture": "bipède",
+  "taille_finale": "petite",
+  "fiche": "Petit diablotin né d'une braise tombée, il hante les foyers des volcans et les cheminées abandonnées.",
+  "caractere": "farceur et gourmand",
+  "numero": 1,
+  "famille": "Démons",
+  "epreuves": [
+   "Sécurité",
+   "Système"
+  ],
+  "variantes": [
+   {
+    "id": "classique",
+    "nom": "classique",
+    "chance": 45.4
+   },
+   {
+    "id": "volcan",
+    "nom": "volcan",
+    "chance": 22.7
+   },
+   {
+    "id": "lave",
+    "nom": "lave",
+    "chance": 13.9
+   },
+   {
+    "id": "cendres",
+    "nom": "cendres",
+    "chance": 10.1
+   },
+   {
+    "id": "canyon",
+    "nom": "canyon",
+    "chance": 7.9
+   }
+  ]
+ },
+ {
+  "nom": "Cornichaud",
+  "id": "cornichaud",
+  "rarete": "commune",
+  "posture": "quadrupède",
+  "taille_finale": "moyenne",
+  "fiche": "Chiot infernal aux cornes brûlantes qui garde les entrées des grottes volcaniques et des ruines calcinées.",
+  "caractere": "fidèle et bagarreur",
+  "numero": 2,
+  "famille": "Démons",
+  "epreuves": [
+   "Sécurité",
+   "Système"
+  ],
+  "variantes": [
+   {
+    "id": "classique",
+    "nom": "classique",
+    "chance": 40.5
+   },
+   {
+    "id": "volcan",
+    "nom": "volcan",
+    "chance": 20.3
+   },
+   {
+    "id": "ruines",
+    "nom": "ruines",
+    "chance": 12.4
+   },
+   {
+    "id": "canyon",
+    "nom": "canyon",
+    "chance": 9.1
+   },
+   {
+    "id": "lave",
+    "nom": "lave",
+    "chance": 7.0
+   },
+   {
+    "id": "cendres",
+    "nom": "cendres",
+    "chance": 5.8
+   },
+   {
+    "id": "ombre",
+    "nom": "ombre",
+    "chance": 4.9
+   }
+  ]
+ },
+ {
+  "nom": "Flamouche",
+  "id": "flamouche",
+  "rarete": "commune",
+  "posture": "volant",
+  "taille_finale": "petite",
+  "fiche": "Insecte démoniaque attiré par toutes les flammes, il bourdonne en essaims au-dessus des coulées de lave.",
+  "caractere": "curieux et agité",
+  "numero": 3,
+  "famille": "Démons",
+  "epreuves": [
+   "Sécurité",
+   "Système"
+  ],
+  "variantes": [
+   {
+    "id": "classique",
+    "nom": "classique",
+    "chance": 45.4
+   },
+   {
+    "id": "lave",
+    "nom": "lave",
+    "chance": 22.7
+   },
+   {
+    "id": "volcan",
+    "nom": "volcan",
+    "chance": 13.9
+   },
+   {
+    "id": "ombre",
+    "nom": "ombre",
+    "chance": 10.1
+   },
+   {
+    "id": "marais",
+    "nom": "marais",
+    "chance": 7.9
+   }
+  ]
+ },
+ {
+  "nom": "Cendrouille",
+  "id": "cendrouille",
+  "rarete": "commune",
+  "posture": "rampant",
+  "taille_finale": "moyenne",
+  "fiche": "Salamandre démoniaque couverte de cendres, elle se terre sous les braises refroidies des anciens incendies.",
+  "caractere": "paresseux et rancunier",
+  "numero": 4,
+  "famille": "Démons",
+  "epreuves": [
+   "Sécurité",
+   "Système"
+  ],
+  "variantes": [
+   {
+    "id": "classique",
+    "nom": "classique",
+    "chance": 42.6
+   },
+   {
+    "id": "cendres",
+    "nom": "cendres",
+    "chance": 21.3
+   },
+   {
+    "id": "lave",
+    "nom": "lave",
+    "chance": 13.1
+   },
+   {
+    "id": "canyon",
+    "nom": "canyon",
+    "chance": 9.5
+   },
+   {
+    "id": "volcan",
+    "nom": "volcan",
+    "chance": 7.4
+   },
+   {
+    "id": "crypte",
+    "nom": "crypte",
+    "chance": 6.1
+   }
+  ]
+ },
+ {
+  "nom": "Ricanombre",
+  "id": "ricanombre",
+  "rarete": "commune",
+  "posture": "flottant",
+  "taille_finale": "petite",
+  "fiche": "Esprit démoniaque fait d'ombre et d'un sourire lumineux, il ricane dans les recoins sombres des cryptes.",
+  "caractere": "moqueur et sournois",
+  "numero": 5,
+  "famille": "Démons",
+  "epreuves": [
+   "Sécurité",
+   "Système"
+  ],
+  "variantes": [
+   {
+    "id": "classique",
+    "nom": "classique",
+    "chance": 49.3
+   },
+   {
+    "id": "ombre",
+    "nom": "ombre",
+    "chance": 24.6
+   },
+   {
+    "id": "ossuaire",
+    "nom": "ossuaire",
+    "chance": 15.1
+   },
+   {
+    "id": "arcane",
+    "nom": "arcane",
+    "chance": 11.0
+   }
+  ]
+ },
+ {
+  "nom": "Sulfurette",
+  "id": "sulfurette",
+  "rarete": "commune",
+  "posture": "serpentin",
+  "taille_finale": "moyenne",
+  "fiche": "Serpent démoniaque qui exhale du soufre, il ondule dans les fissures fumantes autour des cratères.",
+  "caractere": "vif et vaniteux",
+  "numero": 6,
+  "famille": "Démons",
+  "epreuves": [
+   "Sécurité",
+   "Système"
+  ],
+  "variantes": [
+   {
+    "id": "classique",
+    "nom": "classique",
+    "chance": 40.5
+   },
+   {
+    "id": "volcan",
+    "nom": "volcan",
+    "chance": 20.3
+   },
+   {
+    "id": "sable",
+    "nom": "sable",
+    "chance": 12.4
+   },
+   {
+    "id": "lave",
+    "nom": "lave",
+    "chance": 9.1
+   },
+   {
+    "id": "canyon",
+    "nom": "canyon",
+    "chance": 7.0
+   },
+   {
+    "id": "toxique",
+    "nom": "toxique",
+    "chance": 5.8
+   },
+   {
+    "id": "desert",
+    "nom": "désert",
+    "chance": 4.9
+   }
+  ]
+ },
+ {
+  "nom": "Tisonnier",
+  "id": "tisonnier",
+  "rarete": "peu commune",
+  "posture": "bipède",
+  "taille_finale": "moyenne",
+  "fiche": "Forgeron des enfers aux bras en tisonniers, il martèle ses armes au cœur des forges volcaniques.",
+  "caractere": "travailleur et bourru",
+  "numero": 7,
+  "famille": "Démons",
+  "epreuves": [
+   "Sécurité",
+   "Système"
+  ],
+  "variantes": [
+   {
+    "id": "classique",
+    "nom": "classique",
+    "chance": 42.6
+   },
+   {
+    "id": "volcan",
+    "nom": "volcan",
+    "chance": 21.3
+   },
+   {
+    "id": "ruines",
+    "nom": "ruines",
+    "chance": 13.1
+   },
+   {
+    "id": "mecanique",
+    "nom": "mécanique",
+    "chance": 9.5
+   },
+   {
+    "id": "rouille",
+    "nom": "rouille",
+    "chance": 7.4
+   },
+   {
+    "id": "lave",
+    "nom": "lave",
+    "chance": 6.1
+   }
+  ]
+ },
+ {
+  "nom": "Chaudronne",
+  "id": "chaudronne",
+  "rarete": "peu commune",
+  "posture": "amorphe",
+  "taille_finale": "moyenne",
+  "fiche": "Masse de magma vivant qui bouillonne dans un chaudron fêlé, elle mijote dans les marais sulfureux.",
+  "caractere": "grognon et protecteur",
+  "numero": 8,
+  "famille": "Démons",
+  "epreuves": [
+   "Sécurité",
+   "Système"
+  ],
+  "variantes": [
+   {
+    "id": "classique",
+    "nom": "classique",
+    "chance": 38.9
+   },
+   {
+    "id": "marais",
+    "nom": "marais",
+    "chance": 19.4
+   },
+   {
+    "id": "arcane",
+    "nom": "arcane",
+    "chance": 11.9
+   },
+   {
+    "id": "crypte",
+    "nom": "crypte",
+    "chance": 8.7
+   },
+   {
+    "id": "volcan",
+    "nom": "volcan",
+    "chance": 6.7
+   },
+   {
+    "id": "lave",
+    "nom": "lave",
+    "chance": 5.6
+   },
+   {
+    "id": "toxique",
+    "nom": "toxique",
+    "chance": 4.7
+   },
+   {
+    "id": "brume",
+    "nom": "brume",
+    "chance": 4.1
+   }
+  ]
+ },
+ {
+  "nom": "Infernaille",
+  "id": "infernaille",
+  "rarete": "peu commune",
+  "posture": "multipattes",
+  "taille_finale": "grande",
+  "fiche": "Mille-pattes démoniaque fait de maillons de fer chauffés à blanc, il serpente dans les ruines et les forges oubliées.",
+  "caractere": "tenace et bruyant",
+  "numero": 9,
+  "famille": "Démons",
+  "epreuves": [
+   "Sécurité",
+   "Système"
+  ],
+  "variantes": [
+   {
+    "id": "classique",
+    "nom": "classique",
+    "chance": 40.5
+   },
+   {
+    "id": "ruines",
+    "nom": "ruines",
+    "chance": 20.3
+   },
+   {
+    "id": "mecanique",
+    "nom": "mécanique",
+    "chance": 12.4
+   },
+   {
+    "id": "volcan",
+    "nom": "volcan",
+    "chance": 9.1
+   },
+   {
+    "id": "canyon",
+    "nom": "canyon",
+    "chance": 7.0
+   },
+   {
+    "id": "cendres",
+    "nom": "cendres",
+    "chance": 5.8
+   },
+   {
+    "id": "crypte",
+    "nom": "crypte",
+    "chance": 4.9
+   }
+  ]
+ },
+ {
+  "nom": "Gargouflamme",
+  "id": "gargouflamme",
+  "rarete": "peu commune",
+  "posture": "volant",
+  "taille_finale": "grande",
+  "fiche": "Gargouille démoniaque de pierre volcanique qui veille, immobile, sur les tours en ruine avant de s'envoler en flammes.",
+  "caractere": "vigilant et taciturne",
+  "numero": 10,
+  "famille": "Démons",
+  "epreuves": [
+   "Sécurité",
+   "Système"
+  ],
+  "variantes": [
+   {
+    "id": "classique",
+    "nom": "classique",
+    "chance": 42.6
+   },
+   {
+    "id": "ruines",
+    "nom": "ruines",
+    "chance": 21.3
+   },
+   {
+    "id": "ombre",
+    "nom": "ombre",
+    "chance": 13.1
+   },
+   {
+    "id": "orage",
+    "nom": "orage",
+    "chance": 9.5
+   },
+   {
+    "id": "nuage",
+    "nom": "nuage",
+    "chance": 7.4
+   },
+   {
+    "id": "montagne",
+    "nom": "montagne",
+    "chance": 6.1
+   }
+  ]
+ },
+ {
+  "nom": "Ombrachne",
+  "id": "ombrachne",
+  "rarete": "rare",
+  "posture": "multipattes",
+  "taille_finale": "grande",
+  "fiche": "Araignée démoniaque tissant des toiles d'ombre et de feu violet au fond des cryptes et des gouffres.",
+  "caractere": "patiente et calculatrice",
+  "numero": 11,
+  "famille": "Démons",
+  "epreuves": [
+   "Sécurité",
+   "Système"
+  ],
+  "variantes": [
+   {
+    "id": "classique",
+    "nom": "classique",
+    "chance": 49.3
+   },
+   {
+    "id": "crypte",
+    "nom": "crypte",
+    "chance": 24.6
+   },
+   {
+    "id": "ossuaire",
+    "nom": "ossuaire",
+    "chance": 15.1
+   },
+   {
+    "id": "ruines",
+    "nom": "ruines",
+    "chance": 11.0
+   }
+  ]
+ },
+ {
+  "nom": "Pyrodrac",
+  "id": "pyrodrac",
+  "rarete": "rare",
+  "posture": "volant",
+  "taille_finale": "grande",
+  "fiche": "Dragon démoniaque au souffle de soufre, il niche sur les cheminées des volcans en éruption.",
+  "caractere": "fier et colérique",
+  "numero": 12,
+  "famille": "Démons",
+  "epreuves": [
+   "Sécurité",
+   "Système"
+  ],
+  "variantes": [
+   {
+    "id": "classique",
+    "nom": "classique",
+    "chance": 38.9
+   },
+   {
+    "id": "volcan",
+    "nom": "volcan",
+    "chance": 19.4
+   },
+   {
+    "id": "cendres",
+    "nom": "cendres",
+    "chance": 11.9
+   },
+   {
+    "id": "orage",
+    "nom": "orage",
+    "chance": 8.7
+   },
+   {
+    "id": "lave",
+    "nom": "lave",
+    "chance": 6.7
+   },
+   {
+    "id": "montagne",
+    "nom": "montagne",
+    "chance": 5.6
+   },
+   {
+    "id": "soleil",
+    "nom": "soleil",
+    "chance": 4.7
+   },
+   {
+    "id": "canyon",
+    "nom": "canyon",
+    "chance": 4.1
+   }
+  ]
+ },
+ {
+  "nom": "Cauchemarre",
+  "id": "cauchemarre",
+  "rarete": "rare",
+  "posture": "quadrupède",
+  "taille_finale": "grande",
+  "fiche": "Destrier démoniaque aux sabots enflammés qui galope dans les brumes nocturnes et hante les rêves.",
+  "caractere": "fougueux et insaisissable",
+  "numero": 13,
+  "famille": "Démons",
+  "epreuves": [
+   "Sécurité",
+   "Système"
+  ],
+  "variantes": [
+   {
+    "id": "classique",
+    "nom": "classique",
+    "chance": 40.5
+   },
+   {
+    "id": "brume",
+    "nom": "brume",
+    "chance": 20.3
+   },
+   {
+    "id": "crypte",
+    "nom": "crypte",
+    "chance": 12.4
+   },
+   {
+    "id": "ombre",
+    "nom": "ombre",
+    "chance": 9.1
+   },
+   {
+    "id": "prairie",
+    "nom": "prairie",
+    "chance": 7.0
+   },
+   {
+    "id": "ruines",
+    "nom": "ruines",
+    "chance": 5.8
+   },
+   {
+    "id": "aurore",
+    "nom": "aurore",
+    "chance": 4.9
+   }
+  ]
+ },
+ {
+  "nom": "Volcarnage",
+  "id": "volcarnage",
+  "rarete": "rare",
+  "posture": "bipède",
+  "taille_finale": "colossale",
+  "fiche": "Colosse démoniaque dont le dos est un volcan actif, il écrase tout sur son passage dans les plaines de lave.",
+  "caractere": "brutal et impulsif",
+  "numero": 14,
+  "famille": "Démons",
+  "epreuves": [
+   "Sécurité",
+   "Système"
+  ],
+  "variantes": [
+   {
+    "id": "classique",
+    "nom": "classique",
+    "chance": 38.9
+   },
+   {
+    "id": "lave",
+    "nom": "lave",
+    "chance": 19.4
+   },
+   {
+    "id": "cendres",
+    "nom": "cendres",
+    "chance": 11.9
+   },
+   {
+    "id": "volcan",
+    "nom": "volcan",
+    "chance": 8.7
+   },
+   {
+    "id": "ruines",
+    "nom": "ruines",
+    "chance": 6.7
+   },
+   {
+    "id": "montagne",
+    "nom": "montagne",
+    "chance": 5.6
+   },
+   {
+    "id": "desert",
+    "nom": "désert",
+    "chance": 4.7
+   },
+   {
+    "id": "canyon",
+    "nom": "canyon",
+    "chance": 4.1
+   }
+  ]
+ },
+ {
+  "nom": "Infernarque",
+  "id": "infernarque",
+  "rarete": "légendaire",
+  "posture": "bipède",
+  "taille_finale": "colossale",
+  "fiche": "Seigneur suprême des démons, il règne depuis un trône de lave au plus profond des ténèbres infernales.",
+  "caractere": "majestueux et impitoyable",
+  "numero": 15,
+  "famille": "Démons",
+  "epreuves": [
+   "Sécurité",
+   "Système"
+  ],
+  "variantes": [
+   {
+    "id": "classique",
+    "nom": "classique",
+    "chance": 37.5
+   },
+   {
+    "id": "lave",
+    "nom": "lave",
+    "chance": 18.8
+   },
+   {
+    "id": "ombre",
+    "nom": "ombre",
+    "chance": 11.5
+   },
+   {
+    "id": "cendres",
+    "nom": "cendres",
+    "chance": 8.4
+   },
+   {
+    "id": "ossuaire",
+    "nom": "ossuaire",
+    "chance": 6.5
+   },
+   {
+    "id": "ruines",
+    "nom": "ruines",
+    "chance": 5.4
+   },
+   {
+    "id": "volcan",
+    "nom": "volcan",
+    "chance": 4.5
+   },
+   {
+    "id": "arcane",
+    "nom": "arcane",
+    "chance": 4.0
+   },
+   {
+    "id": "crypte",
+    "nom": "crypte",
+    "chance": 3.5
+   }
+  ]
+ },
+ {
+  "nom": "Étincelot",
+  "id": "etincelot",
+  "rarete": "commune",
+  "posture": "rampant",
+  "taille_finale": "petite",
+  "fiche": "Une larve de charbon tiède qui rampe dans les cendres des volcans et grignote les braises oubliées.",
+  "caractere": "frileux et gourmand",
+  "numero": 16,
+  "famille": "Élémentaires",
+  "epreuves": [
+   "Matériel",
+   "Système"
+  ],
+  "variantes": [
+   {
+    "id": "classique",
+    "nom": "classique",
+    "chance": 49.3
+   },
+   {
+    "id": "cendres",
+    "nom": "cendres",
+    "chance": 24.6
+   },
+   {
+    "id": "volcan",
+    "nom": "volcan",
+    "chance": 15.1
+   },
+   {
+    "id": "canyon",
+    "nom": "canyon",
+    "chance": 11.0
+   }
+  ]
+ },
+ {
+  "nom": "Givrichon",
+  "id": "givrichon",
+  "rarete": "commune",
+  "posture": "quadrupède",
+  "taille_finale": "petite",
+  "fiche": "Une petite boule de neige à pattes dont les piquants de glace poussent pendant les nuits de blizzard.",
+  "caractere": "timide et câlin",
+  "numero": 17,
+  "famille": "Élémentaires",
+  "epreuves": [
+   "Matériel",
+   "Système"
+  ],
+  "variantes": [
+   {
+    "id": "classique",
+    "nom": "classique",
+    "chance": 40.5
+   },
+   {
+    "id": "glace",
+    "nom": "glace",
+    "chance": 20.3
+   },
+   {
+    "id": "aurore",
+    "nom": "aurore",
+    "chance": 12.4
+   },
+   {
+    "id": "toundra",
+    "nom": "toundra",
+    "chance": 9.1
+   },
+   {
+    "id": "forêt",
+    "nom": "forêt",
+    "chance": 7.0
+   },
+   {
+    "id": "brume",
+    "nom": "brume",
+    "chance": 5.8
+   },
+   {
+    "id": "montagne",
+    "nom": "montagne",
+    "chance": 4.9
+   }
+  ]
+ },
+ {
+  "nom": "Gouttelin",
+  "id": "gouttelin",
+  "rarete": "commune",
+  "posture": "amorphe",
+  "taille_finale": "petite",
+  "fiche": "Une goutte d'eau vivante qui saute de flaque en flaque et adore les sources pétillantes.",
+  "caractere": "joyeux et bavard",
+  "numero": 18,
+  "famille": "Élémentaires",
+  "epreuves": [
+   "Matériel",
+   "Système"
+  ],
+  "variantes": [
+   {
+    "id": "classique",
+    "nom": "classique",
+    "chance": 38.9
+   },
+   {
+    "id": "eau_petillante",
+    "nom": "eau pétillante",
+    "chance": 19.4
+   },
+   {
+    "id": "brume",
+    "nom": "brume",
+    "chance": 11.9
+   },
+   {
+    "id": "forêt",
+    "nom": "forêt",
+    "chance": 8.7
+   },
+   {
+    "id": "lagon",
+    "nom": "lagon",
+    "chance": 6.7
+   },
+   {
+    "id": "marais",
+    "nom": "marais",
+    "chance": 5.6
+   },
+   {
+    "id": "corail",
+    "nom": "corail",
+    "chance": 4.7
+   },
+   {
+    "id": "prairie",
+    "nom": "prairie",
+    "chance": 4.1
+   }
+  ]
+ },
+ {
+  "nom": "Zapiot",
+  "id": "zapiot",
+  "rarete": "commune",
+  "posture": "flottant",
+  "taille_finale": "petite",
+  "fiche": "Une étincelle curieuse qui flotte dans les nuages d'orage et grésille quand elle est contente.",
+  "caractere": "hyperactif et farceur",
+  "numero": 19,
+  "famille": "Élémentaires",
+  "epreuves": [
+   "Matériel",
+   "Système"
+  ],
+  "variantes": [
+   {
+    "id": "classique",
+    "nom": "classique",
+    "chance": 45.4
+   },
+   {
+    "id": "orage",
+    "nom": "orage",
+    "chance": 22.7
+   },
+   {
+    "id": "neon",
+    "nom": "néon",
+    "chance": 13.9
+   },
+   {
+    "id": "aurore",
+    "nom": "aurore",
+    "chance": 10.1
+   },
+   {
+    "id": "montagne",
+    "nom": "montagne",
+    "chance": 7.9
+   }
+  ]
+ },
+ {
+  "nom": "Cailloute",
+  "id": "cailloute",
+  "rarete": "commune",
+  "posture": "bipède",
+  "taille_finale": "moyenne",
+  "fiche": "Un petit caillou têtu qui se met debout au bord des sentiers de montagne pour regarder passer les voyageurs.",
+  "caractere": "têtu et loyal",
+  "numero": 20,
+  "famille": "Élémentaires",
+  "epreuves": [
+   "Matériel",
+   "Système"
+  ],
+  "variantes": [
+   {
+    "id": "classique",
+    "nom": "classique",
+    "chance": 45.4
+   },
+   {
+    "id": "montagne",
+    "nom": "montagne",
+    "chance": 22.7
+   },
+   {
+    "id": "canyon",
+    "nom": "canyon",
+    "chance": 13.9
+   },
+   {
+    "id": "forêt",
+    "nom": "forêt",
+    "chance": 10.1
+   },
+   {
+    "id": "desert",
+    "nom": "désert",
+    "chance": 7.9
+   }
+  ]
+ },
+ {
+  "nom": "Bourrasquet",
+  "id": "bourrasquet",
+  "rarete": "commune",
+  "posture": "volant",
+  "taille_finale": "petite",
+  "fiche": "Un petit oiseau de courant d'air qui siffle en virevoltant au-dessus des prairies venteuses.",
+  "caractere": "insouciant et rapide",
+  "numero": 21,
+  "famille": "Élémentaires",
+  "epreuves": [
+   "Matériel",
+   "Système"
+  ],
+  "variantes": [
+   {
+    "id": "classique",
+    "nom": "classique",
+    "chance": 45.4
+   },
+   {
+    "id": "prairie",
+    "nom": "prairie",
+    "chance": 22.7
+   },
+   {
+    "id": "orage",
+    "nom": "orage",
+    "chance": 13.9
+   },
+   {
+    "id": "montagne",
+    "nom": "montagne",
+    "chance": 10.1
+   },
+   {
+    "id": "canyon",
+    "nom": "canyon",
+    "chance": 7.9
+   }
+  ]
+ },
+ {
+  "nom": "Fumerole",
+  "id": "fumerole",
+  "rarete": "peu commune",
+  "posture": "serpentin",
+  "taille_finale": "moyenne",
+  "fiche": "Un serpent de fumée et de flammes qui se glisse entre les fissures brûlantes des volcans.",
+  "caractere": "sournois et curieux",
+  "numero": 22,
+  "famille": "Élémentaires",
+  "epreuves": [
+   "Matériel",
+   "Système"
+  ],
+  "variantes": [
+   {
+    "id": "classique",
+    "nom": "classique",
+    "chance": 49.3
+   },
+   {
+    "id": "volcan",
+    "nom": "volcan",
+    "chance": 24.6
+   },
+   {
+    "id": "brume",
+    "nom": "brume",
+    "chance": 15.1
+   },
+   {
+    "id": "montagne",
+    "nom": "montagne",
+    "chance": 11.0
+   }
+  ]
+ },
+ {
+  "nom": "Écumane",
+  "id": "ecumane",
+  "rarete": "peu commune",
+  "posture": "quadrupède",
+  "taille_finale": "grande",
+  "fiche": "Un cheval d'écume qui galope sur les vagues des lagons et disparaît dans les embruns.",
+  "caractere": "fier et libre",
+  "numero": 23,
+  "famille": "Élémentaires",
+  "epreuves": [
+   "Matériel",
+   "Système"
+  ],
+  "variantes": [
+   {
+    "id": "classique",
+    "nom": "classique",
+    "chance": 40.5
+   },
+   {
+    "id": "lagon",
+    "nom": "lagon",
+    "chance": 20.3
+   },
+   {
+    "id": "abyssal",
+    "nom": "abyssal",
+    "chance": 12.4
+   },
+   {
+    "id": "eau_petillante",
+    "nom": "eau pétillante",
+    "chance": 9.1
+   },
+   {
+    "id": "brume",
+    "nom": "brume",
+    "chance": 7.0
+   },
+   {
+    "id": "corail",
+    "nom": "corail",
+    "chance": 5.8
+   },
+   {
+    "id": "lune",
+    "nom": "lune",
+    "chance": 4.9
+   }
+  ]
+ },
+ {
+  "nom": "Galetard",
+  "id": "galetard",
+  "rarete": "peu commune",
+  "posture": "multipattes",
+  "taille_finale": "grande",
+  "fiche": "Une longue chenille de galets qui creuse lentement des tunnels sous les canyons.",
+  "caractere": "patient et grognon",
+  "numero": 24,
+  "famille": "Élémentaires",
+  "epreuves": [
+   "Matériel",
+   "Système"
+  ],
+  "variantes": [
+   {
+    "id": "classique",
+    "nom": "classique",
+    "chance": 42.6
+   },
+   {
+    "id": "canyon",
+    "nom": "canyon",
+    "chance": 21.3
+   },
+   {
+    "id": "sable",
+    "nom": "sable",
+    "chance": 13.1
+   },
+   {
+    "id": "ruines",
+    "nom": "ruines",
+    "chance": 9.5
+   },
+   {
+    "id": "desert",
+    "nom": "désert",
+    "chance": 7.4
+   },
+   {
+    "id": "crypte",
+    "nom": "crypte",
+    "chance": 6.1
+   }
+  ]
+ },
+ {
+  "nom": "Givrarde",
+  "id": "givrarde",
+  "rarete": "peu commune",
+  "posture": "bipède",
+  "taille_finale": "grande",
+  "fiche": "Une gardienne des glaciers qui sculpte des tempêtes de neige avec ses longues mains de givre.",
+  "caractere": "froide et protectrice",
+  "numero": 25,
+  "famille": "Élémentaires",
+  "epreuves": [
+   "Matériel",
+   "Système"
+  ],
+  "variantes": [
+   {
+    "id": "classique",
+    "nom": "classique",
+    "chance": 42.6
+   },
+   {
+    "id": "glace",
+    "nom": "glace",
+    "chance": 21.3
+   },
+   {
+    "id": "cristal",
+    "nom": "cristal",
+    "chance": 13.1
+   },
+   {
+    "id": "ruines",
+    "nom": "ruines",
+    "chance": 9.5
+   },
+   {
+    "id": "brume",
+    "nom": "brume",
+    "chance": 7.4
+   },
+   {
+    "id": "aurore",
+    "nom": "aurore",
+    "chance": 6.1
+   }
+  ]
+ },
+ {
+  "nom": "Fulgurox",
+  "id": "fulgurox",
+  "rarete": "rare",
+  "posture": "quadrupède",
+  "taille_finale": "grande",
+  "fiche": "Un bœuf d'orage qui charge à travers les plaines quand le tonnerre gronde et fait tomber la foudre avec ses cornes.",
+  "caractere": "impulsif et courageux",
+  "numero": 26,
+  "famille": "Élémentaires",
+  "epreuves": [
+   "Matériel",
+   "Système"
+  ],
+  "variantes": [
+   {
+    "id": "classique",
+    "nom": "classique",
+    "chance": 45.4
+   },
+   {
+    "id": "orage",
+    "nom": "orage",
+    "chance": 22.7
+   },
+   {
+    "id": "nuage",
+    "nom": "nuage",
+    "chance": 13.9
+   },
+   {
+    "id": "prairie",
+    "nom": "prairie",
+    "chance": 10.1
+   },
+   {
+    "id": "montagne",
+    "nom": "montagne",
+    "chance": 7.9
+   }
+  ]
+ },
+ {
+  "nom": "Cyclonaute",
+  "id": "cyclonaute",
+  "rarete": "rare",
+  "posture": "flottant",
+  "taille_finale": "grande",
+  "fiche": "Un voyageur des hautes altitudes qui vit au cœur des tornades et les guide à travers le ciel.",
+  "caractere": "rêveur et imprévisible",
+  "numero": 27,
+  "famille": "Élémentaires",
+  "epreuves": [
+   "Matériel",
+   "Système"
+  ],
+  "variantes": [
+   {
+    "id": "classique",
+    "nom": "classique",
+    "chance": 37.5
+   },
+   {
+    "id": "nuage",
+    "nom": "nuage",
+    "chance": 18.8
+   },
+   {
+    "id": "canyon",
+    "nom": "canyon",
+    "chance": 11.5
+   },
+   {
+    "id": "montagne",
+    "nom": "montagne",
+    "chance": 8.4
+   },
+   {
+    "id": "prairie",
+    "nom": "prairie",
+    "chance": 6.5
+   },
+   {
+    "id": "orage",
+    "nom": "orage",
+    "chance": 5.4
+   },
+   {
+    "id": "desert",
+    "nom": "désert",
+    "chance": 4.5
+   },
+   {
+    "id": "aurore",
+    "nom": "aurore",
+    "chance": 4.0
+   },
+   {
+    "id": "sable",
+    "nom": "sable",
+    "chance": 3.5
+   }
+  ]
+ },
+ {
+  "nom": "Magmastodonte",
+  "id": "magmastodonte",
+  "rarete": "rare",
+  "posture": "quadrupède",
+  "taille_finale": "colossale",
+  "fiche": "Un pachyderme de roche en fusion dont chaque pas laisse une coulée de lave dans les plaines volcaniques.",
+  "caractere": "calme mais terrible",
+  "numero": 28,
+  "famille": "Élémentaires",
+  "epreuves": [
+   "Matériel",
+   "Système"
+  ],
+  "variantes": [
+   {
+    "id": "classique",
+    "nom": "classique",
+    "chance": 40.5
+   },
+   {
+    "id": "volcan",
+    "nom": "volcan",
+    "chance": 20.3
+   },
+   {
+    "id": "cendres",
+    "nom": "cendres",
+    "chance": 12.4
+   },
+   {
+    "id": "canyon",
+    "nom": "canyon",
+    "chance": 9.1
+   },
+   {
+    "id": "desert",
+    "nom": "désert",
+    "chance": 7.0
+   },
+   {
+    "id": "lave",
+    "nom": "lave",
+    "chance": 5.8
+   },
+   {
+    "id": "montagne",
+    "nom": "montagne",
+    "chance": 4.9
+   }
+  ]
+ },
+ {
+  "nom": "Tsunamir",
+  "id": "tsunamir",
+  "rarete": "rare",
+  "posture": "serpentin",
+  "taille_finale": "colossale",
+  "fiche": "Un grand dragon des marées qui dort au fond des abysses et soulève les vagues géantes en se réveillant.",
+  "caractere": "majestueux et rancunier",
+  "numero": 29,
+  "famille": "Élémentaires",
+  "epreuves": [
+   "Matériel",
+   "Système"
+  ],
+  "variantes": [
+   {
+    "id": "classique",
+    "nom": "classique",
+    "chance": 49.3
+   },
+   {
+    "id": "abyssal",
+    "nom": "abyssal",
+    "chance": 24.6
+   },
+   {
+    "id": "lagon",
+    "nom": "lagon",
+    "chance": 15.1
+   },
+   {
+    "id": "ruines",
+    "nom": "ruines",
+    "chance": 11.0
+   }
+  ]
+ },
+ {
+  "nom": "Tellurion",
+  "id": "tellurion",
+  "rarete": "légendaire",
+  "posture": "bipède",
+  "taille_finale": "colossale",
+  "fiche": "Le seigneur des éléments, un titan de roche vivante dont le corps porte une montagne et les six forces de la nature.",
+  "caractere": "sage et implacable",
+  "numero": 30,
+  "famille": "Élémentaires",
+  "epreuves": [
+   "Matériel",
+   "Système"
+  ],
+  "variantes": [
+   {
+    "id": "classique",
+    "nom": "classique",
+    "chance": 42.6
+   },
+   {
+    "id": "montagne",
+    "nom": "montagne",
+    "chance": 21.3
+   },
+   {
+    "id": "nuage",
+    "nom": "nuage",
+    "chance": 13.1
+   },
+   {
+    "id": "volcan",
+    "nom": "volcan",
+    "chance": 9.5
+   },
+   {
+    "id": "glace",
+    "nom": "glace",
+    "chance": 7.4
+   },
+   {
+    "id": "lagon",
+    "nom": "lagon",
+    "chance": 6.1
+   }
+  ]
+ },
+ {
+  "nom": "Osselet",
+  "id": "osselet",
+  "rarete": "commune",
+  "posture": "quadrupède",
+  "taille_finale": "petite",
+  "fiche": "Un petit chien-squelette joueur qui enterre ses propres os dans les ossuaires et les cimetières oubliés.",
+  "caractere": "joueur et fidèle",
+  "numero": 31,
+  "famille": "Morts-vivants",
+  "epreuves": [
+   "Processus"
+  ],
+  "variantes": [
+   {
+    "id": "classique",
+    "nom": "classique",
+    "chance": 49.3
+   },
+   {
+    "id": "ossuaire",
+    "nom": "ossuaire",
+    "chance": 24.6
+   },
+   {
+    "id": "ombre",
+    "nom": "ombre",
+    "chance": 15.1
+   },
+   {
+    "id": "forêt",
+    "nom": "forêt",
+    "chance": 11.0
+   }
+  ]
+ },
+ {
+  "nom": "Drapouille",
+  "id": "drapouille",
+  "rarete": "commune",
+  "posture": "flottant",
+  "taille_finale": "petite",
+  "fiche": "Un fantôme-drap espiègle qui flotte dans les greniers des ruines et adore faire « bouh » aux voyageurs.",
+  "caractere": "espiègle et farceur",
+  "numero": 32,
+  "famille": "Morts-vivants",
+  "epreuves": [
+   "Processus"
+  ],
+  "variantes": [
+   {
+    "id": "classique",
+    "nom": "classique",
+    "chance": 55.4
+   },
+   {
+    "id": "ruines",
+    "nom": "ruines",
+    "chance": 27.7
+   },
+   {
+    "id": "nuage",
+    "nom": "nuage",
+    "chance": 17.0
+   }
+  ]
+ },
+ {
+  "nom": "Goulichon",
+  "id": "goulichon",
+  "rarete": "commune",
+  "posture": "bipède",
+  "taille_finale": "moyenne",
+  "fiche": "Une petite goule gourmande qui fouille les tombes des marais à la recherche de vieux biscuits oubliés.",
+  "caractere": "gourmand et maladroit",
+  "numero": 33,
+  "famille": "Morts-vivants",
+  "epreuves": [
+   "Processus"
+  ],
+  "variantes": [
+   {
+    "id": "classique",
+    "nom": "classique",
+    "chance": 55.4
+   },
+   {
+    "id": "marais",
+    "nom": "marais",
+    "chance": 27.7
+   },
+   {
+    "id": "champignonniere",
+    "nom": "champignonnière",
+    "chance": 17.0
+   }
+  ]
+ },
+ {
+  "nom": "Crânard",
+  "id": "cranard",
+  "rarete": "commune",
+  "posture": "rampant",
+  "taille_finale": "petite",
+  "fiche": "Un bernard-l'ermite des catacombes qui se cache dans un vieux crâne et le change quand il grandit.",
+  "caractere": "timide et collectionneur",
+  "numero": 34,
+  "famille": "Morts-vivants",
+  "epreuves": [
+   "Processus"
+  ],
+  "variantes": [
+   {
+    "id": "classique",
+    "nom": "classique",
+    "chance": 40.5
+   },
+   {
+    "id": "ossuaire",
+    "nom": "ossuaire",
+    "chance": 20.3
+   },
+   {
+    "id": "ombre",
+    "nom": "ombre",
+    "chance": 12.4
+   },
+   {
+    "id": "sable",
+    "nom": "sable",
+    "chance": 9.1
+   },
+   {
+    "id": "crypte",
+    "nom": "crypte",
+    "chance": 7.0
+   },
+   {
+    "id": "marais",
+    "nom": "marais",
+    "chance": 5.8
+   },
+   {
+    "id": "ruines",
+    "nom": "ruines",
+    "chance": 4.9
+   }
+  ]
+ },
+ {
+  "nom": "Follanterne",
+  "id": "follanterne",
+  "rarete": "commune",
+  "posture": "flottant",
+  "taille_finale": "petite",
+  "fiche": "Un feu follet logé dans une vieille lanterne, qui guide (ou égare) les promeneurs dans la brume des marais.",
+  "caractere": "curieux et taquin",
+  "numero": 35,
+  "famille": "Morts-vivants",
+  "epreuves": [
+   "Processus"
+  ],
+  "variantes": [
+   {
+    "id": "classique",
+    "nom": "classique",
+    "chance": 38.9
+   },
+   {
+    "id": "marais",
+    "nom": "marais",
+    "chance": 19.4
+   },
+   {
+    "id": "brume",
+    "nom": "brume",
+    "chance": 11.9
+   },
+   {
+    "id": "forêt",
+    "nom": "forêt",
+    "chance": 8.7
+   },
+   {
+    "id": "ruines",
+    "nom": "ruines",
+    "chance": 6.7
+   },
+   {
+    "id": "toxique",
+    "nom": "toxique",
+    "chance": 5.6
+   },
+   {
+    "id": "ombre",
+    "nom": "ombre",
+    "chance": 4.7
+   },
+   {
+    "id": "crypte",
+    "nom": "crypte",
+    "chance": 4.1
+   }
+  ]
+ },
+ {
+  "nom": "Vertébrine",
+  "id": "vertebrine",
+  "rarete": "commune",
+  "posture": "serpentin",
+  "taille_finale": "moyenne",
+  "fiche": "Un serpent fait de vertèbres qui ondule entre les dunes et les tombeaux ensablés du désert.",
+  "caractere": "calme et sournois",
+  "numero": 36,
+  "famille": "Morts-vivants",
+  "epreuves": [
+   "Processus"
+  ],
+  "variantes": [
+   {
+    "id": "classique",
+    "nom": "classique",
+    "chance": 55.4
+   },
+   {
+    "id": "desert",
+    "nom": "désert",
+    "chance": 27.7
+   },
+   {
+    "id": "sable",
+    "nom": "sable",
+    "chance": 17.0
+   }
+  ]
+ },
+ {
+  "nom": "Momiaou",
+  "id": "momiaou",
+  "rarete": "peu commune",
+  "posture": "quadrupède",
+  "taille_finale": "moyenne",
+  "fiche": "Un chat momifié gardien des tombeaux du désert, qui ronronne sous ses bandelettes.",
+  "caractere": "fier et paresseux",
+  "numero": 37,
+  "famille": "Morts-vivants",
+  "epreuves": [
+   "Processus"
+  ],
+  "variantes": [
+   {
+    "id": "classique",
+    "nom": "classique",
+    "chance": 42.6
+   },
+   {
+    "id": "desert",
+    "nom": "désert",
+    "chance": 21.3
+   },
+   {
+    "id": "canyon",
+    "nom": "canyon",
+    "chance": 13.1
+   },
+   {
+    "id": "ossuaire",
+    "nom": "ossuaire",
+    "chance": 9.5
+   },
+   {
+    "id": "sable",
+    "nom": "sable",
+    "chance": 7.4
+   },
+   {
+    "id": "soleil",
+    "nom": "soleil",
+    "chance": 6.1
+   }
+  ]
+ },
+ {
+  "nom": "Corbouh",
+  "id": "corbouh",
+  "rarete": "peu commune",
+  "posture": "volant",
+  "taille_finale": "moyenne",
+  "fiche": "Un corbeau fantôme qui tournoie au-dessus des vieux cimetières en criant « bouh » au lieu de croasser.",
+  "caractere": "bavard et moqueur",
+  "numero": 38,
+  "famille": "Morts-vivants",
+  "epreuves": [
+   "Processus"
+  ],
+  "variantes": [
+   {
+    "id": "classique",
+    "nom": "classique",
+    "chance": 38.9
+   },
+   {
+    "id": "crypte",
+    "nom": "crypte",
+    "chance": 19.4
+   },
+   {
+    "id": "ruines",
+    "nom": "ruines",
+    "chance": 11.9
+   },
+   {
+    "id": "nuage",
+    "nom": "nuage",
+    "chance": 8.7
+   },
+   {
+    "id": "forêt",
+    "nom": "forêt",
+    "chance": 6.7
+   },
+   {
+    "id": "lune",
+    "nom": "lune",
+    "chance": 5.6
+   },
+   {
+    "id": "brume",
+    "nom": "brume",
+    "chance": 4.7
+   },
+   {
+    "id": "ombre",
+    "nom": "ombre",
+    "chance": 4.1
+   }
+  ]
+ },
+ {
+  "nom": "Heaumbre",
+  "id": "heaumbre",
+  "rarete": "peu commune",
+  "posture": "bipède",
+  "taille_finale": "grande",
+  "fiche": "Une armure de chevalier maudit habitée par une ombre, qui monte la garde dans les forteresses en ruine.",
+  "caractere": "loyal et solennel",
+  "numero": 39,
+  "famille": "Morts-vivants",
+  "epreuves": [
+   "Processus"
+  ],
+  "variantes": [
+   {
+    "id": "classique",
+    "nom": "classique",
+    "chance": 45.4
+   },
+   {
+    "id": "ruines",
+    "nom": "ruines",
+    "chance": 22.7
+   },
+   {
+    "id": "montagne",
+    "nom": "montagne",
+    "chance": 13.9
+   },
+   {
+    "id": "ombre",
+    "nom": "ombre",
+    "chance": 10.1
+   },
+   {
+    "id": "crypte",
+    "nom": "crypte",
+    "chance": 7.9
+   }
+  ]
+ },
+ {
+  "nom": "Tibiarachne",
+  "id": "tibiarachne",
+  "rarete": "peu commune",
+  "posture": "multipattes",
+  "taille_finale": "moyenne",
+  "fiche": "Une araignée d'os qui tisse des toiles d'ectoplasme dans les recoins des ossuaires.",
+  "caractere": "patiente et méticuleuse",
+  "numero": 40,
+  "famille": "Morts-vivants",
+  "epreuves": [
+   "Processus"
+  ],
+  "variantes": [
+   {
+    "id": "classique",
+    "nom": "classique",
+    "chance": 55.4
+   },
+   {
+    "id": "ossuaire",
+    "nom": "ossuaire",
+    "chance": 27.7
+   },
+   {
+    "id": "crypte",
+    "nom": "crypte",
+    "chance": 17.0
+   }
+  ]
+ },
+ {
+  "nom": "Hurlombre",
+  "id": "hurlombre",
+  "rarete": "rare",
+  "posture": "flottant",
+  "taille_finale": "grande",
+  "fiche": "Un spectre hurleur aux longs cheveux de brume qui chante des complaintes glacées dans la toundra.",
+  "caractere": "mélancolique et dramatique",
+  "numero": 41,
+  "famille": "Morts-vivants",
+  "epreuves": [
+   "Processus"
+  ],
+  "variantes": [
+   {
+    "id": "classique",
+    "nom": "classique",
+    "chance": 42.6
+   },
+   {
+    "id": "toundra",
+    "nom": "toundra",
+    "chance": 21.3
+   },
+   {
+    "id": "montagne",
+    "nom": "montagne",
+    "chance": 13.1
+   },
+   {
+    "id": "aurore",
+    "nom": "aurore",
+    "chance": 9.5
+   },
+   {
+    "id": "brume",
+    "nom": "brume",
+    "chance": 7.4
+   },
+   {
+    "id": "ombre",
+    "nom": "ombre",
+    "chance": 6.1
+   }
+  ]
+ },
+ {
+  "nom": "Brumaleine",
+  "id": "brumaleine",
+  "rarete": "rare",
+  "posture": "flottant",
+  "taille_finale": "colossale",
+  "fiche": "Une baleine squelette qui nage dans le brouillard au-dessus des mers mortes et des nuages.",
+  "caractere": "paisible et rêveur",
+  "numero": 42,
+  "famille": "Morts-vivants",
+  "epreuves": [
+   "Processus"
+  ],
+  "variantes": [
+   {
+    "id": "classique",
+    "nom": "classique",
+    "chance": 49.3
+   },
+   {
+    "id": "brume",
+    "nom": "brume",
+    "chance": 24.6
+   },
+   {
+    "id": "aurore",
+    "nom": "aurore",
+    "chance": 15.1
+   },
+   {
+    "id": "cosmique",
+    "nom": "cosmique",
+    "chance": 11.0
+   }
+  ]
+ },
+ {
+  "nom": "Ectoplouf",
+  "id": "ectoplouf",
+  "rarete": "rare",
+  "posture": "amorphe",
+  "taille_finale": "grande",
+  "fiche": "Une flaque d'ectoplasme vivante qui avale les vieux objets hantés et les garde flottant dans son corps.",
+  "caractere": "glouton et câlin",
+  "numero": 43,
+  "famille": "Morts-vivants",
+  "epreuves": [
+   "Processus"
+  ],
+  "variantes": [
+   {
+    "id": "classique",
+    "nom": "classique",
+    "chance": 55.4
+   },
+   {
+    "id": "crypte",
+    "nom": "crypte",
+    "chance": 27.7
+   },
+   {
+    "id": "toxique",
+    "nom": "toxique",
+    "chance": 17.0
+   }
+  ]
+ },
+ {
+  "nom": "Drakosse",
+  "id": "drakosse",
+  "rarete": "rare",
+  "posture": "volant",
+  "taille_finale": "colossale",
+  "fiche": "Un dragon squelette réveillé par la nécromancie qui veille sur les montagnes de cendres et les grands ossuaires.",
+  "caractere": "orgueilleux et protecteur",
+  "numero": 44,
+  "famille": "Morts-vivants",
+  "epreuves": [
+   "Processus"
+  ],
+  "variantes": [
+   {
+    "id": "classique",
+    "nom": "classique",
+    "chance": 45.4
+   },
+   {
+    "id": "montagne",
+    "nom": "montagne",
+    "chance": 22.7
+   },
+   {
+    "id": "ruines",
+    "nom": "ruines",
+    "chance": 13.9
+   },
+   {
+    "id": "canyon",
+    "nom": "canyon",
+    "chance": 10.1
+   },
+   {
+    "id": "crypte",
+    "nom": "crypte",
+    "chance": 7.9
+   }
+  ]
+ },
+ {
+  "nom": "Lichonarque",
+  "id": "lichonarque",
+  "rarete": "légendaire",
+  "posture": "bipède",
+  "taille_finale": "grande",
+  "fiche": "Le roi-liche des morts-vivants, un sorcier squelette couronné qui règne sur toutes les cryptes depuis son trône d'os.",
+  "caractere": "sage et majestueux",
+  "numero": 45,
+  "famille": "Morts-vivants",
+  "epreuves": [
+   "Processus"
+  ],
+  "variantes": [
+   {
+    "id": "classique",
+    "nom": "classique",
+    "chance": 49.3
+   },
+   {
+    "id": "crypte",
+    "nom": "crypte",
+    "chance": 24.6
+   },
+   {
+    "id": "ruines",
+    "nom": "ruines",
+    "chance": 15.1
+   },
+   {
+    "id": "cristal",
+    "nom": "cristal",
+    "chance": 11.0
+   }
+  ]
+ },
+ {
+  "nom": "Groinfer",
+  "id": "groinfer",
+  "rarete": "commune",
+  "posture": "quadrupède",
+  "taille_finale": "moyenne",
+  "fiche": "Un sanglier têtu dont la peau durcit en plaques de fer, qui fouille les sous-bois et les prairies à la recherche de racines.",
+  "caractere": "têtu et glouton",
+  "numero": 46,
+  "famille": "Bêtes monstrueuses",
+  "epreuves": [
+   "Mémoire",
+   "Rétro"
+  ],
+  "variantes": [
+   {
+    "id": "classique",
+    "nom": "classique",
+    "chance": 49.3
+   },
+   {
+    "id": "forêt",
+    "nom": "forêt",
+    "chance": 24.6
+   },
+   {
+    "id": "ruines",
+    "nom": "ruines",
+    "chance": 15.1
+   },
+   {
+    "id": "rouille",
+    "nom": "rouille",
+    "chance": 11.0
+   }
+  ]
+ },
+ {
+  "nom": "Chauvecroc",
+  "id": "chauvecroc",
+  "rarete": "commune",
+  "posture": "volant",
+  "taille_finale": "petite",
+  "fiche": "Une chauve-souris aux crocs démesurés qui niche par colonies dans les grottes, les cryptes et les canyons.",
+  "caractere": "nerveux et curieux",
+  "numero": 47,
+  "famille": "Bêtes monstrueuses",
+  "epreuves": [
+   "Mémoire",
+   "Rétro"
+  ],
+  "variantes": [
+   {
+    "id": "classique",
+    "nom": "classique",
+    "chance": 55.4
+   },
+   {
+    "id": "canyon",
+    "nom": "canyon",
+    "chance": 27.7
+   },
+   {
+    "id": "montagne",
+    "nom": "montagne",
+    "chance": 17.0
+   }
+  ]
+ },
+ {
+  "nom": "Fouinroc",
+  "id": "fouinroc",
+  "rarete": "commune",
+  "posture": "rampant",
+  "taille_finale": "petite",
+  "fiche": "Une taupe fouisseuse aux griffes de pierre qui creuse des galeries sous les déserts et les montagnes.",
+  "caractere": "timide et bosseur",
+  "numero": 48,
+  "famille": "Bêtes monstrueuses",
+  "epreuves": [
+   "Mémoire",
+   "Rétro"
+  ],
+  "variantes": [
+   {
+    "id": "classique",
+    "nom": "classique",
+    "chance": 45.4
+   },
+   {
+    "id": "desert",
+    "nom": "désert",
+    "chance": 22.7
+   },
+   {
+    "id": "sable",
+    "nom": "sable",
+    "chance": 13.9
+   },
+   {
+    "id": "ruines",
+    "nom": "ruines",
+    "chance": 10.1
+   },
+   {
+    "id": "canyon",
+    "nom": "canyon",
+    "chance": 7.9
+   }
+  ]
+ },
+ {
+  "nom": "Louvacier",
+  "id": "louvacier",
+  "rarete": "commune",
+  "posture": "quadrupède",
+  "taille_finale": "moyenne",
+  "fiche": "Un loup cuirassé de plaques d'acier naturel qui chasse en meute dans la toundra et les forêts enneigées.",
+  "caractere": "loyal et fier",
+  "numero": 49,
+  "famille": "Bêtes monstrueuses",
+  "epreuves": [
+   "Mémoire",
+   "Rétro"
+  ],
+  "variantes": [
+   {
+    "id": "classique",
+    "nom": "classique",
+    "chance": 42.6
+   },
+   {
+    "id": "toundra",
+    "nom": "toundra",
+    "chance": 21.3
+   },
+   {
+    "id": "forêt",
+    "nom": "forêt",
+    "chance": 13.1
+   },
+   {
+    "id": "glace",
+    "nom": "glace",
+    "chance": 9.5
+   },
+   {
+    "id": "aurore",
+    "nom": "aurore",
+    "chance": 7.4
+   },
+   {
+    "id": "montagne",
+    "nom": "montagne",
+    "chance": 6.1
+   }
+  ]
+ },
+ {
+  "nom": "Ricanos",
+  "id": "ricanos",
+  "rarete": "commune",
+  "posture": "quadrupède",
+  "taille_finale": "moyenne",
+  "fiche": "Une hyène charognarde qui ricane la nuit en rongeant les os des ossuaires et des déserts.",
+  "caractere": "moqueur et malin",
+  "numero": 50,
+  "famille": "Bêtes monstrueuses",
+  "epreuves": [
+   "Mémoire",
+   "Rétro"
+  ],
+  "variantes": [
+   {
+    "id": "classique",
+    "nom": "classique",
+    "chance": 45.4
+   },
+   {
+    "id": "desert",
+    "nom": "désert",
+    "chance": 22.7
+   },
+   {
+    "id": "cendres",
+    "nom": "cendres",
+    "chance": 13.9
+   },
+   {
+    "id": "crypte",
+    "nom": "crypte",
+    "chance": 10.1
+   },
+   {
+    "id": "canyon",
+    "nom": "canyon",
+    "chance": 7.9
+   }
+  ]
+ },
+ {
+  "nom": "Serpelage",
+  "id": "serpelage",
+  "rarete": "commune",
+  "posture": "serpentin",
+  "taille_finale": "moyenne",
+  "fiche": "Un long furet-serpent au pelage soyeux qui se faufile dans les jungles et les marais pour voler des œufs.",
+  "caractere": "espiègle et voleur",
+  "numero": 51,
+  "famille": "Bêtes monstrueuses",
+  "epreuves": [
+   "Mémoire",
+   "Rétro"
+  ],
+  "variantes": [
+   {
+    "id": "classique",
+    "nom": "classique",
+    "chance": 38.9
+   },
+   {
+    "id": "jungle",
+    "nom": "jungle",
+    "chance": 19.4
+   },
+   {
+    "id": "forêt",
+    "nom": "forêt",
+    "chance": 11.9
+   },
+   {
+    "id": "prairie",
+    "nom": "prairie",
+    "chance": 8.7
+   },
+   {
+    "id": "marais",
+    "nom": "marais",
+    "chance": 6.7
+   },
+   {
+    "id": "lagon",
+    "nom": "lagon",
+    "chance": 5.6
+   },
+   {
+    "id": "champignonniere",
+    "nom": "champignonnière",
+    "chance": 4.7
+   },
+   {
+    "id": "ruines",
+    "nom": "ruines",
+    "chance": 4.1
+   }
+  ]
+ },
+ {
+  "nom": "Félicorne",
+  "id": "felicorne",
+  "rarete": "peu commune",
+  "posture": "quadrupède",
+  "taille_finale": "grande",
+  "fiche": "Un grand félin aux cornes recourbées qui guette ses proies du haut des falaises et des canyons.",
+  "caractere": "fier et solitaire",
+  "numero": 52,
+  "famille": "Bêtes monstrueuses",
+  "epreuves": [
+   "Mémoire",
+   "Rétro"
+  ],
+  "variantes": [
+   {
+    "id": "classique",
+    "nom": "classique",
+    "chance": 42.6
+   },
+   {
+    "id": "canyon",
+    "nom": "canyon",
+    "chance": 21.3
+   },
+   {
+    "id": "montagne",
+    "nom": "montagne",
+    "chance": 13.1
+   },
+   {
+    "id": "soleil",
+    "nom": "soleil",
+    "chance": 9.5
+   },
+   {
+    "id": "ruines",
+    "nom": "ruines",
+    "chance": 7.4
+   },
+   {
+    "id": "desert",
+    "nom": "désert",
+    "chance": 6.1
+   }
+  ]
+ },
+ {
+  "nom": "Milgriffe",
+  "id": "milgriffe",
+  "rarete": "peu commune",
+  "posture": "multipattes",
+  "taille_finale": "moyenne",
+  "fiche": "Un blaireau à six pattes griffues qui creuse ses terriers dans les forêts sombres et les champignonnières.",
+  "caractere": "grognon et protecteur",
+  "numero": 53,
+  "famille": "Bêtes monstrueuses",
+  "epreuves": [
+   "Mémoire",
+   "Rétro"
+  ],
+  "variantes": [
+   {
+    "id": "classique",
+    "nom": "classique",
+    "chance": 40.5
+   },
+   {
+    "id": "forêt",
+    "nom": "forêt",
+    "chance": 20.3
+   },
+   {
+    "id": "ruines",
+    "nom": "ruines",
+    "chance": 12.4
+   },
+   {
+    "id": "champignonniere",
+    "nom": "champignonnière",
+    "chance": 9.1
+   },
+   {
+    "id": "marais",
+    "nom": "marais",
+    "chance": 7.0
+   },
+   {
+    "id": "montagne",
+    "nom": "montagne",
+    "chance": 5.8
+   },
+   {
+    "id": "ombre",
+    "nom": "ombre",
+    "chance": 4.9
+   }
+  ]
+ },
+ {
+  "nom": "Simiosse",
+  "id": "simiosse",
+  "rarete": "peu commune",
+  "posture": "bipède",
+  "taille_finale": "grande",
+  "fiche": "Un grand singe qui se façonne une armure avec les os de ses proies et règne sur les jungles et les ruines.",
+  "caractere": "bagarreur et rusé",
+  "numero": 54,
+  "famille": "Bêtes monstrueuses",
+  "epreuves": [
+   "Mémoire",
+   "Rétro"
+  ],
+  "variantes": [
+   {
+    "id": "classique",
+    "nom": "classique",
+    "chance": 38.9
+   },
+   {
+    "id": "jungle",
+    "nom": "jungle",
+    "chance": 19.4
+   },
+   {
+    "id": "forêt",
+    "nom": "forêt",
+    "chance": 11.9
+   },
+   {
+    "id": "ruines",
+    "nom": "ruines",
+    "chance": 8.7
+   },
+   {
+    "id": "montagne",
+    "nom": "montagne",
+    "chance": 6.7
+   },
+   {
+    "id": "ossuaire",
+    "nom": "ossuaire",
+    "chance": 5.6
+   },
+   {
+    "id": "marais",
+    "nom": "marais",
+    "chance": 4.7
+   },
+   {
+    "id": "canyon",
+    "nom": "canyon",
+    "chance": 4.1
+   }
+  ]
+ },
+ {
+  "nom": "Tatoublind",
+  "id": "tatoublind",
+  "rarete": "peu commune",
+  "posture": "quadrupède",
+  "taille_finale": "moyenne",
+  "fiche": "Un tatou blindé qui se roule en boule pour dévaler les dunes et les pentes des volcans.",
+  "caractere": "placide et costaud",
+  "numero": 55,
+  "famille": "Bêtes monstrueuses",
+  "epreuves": [
+   "Mémoire",
+   "Rétro"
+  ],
+  "variantes": [
+   {
+    "id": "classique",
+    "nom": "classique",
+    "chance": 49.3
+   },
+   {
+    "id": "desert",
+    "nom": "désert",
+    "chance": 24.6
+   },
+   {
+    "id": "volcan",
+    "nom": "volcan",
+    "chance": 15.1
+   },
+   {
+    "id": "prairie",
+    "nom": "prairie",
+    "chance": 11.0
+   }
+  ]
+ },
+ {
+  "nom": "Hibourreau",
+  "id": "hibourreau",
+  "rarete": "rare",
+  "posture": "volant",
+  "taille_finale": "grande",
+  "fiche": "Un hibou-lynx nocturne aux serres immenses qui fond en silence sur ses proies dans la brume des forêts.",
+  "caractere": "silencieux et implacable",
+  "numero": 56,
+  "famille": "Bêtes monstrueuses",
+  "epreuves": [
+   "Mémoire",
+   "Rétro"
+  ],
+  "variantes": [
+   {
+    "id": "classique",
+    "nom": "classique",
+    "chance": 37.5
+   },
+   {
+    "id": "forêt",
+    "nom": "forêt",
+    "chance": 18.8
+   },
+   {
+    "id": "toundra",
+    "nom": "toundra",
+    "chance": 11.5
+   },
+   {
+    "id": "lune",
+    "nom": "lune",
+    "chance": 8.4
+   },
+   {
+    "id": "montagne",
+    "nom": "montagne",
+    "chance": 6.5
+   },
+   {
+    "id": "brume",
+    "nom": "brume",
+    "chance": 5.4
+   },
+   {
+    "id": "ombre",
+    "nom": "ombre",
+    "chance": 4.5
+   },
+   {
+    "id": "ruines",
+    "nom": "ruines",
+    "chance": 4.0
+   },
+   {
+    "id": "crypte",
+    "nom": "crypte",
+    "chance": 3.5
+   }
+  ]
+ },
+ {
+  "nom": "Oursomont",
+  "id": "oursomont",
+  "rarete": "rare",
+  "posture": "bipède",
+  "taille_finale": "colossale",
+  "fiche": "Un ours géant au dos couvert de roches qui se dresse sur ses pattes arrière pour défendre sa montagne.",
+  "caractere": "calme mais redoutable",
+  "numero": 57,
+  "famille": "Bêtes monstrueuses",
+  "epreuves": [
+   "Mémoire",
+   "Rétro"
+  ],
+  "variantes": [
+   {
+    "id": "classique",
+    "nom": "classique",
+    "chance": 49.3
+   },
+   {
+    "id": "montagne",
+    "nom": "montagne",
+    "chance": 24.6
+   },
+   {
+    "id": "canyon",
+    "nom": "canyon",
+    "chance": 15.1
+   },
+   {
+    "id": "cristal",
+    "nom": "cristal",
+    "chance": 11.0
+   }
+  ]
+ },
+ {
+  "nom": "Trigueule",
+  "id": "trigueule",
+  "rarete": "rare",
+  "posture": "quadrupède",
+  "taille_finale": "grande",
+  "fiche": "Une chimère à trois têtes de lion, de bouc et de chacal qui rôde dans les ruines arcaniques et les canyons.",
+  "caractere": "imprévisible et vorace",
+  "numero": 58,
+  "famille": "Bêtes monstrueuses",
+  "epreuves": [
+   "Mémoire",
+   "Rétro"
+  ],
+  "variantes": [
+   {
+    "id": "classique",
+    "nom": "classique",
+    "chance": 37.5
+   },
+   {
+    "id": "ruines",
+    "nom": "ruines",
+    "chance": 18.8
+   },
+   {
+    "id": "montagne",
+    "nom": "montagne",
+    "chance": 11.5
+   },
+   {
+    "id": "canyon",
+    "nom": "canyon",
+    "chance": 8.4
+   },
+   {
+    "id": "ossuaire",
+    "nom": "ossuaire",
+    "chance": 6.5
+   },
+   {
+    "id": "arcane",
+    "nom": "arcane",
+    "chance": 5.4
+   },
+   {
+    "id": "cendres",
+    "nom": "cendres",
+    "chance": 4.5
+   },
+   {
+    "id": "volcan",
+    "nom": "volcan",
+    "chance": 4.0
+   },
+   {
+    "id": "desert",
+    "nom": "désert",
+    "chance": 3.5
+   }
+  ]
+ },
+ {
+  "nom": "Mammouroc",
+  "id": "mammouroc",
+  "rarete": "rare",
+  "posture": "quadrupède",
+  "taille_finale": "colossale",
+  "fiche": "Un mammouth colossal aux défenses de pierre qui migre lentement à travers la toundra et les glaciers.",
+  "caractere": "paisible et inébranlable",
+  "numero": 59,
+  "famille": "Bêtes monstrueuses",
+  "epreuves": [
+   "Mémoire",
+   "Rétro"
+  ],
+  "variantes": [
+   {
+    "id": "classique",
+    "nom": "classique",
+    "chance": 49.3
+   },
+   {
+    "id": "toundra",
+    "nom": "toundra",
+    "chance": 24.6
+   },
+   {
+    "id": "ossuaire",
+    "nom": "ossuaire",
+    "chance": 15.1
+   },
+   {
+    "id": "montagne",
+    "nom": "montagne",
+    "chance": 11.0
+   }
+  ]
+ },
+ {
+  "nom": "Rugissire",
+  "id": "rugissire",
+  "rarete": "légendaire",
+  "posture": "quadrupède",
+  "taille_finale": "colossale",
+  "fiche": "Le seigneur des bêtes, un fauve colossal couronné d'os dont le rugissement fait trembler toutes les terres sauvages.",
+  "caractere": "noble et indomptable",
+  "numero": 60,
+  "famille": "Bêtes monstrueuses",
+  "epreuves": [
+   "Mémoire",
+   "Rétro"
+  ],
+  "variantes": [
+   {
+    "id": "classique",
+    "nom": "classique",
+    "chance": 40.5
+   },
+   {
+    "id": "montagne",
+    "nom": "montagne",
+    "chance": 20.3
+   },
+   {
+    "id": "toundra",
+    "nom": "toundra",
+    "chance": 12.4
+   },
+   {
+    "id": "ossuaire",
+    "nom": "ossuaire",
+    "chance": 9.1
+   },
+   {
+    "id": "prairie",
+    "nom": "prairie",
+    "chance": 7.0
+   },
+   {
+    "id": "ruines",
+    "nom": "ruines",
+    "chance": 5.8
+   },
+   {
+    "id": "soleil",
+    "nom": "soleil",
+    "chance": 4.9
+   }
+  ]
+ },
+ {
+  "nom": "Glandouille",
+  "id": "glandouille",
+  "rarete": "commune",
+  "posture": "bipède",
+  "taille_finale": "petite",
+  "fiche": "Un gland paresseux qui s'est réveillé un jour avec des jambes et passe ses siestes au pied des chênes de la forêt.",
+  "caractere": "paresseux et câlin",
+  "numero": 61,
+  "famille": "Sylvestres",
+  "epreuves": [
+   "Fichiers"
+  ],
+  "variantes": [
+   {
+    "id": "classique",
+    "nom": "classique",
+    "chance": 55.4
+   },
+   {
+    "id": "forêt",
+    "nom": "forêt",
+    "chance": 27.7
+   },
+   {
+    "id": "ruines",
+    "nom": "ruines",
+    "chance": 17.0
+   }
+  ]
+ },
+ {
+  "nom": "Sporichon",
+  "id": "sporichon",
+  "rarete": "commune",
+  "posture": "bipède",
+  "taille_finale": "petite",
+  "fiche": "Un petit champignon guerrier qui défend les cercles de fées des sous-bois humides avec un courage démesuré.",
+  "caractere": "téméraire et bavard",
+  "numero": 62,
+  "famille": "Sylvestres",
+  "epreuves": [
+   "Fichiers"
+  ],
+  "variantes": [
+   {
+    "id": "classique",
+    "nom": "classique",
+    "chance": 40.5
+   },
+   {
+    "id": "champignonniere",
+    "nom": "champignonnière",
+    "chance": 20.3
+   },
+   {
+    "id": "marais",
+    "nom": "marais",
+    "chance": 12.4
+   },
+   {
+    "id": "ruines",
+    "nom": "ruines",
+    "chance": 9.1
+   },
+   {
+    "id": "crypte",
+    "nom": "crypte",
+    "chance": 7.0
+   },
+   {
+    "id": "forêt",
+    "nom": "forêt",
+    "chance": 5.8
+   },
+   {
+    "id": "brume",
+    "nom": "brume",
+    "chance": 4.9
+   }
+  ]
+ },
+ {
+  "nom": "Pétalouette",
+  "id": "petalouette",
+  "rarete": "commune",
+  "posture": "volant",
+  "taille_finale": "petite",
+  "fiche": "Une créature-fleur qui volette de prairie en prairie en battant de ses pétales comme des ailes.",
+  "caractere": "joyeuse et étourdie",
+  "numero": 63,
+  "famille": "Sylvestres",
+  "epreuves": [
+   "Fichiers"
+  ],
+  "variantes": [
+   {
+    "id": "classique",
+    "nom": "classique",
+    "chance": 49.3
+   },
+   {
+    "id": "prairie",
+    "nom": "prairie",
+    "chance": 24.6
+   },
+   {
+    "id": "soleil",
+    "nom": "soleil",
+    "chance": 15.1
+   },
+   {
+    "id": "forêt",
+    "nom": "forêt",
+    "chance": 11.0
+   }
+  ]
+ },
+ {
+  "nom": "Mousselin",
+  "id": "mousselin",
+  "rarete": "commune",
+  "posture": "amorphe",
+  "taille_finale": "moyenne",
+  "fiche": "Une boule de mousse vivante qui s'étale sur les pierres humides des sous-bois et absorbe la rosée.",
+  "caractere": "doux et rêveur",
+  "numero": 64,
+  "famille": "Sylvestres",
+  "epreuves": [
+   "Fichiers"
+  ],
+  "variantes": [
+   {
+    "id": "classique",
+    "nom": "classique",
+    "chance": 38.9
+   },
+   {
+    "id": "forêt",
+    "nom": "forêt",
+    "chance": 19.4
+   },
+   {
+    "id": "champignonniere",
+    "nom": "champignonnière",
+    "chance": 11.9
+   },
+   {
+    "id": "montagne",
+    "nom": "montagne",
+    "chance": 8.7
+   },
+   {
+    "id": "brume",
+    "nom": "brume",
+    "chance": 6.7
+   },
+   {
+    "id": "jungle",
+    "nom": "jungle",
+    "chance": 5.6
+   },
+   {
+    "id": "ruines",
+    "nom": "ruines",
+    "chance": 4.7
+   },
+   {
+    "id": "marais",
+    "nom": "marais",
+    "chance": 4.1
+   }
+  ]
+ },
+ {
+  "nom": "Ronceau",
+  "id": "ronceau",
+  "rarete": "commune",
+  "posture": "quadrupède",
+  "taille_finale": "moyenne",
+  "fiche": "Un renardeau fait de ronces entrelacées qui chaparde les baies dans les haies des lisières.",
+  "caractere": "malicieux et gourmand",
+  "numero": 65,
+  "famille": "Sylvestres",
+  "epreuves": [
+   "Fichiers"
+  ],
+  "variantes": [
+   {
+    "id": "classique",
+    "nom": "classique",
+    "chance": 55.4
+   },
+   {
+    "id": "forêt",
+    "nom": "forêt",
+    "chance": 27.7
+   },
+   {
+    "id": "prairie",
+    "nom": "prairie",
+    "chance": 17.0
+   }
+  ]
+ },
+ {
+  "nom": "Racinelle",
+  "id": "racinelle",
+  "rarete": "commune",
+  "posture": "flottant",
+  "taille_finale": "petite",
+  "fiche": "Un esprit des racines qui flotte sous la terre et remonte la nuit pour veiller sur les jeunes pousses.",
+  "caractere": "timide et attentionnée",
+  "numero": 66,
+  "famille": "Sylvestres",
+  "epreuves": [
+   "Fichiers"
+  ],
+  "variantes": [
+   {
+    "id": "classique",
+    "nom": "classique",
+    "chance": 40.5
+   },
+   {
+    "id": "forêt",
+    "nom": "forêt",
+    "chance": 20.3
+   },
+   {
+    "id": "ruines",
+    "nom": "ruines",
+    "chance": 12.4
+   },
+   {
+    "id": "ombre",
+    "nom": "ombre",
+    "chance": 9.1
+   },
+   {
+    "id": "marais",
+    "nom": "marais",
+    "chance": 7.0
+   },
+   {
+    "id": "brume",
+    "nom": "brume",
+    "chance": 5.8
+   },
+   {
+    "id": "crypte",
+    "nom": "crypte",
+    "chance": 4.9
+   }
+  ]
+ },
+ {
+  "nom": "Croquefleur",
+  "id": "croquefleur",
+  "rarete": "peu commune",
+  "posture": "rampant",
+  "taille_finale": "moyenne",
+  "fiche": "Une plante carnivore affamée qui rampe sur ses racines dans les marais et happe tout ce qui bourdonne.",
+  "caractere": "vorace et joueur",
+  "numero": 67,
+  "famille": "Sylvestres",
+  "epreuves": [
+   "Fichiers"
+  ],
+  "variantes": [
+   {
+    "id": "classique",
+    "nom": "classique",
+    "chance": 40.5
+   },
+   {
+    "id": "marais",
+    "nom": "marais",
+    "chance": 20.3
+   },
+   {
+    "id": "toxique",
+    "nom": "toxique",
+    "chance": 12.4
+   },
+   {
+    "id": "jungle",
+    "nom": "jungle",
+    "chance": 9.1
+   },
+   {
+    "id": "lagon",
+    "nom": "lagon",
+    "chance": 7.0
+   },
+   {
+    "id": "brume",
+    "nom": "brume",
+    "chance": 5.8
+   },
+   {
+    "id": "forêt",
+    "nom": "forêt",
+    "chance": 4.9
+   }
+  ]
+ },
+ {
+  "nom": "Lampignon",
+  "id": "lampignon",
+  "rarete": "peu commune",
+  "posture": "flottant",
+  "taille_finale": "moyenne",
+  "fiche": "Un champignon lumineux qui flotte dans les grottes et les forêts nocturnes pour guider les voyageurs égarés.",
+  "caractere": "serviable et curieux",
+  "numero": 68,
+  "famille": "Sylvestres",
+  "epreuves": [
+   "Fichiers"
+  ],
+  "variantes": [
+   {
+    "id": "classique",
+    "nom": "classique",
+    "chance": 42.6
+   },
+   {
+    "id": "champignonniere",
+    "nom": "champignonnière",
+    "chance": 21.3
+   },
+   {
+    "id": "cristal",
+    "nom": "cristal",
+    "chance": 13.1
+   },
+   {
+    "id": "ombre",
+    "nom": "ombre",
+    "chance": 9.5
+   },
+   {
+    "id": "forêt",
+    "nom": "forêt",
+    "chance": 7.4
+   },
+   {
+    "id": "marais",
+    "nom": "marais",
+    "chance": 6.1
+   }
+  ]
+ },
+ {
+  "nom": "Lianaconda",
+  "id": "lianaconda",
+  "rarete": "peu commune",
+  "posture": "serpentin",
+  "taille_finale": "grande",
+  "fiche": "Un serpent de lianes qui s'enroule autour des grands arbres de la jungle et se confond avec la végétation.",
+  "caractere": "patient et rusé",
+  "numero": 69,
+  "famille": "Sylvestres",
+  "epreuves": [
+   "Fichiers"
+  ],
+  "variantes": [
+   {
+    "id": "classique",
+    "nom": "classique",
+    "chance": 49.3
+   },
+   {
+    "id": "jungle",
+    "nom": "jungle",
+    "chance": 24.6
+   },
+   {
+    "id": "ruines",
+    "nom": "ruines",
+    "chance": 15.1
+   },
+   {
+    "id": "marais",
+    "nom": "marais",
+    "chance": 11.0
+   }
+  ]
+ },
+ {
+  "nom": "Écorcerf",
+  "id": "ecorcerf",
+  "rarete": "peu commune",
+  "posture": "quadrupède",
+  "taille_finale": "grande",
+  "fiche": "Un cerf à la peau d'écorce dont les bois sont de vraies branches feuillues qui changent avec les saisons.",
+  "caractere": "noble et méfiant",
+  "numero": 70,
+  "famille": "Sylvestres",
+  "epreuves": [
+   "Fichiers"
+  ],
+  "variantes": [
+   {
+    "id": "classique",
+    "nom": "classique",
+    "chance": 55.4
+   },
+   {
+    "id": "forêt",
+    "nom": "forêt",
+    "chance": 27.7
+   },
+   {
+    "id": "brume",
+    "nom": "brume",
+    "chance": 17.0
+   }
+  ]
+ },
+ {
+  "nom": "Nénuphage",
+  "id": "nenuphage",
+  "rarete": "rare",
+  "posture": "quadrupède",
+  "taille_finale": "grande",
+  "fiche": "Un batracien végétal qui se cache sous un nénuphar géant dans les marais et engloutit tout ce qui s'y pose.",
+  "caractere": "placide et glouton",
+  "numero": 71,
+  "famille": "Sylvestres",
+  "epreuves": [
+   "Fichiers"
+  ],
+  "variantes": [
+   {
+    "id": "classique",
+    "nom": "classique",
+    "chance": 49.3
+   },
+   {
+    "id": "marais",
+    "nom": "marais",
+    "chance": 24.6
+   },
+   {
+    "id": "toxique",
+    "nom": "toxique",
+    "chance": 15.1
+   },
+   {
+    "id": "lagon",
+    "nom": "lagon",
+    "chance": 11.0
+   }
+  ]
+ },
+ {
+  "nom": "Ambrelune",
+  "id": "ambrelune",
+  "rarete": "rare",
+  "posture": "volant",
+  "taille_finale": "moyenne",
+  "fiche": "Une créature de sève et d'ambre aux ailes de feuilles translucides qui ne sort que les nuits de pleine lune.",
+  "caractere": "mystérieuse et calme",
+  "numero": 72,
+  "famille": "Sylvestres",
+  "epreuves": [
+   "Fichiers"
+  ],
+  "variantes": [
+   {
+    "id": "classique",
+    "nom": "classique",
+    "chance": 42.6
+   },
+   {
+    "id": "forêt",
+    "nom": "forêt",
+    "chance": 21.3
+   },
+   {
+    "id": "ombre",
+    "nom": "ombre",
+    "chance": 13.1
+   },
+   {
+    "id": "cristal",
+    "nom": "cristal",
+    "chance": 9.5
+   },
+   {
+    "id": "montagne",
+    "nom": "montagne",
+    "chance": 7.4
+   },
+   {
+    "id": "lune",
+    "nom": "lune",
+    "chance": 6.1
+   }
+  ]
+ },
+ {
+  "nom": "Mycélix",
+  "id": "mycelix",
+  "rarete": "rare",
+  "posture": "multipattes",
+  "taille_finale": "grande",
+  "fiche": "Un mille-pattes de mycélium qui tisse des réseaux souterrains entre les racines de toute une forêt.",
+  "caractere": "discret et intelligent",
+  "numero": 73,
+  "famille": "Sylvestres",
+  "epreuves": [
+   "Fichiers"
+  ],
+  "variantes": [
+   {
+    "id": "classique",
+    "nom": "classique",
+    "chance": 45.4
+   },
+   {
+    "id": "champignonniere",
+    "nom": "champignonnière",
+    "chance": 22.7
+   },
+   {
+    "id": "toxique",
+    "nom": "toxique",
+    "chance": 13.9
+   },
+   {
+    "id": "marais",
+    "nom": "marais",
+    "chance": 10.1
+   },
+   {
+    "id": "ruines",
+    "nom": "ruines",
+    "chance": 7.9
+   }
+  ]
+ },
+ {
+  "nom": "Chêneroc",
+  "id": "cheneroc",
+  "rarete": "rare",
+  "posture": "bipède",
+  "taille_finale": "colossale",
+  "fiche": "Un arbre animé mi-chêne mi-rocher qui garde les cols des montagnes boisées depuis des siècles.",
+  "caractere": "lent et protecteur",
+  "numero": 74,
+  "famille": "Sylvestres",
+  "epreuves": [
+   "Fichiers"
+  ],
+  "variantes": [
+   {
+    "id": "classique",
+    "nom": "classique",
+    "chance": 42.6
+   },
+   {
+    "id": "forêt",
+    "nom": "forêt",
+    "chance": 21.3
+   },
+   {
+    "id": "canyon",
+    "nom": "canyon",
+    "chance": 13.1
+   },
+   {
+    "id": "ruines",
+    "nom": "ruines",
+    "chance": 9.5
+   },
+   {
+    "id": "brume",
+    "nom": "brume",
+    "chance": 7.4
+   },
+   {
+    "id": "montagne",
+    "nom": "montagne",
+    "chance": 6.1
+   }
+  ]
+ },
+ {
+  "nom": "Sylvarque",
+  "id": "sylvarque",
+  "rarete": "légendaire",
+  "posture": "bipède",
+  "taille_finale": "colossale",
+  "fiche": "Le seigneur de toutes les forêts, un arbre-roi millénaire dont chaque pas fait germer une prairie fleurie.",
+  "caractere": "sage et majestueux",
+  "numero": 75,
+  "famille": "Sylvestres",
+  "epreuves": [
+   "Fichiers"
+  ],
+  "variantes": [
+   {
+    "id": "classique",
+    "nom": "classique",
+    "chance": 40.5
+   },
+   {
+    "id": "forêt",
+    "nom": "forêt",
+    "chance": 20.3
+   },
+   {
+    "id": "ruines",
+    "nom": "ruines",
+    "chance": 12.4
+   },
+   {
+    "id": "soleil",
+    "nom": "soleil",
+    "chance": 9.1
+   },
+   {
+    "id": "montagne",
+    "nom": "montagne",
+    "chance": 7.0
+   },
+   {
+    "id": "prairie",
+    "nom": "prairie",
+    "chance": 5.8
+   },
+   {
+    "id": "jungle",
+    "nom": "jungle",
+    "chance": 4.9
+   }
+  ]
+ },
+ {
+  "nom": "Scarabouille",
+  "id": "scarabouille",
+  "rarete": "commune",
+  "posture": "quadrupède",
+  "taille_finale": "moyenne",
+  "fiche": "Petit scarabée joufflu qui roule des boulettes de terre dans les prairies et les sous-bois.",
+  "caractere": "têtu et gourmand",
+  "numero": 76,
+  "famille": "Arthropodes",
+  "epreuves": [
+   "Bugs",
+   "Code"
+  ],
+  "variantes": [
+   {
+    "id": "classique",
+    "nom": "classique",
+    "chance": 49.3
+   },
+   {
+    "id": "prairie",
+    "nom": "prairie",
+    "chance": 24.6
+   },
+   {
+    "id": "sable",
+    "nom": "sable",
+    "chance": 15.1
+   },
+   {
+    "id": "champignonniere",
+    "nom": "champignonnière",
+    "chance": 11.0
+   }
+  ]
+ },
+ {
+  "nom": "Pucerise",
+  "id": "pucerise",
+  "rarete": "commune",
+  "posture": "rampant",
+  "taille_finale": "petite",
+  "fiche": "Puceron rond comme une cerise qui sirote la sève des plantes dans les jardins sauvages.",
+  "caractere": "doux et collant",
+  "numero": 77,
+  "famille": "Arthropodes",
+  "epreuves": [
+   "Bugs",
+   "Code"
+  ],
+  "variantes": [
+   {
+    "id": "classique",
+    "nom": "classique",
+    "chance": 55.4
+   },
+   {
+    "id": "prairie",
+    "nom": "prairie",
+    "chance": 27.7
+   },
+   {
+    "id": "eau_petillante",
+    "nom": "eau pétillante",
+    "chance": 17.0
+   }
+  ]
+ },
+ {
+  "nom": "Fourmidable",
+  "id": "fourmidable",
+  "rarete": "commune",
+  "posture": "bipède",
+  "taille_finale": "moyenne",
+  "fiche": "Fourmi ouvrière qui marche debout et porte des charges dix fois plus lourdes qu'elle dans les canyons.",
+  "caractere": "travailleur et fier",
+  "numero": 78,
+  "famille": "Arthropodes",
+  "epreuves": [
+   "Bugs",
+   "Code"
+  ],
+  "variantes": [
+   {
+    "id": "classique",
+    "nom": "classique",
+    "chance": 55.4
+   },
+   {
+    "id": "canyon",
+    "nom": "canyon",
+    "chance": 27.7
+   },
+   {
+    "id": "ruines",
+    "nom": "ruines",
+    "chance": 17.0
+   }
+  ]
+ },
+ {
+  "nom": "Papillombre",
+  "id": "papillombre",
+  "rarete": "commune",
+  "posture": "volant",
+  "taille_finale": "moyenne",
+  "fiche": "Papillon de nuit aux ailes de velours sombre qui danse autour des lumières dans la brume.",
+  "caractere": "rêveur et curieux",
+  "numero": 79,
+  "famille": "Arthropodes",
+  "epreuves": [
+   "Bugs",
+   "Code"
+  ],
+  "variantes": [
+   {
+    "id": "classique",
+    "nom": "classique",
+    "chance": 40.5
+   },
+   {
+    "id": "brume",
+    "nom": "brume",
+    "chance": 20.3
+   },
+   {
+    "id": "lune",
+    "nom": "lune",
+    "chance": 12.4
+   },
+   {
+    "id": "marais",
+    "nom": "marais",
+    "chance": 9.1
+   },
+   {
+    "id": "ruines",
+    "nom": "ruines",
+    "chance": 7.0
+   },
+   {
+    "id": "ombre",
+    "nom": "ombre",
+    "chance": 5.8
+   },
+   {
+    "id": "forêt",
+    "nom": "forêt",
+    "chance": 4.9
+   }
+  ]
+ },
+ {
+  "nom": "Clopinou",
+  "id": "clopinou",
+  "rarete": "commune",
+  "posture": "multipattes",
+  "taille_finale": "petite",
+  "fiche": "Cloporte câlin qui se roule en boule sous les pierres humides des ruines et des cryptes.",
+  "caractere": "timide et câlin",
+  "numero": 80,
+  "famille": "Arthropodes",
+  "epreuves": [
+   "Bugs",
+   "Code"
+  ],
+  "variantes": [
+   {
+    "id": "classique",
+    "nom": "classique",
+    "chance": 49.3
+   },
+   {
+    "id": "ruines",
+    "nom": "ruines",
+    "chance": 24.6
+   },
+   {
+    "id": "marais",
+    "nom": "marais",
+    "chance": 15.1
+   },
+   {
+    "id": "forêt",
+    "nom": "forêt",
+    "chance": 11.0
+   }
+  ]
+ },
+ {
+  "nom": "Tiquetac",
+  "id": "tiquetac",
+  "rarete": "commune",
+  "posture": "flottant",
+  "taille_finale": "moyenne",
+  "fiche": "Tique gonflée comme un ballon qui flotte lentement dans les marais en faisant tic-tac.",
+  "caractere": "patient et sournois",
+  "numero": 81,
+  "famille": "Arthropodes",
+  "epreuves": [
+   "Bugs",
+   "Code"
+  ],
+  "variantes": [
+   {
+    "id": "classique",
+    "nom": "classique",
+    "chance": 55.4
+   },
+   {
+    "id": "marais",
+    "nom": "marais",
+    "chance": 27.7
+   },
+   {
+    "id": "forêt",
+    "nom": "forêt",
+    "chance": 17.0
+   }
+  ]
+ },
+ {
+  "nom": "Araignoir",
+  "id": "araignoir",
+  "rarete": "peu commune",
+  "posture": "multipattes",
+  "taille_finale": "grande",
+  "fiche": "Araignée noire qui tisse des toiles de soie sombre dans les cryptes et les ruines oubliées.",
+  "caractere": "calme et rusé",
+  "numero": 82,
+  "famille": "Arthropodes",
+  "epreuves": [
+   "Bugs",
+   "Code"
+  ],
+  "variantes": [
+   {
+    "id": "classique",
+    "nom": "classique",
+    "chance": 42.6
+   },
+   {
+    "id": "crypte",
+    "nom": "crypte",
+    "chance": 21.3
+   },
+   {
+    "id": "ombre",
+    "nom": "ombre",
+    "chance": 13.1
+   },
+   {
+    "id": "ruines",
+    "nom": "ruines",
+    "chance": 9.5
+   },
+   {
+    "id": "forêt",
+    "nom": "forêt",
+    "chance": 7.4
+   },
+   {
+    "id": "canyon",
+    "nom": "canyon",
+    "chance": 6.1
+   }
+  ]
+ },
+ {
+  "nom": "Mantelame",
+  "id": "mantelame",
+  "rarete": "peu commune",
+  "posture": "bipède",
+  "taille_finale": "grande",
+  "fiche": "Mante religieuse escrimeuse aux bras en lames qui guette ses proies immobile dans la jungle.",
+  "caractere": "discipliné et silencieux",
+  "numero": 83,
+  "famille": "Arthropodes",
+  "epreuves": [
+   "Bugs",
+   "Code"
+  ],
+  "variantes": [
+   {
+    "id": "classique",
+    "nom": "classique",
+    "chance": 45.4
+   },
+   {
+    "id": "jungle",
+    "nom": "jungle",
+    "chance": 22.7
+   },
+   {
+    "id": "montagne",
+    "nom": "montagne",
+    "chance": 13.9
+   },
+   {
+    "id": "marais",
+    "nom": "marais",
+    "chance": 10.1
+   },
+   {
+    "id": "prairie",
+    "nom": "prairie",
+    "chance": 7.9
+   }
+  ]
+ },
+ {
+  "nom": "Scorpiquant",
+  "id": "scorpiquant",
+  "rarete": "peu commune",
+  "posture": "multipattes",
+  "taille_finale": "grande",
+  "fiche": "Scorpion des dunes au dard brûlant qui se cache sous le sable chaud du désert.",
+  "caractere": "irritable et loyal",
+  "numero": 84,
+  "famille": "Arthropodes",
+  "epreuves": [
+   "Bugs",
+   "Code"
+  ],
+  "variantes": [
+   {
+    "id": "classique",
+    "nom": "classique",
+    "chance": 40.5
+   },
+   {
+    "id": "desert",
+    "nom": "désert",
+    "chance": 20.3
+   },
+   {
+    "id": "canyon",
+    "nom": "canyon",
+    "chance": 12.4
+   },
+   {
+    "id": "montagne",
+    "nom": "montagne",
+    "chance": 9.1
+   },
+   {
+    "id": "cendres",
+    "nom": "cendres",
+    "chance": 7.0
+   },
+   {
+    "id": "volcan",
+    "nom": "volcan",
+    "chance": 5.8
+   },
+   {
+    "id": "ruines",
+    "nom": "ruines",
+    "chance": 4.9
+   }
+  ]
+ },
+ {
+  "nom": "Millepince",
+  "id": "millepince",
+  "rarete": "peu commune",
+  "posture": "serpentin",
+  "taille_finale": "grande",
+  "fiche": "Mille-pattes géant aux crochets venimeux qui serpente dans les galeries humides et les champignonnières.",
+  "caractere": "nerveux et vorace",
+  "numero": 85,
+  "famille": "Arthropodes",
+  "epreuves": [
+   "Bugs",
+   "Code"
+  ],
+  "variantes": [
+   {
+    "id": "classique",
+    "nom": "classique",
+    "chance": 49.3
+   },
+   {
+    "id": "champignonniere",
+    "nom": "champignonnière",
+    "chance": 24.6
+   },
+   {
+    "id": "jungle",
+    "nom": "jungle",
+    "chance": 15.1
+   },
+   {
+    "id": "forêt",
+    "nom": "forêt",
+    "chance": 11.0
+   }
+  ]
+ },
+ {
+  "nom": "Bourdonjon",
+  "id": "bourdonjon",
+  "rarete": "rare",
+  "posture": "volant",
+  "taille_finale": "grande",
+  "fiche": "Bourdon bâtisseur qui porte sur son dos une ruche-forteresse où vivent ses petites ouvrières.",
+  "caractere": "protecteur et bougon",
+  "numero": 86,
+  "famille": "Arthropodes",
+  "epreuves": [
+   "Bugs",
+   "Code"
+  ],
+  "variantes": [
+   {
+    "id": "classique",
+    "nom": "classique",
+    "chance": 49.3
+   },
+   {
+    "id": "prairie",
+    "nom": "prairie",
+    "chance": 24.6
+   },
+   {
+    "id": "soleil",
+    "nom": "soleil",
+    "chance": 15.1
+   },
+   {
+    "id": "nuage",
+    "nom": "nuage",
+    "chance": 11.0
+   }
+  ]
+ },
+ {
+  "nom": "Libellance",
+  "id": "libellance",
+  "rarete": "rare",
+  "posture": "volant",
+  "taille_finale": "grande",
+  "fiche": "Libellule chevalier à la queue en lance qui patrouille au-dessus des lagons et des orages.",
+  "caractere": "rapide et noble",
+  "numero": 87,
+  "famille": "Arthropodes",
+  "epreuves": [
+   "Bugs",
+   "Code"
+  ],
+  "variantes": [
+   {
+    "id": "classique",
+    "nom": "classique",
+    "chance": 38.9
+   },
+   {
+    "id": "lagon",
+    "nom": "lagon",
+    "chance": 19.4
+   },
+   {
+    "id": "nuage",
+    "nom": "nuage",
+    "chance": 11.9
+   },
+   {
+    "id": "prairie",
+    "nom": "prairie",
+    "chance": 8.7
+   },
+   {
+    "id": "marais",
+    "nom": "marais",
+    "chance": 6.7
+   },
+   {
+    "id": "jungle",
+    "nom": "jungle",
+    "chance": 5.6
+   },
+   {
+    "id": "corail",
+    "nom": "corail",
+    "chance": 4.7
+   },
+   {
+    "id": "orage",
+    "nom": "orage",
+    "chance": 4.1
+   }
+  ]
+ },
+ {
+  "nom": "Cigalarme",
+  "id": "cigalarme",
+  "rarete": "rare",
+  "posture": "quadrupède",
+  "taille_finale": "colossale",
+  "fiche": "Cigale géante dont le chant assourdissant résonne comme une sirène au sommet des volcans.",
+  "caractere": "bruyant et joyeux",
+  "numero": 88,
+  "famille": "Arthropodes",
+  "epreuves": [
+   "Bugs",
+   "Code"
+  ],
+  "variantes": [
+   {
+    "id": "classique",
+    "nom": "classique",
+    "chance": 45.4
+   },
+   {
+    "id": "volcan",
+    "nom": "volcan",
+    "chance": 22.7
+   },
+   {
+    "id": "prairie",
+    "nom": "prairie",
+    "chance": 13.9
+   },
+   {
+    "id": "soleil",
+    "nom": "soleil",
+    "chance": 10.1
+   },
+   {
+    "id": "forêt",
+    "nom": "forêt",
+    "chance": 7.9
+   }
+  ]
+ },
+ {
+  "nom": "Cocondor",
+  "id": "cocondor",
+  "rarete": "rare",
+  "posture": "amorphe",
+  "taille_finale": "grande",
+  "fiche": "Cocon vivant de soie dorée qui se métamorphose sans fin au cœur des grottes de cristal.",
+  "caractere": "mystérieux et changeant",
+  "numero": 89,
+  "famille": "Arthropodes",
+  "epreuves": [
+   "Bugs",
+   "Code"
+  ],
+  "variantes": [
+   {
+    "id": "classique",
+    "nom": "classique",
+    "chance": 45.4
+   },
+   {
+    "id": "cristal",
+    "nom": "cristal",
+    "chance": 22.7
+   },
+   {
+    "id": "arcane",
+    "nom": "arcane",
+    "chance": 13.9
+   },
+   {
+    "id": "aurore",
+    "nom": "aurore",
+    "chance": 10.1
+   },
+   {
+    "id": "forêt",
+    "nom": "forêt",
+    "chance": 7.9
+   }
+  ]
+ },
+ {
+  "nom": "Essaimpereur",
+  "id": "essaimpereur",
+  "rarete": "légendaire",
+  "posture": "quadrupède",
+  "taille_finale": "colossale",
+  "fiche": "Souverain colossal de tous les insectes, dont la carapace-couronne abrite un essaim entier.",
+  "caractere": "majestueux et implacable",
+  "numero": 90,
+  "famille": "Arthropodes",
+  "epreuves": [
+   "Bugs",
+   "Code"
+  ],
+  "variantes": [
+   {
+    "id": "classique",
+    "nom": "classique",
+    "chance": 45.4
+   },
+   {
+    "id": "ruines",
+    "nom": "ruines",
+    "chance": 22.7
+   },
+   {
+    "id": "jungle",
+    "nom": "jungle",
+    "chance": 13.9
+   },
+   {
+    "id": "forêt",
+    "nom": "forêt",
+    "chance": 10.1
+   },
+   {
+    "id": "desert",
+    "nom": "désert",
+    "chance": 7.9
+   }
+  ]
+ },
+ {
+  "nom": "Plouftin",
+  "id": "plouftin",
+  "rarete": "commune",
+  "posture": "flottant",
+  "taille_finale": "petite",
+  "fiche": "Petit poisson-bulle qui gonfle quand il a peur, il dérive en bancs dans les lagons tièdes et les coraux peu profonds.",
+  "caractere": "peureux et joueur",
+  "numero": 91,
+  "famille": "Abyssaux",
+  "epreuves": [
+   "Données"
+  ],
+  "variantes": [
+   {
+    "id": "classique",
+    "nom": "classique",
+    "chance": 40.5
+   },
+   {
+    "id": "lagon",
+    "nom": "lagon",
+    "chance": 20.3
+   },
+   {
+    "id": "marais",
+    "nom": "marais",
+    "chance": 12.4
+   },
+   {
+    "id": "abyssal",
+    "nom": "abyssal",
+    "chance": 9.1
+   },
+   {
+    "id": "eau_petillante",
+    "nom": "eau pétillante",
+    "chance": 7.0
+   },
+   {
+    "id": "corail",
+    "nom": "corail",
+    "chance": 5.8
+   },
+   {
+    "id": "brume",
+    "nom": "brume",
+    "chance": 4.9
+   }
+  ]
+ },
+ {
+  "nom": "Tritonnet",
+  "id": "tritonnet",
+  "rarete": "commune",
+  "posture": "bipède",
+  "taille_finale": "petite",
+  "fiche": "Petit amphibien des récifs qui marche sur ses nageoires arrière et collectionne les coquillages échoués.",
+  "caractere": "curieux et bavard",
+  "numero": 92,
+  "famille": "Abyssaux",
+  "epreuves": [
+   "Données"
+  ],
+  "variantes": [
+   {
+    "id": "classique",
+    "nom": "classique",
+    "chance": 49.3
+   },
+   {
+    "id": "lagon",
+    "nom": "lagon",
+    "chance": 24.6
+   },
+   {
+    "id": "ruines",
+    "nom": "ruines",
+    "chance": 15.1
+   },
+   {
+    "id": "marais",
+    "nom": "marais",
+    "chance": 11.0
+   }
+  ]
+ },
+ {
+  "nom": "Krillou",
+  "id": "krillou",
+  "rarete": "commune",
+  "posture": "multipattes",
+  "taille_finale": "petite",
+  "fiche": "Minuscule crevette translucide qui vit en nuées scintillantes et éclaire l'eau froide la nuit.",
+  "caractere": "grégaire et étourdi",
+  "numero": 93,
+  "famille": "Abyssaux",
+  "epreuves": [
+   "Données"
+  ],
+  "variantes": [
+   {
+    "id": "classique",
+    "nom": "classique",
+    "chance": 40.5
+   },
+   {
+    "id": "abyssal",
+    "nom": "abyssal",
+    "chance": 20.3
+   },
+   {
+    "id": "corail",
+    "nom": "corail",
+    "chance": 12.4
+   },
+   {
+    "id": "glace",
+    "nom": "glace",
+    "chance": 9.1
+   },
+   {
+    "id": "lagon",
+    "nom": "lagon",
+    "chance": 7.0
+   },
+   {
+    "id": "neon",
+    "nom": "néon",
+    "chance": 5.8
+   },
+   {
+    "id": "aurore",
+    "nom": "aurore",
+    "chance": 4.9
+   }
+  ]
+ },
+ {
+  "nom": "Anguillon",
+  "id": "anguillon",
+  "rarete": "commune",
+  "posture": "serpentin",
+  "taille_finale": "moyenne",
+  "fiche": "Anguille électrique qui se cache dans les épaves et grésille quand on la caresse.",
+  "caractere": "nerveux et taquin",
+  "numero": 94,
+  "famille": "Abyssaux",
+  "epreuves": [
+   "Données"
+  ],
+  "variantes": [
+   {
+    "id": "classique",
+    "nom": "classique",
+    "chance": 45.4
+   },
+   {
+    "id": "abyssal",
+    "nom": "abyssal",
+    "chance": 22.7
+   },
+   {
+    "id": "marais",
+    "nom": "marais",
+    "chance": 13.9
+   },
+   {
+    "id": "ruines",
+    "nom": "ruines",
+    "chance": 10.1
+   },
+   {
+    "id": "corail",
+    "nom": "corail",
+    "chance": 7.9
+   }
+  ]
+ },
+ {
+  "nom": "Crabouille",
+  "id": "crabouille",
+  "rarete": "commune",
+  "posture": "multipattes",
+  "taille_finale": "moyenne",
+  "fiche": "Crabe bagarreur qui se fabrique une armure avec tout ce qu'il ramasse sur le fond marin.",
+  "caractere": "têtu et costaud",
+  "numero": 95,
+  "famille": "Abyssaux",
+  "epreuves": [
+   "Données"
+  ],
+  "variantes": [
+   {
+    "id": "classique",
+    "nom": "classique",
+    "chance": 45.4
+   },
+   {
+    "id": "sable",
+    "nom": "sable",
+    "chance": 22.7
+   },
+   {
+    "id": "canyon",
+    "nom": "canyon",
+    "chance": 13.9
+   },
+   {
+    "id": "lagon",
+    "nom": "lagon",
+    "chance": 10.1
+   },
+   {
+    "id": "abyssal",
+    "nom": "abyssal",
+    "chance": 7.9
+   }
+  ]
+ },
+ {
+  "nom": "Poulpiot",
+  "id": "poulpiot",
+  "rarete": "commune",
+  "posture": "rampant",
+  "taille_finale": "moyenne",
+  "fiche": "Petit poulpe malin qui change de couleur et vole les objets brillants des plongeurs.",
+  "caractere": "malicieux et gourmand",
+  "numero": 96,
+  "famille": "Abyssaux",
+  "epreuves": [
+   "Données"
+  ],
+  "variantes": [
+   {
+    "id": "classique",
+    "nom": "classique",
+    "chance": 42.6
+   },
+   {
+    "id": "corail",
+    "nom": "corail",
+    "chance": 21.3
+   },
+   {
+    "id": "abyssal",
+    "nom": "abyssal",
+    "chance": 13.1
+   },
+   {
+    "id": "lagon",
+    "nom": "lagon",
+    "chance": 9.5
+   },
+   {
+    "id": "ruines",
+    "nom": "ruines",
+    "chance": 7.4
+   },
+   {
+    "id": "neon",
+    "nom": "néon",
+    "chance": 6.1
+   }
+  ]
+ },
+ {
+  "nom": "Lampiotte",
+  "id": "lampiotte",
+  "rarete": "peu commune",
+  "posture": "flottant",
+  "taille_finale": "moyenne",
+  "fiche": "Poisson des grandes profondeurs qui attire ses proies avec la petite lanterne qui pend devant sa bouche.",
+  "caractere": "solitaire et rusé",
+  "numero": 97,
+  "famille": "Abyssaux",
+  "epreuves": [
+   "Données"
+  ],
+  "variantes": [
+   {
+    "id": "classique",
+    "nom": "classique",
+    "chance": 49.3
+   },
+   {
+    "id": "abyssal",
+    "nom": "abyssal",
+    "chance": 24.6
+   },
+   {
+    "id": "crypte",
+    "nom": "crypte",
+    "chance": 15.1
+   },
+   {
+    "id": "ombre",
+    "nom": "ombre",
+    "chance": 11.0
+   }
+  ]
+ },
+ {
+  "nom": "Bavonge",
+  "id": "bavonge",
+  "rarete": "peu commune",
+  "posture": "amorphe",
+  "taille_finale": "grande",
+  "fiche": "Éponge vivante et gluante qui filtre l'eau des grottes sous-marines et absorbe tout ce qu'elle touche.",
+  "caractere": "placide et glouton",
+  "numero": 98,
+  "famille": "Abyssaux",
+  "epreuves": [
+   "Données"
+  ],
+  "variantes": [
+   {
+    "id": "classique",
+    "nom": "classique",
+    "chance": 45.4
+   },
+   {
+    "id": "corail",
+    "nom": "corail",
+    "chance": 22.7
+   },
+   {
+    "id": "abyssal",
+    "nom": "abyssal",
+    "chance": 13.9
+   },
+   {
+    "id": "marais",
+    "nom": "marais",
+    "chance": 10.1
+   },
+   {
+    "id": "toxique",
+    "nom": "toxique",
+    "chance": 7.9
+   }
+  ]
+ },
+ {
+  "nom": "Nautiloque",
+  "id": "nautiloque",
+  "rarete": "peu commune",
+  "posture": "flottant",
+  "taille_finale": "moyenne",
+  "fiche": "Céphalopode à coquille spirale qui monte et descend dans l'eau comme un sous-marin et parle par éclats de lumière.",
+  "caractere": "sage et bavard",
+  "numero": 99,
+  "famille": "Abyssaux",
+  "epreuves": [
+   "Données"
+  ],
+  "variantes": [
+   {
+    "id": "classique",
+    "nom": "classique",
+    "chance": 42.6
+   },
+   {
+    "id": "abyssal",
+    "nom": "abyssal",
+    "chance": 21.3
+   },
+   {
+    "id": "corail",
+    "nom": "corail",
+    "chance": 13.1
+   },
+   {
+    "id": "lagon",
+    "nom": "lagon",
+    "chance": 9.5
+   },
+   {
+    "id": "ruines",
+    "nom": "ruines",
+    "chance": 7.4
+   },
+   {
+    "id": "lune",
+    "nom": "lune",
+    "chance": 6.1
+   }
+  ]
+ },
+ {
+  "nom": "Raiyon",
+  "id": "raiyon",
+  "rarete": "peu commune",
+  "posture": "volant",
+  "taille_finale": "grande",
+  "fiche": "Raie géante qui plane dans les courants comme un oiseau et bondit parfois hors de l'eau sous la lune.",
+  "caractere": "libre et gracieux",
+  "numero": 100,
+  "famille": "Abyssaux",
+  "epreuves": [
+   "Données"
+  ],
+  "variantes": [
+   {
+    "id": "classique",
+    "nom": "classique",
+    "chance": 40.5
+   },
+   {
+    "id": "lagon",
+    "nom": "lagon",
+    "chance": 20.3
+   },
+   {
+    "id": "corail",
+    "nom": "corail",
+    "chance": 12.4
+   },
+   {
+    "id": "aurore",
+    "nom": "aurore",
+    "chance": 9.1
+   },
+   {
+    "id": "abyssal",
+    "nom": "abyssal",
+    "chance": 7.0
+   },
+   {
+    "id": "nuage",
+    "nom": "nuage",
+    "chance": 5.8
+   },
+   {
+    "id": "sable",
+    "nom": "sable",
+    "chance": 4.9
+   }
+  ]
+ },
+ {
+  "nom": "Homardeur",
+  "id": "homardeur",
+  "rarete": "rare",
+  "posture": "bipède",
+  "taille_finale": "grande",
+  "fiche": "Homard chevalier qui se dresse sur ses pattes arrière pour défendre les épaves où il a établi son fief.",
+  "caractere": "fier et loyal",
+  "numero": 101,
+  "famille": "Abyssaux",
+  "epreuves": [
+   "Données"
+  ],
+  "variantes": [
+   {
+    "id": "classique",
+    "nom": "classique",
+    "chance": 38.9
+   },
+   {
+    "id": "ruines",
+    "nom": "ruines",
+    "chance": 19.4
+   },
+   {
+    "id": "corail",
+    "nom": "corail",
+    "chance": 11.9
+   },
+   {
+    "id": "sable",
+    "nom": "sable",
+    "chance": 8.7
+   },
+   {
+    "id": "rouille",
+    "nom": "rouille",
+    "chance": 6.7
+   },
+   {
+    "id": "abyssal",
+    "nom": "abyssal",
+    "chance": 5.6
+   },
+   {
+    "id": "canyon",
+    "nom": "canyon",
+    "chance": 4.7
+   },
+   {
+    "id": "mecanique",
+    "nom": "mécanique",
+    "chance": 4.1
+   }
+  ]
+ },
+ {
+  "nom": "Calmarée",
+  "id": "calmaree",
+  "rarete": "rare",
+  "posture": "flottant",
+  "taille_finale": "colossale",
+  "fiche": "Calmar géant des fosses obscures qui fait monter les marées en battant de ses immenses bras.",
+  "caractere": "mystérieux et colérique",
+  "numero": 102,
+  "famille": "Abyssaux",
+  "epreuves": [
+   "Données"
+  ],
+  "variantes": [
+   {
+    "id": "classique",
+    "nom": "classique",
+    "chance": 45.4
+   },
+   {
+    "id": "abyssal",
+    "nom": "abyssal",
+    "chance": 22.7
+   },
+   {
+    "id": "brume",
+    "nom": "brume",
+    "chance": 13.9
+   },
+   {
+    "id": "ombre",
+    "nom": "ombre",
+    "chance": 10.1
+   },
+   {
+    "id": "lune",
+    "nom": "lune",
+    "chance": 7.9
+   }
+  ]
+ },
+ {
+  "nom": "Récifort",
+  "id": "recifort",
+  "rarete": "rare",
+  "posture": "quadrupède",
+  "taille_finale": "colossale",
+  "fiche": "Tortue colossale dont la carapace porte un récif de corail entier, abri de milliers de petits poissons.",
+  "caractere": "patient et protecteur",
+  "numero": 103,
+  "famille": "Abyssaux",
+  "epreuves": [
+   "Données"
+  ],
+  "variantes": [
+   {
+    "id": "classique",
+    "nom": "classique",
+    "chance": 42.6
+   },
+   {
+    "id": "corail",
+    "nom": "corail",
+    "chance": 21.3
+   },
+   {
+    "id": "lagon",
+    "nom": "lagon",
+    "chance": 13.1
+   },
+   {
+    "id": "abyssal",
+    "nom": "abyssal",
+    "chance": 9.5
+   },
+   {
+    "id": "ruines",
+    "nom": "ruines",
+    "chance": 7.4
+   },
+   {
+    "id": "sable",
+    "nom": "sable",
+    "chance": 6.1
+   }
+  ]
+ },
+ {
+  "nom": "Ondulame",
+  "id": "ondulame",
+  "rarete": "rare",
+  "posture": "serpentin",
+  "taille_finale": "colossale",
+  "fiche": "Serpent de mer aux nageoires tranchantes qui fend les vagues des tempêtes et coule les navires imprudents.",
+  "caractere": "farouche et orgueilleux",
+  "numero": 104,
+  "famille": "Abyssaux",
+  "epreuves": [
+   "Données"
+  ],
+  "variantes": [
+   {
+    "id": "classique",
+    "nom": "classique",
+    "chance": 42.6
+   },
+   {
+    "id": "abyssal",
+    "nom": "abyssal",
+    "chance": 21.3
+   },
+   {
+    "id": "lagon",
+    "nom": "lagon",
+    "chance": 13.1
+   },
+   {
+    "id": "corail",
+    "nom": "corail",
+    "chance": 9.5
+   },
+   {
+    "id": "glace",
+    "nom": "glace",
+    "chance": 7.4
+   },
+   {
+    "id": "ruines",
+    "nom": "ruines",
+    "chance": 6.1
+   }
+  ]
+ },
+ {
+  "nom": "Noctilune",
+  "id": "noctilune",
+  "rarete": "légendaire",
+  "posture": "flottant",
+  "taille_finale": "colossale",
+  "fiche": "Reine des abysses, immense méduse couronnée dont la lumière guide toutes les créatures des profondeurs.",
+  "caractere": "majestueuse et sereine",
+  "numero": 105,
+  "famille": "Abyssaux",
+  "epreuves": [
+   "Données"
+  ],
+  "variantes": [
+   {
+    "id": "classique",
+    "nom": "classique",
+    "chance": 49.3
+   },
+   {
+    "id": "abyssal",
+    "nom": "abyssal",
+    "chance": 24.6
+   },
+   {
+    "id": "arcane",
+    "nom": "arcane",
+    "chance": 15.1
+   },
+   {
+    "id": "cosmique",
+    "nom": "cosmique",
+    "chance": 11.0
+   }
+  ]
+ },
+ {
+  "nom": "Lumignon",
+  "id": "lumignon",
+  "rarete": "commune",
+  "posture": "flottant",
+  "taille_finale": "petite",
+  "fiche": "Petite flamme de lumière pure qui flotte au-dessus des sanctuaires oubliés et des sommets nocturnes.",
+  "caractere": "doux et curieux",
+  "numero": 106,
+  "famille": "Célestes",
+  "epreuves": [
+   "Réseau",
+   "Nuage"
+  ],
+  "variantes": [
+   {
+    "id": "classique",
+    "nom": "classique",
+    "chance": 42.6
+   },
+   {
+    "id": "soleil",
+    "nom": "soleil",
+    "chance": 21.3
+   },
+   {
+    "id": "nuage",
+    "nom": "nuage",
+    "chance": 13.1
+   },
+   {
+    "id": "ruines",
+    "nom": "ruines",
+    "chance": 9.5
+   },
+   {
+    "id": "aurore",
+    "nom": "aurore",
+    "chance": 7.4
+   },
+   {
+    "id": "cosmique",
+    "nom": "cosmique",
+    "chance": 6.1
+   }
+  ]
+ },
+ {
+  "nom": "Étoilapin",
+  "id": "etoilapin",
+  "rarete": "commune",
+  "posture": "quadrupède",
+  "taille_finale": "petite",
+  "fiche": "Lapin constellé qui bondit dans les prairies au clair de lune en semant des étincelles d'étoiles.",
+  "caractere": "joueur et rêveur",
+  "numero": 107,
+  "famille": "Célestes",
+  "epreuves": [
+   "Réseau",
+   "Nuage"
+  ],
+  "variantes": [
+   {
+    "id": "classique",
+    "nom": "classique",
+    "chance": 55.4
+   },
+   {
+    "id": "prairie",
+    "nom": "prairie",
+    "chance": 27.7
+   },
+   {
+    "id": "cosmique",
+    "nom": "cosmique",
+    "chance": 17.0
+   }
+  ]
+ },
+ {
+  "nom": "Plumange",
+  "id": "plumange",
+  "rarete": "commune",
+  "posture": "volant",
+  "taille_finale": "petite",
+  "fiche": "Oisillon ailé aux plumes d'or qui veille sur les clochers en ruine et les nids des falaises.",
+  "caractere": "protecteur et fier",
+  "numero": 108,
+  "famille": "Célestes",
+  "epreuves": [
+   "Réseau",
+   "Nuage"
+  ],
+  "variantes": [
+   {
+    "id": "classique",
+    "nom": "classique",
+    "chance": 38.9
+   },
+   {
+    "id": "nuage",
+    "nom": "nuage",
+    "chance": 19.4
+   },
+   {
+    "id": "soleil",
+    "nom": "soleil",
+    "chance": 11.9
+   },
+   {
+    "id": "montagne",
+    "nom": "montagne",
+    "chance": 8.7
+   },
+   {
+    "id": "aurore",
+    "nom": "aurore",
+    "chance": 6.7
+   },
+   {
+    "id": "orage",
+    "nom": "orage",
+    "chance": 5.6
+   },
+   {
+    "id": "prairie",
+    "nom": "prairie",
+    "chance": 4.7
+   },
+   {
+    "id": "ruines",
+    "nom": "ruines",
+    "chance": 4.1
+   }
+  ]
+ },
+ {
+  "nom": "Nébuline",
+  "id": "nebuline",
+  "rarete": "commune",
+  "posture": "amorphe",
+  "taille_finale": "petite",
+  "fiche": "Petit nuage de poussière d'étoiles vivant qui dérive dans le ciel nocturne et les grottes de cristal.",
+  "caractere": "rêveur et câlin",
+  "numero": 109,
+  "famille": "Célestes",
+  "epreuves": [
+   "Réseau",
+   "Nuage"
+  ],
+  "variantes": [
+   {
+    "id": "classique",
+    "nom": "classique",
+    "chance": 55.4
+   },
+   {
+    "id": "cosmique",
+    "nom": "cosmique",
+    "chance": 27.7
+   },
+   {
+    "id": "brume",
+    "nom": "brume",
+    "chance": 17.0
+   }
+  ]
+ },
+ {
+  "nom": "Filcomète",
+  "id": "filcomete",
+  "rarete": "commune",
+  "posture": "serpentin",
+  "taille_finale": "moyenne",
+  "fiche": "Serpent céleste dont la queue laisse une traînée lumineuse comme une comète au-dessus des déserts nocturnes.",
+  "caractere": "vif et espiègle",
+  "numero": 110,
+  "famille": "Célestes",
+  "epreuves": [
+   "Réseau",
+   "Nuage"
+  ],
+  "variantes": [
+   {
+    "id": "classique",
+    "nom": "classique",
+    "chance": 49.3
+   },
+   {
+    "id": "cosmique",
+    "nom": "cosmique",
+    "chance": 24.6
+   },
+   {
+    "id": "desert",
+    "nom": "désert",
+    "chance": 15.1
+   },
+   {
+    "id": "nuage",
+    "nom": "nuage",
+    "chance": 11.0
+   }
+  ]
+ },
+ {
+  "nom": "Auréolin",
+  "id": "aureolin",
+  "rarete": "commune",
+  "posture": "bipède",
+  "taille_finale": "petite",
+  "fiche": "Petit moine de lumière à auréole qui garde les temples des montagnes et allume les lanternes à l'aube.",
+  "caractere": "sage et gourmand",
+  "numero": 111,
+  "famille": "Célestes",
+  "epreuves": [
+   "Réseau",
+   "Nuage"
+  ],
+  "variantes": [
+   {
+    "id": "classique",
+    "nom": "classique",
+    "chance": 49.3
+   },
+   {
+    "id": "montagne",
+    "nom": "montagne",
+    "chance": 24.6
+   },
+   {
+    "id": "arcane",
+    "nom": "arcane",
+    "chance": 15.1
+   },
+   {
+    "id": "cristal",
+    "nom": "cristal",
+    "chance": 11.0
+   }
+  ]
+ },
+ {
+  "nom": "Lunacorne",
+  "id": "lunacorne",
+  "rarete": "peu commune",
+  "posture": "quadrupède",
+  "taille_finale": "grande",
+  "fiche": "Chèvre sacrée aux cornes en croissant de lune qui escalade les pics enneigés les nuits de pleine lune.",
+  "caractere": "calme et têtu",
+  "numero": 112,
+  "famille": "Célestes",
+  "epreuves": [
+   "Réseau",
+   "Nuage"
+  ],
+  "variantes": [
+   {
+    "id": "classique",
+    "nom": "classique",
+    "chance": 45.4
+   },
+   {
+    "id": "montagne",
+    "nom": "montagne",
+    "chance": 22.7
+   },
+   {
+    "id": "lune",
+    "nom": "lune",
+    "chance": 13.9
+   },
+   {
+    "id": "toundra",
+    "nom": "toundra",
+    "chance": 10.1
+   },
+   {
+    "id": "glace",
+    "nom": "glace",
+    "chance": 7.9
+   }
+  ]
+ },
+ {
+  "nom": "Scintipède",
+  "id": "scintipede",
+  "rarete": "peu commune",
+  "posture": "multipattes",
+  "taille_finale": "moyenne",
+  "fiche": "Long mille-pattes de lumière dont chaque segment brille comme une étoile, il serpente dans les grottes de cristal.",
+  "caractere": "discret et lumineux",
+  "numero": 113,
+  "famille": "Célestes",
+  "epreuves": [
+   "Réseau",
+   "Nuage"
+  ],
+  "variantes": [
+   {
+    "id": "classique",
+    "nom": "classique",
+    "chance": 40.5
+   },
+   {
+    "id": "cristal",
+    "nom": "cristal",
+    "chance": 20.3
+   },
+   {
+    "id": "cosmique",
+    "nom": "cosmique",
+    "chance": 12.4
+   },
+   {
+    "id": "lune",
+    "nom": "lune",
+    "chance": 9.1
+   },
+   {
+    "id": "ruines",
+    "nom": "ruines",
+    "chance": 7.0
+   },
+   {
+    "id": "arcane",
+    "nom": "arcane",
+    "chance": 5.8
+   },
+   {
+    "id": "montagne",
+    "nom": "montagne",
+    "chance": 4.9
+   }
+  ]
+ },
+ {
+  "nom": "Séraphibou",
+  "id": "seraphibou",
+  "rarete": "peu commune",
+  "posture": "volant",
+  "taille_finale": "moyenne",
+  "fiche": "Hibou à six ailes qui veille la nuit sur les tours célestes et lit les étoiles.",
+  "caractere": "savant et vigilant",
+  "numero": 114,
+  "famille": "Célestes",
+  "epreuves": [
+   "Réseau",
+   "Nuage"
+  ],
+  "variantes": [
+   {
+    "id": "classique",
+    "nom": "classique",
+    "chance": 40.5
+   },
+   {
+    "id": "nuage",
+    "nom": "nuage",
+    "chance": 20.3
+   },
+   {
+    "id": "cosmique",
+    "nom": "cosmique",
+    "chance": 12.4
+   },
+   {
+    "id": "montagne",
+    "nom": "montagne",
+    "chance": 9.1
+   },
+   {
+    "id": "ruines",
+    "nom": "ruines",
+    "chance": 7.0
+   },
+   {
+    "id": "forêt",
+    "nom": "forêt",
+    "chance": 5.8
+   },
+   {
+    "id": "arcane",
+    "nom": "arcane",
+    "chance": 4.9
+   }
+  ]
+ },
+ {
+  "nom": "Éclipsard",
+  "id": "eclipsard",
+  "rarete": "peu commune",
+  "posture": "flottant",
+  "taille_finale": "moyenne",
+  "fiche": "Masque flottant mi-soleil mi-lune qui n'apparaît que pendant les éclipses au-dessus des ruines.",
+  "caractere": "mystérieux et taquin",
+  "numero": 115,
+  "famille": "Célestes",
+  "epreuves": [
+   "Réseau",
+   "Nuage"
+  ],
+  "variantes": [
+   {
+    "id": "classique",
+    "nom": "classique",
+    "chance": 49.3
+   },
+   {
+    "id": "soleil",
+    "nom": "soleil",
+    "chance": 24.6
+   },
+   {
+    "id": "arcane",
+    "nom": "arcane",
+    "chance": 15.1
+   },
+   {
+    "id": "ombre",
+    "nom": "ombre",
+    "chance": 11.0
+   }
+  ]
+ },
+ {
+  "nom": "Rugisoleil",
+  "id": "rugisoleil",
+  "rarete": "rare",
+  "posture": "quadrupède",
+  "taille_finale": "grande",
+  "fiche": "Lion sacré à crinière de flammes dorées, gardien des temples solaires du désert.",
+  "caractere": "noble et fougueux",
+  "numero": 116,
+  "famille": "Célestes",
+  "epreuves": [
+   "Réseau",
+   "Nuage"
+  ],
+  "variantes": [
+   {
+    "id": "classique",
+    "nom": "classique",
+    "chance": 55.4
+   },
+   {
+    "id": "desert",
+    "nom": "désert",
+    "chance": 27.7
+   },
+   {
+    "id": "canyon",
+    "nom": "canyon",
+    "chance": 17.0
+   }
+  ]
+ },
+ {
+  "nom": "Astralame",
+  "id": "astralame",
+  "rarete": "rare",
+  "posture": "bipède",
+  "taille_finale": "grande",
+  "fiche": "Chevalier de lumière qui manie une lame forgée dans une étoile, il garde les portes du ciel.",
+  "caractere": "loyal et solennel",
+  "numero": 117,
+  "famille": "Célestes",
+  "epreuves": [
+   "Réseau",
+   "Nuage"
+  ],
+  "variantes": [
+   {
+    "id": "classique",
+    "nom": "classique",
+    "chance": 45.4
+   },
+   {
+    "id": "nuage",
+    "nom": "nuage",
+    "chance": 22.7
+   },
+   {
+    "id": "montagne",
+    "nom": "montagne",
+    "chance": 13.9
+   },
+   {
+    "id": "ruines",
+    "nom": "ruines",
+    "chance": 10.1
+   },
+   {
+    "id": "arcane",
+    "nom": "arcane",
+    "chance": 7.9
+   }
+  ]
+ },
+ {
+  "nom": "Zénithéon",
+  "id": "zenitheon",
+  "rarete": "rare",
+  "posture": "serpentin",
+  "taille_finale": "colossale",
+  "fiche": "Grand serpent ailé des hautes altitudes qui ondule entre les aurores boréales.",
+  "caractere": "majestueux et distant",
+  "numero": 118,
+  "famille": "Célestes",
+  "epreuves": [
+   "Réseau",
+   "Nuage"
+  ],
+  "variantes": [
+   {
+    "id": "classique",
+    "nom": "classique",
+    "chance": 45.4
+   },
+   {
+    "id": "aurore",
+    "nom": "aurore",
+    "chance": 22.7
+   },
+   {
+    "id": "montagne",
+    "nom": "montagne",
+    "chance": 13.9
+   },
+   {
+    "id": "toundra",
+    "nom": "toundra",
+    "chance": 10.1
+   },
+   {
+    "id": "cosmique",
+    "nom": "cosmique",
+    "chance": 7.9
+   }
+  ]
+ },
+ {
+  "nom": "Tortunivers",
+  "id": "tortunivers",
+  "rarete": "rare",
+  "posture": "rampant",
+  "taille_finale": "colossale",
+  "fiche": "Tortue cosmique colossale qui porte une galaxie sur sa carapace et dort sur les rives des lacs gelés.",
+  "caractere": "patient et bienveillant",
+  "numero": 119,
+  "famille": "Célestes",
+  "epreuves": [
+   "Réseau",
+   "Nuage"
+  ],
+  "variantes": [
+   {
+    "id": "classique",
+    "nom": "classique",
+    "chance": 38.9
+   },
+   {
+    "id": "cosmique",
+    "nom": "cosmique",
+    "chance": 19.4
+   },
+   {
+    "id": "glace",
+    "nom": "glace",
+    "chance": 11.9
+   },
+   {
+    "id": "toundra",
+    "nom": "toundra",
+    "chance": 8.7
+   },
+   {
+    "id": "cristal",
+    "nom": "cristal",
+    "chance": 6.7
+   },
+   {
+    "id": "lune",
+    "nom": "lune",
+    "chance": 5.6
+   },
+   {
+    "id": "arcane",
+    "nom": "arcane",
+    "chance": 4.7
+   },
+   {
+    "id": "lagon",
+    "nom": "lagon",
+    "chance": 4.1
+   }
+  ]
+ },
+ {
+  "nom": "Empyria",
+  "id": "empyria",
+  "rarete": "légendaire",
+  "posture": "volant",
+  "taille_finale": "colossale",
+  "fiche": "Reine céleste aux ailes immenses qui règne sur le firmament et fait se lever les étoiles.",
+  "caractere": "souveraine et bienveillante",
+  "numero": 120,
+  "famille": "Célestes",
+  "epreuves": [
+   "Réseau",
+   "Nuage"
+  ],
+  "variantes": [
+   {
+    "id": "classique",
+    "nom": "classique",
+    "chance": 45.4
+   },
+   {
+    "id": "cosmique",
+    "nom": "cosmique",
+    "chance": 22.7
+   },
+   {
+    "id": "cristal",
+    "nom": "cristal",
+    "chance": 13.9
+   },
+   {
+    "id": "montagne",
+    "nom": "montagne",
+    "chance": 10.1
+   },
+   {
+    "id": "nuage",
+    "nom": "nuage",
+    "chance": 7.9
+   }
+  ]
+ },
+ {
+  "nom": "Boulonnet",
+  "id": "boulonnet",
+  "rarete": "commune",
+  "posture": "bipède",
+  "taille_finale": "petite",
+  "fiche": "Petit automate de bronze né d'un boulon oublié, il trottine dans les ateliers abandonnés en quête de vis à serrer.",
+  "caractere": "serviable et curieux",
+  "numero": 121,
+  "famille": "Constructs",
+  "epreuves": [
+   "Code",
+   "Crypto"
+  ],
+  "variantes": [
+   {
+    "id": "classique",
+    "nom": "classique",
+    "chance": 38.9
+   },
+   {
+    "id": "mecanique",
+    "nom": "mécanique",
+    "chance": 19.4
+   },
+   {
+    "id": "ruines",
+    "nom": "ruines",
+    "chance": 11.9
+   },
+   {
+    "id": "cristal",
+    "nom": "cristal",
+    "chance": 8.7
+   },
+   {
+    "id": "rouille",
+    "nom": "rouille",
+    "chance": 6.7
+   },
+   {
+    "id": "montagne",
+    "nom": "montagne",
+    "chance": 5.6
+   },
+   {
+    "id": "canyon",
+    "nom": "canyon",
+    "chance": 4.7
+   },
+   {
+    "id": "neon",
+    "nom": "néon",
+    "chance": 4.1
+   }
+  ]
+ },
+ {
+  "nom": "Rouillot",
+  "id": "rouillot",
+  "rarete": "commune",
+  "posture": "quadrupède",
+  "taille_finale": "petite",
+  "fiche": "Chiot de ferraille rouillée qui fouille les décharges et ronge les vieilles chaînes comme des os.",
+  "caractere": "joueur et gourmand",
+  "numero": 122,
+  "famille": "Constructs",
+  "epreuves": [
+   "Code",
+   "Crypto"
+  ],
+  "variantes": [
+   {
+    "id": "classique",
+    "nom": "classique",
+    "chance": 45.4
+   },
+   {
+    "id": "rouille",
+    "nom": "rouille",
+    "chance": 22.7
+   },
+   {
+    "id": "mecanique",
+    "nom": "mécanique",
+    "chance": 13.9
+   },
+   {
+    "id": "sable",
+    "nom": "sable",
+    "chance": 10.1
+   },
+   {
+    "id": "canyon",
+    "nom": "canyon",
+    "chance": 7.9
+   }
+  ]
+ },
+ {
+  "nom": "Pantinou",
+  "id": "pantinou",
+  "rarete": "commune",
+  "posture": "bipède",
+  "taille_finale": "moyenne",
+  "fiche": "Marionnette de bois enchantée qui danse seule dans les théâtres en ruine, ses fils reliés à rien.",
+  "caractere": "farceur et théâtral",
+  "numero": 123,
+  "famille": "Constructs",
+  "epreuves": [
+   "Code",
+   "Crypto"
+  ],
+  "variantes": [
+   {
+    "id": "classique",
+    "nom": "classique",
+    "chance": 40.5
+   },
+   {
+    "id": "ruines",
+    "nom": "ruines",
+    "chance": 20.3
+   },
+   {
+    "id": "crypte",
+    "nom": "crypte",
+    "chance": 12.4
+   },
+   {
+    "id": "forêt",
+    "nom": "forêt",
+    "chance": 9.1
+   },
+   {
+    "id": "neon",
+    "nom": "néon",
+    "chance": 7.0
+   },
+   {
+    "id": "ombre",
+    "nom": "ombre",
+    "chance": 5.8
+   },
+   {
+    "id": "brume",
+    "nom": "brume",
+    "chance": 4.9
+   }
+  ]
+ },
+ {
+  "nom": "Ressortine",
+  "id": "ressortine",
+  "rarete": "commune",
+  "posture": "serpentin",
+  "taille_finale": "moyenne",
+  "fiche": "Serpent d'acier fait d'un ressort enchanté, il rebondit entre les rochers des canyons en sifflant comme une bouilloire.",
+  "caractere": "nerveux et rapide",
+  "numero": 124,
+  "famille": "Constructs",
+  "epreuves": [
+   "Code",
+   "Crypto"
+  ],
+  "variantes": [
+   {
+    "id": "classique",
+    "nom": "classique",
+    "chance": 55.4
+   },
+   {
+    "id": "canyon",
+    "nom": "canyon",
+    "chance": 27.7
+   },
+   {
+    "id": "mecanique",
+    "nom": "mécanique",
+    "chance": 17.0
+   }
+  ]
+ },
+ {
+  "nom": "Pavegarde",
+  "id": "pavegarde",
+  "rarete": "commune",
+  "posture": "quadrupède",
+  "taille_finale": "moyenne",
+  "fiche": "Petit gardien de pierre taillée qui veille sur les entrées des temples et dort la journée en se faisant passer pour une statue.",
+  "caractere": "loyal et têtu",
+  "numero": 125,
+  "famille": "Constructs",
+  "epreuves": [
+   "Code",
+   "Crypto"
+  ],
+  "variantes": [
+   {
+    "id": "classique",
+    "nom": "classique",
+    "chance": 55.4
+   },
+   {
+    "id": "ruines",
+    "nom": "ruines",
+    "chance": 27.7
+   },
+   {
+    "id": "montagne",
+    "nom": "montagne",
+    "chance": 17.0
+   }
+  ]
+ },
+ {
+  "nom": "Lanternix",
+  "id": "lanternix",
+  "rarete": "commune",
+  "posture": "flottant",
+  "taille_finale": "petite",
+  "fiche": "Lanterne de cuivre animée qui flotte dans les galeries sombres pour guider les voyageurs égarés.",
+  "caractere": "doux et veilleur",
+  "numero": 126,
+  "famille": "Constructs",
+  "epreuves": [
+   "Code",
+   "Crypto"
+  ],
+  "variantes": [
+   {
+    "id": "classique",
+    "nom": "classique",
+    "chance": 55.4
+   },
+   {
+    "id": "ombre",
+    "nom": "ombre",
+    "chance": 27.7
+   },
+   {
+    "id": "ossuaire",
+    "nom": "ossuaire",
+    "chance": 17.0
+   }
+  ]
+ },
+ {
+  "nom": "Engrenaille",
+  "id": "engrenaille",
+  "rarete": "peu commune",
+  "posture": "multipattes",
+  "taille_finale": "grande",
+  "fiche": "Mille-pattes d'engrenages qui ronronne dans les machineries des usines oubliées et répare tout ce qu'il traverse.",
+  "caractere": "méthodique et bavard",
+  "numero": 127,
+  "famille": "Constructs",
+  "epreuves": [
+   "Code",
+   "Crypto"
+  ],
+  "variantes": [
+   {
+    "id": "classique",
+    "nom": "classique",
+    "chance": 55.4
+   },
+   {
+    "id": "mecanique",
+    "nom": "mécanique",
+    "chance": 27.7
+   },
+   {
+    "id": "neon",
+    "nom": "néon",
+    "chance": 17.0
+   }
+  ]
+ },
+ {
+  "nom": "Heaumeur",
+  "id": "heaumeur",
+  "rarete": "peu commune",
+  "posture": "bipède",
+  "taille_finale": "grande",
+  "fiche": "Armure vivante habitée par un vent ensorcelé, elle garde les salles d'armes des forteresses et change d'humeur selon son heaume.",
+  "caractere": "fier et lunatique",
+  "numero": 128,
+  "famille": "Constructs",
+  "epreuves": [
+   "Code",
+   "Crypto"
+  ],
+  "variantes": [
+   {
+    "id": "classique",
+    "nom": "classique",
+    "chance": 38.9
+   },
+   {
+    "id": "ruines",
+    "nom": "ruines",
+    "chance": 19.4
+   },
+   {
+    "id": "brume",
+    "nom": "brume",
+    "chance": 11.9
+   },
+   {
+    "id": "crypte",
+    "nom": "crypte",
+    "chance": 8.7
+   },
+   {
+    "id": "montagne",
+    "nom": "montagne",
+    "chance": 6.7
+   },
+   {
+    "id": "arcane",
+    "nom": "arcane",
+    "chance": 5.6
+   },
+   {
+    "id": "ombre",
+    "nom": "ombre",
+    "chance": 4.7
+   },
+   {
+    "id": "ossuaire",
+    "nom": "ossuaire",
+    "chance": 4.1
+   }
+  ]
+ },
+ {
+  "nom": "Horlogrif",
+  "id": "horlogrif",
+  "rarete": "peu commune",
+  "posture": "volant",
+  "taille_finale": "grande",
+  "fiche": "Griffon mécanique à rouages d'horloge qui survole les clochers et tient le temps pour les cités des montagnes.",
+  "caractere": "ponctuel et sévère",
+  "numero": 129,
+  "famille": "Constructs",
+  "epreuves": [
+   "Code",
+   "Crypto"
+  ],
+  "variantes": [
+   {
+    "id": "classique",
+    "nom": "classique",
+    "chance": 45.4
+   },
+   {
+    "id": "montagne",
+    "nom": "montagne",
+    "chance": 22.7
+   },
+   {
+    "id": "mecanique",
+    "nom": "mécanique",
+    "chance": 13.9
+   },
+   {
+    "id": "nuage",
+    "nom": "nuage",
+    "chance": 10.1
+   },
+   {
+    "id": "lune",
+    "nom": "lune",
+    "chance": 7.9
+   }
+  ]
+ },
+ {
+  "nom": "Fondelin",
+  "id": "fondelin",
+  "rarete": "peu commune",
+  "posture": "amorphe",
+  "taille_finale": "moyenne",
+  "fiche": "Flaque de métal en fusion animée par une étincelle de magie, elle rampe dans les forges et se façonne selon ses envies.",
+  "caractere": "malléable et chaleureux",
+  "numero": 130,
+  "famille": "Constructs",
+  "epreuves": [
+   "Code",
+   "Crypto"
+  ],
+  "variantes": [
+   {
+    "id": "classique",
+    "nom": "classique",
+    "chance": 45.4
+   },
+   {
+    "id": "lave",
+    "nom": "lave",
+    "chance": 22.7
+   },
+   {
+    "id": "cendres",
+    "nom": "cendres",
+    "chance": 13.9
+   },
+   {
+    "id": "rouille",
+    "nom": "rouille",
+    "chance": 10.1
+   },
+   {
+    "id": "volcan",
+    "nom": "volcan",
+    "chance": 7.9
+   }
+  ]
+ },
+ {
+  "nom": "Runodrake",
+  "id": "runodrake",
+  "rarete": "rare",
+  "posture": "volant",
+  "taille_finale": "grande",
+  "fiche": "Machine runique en forme de drake, forgée par des mages oubliés pour patrouiller le ciel au-dessus des tours d'arcane.",
+  "caractere": "orgueilleux et vigilant",
+  "numero": 131,
+  "famille": "Constructs",
+  "epreuves": [
+   "Code",
+   "Crypto"
+  ],
+  "variantes": [
+   {
+    "id": "classique",
+    "nom": "classique",
+    "chance": 40.5
+   },
+   {
+    "id": "arcane",
+    "nom": "arcane",
+    "chance": 20.3
+   },
+   {
+    "id": "cristal",
+    "nom": "cristal",
+    "chance": 12.4
+   },
+   {
+    "id": "cosmique",
+    "nom": "cosmique",
+    "chance": 9.1
+   },
+   {
+    "id": "aurore",
+    "nom": "aurore",
+    "chance": 7.0
+   },
+   {
+    "id": "nuage",
+    "nom": "nuage",
+    "chance": 5.8
+   },
+   {
+    "id": "orage",
+    "nom": "orage",
+    "chance": 4.9
+   }
+  ]
+ },
+ {
+  "nom": "Golemmur",
+  "id": "golemmur",
+  "rarete": "rare",
+  "posture": "bipède",
+  "taille_finale": "colossale",
+  "fiche": "Golem colossal bâti à partir d'un rempart entier, il protège les vallées et peut rester immobile des siècles.",
+  "caractere": "patient et protecteur",
+  "numero": 132,
+  "famille": "Constructs",
+  "epreuves": [
+   "Code",
+   "Crypto"
+  ],
+  "variantes": [
+   {
+    "id": "classique",
+    "nom": "classique",
+    "chance": 40.5
+   },
+   {
+    "id": "montagne",
+    "nom": "montagne",
+    "chance": 20.3
+   },
+   {
+    "id": "forêt",
+    "nom": "forêt",
+    "chance": 12.4
+   },
+   {
+    "id": "desert",
+    "nom": "désert",
+    "chance": 9.1
+   },
+   {
+    "id": "toundra",
+    "nom": "toundra",
+    "chance": 7.0
+   },
+   {
+    "id": "prairie",
+    "nom": "prairie",
+    "chance": 5.8
+   },
+   {
+    "id": "canyon",
+    "nom": "canyon",
+    "chance": 4.9
+   }
+  ]
+ },
+ {
+  "nom": "Chaudrogre",
+  "id": "chaudrogre",
+  "rarete": "rare",
+  "posture": "quadrupède",
+  "taille_finale": "grande",
+  "fiche": "Machine à vapeur bestiale à chaudière vivante, elle arpente les terres volcaniques et souffle des nuages brûlants.",
+  "caractere": "colérique et infatigable",
+  "numero": 133,
+  "famille": "Constructs",
+  "epreuves": [
+   "Code",
+   "Crypto"
+  ],
+  "variantes": [
+   {
+    "id": "classique",
+    "nom": "classique",
+    "chance": 55.4
+   },
+   {
+    "id": "volcan",
+    "nom": "volcan",
+    "chance": 27.7
+   },
+   {
+    "id": "mecanique",
+    "nom": "mécanique",
+    "chance": 17.0
+   }
+  ]
+ },
+ {
+  "nom": "Marionnoire",
+  "id": "marionnoire",
+  "rarete": "rare",
+  "posture": "flottant",
+  "taille_finale": "grande",
+  "fiche": "Marionnettiste de porcelaine noire qui flotte dans les théâtres hantés, tirant les fils de petites poupées à son service.",
+  "caractere": "mystérieux et manipulateur",
+  "numero": 134,
+  "famille": "Constructs",
+  "epreuves": [
+   "Code",
+   "Crypto"
+  ],
+  "variantes": [
+   {
+    "id": "classique",
+    "nom": "classique",
+    "chance": 45.4
+   },
+   {
+    "id": "ombre",
+    "nom": "ombre",
+    "chance": 22.7
+   },
+   {
+    "id": "arcane",
+    "nom": "arcane",
+    "chance": 13.9
+   },
+   {
+    "id": "crypte",
+    "nom": "crypte",
+    "chance": 10.1
+   },
+   {
+    "id": "ruines",
+    "nom": "ruines",
+    "chance": 7.9
+   }
+  ]
+ },
+ {
+  "nom": "Forgerain",
+  "id": "forgerain",
+  "rarete": "légendaire",
+  "posture": "bipède",
+  "taille_finale": "colossale",
+  "fiche": "Souverain de tous les constructs, ce titan-forge vit au cœur des volcans éteints et donne vie à chaque machine d'un coup de marteau.",
+  "caractere": "sage et imposant",
+  "numero": 135,
+  "famille": "Constructs",
+  "epreuves": [
+   "Code",
+   "Crypto"
+  ],
+  "variantes": [
+   {
+    "id": "classique",
+    "nom": "classique",
+    "chance": 37.5
+   },
+   {
+    "id": "volcan",
+    "nom": "volcan",
+    "chance": 18.8
+   },
+   {
+    "id": "cristal",
+    "nom": "cristal",
+    "chance": 11.5
+   },
+   {
+    "id": "ruines",
+    "nom": "ruines",
+    "chance": 8.4
+   },
+   {
+    "id": "arcane",
+    "nom": "arcane",
+    "chance": 6.5
+   },
+   {
+    "id": "montagne",
+    "nom": "montagne",
+    "chance": 5.4
+   },
+   {
+    "id": "cendres",
+    "nom": "cendres",
+    "chance": 4.5
+   },
+   {
+    "id": "mecanique",
+    "nom": "mécanique",
+    "chance": 4.0
+   },
+   {
+    "id": "cosmique",
+    "nom": "cosmique",
+    "chance": 3.5
+   }
+  ]
+ },
+ {
+  "nom": "Zyeuton",
+  "id": "zyeuton",
+  "rarete": "commune",
+  "posture": "flottant",
+  "taille_finale": "petite",
+  "fiche": "Un petit œil flottant et curieux qui hante les brumes et les ruines pour tout observer.",
+  "caractere": "curieux et indiscret",
+  "numero": 136,
+  "famille": "Aberrations",
+  "epreuves": [
+   "Glitch"
+  ],
+  "variantes": [
+   {
+    "id": "classique",
+    "nom": "classique",
+    "chance": 40.5
+   },
+   {
+    "id": "brume",
+    "nom": "brume",
+    "chance": 20.3
+   },
+   {
+    "id": "arcane",
+    "nom": "arcane",
+    "chance": 12.4
+   },
+   {
+    "id": "lune",
+    "nom": "lune",
+    "chance": 9.1
+   },
+   {
+    "id": "ombre",
+    "nom": "ombre",
+    "chance": 7.0
+   },
+   {
+    "id": "ruines",
+    "nom": "ruines",
+    "chance": 5.8
+   },
+   {
+    "id": "marais",
+    "nom": "marais",
+    "chance": 4.9
+   }
+  ]
+ },
+ {
+  "nom": "Gloupi",
+  "id": "gloupi",
+  "rarete": "commune",
+  "posture": "amorphe",
+  "taille_finale": "moyenne",
+  "fiche": "Une gelée vivante gourmande qui avale tout ce qui brille dans les marais toxiques.",
+  "caractere": "glouton et câlin",
+  "numero": 137,
+  "famille": "Aberrations",
+  "epreuves": [
+   "Glitch"
+  ],
+  "variantes": [
+   {
+    "id": "classique",
+    "nom": "classique",
+    "chance": 42.6
+   },
+   {
+    "id": "marais",
+    "nom": "marais",
+    "chance": 21.3
+   },
+   {
+    "id": "eau_petillante",
+    "nom": "eau pétillante",
+    "chance": 13.1
+   },
+   {
+    "id": "ruines",
+    "nom": "ruines",
+    "chance": 9.5
+   },
+   {
+    "id": "toxique",
+    "nom": "toxique",
+    "chance": 7.4
+   },
+   {
+    "id": "rouille",
+    "nom": "rouille",
+    "chance": 6.1
+   }
+  ]
+ },
+ {
+  "nom": "Tentaclou",
+  "id": "tentaclou",
+  "rarete": "commune",
+  "posture": "rampant",
+  "taille_finale": "petite",
+  "fiche": "Un petit rampeur à tentacules qui se fixe sous les pierres des grottes humides.",
+  "caractere": "timide et collant",
+  "numero": 138,
+  "famille": "Aberrations",
+  "epreuves": [
+   "Glitch"
+  ],
+  "variantes": [
+   {
+    "id": "classique",
+    "nom": "classique",
+    "chance": 49.3
+   },
+   {
+    "id": "marais",
+    "nom": "marais",
+    "chance": 24.6
+   },
+   {
+    "id": "crypte",
+    "nom": "crypte",
+    "chance": 15.1
+   },
+   {
+    "id": "ruines",
+    "nom": "ruines",
+    "chance": 11.0
+   }
+  ]
+ },
+ {
+  "nom": "Parasouris",
+  "id": "parasouris",
+  "rarete": "commune",
+  "posture": "quadrupède",
+  "taille_finale": "petite",
+  "fiche": "Une souris habitée par un minuscule parasite lumineux qui lui pousse sur le dos, cachée dans les recoins rouillés.",
+  "caractere": "nerveux et malin",
+  "numero": 139,
+  "famille": "Aberrations",
+  "epreuves": [
+   "Glitch"
+  ],
+  "variantes": [
+   {
+    "id": "classique",
+    "nom": "classique",
+    "chance": 38.9
+   },
+   {
+    "id": "rouille",
+    "nom": "rouille",
+    "chance": 19.4
+   },
+   {
+    "id": "mecanique",
+    "nom": "mécanique",
+    "chance": 11.9
+   },
+   {
+    "id": "ruines",
+    "nom": "ruines",
+    "chance": 8.7
+   },
+   {
+    "id": "toxique",
+    "nom": "toxique",
+    "chance": 6.7
+   },
+   {
+    "id": "neon",
+    "nom": "néon",
+    "chance": 5.6
+   },
+   {
+    "id": "champignonniere",
+    "nom": "champignonnière",
+    "chance": 4.7
+   },
+   {
+    "id": "ombre",
+    "nom": "ombre",
+    "chance": 4.1
+   }
+  ]
+ },
+ {
+  "nom": "Mutaloupe",
+  "id": "mutaloupe",
+  "rarete": "commune",
+  "posture": "multipattes",
+  "taille_finale": "moyenne",
+  "fiche": "Une créature à pattes fines dont l'œil unique grossit tout comme une loupe, rôdant dans les cristaux.",
+  "caractere": "méticuleux et fouineur",
+  "numero": 140,
+  "famille": "Aberrations",
+  "epreuves": [
+   "Glitch"
+  ],
+  "variantes": [
+   {
+    "id": "classique",
+    "nom": "classique",
+    "chance": 55.4
+   },
+   {
+    "id": "cristal",
+    "nom": "cristal",
+    "chance": 27.7
+   },
+   {
+    "id": "arcane",
+    "nom": "arcane",
+    "chance": 17.0
+   }
+  ]
+ },
+ {
+  "nom": "Bavouille",
+  "id": "bavouille",
+  "rarete": "commune",
+  "posture": "rampant",
+  "taille_finale": "moyenne",
+  "fiche": "Une grosse limace iridescente qui laisse derrière elle une traînée lumineuse dans les forêts humides.",
+  "caractere": "lent et rêveur",
+  "numero": 141,
+  "famille": "Aberrations",
+  "epreuves": [
+   "Glitch"
+  ],
+  "variantes": [
+   {
+    "id": "classique",
+    "nom": "classique",
+    "chance": 38.9
+   },
+   {
+    "id": "forêt",
+    "nom": "forêt",
+    "chance": 19.4
+   },
+   {
+    "id": "champignonniere",
+    "nom": "champignonnière",
+    "chance": 11.9
+   },
+   {
+    "id": "jungle",
+    "nom": "jungle",
+    "chance": 8.7
+   },
+   {
+    "id": "marais",
+    "nom": "marais",
+    "chance": 6.7
+   },
+   {
+    "id": "prairie",
+    "nom": "prairie",
+    "chance": 5.6
+   },
+   {
+    "id": "toxique",
+    "nom": "toxique",
+    "chance": 4.7
+   },
+   {
+    "id": "brume",
+    "nom": "brume",
+    "chance": 4.1
+   }
+  ]
+ },
+ {
+  "nom": "Greffon",
+  "id": "greffon",
+  "rarete": "peu commune",
+  "posture": "bipède",
+  "taille_finale": "moyenne",
+  "fiche": "Un petit être dont les bras sont des créatures indépendantes qui ont chacune leur avis, vivant dans les ruines.",
+  "caractere": "indécis et bavard",
+  "numero": 142,
+  "famille": "Aberrations",
+  "epreuves": [
+   "Glitch"
+  ],
+  "variantes": [
+   {
+    "id": "classique",
+    "nom": "classique",
+    "chance": 42.6
+   },
+   {
+    "id": "ruines",
+    "nom": "ruines",
+    "chance": 21.3
+   },
+   {
+    "id": "crypte",
+    "nom": "crypte",
+    "chance": 13.1
+   },
+   {
+    "id": "toxique",
+    "nom": "toxique",
+    "chance": 9.5
+   },
+   {
+    "id": "ombre",
+    "nom": "ombre",
+    "chance": 7.4
+   },
+   {
+    "id": "forêt",
+    "nom": "forêt",
+    "chance": 6.1
+   }
+  ]
+ },
+ {
+  "nom": "Ciliacle",
+  "id": "ciliacle",
+  "rarete": "peu commune",
+  "posture": "serpentin",
+  "taille_finale": "grande",
+  "fiche": "Un long serpent couvert de cils ondulants qui nage dans les eaux pétillantes et toxiques.",
+  "caractere": "gracieux et chatouilleux",
+  "numero": 143,
+  "famille": "Aberrations",
+  "epreuves": [
+   "Glitch"
+  ],
+  "variantes": [
+   {
+    "id": "classique",
+    "nom": "classique",
+    "chance": 38.9
+   },
+   {
+    "id": "eau_petillante",
+    "nom": "eau pétillante",
+    "chance": 19.4
+   },
+   {
+    "id": "abyssal",
+    "nom": "abyssal",
+    "chance": 11.9
+   },
+   {
+    "id": "toxique",
+    "nom": "toxique",
+    "chance": 8.7
+   },
+   {
+    "id": "jungle",
+    "nom": "jungle",
+    "chance": 6.7
+   },
+   {
+    "id": "marais",
+    "nom": "marais",
+    "chance": 5.6
+   },
+   {
+    "id": "brume",
+    "nom": "brume",
+    "chance": 4.7
+   },
+   {
+    "id": "corail",
+    "nom": "corail",
+    "chance": 4.1
+   }
+  ]
+ },
+ {
+  "nom": "Miroeil",
+  "id": "miroeil",
+  "rarete": "peu commune",
+  "posture": "volant",
+  "taille_finale": "moyenne",
+  "fiche": "Un papillon étrange dont les ailes reflètent un autre monde, voletant au cœur des aurores.",
+  "caractere": "mystérieux et coquet",
+  "numero": 144,
+  "famille": "Aberrations",
+  "epreuves": [
+   "Glitch"
+  ],
+  "variantes": [
+   {
+    "id": "classique",
+    "nom": "classique",
+    "chance": 42.6
+   },
+   {
+    "id": "aurore",
+    "nom": "aurore",
+    "chance": 21.3
+   },
+   {
+    "id": "nuage",
+    "nom": "nuage",
+    "chance": 13.1
+   },
+   {
+    "id": "lune",
+    "nom": "lune",
+    "chance": 9.5
+   },
+   {
+    "id": "ombre",
+    "nom": "ombre",
+    "chance": 7.4
+   },
+   {
+    "id": "brume",
+    "nom": "brume",
+    "chance": 6.1
+   }
+  ]
+ },
+ {
+  "nom": "Mixtrouille",
+  "id": "mixtrouille",
+  "rarete": "peu commune",
+  "posture": "quadrupède",
+  "taille_finale": "grande",
+  "fiche": "Une bête faite de morceaux qui ne vont pas ensemble, née d'une expérience ratée dans un laboratoire en ruine.",
+  "caractere": "maladroit et joyeux",
+  "numero": 145,
+  "famille": "Aberrations",
+  "epreuves": [
+   "Glitch"
+  ],
+  "variantes": [
+   {
+    "id": "classique",
+    "nom": "classique",
+    "chance": 55.4
+   },
+   {
+    "id": "ruines",
+    "nom": "ruines",
+    "chance": 27.7
+   },
+   {
+    "id": "toxique",
+    "nom": "toxique",
+    "chance": 17.0
+   }
+  ]
+ },
+ {
+  "nom": "Pupillarque",
+  "id": "pupillarque",
+  "rarete": "rare",
+  "posture": "flottant",
+  "taille_finale": "grande",
+  "fiche": "Un sage aux mille regards qui flotte dans les ruines arcaniques et voit à travers les murs.",
+  "caractere": "hautain et érudit",
+  "numero": 146,
+  "famille": "Aberrations",
+  "epreuves": [
+   "Glitch"
+  ],
+  "variantes": [
+   {
+    "id": "classique",
+    "nom": "classique",
+    "chance": 40.5
+   },
+   {
+    "id": "arcane",
+    "nom": "arcane",
+    "chance": 20.3
+   },
+   {
+    "id": "lune",
+    "nom": "lune",
+    "chance": 12.4
+   },
+   {
+    "id": "crypte",
+    "nom": "crypte",
+    "chance": 9.1
+   },
+   {
+    "id": "ruines",
+    "nom": "ruines",
+    "chance": 7.0
+   },
+   {
+    "id": "cosmique",
+    "nom": "cosmique",
+    "chance": 5.8
+   },
+   {
+    "id": "ombre",
+    "nom": "ombre",
+    "chance": 4.9
+   }
+  ]
+ },
+ {
+  "nom": "Ventouzar",
+  "id": "ventouzar",
+  "rarete": "rare",
+  "posture": "volant",
+  "taille_finale": "grande",
+  "fiche": "Une pieuvre céleste qui nage dans les nuages d'orage en se tenant par ses ventouses aux éclairs.",
+  "caractere": "farceur et vif",
+  "numero": 147,
+  "famille": "Aberrations",
+  "epreuves": [
+   "Glitch"
+  ],
+  "variantes": [
+   {
+    "id": "classique",
+    "nom": "classique",
+    "chance": 38.9
+   },
+   {
+    "id": "orage",
+    "nom": "orage",
+    "chance": 19.4
+   },
+   {
+    "id": "neon",
+    "nom": "néon",
+    "chance": 11.9
+   },
+   {
+    "id": "montagne",
+    "nom": "montagne",
+    "chance": 8.7
+   },
+   {
+    "id": "brume",
+    "nom": "brume",
+    "chance": 6.7
+   },
+   {
+    "id": "aurore",
+    "nom": "aurore",
+    "chance": 5.6
+   },
+   {
+    "id": "nuage",
+    "nom": "nuage",
+    "chance": 4.7
+   },
+   {
+    "id": "cosmique",
+    "nom": "cosmique",
+    "chance": 4.1
+   }
+  ]
+ },
+ {
+  "nom": "Fractalis",
+  "id": "fractalis",
+  "rarete": "rare",
+  "posture": "multipattes",
+  "taille_finale": "grande",
+  "fiche": "Une créature géométrique dont chaque patte se divise en pattes plus petites, née au cœur des cristaux.",
+  "caractere": "calme et calculateur",
+  "numero": 148,
+  "famille": "Aberrations",
+  "epreuves": [
+   "Glitch"
+  ],
+  "variantes": [
+   {
+    "id": "classique",
+    "nom": "classique",
+    "chance": 40.5
+   },
+   {
+    "id": "cristal",
+    "nom": "cristal",
+    "chance": 20.3
+   },
+   {
+    "id": "canyon",
+    "nom": "canyon",
+    "chance": 12.4
+   },
+   {
+    "id": "glace",
+    "nom": "glace",
+    "chance": 9.1
+   },
+   {
+    "id": "arcane",
+    "nom": "arcane",
+    "chance": 7.0
+   },
+   {
+    "id": "ruines",
+    "nom": "ruines",
+    "chance": 5.8
+   },
+   {
+    "id": "neon",
+    "nom": "néon",
+    "chance": 4.9
+   }
+  ]
+ },
+ {
+  "nom": "Torsillon",
+  "id": "torsillon",
+  "rarete": "rare",
+  "posture": "serpentin",
+  "taille_finale": "grande",
+  "fiche": "Un serpent tordu en boucle sans fin qui se mord la queue et apparaît là où l'espace se plie.",
+  "caractere": "énigmatique et patient",
+  "numero": 149,
+  "famille": "Aberrations",
+  "epreuves": [
+   "Glitch"
+  ],
+  "variantes": [
+   {
+    "id": "classique",
+    "nom": "classique",
+    "chance": 55.4
+   },
+   {
+    "id": "cosmique",
+    "nom": "cosmique",
+    "chance": 27.7
+   },
+   {
+    "id": "brume",
+    "nom": "brume",
+    "chance": 17.0
+   }
+  ]
+ },
+ {
+  "nom": "Chaosmère",
+  "id": "chaosmere",
+  "rarete": "légendaire",
+  "posture": "amorphe",
+  "taille_finale": "colossale",
+  "fiche": "La reine des aberrations, une masse vivante d'où naissent toutes les mutations, endormie au fond des ombres cosmiques.",
+  "caractere": "maternelle et insondable",
+  "numero": 150,
+  "famille": "Aberrations",
+  "epreuves": [
+   "Glitch"
+  ],
+  "variantes": [
+   {
+    "id": "classique",
+    "nom": "classique",
+    "chance": 42.6
+   },
+   {
+    "id": "cosmique",
+    "nom": "cosmique",
+    "chance": 21.3
+   },
+   {
+    "id": "lune",
+    "nom": "lune",
+    "chance": 13.1
+   },
+   {
+    "id": "ombre",
+    "nom": "ombre",
+    "chance": 9.5
+   },
+   {
+    "id": "brume",
+    "nom": "brume",
+    "chance": 7.4
+   },
+   {
+    "id": "arcane",
+    "nom": "arcane",
+    "chance": 6.1
+   }
+  ]
+ }
+]
