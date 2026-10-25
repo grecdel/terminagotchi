@@ -137,12 +137,17 @@ object Recensement {
         }
         val caps = Explo.captures(jeu)
         val connus = (0 until caps.length()).map { caps.getJSONObject(it).optString("id") }.toMutableSet()
+        val parId = (0 until caps.length()).associateBy { caps.getJSONObject(it).optString("id") }
         srv.optJSONArray("captures")?.let { a ->
             for (i in 0 until a.length()) {
                 val ind = a.getJSONObject(i)
-                if (connus.add(ind.optString("id"))) caps.put(ind)
+                val ici = parId[ind.optString("id")]?.let { caps.getJSONObject(it) }
+                if (ici != null) {                      // anti-triche : le verdict du serveur
+                    if (ind.has("verifie")) ici.put("verifie", ind.optBoolean("verifie"))
+                } else if (connus.add(ind.optString("id"))) caps.put(ind)
             }
         }
+        Tirage.rangerGraines(jeu, r.optJSONArray("graines"))   // graines des prochains jours (jeu hors ligne)
         Bestiaire.migrer(jeu.extra)      // des captures d'avant le nouveau bestiaire ont pu revenir du serveur
         srv.optJSONObject("partage")?.let { pa ->
             if (pa.optLong("date") >= (c.optJSONObject("partage")?.optLong("date") ?: 0L)) c.put("partage", pa)

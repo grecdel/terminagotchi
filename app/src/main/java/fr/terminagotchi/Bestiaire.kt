@@ -53,10 +53,14 @@ object Bestiaire {
         private set
     var chanceShiny = 100
         private set
-    private var poidsFrequence: Map<String, Double> = emptyMap()
-    private var poidsNote: Map<String, Double> = emptyMap()
-    private var paliers: List<Pair<Double, String>> = emptyList()
-    private var speciales: Map<String, String> = emptyMap()
+    var poidsFrequence: Map<String, Double> = emptyMap()
+        private set
+    var poidsNote: Map<String, Double> = emptyMap()
+        private set
+    var paliers: List<Pair<Double, String>> = emptyList()
+        private set
+    var speciales: Map<String, String> = emptyMap()
+        private set
     private var anciens: Map<String, Int> = emptyMap()
 
     private var ctxApp: Context? = null

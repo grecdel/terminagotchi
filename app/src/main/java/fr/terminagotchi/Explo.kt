@@ -31,21 +31,31 @@ object Explo {
     /** Un monstre sauvage apparaît (pendant qu'on joue) : le dressage commence aussitôt. */
     fun spawn(jeu: Jeu) {
         if (Dressage.actif(jeu)) return
-        val t = Bestiaire.tirer()
-        var e = t.espece
-        var vid = t.variante
         val caps = captures(jeu)
         val legendaires = (0 until caps.length()).count { Bestiaire.rareteDe(caps.getJSONObject(it)) == "légendaire" }
-        if (legendaires >= 3 && Random.nextDouble() < 1.0 / 15 && collection(jeu).optInt("Abyssor") == 0) {
-            Bestiaire.espece("Abyssor")?.let { e = it; vid = "classique" }      // la mythique secrète #151
+        val abyssorPermis = legendaires >= 3 && collection(jeu).optInt("Abyssor") == 0   // la mythique secrète #151
+        // anti-triche : tirage vérifiable par le serveur si une graine du jour est en cache (voir Tirage.kt)
+        val verifiable = Tirage.apparition(jeu, abyssorPermis)
+        val e: Bestiaire.Espece
+        val ind: JSONObject
+        if (verifiable != null) {
+            e = verifiable.first
+            ind = verifiable.second
+        } else {                                  // sans graine : au hasard, « non vérifié » sur le site
+            val t = Bestiaire.tirer()
+            var esp = t.espece
+            var vid = t.variante
+            if (abyssorPermis && Random.nextDouble() < 1.0 / 15) {
+                Bestiaire.espece("Abyssor")?.let { esp = it; vid = "classique" }
+            }
+            e = esp
+            // l'individu est tiré dès son apparition : stats, rareté et stade sont lisibles sur sa fiche (cat)
+            ind = Bestiaire.individu(e, t.shiny, Bestiaire.variante(e, vid).zone, vid)
+            ind.put("stade", Bestiaire.choisir(Bestiaire.STADES.take(4), listOf(35.0, 35.0, 20.0, 10.0)))
+            if (t.shiny) ind.put("teinte", Bestiaire.arrondi(Random.nextDouble(0.15, 0.85), 3))   // couleur shiny propre à cet individu
         }
-        val zone = Bestiaire.variante(e, vid).zone
-        File(jeu.terrain, zone).mkdirs()
+        File(jeu.terrain, ind.optString("zone")).mkdirs()
         etat(jeu).put("explo_n", etat(jeu).optInt("explo_n") + 1)
-        // l'individu est tiré dès son apparition : stats, rareté et stade sont lisibles sur sa fiche (cat)
-        val ind = Bestiaire.individu(e, t.shiny, zone, vid)
-        ind.put("stade", Bestiaire.choisir(Bestiaire.STADES.take(4), listOf(35.0, 35.0, 20.0, 10.0)))
-        if (t.shiny) ind.put("teinte", Bestiaire.arrondi(Random.nextDouble(0.15, 0.85), 3))   // couleur shiny propre à cet individu
         jeu.log(Mots.accorder("⚔ Un monstre sauvage apparaît : {nom} !", "nom" to e.nom))
         jeu.animer("attaque")
         Dressage.commencer(jeu, e, ind)
