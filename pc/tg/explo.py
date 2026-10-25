@@ -6,6 +6,13 @@ cache profond (recoin → cachette → sanctuaire). Pour l'apprivoiser : la trou
 la lire (cat), puis réussir son dressage (voir dressage.py). Chaque bestiole est unique.
 """
 import random
+import re
+
+_ANSI = re.compile(r"\x1b\[[0-9;]*m")
+
+
+def piege_ansi(t):
+    return _ANSI.sub("", t)
 
 from . import bestiaire as B
 from . import core
@@ -34,17 +41,22 @@ def debloque(state):
 def spawn(state):
     if len(state["sauvages"]) >= MAX_SAUVAGES:
         return
-    e, shiny = B.tirer()
-    legendaires = sum(1 for n, k in state["collection"].items() if k and (B.espece(n) or {}).get("rarete") == "légendaire")
+    e, shiny, vid = B.tirer()
+    legendaires = sum(1 for c in state.get("captures", []) if B.rarete_de(c) == "légendaire")
     if legendaires >= 3 and random.random() < 1 / 15 and not state["collection"].get("Abyssor"):
-        e = B.espece("Abyssor")                 # la légendaire secrète #151
-    zone = e["zone"]
+        e, vid = B.espece("Abyssor"), "classique"   # la mythique secrète #151
+    zone = B.variante(e, vid).get("zone", e["zone"])
     dossier = T / zone
     dossier.mkdir(parents=True, exist_ok=True)
     state["explo_n"] += 1
     if state.get("dressage"):
         return
-    s = {"f": dressage.fiche(e["nom"]).name, "e": e["nom"], "zone": zone, "shiny": shiny}
+    # l'individu est tiré dès son apparition : stats, rareté et stade sont lisibles sur sa fiche (cat)
+    ind = B.individu(e, shiny, zone, vid)
+    ind["stade"] = random.choices(B.STADES[:4], [35, 35, 20, 10])[0]
+    if shiny:
+        ind["teinte"] = round(random.uniform(0.15, 0.85), 3)   # couleur shiny propre à cet individu
+    s = {"f": dressage.fiche(e["nom"]).name, "e": e["nom"], "zone": zone, "shiny": shiny, "v": vid, "ind": ind}
     state["sauvages"].append(s)
     core.log(state, f"⚔ Un {e['nom']} sauvage apparaît !")
     dressage.commencer(state, s)
@@ -89,17 +101,21 @@ def _carte_individu(ind):
     e = B.espece(ind["espece"])
     if e is None:
         return []
-    sp = B.dessin(e, ind.get("shiny"), grand=True)
+    r = B.rarete_de(ind)
+    sp = B.dessin(e, ind.get("shiny"), grand=True, stade=ind.get("stade", "adulte"), vid=ind.get("variante", "classique"),
+                  teinte=ind.get("teinte", 0.5))
+    var = ind.get("variante", "classique")
     infos = [
-        f"{B.nom_affiche(e, ind.get('shiny'))} {DIM}#{e['numero']:03d} · {e['rarete']} · {e['famille']}{RESET}",
+        f"{B.nom_affiche(e, ind.get('shiny'), r)} {DIM}#{e['numero']:03d} · {RESET}{B.libelle_rarete(r)}"
+        f"{DIM} · {e['famille']}{' · ' + var if var != 'classique' else ''}{RESET}",
         f"{DIM}signe particulier :{RESET} {ind.get('marque', '?')}",
         f"{DIM}humeur {ind.get('humeur', '?')} · {ind.get('taille', '?')} cm · potentiel {ind.get('potentiel', '?')} %{RESET}",
     ]
     hauteur = max(len(sp), len(infos))
-    w = len(e["sprite"][0])
+    w = max((len(piege_ansi(x)) for x in sp), default=0)
     lignes = []
     for i in range(hauteur):
-        gauche = sp[i] if i < len(sp) else " " * w
+        gauche = (sp[i] + " " * (w - len(piege_ansi(sp[i])))) if i < len(sp) else " " * w
         droite = infos[i] if i < len(infos) else ""
         lignes.append("  " + gauche + "  " + droite)
     return lignes
@@ -110,12 +126,11 @@ def ecran_collection(state):
     caps = state.get("captures", [])
     especes_vues = {n for n, k in state["collection"].items() if k}
     par_rarete = {}
-    for e in B.publiques():
-        r = e["rarete"]
-        vu, tot = par_rarete.get(r, (0, 0))
-        par_rarete[r] = (vu + (e["nom"] in especes_vues), tot + 1)
+    for c in caps:
+        r = B.rarete_de(c)
+        par_rarete[r] = par_rarete.get(r, 0) + 1
     lignes.append(" Espèces découvertes : " + BOLD + f"{len(especes_vues)}/150" + RESET + "   " + "  ".join(
-        f"{B.fg24(B.COULEUR_RARETE[r])}{r} {v}/{t}{RESET}" for r, (v, t) in par_rarete.items()))
+        f"{B.libelle_rarete(r)} {par_rarete[r]}" for r in B.COULEUR_RARETE if r in par_rarete))
     shinies = sum(1 for c in caps if c.get("shiny"))
     lignes.append(f" Bestioles dressées : {len(caps)}" + (f" · dont {B.arc_en_ciel(f'{shinies} shiny')}" if shinies else ""))
     if state["collection"].get("Abyssor"):
@@ -151,7 +166,7 @@ def fiche(state, nom):
     if e is None or (e.get("secrete") and not connue):
         return [f" Aucune espèce ne s'appelle « {nom} ». Les 150 sont sur le site : tg site bestiaire"]
     entete = f" {BOLD}#{e['numero']:03d}{RESET} {B.nom_affiche(e) if connue else '???'}  " \
-             f"{B.fg24(B.COULEUR_RARETE[e['rarete']])}{e['rarete']}{RESET} · {e['icone']} {e['famille']}"
+             f"{DIM}se montre {e['frequence']}{RESET} · {e['icone']} {e['famille']}"
     lignes = [entete, ""]
     if not connue:
         lignes += [f"  {DIM}Tu ne l'as pas encore capturée.{RESET}",
@@ -159,14 +174,17 @@ def fiche(state, nom):
                    f"  Elle se montre {e['frequence']}, attirée par la commande « {e['attiree_par']} »."]
         return lignes
     sp = B.dessin(e, grand=True)
+    vars_ = [v["nom"] for v in e.get("variantes", [])[1:]]
     texte = [e["description"], e["comportement"],
              f"Capacité : {e['capacite']} · stat favorite : {e['stat']}",
              f"Taille ~{e['taille_cm']} cm · poids ~{e['poids_ko']} Ko",
              "  ".join(f"{k} {v}" for k, v in e["stats"].items()),
              f"Habitat : {lieu(e['zone'])} · attirée par « {e['attiree_par']} »",
+             (f"Variantes : {', '.join(vars_)}" if vars_ else ""),
              f"Tu en as dressé {state['collection'][e['nom']]}."]
     for i in range(max(len(sp), len(texte))):
-        g = sp[i] if i < len(sp) else " " * len(e["sprite"][0])
+        lg = max((len(piege_ansi(x)) for x in sp), default=0)
+        g = (sp[i] + " " * (lg - len(piege_ansi(sp[i])))) if i < len(sp) else " " * lg
         d = texte[i] if i < len(texte) else ""
         lignes.append("  " + g + "  " + d)
     return lignes

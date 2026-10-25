@@ -23,9 +23,11 @@ from . import core
 from .plateforme import IS_WIN
 
 T = core.TERRAIN
-DUREE = {"commune": 90, "peu commune": 120, "rare": 180, "légendaire": 240}
-NB_TACHES = {"commune": 2, "peu commune": 3, "rare": 4, "légendaire": 6}
-NIVEAU_MAX = {"commune": 1, "peu commune": 2, "rare": 3, "légendaire": 3}
+# la difficulté dépend de la rareté de L'INDIVIDU (ses stats, sa variante…), pas de l'espèce
+DUREE = {"commune": 90, "peu commune": 120, "rare": 180, "épique": 210, "légendaire": 240, "mythique": 300}
+NB_TACHES = {"commune": 2, "peu commune": 3, "rare": 4, "épique": 5, "légendaire": 6, "mythique": 7}
+NIVEAU_MAX = {"commune": 1, "peu commune": 2, "rare": 3, "épique": 3, "légendaire": 3, "mythique": 3}
+ULTIMES = ("légendaire", "mythique")
 LECTURE = {"cat", "less", "more", "head", "tail", "type", "get-content", "bat", "nano", "vim", "vi"}
 
 MOTS = ["octet", "pixel", "bug", "shell", "noyau", "cache", "paquet", "script", "fichier", "chat",
@@ -384,13 +386,17 @@ def bonus(state):
     }
 
 
-def ecrire_fiche(e, shiny, zone):
-    st = "  ".join(f"{k} {v}" for k, v in e["stats"].items())
+def ecrire_fiche(e, shiny, zone, ind=None):
+    ind = ind or B.individu(e, shiny, zone)
+    st = "  ".join(f"{k} {v}" for k, v in ind["stats"].items())
+    var = ind.get("variante", "classique")
     fiche(e["nom"]).write_text(
         f"══════════ FICHE DE MONSTRE ══════════\n"
         f"  Nom     : {e['nom']}{' ✨ (shiny !)' if shiny else ''}\n"
         f"  Numéro  : #{e['numero']:03d}\n"
-        f"  Rareté  : {e['rarete']}\n"
+        f"  Rareté  : {ind['rarete']}  (note {ind['note']}/100)\n"
+        f"  Variante: {var}\n"
+        f"  Âge     : {ind.get('stade', 'bebe').replace('bebe', 'bébé')}\n"
         f"  Famille : {e['famille']}\n"
         f"  Stats   : {st}\n"
         f"  Taille  : ~{e['taille_cm']} cm   Poids : ~{e['poids_ko']} Ko\n\n"
@@ -400,17 +406,17 @@ def ecrire_fiche(e, shiny, zone):
         encoding="utf-8")
 
 
-def choisir_epreuves(e, premiere):
-    return EPREUVES["Rencontre"] + _epreuves_famille(e, premiere)
+def choisir_epreuves(e, premiere, rarete="commune"):
+    return EPREUVES["Rencontre"] + _epreuves_famille(e, premiere, rarete)
 
 
-def _epreuves_famille(e, premiere):
-    fam = e["famille"]
-    pool = [x for x in EPREUVES.get(fam, []) if not (x["posix"] and IS_WIN)]
-    nmax = NIVEAU_MAX[e["rarete"]]
-    n = NB_TACHES[e["rarete"]]
-    if e["rarete"] == "légendaire":           # l'épreuve ultime : sa famille + des épreuves d'ailleurs
-        autres = [x for f, v in EPREUVES.items() if f not in (fam, "Rencontre") for x in v
+def _epreuves_famille(e, premiere, rarete="commune"):
+    fams = e.get("epreuves") or [e["famille"]]           # les commandes que cette famille aime
+    pool = [x for f in fams for x in EPREUVES.get(f, []) if not (x["posix"] and IS_WIN)]
+    nmax = NIVEAU_MAX[rarete]
+    n = NB_TACHES[rarete]
+    if rarete in ULTIMES:                     # l'épreuve ultime : sa famille + des épreuves d'ailleurs
+        autres = [x for f, v in EPREUVES.items() if f not in fams and f != "Rencontre" for x in v
                   if not (x["posix"] and IS_WIN) and x["niveau"] >= 2]
         random.shuffle(autres)
         choix = sorted(pool, key=lambda x: x["niveau"])[-3:] + autres[:3]
@@ -440,26 +446,32 @@ def commencer(state, sauvage):
     e = B.espece(sauvage["e"])
     if e is None:
         return
+    if not sauvage.get("ind"):                          # (anciennes sauvegardes)
+        sauvage["ind"] = B.individu(e, sauvage.get("shiny"), sauvage["zone"], sauvage.get("v", "classique"))
+        sauvage["ind"]["stade"] = "bebe"
+    ind = sauvage["ind"]
+    rar = ind["rarete"]
     jour = date.today().isoformat()
-    if e["rarete"] == "légendaire" and state.setdefault("dressage_essais", {}).get(e["nom"]) == jour:
+    if rar in ULTIMES and state.setdefault("dressage_essais", {}).get(e["nom"]) == jour:
         core.say(state, f"{e['nom']} t'ignore… les légendaires n'acceptent qu'un essai par jour. Reviens demain !", 12)
         return
     familles = state.setdefault("dressage_familles", [])
     premiere = e["famille"] not in familles
-    taches = choisir_epreuves(e, premiere)
+    taches = choisir_epreuves(e, premiere, rar)
     bo = bonus(state)
     fam_de = {id(x): f for f, v in EPREUVES.items() for x in v}
     state["dressage"] = {
         "sauvage": sauvage["f"], "espece": e["nom"], "shiny": sauvage.get("shiny", False), "zone": sauvage["zone"],
         "taches": [f"{fam_de[id(x)]}:{x['id']}" for x in taches], "faites": [], "lignes": [],
-        "debut": time.time(), "duree": None if premiere else DUREE[e["rarete"]] + bo["temps"], "x": {}, "lecon": premiere,
+        "debut": time.time(), "duree": None if premiere else DUREE[rar] + bo["temps"], "x": {}, "lecon": premiere,
+        "ind": ind, "rarete": rar, "variante": ind.get("variante", "classique"),
         "mefiance": 100 - bo["mefiance"], "seconde": bo["seconde_chance"], "examine": False,
     }
-    if e["rarete"] == "légendaire":
-        state["dressage_essais"][e["nom"]] = jour
+    if rar in ULTIMES:
+        state.setdefault("dressage_essais", {})[e["nom"]] = jour
     c = contexte(state)
     c["d"].mkdir(parents=True, exist_ok=True)
-    ecrire_fiche(e, sauvage.get("shiny"), sauvage["zone"])
+    ecrire_fiche(e, sauvage.get("shiny"), sauvage["zone"], ind)
     preparees = set()
     for fid in state["dressage"]["taches"]:
         x = _par_id(fid)
@@ -549,11 +561,12 @@ def reussir(state):
         fiche(d["espece"]).unlink()
     except OSError:
         pass
-    ind = B.individu(e, d["shiny"], d["zone"])
+    ind = d.get("ind") or B.individu(e, d["shiny"], d["zone"])
     ind["dresse"] = round(time.time() - d["debut"])
-    ind["stade"], ind["xp"] = "enfant", 0               # il grandira en gardant son nom
+    ind.setdefault("stade", "bebe")
+    ind["xp"] = 0                                       # il grandira en gardant son nom
     if d["shiny"]:
-        ind["teinte"] = round(random.uniform(0.15, 0.85), 3)   # couleur shiny propre à cet individu
+        ind.setdefault("teinte", round(random.uniform(0.15, 0.85), 3))   # couleur shiny propre à cet individu
     state["active"] = ind["id"]
     state["captures"].append(ind)
     state["collection"][e["nom"]] = state["collection"].get(e["nom"], 0) + 1
@@ -561,7 +574,7 @@ def reussir(state):
     if e["famille"] not in fams:
         fams.append(e["famille"])
     titre = e["nom"] + (" ✨ SHINY" if d["shiny"] else "")
-    core.log(state, f"🎓 {titre} dressé en {ind['dresse']} s ! ({e['rarete']})")
+    core.log(state, f"🎓 {titre} dressé en {ind['dresse']} s ! ({ind['rarete']})")
     core.say(state, f"{e['nom']}{' ✨' if d['shiny'] else ''} te fait confiance et rejoint ta troupe ! "
                     f"Signe particulier : {ind['marque']}. ([c] pour ta collection)", 14)
     core.notif(state, f"🎓 {titre} a rejoint ta troupe !")
@@ -570,7 +583,7 @@ def reussir(state):
         st = random.choice(list(state["stats"]))
     state["stats"][st] += 2 + len(d["taches"])
     bonus = 2 if d["duree"] and reste_depuis(d) > d["duree"] / 2 else 1
-    core.add_xp(state, B.XP_RARETE[e["rarete"]] * (3 if d["shiny"] else 1) * bonus)
+    core.add_xp(state, B.XP_RARETE[ind["rarete"]] * (3 if d["shiny"] else 1) * bonus)
 
 
 def reste_depuis(d):
@@ -607,8 +620,11 @@ def jauge(valeur, maxi, largeur, inverse=False):
     return f"{fg(coul)}{'█' * n}{fg(238)}{'░' * (largeur - n)}{RESET}"
 
 
-def petit_dessin(e, shiny):
-    """Le monstre en 24 px (12 lignes) : version détaillée réduite si elle existe."""
+def petit_dessin(e, shiny, ind=None):
+    """Le monstre en gros pixels (son vrai stade et sa variante) ; Abyssor : version détaillée réduite."""
+    if ind and B.image(e):
+        return B.dessin(e, shiny, stade=ind.get("stade", "adulte"), vid=ind.get("variante", "classique"),
+                        teinte=ind.get("teinte", 0.5))
     if e.get("sprite_grand"):
         g = dict(e)
         g["sprite_grand"] = [r[::2] for r in e["sprite_grand"][::2]]
@@ -662,13 +678,17 @@ def lignes_ecran(state, largeur=62):
     gauche_txt = [f"{nom_f} {DIM}· niv. {lvl}{RESET}", st_f,
                   f"{fg(250)}Faim{RESET}     {jauge(state['hunger'], 100, 12)}"]
     # ---- le monstre
-    sp_m = petit_dessin(e, d["shiny"])
+    ind = d.get("ind") or {}
+    sp_m = petit_dessin(e, d["shiny"], ind)
     if d.get("examine"):
-        st_m = "  ".join(f"{fg(COUL_STAT.get(k, 250))}{k}{RESET} {BOLD}{v}{RESET}" for k, v in e["stats"].items())
+        st_m = "  ".join(f"{fg(COUL_STAT.get(k, 250))}{k}{RESET} {BOLD}{v}{RESET}"
+                         for k, v in (ind.get("stats") or e["stats"]).items())
     else:
         st_m = f"{DIM}stats : ??? (examine-le){RESET}"
-    droite_txt = [f"{BOLD}{B.nom_affiche(e, d['shiny'])}{RESET} {DIM}#{e['numero']:03d}{RESET} "
-                  f"{B.fg24(B.COULEUR_RARETE[e['rarete']])}{e['rarete']}{RESET}", st_m,
+    rar = d.get("rarete") or "commune"
+    droite_txt = [f"{BOLD}{B.nom_affiche(e, d['shiny'], rar if d.get('examine') else None)}{RESET} "
+                  f"{DIM}#{e['numero']:03d}{RESET} "
+                  + (B.libelle_rarete(rar) if d.get("examine") else f"{DIM}rareté ???{RESET}"), st_m,
                   f"{fg(213)}Méfiance{RESET} {jauge(mef, 100, 12, inverse=True)} {mef:3.0f} %"]
     out = ["", f" {fg(196)}{BOLD}⚔ UN MONSTRE SAUVAGE !{RESET}", ""]
     out += _cote_a_cote(sp_f, sp_m, LG, milieu=f"{fg(196)}{BOLD}  VS  {RESET}")

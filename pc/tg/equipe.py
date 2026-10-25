@@ -17,9 +17,12 @@ from . import bestiaire as B
 from . import core
 from .plateforme import BOLD, DIM, RESET, fg
 
-STADES = ["enfant", "ado", "adulte", "finale"]
-NOM_STADE = {"enfant": "enfant", "ado": "ado", "adulte": "adulte", "finale": "forme finale"}
-SEUILS = {"enfant": 150, "ado": 500, "adulte": 1500}          # XP pour passer au stade suivant
+STADES = ["bebe", "enfant", "ado", "adulte", "ancien"]
+NOM_STADE = {"bebe": "bébé", "enfant": "enfant", "ado": "ado", "adulte": "adulte", "ancien": "ancien",
+             "finale": "ancien"}
+SEUILS = {"bebe": 100, "enfant": 250, "ado": 600, "adulte": 1500}  # XP pour passer au stade suivant
+# Abyssor (animations détaillées faites à la main) garde ses noms de stades d'origine
+STADES_ABYSSOR = {"bebe": "enfant", "enfant": "enfant", "ado": "ado", "adulte": "adulte", "ancien": "finale"}
 ANIMS = ["statique", "mange", "attaque", "salut", "parle", "dort", "content", "affame", "confus", "colere",
          "victoire", "ko", "evolution"]
 _CACHE = {}
@@ -79,7 +82,7 @@ def images(espece, stade, nom, teinte=0.0):
     d = donnees(espece)
     if not d:
         return None
-    a = d["anims"].get(stade, {}).get(nom)
+    a = d["anims"].get(STADES_ABYSSOR.get(stade, stade), {}).get(nom) or d["anims"].get(stade, {}).get(nom)
     if not a:
         return None
     pal = _palette(a["palette"], teinte)
@@ -92,7 +95,8 @@ def images(espece, stade, nom, teinte=0.0):
 
 # ---------------------------------------------------------------- l'équipe
 def stade(ind):
-    return ind.get("stade", "enfant")
+    s = ind.get("stade", "bebe")
+    return "ancien" if s == "finale" else s
 
 
 def active(state):
@@ -143,7 +147,9 @@ def ecran_equipe(state):
         seuil = SEUILS.get(s)
         barre = f"{c.get('xp', 0)}/{seuil} XP" if seuil else "stade maximal"
         marque = f"{fg(226)}★ active{RESET} " if c is act else "         "
-        lignes.append(f" {marque}{B.nom_affiche(e, c.get('shiny'))} {DIM}· {NOM_STADE[s]} · {barre}"
+        var = c.get("variante", "classique")
+        lignes.append(f" {marque}{B.nom_affiche(e, c.get('shiny'), B.rarete_de(c))} {DIM}· {NOM_STADE[s]}"
+                      f"{' · ' + var if var != 'classique' else ''} · {B.rarete_de(c)} · {barre}"
                       f"{' · animé' if anime(e['nom']) else ''}{RESET}")
     lignes += ["", f" {DIM}Choisir l'active : tg troupe <nom> · la voir bouger : tg anime <nom> [animation]{RESET}"]
     return lignes
@@ -168,28 +174,29 @@ def jouer(state, args):
     else:
         ind = active(state)
     if not ind:
-        print(" Aucune bestiole de ce nom dans ton équipe. (tg troupe pour la liste)")
+        print(" Aucune bestiole de ce nom dans ta troupe. (tg troupe pour la liste)")
         return
     quoi = (args[1] if len(args) > 1 else "statique").lower().replace("é", "e").replace("è", "e")
     s = stade(ind)
     if quoi == "evolution":                  # on rejoue l'évolution qui a mené au stade actuel
         i = STADES.index(s)
         if i == 0:
-            print(f" {ind['espece']} est encore enfant : il n'a pas encore évolué.")
+            print(f" {ind['espece']} est encore bébé : il n'a pas encore évolué.")
             return
         s = STADES[i - 1]
     teinte = ind.get("teinte", 0.5) if ind.get("shiny") else 0.0
     r = images(ind["espece"], s, quoi, teinte)
     if r is None:
         if not anime(ind["espece"]):
-            print("\n".join(B.dessin(B.espece(ind["espece"]), ind.get("shiny"))))
+            print("\n".join(B.dessin(B.espece(ind["espece"]), ind.get("shiny"), stade=stade(ind),
+                                     vid=ind.get("variante", "classique"), teinte=ind.get("teinte", 0.5))))
             print(f" {DIM}{ind['espece']} n'a pas encore d'animation détaillée.{RESET}")
         else:
             print(f" Animations : {', '.join(a for a in ANIMS)}")
         return
     frames, ips = r
     tours = 1 if quoi == "evolution" else 3
-    titre = f" {B.nom_affiche(B.espece(ind['espece']), ind.get('shiny'))} {DIM}· {NOM_STADE[stade(ind)]} · {quoi}{RESET}"
+    titre = f" {B.nom_affiche(B.espece(ind['espece']), ind.get('shiny'), B.rarete_de(ind))} {DIM}· {NOM_STADE[stade(ind)]} · {quoi}{RESET}"
     sys.stdout.write("\033[?25l")
     try:
         h = len(frames[0])
