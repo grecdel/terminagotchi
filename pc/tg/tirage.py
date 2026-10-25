@@ -28,7 +28,10 @@ Tous les calculs sont en entiers. Vecteurs de test communs : donnees/anti_triche
   pondere(poids)   = r = entier(somme des poids) ; premier indice i tel que r < poids[0] + … + poids[i]
 
   Ordre des tirages (chacun consomme toujours ses nombres, même s'il ne sert pas) :
-   1. espèce      : pondere(poids_frequence[frequence]) sur les espèces publiques, dans l'ordre du fichier
+   1. espèce      : pondere(poids) sur les espèces publiques, dans l'ordre du fichier, avec
+                    poids = poids_frequence[frequence] × (ATTIRANCE si famille == famille attirée, sinon 1)
+                    (famille attirée : celle dont l'enfant vient de taper la commande « attiree_par »,
+                    déclarée avec l'apparition dans le champ « attire » ; absente = aucune)
    2. variante    : pondere(round(chance × 10)) sur les variantes de l'espèce
    3. shiny       : entier(chance_shiny) == 0
    4. Abyssor     : entier(15) == 0 ; s'il est permis (3 légendaires et pas encore d'Abyssor), l'espèce
@@ -48,6 +51,11 @@ Tous les calculs sont en entiers. Vecteurs de test communs : donnees/anti_triche
                     (Ps, Pv, Pp, Pb = poids de rarete.poids ; score de la variante en millièmes)
                     note = min(1000, (N + 7000) // 14000)
       rareté      : le dernier palier dont le seuil (× 10, arrondi) ≤ note ; Abyssor : « mythique »
+
+  L'attirance ne change QUE le tirage 1 (chaque tirage consomme toujours un seul nombre) : shiny,
+  qualité, stats… restent ceux du compteur. Le serveur refait le tirage avec la famille déclarée et
+  vérifie qu'elle est plausible : une vraie famille, dont la commande fait partie des commandes que
+  le joueur a déjà tapées (« vus »).
 """
 import time
 
@@ -57,6 +65,13 @@ MASQUE = (1 << 64) - 1
 VERSION = 1
 MAX_APPARITIONS = 200          # apparitions au plus par graine (par jour et par appareil)
 POIDS_STADES = [35, 35, 20, 10]
+ATTIRANCE = 4                  # la famille attirée pèse 4 fois plus lourd (≈ 10 % → ≈ 30 % des apparitions)
+
+
+def poids_especes(pub, attire=None):
+    """Le poids de chaque espèce publique au tirage 1 (entiers)."""
+    pf = B.donnees()["poids_frequence"]
+    return [pf[x["frequence"]] * (ATTIRANCE if attire and x["famille"] == attire else 1) for x in pub]
 
 
 class Hasard:
@@ -106,12 +121,13 @@ def rarete_entiere(e, note10):
     return nom
 
 
-def tirer(valeur, compteur, abyssor_permis=False):
-    """Le tirage complet d'une apparition. Renvoie (espèce, champs de l'individu)."""
+def tirer(valeur, compteur, abyssor_permis=False, attire=None):
+    """Le tirage complet d'une apparition. Renvoie (espèce, champs de l'individu).
+    attire : la famille attirée (ou None)."""
     d = B.donnees()
     h = Hasard(valeur, compteur)
     pub = B.publiques()
-    e = pub[h.pondere([d["poids_frequence"][x["frequence"]] for x in pub])]
+    e = pub[h.pondere(poids_especes(pub, attire))]
     v = e["variantes"][h.pondere([round(x["chance"] * 10) for x in e["variantes"]])]["id"]
     shiny = h.entier(d["chance_shiny"]) == 0
     if h.entier(15) == 0 and abyssor_permis:
@@ -176,10 +192,11 @@ def ranger_graines(state, graines, t=None):
         c.get("apparitions", {}).pop(gid, None)
 
 
-def apparition(state, zone_de, abyssor_permis=False):
+def apparition(state, zone_de, abyssor_permis=False, attire=None):
     """Une apparition tirée de la graine du jour (vérifiable par le serveur), ou None s'il n'y en a pas.
 
-    zone_de(espèce, variante) donne le dossier où elle se cache. Renvoie (espèce, individu)."""
+    zone_de(espèce, variante) donne le dossier où elle se cache. attire : la famille attirée (ou None),
+    gardée dans l'individu (« attire ») pour que le serveur refasse le même tirage. Renvoie (espèce, individu)."""
     g = graine_du_jour(state)
     if not g:
         return None
@@ -190,9 +207,11 @@ def apparition(state, zone_de, abyssor_permis=False):
     if n >= MAX_APPARITIONS:
         return None
     compteurs[gid] = n + 1
-    e, champs = tirer(valeur, n, abyssor_permis)
+    e, champs = tirer(valeur, n, abyssor_permis, attire)
     ind = B.individu(e, champs["shiny"], zone_de(e, champs["variante"]), champs["variante"])
     ind.update(champs)
     ind["graine"] = gid
     ind["n"] = n
+    if attire:
+        ind["attire"] = attire
     return e, ind

@@ -14,6 +14,8 @@ import org.json.JSONObject
  */
 object Tirage {
     const val MAX_APPARITIONS = 200
+    /** La famille attirée (sa commande « attiree_par » vient d'être tapée) pèse 4 fois plus lourd au tirage 1. */
+    const val ATTIRANCE = 4L
     private val POIDS_STADES = listOf(35L, 35L, 20L, 10L)
 
     class Hasard(valeur: String, compteur: Long) {
@@ -60,11 +62,16 @@ object Tirage {
 
     class Resultat(val espece: Bestiaire.Espece, val champs: JSONObject)
 
-    /** Le tirage complet d'une apparition (mêmes champs, dans le même ordre, que le Python). */
-    fun tirer(valeur: String, compteur: Long, abyssorPermis: Boolean = false): Resultat {
+    /** Poids de chaque espèce publique au tirage 1 (comme tirage.poids_especes en Python). */
+    fun poidsEspeces(pub: List<Bestiaire.Espece>, attire: String? = null): List<Long> =
+        pub.map { Math.round(Bestiaire.poidsFrequence[it.frequence] ?: 1.0) * (if (attire != null && it.famille == attire) ATTIRANCE else 1L) }
+
+    /** Le tirage complet d'une apparition (mêmes champs, dans le même ordre, que le Python).
+     *  attire : la famille attirée (ou null) ; elle ne change que le choix de l'espèce. */
+    fun tirer(valeur: String, compteur: Long, abyssorPermis: Boolean = false, attire: String? = null): Resultat {
         val h = Hasard(valeur, compteur)
         val pub = Bestiaire.publiques()
-        var e = pub[h.pondere(pub.map { Math.round(Bestiaire.poidsFrequence[it.frequence] ?: 1.0) })]
+        var e = pub[h.pondere(poidsEspeces(pub, attire))]
         var v = e.variantes[h.pondere(e.variantes.map { Math.round(it.chance * 10) })].id
         val shiny = h.entier(Bestiaire.chanceShiny) == 0
         if (h.entier(15) == 0 && abyssorPermis) {
@@ -120,8 +127,9 @@ object Tirage {
         }
     }
 
-    /** Une apparition tirée de la graine du jour (vérifiable), ou null s'il n'y en a pas. */
-    fun apparition(jeu: Jeu, abyssorPermis: Boolean): Pair<Bestiaire.Espece, JSONObject>? {
+    /** Une apparition tirée de la graine du jour (vérifiable), ou null s'il n'y en a pas.
+     *  attire : la famille attirée, gardée dans l'individu (« attire ») pour que le serveur refasse le tirage. */
+    fun apparition(jeu: Jeu, abyssorPermis: Boolean, attire: String? = null): Pair<Bestiaire.Espece, JSONObject>? {
         val c = Recensement.compte(jeu)
         val cache = c.optJSONObject("graines") ?: return null
         val aujourdhui = jour()
@@ -132,11 +140,12 @@ object Tirage {
         val n = compteurs.optLong(id)
         if (n >= MAX_APPARITIONS) return null
         compteurs.put(id, n + 1)
-        val t = tirer(valeur, n, abyssorPermis)
+        val t = tirer(valeur, n, abyssorPermis, attire)
         val vid = t.champs.getString("variante")
         val ind = Bestiaire.individu(t.espece, t.champs.getBoolean("shiny"), Bestiaire.variante(t.espece, vid).zone, vid)
         for (k in t.champs.keys().asSequence().toList()) ind.put(k, t.champs.get(k))
         ind.put("graine", id).put("n", n)
+        if (attire != null) ind.put("attire", attire)
         return t.espece to ind
     }
 }

@@ -68,6 +68,14 @@ def espece(nom):
     return None
 
 
+def familles():
+    """{famille: commande qui l'attire} (une commande par famille, champ « attiree_par »)."""
+    out = {}
+    for e in publiques():
+        out.setdefault(e["famille"], e["attiree_par"])
+    return out
+
+
 def migrer(state):
     """Sauvegardes d'avant le nouveau bestiaire : chaque ancienne espèce devient la nouvelle de même numéro."""
     anciens = donnees().get("anciens", {})
@@ -96,11 +104,13 @@ def migrer(state):
     return state
 
 
-def tirer(rnd=random):
-    """Une apparition : l'espèce (selon sa fréquence), sa variante (selon son habitat), shiny ou pas."""
+def tirer(rnd=random, attire=None):
+    """Une apparition : l'espèce (selon sa fréquence, et la famille attirée), sa variante (selon son
+    habitat), shiny ou pas. Sans graine (non vérifiable) ; même pondération que tirage.poids_especes."""
+    from .tirage import poids_especes
     d = donnees()
     pub = publiques()
-    e = rnd.choices(pub, [d["poids_frequence"][x["frequence"]] for x in pub])[0]
+    e = rnd.choices(pub, poids_especes(pub, attire))[0]
     v = rnd.choices(e["variantes"], [x["chance"] for x in e["variantes"]])[0]
     shiny = rnd.randrange(d["chance_shiny"]) == 0
     return e, shiny, v["id"]

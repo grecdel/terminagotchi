@@ -285,8 +285,26 @@ console.log("Anti-triche : graines et captures vérifiées");
   r = await appel("POST", "/api/sync", { cle: cleTel, corps: { appareil: "android", captures: [{ ...honnete, stade: "ancien", stats: { ...honnete.stats, PV: 999 } }] } });
   const h2 = r.j.etat.captures.find((c) => c.id === "dddddd0001");
   verifier(h2.stats.PV === honnete.stats.PV && h2.stade === honnete.stade, "une capture vérifiée ne change ni de stats ni de stade trop vite");
+  // attirance : la commande d'une famille, tapée par l'enfant, rend cette famille plus probable
+  const captA = (id, n, attire) => {
+    const t = tirer(g.valeur, n, false, attire).champs;
+    return { id, ...t, stats: { ...t.stats }, graine: g.id, n, date: maintenant, zone: "volcan", attire };
+  };
+  let nFaux = 13;
+  while (tirer(g.valeur, nFaux).champs.espece === tirer(g.valeur, nFaux, false, "Constructs").champs.espece) nFaux++;
+  const menteur = { ...capt2("dddddd0013", nFaux), attire: "Constructs" };
+  r = await appel("POST", "/api/sync", { cle: cleTel, corps: { appareil: "android", captures: [
+    captA("dddddd0010", 10, "Constructs"), captA("dddddd0011", 11, "Démons"), menteur,
+  ] } });
+  let parA = Object.fromEntries(r.j.etat.captures.map((c) => [c.id, c]));
+  verifier(parA.dddddd0010?.verifie === true && parA.dddddd0010.attire === "Constructs", "attirance par git (déjà tapée) : vérifiée");
+  verifier(parA.dddddd0011?.verifie === false && parA.dddddd0011.raison === "attirance impossible", "attirance par chmod jamais tapée : non vérifiée");
+  verifier(parA.dddddd0013?.verifie === false && parA.dddddd0013.raison === "ne correspond pas au tirage", "attirance annoncée après coup : non vérifiée");
+  r = await appel("POST", "/api/sync", { cle: cleTel, corps: { appareil: "android", vus: ["chmod"], captures: [captA("dddddd0012", 12, "Démons")] } });
+  parA = Object.fromEntries(r.j.etat.captures.map((c) => [c.id, c]));
+  verifier(parA.dddddd0012?.verifie === true, "chmod envoyé avec la capture : attirance des Démons vérifiée");
   r = await appel("GET", "/api/profil/Grec");
-  verifier(r.j.capturesVerifiees === 3, "profil : 3 captures vérifiées comptées à part");
+  verifier(r.j.capturesVerifiees === 5, "profil : 5 captures vérifiées comptées à part");
   r = await appel("GET", "/captures");
   verifier(r.t.includes("✔ vérifiée") && r.t.includes("non vérifiée") && r.t.includes("/portraits/"), "galerie : vérifiées (✔) et non vérifiées affichées");
   const sansSecret = { DB: env.DB };

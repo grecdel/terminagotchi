@@ -1,7 +1,7 @@
 // Anti-triche : le JavaScript du serveur donne EXACTEMENT les mêmes tirages que le PC et l'appli.
 // Lancer :  node --no-warnings test/tirage.mjs
 import { readFileSync } from "node:fs";
-import { Hasard, tirer, differences, stadePlausible, xpPourGrandir } from "../src/tirage.js";
+import { Hasard, tirer, differences, stadePlausible, xpPourGrandir, attirancePlausible, FAMILLES } from "../src/tirage.js";
 
 const V = JSON.parse(readFileSync(new URL("../../donnees/anti_triche/vecteurs.json", import.meta.url), "utf8"));
 let ok = 0;
@@ -19,7 +19,7 @@ for (const s of V.splitmix) {
 let pareils = 0;
 const rates = [];
 for (const t of V.tirages) {
-  const { champs } = tirer(t.valeur, t.n, t.abyssor);
+  const { champs } = tirer(t.valeur, t.n, t.abyssor, t.attire ?? null);
   if (JSON.stringify(champs) === JSON.stringify(t.attendu)) pareils++;
   else rates.push(`${t.valeur.slice(0, 8)}#${t.n} : ${JSON.stringify(champs)} ≠ ${JSON.stringify(t.attendu)}`);
 }
@@ -27,6 +27,25 @@ verifier(pareils === V.tirages.length, `${pareils}/${V.tirages.length} tirages i
 for (const r of rates.slice(0, 3)) console.log("     ", r);
 verifier(V.tirages.some((t) => t.attendu.shiny) && V.tirages.some((t) => t.attendu.espece === "Abyssor"),
   "les vecteurs couvrent des shiny et Abyssor");
+
+verifier(V.tirages.some((t) => t.attire), "les vecteurs couvrent l'attirance d'une famille");
+
+console.log("Attirance (la commande tapée attire une famille)");
+const fam = Object.keys(FAMILLES);
+verifier(fam.length === 10 && Object.values(FAMILLES).includes("chmod"), "10 familles, une commande chacune");
+verifier(attirancePlausible(undefined, []) === null, "pas d'attirance déclarée : tirage normal");
+verifier(attirancePlausible("Démons", ["ls", "chmod"]) === "Démons", "famille attirée par une commande déjà tapée : acceptée");
+verifier(attirancePlausible("Démons", ["ls"]) === undefined, "commande jamais tapée : refusée");
+verifier(attirancePlausible("Licornes", ["chmod"]) === undefined, "famille inconnue : refusée");
+const N = 4000;
+let sans = 0;
+let avec = 0;
+for (let n = 0; n < N; n++) {
+  const g = (n * 2654435761 % 4294967296).toString(16).padStart(16, "0") + "0".repeat(48);
+  if (tirer(g, n % 200).e.famille === "Démons") sans++;
+  if (tirer(g, n % 200, false, "Démons").e.famille === "Démons") avec++;
+}
+verifier(avec > 2 * sans, `Démons : ${(100 * sans / N).toFixed(1)} % sans attirance, ${(100 * avec / N).toFixed(1)} % avec`);
 
 console.log("Comparaison d'une capture");
 const t0 = V.tirages[0];

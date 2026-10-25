@@ -59,10 +59,30 @@ export function rareteEntiere(e, note10) {
   return nom;
 }
 
-/** Le tirage complet : { e, champs } (champs = ce que l'individu doit contenir). */
-export function tirer(valeur, compteur, abyssorPermis = false) {
+/** Les familles et la commande qui attire chacune (champ « attiree_par » du bestiaire). */
+export const FAMILLES = D.familles;
+
+/** Poids de chaque espèce publique au tirage 1 : la famille attirée pèse D.attirance fois plus. */
+export function poidsEspeces(attire = null) {
+  return PUBLIQUES_T.map((x) => D.poids_frequence[x.frequence] * (attire && x.famille === attire ? D.attirance : 1));
+}
+
+/**
+ * Attirance déclarée par une capture (champ « attire ») : plausible si c'est une vraie famille et
+ * que le joueur a déjà tapé sa commande (elle est dans ses « vus »). Renvoie la famille, null si
+ * aucune n'est déclarée, ou undefined si elle n'est pas plausible.
+ */
+export function attirancePlausible(attire, vus) {
+  if (attire === undefined || attire === null || attire === "") return null;
+  if (typeof attire !== "string" || !Object.hasOwn(FAMILLES, attire)) return undefined;
+  const cmd = FAMILLES[attire];
+  return (vus instanceof Set ? vus.has(cmd) : Array.isArray(vus) && vus.includes(cmd)) ? attire : undefined;
+}
+
+/** Le tirage complet : { e, champs } (champs = ce que l'individu doit contenir). attire : la famille attirée. */
+export function tirer(valeur, compteur, abyssorPermis = false, attire = null) {
   const h = new Hasard(valeur, compteur);
-  let e = PUBLIQUES_T[h.pondere(PUBLIQUES_T.map((x) => D.poids_frequence[x.frequence]))];
+  let e = PUBLIQUES_T[h.pondere(poidsEspeces(attire))];
   let v = e.variantes[h.pondere(e.variantes.map((x) => arrondi(x.chance * 10)))].id;
   const shiny = h.entier(D.chance_shiny) === 0;
   if (h.entier(15) === 0 && abyssorPermis) {

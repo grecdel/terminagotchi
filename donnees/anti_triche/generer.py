@@ -35,7 +35,7 @@ def donnees_site():
         if e.get("secrete") and e["id"] != "abyssor":
             continue
         especes.append({
-            "id": e["id"], "nom": e["nom"], "frequence": e["frequence"], "puissance": e.get("puissance", 1),
+            "id": e["id"], "nom": e["nom"], "famille": e["famille"], "frequence": e["frequence"], "puissance": e.get("puissance", 1),
             "taille_cm": e["taille_cm"], "stats": e["stats"], "secrete": bool(e.get("secrete")),
             "variantes": [{"id": v["id"], "chance": v["chance"], "score": v.get("score", 0), "zone": v.get("zone", e["zone"])}
                           for v in e["variantes"]],
@@ -44,7 +44,8 @@ def donnees_site():
         "version": T.VERSION, "chance_shiny": d["chance_shiny"], "poids_frequence": d["poids_frequence"],
         "rarete": {k: d["rarete"][k] for k in ("poids", "paliers", "speciales")},
         "marques": d["marques"], "humeurs": d["humeurs"], "stades": B.STADES,
-        "poids_stades": T.POIDS_STADES, "max_apparitions": T.MAX_APPARITIONS, "especes": especes,
+        "poids_stades": T.POIDS_STADES, "max_apparitions": T.MAX_APPARITIONS,
+        "attirance": T.ATTIRANCE, "familles": B.familles(), "especes": especes,
     }
 
 
@@ -61,6 +62,13 @@ def vecteurs():
                 if ab and e["id"] != "abyssor":
                     continue                      # avec Abyssor permis : seulement les cas où il apparaît
                 tirages.append({"valeur": g, "n": n, "abyssor": ab, "attendu": c})
+    # avec une famille attirée (champ « attire ») : chaque famille, sur deux graines
+    familles = list(B.familles())
+    for g in GRAINES[1:3]:
+        for n in range(40):
+            f = familles[n % len(familles)]
+            e, c = T.tirer(g, n, False, f)
+            tirages.append({"valeur": g, "n": n, "abyssor": False, "attire": f, "attendu": c})
     # quelques cas rares cherchés exprès (shiny, légendaire)
     g = GRAINES[2]
     trouves = {"shiny": 0, "légendaire": 0}

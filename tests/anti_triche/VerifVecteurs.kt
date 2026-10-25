@@ -33,7 +33,8 @@ fun main(args: Array<String>) {
     var pareils = 0
     for (i in 0 until ts.length()) {
         val t = ts.getJSONObject(i)
-        val r = Tirage.tirer(t.getString("valeur"), t.getLong("n"), t.getBoolean("abyssor"))
+        val attire = if (t.has("attire")) t.getString("attire") else null
+        val r = Tirage.tirer(t.getString("valeur"), t.getLong("n"), t.getBoolean("abyssor"), attire)
         val a = canon(t.getJSONObject("attendu")); val o = canon(r.champs)
         if (a == o) pareils++ else { ko++; if (ko < 4) println("✖ ${t.getString("valeur").take(8)}#${t.getLong("n")} :\n  $o\n  $a") }
     }

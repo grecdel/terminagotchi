@@ -5,7 +5,7 @@
  */
 
 import BESTIAIRE from "./bestiaire.js";
-import { tirer, differences, stadePlausible, MAX_APPARITIONS, PAR_NOM_T, TIRAGE } from "./tirage.js";
+import { tirer, differences, stadePlausible, attirancePlausible, MAX_APPARITIONS, PAR_NOM_T, TIRAGE } from "./tirage.js";
 import { LANGUES, NOMS_LANGUES, LOCALES, RTL, choisirLangue, cookieLangue, textes, libelle } from "./i18n.js";
 
 const DEPOT = "https://github.com/grecdel/terminagotchi-android";
@@ -173,9 +173,12 @@ async function graines(env, joueur) {
 /**
  * Vérifie les NOUVELLES captures qui annoncent une graine : refait le tirage, compare, contrôle que
  * (graine, compteur) ne sert qu'une fois et que le stade est plausible. Renvoie Map(id → verdict).
+ * Attirance (champ « attire ») : le tirage est refait avec la famille déclarée, acceptée seulement si
+ * le joueur a déjà tapé la commande de cette famille (commandes « vus » connues ou envoyées).
  */
-async function verifierCaptures(env, joueur, etat, envoyees) {
+async function verifierCaptures(env, joueur, etat, envoyees, vusEnvoyes = []) {
   const verdicts = new Map();
+  const vus = new Set([...(Array.isArray(etat.vus) ? etat.vus : []), ...(Array.isArray(vusEnvoyes) ? vusEnvoyes : [])]);
   const connues = new Set((etat.captures || []).map((c) => c.id));
   const postes = new Map();
   const maintenant = Date.now();
@@ -196,7 +199,9 @@ async function verifierCaptures(env, joueur, etat, envoyees) {
       postes.set(poste, !!r);
     }
     if (!postes.get(poste)) { non("graine d'un autre joueur"); continue; }
-    const { champs } = tirer(await valeurGraine(env, joueur.id, poste, jour), n, c.espece === "Abyssor");
+    const attire = attirancePlausible(c.attire, vus);
+    if (attire === undefined) { non("attirance impossible"); continue; }
+    const { champs } = tirer(await valeurGraine(env, joueur.id, poste, jour), n, c.espece === "Abyssor", attire);
     if (differences(c, champs).length) { non("ne correspond pas au tirage"); continue; }
     const i0 = TIRAGE.stades.indexOf(champs.stade);
     const voulu = TIRAGE.stades.includes(c.stade) ? c.stade : champs.stade;
@@ -271,7 +276,7 @@ function fusionner(etat, envoi, appareil, verdicts = new Map()) {
         id: c.id, espece: t.espece, variante: t.variante, shiny: t.shiny, date: entier(c.date, 4e12), marque: t.marque,
         humeur: t.humeur, taille: t.taille, qualite: t.qualite, potentiel: t.potentiel, stats: t.stats, note: t.note,
         rarete: t.rarete, zone, stade: v.stade, stade0: t.stade, depuis: v.depuis, teinte: t.teinte ?? 0,
-        graine: c.graine, n: c.n, verifie: true,
+        graine: c.graine, n: c.n, verifie: true, ...(typeof c.attire === "string" && { attire: c.attire }),
       });
       connues.add(c.id);
       continue;
@@ -381,7 +386,7 @@ async function synchroniser(env, joueur, b, partie) {
   const appareil = APPAREILS.includes(b.appareil) ? b.appareil : "pc";
   const ligne = await env.DB.prepare("SELECT etat FROM parties WHERE joueur = ? AND partie = ?").bind(joueur.id, partie).first();
   const avant = ligne ? lireEtat(ligne) : {};
-  const e = fusionner(avant, b, appareil, await verifierCaptures(env, joueur, avant, b.captures));
+  const e = fusionner(avant, b, appareil, await verifierCaptures(env, joueur, avant, b.captures, b.vus));
   const maintenant = Date.now();
   await env.DB.prepare(
     "INSERT INTO parties (joueur, partie, etat, xp, niveau, cree, maj) VALUES (?, ?, ?, ?, ?, ?, ?) "
