@@ -1,18 +1,104 @@
 {
  "espece": "Darmong",
- "allure": "quadrupède : marche à quatre pattes, ailes repliées (contrairement à Abyssor, debout)",
+ "allure": "vrai quadrupède : quatre pattes au sol, dos horizontal, ailes repliées sur le dos (Abyssor, lui, se tient debout)",
  "famille_provisoire": "Élémentaires (en attendant le nouveau bestiaire à 10 familles)",
- "stades": ["bebe", "enfant", "ado", "adulte", "ancien"],
+ "stades": [
+  "bebe",
+  "enfant",
+  "ado",
+  "adulte",
+  "ancien"
+ ],
  "variantes": [
-  {"id": "classique", "nom": "Darmong",          "element": "feu",      "rarete": "commune",     "chance": 28, "caractere": "joueur et protecteur"},
-  {"id": "sable",     "nom": "Darmong des sables","element": "terre",   "rarete": "commune",     "chance": 18, "caractere": "patient, endurant"},
-  {"id": "marin",     "nom": "Darmong marin",    "element": "eau",      "rarete": "peu commune", "chance": 14, "caractere": "curieux et calme"},
-  {"id": "lave",      "nom": "Darmong de lave",  "element": "magma",    "rarete": "peu commune", "chance": 12, "caractere": "fougueux, s'emporte vite"},
-  {"id": "toxique",   "nom": "Darmong toxique",  "element": "poison",   "rarete": "peu commune", "chance": 10, "caractere": "méfiant et rusé"},
-  {"id": "givre",     "nom": "Darmong de givre", "element": "glace",    "rarete": "rare",        "chance": 7,  "caractere": "solitaire et sage"},
-  {"id": "orage",     "nom": "Darmong d'orage",  "element": "foudre",   "rarete": "rare",        "chance": 5,  "caractere": "nerveux, toujours en alerte"},
-  {"id": "arcane",    "nom": "Darmong arcanique","element": "magie",    "rarete": "rare",        "chance": 3.5,"caractere": "rêveur, un peu mystique"},
-  {"id": "dore",      "nom": "Darmong doré",     "element": "lumière",  "rarete": "légendaire",  "chance": 1.8,"caractere": "noble et bienveillant"},
-  {"id": "cosmique",  "nom": "Darmong cosmique", "element": "étoiles",  "rarete": "légendaire",  "chance": 0.7,"caractere": "énigmatique, venu d'ailleurs"}
+  {
+   "id": "classique",
+   "nom": "Darmong",
+   "element": "feu",
+   "rarete": "commune",
+   "chance": 28,
+   "caractere": "joueur et protecteur",
+   "matiere": "écailles rouges, le modèle de base"
+  },
+  {
+   "id": "sable",
+   "nom": "Darmong des sables",
+   "element": "terre",
+   "rarete": "commune",
+   "chance": 18,
+   "caractere": "patient, endurant",
+   "matiere": "plaques de grès gravées, sans ailes, collerette au cou"
+  },
+  {
+   "id": "marin",
+   "nom": "Darmong marin",
+   "element": "eau",
+   "rarete": "peu commune",
+   "chance": 14,
+   "caractere": "curieux et calme",
+   "matiere": "nageoires et branchies, coraux sur le dos, bulles"
+  },
+  {
+   "id": "lave",
+   "nom": "Darmong de lave",
+   "element": "magma",
+   "rarete": "peu commune",
+   "chance": 12,
+   "caractere": "fougueux, s'emporte vite",
+   "matiere": "roche noire fissurée de magma, épines qui fument"
+  },
+  {
+   "id": "toxique",
+   "nom": "Darmong toxique",
+   "element": "poison",
+   "rarete": "peu commune",
+   "chance": 10,
+   "caractere": "méfiant et rusé",
+   "matiere": "champignons et bulles de poison sur le dos, bave qui coule"
+  },
+  {
+   "id": "givre",
+   "nom": "Darmong de givre",
+   "element": "glace",
+   "rarete": "rare",
+   "chance": 7,
+   "caractere": "solitaire et sage",
+   "matiere": "pics de glace et stalactites, souffle givré"
+  },
+  {
+   "id": "orage",
+   "nom": "Darmong d'orage",
+   "element": "foudre",
+   "rarete": "rare",
+   "chance": 5,
+   "caractere": "nerveux, toujours en alerte",
+   "matiere": "ailes et crinière d'éclairs crépitants"
+  },
+  {
+   "id": "arcane",
+   "nom": "Darmong arcanique",
+   "element": "magie",
+   "rarete": "rare",
+   "chance": 3.5,
+   "caractere": "rêveur, un peu mystique",
+   "matiere": "runes lumineuses, cristaux flottants, cornes de cristal"
+  },
+  {
+   "id": "dore",
+   "nom": "Darmong doré",
+   "element": "lumière",
+   "rarete": "légendaire",
+   "chance": 1.8,
+   "caractere": "noble et bienveillant",
+   "matiere": "ailes à plumes, armure d'or, halo pour l'ancien"
+  },
+  {
+   "id": "cosmique",
+   "nom": "Darmong cosmique",
+   "element": "étoiles",
+   "rarete": "légendaire",
+   "chance": 0.7,
+   "caractere": "énigmatique, venu d'ailleurs",
+   "matiere": "corps translucide rempli d'étoiles et de planètes"
+  }
  ]
 }
