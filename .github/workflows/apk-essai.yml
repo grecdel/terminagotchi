@@ -1,0 +1,53 @@
+name: APK d'essai (branche nouveau-bestiaire)
+
+on:
+  push:
+    branches: [nouveau-bestiaire]
+    paths: ["app/**", "pc/**", "build.gradle*", "settings.gradle*", ".github/workflows/apk-essai.yml"]
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: apk-essai
+  cancel-in-progress: true
+
+jobs:
+  apk:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: "17"
+
+      - uses: gradle/actions/setup-gradle@v4
+        with:
+          gradle-version: "8.9"
+
+      - name: Compiler
+        run: gradle assembleRelease --stacktrace --no-daemon
+
+      - name: Préparer l'APK et la version PC
+        run: |
+          cp app/build/outputs/apk/release/app-release.apk terminagotchi-essai.apk
+          python3 -m zipapp pc -c -o terminagotchi-essai.pyz -p "/usr/bin/env python3"
+
+      - name: Publier en pré-version d'essai
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: essai-${{ github.run_number }}
+          target_commitish: ${{ github.sha }}
+          name: "Essai nouveau bestiaire #${{ github.run_number }}"
+          body: |
+            🧪 Version d'ESSAI (branche nouveau-bestiaire) : nouveau bestiaire, animations, textes « maison ».
+            📱 **terminagotchi-essai.apk** : à ouvrir sur ton téléphone.
+            💻 **terminagotchi-essai.pyz** : la version PC, `python3 terminagotchi-essai.pyz`.
+          files: |
+            terminagotchi-essai.apk
+            terminagotchi-essai.pyz
+          prerelease: true
+          make_latest: false
