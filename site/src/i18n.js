@@ -72,7 +72,7 @@ const plRu = (n, un, peu, beaucoup) => {
 
 const fr = {
   fleches: ["←", "→"], // précédent / suivant (inversées pour les langues de droite à gauche)
-  nav: { classement: "Classement", bestiaire: "Bestiaire", captures: "Captures", ctf: "CTF web", telecharger: "Télécharger", langue: "Langue" },
+  nav: { classement: "Classement", bestiaire: "Bestiaire", captures: "Captures", ctf: "CTF web", telecharger: "Télécharger", compte: "Mon compte", langue: "Langue" },
   description: "Terminagotchi : la créature qui se nourrit de tes commandes et t'apprend le terminal.",
   creature: "créature",
   // libellés génériques (les clés sont les valeurs françaises des données ; absentes = on garde le français)
@@ -223,6 +223,20 @@ const fr = {
     e5: "Le drapeau est rangé quelque part là-dedans. Astuce sur PC : curl <adresse> | python3 -m json.tool",
     cinq: "Il n'y a que 5 épreuves.\n",
   },
+  compte: {
+    titre: "Mon compte",
+    invite: "Pas de mot de passe ici ! Pour te connecter, tape <code>compte site</code> dans le terminal du jeu (PC ou téléphone) : il te donne un lien qui ne marche qu'une fois.",
+    bonjour: (p) => `Bonjour ${p} !`,
+    profil: "Mon profil public",
+    lier: "Lier un appareil",
+    jetonBouton: "Donner un jeton pour un autre appareil",
+    jeton: (j) => `Ton jeton : <code>${j}</code>`,
+    jetonAide: "Dans le terminal de ton autre appareil, tape <code>compte lier</code> suivi de ce jeton. Il marche 10 minutes, une seule fois.",
+    parties: "Tes créatures",
+    aucunePartie: "Pas encore de créature synchronisée.",
+    sortir: "Me déconnecter du site",
+    perime: "Ce lien est périmé ou a déjà servi. Tape à nouveau <code>compte site</code> dans le jeu.",
+  },
   introuvable: {
     titre: "Introuvable",
     texte: "Cette page n'existe pas. <a href=\"/\">Retour à l'accueil</a>",
@@ -232,7 +246,7 @@ const fr = {
 // ====================================================================== anglais
 
 const en = {
-  nav: { classement: "Leaderboard", bestiaire: "Bestiary", captures: "Catches", ctf: "Web CTF", telecharger: "Download", langue: "Language" },
+  nav: { classement: "Leaderboard", bestiaire: "Bestiary", captures: "Catches", ctf: "Web CTF", telecharger: "Download", compte: "My account", langue: "Language" },
   description: "Terminagotchi: the creature that eats your commands and teaches you the terminal.",
   creature: "creature",
   stats: { Intelligence: "Brains", "Agilité": "Agility", Force: "Strength", Endurance: "Stamina" },
@@ -392,6 +406,20 @@ const en = {
     e5: "The flag is tucked away somewhere in here. Tip on PC: curl <address> | python3 -m json.tool",
     cinq: "There are only 5 challenges.\n",
   },
+  compte: {
+    titre: "My account",
+    invite: "No password here! To sign in, type <code>compte site</code> in the game's terminal (PC or phone): it gives you a link that only works once.",
+    bonjour: (p) => `Hello ${p}!`,
+    profil: "My public profile",
+    lier: "Link a device",
+    jetonBouton: "Get a token for another device",
+    jeton: (j) => `Your token: <code>${j}</code>`,
+    jetonAide: "In the terminal of your other device, type <code>compte lier</code> followed by this token. It works for 10 minutes, only once.",
+    parties: "Your creatures",
+    aucunePartie: "No creature synced yet.",
+    sortir: "Sign out of the site",
+    perime: "This link has expired or was already used. Type <code>compte site</code> in the game again.",
+  },
   introuvable: {
     titre: "Not found",
     texte: "This page does not exist. <a href=\"/\">Back to home</a>",
@@ -401,7 +429,7 @@ const en = {
 // ====================================================================== espagnol
 
 const es = {
-  nav: { classement: "Clasificación", bestiaire: "Bestiario", captures: "Capturas", ctf: "CTF web", telecharger: "Descargar", langue: "Idioma" },
+  nav: { classement: "Clasificación", bestiaire: "Bestiario", captures: "Capturas", ctf: "CTF web", telecharger: "Descargar", compte: "Mi cuenta", langue: "Idioma" },
   description: "Terminagotchi: la criatura que se alimenta de tus comandos y te enseña a usar la terminal.",
   creature: "criatura",
   stats: { Intelligence: "Inteligencia", "Agilité": "Agilidad", Force: "Fuerza", Endurance: "Aguante" },
@@ -561,6 +589,20 @@ const es = {
     e5: "La bandera está guardada en algún sitio aquí dentro. Truco en PC: curl <dirección> | python3 -m json.tool",
     cinq: "Solo hay 5 pruebas.\n",
   },
+  compte: {
+    titre: "Mi cuenta",
+    invite: "¡Aquí no hay contraseña! Para entrar, escribe <code>compte site</code> en el terminal del juego (PC o móvil): te da un enlace que solo funciona una vez.",
+    bonjour: (p) => `¡Hola, ${p}!`,
+    profil: "Mi perfil público",
+    lier: "Vincular un dispositivo",
+    jetonBouton: "Dar un código para otro dispositivo",
+    jeton: (j) => `Tu código: <code>${j}</code>`,
+    jetonAide: "En el terminal de tu otro dispositivo, escribe <code>compte lier</code> seguido de este código. Funciona 10 minutos, una sola vez.",
+    parties: "Tus criaturas",
+    aucunePartie: "Todavía no hay ninguna criatura sincronizada.",
+    sortir: "Salir del sitio",
+    perime: "Este enlace ha caducado o ya se usó. Escribe otra vez <code>compte site</code> en el juego.",
+  },
   introuvable: {
     titre: "No encontrada",
     texte: "Esta página no existe. <a href=\"/\">Volver al inicio</a>",
@@ -570,7 +612,7 @@ const es = {
 // ====================================================================== allemand
 
 const de = {
-  nav: { classement: "Rangliste", bestiaire: "Tierbuch", captures: "Fänge", ctf: "Web-CTF", telecharger: "Herunterladen", langue: "Sprache" },
+  nav: { classement: "Rangliste", bestiaire: "Tierbuch", captures: "Fänge", ctf: "Web-CTF", telecharger: "Herunterladen", compte: "Mein Konto", langue: "Sprache" },
   description: "Terminagotchi: das Wesen, das deine Befehle frisst und dir das Terminal beibringt.",
   creature: "Wesen",
   stats: { Intelligence: "Köpfchen", "Agilité": "Geschick", Force: "Kraft", Endurance: "Ausdauer" },
@@ -730,6 +772,20 @@ const de = {
     e5: "Die Flagge ist irgendwo hier drin versteckt. Tipp am PC: curl <Adresse> | python3 -m json.tool",
     cinq: "Es gibt nur 5 Aufgaben.\n",
   },
+  compte: {
+    titre: "Mein Konto",
+    invite: "Hier gibt es kein Passwort! Zum Anmelden tippe <code>compte site</code> im Terminal des Spiels (PC oder Handy): Du bekommst einen Link, der nur einmal funktioniert.",
+    bonjour: (p) => `Hallo ${p}!`,
+    profil: "Mein öffentliches Profil",
+    lier: "Ein Gerät verbinden",
+    jetonBouton: "Einen Code für ein anderes Gerät holen",
+    jeton: (j) => `Dein Code: <code>${j}</code>`,
+    jetonAide: "Tippe im Terminal deines anderen Geräts <code>compte lier</code> und dann diesen Code. Er gilt 10 Minuten, nur einmal.",
+    parties: "Deine Wesen",
+    aucunePartie: "Noch kein Wesen synchronisiert.",
+    sortir: "Von der Seite abmelden",
+    perime: "Dieser Link ist abgelaufen oder wurde schon benutzt. Tippe im Spiel noch einmal <code>compte site</code>.",
+  },
   introuvable: {
     titre: "Nicht gefunden",
     texte: "Diese Seite gibt es nicht. <a href=\"/\">Zurück zum Start</a>",
@@ -739,7 +795,7 @@ const de = {
 // ====================================================================== italien
 
 const it = {
-  nav: { classement: "Classifica", bestiaire: "Bestiario", captures: "Catture", ctf: "CTF web", telecharger: "Scarica", langue: "Lingua" },
+  nav: { classement: "Classifica", bestiaire: "Bestiario", captures: "Catture", ctf: "CTF web", telecharger: "Scarica", compte: "Il mio account", langue: "Lingua" },
   description: "Terminagotchi: la creatura che mangia i tuoi comandi e ti insegna il terminale.",
   creature: "creatura",
   stats: { Intelligence: "Intelligenza", "Agilité": "Agilità", Force: "Forza", Endurance: "Resistenza" },
@@ -899,6 +955,20 @@ const it = {
     e5: "La bandiera è nascosta da qualche parte qui dentro. Trucco su PC: curl <indirizzo> | python3 -m json.tool",
     cinq: "Ci sono solo 5 prove.\n",
   },
+  compte: {
+    titre: "Il mio account",
+    invite: "Qui non c'è nessuna password! Per entrare, scrivi <code>compte site</code> nel terminale del gioco (PC o telefono): ti dà un link che funziona una volta sola.",
+    bonjour: (p) => `Ciao ${p}!`,
+    profil: "Il mio profilo pubblico",
+    lier: "Collegare un dispositivo",
+    jetonBouton: "Dammi un codice per un altro dispositivo",
+    jeton: (j) => `Il tuo codice: <code>${j}</code>`,
+    jetonAide: "Nel terminale dell'altro dispositivo, scrivi <code>compte lier</code> seguito da questo codice. Funziona 10 minuti, una volta sola.",
+    parties: "Le tue creature",
+    aucunePartie: "Ancora nessuna creatura sincronizzata.",
+    sortir: "Esci dal sito",
+    perime: "Questo link è scaduto o è già stato usato. Scrivi di nuovo <code>compte site</code> nel gioco.",
+  },
   introuvable: {
     titre: "Non trovata",
     texte: "Questa pagina non esiste. <a href=\"/\">Torna alla home</a>",
@@ -908,7 +978,7 @@ const it = {
 // ====================================================================== portugais (Portugal, on tutoie)
 
 const pt = {
-  nav: { classement: "Classificação", bestiaire: "Bestiário", captures: "Capturas", ctf: "CTF web", telecharger: "Descarregar", langue: "Língua" },
+  nav: { classement: "Classificação", bestiaire: "Bestiário", captures: "Capturas", ctf: "CTF web", telecharger: "Descarregar", compte: "A minha conta", langue: "Língua" },
   description: "Terminagotchi: a criatura que come os teus comandos e te ensina o terminal.",
   creature: "criatura",
   stats: { Intelligence: "Inteligência", "Agilité": "Agilidade", Force: "Força", Endurance: "Resistência" },
@@ -1068,6 +1138,20 @@ const pt = {
     e5: "A bandeira está guardada algures aqui dentro. Dica no PC: curl <endereço> | python3 -m json.tool",
     cinq: "Só há 5 provas.\n",
   },
+  compte: {
+    titre: "A minha conta",
+    invite: "Aqui não há palavra-passe! Para entrar, escreve <code>compte site</code> no terminal do jogo (PC ou telemóvel): dá-te uma ligação que só funciona uma vez.",
+    bonjour: (p) => `Olá, ${p}!`,
+    profil: "O meu perfil público",
+    lier: "Ligar um aparelho",
+    jetonBouton: "Dar um código para outro aparelho",
+    jeton: (j) => `O teu código: <code>${j}</code>`,
+    jetonAide: "No terminal do teu outro aparelho, escreve <code>compte lier</code> seguido deste código. Funciona 10 minutos, uma só vez.",
+    parties: "As tuas criaturas",
+    aucunePartie: "Ainda não há nenhuma criatura sincronizada.",
+    sortir: "Sair do site",
+    perime: "Esta ligação expirou ou já foi usada. Escreve de novo <code>compte site</code> no jogo.",
+  },
   introuvable: {
     titre: "Não encontrada",
     texte: "Esta página não existe. <a href=\"/\">Voltar ao início</a>",
@@ -1077,7 +1161,7 @@ const pt = {
 // ====================================================================== chinois simplifié
 
 const zh = {
-  nav: { classement: "排行榜", bestiaire: "图鉴", captures: "捕获", ctf: "网页 CTF", telecharger: "下载", langue: "语言" },
+  nav: { classement: "排行榜", bestiaire: "图鉴", captures: "捕获", ctf: "网页 CTF", telecharger: "下载", compte: "我的账号", langue: "语言" },
   description: "Terminagotchi：吃掉你的命令、教你用终端的小怪兽。",
   creature: "小怪兽",
   stats: { Intelligence: "智力", "Agilité": "敏捷", Force: "力量", Endurance: "耐力" },
@@ -1237,6 +1321,20 @@ const zh = {
     e5: "旗子藏在这里面的某个地方。电脑上的小窍门：curl <地址> | python3 -m json.tool",
     cinq: "只有 5 个关卡。\n",
   },
+  compte: {
+    titre: "我的账号",
+    invite: "这里不用密码！要登录，请在游戏的终端里（电脑或手机）输入 <code>compte site</code>：它会给你一个只能用一次的链接。",
+    bonjour: (p) => `你好，${p}！`,
+    profil: "我的公开主页",
+    lier: "连接一台设备",
+    jetonBouton: "给另一台设备一个口令",
+    jeton: (j) => `你的口令：<code>${j}</code>`,
+    jetonAide: "在另一台设备的终端里，输入 <code>compte lier</code> 再加上这个口令。它在 10 分钟内有效，只能用一次。",
+    parties: "你的小生物",
+    aucunePartie: "还没有同步过的小生物。",
+    sortir: "退出网站",
+    perime: "这个链接已经过期或用过了。请在游戏里再输入一次 <code>compte site</code>。",
+  },
   introuvable: {
     titre: "找不到",
     texte: "这个页面不存在。<a href=\"/\">回到首页</a>",
@@ -1246,7 +1344,7 @@ const zh = {
 // ====================================================================== russe (на «ты»)
 
 const ru = {
-  nav: { classement: "Рейтинг", bestiaire: "Бестиарий", captures: "Улов", ctf: "Веб-CTF", telecharger: "Скачать", langue: "Язык" },
+  nav: { classement: "Рейтинг", bestiaire: "Бестиарий", captures: "Улов", ctf: "Веб-CTF", telecharger: "Скачать", compte: "Мой аккаунт", langue: "Язык" },
   description: "Terminagotchi: существо, которое ест твои команды и учит тебя терминалу.",
   creature: "существо",
   stats: { Intelligence: "Ум", "Agilité": "Ловкость", Force: "Сила", Endurance: "Выносливость" },
@@ -1406,6 +1504,20 @@ const ru = {
     e5: "Флаг спрятан где-то здесь внутри. Совет для ПК: curl <адрес> | python3 -m json.tool",
     cinq: "Заданий всего 5.\n",
   },
+  compte: {
+    titre: "Мой аккаунт",
+    invite: "Здесь нет пароля! Чтобы войти, набери <code>compte site</code> в терминале игры (на компьютере или телефоне): ты получишь ссылку, которая работает только один раз.",
+    bonjour: (p) => `Привет, ${p}!`,
+    profil: "Мой открытый профиль",
+    lier: "Подключить устройство",
+    jetonBouton: "Получить код для другого устройства",
+    jeton: (j) => `Твой код: <code>${j}</code>`,
+    jetonAide: "В терминале другого устройства набери <code>compte lier</code> и этот код. Он действует 10 минут, только один раз.",
+    parties: "Твои существа",
+    aucunePartie: "Пока нет синхронизированных существ.",
+    sortir: "Выйти с сайта",
+    perime: "Эта ссылка устарела или уже использована. Набери в игре <code>compte site</code> ещё раз.",
+  },
   introuvable: {
     titre: "Не найдено",
     texte: "Такой страницы нет. <a href=\"/\">На главную</a>",
@@ -1415,7 +1527,7 @@ const ru = {
 // ====================================================================== japonais (やさしい ことば、ひらがな多め)
 
 const ja = {
-  nav: { classement: "ランキング", bestiaire: "ずかん", captures: "つかまえた子", ctf: "Web CTF", telecharger: "ダウンロード", langue: "ことば" },
+  nav: { classement: "ランキング", bestiaire: "ずかん", captures: "つかまえた子", ctf: "Web CTF", telecharger: "ダウンロード", compte: "マイアカウント", langue: "ことば" },
   description: "Terminagotchi：きみのコマンドを食べて、ターミナルを教えてくれるいきもの。",
   creature: "いきもの",
   stats: { Intelligence: "かしこさ", "Agilité": "すばやさ", Force: "ちから", Endurance: "たいりょく" },
@@ -1575,6 +1687,20 @@ const ja = {
     e5: "はたは この中の どこかに しまってあるよ。パソコンでのコツ：curl <アドレス> | python3 -m json.tool",
     cinq: "もんだいは 5 つだけだよ。\n",
   },
+  compte: {
+    titre: "マイアカウント",
+    invite: "パスワードはいりません！ログインするには、ゲームのターミナル（パソコンかスマホ）で <code>compte site</code> と入力してね。一度だけ使えるリンクがもらえるよ。",
+    bonjour: (p) => `こんにちは、${p}！`,
+    profil: "わたしの公開プロフィール",
+    lier: "ほかの機器をつなぐ",
+    jetonBouton: "ほかの機器用のコードをもらう",
+    jeton: (j) => `きみのコード：<code>${j}</code>`,
+    jetonAide: "もう一つの機器のターミナルで、<code>compte lier</code> のあとにこのコードを入力してね。10分間、一度だけ使えるよ。",
+    parties: "きみのいきもの",
+    aucunePartie: "まだ同期したいきものはいません。",
+    sortir: "サイトからログアウト",
+    perime: "このリンクは期限切れか、もう使われています。ゲームでもう一度 <code>compte site</code> と入力してね。",
+  },
   introuvable: {
     titre: "見つからないよ",
     texte: "このページは ないよ。<a href=\"/\">ホームにもどる</a>",
@@ -1584,7 +1710,7 @@ const ja = {
 // ====================================================================== hindi (तुम)
 
 const hi = {
-  nav: { classement: "रैंकिंग", bestiaire: "जीवों की किताब", captures: "पकड़े गए जीव", ctf: "वेब CTF", telecharger: "डाउनलोड", langue: "भाषा" },
+  nav: { classement: "रैंकिंग", bestiaire: "जीवों की किताब", captures: "पकड़े गए जीव", ctf: "वेब CTF", telecharger: "डाउनलोड", compte: "मेरा खाता", langue: "भाषा" },
   description: "Terminagotchi: वह जीव जो तुम्हारी कमांड खाता है और तुम्हें टर्मिनल चलाना सिखाता है।",
   creature: "जीव",
   stats: { Intelligence: "बुद्धि", "Agilité": "फुर्ती", Force: "ताक़त", Endurance: "दम" },
@@ -1744,6 +1870,20 @@ const hi = {
     e5: "झंडा यहीं कहीं अंदर रखा है। PC पर तरकीब: curl <पता> | python3 -m json.tool",
     cinq: "सिर्फ़ 5 चुनौतियाँ हैं।\n",
   },
+  compte: {
+    titre: "मेरा खाता",
+    invite: "यहाँ कोई पासवर्ड नहीं! लॉग इन करने के लिए, खेल के टर्मिनल (PC या फ़ोन) में <code>compte site</code> लिखो: तुम्हें एक लिंक मिलेगा जो सिर्फ़ एक बार चलता है।",
+    bonjour: (p) => `नमस्ते ${p}!`,
+    profil: "मेरी सार्वजनिक प्रोफ़ाइल",
+    lier: "कोई डिवाइस जोड़ो",
+    jetonBouton: "दूसरे डिवाइस के लिए कोड लो",
+    jeton: (j) => `तुम्हारा कोड: <code>${j}</code>`,
+    jetonAide: "अपने दूसरे डिवाइस के टर्मिनल में <code>compte lier</code> और फिर यह कोड लिखो। यह 10 मिनट तक, सिर्फ़ एक बार चलता है।",
+    parties: "तुम्हारे जीव",
+    aucunePartie: "अभी तक कोई जीव सिंक नहीं हुआ।",
+    sortir: "साइट से लॉग आउट करो",
+    perime: "यह लिंक पुराना हो गया है या पहले ही इस्तेमाल हो चुका है। खेल में फिर से <code>compte site</code> लिखो।",
+  },
   introuvable: {
     titre: "नहीं मिला",
     texte: "यह पेज मौजूद नहीं है। <a href=\"/\">होम पर वापस</a>",
@@ -1754,7 +1894,7 @@ const hi = {
 
 const ar = {
   fleches: ["→", "←"],
-  nav: { classement: "الترتيب", bestiaire: "كتاب المخلوقات", captures: "الصيد", ctf: "CTF الويب", telecharger: "تنزيل", langue: "اللغة" },
+  nav: { classement: "الترتيب", bestiaire: "كتاب المخلوقات", captures: "الصيد", ctf: "CTF الويب", telecharger: "تنزيل", compte: "حسابي", langue: "اللغة" },
   description: "Terminagotchi: المخلوق الذي يأكل أوامرك ويعلّمك استخدام الطرفية.",
   creature: "مخلوق",
   stats: { Intelligence: "الذكاء", "Agilité": "الخفة", Force: "القوة", Endurance: "التحمّل" },
@@ -1914,6 +2054,20 @@ const ar = {
     e5: "العلم مخبّأ في مكان ما هنا. حيلة على الحاسوب: curl <العنوان> | python3 -m json.tool",
     cinq: "هناك 5 تحديات فقط.\n",
   },
+  compte: {
+    titre: "حسابي",
+    invite: "لا توجد كلمة سر هنا! لتدخل، اكتب <code>compte site</code> في طرفية اللعبة (الحاسوب أو الهاتف): ستحصل على رابط يعمل مرة واحدة فقط.",
+    bonjour: (p) => `مرحبًا ${p}!`,
+    profil: "ملفي العام",
+    lier: "ربط جهاز",
+    jetonBouton: "احصل على رمز لجهاز آخر",
+    jeton: (j) => `رمزك: <code>${j}</code>`,
+    jetonAide: "في طرفية جهازك الآخر، اكتب <code>compte lier</code> ثم هذا الرمز. يعمل لمدة 10 دقائق، مرة واحدة فقط.",
+    parties: "مخلوقاتك",
+    aucunePartie: "لا يوجد مخلوق متزامن بعد.",
+    sortir: "الخروج من الموقع",
+    perime: "انتهت صلاحية هذا الرابط أو استُعمل من قبل. اكتب <code>compte site</code> في اللعبة مرة أخرى.",
+  },
   introuvable: {
     titre: "غير موجودة",
     texte: "هذه الصفحة غير موجودة. <a href=\"/\">العودة إلى الرئيسية</a>",
@@ -1923,7 +2077,7 @@ const ar = {
 // ====================================================================== bengali (তুমি)
 
 const bn = {
-  nav: { classement: "সেরাদের তালিকা", bestiaire: "প্রাণীর বই", captures: "ধরা প্রাণী", ctf: "ওয়েব CTF", telecharger: "ডাউনলোড", langue: "ভাষা" },
+  nav: { classement: "সেরাদের তালিকা", bestiaire: "প্রাণীর বই", captures: "ধরা প্রাণী", ctf: "ওয়েব CTF", telecharger: "ডাউনলোড", compte: "আমার অ্যাকাউন্ট", langue: "ভাষা" },
   description: "Terminagotchi: যে প্রাণী তোমার কমান্ড খায় আর তোমাকে টার্মিনাল শেখায়।",
   creature: "প্রাণী",
   stats: { Intelligence: "বুদ্ধি", "Agilité": "ক্ষিপ্রতা", Force: "শক্তি", Endurance: "দম" },
@@ -2083,6 +2237,20 @@ const bn = {
     e5: "পতাকাটা এর ভেতরেই কোথাও রাখা আছে। PC-তে কৌশল: curl <ঠিকানা> | python3 -m json.tool",
     cinq: "চ্যালেঞ্জ মাত্র 5টি।\n",
   },
+  compte: {
+    titre: "আমার অ্যাকাউন্ট",
+    invite: "এখানে কোনো পাসওয়ার্ড নেই! ঢুকতে হলে খেলার টার্মিনালে (PC বা ফোনে) <code>compte site</code> লেখো: তুমি একটা লিংক পাবে যা শুধু একবারই কাজ করে।",
+    bonjour: (p) => `হ্যালো ${p}!`,
+    profil: "আমার সর্বজনীন প্রোফাইল",
+    lier: "একটা যন্ত্র জোড়ো",
+    jetonBouton: "অন্য যন্ত্রের জন্য একটা কোড নাও",
+    jeton: (j) => `তোমার কোড: <code>${j}</code>`,
+    jetonAide: "তোমার অন্য যন্ত্রের টার্মিনালে <code>compte lier</code> আর তারপর এই কোডটা লেখো। এটা ১০ মিনিট, শুধু একবার কাজ করে।",
+    parties: "তোমার প্রাণীরা",
+    aucunePartie: "এখনো কোনো প্রাণী সিঙ্ক হয়নি।",
+    sortir: "সাইট থেকে বেরিয়ে যাও",
+    perime: "এই লিংকের মেয়াদ শেষ বা এটা আগেই ব্যবহার হয়েছে। খেলায় আবার <code>compte site</code> লেখো।",
+  },
   introuvable: {
     titre: "পাওয়া যায়নি",
     texte: "এই পাতাটা নেই। <a href=\"/\">হোমে ফিরে যাও</a>",
@@ -2092,7 +2260,7 @@ const bn = {
 // ====================================================================== indonésien (kamu)
 
 const id = {
-  nav: { classement: "Peringkat", bestiaire: "Buku Makhluk", captures: "Tangkapan", ctf: "CTF web", telecharger: "Unduh", langue: "Bahasa" },
+  nav: { classement: "Peringkat", bestiaire: "Buku Makhluk", captures: "Tangkapan", ctf: "CTF web", telecharger: "Unduh", compte: "Akunku", langue: "Bahasa" },
   description: "Terminagotchi: makhluk yang memakan perintahmu dan mengajarimu terminal.",
   creature: "makhluk",
   stats: { Intelligence: "Kecerdasan", "Agilité": "Kelincahan", Force: "Kekuatan", Endurance: "Daya tahan" },
@@ -2252,6 +2420,20 @@ const id = {
     e5: "Benderanya disimpan di suatu tempat di sini. Tips di PC: curl <alamat> | python3 -m json.tool",
     cinq: "Hanya ada 5 tantangan.\n",
   },
+  compte: {
+    titre: "Akunku",
+    invite: "Di sini tidak ada kata sandi! Untuk masuk, ketik <code>compte site</code> di terminal permainan (PC atau ponsel): kamu akan mendapat tautan yang hanya bisa dipakai sekali.",
+    bonjour: (p) => `Halo, ${p}!`,
+    profil: "Profil publikku",
+    lier: "Hubungkan perangkat",
+    jetonBouton: "Minta kode untuk perangkat lain",
+    jeton: (j) => `Kodemu: <code>${j}</code>`,
+    jetonAide: "Di terminal perangkatmu yang lain, ketik <code>compte lier</code> lalu kode ini. Berlaku 10 menit, hanya sekali.",
+    parties: "Makhluk-makhlukmu",
+    aucunePartie: "Belum ada makhluk yang disinkronkan.",
+    sortir: "Keluar dari situs",
+    perime: "Tautan ini sudah kedaluwarsa atau sudah dipakai. Ketik lagi <code>compte site</code> di permainan.",
+  },
   introuvable: {
     titre: "Tidak ditemukan",
     texte: "Halaman ini tidak ada. <a href=\"/\">Kembali ke beranda</a>",
@@ -2262,7 +2444,7 @@ const id = {
 
 const ur = {
   fleches: ["→", "←"],
-  nav: { classement: "درجہ بندی", bestiaire: "جانداروں کی کتاب", captures: "پکڑے گئے جاندار", ctf: "ویب CTF", telecharger: "ڈاؤن لوڈ", langue: "زبان" },
+  nav: { classement: "درجہ بندی", bestiaire: "جانداروں کی کتاب", captures: "پکڑے گئے جاندار", ctf: "ویب CTF", telecharger: "ڈاؤن لوڈ", compte: "میرا اکاؤنٹ", langue: "زبان" },
   description: "Terminagotchi: وہ جاندار جو تمہاری کمانڈز کھاتا ہے اور تمہیں ٹرمینل سکھاتا ہے۔",
   creature: "جاندار",
   stats: { Intelligence: "ذہانت", "Agilité": "پھرتی", Force: "طاقت", Endurance: "دم خم" },
@@ -2421,6 +2603,20 @@ const ur = {
     e4ok: (f) => `خوش آمدید، «admin»… (سرور نے تمہاری بات مان لی!) تمہارا جھنڈا: ${f}\n`,
     e5: "جھنڈا یہیں کہیں اندر رکھا ہے۔ PC پر ترکیب: curl <پتا> | python3 -m json.tool",
     cinq: "صرف 5 چیلنج ہیں۔\n",
+  },
+  compte: {
+    titre: "میرا اکاؤنٹ",
+    invite: "یہاں کوئی پاس ورڈ نہیں! داخل ہونے کے لیے کھیل کے ٹرمینل (PC یا فون) میں <code>compte site</code> لکھو: تمہیں ایک لنک ملے گا جو صرف ایک بار چلتا ہے۔",
+    bonjour: (p) => `ہیلو ${p}!`,
+    profil: "میری عوامی پروفائل",
+    lier: "کوئی آلہ جوڑو",
+    jetonBouton: "دوسرے آلے کے لیے کوڈ لو",
+    jeton: (j) => `تمہارا کوڈ: <code>${j}</code>`,
+    jetonAide: "اپنے دوسرے آلے کے ٹرمینل میں <code>compte lier</code> اور پھر یہ کوڈ لکھو۔ یہ 10 منٹ تک، صرف ایک بار چلتا ہے۔",
+    parties: "تمہاری مخلوقات",
+    aucunePartie: "ابھی تک کوئی مخلوق ہم آہنگ نہیں ہوئی۔",
+    sortir: "سائٹ سے باہر نکلو",
+    perime: "اس لنک کی مدت ختم ہو گئی ہے یا یہ پہلے ہی استعمال ہو چکا ہے۔ کھیل میں دوبارہ <code>compte site</code> لکھو۔",
   },
   introuvable: {
     titre: "نہیں ملا",

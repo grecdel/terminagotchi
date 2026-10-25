@@ -60,3 +60,34 @@ CREATE TABLE IF NOT EXISTS apparitions (
   PRIMARY KEY (graine, n)
 );
 CREATE INDEX IF NOT EXISTS apparitions_joueur ON apparitions (joueur);
+
+-- Plusieurs parties (créatures) par compte. Partie « 1 » = la créature d'avant les parties multiples.
+-- La ligne `joueurs` garde une copie de la meilleure partie (profil, classement, galerie).
+CREATE TABLE IF NOT EXISTS parties (
+  joueur TEXT NOT NULL,
+  partie TEXT NOT NULL,
+  etat TEXT NOT NULL DEFAULT '{}',
+  xp INTEGER NOT NULL DEFAULT 0,
+  niveau INTEGER NOT NULL DEFAULT 1,
+  cree INTEGER NOT NULL,
+  maj INTEGER NOT NULL,
+  PRIMARY KEY (joueur, partie)
+);
+-- Migration (ré-exécutable) : la créature existante de chaque compte devient sa partie 1.
+INSERT OR IGNORE INTO parties (joueur, partie, etat, xp, niveau, cree, maj)
+  SELECT id, '1', etat, xp, niveau, cree, maj FROM joueurs
+  WHERE etat <> '{}' AND NOT EXISTS (SELECT 1 FROM parties p WHERE p.joueur = joueurs.id);
+
+-- Code de secours (un par compte) : seule son empreinte HMAC est stockée.
+CREATE TABLE IF NOT EXISTS secours (
+  empreinte TEXT PRIMARY KEY,
+  joueur TEXT NOT NULL UNIQUE,
+  cree INTEGER NOT NULL
+);
+
+-- Sessions du site, ouvertes par un lien à usage unique (`compte site`). Seule l'empreinte est stockée.
+CREATE TABLE IF NOT EXISTS sessions (
+  empreinte TEXT PRIMARY KEY,
+  joueur TEXT NOT NULL,
+  expire INTEGER NOT NULL
+);

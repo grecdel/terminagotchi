@@ -298,7 +298,7 @@ console.log("Anti-triche : graines et captures vérifiées");
 }
 
 // chaque page dans chaque langue
-const pages = ["/", "/classement", "/bestiaire", "/bestiaire/glitchou", "/captures", "/captures?shiny=1", "/joueur/Grec", "/joueur/Personne", lienBadge, "/badge/0123456789abcdef", "/ctf", "/nimporte"];
+const pages = ["/", "/classement", "/bestiaire", "/bestiaire/glitchou", "/captures", "/captures?shiny=1", "/joueur/Grec", "/joueur/Personne", lienBadge, "/badge/0123456789abcdef", "/ctf", "/nimporte", "/compte", "/connexion?t=0"];
 let rendues = 0;
 const rates = [];
 for (const l of LANGUES) {
@@ -310,6 +310,76 @@ for (const l of LANGUES) {
   }
 }
 verifier(rates.length === 0, `${rendues} pages rendues sans trou (${LANGUES.length} langues × ${pages.length} pages)` + (rates.length ? " ; ratées : " + rates.slice(0, 5).join(", ") : ""));
+
+console.log("Plusieurs parties, jetons TG-…, code de secours, connexion au site");
+{
+  const ip = { "cf-connecting-ip": "10.7.7.7" };
+  r = await appel("POST", "/api/inscription", { corps: { pseudo: "Parties", appareil: "pc" }, entetes: ip });
+  const cle = r.j.cle;
+  const secours = r.j.secours;
+  verifier(/^TG-[A-Z2-9]{4}-[A-Z2-9]{4}-[A-Z2-9]{4}$/.test(secours || ""), "inscription : code de secours donné une fois (" + secours + ")");
+  // ancienne appli : /api/sync sans identifiant = partie 1
+  await appel("POST", "/api/sync", { cle, corps: { appareil: "pc", deltas: { xp: 100 }, valeurs: { nom: "Pixel" } } });
+  r = await appel("POST", "/api/sync/a1b2c3d4", { cle, corps: { appareil: "pc", partie: "a1b2c3d4", deltas: { xp: 30 }, valeurs: { nom: "Bidule" } } });
+  verifier(r.j?.partie === "a1b2c3d4" && r.j.etat.xp === 30 && r.j.etat.nom === "Bidule", "une 2e partie ne se mélange pas à la 1re");
+  r = await appel("POST", "/api/sync", { cle, corps: { appareil: "android", deltas: { xp: 5 } } });
+  verifier(r.j?.partie === "1" && r.j.etat.xp === 105 && r.j.etat.nom === "Pixel", "sync sans identifiant = partie 1 (compatibilité)");
+  r = await appel("GET", "/api/parties", { cle });
+  verifier(r.j?.parties?.length === 2 && r.j.parties.map((p) => p.nom).join() === "Pixel,Bidule", "/api/parties liste les 2 créatures");
+  r = await appel("GET", "/api/profil/Parties");
+  verifier(r.j?.xp === 105 && r.j.nom === "Pixel", "le profil montre la meilleure créature");
+  r = await appel("POST", "/api/sync/x%20y", { cle, corps: {} });
+  verifier(r.statut === 400, "identifiant de partie invalide refusé");
+  // migration douce : un compte d'avant (créature dans joueurs.etat, aucune ligne parties)
+  const vieux = await appel("POST", "/api/inscription", { corps: { pseudo: "Ancien", appareil: "pc" }, entetes: ip });
+  await env.DB.prepare("UPDATE joueurs SET etat = ?, xp = 400, niveau = 7 WHERE pseudo = 'Ancien'").bind(JSON.stringify({ nom: "Vieux", xp: 400 })).run();
+  r = await appel("GET", "/api/parties", { cle: vieux.j.cle });
+  verifier(r.j?.parties?.length === 1 && r.j.parties[0].partie === "1" && r.j.parties[0].nom === "Vieux", "migration : la créature existante devient la partie 1");
+  r = await appel("POST", "/api/sync", { cle: vieux.j.cle, corps: { appareil: "pc", deltas: { xp: 1 } } });
+  verifier(r.j?.etat?.xp === 401, "… et la synchro de la partie 1 continue dessus");
+  // jeton TG-XXXX-XX
+  r = await appel("POST", "/api/code", { cle });
+  verifier(/^TG-[A-Z2-9]{4}-[A-Z2-9]{2}$/.test(r.j?.jeton || ""), "jeton lisible : " + r.j?.jeton);
+  r = await appel("POST", "/api/lier", { corps: { code: r.j.jeton.toLowerCase(), appareil: "android" }, entetes: ip });
+  verifier(r.j?.pseudo === "Parties" && /^[0-9a-f]{64}$/.test(r.j.cle), "compte lier TG-… relie l'appareil");
+  const cleTel2 = r.j.cle;
+  // code de secours
+  r = await appel("POST", "/api/secours/recuperer", { corps: { code: "TG-AAAA-AAAA-AAAA" }, entetes: ip });
+  verifier(r.statut === 404, "faux code de secours refusé");
+  r = await appel("POST", "/api/secours/recuperer", { corps: { code: secours.toLowerCase().replaceAll("-", " "), appareil: "pc" }, entetes: ip });
+  verifier(r.j?.pseudo === "Parties" && /^[0-9a-f]{64}$/.test(r.j.cle), "le code de secours rend le compte");
+  const enClair = await env.DB.prepare("SELECT COUNT(*) AS n FROM secours WHERE empreinte LIKE ?").bind("%" + secours.replaceAll("-", "").slice(2) + "%").first();
+  verifier(enClair.n === 0, "le code de secours n'est pas stocké en clair");
+  r = await appel("POST", "/api/secours", { cle });
+  const secours2 = r.j?.secours;
+  r = await appel("POST", "/api/secours/recuperer", { corps: { code: secours }, entetes: { "cf-connecting-ip": "10.7.7.8" } });
+  verifier(secours2 && r.statut === 404, "un nouveau code de secours remplace l'ancien");
+  // déconnexion d'un appareil
+  r = await appel("POST", "/api/deconnexion", { cle: cleTel2 });
+  r = await appel("GET", "/api/parties", { cle: cleTel2 });
+  verifier(r.statut === 401, "après déconnexion, la clé de l'appareil ne marche plus");
+  // lien à usage unique vers le site
+  r = await appel("POST", "/api/lien-site", { cle });
+  const lien = r.j?.lien || "";
+  verifier(/^\/connexion\?t=[0-9a-f]{32}$/.test(lien), "compte site : lien à usage unique");
+  r = await appel("GET", lien);
+  const cookie = (r.h.get("set-cookie") || "").match(/tg_session=[0-9a-f]{64}/)?.[0];
+  verifier(r.statut === 303 && r.h.get("location") === "/compte" && cookie && /HttpOnly/.test(r.h.get("set-cookie")), "le lien ouvre une session (cookie HttpOnly)");
+  r = await appel("GET", lien);
+  verifier(r.statut === 404, "le lien ne marche qu'une fois");
+  r = await appel("GET", "/compte", { entetes: { cookie } });
+  verifier(r.t.includes("Parties") && r.t.includes("Bidule") && r.t.includes("/compte/jeton"), "page Mon compte : pseudo, créatures, bouton « lier un appareil »");
+  r = await appel("POST", "/compte/jeton", { entetes: { cookie } });
+  const jeton = r.t.match(/TG-[A-Z2-9]{4}-[A-Z2-9]{2}/)?.[0];
+  verifier(!!jeton, "le site affiche un jeton TG-… : " + jeton);
+  r = await appel("POST", "/api/lier", { corps: { code: jeton, appareil: "pc" }, entetes: ip });
+  verifier(r.j?.pseudo === "Parties", "… qui relie un appareil depuis le terminal");
+  r = await appel("GET", "/compte");
+  verifier(r.t.includes("compte site") && !r.t.includes("Bidule"), "sans session : la page explique « compte site »");
+  r = await appel("POST", "/compte/sortir", { entetes: { cookie } });
+  r = await appel("GET", "/compte", { entetes: { cookie } });
+  verifier(!r.t.includes("Bidule"), "se déconnecter du site ferme la session");
+}
 
 console.log(`\n${ok} réussis, ${ko} échoués`);
 process.exit(ko ? 1 : 0);

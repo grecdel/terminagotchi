@@ -319,6 +319,104 @@ function fusionner(etat, envoi, appareil, verdicts = new Map()) {
   return e;
 }
 
+// ====================================================================== comptes : parties, jetons, code de secours
+
+/*
+ * Plusieurs parties par compte (table `parties`) : une partie = une créature. L'identifiant « 1 »
+ * est la créature d'avant les parties multiples (les anciennes appli synchronisent sur /api/sync
+ * sans identifiant = partie 1) ; les autres ont des identifiants au hasard, sur /api/sync/<id>.
+ * La ligne `joueurs` garde une copie de la MEILLEURE partie (plus d'XP) : profil, classement, galerie.
+ *
+ * Connexion sans mot de passe (des enfants) : un jeton court TG-XXXX-XX (10 minutes, une fois) relie
+ * un appareil ; `compte site` donne un lien à usage unique qui ouvre une session sur le site ;
+ * un code de secours TG-XXXX-XXXX-XXXX, montré UNE fois, rend le compte si l'appareil est perdu
+ * (seule son empreinte HMAC est stockée).
+ */
+const ALPHABET = "ABCDEFGHJKMNPQRSTUVWXYZ23456789";
+const RE_PARTIE = /^[A-Za-z0-9_-]{1,24}$/;
+const SESSION_JOURS = 30;
+
+function tirerCode(n) {
+  const b = new Uint8Array(n);
+  crypto.getRandomValues(b);
+  return [...b].map((x) => ALPHABET[x % ALPHABET.length]).join("");
+}
+
+/** « tg-7kq2 m9 » → « 7KQ2M9 » (le préfixe TG- et les tirets sont facultatifs). */
+function normaliserJeton(t, longueur) {
+  const c = String(t || "").toUpperCase().replace(/[^A-Z0-9]/g, "");
+  return c.length === longueur + 2 && c.startsWith("TG") ? c.slice(2) : c;
+}
+
+const jetonLisible = (c) => `TG-${c.slice(0, 4)}-${c.slice(4)}`;
+const secoursLisible = (c) => `TG-${c.slice(0, 4)}-${c.slice(4, 8)}-${c.slice(8)}`;
+
+async function nouveauJeton(env, joueurId) {
+  const code = tirerCode(6);
+  await env.DB.prepare("DELETE FROM codes WHERE expire < ?").bind(Date.now()).run();
+  await env.DB.prepare("INSERT INTO codes (code, joueur, expire) VALUES (?, ?, ?)")
+    .bind(code, joueurId, Date.now() + 10 * 60_000).run();
+  return code;
+}
+
+/** Un nouveau code de secours (remplace l'ancien). Renvoyé UNE fois, jamais stocké en clair. */
+async function nouveauSecours(env, joueurId) {
+  const code = tirerCode(12);
+  const empreinte = await hmac(await secretServeur(env), "secours|" + code);
+  await env.DB.prepare("DELETE FROM secours WHERE joueur = ?").bind(joueurId).run();
+  await env.DB.prepare("INSERT INTO secours (empreinte, joueur, cree) VALUES (?, ?, ?)").bind(empreinte, joueurId, Date.now()).run();
+  return secoursLisible(code);
+}
+
+/** Migration douce : un compte sans ligne `parties` voit sa créature d'avant devenir la partie 1. */
+async function migrerParties(env, joueur) {
+  await env.DB.prepare(
+    "INSERT OR IGNORE INTO parties (joueur, partie, etat, xp, niveau, cree, maj) SELECT id, '1', etat, xp, niveau, cree, maj "
+    + "FROM joueurs WHERE id = ? AND etat <> '{}' AND NOT EXISTS (SELECT 1 FROM parties p WHERE p.joueur = joueurs.id)",
+  ).bind(joueur.id).run();
+}
+
+async function synchroniser(env, joueur, b, partie) {
+  await migrerParties(env, joueur);
+  const appareil = APPAREILS.includes(b.appareil) ? b.appareil : "pc";
+  const ligne = await env.DB.prepare("SELECT etat FROM parties WHERE joueur = ? AND partie = ?").bind(joueur.id, partie).first();
+  const avant = ligne ? lireEtat(ligne) : {};
+  const e = fusionner(avant, b, appareil, await verifierCaptures(env, joueur, avant, b.captures));
+  const maintenant = Date.now();
+  await env.DB.prepare(
+    "INSERT INTO parties (joueur, partie, etat, xp, niveau, cree, maj) VALUES (?, ?, ?, ?, ?, ?, ?) "
+    + "ON CONFLICT (joueur, partie) DO UPDATE SET etat = excluded.etat, xp = excluded.xp, niveau = excluded.niveau, maj = excluded.maj",
+  ).bind(joueur.id, partie, JSON.stringify(e), e.xp, niveauDe(e.xp), maintenant, maintenant).run();
+  // la vitrine du joueur (profil, classement, galerie) montre sa meilleure créature
+  const meilleure = await env.DB.prepare("SELECT etat, xp, niveau FROM parties WHERE joueur = ? ORDER BY xp DESC, maj DESC LIMIT 1")
+    .bind(joueur.id).first();
+  await env.DB.prepare("UPDATE joueurs SET etat = ?, xp = ?, niveau = ?, maj = ? WHERE id = ?")
+    .bind(meilleure.etat, meilleure.xp, meilleure.niveau, maintenant, joueur.id).run();
+  const nouveaux = [];
+  if (Object.keys(e.appareils).length >= 2) {
+    const bd = await donnerBadge(env, joueur.id, "multi", "Multi-plateforme : PC + téléphone");
+    if (bd) nouveaux.push(bd);
+  }
+  return json({ etat: e, partie, badges: nouveaux, graines: await graines(env, joueur) });
+}
+
+async function listeParties(env, joueur) {
+  await migrerParties(env, joueur);
+  const r = await env.DB.prepare("SELECT partie, etat, xp, niveau, maj FROM parties WHERE joueur = ? ORDER BY cree").bind(joueur.id).all();
+  return r.results.map((p) => {
+    const e = lireEtat(p);
+    return { partie: p.partie, nom: e.nom || "", forme: e.forme || null, niveau: p.niveau, xp: p.xp, shiny: !!e.shiny, maj: p.maj };
+  });
+}
+
+/** Le joueur connecté au site (cookie de session), ou null. */
+async function joueurSession(requete, env) {
+  const m = String(requete.headers.get("cookie") || "").match(/(?:^|;\s*)tg_session=([0-9a-f]{64})/);
+  if (!m) return null;
+  return env.DB.prepare("SELECT j.* FROM sessions s JOIN joueurs j ON j.id = s.joueur WHERE s.empreinte = ? AND s.expire > ?")
+    .bind(await sha256(m[1]), Date.now()).first();
+}
+
 // ====================================================================== API
 
 async function api(requete, env, chemin) {
@@ -341,20 +439,34 @@ async function api(requete, env, chemin) {
       .bind(id, pseudo, maintenant, maintenant).run();
     const cle = await nouvelleCle(env, id, appareil);
     await donnerBadge(env, id, "recense", "Recensé");
-    return json({ pseudo, cle, profil: "/joueur/" + pseudo });
+    // code de secours : donné UNE seule fois, ici
+    return json({ pseudo, cle, profil: "/joueur/" + pseudo, secours: await nouveauSecours(env, id) });
   }
 
   if (chemin === "/api/lier" && m === "POST") {
     if (!(await limite(env, "lier:" + ip, 10))) return erreur("Trop d'essais, réessaie dans une minute.", 429);
     const b = await corps(requete);
-    const code = String(b?.code || "").trim().toUpperCase();
+    const code = normaliserJeton(b?.code, 6);       // TG-7KQ2-M9, 7KQ2M9…
     const appareil = APPAREILS.includes(b?.appareil) ? b.appareil : "pc";
-    const c = await env.DB.prepare("SELECT * FROM codes WHERE code = ?").bind(code).first();
+    const c = code.length === 6 ? await env.DB.prepare("SELECT * FROM codes WHERE code = ?").bind(code).first() : null;
     if (!c || c.expire < Date.now()) return erreur("Code invalide ou expiré (il dure 10 minutes).", 404);
     await env.DB.prepare("DELETE FROM codes WHERE code = ?").bind(code).run();
     const j = await env.DB.prepare("SELECT pseudo FROM joueurs WHERE id = ?").bind(c.joueur).first();
     const cle = await nouvelleCle(env, c.joueur, appareil);
     return json({ pseudo: j.pseudo, cle });
+  }
+
+  if (chemin === "/api/secours/recuperer" && m === "POST") {
+    if (!(await limite(env, "secours:" + ip, 5))) return erreur("Trop d'essais, réessaie dans une minute.", 429);
+    const b = await corps(requete);
+    const code = normaliserJeton(b?.code, 12);
+    const appareil = APPAREILS.includes(b?.appareil) ? b.appareil : "pc";
+    const s = code.length === 12
+      ? await env.DB.prepare("SELECT joueur FROM secours WHERE empreinte = ?").bind(await hmac(await secretServeur(env), "secours|" + code)).first()
+      : null;
+    if (!s) return erreur("Code de secours inconnu : vérifie chaque caractère.", 404);
+    const j = await env.DB.prepare("SELECT pseudo FROM joueurs WHERE id = ?").bind(s.joueur).first();
+    return json({ pseudo: j.pseudo, cle: await nouvelleCle(env, s.joueur, appareil) });
   }
 
   if (chemin === "/api/classement" && m === "GET") {
@@ -388,31 +500,44 @@ async function api(requete, env, chemin) {
   }
 
   if (chemin === "/api/code" && m === "POST") {
-    const alphabet = "ABCDEFGHJKMNPQRSTUVWXYZ23456789";
-    const b = new Uint8Array(6);
-    crypto.getRandomValues(b);
-    const code = [...b].map((x) => alphabet[x % alphabet.length]).join("");
-    await env.DB.prepare("DELETE FROM codes WHERE expire < ?").bind(Date.now()).run();
-    await env.DB.prepare("INSERT INTO codes (code, joueur, expire) VALUES (?, ?, ?)")
-      .bind(code, joueur.id, Date.now() + 10 * 60_000).run();
-    return json({ code, expire: 600 });
+    const code = await nouveauJeton(env, joueur.id);
+    return json({ code, jeton: jetonLisible(code), expire: 600 });
   }
 
-  if (chemin === "/api/sync" && m === "POST") {
+  if (chemin === "/api/secours" && m === "POST") {
+    if (!(await limite(env, "nouveau-secours:" + joueur.id, 5))) return erreur("Trop d'essais, réessaie dans une minute.", 429);
+    return json({ secours: await nouveauSecours(env, joueur.id) });
+  }
+
+  if (chemin === "/api/lien-site" && m === "POST") {
+    // lien à usage unique (10 minutes) qui ouvre une session sur le site ; seule son empreinte est gardée
+    const t = aleatoire(16);
+    await env.DB.prepare("DELETE FROM codes WHERE expire < ?").bind(Date.now()).run();
+    await env.DB.prepare("INSERT INTO codes (code, joueur, expire) VALUES (?, ?, ?)")
+      .bind("W" + (await sha256(t)), joueur.id, Date.now() + 10 * 60_000).run();
+    return json({ lien: "/connexion?t=" + t, expire: 600 });
+  }
+
+  if (chemin === "/api/deconnexion" && m === "POST") {
+    await env.DB.prepare("DELETE FROM cles WHERE empreinte = ?").bind(joueur.empreinte_cle).run();
+    return json({ ok: true });
+  }
+
+  if (chemin === "/api/parties" && m === "GET") {
+    return json({ parties: await listeParties(env, joueur) });
+  }
+
+  const ms = chemin.match(/^\/api\/sync(?:\/([^/]+))?$/);
+  if (ms && m === "POST") {
     if (!(await limite(env, "sync:" + joueur.id, 30))) return erreur("Trop de synchros, doucement !", 429);
     const b = await corps(requete);
     if (!b) return erreur("Données illisibles.");
-    const appareil = APPAREILS.includes(b.appareil) ? b.appareil : "pc";
-    const avant = lireEtat(joueur);
-    const e = fusionner(avant, b, appareil, await verifierCaptures(env, joueur, avant, b.captures));
-    await env.DB.prepare("UPDATE joueurs SET etat = ?, xp = ?, niveau = ?, maj = ? WHERE id = ?")
-      .bind(JSON.stringify(e), e.xp, niveauDe(e.xp), Date.now(), joueur.id).run();
-    const nouveaux = [];
-    if (Object.keys(e.appareils).length >= 2) {
-      const bd = await donnerBadge(env, joueur.id, "multi", "Multi-plateforme : PC + téléphone");
-      if (bd) nouveaux.push(bd);
-    }
-    return json({ etat: e, badges: nouveaux, graines: await graines(env, joueur) });
+    // sans identifiant (anciennes versions de l'appli) : la partie 1
+    const partie = ms[1] ? decodeURIComponent(ms[1]) : "1";
+    if (!RE_PARTIE.test(partie)) return erreur("Identifiant de partie invalide.");
+    const n = await env.DB.prepare("SELECT COUNT(*) AS n FROM parties WHERE joueur = ? AND partie <> ?").bind(joueur.id, partie).first();
+    if (n.n >= 30) return erreur("Trop de parties sur ce compte.", 409);
+    return synchroniser(env, joueur, b, partie);
   }
 
   if (chemin === "/api/drapeau" && m === "POST") {
@@ -658,7 +783,7 @@ function page(L, titre, contenu, description = L.t.description, statut = 200) {
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>${echapper(titre)} · Terminagotchi</title><meta name="description" content="${echapper(description)}">
 <style>${CSS}</style></head><body>
-<header><nav><a class="logo" href="/"><bdi>▞ Terminagotchi</bdi></a><a href="/classement">${n.classement}</a><a href="/bestiaire">${n.bestiaire}</a><a href="/captures">${n.captures}</a><a href="/ctf">${n.ctf}</a><a href="/#telecharger">${n.telecharger}</a>${selecteurLangue(L)}</nav></header>
+<header><nav><a class="logo" href="/"><bdi>▞ Terminagotchi</bdi></a><a href="/classement">${n.classement}</a><a href="/bestiaire">${n.bestiaire}</a><a href="/captures">${n.captures}</a><a href="/ctf">${n.ctf}</a><a href="/#telecharger">${n.telecharger}</a><a href="/compte">${n.compte}</a>${selecteurLangue(L)}</nav></header>
 <main>${contenu}</main></body></html>`, {
     status: statut,
     headers: { "content-type": "text/html; charset=utf-8", "content-language": L.lang, vary: "Accept-Language, Cookie" },
@@ -960,8 +1085,52 @@ function pageCtf(L, origine) {
 
 // ====================================================================== aiguillage
 
+// ====================================================================== pages du compte (session par cookie)
+
+function cookieSession(valeur, maxAge) {
+  return `tg_session=${valeur}; Path=/; Max-Age=${maxAge}; HttpOnly; Secure; SameSite=Lax`;
+}
+
+async function pageConnexion(env, L, url) {
+  const t = String(url.searchParams.get("t") || "");
+  const cle = /^[0-9a-f]{32}$/.test(t) ? "W" + (await sha256(t)) : "";
+  const c = cle ? await env.DB.prepare("SELECT * FROM codes WHERE code = ?").bind(cle).first() : null;
+  if (!c || c.expire < Date.now()) {
+    return page(L, L.t.compte.titre, `<h1>${L.t.compte.titre}</h1><p>${L.t.compte.perime}</p>`, undefined, 404);
+  }
+  await env.DB.prepare("DELETE FROM codes WHERE code = ?").bind(cle).run();        // une seule fois
+  const s = aleatoire(32);
+  await env.DB.prepare("DELETE FROM sessions WHERE expire < ?").bind(Date.now()).run();
+  await env.DB.prepare("INSERT INTO sessions (empreinte, joueur, expire) VALUES (?, ?, ?)")
+    .bind(await sha256(s), c.joueur, Date.now() + SESSION_JOURS * 86_400_000).run();
+  return new Response(null, { status: 303, headers: { location: "/compte", "set-cookie": cookieSession(s, SESSION_JOURS * 86400) } });
+}
+
+async function pageCompte(requete, env, L, chemin) {
+  const C = L.t.compte;
+  const j = await joueurSession(requete, env);
+  if (!j) return page(L, C.titre, `<h1>${C.titre}</h1><p>${C.invite}</p>`);
+  if (chemin === "/compte/sortir" && requete.method === "POST") {
+    const m = String(requete.headers.get("cookie") || "").match(/tg_session=([0-9a-f]{64})/);
+    if (m) await env.DB.prepare("DELETE FROM sessions WHERE empreinte = ?").bind(await sha256(m[1])).run();
+    return new Response(null, { status: 303, headers: { location: "/", "set-cookie": cookieSession("", 0) } });
+  }
+  let jeton = "";
+  if (chemin === "/compte/jeton" && requete.method === "POST") {
+    jeton = `<div class="carte"><p>${C.jeton(jetonLisible(await nouveauJeton(env, j.id)))}</p><p class="doux">${C.jetonAide}</p></div>`;
+  }
+  const parties = (await listeParties(env, j)).map((p) => `<li>${bdi(p.nom || "?")} · ${echapper(lib(L, "formes", p.forme) || "")} niv. ${p.niveau}</li>`).join("");
+  return page(L, C.titre, `<h1>${C.bonjour(bdi(j.pseudo))}</h1>
+<p><a href="/joueur/${encodeURIComponent(j.pseudo)}">${C.profil}</a></p>
+<h2>${C.lier}</h2>${jeton}<form method="post" action="/compte/jeton"><button>${C.jetonBouton}</button></form>
+<h2>${C.parties}</h2>${parties ? `<ul>${parties}</ul>` : `<p class="doux">${C.aucunePartie}</p>`}
+<form method="post" action="/compte/sortir"><button>${C.sortir}</button></form>`);
+}
+
 async function aiguiller(requete, env, url, chemin, L) {
   if (chemin === "/") return pageAccueil(env, L);
+  if (chemin === "/connexion") return pageConnexion(env, L, url);
+  if (chemin === "/compte" || chemin === "/compte/jeton" || chemin === "/compte/sortir") return pageCompte(requete, env, L, chemin);
   if (chemin === "/classement") return pageClassement(env, L);
   if (chemin === "/ctf") return pageCtf(L, url.origin);
   if (chemin === "/bestiaire") return pageBestiaire(L, url);
@@ -1004,4 +1173,4 @@ export default {
 };
 
 // pour les tests
-export { fusionner, niveauDe, drapeauDe, EPREUVES };
+export { fusionner, niveauDe, drapeauDe, EPREUVES, normaliserJeton };
