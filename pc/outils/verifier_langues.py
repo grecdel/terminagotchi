@@ -90,7 +90,8 @@ def verifier_langue(code, fr, d):
                     if cmd not in txt:
                         err.append(f"{code}: app.aide : la commande « {cmd} » a disparu")
         else:
-            pv, pw = params(v), params(w)
+            # {Processeur} (majuscule de début de phrase) et {processeur} sont interchangeables
+            pv, pw = {x.lower() for x in params(v)}, {x.lower() for x in params(w)}
             if pv != pw:
                 err.append(f"{code}: {k} : paramètres {sorted(pw)} au lieu de {sorted(pv)}")
             if tete(v) and tete(v) != tete(w) and tete(v) in "✨⬆🎓🌳🎯🐾💨🌲⚡":
