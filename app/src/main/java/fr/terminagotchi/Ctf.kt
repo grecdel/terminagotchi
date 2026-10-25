@@ -17,36 +17,36 @@ object Ctf {
         "socket", "bash", "linux", "stack", "loop", "token", "crypto", "flag", "hack", "zero", "ninja")
 
     private val EPREUVES = listOf(
-        Epreuve("01_cache", "L'invisible", "Un drapeau est caché dans ce dossier… mais ls ne le montre pas.",
-            listOf("Certains fichiers sont cachés.", "Les fichiers cachés commencent par un point.", "ls -a puis cat .drapeau"),
-            "📐 Fichiers cachés\n   ls      →  notes.txt\n   ls -a   →  .  ..  .drapeau  notes.txt\n" +
-                "   Un nom qui commence par « . » est caché. Les hackers regardent TOUJOURS avec ls -a."),
-        Epreuve("02_meule", "La meule de foin", "Le drapeau est perdu dans un journal de 3 000 lignes.",
-            listOf("Lire 3 000 lignes à la main ? Non merci.", "grep cherche un texte dans un fichier.", "grep TG journal.log"),
+        Epreuve("01_cache", "L'invisible", "Un trésor est caché dans cette pièce… mais ls ne le voit pas.",
+            listOf("Certaines feuilles se cachent sous le tapis.", "Les fichiers cachés ont un nom qui commence par un point.", "ls -a puis cat .drapeau"),
+            "📐 Fichiers cachés (sous le tapis)\n   ls      →  notes.txt\n   ls -a   →  .  ..  .drapeau  notes.txt\n" +
+                "   Un nom qui commence par « . » est caché. Les détectives regardent TOUJOURS avec ls -a."),
+        Epreuve("02_meule", "La meule de foin", "Le trésor est perdu dans un journal de 3 000 lignes.",
+            listOf("Lire 3 000 lignes à la main ? Non merci.", "Prends la loupe du détective : grep cherche un texte dans un fichier.", "grep TG journal.log"),
             "📐 grep\n   journal.log ─┬─ ligne 1   ✗\n                ├─ …         ✗\n                └─ ligne 2047 ✓ TG{…}\n" +
-                "   grep lit chaque ligne et ne garde que celles qui correspondent."),
-        Epreuve("03_coffre", "Le coffre", "Le coffre est fermé à clé. Mais c'est TON coffre…",
-            listOf("cat coffre.txt → accès refusé. Regarde ses droits.", "ls -l : ---------- = personne ne peut lire.",
+                "   La loupe grep lit chaque ligne et ne garde que celles qui correspondent."),
+        Epreuve("03_coffre", "Le coffre", "Le coffre a un cadenas. Mais c'est TON coffre…",
+            listOf("cat coffre.txt → accès refusé. Regarde ses cadenas (ses droits).", "ls -l : ---------- = personne ne peut lire.",
                 "chmod 644 coffre.txt puis cat coffre.txt"),
-            "📐 Droits\n   ----------  →  chmod 644  →  -rw-r--r--\n   r = lire, w = écrire, x = exécuter\n" +
-                "   Le propriétaire peut toujours changer les droits de ses fichiers."),
-        Epreuve("04_labyrinthe", "Le labyrinthe", "Le drapeau est au fond d'un labyrinthe de dossiers.",
-            listOf("Explorer chaque dossier à la main serait long.", "find cherche des fichiers par leur nom, partout.",
+            "📐 Droits (les cadenas)\n   ----------  →  chmod 644  →  -rw-r--r--\n   r = lire, w = écrire, x = exécuter\n" +
+                "   Le propriétaire a toujours la clé des cadenas de ses fichiers."),
+        Epreuve("04_labyrinthe", "Le labyrinthe", "Le trésor est au fond d'un labyrinthe de pièces.",
+            listOf("Ouvrir chaque porte à la main serait long.", "find cherche un objet par son nom dans toutes les pièces.",
                 "find . -name \"drapeau*\" puis cat le chemin trouvé"),
-            "📐 find\n   .  ─ a ─ b ─ c ─ d ─ drapeau.txt ✓\n   find parcourt TOUT l'arbre des dossiers à ta place."),
-        Epreuve("05_code", "Le message codé", "Ce message est illisible… il est encodé en base64.",
-            listOf("base64 est un encodage, pas un vrai chiffrement.", "La commande base64 sait décoder avec -d.",
+            "📐 find\n   .  ─ a ─ b ─ c ─ d ─ drapeau.txt ✓\n   find visite TOUTES les pièces (l'arborescence des dossiers) à ta place."),
+        Epreuve("05_code", "Le message codé", "Ce message est illisible… il porte un déguisement : le base64.",
+            listOf("base64 est un déguisement (un encodage), pas un vrai cadenas (un chiffrement).", "La commande base64 enlève le déguisement avec -d.",
                 "base64 -d message.b64"),
-            "📐 Encodage ≠ chiffrement\n   « TG{…} » ⇄ base64 ⇄ « VEd7…== »\n" +
+            "📐 Déguisement ≠ cadenas (encodage ≠ chiffrement)\n   « TG{…} » ⇄ base64 ⇄ « VEd7…== »\n" +
                 "   Tout le monde peut décoder du base64 : ça ne protège rien !"),
         Epreuve("06_miroir", "Le miroir", "Ce texte est écrit à l'envers.",
-            listOf("Chaque ligne est retournée.", "La commande rev retourne les lignes.", "rev envers.txt"),
+            listOf("Chaque ligne est retournée, comme dans un miroir.", "La commande rev retourne les lignes.", "rev envers.txt"),
             "📐 rev\n   }…{GT  →  rev  →  TG{…}\n   Les outils simples combinés battent souvent les gros programmes."),
-        Epreuve("07_aiguille", "L'aiguille", "40 fichiers. Un seul fait exactement 42 octets : c'est lui.",
-            listOf("Compare les tailles des fichiers.", "ls -l montre la taille (5e colonne).",
+        Epreuve("07_aiguille", "L'aiguille", "40 feuilles. Une seule pèse exactement 42 octets : c'est elle.",
+            listOf("Compare le poids des fichiers.", "ls -l montre la taille (5e colonne).",
                 "find . -size 42c   (c = octets) puis cat le fichier"),
             "📐 Taille\n   ls -l  →  -rw------- 1 u0 u0  42 fichier_17.txt\n" +
-                "   find -size trouve des fichiers par leur poids : utile pour l'enquête numérique."),
+                "   find -size trouve des fichiers par leur poids : utile pour l'enquête du détective."),
     )
 
     fun dossier(jeu: Jeu) = File(jeu.terrain, "ctf")
@@ -74,7 +74,7 @@ object Ctf {
         for (ep in EPREUVES) {
             val d = File(racine, ep.id)
             d.mkdirs()
-            File(d, "LISEZMOI.txt").writeText("🚩 ${ep.titre}\n${ep.mission}\nQuand tu as le drapeau :  drapeau TG{…}\n" +
+            File(d, "LISEZMOI.txt").writeText("🚩 ${ep.titre}\n${ep.mission}\nQuand tu as le trésor (le drapeau) :  drapeau TG{…}\n" +
                 "Besoin d'aide :  indice ${ep.id.take(2).trimStart('0')}\n")
             val f = nouveauDrapeau()
             emp.put(ep.id, empreinte(f))
@@ -129,25 +129,25 @@ object Ctf {
     }
 
     fun ouvrir(jeu: Jeu, arg: String): Pair<String, File?> {
-        if (!File(jeu.terrain, "nid").isDirectory) return "Le capture the flag s'ouvre après la leçon « Construire mon nid »." to null
+        if (!File(jeu.terrain, "nid").isDirectory) return Mots.accorder("{ctf} s'ouvre après la leçon « Construire mon nid ».", "ctf" to Mots.terme("ctf", Mots.palier(jeu), true)) to null
         val neuf = arg == "nouveau" || !dossier(jeu).isDirectory
         if (neuf) {
             etat(jeu).put("resolus", JSONArray())
             preparer(jeu)
-            jeu.log("🚩 Le capture the flag est prêt !")
+            jeu.log(Mots.accorder("🚩 {ctf} est prête !", "ctf" to Mots.terme("ctf", 0, true)))
         }
-        val suite = if (neuf) "\n\nJe t'emmène dans le dossier des épreuves. Commence par : cd 01_cache" else ""
+        val suite = if (neuf) "\n\nJe t'emmène dans la pièce des énigmes. Commence par : cd 01_cache" else ""
         val aller: File? = if (neuf) dossier(jeu) else null
         return Pair(texte(jeu) + suite, aller)
     }
 
     fun texte(jeu: Jeu): String {
-        val sb = StringBuilder("🚩 Capture the flag — ~/terrain_terminagotchi/ctf\n")
+        val sb = StringBuilder("🚩 " + Mots.terme("ctf", Mots.palier(jeu), true) + " — ~/terrain_terminagotchi/ctf\n")
         for ((i, ep) in EPREUVES.withIndex()) {
             sb.append(if (estResolu(jeu, ep.id)) "  ✅ " else "  ⬜ ").append("${i + 1}. ${ep.titre} (${ep.id})\n")
         }
-        sb.append("Score : ${resolus(jeu).length()}/${EPREUVES.size} · lis LISEZMOI.txt dans chaque dossier\n")
-        sb.append("Valider : drapeau TG{…} · aide : indice <numéro>")
+        sb.append("Trésors : ${resolus(jeu).length()}/${EPREUVES.size} · lis LISEZMOI.txt dans chaque pièce\n")
+        sb.append("Montrer un trésor : drapeau TG{…} · coup de pouce : indice <numéro>")
         return sb.toString()
     }
 
@@ -162,10 +162,10 @@ object Ctf {
 
     fun valider(jeu: Jeu, proposition: String): String {
         if (proposition.isBlank()) return "Exemple : drapeau TG{pixel_root_123}"
-        val emp = etat(jeu).optJSONObject("empreintes") ?: return "Tape d'abord « ctf » pour préparer les épreuves."
+        val emp = etat(jeu).optJSONObject("empreintes") ?: return "Tape d'abord « ctf » pour cacher les trésors."
         val h = empreinte(proposition)
         val ep = EPREUVES.firstOrNull { emp.optString(it.id) == h }
-            ?: return "❌ Ce n'est pas un drapeau valide. Vérifie chaque caractère (majuscules, accolades)."
+            ?: return "❌ Ce n'est pas un vrai trésor. Vérifie chaque caractère (majuscules, accolades)."
         if (estResolu(jeu, ep.id)) return "Tu as déjà validé « ${ep.titre} » !"
         resolus(jeu).put(ep.id)
         val nbIndices = etat(jeu).optJSONObject("indices")?.optInt(ep.id) ?: 0
@@ -174,6 +174,6 @@ object Ctf {
         jeu.stats["Intelligence"] = (jeu.stats["Intelligence"] ?: 0) + 3
         jeu.log("🚩 Drapeau « ${ep.titre} » capturé !")
         val fin = if (resolus(jeu).length() == EPREUVES.size) "\n\n🏆 TOUS LES DRAPEAUX ! Tu as l'âme d'un hacker éthique." else ""
-        return "🚩 Drapeau validé : ${ep.titre} ! +$gain XP\n\n${ep.schema}$fin"
+        return "🚩 Trésor trouvé : ${ep.titre} ! +$gain XP\n\n${ep.schema}$fin"
     }
 }

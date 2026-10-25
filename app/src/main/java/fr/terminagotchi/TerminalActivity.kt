@@ -254,7 +254,7 @@ class TerminalActivity : Activity() {
         val mot = texte.substring(debutMot)
         val candidats: List<String>
         if (debutMot == 0) {
-            candidats = Regles.LEXIQUE.map { it.first }.filter { it.startsWith(mot) }.distinct()
+            candidats = Regles.LEXIQUE.map { it.cmd }.filter { it.startsWith(mot) }.distinct()
         } else {
             val dossierMot = mot.substringBeforeLast('/', "")
             val prefixe = mot.substringAfterLast('/')
@@ -290,16 +290,16 @@ class TerminalActivity : Activity() {
         val s = sortie.lowercase()
         return when {
             "no such file" in s || "dossier introuvable" in s ->
-                "🤔 Ce fichier ou dossier n'existe pas ici. Vérifie le nom avec ls (majuscules, accents, espaces) ou utilise Tab."
+                "🤔 Cette feuille ou cette pièce n'existe pas ici (fichier ou dossier introuvable). Regarde les noms avec ls (majuscules, accents, espaces) ou utilise Tab."
             "permission denied" in s ->
-                "🔒 Accès refusé : soit le fichier est protégé (chmod), soit c'est une zone d'Android interdite à l'appli."
-            "read-only file system" in s -> "🔒 Cette partie du téléphone est en lecture seule : on ne peut rien y écrire."
+                "🔒 Accès refusé : soit il y a un cadenas (chmod), soit c'est une pièce d'Android interdite à l'appli."
+            "read-only file system" in s -> "🔒 Cette partie de la maison est en lecture seule : on peut regarder, pas écrire."
             "not found" in s && Regles.premierMot(ligne).isNotEmpty() ->
                 "❓ Je ne connais pas la commande « ${Regles.premierMot(ligne)} ». Regarde dans 📖 Lexique (ou fais Tab)."
-            "file exists" in s -> "📦 Ça existe déjà : choisis un autre nom, ou regarde avec ls."
-            "is a directory" in s -> "📁 C'est un dossier, pas un fichier : utilise ls pour voir dedans (ou rm -r pour le supprimer)."
-            "not a directory" in s -> "📄 C'est un fichier, pas un dossier : on ne peut pas entrer dedans."
-            "not empty" in s -> "📦 Le dossier n'est pas vide : vide-le d'abord, ou utilise rm -r (prudence, c'est définitif)."
+            "file exists" in s -> "📦 Ça existe déjà : choisis une autre étiquette, ou regarde avec ls."
+            "is a directory" in s -> "📁 C'est une pièce (un dossier), pas une feuille : regarde dedans avec ls (ou rm -r pour la broyer, prudence !)."
+            "not a directory" in s -> "📄 C'est une feuille (un fichier), pas une pièce : on ne peut pas passer sa porte."
+            "not empty" in s -> "📦 La pièce n'est pas vide : vide-la d'abord, ou utilise rm -r (la broyeuse : c'est définitif)."
             "missing" in s || "needs " in s || "usage:" in s ->
                 "✍ Il manque quelque chose après la commande. Regarde l'exemple dans 📖 Lexique."
             "unknown option" in s || "invalid option" in s || "bad option" in s ->
@@ -341,13 +341,13 @@ class TerminalActivity : Activity() {
             "clear" -> { sortie.text = ""; return }
             "quitter", "exit" -> { finish(); return }
             "aide" -> {
-                ecrire("Ce terminal exécute de vraies commandes Android : ls, cd, mkdir, cat, grep, cp, mv, rm, ping…\n" +
+                ecrire("Ce terminal est la porte de la maison du téléphone : tape de vraies commandes Android (ls, cd, mkdir, cat, grep, cp, mv, rm, ping…)\n" +
                     "📱 Téléphone : ouvre, applis, web, carte, appelle, sms, partage, lampe, vibre, batterie, dis, reglages\n" +
                     "🐾 Avec moi : caresse, danse, parle, joue, devine, etat, renomme\n" +
-                    "🎮 Jeux : donjon, plan, quetes, attaque, sac, equipe · ctf, drapeau, indice · doom, edite\n" +
+                    "🎮 Jeux : donjon, plan, quetes, attaque, sac, equipe · " + Mots.terme("ctf", Mots.palier(jeu)) + " : ctf, drapeau, indice · doom, edite\n" +
                     "🌳 Progresser : arbre, collection, defi, cherche <ce que tu veux faire>\n" +
                     "🌍 En ligne : compte, compte creer Pseudo, compte code, compte lier CODE, sync\n" +
-                    "Tout est expliqué dans 📖 Lexique. Chaque commande tapée me nourrit (pas les collées !).\n" +
+                    "Chaque commande a son image dans 📖 Lexique. Chaque commande tapée me nourrit (pas les collées !).\n" +
                     "clear = effacer · quitter = fermer")
                 return
             }
@@ -535,13 +535,17 @@ class TerminalActivity : Activity() {
 
     /** Commandes déjà goûtées en blanc, jamais tapées en gris. */
     private fun remplirLexique() {
-        val connues = Regles.LEXIQUE.count { it.first in jeu.vus && !it.third.startsWith("💻") }
+        val connues = Regles.LEXIQUE.count { it.cmd in jeu.vus && !it.section.startsWith("💻") }
+        val palier = Mots.palier(jeu)
         val sb = SpannableStringBuilder()
         val entete = "Goûtées : $connues/${Regles.LEXIQUE.size}  ·  blanc = déjà tapée, gris = à découvrir\n"
         sb.append(entete)
         sb.setSpan(ForegroundColorSpan(0xFFFF87FF.toInt()), 0, entete.length, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
         var section = ""
-        for ((cmd, desc, sec) in Regles.LEXIQUE) {
+        for (m in Regles.LEXIQUE) {
+            val cmd = m.cmd
+            val sec = m.section
+            val desc = Regles.explication(m, palier)
             if (sec != section) {
                 section = sec
                 val d = sb.length
@@ -637,7 +641,7 @@ class TerminalActivity : Activity() {
         var change = false
         if (commande != null) {
             if (dernierDossier != null && !memePiece) {
-                ecrire("🚶 Tu entres dans ${shell.chemin()}", 0xFFAF87FF.toInt())
+                ecrire("🚶 Tu passes la porte : ${shell.chemin()}", 0xFFAF87FF.toInt())
                 change = true
             } else if (Regles.premierMot(commande) == "cd") {
                 ecrire("📍 Tu es déjà dans ${shell.chemin()}", 0xFFAF87FF.toInt())
@@ -645,7 +649,10 @@ class TerminalActivity : Activity() {
             }
             for (n in nouveaux.filter { !it.startsWith(".") }) {
                 val dossier = File(d, n).isDirectory
-                ecrire(if (dossier) "📁 Nouveau dossier : $n" else "📄 Nouveau fichier : $n", 0xFF5FD787.toInt())
+                val p = Mots.palier(jeu)
+                ecrire(if (dossier) Mots.accorder("📁 {quoi} vient d'apparaître : {n}", "quoi" to Mots.terme("un_dossier", p, true), "n" to n)
+                    else Mots.accorder("📄 {quoi} vient d'apparaître : {n}", "quoi" to Mots.terme("un_fichier", p, true), "n" to n),
+                    0xFF5FD787.toInt())
                 change = true
             }
             for (n in partis.filter { !it.startsWith(".") }) {

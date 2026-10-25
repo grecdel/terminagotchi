@@ -28,10 +28,10 @@ object Arbre {
                 Lecon("Les petits pouvoirs", "Télécommande", 1, listOf(
                     Etape("Appuie sur l'interrupteur de la lampe de poche !", "lampe on", "Lumière ! Une commande, une action.",
                         re = r("^lampe\\s+on")),
-                    Etape("… et éteins-la.", "lampe off", "Le petit mot après la commande (on/off) change ce qu'elle fait : les grands disent *un argument*.",
+                    Etape("… et éteins-la.", "lampe off", "Le petit mot après la commande (on/off) change ce qu'elle fait : les grands disent « un argument ».",
                         re = r("^lampe\\s+off")),
                     Etape("Fais frissonner le téléphone.", "vibre 300", "300 = la durée, en millisecondes.", re = r("^vibre\\b")),
-                    Etape("Il reste combien à manger dans le ventre du téléphone ?", "batterie", "Pratique avant de partir ! Les grands disent *la batterie*.", re = r("^batterie\\b")),
+                    Etape("Il reste combien à manger dans le ventre du téléphone ?", "batterie", "Pratique avant de partir ! Les grands disent « la batterie ».", re = r("^batterie\\b")),
                 )),
                 Lecon("Ouvrir le monde", "Portier", 1, listOf(
                     Etape("Quelles applis habitent dans ton téléphone ?", "applis", "Chaque appli a un nom visible… et un nom secret : son paquet.",
@@ -44,7 +44,7 @@ object Arbre {
                         re = r("^carte\\s+\\S+")),
                 )),
                 Lecon("Le messager", "Messager", 1, listOf(
-                    Etape("Fais lire une phrase à voix haute au téléphone.", "dis bonjour", "J'ai une voix ! Les grands disent *synthèse vocale*.", re = r("^dis\\s+\\S+")),
+                    Etape("Fais lire une phrase à voix haute au téléphone.", "dis bonjour", "J'ai une voix ! Les grands disent « synthèse vocale ».", re = r("^dis\\s+\\S+")),
                     Etape("Glisse un message dans la boîte aux lettres de ton choix.", "partage coucou", "C'est toi qui choisis l'appli : WhatsApp, mail…",
                         re = r("^partage\\s+\\S+")),
                     Etape("Écris un petit mot SMS (rien ne part sans toi).", "sms 0612345678 coucou",
@@ -54,7 +54,7 @@ object Arbre {
             "systeme" to Branche("systeme", "Système", "⚙", "Force", "comprendre la maison et ses habitants (le système)", listOf(
                 Lecon("La vigie", "Vigie", 1, listOf(
                     Etape("Qui suis-je pour la maison Android ?", "whoami",
-                        "Chaque appli a sa propre chambre fermée, avec son propre utilisateur : les grands disent *le bac à sable*.",
+                        "Chaque appli a sa propre chambre fermée, avec son propre utilisateur : les grands disent « le bac à sable ».",
                         re = r("^whoami\\b")),
                     Etape("Et à quels clubs j'appartiens (mes groupes) ?", "id", "uid = numéro d'utilisateur, gid = numéro de groupe.", re = r("^id\\b")),
                     Etape("Qui est réveillé dans la maison ? Liste les processus.", "ps",
@@ -78,7 +78,7 @@ object Arbre {
             "tuyaux" to Branche("tuyaux", "Tuyaux", "🔧", "Endurance", "brancher les commandes entre elles, comme des tuyaux", listOf(
                 Lecon("Le tuyau", "Plombier", 1, listOf(
                     Etape("Compte tout ce qu'il y a dans la pièce.", "ls | wc -l",
-                        "« | » est un tuyau : ce que ls dit coule dans wc, qui compte les lignes. Les grands disent *un pipe*.", re = r("\\|\\s*wc\\b"),
+                        "« | » est un tuyau : ce que ls dit coule dans wc, qui compte les lignes. Les grands disent « un pipe ».", re = r("\\|\\s*wc\\b"),
                         astuce = "Le | est dans la rangée de touches au-dessus du clavier."),
                     Etape("Commence une liste de courses avec l'entonnoir >.", "echo banane > courses.txt", "Le fichier courses.txt est né.",
                         fs = { trouve(it, "courses.txt") != null }),
@@ -99,7 +99,7 @@ object Arbre {
             "scripts" to Branche("scripts", "Scripts", "🧪", "Intelligence", "des recettes que la maison suit toute seule, et TES commandes", listOf(
                 Lecon("Ma première recette", "Cuistot", 1, listOf(
                     Etape("Écris une recette (une liste de commandes) sur une feuille.", "echo 'echo \"Miam !\"' > miam.sh",
-                        "Une recette rangée dans un fichier : les grands disent *un script*.", fs = { trouve(it, "miam.sh") != null }),
+                        "Une recette rangée dans un fichier : les grands disent « un script ».", fs = { trouve(it, "miam.sh") != null }),
                     Etape("Lis-la à voix haute.", "cat miam.sh", "Elle contient une commande.", re = r("^cat\\b.*miam")),
                     Etape("Demande à la maison de suivre la recette !", "sh miam.sh",
                         "sh lit le script et exécute ses commandes, toute seule. Tu viens de programmer !",

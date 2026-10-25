@@ -78,7 +78,7 @@ object Dressage {
     val EPREUVES: List<Epreuve> = listOf(
         // ---------------------------------------------------- rencontre (toujours en premier)
         Epreuve("Rencontre", "examiner", 1, "Lis sa fiche à voix haute pour voir ses {stats}.",
-            "cat lit une {fichier} à voix haute. La fiche du monstre est posée dans {terrain}.",
+            "cat lit {un_fichier} à voix haute. La fiche du monstre est posée dans {terrain}.",
             "cat ~/terrain_terminagotchi/monstre_{nom_min}.txt") { c -> tape(c, "$CAT.*monstre_" + Regex.escape(c.nom.lowercase())) },
         Epreuve("Rencontre", "repaire", 1, "D'où vient {nom} ? Cherche son repaire dans toutes les pièces de {terrain}.",
             "find cherche un objet dans toutes les pièces, même les plus petites (chaque {dossier} et ses sous-dossiers). Il te donne le chemin complet : c'est là que vit le monstre.",

@@ -24,7 +24,7 @@ object Donjon {
         Objet("tunique_epaisse", "armure", 1, "Mieux que rien."),
         Objet("cotte_de_mailles", "armure", 2, "Cliquette à chaque pas."),
         Objet("armure_de_plaques", "armure", 4, "Le top de la protection."),
-        Objet("potion_de_soin", "potion", 10, "Rend 10 points de vie."),
+        Objet("potion_de_soin", "potion", 10, "Rend 10 cœurs."),
     )
     private val SALLES = listOf("salle_des_torches", "crypte", "armurerie", "bibliotheque", "cachot", "cuisine",
         "chapelle", "galerie", "puits", "forge", "jardin_souterrain", "salle_du_trone", "catacombes",
@@ -94,7 +94,7 @@ object Donjon {
         // monstres cachés
         salles.shuffled().take((2..3).random()).forEach { s ->
             val m = MONSTRES.random()
-            File(s, ".monstre_$m").writeText("${m.replace('_', ' ')}\nPV : ${6 + numero * 3}\nATTAQUE : ${2 + numero}\n")
+            File(s, ".monstre_$m").writeText("${m.replace('_', ' ')}\nCœurs (PV) : ${6 + numero * 3}\nForce (ATTAQUE) : ${2 + numero}\n")
         }
         // parchemin caché
         File(salles.random(), ".parchemin").writeText(
@@ -171,7 +171,7 @@ object Donjon {
             val o = q.getJSONObject(i)
             sb.append(if (o.optBoolean("fait")) "  ✅ " else "  ⬜ ").append(QUETES[o.getString("id")]).append('\n')
         }
-        sb.append("PV : ${etat(jeu).optInt("pv", pvMax(jeu))}/${pvMax(jeu)} · ${texteEquipement(jeu)}")
+        sb.append("❤ ${etat(jeu).optInt("pv", pvMax(jeu))}/${pvMax(jeu)} · ${texteEquipement(jeu)}")
         return sb.toString()
     }
 
@@ -202,7 +202,7 @@ object Donjon {
         val o = lireObjet(f) ?: return "Objet inconnu."
         if (o.type == "potion") return "Une potion se boit : bois ${o.nom}"
         etat(jeu).put(o.type, o.nom)
-        return "⚔ ${jeu.nom} s'équipe : ${o.nom} (+${o.bonus} ${if (o.type == "arme") "attaque" else "défense"})"
+        return "⚔ ${jeu.nom} s'équipe : ${o.nom} (+${o.bonus} ${if (o.type == "arme") "force" else "bouclier"})"
     }
 
     fun bois(jeu: Jeu, nom: String): String {
@@ -212,7 +212,7 @@ object Donjon {
         f.delete()
         val e = etat(jeu)
         e.put("pv", (e.optInt("pv", pvMax(jeu)) + o.bonus).coerceAtMost(pvMax(jeu)))
-        return "🧪 Glou glou… PV : ${e.optInt("pv")}/${pvMax(jeu)}"
+        return "🧪 Glou glou… ❤ ${e.optInt("pv")}/${pvMax(jeu)}"
     }
 
     private fun bonus(type: String, jeu: Jeu): Int {
@@ -226,13 +226,13 @@ object Donjon {
             ?: return Res("Aucun monstre dans cette salle. As-tu bien regardé avec ls -a ?")
         val lignes = m.readLines()
         val nomM = lignes.firstOrNull() ?: "monstre"
-        var pvM = lignes.firstOrNull { it.startsWith("PV") }?.substringAfter(':')?.trim()?.toIntOrNull() ?: 8
-        val atkM = lignes.firstOrNull { it.startsWith("ATTAQUE") }?.substringAfter(':')?.trim()?.toIntOrNull() ?: 3
+        var pvM = lignes.firstOrNull { it.startsWith("PV") || it.startsWith("Cœurs") }?.substringAfter(':')?.trim()?.toIntOrNull() ?: 8
+        val atkM = lignes.firstOrNull { it.startsWith("ATTAQUE") || it.startsWith("Force") }?.substringAfter(':')?.trim()?.toIntOrNull() ?: 3
         val e = etat(jeu)
         var pv = e.optInt("pv", pvMax(jeu))
         val atk = 2 + (jeu.stats["Force"] ?: 0) / 4 + bonus("arme", jeu)
         val def = bonus("armure", jeu) + (jeu.stats["Endurance"] ?: 0) / 8
-        val sb = StringBuilder("⚔ Combat contre $nomM ! (toi : $pv PV, attaque $atk, défense $def)\n")
+        val sb = StringBuilder("⚔ Combat contre $nomM ! (toi : ❤ $pv, force $atk, bouclier $def)\n")
         var tour = 0
         while (pvM > 0 && pv > 0 && tour < 30) {
             tour++
@@ -259,7 +259,7 @@ object Donjon {
                 sb.append("💎 Il a laissé tomber : ${butin.nom}.objet\n")
             }
             jeu.log("⚔ $nomM vaincu !")
-            sb.append("🏆 Victoire ! +$gain XP · PV restants : $pv/${pvMax(jeu)}")
+            sb.append("🏆 Victoire ! +$gain XP · ❤ restants : $pv/${pvMax(jeu)}")
             return Res(sb.toString())
         }
         e.put("pv", pvMax(jeu))

@@ -84,7 +84,7 @@ class Commandes(
                 val caps = Explo.captures(jeu)
                 val ind = if (e == null) Equipe.active(jeu) else (caps.length() - 1 downTo 0).map { caps.getJSONObject(it) }
                     .firstOrNull { it.optString("espece") == e.nom }
-                if (ind == null) Reponse("Aucune bestiole de ce nom dans ton équipe (tape « equipe »).", couleur = ORANGE)
+                if (ind == null) Reponse("Aucune bestiole de ce nom dans ta troupe (tape « troupe »).", couleur = ORANGE)
                 else Reponse(Animations.jouer(act, ind, m.getOrNull(1) ?: ""), couleur = ROSE)
             }
             "dressage" -> Reponse(if (reste.trim() == "abandon") Dressage.abandonner(jeu) else "Pour abandonner un dressage : dressage abandon", couleur = ROSE)
@@ -152,7 +152,7 @@ class Commandes(
             ?: return Reponse("Impossible d'ouvrir ${choix.first}.", couleur = ORANGE)
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
         act.startActivity(intent)
-        return Reponse("🚀 J'ouvre ${choix.first} !  (son nom secret : ${choix.second})", saut = 3)
+        return Reponse("🚀 J'allume ${choix.first} !  (son nom secret : ${choix.second})", saut = 3)
     }
 
     private fun web(texte: String): Reponse {
@@ -359,7 +359,7 @@ class Commandes(
         val quand = if (dernier > 0) java.text.SimpleDateFormat("HH:mm", java.util.Locale.FRANCE).format(java.util.Date(dernier)) else "jamais"
         val url = c.optString("serveur")
         return Reponse("🌍 Compte : ${c.optString("pseudo")} · dernière synchro : $quand\nProfil : $url/joueur/${c.optString("pseudo")}\n" +
-            "CTF web (badges vérifiés) : $url/ctf\n  compte code → relier un autre appareil · sync → synchroniser", couleur = BLEU)
+            "Chasse au trésor du site (CTF web, badges vérifiés) : $url/ctf\n  compte code → relier un autre appareil · sync → synchroniser", couleur = BLEU)
     }
 
     /** site [bestiaire|captures|classement|ctf] : ouvre le site du recensement dans le navigateur. */
@@ -414,7 +414,7 @@ class Commandes(
                 if (!r.isNull("badgeFinal") && r.optString("badgeFinal").isNotEmpty()) append("\n🏆 TOUS LES DRAPEAUX ! $url${r.optString("badgeFinal")}")
             }
         }
-        return Reponse("⏳ Ce n'est pas un drapeau du CTF de l'appli… je demande au serveur (CTF web).", couleur = VERT)
+        return Reponse("⏳ Ce n'est pas un trésor de la chasse de l'appli… je demande au site (chasse au trésor du site).", couleur = VERT)
     }
 
     // ---------------------------------------------------------------- progression et jeux
@@ -437,11 +437,11 @@ class Commandes(
             else -> File(dossier(), nom)
         }
         if (!f.canonicalPath.startsWith(jeu.home.canonicalPath)) {
-            return Reponse("Je ne peux modifier que les fichiers de ta maison (~).", couleur = ORANGE)
+            return Reponse("Je ne peux écrire que dans les feuilles de ta maison (~).", couleur = ORANGE)
         }
-        if (f.isDirectory) return Reponse("${f.name} est un dossier, pas un fichier.", couleur = ORANGE)
+        if (f.isDirectory) return Reponse("${f.name} est une pièce (un dossier), pas une feuille.", couleur = ORANGE)
         act.startActivity(Intent(act, EditeurActivity::class.java).putExtra("chemin", f.absolutePath))
-        return Reponse("✏ J'ouvre l'éditeur sur ${f.name}… (comme nano sur un ordinateur)")
+        return Reponse("✏ J'ouvre ton cahier sur ${f.name}… (comme nano sur un ordinateur)")
     }
 
     private fun doom(): Reponse {

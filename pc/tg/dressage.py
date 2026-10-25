@@ -744,7 +744,7 @@ def lignes_ecran(state, largeur=62):
 # Pour chaque épreuve : ce que fait la commande (en clair) et un exemple complet à adapter.
 # (exemple PC/Mac/Linux, exemple Windows PowerShell si différent)
 AIDES = {
-    "Rencontre:examiner": ("cat lit une {fichier} à voix haute. La fiche du monstre est posée dans {terrain}.",
+    "Rencontre:examiner": ("cat lit {un_fichier} à voix haute. La fiche du monstre est posée dans {terrain}.",
                            "cat ~/terrain_terminagotchi/monstre_{nom_min}.txt", "cat ~/terrain_terminagotchi/monstre_{nom_min}.txt"),
     "Rencontre:repaire": ("find cherche un objet dans toutes les pièces, même les plus petites (chaque {dossier} et ses "
                           "sous-dossiers). Il te donne le chemin complet : c'est là que vit le monstre.",
