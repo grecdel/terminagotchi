@@ -1,0 +1,287 @@
+[
+  {
+    "rang": 1,
+    "nom": "Scarabouille",
+    "id": "scarabouille",
+    "rarete": "commune",
+    "posture": "quadrupède",
+    "taille_finale": "moyenne",
+    "fiche": "Petit scarabée joufflu qui roule des boulettes de terre dans les prairies et les sous-bois.",
+    "caractere": "têtu et gourmand",
+    "apparence": "Chubby beetle with a domed shiny shell split down the middle, stubby legs and a round face; glossy black, acid green and yellow spots.",
+    "stades": {
+      "bebe": "A round shiny black bean with big yellow eyes, two tiny antenna nubs and four stubby feet.",
+      "enfant": "Its shell splits into two green-spotted wing cases and a small blunt horn appears on its nose.",
+      "ado": "Body grows longer and sturdier, the nose horn becomes a curved spike and thick spiked forelegs appear.",
+      "adulte": "A heavy armored beetle with a huge forked rhinoceros horn, broad acid-green wing cases and clawed legs that push a giant earth ball.",
+      "ancien": "Its shell is cracked and covered in moss and tiny flowers, the horn is chipped and ringed with old golden bands."
+    },
+    "habitats": ["prairie", "forêt", "jungle", "sable", "marais", "champignonnière", "montagne"]
+  },
+  {
+    "rang": 2,
+    "nom": "Pucerise",
+    "id": "pucerise",
+    "rarete": "commune",
+    "posture": "rampant",
+    "taille_finale": "petite",
+    "fiche": "Puceron rond comme une cerise qui sirote la sève des plantes dans les jardins sauvages.",
+    "caractere": "doux et collant",
+    "apparence": "Plump soft aphid shaped like a cherry with a leaf-like stem on its head and tiny legs; cherry purple, lime green and glossy black.",
+    "stades": {
+      "bebe": "A tiny round purple droplet with huge black eyes and a little green stem sprouting from its head.",
+      "enfant": "Six tiny green legs and a pair of short antennae appear under its round body.",
+      "ado": "Its body becomes pear-shaped, two little nectar tubes grow on its back and its stem opens into a leaf.",
+      "adulte": "A big glossy cherry-like bug with translucent lime wings folded on its back, nectar tubes dripping sweet syrup and leafy antennae.",
+      "ancien": "Its skin is wrinkled like a dried cherry, its leaf has turned amber and a halo of tiny sugar crystals floats around it."
+    },
+    "habitats": ["prairie", "forêt", "jungle", "marais", "champignonnière", "eau pétillante"]
+  },
+  {
+    "rang": 3,
+    "nom": "Fourmidable",
+    "id": "fourmidable",
+    "rarete": "commune",
+    "posture": "bipède",
+    "taille_finale": "moyenne",
+    "fiche": "Fourmi ouvrière qui marche debout et porte des charges dix fois plus lourdes qu'elle dans les canyons.",
+    "caractere": "travailleur et fier",
+    "apparence": "Upright ant with a segmented body, big jaws and strong arms; glossy black, rust orange and yellow.",
+    "stades": {
+      "bebe": "A round black head on a tiny pill body with big eyes and two wobbly antennae, standing on two little feet.",
+      "enfant": "Its body splits into three segments and two small arms with round mittens appear.",
+      "ado": "Legs and arms lengthen, small orange mandibles grow and it carries a pebble on its back.",
+      "adulte": "A muscular upright ant with huge crushing mandibles, four powerful arms and a thick orange-banded abdomen, lifting a boulder overhead.",
+      "ancien": "Its armor is scratched and dusty, one antenna is bent, and it wears a yellow foreman scarf and leans on a stone pickaxe."
+    },
+    "habitats": ["canyon", "désert", "sable", "prairie", "forêt", "montagne", "ruines"]
+  },
+  {
+    "rang": 4,
+    "nom": "Papillombre",
+    "id": "papillombre",
+    "rarete": "commune",
+    "posture": "volant",
+    "taille_finale": "moyenne",
+    "fiche": "Papillon de nuit aux ailes de velours sombre qui danse autour des lumières dans la brume.",
+    "caractere": "rêveur et curieux",
+    "apparence": "Fuzzy moth with velvet wings marked with eye patterns and feathery antennae; deep purple, black and pale yellow.",
+    "stades": {
+      "bebe": "A fuzzy round purple caterpillar ball with big shiny eyes and two tiny feathery tufts.",
+      "enfant": "Two small stubby black wings sprout from its back and its tufts become short feathery antennae.",
+      "ado": "Its body slims, wings grow large with yellow eye spots and a fluffy collar appears around its neck.",
+      "adulte": "A large elegant moth with wide velvet wings covered in glowing yellow eye patterns, a thick fur mane and long feathered antennae.",
+      "ancien": "Its wings are frayed at the edges like old lace, its fur turns silver and faint glowing dust trails behind it."
+    },
+    "habitats": ["brume", "ombre", "forêt", "lune", "néon", "ruines", "marais"]
+  },
+  {
+    "rang": 5,
+    "nom": "Clopinou",
+    "id": "clopinou",
+    "rarete": "commune",
+    "posture": "multipattes",
+    "taille_finale": "petite",
+    "fiche": "Cloporte câlin qui se roule en boule sous les pierres humides des ruines et des cryptes.",
+    "caractere": "timide et câlin",
+    "apparence": "Pill bug with overlapping curved armor plates and many small legs, able to roll into a ball; slate grey, glossy black and pale yellow.",
+    "stades": {
+      "bebe": "A small grey ball with three soft plates, two big eyes peeking out and a row of tiny feet.",
+      "enfant": "It unrolls into an oval with more plates, two short antennae and two little tail prongs.",
+      "ado": "Its plates become thick and shiny black with yellow rims and its legs grow longer and more numerous.",
+      "adulte": "A heavy armored isopod with layered stone-like plates edged in yellow, spiked tail prongs and a row of strong legs, able to roll into a boulder.",
+      "ancien": "Its plates are covered in moss and lichen, one carries a carved rune, and small mushrooms grow on its back."
+    },
+    "habitats": ["ruines", "crypte", "forêt", "champignonnière", "marais", "ossuaire"]
+  },
+  {
+    "rang": 6,
+    "nom": "Tiquetac",
+    "id": "tiquetac",
+    "rarete": "commune",
+    "posture": "flottant",
+    "taille_finale": "moyenne",
+    "fiche": "Tique gonflée comme un ballon qui flotte lentement dans les marais en faisant tic-tac.",
+    "caractere": "patient et sournois",
+    "apparence": "Balloon-like tick with an inflated glossy body, a small hard head and dangling legs; dark purple, glossy black and acid green.",
+    "stades": {
+      "bebe": "A tiny round black seed with huge green eyes and four little dangling legs.",
+      "enfant": "Its body swells into a small purple balloon and two short barbed mouthparts appear.",
+      "ado": "Its balloon body grows large with green vein patterns, eight legs dangle below and it starts to float.",
+      "adulte": "A big floating tick with a glossy inflated purple belly lined with glowing green veins, a hard black shield head with hooked jaws and eight clawed dangling legs.",
+      "ancien": "Its balloon is patched and scarred, its shield head is crowned with old bone fragments and a faint green glow ticks like a clock inside it."
+    },
+    "habitats": ["marais", "toxique", "jungle", "brume", "forêt", "prairie"]
+  },
+  {
+    "rang": 7,
+    "nom": "Araignoir",
+    "id": "araignoir",
+    "rarete": "peu commune",
+    "posture": "multipattes",
+    "taille_finale": "grande",
+    "fiche": "Araignée noire qui tisse des toiles de soie sombre dans les cryptes et les ruines oubliées.",
+    "caractere": "calme et rusé",
+    "apparence": "Eight-legged spider with a round abdomen, many eyes and silk spinners; glossy black, deep purple and acid green markings.",
+    "stades": {
+      "bebe": "A round fuzzy black puffball with two big eyes, four tiny eye dots and four stubby legs.",
+      "enfant": "It gets eight thin legs and a small purple abdomen with a green dot pattern.",
+      "ado": "Its abdomen grows large with a green hourglass mark, fangs appear and silk threads trail from its back.",
+      "adulte": "A large spider with long jointed legs ending in hooks, eight glowing green eyes, curved fangs and a huge purple abdomen spinning a dark web cape.",
+      "ancien": "Its legs are wrapped in grey web like bandages, its eyes glow dim silver and old relics hang caught in its silk mantle."
+    },
+    "habitats": ["crypte", "ruines", "ombre", "forêt", "ossuaire", "jungle", "brume", "canyon"]
+  },
+  {
+    "rang": 8,
+    "nom": "Mantelame",
+    "id": "mantelame",
+    "rarete": "peu commune",
+    "posture": "bipède",
+    "taille_finale": "grande",
+    "fiche": "Mante religieuse escrimeuse aux bras en lames qui guette ses proies immobile dans la jungle.",
+    "caractere": "discipliné et silencieux",
+    "apparence": "Upright praying mantis with a triangular head, long neck and scythe-like forearms; acid green, yellow and black edges.",
+    "stades": {
+      "bebe": "A small green bean with a triangle head, huge round eyes and two folded nub arms.",
+      "enfant": "Its neck stretches and its nub arms become small hooked pincers.",
+      "ado": "It stands taller on thin legs, its forearms become serrated blades and small leaf-shaped wings appear.",
+      "adulte": "A tall fencer mantis with long gleaming scythe arms edged in black, wide green leaf wings like a cloak and a crested head.",
+      "ancien": "Its body turns autumn yellow, its blades are notched from duels and a long antenna beard hangs from its chin."
+    },
+    "habitats": ["jungle", "forêt", "prairie", "marais", "ruines", "montagne"]
+  },
+  {
+    "rang": 9,
+    "nom": "Scorpiquant",
+    "id": "scorpiquant",
+    "rarete": "peu commune",
+    "posture": "multipattes",
+    "taille_finale": "grande",
+    "fiche": "Scorpion des dunes au dard brûlant qui se cache sous le sable chaud du désert.",
+    "caractere": "irritable et loyal",
+    "apparence": "Armored scorpion with big pincers, segmented tail and glowing stinger; sand yellow, glossy black and orange.",
+    "stades": {
+      "bebe": "A round yellow pebble with big eyes, two tiny pincer mittens and a short curly tail.",
+      "enfant": "Its tail grows into three segments with a small blunt stinger and four pairs of little legs appear.",
+      "ado": "Its pincers get serrated, black plates cover its back and the stinger becomes sharp and glowing orange.",
+      "adulte": "A large heavily armored scorpion with massive black pincers, a long segmented tail raised high and a blazing orange stinger.",
+      "ancien": "Its plates are sand-worn and engraved with desert runes, its stinger glows like an ember and a bead necklace hangs from its claw."
+    },
+    "habitats": ["désert", "sable", "canyon", "volcan", "cendres", "ruines", "montagne"]
+  },
+  {
+    "rang": 10,
+    "nom": "Millepince",
+    "id": "millepince",
+    "rarete": "peu commune",
+    "posture": "serpentin",
+    "taille_finale": "grande",
+    "fiche": "Mille-pattes géant aux crochets venimeux qui serpente dans les galeries humides et les champignonnières.",
+    "caractere": "nerveux et vorace",
+    "apparence": "Long segmented centipede with rows of legs, venom claws and antennae; glossy black, purple and yellow leg tips.",
+    "stades": {
+      "bebe": "A short chubby worm of three round segments with big eyes and tiny feet.",
+      "enfant": "Its body grows to six segments, each with yellow-tipped legs, and two long antennae appear.",
+      "ado": "Its body becomes long and snake-like, purple plates cover each segment and hooked venom claws grow near its head.",
+      "adulte": "A huge coiling centipede with dozens of glossy black segments, yellow spiked legs, giant purple venom pincers and a horned head.",
+      "ancien": "Its segments are cracked and moss-filled, some legs are replaced by roots, and its antennae trail like long white whiskers."
+    },
+    "habitats": ["champignonnière", "jungle", "marais", "crypte", "forêt", "toxique", "ruines"]
+  },
+  {
+    "rang": 11,
+    "nom": "Bourdonjon",
+    "id": "bourdonjon",
+    "rarete": "rare",
+    "posture": "volant",
+    "taille_finale": "grande",
+    "fiche": "Bourdon bâtisseur qui porte sur son dos une ruche-forteresse où vivent ses petites ouvrières.",
+    "caractere": "protecteur et bougon",
+    "apparence": "Fluffy bumblebee with a round striped body, small wings and a wax hive built on its back; yellow, black and honey amber.",
+    "stades": {
+      "bebe": "A fluffy yellow and black striped ball with big eyes and two tiny buzzing wings.",
+      "enfant": "Its fur gets thicker, a small stinger appears and a little wax cell grows on its back.",
+      "ado": "Its wings grow stronger, the wax cells stack into a small tower on its back and its legs carry pollen baskets.",
+      "adulte": "A big furry bumblebee carrying a honey-amber hive fortress with towers and tiny windows on its back, with armored striped body and a thick stinger.",
+      "ancien": "Its fur turns grey and shaggy, its hive castle is crumbling and covered in flowers, and honey drips like a beard from its jaws."
+    },
+    "habitats": ["prairie", "forêt", "montagne", "jungle", "ruines", "soleil", "nuage"]
+  },
+  {
+    "rang": 12,
+    "nom": "Libellance",
+    "id": "libellance",
+    "rarete": "rare",
+    "posture": "volant",
+    "taille_finale": "grande",
+    "fiche": "Libellule chevalier à la queue en lance qui patrouille au-dessus des lagons et des orages.",
+    "caractere": "rapide et noble",
+    "apparence": "Slender dragonfly with four long glassy wings, compound eyes and a lance-tipped tail; iridescent acid green, purple and black.",
+    "stades": {
+      "bebe": "A small round water nymph with huge bubble eyes and stubby legs.",
+      "enfant": "Its body stretches, two short glassy wings appear and a tiny pointed tail grows.",
+      "ado": "It gets four longer veined wings, an iridescent green body and a needle-sharp tail tip.",
+      "adulte": "A large knight dragonfly with four wide crackling glassy wings, a purple helmet-like head and a long armored tail ending in a spear blade.",
+      "ancien": "Its wings are clouded with frost patterns, its armor is tarnished bronze and a faint ring of lightning circles its head like a halo."
+    },
+    "habitats": ["lagon", "marais", "orage", "eau pétillante", "jungle", "nuage", "prairie", "corail"]
+  },
+  {
+    "rang": 13,
+    "nom": "Cigalarme",
+    "id": "cigalarme",
+    "rarete": "rare",
+    "posture": "quadrupède",
+    "taille_finale": "colossale",
+    "fiche": "Cigale géante dont le chant assourdissant résonne comme une sirène au sommet des volcans.",
+    "caractere": "bruyant et joyeux",
+    "apparence": "Massive cicada with a broad head, wide-set eyes, translucent veined wings and drum-like sound plates on its sides; acid green, glossy black and orange.",
+    "stades": {
+      "bebe": "A round brown shell nymph with big eyes, digging claws and a soft belly.",
+      "enfant": "It cracks out of its shell with small crumpled green wings and two tiny drum plates on its sides.",
+      "ado": "Its wings unfold with black veins, its drum plates grow big and round and its body becomes thick and broad.",
+      "adulte": "A colossal four-legged cicada with huge glowing orange drum plates on its flanks, wide clear veined wings and a heavy armored head.",
+      "ancien": "Its drum plates are cracked like old bells, empty shells of its past molts hang on its back and its wings are patched with amber."
+    },
+    "habitats": ["volcan", "forêt", "prairie", "montagne", "soleil", "cendres", "désert"]
+  },
+  {
+    "rang": 14,
+    "nom": "Cocondor",
+    "id": "cocondor",
+    "rarete": "rare",
+    "posture": "amorphe",
+    "taille_finale": "grande",
+    "fiche": "Cocon vivant de soie dorée qui se métamorphose sans fin au cœur des grottes de cristal.",
+    "caractere": "mystérieux et changeant",
+    "apparence": "Shapeless living cocoon of golden silk threads with a shimmering creature visible inside; gold, deep purple and acid green glow.",
+    "stades": {
+      "bebe": "A small fuzzy golden silk lump with two big eyes peeking through the threads.",
+      "enfant": "Silk tendrils sprout from its body and a purple glow pulses inside it.",
+      "ado": "Its silk splits open in places revealing folded wings and twitching legs inside a glowing chrysalis.",
+      "adulte": "A large pulsing golden cocoon mass with silk tendril arms, half-emerged wings of light and many glowing green eyes shining through the threads.",
+      "ancien": "Its silk turns pale and crystalline, ancient insect relics are woven into it and a halo of floating silk rings surrounds it."
+    },
+    "habitats": ["cristal", "arcane", "forêt", "jungle", "aurore", "champignonnière", "lune"]
+  },
+  {
+    "rang": 15,
+    "nom": "Essaimpereur",
+    "id": "essaimpereur",
+    "rarete": "légendaire",
+    "posture": "quadrupède",
+    "taille_finale": "colossale",
+    "fiche": "Souverain colossal de tous les insectes, dont la carapace-couronne abrite un essaim entier.",
+    "caractere": "majestueux et implacable",
+    "apparence": "Colossal royal beetle-wasp with a crown-shaped carapace housing a swarm, regal mandibles and gauzy wings; glossy black, acid green, gold and purple.",
+    "stades": {
+      "bebe": "A round glossy black grub with big gold eyes and a tiny three-point crown nub on its head.",
+      "enfant": "Six short legs and a small shell appear, and its crown nub becomes three gold spikes.",
+      "ado": "Its shell splits into green wing cases, sharp mandibles grow and a few tiny insects buzz around its crown.",
+      "adulte": "A colossal four-legged armored emperor beetle with a towering gold crown carapace full of hive holes, sweeping purple wings, huge sickle mandibles and a swarm orbiting it.",
+      "ancien": "Its carapace is cracked and overgrown like an old cathedral, its crown is ringed with glowing amber relics and its swarm forms a shining halo."
+    },
+    "habitats": ["ruines", "jungle", "toxique", "désert", "forêt", "canyon", "volcan", "arcane", "soleil"]
+  }
+]
