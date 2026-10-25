@@ -251,13 +251,13 @@
   "taille_finale": "grande",
   "fiche": "Une gardienne des glaciers qui sculpte des tempêtes de neige avec ses longues mains de givre.",
   "caractere": "froide et protectrice",
-  "apparence": "Tall bipedal figure with a body of packed snow and a cloak of icicles; colors: glacier blue, white, frost violet.",
+  "apparence": "Snow spirit wrapped in a long hooded robe of packed snow and icicles, no visible human body, only glowing eyes inside the hood; colors: glacier blue, white, frost violet.",
   "stades": {
    "bebe": "A small round snow mound with big eyes and a tiny icicle sprouting on top like a hair tuft.",
    "enfant": "Two short legs and mitten-like snowy arms appear, plus a hood of frost.",
-   "ado": "The body grows tall and thin, fingers become long icicles and a short cape of ice shards forms.",
-   "adulte": "A tall snow guardian with a flowing cloak of hanging icicles, long ice-blade fingers and a crystal crown.",
-   "ancien": "Her snow body is cracked like old glacier ice, with a long frozen beard of icicles, a frost cane and an aurora halo."
+   "ado": "It grows taller inside a short hooded cape of ice shards, with long icicle fingers poking out of wide sleeves.",
+   "adulte": "A tall robed snow guardian, the hood crowned with crystals, a long flowing robe of hanging icicles touching the ground and ice-blade fingers.",
+   "ancien": "The robe is cracked like old glacier ice, a long frozen beard of icicles hangs from the hood, with a frost cane and an aurora halo."
   },
   "habitats": [
    "glace",

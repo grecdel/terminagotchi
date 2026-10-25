@@ -1,287 +1,406 @@
 [
-  {
-    "rang": 1,
-    "nom": "Braisillon",
-    "id": "braisillon",
-    "rarete": "commune",
-    "posture": "bipède",
-    "taille_finale": "petite",
-    "fiche": "Petit diablotin né d'une braise tombée, il hante les foyers des volcans et les cheminées abandonnées.",
-    "caractere": "farceur et gourmand",
-    "apparence": "Small imp with charcoal skin cracked by glowing ember lines, stubby horns, flame tuft on the head; colors red, black and incandescent orange.",
-    "stades": {
-      "bebe": "A round black coal-ball with big glowing orange eyes, two tiny nub horns and a single flickering flame on top.",
-      "enfant": "Short stubby legs and little clawed arms appear, plus a thin pointed tail ending in a spark.",
-      "ado": "The body stretches into a lanky imp with longer curved horns, pointed ears and tiny bat-wing buds on the back.",
-      "adulte": "A wiry imp with small membranous red wings, sharp black claws, a spade-tipped tail and a blazing flame crest.",
-      "ancien": "An elder imp with a long ash-grey beard of smoke, chipped horns hung with tiny brass rings and a glowing ember cane."
-    },
-    "habitats": ["volcan", "cendres", "lave", "ruines", "montagne", "canyon"]
+ {
+  "rang": 1,
+  "nom": "Braisillon",
+  "id": "braisillon",
+  "rarete": "commune",
+  "posture": "bipède",
+  "taille_finale": "petite",
+  "fiche": "Petit diablotin né d'une braise tombée, il hante les foyers des volcans et les cheminées abandonnées.",
+  "caractere": "farceur et gourmand",
+  "apparence": "Small imp with charcoal skin cracked by glowing ember lines, stubby horns, flame tuft on the head; colors red, black and incandescent orange.",
+  "stades": {
+   "bebe": "A round black coal-ball with big glowing orange eyes, two tiny nub horns and a single flickering flame on top.",
+   "enfant": "Short stubby legs and little clawed arms appear, plus a thin pointed tail ending in a spark.",
+   "ado": "The body stretches into a lanky imp with longer curved horns, pointed ears and tiny bat-wing buds on the back.",
+   "adulte": "A wiry imp with small membranous red wings, sharp black claws, a spade-tipped tail and a blazing flame crest.",
+   "ancien": "An elder imp with a long ash-grey beard of smoke, chipped horns hung with tiny brass rings and a glowing ember cane."
   },
-  {
-    "rang": 2,
-    "nom": "Cornichaud",
-    "id": "cornichaud",
-    "rarete": "commune",
-    "posture": "quadrupède",
-    "taille_finale": "moyenne",
-    "fiche": "Chiot infernal aux cornes brûlantes qui garde les entrées des grottes volcaniques et des ruines calcinées.",
-    "caractere": "fidèle et bagarreur",
-    "apparence": "Hound-like demon with sooty fur, curling horns and glowing paws; colors black, deep red and incandescent orange.",
-    "stades": {
-      "bebe": "A round fluffy black puppy with huge orange eyes, floppy ears and two tiny red horn nubs.",
-      "enfant": "Legs lengthen, the horns curl into small spirals and the paw pads start glowing like embers.",
-      "ado": "A lean hound body with a spiky ridge of red bone plates along the spine and a whip tail with a flame tip.",
-      "adulte": "A muscular demon hound with large ram-like horns, a mane of living fire, obsidian claws and a spiked tail.",
-      "ancien": "An old grizzled hound with a smoky grey muzzle, cracked horns wrapped in iron chains and a dim halo of embers."
-    },
-    "habitats": ["volcan", "ruines", "cendres", "canyon", "lave", "désert", "ombre"]
+  "habitats": [
+   "volcan",
+   "cendres",
+   "lave",
+   "ruines",
+   "montagne",
+   "canyon"
+  ]
+ },
+ {
+  "rang": 2,
+  "nom": "Cornichaud",
+  "id": "cornichaud",
+  "rarete": "commune",
+  "posture": "quadrupède",
+  "taille_finale": "moyenne",
+  "fiche": "Chiot infernal aux cornes brûlantes qui garde les entrées des grottes volcaniques et des ruines calcinées.",
+  "caractere": "fidèle et bagarreur",
+  "apparence": "Hound-like demon with sooty fur, curling horns and glowing paws; colors black, deep red and incandescent orange.",
+  "stades": {
+   "bebe": "A round fluffy black puppy with huge orange eyes, floppy ears and two tiny red horn nubs.",
+   "enfant": "Legs lengthen, the horns curl into small spirals and the paw pads start glowing like embers.",
+   "ado": "A lean hound body with a spiky ridge of red bone plates along the spine and a whip tail with a flame tip.",
+   "adulte": "A muscular demon hound with large ram-like horns, a mane of living fire, obsidian claws and a spiked tail.",
+   "ancien": "An old grizzled hound with a smoky grey muzzle, cracked horns wrapped in iron chains and a dim halo of embers."
   },
-  {
-    "rang": 3,
-    "nom": "Flamouche",
-    "id": "flamouche",
-    "rarete": "commune",
-    "posture": "volant",
-    "taille_finale": "petite",
-    "fiche": "Insecte démoniaque attiré par toutes les flammes, il bourdonne en essaims au-dessus des coulées de lave.",
-    "caractere": "curieux et agité",
-    "apparence": "Fly-like demon with a fuzzy black body, translucent membranous wings with red veins and glowing compound eyes; colors black, red and orange.",
-    "stades": {
-      "bebe": "A round fuzzy black ball with two giant glowing orange eyes and two tiny stub wings.",
-      "enfant": "Thin legs and a pair of short feelers appear, and the wings become small red membranes.",
-      "ado": "The body splits into head, thorax and a striped orange abdomen, with a second pair of wings and tiny horns.",
-      "adulte": "A large demon fly with four veined bat-like wings, a curved horn, mandible claws and a glowing stinger abdomen.",
-      "ancien": "An elder fly with tattered wings patched with ash, a long grey whisker-like antenna beard and a floating ember halo."
-    },
-    "habitats": ["lave", "volcan", "cendres", "marais", "toxique", "ombre"]
+  "habitats": [
+   "volcan",
+   "ruines",
+   "cendres",
+   "canyon",
+   "lave",
+   "désert",
+   "ombre"
+  ]
+ },
+ {
+  "rang": 3,
+  "nom": "Flamouche",
+  "id": "flamouche",
+  "rarete": "commune",
+  "posture": "volant",
+  "taille_finale": "petite",
+  "fiche": "Insecte démoniaque attiré par toutes les flammes, il bourdonne en essaims au-dessus des coulées de lave.",
+  "caractere": "curieux et agité",
+  "apparence": "Fly-like demon with a fuzzy black body, translucent membranous wings with red veins and glowing compound eyes; colors black, red and orange.",
+  "stades": {
+   "bebe": "A round fuzzy black ball with two giant glowing orange eyes and two tiny stub wings.",
+   "enfant": "Thin legs and a pair of short feelers appear, and the wings become small red membranes.",
+   "ado": "The body splits into head, thorax and a striped orange abdomen, with a second pair of wings and tiny horns.",
+   "adulte": "A large demon fly with four veined bat-like wings, a curved horn, mandible claws and a glowing stinger abdomen.",
+   "ancien": "An elder fly with tattered wings patched with ash, a long grey whisker-like antenna beard and a floating ember halo."
   },
-  {
-    "rang": 4,
-    "nom": "Cendrouille",
-    "id": "cendrouille",
-    "rarete": "commune",
-    "posture": "rampant",
-    "taille_finale": "moyenne",
-    "fiche": "Salamandre démoniaque couverte de cendres, elle se terre sous les braises refroidies des anciens incendies.",
-    "caractere": "paresseux et rancunier",
-    "apparence": "Flat lizard-like demon with ash-grey crusted skin, glowing cracks and back spikes; colors grey-black, red and orange.",
-    "stades": {
-      "bebe": "A round flat ash-grey blob with stubby little legs, big sleepy orange eyes and a tiny ember on its nose.",
-      "enfant": "The body lengthens into a small salamander with a short tail and a row of tiny red spikes on the back.",
-      "ado": "Glowing lava cracks open across the skin, the claws grow long and two small backward horns appear.",
-      "adulte": "A long low-slung demon salamander with a thick ash crust armor, molten back spikes, a forked tongue and a club tail.",
-      "ancien": "An ancient salamander whose crust is mossy with soot and cracked like old stone, with a beard of hanging ash and relic chains."
-    },
-    "habitats": ["cendres", "volcan", "lave", "ruines", "désert", "canyon", "crypte"]
+  "habitats": [
+   "lave",
+   "volcan",
+   "cendres",
+   "marais",
+   "toxique",
+   "ombre"
+  ]
+ },
+ {
+  "rang": 4,
+  "nom": "Cendrouille",
+  "id": "cendrouille",
+  "rarete": "commune",
+  "posture": "rampant",
+  "taille_finale": "moyenne",
+  "fiche": "Salamandre démoniaque couverte de cendres, elle se terre sous les braises refroidies des anciens incendies.",
+  "caractere": "paresseux et rancunier",
+  "apparence": "Flat lizard-like demon with ash-grey crusted skin, glowing cracks and back spikes; colors grey-black, red and orange.",
+  "stades": {
+   "bebe": "A round flat ash-grey blob with stubby little legs, big sleepy orange eyes and a tiny ember on its nose.",
+   "enfant": "The body lengthens into a small salamander with a short tail and a row of tiny red spikes on the back.",
+   "ado": "Glowing lava cracks open across the skin, the claws grow long and two small backward horns appear.",
+   "adulte": "A long low-slung demon salamander with a thick ash crust armor, molten back spikes, a forked tongue and a club tail.",
+   "ancien": "An ancient salamander whose crust is mossy with soot and cracked like old stone, with a beard of hanging ash and relic chains."
   },
-  {
-    "rang": 5,
-    "nom": "Ricanombre",
-    "id": "ricanombre",
-    "rarete": "commune",
-    "posture": "flottant",
-    "taille_finale": "petite",
-    "fiche": "Esprit démoniaque fait d'ombre et d'un sourire lumineux, il ricane dans les recoins sombres des cryptes.",
-    "caractere": "moqueur et sournois",
-    "apparence": "Floating shadow demon with a wispy black body, a wide glowing grin and purple eyes; colors black, purple and red.",
-    "stades": {
-      "bebe": "A small round puff of black smoke with two big purple eyes and a tiny glowing smile.",
-      "enfant": "Two wispy arms with little claws appear and two small horn points rise from the head.",
-      "ado": "A tattered shadow cape forms around the body and the grin widens with jagged red glowing teeth.",
-      "adulte": "A large hooded shadow with long curved horns, long clawed hands, a huge grinning mouth and swirling purple flames below.",
-      "ancien": "An elder shadow wearing a cracked bone mask over its grin, with a crown of purple flame and dangling relic charms."
-    },
-    "habitats": ["ombre", "crypte", "ruines", "brume", "ossuaire", "arcane", "lune"]
+  "habitats": [
+   "cendres",
+   "volcan",
+   "lave",
+   "ruines",
+   "désert",
+   "canyon",
+   "crypte"
+  ]
+ },
+ {
+  "rang": 5,
+  "nom": "Ricanombre",
+  "id": "ricanombre",
+  "rarete": "commune",
+  "posture": "flottant",
+  "taille_finale": "petite",
+  "fiche": "Esprit démoniaque fait d'ombre et d'un sourire lumineux, il ricane dans les recoins sombres des cryptes.",
+  "caractere": "moqueur et sournois",
+  "apparence": "Floating shadow demon with a wispy black body, a wide glowing grin and purple eyes; colors black, purple and red.",
+  "stades": {
+   "bebe": "A small round puff of black smoke with two big purple eyes and a tiny glowing smile.",
+   "enfant": "Two wispy arms with little claws appear and two small horn points rise from the head.",
+   "ado": "A tattered shadow cape forms around the body and the grin widens with jagged red glowing teeth.",
+   "adulte": "A large hooded shadow with long curved horns, long clawed hands, a huge grinning mouth and swirling purple flames below.",
+   "ancien": "An elder shadow wearing a cracked bone mask over its grin, with a crown of purple flame and dangling relic charms."
   },
-  {
-    "rang": 6,
-    "nom": "Sulfurette",
-    "id": "sulfurette",
-    "rarete": "commune",
-    "posture": "serpentin",
-    "taille_finale": "moyenne",
-    "fiche": "Serpent démoniaque qui exhale du soufre, il ondule dans les fissures fumantes autour des cratères.",
-    "caractere": "vif et vaniteux",
-    "apparence": "Snake demon with glossy black scales, sulfur-yellow belly and orange glowing eyes; colors black, red and sulfur orange.",
-    "stades": {
-      "bebe": "A tiny round coiled snakelet with a big head, huge orange eyes and a little puff of yellow smoke.",
-      "enfant": "The body lengthens and two tiny red horn buds and a forked flame tongue appear.",
-      "ado": "A frilled hood of thin red membrane opens behind the head and a rattle of glowing stones grows on the tail.",
-      "adulte": "A long serpent with a wide spiked hood, two swept-back horns, smoking venom fangs and a burning ember tail tip.",
-      "ancien": "An elder serpent with faded cracked scales, long whisker barbels like a beard and a gold relic ring around its horns."
-    },
-    "habitats": ["volcan", "désert", "toxique", "canyon", "sable", "cendres", "lave"]
+  "habitats": [
+   "ombre",
+   "crypte",
+   "ruines",
+   "brume",
+   "ossuaire",
+   "arcane",
+   "lune"
+  ]
+ },
+ {
+  "rang": 6,
+  "nom": "Sulfurette",
+  "id": "sulfurette",
+  "rarete": "commune",
+  "posture": "serpentin",
+  "taille_finale": "moyenne",
+  "fiche": "Serpent démoniaque qui exhale du soufre, il ondule dans les fissures fumantes autour des cratères.",
+  "caractere": "vif et vaniteux",
+  "apparence": "Snake demon with glossy black scales, sulfur-yellow belly and orange glowing eyes; colors black, red and sulfur orange.",
+  "stades": {
+   "bebe": "A tiny round coiled snakelet with a big head, huge orange eyes and a little puff of yellow smoke.",
+   "enfant": "The body lengthens and two tiny red horn buds and a forked flame tongue appear.",
+   "ado": "A frilled hood of thin red membrane opens behind the head and a rattle of glowing stones grows on the tail.",
+   "adulte": "A long serpent with a wide spiked hood, two swept-back horns, smoking venom fangs and a burning ember tail tip.",
+   "ancien": "An elder serpent with faded cracked scales, long whisker barbels like a beard and a gold relic ring around its horns."
   },
-  {
-    "rang": 7,
-    "nom": "Tisonnier",
-    "id": "tisonnier",
-    "rarete": "peu commune",
-    "posture": "bipède",
-    "taille_finale": "moyenne",
-    "fiche": "Forgeron des enfers aux bras en tisonniers, il martèle ses armes au cœur des forges volcaniques.",
-    "caractere": "travailleur et bourru",
-    "apparence": "Stocky demon smith with blackened iron skin, a glowing furnace belly and tool-like arms; colors black, red and incandescent orange.",
-    "stades": {
-      "bebe": "A round iron-black pot-bellied baby with a glowing orange belly window, big eyes and tiny horn nubs.",
-      "enfant": "Short arms appear ending in little poker-shaped hooks and a small leather apron forms on the belly.",
-      "ado": "The shoulders widen, one arm becomes a small hammer head, and a chimney horn starts puffing smoke from the head.",
-      "adulte": "A broad demon blacksmith with a hammer arm and a poker-blade arm, a roaring furnace chest and two chimney horns.",
-      "ancien": "An old smith with a long braided beard of iron wire, soot-stained cracked plating and a glowing anvil pendant."
-    },
-    "habitats": ["volcan", "lave", "mécanique", "rouille", "montagne", "cendres", "ruines"]
+  "habitats": [
+   "volcan",
+   "désert",
+   "toxique",
+   "canyon",
+   "sable",
+   "cendres",
+   "lave"
+  ]
+ },
+ {
+  "rang": 7,
+  "nom": "Tisonnier",
+  "id": "tisonnier",
+  "rarete": "peu commune",
+  "posture": "bipède",
+  "taille_finale": "moyenne",
+  "fiche": "Forgeron des enfers aux bras en tisonniers, il martèle ses armes au cœur des forges volcaniques.",
+  "caractere": "travailleur et bourru",
+  "apparence": "Stocky demon smith with blackened iron skin, a glowing furnace belly and tool-like arms; colors black, red and incandescent orange.",
+  "stades": {
+   "bebe": "A round iron-black pot-bellied baby with a glowing orange belly window, big eyes and tiny horn nubs.",
+   "enfant": "Short arms appear ending in little poker-shaped hooks and a small leather apron forms on the belly.",
+   "ado": "The shoulders widen, one arm becomes a small hammer head, and a chimney horn starts puffing smoke from the head.",
+   "adulte": "A broad demon blacksmith with a hammer arm and a poker-blade arm, a roaring furnace chest and two chimney horns.",
+   "ancien": "An old smith with a long braided beard of iron wire, soot-stained cracked plating and a glowing anvil pendant."
   },
-  {
-    "rang": 8,
-    "nom": "Chaudronne",
-    "id": "chaudronne",
-    "rarete": "peu commune",
-    "posture": "amorphe",
-    "taille_finale": "moyenne",
-    "fiche": "Masse de magma vivant qui bouillonne dans un chaudron fêlé, elle mijote dans les marais sulfureux.",
-    "caractere": "grognon et protecteur",
-    "apparence": "Bubbling blob of dark magma living inside a cracked black cauldron; colors black, purple and incandescent orange.",
-    "stades": {
-      "bebe": "A small round blob of glowing orange goo with two big eyes, sitting in a tiny black bowl.",
-      "enfant": "The bowl becomes a little cauldron with stubby feet and the goo grows two dripping blobby arms.",
-      "ado": "Purple bubbles and two small horns of hardened magma rise from the goo, and the cauldron gets iron handles.",
-      "adulte": "A large cracked cauldron with clawed iron legs, overflowing with glowing magma that forms a horned face and grasping arms.",
-      "ancien": "An elder cauldron covered in runes and rust, a beard of hanging dried lava drips and a ring of floating ember skulls."
-    },
-    "habitats": ["marais", "toxique", "volcan", "arcane", "crypte", "lave", "brume"]
+  "habitats": [
+   "volcan",
+   "lave",
+   "mécanique",
+   "rouille",
+   "montagne",
+   "cendres",
+   "ruines"
+  ]
+ },
+ {
+  "rang": 8,
+  "nom": "Chaudronne",
+  "id": "chaudronne",
+  "rarete": "peu commune",
+  "posture": "amorphe",
+  "taille_finale": "moyenne",
+  "fiche": "Masse de magma vivant qui bouillonne dans un chaudron fêlé, elle mijote dans les marais sulfureux.",
+  "caractere": "grognon et protecteur",
+  "apparence": "Bubbling blob of dark magma living inside a cracked black cauldron; colors black, purple and incandescent orange.",
+  "stades": {
+   "bebe": "A small round blob of glowing orange goo with two big eyes, sitting in a tiny black bowl.",
+   "enfant": "The bowl becomes a little cauldron with stubby feet and the goo grows two dripping blobby arms.",
+   "ado": "Purple bubbles and two small horns of hardened magma rise from the goo, and the cauldron gets iron handles.",
+   "adulte": "A large cracked cauldron with clawed iron legs, overflowing with glowing magma that forms a horned face and grasping arms.",
+   "ancien": "An elder cauldron covered in runes and rust, a beard of hanging dried lava drips and a ring of floating ember skulls."
   },
-  {
-    "rang": 9,
-    "nom": "Infernaille",
-    "id": "infernaille",
-    "rarete": "peu commune",
-    "posture": "multipattes",
-    "taille_finale": "grande",
-    "fiche": "Mille-pattes démoniaque fait de maillons de fer chauffés à blanc, il serpente dans les ruines et les forges oubliées.",
-    "caractere": "tenace et bruyant",
-    "apparence": "Centipede demon whose segments are red-hot iron chain links with spiky claw legs; colors black iron, red and incandescent orange.",
-    "stades": {
-      "bebe": "A round iron ball with big glowing eyes and four tiny stubby legs.",
-      "enfant": "Two more iron segments link behind the head, each with a pair of small hooked legs.",
-      "ado": "The body becomes a chain of many glowing links with sharp claw legs and curved pincer horns on the head.",
-      "adulte": "A long armored chain centipede with spiked links, blade-like legs, huge horned mandibles and a hook-tipped tail.",
-      "ancien": "An elder chain centipede with rusted links tied with relic padlocks, a mossy soot crust and a crown of ember spikes."
-    },
-    "habitats": ["ruines", "rouille", "mécanique", "volcan", "crypte", "cendres", "canyon"]
+  "habitats": [
+   "marais",
+   "toxique",
+   "volcan",
+   "arcane",
+   "crypte",
+   "lave",
+   "brume"
+  ]
+ },
+ {
+  "rang": 9,
+  "nom": "Infernaille",
+  "id": "infernaille",
+  "rarete": "peu commune",
+  "posture": "multipattes",
+  "taille_finale": "grande",
+  "fiche": "Mille-pattes démoniaque fait de maillons de fer chauffés à blanc, il serpente dans les ruines et les forges oubliées.",
+  "caractere": "tenace et bruyant",
+  "apparence": "Centipede demon whose segments are red-hot iron chain links with spiky claw legs; colors black iron, red and incandescent orange.",
+  "stades": {
+   "bebe": "A round iron ball with big glowing eyes and four tiny stubby legs.",
+   "enfant": "Two more iron segments link behind the head, each with a pair of small hooked legs.",
+   "ado": "The body becomes a chain of many glowing links with sharp claw legs and curved pincer horns on the head.",
+   "adulte": "A long armored chain centipede with spiked links, blade-like legs, huge horned mandibles and a hook-tipped tail.",
+   "ancien": "An elder chain centipede with rusted links tied with relic padlocks, a mossy soot crust and a crown of ember spikes."
   },
-  {
-    "rang": 10,
-    "nom": "Gargouflamme",
-    "id": "gargouflamme",
-    "rarete": "peu commune",
-    "posture": "volant",
-    "taille_finale": "grande",
-    "fiche": "Gargouille démoniaque de pierre volcanique qui veille, immobile, sur les tours en ruine avant de s'envoler en flammes.",
-    "caractere": "vigilant et taciturne",
-    "apparence": "Gargoyle demon of black volcanic stone with glowing seams, membranous wings and a fanged face; colors black, purple and orange.",
-    "stades": {
-      "bebe": "A round little stone pebble with big glowing orange eyes, tiny horns and two stubby wing nubs.",
-      "enfant": "Crouched little legs and arms appear and the wings grow into small stone-ribbed membranes.",
-      "ado": "The face grows a fanged snout, the horns curve backward and a stone tail with a spade tip appears.",
-      "adulte": "A large winged gargoyle with wide purple membranous wings, crown of stone horns, fanged maw and molten cracks across its body.",
-      "ancien": "An ancient gargoyle covered in moss and deep cracks, a long stone beard and a broken relic chain around the neck."
-    },
-    "habitats": ["ruines", "montagne", "orage", "volcan", "crypte", "nuage", "ombre"]
+  "habitats": [
+   "ruines",
+   "rouille",
+   "mécanique",
+   "volcan",
+   "crypte",
+   "cendres",
+   "canyon"
+  ]
+ },
+ {
+  "rang": 10,
+  "nom": "Gargouflamme",
+  "id": "gargouflamme",
+  "rarete": "peu commune",
+  "posture": "volant",
+  "taille_finale": "grande",
+  "fiche": "Gargouille démoniaque de pierre volcanique qui veille, immobile, sur les tours en ruine avant de s'envoler en flammes.",
+  "caractere": "vigilant et taciturne",
+  "apparence": "Gargoyle demon of black volcanic stone with glowing seams, membranous wings and a fanged face; colors black, dark red and orange.",
+  "stades": {
+   "bebe": "A round little stone pebble with big glowing orange eyes, tiny horns and two stubby wing nubs.",
+   "enfant": "Crouched little legs and arms appear and the wings grow into small stone-ribbed membranes.",
+   "ado": "The face grows a fanged snout, the horns curve backward and a stone tail with a spade tip appears.",
+   "adulte": "A large winged gargoyle with wide dark red membranous wings, crown of stone horns, fanged maw and molten cracks across its body.",
+   "ancien": "An ancient gargoyle covered in moss and deep cracks, a long stone beard and a broken relic chain around the neck."
   },
-  {
-    "rang": 11,
-    "nom": "Ombrachne",
-    "id": "ombrachne",
-    "rarete": "rare",
-    "posture": "multipattes",
-    "taille_finale": "grande",
-    "fiche": "Araignée démoniaque tissant des toiles d'ombre et de feu violet au fond des cryptes et des gouffres.",
-    "caractere": "patiente et calculatrice",
-    "apparence": "Spider demon with a glossy black carapace, purple flame web and many glowing red eyes; colors black, purple and red.",
-    "stades": {
-      "bebe": "A round black fuzzy ball with three big red eyes and six tiny stubby legs.",
-      "enfant": "Eight thin legs grow out and two small purple fangs and a tiny horn appear.",
-      "ado": "A horned upper torso with two clawed arms rises from the spider body, and the abdomen shows a glowing purple sigil.",
-      "adulte": "A large spider demon with a horned humanoid torso, eight blade-tipped legs, many red eyes and trailing purple fire webs.",
-      "ancien": "An elder spider with grey silk hair like a long beard, cracked carapace hung with bone relics and a violet flame halo."
-    },
-    "habitats": ["crypte", "ombre", "ossuaire", "ruines", "canyon", "arcane", "jungle"]
+  "habitats": [
+   "ruines",
+   "montagne",
+   "orage",
+   "volcan",
+   "crypte",
+   "nuage",
+   "ombre"
+  ]
+ },
+ {
+  "rang": 11,
+  "nom": "Ombrachne",
+  "id": "ombrachne",
+  "rarete": "rare",
+  "posture": "multipattes",
+  "taille_finale": "grande",
+  "fiche": "Araignée démoniaque tissant des toiles d'ombre et de feu violet au fond des cryptes et des gouffres.",
+  "caractere": "patiente et calculatrice",
+  "apparence": "Spider demon with a glossy black carapace, purple flame web and many glowing red eyes; colors black, purple and red.",
+  "stades": {
+   "bebe": "A round black fuzzy ball with three big red eyes and six tiny stubby legs.",
+   "enfant": "Eight thin legs grow out and two small purple fangs and a tiny horn appear.",
+   "ado": "A horned upper torso with two clawed arms rises from the spider body, and the abdomen shows a glowing purple sigil.",
+   "adulte": "A large spider demon with a horned humanoid torso, eight blade-tipped legs, many red eyes and trailing purple fire webs.",
+   "ancien": "An elder spider with grey silk hair like a long beard, cracked carapace hung with bone relics and a violet flame halo."
   },
-  {
-    "rang": 12,
-    "nom": "Pyrodrac",
-    "id": "pyrodrac",
-    "rarete": "rare",
-    "posture": "volant",
-    "taille_finale": "grande",
-    "fiche": "Dragon démoniaque au souffle de soufre, il niche sur les cheminées des volcans en éruption.",
-    "caractere": "fier et colérique",
-    "apparence": "Demonic dragon with black scales, red membranous wings, molten-glowing chest and twisted horns; colors black, red and orange.",
-    "stades": {
-      "bebe": "A round red egg-shaped hatchling with big orange eyes, tiny wing nubs and a small smoke puff from its nose.",
-      "enfant": "Four short legs and a stubby tail appear and the wings become small bat-like membranes.",
-      "ado": "The neck lengthens, two twisted horns grow, and a row of black spines runs from head to tail.",
-      "adulte": "A large winged demon dragon with huge tattered red wings, crown of twisted horns, glowing lava chest and spiked tail.",
-      "ancien": "An ancient dragon with ash-grey whisker beard, horns ringed with gold relics and scales cracked like cooled lava."
-    },
-    "habitats": ["volcan", "lave", "montagne", "cendres", "canyon", "orage", "soleil"]
+  "habitats": [
+   "crypte",
+   "ombre",
+   "ossuaire",
+   "ruines",
+   "canyon",
+   "arcane",
+   "jungle"
+  ]
+ },
+ {
+  "rang": 12,
+  "nom": "Pyrodrac",
+  "id": "pyrodrac",
+  "rarete": "rare",
+  "posture": "volant",
+  "taille_finale": "grande",
+  "fiche": "Dragon démoniaque au souffle de soufre, il niche sur les cheminées des volcans en éruption.",
+  "caractere": "fier et colérique",
+  "apparence": "Demonic dragon with black scales, red membranous wings, molten-glowing chest and twisted horns; colors black, red and orange.",
+  "stades": {
+   "bebe": "A round red egg-shaped hatchling with big orange eyes, tiny wing nubs and a small smoke puff from its nose.",
+   "enfant": "Four short legs and a stubby tail appear and the wings become small bat-like membranes.",
+   "ado": "The neck lengthens, two twisted horns grow, and a row of black spines runs from head to tail.",
+   "adulte": "A large winged demon dragon with huge tattered red wings, crown of twisted horns, glowing lava chest and spiked tail.",
+   "ancien": "An ancient dragon with ash-grey whisker beard, horns ringed with gold relics and scales cracked like cooled lava."
   },
-  {
-    "rang": 13,
-    "nom": "Cauchemarre",
-    "id": "cauchemarre",
-    "rarete": "rare",
-    "posture": "quadrupède",
-    "taille_finale": "grande",
-    "fiche": "Destrier démoniaque aux sabots enflammés qui galope dans les brumes nocturnes et hante les rêves.",
-    "caractere": "fougueux et insaisissable",
-    "apparence": "Demon horse with dark purple coat, mane and tail of violet fire, glowing red eyes and horns; colors black, purple and red.",
-    "stades": {
-      "bebe": "A round little foal with stubby legs, huge red eyes and a tiny wisp of purple flame for a mane.",
-      "enfant": "The legs grow long and wobbly, the hooves start burning and two small horn buds appear.",
-      "ado": "A slender horse body with a flaming mane, two curved horns and a thin spiked tail of fire.",
-      "adulte": "A powerful dark stallion with blazing violet mane and tail, long swept-back horns, bony armored face and burning hooves.",
-      "ancien": "An elder steed with a long silver smoke beard, cracked horns decorated with relic bells and a crescent moon halo."
-    },
-    "habitats": ["brume", "ombre", "lune", "prairie", "ruines", "crypte", "aurore"]
+  "habitats": [
+   "volcan",
+   "lave",
+   "montagne",
+   "cendres",
+   "canyon",
+   "orage",
+   "soleil"
+  ]
+ },
+ {
+  "rang": 13,
+  "nom": "Cauchemarre",
+  "id": "cauchemarre",
+  "rarete": "rare",
+  "posture": "quadrupède",
+  "taille_finale": "grande",
+  "fiche": "Destrier démoniaque aux sabots enflammés qui galope dans les brumes nocturnes et hante les rêves.",
+  "caractere": "fougueux et insaisissable",
+  "apparence": "Demon horse with dark purple coat, mane and tail of violet fire, glowing red eyes and horns; colors black, purple and red.",
+  "stades": {
+   "bebe": "A round little foal with stubby legs, huge red eyes and a tiny wisp of purple flame for a mane.",
+   "enfant": "The legs grow long and wobbly, the hooves start burning and two small horn buds appear.",
+   "ado": "A slender horse body with a flaming mane, two curved horns and a thin spiked tail of fire.",
+   "adulte": "A powerful dark stallion with blazing violet mane and tail, long swept-back horns, bony armored face and burning hooves.",
+   "ancien": "An elder steed with a long silver smoke beard, cracked horns decorated with relic bells and a crescent moon halo."
   },
-  {
-    "rang": 14,
-    "nom": "Volcarnage",
-    "id": "volcarnage",
-    "rarete": "rare",
-    "posture": "bipède",
-    "taille_finale": "colossale",
-    "fiche": "Colosse démoniaque dont le dos est un volcan actif, il écrase tout sur son passage dans les plaines de lave.",
-    "caractere": "brutal et impulsif",
-    "apparence": "Huge brute demon with obsidian rock body, a smoking crater on its back and lava veins; colors black, red and incandescent orange.",
-    "stades": {
-      "bebe": "A round obsidian pebble baby with big glowing eyes and a tiny smoking bump on its back.",
-      "enfant": "Thick stubby arms and legs appear and the bump becomes a small crater with lava bubbling inside.",
-      "ado": "Huge fists of rock form, two thick horns grow and lava veins spread across the chest.",
-      "adulte": "A towering hunched brute with giant rock fists, massive curved horns, a fanged jaw and an erupting volcano on its back.",
-      "ancien": "An ancient colossus with moss and ash on its shoulders, a dormant crater, a beard of cooled lava and relic totems."
-    },
-    "habitats": ["lave", "volcan", "cendres", "montagne", "canyon", "désert", "ruines"]
+  "habitats": [
+   "brume",
+   "ombre",
+   "lune",
+   "prairie",
+   "ruines",
+   "crypte",
+   "aurore"
+  ]
+ },
+ {
+  "rang": 14,
+  "nom": "Volcarnage",
+  "id": "volcarnage",
+  "rarete": "rare",
+  "posture": "bipède",
+  "taille_finale": "colossale",
+  "fiche": "Colosse démoniaque dont le dos est un volcan actif, il écrase tout sur son passage dans les plaines de lave.",
+  "caractere": "brutal et impulsif",
+  "apparence": "Huge brute demon with obsidian rock body, a smoking crater on its back and lava veins; colors black, red and incandescent orange.",
+  "stades": {
+   "bebe": "A round obsidian pebble baby with big glowing eyes and a tiny smoking bump on its back.",
+   "enfant": "Thick stubby arms and legs appear and the bump becomes a small crater with lava bubbling inside.",
+   "ado": "Huge fists of rock form, two thick horns grow and lava veins spread across the chest.",
+   "adulte": "A towering hunched brute with giant rock fists, massive curved horns, a fanged jaw and an erupting volcano on its back.",
+   "ancien": "An ancient colossus with moss and ash on its shoulders, a dormant crater, a beard of cooled lava and relic totems."
   },
-  {
-    "rang": 15,
-    "nom": "Infernarque",
-    "id": "infernarque",
-    "rarete": "légendaire",
-    "posture": "bipède",
-    "taille_finale": "colossale",
-    "fiche": "Seigneur suprême des démons, il règne depuis un trône de lave au plus profond des ténèbres infernales.",
-    "caractere": "majestueux et impitoyable",
-    "apparence": "Regal demon lord with black armored skin, a burning crown of horns, huge membranous wings and a flowing ember cape; colors black, red and royal purple.",
-    "stades": {
-      "bebe": "A round little black demon with big golden-red eyes, a tiny flame crown and a mini purple cape.",
-      "enfant": "Small arms and legs, tiny bat wings and a short spade-tipped tail appear.",
-      "ado": "The body becomes tall and slender, the flame crown grows into four horns and black armor plates appear on the shoulders.",
-      "adulte": "A towering demon lord with vast black-and-red wings, a crown of six burning horns, spiked obsidian armor, a flaming scepter and a long purple cape.",
-      "ancien": "An elder sovereign with a long white flame beard, cracked horns set with relic gems, a halo of black fire and a scepter used as a cane."
-    },
-    "habitats": ["lave", "volcan", "ombre", "cendres", "ruines", "arcane", "crypte", "ossuaire"]
-  }
+  "habitats": [
+   "lave",
+   "volcan",
+   "cendres",
+   "montagne",
+   "canyon",
+   "désert",
+   "ruines"
+  ]
+ },
+ {
+  "rang": 15,
+  "nom": "Infernarque",
+  "id": "infernarque",
+  "rarete": "légendaire",
+  "posture": "bipède",
+  "taille_finale": "colossale",
+  "fiche": "Seigneur suprême des démons, il règne depuis un trône de lave au plus profond des ténèbres infernales.",
+  "caractere": "majestueux et impitoyable",
+  "apparence": "Regal demon lord with black armored skin, a burning crown of horns, huge membranous wings and a flowing ember cape; colors black, red and royal purple.",
+  "stades": {
+   "bebe": "A round little black demon with big golden-red eyes, a tiny flame crown and a mini purple cape.",
+   "enfant": "Small arms and legs, tiny bat wings and a short spade-tipped tail appear.",
+   "ado": "The body becomes tall and slender, the flame crown grows into four horns and black armor plates appear on the shoulders.",
+   "adulte": "A towering demon lord with vast black-and-red wings, a crown of six burning horns, spiked obsidian armor, a flaming scepter and a long purple cape.",
+   "ancien": "An elder sovereign with a long white flame beard, cracked horns set with relic gems, a halo of black fire and a scepter used as a cane."
+  },
+  "habitats": [
+   "lave",
+   "volcan",
+   "ombre",
+   "cendres",
+   "ruines",
+   "arcane",
+   "crypte",
+   "ossuaire"
+  ]
+ }
 ]
