@@ -76,7 +76,7 @@ class Mini:
             raise KeyboardInterrupt
         if premier in ("clear", "cls"):
             self.sortie = []
-        elif premier == "aide":
+        elif premier in ("aide", "help"):
             self.sortie += [f"{DIM}" + l for l in langue.liste("mini.aide")] + [RESET]
         elif premier in ("cd", "set-location", "sl"):
             cible = os.path.expandvars(os.path.expanduser(" ".join(mots[1:]) or "~"))
