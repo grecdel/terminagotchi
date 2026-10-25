@@ -296,5 +296,18 @@ def nom_affiche(e, shiny=False, rarete_ind=None):
     return (fg24(img[3][len(img[3]) // 2]) if img else "") + nom + RESET
 
 
+CLES_STAT = {"PV": "pv", "ATK": "atk", "DEF": "def", "VIT": "vit", "INT": "int"}
+
+
+def nom_stat(k, p=0):
+    """PV/ATK/DEF… affichés selon le palier de vocabulaire : cœurs → cœurs (PV) → PV."""
+    from .mots import terme
+    return terme(CLES_STAT[k], p) if k in CLES_STAT else k
+
+
+def texte_stats(stats, p=0):
+    return "  ".join(f"{nom_stat(k, p)} {v}" for k, v in stats.items())
+
+
 def libelle_rarete(r):
     return fg24(COULEUR_RARETE.get(r, "#ffffff")) + r + RESET
