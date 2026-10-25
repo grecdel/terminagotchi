@@ -107,7 +107,9 @@ object Dressage {
         // ---------------------------------------------------- rencontre (toujours en premier)
         Epreuve("Rencontre", "examiner", 1, "Lis sa fiche à voix haute pour voir ses {stats}.",
             "cat lit {un_fichier} à voix haute. La fiche du monstre est posée dans {terrain}.",
-            "cat ~/terrain_terminagotchi/monstre_{nom_min}.txt") { c -> tape(c, "$CAT.*monstre_" + Regex.escape(c.nom.lowercase())) },
+            "cat ~/terrain_terminagotchi/monstre_{nom_min}.txt") { c ->
+            // le fichier s'appelle monstre_<nom sans accents> (Étincelot → monstre_etincelot.txt)
+            tape(c, "$CAT.*monstre_(" + Regex.escape(Bestiaire.simple(c.nom)) + "|" + Regex.escape(c.nom.lowercase()) + ")") },
         Epreuve("Rencontre", "repaire", 1, "D'où vient {nom} ? Cherche son repaire dans toutes les pièces de {terrain}.",
             "find cherche un objet dans toutes les pièces, même les plus petites (chaque {dossier} et ses sous-dossiers). Il te donne le chemin complet : c'est là que vit le monstre.",
             "find ~/terrain_terminagotchi -name repaire_{nom_min}") { c -> tape(c, "^\\s*(find|ls)\\b.*repaire") },
@@ -122,7 +124,8 @@ object Dressage {
         Epreuve("Fichiers", "renomme", 2, "Change l'étiquette de vieux_nom.txt : mets mon nom en minuscules, {nom_min}.txt",
             "mv porte une feuille ailleurs ; si elle reste dans la même pièce, ça change juste son étiquette (son nom).", "mv vieux_nom.txt {nom_min}.txt",
             { c -> File(c.d, "vieux_nom.txt").writeText("Renomme-moi !\n") }) { c ->
-            !File(c.d, "vieux_nom.txt").exists() && File(c.d, c.nom.lowercase() + ".txt").exists() },
+            !File(c.d, "vieux_nom.txt").exists() &&
+                (File(c.d, Bestiaire.simple(c.nom) + ".txt").exists() || File(c.d, c.nom.lowercase() + ".txt").exists()) },
         Epreuve("Fichiers", "archive", 3, "Range tout mon enclos dans une valise : l'archive « enclos.tar.gz ».",
             "tar range toute une pièce dans une seule valise bien tassée (une archive) : c = créer, z = tasser (compresser), f = nom de la valise.",
             "tar -czf enclos.tar.gz enclos") { c -> listOf("enclos.tar.gz", "enclos.tgz", "enclos.tar").any { File(c.d, it).exists() } },
@@ -259,6 +262,9 @@ object Dressage {
     )
 
     private fun parCle(k: String) = EPREUVES.first { it.cle == k }
+
+    /** Fin du dernier dressage, pour l'écran : le monstre joue « victoire » (capturé) ou « ko » (enfui). */
+    @Volatile var finale: Pair<JSONObject, String>? = null
 
     // ---------------------------------------------------------------- état
     private fun etat(jeu: Jeu): JSONObject? = jeu.module("dressage").optJSONObject("en_cours")
@@ -420,6 +426,7 @@ object Dressage {
         jeu.dire(Mots.accorder("{nom}{eclat} te fait confiance et rejoint ta troupe ! Signe particulier : {marque}.",
             "nom" to e.nom, "eclat" to (if (shiny) " ✨" else ""), "marque" to ind.optString("marque")), 14)
         jeu.animer("victoire")
+        finale = ind to "victoire"
         val st = if (e.stat in jeu.stats) e.stat else Regles.STATS.random()
         jeu.stats[st] = (jeu.stats[st] ?: 0) + 2 + d.getJSONArray("taches").length()
         val duree = d.optInt("duree")
@@ -433,6 +440,7 @@ object Dressage {
         fiche(jeu, d.getString("espece")).delete()
         jeu.log(Mots.accorder("💨 {nom} a perdu patience et a filé…", "nom" to d.getString("espece")))
         jeu.animer("ko")
+        d.optJSONObject("ind")?.let { finale = JSONObject(it.toString()).put("espece", d.getString("espece")).put("shiny", d.optBoolean("shiny")) to "ko" }
         return Mots.accorder("💨 Trop tard ! {nom} a filé. Continue de jouer : une autre chance viendra peut-être.",
             "nom" to d.getString("espece"))
     }

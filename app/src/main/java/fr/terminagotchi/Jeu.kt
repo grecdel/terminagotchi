@@ -635,7 +635,7 @@ class Jeu(ctx: Context) {
         if (bulleActive().isNotEmpty()) return
         when {
             stade == 0 -> dire(Regles.OEUF.random())
-            faim < 30 -> { dire(Regles.FAIM.random()); animer("affame") }
+            faim < 30 -> dire(Regles.FAIM.random())
             else -> dire(Regles.TRAITS[trait]?.random() ?: "…")
         }
     }

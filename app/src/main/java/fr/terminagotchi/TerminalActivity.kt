@@ -69,8 +69,8 @@ class TerminalActivity : Activity() {
     private var lecture: List<android.graphics.Bitmap>? = null
     private var lectureK = 0
     private var lectureFin = 0
-    private var animJouee = 0L
-    private var derniereCommande = System.currentTimeMillis()
+    private var animJouee = System.currentTimeMillis()   // on ne rejoue pas les événements d'avant l'ouverture
+    private var ambiance = System.currentTimeMillis() + AMBIANCE
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -163,7 +163,6 @@ class TerminalActivity : Activity() {
             ecrire("Un œuf est apparu sur ton écran !\nComment s'appelle ta créature ?")
         } else {
             jeu.parlerSiSilencieux()
-            jeu.animer("salut")
             ecrire("Tape tes commandes ici : je les mange au fur et à mesure !\n« aide » pour l'aide.")
         }
         jeu.sauver()
@@ -442,7 +441,6 @@ class TerminalActivity : Activity() {
     }
 
     private fun apresCommande(ligne: String, etaitColle: Boolean, etaitRappel: Boolean = false) {
-        derniereCommande = System.currentTimeMillis()
         jeu.tick()
         val mange = jeu.manger(ligne, etaitColle, etaitRappel)
         jeu.leconTick(ligne, etaitColle)
@@ -726,22 +724,43 @@ class TerminalActivity : Activity() {
     }
 
     // ------------------------------------------------------------ courtes animations de la créature
-    /** Joue la dernière animation demandée (jeu.animer), si elle est récente et pas encore jouée. */
+    /**
+     * Joue la dernière animation demandée (jeu.animer), si elle est récente et pas encore jouée.
+     * À la fin d'un dressage, c'est d'abord le monstre qui joue « victoire » (capturé) ou « ko » (enfui).
+     */
     private fun lancerAnimation() {
+        Dressage.finale?.let { (ind, nom) ->
+            Dressage.finale = null
+            jeu.anim?.let { animJouee = maxOf(animJouee, it.second) }
+            val r = try { Animations.pour(ind, nom, Equipe.stade(ind), 3) } catch (e: Exception) { null }
+            if (r != null && r.first.isNotEmpty()) { demarrer(r.first, r.second, 2 * r.first.size); return }
+        }
         val a = jeu.anim ?: return
-        if (a.second <= animJouee || System.currentTimeMillis() - a.second > 4000 || !jeu.existe) return
+        if (a.second <= animJouee || System.currentTimeMillis() - a.second > 4000) return
         animJouee = a.second
-        val anim = try { Sprites.animation(jeu, a.first) } catch (e: Exception) {
-            android.util.Log.e("TG", "animation ${a.first}", e); return
+        jouerCreature(a.first)
+    }
+
+    /** La créature joue une animation automatique, courte (≈ 3 s) et sans bloquer la saisie. */
+    private fun jouerCreature(nom: String) {
+        if (!jeu.existe) return
+        val anim = try { Sprites.animation(jeu, nom) } catch (e: Exception) {
+            android.util.Log.e("TG", "animation $nom", e); return
         }
         val imgs = AnimAuto.bitmaps(anim, 8, null)
         if (imgs.isEmpty()) return
+        val n = if (nom == "evolution") imgs.size else minOf(2 * imgs.size, maxOf(imgs.size, 3 * anim.ips))
+        demarrer(imgs, anim.ips, n)
+    }
+
+    private fun demarrer(imgs: List<android.graphics.Bitmap>, ips: Int, n: Int) {
         val deja = lecture != null
         lecture = imgs
         lectureK = 0
-        lectureFin = imgs.size * (if (a.first == "evolution") 1 else 2)
+        lectureFin = n
         creature.setImageBitmap(imgs[0])
-        if (!deja) handler.postDelayed({ pasAnimation(1000L / maxOf(1, anim.ips)) }, 1000L / maxOf(1, anim.ips))
+        val pause = 1000L / maxOf(1, ips)
+        if (!deja) handler.postDelayed({ pasAnimation(pause) }, pause)
     }
 
     private fun pasAnimation(pause: Long) {
@@ -754,6 +773,24 @@ class TerminalActivity : Activity() {
         }
         creature.setImageBitmap(imgs[lectureK % imgs.size])
         handler.postDelayed({ pasAnimation(pause) }, pause)
+    }
+
+    /** Petites animations d'ambiance (comme sur PC) : sommeil la nuit, faim, sinon de temps en temps un geste. */
+    private fun ambiance() {
+        val now = System.currentTimeMillis()
+        if (lecture != null || now < ambiance || !jeu.existe || Dressage.actif(jeu)) return
+        ambiance = now + AMBIANCE
+        val h = java.util.Calendar.getInstance().get(java.util.Calendar.HOUR_OF_DAY)
+        when {
+            h >= 21 || h < 7 -> jouerCreature("dort")
+            jeu.faim < 30 -> jouerCreature("affame")
+            Random.nextDouble() < 0.3 -> jouerCreature(listOf("statique", "salut", "content").random())
+        }
+    }
+
+    companion object {
+        /** millisecondes entre deux petites animations d'ambiance */
+        private const val AMBIANCE = 25_000L
     }
 
     private fun animer() {
@@ -781,8 +818,7 @@ class TerminalActivity : Activity() {
             Explo.verifier(jeu)?.let { ecrire(it, 0xFFFF87FF.toInt()) }
             Dressage.verifier(jeu, null, false)?.let { ecrire(it, 0xFFFF87FF.toInt()) }
             if (Random.nextInt(4) == 0) jeu.parlerSiSilencieux()
-            // personne ne tape depuis 2 minutes : la créature fait une petite sieste
-            if (jeu.existe && System.currentTimeMillis() - derniereCommande > 120_000 && Random.nextInt(6) == 0) jeu.animer("dort")
+            ambiance()
             jeu.sauver()
             rafraichir()
         } else if ((Defis.actif(jeu) != null || Dressage.actif(jeu)) && frame % 2 == 0) {

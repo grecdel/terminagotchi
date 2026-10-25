@@ -99,7 +99,7 @@ object Explo {
             sb.append("L'exploration s'ouvre avec la leçon « Construire mon nid ».")
         } else {
             sb.append("Joue avec ton familier : des monstres sauvages finiront par apparaître.")
-            sb.append("\nTa troupe : troupe · fiche d'une espèce : bestiaire <nom> · tout le bestiaire : site bestiaire")
+            sb.append("\nTa troupe : troupe · fiche d'une espèce : bestiaire <nom> · les 150 : site bestiaire")
         }
         return sb.toString()
     }

@@ -67,7 +67,7 @@ object Equipe {
 
     fun texte(jeu: Jeu): String {
         val caps = Explo.captures(jeu)
-        if (caps.length() == 0) return "Ta troupe est vide : dresse ta première bestiole en jouant avec ton familier !"
+        if (caps.length() == 0) return "Ta troupe est vide : joue avec ton familier, un monstre finira par apparaître !"
         val act = active(jeu)
         val sb = StringBuilder("🐾 Troupe de ${jeu.nom}\n")
         for (i in caps.length() - 1 downTo maxOf(0, caps.length() - 12)) {
