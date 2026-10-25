@@ -24,13 +24,15 @@ def couleur(code):
     return np.array([int(code[i:i + 2], 16) for i in (0, 2, 4)], float)
 
 
-def detourer(img, fond, tolerance=70):
-    """Enlève le fond uni : tout ce qui touche le bord et ressemble à la couleur du fond."""
+def detourer(img, fond, tolerance=70, trous=45):
+    """Enlève le fond uni : tout ce qui touche le bord et ressemble à la couleur du fond,
+    plus les « trous » fermés (dans une boucle de queue…) de la couleur exacte du fond."""
     a = np.asarray(img.convert("RGB")).astype(float)
-    proche = np.linalg.norm(a - fond, axis=-1) < tolerance
+    dist = np.linalg.norm(a - fond, axis=-1)
+    proche = dist < tolerance
     lab, _ = ndimage.label(proche)
     bords = set(np.unique(np.concatenate([lab[0], lab[-1], lab[:, 0], lab[:, -1]]))) - {0}
-    fond_m = np.isin(lab, list(bords))
+    fond_m = np.isin(lab, list(bords)) | (dist < trous)
     creature = ~fond_m
     creature = ndimage.binary_opening(creature, iterations=1)
     lab, n = ndimage.label(creature)
