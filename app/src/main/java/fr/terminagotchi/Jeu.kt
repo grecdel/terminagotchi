@@ -249,6 +249,12 @@ object Regles {
 
 /** L'état de la créature, sauvegardé en JSON dans le stockage privé de l'appli. */
 class Jeu(ctx: Context) {
+    companion object {
+        /** quelle animation l'emporte quand plusieurs arrivent en même temps (comme core.PRIORITE_ANIM sur PC) */
+        val PRIORITE_ANIM = mapOf("evolution" to 9, "victoire" to 8, "ko" to 7, "colere" to 6, "content" to 5,
+            "confus" to 4, "mange" to 3, "salut" to 2, "parle" to 1)
+    }
+
     init {
         Bestiaire.charger(ctx.applicationContext)
         Animations.init(ctx)
@@ -274,6 +280,10 @@ class Jeu(ctx: Context) {
     var trait = Regles.TRAITS.keys.random()
     var bulle = ""
     var bulleFin = 0L
+    /** phrases en attente : la créature ne se coupe jamais la parole (texte, secondes) */
+    val bulles = mutableListOf<Pair<String, Int>>()
+    /** dernière courte animation demandée pour la créature (nom, date en ms) : l'écran la joue */
+    var anim: Pair<String, Long>? = null
     var colles = 0
     /** créature shiny (1 chance sur 64 à la naissance) */
     var shiny = false
@@ -381,9 +391,15 @@ class Jeu(ctx: Context) {
             trait = o.optString("trait", trait)
             bulle = o.optString("bulle")
             bulleFin = o.optLong("bulleFin")
+            bulles.clear()
+            o.optJSONArray("bulles")?.let { a ->
+                for (i in 0 until a.length()) a.optJSONArray(i)?.let { b -> bulles.add(b.optString(0) to b.optInt(1, 8)) }
+            }
+            anim = o.optJSONArray("anim")?.let { a -> a.optString(0) to a.optLong(1) }
             colles = o.optInt("colles")
             shiny = o.optBoolean("shiny")
             extra = o.optJSONObject("extra") ?: JSONObject()
+            Bestiaire.migrer(extra)          // anciennes espèces → nouveau bestiaire, « finale » → « ancien »
         } catch (e: Exception) {
             // sauvegarde illisible : on repart de zéro plutôt que de planter
         }
@@ -407,6 +423,8 @@ class Jeu(ctx: Context) {
         o.put("trait", trait)
         o.put("bulle", bulle)
         o.put("bulleFin", bulleFin)
+        o.put("bulles", JSONArray(bulles.map { JSONArray().put(it.first).put(it.second) }))
+        anim?.let { o.put("anim", JSONArray().put(it.first).put(it.second)) }
         o.put("colles", colles)
         o.put("shiny", shiny)
         o.put("extra", extra)
@@ -422,12 +440,37 @@ class Jeu(ctx: Context) {
         while (journal.size > 6) journal.removeAt(0)
     }
 
+    /** La créature parle. Si elle parle déjà, la phrase attend son tour (rien n'est écrasé). */
     fun dire(texte: String, secondes: Int = 8) {
+        if (System.currentTimeMillis() < bulleFin && bulle.isNotEmpty() && bulle != texte) {
+            if (bulles.none { it.first == texte }) {
+                bulles.add(texte to secondes)
+                while (bulles.size > 4) bulles.removeAt(0)
+            }
+            return
+        }
         bulle = texte
         bulleFin = System.currentTimeMillis() + secondes * 1000L
     }
 
-    fun bulleActive(): String = if (System.currentTimeMillis() < bulleFin) bulle else ""
+    /** La phrase à afficher maintenant (passe à la suivante de la file quand la précédente est lue). */
+    fun bulleActive(): String {
+        val now = System.currentTimeMillis()
+        if (now >= bulleFin && bulles.isNotEmpty()) {
+            val (t, sec) = bulles.removeAt(0)
+            bulle = t
+            bulleFin = now + sec * 1000L
+        }
+        return if (now < bulleFin) bulle else ""
+    }
+
+    /** Demande une courte animation de la créature (la plus importante gagne si plusieurs arrivent ensemble). */
+    fun animer(nom: String) {
+        val now = System.currentTimeMillis()
+        val a = anim
+        if (a != null && now - a.second < 2000 && (PRIORITE_ANIM[a.first] ?: 0) > (PRIORITE_ANIM[nom] ?: 0)) return
+        anim = nom to now
+    }
 
     fun dominant(): String =
         if (stats.values.all { it == 0 }) Regles.STATS.random() else stats.maxByOrNull { it.value }!!.key
@@ -444,6 +487,7 @@ class Jeu(ctx: Context) {
         xp += n
         val apres = niveau
         if (apres <= avant) return
+        animer(if (Regles.stade(apres) > Regles.stade(avant)) "evolution" else "content")
         if (Regles.stade(apres) > Regles.stade(avant)) {
             if (Regles.stade(apres) == 1) {
                 log("✨ L'œuf a éclos !")
@@ -457,7 +501,7 @@ class Jeu(ctx: Context) {
             log("⬆ Niveau $apres !")
         }
         val l = leconCourante()
-        if (l != null && l.niveau == apres) dire("J'ai quelque chose à t'apprendre !", 10)
+        if (l != null && l.niveau == apres) { dire("J'ai quelque chose à t'apprendre !", 10); animer("parle") }
     }
 
     /** Mange une commande. Renvoie false si elle a été refusée (collée). */
@@ -466,6 +510,7 @@ class Jeu(ctx: Context) {
             colles++
             log("✖ copier-coller détecté : pas de nourriture")
             dire(Regles.COLLE.random(), 10)
+            animer("colere")
             return false
         }
         val cmd = Regles.premierMot(ligne)
@@ -503,6 +548,7 @@ class Jeu(ctx: Context) {
         faim = (faim + 3).coerceAtMost(100.0)
         module("compte").put("repas", System.currentTimeMillis())
         log(msg)
+        animer("mange")
         ajouterXp(gain)
         return true
     }
@@ -539,6 +585,7 @@ class Jeu(ctx: Context) {
         log("✔ ${e.cmd}")
         dire(e.bravo, 12)
         etape++
+        animer("content")
         if (etape < l.etapes.size) {
             ajouterXp(5)
             return true
@@ -588,7 +635,7 @@ class Jeu(ctx: Context) {
         if (bulleActive().isNotEmpty()) return
         when {
             stade == 0 -> dire(Regles.OEUF.random())
-            faim < 30 -> dire(Regles.FAIM.random())
+            faim < 30 -> { dire(Regles.FAIM.random()); animer("affame") }
             else -> dire(Regles.TRAITS[trait]?.random() ?: "…")
         }
     }

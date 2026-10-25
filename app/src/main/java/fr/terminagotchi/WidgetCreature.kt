@@ -21,7 +21,6 @@ class WidgetCreature : AppWidgetProvider() {
             if (ids.isEmpty()) return
             val jeu = Jeu(ctx)
             jeu.tick()
-            jeu.sauver()
 
             val v = RemoteViews(ctx.packageName, R.layout.widget)
             v.setImageViewBitmap(R.id.w_creature, Sprites.bitmap(jeu, 10))
@@ -34,6 +33,7 @@ class WidgetCreature : AppWidgetProvider() {
                 v.setTextViewText(R.id.w_faim, "")
                 v.setTextViewText(R.id.w_info, "Touche le bouton pour le faire éclore !")
             }
+            jeu.sauver()                 // après infoWidget : la bulle suivante de la file a pu être prise
             val intent = Intent(ctx, TerminalActivity::class.java)
                 .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TOP)
             val pi = PendingIntent.getActivity(ctx, 0, intent,

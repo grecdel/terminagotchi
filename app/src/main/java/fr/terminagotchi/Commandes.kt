@@ -65,11 +65,11 @@ class Commandes(
             "dis" -> dis(reste)
             "reglages" -> reglages(mots.getOrNull(1))
             // ---------------------------------------------------- créature
-            "caresse" -> Reponse(listOf("Rrrrr… 💜", "Hihi, ça chatouille !", "Encore, encore !",
-                "*ferme les yeux de bonheur*").random(), saut = 2, couleur = ROSE)
-            "danse" -> Reponse(listOf("♪ ┏(・o･)┛ ♪ ┗( ･o･)┓ ♪", "♫ \\(^o^)/ ♫ \\(^o^)/ ♫",
-                "*tourne sur lui-même en pixels*").random(), saut = 8, couleur = ROSE)
-            "parle" -> Reponse("« ${(Regles.TRAITS[jeu.trait] ?: Regles.OEUF).random()} »", couleur = ROSE)
+            "caresse" -> jeu.animer("content").let { Reponse(listOf("Rrrrr… 💜", "Hihi, ça chatouille !", "Encore, encore !",
+                "*ferme les yeux de bonheur*").random(), saut = 2, couleur = ROSE) }
+            "danse" -> jeu.animer("victoire").let { Reponse(listOf("♪ ┏(・o･)┛ ♪ ┗( ･o･)┓ ♪", "♫ \\(^o^)/ ♫ \\(^o^)/ ♫",
+                "*tourne sur lui-même en pixels*").random(), saut = 8, couleur = ROSE) }
+            "parle" -> jeu.animer("parle").let { Reponse("« ${(Regles.TRAITS[jeu.trait] ?: Regles.OEUF).random()} »", couleur = ROSE) }
             "joue" -> joue(mots.getOrNull(1))
             "devine" -> devine(mots.getOrNull(1))
             "etat" -> etat()

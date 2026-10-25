@@ -65,6 +65,12 @@ class TerminalActivity : Activity() {
     private var frame = 0
     private var cligne = 0
     private var saut = 0
+    // courte animation de la créature en cours (moteur AnimAuto) : images, position, date de la demande jouée
+    private var lecture: List<android.graphics.Bitmap>? = null
+    private var lectureK = 0
+    private var lectureFin = 0
+    private var animJouee = 0L
+    private var derniereCommande = System.currentTimeMillis()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -157,6 +163,7 @@ class TerminalActivity : Activity() {
             ecrire("Un œuf est apparu sur ton écran !\nComment s'appelle ta créature ?")
         } else {
             jeu.parlerSiSilencieux()
+            jeu.animer("salut")
             ecrire("Tape tes commandes ici : je les mange au fur et à mesure !\n« aide » pour l'aide.")
         }
         jeu.sauver()
@@ -294,8 +301,10 @@ class TerminalActivity : Activity() {
             "permission denied" in s ->
                 "🔒 Accès refusé : soit il y a un cadenas (chmod), soit c'est une pièce d'Android interdite à l'appli."
             "read-only file system" in s -> "🔒 Cette partie de la maison est en lecture seule : on peut regarder, pas écrire."
-            "not found" in s && Regles.premierMot(ligne).isNotEmpty() ->
+            "not found" in s && Regles.premierMot(ligne).isNotEmpty() -> {
+                jeu.animer("confus")
                 "❓ Je ne connais pas la commande « ${Regles.premierMot(ligne)} ». Regarde dans 📖 Lexique (ou fais Tab)."
+            }
             "file exists" in s -> "📦 Ça existe déjà : choisis une autre étiquette, ou regarde avec ls."
             "is a directory" in s -> "📁 C'est une pièce (un dossier), pas une feuille : regarde dedans avec ls (ou rm -r pour la broyer, prudence !)."
             "not a directory" in s -> "📄 C'est une feuille (un fichier), pas une pièce : on ne peut pas passer sa porte."
@@ -409,7 +418,7 @@ class TerminalActivity : Activity() {
     /**
      * Réglages réservés aux tests automatiques (lancés par adb, impossibles depuis l'appli) :
      *   --es essai_dressage abyssor        fait apparaître ce monstre
-     *   --es essai_equipe abyssor:adulte   donne une bestiole dressée à ce stade
+     *   --es essai_equipe abyssor:adulte   donne une bestiole dressée à ce stade (bebe, enfant, ado, adulte, ancien)
      */
     private fun essais(i: android.content.Intent?) {
         if (i == null || !jeu.existe) return
@@ -417,13 +426,13 @@ class TerminalActivity : Activity() {
             Bestiaire.espece(nom)?.let { e ->
                 jeu.module("dressage").remove("en_cours")
                 java.io.File(jeu.terrain, e.zone).mkdirs()
-                Dressage.commencer(jeu, e, false)
+                Dressage.commencer(jeu, e)
             }
         }
         i.getStringExtra("essai_equipe")?.let { v ->
             val (nom, stade) = (v.split(":") + "enfant").let { it[0] to it[1] }
             Bestiaire.espece(nom)?.let { e ->
-                val ind = Bestiaire.individu(e, false, e.zone).put("stade", stade).put("xp", 0)
+                val ind = Bestiaire.individu(e, false, e.zone).put("stade", if (stade == "finale") "ancien" else stade).put("xp", 0)
                 Explo.captures(jeu).put(ind)
                 Explo.collection(jeu).put(e.nom, Explo.collection(jeu).optInt(e.nom) + 1)
                 jeu.module("equipe").put("active", ind.getString("id"))
@@ -433,6 +442,7 @@ class TerminalActivity : Activity() {
     }
 
     private fun apresCommande(ligne: String, etaitColle: Boolean, etaitRappel: Boolean = false) {
+        derniereCommande = System.currentTimeMillis()
         jeu.tick()
         val mange = jeu.manger(ligne, etaitColle, etaitRappel)
         jeu.leconTick(ligne, etaitColle)
@@ -451,18 +461,19 @@ class TerminalActivity : Activity() {
         WidgetCreature.majTous(this)
         if (mange) saut = maxOf(saut, 4)
         rafraichir()
+        lancerAnimation()
         if (Recensement.aUnCompte(jeu) && Regles.premierMot(ligne) !in setOf("sync", "compte")) {
             commandes.sync(forcer = false, silencieux = true)
         }
     }
 
     /**
-     * Mise en forme spéciale : ¤id¤ / ¤id*¤ = dessin d'une bestiole (normale / shiny),
-     * §texte§ = écriture arc-en-ciel (RGB).
+     * Mise en forme spéciale : ¤id:variante:stade*teinte+¤ = dessin d'une bestiole (voir Bestiaire.balise :
+     * * = shiny avec sa teinte, + = grand portrait), §texte§ = écriture arc-en-ciel (RGB).
      */
     private fun miseEnForme(texte: String, couleur: Int?): SpannableStringBuilder {
         val sb = SpannableStringBuilder()
-        val motif = Regex("¤([a-z0-9]+)([*+]?)¤|§([^§]*)§")
+        val motif = Regex("¤([a-z0-9_]+)(?::([^:¤*+]+))?(?::([a-z]+))?(?:\\*([0-9.]*))?(\\+)?¤|§([^§]*)§")
         var i = 0
         for (m in motif.findAll(texte)) {
             sb.append(texte, i, m.range.first)
@@ -471,15 +482,24 @@ class TerminalActivity : Activity() {
                 if (e != null) {
                     val debut = sb.length
                     sb.append("\uFFFC")
-                    val detail = if (m.groupValues[2] == "+") Animations.detaille(e.id) else null
-                    val d = android.graphics.drawable.BitmapDrawable(resources, detail ?: Bestiaire.bitmap(e, m.groupValues[2] == "*", 4))
+                    val vid = m.groupValues[2].ifEmpty { "classique" }
+                    val stade = m.groupValues[3].ifEmpty { "adulte" }
+                    val shiny = m.groups[4] != null
+                    val teinte = m.groupValues[4].toDoubleOrNull() ?: 0.5
+                    val grand = m.groupValues[5] == "+"
+                    // grand : le portrait peint (ou la version détaillée faite main d'Abyssor)
+                    val detail = if (!grand) null else Bestiaire.portrait(e, vid, stade)
+                        ?: (if (Animations.dispo(e.id)) Animations.detaille(e.id, stade) else null)
+                    val d = android.graphics.drawable.BitmapDrawable(resources,
+                        detail ?: Bestiaire.bitmap(e, shiny, 4, stade, vid, teinte))
+                    if (detail != null && shiny) d.colorFilter = Bestiaire.filtreTeinte(teinte)
                     val px = ((if (detail != null) 160 else 40) * resources.displayMetrics.density).toInt()
                     d.setBounds(0, 0, px, px)
                     sb.setSpan(android.text.style.ImageSpan(d, android.text.style.DynamicDrawableSpan.ALIGN_BOTTOM),
                         debut, debut + 1, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
                 }
             } else {
-                arcEnCiel(sb, m.groupValues[3])
+                arcEnCiel(sb, m.groupValues[6])
             }
             i = m.range.last + 1
         }
@@ -702,7 +722,38 @@ class TerminalActivity : Activity() {
         // pendant un dressage, le familier est déjà dans le face-à-face : on allège l'en-tête
         val vis = if (panneau != null) View.GONE else View.VISIBLE
         creature.visibility = vis; faim.visibility = vis; xp.visibility = vis; stats.visibility = vis
-        creature.setImageBitmap(Sprites.bitmap(jeu, 12, cligne > 0))
+        if (lecture == null) creature.setImageBitmap(Sprites.bitmap(jeu, 12, cligne > 0))
+    }
+
+    // ------------------------------------------------------------ courtes animations de la créature
+    /** Joue la dernière animation demandée (jeu.animer), si elle est récente et pas encore jouée. */
+    private fun lancerAnimation() {
+        val a = jeu.anim ?: return
+        if (a.second <= animJouee || System.currentTimeMillis() - a.second > 4000 || !jeu.existe) return
+        animJouee = a.second
+        val anim = try { Sprites.animation(jeu, a.first) } catch (e: Exception) {
+            android.util.Log.e("TG", "animation ${a.first}", e); return
+        }
+        val imgs = AnimAuto.bitmaps(anim, 8, null)
+        if (imgs.isEmpty()) return
+        val deja = lecture != null
+        lecture = imgs
+        lectureK = 0
+        lectureFin = imgs.size * (if (a.first == "evolution") 1 else 2)
+        creature.setImageBitmap(imgs[0])
+        if (!deja) handler.postDelayed({ pasAnimation(1000L / maxOf(1, anim.ips)) }, 1000L / maxOf(1, anim.ips))
+    }
+
+    private fun pasAnimation(pause: Long) {
+        val imgs = lecture ?: return
+        lectureK++
+        if (lectureK >= lectureFin) {
+            lecture = null
+            creature.setImageBitmap(Sprites.bitmap(jeu, 12, false))
+            return
+        }
+        creature.setImageBitmap(imgs[lectureK % imgs.size])
+        handler.postDelayed({ pasAnimation(pause) }, pause)
     }
 
     private fun animer() {
@@ -713,7 +764,9 @@ class TerminalActivity : Activity() {
             frame % 2 == 0 -> -2f * dp
             else -> 0f
         }
-        if (cligne > 0) {
+        if (lecture != null) {
+            // une animation est en cours : pas de clignement
+        } else if (cligne > 0) {
             cligne--
             if (cligne == 0) creature.setImageBitmap(Sprites.bitmap(jeu, 12, false))
         } else if (Random.nextInt(12) == 0) {
@@ -728,6 +781,8 @@ class TerminalActivity : Activity() {
             Explo.verifier(jeu)?.let { ecrire(it, 0xFFFF87FF.toInt()) }
             Dressage.verifier(jeu, null, false)?.let { ecrire(it, 0xFFFF87FF.toInt()) }
             if (Random.nextInt(4) == 0) jeu.parlerSiSilencieux()
+            // personne ne tape depuis 2 minutes : la créature fait une petite sieste
+            if (jeu.existe && System.currentTimeMillis() - derniereCommande > 120_000 && Random.nextInt(6) == 0) jeu.animer("dort")
             jeu.sauver()
             rafraichir()
         } else if ((Defis.actif(jeu) != null || Dressage.actif(jeu)) && frame % 2 == 0) {
@@ -736,6 +791,7 @@ class TerminalActivity : Activity() {
         } else if (bulle.visibility == View.VISIBLE && jeu.bulleActive().isEmpty()) {
             rafraichir()
         }
+        lancerAnimation()
         handler.postDelayed({ animer() }, 420)
     }
 }

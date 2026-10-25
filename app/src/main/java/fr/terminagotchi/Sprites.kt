@@ -90,12 +90,13 @@ object Sprites {
         return rows
     }
 
-    fun lignes(jeu: Jeu): List<String> = when (jeu.stade) {
+    /** Le dessin de la créature à son stade actuel, ou au stade st (pour rejouer une évolution). */
+    fun lignes(jeu: Jeu, st: Int = jeu.stade): List<String> = when (st) {
         0 -> OEUF
         1 -> BEBE
         else -> {
             val f = jeu.forme ?: jeu.dominant()
-            if (jeu.stade == 2) ADO_TETE.getValue(f) + overlay(ADO, ADO_CORPS[f])
+            if (st == 2) ADO_TETE.getValue(f) + overlay(ADO, ADO_CORPS[f])
             else ADULTE_TETE.getValue(f) + overlay(ADULTE, ADULTE_CORPS[f])
         }
     }
@@ -114,6 +115,51 @@ object Sprites {
         return mapOf('b' to corps, 'e' to (if (cligne) corps else 16), 'k' to 211,
             'm' to (if (jeu.faim >= 30) 52 else 16), 'h' to 180, 'w' to 230, 's' to 180, 'c' to 136,
             'a' to 250, 'l' to 51)
+    }
+
+    // ------------------------------------------------------------ animations automatiques (moteur AnimAuto)
+    /** Lignes de caractères + palette xterm → image en indices + palette 0xRRGGBB (comme sprites._indexer sur PC). */
+    fun indexer(rows: List<String>, pal: Map<Char, Int>): AnimAuto.Sprite {
+        val w = rows.maxOf { it.length }
+        val codes = mutableListOf<Int>()
+        val octets = ByteArray(w * rows.size)
+        rows.forEachIndexed { y, r ->
+            for (x in 0 until w) {
+                val c = pal[if (x < r.length) r[x] else '.'] ?: continue
+                if (c !in codes) codes.add(c)
+                octets[y * w + x] = (codes.indexOf(c) + 1).toByte()
+            }
+        }
+        return AnimAuto.Sprite(w, rows.size, octets, IntArray(codes.size) { x256(codes[it]) and 0xFFFFFF })
+    }
+
+    /** Coupe les bords vides communs à toutes les images (hauteur gardée paire, comme sprites._recadrer). */
+    fun recadrer(a: AnimAuto.Anim): AnimAuto.Anim {
+        val W = a.largeur; val H = a.hauteur
+        var x0 = W; var y0 = H; var x1 = -1; var y1 = -1
+        for (f in a.images) for (y in 0 until H) for (x in 0 until W) if (f[y * W + x].toInt() != 0) {
+            if (y < y0) y0 = y; if (y > y1) y1 = y; if (x < x0) x0 = x; if (x > x1) x1 = x
+        }
+        if (x1 < 0) return a
+        y0 -= y0 % 2
+        val nw = x1 - x0 + 1
+        var nh = y1 - y0 + 1
+        nh += nh % 2
+        val out = a.images.map { f ->
+            val b = ByteArray(nw * nh)
+            for (y in 0 until nh) if (y0 + y < H) System.arraycopy(f, (y0 + y) * W + x0, b, y * nw, nw)
+            b
+        }
+        return AnimAuto.Anim(nw, nh, out, a.palette, a.nTeinte, a.ips)
+    }
+
+    /** La créature principale joue une animation automatique (mange, evolution, victoire, ko, dort, affame, colere…). */
+    fun animation(jeu: Jeu, nom: String): AnimAuto.Anim {
+        val pal = palette(jeu, false)
+        val st = jeu.stade
+        val img = indexer(lignes(jeu, st), pal)
+        val de = if (nom == "evolution" && st > 0) indexer(lignes(jeu, st - 1), pal) else null
+        return recadrer(AnimAuto.images(img, nom, de))
     }
 
     /** Couleur xterm-256 → couleur Android. */

@@ -6,17 +6,14 @@ import java.io.File
 import kotlin.random.Random
 
 /**
- * Exploration : les zones sont de vrais dossiers du terrain de jeu.
- * Les 150 espèces du bestiaire s'y cachent en fichiers cachés, chacune dans l'habitat de sa famille ;
- * plus elle est rare, plus elle est profonde (recoin → cachette → sanctuaire).
+ * Exploration : les zones sont de vrais dossiers du terrain de jeu (portage de pc/tg/explo.py).
+ * Les 150 espèces du bestiaire s'y cachent, chacune dans l'habitat de sa variante.
  * Pendant qu'on joue, un monstre sauvage peut apparaître : il faut alors le dresser (voir Dressage.kt).
- * Chaque capture est un individu unique (marque, humeur, taille, potentiel… et parfois shiny ✨).
+ * Chaque bestiole est un individu unique, tiré dès son apparition : stats, variante, stade, rareté
+ * (5 paliers, plus « mythique » pour Abyssor)… et parfois shiny ✨, avec une teinte qui n'est qu'à elle.
  */
 object Explo {
     private fun etat(jeu: Jeu) = jeu.module("explo")
-
-    private fun sauvages(jeu: Jeu): JSONArray =
-        etat(jeu).optJSONArray("sauvages") ?: JSONArray().also { etat(jeu).put("sauvages", it) }
 
     fun collection(jeu: Jeu): JSONObject =
         etat(jeu).optJSONObject("collection") ?: JSONObject().also { etat(jeu).put("collection", it) }
@@ -34,16 +31,27 @@ object Explo {
     /** Un monstre sauvage apparaît (pendant qu'on joue) : le dressage commence aussitôt. */
     fun spawn(jeu: Jeu) {
         if (Dressage.actif(jeu)) return
-        var (e, shiny) = Bestiaire.tirer()
-        val legendaires = Bestiaire.especes.count { it.rarete == "légendaire" && collection(jeu).optInt(it.nom) > 0 }
-        if (legendaires >= 3 && Random.nextInt(15) == 0 && collection(jeu).optInt("Abyssor") == 0) {
-            Bestiaire.espece("Abyssor")?.let { e = it }      // la légendaire secrète #151
+        val t = Bestiaire.tirer()
+        var e = t.espece
+        var vid = t.variante
+        val caps = captures(jeu)
+        val legendaires = (0 until caps.length()).count { Bestiaire.rareteDe(caps.getJSONObject(it)) == "légendaire" }
+        if (legendaires >= 3 && Random.nextDouble() < 1.0 / 15 && collection(jeu).optInt("Abyssor") == 0) {
+            Bestiaire.espece("Abyssor")?.let { e = it; vid = "classique" }      // la mythique secrète #151
         }
-        File(jeu.terrain, e.zone).mkdirs()
-        Dressage.commencer(jeu, e, shiny)
+        val zone = Bestiaire.variante(e, vid).zone
+        File(jeu.terrain, zone).mkdirs()
+        etat(jeu).put("explo_n", etat(jeu).optInt("explo_n") + 1)
+        // l'individu est tiré dès son apparition : stats, rareté et stade sont lisibles sur sa fiche (cat)
+        val ind = Bestiaire.individu(e, t.shiny, zone, vid)
+        ind.put("stade", Bestiaire.choisir(Bestiaire.STADES.take(4), listOf(35.0, 35.0, 20.0, 10.0)))
+        if (t.shiny) ind.put("teinte", Bestiaire.arrondi(Random.nextDouble(0.15, 0.85), 3))   // couleur shiny propre à cet individu
+        jeu.log(Mots.accorder("⚔ Un monstre sauvage apparaît : {nom} !", "nom" to e.nom))
+        jeu.animer("attaque")
+        Dressage.commencer(jeu, e, ind)
     }
 
-    /** Ouverture de l'exploration, et fuite si la fiche du monstre a été effacée. */
+    /** Ouverture de l'exploration. */
     fun verifier(jeu: Jeu): String? {
         if (!debloquee(jeu)) return null
         val e = etat(jeu)
@@ -57,68 +65,71 @@ object Explo {
     }
 
     /**
-     * Texte d'une capture. ¤id¤ (ou ¤id*¤ pour shiny) = dessin de la bestiole,
+     * Texte d'une capture. ¤…¤ = dessin de la bestiole (voir Bestiaire.balise),
      * §texte§ = écriture arc-en-ciel : le terminal de l'appli les remplace à l'affichage.
      */
     fun carte(ind: JSONObject): String {
         val e = Bestiaire.espece(ind.optString("espece")) ?: return ind.optString("espece")
-        val shiny = ind.optBoolean("shiny")
-        val nom = e.nom + if (shiny) " ✨" else ""
-        val titre = if (shiny || e.rarete == "légendaire") "§$nom§" else nom
-        return "¤${e.id}${if (shiny) "*" else ""}¤ $titre  #%03d · ${e.rarete} · ${e.famille}\n".format(e.numero) +
-            "   signe particulier : §${ind.optString("marque")}§\n" +
-            "   humeur ${ind.optString("humeur")} · ${ind.optDouble("taille")} cm · potentiel ${ind.optInt("potentiel")} %"
+        val r = Bestiaire.rareteDe(ind)
+        val v = ind.optString("variante", "classique")
+        return Bestiaire.balise(ind) + " " + Bestiaire.nomAffiche(e, ind.optBoolean("shiny"), r) +
+            "  #%03d · $r · ${e.famille}".format(e.numero) + (if (v != "classique") " · $v" else "") + "\n" +
+            "   signe particulier : ${ind.optString("marque", "?")}\n" +
+            "   humeur ${ind.optString("humeur", "?")} · ${ind.opt("taille") ?: "?"} cm · potentiel ${ind.opt("potentiel") ?: "?"} %"
     }
 
     fun texteCollection(jeu: Jeu): String {
         val coll = collection(jeu)
-        val vues = Bestiaire.especes.filter { coll.optInt(it.nom) > 0 && !it.secrete }
+        val vues = coll.keys().asSequence().filter { coll.optInt(it) > 0 }.toSet()
         val caps = captures(jeu)
+        val parRarete = LinkedHashMap<String, Int>()
+        for (i in 0 until caps.length()) Bestiaire.rareteDe(caps.getJSONObject(i)).let { parRarete[it] = (parRarete[it] ?: 0) + 1 }
         val sb = StringBuilder("🐾 Collection de ${jeu.nom}\n")
-        sb.append("Espèces découvertes : ${vues.size}/150\n")
-        for (r in listOf("commune", "peu commune", "rare", "légendaire")) {
-            val tot = Bestiaire.especes.count { it.rarete == r && !it.secrete }
-            sb.append("   $r : ${vues.count { it.rarete == r }}/$tot\n")
-        }
+        sb.append("Espèces découvertes : ${vues.size}/150   ")
+            .append(Bestiaire.RARETES.filter { it in parRarete }.joinToString("  ") { "$it ${parRarete[it]}" }).append("\n")
         val shinies = (0 until caps.length()).count { caps.getJSONObject(it).optBoolean("shiny") }
         sb.append("Bestioles dressées : ${caps.length()}" + (if (shinies > 0) " · dont §$shinies shiny§" else "") + "\n")
         if (coll.optInt("Abyssor") > 0) sb.append("§★ Espèce secrète #151 découverte : Abyssor§\n")
+        sb.append("\n")
         if (caps.length() > 0) {
-            sb.append("\nTes dernières captures :\n")
-            for (i in caps.length() - 1 downTo maxOf(0, caps.length() - 5)) sb.append(carte(caps.getJSONObject(i))).append("\n\n")
-        }
+            sb.append("Tes dernières captures :\n")
+            for (i in caps.length() - 1 downTo maxOf(0, caps.length() - 6)) sb.append(carte(caps.getJSONObject(i))).append("\n\n")
+        } else sb.append("Aucune bestiole dressée pour l'instant.\n")
         if (!debloquee(jeu)) {
             sb.append("L'exploration s'ouvre avec la leçon « Construire mon nid ».")
         } else {
             sb.append("Joue avec ton familier : des monstres sauvages finiront par apparaître.")
-            sb.append("\nTa troupe : troupe · fiche d'une espèce : bestiaire <nom> · les 150 : site bestiaire")
+            sb.append("\nTa troupe : troupe · fiche d'une espèce : bestiaire <nom> · tout le bestiaire : site bestiaire")
         }
         return sb.toString()
     }
 
-    /** bestiaire <nom> : fiche complète seulement si l'espèce a déjà été capturée. */
+    /** bestiaire <nom> : fiche détaillée (complète seulement si l'espèce a déjà été capturée). */
     fun fiche(jeu: Jeu, nom: String): String {
         val coll = collection(jeu)
         if (nom.isBlank()) {
-            val vues = Bestiaire.especes.filter { coll.optInt(it.nom) > 0 }
-            if (vues.isEmpty()) return "Tu n'as encore capturé aucune bestiole. Exemple : bestiaire Glitchou"
+            val vues = coll.keys().asSequence().filter { coll.optInt(it) > 0 }.mapNotNull { Bestiaire.espece(it) }
+                .sortedBy { it.numero }.toList()
+            if (vues.isEmpty()) return "Tu n'as encore capturé aucune bestiole. Exemple : bestiaire Braisillon"
             return "Tes espèces : " + vues.joinToString(", ") { "#%03d ${it.nom}".format(it.numero) } + "\nFiche : bestiaire <nom>"
         }
         val e = Bestiaire.espece(nom)
         val connue = e != null && coll.optInt(e.nom) > 0
         if (e == null || (e.secrete && !connue)) return "Aucune espèce ne s'appelle « $nom ». Les 150 sont sur le site : site bestiaire"
-        val entete = "#%03d ".format(e.numero) + (if (!connue) "???" else if (e.rarete == "légendaire") "§${e.nom}§" else e.nom) +
-            " · ${e.rarete} · ${e.icone} ${e.famille}"
+        val entete = "#%03d ".format(e.numero) + (if (connue) Bestiaire.nomAffiche(e) else "???") +
+            "  se montre ${e.frequence} · ${e.icone} ${e.famille}"
         if (!connue) {
-            return "$entete\nPas encore dans ta troupe.\nHabitat : ${Bestiaire.lieu(e.zone)} (${e.zone})\n" +
+            return "$entete\nPas encore dans ta troupe.\nHabitat : ${Bestiaire.lieu(e.zone)}  (${e.zone})\n" +
                 "Cette espèce se montre ${e.frequence}, attirée par la commande « ${e.attireePar} »."
         }
-        val dessin = if (Animations.dispo(e.id)) "¤${e.id}+¤\n" else "¤${e.id}¤ "     // version détaillée pour la fiche
-        return "$dessin$entete\n${e.description}\n${e.comportement}\n" +
+        val vars = e.variantes.drop(1).map { it.nom }
+        return Bestiaire.balise(e, grand = true) + "\n$entete\n${e.description}\n${e.comportement}\n" +
             "Capacité : ${e.capacite} · point fort : ${e.stat}\n" +
             "Taille ~${e.tailleCm} cm · poids ~${e.poidsKo} Ko\n" +
             Mots.texteStats(e.stats, Mots.palier(jeu)) + "\n" +
-            "Habitat : ${Bestiaire.lieu(e.zone)} · attirée par « ${e.attireePar} »\nTu en as dressé ${coll.optInt(e.nom)}."
+            "Habitat : ${Bestiaire.lieu(e.zone)} · attirée par « ${e.attireePar} »\n" +
+            (if (vars.isNotEmpty()) "Variantes : ${vars.joinToString(", ")}\n" else "") +
+            "Tu en as dressé ${coll.optInt(e.nom)}."
     }
 }
 
@@ -153,6 +164,7 @@ object Defis {
             if (nouveau) rec.put(cmd, t)
             d.put("cmd", "")
             jeu.stats["Agilité"] = (jeu.stats["Agilité"] ?: 0) + 2
+            jeu.animer("victoire")
             jeu.ajouterXp(10)
             val m = "⚡ Défi réussi en ${"%.1f".format(t)} s" + if (nouveau) " — NOUVEAU RECORD !" else ""
             jeu.log(m)
@@ -163,6 +175,7 @@ object Defis {
             d.put("cmd", "")
             jeu.log("⚡ Défi « $cmd » raté…")
             jeu.dire("Trop lent ! On réessaiera.", 6)
+            jeu.animer("confus")
         }
         return null
     }

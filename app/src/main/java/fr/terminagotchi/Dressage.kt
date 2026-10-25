@@ -23,9 +23,11 @@ import kotlin.random.Random
  * Étapes 1 et 2 toujours : l'examiner (cat sa fiche), trouver son repaire (find).
  */
 object Dressage {
-    private val DUREE = mapOf("commune" to 90, "peu commune" to 120, "rare" to 180, "légendaire" to 240)
-    private val NB = mapOf("commune" to 2, "peu commune" to 3, "rare" to 4, "légendaire" to 6)
-    private val NIV = mapOf("commune" to 1, "peu commune" to 2, "rare" to 3, "légendaire" to 3)
+    // la difficulté dépend de la rareté de L'INDIVIDU (ses stats, sa variante…), pas de l'espèce
+    private val DUREE = mapOf("commune" to 90, "peu commune" to 120, "rare" to 180, "épique" to 210, "légendaire" to 240, "mythique" to 300)
+    private val NB = mapOf("commune" to 2, "peu commune" to 3, "rare" to 4, "épique" to 5, "légendaire" to 6, "mythique" to 7)
+    private val NIV = mapOf("commune" to 1, "peu commune" to 2, "rare" to 3, "épique" to 3, "légendaire" to 3, "mythique" to 3)
+    val ULTIMES = setOf("légendaire", "mythique")
     private val MOTS = listOf("octet", "pixel", "bug", "shell", "noyau", "cache", "paquet", "script", "fichier", "chat",
         "nuage", "clef", "boucle", "signal", "tuyau", "racine")
 
@@ -70,6 +72,32 @@ object Dressage {
         val s = (100..9999).shuffled().take(8)
         File(c.d, "scores.txt").writeText(s.joinToString("\n") + "\n")
         c.x.put("scores", JSONArray(s))
+    }
+    private fun prepCorrompu(c: Ctx) {
+        if (c.x.has("phrase")) return
+        val p = listOf("je suis ton ami", "merci pour la gamelle", "le terminal est mon jardin", "on part en exploration").random()
+        c.x.put("phrase", p)
+        File(c.d, "corrompu.txt").writeText(p.reversed() + "\n")
+    }
+    private fun prepCri(c: Ctx) {
+        if (c.x.has("cri")) return
+        val p = listOf("JE VEUX JOUER", "OU EST MA GAMELLE", "RACONTE MOI UNE HISTOIRE").random()
+        c.x.put("cri", p)
+        File(c.d, "cri.txt").writeText(p + "\n")
+    }
+    /** Personne d'autre que toi ne peut toucher la cage (chmod 600). */
+    private fun cagePrivee(c: Ctx): Boolean {
+        val f = File(c.d, "enclos/cage")
+        if (!f.exists()) return false
+        return try {
+            val perms = java.nio.file.Files.getPosixFilePermissions(f.toPath())
+            perms.none { it.name.startsWith("GROUP") || it.name.startsWith("OTHERS") }
+        } catch (e: Exception) { false }
+    }
+    private fun plusFrequents(l: List<String>): List<String> {
+        val n = l.groupingBy { it }.eachCount()
+        val m = n.values.maxOrNull() ?: return emptyList()
+        return n.filterValues { it == m }.keys.toList()
     }
     private fun scores(c: Ctx) = c.x.optJSONArray("scores")!!.let { a -> (0 until a.length()).map { a.getInt(it) } }
 
@@ -116,6 +144,9 @@ object Dressage {
             "df -h") { c -> tape(c, "^\\s*df\\b") },
         Epreuve("Mémoire", "ram", 1, "Et {ram}, il en reste ?", "free montre {ram} : un grand plan de travail où les programmes posent leurs affaires. -h = tailles lisibles.",
             "free -h") { c -> tape(c, "^\\s*free\\b") },
+        Epreuve("Mémoire", "poids", 2, "Combien pèse mon nid, avec tout ce qu'il contient ?",
+            "du pèse une pièce et tout ce qu'elle contient ; -s = juste le total, -h = taille lisible.",
+            "du -sh ~/terrain_terminagotchi/nid") { c -> tape(c, "^\\s*du\\b") },
         Epreuve("Mémoire", "sac", 3, "J'ai caché des objets dans mon sac/. Combien ? Réponds-moi avec echo.",
             "ls sac regarde dans le sac. Le | est un tuyau : il verse la liste dans wc -l, qui compte les lignes. Ensuite, dis le nombre avec echo.",
             "ls sac | wc -l    puis    echo 7", { c ->
@@ -127,6 +158,9 @@ object Dressage {
         Epreuve("Sécurité", "cachette", 1, "Cache un secret dans mon enclos : {un_fichier} dont le nom commence par un point.",
             "Une feuille dont le nom commence par un point se cache sous le tapis : ls ne la voit pas, ls -a si.", "touch enclos/.secret") { c ->
             File(c.d, "enclos").listFiles()?.any { it.name.startsWith(".") && it.isFile } == true },
+        Epreuve("Sécurité", "prive", 2, "Mets un cadenas sur ma cage : personne d'autre que toi ne doit y toucher.",
+            "chmod pose un cadenas (il change les droits). 600 = toi seul peux lire et écrire, personne d'autre.",
+            "chmod 600 enclos/cage") { c -> cagePrivee(c) },
         Epreuve("Sécurité", "empreinte", 3, "Donne-moi l'empreinte de collier.txt (ses 8 premiers caractères, avec echo).",
             "sha256sum prend l'empreinte digitale d'une feuille : une suite de lettres et de chiffres qui change si on modifie une seule lettre. Recopie les 8 premiers avec echo.",
             "sha256sum collier.txt    puis    echo 1a2b3c4d", ::prepCollier) { c ->
@@ -135,6 +169,10 @@ object Dressage {
         // ---------------------------------------------------- Code
         Epreuve("Code", "chant", 1, "Verse mon nom dans {un_fichier} « chant.txt ».", "echo dit un texte. L'entonnoir > le verse dans une feuille au lieu de l'écran.",
             "echo {nom} > chant.txt") { c -> lire(File(c.d, "chant.txt"))?.lowercase()?.contains(c.nom.lowercase()) == true },
+        Epreuve("Code", "script", 2, "Écris-moi une petite recette tour.sh qui fait un echo, puis {rendre_executable}.",
+            "Une recette (un script), c'est une feuille de commandes. Écris-la, puis chmod +x l'autorise à cuisiner toute seule : elle devient {executable} (on la lance avec ./tour.sh).",
+            "echo 'echo hop' > tour.sh ; chmod +x tour.sh") { c ->
+            val f = File(c.d, "tour.sh"); lire(f)?.lowercase()?.contains("echo") == true && f.canExecute() },
         Epreuve("Code", "compte", 3, "Écris les nombres de 1 à 5, un par ligne, dans compte.txt (avec une boucle !).",
             "Une boucle for répète une commande pour chaque nombre. Tout ce qui est dit tombe dans la feuille grâce à l'entonnoir >.",
             "for i in 1 2 3 4 5; do echo \$i; done > compte.txt") { c -> lignesDe(File(c.d, "compte.txt"))?.map { it.trim() } == listOf("1", "2", "3", "4", "5") },
@@ -144,6 +182,9 @@ object Dressage {
         Epreuve("Matériel", "coeurs", 2, "{Processeur} a combien de cœurs ? Réponds avec echo.",
             "nproc compte les cœurs de {processeur} : combien de choses il fait en même temps. Réponds ensuite avec echo.", "nproc    puis    echo 8") { c ->
             repond(c, Runtime.getRuntime().availableProcessors()) },
+        Epreuve("Matériel", "disques", 2, "Montre-moi {disque} de ta maison.",
+            "df montre {disque} et leurs étagères (les partitions), avec la place de chacune.", "df") { c ->
+            tape(c, "^\\s*(lsblk|df|fdisk\\s+-l)\\b") },
         // ---------------------------------------------------- Bugs
         Epreuve("Bugs", "erreurs", 1, "Trouve les lignes ERROR dans bug.log.", "grep est la loupe du détective : elle montre les lignes qui contiennent le mot.",
             "grep ERROR bug.log", ::prepBug) { c -> tape(c, "grep.*error") },
@@ -184,6 +225,9 @@ object Dressage {
             tape(c, "^\\s*echo\\b.*" + Regex.escape(c.nom)) },
         Epreuve("IA", "chat", 2, "Combien de lignes contiennent « chat » dans croquettes.txt ? Réponds avec echo.", "grep -c compte les lignes où la loupe trouve le mot.",
             "grep -c chat croquettes.txt    puis    echo 2", ::prepLignes) { c -> repond(c, liste(c.x, "croquettes").count { "chat" in it }) },
+        Epreuve("IA", "frequent", 3, "Quel est le mot le plus fréquent dans croquettes.txt ? Réponds avec echo.",
+            "sort range, uniq -c compte chaque mot, puis sort -n range par nombre : le dernier est le champion.",
+            "sort croquettes.txt | uniq -c | sort -n", ::prepLignes) { c -> plusFrequents(liste(c.x, "croquettes")).any { repond(c, it) } },
         // ---------------------------------------------------- Rétro
         Epreuve("Rétro", "calendrier", 1, "Montre-moi le calendrier du mois.", "cal affiche le calendrier accroché dans la cuisine.", "cal") { c -> tape(c, "^\\s*cal\\b") },
         Epreuve("Rétro", "record", 2, "Quel est le meilleur score de scores.txt ? Réponds avec echo.",
@@ -193,14 +237,15 @@ object Dressage {
             "sort -nr range du plus grand au plus petit (r = à l'envers), head -3 garde les 3 premiers, l'entonnoir > les verse dans la feuille.", "sort -nr scores.txt | head -3 > top3.txt",
             ::prepScores) { c -> lignesDe(File(c.d, "top3.txt"))?.map { it.trim() } == scores(c).sortedDescending().take(3).map { it.toString() } },
         // ---------------------------------------------------- Glitch
-        Epreuve("Glitch", "voir", 1, "Regarde corrompu.txt… mes mots sont à l'envers !", "cat lit une feuille à voix haute.", "cat corrompu.txt", { c ->
-            if (!c.x.has("phrase")) { val p = listOf("je suis ton ami", "merci pour la gamelle", "on part en exploration").random()
-                c.x.put("phrase", p); File(c.d, "corrompu.txt").writeText(p.reversed() + "\n") } }) { c -> tape(c, "$CAT.*corrompu") },
+        Epreuve("Glitch", "voir", 1, "Regarde corrompu.txt… mes mots sont à l'envers !", "cat lit une feuille à voix haute.", "cat corrompu.txt",
+            ::prepCorrompu) { c -> tape(c, "$CAT.*corrompu") },
         Epreuve("Glitch", "repare", 2, "Remets corrompu.txt à l'endroit dans repare.txt.", "rev retourne chaque ligne, comme dans un miroir ; l'entonnoir > verse le résultat dans une feuille.",
-            "rev corrompu.txt > repare.txt", { c ->
-            if (!c.x.has("phrase")) { val p = listOf("je suis ton ami", "merci pour la gamelle", "on part en exploration").random()
-                c.x.put("phrase", p); File(c.d, "corrompu.txt").writeText(p.reversed() + "\n") } }) { c ->
+            "rev corrompu.txt > repare.txt", ::prepCorrompu) { c ->
             lire(File(c.d, "repare.txt"))?.trim() == c.x.optString("phrase") },
+        Epreuve("Glitch", "chuchote", 3, "Je crie trop fort (cri.txt) : écris-le en minuscules dans chuchote.txt.",
+            "tr change des lettres en d'autres : ici chaque majuscule (A-Z) en minuscule (a-z). Le < lui tend la feuille à lire.",
+            "tr A-Z a-z < cri.txt > chuchote.txt", ::prepCri) { c ->
+            lire(File(c.d, "chuchote.txt"))?.trim() == c.x.optString("cri").lowercase() },
         // ---------------------------------------------------- Système
         Epreuve("Système", "qui", 1, "Qui es-tu pour la maison ? Demande ton nom d'habitant.", "whoami (« qui suis-je ? ») dit ton nom d'habitant : ton nom d'utilisateur.",
             "whoami") { c -> tape(c, "^\\s*whoami\\b") },
@@ -231,38 +276,76 @@ object Dressage {
     private fun bonusMefiance(jeu: Jeu) = minOf(30, (jeu.stats["Force"] ?: 0) / 2)
     private fun partExemple(jeu: Jeu) = 0.5 + minOf(0.4, (jeu.stats["Intelligence"] ?: 0) / 100.0)
 
-    fun commencer(jeu: Jeu, e: Bestiaire.Espece, shiny: Boolean) {
+    /** Les épreuves de la famille (e.epreuves : les commandes que cette famille aime), selon la rareté de l'individu. */
+    fun choisirEpreuves(e: Bestiaire.Espece, premiere: Boolean, rarete: String): List<Epreuve> {
+        val fams = e.epreuves.ifEmpty { listOf(e.famille) }
+        val pool = fams.flatMap { f -> EPREUVES.filter { it.fam == f } }
+        val n = NB[rarete] ?: 2
+        val choix = if (rarete in ULTIMES) {        // l'épreuve ultime : sa famille + des épreuves d'ailleurs
+            val autres = EPREUVES.filter { it.fam !in fams && it.fam != "Rencontre" && it.niveau >= 2 }.shuffled()
+            pool.sortedBy { it.niveau }.takeLast(3) + autres.take(3)
+        } else {
+            val ok = pool.filter { it.niveau <= (NIV[rarete] ?: 1) }.sortedBy { it.niveau }
+            if (premiere) ok.take(n) else ok.shuffled().take(minOf(n, ok.size)).sortedBy { it.niveau }
+        }
+        return EPREUVES.filter { it.fam == "Rencontre" } + choix.distinctBy { it.id }    // pas deux fois la même épreuve
+    }
+
+    /** Un monstre vient d'apparaître : le dressage commence tout de suite. Renvoie false s'il t'ignore. */
+    fun commencer(jeu: Jeu, e: Bestiaire.Espece, individu: JSONObject? = null): Boolean {
+        val ind = individu ?: Bestiaire.individu(e, false, e.zone).put("stade", "bebe")
+        val rar = Bestiaire.rareteDe(ind)
+        val shiny = ind.optBoolean("shiny")
         val m = jeu.module("dressage")
+        val jour = java.text.SimpleDateFormat("yyyy-MM-dd", java.util.Locale.ROOT).format(java.util.Date())
+        val essais = m.optJSONObject("essais") ?: JSONObject().also { m.put("essais", it) }
+        if (rar in ULTIMES && essais.optString(e.nom) == jour) {
+            jeu.dire(Mots.accorder("{nom} t'ignore… les légendaires n'acceptent qu'un essai par jour. Reviens demain !",
+                "nom" to e.nom), 12)
+            return false
+        }
         val faites = m.optJSONArray("familles") ?: JSONArray().also { m.put("familles", it) }
         val premiere = (0 until faites.length()).none { faites.getString(it) == e.famille }
-        val pool = EPREUVES.filter { it.fam == e.famille && it.niveau <= (NIV[e.rarete] ?: 1) }.sortedBy { it.niveau }
-        val n = NB[e.rarete] ?: 2
-        val choix = if (e.rarete == "légendaire") {
-            EPREUVES.filter { it.fam == e.famille }.sortedBy { it.niveau }.takeLast(3) +
-                EPREUVES.filter { it.fam != e.famille && it.fam != "Rencontre" && it.niveau >= 2 }.shuffled().take(3)
-        } else if (premiere) pool.take(n) else pool.shuffled().take(n).sortedBy { it.niveau }
-        val taches = EPREUVES.filter { it.fam == "Rencontre" } + choix.distinctBy { it.cle }
-        val d = JSONObject().put("espece", e.nom).put("shiny", shiny).put("zone", e.zone)
+        val taches = choisirEpreuves(e, premiere, rar)
+        val zone = ind.optString("zone").ifEmpty { e.zone }
+        val d = JSONObject().put("espece", e.nom).put("shiny", shiny).put("zone", zone)
             .put("taches", JSONArray(taches.map { it.cle })).put("faites", JSONArray()).put("lignes", JSONArray())
             .put("debut", System.currentTimeMillis()).put("x", JSONObject())
-            .put("duree", if (premiere) 0 else (DUREE[e.rarete] ?: 90) + bonusTemps(jeu))
+            .put("duree", if (premiere) 0 else (DUREE[rar] ?: 90) + bonusTemps(jeu))
             .put("mefiance", 100 - bonusMefiance(jeu)).put("seconde", (jeu.stats["Endurance"] ?: 0) >= 20)
+            .put("ind", ind).put("rarete", rar).put("variante", ind.optString("variante", "classique")).put("examine", false)
+        if (rar in ULTIMES) essais.put(e.nom, jour)
         m.put("en_cours", d)
         val c = ctx(jeu, d)
         c.d.mkdirs()
         for (t in taches) t.prep?.invoke(c)
+        ecrireFiche(jeu, e, ind)
+        val eclat = if (shiny) " ✨" else ""
+        jeu.dire(if (premiere) Mots.accorder("Un monstre sauvage : {nom}{eclat} ! Première rencontre avec la famille {famille} : " +
+                "pas de chrono, je t'explique tout.", "nom" to e.nom, "eclat" to eclat, "famille" to e.famille)
+            else Mots.accorder("Un monstre sauvage : {nom}{eclat} ! Gagne sa confiance avant la fin du temps.",
+                "nom" to e.nom, "eclat" to eclat), 12)
+        jeu.log(Mots.accorder("🎓 Dressage de {nom} commencé ({n} épreuves)", "nom" to e.nom, "n" to taches.size))
+        return true
+    }
+
+    /** La fiche du monstre, posée dans le terrain de jeu (cat pour la lire). */
+    private fun ecrireFiche(jeu: Jeu, e: Bestiaire.Espece, ind: JSONObject) {
         val p = Mots.palier(jeu)
+        val st = ind.optJSONObject("stats")?.let { o -> LinkedHashMap(o.keys().asSequence().associateWith { o.optInt(it) }) } ?: e.stats
         fiche(jeu, e.nom).writeText(
-            "══════════ FICHE DE MONSTRE ══════════\n  Nom     : ${e.nom}${if (shiny) " ✨ (shiny !)" else ""}\n" +
-                "  Numéro  : #%03d\n".format(e.numero) + "  Rareté  : ${e.rarete}\n  Famille : ${e.famille}\n" +
-                "  " + Mots.terme("stats", p, true).padEnd(8) + ": " + Mots.texteStats(e.stats, p) + "\n\n" +
+            "══════════ FICHE DE MONSTRE ══════════\n" +
+                "  Nom     : ${e.nom}${if (ind.optBoolean("shiny")) " ✨ (shiny !)" else ""}\n" +
+                "  Numéro  : #%03d\n".format(e.numero) +
+                "  Rareté  : ${Bestiaire.rareteDe(ind)}  (note ${ind.opt("note") ?: "?"}/100)\n" +
+                "  Variante: ${ind.optString("variante", "classique")}\n" +
+                "  Âge     : ${Equipe.nomStade(Equipe.stade(ind))}\n" +
+                "  Famille : ${e.famille}\n" +
+                "  " + Mots.terme("stats", p, true).padEnd(8) + ": " + Mots.texteStats(st, p) + "\n" +
+                "  Taille  : ~${e.tailleCm} cm   Poids : ~${e.poidsKo} Ko\n\n" +
                 "  « ${e.description} »\n  ${e.comportement}\n\n" +
                 Mots.accorder("  Son repaire s'appelle « {repaire} »… caché quelque part dans {terrain}.\n",
                     "repaire" to repaire(e.nom), "terrain" to Mots.terme("terrain", p)))
-        jeu.log(Mots.accorder("⚔ Un monstre sauvage apparaît : {nom} !", "nom" to e.nom))
-        jeu.dire(if (premiere) Mots.accorder("Un monstre sauvage : {nom} ! Première rencontre avec la famille {famille} : " +
-                "pas de chrono, je t'explique tout.", "nom" to e.nom, "famille" to e.famille)
-            else Mots.accorder("Un monstre sauvage : {nom} ! Gagne sa confiance avant la fin du temps.", "nom" to e.nom), 12)
     }
 
     fun reste(jeu: Jeu): Int? {
@@ -319,21 +402,29 @@ object Dressage {
         val e = Bestiaire.espece(d.getString("espece"))!!
         fiche(jeu, e.nom).delete()
         val shiny = d.optBoolean("shiny")
-        val ind = Bestiaire.individu(e, shiny, d.getString("zone"))
-            .put("dresse", (System.currentTimeMillis() - d.optLong("debut")) / 1000).put("stade", "enfant").put("xp", 0)
-        if (shiny) ind.put("teinte", Math.round(Random.nextDouble(0.15, 0.85) * 1000) / 1000.0)
+        val ind = d.optJSONObject("ind") ?: Bestiaire.individu(e, shiny, d.getString("zone"))
+        val ecoule = (System.currentTimeMillis() - d.optLong("debut")) / 1000
+        ind.put("dresse", ecoule)
+        if (!ind.has("stade")) ind.put("stade", "bebe")
+        ind.put("xp", 0)                                    // il grandira en gardant son nom
+        if (shiny && !ind.has("teinte")) ind.put("teinte", Bestiaire.arrondi(Random.nextDouble(0.15, 0.85), 3))
+        val rar = Bestiaire.rareteDe(ind)
+        if (!ind.has("rarete")) ind.put("rarete", rar)
         Explo.captures(jeu).put(ind)
         Explo.collection(jeu).let { it.put(e.nom, it.optInt(e.nom) + 1) }
         jeu.module("equipe").put("active", ind.getString("id"))
         val fams = jeu.module("dressage").optJSONArray("familles") ?: JSONArray().also { jeu.module("dressage").put("familles", it) }
         if ((0 until fams.length()).none { fams.getString(it) == e.famille }) fams.put(e.famille)
+        val titre = e.nom + if (shiny) " ✨ SHINY" else ""
+        jeu.log(Mots.accorder("🎓 Dressage réussi : {titre} en {s} s ! ({rarete})", "titre" to titre, "s" to ecoule, "rarete" to rar))
+        jeu.dire(Mots.accorder("{nom}{eclat} te fait confiance et rejoint ta troupe ! Signe particulier : {marque}.",
+            "nom" to e.nom, "eclat" to (if (shiny) " ✨" else ""), "marque" to ind.optString("marque")), 14)
+        jeu.animer("victoire")
         val st = if (e.stat in jeu.stats) e.stat else Regles.STATS.random()
         jeu.stats[st] = (jeu.stats[st] ?: 0) + 2 + d.getJSONArray("taches").length()
-        jeu.ajouterXp((Bestiaire.XP[e.rarete] ?: 15) * if (shiny) 3 else 1)
-        val titre = e.nom + if (shiny) " ✨ SHINY" else ""
-        jeu.log(Mots.accorder("🎓 Dressage réussi : {titre} ! ({rarete})", "titre" to titre, "rarete" to e.rarete))
-        jeu.dire(Mots.accorder("{nom} te fait confiance et rejoint ta troupe ! Signe particulier : {marque}.",
-            "nom" to e.nom, "marque" to ind.getString("marque")), 14)
+        val duree = d.optInt("duree")
+        val bonus = if (duree > 0 && duree - ecoule > duree / 2.0) 2 else 1
+        jeu.ajouterXp((Bestiaire.XP[rar] ?: 15) * (if (shiny) 3 else 1) * bonus)
         return "🎓 ${Explo.carte(ind)}\n" + Mots.accorder("{nom} rejoint ta troupe (tape « troupe »).", "nom" to e.nom)
     }
 
@@ -341,6 +432,7 @@ object Dressage {
         jeu.module("dressage").remove("en_cours")
         fiche(jeu, d.getString("espece")).delete()
         jeu.log(Mots.accorder("💨 {nom} a perdu patience et a filé…", "nom" to d.getString("espece")))
+        jeu.animer("ko")
         return Mots.accorder("💨 Trop tard ! {nom} a filé. Continue de jouer : une autre chance viendra peut-être.",
             "nom" to d.getString("espece"))
     }
@@ -394,17 +486,24 @@ object Dressage {
         }
         image(Sprites.bitmap(jeu, 6, false))
         sb.texte("   VS   ", 0xFFFF5050.toInt(), true, 1.3f)
-        image(Animations.pixels(e.id, "adulte", "statique", 3)?.firstOrNull() ?: Bestiaire.bitmap(e, d.optBoolean("shiny"), 5))
+        val ind = d.optJSONObject("ind")
+        val stadeM = ind?.let { Equipe.stade(it) } ?: "adulte"
+        val shinyM = d.optBoolean("shiny")
+        image((if (Animations.dispo(e.id)) Animations.pixels(e.id, stadeM, "statique", 3)?.firstOrNull() else null)
+            ?: Bestiaire.bitmap(e, shinyM, 3, stadeM, d.optString("variante", "classique"), ind?.optDouble("teinte", 0.5) ?: 0.5))
         sb.append("\n")
         val COUL_FAM = mapOf("Intelligence" to 0xFF00AFFF.toInt(), "Agilité" to 0xFF5FD787.toInt(),
             "Force" to 0xFFFF5F5F.toInt(), "Endurance" to 0xFFFFD75F.toInt())
         sb.texte("◀ ${jeu.nom}  ", 0xFFFFFFFF.toInt(), true)
         for ((k, v) in jeu.stats) { sb.texte(k.take(3).uppercase(), COUL_FAM[k] ?: -1, true); sb.texte(" $v  ", 0xFFE0E0F0.toInt()) }
         sb.append("\n")
-        sb.texte("▶ ${e.nom}", Bestiaire.COULEUR_RARETE[e.rarete] ?: -1, true)
-        sb.texte("  #%03d ${e.rarete}  ".format(e.numero), 0xFF9090A8.toInt())
-        if (d.optBoolean("examine")) {
-            for ((k, v) in e.stats) { sb.texte(Mots.nomStat(k, p), COUL_STAT[k] ?: -1, true); sb.texte(" $v  ", 0xFFE0E0F0.toInt()) }
+        val rar = d.optString("rarete").ifEmpty { "commune" }
+        val examine = d.optBoolean("examine")
+        sb.texte("▶ ${e.nom}${if (shinyM) " ✨" else ""}", if (examine) Bestiaire.COULEUR_RARETE[rar] ?: -1 else 0xFFFFFFFF.toInt(), true)
+        sb.texte("  #%03d ".format(e.numero) + (if (examine) rar else "rareté ???") + " · ${Equipe.nomStade(stadeM)}  ", 0xFF9090A8.toInt())
+        val statsM = ind?.optJSONObject("stats")?.let { o -> LinkedHashMap(o.keys().asSequence().associateWith { o.optInt(it) }) } ?: e.stats
+        if (examine) {
+            for ((k, v) in statsM) { sb.texte(Mots.nomStat(k, p), COUL_STAT[k] ?: -1, true); sb.texte(" $v  ", 0xFFE0E0F0.toInt()) }
             sb.append("\n")
         } else sb.texte(Mots.terme("stats", p) + " ??? (lis sa fiche)\n", 0xFF808098.toInt())
         val nTot = d.getJSONArray("taches").length()

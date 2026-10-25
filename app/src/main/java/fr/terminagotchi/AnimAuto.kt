@@ -1,7 +1,6 @@
 package fr.terminagotchi
 
 import android.graphics.Bitmap
-import android.graphics.Color
 
 /**
  * Animations procédurales pour tout le bestiaire : portage exact de pc/tg/anim_auto.py.
@@ -710,17 +709,13 @@ object AnimAuto {
 
     /**
      * Les images en Bitmap agrandies sans lissage (echelle × echelle par pixel).
-     * teinte (0..1, null = normal) : shiny, rotation de teinte HSV des couleurs de la bestiole seulement.
+     * teinte (0..1, null = normal) : shiny, décalage de teinte des couleurs de la bestiole seulement
+     * (Bestiaire.decaler, comme B.decaler dans anim_auto.lignes sur PC).
      */
     fun bitmaps(anim: Anim, echelle: Int, teinte: Double?): List<Bitmap> {
         val pal = anim.palette.copyOf()
         if (teinte != null) {
-            val hsv = FloatArray(3)
-            for (k in 0 until anim.nTeinte) {
-                Color.colorToHSV(pal[k], hsv)
-                hsv[0] = (((hsv[0] + teinte * 360.0) % 360.0 + 360.0) % 360.0).toFloat()
-                pal[k] = Color.HSVToColor(0xFF, hsv)
-            }
+            for (k in 0 until anim.nTeinte) pal[k] = Bestiaire.decaler(pal[k] and 0xFFFFFF, teinte) or 0xFF000000.toInt()
         }
         val e = maxOf(1, echelle)
         val W = anim.largeur; val H = anim.hauteur

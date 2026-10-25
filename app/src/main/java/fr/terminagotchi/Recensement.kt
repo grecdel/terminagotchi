@@ -143,6 +143,7 @@ object Recensement {
                 if (connus.add(ind.optString("id"))) caps.put(ind)
             }
         }
+        Bestiaire.migrer(jeu.extra)      // des captures d'avant le nouveau bestiaire ont pu revenir du serveur
         srv.optJSONObject("partage")?.let { pa ->
             if (pa.optLong("date") >= (c.optJSONObject("partage")?.optLong("date") ?: 0L)) c.put("partage", pa)
         }
