@@ -710,7 +710,7 @@ class Jeu(ctx: Context) {
     }
 
     /** les commandes à taper depuis le terrain (pas depuis la pièce de l'aile) */
-    private val DEPUIS = listOf("cat coeur", "chmod 444 coeur", "echo ? > coeur", "cp -r grenier")
+    private val DEPUIS = listOf("cat coeur", "chmod 444 coeur", "echo ? > coeur", "cp -r grenier", "rm -r vieille_cabane")
 
     fun infoWidget(): String {
         val b = bulleActive()

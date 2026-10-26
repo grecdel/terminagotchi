@@ -315,7 +315,10 @@ st = tape_sans_lancer("ls -l | grep repas")
 verifier("Il manque" not in bulles(st) and "✍" not in bulles(st), "commande complète (ou avec un tuyau) → pas d'aide")
 for cmd in ("mkdir", "touch", "cat", "cp", "mv", "rm", "rmdir", "grep", "chmod", "head", "tail", "wc", "find", "kill",
             "ping", "ssh", "curl", "nano", "less"):
-    verifier(exemples.manque(cmd) == cmd and exemples.aide(st, cmd), f"{cmd} seul : aide prévue")
+    # (pas d'aide pour une commande absente de cet ordinateur : core.feed dit déjà qu'il ne la connaît pas)
+    present = core.commande_existe(cmd)
+    verifier(exemples.manque(cmd) == cmd and bool(exemples.aide(st, cmd)) == present,
+             f"{cmd} seul : aide prévue" + ("" if present else " (absente ici : pas d'aide, « commande inconnue »)"))
 # la leçon en cours demande cette commande : c'est elle qui est proposée
 _lc = lecons.lecon_courante
 lecons.lecon_courante = lambda s: ({"steps": [{"cmd": "mkdir nid"}]}, "")

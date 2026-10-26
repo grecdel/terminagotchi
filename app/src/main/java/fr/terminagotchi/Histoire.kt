@@ -12,7 +12,7 @@ import java.io.File
  * vrai problème à résoudre ; les commandes sont les outils pour le résoudre.
  *
  *    1 reveil        Le réveil                 pwd, ls, cd              (on trouve l'œuf)
- *    2 nid           Le nid                    mkdir, touch, >, cat     (une chambre et un repas)
+ *    2 nid           Le nid                    mkdir, touch, rmdir, rm -r, >, cat   (une chambre, une pièce en trop, un repas)
  *    3 grenier       Le grenier des Sylvestres ls -R, mv, cp, rm        (des lianes ont tout mélangé)
  *    4 cave          La cave des Démons        whoami, id, chmod        (ils volent la nourriture)
  *    5 bibliotheque  La bibliothèque           find, cat, grep, head, wc, et les tuyaux | sort
@@ -40,7 +40,8 @@ import java.io.File
  *
  * Sauvegarde : module « histoire » = {chap, faits (leçons finies), ailes (chapitres finis), pas (étape gardée par
  * leçon), ouverts (chapitres annoncés), carnet ({commande: chapitre}), meubles, suggere, annonce, born, v}.
- * Les anciennes sauvegardes (lecon / etape / arbre) sont rangées dans les bons chapitres (migrer).
+ * Les anciennes sauvegardes (lecon / etape / arbre) sont rangées dans les bons chapitres (migrer) ; v 1 → 2 : la
+ * leçon « Une pièce en trop » (debarras) est insérée dans le chapitre 2 sans casser les parties en cours (versionV2).
  */
 object Histoire {
     const val NIVEAU_EXPERT = 10
@@ -53,7 +54,7 @@ object Histoire {
 
     val CHAPITRES = listOf(
         Chapitre("reveil", 1, "vestibule", null, listOf("t0", "reveil1"), listOf(2, 2), "veilleuse"),
-        Chapitre("nid", 2, "nid", null, listOf("nid0", "nid1"), listOf(3, 4), "coussin"),
+        Chapitre("nid", 2, "nid", null, listOf("nid0", "debarras", "nid1"), listOf(3, 3, 4), "coussin"),
         Chapitre("grenier", 3, "grenier", "Sylvestres", listOf("grenier0", "t4"), null, "plante", "jardinier"),
         Chapitre("cave", 4, "cave", "Démons", listOf("cave0", "t3"), null, "cadenas_dore", "gardien_des_cles"),
         Chapitre("bibliotheque", 5, "bibliotheque", "Abyssaux", listOf("biblio0", "biblio1", "tuyaux0", "tuyaux1"), null,
@@ -135,6 +136,12 @@ object Histoire {
                 ref("t1", 2),
                 n("nid0", 2, "touch nid/lit.txt", fs = { File(it.terrain, "nid/lit.txt").isFile }, cree = "nid/lit.txt"),
             )),
+            // une pièce en trop : démolir une pièce vide (rmdir), puis la broyeuse pour une pièce pleine (rm -r)
+            "debarras" to Lecon("hist.debarras.titre", null, 1, listOf(
+                n("debarras", 0, "mkdir debarras", fs = { debarras(it) != null }, cree = "debarras"),
+                n("debarras", 1, "rmdir debarras", fs = { debarras(it) == null }),
+                n("debarras", 2, "rm -r vieille_cabane", fs = { !File(it.terrain, "vieille_cabane").exists() && it.terrain.isDirectory }),
+            )),
             "nid1" to Lecon("lec.t2.titre", null, 1, listOf(ref("t2", 0), ref("t2", 1))),
             // pas de tree sur le téléphone : ls -R montre le plan
             "grenier0" to Lecon("hist.grenier0.titre", "Explorateur", 1, listOf(
@@ -213,6 +220,10 @@ object Histoire {
 
     fun lecon(jeu: Jeu, lid: String): Lecon? = jeu.catalogue[lid]
 
+    /** Le débarras de la leçon « Une pièce en trop » (dans la grande salle ou dans le nid), ou null. */
+    fun debarras(jeu: Jeu): File? =
+        listOf(File(jeu.terrain, "debarras"), File(jeu.terrain, "nid/debarras")).firstOrNull { it.isDirectory }
+
     // ---------------------------------------------------------------- l'état
     private fun liste(o: JSONObject, k: String) = Quetes.liste(o, k)
     private fun mettre(o: JSONObject, k: String, l: List<String>) { o.put(k, JSONArray(l)) }
@@ -226,7 +237,24 @@ object Histoire {
         for (k in listOf("faits", "ailes", "ouverts", "meubles", "suggere")) if (!h.has(k)) h.put(k, JSONArray())
         for (k in listOf("pas", "carnet")) if (!h.has(k)) h.put(k, JSONObject())
         if (!h.has("born")) h.put("born", System.currentTimeMillis() / 1000)
+        if (h.optInt("v", 1) < 2) versionV2(jeu, h)
         return h
+    }
+
+    /**
+     * Sauvegarde v1 → v2 : la leçon « Une pièce en trop » (debarras) arrive entre le nid (nid0) et le garde-manger
+     * (nid1). Le chapitre 2 déjà fini la compte comme faite ; une partie en plein garde-manger le garde (son étape
+     * est rangée pour après le débarras) ; une partie en plein nid0 continue nid0 à la même étape.
+     */
+    private fun versionV2(jeu: Jeu, h: JSONObject) {
+        h.put("v", 2)
+        val f = liste(h, "faits")
+        if ("debarras" in f) return
+        if ("nid1" in f || "nid" in liste(h, "ailes")) { ajouter(h, "faits", "debarras"); return }
+        if ("nid0" in f && h.optString("chap") == "nid") {
+            if (jeu.etape > 0) h.getJSONObject("pas").put("nid1", jeu.etape)
+            jeu.etape = 0
+        }
     }
 
     fun faits(jeu: Jeu) = liste(h(jeu), "faits")
@@ -289,6 +317,11 @@ object Histoire {
         val l = lecon(jeu, lid) ?: return null
         val st = etapes(jeu, lid)
         if (st.isEmpty()) return null
+        if (jeu.etape >= st.size) {
+            // filet de sécurité : toutes les étapes sont faites (sauvegarde d'une autre version…) → la leçon se termine
+            finirLecon(jeu, Courante(lid, c, l, st, niveauRequis(jeu, c, i), ""))
+            return leconCourante(jeu)
+        }
         jeu.etape = jeu.etape.coerceIn(0, st.size - 1)
         palier = Mots.palier(jeu)
         return Courante(lid, c, l, st, niveauRequis(jeu, c, i), t("hist.etiquette", "i" to i + 1, "total" to c.lecons.size))
@@ -367,6 +400,9 @@ object Histoire {
             "bibliotheque/etagere_c/coin_poussiereux/livre_des_abysses.txt" to Langue.liste("hist.meuble.abysses").joinToString("\n"))
         "salle_des_machines" -> mapOf("salle_des_machines/vieux_carton.bin" to ByteArray(300000))
         "atelier" -> mapOf("atelier/plan_de_travail.txt" to dire(jeu, "hist.meuble.plan"))
+        // la vieille cabane pleine de planches de la leçon « Une pièce en trop » (seulement par BESOINS)
+        "nid" -> linkedMapOf("vieille_cabane/planche_1.txt" to dire(jeu, "hist.meuble.planche"),
+            "vieille_cabane/planche_2.txt" to dire(jeu, "hist.meuble.planche"))
         "coeur" -> {
             val m = linkedMapOf<String, Any>(
                 "coeur/message_brouille.txt" to dire(jeu, "hist.meuble.message").split("\n").joinToString("\n") { inverse(it) },
@@ -385,6 +421,7 @@ object Histoire {
     /** fichiers dont une leçon a besoin : remis s'ils disparaissent (tant que l'étape n'est pas passée) */
     private val BESOINS: Map<String, List<Pair<String, Int?>>> = mapOf(
         "reveil1" to listOf("vestibule/oeuf_tout_chaud.txt" to null),
+        "debarras" to listOf("vieille_cabane/planche_1.txt" to 2, "vieille_cabane/planche_2.txt" to 2),
         "grenier0" to listOf("grenier/fouillis/ours_en_peluche.txt" to 2),
         "biblio0" to listOf("bibliotheque/etagere_c/coin_poussiereux/livre_des_abysses.txt" to null),
         "biblio1" to listOf("bibliotheque/etagere_c/coin_poussiereux/livre_des_abysses.txt" to null),
@@ -573,6 +610,8 @@ object Histoire {
     }
 
     private fun tickLecon(jeu: Jeu, tapees: List<Pair<String, String?>>) {
+        // filet de sécurité : un chapitre dont toutes les leçons sont faites se termine (le suivant démarre)
+        chapitreCourant(jeu)?.let { c -> if (c.lecons.all { it in faits(jeu) }) finirChapitre(jeu, c) }
         val les = leconCourante(jeu) ?: return
         if (jeu.niveau < les.niveau) return
         val h = h(jeu)
@@ -593,8 +632,10 @@ object Histoire {
                 if (!avancer(jeu, les)) { jeu.indiceLecon = null; return }
             }
         }
-        val e = les.etapes[jeu.etape]
-        if (e.fs?.invoke(jeu) == true || iciOk(jeu, e, Maison.ici(jeu))) {
+        // les étapes déjà faites (fichiers, dossier courant) passent toutes, jusqu'à la fin de la leçon s'il le faut
+        for (k in les.etapes.indices) {
+            val e = les.etapes[jeu.etape]
+            if (e.fs?.invoke(jeu) != true && !iciOk(jeu, e, Maison.ici(jeu))) break
             if (!avancer(jeu, les)) { jeu.indiceLecon = null; return }
         }
         if (avant != (les.id to jeu.etape)) jeu.indiceLecon = null
@@ -617,7 +658,56 @@ object Histoire {
             }
         }
         if (e.ici != null) return null
-        return Indices.lecon(jeu, e, tapees.map { it.first })
+        val lignes = tapees.map { it.first }
+        indiceRm(jeu, e, tapees)?.let { return it }
+        if (Indices.fauteDeFrappe(lignes, e.cmd, chiffres = true) == null) indiceChemin(jeu, e, tapees)?.let { return it }
+        return Indices.lecon(jeu, e, lignes)
+    }
+
+    private val RECURSIF = Regex("^-\\w*[rR]")
+
+    /** Le dossier visé par un mot tapé (relatif au dossier courant, ou ~/…). */
+    private fun cible(jeu: Jeu, cwd: String?, mot: String): File = when {
+        mot.startsWith("~/") -> File(jeu.home, mot.substring(2))
+        mot.startsWith("/") -> File(mot)
+        else -> File(cwd ?: jeu.home.path, mot)
+    }
+
+    /** rm sur une pièce (« rm debarras » échoue) ; rmdir sur une pièce pleine (« rmdir vieille_cabane » refuse). */
+    private fun indiceRm(jeu: Jeu, e: Etape, tapees: List<Pair<String, String?>>): String? {
+        for ((l, cwd) in tapees) {
+            val mots = l.trim().split(Regex("\\s+"))
+            val cmd = mots[0].lowercase()
+            val args = mots.drop(1).filter { !it.startsWith("-") }
+            if (cmd == "rm" && mots.drop(1).none { RECURSIF.containsMatchIn(it) }) {
+                args.firstOrNull { cible(jeu, cwd, it).isDirectory }?.let { return t("hist.indice.rmdir", "nom" to it.trimEnd('/')) }
+            }
+            if (cmd == "rmdir" && e.cmd.startsWith("rm -r")) {
+                args.firstOrNull { cible(jeu, cwd, it).list()?.isNotEmpty() == true }
+                    ?.let { return t("hist.indice.plein", "nom" to it.trimEnd('/'), "cmd" to e.cmd) }
+            }
+        }
+        return null
+    }
+
+    /**
+     * Le fichier de l'étape n'est pas arrivé au bon endroit DANS le terrain (sinon Indices.lecon dit d'y aller) :
+     * c'est devenu un dossier (mkdir nid/lit.txt), ou la commande a été tapée sans son chemin (touch lit.txt dans la
+     * grande salle), ou depuis une autre pièce (touch nid/lit.txt dans le nid).
+     */
+    private fun indiceChemin(jeu: Jeu, e: Etape, tapees: List<Pair<String, String?>>): String? {
+        val rel = e.cree ?: return null
+        if ('/' !in rel || rel !in e.cmd || e.fs?.invoke(jeu) == true) return null
+        val f = File(jeu.terrain, rel)
+        if (f.isDirectory) return t("hist.indice.dossier", "nom" to f.name, "rel" to rel, "cmd" to e.cmd)
+        val premier = e.cmd.split(" ")[0].lowercase()
+        for ((l, cwd) in tapees) {
+            if (l.trim().split(Regex("\\s+"))[0].lowercase() != premier) continue
+            val r = Maison.rel(jeu, cwd) ?: continue
+            return if (r.isEmpty()) t("hist.indice.chemin", "cmd" to e.cmd)
+            else t("hist.indice.depuis", "terrain" to "cd ~/${jeu.terrain.name}", "cmd" to e.cmd)
+        }
+        return null
     }
 
     // ---------------------------------------------------------------- attirance du chapitre
@@ -673,7 +763,7 @@ object Histoire {
         val pas = JSONObject()
         fun fait(vararg ids: String) { for (x in ids) if (x !in faits) faits.add(x) }
         if (L >= 1) fait("t0")
-        if (L >= 2) fait("reveil1", "nid0")
+        if (L >= 2) fait("reveil1", "nid0", "debarras")
         if (L >= 3) fait("nid1")
         if (L >= 4) fait("t3")
         if (L >= 5) fait("t4")
@@ -701,7 +791,7 @@ object Histoire {
                 courant = chapitreDeLecon(lid)?.id ?: courant
             }
         }
-        val h = JSONObject().put("v", 1).put("chap", "reveil").put("faits", JSONArray(faits)).put("ailes", JSONArray())
+        val h = JSONObject().put("v", 2).put("chap", "reveil").put("faits", JSONArray(faits)).put("ailes", JSONArray())
             .put("pas", pas).put("ouverts", JSONArray()).put("carnet", JSONObject()).put("meubles", JSONArray())
             .put("suggere", JSONArray()).put("born", System.currentTimeMillis() / 1000)
         jeu.extra.put("histoire", h)
