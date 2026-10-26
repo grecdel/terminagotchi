@@ -84,6 +84,8 @@ def _charge(state):
                     "forme": state.get("branch"), "faim": state["hunger"],
                     "faimDate": int(state.get("repas_t", 0) * 1000)},
     }
+    from . import entrainement
+    charge["entrainement"], snap["ent"] = entrainement.charge(state, base.get("ent"))
     return charge, snap
 
 
@@ -171,6 +173,10 @@ def synchroniser(forcer=False):
             cc["serveur"] = url
         avant = s["xp"]
         _appliquer(s, r["etat"], snap)
+        from . import entrainement             # salle d'entraînement : compteurs, records vérifiés, Star de la semaine
+        if isinstance(r["etat"].get("entrainement"), dict):     # (un site pas encore à jour n'en renvoie pas)
+            compte(s)["base"]["ent"] = entrainement.appliquer(s, r["etat"].get("entrainement"), snap["ent"],
+                                                              charge["entrainement"]["runs"], r.get("entrainement"))
         tirage.ranger_graines(s, r.get("graines"))   # graines des prochains jours (jeu hors ligne)
         gagne = s["xp"] - avant
         if gagne > 0:
