@@ -679,7 +679,7 @@
  "ep.materiel.coeurs": "{Processeur} a combien de cœurs ? Réponds avec `echo`.",
  "aide.materiel.coeurs": "`nproc` compte les cœurs de {processeur} : combien de choses il fait en même temps. Réponds ensuite avec `echo`.",
  "ep.materiel.disques": "Montre-moi {disque} de ton monde.",
- "aidea.materiel.disques": "`df` montre {disque} et leurs étagères (les partitions), avec la place de chacune.",
+ "aidea.materiel.disques": "`df` montre {disque} et ses compartiments (les partitions), avec la place de chacun.",
  "ep.bugs.erreurs": "Trouve les lignes ERROR dans bug.log.",
  "aide.bugs.erreurs": "`grep` est la loupe du détective : elle montre les lignes qui contiennent le mot.",
  "ep.bugs.combien": "Combien y a-t-il d'erreurs dans bug.log ? Réponds avec `echo`.",

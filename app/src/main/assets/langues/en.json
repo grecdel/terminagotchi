@@ -679,7 +679,7 @@
  "ep.materiel.coeurs": "How many cores does {processeur} have? Answer with `echo`.",
  "aide.materiel.coeurs": "`nproc` counts the cores of {processeur}: how many things it does at the same time. Then answer with `echo`.",
  "ep.materiel.disques": "Show me {disque} of your world.",
- "aidea.materiel.disques": "`df` shows {disque} and their shelves (the partitions), with the space of each one.",
+ "aidea.materiel.disques": "`df` shows {disque} and its compartments (the partitions), with the space of each one.",
  "ep.bugs.erreurs": "Find the ERROR lines in bug.log.",
  "aide.bugs.erreurs": "`grep` is the detective's magnifying glass: it shows the lines that contain the word.",
  "ep.bugs.combien": "How many errors are there in bug.log? Answer with `echo`.",

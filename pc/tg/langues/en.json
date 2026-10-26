@@ -635,7 +635,7 @@
  "aide.code.compte": "A for loop repeats a command for each number. Everything said lands on the scroll thanks to the funnel >.",
  "aide.materiel.machine": "`uname -m` tells what kind of brain the world has: {processeur} (x86_64, arm64…).",
  "aide.materiel.coeurs": "`nproc` counts the cores of {processeur}: how many things it does at the same time. Then answer with `echo`.",
- "aide.materiel.disques": "lsblk shows {disque} and their shelves (the partitions).",
+ "aide.materiel.disques": "lsblk shows {disque} and its compartments (the partitions).",
  "aide.bugs.erreurs": "`grep` is the detective's magnifying glass: it shows the lines that contain the word.",
  "aide.bugs.combien": "`grep -c` counts the lines found by the magnifying glass, instead of showing them.",
  "aide.bugs.corrige": "`grep -v` does the opposite and keeps the lines WITHOUT the word; the funnel > writes them on a new scroll.",

@@ -635,7 +635,7 @@
  "aide.code.compte": "Une boucle for répète une commande pour chaque nombre. Tout ce qui est dit tombe sur le parchemin grâce à l'entonnoir >.",
  "aide.materiel.machine": "`uname -m` dit quel genre de cerveau a le monde : {processeur} (x86_64, arm64…).",
  "aide.materiel.coeurs": "`nproc` compte les cœurs de {processeur} : combien de choses il fait en même temps. Réponds ensuite avec `echo`.",
- "aide.materiel.disques": "lsblk montre {disque} et leurs étagères (les partitions).",
+ "aide.materiel.disques": "lsblk montre {disque} et ses compartiments (les partitions).",
  "aide.bugs.erreurs": "`grep` est la loupe du détective : elle montre les lignes qui contiennent le mot.",
  "aide.bugs.combien": "`grep -c` compte les lignes trouvées par la loupe, au lieu de les montrer.",
  "aide.bugs.corrige": "`grep -v` garde au contraire les lignes SANS le mot ; l'entonnoir > les écrit sur un nouveau parchemin.",
