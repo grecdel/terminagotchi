@@ -460,9 +460,10 @@ def tick(state, lignes):
             f = min(100.0, f + FATIGUE_COMMANDE)
         g["fatigue"][m[0]] = round(f, 3)
         bonus = sum(1 for l in tapees if du_talent(tal, l))
+        from . import intro
         if bonus:
             core.add_xp(state, bonus)
-            if now - g["astuce_t"] >= ASTUCE_DELAI:
+            if now - g["astuce_t"] >= ASTUCE_DELAI and intro.ouvert(state, "equipe"):
                 g["astuce_t"] = now
                 core.say(state, f"{ICONES[m[2]]} {m[1]} : " + astuce(tal), 10)
         if f >= FATIGUE_ALERTE and now - g["fatigue_dit"] >= FATIGUE_DELAI and len(membres(state)) > 1:
@@ -477,7 +478,9 @@ def tick(state, lignes):
                 g["sortie_t"] = now
                 x = veut[int(now) % len(veut)]
                 core.say(state, t("guide.sortie.dit", nom=x[1], cmd=cmd_guide(x[1])), 12)
-    _region(state, tapees, g, now)
+    from . import intro
+    if intro.ouvert(state, "biomes"):               # les régions gardées : après leur présentation (intro.json)
+        _region(state, tapees, g, now)
 
 
 # ---------------------------------------------------------------- écrans

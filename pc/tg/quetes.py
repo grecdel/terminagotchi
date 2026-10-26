@@ -566,6 +566,9 @@ def tick(state, lignes, cwds):
     """À chaque étape de jeu, après les leçons."""
     if not T().is_dir():
         return
+    from . import intro
+    if not intro.ouvert(state, "quetes"):           # les quêtes arrivent avec leur présentation (intro.json)
+        return
     q = q_(state)
     poser(state)
     annonces(state)

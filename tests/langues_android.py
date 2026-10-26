@@ -165,7 +165,8 @@ def verifier_langue(code, fr, d, pc, com):
 ESPACES = ("app", "core", "dress", "dressa", "ep", "epa", "aide", "aidea", "lec", "leca", "reg", "lex", "lexa", "eq",
            "exp", "expa", "rec", "reca", "part", "terme", "stat", "skill", "trait", "stade", "forme", "humeur", "branche",
            "rarete", "stade_bestiole", "frequence", "mini", "arbre", "tel", "cre", "defi", "edite", "doom", "notifs", "ctf",
-           "donjon", "jeu", "widget", "rappel", "rech", "shell", "term", "hist", "hista", "qu", "qua", "carte", "cartea", "env", "ent")
+           "donjon", "jeu", "widget", "rappel", "rech", "shell", "term", "hist", "hista", "qu", "qua", "carte", "cartea", "env", "ent",
+           "intro", "deb")
 
 
 def cles_du_code():

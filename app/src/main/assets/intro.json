@@ -9,6 +9,7 @@
   "  eclos = l'œuf a éclos · niveau = niveau atteint · lecons = leçons finies · chapitres = chapitres finis ·",
   "  ailes = nombre d'ailes (chapitres 3 à 9) finies · captures = bestioles dans l'équipe · apres = fonctions déjà ouvertes.",
   "  commandes : les commandes de la fonction (avant : « pas encore », jamais une erreur). Textes deb.<id>.titre / deb.<id>.texte.",
+  "  cmd_pc / cmd_tel : les commandes montrées dans l'écran de présentation ({cmd}, {cmd2}) sur PC et sur Android.",
   "Anciennes parties (sans « debloc » dans la sauvegarde) : tout reste ouvert ; les fiches des fonctions déjà atteintes",
   "ne sont pas remontrées, les autres le sont quand leur condition arrive."
  ],
@@ -245,7 +246,9 @@
    "quand": {
     "eclos": true
    },
-   "commandes": []
+   "commandes": [],
+   "cmd_pc": [],
+   "cmd_tel": []
   },
   {
    "id": "envies",
@@ -260,6 +263,12 @@
    "commandes": [
     "envies",
     "envie"
+   ],
+   "cmd_pc": [
+    "tg envies"
+   ],
+   "cmd_tel": [
+    "envies"
    ]
   },
   {
@@ -274,6 +283,12 @@
    },
    "commandes": [
     "carte"
+   ],
+   "cmd_pc": [
+    "tg carte"
+   ],
+   "cmd_tel": [
+    "carte"
    ]
   },
   {
@@ -282,8 +297,8 @@
    "icone": "feu",
    "quand": {
     "eclos": true,
-    "lecons": [
-     "nid0"
+    "chapitres": [
+     "nid"
     ]
    },
    "commandes": [
@@ -291,6 +306,12 @@
     "combat",
     "monstre",
     "monstres",
+    "defi"
+   ],
+   "cmd_pc": [
+    "tg defi"
+   ],
+   "cmd_tel": [
     "defi"
    ]
   },
@@ -308,6 +329,14 @@
     "lexique",
     "explique",
     "cherche"
+   ],
+   "cmd_pc": [
+    "tg explique rm",
+    "tg lexique"
+   ],
+   "cmd_tel": [
+    "explique rm",
+    "lexique"
    ]
   },
   {
@@ -316,8 +345,8 @@
    "icone": "etoile",
    "quand": {
     "eclos": true,
-    "chapitres": [
-     "nid"
+    "lecons": [
+     "nid1"
     ]
    },
    "commandes": [
@@ -328,6 +357,14 @@
     "ailes",
     "arbre",
     "histoire"
+   ],
+   "cmd_pc": [
+    "tg quetes",
+    "tg aile"
+   ],
+   "cmd_tel": [
+    "quetes",
+    "aile"
    ]
   },
   {
@@ -342,6 +379,12 @@
     "notifs",
     "notif",
     "aura"
+   ],
+   "cmd_pc": [
+    "tg notifs on"
+   ],
+   "cmd_tel": [
+    "notifs on"
    ]
   },
   {
@@ -360,6 +403,14 @@
     "collection",
     "bestiaire",
     "anime"
+   ],
+   "cmd_pc": [
+    "tg equipe",
+    "tg guide <nom>"
+   ],
+   "cmd_tel": [
+    "equipe",
+    "guide <nom>"
    ]
   },
   {
@@ -374,6 +425,12 @@
     "entrainement",
     "exercice",
     "badges"
+   ],
+   "cmd_pc": [
+    "tg entrainement"
+   ],
+   "cmd_tel": [
+    "entrainement"
    ]
   },
   {
@@ -388,6 +445,12 @@
     "compte",
     "sync",
     "site"
+   ],
+   "cmd_pc": [
+    "tg compte"
+   ],
+   "cmd_tel": [
+    "compte"
    ]
   },
   {
@@ -401,7 +464,13 @@
      "equipe"
     ]
    },
-   "commandes": []
+   "commandes": [],
+   "cmd_pc": [
+    "tg types"
+   ],
+   "cmd_tel": [
+    "types"
+   ]
   },
   {
    "id": "donjon",
@@ -421,6 +490,14 @@
     "drapeau",
     "indice",
     "doom"
+   ],
+   "cmd_pc": [
+    "tg site ctf",
+    "tg drapeau"
+   ],
+   "cmd_tel": [
+    "donjon",
+    "ctf"
    ]
   }
  ]

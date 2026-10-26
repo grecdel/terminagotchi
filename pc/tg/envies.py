@@ -396,7 +396,10 @@ def tick(state, lignes):
         core.say(state, au_hasard("env.merci.faim"), 8)
         core.animer(state, "content")
     avant = e.get("propre_n")
-    _poussiere(state, e, now)
+    from . import intro
+    ouvert = intro.ouvert(state, "envies")          # avant leur présentation : pas de poussière ni de rappel
+    if ouvert:
+        _poussiere(state, e, now)
     n = len(poussieres())
     if avant is not None and n < avant and tapees:
         m = e.get("moment") or {}
@@ -406,7 +409,8 @@ def tick(state, lignes):
                 core.say(state, au_hasard("env.merci.proprete"), 8)
                 core.animer(state, "content")
     e["propre_n"] = n
-    _rappeler(state, e, len(tapees), now)
+    if ouvert:
+        _rappeler(state, e, len(tapees), now)
 
 
 # ---------------------------------------------------------------- humeur et affichage

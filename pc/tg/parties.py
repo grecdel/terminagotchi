@@ -207,12 +207,16 @@ def _nouvel_id():
             return i
 
 
-def nouvelle(nom, langue_code, message_oeuf):
-    """Une nouvelle partie : l'ancienne est rangée. Renvoie l'id (None si plein ou impossible)."""
+def nouvelle(nom, langue_code, message_oeuf, intro=False):
+    """Une nouvelle partie : l'ancienne est rangée. Renvoie l'id (None si plein ou impossible).
+    intro : la partie commence par l'œuf et sa liste de commandes, le jeu s'ouvre petit à petit (intro.py)."""
     if pleine():
         return None
     ancien = _lire(core.SAVE_FILE) or {}
     s = core.migrate(core.new_state(nom[:16] or "Pixel", langue_code))
+    if intro:
+        from . import intro as I
+        I.nouvelle_partie(s)
     if isinstance(ancien.get("config"), dict):
         s["config"] = dict(ancien["config"])        # les réglages de l'appareil suivent (notifications, compagnon)
         s["config"].pop("aura", None)               # l'aura de rareté, elle, se règle partie par partie (tg aura)

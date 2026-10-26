@@ -16,6 +16,7 @@ d'une confirmation se dit dans n'importe laquelle des 14 langues (clé part.oui 
 да, はい, 是, हाँ, نعم, হ্যাঁ, ya, ہاں…). Même règle sur Android (MenuParties.kt).
 """
 import json
+import sys
 import threading
 import unicodedata
 import urllib.request
@@ -149,8 +150,9 @@ def _message_oeuf(s):
     return t("app.oeuf_apparu", trait=core.nom_trait(s["trait"]))
 
 
-def nouvelle(demander, confirmer=True):
-    """Demande confirmation puis le nom ; l'ancienne partie est rangée. Renvoie le message."""
+def nouvelle(demander, confirmer=True, avec_intro=None):
+    """Demande confirmation puis le nom ; l'ancienne partie est rangée. Renvoie le message.
+    avec_intro (par défaut : une vraie personne au clavier) : les écrans de l'intro, puis l'œuf et sa liste."""
     st = _etat()
     if parties.pleine():
         return t("part.plein", n=parties.MAX)
@@ -158,8 +160,13 @@ def nouvelle(demander, confirmer=True):
         print(t("part.n.confirmer", nom=st["name"]))
         if not oui(demander("  " + t("part.oui_non") + " ")):
             return t("part.n.rien")
-    nom = demander(t("app.nom_creature") + " ").strip()[:16] or "Pixel"
-    i = parties.nouvelle(nom, langue.courante(), _message_oeuf)
+    if avec_intro is None:
+        avec_intro = sys.stdin.isatty() and sys.stdout.isatty()
+    from . import intro
+    from .plateforme import clear
+    nom = intro.jouer_ecrans(demander, clear) if avec_intro else None
+    nom = (nom or demander(t("app.nom_creature") + " ")).strip()[:16] or "Pixel"
+    i = parties.nouvelle(nom, langue.courante(), _message_oeuf, intro=avec_intro)
     if not i:
         return t("part.n.echec")
     return t("part.n.ok", nom=nom)

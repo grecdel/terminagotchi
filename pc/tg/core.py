@@ -196,7 +196,7 @@ def notif(state, texte):
 
 # Courtes animations de la fenêtre principale : un événement daté, rangé dans la sauvegarde
 # (n'importe quel processus — invite, veille, fenêtre — peut le déclencher ; la fenêtre le joue).
-PRIORITE_ANIM = {"evolution": 9, "victoire": 8, "ko": 7, "colere": 6, "attaque": 6, "dort": 6, "content": 5, "confus": 4,
+PRIORITE_ANIM = {"eclosion": 10, "oeuf_1": 3, "oeuf_2": 3, "oeuf_3": 3, "evolution": 9, "victoire": 8, "ko": 7, "colere": 6, "attaque": 6, "dort": 6, "content": 5, "confus": 4,
                  "mange": 3, "salut": 2, "parle": 1}
 
 
@@ -291,6 +291,9 @@ def migrate(state):
     envies.e_(state)                       # les 6 envies (une ancienne partie reçoit des valeurs moyennes)
     from . import guide
     guide.g_(state)                        # le guide (une ancienne partie : le compagnon est le guide)
+    from . import intro
+    intro.i_(state)                        # l'intro et le déblocage (une ancienne partie : tout reste ouvert)
+    intro.d_(state)
     for k, v in {"notifs": True, "permanente": True, "compagnon": "ligne", "bulle": True}.items():
         state["config"].setdefault(k, v)
     state["version"] = VERSION
@@ -300,6 +303,8 @@ def migrate(state):
 def add_xp(state, n):
     old = level(state["xp"])
     state["xp"] += n
+    if isinstance(state.get("intro"), dict) and state["intro"].get("etat") == "oeuf":
+        state["xp"] = min(state["xp"], 9)    # l'œuf n'éclot qu'à la fin de sa liste de commandes (intro.py)
     new = level(state["xp"])
     if new <= old:
         return
@@ -441,7 +446,9 @@ def defi_tick(state, lines, spontaneous, proba=1.5 / 300):
     d = state["defi"]
     if not d:
         if spontaneous and stage(level(state["xp"])) >= 1 and random.random() < proba:
-            defi_start(state)
+            from . import intro
+            if intro.ouvert(state, "combats"):         # les défis éclair arrivent avec les monstres (intro.json)
+                defi_start(state)
         return
     for line in lines:
         if not est_colle(line) and first_word(line) == d["cmd"]:

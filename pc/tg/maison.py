@@ -421,6 +421,18 @@ def etiquette(state, n):
     return n["nom"]
 
 
+def garde(state, n):
+    """Une région gardée (biome/<type>/ et ce qu'elle contient) : « fermee » si aucune bestiole de son type n'est dans
+    l'équipe (guide.region_ouverte), « visite » si on peut y entrer mais pas l'agrandir (guide.peut_agrandir), sinon ""."""
+    b = n["biome"]
+    if not n["rel"].startswith("biome/") or b not in BIOMES or n["genre"] not in ("region", "parcelle", "lieu"):
+        return ""
+    from . import guide
+    if not guide.region_ouverte(state, b):
+        return "fermee"
+    return "" if guide.peut_agrandir(state, b) else "visite"
+
+
 def ouverts(state):
     """Les lieux dont on voit l'intérieur : visités (et leurs parents), montrés par `tree`, le camp de base."""
     m = m_(state)
@@ -456,6 +468,7 @@ def noeuds(state, marquer=False):
              "suite": suite, "cle": cle}
         if g == "piece" and b in PIECES:
             n["marques"] = ("★" if quetes.etoile(state, b) else "") if brume else marques(state, b)
+        n["garde"] = garde(state, n)
         n["etiquette"] = etiquette(state, n)
         out.append(n)
         return n
@@ -550,7 +563,7 @@ def _bg24(h):
 def sol(n, parent=None):
     """(dessus, côté) de la tuile d'une ligne."""
     g, b = n["genre"], n["biome"]
-    if n["brume"]:
+    if n["brume"] or n.get("garde") == "fermee":     # une région fermée est grise (comme la brume)
         return SOLS["brume"]
     if g == "piece":
         return SOLS_PIECES.get(b, SOLS["lieu"])
@@ -591,7 +604,7 @@ def _texte_tree(n, couleur=True):
     if n["genre"] == "suite":
         nom = "… " + t("carte.monde.autres", n=n["suite"])
     if couleur:
-        c = DIM if n["brume"] or n["genre"] == "suite" else \
+        c = DIM if n["brume"] or n["genre"] == "suite" or n.get("garde") == "fermee" else \
             fg(141) if n["genre"] in ("secret", "secret_objet") else \
             _fg24(BIOMES[n["biome"]][3]) if n["dossier"] and n["biome"] in BIOMES else \
             fg(214) if n["dossier"] else fg(252)
@@ -603,6 +616,10 @@ def _signes(n, couleur=True):
     s = ""
     if n["marques"]:
         s += " " + n["marques"]
+    if n.get("garde"):                       # 🔒 fermée / 👣 visite seulement (guide.py)
+        from . import guide
+        texte = t("carte.garde." + n["garde"], type=guide.etiquette(n["biome"]))
+        s += " " + ((DIM if n["garde"] == "fermee" else fg(214)) + texte + RESET if couleur else texte)
     if n["ici"]:
         s += " " + (fg(84) if couleur else "") + "◉ " + t("carte.monde.ici") + (RESET if couleur else "")
     if n["nouveau"]:
@@ -635,7 +652,8 @@ def carte(state, mode=None):
                 parents[n["prof"]] = sol(n)
             gauche = "  " * n["prof"] + _tuile(n, parents) + emoji(n) + " "
             reste = LARGE_DESSIN - largeur(gauche)
-            lab = (DIM if n["brume"] else BOLD if n["dossier"] else "") + raccourcir(n["etiquette"], max(4, reste)) + RESET
+            lab = (DIM if n["brume"] or n.get("garde") == "fermee" else BOLD if n["dossier"] else "") \
+                + raccourcir(n["etiquette"], max(4, reste)) + RESET
             dessins.append(gauche + lab)
         w = min(LARGE_DESSIN, max(largeur(d) for d in dessins))
         for n, d in zip(ns, dessins):

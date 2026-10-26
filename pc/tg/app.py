@@ -8,8 +8,8 @@ import time
 
 import subprocess
 
-from . import (compagnon, core, dressage, entrainement, envies, equipe, guide, exemples, explique, explo, histoire, lecons, lexique, maison, notif,
-               quetes, recense, registre, sprites, terrain)
+from . import (compagnon, core, dressage, entrainement, envies, equipe, guide, exemples, explique, explo, histoire, intro, lecons, lexique,
+               maison, notif, quetes, recense, registre, sprites, terrain)
 from .bestiaire import arc_en_ciel
 from . import langue
 from .langue import ajuster, envelopper, largeur, raccourcir, t
@@ -31,13 +31,19 @@ def render(state, frame, interactif, anim=None):
     d = state.get("dressage")
     if d and not d.get("fenetre"):          # pas de fenêtre possible (pas d'écran graphique) : on l'affiche ici
         return render_dressage(state, interactif, anim)
+    if intro.en_cours(state):               # l'œuf seul, sa liste de commandes et l'invite (intro.py)
+        lignes = intro.lignes_ecran_oeuf(state, frame, anim)
+        return "\n".join(lignes + ["", title_line(t("app.journal"))] + [" " + l for l in state["log"][-3:]]) + "\n"
+    cid = intro.a_montrer(state) if interactif else None
+    if cid and not anim:                    # une nouveauté à présenter (merci, puis chaque fonction qui s'ouvre)
+        return "\n".join(intro.lignes_ecran(state, cid)) + "\n"
     lvl = core.level(state["xp"])
     st = core.stage(lvl)
     if anim:
         w = max(len(_ANSI.sub("", l)) for l in anim)
         sprite = list(anim)
     else:
-        sprite, w = sprites.creature(state, aura_ecran(state), frame)      # + son aura de rareté (tg aura)
+        sprite, w = dessin_guide(state, frame)                         # le guide (+ son aura de rareté, tg aura)
         sprite = ([" " * w] + sprite) if frame % 2 else (sprite + [" " * w])
     lg = max(20, w)
     left = ["  " + line + " " * (lg - w) for line in sprite]
@@ -56,12 +62,12 @@ def render(state, frame, interactif, anim=None):
         + (" " + entrainement.titre_colore(state) if entrainement.titres(state) else ""),
         f"{DIM}" + t("app.caractere", trait=core.nom_trait(state["trait"])) + RESET,
         f"{xp_l} {sprites.bar(state['xp'] - lo, hi - lo)} {state['xp']}/{hi}",
-        f"{jauges[0]}  {DIM}{envies.humeur(state)}{RESET}",
-        jauges[1] + (f"  {fg(214)}💭 {envies.ICONES[m['e']]} {envies.nom(m['e'])}{RESET}" if m else ""),
-        stats,
-        t("app.competences_bestioles", n=nb_sk, b=sum(state["collection"].values())),
     ]
-    if state.get("captures"):                     # le guide (tg guide) : en tête de l'équipe
+    if intro.ouvert(state, "envies"):             # les jauges des envies arrivent avec leur présentation
+        right += [f"{jauges[0]}  {DIM}{envies.humeur(state)}{RESET}",
+                  jauges[1] + (f"  {fg(214)}💭 {envies.ICONES[m['e']]} {envies.nom(m['e'])}{RESET}" if m else "")]
+    right += [stats, t("app.competences_bestioles", n=nb_sk, b=sum(state["collection"].values()))]
+    if state.get("captures") and intro.ouvert(state, "equipe"):     # le guide (tg guide) : en tête de l'équipe
         gm = guide.actuel(state)
         right.append(f"🧭 {guide.ICONES[gm[2]]} {gm[1]} {DIM}· {t('guide.talent.' + guide.TALENTS[gm[2]])}{RESET}")
     n = max(len(left), len(right))
@@ -129,7 +135,7 @@ def render(state, frame, interactif, anim=None):
             lines.append(title_line(b[0], 213))
             for x in envelopper(b[1], 78):
                 lines.append(f" {x}")
-    suivie = quetes.ligne_suivie(state)
+    suivie = quetes.ligne_suivie(state) if intro.ouvert(state, "quetes") else None
     if suivie:
         lines.append(f" {fg(214)}{suivie}{RESET}")
 
@@ -147,10 +153,52 @@ def render(state, frame, interactif, anim=None):
             lines.append(f" {fg(226)}" + t("app.journal.compagnon") + RESET)
     lines += [" " + l for l in state["log"][-4:]]
     if interactif:
-        lines.append(f"{fg(244)} " + t("app.touches.histoire") + RESET)
+        lines.append(f"{fg(244)} " + touches(state) + RESET)
     else:
         lines.append(f"{DIM} " + t("app.digere_ferme") + RESET)
     return "\n".join(lines) + "\n"
+
+
+# les touches de la fenêtre et la fonction du jeu qu'elles ouvrent (intro.json : avant, « pas encore »)
+TOUCHES = {"/": "lexique", "r": "lexique", "?": "lexique", "l": "lexique", "a": "quetes", "j": "quetes", "m": "carte",
+           "c": "equipe", "u": "extras"}
+
+
+def touches(state):
+    """Le pied de la fenêtre, sans les touches des fonctions pas encore ouvertes ([m] carte…)."""
+    morceaux = re.split(r"(?=\[)", t("app.touches.histoire"))
+    garde = [x for x in morceaux if not (len(x) > 2 and x[0] == "[" and x[2] == "]"
+                                         and x[1] in TOUCHES and not intro.ouvert(state, TOUCHES[x[1]]))]
+    return "".join(garde).strip()
+
+
+_CACHE_GUIDE = {}
+
+
+def dessin_guide(state, frame=0):
+    """La créature de l'écran principal : le GUIDE actuel (le compagnon, ou la bestiole en tête de l'équipe,
+    à son stade, dans sa variante, avec son aura de rareté), sinon le compagnon sorti de l'œuf."""
+    m = guide.actuel(state)
+    ind = m[3]
+    if ind is not None:
+        cle = (ind.get("id"), equipe.stade(ind), ind.get("variante"), ind.get("shiny"), bool(aura_ecran(state) is not None))
+        r = _CACHE_GUIDE.get(cle)
+        if r is None:
+            try:
+                r = equipe.animation(ind, "statique", aura=aura_active(state))
+            except Exception:
+                r = None
+            _CACHE_GUIDE.clear()
+            _CACHE_GUIDE[cle] = r
+        if r and r[0]:
+            image = r[0][frame % len(r[0])]
+            return list(image), max(largeur(l) for l in image)
+    return sprites.creature(state, aura_ecran(state), frame)
+
+
+def aura_active(state):
+    from . import aura
+    return aura.active(state)
 
 
 def vue_dressage():
@@ -244,17 +292,20 @@ def boucle_jeu(state, lines, spontane=True, rythme=1.5, defis=True, cwd=None):
     core.tick(state)
     for line in lines:
         core.feed(state, line)
+    lines = intro.tick(state, lines)          # l'œuf : sa liste, ses fêlures, l'éclosion (la suite : après l'éclosion)
     exemples.tick(state, lines)               # mkdir tout seul… : une bulle avec la commande à taper
     terrain.tick(state, lines)                # terrain effacé : le reconstruire, reprendre la leçon
     histoire.tick(state, lines, cwd)          # la Maison endormie : visites, chapitres, quêtes
     dressage.tick(state, lines)
     equipe.tick(state, lines)
-    explo.tick(state, spontane, proba=rythme / 480, jeu=sum(1 for l in lines if not core.est_colle(l)), lignes=lines)
+    if intro.ouvert(state, "combats"):        # les monstres arrivent avec leur présentation (intro.json)
+        explo.tick(state, spontane, proba=rythme / 480, jeu=sum(1 for l in lines if not core.est_colle(l)), lignes=lines)
     core.defi_tick(state, lines, spontaneous=spontane and defis, proba=rythme / 300)
     envies.tick(state, lines)                 # les 6 envies : usure, plaisirs, poussière, rappel espacé
     entrainement.tick(state, lines)           # salle d'entraînement : l'exercice en cours est-il réussi ?
     guide.tick(state, lines)                  # le guide : talents, fatigue, envie de sortir, régions gardées
     core.idle_talk(state, proba=min(1.0, 0.08 * rythme / 1.5))
+    intro.verifier(state)                     # les fonctions qui s'ouvrent maintenant (présentées une par une)
 
 
 def etape(spontane=True, rythme=1.5, defis=True, avant_save=None, extra=None, cwd=None):
@@ -274,8 +325,9 @@ def etape(spontane=True, rythme=1.5, defis=True, avant_save=None, extra=None, cw
         a_envoyer, state["notifs"] = state["notifs"], []
         core.save(state)
     try:
-        notif.envoyer(state, a_envoyer)
-        notif.permanente(state)
+        if intro.ouvert(state, "extras"):          # les notifications arrivent avec leur présentation (intro.json)
+            notif.envoyer(state, a_envoyer)
+            notif.permanente(state)
     except Exception:
         pass
     if SYNC_AUTO:
@@ -506,18 +558,30 @@ def menu_recensement(clav):
 
 # ================================================================ modes
 
-def creer_si_besoin():
+def creer_si_besoin(avec_intro=None):
+    """Premier lancement : la créature est créée. avec_intro (par défaut : une vraie personne au clavier) :
+    les écrans de l'intro, puis l'œuf et sa liste de commandes, et le jeu qui s'ouvre petit à petit (intro.py).
+    Sans personne au clavier (scripts, tests), tout est ouvert tout de suite."""
+    if core.load() is not None:
+        return
+    if avec_intro is None:
+        avec_intro = sys.stdin.isatty() and sys.stdout.isatty()
+    try:
+        code = langue.detecter()                  # premier lancement : la langue du système
+        langue.definir(code)
+        name = intro.jouer_ecrans(input, clear) if avec_intro else None
+        if not name:
+            name = input(t("app.nom_creature") + " ")
+        name = name.strip()[:16] or "Pixel"
+    except (KeyboardInterrupt, EOFError):
+        print("\n" + t("app.a_bientot"))
+        raise SystemExit(0)
     with core.verrou():
         state = core.load()
         if state is None:
-            try:
-                code = langue.detecter()          # premier lancement : la langue du système
-                langue.definir(code)
-                name = input(t("app.nom_creature") + " ").strip()[:16] or "Pixel"
-            except (KeyboardInterrupt, EOFError):
-                print("\n" + t("app.a_bientot"))
-                raise SystemExit(0)
             state = core.migrate(core.new_state(name, code))
+            if avec_intro:
+                intro.nouvelle_partie(state)
             core.read_new_lines(state)   # mémorise où on en est, sans manger l'ancien historique
             core.log(state, t("app.oeuf_apparu", trait=core.nom_trait(state["trait"])))
             core.animer(state, "salut")
@@ -597,9 +661,15 @@ def fenetre(once):
                             anim = [r[0], r[1], 0, min(2 * len(r[0]), max(len(r[0]), int(3 * r[1])))]
                     elif not once and evt and evt[1] > vu_anim:
                         vu_anim = evt[1]
-                        if now - evt[1] < 15:
+                        if now - evt[1] < 15 and evt[0].startswith(("oeuf_", "eclosion")):
+                            try:                       # l'œuf remue, brille, se fêle, éclot (intro.py)
+                                f, ips = intro.animation(evt[0], state)
+                                anim = [f, ips, 0, len(f)]
+                            except Exception:
+                                pass
+                        elif now - evt[1] < 15:
                             anim = _preparer_anim(state, evt[0]) or anim
-                    elif not once and anim is None and now >= ambiance:
+                    elif not once and anim is None and now >= ambiance and not intro.en_cours(state):
                         ambiance = now + AMBIANCE
                         if _nuit():
                             anim = _preparer_anim(state, "dort")
@@ -622,7 +692,15 @@ def fenetre(once):
                     continue
                 anim = None
                 clear()
+                if intro.a_montrer(state) and not intro.en_cours(state) and k.lower() != "q":
+                    if k in ("\r", "\n", " "):          # Entrée : l'écran de présentation est lu
+                        state = core.modifier(intro.lu) or state
+                    continue
                 k = k.lower()
+                fid = TOUCHES.get(k)
+                if fid and not intro.ouvert(state, fid):
+                    state = core.modifier(lambda s: core.say(s, t("deb.pas_encore", cmd=k), 6)) or state
+                    continue
                 if k in ("/", "r", "?"):
                     menu_recherche(state, clav)
                 elif k == "a":
@@ -688,6 +766,21 @@ def commande_histoire(mode, args):
     return "\n".join(histoire.lignes_ailes(core.modifier(lambda s: histoire.h_(s))))
 
 
+def commande_debloquer(args, demander=None):
+    """tg debloquer tout [--oui] : ouvre tout le jeu d'un coup (après confirmation)."""
+    from . import accueil
+    if not args or args[0].lower() not in ("tout", "all"):
+        return t("deb.tout.non")
+    if "--oui" not in sys.argv:
+        try:
+            if not accueil.oui((demander or input)(t("deb.tout.question") + " ")):
+                return t("deb.tout.non")
+        except (KeyboardInterrupt, EOFError):
+            return t("deb.tout.non")
+    core.modifier(intro.tout_debloquer)
+    return t("deb.tout.ok")
+
+
 def commande_guide(mode, args):
     """tg guide : le guide ; tg guide <nom> ou tg equipe guide <nom> : changer de guide ; tg types : la table des types."""
     if mode == "types":
@@ -718,6 +811,26 @@ def main():
         return
     if mode in ("aide", "help", "-h"):
         print(aide())
+        return
+    if mode == "debloquer":                    # tg debloquer tout : pour les parents et les tests (confirmation)
+        creer_si_besoin()
+        print(commande_debloquer(args[1:]))
+        return
+    st = core.load()
+    if st is not None and mode:                # une fonction pas encore ouverte : « pas encore » (intro.json)
+        core.migrate(st)
+        nom = "guide" if mode == "equipe" and len(args) > 1 and args[1].lower() == "guide" else mode
+        msg = intro.bloque(st, nom)
+        if msg:
+            print(msg)
+            return
+    if mode == "notifs":                       # tg notifs on|off : les notifications de la créature
+        creer_si_besoin()
+        choix = args[1].lower() if len(args) > 1 else ""
+        if choix in ("on", "off"):
+            core.modifier(lambda s: s["config"].update(notifs=choix == "on"))
+        on = core.load()["config"].get("notifs", True)
+        print(t("app.options.notifs", etat=f"{fg(78)}{t('app.on')}{RESET}" if on else f"{fg(203)}{t('app.off')}{RESET}"))
         return
     if mode == "explique":                     # tg explique rm : la fiche d'une commande et de ses options
         st = core.load() or {}

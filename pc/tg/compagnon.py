@@ -47,6 +47,11 @@ def ligne(state):
         return f"{tete}  {' · '.join(msgs)}"
     if state["defi"]:
         return f"{tete}  {fg(226)}" + t("comp.defi", cmd=piege(state["defi"]["cmd"])) + RESET
+    from . import intro
+    if intro.en_cours(state):                      # l'œuf : la prochaine commande de sa liste
+        p = intro.prochaine(state)
+        return f"{tete}  {fg(226)}🥚 " + t("intro.liste.titre", n=len(intro.i_(state)["faits"]), total=len(intro.checklist())) \
+            + (f" ➜ `{intro.commande_de(p)}`" if p else "") + RESET
     from . import envies
     r = envies.rappel_recent(state)
     if r:                                          # l'envie du moment (au plus une fois toutes les 12 commandes)
@@ -85,6 +90,10 @@ def prompt(etape):
         s = ligne(state)
         if state["config"]["compagnon"] == "coin":
             s = coin(state) + s
+        from . import intro
+        avant = intro.pour_prompt(state)          # l'œuf qui réagit, l'écran « merci », une nouveauté (une fois)
+        if avant:
+            s = "\n".join(avant) + RESET + "\n" + s
         sortie.append(s)
         state["prompt_vu"] = state.get("nlog", 0)
 
