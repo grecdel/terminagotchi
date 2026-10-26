@@ -8,8 +8,8 @@ import time
 
 import subprocess
 
-from . import (compagnon, core, dressage, equipe, explo, histoire, lecons, lexique, maison, notif, quetes, recense,
-               registre, sprites, terrain)
+from . import (compagnon, core, dressage, equipe, exemples, explo, histoire, lecons, lexique, maison, notif, quetes,
+               recense, registre, sprites, terrain)
 from .bestiaire import arc_en_ciel
 from . import langue
 from .langue import ajuster, envelopper, largeur, raccourcir, t
@@ -234,6 +234,7 @@ def boucle_jeu(state, lines, spontane=True, rythme=1.5, defis=True, cwd=None):
     core.tick(state)
     for line in lines:
         core.feed(state, line)
+    exemples.tick(state, lines)               # mkdir tout seul… : une bulle avec la commande à taper
     terrain.tick(state, lines)                # terrain effacé : le reconstruire, reprendre la leçon
     histoire.tick(state, lines, cwd)          # la Maison endormie : visites, chapitres, quêtes
     dressage.tick(state, lines)

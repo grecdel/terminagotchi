@@ -1814,5 +1814,20 @@
  "lexa.aile.t": "elegir el capítulo: aile grenier",
  "lexa.maison.carte.i": "el plano de la casa, con las habitaciones visitadas",
  "lexa.maison.carte.t": "el mapa de las carpetas visitadas",
- "term.aide.maison": "🏚 La casa: carte (el plano), quetes (el diario de misiones, quetes suivre 2), aile (elegir el ala que despertar)"
+ "term.aide.maison": "🏚 La casa: carte (el plano), quetes (el diario de misiones, quetes suivre 2), aile (elegir el ala que despertar)",
+ "lex.exemple": "ejemplo: {ex}",
+ "lex.exemples.ou": "Los ejemplos se escriben en el terreno de juego: {cmd}",
+ "lex.ex.numero": "NÚMERO",
+ "lex.ex.salut": "hola",
+ "aide.manque.mkdir": "✍ ¡Falta el nombre! {cmd} construye {un_dossier}: dile cómo llamarla. Prueba: {ex}",
+ "aide.manque.rmdir": "✍ ¡Falta el nombre! {cmd} desmonta {un_dossier} vacía: dile su nombre. Prueba: {ex}",
+ "aide.manque.touch": "✍ ¡Falta el nombre! {cmd} pone {un_fichier} en la mesa: dile su nombre. Prueba: {ex}",
+ "aide.manque.lire": "✍ ¡{cmd} necesita el nombre de la carta que hay que leer! Prueba: {ex}",
+ "aide.manque.deux": "✍ {cmd} necesita DOS nombres: la hoja y luego dónde ponerla. Prueba: {ex}",
+ "aide.manque.rm": "✍ Falta el nombre de la hoja que hay que triturar (cuidado, es para siempre). Prueba: {ex}",
+ "aide.manque.grep": "✍ La lupa necesita una palabra que buscar Y el nombre de la carta donde buscar. Prueba: {ex}",
+ "aide.manque.chmod": "✍ {cmd} necesita el candado (un número, como 444) y luego el nombre de la hoja. Prueba: {ex}",
+ "aide.manque.find": "✍ Dile a {cmd} qué buscar (aquí: todas las hojas que terminan en .txt). Prueba: {ex}",
+ "aide.manque.kill": "✍ {cmd} necesita el número del programa que hay que dormir (ps muestra los números). Prueba: {ex}",
+ "aide.manque.reseau": "✍ {cmd} necesita la dirección de una casa en internet. Prueba: {ex}"
 }

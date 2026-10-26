@@ -1819,5 +1819,20 @@
  "lexa.aile.t": "اختر الفصل: aile grenier",
  "lexa.maison.carte.i": "مخطّط البيت مع الغرف التي زرتها",
  "lexa.maison.carte.t": "خريطة المجلدات التي زرتها",
- "term.aide.maison": "🏚 البيت: carte (المخطّط)، quetes (سجلّ المهمات، quetes suivre 2)، aile (اختيار الجناح الذي توقظه)"
+ "term.aide.maison": "🏚 البيت: carte (المخطّط)، quetes (سجلّ المهمات، quetes suivre 2)، aile (اختيار الجناح الذي توقظه)",
+ "lex.exemple": "مثال: {ex}",
+ "lex.exemples.ou": "اكتب الأمثلة في ساحة اللعب: {cmd}",
+ "lex.ex.numero": "الرقم",
+ "lex.ex.salut": "مرحبا",
+ "aide.manque.mkdir": "✍ الاسم ناقص! {cmd} يبني {un_dossier}: قل له ماذا يسمّيها. جرّب: {ex}",
+ "aide.manque.rmdir": "✍ الاسم ناقص! {cmd} يزيل {un_dossier} (لا شيء بالداخل): قل له الاسم. جرّب: {ex}",
+ "aide.manque.touch": "✍ الاسم ناقص! {cmd} يضع {un_fichier} على الطاولة: قل له الاسم. جرّب: {ex}",
+ "aide.manque.lire": "✍ {cmd} يحتاج إلى اسم الرسالة التي سيقرؤها! جرّب: {ex}",
+ "aide.manque.deux": "✍ {cmd} يحتاج إلى اسمين: الورقة، ثم أين يضعها. جرّب: {ex}",
+ "aide.manque.rm": "✍ اسم الورقة التي ستُفرم ناقص (انتبه، هذا إلى الأبد). جرّب: {ex}",
+ "aide.manque.grep": "✍ العدسة المكبّرة تحتاج إلى كلمة تبحث عنها واسم الرسالة التي تبحث فيها. جرّب: {ex}",
+ "aide.manque.chmod": "✍ {cmd} يحتاج إلى القفل (رقم مثل 444) ثم اسم الورقة. جرّب: {ex}",
+ "aide.manque.find": "✍ قل لـ {cmd} عمّ يبحث (هنا: كل الأوراق التي تنتهي بـ .txt). جرّب: {ex}",
+ "aide.manque.kill": "✍ {cmd} يحتاج إلى رقم البرنامج الذي سينام (ps يعرض الأرقام). جرّب: {ex}",
+ "aide.manque.reseau": "✍ {cmd} يحتاج إلى عنوان بيت على الإنترنت. جرّب: {ex}"
 }

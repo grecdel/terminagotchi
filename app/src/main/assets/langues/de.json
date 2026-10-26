@@ -1814,5 +1814,20 @@
  "lexa.aile.t": "das Kapitel wählen: aile grenier",
  "lexa.maison.carte.i": "der Plan des Hauses mit den besuchten Zimmern",
  "lexa.maison.carte.t": "die Karte der besuchten Ordner",
- "term.aide.maison": "🏚 Das Haus: carte (der Plan), quetes (das Aufgabenbuch, quetes suivre 2), aile (den Flügel wählen, der geweckt wird)"
+ "term.aide.maison": "🏚 Das Haus: carte (der Plan), quetes (das Aufgabenbuch, quetes suivre 2), aile (den Flügel wählen, der geweckt wird)",
+ "lex.exemple": "Beispiel: {ex}",
+ "lex.exemples.ou": "Die Beispiele tippst du im Spielgelände: {cmd}",
+ "lex.ex.numero": "NUMMER",
+ "lex.ex.salut": "hallo",
+ "aide.manque.mkdir": "✍ Der Name fehlt! Mit {cmd} entsteht {un_dossier}: sag, wie es heißen soll. Probier: {ex}",
+ "aide.manque.rmdir": "✍ Der Name fehlt! Mit {cmd} verschwindet {un_dossier} (nur wenn nichts drin ist): sag den Namen. Probier: {ex}",
+ "aide.manque.touch": "✍ Der Name fehlt! Mit {cmd} liegt {un_fichier} auf dem Tisch: sag den Namen. Probier: {ex}",
+ "aide.manque.lire": "✍ {cmd} braucht den Namen des Briefs, den es lesen soll! Probier: {ex}",
+ "aide.manque.deux": "✍ {cmd} braucht ZWEI Namen: das Blatt und dann, wohin damit. Probier: {ex}",
+ "aide.manque.rm": "✍ Der Name des Blatts für den Schredder fehlt (Vorsicht, das ist für immer). Probier: {ex}",
+ "aide.manque.grep": "✍ Die Lupe braucht ein Wort zum Suchen UND den Namen des Briefs, in dem sie sucht. Probier: {ex}",
+ "aide.manque.chmod": "✍ {cmd} braucht das Vorhängeschloss (eine Zahl wie 444) und dann den Namen des Blatts. Probier: {ex}",
+ "aide.manque.find": "✍ Sag {cmd}, was es suchen soll (hier: alle Blätter, die auf .txt enden). Probier: {ex}",
+ "aide.manque.kill": "✍ {cmd} braucht die Nummer des Programms, das schlafen gehen soll (ps zeigt die Nummern). Probier: {ex}",
+ "aide.manque.reseau": "✍ {cmd} braucht die Adresse eines Hauses im Internet. Probier: {ex}"
 }

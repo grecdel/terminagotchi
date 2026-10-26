@@ -1819,5 +1819,20 @@
  "lexa.aile.t": "choisir le chapitre : aile grenier",
  "lexa.maison.carte.i": "le plan de la maison, avec les pièces visitées",
  "lexa.maison.carte.t": "la carte des dossiers visités",
- "term.aide.maison": "🏚 La maison : carte (le plan), quetes (le journal des quêtes, quetes suivre 2), aile (choisir l'aile à réveiller)"
+ "term.aide.maison": "🏚 La maison : carte (le plan), quetes (le journal des quêtes, quetes suivre 2), aile (choisir l'aile à réveiller)",
+ "lex.exemple": "exemple : {ex}",
+ "lex.exemples.ou": "Les exemples se tapent dans le terrain de jeu : {cmd}",
+ "lex.ex.numero": "NUMÉRO",
+ "lex.ex.salut": "coucou",
+ "aide.manque.mkdir": "✍ Il manque le nom ! {cmd} construit {un_dossier} : dis-lui comment l'appeler. Essaie : {ex}",
+ "aide.manque.rmdir": "✍ Il manque le nom ! {cmd} démonte {un_dossier} vide : dis-lui son nom. Essaie : {ex}",
+ "aide.manque.touch": "✍ Il manque le nom ! {cmd} pose {un_fichier} sur la table : dis-lui son nom. Essaie : {ex}",
+ "aide.manque.lire": "✍ {cmd} a besoin du nom de la lettre à lire ! Essaie : {ex}",
+ "aide.manque.deux": "✍ {cmd} a besoin de DEUX noms : la feuille, puis où la mettre. Essaie : {ex}",
+ "aide.manque.rm": "✍ Il manque le nom de la feuille à broyer (attention, c'est pour toujours). Essaie : {ex}",
+ "aide.manque.grep": "✍ La loupe a besoin d'un mot à chercher ET du nom de la lettre où chercher. Essaie : {ex}",
+ "aide.manque.chmod": "✍ {cmd} a besoin du cadenas (un nombre, comme 444) puis du nom de la feuille. Essaie : {ex}",
+ "aide.manque.find": "✍ Dis à {cmd} quoi chercher (ici : toutes les feuilles qui finissent par .txt). Essaie : {ex}",
+ "aide.manque.kill": "✍ {cmd} a besoin du numéro du programme à endormir (ps montre les numéros). Essaie : {ex}",
+ "aide.manque.reseau": "✍ {cmd} a besoin de l'adresse d'une maison sur internet. Essaie : {ex}"
 }

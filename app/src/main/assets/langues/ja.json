@@ -1822,5 +1822,20 @@
  "lexa.aile.t": "しょうを えらぶ：aile grenier",
  "lexa.maison.carte.i": "いった へやが のってる いえの まどりず",
  "lexa.maison.carte.t": "いった フォルダの ちず",
- "term.aide.maison": "🏚 いえ：carte（まどりず）、quetes（クエストの にっき、quetes suivre 2）、aile（おこす ウイングを えらぶ）"
+ "term.aide.maison": "🏚 いえ：carte（まどりず）、quetes（クエストの にっき、quetes suivre 2）、aile（おこす ウイングを えらぶ）",
+ "lex.exemple": "れい：{ex}",
+ "lex.exemples.ou": "れいは あそびばで うってね：{cmd}",
+ "lex.ex.numero": "ばんごう",
+ "lex.ex.salut": "こんにちは",
+ "aide.manque.mkdir": "✍ なまえが たりない！ {cmd} は {un_dossier}を たてるよ。なんて よぶか おしえてね。ためしてみて：{ex}",
+ "aide.manque.rmdir": "✍ なまえが たりない！ {cmd} は なにも はいっていない {un_dossier}を かたづけるよ。なまえを おしえてね。ためしてみて：{ex}",
+ "aide.manque.touch": "✍ なまえが たりない！ {cmd} は {un_fichier}を つくえに おくよ。なまえを おしえてね。ためしてみて：{ex}",
+ "aide.manque.lire": "✍ {cmd} には よむ てがみの なまえが いるよ！ ためしてみて：{ex}",
+ "aide.manque.deux": "✍ {cmd} には なまえが 2つ いるよ：かみと、それを おく ばしょ。ためしてみて：{ex}",
+ "aide.manque.rm": "✍ シュレッダーに かける かみの なまえが たりない（ちゅうい：もう もどらないよ）。ためしてみて：{ex}",
+ "aide.manque.grep": "✍ むしめがねには さがす ことばと、さがす てがみの なまえが いるよ。ためしてみて：{ex}",
+ "aide.manque.chmod": "✍ {cmd} には かぎ（444 みたいな すうじ）と、かみの なまえが いるよ。ためしてみて：{ex}",
+ "aide.manque.find": "✍ {cmd} に なにを さがすか おしえてね（ここでは .txt で おわる かみ ぜんぶ）。ためしてみて：{ex}",
+ "aide.manque.kill": "✍ {cmd} には ねかせる プログラムの ばんごうが いるよ（ps で ばんごうが みえる）。ためしてみて：{ex}",
+ "aide.manque.reseau": "✍ {cmd} には インターネットの いえの アドレスが いるよ。ためしてみて：{ex}"
 }

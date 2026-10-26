@@ -1814,5 +1814,20 @@
  "lexa.aile.t": "scegliere il capitolo: aile grenier",
  "lexa.maison.carte.i": "la pianta della casa, con le stanze visitate",
  "lexa.maison.carte.t": "la mappa delle cartelle visitate",
- "term.aide.maison": "🏚 La casa: carte (la pianta), quetes (il diario delle missioni, quetes suivre 2), aile (scegliere l'ala da svegliare)"
+ "term.aide.maison": "🏚 La casa: carte (la pianta), quetes (il diario delle missioni, quetes suivre 2), aile (scegliere l'ala da svegliare)",
+ "lex.exemple": "esempio: {ex}",
+ "lex.exemples.ou": "Gli esempi si scrivono nel terreno di gioco: {cmd}",
+ "lex.ex.numero": "NUMERO",
+ "lex.ex.salut": "ciao",
+ "aide.manque.mkdir": "✍ Manca il nome! {cmd} costruisce {un_dossier}: dimmi come chiamarla. Prova: {ex}",
+ "aide.manque.rmdir": "✍ Manca il nome! {cmd} smonta {un_dossier} vuota: dimmi il suo nome. Prova: {ex}",
+ "aide.manque.touch": "✍ Manca il nome! {cmd} posa {un_fichier} sul tavolo: dimmi il suo nome. Prova: {ex}",
+ "aide.manque.lire": "✍ {cmd} ha bisogno del nome della lettera da leggere! Prova: {ex}",
+ "aide.manque.deux": "✍ {cmd} ha bisogno di DUE nomi: il foglio, poi dove metterlo. Prova: {ex}",
+ "aide.manque.rm": "✍ Manca il nome del foglio da distruggere (attenzione, è per sempre). Prova: {ex}",
+ "aide.manque.grep": "✍ La lente ha bisogno di una parola da cercare E del nome della lettera dove cercare. Prova: {ex}",
+ "aide.manque.chmod": "✍ {cmd} ha bisogno del lucchetto (un numero, come 444) e poi del nome del foglio. Prova: {ex}",
+ "aide.manque.find": "✍ Di' a {cmd} cosa cercare (qui: tutti i fogli che finiscono con .txt). Prova: {ex}",
+ "aide.manque.kill": "✍ {cmd} ha bisogno del numero del programma da addormentare (ps mostra i numeri). Prova: {ex}",
+ "aide.manque.reseau": "✍ {cmd} ha bisogno dell'indirizzo di una casa su internet. Prova: {ex}"
 }

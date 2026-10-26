@@ -12,7 +12,10 @@ Chaque commande a une IMAGE (la maison) et une explication TECHNIQUE ; l'afficha
 suit le palier de vocabulaire (voir mots.py) : l'image seule, puis l'image et la
 technique côte à côte, puis la technique avec l'image en petit rappel.
 Les mêmes phrases existent dans l'appli Android (Regles.LEXIQUE dans Jeu.kt).
+Sous chaque commande qui a besoin de quelque chose après elle : un exemple prêt à taper depuis le
+terrain de jeu (« ↳ exemple : mkdir cabane », voir exemples.py).
 """
+from . import core, exemples
 from .langue import t
 from .mots import palier
 from .plateforme import BOLD, DIM, RESET, C, OS_NAMES, OSK, fg, installer
@@ -167,9 +170,13 @@ def lignes(state):
                 sortie.append(f"  {fg(255)}● {BOLD}{cmd:<15}{RESET}{fg(255)} {desc}{RESET}{moment}")
             else:
                 sortie.append(f"  {fg(244)}○ {cmd:<15} {desc}{RESET}")
+            ex = exemples.lexique(cmd)
+            if ex:
+                sortie.append(f"  {' ' * 18}{fg(110)}↳ " + t("lex.exemple", ex=ex) + RESET)
     entete = [f" {fg(213)}── 📖 " + t("lex.carnet.titre", nom=state.get("name", "")) + RESET,
               f" {DIM}" + t("lex.titre", ici=ici, n=goutees, total=total) + RESET,
-              f" {DIM}" + t("lex.legende") + RESET]
+              f" {DIM}" + t("lex.legende") + RESET,
+              f" {fg(110)}↳ " + t("lex.exemples.ou", cmd=f"cd ~/{core.TERRAIN.name}") + RESET]
     return entete + sortie + souvenirs(state)
 
 
