@@ -209,6 +209,7 @@ object Defis {
         val cmd = POOL.random()
         jeu.module("defi").put("cmd", cmd).put("debut", System.currentTimeMillis())
         jeu.dire(t("defi.dit", "cmd" to Regles.piege(cmd)), 20)
+        Guide.annonceDefi(jeu)                              // l'épreuve du jour annonce un type (Guide.kt)
     }
 
     fun resteSecondes(jeu: Jeu): Long {
@@ -232,6 +233,7 @@ object Defis {
             jeu.animer("victoire")
             jeu.ajouterXp(10)
             Envies.plaisir(jeu, "jeu", "defi")
+            Guide.apresDefi(jeu)                            // guide fort contre le type du jour : +5 XP
             val m = t("defi.reussi", "s" to "%.1f".format(t)) + if (nouveau) t("defi.record") else ""
             jeu.log(m)
             jeu.dire(m, 8)

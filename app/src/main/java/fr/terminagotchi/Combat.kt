@@ -86,8 +86,12 @@ object Combat {
         val cb = JSONObject().put("id", ind.optString("id")).put("espece", e.nom).put("special", e.attireePar)
             .put("capacite", e.capacite).put("moi", JSONArray().put(moi).put(moi)).put("lui", JSONArray().put(lui).put(lui))
             .put("tour", 0).put("observe", false).put("vu", false).put("fin", "").put("journal", JSONArray())
+        val (tm, tl, texte) = Guide.debutCombat(ind, d.getString("espece"), d.optString("variante", "classique"))
+        cb.put("types", JSONArray().put(tm).put(tl))           // la table des types (Guide.kt) : ×1.5 / ×0.67
+        cb.getJSONArray("journal").put(texte)
         d.put("combat", cb)
         jeu.dire(t("dress.combat.debut", "nom" to e.nom, "monstre" to d.getString("espece"), "cmd" to e.attireePar), 12)
+        jeu.dire(texte, 10)
         return true
     }
 
@@ -123,17 +127,19 @@ object Combat {
             cb.put("observe", observe)                         // ls chez les Sylvestres : attaque ET observe
             val p = borne(0.7 + ((stT["VIT"] ?: 30) - (stM["VIT"] ?: 30)) / 60.0, 0.45, 0.9)
             if (sur || de() < p) {
-                val n = (if (estSpecial) 2 else 1) + (if (sur) 1 else 0)
+                val mult = mult(cb)
+                val n = Guide.degats((if (estSpecial) 2 else 1) + (if (sur) 1 else 0), mult)
                 lui.put(0, maxOf(0, lui.getInt(0) - n))
                 journal.add(if (estSpecial) t("dress.combat.special", "nom" to nom,
                     "capacite" to cb.optString("capacite").ifEmpty { cmd }, "n" to n)
                     else t("dress.combat.attaque", "nom" to nom, "n" to n))
+                if (mult != 1.0) journal.add(if (mult > 1) t("guide.combat.super") else t("guide.combat.bof"))
                 if (estSpecial) anim(ind, "attaque")
             } else journal.add(t("dress.combat.rate", "nom" to nom))
         }
         if (lui.getInt(0) > 0) {                               // le monstre répond
             if (observe) journal.add(t("dress.combat.esquive", "nom" to nom, "monstre" to monstre))
-            else if (de() < borne(0.45 + ((stM["ATK"] ?: 30) - (stT["DEF"] ?: 30)) / 60.0, 0.2, 0.75)) {
+            else if (de() < borne(0.45 + ((stM["ATK"] ?: 30) - (stT["DEF"] ?: 30)) / 60.0 + ecart(cb), 0.2, 0.75)) {
                 moi.put(0, maxOf(0, moi.getInt(0) - 1))
                 journal.add(t("dress.combat.touche", "nom" to nom, "monstre" to monstre))
             } else journal.add(t("dress.combat.manque", "monstre" to monstre))
@@ -147,6 +153,22 @@ object Combat {
             moi.getInt(0) <= 0 -> finir(jeu, "perdu")
             cb.optInt("tour") >= TOURS_MAX -> finir(jeu, "nul")
             else -> null
+        }
+    }
+
+    /** La force du type de ta bestiole contre celui du monstre (×1.5, ×0.67 ou ×1). */
+    private fun mult(cb: JSONObject): Double {
+        val ty = cb.optJSONArray("types") ?: return 1.0
+        return Guide.efficacite(ty.optString(0), ty.optString(1))
+    }
+
+    /** Le monstre touche un peu plus souvent s'il est fort contre toi (+0.15), un peu moins si tu l'es (−0.15). */
+    private fun ecart(cb: JSONObject): Double {
+        val ty = cb.optJSONArray("types") ?: return 0.0
+        return when {
+            Guide.efficacite(ty.optString(1), ty.optString(0)) > 1 -> 0.15
+            Guide.efficacite(ty.optString(0), ty.optString(1)) > 1 -> -0.15
+            else -> 0.0
         }
     }
 

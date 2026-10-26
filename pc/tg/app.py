@@ -8,7 +8,7 @@ import time
 
 import subprocess
 
-from . import (compagnon, core, dressage, entrainement, envies, equipe, exemples, explique, explo, histoire, lecons, lexique, maison, notif,
+from . import (compagnon, core, dressage, entrainement, envies, equipe, guide, exemples, explique, explo, histoire, lecons, lexique, maison, notif,
                quetes, recense, registre, sprites, terrain)
 from .bestiaire import arc_en_ciel
 from . import langue
@@ -61,6 +61,9 @@ def render(state, frame, interactif, anim=None):
         stats,
         t("app.competences_bestioles", n=nb_sk, b=sum(state["collection"].values())),
     ]
+    if state.get("captures"):                     # le guide (tg guide) : en tête de l'équipe
+        gm = guide.actuel(state)
+        right.append(f"🧭 {guide.ICONES[gm[2]]} {gm[1]} {DIM}· {t('guide.talent.' + guide.TALENTS[gm[2]])}{RESET}")
     n = max(len(left), len(right))
     left += [" " * (lg + 2)] * (n - len(left))
     right += [""] * (n - len(right))
@@ -250,6 +253,7 @@ def boucle_jeu(state, lines, spontane=True, rythme=1.5, defis=True, cwd=None):
     core.defi_tick(state, lines, spontaneous=spontane and defis, proba=rythme / 300)
     envies.tick(state, lines)                 # les 6 envies : usure, plaisirs, poussière, rappel espacé
     entrainement.tick(state, lines)           # salle d'entraînement : l'exercice en cours est-il réussi ?
+    guide.tick(state, lines)                  # le guide : talents, fatigue, envie de sortir, régions gardées
     core.idle_talk(state, proba=min(1.0, 0.08 * rythme / 1.5))
 
 
@@ -684,6 +688,22 @@ def commande_histoire(mode, args):
     return "\n".join(histoire.lignes_ailes(core.modifier(lambda s: histoire.h_(s))))
 
 
+def commande_guide(mode, args):
+    """tg guide : le guide ; tg guide <nom> ou tg equipe guide <nom> : changer de guide ; tg types : la table des types."""
+    if mode == "types":
+        return "\n".join(guide.ecran_types(core.load()))
+    if mode == "equipe":
+        args = args[1:]
+    if not args:
+        return "\n".join(guide.ecran(core.modifier(lambda s: guide.tick(s, []))))
+    res = []
+    core.modifier(lambda s: res.append(guide.choisir(s, " ".join(args))))
+    texte, ind = res[0] if res else ("", None)
+    if ind is not None or texte.startswith("🔄"):
+        guide.animation_changement(ind, core.load())
+    return texte
+
+
 def main():
     langue.installer_rendu()                   # les commandes à taper en vert (`…` dans les textes)
     args = [a for a in sys.argv[1:] if not a.startswith("--")]
@@ -758,6 +778,12 @@ def main():
         creer_si_besoin()
         print(commande_histoire(mode, args[1:]))
         return
+    if mode in ("guide", "types") or (mode == "equipe" and len(args) > 1 and args[1].lower() == "guide"):
+        creer_si_besoin()                      # le guide (guide.py) : tg guide [nom], tg equipe guide <nom>, tg types
+        print(commande_guide(mode, args[1:]))
+        return
+    if mode == "equipe":
+        mode = "troupe"
     if mode in ("compte", "sync", "drapeau", "lexique", "site", "bestiaire", "collection", "troupe", "anime"):
         creer_si_besoin()
         if mode == "troupe":

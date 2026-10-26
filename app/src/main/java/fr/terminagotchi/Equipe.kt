@@ -69,7 +69,8 @@ object Equipe {
         val caps = Explo.captures(jeu)
         if (caps.length() == 0) return t("eq.vide.tel")
         val act = active(jeu)
-        val sb = StringBuilder("🐾 " + t("eq.titre", "nom" to jeu.nom) + "\n")
+        val sb = StringBuilder("🐾 " + t("eq.titre", "nom" to jeu.nom) + "\n" + Guide.ligneEquipe(jeu) + "\n")
+        val sortir = Guide.membres(jeu).filter { Guide.envieDeSortir(jeu, it) }.map { it.id }.toSet()
         for (i in caps.length() - 1 downTo maxOf(0, caps.length() - 12)) {
             val c = caps.getJSONObject(i)
             val e = Bestiaire.espece(c.optString("espece")) ?: continue
@@ -79,11 +80,13 @@ object Equipe {
             val v = c.optString("variante", "classique")
             sb.append(if (c.optString("id") == act?.optString("id")) "★ " else "   ")
                 .append(Bestiaire.balise(c)).append(" ")
-                .append(Bestiaire.nomAffiche(e, c.optBoolean("shiny"), r)).append(" · ${nomStade(s)}")
+                .append(Bestiaire.nomAffiche(e, c.optBoolean("shiny"), r))
+                .append(Guide.typeInd(c).let { ty -> " · ${Guide.ICONES[ty]} ${Guide.nomType(ty)}" }).append(" · ${nomStade(s)}")
                 .append(if (v != "classique") " · $v" else "").append(" · ${Bestiaire.nomRarete(r)} · ")
                 .append(if (seuil != null) "${c.optInt("xp")}/$seuil XP" else t("eq.stade_max"))
                 .append(if (Animations.dispo(e.id)) " · " + t("eq.anime") else "")
                 .append(if (Combat.repose(c)) " " + t("eq.repos", "min" to Combat.minutesDeRepos(c)) else "")   // KO au combat
+                .append(if (c.optString("id") in sortir) " " + t("guide.ecran.sortir") else "")
                 .append("\n")
         }
         sb.append("\n" + t("aura.legende"))                    // la lueur autour des bestioles (Aura.kt)
@@ -98,6 +101,7 @@ object Equipe {
             val c = caps.getJSONObject(i)
             if (c.optString("espece") == e.nom) {
                 jeu.module("equipe").put("active", c.optString("id"))
+                Guide.suivreChoixEquipe(jeu, c.optString("id"))     // en tête de l'équipe : elle devient aussi le guide
                 return t("eq.choisie",
                     "nom" to e.nom)
             }

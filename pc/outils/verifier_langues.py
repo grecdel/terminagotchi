@@ -26,7 +26,7 @@ TG = os.path.join(os.path.dirname(ICI), "tg")
 LANGUES = os.path.join(TG, "langues")
 ESPACES = ("app", "core", "dress", "ep", "aide", "lec", "reg", "lex", "eq", "exp", "rec", "notif", "comp", "bur",
            "mini", "terme", "stat", "skill", "trait", "stade", "forme", "humeur", "branche", "rarete",
-           "stade_bestiole", "frequence", "hist", "qu", "carte", "env", "ent")
+           "stade_bestiole", "frequence", "hist", "qu", "carte", "env", "ent", "guide", "type", "types")
 
 
 def params(texte):

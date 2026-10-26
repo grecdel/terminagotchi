@@ -137,7 +137,9 @@ def ecran_equipe(state):
     if not caps:
         return [" " + t("eq.vide")]
     act = active(state)
-    lignes = [f" {fg(213)}── 🐾 " + t("eq.titre", nom=state["name"]) + f" ──{RESET}", ""]
+    from . import guide
+    lignes = [f" {fg(213)}── 🐾 " + t("eq.titre", nom=state["name"]) + f" ──{RESET}", " " + guide.ligne_equipe(state), ""]
+    sortir = {m[0] for m in guide.membres(state) if guide.envie_de_sortir(state, m)}
     for c in caps[-12:][::-1]:
         e = B.espece(c["espece"])
         if not e:
@@ -151,8 +153,11 @@ def ecran_equipe(state):
         var = c.get("variante", "classique")
         dort = c.get("repos", 0) > time.time()            # KO au combat : elle se repose (voir combat.py)
         repos = f" {fg(117)}" + t("eq.repos", min=max(1, round((c["repos"] - time.time()) / 60))) + RESET if dort else ""
-        lignes.append(f" {marque}{B.nom_affiche(e, c.get('shiny'), B.rarete_de(c))} {DIM}· {B.nom_stade(s)}"
-                      f"{' · ' + var if var != 'classique' else ''} · {B.nom_rarete(B.rarete_de(c))} · {barre}{RESET}{repos}")
+        ty = guide.type_ind(c)
+        envie = " " + t("guide.ecran.sortir") if c.get("id") in sortir else ""
+        lignes.append(f" {marque}{B.nom_affiche(e, c.get('shiny'), B.rarete_de(c))} {DIM}· {guide.ICONES[ty]} {guide.nom_type(ty)}"
+                      f" · {B.nom_stade(s)}{' · ' + var if var != 'classique' else ''} · {B.nom_rarete(B.rarete_de(c))} · {barre}{RESET}"
+                      f"{repos}{envie}")
     lignes += ["", f" {DIM}" + t("eq.pied") + RESET]
     return lignes
 
@@ -163,6 +168,8 @@ def choisir(state, nom):
     if not caps:
         return " " + t("eq.pas_dans_troupe", nom=nom)
     state["active"] = caps[-1]["id"]
+    from . import guide
+    guide.suivre_choix_equipe(state, caps[-1])     # en tête de l'équipe : elle devient aussi le guide
     return " " + t("eq.choisie", nom=caps[-1]["espece"])
 
 

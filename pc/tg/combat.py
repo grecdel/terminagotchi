@@ -22,6 +22,7 @@ import time
 from . import bestiaire as B
 from . import core
 from . import equipe
+from . import guide
 from .langue import t
 
 TOURS_MAX = 5
@@ -80,7 +81,12 @@ def preparer(state):
     d["combat"] = {"id": ind["id"], "espece": ind["espece"], "special": e.get("attiree_par") or "",
                    "capacite": e.get("capacite") or "", "moi": [moi, moi], "lui": [lui, lui], "tour": 0,
                    "observe": False, "vu": False, "fin": None, "journal": []}
+    from . import guide
+    tm, tl, texte = guide.debut_combat(state, ind, d["espece"], d.get("variante", "classique"))
+    d["combat"]["types"] = [tm, tl]                         # la table des types (guide.py) : ×1.5 / ×0.67
+    d["combat"]["journal"] = [texte]
     core.say(state, t("dress.combat.debut", nom=ind["espece"], monstre=d["espece"], cmd=d["combat"]["special"]), 12)
+    core.say(state, texte, 10)
     return True
 
 
@@ -113,9 +119,13 @@ def coup(state, ligne, rnd=None):
         p = _borne(0.7 + (st_t.get("VIT", 30) - st_m.get("VIT", 30)) / 60, 0.45, 0.9)
         if sur or rnd.random() < p:
             n = (2 if special else 1) + (1 if sur else 0)
+            mult = _mult(cb)
+            n = guide.degats(n, mult)
             cb["lui"][0] = max(0, cb["lui"][0] - n)
             journal.append(t("dress.combat.special", nom=nom, capacite=cb["capacite"] or cmd, n=n) if special
                            else t("dress.combat.attaque", nom=nom, n=n))
+            if mult != 1.0:
+                journal.append(t("guide.combat.super") if mult > 1 else t("guide.combat.bof"))
             if special:
                 _anim(state, ind, "attaque")
         else:
@@ -123,7 +133,7 @@ def coup(state, ligne, rnd=None):
     if cb["lui"][0] > 0:                                   # le monstre répond
         if observe:
             journal.append(t("dress.combat.esquive", nom=nom, monstre=monstre))
-        elif rnd.random() < _borne(0.45 + (st_m.get("ATK", 30) - st_t.get("DEF", 30)) / 60, 0.2, 0.75):
+        elif rnd.random() < _borne(0.45 + (st_m.get("ATK", 30) - st_t.get("DEF", 30)) / 60 + _ecart(cb), 0.2, 0.75):
             cb["moi"][0] = max(0, cb["moi"][0] - 1)
             journal.append(t("dress.combat.touche", nom=nom, monstre=monstre))
         else:
@@ -137,6 +147,22 @@ def coup(state, ligne, rnd=None):
     if cb["tour"] >= TOURS_MAX:
         return finir(state, "nul")
     return None
+
+
+def _mult(cb):
+    """La force du type de ta bestiole contre celui du monstre (×1.5, ×0.67 ou ×1)."""
+    ty = cb.get("types")
+    return guide.efficacite(ty[0], ty[1]) if ty else 1.0
+
+
+def _ecart(cb):
+    """Le monstre touche un peu plus souvent s'il est fort contre toi (+0.15), un peu moins si tu l'es (−0.15)."""
+    ty = cb.get("types")
+    if not ty:
+        return 0.0
+    if guide.efficacite(ty[1], ty[0]) > 1:
+        return 0.15
+    return -0.15 if guide.efficacite(ty[0], ty[1]) > 1 else 0.0
 
 
 def _plus_dure(d):

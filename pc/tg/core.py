@@ -289,6 +289,8 @@ def migrate(state):
         state["branch"] = dominant(state)
     from . import envies
     envies.e_(state)                       # les 6 envies (une ancienne partie reçoit des valeurs moyennes)
+    from . import guide
+    guide.g_(state)                        # le guide (une ancienne partie : le compagnon est le guide)
     for k, v in {"notifs": True, "permanente": True, "compagnon": "ligne", "bulle": True}.items():
         state["config"].setdefault(k, v)
     state["version"] = VERSION
@@ -333,7 +335,8 @@ BUILTINS = {"cd", "echo", "export", "alias", "history", "type", "source", ".", "
             "set", "unset", "read", "test", "[", "pushd", "popd", "jobs", "fg", "bg", "kill", "umask", "ulimit",
             "true", "false", "printf", "wait", "trap", "exec", "eval", "help", "tg", "clear",
             "carte", "quetes", "explique",          # carte, quetes : les raccourcis du jeu (tg carte, tg quetes)
-            "entrainement", "exercice", "badges"}   # la salle d'entraînement (tg entrainement, tg badges)
+            "entrainement", "exercice", "badges",   # la salle d'entraînement (tg entrainement, tg badges)
+            "guide", "types", "equipe"}             # le guide (tg guide, tg types, tg equipe)
 
 
 def commande_existe(cmd):
@@ -416,6 +419,8 @@ def defi_start(state):
     state["defi"] = {"cmd": cmd, "start": time.time()}
     say(state, t("core.defi.dit", cmd=piege(cmd)), defi_duree(state))
     notif(state, t("core.defi.notif", cmd=piege(cmd), s=defi_duree(state)))
+    from . import guide
+    guide.annonce_defi(state)                       # l'épreuve du jour annonce un type (guide.py)
 
 
 def defi_tick(state, lines, spontaneous, proba=1.5 / 300):
@@ -436,8 +441,9 @@ def defi_tick(state, lines, spontaneous, proba=1.5 / 300):
             state["defi"] = None
             animer(state, "victoire")
             add_xp(state, 10)
-            from . import envies
+            from . import envies, guide
             envies.plaisir(state, "jeu", "defi")
+            guide.apres_defi(state)                 # guide fort contre le type du jour : +5 XP
             return
     if time.time() - d["start"] > defi_duree(state):
         log(state, t("core.defi.rate.log", cmd=d["cmd"]))

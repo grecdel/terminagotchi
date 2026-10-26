@@ -118,14 +118,16 @@ def _blocs():
                          'PROMPT_COMMAND="__tg_prompt${PROMPT_COMMAND:+; $PROMPT_COMMAND}"\n'
                          f"alias tg='\"{exe}\" \"{app}\"'\n"
                          "alias carte='tg carte'; alias quetes='tg quetes'; alias explique='tg explique'\n"
-                         "alias entrainement='tg entrainement'; alias exercice='tg entrainement'; alias badges='tg badges'")
+                         "alias entrainement='tg entrainement'; alias exercice='tg entrainement'; alias badges='tg badges'\n"
+                         "alias guide='tg guide'; alias types='tg types'; alias equipe='tg equipe'")
     if not IS_WIN and (shell.endswith("zsh") or zshrc.exists() or OSK == "mac"):
         blocs[zshrc] = ("setopt INC_APPEND_HISTORY\n"
                         f'__tg_prompt() {{ "{exe}" "{app}" prompt }}\n'
                         "autoload -Uz add-zsh-hook && add-zsh-hook precmd __tg_prompt\n"
                         f"alias tg='\"{exe}\" \"{app}\"'\n"
                         "alias carte='tg carte'; alias quetes='tg quetes'; alias explique='tg explique'\n"
-                        "alias entrainement='tg entrainement'; alias exercice='tg entrainement'; alias badges='tg badges'")
+                        "alias entrainement='tg entrainement'; alias exercice='tg entrainement'; alias badges='tg badges'\n"
+                        "alias guide='tg guide'; alias types='tg types'; alias equipe='tg equipe'")
     fish = home / ".config" / "fish"
     if not IS_WIN and fish.is_dir():
         blocs[fish / "conf.d" / "terminagotchi.fish"] = (
@@ -134,7 +136,9 @@ def _blocs():
             'function carte\n    tg carte\nend\nfunction quetes\n    tg quetes $argv\nend\n'
             'function explique\n    tg explique $argv\nend\n'
             'function entrainement\n    tg entrainement $argv\nend\nfunction exercice\n    tg entrainement $argv\nend\n'
-            'function badges\n    tg badges $argv\nend')
+            'function badges\n    tg badges $argv\nend\n'
+            'function guide\n    tg guide $argv\nend\nfunction types\n    tg types\nend\n'
+            'function equipe\n    tg equipe $argv\nend')
     for ps in ("powershell", "pwsh"):
         if shutil.which(ps):
             try:
@@ -150,7 +154,9 @@ def _blocs():
                                        'function carte { tg carte }\nfunction quetes { tg quetes @args }\n'
                                        'function explique { tg explique @args }\n'
                                        'function entrainement { tg entrainement @args }\n'
-                                       'function exercice { tg entrainement @args }\nfunction badges { tg badges @args }')
+                                       'function exercice { tg entrainement @args }\nfunction badges { tg badges @args }\n'
+                                       'function guide { tg guide @args }\nfunction types { tg types }\n'
+                                       'function equipe { tg equipe @args }')
     return blocs
 
 

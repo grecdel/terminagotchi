@@ -499,6 +499,7 @@ object Entrainement {
         val out = mutableListOf(t("ent.debut.titre", "famille" to nomFamille(ty.famille)), consigne(typ, p),
             t("ent.depart", "cmd" to vert(jeu, "cd ~/${jeu.terrain.name}/$SALLE")))
         for (x in idees(typ, p)) out.add(t("ent.idee", "cmd" to vert(jeu, x)))
+        Guide.indiceExercice(jeu, ty.famille)?.let { out.add(it) }      // le guide du bon type souffle une astuce de plus
         out.add(if (ty.reponse) t("ent.repondre", "cmd" to vert(jeu, COMMANDE)) else t("ent.verifier", "cmd" to vert(jeu, COMMANDE)))
         out.add(t("ent.chrono", "d" to ty.par, "o" to 2 * ty.par, "a" to 4 * ty.par))
         return out.joinToString("\n")
@@ -553,6 +554,7 @@ object Entrainement {
         val sec = "%.1f".format(java.util.Locale.ROOT, s)
         val out = mutableListOf(t("ent.reussi", "s" to sec, "icone" to ICONE_MEDAILLE[m], "medaille" to nomMedaille(m), "xp" to xp, "nom" to jeu.nom))
         if (nouveau && rec != null) out.add(t("ent.record", "avant" to "%.1f".format(java.util.Locale.ROOT, rec.optDouble("t"))))
+        Guide.bonusExercice(jeu, f, xp)?.let { out.add(it) }            // talent du guide : +25 % d'XP sur sa famille
         val apres = echelon(e, f)
         if (apres > avant) {
             val en = Badges.ECHELONS[apres]

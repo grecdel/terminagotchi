@@ -1,0 +1,110 @@
+{
+  "version": 1,
+  "description": "Types de biome du terrain Terminagotchi. Une créature vit dans la région du TYPE de sa variante affichée, quelle que soit sa famille (un mort-vivant de feu vit avec une machine de feu). Vérification : python3 donnees/verifier_biomes.py",
+  "regle_type": "type = type dont la liste « habitats » contient l'id de la variante affichée ; pour la variante « classique » : classique_par_espece[id de l'espèce] s'il existe, sinon classique_par_famille[famille].",
+  "parcelle": {
+    "taille": 4,
+    "creatures_par_parcelle": 1,
+    "dossier": "biome/<type>/parcelle_<n>",
+    "explication": "Une région est faite de parcelles de 4×4 cases ; une parcelle = un dossier = une pièce de la maison ; 1 créature par parcelle. Les créatures en trop attendent au refuge."
+  },
+  "capacite": {
+    "parcelles_de_depart": 2,
+    "parcelles_max_niveau_1": 2,
+    "parcelles_en_plus_par_niveau": 1,
+    "parcelles_max_absolu": 8,
+    "formule": "parcelles max par type = min(8, 1 + niveau de dressage)"
+  },
+  "types": [
+    {
+      "id": "feu", "nom": "Feu", "emoji": "🔥",
+      "couleurs": { "principale": "#e8562a", "sombre": "#3a2a30", "claire": "#ffb347", "accent": "#ffd36b" },
+      "sols": ["basalte", "lave", "cendre"],
+      "decors": ["rocher_volcanique", "geyser_de_feu", "braises"],
+      "habitats": ["volcan", "lave", "cendres", "soleil"]
+    },
+    {
+      "id": "eau", "nom": "Eau", "emoji": "💧",
+      "couleurs": { "principale": "#2f7fc4", "sombre": "#1d4f7a", "claire": "#7cc7ff", "accent": "#ff8a7a" },
+      "sols": ["eau", "sable_mouille", "corail"],
+      "decors": ["corail", "coquillage", "algues"],
+      "habitats": ["lagon", "corail", "abyssal", "eau_petillante"]
+    },
+    {
+      "id": "glace", "nom": "Glace", "emoji": "❄️",
+      "couleurs": { "principale": "#9fd8f2", "sombre": "#5689a3", "claire": "#f5fbff", "accent": "#b48cff" },
+      "sols": ["neige", "glace"],
+      "decors": ["sapin_enneige", "cristal", "bonhomme_de_neige"],
+      "habitats": ["glace", "toundra", "aurore", "cristal"]
+    },
+    {
+      "id": "plante", "nom": "Plante", "emoji": "🌿",
+      "couleurs": { "principale": "#5aa63a", "sombre": "#2f6b2c", "claire": "#86d45a", "accent": "#ff6fa8" },
+      "sols": ["herbe", "fleurs", "mousse"],
+      "decors": ["chene", "sapin", "champignon", "buisson"],
+      "habitats": ["forêt", "prairie", "jungle", "champignonniere"]
+    },
+    {
+      "id": "roche", "nom": "Roche", "emoji": "⛰️",
+      "couleurs": { "principale": "#c9a26a", "sombre": "#7d828a", "claire": "#efdb9c", "accent": "#b8945a" },
+      "sols": ["pierre", "sable", "gres"],
+      "decors": ["rocher", "cactus", "colonne_en_ruine"],
+      "habitats": ["montagne", "canyon", "desert", "sable", "ruines"]
+    },
+    {
+      "id": "ciel", "nom": "Ciel & Foudre", "emoji": "⚡",
+      "couleurs": { "principale": "#dfe9ff", "sombre": "#8b9ac4", "claire": "#ffffff", "accent": "#ffe14a" },
+      "sols": ["nuage", "nuage_d_orage"],
+      "decors": ["paratonnerre", "etoile_tombee", "eolienne"],
+      "habitats": ["nuage", "orage", "brume", "cosmique"]
+    },
+    {
+      "id": "ombre", "nom": "Ombre", "emoji": "🌙",
+      "couleurs": { "principale": "#4b3a6b", "sombre": "#251c38", "claire": "#8f7bc0", "accent": "#7dffcf" },
+      "sols": ["dalle_sombre", "terre_violette"],
+      "decors": ["pierre_tombale", "champignon_lumineux", "pierre_runique"],
+      "habitats": ["ombre", "crypte", "ossuaire", "lune", "arcane"]
+    },
+    {
+      "id": "machine", "nom": "Machine", "emoji": "⚙️",
+      "couleurs": { "principale": "#8a96a3", "sombre": "#4a525c", "claire": "#c9d2db", "accent": "#3df2ff" },
+      "sols": ["plaque_metal", "grille", "rouille"],
+      "decors": ["engrenage", "tuyau", "lampadaire_neon"],
+      "habitats": ["mecanique", "rouille", "neon"]
+    },
+    {
+      "id": "poison", "nom": "Poison", "emoji": "🧪",
+      "couleurs": { "principale": "#6a8f2a", "sombre": "#3b4a1c", "claire": "#b6ff4a", "accent": "#c04aff" },
+      "sols": ["vase", "mare_toxique"],
+      "decors": ["champignon_toxique", "roseau", "bulles"],
+      "habitats": ["toxique", "marais"]
+    }
+  ],
+  "classique_par_famille": {
+    "Démons": "feu",
+    "Élémentaires": "roche",
+    "Morts-vivants": "ombre",
+    "Bêtes monstrueuses": "roche",
+    "Sylvestres": "plante",
+    "Arthropodes": "plante",
+    "Abyssaux": "eau",
+    "Célestes": "ciel",
+    "Constructs": "machine",
+    "Aberrations": "poison"
+  },
+  "classique_par_espece": {
+    "ricanombre": "ombre", "ombrachne": "ombre", "cauchemarre": "ombre",
+    "etincelot": "feu", "givrichon": "glace", "gouttelin": "eau", "zapiot": "ciel", "bourrasquet": "ciel",
+    "fumerole": "feu", "ecumane": "eau", "givrarde": "glace", "fulgurox": "ciel", "cyclonaute": "ciel",
+    "magmastodonte": "feu", "tsunamir": "eau",
+    "vertebrine": "roche", "momiaou": "roche", "hurlombre": "glace", "brumaleine": "ciel", "drakosse": "feu",
+    "tatoublind": "roche", "louvacier": "glace", "mammouroc": "glace", "serpelage": "plante", "milgriffe": "plante",
+    "scorpiquant": "roche", "fourmidable": "roche", "araignoir": "ombre", "papillombre": "ombre", "cigalarme": "feu",
+    "cocondor": "glace", "libellance": "eau",
+    "lunacorne": "glace", "rugisoleil": "feu", "tortunivers": "glace",
+    "chaudrogre": "feu", "fondelin": "feu", "forgerain": "feu", "pavegarde": "roche", "golemmur": "roche",
+    "marionnoire": "ombre",
+    "zyeuton": "ombre", "pupillarque": "ombre", "chaosmere": "ombre", "mutaloupe": "glace", "fractalis": "glace",
+    "miroeil": "glace", "ventouzar": "ciel"
+  }
+}

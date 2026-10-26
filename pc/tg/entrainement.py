@@ -639,6 +639,10 @@ def lignes_exercice(state, c):
            f" {DIM}" + t("ent.depart", cmd=vert(state, f"cd ~/{core.TERRAIN.name}/{SALLE}")) + RESET]
     for x in idees(typ, p):
         out.append(f" {DIM}" + t("ent.idee", cmd=vert(state, x)) + RESET)
+    from . import guide
+    indice = guide.indice_exercice(state, f)          # le guide du bon type souffle une astuce de plus
+    if indice:
+        out.append(" " + indice)
     if TYPES[typ][4]:
         out.append(" " + t("ent.repondre", cmd=vert(state, commande())))
     else:
@@ -699,6 +703,10 @@ def reussir(state, cwd=None):
     out = [t("ent.reussi", s=f"{s:.1f}", icone=ICONE_MEDAILLE[m], medaille=nom_medaille(m), xp=xp, nom=state["name"])]
     if nouveau and rec is not None:
         out.append(t("ent.record", avant=f"{rec['t']:.1f}"))
+    from . import guide
+    _, bonus = guide.bonus_exercice(state, f, xp)       # talent du guide : +25 % d'XP sur sa famille
+    if bonus:
+        out.append(bonus)
     apres = echelon(e, f)
     if apres > avant:
         en = B.ECHELONS[apres]

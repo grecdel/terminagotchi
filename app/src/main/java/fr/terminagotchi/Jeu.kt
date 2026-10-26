@@ -284,6 +284,7 @@ class Jeu(ctx: Context) {
         Langue.init(ctx)
         Bestiaire.charger(ctx.applicationContext)
         Animations.init(ctx)
+        Guide.init(ctx)
     }
 
     private val app: Context = ctx.applicationContext ?: ctx

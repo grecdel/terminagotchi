@@ -102,7 +102,14 @@ class Commandes(
             "plan" -> Reponse(Donjon.plan(jeu, dossier()), couleur = JAUNE)
             "quetes", "quete", "journal" -> quetes(reste)
             "sac" -> Reponse(Donjon.texteSac(jeu), couleur = JAUNE)
-            "equipe" -> Reponse(Donjon.equipe(jeu, reste), saut = 2, couleur = JAUNE)
+            // equipe : la troupe ; equipe guide <nom> : changer de guide (Guide.kt) ; equipe <objet> : s'équiper au donjon
+            "equipe" -> when {
+                reste.isBlank() -> Reponse(Equipe.texte(jeu), couleur = ROSE)
+                reste.split(Regex("\\s+"))[0].lowercase() == "guide" -> Reponse(Guide.commande(jeu, reste.substringAfter(' ', "").trim()), couleur = ROSE)
+                else -> Reponse(Donjon.equipe(jeu, reste), saut = 2, couleur = JAUNE)
+            }
+            "guide" -> Reponse(Guide.commande(jeu, reste), couleur = ROSE)
+            "types" -> Reponse(Guide.ecranTypes(), couleur = ROSE)
             "bois" -> Reponse(Donjon.bois(jeu, reste), saut = 2, couleur = JAUNE)
             "attaque" -> Donjon.attaque(jeu, dossier()).let { Reponse(it.texte, saut = 6, couleur = JAUNE, aller = it.aller) }
             "ctf" -> Ctf.ouvrir(jeu, reste).let { Reponse(it.first, couleur = VERT, aller = it.second) }
