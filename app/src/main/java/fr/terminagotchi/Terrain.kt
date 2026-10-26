@@ -43,7 +43,7 @@ object Terrain {
     /** Le bandeau de l'écran principal tant que le terrain n'est pas reconstruit, ou null. */
     fun bandeau(jeu: Jeu): String? {
         val cmd = perdu(jeu) ?: return null
-        return t("app.terrain.titre") + "\n➜ " + Regles.piege(cmd) + "\n" + t("app.terrain.pourquoi")
+        return t("app.terrain.titre") + "\n➜ `" + Regles.piege(cmd) + "`\n" + t("app.terrain.pourquoi")
     }
 
     private fun ecrire(f: File, texte: String, executable: Boolean = false) {

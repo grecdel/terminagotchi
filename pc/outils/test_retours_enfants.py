@@ -60,11 +60,12 @@ def modifier(fn):
 
 
 def texte(lignes):
-    return ANSI.sub("", "\n".join(lignes) if isinstance(lignes, list) else lignes)
+    """Le texte tel que l'enfant le lit (sans couleurs, sans les backticks des commandes en vert)."""
+    return langue.sans_marques(ANSI.sub("", "\n".join(lignes) if isinstance(lignes, list) else lignes))
 
 
 def bulles(st):
-    return " | ".join([(st.get("bubble") or [""])[0]] + [b[0] for b in st.get("bulles", [])])
+    return langue.sans_marques(" | ".join([(st.get("bubble") or [""])[0]] + [b[0] for b in st.get("bulles", [])]))
 
 
 def niveau(n):
@@ -304,7 +305,7 @@ def tape_sans_lancer(cmd):
 modifier(lambda s: (s.__setitem__("bubble", None), s.__setitem__("bulles", [])))
 st = tape_sans_lancer("mkdir")
 verifier("Il manque le nom" in bulles(st) and "Essaie : mkdir " in bulles(st), f"mkdir seul → bulle : {bulles(st)}")
-verifier(any("Essaie : mkdir " in m for m in st["log"][-3:]), "… et la même aide au-dessus de l'invite (journal)")
+verifier(any("Essaie : mkdir " in langue.sans_marques(m) for m in st["log"][-3:]), "… et la même aide au-dessus de l'invite (journal)")
 modifier(lambda s: (s.__setitem__("bubble", None), s.__setitem__("bulles", [])))
 st = tape_sans_lancer("cat")
 verifier("cat nid/repas.txt" in bulles(st) and "Ctrl+C" in bulles(st), f"cat seul → bulle : {bulles(st)}")
@@ -324,7 +325,7 @@ for cmd in ("mkdir", "touch", "cat", "cp", "mv", "rm", "rmdir", "grep", "chmod",
 # la leçon en cours demande cette commande : c'est elle qui est proposée
 _lc = lecons.lecon_courante
 lecons.lecon_courante = lambda s: ({"steps": [{"cmd": "mkdir nid"}]}, "")
-verifier("Essaie : mkdir nid" in exemples.aide({"step": 0, "xp": 0}, "mkdir"), "pendant la leçon « mkdir nid » : Essaie : mkdir nid")
+verifier("Essaie : `mkdir nid`" in exemples.aide({"step": 0, "xp": 0}, "mkdir"), "pendant la leçon « mkdir nid » : Essaie : mkdir nid")
 lecons.lecon_courante = _lc
 
 # Les exemples du lexique marchent vraiment depuis le terrain de jeu (dans l'ordre du lexique)

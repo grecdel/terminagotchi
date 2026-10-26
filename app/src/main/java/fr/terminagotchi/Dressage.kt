@@ -685,8 +685,10 @@ object Dressage {
 
     private fun SpannableStringBuilder.texte(t: String, couleur: Int, gras: Boolean = false, taille: Float = 1f): SpannableStringBuilder {
         val a = length
-        append(t)
+        val (txt, cmds) = Vert.passages(t)                // `commande` : en vert par-dessus la couleur du texte
+        append(txt)
         setSpan(ForegroundColorSpan(couleur), a, length, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
+        for ((x, y) in cmds) setSpan(ForegroundColorSpan(Vert.COULEUR), a + x, a + y, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
         if (gras) setSpan(StyleSpan(Typeface.BOLD), a, length, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
         if (taille != 1f) setSpan(RelativeSizeSpan(taille), a, length, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
         return this
@@ -799,7 +801,7 @@ object Dressage {
         sb.texte(col(2), 0xFF87D7FF.toInt(), true).texte(f(ep.explication) + "\n", 0xFFD0D0E0.toInt())
         val duree = d.optInt("duree")
         val montre = r == null || ep.fam == "Rencontre" || d.optBoolean("exemple_tout_de_suite") || r <= duree * (1 - partExemple(jeu))
-        if (montre) sb.texte(col(3), 0xFF87FF87.toInt(), true).texte(Regles.piege(Mots.remplir(ep.exemple, valeurs)) + "\n", 0xFF87FF87.toInt())
+        if (montre) sb.texte(col(3), 0xFF87FF87.toInt(), true).texte("`" + Regles.piege(Mots.remplir(ep.exemple, valeurs)) + "`\n", 0xFF87FF87.toInt())
         else sb.texte(col(3), 0xFF87FF87.toInt(), true)
             .texte(t("dressa.exemple_dans", "s" to r!! - (duree * (1 - partExemple(jeu))).toInt()) + "\n", 0xFF808098.toInt())
         d.optString("indice").ifEmpty { null }?.let { sb.texte(col(5), 0xFFFFAF00.toInt(), true).texte(it + "\n", 0xFFFFAF00.toInt()) }
@@ -828,7 +830,7 @@ object Dressage {
         for ((k, coup) in coups.withIndex()) {
             val (c, expl, coul) = coup
             val mot = Langue.ajuster(c, n)
-            sb.texte("  " + (if (k < coups.size - 1) Regles.piege(mot) else mot), coul, true).texte("→ $expl\n", 0xFFD0D0E0.toInt())
+            sb.texte("  " + (if (k < coups.size - 1) "`" + Regles.piege(mot) + "`" else mot), coul, true).texte("→ $expl\n", 0xFFD0D0E0.toInt())
         }
         sb.texte(t("dress.combat.ensuite"), 0xFF808098.toInt())
         return sb

@@ -704,7 +704,7 @@ object Quetes {
         val c = Histoire.leconCourante(jeu)
         if (c != null) {
             out.add("  ▶ ${c.etiquette} · ${c.titre}")
-            out.add("     ➜ ${Regles.piege(c.etapes[jeu.etape].cmd)}")
+            out.add("     ➜ `${Regles.piege(c.etapes[jeu.etape].cmd)}`")
         } else {
             out.add("  " + (Histoire.bandeau(jeu)?.second ?: t("qu.journal.rien")))
         }

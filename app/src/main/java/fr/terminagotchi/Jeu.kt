@@ -695,7 +695,7 @@ class Jeu(ctx: Context) {
                 out.add(t("leca.prochaine", "n" to c.niveau, "xp" to manque))
             } else {
                 val e = c.etapes[etape]
-                out.add("${c.titre} (${etape + 1}/${c.etapes.size}) · ${e.dit}\n➜ ${Regles.piege(e.cmd)}")
+                out.add("${c.titre} (${etape + 1}/${c.etapes.size}) · ${e.dit}\n➜ `${Regles.piege(e.cmd)}`")
                 if (DEPUIS.any { e.cmd.startsWith(it) } || "nid/" in e.cmd || e.cmd.endsWith(" nid") || "reserve.txt" in e.cmd) {
                     out.add(t("app.lecon.depuis", "terrain" to Mots.terme("terrain", Mots.palier(this)), "cmd" to "cd ~/${terrain.name}"))
                 }

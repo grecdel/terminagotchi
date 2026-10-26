@@ -809,7 +809,7 @@ def lignes_ecran(state, largeur_txt=62):
     if ex:
         seuil = d["duree"] * (1 - bonus(state)["exemple"]) if d["duree"] else None
         if r is None or fid.startswith("Rencontre:") or d.get("exemple_tout_de_suite") or r <= d["duree"] - seuil:
-            out.append(f" {fg(120)}{BOLD}{col['tape']}{RESET}{fg(120)}{piege(ex)}{RESET}")
+            out.append(f" {fg(120)}{BOLD}{col['tape']}{RESET}{fg(120)}`{piege(ex)}`{RESET}")
         else:
             out.append(f" {fg(120)}{col['tape']}{RESET}{DIM}"
                        + t("dress.exemple_dans", s=f"{r - (d['duree'] - seuil):.0f}") + RESET)
@@ -842,7 +842,9 @@ def _lignes_combat(cb, largeur_txt=62):
               (t("dress.combat.autre"), t("dress.combat.attaque.aide"), 250)]
     lc = max(largeur(c) for c, _, _ in coups) + 2
     for c, expl, coul in coups:
-        out.append(f"   {fg(coul)}{BOLD}{piege(ajuster(c, lc)) if c != coups[-1][0] else ajuster(c, lc)}{RESET}→ {expl}")
+        cmd = piege(c) if c != coups[-1][0] else c                    # « autre commande » : pas une commande à taper
+        cmd = f"`{cmd}`" if c != coups[-1][0] else cmd
+        out.append(f"   {fg(coul)}{BOLD}{ajuster(cmd, lc)}{RESET}→ {expl}")
     out.append(f" {DIM}" + t("dress.combat.ensuite") + RESET)
     return out
 

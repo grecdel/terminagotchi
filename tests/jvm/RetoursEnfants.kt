@@ -35,6 +35,8 @@ import fr.terminagotchi.Shell
 import fr.terminagotchi.Terrain
 import fr.terminagotchi.Tirage
 import fr.terminagotchi.Tour
+import fr.terminagotchi.Vert
+import fr.terminagotchi.t
 import org.json.JSONArray
 import org.json.JSONObject
 import java.io.File
@@ -81,7 +83,8 @@ fun tape(cmd: String, ou: File? = null) {
 fun niveau(n: Int) { jeu.xp = maxOf(jeu.xp, 10 * (n - 1) * (n - 1)) }
 fun lec(): Pair<String?, Int> = Histoire.leconCourante(jeu)?.id to jeu.etape
 
-fun bulles() = (listOf(jeu.bulle) + jeu.bulles.map { it.first }).joinToString(" | ")
+/** Les bulles telles que l'enfant les lit (sans les backticks des commandes en vert, voir Vert.kt). */
+fun bulles() = Vert.sansMarques((listOf(jeu.bulle) + jeu.bulles.map { it.first }).joinToString(" | "))
 
 /** Les champs tirés de la graine sont tous dans l'individu, avec les mêmes valeurs. */
 fun inclus(champs: JSONObject, ind: JSONObject) = champs.keys().asSequence().all { k -> ind.has(k) && ind.get(k).toString() == champs.get(k).toString() }
@@ -145,7 +148,7 @@ fun main(args: Array<String>) {
     verifier(Terrain.perdu(jeu) == "mkdir -p ~/terrain_terminagotchi/nid", "détecté : la commande proposée est « ${Terrain.perdu(jeu)} »")
     verifier("mkdir -p ~/terrain_terminagotchi/nid" in bulles(), "une bulle claire donne la commande")
     val bandeau = Terrain.bandeau(jeu) ?: ""
-    verifier("➜ mk" in bandeau && "~/terrain_terminagotchi/nid" in bandeau, "le bandeau (avec la commande) reste sur l'écran principal")
+    verifier("➜ mk" in Vert.sansMarques(bandeau) && "~/terrain_terminagotchi/nid" in bandeau, "le bandeau (avec la commande) reste sur l'écran principal")
     verifier(!Explo.debloquee(jeu), "pas de monstre tant que le nid n'existe pas")
     tape("mkdir -p ~/terrain_terminagotchi/nid")
     verifier(Terrain.perdu(jeu) == null && Terrain.bandeau(jeu) == null, "reconstruit : plus d'alerte")
@@ -314,7 +317,7 @@ fun main(args: Array<String>) {
     viderBulles()
     val aideMkdir = tapeSortie("mkdir")
     verifier("Il manque le nom" in bulles() && "Essaie : mkdir " in bulles(), "mkdir seul → bulle : ${bulles()}")
-    verifier("Essaie : mkdir " in aideMkdir, "… et la même aide écrite dans le terminal (sous la sortie)")
+    verifier("Essaie : mkdir " in Vert.sansMarques(aideMkdir), "… et la même aide écrite dans le terminal (sous la sortie)")
     viderBulles()
     tapeSortie("cp nid/repas.txt")
     verifier("DEUX noms" in bulles() && "cp nid/repas.txt copie.txt" in bulles(), "cp avec un seul nom → ${bulles()}")
@@ -349,6 +352,26 @@ fun main(args: Array<String>) {
     verifier(Exemples.lexique(lexMkdir) == "mkdir cabane", "lexique : mkdir → ↳ exemple : mkdir cabane")
     verifier(Regles.LEXIQUE.filter { it.cmd == "carte" }.map { Exemples.lexique(it) } == listOf("carte tour eiffel", null),
         "carte (téléphone) → carte tour eiffel ; carte (la maison) : rien à ajouter")
+
+    println("7. Les commandes à taper, en vert")
+    viderBulles()
+    tapeSortie("mkdir")
+    val (lu, verts) = Vert.passages(jeu.bulle)
+    verifier(verts.map { lu.substring(it.first, it.second) } == listOf("mkdir", "mkdir cabane"),
+        "bulle « mkdir » : en vert ${verts.map { lu.substring(it.first, it.second) }}, le reste dans la couleur de la bulle")
+    verifier("`" !in lu && lu.contains("Essaie : mkdir cabane"), "à l'écran, plus de backticks ; les caractères de la commande sont intacts")
+    val lecon = jeu.texteLecon() ?: ""
+    verifier(Vert.passages(lecon).second.isNotEmpty(), "la leçon montre sa commande (➜ …) en vert")
+    val ex = Vert.passages(t("lex.exemple", "ex" to "mkdir cabane"))
+    verifier(ex.second.size == 1 && ex.first.substring(ex.second[0].first, ex.second[0].second) == "mkdir cabane",
+        "lexique : « ${ex.first} » avec mkdir cabane en vert")
+    Langue.definir("ar")
+    val ar = t("aide.manque.mkdir", "cmd" to "mkdir", "ex" to "mkdir cabane", "un_dossier" to "غرفة")
+    val (arLu, arVerts) = Vert.passages(ar)
+    verifier(arVerts.size == 2 && arVerts.all { (a, b) -> arLu[a] == '\u2066' && arLu[b - 1] == '\u2069' } &&
+        arVerts.map { (a, b) -> arLu.substring(a + 1, b - 1) } == listOf("mkdir", "mkdir cabane"),
+        "arabe : chaque commande verte est isolée de gauche à droite (LRI … PDI), sans changer ses caractères")
+    Langue.definir("fr")
 
     println("\n$ok réussis, $ko échoués")
     System.exit(if (ko > 0) 1 else 0)

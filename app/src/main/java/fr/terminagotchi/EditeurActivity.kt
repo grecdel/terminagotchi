@@ -35,7 +35,7 @@ class EditeurActivity : Activity() {
         racine.addView(titre)
 
         val aide = TextView(this)
-        aide.text = if (fichier.name == "carte.txt") Doom.legende() else t("edite.aide")
+        aide.text = Vert.rendre(if (fichier.name == "carte.txt") Doom.legende() else t("edite.aide"))
         aide.setTextColor(0xFF9A9AB0.toInt())
         aide.textSize = 12f
         racine.addView(aide)

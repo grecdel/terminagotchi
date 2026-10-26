@@ -140,12 +140,13 @@ object Langue {
         "(?:[\\x20-\\x7E …À-ÖØ-öø-ɏаседорхуіѕԁһј]*[$LAT/_}\\]\"'*…~>)%])?")
     private val LETTRE = Regex("[$LAT]")
     private val ARABE = Regex("[؀-ۿݐ-ݿﭐ-﷿ﹰ-﻿]")
-    private val BALISE = Regex("¤[^¤]*¤")
+    private val BALISE = Regex("¤[^¤]*¤|`[^`\n]+`")
 
     /**
      * En arabe et en ourdou : isole chaque morceau de code latin (LRI … PDI) pour qu'il reste lisible de gauche
      * à droite au milieu de la phrase, et commence chaque ligne écrite en arabe par RLM (la ligne s'aligne à
-     * droite même si elle commence par une commande). Ne touche pas aux balises de dessin ¤…¤.
+     * droite même si elle commence par une commande). Ne touche pas aux balises de dessin ¤…¤ ; une commande
+     * balisée `…` est isolée en entier (`⁦mkdir cabane⁩`), les backticks restent autour pour le vert.
      * Dans les autres langues, le texte ne change pas.
      */
     fun bidi(s: String): String {
@@ -154,7 +155,9 @@ object Langue {
         var i = 0
         fun isoler(morceau: String) = CODE.replace(morceau) { m -> if (LETTRE.containsMatchIn(m.value)) LRI + m.value + PDI else m.value }
         for (b in BALISE.findAll(s)) {
-            sb.append(isoler(s.substring(i, b.range.first))).append(b.value)
+            // une commande `…` : isolée de gauche à droite en entier (elle reste verte, voir Vert.kt)
+            val v = if (b.value.startsWith("`")) "`" + LRI + b.value.substring(1, b.value.length - 1) + PDI + "`" else b.value
+            sb.append(isoler(s.substring(i, b.range.first))).append(v)
             i = b.range.last + 1
         }
         sb.append(isoler(s.substring(i)))
@@ -164,6 +167,7 @@ object Langue {
     // ---------------------------------------------------------------- largeur d'affichage
     /** Colonnes occupées par un caractère : 2 pour le chinois, le japonais, le coréen (et les émojis larges), 0 pour les marques. */
     fun largeurCar(cp: Int): Int {
+        if (cp == '`'.code) return 0                 // le marqueur des commandes (vertes, voir Vert.kt) ne s'affiche pas
         val type = Character.getType(cp)
         if (type == Character.NON_SPACING_MARK.toInt() || type == Character.ENCLOSING_MARK.toInt() || type == Character.FORMAT.toInt()) return 0
         return if ((cp in 0x1100..0x115F) || (cp in 0x2E80..0x303E) || (cp in 0x3041..0x33FF) || (cp in 0x3400..0x4DBF) ||

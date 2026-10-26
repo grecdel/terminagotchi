@@ -208,11 +208,11 @@ object Recherche {
         for ((s, e) in scores.take(3)) {
             if (s < seuil) continue
             if (e.etapes.size == 1) {
-                sb.append("• ${e.titre}\n   ➜ ${Regles.piege(e.etapes[0].first)}\n")
+                sb.append("• ${e.titre}\n   ➜ `${Regles.piege(e.etapes[0].first)}`\n")
                 (e.image ?: image(e.etapes[0].first))?.takeIf { it != e.titre }?.let { sb.append("   🏠 $it\n") }
             } else {
                 sb.append("• " + t("reg.recette", "titre" to e.titre) + "\n")
-                e.etapes.forEachIndexed { i, (c, _) -> sb.append("   ${i + 1}. ${Regles.piege(c)}   (${e.explication(i)})\n") }
+                e.etapes.forEachIndexed { i, (c, _) -> sb.append("   ${i + 1}. `${Regles.piege(c)}`   (${e.explication(i)})\n") }
             }
         }
         sb.append(t("rech.tape"))

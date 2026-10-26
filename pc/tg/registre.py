@@ -448,7 +448,7 @@ def afficher(resultats, nom):
     for e in resultats:
         if e["type"] == "cmd":
             out.append(f" {BOLD}{t(e['desc'])}{RESET}")
-            out.append(f"   {fg(226)}➜ {piege(e['cmd'])}{RESET}")
+            out.append(f"   {fg(226)}➜ `{piege(e['cmd'])}`{RESET}")
             if image(e):
                 out.append(f"   {fg(147)}🏠 {image(e)}{RESET}")
             if e["danger"]:
@@ -458,7 +458,7 @@ def afficher(resultats, nom):
         else:
             out.append(f" {BOLD}" + t("reg.recette", titre=titre(e)) + RESET)
             for i, (cmd, expl) in enumerate(e["steps"], 1):
-                out.append(f"   {i}. {fg(226)}{piege(cmd)}{RESET}  {DIM}{t(expl)}{RESET}")
+                out.append(f"   {i}. {fg(226)}`{piege(cmd)}`{RESET}  {DIM}{t(expl)}{RESET}")
         out.append("")
     return out
 

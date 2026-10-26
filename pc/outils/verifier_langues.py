@@ -8,6 +8,8 @@ Vérifie, pour chaque langue (pc/tg/langues/xx.json) par rapport au français (f
   - que chaque {param} du français est présent dans la traduction (et rien d'autre) ;
   - que l'emoji de tête est gardé (il déclenche les notifications : ✨ ⬆ 🎓 🌳 …) ;
   - que les phrases criées (dress.fichier.cri) restent en MAJUSCULES ASCII (tr A-Z a-z) ;
+  - que chaque traduction a autant de commandes balisées `…` (affichées en vert) que le français, et que
+    chaque passage `…` tient sur une ligne ;
 Et dans le code (pc/tg/*.py) : que toutes les clés utilisées existent en français.
 Code de sortie 1 s'il y a une erreur.
 """
@@ -49,6 +51,29 @@ def charger(code):
         return json.load(f)
 
 
+def marqueurs(v):
+    """Nombre de backticks (les commandes à taper, en vert) de chaque texte d'une valeur."""
+    return [x.count("`") for x in (v if isinstance(v, list) else [v]) if isinstance(x, str)]
+
+
+def marques_ok(code, k, v):
+    """Chaque ligne a un nombre pair de backticks : un passage `…` ne coupe jamais une ligne."""
+    for x in (v if isinstance(v, list) else [v]):
+        if isinstance(x, str) and any(l.count("`") % 2 for l in x.split("\n")):
+            return [f"{code}: {k} : passage `…` ouvert sans être fermé sur la même ligne"]
+    return []
+
+
+def verifier_marques(code, k, v, w):
+    """Autant de commandes balisées que le français (phrase par phrase si les listes ont la même longueur)."""
+    a, b = marqueurs(v), marqueurs(w)
+    if isinstance(v, list) and isinstance(w, list) and len(a) != len(b):
+        a, b = [sum(a)], [sum(b)]
+    if a != b:
+        return [f"{code}: {k} : {sum(b)} marqueur(s) ` au lieu de {sum(a)} (les commandes en vert)"]
+    return marques_ok(code, k, w)
+
+
 def verifier_langue(code, fr, d):
     err = []
     for k in fr:
@@ -61,6 +86,8 @@ def verifier_langue(code, fr, d):
         if k not in d:
             continue
         w = d[k]
+        if type(v) is type(w):
+            err += verifier_marques(code, k, v, w)
         if type(v) is not type(w):
             err.append(f"{code}: {k} : type différent ({type(v).__name__} ≠ {type(w).__name__})")
             continue
@@ -123,7 +150,8 @@ def main():
         if k.endswith(".") or k in fr or any(x.startswith(k + ".") for x in fr):
             continue
         erreurs.append(f"code : clé absente de fr.json : {k} ({ou})")
-    for v in fr.values():
+    for k, v in fr.items():
+        erreurs += marques_ok("fr", k, v)
         for x in (v if isinstance(v, list) else [v]):
             if "<accolade" in " ".join(params(x)):
                 erreurs.append(f"fr : accolade mal fermée dans « {x[:60]} »")

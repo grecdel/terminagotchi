@@ -33,7 +33,7 @@ class WidgetCreature : AppWidgetProvider() {
             if (jeu.existe) {
                 v.setTextViewText(R.id.w_titre, jeu.titre())
                 v.setTextViewText(R.id.w_faim, jeu.texteFaim())
-                v.setTextViewText(R.id.w_info, jeu.infoWidget())
+                v.setTextViewText(R.id.w_info, Vert.rendre(jeu.infoWidget()))
             } else {
                 v.setTextViewText(R.id.w_titre, t("widget.oeuf"))
                 v.setTextViewText(R.id.w_faim, "")

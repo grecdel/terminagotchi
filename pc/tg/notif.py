@@ -4,7 +4,7 @@ import shutil
 import subprocess
 
 from . import core, lecons, sprites
-from .langue import t
+from .langue import sans_marques, t
 from .plateforme import IS_WIN, OSK
 
 IMAGE = core.SAVE_DIR / "creature.png"
@@ -28,6 +28,7 @@ def systeme():
 
 def _lancer(args):
     """Lance sans attendre ni afficher quoi que ce soit."""
+    args = [sans_marques(a) for a in args]     # pas de backticks dans les notifications (voir langue.rendre)
     try:
         kw = {"stdout": subprocess.DEVNULL, "stderr": subprocess.DEVNULL, "stdin": subprocess.DEVNULL}
         if IS_WIN:

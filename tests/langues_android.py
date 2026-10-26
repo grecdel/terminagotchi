@@ -16,6 +16,7 @@ Pour chaque langue, par rapport au français (fr.json) :
   - les phrases criées (dress.fichier.cri) restent en MAJUSCULES ASCII (la commande tr A-Z a-z) ;
   - les commandes à taper (compte creer, partie charger 2, langue en…) ne sont pas traduites ;
   - les mots du menu des parties (part.oui, part.mots.*) ne sont pas vides.
+  - autant de commandes balisées `…` (affichées en vert) que le français, chaque passage sur une seule ligne.
 Et dans le code Kotlin : toutes les clés utilisées existent en français.
 """
 import glob
@@ -89,6 +90,27 @@ def synchroniser(fr):
     print(f"--sync : {len(com)} clés communes recopiées depuis le PC")
 
 
+def marqueurs(v):
+    return [x.count("`") for x in (v if isinstance(v, list) else [v]) if isinstance(x, str)]
+
+
+def marques_ok(code, k, v):
+    for x in (v if isinstance(v, list) else [v]):
+        if isinstance(x, str) and any(l.count("`") % 2 for l in x.split("\n")):
+            return [f"{code}: {k} : passage `…` ouvert sans être fermé sur la même ligne"]
+    return []
+
+
+def verifier_marques(code, k, v, w):
+    """Autant de commandes balisées `…` que le français (phrase par phrase si les listes ont la même longueur)."""
+    a, b = marqueurs(v), marqueurs(w)
+    if isinstance(v, list) and isinstance(w, list) and len(a) != len(b):
+        a, b = [sum(a)], [sum(b)]
+    if a != b:
+        return [f"{code}: {k} : {sum(b)} marqueur(s) ` au lieu de {sum(a)} (les commandes en vert)"]
+    return marques_ok(code, k, w)
+
+
 def verifier_langue(code, fr, d, pc, com):
     err = []
     for k in fr:
@@ -104,6 +126,7 @@ def verifier_langue(code, fr, d, pc, com):
         if type(v) is not type(w):
             err.append(f"{code}: {k} : type différent ({type(v).__name__} ≠ {type(w).__name__})")
             continue
+        err += verifier_marques(code, k, v, w)
         if k in com and pc is not None and k in pc and pc[k] != w:
             err.append(f"{code}: {k} : clé commune avec le PC mais traduction différente (lance --sync)")
         if isinstance(v, list):
@@ -172,6 +195,8 @@ def main():
         if re.search(r"\.(txt|sh|json|html|bin)$", k):          # un nom de fichier (carte.txt), pas une clé
             continue
         erreurs.append(f"code : clé absente de fr.json : {k} ({ou})")
+    for k, v in fr.items():
+        erreurs += marques_ok("fr", k, v)
     for k in ("part.oui", "part.non", "part.mots.continuer", "part.mots.nouvelle", "part.mots.charger", "part.mots.compte"):
         if not fr.get(k):
             erreurs.append(f"fr : {k} manque (mots du menu des parties)")

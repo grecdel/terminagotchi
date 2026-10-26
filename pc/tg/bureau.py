@@ -11,7 +11,7 @@ import time
 
 from . import core, lecons, sprites
 from . import langue
-from .langue import t
+from .langue import sans_marques, t
 from .plateforme import IS_WIN, OSK, piege
 
 PX = 7                 # taille d'un pixel de la créature à l'écran
@@ -130,7 +130,7 @@ class Bureau:
     # --------------------------------------------------------- dessin
     def _bulle(self, texte, y_bas):
         cv = self.cv
-        t = cv.create_text(W // 2, 10, text=texte, width=W - 30, font=("TkDefaultFont", 9),
+        t = cv.create_text(W // 2, 10, text=sans_marques(texte), width=W - 30, font=("TkDefaultFont", 9),
                            fill="#1e1e2e", anchor="n")
         x1, y1, x2, y2 = cv.bbox(t)
         dy = max(4, y_bas - y2 - 14)
@@ -145,7 +145,7 @@ class Bureau:
         cv, st = self.cv, self.state
         cv.delete("all")
         if not st:
-            cv.create_text(W // 2, H // 2, text=t("bur.pas_de_creature"),
+            cv.create_text(W // 2, H // 2, text=sans_marques(t("bur.pas_de_creature")),
                            fill="#bbbbbb", font=("TkDefaultFont", 9))
             return
         if self.carte:
@@ -174,14 +174,14 @@ class Bureau:
         # textes flottants
         for f in list(self.flottants):
             f[1] += 1
-            cv.create_text(x0 + sw + 4, y0 + 10 - f[1] * 2, text=f[0], fill="#ffd75f",
+            cv.create_text(x0 + sw + 4, y0 + 10 - f[1] * 2, text=sans_marques(f[0]), fill="#ffd75f",
                            font=("TkDefaultFont", 9, "bold"), anchor="w")
             if f[1] > 15:
                 self.flottants.remove(f)
 
         # nom, niveau, faim
         lvl = core.level(st["xp"])
-        cv.create_text(W // 2, H - 22, text=f"{st['name']} · " + t("dress.niv", n=lvl), fill="#e6e6e6",
+        cv.create_text(W // 2, H - 22, text=sans_marques(f"{st['name']} · " + t("dress.niv", n=lvl)), fill="#e6e6e6",
                        font=("TkDefaultFont", 9, "bold"))
         jx, jy = W // 2 - 40, H - 10
         coul = "#5fd787" if st["hunger"] >= 60 else "#ffd75f" if st["hunger"] >= 30 else "#ff5f5f"
@@ -207,7 +207,7 @@ class Bureau:
         if les and lvl >= les["niveau"]:
             lignes.append(t("comp.lecon", cmd=piege(les["steps"][st["step"]]["cmd"])))
         self.cv.create_rectangle(8, 8, W - 8, 92, fill="#2a2a40", outline="#5f5f87")
-        self.cv.create_text(16, 14, text="\n".join(lignes), fill="#e6e6e6", anchor="nw",
+        self.cv.create_text(16, 14, text=sans_marques("\n".join(lignes)), fill="#e6e6e6", anchor="nw",
                             font=("TkDefaultFont", 8), width=W - 30)
 
 

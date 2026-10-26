@@ -531,11 +531,15 @@ class TerminalActivity : Activity() {
      */
     private fun miseEnForme(texte: String, couleur: Int?): SpannableStringBuilder {
         val sb = SpannableStringBuilder()
-        val motif = Regex("¤([a-z0-9_]+)(?::([^:¤*+]+))?(?::([a-z]+))?(?:\\*([0-9.]*))?(\\+)?¤|§([^§]*)§")
+        val motif = Regex("¤([a-z0-9_]+)(?::([^:¤*+]+))?(?::([a-z]+))?(?:\\*([0-9.]*))?(\\+)?¤|§([^§]*)§|`([^`\n]+)`")
         var i = 0
         for (m in motif.findAll(texte)) {
             sb.append(texte, i, m.range.first)
-            if (m.groupValues[1].isNotEmpty()) {
+            if (m.groups[7] != null) {                    // `commande` : en vert (voir Vert.kt)
+                val debut = sb.length
+                sb.append(m.groupValues[7])
+                sb.setSpan(ForegroundColorSpan(Vert.COULEUR), debut, sb.length, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
+            } else if (m.groupValues[1].isNotEmpty()) {
                 val e = Bestiaire.espece(m.groupValues[1])
                 if (e != null) {
                     val debut = sb.length
@@ -647,8 +651,8 @@ class TerminalActivity : Activity() {
         val entete = t("lex.carnet.titre", "nom" to jeu.nom) + "\n" +
             t("term.lexique.entete", "n" to connues, "total" to Regles.LEXIQUE.size) + "\n" +
             "↳ " + t("lex.exemples.ou", "cmd" to "cd ~/${jeu.terrain.name}") + "\n"
-        sb.append(entete)
-        sb.setSpan(ForegroundColorSpan(0xFFFF87FF.toInt()), 0, entete.length, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
+        Vert.ajouter(sb, entete)
+        sb.setSpan(ForegroundColorSpan(0xFFFF87FF.toInt()), 0, sb.length, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
         var section = ""
         for (m in Regles.LEXIQUE) {
             val cmd = m.cmd
@@ -668,7 +672,7 @@ class TerminalActivity : Activity() {
             val debutCmd = sb.length
             sb.append(cmd)
             sb.setSpan(StyleSpan(Typeface.BOLD), debutCmd, sb.length, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
-            sb.append("  $desc")
+            Vert.ajouter(sb, "  $desc")
             val couleur = if (pc) 0xFF45455A.toInt() else if (goutee) 0xFFFFFFFF.toInt() else 0xFF6A6A85.toInt()
             sb.setSpan(ForegroundColorSpan(couleur), debut, sb.length, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
             // le moment de l'histoire où la commande a été apprise (carnet d'aventure)
@@ -682,13 +686,22 @@ class TerminalActivity : Activity() {
             // un exemple prêt à taper (depuis le terrain de jeu), voir Exemples.kt
             Exemples.lexique(m)?.let { ex ->
                 val e = sb.length
-                sb.append("    ↳ " + t("lex.exemple", "ex" to ex) + "\n")
+                Vert.ajouter(sb, "    ↳ " + t("lex.exemple", "ex" to ex) + "\n")
                 sb.setSpan(ForegroundColorSpan(0xFF87AFD7.toInt()), e, sb.length, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
             }
         }
         val d = sb.length
-        sb.append(Histoire.souvenirs(jeu).joinToString("\n"))
+        Vert.ajouter(sb, Histoire.souvenirs(jeu).joinToString("\n"))
         sb.setSpan(ForegroundColorSpan(0xFFAFAFFF.toInt()), d, sb.length, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
+        // les couleurs de ligne ont été posées après : le vert des commandes repasse par-dessus
+        for (sp in sb.getSpans(0, sb.length, ForegroundColorSpan::class.java)) {
+            if (sp.foregroundColor == Vert.COULEUR) {
+                val a = sb.getSpanStart(sp)
+                val b = sb.getSpanEnd(sp)
+                sb.removeSpan(sp)
+                sb.setSpan(sp, a, b, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
+            }
+        }
         lexiqueTexte.text = sb
     }
 
@@ -799,14 +812,14 @@ class TerminalActivity : Activity() {
         invite.text = if (::menu.isInitialized && menu.ouvert) ">" else if (jeu.existe) "${shell.chemin()} $" else t("term.invite_nom")
         val b = jeu.bulleActive()
         bulle.visibility = if (b.isEmpty()) View.GONE else View.VISIBLE
-        bulle.text = b
+        bulle.text = Vert.rendre(b)
         val defi = Defis.actif(jeu)
         val panneau = Dressage.panneau(jeu, resources, imageCombat)
         // terrain effacé : le bandeau avec la commande à taper reste au-dessus de la leçon
         val l: CharSequence? = panneau ?: if (defi != null) t("app.defi", "cmd" to Regles.piege(defi), "s" to Defis.resteSecondes(jeu))
             else if (jeu.existe) listOfNotNull(Terrain.bandeau(jeu), jeu.texteLecon()).joinToString("\n\n").ifEmpty { null } else null
         lecon.visibility = if (l == null) View.GONE else View.VISIBLE
-        lecon.text = l ?: ""
+        lecon.text = Vert.rendre(l ?: "")
         // le panneau du dressage ne doit pas écraser la ligne de saisie (un champ sans hauteur ne peut plus recevoir
         // ce qu'on tape) : on cache la fenêtre d'observation, on réduit la sortie, et le panneau défile s'il est trop haut
         val dp = resources.displayMetrics.density

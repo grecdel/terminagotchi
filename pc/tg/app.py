@@ -84,7 +84,7 @@ def render(state, frame, interactif, anim=None):
     perdu = state.get("terrain_perdu")
     if perdu:                                 # le terrain a été effacé : la commande pour le reconstruire
         lines.append(title_line(t("app.terrain.titre"), 196))
-        lines.append(f"   {fg(226)}➜ {piege(perdu['cmd'])}{RESET}")
+        lines.append(f"   {fg(226)}➜ `{piege(perdu['cmd'])}`{RESET}")
         for x in envelopper(t("app.terrain.pourquoi"), 78):
             lines.append(f"   {DIM}{x}{RESET}")
     les, etiquette = lecons.lecon_courante(state)
@@ -103,7 +103,7 @@ def render(state, frame, interactif, anim=None):
                                                 n=state["step"] + 1, total=len(les["steps"])) + RESET)
             for x in envelopper(lecons.tx(step["dit"]), 78):
                 lines.append(f" {x}")
-            lines.append(f"   {fg(226)}➜ {piege(step['cmd'])}{RESET}")
+            lines.append(f"   {fg(226)}➜ `{piege(step['cmd'])}`{RESET}")
             if "nid/" in step["cmd"] or step["cmd"].endswith(" nid") or "reserve.txt" in step["cmd"] \
                     or step["cmd"].startswith(("cat coeur", "chmod 444 coeur", "echo ? > coeur", "cp -r grenier", "rm -r vieille_cabane")):
                 lines.append(f"   {DIM}" + t("app.lecon.depuis", terrain=terme("terrain", palier(state)),
@@ -654,6 +654,7 @@ def commande_histoire(mode, args):
 
 
 def main():
+    langue.installer_rendu()                   # les commandes à taper en vert (`…` dans les textes)
     args = [a for a in sys.argv[1:] if not a.startswith("--")]
     mode = args[0].lower() if args else ""
     if core.load() is None:                    # pas encore de sauvegarde : la langue du système

@@ -23,6 +23,7 @@ import os
 import pkgutil
 import random
 import re
+import sys
 import unicodedata
 
 LANGUES = {
@@ -132,11 +133,86 @@ def au_hasard(cle, **params):
     return remplir(random.choice(liste(cle)), params)
 
 
+# ---------------------------------------------------------------- les commandes à taper, en vert
+# Dans les textes (langues/xx.json et le code), une commande à taper est entre backticks : `mkdir cabane`.
+# Le rendu se fait à un seul endroit : la sortie du terminal (installer_rendu, appelé par app.main) met la
+# commande en vert, ou enlève juste les backticks si NO_COLOR est défini ou si la sortie n'est pas un
+# terminal. Les caractères de la commande ne changent pas (le copier-coller marche comme avant).
+# En arabe et en ourdou, la commande est isolée de gauche à droite (LRI … PDI), avec sa couleur.
+# Les fenêtres (bureau.py) et les notifications (notif.py) reçoivent le texte sans backticks (sans_marques).
+MARQUE = "`"
+_PASSAGE = re.compile(r"`([^`\n]+)`")
+VERT = "\x1b[38;5;84m"
+FIN_VERT = "\x1b[39m"
+LRI, PDI = "\u2066", "\u2069"
+RTL = ("ar", "ur")
+
+
+def couleurs(flux):
+    """Vrai si on peut colorer ce flux : un vrai terminal, sans NO_COLOR ni TERM=dumb."""
+    if os.environ.get("NO_COLOR") is not None or os.environ.get("TERM") == "dumb":
+        return False
+    try:
+        return flux.isatty()
+    except (AttributeError, ValueError, OSError):
+        return False
+
+
+def rendre(texte, couleur=True):
+    """`commande` → la commande en vert (ou sans couleur), isolée de gauche à droite en arabe et en ourdou."""
+    if MARQUE not in texte:
+        return texte
+    rtl = courante() in RTL
+
+    def un(m):
+        c = LRI + m.group(1) + PDI if rtl else m.group(1)
+        return VERT + c + FIN_VERT if couleur else c
+    return _PASSAGE.sub(un, texte)
+
+
+def sans_marques(texte):
+    """Le texte sans backticks ni couleur (fenêtres, notifications, fichiers)."""
+    return rendre(texte, couleur=False) if isinstance(texte, str) else texte
+
+
+class _Rendu:
+    """Enveloppe sys.stdout : chaque écriture passe par rendre()."""
+
+    def __init__(self, flux):
+        self._flux = flux
+        self._couleur = couleurs(flux)
+
+    def write(self, s):
+        return self._flux.write(rendre(s, self._couleur) if isinstance(s, str) else s)
+
+    def __getattr__(self, nom):
+        return getattr(self._flux, nom)
+
+
+def installer_rendu():
+    """À appeler une fois au démarrage : tout ce qui est écrit dans le terminal montre les commandes en vert."""
+    if not isinstance(sys.stdout, _Rendu):
+        sys.stdout = _Rendu(sys.stdout)
+
+
+def equilibrer(lignes):
+    """Après un découpage en lignes : un passage `…` coupé en deux est refermé puis rouvert."""
+    out, ouvert = [], False
+    for l in lignes:
+        if ouvert:
+            l = MARQUE + l
+        ouvert = l.count(MARQUE) % 2 == 1
+        out.append(l + MARQUE if ouvert else l)
+    return out
+
+
 # ---------------------------------------------------------------- largeur d'affichage
 _ANSI = re.compile(r"\x1b\[[0-9;?]*[A-Za-z]")
 
 
 def largeur_car(c):
+    if c == MARQUE:                         # le marqueur des commandes : remplacé par une couleur
+        return 0
     if unicodedata.combining(c) or unicodedata.category(c) in ("Mn", "Me", "Cf"):
         return 0
     return 2 if unicodedata.east_asian_width(c) in ("W", "F") else 1
@@ -163,7 +239,10 @@ def raccourcir(texte, n, fin="…"):
             break
         out += c
         w += lc
-    return out.rstrip() + fin
+    out = out.rstrip()
+    if out.count(MARQUE) % 2:
+        out += MARQUE
+    return out + fin
 
 
 def envelopper(texte, n):
@@ -188,4 +267,4 @@ def envelopper(texte, n):
                 ligne += m
                 w += largeur(m)
         lignes.append(ligne.rstrip())
-    return [l for l in lignes if l] or [""]
+    return equilibrer([l for l in lignes if l]) or [""]
