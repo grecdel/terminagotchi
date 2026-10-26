@@ -142,7 +142,7 @@ def verifier_langue(code, fr, d, pc, com):
 ESPACES = ("app", "core", "dress", "dressa", "ep", "epa", "aide", "aidea", "lec", "leca", "reg", "lex", "lexa", "eq",
            "exp", "expa", "rec", "reca", "part", "terme", "stat", "skill", "trait", "stade", "forme", "humeur", "branche",
            "rarete", "stade_bestiole", "frequence", "mini", "arbre", "tel", "cre", "defi", "edite", "doom", "notifs", "ctf",
-           "donjon", "jeu", "widget", "rappel", "rech", "shell", "term")
+           "donjon", "jeu", "widget", "rappel", "rech", "shell", "term", "hist", "hista", "qu", "qua", "carte", "cartea")
 
 
 def cles_du_code():
@@ -168,6 +168,8 @@ def main():
     erreurs = []
     for k, ou in cles_du_code().items():
         if k.endswith(".") or k in fr or any(x.startswith(k + ".") for x in fr):
+            continue
+        if re.search(r"\.(txt|sh|json|html|bin)$", k):          # un nom de fichier (carte.txt), pas une clé
             continue
         erreurs.append(f"code : clé absente de fr.json : {k} ({ou})")
     for k in ("part.oui", "part.non", "part.mots.continuer", "part.mots.nouvelle", "part.mots.charger", "part.mots.compte"):
