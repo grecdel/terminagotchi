@@ -1,0 +1,427 @@
+{
+ "_doc": [
+  "L'introduction du jeu et le déblocage progressif (PC : pc/tg/intro.py, Android : Intro.kt).",
+  "UNE seule source : donnees/intro.json, recopiée telle quelle dans pc/tg/intro.json et app/src/main/assets/intro.json",
+  "(les tests pc/outils/test_intro.py et tests/jvm/Intro.kt vérifient que les copies sont identiques).",
+  "ecrans : les écrans de l'intro (textes intro.e.titre.N / intro.e.texte.N, une scène en pixels chacun).",
+  "checklist : les commandes qui nourrissent l'œuf (textes intro.l.<id> et intro.r.<id>) ; re = l'expression qui la reconnaît.",
+  "deblocages : chaque fonction du jeu et ce qui l'ouvre (toutes les conditions de « quand » doivent être vraies) :",
+  "  eclos = l'œuf a éclos · niveau = niveau atteint · lecons = leçons finies · chapitres = chapitres finis ·",
+  "  ailes = nombre d'ailes (chapitres 3 à 9) finies · captures = bestioles dans l'équipe · apres = fonctions déjà ouvertes.",
+  "  commandes : les commandes de la fonction (avant : « pas encore », jamais une erreur). Textes deb.<id>.titre / deb.<id>.texte.",
+  "Anciennes parties (sans « debloc » dans la sauvegarde) : tout reste ouvert ; les fiches des fonctions déjà atteintes",
+  "ne sont pas remontrées, les autres le sont quand leur condition arrive."
+ ],
+ "version": 1,
+ "palette": {
+  "s": "#5fafff",
+  "S": "#16213e",
+  "c": "#ffffff",
+  "y": "#ffd75f",
+  "Y": "#ffaf00",
+  "g": "#5aa63a",
+  "G": "#2f6b2c",
+  "l": "#86d45a",
+  "n": "#8a5a30",
+  "N": "#4a2e18",
+  "r": "#e8562a",
+  "R": "#a33a1c",
+  "w": "#ffffd7",
+  "W": "#d7af87",
+  "b": "#2f7fc4",
+  "B": "#1d4f7a",
+  "z": "#5d6b62",
+  "Z": "#3a3d44",
+  "m": "#f5f5d0",
+  "k": "#101418",
+  "K": "#1c2a22",
+  "t": "#5cff95",
+  "T": "#2b4d38",
+  "p": "#b48cff",
+  "o": "#ff5a5a",
+  "j": "#ffc94d",
+  "f": "#5f3a1e",
+  "h": "#fff7a0",
+  "d": "#3a2a30",
+  "D": "#2a3550",
+  "x": "#9aa3ad",
+  "e": "#4b3a6b"
+ },
+ "ecrans": [
+  {
+   "n": 1,
+   "scene": "monde"
+  },
+  {
+   "n": 2,
+   "scene": "dort"
+  },
+  {
+   "n": 3,
+   "scene": "invite"
+  },
+  {
+   "n": 4,
+   "scene": "oeuf"
+  }
+ ],
+ "scenes": {
+  "monde": [
+   "ssssssssssssssssssssssyyysss",
+   "sssscccsssssssssssssssyyyyss",
+   "sscccccssssssssssssssssyysss",
+   "ssssssssssssrrrsssssssssssss",
+   "sssssssssssrrrrrssssssssssss",
+   "ssssGsssssrrrrrrrssssssGssss",
+   "sssGGGsssssnnnnnsssssssGGGss",
+   "ssGGlGGssssnnynnssssssGGlGGs",
+   "sssGnGsssssnnnnnsssssssGnGss",
+   "gggggngggggnnNnngggggggggngg",
+   "gglgggggggggggggggglgggggggg",
+   "gggggggggbbbbbbbbbggggggglgg",
+   "gglgggbbbbbcbbbbbbbbbggggggg",
+   "ggggggggbbbbbbbbbggggglggggg"
+  ],
+  "dort": [
+   "SSSSSSSSSSSSSSSSSSSSSSmmmSSS",
+   "SScSSSSSSScSSSSSSSSSSmmSSSSS",
+   "SSSSSSSSSSSSSSScSSSSSmmSSSSS",
+   "SSSSScSSSSSSeeeSSSSSSSmmmSSS",
+   "SSSSSSSSSSSeeeeeSScccSSSSScS",
+   "SSSSZSSSSSeeeeeeeSSScSSZSSSS",
+   "SSSZZZSSSSSNNNNNSSScSSSZZZSS",
+   "SSZZzZZSSSSNNkNNSScccSZZzZZS",
+   "SSSZNZSSSSSNNNNNSSSSSSSSZNZS",
+   "ZZZZZNZZZZZNNNNNZZZZZZZZZNZZ",
+   "ZZzZZZZZZZZZZZZZZZZzZZZZZZZZ",
+   "ZZZZZZZZZDDDDDDDDDZZZZZZZzZZ",
+   "ZZzZZZDDDDDDDDDDDDDDDZZZZZZZ",
+   "ZZZZZZZZDDDDDDDDDZZZZZzZZZZZ"
+  ],
+  "invite": [
+   "............................",
+   ".KKKKKKKKKKKKKKKKKKKKKKKKKK.",
+   ".KojtKKKKKKKKKKKKKKKKKKKKKK.",
+   ".KKKKKKKKKKKKKKKKKKKKKKKKKK.",
+   ".TkkkkkkkkkkkkkkkkkkkkkkkkT.",
+   ".TktkkkTTTTTkTTTkkkkkkkkkkT.",
+   ".TkktkkkkkkkkkkkkkkkkkkkkkT.",
+   ".TktkkkTTTkTTTTTTTkkkkkkkkT.",
+   ".TkkkkkkkkkkkkkkkkkkkkkkkkT.",
+   ".TktkkkkkkkkkkkkkkkkkkkkkkT.",
+   ".TkktkkttttkkkkkkkkkkkkkkkT.",
+   ".TktkkkttttkkkkkkkkkkkkkkkT.",
+   ".TkkkkkkkkkkkkkkkkkkkkkkkkT.",
+   ".TTTTTTTTTTTTTTTTTTTTTTTTTT."
+  ],
+  "oeuf": [
+   "SSSSSSSSSSSSSSSSSSSSSSSSSSSS",
+   "SSSSSSSShSSSSSSSSSSShSSSSSSS",
+   "SSShSSSSSSSSSwwwwSSSSSSSShSS",
+   "SSSSSSSSSSSSwwwwwwSSSSSSSSSS",
+   "SSSSSSSSSSSwwwWwwwwSSSSSSSSS",
+   "SSSSShSSSSSwwwwwwWwSSSShSSSS",
+   "SSSSSSSSSSwwWwwwwwwwSSSSSSSS",
+   "SSSSSSSSSSwwwwwwwWwwSSSSSSSS",
+   "SShSSSSSSSwwwwWwwwwwSSSSSSSS",
+   "SSSSSSSSSSwwwwwwwwwwSSSSShSS",
+   "SSSSSSSSNnNwwwwwwwwNnNSSSSSS",
+   "SSSSSSSnNnNnNwwwwnNnNnNSSSSS",
+   "SSSSSSSSnNnNnNnNnNnNnNSSSSSS",
+   "SSSSSSSSSSNnNnNnNnNnSSSSSSSS"
+  ]
+ },
+ "oeuf": [
+  "....wwww....",
+  "...wwwwww...",
+  "..wwwWwwww..",
+  "..wwwwwwWw..",
+  ".wwWwwwwwww.",
+  ".wwwwwwwWww.",
+  ".wwwwWwwwww.",
+  ".wwwwwwwwww.",
+  "..wwwwwwww..",
+  "...wwwwww..."
+ ],
+ "feles": [
+  [
+   [
+    6,
+    1
+   ],
+   [
+    7,
+    2
+   ],
+   [
+    6,
+    3
+   ],
+   [
+    7,
+    4
+   ]
+  ],
+  [
+   [
+    3,
+    4
+   ],
+   [
+    2,
+    5
+   ],
+   [
+    3,
+    6
+   ],
+   [
+    4,
+    7
+   ]
+  ],
+  [
+   [
+    1,
+    5
+   ],
+   [
+    2,
+    6
+   ],
+   [
+    4,
+    5
+   ],
+   [
+    5,
+    6
+   ],
+   [
+    6,
+    5
+   ],
+   [
+    7,
+    6
+   ],
+   [
+    8,
+    5
+   ],
+   [
+    9,
+    6
+   ],
+   [
+    10,
+    5
+   ]
+  ]
+ ],
+ "checklist": [
+  {
+   "id": "pwd",
+   "re": "^(pwd|get-location|gl)\\b"
+  },
+  {
+   "id": "ls",
+   "re": "^(ls|dir|gci|get-childitem)\\b"
+  },
+  {
+   "id": "echo",
+   "re": "^(echo|write-output)\\s+\\S"
+  },
+  {
+   "id": "whoami",
+   "re": "^whoami\\b"
+  }
+ ],
+ "deblocages": [
+  {
+   "id": "histoire",
+   "emoji": "📖",
+   "icone": "livre",
+   "quand": {
+    "eclos": true
+   },
+   "commandes": []
+  },
+  {
+   "id": "envies",
+   "emoji": "💭",
+   "icone": "coeur",
+   "quand": {
+    "eclos": true,
+    "lecons": [
+     "t0"
+    ]
+   },
+   "commandes": [
+    "envies",
+    "envie"
+   ]
+  },
+  {
+   "id": "carte",
+   "emoji": "🗺",
+   "icone": "portail",
+   "quand": {
+    "eclos": true,
+    "chapitres": [
+     "reveil"
+    ]
+   },
+   "commandes": [
+    "carte"
+   ]
+  },
+  {
+   "id": "combats",
+   "emoji": "⚔",
+   "icone": "feu",
+   "quand": {
+    "eclos": true,
+    "lecons": [
+     "nid0"
+    ]
+   },
+   "commandes": [
+    "dressage",
+    "combat",
+    "monstre",
+    "monstres",
+    "defi"
+   ]
+  },
+  {
+   "id": "lexique",
+   "emoji": "📚",
+   "icone": "note",
+   "quand": {
+    "eclos": true,
+    "lecons": [
+     "debarras"
+    ]
+   },
+   "commandes": [
+    "lexique",
+    "explique",
+    "cherche"
+   ]
+  },
+  {
+   "id": "quetes",
+   "emoji": "📜",
+   "icone": "etoile",
+   "quand": {
+    "eclos": true,
+    "chapitres": [
+     "nid"
+    ]
+   },
+   "commandes": [
+    "quetes",
+    "quete",
+    "journal",
+    "aile",
+    "ailes",
+    "arbre",
+    "histoire"
+   ]
+  },
+  {
+   "id": "extras",
+   "emoji": "🔔",
+   "icone": "antenne",
+   "quand": {
+    "eclos": true,
+    "niveau": 4
+   },
+   "commandes": [
+    "notifs",
+    "notif",
+    "aura"
+   ]
+  },
+  {
+   "id": "equipe",
+   "emoji": "🧭",
+   "icone": "oeuf",
+   "quand": {
+    "eclos": true,
+    "captures": 1
+   },
+   "commandes": [
+    "guide",
+    "types",
+    "equipe",
+    "troupe",
+    "collection",
+    "bestiaire",
+    "anime"
+   ]
+  },
+  {
+   "id": "entrainement",
+   "emoji": "🎯",
+   "icone": "marteau",
+   "quand": {
+    "eclos": true,
+    "niveau": 6
+   },
+   "commandes": [
+    "entrainement",
+    "exercice",
+    "badges"
+   ]
+  },
+  {
+   "id": "compte",
+   "emoji": "🌍",
+   "icone": "cle",
+   "quand": {
+    "eclos": true,
+    "ailes": 1
+   },
+   "commandes": [
+    "compte",
+    "sync",
+    "site"
+   ]
+  },
+  {
+   "id": "biomes",
+   "emoji": "🌋",
+   "icone": "plante",
+   "quand": {
+    "eclos": true,
+    "ailes": 2,
+    "apres": [
+     "equipe"
+    ]
+   },
+   "commandes": []
+  },
+  {
+   "id": "donjon",
+   "emoji": "🗝",
+   "icone": "secret",
+   "quand": {
+    "eclos": true,
+    "ailes": 3
+   },
+   "commandes": [
+    "donjon",
+    "plan",
+    "sac",
+    "bois",
+    "attaque",
+    "ctf",
+    "drapeau",
+    "indice",
+    "doom"
+   ]
+  }
+ ]
+}
