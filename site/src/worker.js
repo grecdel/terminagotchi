@@ -9,6 +9,7 @@ import { tirer, differences, stadePlausible, attirancePlausible, MAX_APPARITIONS
 import { LANGUES, NOMS_LANGUES, LOCALES, RTL, choisirLangue, cookieLangue, textes, libelle } from "./i18n.js";
 import { confidentialiteFr, mentionsFr } from "./legal_fr.js";
 import * as ENT from "./entrainement.js";
+import { barreTerminal, planSite, CSS_TERMINAL } from "./terminal.js";
 
 // ====================================================================== réglages à remplir
 
@@ -616,6 +617,11 @@ async function api(requete, env, chemin) {
     }));
   }
 
+  // le plan du site pour le mini-terminal des pages (ls, cd, Tab…) : ne change qu'avec une nouvelle version
+  if (chemin === "/api/plan" && m === "GET") {
+    return json(planSite(new URL(requete.url).searchParams.get("lang")), 200, { "cache-control": "public, max-age=3600" });
+  }
+
   if (chemin === "/api/records" && m === "GET") {
     return json(await donneesRecords(env));
   }
@@ -1154,7 +1160,7 @@ html:not([lang="fr"]) section[lang="fr"]{border-top:2px dashed var(--bord);margi
  td,th{padding:6px 3px}
  .btn.grand{padding:16px 18px}
 }
-`;
+${CSS_TERMINAL}`;
 
 /** Le contexte de langue d'une requête : langue, textes, sens d'écriture, format des dates. */
 function contexteLangue(requete, url) {
@@ -1214,7 +1220,8 @@ function page(L, titre, contenu, description = L.t.description, statut = 200) {
 <header class="entete"><div class="barre">${points}<a class="logo" href="/"><img src="/icone.png" alt="" width="28" height="28"><bdi>TERMINAGOTCHI</bdi></a>${selecteurLangue(L)}</div>
 <nav class="menu">${menu(L)}</nav></header>
 <main>${contenu}</main>
-${piedDePage(L)}</body></html>`, {
+${piedDePage(L)}
+${barreTerminal(L)}</body></html>`, {
     status: statut,
     headers: { "content-type": "text/html; charset=utf-8", "content-language": L.lang, vary: "Accept-Language, Cookie" },
   });

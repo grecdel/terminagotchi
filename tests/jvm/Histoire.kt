@@ -151,7 +151,7 @@ fun main(args: Array<String>) {
     for (c in listOf("pwd", "ls", "cd ~")) tape(c)
     verifier(lecon() == ("reveil1" to 0), "« Où suis-je ? » finie → ${lecon()}")
     verifier(File(T, "vestibule/oeuf_tout_chaud.txt").isFile, "la vieille maison est là : vestibule/oeuf_tout_chaud.txt")
-    verifier("Chapitre 1 · Le réveil" in ecran() && "La vieille porte" in ecran(), "l'écran montre le chapitre et la leçon")
+    verifier("Chapitre 1 · Le réveil" in ecran() && "Le vieux chemin" in ecran(), "l'écran montre le chapitre et la leçon")
     tape("cd terrain_terminagotchi")
     verifier(lecon() == ("reveil1" to 1), "cd terrain_terminagotchi : entré dans la grande salle (vu par le dossier courant)")
     tape("ls")
@@ -182,7 +182,7 @@ fun main(args: Array<String>) {
     tape("echo pomme > nid/repas.txt")
     tape("cat nid/repas.txt")
     verifier(Histoire.fini(jeu, "nid") && Histoire.chapitreCourant(jeu) == null, "chapitre 2 fini : aucune aile imposée")
-    verifier("Quelle aile réveiller" in ecran(), "l'écran propose de choisir une aile")
+    verifier("Quel lieu réveiller" in ecran(), "l'écran propose de choisir une aile")
     verifier(Maison.AILES.all { File(T, it).isDirectory } && !File(T, "coeur").exists() && File(T, "jardin").isDirectory,
         "les 7 portes des ailes sont posées, et le jardin du téléphone (pas encore le cœur)")
 
@@ -313,7 +313,7 @@ fun main(args: Array<String>) {
     verifier("1. " in j && "[du jour]" in j, "quêtes numérotées, quête du jour marquée")
     val lex = t("lex.carnet.titre", "nom" to jeu.nom) + "\n" + listOf("chmod", "pwd").joinToString("\n") { "$it · 📖 " + Histoire.quand(jeu, it) } +
         "\n" + Histoire.souvenirs(jeu).joinToString("\n")
-    verifier("Carnet d'aventure" in lex && "chmod · 📖 La cave" in lex && "pwd · 📖 Le réveil" in lex, "le carnet range chaque commande avec son chapitre")
+    verifier("Carnet d'aventure" in lex && "chmod · 📖 La Cave" in lex && "pwd · 📖 Le réveil" in lex, "le carnet range chaque commande avec son chapitre")
     verifier("Gardien des clés" in lex && "Souvenirs" in lex, "les souvenirs (titres, objets) sont dans le carnet")
 
     println("8. Le cœur et Abyssor")
@@ -336,8 +336,8 @@ fun main(args: Array<String>) {
     tape("echo ${n + 1} > coeur/reponse.txt")
     verifier(lecon() == ("coeur2" to 2) && "nombre" in (jeu.indiceLecon ?: ""), "mauvais nombre : Abyssor secoue la tête")
     tape("grep -rl ABYSSOR ~/terrain_terminagotchi | wc -l > coeur/reponse.txt")
-    verifier(Histoire.fini(jeu, "coeur"), "bonne réponse : le cœur bat, la maison est réveillée")
-    verifier("La maison est réveillée" in ecran(), "écran de fin")
+    verifier(Histoire.fini(jeu, "coeur"), "bonne réponse : le cœur bat, le monde est réveillé")
+    verifier("Le monde est réveillé" in ecran(), "écran de fin")
 
     println("9. Migration des anciennes sauvegardes Android")
     jeu.sauver()

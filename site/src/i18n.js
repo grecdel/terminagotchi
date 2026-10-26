@@ -13,6 +13,7 @@
 
 import { PAGES } from "./i18n_pages.js";
 import { ENTRAINEMENT } from "./i18n_entrainement.js";
+import { TERMINAL } from "./i18n_terminal.js";
 
 export const LANGUES = ["fr", "en", "es", "de", "it", "pt", "zh", "ru", "ja", "hi", "ar", "bn", "id", "ur"];
 /** Langues écrites de droite à gauche. */
@@ -2867,6 +2868,8 @@ export const DICTIONNAIRES = { fr, en, es, de, it, pt, zh, ru, ja, hi, ar, bn, i
 for (const [l, d] of Object.entries(PAGES)) Object.assign(DICTIONNAIRES[l], d);
 // salle d'entraînement : page /records, badges et titres du profil (fichier à part : i18n_entrainement.js)
 for (const [l, d] of Object.entries(ENTRAINEMENT)) Object.assign(DICTIONNAIRES[l], d);
+// mini-terminal en bas de chaque page (fichier à part : i18n_terminal.js)
+for (const [l, d] of Object.entries(TERMINAL)) Object.assign(DICTIONNAIRES[l], d);
 
 /** Fusion profonde : ce qui manque dans une langue est pris en français. */
 function fusion(base, sur) {
