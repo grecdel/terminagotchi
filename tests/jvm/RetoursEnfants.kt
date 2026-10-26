@@ -362,9 +362,9 @@ fun main(args: Array<String>) {
     verifier("`" !in lu && lu.contains("Essaie : mkdir cabane"), "à l'écran, plus de backticks ; les caractères de la commande sont intacts")
     val lecon = jeu.texteLecon() ?: ""
     verifier(Vert.passages(lecon).second.isNotEmpty(), "la leçon montre sa commande (➜ …) en vert")
-    val ex = Vert.passages(t("lex.exemple", "ex" to "mkdir cabane"))
-    verifier(ex.second.size == 1 && ex.first.substring(ex.second[0].first, ex.second[0].second) == "mkdir cabane",
-        "lexique : « ${ex.first} » avec mkdir cabane en vert")
+    val exLex = Vert.passages(t("lex.exemple", "ex" to "mkdir cabane"))
+    verifier(exLex.second.size == 1 && exLex.first.substring(exLex.second[0].first, exLex.second[0].second) == "mkdir cabane",
+        "lexique : « ${exLex.first} » avec mkdir cabane en vert")
     Langue.definir("ar")
     val ar = t("aide.manque.mkdir", "cmd" to "mkdir", "ex" to "mkdir cabane", "un_dossier" to "غرفة")
     val (arLu, arVerts) = Vert.passages(ar)
