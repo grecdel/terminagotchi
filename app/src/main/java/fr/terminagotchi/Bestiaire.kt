@@ -478,17 +478,20 @@ object Bestiaire {
     fun nomFrequence(f: String) = Langue.ou("frequence.$f", f)
 
     /**
-     * Balise de dessin pour le terminal de l'appli : ¤id:variante:stade*teinte+¤
-     * (* = shiny, avec sa teinte ; + = grand portrait). Remplacée par l'image à l'affichage.
+     * Balise de dessin pour le terminal de l'appli : ¤id:variante:stade*teinte+~n¤
+     * (* = shiny, avec sa teinte ; + = grand portrait ; ~n = aura de rareté, palier n de Aura.ORDRE).
+     * Remplacée par l'image à l'affichage.
      */
     fun balise(e: Espece, vid: String = "classique", stade: String = "adulte", shiny: Boolean = false,
-               teinte: Double = 0.5, grand: Boolean = false): String =
-        "¤${e.id}:$vid:$stade" + (if (shiny) "*$teinte" else "") + (if (grand) "+" else "") + "¤"
+               teinte: Double = 0.5, grand: Boolean = false, aura: String? = null): String =
+        "¤${e.id}:$vid:$stade" + (if (shiny) "*$teinte" else "") + (if (grand) "+" else "") +
+            (if (aura != null) "~${Aura.code(aura)}" else "") + "¤"
 
-    fun balise(ind: JSONObject, grand: Boolean = false): String {
+    /** Une bestiole de la troupe, avec son aura de rareté (aura = false pour la dessiner sans). */
+    fun balise(ind: JSONObject, grand: Boolean = false, aura: Boolean = true): String {
         val e = espece(ind.optString("espece")) ?: return ""
         return balise(e, ind.optString("variante", "classique"), Equipe.stade(ind), ind.optBoolean("shiny"),
-            ind.optDouble("teinte", 0.5), grand)
+            ind.optDouble("teinte", 0.5), grand, if (aura) Aura.palierInd(ind) else null)
     }
 
     /** Nom à afficher : §arc-en-ciel§ pour les shiny, les légendaires et les mythiques. */

@@ -86,6 +86,7 @@ object Equipe {
                 .append(if (Combat.repose(c)) " " + t("eq.repos", "min" to Combat.minutesDeRepos(c)) else "")   // KO au combat
                 .append("\n")
         }
+        sb.append("\n" + t("aura.legende"))                    // la lueur autour des bestioles (Aura.kt)
         sb.append("\n" + t("eq.pied.tel"))
         return sb.toString()
     }

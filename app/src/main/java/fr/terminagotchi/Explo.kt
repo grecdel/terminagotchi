@@ -152,6 +152,7 @@ object Explo {
         if (caps.length() > 0) {
             sb.append(t("exp.dernieres") + "\n")
             for (i in caps.length() - 1 downTo maxOf(0, caps.length() - 6)) sb.append(carte(caps.getJSONObject(i))).append("\n\n")
+            sb.append(t("aura.legende") + "\n\n")              // la lueur autour des bestioles (Aura.kt)
         } else sb.append(t("exp.aucune_dressee") + "\n")
         if (!debloquee(jeu)) {
             sb.append(t("exp.s_ouvre", "lecon" to t("lec.t1.titre")))

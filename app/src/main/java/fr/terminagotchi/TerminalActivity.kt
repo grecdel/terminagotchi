@@ -105,6 +105,7 @@ class TerminalActivity : Activity() {
             requestPermissions(arrayOf("android.permission.POST_NOTIFICATIONS"), 1)
         }
         creature = findViewById(R.id.creature)
+        creerBoutonAura()
         titre = findViewById(R.id.titre)
         faim = findViewById(R.id.faim)
         xp = findViewById(R.id.xp)
@@ -536,18 +537,18 @@ class TerminalActivity : Activity() {
     }
 
     /**
-     * Mise en forme spéciale : ¤id:variante:stade*teinte+¤ = dessin d'une bestiole (voir Bestiaire.balise :
-     * * = shiny avec sa teinte, + = grand portrait), §texte§ = écriture arc-en-ciel (RGB).
+     * Mise en forme spéciale : ¤id:variante:stade*teinte+~n¤ = dessin d'une bestiole (voir Bestiaire.balise :
+     * * = shiny avec sa teinte, + = grand portrait, ~n = aura de rareté), §texte§ = écriture arc-en-ciel (RGB).
      */
     private fun miseEnForme(texte: String, couleur: Int?): SpannableStringBuilder {
         val sb = SpannableStringBuilder()
-        val motif = Regex("¤([a-z0-9_]+)(?::([^:¤*+]+))?(?::([a-z]+))?(?:\\*([0-9.]*))?(\\+)?¤|§([^§]*)§|`([^`\n]+)`")
+        val motif = Regex("¤([a-z0-9_]+)(?::([^:¤*+~]+))?(?::([a-z]+))?(?:\\*([0-9.]*))?(\\+)?(?:~([0-9]))?¤|§([^§]*)§|`([^`\n]+)`")
         var i = 0
         for (m in motif.findAll(texte)) {
             sb.append(texte, i, m.range.first)
-            if (m.groups[7] != null) {                    // `commande` : en vert (voir Vert.kt)
+            if (m.groups[8] != null) {                    // `commande` : en vert (voir Vert.kt)
                 val debut = sb.length
-                sb.append(m.groupValues[7])
+                sb.append(m.groupValues[8])
                 sb.setSpan(ForegroundColorSpan(Vert.COULEUR), debut, sb.length, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
             } else if (m.groupValues[1].isNotEmpty()) {
                 val e = Bestiaire.espece(m.groupValues[1])
@@ -562,16 +563,19 @@ class TerminalActivity : Activity() {
                     // grand : le portrait peint (ou la version détaillée faite main d'Abyssor)
                     val detail = if (!grand) null else Bestiaire.portrait(e, vid, stade)
                         ?: (if (Animations.dispo(e.id)) Animations.detaille(e.id, stade) else null)
-                    val d = android.graphics.drawable.BitmapDrawable(resources,
-                        detail ?: Bestiaire.bitmap(e, shiny, 4, stade, vid, teinte))
+                    // l'aura de rareté autour des petits dessins (troupe, collection) : la bestiole garde sa taille
+                    val aura = if (detail == null) Aura.deCode(m.groupValues[6].toIntOrNull()) else null
+                    val petit = detail ?: Bestiaire.bitmap(e, shiny, 4, stade, vid, teinte)
+                    val img = if (aura == null) petit else try { Aura.entourer(petit, 4, aura, garder = true) } catch (x: Exception) { petit }
+                    val d = android.graphics.drawable.BitmapDrawable(resources, img)
                     if (detail != null && shiny) d.colorFilter = Bestiaire.filtreTeinte(teinte)
                     val px = ((if (detail != null) 160 else 40) * resources.displayMetrics.density).toInt()
-                    d.setBounds(0, 0, px, px)
+                    d.setBounds(0, 0, px * img.width / maxOf(1, petit.width), px * img.height / maxOf(1, petit.height))
                     sb.setSpan(android.text.style.ImageSpan(d, android.text.style.DynamicDrawableSpan.ALIGN_BOTTOM),
                         debut, debut + 1, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
                 }
             } else {
-                arcEnCiel(sb, m.groupValues[6])
+                arcEnCiel(sb, m.groupValues[7])
             }
             i = m.range.last + 1
         }
@@ -616,6 +620,7 @@ class TerminalActivity : Activity() {
     /** Les textes de l'écran qui ne viennent pas du jeu (bouton du lexique, indice de la ligne de saisie). */
     private fun textesFixes() {
         lexiqueBtn.text = if (lexiqueVue.visibility == View.VISIBLE) t("term.btn.terminal") else t("term.btn.lexique")
+        if (::auraBtn.isInitialized) auraBtn.contentDescription = t("aura.bouton")
         saisie.setHint(t("term.saisie"))
     }
 
@@ -861,7 +866,9 @@ class TerminalActivity : Activity() {
         // pendant un dressage, le familier est déjà dans le face-à-face : on allège l'en-tête
         val vis = if (panneau != null) View.GONE else View.VISIBLE
         creature.visibility = vis; faim.visibility = vis; xp.visibility = vis; stats.visibility = vis
-        if (lecture == null) creature.setImageBitmap(Sprites.bitmap(jeu, 12, cligne > 0))
+        auraBtn.visibility = vis
+        majBoutonAura()
+        if (lecture == null) creature.setImageBitmap(imageCreature(cligne > 0))
     }
 
     // ------------------------------------------------------------ courtes animations de la créature
@@ -896,7 +903,7 @@ class TerminalActivity : Activity() {
         if (r == null || r.first.isEmpty()) return
         val imgs = r.first
         val n = if (nom == "attaque" || nom == "dort") imgs.size else 2 * imgs.size
-        if (!Dressage.actif(jeu)) { demarrer(imgs, r.second, n); return }     // plus de face-à-face : dans l'en-tête
+        if (!Dressage.actif(jeu)) { demarrer(imgs, r.second, n, 3, Aura.palierInd(ind)); return }     // plus de face-à-face : dans l'en-tête
         val numero = ++animCombat
         val pause = 1000L / maxOf(1, r.second)
         var k = 0
@@ -924,15 +931,18 @@ class TerminalActivity : Activity() {
         val imgs = AnimAuto.bitmaps(anim, 8, null)
         if (imgs.isEmpty()) return
         val n = if (nom == "evolution") imgs.size else minOf(2 * imgs.size, maxOf(imgs.size, 3 * anim.ips))
-        demarrer(imgs, anim.ips, n)
+        demarrer(imgs, anim.ips, n, 8, Aura.palierCompagnon(jeu))
     }
 
-    private fun demarrer(imgs: List<android.graphics.Bitmap>, ips: Int, n: Int) {
+    /** echelle, palier : pour dessiner l'aura de rareté autour des images (0 / null : sans aura). */
+    private fun demarrer(imgs: List<android.graphics.Bitmap>, ips: Int, n: Int, echelle: Int = 0, palier: String? = null) {
         val deja = lecture != null
         lecture = imgs
         lectureK = 0
         lectureFin = n
-        creature.setImageBitmap(imgs[0])
+        lectureEchelle = echelle
+        lecturePalier = palier
+        creature.setImageBitmap(avecAura(imgs[0], echelle, palier, 0))
         val pause = 1000L / maxOf(1, ips)
         if (!deja) handler.postDelayed({ pasAnimation(pause) }, pause)
     }
@@ -942,10 +952,10 @@ class TerminalActivity : Activity() {
         lectureK++
         if (lectureK >= lectureFin) {
             lecture = null
-            creature.setImageBitmap(Sprites.bitmap(jeu, 12, false))
+            creature.setImageBitmap(imageCreature(false))
             return
         }
-        creature.setImageBitmap(imgs[lectureK % imgs.size])
+        creature.setImageBitmap(avecAura(imgs[lectureK % imgs.size], lectureEchelle, lecturePalier, lectureK))
         handler.postDelayed({ pasAnimation(pause) }, pause)
     }
 
@@ -960,6 +970,59 @@ class TerminalActivity : Activity() {
             jeu.faim < 30 -> jouerCreature("affame")
             Random.nextDouble() < 0.3 -> jouerCreature(listOf("statique", "salut", "content").random())
         }
+    }
+
+    // ------------------------------------------------------------ aura de rareté (Aura.kt) autour de la créature
+    private lateinit var auraBtn: TextView
+    private var lectureEchelle = 0
+    private var lecturePalier: String? = null
+
+    private fun auraVisible() = jeu.existe && Aura.active(jeu)
+
+    /** La créature de l'en-tête, entourée de son aura si le réglage de la partie l'affiche (bouton ✨). */
+    private fun imageCreature(cligne: Boolean): android.graphics.Bitmap =
+        avecAura(Sprites.bitmap(jeu, 12, cligne), 12, if (jeu.existe) Aura.palierCompagnon(jeu) else null, 2 * frame)
+
+    private fun avecAura(b: android.graphics.Bitmap, echelle: Int, palier: String?, phase: Int): android.graphics.Bitmap {
+        if (palier == null || echelle <= 0 || !auraVisible()) return b
+        return try { Aura.entourer(b, echelle, palier, phase) } catch (e: Exception) { b }
+    }
+
+    /** Le petit bouton ✨ posé dans le coin de la créature : affiche ou cache son aura (réglage de la partie). */
+    private fun creerBoutonAura() {
+        val dp = resources.displayMetrics.density
+        val parent = creature.parent as android.view.ViewGroup
+        val lp = creature.layoutParams
+        parent.removeView(creature)                         // la créature est le premier élément de l'en-tête
+        val cadre = android.widget.FrameLayout(this)
+        cadre.layoutParams = lp
+        creature.layoutParams = android.widget.FrameLayout.LayoutParams(
+            android.view.ViewGroup.LayoutParams.MATCH_PARENT, android.view.ViewGroup.LayoutParams.MATCH_PARENT)
+        cadre.addView(creature)
+        auraBtn = TextView(this).apply {
+            text = "✨"
+            textSize = 11f
+            gravity = Gravity.CENTER
+            background = GradientDrawable().apply { setColor(0x55000000); cornerRadius = 11 * dp }
+            layoutParams = android.widget.FrameLayout.LayoutParams((22 * dp).toInt(), (22 * dp).toInt(), Gravity.TOP or Gravity.END)
+            contentDescription = t("aura.bouton")
+            setOnClickListener { basculerAura() }
+        }
+        cadre.addView(auraBtn)
+        parent.addView(cadre, 0)
+        majBoutonAura()
+    }
+
+    private fun majBoutonAura() {
+        if (::auraBtn.isInitialized) auraBtn.alpha = if (Aura.active(jeu)) 1f else 0.35f
+    }
+
+    private fun basculerAura() {
+        val on = Aura.basculer(jeu)
+        jeu.sauver()
+        ecrire(if (on) t("aura.on") + "\n" + t("aura.legende") else t("aura.off"), Commandes.BLEU)
+        rafraichir()
+        saisie.requestFocus()
     }
 
     companion object {
@@ -979,10 +1042,12 @@ class TerminalActivity : Activity() {
             // une animation est en cours : pas de clignement
         } else if (cligne > 0) {
             cligne--
-            if (cligne == 0) creature.setImageBitmap(Sprites.bitmap(jeu, 12, false))
+            if (cligne == 0) creature.setImageBitmap(imageCreature(false))
         } else if (Random.nextInt(12) == 0) {
             cligne = 1
-            creature.setImageBitmap(Sprites.bitmap(jeu, 12, true))
+            creature.setImageBitmap(imageCreature(true))
+        } else if (auraVisible()) {
+            creature.setImageBitmap(imageCreature(false))      // l'aura respire
         }
         if (frame % 12 == 0 && !enCours) {        // toutes les ~5 s : la faim, le terrain, les bulles, les leçons « fichiers »
             for ((m, c) in Tour.periodique(jeu, shell.dossier)) ecrire(m, c)
