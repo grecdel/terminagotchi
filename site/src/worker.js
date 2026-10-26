@@ -861,6 +861,9 @@ main{max-width:1040px;margin:0 auto;padding:30px 20px 80px}
 .sol{width:46%;height:10px;margin-top:10px;background:rgba(92,255,149,.18);animation:sol 2.6s steps(6) infinite alternate}
 @keyframes flotte{to{transform:translateY(-14px)}}
 @keyframes sol{to{transform:scaleX(.8);opacity:.6}}
+.mascotte.mange{aspect-ratio:300/420;background:url(/mascotte_mange.png) 0 0/600% 100% no-repeat;cursor:pointer}
+.mascotte.croque{animation:flotte 2.6s steps(6) infinite alternate,croque 2.6s step-end 1}
+@keyframes croque{0%{background-position-x:0}18%{background-position-x:20%}26%{background-position-x:40%}34%{background-position-x:60%}46%{background-position-x:80%}64%{background-position-x:100%}88%,100%{background-position-x:0}}
 @media (prefers-reduced-motion:reduce){.mascotte,.sol,.curseur{animation:none}}
 .apercu{display:grid;gap:14px;grid-template-columns:repeat(auto-fill,minmax(96px,1fr));margin:18px 0}
 .apercu a{display:grid;place-items:center;aspect-ratio:1;margin:2px;position:relative}
@@ -1094,7 +1097,7 @@ async function pageAccueil(env, L) {
     <p><a class="btn grand" href="#telecharger">${FLECHE}${A.telecharger}</a><a class="btn ambre" href="/bestiaire">${A.voirBestiaire}</a></p>
     <p class="doux petit">${A.recensees(n)}</p>
   </div>
-  <div class="scene ecran"><img class="mascotte" src="/mascotte.png" alt="Terminagotchi" width="512" height="651"><div class="sol" aria-hidden="true"></div></div>
+  <div class="scene ecran"><div class="mascotte mange" role="img" aria-label="Terminagotchi"></div><div class="sol" aria-hidden="true"></div></div><script>(function(){var m=document.querySelector(".mascotte.mange");if(!m||matchMedia("(prefers-reduced-motion:reduce)").matches)return;function c(){m.classList.remove("croque");void m.offsetWidth;m.classList.add("croque")}m.addEventListener("animationend",function(e){if(e.animationName==="croque")m.classList.remove("croque")});m.addEventListener("click",c);function t(){setTimeout(function(){c();t()},12000+Math.random()*18000)}setTimeout(c,2500);t()})()</script>
 </section>
 <h2 id="telecharger">${A.telecharger}</h2>
 <div class="grille">
