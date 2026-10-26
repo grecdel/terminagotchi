@@ -29,7 +29,7 @@ os.environ.pop("HISTFILE", None)
 RACINE = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(RACINE / "pc"))
 
-from tg import app, bestiaire as B, combat, core, dressage, equipe, explo, histoire, langue, lecons, tirage  # noqa: E402
+from tg import app, bestiaire as B, combat, core, dressage, equipe, exemples, explo, histoire, langue, lecons, lexique, tirage  # noqa: E402,E501
 
 HOME = Path.home()
 T = core.TERRAIN
@@ -285,6 +285,69 @@ verifier("💤" in texte(equipe.ecran_equipe(st)), "la troupe montre qu'elle se 
 st = modifier(nouveau_monstre)
 verifier(not st["dressage"].get("combat") and "se repose" in bulles(st), "toute la troupe se repose : pas de combat")
 combat.random = random
+
+print("6. Il manque quelque chose après la commande (mkdir tout seul…)")
+
+
+def tape_sans_lancer(cmd):
+    """La commande part dans l'historique sans être lancée (cat tout seul attendrait le clavier sans fin)."""
+    with open(HOME / ".bash_history", "a", encoding="utf-8") as f:
+        f.write(cmd + "\n")
+    return app.etape(spontane=False, defis=False)
+
+
+modifier(lambda s: (s.__setitem__("bubble", None), s.__setitem__("bulles", [])))
+st = tape_sans_lancer("mkdir")
+verifier("Il manque le nom" in bulles(st) and "Essaie : mkdir " in bulles(st), f"mkdir seul → bulle : {bulles(st)}")
+verifier(any("Essaie : mkdir " in m for m in st["log"][-3:]), "… et la même aide au-dessus de l'invite (journal)")
+modifier(lambda s: (s.__setitem__("bubble", None), s.__setitem__("bulles", [])))
+st = tape_sans_lancer("cat")
+verifier("cat nid/repas.txt" in bulles(st) and "Ctrl+C" in bulles(st), f"cat seul → bulle : {bulles(st)}")
+modifier(lambda s: (s.__setitem__("bubble", None), s.__setitem__("bulles", [])))
+st = tape_sans_lancer("cp nid/repas.txt")
+verifier("DEUX noms" in bulles(st), "cp avec un seul nom → il en faut deux")
+modifier(lambda s: (s.__setitem__("bubble", None), s.__setitem__("bulles", [])))
+st = tape_sans_lancer("mkdir cabane_test")
+st = tape_sans_lancer("ls -l | grep repas")
+verifier("Il manque" not in bulles(st) and "✍" not in bulles(st), "commande complète (ou avec un tuyau) → pas d'aide")
+for cmd in ("mkdir", "touch", "cat", "cp", "mv", "rm", "rmdir", "grep", "chmod", "head", "tail", "wc", "find", "kill",
+            "ping", "ssh", "curl", "nano", "less"):
+    verifier(exemples.manque(cmd) == cmd and exemples.aide(st, cmd), f"{cmd} seul : aide prévue")
+# la leçon en cours demande cette commande : c'est elle qui est proposée
+_lc = lecons.lecon_courante
+lecons.lecon_courante = lambda s: ({"steps": [{"cmd": "mkdir nid"}]}, "")
+verifier("Essaie : mkdir nid" in exemples.aide({"step": 0, "xp": 0}, "mkdir"), "pendant la leçon « mkdir nid » : Essaie : mkdir nid")
+lecons.lecon_courante = _lc
+
+# Les exemples du lexique marchent vraiment depuis le terrain de jeu (dans l'ordre du lexique)
+lancees = []
+for _titre, univers, cmds in lexique._entrees():
+    for cmd, _i, _t in cmds:
+        ex = exemples.lexique(cmd)
+        if ex and univers == lexique.ICI and not cmd.startswith("tg"):
+            lancees += ex.split(" · ")
+for regle in exemples.REGLES.values():                 # les exemples des bulles qui ne sont pas dans le lexique PC
+    if regle[1] not in lancees:
+        lancees.append(regle[1])
+lancees.append("echo coucou > mot.txt")
+HORS_LIGNE = ("ping", "curl", "nslookup", "ssh", "kill", "nano")   # réseau, NUMÉRO à remplacer, éditeur plein écran
+(T / "nid" / "repas.txt").chmod(0o644)
+for ex in lancees:
+    if ex.split()[0] in HORS_LIGNE:
+        continue
+    r = subprocess.run(["bash", "-c", ex], cwd=str(T), stdin=subprocess.DEVNULL, capture_output=True, text=True,
+                       timeout=30)
+    verifier(r.returncode == 0, f"exemple « {ex} » : marche depuis le terrain"
+             + ("" if r.returncode == 0 else f" ✖ {r.stdout}{r.stderr}".strip()))
+    verifier(exemples.manque(ex) is None, f"   … et n'est pas pris pour une commande incomplète")
+for cmd, ex in (("mkdir", "mkdir cabane"), ("cat", "cat nid/repas.txt"), ("cp", "cp nid/repas.txt copie.txt"),
+                ("grep", "grep pomme nid/repas.txt"), ("chmod", "chmod 444 nid/repas.txt"),
+                ("head", "head -n 3 nid/repas.txt"), ("find", 'find . -name "*.txt"'), ("kill", "kill NUMÉRO"),
+                ("ping", "ping -c 3 example.com")):
+    verifier(exemples.lexique(cmd) == ex, f"lexique : {cmd} → exemple : {ex}")
+ecran = texte(lexique.lignes(core.load()))
+verifier("↳ exemple : mkdir cabane" in ecran and "↳ exemple : cat nid/repas.txt" in ecran,
+         "le lexique affiche « ↳ exemple : mkdir cabane »")
 
 print(f"\n{ok} réussis, {ko} échoués   (HOME={HOME})")
 sys.exit(1 if ko else 0)
