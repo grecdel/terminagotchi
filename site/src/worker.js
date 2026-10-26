@@ -738,10 +738,9 @@ a:hover{color:var(--ambre)}
 :focus-visible{outline:3px solid var(--ambre);outline-offset:6px}
 h1,h2,h3{font-family:var(--titre);font-weight:var(--graisse)}
 h1{font-size:var(--h1);line-height:1.45;margin:10px 0 14px;color:var(--vert);text-shadow:0 0 14px rgba(92,255,149,.35)}
-h2{font-size:var(--h2);line-height:1.5;margin:44px 0 18px;color:var(--ambre);display:flex;align-items:center;gap:12px}
-h2{flex-wrap:wrap}
-h2 .petit{font:var(--petit)/1.3 var(--police);flex-basis:100%}
-h2::before{content:"";flex:none;width:10px;height:10px;background:var(--ambre);box-shadow:${cran("var(--ambre-fonce)", 2)}}
+h2{font-size:var(--h2);line-height:1.5;margin:44px 0 18px;color:var(--ambre)}
+h2 .petit{display:block;margin-top:6px;font:var(--petit)/1.3 var(--police)}
+h2::before{content:"";display:inline-block;vertical-align:.1em;margin-inline-end:12px;width:10px;height:10px;background:var(--ambre);box-shadow:${cran("var(--ambre-fonce)", 2)}}
 p{margin:0 0 14px}
 .doux{color:var(--doux)}
 .petit{font-size:var(--petit)}
