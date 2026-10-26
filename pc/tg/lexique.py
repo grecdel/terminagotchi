@@ -15,7 +15,7 @@ Les mêmes phrases existent dans l'appli Android (Regles.LEXIQUE dans Jeu.kt).
 Sous chaque commande qui a besoin de quelque chose après elle : un exemple prêt à taper depuis le
 terrain de jeu (« ↳ exemple : mkdir cabane », voir exemples.py).
 """
-from . import core, exemples
+from . import core, exemples, explique
 from .langue import t
 from .mots import palier
 from .plateforme import BOLD, DIM, RESET, C, OS_NAMES, OSK, fg, installer
@@ -79,6 +79,7 @@ def _entrees():
             ("tg carte", t("lex.tg_carte.i"), t("lex.tg_carte.t")),
             ("tg quetes", t("lex.tg_quetes.i"), t("lex.tg_quetes.t")),
             ("tg aile", t("lex.tg_aile.i"), t("lex.tg_aile.t")),
+            ("tg explique", t("lex.explique.i"), t("lex.explique.t")),
         ]),
         (t("lex.ch.recensement"), ICI, [
             ("tg", t("lex.tg.i"), t("lex.tg.t")),
@@ -173,10 +174,14 @@ def lignes(state):
             ex = exemples.lexique(cmd)
             if ex:
                 sortie.append(f"  {' ' * 18}{fg(110)}↳ " + t("lex.exemple", ex=ex) + RESET)
+            for k, o in enumerate(explique.lignes_options(cmd.split()[0])):   # -r = « récursif »…
+                debut = t("lex.options") + " " if k == 0 else ""
+                sortie.append(f"  {' ' * 18}{DIM}{debut}{o}{RESET}")
     entete = [f" {fg(213)}── 📖 " + t("lex.carnet.titre", nom=state.get("name", "")) + RESET,
               f" {DIM}" + t("lex.titre", ici=ici, n=goutees, total=total) + RESET,
               f" {DIM}" + t("lex.legende") + RESET,
-              f" {fg(110)}↳ " + t("lex.exemples.ou", cmd=f"cd ~/{core.TERRAIN.name}") + RESET]
+              f" {fg(110)}↳ " + t("lex.exemples.ou", cmd=f"cd ~/{core.TERRAIN.name}") + RESET,
+              f" {fg(110)}📖 " + t("lex.explique", ex="tg explique rm") + RESET]
     return entete + sortie + souvenirs(state)
 
 

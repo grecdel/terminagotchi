@@ -66,6 +66,7 @@ def _table():
         "tg aile": "tg aile grenier",
         "tg bestiaire": "tg bestiaire Glitchou",
         "tg langue": "tg langue en",
+        "tg explique": "tg explique rm",
         # le téléphone (appli Android, ou Termux)
         "ouvre": "ouvre whatsapp",
         "sms": "sms 0612345678 {salut}",

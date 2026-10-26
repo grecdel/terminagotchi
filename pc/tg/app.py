@@ -8,7 +8,7 @@ import time
 
 import subprocess
 
-from . import (compagnon, core, dressage, equipe, exemples, explo, histoire, lecons, lexique, maison, notif, quetes,
+from . import (compagnon, core, dressage, equipe, exemples, explique, explo, histoire, lecons, lexique, maison, notif, quetes,
                recense, registre, sprites, terrain)
 from .bestiaire import arc_en_ciel
 from . import langue
@@ -104,6 +104,9 @@ def render(state, frame, interactif, anim=None):
             for x in envelopper(lecons.tx(step["dit"]), 78):
                 lines.append(f" {x}")
             lines.append(f"   {fg(226)}➜ `{piege(step['cmd'])}`{RESET}")
+            for montre, cle in explique.nouvelles(state, step["cmd"]):      # 💡 Le -r veut dire…
+                for x in envelopper(explique.phrase(montre, cle), 74):
+                    lines.append(f"   {DIM}{x}{RESET}")
             if "nid/" in step["cmd"] or step["cmd"].endswith(" nid") or "reserve.txt" in step["cmd"] \
                     or step["cmd"].startswith(("cat coeur", "chmod 444 coeur", "echo ? > coeur", "cp -r grenier", "rm -r vieille_cabane")):
                 lines.append(f"   {DIM}" + t("app.lecon.depuis", terrain=terme("terrain", palier(state)),
@@ -667,6 +670,10 @@ def main():
         return
     if mode in ("aide", "help", "-h"):
         print(aide())
+        return
+    if mode == "explique":                     # tg explique rm : la fiche d'une commande et de ses options
+        st = core.load() or {}
+        print("\n".join(explique.fiche(st, " ".join(args[1:]))))
         return
     if mode == "langue":
         if len(args) > 1:

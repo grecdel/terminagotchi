@@ -647,6 +647,8 @@ def avancer(state, les):
     step = les["steps"][state["step"]]
     core.log(state, f"✔ {step['cmd']}")
     core.say(state, lecons.tx(step["bravo"]), 12)
+    from . import explique
+    explique.apres_reussite(state, step["cmd"])           # -r, >>, 444… : expliqués une fois (explique.py)
     state["step"] += 1
     core.animer(state, "content")
     if state["step"] < len(les["steps"]):
