@@ -1,0 +1,4096 @@
+{
+"exercices": [
+{
+"type": "exp_chemin",
+"valeur": "9f5fa6f22fde5166619939c9b145d8ac6e9574663974ecb59510a9c9dff04f99",
+"k": 0,
+"empreinte": "exp_chemin|coins=tiroir,panier|i=0|j=1|pieces=grenier,couloir,bibliotheque",
+"reponse": null
+},
+{
+"type": "exp_chemin",
+"valeur": "9f5fa6f22fde5166619939c9b145d8ac6e9574663974ecb59510a9c9dff04f99",
+"k": 1,
+"empreinte": "exp_chemin|coins=malle,tiroir|i=1|j=0|pieces=grenier,chambre,jardin",
+"reponse": null
+},
+{
+"type": "exp_chemin",
+"valeur": "9f5fa6f22fde5166619939c9b145d8ac6e9574663974ecb59510a9c9dff04f99",
+"k": 3,
+"empreinte": "exp_chemin|coins=malle,etagere|i=2|j=1|pieces=cave,jardin,atelier",
+"reponse": null
+},
+{
+"type": "exp_chemin",
+"valeur": "9f5fa6f22fde5166619939c9b145d8ac6e9574663974ecb59510a9c9dff04f99",
+"k": 99,
+"empreinte": "exp_chemin|coins=armoire,coffre|i=2|j=0|pieces=couloir,grenier,bureau",
+"reponse": null
+},
+{
+"type": "exp_cle",
+"valeur": "9f5fa6f22fde5166619939c9b145d8ac6e9574663974ecb59510a9c9dff04f99",
+"k": 0,
+"empreinte": "exp_cle|coins=tiroir,panier|i=0|j=1|pieces=grenier,couloir,bibliotheque",
+"reponse": null
+},
+{
+"type": "exp_cle",
+"valeur": "9f5fa6f22fde5166619939c9b145d8ac6e9574663974ecb59510a9c9dff04f99",
+"k": 1,
+"empreinte": "exp_cle|coins=malle,tiroir|i=1|j=0|pieces=grenier,chambre,jardin",
+"reponse": null
+},
+{
+"type": "exp_cle",
+"valeur": "9f5fa6f22fde5166619939c9b145d8ac6e9574663974ecb59510a9c9dff04f99",
+"k": 3,
+"empreinte": "exp_cle|coins=malle,etagere|i=2|j=1|pieces=cave,jardin,atelier",
+"reponse": null
+},
+{
+"type": "exp_cle",
+"valeur": "9f5fa6f22fde5166619939c9b145d8ac6e9574663974ecb59510a9c9dff04f99",
+"k": 99,
+"empreinte": "exp_cle|coins=armoire,coffre|i=2|j=0|pieces=couloir,grenier,bureau",
+"reponse": null
+},
+{
+"type": "bat_pieces",
+"valeur": "9f5fa6f22fde5166619939c9b145d8ac6e9574663974ecb59510a9c9dff04f99",
+"k": 0,
+"empreinte": "bat_pieces|pieces=grenier,couloir",
+"reponse": null
+},
+{
+"type": "bat_pieces",
+"valeur": "9f5fa6f22fde5166619939c9b145d8ac6e9574663974ecb59510a9c9dff04f99",
+"k": 1,
+"empreinte": "bat_pieces|pieces=grenier,chambre",
+"reponse": null
+},
+{
+"type": "bat_pieces",
+"valeur": "9f5fa6f22fde5166619939c9b145d8ac6e9574663974ecb59510a9c9dff04f99",
+"k": 3,
+"empreinte": "bat_pieces|pieces=cave,jardin",
+"reponse": null
+},
+{
+"type": "bat_pieces",
+"valeur": "9f5fa6f22fde5166619939c9b145d8ac6e9574663974ecb59510a9c9dff04f99",
+"k": 99,
+"empreinte": "bat_pieces|pieces=couloir,grenier",
+"reponse": null
+},
+{
+"type": "bat_objets",
+"valeur": "9f5fa6f22fde5166619939c9b145d8ac6e9574663974ecb59510a9c9dff04f99",
+"k": 0,
+"empreinte": "bat_objets|objets=bille,crayon|pieces=grenier",
+"reponse": null
+},
+{
+"type": "bat_objets",
+"valeur": "9f5fa6f22fde5166619939c9b145d8ac6e9574663974ecb59510a9c9dff04f99",
+"k": 1,
+"empreinte": "bat_objets|objets=crayon,gomme|pieces=grenier",
+"reponse": null
+},
+{
+"type": "bat_objets",
+"valeur": "9f5fa6f22fde5166619939c9b145d8ac6e9574663974ecb59510a9c9dff04f99",
+"k": 3,
+"empreinte": "bat_objets|objets=livre,pomme|pieces=cave",
+"reponse": null
+},
+{
+"type": "bat_objets",
+"valeur": "9f5fa6f22fde5166619939c9b145d8ac6e9574663974ecb59510a9c9dff04f99",
+"k": 99,
+"empreinte": "bat_objets|objets=tambour,carte|pieces=couloir",
+"reponse": null
+},
+{
+"type": "dem_mv",
+"valeur": "9f5fa6f22fde5166619939c9b145d8ac6e9574663974ecb59510a9c9dff04f99",
+"k": 0,
+"empreinte": "dem_mv|objets=plume|pieces=grenier,couloir",
+"reponse": null
+},
+{
+"type": "dem_mv",
+"valeur": "9f5fa6f22fde5166619939c9b145d8ac6e9574663974ecb59510a9c9dff04f99",
+"k": 1,
+"empreinte": "dem_mv|objets=crayon|pieces=grenier,chambre",
+"reponse": null
+},
+{
+"type": "dem_mv",
+"valeur": "9f5fa6f22fde5166619939c9b145d8ac6e9574663974ecb59510a9c9dff04f99",
+"k": 3,
+"empreinte": "dem_mv|objets=bille|pieces=cave,jardin",
+"reponse": null
+},
+{
+"type": "dem_mv",
+"valeur": "9f5fa6f22fde5166619939c9b145d8ac6e9574663974ecb59510a9c9dff04f99",
+"k": 99,
+"empreinte": "dem_mv|objets=plume|pieces=couloir,grenier",
+"reponse": null
+},
+{
+"type": "dem_cp",
+"valeur": "9f5fa6f22fde5166619939c9b145d8ac6e9574663974ecb59510a9c9dff04f99",
+"k": 0,
+"empreinte": "dem_cp|objets=plume|pieces=grenier,couloir",
+"reponse": null
+},
+{
+"type": "dem_cp",
+"valeur": "9f5fa6f22fde5166619939c9b145d8ac6e9574663974ecb59510a9c9dff04f99",
+"k": 1,
+"empreinte": "dem_cp|objets=crayon|pieces=grenier,chambre",
+"reponse": null
+},
+{
+"type": "dem_cp",
+"valeur": "9f5fa6f22fde5166619939c9b145d8ac6e9574663974ecb59510a9c9dff04f99",
+"k": 3,
+"empreinte": "dem_cp|objets=bille|pieces=cave,jardin",
+"reponse": null
+},
+{
+"type": "dem_cp",
+"valeur": "9f5fa6f22fde5166619939c9b145d8ac6e9574663974ecb59510a9c9dff04f99",
+"k": 99,
+"empreinte": "dem_cp|objets=plume|pieces=couloir,grenier",
+"reponse": null
+},
+{
+"type": "net_rm",
+"valeur": "9f5fa6f22fde5166619939c9b145d8ac6e9574663974ecb59510a9c9dff04f99",
+"k": 0,
+"empreinte": "net_rm|n=3|objets=bille|pieces=grenier",
+"reponse": null
+},
+{
+"type": "net_rm",
+"valeur": "9f5fa6f22fde5166619939c9b145d8ac6e9574663974ecb59510a9c9dff04f99",
+"k": 1,
+"empreinte": "net_rm|n=2|objets=crayon|pieces=grenier",
+"reponse": null
+},
+{
+"type": "net_rm",
+"valeur": "9f5fa6f22fde5166619939c9b145d8ac6e9574663974ecb59510a9c9dff04f99",
+"k": 3,
+"empreinte": "net_rm|n=2|objets=livre|pieces=cave",
+"reponse": null
+},
+{
+"type": "net_rm",
+"valeur": "9f5fa6f22fde5166619939c9b145d8ac6e9574663974ecb59510a9c9dff04f99",
+"k": 99,
+"empreinte": "net_rm|n=3|objets=tambour|pieces=couloir",
+"reponse": null
+},
+{
+"type": "net_rmdir",
+"valeur": "9f5fa6f22fde5166619939c9b145d8ac6e9574663974ecb59510a9c9dff04f99",
+"k": 0,
+"empreinte": "net_rmdir|objets=tambour|pieces=grenier,couloir,bibliotheque",
+"reponse": null
+},
+{
+"type": "net_rmdir",
+"valeur": "9f5fa6f22fde5166619939c9b145d8ac6e9574663974ecb59510a9c9dff04f99",
+"k": 1,
+"empreinte": "net_rmdir|objets=carte|pieces=grenier,chambre,jardin",
+"reponse": null
+},
+{
+"type": "net_rmdir",
+"valeur": "9f5fa6f22fde5166619939c9b145d8ac6e9574663974ecb59510a9c9dff04f99",
+"k": 3,
+"empreinte": "net_rmdir|objets=gomme|pieces=cave,jardin,atelier",
+"reponse": null
+},
+{
+"type": "net_rmdir",
+"valeur": "9f5fa6f22fde5166619939c9b145d8ac6e9574663974ecb59510a9c9dff04f99",
+"k": 99,
+"empreinte": "net_rmdir|objets=lampe|pieces=couloir,grenier,bureau",
+"reponse": null
+},
+{
+"type": "net_rmr",
+"valeur": "9f5fa6f22fde5166619939c9b145d8ac6e9574663974ecb59510a9c9dff04f99",
+"k": 0,
+"empreinte": "net_rmr|objets=plume,coquillage,bougie|pieces=grenier,couloir",
+"reponse": null
+},
+{
+"type": "net_rmr",
+"valeur": "9f5fa6f22fde5166619939c9b145d8ac6e9574663974ecb59510a9c9dff04f99",
+"k": 1,
+"empreinte": "net_rmr|objets=crayon,lampe,tambour|pieces=grenier,chambre",
+"reponse": null
+},
+{
+"type": "net_rmr",
+"valeur": "9f5fa6f22fde5166619939c9b145d8ac6e9574663974ecb59510a9c9dff04f99",
+"k": 3,
+"empreinte": "net_rmr|objets=bille,balle,carte|pieces=cave,jardin",
+"reponse": null
+},
+{
+"type": "net_rmr",
+"valeur": "9f5fa6f22fde5166619939c9b145d8ac6e9574663974ecb59510a9c9dff04f99",
+"k": 99,
+"empreinte": "net_rmr|objets=plume,lampe,livre|pieces=couloir,grenier",
+"reponse": null
+},
+{
+"type": "lec_cat",
+"valeur": "9f5fa6f22fde5166619939c9b145d8ac6e9574663974ecb59510a9c9dff04f99",
+"k": 0,
+"empreinte": "lec_cat|mots=dragon|n=1",
+"reponse": "dragon"
+},
+{
+"type": "lec_cat",
+"valeur": "9f5fa6f22fde5166619939c9b145d8ac6e9574663974ecb59510a9c9dff04f99",
+"k": 1,
+"empreinte": "lec_cat|mots=dragon|n=3",
+"reponse": "dragon"
+},
+{
+"type": "lec_cat",
+"valeur": "9f5fa6f22fde5166619939c9b145d8ac6e9574663974ecb59510a9c9dff04f99",
+"k": 3,
+"empreinte": "lec_cat|mots=licorne|n=3",
+"reponse": "licorne"
+},
+{
+"type": "lec_cat",
+"valeur": "9f5fa6f22fde5166619939c9b145d8ac6e9574663974ecb59510a9c9dff04f99",
+"k": 99,
+"empreinte": "lec_cat|mots=sirene|n=2",
+"reponse": "sirene"
+},
+{
+"type": "lec_head",
+"valeur": "9f5fa6f22fde5166619939c9b145d8ac6e9574663974ecb59510a9c9dff04f99",
+"k": 0,
+"empreinte": "lec_head|mots=dragon,sirene,nuage,robot,licorne,comete,biscuit,fusee|n=4",
+"reponse": "robot"
+},
+{
+"type": "lec_head",
+"valeur": "9f5fa6f22fde5166619939c9b145d8ac6e9574663974ecb59510a9c9dff04f99",
+"k": 1,
+"empreinte": "lec_head|mots=dragon,tortue,pirate,robot,fusee,cactus,nuage,comete|n=4",
+"reponse": "robot"
+},
+{
+"type": "lec_head",
+"valeur": "9f5fa6f22fde5166619939c9b145d8ac6e9574663974ecb59510a9c9dff04f99",
+"k": 3,
+"empreinte": "lec_head|mots=licorne,pirate,robot,comete,biscuit,tortue,fusee,dragon|n=3",
+"reponse": "robot"
+},
+{
+"type": "lec_head",
+"valeur": "9f5fa6f22fde5166619939c9b145d8ac6e9574663974ecb59510a9c9dff04f99",
+"k": 99,
+"empreinte": "lec_head|mots=sirene,dragon,comete,licorne,pirate,fusee,nuage,cactus|n=4",
+"reponse": "licorne"
+},
+{
+"type": "lec_tail",
+"valeur": "9f5fa6f22fde5166619939c9b145d8ac6e9574663974ecb59510a9c9dff04f99",
+"k": 0,
+"empreinte": "lec_tail|mots=dragon,sirene,nuage,robot,licorne,comete,biscuit,fusee|n=4",
+"reponse": "fusee"
+},
+{
+"type": "lec_tail",
+"valeur": "9f5fa6f22fde5166619939c9b145d8ac6e9574663974ecb59510a9c9dff04f99",
+"k": 1,
+"empreinte": "lec_tail|mots=dragon,tortue,pirate,robot,fusee,cactus,nuage,comete|n=4",
+"reponse": "comete"
+},
+{
+"type": "lec_tail",
+"valeur": "9f5fa6f22fde5166619939c9b145d8ac6e9574663974ecb59510a9c9dff04f99",
+"k": 3,
+"empreinte": "lec_tail|mots=licorne,pirate,robot,comete,biscuit,tortue,fusee,dragon|n=3",
+"reponse": "dragon"
+},
+{
+"type": "lec_tail",
+"valeur": "9f5fa6f22fde5166619939c9b145d8ac6e9574663974ecb59510a9c9dff04f99",
+"k": 99,
+"empreinte": "lec_tail|mots=sirene,dragon,comete,licorne,pirate,fusee,nuage,cactus|n=4",
+"reponse": "cactus"
+},
+{
+"type": "det_grep",
+"valeur": "9f5fa6f22fde5166619939c9b145d8ac6e9574663974ecb59510a9c9dff04f99",
+"k": 0,
+"empreinte": "det_grep|i=1|mots=licorne,sirene,nuage,robot,tortue,volcan|objets=balle,gomme,cle,carte,etoile",
+"reponse": "gomme"
+},
+{
+"type": "det_grep",
+"valeur": "9f5fa6f22fde5166619939c9b145d8ac6e9574663974ecb59510a9c9dff04f99",
+"k": 1,
+"empreinte": "det_grep|i=3|mots=pirate,biscuit,robot,cactus,volcan,tortue|objets=gomme,plume,balle,lampe,boussole",
+"reponse": "lampe"
+},
+{
+"type": "det_grep",
+"valeur": "9f5fa6f22fde5166619939c9b145d8ac6e9574663974ecb59510a9c9dff04f99",
+"k": 3,
+"empreinte": "det_grep|i=3|mots=robot,biscuit,dragon,nuage,licorne,cactus|objets=livre,bille,flute,plume,carte",
+"reponse": "plume"
+},
+{
+"type": "det_grep",
+"valeur": "9f5fa6f22fde5166619939c9b145d8ac6e9574663974ecb59510a9c9dff04f99",
+"k": 99,
+"empreinte": "det_grep|i=4|mots=robot,nuage,cactus,sirene,pirate,comete|objets=lampe,etoile,cle,boussole,livre",
+"reponse": "livre"
+},
+{
+"type": "det_find",
+"valeur": "9f5fa6f22fde5166619939c9b145d8ac6e9574663974ecb59510a9c9dff04f99",
+"k": 0,
+"empreinte": "det_find|coins=tiroir,panier|i=0|j=1|objet=pomme|pieces=grenier,couloir,bibliotheque",
+"reponse": "grenier"
+},
+{
+"type": "det_find",
+"valeur": "9f5fa6f22fde5166619939c9b145d8ac6e9574663974ecb59510a9c9dff04f99",
+"k": 1,
+"empreinte": "det_find|coins=malle,tiroir|i=1|j=0|objet=carte|pieces=grenier,chambre,jardin",
+"reponse": "chambre"
+},
+{
+"type": "det_find",
+"valeur": "9f5fa6f22fde5166619939c9b145d8ac6e9574663974ecb59510a9c9dff04f99",
+"k": 3,
+"empreinte": "det_find|coins=malle,etagere|i=2|j=1|objet=balle|pieces=cave,jardin,atelier",
+"reponse": "atelier"
+},
+{
+"type": "det_find",
+"valeur": "9f5fa6f22fde5166619939c9b145d8ac6e9574663974ecb59510a9c9dff04f99",
+"k": 99,
+"empreinte": "det_find|coins=armoire,coffre|i=2|j=0|objet=livre|pieces=couloir,grenier,bureau",
+"reponse": "bureau"
+},
+{
+"type": "plo_ecrit",
+"valeur": "9f5fa6f22fde5166619939c9b145d8ac6e9574663974ecb59510a9c9dff04f99",
+"k": 0,
+"empreinte": "plo_ecrit|mots=dragon",
+"reponse": null
+},
+{
+"type": "plo_ecrit",
+"valeur": "9f5fa6f22fde5166619939c9b145d8ac6e9574663974ecb59510a9c9dff04f99",
+"k": 1,
+"empreinte": "plo_ecrit|mots=dragon",
+"reponse": null
+},
+{
+"type": "plo_ecrit",
+"valeur": "9f5fa6f22fde5166619939c9b145d8ac6e9574663974ecb59510a9c9dff04f99",
+"k": 3,
+"empreinte": "plo_ecrit|mots=licorne",
+"reponse": null
+},
+{
+"type": "plo_ecrit",
+"valeur": "9f5fa6f22fde5166619939c9b145d8ac6e9574663974ecb59510a9c9dff04f99",
+"k": 99,
+"empreinte": "plo_ecrit|mots=sirene",
+"reponse": null
+},
+{
+"type": "plo_ajout",
+"valeur": "9f5fa6f22fde5166619939c9b145d8ac6e9574663974ecb59510a9c9dff04f99",
+"k": 0,
+"empreinte": "plo_ajout|mots=dragon,sirene,nuage,robot",
+"reponse": null
+},
+{
+"type": "plo_ajout",
+"valeur": "9f5fa6f22fde5166619939c9b145d8ac6e9574663974ecb59510a9c9dff04f99",
+"k": 1,
+"empreinte": "plo_ajout|mots=dragon,tortue,pirate,robot",
+"reponse": null
+},
+{
+"type": "plo_ajout",
+"valeur": "9f5fa6f22fde5166619939c9b145d8ac6e9574663974ecb59510a9c9dff04f99",
+"k": 3,
+"empreinte": "plo_ajout|mots=licorne,pirate,robot,comete",
+"reponse": null
+},
+{
+"type": "plo_ajout",
+"valeur": "9f5fa6f22fde5166619939c9b145d8ac6e9574663974ecb59510a9c9dff04f99",
+"k": 99,
+"empreinte": "plo_ajout|mots=sirene,dragon,comete,licorne",
+"reponse": null
+},
+{
+"type": "plo_tuyau",
+"valeur": "9f5fa6f22fde5166619939c9b145d8ac6e9574663974ecb59510a9c9dff04f99",
+"k": 0,
+"empreinte": "plo_tuyau|lignes=0,3,0,3,3,0,3,3,0,0,3|objets=balle,gomme,cle,carte",
+"reponse": "5"
+},
+{
+"type": "plo_tuyau",
+"valeur": "9f5fa6f22fde5166619939c9b145d8ac6e9574663974ecb59510a9c9dff04f99",
+"k": 1,
+"empreinte": "plo_tuyau|lignes=0,0,1,1,0,1,3,0,0,3|objets=gomme,plume,balle,lampe",
+"reponse": "5"
+},
+{
+"type": "plo_tuyau",
+"valeur": "9f5fa6f22fde5166619939c9b145d8ac6e9574663974ecb59510a9c9dff04f99",
+"k": 3,
+"empreinte": "plo_tuyau|lignes=1,1,1,2,1,1,2,1,3,0|objets=livre,bille,flute,plume",
+"reponse": "1"
+},
+{
+"type": "plo_tuyau",
+"valeur": "9f5fa6f22fde5166619939c9b145d8ac6e9574663974ecb59510a9c9dff04f99",
+"k": 99,
+"empreinte": "plo_tuyau|lignes=1,2,0,2,0,2,0,1,0|objets=lampe,etoile,cle,boussole",
+"reponse": "4"
+},
+{
+"type": "cui_lancer",
+"valeur": "9f5fa6f22fde5166619939c9b145d8ac6e9574663974ecb59510a9c9dff04f99",
+"k": 0,
+"empreinte": "cui_lancer|mots=dragon",
+"reponse": "dragon"
+},
+{
+"type": "cui_lancer",
+"valeur": "9f5fa6f22fde5166619939c9b145d8ac6e9574663974ecb59510a9c9dff04f99",
+"k": 1,
+"empreinte": "cui_lancer|mots=dragon",
+"reponse": "dragon"
+},
+{
+"type": "cui_lancer",
+"valeur": "9f5fa6f22fde5166619939c9b145d8ac6e9574663974ecb59510a9c9dff04f99",
+"k": 3,
+"empreinte": "cui_lancer|mots=licorne",
+"reponse": "licorne"
+},
+{
+"type": "cui_lancer",
+"valeur": "9f5fa6f22fde5166619939c9b145d8ac6e9574663974ecb59510a9c9dff04f99",
+"k": 99,
+"empreinte": "cui_lancer|mots=sirene",
+"reponse": "sirene"
+},
+{
+"type": "cui_ecrire",
+"valeur": "9f5fa6f22fde5166619939c9b145d8ac6e9574663974ecb59510a9c9dff04f99",
+"k": 0,
+"empreinte": "cui_ecrire|mots=dragon",
+"reponse": null
+},
+{
+"type": "cui_ecrire",
+"valeur": "9f5fa6f22fde5166619939c9b145d8ac6e9574663974ecb59510a9c9dff04f99",
+"k": 1,
+"empreinte": "cui_ecrire|mots=dragon",
+"reponse": null
+},
+{
+"type": "cui_ecrire",
+"valeur": "9f5fa6f22fde5166619939c9b145d8ac6e9574663974ecb59510a9c9dff04f99",
+"k": 3,
+"empreinte": "cui_ecrire|mots=licorne",
+"reponse": null
+},
+{
+"type": "cui_ecrire",
+"valeur": "9f5fa6f22fde5166619939c9b145d8ac6e9574663974ecb59510a9c9dff04f99",
+"k": 99,
+"empreinte": "cui_ecrire|mots=sirene",
+"reponse": null
+},
+{
+"type": "exp_chemin",
+"valeur": "f5ba7feb881a8dfc4181a5396eb1de041852624d420ba9697c76f4202461ea55",
+"k": 0,
+"empreinte": "exp_chemin|coins=armoire,boite|i=2|j=1|pieces=grenier,couloir,atelier",
+"reponse": null
+},
+{
+"type": "exp_chemin",
+"valeur": "f5ba7feb881a8dfc4181a5396eb1de041852624d420ba9697c76f4202461ea55",
+"k": 1,
+"empreinte": "exp_chemin|coins=coffre,armoire|i=2|j=0|pieces=salon,atelier,cave",
+"reponse": null
+},
+{
+"type": "exp_chemin",
+"valeur": "f5ba7feb881a8dfc4181a5396eb1de041852624d420ba9697c76f4202461ea55",
+"k": 10,
+"empreinte": "exp_chemin|coins=placard,malle|i=0|j=1|pieces=garage,cave,cuisine",
+"reponse": null
+},
+{
+"type": "exp_chemin",
+"valeur": "f5ba7feb881a8dfc4181a5396eb1de041852624d420ba9697c76f4202461ea55",
+"k": 99,
+"empreinte": "exp_chemin|coins=armoire,boite|i=2|j=0|pieces=atelier,bureau,garage",
+"reponse": null
+},
+{
+"type": "exp_cle",
+"valeur": "f5ba7feb881a8dfc4181a5396eb1de041852624d420ba9697c76f4202461ea55",
+"k": 0,
+"empreinte": "exp_cle|coins=armoire,boite|i=2|j=1|pieces=grenier,couloir,atelier",
+"reponse": null
+},
+{
+"type": "exp_cle",
+"valeur": "f5ba7feb881a8dfc4181a5396eb1de041852624d420ba9697c76f4202461ea55",
+"k": 1,
+"empreinte": "exp_cle|coins=coffre,armoire|i=2|j=0|pieces=salon,atelier,cave",
+"reponse": null
+},
+{
+"type": "exp_cle",
+"valeur": "f5ba7feb881a8dfc4181a5396eb1de041852624d420ba9697c76f4202461ea55",
+"k": 10,
+"empreinte": "exp_cle|coins=placard,malle|i=0|j=1|pieces=garage,cave,cuisine",
+"reponse": null
+},
+{
+"type": "exp_cle",
+"valeur": "f5ba7feb881a8dfc4181a5396eb1de041852624d420ba9697c76f4202461ea55",
+"k": 99,
+"empreinte": "exp_cle|coins=armoire,boite|i=2|j=0|pieces=atelier,bureau,garage",
+"reponse": null
+},
+{
+"type": "bat_pieces",
+"valeur": "f5ba7feb881a8dfc4181a5396eb1de041852624d420ba9697c76f4202461ea55",
+"k": 0,
+"empreinte": "bat_pieces|pieces=grenier,couloir",
+"reponse": null
+},
+{
+"type": "bat_pieces",
+"valeur": "f5ba7feb881a8dfc4181a5396eb1de041852624d420ba9697c76f4202461ea55",
+"k": 1,
+"empreinte": "bat_pieces|pieces=salon,atelier",
+"reponse": null
+},
+{
+"type": "bat_pieces",
+"valeur": "f5ba7feb881a8dfc4181a5396eb1de041852624d420ba9697c76f4202461ea55",
+"k": 10,
+"empreinte": "bat_pieces|pieces=garage,cave",
+"reponse": null
+},
+{
+"type": "bat_pieces",
+"valeur": "f5ba7feb881a8dfc4181a5396eb1de041852624d420ba9697c76f4202461ea55",
+"k": 99,
+"empreinte": "bat_pieces|pieces=atelier,bureau",
+"reponse": null
+},
+{
+"type": "bat_objets",
+"valeur": "f5ba7feb881a8dfc4181a5396eb1de041852624d420ba9697c76f4202461ea55",
+"k": 0,
+"empreinte": "bat_objets|objets=bougie,crayon|pieces=grenier",
+"reponse": null
+},
+{
+"type": "bat_objets",
+"valeur": "f5ba7feb881a8dfc4181a5396eb1de041852624d420ba9697c76f4202461ea55",
+"k": 1,
+"empreinte": "bat_objets|objets=gomme,coquillage|pieces=salon",
+"reponse": null
+},
+{
+"type": "bat_objets",
+"valeur": "f5ba7feb881a8dfc4181a5396eb1de041852624d420ba9697c76f4202461ea55",
+"k": 10,
+"empreinte": "bat_objets|objets=cle,etoile|pieces=garage",
+"reponse": null
+},
+{
+"type": "bat_objets",
+"valeur": "f5ba7feb881a8dfc4181a5396eb1de041852624d420ba9697c76f4202461ea55",
+"k": 99,
+"empreinte": "bat_objets|objets=cle,bougie|pieces=atelier",
+"reponse": null
+},
+{
+"type": "dem_mv",
+"valeur": "f5ba7feb881a8dfc4181a5396eb1de041852624d420ba9697c76f4202461ea55",
+"k": 0,
+"empreinte": "dem_mv|objets=gomme|pieces=grenier,couloir",
+"reponse": null
+},
+{
+"type": "dem_mv",
+"valeur": "f5ba7feb881a8dfc4181a5396eb1de041852624d420ba9697c76f4202461ea55",
+"k": 1,
+"empreinte": "dem_mv|objets=gomme|pieces=salon,atelier",
+"reponse": null
+},
+{
+"type": "dem_mv",
+"valeur": "f5ba7feb881a8dfc4181a5396eb1de041852624d420ba9697c76f4202461ea55",
+"k": 10,
+"empreinte": "dem_mv|objets=boussole|pieces=garage,cave",
+"reponse": null
+},
+{
+"type": "dem_mv",
+"valeur": "f5ba7feb881a8dfc4181a5396eb1de041852624d420ba9697c76f4202461ea55",
+"k": 99,
+"empreinte": "dem_mv|objets=coquillage|pieces=atelier,bureau",
+"reponse": null
+},
+{
+"type": "dem_cp",
+"valeur": "f5ba7feb881a8dfc4181a5396eb1de041852624d420ba9697c76f4202461ea55",
+"k": 0,
+"empreinte": "dem_cp|objets=gomme|pieces=grenier,couloir",
+"reponse": null
+},
+{
+"type": "dem_cp",
+"valeur": "f5ba7feb881a8dfc4181a5396eb1de041852624d420ba9697c76f4202461ea55",
+"k": 1,
+"empreinte": "dem_cp|objets=gomme|pieces=salon,atelier",
+"reponse": null
+},
+{
+"type": "dem_cp",
+"valeur": "f5ba7feb881a8dfc4181a5396eb1de041852624d420ba9697c76f4202461ea55",
+"k": 10,
+"empreinte": "dem_cp|objets=boussole|pieces=garage,cave",
+"reponse": null
+},
+{
+"type": "dem_cp",
+"valeur": "f5ba7feb881a8dfc4181a5396eb1de041852624d420ba9697c76f4202461ea55",
+"k": 99,
+"empreinte": "dem_cp|objets=coquillage|pieces=atelier,bureau",
+"reponse": null
+},
+{
+"type": "net_rm",
+"valeur": "f5ba7feb881a8dfc4181a5396eb1de041852624d420ba9697c76f4202461ea55",
+"k": 0,
+"empreinte": "net_rm|n=3|objets=bougie|pieces=grenier",
+"reponse": null
+},
+{
+"type": "net_rm",
+"valeur": "f5ba7feb881a8dfc4181a5396eb1de041852624d420ba9697c76f4202461ea55",
+"k": 1,
+"empreinte": "net_rm|n=4|objets=gomme|pieces=salon",
+"reponse": null
+},
+{
+"type": "net_rm",
+"valeur": "f5ba7feb881a8dfc4181a5396eb1de041852624d420ba9697c76f4202461ea55",
+"k": 10,
+"empreinte": "net_rm|n=3|objets=cle|pieces=garage",
+"reponse": null
+},
+{
+"type": "net_rm",
+"valeur": "f5ba7feb881a8dfc4181a5396eb1de041852624d420ba9697c76f4202461ea55",
+"k": 99,
+"empreinte": "net_rm|n=2|objets=cle|pieces=atelier",
+"reponse": null
+},
+{
+"type": "net_rmdir",
+"valeur": "f5ba7feb881a8dfc4181a5396eb1de041852624d420ba9697c76f4202461ea55",
+"k": 0,
+"empreinte": "net_rmdir|objets=lampe|pieces=grenier,couloir,atelier",
+"reponse": null
+},
+{
+"type": "net_rmdir",
+"valeur": "f5ba7feb881a8dfc4181a5396eb1de041852624d420ba9697c76f4202461ea55",
+"k": 1,
+"empreinte": "net_rmdir|objets=pomme|pieces=salon,atelier,cave",
+"reponse": null
+},
+{
+"type": "net_rmdir",
+"valeur": "f5ba7feb881a8dfc4181a5396eb1de041852624d420ba9697c76f4202461ea55",
+"k": 10,
+"empreinte": "net_rmdir|objets=balle|pieces=garage,cave,cuisine",
+"reponse": null
+},
+{
+"type": "net_rmdir",
+"valeur": "f5ba7feb881a8dfc4181a5396eb1de041852624d420ba9697c76f4202461ea55",
+"k": 99,
+"empreinte": "net_rmdir|objets=lampe|pieces=atelier,bureau,garage",
+"reponse": null
+},
+{
+"type": "net_rmr",
+"valeur": "f5ba7feb881a8dfc4181a5396eb1de041852624d420ba9697c76f4202461ea55",
+"k": 0,
+"empreinte": "net_rmr|objets=gomme,flute,boussole|pieces=grenier,couloir",
+"reponse": null
+},
+{
+"type": "net_rmr",
+"valeur": "f5ba7feb881a8dfc4181a5396eb1de041852624d420ba9697c76f4202461ea55",
+"k": 1,
+"empreinte": "net_rmr|objets=gomme,balle,etoile|pieces=salon,atelier",
+"reponse": null
+},
+{
+"type": "net_rmr",
+"valeur": "f5ba7feb881a8dfc4181a5396eb1de041852624d420ba9697c76f4202461ea55",
+"k": 10,
+"empreinte": "net_rmr|objets=boussole,bougie,gomme|pieces=garage,cave",
+"reponse": null
+},
+{
+"type": "net_rmr",
+"valeur": "f5ba7feb881a8dfc4181a5396eb1de041852624d420ba9697c76f4202461ea55",
+"k": 99,
+"empreinte": "net_rmr|objets=coquillage,cle,bille|pieces=atelier,bureau",
+"reponse": null
+},
+{
+"type": "lec_cat",
+"valeur": "f5ba7feb881a8dfc4181a5396eb1de041852624d420ba9697c76f4202461ea55",
+"k": 0,
+"empreinte": "lec_cat|mots=dragon|n=1",
+"reponse": "dragon"
+},
+{
+"type": "lec_cat",
+"valeur": "f5ba7feb881a8dfc4181a5396eb1de041852624d420ba9697c76f4202461ea55",
+"k": 1,
+"empreinte": "lec_cat|mots=volcan|n=3",
+"reponse": "volcan"
+},
+{
+"type": "lec_cat",
+"valeur": "f5ba7feb881a8dfc4181a5396eb1de041852624d420ba9697c76f4202461ea55",
+"k": 10,
+"empreinte": "lec_cat|mots=cactus|n=2",
+"reponse": "cactus"
+},
+{
+"type": "lec_cat",
+"valeur": "f5ba7feb881a8dfc4181a5396eb1de041852624d420ba9697c76f4202461ea55",
+"k": 99,
+"empreinte": "lec_cat|mots=robot|n=1",
+"reponse": "robot"
+},
+{
+"type": "lec_head",
+"valeur": "f5ba7feb881a8dfc4181a5396eb1de041852624d420ba9697c76f4202461ea55",
+"k": 0,
+"empreinte": "lec_head|mots=dragon,sirene,robot,fusee,cactus,nuage,biscuit,pirate|n=2",
+"reponse": "sirene"
+},
+{
+"type": "lec_head",
+"valeur": "f5ba7feb881a8dfc4181a5396eb1de041852624d420ba9697c76f4202461ea55",
+"k": 1,
+"empreinte": "lec_head|mots=volcan,robot,licorne,biscuit,sirene,cactus,nuage,fusee|n=4",
+"reponse": "biscuit"
+},
+{
+"type": "lec_head",
+"valeur": "f5ba7feb881a8dfc4181a5396eb1de041852624d420ba9697c76f4202461ea55",
+"k": 10,
+"empreinte": "lec_head|mots=cactus,licorne,fusee,comete,tortue,volcan,pirate,nuage|n=3",
+"reponse": "fusee"
+},
+{
+"type": "lec_head",
+"valeur": "f5ba7feb881a8dfc4181a5396eb1de041852624d420ba9697c76f4202461ea55",
+"k": 99,
+"empreinte": "lec_head|mots=robot,comete,cactus,tortue,licorne,pirate,dragon,biscuit|n=3",
+"reponse": "cactus"
+},
+{
+"type": "lec_tail",
+"valeur": "f5ba7feb881a8dfc4181a5396eb1de041852624d420ba9697c76f4202461ea55",
+"k": 0,
+"empreinte": "lec_tail|mots=dragon,sirene,robot,fusee,cactus,nuage,biscuit,pirate|n=2",
+"reponse": "pirate"
+},
+{
+"type": "lec_tail",
+"valeur": "f5ba7feb881a8dfc4181a5396eb1de041852624d420ba9697c76f4202461ea55",
+"k": 1,
+"empreinte": "lec_tail|mots=volcan,robot,licorne,biscuit,sirene,cactus,nuage,fusee|n=4",
+"reponse": "fusee"
+},
+{
+"type": "lec_tail",
+"valeur": "f5ba7feb881a8dfc4181a5396eb1de041852624d420ba9697c76f4202461ea55",
+"k": 10,
+"empreinte": "lec_tail|mots=cactus,licorne,fusee,comete,tortue,volcan,pirate,nuage|n=3",
+"reponse": "nuage"
+},
+{
+"type": "lec_tail",
+"valeur": "f5ba7feb881a8dfc4181a5396eb1de041852624d420ba9697c76f4202461ea55",
+"k": 99,
+"empreinte": "lec_tail|mots=robot,comete,cactus,tortue,licorne,pirate,dragon,biscuit|n=3",
+"reponse": "biscuit"
+},
+{
+"type": "det_grep",
+"valeur": "f5ba7feb881a8dfc4181a5396eb1de041852624d420ba9697c76f4202461ea55",
+"k": 0,
+"empreinte": "det_grep|i=3|mots=fusee,biscuit,volcan,licorne,comete,cactus|objets=balle,bougie,gomme,tambour,boussole",
+"reponse": "tambour"
+},
+{
+"type": "det_grep",
+"valeur": "f5ba7feb881a8dfc4181a5396eb1de041852624d420ba9697c76f4202461ea55",
+"k": 1,
+"empreinte": "det_grep|i=0|mots=fusee,pirate,biscuit,cactus,tortue,sirene|objets=lampe,pomme,bougie,boussole,etoile",
+"reponse": "lampe"
+},
+{
+"type": "det_grep",
+"valeur": "f5ba7feb881a8dfc4181a5396eb1de041852624d420ba9697c76f4202461ea55",
+"k": 10,
+"empreinte": "det_grep|i=3|mots=licorne,volcan,robot,pirate,sirene,fusee|objets=coquillage,cle,plume,balle,etoile",
+"reponse": "balle"
+},
+{
+"type": "det_grep",
+"valeur": "f5ba7feb881a8dfc4181a5396eb1de041852624d420ba9697c76f4202461ea55",
+"k": 99,
+"empreinte": "det_grep|i=3|mots=robot,sirene,pirate,fusee,dragon,tortue|objets=flute,bougie,coquillage,tambour,carte",
+"reponse": "tambour"
+},
+{
+"type": "det_find",
+"valeur": "f5ba7feb881a8dfc4181a5396eb1de041852624d420ba9697c76f4202461ea55",
+"k": 0,
+"empreinte": "det_find|coins=armoire,boite|i=2|j=1|objet=lampe|pieces=grenier,couloir,atelier",
+"reponse": "atelier"
+},
+{
+"type": "det_find",
+"valeur": "f5ba7feb881a8dfc4181a5396eb1de041852624d420ba9697c76f4202461ea55",
+"k": 1,
+"empreinte": "det_find|coins=coffre,armoire|i=2|j=0|objet=carte|pieces=salon,atelier,cave",
+"reponse": "cave"
+},
+{
+"type": "det_find",
+"valeur": "f5ba7feb881a8dfc4181a5396eb1de041852624d420ba9697c76f4202461ea55",
+"k": 10,
+"empreinte": "det_find|coins=placard,malle|i=0|j=1|objet=balle|pieces=garage,cave,cuisine",
+"reponse": "garage"
+},
+{
+"type": "det_find",
+"valeur": "f5ba7feb881a8dfc4181a5396eb1de041852624d420ba9697c76f4202461ea55",
+"k": 99,
+"empreinte": "det_find|coins=armoire,boite|i=2|j=0|objet=tambour|pieces=atelier,bureau,garage",
+"reponse": "garage"
+},
+{
+"type": "plo_ecrit",
+"valeur": "f5ba7feb881a8dfc4181a5396eb1de041852624d420ba9697c76f4202461ea55",
+"k": 0,
+"empreinte": "plo_ecrit|mots=dragon",
+"reponse": null
+},
+{
+"type": "plo_ecrit",
+"valeur": "f5ba7feb881a8dfc4181a5396eb1de041852624d420ba9697c76f4202461ea55",
+"k": 1,
+"empreinte": "plo_ecrit|mots=volcan",
+"reponse": null
+},
+{
+"type": "plo_ecrit",
+"valeur": "f5ba7feb881a8dfc4181a5396eb1de041852624d420ba9697c76f4202461ea55",
+"k": 10,
+"empreinte": "plo_ecrit|mots=cactus",
+"reponse": null
+},
+{
+"type": "plo_ecrit",
+"valeur": "f5ba7feb881a8dfc4181a5396eb1de041852624d420ba9697c76f4202461ea55",
+"k": 99,
+"empreinte": "plo_ecrit|mots=robot",
+"reponse": null
+},
+{
+"type": "plo_ajout",
+"valeur": "f5ba7feb881a8dfc4181a5396eb1de041852624d420ba9697c76f4202461ea55",
+"k": 0,
+"empreinte": "plo_ajout|mots=dragon,sirene,robot,fusee",
+"reponse": null
+},
+{
+"type": "plo_ajout",
+"valeur": "f5ba7feb881a8dfc4181a5396eb1de041852624d420ba9697c76f4202461ea55",
+"k": 1,
+"empreinte": "plo_ajout|mots=volcan,robot,licorne,biscuit",
+"reponse": null
+},
+{
+"type": "plo_ajout",
+"valeur": "f5ba7feb881a8dfc4181a5396eb1de041852624d420ba9697c76f4202461ea55",
+"k": 10,
+"empreinte": "plo_ajout|mots=cactus,licorne,fusee,comete",
+"reponse": null
+},
+{
+"type": "plo_ajout",
+"valeur": "f5ba7feb881a8dfc4181a5396eb1de041852624d420ba9697c76f4202461ea55",
+"k": 99,
+"empreinte": "plo_ajout|mots=robot,comete,cactus,tortue",
+"reponse": null
+},
+{
+"type": "plo_tuyau",
+"valeur": "f5ba7feb881a8dfc4181a5396eb1de041852624d420ba9697c76f4202461ea55",
+"k": 0,
+"empreinte": "plo_tuyau|lignes=2,3,3,2,2,2,3,2,2,0|objets=balle,bougie,gomme,tambour",
+"reponse": "1"
+},
+{
+"type": "plo_tuyau",
+"valeur": "f5ba7feb881a8dfc4181a5396eb1de041852624d420ba9697c76f4202461ea55",
+"k": 1,
+"empreinte": "plo_tuyau|lignes=2,0,1,0,3,1,3,0,0|objets=lampe,pomme,bougie,boussole",
+"reponse": "4"
+},
+{
+"type": "plo_tuyau",
+"valeur": "f5ba7feb881a8dfc4181a5396eb1de041852624d420ba9697c76f4202461ea55",
+"k": 10,
+"empreinte": "plo_tuyau|lignes=0,3,1,2,3,3,3,0,2,0|objets=coquillage,cle,plume,balle",
+"reponse": "3"
+},
+{
+"type": "plo_tuyau",
+"valeur": "f5ba7feb881a8dfc4181a5396eb1de041852624d420ba9697c76f4202461ea55",
+"k": 99,
+"empreinte": "plo_tuyau|lignes=1,0,2,2,3,3,0,0,3,2|objets=flute,bougie,coquillage,tambour",
+"reponse": "3"
+},
+{
+"type": "cui_lancer",
+"valeur": "f5ba7feb881a8dfc4181a5396eb1de041852624d420ba9697c76f4202461ea55",
+"k": 0,
+"empreinte": "cui_lancer|mots=dragon",
+"reponse": "dragon"
+},
+{
+"type": "cui_lancer",
+"valeur": "f5ba7feb881a8dfc4181a5396eb1de041852624d420ba9697c76f4202461ea55",
+"k": 1,
+"empreinte": "cui_lancer|mots=volcan",
+"reponse": "volcan"
+},
+{
+"type": "cui_lancer",
+"valeur": "f5ba7feb881a8dfc4181a5396eb1de041852624d420ba9697c76f4202461ea55",
+"k": 10,
+"empreinte": "cui_lancer|mots=cactus",
+"reponse": "cactus"
+},
+{
+"type": "cui_lancer",
+"valeur": "f5ba7feb881a8dfc4181a5396eb1de041852624d420ba9697c76f4202461ea55",
+"k": 99,
+"empreinte": "cui_lancer|mots=robot",
+"reponse": "robot"
+},
+{
+"type": "cui_ecrire",
+"valeur": "f5ba7feb881a8dfc4181a5396eb1de041852624d420ba9697c76f4202461ea55",
+"k": 0,
+"empreinte": "cui_ecrire|mots=dragon",
+"reponse": null
+},
+{
+"type": "cui_ecrire",
+"valeur": "f5ba7feb881a8dfc4181a5396eb1de041852624d420ba9697c76f4202461ea55",
+"k": 1,
+"empreinte": "cui_ecrire|mots=volcan",
+"reponse": null
+},
+{
+"type": "cui_ecrire",
+"valeur": "f5ba7feb881a8dfc4181a5396eb1de041852624d420ba9697c76f4202461ea55",
+"k": 10,
+"empreinte": "cui_ecrire|mots=cactus",
+"reponse": null
+},
+{
+"type": "cui_ecrire",
+"valeur": "f5ba7feb881a8dfc4181a5396eb1de041852624d420ba9697c76f4202461ea55",
+"k": 99,
+"empreinte": "cui_ecrire|mots=robot",
+"reponse": null
+},
+{
+"type": "exp_chemin",
+"valeur": "359aa7560cab0dfca88ac934c57f9bc072259995704143484e52f2664be47b92",
+"k": 0,
+"empreinte": "exp_chemin|coins=panier,placard|i=1|j=0|pieces=chambre,salon,garage",
+"reponse": null
+},
+{
+"type": "exp_chemin",
+"valeur": "359aa7560cab0dfca88ac934c57f9bc072259995704143484e52f2664be47b92",
+"k": 1,
+"empreinte": "exp_chemin|coins=armoire,coffre|i=2|j=0|pieces=cave,salon,chambre",
+"reponse": null
+},
+{
+"type": "exp_chemin",
+"valeur": "359aa7560cab0dfca88ac934c57f9bc072259995704143484e52f2664be47b92",
+"k": 17,
+"empreinte": "exp_chemin|coins=panier,coffre|i=2|j=1|pieces=garage,jardin,bureau",
+"reponse": null
+},
+{
+"type": "exp_chemin",
+"valeur": "359aa7560cab0dfca88ac934c57f9bc072259995704143484e52f2664be47b92",
+"k": 99,
+"empreinte": "exp_chemin|coins=placard,coffre|i=0|j=0|pieces=bibliotheque,grenier,cave",
+"reponse": null
+},
+{
+"type": "exp_cle",
+"valeur": "359aa7560cab0dfca88ac934c57f9bc072259995704143484e52f2664be47b92",
+"k": 0,
+"empreinte": "exp_cle|coins=panier,placard|i=1|j=0|pieces=chambre,salon,garage",
+"reponse": null
+},
+{
+"type": "exp_cle",
+"valeur": "359aa7560cab0dfca88ac934c57f9bc072259995704143484e52f2664be47b92",
+"k": 1,
+"empreinte": "exp_cle|coins=armoire,coffre|i=2|j=0|pieces=cave,salon,chambre",
+"reponse": null
+},
+{
+"type": "exp_cle",
+"valeur": "359aa7560cab0dfca88ac934c57f9bc072259995704143484e52f2664be47b92",
+"k": 17,
+"empreinte": "exp_cle|coins=panier,coffre|i=2|j=1|pieces=garage,jardin,bureau",
+"reponse": null
+},
+{
+"type": "exp_cle",
+"valeur": "359aa7560cab0dfca88ac934c57f9bc072259995704143484e52f2664be47b92",
+"k": 99,
+"empreinte": "exp_cle|coins=placard,coffre|i=0|j=0|pieces=bibliotheque,grenier,cave",
+"reponse": null
+},
+{
+"type": "bat_pieces",
+"valeur": "359aa7560cab0dfca88ac934c57f9bc072259995704143484e52f2664be47b92",
+"k": 0,
+"empreinte": "bat_pieces|pieces=chambre,salon",
+"reponse": null
+},
+{
+"type": "bat_pieces",
+"valeur": "359aa7560cab0dfca88ac934c57f9bc072259995704143484e52f2664be47b92",
+"k": 1,
+"empreinte": "bat_pieces|pieces=cave,salon",
+"reponse": null
+},
+{
+"type": "bat_pieces",
+"valeur": "359aa7560cab0dfca88ac934c57f9bc072259995704143484e52f2664be47b92",
+"k": 17,
+"empreinte": "bat_pieces|pieces=garage,jardin",
+"reponse": null
+},
+{
+"type": "bat_pieces",
+"valeur": "359aa7560cab0dfca88ac934c57f9bc072259995704143484e52f2664be47b92",
+"k": 99,
+"empreinte": "bat_pieces|pieces=bibliotheque,grenier",
+"reponse": null
+},
+{
+"type": "bat_objets",
+"valeur": "359aa7560cab0dfca88ac934c57f9bc072259995704143484e52f2664be47b92",
+"k": 0,
+"empreinte": "bat_objets|objets=plume,coquillage|pieces=chambre",
+"reponse": null
+},
+{
+"type": "bat_objets",
+"valeur": "359aa7560cab0dfca88ac934c57f9bc072259995704143484e52f2664be47b92",
+"k": 1,
+"empreinte": "bat_objets|objets=lampe,plume|pieces=cave",
+"reponse": null
+},
+{
+"type": "bat_objets",
+"valeur": "359aa7560cab0dfca88ac934c57f9bc072259995704143484e52f2664be47b92",
+"k": 17,
+"empreinte": "bat_objets|objets=coquillage,tambour|pieces=garage",
+"reponse": null
+},
+{
+"type": "bat_objets",
+"valeur": "359aa7560cab0dfca88ac934c57f9bc072259995704143484e52f2664be47b92",
+"k": 99,
+"empreinte": "bat_objets|objets=tambour,crayon|pieces=bibliotheque",
+"reponse": null
+},
+{
+"type": "dem_mv",
+"valeur": "359aa7560cab0dfca88ac934c57f9bc072259995704143484e52f2664be47b92",
+"k": 0,
+"empreinte": "dem_mv|objets=tambour|pieces=chambre,salon",
+"reponse": null
+},
+{
+"type": "dem_mv",
+"valeur": "359aa7560cab0dfca88ac934c57f9bc072259995704143484e52f2664be47b92",
+"k": 1,
+"empreinte": "dem_mv|objets=carte|pieces=cave,salon",
+"reponse": null
+},
+{
+"type": "dem_mv",
+"valeur": "359aa7560cab0dfca88ac934c57f9bc072259995704143484e52f2664be47b92",
+"k": 17,
+"empreinte": "dem_mv|objets=plume|pieces=garage,jardin",
+"reponse": null
+},
+{
+"type": "dem_mv",
+"valeur": "359aa7560cab0dfca88ac934c57f9bc072259995704143484e52f2664be47b92",
+"k": 99,
+"empreinte": "dem_mv|objets=plume|pieces=bibliotheque,grenier",
+"reponse": null
+},
+{
+"type": "dem_cp",
+"valeur": "359aa7560cab0dfca88ac934c57f9bc072259995704143484e52f2664be47b92",
+"k": 0,
+"empreinte": "dem_cp|objets=tambour|pieces=chambre,salon",
+"reponse": null
+},
+{
+"type": "dem_cp",
+"valeur": "359aa7560cab0dfca88ac934c57f9bc072259995704143484e52f2664be47b92",
+"k": 1,
+"empreinte": "dem_cp|objets=carte|pieces=cave,salon",
+"reponse": null
+},
+{
+"type": "dem_cp",
+"valeur": "359aa7560cab0dfca88ac934c57f9bc072259995704143484e52f2664be47b92",
+"k": 17,
+"empreinte": "dem_cp|objets=plume|pieces=garage,jardin",
+"reponse": null
+},
+{
+"type": "dem_cp",
+"valeur": "359aa7560cab0dfca88ac934c57f9bc072259995704143484e52f2664be47b92",
+"k": 99,
+"empreinte": "dem_cp|objets=plume|pieces=bibliotheque,grenier",
+"reponse": null
+},
+{
+"type": "net_rm",
+"valeur": "359aa7560cab0dfca88ac934c57f9bc072259995704143484e52f2664be47b92",
+"k": 0,
+"empreinte": "net_rm|n=4|objets=plume|pieces=chambre",
+"reponse": null
+},
+{
+"type": "net_rm",
+"valeur": "359aa7560cab0dfca88ac934c57f9bc072259995704143484e52f2664be47b92",
+"k": 1,
+"empreinte": "net_rm|n=4|objets=lampe|pieces=cave",
+"reponse": null
+},
+{
+"type": "net_rm",
+"valeur": "359aa7560cab0dfca88ac934c57f9bc072259995704143484e52f2664be47b92",
+"k": 17,
+"empreinte": "net_rm|n=2|objets=coquillage|pieces=garage",
+"reponse": null
+},
+{
+"type": "net_rm",
+"valeur": "359aa7560cab0dfca88ac934c57f9bc072259995704143484e52f2664be47b92",
+"k": 99,
+"empreinte": "net_rm|n=3|objets=tambour|pieces=bibliotheque",
+"reponse": null
+},
+{
+"type": "net_rmdir",
+"valeur": "359aa7560cab0dfca88ac934c57f9bc072259995704143484e52f2664be47b92",
+"k": 0,
+"empreinte": "net_rmdir|objets=plume|pieces=chambre,salon,garage",
+"reponse": null
+},
+{
+"type": "net_rmdir",
+"valeur": "359aa7560cab0dfca88ac934c57f9bc072259995704143484e52f2664be47b92",
+"k": 1,
+"empreinte": "net_rmdir|objets=etoile|pieces=cave,salon,chambre",
+"reponse": null
+},
+{
+"type": "net_rmdir",
+"valeur": "359aa7560cab0dfca88ac934c57f9bc072259995704143484e52f2664be47b92",
+"k": 17,
+"empreinte": "net_rmdir|objets=crayon|pieces=garage,jardin,bureau",
+"reponse": null
+},
+{
+"type": "net_rmdir",
+"valeur": "359aa7560cab0dfca88ac934c57f9bc072259995704143484e52f2664be47b92",
+"k": 99,
+"empreinte": "net_rmdir|objets=balle|pieces=bibliotheque,grenier,cave",
+"reponse": null
+},
+{
+"type": "net_rmr",
+"valeur": "359aa7560cab0dfca88ac934c57f9bc072259995704143484e52f2664be47b92",
+"k": 0,
+"empreinte": "net_rmr|objets=tambour,balle,flute|pieces=chambre,salon",
+"reponse": null
+},
+{
+"type": "net_rmr",
+"valeur": "359aa7560cab0dfca88ac934c57f9bc072259995704143484e52f2664be47b92",
+"k": 1,
+"empreinte": "net_rmr|objets=carte,coquillage,livre|pieces=cave,salon",
+"reponse": null
+},
+{
+"type": "net_rmr",
+"valeur": "359aa7560cab0dfca88ac934c57f9bc072259995704143484e52f2664be47b92",
+"k": 17,
+"empreinte": "net_rmr|objets=plume,tambour,bougie|pieces=garage,jardin",
+"reponse": null
+},
+{
+"type": "net_rmr",
+"valeur": "359aa7560cab0dfca88ac934c57f9bc072259995704143484e52f2664be47b92",
+"k": 99,
+"empreinte": "net_rmr|objets=plume,flute,balle|pieces=bibliotheque,grenier",
+"reponse": null
+},
+{
+"type": "lec_cat",
+"valeur": "359aa7560cab0dfca88ac934c57f9bc072259995704143484e52f2664be47b92",
+"k": 0,
+"empreinte": "lec_cat|mots=tortue|n=3",
+"reponse": "tortue"
+},
+{
+"type": "lec_cat",
+"valeur": "359aa7560cab0dfca88ac934c57f9bc072259995704143484e52f2664be47b92",
+"k": 1,
+"empreinte": "lec_cat|mots=licorne|n=1",
+"reponse": "licorne"
+},
+{
+"type": "lec_cat",
+"valeur": "359aa7560cab0dfca88ac934c57f9bc072259995704143484e52f2664be47b92",
+"k": 17,
+"empreinte": "lec_cat|mots=cactus|n=2",
+"reponse": "cactus"
+},
+{
+"type": "lec_cat",
+"valeur": "359aa7560cab0dfca88ac934c57f9bc072259995704143484e52f2664be47b92",
+"k": 99,
+"empreinte": "lec_cat|mots=nuage|n=3",
+"reponse": "nuage"
+},
+{
+"type": "lec_head",
+"valeur": "359aa7560cab0dfca88ac934c57f9bc072259995704143484e52f2664be47b92",
+"k": 0,
+"empreinte": "lec_head|mots=tortue,volcan,cactus,dragon,sirene,robot,comete,pirate|n=2",
+"reponse": "volcan"
+},
+{
+"type": "lec_head",
+"valeur": "359aa7560cab0dfca88ac934c57f9bc072259995704143484e52f2664be47b92",
+"k": 1,
+"empreinte": "lec_head|mots=licorne,volcan,tortue,robot,nuage,comete,dragon,cactus|n=4",
+"reponse": "robot"
+},
+{
+"type": "lec_head",
+"valeur": "359aa7560cab0dfca88ac934c57f9bc072259995704143484e52f2664be47b92",
+"k": 17,
+"empreinte": "lec_head|mots=cactus,pirate,comete,volcan,biscuit,nuage,dragon,tortue|n=2",
+"reponse": "pirate"
+},
+{
+"type": "lec_head",
+"valeur": "359aa7560cab0dfca88ac934c57f9bc072259995704143484e52f2664be47b92",
+"k": 99,
+"empreinte": "lec_head|mots=nuage,dragon,licorne,sirene,tortue,cactus,fusee,biscuit|n=4",
+"reponse": "sirene"
+},
+{
+"type": "lec_tail",
+"valeur": "359aa7560cab0dfca88ac934c57f9bc072259995704143484e52f2664be47b92",
+"k": 0,
+"empreinte": "lec_tail|mots=tortue,volcan,cactus,dragon,sirene,robot,comete,pirate|n=2",
+"reponse": "pirate"
+},
+{
+"type": "lec_tail",
+"valeur": "359aa7560cab0dfca88ac934c57f9bc072259995704143484e52f2664be47b92",
+"k": 1,
+"empreinte": "lec_tail|mots=licorne,volcan,tortue,robot,nuage,comete,dragon,cactus|n=4",
+"reponse": "cactus"
+},
+{
+"type": "lec_tail",
+"valeur": "359aa7560cab0dfca88ac934c57f9bc072259995704143484e52f2664be47b92",
+"k": 17,
+"empreinte": "lec_tail|mots=cactus,pirate,comete,volcan,biscuit,nuage,dragon,tortue|n=2",
+"reponse": "tortue"
+},
+{
+"type": "lec_tail",
+"valeur": "359aa7560cab0dfca88ac934c57f9bc072259995704143484e52f2664be47b92",
+"k": 99,
+"empreinte": "lec_tail|mots=nuage,dragon,licorne,sirene,tortue,cactus,fusee,biscuit|n=4",
+"reponse": "biscuit"
+},
+{
+"type": "det_grep",
+"valeur": "359aa7560cab0dfca88ac934c57f9bc072259995704143484e52f2664be47b92",
+"k": 0,
+"empreinte": "det_grep|i=4|mots=pirate,nuage,sirene,volcan,dragon,tortue|objets=bougie,bille,coquillage,pomme,balle",
+"reponse": "balle"
+},
+{
+"type": "det_grep",
+"valeur": "359aa7560cab0dfca88ac934c57f9bc072259995704143484e52f2664be47b92",
+"k": 1,
+"empreinte": "det_grep|i=4|mots=robot,nuage,cactus,licorne,comete,volcan|objets=coquillage,bougie,etoile,balle,crayon",
+"reponse": "crayon"
+},
+{
+"type": "det_grep",
+"valeur": "359aa7560cab0dfca88ac934c57f9bc072259995704143484e52f2664be47b92",
+"k": 17,
+"empreinte": "det_grep|i=0|mots=robot,nuage,fusee,biscuit,cactus,pirate|objets=pomme,carte,cle,flute,gomme",
+"reponse": "pomme"
+},
+{
+"type": "det_grep",
+"valeur": "359aa7560cab0dfca88ac934c57f9bc072259995704143484e52f2664be47b92",
+"k": 99,
+"empreinte": "det_grep|i=0|mots=licorne,cactus,pirate,robot,fusee,dragon|objets=plume,pomme,tambour,livre,bille",
+"reponse": "plume"
+},
+{
+"type": "det_find",
+"valeur": "359aa7560cab0dfca88ac934c57f9bc072259995704143484e52f2664be47b92",
+"k": 0,
+"empreinte": "det_find|coins=panier,placard|i=1|j=0|objet=balle|pieces=chambre,salon,garage",
+"reponse": "salon"
+},
+{
+"type": "det_find",
+"valeur": "359aa7560cab0dfca88ac934c57f9bc072259995704143484e52f2664be47b92",
+"k": 1,
+"empreinte": "det_find|coins=armoire,coffre|i=2|j=0|objet=pomme|pieces=cave,salon,chambre",
+"reponse": "chambre"
+},
+{
+"type": "det_find",
+"valeur": "359aa7560cab0dfca88ac934c57f9bc072259995704143484e52f2664be47b92",
+"k": 17,
+"empreinte": "det_find|coins=panier,coffre|i=2|j=1|objet=pomme|pieces=garage,jardin,bureau",
+"reponse": "bureau"
+},
+{
+"type": "det_find",
+"valeur": "359aa7560cab0dfca88ac934c57f9bc072259995704143484e52f2664be47b92",
+"k": 99,
+"empreinte": "det_find|coins=placard,coffre|i=0|j=0|objet=tambour|pieces=bibliotheque,grenier,cave",
+"reponse": "bibliotheque"
+},
+{
+"type": "plo_ecrit",
+"valeur": "359aa7560cab0dfca88ac934c57f9bc072259995704143484e52f2664be47b92",
+"k": 0,
+"empreinte": "plo_ecrit|mots=tortue",
+"reponse": null
+},
+{
+"type": "plo_ecrit",
+"valeur": "359aa7560cab0dfca88ac934c57f9bc072259995704143484e52f2664be47b92",
+"k": 1,
+"empreinte": "plo_ecrit|mots=licorne",
+"reponse": null
+},
+{
+"type": "plo_ecrit",
+"valeur": "359aa7560cab0dfca88ac934c57f9bc072259995704143484e52f2664be47b92",
+"k": 17,
+"empreinte": "plo_ecrit|mots=cactus",
+"reponse": null
+},
+{
+"type": "plo_ecrit",
+"valeur": "359aa7560cab0dfca88ac934c57f9bc072259995704143484e52f2664be47b92",
+"k": 99,
+"empreinte": "plo_ecrit|mots=nuage",
+"reponse": null
+},
+{
+"type": "plo_ajout",
+"valeur": "359aa7560cab0dfca88ac934c57f9bc072259995704143484e52f2664be47b92",
+"k": 0,
+"empreinte": "plo_ajout|mots=tortue,volcan,cactus,dragon",
+"reponse": null
+},
+{
+"type": "plo_ajout",
+"valeur": "359aa7560cab0dfca88ac934c57f9bc072259995704143484e52f2664be47b92",
+"k": 1,
+"empreinte": "plo_ajout|mots=licorne,volcan,tortue,robot",
+"reponse": null
+},
+{
+"type": "plo_ajout",
+"valeur": "359aa7560cab0dfca88ac934c57f9bc072259995704143484e52f2664be47b92",
+"k": 17,
+"empreinte": "plo_ajout|mots=cactus,pirate,comete,volcan",
+"reponse": null
+},
+{
+"type": "plo_ajout",
+"valeur": "359aa7560cab0dfca88ac934c57f9bc072259995704143484e52f2664be47b92",
+"k": 99,
+"empreinte": "plo_ajout|mots=nuage,dragon,licorne,sirene",
+"reponse": null
+},
+{
+"type": "plo_tuyau",
+"valeur": "359aa7560cab0dfca88ac934c57f9bc072259995704143484e52f2664be47b92",
+"k": 0,
+"empreinte": "plo_tuyau|lignes=0,2,1,1,2,1,3,3,2,1,3|objets=bougie,bille,coquillage,pomme",
+"reponse": "1"
+},
+{
+"type": "plo_tuyau",
+"valeur": "359aa7560cab0dfca88ac934c57f9bc072259995704143484e52f2664be47b92",
+"k": 1,
+"empreinte": "plo_tuyau|lignes=1,2,0,3,2,2,3,3,2,2,0,2|objets=coquillage,bougie,etoile,balle",
+"reponse": "2"
+},
+{
+"type": "plo_tuyau",
+"valeur": "359aa7560cab0dfca88ac934c57f9bc072259995704143484e52f2664be47b92",
+"k": 17,
+"empreinte": "plo_tuyau|lignes=1,3,0,0,0,0,3,3,1,3,2|objets=pomme,carte,cle,flute",
+"reponse": "4"
+},
+{
+"type": "plo_tuyau",
+"valeur": "359aa7560cab0dfca88ac934c57f9bc072259995704143484e52f2664be47b92",
+"k": 99,
+"empreinte": "plo_tuyau|lignes=0,0,2,1,0,0,0,2,2|objets=plume,pomme,tambour,livre",
+"reponse": "5"
+},
+{
+"type": "cui_lancer",
+"valeur": "359aa7560cab0dfca88ac934c57f9bc072259995704143484e52f2664be47b92",
+"k": 0,
+"empreinte": "cui_lancer|mots=tortue",
+"reponse": "tortue"
+},
+{
+"type": "cui_lancer",
+"valeur": "359aa7560cab0dfca88ac934c57f9bc072259995704143484e52f2664be47b92",
+"k": 1,
+"empreinte": "cui_lancer|mots=licorne",
+"reponse": "licorne"
+},
+{
+"type": "cui_lancer",
+"valeur": "359aa7560cab0dfca88ac934c57f9bc072259995704143484e52f2664be47b92",
+"k": 17,
+"empreinte": "cui_lancer|mots=cactus",
+"reponse": "cactus"
+},
+{
+"type": "cui_lancer",
+"valeur": "359aa7560cab0dfca88ac934c57f9bc072259995704143484e52f2664be47b92",
+"k": 99,
+"empreinte": "cui_lancer|mots=nuage",
+"reponse": "nuage"
+},
+{
+"type": "cui_ecrire",
+"valeur": "359aa7560cab0dfca88ac934c57f9bc072259995704143484e52f2664be47b92",
+"k": 0,
+"empreinte": "cui_ecrire|mots=tortue",
+"reponse": null
+},
+{
+"type": "cui_ecrire",
+"valeur": "359aa7560cab0dfca88ac934c57f9bc072259995704143484e52f2664be47b92",
+"k": 1,
+"empreinte": "cui_ecrire|mots=licorne",
+"reponse": null
+},
+{
+"type": "cui_ecrire",
+"valeur": "359aa7560cab0dfca88ac934c57f9bc072259995704143484e52f2664be47b92",
+"k": 17,
+"empreinte": "cui_ecrire|mots=cactus",
+"reponse": null
+},
+{
+"type": "cui_ecrire",
+"valeur": "359aa7560cab0dfca88ac934c57f9bc072259995704143484e52f2664be47b92",
+"k": 99,
+"empreinte": "cui_ecrire|mots=nuage",
+"reponse": null
+},
+{
+"type": "exp_chemin",
+"valeur": "0fbaba32c573a4b4b66e8e3bcb84303fe1959db0cb4be10578d04c2d2cc6f079",
+"k": 0,
+"empreinte": "exp_chemin|coins=boite,placard|i=1|j=1|pieces=couloir,bureau,bibliotheque",
+"reponse": null
+},
+{
+"type": "exp_chemin",
+"valeur": "0fbaba32c573a4b4b66e8e3bcb84303fe1959db0cb4be10578d04c2d2cc6f079",
+"k": 1,
+"empreinte": "exp_chemin|coins=tiroir,etagere|i=2|j=0|pieces=bibliotheque,chambre,couloir",
+"reponse": null
+},
+{
+"type": "exp_chemin",
+"valeur": "0fbaba32c573a4b4b66e8e3bcb84303fe1959db0cb4be10578d04c2d2cc6f079",
+"k": 24,
+"empreinte": "exp_chemin|coins=coffre,placard|i=0|j=1|pieces=cuisine,grenier,bureau",
+"reponse": null
+},
+{
+"type": "exp_chemin",
+"valeur": "0fbaba32c573a4b4b66e8e3bcb84303fe1959db0cb4be10578d04c2d2cc6f079",
+"k": 99,
+"empreinte": "exp_chemin|coins=malle,panier|i=1|j=0|pieces=salon,chambre,atelier",
+"reponse": null
+},
+{
+"type": "exp_cle",
+"valeur": "0fbaba32c573a4b4b66e8e3bcb84303fe1959db0cb4be10578d04c2d2cc6f079",
+"k": 0,
+"empreinte": "exp_cle|coins=boite,placard|i=1|j=1|pieces=couloir,bureau,bibliotheque",
+"reponse": null
+},
+{
+"type": "exp_cle",
+"valeur": "0fbaba32c573a4b4b66e8e3bcb84303fe1959db0cb4be10578d04c2d2cc6f079",
+"k": 1,
+"empreinte": "exp_cle|coins=tiroir,etagere|i=2|j=0|pieces=bibliotheque,chambre,couloir",
+"reponse": null
+},
+{
+"type": "exp_cle",
+"valeur": "0fbaba32c573a4b4b66e8e3bcb84303fe1959db0cb4be10578d04c2d2cc6f079",
+"k": 24,
+"empreinte": "exp_cle|coins=coffre,placard|i=0|j=1|pieces=cuisine,grenier,bureau",
+"reponse": null
+},
+{
+"type": "exp_cle",
+"valeur": "0fbaba32c573a4b4b66e8e3bcb84303fe1959db0cb4be10578d04c2d2cc6f079",
+"k": 99,
+"empreinte": "exp_cle|coins=malle,panier|i=1|j=0|pieces=salon,chambre,atelier",
+"reponse": null
+},
+{
+"type": "bat_pieces",
+"valeur": "0fbaba32c573a4b4b66e8e3bcb84303fe1959db0cb4be10578d04c2d2cc6f079",
+"k": 0,
+"empreinte": "bat_pieces|pieces=couloir,bureau",
+"reponse": null
+},
+{
+"type": "bat_pieces",
+"valeur": "0fbaba32c573a4b4b66e8e3bcb84303fe1959db0cb4be10578d04c2d2cc6f079",
+"k": 1,
+"empreinte": "bat_pieces|pieces=bibliotheque,chambre",
+"reponse": null
+},
+{
+"type": "bat_pieces",
+"valeur": "0fbaba32c573a4b4b66e8e3bcb84303fe1959db0cb4be10578d04c2d2cc6f079",
+"k": 24,
+"empreinte": "bat_pieces|pieces=cuisine,grenier",
+"reponse": null
+},
+{
+"type": "bat_pieces",
+"valeur": "0fbaba32c573a4b4b66e8e3bcb84303fe1959db0cb4be10578d04c2d2cc6f079",
+"k": 99,
+"empreinte": "bat_pieces|pieces=salon,chambre",
+"reponse": null
+},
+{
+"type": "bat_objets",
+"valeur": "0fbaba32c573a4b4b66e8e3bcb84303fe1959db0cb4be10578d04c2d2cc6f079",
+"k": 0,
+"empreinte": "bat_objets|objets=boussole,livre|pieces=couloir",
+"reponse": null
+},
+{
+"type": "bat_objets",
+"valeur": "0fbaba32c573a4b4b66e8e3bcb84303fe1959db0cb4be10578d04c2d2cc6f079",
+"k": 1,
+"empreinte": "bat_objets|objets=balle,tambour|pieces=bibliotheque",
+"reponse": null
+},
+{
+"type": "bat_objets",
+"valeur": "0fbaba32c573a4b4b66e8e3bcb84303fe1959db0cb4be10578d04c2d2cc6f079",
+"k": 24,
+"empreinte": "bat_objets|objets=tambour,pomme|pieces=cuisine",
+"reponse": null
+},
+{
+"type": "bat_objets",
+"valeur": "0fbaba32c573a4b4b66e8e3bcb84303fe1959db0cb4be10578d04c2d2cc6f079",
+"k": 99,
+"empreinte": "bat_objets|objets=etoile,crayon|pieces=salon",
+"reponse": null
+},
+{
+"type": "dem_mv",
+"valeur": "0fbaba32c573a4b4b66e8e3bcb84303fe1959db0cb4be10578d04c2d2cc6f079",
+"k": 0,
+"empreinte": "dem_mv|objets=boussole|pieces=couloir,bureau",
+"reponse": null
+},
+{
+"type": "dem_mv",
+"valeur": "0fbaba32c573a4b4b66e8e3bcb84303fe1959db0cb4be10578d04c2d2cc6f079",
+"k": 1,
+"empreinte": "dem_mv|objets=bougie|pieces=bibliotheque,chambre",
+"reponse": null
+},
+{
+"type": "dem_mv",
+"valeur": "0fbaba32c573a4b4b66e8e3bcb84303fe1959db0cb4be10578d04c2d2cc6f079",
+"k": 24,
+"empreinte": "dem_mv|objets=crayon|pieces=cuisine,grenier",
+"reponse": null
+},
+{
+"type": "dem_mv",
+"valeur": "0fbaba32c573a4b4b66e8e3bcb84303fe1959db0cb4be10578d04c2d2cc6f079",
+"k": 99,
+"empreinte": "dem_mv|objets=bille|pieces=salon,chambre",
+"reponse": null
+},
+{
+"type": "dem_cp",
+"valeur": "0fbaba32c573a4b4b66e8e3bcb84303fe1959db0cb4be10578d04c2d2cc6f079",
+"k": 0,
+"empreinte": "dem_cp|objets=boussole|pieces=couloir,bureau",
+"reponse": null
+},
+{
+"type": "dem_cp",
+"valeur": "0fbaba32c573a4b4b66e8e3bcb84303fe1959db0cb4be10578d04c2d2cc6f079",
+"k": 1,
+"empreinte": "dem_cp|objets=bougie|pieces=bibliotheque,chambre",
+"reponse": null
+},
+{
+"type": "dem_cp",
+"valeur": "0fbaba32c573a4b4b66e8e3bcb84303fe1959db0cb4be10578d04c2d2cc6f079",
+"k": 24,
+"empreinte": "dem_cp|objets=crayon|pieces=cuisine,grenier",
+"reponse": null
+},
+{
+"type": "dem_cp",
+"valeur": "0fbaba32c573a4b4b66e8e3bcb84303fe1959db0cb4be10578d04c2d2cc6f079",
+"k": 99,
+"empreinte": "dem_cp|objets=bille|pieces=salon,chambre",
+"reponse": null
+},
+{
+"type": "net_rm",
+"valeur": "0fbaba32c573a4b4b66e8e3bcb84303fe1959db0cb4be10578d04c2d2cc6f079",
+"k": 0,
+"empreinte": "net_rm|n=2|objets=boussole|pieces=couloir",
+"reponse": null
+},
+{
+"type": "net_rm",
+"valeur": "0fbaba32c573a4b4b66e8e3bcb84303fe1959db0cb4be10578d04c2d2cc6f079",
+"k": 1,
+"empreinte": "net_rm|n=2|objets=balle|pieces=bibliotheque",
+"reponse": null
+},
+{
+"type": "net_rm",
+"valeur": "0fbaba32c573a4b4b66e8e3bcb84303fe1959db0cb4be10578d04c2d2cc6f079",
+"k": 24,
+"empreinte": "net_rm|n=2|objets=tambour|pieces=cuisine",
+"reponse": null
+},
+{
+"type": "net_rm",
+"valeur": "0fbaba32c573a4b4b66e8e3bcb84303fe1959db0cb4be10578d04c2d2cc6f079",
+"k": 99,
+"empreinte": "net_rm|n=3|objets=etoile|pieces=salon",
+"reponse": null
+},
+{
+"type": "net_rmdir",
+"valeur": "0fbaba32c573a4b4b66e8e3bcb84303fe1959db0cb4be10578d04c2d2cc6f079",
+"k": 0,
+"empreinte": "net_rmdir|objets=bougie|pieces=couloir,bureau,bibliotheque",
+"reponse": null
+},
+{
+"type": "net_rmdir",
+"valeur": "0fbaba32c573a4b4b66e8e3bcb84303fe1959db0cb4be10578d04c2d2cc6f079",
+"k": 1,
+"empreinte": "net_rmdir|objets=tambour|pieces=bibliotheque,chambre,couloir",
+"reponse": null
+},
+{
+"type": "net_rmdir",
+"valeur": "0fbaba32c573a4b4b66e8e3bcb84303fe1959db0cb4be10578d04c2d2cc6f079",
+"k": 24,
+"empreinte": "net_rmdir|objets=boussole|pieces=cuisine,grenier,bureau",
+"reponse": null
+},
+{
+"type": "net_rmdir",
+"valeur": "0fbaba32c573a4b4b66e8e3bcb84303fe1959db0cb4be10578d04c2d2cc6f079",
+"k": 99,
+"empreinte": "net_rmdir|objets=carte|pieces=salon,chambre,atelier",
+"reponse": null
+},
+{
+"type": "net_rmr",
+"valeur": "0fbaba32c573a4b4b66e8e3bcb84303fe1959db0cb4be10578d04c2d2cc6f079",
+"k": 0,
+"empreinte": "net_rmr|objets=boussole,coquillage,cle|pieces=couloir,bureau",
+"reponse": null
+},
+{
+"type": "net_rmr",
+"valeur": "0fbaba32c573a4b4b66e8e3bcb84303fe1959db0cb4be10578d04c2d2cc6f079",
+"k": 1,
+"empreinte": "net_rmr|objets=bougie,pomme,coquillage|pieces=bibliotheque,chambre",
+"reponse": null
+},
+{
+"type": "net_rmr",
+"valeur": "0fbaba32c573a4b4b66e8e3bcb84303fe1959db0cb4be10578d04c2d2cc6f079",
+"k": 24,
+"empreinte": "net_rmr|objets=crayon,boussole,cle|pieces=cuisine,grenier",
+"reponse": null
+},
+{
+"type": "net_rmr",
+"valeur": "0fbaba32c573a4b4b66e8e3bcb84303fe1959db0cb4be10578d04c2d2cc6f079",
+"k": 99,
+"empreinte": "net_rmr|objets=bille,livre,bougie|pieces=salon,chambre",
+"reponse": null
+},
+{
+"type": "lec_cat",
+"valeur": "0fbaba32c573a4b4b66e8e3bcb84303fe1959db0cb4be10578d04c2d2cc6f079",
+"k": 0,
+"empreinte": "lec_cat|mots=sirene|n=2",
+"reponse": "sirene"
+},
+{
+"type": "lec_cat",
+"valeur": "0fbaba32c573a4b4b66e8e3bcb84303fe1959db0cb4be10578d04c2d2cc6f079",
+"k": 1,
+"empreinte": "lec_cat|mots=nuage|n=1",
+"reponse": "nuage"
+},
+{
+"type": "lec_cat",
+"valeur": "0fbaba32c573a4b4b66e8e3bcb84303fe1959db0cb4be10578d04c2d2cc6f079",
+"k": 24,
+"empreinte": "lec_cat|mots=fusee|n=3",
+"reponse": "fusee"
+},
+{
+"type": "lec_cat",
+"valeur": "0fbaba32c573a4b4b66e8e3bcb84303fe1959db0cb4be10578d04c2d2cc6f079",
+"k": 99,
+"empreinte": "lec_cat|mots=volcan|n=3",
+"reponse": "volcan"
+},
+{
+"type": "lec_head",
+"valeur": "0fbaba32c573a4b4b66e8e3bcb84303fe1959db0cb4be10578d04c2d2cc6f079",
+"k": 0,
+"empreinte": "lec_head|mots=sirene,comete,nuage,cactus,fusee,biscuit,licorne,volcan|n=3",
+"reponse": "nuage"
+},
+{
+"type": "lec_head",
+"valeur": "0fbaba32c573a4b4b66e8e3bcb84303fe1959db0cb4be10578d04c2d2cc6f079",
+"k": 1,
+"empreinte": "lec_head|mots=nuage,tortue,sirene,biscuit,cactus,fusee,licorne,pirate|n=4",
+"reponse": "biscuit"
+},
+{
+"type": "lec_head",
+"valeur": "0fbaba32c573a4b4b66e8e3bcb84303fe1959db0cb4be10578d04c2d2cc6f079",
+"k": 24,
+"empreinte": "lec_head|mots=fusee,dragon,comete,pirate,volcan,nuage,tortue,robot|n=3",
+"reponse": "comete"
+},
+{
+"type": "lec_head",
+"valeur": "0fbaba32c573a4b4b66e8e3bcb84303fe1959db0cb4be10578d04c2d2cc6f079",
+"k": 99,
+"empreinte": "lec_head|mots=volcan,tortue,robot,licorne,biscuit,cactus,comete,dragon|n=4",
+"reponse": "licorne"
+},
+{
+"type": "lec_tail",
+"valeur": "0fbaba32c573a4b4b66e8e3bcb84303fe1959db0cb4be10578d04c2d2cc6f079",
+"k": 0,
+"empreinte": "lec_tail|mots=sirene,comete,nuage,cactus,fusee,biscuit,licorne,volcan|n=3",
+"reponse": "volcan"
+},
+{
+"type": "lec_tail",
+"valeur": "0fbaba32c573a4b4b66e8e3bcb84303fe1959db0cb4be10578d04c2d2cc6f079",
+"k": 1,
+"empreinte": "lec_tail|mots=nuage,tortue,sirene,biscuit,cactus,fusee,licorne,pirate|n=4",
+"reponse": "pirate"
+},
+{
+"type": "lec_tail",
+"valeur": "0fbaba32c573a4b4b66e8e3bcb84303fe1959db0cb4be10578d04c2d2cc6f079",
+"k": 24,
+"empreinte": "lec_tail|mots=fusee,dragon,comete,pirate,volcan,nuage,tortue,robot|n=3",
+"reponse": "robot"
+},
+{
+"type": "lec_tail",
+"valeur": "0fbaba32c573a4b4b66e8e3bcb84303fe1959db0cb4be10578d04c2d2cc6f079",
+"k": 99,
+"empreinte": "lec_tail|mots=volcan,tortue,robot,licorne,biscuit,cactus,comete,dragon|n=4",
+"reponse": "dragon"
+},
+{
+"type": "det_grep",
+"valeur": "0fbaba32c573a4b4b66e8e3bcb84303fe1959db0cb4be10578d04c2d2cc6f079",
+"k": 0,
+"empreinte": "det_grep|i=3|mots=pirate,sirene,volcan,licorne,dragon,nuage|objets=bougie,etoile,crayon,balle,plume",
+"reponse": "balle"
+},
+{
+"type": "det_grep",
+"valeur": "0fbaba32c573a4b4b66e8e3bcb84303fe1959db0cb4be10578d04c2d2cc6f079",
+"k": 1,
+"empreinte": "det_grep|i=0|mots=cactus,fusee,licorne,dragon,sirene,volcan|objets=cle,balle,carte,pomme,coquillage",
+"reponse": "cle"
+},
+{
+"type": "det_grep",
+"valeur": "0fbaba32c573a4b4b66e8e3bcb84303fe1959db0cb4be10578d04c2d2cc6f079",
+"k": 24,
+"empreinte": "det_grep|i=4|mots=volcan,tortue,robot,dragon,biscuit,pirate|objets=plume,flute,livre,balle,coquillage",
+"reponse": "coquillage"
+},
+{
+"type": "det_grep",
+"valeur": "0fbaba32c573a4b4b66e8e3bcb84303fe1959db0cb4be10578d04c2d2cc6f079",
+"k": 99,
+"empreinte": "det_grep|i=1|mots=pirate,volcan,fusee,sirene,licorne,comete|objets=etoile,coquillage,flute,tambour,carte",
+"reponse": "coquillage"
+},
+{
+"type": "det_find",
+"valeur": "0fbaba32c573a4b4b66e8e3bcb84303fe1959db0cb4be10578d04c2d2cc6f079",
+"k": 0,
+"empreinte": "det_find|coins=boite,placard|i=1|j=1|objet=etoile|pieces=couloir,bureau,bibliotheque",
+"reponse": "bureau"
+},
+{
+"type": "det_find",
+"valeur": "0fbaba32c573a4b4b66e8e3bcb84303fe1959db0cb4be10578d04c2d2cc6f079",
+"k": 1,
+"empreinte": "det_find|coins=tiroir,etagere|i=2|j=0|objet=cle|pieces=bibliotheque,chambre,couloir",
+"reponse": "couloir"
+},
+{
+"type": "det_find",
+"valeur": "0fbaba32c573a4b4b66e8e3bcb84303fe1959db0cb4be10578d04c2d2cc6f079",
+"k": 24,
+"empreinte": "det_find|coins=coffre,placard|i=0|j=1|objet=etoile|pieces=cuisine,grenier,bureau",
+"reponse": "cuisine"
+},
+{
+"type": "det_find",
+"valeur": "0fbaba32c573a4b4b66e8e3bcb84303fe1959db0cb4be10578d04c2d2cc6f079",
+"k": 99,
+"empreinte": "det_find|coins=malle,panier|i=1|j=0|objet=cle|pieces=salon,chambre,atelier",
+"reponse": "chambre"
+},
+{
+"type": "plo_ecrit",
+"valeur": "0fbaba32c573a4b4b66e8e3bcb84303fe1959db0cb4be10578d04c2d2cc6f079",
+"k": 0,
+"empreinte": "plo_ecrit|mots=sirene",
+"reponse": null
+},
+{
+"type": "plo_ecrit",
+"valeur": "0fbaba32c573a4b4b66e8e3bcb84303fe1959db0cb4be10578d04c2d2cc6f079",
+"k": 1,
+"empreinte": "plo_ecrit|mots=nuage",
+"reponse": null
+},
+{
+"type": "plo_ecrit",
+"valeur": "0fbaba32c573a4b4b66e8e3bcb84303fe1959db0cb4be10578d04c2d2cc6f079",
+"k": 24,
+"empreinte": "plo_ecrit|mots=fusee",
+"reponse": null
+},
+{
+"type": "plo_ecrit",
+"valeur": "0fbaba32c573a4b4b66e8e3bcb84303fe1959db0cb4be10578d04c2d2cc6f079",
+"k": 99,
+"empreinte": "plo_ecrit|mots=volcan",
+"reponse": null
+},
+{
+"type": "plo_ajout",
+"valeur": "0fbaba32c573a4b4b66e8e3bcb84303fe1959db0cb4be10578d04c2d2cc6f079",
+"k": 0,
+"empreinte": "plo_ajout|mots=sirene,comete,nuage,cactus",
+"reponse": null
+},
+{
+"type": "plo_ajout",
+"valeur": "0fbaba32c573a4b4b66e8e3bcb84303fe1959db0cb4be10578d04c2d2cc6f079",
+"k": 1,
+"empreinte": "plo_ajout|mots=nuage,tortue,sirene,biscuit",
+"reponse": null
+},
+{
+"type": "plo_ajout",
+"valeur": "0fbaba32c573a4b4b66e8e3bcb84303fe1959db0cb4be10578d04c2d2cc6f079",
+"k": 24,
+"empreinte": "plo_ajout|mots=fusee,dragon,comete,pirate",
+"reponse": null
+},
+{
+"type": "plo_ajout",
+"valeur": "0fbaba32c573a4b4b66e8e3bcb84303fe1959db0cb4be10578d04c2d2cc6f079",
+"k": 99,
+"empreinte": "plo_ajout|mots=volcan,tortue,robot,licorne",
+"reponse": null
+},
+{
+"type": "plo_tuyau",
+"valeur": "0fbaba32c573a4b4b66e8e3bcb84303fe1959db0cb4be10578d04c2d2cc6f079",
+"k": 0,
+"empreinte": "plo_tuyau|lignes=0,3,3,2,3,3,0,3,1,3|objets=bougie,etoile,crayon,balle",
+"reponse": "2"
+},
+{
+"type": "plo_tuyau",
+"valeur": "0fbaba32c573a4b4b66e8e3bcb84303fe1959db0cb4be10578d04c2d2cc6f079",
+"k": 1,
+"empreinte": "plo_tuyau|lignes=0,2,2,3,3,2,2,0,3,0,1|objets=cle,balle,carte,pomme",
+"reponse": "3"
+},
+{
+"type": "plo_tuyau",
+"valeur": "0fbaba32c573a4b4b66e8e3bcb84303fe1959db0cb4be10578d04c2d2cc6f079",
+"k": 24,
+"empreinte": "plo_tuyau|lignes=3,1,3,0,1,1,0,3,3,2,3|objets=plume,flute,livre,balle",
+"reponse": "2"
+},
+{
+"type": "plo_tuyau",
+"valeur": "0fbaba32c573a4b4b66e8e3bcb84303fe1959db0cb4be10578d04c2d2cc6f079",
+"k": 99,
+"empreinte": "plo_tuyau|lignes=0,2,2,0,0,3,3,1,0,0,2|objets=etoile,coquillage,flute,tambour",
+"reponse": "5"
+},
+{
+"type": "cui_lancer",
+"valeur": "0fbaba32c573a4b4b66e8e3bcb84303fe1959db0cb4be10578d04c2d2cc6f079",
+"k": 0,
+"empreinte": "cui_lancer|mots=sirene",
+"reponse": "sirene"
+},
+{
+"type": "cui_lancer",
+"valeur": "0fbaba32c573a4b4b66e8e3bcb84303fe1959db0cb4be10578d04c2d2cc6f079",
+"k": 1,
+"empreinte": "cui_lancer|mots=nuage",
+"reponse": "nuage"
+},
+{
+"type": "cui_lancer",
+"valeur": "0fbaba32c573a4b4b66e8e3bcb84303fe1959db0cb4be10578d04c2d2cc6f079",
+"k": 24,
+"empreinte": "cui_lancer|mots=fusee",
+"reponse": "fusee"
+},
+{
+"type": "cui_lancer",
+"valeur": "0fbaba32c573a4b4b66e8e3bcb84303fe1959db0cb4be10578d04c2d2cc6f079",
+"k": 99,
+"empreinte": "cui_lancer|mots=volcan",
+"reponse": "volcan"
+},
+{
+"type": "cui_ecrire",
+"valeur": "0fbaba32c573a4b4b66e8e3bcb84303fe1959db0cb4be10578d04c2d2cc6f079",
+"k": 0,
+"empreinte": "cui_ecrire|mots=sirene",
+"reponse": null
+},
+{
+"type": "cui_ecrire",
+"valeur": "0fbaba32c573a4b4b66e8e3bcb84303fe1959db0cb4be10578d04c2d2cc6f079",
+"k": 1,
+"empreinte": "cui_ecrire|mots=nuage",
+"reponse": null
+},
+{
+"type": "cui_ecrire",
+"valeur": "0fbaba32c573a4b4b66e8e3bcb84303fe1959db0cb4be10578d04c2d2cc6f079",
+"k": 24,
+"empreinte": "cui_ecrire|mots=fusee",
+"reponse": null
+},
+{
+"type": "cui_ecrire",
+"valeur": "0fbaba32c573a4b4b66e8e3bcb84303fe1959db0cb4be10578d04c2d2cc6f079",
+"k": 99,
+"empreinte": "cui_ecrire|mots=volcan",
+"reponse": null
+},
+{
+"type": "exp_chemin",
+"valeur": "4e6fb5902cdc9e0637ac6d0ac4f6cef2a173024fff5667f98498a2df9427a6f7",
+"k": 0,
+"empreinte": "exp_chemin|coins=malle,coffre|i=2|j=0|pieces=cave,veranda,atelier",
+"reponse": null
+},
+{
+"type": "exp_chemin",
+"valeur": "4e6fb5902cdc9e0637ac6d0ac4f6cef2a173024fff5667f98498a2df9427a6f7",
+"k": 1,
+"empreinte": "exp_chemin|coins=etagere,placard|i=2|j=0|pieces=salon,couloir,jardin",
+"reponse": null
+},
+{
+"type": "exp_chemin",
+"valeur": "4e6fb5902cdc9e0637ac6d0ac4f6cef2a173024fff5667f98498a2df9427a6f7",
+"k": 31,
+"empreinte": "exp_chemin|coins=placard,malle|i=1|j=1|pieces=couloir,bureau,salon",
+"reponse": null
+},
+{
+"type": "exp_chemin",
+"valeur": "4e6fb5902cdc9e0637ac6d0ac4f6cef2a173024fff5667f98498a2df9427a6f7",
+"k": 99,
+"empreinte": "exp_chemin|coins=etagere,tiroir|i=0|j=1|pieces=bureau,chambre,garage",
+"reponse": null
+},
+{
+"type": "exp_cle",
+"valeur": "4e6fb5902cdc9e0637ac6d0ac4f6cef2a173024fff5667f98498a2df9427a6f7",
+"k": 0,
+"empreinte": "exp_cle|coins=malle,coffre|i=2|j=0|pieces=cave,veranda,atelier",
+"reponse": null
+},
+{
+"type": "exp_cle",
+"valeur": "4e6fb5902cdc9e0637ac6d0ac4f6cef2a173024fff5667f98498a2df9427a6f7",
+"k": 1,
+"empreinte": "exp_cle|coins=etagere,placard|i=2|j=0|pieces=salon,couloir,jardin",
+"reponse": null
+},
+{
+"type": "exp_cle",
+"valeur": "4e6fb5902cdc9e0637ac6d0ac4f6cef2a173024fff5667f98498a2df9427a6f7",
+"k": 31,
+"empreinte": "exp_cle|coins=placard,malle|i=1|j=1|pieces=couloir,bureau,salon",
+"reponse": null
+},
+{
+"type": "exp_cle",
+"valeur": "4e6fb5902cdc9e0637ac6d0ac4f6cef2a173024fff5667f98498a2df9427a6f7",
+"k": 99,
+"empreinte": "exp_cle|coins=etagere,tiroir|i=0|j=1|pieces=bureau,chambre,garage",
+"reponse": null
+},
+{
+"type": "bat_pieces",
+"valeur": "4e6fb5902cdc9e0637ac6d0ac4f6cef2a173024fff5667f98498a2df9427a6f7",
+"k": 0,
+"empreinte": "bat_pieces|pieces=cave,veranda",
+"reponse": null
+},
+{
+"type": "bat_pieces",
+"valeur": "4e6fb5902cdc9e0637ac6d0ac4f6cef2a173024fff5667f98498a2df9427a6f7",
+"k": 1,
+"empreinte": "bat_pieces|pieces=salon,couloir",
+"reponse": null
+},
+{
+"type": "bat_pieces",
+"valeur": "4e6fb5902cdc9e0637ac6d0ac4f6cef2a173024fff5667f98498a2df9427a6f7",
+"k": 31,
+"empreinte": "bat_pieces|pieces=couloir,bureau",
+"reponse": null
+},
+{
+"type": "bat_pieces",
+"valeur": "4e6fb5902cdc9e0637ac6d0ac4f6cef2a173024fff5667f98498a2df9427a6f7",
+"k": 99,
+"empreinte": "bat_pieces|pieces=bureau,chambre",
+"reponse": null
+},
+{
+"type": "bat_objets",
+"valeur": "4e6fb5902cdc9e0637ac6d0ac4f6cef2a173024fff5667f98498a2df9427a6f7",
+"k": 0,
+"empreinte": "bat_objets|objets=carte,flute|pieces=cave",
+"reponse": null
+},
+{
+"type": "bat_objets",
+"valeur": "4e6fb5902cdc9e0637ac6d0ac4f6cef2a173024fff5667f98498a2df9427a6f7",
+"k": 1,
+"empreinte": "bat_objets|objets=etoile,lampe|pieces=salon",
+"reponse": null
+},
+{
+"type": "bat_objets",
+"valeur": "4e6fb5902cdc9e0637ac6d0ac4f6cef2a173024fff5667f98498a2df9427a6f7",
+"k": 31,
+"empreinte": "bat_objets|objets=bougie,cle|pieces=couloir",
+"reponse": null
+},
+{
+"type": "bat_objets",
+"valeur": "4e6fb5902cdc9e0637ac6d0ac4f6cef2a173024fff5667f98498a2df9427a6f7",
+"k": 99,
+"empreinte": "bat_objets|objets=bille,cle|pieces=bureau",
+"reponse": null
+},
+{
+"type": "dem_mv",
+"valeur": "4e6fb5902cdc9e0637ac6d0ac4f6cef2a173024fff5667f98498a2df9427a6f7",
+"k": 0,
+"empreinte": "dem_mv|objets=flute|pieces=cave,veranda",
+"reponse": null
+},
+{
+"type": "dem_mv",
+"valeur": "4e6fb5902cdc9e0637ac6d0ac4f6cef2a173024fff5667f98498a2df9427a6f7",
+"k": 1,
+"empreinte": "dem_mv|objets=pomme|pieces=salon,couloir",
+"reponse": null
+},
+{
+"type": "dem_mv",
+"valeur": "4e6fb5902cdc9e0637ac6d0ac4f6cef2a173024fff5667f98498a2df9427a6f7",
+"k": 31,
+"empreinte": "dem_mv|objets=carte|pieces=couloir,bureau",
+"reponse": null
+},
+{
+"type": "dem_mv",
+"valeur": "4e6fb5902cdc9e0637ac6d0ac4f6cef2a173024fff5667f98498a2df9427a6f7",
+"k": 99,
+"empreinte": "dem_mv|objets=boussole|pieces=bureau,chambre",
+"reponse": null
+},
+{
+"type": "dem_cp",
+"valeur": "4e6fb5902cdc9e0637ac6d0ac4f6cef2a173024fff5667f98498a2df9427a6f7",
+"k": 0,
+"empreinte": "dem_cp|objets=flute|pieces=cave,veranda",
+"reponse": null
+},
+{
+"type": "dem_cp",
+"valeur": "4e6fb5902cdc9e0637ac6d0ac4f6cef2a173024fff5667f98498a2df9427a6f7",
+"k": 1,
+"empreinte": "dem_cp|objets=pomme|pieces=salon,couloir",
+"reponse": null
+},
+{
+"type": "dem_cp",
+"valeur": "4e6fb5902cdc9e0637ac6d0ac4f6cef2a173024fff5667f98498a2df9427a6f7",
+"k": 31,
+"empreinte": "dem_cp|objets=carte|pieces=couloir,bureau",
+"reponse": null
+},
+{
+"type": "dem_cp",
+"valeur": "4e6fb5902cdc9e0637ac6d0ac4f6cef2a173024fff5667f98498a2df9427a6f7",
+"k": 99,
+"empreinte": "dem_cp|objets=boussole|pieces=bureau,chambre",
+"reponse": null
+},
+{
+"type": "net_rm",
+"valeur": "4e6fb5902cdc9e0637ac6d0ac4f6cef2a173024fff5667f98498a2df9427a6f7",
+"k": 0,
+"empreinte": "net_rm|n=4|objets=carte|pieces=cave",
+"reponse": null
+},
+{
+"type": "net_rm",
+"valeur": "4e6fb5902cdc9e0637ac6d0ac4f6cef2a173024fff5667f98498a2df9427a6f7",
+"k": 1,
+"empreinte": "net_rm|n=4|objets=etoile|pieces=salon",
+"reponse": null
+},
+{
+"type": "net_rm",
+"valeur": "4e6fb5902cdc9e0637ac6d0ac4f6cef2a173024fff5667f98498a2df9427a6f7",
+"k": 31,
+"empreinte": "net_rm|n=3|objets=bougie|pieces=couloir",
+"reponse": null
+},
+{
+"type": "net_rm",
+"valeur": "4e6fb5902cdc9e0637ac6d0ac4f6cef2a173024fff5667f98498a2df9427a6f7",
+"k": 99,
+"empreinte": "net_rm|n=3|objets=bille|pieces=bureau",
+"reponse": null
+},
+{
+"type": "net_rmdir",
+"valeur": "4e6fb5902cdc9e0637ac6d0ac4f6cef2a173024fff5667f98498a2df9427a6f7",
+"k": 0,
+"empreinte": "net_rmdir|objets=gomme|pieces=cave,veranda,atelier",
+"reponse": null
+},
+{
+"type": "net_rmdir",
+"valeur": "4e6fb5902cdc9e0637ac6d0ac4f6cef2a173024fff5667f98498a2df9427a6f7",
+"k": 1,
+"empreinte": "net_rmdir|objets=livre|pieces=salon,couloir,jardin",
+"reponse": null
+},
+{
+"type": "net_rmdir",
+"valeur": "4e6fb5902cdc9e0637ac6d0ac4f6cef2a173024fff5667f98498a2df9427a6f7",
+"k": 31,
+"empreinte": "net_rmdir|objets=balle|pieces=couloir,bureau,salon",
+"reponse": null
+},
+{
+"type": "net_rmdir",
+"valeur": "4e6fb5902cdc9e0637ac6d0ac4f6cef2a173024fff5667f98498a2df9427a6f7",
+"k": 99,
+"empreinte": "net_rmdir|objets=coquillage|pieces=bureau,chambre,garage",
+"reponse": null
+},
+{
+"type": "net_rmr",
+"valeur": "4e6fb5902cdc9e0637ac6d0ac4f6cef2a173024fff5667f98498a2df9427a6f7",
+"k": 0,
+"empreinte": "net_rmr|objets=flute,balle,plume|pieces=cave,veranda",
+"reponse": null
+},
+{
+"type": "net_rmr",
+"valeur": "4e6fb5902cdc9e0637ac6d0ac4f6cef2a173024fff5667f98498a2df9427a6f7",
+"k": 1,
+"empreinte": "net_rmr|objets=pomme,coquillage,cle|pieces=salon,couloir",
+"reponse": null
+},
+{
+"type": "net_rmr",
+"valeur": "4e6fb5902cdc9e0637ac6d0ac4f6cef2a173024fff5667f98498a2df9427a6f7",
+"k": 31,
+"empreinte": "net_rmr|objets=carte,gomme,plume|pieces=couloir,bureau",
+"reponse": null
+},
+{
+"type": "net_rmr",
+"valeur": "4e6fb5902cdc9e0637ac6d0ac4f6cef2a173024fff5667f98498a2df9427a6f7",
+"k": 99,
+"empreinte": "net_rmr|objets=boussole,coquillage,tambour|pieces=bureau,chambre",
+"reponse": null
+},
+{
+"type": "lec_cat",
+"valeur": "4e6fb5902cdc9e0637ac6d0ac4f6cef2a173024fff5667f98498a2df9427a6f7",
+"k": 0,
+"empreinte": "lec_cat|mots=licorne|n=2",
+"reponse": "licorne"
+},
+{
+"type": "lec_cat",
+"valeur": "4e6fb5902cdc9e0637ac6d0ac4f6cef2a173024fff5667f98498a2df9427a6f7",
+"k": 1,
+"empreinte": "lec_cat|mots=volcan|n=1",
+"reponse": "volcan"
+},
+{
+"type": "lec_cat",
+"valeur": "4e6fb5902cdc9e0637ac6d0ac4f6cef2a173024fff5667f98498a2df9427a6f7",
+"k": 31,
+"empreinte": "lec_cat|mots=sirene|n=3",
+"reponse": "sirene"
+},
+{
+"type": "lec_cat",
+"valeur": "4e6fb5902cdc9e0637ac6d0ac4f6cef2a173024fff5667f98498a2df9427a6f7",
+"k": 99,
+"empreinte": "lec_cat|mots=comete|n=1",
+"reponse": "comete"
+},
+{
+"type": "lec_head",
+"valeur": "4e6fb5902cdc9e0637ac6d0ac4f6cef2a173024fff5667f98498a2df9427a6f7",
+"k": 0,
+"empreinte": "lec_head|mots=licorne,biscuit,robot,dragon,comete,sirene,cactus,nuage|n=4",
+"reponse": "dragon"
+},
+{
+"type": "lec_head",
+"valeur": "4e6fb5902cdc9e0637ac6d0ac4f6cef2a173024fff5667f98498a2df9427a6f7",
+"k": 1,
+"empreinte": "lec_head|mots=volcan,sirene,pirate,dragon,comete,biscuit,fusee,tortue|n=4",
+"reponse": "dragon"
+},
+{
+"type": "lec_head",
+"valeur": "4e6fb5902cdc9e0637ac6d0ac4f6cef2a173024fff5667f98498a2df9427a6f7",
+"k": 31,
+"empreinte": "lec_head|mots=sirene,comete,volcan,biscuit,pirate,licorne,robot,dragon|n=2",
+"reponse": "comete"
+},
+{
+"type": "lec_head",
+"valeur": "4e6fb5902cdc9e0637ac6d0ac4f6cef2a173024fff5667f98498a2df9427a6f7",
+"k": 99,
+"empreinte": "lec_head|mots=comete,tortue,cactus,fusee,nuage,volcan,biscuit,robot|n=3",
+"reponse": "cactus"
+},
+{
+"type": "lec_tail",
+"valeur": "4e6fb5902cdc9e0637ac6d0ac4f6cef2a173024fff5667f98498a2df9427a6f7",
+"k": 0,
+"empreinte": "lec_tail|mots=licorne,biscuit,robot,dragon,comete,sirene,cactus,nuage|n=4",
+"reponse": "nuage"
+},
+{
+"type": "lec_tail",
+"valeur": "4e6fb5902cdc9e0637ac6d0ac4f6cef2a173024fff5667f98498a2df9427a6f7",
+"k": 1,
+"empreinte": "lec_tail|mots=volcan,sirene,pirate,dragon,comete,biscuit,fusee,tortue|n=4",
+"reponse": "tortue"
+},
+{
+"type": "lec_tail",
+"valeur": "4e6fb5902cdc9e0637ac6d0ac4f6cef2a173024fff5667f98498a2df9427a6f7",
+"k": 31,
+"empreinte": "lec_tail|mots=sirene,comete,volcan,biscuit,pirate,licorne,robot,dragon|n=2",
+"reponse": "dragon"
+},
+{
+"type": "lec_tail",
+"valeur": "4e6fb5902cdc9e0637ac6d0ac4f6cef2a173024fff5667f98498a2df9427a6f7",
+"k": 99,
+"empreinte": "lec_tail|mots=comete,tortue,cactus,fusee,nuage,volcan,biscuit,robot|n=3",
+"reponse": "robot"
+},
+{
+"type": "det_grep",
+"valeur": "4e6fb5902cdc9e0637ac6d0ac4f6cef2a173024fff5667f98498a2df9427a6f7",
+"k": 0,
+"empreinte": "det_grep|i=4|mots=robot,nuage,licorne,cactus,comete,tortue|objets=coquillage,carte,balle,plume,lampe",
+"reponse": "lampe"
+},
+{
+"type": "det_grep",
+"valeur": "4e6fb5902cdc9e0637ac6d0ac4f6cef2a173024fff5667f98498a2df9427a6f7",
+"k": 1,
+"empreinte": "det_grep|i=2|mots=cactus,sirene,tortue,dragon,nuage,biscuit|objets=bougie,balle,tambour,pomme,cle",
+"reponse": "tambour"
+},
+{
+"type": "det_grep",
+"valeur": "4e6fb5902cdc9e0637ac6d0ac4f6cef2a173024fff5667f98498a2df9427a6f7",
+"k": 31,
+"empreinte": "det_grep|i=4|mots=nuage,licorne,comete,fusee,robot,pirate|objets=bille,plume,flute,lampe,livre",
+"reponse": "livre"
+},
+{
+"type": "det_grep",
+"valeur": "4e6fb5902cdc9e0637ac6d0ac4f6cef2a173024fff5667f98498a2df9427a6f7",
+"k": 99,
+"empreinte": "det_grep|i=3|mots=comete,pirate,volcan,tortue,sirene,nuage|objets=crayon,livre,tambour,coquillage,plume",
+"reponse": "coquillage"
+},
+{
+"type": "det_find",
+"valeur": "4e6fb5902cdc9e0637ac6d0ac4f6cef2a173024fff5667f98498a2df9427a6f7",
+"k": 0,
+"empreinte": "det_find|coins=malle,coffre|i=2|j=0|objet=balle|pieces=cave,veranda,atelier",
+"reponse": "atelier"
+},
+{
+"type": "det_find",
+"valeur": "4e6fb5902cdc9e0637ac6d0ac4f6cef2a173024fff5667f98498a2df9427a6f7",
+"k": 1,
+"empreinte": "det_find|coins=etagere,placard|i=2|j=0|objet=lampe|pieces=salon,couloir,jardin",
+"reponse": "jardin"
+},
+{
+"type": "det_find",
+"valeur": "4e6fb5902cdc9e0637ac6d0ac4f6cef2a173024fff5667f98498a2df9427a6f7",
+"k": 31,
+"empreinte": "det_find|coins=placard,malle|i=1|j=1|objet=livre|pieces=couloir,bureau,salon",
+"reponse": "bureau"
+},
+{
+"type": "det_find",
+"valeur": "4e6fb5902cdc9e0637ac6d0ac4f6cef2a173024fff5667f98498a2df9427a6f7",
+"k": 99,
+"empreinte": "det_find|coins=etagere,tiroir|i=0|j=1|objet=balle|pieces=bureau,chambre,garage",
+"reponse": "bureau"
+},
+{
+"type": "plo_ecrit",
+"valeur": "4e6fb5902cdc9e0637ac6d0ac4f6cef2a173024fff5667f98498a2df9427a6f7",
+"k": 0,
+"empreinte": "plo_ecrit|mots=licorne",
+"reponse": null
+},
+{
+"type": "plo_ecrit",
+"valeur": "4e6fb5902cdc9e0637ac6d0ac4f6cef2a173024fff5667f98498a2df9427a6f7",
+"k": 1,
+"empreinte": "plo_ecrit|mots=volcan",
+"reponse": null
+},
+{
+"type": "plo_ecrit",
+"valeur": "4e6fb5902cdc9e0637ac6d0ac4f6cef2a173024fff5667f98498a2df9427a6f7",
+"k": 31,
+"empreinte": "plo_ecrit|mots=sirene",
+"reponse": null
+},
+{
+"type": "plo_ecrit",
+"valeur": "4e6fb5902cdc9e0637ac6d0ac4f6cef2a173024fff5667f98498a2df9427a6f7",
+"k": 99,
+"empreinte": "plo_ecrit|mots=comete",
+"reponse": null
+},
+{
+"type": "plo_ajout",
+"valeur": "4e6fb5902cdc9e0637ac6d0ac4f6cef2a173024fff5667f98498a2df9427a6f7",
+"k": 0,
+"empreinte": "plo_ajout|mots=licorne,biscuit,robot,dragon",
+"reponse": null
+},
+{
+"type": "plo_ajout",
+"valeur": "4e6fb5902cdc9e0637ac6d0ac4f6cef2a173024fff5667f98498a2df9427a6f7",
+"k": 1,
+"empreinte": "plo_ajout|mots=volcan,sirene,pirate,dragon",
+"reponse": null
+},
+{
+"type": "plo_ajout",
+"valeur": "4e6fb5902cdc9e0637ac6d0ac4f6cef2a173024fff5667f98498a2df9427a6f7",
+"k": 31,
+"empreinte": "plo_ajout|mots=sirene,comete,volcan,biscuit",
+"reponse": null
+},
+{
+"type": "plo_ajout",
+"valeur": "4e6fb5902cdc9e0637ac6d0ac4f6cef2a173024fff5667f98498a2df9427a6f7",
+"k": 99,
+"empreinte": "plo_ajout|mots=comete,tortue,cactus,fusee",
+"reponse": null
+},
+{
+"type": "plo_tuyau",
+"valeur": "4e6fb5902cdc9e0637ac6d0ac4f6cef2a173024fff5667f98498a2df9427a6f7",
+"k": 0,
+"empreinte": "plo_tuyau|lignes=1,0,1,3,2,2,1,2,0,2,0,2|objets=coquillage,carte,balle,plume",
+"reponse": "3"
+},
+{
+"type": "plo_tuyau",
+"valeur": "4e6fb5902cdc9e0637ac6d0ac4f6cef2a173024fff5667f98498a2df9427a6f7",
+"k": 1,
+"empreinte": "plo_tuyau|lignes=0,0,3,1,2,0,0,2,2|objets=bougie,balle,tambour,pomme",
+"reponse": "4"
+},
+{
+"type": "plo_tuyau",
+"valeur": "4e6fb5902cdc9e0637ac6d0ac4f6cef2a173024fff5667f98498a2df9427a6f7",
+"k": 31,
+"empreinte": "plo_tuyau|lignes=2,3,0,2,1,3,1,2,0|objets=bille,plume,flute,lampe",
+"reponse": "2"
+},
+{
+"type": "plo_tuyau",
+"valeur": "4e6fb5902cdc9e0637ac6d0ac4f6cef2a173024fff5667f98498a2df9427a6f7",
+"k": 99,
+"empreinte": "plo_tuyau|lignes=2,1,1,3,3,1,2,1,0,2|objets=crayon,livre,tambour,coquillage",
+"reponse": "1"
+},
+{
+"type": "cui_lancer",
+"valeur": "4e6fb5902cdc9e0637ac6d0ac4f6cef2a173024fff5667f98498a2df9427a6f7",
+"k": 0,
+"empreinte": "cui_lancer|mots=licorne",
+"reponse": "licorne"
+},
+{
+"type": "cui_lancer",
+"valeur": "4e6fb5902cdc9e0637ac6d0ac4f6cef2a173024fff5667f98498a2df9427a6f7",
+"k": 1,
+"empreinte": "cui_lancer|mots=volcan",
+"reponse": "volcan"
+},
+{
+"type": "cui_lancer",
+"valeur": "4e6fb5902cdc9e0637ac6d0ac4f6cef2a173024fff5667f98498a2df9427a6f7",
+"k": 31,
+"empreinte": "cui_lancer|mots=sirene",
+"reponse": "sirene"
+},
+{
+"type": "cui_lancer",
+"valeur": "4e6fb5902cdc9e0637ac6d0ac4f6cef2a173024fff5667f98498a2df9427a6f7",
+"k": 99,
+"empreinte": "cui_lancer|mots=comete",
+"reponse": "comete"
+},
+{
+"type": "cui_ecrire",
+"valeur": "4e6fb5902cdc9e0637ac6d0ac4f6cef2a173024fff5667f98498a2df9427a6f7",
+"k": 0,
+"empreinte": "cui_ecrire|mots=licorne",
+"reponse": null
+},
+{
+"type": "cui_ecrire",
+"valeur": "4e6fb5902cdc9e0637ac6d0ac4f6cef2a173024fff5667f98498a2df9427a6f7",
+"k": 1,
+"empreinte": "cui_ecrire|mots=volcan",
+"reponse": null
+},
+{
+"type": "cui_ecrire",
+"valeur": "4e6fb5902cdc9e0637ac6d0ac4f6cef2a173024fff5667f98498a2df9427a6f7",
+"k": 31,
+"empreinte": "cui_ecrire|mots=sirene",
+"reponse": null
+},
+{
+"type": "cui_ecrire",
+"valeur": "4e6fb5902cdc9e0637ac6d0ac4f6cef2a173024fff5667f98498a2df9427a6f7",
+"k": 99,
+"empreinte": "cui_ecrire|mots=comete",
+"reponse": null
+},
+{
+"type": "exp_chemin",
+"valeur": "b66c7a282c92118b020943a18efa92114a18263f784e47153af3a103838363b1",
+"k": 0,
+"empreinte": "exp_chemin|coins=coffre,placard|i=0|j=0|pieces=grenier,chambre,atelier",
+"reponse": null
+},
+{
+"type": "exp_chemin",
+"valeur": "b66c7a282c92118b020943a18efa92114a18263f784e47153af3a103838363b1",
+"k": 1,
+"empreinte": "exp_chemin|coins=placard,panier|i=2|j=0|pieces=jardin,salon,grenier",
+"reponse": null
+},
+{
+"type": "exp_chemin",
+"valeur": "b66c7a282c92118b020943a18efa92114a18263f784e47153af3a103838363b1",
+"k": 38,
+"empreinte": "exp_chemin|coins=coffre,tiroir|i=2|j=1|pieces=salon,garage,veranda",
+"reponse": null
+},
+{
+"type": "exp_chemin",
+"valeur": "b66c7a282c92118b020943a18efa92114a18263f784e47153af3a103838363b1",
+"k": 99,
+"empreinte": "exp_chemin|coins=armoire,panier|i=0|j=0|pieces=atelier,cave,veranda",
+"reponse": null
+},
+{
+"type": "exp_cle",
+"valeur": "b66c7a282c92118b020943a18efa92114a18263f784e47153af3a103838363b1",
+"k": 0,
+"empreinte": "exp_cle|coins=coffre,placard|i=0|j=0|pieces=grenier,chambre,atelier",
+"reponse": null
+},
+{
+"type": "exp_cle",
+"valeur": "b66c7a282c92118b020943a18efa92114a18263f784e47153af3a103838363b1",
+"k": 1,
+"empreinte": "exp_cle|coins=placard,panier|i=2|j=0|pieces=jardin,salon,grenier",
+"reponse": null
+},
+{
+"type": "exp_cle",
+"valeur": "b66c7a282c92118b020943a18efa92114a18263f784e47153af3a103838363b1",
+"k": 38,
+"empreinte": "exp_cle|coins=coffre,tiroir|i=2|j=1|pieces=salon,garage,veranda",
+"reponse": null
+},
+{
+"type": "exp_cle",
+"valeur": "b66c7a282c92118b020943a18efa92114a18263f784e47153af3a103838363b1",
+"k": 99,
+"empreinte": "exp_cle|coins=armoire,panier|i=0|j=0|pieces=atelier,cave,veranda",
+"reponse": null
+},
+{
+"type": "bat_pieces",
+"valeur": "b66c7a282c92118b020943a18efa92114a18263f784e47153af3a103838363b1",
+"k": 0,
+"empreinte": "bat_pieces|pieces=grenier,chambre",
+"reponse": null
+},
+{
+"type": "bat_pieces",
+"valeur": "b66c7a282c92118b020943a18efa92114a18263f784e47153af3a103838363b1",
+"k": 1,
+"empreinte": "bat_pieces|pieces=jardin,salon",
+"reponse": null
+},
+{
+"type": "bat_pieces",
+"valeur": "b66c7a282c92118b020943a18efa92114a18263f784e47153af3a103838363b1",
+"k": 38,
+"empreinte": "bat_pieces|pieces=salon,garage",
+"reponse": null
+},
+{
+"type": "bat_pieces",
+"valeur": "b66c7a282c92118b020943a18efa92114a18263f784e47153af3a103838363b1",
+"k": 99,
+"empreinte": "bat_pieces|pieces=atelier,cave",
+"reponse": null
+},
+{
+"type": "bat_objets",
+"valeur": "b66c7a282c92118b020943a18efa92114a18263f784e47153af3a103838363b1",
+"k": 0,
+"empreinte": "bat_objets|objets=crayon,livre|pieces=grenier",
+"reponse": null
+},
+{
+"type": "bat_objets",
+"valeur": "b66c7a282c92118b020943a18efa92114a18263f784e47153af3a103838363b1",
+"k": 1,
+"empreinte": "bat_objets|objets=cle,bougie|pieces=jardin",
+"reponse": null
+},
+{
+"type": "bat_objets",
+"valeur": "b66c7a282c92118b020943a18efa92114a18263f784e47153af3a103838363b1",
+"k": 38,
+"empreinte": "bat_objets|objets=lampe,gomme|pieces=salon",
+"reponse": null
+},
+{
+"type": "bat_objets",
+"valeur": "b66c7a282c92118b020943a18efa92114a18263f784e47153af3a103838363b1",
+"k": 99,
+"empreinte": "bat_objets|objets=carte,gomme|pieces=atelier",
+"reponse": null
+},
+{
+"type": "dem_mv",
+"valeur": "b66c7a282c92118b020943a18efa92114a18263f784e47153af3a103838363b1",
+"k": 0,
+"empreinte": "dem_mv|objets=gomme|pieces=grenier,chambre",
+"reponse": null
+},
+{
+"type": "dem_mv",
+"valeur": "b66c7a282c92118b020943a18efa92114a18263f784e47153af3a103838363b1",
+"k": 1,
+"empreinte": "dem_mv|objets=lampe|pieces=jardin,salon",
+"reponse": null
+},
+{
+"type": "dem_mv",
+"valeur": "b66c7a282c92118b020943a18efa92114a18263f784e47153af3a103838363b1",
+"k": 38,
+"empreinte": "dem_mv|objets=flute|pieces=salon,garage",
+"reponse": null
+},
+{
+"type": "dem_mv",
+"valeur": "b66c7a282c92118b020943a18efa92114a18263f784e47153af3a103838363b1",
+"k": 99,
+"empreinte": "dem_mv|objets=flute|pieces=atelier,cave",
+"reponse": null
+},
+{
+"type": "dem_cp",
+"valeur": "b66c7a282c92118b020943a18efa92114a18263f784e47153af3a103838363b1",
+"k": 0,
+"empreinte": "dem_cp|objets=gomme|pieces=grenier,chambre",
+"reponse": null
+},
+{
+"type": "dem_cp",
+"valeur": "b66c7a282c92118b020943a18efa92114a18263f784e47153af3a103838363b1",
+"k": 1,
+"empreinte": "dem_cp|objets=lampe|pieces=jardin,salon",
+"reponse": null
+},
+{
+"type": "dem_cp",
+"valeur": "b66c7a282c92118b020943a18efa92114a18263f784e47153af3a103838363b1",
+"k": 38,
+"empreinte": "dem_cp|objets=flute|pieces=salon,garage",
+"reponse": null
+},
+{
+"type": "dem_cp",
+"valeur": "b66c7a282c92118b020943a18efa92114a18263f784e47153af3a103838363b1",
+"k": 99,
+"empreinte": "dem_cp|objets=flute|pieces=atelier,cave",
+"reponse": null
+},
+{
+"type": "net_rm",
+"valeur": "b66c7a282c92118b020943a18efa92114a18263f784e47153af3a103838363b1",
+"k": 0,
+"empreinte": "net_rm|n=2|objets=crayon|pieces=grenier",
+"reponse": null
+},
+{
+"type": "net_rm",
+"valeur": "b66c7a282c92118b020943a18efa92114a18263f784e47153af3a103838363b1",
+"k": 1,
+"empreinte": "net_rm|n=2|objets=cle|pieces=jardin",
+"reponse": null
+},
+{
+"type": "net_rm",
+"valeur": "b66c7a282c92118b020943a18efa92114a18263f784e47153af3a103838363b1",
+"k": 38,
+"empreinte": "net_rm|n=2|objets=lampe|pieces=salon",
+"reponse": null
+},
+{
+"type": "net_rm",
+"valeur": "b66c7a282c92118b020943a18efa92114a18263f784e47153af3a103838363b1",
+"k": 99,
+"empreinte": "net_rm|n=2|objets=carte|pieces=atelier",
+"reponse": null
+},
+{
+"type": "net_rmdir",
+"valeur": "b66c7a282c92118b020943a18efa92114a18263f784e47153af3a103838363b1",
+"k": 0,
+"empreinte": "net_rmdir|objets=boussole|pieces=grenier,chambre,atelier",
+"reponse": null
+},
+{
+"type": "net_rmdir",
+"valeur": "b66c7a282c92118b020943a18efa92114a18263f784e47153af3a103838363b1",
+"k": 1,
+"empreinte": "net_rmdir|objets=balle|pieces=jardin,salon,grenier",
+"reponse": null
+},
+{
+"type": "net_rmdir",
+"valeur": "b66c7a282c92118b020943a18efa92114a18263f784e47153af3a103838363b1",
+"k": 38,
+"empreinte": "net_rmdir|objets=boussole|pieces=salon,garage,veranda",
+"reponse": null
+},
+{
+"type": "net_rmdir",
+"valeur": "b66c7a282c92118b020943a18efa92114a18263f784e47153af3a103838363b1",
+"k": 99,
+"empreinte": "net_rmdir|objets=lampe|pieces=atelier,cave,veranda",
+"reponse": null
+},
+{
+"type": "net_rmr",
+"valeur": "b66c7a282c92118b020943a18efa92114a18263f784e47153af3a103838363b1",
+"k": 0,
+"empreinte": "net_rmr|objets=gomme,coquillage,cle|pieces=grenier,chambre",
+"reponse": null
+},
+{
+"type": "net_rmr",
+"valeur": "b66c7a282c92118b020943a18efa92114a18263f784e47153af3a103838363b1",
+"k": 1,
+"empreinte": "net_rmr|objets=lampe,boussole,bougie|pieces=jardin,salon",
+"reponse": null
+},
+{
+"type": "net_rmr",
+"valeur": "b66c7a282c92118b020943a18efa92114a18263f784e47153af3a103838363b1",
+"k": 38,
+"empreinte": "net_rmr|objets=flute,lampe,balle|pieces=salon,garage",
+"reponse": null
+},
+{
+"type": "net_rmr",
+"valeur": "b66c7a282c92118b020943a18efa92114a18263f784e47153af3a103838363b1",
+"k": 99,
+"empreinte": "net_rmr|objets=flute,bougie,balle|pieces=atelier,cave",
+"reponse": null
+},
+{
+"type": "lec_cat",
+"valeur": "b66c7a282c92118b020943a18efa92114a18263f784e47153af3a103838363b1",
+"k": 0,
+"empreinte": "lec_cat|mots=dragon|n=1",
+"reponse": "dragon"
+},
+{
+"type": "lec_cat",
+"valeur": "b66c7a282c92118b020943a18efa92114a18263f784e47153af3a103838363b1",
+"k": 1,
+"empreinte": "lec_cat|mots=pirate|n=1",
+"reponse": "pirate"
+},
+{
+"type": "lec_cat",
+"valeur": "b66c7a282c92118b020943a18efa92114a18263f784e47153af3a103838363b1",
+"k": 38,
+"empreinte": "lec_cat|mots=volcan|n=2",
+"reponse": "volcan"
+},
+{
+"type": "lec_cat",
+"valeur": "b66c7a282c92118b020943a18efa92114a18263f784e47153af3a103838363b1",
+"k": 99,
+"empreinte": "lec_cat|mots=robot|n=3",
+"reponse": "robot"
+},
+{
+"type": "lec_head",
+"valeur": "b66c7a282c92118b020943a18efa92114a18263f784e47153af3a103838363b1",
+"k": 0,
+"empreinte": "lec_head|mots=dragon,tortue,robot,fusee,comete,biscuit,cactus,pirate|n=4",
+"reponse": "fusee"
+},
+{
+"type": "lec_head",
+"valeur": "b66c7a282c92118b020943a18efa92114a18263f784e47153af3a103838363b1",
+"k": 1,
+"empreinte": "lec_head|mots=pirate,volcan,dragon,nuage,sirene,tortue,comete,cactus|n=4",
+"reponse": "nuage"
+},
+{
+"type": "lec_head",
+"valeur": "b66c7a282c92118b020943a18efa92114a18263f784e47153af3a103838363b1",
+"k": 38,
+"empreinte": "lec_head|mots=volcan,cactus,biscuit,dragon,fusee,sirene,pirate,nuage|n=3",
+"reponse": "biscuit"
+},
+{
+"type": "lec_head",
+"valeur": "b66c7a282c92118b020943a18efa92114a18263f784e47153af3a103838363b1",
+"k": 99,
+"empreinte": "lec_head|mots=robot,licorne,biscuit,comete,tortue,cactus,dragon,pirate|n=3",
+"reponse": "biscuit"
+},
+{
+"type": "lec_tail",
+"valeur": "b66c7a282c92118b020943a18efa92114a18263f784e47153af3a103838363b1",
+"k": 0,
+"empreinte": "lec_tail|mots=dragon,tortue,robot,fusee,comete,biscuit,cactus,pirate|n=4",
+"reponse": "pirate"
+},
+{
+"type": "lec_tail",
+"valeur": "b66c7a282c92118b020943a18efa92114a18263f784e47153af3a103838363b1",
+"k": 1,
+"empreinte": "lec_tail|mots=pirate,volcan,dragon,nuage,sirene,tortue,comete,cactus|n=4",
+"reponse": "cactus"
+},
+{
+"type": "lec_tail",
+"valeur": "b66c7a282c92118b020943a18efa92114a18263f784e47153af3a103838363b1",
+"k": 38,
+"empreinte": "lec_tail|mots=volcan,cactus,biscuit,dragon,fusee,sirene,pirate,nuage|n=3",
+"reponse": "nuage"
+},
+{
+"type": "lec_tail",
+"valeur": "b66c7a282c92118b020943a18efa92114a18263f784e47153af3a103838363b1",
+"k": 99,
+"empreinte": "lec_tail|mots=robot,licorne,biscuit,comete,tortue,cactus,dragon,pirate|n=3",
+"reponse": "pirate"
+},
+{
+"type": "det_grep",
+"valeur": "b66c7a282c92118b020943a18efa92114a18263f784e47153af3a103838363b1",
+"k": 0,
+"empreinte": "det_grep|i=2|mots=licorne,cactus,dragon,robot,biscuit,fusee|objets=gomme,pomme,bille,tambour,lampe",
+"reponse": "bille"
+},
+{
+"type": "det_grep",
+"valeur": "b66c7a282c92118b020943a18efa92114a18263f784e47153af3a103838363b1",
+"k": 1,
+"empreinte": "det_grep|i=4|mots=fusee,robot,cactus,licorne,pirate,nuage|objets=boussole,bougie,carte,pomme,bille",
+"reponse": "bille"
+},
+{
+"type": "det_grep",
+"valeur": "b66c7a282c92118b020943a18efa92114a18263f784e47153af3a103838363b1",
+"k": 38,
+"empreinte": "det_grep|i=0|mots=sirene,dragon,robot,tortue,biscuit,pirate|objets=bille,boussole,carte,bougie,gomme",
+"reponse": "bille"
+},
+{
+"type": "det_grep",
+"valeur": "b66c7a282c92118b020943a18efa92114a18263f784e47153af3a103838363b1",
+"k": 99,
+"empreinte": "det_grep|i=2|mots=licorne,biscuit,tortue,pirate,cactus,robot|objets=gomme,bille,carte,flute,etoile",
+"reponse": "carte"
+},
+{
+"type": "det_find",
+"valeur": "b66c7a282c92118b020943a18efa92114a18263f784e47153af3a103838363b1",
+"k": 0,
+"empreinte": "det_find|coins=coffre,placard|i=0|j=0|objet=cle|pieces=grenier,chambre,atelier",
+"reponse": "grenier"
+},
+{
+"type": "det_find",
+"valeur": "b66c7a282c92118b020943a18efa92114a18263f784e47153af3a103838363b1",
+"k": 1,
+"empreinte": "det_find|coins=placard,panier|i=2|j=0|objet=boussole|pieces=jardin,salon,grenier",
+"reponse": "grenier"
+},
+{
+"type": "det_find",
+"valeur": "b66c7a282c92118b020943a18efa92114a18263f784e47153af3a103838363b1",
+"k": 38,
+"empreinte": "det_find|coins=coffre,tiroir|i=2|j=1|objet=gomme|pieces=salon,garage,veranda",
+"reponse": "veranda"
+},
+{
+"type": "det_find",
+"valeur": "b66c7a282c92118b020943a18efa92114a18263f784e47153af3a103838363b1",
+"k": 99,
+"empreinte": "det_find|coins=armoire,panier|i=0|j=0|objet=etoile|pieces=atelier,cave,veranda",
+"reponse": "atelier"
+},
+{
+"type": "plo_ecrit",
+"valeur": "b66c7a282c92118b020943a18efa92114a18263f784e47153af3a103838363b1",
+"k": 0,
+"empreinte": "plo_ecrit|mots=dragon",
+"reponse": null
+},
+{
+"type": "plo_ecrit",
+"valeur": "b66c7a282c92118b020943a18efa92114a18263f784e47153af3a103838363b1",
+"k": 1,
+"empreinte": "plo_ecrit|mots=pirate",
+"reponse": null
+},
+{
+"type": "plo_ecrit",
+"valeur": "b66c7a282c92118b020943a18efa92114a18263f784e47153af3a103838363b1",
+"k": 38,
+"empreinte": "plo_ecrit|mots=volcan",
+"reponse": null
+},
+{
+"type": "plo_ecrit",
+"valeur": "b66c7a282c92118b020943a18efa92114a18263f784e47153af3a103838363b1",
+"k": 99,
+"empreinte": "plo_ecrit|mots=robot",
+"reponse": null
+},
+{
+"type": "plo_ajout",
+"valeur": "b66c7a282c92118b020943a18efa92114a18263f784e47153af3a103838363b1",
+"k": 0,
+"empreinte": "plo_ajout|mots=dragon,tortue,robot,fusee",
+"reponse": null
+},
+{
+"type": "plo_ajout",
+"valeur": "b66c7a282c92118b020943a18efa92114a18263f784e47153af3a103838363b1",
+"k": 1,
+"empreinte": "plo_ajout|mots=pirate,volcan,dragon,nuage",
+"reponse": null
+},
+{
+"type": "plo_ajout",
+"valeur": "b66c7a282c92118b020943a18efa92114a18263f784e47153af3a103838363b1",
+"k": 38,
+"empreinte": "plo_ajout|mots=volcan,cactus,biscuit,dragon",
+"reponse": null
+},
+{
+"type": "plo_ajout",
+"valeur": "b66c7a282c92118b020943a18efa92114a18263f784e47153af3a103838363b1",
+"k": 99,
+"empreinte": "plo_ajout|mots=robot,licorne,biscuit,comete",
+"reponse": null
+},
+{
+"type": "plo_tuyau",
+"valeur": "b66c7a282c92118b020943a18efa92114a18263f784e47153af3a103838363b1",
+"k": 0,
+"empreinte": "plo_tuyau|lignes=0,2,2,0,1,2,3,3,2,1,2|objets=gomme,pomme,bille,tambour",
+"reponse": "2"
+},
+{
+"type": "plo_tuyau",
+"valeur": "b66c7a282c92118b020943a18efa92114a18263f784e47153af3a103838363b1",
+"k": 1,
+"empreinte": "plo_tuyau|lignes=2,0,0,2,0,1,0,3,1|objets=boussole,bougie,carte,pomme",
+"reponse": "4"
+},
+{
+"type": "plo_tuyau",
+"valeur": "b66c7a282c92118b020943a18efa92114a18263f784e47153af3a103838363b1",
+"k": 38,
+"empreinte": "plo_tuyau|lignes=3,1,1,3,1,3,0,3,1|objets=bille,boussole,carte,bougie",
+"reponse": "1"
+},
+{
+"type": "plo_tuyau",
+"valeur": "b66c7a282c92118b020943a18efa92114a18263f784e47153af3a103838363b1",
+"k": 99,
+"empreinte": "plo_tuyau|lignes=0,2,3,0,0,1,2,3,3|objets=gomme,bille,carte,flute",
+"reponse": "3"
+},
+{
+"type": "cui_lancer",
+"valeur": "b66c7a282c92118b020943a18efa92114a18263f784e47153af3a103838363b1",
+"k": 0,
+"empreinte": "cui_lancer|mots=dragon",
+"reponse": "dragon"
+},
+{
+"type": "cui_lancer",
+"valeur": "b66c7a282c92118b020943a18efa92114a18263f784e47153af3a103838363b1",
+"k": 1,
+"empreinte": "cui_lancer|mots=pirate",
+"reponse": "pirate"
+},
+{
+"type": "cui_lancer",
+"valeur": "b66c7a282c92118b020943a18efa92114a18263f784e47153af3a103838363b1",
+"k": 38,
+"empreinte": "cui_lancer|mots=volcan",
+"reponse": "volcan"
+},
+{
+"type": "cui_lancer",
+"valeur": "b66c7a282c92118b020943a18efa92114a18263f784e47153af3a103838363b1",
+"k": 99,
+"empreinte": "cui_lancer|mots=robot",
+"reponse": "robot"
+},
+{
+"type": "cui_ecrire",
+"valeur": "b66c7a282c92118b020943a18efa92114a18263f784e47153af3a103838363b1",
+"k": 0,
+"empreinte": "cui_ecrire|mots=dragon",
+"reponse": null
+},
+{
+"type": "cui_ecrire",
+"valeur": "b66c7a282c92118b020943a18efa92114a18263f784e47153af3a103838363b1",
+"k": 1,
+"empreinte": "cui_ecrire|mots=pirate",
+"reponse": null
+},
+{
+"type": "cui_ecrire",
+"valeur": "b66c7a282c92118b020943a18efa92114a18263f784e47153af3a103838363b1",
+"k": 38,
+"empreinte": "cui_ecrire|mots=volcan",
+"reponse": null
+},
+{
+"type": "cui_ecrire",
+"valeur": "b66c7a282c92118b020943a18efa92114a18263f784e47153af3a103838363b1",
+"k": 99,
+"empreinte": "cui_ecrire|mots=robot",
+"reponse": null
+}
+],
+"medailles": [
+{
+"type": "exp_chemin",
+"t": 0.5,
+"medaille": "diamant"
+},
+{
+"type": "exp_chemin",
+"t": 15,
+"medaille": "diamant"
+},
+{
+"type": "exp_chemin",
+"t": 15.1,
+"medaille": "or"
+},
+{
+"type": "exp_chemin",
+"t": 30,
+"medaille": "or"
+},
+{
+"type": "exp_chemin",
+"t": 30.1,
+"medaille": "argent"
+},
+{
+"type": "exp_chemin",
+"t": 60,
+"medaille": "argent"
+},
+{
+"type": "exp_chemin",
+"t": 60.1,
+"medaille": "bronze"
+},
+{
+"type": "exp_chemin",
+"t": 900,
+"medaille": "bronze"
+},
+{
+"type": "exp_cle",
+"t": 0.5,
+"medaille": "diamant"
+},
+{
+"type": "exp_cle",
+"t": 30,
+"medaille": "diamant"
+},
+{
+"type": "exp_cle",
+"t": 30.1,
+"medaille": "or"
+},
+{
+"type": "exp_cle",
+"t": 60,
+"medaille": "or"
+},
+{
+"type": "exp_cle",
+"t": 60.1,
+"medaille": "argent"
+},
+{
+"type": "exp_cle",
+"t": 120,
+"medaille": "argent"
+},
+{
+"type": "exp_cle",
+"t": 120.1,
+"medaille": "bronze"
+},
+{
+"type": "exp_cle",
+"t": 900,
+"medaille": "bronze"
+},
+{
+"type": "bat_pieces",
+"t": 0.5,
+"medaille": "diamant"
+},
+{
+"type": "bat_pieces",
+"t": 15,
+"medaille": "diamant"
+},
+{
+"type": "bat_pieces",
+"t": 15.1,
+"medaille": "or"
+},
+{
+"type": "bat_pieces",
+"t": 30,
+"medaille": "or"
+},
+{
+"type": "bat_pieces",
+"t": 30.1,
+"medaille": "argent"
+},
+{
+"type": "bat_pieces",
+"t": 60,
+"medaille": "argent"
+},
+{
+"type": "bat_pieces",
+"t": 60.1,
+"medaille": "bronze"
+},
+{
+"type": "bat_pieces",
+"t": 900,
+"medaille": "bronze"
+},
+{
+"type": "bat_objets",
+"t": 0.5,
+"medaille": "diamant"
+},
+{
+"type": "bat_objets",
+"t": 25,
+"medaille": "diamant"
+},
+{
+"type": "bat_objets",
+"t": 25.1,
+"medaille": "or"
+},
+{
+"type": "bat_objets",
+"t": 50,
+"medaille": "or"
+},
+{
+"type": "bat_objets",
+"t": 50.1,
+"medaille": "argent"
+},
+{
+"type": "bat_objets",
+"t": 100,
+"medaille": "argent"
+},
+{
+"type": "bat_objets",
+"t": 100.1,
+"medaille": "bronze"
+},
+{
+"type": "bat_objets",
+"t": 900,
+"medaille": "bronze"
+},
+{
+"type": "dem_mv",
+"t": 0.5,
+"medaille": "diamant"
+},
+{
+"type": "dem_mv",
+"t": 20,
+"medaille": "diamant"
+},
+{
+"type": "dem_mv",
+"t": 20.1,
+"medaille": "or"
+},
+{
+"type": "dem_mv",
+"t": 40,
+"medaille": "or"
+},
+{
+"type": "dem_mv",
+"t": 40.1,
+"medaille": "argent"
+},
+{
+"type": "dem_mv",
+"t": 80,
+"medaille": "argent"
+},
+{
+"type": "dem_mv",
+"t": 80.1,
+"medaille": "bronze"
+},
+{
+"type": "dem_mv",
+"t": 900,
+"medaille": "bronze"
+},
+{
+"type": "dem_cp",
+"t": 0.5,
+"medaille": "diamant"
+},
+{
+"type": "dem_cp",
+"t": 20,
+"medaille": "diamant"
+},
+{
+"type": "dem_cp",
+"t": 20.1,
+"medaille": "or"
+},
+{
+"type": "dem_cp",
+"t": 40,
+"medaille": "or"
+},
+{
+"type": "dem_cp",
+"t": 40.1,
+"medaille": "argent"
+},
+{
+"type": "dem_cp",
+"t": 80,
+"medaille": "argent"
+},
+{
+"type": "dem_cp",
+"t": 80.1,
+"medaille": "bronze"
+},
+{
+"type": "dem_cp",
+"t": 900,
+"medaille": "bronze"
+},
+{
+"type": "net_rm",
+"t": 0.5,
+"medaille": "diamant"
+},
+{
+"type": "net_rm",
+"t": 20,
+"medaille": "diamant"
+},
+{
+"type": "net_rm",
+"t": 20.1,
+"medaille": "or"
+},
+{
+"type": "net_rm",
+"t": 40,
+"medaille": "or"
+},
+{
+"type": "net_rm",
+"t": 40.1,
+"medaille": "argent"
+},
+{
+"type": "net_rm",
+"t": 80,
+"medaille": "argent"
+},
+{
+"type": "net_rm",
+"t": 80.1,
+"medaille": "bronze"
+},
+{
+"type": "net_rm",
+"t": 900,
+"medaille": "bronze"
+},
+{
+"type": "net_rmdir",
+"t": 0.5,
+"medaille": "diamant"
+},
+{
+"type": "net_rmdir",
+"t": 20,
+"medaille": "diamant"
+},
+{
+"type": "net_rmdir",
+"t": 20.1,
+"medaille": "or"
+},
+{
+"type": "net_rmdir",
+"t": 40,
+"medaille": "or"
+},
+{
+"type": "net_rmdir",
+"t": 40.1,
+"medaille": "argent"
+},
+{
+"type": "net_rmdir",
+"t": 80,
+"medaille": "argent"
+},
+{
+"type": "net_rmdir",
+"t": 80.1,
+"medaille": "bronze"
+},
+{
+"type": "net_rmdir",
+"t": 900,
+"medaille": "bronze"
+},
+{
+"type": "net_rmr",
+"t": 0.5,
+"medaille": "diamant"
+},
+{
+"type": "net_rmr",
+"t": 15,
+"medaille": "diamant"
+},
+{
+"type": "net_rmr",
+"t": 15.1,
+"medaille": "or"
+},
+{
+"type": "net_rmr",
+"t": 30,
+"medaille": "or"
+},
+{
+"type": "net_rmr",
+"t": 30.1,
+"medaille": "argent"
+},
+{
+"type": "net_rmr",
+"t": 60,
+"medaille": "argent"
+},
+{
+"type": "net_rmr",
+"t": 60.1,
+"medaille": "bronze"
+},
+{
+"type": "net_rmr",
+"t": 900,
+"medaille": "bronze"
+},
+{
+"type": "lec_cat",
+"t": 0.5,
+"medaille": "diamant"
+},
+{
+"type": "lec_cat",
+"t": 20,
+"medaille": "diamant"
+},
+{
+"type": "lec_cat",
+"t": 20.1,
+"medaille": "or"
+},
+{
+"type": "lec_cat",
+"t": 40,
+"medaille": "or"
+},
+{
+"type": "lec_cat",
+"t": 40.1,
+"medaille": "argent"
+},
+{
+"type": "lec_cat",
+"t": 80,
+"medaille": "argent"
+},
+{
+"type": "lec_cat",
+"t": 80.1,
+"medaille": "bronze"
+},
+{
+"type": "lec_cat",
+"t": 900,
+"medaille": "bronze"
+},
+{
+"type": "lec_head",
+"t": 0.5,
+"medaille": "diamant"
+},
+{
+"type": "lec_head",
+"t": 20,
+"medaille": "diamant"
+},
+{
+"type": "lec_head",
+"t": 20.1,
+"medaille": "or"
+},
+{
+"type": "lec_head",
+"t": 40,
+"medaille": "or"
+},
+{
+"type": "lec_head",
+"t": 40.1,
+"medaille": "argent"
+},
+{
+"type": "lec_head",
+"t": 80,
+"medaille": "argent"
+},
+{
+"type": "lec_head",
+"t": 80.1,
+"medaille": "bronze"
+},
+{
+"type": "lec_head",
+"t": 900,
+"medaille": "bronze"
+},
+{
+"type": "lec_tail",
+"t": 0.5,
+"medaille": "diamant"
+},
+{
+"type": "lec_tail",
+"t": 20,
+"medaille": "diamant"
+},
+{
+"type": "lec_tail",
+"t": 20.1,
+"medaille": "or"
+},
+{
+"type": "lec_tail",
+"t": 40,
+"medaille": "or"
+},
+{
+"type": "lec_tail",
+"t": 40.1,
+"medaille": "argent"
+},
+{
+"type": "lec_tail",
+"t": 80,
+"medaille": "argent"
+},
+{
+"type": "lec_tail",
+"t": 80.1,
+"medaille": "bronze"
+},
+{
+"type": "lec_tail",
+"t": 900,
+"medaille": "bronze"
+},
+{
+"type": "det_grep",
+"t": 0.5,
+"medaille": "diamant"
+},
+{
+"type": "det_grep",
+"t": 25,
+"medaille": "diamant"
+},
+{
+"type": "det_grep",
+"t": 25.1,
+"medaille": "or"
+},
+{
+"type": "det_grep",
+"t": 50,
+"medaille": "or"
+},
+{
+"type": "det_grep",
+"t": 50.1,
+"medaille": "argent"
+},
+{
+"type": "det_grep",
+"t": 100,
+"medaille": "argent"
+},
+{
+"type": "det_grep",
+"t": 100.1,
+"medaille": "bronze"
+},
+{
+"type": "det_grep",
+"t": 900,
+"medaille": "bronze"
+},
+{
+"type": "det_find",
+"t": 0.5,
+"medaille": "diamant"
+},
+{
+"type": "det_find",
+"t": 25,
+"medaille": "diamant"
+},
+{
+"type": "det_find",
+"t": 25.1,
+"medaille": "or"
+},
+{
+"type": "det_find",
+"t": 50,
+"medaille": "or"
+},
+{
+"type": "det_find",
+"t": 50.1,
+"medaille": "argent"
+},
+{
+"type": "det_find",
+"t": 100,
+"medaille": "argent"
+},
+{
+"type": "det_find",
+"t": 100.1,
+"medaille": "bronze"
+},
+{
+"type": "det_find",
+"t": 900,
+"medaille": "bronze"
+},
+{
+"type": "plo_ecrit",
+"t": 0.5,
+"medaille": "diamant"
+},
+{
+"type": "plo_ecrit",
+"t": 20,
+"medaille": "diamant"
+},
+{
+"type": "plo_ecrit",
+"t": 20.1,
+"medaille": "or"
+},
+{
+"type": "plo_ecrit",
+"t": 40,
+"medaille": "or"
+},
+{
+"type": "plo_ecrit",
+"t": 40.1,
+"medaille": "argent"
+},
+{
+"type": "plo_ecrit",
+"t": 80,
+"medaille": "argent"
+},
+{
+"type": "plo_ecrit",
+"t": 80.1,
+"medaille": "bronze"
+},
+{
+"type": "plo_ecrit",
+"t": 900,
+"medaille": "bronze"
+},
+{
+"type": "plo_ajout",
+"t": 0.5,
+"medaille": "diamant"
+},
+{
+"type": "plo_ajout",
+"t": 20,
+"medaille": "diamant"
+},
+{
+"type": "plo_ajout",
+"t": 20.1,
+"medaille": "or"
+},
+{
+"type": "plo_ajout",
+"t": 40,
+"medaille": "or"
+},
+{
+"type": "plo_ajout",
+"t": 40.1,
+"medaille": "argent"
+},
+{
+"type": "plo_ajout",
+"t": 80,
+"medaille": "argent"
+},
+{
+"type": "plo_ajout",
+"t": 80.1,
+"medaille": "bronze"
+},
+{
+"type": "plo_ajout",
+"t": 900,
+"medaille": "bronze"
+},
+{
+"type": "plo_tuyau",
+"t": 0.5,
+"medaille": "diamant"
+},
+{
+"type": "plo_tuyau",
+"t": 30,
+"medaille": "diamant"
+},
+{
+"type": "plo_tuyau",
+"t": 30.1,
+"medaille": "or"
+},
+{
+"type": "plo_tuyau",
+"t": 60,
+"medaille": "or"
+},
+{
+"type": "plo_tuyau",
+"t": 60.1,
+"medaille": "argent"
+},
+{
+"type": "plo_tuyau",
+"t": 120,
+"medaille": "argent"
+},
+{
+"type": "plo_tuyau",
+"t": 120.1,
+"medaille": "bronze"
+},
+{
+"type": "plo_tuyau",
+"t": 900,
+"medaille": "bronze"
+},
+{
+"type": "cui_lancer",
+"t": 0.5,
+"medaille": "diamant"
+},
+{
+"type": "cui_lancer",
+"t": 20,
+"medaille": "diamant"
+},
+{
+"type": "cui_lancer",
+"t": 20.1,
+"medaille": "or"
+},
+{
+"type": "cui_lancer",
+"t": 40,
+"medaille": "or"
+},
+{
+"type": "cui_lancer",
+"t": 40.1,
+"medaille": "argent"
+},
+{
+"type": "cui_lancer",
+"t": 80,
+"medaille": "argent"
+},
+{
+"type": "cui_lancer",
+"t": 80.1,
+"medaille": "bronze"
+},
+{
+"type": "cui_lancer",
+"t": 900,
+"medaille": "bronze"
+},
+{
+"type": "cui_ecrire",
+"t": 0.5,
+"medaille": "diamant"
+},
+{
+"type": "cui_ecrire",
+"t": 40,
+"medaille": "diamant"
+},
+{
+"type": "cui_ecrire",
+"t": 40.1,
+"medaille": "or"
+},
+{
+"type": "cui_ecrire",
+"t": 80,
+"medaille": "or"
+},
+{
+"type": "cui_ecrire",
+"t": 80.1,
+"medaille": "argent"
+},
+{
+"type": "cui_ecrire",
+"t": 160,
+"medaille": "argent"
+},
+{
+"type": "cui_ecrire",
+"t": 160.1,
+"medaille": "bronze"
+},
+{
+"type": "cui_ecrire",
+"t": 900,
+"medaille": "bronze"
+}
+],
+"echelons": [
+{
+"n": 0,
+"or": 0,
+"echelon": -1
+},
+{
+"n": 0,
+"or": 1,
+"echelon": -1
+},
+{
+"n": 1,
+"or": 0,
+"echelon": 0
+},
+{
+"n": 1,
+"or": 1,
+"echelon": 0
+},
+{
+"n": 4,
+"or": 0,
+"echelon": 0
+},
+{
+"n": 4,
+"or": 1,
+"echelon": 0
+},
+{
+"n": 5,
+"or": 0,
+"echelon": 1
+},
+{
+"n": 5,
+"or": 1,
+"echelon": 1
+},
+{
+"n": 14,
+"or": 0,
+"echelon": 1
+},
+{
+"n": 14,
+"or": 1,
+"echelon": 1
+},
+{
+"n": 15,
+"or": 0,
+"echelon": 2
+},
+{
+"n": 15,
+"or": 1,
+"echelon": 2
+},
+{
+"n": 29,
+"or": 0,
+"echelon": 2
+},
+{
+"n": 29,
+"or": 1,
+"echelon": 2
+},
+{
+"n": 30,
+"or": 0,
+"echelon": 3
+},
+{
+"n": 30,
+"or": 1,
+"echelon": 3
+},
+{
+"n": 49,
+"or": 0,
+"echelon": 3
+},
+{
+"n": 49,
+"or": 1,
+"echelon": 3
+},
+{
+"n": 50,
+"or": 0,
+"echelon": 3
+},
+{
+"n": 50,
+"or": 1,
+"echelon": 4
+},
+{
+"n": 80,
+"or": 0,
+"echelon": 3
+},
+{
+"n": 80,
+"or": 1,
+"echelon": 4
+}
+],
+"semaines": [
+{
+"t": 0,
+"semaine": "1970-W01"
+},
+{
+"t": 1704067200,
+"semaine": "2024-W01"
+},
+{
+"t": 1735603200,
+"semaine": "2025-W01"
+},
+{
+"t": 1767139200,
+"semaine": "2026-W01"
+},
+{
+"t": 1793000000,
+"semaine": "2026-W44"
+},
+{
+"t": 1798675200,
+"semaine": "2026-W53"
+}
+]
+}

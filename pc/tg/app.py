@@ -8,7 +8,7 @@ import time
 
 import subprocess
 
-from . import (compagnon, core, dressage, envies, equipe, exemples, explique, explo, histoire, lecons, lexique, maison, notif,
+from . import (compagnon, core, dressage, entrainement, envies, equipe, exemples, explique, explo, histoire, lecons, lexique, maison, notif,
                quetes, recense, registre, sprites, terrain)
 from .bestiaire import arc_en_ciel
 from . import langue
@@ -52,7 +52,8 @@ def render(state, frame, interactif, anim=None):
     m = envies.moment(state)
     right = [
         (arc_en_ciel(state["name"] + " ✨") if state.get("shiny") else f"{BOLD}{state['name']}{RESET}")
-        + " · " + t("app.forme_niveau", forme=forme, n=lvl),
+        + " · " + t("app.forme_niveau", forme=forme, n=lvl)
+        + (" " + entrainement.titre_colore(state) if entrainement.titres(state) else ""),
         f"{DIM}" + t("app.caractere", trait=core.nom_trait(state["trait"])) + RESET,
         f"{xp_l} {sprites.bar(state['xp'] - lo, hi - lo)} {state['xp']}/{hi}",
         f"{jauges[0]}  {DIM}{envies.humeur(state)}{RESET}",
@@ -248,6 +249,7 @@ def boucle_jeu(state, lines, spontane=True, rythme=1.5, defis=True, cwd=None):
     explo.tick(state, spontane, proba=rythme / 480, jeu=sum(1 for l in lines if not core.est_colle(l)), lignes=lines)
     core.defi_tick(state, lines, spontaneous=spontane and defis, proba=rythme / 300)
     envies.tick(state, lines)                 # les 6 envies : usure, plaisirs, poussière, rappel espacé
+    entrainement.tick(state, lines)           # salle d'entraînement : l'exercice en cours est-il réussi ?
     core.idle_talk(state, proba=min(1.0, 0.08 * rythme / 1.5))
 
 
@@ -654,7 +656,7 @@ def veille():
 
 def aide():
     return "\n".join(langue.remplir(l, {}) for l in langue.liste("app.aide") + langue.liste("app.aide.histoire")
-                     + [t("env.aide"), t("aura.aide")])
+                     + [t("env.aide"), t("aura.aide"), t("ent.aide")])
 
 
 def commande_histoire(mode, args):
@@ -721,6 +723,20 @@ def main():
             creer_si_besoin()
         else:
             print(accueil.commande(args[1:]))
+        return
+    if mode in ("entrainement", "exercice", "badges"):    # la salle d'entraînement, les badges et les titres
+        creer_si_besoin()
+        sortie = []
+        try:
+            ici = os.getcwd()
+        except OSError:
+            ici = None
+        if mode == "badges":
+            core.modifier(lambda s: sortie.extend(entrainement.commande_badges(s, args[1:])))
+        else:
+            etape(spontane=False, defis=False, cwd=ici)        # les dernières commandes tapées d'abord
+            core.modifier(lambda s: sortie.extend(entrainement.commande_texte(s, args[1:], ici)))
+        print("\n".join(sortie))
         return
     if mode == "envies":                       # tg envies : les 6 envies, et comment faire plaisir à chacune
         creer_si_besoin()

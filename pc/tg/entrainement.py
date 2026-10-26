@@ -610,7 +610,7 @@ def lignes_exercice(state, c):
     for x in idees(typ, p):
         out.append(f" {DIM}" + t("ent.idee", cmd=vert(state, x)) + RESET)
     if TYPES[typ][4]:
-        out.append(" " + t("ent.repondre", cmd=vert(state, commande() + " " + t("ent.ta_reponse"))))
+        out.append(" " + t("ent.repondre", cmd=vert(state, commande())))
     else:
         out.append(f" {DIM}" + t("ent.verifier", cmd=vert(state, commande())) + RESET)
     out.append(f" {DIM}" + t("ent.chrono", d=par, o=2 * par, a=4 * par) + RESET)
@@ -671,7 +671,7 @@ def reussir(state, cwd=None):
     apres = echelon(e, f)
     if apres > avant:
         en = B.ECHELONS[apres]
-        out.append(t("ent.echelon_monte", badge=nom_famille(f), echelon=nom_echelon(en), cmd="tg badges"))
+        out.append(t("ent.echelon_monte", badge=nom_famille(f), echelon=nom_echelon(en), cmd="`tg badges`"))
         core.log(state, "🏅 " + t("ent.echelon_log", badge=nom_famille(f), echelon=nom_echelon(en)))
     core.log(state, t("ent.reussi_log", s=f"{s:.1f}", icone=ICONE_MEDAILLE[m]))
     core.say(state, out[0], 12)

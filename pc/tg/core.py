@@ -332,7 +332,8 @@ def tick(state):
 BUILTINS = {"cd", "echo", "export", "alias", "history", "type", "source", ".", "exit", "for", "if", "while",
             "set", "unset", "read", "test", "[", "pushd", "popd", "jobs", "fg", "bg", "kill", "umask", "ulimit",
             "true", "false", "printf", "wait", "trap", "exec", "eval", "help", "tg", "clear",
-            "carte", "quetes", "explique"}          # carte, quetes : les raccourcis du jeu (tg carte, tg quetes)
+            "carte", "quetes", "explique",          # carte, quetes : les raccourcis du jeu (tg carte, tg quetes)
+            "entrainement", "exercice", "badges"}   # la salle d'entraînement (tg entrainement, tg badges)
 
 
 def commande_existe(cmd):
