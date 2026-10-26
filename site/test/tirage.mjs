@@ -73,11 +73,18 @@ console.log("Salle d'entraînement (donnees/entrainement/vecteurs.json)");
   verifier(ratesE.length === 0, `${VE.exercices.length - ratesE.length}/${VE.exercices.length} exercices identiques au Python`);
   for (const r of ratesE.slice(0, 3)) console.log("     ", r);
   verifier(VE.medailles.every((m) => E.medaille(m.type, m.t) === m.medaille), `${VE.medailles.length} médailles identiques`);
-  verifier(VE.echelons.every((m) => E.echelonDe(m.n, m.or) === m.echelon), "échelons identiques (Diamant : + une médaille d'or)");
+  verifier(VE.echelons.every((m) => E.echelonDe(m.n, m.or) === m.echelon), "grades identiques (Giga : + une médaille d'or)");
+  verifier(VE.echelons.every((m) => E.etoilesDe(m.n, m.echelon) === m.etoiles), "étoiles identiques (au Giga : 75 / 100 / 150)");
+  const { createHash } = await import("node:crypto");
+  const empreinteDessin = (g) => createHash("sha256").update(g.map((l) => l.map((c) => c || "").join(",")).join("/")).digest("hex");
+  verifier(VE.ecussons.every((m) => empreinteDessin(E.ecusson(m.famille, m.echelon, m.etoiles)) === m.empreinte),
+    `${VE.ecussons.length} badges complets identiques au pixel près (galons, étoiles)`);
+  const px = E.ECHELONS.map((e) => E.galons(e).flat().filter(Boolean).length);
+  verifier(px.every((n, i) => i === 0 || n > px[i - 1]), `les galons grandissent à chaque grade (${px.join(", ")})`);
   verifier(VE.semaines.every((m) => E.semaine(m.t * 1000) === m.semaine), "semaines ISO identiques");
   verifier(E.commandesConnues("plo_tuyau", ["grep", "wc"]) && !E.commandesConnues("plo_tuyau", ["grep"]), "commandes déjà tapées : vérifiées");
-  verifier(E.svgBadge("explorateur", "diamant").includes('fill="#ffffff"') && E.svgBadge(null, null).includes("#3a3a44"),
-    "badges en SVG (étincelle du diamant, « ??? » gris)");
+  verifier(E.svgBadge("explorateur", "giga").includes('fill="#ffffff"') && E.svgBadge(null, null).includes("#3a3a44"),
+    "badges en SVG (étincelle du Giga, « ??? » gris)");
 }
 
 console.log(`\n${ok} réussis, ${ko} échoués`);

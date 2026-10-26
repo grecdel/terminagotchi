@@ -1,16 +1,18 @@
 /**
  * La salle d'entraînement côté site : le serveur refait le tirage d'un exercice à partir de (graine, compteur) pour
  * vérifier un temps. Même spécification que pc/tg/entrainement.py et app/…/Entrainement.kt ; vecteurs communs :
- * donnees/entrainement/vecteurs.json (vérifiés par test/tirage.mjs). Les badges (dessins 14 × 14, mêmes couleurs que
- * pc/tg/badges.py et Badges.kt) sont dessinés en SVG.
+ * donnees/entrainement/vecteurs.json (vérifiés par test/tirage.mjs). Les badges (écusson 14 × 14, ou complet 18 × 28 avec
+ * les galons du grade et les étoiles ; mêmes dessins et couleurs que pc/tg/badges.py et Badges.kt) sont dessinés en SVG.
  */
 import { Hasard } from "./tirage.js";
 
 export const BASE = 1_000_000;
 export const MAX_PAR_GRAINE = 100;
 export const FAMILLES = ["explorateur", "batisseur", "demenageur", "nettoyeur", "lecteur", "detective", "plombier", "cuisinier"];
-export const ECHELONS = ["bois", "bronze", "argent", "or", "diamant"];
+/** Les grades (des tailles d'informatique), leurs seuils, et les étoiles vers le grade suivant (★, ★★, ★★★). */
+export const ECHELONS = ["bit", "octet", "kilo", "mega", "giga"];
 export const SEUILS = [1, 5, 15, 30, 50];
+export const ETOILES = [[2, 3, 4], [8, 10, 13], [19, 23, 27], [35, 40, 45], [75, 100, 150]];
 export const MEDAILLES = ["bronze", "argent", "or", "diamant"];
 export const ICONE_MEDAILLE = { bronze: "🥉", argent: "🥈", or: "🥇", diamant: "💎" };
 
@@ -118,7 +120,7 @@ export function semaine(ms = Date.now()) {
 }
 export const semainePrecedente = (ms = Date.now()) => semaine(ms - 7 * 86_400_000);
 
-/** L'échelon atteint (0…4, ou -1) : n réussites, et pour le Diamant une médaille d'or (ou de diamant). */
+/** Le grade atteint (0…4, ou -1) : n réussites, et pour le Giga une médaille d'or (ou de diamant). */
 export function echelonDe(n, ors = 0) {
   let k = -1;
   SEUILS.forEach((s, i) => { if (n >= s && (i < 4 || ors >= 1)) k = i; });
@@ -133,13 +135,15 @@ export function commandesConnues(typ, vus) {
 
 // ---------------------------------------------------------------- les badges (mêmes dessins que le jeu)
 export const COULEURS = {
-  bois: ["#3a2a1a", "#76583a", "#987654", "#efe0c4", "#4a3522"],
-  bronze: ["#6b3510", "#d0782a", "#f6ad62", "#fff3e0", "#7a3c0c"],
-  argent: ["#4a525e", "#aab5c2", "#e6edf4", "#323a47", "#6b7685"],
-  or: ["#6b4700", "#e8b71c", "#fff27a", "#4f3300", "#a36f00"],
-  diamant: ["#0b4a66", "#3fcfff", "#d2f8ff", "#06324a", "#1a7fae"],
+  bit: ["#0d3b1e", "#2f9e4f", "#86e89a", "#eaffe9", "#17602f"],
+  octet: ["#08404d", "#22b0c6", "#a6f3ff", "#062f3a", "#127688"],
+  kilo: ["#152a78", "#4072f0", "#b1c8ff", "#f0f4ff", "#2240b0"],
+  mega: ["#3d0f60", "#a050e6", "#e2b8ff", "#fff0ff", "#5e1f92"],
+  giga: ["#6b4700", "#e8b71c", "#fff27a", "#4f3300", "#a36f00"],
   cache: ["#3a3a44", "#5a5a66", "#6e6e7a", "#8a8a96", "#4a4a55"],
 };
+const FIXES = { d: "#4a3000", e: "#d9a41a", g: "#fff27a", q: "#0b3f55", r: "#3fd6ff", s: "#ffffff", z: "#0c0c10", y: "#4a4a5e", x: "#262630", p: "#d8d8e0" };
+const ETOILE_ON = "#ffd84a", ETOILE_OFF = "#3c3c4a";
 const FORME = ["...oooooooo...", "..ohhhhhhhhfo.", ".ohhffffffffo.", "ohhffffffffffo", "ohfffffffffffo", "ohfffffffffffo", "ohfffffffffffo",
   "ohfffffffffffo", "ohfffffffffffo", "offfffffffffo.", ".offfffffffo..", "..offfffffo...", "...offfffo....", ".....ooo......"];
 const ICONES = {
@@ -154,6 +158,94 @@ const ICONES = {
   cache: ["..iiii..", ".ii..ii.", ".....ii.", "....ii..", "...ii...", "...ii...", "........", "...ii..."],
 };
 const ETINCELLES = [[1, 12], [0, 12], [2, 12], [1, 11], [1, 13]];
+/** Les galons de chaque grade : [première ligne, lignes de 18 pixels], derrière l'écusson (voir pc/tg/badges.py). */
+const GALONS = {
+  bit: [16, [
+    ".......aaa........",
+    ".....aabbbaa......",
+    "...aabbcccbbaa....",
+    "..abbccaaaccbba...",
+    ".abccaa...aaccba..",
+    ".acaa.......aaca..",
+    "..a...........a...",
+  ]],
+  octet: [16, [
+    ".......aaa........",
+    ".....aabbbaa......",
+    "...aabbcccbbaa....",
+    "..abbccaaaccbba...",
+    ".abccaabbbaaccba..",
+    ".acaabbcccbbaaca..",
+    "..abbccaaaccbba...",
+    ".abccaa...aaccba..",
+    ".acaa.......aaca..",
+    "..a...........a...",
+  ]],
+  kilo: [16, [
+    ".......aaa........",
+    ".....aabbbaa......",
+    "...aabbcccbbaa....",
+    "..abbccaaaccbba...",
+    ".abccaabbbaaccba..",
+    ".acaabbcccbbaaca..",
+    "..abbccaaaccbba...",
+    ".abccaabbbaaccba..",
+    ".acaabbcccbbaaca..",
+    "..abbccaaaccbba...",
+    ".abccaa...aaccba..",
+    ".acaa.......aaca..",
+  ]],
+  mega: [7, [
+    "d................d",
+    "gd..............dg",
+    "ed..............de",
+    "egd............dge",
+    "ed..............de",
+    "egd............dge",
+    "ed..............de",
+    "egd............dge",
+    "ed..............de",
+    "ded....aaa.....ded",
+    ".ded.aabbbaa..ded.",
+    "..daabbcccbbaaed..",
+    "..abbccaaaccbba...",
+    ".abccaabbbaaccba..",
+    ".acaabbcccbbaaca..",
+    "..abbccaaaccbba...",
+    ".abccaabbbaaccba..",
+    ".acaabbcccbbaaca..",
+    "..abbccaaaccbba...",
+    ".abccaa...aaccba..",
+    ".acaa.......aaca..",
+  ]],
+  giga: [4, [
+    "q................q",
+    "sq..............qs",
+    "rsq............qsr",
+    "rrq............qrr",
+    "rsq............qsr",
+    "rrq............qrr",
+    "rsq............qsr",
+    "rrq............qrr",
+    "rsq............qsr",
+    "rrq............qrr",
+    "rsq............qsr",
+    "rrq............qrr",
+    "qrrq...aaa....qrrq",
+    ".qrrqaabbbaa.qrrq.",
+    "..qaabpcpcpbaarq..",
+    "..abbzyyyyyzbba...",
+    ".abcczxsxxxzccba..",
+    ".acaazxxxxxzaaca..",
+    "..abbcpapapcbba...",
+    ".abccaabbbaaccba..",
+    ".acaabbcccbbaaca..",
+    "..abbccaaaccbba...",
+    ".abccaa...aaccba..",
+    ".acaa.......aaca..",
+  ]],
+};
+const ETOILE = ["..x..", ".xxx.", "xxxxx", ".x.x."];
 
 export function grille(famille, echelon) {
   const cache = !famille || !ECHELONS.includes(echelon) || !ICONES[famille];
@@ -161,18 +253,44 @@ export function grille(famille, echelon) {
   const pal = { o: c[0], f: c[1], h: c[2], i: c[3], k: c[4], K: c[4] };
   const g = FORME.map((l) => [...l].map((x) => pal[x] || null));
   ICONES[cache ? "cache" : famille].forEach((l, y) => [...l].forEach((x, xx) => { if (x !== ".") g[3 + y][3 + xx] = pal[x]; }));
-  if (echelon === "diamant" && !cache) for (const [y, x] of ETINCELLES) g[y][x] = "#ffffff";
+  if (echelon === "giga" && !cache) for (const [y, x] of ETINCELLES) g[y][x] = "#ffffff";
   return g;
 }
 
-/** Le badge en SVG (pixels nets). */
-export function svgBadge(famille, echelon, taille = 4, etiquette = "") {
-  const g = grille(famille, echelon);
+/** Le grade seul : grille 18 × 28 (null = transparent). */
+export function galons(echelon) {
+  const g = Array.from({ length: 28 }, () => Array(18).fill(null));
+  if (!ECHELONS.includes(echelon)) return g;
+  const c = COULEURS[echelon];
+  const pal = { ...FIXES, a: c[0], b: c[2], c: c[1] };
+  const [y0, lignes] = GALONS[echelon];
+  lignes.forEach((l, y) => [...l].forEach((x, xx) => { if (x !== ".") g[y0 + y][xx] = pal[x]; }));
+  return g;
+}
+
+/** Le badge complet 18 × 28 : galons, écusson en (2, 4), 3 étoiles au-dessus (0 à 3 allumées). « ??? » : l'écusson gris seul. */
+export function ecusson(famille, echelon, etoiles = 0) {
+  const cache = !famille || !ECHELONS.includes(echelon) || !ICONES[famille];
+  const g = galons(cache ? null : echelon);
+  grille(famille, echelon).forEach((l, y) => l.forEach((c, x) => { if (c) g[4 + y][2 + x] = c; }));
+  if (!cache) [0, 6, 12].forEach((x0, i) => ETOILE.forEach((l, y) => [...l].forEach((x, xx) => {
+    if (x === "x") g[y][x0 + xx] = i < etoiles ? ETOILE_ON : ETOILE_OFF;
+  })));
+  return g;
+}
+
+/** Les étoiles (0…3) dans le grade k avec n réussites. */
+export const etoilesDe = (n, k) => (k < 0 ? 0 : ETOILES[k].filter((s) => n >= s).length);
+
+/** Le badge en SVG (pixels nets) : l'écusson seul, ou complet (galons, étoiles) quand `etoiles` est un nombre. */
+export function svgBadge(famille, echelon, taille = 4, etiquette = "", etoiles = null) {
+  const g = Number.isInteger(etoiles) ? ecusson(famille, echelon, etoiles) : grille(famille, echelon);
+  const w = g[0].length, h = g.length;
   const parCouleur = new Map();
   g.forEach((l, y) => l.forEach((c, x) => { if (c) parCouleur.set(c, (parCouleur.get(c) || "") + `M${x} ${y}h1v1h-1z`); }));
   const rects = [...parCouleur].map(([c, d]) => `<path fill="${c}" d="${d}"/>`).join("");
   const role = etiquette ? `role="img" aria-label="${etiquette.replace(/"/g, "&quot;")}"` : `aria-hidden="true"`;
-  return `<svg class="badge-px" viewBox="0 0 14 14" width="${14 * taille}" height="${14 * taille}" shape-rendering="crispEdges" ${role}>${rects}</svg>`;
+  return `<svg class="badge-px" viewBox="0 0 ${w} ${h}" width="${w * taille}" height="${h * taille}" shape-rendering="crispEdges" ${role}>${rects}</svg>`;
 }
 
 // ---------------------------------------------------------------- l'état d'une partie (etat.entrainement)

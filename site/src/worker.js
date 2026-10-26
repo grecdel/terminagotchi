@@ -772,7 +772,7 @@ async function entrainementPublic(env, joueurId, ent) {
   const familles = Object.fromEntries(ENT.FAMILLES.map((f) => {
     const x = ENT.fam(e, f);
     const k = ENT.echelon(e, f);
-    return [f, { n: x.n, or: x.or + x.diamant, echelon: k >= 0 ? ENT.ECHELONS[k] : null }];
+    return [f, { n: x.n, or: x.or + x.diamant, echelon: k >= 0 ? ENT.ECHELONS[k] : null, etoiles: ENT.etoilesDe(x.n, k) }];
   }));
   const records = Object.fromEntries(Object.entries(e.records || {}).filter(([typ, r]) => Object.hasOwn(ENT.TYPES, typ) && r && Number(r.t) > 0)
     .map(([typ, r]) => [typ, { t: Number(r.t), v: r.v === true }]));
@@ -1359,11 +1359,11 @@ async function pageRecords(env, L) {
   const E = L.t.ent;
   const d = await donneesRecords(env);
   const lienJ = (p) => `<a href="/joueur/${encodeURIComponent(p)}">${bdi(p)}</a>`;
-  const echelle = ENT.ECHELONS.map((e) => `<figure class="ech">${ENT.svgBadge("explorateur", e, 4, E.echelonsNoms[e])}<figcaption>${echapper(E.echelonsNoms[e])}</figcaption></figure>`).join("");
+  const echelle = ENT.ECHELONS.map((e, k) => `<figure class="ech">${ENT.svgBadge("explorateur", e, 3, E.echelonsNoms[e], 0)}<figcaption><b>${echapper(E.echelonsNoms[e])}</b> · <bdi>${ENT.SEUILS[k]}</bdi><br><span class="doux">${echapper(E.gradesSens[e])}</span></figcaption></figure>`).join("");
   const stars = ENT.FAMILLES.map((f) => {
     const s = d.stars[f];
     const t = d.enTete[f];
-    return `<div class="carte star">${ENT.svgBadge(f, s ? "or" : null, 3, E.familles[f])}<div><b>${echapper(E.familles[f])}</b>
+    return `<div class="carte star">${ENT.svgBadge(f, s ? "giga" : null, 3, E.familles[f])}<div><b>${echapper(E.familles[f])}</b>
 <div>${s ? `🏆 ${lienJ(s.pseudo)} <span class="doux">${echapper(E.reussis(s.n))}</span>` : `<span class="doux">—</span>`}</div>
 <div class="doux petit">${echapper(E.enTete)} : ${t ? `${lienJ(t.pseudo)} (${echapper(E.reussis(t.n))})` : "—"}</div></div></div>`;
   }).join("");
@@ -1372,13 +1372,13 @@ async function pageRecords(env, L) {
   for (const f of ENT.FAMILLES) {
     const types = Object.keys(ENT.TYPES).filter((typ) => ENT.TYPES[typ][0] === f && d.records[typ]?.length);
     if (!types.length) continue;
-    familles += `<h2 class="avec-badge">${ENT.svgBadge(f, "or", 2)}${echapper(E.familles[f])}</h2><div class="grille">`
+    familles += `<h2 class="avec-badge">${ENT.svgBadge(f, "giga", 2)}${echapper(E.familles[f])}</h2><div class="grille">`
       + types.map((typ) => fenetre(`~/records/${typ}`, `<p><b>${echapper(E.types[typ])}</b></p><table><tr><th>#</th><th>${L.t.thJoueur}</th><th>${echapper(E.thTemps)}</th></tr>`
         + d.records[typ].map((r, i) => `<tr><td class="rang"><bdi>${i + 1}</bdi></td><td>${lienJ(r.pseudo)}</td><td class="num"><bdi>${r.t.toFixed(1)} s</bdi> ${MEDAILLE_ICONE[r.medaille]}</td></tr>`).join("")
         + "</table>")).join("") + "</div>";
   }
   return page(L, E.titre, `<h1>${E.h1}</h1><p>${E.intro}</p>
-<h2>${echapper(E.echelons)}</h2><div class="echelle">${echelle}</div><p class="doux petit">${echapper(E.echelle)}</p>
+<h2>${echapper(E.echelons)}</h2><p>${echapper(E.gradesIntro)}</p><div class="echelle">${echelle}</div><p class="doux petit">${echapper(E.echelle)}</p>
 <h2>${echapper(E.stars)}</h2><p class="doux">${echapper(E.starsSous)}</p>
 ${Object.keys(d.stars).length || Object.keys(d.enTete).length ? `<div class="grille stars">${stars}</div>` : `<p class="doux">${echapper(E.aucuneStar)}</p>`}
 ${palmares ? `<h2>${echapper(E.palmares)}</h2>${fenetre("~/stars", `<table>${palmares}</table>`)}` : ""}
@@ -1391,8 +1391,9 @@ function sectionEntrainement(L, ent) {
   if (!ent) return "";
   const badges = ENT.FAMILLES.filter((f) => ent.familles[f]?.echelon).map((f) => {
     const x = ent.familles[f];
-    const nom = `${E.familles[f]} · ${E.echelonsNoms[x.echelon]}`;
-    return `<figure class="ech" title="${echapper(nom)}">${ENT.svgBadge(f, x.echelon, 4, nom)}<figcaption>${echapper(E.familles[f])}<br><span class="doux">${echapper(E.echelonsNoms[x.echelon])} · ${echapper(E.reussis(x.n))}</span></figcaption></figure>`;
+    const et = "★".repeat(x.etoiles || 0) + "☆".repeat(3 - (x.etoiles || 0));
+    const nom = `${E.familles[f]} · ${E.echelonsNoms[x.echelon]} ${et}`;
+    return `<figure class="ech" title="${echapper(nom)}">${ENT.svgBadge(f, x.echelon, 3, nom, x.etoiles || 0)}<figcaption>${echapper(E.familles[f])}<br><span class="doux">${echapper(E.echelonsNoms[x.echelon])} ${et} · ${echapper(E.reussis(x.n))}</span></figcaption></figure>`;
   }).join("");
   const stars = Object.entries(ent.stars || {}).filter(([f]) => E.familles[f])
     .map(([f, n]) => `<span class="badge" style="color:#ffaf00">${echapper(E.starCompte(E.familles[f], n))}</span>`).join("");

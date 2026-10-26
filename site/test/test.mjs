@@ -374,7 +374,13 @@ console.log("Salle d'entraînement : exercices vérifiés, records, badges, Star
   verifier(r.t.includes("Badges de la salle d&#39;entraînement") && r.t.includes("Bâtisseur") && r.t.includes("non vérifié") && r.t.includes("Star de la semaine en Lecteur : 1 fois"),
     "profil : badges, records (vérifiés ou non) et Stars");
   r = await appel("GET", "/api/profil/Grec");
-  verifier(r.j.entrainement?.familles?.batisseur?.echelon === "bois" && r.j.entrainement.stars.lecteur === 1, "profil JSON : échelons et Stars");
+  verifier(r.j.entrainement?.familles?.batisseur?.echelon === "bit" && r.j.entrainement.familles.batisseur.etoiles === 3
+    && r.j.entrainement.stars.lecteur === 1, "profil JSON : grades, étoiles et Stars (4 réussites : Bit ★★★)");
+  r = await appel("GET", "/joueur/Grec");
+  verifier(r.t.includes("Bit ★★★") && r.t.includes('viewBox="0 0 18 28"'), "profil : le badge complet (galons, étoiles) et son grade");
+  r = await appel("GET", "/records");
+  verifier(["Bit", "Octet", "Kilo", "Méga", "Giga", "8 × Bit"].every((x) => r.t.includes(x)) && r.t.split('viewBox="0 0 18 28"').length - 1 === 5,
+    "/records : les 5 grades, leurs galons et ce qu'ils veulent dire");
   r = await appel("GET", "/records?lang=ja");
   verifier(r.t.includes("トレーニングルーム"), "/records traduit (japonais)");
 }
