@@ -11,7 +11,9 @@ De vraies commandes sont lancées avec bash et écrites dans ~/.bash_history, pu
   3. premier dressage : un monstre courant et commun, 2 épreuves simples, indices « presque »,
      tirage toujours vérifiable (graine, compteur) ; puis la difficulté monte avec les captures ;
   4. attirance : sur beaucoup d'apparitions, la famille attirée sort vraiment plus souvent ;
-  5. mini-combat : gagné (peur −40, une épreuve en moins), puis perdu (KO, repos, pas de mort).
+  5. mini-combat : gagné (peur −40, une épreuve en moins), puis perdu (KO, repos, pas de mort) ;
+  6. il manque quelque chose après la commande (mkdir tout seul, cat qui attend le clavier…) → bulle
+     avec la commande à taper ; et chaque exemple du lexique marche vraiment depuis le terrain.
 """
 import collections
 import os
@@ -29,7 +31,8 @@ os.environ.pop("HISTFILE", None)
 RACINE = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(RACINE / "pc"))
 
-from tg import app, bestiaire as B, combat, core, dressage, equipe, exemples, explo, histoire, langue, lecons, lexique, tirage  # noqa: E402,E501
+from tg import (app, bestiaire as B, combat, core, dressage, equipe, exemples, explo, histoire, langue,  # noqa: E402
+                lecons, lexique, tirage)
 
 HOME = Path.home()
 T = core.TERRAIN
@@ -331,7 +334,7 @@ for regle in exemples.REGLES.values():                 # les exemples des bulles
         lancees.append(regle[1])
 lancees.append("echo coucou > mot.txt")
 HORS_LIGNE = ("ping", "curl", "nslookup", "ssh", "kill", "nano")   # réseau, NUMÉRO à remplacer, éditeur plein écran
-(T / "nid" / "repas.txt").chmod(0o644)
+(T / "nid" / "repas.txt").chmod(0o644)                 # la leçon des droits l'a mis sous cadenas
 for ex in lancees:
     if ex.split()[0] in HORS_LIGNE:
         continue

@@ -23,12 +23,14 @@ import fr.terminagotchi.Bestiaire
 import fr.terminagotchi.Combat
 import fr.terminagotchi.Dressage
 import fr.terminagotchi.Equipe
+import fr.terminagotchi.Exemples
 import fr.terminagotchi.Explo
 import fr.terminagotchi.Animations
 import fr.terminagotchi.Histoire
 import fr.terminagotchi.Jeu
 import fr.terminagotchi.Langue
 import fr.terminagotchi.Recensement
+import fr.terminagotchi.Regles
 import fr.terminagotchi.Shell
 import fr.terminagotchi.Terrain
 import fr.terminagotchi.Tirage
@@ -293,6 +295,59 @@ fun main(args: Array<String>) {
     nouveauMonstre()
     verifier(dressage()?.has("combat") == false && "se repose" in bulles(), "toute la troupe se repose : pas de combat")
     Combat.de = { kotlin.random.Random.nextDouble() }
+
+    println("6. Il manque quelque chose après la commande (mkdir tout seul…)")
+    /** Comme le terminal de l'appli : la commande tourne (entrée fermée), puis l'aide lit la ligne ET la sortie. */
+    fun tapeSortie(cmd: String): String {
+        val pb = ProcessBuilder("bash", "-c", cmd).directory(T).redirectErrorStream(true)
+        pb.environment()["HOME"] = jeu.home.absolutePath
+        val p = pb.start()
+        p.outputStream.close()
+        val sortie = p.inputStream.readBytes().toString(Charsets.UTF_8).trimEnd()
+        p.waitFor()
+        val aide = Exemples.apres(jeu, cmd, sortie)
+        Tour.apresCommande(jeu, cmd, colle = false, rappel = false, hasard = false, cwd = T)
+        return aide ?: ""
+    }
+    fun viderBulles() { jeu.bulle = ""; jeu.bulles.clear() }
+    viderBulles()
+    val aideMkdir = tapeSortie("mkdir")
+    verifier("Il manque le nom" in bulles() && "Essaie : mkdir " in bulles(), "mkdir seul → bulle : ${bulles()}")
+    verifier("Essaie : mkdir " in aideMkdir, "… et la même aide écrite dans le terminal (sous la sortie)")
+    viderBulles()
+    tapeSortie("cp nid/repas.txt")
+    verifier("DEUX noms" in bulles() && "cp nid/repas.txt copie.txt" in bulles(), "cp avec un seul nom → ${bulles()}")
+    viderBulles()
+    tapeSortie("mkdir cabane_test")
+    tapeSortie("ls -l | grep repas")
+    verifier("✍" !in bulles(), "commande complète (ou avec un tuyau) → pas d'aide")
+    verifier(Exemples.texte(jeu, "mkdir a b", "mkdir: missing operand") != null, "la sortie « missing operand » suffit aussi")
+    verifier(Exemples.texte(jeu, "nano", "sh: nano: not found") == null, "commande absente du téléphone → pas d'aide (le terminal le dit déjà)")
+    for (c in listOf("mkdir", "touch", "cat", "cp", "mv", "rm", "rmdir", "grep", "chmod", "head", "tail", "wc", "find", "kill",
+            "ping", "ssh", "curl", "nano", "less"))
+        verifier(Exemples.manque(c) == c && Exemples.texte(jeu, c) != null, "$c seul : aide prévue")
+
+    // les exemples du lexique marchent vraiment depuis le terrain de jeu (dans l'ordre du lexique)
+    File(T, "nid/repas.txt").setWritable(true)                // la leçon des droits l'a mis sous cadenas
+    val shellables = setOf("lex.ch.fichiers", "lex.ch.lire", "lex.ch.systeme")
+    val lancees = Regles.LEXIQUE.filter { it.sectionCle in shellables }.mapNotNull { Exemples.lexique(it) }
+        .flatMap { it.split(" · ") }.toMutableList()
+    for (r in Exemples.REGLES.values) if (r.ex !in lancees) lancees.add(r.ex)
+    val horsLigne = setOf("ping", "curl", "nslookup", "ssh", "kill", "nano", "git", "less")   // réseau, NUMÉRO, absentes du téléphone
+    for (ex in lancees) {
+        if (ex.split(" ")[0] in horsLigne) continue
+        val pb = ProcessBuilder("bash", "-c", ex).directory(T).redirectErrorStream(true)
+        pb.environment()["HOME"] = jeu.home.absolutePath
+        val p = pb.start()
+        p.outputStream.close()
+        val sortie = p.inputStream.readBytes().toString(Charsets.UTF_8).trim()
+        val code = p.waitFor()
+        verifier(code == 0 && Exemples.manque(ex) == null, "exemple « $ex » : marche depuis le terrain" + if (code == 0) "" else " ✖ $sortie")
+    }
+    val lexMkdir = Regles.LEXIQUE.first { it.cmd == "mkdir" }
+    verifier(Exemples.lexique(lexMkdir) == "mkdir cabane", "lexique : mkdir → ↳ exemple : mkdir cabane")
+    verifier(Regles.LEXIQUE.filter { it.cmd == "carte" }.map { Exemples.lexique(it) } == listOf("carte tour eiffel", null),
+        "carte (téléphone) → carte tour eiffel ; carte (la maison) : rien à ajouter")
 
     println("\n$ok réussis, $ko échoués")
     System.exit(if (ko > 0) 1 else 0)

@@ -1829,5 +1829,9 @@
  "aide.manque.chmod": "✍ {cmd} braucht das Vorhängeschloss (eine Zahl wie 444) und dann den Namen des Blatts. Probier: {ex}",
  "aide.manque.find": "✍ Sag {cmd}, was es suchen soll (hier: alle Blätter, die auf .txt enden). Probier: {ex}",
  "aide.manque.kill": "✍ {cmd} braucht die Nummer des Programms, das schlafen gehen soll (ps zeigt die Nummern). Probier: {ex}",
- "aide.manque.reseau": "✍ {cmd} braucht die Adresse eines Hauses im Internet. Probier: {ex}"
+ "aide.manque.reseau": "✍ {cmd} braucht die Adresse eines Hauses im Internet. Probier: {ex}",
+ "lex.ex.ssh": "NAME@ADRESSE",
+ "aide.manque.ssh": "✍ {cmd} braucht den Namen des Bewohners und die Adresse des anderen Hauses. Probier: {ex}",
+ "aide.manque.nano": "✍ {cmd} braucht den Namen des Blatts, in das du schreibst. Probier: {ex} (zum Beenden: Strg+X)",
+ "aide.manque.git": "✍ {cmd} braucht danach ein Aktionswort. Probier: {ex}"
 }

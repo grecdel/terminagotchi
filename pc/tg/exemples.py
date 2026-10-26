@@ -182,8 +182,8 @@ def _exemple_lecon(state, cmd):
 def aide(state, ligne):
     """Le texte de la bulle d'aide pour cette ligne, ou None."""
     cmd = manque(ligne)
-    if not cmd:
-        return None
+    if not cmd or (not IS_WIN and not core.commande_existe(core.first_word(ligne))):
+        return None                       # absente de cet ordinateur : core.feed dit déjà qu'il ne la connaît pas
     cle, ex, _b, _v, clavier = REGLES[cmd]
     if IS_WIN:
         ex = EX_WINDOWS.get(cmd, ex)

@@ -1834,5 +1834,9 @@
  "aide.manque.chmod": "✍ {cmd} a besoin du cadenas (un nombre, comme 444) puis du nom de la feuille. Essaie : {ex}",
  "aide.manque.find": "✍ Dis à {cmd} quoi chercher (ici : toutes les feuilles qui finissent par .txt). Essaie : {ex}",
  "aide.manque.kill": "✍ {cmd} a besoin du numéro du programme à endormir (ps montre les numéros). Essaie : {ex}",
- "aide.manque.reseau": "✍ {cmd} a besoin de l'adresse d'une maison sur internet. Essaie : {ex}"
+ "aide.manque.reseau": "✍ {cmd} a besoin de l'adresse d'une maison sur internet. Essaie : {ex}",
+ "lex.ex.ssh": "NOM@ADRESSE",
+ "aide.manque.ssh": "✍ {cmd} a besoin du nom de l'habitant et de l'adresse de l'autre maison. Essaie : {ex}",
+ "aide.manque.nano": "✍ {cmd} a besoin du nom de la feuille où écrire. Essaie : {ex} (pour sortir : Ctrl+X)",
+ "aide.manque.git": "✍ {cmd} a besoin d'un mot d'action après lui. Essaie : {ex}"
 }

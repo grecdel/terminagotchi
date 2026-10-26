@@ -1834,5 +1834,9 @@
  "aide.manque.chmod": "✍ {cmd} needs the padlock (a number, like 444) then the name of the sheet. Try: {ex}",
  "aide.manque.find": "✍ Tell {cmd} what to look for (here: all the sheets ending in .txt). Try: {ex}",
  "aide.manque.kill": "✍ {cmd} needs the number of the program to put to sleep (ps shows the numbers). Try: {ex}",
- "aide.manque.reseau": "✍ {cmd} needs the address of a house on the internet. Try: {ex}"
+ "aide.manque.reseau": "✍ {cmd} needs the address of a house on the internet. Try: {ex}",
+ "lex.ex.ssh": "NAME@ADDRESS",
+ "aide.manque.ssh": "✍ {cmd} needs the name of the resident and the address of the other house. Try: {ex}",
+ "aide.manque.nano": "✍ {cmd} needs the name of the sheet to write in. Try: {ex} (to quit: Ctrl+X)",
+ "aide.manque.git": "✍ {cmd} needs an action word after it. Try: {ex}"
 }

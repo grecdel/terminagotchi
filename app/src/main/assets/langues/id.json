@@ -1831,5 +1831,9 @@
  "aide.manque.chmod": "✍ {cmd} butuh gemboknya (sebuah angka, seperti 444) lalu nama kertasnya. Coba: {ex}",
  "aide.manque.find": "✍ Beri tahu {cmd} apa yang dicari (di sini: semua kertas yang berakhiran .txt). Coba: {ex}",
  "aide.manque.kill": "✍ {cmd} butuh nomor program yang mau ditidurkan (ps menunjukkan nomornya). Coba: {ex}",
- "aide.manque.reseau": "✍ {cmd} butuh alamat sebuah rumah di internet. Coba: {ex}"
+ "aide.manque.reseau": "✍ {cmd} butuh alamat sebuah rumah di internet. Coba: {ex}",
+ "lex.ex.ssh": "NAMA@ALAMAT",
+ "aide.manque.ssh": "✍ {cmd} butuh nama penghuni dan alamat rumah yang lain. Coba: {ex}",
+ "aide.manque.nano": "✍ {cmd} butuh nama kertas tempat menulis. Coba: {ex} (untuk keluar: Ctrl+X)",
+ "aide.manque.git": "✍ {cmd} butuh kata perintah sesudahnya. Coba: {ex}"
 }

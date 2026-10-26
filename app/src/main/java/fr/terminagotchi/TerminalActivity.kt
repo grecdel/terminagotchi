@@ -440,7 +440,8 @@ class TerminalActivity : Activity() {
             val resultat = try { shell.executer(ligne) } catch (e: Exception) { android.util.Log.e("TG", "shell", e); t("term.erreur", "msg" to e.message) }
             handler.post {
                 if (resultat.isNotEmpty()) ecrire(resultat)
-                expliquer(resultat, ligne)?.let { ecrire(it, 0xFFFFAF5F.toInt()) }
+                // il manque quelque chose (mkdir tout seul…) : la commande à taper, en bulle et ici ; sinon l'explication de l'erreur
+                (Exemples.apres(jeu, ligne, resultat) ?: expliquer(resultat, ligne))?.let { ecrire(it, 0xFFFFAF5F.toInt()) }
                 val change = majObservatoire(ligne)
                 if (lexiqueVue.visibility == View.VISIBLE) basculerLexique()
                 if (resultat.isEmpty() && !change) {
@@ -635,7 +636,8 @@ class TerminalActivity : Activity() {
 
     /**
      * Le carnet d'aventure : les commandes déjà goûtées en blanc (avec le moment de l'histoire où on les a apprises),
-     * jamais tapées en gris ; puis les souvenirs (chapitres réveillés, quêtes, titres, objets).
+     * jamais tapées en gris, chacune avec un exemple prêt à taper (↳) ; puis les souvenirs (chapitres réveillés,
+     * quêtes, titres, objets).
      */
     private fun remplirLexique() {
         val connues = Regles.LEXIQUE.count { it.cmd in jeu.vus && !it.pc }
@@ -643,7 +645,8 @@ class TerminalActivity : Activity() {
         val sb = SpannableStringBuilder()
         Histoire.h(jeu)
         val entete = t("lex.carnet.titre", "nom" to jeu.nom) + "\n" +
-            t("term.lexique.entete", "n" to connues, "total" to Regles.LEXIQUE.size) + "\n"
+            t("term.lexique.entete", "n" to connues, "total" to Regles.LEXIQUE.size) + "\n" +
+            "↳ " + t("lex.exemples.ou", "cmd" to "cd ~/${jeu.terrain.name}") + "\n"
         sb.append(entete)
         sb.setSpan(ForegroundColorSpan(0xFFFF87FF.toInt()), 0, entete.length, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
         var section = ""
@@ -676,6 +679,12 @@ class TerminalActivity : Activity() {
                 sb.setSpan(ForegroundColorSpan(0xFFFF87FF.toInt()), d, sb.length, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
             }
             sb.append("\n")
+            // un exemple prêt à taper (depuis le terrain de jeu), voir Exemples.kt
+            Exemples.lexique(m)?.let { ex ->
+                val e = sb.length
+                sb.append("    ↳ " + t("lex.exemple", "ex" to ex) + "\n")
+                sb.setSpan(ForegroundColorSpan(0xFF87AFD7.toInt()), e, sb.length, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
+            }
         }
         val d = sb.length
         sb.append(Histoire.souvenirs(jeu).joinToString("\n"))

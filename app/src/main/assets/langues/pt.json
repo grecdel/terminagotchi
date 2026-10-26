@@ -1829,5 +1829,9 @@
  "aide.manque.chmod": "✍ {cmd} precisa do cadeado (um número, como 444) e depois do nome da folha. Experimenta: {ex}",
  "aide.manque.find": "✍ Diz ao {cmd} o que procurar (aqui: todas as folhas que acabam em .txt). Experimenta: {ex}",
  "aide.manque.kill": "✍ {cmd} precisa do número do programa a adormecer (ps mostra os números). Experimenta: {ex}",
- "aide.manque.reseau": "✍ {cmd} precisa do endereço de uma casa na internet. Experimenta: {ex}"
+ "aide.manque.reseau": "✍ {cmd} precisa do endereço de uma casa na internet. Experimenta: {ex}",
+ "lex.ex.ssh": "NOME@ENDEREÇO",
+ "aide.manque.ssh": "✍ {cmd} precisa do nome do habitante e do endereço da outra casa. Experimenta: {ex}",
+ "aide.manque.nano": "✍ {cmd} precisa do nome da folha onde escrever. Experimenta: {ex} (para sair: Ctrl+X)",
+ "aide.manque.git": "✍ {cmd} precisa de uma palavra de ação a seguir. Experimenta: {ex}"
 }

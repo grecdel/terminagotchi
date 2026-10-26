@@ -1829,5 +1829,9 @@
  "aide.manque.chmod": "✍ {cmd} ha bisogno del lucchetto (un numero, come 444) e poi del nome del foglio. Prova: {ex}",
  "aide.manque.find": "✍ Di' a {cmd} cosa cercare (qui: tutti i fogli che finiscono con .txt). Prova: {ex}",
  "aide.manque.kill": "✍ {cmd} ha bisogno del numero del programma da addormentare (ps mostra i numeri). Prova: {ex}",
- "aide.manque.reseau": "✍ {cmd} ha bisogno dell'indirizzo di una casa su internet. Prova: {ex}"
+ "aide.manque.reseau": "✍ {cmd} ha bisogno dell'indirizzo di una casa su internet. Prova: {ex}",
+ "lex.ex.ssh": "NOME@INDIRIZZO",
+ "aide.manque.ssh": "✍ {cmd} ha bisogno del nome dell'abitante e dell'indirizzo dell'altra casa. Prova: {ex}",
+ "aide.manque.nano": "✍ {cmd} ha bisogno del nome del foglio su cui scrivere. Prova: {ex} (per uscire: Ctrl+X)",
+ "aide.manque.git": "✍ {cmd} ha bisogno di una parola d'azione dopo. Prova: {ex}"
 }

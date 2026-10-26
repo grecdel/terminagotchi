@@ -224,6 +224,15 @@ fun main(args: Array<String>) {
     p.tape("rm -r cabane")
     verif("nid0" in Histoire.faits(p.jeu) && p.lecon().first == "nid1", "dernière étape faite : leçon finie, la suite démarre")
 
+
+    println("6. Erreurs réalistes au lit (étape 3)")
+    for (essais in listOf(listOf("mkdir nid/lit.txt", "touch nid/lit.txt"), listOf("touch lit.txt", "cd ~/terrain_terminagotchi", "touch lit.txt"),
+            listOf("cd nid", "mkdir lit.txt", "touch lit.txt"), listOf("cd nid", "touch nid/lit.txt"))) {
+        p = nouvellePartie("Lit")
+        reveil(p)
+        p.suite("cd ..", "mkdir nid")
+        for (c in essais) { p.tape(c); println("     $c → ${p.lecon()} 💡 ${p.jeu.indiceLecon} | ${p.bulles().take(160)}") }
+    }
     println("\n$okT réussis, $koT échoués")
     System.exit(if (koT > 0) 1 else 0)
 }
