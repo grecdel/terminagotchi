@@ -9,6 +9,7 @@ Une créature en pixel art qui se nourrit des commandes que tu tapes, et qui t'a
 4. Touche **⌨ Terminal** : le panneau s'ouvre avec le clavier. Baptise ta créature et tape `ls` !
 
 ## Jouer
+- Au début : quelques écrans racontent le Terminaworld endormi, puis l'œuf attend 4 commandes (`pwd`, `ls`, `echo bonjour`, `whoami`) pour éclore. Le reste du jeu s'ouvre petit à petit, chaque nouveauté présentée par ta créature (pour tout ouvrir d'un coup, un parent peut taper `debloquer tout`, ou `tg debloquer tout` sur PC).
 - Chaque commande tapée la nourrit et lui donne de l'XP (les commandes collées ne comptent pas).
 - Elle te donne des leçons au fil de sa croissance : navigation, dossiers, fichiers, protections, ménage.
 - Elle évolue (Œuf → Bébé → Ado → Adulte) selon les commandes que tu utilises le plus.

@@ -20,8 +20,16 @@ tape() {   # tape une commande lettre par lettre puis Entrée
 }
 adb shell am start -n fr.terminagotchi/.TerminalActivity
 capture debut 5
+tape "" 2
+capture intro_1
 tape "Pixel" 2
 capture bapteme
+# l'œuf et sa liste (Intro.kt) : 4 commandes, il éclot ; puis tout est ouvert pour la suite du scénario
+tape "ls" 2
+capture oeuf_fele
+for c in "pwd" "echo bonjour" "whoami"; do tape "$c" 2; done
+capture eclosion_merci
+tape "debloquer tout"; tape "oui"
 for c in "pwd" "ls" "cd" "mkdir terrain_terminagotchi" "cd terrain_terminagotchi" "mkdir nid"; do tape "$c"; done
 capture nid
 tape "echo pomme > nid/repas.txt"; tape "cat nid/repas.txt"; tape "grep pomme nid/repas.txt"

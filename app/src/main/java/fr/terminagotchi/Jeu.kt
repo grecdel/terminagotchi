@@ -276,7 +276,7 @@ class Jeu(ctx: Context) {
         @Volatile private var DEJA: String? = null
 
         /** quelle animation l'emporte quand plusieurs arrivent en même temps (comme core.PRIORITE_ANIM sur PC) */
-        val PRIORITE_ANIM = mapOf("evolution" to 9, "victoire" to 8, "ko" to 7, "colere" to 6, "dort" to 6, "content" to 5,
+        val PRIORITE_ANIM = mapOf("eclosion" to 10, "oeuf_1" to 3, "oeuf_2" to 3, "oeuf_3" to 3, "evolution" to 9, "victoire" to 8, "ko" to 7, "colere" to 6, "dort" to 6, "content" to 5,
             "confus" to 4, "mange" to 3, "salut" to 2, "parle" to 1)
     }
 

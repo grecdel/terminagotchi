@@ -149,6 +149,8 @@ def main():
         # préfixes construits dans le code (t("stat." + x)…) : seules les clés complètes sont vérifiées
         if k.endswith(".") or k in fr or any(x.startswith(k + ".") for x in fr):
             continue
+        if re.search(r"\.(txt|sh|json|html|bin)$", k):          # un nom de fichier (intro.json), pas une clé
+            continue
         erreurs.append(f"code : clé absente de fr.json : {k} ({ou})")
     for k, v in fr.items():
         erreurs += marques_ok("fr", k, v)
