@@ -10,10 +10,11 @@ export const BASE = 1_000_000;
 export const MAX_PAR_GRAINE = 100;
 export const FAMILLES = ["explorateur", "batisseur", "demenageur", "nettoyeur", "lecteur", "detective", "plombier", "cuisinier"];
 /** Les grades (des tailles d'informatique), leurs seuils, et les étoiles vers le grade suivant (★, ★★, ★★★). */
-export const ECHELONS = ["bit", "octet", "kilo", "mega", "giga", "tera"];
-export const SEUILS = [1, 5, 15, 30, 50, 100];
-export const DIAMANTS_TERA = 3;
-export const ETOILES = [[2, 3, 4], [8, 10, 13], [19, 23, 27], [35, 40, 45], [63, 75, 88], [150, 200, 300]];
+export const ECHELONS = ["bit", "octet", "kilo", "mega", "giga", "tera", "peta", "exa"];
+export const SEUILS = [1, 5, 15, 30, 50, 100, 200, 400];
+/** Médailles de diamant demandées par grade (Téra 3, Péta 6, Exa 10) ; l'Exa demande aussi chaque exercice de la famille. */
+export const DIAMANTS = [0, 0, 0, 0, 0, 3, 6, 10];
+export const ETOILES = [[2, 3, 4], [8, 10, 13], [19, 23, 27], [35, 40, 45], [63, 75, 88], [125, 150, 175], [250, 300, 350], [600, 800, 1000]];
 export const MEDAILLES = ["bronze", "argent", "or", "diamant"];
 export const ICONE_MEDAILLE = { bronze: "🥉", argent: "🥈", or: "🥇", diamant: "💎" };
 
@@ -121,10 +122,14 @@ export function semaine(ms = Date.now()) {
 }
 export const semainePrecedente = (ms = Date.now()) => semaine(ms - 7 * 86_400_000);
 
-/** Le grade atteint (0…5, ou -1) : n réussites, pour le Giga une médaille d'or (ou de diamant), pour le Téra 3 de diamant. */
-export function echelonDe(n, ors = 0, diamants = 0) {
+/** Le grade atteint (0…7, ou -1) : n réussites, pour le Giga une médaille d'or (ou de diamant), puis des médailles de
+ * diamant (DIAMANTS), et pour l'Exa chaque exercice de la famille réussi au moins une fois. On monte dans l'ordre. */
+export function echelonDe(n, ors = 0, diamants = 0, tousTypes = false) {
   let k = -1;
-  SEUILS.forEach((s, i) => { if (n >= s && (i < 4 || ors >= 1) && (i < 5 || diamants >= DIAMANTS_TERA)) k = i; });
+  for (const [i, s] of SEUILS.entries()) {
+    if (n >= s && (i < 4 || ors >= 1) && diamants >= DIAMANTS[i] && (i < 7 || tousTypes)) k = i;
+    else break;
+  }
   return k;
 }
 
@@ -142,9 +147,11 @@ export const COULEURS = {
   mega: ["#3d0f60", "#a050e6", "#e2b8ff", "#fff0ff", "#5e1f92"],
   giga: ["#6b4700", "#e8b71c", "#fff27a", "#4f3300", "#a36f00"],
   tera: ["#4b3a8c", "#dfe9ff", "#ffffff", "#4b3a8c", "#ff6fd8"],
+  peta: ["#4a0a18", "#e8344e", "#ff9aa8", "#fff0f0", "#8a1028"],
+  exa: ["#0b0626", "#3a1f9e", "#9f8bff", "#ffe36e", "#ff7ad9"],
   cache: ["#3a3a44", "#5a5a66", "#6e6e7a", "#8a8a96", "#4a4a55"],
 };
-const FIXES = { d: "#4a3000", e: "#d9a41a", g: "#fff27a", q: "#0b3f55", r: "#3fd6ff", s: "#ffffff", z: "#0c0c10", y: "#4a4a5e", x: "#262630", p: "#d8d8e0", "1": "#ff5a6e", "2": "#ffa63d", "3": "#ffe94a", "4": "#5cff86", "5": "#4ad8ff", "6": "#b46cff", n: "#1a0d33", v: "#ffffff", w: "#ffffff", u: "#8ff7ff" };
+const FIXES = { d: "#4a3000", e: "#d9a41a", g: "#fff27a", q: "#0b3f55", r: "#3fd6ff", s: "#fff6c8", z: "#0c0c10", y: "#4a4a5e", x: "#262630", p: "#d8d8e0", "1": "#ff5a6e", "2": "#ffa63d", "3": "#ffe94a", "4": "#5cff86", "5": "#4ad8ff", "6": "#b46cff", n: "#1a0d33", v: "#ffffff", w: "#ffffff", u: "#8ff7ff", o: "#cfd8ff", L: "#fff3b0", P: "#ff9f43", "~": "#14214f", ":": "#5a2470", "*": "#ffffff", "+": "#7f9cff", S: "#ffd84a", W: "#ffffff" };
 const ETOILE_ON = "#ffd84a", ETOILE_OFF = "#3c3c4a";
 const FORME = ["...oooooooo...", "..ohhhhhhhhfo.", ".ohhffffffffo.", "ohhffffffffffo", "ohfffffffffffo", "ohfffffffffffo", "ohfffffffffffo",
   "ohfffffffffffo", "ohfffffffffffo", "offfffffffffo.", ".offfffffffo..", "..offfffffo...", "...offfffo....", ".....ooo......"];
@@ -272,6 +279,77 @@ const GALONS = {
     ".abccaanwnaaccba..",
     ".acaa.nuwun.aaca..",
   ]],
+  peta: [4, [
+    "1111n........n1111",
+    "1v1n..........n1v1",
+    "1vn............nv1",
+    "22n............n22",
+    "2vn............nv2",
+    "33n............n33",
+    "3vn............nv3",
+    "33n............n33",
+    "4vn............nv4",
+    "44n............n44",
+    "5vn............nv5",
+    "55n............n55",
+    "n55n...aaa....n55n",
+    ".n66naabbbaa.n66n.",
+    "o.naabpcpcpbaa6n.o",
+    "..abbzyyyyyzbba...",
+    "oabcczxuwuxzccba.o",
+    "LPcaazxuuuxzaaca..",
+    "PPabbcpapapcbba..o",
+    "oabccaabbbaaccba.o",
+    "oacaabbcccbbaacaLP",
+    "..abbccaaaccbba.PP",
+    "oabccaanwnaaccbaoo",
+    ".acaa.nuwun.aaca..",
+  ]],
+  exa: [0, [
+    "..:~~*~~:~~*~:~~..",
+    ".~~:~~:~~:~:~~:~+.",
+    "~+~~:~~:~:~*:~~:~~",
+    "*~:~~:~:~~:~~:~~:~",
+    "1111n:~~:~~:~n1111",
+    "1v1n~~:~~:~~:~n1v1",
+    "1vn~:~~:~~:~:~~nv1",
+    "22n~~:~~:~:~~:~n22",
+    "2vn:~~:~:~~:~~:nv2",
+    "33n~:~:~~:~~:~~n33",
+    "3vn~:~~:~~:~~:~nv3",
+    "33n~~:~~:~~:~:~n33",
+    "4vn:~~:~~:~:~~:nv4",
+    "44n~:~~:~:~~:~~n44",
+    "5vn~~:~:~~:~~:*nv5",
+    "55n:~:~~:~~:~~:n55",
+    "n55n~~:aaa~~:*n55n",
+    "~n66naabbbaa:n66n~",
+    "o~naabpcpcpbaa6n:o",
+    ":~abbzyyyyyzbba~~:",
+    "oabcczxuwuxzccba~o",
+    "LPcaazxuuuxzaaca~~",
+    "PPabbcpapapcbba~:o",
+    "oabccaabbbaaccba~o",
+    "oacaabbcccbbaacaLP",
+    "~~abbccaaaccbba~PP",
+    "oabccaanwnaaccbaoo",
+    ".acaa~nuwun~aaca..",
+  ]],
+};
+/** Par-dessus l'écusson (Péta, Exa) : l'étoile posée. */
+const DEVANT = {
+  peta: [3, [
+    "........s.........",
+    "........S.........",
+    "......sSWSs.......",
+    "........S.........",
+  ]],
+  exa: [3, [
+    "........s.........",
+    "........S.........",
+    "......sSWSs.......",
+    "........S.........",
+  ]],
 };
 const ETOILE = ["..x..", ".xxx.", "xxxxx", ".x.x."];
 
@@ -281,26 +359,33 @@ export function grille(famille, echelon) {
   const pal = { o: c[0], f: c[1], h: c[2], i: c[3], k: c[4], K: c[4] };
   const g = FORME.map((l) => [...l].map((x) => pal[x] || null));
   ICONES[cache ? "cache" : famille].forEach((l, y) => [...l].forEach((x, xx) => { if (x !== ".") g[3 + y][3 + xx] = pal[x]; }));
-  if ((echelon === "giga" || echelon === "tera") && !cache) for (const [y, x] of ETINCELLES) g[y][x] = "#ffffff";
+  if (ECHELONS.indexOf(echelon) >= 4 && !cache) for (const [y, x] of ETINCELLES) g[y][x] = "#ffffff";
   return g;
 }
 
-/** Le grade seul : grille 18 × 28 (null = transparent). */
-export function galons(echelon) {
-  const g = Array.from({ length: 28 }, () => Array(18).fill(null));
-  if (!ECHELONS.includes(echelon)) return g;
+function couche(g, echelon, motifs) {
+  if (!motifs[echelon]) return g;
   const c = COULEURS[echelon];
   const pal = { ...FIXES, a: c[0], b: c[2], c: c[1] };
-  const [y0, lignes] = GALONS[echelon];
+  const [y0, lignes] = motifs[echelon];
   lignes.forEach((l, y) => [...l].forEach((x, xx) => { if (x !== ".") g[y0 + y][xx] = pal[x]; }));
   return g;
+}
+
+/** Le grade seul : grille 18 × 28 (null = transparent), avec ce qui passe devant l'écusson. */
+export function galons(echelon, devant = true) {
+  const g = Array.from({ length: 28 }, () => Array(18).fill(null));
+  if (!ECHELONS.includes(echelon)) return g;
+  couche(g, echelon, GALONS);
+  return devant ? couche(g, echelon, DEVANT) : g;
 }
 
 /** Le badge complet 18 × 28 : galons, écusson en (2, 4), 3 étoiles au-dessus (0 à 3 allumées). « ??? » : l'écusson gris seul. */
 export function ecusson(famille, echelon, etoiles = 0) {
   const cache = !famille || !ECHELONS.includes(echelon) || !ICONES[famille];
-  const g = galons(cache ? null : echelon);
+  const g = galons(cache ? null : echelon, false);
   grille(famille, echelon).forEach((l, y) => l.forEach((c, x) => { if (c) g[4 + y][2 + x] = c; }));
+  if (!cache) couche(g, echelon, DEVANT);
   if (!cache) [0, 6, 12].forEach((x0, i) => ETOILE.forEach((l, y) => [...l].forEach((x, xx) => {
     if (x === "x") g[y][x0 + xx] = i < etoiles ? ETOILE_ON : ETOILE_OFF;
   })));
@@ -332,9 +417,15 @@ export function fam(e, f) {
   return x;
 }
 
+/** Pour l'Exa : chaque exercice de la famille a-t-il été réussi au moins une fois (il a un record) ? */
+export function tousTypes(e, f) {
+  const recs = e.records && typeof e.records === "object" ? e.records : {};
+  return Object.keys(TYPES).filter((typ) => TYPES[typ][0] === f).every((typ) => Object.hasOwn(recs, typ));
+}
+
 export function echelon(e, f) {
   const x = fam(e, f);
-  return echelonDe(x.n, x.or + x.diamant, x.diamant);
+  return echelonDe(x.n, x.or + x.diamant, x.diamant, tousTypes(e, f));
 }
 
 /** Les titres d'une partie, du plus beau au plus simple : [{ id, famille?, echelon?, couleur }]. */

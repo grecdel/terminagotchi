@@ -215,9 +215,17 @@ object Entrainement {
 
     fun famillesOuvertes(jeu: Jeu) = Badges.FAMILLES.filter { typesDe(jeu, it).isNotEmpty() }
 
+    /** (exercices de la famille déjà réussis au moins une fois, exercices de la famille) — pour l'Exa. */
+    fun typesFaits(e: JSONObject, f: String): Pair<Int, Int> {
+        val tous = TYPES.filter { it.value.famille == f }.keys
+        val recs = e.optJSONObject("records") ?: JSONObject()
+        return tous.count { recs.has(it) } to tous.size
+    }
+
     fun echelon(e: JSONObject, f: String): Int {
         val x = fam(e, f)
-        return Badges.echelonDe(x.optInt("n"), x.optInt("or") + x.optInt("diamant"), x.optInt("diamant"))
+        val (a, b) = typesFaits(e, f)
+        return Badges.echelonDe(x.optInt("n"), x.optInt("or") + x.optInt("diamant"), x.optInt("diamant"), a == b)
     }
 
     fun etoiles(e: JSONObject, f: String): Int = Badges.etoilesDe(fam(e, f).optInt("n"), echelon(e, f))
@@ -658,19 +666,22 @@ object Entrainement {
         if (k + 1 < Badges.ECHELONS.size) {
             val s = Badges.SEUILS[k + 1]
             return if (k + 1 == 4 && n >= s) t("ent.badges.manque_or")
-            else if (k + 1 == 5 && n >= s) t("ent.badges.manque_diamant", "n" to fam(e, f).optInt("diamant"), "s" to Badges.DIAMANTS_TERA)
+            else if (n >= s && fam(e, f).optInt("diamant") < Badges.DIAMANTS[k + 1])
+                t("ent.badges.manque_diamant", "n" to fam(e, f).optInt("diamant"), "s" to Badges.DIAMANTS[k + 1])
+            else if (k + 1 == 7 && n >= s) typesFaits(e, f).let { t("ent.badges.manque_types", "n" to it.first, "s" to it.second) }
             else t("ent.badges.progres", "n" to n, "s" to s, "echelon" to nomEchelon(Badges.ECHELONS[k + 1]))
         }
         val s = Badges.prochaineEtoile(n, k) ?: return t("ent.badges.max")
         return t("ent.badges.etoile", "n" to n, "s" to s)
     }
 
-    /** Les 5 grades expliqués (Bit, Octet… : des tailles d'informatique), avec leurs galons et les étoiles. */
+    /** Les 8 grades expliqués (Bit, Octet… : des tailles d'informatique), avec leurs galons et les étoiles. */
     fun ecranGrades(): String {
         val out = mutableListOf(t("ent.grades.titre"), "")
         Badges.ECHELONS.forEachIndexed { k, en ->
             out.add(Badges.balise("explorateur", en, 0) + "  " + nomEchelon(en) + " · " + t("ent.grades.seuil", "n" to Badges.SEUILS[k]) +
-                (if (k == 4) " " + t("ent.badges.manque_or") else if (k == 5) " " + t("ent.grades.diamants", "n" to Badges.DIAMANTS_TERA) else ""))
+                (if (k == 4) " " + t("ent.badges.manque_or") else if (Badges.DIAMANTS[k] > 0) " " + t("ent.grades.diamants", "n" to Badges.DIAMANTS[k]) else "") +
+                (if (k == 7) " " + t("ent.grades.tous_types") else ""))
         }
         out.add("")
         out.add(t("ent.grades.intro"))

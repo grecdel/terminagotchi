@@ -3960,6 +3960,7 @@
 "n": 0,
 "or": 0,
 "diamant": 0,
+"tous": false,
 "echelon": -1,
 "etoiles": 0
 },
@@ -3967,6 +3968,7 @@
 "n": 0,
 "or": 1,
 "diamant": 0,
+"tous": false,
 "echelon": -1,
 "etoiles": 0
 },
@@ -3974,6 +3976,7 @@
 "n": 0,
 "or": 3,
 "diamant": 2,
+"tous": false,
 "echelon": -1,
 "etoiles": 0
 },
@@ -3981,6 +3984,39 @@
 "n": 0,
 "or": 3,
 "diamant": 3,
+"tous": false,
+"echelon": -1,
+"etoiles": 0
+},
+{
+"n": 0,
+"or": 6,
+"diamant": 6,
+"tous": false,
+"echelon": -1,
+"etoiles": 0
+},
+{
+"n": 0,
+"or": 10,
+"diamant": 9,
+"tous": true,
+"echelon": -1,
+"etoiles": 0
+},
+{
+"n": 0,
+"or": 10,
+"diamant": 10,
+"tous": false,
+"echelon": -1,
+"etoiles": 0
+},
+{
+"n": 0,
+"or": 10,
+"diamant": 10,
+"tous": true,
 "echelon": -1,
 "etoiles": 0
 },
@@ -3988,6 +4024,7 @@
 "n": 1,
 "or": 0,
 "diamant": 0,
+"tous": false,
 "echelon": 0,
 "etoiles": 0
 },
@@ -3995,6 +4032,7 @@
 "n": 1,
 "or": 1,
 "diamant": 0,
+"tous": false,
 "echelon": 0,
 "etoiles": 0
 },
@@ -4002,6 +4040,7 @@
 "n": 1,
 "or": 3,
 "diamant": 2,
+"tous": false,
 "echelon": 0,
 "etoiles": 0
 },
@@ -4009,6 +4048,39 @@
 "n": 1,
 "or": 3,
 "diamant": 3,
+"tous": false,
+"echelon": 0,
+"etoiles": 0
+},
+{
+"n": 1,
+"or": 6,
+"diamant": 6,
+"tous": false,
+"echelon": 0,
+"etoiles": 0
+},
+{
+"n": 1,
+"or": 10,
+"diamant": 9,
+"tous": true,
+"echelon": 0,
+"etoiles": 0
+},
+{
+"n": 1,
+"or": 10,
+"diamant": 10,
+"tous": false,
+"echelon": 0,
+"etoiles": 0
+},
+{
+"n": 1,
+"or": 10,
+"diamant": 10,
+"tous": true,
 "echelon": 0,
 "etoiles": 0
 },
@@ -4016,6 +4088,7 @@
 "n": 2,
 "or": 0,
 "diamant": 0,
+"tous": false,
 "echelon": 0,
 "etoiles": 1
 },
@@ -4023,6 +4096,7 @@
 "n": 2,
 "or": 1,
 "diamant": 0,
+"tous": false,
 "echelon": 0,
 "etoiles": 1
 },
@@ -4030,6 +4104,7 @@
 "n": 2,
 "or": 3,
 "diamant": 2,
+"tous": false,
 "echelon": 0,
 "etoiles": 1
 },
@@ -4037,6 +4112,39 @@
 "n": 2,
 "or": 3,
 "diamant": 3,
+"tous": false,
+"echelon": 0,
+"etoiles": 1
+},
+{
+"n": 2,
+"or": 6,
+"diamant": 6,
+"tous": false,
+"echelon": 0,
+"etoiles": 1
+},
+{
+"n": 2,
+"or": 10,
+"diamant": 9,
+"tous": true,
+"echelon": 0,
+"etoiles": 1
+},
+{
+"n": 2,
+"or": 10,
+"diamant": 10,
+"tous": false,
+"echelon": 0,
+"etoiles": 1
+},
+{
+"n": 2,
+"or": 10,
+"diamant": 10,
+"tous": true,
 "echelon": 0,
 "etoiles": 1
 },
@@ -4044,6 +4152,7 @@
 "n": 3,
 "or": 0,
 "diamant": 0,
+"tous": false,
 "echelon": 0,
 "etoiles": 2
 },
@@ -4051,6 +4160,7 @@
 "n": 3,
 "or": 1,
 "diamant": 0,
+"tous": false,
 "echelon": 0,
 "etoiles": 2
 },
@@ -4058,6 +4168,7 @@
 "n": 3,
 "or": 3,
 "diamant": 2,
+"tous": false,
 "echelon": 0,
 "etoiles": 2
 },
@@ -4065,6 +4176,39 @@
 "n": 3,
 "or": 3,
 "diamant": 3,
+"tous": false,
+"echelon": 0,
+"etoiles": 2
+},
+{
+"n": 3,
+"or": 6,
+"diamant": 6,
+"tous": false,
+"echelon": 0,
+"etoiles": 2
+},
+{
+"n": 3,
+"or": 10,
+"diamant": 9,
+"tous": true,
+"echelon": 0,
+"etoiles": 2
+},
+{
+"n": 3,
+"or": 10,
+"diamant": 10,
+"tous": false,
+"echelon": 0,
+"etoiles": 2
+},
+{
+"n": 3,
+"or": 10,
+"diamant": 10,
+"tous": true,
 "echelon": 0,
 "etoiles": 2
 },
@@ -4072,6 +4216,7 @@
 "n": 4,
 "or": 0,
 "diamant": 0,
+"tous": false,
 "echelon": 0,
 "etoiles": 3
 },
@@ -4079,6 +4224,7 @@
 "n": 4,
 "or": 1,
 "diamant": 0,
+"tous": false,
 "echelon": 0,
 "etoiles": 3
 },
@@ -4086,6 +4232,7 @@
 "n": 4,
 "or": 3,
 "diamant": 2,
+"tous": false,
 "echelon": 0,
 "etoiles": 3
 },
@@ -4093,6 +4240,39 @@
 "n": 4,
 "or": 3,
 "diamant": 3,
+"tous": false,
+"echelon": 0,
+"etoiles": 3
+},
+{
+"n": 4,
+"or": 6,
+"diamant": 6,
+"tous": false,
+"echelon": 0,
+"etoiles": 3
+},
+{
+"n": 4,
+"or": 10,
+"diamant": 9,
+"tous": true,
+"echelon": 0,
+"etoiles": 3
+},
+{
+"n": 4,
+"or": 10,
+"diamant": 10,
+"tous": false,
+"echelon": 0,
+"etoiles": 3
+},
+{
+"n": 4,
+"or": 10,
+"diamant": 10,
+"tous": true,
 "echelon": 0,
 "etoiles": 3
 },
@@ -4100,6 +4280,7 @@
 "n": 5,
 "or": 0,
 "diamant": 0,
+"tous": false,
 "echelon": 1,
 "etoiles": 0
 },
@@ -4107,6 +4288,7 @@
 "n": 5,
 "or": 1,
 "diamant": 0,
+"tous": false,
 "echelon": 1,
 "etoiles": 0
 },
@@ -4114,6 +4296,7 @@
 "n": 5,
 "or": 3,
 "diamant": 2,
+"tous": false,
 "echelon": 1,
 "etoiles": 0
 },
@@ -4121,6 +4304,39 @@
 "n": 5,
 "or": 3,
 "diamant": 3,
+"tous": false,
+"echelon": 1,
+"etoiles": 0
+},
+{
+"n": 5,
+"or": 6,
+"diamant": 6,
+"tous": false,
+"echelon": 1,
+"etoiles": 0
+},
+{
+"n": 5,
+"or": 10,
+"diamant": 9,
+"tous": true,
+"echelon": 1,
+"etoiles": 0
+},
+{
+"n": 5,
+"or": 10,
+"diamant": 10,
+"tous": false,
+"echelon": 1,
+"etoiles": 0
+},
+{
+"n": 5,
+"or": 10,
+"diamant": 10,
+"tous": true,
 "echelon": 1,
 "etoiles": 0
 },
@@ -4128,6 +4344,7 @@
 "n": 8,
 "or": 0,
 "diamant": 0,
+"tous": false,
 "echelon": 1,
 "etoiles": 1
 },
@@ -4135,6 +4352,7 @@
 "n": 8,
 "or": 1,
 "diamant": 0,
+"tous": false,
 "echelon": 1,
 "etoiles": 1
 },
@@ -4142,6 +4360,7 @@
 "n": 8,
 "or": 3,
 "diamant": 2,
+"tous": false,
 "echelon": 1,
 "etoiles": 1
 },
@@ -4149,6 +4368,39 @@
 "n": 8,
 "or": 3,
 "diamant": 3,
+"tous": false,
+"echelon": 1,
+"etoiles": 1
+},
+{
+"n": 8,
+"or": 6,
+"diamant": 6,
+"tous": false,
+"echelon": 1,
+"etoiles": 1
+},
+{
+"n": 8,
+"or": 10,
+"diamant": 9,
+"tous": true,
+"echelon": 1,
+"etoiles": 1
+},
+{
+"n": 8,
+"or": 10,
+"diamant": 10,
+"tous": false,
+"echelon": 1,
+"etoiles": 1
+},
+{
+"n": 8,
+"or": 10,
+"diamant": 10,
+"tous": true,
 "echelon": 1,
 "etoiles": 1
 },
@@ -4156,6 +4408,7 @@
 "n": 12,
 "or": 0,
 "diamant": 0,
+"tous": false,
 "echelon": 1,
 "etoiles": 2
 },
@@ -4163,6 +4416,7 @@
 "n": 12,
 "or": 1,
 "diamant": 0,
+"tous": false,
 "echelon": 1,
 "etoiles": 2
 },
@@ -4170,6 +4424,7 @@
 "n": 12,
 "or": 3,
 "diamant": 2,
+"tous": false,
 "echelon": 1,
 "etoiles": 2
 },
@@ -4177,6 +4432,39 @@
 "n": 12,
 "or": 3,
 "diamant": 3,
+"tous": false,
+"echelon": 1,
+"etoiles": 2
+},
+{
+"n": 12,
+"or": 6,
+"diamant": 6,
+"tous": false,
+"echelon": 1,
+"etoiles": 2
+},
+{
+"n": 12,
+"or": 10,
+"diamant": 9,
+"tous": true,
+"echelon": 1,
+"etoiles": 2
+},
+{
+"n": 12,
+"or": 10,
+"diamant": 10,
+"tous": false,
+"echelon": 1,
+"etoiles": 2
+},
+{
+"n": 12,
+"or": 10,
+"diamant": 10,
+"tous": true,
 "echelon": 1,
 "etoiles": 2
 },
@@ -4184,6 +4472,7 @@
 "n": 13,
 "or": 0,
 "diamant": 0,
+"tous": false,
 "echelon": 1,
 "etoiles": 3
 },
@@ -4191,6 +4480,7 @@
 "n": 13,
 "or": 1,
 "diamant": 0,
+"tous": false,
 "echelon": 1,
 "etoiles": 3
 },
@@ -4198,6 +4488,7 @@
 "n": 13,
 "or": 3,
 "diamant": 2,
+"tous": false,
 "echelon": 1,
 "etoiles": 3
 },
@@ -4205,6 +4496,39 @@
 "n": 13,
 "or": 3,
 "diamant": 3,
+"tous": false,
+"echelon": 1,
+"etoiles": 3
+},
+{
+"n": 13,
+"or": 6,
+"diamant": 6,
+"tous": false,
+"echelon": 1,
+"etoiles": 3
+},
+{
+"n": 13,
+"or": 10,
+"diamant": 9,
+"tous": true,
+"echelon": 1,
+"etoiles": 3
+},
+{
+"n": 13,
+"or": 10,
+"diamant": 10,
+"tous": false,
+"echelon": 1,
+"etoiles": 3
+},
+{
+"n": 13,
+"or": 10,
+"diamant": 10,
+"tous": true,
 "echelon": 1,
 "etoiles": 3
 },
@@ -4212,6 +4536,7 @@
 "n": 14,
 "or": 0,
 "diamant": 0,
+"tous": false,
 "echelon": 1,
 "etoiles": 3
 },
@@ -4219,6 +4544,7 @@
 "n": 14,
 "or": 1,
 "diamant": 0,
+"tous": false,
 "echelon": 1,
 "etoiles": 3
 },
@@ -4226,6 +4552,7 @@
 "n": 14,
 "or": 3,
 "diamant": 2,
+"tous": false,
 "echelon": 1,
 "etoiles": 3
 },
@@ -4233,6 +4560,39 @@
 "n": 14,
 "or": 3,
 "diamant": 3,
+"tous": false,
+"echelon": 1,
+"etoiles": 3
+},
+{
+"n": 14,
+"or": 6,
+"diamant": 6,
+"tous": false,
+"echelon": 1,
+"etoiles": 3
+},
+{
+"n": 14,
+"or": 10,
+"diamant": 9,
+"tous": true,
+"echelon": 1,
+"etoiles": 3
+},
+{
+"n": 14,
+"or": 10,
+"diamant": 10,
+"tous": false,
+"echelon": 1,
+"etoiles": 3
+},
+{
+"n": 14,
+"or": 10,
+"diamant": 10,
+"tous": true,
 "echelon": 1,
 "etoiles": 3
 },
@@ -4240,6 +4600,7 @@
 "n": 15,
 "or": 0,
 "diamant": 0,
+"tous": false,
 "echelon": 2,
 "etoiles": 0
 },
@@ -4247,6 +4608,7 @@
 "n": 15,
 "or": 1,
 "diamant": 0,
+"tous": false,
 "echelon": 2,
 "etoiles": 0
 },
@@ -4254,6 +4616,7 @@
 "n": 15,
 "or": 3,
 "diamant": 2,
+"tous": false,
 "echelon": 2,
 "etoiles": 0
 },
@@ -4261,6 +4624,39 @@
 "n": 15,
 "or": 3,
 "diamant": 3,
+"tous": false,
+"echelon": 2,
+"etoiles": 0
+},
+{
+"n": 15,
+"or": 6,
+"diamant": 6,
+"tous": false,
+"echelon": 2,
+"etoiles": 0
+},
+{
+"n": 15,
+"or": 10,
+"diamant": 9,
+"tous": true,
+"echelon": 2,
+"etoiles": 0
+},
+{
+"n": 15,
+"or": 10,
+"diamant": 10,
+"tous": false,
+"echelon": 2,
+"etoiles": 0
+},
+{
+"n": 15,
+"or": 10,
+"diamant": 10,
+"tous": true,
 "echelon": 2,
 "etoiles": 0
 },
@@ -4268,6 +4664,7 @@
 "n": 19,
 "or": 0,
 "diamant": 0,
+"tous": false,
 "echelon": 2,
 "etoiles": 1
 },
@@ -4275,6 +4672,7 @@
 "n": 19,
 "or": 1,
 "diamant": 0,
+"tous": false,
 "echelon": 2,
 "etoiles": 1
 },
@@ -4282,6 +4680,7 @@
 "n": 19,
 "or": 3,
 "diamant": 2,
+"tous": false,
 "echelon": 2,
 "etoiles": 1
 },
@@ -4289,6 +4688,39 @@
 "n": 19,
 "or": 3,
 "diamant": 3,
+"tous": false,
+"echelon": 2,
+"etoiles": 1
+},
+{
+"n": 19,
+"or": 6,
+"diamant": 6,
+"tous": false,
+"echelon": 2,
+"etoiles": 1
+},
+{
+"n": 19,
+"or": 10,
+"diamant": 9,
+"tous": true,
+"echelon": 2,
+"etoiles": 1
+},
+{
+"n": 19,
+"or": 10,
+"diamant": 10,
+"tous": false,
+"echelon": 2,
+"etoiles": 1
+},
+{
+"n": 19,
+"or": 10,
+"diamant": 10,
+"tous": true,
 "echelon": 2,
 "etoiles": 1
 },
@@ -4296,6 +4728,7 @@
 "n": 23,
 "or": 0,
 "diamant": 0,
+"tous": false,
 "echelon": 2,
 "etoiles": 2
 },
@@ -4303,6 +4736,7 @@
 "n": 23,
 "or": 1,
 "diamant": 0,
+"tous": false,
 "echelon": 2,
 "etoiles": 2
 },
@@ -4310,6 +4744,7 @@
 "n": 23,
 "or": 3,
 "diamant": 2,
+"tous": false,
 "echelon": 2,
 "etoiles": 2
 },
@@ -4317,6 +4752,39 @@
 "n": 23,
 "or": 3,
 "diamant": 3,
+"tous": false,
+"echelon": 2,
+"etoiles": 2
+},
+{
+"n": 23,
+"or": 6,
+"diamant": 6,
+"tous": false,
+"echelon": 2,
+"etoiles": 2
+},
+{
+"n": 23,
+"or": 10,
+"diamant": 9,
+"tous": true,
+"echelon": 2,
+"etoiles": 2
+},
+{
+"n": 23,
+"or": 10,
+"diamant": 10,
+"tous": false,
+"echelon": 2,
+"etoiles": 2
+},
+{
+"n": 23,
+"or": 10,
+"diamant": 10,
+"tous": true,
 "echelon": 2,
 "etoiles": 2
 },
@@ -4324,6 +4792,7 @@
 "n": 27,
 "or": 0,
 "diamant": 0,
+"tous": false,
 "echelon": 2,
 "etoiles": 3
 },
@@ -4331,6 +4800,7 @@
 "n": 27,
 "or": 1,
 "diamant": 0,
+"tous": false,
 "echelon": 2,
 "etoiles": 3
 },
@@ -4338,6 +4808,7 @@
 "n": 27,
 "or": 3,
 "diamant": 2,
+"tous": false,
 "echelon": 2,
 "etoiles": 3
 },
@@ -4345,6 +4816,39 @@
 "n": 27,
 "or": 3,
 "diamant": 3,
+"tous": false,
+"echelon": 2,
+"etoiles": 3
+},
+{
+"n": 27,
+"or": 6,
+"diamant": 6,
+"tous": false,
+"echelon": 2,
+"etoiles": 3
+},
+{
+"n": 27,
+"or": 10,
+"diamant": 9,
+"tous": true,
+"echelon": 2,
+"etoiles": 3
+},
+{
+"n": 27,
+"or": 10,
+"diamant": 10,
+"tous": false,
+"echelon": 2,
+"etoiles": 3
+},
+{
+"n": 27,
+"or": 10,
+"diamant": 10,
+"tous": true,
 "echelon": 2,
 "etoiles": 3
 },
@@ -4352,6 +4856,7 @@
 "n": 29,
 "or": 0,
 "diamant": 0,
+"tous": false,
 "echelon": 2,
 "etoiles": 3
 },
@@ -4359,6 +4864,7 @@
 "n": 29,
 "or": 1,
 "diamant": 0,
+"tous": false,
 "echelon": 2,
 "etoiles": 3
 },
@@ -4366,6 +4872,7 @@
 "n": 29,
 "or": 3,
 "diamant": 2,
+"tous": false,
 "echelon": 2,
 "etoiles": 3
 },
@@ -4373,6 +4880,39 @@
 "n": 29,
 "or": 3,
 "diamant": 3,
+"tous": false,
+"echelon": 2,
+"etoiles": 3
+},
+{
+"n": 29,
+"or": 6,
+"diamant": 6,
+"tous": false,
+"echelon": 2,
+"etoiles": 3
+},
+{
+"n": 29,
+"or": 10,
+"diamant": 9,
+"tous": true,
+"echelon": 2,
+"etoiles": 3
+},
+{
+"n": 29,
+"or": 10,
+"diamant": 10,
+"tous": false,
+"echelon": 2,
+"etoiles": 3
+},
+{
+"n": 29,
+"or": 10,
+"diamant": 10,
+"tous": true,
 "echelon": 2,
 "etoiles": 3
 },
@@ -4380,6 +4920,7 @@
 "n": 30,
 "or": 0,
 "diamant": 0,
+"tous": false,
 "echelon": 3,
 "etoiles": 0
 },
@@ -4387,6 +4928,7 @@
 "n": 30,
 "or": 1,
 "diamant": 0,
+"tous": false,
 "echelon": 3,
 "etoiles": 0
 },
@@ -4394,6 +4936,7 @@
 "n": 30,
 "or": 3,
 "diamant": 2,
+"tous": false,
 "echelon": 3,
 "etoiles": 0
 },
@@ -4401,6 +4944,39 @@
 "n": 30,
 "or": 3,
 "diamant": 3,
+"tous": false,
+"echelon": 3,
+"etoiles": 0
+},
+{
+"n": 30,
+"or": 6,
+"diamant": 6,
+"tous": false,
+"echelon": 3,
+"etoiles": 0
+},
+{
+"n": 30,
+"or": 10,
+"diamant": 9,
+"tous": true,
+"echelon": 3,
+"etoiles": 0
+},
+{
+"n": 30,
+"or": 10,
+"diamant": 10,
+"tous": false,
+"echelon": 3,
+"etoiles": 0
+},
+{
+"n": 30,
+"or": 10,
+"diamant": 10,
+"tous": true,
 "echelon": 3,
 "etoiles": 0
 },
@@ -4408,6 +4984,7 @@
 "n": 35,
 "or": 0,
 "diamant": 0,
+"tous": false,
 "echelon": 3,
 "etoiles": 1
 },
@@ -4415,6 +4992,7 @@
 "n": 35,
 "or": 1,
 "diamant": 0,
+"tous": false,
 "echelon": 3,
 "etoiles": 1
 },
@@ -4422,6 +5000,7 @@
 "n": 35,
 "or": 3,
 "diamant": 2,
+"tous": false,
 "echelon": 3,
 "etoiles": 1
 },
@@ -4429,6 +5008,39 @@
 "n": 35,
 "or": 3,
 "diamant": 3,
+"tous": false,
+"echelon": 3,
+"etoiles": 1
+},
+{
+"n": 35,
+"or": 6,
+"diamant": 6,
+"tous": false,
+"echelon": 3,
+"etoiles": 1
+},
+{
+"n": 35,
+"or": 10,
+"diamant": 9,
+"tous": true,
+"echelon": 3,
+"etoiles": 1
+},
+{
+"n": 35,
+"or": 10,
+"diamant": 10,
+"tous": false,
+"echelon": 3,
+"etoiles": 1
+},
+{
+"n": 35,
+"or": 10,
+"diamant": 10,
+"tous": true,
 "echelon": 3,
 "etoiles": 1
 },
@@ -4436,6 +5048,7 @@
 "n": 45,
 "or": 0,
 "diamant": 0,
+"tous": false,
 "echelon": 3,
 "etoiles": 3
 },
@@ -4443,6 +5056,7 @@
 "n": 45,
 "or": 1,
 "diamant": 0,
+"tous": false,
 "echelon": 3,
 "etoiles": 3
 },
@@ -4450,6 +5064,7 @@
 "n": 45,
 "or": 3,
 "diamant": 2,
+"tous": false,
 "echelon": 3,
 "etoiles": 3
 },
@@ -4457,6 +5072,39 @@
 "n": 45,
 "or": 3,
 "diamant": 3,
+"tous": false,
+"echelon": 3,
+"etoiles": 3
+},
+{
+"n": 45,
+"or": 6,
+"diamant": 6,
+"tous": false,
+"echelon": 3,
+"etoiles": 3
+},
+{
+"n": 45,
+"or": 10,
+"diamant": 9,
+"tous": true,
+"echelon": 3,
+"etoiles": 3
+},
+{
+"n": 45,
+"or": 10,
+"diamant": 10,
+"tous": false,
+"echelon": 3,
+"etoiles": 3
+},
+{
+"n": 45,
+"or": 10,
+"diamant": 10,
+"tous": true,
 "echelon": 3,
 "etoiles": 3
 },
@@ -4464,6 +5112,7 @@
 "n": 49,
 "or": 0,
 "diamant": 0,
+"tous": false,
 "echelon": 3,
 "etoiles": 3
 },
@@ -4471,6 +5120,7 @@
 "n": 49,
 "or": 1,
 "diamant": 0,
+"tous": false,
 "echelon": 3,
 "etoiles": 3
 },
@@ -4478,6 +5128,7 @@
 "n": 49,
 "or": 3,
 "diamant": 2,
+"tous": false,
 "echelon": 3,
 "etoiles": 3
 },
@@ -4485,6 +5136,39 @@
 "n": 49,
 "or": 3,
 "diamant": 3,
+"tous": false,
+"echelon": 3,
+"etoiles": 3
+},
+{
+"n": 49,
+"or": 6,
+"diamant": 6,
+"tous": false,
+"echelon": 3,
+"etoiles": 3
+},
+{
+"n": 49,
+"or": 10,
+"diamant": 9,
+"tous": true,
+"echelon": 3,
+"etoiles": 3
+},
+{
+"n": 49,
+"or": 10,
+"diamant": 10,
+"tous": false,
+"echelon": 3,
+"etoiles": 3
+},
+{
+"n": 49,
+"or": 10,
+"diamant": 10,
+"tous": true,
 "echelon": 3,
 "etoiles": 3
 },
@@ -4492,6 +5176,7 @@
 "n": 50,
 "or": 0,
 "diamant": 0,
+"tous": false,
 "echelon": 3,
 "etoiles": 3
 },
@@ -4499,6 +5184,7 @@
 "n": 50,
 "or": 1,
 "diamant": 0,
+"tous": false,
 "echelon": 4,
 "etoiles": 0
 },
@@ -4506,6 +5192,7 @@
 "n": 50,
 "or": 3,
 "diamant": 2,
+"tous": false,
 "echelon": 4,
 "etoiles": 0
 },
@@ -4513,6 +5200,39 @@
 "n": 50,
 "or": 3,
 "diamant": 3,
+"tous": false,
+"echelon": 4,
+"etoiles": 0
+},
+{
+"n": 50,
+"or": 6,
+"diamant": 6,
+"tous": false,
+"echelon": 4,
+"etoiles": 0
+},
+{
+"n": 50,
+"or": 10,
+"diamant": 9,
+"tous": true,
+"echelon": 4,
+"etoiles": 0
+},
+{
+"n": 50,
+"or": 10,
+"diamant": 10,
+"tous": false,
+"echelon": 4,
+"etoiles": 0
+},
+{
+"n": 50,
+"or": 10,
+"diamant": 10,
+"tous": true,
 "echelon": 4,
 "etoiles": 0
 },
@@ -4520,6 +5240,7 @@
 "n": 62,
 "or": 0,
 "diamant": 0,
+"tous": false,
 "echelon": 3,
 "etoiles": 3
 },
@@ -4527,6 +5248,7 @@
 "n": 62,
 "or": 1,
 "diamant": 0,
+"tous": false,
 "echelon": 4,
 "etoiles": 0
 },
@@ -4534,6 +5256,7 @@
 "n": 62,
 "or": 3,
 "diamant": 2,
+"tous": false,
 "echelon": 4,
 "etoiles": 0
 },
@@ -4541,6 +5264,39 @@
 "n": 62,
 "or": 3,
 "diamant": 3,
+"tous": false,
+"echelon": 4,
+"etoiles": 0
+},
+{
+"n": 62,
+"or": 6,
+"diamant": 6,
+"tous": false,
+"echelon": 4,
+"etoiles": 0
+},
+{
+"n": 62,
+"or": 10,
+"diamant": 9,
+"tous": true,
+"echelon": 4,
+"etoiles": 0
+},
+{
+"n": 62,
+"or": 10,
+"diamant": 10,
+"tous": false,
+"echelon": 4,
+"etoiles": 0
+},
+{
+"n": 62,
+"or": 10,
+"diamant": 10,
+"tous": true,
 "echelon": 4,
 "etoiles": 0
 },
@@ -4548,6 +5304,7 @@
 "n": 63,
 "or": 0,
 "diamant": 0,
+"tous": false,
 "echelon": 3,
 "etoiles": 3
 },
@@ -4555,6 +5312,7 @@
 "n": 63,
 "or": 1,
 "diamant": 0,
+"tous": false,
 "echelon": 4,
 "etoiles": 1
 },
@@ -4562,6 +5320,7 @@
 "n": 63,
 "or": 3,
 "diamant": 2,
+"tous": false,
 "echelon": 4,
 "etoiles": 1
 },
@@ -4569,6 +5328,39 @@
 "n": 63,
 "or": 3,
 "diamant": 3,
+"tous": false,
+"echelon": 4,
+"etoiles": 1
+},
+{
+"n": 63,
+"or": 6,
+"diamant": 6,
+"tous": false,
+"echelon": 4,
+"etoiles": 1
+},
+{
+"n": 63,
+"or": 10,
+"diamant": 9,
+"tous": true,
+"echelon": 4,
+"etoiles": 1
+},
+{
+"n": 63,
+"or": 10,
+"diamant": 10,
+"tous": false,
+"echelon": 4,
+"etoiles": 1
+},
+{
+"n": 63,
+"or": 10,
+"diamant": 10,
+"tous": true,
 "echelon": 4,
 "etoiles": 1
 },
@@ -4576,6 +5368,7 @@
 "n": 75,
 "or": 0,
 "diamant": 0,
+"tous": false,
 "echelon": 3,
 "etoiles": 3
 },
@@ -4583,6 +5376,7 @@
 "n": 75,
 "or": 1,
 "diamant": 0,
+"tous": false,
 "echelon": 4,
 "etoiles": 2
 },
@@ -4590,6 +5384,7 @@
 "n": 75,
 "or": 3,
 "diamant": 2,
+"tous": false,
 "echelon": 4,
 "etoiles": 2
 },
@@ -4597,6 +5392,39 @@
 "n": 75,
 "or": 3,
 "diamant": 3,
+"tous": false,
+"echelon": 4,
+"etoiles": 2
+},
+{
+"n": 75,
+"or": 6,
+"diamant": 6,
+"tous": false,
+"echelon": 4,
+"etoiles": 2
+},
+{
+"n": 75,
+"or": 10,
+"diamant": 9,
+"tous": true,
+"echelon": 4,
+"etoiles": 2
+},
+{
+"n": 75,
+"or": 10,
+"diamant": 10,
+"tous": false,
+"echelon": 4,
+"etoiles": 2
+},
+{
+"n": 75,
+"or": 10,
+"diamant": 10,
+"tous": true,
 "echelon": 4,
 "etoiles": 2
 },
@@ -4604,6 +5432,7 @@
 "n": 88,
 "or": 0,
 "diamant": 0,
+"tous": false,
 "echelon": 3,
 "etoiles": 3
 },
@@ -4611,6 +5440,7 @@
 "n": 88,
 "or": 1,
 "diamant": 0,
+"tous": false,
 "echelon": 4,
 "etoiles": 3
 },
@@ -4618,6 +5448,7 @@
 "n": 88,
 "or": 3,
 "diamant": 2,
+"tous": false,
 "echelon": 4,
 "etoiles": 3
 },
@@ -4625,6 +5456,39 @@
 "n": 88,
 "or": 3,
 "diamant": 3,
+"tous": false,
+"echelon": 4,
+"etoiles": 3
+},
+{
+"n": 88,
+"or": 6,
+"diamant": 6,
+"tous": false,
+"echelon": 4,
+"etoiles": 3
+},
+{
+"n": 88,
+"or": 10,
+"diamant": 9,
+"tous": true,
+"echelon": 4,
+"etoiles": 3
+},
+{
+"n": 88,
+"or": 10,
+"diamant": 10,
+"tous": false,
+"echelon": 4,
+"etoiles": 3
+},
+{
+"n": 88,
+"or": 10,
+"diamant": 10,
+"tous": true,
 "echelon": 4,
 "etoiles": 3
 },
@@ -4632,6 +5496,7 @@
 "n": 99,
 "or": 0,
 "diamant": 0,
+"tous": false,
 "echelon": 3,
 "etoiles": 3
 },
@@ -4639,6 +5504,7 @@
 "n": 99,
 "or": 1,
 "diamant": 0,
+"tous": false,
 "echelon": 4,
 "etoiles": 3
 },
@@ -4646,6 +5512,7 @@
 "n": 99,
 "or": 3,
 "diamant": 2,
+"tous": false,
 "echelon": 4,
 "etoiles": 3
 },
@@ -4653,6 +5520,39 @@
 "n": 99,
 "or": 3,
 "diamant": 3,
+"tous": false,
+"echelon": 4,
+"etoiles": 3
+},
+{
+"n": 99,
+"or": 6,
+"diamant": 6,
+"tous": false,
+"echelon": 4,
+"etoiles": 3
+},
+{
+"n": 99,
+"or": 10,
+"diamant": 9,
+"tous": true,
+"echelon": 4,
+"etoiles": 3
+},
+{
+"n": 99,
+"or": 10,
+"diamant": 10,
+"tous": false,
+"echelon": 4,
+"etoiles": 3
+},
+{
+"n": 99,
+"or": 10,
+"diamant": 10,
+"tous": true,
 "echelon": 4,
 "etoiles": 3
 },
@@ -4660,6 +5560,7 @@
 "n": 100,
 "or": 0,
 "diamant": 0,
+"tous": false,
 "echelon": 3,
 "etoiles": 3
 },
@@ -4667,6 +5568,7 @@
 "n": 100,
 "or": 1,
 "diamant": 0,
+"tous": false,
 "echelon": 4,
 "etoiles": 3
 },
@@ -4674,6 +5576,7 @@
 "n": 100,
 "or": 3,
 "diamant": 2,
+"tous": false,
 "echelon": 4,
 "etoiles": 3
 },
@@ -4681,125 +5584,495 @@
 "n": 100,
 "or": 3,
 "diamant": 3,
+"tous": false,
 "echelon": 5,
 "etoiles": 0
 },
 {
-"n": 149,
-"or": 0,
-"diamant": 0,
-"echelon": 3,
-"etoiles": 3
-},
-{
-"n": 149,
-"or": 1,
-"diamant": 0,
-"echelon": 4,
-"etoiles": 3
-},
-{
-"n": 149,
-"or": 3,
-"diamant": 2,
-"echelon": 4,
-"etoiles": 3
-},
-{
-"n": 149,
-"or": 3,
-"diamant": 3,
+"n": 100,
+"or": 6,
+"diamant": 6,
+"tous": false,
 "echelon": 5,
 "etoiles": 0
 },
 {
-"n": 150,
+"n": 100,
+"or": 10,
+"diamant": 9,
+"tous": true,
+"echelon": 5,
+"etoiles": 0
+},
+{
+"n": 100,
+"or": 10,
+"diamant": 10,
+"tous": false,
+"echelon": 5,
+"etoiles": 0
+},
+{
+"n": 100,
+"or": 10,
+"diamant": 10,
+"tous": true,
+"echelon": 5,
+"etoiles": 0
+},
+{
+"n": 124,
 "or": 0,
 "diamant": 0,
+"tous": false,
 "echelon": 3,
 "etoiles": 3
 },
 {
-"n": 150,
+"n": 124,
 "or": 1,
 "diamant": 0,
+"tous": false,
 "echelon": 4,
 "etoiles": 3
 },
 {
-"n": 150,
+"n": 124,
 "or": 3,
 "diamant": 2,
+"tous": false,
 "echelon": 4,
 "etoiles": 3
 },
 {
-"n": 150,
+"n": 124,
 "or": 3,
 "diamant": 3,
+"tous": false,
+"echelon": 5,
+"etoiles": 0
+},
+{
+"n": 124,
+"or": 6,
+"diamant": 6,
+"tous": false,
+"echelon": 5,
+"etoiles": 0
+},
+{
+"n": 124,
+"or": 10,
+"diamant": 9,
+"tous": true,
+"echelon": 5,
+"etoiles": 0
+},
+{
+"n": 124,
+"or": 10,
+"diamant": 10,
+"tous": false,
+"echelon": 5,
+"etoiles": 0
+},
+{
+"n": 124,
+"or": 10,
+"diamant": 10,
+"tous": true,
+"echelon": 5,
+"etoiles": 0
+},
+{
+"n": 125,
+"or": 0,
+"diamant": 0,
+"tous": false,
+"echelon": 3,
+"etoiles": 3
+},
+{
+"n": 125,
+"or": 1,
+"diamant": 0,
+"tous": false,
+"echelon": 4,
+"etoiles": 3
+},
+{
+"n": 125,
+"or": 3,
+"diamant": 2,
+"tous": false,
+"echelon": 4,
+"etoiles": 3
+},
+{
+"n": 125,
+"or": 3,
+"diamant": 3,
+"tous": false,
 "echelon": 5,
 "etoiles": 1
 },
 {
-"n": 200,
+"n": 125,
+"or": 6,
+"diamant": 6,
+"tous": false,
+"echelon": 5,
+"etoiles": 1
+},
+{
+"n": 125,
+"or": 10,
+"diamant": 9,
+"tous": true,
+"echelon": 5,
+"etoiles": 1
+},
+{
+"n": 125,
+"or": 10,
+"diamant": 10,
+"tous": false,
+"echelon": 5,
+"etoiles": 1
+},
+{
+"n": 125,
+"or": 10,
+"diamant": 10,
+"tous": true,
+"echelon": 5,
+"etoiles": 1
+},
+{
+"n": 150,
 "or": 0,
 "diamant": 0,
+"tous": false,
 "echelon": 3,
 "etoiles": 3
 },
 {
-"n": 200,
+"n": 150,
 "or": 1,
 "diamant": 0,
+"tous": false,
 "echelon": 4,
 "etoiles": 3
 },
 {
-"n": 200,
+"n": 150,
 "or": 3,
 "diamant": 2,
+"tous": false,
 "echelon": 4,
 "etoiles": 3
 },
 {
-"n": 200,
+"n": 150,
 "or": 3,
 "diamant": 3,
+"tous": false,
 "echelon": 5,
 "etoiles": 2
 },
 {
-"n": 299,
-"or": 0,
-"diamant": 0,
-"echelon": 3,
-"etoiles": 3
-},
-{
-"n": 299,
-"or": 1,
-"diamant": 0,
-"echelon": 4,
-"etoiles": 3
-},
-{
-"n": 299,
-"or": 3,
-"diamant": 2,
-"echelon": 4,
-"etoiles": 3
-},
-{
-"n": 299,
-"or": 3,
-"diamant": 3,
+"n": 150,
+"or": 6,
+"diamant": 6,
+"tous": false,
 "echelon": 5,
 "etoiles": 2
 },
 {
+"n": 150,
+"or": 10,
+"diamant": 9,
+"tous": true,
+"echelon": 5,
+"etoiles": 2
+},
+{
+"n": 150,
+"or": 10,
+"diamant": 10,
+"tous": false,
+"echelon": 5,
+"etoiles": 2
+},
+{
+"n": 150,
+"or": 10,
+"diamant": 10,
+"tous": true,
+"echelon": 5,
+"etoiles": 2
+},
+{
+"n": 175,
+"or": 0,
+"diamant": 0,
+"tous": false,
+"echelon": 3,
+"etoiles": 3
+},
+{
+"n": 175,
+"or": 1,
+"diamant": 0,
+"tous": false,
+"echelon": 4,
+"etoiles": 3
+},
+{
+"n": 175,
+"or": 3,
+"diamant": 2,
+"tous": false,
+"echelon": 4,
+"etoiles": 3
+},
+{
+"n": 175,
+"or": 3,
+"diamant": 3,
+"tous": false,
+"echelon": 5,
+"etoiles": 3
+},
+{
+"n": 175,
+"or": 6,
+"diamant": 6,
+"tous": false,
+"echelon": 5,
+"etoiles": 3
+},
+{
+"n": 175,
+"or": 10,
+"diamant": 9,
+"tous": true,
+"echelon": 5,
+"etoiles": 3
+},
+{
+"n": 175,
+"or": 10,
+"diamant": 10,
+"tous": false,
+"echelon": 5,
+"etoiles": 3
+},
+{
+"n": 175,
+"or": 10,
+"diamant": 10,
+"tous": true,
+"echelon": 5,
+"etoiles": 3
+},
+{
+"n": 199,
+"or": 0,
+"diamant": 0,
+"tous": false,
+"echelon": 3,
+"etoiles": 3
+},
+{
+"n": 199,
+"or": 1,
+"diamant": 0,
+"tous": false,
+"echelon": 4,
+"etoiles": 3
+},
+{
+"n": 199,
+"or": 3,
+"diamant": 2,
+"tous": false,
+"echelon": 4,
+"etoiles": 3
+},
+{
+"n": 199,
+"or": 3,
+"diamant": 3,
+"tous": false,
+"echelon": 5,
+"etoiles": 3
+},
+{
+"n": 199,
+"or": 6,
+"diamant": 6,
+"tous": false,
+"echelon": 5,
+"etoiles": 3
+},
+{
+"n": 199,
+"or": 10,
+"diamant": 9,
+"tous": true,
+"echelon": 5,
+"etoiles": 3
+},
+{
+"n": 199,
+"or": 10,
+"diamant": 10,
+"tous": false,
+"echelon": 5,
+"etoiles": 3
+},
+{
+"n": 199,
+"or": 10,
+"diamant": 10,
+"tous": true,
+"echelon": 5,
+"etoiles": 3
+},
+{
+"n": 200,
+"or": 0,
+"diamant": 0,
+"tous": false,
+"echelon": 3,
+"etoiles": 3
+},
+{
+"n": 200,
+"or": 1,
+"diamant": 0,
+"tous": false,
+"echelon": 4,
+"etoiles": 3
+},
+{
+"n": 200,
+"or": 3,
+"diamant": 2,
+"tous": false,
+"echelon": 4,
+"etoiles": 3
+},
+{
+"n": 200,
+"or": 3,
+"diamant": 3,
+"tous": false,
+"echelon": 5,
+"etoiles": 3
+},
+{
+"n": 200,
+"or": 6,
+"diamant": 6,
+"tous": false,
+"echelon": 6,
+"etoiles": 0
+},
+{
+"n": 200,
+"or": 10,
+"diamant": 9,
+"tous": true,
+"echelon": 6,
+"etoiles": 0
+},
+{
+"n": 200,
+"or": 10,
+"diamant": 10,
+"tous": false,
+"echelon": 6,
+"etoiles": 0
+},
+{
+"n": 200,
+"or": 10,
+"diamant": 10,
+"tous": true,
+"echelon": 6,
+"etoiles": 0
+},
+{
+"n": 250,
+"or": 0,
+"diamant": 0,
+"tous": false,
+"echelon": 3,
+"etoiles": 3
+},
+{
+"n": 250,
+"or": 1,
+"diamant": 0,
+"tous": false,
+"echelon": 4,
+"etoiles": 3
+},
+{
+"n": 250,
+"or": 3,
+"diamant": 2,
+"tous": false,
+"echelon": 4,
+"etoiles": 3
+},
+{
+"n": 250,
+"or": 3,
+"diamant": 3,
+"tous": false,
+"echelon": 5,
+"etoiles": 3
+},
+{
+"n": 250,
+"or": 6,
+"diamant": 6,
+"tous": false,
+"echelon": 6,
+"etoiles": 1
+},
+{
+"n": 250,
+"or": 10,
+"diamant": 9,
+"tous": true,
+"echelon": 6,
+"etoiles": 1
+},
+{
+"n": 250,
+"or": 10,
+"diamant": 10,
+"tous": false,
+"echelon": 6,
+"etoiles": 1
+},
+{
+"n": 250,
+"or": 10,
+"diamant": 10,
+"tous": true,
+"echelon": 6,
+"etoiles": 1
+},
+{
 "n": 300,
 "or": 0,
 "diamant": 0,
+"tous": false,
 "echelon": 3,
 "etoiles": 3
 },
@@ -4807,6 +6080,7 @@
 "n": 300,
 "or": 1,
 "diamant": 0,
+"tous": false,
 "echelon": 4,
 "etoiles": 3
 },
@@ -4814,6 +6088,7 @@
 "n": 300,
 "or": 3,
 "diamant": 2,
+"tous": false,
 "echelon": 4,
 "etoiles": 3
 },
@@ -4821,35 +6096,552 @@
 "n": 300,
 "or": 3,
 "diamant": 3,
+"tous": false,
 "echelon": 5,
 "etoiles": 3
 },
 {
-"n": 900,
+"n": 300,
+"or": 6,
+"diamant": 6,
+"tous": false,
+"echelon": 6,
+"etoiles": 2
+},
+{
+"n": 300,
+"or": 10,
+"diamant": 9,
+"tous": true,
+"echelon": 6,
+"etoiles": 2
+},
+{
+"n": 300,
+"or": 10,
+"diamant": 10,
+"tous": false,
+"echelon": 6,
+"etoiles": 2
+},
+{
+"n": 300,
+"or": 10,
+"diamant": 10,
+"tous": true,
+"echelon": 6,
+"etoiles": 2
+},
+{
+"n": 350,
 "or": 0,
 "diamant": 0,
+"tous": false,
 "echelon": 3,
 "etoiles": 3
 },
 {
-"n": 900,
+"n": 350,
 "or": 1,
 "diamant": 0,
+"tous": false,
 "echelon": 4,
 "etoiles": 3
 },
 {
-"n": 900,
+"n": 350,
 "or": 3,
 "diamant": 2,
+"tous": false,
 "echelon": 4,
 "etoiles": 3
 },
 {
-"n": 900,
+"n": 350,
 "or": 3,
 "diamant": 3,
+"tous": false,
 "echelon": 5,
+"etoiles": 3
+},
+{
+"n": 350,
+"or": 6,
+"diamant": 6,
+"tous": false,
+"echelon": 6,
+"etoiles": 3
+},
+{
+"n": 350,
+"or": 10,
+"diamant": 9,
+"tous": true,
+"echelon": 6,
+"etoiles": 3
+},
+{
+"n": 350,
+"or": 10,
+"diamant": 10,
+"tous": false,
+"echelon": 6,
+"etoiles": 3
+},
+{
+"n": 350,
+"or": 10,
+"diamant": 10,
+"tous": true,
+"echelon": 6,
+"etoiles": 3
+},
+{
+"n": 399,
+"or": 0,
+"diamant": 0,
+"tous": false,
+"echelon": 3,
+"etoiles": 3
+},
+{
+"n": 399,
+"or": 1,
+"diamant": 0,
+"tous": false,
+"echelon": 4,
+"etoiles": 3
+},
+{
+"n": 399,
+"or": 3,
+"diamant": 2,
+"tous": false,
+"echelon": 4,
+"etoiles": 3
+},
+{
+"n": 399,
+"or": 3,
+"diamant": 3,
+"tous": false,
+"echelon": 5,
+"etoiles": 3
+},
+{
+"n": 399,
+"or": 6,
+"diamant": 6,
+"tous": false,
+"echelon": 6,
+"etoiles": 3
+},
+{
+"n": 399,
+"or": 10,
+"diamant": 9,
+"tous": true,
+"echelon": 6,
+"etoiles": 3
+},
+{
+"n": 399,
+"or": 10,
+"diamant": 10,
+"tous": false,
+"echelon": 6,
+"etoiles": 3
+},
+{
+"n": 399,
+"or": 10,
+"diamant": 10,
+"tous": true,
+"echelon": 6,
+"etoiles": 3
+},
+{
+"n": 400,
+"or": 0,
+"diamant": 0,
+"tous": false,
+"echelon": 3,
+"etoiles": 3
+},
+{
+"n": 400,
+"or": 1,
+"diamant": 0,
+"tous": false,
+"echelon": 4,
+"etoiles": 3
+},
+{
+"n": 400,
+"or": 3,
+"diamant": 2,
+"tous": false,
+"echelon": 4,
+"etoiles": 3
+},
+{
+"n": 400,
+"or": 3,
+"diamant": 3,
+"tous": false,
+"echelon": 5,
+"etoiles": 3
+},
+{
+"n": 400,
+"or": 6,
+"diamant": 6,
+"tous": false,
+"echelon": 6,
+"etoiles": 3
+},
+{
+"n": 400,
+"or": 10,
+"diamant": 9,
+"tous": true,
+"echelon": 6,
+"etoiles": 3
+},
+{
+"n": 400,
+"or": 10,
+"diamant": 10,
+"tous": false,
+"echelon": 6,
+"etoiles": 3
+},
+{
+"n": 400,
+"or": 10,
+"diamant": 10,
+"tous": true,
+"echelon": 7,
+"etoiles": 0
+},
+{
+"n": 599,
+"or": 0,
+"diamant": 0,
+"tous": false,
+"echelon": 3,
+"etoiles": 3
+},
+{
+"n": 599,
+"or": 1,
+"diamant": 0,
+"tous": false,
+"echelon": 4,
+"etoiles": 3
+},
+{
+"n": 599,
+"or": 3,
+"diamant": 2,
+"tous": false,
+"echelon": 4,
+"etoiles": 3
+},
+{
+"n": 599,
+"or": 3,
+"diamant": 3,
+"tous": false,
+"echelon": 5,
+"etoiles": 3
+},
+{
+"n": 599,
+"or": 6,
+"diamant": 6,
+"tous": false,
+"echelon": 6,
+"etoiles": 3
+},
+{
+"n": 599,
+"or": 10,
+"diamant": 9,
+"tous": true,
+"echelon": 6,
+"etoiles": 3
+},
+{
+"n": 599,
+"or": 10,
+"diamant": 10,
+"tous": false,
+"echelon": 6,
+"etoiles": 3
+},
+{
+"n": 599,
+"or": 10,
+"diamant": 10,
+"tous": true,
+"echelon": 7,
+"etoiles": 0
+},
+{
+"n": 600,
+"or": 0,
+"diamant": 0,
+"tous": false,
+"echelon": 3,
+"etoiles": 3
+},
+{
+"n": 600,
+"or": 1,
+"diamant": 0,
+"tous": false,
+"echelon": 4,
+"etoiles": 3
+},
+{
+"n": 600,
+"or": 3,
+"diamant": 2,
+"tous": false,
+"echelon": 4,
+"etoiles": 3
+},
+{
+"n": 600,
+"or": 3,
+"diamant": 3,
+"tous": false,
+"echelon": 5,
+"etoiles": 3
+},
+{
+"n": 600,
+"or": 6,
+"diamant": 6,
+"tous": false,
+"echelon": 6,
+"etoiles": 3
+},
+{
+"n": 600,
+"or": 10,
+"diamant": 9,
+"tous": true,
+"echelon": 6,
+"etoiles": 3
+},
+{
+"n": 600,
+"or": 10,
+"diamant": 10,
+"tous": false,
+"echelon": 6,
+"etoiles": 3
+},
+{
+"n": 600,
+"or": 10,
+"diamant": 10,
+"tous": true,
+"echelon": 7,
+"etoiles": 1
+},
+{
+"n": 800,
+"or": 0,
+"diamant": 0,
+"tous": false,
+"echelon": 3,
+"etoiles": 3
+},
+{
+"n": 800,
+"or": 1,
+"diamant": 0,
+"tous": false,
+"echelon": 4,
+"etoiles": 3
+},
+{
+"n": 800,
+"or": 3,
+"diamant": 2,
+"tous": false,
+"echelon": 4,
+"etoiles": 3
+},
+{
+"n": 800,
+"or": 3,
+"diamant": 3,
+"tous": false,
+"echelon": 5,
+"etoiles": 3
+},
+{
+"n": 800,
+"or": 6,
+"diamant": 6,
+"tous": false,
+"echelon": 6,
+"etoiles": 3
+},
+{
+"n": 800,
+"or": 10,
+"diamant": 9,
+"tous": true,
+"echelon": 6,
+"etoiles": 3
+},
+{
+"n": 800,
+"or": 10,
+"diamant": 10,
+"tous": false,
+"echelon": 6,
+"etoiles": 3
+},
+{
+"n": 800,
+"or": 10,
+"diamant": 10,
+"tous": true,
+"echelon": 7,
+"etoiles": 2
+},
+{
+"n": 1000,
+"or": 0,
+"diamant": 0,
+"tous": false,
+"echelon": 3,
+"etoiles": 3
+},
+{
+"n": 1000,
+"or": 1,
+"diamant": 0,
+"tous": false,
+"echelon": 4,
+"etoiles": 3
+},
+{
+"n": 1000,
+"or": 3,
+"diamant": 2,
+"tous": false,
+"echelon": 4,
+"etoiles": 3
+},
+{
+"n": 1000,
+"or": 3,
+"diamant": 3,
+"tous": false,
+"echelon": 5,
+"etoiles": 3
+},
+{
+"n": 1000,
+"or": 6,
+"diamant": 6,
+"tous": false,
+"echelon": 6,
+"etoiles": 3
+},
+{
+"n": 1000,
+"or": 10,
+"diamant": 9,
+"tous": true,
+"echelon": 6,
+"etoiles": 3
+},
+{
+"n": 1000,
+"or": 10,
+"diamant": 10,
+"tous": false,
+"echelon": 6,
+"etoiles": 3
+},
+{
+"n": 1000,
+"or": 10,
+"diamant": 10,
+"tous": true,
+"echelon": 7,
+"etoiles": 3
+},
+{
+"n": 5000,
+"or": 0,
+"diamant": 0,
+"tous": false,
+"echelon": 3,
+"etoiles": 3
+},
+{
+"n": 5000,
+"or": 1,
+"diamant": 0,
+"tous": false,
+"echelon": 4,
+"etoiles": 3
+},
+{
+"n": 5000,
+"or": 3,
+"diamant": 2,
+"tous": false,
+"echelon": 4,
+"etoiles": 3
+},
+{
+"n": 5000,
+"or": 3,
+"diamant": 3,
+"tous": false,
+"echelon": 5,
+"etoiles": 3
+},
+{
+"n": 5000,
+"or": 6,
+"diamant": 6,
+"tous": false,
+"echelon": 6,
+"etoiles": 3
+},
+{
+"n": 5000,
+"or": 10,
+"diamant": 9,
+"tous": true,
+"echelon": 6,
+"etoiles": 3
+},
+{
+"n": 5000,
+"or": 10,
+"diamant": 10,
+"tous": false,
+"echelon": 6,
+"etoiles": 3
+},
+{
+"n": 5000,
+"or": 10,
+"diamant": 10,
+"tous": true,
+"echelon": 7,
 "etoiles": 3
 }
 ],
@@ -4908,13 +6700,25 @@
 "famille": "explorateur",
 "echelon": "giga",
 "etoiles": 0,
-"empreinte": "49621f88616ef9cd29a2cf725785975649216adab648e02ae303771a90509e4d"
+"empreinte": "53c742222ba30af2b96e5781eba8a8fde8945ce3610570d42f610bc042ad7670"
 },
 {
 "famille": "explorateur",
 "echelon": "tera",
 "etoiles": 0,
 "empreinte": "9eaeb85da1f9449b9c621980acc7795afcb2d632f795b3276c790d35980d4308"
+},
+{
+"famille": "explorateur",
+"echelon": "peta",
+"etoiles": 0,
+"empreinte": "b4477cc470f5def2d6a1f28f5ea6b9c568bb6897542383098aba4b2705d0f5af"
+},
+{
+"famille": "explorateur",
+"echelon": "exa",
+"etoiles": 3,
+"empreinte": "d948872ad9b41a60babebcfe31f5460cf7554c0a11ea811381a6068c5c3ce88e"
 },
 {
 "famille": "batisseur",
@@ -4944,13 +6748,25 @@
 "famille": "batisseur",
 "echelon": "giga",
 "etoiles": 1,
-"empreinte": "82c5d38cc56fbae42b65e62f3d78f214715d069c1eac8c88bcf319844584a838"
+"empreinte": "6faaf251ef96a3ef5e196527f75322b504db784e13054c89a52d3f749d082402"
 },
 {
 "famille": "batisseur",
 "echelon": "tera",
 "etoiles": 1,
 "empreinte": "29c754e6c56216c9e4692ece1dddc4403cdf7f4f55b12a33a2a7c731812f9e9e"
+},
+{
+"famille": "batisseur",
+"echelon": "peta",
+"etoiles": 1,
+"empreinte": "73ca91bfd31439fed3293a9357fbe24c88cb2c360516e22ee1e63e9b278a21b4"
+},
+{
+"famille": "batisseur",
+"echelon": "exa",
+"etoiles": 0,
+"empreinte": "8635bc6d5d23817a08f9a640b18b8d45a981407db1a9cbf3a7ed0db79cf34e73"
 },
 {
 "famille": "demenageur",
@@ -4980,13 +6796,25 @@
 "famille": "demenageur",
 "echelon": "giga",
 "etoiles": 2,
-"empreinte": "3241f5c172a7cd1df8ff253309be5fef1afe8a5bd2356927406076f3c903b08e"
+"empreinte": "581ac66643a63e9f3cb1b1533dd522baa2d2090c07b6e8b9e6d2a6cec92ee71f"
 },
 {
 "famille": "demenageur",
 "echelon": "tera",
 "etoiles": 2,
 "empreinte": "c19c369e11f9a8cbc31075c59d5c854e574f004ccf9e2cb415d930d1b7218013"
+},
+{
+"famille": "demenageur",
+"echelon": "peta",
+"etoiles": 2,
+"empreinte": "f180474975cdb1be87c37973257c20e2872f7d3b2b4df105c5b8d1a7b457830a"
+},
+{
+"famille": "demenageur",
+"echelon": "exa",
+"etoiles": 1,
+"empreinte": "da55dc055e54425be16809aefdc3b07efd828045d7e2f58c2cc5a2f80c0e50d7"
 },
 {
 "famille": "nettoyeur",
@@ -5016,13 +6844,25 @@
 "famille": "nettoyeur",
 "echelon": "giga",
 "etoiles": 3,
-"empreinte": "50e773d3e78e2b85abb08a6d7005fbef8b5f59137939f7817236c22a5d3671cc"
+"empreinte": "b0ac322de85c65ae89cffacf73c37a37ab990e2cf889728339cff7bcf653031d"
 },
 {
 "famille": "nettoyeur",
 "echelon": "tera",
 "etoiles": 3,
 "empreinte": "73d0e8d6363d0a372bb95377b1afe6d17f6ebaf691b37f3842ada117ddbb8ccd"
+},
+{
+"famille": "nettoyeur",
+"echelon": "peta",
+"etoiles": 3,
+"empreinte": "ee1ead8df644a06bf938e7419a04aa30c1a2c14dd0bb0692e5e71ad6e69c787f"
+},
+{
+"famille": "nettoyeur",
+"echelon": "exa",
+"etoiles": 2,
+"empreinte": "24049627ec1a30e33586e0e8a9d88eb654088397b5ef2bef8a1043c30359c207"
 },
 {
 "famille": "lecteur",
@@ -5052,13 +6892,25 @@
 "famille": "lecteur",
 "echelon": "giga",
 "etoiles": 0,
-"empreinte": "25ff1d92a4177502a3a16477a06edfc15767d5d76cf9faa11101249f9bd379b7"
+"empreinte": "95dabdc0474fcb1339b28c5593b8cf2905057d77dc813d340b46314402a5b19e"
 },
 {
 "famille": "lecteur",
 "echelon": "tera",
 "etoiles": 0,
 "empreinte": "ac2f0d8047e229bf9144e8148b0cb585a26581d64cb2979bc4197d3fc5ce880e"
+},
+{
+"famille": "lecteur",
+"echelon": "peta",
+"etoiles": 0,
+"empreinte": "ae177bfdd2021ceae6a6862ef3d3aeb4ff740883b37e2ad2a121d4d30dfee41b"
+},
+{
+"famille": "lecteur",
+"echelon": "exa",
+"etoiles": 3,
+"empreinte": "fa5dc2ece071b1fa94974063985762fa78182512eed88ea555789de5883e62b3"
 },
 {
 "famille": "detective",
@@ -5088,13 +6940,25 @@
 "famille": "detective",
 "echelon": "giga",
 "etoiles": 1,
-"empreinte": "5fe764ddb5ee2d518f97561cb29b68381b860c2cc18b650ee0811186ad70fa58"
+"empreinte": "68a840ea58ecaa73a4d5636db01b9e97041bf208c85dd049bd029bb0063efc68"
 },
 {
 "famille": "detective",
 "echelon": "tera",
 "etoiles": 1,
 "empreinte": "ad5693ee91803fdf8d357613fc5a4627c4bb5e53cd50251390dd335b7b03744d"
+},
+{
+"famille": "detective",
+"echelon": "peta",
+"etoiles": 1,
+"empreinte": "67717480e22f9d44ada768606422e9c08480f2bb7efc7f97737919de4269d869"
+},
+{
+"famille": "detective",
+"echelon": "exa",
+"etoiles": 0,
+"empreinte": "7d4c2ab3b18123bcd2b0d63d459cd81d337afda275b3f57059f55d5fc4b85cc5"
 },
 {
 "famille": "plombier",
@@ -5124,13 +6988,25 @@
 "famille": "plombier",
 "echelon": "giga",
 "etoiles": 2,
-"empreinte": "ea8bc3d608819ee37ec807552810914763fcdd0c513279b5d6f6ea3eb84659d3"
+"empreinte": "f0d99ab5660e406b4c16aa48969d0de406f0a6309d2a1e7348dec4e576ae5440"
 },
 {
 "famille": "plombier",
 "echelon": "tera",
 "etoiles": 2,
 "empreinte": "1cc22eba6d77aa17efadd633addd11ee00558c65ab8598100c69bf17b79da300"
+},
+{
+"famille": "plombier",
+"echelon": "peta",
+"etoiles": 2,
+"empreinte": "96f4347b3e2bf995a7e56586e0a86c43a7eb00562e689da81ca6519c46a67b93"
+},
+{
+"famille": "plombier",
+"echelon": "exa",
+"etoiles": 1,
+"empreinte": "16538256568d3e2a48d4d9f4bb187fd1db68abcdfe01529dfa9598f12b949482"
 },
 {
 "famille": "cuisinier",
@@ -5160,13 +7036,25 @@
 "famille": "cuisinier",
 "echelon": "giga",
 "etoiles": 3,
-"empreinte": "1ee6752fe46c23c1775b1c3d3384719e9c9720cbcc8430bb7674f8397dd2cf36"
+"empreinte": "6275c5ba843f33531c3522dd1330e06d2197ad04e8f8b3185eccb8effbec8123"
 },
 {
 "famille": "cuisinier",
 "echelon": "tera",
 "etoiles": 3,
 "empreinte": "5dfc148893779c1a3db432a2cf724f0fd60cd0a543573bd18c67ff2915e77e68"
+},
+{
+"famille": "cuisinier",
+"echelon": "peta",
+"etoiles": 3,
+"empreinte": "ca5aacbe61e87fd674413eca37fffd43b54178f9f1c1ab0833b8e15e3ae33e19"
+},
+{
+"famille": "cuisinier",
+"echelon": "exa",
+"etoiles": 2,
+"empreinte": "c255aca1bbc076825d3f9d1934aeb46772d357527ccddfa4733eca9eca69a12f"
 },
 {
 "famille": null,

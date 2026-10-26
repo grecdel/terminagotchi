@@ -73,14 +73,18 @@ console.log("Salle d'entraînement (donnees/entrainement/vecteurs.json)");
   verifier(ratesE.length === 0, `${VE.exercices.length - ratesE.length}/${VE.exercices.length} exercices identiques au Python`);
   for (const r of ratesE.slice(0, 3)) console.log("     ", r);
   verifier(VE.medailles.every((m) => E.medaille(m.type, m.t) === m.medaille), `${VE.medailles.length} médailles identiques`);
-  verifier(VE.echelons.every((m) => E.echelonDe(m.n, m.or, m.diamant) === m.echelon), "grades identiques (Giga : + une médaille d'or ; Téra : + 3 de diamant)");
-  verifier(VE.echelons.every((m) => E.etoilesDe(m.n, m.echelon) === m.etoiles), "étoiles identiques (au Téra : 150 / 200 / 300)");
+  verifier(VE.echelons.every((m) => E.echelonDe(m.n, m.or, m.diamant, m.tous) === m.echelon), "grades identiques (Giga : 1 médaille d'or ; Téra 3, Péta 6, Exa 10 de diamant ; Exa : chaque exercice)");
+  verifier(VE.echelons.every((m) => E.etoilesDe(m.n, m.echelon) === m.etoiles), "étoiles identiques (à l'Exa : 600 / 800 / 1000)");
   const { createHash } = await import("node:crypto");
   const empreinteDessin = (g) => createHash("sha256").update(g.map((l) => l.map((c) => c || "").join(",")).join("/")).digest("hex");
   verifier(VE.ecussons.every((m) => empreinteDessin(E.ecusson(m.famille, m.echelon, m.etoiles)) === m.empreinte),
     `${VE.ecussons.length} badges complets identiques au pixel près (galons, étoiles)`);
   const px = E.ECHELONS.map((e) => E.galons(e).flat().filter(Boolean).length);
   verifier(px.every((n, i) => i === 0 || n > px[i - 1]), `les galons grandissent à chaque grade (${px.join(", ")})`);
+  const tout = { familles: { cuisinier: { n: 400, or: 0, diamant: 10 } }, records: {} };
+  const avant = E.echelon(tout, "cuisinier");
+  for (const typ of Object.keys(E.TYPES)) if (E.TYPES[typ][0] === "cuisinier") tout.records[typ] = { t: 9.9 };
+  verifier(avant === 6 && E.echelon(tout, "cuisinier") === 7, "Exa : seulement quand chaque exercice de la famille est réussi (sinon Péta)");
   verifier(VE.semaines.every((m) => E.semaine(m.t * 1000) === m.semaine), "semaines ISO identiques");
   verifier(E.commandesConnues("plo_tuyau", ["grep", "wc"]) && !E.commandesConnues("plo_tuyau", ["grep"]), "commandes déjà tapées : vérifiées");
   verifier(E.svgBadge("explorateur", "giga").includes('fill="#ffffff"') && E.svgBadge(null, null).includes("#3a3a44"),

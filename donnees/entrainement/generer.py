@@ -35,11 +35,14 @@ def vecteurs():
         par = E.TYPES[typ][3]
         for s in (0.5, par, par + 0.1, 2 * par, 2 * par + 0.1, 4 * par, 4 * par + 0.1, 900):
             out["medailles"].append({"type": typ, "t": round(s, 1), "medaille": E.medaille(typ, round(s, 1))})
-    for n in (0, 1, 2, 3, 4, 5, 8, 12, 13, 14, 15, 19, 23, 27, 29, 30, 35, 45, 49, 50, 62, 63, 75, 88, 99, 100, 149, 150,
-              200, 299, 300, 900):
-        for ors, dia in ((0, 0), (1, 0), (3, 2), (3, 3)):      # ors : médailles d'or ou de diamant ; dia : de diamant
-            k = B.echelon_de(n, ors, dia)
-            out["echelons"].append({"n": n, "or": ors, "diamant": dia, "echelon": k, "etoiles": B.etoiles_de(n, k)})
+    for n in (0, 1, 2, 3, 4, 5, 8, 12, 13, 14, 15, 19, 23, 27, 29, 30, 35, 45, 49, 50, 62, 63, 75, 88, 99, 100, 124, 125,
+              150, 175, 199, 200, 250, 300, 350, 399, 400, 599, 600, 800, 1000, 5000):
+        # ors : médailles d'or ou de diamant ; dia : de diamant ; tous : chaque exercice de la famille réussi (Exa)
+        for ors, dia, tous in ((0, 0, False), (1, 0, False), (3, 2, False), (3, 3, False), (6, 6, False), (10, 9, True),
+                               (10, 10, False), (10, 10, True)):
+            k = B.echelon_de(n, ors, dia, tous)
+            out["echelons"].append({"n": n, "or": ors, "diamant": dia, "tous": tous, "echelon": k,
+                                    "etoiles": B.etoiles_de(n, k)})
     for i, f in enumerate(B.FAMILLES):
         for e in B.ECHELONS:
             out["ecussons"].append({"famille": f, "echelon": e, "etoiles": (i + len(e)) % 4,

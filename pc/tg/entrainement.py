@@ -15,8 +15,8 @@ Seuls les exercices dont l'enfant a déjà tapé les commandes sont proposés (�
 sont repérés dans les lignes tapées (state["entrainement"]["sym"]). Une famille sans exercice possible
 reste cachée (« ??? »).
 
-Badges (à la PARTIE, pas à la créature) : voir badges.py (grades Bit → Octet → Kilo → Méga → Giga → Téra, galons et
-étoiles ; `tg badges grades` les explique ; Téra : 100 réussites et 3 médailles 💎). Titres : « Élève de la salle » (1 réussite), « <badge> <grade> »
+Badges (à la PARTIE, pas à la créature) : voir badges.py (grades Bit → Octet → … → Giga → Téra → Péta → Exa, galons et
+étoiles ; `tg badges grades` les explique ; au-delà du Giga : Téra, Péta, Exa — voir badges.py). Titres : « Élève de la salle » (1 réussite), « <badge> <grade> »
 (« Explorateur Kilo » : Octet et plus, couleur du grade), « Touche-à-tout » (6 familles en Octet),
 « Légende de la salle » (8 familles en Méga, arc-en-ciel), et « Star de la semaine » (🏆, la meilleure
 partie de la semaine dans une famille d'après le site : gardé UNE semaine, compté en ligne).
@@ -276,9 +276,16 @@ def familles_ouvertes(state):
     return [f for f in B.FAMILLES if types_de(state, f)]
 
 
+def types_faits(e, f):
+    """(exercices de la famille déjà réussis au moins une fois, exercices de la famille) — pour l'Exa."""
+    tous = [x for x, v in TYPES.items() if v[0] == f]
+    return sum(1 for x in tous if x in e["records"]), len(tous)
+
+
 def echelon(e, f):
     x = fam_(e, f)
-    return B.echelon_de(x["n"], x["or"] + x["diamant"], x["diamant"])
+    a, b = types_faits(e, f)
+    return B.echelon_de(x["n"], x["or"] + x["diamant"], x["diamant"], a == b)
 
 
 def etoiles(e, f):
@@ -774,15 +781,18 @@ def commande_texte(state, args, cwd=None):
 
 # ---------------------------------------------------------------- badges, titres, records (écrans)
 def progres(e, f):
-    """Le texte de progression d'un badge gagné : vers le grade suivant, ou vers l'étoile suivante au Giga."""
+    """Le texte de progression d'un badge gagné : vers le grade suivant (ou ce qui manque : médailles, exercices),
+    ou vers l'étoile suivante à l'Exa."""
     x = fam_(e, f)
     k = echelon(e, f)
     if k + 1 < len(B.ECHELONS):
         s = B.SEUILS[k + 1]
         if k + 1 == 4 and x["n"] >= s:
             return t("ent.badges.manque_or")
-        if k + 1 == 5 and x["n"] >= s:
-            return t("ent.badges.manque_diamant", n=x["diamant"], s=B.DIAMANTS_TERA)
+        if x["n"] >= s and x["diamant"] < B.DIAMANTS[k + 1]:
+            return t("ent.badges.manque_diamant", n=x["diamant"], s=B.DIAMANTS[k + 1])
+        if k + 1 == 7 and x["n"] >= s:
+            return t("ent.badges.manque_types", n=types_faits(e, f)[0], s=types_faits(e, f)[1])
         return t("ent.badges.progres", n=x["n"], s=s, echelon=nom_echelon(B.ECHELONS[k + 1]))
     s = B.prochaine_etoile(x["n"], k)
     return t("ent.badges.etoile", n=x["n"], s=s) if s else t("ent.badges.max")
@@ -824,15 +834,16 @@ def ecran_badges(state):
 
 
 def ecran_grades(state):
-    """Les 5 grades expliqués (Bit, Octet… : des tailles d'informatique), avec leurs galons et les étoiles."""
+    """Les 8 grades expliqués (Bit, Octet… : des tailles d'informatique), avec leurs galons et les étoiles."""
     cases = []
     for k, en in enumerate(B.ECHELONS):
         cases.append(("explorateur", en, 0, [(nom_echelon(en), B.couleur_ansi(en) + BOLD),
                                              (t("ent.grades.seuil", n=B.SEUILS[k]), DIM),
                                              (t("ent.badges.manque_or") if k == 4 else
-                                              t("ent.grades.diamants", n=B.DIAMANTS_TERA) if k == 5 else "", DIM)]))
+                                              t("ent.grades.diamants", n=B.DIAMANTS[k]) if B.DIAMANTS[k] else "", DIM),
+                                             (t("ent.grades.tous_types") if k == 7 else "", DIM)]))
     out = [f" {fg(213)}{BOLD}" + t("ent.grades.titre") + RESET, ""]
-    out += B.planche(cases[:3]) + B.planche(cases[3:])
+    out += B.planche(cases)
     out.append(" " + t("ent.grades.intro"))
     for en in B.ECHELONS:
         out.append(f"   {B.couleur_ansi(en)}{BOLD}{nom_echelon(en)}{RESET} : " + t("ent.grades." + en))

@@ -97,10 +97,10 @@ fun main(args: Array<String>) {
     verifier((0 until med.length()).all { med.getJSONObject(it).let { m -> Entrainement.medaille(m.getString("type"), m.getDouble("t")) == m.getString("medaille") } },
         "${med.length()} médailles identiques")
     val ech = v.getJSONArray("echelons")
-    verifier((0 until ech.length()).all { ech.getJSONObject(it).let { m -> Badges.echelonDe(m.getInt("n"), m.getInt("or"), m.getInt("diamant")) == m.getInt("echelon") } },
-        "grades identiques (Giga : une médaille d'or ; Téra : 3 de diamant)")
+    verifier((0 until ech.length()).all { ech.getJSONObject(it).let { m -> Badges.echelonDe(m.getInt("n"), m.getInt("or"), m.getInt("diamant"), m.getBoolean("tous")) == m.getInt("echelon") } },
+        "grades identiques (Giga : 1 médaille d'or ; Téra 3, Péta 6, Exa 10 de diamant ; Exa : chaque exercice)")
     verifier((0 until ech.length()).all { ech.getJSONObject(it).let { m -> Badges.etoilesDe(m.getInt("n"), m.getInt("echelon")) == m.getInt("etoiles") } },
-        "étoiles identiques (au Téra : 150 / 200 / 300)")
+        "étoiles identiques (à l'Exa : 600 / 800 / 1000)")
     val ecu = v.getJSONArray("ecussons")
     fun empreinte(g: List<List<String?>>): String = java.security.MessageDigest.getInstance("SHA-256")
         .digest(g.joinToString("/") { l -> l.joinToString(",") { it ?: "" } }.toByteArray()).joinToString("") { "%02x".format(it) }
@@ -109,7 +109,7 @@ fun main(args: Array<String>) {
             if (m.isNull("echelon")) null else m.getString("echelon"), m.getInt("etoiles"))) == m.getString("empreinte") } },
         "${ecu.length()} badges complets identiques au pixel près (galons, étoiles)")
     val px = Badges.ECHELONS.map { e -> Badges.galons(e).sumOf { l -> l.count { it != null } } }
-    verifier(px == px.sorted() && px.toSet().size == 6, "les galons grandissent à chaque grade ($px)")
+    verifier(px == px.sorted() && px.toSet().size == 8, "les galons grandissent à chaque grade ($px)")
     verifier(Entrainement.migrerTitre("explorateur:argent") == "explorateur:kilo" && Entrainement.migrerTitre("touche") == "touche",
         "vieille sauvegarde : « Explorateur d'Argent » devient « Explorateur Kilo »")
     val sem = v.getJSONArray("semaines")
@@ -210,14 +210,22 @@ fun main(args: Array<String>) {
         "badges : une image complète, le grade et ses étoiles par famille")
     verifier(Entrainement.titreAffiche(jeu)?.texte == "Nettoyeur Giga", "le titre affiché est le plus beau : « Nettoyeur Giga »")
     verifier("`badges grades`" in ecran && "8 bits" in Entrainement.commandeBadges(jeu, "grades")
-        && Regex("¤badge:explorateur:[a-z]+~0¤").findAll(Entrainement.commandeBadges(jeu, "grades")).count() == 6
-        && "bibliothèque de films" in Entrainement.commandeBadges(jeu, "grades"),
-        "badges grades : les 6 grades, leurs galons et ce qu'ils veulent dire")
+        && Regex("¤badge:explorateur:[a-z]+~0¤").findAll(Entrainement.commandeBadges(jeu, "grades")).count() == 8
+        && "bibliothèque de films" in Entrainement.commandeBadges(jeu, "grades") && "Internet" in Entrainement.commandeBadges(jeu, "grades"),
+        "badges grades : les 8 grades, leurs galons et ce qu'ils veulent dire")
     regler("cuisinier", 100, 1)
     verifier("💎 0/3" in Entrainement.ecranBadges(jeu), "100 réussites sans 3 médailles de diamant : encore Giga (💎 0/3)")
     Entrainement.fam(Entrainement.e(jeu), "cuisinier").put("diamant", 3)
     verifier(Entrainement.echelon(Entrainement.e(jeu), "cuisinier") == 5 && "¤badge:cuisinier:tera~0¤" in Entrainement.ecranBadges(jeu)
         && Entrainement.titres(jeu).any { it.texte == "Cuisinier Téra" }, "… avec 3 médailles de diamant : Téra (« Cuisinier Téra »)")
+    Entrainement.fam(Entrainement.e(jeu), "cuisinier").put("n", 400).put("diamant", 10)
+    val (fait, tous) = Entrainement.typesFaits(Entrainement.e(jeu), "cuisinier")
+    verifier(fait == tous || (Entrainement.echelon(Entrainement.e(jeu), "cuisinier") == 6 && "exercices : $fait/$tous" in Entrainement.ecranBadges(jeu)),
+        "400 réussites et 10 💎 : encore Péta tant qu'un exercice manque ($fait/$tous)")
+    val recsC = Entrainement.e(jeu).getJSONObject("records")
+    for ((typ, v) in Entrainement.TYPES) if (v.famille == "cuisinier" && !recsC.has(typ)) recsC.put(typ, org.json.JSONObject().put("t", 9.9))
+    verifier(Entrainement.echelon(Entrainement.e(jeu), "cuisinier") == 7 && "¤badge:cuisinier:exa~0¤" in Entrainement.ecranBadges(jeu)
+        && Entrainement.titres(jeu).any { it.texte == "Cuisinier Exa" }, "… avec chaque exercice : Exa (« Cuisinier Exa »)")
     regler("cuisinier", 0)
     regler("plombier", 9)
     verifier("¤badge:plombier:octet~1¤" in Entrainement.ecranBadges(jeu) && "9/15 → Kilo" in Entrainement.ecranBadges(jeu), "9 réussites : Octet ★☆☆, 9/15 → Kilo")
