@@ -93,10 +93,14 @@ class Partie(val app: AppareilT) {
 }
 
 lateinit var appT: AppareilT
+lateinit var assetsT: File
 
-/** Une partie toute neuve, créée comme par le menu « nouvelle partie » (l'ancienne est rangée avec son terrain). */
-fun nouvellePartie(nom: String): Partie {
-    if (File(appT.filesDir, "sauvegarde.json").exists()) Parties.nouvelle(appT)
+/** Une partie toute neuve, créée comme par le menu « nouvelle partie » (l'ancienne est rangée avec son terrain).
+ *  meme = false : sur un appareil neuf (Parties.MAX parties au plus par appareil). */
+fun nouvellePartie(nom: String, meme: Boolean = false): Partie {
+    if (!meme) {
+        appT = AppareilT(File(appT.filesDir.parentFile, "app_" + System.nanoTime()).apply { mkdirs() }, assetsT)
+    } else if (File(appT.filesDir, "sauvegarde.json").exists()) Parties.nouvelle(appT)
     val p = Partie(appT)
     p.jeu.changerLangue("fr")
     p.jeu.nom = nom
@@ -120,7 +124,8 @@ fun reveil(p: Partie) {
 fun main(args: Array<String>) {
     val assets = File(args[0])
     val dossier = File(System.getProperty("java.io.tmpdir"), "tg_tutoriel_" + System.nanoTime()).apply { mkdirs() }
-    appT = AppareilT(dossier, assets)
+    assetsT = assets
+    appT = AppareilT(File(dossier, "app").apply { mkdirs() }, assets)
     Langue.init(appT)
     Langue.definir("fr")
     val faits = { p: Partie -> Histoire.faits(p.jeu) }
@@ -180,7 +185,7 @@ fun main(args: Array<String>) {
     verif(p.bloque == null, "jamais bloqué : ${p.bloque}")
 
     println("3. Variantes réalistes")
-    p = nouvellePartie("Mauvais dossier")
+    p = nouvellePartie("Mauvais dossier", meme = true)
     reveil(p)
     p.tape("mkdir nid")                                     // tapé dans le vestibule
     verif(p.lecon() == ("nid0" to 0), "mkdir nid dans le vestibule : on doit d'abord reculer (${p.lecon()})")
@@ -194,7 +199,7 @@ fun main(args: Array<String>) {
     p.suite("cd ~/terrain_terminagotchi", "rm  -r   vieille_cabane")
     verif("debarras" in faits(p), "cd absolu, rm -r avec espaces en trop : leçon finie")
     verif(p.bloque == null, "jamais bloqué : ${p.bloque}")
-    p = nouvellePartie("Deja la")
+    p = nouvellePartie("Deja la", meme = true)
     reveil(p)
     File(p.T, "nid").mkdirs()
     File(p.T, "debarras").mkdirs()
@@ -208,8 +213,8 @@ fun main(args: Array<String>) {
 
     println("4. Parties : chaque nouvelle partie a son terrain, l'ancienne est rangée")
     val rangees = File(appT.filesDir, "parties").listFiles()!!.filter { it.name.startsWith("terrain_") }
-    verif(rangees.size >= 2 && rangees.all { File(it, "nid").isDirectory }, "terrains rangés dans parties/ : ${rangees.map { it.name }}")
-    p = nouvellePartie("Neuve")
+    verif(rangees.size == 2 && rangees.all { File(it, "nid").isDirectory }, "terrains rangés dans parties/ : ${rangees.map { it.name }}")
+    p = nouvellePartie("Neuve", meme = true)
     verif(!p.T.exists() && p.lecon() == ("t0" to 0), "la nouvelle partie démarre sans terrain, au début")
     reveil(p)
     p.suite("cd /", "cd ${p.T.path}", "mkdir nid")
