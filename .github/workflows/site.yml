@@ -87,6 +87,8 @@ jobs:
         run: |
           npx wrangler@3 deploy 2>&1 | tee deploy.log
           grep -oE 'https://[a-z0-9.-]+\.workers\.dev' deploy.log | head -1 > url.txt
+          # Nom de domaine perso : utilisé dès qu'il répond (sinon on garde l'adresse workers.dev)
+          if curl -fsS -m 15 -o /dev/null https://terminagotchi.com/; then echo "https://terminagotchi.com" > url.txt; fi
           echo "Adresse du site : $(cat url.txt)"
           test -s url.txt
 
