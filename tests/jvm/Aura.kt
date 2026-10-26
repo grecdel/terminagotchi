@@ -87,7 +87,7 @@ fun main(args: Array<String>) {
     println("Listes : troupe et collection")
     val caps = Explo.captures(jeu)
     for ((nom, rar, sh) in listOf(Triple("Braisillon", "légendaire", false), Triple("Pyrodrac", "commune", false), Triple("Ombrachne", "rare", true))) {
-        val ind = Bestiaire.individu(Bestiaire.espece(nom)!!, sh)
+        val ind = Bestiaire.individu(Bestiaire.espece(nom)!!, sh, "")
         ind.put("rarete", rar).put("stade", "adulte")
         caps.put(ind)
     }

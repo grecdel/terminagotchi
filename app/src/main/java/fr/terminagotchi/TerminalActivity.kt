@@ -866,7 +866,7 @@ class TerminalActivity : Activity() {
         // pendant un dressage, le familier est déjà dans le face-à-face : on allège l'en-tête
         val vis = if (panneau != null) View.GONE else View.VISIBLE
         creature.visibility = vis; faim.visibility = vis; xp.visibility = vis; stats.visibility = vis
-        auraBtn.visibility = vis
+        if (::auraBtn.isInitialized) auraBtn.visibility = vis
         majBoutonAura()
         if (lecture == null) creature.setImageBitmap(imageCreature(cligne > 0))
     }
