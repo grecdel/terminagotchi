@@ -24,6 +24,7 @@ import fr.terminagotchi.Combat
 import fr.terminagotchi.Dressage
 import fr.terminagotchi.Equipe
 import fr.terminagotchi.Exemples
+import fr.terminagotchi.Explique
 import fr.terminagotchi.Explo
 import fr.terminagotchi.Animations
 import fr.terminagotchi.Histoire
@@ -372,6 +373,16 @@ fun main(args: Array<String>) {
         arVerts.map { (a, b) -> arLu.substring(a + 1, b - 1) } == listOf("mkdir", "mkdir cabane"),
         "arabe : chaque commande verte est isolée de gauche à droite (LRI … PDI), sans changer ses caractères")
     Langue.definir("fr")
+
+    println("8. Expliquer chaque commande et ses options (enfant, puis pour les grands)")
+    val vuesOpt = jeu.module("explique").optJSONArray("vues")?.toString() ?: ""
+    verifier("recursif_rm" in vuesOpt, "« rm -r vieille_cabane » réussi : le -r a été expliqué (et retenu)")
+    verifier(Explique.options("ps aux | wc -l") == listOf("aux" to "aux", "|" to "tuyau", "-l" to "lignes"),
+        "options repérées dans « ps aux | wc -l » : aux, |, -l")
+    val ficheRm = Vert.sansMarques(Explique.fiche(jeu, "rm"))
+    verifier("« récursif »" in ficheRm && "--recursive" in ficheRm && "Pour les grands" in ficheRm && "rmdir" in ficheRm,
+        "explique rm : image, -r (« récursif » / --recursive), pour les grands, différences avec rmdir")
+    verifier(Explique.fiche(jeu, "zorglub").contains("zorglub"), "explique d'une commande inconnue : un message clair")
 
     println("\n$ok réussis, $ko échoués")
     System.exit(if (ko > 0) 1 else 0)

@@ -68,6 +68,7 @@ object Exemples {
         "bestiaire" to "bestiaire Glitchou",
         "anime" to "anime abyssor attaque",
         "aile" to "aile grenier",
+        "explique" to "explique rm",
     )
 
     /** Les mots à remplacer d'un exemple, dans la langue courante (NUMÉRO, NOM@ADRESSE, coucou). */

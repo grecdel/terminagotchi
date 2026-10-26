@@ -31,7 +31,7 @@ os.environ.pop("HISTFILE", None)
 RACINE = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(RACINE / "pc"))
 
-from tg import (app, bestiaire as B, combat, core, dressage, equipe, exemples, explo, histoire, langue,  # noqa: E402
+from tg import (app, bestiaire as B, combat, core, dressage, equipe, exemples, explique, explo, histoire, langue,  # noqa: E402
                 lecons, lexique, tirage)
 
 HOME = Path.home()
@@ -357,6 +357,20 @@ for cmd, ex in (("mkdir", "mkdir cabane"), ("cat", "cat nid/repas.txt"), ("cp", 
 ecran = texte(lexique.lignes(core.load()))
 verifier("↳ exemple : mkdir cabane" in ecran and "↳ exemple : cat nid/repas.txt" in ecran,
          "le lexique affiche « ↳ exemple : mkdir cabane »")
+
+print("7. Expliquer chaque commande et ses options (enfant, puis pour les grands)")
+st = core.load()
+verifier("recursif_rm" in st.get("options_vues", []), "« rm -r vieille_cabane » réussi : le -r a été expliqué (et retenu)")
+verifier(explique.options("ps aux | wc -l") == [("aux", "aux"), ("|", "tuyau"), ("-l", "lignes")],
+         "options repérées dans « ps aux | wc -l » : aux, |, -l")
+fiche = texte(explique.fiche(st, "rm"))
+verifier("« récursif »" in fiche and "--recursive" in fiche and "Pour les grands" in fiche and "rmdir" in fiche,
+         "tg explique rm : image, -r (« récursif » / --recursive), pour les grands, différences avec rmdir")
+verifier("Pour les grands" not in " ".join(explique.phrases({"xp": 0}, "-r", "recursif_rm")),
+         "palier 0 : la leçon ne montre que l'image")
+verifier("--recursive" in langue.sans_marques(" ".join(explique.phrases({"xp": 10 * 11 ** 2}, "-r", "recursif_rm"))),
+         "palier 1 et plus : la ligne pour les grands suit l'image")
+verifier("Pour les grands" in texte(lexique.lignes(st)), "le lexique a ses lignes « Pour les grands » et ses options")
 
 print(f"\n{ok} réussis, {ko} échoués   (HOME={HOME})")
 sys.exit(1 if ko else 0)

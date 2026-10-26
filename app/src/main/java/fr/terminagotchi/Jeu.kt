@@ -241,6 +241,7 @@ object Regles {
             Mot("bestiaire", "lexa.bestiaire.i", "lexa.bestiaire.t", j),
             Mot("troupe", "lexa.troupe.i", "lexa.troupe.t", j),
             Mot("anime", "lexa.anime.i", "lexa.anime.t", j),
+            Mot("explique", "lex.explique.i", "lex.explique.t", j),
             Mot("carte", "lexa.maison.carte.i", "lexa.maison.carte.t", m),
             Mot("quetes", "lex.tg_quetes.i", "lex.tg_quetes.t", m),
             Mot("aile", "lexa.aile.i", "lexa.aile.t", m),
@@ -696,6 +697,8 @@ class Jeu(ctx: Context) {
             } else {
                 val e = c.etapes[etape]
                 out.add("${c.titre} (${etape + 1}/${c.etapes.size}) · ${e.dit}\n➜ `${Regles.piege(e.cmd)}`")
+                for ((montre, cle) in Explique.nouvelles(this, e.cmd))          // 💡 Le -r veut dire… (+ pour les grands)
+                    Explique.phrases(this, montre, cle).forEachIndexed { k, p -> out.add("  ".repeat(k) + p) }
                 if (DEPUIS.any { e.cmd.startsWith(it) } || "nid/" in e.cmd || e.cmd.endsWith(" nid") || "reserve.txt" in e.cmd) {
                     out.add(t("app.lecon.depuis", "terrain" to Mots.terme("terrain", Mots.palier(this)), "cmd" to "cd ~/${terrain.name}"))
                 }

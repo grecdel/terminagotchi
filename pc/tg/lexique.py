@@ -174,6 +174,9 @@ def lignes(state):
             ex = exemples.lexique(cmd)
             if ex:
                 sortie.append(f"  {' ' * 18}{fg(110)}↳ " + t("lex.exemple", ex=ex) + RESET)
+            g = explique.grand_commande(cmd.split()[0].lower(), technique)        # pour les grands
+            if g:
+                sortie.append(f"  {' ' * 18}{DIM}{g}{RESET}")
             for k, o in enumerate(explique.lignes_options(cmd.split()[0])):   # -r = « récursif »…
                 debut = t("lex.options") + " " if k == 0 else ""
                 sortie.append(f"  {' ' * 18}{DIM}{debut}{o}{RESET}")

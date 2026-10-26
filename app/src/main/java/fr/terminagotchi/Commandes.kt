@@ -104,6 +104,7 @@ class Commandes(
             "compte" -> compte(reste)
             "site" -> site(reste)
             "bestiaire" -> Reponse(Explo.fiche(jeu, reste), couleur = ROSE)
+            "explique" -> Reponse(Explique.fiche(jeu, reste), couleur = BLEU)
             "sync" -> sync()
             "indice" -> Reponse(Ctf.indice(jeu, reste), couleur = VERT)
             "edite" -> edite(reste)

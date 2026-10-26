@@ -11,10 +11,14 @@
      étape, la leçon l'explique en une phrase (« 💡 Le -r veut dire… ») ; quand l'étape est réussie, la
      créature le redit dans une bulle et ne le répète plus (state["options_vues"]) ;
    - la commande « tg explique rm » (ou « explique rm ») : la fiche complète d'une commande.
+4) Pour les grands : sous chaque explication imagée, l'explication technique exacte (« grand.<commande> »,
+   « optg.<clé> », avec les noms longs des options GNU : --recursive, --all, --human-readable…).
+   Lexique et fiche : toujours. Leçons et bulles : à partir du palier 1 de vocabulaire (mots.py) ;
+   au palier 0, seulement l'image (la version technique reste dans « explique »).
 Mêmes tables dans l'appli Android (Explique.kt).
 """
 from . import core
-from .langue import t
+from .langue import brut, t
 from .mots import palier
 from .plateforme import DIM, RESET, BOLD, fg
 
@@ -95,6 +99,26 @@ def phrase(montre, cle):
     return t("opt.phrase", opt=montre, sens=t("opt." + cle))
 
 
+def grand(cle):
+    """« Pour les grands : … » (l'explication technique exacte)."""
+    return t("grand.ligne", texte=t(cle))
+
+
+def grand_commande(nom, technique=None):
+    """L'explication technique d'une commande : grand.<cmd>, sinon la technique du lexique."""
+    if brut("grand." + nom) is not None:
+        return grand("grand." + nom)
+    return t("grand.ligne", texte=technique) if technique else None
+
+
+def phrases(state, montre, cle):
+    """L'image (la créature), puis la version des grands à partir du palier 1."""
+    out = [phrase(montre, cle)]
+    if palier(state) >= 1:
+        out.append(grand("optg." + cle))
+    return out
+
+
 def nouvelles(state, cmd):
     """Les options de cette commande que la créature n'a pas encore expliquées."""
     vues = set(state.get("options_vues", []))
@@ -105,8 +129,9 @@ def apres_reussite(state, cmd):
     """Étape réussie : la créature explique (une seule fois) les nouvelles options, puis s'en souvient."""
     nouv = nouvelles(state, cmd)
     for montre, cle in nouv:
-        core.say(state, phrase(montre, cle), 14)
-        core.log(state, phrase(montre, cle))
+        for x in phrases(state, montre, cle):
+            core.say(state, x, 14)
+            core.log(state, x)
     state["options_vues"] = list(state.get("options_vues", [])) + [c for _m, c in nouv]
 
 
@@ -120,6 +145,7 @@ def lignes_options(cmd):
         vues.add(cle)
         montre = "-3" if opt == "-#" else opt
         out.append(f"`{montre}` : " + t("opt." + cle))
+        out.append("   " + grand("optg." + cle))
     return out
 
 
@@ -144,7 +170,10 @@ def fiche(state, cmd):
         return [t("explique.inconnue", cmd=cmd, ex="tg explique rm")]
     out = ["", f" {fg(213)}{BOLD}" + t("explique.titre", cmd=entree[0] if entree else nom) + RESET]
     if entree:
-        out.append("  " + lexique.explication(entree[1], entree[2], palier(state)))
+        out.append("  " + entree[1])
+    g = grand_commande(nom, entree[2] if entree else None)
+    if g:
+        out.append(f"  {DIM}{g}{RESET}")
     ex = exemples.lexique(entree[0] if entree else nom)
     if ex:
         out.append(f"  {fg(110)}↳ " + t("lex.exemple", ex=ex) + RESET)

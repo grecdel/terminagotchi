@@ -650,7 +650,8 @@ class TerminalActivity : Activity() {
         Histoire.h(jeu)
         val entete = t("lex.carnet.titre", "nom" to jeu.nom) + "\n" +
             t("term.lexique.entete", "n" to connues, "total" to Regles.LEXIQUE.size) + "\n" +
-            "↳ " + t("lex.exemples.ou", "cmd" to "cd ~/${jeu.terrain.name}") + "\n"
+            "↳ " + t("lex.exemples.ou", "cmd" to "cd ~/${jeu.terrain.name}") + "\n" +
+            "📖 " + t("lex.explique", "ex" to "explique rm") + "\n"
         Vert.ajouter(sb, entete)
         sb.setSpan(ForegroundColorSpan(0xFFFF87FF.toInt()), 0, sb.length, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
         var section = ""
@@ -688,6 +689,15 @@ class TerminalActivity : Activity() {
                 val e = sb.length
                 Vert.ajouter(sb, "    ↳ " + t("lex.exemple", "ex" to ex) + "\n")
                 sb.setSpan(ForegroundColorSpan(0xFF87AFD7.toInt()), e, sb.length, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
+            }
+            // pour les grands, puis les options (-r = « récursif »…), voir Explique.kt
+            if (!pc) {
+                val e = sb.length
+                Explique.grandCommande(cmd, m.technique)?.let { Vert.ajouter(sb, "    $it\n") }
+                Explique.lignesOptions(cmd).forEachIndexed { k, o ->
+                    Vert.ajouter(sb, "    " + (if (k == 0) t("lex.options") + " " else "") + o + "\n")
+                }
+                sb.setSpan(ForegroundColorSpan(0xFF9A9AB0.toInt()), e, sb.length, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
             }
         }
         val d = sb.length

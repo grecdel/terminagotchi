@@ -568,6 +568,7 @@ object Histoire {
         val e = les.etapes[jeu.etape]
         jeu.log("✔ ${e.cmd}")
         jeu.dire(e.bravo, 12)
+        Explique.apresReussite(jeu, e.cmd)          // -r, >>, 444… : expliqués une fois (Explique.kt)
         jeu.etape++
         jeu.animer("content")
         if (jeu.etape < les.etapes.size) {
