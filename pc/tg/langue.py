@@ -146,6 +146,7 @@ VERT = "\x1b[38;5;84m"
 FIN_VERT = "\x1b[39m"
 LRI, PDI = "\u2066", "\u2069"
 RTL = ("ar", "ur")
+_SGR = re.compile(r"\x1b\[[0-9;]*m")
 
 
 def couleurs(flux):
@@ -166,7 +167,12 @@ def rendre(texte, couleur=True):
 
     def un(m):
         c = LRI + m.group(1) + PDI if rtl else m.group(1)
-        return VERT + c + FIN_VERT if couleur else c
+        if not couleur:
+            return c
+        # après la commande, la ligne reprend sa couleur (la dernière couleur posée avant elle)
+        avant = [x for x in _SGR.findall(texte, 0, m.start()) if x.startswith("\x1b[38;") or x in ("\x1b[0m", "\x1b[39m")]
+        apres = avant[-1] if avant and avant[-1].startswith("\x1b[38;") else FIN_VERT
+        return VERT + c + apres
     return _PASSAGE.sub(un, texte)
 
 
