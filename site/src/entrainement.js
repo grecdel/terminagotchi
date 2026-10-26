@@ -10,9 +10,10 @@ export const BASE = 1_000_000;
 export const MAX_PAR_GRAINE = 100;
 export const FAMILLES = ["explorateur", "batisseur", "demenageur", "nettoyeur", "lecteur", "detective", "plombier", "cuisinier"];
 /** Les grades (des tailles d'informatique), leurs seuils, et les étoiles vers le grade suivant (★, ★★, ★★★). */
-export const ECHELONS = ["bit", "octet", "kilo", "mega", "giga"];
-export const SEUILS = [1, 5, 15, 30, 50];
-export const ETOILES = [[2, 3, 4], [8, 10, 13], [19, 23, 27], [35, 40, 45], [75, 100, 150]];
+export const ECHELONS = ["bit", "octet", "kilo", "mega", "giga", "tera"];
+export const SEUILS = [1, 5, 15, 30, 50, 100];
+export const DIAMANTS_TERA = 3;
+export const ETOILES = [[2, 3, 4], [8, 10, 13], [19, 23, 27], [35, 40, 45], [63, 75, 88], [150, 200, 300]];
 export const MEDAILLES = ["bronze", "argent", "or", "diamant"];
 export const ICONE_MEDAILLE = { bronze: "🥉", argent: "🥈", or: "🥇", diamant: "💎" };
 
@@ -120,10 +121,10 @@ export function semaine(ms = Date.now()) {
 }
 export const semainePrecedente = (ms = Date.now()) => semaine(ms - 7 * 86_400_000);
 
-/** Le grade atteint (0…4, ou -1) : n réussites, et pour le Giga une médaille d'or (ou de diamant). */
-export function echelonDe(n, ors = 0) {
+/** Le grade atteint (0…5, ou -1) : n réussites, pour le Giga une médaille d'or (ou de diamant), pour le Téra 3 de diamant. */
+export function echelonDe(n, ors = 0, diamants = 0) {
   let k = -1;
-  SEUILS.forEach((s, i) => { if (n >= s && (i < 4 || ors >= 1)) k = i; });
+  SEUILS.forEach((s, i) => { if (n >= s && (i < 4 || ors >= 1) && (i < 5 || diamants >= DIAMANTS_TERA)) k = i; });
   return k;
 }
 
@@ -140,9 +141,10 @@ export const COULEURS = {
   kilo: ["#152a78", "#4072f0", "#b1c8ff", "#f0f4ff", "#2240b0"],
   mega: ["#3d0f60", "#a050e6", "#e2b8ff", "#fff0ff", "#5e1f92"],
   giga: ["#6b4700", "#e8b71c", "#fff27a", "#4f3300", "#a36f00"],
+  tera: ["#4b3a8c", "#dfe9ff", "#ffffff", "#4b3a8c", "#ff6fd8"],
   cache: ["#3a3a44", "#5a5a66", "#6e6e7a", "#8a8a96", "#4a4a55"],
 };
-const FIXES = { d: "#4a3000", e: "#d9a41a", g: "#fff27a", q: "#0b3f55", r: "#3fd6ff", s: "#ffffff", z: "#0c0c10", y: "#4a4a5e", x: "#262630", p: "#d8d8e0" };
+const FIXES = { d: "#4a3000", e: "#d9a41a", g: "#fff27a", q: "#0b3f55", r: "#3fd6ff", s: "#ffffff", z: "#0c0c10", y: "#4a4a5e", x: "#262630", p: "#d8d8e0", "1": "#ff5a6e", "2": "#ffa63d", "3": "#ffe94a", "4": "#5cff86", "5": "#4ad8ff", "6": "#b46cff", n: "#1a0d33", v: "#ffffff", w: "#ffffff", u: "#8ff7ff" };
 const ETOILE_ON = "#ffd84a", ETOILE_OFF = "#3c3c4a";
 const FORME = ["...oooooooo...", "..ohhhhhhhhfo.", ".ohhffffffffo.", "ohhffffffffffo", "ohfffffffffffo", "ohfffffffffffo", "ohfffffffffffo",
   "ohfffffffffffo", "ohfffffffffffo", "offfffffffffo.", ".offfffffffo..", "..offfffffo...", "...offfffo....", ".....ooo......"];
@@ -244,6 +246,32 @@ const GALONS = {
     ".abccaa...aaccba..",
     ".acaa.......aaca..",
   ]],
+  tera: [4, [
+    "1111n........n1111",
+    "1v1n..........n1v1",
+    "1vn............nv1",
+    "22n............n22",
+    "2vn............nv2",
+    "33n............n33",
+    "3vn............nv3",
+    "33n............n33",
+    "4vn............nv4",
+    "44n............n44",
+    "5vn............nv5",
+    "55n............n55",
+    "n55n...aaa....n55n",
+    ".n66naabbbaa.n66n.",
+    "..naabpcpcpbaa6n..",
+    "..abbzyyyyyzbba...",
+    ".abcczxuwuxzccba..",
+    ".acaazxuuuxzaaca..",
+    "..abbcpapapcbba...",
+    ".abccaabbbaaccba..",
+    ".acaabbcccbbaaca..",
+    "..abbccaaaccbba...",
+    ".abccaanwnaaccba..",
+    ".acaa.nuwun.aaca..",
+  ]],
 };
 const ETOILE = ["..x..", ".xxx.", "xxxxx", ".x.x."];
 
@@ -253,7 +281,7 @@ export function grille(famille, echelon) {
   const pal = { o: c[0], f: c[1], h: c[2], i: c[3], k: c[4], K: c[4] };
   const g = FORME.map((l) => [...l].map((x) => pal[x] || null));
   ICONES[cache ? "cache" : famille].forEach((l, y) => [...l].forEach((x, xx) => { if (x !== ".") g[3 + y][3 + xx] = pal[x]; }));
-  if (echelon === "giga" && !cache) for (const [y, x] of ETINCELLES) g[y][x] = "#ffffff";
+  if ((echelon === "giga" || echelon === "tera") && !cache) for (const [y, x] of ETINCELLES) g[y][x] = "#ffffff";
   return g;
 }
 
@@ -306,7 +334,7 @@ export function fam(e, f) {
 
 export function echelon(e, f) {
   const x = fam(e, f);
-  return echelonDe(x.n, x.or + x.diamant);
+  return echelonDe(x.n, x.or + x.diamant, x.diamant);
 }
 
 /** Les titres d'une partie, du plus beau au plus simple : [{ id, famille?, echelon?, couleur }]. */

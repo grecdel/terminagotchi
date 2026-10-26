@@ -379,8 +379,8 @@ console.log("Salle d'entraînement : exercices vérifiés, records, badges, Star
   r = await appel("GET", "/joueur/Grec");
   verifier(r.t.includes("Bit ★★★") && r.t.includes('viewBox="0 0 18 28"'), "profil : le badge complet (galons, étoiles) et son grade");
   r = await appel("GET", "/records");
-  verifier(["Bit", "Octet", "Kilo", "Méga", "Giga", "8 × Bit"].every((x) => r.t.includes(x)) && r.t.split('viewBox="0 0 18 28"').length - 1 === 5,
-    "/records : les 5 grades, leurs galons et ce qu'ils veulent dire");
+  verifier(["Bit", "Octet", "Kilo", "Méga", "Giga", "Téra", "8 × Bit", "Téra 100"].every((x) => r.t.includes(x)) && r.t.split('viewBox="0 0 18 28"').length - 1 === 6,
+    "/records : les 6 grades, leurs galons et ce qu'ils veulent dire");
   r = await appel("GET", "/records?lang=ja");
   verifier(r.t.includes("トレーニングルーム"), "/records traduit (japonais)");
 }

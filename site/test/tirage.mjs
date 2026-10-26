@@ -73,8 +73,8 @@ console.log("Salle d'entraînement (donnees/entrainement/vecteurs.json)");
   verifier(ratesE.length === 0, `${VE.exercices.length - ratesE.length}/${VE.exercices.length} exercices identiques au Python`);
   for (const r of ratesE.slice(0, 3)) console.log("     ", r);
   verifier(VE.medailles.every((m) => E.medaille(m.type, m.t) === m.medaille), `${VE.medailles.length} médailles identiques`);
-  verifier(VE.echelons.every((m) => E.echelonDe(m.n, m.or) === m.echelon), "grades identiques (Giga : + une médaille d'or)");
-  verifier(VE.echelons.every((m) => E.etoilesDe(m.n, m.echelon) === m.etoiles), "étoiles identiques (au Giga : 75 / 100 / 150)");
+  verifier(VE.echelons.every((m) => E.echelonDe(m.n, m.or, m.diamant) === m.echelon), "grades identiques (Giga : + une médaille d'or ; Téra : + 3 de diamant)");
+  verifier(VE.echelons.every((m) => E.etoilesDe(m.n, m.echelon) === m.etoiles), "étoiles identiques (au Téra : 150 / 200 / 300)");
   const { createHash } = await import("node:crypto");
   const empreinteDessin = (g) => createHash("sha256").update(g.map((l) => l.map((c) => c || "").join(",")).join("/")).digest("hex");
   verifier(VE.ecussons.every((m) => empreinteDessin(E.ecusson(m.famille, m.echelon, m.etoiles)) === m.empreinte),
