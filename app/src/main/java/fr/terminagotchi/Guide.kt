@@ -356,7 +356,7 @@ object Guide {
             g.getJSONObject("fatigue").put(m.id, Math.round(f * 1000) / 1000.0)
             if (duTalent(tal, ligne!!)) {
                 jeu.ajouterXp(1)
-                if (now - g.optLong("astuce_t") >= ASTUCE_DELAI) {
+                if (now - g.optLong("astuce_t") >= ASTUCE_DELAI && Intro.ouvert(jeu, "equipe")) {
                     g.put("astuce_t", now)
                     jeu.dire("${ICONES[m.type]} ${m.nom} : " + astuce(tal), 10)
                 }
@@ -378,6 +378,7 @@ object Guide {
                 }
             }
         }
+        if (!Intro.ouvert(jeu, "biomes")) return null        // les régions gardées : après leur présentation (Intro.kt)
         return region(jeu, if (tapee) ligne else null, cwd?.path, g, now)
     }
 

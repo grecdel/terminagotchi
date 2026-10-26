@@ -195,7 +195,7 @@ class NotifVie : BroadcastReceiver() {
 
         /** Publie (ou met à jour, ou retire) la notification pour la partie active. Appelé par WidgetCreature.majTous. */
         fun maj(ctx: Context, jeu: Jeu) {
-            if (!voulue(ctx) || !jeu.existe) { retirer(ctx); return }
+            if (!voulue(ctx) || !jeu.existe || !Intro.ouvert(jeu, "extras")) { retirer(ctx); return }   // après sa présentation
             if (!permise(ctx)) return
             val nm = gestionnaire(ctx) ?: return
             try {

@@ -298,6 +298,9 @@ object Maison {
     ) {
         var ici = false
         var marques = ""
+        /** une région gardée : « fermee » (aucune bestiole de son type dans l'équipe), « visite » (pas de guide de son
+         *  type pour l'agrandir), sinon "" (voir garde) */
+        var garde = ""
         var etiquette = ""
         /** la ligne du dossier parent (null pour le camp de base) */
         var parent: Noeud? = null
@@ -326,6 +329,17 @@ object Maison {
             in TEXTES -> "note"
             else -> "coffre"
         } to region
+    }
+
+    /**
+     * Une région gardée (biome/<type>/ et ce qu'elle contient) : « fermee » si aucune bestiole de son type n'est dans
+     * l'équipe (Guide.regionOuverte), « visite » si on peut y entrer mais pas l'agrandir (Guide.peutAgrandir), sinon "".
+     */
+    fun garde(jeu: Jeu, n: Noeud): String {
+        val b = n.biome ?: return ""
+        if (!n.rel.startsWith("biome/") || b !in BIOMES || n.genre !in setOf("region", "parcelle", "lieu")) return ""
+        if (!Guide.regionOuverte(jeu, b)) return "fermee"
+        return if (Guide.peutAgrandir(jeu, b)) "" else "visite"
     }
 
     /** Le nom dessiné à côté de la tuile. */
@@ -367,6 +381,7 @@ object Maison {
             val n = Noeud(r, nom, prof, dossier, g, b, brume, suite == 0 && cle !in montres, branches, suite, cle)
             n.parent = parent
             if (g == "piece" && b != null && b in PIECES) n.marques = if (brume) (if (Quetes.etoile(jeu, b)) "★" else "") else marques(jeu, b)
+            n.garde = garde(jeu, n)
             n.etiquette = etiquette(n)
             out.add(n)
             return n
@@ -471,6 +486,7 @@ object Maison {
             val lab = if (n.brume) "░░░░ ???" else emoji(n) + " " + n.etiquette
             var s = g + texteTree(n) + "  " + lab
             if (n.marques.isNotEmpty()) s += " " + n.marques
+            if (n.garde.isNotEmpty()) s += " " + t("carte.garde.${n.garde}", "type" to Guide.etiquette(n.biome ?: ""))
             if (n.ici) s += " ◉ " + t("carte.monde.ici")
             if (n.nouveau) s += " ✨ " + t("carte.monde.nouveau")
             l.add(s)

@@ -51,6 +51,9 @@ class Commandes(
         val mots = ligne.trim().split(Regex("\\s+"))
         val cmd = mots.first().lowercase()
         val reste = ligne.trim().substringAfter(' ', "").trim()
+        // une fonction pas encore ouverte (Intro.kt, intro.json) : « pas encore », jamais une erreur
+        val nom = if (cmd == "equipe" && reste.split(Regex("\\s+"))[0].lowercase() == "guide") "guide" else cmd
+        Intro.bloque(jeu, nom, reste)?.let { return Reponse(it, couleur = ORANGE) }
         return when (cmd) {
             // ---------------------------------------------------- téléphone
             "applis" -> applis(reste)

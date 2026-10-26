@@ -71,6 +71,10 @@ class TerminalActivity : Activity() {
     private var lectureK = 0
     private var lectureFin = 0
     private var animJouee = System.currentTimeMillis()   // on ne rejoue pas les événements d'avant l'ouverture
+    // l'intro (Intro.kt, IntroVue) : l'écran du début montré (0 : aucun), la confirmation de « debloquer tout »
+    private var ecranIntro = 0
+    private var introVue: IntroVue? = null
+    private var confirmerDeblocage = false
     private var ambiance = System.currentTimeMillis() + AMBIANCE
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -91,6 +95,7 @@ class TerminalActivity : Activity() {
             apresChangement = {
                 shell.dossier = jeu.home            // l'ancien terrain a été rangé avec son ancienne partie
                 animJouee = System.currentTimeMillis()
+                ecranIntro = if (!jeu.existe) 1 else 0       // une nouvelle partie : les écrans du début
                 WidgetCreature.majTous(this)
                 if (::contenu.isInitialized) majObservatoire(null)
                 rafraichir()
@@ -177,6 +182,7 @@ class TerminalActivity : Activity() {
             ecrire(menu.ouvrir(), Commandes.ROSE)       // lancé depuis l'icône : le menu des parties
         } else if (!jeu.existe) {
             ecrire(t("term.oeuf"))
+            ecranIntro = 1                           // les écrans du début (Intro.kt), avant le nom de l'œuf
         } else {
             jeu.parlerSiSilencieux()
             ecrire(t("mini.accueil1") + "\n" + t("term.aide_pour_aide"))
@@ -369,6 +375,27 @@ class TerminalActivity : Activity() {
         val etaitRappel = rappel != null && ligne == rappel
         rappel = null
         posHisto = -1
+        if (confirmerDeblocage) {                    // « debloquer tout » : oui / non (dans les 14 langues)
+            confirmerDeblocage = false
+            saisie.setText("")
+            ecrire("> $ligne", 0xFF5FD787.toInt())
+            if (MenuParties.oui(ligne)) {
+                Intro.toutDebloquer(jeu)
+                jeu.sauver()
+                ecrire(t("deb.tout.ok"), Commandes.ROSE)
+            } else ecrire(t("deb.tout.non"), Commandes.ROSE)
+            rafraichir()
+            return
+        }
+        if (!jeu.existe && ecranIntro > 0 && ligne.isEmpty() && !menu.ouvert) {   // Entrée : l'écran suivant
+            actionIntro("suivant")
+            return
+        }
+        if (jeu.existe && ligne.isEmpty() && Intro.aMontrer(jeu) != null) {     // Entrée : l'écran de présentation est lu
+            actionIntro("ok")
+            return
+        }
+        if (jeu.existe && ligne.isNotEmpty() && Intro.aMontrer(jeu) != null) Intro.lu(jeu)   // taper une commande le referme
         if (menu.ouvert && !enCours) {              // une réponse au menu des parties (rien n'est mangé)
             saisie.setText("")
             ecrire("> $ligne", 0xFF5FD787.toInt())
@@ -390,11 +417,13 @@ class TerminalActivity : Activity() {
         if (!jeu.existe) {
             jeu.nom = ligne.take(16)
             jeu.shiny = false   // le compagnon ne naît jamais shiny (pas de rareté)
+            Intro.nouvellePartie(jeu)              // l'œuf seul, sa liste de commandes ; le jeu s'ouvre petit à petit
+            ecranIntro = 0
             jeu.log(t("app.oeuf_apparu", "trait" to Regles.nomTrait(jeu.trait)))
             jeu.dire(t("term.toc_toc"), 10)
             jeu.sauver()
             WidgetCreature.majTous(this)
-            ecrire(t("term.bienvenue", "nom" to jeu.nom))
+            ecrire(t("intro.ou.tel") + "\n" + t("intro.astuce.0"), Commandes.ROSE)
             rafraichir()
             return
         }
@@ -406,6 +435,18 @@ class TerminalActivity : Activity() {
             "parties" -> { ecrire(menu.ouvrir(), Commandes.ROSE); return }
             "langue" -> { ecrire(langue(ligne.trim().split(Regex("\\s+")).getOrNull(1)), Commandes.ROSE); return }
             "partie" -> { ecrire(menu.commande(ligne.substringAfter(' ', "")), Commandes.ROSE); rafraichir(); return }
+            "debloquer" -> {                          // pour les parents et les tests : tout ouvrir (après confirmation)
+                if (ligne.trim().split(Regex("\\s+")).getOrNull(1)?.lowercase() in setOf("tout", "all")) {
+                    confirmerDeblocage = true
+                    ecrire(t("deb.tout.question"), Commandes.ROSE)
+                } else ecrire(t("deb.tout.non"), Commandes.ROSE)
+                return
+            }
+            "lexique" -> {                            // le carnet d'aventure (comme le bouton 📖)
+                val non = Intro.bloque(jeu, "lexique")
+                if (non != null) ecrire(non, 0xFFFFAF5F.toInt()) else if (lexiqueVue.visibility != View.VISIBLE) basculerLexique()
+                return
+            }
             "aide" -> {
                 ecrire(t("term.aide", "ctf" to Mots.terme("ctf", Mots.palier(jeu), true)) + "\n" + t("term.aide.maison") + "\n" + t("env.aide.tel") + "\n" + t("ent.aide.tel"))
                 return
@@ -453,6 +494,8 @@ class TerminalActivity : Activity() {
             val resultat = try { shell.executer(ligne) } catch (e: Exception) { android.util.Log.e("TG", "shell", e); t("term.erreur", "msg" to e.message) }
             handler.post {
                 if (resultat.isNotEmpty()) ecrire(resultat)
+                // pendant l'œuf : une commande inconnue, et le petit tutoriel dit que ce n'est pas grave
+                if (Intro.enCours(jeu) && "not found" in resultat.lowercase()) Intro.signalerErreur(jeu)
                 // il manque quelque chose (mkdir tout seul…) : la commande à taper, en bulle et ici ; sinon l'explication de l'erreur
                 (Exemples.apres(jeu, ligne, resultat) ?: expliquer(resultat, ligne))?.let { ecrire(it, 0xFFFFAF5F.toInt()) }
                 val change = majObservatoire(ligne)
@@ -618,6 +661,59 @@ class TerminalActivity : Activity() {
             val coul = android.graphics.Color.HSVToColor(floatArrayOf(360f * k / (n + 4), 0.6f, 1f))
             sb.setSpan(ForegroundColorSpan(coul), debut, debut + 1, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
         }
+    }
+
+    // ------------------------------------------------------------ l'intro (Intro.kt) : écrans du début, œuf, présentations
+    /** Montre (ou retire) l'intro dessinée à la place de l'observatoire, selon où en est la partie. */
+    private fun majIntro() {
+        if (!::contenu.isInitialized) return
+        val obs = chemin.parent as View
+        val boiteSortie = defile.parent as View
+        val ecran = !jeu.existe && ecranIntro > 0 && !menu.ouvert
+        val carteIntro = if (jeu.existe) Intro.aMontrer(jeu) else null
+        val mode = when {
+            ecran -> "ecran"
+            jeu.existe && Intro.enCours(jeu) -> "oeuf"
+            carteIntro != null -> "carte"
+            else -> null
+        }
+        if (mode == null) {
+            introVue?.let { (it.parent as? LinearLayout)?.removeView(it) }
+            introVue = null
+            if (carteVue == null) obs.visibility = View.VISIBLE
+            boiteSortie.visibility = View.VISIBLE
+            return
+        }
+        val v = introVue ?: run {
+            val panneau = obs.parent as LinearLayout
+            var i = 0
+            while (i < panneau.childCount && panneau.getChildAt(i) !== obs) i++
+            val nv = IntroVue(this, jeu, { imagePresentation() }) { actionIntro(it) }
+            val lp = LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT)
+            lp.topMargin = (8 * resources.displayMetrics.density).toInt()
+            panneau.addView(nv, i, lp)
+            introVue = nv
+            nv
+        }
+        v.chemin = jeu.home.path
+        when (mode) {
+            "ecran" -> v.montrerEcran(ecranIntro.coerceIn(1, v.nbEcrans()))
+            "oeuf" -> v.montrerOeuf()
+            else -> v.montrerCarte(carteIntro!!)
+        }
+        obs.visibility = View.GONE
+        boiteSortie.visibility = if (mode == "ecran") View.GONE else View.VISIBLE
+    }
+
+    /** Un bouton de l'intro (ou Entrée sur une ligne vide) : suivant, passer, ok. */
+    private fun actionIntro(a: String) {
+        when (a) {
+            "suivant" -> if (!jeu.existe && ecranIntro > 0) ecranIntro = minOf(ecranIntro + 1, introVue?.nbEcrans() ?: 4)
+            "passer" -> if (!jeu.existe && ecranIntro > 0) ecranIntro = introVue?.nbEcrans() ?: 4
+            "ok" -> if (jeu.existe && Intro.aMontrer(jeu) != null) { Intro.lu(jeu); jeu.sauver() }
+        }
+        rafraichir()
+        saisie.requestFocus()
     }
 
     // ------------------------------------------------------------ la carte qui pousse
@@ -877,7 +973,7 @@ class TerminalActivity : Activity() {
         titre.text = if (!jeu.existe) t("term.oeuf_mysterieux") else if (jeu.shiny) miseEnForme("§${jeu.titre()}§", null) else jeu.titre()
         faim.text = if (jeu.existe) Envies.compact(jeu) + "  " + Envies.emoji(jeu) else jeu.texteFaim()
         xp.text = jeu.texteXp()
-        stats.text = jeu.texteStats() + if (Explo.captures(jeu).length() > 0) Guide.actuel(jeu).let { "  🧭 ${Guide.ICONES[it.type]} ${it.nom}" } else ""
+        stats.text = jeu.texteStats() + if (Explo.captures(jeu).length() > 0 && Intro.ouvert(jeu, "equipe")) Guide.actuel(jeu).let { "  🧭 ${Guide.ICONES[it.type]} ${it.nom}" } else ""
         invite.text = if (::menu.isInitialized && menu.ouvert) ">" else if (jeu.existe) "${shell.chemin()} $" else t("term.invite_nom")
         val b = jeu.bulleActive()
         bulle.visibility = if (b.isEmpty()) View.GONE else View.VISIBLE
@@ -886,7 +982,7 @@ class TerminalActivity : Activity() {
         val panneau = Dressage.panneau(jeu, resources, imageCombat)
         // terrain effacé : le bandeau avec la commande à taper reste au-dessus de la leçon
         val l: CharSequence? = panneau ?: if (defi != null) t("app.defi", "cmd" to Regles.piege(defi), "s" to Defis.resteSecondes(jeu))
-            else if (jeu.existe) listOfNotNull(Terrain.bandeau(jeu), jeu.texteLecon()).joinToString("\n\n").ifEmpty { null } else null
+            else if (jeu.existe && !Intro.enCours(jeu)) listOfNotNull(Terrain.bandeau(jeu), jeu.texteLecon()).joinToString("\n\n").ifEmpty { null } else null
         lecon.visibility = if (l == null) View.GONE else View.VISIBLE
         lecon.text = Vert.rendre(l ?: "")
         // le panneau du dressage ne doit pas écraser la ligne de saisie (un champ sans hauteur ne peut plus recevoir
@@ -911,6 +1007,14 @@ class TerminalActivity : Activity() {
         val vis = if (panneau != null) View.GONE else View.VISIBLE
         creature.visibility = vis; faim.visibility = vis; xp.visibility = vis; stats.visibility = vis
         if (::auraBtn.isInitialized) auraBtn.visibility = vis
+        // l'intro : l'œuf seul (dessiné dans IntroVue) ; ensuite, chaque élément arrive avec sa présentation (Intro.kt)
+        val oeuf = !jeu.existe || Intro.enCours(jeu)
+        if (oeuf) { creature.visibility = View.GONE; faim.visibility = View.GONE; xp.visibility = View.GONE; stats.visibility = View.GONE }
+        if (jeu.existe && !Intro.ouvert(jeu, "envies")) faim.visibility = View.GONE
+        if (::auraBtn.isInitialized && (oeuf || !Intro.ouvert(jeu, "equipe"))) auraBtn.visibility = View.GONE
+        (creature.parent as? View)?.visibility = if (oeuf) View.GONE else View.VISIBLE
+        lexiqueBtn.visibility = if (jeu.existe && !oeuf && Intro.ouvert(jeu, "lexique")) View.VISIBLE else View.GONE
+        majIntro()
         majBoutonAura()
         if (lecture == null) creature.setImageBitmap(imageCreature(cligne > 0))
     }
@@ -934,6 +1038,11 @@ class TerminalActivity : Activity() {
         val a = jeu.anim ?: return
         if (a.second <= animJouee || System.currentTimeMillis() - a.second > 4000) return
         animJouee = a.second
+        if (Intro.numeroAnim(a.first) > 0) {                 // l'œuf remue, brille, se fêle, éclot (IntroVue)
+            if (a.first != "eclosion") majIntro()
+            introVue?.jouer(a.first)
+            return
+        }
         jouerCreature(a.first)
     }
 
@@ -969,6 +1078,14 @@ class TerminalActivity : Activity() {
     /** La créature joue une animation automatique, courte (≈ 3 s) et sans bloquer la saisie. */
     private fun jouerCreature(nom: String) {
         if (!jeu.existe) return
+        guideCapture()?.let { ind ->                 // le guide est une bestiole de l'équipe : c'est elle qui joue
+            val r = try { Animations.pour(ind, nom, Equipe.stade(ind), 3) } catch (e: Exception) { null }
+            if (r != null && r.first.isNotEmpty()) {
+                val n = if (nom == "evolution") r.first.size else minOf(2 * r.first.size, maxOf(r.first.size, 3 * r.second))
+                demarrer(r.first, r.second, n, 3, Aura.palierInd(ind))
+            }
+            return
+        }
         val anim = try { Sprites.animation(jeu, nom) } catch (e: Exception) {
             android.util.Log.e("TG", "animation $nom", e); return
         }
@@ -1023,9 +1140,32 @@ class TerminalActivity : Activity() {
 
     private fun auraVisible() = jeu.existe && Aura.active(jeu)
 
-    /** La créature de l'en-tête, entourée de son aura si le réglage de la partie l'affiche (bouton ✨). */
-    private fun imageCreature(cligne: Boolean): android.graphics.Bitmap =
-        avecAura(Sprites.bitmap(jeu, 12, cligne), 12, if (jeu.existe) Aura.palierCompagnon(jeu) else null, 2 * frame)
+    /** Le guide, s'il est une bestiole de l'équipe (sinon null : c'est le compagnon sorti de l'œuf). */
+    private fun guideCapture(): org.json.JSONObject? =
+        if (!jeu.existe || Explo.captures(jeu).length() == 0) null else try { Guide.actuel(jeu).ind } catch (e: Exception) { null }
+
+    private var imageGuide: Pair<String, android.graphics.Bitmap>? = null
+
+    /**
+     * La créature de l'en-tête : le GUIDE actuel (la bestiole en tête de l'équipe, à son stade, dans sa variante, avec
+     * son aura de rareté), sinon le compagnon sorti de l'œuf ; entourée de son aura si le réglage l'affiche (bouton ✨).
+     */
+    private fun imageCreature(cligne: Boolean): android.graphics.Bitmap {
+        val ind = guideCapture()
+        if (ind != null) {
+            val cle = listOf(ind.optString("id"), Equipe.stade(ind), ind.optString("variante"), ind.optBoolean("shiny")).joinToString("|")
+            val b = imageGuide?.takeIf { it.first == cle }?.second ?: try {
+                Animations.pour(ind, "statique", Equipe.stade(ind), 3)?.first?.firstOrNull()
+            } catch (e: Exception) { null }?.also { imageGuide = cle to it }
+            if (b != null) return avecAura(b, 3, Aura.palierInd(ind), 2 * frame)
+        }
+        return avecAura(Sprites.bitmap(jeu, 12, cligne), 12, if (jeu.existe) Aura.palierCompagnon(jeu) else null, 2 * frame)
+    }
+
+    /** Pour les écrans de présentation : la créature (ou son guide) en petit. */
+    private fun imagePresentation(): android.graphics.Bitmap? = try {
+        guideCapture()?.let { Animations.pour(it, "statique", Equipe.stade(it), 2)?.first?.firstOrNull() } ?: Sprites.bitmap(jeu, 1)
+    } catch (e: Exception) { null }
 
     private fun avecAura(b: android.graphics.Bitmap, echelle: Int, palier: String?, phase: Int): android.graphics.Bitmap {
         if (palier == null || echelle <= 0 || !auraVisible()) return b

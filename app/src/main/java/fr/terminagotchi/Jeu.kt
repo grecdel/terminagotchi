@@ -285,6 +285,7 @@ class Jeu(ctx: Context) {
         Bestiaire.charger(ctx.applicationContext)
         Animations.init(ctx)
         Guide.init(ctx)
+        Intro.init(ctx)
     }
 
     private val app: Context = ctx.applicationContext ?: ctx
@@ -569,6 +570,7 @@ class Jeu(ctx: Context) {
     fun ajouterXp(n: Int) {
         val avant = niveau
         xp += n
+        if (Intro.retient(this)) xp = minOf(xp, 9)         // l'œuf n'éclot qu'à la fin de sa liste de commandes (Intro.kt)
         val apres = niveau
         if (apres <= avant) return
         animer(if (Regles.stade(apres) > Regles.stade(avant)) "evolution" else "content")
@@ -734,9 +736,10 @@ class Jeu(ctx: Context) {
     fun infoWidget(): String {
         val b = bulleActive()
         if (b.isNotEmpty()) return "« $b »"
+        if (Intro.retient(this)) return "🥚 " + Intro.titreListe(this)     // l'œuf : sa liste de commandes
         val e = etapeCourante()
         if (e != null) return t("widget.lecon", "cmd" to Regles.piege(e.cmd))
-        Envies.phrase(this)?.let { return "💭 $it" }                      // l'envie du moment
+        if (Intro.ouvert(this, "envies")) Envies.phrase(this)?.let { return "💭 $it" }      // l'envie du moment
         return journal.lastOrNull()?.drop(6) ?: t("widget.nourris")
     }
 }

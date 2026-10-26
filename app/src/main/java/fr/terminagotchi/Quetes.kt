@@ -620,6 +620,7 @@ object Quetes {
     /** À chaque tour de jeu, après les leçons. */
     fun tick(jeu: Jeu, tapees: List<Pair<String, String?>>) {
         if (!T(jeu).isDirectory) return
+        if (!Intro.ouvert(jeu, "quetes")) return             // les quêtes arrivent avec leur présentation (Intro.kt)
         val q = q(jeu)
         poser(jeu)
         annonces(jeu)

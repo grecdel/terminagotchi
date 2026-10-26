@@ -59,7 +59,7 @@ object Carte {
         "brume" to (0xFF6A6F78 to 0xFF3A3D44)).mapValues { (_, v) -> v.first.toInt() to v.second.toInt() }
 
     fun sol(n: Maison.Noeud): Pair<Int, Int> = when {
-        n.brume -> SOLS.getValue("brume")
+        n.brume || n.garde == "fermee" -> SOLS.getValue("brume")           // une région fermée est grise
         n.genre == "piece" -> SOLS_PIECES[n.biome] ?: SOLS.getValue("lieu")
         n.genre in setOf("region", "parcelle", "lieu") && n.biome in Maison.BIOMES ->
             Maison.BIOMES.getValue(n.biome!!).let { it.principale to it.sombre }
@@ -216,7 +216,7 @@ object Carte {
         // 1. mesurer : la colonne du dessin, puis celle de tree
         var gauche = 0f
         for (n in noeuds) {
-            val lab = n.etiquette + if (n.marques.isNotEmpty()) "  " + n.marques else ""
+            val lab = n.etiquette + (if (n.marques.isNotEmpty()) "  " + n.marques else "") + (if (n.garde.isNotEmpty()) "  🔒" else "")
             gauche = maxOf(gauche, MARGE + n.prof * RETRAIT + 38f + p.mesure(lab, TAILLE, gras = n.dossier))
         }
         gauche += 12f
@@ -282,15 +282,21 @@ object Carte {
             }
             if (n.ici && !p.creature(x + 25f, y + 27f, 24f)) p.pixels(icone("epingle"), x + 18f, y + 2f, ECHELLE)   // la créature est ici
             val lab = n.etiquette
-            val coul = if (n.brume) BRUME else if (n.dossier) TEXTE else DOUX
+            val coul = if (n.brume || n.garde == "fermee") BRUME else if (n.dossier) TEXTE else DOUX
             p.texte(lab, x + 38f, y + 21f, TAILLE, coul, gras = n.dossier && !n.brume)
             if (n.marques.isNotEmpty()) p.texte(n.marques, x + 38f + p.mesure(lab, TAILLE, gras = n.dossier && !n.brume) + 6f, y + 21f, TAILLE, AMBRE)
+            if (n.garde.isNotEmpty()) {                            // 🔒 fermée (grise) · 👣 visite seulement (Guide.kt)
+                val xg = x + 38f + p.mesure(lab, TAILLE, gras = n.dossier && !n.brume) + 6f +
+                    (if (n.marques.isNotEmpty()) p.mesure(n.marques, TAILLE) + 6f else 0f)
+                if (n.garde == "fermee") p.pixels(icone("cadenas"), xg, y + 10f, 1.5f)
+                else p.texte("👣", xg, y + 21f, TAILLE, AMBRE)
+            }
             // tree
             p.texte(n.branches, xTree, y + 21f, TAILLE, BORD_VIF, mono = true)
             val xn = xTree + p.mesure(n.branches, TAILLE, mono = true)
             val nom = Maison.texteTree(n).removePrefix(n.branches)
             val cn = when {
-                n.brume || n.genre == "suite" -> BRUME
+                n.brume || n.genre == "suite" || n.garde == "fermee" -> BRUME
                 n.genre == "secret" || n.genre == "secret_objet" -> VIOLET
                 n.dossier && n.biome in Maison.BIOMES -> Maison.BIOMES.getValue(n.biome!!).claire
                 n.dossier -> AMBRE

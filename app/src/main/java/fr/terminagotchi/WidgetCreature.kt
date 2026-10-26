@@ -32,7 +32,7 @@ class WidgetCreature : AppWidgetProvider() {
             v.setImageViewBitmap(R.id.w_creature, Sprites.bitmap(jeu, 10))
             if (jeu.existe) {
                 v.setTextViewText(R.id.w_titre, jeu.titre())
-                v.setTextViewText(R.id.w_faim, Envies.compact(jeu))          // les 6 envies, en petit
+                v.setTextViewText(R.id.w_faim, if (Intro.ouvert(jeu, "envies")) Envies.compact(jeu) else "")   // les 6 envies
                 v.setTextViewText(R.id.w_info, Vert.rendre(jeu.infoWidget()))
             } else {
                 v.setTextViewText(R.id.w_titre, t("widget.oeuf"))

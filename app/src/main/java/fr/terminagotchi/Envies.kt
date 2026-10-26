@@ -219,7 +219,7 @@ object Envies {
             if (now > debutRepos) v.put("sommeil", minOf(100.0, v.optDouble("sommeil", MIGRATION) + REPOS_HEURE * (now - debutRepos) / 3600_000.0))
             e.put("t", now)
         }
-        poussiere(jeu, e, now)
+        if (Intro.ouvert(jeu, "envies")) poussiere(jeu, e, now)
     }
 
     // ------------------------------------------------------------ l'envie du moment et la bulle
@@ -355,7 +355,7 @@ object Envies {
             }
         }
         e.put("propre_n", n)
-        rappeler(jeu, e, if (tapee) 1 else 0, now)
+        if (Intro.ouvert(jeu, "envies")) rappeler(jeu, e, if (tapee) 1 else 0, now)    // après leur présentation
     }
 
     // ------------------------------------------------------------ humeur et affichage
