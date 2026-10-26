@@ -9,20 +9,29 @@ import java.util.Date
 import java.util.Locale
 import kotlin.math.sqrt
 
-/** Une étape de leçon : les textes sont des clés de langue (traduits au moment de l'affichage). */
+/**
+ * Une étape de leçon : les textes sont des clés de langue (traduits au moment de l'affichage, avec le jargon du
+ * palier, voir Histoire.tx). ou : la pièce où la commande doit être tapée ; ici : la pièce où il faut entrer
+ * (exact : pas une de ses sous-pièces) ; expert : seulement à partir du niveau 10.
+ */
 class Etape(
-    private val ditCle: String,
+    val ditCle: String,
     val cmd: String,
-    private val bravoCle: String,
+    val bravoCle: String,
     val re: Regex? = null,
     val fs: ((Jeu) -> Boolean)? = null,
-    private val astuceCle: String? = null,
+    val astuceCle: String? = null,
     /** ce que crée l'étape (chemin dans le terrain) : pour repérer une bonne commande tapée au mauvais endroit */
     val cree: String? = null,
+    val ou: String? = null,
+    val ici: String? = null,
+    val exact: Boolean = false,
+    val expert: Boolean = false,
+    val params: Map<String, String> = emptyMap(),
 ) {
-    val dit: String get() = t(ditCle)
-    val bravo: String get() = t(bravoCle)
-    val astuce: String? get() = astuceCle?.let { t(it) }
+    val dit: String get() = Histoire.tx(ditCle, params)
+    val bravo: String get() = Histoire.tx(bravoCle, params)
+    val astuce: String? get() = astuceCle?.let { Histoire.tx(it, params) }
 }
 
 /** Une commande du lexique : son image (la maison), son explication technique, sa section (clés de langue). */
@@ -36,8 +45,8 @@ class Mot(val cmd: String, private val imageCle: String, private val techniqueCl
     fun textes(code: String) = listOfNotNull(Langue.brut(imageCle, code)?.toString(), Langue.brut(techniqueCle, code)?.toString())
 }
 
-class Lecon(private val titreCle: String, val skill: String, val niveau: Int, val etapes: List<Etape>) {
-    val titre: String get() = t(titreCle)
+class Lecon(val titreCle: String, val skill: String?, val niveau: Int, val etapes: List<Etape>) {
+    val titre: String get() = Histoire.tx(titreCle)
 }
 
 /** Règles communes : catégories, compétences, textes, piège anti copier-coller. */
@@ -87,6 +96,12 @@ object Regles {
         "Apprenti" to setOf("doom"),
         "Architecte" to setOf("edite"),
         "Ingénieur" to setOf("doom", "edite"),
+        // l'histoire « La Maison endormie » (Histoire.kt)
+        "Explorateur" to setOf("tree", "find"),
+        "Héros" to setOf("rev", "wc", "sort", "uniq"),
+        "Chasseur" to setOf("ps", "date"),
+        "Radar" to setOf("ping", "ip", "ifconfig"),
+        "Facteur" to setOf("web", "hostname"),
     )
 
     /** les caractères (identifiants) et la clé de leurs phrases (Langue.liste) */
@@ -151,6 +166,7 @@ object Regles {
         val j = "lexa.ch.jeux"
         val p = "lexa.ch.pc"
         val w = "lex.ch.recensement"
+        val m = "lex.ch.maison"
         listOf(
             Mot("pwd", "lex.pwd.i", "lex.pwd.t", f),
             Mot("ls", "lexa.ls.i", "lexa.ls.t", f),
@@ -163,6 +179,7 @@ object Regles {
             Mot("rm", "lexa.rm.i", "lexa.rm.t", f),
             Mot("rmdir", "reg.img.rmdir", "lexa.rmdir.t", f),
             Mot("chmod", "lexa.chmod.i", "lexa.chmod.t", f),
+            Mot("rev", "lex.rev.i", "lex.rev.t", f),
             Mot("cat", "lex.cat.i", "lex.cat.t", l),
             Mot("head", "lex.head.i", "lex.head.t", l),
             Mot("tail", "reg.img.tail", "lexa.tail.t", l),
@@ -175,6 +192,7 @@ object Regles {
             Mot("whoami", "lexa.whoami.i", "lexa.whoami.t", y),
             Mot("id", "lexa.id.i", "lexa.id.t", y),
             Mot("uptime", "lexa.uptime.i", "lexa.uptime.t", y),
+            Mot("free", "lex.free.i", "lex.free.t", y),
             Mot("uname", "lexa.uname.i", "lexa.uname.t", y),
             Mot("df", "lexa.df.i", "lexa.df.t", y),
             Mot("du", "lexa.du.i", "lexa.du.t", y),
@@ -200,13 +218,11 @@ object Regles {
             Mot("devine", "lexa.devine.i", "lexa.devine.t", c),
             Mot("etat", "lexa.etat.i", "lexa.etat.t", c),
             Mot("renomme", "lexa.renomme.i", "lexa.renomme.t", c),
-            Mot("arbre", "lexa.arbre.i", "lexa.arbre.t", j),
             Mot("cherche", "lexa.cherche.i", "lexa.cherche.t", j),
             Mot("collection", "lexa.collection.i", "lexa.collection.t", j),
             Mot("defi", "lexa.defi.i", "lexa.defi.t", j),
             Mot("donjon", "lexa.donjon.i", "lexa.donjon.t", j),
             Mot("plan", "lexa.plan.i", "lexa.plan.t", j),
-            Mot("quetes", "lexa.quetes.i", "lexa.quetes.t", j),
             Mot("attaque", "lexa.attaque.i", "lexa.attaque.t", j),
             Mot("sac", "lexa.sac.i", "lexa.sac.t", j),
             Mot("equipe", "lexa.equipe.i", "lexa.equipe.t", j),
@@ -224,6 +240,9 @@ object Regles {
             Mot("bestiaire", "lexa.bestiaire.i", "lexa.bestiaire.t", j),
             Mot("troupe", "lexa.troupe.i", "lexa.troupe.t", j),
             Mot("anime", "lexa.anime.i", "lexa.anime.t", j),
+            Mot("carte", "lexa.maison.carte.i", "lexa.maison.carte.t", m),
+            Mot("quetes", "lex.tg_quetes.i", "lex.tg_quetes.t", m),
+            Mot("aile", "lexa.aile.i", "lexa.aile.t", m),
             Mot("sudo", "lexa.sudo.i", "lexa.sudo.t", p),
             Mot("apt", "lexa.apt.i", "lexa.apt.t", p),
             Mot("nano", "lexa.nano.i", "lexa.nano.t", p),
@@ -559,7 +578,7 @@ class Jeu(ctx: Context) {
         } else {
             log(t("core.niveau.log", "n" to apres))
         }
-        val l = leconCourante()
+        val l = Histoire.leconCourante(this)
         if (l != null && l.niveau == apres) { dire(t("lec.annonce"), 10); animer("parle") }
     }
 
@@ -612,103 +631,22 @@ class Jeu(ctx: Context) {
         return true
     }
 
-    val troncFini: Boolean get() = lecon >= lecons.size
+    /** Toutes les leçons (tronc, branches du téléphone, leçons de l'histoire), par identifiant (voir Histoire). */
+    val catalogue: Map<String, Lecon> by lazy { Histoire.catalogue(this) }
 
-    fun brancheActive(): String? = module("arbre").optString("active", "").ifEmpty { null }
+    /** (compatibilité) les deux premiers chapitres sont finis : la maison est libre. */
+    val troncFini: Boolean get() = Histoire.fini(this, "nid")
 
-    fun progresBranche(b: String): Int = module("arbre").optJSONObject("progres")?.optInt(b) ?: 0
-
-    fun choisirBranche(b: String) {
-        val a = module("arbre")
-        if (a.optString("active") != b) {
-            a.put("active", b)
-            etape = 0
-        }
-    }
-
-    fun leconCourante(): Lecon? {
-        if (lecon < lecons.size) return lecons[lecon]
-        val b = brancheActive() ?: return null
-        val ls = branches[b]?.lecons ?: return null
-        val i = progresBranche(b)
-        return if (i < ls.size) ls[i] else null
-    }
-
+    /** l'étape à faire maintenant (null s'il n'y a pas de leçon, ou si le niveau n'est pas encore atteint) */
     fun etapeCourante(): Etape? {
-        val l = leconCourante() ?: return null
-        return if (niveau >= l.niveau) l.etapes[etape] else null
-    }
-
-    private fun avancer(l: Lecon): Boolean {
-        val e = l.etapes[etape]
-        log("✔ ${e.cmd}")
-        dire(e.bravo, 12)
-        etape++
-        animer("content")
-        if (etape < l.etapes.size) {
-            ajouterXp(5)
-            return true
-        }
-        etape = 0
-        if (l.skill !in skills) skills.add(l.skill)
-        log(t("lec.finie.log", "titre" to l.titre, "skill" to Regles.nomSkill(l.skill)))
-        var msg = t("lec.finie.dit", "skill" to Regles.nomSkill(l.skill))
-        if (!troncFini) {
-            lecon++
-            if (troncFini) msg = t("leca.tronc_fini")
-        } else {
-            val b = brancheActive()
-            if (b != null) {
-                val a = module("arbre")
-                val p = a.optJSONObject("progres") ?: JSONObject().also { a.put("progres", it) }
-                p.put(b, p.optInt(b) + 1)
-                val br = branches[b]
-                if (br != null) {
-                    stats[br.stat] = (stats[br.stat] ?: 0) + 5
-                    if (p.optInt(b) >= br.lecons.size) {
-                        a.put("active", "")
-                        log(t("lec.branche.maitrisee.log", "branche" to br.nom))
-                        msg = t("leca.branche.maitrisee", "branche" to br.nom)
-                    }
-                }
-            }
-        }
-        ajouterXp(20)
-        dire(msg, 14)
-        return false
+        val c = Histoire.leconCourante(this) ?: return null
+        return if (niveau >= c.niveau) c.etapes[etape] else null
     }
 
     /** l'indice « presque ! » de l'étape en cours (affiché sous la leçon), ou null */
     var indiceLecon: String?
         get() = module("lecons").optString("indice").ifEmpty { null }
         set(v) { if (v == null) module("lecons").remove("indice") else module("lecons").put("indice", v) }
-
-    private fun positionLecon() = listOf(lecon, etape, brancheActive(), progresBranche(brancheActive() ?: ""))
-
-    fun leconTick(ligne: String?, colle: Boolean) {
-        val l = leconCourante() ?: return
-        if (niveau < l.niveau) return
-        val avant = positionLecon()
-        val e = l.etapes[etape]
-        val tapee = ligne != null && !colle && !Regles.estColle(ligne)
-        var finie = false
-        if (tapee && e.re?.containsMatchIn(ligne!!.trim()) == true) {
-            if (!avancer(l)) finie = true
-        }
-        if (!finie) {
-            val l2 = leconCourante()
-            if (l2 === l && niveau >= l2.niveau && l2.etapes[etape].fs?.invoke(this) == true) avancer(l2)
-        }
-        if (avant != positionLecon()) indiceLecon = null
-        else if (tapee) {
-            // presque réussie ? un indice clair (faute de frappe, mauvais endroit, « pome »…)
-            val conseil = Indices.lecon(this, e, listOf(ligne!!))
-            if (conseil != null && conseil != indiceLecon) {
-                indiceLecon = conseil
-                dire("💡 $conseil", 12)
-            }
-        }
-    }
 
     fun parlerSiSilencieux() {
         if (bulleActive().isNotEmpty()) return
@@ -741,19 +679,37 @@ class Jeu(ctx: Context) {
 
     fun texteStats() = Regles.STATS.joinToString("  ") { "${Regles.court(it)} ${stats[it]}" }
 
+    /**
+     * Le panneau de la leçon (comme l'écran principal du PC) : le chapitre, la leçon et son étape ; sans leçon,
+     * le choix de l'aile (ou la fin) ; puis la quête suivie.
+     */
     fun texteLecon(): String? {
-        val l = leconCourante() ?: return if (troncFini && brancheActive() == null)
-            t("leca.choisis_branche") else null
-        if (niveau < l.niveau) {
-            val manque = 10 * (l.niveau - 1) * (l.niveau - 1) - xp
-            return t("leca.prochaine",
-                "n" to l.niveau, "xp" to manque)
+        val out = mutableListOf<String>()
+        val c = Histoire.leconCourante(this)
+        if (c != null) {
+            out.add(t("hist.ecran.chapitre", "icone" to (Maison.ICONES[c.chap.piece] ?: "📖"),
+                "chapitre" to Histoire.nomChapitre(c.chap.id), "n" to c.chap.n) + " · " + c.etiquette)
+            if (niveau < c.niveau) {
+                val manque = 10 * (c.niveau - 1) * (c.niveau - 1) - xp
+                out.add(t("leca.prochaine", "n" to c.niveau, "xp" to manque))
+            } else {
+                val e = c.etapes[etape]
+                out.add("${c.titre} (${etape + 1}/${c.etapes.size}) · ${e.dit}\n➜ ${Regles.piege(e.cmd)}")
+                if (DEPUIS.any { e.cmd.startsWith(it) } || "nid/" in e.cmd || e.cmd.endsWith(" nid") || "reserve.txt" in e.cmd) {
+                    out.add(t("app.lecon.depuis", "terrain" to Mots.terme("terrain", Mots.palier(this)), "cmd" to "cd ~/${terrain.name}"))
+                }
+                e.astuce?.let { out.add(it) }
+                indiceLecon?.let { out.add("💡 $it") }
+            }
+        } else {
+            Histoire.bandeau(this)?.let { out.add(it.first + "\n" + it.second) }
         }
-        val e = l.etapes[etape]
-        val astuce = if (e.astuce != null) "\n${e.astuce}" else ""
-        val indice = indiceLecon?.let { "\n💡 $it" } ?: ""
-        return "${l.titre} (${etape + 1}/${l.etapes.size}) · ${e.dit}\n➜ ${Regles.piege(e.cmd)}$astuce$indice"
+        Quetes.ligneSuivie(this)?.let { out.add(it) }
+        return out.joinToString("\n").ifEmpty { null }
     }
+
+    /** les commandes à taper depuis le terrain (pas depuis la pièce de l'aile) */
+    private val DEPUIS = listOf("cat coeur", "chmod 444 coeur", "echo ? > coeur", "cp -r grenier")
 
     fun infoWidget(): String {
         val b = bulleActive()

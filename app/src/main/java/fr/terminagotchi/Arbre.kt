@@ -14,15 +14,17 @@ class Branche(
     val desc: String get() = t(descCle)
 }
 
-/** L'arbre de compétences du téléphone, ouvert après le tronc commun. */
+/**
+ * Les leçons propres au téléphone (les anciennes branches de l'arbre : téléphone, système, tuyaux, scripts,
+ * créateur). La Maison endormie (Histoire.kt) les range dans ses chapitres : le jardin du téléphone, la salle des
+ * machines, la bibliothèque, l'atelier… La commande « arbre » montre maintenant les ailes de la maison.
+ */
 object Arbre {
     private fun r(p: String) = Regex(p, RegexOption.IGNORE_CASE)
 
     /** Cherche un fichier par son nom n'importe où dans la maison (sur 5 niveaux). */
     fun trouve(jeu: Jeu, nom: String): File? =
         jeu.home.walkTopDown().maxDepth(5).firstOrNull { it.isFile && it.name == nom }
-
-    val ORDRE = listOf("telephone", "systeme", "tuyaux", "scripts", "createur")
 
     fun creer(jeu: Jeu): Map<String, Branche> {
         val dossierJeu = File(jeu.terrain, "jeu")
@@ -175,26 +177,5 @@ object Arbre {
                 )),
             )),
         )
-    }
-
-    fun texte(jeu: Jeu): String {
-        val sb = StringBuilder("🌳 " + t("app.arbre.titre") + "\n")
-        if (!jeu.troncFini) {
-            sb.append(t("app.arbre.tronc_dabord", "n" to jeu.lecon, "total" to jeu.lecons.size) + "\n")
-        }
-        for (cle in ORDRE) {
-            val b = jeu.branches[cle] ?: continue
-            val fait = jeu.progresBranche(cle)
-            val etat = when {
-                fait >= b.lecons.size -> t("app.arbre.maitrisee")
-                jeu.brancheActive() == cle -> t("app.arbre.en_cours")
-                else -> ""
-            }
-            sb.append("\n${b.icone} ${b.nom} ($fait/${b.lecons.size}) $etat\n   " +
-                t("app.arbre.desc", "desc" to b.desc, "stat" to Regles.nomStat(b.stat)) + "\n")
-            b.lecons.forEachIndexed { i, l -> sb.append("   ${if (i < fait) "■" else "□"} ${l.titre} → ${Regles.nomSkill(l.skill)}\n") }
-        }
-        sb.append("\n" + t("arbre.suivre", "liste" to ORDRE.joinToString(" | ")))
-        return sb.toString()
     }
 }

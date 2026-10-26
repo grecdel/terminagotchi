@@ -378,14 +378,14 @@ class TerminalActivity : Activity() {
             "langue" -> { ecrire(langue(ligne.trim().split(Regex("\\s+")).getOrNull(1)), Commandes.ROSE); return }
             "partie" -> { ecrire(menu.commande(ligne.substringAfter(' ', "")), Commandes.ROSE); rafraichir(); return }
             "aide" -> {
-                ecrire(t("term.aide", "ctf" to Mots.terme("ctf", Mots.palier(jeu), true)))
+                ecrire(t("term.aide", "ctf" to Mots.terme("ctf", Mots.palier(jeu), true)) + "\n" + t("term.aide.maison"))
                 return
             }
         }
         // Commandes intégrées (téléphone, créature) : réponse immédiate
         val interne = commandes.executer(ligne)
         if (interne != null) {
-            ecrire(interne.texte, interne.couleur)
+            ecrire(interne.texte, interne.couleur, interne.petit)
             if (lexiqueVue.visibility == View.VISIBLE) basculerLexique()
             interne.aller?.let {
                 shell.dossier = it
@@ -478,7 +478,7 @@ class TerminalActivity : Activity() {
 
     private fun apresCommande(ligne: String, etaitColle: Boolean, etaitRappel: Boolean = false) {
         // le tour de jeu (créature, terrain, leçons, défi, dressage et combat, troupe, attirance, monstres) : voir Tour.kt
-        val tour = Tour.apresCommande(jeu, ligne, etaitColle, etaitRappel)
+        val tour = Tour.apresCommande(jeu, ligne, etaitColle, etaitRappel, cwd = shell.dossier)
         val mange = tour.mange
         for ((m, c) in tour.messages) ecrire(m, c)
         if (tour.saut > saut) saut = tour.saut
@@ -559,8 +559,10 @@ class TerminalActivity : Activity() {
         }
     }
 
-    private fun ecrire(texte: String, couleur: Int? = null) {
+    /** petit : en plus petit (la carte de la maison tient dans la largeur de l'écran). */
+    private fun ecrire(texte: String, couleur: Int? = null, petit: Boolean = false) {
         val s = miseEnForme(texte, couleur)
+        if (petit) s.setSpan(android.text.style.RelativeSizeSpan(0.85f), 0, s.length, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
         if (sortie.length() > 0) sortie.append("\n")
         sortie.append(s)
         if (sortie.length() > 15000) sortie.text = sortie.text.subSequence(sortie.length() - 12000, sortie.length())
@@ -603,12 +605,17 @@ class TerminalActivity : Activity() {
         }
     }
 
-    /** Commandes déjà goûtées en blanc, jamais tapées en gris. */
+    /**
+     * Le carnet d'aventure : les commandes déjà goûtées en blanc (avec le moment de l'histoire où on les a apprises),
+     * jamais tapées en gris ; puis les souvenirs (chapitres réveillés, quêtes, titres, objets).
+     */
     private fun remplirLexique() {
         val connues = Regles.LEXIQUE.count { it.cmd in jeu.vus && !it.pc }
         val palier = Mots.palier(jeu)
         val sb = SpannableStringBuilder()
-        val entete = t("term.lexique.entete", "n" to connues, "total" to Regles.LEXIQUE.size) + "\n"
+        Histoire.h(jeu)
+        val entete = t("lex.carnet.titre", "nom" to jeu.nom) + "\n" +
+            t("term.lexique.entete", "n" to connues, "total" to Regles.LEXIQUE.size) + "\n"
         sb.append(entete)
         sb.setSpan(ForegroundColorSpan(0xFFFF87FF.toInt()), 0, entete.length, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
         var section = ""
@@ -630,10 +637,21 @@ class TerminalActivity : Activity() {
             val debutCmd = sb.length
             sb.append(cmd)
             sb.setSpan(StyleSpan(Typeface.BOLD), debutCmd, sb.length, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
-            sb.append("  $desc\n")
+            sb.append("  $desc")
             val couleur = if (pc) 0xFF45455A.toInt() else if (goutee) 0xFFFFFFFF.toInt() else 0xFF6A6A85.toInt()
             sb.setSpan(ForegroundColorSpan(couleur), debut, sb.length, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
+            // le moment de l'histoire où la commande a été apprise (carnet d'aventure)
+            val moment = if (goutee) Histoire.quand(jeu, cmd) else ""
+            if (moment.isNotEmpty()) {
+                val d = sb.length
+                sb.append(" · 📖 $moment")
+                sb.setSpan(ForegroundColorSpan(0xFFFF87FF.toInt()), d, sb.length, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
+            }
+            sb.append("\n")
         }
+        val d = sb.length
+        sb.append(Histoire.souvenirs(jeu).joinToString("\n"))
+        sb.setSpan(ForegroundColorSpan(0xFFAFAFFF.toInt()), d, sb.length, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
         lexiqueTexte.text = sb
     }
 
@@ -897,7 +915,7 @@ class TerminalActivity : Activity() {
             creature.setImageBitmap(Sprites.bitmap(jeu, 12, true))
         }
         if (frame % 12 == 0 && !enCours) {        // toutes les ~5 s : la faim, le terrain, les bulles, les leçons « fichiers »
-            for ((m, c) in Tour.periodique(jeu)) ecrire(m, c)
+            for ((m, c) in Tour.periodique(jeu, shell.dossier)) ecrire(m, c)
             if (Random.nextInt(4) == 0) jeu.parlerSiSilencieux()
             ambiance()
             jeu.sauver()

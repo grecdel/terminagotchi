@@ -42,7 +42,7 @@ object Mots {
     /** Les clés du vocabulaire progressif (« terme.<clé> » dans assets/langues/xx.json : 3 paliers). */
     val CLES = listOf("mefiance", "pv", "atk", "def", "vit", "int", "stats", "ram", "processeur", "executable", "ctf",
         "dossier", "dossiers", "fichier", "fichiers", "un_dossier", "un_fichier", "rendre_executable", "processus",
-        "disque", "dns", "ip", "arborescence", "terrain")
+        "disque", "dns", "ip", "arborescence", "terrain", "droits", "script", "cache", "administrateur", "reseau")
 
     fun palier(niveau: Int, lecons: Int = 0): Int {
         val p = if (niveau >= SEUIL_NIVEAU[1]) 2 else if (niveau >= SEUIL_NIVEAU[0]) 1 else 0
@@ -50,7 +50,11 @@ object Mots {
         return maxOf(p, q)
     }
 
-    fun palier(jeu: Jeu): Int = palier(jeu.niveau, jeu.skills.size)
+    /** les leçons terminées : celles de l'histoire (Histoire.kt), ou à défaut les compétences des anciennes sauvegardes */
+    fun palier(jeu: Jeu): Int {
+        val faits = jeu.extra.optJSONObject("histoire")?.optJSONArray("faits")?.length() ?: 0
+        return palier(jeu.niveau, maxOf(faits, jeu.skills.size))
+    }
 
     fun terme(cle: String, p: Int = 0, majuscule: Boolean = false): String {
         val v = Langue.brut("terme.$cle")

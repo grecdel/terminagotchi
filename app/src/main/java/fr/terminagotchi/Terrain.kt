@@ -6,16 +6,17 @@ import java.io.File
  * Le terrain effacé (portage de pc/tg/terrain.py) : si l'enfant fait rm -rf ~/terrain_terminagotchi
  * (ou efface le nid), on le remarque et on l'aide à reconstruire, puis la leçon reprend au bon endroit.
  *
- *  1. Détection : la partie a déjà construit son terrain (leçon « Bâtisseur » finie) mais le dossier
- *     ~/terrain_terminagotchi ou son nid n'existe plus. UN TERRAIN PAR PARTIE (voir Parties.kt) : une
- *     nouvelle partie démarre sans terrain, mais tant que sa leçon 1 n'est pas finie, rien ne manque ;
+ *  1. Détection : la partie a déjà son terrain (la vieille porte du chapitre 1 est passée) mais le dossier
+ *     ~/terrain_terminagotchi n'existe plus, ou son nid a disparu (leçon « Construire mon nid » finie).
+ *     UN TERRAIN PAR PARTIE (voir Parties.kt) : une nouvelle partie démarre sans terrain (le jeu ouvre la
+ *     vieille porte au chapitre 1), et tant que ce n'est pas fait, rien ne manque ;
  *     en changeant de partie, chacune retrouve le sien (rangé dans parties/terrain_<id>).
  *  2. Une bulle claire donne LA commande à taper (mkdir -p ~/terrain_terminagotchi/nid) ; un bandeau reste
  *     affiché tant que ce n'est pas fait (bandeau()). Si l'enfant n'y arrive pas, le jeu reconstruit lui-même
  *     après AIDE_AUTO commandes.
  *  3. Reprise : les fichiers indispensables à l'étape en cours sont remis (repas.txt pour la leçon des droits,
- *     miam.sh pour les scripts…), ou bien la leçon revient à l'étape qui les crée. Les monstres reviennent dès
- *     que le nid existe (Explo.debloquee).
+ *     miam.sh pour les scripts…), ou bien la leçon revient à l'étape qui les crée. Les portes des pièces et leurs
+ *     meubles reviennent aussi (Histoire.meubler). Les monstres reviennent dès que le nid existe (Explo.debloquee).
  */
 object Terrain {
     /** commandes tapées sans réussir : le jeu reconstruit lui-même */
@@ -23,16 +24,14 @@ object Terrain {
 
     private fun etat(jeu: Jeu) = jeu.module("terrain")
 
-    /** Vrai si la partie a déjà son terrain et son nid (leçon « Bâtisseur » finie). */
-    fun aConstruit(jeu: Jeu) = jeu.lecon >= 2 || "Bâtisseur" in jeu.skills
+    /** Vrai si la partie a déjà son terrain et son nid (leçon « Construire mon nid » finie). */
+    fun aConstruit(jeu: Jeu) = "nid0" in Histoire.faits(jeu) || "Bâtisseur" in jeu.skills
 
     /** Ce qui a disparu et que l'enfant doit reconstruire (terrain, nid). */
     fun manque(jeu: Jeu): List<String> {
         val m = mutableListOf<String>()
-        if (aConstruit(jeu)) {
-            if (!jeu.terrain.isDirectory) m.add("terrain")
-            if (!File(jeu.terrain, "nid").isDirectory) m.add("nid")
-        }
+        if ((aConstruit(jeu) || "reveil1" in Histoire.faits(jeu)) && !jeu.terrain.isDirectory) m.add("terrain")
+        if (aConstruit(jeu) && !File(jeu.terrain, "nid").isDirectory) m.add("nid")
         return m
     }
 
@@ -65,40 +64,28 @@ object Terrain {
             if (jeu.etape > vers) { jeu.etape = vers; recule = true }
         }
         fun trouve(nom: String) = Arbre.trouve(jeu, nom) != null
-        if (!jeu.troncFini) {
-            when (jeu.lecon) {
-                1 -> if (etape >= 1 && !jeu.terrain.isDirectory) reculer(0)          // cd terrain : il faut d'abord le refaire
-                2 -> if (etape >= 1 && !Indices.contient(repas, "pomme")) reculer(0) // cat / grep : on réécrit le repas
-                3 -> if (nid.isDirectory && !repas.isFile) {                          // la leçon des droits a besoin du repas
-                    ecrire(repas, "pomme\n"); remis.add("nid/repas.txt")
-                }
-                4 -> if (nid.isDirectory) {
-                    if (etape == 0 && !repas.isFile) {
-                        ecrire(repas, "pomme\n"); remis.add("nid/repas.txt")
-                    } else if (etape == 1 && !File(nid, "secours.txt").isFile && !File(jeu.terrain, "reserve.txt").isFile) {
-                        reculer(0)
-                        if (!repas.isFile) { ecrire(repas, "pomme\n"); remis.add("nid/repas.txt") }
-                    }
+        fun remettreRepas() { ecrire(repas, "pomme\n"); remis.add("nid/repas.txt") }
+        when (Histoire.leconId(jeu)) {
+            "nid0" -> if (etape >= 2 && !nid.isDirectory) reculer(1)                 // le lit va dans le nid : il faut le refaire
+            "nid1" -> if (etape >= 1 && !Indices.contient(repas, "pomme")) reculer(0)  // cat : on réécrit le repas
+            "t3" -> if (nid.isDirectory && !repas.isFile) remettreRepas()            // la leçon des droits a besoin du repas
+            "biblio1" -> if (etape == 0 && nid.isDirectory && !repas.isFile) remettreRepas()   // (la loupe aussi)
+            "t4" -> if (nid.isDirectory) {
+                if (etape == 0 && !repas.isFile) remettreRepas()
+                else if (etape == 1 && !File(nid, "secours.txt").isFile && !File(jeu.terrain, "reserve.txt").isFile) {
+                    reculer(0)
+                    if (!repas.isFile) remettreRepas()
                 }
             }
-            return remis to recule
-        }
-        val b = jeu.brancheActive() ?: return remis to recule
-        val i = jeu.progresBranche(b)
-        when (b) {
-            "scripts" -> if (nid.isDirectory) {
-                if (i == 0 && etape >= 1 && !trouve("miam.sh")) reculer(0)
-                else if (i >= 1 && !trouve("miam.sh")) {
-                    ecrire(File(nid, "miam.sh"), "echo \"Miam !\"\n", executable = i >= 2)
-                    remis.add("nid/miam.sh")
-                }
+            "scripts0" -> if (nid.isDirectory && etape >= 1 && !trouve("miam.sh")) reculer(0)
+            "scripts1", "scripts2" -> if (nid.isDirectory && !trouve("miam.sh")) {
+                ecrire(File(nid, "miam.sh"), "echo \"Miam !\"\n", executable = Histoire.leconId(jeu) == "scripts2")
+                remis.add("nid/miam.sh")
             }
-            // les branches du téléphone : la liste de courses, la carte du Doom
-            "tuyaux" -> {
-                if (i == 0 && etape >= 2 && !trouve("courses.txt")) reculer(1)
-                else if (i == 1 && etape >= 2 && !trouve("triee.txt")) reculer(1)
-            }
-            "createur" -> if (i == 0 && etape >= 1 && !File(jeu.terrain, "jeu/carte.txt").isFile) reculer(0)
+            // les leçons du téléphone : la liste de courses, la carte du Doom
+            "tuyaux0" -> if (etape >= 2 && !trouve("courses.txt")) reculer(1)
+            "tuyaux1" -> if (etape >= 2 && !trouve("triee.txt")) reculer(1)
+            "createur0" -> if (etape >= 1 && !File(jeu.terrain, "jeu/carte.txt").isFile) reculer(0)
         }
         return remis to recule
     }

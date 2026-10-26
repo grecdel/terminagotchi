@@ -169,7 +169,7 @@ object Langue {
         return if ((cp in 0x1100..0x115F) || (cp in 0x2E80..0x303E) || (cp in 0x3041..0x33FF) || (cp in 0x3400..0x4DBF) ||
             (cp in 0x4E00..0x9FFF) || (cp in 0xA000..0xA4CF) || (cp in 0xAC00..0xD7A3) || (cp in 0xF900..0xFAFF) ||
             (cp in 0xFE30..0xFE4F) || (cp in 0xFF00..0xFF60) || (cp in 0xFFE0..0xFFE6) || (cp in 0x1F300..0x1F64F) ||
-            (cp in 0x1F900..0x1F9FF) || (cp in 0x20000..0x3FFFD)) 2 else 1
+            (cp in 0x1F680..0x1F6FF) || (cp in 0x1F900..0x1F9FF) || (cp in 0x20000..0x3FFFD)) 2 else 1
     }
 
     /** Nombre de colonnes occupées à l'écran (CJK = 2 colonnes). */
@@ -182,6 +182,23 @@ object Langue {
 
     /** Complète avec des espaces jusqu'à n colonnes. */
     fun ajuster(s: String, n: Int): String = s + " ".repeat(maxOf(0, n - largeur(s)))
+
+    /** Coupe un texte à n colonnes (avec « … » au bout), comme langue.raccourcir sur PC. */
+    fun raccourcir(s: String, n: Int, fin: String = "…"): String {
+        if (largeur(s) <= n) return s
+        val sb = StringBuilder()
+        var w = 0
+        var i = 0
+        while (i < s.length) {
+            val cp = s.codePointAt(i)
+            val lc = largeurCar(cp)
+            if (w + lc > n - largeur(fin)) break
+            sb.appendCodePoint(cp)
+            w += lc
+            i += Character.charCount(cp)
+        }
+        return sb.toString().trimEnd() + fin
+    }
 }
 
 /** Le texte d'une clé dans la langue choisie (voir Langue). */

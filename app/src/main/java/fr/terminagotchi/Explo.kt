@@ -88,7 +88,8 @@ object Explo {
         val caps = captures(jeu)
         val legendaires = (0 until caps.length()).count { Bestiaire.rareteDe(caps.getJSONObject(it)) == "légendaire" }
         val abyssorPermis = legendaires >= 3 && collection(jeu).optInt("Abyssor") == 0   // la mythique secrète #151
-        val attire = attirance(jeu)
+        // la commande d'une famille l'attire ; sinon, le chapitre en cours attire la sienne (Histoire.familleAttiree)
+        val attire = attirance(jeu) ?: Histoire.familleAttiree(jeu)
         val premier = caps.length() == 0
         var r: Pair<Bestiaire.Espece, JSONObject>? = null
         for (i in 0 until if (premier) ESSAIS_PREMIER else 1) {
@@ -96,7 +97,7 @@ object Explo {
             r = Tirage.apparition(jeu, abyssorPermis && !premier, attire) ?: auHasard(abyssorPermis && !premier, attire)
             if (!premier || facile(r.first, r.second)) break
         }
-        if (attire != null) etat(jeu).remove("attirance")      // une commande attire UNE apparition
+        if (attirance(jeu) != null) etat(jeu).remove("attirance")      // une commande attire UNE apparition
         val (e, ind) = r!!
         File(jeu.terrain, ind.optString("zone")).mkdirs()
         etat(jeu).put("explo_n", etat(jeu).optInt("explo_n") + 1)

@@ -31,7 +31,8 @@ class Commandes(
 ) {
 
     /** aller : dossier où emmener le joueur après la commande (donjon, ctf…). */
-    class Reponse(val texte: String, val saut: Int = 0, val couleur: Int? = null, val aller: File? = null)
+    /** petit : en plus petit (la carte de la maison tient alors dans la largeur de l'écran). */
+    class Reponse(val texte: String, val saut: Int = 0, val couleur: Int? = null, val aller: File? = null, val petit: Boolean = false)
 
     private var tts: TextToSpeech? = null
     private var ttsPret = false
@@ -53,7 +54,9 @@ class Commandes(
             "applis" -> applis(reste)
             "ouvre" -> ouvre(reste)
             "web" -> web(reste)
-            "carte" -> lancer(Intent(Intent.ACTION_VIEW, Uri.parse("geo:0,0?q=" + Uri.encode(reste))),
+            // carte tout seul : le plan de la maison ; carte <lieu> : la carte du monde
+            "carte" -> if (reste.isEmpty()) Reponse(Maison.carte(jeu.also { Histoire.h(it) }).joinToString("\n"), couleur = ROSE, petit = true)
+                else lancer(Intent(Intent.ACTION_VIEW, Uri.parse("geo:0,0?q=" + Uri.encode(reste))),
                 t("tel.carte.ok", "q" to reste), "carte gare de lyon", reste)
             "appelle" -> lancer(Intent(Intent.ACTION_DIAL, Uri.parse("tel:" + Uri.encode(reste))),
                 t("tel.appelle.ok"), "appelle 0612345678", reste)
@@ -73,7 +76,7 @@ class Commandes(
             "etat" -> etat()
             "renomme" -> renomme(reste)
             // ---------------------------------------------------- progression et jeux
-            "arbre" -> arbre(reste)
+            "arbre", "aile", "ailes", "histoire" -> aile(reste)
             "collection" -> Reponse(Explo.texteCollection(jeu), couleur = ROSE)
             "troupe" -> Reponse(if (reste.isBlank()) Equipe.texte(jeu) else Equipe.choisir(jeu, reste), couleur = ROSE)
             "anime" -> {
@@ -91,7 +94,7 @@ class Commandes(
                 else { Defis.lancer(jeu); Reponse(t("defi.lance"), saut = 2, couleur = JAUNE) }
             "donjon" -> Donjon.entrer(jeu, reste).let { Reponse(it.texte, saut = 2, couleur = JAUNE, aller = it.aller) }
             "plan" -> Reponse(Donjon.plan(jeu, dossier()), couleur = JAUNE)
-            "quetes" -> Reponse(Donjon.texteQuetes(jeu), couleur = JAUNE)
+            "quetes", "quete", "journal" -> quetes(reste)
             "sac" -> Reponse(Donjon.texteSac(jeu), couleur = JAUNE)
             "equipe" -> Reponse(Donjon.equipe(jeu, reste), saut = 2, couleur = JAUNE)
             "bois" -> Reponse(Donjon.bois(jeu, reste), saut = 2, couleur = JAUNE)
@@ -475,15 +478,23 @@ class Commandes(
     }
 
     // ---------------------------------------------------------------- progression et jeux
-    private fun arbre(choix: String): Reponse {
-        if (choix.isEmpty()) return Reponse(Arbre.texte(jeu), couleur = ROSE)
-        if (!jeu.troncFini) return Reponse(t("arbre.tronc_dabord"), couleur = ORANGE)
-        val cle = choix.lowercase().replace("é", "e").replace("è", "e")
-        val b = jeu.branches[cle] ?: return Reponse(t("arbre.branches", "liste" to Arbre.ORDRE.joinToString(", ")), couleur = ORANGE)
-        if (jeu.progresBranche(cle) >= b.lecons.size) return Reponse(t("arbre.deja", "branche" to b.nom), couleur = ROSE)
-        jeu.choisirBranche(cle)
-        jeu.dire(t("arbre.choisie.dit", "branche" to b.nom), 10)
-        return Reponse(t("arbre.choisie", "icone" to b.icone, "branche" to b.nom, "desc" to b.desc), saut = 3, couleur = ROSE)
+    /** aile · aile <nom ou numéro> (aussi arbre, l'ancien nom) : les ailes de la maison, choisir celle qu'on réveille. */
+    private fun aile(choix: String): Reponse {
+        Histoire.h(jeu)
+        if (choix.isEmpty()) return Reponse(Histoire.lignesAiles(jeu).joinToString("\n"), couleur = ROSE)
+        val cid = Histoire.chercherChapitre(choix)
+            ?: return Reponse(t("hist.aile.inconnue", "nom" to choix) + "\n" + Histoire.lignesAiles(jeu).joinToString("\n"), couleur = ORANGE)
+        return Reponse(Histoire.choisir(jeu, cid, dit = false), saut = 3, couleur = ROSE)
+    }
+
+    /** quetes · quetes suivre N : le journal des quêtes de la maison (puis celles du donjon, s'il y en a). */
+    private fun quetes(reste: String): Reponse {
+        val m = reste.split(Regex("\\s+")).filter { it.isNotEmpty() }
+        if (m.size >= 2 && m[0].lowercase() in setOf("suivre", "follow", "s")) return Reponse(Quetes.suivre(jeu, m[1]), couleur = JAUNE)
+        Histoire.h(jeu)
+        var txt = Quetes.journal(jeu).joinToString("\n")
+        if (jeu.module("donjon").has("quetes")) txt += "\n\n" + Donjon.texteQuetes(jeu)
+        return Reponse(txt, couleur = JAUNE)
     }
 
     private fun edite(nom: String): Reponse {
