@@ -348,7 +348,11 @@ verifier("histoire" in st and "systeme1" in h(st)["faits"] and "dortoir0" in h(s
 verifier(h(st)["chap"] == "grenier" and lecon(st) == ("grenier0", 0) and h(st)["pas"].get("t4") == 2,
          f"leçon « Grand ménage » en cours → le grenier, étape rm gardée : {lecon(st)}")
 
-print("10. Sécurité et langues")
+print("10. Terrain effacé, sécurité et langues")
+subprocess.run(["rm", "-rf", str(T / "grenier")])
+st = tape("ls")
+verifier((T / "grenier" / "lettre_du_jardinier.txt").is_file() and (T / "grenier" / "fouillis").is_dir(),
+         "grenier effacé : la porte, ses meubles et ses quêtes pas finies reviennent")
 apres = fichiers_hors_terrain()
 nouveaux = sorted(x for x in apres - avant if not x.endswith(".bash_history"))
 verifier(not nouveaux, f"rien d'écrit hors du terrain ({nouveaux[:3]})")

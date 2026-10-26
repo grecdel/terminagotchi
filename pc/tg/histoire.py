@@ -488,6 +488,12 @@ def meubler(state):
                 d.mkdir(parents=True, exist_ok=True)
             except OSError:
                 continue
+            # la pièce avait disparu (terrain effacé) : ses meubles et ses quêtes pas finies reviennent
+            if "piece:" + p in h["meubles"]:
+                h["meubles"].remove("piece:" + p)
+            from . import quetes
+            q = quetes.q_(state)
+            q["poses"] = [x for x in q["poses"] if x in q["finies"] or quetes.PAR_ID[x]["piece"] != p]
         cle = "piece:" + p
         if cle not in h["meubles"]:
             h["meubles"].append(cle)

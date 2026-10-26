@@ -19,7 +19,7 @@ if Path.home() == Path(os.path.expanduser("~")) and "--force-home" not in sys.ar
     pass
 sys.path.insert(0, os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))))
 
-from tg import app, core, dressage, equipe, explo, langue, lexique, registre, sprites  # noqa: E402
+from tg import app, core, dressage, equipe, explo, histoire, langue, lexique, maison, quetes, registre, sprites  # noqa: E402
 
 ANSI = re.compile(r"\x1b\[[0-9;?]*[A-Za-z]")
 COURT = "--court" in sys.argv
@@ -101,7 +101,13 @@ def main():
             erreurs.append("animation impossible pour " + caps[-1]["espece"])
     frames, _ips = sprites.animation(core.load(), "mange")
     montrer("animation (mange, image 5)", frames[5])
-    montrer("lexique", lexique.lignes(core.load()))
+    montrer("lexique (carnet d'aventure)", lexique.lignes(core.load()))
+    st = core.modifier(lambda s: histoire.h_(s))
+    montrer("carte de la maison", maison.carte(st))
+    if len(maison.verifier_largeur(maison.carte(st))) != 1:
+        erreurs.append("carte : les lignes du plan n'ont pas toutes la même largeur")
+    montrer("ailes de la maison", histoire.lignes_ailes(st))
+    montrer("journal des quêtes", quetes.journal(st))
     montrer("aide", app.aide())
     for q in (langue.t("reg.r.creer_dossier_entrer"), "grep", "supprimer un dossier"):
         montrer(f"recherche « {q} »", registre.afficher(registre.chercher(q), "Test"))
