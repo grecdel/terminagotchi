@@ -18,14 +18,15 @@ import java.util.Locale
  * La créature « en direct » dans la barre de notification, comme un tamagotchi de poche.
  *
  *  - une notification « en cours » (ongoing), silencieuse, sur son propre canal (CANAL), séparée des rappels ;
- *  - repliée : le portrait en grande icône, le nom et le niveau, les jauges (🍎 faim, ⭐ XP) et l'humeur ;
- *    dépliée : une vue personnalisée (layout notif_vie, comme le widget) avec la créature en grand et sa phrase ;
+ *  - repliée : le portrait en grande icône, le nom et le niveau, les 3 envies les plus basses (Envies.kt), ⭐ XP,
+ *    l'humeur et l'envie du moment ; dépliée : une vue personnalisée (layout notif_vie, comme le widget) avec la
+ *    créature en grand, les 6 envies et sa phrase ;
  *  - trois boutons : Nourrir (une petite ration, limitée : le vrai repas reste les commandes), Caresser, Terminal.
  *
  * Pas de service au premier plan : la notification est simplement (re)publiée à chaque changement (après chaque
  * commande, changement de partie ou de langue : partout où le widget se met à jour, voir WidgetCreature.majTous),
  * et en fond par l'alarme existante des Rappels (toutes les 30 min environ). La faim ne baisse que d'un point toutes
- * les 6 minutes (un cran de jauge ≈ 2 h) : il n'y a rien à animer entre deux mises à jour.
+ * les 12 minutes, les autres envies encore moins vite : il n'y a rien à animer entre deux mises à jour.
  *
  * Elle suit la partie active (Jeu lit toujours la sauvegarde active, voir Parties.kt).
  * Réglage de l'appareil (pas de la partie) : commande « notif on / notif off », activée par défaut.
@@ -147,10 +148,10 @@ class NotifVie : BroadcastReceiver() {
             val brute = when {
                 now < jeu.bulleFin && jeu.bulle.isNotEmpty() -> jeu.bulle
                 jeu.bulles.isNotEmpty() -> jeu.bulles.first().first
+                jeu.stade > 0 && Envies.phrase(jeu) != null -> "💭 " + Envies.phrase(jeu)   // l'envie du moment
                 else -> {
                     val cle = when {
                         jeu.stade == 0 -> Regles.OEUF
-                        jeu.faim < 30 -> Regles.FAIM
                         else -> Regles.TRAITS[jeu.trait] ?: Regles.OEUF
                     }
                     val l = Langue.brutes(cle)
@@ -161,20 +162,22 @@ class NotifVie : BroadcastReceiver() {
             return BALISE.replace(brute, "").replace("§", "").replace(Regex("\\s+"), " ").trim()
         }
 
-        fun emojiHumeur(jeu: Jeu) = when {
-            jeu.faim >= 60 -> "😊"
-            jeu.faim >= 30 -> "🙂"
-            jeu.faim > 0 -> "😟"
-            else -> "😵"
-        }
+        /** l'emoji de l'humeur (les 6 envies combinées, voir Envies.humeurCle) */
+        fun emojiHumeur(jeu: Jeu) = Envies.emoji(jeu)
 
-        /** « 🍎 ▰▰▰▱▱  ⭐ ▰▰▱▱▱ » : la faim et l'XP jusqu'au niveau suivant. */
-        fun jauges(jeu: Jeu): String {
+        /** « ⭐ ▰▰▱▱▱ » : l'XP jusqu'au niveau suivant. */
+        fun xp(jeu: Jeu): String {
             val n = jeu.niveau
             val lo = 10 * (n - 1) * (n - 1)
             val hi = 10 * n * n
-            return "🍎 ${Regles.barre(jeu.faim, 100.0, 5)}  ⭐ ${Regles.barre((jeu.xp - lo).toDouble(), (hi - lo).toDouble(), 5)}"
+            return "⭐ ${Regles.barre((jeu.xp - lo).toDouble(), (hi - lo).toDouble(), 5)}"
         }
+
+        /** Vue réduite : les 3 envies les plus basses et l'XP (« 🎮▰▱▱▱ 😴▰▰▱▱ 📚▰▰▰▱  ⭐ ▰▰▱▱▱ »). */
+        fun jauges(jeu: Jeu): String = "${Envies.plusBasses(jeu)}  ${xp(jeu)}"
+
+        /** Vue dépliée : les 6 envies (2 lignes de 3). */
+        fun jaugesToutes(jeu: Jeu): String = Envies.compact(jeu)
 
         // ------------------------------------------------------------ la notification
         private fun canal(ctx: Context, nm: NotificationManager) {
@@ -199,9 +202,10 @@ class NotifVie : BroadcastReceiver() {
                 canal(ctx, nm)
                 val titre = jeu.titre()
                 val jauges = jauges(jeu)
-                val humeur = "${emojiHumeur(jeu)} ${jeu.humeur()}"
+                val toutes = jaugesToutes(jeu)
+                val humeur = "${emojiHumeur(jeu)} ${jeu.humeur()}  ${xp(jeu)}"
                 val dit = phrase(jeu)
-                val cle = listOf(jeu.partie, titre, jauges, humeur, dit, jeu.stade, jeu.forme, jeu.shiny, Langue.courante).joinToString("|")
+                val cle = listOf(jeu.partie, titre, jauges, toutes, humeur, dit, jeu.stade, jeu.forme, jeu.shiny, Langue.courante).joinToString("|")
                 if (cle == affiche && nm.activeNotifications.any { it.id == ID }) return
 
                 val ouvrir = PendingIntent.getActivity(ctx, 12,
@@ -212,7 +216,7 @@ class NotifVie : BroadcastReceiver() {
                 val v = RemoteViews(ctx.packageName, R.layout.notif_vie)
                 v.setImageViewBitmap(R.id.n_creature, Sprites.bitmap(jeu, 16))
                 v.setTextViewText(R.id.n_titre, titre)
-                v.setTextViewText(R.id.n_jauges, jauges)
+                v.setTextViewText(R.id.n_jauges, toutes)
                 v.setTextViewText(R.id.n_humeur, humeur)
                 v.setTextViewText(R.id.n_phrase, Vert.rendre(if (dit.isEmpty()) "" else "« $dit »"))
                 v.setOnClickPendingIntent(R.id.n_creature, ouvrir)

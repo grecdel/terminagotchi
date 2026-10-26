@@ -31,6 +31,7 @@ object Tour {
         if (hasard && !colle && !rappel && Explo.debloquee(jeu) && !Dressage.actif(jeu) && Random.nextInt(25) == 0) {
             Explo.spawn(jeu)                                       // en jouant, un monstre peut surgir
         }
+        Envies.apresCommande(jeu, ligne, colle || rappel)          // les 6 envies : usure, plaisirs, poussière, rappel espacé
         return Resultat(mange, msgs, saut)
     }
 

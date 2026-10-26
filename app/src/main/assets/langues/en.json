@@ -2016,5 +2016,112 @@
  "grand.python3": "Python 3 interpreter: runs a script, or code with -c.",
  "grand.nano": "text editor in the terminal (Ctrl+O saves, Ctrl+X quits).",
  "grand.clear": "clears the terminal screen.",
- "grand.apt": "Debian and Ubuntu package manager: installs, updates, removes software."
+ "grand.apt": "Debian and Ubuntu package manager: installs, updates, removes software.",
+ "env.nom.faim": "Hunger",
+ "env.nom.jeu": "Play",
+ "env.nom.curiosite": "Curiosity",
+ "env.nom.explorer": "Exploring",
+ "env.nom.sommeil": "Sleep",
+ "env.nom.proprete": "Tidiness",
+ "env.dit.faim": [
+  "I'm a bit peckish… Type `{cmd}` to feed me!",
+  "My tummy is rumbling! Any command will do… `{cmd}` maybe?",
+  "Yum, I'm hungry! Will you give me a `{cmd}` to nibble?",
+  "A byte-sized snack? Type `{cmd}`!",
+  "I could eat a command… Try `{cmd}`!"
+ ],
+ "env.dit.jeu": [
+  "I'm bored… shall we play? Type `{cmd}`!",
+  "How about a bit of fun? `{cmd}`!",
+  "I want to move! Shall we do `{cmd}`?",
+  "Come on, let's play together! Type `{cmd}`.",
+  "I'm going round in circles… `{cmd}`, how about it?"
+ ],
+ "env.dit.curiosite": [
+  "I want to learn something! Type `{cmd}`.",
+  "Hey, will you explain it to me? `{cmd}`!",
+  "My head is hungry for knowledge… Try `{cmd}`!",
+  "I wonder how it works… Shall we look with `{cmd}`?",
+  "Something new to discover? `{cmd}`!"
+ ],
+ "env.dit.explorer": [
+  "I want to explore! Type `{cmd}`.",
+  "What if there were a secret room around here? Try `{cmd}`!",
+  "Off on an adventure? `{cmd}`!",
+  "I know this spot too well… Let's go somewhere else: `{cmd}`.",
+  "My paws want to travel! `{cmd}`?"
+ ],
+ "env.dit.sommeil": [
+  "I'm sleepy… Type `{cmd}` and I'll take a little nap.",
+  "*yawn* A little nap? Type `{cmd}`.",
+  "My eyes keep closing… `{cmd}`, please!",
+  "Zzz… sorry! Will you let me sleep a bit? `{cmd}`!",
+  "A power nap would do me good: `{cmd}`."
+ ],
+ "env.dit.proprete": [
+  "Achoo! There's dust in my house… Type `{cmd}`.",
+  "My hidden cupboard is full of dust! Shall we tidy up? `{cmd}`",
+  "Little useless files are lying around my place… `{cmd}` to start!",
+  "All this dust is itchy! Help me: `{cmd}`.",
+  "A quick sweep? Start with `{cmd}`!"
+ ],
+ "env.merci.faim": [
+  "Yum! My tummy is happy. 🍎",
+  "Thanks, that feels good!",
+  "Delicious, those commands!"
+ ],
+ "env.merci.jeu": [
+  "Yay, that was fun! 🎮",
+  "Awesome! I'm not bored any more.",
+  "Again! That was great!"
+ ],
+ "env.merci.curiosite": [
+  "Oh! I learned something! 📚",
+  "Thanks, my head is so happy!",
+  "Fascinating! I love learning with you."
+ ],
+ "env.merci.explorer": [
+  "What an adventure! 🧭",
+  "Wow, a new place!",
+  "I love discovering the house with you!"
+ ],
+ "env.merci.sommeil": [
+  "Zzz… Ah, what a lovely nap! 😴",
+  "I'm full of energy now!",
+  "Mmm… thanks for the nap!"
+ ],
+ "env.merci.proprete": [
+  "Thank you! My house is all clean! 🧹",
+  "Not a speck of dust left, well done!",
+  "Smells clean! Thanks for sweeping."
+ ],
+ "env.soir": [
+  "*yawn* It's getting late… We played well today. Shall we stop for tonight?",
+  "*yawn* My eyes are stinging… Shall we carry on tomorrow? Good night!",
+  "It's dark outside… I think it's time for both of us to rest."
+ ],
+ "env.sieste.log": "💤 {s} s nap: sleep +{n}",
+ "env.poussiere.contenu": "Dust! A little useless Terminagotchi file. You can delete it: rm .cache/*.tmp",
+ "env.poussiere.premiere": "🧹 Some dust fell into my hidden cupboard `.cache`! Type `{cmd}` to find out how to clean it.",
+ "env.cache.enfant": "The hidden cupboard is a folder whose name starts with a dot (.cache): you only see it with {lsa}. The dust is little .tmp files that are no use at all.",
+ "env.cache.grands": "For grown-ups: real computers have a cache too, temporary files kept to go faster. Never touch the real system's ones: here we ONLY clean the game's house, ~/terrain_terminagotchi/.cache.",
+ "env.ecran.titre": "💭 {nom}'s wishes",
+ "env.ecran.moment": "Wish of the moment: {icone} {envie} → `{cmd}`",
+ "env.ecran.aucune": "Wish of the moment: nothing, all is well for {nom}!",
+ "env.ecran.humeur": "Mood: {humeur}",
+ "env.ecran.pied": "A wish at zero? Don't worry: {nom} is just a little sad or grumpy. There is no punishment.",
+ "env.comment.faim": "Any command feeds me, for example {cmds}.",
+ "env.comment.jeu": "Play with me: {cmds}. Fights and taming monsters count too!",
+ "env.comment.curiosite": "Learn: a lesson step, a quest, a command I've never tasted, or {cmds}.",
+ "env.comment.explorer": "Explore: enter a room you've never visited (the map: {cmds}), find a secret room with {lsa}, track down a hidden monster.",
+ "env.comment.sommeil": "A nap: {cmd}. I get tired when we play, especially in the evening, and I also rest when you're not playing.",
+ "env.comment.proprete": "Dust (little .tmp files) falls into my hidden cupboard .cache. Go to my place ({aller}), look with {voir}, then clean with {nettoyer}.",
+ "humeur.joyeux": "cheerful",
+ "humeur.triste": "sad",
+ "humeur.grognon": "grumpy",
+ "lex.tg_envies.i": "what your creature wants: eat, play, learn, explore, sleep, tidy up",
+ "lex.tg_envies.t": "the 6 wish gauges, and the command that pleases each one",
+ "env.aide.tel": "💭 Wishes: `envies` (what I want and how to please me) · `sleep 10` (a little nap)",
+ "env.sieste.debut": "💤 {nom} is taking a {s}-second nap… Shh!",
+ "env.sieste.trop": "Here a nap lasts {max} seconds at most: try `sleep 10`."
 }

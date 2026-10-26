@@ -527,6 +527,7 @@ object Dressage {
         val duree = d.optInt("duree")
         val bonus = if (duree > 0 && duree - ecoule > duree / 2.0) 2 else 1
         jeu.ajouterXp((Bestiaire.XP[rar] ?: 15) * (if (shiny) 3 else 1) * bonus)
+        Envies.plaisir(jeu, "jeu", "dressage")
         return "🎓 ${Explo.carte(ind)}\n" + t("dressa.rejoint", "nom" to e.nom)
     }
 

@@ -190,6 +190,7 @@ object Combat {
             }
             else -> jeu.dire(t("dress.combat.nul"), 10)
         }
+        Envies.plaisir(jeu, "jeu", "combat")                  // gagné ou perdu : on a bien joué
         // le dressage commence maintenant : chrono à zéro, les commandes du combat ne comptent pas
         d.put("debut", System.currentTimeMillis())
         d.put("lignes", JSONArray())

@@ -406,7 +406,7 @@ class TerminalActivity : Activity() {
             "langue" -> { ecrire(langue(ligne.trim().split(Regex("\\s+")).getOrNull(1)), Commandes.ROSE); return }
             "partie" -> { ecrire(menu.commande(ligne.substringAfter(' ', "")), Commandes.ROSE); rafraichir(); return }
             "aide" -> {
-                ecrire(t("term.aide", "ctf" to Mots.terme("ctf", Mots.palier(jeu), true)) + "\n" + t("term.aide.maison"))
+                ecrire(t("term.aide", "ctf" to Mots.terme("ctf", Mots.palier(jeu), true)) + "\n" + t("term.aide.maison") + "\n" + t("env.aide.tel"))
                 return
             }
         }
@@ -431,6 +431,16 @@ class TerminalActivity : Activity() {
             ecrire(t("dressa.combat.coup", "cmd" to mot), 0xFF9A9AB0.toInt())
             try { apresCommande(ligne, etaitColle, etaitRappel) } catch (e: Exception) { android.util.Log.e("TG", "après « $ligne »", e) }
             return
+        }
+
+        // sleep N : une vraie sieste (le vrai shell la fait), avec l'animation « dort » ; le shell coupe à 20 s
+        Envies.dureeSieste(ligne)?.let { s ->
+            if (s > Envies.SIESTE_MAX_TEL) {
+                ecrire(t("env.sieste.trop", "max" to Envies.SIESTE_MAX_TEL), 0xFFFFAF5F.toInt())
+                return
+            }
+            ecrire(t("env.sieste.debut", "nom" to jeu.nom, "s" to (if (s == Math.floor(s)) s.toLong().toString() else s.toString())), 0xFF9A9AB0.toInt())
+            jouerCreature("dort")
         }
 
         enCours = true
@@ -816,7 +826,7 @@ class TerminalActivity : Activity() {
     // ------------------------------------------------------------ affichage
     private fun rafraichir() {
         titre.text = if (!jeu.existe) t("term.oeuf_mysterieux") else if (jeu.shiny) miseEnForme("§${jeu.titre()}§", null) else jeu.titre()
-        faim.text = jeu.texteFaim()
+        faim.text = if (jeu.existe) Envies.compact(jeu) + "  " + Envies.emoji(jeu) else jeu.texteFaim()
         xp.text = jeu.texteXp()
         stats.text = jeu.texteStats()
         invite.text = if (::menu.isInitialized && menu.ouvert) ">" else if (jeu.existe) "${shell.chemin()} $" else t("term.invite_nom")

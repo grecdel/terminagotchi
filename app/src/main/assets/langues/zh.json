@@ -2017,5 +2017,112 @@
  "grand.python3": "Python 3 解释器：运行脚本，或用 -c 运行代码。",
  "grand.nano": "终端里的文本编辑器（Ctrl+O 保存，Ctrl+X 退出）。",
  "grand.clear": "清空终端屏幕。",
- "grand.apt": "Debian 和 Ubuntu 的软件包管理器：安装、更新、删除软件。"
+ "grand.apt": "Debian 和 Ubuntu 的软件包管理器：安装、更新、删除软件。",
+ "env.nom.faim": "饥饿",
+ "env.nom.jeu": "玩耍",
+ "env.nom.curiosite": "好奇",
+ "env.nom.explorer": "探索",
+ "env.nom.sommeil": "睡眠",
+ "env.nom.proprete": "整洁",
+ "env.dit.faim": [
+  "我有点饿了……输入 `{cmd}` 喂喂我吧！",
+  "我的肚子在咕咕叫！随便一条命令都行……比如 `{cmd}`？",
+  "好饿呀！给我一个 `{cmd}` 当零食好吗？",
+  "来一字节的点心？输入 `{cmd}`！",
+  "我想吃一条命令……试试 `{cmd}`！"
+ ],
+ "env.dit.jeu": [
+  "我好无聊……一起玩吧？输入 `{cmd}`！",
+  "我们来玩点有趣的吧？`{cmd}`！",
+  "我想动一动！来个 `{cmd}` 吧？",
+  "来吧，一起玩一局！输入 `{cmd}`。",
+  "我在原地打转……`{cmd}`，怎么样？"
+ ],
+ "env.dit.curiosite": [
+  "我想学点新东西！输入 `{cmd}`。",
+  "嘿，你给我讲讲好吗？`{cmd}`！",
+  "我的脑袋渴望知识……试试 `{cmd}`！",
+  "我想知道它是怎么运作的……用 `{cmd}` 看看？",
+  "有新东西可以发现吗？`{cmd}`！"
+ ],
+ "env.dit.explorer": [
+  "我想去探险！输入 `{cmd}`。",
+  "这里会不会有一间秘密房间？试试 `{cmd}`！",
+  "我们去冒险吧？`{cmd}`！",
+  "这个角落我太熟悉了……去别处看看：`{cmd}`。",
+  "我的小爪子想去旅行！`{cmd}`？"
+ ],
+ "env.dit.sommeil": [
+  "我困了……输入 `{cmd}`，我就小睡一会儿。",
+  "*打哈欠* 小睡一下？输入 `{cmd}`。",
+  "我的眼睛自己闭上了……`{cmd}`，拜托啦！",
+  "呼呼……抱歉！让我睡一会儿好吗？`{cmd}`！",
+  "打个小盹会让我舒服很多：`{cmd}`。"
+ ],
+ "env.dit.proprete": [
+  "阿嚏！我家里有灰尘……输入 `{cmd}`。",
+  "我的隐藏柜子里全是灰尘！一起打扫吧？`{cmd}`",
+  "家里散落着没用的小文件……先输入 `{cmd}`！",
+  "这些灰尘好痒呀！帮帮我：`{cmd}`。",
+  "扫一扫？从 `{cmd}` 开始吧！"
+ ],
+ "env.merci.faim": [
+  "好吃！我的肚子很满足。🍎",
+  "谢谢，舒服多了！",
+  "这些命令真美味！"
+ ],
+ "env.merci.jeu": [
+  "耶，玩得真开心！🎮",
+  "太棒了！我不无聊了。",
+  "再来一次！太好玩了！"
+ ],
+ "env.merci.curiosite": [
+  "哦！我学到新东西了！📚",
+  "谢谢，我的脑袋好开心！",
+  "太神奇了！我喜欢和你一起学习。"
+ ],
+ "env.merci.explorer": [
+  "好一场冒险！🧭",
+  "哇，一个新地方！",
+  "我喜欢和你一起探索这座房子！"
+ ],
+ "env.merci.sommeil": [
+  "呼呼……啊，睡得真香！😴",
+  "我现在精神满满！",
+  "嗯……谢谢你让我午睡！"
+ ],
+ "env.merci.proprete": [
+  "谢谢！我的家干干净净！🧹",
+  "一粒灰尘都没有了，真棒！",
+  "闻起来好干净！谢谢你帮我打扫。"
+ ],
+ "env.soir": [
+  "*打哈欠* 天色不早了……我们今天玩得很开心。今晚就到这里吧？",
+  "*打哈欠* 我的眼睛有点酸……明天再继续好吗？晚安！",
+  "外面天黑了……我想我们俩都该休息啦。"
+ ],
+ "env.sieste.log": "💤 午睡 {s} 秒：睡眠 +{n}",
+ "env.poussiere.contenu": "灰尘！这是 Terminagotchi 的一个没用的小文件。你可以删除它：rm .cache/*.tmp",
+ "env.poussiere.premiere": "🧹 灰尘落进了我的隐藏柜子 `.cache`！输入 `{cmd}` 看看怎么打扫。",
+ "env.cache.enfant": "隐藏柜子是一个名字以点开头的文件夹（.cache）：只有用 {lsa} 才能看到它。灰尘就是一些没用的 .tmp 小文件。",
+ "env.cache.grands": "给大孩子：真正的电脑也有缓存，就是为了运行更快而保存的临时文件。千万不要动真实系统里的缓存：这里我们只打扫游戏的家，~/terrain_terminagotchi/.cache。",
+ "env.ecran.titre": "💭 {nom} 的愿望",
+ "env.ecran.moment": "当前愿望：{icone} {envie} → `{cmd}`",
+ "env.ecran.aucune": "当前愿望：没有，{nom} 一切都好！",
+ "env.ecran.humeur": "心情：{humeur}",
+ "env.ecran.pied": "某个愿望降到零了？别担心：{nom} 只是有点难过或闹脾气。没有任何惩罚。",
+ "env.comment.faim": "任何命令都能喂饱我，比如 {cmds}。",
+ "env.comment.jeu": "和我一起玩：{cmds}。战斗和驯服怪物也算哦！",
+ "env.comment.curiosite": "学习：完成一步课程、一个任务、一条我从没尝过的命令，或者 {cmds}。",
+ "env.comment.explorer": "探索：进入一个从没去过的房间（地图：{cmds}），用 {lsa} 找到秘密房间，找出藏起来的怪物。",
+ "env.comment.sommeil": "小睡一下：{cmd}。玩耍会让我累，晚上更容易累；你不玩的时候我也会休息。",
+ "env.comment.proprete": "灰尘（.tmp 小文件）会落进我的隐藏柜子 .cache。来我家（{aller}），用 {voir} 看看，再用 {nettoyer} 打扫干净。",
+ "humeur.joyeux": "开心",
+ "humeur.triste": "难过",
+ "humeur.grognon": "闹脾气",
+ "lex.tg_envies.i": "你的小生物想做什么：吃东西、玩耍、学习、探索、睡觉、打扫",
+ "lex.tg_envies.t": "6 个愿望量表，以及满足每个愿望的命令",
+ "env.aide.tel": "💭 愿望：`envies`（我想要什么、怎样让我开心）· `sleep 10`（小睡一会儿）",
+ "env.sieste.debut": "💤 {nom} 正在午睡 {s} 秒……嘘！",
+ "env.sieste.trop": "这里的午睡最多 {max} 秒：试试 `sleep 10`。"
 }

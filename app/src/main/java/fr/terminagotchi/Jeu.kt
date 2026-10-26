@@ -218,6 +218,7 @@ object Regles {
             Mot("devine", "lexa.devine.i", "lexa.devine.t", c),
             Mot("etat", "lexa.etat.i", "lexa.etat.t", c),
             Mot("renomme", "lexa.renomme.i", "lexa.renomme.t", c),
+            Mot("envies", "lex.tg_envies.i", "lex.tg_envies.t", c),
             Mot("cherche", "lexa.cherche.i", "lexa.cherche.t", j),
             Mot("collection", "lexa.collection.i", "lexa.collection.t", j),
             Mot("defi", "lexa.defi.i", "lexa.defi.t", j),
@@ -275,7 +276,7 @@ class Jeu(ctx: Context) {
         @Volatile private var DEJA: String? = null
 
         /** quelle animation l'emporte quand plusieurs arrivent en même temps (comme core.PRIORITE_ANIM sur PC) */
-        val PRIORITE_ANIM = mapOf("evolution" to 9, "victoire" to 8, "ko" to 7, "colere" to 6, "content" to 5,
+        val PRIORITE_ANIM = mapOf("evolution" to 9, "victoire" to 8, "ko" to 7, "colere" to 6, "dort" to 6, "content" to 5,
             "confus" to 4, "mange" to 3, "salut" to 2, "parle" to 1)
     }
 
@@ -557,9 +558,11 @@ class Jeu(ctx: Context) {
 
     fun tick() {
         val now = System.currentTimeMillis()
-        val rate = if ("Gardien" in skills) 720_000.0 else 360_000.0     // ms par point de faim
+        // ms par point de faim : 2 fois plus lent qu'avant les envies (Envies.kt) ; Gardien double encore
+        val rate = if ("Gardien" in skills) 1_440_000.0 else 720_000.0
         faim = (faim - (now - dernierTick) / rate).coerceAtLeast(0.0)
         dernierTick = now
+        Envies.temps(this)                  // les autres envies : usure lente, repos, poussière du terrain
     }
 
     fun ajouterXp(n: Int) {
@@ -654,18 +657,14 @@ class Jeu(ctx: Context) {
         if (bulleActive().isNotEmpty()) return
         when {
             stade == 0 -> dire(Regles.auHasard(Regles.OEUF))
-            faim < 30 -> dire(Regles.auHasard(Regles.FAIM))
+            // la faim et les autres envies passent par Envies.kt (rappels espacés)
             else -> dire(Regles.TRAITS[trait]?.let { Regles.auHasard(it) } ?: "…")
         }
     }
 
     // ------------------------------------------------------------ textes affichés
-    fun humeur() = when {
-        faim >= 60 -> t("humeur.repu")
-        faim >= 30 -> t("humeur.creux")
-        faim > 0 -> t("humeur.affame")
-        else -> t("humeur.vide")
-    }
+    /** l'humeur combine les 6 envies (la faim d'abord), voir Envies.humeurCle */
+    fun humeur() = t(Envies.humeurCle(this))
 
     fun titre(): String {
         return "$nom${if (shiny) " ✨" else ""} · " + t("app.forme_niveau", "forme" to Regles.espece(stade, forme), "n" to niveau)
@@ -720,6 +719,7 @@ class Jeu(ctx: Context) {
         if (b.isNotEmpty()) return "« $b »"
         val e = etapeCourante()
         if (e != null) return t("widget.lecon", "cmd" to Regles.piege(e.cmd))
+        Envies.phrase(this)?.let { return "💭 $it" }                      // l'envie du moment
         return journal.lastOrNull()?.drop(6) ?: t("widget.nourris")
     }
 }

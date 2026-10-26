@@ -2011,5 +2011,112 @@
  "grand.python3": "Python-3-Interpreter: führt ein Skript aus, oder Code mit -c.",
  "grand.nano": "Texteditor im Terminal (Strg+O speichert, Strg+X beendet).",
  "grand.clear": "löscht den Bildschirm des Terminals.",
- "grand.apt": "Paketverwaltung von Debian und Ubuntu: installiert, aktualisiert und entfernt Software."
+ "grand.apt": "Paketverwaltung von Debian und Ubuntu: installiert, aktualisiert und entfernt Software.",
+ "env.nom.faim": "Hunger",
+ "env.nom.jeu": "Spielen",
+ "env.nom.curiosite": "Neugier",
+ "env.nom.explorer": "Entdecken",
+ "env.nom.sommeil": "Schlaf",
+ "env.nom.proprete": "Sauberkeit",
+ "env.dit.faim": [
+  "Ich hab ein bisschen Hunger… Tippe `{cmd}`, um mich zu füttern!",
+  "Mein Bauch knurrt! Irgendein Befehl… vielleicht `{cmd}`?",
+  "Mjam, ich hab Hunger! Gibst du mir ein `{cmd}` zum Knabbern?",
+  "Ein Byte als Snack? Tippe `{cmd}`!",
+  "Ich könnte einen Befehl essen… Probier `{cmd}`!"
+ ],
+ "env.dit.jeu": [
+  "Mir ist langweilig… spielen wir? Tippe `{cmd}`!",
+  "Wie wär's mit ein bisschen Spaß? `{cmd}`!",
+  "Ich will mich bewegen! Machen wir `{cmd}`?",
+  "Komm, eine Runde zusammen! Tippe `{cmd}`.",
+  "Ich drehe mich im Kreis… Lust auf `{cmd}`?"
+ ],
+ "env.dit.curiosite": [
+  "Ich will etwas lernen! Tippe `{cmd}`.",
+  "Du, erklärst du es mir? `{cmd}`!",
+  "Mein Kopf hat Hunger auf Wissen… Probier `{cmd}`!",
+  "Ich frage mich, wie das funktioniert… Schauen wir mit `{cmd}` nach?",
+  "Etwas Neues zu entdecken? `{cmd}`!"
+ ],
+ "env.dit.explorer": [
+  "Ich will auf Entdeckungstour! Tippe `{cmd}`.",
+  "Und wenn es hier ein geheimes Zimmer gibt? Probier `{cmd}`!",
+  "Gehen wir auf Abenteuer? `{cmd}`!",
+  "Diese Ecke kenne ich zu gut… Schauen wir woanders: `{cmd}`.",
+  "Meine Pfoten wollen reisen! `{cmd}`?"
+ ],
+ "env.dit.sommeil": [
+  "Ich bin müde… Tippe `{cmd}`, dann mache ich ein kleines Nickerchen.",
+  "*gähn* Ein kleines Nickerchen? Tippe `{cmd}`.",
+  "Mir fallen die Augen zu… `{cmd}`, bitte!",
+  "Zzz… Entschuldigung! Lässt du mich ein bisschen schlafen? `{cmd}`!",
+  "Ein Blitz-Nickerchen würde mir guttun: `{cmd}`."
+ ],
+ "env.dit.proprete": [
+  "Hatschi! In meinem Haus liegt Staub… Tippe `{cmd}`.",
+  "Mein versteckter Schrank ist voller Staub! Räumen wir auf? `{cmd}`",
+  "Kleine nutzlose Dateien liegen bei mir herum… `{cmd}` zum Anfangen!",
+  "Der ganze Staub juckt! Hilf mir: `{cmd}`.",
+  "Einmal durchfegen? Fang mit `{cmd}` an!"
+ ],
+ "env.merci.faim": [
+  "Mjam! Mein Bauch ist zufrieden. 🍎",
+  "Danke, das tut gut!",
+  "Lecker, diese Befehle!"
+ ],
+ "env.merci.jeu": [
+  "Juhu, das hat Spaß gemacht! 🎮",
+  "Super! Mir ist nicht mehr langweilig.",
+  "Nochmal! Das war toll!"
+ ],
+ "env.merci.curiosite": [
+  "Oh! Ich habe etwas gelernt! 📚",
+  "Danke, mein Kopf ist ganz glücklich!",
+  "Faszinierend! Ich lerne so gern mit dir."
+ ],
+ "env.merci.explorer": [
+  "Was für ein Abenteuer! 🧭",
+  "Wow, ein neuer Ort!",
+  "Ich entdecke das Haus so gern mit dir!"
+ ],
+ "env.merci.sommeil": [
+  "Zzz… Ah, was für ein schönes Nickerchen! 😴",
+  "Jetzt bin ich topfit!",
+  "Mmh… danke für das Nickerchen!"
+ ],
+ "env.merci.proprete": [
+  "Danke! Mein Haus ist ganz sauber! 🧹",
+  "Kein Staubkorn mehr, bravo!",
+  "Riecht sauber! Danke fürs Fegen."
+ ],
+ "env.soir": [
+  "*gähn* Es wird spät… Wir haben heute schön gespielt. Wollen wir für heute Abend aufhören?",
+  "*gähn* Meine Augen brennen… Machen wir morgen weiter? Gute Nacht!",
+  "Draußen ist es dunkel… Ich glaube, es ist Zeit, dass wir uns beide ausruhen."
+ ],
+ "env.sieste.log": "💤 Nickerchen von {s} s: Schlaf +{n}",
+ "env.poussiere.contenu": "Staub! Eine kleine nutzlose Terminagotchi-Datei. Du kannst sie löschen: rm .cache/*.tmp",
+ "env.poussiere.premiere": "🧹 Staub ist in meinen versteckten Schrank `.cache` gefallen! Tippe `{cmd}`, um zu erfahren, wie man putzt.",
+ "env.cache.enfant": "Der versteckte Schrank ist ein Ordner, dessen Name mit einem Punkt beginnt (.cache): Man sieht ihn nur mit {lsa}. Der Staub sind kleine .tmp-Dateien, die zu nichts nützen.",
+ "env.cache.grands": "Für die Großen: Echte Computer haben auch einen Cache, temporäre Dateien, die aufbewahrt werden, damit alles schneller geht. Fass die des echten Systems nie an: Hier putzen wir NUR das Haus des Spiels, ~/terrain_terminagotchi/.cache.",
+ "env.ecran.titre": "💭 Was {nom} sich wünscht",
+ "env.ecran.moment": "Wunsch des Moments: {icone} {envie} → `{cmd}`",
+ "env.ecran.aucune": "Wunsch des Moments: nichts, {nom} geht es prima!",
+ "env.ecran.humeur": "Laune: {humeur}",
+ "env.ecran.pied": "Ein Wunsch auf null? Keine Sorge: {nom} ist nur ein bisschen traurig oder grummelig. Es gibt keine Strafe.",
+ "env.comment.faim": "Jeder Befehl füttert mich, zum Beispiel {cmds}.",
+ "env.comment.jeu": "Mit mir spielen: {cmds}. Kämpfe und das Zähmen von Monstern zählen auch!",
+ "env.comment.curiosite": "Lernen: ein Lektionsschritt, eine Quest, ein Befehl, den ich noch nie probiert habe, oder {cmds}.",
+ "env.comment.explorer": "Entdecken: ein noch nie besuchtes Zimmer betreten (der Plan: {cmds}), ein geheimes Zimmer mit {lsa} finden, ein verstecktes Monster aufspüren.",
+ "env.comment.sommeil": "Ein Nickerchen: {cmd}. Beim Spielen werde ich müde, vor allem abends, und ich ruhe mich auch aus, wenn du nicht spielst.",
+ "env.comment.proprete": "Staub (kleine .tmp-Dateien) fällt in meinen versteckten Schrank .cache. Geh zu mir ({aller}), schau mit {voir} nach und putze dann mit {nettoyer}.",
+ "humeur.joyeux": "fröhlich",
+ "humeur.triste": "traurig",
+ "humeur.grognon": "grummelig",
+ "lex.tg_envies.i": "was deine Kreatur möchte: essen, spielen, lernen, entdecken, schlafen, aufräumen",
+ "lex.tg_envies.t": "die 6 Wunsch-Anzeigen und der Befehl, der jeden erfüllt",
+ "env.aide.tel": "💭 Wünsche: `envies` (was ich möchte und wie du mir eine Freude machst) · `sleep 10` (ein kleines Nickerchen)",
+ "env.sieste.debut": "💤 {nom} macht ein Nickerchen von {s} Sekunden… Psst!",
+ "env.sieste.trop": "Hier dauert ein Nickerchen höchstens {max} Sekunden: probier `sleep 10`."
 }

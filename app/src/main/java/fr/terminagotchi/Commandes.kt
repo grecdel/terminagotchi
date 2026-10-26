@@ -74,6 +74,7 @@ class Commandes(
             "joue" -> joue(mots.getOrNull(1))
             "devine" -> devine(mots.getOrNull(1))
             "etat" -> etat()
+            "envies", "envie" -> Reponse(Envies.ecran(jeu), couleur = ROSE)
             "renomme" -> renomme(reste)
             // ---------------------------------------------------- progression et jeux
             "arbre", "aile", "ailes", "histoire" -> aile(reste)
@@ -564,6 +565,7 @@ class Commandes(
         val toi: String = coup?.lowercase() ?: ""
         if (toi !in coups) return Reponse(t("cre.joue.aide"), couleur = ROSE)
         val moi = coups.random()
+        Envies.plaisir(jeu, "jeu", "mini")
         val emoji = mapOf("pierre" to "🪨", "feuille" to "📄", "ciseaux" to "✂")
         val resultat = when {
             moi == toi -> t("cre.joue.egalite")
@@ -589,6 +591,7 @@ class Commandes(
             else -> {
                 nombreSecret = 0
                 jeu.ajouterXp(if (essais <= 5) 10 else 5)
+                Envies.plaisir(jeu, "jeu", "mini")
                 Reponse(t("cre.devine.trouve", "n" to k, "essais" to essais), saut = 8, couleur = ROSE)
             }
         }
@@ -618,7 +621,7 @@ class Commandes(
         val JAUNE = 0xFFFFD787.toInt()
         val VERT = 0xFF87FFAF.toInt()
         val ORANGE = 0xFFFFAF5F.toInt()
-        val CREATURE = setOf("caresse", "danse", "parle", "joue", "devine", "etat", "renomme")
+        val CREATURE = setOf("caresse", "danse", "parle", "joue", "devine", "etat", "renomme", "envies", "envie")
         val TELEPHONE = setOf("applis", "ouvre", "web", "carte", "appelle", "sms", "partage", "lampe", "vibre",
             "batterie", "dis", "reglages")
     }

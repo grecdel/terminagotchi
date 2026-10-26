@@ -171,6 +171,7 @@ object Ctf {
         val nbIndices = etat(jeu).optJSONObject("indices")?.optInt(ep.id) ?: 0
         val gain = (40 - nbIndices * 10).coerceAtLeast(10)
         jeu.ajouterXp(gain)
+        Envies.plaisir(jeu, "jeu", "ctf")                    // la chasse au trésor
         jeu.stats["Intelligence"] = (jeu.stats["Intelligence"] ?: 0) + 3
         jeu.log(t("ctf.capture.log", "titre" to ep.titre))
         val fin = if (resolus(jeu).length() == EPREUVES.size) "\n\n" + t("ctf.tous") else ""

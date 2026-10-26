@@ -230,6 +230,7 @@ object Defis {
             jeu.stats["Agilité"] = (jeu.stats["Agilité"] ?: 0) + 2
             jeu.animer("victoire")
             jeu.ajouterXp(10)
+            Envies.plaisir(jeu, "jeu", "defi")
             val m = t("defi.reussi", "s" to "%.1f".format(t)) + if (nouveau) t("defi.record") else ""
             jeu.log(m)
             jeu.dire(m, 8)

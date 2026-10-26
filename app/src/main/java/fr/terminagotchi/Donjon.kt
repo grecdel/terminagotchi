@@ -263,6 +263,7 @@ object Donjon {
             e.put("vaincus", e.optInt("vaincus") + 1)
             val gain = 10 + 5 * e.optInt("etage", 1)
             jeu.ajouterXp(gain)
+            Envies.plaisir(jeu, "jeu", "donjon")
             jeu.stats["Force"] = (jeu.stats["Force"] ?: 0) + 1
             if ((1..3).random() == 1) {
                 val butin = OBJETS.filter { it.type == "potion" || it.bonus <= 2 }.random()
@@ -296,6 +297,7 @@ object Donjon {
                 msgs.add(t("donjon.quetes_finies"))
             }
             aller = generer(jeu, n)
+            Envies.plaisir(jeu, "jeu", "donjon")
             jeu.log(t("donjon.etage.log", "n" to n))
             msgs.add(t("donjon.descend", "n" to n) + "\n" + texteQuetes(jeu))
             return Res(msgs.joinToString("\n"), aller)
