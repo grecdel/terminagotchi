@@ -35,10 +35,11 @@ def vecteurs():
         par = E.TYPES[typ][3]
         for s in (0.5, par, par + 0.1, 2 * par, 2 * par + 0.1, 4 * par, 4 * par + 0.1, 900):
             out["medailles"].append({"type": typ, "t": round(s, 1), "medaille": E.medaille(typ, round(s, 1))})
-    for n in (0, 1, 2, 3, 4, 5, 8, 12, 13, 14, 15, 19, 23, 27, 29, 30, 35, 45, 49, 50, 74, 75, 100, 149, 150, 400):
-        for ors in (0, 1):
-            k = B.echelon_de(n, ors)
-            out["echelons"].append({"n": n, "or": ors, "echelon": k, "etoiles": B.etoiles_de(n, k)})
+    for n in (0, 1, 2, 3, 4, 5, 8, 12, 13, 14, 15, 19, 23, 27, 29, 30, 35, 45, 49, 50, 62, 63, 75, 88, 99, 100, 149, 150,
+              200, 299, 300, 900):
+        for ors, dia in ((0, 0), (1, 0), (3, 2), (3, 3)):      # ors : médailles d'or ou de diamant ; dia : de diamant
+            k = B.echelon_de(n, ors, dia)
+            out["echelons"].append({"n": n, "or": ors, "diamant": dia, "echelon": k, "etoiles": B.etoiles_de(n, k)})
     for i, f in enumerate(B.FAMILLES):
         for e in B.ECHELONS:
             out["ecussons"].append({"famille": f, "echelon": e, "etoiles": (i + len(e)) % 4,

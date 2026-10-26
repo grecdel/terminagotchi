@@ -75,22 +75,25 @@ V = json.loads((RACINE / "donnees/entrainement/vecteurs.json").read_text(encodin
 verifier(generer.vecteurs() == V, f"{len(V['exercices'])} tirages, médailles, échelons et semaines identiques au fichier")
 verifier(len({x["empreinte"] for x in V["exercices"]}) > 400, "les tirages sont variés")
 verifier(set(E.TYPES) == {x["type"] for x in V["exercices"]}, "les vecteurs couvrent les 19 exercices")
-verifier(len(B.FAMILLES) == 8 and B.SEUILS == (1, 5, 15, 30, 50), "8 familles, échelons à 1 / 5 / 15 / 30 / 50")
+verifier(len(B.FAMILLES) == 8 and B.SEUILS == (1, 5, 15, 30, 50, 100), "8 familles, grades à 1 / 5 / 15 / 30 / 50 / 100")
 verifier(B.echelon_de(50, 0) == 3 and B.echelon_de(50, 1) == 4 and B.echelon_de(15, 0) == 2,
          "le Giga demande aussi une médaille d'or")
-verifier(B.ECHELONS == ("bit", "octet", "kilo", "mega", "giga"), "grades : Bit, Octet, Kilo, Méga, Giga")
+verifier(B.ECHELONS == ("bit", "octet", "kilo", "mega", "giga", "tera"), "grades : Bit, Octet, Kilo, Méga, Giga, Téra")
+verifier(B.echelon_de(300, 9, 2) == 4 and B.echelon_de(300, 3, 3) == 5 and B.echelon_de(99, 3, 3) == 4,
+         "le Téra : 100 réussites et 3 médailles de diamant")
 verifier([B.etoiles_de(n, 0) for n in (1, 2, 3, 4)] == [0, 1, 2, 3] and B.etoiles_de(5, 1) == 0
          and [B.etoiles_de(n, 2) for n in (18, 19, 23, 27, 29)] == [0, 1, 2, 3, 3], "étoiles : un quart du chemin chacune")
-verifier([B.etoiles_de(n, 4) for n in (50, 75, 100, 149, 150, 999)] == [0, 1, 2, 2, 3, 3] and B.etoiles_de(9, -1) == 0,
-         "au Giga, les étoiles continuent à 75 / 100 / 150")
-verifier(all(a < b for k in range(4) for a, b in zip((B.SEUILS[k],) + B.ETOILES[k], B.ETOILES[k] + (B.SEUILS[k + 1],))),
+verifier([B.etoiles_de(n, 4) for n in (50, 62, 63, 75, 88, 99)] == [0, 0, 1, 2, 3, 3] and B.etoiles_de(9, -1) == 0,
+         "Giga → Téra : étoiles à 63 / 75 / 88")
+verifier([B.etoiles_de(n, 5) for n in (100, 150, 200, 299, 300, 999)] == [0, 1, 2, 2, 3, 3], "au Téra, les étoiles continuent à 150 / 200 / 300")
+verifier(all(a < b for k in range(5) for a, b in zip((B.SEUILS[k],) + B.ETOILES[k], B.ETOILES[k] + (B.SEUILS[k + 1],))),
          "les étoiles tombent entre deux grades")
 def _pixels(g):
     return sum(1 for l in g for c in l if c)
 gal = [_pixels(B.galons(e)) for e in B.ECHELONS]
 verifier(all(len(B.ecusson(f, e)) == 28 and all(len(l) == 18 for l in B.ecusson(f, e)) for f in B.FAMILLES for e in B.ECHELONS),
          "badge complet : 18 × 28 pixels")
-verifier(gal == sorted(gal) and len(set(gal)) == 5, f"les galons grandissent à chaque grade ({gal} pixels)")
+verifier(gal == sorted(gal) and len(set(gal)) == 6, f"les galons grandissent à chaque grade ({gal} pixels)")
 verifier(sum(1 for c in B.ecusson("lecteur", "kilo", 2)[2] if c == B.ETOILE_ON) == 10
          and _pixels(B.ecusson(None, None)) == _pixels(B.grille(None, None)), "étoiles allumées sur le badge ; « ??? » sans galons")
 verifier(E.migrer_titre("explorateur:argent") == "explorateur:kilo" and E.migrer_titre("touche") == "touche",
@@ -217,17 +220,25 @@ regler("nettoyeur", 50, 0)
 verifier(E.echelon(E.e_(etat()), "nettoyeur") == 3, "50 réussites sans médaille d'or : encore Méga")
 regler("nettoyeur", 50, 1)
 verifier(E.echelon(E.e_(etat()), "nettoyeur") == 4, "… avec une médaille d'or : Giga")
+regler("cuisinier", 100, 1)
+r = sans(modifier(lambda s: E.ecran_badges(s)))
+verifier("💎 0/3" in r, "100 réussites sans 3 médailles de diamant : encore Giga (💎 0/3)")
+modifier(lambda s: E.fam_(E.e_(s), "cuisinier").update(diamant=3, bronze=96, **{"or": 1}))
+verifier(E.echelon(E.e_(etat()), "cuisinier") == 5 and "Cuisinier Téra" == E.titre_affiche(etat())[0],
+         "… avec 3 médailles de diamant : Téra, le plus beau titre « Cuisinier Téra »")
+regler("cuisinier", 0)
 regler("plombier", 9)
 r = sans(modifier(lambda s: E.ecran_badges(s)))
 verifier("Octet ★☆☆" in r and "9/15 → Kilo" in r, "tg badges : le grade, ses étoiles et la suite (Octet ★☆☆ · 9/15 → Kilo)")
 regler("plombier", 0)
 ecran = sans(modifier(E.ecran_badges))
-verifier("Giga" in ecran and "Octet" in ecran and "▀" in ecran and "50/75 → ★" in ecran, "tg badges dessine les badges, leurs grades et leurs étoiles")
+verifier("Giga" in ecran and "Octet" in ecran and "▀" in ecran and "50/100 → Téra" in ecran, "tg badges dessine les badges, leurs grades et leurs étoiles")
 verifier("Nettoyeur Giga" in ecran, "le titre affiché est le plus beau : « Nettoyeur Giga »")
 verifier("`tg badges grades`" in ecran or "tg badges grades" in ecran, "tg badges présente les grades")
 gr = sans(modifier(lambda s: E.commande_badges(s, ["grades"])))
 verifier("8 bits" in gr and "dès 50" in gr, "tg badges grades : ce que veulent dire Bit, Octet, Kilo…")
-verifier(all(x in gr for x in ("Bit", "Octet", "Kilo", "Méga", "Giga", "150", "▀")), "… avec les 5 galons et les étoiles du Giga")
+verifier(all(x in gr for x in ("Bit", "Octet", "Kilo", "Méga", "Giga", "Téra", "300", "bibliothèque de films", "▀")),
+         "… avec les 6 galons, le Téra et ses étoiles")
 liste = sans(modifier(lambda s: E.ecran_titres(s)))
 verifier("Élève de la salle" in liste and "Bâtisseur Octet" in liste, "tg badges titre : la liste des titres")
 n = sans(modifier(lambda s: E.ecran_titres(s))).split("\n").index(

@@ -217,7 +217,7 @@ object Entrainement {
 
     fun echelon(e: JSONObject, f: String): Int {
         val x = fam(e, f)
-        return Badges.echelonDe(x.optInt("n"), x.optInt("or") + x.optInt("diamant"))
+        return Badges.echelonDe(x.optInt("n"), x.optInt("or") + x.optInt("diamant"), x.optInt("diamant"))
     }
 
     fun etoiles(e: JSONObject, f: String): Int = Badges.etoilesDe(fam(e, f).optInt("n"), echelon(e, f))
@@ -658,6 +658,7 @@ object Entrainement {
         if (k + 1 < Badges.ECHELONS.size) {
             val s = Badges.SEUILS[k + 1]
             return if (k + 1 == 4 && n >= s) t("ent.badges.manque_or")
+            else if (k + 1 == 5 && n >= s) t("ent.badges.manque_diamant", "n" to fam(e, f).optInt("diamant"), "s" to Badges.DIAMANTS_TERA)
             else t("ent.badges.progres", "n" to n, "s" to s, "echelon" to nomEchelon(Badges.ECHELONS[k + 1]))
         }
         val s = Badges.prochaineEtoile(n, k) ?: return t("ent.badges.max")
@@ -669,14 +670,14 @@ object Entrainement {
         val out = mutableListOf(t("ent.grades.titre"), "")
         Badges.ECHELONS.forEachIndexed { k, en ->
             out.add(Badges.balise("explorateur", en, 0) + "  " + nomEchelon(en) + " · " + t("ent.grades.seuil", "n" to Badges.SEUILS[k]) +
-                (if (k == 4) " " + t("ent.badges.manque_or") else ""))
+                (if (k == 4) " " + t("ent.badges.manque_or") else if (k == 5) " " + t("ent.grades.diamants", "n" to Badges.DIAMANTS_TERA) else ""))
         }
         out.add("")
         out.add(t("ent.grades.intro"))
         for (en in Badges.ECHELONS) out.add("  " + nomEchelon(en) + " : " + t("ent.grades.$en"))
         out.add("")
         out.add(t("ent.grades.galons"))
-        out.add(t("ent.grades.etoiles", "n" to Badges.ETOILES[4][2]))
+        out.add(t("ent.grades.etoiles", "n" to Badges.ETOILES.last()[2]))
         return out.joinToString("\n")
     }
 

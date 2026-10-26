@@ -15,8 +15,8 @@ Seuls les exercices dont l'enfant a déjà tapé les commandes sont proposés (�
 sont repérés dans les lignes tapées (state["entrainement"]["sym"]). Une famille sans exercice possible
 reste cachée (« ??? »).
 
-Badges (à la PARTIE, pas à la créature) : voir badges.py (grades Bit → Octet → Kilo → Méga → Giga, galons et
-étoiles ; `tg badges grades` les explique). Titres : « Élève de la salle » (1 réussite), « <badge> <grade> »
+Badges (à la PARTIE, pas à la créature) : voir badges.py (grades Bit → Octet → Kilo → Méga → Giga → Téra, galons et
+étoiles ; `tg badges grades` les explique ; Téra : 100 réussites et 3 médailles 💎). Titres : « Élève de la salle » (1 réussite), « <badge> <grade> »
 (« Explorateur Kilo » : Octet et plus, couleur du grade), « Touche-à-tout » (6 familles en Octet),
 « Légende de la salle » (8 familles en Méga, arc-en-ciel), et « Star de la semaine » (🏆, la meilleure
 partie de la semaine dans une famille d'après le site : gardé UNE semaine, compté en ligne).
@@ -278,7 +278,7 @@ def familles_ouvertes(state):
 
 def echelon(e, f):
     x = fam_(e, f)
-    return B.echelon_de(x["n"], x["or"] + x["diamant"])
+    return B.echelon_de(x["n"], x["or"] + x["diamant"], x["diamant"])
 
 
 def etoiles(e, f):
@@ -781,6 +781,8 @@ def progres(e, f):
         s = B.SEUILS[k + 1]
         if k + 1 == 4 and x["n"] >= s:
             return t("ent.badges.manque_or")
+        if k + 1 == 5 and x["n"] >= s:
+            return t("ent.badges.manque_diamant", n=x["diamant"], s=B.DIAMANTS_TERA)
         return t("ent.badges.progres", n=x["n"], s=s, echelon=nom_echelon(B.ECHELONS[k + 1]))
     s = B.prochaine_etoile(x["n"], k)
     return t("ent.badges.etoile", n=x["n"], s=s) if s else t("ent.badges.max")
@@ -827,7 +829,8 @@ def ecran_grades(state):
     for k, en in enumerate(B.ECHELONS):
         cases.append(("explorateur", en, 0, [(nom_echelon(en), B.couleur_ansi(en) + BOLD),
                                              (t("ent.grades.seuil", n=B.SEUILS[k]), DIM),
-                                             (t("ent.badges.manque_or") if k == 4 else "", DIM)]))
+                                             (t("ent.badges.manque_or") if k == 4 else
+                                              t("ent.grades.diamants", n=B.DIAMANTS_TERA) if k == 5 else "", DIM)]))
     out = [f" {fg(213)}{BOLD}" + t("ent.grades.titre") + RESET, ""]
     out += B.planche(cases[:3]) + B.planche(cases[3:])
     out.append(" " + t("ent.grades.intro"))
@@ -835,7 +838,7 @@ def ecran_grades(state):
         out.append(f"   {B.couleur_ansi(en)}{BOLD}{nom_echelon(en)}{RESET} : " + t("ent.grades." + en))
     out.append("")
     out.append(" " + t("ent.grades.galons"))
-    out.append(" " + t("ent.grades.etoiles", n=B.ETOILES[4][2]))
+    out.append(" " + t("ent.grades.etoiles", n=B.ETOILES[-1][2]))
     return out
 
 
