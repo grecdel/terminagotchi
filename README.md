@@ -12,5 +12,6 @@ Une créature en pixel art qui se nourrit des commandes que tu tapes, et qui t'a
 - Chaque commande tapée la nourrit et lui donne de l'XP (les commandes collées ne comptent pas).
 - Elle te donne des leçons au fil de sa croissance : navigation, dossiers, fichiers, protections, ménage.
 - Elle évolue (Œuf → Bébé → Ado → Adulte) selon les commandes que tu utilises le plus.
+- Tape `entrainement` pour un petit exercice chronométré dans la salle d'entraînement : tu gagnes des badges (Bois → Bronze → Argent → Or → Diamant) et des titres, ta créature gagne de l'XP. `badges` les montre.
 
 Chaque modification du code fabrique automatiquement une nouvelle version dans les Releases.

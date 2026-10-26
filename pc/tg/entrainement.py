@@ -28,6 +28,8 @@ vecteurs communs : donnees/entrainement/vecteurs.json.
 
 Tirage d'un exercice (h = Hasard(valeur, 1 000 000 + k)) ; choisir(liste, n) = Fisher-Yates partiel :
 pour i de 0 à n-1, j = i + entier(len - i), échange, puis les n premiers.
+
+Tests : pc/outils/test_entrainement.py (PC), tests/jvm/Entrainement.kt (appli), site/test/test.mjs et tirage.mjs (site).
 """
 import os
 import random
