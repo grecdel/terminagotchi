@@ -92,7 +92,11 @@ def resume(state):
     lvl = core.level(state["xp"])
     st = core.stage(lvl)
     titre = f"{state['name']} · " + t("app.forme_niveau", forme=core.forme(state, lvl), n=lvl)
-    lignes = [f"{t('app.faim')} {sprites.bar(state['hunger'], 100, 8)}  {core.mood(state['hunger'])}"]
+    from . import envies
+    m = envies.moment(state)
+    lignes = [" ".join(envies.compact(state, 4, 6)) + f"  {envies.humeur(state)}"]
+    if m:
+        lignes.append(f"💭 {envies.ICONES[m['e']]} {envies.nom(m['e'])} → {m['cmd']}")
     les, etiq = lecons.lecon_courante(state)
     if les and lvl >= les["niveau"]:
         lignes.append(t("notif.lecon", titre=lecons.tx(les["titre"])))

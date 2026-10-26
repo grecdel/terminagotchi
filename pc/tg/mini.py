@@ -13,7 +13,7 @@ import textwrap
 import time
 from pathlib import Path
 
-from . import core, lecons, sprites
+from . import core, envies, lecons, sprites
 from . import langue
 from .langue import envelopper, largeur, t
 from .plateforme import BOLD, DIM, IS_WIN, RESET, Clavier, clear, fg, piege
@@ -151,7 +151,7 @@ class Mini:
             droite = [f"{BOLD}{st['name']}{RESET} " + t("dress.niv", n=lvl),
                       f"{fg(faim_c)}{langue.ajuster(lf, lj)} {sprites.bar(st['hunger'], 100, 6)}{RESET}",
                       f"{DIM}{langue.ajuster(lx, lj)} {sprites.bar(st['xp'] - lo, hi - lo, 6)}{RESET}",
-                      f"{DIM}{core.mood(st['hunger'])}{RESET}"]
+                      f"{DIM}{envies.humeur(st)}{RESET}"]
             if cols >= w + 18:
                 droite = [""] + droite
                 n = max(len(sp), len(droite))

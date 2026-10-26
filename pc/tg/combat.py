@@ -174,6 +174,8 @@ def finir(state, resultat):
         core.say(state, t("dress.combat.perdu", nom=nom), 12)
     else:
         core.say(state, t("dress.combat.nul"), 10)
+    from . import envies
+    envies.plaisir(state, "jeu", "combat")            # gagné ou perdu : on a bien joué
     # le dressage commence maintenant : chrono à zéro, les commandes du combat ne comptent pas
     d["debut"] = time.time()
     d["lignes"] = []

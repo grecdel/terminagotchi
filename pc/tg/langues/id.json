@@ -2023,5 +2023,112 @@
  "grand.python3": "penerjemah Python 3: menjalankan skrip, atau kode dengan -c.",
  "grand.nano": "penyunting teks di terminal (Ctrl+O menyimpan, Ctrl+X keluar).",
  "grand.clear": "membersihkan layar terminal.",
- "grand.apt": "pengelola paket Debian dan Ubuntu: memasang, memperbarui, dan menghapus perangkat lunak."
+ "grand.apt": "pengelola paket Debian dan Ubuntu: memasang, memperbarui, dan menghapus perangkat lunak.",
+ "env.nom.faim": "Lapar",
+ "env.nom.jeu": "Main",
+ "env.nom.curiosite": "Rasa ingin tahu",
+ "env.nom.explorer": "Menjelajah",
+ "env.nom.sommeil": "Tidur",
+ "env.nom.proprete": "Kebersihan",
+ "env.dit.faim": [
+  "Aku agak lapar… Ketik `{cmd}` untuk memberiku makan!",
+  "Perutku keroncongan! Perintah apa saja boleh… `{cmd}` misalnya?",
+  "Nyam, aku lapar! Mau kasih aku `{cmd}` untuk camilan?",
+  "Camilan seukuran satu byte? Ketik `{cmd}`!",
+  "Aku ingin makan perintah… Coba `{cmd}`!"
+ ],
+ "env.dit.jeu": [
+  "Aku bosan… main yuk? Ketik `{cmd}`!",
+  "Bagaimana kalau kita bersenang-senang? `{cmd}`!",
+  "Aku ingin bergerak! Kita main `{cmd}`?",
+  "Ayo, main sama-sama! Ketik `{cmd}`.",
+  "Aku cuma berputar-putar… `{cmd}`, mau?"
+ ],
+ "env.dit.curiosite": [
+  "Aku ingin belajar sesuatu! Ketik `{cmd}`.",
+  "Hei, mau jelaskan padaku? `{cmd}`!",
+  "Kepalaku lapar akan ilmu… Coba `{cmd}`!",
+  "Aku penasaran cara kerjanya… Kita lihat dengan `{cmd}`?",
+  "Ada hal baru untuk ditemukan? `{cmd}`!"
+ ],
+ "env.dit.explorer": [
+  "Aku ingin menjelajah! Ketik `{cmd}`.",
+  "Bagaimana kalau ada ruang rahasia di sini? Coba `{cmd}`!",
+  "Kita berpetualang? `{cmd}`!",
+  "Aku sudah terlalu kenal sudut ini… Ayo ke tempat lain: `{cmd}`.",
+  "Kakiku ingin bepergian! `{cmd}`?"
+ ],
+ "env.dit.sommeil": [
+  "Aku mengantuk… Ketik `{cmd}` dan aku tidur siang sebentar.",
+  "*menguap* Tidur siang sebentar? Ketik `{cmd}`.",
+  "Mataku menutup sendiri… `{cmd}`, tolong!",
+  "Zzz… maaf! Boleh aku tidur sebentar? `{cmd}`!",
+  "Tidur sekejap akan membuatku segar: `{cmd}`."
+ ],
+ "env.dit.proprete": [
+  "Hatsyi! Ada debu di rumahku… Ketik `{cmd}`.",
+  "Lemari tersembunyiku penuh debu! Kita bersih-bersih? `{cmd}`",
+  "Berkas-berkas kecil tak berguna berserakan di rumahku… `{cmd}` untuk mulai!",
+  "Debu ini bikin gatal! Bantu aku: `{cmd}`.",
+  "Menyapu sebentar? Mulai dengan `{cmd}`!"
+ ],
+ "env.merci.faim": [
+  "Nyam! Perutku senang. 🍎",
+  "Terima kasih, rasanya enak!",
+  "Lezat sekali perintah-perintah ini!"
+ ],
+ "env.merci.jeu": [
+  "Hore, seru sekali mainnya! 🎮",
+  "Keren! Aku tidak bosan lagi.",
+  "Lagi! Tadi hebat sekali!"
+ ],
+ "env.merci.curiosite": [
+  "Oh! Aku belajar sesuatu! 📚",
+  "Terima kasih, kepalaku senang sekali!",
+  "Menakjubkan! Aku suka belajar bersamamu."
+ ],
+ "env.merci.explorer": [
+  "Petualangan yang hebat! 🧭",
+  "Wah, tempat baru!",
+  "Aku suka menjelajahi rumah bersamamu!"
+ ],
+ "env.merci.sommeil": [
+  "Zzz… Ah, tidur siang yang nyenyak! 😴",
+  "Aku jadi penuh tenaga!",
+  "Hmm… terima kasih untuk tidur siangnya!"
+ ],
+ "env.merci.proprete": [
+  "Terima kasih! Rumahku bersih sekali! 🧹",
+  "Tidak ada sebutir debu pun, hebat!",
+  "Wangi bersih! Terima kasih sudah menyapu."
+ ],
+ "env.soir": [
+  "*menguap* Sudah larut… Hari ini kita main dengan seru. Bagaimana kalau kita berhenti untuk malam ini?",
+  "*menguap* Mataku perih… Lanjut besok? Selamat malam!",
+  "Di luar sudah gelap… Kurasa sudah waktunya kita berdua beristirahat."
+ ],
+ "env.sieste.log": "💤 Tidur siang {s} dtk: tidur +{n}",
+ "env.poussiere.contenu": "Debu! Sebuah berkas kecil Terminagotchi yang tidak berguna. Kamu boleh menghapusnya: rm .cache/*.tmp",
+ "env.poussiere.premiere": "🧹 Debu jatuh ke lemari tersembunyiku `.cache`! Ketik `{cmd}` untuk tahu cara membersihkannya.",
+ "env.cache.enfant": "Lemari tersembunyi adalah folder yang namanya diawali titik (.cache): hanya terlihat dengan {lsa}. Debunya adalah berkas-berkas kecil .tmp yang tidak berguna.",
+ "env.cache.grands": "Untuk yang lebih besar: komputer sungguhan juga punya cache, berkas sementara yang disimpan agar lebih cepat. Jangan pernah menyentuh milik sistem sungguhan: di sini kita HANYA membersihkan rumah permainan, ~/terrain_terminagotchi/.cache.",
+ "env.ecran.titre": "💭 Keinginan {nom}",
+ "env.ecran.moment": "Keinginan saat ini: {icone} {envie} → `{cmd}`",
+ "env.ecran.aucune": "Keinginan saat ini: tidak ada, {nom} baik-baik saja!",
+ "env.ecran.humeur": "Suasana hati: {humeur}",
+ "env.ecran.pied": "Ada keinginan di angka nol? Tenang: {nom} hanya sedikit sedih atau menggerutu. Tidak ada hukuman.",
+ "env.comment.faim": "Perintah apa pun memberiku makan, misalnya {cmds}.",
+ "env.comment.jeu": "Main bersamaku: {cmds}. Bertarung dan menjinakkan monster juga dihitung!",
+ "env.comment.curiosite": "Belajar: satu langkah pelajaran, sebuah misi, perintah yang belum pernah kucicipi, atau {cmds}.",
+ "env.comment.explorer": "Menjelajah: masuk ke ruangan yang belum pernah dikunjungi (petanya: {cmds}), menemukan ruang rahasia dengan {lsa}, mencari monster yang bersembunyi.",
+ "env.comment.sommeil": "Tidur siang: {cmd}. Aku lelah kalau bermain, apalagi di malam hari, dan aku juga beristirahat saat kamu tidak bermain.",
+ "env.comment.proprete": "Debu (berkas-berkas kecil .tmp) jatuh ke lemari tersembunyiku .cache. Datanglah ke rumahku ({aller}), lihat dengan {voir}, lalu bersihkan dengan {nettoyer}.",
+ "humeur.joyeux": "gembira",
+ "humeur.triste": "sedih",
+ "humeur.grognon": "menggerutu",
+ "lex.tg_envies.i": "apa yang diinginkan makhlukmu: makan, bermain, belajar, menjelajah, tidur, bersih-bersih",
+ "lex.tg_envies.t": "6 pengukur keinginan, dan perintah yang menyenangkan masing-masing",
+ "env.aide": "  `tg envies`                    6 keinginannya (lapar, main, rasa ingin tahu, menjelajah, tidur, kebersihan) dan cara menyenangkannya · `tg defi` tantangan kilat",
+ "reg.tg_envies": "melihat keinginan makhlukmu dan cara memenuhinya",
+ "reg.tg_envies.kw": "keinginan ingin kebutuhan butuh bosan lapar main bermain permainan tidur mengantuk lelah bersih kebersihan debu bersih-bersih penasaran belajar menjelajah suasana sedih menggerutu"
 }

@@ -196,7 +196,7 @@ def notif(state, texte):
 
 # Courtes animations de la fenêtre principale : un événement daté, rangé dans la sauvegarde
 # (n'importe quel processus — invite, veille, fenêtre — peut le déclencher ; la fenêtre le joue).
-PRIORITE_ANIM = {"evolution": 9, "victoire": 8, "ko": 7, "colere": 6, "attaque": 6, "content": 5, "confus": 4,
+PRIORITE_ANIM = {"evolution": 9, "victoire": 8, "ko": 7, "colere": 6, "attaque": 6, "dort": 6, "content": 5, "confus": 4,
                  "mange": 3, "salut": 2, "parle": 1}
 
 
@@ -287,6 +287,8 @@ def migrate(state):
         state.setdefault(k, v)
     if stage(level(state["xp"])) >= 2 and not state.get("branch"):
         state["branch"] = dominant(state)
+    from . import envies
+    envies.e_(state)                       # les 6 envies (une ancienne partie reçoit des valeurs moyennes)
     for k, v in {"notifs": True, "permanente": True, "compagnon": "ligne", "bulle": True}.items():
         state["config"].setdefault(k, v)
     state["version"] = VERSION
@@ -315,7 +317,8 @@ def add_xp(state, n):
 
 def tick(state):
     now = time.time()
-    rate = 720 if "Gardien" in state["skills"] else 360   # secondes par point de faim
+    # secondes par point de faim : 2 fois plus lent qu'avant les envies (envies.py) ; Gardien double encore
+    rate = 1440 if "Gardien" in state["skills"] else 720
     rate *= 1 + min(1.0, state["stats"].get("Endurance", 0) / 100)   # l'Endurance fait durer le repas
     avant = state["hunger"]
     state["hunger"] = max(0.0, state["hunger"] - (now - state["last_tick"]) / rate)
@@ -432,6 +435,8 @@ def defi_tick(state, lines, spontaneous, proba=1.5 / 300):
             state["defi"] = None
             animer(state, "victoire")
             add_xp(state, 10)
+            from . import envies
+            envies.plaisir(state, "jeu", "defi")
             return
     if time.time() - d["start"] > defi_duree(state):
         log(state, t("core.defi.rate.log", cmd=d["cmd"]))
@@ -450,9 +455,7 @@ def idle_talk(state, proba=0.08):
     st = stage(level(state["xp"]))
     if st == 0:
         say(state, au_hasard("core.oeuf"))
-    elif state["hunger"] < 30:
-        say(state, au_hasard("core.faim"))
-    else:
+    else:                      # la faim et les autres envies passent par envies.py (rappels espacés)
         say(state, au_hasard("trait." + state["trait"] + ".phrases"))
 
 

@@ -656,6 +656,8 @@ def reussir(state):
     state["stats"][st] += 2 + len(d["taches"])
     bonus = 2 if d["duree"] and reste_depuis(d) > d["duree"] / 2 else 1
     core.add_xp(state, B.XP_RARETE[ind["rarete"]] * (3 if d["shiny"] else 1) * bonus)
+    from . import envies
+    envies.plaisir(state, "jeu", "dressage")
 
 
 def reste_depuis(d):

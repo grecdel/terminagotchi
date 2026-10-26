@@ -47,6 +47,10 @@ def ligne(state):
         return f"{tete}  {' · '.join(msgs)}"
     if state["defi"]:
         return f"{tete}  {fg(226)}" + t("comp.defi", cmd=piege(state["defi"]["cmd"])) + RESET
+    from . import envies
+    r = envies.rappel_recent(state)
+    if r:                                          # l'envie du moment (au plus une fois toutes les 12 commandes)
+        return f"{tete}  {fg(214)}💭 {r}{RESET}"
     les, _ = lecons.lecon_courante(state)
     if les and lvl >= les["niveau"]:
         return f"{tete}  {DIM}" + t("comp.lecon", cmd=piege(les["steps"][state["step"]]["cmd"])) + RESET

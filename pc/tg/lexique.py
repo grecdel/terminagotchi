@@ -80,6 +80,7 @@ def _entrees():
             ("tg quetes", t("lex.tg_quetes.i"), t("lex.tg_quetes.t")),
             ("tg aile", t("lex.tg_aile.i"), t("lex.tg_aile.t")),
             ("tg explique", t("lex.explique.i"), t("lex.explique.t")),
+            ("tg envies", t("lex.tg_envies.i"), t("lex.tg_envies.t")),
         ]),
         (t("lex.ch.recensement"), ICI, [
             ("tg", t("lex.tg.i"), t("lex.tg.t")),

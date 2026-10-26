@@ -8,8 +8,8 @@ import time
 
 import subprocess
 
-from . import (compagnon, core, dressage, equipe, exemples, explique, explo, histoire, lecons, lexique, maison, notif, quetes,
-               recense, registre, sprites, terrain)
+from . import (compagnon, core, dressage, envies, equipe, exemples, explique, explo, histoire, lecons, lexique, maison, notif,
+               quetes, recense, registre, sprites, terrain)
 from .bestiaire import arc_en_ciel
 from . import langue
 from .langue import ajuster, envelopper, largeur, raccourcir, t
@@ -47,14 +47,16 @@ def render(state, frame, interactif, anim=None):
     stats = "  ".join(f"{fg(v['color'])}{core.nom_stat(v['stat'], court=True)}{RESET} {BOLD}{state['stats'][v['stat']]}{RESET}"
                       for v in core.CATEGORIES.values())
     nb_sk = len(state["skills"])
-    xp_l, faim_l = t("app.xp"), t("app.faim")
-    lj = max(largeur(xp_l), largeur(faim_l))
+    xp_l = t("app.xp")
+    jauges = envies.compact(state)                # les 6 envies, en petit (tg envies : le détail)
+    m = envies.moment(state)
     right = [
         (arc_en_ciel(state["name"] + " ✨") if state.get("shiny") else f"{BOLD}{state['name']}{RESET}")
         + " · " + t("app.forme_niveau", forme=forme, n=lvl),
         f"{DIM}" + t("app.caractere", trait=core.nom_trait(state["trait"])) + RESET,
-        f"{ajuster(xp_l, lj)} {sprites.bar(state['xp'] - lo, hi - lo)} {state['xp']}/{hi}",
-        f"{ajuster(faim_l, lj)} {dressage.jauge(state['hunger'], 100, 10)} {core.mood(state['hunger'])}",
+        f"{xp_l} {sprites.bar(state['xp'] - lo, hi - lo)} {state['xp']}/{hi}",
+        f"{jauges[0]}  {DIM}{envies.humeur(state)}{RESET}",
+        jauges[1] + (f"  {fg(214)}💭 {envies.ICONES[m['e']]} {envies.nom(m['e'])}{RESET}" if m else ""),
         stats,
         t("app.competences_bestioles", n=nb_sk, b=sum(state["collection"].values())),
     ]
@@ -245,6 +247,7 @@ def boucle_jeu(state, lines, spontane=True, rythme=1.5, defis=True, cwd=None):
     equipe.tick(state, lines)
     explo.tick(state, spontane, proba=rythme / 480, jeu=sum(1 for l in lines if not core.est_colle(l)), lignes=lines)
     core.defi_tick(state, lines, spontaneous=spontane and defis, proba=rythme / 300)
+    envies.tick(state, lines)                 # les 6 envies : usure, plaisirs, poussière, rappel espacé
     core.idle_talk(state, proba=min(1.0, 0.08 * rythme / 1.5))
 
 
@@ -632,7 +635,8 @@ def veille():
 
 
 def aide():
-    return "\n".join(langue.remplir(l, {}) for l in langue.liste("app.aide") + langue.liste("app.aide.histoire"))
+    return "\n".join(langue.remplir(l, {}) for l in langue.liste("app.aide") + langue.liste("app.aide.histoire")
+                     + [t("env.aide")])
 
 
 def commande_histoire(mode, args):
@@ -699,6 +703,15 @@ def main():
             creer_si_besoin()
         else:
             print(accueil.commande(args[1:]))
+        return
+    if mode == "envies":                       # tg envies : les 6 envies, et comment faire plaisir à chacune
+        creer_si_besoin()
+        print("\n".join(envies.ecran(core.modifier(lambda s: envies.tick(s, [])))))
+        return
+    if mode == "defi":                         # tg defi : un défi éclair tout de suite (l'envie de jouer)
+        creer_si_besoin()
+        st = core.modifier(lambda s: core.defi_start(s) if not s.get("defi") else None)
+        print(t("core.defi.dit", cmd=piege(st["defi"]["cmd"])) if st and st.get("defi") else "")
         return
     if mode in ("carte", "quetes", "quete", "journal", "aile", "ailes", "histoire"):
         creer_si_besoin()

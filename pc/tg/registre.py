@@ -53,6 +53,7 @@ REGISTRE = [
     E("cd dossier", "cd dossier", "reg.aller_dossier", "reg.aller_dossier.kw"),
     E("cd ..", "cd ..", "reg.remonter_dossier_parent", "reg.remonter_dossier_parent.kw"),
     E("cd ~", "cd ~", "reg.revenir_dossier_perso", "reg.revenir_dossier_perso.kw"),
+    E("tg envies", "tg envies", "reg.tg_envies", "reg.tg_envies.kw"),
     E("tree", "tree /f", "reg.voir_plan_tous_dossiers", "reg.voir_plan_tous_dossiers.kw",
       note=None if IS_WIN else ("reg.note.absent", {"cmd": installer("tree")})),
     # --- fichiers et dossiers
