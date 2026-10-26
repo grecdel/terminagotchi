@@ -167,9 +167,10 @@ def choisir(state, nom):
 
 
 # ---------------------------------------------------------------- tg anime
-def animation(ind, quoi):
+def animation(ind, quoi, aura=False):
     """(images, ips) d'une bestiole de la troupe : à son stade, dans sa variante, avec sa teinte shiny.
-    Abyssor garde ses animations faites main ; toutes les autres espèces passent par anim_auto."""
+    Abyssor garde ses animations faites main ; toutes les autres espèces passent par anim_auto.
+    aura=True : son aura de rareté respire autour d'elle (aura.py)."""
     s = stade(ind)
     if anime(ind["espece"]):
         avant = s
@@ -183,7 +184,8 @@ def animation(ind, quoi):
     if not e:
         return None
     teinte = ind.get("teinte", 0.5) if ind.get("shiny") else None
-    return anim_auto.lignes(e, s, ind.get("variante", "classique"), quoi, teinte)
+    from . import aura as A
+    return anim_auto.lignes(e, s, ind.get("variante", "classique"), quoi, teinte, A.palier_ind(ind) if aura else None)
 
 
 def derouler(frames, ips, tours, titre=None):
@@ -223,10 +225,12 @@ def jouer(state, args, tours=None):
     if quoi == "evolution" and stade(ind) == "bebe":
         print(" " + t("eq.encore_bebe", nom=ind["espece"]))
         return
-    r = animation(ind, quoi)
+    r = animation(ind, quoi, aura=True)
     if r is None:
+        from . import aura as A
         print("\n".join(B.dessin(B.espece(ind["espece"]), ind.get("shiny"), stade=stade(ind),
-                                 vid=ind.get("variante", "classique"), teinte=ind.get("teinte", 0.5))))
+                                 vid=ind.get("variante", "classique"), teinte=ind.get("teinte", 0.5),
+                                 aura=A.palier_ind(ind))))
         print(f" {DIM}" + t("eq.pas_d_image", nom=ind["espece"]) + RESET)
         return
     frames, ips = r

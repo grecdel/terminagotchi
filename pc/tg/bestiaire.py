@@ -240,9 +240,14 @@ def bg24(h):
     return f"\033[48;2;{r};{g};{b}m"
 
 
-def dessin(e, shiny=False, grand=False, stade="adulte", vid="classique", teinte=0.5):
+def dessin(e, shiny=False, grand=False, stade="adulte", vid="classique", teinte=0.5, aura=None, phase=None):
     """La bestiole en pixel art pour le terminal (2 pixels verticaux par caractère).
-    Les espèces du nouveau bestiaire ont une image par stade et par variante ; Abyssor garde son dessin."""
+    Les espèces du nouveau bestiaire ont une image par stade et par variante ; Abyssor garde son dessin.
+    aura : palier d'aura de rareté (voir aura.py) à dessiner autour de la silhouette, ou None."""
+    if aura:
+        from . import aura as A
+        w, h, couleurs = pixels(e, shiny, grand, stade, vid, teinte)
+        return A.lignes(w, h, couleurs, aura, A.PHASE_FIXE if phase is None else phase)
     img = image(e, stade, vid)
     if img:
         w, h, octets, pal = img
@@ -250,6 +255,24 @@ def dessin(e, shiny=False, grand=False, stade="adulte", vid="classique", teinte=
             pal = [decaler(c, teinte) for c in pal]
         return lignes_image(w, h, octets, pal)
     return _dessin_ancien(e, shiny, grand)
+
+
+def pixels(e, shiny=False, grand=False, stade="adulte", vid="classique", teinte=0.5):
+    """(largeur, hauteur, couleurs "#rrggbb" ou None) : l'image d'une bestiole pixel par pixel (pour l'aura)."""
+    img = image(e, stade, vid)
+    if img:
+        w, h, octets, pal = img
+        if shiny:
+            pal = [decaler(c, teinte) for c in pal]
+        return w, h, [pal[o - 1] if o else None for o in octets[:w * h]]
+    if grand and e.get("sprite_grand"):
+        rows = e["sprite_grand"]
+        pal = e["palette_grand_shiny"] if shiny else e["palette_grand"]
+    else:
+        rows = e.get("sprite_shiny" if shiny else "sprite") or []
+        pal = e.get("palette_shiny" if shiny else "palette") or {}
+    w = max((len(r) for r in rows), default=0)
+    return w, len(rows), [pal.get(ch) for r in rows for ch in r.ljust(w, ".")]
 
 
 def _dessin_ancien(e, shiny=False, grand=False):

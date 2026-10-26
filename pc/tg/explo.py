@@ -172,8 +172,9 @@ def _carte_individu(ind):
     if e is None:
         return []
     r = B.rarete_de(ind)
+    from . import aura
     sp = B.dessin(e, ind.get("shiny"), grand=True, stade=ind.get("stade", "adulte"), vid=ind.get("variante", "classique"),
-                  teinte=ind.get("teinte", 0.5))
+                  teinte=ind.get("teinte", 0.5), aura=aura.palier_ind(ind))     # l'aura montre sa rareté
     var = ind.get("variante", "classique")
     infos = [
         f"{B.nom_affiche(e, ind.get('shiny'), r)} {DIM}#{e['numero']:03d} · {RESET}{B.libelle_rarete(r)}"
@@ -212,6 +213,7 @@ def ecran_collection(state):
         for ind in caps[-6:][::-1]:
             lignes += _carte_individu(ind)
             lignes.append("")
+        lignes.append(f" {DIM}" + t("aura.legende") + RESET)     # la lueur autour des bestioles (aura.py)
     else:
         lignes.append(f" {DIM}" + t("exp.aucune_dressee") + RESET)
     if not state["explo"]:

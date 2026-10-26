@@ -146,8 +146,18 @@ def palette(state, blink=False):
             "h": 180, "w": 230, "s": 180, "c": 136, "a": 250, "l": 51}
 
 
-def creature(state):
-    return render_sprite(get_sprite(state), palette(state, random.random() < 0.15))
+def creature(state, aura=None, phase=0):
+    """(lignes, largeur) de la créature ; aura : palier d'aura (aura.py) dessiné autour de sa silhouette."""
+    rows, pal = get_sprite(state), palette(state, random.random() < 0.15)
+    if aura:
+        from . import aura as A
+        if A.visible(aura, terminal=True):
+            w = max(len(r) for r in rows)
+            couleurs = [None if pal.get(ch) is None else "#%02x%02x%02x" % x256(pal[ch])
+                        for r in rows for ch in r.ljust(w, ".")]
+            lignes = A.lignes(w, len(rows), couleurs, aura, phase)
+            return lignes, w + 2 * A.PALIERS[aura].rayon
+    return render_sprite(rows, pal)
 
 
 def x256(n):
@@ -236,8 +246,9 @@ def _recadrer(W, H, frames):
     return nw, nh, out
 
 
-def animation(state, nom):
-    """La créature principale joue une animation automatique (moteur anim_auto) : (lignes par image, ips)."""
+def animation(state, nom, aura=None):
+    """La créature principale joue une animation automatique (moteur anim_auto) : (lignes par image, ips).
+    aura : palier d'aura (aura.py) qui respire autour d'elle pendant l'animation."""
     from . import anim_auto
     from .bestiaire import lignes_image
     pal = palette(state)
@@ -249,6 +260,10 @@ def animation(state, nom):
     W, H, frames, pal2, _ = anim_auto._calculer(w, h, o, p, nom, de)
     W, H, frames = _recadrer(W, H, frames)
     hexa = ["#%06x" % c for c in pal2]
+    if aura:
+        from . import aura as A
+        if A.visible(aura, terminal=True):
+            return [A.lignes(W, H, A.depuis_octets(W, H, f, hexa), aura, k) for k, f in enumerate(frames)], anim_auto.IPS
     return [lignes_image(W, H, f, hexa) for f in frames], anim_auto.IPS
 
 

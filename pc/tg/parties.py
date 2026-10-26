@@ -215,6 +215,7 @@ def nouvelle(nom, langue_code, message_oeuf):
     s = core.migrate(core.new_state(nom[:16] or "Pixel", langue_code))
     if isinstance(ancien.get("config"), dict):
         s["config"] = dict(ancien["config"])        # les réglages de l'appareil suivent (notifications, compagnon)
+        s["config"].pop("aura", None)               # l'aura de rareté, elle, se règle partie par partie (tg aura)
     core.log(s, message_oeuf(s))
     core.animer(s, "salut")
     s["notifs"] = []

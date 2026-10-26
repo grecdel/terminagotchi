@@ -699,9 +699,10 @@ def images(w, h, octets, palette, nom, de=None):
     return W, H, fr, [_hex(x) for x in pal]
 
 
-def lignes(e, stade, vid, nom, teinte=None):
+def lignes(e, stade, vid, nom, teinte=None, aura=None):
     """(images en lignes de terminal, images par seconde) pour une espèce du bestiaire, ou None.
-    Pour « evolution », stade est le stade d'arrivée : on part du stade précédent."""
+    Pour « evolution », stade est le stade d'arrivée : on part du stade précédent.
+    aura : palier d'aura de rareté (aura.py) qui respire autour de la silhouette, image après image."""
     img = B.image(e, stade, vid)
     if not img:
         return None
@@ -715,6 +716,10 @@ def lignes(e, stade, vid, nom, teinte=None):
     pal = [_hex(x) for x in pal]
     if teinte is not None:
         pal = [B.decaler(x, teinte) if k < n_teinte else x for k, x in enumerate(pal)]
+    if aura:
+        from . import aura as A
+        if A.visible(aura, terminal=True):
+            return [A.lignes(W, H, A.depuis_octets(W, H, x, pal), aura, k) for k, x in enumerate(fr)], IPS
     return [B.lignes_image(W, H, x, pal) for x in fr], IPS
 
 

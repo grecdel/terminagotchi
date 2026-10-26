@@ -37,7 +37,7 @@ def render(state, frame, interactif, anim=None):
         w = max(len(_ANSI.sub("", l)) for l in anim)
         sprite = list(anim)
     else:
-        sprite, w = sprites.creature(state)
+        sprite, w = sprites.creature(state, aura_ecran(state), frame)      # + son aura de rareté (tg aura)
         sprite = ([" " * w] + sprite) if frame % 2 else (sprite + [" " * w])
     lg = max(20, w)
     left = ["  " + line + " " * (lg - w) for line in sprite]
@@ -526,10 +526,26 @@ def _nuit():
     return h >= 21 or h < 7
 
 
+def aura_ecran(state):
+    """Le palier d'aura de la créature de l'écran principal, ou None si le réglage est coupé (tg aura off)."""
+    from . import aura
+    return aura.palier_compagnon(state) if aura.active(state) else None
+
+
+def commande_aura(args):
+    """tg aura [on|off] : l'aura de rareté autour de la créature de l'écran principal (réglage de la partie)."""
+    from . import aura
+    choix = args[0].lower() if args else ""
+    if choix in ("on", "off"):
+        core.modifier(lambda s: s["config"].update(aura=choix == "on"))
+    etat = f"{fg(78)}{t('app.on')}{RESET}" if aura.active(core.load()) else f"{fg(203)}{t('app.off')}{RESET}"
+    return " " + t("aura.etat", etat=etat) + f"\n {DIM}" + t("aura.legende") + RESET
+
+
 def _preparer_anim(state, nom):
     """[images, ips, image courante, nombre d'images à jouer] : court (≈ 3 s), jamais bloquant."""
     try:
-        frames, ips = sprites.animation(state, nom)
+        frames, ips = sprites.animation(state, nom, aura_ecran(state))
     except Exception:
         return None
     n = len(frames) if nom == "evolution" else min(2 * len(frames), max(len(frames), int(3 * ips)))
@@ -613,6 +629,8 @@ def fenetre(once):
                     menu_carte(state, clav)
                 elif k == "j":
                     menu_quetes(state, clav)
+                elif k == "u":                    # l'aura de rareté autour de la créature
+                    state = core.modifier(lambda s: s["config"].update(aura=not s["config"].get("aura", True)))
                 elif k == "q":
                     break
     except KeyboardInterrupt:
@@ -636,7 +654,7 @@ def veille():
 
 def aide():
     return "\n".join(langue.remplir(l, {}) for l in langue.liste("app.aide") + langue.liste("app.aide.histoire")
-                     + [t("env.aide")])
+                     + [t("env.aide"), t("aura.aide")])
 
 
 def commande_histoire(mode, args):
@@ -712,6 +730,10 @@ def main():
         creer_si_besoin()
         st = core.modifier(lambda s: core.defi_start(s) if not s.get("defi") else None)
         print(t("core.defi.dit", cmd=piege(st["defi"]["cmd"])) if st and st.get("defi") else "")
+        return
+    if mode == "aura":                         # tg aura on|off : l'aura de rareté autour de la créature
+        creer_si_besoin()
+        print(commande_aura(args[1:]))
         return
     if mode in ("carte", "quetes", "quete", "journal", "aile", "ailes", "histoire"):
         creer_si_besoin()
