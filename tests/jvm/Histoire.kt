@@ -107,6 +107,15 @@ fun horsTerrain(): Set<String> = jeu.home.walkTopDown().onEnter { it != T }.filt
 fun main(args: Array<String>) {
     val assets = File(args[0])
     val dossier = File(System.getProperty("java.io.tmpdir"), "tg_histoire_" + System.nanoTime()).apply { mkdirs() }
+    // root (sans setpriv) passe outre chmod 444 : la leçon des droits ne se valide pas et tout le reste déraille
+    File(dossier, "verrou_droits").let { v ->
+        v.writeText("x"); v.setWritable(false, false)
+        if (v.canWrite()) {
+            System.err.println("Ce test doit se lancer SANS le droit de passer outre chmod (root : setpriv --bounding-set -dac_override,-dac_read_search java …)")
+            kotlin.system.exitProcess(2)
+        }
+        v.setWritable(true); v.delete()
+    }
     val app = AppareilH(dossier, assets)
     Langue.init(app)
     Langue.definir("fr")

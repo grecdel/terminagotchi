@@ -96,6 +96,15 @@ fun liste(a: JSONArray?) = if (a == null) emptyList() else (0 until a.length()).
 fun main(args: Array<String>) {
     val assets = File(args[0])
     val dossier = File(System.getProperty("java.io.tmpdir"), "tg_retours_" + System.nanoTime()).apply { mkdirs() }
+    // root (sans setpriv) passe outre chmod 444 : la leçon des droits ne se valide pas et tout le reste déraille
+    File(dossier, "verrou_droits").let { v ->
+        v.writeText("x"); v.setWritable(false, false)
+        if (v.canWrite()) {
+            System.err.println("Ce test doit se lancer SANS le droit de passer outre chmod (root : setpriv --bounding-set -dac_override,-dac_read_search java …)")
+            kotlin.system.exitProcess(2)
+        }
+        v.setWritable(true); v.delete()
+    }
     val app = AppareilR(dossier, assets)
     Langue.init(app)
     Langue.definir("fr")
