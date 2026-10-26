@@ -11,6 +11,8 @@
  * soit une fonction qui reçoit des morceaux déjà échappés. Une clé absente retombe sur le français.
  */
 
+import { PAGES } from "./i18n_pages.js";
+
 export const LANGUES = ["fr", "en", "es", "de", "it", "pt", "zh", "ru", "ja", "hi", "ar", "bn", "id", "ur"];
 /** Langues écrites de droite à gauche. */
 export const RTL = new Set(["ar", "ur"]);
@@ -2860,6 +2862,8 @@ const ur = {
 };
 
 export const DICTIONNAIRES = { fr, en, es, de, it, pt, zh, ru, ja, hi, ar, bn, id, ur };
+// pages Parents, Soutenir, Confidentialité, Mentions légales et pied de page (fichier à part : i18n_pages.js)
+for (const [l, d] of Object.entries(PAGES)) Object.assign(DICTIONNAIRES[l], d);
 
 /** Fusion profonde : ce qui manque dans une langue est pris en français. */
 function fusion(base, sur) {

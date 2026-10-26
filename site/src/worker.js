@@ -7,8 +7,28 @@
 import BESTIAIRE from "./bestiaire.js";
 import { tirer, differences, stadePlausible, attirancePlausible, MAX_APPARITIONS, PAR_NOM_T, TIRAGE } from "./tirage.js";
 import { LANGUES, NOMS_LANGUES, LOCALES, RTL, choisirLangue, cookieLangue, textes, libelle } from "./i18n.js";
+import { confidentialiteFr, mentionsFr } from "./legal_fr.js";
+
+// ====================================================================== réglages à remplir
 
 const DEPOT = "https://github.com/grecdel/terminagotchi-android";
+const CONTACT = "contact@terminagotchi.com";
+/** Liens de dons (page /soutenir). Une plateforme n'est affichée que si son lien est rempli. */
+const DONS = { liberapay: "", kofi: "", github: "" };
+/**
+ * Éditeur du site (page /mentions-legales). Particulier non professionnel :
+ *  - anonyme: true  → nom et adresse NON publiés (il faut les avoir donnés à l'hébergeur, Cloudflare) ;
+ *  - anonyme: false → remplir nom (et adresse si on veut la publier).
+ * directeur : directeur de la publication (vide = l'éditeur lui-même).
+ */
+const EDITEUR = { anonyme: true, nom: "", adresse: "", directeur: "" };
+/** Licence du code source (ex. « GPL-3.0-or-later », « MIT ») : vide tant que le dépôt n'a pas de fichier LICENSE. */
+const LICENCE = "";
+/**
+ * Durées de conservation, annoncées sur /confidentialite ET appliquées par la purge quotidienne (scheduled) :
+ * compte effacé après `inactifMois` sans synchronisation ; adresses IP et compteurs anti-abus après `ipHeures`.
+ */
+const CONSERVATION = { inactifMois: 36, ipHeures: 24, sessionJours: 30 };
 const STATS = ["Intelligence", "Agilité", "Force", "Endurance"];
 const COULEUR = { Intelligence: 39, "Agilité": 78, Force: 203, Endurance: 221 };
 const STADES = ["Œuf", "Bébé", "Ado", "Adulte"];
@@ -344,7 +364,7 @@ function fusionner(etat, envoi, appareil, verdicts = new Map()) {
  */
 const ALPHABET = "ABCDEFGHJKMNPQRSTUVWXYZ23456789";
 const RE_PARTIE = /^[A-Za-z0-9_-]{1,24}$/;
-const SESSION_JOURS = 30;
+const SESSION_JOURS = CONSERVATION.sessionJours;
 
 function tirerCode(n) {
   const b = new Uint8Array(n);
@@ -528,6 +548,16 @@ async function api(requete, env, chemin) {
     return json({ lien: "/connexion?t=" + t, expire: 600 });
   }
 
+  if (chemin === "/api/compte" && m === "DELETE") {
+    // suppression définitive du compte et de TOUTES ses données ; le pseudo doit être recopié (pas de suppression par erreur)
+    const b = await corps(requete);
+    if (String(b?.confirmer || "").trim().toLowerCase() !== joueur.pseudo.toLowerCase()) {
+      return erreur("Pour supprimer le compte, recopie le pseudo dans « confirmer ».", 400);
+    }
+    await supprimerCompte(env, joueur.id);
+    return json({ ok: true, supprime: joueur.pseudo });
+  }
+
   if (chemin === "/api/deconnexion" && m === "POST") {
     await env.DB.prepare("DELETE FROM cles WHERE empreinte = ?").bind(joueur.empreinte_cle).run();
     return json({ ok: true });
@@ -572,6 +602,33 @@ async function api(requete, env, chemin) {
   }
 
   return erreur("Route inconnue.", 404);
+}
+
+// ====================================================================== suppression et durées de conservation
+
+/** Efface un compte et tout ce qui s'y rattache (toutes les tables qui ont une colonne « joueur »). */
+async function supprimerCompte(env, id) {
+  for (const table of ["cles", "codes", "badges", "apparitions", "parties", "secours", "sessions"]) {
+    await env.DB.prepare(`DELETE FROM ${table} WHERE joueur = ?`).bind(id).run();
+  }
+  // compteurs anti-abus par compte (« sync:<id> », « drapeau:<id> »…)
+  await env.DB.prepare("DELETE FROM essais WHERE sujet LIKE ?").bind("%:" + id).run();
+  await env.DB.prepare("DELETE FROM joueurs WHERE id = ?").bind(id).run();
+}
+
+/**
+ * Applique les durées annoncées sur /confidentialite (lancée chaque jour par le déclencheur « crons » de wrangler.toml) :
+ * comptes sans synchronisation depuis CONSERVATION.inactifMois, compteurs anti-abus (adresses IP) de plus de
+ * CONSERVATION.ipHeures, jetons et sessions expirés. Renvoie le nombre de comptes effacés.
+ */
+async function purger(env, maintenant = Date.now()) {
+  await env.DB.prepare("DELETE FROM essais WHERE minute < ?").bind(Math.floor(maintenant / 60000) - CONSERVATION.ipHeures * 60).run();
+  await env.DB.prepare("DELETE FROM codes WHERE expire < ?").bind(maintenant).run();
+  await env.DB.prepare("DELETE FROM sessions WHERE expire < ?").bind(maintenant).run();
+  const limite = maintenant - CONSERVATION.inactifMois * 30.44 * 86_400_000;
+  const vieux = await env.DB.prepare("SELECT id FROM joueurs WHERE maj < ? LIMIT 200").bind(Math.round(limite)).all();
+  for (const j of vieux.results) await supprimerCompte(env, j.id);
+  return vieux.results.length;
 }
 
 async function profilPublic(env, pseudo) {
@@ -709,10 +766,20 @@ const POLICES = {
   ar: `"Noto Sans Arabic","Noto Naskh Arabic","Segoe UI","Tahoma","Geeza Pro","DejaVu Sans",${MONO},sans-serif`,
   ur: `"Noto Nastaliq Urdu","Jameel Noori Nastaliq","Urdu Typesetting","Noto Naskh Arabic","Noto Sans Arabic","Segoe UI","Tahoma",${MONO},sans-serif`,
 };
-// polices pixel (Google Fonts) : « Press Start 2P » pour les titres et les boutons, « VT323 » pour le texte.
+// polices pixel, hébergées ici (public/polices, fichiers woff2 du projet Fontsource, licence SIL OFL 1.1) :
+// aucune requête vers Google Fonts, donc aucune adresse IP envoyée à Google.
+// « Press Start 2P » pour les titres et les boutons, « VT323 » pour le texte.
 // Elles ne couvrent que l'alphabet latin (et le cyrillique pour Press Start 2P) : les autres écritures gardent
 // leurs polices lisibles, en taille normale (VT323 est petite, la même taille rendrait le reste énorme).
-const FONTES = "https://fonts.googleapis.com/css2?family=Press+Start+2P&family=VT323&display=swap";
+const UNICODE = {
+  latin: "U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD",
+  "latin-ext": "U+0100-02BA,U+02BD-02C5,U+02C7-02CC,U+02CE-02D7,U+02DD-02FF,U+0304,U+0308,U+0329,U+1D00-1DBF,U+1E00-1E9F,U+1EF2-1EFF,U+2020,U+20A0-20AB,U+20AD-20C0,U+2113,U+2C60-2C7F,U+A720-A7FF",
+  cyrillic: "U+0301,U+0400-045F,U+0490-0491,U+04B0-04B1,U+2116",
+  "cyrillic-ext": "U+0460-052F,U+1C80-1C8A,U+20B4,U+2DE0-2DFF,U+A640-A69F,U+FE2E-FE2F",
+};
+const FONTES = [["Press Start 2P", "press-start-2p", ["latin", "latin-ext", "cyrillic", "cyrillic-ext"]], ["VT323", "vt323", ["latin", "latin-ext"]]]
+  .flatMap(([famille, fichier, sousEnsembles]) => sousEnsembles.map((u) => `@font-face{font-family:"${famille}";font-style:normal;font-weight:400;font-display:swap;`
+    + `src:url(/polices/${fichier}-${u}-400-normal.woff2) format("woff2");unicode-range:${UNICODE[u]}}`)).join("\n");
 const PIXEL = `"Press Start 2P",${MONO},monospace`;
 const VT = `"VT323",${MONO},monospace`;
 
@@ -720,6 +787,7 @@ const VT = `"VT323",${MONO},monospace`;
 const cran = (c, p = 4) => `0 -${p}px 0 ${c},0 ${p}px 0 ${c},-${p}px 0 0 ${c},${p}px 0 0 ${c}`;
 
 const CSS = `
+${FONTES}
 :root{--fond:#08100c;--panneau:#0f1a14;--ecran:#050b08;--bord:#2b4d38;--bord-vif:#4c8c63;--texte:#dcf7e6;--doux:#9cc4aa;
 --vert:#5cff95;--vert-fonce:#139a4c;--ambre:#ffb84d;--ambre-fonce:#a86400;--encre:#04170b;
 --pixel:${PIXEL};--police:${VT};--titre:${PIXEL};--corps:22px;--interligne:1.3;--petit:19px;--mini:11px;--bouton:13px;--graisse:400;--h1:28px;--h2:16px}
@@ -865,7 +933,39 @@ a.bestiole:hover{color:var(--texte);box-shadow:inset 0 4px 0 var(--r,var(--bord)
 .stades figcaption{margin-top:10px;font-size:var(--petit);color:var(--doux)}
 .variante.pas-dessinee .ecran img{filter:grayscale(1) brightness(.55)}
 .voisins{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap;margin-top:36px}
+/* ---- pied de page */
+.pied{max-width:1040px;margin:0 auto;padding:22px 20px 36px;border-top:2px dashed var(--bord);color:var(--doux);font-size:var(--petit);text-align:center}
+.pied .liens{display:flex;flex-wrap:wrap;justify-content:center;gap:4px 26px}
+.pied a{color:var(--doux);text-decoration:none;white-space:nowrap;padding:2px 0}
+.pied a:hover{color:var(--vert)}
+.pied p{margin:10px 0 0;font-size:calc(var(--petit) - 2px);opacity:.8}
+/* ---- pages pour les adultes (parents, soutenir, textes légaux) */
+.texte-long{max-width:780px}
+.texte-long ul{padding-inline-start:26px;margin:0 0 14px}
+.texte-long li{margin:0 0 8px}
+.texte-long li::marker{color:var(--ambre)}
+.bandeau{display:flex;gap:14px;align-items:flex-start;background:var(--ecran);padding:14px 18px;margin:4px 4px 22px;box-shadow:${cran("var(--ambre-fonce)")}}
+.bandeau .icone{font:20px/1 var(--pixel);color:var(--ambre);flex:none}
+.bandeau p{margin:0}
+.enfants{box-shadow:inset 0 4px 0 var(--vert),${cran("var(--bord)")}}
+.enfants li{margin-bottom:10px}
+.avertissement{box-shadow:${cran("var(--ambre-fonce)")}}
+.avertissement p:last-child,.carte>p:last-child{margin-bottom:0}
+.dons{display:flex;flex-wrap:wrap;gap:6px}
+html:not([lang="fr"]) section[lang="fr"]{border-top:2px dashed var(--bord);margin-top:36px;padding-top:6px}
+.defile{overflow-x:auto;margin:0 0 14px}
+.tableau-legal{font-size:var(--petit);min-width:640px}
+.tableau-legal td{vertical-align:top}
+.tableau-legal td:first-child{width:38%}
 @media (max-width:760px){
+ .pied{padding:20px 16px 30px}
+ .tableau-legal{min-width:0}
+ .tableau-legal,.tableau-legal tbody,.tableau-legal tr,.tableau-legal td{display:block;width:auto}
+ .tableau-legal .entetes{display:none}
+ .tableau-legal tr{padding:12px 0;border-bottom:2px dashed var(--bord)}
+ .tableau-legal td,.tableau-legal td:first-child{width:auto;border:0;padding:3px 0}
+ .tableau-legal td[data-t]::before{content:attr(data-t) " : ";color:var(--ambre)}
+ .bandeau{padding:12px 14px}
  .hero,.fiche{grid-template-columns:1fr;gap:18px}
  .hero .scene{order:-1}
  .mascotte{width:min(170px,46vw)}
@@ -923,18 +1023,29 @@ function menu(L) {
   }).join("");
 }
 
+/** Le pied de page : liens discrets vers le code, le contact et les pages pour les adultes. */
+function piedDePage(L) {
+  const P = L.t.pied;
+  const liens = [[DEPOT, P.source], [`mailto:${CONTACT}`, P.contact], ["/soutenir", P.soutenir], ["/parents", P.parents],
+    ["/mentions-legales", P.mentions], ["/confidentialite", P.confidentialite]];
+  return `<footer class="pied"><div class="liens">`
+    + liens.map(([href, t]) => `<a href="${echapper(href)}">${echapper(t)}</a>`).join("")
+    + `</div><p>Terminagotchi · <bdi>terminagotchi.com</bdi></p></footer>`;
+}
+
 function page(L, titre, contenu, description = L.t.description, statut = 200) {
   return new Response(`<!doctype html><html lang="${L.lang}" dir="${L.dir}"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>${echapper(titre)} · Terminagotchi</title><meta name="description" content="${echapper(description)}">
 <meta name="theme-color" content="#08100c">
 <link rel="icon" type="image/png" href="/favicon.png"><link rel="apple-touch-icon" href="/icone.png">
-<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="${FONTES}">
+<link rel="preload" href="/polices/press-start-2p-latin-400-normal.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="/polices/vt323-latin-400-normal.woff2" as="font" type="font/woff2" crossorigin>
 <style>${CSS}</style></head><body>
 <header class="entete"><div class="barre">${points}<a class="logo" href="/"><img src="/icone.png" alt="" width="28" height="28"><bdi>TERMINAGOTCHI</bdi></a>${selecteurLangue(L)}</div>
 <nav class="menu">${menu(L)}</nav></header>
-<main>${contenu}</main></body></html>`, {
+<main>${contenu}</main>
+${piedDePage(L)}</body></html>`, {
     status: statut,
     headers: { "content-type": "text/html; charset=utf-8", "content-language": L.lang, vary: "Accept-Language, Cookie" },
   });
@@ -1288,6 +1399,82 @@ ${fenetre("~/ctf", `<ol style="padding-inline-start:24px;margin:0">${liste}</ol>
 <div class="carte"><p class="doux">${C.pourquoiTexte}</p></div>`);
 }
 
+// ====================================================================== pages pour les adultes
+
+const lienMail = `<a href="mailto:${CONTACT}">${CONTACT}</a>`;
+const liste = (items) => `<ul>${items.map((x) => `<li>${x}</li>`).join("")}</ul>`;
+const NOMS_DONS = { liberapay: "Liberapay", kofi: "Ko-fi", github: "GitHub Sponsors" };
+
+function pageSoutenir(L) {
+  const S = L.t.soutenir;
+  const dons = Object.entries(DONS).filter(([, lien]) => /^https:\/\//.test(lien || ""));
+  const boutons = dons.length
+    ? `<div class="dons">${dons.map(([k, lien], i) => `<a class="btn${i % 2 ? " ambre" : ""}" href="${echapper(lien)}" rel="noopener">${echapper(NOMS_DONS[k] || k)}</a>`).join("")}</div>`
+    : `<p class="doux"><span class="curseur" aria-hidden="true">█</span> ${S.bientot}</p>`;
+  return page(L, S.titre, `<div class="texte-long">
+<h1>${S.h1}</h1>
+<div class="bandeau"><span class="icone" aria-hidden="true">!</span><p>${S.pourQui}</p></div>
+<h2>${S.gratuitTitre}</h2>
+<p>${S.gratuit}</p>
+<p class="doux">${S.cout}</p>
+<h2>${S.donsTitre}</h2>
+<div class="carte"><p>${S.donsTexte}</p>${boutons}</div>
+<h2>${S.autresTitre}</h2>
+${liste(S.autres.map((x, i) => (i === 1 ? `${x} <a href="${DEPOT}/issues">GitHub</a>` : x)))}
+<p>${S.ecrire(lienMail)}</p>
+<p class="pixel" style="color:var(--vert);font-size:14px;margin-top:28px">${S.merci}</p>
+</div>`, S.gratuit);
+}
+
+function pageParents(L) {
+  const P = L.t.parents;
+  return page(L, P.titre, `<div class="texte-long">
+<h1>${P.h1}</h1>
+<p>${P.intro}</p>
+<h2>${P.apprendTitre}</h2>
+<p>${P.apprend}</p>
+<p>${P.histoire}</p>
+<h2>${P.sansTitre}</h2>
+<div class="carte">${liste(P.sans)}</div>
+<h2>${P.horsLigneTitre}</h2>
+<p>${P.horsLigne}</p>
+<p class="doux">${P.public}</p>
+<h2>${P.ordiTitre}</h2>
+${liste(P.ordi)}
+<h2>${P.supprimerTitre}</h2>
+<p>${P.supprimer(lienMail)}</p>
+<p><a href="/confidentialite">${P.plus}</a></p>
+<p><a class="btn ambre" href="/soutenir">${P.soutenir}</a></p>
+</div>`, P.intro);
+}
+
+/** Le texte complet en français (qui fait foi), isolé pour garder sa langue et son sens d'écriture. */
+const texteFr = (L, html, note = L.t.confidentialite.versionFr) => `${L.lang === "fr" || !note ? "" : `<p class="doux">${note}</p>`}<section lang="fr" dir="ltr">${html}</section>`;
+
+function pageConfidentialite(L) {
+  const C = L.t.confidentialite;
+  const complet = confidentialiteFr({ contact: CONTACT, depot: DEPOT, conservation: CONSERVATION });
+  return page(L, C.titre, `<div class="texte-long">
+<h1>${C.h1}</h1>
+<div class="carte enfants"><h2 style="margin-top:6px">${C.enfantsTitre}</h2>${liste(C.enfants)}</div>
+<h2>${C.resumeTitre}</h2>
+${liste([...C.resume, C.duree(Math.round(CONSERVATION.inactifMois / 12)), C.droits(lienMail)])}
+${L.lang === "fr" ? "" : `<div class="bandeau"><span class="icone" aria-hidden="true">!</span><p>${C.modele}</p></div>`}
+<h2>${C.complete}</h2>
+${texteFr(L, complet)}
+</div>`, C.enfants[0]);
+}
+
+function pageMentions(L) {
+  const M = L.t.mentions;
+  const complet = mentionsFr({ contact: CONTACT, depot: DEPOT, editeur: EDITEUR, licence: LICENCE });
+  return page(L, M.titre, `<div class="texte-long">
+<h1>${M.h1}</h1>
+${L.lang === "fr" ? "" : `<div class="bandeau"><span class="icone" aria-hidden="true">!</span><p>${M.enFrancais} ${L.t.confidentialite.modele}</p></div>`}
+${texteFr(L, complet, "")}
+</div>`, M.titre);
+}
+
 // ====================================================================== aiguillage
 
 // ====================================================================== pages du compte (session par cookie)
@@ -1340,6 +1527,10 @@ async function aiguiller(requete, env, url, chemin, L) {
   if (chemin === "/ctf") return pageCtf(L, url.origin);
   if (chemin === "/bestiaire") return pageBestiaire(L, url);
   if (chemin === "/captures") return pageCaptures(env, L, url);
+  if (chemin === "/soutenir") return pageSoutenir(L);
+  if (chemin === "/parents") return pageParents(L);
+  if (chemin === "/confidentialite") return pageConfidentialite(L);
+  if (chemin === "/mentions-legales") return pageMentions(L);
   const mb = chemin.match(/^\/bestiaire\/([a-z0-9]+)$/);
   if (mb) return pageEspece(L, mb[1]);
   if (chemin === "/robots.txt") {
@@ -1360,7 +1551,7 @@ export default {
     const chemin = url.pathname.replace(/\/+$/, "") || "/";
     try {
       if (requete.method === "OPTIONS") {
-        return new Response(null, { headers: { "access-control-allow-origin": "*", "access-control-allow-headers": "authorization, content-type", "access-control-allow-methods": "GET, POST" } });
+        return new Response(null, { headers: { "access-control-allow-origin": "*", "access-control-allow-headers": "authorization, content-type", "access-control-allow-methods": "GET, POST, DELETE" } });
       }
       // l'API reste en français : c'est l'appli et le jeu PC qui la lisent
       if (chemin.startsWith("/api/")) return await api(requete, env, chemin);
@@ -1375,7 +1566,11 @@ export default {
       return chemin.startsWith("/api/") ? erreur("Erreur du serveur : " + e.message, 500) : texte("Erreur du serveur.\n", 500);
     }
   },
+  // chaque jour (wrangler.toml, [triggers]) : on efface ce qui a dépassé sa durée de conservation
+  async scheduled(evenement, env, ctx) {
+    ctx.waitUntil(purger(env));
+  },
 };
 
 // pour les tests
-export { fusionner, niveauDe, drapeauDe, EPREUVES, normaliserJeton };
+export { fusionner, niveauDe, drapeauDe, EPREUVES, normaliserJeton, purger, CONSERVATION };

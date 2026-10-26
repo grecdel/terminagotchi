@@ -321,7 +321,8 @@ console.log("Anti-triche : graines et captures vérifiées");
 }
 
 // chaque page dans chaque langue
-const pages = ["/", "/classement", "/bestiaire", "/bestiaire/braisillon", "/captures", "/captures?shiny=1", "/joueur/Grec", "/joueur/Personne", lienBadge, "/badge/0123456789abcdef", "/ctf", "/nimporte", "/compte", "/connexion?t=0"];
+const pages = ["/", "/classement", "/bestiaire", "/bestiaire/braisillon", "/captures", "/captures?shiny=1", "/joueur/Grec", "/joueur/Personne", lienBadge, "/badge/0123456789abcdef", "/ctf", "/nimporte", "/compte", "/connexion?t=0",
+  "/parents", "/soutenir", "/confidentialite", "/mentions-legales"];
 let rendues = 0;
 const rates = [];
 for (const l of LANGUES) {
@@ -402,6 +403,63 @@ console.log("Plusieurs parties, jetons TG-…, code de secours, connexion au sit
   r = await appel("POST", "/compte/sortir", { entetes: { cookie } });
   r = await appel("GET", "/compte", { entetes: { cookie } });
   verifier(!r.t.includes("Bidule"), "se déconnecter du site ferme la session");
+}
+
+console.log("Pied de page, pages pour les adultes, polices locales");
+{
+  r = await appel("GET", "/classement");
+  verifier(["/parents", "/soutenir", "/confidentialite", "/mentions-legales", "mailto:contact@terminagotchi.com", "github.com/grecdel/terminagotchi-android"]
+    .every((x) => r.t.includes(`href="${x.startsWith("/") || x.startsWith("mailto") ? x : "https://" + x}"`)), "pied de page : code, contact, soutenir, parents, mentions, confidentialité");
+  verifier(!/googleapis|gstatic/.test(r.t) && r.t.includes("/polices/vt323-latin-400-normal.woff2") && r.t.includes("@font-face"),
+    "polices hébergées sur le site : aucun appel à Google Fonts");
+  r = await appel("GET", "/soutenir");
+  verifier(r.t.includes("parents") && r.t.includes("bientôt") && !/liberapay\.com|ko-fi\.com/.test(r.t), "soutenir : pour les adultes, « bientôt » tant qu'aucun lien n'est rempli");
+  r = await appel("GET", "/parents?lang=en");
+  verifier(r.t.includes("For parents") && r.t.includes("~/terrain_terminagotchi") && r.t.includes("~/.terminagotchi"), "parents (anglais) : ce que fait le jeu sur l'ordinateur");
+  r = await appel("GET", "/confidentialite");
+  verifier(r.t.includes("pour les enfants") && r.t.includes("Data Privacy Framework") && r.t.includes("CNIL") && r.t.includes("tg_session")
+    && r.t.includes("Adresse IP") && r.t.includes("au plus 24 heures") && r.t.includes("après 3 ans"), "confidentialité : enfants, IP, cookies, durées, CNIL");
+  r = await appel("GET", "/confidentialite?lang=ar");
+  verifier(/<html lang="ar" dir="rtl">/.test(r.t) && r.t.includes('<section lang="fr" dir="ltr">') && r.t.includes("الخصوصية"), "confidentialité en arabe : résumé traduit + texte français qui fait foi (ltr)");
+  r = await appel("GET", "/mentions-legales");
+  verifier(r.t.includes("101 Townsend Street") && r.t.includes("non professionnel") && r.t.includes("Modèle à faire vérifier")
+    && r.t.includes("SIL Open Font License") && r.t.includes("Aucune licence"), "mentions légales : hébergeur, éditeur, modèle à vérifier, crédits, licence");
+}
+
+console.log("Suppression d'un compte et durées de conservation");
+{
+  const ip = { "cf-connecting-ip": "10.6.6.6" };
+  r = await appel("POST", "/api/inscription", { corps: { pseudo: "Efface", appareil: "pc" }, entetes: ip });
+  const cle = r.j.cle;
+  await appel("POST", "/api/sync", { cle, corps: { appareil: "pc", deltas: { xp: 50 }, valeurs: { nom: "Gomme" } } });
+  await appel("POST", "/api/code", { cle });
+  r = await appel("DELETE", "/api/compte", { cle, corps: { confirmer: "pas-moi" } });
+  verifier(r.statut === 400, "suppression refusée sans recopier le pseudo");
+  r = await appel("DELETE", "/api/compte", { cle, corps: { confirmer: "efface" } });
+  verifier(r.j?.ok === true && r.j.supprime === "Efface", "DELETE /api/compte avec la clé : compte supprimé");
+  const restes = [];
+  for (const t of ["cles", "codes", "badges", "apparitions", "parties", "secours", "sessions"]) {
+    const n = (await env.DB.prepare(`SELECT COUNT(*) AS n FROM ${t} WHERE joueur NOT IN (SELECT id FROM joueurs)`).first()).n;
+    if (n) restes.push(t);
+  }
+  verifier(restes.length === 0, "aucune donnée orpheline après la suppression" + (restes.length ? " : " + restes.join(", ") : ""));
+  r = await appel("GET", "/api/profil/Efface");
+  verifier(r.statut === 404, "le profil public a disparu");
+  r = await appel("GET", "/api/moi", { cle });
+  verifier(r.statut === 401, "la clé ne marche plus");
+  r = await appel("OPTIONS", "/api/compte");
+  verifier(/DELETE/.test(r.h.get("access-control-allow-methods")), "CORS : DELETE autorisé");
+  // purge : un compte inactif depuis plus longtemps que CONSERVATION.inactifMois, des compteurs d'IP anciens
+  r = await appel("POST", "/api/inscription", { corps: { pseudo: "Endormi", appareil: "pc" }, entetes: ip });
+  const { purger, CONSERVATION } = await import("../src/worker.js");
+  const vieux = Date.now() - (CONSERVATION.inactifMois + 1) * 31 * 86_400_000;
+  await env.DB.prepare("UPDATE joueurs SET maj = ? WHERE pseudo = 'Endormi'").bind(vieux).run();
+  await env.DB.prepare("INSERT INTO essais (sujet, minute, n) VALUES ('inscription:10.1.1.1', ?, 1)").bind(Math.floor(Date.now() / 60000) - CONSERVATION.ipHeures * 60 - 5).run();
+  const n = await purger(env);
+  const ipRestante = await env.DB.prepare("SELECT 1 AS x FROM essais WHERE sujet = 'inscription:10.1.1.1'").first();
+  verifier(n === 1 && (await appel("GET", "/api/profil/Endormi")).statut === 404 && (await appel("GET", "/api/profil/Grec")).statut === 200,
+    `purge : compte inactif depuis plus de ${CONSERVATION.inactifMois} mois effacé, les autres gardés`);
+  verifier(!ipRestante, `purge : adresses IP de plus de ${CONSERVATION.ipHeures} h effacées`);
 }
 
 console.log(`\n${ok} réussis, ${ko} échoués`);
