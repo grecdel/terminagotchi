@@ -77,7 +77,24 @@ verifier(len({x["empreinte"] for x in V["exercices"]}) > 400, "les tirages sont 
 verifier(set(E.TYPES) == {x["type"] for x in V["exercices"]}, "les vecteurs couvrent les 19 exercices")
 verifier(len(B.FAMILLES) == 8 and B.SEUILS == (1, 5, 15, 30, 50), "8 familles, échelons à 1 / 5 / 15 / 30 / 50")
 verifier(B.echelon_de(50, 0) == 3 and B.echelon_de(50, 1) == 4 and B.echelon_de(15, 0) == 2,
-         "le Diamant demande aussi une médaille d'or")
+         "le Giga demande aussi une médaille d'or")
+verifier(B.ECHELONS == ("bit", "octet", "kilo", "mega", "giga"), "grades : Bit, Octet, Kilo, Méga, Giga")
+verifier([B.etoiles_de(n, 0) for n in (1, 2, 3, 4)] == [0, 1, 2, 3] and B.etoiles_de(5, 1) == 0
+         and [B.etoiles_de(n, 2) for n in (18, 19, 23, 27, 29)] == [0, 1, 2, 3, 3], "étoiles : un quart du chemin chacune")
+verifier([B.etoiles_de(n, 4) for n in (50, 75, 100, 149, 150, 999)] == [0, 1, 2, 2, 3, 3] and B.etoiles_de(9, -1) == 0,
+         "au Giga, les étoiles continuent à 75 / 100 / 150")
+verifier(all(a < b for k in range(4) for a, b in zip((B.SEUILS[k],) + B.ETOILES[k], B.ETOILES[k] + (B.SEUILS[k + 1],))),
+         "les étoiles tombent entre deux grades")
+def _pixels(g):
+    return sum(1 for l in g for c in l if c)
+gal = [_pixels(B.galons(e)) for e in B.ECHELONS]
+verifier(all(len(B.ecusson(f, e)) == 28 and all(len(l) == 18 for l in B.ecusson(f, e)) for f in B.FAMILLES for e in B.ECHELONS),
+         "badge complet : 18 × 28 pixels")
+verifier(gal == sorted(gal) and len(set(gal)) == 5, f"les galons grandissent à chaque grade ({gal} pixels)")
+verifier(sum(1 for c in B.ecusson("lecteur", "kilo", 2)[2] if c == B.ETOILE_ON) == 10
+         and _pixels(B.ecusson(None, None)) == _pixels(B.grille(None, None)), "étoiles allumées sur le badge ; « ??? » sans galons")
+verifier(E.migrer_titre("explorateur:argent") == "explorateur:kilo" and E.migrer_titre("touche") == "touche",
+         "vieille sauvegarde : le titre « … d'Argent » devient « … Kilo »")
 
 print("Avant le terrain, avant les commandes")
 st = etat()
@@ -194,26 +211,34 @@ for x in ("cave", "jardin", "grenier", "salon", "bureau", "chambre", "garage", "
           "bibliotheque", "couloir"):
     bash(f"mkdir -p {x}", S)
 st = app.etape(spontane=False, defis=False, extra=["mkdir cave"], cwd=str(S))
-verifier(B.echelon_de(st["entrainement"]["familles"]["batisseur"]["n"]) == 1, "5e réussite : badge Bâtisseur en Bronze")
-verifier("Bronze" in " ".join(st["log"]), "« badge Bâtisseur : Bronze » dans le journal")
+verifier(B.echelon_de(st["entrainement"]["familles"]["batisseur"]["n"]) == 1, "5e réussite : badge Bâtisseur en Octet")
+verifier("badge Bâtisseur : Octet" in " ".join(st["log"]), "« badge Bâtisseur : Octet » dans le journal")
 regler("nettoyeur", 50, 0)
-verifier(E.echelon(E.e_(etat()), "nettoyeur") == 3, "50 réussites sans médaille d'or : encore Or")
+verifier(E.echelon(E.e_(etat()), "nettoyeur") == 3, "50 réussites sans médaille d'or : encore Méga")
 regler("nettoyeur", 50, 1)
-verifier(E.echelon(E.e_(etat()), "nettoyeur") == 4, "… avec une médaille d'or : Diamant")
+verifier(E.echelon(E.e_(etat()), "nettoyeur") == 4, "… avec une médaille d'or : Giga")
+regler("plombier", 9)
+r = sans(modifier(lambda s: E.ecran_badges(s)))
+verifier("Octet ★☆☆" in r and "9/15 → Kilo" in r, "tg badges : le grade, ses étoiles et la suite (Octet ★☆☆ · 9/15 → Kilo)")
+regler("plombier", 0)
 ecran = sans(modifier(E.ecran_badges))
-verifier("Diamant" in ecran and "Bronze" in ecran and "▀" in ecran, "tg badges dessine les badges et leurs échelons")
-verifier("Nettoyeur de Diamant" in ecran, "le titre affiché est le plus beau : « Nettoyeur de Diamant »")
+verifier("Giga" in ecran and "Octet" in ecran and "▀" in ecran and "50/75 → ★" in ecran, "tg badges dessine les badges, leurs grades et leurs étoiles")
+verifier("Nettoyeur Giga" in ecran, "le titre affiché est le plus beau : « Nettoyeur Giga »")
+verifier("`tg badges grades`" in ecran or "tg badges grades" in ecran, "tg badges présente les grades")
+gr = sans(modifier(lambda s: E.commande_badges(s, ["grades"])))
+verifier("8 bits" in gr and "dès 50" in gr, "tg badges grades : ce que veulent dire Bit, Octet, Kilo…")
+verifier(all(x in gr for x in ("Bit", "Octet", "Kilo", "Méga", "Giga", "150", "▀")), "… avec les 5 galons et les étoiles du Giga")
 liste = sans(modifier(lambda s: E.ecran_titres(s)))
-verifier("Élève de la salle" in liste and "Bâtisseur de Bronze" in liste, "tg badges titre : la liste des titres")
+verifier("Élève de la salle" in liste and "Bâtisseur Octet" in liste, "tg badges titre : la liste des titres")
 n = sans(modifier(lambda s: E.ecran_titres(s))).split("\n").index(
     next(l for l in liste.split("\n") if "Élève de la salle" in l))
 modifier(lambda s: E.ecran_titres(s, str(n)))
 verifier(E.titre_affiche(etat())[0] == "Élève de la salle", "on choisit son titre")
 modifier(lambda s: E.ecran_titres(s, "auto"))
-verifier(E.titre_affiche(etat())[0] == "Nettoyeur de Diamant", "auto : le plus beau titre revient")
+verifier(E.titre_affiche(etat())[0] == "Nettoyeur Giga", "auto : le plus beau titre revient")
 for f in B.FAMILLES:
     regler(f, 30, 1)
-verifier(E.titre_affiche(etat()) == ("Légende de la salle", "arc"), "8 familles en Or : « Légende de la salle » (arc-en-ciel)")
+verifier(E.titre_affiche(etat()) == ("Légende de la salle", "arc"), "8 familles en Méga : « Légende de la salle » (arc-en-ciel)")
 import re  # noqa: E402
 verifier("« Légende de la salle »" in re.sub(r"\x1b\[[0-9;]*m", "", app.render(etat(), 0, False)),
          "le titre est à côté du nom sur l'écran principal")

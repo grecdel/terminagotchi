@@ -15,9 +15,10 @@ Seuls les exercices dont l'enfant a déjà tapé les commandes sont proposés (�
 sont repérés dans les lignes tapées (state["entrainement"]["sym"]). Une famille sans exercice possible
 reste cachée (« ??? »).
 
-Badges (à la PARTIE, pas à la créature) : voir badges.py. Titres : « Élève de la salle » (1 réussite),
-« <badge> de <échelon> » (Bronze et plus, couleur de l'échelon), « Touche-à-tout » (6 familles en Bronze),
-« Légende de la salle » (8 familles en Or, arc-en-ciel), et « Star de la semaine » (🏆, la meilleure
+Badges (à la PARTIE, pas à la créature) : voir badges.py (grades Bit → Octet → Kilo → Méga → Giga, galons et
+étoiles ; `tg badges grades` les explique). Titres : « Élève de la salle » (1 réussite), « <badge> <grade> »
+(« Explorateur Kilo » : Octet et plus, couleur du grade), « Touche-à-tout » (6 familles en Octet),
+« Légende de la salle » (8 familles en Méga, arc-en-ciel), et « Star de la semaine » (🏆, la meilleure
 partie de la semaine dans une famille d'après le site : gardé UNE semaine, compté en ligne).
 
 Anti-triche (même idée que tirage.py) : l'exercice est tiré de (graine du jour, 1 000 000 + compteur) ; son
@@ -229,7 +230,18 @@ def e_(state):
     for k, d in {"cours": None, "compteurs": {}, "familles": {}, "records": {}, "envoyer": [], "sym": [],
                  "titre": None, "hebdo": {}, "hebdo_compte": {}}.items():
         e.setdefault(k, d)
+    e["titre"] = migrer_titre(e["titre"])
     return e
+
+
+def migrer_titre(x):
+    """Vieilles sauvegardes : le titre choisi « explorateur:argent » devient « explorateur:kilo » (les compteurs,
+    eux, ne changent pas : les grades se recalculent)."""
+    if isinstance(x, str) and ":" in x:
+        f, _, en = x.partition(":")
+        if en in B.ANCIENS:
+            return f"{f}:{B.ANCIENS[en]}"
+    return x
 
 
 def fam_(e, f):
@@ -267,6 +279,10 @@ def familles_ouvertes(state):
 def echelon(e, f):
     x = fam_(e, f)
     return B.echelon_de(x["n"], x["or"] + x["diamant"])
+
+
+def etoiles(e, f):
+    return B.etoiles_de(fam_(e, f)["n"], echelon(e, f))
 
 
 # ---------------------------------------------------------------- la salle (seulement dans le terrain)
@@ -533,7 +549,12 @@ def nom_famille(f):
 
 
 def nom_echelon(e):
-    return t("ent.echelon." + e)
+    """Le nom d'un grade (Bit, Octet, Kilo, Méga, Giga)."""
+    return t("ent.grade." + e)
+
+
+def nom_medaille(m):
+    return t("ent.medaille." + m)
 
 
 def colorer(texte, couleur):
@@ -652,6 +673,7 @@ def reussir(state, cwd=None):
     s = max(0.1, round(time.time() - c["debut"], 1))
     m = medaille(typ, s)
     avant = echelon(e, f)
+    et_avant = etoiles(e, f)
     x = fam_(e, f)
     x["n"] += 1
     x[m] += 1
@@ -667,7 +689,7 @@ def reussir(state, cwd=None):
     core.add_xp(state, xp)
     from . import envies
     envies.plaisir(state, "jeu", "defi")
-    out = [t("ent.reussi", s=f"{s:.1f}", icone=ICONE_MEDAILLE[m], medaille=nom_echelon(m), xp=xp, nom=state["name"])]
+    out = [t("ent.reussi", s=f"{s:.1f}", icone=ICONE_MEDAILLE[m], medaille=nom_medaille(m), xp=xp, nom=state["name"])]
     if nouveau and rec is not None:
         out.append(t("ent.record", avant=f"{rec['t']:.1f}"))
     apres = echelon(e, f)
@@ -675,6 +697,8 @@ def reussir(state, cwd=None):
         en = B.ECHELONS[apres]
         out.append(t("ent.echelon_monte", badge=nom_famille(f), echelon=nom_echelon(en), cmd="`tg badges`"))
         core.log(state, "🏅 " + t("ent.echelon_log", badge=nom_famille(f), echelon=nom_echelon(en)))
+    elif apres == avant and etoiles(e, f) > et_avant:
+        out.append(t("ent.etoile", badge=nom_famille(f), etoiles=B.texte_etoiles(etoiles(e, f))))
     core.log(state, t("ent.reussi_log", s=f"{s:.1f}", icone=ICONE_MEDAILLE[m]))
     core.say(state, out[0], 12)
     core.animer(state, "victoire")
@@ -749,6 +773,19 @@ def commande_texte(state, args, cwd=None):
 
 
 # ---------------------------------------------------------------- badges, titres, records (écrans)
+def progres(e, f):
+    """Le texte de progression d'un badge gagné : vers le grade suivant, ou vers l'étoile suivante au Giga."""
+    x = fam_(e, f)
+    k = echelon(e, f)
+    if k + 1 < len(B.ECHELONS):
+        s = B.SEUILS[k + 1]
+        if k + 1 == 4 and x["n"] >= s:
+            return t("ent.badges.manque_or")
+        return t("ent.badges.progres", n=x["n"], s=s, echelon=nom_echelon(B.ECHELONS[k + 1]))
+    s = B.prochaine_etoile(x["n"], k)
+    return t("ent.badges.etoile", n=x["n"], s=s) if s else t("ent.badges.max")
+
+
 def ecran_badges(state):
     e = e_(state)
     ouvertes = set(familles_ouvertes(state))
@@ -757,20 +794,18 @@ def ecran_badges(state):
         x = fam_(e, f)
         k = echelon(e, f)
         if f not in ouvertes and not x["n"]:
-            cases.append((None, None, [(t("ent.badges.cache"), DIM), ("", ""), ("", "")]))
+            cases.append((None, None, 0, [(t("ent.badges.cache"), DIM), ("", ""), ("", "")]))
             continue
         en = B.ECHELONS[k] if k >= 0 else None
-        if k + 1 < len(B.ECHELONS):
-            s = B.SEUILS[k + 1]
-            prog = t("ent.badges.progres", n=x["n"], s=s, echelon=nom_echelon(B.ECHELONS[k + 1]))
-            if k + 1 == 4 and x["n"] >= s:
-                prog = t("ent.badges.manque_or")
+        if en:
+            n = etoiles(e, f)
+            cases.append((f, en, n, [(nom_famille(f), BOLD),
+                                     (nom_echelon(en) + " " + B.texte_etoiles(n), B.couleur_ansi(en)),
+                                     (progres(e, f), DIM)]))
         else:
-            prog = t("ent.badges.max")
-        cases.append((f if en else None, en, [(nom_famille(f), BOLD),
-                                              (nom_echelon(en) if en else t("ent.badges.decouvrir"),
-                                               B.couleur_ansi(en) if en else DIM),
-                                              (prog, DIM)]))
+            cases.append((None, None, 0, [(nom_famille(f), BOLD), (t("ent.badges.decouvrir"), DIM),
+                                          (t("ent.badges.progres", n=x["n"], s=B.SEUILS[0],
+                                             echelon=nom_echelon(B.ECHELONS[0])), DIM)]))
     out = [f" {fg(213)}{BOLD}" + t("ent.badges.titre") + f"{RESET}   {DIM}" + t("ent.badges.sous") + RESET, ""]
     out += B.planche(cases)
     ta = titre_affiche(state)
@@ -781,7 +816,26 @@ def ecran_badges(state):
     for f in B.FAMILLES:
         if hc.get(f):
             out.append(" " + colorer(t("ent.hebdo.compte", badge=nom_famille(f), n=hc[f]), COULEUR_TITRE["star"]))
+    out.append(" " + t("ent.badges.grades", cmd="`tg badges grades`"))
     out.append(f" {DIM}" + t("ent.badges.pied", cmd="`tg entrainement`", rec="`tg badges records`") + RESET)
+    return out
+
+
+def ecran_grades(state):
+    """Les 5 grades expliqués (Bit, Octet… : des tailles d'informatique), avec leurs galons et les étoiles."""
+    cases = []
+    for k, en in enumerate(B.ECHELONS):
+        cases.append(("explorateur", en, 0, [(nom_echelon(en), B.couleur_ansi(en) + BOLD),
+                                             (t("ent.grades.seuil", n=B.SEUILS[k]), DIM),
+                                             (t("ent.badges.manque_or") if k == 4 else "", DIM)]))
+    out = [f" {fg(213)}{BOLD}" + t("ent.grades.titre") + RESET, ""]
+    out += B.planche(cases[:3]) + B.planche(cases[3:])
+    out.append(" " + t("ent.grades.intro"))
+    for en in B.ECHELONS:
+        out.append(f"   {B.couleur_ansi(en)}{BOLD}{nom_echelon(en)}{RESET} : " + t("ent.grades." + en))
+    out.append("")
+    out.append(" " + t("ent.grades.galons"))
+    out.append(" " + t("ent.grades.etoiles", n=B.ETOILES[4][2]))
     return out
 
 
@@ -834,6 +888,8 @@ def commande_badges(state, args):
         return ecran_titres(state, args[1] if len(args) > 1 else None)
     if args and args[0].lower() in ("records", "record"):
         return ecran_records(state)
+    if args and args[0].lower() in ("grades", "grade", "echelons", "echelon", "échelons", "échelon", "aide", "etoiles", "étoiles"):
+        return ecran_grades(state)
     return ecran_badges(state)
 
 

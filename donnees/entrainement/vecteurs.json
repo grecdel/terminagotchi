@@ -3959,112 +3959,314 @@
 {
 "n": 0,
 "or": 0,
-"echelon": -1
+"echelon": -1,
+"etoiles": 0
 },
 {
 "n": 0,
 "or": 1,
-"echelon": -1
+"echelon": -1,
+"etoiles": 0
 },
 {
 "n": 1,
 "or": 0,
-"echelon": 0
+"echelon": 0,
+"etoiles": 0
 },
 {
 "n": 1,
 "or": 1,
-"echelon": 0
+"echelon": 0,
+"etoiles": 0
+},
+{
+"n": 2,
+"or": 0,
+"echelon": 0,
+"etoiles": 1
+},
+{
+"n": 2,
+"or": 1,
+"echelon": 0,
+"etoiles": 1
+},
+{
+"n": 3,
+"or": 0,
+"echelon": 0,
+"etoiles": 2
+},
+{
+"n": 3,
+"or": 1,
+"echelon": 0,
+"etoiles": 2
 },
 {
 "n": 4,
 "or": 0,
-"echelon": 0
+"echelon": 0,
+"etoiles": 3
 },
 {
 "n": 4,
 "or": 1,
-"echelon": 0
+"echelon": 0,
+"etoiles": 3
 },
 {
 "n": 5,
 "or": 0,
-"echelon": 1
+"echelon": 1,
+"etoiles": 0
 },
 {
 "n": 5,
 "or": 1,
-"echelon": 1
+"echelon": 1,
+"etoiles": 0
+},
+{
+"n": 8,
+"or": 0,
+"echelon": 1,
+"etoiles": 1
+},
+{
+"n": 8,
+"or": 1,
+"echelon": 1,
+"etoiles": 1
+},
+{
+"n": 12,
+"or": 0,
+"echelon": 1,
+"etoiles": 2
+},
+{
+"n": 12,
+"or": 1,
+"echelon": 1,
+"etoiles": 2
+},
+{
+"n": 13,
+"or": 0,
+"echelon": 1,
+"etoiles": 3
+},
+{
+"n": 13,
+"or": 1,
+"echelon": 1,
+"etoiles": 3
 },
 {
 "n": 14,
 "or": 0,
-"echelon": 1
+"echelon": 1,
+"etoiles": 3
 },
 {
 "n": 14,
 "or": 1,
-"echelon": 1
+"echelon": 1,
+"etoiles": 3
 },
 {
 "n": 15,
 "or": 0,
-"echelon": 2
+"echelon": 2,
+"etoiles": 0
 },
 {
 "n": 15,
 "or": 1,
-"echelon": 2
+"echelon": 2,
+"etoiles": 0
+},
+{
+"n": 19,
+"or": 0,
+"echelon": 2,
+"etoiles": 1
+},
+{
+"n": 19,
+"or": 1,
+"echelon": 2,
+"etoiles": 1
+},
+{
+"n": 23,
+"or": 0,
+"echelon": 2,
+"etoiles": 2
+},
+{
+"n": 23,
+"or": 1,
+"echelon": 2,
+"etoiles": 2
+},
+{
+"n": 27,
+"or": 0,
+"echelon": 2,
+"etoiles": 3
+},
+{
+"n": 27,
+"or": 1,
+"echelon": 2,
+"etoiles": 3
 },
 {
 "n": 29,
 "or": 0,
-"echelon": 2
+"echelon": 2,
+"etoiles": 3
 },
 {
 "n": 29,
 "or": 1,
-"echelon": 2
+"echelon": 2,
+"etoiles": 3
 },
 {
 "n": 30,
 "or": 0,
-"echelon": 3
+"echelon": 3,
+"etoiles": 0
 },
 {
 "n": 30,
 "or": 1,
-"echelon": 3
+"echelon": 3,
+"etoiles": 0
+},
+{
+"n": 35,
+"or": 0,
+"echelon": 3,
+"etoiles": 1
+},
+{
+"n": 35,
+"or": 1,
+"echelon": 3,
+"etoiles": 1
+},
+{
+"n": 45,
+"or": 0,
+"echelon": 3,
+"etoiles": 3
+},
+{
+"n": 45,
+"or": 1,
+"echelon": 3,
+"etoiles": 3
 },
 {
 "n": 49,
 "or": 0,
-"echelon": 3
+"echelon": 3,
+"etoiles": 3
 },
 {
 "n": 49,
 "or": 1,
-"echelon": 3
+"echelon": 3,
+"etoiles": 3
 },
 {
 "n": 50,
 "or": 0,
-"echelon": 3
+"echelon": 3,
+"etoiles": 3
 },
 {
 "n": 50,
 "or": 1,
-"echelon": 4
+"echelon": 4,
+"etoiles": 0
 },
 {
-"n": 80,
+"n": 74,
 "or": 0,
-"echelon": 3
+"echelon": 3,
+"etoiles": 3
 },
 {
-"n": 80,
+"n": 74,
 "or": 1,
-"echelon": 4
+"echelon": 4,
+"etoiles": 0
+},
+{
+"n": 75,
+"or": 0,
+"echelon": 3,
+"etoiles": 3
+},
+{
+"n": 75,
+"or": 1,
+"echelon": 4,
+"etoiles": 1
+},
+{
+"n": 100,
+"or": 0,
+"echelon": 3,
+"etoiles": 3
+},
+{
+"n": 100,
+"or": 1,
+"echelon": 4,
+"etoiles": 2
+},
+{
+"n": 149,
+"or": 0,
+"echelon": 3,
+"etoiles": 3
+},
+{
+"n": 149,
+"or": 1,
+"echelon": 4,
+"etoiles": 2
+},
+{
+"n": 150,
+"or": 0,
+"echelon": 3,
+"etoiles": 3
+},
+{
+"n": 150,
+"or": 1,
+"echelon": 4,
+"etoiles": 3
+},
+{
+"n": 400,
+"or": 0,
+"echelon": 3,
+"etoiles": 3
+},
+{
+"n": 400,
+"or": 1,
+"echelon": 4,
+"etoiles": 3
 }
 ],
 "semaines": [
@@ -4091,6 +4293,254 @@
 {
 "t": 1798675200,
 "semaine": "2026-W53"
+}
+],
+"ecussons": [
+{
+"famille": "explorateur",
+"echelon": "bit",
+"etoiles": 3,
+"empreinte": "3cb4c0f1910fd520af4137bb838a85fd1cc660f7735ff53ce5ef006e42eb45c2"
+},
+{
+"famille": "explorateur",
+"echelon": "octet",
+"etoiles": 1,
+"empreinte": "8459ec8959365c555536ec04ce648fd7b6da372f196ccad34ea1e8eef78c8e37"
+},
+{
+"famille": "explorateur",
+"echelon": "kilo",
+"etoiles": 0,
+"empreinte": "1a30848e724df899c3a774d62a5b81f13811185fd27fee220d813d193b2be9b2"
+},
+{
+"famille": "explorateur",
+"echelon": "mega",
+"etoiles": 0,
+"empreinte": "cd083351a89c7df5bf29fba9c5c7ea0e4694fb493085026e7599cebd412f9929"
+},
+{
+"famille": "explorateur",
+"echelon": "giga",
+"etoiles": 0,
+"empreinte": "49621f88616ef9cd29a2cf725785975649216adab648e02ae303771a90509e4d"
+},
+{
+"famille": "batisseur",
+"echelon": "bit",
+"etoiles": 0,
+"empreinte": "211df57d1c90070677c062b1eccd019a1057ee014d596778ad45fcb9e812f31b"
+},
+{
+"famille": "batisseur",
+"echelon": "octet",
+"etoiles": 2,
+"empreinte": "55e4e10297e09c3857aefeeb78ca4a83d92391fb1ec479346a1d19f276c1f364"
+},
+{
+"famille": "batisseur",
+"echelon": "kilo",
+"etoiles": 1,
+"empreinte": "427313a0fc9f42649ae4585ef2542669bba06e1ca9f1612b11007c140f55fef3"
+},
+{
+"famille": "batisseur",
+"echelon": "mega",
+"etoiles": 1,
+"empreinte": "1d35fcae8bccc1d5b925a89fe45a360b10ecd052ee3deb70b6c120d62883f6e5"
+},
+{
+"famille": "batisseur",
+"echelon": "giga",
+"etoiles": 1,
+"empreinte": "82c5d38cc56fbae42b65e62f3d78f214715d069c1eac8c88bcf319844584a838"
+},
+{
+"famille": "demenageur",
+"echelon": "bit",
+"etoiles": 1,
+"empreinte": "bbae90467cf8605832992f03db1eb146d23cf11098ee837269cc9d0e63e53903"
+},
+{
+"famille": "demenageur",
+"echelon": "octet",
+"etoiles": 3,
+"empreinte": "c8e901d0eca590513a85cf0e5ea2481b06f366d88dab4600d91ee0268b0e1254"
+},
+{
+"famille": "demenageur",
+"echelon": "kilo",
+"etoiles": 2,
+"empreinte": "e4e13c7b2b9aace267488ab5b19b5b5b96f97d365d39c71c9268100ef0030134"
+},
+{
+"famille": "demenageur",
+"echelon": "mega",
+"etoiles": 2,
+"empreinte": "25ce788f7d3b0cbd4b0e4daf3d53fe610e58cd06f95f5f78dbfcbfa0c3b70551"
+},
+{
+"famille": "demenageur",
+"echelon": "giga",
+"etoiles": 2,
+"empreinte": "3241f5c172a7cd1df8ff253309be5fef1afe8a5bd2356927406076f3c903b08e"
+},
+{
+"famille": "nettoyeur",
+"echelon": "bit",
+"etoiles": 2,
+"empreinte": "dde5e930962be23ef20b6fe28f10dbca580e9570d86acd8e8841ea4719916809"
+},
+{
+"famille": "nettoyeur",
+"echelon": "octet",
+"etoiles": 0,
+"empreinte": "bf406275ea08f5b843bb9655b70f697b1496801c97289690fc28509ccb66a4bc"
+},
+{
+"famille": "nettoyeur",
+"echelon": "kilo",
+"etoiles": 3,
+"empreinte": "e909e2acc79b59af092d4811cc435555db221236e561c005227ec4f444af494c"
+},
+{
+"famille": "nettoyeur",
+"echelon": "mega",
+"etoiles": 3,
+"empreinte": "3772f9f8af54d7a5c39eb0acb39891ae113be718230e9e3c817962e04d20bdc9"
+},
+{
+"famille": "nettoyeur",
+"echelon": "giga",
+"etoiles": 3,
+"empreinte": "50e773d3e78e2b85abb08a6d7005fbef8b5f59137939f7817236c22a5d3671cc"
+},
+{
+"famille": "lecteur",
+"echelon": "bit",
+"etoiles": 3,
+"empreinte": "b35ca402a9616a4727138cc87997e4e6abd1461444089aa1da702ec42f5f8bda"
+},
+{
+"famille": "lecteur",
+"echelon": "octet",
+"etoiles": 1,
+"empreinte": "9277365257f44e51d33319991598fe76d34f13ee7e336409db1bc23624e8b27d"
+},
+{
+"famille": "lecteur",
+"echelon": "kilo",
+"etoiles": 0,
+"empreinte": "e2fed5b2b993a9bcb2a90b8b465e0ccfa3b22a6c65a79ef03b539cb227e6e404"
+},
+{
+"famille": "lecteur",
+"echelon": "mega",
+"etoiles": 0,
+"empreinte": "9d39e1746882c6ea9423920984e39b712d53dcbd05936af051acfb41761d2110"
+},
+{
+"famille": "lecteur",
+"echelon": "giga",
+"etoiles": 0,
+"empreinte": "25ff1d92a4177502a3a16477a06edfc15767d5d76cf9faa11101249f9bd379b7"
+},
+{
+"famille": "detective",
+"echelon": "bit",
+"etoiles": 0,
+"empreinte": "37f936533963d53ef61700a6edaa1e4e8108674d17d02b9bbe63f60d5ebdc62b"
+},
+{
+"famille": "detective",
+"echelon": "octet",
+"etoiles": 2,
+"empreinte": "67f99ff083aa75a440806759f444a844fab1337bfcc0dc5db628c187186693a5"
+},
+{
+"famille": "detective",
+"echelon": "kilo",
+"etoiles": 1,
+"empreinte": "7bbefa2619a990a475dbb11b569f2130e1b71c6aab68614dff81c039ec093d96"
+},
+{
+"famille": "detective",
+"echelon": "mega",
+"etoiles": 1,
+"empreinte": "9004d34b7c1bceeb20e8bbe7ccdf0c97eff29294353968246c40966554238690"
+},
+{
+"famille": "detective",
+"echelon": "giga",
+"etoiles": 1,
+"empreinte": "5fe764ddb5ee2d518f97561cb29b68381b860c2cc18b650ee0811186ad70fa58"
+},
+{
+"famille": "plombier",
+"echelon": "bit",
+"etoiles": 1,
+"empreinte": "cb73813030dde98ebc4388b84ddc8762cdc38a2cdd24cd769cfb8e5fa9ec8cd0"
+},
+{
+"famille": "plombier",
+"echelon": "octet",
+"etoiles": 3,
+"empreinte": "b7b8d6f81f3eb476ff457952fd953c50b17502718980dbedced4c20e89b62c27"
+},
+{
+"famille": "plombier",
+"echelon": "kilo",
+"etoiles": 2,
+"empreinte": "3f38db0531373e0eef394d52af7cc3bdee5831366422ec5d88eb25db6bb06638"
+},
+{
+"famille": "plombier",
+"echelon": "mega",
+"etoiles": 2,
+"empreinte": "2f1d0f18aece5bf71a52a4a0619026848c25e79b5c766d96cdfa558567c508b5"
+},
+{
+"famille": "plombier",
+"echelon": "giga",
+"etoiles": 2,
+"empreinte": "ea8bc3d608819ee37ec807552810914763fcdd0c513279b5d6f6ea3eb84659d3"
+},
+{
+"famille": "cuisinier",
+"echelon": "bit",
+"etoiles": 2,
+"empreinte": "eb3c07ed6c32360e4d2e2da3ad22c4292756d1dbb8f40e2d3337fb233b074ec9"
+},
+{
+"famille": "cuisinier",
+"echelon": "octet",
+"etoiles": 0,
+"empreinte": "b535460939b5f890eb93181c44edf22549c9f1c466855a94f7fd314a8611ecd0"
+},
+{
+"famille": "cuisinier",
+"echelon": "kilo",
+"etoiles": 3,
+"empreinte": "9f2d1e6db0763ce78c7f816a0d5b85128c4d6b414e97cb116fecce2611093d02"
+},
+{
+"famille": "cuisinier",
+"echelon": "mega",
+"etoiles": 3,
+"empreinte": "1710fd7b8386d470162bbf3691a10be3857d93381e00c93158cb2bfd4de0d10f"
+},
+{
+"famille": "cuisinier",
+"echelon": "giga",
+"etoiles": 3,
+"empreinte": "1ee6752fe46c23c1775b1c3d3384719e9c9720cbcc8430bb7674f8397dd2cf36"
+},
+{
+"famille": null,
+"echelon": null,
+"etoiles": 0,
+"empreinte": "cd1c5579d21e792d9ce2bbf2a2beea11f30c81eded36f90a2947ecf602ba6d3f"
 }
 ]
 }

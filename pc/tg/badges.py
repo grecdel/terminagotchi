@@ -1,4 +1,4 @@
-"""Les badges de la salle d'entraînement : un dessin en pixels par famille, une couleur par échelon.
+"""Les badges de la salle d'entraînement : un dessin en pixels par famille, un grade par échelon, des étoiles.
 
 Les badges appartiennent à la PARTIE (ils mesurent ce que l'enfant sait faire), pas à la créature :
 la créature, elle, ne gagne que de l'XP.
@@ -7,28 +7,46 @@ la créature, elle, ne gagne que de l'XP.
   explorateur  cd, ls, pwd           batisseur  mkdir, touch        demenageur  cp, mv
   nettoyeur    rm, rmdir, rm -r      lecteur    cat, head, tail     detective   grep, find
   plombier     |  >  >>              cuisinier  recettes (scripts), chmod
-5 échelons : Bois → Bronze → Argent → Or → Diamant, à 1 / 5 / 15 / 30 / 50 exercices réussis dans la
-famille ; le Diamant demande en plus au moins une médaille d'or (ou de diamant) en temps dans la famille.
+5 échelons (des tailles d'informatique) : Bit → Octet → Kilo → Méga → Giga, à 1 / 5 / 15 / 30 / 50 exercices
+réussis dans la famille ; le Giga demande en plus au moins une médaille d'or (ou de diamant) en temps dans la famille.
+(Avant : Bois / Bronze / Argent / Or / Diamant ; ANCIENS sert à reprendre les vieilles sauvegardes.)
 
-Le dessin : 14 × 14 pixels (un écusson). Mêmes données dans l'appli (Badges.kt) et sur le site
-(site/src/badges.js) ; les couleurs y sont identiques.
-  .  transparent    o  contour    f  fond    h  reflet    i  dessin    k  détail du dessin    s  étincelle
-Dans le terminal, un pixel = un demi-caractère « ▀ » (14 colonnes × 7 lignes).
+Chaque échelon a son GRADE, dessiné comme les galons des militaires, sous l'écusson :
+  Bit 1 chevron · Octet 2 chevrons · Kilo 3 chevrons · Méga 3 chevrons + un arc de pistes dorées (circuit
+  imprimé) · Giga 3 chevrons + des ailes de pistes lumineuses et une puce au centre (+ l'étincelle).
+Et des ÉTOILES (0 à 3, au-dessus de l'écusson) : le chemin vers l'échelon suivant, coupé en quarts (arrondis
+au-dessus) ; au Giga, elles continuent à 75 / 100 / 150 réussites. Voir ETOILES.
+
+Le dessin complet (« ecusson ») : 18 × 28 pixels. Lignes 0-3 : les 3 étoiles (x = 0, 6, 12) ; l'écusson
+14 × 14 en (2, 4) ; les galons dessous et derrière. Mêmes données dans l'appli (Badges.kt) et sur le site
+(site/src/entrainement.js) ; les couleurs y sont identiques.
+  Écusson :  .  transparent    o  contour    f  fond    h  reflet    i  dessin    k  détail du dessin
+  Galons :   a  contour   b  reflet   c  fond (couleurs de l'échelon)    d e g  pistes dorées (contour, piste, via)
+             q r s  pistes lumineuses du Giga    z y x  la puce (contour, dessus, corps)    p  pattes de la puce
+Dans le terminal, un pixel = un demi-caractère « ▀ » (18 colonnes × 14 lignes).
 """
 FAMILLES = ("explorateur", "batisseur", "demenageur", "nettoyeur", "lecteur", "detective", "plombier", "cuisinier")
-ECHELONS = ("bois", "bronze", "argent", "or", "diamant")
+ECHELONS = ("bit", "octet", "kilo", "mega", "giga")
 SEUILS = (1, 5, 15, 30, 50)
+# les étoiles de chaque échelon : réussites pour ★, ★★, ★★★ (quarts du chemin vers l'échelon suivant)
+ETOILES = ((2, 3, 4), (8, 10, 13), (19, 23, 27), (35, 40, 45), (75, 100, 150))
+ANCIENS = {"bois": "bit", "bronze": "octet", "argent": "kilo", "or": "mega", "diamant": "giga"}
 
-# couleurs : contour, fond, reflet, dessin, détail
+# couleurs : contour, fond, reflet, dessin, détail (vert circuit → cyan → bleu → violet → or)
 COULEURS = {
-    "bois":    ("#3a2a1a", "#76583a", "#987654", "#efe0c4", "#4a3522"),
-    "bronze":  ("#6b3510", "#d0782a", "#f6ad62", "#fff3e0", "#7a3c0c"),
-    "argent":  ("#4a525e", "#aab5c2", "#e6edf4", "#323a47", "#6b7685"),
-    "or":      ("#6b4700", "#e8b71c", "#fff27a", "#4f3300", "#a36f00"),
-    "diamant": ("#0b4a66", "#3fcfff", "#d2f8ff", "#06324a", "#1a7fae"),
-    "cache":   ("#3a3a44", "#5a5a66", "#6e6e7a", "#8a8a96", "#4a4a55"),   # famille pas encore découverte
+    "bit":   ("#0d3b1e", "#2f9e4f", "#86e89a", "#eaffe9", "#17602f"),
+    "octet": ("#08404d", "#22b0c6", "#a6f3ff", "#062f3a", "#127688"),
+    "kilo":  ("#152a78", "#4072f0", "#b1c8ff", "#f0f4ff", "#2240b0"),
+    "mega":  ("#3d0f60", "#a050e6", "#e2b8ff", "#fff0ff", "#5e1f92"),
+    "giga":  ("#6b4700", "#e8b71c", "#fff27a", "#4f3300", "#a36f00"),
+    "cache": ("#3a3a44", "#5a5a66", "#6e6e7a", "#8a8a96", "#4a4a55"),   # famille pas encore découverte
 }
 ETINCELLE = "#ffffff"
+# couleurs fixes des galons (pistes, puce)
+FIXES = {"d": "#4a3000", "e": "#d9a41a", "g": "#fff27a", "q": "#0b3f55", "r": "#3fd6ff", "s": "#ffffff",
+         "z": "#0c0c10", "y": "#4a4a5e", "x": "#262630", "p": "#d8d8e0"}
+ETOILE_ON, ETOILE_OFF = "#ffd84a", "#3c3c4a"
+LARGEUR, HAUTEUR, BX, BY = 18, 28, 2, 4
 
 FORME = [
     "...oooooooo...",
@@ -139,14 +157,104 @@ ICONES = {
         "...ii...",
     ],
 }
-# l'étincelle du diamant (coin en haut à droite)
+# l'étincelle du Giga (coin en haut à droite de l'écusson)
 ETINCELLES = [(1, 12), (0, 12), (2, 12), (1, 11), (1, 13)]
+
+# les galons : (première ligne, lignes de 18 pixels) ; dessinés derrière l'écusson
+GALONS = {
+    "bit": (16, [
+        ".......aaa........",
+        ".....aabbbaa......",
+        "...aabbcccbbaa....",
+        "..abbccaaaccbba...",
+        ".abccaa...aaccba..",
+        ".acaa.......aaca..",
+        "..a...........a...",
+    ]),
+    "octet": (16, [
+        ".......aaa........",
+        ".....aabbbaa......",
+        "...aabbcccbbaa....",
+        "..abbccaaaccbba...",
+        ".abccaabbbaaccba..",
+        ".acaabbcccbbaaca..",
+        "..abbccaaaccbba...",
+        ".abccaa...aaccba..",
+        ".acaa.......aaca..",
+        "..a...........a...",
+    ]),
+    "kilo": (16, [
+        ".......aaa........",
+        ".....aabbbaa......",
+        "...aabbcccbbaa....",
+        "..abbccaaaccbba...",
+        ".abccaabbbaaccba..",
+        ".acaabbcccbbaaca..",
+        "..abbccaaaccbba...",
+        ".abccaabbbaaccba..",
+        ".acaabbcccbbaaca..",
+        "..abbccaaaccbba...",
+        ".abccaa...aaccba..",
+        ".acaa.......aaca..",
+    ]),
+    "mega": (7, [
+        "d................d",
+        "gd..............dg",
+        "ed..............de",
+        "egd............dge",
+        "ed..............de",
+        "egd............dge",
+        "ed..............de",
+        "egd............dge",
+        "ed..............de",
+        "ded....aaa.....ded",
+        ".ded.aabbbaa..ded.",
+        "..daabbcccbbaaed..",
+        "..abbccaaaccbba...",
+        ".abccaabbbaaccba..",
+        ".acaabbcccbbaaca..",
+        "..abbccaaaccbba...",
+        ".abccaabbbaaccba..",
+        ".acaabbcccbbaaca..",
+        "..abbccaaaccbba...",
+        ".abccaa...aaccba..",
+        ".acaa.......aaca..",
+    ]),
+    "giga": (4, [
+        "q................q",
+        "sq..............qs",
+        "rsq............qsr",
+        "rrq............qrr",
+        "rsq............qsr",
+        "rrq............qrr",
+        "rsq............qsr",
+        "rrq............qrr",
+        "rsq............qsr",
+        "rrq............qrr",
+        "rsq............qsr",
+        "rrq............qrr",
+        "qrrq...aaa....qrrq",
+        ".qrrqaabbbaa.qrrq.",
+        "..qaabpcpcpbaarq..",
+        "..abbzyyyyyzbba...",
+        ".abcczxsxxxzccba..",
+        ".acaazxxxxxzaaca..",
+        "..abbcpapapcbba...",
+        ".abccaabbbaaccba..",
+        ".acaabbcccbbaaca..",
+        "..abbccaaaccbba...",
+        ".abccaa...aaccba..",
+        ".acaa.......aaca..",
+    ]),
+}
+ETOILE = ["..x..", ".xxx.", "xxxxx", ".x.x."]
+X_ETOILES = (0, 6, 12)
 
 
 def grille(famille, echelon):
-    """La grille 14 × 14 de couleurs « #rrggbb » (None = transparent).
+    """L'écusson seul : grille 14 × 14 de couleurs « #rrggbb » (None = transparent).
     famille = None ou echelon = None : la famille pas encore découverte (gris, « ? »)."""
-    cache = famille is None or echelon is None
+    cache = famille is None or echelon not in ECHELONS
     c = COULEURS["cache" if cache else echelon]
     pal = {"o": c[0], "f": c[1], "h": c[2], "i": c[3], "k": c[4], "K": c[4]}
     g = [[pal.get(x) for x in ligne] for ligne in FORME]
@@ -155,9 +263,42 @@ def grille(famille, echelon):
         for x, ch in enumerate(ligne):
             if ch != ".":
                 g[3 + y][3 + x] = pal[ch]
-    if echelon == "diamant" and not cache:
+    if echelon == "giga" and not cache:
         for y, x in ETINCELLES:
             g[y][x] = ETINCELLE
+    return g
+
+
+def galons(echelon):
+    """Le grade seul : grille 18 × 28 (None = transparent), sans écusson ni étoiles."""
+    g = [[None] * LARGEUR for _ in range(HAUTEUR)]
+    if echelon not in ECHELONS:
+        return g
+    c = COULEURS[echelon]
+    pal = dict(FIXES, a=c[0], b=c[2], c=c[1])
+    y0, lignes = GALONS[echelon]
+    for y, ligne in enumerate(lignes):
+        for x, ch in enumerate(ligne):
+            if ch != ".":
+                g[y0 + y][x] = pal[ch]
+    return g
+
+
+def ecusson(famille, echelon, etoiles=0):
+    """Le badge complet 18 × 28 : galons (derrière), écusson, et les 3 étoiles (0 à 3 allumées) au-dessus.
+    Famille pas encore découverte (famille ou echelon None) : l'écusson gris seul."""
+    cache = famille is None or echelon not in ECHELONS
+    g = galons(None if cache else echelon)
+    for y, ligne in enumerate(grille(famille, echelon)):
+        for x, col in enumerate(ligne):
+            if col:
+                g[BY + y][BX + x] = col
+    if not cache:
+        for i, x0 in enumerate(X_ETOILES):
+            for y, ligne in enumerate(ETOILE):
+                for x, ch in enumerate(ligne):
+                    if ch == "x":
+                        g[y][x0 + x] = ETOILE_ON if i < etoiles else ETOILE_OFF
     return g
 
 
@@ -170,25 +311,36 @@ def echelon_de(n, ors=0):
     return k
 
 
+def etoiles_de(n, k):
+    """Les étoiles (0…3) dans l'échelon k avec n réussites (k = -1 : aucune)."""
+    return 0 if k < 0 else sum(1 for s in ETOILES[k] if n >= s)
+
+
+def prochaine_etoile(n, k):
+    """Le nombre de réussites de la prochaine étoile dans l'échelon k, ou None (3 étoiles)."""
+    return next((s for s in ETOILES[k] if n < s), None) if k >= 0 else None
+
+
+def texte_etoiles(n):
+    return "★" * n + "☆" * (3 - n)
+
+
 # ---------------------------------------------------------------- dans le terminal
 def couleur_ansi(echelon):
     """La couleur du texte d'un échelon (son reflet), pour les noms et les titres."""
-    return f"\x1b[38;2;{_rvb(COULEURS[echelon or 'cache'][2])}m"
+    return f"\x1b[38;2;{_rvb(COULEURS[echelon if echelon in COULEURS else 'cache'][2])}m"
 
 
 def _rvb(h):
     return ";".join(str(int(h[i:i + 2], 16)) for i in (1, 3, 5))
 
 
-
-
-def lignes_terminal(famille, echelon):
-    """Le badge en 7 lignes de 14 caractères « ▀ » colorés (haut = couleur du texte, bas = fond)."""
-    g = grille(famille, echelon)
+def lignes_grille(g):
+    """Une grille de pixels (hauteur paire) en lignes de caractères « ▀ » colorés (haut = texte, bas = fond)."""
     out = []
-    for y in range(0, 14, 2):
+    for y in range(0, len(g), 2):
         s = ""
-        for x in range(14):
+        for x in range(len(g[y])):
             a, b = g[y][x], g[y + 1][x]
             if a is None and b is None:
                 s += "\x1b[0m "
@@ -202,26 +354,32 @@ def lignes_terminal(famille, echelon):
     return out
 
 
-def planche(cases, par_ligne=4, largeur_case=17):
-    """Les badges côte à côte : cases = [(famille, echelon, [(texte, couleur) sous le badge])] (famille None =
-    « ??? » ; couleur = séquence ANSI ou ""). Renvoie les lignes du terminal (le texte sous chaque badge est centré, coupé à la largeur de la case)."""
+def lignes_terminal(famille, echelon, etoiles=0):
+    """Le badge complet en 14 lignes de 18 caractères."""
+    return lignes_grille(ecusson(famille, echelon, etoiles))
+
+
+def planche(cases, par_ligne=4, largeur_case=19):
+    """Les badges côte à côte : cases = [(famille, echelon, etoiles, [(texte, couleur) sous le badge])] (famille None =
+    « ??? » ; couleur = séquence ANSI ou ""). Renvoie les lignes du terminal (le texte sous chaque badge est centré,
+    coupé à la largeur de la case)."""
     from .langue import largeur, raccourcir
     out = []
     for i in range(0, len(cases), par_ligne):
         rang = cases[i:i + par_ligne]
-        dessins = [lignes_terminal(f, e) for f, e, _ in rang]
-        marge = (largeur_case - 14) // 2
-        for y in range(7):
-            out.append(" " + "".join(" " * marge + d[y] + " " * (largeur_case - 14 - marge) for d in dessins))
-        n = max(len(t) for _, _, t in rang)
+        dessins = [lignes_terminal(f, e, n) for f, e, n, _ in rang]
+        marge = (largeur_case - LARGEUR) // 2
+        for y in range(HAUTEUR // 2):
+            out.append(" " + "".join(" " * marge + d[y] + " " * (largeur_case - LARGEUR - marge) for d in dessins).rstrip())
+        n = max(len(t) for *_, t in rang)
         for y in range(n):
             ligne = " "
-            for _, _, t in rang:
+            for *_, t in rang:
                 x, c = t[y] if y < len(t) else ("", "")
                 brut = raccourcir(x, largeur_case - 1)
                 vis = largeur(brut)
                 g = (largeur_case - vis) // 2
                 ligne += " " * g + c + brut + "\x1b[0m" + " " * (largeur_case - vis - g)
-            out.append(ligne)
+            out.append(ligne.rstrip())
         out.append("")
     return out
