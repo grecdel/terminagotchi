@@ -1019,9 +1019,9 @@ main{max-width:1040px;margin:0 auto;padding:30px 20px 80px}
 .sol{width:46%;height:10px;margin-top:10px;background:rgba(92,255,149,.18);animation:sol 2.6s steps(6) infinite alternate}
 @keyframes flotte{to{transform:translateY(-14px)}}
 @keyframes sol{to{transform:scaleX(.8);opacity:.6}}
-.mascotte.mange{aspect-ratio:240/400;background:url(/mascotte_mange.png) 0 0/800% 100% no-repeat;cursor:pointer}
-.mascotte.croque{animation:flotte 2.6s steps(6) infinite alternate,croque 4.24s step-end 1}
-@keyframes croque{0.0%{background-position-x:0.0%}16.5%{background-position-x:14.286%}20.3%{background-position-x:28.571%}24.8%{background-position-x:42.857%}29.5%{background-position-x:57.143%}34.0%{background-position-x:42.857%}38.4%{background-position-x:57.143%}42.9%{background-position-x:42.857%}47.4%{background-position-x:71.429%}55.0%{background-position-x:85.714%}68.2%{background-position-x:100.0%}78.8%{background-position-x:0.0%}100%{background-position-x:0}}
+.mascotte.mange{aspect-ratio:240/400;background:url(/mascotte_mange.png) 0 0/900% 100% no-repeat;cursor:pointer}
+.mascotte.croque{animation:flotte 2.6s steps(6) infinite alternate,croque 4.51s step-end 1}
+@keyframes croque{0.0%{background-position-x:0.0%}15.5%{background-position-x:12.5%}19.3%{background-position-x:25.0%}23.7%{background-position-x:37.5%}27.5%{background-position-x:50.0%}30.8%{background-position-x:37.5%}33.9%{background-position-x:62.5%}37.3%{background-position-x:50.0%}40.6%{background-position-x:37.5%}43.7%{background-position-x:62.5%}47.0%{background-position-x:37.5%}51.0%{background-position-x:75.0%}56.8%{background-position-x:87.5%}70.1%{background-position-x:100.0%}80.0%{background-position-x:0.0%}100%{background-position-x:0}}
 @media (prefers-reduced-motion:reduce){.mascotte,.sol,.curseur{animation:none}}
 .apercu{display:grid;gap:14px;grid-template-columns:repeat(auto-fill,minmax(96px,1fr));margin:18px 0}
 .apercu a{display:grid;place-items:center;aspect-ratio:1;margin:2px;position:relative}
