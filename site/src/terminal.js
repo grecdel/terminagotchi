@@ -2,6 +2,8 @@
  * Terminagotchi — le mini-terminal du site : une barre « visiteur@terminagotchi:~/bestiaire$ _ » en bas de chaque page,
  * pour se promener dans le site avec de vraies commandes (ls, cd, cat, find, tree…), comme dans le jeu.
  *
+ * Fermée par défaut (la souris reste la façon normale de naviguer) : le petit bouton « >_ » l'ouvre, le choix est retenu.
+ *
  * Le site est vu comme un dossier personnel :
  *   ~                      → /
  *   ~/bestiaire            → /bestiaire           (dossiers des familles + un fichier par bestiole)
@@ -205,7 +207,7 @@ else if(e.key==="l"&&e.ctrlKey){e.preventDefault();effacer()}});
 S.addEventListener("click",function(e){if(e.target===S)I.focus()});
 majInvite();for(var i=0;i<JRN.length;i++)rendre(JRN[i]);R.hidden=false;
 var suite=slire("tg-suite");secrire("tg-suite",null);var ouv=lire("tg-ouvert",null);
-if(suite||ouv===1||(ouv==null&&matchMedia("(min-width:761px)").matches))ouvrir(!!suite);
+if(suite||ouv===1)ouvrir(!!suite);
 })()`;
 
 /** La barre du terminal, à mettre à la fin de chaque page. */
@@ -214,7 +216,7 @@ export function barreTerminal(L) {
   const d = { c: cheminVirtuel(L.url), fi: estFichier(L.url) ? 1 : 0, u: M.utilisateur, l: L.lang, s: M, ls: LANGUES.map((l) => [l, NOMS_LANGUES[l]]) };
   const e = (s) => String(s).replace(/&/g, "&amp;").replace(/"/g, "&quot;").replace(/</g, "&lt;");
   return `<div id="tg" class="tg" dir="ltr" hidden>`
-    + `<button type="button" id="tg-ouvrir" class="tg-ouvrir" aria-expanded="false" aria-controls="tg-panneau" title="${e(M.ouvrir)}"><span aria-hidden="true">&gt;_</span><span class="tg-cache">${e(M.ouvrir)}</span></button>`
+    + `<button type="button" id="tg-ouvrir" class="tg-ouvrir" aria-expanded="false" aria-controls="tg-panneau" aria-label="${e(M.bouton)}"><span aria-hidden="true">&gt;_</span><span class="tg-bulle" aria-hidden="true">${e(M.bouton)}</span></button>`
     + `<div id="tg-panneau" class="tg-panneau" hidden><div id="tg-sortie" class="tg-sortie" role="log" aria-live="polite"></div>`
     + `<form id="tg-form" class="tg-ligne"><span id="tg-invite" class="tg-invite" aria-hidden="true"></span>`
     + `<input id="tg-saisie" type="text" aria-label="${e(M.saisie)}" placeholder="help" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" enterkeyhint="go">`
@@ -232,7 +234,8 @@ export const CSS_TERMINAL = `
  font:14px/1 var(--pixel);cursor:pointer;box-shadow:0 -3px 0 var(--bord-vif),0 3px 0 var(--bord-vif),-3px 0 0 var(--bord-vif),3px 0 0 var(--bord-vif),0 0 18px rgba(92,255,149,.25)}
 .tg-ouvrir:hover{color:var(--ambre)}
 .tg-ouvert .tg-ouvrir{display:none}
-.tg-cache{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+.tg-bulle{position:absolute;bottom:calc(100% + 12px);inset-inline-end:-3px;padding:6px 10px;background:var(--panneau);color:var(--texte);white-space:nowrap;font:16px/1.2 var(--police);box-shadow:0 0 0 2px var(--bord-vif);opacity:0;visibility:hidden;transition:opacity .15s}
+.tg-ouvrir:hover .tg-bulle,.tg-ouvrir:focus-visible .tg-bulle{opacity:1;visibility:visible}
 .tg-panneau{background:var(--ecran);border-top:3px solid var(--bord-vif);box-shadow:0 -8px 24px rgba(0,0,0,.5)}
 .tg-sortie{max-height:min(38vh,320px);overflow-y:auto;padding:8px 16px 2px;color:var(--texte);overflow-wrap:anywhere}
 .tg-sortie:empty{display:none}

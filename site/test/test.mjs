@@ -494,6 +494,7 @@ console.log("Mini-terminal du site (ls, cd, cat…)");
   verifier(d.fi === 1 && d.l === "ar" && d.s.ouvrir === "افتح الطرفية" && d.ls.length === 14, "barre : fichier repéré, textes dans la langue de la page");
   verifier(/<div id="tg" class="tg" dir="ltr" hidden>/.test(r.t) && r.t.includes('aria-controls="tg-panneau"') && r.t.includes('id="tg-saisie"'),
     "barre : cachée sans JavaScript, bouton et champ accessibles");
+  verifier(/<div id="tg-panneau" class="tg-panneau" hidden>/.test(r.t) && r.t.includes('aria-label="التنقّل بلوحة المفاتيح"'), "barre : fermée par défaut, bouton « naviguer au clavier » traduit");
   verifier(!/<script[^>]+src=/.test(r.t), "aucun script externe");
 }
 

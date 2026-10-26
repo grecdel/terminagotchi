@@ -10,6 +10,7 @@
 
 const fr = {
   terminal: {
+    bouton: "Naviguer au clavier",
     ouvrir: "Ouvrir le terminal",
     fermer: "Fermer le terminal",
     saisie: "Commande du terminal",
@@ -55,6 +56,7 @@ const fr = {
 
 const en = {
   terminal: {
+    bouton: "Navigate with the keyboard",
     ouvrir: "Open the terminal",
     fermer: "Close the terminal",
     saisie: "Terminal command",
@@ -100,6 +102,7 @@ const en = {
 
 const es = {
   terminal: {
+    bouton: "Navegar con el teclado",
     ouvrir: "Abrir el terminal",
     fermer: "Cerrar el terminal",
     saisie: "Comando del terminal",
@@ -145,6 +148,7 @@ const es = {
 
 const de = {
   terminal: {
+    bouton: "Mit der Tastatur navigieren",
     ouvrir: "Terminal öffnen",
     fermer: "Terminal schließen",
     saisie: "Terminal-Befehl",
@@ -190,6 +194,7 @@ const de = {
 
 const it = {
   terminal: {
+    bouton: "Naviga con la tastiera",
     ouvrir: "Apri il terminale",
     fermer: "Chiudi il terminale",
     saisie: "Comando del terminale",
@@ -235,6 +240,7 @@ const it = {
 
 const pt = {
   terminal: {
+    bouton: "Navegar com o teclado",
     ouvrir: "Abrir o terminal",
     fermer: "Fechar o terminal",
     saisie: "Comando do terminal",
@@ -280,6 +286,7 @@ const pt = {
 
 const zh = {
   terminal: {
+    bouton: "用键盘浏览",
     ouvrir: "打开终端",
     fermer: "关闭终端",
     saisie: "终端命令",
@@ -325,6 +332,7 @@ const zh = {
 
 const ru = {
   terminal: {
+    bouton: "Навигация с клавиатуры",
     ouvrir: "Открыть терминал",
     fermer: "Закрыть терминал",
     saisie: "Команда терминала",
@@ -370,6 +378,7 @@ const ru = {
 
 const ja = {
   terminal: {
+    bouton: "キーボードでたんけん",
     ouvrir: "ターミナルをひらく",
     fermer: "ターミナルをとじる",
     saisie: "ターミナルのコマンド",
@@ -415,6 +424,7 @@ const ja = {
 
 const hi = {
   terminal: {
+    bouton: "कीबोर्ड से घूमो",
     ouvrir: "टर्मिनल खोलो",
     fermer: "टर्मिनल बंद करो",
     saisie: "टर्मिनल कमांड",
@@ -460,6 +470,7 @@ const hi = {
 
 const ar = {
   terminal: {
+    bouton: "التنقّل بلوحة المفاتيح",
     ouvrir: "افتح الطرفية",
     fermer: "أغلق الطرفية",
     saisie: "أمر الطرفية",
@@ -505,6 +516,7 @@ const ar = {
 
 const bn = {
   terminal: {
+    bouton: "কিবোর্ড দিয়ে ঘোরো",
     ouvrir: "টার্মিনাল খোলো",
     fermer: "টার্মিনাল বন্ধ করো",
     saisie: "টার্মিনাল কমান্ড",
@@ -550,6 +562,7 @@ const bn = {
 
 const id = {
   terminal: {
+    bouton: "Jelajahi dengan keyboard",
     ouvrir: "Buka terminal",
     fermer: "Tutup terminal",
     saisie: "Perintah terminal",
@@ -595,6 +608,7 @@ const id = {
 
 const ur = {
   terminal: {
+    bouton: "کی بورڈ سے گھومو",
     ouvrir: "ٹرمینل کھولو",
     fermer: "ٹرمینل بند کرو",
     saisie: "ٹرمینل کمانڈ",
