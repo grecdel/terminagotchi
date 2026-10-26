@@ -2245,7 +2245,7 @@
  "ent.grades.giga": "environ 1 000 mégas : tout un film !",
  "ent.grades.tera": "environ 1 000 gigas : toute une bibliothèque de films !",
  "ent.grades.galons": "Sous le badge, les galons grandissent avec le grade, comme chez les militaires : 1, 2 puis 3 chevrons, puis des pistes de circuit dorées, au Giga des ailes lumineuses avec une puce, et au Téra une couronne arc-en-ciel autour du badge !",
- "ent.grades.etoiles": "★ Les 3 étoiles au-dessus du badge montrent ton chemin vers le grade suivant : 3 étoiles, c'est presque ! Au Giga, elles continuent jusqu'à {n} réussites.",
+ "ent.grades.etoiles": "★ Les 3 étoiles au-dessus du badge montrent ton chemin vers le grade suivant : 3 étoiles, c'est presque ! Au Téra, elles continuent jusqu'à {n} réussites.",
  "ent.badges.pied": "Un exercice ? {cmd} · tes records : {rec}",
  "ent.titre.ligne": "Titre :",
  "ent.titre.changer": "(changer : {cmd})",

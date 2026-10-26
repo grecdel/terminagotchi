@@ -2236,7 +2236,7 @@
  "ent.grades.giga": "about 1,000 megas: a whole film!",
  "ent.grades.tera": "about 1,000 gigas: a whole library of films!",
  "ent.grades.galons": "Under the badge, the stripes grow with the rank, like in the army: 1, 2 then 3 chevrons, then golden circuit tracks, at Giga glowing wings with a chip, and at Tera a rainbow crown around the badge!",
- "ent.grades.etoiles": "★ The 3 stars above the badge show your way to the next rank: 3 stars means almost there! At Giga, they go on up to {n} done.",
+ "ent.grades.etoiles": "★ The 3 stars above the badge show your way to the next rank: 3 stars means almost there! At Tera, they go on up to {n} done.",
  "ent.badges.pied": "An exercise? {cmd} · your records: {rec}",
  "ent.titre.ligne": "Title:",
  "ent.titre.changer": "(change: {cmd})",

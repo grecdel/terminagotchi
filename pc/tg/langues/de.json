@@ -2240,7 +2240,7 @@
  "ent.grades.giga": "ungefähr 1000 Mega: ein ganzer Film!",
  "ent.grades.tera": "ungefähr 1000 Giga: eine ganze Filmbibliothek!",
  "ent.grades.galons": "Unter dem Abzeichen wachsen die Streifen mit dem Rang, wie beim Militär: 1, 2, dann 3 Winkel, dann goldene Leiterbahnen, bei Giga leuchtende Flügel mit einem Chip und bei Tera eine Regenbogenkrone um das Abzeichen!",
- "ent.grades.etoiles": "★ Die 3 Sterne über dem Abzeichen zeigen deinen Weg zum nächsten Rang: 3 Sterne heißt fast geschafft! Bei Giga geht es weiter bis {n}.",
+ "ent.grades.etoiles": "★ Die 3 Sterne über dem Abzeichen zeigen deinen Weg zum nächsten Rang: 3 Sterne heißt fast geschafft! Bei Tera geht es weiter bis {n}.",
  "ent.badges.pied": "Eine Übung? {cmd} · deine Rekorde: {rec}",
  "ent.titre.ligne": "Titel:",
  "ent.titre.changer": "(ändern: {cmd})",

@@ -2240,7 +2240,7 @@
  "ent.grades.giga": "circa 1000 mega: un film intero!",
  "ent.grades.tera": "circa 1000 giga: un'intera biblioteca di film!",
  "ent.grades.galons": "Sotto il distintivo i gradi crescono, come nell'esercito: 1, 2 poi 3 galloni, poi piste dorate di circuito, al Giga ali luminose con un chip, e al Tera una corona arcobaleno intorno al distintivo!",
- "ent.grades.etoiles": "★ Le 3 stelle sopra il distintivo mostrano la strada verso il grado seguente: 3 stelle vuol dire quasi! Al Giga continuano fino a {n} fatti.",
+ "ent.grades.etoiles": "★ Le 3 stelle sopra il distintivo mostrano la strada verso il grado seguente: 3 stelle vuol dire quasi! Al Tera continuano fino a {n} fatti.",
  "ent.badges.pied": "Un esercizio? {cmd} · i tuoi record: {rec}",
  "ent.titre.ligne": "Titolo:",
  "ent.titre.changer": "(cambiare: {cmd})",

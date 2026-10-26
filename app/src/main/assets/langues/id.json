@@ -2233,7 +2233,7 @@
  "ent.grades.giga": "sekitar 1.000 mega: satu film utuh!",
  "ent.grades.tera": "sekitar 1.000 giga: satu perpustakaan film utuh!",
  "ent.grades.galons": "Di bawah lencana, tanda pangkat bertambah, seperti tentara: 1, 2, lalu 3 garis, lalu jalur sirkuit emas, di Giga sayap bercahaya dengan sebuah chip, dan di Tera mahkota pelangi di sekeliling lencana!",
- "ent.grades.etoiles": "★ 3 bintang di atas lencana menunjukkan jalanmu ke pangkat berikutnya: 3 bintang berarti hampir! Di Giga, bintang berlanjut sampai {n}.",
+ "ent.grades.etoiles": "★ 3 bintang di atas lencana menunjukkan jalanmu ke pangkat berikutnya: 3 bintang berarti hampir! Di Tera, bintang berlanjut sampai {n}.",
  "ent.badges.pied": "Latihan? {cmd} · rekormu: {rec}",
  "ent.titre.ligne": "Gelar:",
  "ent.titre.changer": "(ganti: {cmd})",

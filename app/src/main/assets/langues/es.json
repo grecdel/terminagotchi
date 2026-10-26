@@ -2231,7 +2231,7 @@
  "ent.grades.giga": "unos 1000 megas: ¡una película entera!",
  "ent.grades.tera": "unos 1000 gigas: ¡toda una biblioteca de películas!",
  "ent.grades.galons": "Debajo de la insignia, los galones crecen con el rango, como en el ejército: 1, 2 y luego 3 galones, después pistas de circuito doradas, en Giga alas brillantes con un chip, ¡y en Tera una corona arcoíris alrededor de la insignia!",
- "ent.grades.etoiles": "★ Las 3 estrellas encima de la insignia muestran tu camino hacia el rango siguiente: ¡3 estrellas es casi! En Giga siguen hasta {n} hechos.",
+ "ent.grades.etoiles": "★ Las 3 estrellas encima de la insignia muestran tu camino hacia el rango siguiente: ¡3 estrellas es casi! En Tera siguen hasta {n} hechos.",
  "ent.badges.pied": "¿Un ejercicio? {cmd} · tus récords: {rec}",
  "ent.titre.ligne": "Título:",
  "ent.titre.changer": "(cambiar: {cmd})",
