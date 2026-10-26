@@ -107,8 +107,9 @@ r0 = equipe.animation(st["captures"][0], "content")
 verifier(r and r0 and len(r[0]) == len(r0[0]) and lg(r[0][0]) > lg(r0[0][0]), "tg anime : l'aura respire autour d'elle")
 
 print("La créature de l'écran principal et le réglage")
-verifier(A.palier_compagnon({"shiny": True}) == "shiny" and A.palier_compagnon({}) == "commune",
-         "le compagnon : shiny (1 sur 64) ou commune")
+verifier(A.palier_compagnon({"shiny": True}) == "shiny" and A.palier_compagnon({}) is None,
+         "le compagnon : pas d'aura (seul un ancien compagnon shiny garde la sienne)")
+verifier(all(not core.new_state("Zou", "fr")["shiny"] for _ in range(300)), "le compagnon ne naît jamais shiny")
 verifier(A.active(core.load()), "l'aura est affichée par défaut")
 core.modifier(lambda s: s.update(shiny=True))
 ecran_on = app.render(core.load(), 2, False)

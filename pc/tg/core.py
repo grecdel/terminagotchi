@@ -272,7 +272,7 @@ def dominant(state):
 
 def new_state(name, langue_code="fr"):
     now = time.time()
-    return {"name": name, "langue": langue_code, "shiny": random.randrange(64) == 0, "born": now, "last_tick": now, "xp": 0, "hunger": 80.0, "total": 0,
+    return {"name": name, "langue": langue_code, "shiny": False, "born": now, "last_tick": now, "xp": 0, "hunger": 80.0, "total": 0,
             "stats": {v["stat"]: 0 for v in CATEGORIES.values()}, "seen": [], "log": [],
             "offsets": {}, "version": VERSION}
 

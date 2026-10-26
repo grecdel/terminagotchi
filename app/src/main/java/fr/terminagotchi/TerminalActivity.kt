@@ -389,7 +389,7 @@ class TerminalActivity : Activity() {
 
         if (!jeu.existe) {
             jeu.nom = ligne.take(16)
-            jeu.shiny = Random.nextInt(64) == 0
+            jeu.shiny = false   // le compagnon ne naît jamais shiny (pas de rareté)
             jeu.log(t("app.oeuf_apparu", "trait" to Regles.nomTrait(jeu.trait)))
             jeu.dire(t("term.toc_toc"), 10)
             jeu.sauver()

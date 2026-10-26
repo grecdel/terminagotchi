@@ -104,7 +104,7 @@ fun main(args: Array<String>) {
         "le terminal de l'appli relit la balise (teinte shiny + aura)")
 
     println("Le bouton ✨ et les parties")
-    verif(Aura.palierCompagnon(jeu) == (if (jeu.shiny) "shiny" else "commune"), "le compagnon : shiny ou commune")
+    verif(Aura.palierCompagnon(jeu) == (if (jeu.shiny) "shiny" else null), "le compagnon : pas d'aura (sauf ancien shiny)")
     verif(Aura.active(jeu), "l'aura est affichée par défaut")
     verif(!Aura.basculer(jeu) && !Aura.active(jeu), "le bouton la cache")
     jeu.sauver()

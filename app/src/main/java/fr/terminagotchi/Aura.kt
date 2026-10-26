@@ -45,8 +45,9 @@ object Aura {
 
     fun palierInd(ind: JSONObject): String = palierDe(Bestiaire.rareteDe(ind), ind.optBoolean("shiny"))
 
-    /** La créature principale n'a pas de rareté tirée : seule la chance shiny (1 sur 64) la distingue. */
-    fun palierCompagnon(jeu: Jeu): String = if (jeu.shiny) "shiny" else "commune"
+    /** La créature principale n'a pas de rareté et ne naît jamais shiny : pas d'aura (null, pas de lueur grise).
+     *  Seul un compagnon shiny d'une ancienne sauvegarde (avant cette règle) garde sa lueur arc-en-ciel. */
+    fun palierCompagnon(jeu: Jeu): String? = if (jeu.shiny) "shiny" else null
 
     /** Le réglage de la partie (bouton ✨ de l'écran principal) : affichée par défaut. */
     fun active(jeu: Jeu): Boolean = jeu.module("aura").optBoolean("on", true)

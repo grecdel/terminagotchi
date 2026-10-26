@@ -315,7 +315,7 @@ class Jeu(ctx: Context) {
     /** dernière courte animation demandée pour la créature (nom, date en ms) : l'écran la joue */
     var anim: Pair<String, Long>? = null
     var colles = 0
-    /** créature shiny (1 chance sur 64 à la naissance) */
+    /** créature shiny : plus jamais à la naissance (le compagnon n'a pas de rareté) ; gardé pour les anciennes sauvegardes */
     var shiny = false
     /** langue de l'interface (enregistrée dans la sauvegarde ; au premier lancement : celle du téléphone) */
     var langue = Langue.courante

@@ -55,8 +55,9 @@ def palier_ind(ind):
 
 
 def palier_compagnon(state):
-    """La créature principale n'a pas de rareté tirée : seule la chance shiny (1 sur 64) la distingue."""
-    return "shiny" if state.get("shiny") else "commune"
+    """La créature principale n'a pas de rareté et ne naît jamais shiny : pas d'aura (None).
+    Seul un compagnon shiny d'une ancienne sauvegarde (avant cette règle) garde sa lueur arc-en-ciel."""
+    return "shiny" if state.get("shiny") else None
 
 
 def active(state):
