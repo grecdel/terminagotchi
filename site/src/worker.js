@@ -841,6 +841,7 @@ a.bestiole:hover{color:var(--texte);box-shadow:inset 0 4px 0 var(--r,var(--bord)
 .bestiole code{display:block;font-size:13px;text-align:center;overflow-wrap:anywhere;padding:2px 4px;width:100%}
 .bestiole .ecran svg{width:70%;height:auto}
 .nom-b{font:11px/1.5 var(--pixel);text-align:center;overflow-wrap:anywhere}
+.nom-v{font:var(--mini)/1.5 var(--titre);font-weight:var(--graisse)}
 .capture{align-items:stretch;text-align:start}
 .capture .nom-b,.capture .rar-l{text-align:center}
 .capture.shiny{box-shadow:inset 0 4px 0 var(--r,var(--bord)),${cran("#ffd75f")},0 0 22px rgba(255,215,95,.25)}
@@ -1178,7 +1179,7 @@ function pageEspece(L, id) {
     const nom = v.id === "classique" ? E.classique : lib(L, "habitats", v.zone);
     return `<div class="bestiole variante${v.dessinee ? "" : " pas-dessinee"}" style="--r:${couleur}">
     <div class="ecran">${e.portrait ? imgPortrait(e, v.dessinee ? v.id : "classique", "adulte", `${e.nom} (${nom})`) : svgBestiole(e)}</div>
-    <div class="nom-b">${echapper(nom)}</div>
+    <div class="nom-b nom-v">${echapper(nom)}</div>
     <div class="doux petit" style="text-align:center">${echapper(E.chance(v.chance))}</div>
     ${v.dessinee ? "" : `<div class="doux petit" style="text-align:center">${E.pasDessinee}</div>`}
     <code>~/terrain_terminagotchi/${echapper(v.zone)}</code></div>`;
