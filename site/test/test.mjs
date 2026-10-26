@@ -163,22 +163,27 @@ verifier(r.statut === 200 && !r.t.includes("une étoile sur le front"), "galerie
 r = await appel("POST", "/api/sync", { cle: clePc, corps: { appareil: "pc", partage: { actif: true, date: 20 } } });
 verifier(r.j.etat.partage.actif === true, "accord de partage enregistré");
 r = await appel("GET", "/captures");
-verifier(r.t.includes("une étoile sur le front") && r.t.includes("Rootkitsune") && r.t.includes("class=\"rgb\""), "galerie : captures visibles, écriture RGB");
+verifier(r.t.includes("une étoile sur le front") && r.t.includes("Ricanos") && r.t.includes("class=\"rgb\""), "galerie : captures visibles, écriture RGB");
+verifier(r.t.includes("/portraits/runodrake/classique_enfant.webp"), "galerie : une ancienne capture (Glitchou) devient la nouvelle espèce de même numéro (Runodrake), en portrait");
 r = await appel("GET", "/captures?shiny=1");
-verifier(r.t.includes("Rootkitsune") && !r.t.includes(">Glitchou<"), "galerie : filtre shiny");
+verifier(r.t.includes("Ricanos") && !r.t.includes("Runodrake"), "galerie : filtre shiny");
 r = await appel("POST", "/api/sync", { cle: cleTel, corps: { appareil: "android", partage: { actif: false, date: 5 } } });
 verifier(r.j.etat.partage.actif === true, "un vieux réglage de partage n'écrase pas le plus récent");
 r = await appel("GET", "/bestiaire");
 verifier(r.statut === 200 && (r.t.match(/class="bestiole"/g) || []).length === 150, "glossaire : 150 espèces");
-verifier(!r.t.includes("✨"), "glossaire classique : aucune variante shiny");
+verifier(!r.t.includes("hue-rotate") && (r.t.match(/_adulte\.webp/g) || []).length === 150, "glossaire : 150 portraits classiques adultes, aucune variante shiny");
 r = await appel("GET", "/bestiaire?rarete=l%C3%A9gendaire");
 verifier((r.t.match(/class="bestiole"/g) || []).length === 10, "glossaire : filtre des 10 légendaires");
-r = await appel("GET", "/bestiaire/glitchou");
-verifier(r.statut === 200 && r.t.includes("Glitchou") && r.t.includes("terrain_terminagotchi/faille"), "fiche d'espèce");
+r = await appel("GET", "/bestiaire/braisillon");
+verifier(r.statut === 200 && r.t.includes("Braisillon") && r.t.includes("terrain_terminagotchi/volcan"), "fiche d'espèce");
+verifier(["bebe", "enfant", "ado", "adulte", "ancien"].every((s) => r.t.includes(`/portraits/braisillon/classique_${s}.webp`)), "fiche : les 5 stades en portrait");
+verifier(r.t.includes("/portraits/braisillon/lave_adulte.webp") && r.t.includes("Démons") && r.t.includes("environ 1 apparition sur"), "fiche : variantes dessinées, famille, fréquence");
+r = await appel("GET", "/bestiaire/gargouflamme");
+verifier(r.t.includes("pas encore dessinée") && !r.t.includes("/portraits/gargouflamme/canyon_"), "fiche : une variante pas encore dessinée montre la forme classique");
 r = await appel("GET", "/bestiaire/zzz");
 verifier(r.statut === 404, "espèce inconnue : 404");
 r = await appel("GET", "/joueur/Grec");
-verifier(r.t.includes("/bestiaire/glitchou") && r.t.includes("Voir ses captures uniques"), "profil : collection dessinée + lien vers ses captures");
+verifier(r.t.includes("/bestiaire/runodrake") && r.t.includes("Voir ses captures uniques"), "profil : collection dessinée + lien vers ses captures");
 
 console.log("Langues de l'interface");
 const { LANGUES, NOMS_LANGUES, DICTIONNAIRES, depuisAcceptLanguage } = await import("../src/i18n.js");
@@ -208,11 +213,11 @@ r = await appel("GET", "/?lang=ur");
 verifier(langDe(r.t) === "ur/rtl", "ourdou : dir=rtl");
 verifier(LANGUES.every((l) => r.t.includes(`<option value="${l}"`) && r.t.includes(NOMS_LANGUES[l])) && ["中文", "Русский", "日本語", "العربية", "हिन्दी", "বাংলা", "اردو"].every((n) => r.t.includes(n)),
   "sélecteur : les 14 langues, chacune écrite dans sa langue");
-r = await appel("GET", "/bestiaire/glitchou?lang=en");
-verifier(r.t.includes("Glitchou") && r.t.includes("terrain_terminagotchi/faille") && r.t.includes("Bestiary") && r.t.includes("crack"),
+r = await appel("GET", "/bestiaire/braisillon?lang=en");
+verifier(r.t.includes("Braisillon") && r.t.includes("terrain_terminagotchi/volcan") && r.t.includes("Bestiary") && r.t.includes("volcano") && r.t.includes("Demons family"),
   "fiche en anglais : interface traduite, habitat traduit, chemin inchangé");
-const glitchou = (await import("../src/bestiaire.js")).default.especes.find((e) => e.id === "glitchou");
-verifier(r.t.includes(glitchou.description.replace(/'/g, "&#39;")), "les descriptions des bestioles restent en français");
+const braisillon = (await import("../src/bestiaire.js")).default.especes.find((e) => e.id === "braisillon");
+verifier(r.t.includes(braisillon.description.replace(/'/g, "&#39;")), "les descriptions des bestioles restent en français");
 r = await appel("GET", "/bestiaire?rarete=l%C3%A9gendaire&lang=es");
 verifier((r.t.match(/class="bestiole"/g) || []).length === 10 && r.t.includes("legendaria"), "filtres : valeurs françaises dans l'URL, libellés traduits");
 r = await appel("GET", "/joueur/Grec?lang=en");
@@ -316,7 +321,7 @@ console.log("Anti-triche : graines et captures vérifiées");
 }
 
 // chaque page dans chaque langue
-const pages = ["/", "/classement", "/bestiaire", "/bestiaire/glitchou", "/captures", "/captures?shiny=1", "/joueur/Grec", "/joueur/Personne", lienBadge, "/badge/0123456789abcdef", "/ctf", "/nimporte", "/compte", "/connexion?t=0"];
+const pages = ["/", "/classement", "/bestiaire", "/bestiaire/braisillon", "/captures", "/captures?shiny=1", "/joueur/Grec", "/joueur/Personne", lienBadge, "/badge/0123456789abcdef", "/ctf", "/nimporte", "/compte", "/connexion?t=0"];
 let rendues = 0;
 const rates = [];
 for (const l of LANGUES) {

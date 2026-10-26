@@ -12,17 +12,21 @@ const DEPOT = "https://github.com/grecdel/terminagotchi-android";
 const STATS = ["Intelligence", "Agilité", "Force", "Endurance"];
 const COULEUR = { Intelligence: 39, "Agilité": 78, Force: 203, Endurance: 221 };
 const STADES = ["Œuf", "Bébé", "Ado", "Adulte"];
-const ESPECES = BESTIAIRE.especes.map((e) => e.nom);
 const PAR_NOM = Object.fromEntries(BESTIAIRE.especes.map((e) => [e.nom, e]));
 const PAR_ID = Object.fromEntries(BESTIAIRE.especes.map((e) => [e.id, e]));
-const PUBLIQUES = BESTIAIRE.especes.filter((e) => !e.secrete);
+// anciennes espèces (bestiaire v1) : leur nom mène à la nouvelle espèce de même numéro (vieilles captures, collections)
+const ANCIENS = Object.fromEntries(Object.entries(BESTIAIRE.anciens || {}).map(([nom, id]) => [nom, PAR_ID[id]]).filter(([, e]) => e));
+/** L'espèce d'un nom envoyé par le jeu : nom du nouveau bestiaire d'abord, sinon ancien nom. */
+const especeDe = (nom) => PAR_NOM[nom] || ANCIENS[nom] || null;
+const ESPECES = [...new Set([...Object.keys(PAR_NOM), ...Object.keys(ANCIENS)])];
+const PUBLIQUES = BESTIAIRE.especes.filter((e) => !e.secrete).sort((a, b) => a.numero - b.numero);
 // espèces qui ont un dessin complet animé (bandes d'images dans public/anim/<id>/<stade>/<animation>.webp)
 const ANIMEES = new Set(["abyssor"]);
 const STADES_B = ["enfant", "ado", "adulte", "finale"];
 const MARQUES = new Set(BESTIAIRE.marques);
 const HUMEURS = new Set(BESTIAIRE.humeurs);
-const COULEUR_RARETE = { commune: "#b0b0c0", "peu commune": "#5fd787", rare: "#5fafff", "épique": "#c77dff", "légendaire": "#ffaf00",
-  mythique: "#ff5f87" };
+const COULEUR_RARETE = { commune: "#b9c7be", "peu commune": "#5cff95", rare: "#5cb8ff", "épique": "#c58cff", "légendaire": "#ffb84d",
+  mythique: "#ff7aa8" };
 const APPAREILS = ["android", "pc"];
 
 // ====================================================================== outils
@@ -265,7 +269,7 @@ function fusionner(etat, envoi, appareil, verdicts = new Map()) {
   for (const c of Array.isArray(envoi.captures) ? envoi.captures : []) {
     if (e.captures.length >= 3000) break;
     const ok = c && typeof c.id === "string" && /^[0-9a-f]{6,20}$/.test(c.id) && !connues.has(c.id)
-      && (PAR_NOM[c.espece] || PAR_NOM_T[c.espece]) && MARQUES.has(c.marque) && HUMEURS.has(c.humeur);
+      && (especeDe(c.espece) || PAR_NOM_T[c.espece]) && MARQUES.has(c.marque) && HUMEURS.has(c.humeur);
     if (!ok) continue;
     const zone = typeof c.zone === "string" && /^[a-z/_]{0,60}$/.test(c.zone) ? c.zone : "";
     const v = verdicts.get(c.id);
@@ -287,7 +291,7 @@ function fusionner(etat, envoi, appareil, verdicts = new Map()) {
       id: c.id, espece: c.espece, shiny: c.shiny === true, date: entier(c.date, 4e12), marque: c.marque,
       humeur: c.humeur, taille: Math.max(0, Math.min(1000, Number(c.taille) || 0)), potentiel: entier(c.potentiel, 100),
       stats: st, zone,
-      stade: STADES_B.includes(c.stade) ? c.stade : "enfant",
+      stade: STADES_B.includes(c.stade) || TIRAGE.stades.includes(c.stade) ? c.stade : "enfant",
       teinte: Math.max(0, Math.min(1, Number(c.teinte) || 0)),
       verifie: false, ...(v?.raison && { raison: v.raison }),
     });
@@ -302,7 +306,8 @@ function fusionner(etat, envoi, appareil, verdicts = new Map()) {
       // bestiole vérifiée : elle ne grandit pas plus vite que le temps écoulé ne le permet
       const s = stadePlausible(ancienne.stade0, c.stade, (Date.now() - ancienne.depuis) / 1000);
       if (TIRAGE.stades.indexOf(s) > TIRAGE.stades.indexOf(ancienne.stade)) ancienne.stade = s;
-    } else if (STADES_B.indexOf(c.stade) > STADES_B.indexOf(ancienne.stade || "enfant")) ancienne.stade = c.stade;
+    } else if (STADES_B.includes(c.stade) && STADES_B.indexOf(c.stade) > STADES_B.indexOf(ancienne.stade || "enfant")) ancienne.stade = c.stade;
+    else if (TIRAGE.stades.indexOf(c.stade) > TIRAGE.stades.indexOf(ancienne.stade)) ancienne.stade = c.stade;
   }
   if (envoi.partage && typeof envoi.partage === "object" && (Number(envoi.partage.date) || 0) >= (e.partage?.date || 0)) {
     e.partage = { actif: envoi.partage.actif === true, date: Number(envoi.partage.date) || 0 };
@@ -704,62 +709,182 @@ const POLICES = {
   ar: `"Noto Sans Arabic","Noto Naskh Arabic","Segoe UI","Tahoma","Geeza Pro","DejaVu Sans",${MONO},sans-serif`,
   ur: `"Noto Nastaliq Urdu","Jameel Noori Nastaliq","Urdu Typesetting","Noto Naskh Arabic","Noto Sans Arabic","Segoe UI","Tahoma",${MONO},sans-serif`,
 };
+// polices pixel (Google Fonts) : « Press Start 2P » pour les titres et les boutons, « VT323 » pour le texte.
+// Elles ne couvrent que l'alphabet latin (et le cyrillique pour Press Start 2P) : les autres écritures gardent
+// leurs polices lisibles, en taille normale (VT323 est petite, la même taille rendrait le reste énorme).
+const FONTES = "https://fonts.googleapis.com/css2?family=Press+Start+2P&family=VT323&display=swap";
+const PIXEL = `"Press Start 2P",${MONO},monospace`;
+const VT = `"VT323",${MONO},monospace`;
+
+// un cadre en escalier (coins crantés) : quatre ombres décalées, sans image
+const cran = (c, p = 4) => `0 -${p}px 0 ${c},0 ${p}px 0 ${c},-${p}px 0 0 ${c},${p}px 0 0 ${c}`;
 
 const CSS = `
-:root{--fond:#14141f;--carte:#1e1e2e;--bord:#3a3a55;--texte:#e6e6e6;--doux:#9a9ab0;--vert:#5fd787;--rose:#ff87ff;--jaune:#ffd75f;--bleu:#87afff}
+:root{--fond:#08100c;--panneau:#0f1a14;--ecran:#050b08;--bord:#2b4d38;--bord-vif:#4c8c63;--texte:#dcf7e6;--doux:#9cc4aa;
+--vert:#5cff95;--vert-fonce:#139a4c;--ambre:#ffb84d;--ambre-fonce:#a86400;--encre:#04170b;
+--pixel:${PIXEL};--police:${VT};--titre:${PIXEL};--corps:22px;--interligne:1.3;--petit:19px;--mini:11px;--bouton:13px;--graisse:400;--h1:28px;--h2:16px}
+html:lang(ru){--police:${MONO},monospace;--corps:17px;--interligne:1.55;--petit:15px}
+${["zh", "ja", "hi", "bn", "ar", "ur"].map((l) => `html:lang(${l}){--police:${POLICES[l]};--titre:${POLICES[l]};--corps:17px;--petit:15px;--mini:13px;--bouton:17px;--graisse:700;--h1:30px;--h2:21px;--interligne:1.65}`).join("\n")}
+html:lang(ar){--interligne:1.85}html:lang(ur){--interligne:2.15}
 *{box-sizing:border-box}
-body{margin:0;background:var(--fond);color:var(--texte);font:16px/1.5 ${MONO},monospace}
-${Object.entries(POLICES).map(([l, p]) => `body:lang(${l}){font-family:${p}}`).join("\n")}
-body:lang(ur){line-height:2.1}
-body:lang(ar){line-height:1.8}
-a{color:var(--bleu)}
-header{border-bottom:1px solid var(--bord);background:#181826}
-nav{max-width:960px;margin:0 auto;padding:12px 16px;display:flex;gap:18px;align-items:center;flex-wrap:wrap}
-nav .logo{color:var(--rose);font-weight:bold;text-decoration:none;font-size:18px}
-nav a{text-decoration:none}
-.langues{margin-inline-start:auto;display:flex;gap:6px;align-items:center}
-.langues select{background:var(--carte);color:var(--texte);border:1px solid var(--bord);border-radius:10px;padding:4px 8px;font:inherit;font-size:14px;max-width:12em}
-.langues button{background:#5f5fd7;color:#fff;border:0;border-radius:8px;padding:4px 10px;font:inherit}
-main{max-width:960px;margin:0 auto;padding:24px 16px 64px}
-h1{font-size:28px;margin:8px 0 4px}h2{font-size:20px;margin:32px 0 12px;color:var(--jaune)}
+html{background:var(--fond)}
+body{margin:0;min-height:100vh;color:var(--texte);font:var(--corps)/var(--interligne) var(--police);
+ background:radial-gradient(ellipse 120% 60% at 50% -10%,#123322 0,rgba(8,16,12,0) 60%),var(--fond)}
+body::after{content:"";position:fixed;inset:0;pointer-events:none;z-index:50;
+ background:repeating-linear-gradient(to bottom,rgba(0,0,0,0) 0 2px,rgba(0,0,0,.13) 2px 3px)}
+@media (prefers-reduced-motion:reduce){body::after{display:none}}
+a{color:var(--vert);text-underline-offset:3px}
+a:hover{color:var(--ambre)}
+:focus-visible{outline:3px solid var(--ambre);outline-offset:6px}
+h1,h2,h3{font-family:var(--titre);font-weight:var(--graisse)}
+h1{font-size:var(--h1);line-height:1.45;margin:10px 0 14px;color:var(--vert);text-shadow:0 0 14px rgba(92,255,149,.35)}
+h2{font-size:var(--h2);line-height:1.5;margin:44px 0 18px;color:var(--ambre);display:flex;align-items:center;gap:12px}
+h2{flex-wrap:wrap}
+h2 .petit{font:var(--petit)/1.3 var(--police);flex-basis:100%}
+h2::before{content:"";flex:none;width:10px;height:10px;background:var(--ambre);box-shadow:${cran("var(--ambre-fonce)", 2)}}
+p{margin:0 0 14px}
 .doux{color:var(--doux)}
-.carte{background:var(--carte);border:1px solid var(--bord);border-radius:16px;padding:18px}
-.grille{display:grid;gap:14px;grid-template-columns:repeat(auto-fit,minmax(240px,1fr))}
-.hero{display:flex;gap:24px;align-items:center;flex-wrap:wrap}
-.btn{display:inline-block;background:#5f5fd7;color:#fff;text-decoration:none;padding:10px 16px;border-radius:12px;margin-block:6px;margin-inline:0 8px}
-.btn.vert{background:#2f7d50}
+.petit{font-size:var(--petit)}
+.pixel{font-family:var(--pixel)}
+/* ---- en-tête : une fenêtre de terminal */
+.entete{max-width:1040px;margin:18px auto 0;padding:0 16px}
+.barre{display:flex;align-items:center;gap:14px;flex-wrap:wrap;background:var(--bord);padding:8px 14px;box-shadow:${cran("var(--bord)")};margin:4px 4px 0}
+.points{display:flex;gap:8px}.points i{width:12px;height:12px;background:#ff6b6b}.points i+i{background:var(--ambre)}.points i+i+i{background:var(--vert)}
+.logo{display:flex;align-items:center;gap:10px;color:var(--texte);text-decoration:none;font:13px/1 var(--pixel);letter-spacing:1px}
+.logo img{image-rendering:pixelated}
+.menu{display:flex;flex-wrap:wrap;gap:4px 22px;align-items:center;background:var(--panneau);padding:10px 18px;margin:0 4px;box-shadow:${cran("var(--bord)")}}
+.menu a{color:var(--texte);text-decoration:none;font-family:var(--police);white-space:nowrap;padding:2px 0}
+.menu a .invite{color:var(--vert);margin-inline-end:6px}
+.menu a:hover{color:var(--vert)}
+.menu a[aria-current]{color:var(--ambre)}.menu a[aria-current] .invite{color:var(--ambre)}
+.curseur{color:var(--vert);animation:clignote 1.1s steps(1) infinite}
+.menu .curseur{color:var(--ambre);margin-inline-start:4px}
+@keyframes clignote{50%{opacity:0}}
+.langues{margin-inline-start:auto;display:flex;gap:6px;align-items:center}
+.langues select{background:var(--ecran);color:var(--texte);border:0;box-shadow:${cran("var(--bord-vif)", 2)};padding:4px 8px;font:16px ${MONO};max-width:11em}
+.langues button{font-size:11px;padding:6px 10px;margin:0}
+main{max-width:1040px;margin:0 auto;padding:30px 20px 80px}
+/* ---- panneaux et fenêtres */
+.carte{background:var(--panneau);padding:18px 20px;margin:4px;box-shadow:${cran("var(--bord)")}}
+.fenetre{background:var(--panneau);margin:4px;box-shadow:${cran("var(--bord)")}}
+.fenetre>.titre-fen{display:flex;align-items:center;gap:12px;background:var(--bord);padding:6px 14px;color:var(--texte);font:18px/1.2 ${VT}}
+.fenetre>.titre-fen .points i{width:10px;height:10px}
+.fenetre>.contenu{padding:16px 20px}
+.grille{display:grid;gap:24px;grid-template-columns:repeat(auto-fit,minmax(250px,1fr))}
+.ecran{background-color:var(--ecran);background-image:linear-gradient(rgba(92,255,149,.06) 1px,transparent 1px),linear-gradient(90deg,rgba(92,255,149,.06) 1px,transparent 1px);
+ background-size:8px 8px;box-shadow:inset 0 0 0 2px #000,inset 0 0 24px rgba(92,255,149,.08)}
+/* ---- boutons pixel */
+.btn,button{display:inline-flex;align-items:center;justify-content:center;gap:10px;font:var(--bouton)/1.6 var(--titre);font-weight:var(--graisse);color:var(--encre);
+ background:var(--vert);border:0;padding:12px 18px;margin-block:10px;margin-inline:4px 14px;text-decoration:none;cursor:pointer;
+ box-shadow:inset 0 -5px 0 var(--vert-fonce),${cran("var(--vert)")}}
+.btn:hover,button:hover{color:var(--encre);filter:brightness(1.08)}
+.btn:active,button:active{transform:translateY(2px);box-shadow:inset 0 -2px 0 var(--vert-fonce),${cran("var(--vert)")}}
+.btn.ambre{background:var(--ambre);box-shadow:inset 0 -5px 0 var(--ambre-fonce),${cran("var(--ambre)")}}
+.btn.grand{font-size:calc(var(--bouton) + 3px);padding:18px 24px}
+.btn .fichier{font:12px/1.6 var(--pixel)}
+.btn.large{display:flex;width:calc(100% - 8px);margin-inline:4px;padding:16px 10px}
+.fleche{flex:none}
+/* ---- accueil */
+.hero{display:grid;grid-template-columns:minmax(0,1.25fr) minmax(0,.75fr);gap:32px;align-items:center}
+.invite-ligne{font:20px ${VT};color:var(--doux);margin:0}
+.invite-ligne b{color:var(--vert);font-weight:normal}
+.hero h1{font-size:calc(var(--h1) + 4px)}
+.scene{display:grid;place-items:center;padding:30px 10px 18px;margin:4px;box-shadow:${cran("var(--bord)")}}
+.mascotte{width:min(250px,100%);height:auto;image-rendering:pixelated;animation:flotte 2.6s steps(6) infinite alternate;filter:drop-shadow(0 0 18px rgba(92,255,149,.25))}
+.sol{width:46%;height:10px;margin-top:10px;background:rgba(92,255,149,.18);animation:sol 2.6s steps(6) infinite alternate}
+@keyframes flotte{to{transform:translateY(-14px)}}
+@keyframes sol{to{transform:scaleX(.8);opacity:.6}}
+@media (prefers-reduced-motion:reduce){.mascotte,.sol,.curseur{animation:none}}
+.apercu{display:grid;gap:14px;grid-template-columns:repeat(auto-fill,minmax(96px,1fr));margin:18px 0}
+.apercu a{display:grid;place-items:center;aspect-ratio:1;margin:2px;position:relative}
+/* ---- tableaux */
 table{width:100%;border-collapse:collapse}
-td,th{padding:8px 6px;border-bottom:1px solid var(--bord);text-align:start}
-th{color:var(--doux);font-weight:normal;font-size:13px}
-td.num{text-align:end}
-.badge{display:inline-flex;gap:8px;align-items:center;background:#26263a;border:1px solid var(--bord);border-radius:999px;padding:6px 12px;margin-block:4px;margin-inline:0 6px;text-decoration:none;color:var(--texte)}
-.badge.verifie{border-color:#2f7d50}
-.barre{height:8px;background:#33334a;border-radius:4px;overflow:hidden}.barre>i{display:block;height:100%;background:var(--vert)}
-code,pre{background:#11111b;border-radius:8px;font-family:${MONO},monospace;direction:ltr;unicode-bidi:isolate}
-code{padding:2px 6px;line-height:1.5}
+td,th{padding:8px 6px;border-bottom:2px dashed var(--bord);text-align:start}
+tr:last-child td{border-bottom:0}
+th{color:var(--doux);font-weight:normal;font-size:var(--petit)}
+td.num{text-align:end;white-space:nowrap}
+td.rang{font:12px var(--pixel);color:var(--ambre);width:3em}
+/* ---- badges, puces, jauges */
+.badge{display:inline-flex;gap:8px;align-items:center;background:var(--ecran);padding:4px 12px;margin-block:8px;margin-inline:4px 12px;text-decoration:none;color:var(--texte);box-shadow:${cran("var(--bord)", 3)}}
+.badge.verifie{box-shadow:${cran("var(--vert-fonce)", 3)}}
+.barre-xp{height:16px;background:var(--ecran);margin:10px 3px;box-shadow:${cran("var(--bord)", 3)}}
+.barre-xp>i,.jauge>i{display:block;height:100%;background:repeating-linear-gradient(90deg,var(--vert) 0 8px,transparent 8px 10px)}
+code,pre{background:var(--ecran);font-family:${MONO},monospace;font-size:.82em;direction:ltr;unicode-bidi:isolate;color:var(--vert)}
+code{padding:2px 6px;line-height:1.5;overflow-wrap:anywhere}
 pre{padding:12px;overflow-x:auto;text-align:left}
 .ltr{direction:ltr;unicode-bidi:isolate}
 .creature{image-rendering:pixelated;max-width:100%;height:auto}
-.rgb{background:linear-gradient(90deg,#ff5f5f,#ffd75f,#5fd787,#5fd7ff,#af87ff,#ff87ff,#ff5f5f);background-size:200% auto;
- -webkit-background-clip:text;background-clip:text;color:transparent;animation:rgb 4s linear infinite;font-weight:bold}
+.rgb{background:linear-gradient(90deg,#ff6b6b,#ffd75f,#5cff95,#5fd7ff,#c58cff,#ff7aa8,#ff6b6b);background-size:200% auto;
+ -webkit-background-clip:text;background-clip:text;color:transparent;animation:rgb 4s linear infinite}
 @keyframes rgb{to{background-position:200% center}}
 @media (prefers-reduced-motion:reduce){.rgb{animation:none}}
-.grille-b{display:grid;gap:10px;grid-template-columns:repeat(auto-fill,minmax(150px,1fr))}
-.bestiole{background:var(--carte);border:1px solid var(--bord);border-radius:14px;padding:10px;text-align:center;text-decoration:none;color:var(--texte);display:block}
-.bestiole:hover{border-color:#5f5fd7}
-.bestiole svg{width:96px;height:96px}
-.bestiole .num{color:var(--doux);font-size:12px}
-.rar{font-size:12px;border-radius:999px;padding:1px 8px;border:1px solid currentColor;display:inline-block;margin-top:4px}
-.capture{text-align:start}
-.capture.shiny{border-color:#ffd75f;box-shadow:0 0 18px #ffd75f44}
+/* ---- rareté */
+.rar{display:inline-block;font:var(--mini)/1.5 var(--titre);font-weight:var(--graisse);color:var(--encre);background:var(--r);padding:4px 8px;margin:4px 3px;box-shadow:${cran("var(--r)", 2)};white-space:nowrap}
+.legende{display:flex;flex-wrap:wrap;gap:6px 8px;margin:6px 0 12px}
+.pastille{display:inline-block;width:12px;height:12px;background:var(--r);box-shadow:${cran("var(--r)", 2)};margin:0 4px}
+/* ---- filtres */
+.filtres{display:flex;flex-wrap:wrap;align-items:center;gap:8px 4px}
+.filtres+.filtres{margin-top:10px}
+.filtres .etiquette{color:var(--doux);margin-inline-end:8px}
+.puce{display:inline-flex;align-items:center;gap:6px;background:var(--ecran);color:var(--texte);text-decoration:none;padding:3px 10px;margin:3px 5px;box-shadow:${cran("var(--bord)", 2)}}
+.puce:hover{color:var(--vert)}
+.puce[aria-current]{background:var(--ambre);color:var(--encre);box-shadow:${cran("var(--ambre)", 2)}}
+/* ---- cartes de bestioles (façon Pokédex) */
+.grille-b{display:grid;gap:22px;grid-template-columns:repeat(auto-fill,minmax(172px,1fr))}
+.bestiole{display:flex;flex-direction:column;align-items:center;gap:8px;padding:10px 12px 14px;margin:4px;background:var(--panneau);color:var(--texte);text-decoration:none;
+ box-shadow:inset 0 4px 0 var(--r,var(--bord)),${cran("var(--bord)")}}
+a.bestiole:hover{color:var(--texte);box-shadow:inset 0 4px 0 var(--r,var(--bord)),${cran("var(--bord-vif)")}}
+.bestiole .haut{display:flex;justify-content:space-between;align-items:center;width:100%;font:10px/1 var(--pixel);color:var(--doux)}
+.bestiole .haut .fam{font:22px/1 sans-serif}
+.bestiole .ecran{width:100%;aspect-ratio:1;display:grid;place-items:center;position:relative}
+.bestiole .ecran img,.portrait img,.apercu img{position:absolute;inset:8%;width:84%;height:84%;object-fit:contain;image-rendering:pixelated}
+.bestiole code{display:block;font-size:13px;text-align:center;overflow-wrap:anywhere;padding:2px 4px;width:100%}
+.bestiole .ecran svg{width:70%;height:auto}
+.nom-b{font:11px/1.5 var(--pixel);text-align:center;overflow-wrap:anywhere}
+.capture{align-items:stretch;text-align:start}
+.capture .nom-b,.capture .rar-l{text-align:center}
+.capture.shiny{box-shadow:inset 0 4px 0 var(--r,var(--bord)),${cran("#ffd75f")},0 0 22px rgba(255,215,95,.25)}
+.capture .marque{font-size:var(--petit);margin:2px 0}
+.capture .infos{font-size:var(--petit);color:var(--doux);line-height:1.25}
 .anime{direction:ltr;background-size:auto 100%;background-repeat:no-repeat;image-rendering:pixelated;animation:anime 1.2s steps(12) infinite}
 @keyframes anime{from{background-position:0 0}to{background-position:calc(var(--px) * -12) 0}}
 @media (prefers-reduced-motion:reduce){.anime{animation:none}}
-.capture .marque{font-size:14px;margin:6px 0}
-.filtres a{margin-inline-end:10px;font-size:14px}
-.stats-b{display:grid;grid-template-columns:repeat(5,1fr);gap:6px;text-align:center}
-.stats-b div{background:#26263a;border-radius:8px;padding:6px 0}
-@media (max-width:600px){h1{font-size:22px}td,th{padding:6px 3px;font-size:14px}.langues{margin-inline-start:0}}
+/* ---- fiche d'espèce */
+.fiche{display:grid;grid-template-columns:minmax(0,.9fr) minmax(0,1.1fr);gap:32px;align-items:start}
+.portrait{aspect-ratio:1;display:grid;place-items:center;position:relative;margin:4px;box-shadow:inset 0 6px 0 var(--r),${cran("var(--bord)")}}
+.portrait svg{width:70%;height:auto}
+.numero{font:14px var(--pixel);color:var(--doux)}
+.stats-b{display:grid;gap:8px;margin-top:16px}
+.stat{display:grid;grid-template-columns:5.5em 1fr 2.4em;gap:12px;align-items:center}
+.stat b{font:12px var(--pixel);text-align:end}
+.jauge{height:14px;background:var(--ecran);box-shadow:${cran("var(--bord)", 2)}}
+.stades{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:16px;align-items:end}
+.stades figure{margin:0;text-align:center}
+.stades .ecran{aspect-ratio:1;display:flex;align-items:flex-end;justify-content:center;padding-bottom:6%;margin:3px;box-shadow:inset 0 0 0 2px #000,${cran("var(--bord)", 3)}}
+.stades img{object-fit:contain;image-rendering:pixelated;height:var(--h);width:auto;max-width:94%}
+.stades figcaption{margin-top:10px;font-size:var(--petit);color:var(--doux)}
+.variante.pas-dessinee .ecran img{filter:grayscale(1) brightness(.55)}
+.voisins{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap;margin-top:36px}
+@media (max-width:760px){
+ .hero,.fiche{grid-template-columns:1fr;gap:18px}
+ .hero .scene{order:-1}
+ .mascotte{width:min(170px,46vw)}
+ .scene{padding:18px 10px 12px}
+ :root{--h1:20px;--h2:14px;--corps:21px}
+ ${["zh", "ja", "hi", "bn", "ar", "ur"].map((l) => `html:lang(${l})`).join(",")}{--h1:24px;--h2:19px;--corps:16px}
+ html:lang(ru){--corps:16px}
+ .hero h1{font-size:calc(var(--h1) + 2px)}
+ main{padding:22px 16px 64px}
+ .entete{padding:0 12px;margin-top:12px}
+ .menu{gap:2px 16px;padding:8px 14px}
+ .langues{margin-inline-start:0}
+ .grille-b{grid-template-columns:repeat(2,minmax(0,1fr));gap:16px}
+ .nom-b{font-size:10px}
+ .stades{grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}
+ .stades .ecran{margin:2px}
+ td,th{padding:6px 3px}
+ .btn.grand{padding:16px 18px}
+}
 `;
 
 /** Le contexte de langue d'une requête : langue, textes, sens d'écriture, format des dates. */
@@ -772,6 +897,11 @@ function contexteLangue(requete, url) {
 const bdi = (s) => `<bdi>${echapper(s)}</bdi>`;
 const numero = (e) => `<bdi>#${String(e.numero).padStart(3, "0")}</bdi>`;
 const lib = (L, table, cle) => libelle(L.t[table], cle);
+/** Une flèche « télécharger » en gros pixels (les polices pixel n'ont pas de flèche). */
+const FLECHE = `<svg class="fleche" viewBox="0 0 7 8" width="14" height="16" aria-hidden="true" shape-rendering="crispEdges"><path fill="currentColor" d="M2 0h3v4h2v1H6v1H5v1H4v1H3V7H2V6H1V5H0V4h2z"/></svg>`;
+const points = `<span class="points" aria-hidden="true"><i></i><i></i><i></i></span>`;
+/** Une fenêtre de terminal : barre de titre (3 points + chemin) et contenu. */
+const fenetre = (titre, contenu) => `<div class="fenetre"><div class="titre-fen">${points}<bdi class="ltr">${titre}</bdi></div><div class="contenu">${contenu}</div></div>`;
 
 function selecteurLangue(L) {
   const caches = [...L.url.searchParams].filter(([k]) => k !== "lang")
@@ -782,14 +912,28 @@ function selecteurLangue(L) {
     + `<noscript><button type="submit">OK</button></noscript></form>`;
 }
 
-function page(L, titre, contenu, description = L.t.description, statut = 200) {
+function menu(L) {
   const n = L.t.nav;
+  const ici = L.url.pathname.replace(/\/+$/, "") || "/";
+  const liens = [["/classement", n.classement], ["/bestiaire", n.bestiaire], ["/captures", n.captures], ["/ctf", n.ctf],
+    ["/#telecharger", n.telecharger], ["/compte", n.compte]];
+  return liens.map(([href, t]) => {
+    const actif = href !== "/#telecharger" && (ici === href || ici.startsWith(href + "/"));
+    return `<a href="${href}"${actif ? ' aria-current="page"' : ""}><span class="invite" aria-hidden="true">&gt;</span>${t}${actif ? '<span class="curseur" aria-hidden="true">█</span>' : ""}</a>`;
+  }).join("");
+}
+
+function page(L, titre, contenu, description = L.t.description, statut = 200) {
   return new Response(`<!doctype html><html lang="${L.lang}" dir="${L.dir}"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>${echapper(titre)} · Terminagotchi</title><meta name="description" content="${echapper(description)}">
+<meta name="theme-color" content="#08100c">
 <link rel="icon" type="image/png" href="/favicon.png"><link rel="apple-touch-icon" href="/icone.png">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="${FONTES}">
 <style>${CSS}</style></head><body>
-<header><nav><a class="logo" href="/"><img src="/icone.png" alt="" width="28" height="28" style="vertical-align:middle;image-rendering:pixelated;margin-inline-end:6px"><bdi>Terminagotchi</bdi></a><a href="/classement">${n.classement}</a><a href="/bestiaire">${n.bestiaire}</a><a href="/captures">${n.captures}</a><a href="/ctf">${n.ctf}</a><a href="/#telecharger">${n.telecharger}</a><a href="/compte">${n.compte}</a>${selecteurLangue(L)}</nav></header>
+<header class="entete"><div class="barre">${points}<a class="logo" href="/"><img src="/icone.png" alt="" width="28" height="28"><bdi>TERMINAGOTCHI</bdi></a>${selecteurLangue(L)}</div>
+<nav class="menu">${menu(L)}</nav></header>
 <main>${contenu}</main></body></html>`, {
     status: statut,
     headers: { "content-type": "text/html; charset=utf-8", "content-language": L.lang, vary: "Accept-Language, Cookie" },
@@ -810,7 +954,7 @@ function titreBadge(L, b) {
 
 function ligneClassement(L, j, i) {
   const forme = j.forme ? lib(L, "formes", j.forme) : "";
-  return `<tr><td>${i + 1}</td><td><a href="/joueur/${encodeURIComponent(j.pseudo)}">${bdi(j.pseudo)}</a></td>
+  return `<tr><td class="rang"><bdi>${i + 1}</bdi></td><td><a href="/joueur/${encodeURIComponent(j.pseudo)}">${bdi(j.pseudo)}</a></td>
 <td>${bdi(j.nom)} <span class="doux">${echapper(L.t.stades[stadeDe(j.niveau)])} ${echapper(forme)}</span></td>
 <td class="num">${echapper(L.t.niv(j.niveau))}</td><td class="num"><bdi>${j.xp} XP</bdi></td></tr>`;
 }
@@ -827,27 +971,35 @@ async function pageAccueil(env, L) {
     const e = lireEtat(j);
     return ligneClassement(L, { pseudo: j.pseudo, nom: e.nom || j.pseudo, niveau: j.niveau, xp: j.xp, forme: e.forme }, i);
   }).join("");
+  // la première espèce de chaque famille, en portrait
+  const apercu = BESTIAIRE.familles.map((f) => PUBLIQUES.find((e) => e.famille === f.nom && e.portrait)).filter(Boolean)
+    .map((e) => `<a class="ecran" href="/bestiaire/${e.id}" title="${echapper(e.nom)}">${imgPortrait(e, "classique", "adulte", e.nom)}</a>`).join("");
   return page(L, A.titre, `
 <section class="hero">
-  <div><img src="/mascotte.png" alt="Terminagotchi" width="200" style="image-rendering:pixelated;max-width:45vw;height:auto"></div>
-  <div style="flex:1;min-width:260px">
+  <div>
+    <p class="invite-ligne ltr" aria-hidden="true"><b>~$</b> ./terminagotchi<span class="curseur">█</span></p>
     <h1>${A.heroTitre}</h1>
     <p>${A.heroTexte}</p>
-    <p class="doux">${A.recensees(n)}</p>
+    <p><a class="btn grand" href="#telecharger">${FLECHE}${A.telecharger}</a><a class="btn ambre" href="/bestiaire">${A.voirBestiaire}</a></p>
+    <p class="doux petit">${A.recensees(n)}</p>
   </div>
+  <div class="scene ecran"><img class="mascotte" src="/mascotte.png" alt="Terminagotchi" width="512" height="651"><div class="sol" aria-hidden="true"></div></div>
 </section>
 <h2 id="telecharger">${A.telecharger}</h2>
 <div class="grille">
   <div class="carte"><b>📱 Android</b><p class="doux">${A.android}</p>
-    <a class="btn vert" href="${DEPOT}/releases/latest/download/terminagotchi.apk"><bdi>terminagotchi.apk</bdi></a></div>
+    <a class="btn large" href="${DEPOT}/releases/latest/download/terminagotchi.apk">${FLECHE}<bdi class="fichier">terminagotchi.apk</bdi></a></div>
   <div class="carte"><b>💻 ${A.pcTitre}</b><p class="doux">${A.pc}</p>
-    <a class="btn" href="${DEPOT}/releases/latest/download/terminagotchi.pyz"><bdi>terminagotchi.pyz</bdi></a>
+    <a class="btn large ambre" href="${DEPOT}/releases/latest/download/terminagotchi.pyz">${FLECHE}<bdi class="fichier">terminagotchi.pyz</bdi></a>
     <p class="doux">${A.puis} <code>python3 terminagotchi.pyz</code></p></div>
   <div class="carte"><b>🔗 ${A.partoutTitre}</b><p class="doux">${A.partout}</p></div>
 </div>
+<h2>${A.bestioles}</h2>
+<p>${A.bestiolesTexte}</p>
+<div class="apercu">${apercu}</div>
 <h2>${A.classement}</h2>
-<div class="carte">${lignes ? tableClassement(L, lignes) : `<p class="doux">${A.personne}</p>`}
-<p><a href="/classement">${A.voirTout}</a></p></div>
+${fenetre("~/classement", `${lignes ? tableClassement(L, lignes) : `<p class="doux">${A.personne}</p>`}
+<p style="margin:12px 0 0"><a href="/classement">${A.voirTout}</a></p>`)}
 <h2>${A.preuvesTitre}</h2>
 <div class="carte"><p>${A.preuves}</p>
 <p class="doux">${A.preuvesDoux}</p></div>`);
@@ -861,7 +1013,7 @@ async function pageClassement(env, L) {
     return ligneClassement(L, { pseudo: j.pseudo, nom: e.nom || j.pseudo, niveau: j.niveau, xp: j.xp, forme: e.forme }, i);
   }).join("");
   return page(L, C.titre, `<h1>${C.h1}</h1><p class="doux">${C.sous}</p>
-<div class="carte">${lignes ? tableClassement(L, lignes) : `<p class="doux">${C.personne}</p>`}</div>`);
+${fenetre("~/classement --top 100", lignes ? tableClassement(L, lignes) : `<p class="doux">${C.personne}</p>`)}`);
 }
 
 async function pageJoueur(env, L, pseudo) {
@@ -871,13 +1023,20 @@ async function pageJoueur(env, L, pseudo) {
   const lo = 10 * (p.niveau - 1) ** 2;
   const hi = 10 * p.niveau ** 2;
   const pct = Math.round((100 * (p.xp - lo)) / Math.max(1, hi - lo));
-  const stats = STATS.map((s) => `<div title="${echapper(lib(L, "stats", s))}">${echapper(L.t.court[s])} <b>${p.stats[s]}</b></div>`).join("");
+  const stats = STATS.map((s) => `<span class="badge" title="${echapper(lib(L, "stats", s))}">${echapper(L.t.court[s])} <b class="pixel" style="font-size:12px">${p.stats[s]}</b></span>`).join("");
   const badges = p.badges.map((b) => `<a class="badge verifie" href="${b.lien}">✔ ${echapper(titreBadge(L, b))}</a>`).join("")
     || `<span class="doux">${J.aucunBadge}</span>`;
-  const coll = BESTIAIRE.especes.filter((e) => p.collection[e.nom]).map((e) =>
-    `<a class="bestiole" href="${e.secrete ? `/captures?joueur=${encodeURIComponent(p.pseudo)}` : `/bestiaire/${e.id}`}"><div style="display:flex;justify-content:center">${visuel(L, e)}</div><div class="num">${numero(e)}</div>
-     <div>${bdi(e.nom)} <bdi>×${p.collection[e.nom]}</bdi></div></a>`).join("");
-  const collHtml = coll ? `<p class="doux">${J.nbEspeces(Object.keys(p.collection).filter((k) => p.collection[k]).length)}</p><div class="grille-b">${coll}</div>`
+  // collection : les anciens noms (bestiaire v1) comptent pour la nouvelle espèce de même numéro
+  const parEspece = new Map();
+  for (const [nom, n] of Object.entries(p.collection)) {
+    const e = especeDe(nom);
+    if (e && n) parEspece.set(e, (parEspece.get(e) || 0) + n);
+  }
+  const coll = [...parEspece].sort((a, b) => a[0].numero - b[0].numero).map(([e, n]) =>
+    `<a class="bestiole" style="--r:${COULEUR_RARETE[e.rarete]}" href="${e.secrete ? `/captures?joueur=${encodeURIComponent(p.pseudo)}` : `/bestiaire/${e.id}`}">
+     <div class="haut"><span>${numero(e)}</span><span class="fam" title="${echapper(lib(L, "familles", e.famille))}">${e.icone}</span></div>
+     <div class="ecran">${visuel(L, e)}</div><div class="nom-b">${bdi(e.nom)} <bdi>×${n}</bdi></div></a>`).join("");
+  const collHtml = coll ? `<p class="doux">${J.nbEspeces(parEspece.size)}</p><div class="grille-b">${coll}</div>`
     : `<span class="doux">${J.aucuneBestiole}</span>`;
   const comp = p.competences.map((c) => `<span class="badge">◇ ${bdi(c)}</span>`).join("")
     || `<span class="doux">${J.aucune}</span>`;
@@ -886,21 +1045,21 @@ async function pageJoueur(env, L, pseudo) {
   const stade = L.t.stades[stadeDe(p.niveau)];
   return page(L, p.pseudo, `
 <section class="hero">
-  <div class="carte">${svgCreature(p.niveau, p.forme, p.stats, 10, p.shiny, L.t.creature)}</div>
-  <div style="flex:1;min-width:260px">
+  <div>
     <h1>${p.shiny ? `<span class="rgb">${bdi(p.nom)} ✨</span>` : bdi(p.nom)}</h1>
     <p class="doux">${J.ligneCreature(bdi(p.pseudo), echapper(stade), echapper(forme), bdi(p.trait || "?"))}</p>
     <p>${J.ligneNiveau(p.niveau, p.xp, p.rang)}</p>
-    <div class="barre"><i style="width:${pct}%"></i></div>
-    <div class="grille" style="grid-template-columns:repeat(4,1fr);margin-top:12px">${stats}</div>
+    <div class="barre-xp"><i style="width:${pct}%"></i></div>
+    <div style="margin-top:10px">${stats}</div>
     <p class="doux">${J.ligneActivite(p.commandes, p.gouts, appareils)}</p>
   </div>
+  <div class="scene ecran">${svgCreature(p.niveau, p.forme, p.stats, 12, p.shiny, L.t.creature)}</div>
 </section>
 <h2>${J.badges}</h2><div>${badges}</div>
-<h2>${J.competences} <span class="doux" style="font-size:14px">${J.declarees}</span></h2><div>${comp}</div>
+<h2>${J.competences} <span class="doux petit">${J.declarees}</span></h2><div>${comp}</div>
 <h2>${J.collection}</h2>${collHtml}
-${p.partage ? `<p><a href="/captures?joueur=${encodeURIComponent(p.pseudo)}">${J.voirCaptures}</a></p>` : ""}
-<p class="doux" style="margin-top:32px">${J.inscrit(new Date(p.inscrit).toLocaleDateString(L.locale))} ·
+${p.partage ? `<p style="margin-top:20px"><a href="/captures?joueur=${encodeURIComponent(p.pseudo)}">${J.voirCaptures}</a></p>` : ""}
+<p class="doux petit" style="margin-top:32px">${J.inscrit(new Date(p.inscrit).toLocaleDateString(L.locale))} ·
 <a href="/api/profil/${encodeURIComponent(p.pseudo)}">${J.json}</a></p>`, J.description(p.nom, p.pseudo, p.niveau));
 }
 
@@ -910,7 +1069,7 @@ async function pageBadge(env, L, id) {
   if (!b) return page(L, B.inconnuTitre, `<h1>${B.inconnuTitre}</h1><p class="doux">${B.faux}</p>`);
   const date = new Date(b.date).toLocaleString(L.locale, { timeZone: "Europe/Paris" });
   const titre = titreBadge(L, b);
-  return page(L, titre, `<div class="carte" style="max-width:560px;margin:24px auto;text-align:center">
+  return page(L, titre, `<div class="carte" style="max-width:600px;margin:24px auto;text-align:center">
 <div style="font-size:56px">🏅</div><h1>${echapper(titre)}</h1>
 <p>${B.delivre(`<a href="/joueur/${encodeURIComponent(b.pseudo)}"><b>${bdi(b.pseudo)}</b></a>`, `<bdi>${echapper(date)}</bdi>`)}</p>
 <p style="color:var(--vert)">${B.verifie}</p>
@@ -919,14 +1078,29 @@ async function pageBadge(env, L, id) {
 }
 
 // ---------------------------------------------------------------- bestioles
-/** Le dessin d'une bestiole : animé (stade, teinte shiny) si son espèce a un dessin complet, sinon le petit sprite. */
-function visuel(L, e, c = {}, taille = 6, anim = "statique") {
-  if (!ANIMEES.has(e.id)) return svgBestiole(e, c.shiny, taille);
+/** Un portrait (public/portraits/<id>/<variante>_<stade>.webp). */
+function imgPortrait(e, vid, stade, alt, extra = "") {
+  return `<img src="/portraits/${e.id}/${encodeURIComponent(vid)}_${stade}.webp" alt="${echapper(alt)}" loading="lazy" decoding="async"${extra}>`;
+}
+
+/** La variante dessinée la plus proche (sinon la forme classique). */
+const varianteDessinee = (e, vid) => (e.variantes.some((v) => v.id === vid && v.dessinee) ? vid : "classique");
+/** Le stade d'une capture : nouveaux stades, ou anciens (enfant…finale) ramenés aux nouveaux. */
+const stadePortrait = (s) => (TIRAGE.stades.includes(s) ? s : s === "finale" ? "ancien" : STADES_B.includes(s) ? s : "adulte");
+
+/** Le dessin d'une bestiole : son portrait (variante, stade, teinte shiny), l'animation d'Abyssor, sinon le petit sprite. */
+function visuel(L, e, c = {}, anim = "statique") {
+  const filtre = c.shiny ? ` style="filter:hue-rotate(${Math.round((c.teinte || 0.5) * 360)}deg)"` : "";
+  if (e.portrait) {
+    const stade = stadePortrait(c.stade);
+    return imgPortrait(e, varianteDessinee(e, c.variante), stade, `${e.nom} (${lib(L, "stadesB", stade)})`, filtre);
+  }
+  if (!ANIMEES.has(e.id)) return svgBestiole(e, c.shiny, 6);
   const stade = STADES_B.includes(c.stade) ? c.stade : "adulte";
-  const px = 16 * taille;
-  const filtre = c.shiny ? `filter:hue-rotate(${Math.round((c.teinte || 0.5) * 360)}deg);` : "";
+  const px = 112;
+  const teinte = c.shiny ? `filter:hue-rotate(${Math.round((c.teinte || 0.5) * 360)}deg);` : "";
   return `<div class="anime" role="img" aria-label="${echapper(e.nom)} (${echapper(lib(L, "stadesB", stade))})"
-    style="width:${px}px;height:${px}px;background-image:url(/anim/${e.id}/${stade}/${anim}.webp);--px:${px}px;${filtre}"></div>`;
+    style="width:${px}px;height:${px}px;background-image:url(/anim/${e.id}/${stade}/${anim}.webp);--px:${px}px;${teinte}"></div>`;
 }
 
 function svgBestiole(e, shiny = false, taille = 6) {
@@ -943,10 +1117,18 @@ function svgBestiole(e, shiny = false, taille = 6) {
 }
 
 function etiquetteRarete(L, r) {
-  return `<span class="rar" style="color:${COULEUR_RARETE[r]}">${echapper(lib(L, "raretes", r))}</span>`;
+  return `<span class="rar" style="--r:${COULEUR_RARETE[r]}">${echapper(lib(L, "raretes", r))}</span>`;
 }
 
-/** Le glossaire classique des 150 espèces (apparence normale, sans variantes ni shiny). */
+/** Une carte façon Pokédex : numéro, icône de famille, grand portrait, nom, rareté. */
+function carteEspece(L, e) {
+  return `<a class="bestiole" style="--r:${COULEUR_RARETE[e.rarete]}" href="/bestiaire/${e.id}">
+  <div class="haut"><span>${numero(e)}</span><span class="fam" title="${echapper(lib(L, "familles", e.famille))}" aria-label="${echapper(lib(L, "familles", e.famille))}">${e.icone}</span></div>
+  <div class="ecran">${e.portrait ? imgPortrait(e, "classique", "adulte", e.nom) : svgBestiole(e)}</div>
+  <div class="nom-b">${bdi(e.nom)}</div>${etiquetteRarete(L, e.rarete)}</a>`;
+}
+
+/** Le bestiaire : les 150 espèces dans leur forme classique, adulte. */
 function pageBestiaire(L, url) {
   const B = L.t.bestiaire;
   const famille = url.searchParams.get("famille") || "";
@@ -956,53 +1138,79 @@ function pageBestiaire(L, url) {
     const p = new URLSearchParams({ famille, rarete, [k]: v });
     for (const [a, b] of [...p]) if (!b) p.delete(a);
     const actif = (k === "famille" ? famille : rarete) === v;
-    return `<a href="/bestiaire${p.toString() ? "?" + p : ""}"${actif ? ' style="color:var(--jaune)"' : ""}>${t}</a>`;
+    return `<a class="puce" href="/bestiaire${p.toString() ? "?" + p : ""}"${actif ? ' aria-current="true"' : ""}>${t}</a>`;
   };
-  const filtresF = [lien("famille", "", B.toutes), ...BESTIAIRE.familles.map((f) => lien("famille", f.nom, f.icone + " " + echapper(lib(L, "familles", f.nom))))].join(" ");
-  const filtresR = [lien("rarete", "", B.toutes), ...BESTIAIRE.raretes.map((r) => lien("rarete", r, echapper(lib(L, "raretes", r))))].join(" ");
-  const cartes = liste.map((e) => `<a class="bestiole" href="/bestiaire/${e.id}">${svgBestiole(e)}
-    <div class="num">${numero(e)} · ${e.icone} ${echapper(lib(L, "familles", e.famille))}</div>
-    <div><b>${bdi(e.nom)}</b></div>${etiquetteRarete(L, e.rarete)}</a>`).join("");
+  const raretes = BESTIAIRE.raretes.filter((r) => PUBLIQUES.some((e) => e.rarete === r));
+  const filtresF = [lien("famille", "", B.toutes), ...BESTIAIRE.familles.map((f) => lien("famille", f.nom, `<span aria-hidden="true">${f.icone}</span> ${echapper(lib(L, "familles", f.nom))}`))].join("");
+  const filtresR = [lien("rarete", "", B.toutes), ...raretes.map((r) => lien("rarete", r, `<i class="pastille" style="--r:${COULEUR_RARETE[r]}"></i> ${echapper(lib(L, "raretes", r))}`))].join("");
   return page(L, B.titre, `<h1>${B.h1}</h1>
 <p>${B.intro}</p>
-<div class="carte filtres"><div><span class="doux">${B.famille}</span> ${filtresF}</div><div style="margin-top:6px"><span class="doux">${B.rarete}</span> ${filtresR}</div></div>
-<p class="doux">${B.nb(liste.length)}</p>
-<div class="grille-b">${cartes}</div>`, B.description);
+<div class="carte"><div class="filtres"><span class="etiquette">${B.famille}</span>${filtresF}</div>
+<div class="filtres"><span class="etiquette">${B.rarete}</span>${filtresR}</div></div>
+<h2>${B.raretesTitre}</h2>
+<div class="legende">${BESTIAIRE.raretes.map((r) => etiquetteRarete(L, r)).join("")}</div>
+<p class="doux">${B.raretesTexte}</p>
+<p class="doux" style="margin-top:28px">${B.nb(liste.length)}</p>
+<div class="grille-b">${liste.map((e) => carteEspece(L, e)).join("")}</div>`, B.description);
 }
+
+// la plus haute stat de base, pour la longueur des jauges
+const STAT_MAX = Math.max(...PUBLIQUES.flatMap((e) => Object.values(e.stats)));
+// hauteur des portraits selon le stade : on la voit grandir
+const HAUTEUR_STADE = { bebe: 46, enfant: 60, ado: 72, adulte: 86, ancien: 96 };
 
 function pageEspece(L, id) {
   const E = L.t.espece;
   const e = PAR_ID[id];
   if (!e || e.secrete) return page(L, E.inconnueTitre, `<h1>${E.inconnue}</h1><p><a href="/bestiaire">${E.retour}</a></p>`, undefined, 404);
-  const i = e.numero - 1;
-  const prec = PUBLIQUES[(i + 149) % 150];
-  const suiv = PUBLIQUES[(i + 1) % 150];
+  const i = PUBLIQUES.indexOf(e);
+  const prec = PUBLIQUES[(i + PUBLIQUES.length - 1) % PUBLIQUES.length];
+  const suiv = PUBLIQUES[(i + 1) % PUBLIQUES.length];
   const [fp, fs] = L.t.fleches;
-  const stats = Object.entries(e.stats).map(([k, v]) => `<div><div class="doux" style="font-size:12px">${echapper(lib(L, "statsB", k))}</div><b>${v}</b></div>`).join("");
+  const stats = Object.entries(e.stats).map(([k, v]) => `<div class="stat"><span class="doux">${echapper(lib(L, "statsB", k))}</span>`
+    + `<span class="jauge" aria-hidden="true"><i style="width:${Math.round((100 * v) / STAT_MAX)}%"></i></span><b>${v}</b></div>`).join("");
   const fam = lib(L, "familles", e.famille);
   const rar = lib(L, "raretes", e.rarete);
+  const couleur = COULEUR_RARETE[e.rarete];
+  const stades = BESTIAIRE.stades.map((s) => `<figure><div class="ecran">${e.portrait ? imgPortrait(e, "classique", s, `${e.nom} (${lib(L, "stadesB", s)})`, ` style="--h:${HAUTEUR_STADE[s]}%"`) : svgBestiole(e)}</div>
+    <figcaption>${echapper(lib(L, "stadesB", s))}</figcaption></figure>`).join("");
+  const variantes = e.variantes.map((v) => {
+    const nom = v.id === "classique" ? E.classique : lib(L, "habitats", v.zone);
+    return `<div class="bestiole variante${v.dessinee ? "" : " pas-dessinee"}" style="--r:${couleur}">
+    <div class="ecran">${e.portrait ? imgPortrait(e, v.dessinee ? v.id : "classique", "adulte", `${e.nom} (${nom})`) : svgBestiole(e)}</div>
+    <div class="nom-b">${echapper(nom)}</div>
+    <div class="doux petit" style="text-align:center">${echapper(E.chance(v.chance))}</div>
+    ${v.dessinee ? "" : `<div class="doux petit" style="text-align:center">${E.pasDessinee}</div>`}
+    <code>~/terrain_terminagotchi/${echapper(v.zone)}</code></div>`;
+  }).join("");
   return page(L, e.nom, `<p><a href="/bestiaire">${E.retourCourt}</a></p>
-<section class="hero">
-  <div class="carte">${svgBestiole(e, false, 14)}</div>
-  <div style="flex:1;min-width:260px">
-    <p class="doux">${numero(e)} · ${e.icone} ${echapper(E.famille(fam))}</p>
+<section class="fiche">
+  <div class="portrait ecran" style="--r:${couleur}">${e.portrait ? imgPortrait(e, "classique", "adulte", e.nom) : svgBestiole(e, false, 14)}</div>
+  <div>
+    <p class="numero">${numero(e)}</p>
     <h1>${e.rarete === "légendaire" ? `<span class="rgb">${bdi(e.nom)}</span>` : bdi(e.nom)}</h1>
-    ${etiquetteRarete(L, e.rarete)}
+    <p><span class="puce"><span aria-hidden="true">${e.icone}</span> ${echapper(E.famille(fam))}</span> ${etiquetteRarete(L, e.rarete)}</p>
     <p lang="fr" dir="ltr">${echapper(e.description)}</p>
     <p class="doux" lang="fr" dir="ltr">${echapper(e.comportement)}</p>
-    <div class="stats-b">${stats}</div>
+    <div class="stats-b" aria-label="${echapper(E.statsTitre)}">${stats}</div>
   </div>
 </section>
+<h2>${E.stades}</h2>
+<div class="stades">${stades}</div>
 <h2>${E.fiche}</h2>
-<div class="carte"><table>
+${fenetre(`~/bestiaire/${e.id}`, `<table>
+<tr><td class="doux">${E.frequence}</td><td>${etiquetteRarete(L, e.rarete)} ${echapper(lib(L, "frequences", e.frequence))} · ${echapper(E.unSur(e.un_sur))}</td></tr>
+<tr><td class="doux">${E.apparition}</td><td>${E.attiree(`<code>${echapper(e.attiree_par)}</code>`)}</td></tr>
+<tr><td class="doux">${E.habitat}</td><td>${echapper(lib(L, "habitats", e.habitat))} · <code>~/terrain_terminagotchi/${echapper(e.zone)}</code></td></tr>
 <tr><td class="doux">${E.capacite}</td><td><bdi lang="fr">${echapper(e.capacite)}</bdi></td></tr>
 <tr><td class="doux">${E.statFavorite}</td><td>${echapper(lib(L, "stats", e.stat))}</td></tr>
 <tr><td class="doux">${E.taillePoids}</td><td><bdi>~${e.taille_cm} cm · ~${e.poids_ko} ${E.ko}</bdi></td></tr>
-<tr><td class="doux">${E.habitat}</td><td>${echapper(lib(L, "habitats", e.habitat))} · <code>~/terrain_terminagotchi/${echapper(e.zone)}</code></td></tr>
-<tr><td class="doux">${E.apparition}</td><td>${echapper(lib(L, "frequences", e.frequence))} · ${E.attiree(`<code>${echapper(e.attiree_par)}</code>`)}</td></tr>
-</table></div>
-<p style="margin-top:24px"><a href="/bestiaire/${prec.id}">${fp} ${numero(prec)} ${bdi(prec.nom)}</a>
- · <a href="/bestiaire/${suiv.id}">${numero(suiv)} ${bdi(suiv.nom)} ${fs}</a></p>`,
+</table>`)}
+<h2>${E.variantes}</h2>
+<p class="doux">${E.variantesTexte}</p>
+<div class="grille-b">${variantes}</div>
+<nav class="voisins"><a class="puce" href="/bestiaire/${prec.id}">${fp} ${numero(prec)} ${bdi(prec.nom)}</a>
+<a class="puce" href="/bestiaire/${suiv.id}">${numero(suiv)} ${bdi(suiv.nom)} ${fs}</a></nav>`,
   E.description(e.nom, rar, fam));
 }
 
@@ -1022,53 +1230,44 @@ async function pageCaptures(env, L, url) {
     joueurs++;
     for (const c of e.captures || []) caps.push({ ...c, pseudo: j.pseudo });
   }
-  // rareté : celle de l'individu (nouveau bestiaire), sinon celle de l'espèce (ancien)
-  const rareteDe = (c) => c.rarete || PAR_NOM[c.espece]?.rarete;
-  caps = caps.filter((c) => (PAR_NOM[c.espece] || PAR_NOM_T[c.espece]) && (!shinySeul || c.shiny) && (!rarete || rareteDe(c) === rarete));
+  // l'espèce d'une capture : tirage vérifié, nouveau nom, ou ancien nom (bestiaire v1)
+  const especeCapture = (c) => (c.verifie === true && PAR_NOM_T[c.espece] ? PAR_ID[PAR_NOM_T[c.espece].id] : null) || especeDe(c.espece);
+  caps = caps.filter((c) => especeCapture(c) && (!shinySeul || c.shiny) && (!rarete || c.rarete === rarete));
   caps.sort((a, b) => (b.shiny - a.shiny) || ((b.verifie === true) - (a.verifie === true)) || (b.date - a.date));
   const total = caps.length;
   caps = caps.slice(0, 120);
   const cartes = caps.map((c) => {
+    const e = especeCapture(c);
     const date = new Date(c.date).toLocaleDateString(L.locale);
     // anti-triche : seules les bestioles dont le serveur a refait le tirage sont « vérifiées »
-    const verif = `<div class="doux" style="font-size:12px">${c.verifie === true ? `<span style="color:var(--vert)">✔ ${K.verifiee}</span>` : K.nonVerifiee}</div>`;
-    if (!PAR_NOM[c.espece] || c.verifie === true) {
-      const t = PAR_NOM_T[c.espece];
-      const stade = TIRAGE.stades.includes(c.stade) ? c.stade : "adulte";
-      const vid = t.variantes.some((v) => v.id === c.variante) ? c.variante : "classique";
-      const filtre = c.shiny ? ` style="filter:hue-rotate(${Math.round((c.teinte || 0.5) * 360)}deg)"` : "";
-      const nom = c.shiny || ["légendaire", "mythique"].includes(c.rarete) ? `<span class="rgb">${bdi(t.nom)}${c.shiny ? " ✨" : ""}</span>` : `<b>${bdi(t.nom)}</b>`;
-      return `<div class="bestiole capture${c.shiny ? " shiny" : ""}">
-      <div style="text-align:center"><img src="/portraits/${t.id}/${vid}_${stade}.webp" alt="${echapper(t.nom)}" width="96" height="96" loading="lazy"${filtre}></div>
-      <div>${nom}</div>
-      ${COULEUR_RARETE[c.rarete] ? etiquetteRarete(L, c.rarete) : ""}
+    const verif = `<div class="petit">${c.verifie === true ? `<span style="color:var(--vert)">✔ ${K.verifiee}</span>` : `<span class="doux">${K.nonVerifiee}</span>`}</div>`;
+    // rareté : celle de l'individu (nouveau bestiaire) ; les anciennes captures n'en ont pas
+    const rar = COULEUR_RARETE[c.rarete] ? c.rarete : null;
+    const brille = c.shiny || ["légendaire", "mythique"].includes(rar);
+    const nom = brille ? `<span class="rgb">${bdi(e.nom)}${c.shiny ? " ✨" : ""}</span>` : bdi(e.nom);
+    const stade = e.portrait ? stadePortrait(c.stade) : STADES_B.includes(c.stade) ? c.stade : "adulte";
+    const vid = e.portrait ? varianteDessinee(e, c.variante) : "classique";
+    const variante = c.variante && c.variante !== "classique" ? e.variantes.find((v) => v.id === c.variante) : null;
+    return `<div class="bestiole capture${c.shiny ? " shiny" : ""}"${rar ? ` style="--r:${COULEUR_RARETE[rar]}"` : ""}>
+      <div class="haut"><span>${numero(e)}</span><span class="fam" title="${echapper(lib(L, "familles", e.famille))}">${e.icone}</span></div>
+      <div class="ecran">${visuel(L, e, { ...c, stade, variante: vid })}</div>
+      <div class="nom-b">${nom}</div>
+      ${rar ? `<div class="rar-l">${etiquetteRarete(L, rar)}</div>` : ""}
+      <div class="infos">${echapper(lib(L, "stadesB", stade))}${variante ? ` · ${echapper(lib(L, "habitats", variante.zone))}` : ""}</div>
       <div class="marque" lang="fr" dir="ltr">« <span class="rgb">${echapper(c.marque)}</span> »</div>
-      <div class="doux" style="font-size:13px">${echapper(K.humeur(lib(L, "humeurs", c.humeur)))} · <bdi>${c.taille} cm</bdi><br>${K.potentiel} <b style="color:var(--vert)"><bdi>${c.potentiel} %</bdi></b></div>
+      <div class="infos">${echapper(K.humeur(lib(L, "humeurs", c.humeur)))} · <bdi>${c.taille} cm</bdi><br>${K.potentiel} <b style="color:var(--vert)"><bdi>${c.potentiel} %</bdi></b></div>
       ${verif}
-      <div class="doux" style="font-size:12px;margin-top:6px">${K.par(`<a href="/joueur/${encodeURIComponent(c.pseudo)}">${bdi(c.pseudo)}</a>`, `<bdi>${echapper(date)}</bdi>`)}</div>
-    </div>`;
-    }
-    const e = PAR_NOM[c.espece];
-    const nom = c.shiny || e.rarete === "légendaire" ? `<span class="rgb">${bdi(e.nom)}${c.shiny ? " ✨" : ""}</span>` : `<b>${bdi(e.nom)}</b>`;
-    return `<div class="bestiole capture${c.shiny ? " shiny" : ""}">
-      <div style="text-align:center;display:flex;justify-content:center">${visuel(L, e, c)}</div>
-      ${ANIMEES.has(e.id) ? `<div class="doux" style="font-size:12px">${echapper(lib(L, "stadesB", c.stade || "enfant"))}</div>` : ""}
-      <div>${nom} <span class="num">${numero(e)}</span></div>
-      ${etiquetteRarete(L, e.rarete)}
-      <div class="marque" lang="fr" dir="ltr">« <span class="rgb">${echapper(c.marque)}</span> »</div>
-      <div class="doux" style="font-size:13px">${echapper(K.humeur(lib(L, "humeurs", c.humeur)))} · <bdi>${c.taille} cm</bdi><br>${K.potentiel} <b style="color:var(--vert)"><bdi>${c.potentiel} %</bdi></b></div>
-      ${verif}
-      <div class="doux" style="font-size:12px;margin-top:6px">${K.par(`<a href="/joueur/${encodeURIComponent(c.pseudo)}">${bdi(c.pseudo)}</a>`, `<bdi>${echapper(date)}</bdi>`)}</div>
+      <div class="infos">${K.par(`<a href="/joueur/${encodeURIComponent(c.pseudo)}">${bdi(c.pseudo)}</a>`, `<bdi>${echapper(date)}</bdi>`)}</div>
     </div>`;
   }).join("");
-  const lienR = (v, t) => `<a href="/captures?${new URLSearchParams({ ...(filtre && { joueur: filtre }), ...(shinySeul && { shiny: "1" }), ...(v && { rarete: v }) })}">${t}</a>`;
+  const lienR = (v, t) => `<a class="puce" href="/captures?${new URLSearchParams({ ...(filtre && { joueur: filtre }), ...(shinySeul && { shiny: "1" }), ...(v && { rarete: v }) })}"${rarete === v ? ' aria-current="true"' : ""}>${t}</a>`;
   return page(L, K.titre, `<h1>${K.h1}</h1>
 <p>${K.intro}
 ${filtre ? `${K.de(bdi(filtre))} <a href="/captures">${K.voirTous}</a>` : ""}</p>
-<div class="carte filtres">${lienR("", K.toutes)} ${BESTIAIRE.raretes.map((x) => lienR(x, echapper(lib(L, "raretes", x)))).join(" ")}
- · <a href="/captures?${new URLSearchParams({ ...(filtre && { joueur: filtre }), ...(!shinySeul && { shiny: "1" }) })}">${shinySeul ? K.pasQueShiny : `<span class="rgb">${K.shinySeul}</span>`}</a></div>
+<div class="carte"><div class="filtres">${lienR("", K.toutes)}${BESTIAIRE.raretes.map((x) => lienR(x, `<i class="pastille" style="--r:${COULEUR_RARETE[x]}"></i> ${echapper(lib(L, "raretes", x))}`)).join("")}
+<a class="puce" href="/captures?${new URLSearchParams({ ...(filtre && { joueur: filtre }), ...(!shinySeul && { shiny: "1" }) })}"${shinySeul ? ' aria-current="true"' : ""}>${shinySeul ? K.pasQueShiny : `<span class="rgb">${K.shinySeul}</span>`}</a></div></div>
 <p class="doux">${K.resume(total, joueurs, total > 120)}</p>
-${cartes ? `<div class="grille-b" style="grid-template-columns:repeat(auto-fill,minmax(220px,1fr))">${cartes}</div>`
+${cartes ? `<div class="grille-b" style="grid-template-columns:repeat(auto-fill,minmax(210px,1fr))">${cartes}</div>`
     : `<div class="carte"><p class="doux">${K.aucune}</p></div>`}
 <h2>${K.apparaitre}</h2>
 <div class="carte"><p>${K.apparaitreTexte}</p>
@@ -1081,7 +1280,7 @@ function pageCtf(L, origine) {
   const liste = EPREUVES.map((e) => `<li><b>${e.n}. ${echapper(C.epreuves[e.n - 1])}</b> — <code>curl ${origine}/ctf/${C.pseudo}/${e.n}</code></li>`).join("");
   return page(L, C.titre, `<h1>${C.h1}</h1>
 <p>${C.intro(C.pseudo)}</p>
-<div class="carte"><ol style="padding-inline-start:20px">${liste}</ol></div>
+${fenetre("~/ctf", `<ol style="padding-inline-start:24px;margin:0">${liste}</ol>`)}
 <h2>${C.valider}</h2>
 <div class="carte"><p>${C.validerTexte}</p>
 <p class="doux">${C.curl}</p></div>
@@ -1125,7 +1324,7 @@ async function pageCompte(requete, env, L, chemin) {
   if (chemin === "/compte/jeton" && requete.method === "POST") {
     jeton = `<div class="carte"><p>${C.jeton(jetonLisible(await nouveauJeton(env, j.id)))}</p><p class="doux">${C.jetonAide}</p></div>`;
   }
-  const parties = (await listeParties(env, j)).map((p) => `<li>${bdi(p.nom || "?")} · ${echapper(lib(L, "formes", p.forme) || "")} niv. ${p.niveau}</li>`).join("");
+  const parties = (await listeParties(env, j)).map((p) => `<li>${bdi(p.nom || "?")} · ${echapper(lib(L, "formes", p.forme) || "")} ${echapper(L.t.niv(p.niveau))}</li>`).join("");
   return page(L, C.titre, `<h1>${C.bonjour(bdi(j.pseudo))}</h1>
 <p><a href="/joueur/${encodeURIComponent(j.pseudo)}">${C.profil}</a></p>
 <h2>${C.lier}</h2>${jeton}<form method="post" action="/compte/jeton"><button>${C.jetonBouton}</button></form>
