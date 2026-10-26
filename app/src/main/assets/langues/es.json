@@ -2320,7 +2320,7 @@
  "guide.talent.aide": "Te ayuda con `{cmds}`: un truco más en esos ejercicios, +25 % de XP en ellos y +1 XP por comando.",
  "guide.talent.secrets.aide": "Olfatea pasadizos secretos: `{cmds}` y los archivos ocultos (empiezan por un punto) dan +1 XP, y te sopla dónde buscar.",
  "guide.astuce.explorateur": "¡Psst! `{cmd}` te devuelve como un rayo a la carpeta de antes.",
- "guide.astuce.batisseur": "¡Con `{cmd}` construyo salas una dentro de otra de una sola vez!",
+ "guide.astuce.batisseur": "¡Con `{cmd}` construyo lugares uno dentro de otro de una sola vez!",
  "guide.astuce.demenageur": "Para copiar una carpeta entera con todo lo que tiene: `{cmd}`.",
  "guide.astuce.nettoyeur": "Mi trituradora es prudente: `{cmd}` pregunta antes de borrar.",
  "guide.astuce.lecteur": "Congelo el texto: `{cmd}` muestra solo el principio de un archivo.",

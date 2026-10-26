@@ -2325,7 +2325,7 @@
  "guide.talent.aide": "يساعدك في `{cmds}`: نصيحة إضافية في هذه التمارين، و‎+25% XP عليها، و‎+1 XP لكل أمر.",
  "guide.talent.secrets.aide": "يشمّ الممرات السرية: `{cmds}` والملفات المخفية (تبدأ بنقطة) تعطي ‎+1 XP، ويهمس لك أين تبحث.",
  "guide.astuce.explorateur": "بسّ! `{cmd}` يعيدك كالبرق إلى المجلد السابق.",
- "guide.astuce.batisseur": "بـ`{cmd}` أبني غرفًا داخل غرف دفعة واحدة!",
+ "guide.astuce.batisseur": "بـ`{cmd}` أبني أماكن داخل أماكن دفعة واحدة!",
  "guide.astuce.demenageur": "لنسخ مجلد كامل بكل ما فيه: `{cmd}`.",
  "guide.astuce.nettoyeur": "مفرمتي حذرة: `{cmd}` يسأل قبل المسح.",
  "guide.astuce.lecteur": "أجمّد النص: `{cmd}` يعرض بداية الملف فقط.",

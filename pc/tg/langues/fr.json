@@ -2332,7 +2332,7 @@
  "guide.talent.aide": "Il t'aide avec `{cmds}` : une astuce de plus dans ces exercices, +25 % d'XP dessus, et +1 XP par commande.",
  "guide.talent.secrets.aide": "Il flaire les passages secrets : `{cmds}` et les fichiers cachés (ils commencent par un point) rapportent +1 XP, et il te souffle où chercher.",
  "guide.astuce.explorateur": "Psst ! `{cmd}` te ramène d'un éclair au dossier d'avant.",
- "guide.astuce.batisseur": "Avec `{cmd}`, je construis des pièces l'une dans l'autre d'un seul coup !",
+ "guide.astuce.batisseur": "Avec `{cmd}`, je bâtis des lieux l'un dans l'autre d'un seul coup !",
  "guide.astuce.demenageur": "Pour copier tout un dossier avec ce qu'il contient : `{cmd}`.",
  "guide.astuce.nettoyeur": "Ma broyeuse est prudente : `{cmd}` demande avant d'effacer.",
  "guide.astuce.lecteur": "Je gèle le texte : `{cmd}` montre seulement le début d'un fichier.",

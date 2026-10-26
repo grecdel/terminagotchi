@@ -2333,7 +2333,7 @@
  "guide.talent.aide": "它帮你用 `{cmds}`：这些练习里多一个提示，经验 +25%，每个命令再 +1 XP。",
  "guide.talent.secrets.aide": "它能嗅出秘密通道：`{cmds}` 和隐藏文件（以点开头）+1 XP，它还会悄悄告诉你去哪儿找。",
  "guide.astuce.explorateur": "嘘！`{cmd}` 像闪电一样把你带回上一个文件夹。",
- "guide.astuce.batisseur": "用 `{cmd}`，我一下子就能建好一间套一间的房间！",
+ "guide.astuce.batisseur": "用 `{cmd}`，我一下子就能建好一个套一个的地方！",
  "guide.astuce.demenageur": "要复制整个文件夹和里面的所有东西：`{cmd}`。",
  "guide.astuce.nettoyeur": "我的粉碎机很小心：`{cmd}` 删除前会先问你。",
  "guide.astuce.lecteur": "我把文字冻住：`{cmd}` 只显示文件的开头。",

@@ -2329,7 +2329,7 @@
  "guide.talent.aide": "Membantumu dengan `{cmds}`: satu tips tambahan di latihan itu, +25% XP di sana, dan +1 XP per perintah.",
  "guide.talent.secrets.aide": "Mengendus lorong rahasia: `{cmds}` dan file tersembunyi (diawali titik) memberi +1 XP, dan ia membisikkan tempat untuk mencari.",
  "guide.astuce.explorateur": "Psst! `{cmd}` membawamu secepat kilat ke folder sebelumnya.",
- "guide.astuce.batisseur": "Dengan `{cmd}`, aku membangun ruangan di dalam ruangan sekaligus!",
+ "guide.astuce.batisseur": "Dengan `{cmd}`, aku membangun tempat di dalam tempat sekaligus!",
  "guide.astuce.demenageur": "Untuk menyalin satu folder lengkap dengan semua isinya: `{cmd}`.",
  "guide.astuce.nettoyeur": "Penghancurku hati-hati: `{cmd}` bertanya dulu sebelum menghapus.",
  "guide.astuce.lecteur": "Aku membekukan teks: `{cmd}` hanya menampilkan awal sebuah file.",

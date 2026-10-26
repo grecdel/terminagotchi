@@ -2327,7 +2327,7 @@
  "guide.talent.aide": "Hilft dir bei `{cmds}`: ein Tipp mehr in diesen Übungen, +25 % XP darauf und +1 XP pro Befehl.",
  "guide.talent.secrets.aide": "Wittert Geheimgänge: `{cmds}` und versteckte Dateien (sie beginnen mit einem Punkt) bringen +1 XP, und er flüstert dir, wo du suchen sollst.",
  "guide.astuce.explorateur": "Psst! `{cmd}` bringt dich blitzschnell zum vorherigen Ordner zurück.",
- "guide.astuce.batisseur": "Mit `{cmd}` baue ich Räume ineinander, alles auf einmal!",
+ "guide.astuce.batisseur": "Mit `{cmd}` baue ich Orte ineinander, alles auf einmal!",
  "guide.astuce.demenageur": "Um einen ganzen Ordner mit allem darin zu kopieren: `{cmd}`.",
  "guide.astuce.nettoyeur": "Mein Häcksler ist vorsichtig: `{cmd}` fragt vor dem Löschen.",
  "guide.astuce.lecteur": "Ich friere den Text ein: `{cmd}` zeigt nur den Anfang einer Datei.",

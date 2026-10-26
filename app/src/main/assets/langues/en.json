@@ -2325,7 +2325,7 @@
  "guide.talent.aide": "Helps you with `{cmds}`: one more tip in those exercises, +25% XP on them, and +1 XP per command.",
  "guide.talent.secrets.aide": "Sniffs out secret passages: `{cmds}` and hidden files (they start with a dot) give +1 XP, and it whispers where to look.",
  "guide.astuce.explorateur": "Psst! `{cmd}` zips you back to the previous folder.",
- "guide.astuce.batisseur": "With `{cmd}`, I build rooms inside rooms in one go!",
+ "guide.astuce.batisseur": "With `{cmd}`, I build places inside places in one go!",
  "guide.astuce.demenageur": "To copy a whole folder with everything inside: `{cmd}`.",
  "guide.astuce.nettoyeur": "My shredder is careful: `{cmd}` asks before erasing.",
  "guide.astuce.lecteur": "I freeze the text: `{cmd}` shows only the start of a file.",

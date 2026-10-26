@@ -2328,7 +2328,7 @@
  "guide.talent.aide": "`{cmds}` を手伝ってくれる：その練習でヒントが1つ増え、XP +25%、コマンドごとに +1 XP。",
  "guide.talent.secrets.aide": "ひみつの通路をかぎつける：`{cmds}` とかくしファイル（点で始まる）で +1 XP、さがす場所もこっそり教えてくれる。",
  "guide.astuce.explorateur": "ないしょ！`{cmd}` でいなずまみたいに前のフォルダへもどれるよ。",
- "guide.astuce.batisseur": "`{cmd}` で、部屋の中に部屋を一気につくれるよ！",
+ "guide.astuce.batisseur": "`{cmd}` で、ばしょの なかに ばしょを いっきに たてられるよ！",
  "guide.astuce.demenageur": "フォルダを中身ごとまるごとコピーするには：`{cmd}`。",
  "guide.astuce.nettoyeur": "ぼくのこなごなマシンは慎重：`{cmd}` は消す前に聞いてくれる。",
  "guide.astuce.lecteur": "文字をこおらせるよ：`{cmd}` はファイルのはじめだけを見せる。",
