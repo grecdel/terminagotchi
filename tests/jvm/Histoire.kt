@@ -164,6 +164,8 @@ fun main(args: Array<String>) {
     tape("mkdir nid")
     tape("touch nid/lit.txt")
     verifier("nid0" in faits() && "Bâtisseur" in jeu.skills, "le nid et le lit (compétence Bâtisseur)")
+    for (c in listOf("mkdir debarras", "rmdir debarras", "rm -r vieille_cabane")) tape(c)
+    verifier("debarras" in faits() && !File(T, "vieille_cabane").exists(), "une pièce en trop : rmdir, puis la broyeuse rm -r")
     verifier(Explo.debloquee(jeu), "les monstres peuvent arriver")
     niveau(4)
     tape("echo pome > nid/repas.txt")

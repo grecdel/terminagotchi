@@ -80,6 +80,12 @@ NOUVELLES = {
         _ref("t1", 2),
         _n("nid0", 2, cmd=C(f"touch nid{S}lit.txt", f"New-Item nid{S}lit.txt"), fs="lit"),
     ]},
+    # une pièce en trop : démolir une pièce vide (rmdir), puis la broyeuse pour une pièce pleine (rm -r)
+    "debarras": {"titre": "hist.debarras.titre", "skill": None, "steps": [
+        _n("debarras", 0, cmd="mkdir debarras", fs="debarras_la"),
+        _n("debarras", 1, cmd="rmdir debarras", fs="debarras_parti"),
+        _n("debarras", 2, cmd="rm -r vieille_cabane", fs="cabane_partie"),
+    ]},
     "nid1": {"titre": "lec.t2.titre", "skill": None, "steps": [_ref("t2", 0), _ref("t2", 1)]},
     "grenier0": {"titre": "hist.grenier0.titre", "skill": "Explorateur", "steps": [
         _entree("grenier"),
@@ -175,7 +181,7 @@ EXPERT = {
 CHAPITRES = [
     {"id": "reveil", "n": 1, "piece": "vestibule", "famille": None, "lecons": ["t0", "reveil1"], "niveaux": [2, 2],
      "objet": "veilleuse"},
-    {"id": "nid", "n": 2, "piece": "nid", "famille": None, "lecons": ["nid0", "nid1"], "niveaux": [3, 4],
+    {"id": "nid", "n": 2, "piece": "nid", "famille": None, "lecons": ["nid0", "debarras", "nid1"], "niveaux": [3, 3, 4],
      "objet": "coussin"},
     {"id": "grenier", "n": 3, "piece": "grenier", "famille": "Sylvestres", "lecons": ["grenier0", "t4"],
      "objet": "plante", "titre": "jardinier"},
@@ -228,7 +234,24 @@ def h_(state):
     for k, v in {"chap": "reveil", "faits": [], "ailes": [], "pas": {}, "ouverts": [], "annonce": None,
                  "carnet": {}, "meubles": [], "suggere": [], "v": 1}.items():
         h.setdefault(k, v)
+    if h["v"] < 2:
+        _version_v2(state, h)
     return h
+
+
+def _version_v2(state, h):
+    """Sauvegarde v1 → v2 : la leçon « Une pièce en trop » (debarras) arrive entre le nid (nid0) et le garde-manger
+    (nid1). Le chapitre 2 déjà fini la compte comme faite ; une partie en plein garde-manger le garde (son étape est
+    rangée pour après le débarras) ; une partie en plein nid0 continue nid0 à la même étape."""
+    h["v"] = 2
+    if "debarras" in h["faits"]:
+        return
+    if "nid1" in h["faits"] or "nid" in h["ailes"]:
+        h["faits"].append("debarras")
+    elif "nid0" in h["faits"] and h.get("chap") == "nid":
+        if state.get("step", 0) > 0:
+            h["pas"]["nid1"] = state["step"]
+        state["step"] = 0
 
 
 def fini(state, cid):
@@ -321,6 +344,10 @@ def lecon_courante(state):
     st = etapes(state, lid)
     if not st:
         return None, None
+    if state.get("step", 0) >= len(st):
+        # filet de sécurité : toutes les étapes sont faites (sauvegarde d'une autre version…) → la leçon se termine
+        finir_lecon(state, {"id": lid, "chap": c["id"], "titre": d["titre"], "skill": d["skill"], "steps": st})
+        return lecon_courante(state)
     state["step"] = max(0, min(state.get("step", 0), len(st) - 1))
     les = {"id": lid, "chap": c["id"], "titre": d["titre"], "skill": d["skill"], "steps": st,
            "niveau": niveau_requis(state, c, i)}
@@ -391,8 +418,16 @@ def _reponse():
     return x.isdigit() and int(x) == traces_abyssor()
 
 
+def debarras():
+    """Le débarras de la leçon « Une pièce en trop » (dans la grande salle ou dans le nid), ou None."""
+    return next((p for p in (T() / "debarras", T() / "nid" / "debarras") if p.is_dir()), None)
+
+
 lecons.FS.update({
     "lit": lambda: (T() / "nid" / "lit.txt").is_file(),
+    "debarras_la": lambda: debarras() is not None,
+    "debarras_parti": lambda: debarras() is None,
+    "cabane_partie": lambda: not (T() / "vieille_cabane").exists() and T().is_dir(),
     "ours": lambda: (T() / "nid" / "ours_en_peluche.txt").is_file(),
     "carton": lambda: not (T() / "salle_des_machines" / "vieux_carton.bin").exists()
     and (T() / "salle_des_machines").is_dir(),
@@ -401,7 +436,7 @@ lecons.FS.update({
     "coeur_protege": lambda: _repare() and lecons._protected(T() / "coeur" / "coeur_repare.txt"),
     "reponse": _reponse,
 })
-lecons.CREE.update({"lit": "nid/lit.txt", "ours": "nid/ours_en_peluche.txt", "coeur_repare": "coeur/coeur_repare.txt"})
+lecons.CREE.update({"lit": "nid/lit.txt", "debarras_la": "debarras", "ours": "nid/ours_en_peluche.txt", "coeur_repare": "coeur/coeur_repare.txt"})
 
 
 # ---------------------------------------------------------------- les meubles de la maison
@@ -429,6 +464,9 @@ def _meubles(state, p):
         return {"salle_des_machines/vieux_carton.bin": b"\0" * 300000}
     if p == "atelier":
         return {"atelier/plan_de_travail.txt": dire(state, "hist.meuble.plan")}
+    if p == "nid":       # la vieille cabane pleine de planches de la leçon « Une pièce en trop » (seulement par BESOINS)
+        return {"vieille_cabane/planche_1.txt": dire(state, "hist.meuble.planche"),
+                "vieille_cabane/planche_2.txt": dire(state, "hist.meuble.planche")}
     if p == "coeur":
         m = {"coeur/message_brouille.txt": "\n".join(l[::-1] for l in dire(state, "hist.meuble.message").split("\n")),
              "coeur/.porte_secrete/abyssor_dort.txt": dire(state, "hist.meuble.abyssor")}
@@ -455,6 +493,7 @@ def _liste(cle):
 # fichiers dont une leçon a besoin : remis s'ils disparaissent (tant que l'étape n'est pas passée)
 BESOINS = {
     "reveil1": [("vestibule/oeuf_tout_chaud.txt", None)],
+    "debarras": [("vieille_cabane/planche_1.txt", 2), ("vieille_cabane/planche_2.txt", 2)],
     "grenier0": [("grenier/fouillis/ours_en_peluche.txt", 2)],
     "biblio0": [("bibliotheque/etagere_c/coin_poussiereux/livre_des_abysses.txt", None)],
     "biblio1": [("bibliotheque/etagere_c/coin_poussiereux/livre_des_abysses.txt", None)],
@@ -653,6 +692,10 @@ def _ici_ok(step, cwd):
 
 
 def tick_lecon(state, lines, cwds):
+    # filet de sécurité : un chapitre dont toutes les leçons sont faites se termine (le suivant démarre)
+    c = chapitre_courant(state)
+    if c and all(x in h_(state)["faits"] for x in c["lecons"]):
+        _finir_chapitre(state, c)
     les, _ = lecon_courante(state)
     if not les or core.level(state["xp"]) < les["niveau"]:
         return
@@ -675,8 +718,11 @@ def tick_lecon(state, lines, cwds):
             if not avancer(state, les):
                 state["indice_lecon"] = None
                 return
-    step = les["steps"][state["step"]]
-    if ("fs" in step and lecons.FS[step["fs"]]()) or _ici_ok(step, maison.ici(state)):
+    # les étapes déjà faites (fichiers, dossier courant) passent toutes, jusqu'à la fin de la leçon s'il le faut
+    for _ in les["steps"]:
+        step = les["steps"][state["step"]]
+        if not (("fs" in step and lecons.FS[step["fs"]]()) or _ici_ok(step, maison.ici(state))):
+            break
         if not avancer(state, les):
             state["indice_lecon"] = None
             return
@@ -701,7 +747,65 @@ def indice(state, step, lignes, tapees):
                          maison.nom_piece("grande_salle"), cmd=f"cd ~/{T().name}/{step['ou']}".rstrip("/"))
     if "ici" in step:
         return None
+    conseil = _indice_rm(step, tapees)
+    if conseil:
+        return conseil
+    from . import dressage
+    if not dressage.faute_de_frappe(lignes, step["cmd"], chiffres=True):
+        conseil = _indice_chemin(step, tapees)
+        if conseil:
+            return conseil
     return lecons.indice(step, lignes)
+
+
+def _cible(cwd, mot):
+    """Le dossier visé par un mot tapé (relatif au dossier courant, ou ~/…)."""
+    from pathlib import Path
+    if mot.startswith("~"):
+        return Path(os.path.expanduser(mot))
+    return Path(cwd or Path.home()) / mot
+
+
+def _indice_rm(step, tapees):
+    """rm sur une pièce (« rm debarras » échoue) ; rmdir sur une pièce pleine (« rmdir vieille_cabane » refuse)."""
+    for l, cwd in tapees:
+        mots = l.split()
+        if not mots:
+            continue
+        cmd, args = mots[0].lower(), [m for m in mots[1:] if not m.startswith("-")]
+        if cmd == "rm" and not any(re.match(r"^-\w*[rR]", m) for m in mots[1:]):
+            for a in args:
+                if _cible(cwd, a).is_dir():
+                    return t("hist.indice.rmdir", nom=a.rstrip("/\\"))
+        if cmd == "rmdir" and step["cmd"].startswith("rm -r"):
+            for a in args:
+                p = _cible(cwd, a)
+                if p.is_dir() and any(p.iterdir()):
+                    return t("hist.indice.plein", nom=a.rstrip("/\\"), cmd=step["cmd"])
+    return None
+
+
+def _indice_chemin(step, tapees):
+    """Le fichier de l'étape n'est pas arrivé au bon endroit DANS le terrain (sinon lecons.indice dit d'y aller) :
+    c'est devenu un dossier (mkdir nid/lit.txt), ou la commande a été tapée sans son chemin (touch lit.txt dans la
+    grande salle), ou depuis une autre pièce (touch nid/lit.txt dans le nid)."""
+    rel = lecons.CREE.get(step.get("fs"))
+    if not rel or "/" not in rel or rel.replace("/", S) not in step["cmd"] or lecons.FS[step["fs"]]():
+        return None
+    p = T() / rel
+    if p.is_dir():
+        return t("hist.indice.dossier", nom=p.name, rel=rel.replace("/", S), cmd=step["cmd"])
+    premier = step["cmd"].split()[0].lower()
+    for l, cwd in tapees:
+        if not l.split() or l.split()[0].lower() != premier:
+            continue
+        r = maison.rel(cwd)
+        if r is None:
+            continue
+        if r == "":
+            return t("hist.indice.chemin", cmd=step["cmd"])
+        return t("hist.indice.depuis", terrain=f"cd ~/{T().name}", cmd=step["cmd"])
+    return None
 
 
 # ---------------------------------------------------------------- attirance du chapitre
@@ -735,7 +839,7 @@ def migrer(state):
     """Range la progression d'avant (tronc commun + arbre) dans les chapitres, sans rien perdre."""
     if isinstance(state.get("histoire"), dict):
         return state
-    h = {"v": 1, "chap": "reveil", "faits": [], "ailes": [], "pas": {}, "ouverts": [], "annonce": None,
+    h = {"v": 2, "chap": "reveil", "faits": [], "ailes": [], "pas": {}, "ouverts": [], "annonce": None,
          "carnet": {}, "meubles": [], "suggere": []}
     L, s = state.get("lesson", 0), state.get("step", 0)
     faits, pas = [], {}
@@ -747,7 +851,7 @@ def migrer(state):
     if L >= 1:
         fait("t0")
     if L >= 2:
-        fait("reveil1", "nid0")
+        fait("reveil1", "nid0", "debarras")
     if L >= 3:
         fait("nid1")
     if L >= 4:

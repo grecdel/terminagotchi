@@ -131,15 +131,38 @@ subprocess.run(["rmdir", str(T / "vestibule" / "nid")])
 st = tape("cd ..")
 verifier(lecon(st) == ("nid0", 1), "cd .. : retour dans la grande salle")
 st = tape("mkdir nid")
+verifier(lecon(st) == ("nid0", 2) and "(3/3)" in texte(app.render(dict(st, dressage=None), 0, True)), "mkdir nid : 3/3 (le lit)")
+# le blocage à 3/3 signalé sur un téléphone : l'enfant, encore « en mode mkdir », fait du lit un dossier
+st = tape("mkdir nid/lit.txt")
+st = tape("touch nid/lit.txt")
+verifier(lecon(st) == ("nid0", 2) and "rmdir nid/lit.txt" in (st.get("indice_lecon") or ""),
+         f"mkdir nid/lit.txt : lit.txt est un dossier, l'indice dit de le démolir ({st.get('indice_lecon')})")
+st = tape("rmdir nid/lit.txt")
+st = tape("touch lit.txt")
+verifier("touch nid/lit.txt" in (st.get("indice_lecon") or "") and "cd ~/terrain" not in (st.get("indice_lecon") or ""),
+         f"touch lit.txt dans la grande salle : la commande entière, pas « va dans le terrain » ({st.get('indice_lecon')})")
 st = tape("touch nid/lit.txt")
 verifier("nid0" in h(st)["faits"] and "Bâtisseur" in st["skills"], "le nid et le lit (compétence Bâtisseur)")
 verifier(explo.debloque(st), "les monstres peuvent arriver")
+verifier(lecon(st) == ("debarras", 0) and (T / "vieille_cabane" / "planche_1.txt").is_file(),
+         f"la suite démarre : « Une pièce en trop », la vieille cabane est posée ({lecon(st)})")
+st = tape("mkdir debarras")
+st = tape("rm debarras")
+verifier("pas un objet" in (st.get("indice_lecon") or "") and "rmdir debarras" in (st.get("indice_lecon") or ""),
+         f"rm debarras : « une pièce, pas un objet : rmdir » ({st.get('indice_lecon')})")
+st = tape("rmdir debarras")
+verifier(lecon(st) == ("debarras", 2) and not (T / "debarras").exists(), "rmdir debarras : la pièce vide est démolie")
+st = tape("rmdir vieille_cabane")
+verifier("broyeuse" in (st.get("indice_lecon") or ""), f"rmdir sur la cabane pleine : refus expliqué ({st.get('indice_lecon')})")
+st = tape("rm -r vieille_cabane")
+verifier("debarras" in h(st)["faits"] and lecon(st)[0] == "nid1", f"rm -r vieille_cabane : la broyeuse, la suite démarre ({lecon(st)})")
 niveau(4)
 st = tape("echo pome > nid/repas.txt")
 verifier("pomme" in (st.get("indice_lecon") or ""), "« pome » : l'indice de toujours marche dans l'histoire")
 st = tape("echo pomme > nid/repas.txt")
 st = tape("cat nid/repas.txt")
 verifier(histoire.fini(st, "nid") and histoire.chapitre_courant(st) is None, "chapitre 2 fini : aucune aile imposée")
+verifier(not (T / "vieille_cabane").exists(), "la vieille cabane ne revient pas")
 ecran = texte(app.render(dict(st, dressage=None), 0, True))     # (le premier monstre vient d'arriver)
 verifier("Quelle aile réveiller" in ecran, "l'écran propose de choisir une aile")
 verifier(all((T / p).is_dir() for p in maison.AILES) and not (T / "coeur").exists(),
@@ -336,6 +359,28 @@ s = ancienne(lesson=1, step=1)
 verifier(s["histoire"]["chap"] == "reveil" and lecon(s) == ("reveil1", 0), "en train de construire le terrain → la vieille porte")
 s = ancienne(lesson=0, step=0)
 verifier(lecon(s) == ("t0", 0) and not s["histoire"]["faits"], "toute nouvelle partie : rien de fait")
+verifier(s["histoire"]["v"] == 2, "nouvelle sauvegarde : v2")
+
+
+def v1(faits, step, ailes=("reveil",), chap="nid"):
+    """Une sauvegarde de l'histoire d'avant « Une pièce en trop » (v1 : le chapitre 2 = nid0, nid1)."""
+    s = ancienne(lesson=0, step=0)
+    s["histoire"].update(v=1, faits=list(faits), ailes=list(ailes), chap=chap, pas={})
+    s["step"] = step
+    histoire.h_(s)
+    return s
+
+
+s = v1(["t0", "reveil1"], 2)
+verifier(lecon(s) == ("nid0", 2) and s["histoire"]["v"] == 2, f"v1 en plein nid0 (3/3) : même leçon, même étape {lecon(s)}")
+s = v1(["t0", "reveil1", "nid0"], 1)
+verifier(lecon(s) == ("debarras", 0) and s["histoire"]["pas"].get("nid1") == 1,
+         f"v1 en plein garde-manger : d'abord la pièce en trop, l'étape du repas est gardée {lecon(s)}")
+s = v1(["t0", "reveil1", "nid0", "nid1"], 0, ailes=("reveil", "nid"), chap=None)
+verifier("debarras" in s["histoire"]["faits"] and histoire.fini(s, "nid"), "v1 chapitre 2 fini : la leçon compte comme faite")
+s = v1(["t0", "reveil1"], 99)
+verifier(lecon(s) == ("debarras", 0) and "nid0" in s["histoire"]["faits"],
+         f"filet de sécurité : étape au-delà de la fin → leçon finie, la suite démarre {lecon(s)}")
 # une vraie sauvegarde d'avant, dans le fichier : la première étape de jeu la range
 vieille = core.load()
 vieille.pop("histoire")

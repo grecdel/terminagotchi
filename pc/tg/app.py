@@ -105,7 +105,7 @@ def render(state, frame, interactif, anim=None):
                 lines.append(f" {x}")
             lines.append(f"   {fg(226)}➜ {piege(step['cmd'])}{RESET}")
             if "nid/" in step["cmd"] or step["cmd"].endswith(" nid") or "reserve.txt" in step["cmd"] \
-                    or step["cmd"].startswith(("cat coeur", "chmod 444 coeur", "echo ? > coeur", "cp -r grenier")):
+                    or step["cmd"].startswith(("cat coeur", "chmod 444 coeur", "echo ? > coeur", "cp -r grenier", "rm -r vieille_cabane")):
                 lines.append(f"   {DIM}" + t("app.lecon.depuis", terrain=terme("terrain", palier(state)),
                                             cmd=f"cd ~/{core.TERRAIN.name}") + RESET)
             if step.get("astuce"):

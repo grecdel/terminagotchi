@@ -87,10 +87,12 @@ for c in ("pwd", "ls", "cd ~"):
 for c in ("cd terrain_terminagotchi", "ls", "cd vestibule", "ls"):     # chapitre 1 : la vieille porte, l'œuf
     tape(c)
 niveau(3)
-for c in ("cd ..", "mkdir nid", "touch nid/lit.txt"):                  # chapitre 2 : le nid
+for c in ("cd ..", "mkdir nid", "touch nid/lit.txt",                  # chapitre 2 : le nid
+          "mkdir debarras", "rmdir debarras", "rm -r vieille_cabane"):  # et une pièce en trop
     tape(c, T)
 st = core.load()
 verifier("nid0" in st["histoire"]["faits"] and "Bâtisseur" in st["skills"], "chapitres 1-2 : terrain, œuf et nid construits")
+verifier("debarras" in st["histoire"]["faits"], "une pièce en trop : démolie avec rmdir, la cabane broyée avec rm -r")
 
 
 def lec(st):

@@ -108,7 +108,8 @@ fun main(args: Array<String>) {
     for (c in listOf("pwd", "ls", "cd ~")) tape(c)
     for (c in listOf("cd terrain_terminagotchi", "ls", "cd vestibule", "ls")) tape(c)     // chapitre 1 : la vieille porte, l'œuf
     niveau(3)
-    for (c in listOf("cd ..", "mkdir nid", "touch nid/lit.txt")) tape(c, T)             // chapitre 2 : le nid
+    for (c in listOf("cd ..", "mkdir nid", "touch nid/lit.txt",                          // chapitre 2 : le nid
+            "mkdir debarras", "rmdir debarras", "rm -r vieille_cabane")) tape(c, T)        // et une pièce en trop
     verifier("nid0" in Histoire.faits(jeu) && "Bâtisseur" in jeu.skills, "chapitres 1-2 : terrain, œuf et nid construits")
 
     println("1. Leçons : un indice quand c'est presque ça")
