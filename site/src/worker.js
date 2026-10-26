@@ -787,8 +787,9 @@ function page(L, titre, contenu, description = L.t.description, statut = 200) {
   return new Response(`<!doctype html><html lang="${L.lang}" dir="${L.dir}"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>${echapper(titre)} · Terminagotchi</title><meta name="description" content="${echapper(description)}">
+<link rel="icon" type="image/png" href="/favicon.png"><link rel="apple-touch-icon" href="/icone.png">
 <style>${CSS}</style></head><body>
-<header><nav><a class="logo" href="/"><bdi>▞ Terminagotchi</bdi></a><a href="/classement">${n.classement}</a><a href="/bestiaire">${n.bestiaire}</a><a href="/captures">${n.captures}</a><a href="/ctf">${n.ctf}</a><a href="/#telecharger">${n.telecharger}</a><a href="/compte">${n.compte}</a>${selecteurLangue(L)}</nav></header>
+<header><nav><a class="logo" href="/"><img src="/icone.png" alt="" width="28" height="28" style="vertical-align:middle;image-rendering:pixelated;margin-inline-end:6px"><bdi>Terminagotchi</bdi></a><a href="/classement">${n.classement}</a><a href="/bestiaire">${n.bestiaire}</a><a href="/captures">${n.captures}</a><a href="/ctf">${n.ctf}</a><a href="/#telecharger">${n.telecharger}</a><a href="/compte">${n.compte}</a>${selecteurLangue(L)}</nav></header>
 <main>${contenu}</main></body></html>`, {
     status: statut,
     headers: { "content-type": "text/html; charset=utf-8", "content-language": L.lang, vary: "Accept-Language, Cookie" },
@@ -828,7 +829,7 @@ async function pageAccueil(env, L) {
   }).join("");
   return page(L, A.titre, `
 <section class="hero">
-  <div>${svgCreature(12, "Agilité", {}, 10, false, L.t.creature)}</div>
+  <div><img src="/mascotte.png" alt="Terminagotchi" width="200" style="image-rendering:pixelated;max-width:45vw;height:auto"></div>
   <div style="flex:1;min-width:260px">
     <h1>${A.heroTitre}</h1>
     <p>${A.heroTexte}</p>
