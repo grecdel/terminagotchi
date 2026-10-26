@@ -194,9 +194,37 @@ class TerminalActivity : Activity() {
         super.onResume()
         if (::jeu.isInitialized && !enCours) {
             jeu.recharger()        // le Doom ou l'éditeur ont pu changer des choses
+            vuNotif = NotifVie.modifie
+            WidgetCreature.majTous(this)      // la notification en direct apparaît (ou se met à jour) à l'ouverture
             rafraichir()
             if (::commandes.isInitialized && Recensement.aUnCompte(jeu)) commandes.sync(forcer = false, silencieux = true)
             if (::contenu.isInitialized) majObservatoire(null)
+        }
+    }
+
+    /** dernier changement fait depuis la notification (Nourrir, Caresser) déjà relu par le terminal */
+    private var vuNotif = NotifVie.modifie
+
+    /**
+     * Le volet des notifications se referme : si un bouton de la notification a changé la créature pendant ce temps,
+     * on relit la sauvegarde (sinon la prochaine commande l'écraserait avec l'ancien état).
+     */
+    override fun onWindowFocusChanged(hasFocus: Boolean) {
+        super.onWindowFocusChanged(hasFocus)
+        if (hasFocus && ::jeu.isInitialized && !enCours && NotifVie.modifie > vuNotif) {
+            vuNotif = NotifVie.modifie
+            jeu.recharger()
+            rafraichir()
+            lancerAnimation()
+        }
+    }
+
+    /** Réponse à la demande de permission des notifications (au lancement, ou « notif on ») */
+    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<String>, grantResults: IntArray) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+        if (grantResults.isNotEmpty() && grantResults[0] == android.content.pm.PackageManager.PERMISSION_GRANTED) {
+            WidgetCreature.majTous(this)
+            if (requestCode == 2 && ::jeu.isInitialized) ecrire(t("notifs.vie.on", "nom" to jeu.nom), Commandes.ROSE)
         }
     }
 

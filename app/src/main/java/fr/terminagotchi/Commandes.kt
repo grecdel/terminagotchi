@@ -109,6 +109,7 @@ class Commandes(
             "edite" -> edite(reste)
             "doom" -> doom()
             "notifs" -> notifs(reste)
+            "notif" -> notifVie(reste)
             else -> null
         }
     }
@@ -530,6 +531,30 @@ class Commandes(
                 else t("notifs.off.etat"))
         }
         return Reponse(if (n.optBoolean("actives")) t("notifs.on") else t("notifs.off"))
+    }
+
+    /** notif on / off / reglages : la créature en direct dans la barre de notification (NotifVie). */
+    private fun notifVie(choix: String): Reponse {
+        when (choix.lowercase()) {
+            "on" -> {
+                NotifVie.regler(act, true)
+                if (!NotifVie.permise(act)) {           // Android 13+ : on demande la permission (réponse : TerminalActivity)
+                    act.requestPermissions(arrayOf("android.permission.POST_NOTIFICATIONS"), 2)
+                    return Reponse(t("notifs.vie.permission"), couleur = ORANGE)
+                }
+                if (!NotifVie.autorisees(act)) return Reponse(t("notifs.vie.bloquee"), couleur = ORANGE)
+                return Reponse(t("notifs.vie.on", "nom" to jeu.nom), saut = 2)
+            }
+            "off" -> {
+                NotifVie.regler(act, false)
+                return Reponse(t("notifs.vie.off"))
+            }
+            "reglages" -> return lancer(Intent(Settings.ACTION_APP_NOTIFICATION_SETTINGS)
+                .putExtra(Settings.EXTRA_APP_PACKAGE, act.packageName), t("notifs.vie.reglages"), "")
+        }
+        val etat = if (NotifVie.voulue(act)) t("notifs.vie.on.etat", "n" to NotifVie.rationsDuJour(jeu), "max" to NotifVie.RATIONS)
+            else t("notifs.vie.off.etat")
+        return Reponse(if (NotifVie.voulue(act) && !NotifVie.autorisees(act)) etat + "\n" + t("notifs.vie.bloquee") else etat)
     }
 
     // ---------------------------------------------------------------- créature

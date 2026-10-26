@@ -37,7 +37,7 @@ EMOJIS = "✨⬆🎓🌳🎯🐾💨🌲⚡"
 COMMANDES = [
     "compte creer", "compte lier", "compte secours", "compte code", "compte site", "compte oublier",
     "compte partage on", "compte partage off", "partie nouvelle", "partie charger", "langue en", "langue xx",
-    "notifs on", "notifs off", "lampe on", "lampe off", "devine 10", "joue pierre", "renomme Pixel",
+    "notifs on", "notifs off", "notif on", "notif off", "notif reglages", "lampe on", "lampe off", "devine 10", "joue pierre", "renomme Pixel",
     "dressage abandon", "donjon nouveau", "cd 01_cache", "drapeau TG", "indice 1", "edite notes.txt",
     "edite carte.txt", "edite reglages.txt", "bestiaire Braisillon", "bestiaire Glitchou",
     "anime {nom_min} evolution", "cherche grep", "arbre scripts",

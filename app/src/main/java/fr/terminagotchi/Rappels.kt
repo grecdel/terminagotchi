@@ -12,8 +12,8 @@ import android.os.SystemClock
 import android.app.Notification
 
 /**
- * Toutes les 30 minutes environ (même appli fermée) : la faim baisse, le widget se met à jour,
- * et la créature envoie une notification si elle a faim.
+ * Toutes les 30 minutes environ (même appli fermée) : la faim baisse, le widget et la notification en direct
+ * (NotifVie, via WidgetCreature.majTous) se mettent à jour, et la créature envoie une notification si elle a faim.
  */
 class Rappels : BroadcastReceiver() {
     override fun onReceive(context: Context, intent: Intent) {

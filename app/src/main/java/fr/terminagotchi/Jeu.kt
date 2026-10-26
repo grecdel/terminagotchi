@@ -234,6 +234,7 @@ object Regles {
             Mot("doom", "lexa.doom.i", "lexa.doom.t", j),
             Mot("langue", "lexa.langue.i", "lex.tg_langue.t", j),
             Mot("notifs", "lexa.notifs.i", "lexa.notifs.t", j),
+            Mot("notif", "lexa.notif.i", "lexa.notif.t", j),
             Mot("compte", "lexa.compte.i", "lexa.compte.t", w),
             Mot("sync", "lexa.sync.i", "lexa.sync.t", w),
             Mot("site", "lexa.site.i", "lexa.site.t", w),

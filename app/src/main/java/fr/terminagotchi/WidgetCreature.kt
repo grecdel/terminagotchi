@@ -15,12 +15,18 @@ class WidgetCreature : AppWidgetProvider() {
     }
 
     companion object {
+        /** Met à jour les widgets ET la notification en direct (NotifVie) : appelé à chaque changement de la créature. */
         fun majTous(ctx: Context) {
             val mgr = AppWidgetManager.getInstance(ctx)
             val ids = mgr.getAppWidgetIds(ComponentName(ctx, WidgetCreature::class.java))
-            if (ids.isEmpty()) return
+            if (ids.isEmpty() && !NotifVie.voulue(ctx)) return
             val jeu = Jeu(ctx)
             jeu.tick()
+            NotifVie.maj(ctx, jeu)          // avant infoWidget : elle lit la file de bulles sans la vider
+            if (ids.isEmpty()) {
+                if (jeu.existe) jeu.sauver()
+                return
+            }
 
             val v = RemoteViews(ctx.packageName, R.layout.widget)
             v.setImageViewBitmap(R.id.w_creature, Sprites.bitmap(jeu, 10))

@@ -54,6 +54,11 @@
             android:name=".Rappels"
             android:exported="false" />
 
+        <!-- les boutons de la notification en direct (Nourrir, Caresser) -->
+        <receiver
+            android:name=".NotifVie"
+            android:exported="false" />
+
         <receiver
             android:name=".WidgetCreature"
             android:exported="true">
