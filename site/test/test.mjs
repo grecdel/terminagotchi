@@ -320,8 +320,67 @@ console.log("Anti-triche : graines et captures vérifiées");
     "sans SECRET_GRAINES : aucune graine, rien n'est vérifié");
 }
 
+console.log("Salle d'entraînement : exercices vérifiés, records, badges, Star de la semaine");
+{
+  const E = await import("../src/entrainement.js");
+  const auj = new Date().toISOString().slice(0, 10);
+  let r = await appel("POST", "/api/sync", { cle: cleTel, corps: { appareil: "android", vus: ["mkdir", "rm", "rmdir"] } });
+  const g = r.j.graines.find((x) => x.id.startsWith(auj));
+  const run = (id, type, n, t, extra = {}) => ({ id, type, g: g.id, n, t, d: Date.now(), e: E.empreinte(type, E.generer(type, g.valeur, n)), ...extra });
+  const runs = [
+    run("e00000000001", "bat_pieces", 0, 9.4),                                  // honnête (diamant : ≤ 15 s)
+    run("e00000000002", "bat_pieces", 1, 12, { e: "bat_pieces|pieces=cave,salon" }),   // empreinte inventée
+    run("e00000000003", "net_rm", 0, 30),                                       // même (graine, n) qu'un autre
+    run("e00000000004", "bat_pieces", 2, 0.5),                                  // trop rapide pour un enfant
+    run("e00000000005", "plo_tuyau", 3, 40),                                    // commandes jamais tapées (grep, wc)
+    { id: "e00000000006", type: "net_rmdir", g: "", n: 0, t: 18, d: Date.now(), e: "x" },   // sans graine (hors ligne)
+    run("e00000000007", "net_rmr", 4, 14),
+  ];
+  r = await appel("POST", "/api/sync", { cle: cleTel, corps: { appareil: "android", entrainement: {
+    deltas: { batisseur: { n: 4, diamant: 1, or: 1, bronze: 2 }, nettoyeur: { n: 3, argent: 3 } },
+    runs, records: { bat_pieces: { t: 9.4, g: g.id, n: 0 }, net_rmdir: { t: 18, g: "", n: 0 }, exp_cle: { t: 0.2 } },
+  } } });
+  const v = r.j.entrainement?.verdicts || {};
+  verifier(v.e00000000001 === true && v.e00000000007 === true, "exercices honnêtes : vérifiés");
+  verifier(v.e00000000002 === false, "empreinte inventée : non vérifié");
+  verifier(v.e00000000003 === false, "(graine, compteur) déjà utilisé : non vérifié");
+  verifier(v.e00000000004 === false, "temps impossible (0,5 s) : non vérifié");
+  verifier(v.e00000000005 === false, "commandes jamais tapées : non vérifié");
+  verifier(v.e00000000006 === false, "sans graine : gardé, non vérifié");
+  const ent = r.j.etat.entrainement;
+  verifier(ent.familles.batisseur.n === 4 && ent.familles.nettoyeur.n === 3, "les compteurs s'additionnent (badges de la partie)");
+  verifier(ent.records.bat_pieces.v === true && ent.records.bat_pieces.t === 9.4, "record vérifié par le tirage refait");
+  verifier(ent.records.net_rmdir.v === false && !ent.records.exp_cle, "record sans graine : « non vérifié » ; record impossible : refusé");
+  r = await appel("POST", "/api/sync", { cle: cleTel, corps: { appareil: "android", entrainement: { runs: [runs[0]], deltas: {} } } });
+  verifier(r.j.entrainement.verdicts.e00000000001 === true && r.j.etat.entrainement.familles.batisseur.n === 4,
+    "un exercice renvoyé deux fois n'est pas compté deux fois");
+  // la semaine dernière : une Star par famille (calculée une fois, la semaine suivante)
+  const j = await env.DB.prepare("SELECT id FROM joueurs WHERE pseudo = 'Grec'").first();
+  const avant = Date.now() - 7 * 86_400_000;
+  await env.DB.prepare("INSERT INTO exercices (id, joueur, partie, famille, type, temps, medaille, date, semaine, graine, n, verifie) VALUES ('e0000000000a', ?, '1', 'lecteur', 'lec_cat', 11, 'diamant', ?, ?, NULL, NULL, 1)")
+    .bind(j.id, avant, E.semaine(avant)).run();
+  await env.DB.prepare("DELETE FROM config WHERE cle = 'hebdo'").run();
+  r = await appel("POST", "/api/sync", { cle: cleTel, corps: { appareil: "android" } });
+  verifier(r.j.entrainement.hebdo.semaine === E.semainePrecedente() && r.j.entrainement.hebdo.familles.includes("lecteur"),
+    "Star de la semaine (Lecteur) : portée cette semaine");
+  verifier(r.j.entrainement.compte.lecteur === 1, "le site compte combien de fois on l'a eue");
+  r = await appel("GET", "/records");
+  verifier(r.statut === 200 && r.t.includes("Records de la salle") && r.t.includes(">Grec<") && r.t.includes("9.4 s") && r.t.includes("💎"),
+    "/records : les temps vérifiés, avec leur médaille");
+  verifier(!r.t.includes("18.0 s") && r.t.includes("🏆") && r.t.includes("<svg class=\"badge-px\""), "/records : rien de non vérifié, Stars et badges en pixels");
+  r = await appel("GET", "/api/records");
+  verifier(r.j.records.bat_pieces?.[0]?.pseudo === "Grec" && r.j.stars.lecteur?.pseudo === "Grec", "/api/records (JSON)");
+  r = await appel("GET", "/joueur/Grec");
+  verifier(r.t.includes("Badges de la salle d&#39;entraînement") && r.t.includes("Bâtisseur") && r.t.includes("non vérifié") && r.t.includes("Star de la semaine en Lecteur : 1 fois"),
+    "profil : badges, records (vérifiés ou non) et Stars");
+  r = await appel("GET", "/api/profil/Grec");
+  verifier(r.j.entrainement?.familles?.batisseur?.echelon === "bois" && r.j.entrainement.stars.lecteur === 1, "profil JSON : échelons et Stars");
+  r = await appel("GET", "/records?lang=ja");
+  verifier(r.t.includes("トレーニングルーム"), "/records traduit (japonais)");
+}
+
 // chaque page dans chaque langue
-const pages = ["/", "/classement", "/bestiaire", "/bestiaire/braisillon", "/captures", "/captures?shiny=1", "/joueur/Grec", "/joueur/Personne", lienBadge, "/badge/0123456789abcdef", "/ctf", "/nimporte", "/compte", "/connexion?t=0",
+const pages = ["/", "/classement", "/records", "/bestiaire", "/bestiaire/braisillon", "/captures", "/captures?shiny=1", "/joueur/Grec", "/joueur/Personne", lienBadge, "/badge/0123456789abcdef", "/ctf", "/nimporte", "/compte", "/connexion?t=0",
   "/parents", "/soutenir", "/confidentialite", "/mentions-legales"];
 let rendues = 0;
 const rates = [];

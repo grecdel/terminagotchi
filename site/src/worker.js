@@ -8,6 +8,7 @@ import BESTIAIRE from "./bestiaire.js";
 import { tirer, differences, stadePlausible, attirancePlausible, MAX_APPARITIONS, PAR_NOM_T, TIRAGE } from "./tirage.js";
 import { LANGUES, NOMS_LANGUES, LOCALES, RTL, choisirLangue, cookieLangue, textes, libelle } from "./i18n.js";
 import { confidentialiteFr, mentionsFr } from "./legal_fr.js";
+import * as ENT from "./entrainement.js";
 
 // ====================================================================== réglages à remplir
 
@@ -242,6 +243,110 @@ async function verifierCaptures(env, joueur, etat, envoyees, vusEnvoyes = []) {
   return verdicts;
 }
 
+// ====================================================================== salle d'entraînement
+
+/*
+ * Le jeu envoie (etat.entrainement côté jeu, voir pc/tg/entrainement.py) :
+ *   deltas  : les compteurs gagnés depuis la dernière synchro, par famille (n, bronze, argent, or, diamant) ;
+ *   runs    : les exercices réussis à vérifier { id, type, g (graine), n (compteur), t (secondes), d (date), e (empreinte) } ;
+ *   records : son meilleur temps par exercice { t, g, n, d }.
+ * Un exercice est vérifié si la graine est bien celle d'un appareil du joueur, si (graine, n) n'a jamais servi, si
+ * l'enfant avait déjà tapé ses commandes, si l'empreinte est celle du tirage refait ici et si le temps est plausible.
+ * Un record est « vérifié » quand il correspond à un exercice vérifié ; sinon il est gardé, marqué non vérifié.
+ */
+async function posteDuJoueur(env, joueur, poste, cache) {
+  if (!cache.has(poste)) {
+    const r = await env.DB.prepare("SELECT 1 AS ok FROM cles WHERE joueur = ? AND substr(empreinte, 1, 12) = ?").bind(joueur.id, poste).first();
+    cache.set(poste, !!r);
+  }
+  return cache.get(poste);
+}
+
+async function synchroEntrainement(env, joueur, partie, avant, envoi, vus) {
+  const e = { ...ENT.etatVide(), ...(avant && typeof avant === "object" ? avant : {}) };
+  e.familles = { ...(e.familles || {}) };
+  e.records = { ...(e.records || {}) };
+  const verdicts = {};
+  for (const f of ENT.FAMILLES) ENT.fam(e, f);
+  if (!envoi || typeof envoi !== "object") return { etat: e, verdicts };
+  const entier = (x, max) => Math.max(0, Math.min(max, Math.floor(Number(x) || 0)));
+  for (const f of ENT.FAMILLES) {
+    const x = ENT.fam(e, f);
+    for (const k of ["n", ...ENT.MEDAILLES]) x[k] += entier(envoi.deltas?.[f]?.[k], 500);
+  }
+  const garder = (typ, cand) => {
+    const a = e.records[typ];
+    if (!a || (cand.v && !a.v) || (cand.v === !!a.v && cand.t < a.t)) e.records[typ] = cand;
+  };
+  const vusSet = new Set(vus);
+  const maintenant = Date.now();
+  const postes = new Map();
+  for (const run of (Array.isArray(envoi.runs) ? envoi.runs : []).slice(-200)) {
+    if (!run || typeof run.id !== "string" || !/^[0-9a-f]{6,24}$/.test(run.id) || !Object.hasOwn(ENT.TYPES, run.type)) continue;
+    const t = Math.round(Number(run.t) * 10) / 10;
+    if (!(t > 0 && t < 3600)) continue;
+    const deja = await env.DB.prepare("SELECT verifie FROM exercices WHERE id = ?").bind(run.id).first();
+    if (deja) { verdicts[run.id] = deja.verifie === 1; continue; }
+    const m = typeof run.g === "string" && run.g.match(/^(\d{4}-\d{2}-\d{2})\.([0-9a-f]{12})$/);
+    let raison = null;
+    if (!run.g) raison = "sans graine";
+    else if (!env.SECRET_GRAINES) raison = "vérification indisponible";
+    else if (!m || !Number.isInteger(run.n) || run.n < 0 || run.n >= ENT.MAX_PAR_GRAINE) raison = "graine ou compteur invalide";
+    else if (!(Date.parse(m[1] + "T00:00:00Z") <= maintenant + JOUR_MS)) raison = "graine d'un jour futur";
+    else if (!(await posteDuJoueur(env, joueur, m[2], postes))) raison = "graine d'un autre joueur";
+    else if (!ENT.commandesConnues(run.type, vusSet)) raison = "commandes pas encore tapées";
+    else if (ENT.empreinte(run.type, ENT.generer(run.type, await valeurGraine(env, joueur.id, m[2], m[1]), run.n)) !== run.e) raison = "ne correspond pas au tirage";
+    else if (t < ENT.tempsMinimum(run.type)) raison = "temps impossible";
+    const date = Math.min(maintenant, Math.max(Number(run.d) || 0, maintenant - 8 * JOUR_MS));
+    const ligne = [run.id, joueur.id, partie, ENT.TYPES[run.type][0], run.type, t, ENT.medaille(run.type, t), date, ENT.semaine(date)];
+    const sql = "INSERT OR IGNORE INTO exercices (id, joueur, partie, famille, type, temps, medaille, date, semaine, graine, n, verifie) "
+      + "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+    if (!raison) {
+      const r = await env.DB.prepare(sql).bind(...ligne, run.g, run.n, 1).run();
+      if ((r.meta?.changes ?? 0) === 0) raison = "graine déjà utilisée";
+    }
+    if (raison) await env.DB.prepare(sql).bind(...ligne, null, null, 0).run();
+    verdicts[run.id] = !raison;
+    if (!raison) garder(run.type, { t, v: true, d: date });
+  }
+  for (const [typ, r] of Object.entries(envoi.records && typeof envoi.records === "object" ? envoi.records : {})) {
+    if (!Object.hasOwn(ENT.TYPES, typ) || !r || typeof r !== "object") continue;
+    const t = Math.round(Number(r.t) * 10) / 10;
+    if (!(t >= 1 && t < 3600)) continue;
+    const v = typeof r.g === "string" && r.g && Number.isInteger(r.n)
+      ? !!(await env.DB.prepare("SELECT 1 AS ok FROM exercices WHERE joueur = ? AND graine = ? AND n = ? AND verifie = 1 AND ABS(temps - ?) < 0.05")
+        .bind(joueur.id, r.g, r.n, t).first())
+      : false;
+    garder(typ, { t, v, d: entier(r.d, 4e12) });
+  }
+  return { etat: e, verdicts };
+}
+
+/** Donne la « Star de la semaine » de la semaine passée dans chaque famille (une fois par semaine). Renvoie cette semaine-là. */
+async function semainesAttribuees(env, maintenant = Date.now()) {
+  const s = ENT.semainePrecedente(maintenant);
+  const fait = await env.DB.prepare("SELECT valeur FROM config WHERE cle = 'hebdo'").first();
+  if (fait?.valeur === s) return s;
+  for (const f of ENT.FAMILLES) {
+    await env.DB.prepare(
+      "INSERT OR IGNORE INTO titres_hebdo (semaine, famille, joueur, partie, n) SELECT ?, famille, joueur, partie, COUNT(*) AS c "
+      + "FROM exercices WHERE semaine = ? AND famille = ? AND verifie = 1 GROUP BY joueur, partie ORDER BY c DESC, SUM(temps) ASC, MIN(date) ASC LIMIT 1",
+    ).bind(s, s, f).run();
+  }
+  await env.DB.prepare("INSERT INTO config (cle, valeur) VALUES ('hebdo', ?) ON CONFLICT (cle) DO UPDATE SET valeur = excluded.valeur").bind(s).run();
+  return s;
+}
+
+/** Les Stars de la semaine d'un joueur : celles qu'il porte cette semaine (par partie) et combien de fois en tout. */
+async function starsDe(env, joueurId, partie = null) {
+  const s = await semainesAttribuees(env);
+  const ici = partie === null ? "" : " AND partie = ?";
+  const lier = (q, ...p) => env.DB.prepare(q).bind(...p, ...(partie === null ? [] : [partie]));
+  const maintenant = await lier("SELECT famille FROM titres_hebdo WHERE semaine = ? AND joueur = ?" + ici, s, joueurId).all();
+  const compte = await lier("SELECT famille, COUNT(*) AS n FROM titres_hebdo WHERE joueur = ?" + ici + " GROUP BY famille", joueurId).all();
+  return { semaine: s, familles: maintenant.results.map((x) => x.famille), compte: Object.fromEntries(compte.results.map((x) => [x.famille, x.n])) };
+}
+
 // ====================================================================== synchro
 
 /**
@@ -412,6 +517,8 @@ async function synchroniser(env, joueur, b, partie) {
   const ligne = await env.DB.prepare("SELECT etat FROM parties WHERE joueur = ? AND partie = ?").bind(joueur.id, partie).first();
   const avant = ligne ? lireEtat(ligne) : {};
   const e = fusionner(avant, b, appareil, await verifierCaptures(env, joueur, avant, b.captures, b.vus));
+  const ent = await synchroEntrainement(env, joueur, partie, avant.entrainement, b.entrainement, e.vus);
+  e.entrainement = ent.etat;
   const maintenant = Date.now();
   await env.DB.prepare(
     "INSERT INTO parties (joueur, partie, etat, xp, niveau, cree, maj) VALUES (?, ?, ?, ?, ?, ?, ?) "
@@ -427,7 +534,9 @@ async function synchroniser(env, joueur, b, partie) {
     const bd = await donnerBadge(env, joueur.id, "multi", "Multi-plateforme : PC + téléphone");
     if (bd) nouveaux.push(bd);
   }
-  return json({ etat: e, partie, badges: nouveaux, graines: await graines(env, joueur) });
+  const st = await starsDe(env, joueur.id, partie);
+  return json({ etat: e, partie, badges: nouveaux, graines: await graines(env, joueur),
+    entrainement: { hebdo: { semaine: st.semaine, familles: st.familles }, compte: st.compte, verdicts: ent.verdicts } });
 }
 
 async function listeParties(env, joueur) {
@@ -505,6 +614,10 @@ async function api(requete, env, chemin) {
       const e = lireEtat(j);
       return { pseudo: j.pseudo, nom: e.nom || j.pseudo, niveau: j.niveau, xp: j.xp, forme: e.forme || null };
     }));
+  }
+
+  if (chemin === "/api/records" && m === "GET") {
+    return json(await donneesRecords(env));
   }
 
   if (chemin.startsWith("/api/profil/") && m === "GET") {
@@ -608,7 +721,7 @@ async function api(requete, env, chemin) {
 
 /** Efface un compte et tout ce qui s'y rattache (toutes les tables qui ont une colonne « joueur »). */
 async function supprimerCompte(env, id) {
-  for (const table of ["cles", "codes", "badges", "apparitions", "parties", "secours", "sessions"]) {
+  for (const table of ["cles", "codes", "badges", "apparitions", "parties", "secours", "sessions", "exercices", "titres_hebdo"]) {
     await env.DB.prepare(`DELETE FROM ${table} WHERE joueur = ?`).bind(id).run();
   }
   // compteurs anti-abus par compte (« sync:<id> », « drapeau:<id> »…)
@@ -647,7 +760,52 @@ async function profilPublic(env, pseudo) {
     shiny: e.shiny === true, captures: (e.captures || []).length,
     capturesVerifiees: (e.captures || []).filter((c) => c.verifie === true).length, partage: e.partage?.actif === true,
     badges: b.results.map((x) => ({ ...x, lien: "/badge/" + x.id })),
+    entrainement: await entrainementPublic(env, j.id, e.entrainement),
   };
+}
+
+/** Badges, titre, records et Stars de la semaine d'un joueur (sa meilleure partie, ses Stars sur toutes ses parties). */
+async function entrainementPublic(env, joueurId, ent) {
+  const e = { ...ENT.etatVide(), ...(ent && typeof ent === "object" ? ent : {}) };
+  e.familles = { ...(e.familles || {}) };
+  const st = await starsDe(env, joueurId);
+  const familles = Object.fromEntries(ENT.FAMILLES.map((f) => {
+    const x = ENT.fam(e, f);
+    const k = ENT.echelon(e, f);
+    return [f, { n: x.n, or: x.or + x.diamant, echelon: k >= 0 ? ENT.ECHELONS[k] : null }];
+  }));
+  const records = Object.fromEntries(Object.entries(e.records || {}).filter(([typ, r]) => Object.hasOwn(ENT.TYPES, typ) && r && Number(r.t) > 0)
+    .map(([typ, r]) => [typ, { t: Number(r.t), v: r.v === true }]));
+  return { familles, titre: ENT.titres(e, st.familles)[0] || null, records, stars: st.compte };
+}
+
+/** Les records vérifiés (10 meilleurs joueurs par exercice), les Stars de la semaine, la tête de la semaine en cours. */
+async function donneesRecords(env) {
+  const semaine = await semainesAttribuees(env);
+  const cette = ENT.semaine();
+  const tops = await env.DB.prepare(
+    "SELECT e.type, j.pseudo, MIN(e.temps) AS t FROM exercices e JOIN joueurs j ON j.id = e.joueur WHERE e.verifie = 1 "
+    + "GROUP BY e.type, e.joueur ORDER BY e.type, t ASC, MIN(e.date) ASC",
+  ).all();
+  const records = {};
+  for (const r of tops.results) {
+    const l = (records[r.type] ??= []);
+    if (l.length < 10) l.push({ pseudo: r.pseudo, t: r.t, medaille: ENT.medaille(r.type, r.t) });
+  }
+  const stars = (await env.DB.prepare(
+    "SELECT h.famille, h.n, j.pseudo FROM titres_hebdo h JOIN joueurs j ON j.id = h.joueur WHERE h.semaine = ?",
+  ).bind(semaine).all()).results;
+  const enTete = {};
+  const t = (await env.DB.prepare(
+    "SELECT x.famille, j.pseudo, x.c FROM (SELECT famille, joueur, COUNT(*) AS c, SUM(temps) AS st FROM exercices "
+    + "WHERE semaine = ? AND verifie = 1 GROUP BY famille, joueur) x JOIN joueurs j ON j.id = x.joueur ORDER BY x.famille, x.c DESC, x.st ASC",
+  ).bind(cette).all()).results;
+  for (const r of t) enTete[r.famille] ??= { pseudo: r.pseudo, n: r.c };
+  const palmares = (await env.DB.prepare(
+    "SELECT j.pseudo, COUNT(*) AS n FROM titres_hebdo h JOIN joueurs j ON j.id = h.joueur GROUP BY h.joueur ORDER BY n DESC, MIN(h.semaine) ASC LIMIT 10",
+  ).all()).results;
+  return { semaine, cetteSemaine: cette, records, stars: Object.fromEntries(stars.map((x) => [x.famille, { pseudo: x.pseudo, n: x.n }])),
+    enTete, palmares };
 }
 
 // ====================================================================== CTF en ligne
@@ -936,6 +1094,14 @@ a.bestiole:hover{color:var(--texte);box-shadow:inset 0 4px 0 var(--r,var(--bord)
 .stades figcaption{margin-top:10px;font-size:var(--petit);color:var(--doux)}
 .variante.pas-dessinee .ecran img{filter:grayscale(1) brightness(.55)}
 .voisins{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap;margin-top:36px}
+/* ---- salle d'entraînement (badges en pixels, records, Stars de la semaine) */
+.badge-px{image-rendering:pixelated;flex:none}
+.echelle{display:flex;flex-wrap:wrap;gap:18px 26px;align-items:flex-end;margin:10px 4px 14px}
+.ech{margin:0;text-align:center;font-size:var(--petit);max-width:9em}
+.ech figcaption{margin-top:6px}
+.stars .star{display:flex;gap:14px;align-items:center}
+h2.avec-badge{display:flex;align-items:center;gap:12px}
+h2.avec-badge::before{display:none}
 /* ---- pied de page */
 .pied{max-width:1040px;margin:0 auto;padding:22px 20px 36px;border-top:2px dashed var(--bord);color:var(--doux);font-size:var(--petit);text-align:center}
 .pied .liens{display:flex;flex-wrap:wrap;justify-content:center;gap:4px 26px}
@@ -1018,7 +1184,7 @@ function selecteurLangue(L) {
 function menu(L) {
   const n = L.t.nav;
   const ici = L.url.pathname.replace(/\/+$/, "") || "/";
-  const liens = [["/classement", n.classement], ["/bestiaire", n.bestiaire], ["/captures", n.captures], ["/ctf", n.ctf],
+  const liens = [["/classement", n.classement], ["/records", L.t.navRecords], ["/bestiaire", n.bestiaire], ["/captures", n.captures], ["/ctf", n.ctf],
     ["/#telecharger", n.telecharger], ["/compte", n.compte]];
   return liens.map(([href, t]) => {
     const actif = href !== "/#telecharger" && (ici === href || ici.startsWith(href + "/"));
@@ -1170,11 +1336,76 @@ async function pageJoueur(env, L, pseudo) {
   <div class="scene ecran">${svgCreature(p.niveau, p.forme, p.stats, 12, p.shiny, L.t.creature)}</div>
 </section>
 <h2>${J.badges}</h2><div>${badges}</div>
+${sectionEntrainement(L, p.entrainement)}
 <h2>${J.competences} <span class="doux petit">${J.declarees}</span></h2><div>${comp}</div>
 <h2>${J.collection}</h2>${collHtml}
 ${p.partage ? `<p style="margin-top:20px"><a href="/captures?joueur=${encodeURIComponent(p.pseudo)}">${J.voirCaptures}</a></p>` : ""}
 <p class="doux petit" style="margin-top:32px">${J.inscrit(new Date(p.inscrit).toLocaleDateString(L.locale))} ·
 <a href="/api/profil/${encodeURIComponent(p.pseudo)}">${J.json}</a></p>`, J.description(p.nom, p.pseudo, p.niveau));
+}
+
+/** Le texte d'un titre de la salle d'entraînement, dans sa couleur (arc-en-ciel pour la Légende). */
+function titreEnt(L, x) {
+  if (!x) return "";
+  const E = L.t.ent;
+  const texte = x.id === "legende" ? E.titreLegende : x.id === "touche" ? E.titreTouche : x.id === "apprenti" ? E.titreApprenti
+    : x.id === "star" ? E.titreStar(E.familles[x.famille]) : E.titreFamille(E.familles[x.famille], E.echelonsNoms[x.echelon]);
+  return x.couleur === "arc" ? `<span class="rgb">« ${echapper(texte)} »</span>` : `<span style="color:${x.couleur}">« ${echapper(texte)} »</span>`;
+}
+
+const MEDAILLE_ICONE = ENT.ICONE_MEDAILLE;
+
+async function pageRecords(env, L) {
+  const E = L.t.ent;
+  const d = await donneesRecords(env);
+  const lienJ = (p) => `<a href="/joueur/${encodeURIComponent(p)}">${bdi(p)}</a>`;
+  const echelle = ENT.ECHELONS.map((e) => `<figure class="ech">${ENT.svgBadge("explorateur", e, 4, E.echelonsNoms[e])}<figcaption>${echapper(E.echelonsNoms[e])}</figcaption></figure>`).join("");
+  const stars = ENT.FAMILLES.map((f) => {
+    const s = d.stars[f];
+    const t = d.enTete[f];
+    return `<div class="carte star">${ENT.svgBadge(f, s ? "or" : null, 3, E.familles[f])}<div><b>${echapper(E.familles[f])}</b>
+<div>${s ? `🏆 ${lienJ(s.pseudo)} <span class="doux">${echapper(E.reussis(s.n))}</span>` : `<span class="doux">—</span>`}</div>
+<div class="doux petit">${echapper(E.enTete)} : ${t ? `${lienJ(t.pseudo)} (${echapper(E.reussis(t.n))})` : "—"}</div></div></div>`;
+  }).join("");
+  const palmares = d.palmares.map((x, i) => `<tr><td class="rang"><bdi>${i + 1}</bdi></td><td>${lienJ(x.pseudo)}</td><td class="num">${echapper(E.fois(x.n))}</td></tr>`).join("");
+  let familles = "";
+  for (const f of ENT.FAMILLES) {
+    const types = Object.keys(ENT.TYPES).filter((typ) => ENT.TYPES[typ][0] === f && d.records[typ]?.length);
+    if (!types.length) continue;
+    familles += `<h2 class="avec-badge">${ENT.svgBadge(f, "or", 2)}${echapper(E.familles[f])}</h2><div class="grille">`
+      + types.map((typ) => fenetre(`~/records/${typ}`, `<p><b>${echapper(E.types[typ])}</b></p><table><tr><th>#</th><th>${L.t.thJoueur}</th><th>${echapper(E.thTemps)}</th></tr>`
+        + d.records[typ].map((r, i) => `<tr><td class="rang"><bdi>${i + 1}</bdi></td><td>${lienJ(r.pseudo)}</td><td class="num"><bdi>${r.t.toFixed(1)} s</bdi> ${MEDAILLE_ICONE[r.medaille]}</td></tr>`).join("")
+        + "</table>")).join("") + "</div>";
+  }
+  return page(L, E.titre, `<h1>${E.h1}</h1><p>${E.intro}</p>
+<h2>${echapper(E.echelons)}</h2><div class="echelle">${echelle}</div><p class="doux petit">${echapper(E.echelle)}</p>
+<h2>${echapper(E.stars)}</h2><p class="doux">${echapper(E.starsSous)}</p>
+${Object.keys(d.stars).length || Object.keys(d.enTete).length ? `<div class="grille stars">${stars}</div>` : `<p class="doux">${echapper(E.aucuneStar)}</p>`}
+${palmares ? `<h2>${echapper(E.palmares)}</h2>${fenetre("~/stars", `<table>${palmares}</table>`)}` : ""}
+${familles || `<h2>${echapper(E.records)}</h2><p class="doux">${echapper(E.aucun)}</p>`}`, E.description);
+}
+
+/** La partie « salle d'entraînement » du profil : badges, titre, Stars, records. */
+function sectionEntrainement(L, ent) {
+  const E = L.t.ent;
+  if (!ent) return "";
+  const badges = ENT.FAMILLES.filter((f) => ent.familles[f]?.echelon).map((f) => {
+    const x = ent.familles[f];
+    const nom = `${E.familles[f]} · ${E.echelonsNoms[x.echelon]}`;
+    return `<figure class="ech" title="${echapper(nom)}">${ENT.svgBadge(f, x.echelon, 4, nom)}<figcaption>${echapper(E.familles[f])}<br><span class="doux">${echapper(E.echelonsNoms[x.echelon])} · ${echapper(E.reussis(x.n))}</span></figcaption></figure>`;
+  }).join("");
+  const stars = Object.entries(ent.stars || {}).filter(([f]) => E.familles[f])
+    .map(([f, n]) => `<span class="badge" style="color:#ffaf00">${echapper(E.starCompte(E.familles[f], n))}</span>`).join("");
+  const recs = Object.keys(ENT.TYPES).filter((typ) => ent.records[typ]).map((typ) => {
+    const r = ent.records[typ];
+    return `<tr><td>${echapper(E.types[typ])}</td><td class="num"><bdi>${r.t.toFixed(1)} s</bdi> ${MEDAILLE_ICONE[ENT.medaille(typ, r.t)]}</td>
+<td>${r.v ? `<span style="color:var(--vert)">${echapper(E.verifie)}</span>` : `<span class="doux">${echapper(E.nonVerifie)}</span>`}</td></tr>`;
+  }).join("");
+  return `<h2>${echapper(E.profil)}</h2>
+${ent.titre ? `<p>${E.titreLigne(titreEnt(L, ent.titre))}</p>` : ""}
+${badges ? `<div class="echelle">${badges}</div>` : `<p class="doux">${echapper(E.aucunBadge)}</p>`}
+${stars ? `<div>${stars}</div>` : ""}
+${recs ? `<h2>${echapper(E.records)} <a class="petit" href="/records">/records</a></h2>${fenetre("~/records", `<table>${recs}</table>`)}` : ""}`;
 }
 
 async function pageBadge(env, L, id) {
@@ -1527,6 +1758,7 @@ async function aiguiller(requete, env, url, chemin, L) {
   if (chemin === "/connexion") return pageConnexion(env, L, url);
   if (chemin === "/compte" || chemin === "/compte/jeton" || chemin === "/compte/sortir") return pageCompte(requete, env, L, chemin);
   if (chemin === "/classement") return pageClassement(env, L);
+  if (chemin === "/records") return pageRecords(env, L);
   if (chemin === "/ctf") return pageCtf(L, url.origin);
   if (chemin === "/bestiaire") return pageBestiaire(L, url);
   if (chemin === "/captures") return pageCaptures(env, L, url);
@@ -1571,7 +1803,7 @@ export default {
   },
   // chaque jour (wrangler.toml, [triggers]) : on efface ce qui a dépassé sa durée de conservation
   async scheduled(evenement, env, ctx) {
-    ctx.waitUntil(purger(env));
+    ctx.waitUntil(purger(env).then(() => semainesAttribuees(env)));
   },
 };
 

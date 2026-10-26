@@ -61,5 +61,24 @@ verifier(stadePlausible("bebe", "ancien", 60) === "enfant", "en 1 minute (120 XP
 verifier(stadePlausible("bebe", "ado", 3600) === "ado", "en 1 heure, il peut devenir ado");
 verifier(stadePlausible("ado", "enfant", 1e6) === "ado", "on ne rajeunit pas");
 
+console.log("Salle d'entraînement (donnees/entrainement/vecteurs.json)");
+{
+  const E = await import("../src/entrainement.js");
+  const VE = JSON.parse(readFileSync(new URL("../../donnees/entrainement/vecteurs.json", import.meta.url), "utf8"));
+  const ratesE = [];
+  for (const x of VE.exercices) {
+    const p = E.generer(x.type, x.valeur, x.k);
+    if (E.empreinte(x.type, p) !== x.empreinte || E.reponse(x.type, p) !== x.reponse) ratesE.push(`${x.type}#${x.k} : ${E.empreinte(x.type, p)}`);
+  }
+  verifier(ratesE.length === 0, `${VE.exercices.length - ratesE.length}/${VE.exercices.length} exercices identiques au Python`);
+  for (const r of ratesE.slice(0, 3)) console.log("     ", r);
+  verifier(VE.medailles.every((m) => E.medaille(m.type, m.t) === m.medaille), `${VE.medailles.length} médailles identiques`);
+  verifier(VE.echelons.every((m) => E.echelonDe(m.n, m.or) === m.echelon), "échelons identiques (Diamant : + une médaille d'or)");
+  verifier(VE.semaines.every((m) => E.semaine(m.t * 1000) === m.semaine), "semaines ISO identiques");
+  verifier(E.commandesConnues("plo_tuyau", ["grep", "wc"]) && !E.commandesConnues("plo_tuyau", ["grep"]), "commandes déjà tapées : vérifiées");
+  verifier(E.svgBadge("explorateur", "diamant").includes('fill="#ffffff"') && E.svgBadge(null, null).includes("#3a3a44"),
+    "badges en SVG (étincelle du diamant, « ??? » gris)");
+}
+
 console.log(`\n${ok} réussis, ${ko} échoués`);
 if (ko) process.exit(1);
