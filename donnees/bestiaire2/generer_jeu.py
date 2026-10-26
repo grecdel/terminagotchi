@@ -9,6 +9,7 @@ Sorties :
   app/src/main/assets/sprites.bin           …
   app/src/main/assets/portraits/<id>/<variante>_<stade>.webp   versions détaillées pour les fiches
   site/public/portraits/…                   idem pour le site
+  site/src/bestiaire.js                     les données des pages du site (voir generer_site.py)
 Les variantes pas encore dessinées sont simplement absentes : le jeu retombe sur la forme classique.
 """
 import base64
@@ -244,6 +245,8 @@ def main():
     import subprocess
     import sys
     subprocess.run([sys.executable, str(RACINE / "donnees/anti_triche/generer.py")], check=True)
+    # le bestiaire des pages du site (fiches, variantes dessinées, anciennes espèces)
+    subprocess.run([sys.executable, str(ICI / "generer_site.py")], check=True)
 
 
 if __name__ == "__main__":
