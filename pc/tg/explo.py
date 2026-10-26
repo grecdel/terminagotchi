@@ -95,7 +95,12 @@ def lieu(zone):
 
 
 def debloque(state):
-    return "Bâtisseur" in state["skills"] and (T / "nid").is_dir()
+    """Les monstres arrivent après la mini-leçon des passages secrets (ls -a, fin du chapitre 2 : G-05) ; une
+    partie où l'exploration était déjà ouverte la garde."""
+    if not ("Bâtisseur" in state["skills"] and (T / "nid").is_dir()):
+        return False
+    from . import histoire
+    return bool(state.get("explo")) or "secrets" in histoire.h_(state)["faits"]
 
 
 def spawn(state):

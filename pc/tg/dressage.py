@@ -232,6 +232,22 @@ def _nuage_copie(c, l):
     return d.is_dir() and len(list(d.glob("photo*"))) >= 3
 
 
+def _page(c, l):
+    """La page est téléchargée ; sans Internet (G-08), l'essai `curl -o page.html …` suffit : le jeu pose une page
+    locale à la place, jamais d'épreuve impossible."""
+    p = c["d"] / "page.html"
+    if p.exists() and p.stat().st_size > 0:
+        return True
+    if not a_tape(l, r"^\s*curl(\.exe)?\b.*-o\s*\S*page\.html"):
+        return False
+    from . import histoire
+    try:
+        p.write_text(histoire.page_secours(t("hist.colis.titre"), t("hist.colis.texte", nom=c["nom"])), encoding="utf-8")
+    except OSError:
+        pass
+    return True
+
+
 def _cachette(c, l): return any(p.name.startswith(".") and p.is_file() for p in (c["d"] / "enclos").glob(".*")) \
     if (c["d"] / "enclos").is_dir() else False
 
@@ -262,8 +278,7 @@ EPREUVES = {
           lambda c, l: a_tape(l, r"^\s*(ip\s+(a|addr|address)\b|ifconfig\b|ipconfig\b|hostname\s+-I)")),
         E("dns", 2, "ep.reseau.dns", "nslookup",
           lambda c, l: a_tape(l, r"^\s*(nslookup|dig|host)\s+\S+")),
-        E("page", 3, "ep.reseau.page", "curl -o",
-          lambda c, l: (c["d"] / "page.html").exists() and (c["d"] / "page.html").stat().st_size > 0),
+        E("page", 3, "ep.reseau.page", "curl -o", _page),
     ],
     "Processus": [
         E("ps", 1, "ep.processus.ps", "ps / Get-Process",
@@ -376,6 +391,58 @@ EPREUVES = {
 }
 
 
+# G-06 : les notions qu'une épreuve demande. Une épreuve n'est tirée que si l'enfant les a déjà rencontrées : chaque
+# commande goûtée (state["seen"], premier mot), ou « opt:<clé> » = une option ou un symbole expliqué après une leçon
+# (state["options_vues"] : opt:tuyau = |, opt:ecrase = >, opt:inverse = grep -v…). « a/b » : l'une ou l'autre.
+# Sans notion connue, une autre épreuve est choisie (jamais tar, base64, sha256sum, tr, export… sans les avoir vus).
+REQUIS = {
+    "Rencontre:examiner": ["cat"], "Rencontre:repaire": ["find"],
+    "Fichiers:enclos": ["mkdir"], "Fichiers:gamelle": ["touch"], "Fichiers:doudou": ["cp"], "Fichiers:renomme": ["mv"],
+    "Fichiers:archive": ["tar"],
+    "Réseau:ping": ["ping"], "Réseau:hote": ["hostname"], "Réseau:ip": ["ip"], "Réseau:dns": ["nslookup/dig/host"],
+    "Réseau:page": ["curl", "opt:output"],
+    "Processus:ps": ["ps"], "Processus:heure": ["date"], "Processus:fond": ["sleep", "jobs"], "Processus:jobs": ["jobs"],
+    "Processus:kill": ["kill"],
+    "Mémoire:place": ["df"], "Mémoire:ram": ["free"], "Mémoire:poids": ["du"], "Mémoire:sac": ["ls", "wc", "opt:tuyau"],
+    "Sécurité:cage": ["mkdir", "touch"], "Sécurité:cachette": ["touch", "opt:all"], "Sécurité:prive": ["chmod"],
+    "Sécurité:empreinte": ["sha256sum"],
+    "Code:chant": ["echo", "opt:ecrase"], "Code:script": ["echo", "chmod", "opt:plusx"], "Code:compte": ["for"],
+    "Matériel:machine": ["uname"], "Matériel:coeurs": ["nproc"], "Matériel:disques": ["lsblk/df"],
+    "Bugs:erreurs": ["grep"], "Bugs:combien": ["grep"], "Bugs:corrige": ["grep", "opt:inverse", "opt:ecrase"],
+    "Nuage:nuage": ["mkdir"], "Nuage:photos": ["touch"], "Nuage:copie": ["cp", "opt:recursif_cp"],
+    "Données:debut": ["head"], "Données:lignes": ["wc"], "Données:trie": ["sort", "opt:ecrase"],
+    "Données:differentes": ["sort", "uniq", "opt:tuyau"],
+    "Crypto:lire": ["cat"], "Crypto:decode": ["base64"], "Crypto:empreinte": ["sha256sum"],
+    "IA:bonjour": ["echo"], "IA:chat": ["grep"], "IA:frequent": ["sort", "uniq", "opt:tuyau"],
+    "Rétro:calendrier": ["cal"], "Rétro:record": ["sort", "tail", "opt:tuyau"],
+    "Rétro:top3": ["sort", "head", "opt:tuyau", "opt:ecrase"],
+    "Glitch:voir": ["cat"], "Glitch:repare": ["rev", "opt:ecrase"], "Glitch:chuchote": ["tr"],
+    "Système:qui": ["whoami"], "Système:systeme": ["uname"], "Système:alias": ["alias"], "Système:variable": ["export"],
+}
+# les noms Windows / voisins comptent pour la commande Linux du tableau
+SYNONYMES = {"type": "cat", "get-content": "cat", "gc": "cat", "less": "cat", "more": "cat", "new-item": "touch",
+             "copy": "cp", "copy-item": "cp", "move": "mv", "move-item": "mv", "get-process": "ps", "gps": "ps",
+             "tasklist": "ps", "top": "ps", "get-date": "date", "get-psdrive": "df", "select-string": "grep",
+             "sls": "grep", "dir": "ls", "gci": "ls", "get-childitem": "ls", "ipconfig": "ip", "ifconfig": "ip",
+             "write-output": "echo", "attrib": "chmod", "icacls": "chmod", "systeminfo": "uname", "set-alias": "alias",
+             "md": "mkdir", "measure-object": "wc", "test-connection": "ping", "stop-process": "kill",
+             "curl.exe": "curl", "invoke-webrequest": "curl", "iwr": "curl"}
+
+
+def rencontrees(state):
+    """Les notions déjà rencontrées par l'enfant : commandes goûtées (+ leurs noms Linux) et options expliquées."""
+    vues = set(state.get("seen", []))
+    vues |= {SYNONYMES[c] for c in vues if c in SYNONYMES}
+    return vues | {"opt:" + o for o in state.get("options_vues", [])}
+
+
+def connue(fid, notions):
+    """L'épreuve ne demande que des notions déjà rencontrées (notions = rencontrees(state), ou None : pas de filtre)."""
+    if notions is None:
+        return True
+    return all(any(a in notions for a in tok.split("/")) for tok in REQUIS.get(fid, []))
+
+
 def _plus_frequents(lignes):
     from collections import Counter
     c = Counter(lignes)
@@ -447,36 +514,43 @@ def plafond(n_captures):
     return None
 
 
-def choisir_epreuves(e, premiere, rarete="commune", n_captures=None):
-    """Les épreuves d'un dressage. n_captures = bestioles déjà dressées (None : pas de plafond)."""
+def choisir_epreuves(e, premiere, rarete="commune", n_captures=None, notions=None):
+    """Les épreuves d'un dressage. n_captures = bestioles déjà dressées (None : pas de plafond).
+    notions = rencontrees(state) : seules les épreuves dont les notions sont connues (G-06 ; None : toutes)."""
     if n_captures == 0:                       # le tout premier dressage : lire sa fiche + 1 épreuve simple
-        return [EPREUVES["Rencontre"][0]] + _premiere_epreuve(e)
-    return EPREUVES["Rencontre"] + _epreuves_famille(e, premiere, rarete, plafond(n_captures))
+        return [EPREUVES["Rencontre"][0]] + _premiere_epreuve(e, notions)
+    rencontre = [x for x in EPREUVES["Rencontre"] if x is EPREUVES["Rencontre"][0] or connue(_fid(x), notions)]
+    return rencontre + (_epreuves_famille(e, premiere, rarete, plafond(n_captures), notions) or _premiere_epreuve(e, notions))
 
 
 def _fid(x):
     return next(f"{f}:{y['id']}" for f, v in EPREUVES.items() for y in v if y is x)
 
 
-def _premiere_epreuve(e):
+def _premiere_epreuve(e, notions=None):
     fams = e.get("epreuves") or [e["famille"]]
     pool = {_fid(x): x for f in fams for x in EPREUVES.get(f, []) if not (x["posix"] and IS_WIN)}
     for fid in SIMPLES:
-        if fid in pool:
+        if fid in pool and connue(fid, notions):
             return [pool[fid]]
-    return [EPREUVES["Rencontre"][1]]
+    if connue("Rencontre:repaire", notions):
+        return [EPREUVES["Rencontre"][1]]
+    for fid in SIMPLES:                       # rien de connu dans sa famille : une épreuve simple d'ailleurs
+        if connue(fid, notions):
+            return [_par_id(fid)]
+    return []
 
 
-def _epreuves_famille(e, premiere, rarete="commune", cap=None):
+def _epreuves_famille(e, premiere, rarete="commune", cap=None, notions=None):
     fams = e.get("epreuves") or [e["famille"]]           # les commandes que cette famille aime
-    pool = [x for f in fams for x in EPREUVES.get(f, []) if not (x["posix"] and IS_WIN)]
+    pool = [x for f in fams for x in EPREUVES.get(f, []) if not (x["posix"] and IS_WIN) and connue(_fid(x), notions)]
     nmax = NIVEAU_MAX[rarete]
     n = NB_TACHES[rarete]
     if cap:                                   # débutant : moins d'épreuves, plus faciles
         n, nmax = min(n, cap[0]), min(nmax, cap[1])
     if rarete in ULTIMES and not cap:         # l'épreuve ultime : sa famille + des épreuves d'ailleurs
         autres = [x for f, v in EPREUVES.items() if f not in fams and f != "Rencontre" for x in v
-                  if not (x["posix"] and IS_WIN) and x["niveau"] >= 2]
+                  if not (x["posix"] and IS_WIN) and x["niveau"] >= 2 and connue(f"{f}:{x['id']}", notions)]
         random.shuffle(autres)
         choix = sorted(pool, key=lambda x: x["niveau"])[-3:] + autres[:3]
     else:
@@ -517,7 +591,7 @@ def commencer(state, sauvage):
     familles = state.setdefault("dressage_familles", [])
     premiere = e["famille"] not in familles
     n_caps = len(state.get("captures", []))
-    taches = choisir_epreuves(e, premiere, rar, n_caps)
+    taches = choisir_epreuves(e, premiere, rar, n_caps, rencontrees(state))
     bo = bonus(state)
     debutant = TEMPS_DEBUTANT if n_caps < 5 else 0
     fam_de = {id(x): f for f, v in EPREUVES.items() for x in v}

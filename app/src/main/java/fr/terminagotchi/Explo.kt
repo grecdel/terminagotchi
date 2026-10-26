@@ -26,7 +26,10 @@ object Explo {
         return c.keys().asSequence().sumOf { c.optInt(it) }
     }
 
-    fun debloquee(jeu: Jeu) = "Bâtisseur" in jeu.skills && File(jeu.terrain, "nid").isDirectory
+    /** Les monstres arrivent après la mini-leçon des passages secrets (ls -a, fin du chapitre 2 : G-05) ; une partie
+     *  où l'exploration était déjà ouverte la garde. */
+    fun debloquee(jeu: Jeu) = "Bâtisseur" in jeu.skills && File(jeu.terrain, "nid").isDirectory &&
+        (etat(jeu).optBoolean("ouverte") || "secrets" in Histoire.faits(jeu))
 
     /** La commande « attiree_par » d'une famille la rend plus probable pendant 10 minutes (une apparition). */
     const val DUREE_ATTIRANCE = 600_000L

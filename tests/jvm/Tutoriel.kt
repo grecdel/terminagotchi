@@ -246,7 +246,7 @@ fun main(args: Array<String>) {
     p.tape("ls")
     verif(Histoire.fini(p.jeu, "nid") && "debarras" in faits(p) && Histoire.chapitreCourant(p.jeu) == null,
         "v1 chapitre 2 fini : rien à refaire (la leçon compte comme faite)")
-    verif(Histoire.h(p.jeu).optInt("v") == 2, "sauvegarde passée en v2")
+    verif(Histoire.h(p.jeu).optInt("v") == 3 && "secrets" in faits(p), "sauvegarde passée en v3 (passages secrets comptés)")
 
     println("6. Filet de sécurité : une leçon dont toutes les étapes sont faites se termine")
     p = nouvellePartie("Filet")
@@ -256,7 +256,7 @@ fun main(args: Array<String>) {
     p.jeu.sauver(); p.jeu.recharger()
     p.tape("ls")
     verif("nid0" in faits(p) && p.lecon().first == "debarras" && "➜" in p.ecran(), "étape au-delà de la fin : leçon finie, la suite s'affiche (${p.lecon()})")
-    Histoire.h(p.jeu).put("faits", JSONArray(listOf("t0", "reveil1", "nid0", "debarras", "nid1")))
+    Histoire.h(p.jeu).put("faits", JSONArray(listOf("t0", "reveil1", "nid0", "debarras", "nid1", "secrets")))
     p.tape("ls")
     verif(Histoire.fini(p.jeu, "nid"), "toutes les leçons du chapitre faites : le chapitre se termine")
 

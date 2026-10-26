@@ -588,6 +588,9 @@ class Jeu(ctx: Context) {
         if (l != null && l.niveau == apres) { dire(t("lec.annonce"), 10); animer("parle") }
     }
 
+    /** une commande répétée dans les 10 dernières ne donne plus d'XP (anti-remplissage) */
+    val FENETRE_REPAS = 10
+
     /** Mange une commande. Renvoie false si elle a été refusée (collée). */
     fun manger(ligne: String, colle: Boolean, rappel: Boolean = false): Boolean {
         if (colle || Regles.estColle(ligne)) {
@@ -604,6 +607,18 @@ class Jeu(ctx: Context) {
             return false
         }
         total++
+        // anti-remplissage (G-04) : une commande déjà goûtée parmi les FENETRE_REPAS dernières nourrit, mais ne donne
+        // ni XP ni stat (les niveaux viennent des leçons, des chapitres, des exercices et des commandes nouvelles)
+        val repas = module("repas")
+        val derniers = repas.optJSONArray("derniers")?.let { a -> (0 until a.length()).map { a.getString(it) } } ?: emptyList()
+        repas.put("derniers", org.json.JSONArray((derniers + cmd).takeLast(FENETRE_REPAS)))
+        if (cmd in derniers && cmd in vus) {
+            faim = (faim + 3).coerceAtMost(100.0)
+            module("compte").put("repas", System.currentTimeMillis())
+            log(t("core.mange", "cmd" to cmd))
+            animer("mange")
+            return true
+        }
         var gain = 1
         var msg = t("core.mange", "cmd" to cmd)
         val stat = Regles.CATEGORIES.entries.firstOrNull { cmd in it.value }?.key
@@ -700,7 +715,7 @@ class Jeu(ctx: Context) {
                 out.add("${c.titre} (${etape + 1}/${c.etapes.size}) · ${e.dit}\n➜ `${Regles.piege(e.cmd)}`")
                 for ((montre, cle) in Explique.nouvelles(this, e.cmd))          // 💡 Le -r veut dire… (+ pour les grands)
                     Explique.phrases(this, montre, cle).forEachIndexed { k, p -> out.add("  ".repeat(k) + p) }
-                if (DEPUIS.any { e.cmd.startsWith(it) } || "nid/" in e.cmd || e.cmd.endsWith(" nid") || "reserve.txt" in e.cmd) {
+                if (DEPUIS.any { e.cmd.startsWith(it) } || " nid/" in " " + e.cmd || e.cmd.endsWith(" nid") || "reserve.txt" in e.cmd) {
                     out.add(t("app.lecon.depuis", "terrain" to Mots.terme("terrain", Mots.palier(this)), "cmd" to "cd ~/${terrain.name}"))
                 }
                 e.astuce?.let { out.add(it) }

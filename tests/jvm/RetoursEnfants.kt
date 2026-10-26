@@ -135,7 +135,10 @@ fun main(args: Array<String>) {
     tape("echo pomme > nid/repas.txt", T)
     verifier(lec() == ("nid1" to 1) && jeu.indiceLecon == null, "« pomme » : étape réussie, l'indice disparaît")
     tape("cat nid/repas.txt", T)
-    verifier(Histoire.fini(jeu, "nid"), "chapitre 2 fini : la maison est libre")
+    tape("cat mot_secret.txt", T)                           // le point oublié : le passage secret reste caché
+    verifier(lec() == ("secrets" to 0), "passages secrets : il faut d'abord les voir avec ls -a")
+    for (c in listOf("ls -a", "cat .mot_secret.txt")) tape(c, T)
+    verifier(Histoire.fini(jeu, "nid"), "chapitre 2 fini (avec les passages secrets) : la maison est libre")
     niveau(5)
     tape("cd bibliotheque", T)
     for (c in listOf("find . -name \"*abysses*\"", "cat etagere_c/coin_poussiereux/livre_des_abysses.txt")) tape(c, File(T, "bibliotheque"))

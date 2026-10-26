@@ -113,7 +113,11 @@ if "💡 Presque" not in ecran:
 st = tape("echo pomme > nid/repas.txt", T)
 verifier(lec(st) == ("nid1", 1) and not st.get("indice_lecon"), "« pomme » : étape réussie, l'indice disparaît")
 st = tape("cat nid/repas.txt", T)
-verifier(histoire.fini(st, "nid"), "chapitre 2 fini : la maison est libre")
+st = tape("cat mot_secret.txt", T)                      # le point oublié : le passage secret reste caché
+verifier(lec(st) == ("secrets", 0), "passages secrets : il faut d'abord les voir avec ls -a")
+for c in ("ls -a", "cat .mot_secret.txt"):
+    st = tape(c, T)
+verifier(histoire.fini(st, "nid"), "chapitre 2 fini (avec les passages secrets) : la maison est libre")
 niveau(5)
 for c in ("cd bibliotheque", 'find . -name "*abysses*"', "less etagere_c/coin_poussiereux/livre_des_abysses.txt"):
     st = tape(c, T / "bibliotheque" if c.startswith(("find", "less")) else T)

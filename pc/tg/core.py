@@ -356,6 +356,9 @@ def commande_proche(cmd):
     return m[0] if m else None
 
 
+FENETRE_REPAS = 10      # une commande répétée dans les 10 dernières ne donne plus d'XP (anti-remplissage)
+
+
 def feed(state, line):
     if est_colle(line):
         state["colles"] += 1
@@ -375,6 +378,17 @@ def feed(state, line):
         animer(state, "confus")
         return
     state["total"] += 1
+    # anti-remplissage (G-04) : une commande déjà goûtée parmi les FENETRE_REPAS dernières nourrit, mais ne donne
+    # ni XP ni stat (les niveaux viennent des leçons, des chapitres, des exercices et des commandes nouvelles)
+    derniers = state.setdefault("derniers", [])
+    repetee = cmd in derniers and cmd in state["seen"]
+    state["derniers"] = (derniers + [cmd])[-FENETRE_REPAS:]
+    if repetee:
+        state["hunger"] = min(100.0, state["hunger"] + 3)
+        state["repas_t"] = time.time()
+        log(state, t("core.mange", cmd=cmd))
+        animer(state, "mange")
+        return
     gain, msg = 1, t("core.mange", cmd=cmd)
     if not cat and cmd.startswith("termux-"):
         cat = "reseau"

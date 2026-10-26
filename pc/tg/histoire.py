@@ -11,7 +11,7 @@ de 10 familles se sont installés chacun dans un lieu. Avec sa créature, il ré
 Chaque chapitre a un vrai problème à résoudre ; les commandes sont les outils pour le résoudre.
 
    1 reveil        Le réveil                 pwd, ls, cd              (on trouve l'œuf)
-   2 nid           Le nid                    mkdir, touch, >, cat     (un nid et un repas)
+   2 nid           Le nid                    mkdir, touch, >, cat, ls -a (un nid, un repas, un passage secret)
    3 grenier       La forêt du Grenier       tree, mv, cp, rm         (des lianes ont tout mélangé)
    4 cave          La caverne des Démons     whoami, sudo -h, chmod   (ils volent la nourriture)
    5 bibliotheque  La bibliothèque engloutie find, less, grep, head, wc (un livre a disparu)
@@ -26,7 +26,8 @@ Liberté : après le chapitre 2, les ailes 3 à 9 se réveillent dans l'ordre qu
 une aile en y entrant (cd grenier) ou avec le menu [a] / tg aile <nom>. On peut changer d'aile en
 cours de route : l'étape atteinte est gardée (« pas »). Le chapitre 10 s'ouvre quand au moins
 5 ailes sont réveillées. La difficulté s'adapte : le niveau demandé suit le nombre d'ailes déjà
-réveillées, et les étapes « expert » n'apparaissent qu'à partir du niveau 10.
+réveillées (sans jamais dépasser le niveau donné par les leçons déjà faites : pas de remplissage, voir
+niveau_requis), et les étapes « expert » n'apparaissent qu'à partir du niveau 10.
 
 Les leçons réutilisent les étapes (commandes, validations, textes) de lecons.py : TRONC et ARBRE
 restent le catalogue ; ce module les range en chapitres et ajoute ce qui manquait.
@@ -92,6 +93,14 @@ NOUVELLES = {
         _n("debarras", 2, cmd="rm -r vieille_cabane", fs="cabane_partie"),
     ]},
     "nid1": {"titre": "lec.t2.titre", "skill": None, "steps": [_ref("t2", 0), _ref("t2", 1)]},
+    # mini-leçon « pont » (G-05) : les passages secrets (ls -a) juste avant l'ouverture de l'exploration, dont les
+    # cachettes, les quêtes et les épreuves de dressage en ont besoin. astuce = la version des grands.
+    "secrets": {"titre": "hist.secrets.titre", "skill": None, "steps": [
+        _n("secrets", 0, cmd=C("ls -a", "dir -Force"), re=r"^(ls\s+-\w*[aA]|dir\s+(-force|/a)|gci\s+-force|get-childitem\s+-force)",
+           ou="", astuce="hist.secrets.0.adulte"),
+        _n("secrets", 1, cmd=C("cat .mot_secret.txt", "type .mot_secret.txt"), re=LIRE + r".*\.mot_secret", ou="",
+           astuce="hist.secrets.1.adulte"),
+    ]},
     "grenier0": {"titre": "hist.grenier0.titre", "skill": "Explorateur", "steps": [
         _entree("grenier"),
         _n("grenier0", 1, cmd=C("tree", "tree /f"), re=r"^(tree|ls\s+-\w*R)\b",
@@ -186,7 +195,8 @@ EXPERT = {
 CHAPITRES = [
     {"id": "reveil", "n": 1, "piece": "vestibule", "famille": None, "lecons": ["t0", "reveil1"], "niveaux": [2, 2],
      "objet": "veilleuse"},
-    {"id": "nid", "n": 2, "piece": "nid", "famille": None, "lecons": ["nid0", "debarras", "nid1"], "niveaux": [3, 3, 4],
+    {"id": "nid", "n": 2, "piece": "nid", "famille": None, "lecons": ["nid0", "debarras", "nid1", "secrets"],
+     "niveaux": [3, 3, 4, 4],
      "objet": "coussin"},
     {"id": "grenier", "n": 3, "piece": "grenier", "famille": "Sylvestres", "lecons": ["grenier0", "t4"],
      "objet": "plante", "titre": "jardinier"},
@@ -241,7 +251,17 @@ def h_(state):
         h.setdefault(k, v)
     if h["v"] < 2:
         _version_v2(state, h)
+    if h["v"] < 3:
+        _version_v3(state, h)
     return h
+
+
+def _version_v3(state, h):
+    """Sauvegarde v2 → v3 : la mini-leçon « passages secrets » (secrets) finit le chapitre 2. Un chapitre 2 déjà fini
+    la compte comme faite (l'exploration est déjà ouverte) ; une partie en plein chapitre 2 la fera à la fin."""
+    h["v"] = 3
+    if "nid" in h["ailes"] and "secrets" not in h["faits"]:
+        h["faits"].append("secrets")
 
 
 def _version_v2(state, h):
@@ -309,11 +329,27 @@ def nom_chapitre(cid):
     return t(f"hist.{cid}.titre")
 
 
+XP_LECON_SURE = 20      # XP qu'une leçon finie a donnée au moins (20 à la fin, + 5 par étape avant la dernière)
+XP_CHAPITRE_SUR = 30    # XP d'un chapitre fini
+
+
+def xp_appris(state):
+    """L'XP que l'apprentissage seul a forcément donnée : leçons et chapitres finis (jamais la répétition)."""
+    h = h_(state)
+    return XP_LECON_SURE * len(h["faits"]) + XP_CHAPITRE_SUR * len(h["ailes"])
+
+
 def niveau_requis(state, c, i):
+    """Le niveau demandé pour voir la leçon. G-04 : il ne dépasse jamais le niveau que les leçons et chapitres déjà
+    finis ont donné ; un enfant qui suit le parcours n'a donc jamais à « remplir » (seul l'œuf du réveil attend
+    ses premières commandes)."""
     if c.get("niveaux"):
-        return c["niveaux"][min(i, len(c["niveaux"]) - 1)]
-    # les ailes : la difficulté suit le nombre d'ailes déjà réveillées (ordre libre)
-    return min(12, 5 + nb_ailes(state) + i)
+        n = c["niveaux"][min(i, len(c["niveaux"]) - 1)]
+    else:   # les ailes : la difficulté suit le nombre d'ailes déjà réveillées (ordre libre)
+        n = min(12, 5 + nb_ailes(state) + i)
+    if c["id"] == "reveil":
+        return n
+    return max(1, min(n, core.level(xp_appris(state))))
 
 
 def etapes(state, lid):
@@ -471,7 +507,8 @@ def _meubles(state, p):
         return {"atelier/plan_de_travail.txt": dire(state, "hist.meuble.plan")}
     if p == "nid":       # la vieille cabane pleine de planches de la leçon « Une pièce en trop » (seulement par BESOINS)
         return {"vieille_cabane/planche_1.txt": dire(state, "hist.meuble.planche"),
-                "vieille_cabane/planche_2.txt": dire(state, "hist.meuble.planche")}
+                "vieille_cabane/planche_2.txt": dire(state, "hist.meuble.planche"),
+                ".mot_secret.txt": dire(state, "hist.meuble.mot_secret", nom=state.get("name", ""))}
     if p == "coeur":
         m = {"coeur/message_brouille.txt": "\n".join(l[::-1] for l in dire(state, "hist.meuble.message").split("\n")),
              "coeur/.porte_secrete/abyssor_dort.txt": dire(state, "hist.meuble.abyssor")}
@@ -499,6 +536,7 @@ def _liste(cle):
 BESOINS = {
     "reveil1": [("vestibule/oeuf_tout_chaud.txt", None)],
     "debarras": [("vieille_cabane/planche_1.txt", 2), ("vieille_cabane/planche_2.txt", 2)],
+    "secrets": [(".mot_secret.txt", None)],
     "grenier0": [("grenier/fouillis/ours_en_peluche.txt", 2)],
     "biblio0": [("bibliotheque/etagere_c/coin_poussiereux/livre_des_abysses.txt", None)],
     "biblio1": [("bibliotheque/etagere_c/coin_poussiereux/livre_des_abysses.txt", None)],
@@ -896,6 +934,8 @@ def migrer(state):
             pas[lid] = s
         c = chapitre_de_lecon(COUVRE.get(lid, [lid])[0] if COUVRE.get(lid) else lid)
         courant = c["id"] if c else courant
+    if "nid1" in faits:
+        fait("secrets")                     # le tronc commun fini : l'exploration était déjà ouverte (v3)
     h["faits"], h["pas"] = faits, pas
     state["histoire"] = h
     for c in CHAPITRES:
@@ -918,12 +958,90 @@ def migrer(state):
     return state
 
 
+# ---------------------------------------------------------------- filets : jamais de blocage technique
+def _simple(nom):
+    import unicodedata
+    x = unicodedata.normalize("NFKD", nom or "").encode("ascii", "ignore").decode().lower()
+    return re.sub(r"[^a-z0-9]+", "", x) or "terminagotchi"
+
+
+def signer_carnet(state):
+    """G-07 : `git commit` refuse de travailler sans auteur (« Please tell me who you are », en anglais). Dès que le
+    carnet (le dépôt de la leçon git) existe et qu'aucune identité n'est réglée, le jeu signe CE dépôt seulement
+    (git config sans --global, rangé dans carnet/.git/config) au nom de la créature, et l'explique."""
+    h = h_(state)
+    depot = T() / "carnet"
+    if h.get("git_signe") or not (depot / ".git").is_dir():
+        return False
+    import shutil
+    import subprocess
+    if not shutil.which("git"):
+        return False
+
+    def cfg(*a):
+        return subprocess.run(["git", "-C", str(depot), "config", *a], capture_output=True, text=True,
+                              timeout=10).stdout.strip()
+    try:
+        if cfg("user.name") and cfg("user.email"):
+            h["git_signe"] = "deja"                     # une identité existe déjà (globale) : on n'y touche pas
+            return False
+        nom = state.get("name") or "Terminagotchi"
+        cfg("user.name", nom)
+        cfg("user.email", f"{_simple(nom)}@terminagotchi.invalid")
+    except (OSError, subprocess.SubprocessError):
+        return False
+    h["git_signe"] = True
+    core.log(state, t("hist.git.signe.log", nom=nom))
+    core.say(state, dire(state, "hist.git.signe.dit", nom=nom), 14)
+    core.say(state, t("hist.git.signe.adulte", nom=nom, email=f"{_simple(nom)}@terminagotchi.invalid"), 16)
+    return True
+
+
+def page_secours(titre, texte):
+    """Une petite page web locale (le « colis » quand Internet ne répond pas)."""
+    import html
+    return ("<!doctype html>\n<html>\n<head><meta charset=\"utf-8\"><title>" + html.escape(titre) + "</title></head>\n"
+            "<body>\n<h1>" + html.escape(titre) + "</h1>\n<p>" + html.escape(texte) + "</p>\n</body>\n</html>\n")
+
+
+CURL_COLIS = r"^curl(\.exe)?\b.*-o\s*\S*colis\.html"
+
+
+def colis_hors_ligne(state, lines, cwds):
+    """G-08 : `curl -o colis.html …` sans Internet (école, proxy, avion) ne pose aucun fichier, et l'étape attendait ce
+    fichier pour toujours. La commande est dans l'historique, donc elle est finie : si le colis n'est arrivé ni dans
+    le terrain ni là où elle a été tapée, le facteur en dépose un de secours (page locale) et la créature explique."""
+    les, _ = lecon_courante(state)
+    if not les or les["id"] != "reseau1" or core.level(state["xp"]) < les["niveau"]:
+        return False
+    step = les["steps"][state["step"]]
+    if step.get("fs") != "colis" or lecons.FS["colis"]():
+        return False
+    from pathlib import Path
+    for l, cwd in zip(lines, cwds):
+        if est_colle(l) or not re.search(CURL_COLIS, l, re.I):
+            continue
+        if cwd and (Path(cwd) / "colis.html").is_file():
+            return False                                # arrivé ailleurs : l'indice dit où le taper
+        nom = state.get("name", "")
+        if not _ecrire("colis.html", page_secours(t("hist.colis.titre"), t("hist.colis.texte", nom=nom))):
+            return False
+        h_(state)["colis_secours"] = True
+        core.log(state, t("hist.colis.log"))
+        core.say(state, dire(state, "hist.colis.dit", nom=nom), 14)
+        core.say(state, t("hist.colis.adulte"), 16)
+        return True
+    return False
+
+
 # ---------------------------------------------------------------- à chaque étape de jeu
 def tick(state, lines, cwd=None):
     h_(state)
     cwds = maison.suivre(state, lines, cwd)
     meubler(state)
     _visite_aile(state, cwds + [maison.ici(state)])
+    signer_carnet(state)
+    colis_hors_ligne(state, lines, cwds)
     tick_lecon(state, lines, cwds)
     meubler(state)
     from . import quetes

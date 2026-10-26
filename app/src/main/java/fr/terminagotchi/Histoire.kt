@@ -59,7 +59,7 @@ object Histoire {
 
     val CHAPITRES = listOf(
         Chapitre("reveil", 1, "vestibule", null, listOf("t0", "reveil1"), listOf(2, 2), "veilleuse"),
-        Chapitre("nid", 2, "nid", null, listOf("nid0", "debarras", "nid1"), listOf(3, 3, 4), "coussin"),
+        Chapitre("nid", 2, "nid", null, listOf("nid0", "debarras", "nid1", "secrets"), listOf(3, 3, 4, 4), "coussin"),
         Chapitre("grenier", 3, "grenier", "Sylvestres", listOf("grenier0", "t4"), null, "plante", "jardinier"),
         Chapitre("cave", 4, "cave", "Démons", listOf("cave0", "t3"), null, "cadenas_dore", "gardien_des_cles"),
         Chapitre("bibliotheque", 5, "bibliotheque", "Abyssaux", listOf("biblio0", "biblio1", "tuyaux0", "tuyaux1"), null,
@@ -148,6 +148,13 @@ object Histoire {
                 n("debarras", 2, "rm -r vieille_cabane", fs = { !File(it.terrain, "vieille_cabane").exists() && it.terrain.isDirectory }),
             )),
             "nid1" to Lecon("lec.t2.titre", null, 1, listOf(ref("t2", 0), ref("t2", 1))),
+            // mini-leçon « pont » (G-05) : les passages secrets (ls -a) juste avant l'ouverture de l'exploration ;
+            // l'astuce est la version des grands
+            "secrets" to Lecon("hist.secrets.titre", null, 1, listOf(
+                n("secrets", 0, "ls -a", re = "^(ls\\s+-\\w*[aA]|dir\\s+(-force|/a)|gci\\s+-force|get-childitem\\s+-force)", ou = "",
+                    astuce = "hist.secrets.0.adulte"),
+                n("secrets", 1, "cat .mot_secret.txt", re = "$LIRE.*\\.mot_secret", ou = "", astuce = "hist.secrets.1.adulte"),
+            )),
             // pas de tree sur le téléphone : ls -R montre le plan
             "grenier0" to Lecon("hist.grenier0.titre", "Explorateur", 1, listOf(
                 entree("grenier"),
@@ -243,7 +250,15 @@ object Histoire {
         for (k in listOf("pas", "carnet")) if (!h.has(k)) h.put(k, JSONObject())
         if (!h.has("born")) h.put("born", System.currentTimeMillis() / 1000)
         if (h.optInt("v", 1) < 2) versionV2(jeu, h)
+        if (h.optInt("v", 1) < 3) versionV3(h)
         return h
+    }
+
+    /** Sauvegarde v2 → v3 : la mini-leçon « passages secrets » (secrets) finit le chapitre 2. Un chapitre 2 déjà fini
+     *  la compte comme faite ; une partie en plein chapitre 2 la fera à la fin. */
+    private fun versionV3(h: JSONObject) {
+        h.put("v", 3)
+        if ("nid" in liste(h, "ailes")) ajouter(h, "faits", "secrets")
     }
 
     /**
@@ -290,9 +305,21 @@ object Histoire {
         return ouvert(jeu, c.id)
     }
 
+    /** XP qu'une leçon finie a donnée au moins (20 à la fin, + 5 par étape avant la dernière), et un chapitre fini. */
+    const val XP_LECON_SURE = 20
+    const val XP_CHAPITRE_SUR = 30
+
+    /** L'XP que l'apprentissage seul a forcément donnée : leçons et chapitres finis (jamais la répétition). */
+    fun xpAppris(jeu: Jeu) = XP_LECON_SURE * faits(jeu).size + XP_CHAPITRE_SUR * ailes(jeu).size
+
+    /** Le niveau demandé pour voir la leçon. G-04 : jamais plus que le niveau que les leçons et chapitres déjà finis
+     *  ont donné ; un enfant qui suit le parcours n'a jamais à « remplir » (seul l'œuf du réveil attend ses premières
+     *  commandes). */
     fun niveauRequis(jeu: Jeu, c: Chapitre, i: Int): Int {
-        c.niveaux?.let { return it[minOf(i, it.size - 1)] }
-        return minOf(12, 5 + nbAiles(jeu) + i)               // les ailes : la difficulté suit le nombre d'ailes réveillées
+        val n = c.niveaux?.let { it[minOf(i, it.size - 1)] }
+            ?: minOf(12, 5 + nbAiles(jeu) + i)               // les ailes : la difficulté suit le nombre d'ailes réveillées
+        if (c.id == "reveil") return n
+        return maxOf(1, minOf(n, Regles.niveau(xpAppris(jeu))))
     }
 
     fun etapes(jeu: Jeu, lid: String): List<Etape> =
@@ -407,7 +434,8 @@ object Histoire {
         "atelier" -> mapOf("atelier/plan_de_travail.txt" to dire(jeu, "hist.meuble.plan"))
         // la vieille cabane pleine de planches de la leçon « Une pièce en trop » (seulement par BESOINS)
         "nid" -> linkedMapOf("vieille_cabane/planche_1.txt" to dire(jeu, "hist.meuble.planche"),
-            "vieille_cabane/planche_2.txt" to dire(jeu, "hist.meuble.planche"))
+            "vieille_cabane/planche_2.txt" to dire(jeu, "hist.meuble.planche"),
+            ".mot_secret.txt" to dire(jeu, "hist.meuble.mot_secret", "nom" to jeu.nom))
         "coeur" -> {
             val m = linkedMapOf<String, Any>(
                 "coeur/message_brouille.txt" to dire(jeu, "hist.meuble.message").split("\n").joinToString("\n") { inverse(it) },
@@ -427,6 +455,7 @@ object Histoire {
     private val BESOINS: Map<String, List<Pair<String, Int?>>> = mapOf(
         "reveil1" to listOf("vestibule/oeuf_tout_chaud.txt" to null),
         "debarras" to listOf("vieille_cabane/planche_1.txt" to 2, "vieille_cabane/planche_2.txt" to 2),
+        "secrets" to listOf(".mot_secret.txt" to null),
         "grenier0" to listOf("grenier/fouillis/ours_en_peluche.txt" to 2),
         "biblio0" to listOf("bibliotheque/etagere_c/coin_poussiereux/livre_des_abysses.txt" to null),
         "biblio1" to listOf("bibliotheque/etagere_c/coin_poussiereux/livre_des_abysses.txt" to null),
@@ -797,6 +826,7 @@ object Histoire {
                 courant = chapitreDeLecon(lid)?.id ?: courant
             }
         }
+        if ("nid1" in faits) fait("secrets")       // le tronc commun fini : l'exploration était déjà ouverte (v3)
         val h = JSONObject().put("v", 2).put("chap", "reveil").put("faits", JSONArray(faits)).put("ailes", JSONArray())
             .put("pas", pas).put("ouverts", JSONArray()).put("carnet", JSONObject()).put("meubles", JSONArray())
             .put("suggere", JSONArray()).put("born", System.currentTimeMillis() / 1000)

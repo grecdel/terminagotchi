@@ -143,7 +143,7 @@ verifier("touch nid/lit.txt" in (st.get("indice_lecon") or "") and "cd ~/terrain
          f"touch lit.txt dans la grande salle : la commande entière, pas « va dans le terrain » ({st.get('indice_lecon')})")
 st = tape("touch nid/lit.txt")
 verifier("nid0" in h(st)["faits"] and "Bâtisseur" in st["skills"], "le nid et le lit (compétence Bâtisseur)")
-verifier(explo.debloque(st), "les monstres peuvent arriver")
+verifier(not explo.debloque(st), "pas encore de monstres : les passages secrets d'abord (G-05)")
 verifier(lecon(st) == ("debarras", 0) and (T / "vieille_cabane" / "planche_1.txt").is_file(),
          f"la suite démarre : « Une pièce en trop », la vieille cabane est posée ({lecon(st)})")
 st = tape("mkdir debarras")
@@ -161,6 +161,16 @@ st = tape("echo pome > nid/repas.txt")
 verifier("pomme" in (st.get("indice_lecon") or ""), "« pome » : l'indice de toujours marche dans l'histoire")
 st = tape("echo pomme > nid/repas.txt")
 st = tape("cat nid/repas.txt")
+verifier(lecon(st) == ("secrets", 0) and (T / ".mot_secret.txt").is_file() and not explo.debloque(st),
+         f"mini-leçon pont « passages secrets » : le mot caché est posé ({lecon(st)})")
+ecran = texte(app.render(st, 0, True))
+verifier("ls -a" in ecran and "Pour les grands" in ecran, "ls -a : l'explication enfant et la version des grands")
+st = tape("ls")
+verifier(lecon(st) == ("secrets", 0), "ls seul ne montre pas le passage secret")
+st = tape("ls -a")
+verifier(lecon(st) == ("secrets", 1), "ls -a : le passage secret apparaît")
+st = tape("cat .mot_secret.txt")
+verifier(explo.debloque(st), "mot caché lu : les monstres peuvent arriver")
 verifier(histoire.fini(st, "nid") and histoire.chapitre_courant(st) is None, "chapitre 2 fini : aucune aile imposée")
 verifier(not (T / "vieille_cabane").exists(), "la vieille cabane ne revient pas")
 ecran = texte(app.render(dict(st, dressage=None), 0, True))     # (le premier monstre vient d'arriver)
@@ -359,7 +369,7 @@ s = ancienne(lesson=1, step=1)
 verifier(s["histoire"]["chap"] == "reveil" and lecon(s) == ("reveil1", 0), "en train de construire le terrain → la vieille porte")
 s = ancienne(lesson=0, step=0)
 verifier(lecon(s) == ("t0", 0) and not s["histoire"]["faits"], "toute nouvelle partie : rien de fait")
-verifier(s["histoire"]["v"] == 2, "nouvelle sauvegarde : v2")
+verifier(s["histoire"]["v"] == 3, "nouvelle sauvegarde : v3")
 
 
 def v1(faits, step, ailes=("reveil",), chap="nid"):
@@ -372,12 +382,16 @@ def v1(faits, step, ailes=("reveil",), chap="nid"):
 
 
 s = v1(["t0", "reveil1"], 2)
-verifier(lecon(s) == ("nid0", 2) and s["histoire"]["v"] == 2, f"v1 en plein nid0 (3/3) : même leçon, même étape {lecon(s)}")
+verifier(lecon(s) == ("nid0", 2) and s["histoire"]["v"] == 3, f"v1 en plein nid0 (3/3) : même leçon, même étape {lecon(s)}")
 s = v1(["t0", "reveil1", "nid0"], 1)
 verifier(lecon(s) == ("debarras", 0) and s["histoire"]["pas"].get("nid1") == 1,
          f"v1 en plein garde-manger : d'abord la pièce en trop, l'étape du repas est gardée {lecon(s)}")
 s = v1(["t0", "reveil1", "nid0", "nid1"], 0, ailes=("reveil", "nid"), chap=None)
 verifier("debarras" in s["histoire"]["faits"] and histoire.fini(s, "nid"), "v1 chapitre 2 fini : la leçon compte comme faite")
+verifier("secrets" in s["histoire"]["faits"], "v2 → v3 : chapitre 2 fini, les passages secrets comptent comme faits")
+s = v1(["t0", "reveil1", "nid0", "debarras"], 1)
+verifier(lecon(s) == ("nid1", 1) and "secrets" not in s["histoire"]["faits"],
+         f"v2 → v3 en plein garde-manger : même étape, les passages secrets viendront à la fin {lecon(s)}")
 s = v1(["t0", "reveil1"], 99)
 verifier(lecon(s) == ("debarras", 0) and "nid0" in s["histoire"]["faits"],
          f"filet de sécurité : étape au-delà de la fin → leçon finie, la suite démarre {lecon(s)}")

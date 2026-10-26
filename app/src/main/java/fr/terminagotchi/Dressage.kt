@@ -342,29 +342,82 @@ object Dressage {
         return null
     }
 
-    /** Les épreuves d'un dressage. nCaptures = bestioles déjà dressées (null : pas de plafond). */
-    fun choisirEpreuves(e: Bestiaire.Espece, premiere: Boolean, rarete: String, nCaptures: Int? = null): List<Epreuve> {
-        val rencontre = EPREUVES.filter { it.fam == "Rencontre" }
-        if (nCaptures == 0) return listOf(rencontre[0]) + premiereEpreuve(e)   // lire sa fiche + 1 épreuve simple
-        return rencontre + epreuvesFamille(e, premiere, rarete, plafond(nCaptures))
+    /**
+     * G-06 : les notions qu'une épreuve demande (comme dressage.REQUIS sur PC). Une épreuve n'est tirée que si l'enfant
+     * les a déjà rencontrées : chaque commande goûtée (jeu.vus), ou « opt:<clé> » = une option ou un symbole expliqué
+     * après une leçon (Explique : opt:tuyau = |, opt:ecrase = >, opt:inverse = grep -v…). « a/b » : l'une ou l'autre.
+     */
+    val REQUIS: Map<String, List<String>> = mapOf(
+        "Rencontre:examiner" to listOf("cat"), "Rencontre:repaire" to listOf("find"),
+        "Fichiers:enclos" to listOf("mkdir"), "Fichiers:gamelle" to listOf("touch"), "Fichiers:doudou" to listOf("cp"),
+        "Fichiers:renomme" to listOf("mv"), "Fichiers:archive" to listOf("tar"),
+        "Réseau:ping" to listOf("ping"), "Réseau:hote" to listOf("hostname"), "Réseau:ip" to listOf("ip"),
+        "Réseau:dns" to listOf("nslookup/dig/host"), "Réseau:page" to listOf("curl", "opt:output"),
+        "Processus:ps" to listOf("ps"), "Processus:heure" to listOf("date"), "Processus:fond" to listOf("sleep", "jobs"),
+        "Processus:jobs" to listOf("jobs"), "Processus:kill" to listOf("kill"),
+        "Mémoire:place" to listOf("df"), "Mémoire:ram" to listOf("free"), "Mémoire:poids" to listOf("du"),
+        "Mémoire:sac" to listOf("ls", "wc", "opt:tuyau"),
+        "Sécurité:cage" to listOf("mkdir", "touch"), "Sécurité:cachette" to listOf("touch", "opt:all"),
+        "Sécurité:prive" to listOf("chmod"), "Sécurité:empreinte" to listOf("sha256sum"),
+        "Code:chant" to listOf("echo", "opt:ecrase"), "Code:script" to listOf("echo", "chmod", "opt:plusx"),
+        "Code:compte" to listOf("for"),
+        "Matériel:machine" to listOf("uname"), "Matériel:coeurs" to listOf("nproc"), "Matériel:disques" to listOf("lsblk/df"),
+        "Bugs:erreurs" to listOf("grep"), "Bugs:combien" to listOf("grep"), "Bugs:corrige" to listOf("grep", "opt:inverse", "opt:ecrase"),
+        "Nuage:nuage" to listOf("mkdir"), "Nuage:photos" to listOf("touch"), "Nuage:copie" to listOf("cp", "opt:recursif_cp"),
+        "Données:debut" to listOf("head"), "Données:lignes" to listOf("wc"), "Données:trie" to listOf("sort", "opt:ecrase"),
+        "Données:differentes" to listOf("sort", "uniq", "opt:tuyau"),
+        "Crypto:lire" to listOf("cat"), "Crypto:decode" to listOf("base64"), "Crypto:empreinte" to listOf("sha256sum"),
+        "IA:bonjour" to listOf("echo"), "IA:chat" to listOf("grep"), "IA:frequent" to listOf("sort", "uniq", "opt:tuyau"),
+        "Rétro:calendrier" to listOf("cal"), "Rétro:record" to listOf("sort", "tail", "opt:tuyau"),
+        "Rétro:top3" to listOf("sort", "head", "opt:tuyau", "opt:ecrase"),
+        "Glitch:voir" to listOf("cat"), "Glitch:repare" to listOf("rev", "opt:ecrase"), "Glitch:chuchote" to listOf("tr"),
+        "Système:qui" to listOf("whoami"), "Système:systeme" to listOf("uname"), "Système:alias" to listOf("alias"),
+        "Système:variable" to listOf("export"),
+    )
+    /** les commandes voisines comptent pour la commande du tableau (comme dressage.SYNONYMES sur PC) */
+    private val SYNONYMES = mapOf("less" to "cat", "more" to "cat", "top" to "ps", "ifconfig" to "ip", "md" to "mkdir")
+
+    /** Les notions déjà rencontrées par l'enfant : commandes goûtées (+ leurs voisines) et options expliquées. */
+    fun rencontrees(jeu: Jeu): Set<String> {
+        val vues = jeu.vus.toMutableSet()
+        vues += jeu.vus.mapNotNull { SYNONYMES[it] }
+        jeu.module("explique").optJSONArray("vues")?.let { a -> for (i in 0 until a.length()) vues += "opt:" + a.getString(i) }
+        return vues
     }
 
-    private fun premiereEpreuve(e: Bestiaire.Espece): List<Epreuve> {
+    /** L'épreuve ne demande que des notions déjà rencontrées (notions null : pas de filtre). */
+    fun connue(cle: String, notions: Set<String>?): Boolean =
+        notions == null || (REQUIS[cle] ?: emptyList()).all { tok -> tok.split("/").any { it in notions } }
+
+    /** Les épreuves d'un dressage. nCaptures = bestioles déjà dressées (null : pas de plafond).
+     *  notions = rencontrees(jeu) : seules les épreuves dont les notions sont connues (G-06 ; null : toutes). */
+    fun choisirEpreuves(e: Bestiaire.Espece, premiere: Boolean, rarete: String, nCaptures: Int? = null,
+                        notions: Set<String>? = null): List<Epreuve> {
+        val rencontre = EPREUVES.filter { it.fam == "Rencontre" }
+        if (nCaptures == 0) return listOf(rencontre[0]) + premiereEpreuve(e, notions)   // lire sa fiche + 1 épreuve simple
+        val rc = rencontre.filterIndexed { i, x -> i == 0 || connue(x.cle, notions) }
+        return rc + epreuvesFamille(e, premiere, rarete, plafond(nCaptures), notions).ifEmpty { premiereEpreuve(e, notions) }
+    }
+
+    private fun premiereEpreuve(e: Bestiaire.Espece, notions: Set<String>? = null): List<Epreuve> {
         val fams = e.epreuves.ifEmpty { listOf(e.famille) }
         val pool = fams.flatMap { f -> EPREUVES.filter { it.fam == f } }.associateBy { it.cle }
-        for (k in SIMPLES) pool[k]?.let { return listOf(it) }
-        return listOf(EPREUVES.filter { it.fam == "Rencontre" }[1])
+        for (k in SIMPLES) pool[k]?.let { if (connue(k, notions)) return listOf(it) }
+        if (connue("Rencontre:repaire", notions)) return listOf(EPREUVES.filter { it.fam == "Rencontre" }[1])
+        for (k in SIMPLES) if (connue(k, notions)) epreuve(k)?.let { return listOf(it) }   // une épreuve simple d'ailleurs
+        return emptyList()
     }
 
     /** Les épreuves de la famille (e.epreuves : les commandes que cette famille aime), selon la rareté de l'individu. */
-    private fun epreuvesFamille(e: Bestiaire.Espece, premiere: Boolean, rarete: String, cap: Pair<Int, Int>?): List<Epreuve> {
+    private fun epreuvesFamille(e: Bestiaire.Espece, premiere: Boolean, rarete: String, cap: Pair<Int, Int>?,
+                                notions: Set<String>? = null): List<Epreuve> {
         val fams = e.epreuves.ifEmpty { listOf(e.famille) }
-        val pool = fams.flatMap { f -> EPREUVES.filter { it.fam == f } }
+        val pool = fams.flatMap { f -> EPREUVES.filter { it.fam == f && connue(it.cle, notions) } }
         var n = NB[rarete] ?: 2
         var nmax = NIV[rarete] ?: 1
         if (cap != null) { n = minOf(n, cap.first); nmax = minOf(nmax, cap.second) }   // débutant : moins d'épreuves, plus faciles
         val choix = if (rarete in ULTIMES && cap == null) {        // l'épreuve ultime : sa famille + des épreuves d'ailleurs
-            val autres = EPREUVES.filter { it.fam !in fams && it.fam != "Rencontre" && it.niveau >= 2 }.shuffled()
+            val autres = EPREUVES.filter { it.fam !in fams && it.fam != "Rencontre" && it.niveau >= 2 && connue(it.cle, notions) }.shuffled()
             pool.sortedBy { it.niveau }.takeLast(3) + autres.take(3)
         } else {
             val ok = pool.filter { it.niveau <= nmax }.sortedBy { it.niveau }
@@ -389,7 +442,7 @@ object Dressage {
         val faites = m.optJSONArray("familles") ?: JSONArray().also { m.put("familles", it) }
         val premiere = (0 until faites.length()).none { faites.getString(it) == e.famille }
         val nCaps = Explo.captures(jeu).length()
-        val taches = choisirEpreuves(e, premiere, rar, nCaps)
+        val taches = choisirEpreuves(e, premiere, rar, nCaps, rencontrees(jeu))
         val debutant = if (nCaps < 5) TEMPS_DEBUTANT else 0
         val zone = ind.optString("zone").ifEmpty { e.zone }
         val d = JSONObject().put("espece", e.nom).put("shiny", shiny).put("zone", zone)

@@ -114,7 +114,7 @@ def render(state, frame, interactif, anim=None):
                 for k, p in enumerate(explique.phrases(state, montre, cle)):   # (+ pour les grands, palier ≥ 1)
                     for x in envelopper(p, 74 - 2 * k):
                         lines.append(f"   {'  ' * k}{DIM}{x}{RESET}")
-            if "nid/" in step["cmd"] or step["cmd"].endswith(" nid") or "reserve.txt" in step["cmd"] \
+            if " nid/" in " " + step["cmd"] or step["cmd"].endswith(" nid") or "reserve.txt" in step["cmd"] \
                     or step["cmd"].startswith(("cat coeur", "chmod 444 coeur", "echo ? > coeur", "cp -r grenier", "rm -r vieille_cabane")):
                 lines.append(f"   {DIM}" + t("app.lecon.depuis", terrain=terme("terrain", palier(state)),
                                             cmd=f"cd ~/{core.TERRAIN.name}") + RESET)
