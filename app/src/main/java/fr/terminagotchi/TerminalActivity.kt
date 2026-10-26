@@ -414,7 +414,9 @@ class TerminalActivity : Activity() {
         // Commandes intégrées (téléphone, créature) : réponse immédiate
         val interne = commandes.executer(ligne)
         if (interne != null) {
-            ecrire(interne.texte, interne.couleur, interne.petit)
+            // la carte qui pousse s'ouvre à la place de l'observatoire (le texte reste en secours)
+            if (interne.carte && ouvrirCarte()) ecrire("🗺 " + Carte.titre(jeu), interne.couleur)
+            else ecrire(interne.texte, interne.couleur, interne.petit)
             if (lexiqueVue.visibility == View.VISIBLE) basculerLexique()
             interne.aller?.let {
                 shell.dossier = it
@@ -521,6 +523,8 @@ class TerminalActivity : Activity() {
         val tour = Tour.apresCommande(jeu, ligne, etaitColle, etaitRappel, cwd = shell.dossier)
         val mange = tour.mange
         for ((m, c) in tour.messages) ecrire(m, c)
+        Maison.dernierePousse?.let { ecrire(it, 0xFF9A9AB0.toInt()); Maison.dernierePousse = null }   // 🗺 la carte a poussé : + …
+        carteVue?.rafraichir()
         if (tour.saut > saut) saut = tour.saut
         Donjon.verifier(jeu, shell.dossier, ligne)?.let { r ->
             ecrire(r.texte, 0xFFFFD787.toInt())
@@ -614,6 +618,36 @@ class TerminalActivity : Activity() {
             val coul = android.graphics.Color.HSVToColor(floatArrayOf(360f * k / (n + 4), 0.6f, 1f))
             sb.setSpan(ForegroundColorSpan(coul), debut, debut + 1, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
         }
+    }
+
+    // ------------------------------------------------------------ la carte qui pousse
+    private var carteVue: CarteVue? = null
+
+    /** Ouvre (ou rafraîchit) la carte dessinée à la place de l'observatoire. Faux si elle n'a pas pu s'ouvrir. */
+    private fun ouvrirCarte(): Boolean = try {
+        carteVue?.rafraichir() ?: run {
+            val obs = chemin.parent as View
+            val panneau = obs.parent as LinearLayout
+            var i = 0
+            while (i < panneau.childCount && panneau.getChildAt(i) !== obs) i++
+            val v = CarteVue(this, jeu, { Sprites.bitmap(jeu, 1) }) { fermerCarte() }
+            val lp = LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, (250 * resources.displayMetrics.density).toInt())
+            lp.topMargin = (8 * resources.displayMetrics.density).toInt()
+            panneau.addView(v, i, lp)
+            obs.visibility = View.GONE
+            carteVue = v
+        }
+        true
+    } catch (e: Exception) {
+        android.util.Log.e("TG", "carte", e)
+        false
+    }
+
+    private fun fermerCarte() {
+        val v = carteVue ?: return
+        (v.parent as? LinearLayout)?.removeView(v)
+        (chemin.parent as View).visibility = View.VISIBLE
+        carteVue = null
     }
 
     /** petit : en plus petit (la carte de la maison tient dans la largeur de l'écran). */

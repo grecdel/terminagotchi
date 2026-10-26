@@ -32,7 +32,9 @@ class Commandes(
 
     /** aller : dossier où emmener le joueur après la commande (donjon, ctf…). */
     /** petit : en plus petit (la carte de la maison tient alors dans la largeur de l'écran). */
-    class Reponse(val texte: String, val saut: Int = 0, val couleur: Int? = null, val aller: File? = null, val petit: Boolean = false)
+    /** carte : ouvrir la carte qui pousse (CarteVue) ; texte est alors la même carte en `tree` annoté. */
+    class Reponse(val texte: String, val saut: Int = 0, val couleur: Int? = null, val aller: File? = null, val petit: Boolean = false,
+                  val carte: Boolean = false)
 
     private var tts: TextToSpeech? = null
     private var ttsPret = false
@@ -54,8 +56,8 @@ class Commandes(
             "applis" -> applis(reste)
             "ouvre" -> ouvre(reste)
             "web" -> web(reste)
-            // carte tout seul : le plan de la maison ; carte <lieu> : la carte du monde
-            "carte" -> if (reste.isEmpty()) Reponse(Maison.carte(jeu.also { Histoire.h(it) }).joinToString("\n"), couleur = ROSE, petit = true)
+            // carte tout seul : la carte qui pousse (le Terminaworld) ; carte <lieu> : un plan de la ville (appli de cartes)
+            "carte" -> if (reste.isEmpty()) Reponse(Maison.carte(jeu.also { Histoire.h(it) }).joinToString("\n"), couleur = ROSE, petit = true, carte = true)
                 else lancer(Intent(Intent.ACTION_VIEW, Uri.parse("geo:0,0?q=" + Uri.encode(reste))),
                 t("tel.carte.ok", "q" to reste), "carte gare de lyon", reste)
             "appelle" -> lancer(Intent(Intent.ACTION_DIAL, Uri.parse("tel:" + Uri.encode(reste))),
