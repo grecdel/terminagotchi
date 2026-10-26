@@ -76,7 +76,7 @@ TEXTES = {".txt", ".md", ".log", ".csv", ".json", ".ini", ".cfg", ".conf", ".yml
 SCRIPTS = {".sh", ".ps1", ".py", ".bat", ".cmd", ".bash", ".zsh", ".fish", ".js", ".rb", ".pl"}
 IMAGES = {".png", ".jpg", ".jpeg", ".gif", ".bmp", ".webp", ".svg", ".ico", ".tif", ".tiff"}
 PROFONDEUR = 5            # niveaux montrés sous le camp de base
-MAX_PAR_DOSSIER = 14      # au-delà : une ligne « + n autres… »
+MAX_PAR_DOSSIER = 16      # au-delà : une ligne « + n autres… »
 MAX_LIGNES = 150
 TROP_GRAND = 200          # un dossier plus grand n'est pas exploré (on ne lit pas un dossier géant)
 IGNORES = {".git", "node_modules", "__pycache__", ".cache", "venv", ".venv", ".gradle", "build"}
@@ -487,16 +487,23 @@ def noeuds(state, marquer=False):
                 continue                              # pas encore posé par l'histoire
             garde.append((e, c, dossier))
         reste = 0
-        if len(garde) > MAX_PAR_DOSSIER:
-            reste = len(garde) - (MAX_PAR_DOSSIER - 1)
-            garde = garde[:MAX_PAR_DOSSIER - 1]
+        if len(garde) > MAX_PAR_DOSSIER:              # trop de choses : d'abord ce qu'on connaît, la brume ensuite
+            def rang(x):                              # lieux de l'histoire et lieux ouverts, passages, objets, brume
+                e, c, dossier = x
+                if dossier and (ouvert(c) or (prof == 1 and e.name in PIECES)):
+                    return 0
+                return 1 if e.name.startswith(".") else 2 if not dossier else 3
+            choix = sorted(range(len(garde)), key=lambda i: (rang(garde[i]), i))[:MAX_PAR_DOSSIER - 1]
+            reste = len(garde) - len(choix)
+            garde = [garde[i] for i in sorted(choix)]
         for i, (e, c, dossier) in enumerate(garde):
             if len(out) >= MAX_LIGNES:
                 return
             dernier = i == len(garde) - 1 and not reste
-            brume = dossier and not ouvert(c)
+            dedans = dossier and ouvert(c)
+            brume = dossier and not dedans and not e.name.startswith(".")    # un passage secret trouvé se voit
             ligne(c, e.name, prof, dossier, avant + ("└── " if dernier else "├── "), brume)
-            if dossier and not brume and prof < PROFONDEUR and e.name not in IGNORES:
+            if dedans and prof < PROFONDEUR and e.name not in IGNORES:
                 tour(e.path, c, prof + 1, avant + ("    " if dernier else "│   "))
         if reste:
             ligne(r + "/…", "…", prof, False, avant + "└── ", False, suite=reste)
@@ -625,7 +632,7 @@ def carte(state, mode=None):
         dessins = []
         for n in ns:
             if n["dossier"]:
-                parents[n["prof"]] = sol(n)[0]
+                parents[n["prof"]] = sol(n)
             gauche = "  " * n["prof"] + _tuile(n, parents) + emoji(n) + " "
             reste = LARGE_DESSIN - largeur(gauche)
             lab = (DIM if n["brume"] else BOLD if n["dossier"] else "") + raccourcir(n["etiquette"], max(4, reste)) + RESET
@@ -647,8 +654,14 @@ def carte(state, mode=None):
     elif ici(state):
         lignes.append(" ◉ " + t("carte.dehors", lieu=ici(state)))
     lignes.append(f" {DIM}" + t("carte.legende") + RESET)
-    leg = legende(state)
-    lignes.append(" " + t("carte.monde.legende") + (" " + " · ".join(leg) if leg else " " + t("carte.monde.legende.rien")))
+    leg = legende(state) or [t("carte.monde.legende.rien")]
+    cur = " " + t("carte.monde.legende")
+    for x in leg:                                 # la légende, coupée entre deux commandes (72 colonnes)
+        if largeur(cur) + largeur(x) + 3 > 72 and cur.strip() != t("carte.monde.legende").strip():
+            lignes.append(cur)
+            cur = "  "
+        cur += (" · " if not cur.endswith((" ", ":")) and cur.strip() else " ") + x
+    lignes.append(cur)
     trouves, total = _secrets(state)
     lignes.append(" " + t("carte.secrets", n=trouves, total=total))
     if m_(state)["sauvage"]:

@@ -329,7 +329,9 @@ def menu_arbre(state, clav):
 
 def menu_carte(state, clav):
     clear()
-    for l in maison.carte(core.load() or state):
+    res = []
+    core.modifier(lambda s: res.append(maison.carte(s)))
+    for l in res[0] if res else maison.carte(state):
         print(l)
     clav.demander(f"\n {DIM}" + t("app.entree_retour") + RESET)
 
@@ -661,9 +663,10 @@ def aide():
 
 def commande_histoire(mode, args):
     """tg carte · tg quetes [suivre N] · tg aile [nom] : sans ouvrir la fenêtre."""
-    if mode == "carte":
-        st = core.modifier(lambda s: histoire.h_(s))
-        return "\n".join(maison.carte(st))
+    if mode == "carte":                        # la carte qui pousse : ce qui est montré n'est plus « nouveau » ensuite
+        res = []
+        core.modifier(lambda s: (histoire.h_(s), res.append(maison.carte(s))))
+        return "\n".join(res[0]) if res else ""
     if mode in ("quetes", "quete", "journal"):
         if len(args) >= 2 and args[0].lower() in ("suivre", "follow", "s"):
             res = []
