@@ -291,8 +291,8 @@ object Quetes {
             listOf(listOf("cmd", "^(ps|get-process|gps|tasklist)\\b.*\\|\\s*(wc|measure-object|measure)")), 20, "attrape_reves"),
         q("q30", "dortoir", "lettre", "journal_du_veilleur.txt", listOf(listOf("contient", "dortoir/veilleur.txt", nomVeilleur)), 20, "bonnet_de_nuit"),
         q("q31", "dortoir", "cachette", ".sous_les_draps", listOf(), 10, "etoile_filante"),
-        // (téléphone : pas de less, on lit la fin du conte avec tail)
-        q("q32", "dortoir", "lettre", "histoire_du_soir.txt", listOf(listOf("cmd", "^(less|more|tail)\\b.*conte")), 15, "livre_de_contes",
+        // (téléphone : pas de less, on lit le conte avec cat)
+        q("q32", "dortoir", "lettre", "histoire_du_soir.txt", listOf(listOf("cmd", "^(less|more|cat|head|tail)\\b.*conte")), 15, "livre_de_contes",
             pose = poseConte),
         q("q33", "dortoir", "lettre", "reveil_matin.txt", listOf(listOf("cmd", "^(uptime|get-uptime)\\b")), 15, "reveil"),
         // l'atelier des Constructs

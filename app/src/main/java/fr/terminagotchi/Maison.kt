@@ -197,19 +197,24 @@ object Maison {
         return "${ICONES[p] ?: ""} " + marques(jeu, p) to nomPiece(p)
     }
 
-    private fun ajuste(x: String) = Langue.ajuster(Langue.raccourcir(x, LARGE - 2), LARGE - 2)
+    private fun ajuste(x: String) = Langue.ajuster(Langue.raccourcir(x.replace(RLM, ""), LARGE - 2), LARGE - 2)
+
+    /** En arabe et en ourdou, chaque ligne du plan reste de gauche à droite (sinon les cases s'inversent) : marque LRM. */
+    private const val RLM = "\u200F"
+    private const val LRM = "\u200E"
 
     /** Le plan de la maison, avec le brouillard. */
     fun carte(jeu: Jeu): List<String> {
         val h = "─".repeat(LARGE)
         val l = mutableListOf("── 🗺 " + t("carte.titre", "nom" to jeu.nom) + " ──", "")
-        l.add(" ┌" + listOf(h, h, h).joinToString("┬") + "┐")
+        val g = if (Langue.rtl) LRM else ""
+        l.add("$g ┌" + listOf(h, h, h).joinToString("┬") + "┐")
         for ((i, rang) in PLAN.withIndex()) {
             val cases = rang.map { case(jeu, it) }
-            for (k in 0..1) l.add(" │" + cases.joinToString("│") { c -> " " + ajuste(if (k == 0) c.first else c.second) + " " } + "│")
-            if (i < PLAN.size - 1) l.add(" ├" + listOf(h, h, h).joinToString("┼") + "┤")
+            for (k in 0..1) l.add("$g │" + cases.joinToString("│") { c -> " " + ajuste(if (k == 0) c.first else c.second) + " " } + "│")
+            if (i < PLAN.size - 1) l.add("$g ├" + listOf(h, h, h).joinToString("┼") + "┤")
         }
-        l.add(" └" + listOf(h, h, h).joinToString("┴") + "┘")
+        l.add("$g └" + listOf(h, h, h).joinToString("┴") + "┘")
         l.add(t("carte.legende"))
         l.add("")
         val ici = ici(jeu)
@@ -236,6 +241,6 @@ object Maison {
 
     /** Pour les tests : toutes les lignes du plan ont la même largeur à l'écran. */
     fun verifierLargeur(lignes: List<String>): Set<Int> =
-        lignes.filter { it.startsWith(" │") || it.startsWith(" ┌") || it.startsWith(" ├") || it.startsWith(" └") }
+        lignes.map { it.removePrefix(LRM) }.filter { it.startsWith(" │") || it.startsWith(" ┌") || it.startsWith(" ├") || it.startsWith(" └") }
             .map { Langue.largeur(it) }.toSet()
 }

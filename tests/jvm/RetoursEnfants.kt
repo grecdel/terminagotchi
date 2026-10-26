@@ -1,6 +1,8 @@
 /*
- * Test JVM (hors téléphone) des retours des enfants de 7 ans, portage de pc/outils/test_retours_enfants.py :
- *   1. leçons : « pome » au lieu de « pomme » → indice clair, la leçon attend la bonne commande ;
+ * Test JVM (hors téléphone) des retours des enfants de 7 ans, portage de pc/outils/test_retours_enfants.py
+ * (dans « La Maison endormie ») :
+ *   1. leçons (chapitres 1-2, puis la bibliothèque et la cave choisies librement) : « pome » au lieu de « pomme »
+ *      → indice clair, la leçon attend la bonne commande ;
  *   2. terrain effacé (rm -rf) → bulle + bandeau avec la commande ; reconstruit → la leçon reprend au bon
  *      endroit (repas.txt remis) ; si l'enfant n'y arrive pas, le jeu reconstruit lui-même après 12 commandes ;
  *   3. premier dressage : un monstre courant et commun, 2 épreuves simples, indice « presque », tirage toujours
@@ -8,8 +10,9 @@
  *   4. attirance : sur 1200 apparitions vérifiables, la famille attirée sort vraiment plus souvent (≈ 29 %, comme le PC) ;
  *   5. mini-combat : gagné (peur −40, une épreuve en moins), puis perdu (KO, repos, pas de mort).
  *
- * De vraies commandes sont lancées avec bash (HOME = la maison de l'appli), puis le jeu fait le même tour
- * qu'après une commande tapée dans le terminal de l'appli (Tour.apresCommande).
+ * De vraies commandes sont lancées avec bash (HOME = la maison de l'appli), « cd » par Shell.kt comme dans l'appli,
+ * puis le jeu fait le même tour qu'après une commande tapée dans le terminal (Tour.apresCommande, avec le dossier
+ * courant du terminal).
  *
  * Il se compile avec kotlinc contre les classes de l'appli et des imitations d'android.* (qui ne sont pas
  * dans le dépôt), et se lance SANS être root (sinon chmod 444 n'empêche pas d'écrire) :
@@ -22,9 +25,11 @@ import fr.terminagotchi.Dressage
 import fr.terminagotchi.Equipe
 import fr.terminagotchi.Explo
 import fr.terminagotchi.Animations
+import fr.terminagotchi.Histoire
 import fr.terminagotchi.Jeu
 import fr.terminagotchi.Langue
 import fr.terminagotchi.Recensement
+import fr.terminagotchi.Shell
 import fr.terminagotchi.Terrain
 import fr.terminagotchi.Tirage
 import fr.terminagotchi.Tour
@@ -52,17 +57,27 @@ fun verifier(c: Boolean, m: String) {
 }
 
 lateinit var jeu: Jeu
+lateinit var shell: Shell
 val T: File get() = jeu.terrain
 
-/** L'enfant tape une commande : elle s'exécute vraiment (bash), puis le jeu fait son tour. */
-fun tape(cmd: String, ou: File = jeu.home) {
-    val pb = ProcessBuilder("bash", "-c", cmd).directory(ou).redirectErrorStream(true)
-    pb.environment()["HOME"] = jeu.home.absolutePath
-    val p = pb.start()
-    p.inputStream.readBytes()
-    p.waitFor()
-    Tour.apresCommande(jeu, cmd, colle = false, rappel = false, hasard = false)
+/** L'enfant tape une commande dans le terminal (ou : le dossier où elle est tapée, sinon là où il en est) :
+ *  « cd » passe par Shell.kt comme dans l'appli, le reste s'exécute vraiment (bash), puis le jeu fait son tour. */
+fun tape(cmd: String, ou: File? = null) {
+    if (ou != null) shell.dossier = ou
+    if (!shell.dossier.isDirectory) shell.dossier = jeu.home
+    if (cmd.trim().split(" ")[0] == "cd") shell.executer(cmd)
+    else {
+        val pb = ProcessBuilder("bash", "-c", cmd).directory(shell.dossier).redirectErrorStream(true)
+        pb.environment()["HOME"] = jeu.home.absolutePath
+        val p = pb.start()
+        p.inputStream.readBytes()
+        p.waitFor()
+    }
+    Tour.apresCommande(jeu, cmd, colle = false, rappel = false, hasard = false, cwd = shell.dossier)
 }
+
+fun niveau(n: Int) { jeu.xp = maxOf(jeu.xp, 10 * (n - 1) * (n - 1)) }
+fun lec(): Pair<String?, Int> = Histoire.leconCourante(jeu)?.id to jeu.etape
 
 fun bulles() = (listOf(jeu.bulle) + jeu.bulles.map { it.first }).joinToString(" | ")
 
@@ -81,31 +96,44 @@ fun main(args: Array<String>) {
     jeu = Jeu(app)
     jeu.changerLangue("fr")
     jeu.nom = "Pixel"
+    shell = Shell(jeu.home)
     // pas d'ouverture automatique de l'exploration pendant le test : les monstres sont appelés exprès (Explo.spawn)
     jeu.module("explo").put("ouverte", true)
     val jour = java.text.SimpleDateFormat("yyyy-MM-dd", java.util.Locale.ROOT).format(java.util.Date())
     Tirage.rangerGraines(jeu, JSONArray().put(JSONObject().put("id", "$jour.abcdef123456").put("valeur", GRAINE)))
 
+    niveau(2)
     for (c in listOf("pwd", "ls", "cd ~")) tape(c)
-    for (c in listOf("mkdir terrain_terminagotchi", "cd terrain_terminagotchi")) tape(c)
-    tape("mkdir nid", T)
-    verifier(jeu.lecon == 2 && "Bâtisseur" in jeu.skills, "tronc commun : leçon 1 finie (terrain et nid construits)")
+    for (c in listOf("cd terrain_terminagotchi", "ls", "cd vestibule", "ls")) tape(c)     // chapitre 1 : la vieille porte, l'œuf
+    niveau(3)
+    for (c in listOf("cd ..", "mkdir nid", "touch nid/lit.txt")) tape(c, T)             // chapitre 2 : le nid
+    verifier("nid0" in Histoire.faits(jeu) && "Bâtisseur" in jeu.skills, "chapitres 1-2 : terrain, œuf et nid construits")
 
     println("1. Leçons : un indice quand c'est presque ça")
+    niveau(4)
     tape("echo pome > nid/repas.txt", T)
-    verifier(jeu.lecon == 2 && jeu.etape == 0, "« pome » : la leçon attend encore la bonne commande")
+    verifier(lec() == ("nid1" to 0), "« pome » : la leçon attend encore la bonne commande")
     val il = jeu.indiceLecon ?: ""
     verifier("pome" in il && "pomme" in il, "indice : $il")
     verifier("💡 Presque" in (jeu.texteLecon() ?: ""), "l'indice s'affiche sous la leçon")
     tape("echo pomme > nid/repas.txt", T)
-    verifier(jeu.etape == 1 && jeu.indiceLecon == null, "« pomme » : étape réussie, l'indice disparaît")
+    verifier(lec() == ("nid1" to 1) && jeu.indiceLecon == null, "« pomme » : étape réussie, l'indice disparaît")
     tape("cat nid/repas.txt", T)
+    verifier(Histoire.fini(jeu, "nid"), "chapitre 2 fini : la maison est libre")
+    niveau(5)
+    tape("cd bibliotheque", T)
+    for (c in listOf("find . -name \"*abysses*\"", "cat etagere_c/coin_poussiereux/livre_des_abysses.txt")) tape(c, File(T, "bibliotheque"))
+    verifier(lec() == ("biblio1" to 0), "la bibliothèque : le livre est retrouvé, on passe à la loupe")
+    tape("cd ..")
     tape("grep pome nid/repas.txt", T)
-    verifier(jeu.etape == 2 && "« pome »" in (jeu.indiceLecon ?: ""), "grep pome : indice, pas de silence")
+    verifier(lec() == ("biblio1" to 0) && "« pome »" in (jeu.indiceLecon ?: ""), "grep pome : indice, pas de silence")
     tape("grep pomme nid/repas.txt", T)
-    verifier(jeu.lecon == 3, "leçon 2 finie")
+    verifier(lec() == ("biblio1" to 1), "grep pomme : réussi")
+    Histoire.choisir(jeu, "cave")                                          // on change d'aile (l'étape est gardée)
+    tape("cd cave", T)
+    for (c in listOf("whoami", "id", "cd ..")) tape(c)
     tape("ls -l nid", T)
-    verifier(jeu.lecon == 3 && jeu.etape == 1, "leçon 3 (droits) : on en est à chmod 444 nid/repas.txt")
+    verifier(lec() == ("t3" to 1), "la cave (droits) : on en est à chmod 444 nid/repas.txt")
     tape("chmod 444 nid/repas.tx", T)
     verifier("repas.tx »" in (jeu.indiceLecon ?: ""), "chmod 444 nid/repas.tx : ${jeu.indiceLecon}")
 
@@ -119,22 +147,27 @@ fun main(args: Array<String>) {
     tape("mkdir -p ~/terrain_terminagotchi/nid")
     verifier(Terrain.perdu(jeu) == null && Terrain.bandeau(jeu) == null, "reconstruit : plus d'alerte")
     verifier(File(T, "nid/repas.txt").isFile, "repas.txt remis pour que la leçon continue")
-    verifier(jeu.lecon == 3 && jeu.etape == 1, "la leçon reprend au bon endroit (chmod 444)")
+    verifier(lec() == ("t3" to 1), "la leçon reprend au bon endroit (chmod 444)")
+    verifier(File(T, "cave").isDirectory && File(T, "grenier").isDirectory, "les portes des ailes sont reposées")
     tape("chmod 444 nid/repas.txt", T)
-    verifier(jeu.lecon == 3 && jeu.etape == 2, "chmod 444 : réussi après la reconstruction")
+    verifier(lec() == ("t3" to 2), "chmod 444 : réussi après la reconstruction")
     tape("rm -rf ~/terrain_terminagotchi")
     for (i in 0 until Terrain.AIDE_AUTO) tape(listOf("date", "whoami", "ls", "pwd")[i % 4])
     verifier(Terrain.perdu(jeu) == null && File(T, "nid/repas.txt").isFile,
         "l'enfant n'y arrive pas : reconstruit tout seul après ${Terrain.AIDE_AUTO} commandes")
     tape("echo poire >> nid/repas.txt", T)
-    verifier(jeu.lecon == 4, "leçon 3 finie malgré deux effacements")
-    verifier(jeu.lecon == 4 && jeu.etape == 0, "leçon 4 (copie) : on commence")
+    verifier(Histoire.fini(jeu, "cave"), "la cave est réveillée malgré deux effacements")
+    tape("cd ~/terrain_terminagotchi/grenier")
+    verifier(Histoire.chap(jeu) == "grenier", "entrer dans le grenier le choisit")
+    tape("ls -R", File(T, "grenier"))
+    tape("mv fouillis/ours_en_peluche.txt ../nid/", File(T, "grenier"))
+    verifier(lec() == ("t4" to 0), "grenier (copie) : on commence (l'ours a été remis après l'effacement)")
     tape("cp nid/repas.txt nid/secours.txt", T)
     File(T, "nid/secours.txt").delete()
     tape("ls", T)
     verifier(jeu.etape == 0 && "étape d'avant" in bulles(), "secours.txt effacé avant le mv : on refait l'étape d'avant")
     for (c in listOf("cp nid/repas.txt nid/secours.txt", "mv nid/secours.txt reserve.txt", "rm reserve.txt")) tape(c, T)
-    verifier(jeu.troncFini, "tronc commun fini")
+    verifier(Histoire.fini(jeu, "grenier") && Histoire.chapitreCourant(jeu) == null, "le grenier est réveillé")
 
     println("3. Premier dressage facile")
     val r = Explo.spawn(jeu)
@@ -161,7 +194,8 @@ fun main(args: Array<String>) {
     println("   … puis la difficulté monte avec les captures")
     val moy = (0 until 14).map { n -> Bestiaire.publiques().map { Dressage.choisirEpreuves(it, false, "rare", n).size }.average() }
     verifier(moy.zipWithNext().all { (a, b) -> a <= b + 1e-9 }, "épreuves par dressage : " + moy.joinToString(" → ") { "%.1f".format(it) })
-    val niv = listOf(1, 4, 6, 9, 13).map { n -> Dressage.choisirEpreuves(Bestiaire.espece("Braisillon")!!, false, "épique", n).drop(2).maxOf { it.niveau } }
+    // (le tirage des épreuves est au hasard : le niveau le plus haut vu sur 20 dressages)
+    val niv = listOf(1, 4, 6, 9, 13).map { n -> (0 until 20).maxOf { Dressage.choisirEpreuves(Bestiaire.espece("Braisillon")!!, false, "épique", n).drop(2).maxOf { it.niveau } } }
     verifier(niv == niv.sorted() && niv.first() == 1 && niv.last() == 3, "niveau max des épreuves (1, 4, 6, 9, 13 captures) : $niv")
     val grib = Bestiaire.espece("Gribouilleur") ?: Bestiaire.publiques()[0]
     val avecFor = (0 until 14).filter { n -> (0 until 20).any { Dressage.choisirEpreuves(grib, false, "rare", n).any { it.cle == "Code:compte" } } }
