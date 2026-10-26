@@ -1843,5 +1843,18 @@
  "aide.manque.ssh": "✍ {cmd} necesita el nombre del habitante y la dirección de la otra casa. Prueba: {ex}",
  "aide.manque.nano": "✍ {cmd} necesita el nombre de la hoja donde escribir. Prueba: {ex} (para salir: Ctrl+X)",
  "aide.manque.git": "✍ {cmd} necesita una palabra de acción después. Prueba: {ex}",
- "aide.manque.bloque": "(si te quedas atascado: Ctrl+C)"
+ "aide.manque.bloque": "(si te quedas atascado: Ctrl+C)",
+ "hist.debarras.titre": "Una habitación de más",
+ "hist.debarras.0.dit": "¡Uy! Para practicar, construye una habitación de más: un trastero (debarras).",
+ "hist.debarras.0.bravo": "Un trastero nuevecito… ¡pero no lo necesitamos, está vacío!",
+ "hist.debarras.1.dit": "¿Una habitación vacía que no sirve? La derribamos: rmdir es derribar una habitación vacía.",
+ "hist.debarras.1.bravo": "¡Derribada! rmdir solo derriba habitaciones vacías: no se pierde nada. Los mayores dicen «borrar una carpeta vacía».",
+ "hist.debarras.2.dit": "Mira la vieille_cabane: está llena de tablas, así que rmdir se niega. Para una habitación llena está la trituradora rm -r: se traga la habitación Y todo lo que hay dentro, sin papelera. ¡Solo en el terreno de juego!",
+ "hist.debarras.2.bravo": "¡Triturada, con tablas y todo! rm -r no pregunta nada y no devuelve nada: mira siempre antes con ls, y úsala solo en el terreno de juego.",
+ "hist.meuble.planche": "Una tabla vieja y carcomida.",
+ "hist.indice.rmdir": "«{nom}» es una habitación, no un objeto: rm no la derriba. Una habitación vacía se derriba con rmdir: rmdir {nom}",
+ "hist.indice.plein": "rmdir se niega: «{nom}» no está vacía. Para una habitación llena, la trituradora (¡solo en el terreno de juego!): {cmd}",
+ "hist.indice.dossier": "¡Uy, «{nom}» se ha vuelto una habitación, no una hoja! Derríbala con rmdir {rel} y luego: {cmd}",
+ "hist.indice.chemin": "¡Casi! No llegó al sitio correcto. Escribe el comando entero, con la ruta: {cmd}",
+ "hist.indice.depuis": "¡Casi! Este comando se escribe desde el gran salón: {terrain} y luego {cmd}"
 }

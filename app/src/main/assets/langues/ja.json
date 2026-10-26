@@ -1841,5 +1841,18 @@
  "lex.ex.ssh": "なまえ@アドレス",
  "aide.manque.ssh": "✍ {cmd} には すんでいる ひとの なまえと、もう ひとつの いえの アドレスが いるよ。ためしてみて：{ex}",
  "aide.manque.nano": "✍ {cmd} には かきこむ かみの なまえが いるよ。ためしてみて：{ex}（おわるとき：Ctrl+X）",
- "aide.manque.git": "✍ {cmd} の あとには うごきの ことばが いるよ。ためしてみて：{ex}"
+ "aide.manque.git": "✍ {cmd} の あとには うごきの ことばが いるよ。ためしてみて：{ex}",
+ "hist.debarras.titre": "よけいなへや",
+ "hist.debarras.0.dit": "おっと！れんしゅうに、よけいなへやをひとつ作ってみよう：ものおき（debarras）。",
+ "hist.debarras.0.bravo": "ぴかぴかのものおき…でも、いらないね。からっぽだもの！",
+ "hist.debarras.1.dit": "からっぽで役に立たないへや？こわしちゃおう：rmdir は、からっぽのへやをこわすこと。",
+ "hist.debarras.1.bravo": "こわれた！rmdir はからっぽのへやしかこわさない：なにもなくならないよ。大人は「からのフォルダを削除する」って言うんだ。",
+ "hist.debarras.2.dit": "vieille_cabane を見て：板でいっぱいだから、rmdir はことわるよ。いっぱいのへやには、シュレッダーの rm -r がある：へやも中身もぜんぶのみこんで、ごみばこもないんだ。あそび場の中だけで使ってね！",
+ "hist.debarras.2.bravo": "板ごとこなごな！rm -r はなにも聞かないし、なにも返さない：いつも先に ls で見て、あそび場の中だけで使おうね。",
+ "hist.meuble.planche": "虫にくわれた古い板。",
+ "hist.indice.rmdir": "「{nom}」はへやで、ものじゃないよ：rm ではこわせない。からっぽのへやは rmdir でこわすよ：rmdir {nom}",
+ "hist.indice.plein": "rmdir がことわったよ：「{nom}」はからっぽじゃない。いっぱいのへやにはシュレッダー（あそび場の中だけ！）：{cmd}",
+ "hist.indice.dossier": "おっと、「{nom}」が紙じゃなくてへやになっちゃった！rmdir {rel} でこわしてから：{cmd}",
+ "hist.indice.chemin": "おしい！ちがう場所にできちゃった。道すじもつけて、コマンドをぜんぶ打ってね：{cmd}",
+ "hist.indice.depuis": "おしい！このコマンドは大広間で打つよ：{terrain} のあと {cmd}"
 }

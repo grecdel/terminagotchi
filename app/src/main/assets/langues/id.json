@@ -1835,5 +1835,18 @@
  "lex.ex.ssh": "NAMA@ALAMAT",
  "aide.manque.ssh": "✍ {cmd} butuh nama penghuni dan alamat rumah yang lain. Coba: {ex}",
  "aide.manque.nano": "✍ {cmd} butuh nama kertas tempat menulis. Coba: {ex} (untuk keluar: Ctrl+X)",
- "aide.manque.git": "✍ {cmd} butuh kata perintah sesudahnya. Coba: {ex}"
+ "aide.manque.git": "✍ {cmd} butuh kata perintah sesudahnya. Coba: {ex}",
+ "hist.debarras.titre": "Satu ruangan kebanyakan",
+ "hist.debarras.0.dit": "Ups! Untuk latihan, bangun satu ruangan kebanyakan: gudang (debarras).",
+ "hist.debarras.0.bravo": "Gudang yang masih baru… tapi kita tidak butuh, isinya kosong!",
+ "hist.debarras.1.dit": "Ruangan kosong yang tidak berguna? Kita robohkan: rmdir artinya merobohkan ruangan kosong.",
+ "hist.debarras.1.bravo": "Roboh! rmdir hanya merobohkan ruangan kosong: tidak ada yang hilang. Orang dewasa bilang “menghapus folder kosong”.",
+ "hist.debarras.2.dit": "Lihat vieille_cabane: penuh papan, jadi rmdir menolak. Untuk ruangan penuh ada mesin penghancur rm -r: ia menelan ruangan DAN semua isinya, tanpa tempat sampah. Hanya di lapangan bermain!",
+ "hist.debarras.2.bravo": "Hancur, beserta papannya! rm -r tidak bertanya dan tidak mengembalikan apa pun: selalu lihat dulu dengan ls, dan pakai hanya di lapangan bermain.",
+ "hist.meuble.planche": "Papan tua yang sudah lapuk.",
+ "hist.indice.rmdir": "“{nom}” itu ruangan, bukan benda: rm tidak merobohkannya. Ruangan kosong dirobohkan dengan rmdir: rmdir {nom}",
+ "hist.indice.plein": "rmdir menolak: “{nom}” tidak kosong. Untuk ruangan penuh, pakai mesin penghancur (hanya di lapangan bermain!): {cmd}",
+ "hist.indice.dossier": "Ups, “{nom}” jadi ruangan, bukan lembaran! Robohkan dengan rmdir {rel}, lalu: {cmd}",
+ "hist.indice.chemin": "Hampir! Tidak sampai di tempat yang benar. Ketik perintahnya lengkap, dengan jalurnya: {cmd}",
+ "hist.indice.depuis": "Hampir! Perintah ini diketik dari aula besar: {terrain} lalu {cmd}"
 }

@@ -1838,5 +1838,18 @@
  "lex.ex.ssh": "NAME@ADDRESS",
  "aide.manque.ssh": "✍ {cmd} needs the name of the resident and the address of the other house. Try: {ex}",
  "aide.manque.nano": "✍ {cmd} needs the name of the sheet to write in. Try: {ex} (to quit: Ctrl+X)",
- "aide.manque.git": "✍ {cmd} needs an action word after it. Try: {ex}"
+ "aide.manque.git": "✍ {cmd} needs an action word after it. Try: {ex}",
+ "hist.debarras.titre": "One room too many",
+ "hist.debarras.0.dit": "Oops! For practice, build one room too many: a junk room (debarras).",
+ "hist.debarras.0.bravo": "A brand-new junk room… but we don't need it, it's empty!",
+ "hist.debarras.1.dit": "An empty room that's no use? Let's knock it down: rmdir means knocking down an empty room.",
+ "hist.debarras.1.bravo": "Knocked down! rmdir only knocks down empty rooms: nothing gets lost. Grown-ups say “remove an empty folder”.",
+ "hist.debarras.2.dit": "Look at vieille_cabane: it's full of planks, so rmdir refuses. For a full room there's the shredder rm -r: it swallows the room AND everything inside, with no bin. Only in the playground!",
+ "hist.debarras.2.bravo": "Shredded, planks and all! rm -r asks nothing and gives nothing back: always look with ls first, and only use it in the playground.",
+ "hist.meuble.planche": "An old, worm-eaten plank.",
+ "hist.indice.rmdir": "“{nom}” is a room, not an object: rm won't knock it down. An empty room is knocked down with rmdir: rmdir {nom}",
+ "hist.indice.plein": "rmdir refuses: “{nom}” isn't empty. For a full room, use the shredder (only in the playground!): {cmd}",
+ "hist.indice.dossier": "Oops, “{nom}” became a room, not a sheet! Knock it down with rmdir {rel}, then: {cmd}",
+ "hist.indice.chemin": "Almost! It didn't land in the right place. Type the whole command, with the path: {cmd}",
+ "hist.indice.depuis": "Almost! This command is typed from the great hall: {terrain} then {cmd}"
 }

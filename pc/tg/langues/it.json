@@ -1843,5 +1843,18 @@
  "aide.manque.ssh": "✍ {cmd} ha bisogno del nome dell'abitante e dell'indirizzo dell'altra casa. Prova: {ex}",
  "aide.manque.nano": "✍ {cmd} ha bisogno del nome del foglio su cui scrivere. Prova: {ex} (per uscire: Ctrl+X)",
  "aide.manque.git": "✍ {cmd} ha bisogno di una parola d'azione dopo. Prova: {ex}",
- "aide.manque.bloque": "(se sei bloccato: Ctrl+C)"
+ "aide.manque.bloque": "(se sei bloccato: Ctrl+C)",
+ "hist.debarras.titre": "Una stanza di troppo",
+ "hist.debarras.0.dit": "Ops! Per esercitarti, costruisci una stanza di troppo: un ripostiglio (debarras).",
+ "hist.debarras.0.bravo": "Un ripostiglio nuovo di zecca… ma non ci serve, è vuoto!",
+ "hist.debarras.1.dit": "Una stanza vuota che non serve? La demoliamo: rmdir vuol dire demolire una stanza vuota.",
+ "hist.debarras.1.bravo": "Demolita! rmdir demolisce solo le stanze vuote: non si perde niente. I grandi dicono «eliminare una cartella vuota».",
+ "hist.debarras.2.dit": "Guarda la vieille_cabane: è piena di assi, quindi rmdir rifiuta. Per una stanza piena c'è il trituratore rm -r: inghiotte la stanza E tutto quello che c'è dentro, senza cestino. Solo nel terreno di gioco!",
+ "hist.debarras.2.bravo": "Triturata, assi comprese! rm -r non chiede niente e non restituisce niente: guarda sempre prima con ls, e usalo solo nel terreno di gioco.",
+ "hist.meuble.planche": "Una vecchia asse tutta tarlata.",
+ "hist.indice.rmdir": "«{nom}» è una stanza, non un oggetto: rm non la demolisce. Una stanza vuota si demolisce con rmdir: rmdir {nom}",
+ "hist.indice.plein": "rmdir rifiuta: «{nom}» non è vuota. Per una stanza piena c'è il trituratore (solo nel terreno di gioco!): {cmd}",
+ "hist.indice.dossier": "Ops, «{nom}» è diventato una stanza, non un foglio! Demoliscila con rmdir {rel}, poi: {cmd}",
+ "hist.indice.chemin": "Quasi! Non è finito nel posto giusto. Scrivi il comando intero, con il percorso: {cmd}",
+ "hist.indice.depuis": "Quasi! Questo comando si scrive dal salone: {terrain} poi {cmd}"
 }

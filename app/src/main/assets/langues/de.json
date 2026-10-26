@@ -1833,5 +1833,18 @@
  "lex.ex.ssh": "NAME@ADRESSE",
  "aide.manque.ssh": "✍ {cmd} braucht den Namen des Bewohners und die Adresse des anderen Hauses. Probier: {ex}",
  "aide.manque.nano": "✍ {cmd} braucht den Namen des Blatts, in das du schreibst. Probier: {ex} (zum Beenden: Strg+X)",
- "aide.manque.git": "✍ {cmd} braucht danach ein Aktionswort. Probier: {ex}"
+ "aide.manque.git": "✍ {cmd} braucht danach ein Aktionswort. Probier: {ex}",
+ "hist.debarras.titre": "Ein Zimmer zu viel",
+ "hist.debarras.0.dit": "Hoppla! Zum Üben baust du ein Zimmer zu viel: eine Abstellkammer (debarras).",
+ "hist.debarras.0.bravo": "Eine nagelneue Abstellkammer… aber wir brauchen sie nicht, sie ist leer!",
+ "hist.debarras.1.dit": "Ein leeres Zimmer, das nichts nützt? Wir reißen es ab: rmdir heißt, ein leeres Zimmer abreißen.",
+ "hist.debarras.1.bravo": "Abgerissen! rmdir reißt nur leere Zimmer ab: nichts geht verloren. Die Großen sagen „einen leeren Ordner löschen“.",
+ "hist.debarras.2.dit": "Schau dir vieille_cabane an: Sie ist voller Bretter, darum weigert sich rmdir. Für ein volles Zimmer gibt es den Schredder rm -r: Er verschluckt das Zimmer UND alles darin, ohne Papierkorb. Nur auf dem Spielgelände!",
+ "hist.debarras.2.bravo": "Geschreddert, samt Brettern! rm -r fragt nichts und gibt nichts zurück: Schau immer vorher mit ls nach, und benutze ihn nur auf dem Spielgelände.",
+ "hist.meuble.planche": "Ein altes, wurmstichiges Brett.",
+ "hist.indice.rmdir": "„{nom}“ ist ein Zimmer, kein Gegenstand: rm reißt es nicht ab. Ein leeres Zimmer reißt man mit rmdir ab: rmdir {nom}",
+ "hist.indice.plein": "rmdir weigert sich: „{nom}“ ist nicht leer. Für ein volles Zimmer gibt es den Schredder (nur auf dem Spielgelände!): {cmd}",
+ "hist.indice.dossier": "Hoppla, „{nom}“ ist ein Zimmer geworden, kein Blatt! Reiß es mit rmdir {rel} ab, dann: {cmd}",
+ "hist.indice.chemin": "Fast! Es ist nicht am richtigen Ort gelandet. Tippe den ganzen Befehl, mit dem Pfad: {cmd}",
+ "hist.indice.depuis": "Fast! Dieser Befehl wird in der großen Halle getippt: {terrain}, dann {cmd}"
 }

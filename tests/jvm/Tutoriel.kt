@@ -8,6 +8,10 @@
  * trop, terrain d'une partie rangée (parties/terrain_<id>), ancienne sauvegarde (leçon nid0 sans les étapes rmdir),
  * rm debarras (refusé sur un dossier : indice « rmdir »).
  *
+ * Cause du blocage trouvée ainsi : à l'étape 3/3 (le lit), l'enfant encore « en mode mkdir » tape mkdir nid/lit.txt ;
+ * lit.txt devient un DOSSIER, touch nid/lit.txt ne peut plus jamais réussir, et aucun indice ne le disait. Et
+ * « touch lit.txt » dans la grande salle donnait un indice faux (« va dans le terrain » alors qu'on y est).
+ *
  * Après CHAQUE commande : si la leçon affiche n/n et que la dernière étape est faite, elle doit être finie ; l'écran
  * dit toujours la prochaine commande (➜). Même compilation que tests/jvm/Histoire.kt :
  *   kotlinc -cp <imitations>:<appli.jar> tests/jvm/Tutoriel.kt -d tutoriel.jar
@@ -20,6 +24,7 @@ import fr.terminagotchi.Langue
 import fr.terminagotchi.Parties
 import fr.terminagotchi.Shell
 import fr.terminagotchi.Tour
+import org.json.JSONArray
 import org.json.JSONObject
 import java.io.File
 
@@ -118,70 +123,90 @@ fun main(args: Array<String>) {
     appT = AppareilT(dossier, assets)
     Langue.init(appT)
     Langue.definir("fr")
+    val faits = { p: Partie -> Histoire.faits(p.jeu) }
 
     println("1. Nouvelle partie, l'enfant tape tout dans l'ordre")
     var p = nouvellePartie("Pixel")
     reveil(p)
     verif(Histoire.fini(p.jeu, "reveil") && Histoire.chap(p.jeu) == "nid", "chapitre 1 fini : ${p.lecon()} niveau ${p.jeu.niveau}")
     p.suite("cd ..", "mkdir nid")
-    verif(p.lecon() == ("nid0" to 2), "cd .., mkdir nid → ${p.lecon()}")
+    verif(p.lecon() == ("nid0" to 2) && "(3/3)" in p.ecran() && "touch nid/lit.txt".replace(" ", "\u00a0") !in p.ecran(),
+        "cd .., mkdir nid → ${p.lecon()} (3/3 à l'écran)")
     p.tape("touch nid/lit.txt")
-    verif("nid0" !in Histoire.faits(p.jeu) && p.lecon() == ("nid0" to 3), "le lit est posé, la pièce en trop arrive : ${p.lecon()}")
+    verif("nid0" in faits(p) && p.lecon() == ("debarras" to 0), "3/3 : le lit est posé, leçon finie, la suite démarre : ${p.lecon()}")
+    verif(File(p.T, "vieille_cabane/planche_1.txt").isFile, "la vieille cabane pleine de planches est posée")
     p.tape("mkdir debarras")
-    verif(p.lecon() == ("nid0" to 4), "mkdir debarras → ${p.lecon()}")
+    verif(p.lecon() == ("debarras" to 1), "mkdir debarras → ${p.lecon()}")
     p.tape("rm debarras")
-    verif("rmdir" in (p.jeu.indiceLecon ?: "") && File(p.T, "debarras").isDirectory, "rm debarras échoue : indice « rmdir » (${p.jeu.indiceLecon})")
+    verif("pas un objet" in (p.jeu.indiceLecon ?: "") && "rmdir debarras" in (p.jeu.indiceLecon ?: "") && File(p.T, "debarras").isDirectory,
+        "rm debarras échoue : indice « pièce, pas un objet : rmdir » (${p.jeu.indiceLecon})")
     p.tape("rmdir debarras")
-    verif(!File(p.T, "debarras").exists() && p.lecon() == ("nid0" to 5), "rmdir debarras : la pièce vide est démolie → ${p.lecon()}")
-    p.suite("mkdir -p cabane/planche", "rm -r cabane")
-    verif("nid0" in Histoire.faits(p.jeu) && "Bâtisseur" in p.jeu.skills, "rm -r cabane : la broyeuse, leçon finie (Bâtisseur)")
-    var n = 0
-    while (p.jeu.niveau < 4 && n++ < 10) p.tape("ls")
-    p.suite("echo pomme > nid/repas.txt", "cat nid/repas.txt")
-    verif(Histoire.fini(p.jeu, "nid") && Histoire.chapitreCourant(p.jeu) == null, "chapitre 2 fini, la maison est libre")
+    verif(!File(p.T, "debarras").exists() && p.lecon() == ("debarras" to 2), "rmdir debarras : la pièce vide est démolie → ${p.lecon()}")
+    verif("depuis" in p.ecran(), "l'écran dit d'où taper rm -r vieille_cabane")
+    p.tape("rmdir vieille_cabane")
+    verif("broyeuse" in (p.jeu.indiceLecon ?: "") && File(p.T, "vieille_cabane").isDirectory, "rmdir sur la cabane pleine : refus expliqué (${p.jeu.indiceLecon})")
+    p.tape("rm -r vieille_cabane")
+    verif("debarras" in faits(p) && !File(p.T, "vieille_cabane").exists(), "rm -r : la broyeuse, leçon finie")
+    suivreEcran(p) { Histoire.fini(p.jeu, "nid") }
+    verif(Histoire.fini(p.jeu, "nid") && Histoire.chapitreCourant(p.jeu) == null && !File(p.T, "vieille_cabane").exists(),
+        "chapitre 2 fini, la maison est libre (la cabane ne revient pas)")
     verif(p.bloque == null, "jamais bloqué : ${p.bloque}")
     println(p.trace.joinToString("\n") { "     $it" })
 
-    println("2. Variantes réalistes")
+    println("2. Le blocage du 3/3 : erreurs réalistes au lit")
+    p = nouvellePartie("Mode mkdir")
+    reveil(p)
+    p.suite("cd ..", "mkdir nid", "mkdir nid/lit.txt")
+    verif(p.lecon() == ("nid0" to 2) && "rmdir nid/lit.txt" in (p.jeu.indiceLecon ?: ""), "mkdir nid/lit.txt : indice clair (${p.jeu.indiceLecon})")
+    p.tape("touch nid/lit.txt")
+    verif(p.lecon() == ("nid0" to 2) && "rmdir nid/lit.txt" in (p.jeu.indiceLecon ?: "") + p.bulles(), "touch sur le dossier lit.txt : toujours l'indice")
+    p.suite("rmdir nid/lit.txt", "touch nid/lit.txt")
+    verif("nid0" in faits(p), "rmdir puis touch : débloqué, leçon finie")
+    p = nouvellePartie("Sans chemin")
+    reveil(p)
+    p.suite("cd ..", "mkdir nid", "touch lit.txt")
+    verif("touch nid/lit.txt" in (p.jeu.indiceLecon ?: "") && "cd ~/terrain" !in (p.jeu.indiceLecon ?: ""),
+        "touch lit.txt dans la grande salle : l'indice donne la commande entière (${p.jeu.indiceLecon})")
+    p.suite("cd nid", "touch nid/lit.txt")
+    verif("grande salle" in (p.jeu.indiceLecon ?: ""), "touch nid/lit.txt depuis le nid : « depuis la grande salle » (${p.jeu.indiceLecon})")
+    p.tape("touch lit.txt")
+    verif("nid0" in faits(p), "touch lit.txt dans le nid : validé")
+    p = nouvellePartie("Dans le nid")
+    reveil(p)
+    p.suite("cd ..", "mkdir nid", "cd nid", "mkdir lit.txt")
+    verif("rmdir" in (p.jeu.indiceLecon ?: ""), "mkdir lit.txt dans le nid : indice rmdir (${p.jeu.indiceLecon})")
+    p.suite("rmdir lit.txt", "touch lit.txt")
+    verif("nid0" in faits(p), "débloqué")
+    verif(p.bloque == null, "jamais bloqué : ${p.bloque}")
+
+    println("3. Variantes réalistes")
     p = nouvellePartie("Mauvais dossier")
     reveil(p)
     p.tape("mkdir nid")                                     // tapé dans le vestibule
     verif(p.lecon() == ("nid0" to 0), "mkdir nid dans le vestibule : on doit d'abord reculer (${p.lecon()})")
-    p.tape("cd ..")
+    p.tape("cd  ..  ")
     p.tape("mkdir Nid")
-    verif(p.lecon().first == "nid0" && p.lecon().second == 1 && "nid" in (p.jeu.indiceLecon ?: "") + p.bulles(),
-        "mkdir Nid : pas validé, indice (${p.jeu.indiceLecon})")
-    p.tape("mkdir nid")
-    verif(p.lecon() == ("nid0" to 2), "mkdir nid → ${p.lecon()}")
-    p.tape("cd nid")
-    p.tape("touch lit.txt")
-    verif(p.lecon() == ("nid0" to 3), "touch lit.txt depuis le nid : le lit est dans le nid → ${p.lecon()}")
-    p.tape("mkdir debarras")                                // dans le nid : accepté aussi
-    p.tape("rmdir debarras")
-    verif(p.lecon() == ("nid0" to 5), "debarras créé puis démoli dans le nid → ${p.lecon()}")
-    p.suite("cd ~/terrain_terminagotchi", "mkdir cabane", "touch cabane/planche.txt", "rm  -r   cabane")
-    verif("nid0" in Histoire.faits(p.jeu), "cd absolu, rm -r avec espaces en trop : leçon finie")
+    verif(p.lecon() == ("nid0" to 1), "mkdir Nid : pas validé (${p.lecon()} 💡 ${p.jeu.indiceLecon})")
+    p.suite("mkdir nid", "cd nid", "touch lit.txt")
+    verif(p.lecon() == ("debarras" to 0), "touch lit.txt depuis le nid → ${p.lecon()}")
+    p.suite("mkdir debarras", "rmdir debarras")              // dans le nid : accepté aussi
+    verif(p.lecon() == ("debarras" to 2), "debarras créé puis démoli dans le nid → ${p.lecon()}")
+    p.suite("cd ~/terrain_terminagotchi", "rm  -r   vieille_cabane")
+    verif("debarras" in faits(p), "cd absolu, rm -r avec espaces en trop : leçon finie")
     verif(p.bloque == null, "jamais bloqué : ${p.bloque}")
-
-    p = nouvellePartie("Nid deja la")
+    p = nouvellePartie("Deja la")
     reveil(p)
-    File(p.T, "nid").mkdirs()                               // le nid existe déjà (ancienne partie, autre essai…)
-    p.suite("cd  ..  ")
-    verif(p.lecon() == ("nid0" to 3) || p.lecon() == ("nid0" to 2), "cd .. avec espaces, nid déjà là : ${p.lecon()}")
+    File(p.T, "nid").mkdirs()
+    File(p.T, "debarras").mkdirs()
+    p.tape("cd ..")
+    verif(p.lecon() == ("nid0" to 2), "nid déjà là : passé tout seul (${p.lecon()})")
     p.tape("touch ~/terrain_terminagotchi/nid/lit.txt")
-    verif(p.lecon() == ("nid0" to 3), "touch en chemin absolu → ${p.lecon()}")
-    File(p.T, "debarras").mkdirs()                          // debarras déjà là
-    p.tape("ls")
-    p.tape("rmdir debarras")
-    verif(p.lecon() == ("nid0" to 5) || p.lecon() == ("nid0" to 4), "debarras déjà là puis rmdir : ${p.lecon()}")
-    if (p.lecon() == ("nid0" to 4)) p.suite("mkdir debarras", "rmdir debarras")
-    p.tape("rm -r cabane")
-    verif(p.lecon() == ("nid0" to 5), "rm -r d'une pièce qui n'existe pas : rien de validé (${p.lecon()})")
-    p.suite("mkdir cabane", "rm -rf cabane")
-    verif("nid0" in Histoire.faits(p.jeu), "rm -rf : leçon finie")
+    verif(p.lecon() == ("debarras" to 1), "chemin absolu ; debarras déjà là → ${p.lecon()}")
+    p.suite("rmdir debarras", "rm -rf vieille_cabane")
+    verif("debarras" in faits(p), "rm -rf : leçon finie")
     verif(p.bloque == null, "jamais bloqué : ${p.bloque}")
 
-    println("3. Parties : chaque nouvelle partie a son terrain, l'ancienne est rangée")
+    println("4. Parties : chaque nouvelle partie a son terrain, l'ancienne est rangée")
     val rangees = File(appT.filesDir, "parties").listFiles()!!.filter { it.name.startsWith("terrain_") }
     verif(rangees.size >= 2 && rangees.all { File(it, "nid").isDirectory }, "terrains rangés dans parties/ : ${rangees.map { it.name }}")
     p = nouvellePartie("Neuve")
@@ -190,49 +215,46 @@ fun main(args: Array<String>) {
     p.suite("cd /", "cd ${p.T.path}", "mkdir nid")
     verif(p.lecon() == ("nid0" to 2), "cd absolu puis mkdir nid : ${p.lecon()}")
 
-    println("4. Ancienne sauvegarde : nid0 commencé avant les étapes rmdir")
-    p = nouvellePartie("Ancienne")
-    reveil(p)
-    p.suite("cd ..", "mkdir nid")
-    val h = Histoire.h(p.jeu)
-    h.put("v", 1)                                           // une sauvegarde d'avant : le lit était la 3e et dernière étape
-    p.jeu.etape = 2
-    p.jeu.sauver()
-    p.jeu.recharger()
+    println("5. Anciennes sauvegardes (v1, avant « Une pièce en trop »)")
+    fun v1(nom: String, faitsV1: List<String>, etape: Int, ailes: List<String> = listOf("reveil")): Partie {
+        val q = nouvellePartie(nom)
+        reveil(q)
+        q.suite("cd ..", "mkdir nid")
+        val h = Histoire.h(q.jeu)
+        h.put("v", 1).put("faits", JSONArray(faitsV1)).put("ailes", JSONArray(ailes)).put("chap", if ("nid" in ailes) JSONObject.NULL else "nid")
+        q.jeu.etape = etape
+        q.jeu.sauver()
+        q.jeu.recharger()
+        return q
+    }
+    p = v1("En plein lit", listOf("t0", "reveil1"), 2)
     p.tape("touch nid/lit.txt")
-    verif(p.lecon() == ("nid0" to 3), "v1, étape 3/3 (le lit) : la suite (pièce en trop) s'affiche → ${p.lecon()}")
-    p = nouvellePartie("Ancienne finie")
-    reveil(p)
-    p.suite("cd ..", "mkdir nid", "touch nid/lit.txt")
-    Histoire.h(p.jeu).put("v", 1)
-    Histoire.h(p.jeu).put("faits", org.json.JSONArray(listOf("t0", "reveil1", "nid0")))
-    p.jeu.etape = 0
-    p.jeu.sauver()
-    p.jeu.recharger()
+    verif(p.lecon() == ("debarras" to 0), "v1 en plein nid0 (3/3) : le lit finit la leçon, puis « Une pièce en trop » → ${p.lecon()}")
+    p = v1("En plein repas", listOf("t0", "reveil1", "nid0"), 1)
+    File(p.T, "nid/repas.txt").writeText("pomme\n")
     p.tape("ls")
-    verif(p.lecon().first == "nid1", "v1, nid0 déjà finie : on ne la refait pas → ${p.lecon()}")
+    verif(p.lecon() == ("debarras" to 0) && Histoire.h(p.jeu).getJSONObject("pas").optInt("nid1", -1) == 1,
+        "v1 en plein garde-manger (étape 2) : d'abord la pièce en trop, l'étape du repas est gardée → ${p.lecon()}")
+    p.suite("mkdir debarras", "rmdir debarras", "rm -r vieille_cabane")
+    verif(p.lecon() == ("nid1" to 1), "puis le garde-manger reprend à son étape → ${p.lecon()}")
+    p = v1("Nid fini", listOf("t0", "reveil1", "nid0", "nid1"), 0, listOf("reveil", "nid"))
+    p.tape("ls")
+    verif(Histoire.fini(p.jeu, "nid") && "debarras" in faits(p) && Histoire.chapitreCourant(p.jeu) == null,
+        "v1 chapitre 2 fini : rien à refaire (la leçon compte comme faite)")
+    verif(Histoire.h(p.jeu).optInt("v") == 2, "sauvegarde passée en v2")
 
-    println("5. Filet de sécurité : une leçon dont toutes les étapes sont faites se termine")
+    println("6. Filet de sécurité : une leçon dont toutes les étapes sont faites se termine")
     p = nouvellePartie("Filet")
     reveil(p)
-    p.suite("cd ..", "mkdir nid", "touch nid/lit.txt", "mkdir debarras", "rmdir debarras")
-    p.jeu.etape = 99                                        // compteur abîmé (sauvegarde, autre version…)
+    p.suite("cd ..", "mkdir nid")
+    p.jeu.etape = 99                                        // compteur abîmé (sauvegarde d'une autre version…)
+    p.jeu.sauver(); p.jeu.recharger()
     p.tape("ls")
-    verif(p.lecon().first == "nid0" && p.jeu.etape in 0..5 && "➜" in p.ecran(), "étape hors limites : ramenée dans la leçon (${p.lecon()})")
-    p.jeu.etape = 5
-    File(p.T, "cabane").mkdirs()
-    p.tape("rm -r cabane")
-    verif("nid0" in Histoire.faits(p.jeu) && p.lecon().first == "nid1", "dernière étape faite : leçon finie, la suite démarre")
+    verif("nid0" in faits(p) && p.lecon().first == "debarras" && "➜" in p.ecran(), "étape au-delà de la fin : leçon finie, la suite s'affiche (${p.lecon()})")
+    Histoire.h(p.jeu).put("faits", JSONArray(listOf("t0", "reveil1", "nid0", "debarras", "nid1")))
+    p.tape("ls")
+    verif(Histoire.fini(p.jeu, "nid"), "toutes les leçons du chapitre faites : le chapitre se termine")
 
-
-    println("6. Erreurs réalistes au lit (étape 3)")
-    for (essais in listOf(listOf("mkdir nid/lit.txt", "touch nid/lit.txt"), listOf("touch lit.txt", "cd ~/terrain_terminagotchi", "touch lit.txt"),
-            listOf("cd nid", "mkdir lit.txt", "touch lit.txt"), listOf("cd nid", "touch nid/lit.txt"))) {
-        p = nouvellePartie("Lit")
-        reveil(p)
-        p.suite("cd ..", "mkdir nid")
-        for (c in essais) { p.tape(c); println("     $c → ${p.lecon()} 💡 ${p.jeu.indiceLecon} | ${p.bulles().take(160)}") }
-    }
     println("\n$okT réussis, $koT échoués")
     System.exit(if (koT > 0) 1 else 0)
 }

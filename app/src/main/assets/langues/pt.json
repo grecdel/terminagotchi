@@ -1833,5 +1833,18 @@
  "lex.ex.ssh": "NOME@ENDEREÇO",
  "aide.manque.ssh": "✍ {cmd} precisa do nome do habitante e do endereço da outra casa. Experimenta: {ex}",
  "aide.manque.nano": "✍ {cmd} precisa do nome da folha onde escrever. Experimenta: {ex} (para sair: Ctrl+X)",
- "aide.manque.git": "✍ {cmd} precisa de uma palavra de ação a seguir. Experimenta: {ex}"
+ "aide.manque.git": "✍ {cmd} precisa de uma palavra de ação a seguir. Experimenta: {ex}",
+ "hist.debarras.titre": "Um quarto a mais",
+ "hist.debarras.0.dit": "Opa! Para treinar, constrói um quarto a mais: um quarto de arrumos (debarras).",
+ "hist.debarras.0.bravo": "Um quarto de arrumos novinho… mas não precisamos dele, está vazio!",
+ "hist.debarras.1.dit": "Um quarto vazio que não serve para nada? Vamos demoli-lo: rmdir é demolir um quarto vazio.",
+ "hist.debarras.1.bravo": "Demolido! rmdir só demole quartos vazios: nada se perde. Os crescidos dizem «apagar uma pasta vazia».",
+ "hist.debarras.2.dit": "Olha a vieille_cabane: está cheia de tábuas, por isso o rmdir recusa. Para um quarto cheio há o triturador rm -r: engole o quarto E tudo o que está lá dentro, sem lixeira. Só no terreno de jogo!",
+ "hist.debarras.2.bravo": "Triturada, com tábuas e tudo! rm -r não pergunta nada e não devolve nada: olha sempre antes com ls, e usa-o só no terreno de jogo.",
+ "hist.meuble.planche": "Uma tábua velha e carunchosa.",
+ "hist.indice.rmdir": "«{nom}» é um quarto, não um objeto: rm não o demole. Um quarto vazio demole-se com rmdir: rmdir {nom}",
+ "hist.indice.plein": "rmdir recusa: «{nom}» não está vazio. Para um quarto cheio, o triturador (só no terreno de jogo!): {cmd}",
+ "hist.indice.dossier": "Opa, «{nom}» virou um quarto, não uma folha! Demole-o com rmdir {rel} e depois: {cmd}",
+ "hist.indice.chemin": "Quase! Não foi parar ao sítio certo. Escreve o comando inteiro, com o caminho: {cmd}",
+ "hist.indice.depuis": "Quase! Este comando escreve-se a partir do salão: {terrain} e depois {cmd}"
 }

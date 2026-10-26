@@ -1146,7 +1146,7 @@
  "reg.r.creer_propre_commande.kw": "creer commande toujours permanent",
  "reg.r.creer_propre_commande.0": "invente-la",
  "reg.r.creer_propre_commande.1": "enregistre-la dans ta configuration",
- "reg.img.rmdir": "je démonte une pièce vide",
+ "reg.img.rmdir": "je démolis une pièce vide",
  "reg.img.tail": "je lis juste le bas de la lettre",
  "reg.img.echo": "je dis une phrase (avec > : l'entonnoir la verse dans une boîte)",
  "reg.img.clear": "je range la table : l'écran redevient tout propre",
@@ -1848,5 +1848,18 @@
  "aide.manque.ssh": "✍ {cmd} a besoin du nom de l'habitant et de l'adresse de l'autre maison. Essaie : {ex}",
  "aide.manque.nano": "✍ {cmd} a besoin du nom de la feuille où écrire. Essaie : {ex} (pour sortir : Ctrl+X)",
  "aide.manque.git": "✍ {cmd} a besoin d'un mot d'action après lui. Essaie : {ex}",
- "aide.manque.bloque": "(si tu es bloqué : Ctrl+C)"
+ "aide.manque.bloque": "(si tu es bloqué : Ctrl+C)",
+ "hist.debarras.titre": "Une pièce en trop",
+ "hist.debarras.0.dit": "Oups ! Pour s'entraîner, construis une pièce en trop : un débarras.",
+ "hist.debarras.0.bravo": "Un débarras tout neuf… mais on n'en a pas besoin, il est vide !",
+ "hist.debarras.1.dit": "Une pièce vide qui ne sert à rien ? On la démolit : rmdir, c'est démolir une pièce vide.",
+ "hist.debarras.1.bravo": "Démolie ! rmdir ne démolit que les pièces vides : rien ne se perd. Les grands disent « supprimer un dossier vide ».",
+ "hist.debarras.2.dit": "Regarde la vieille_cabane : elle est pleine de planches, alors rmdir refuse. Pour une pièce pleine, il y a la broyeuse rm -r : elle avale la pièce ET tout ce qu'il y a dedans, sans poubelle. Seulement dans le terrain de jeu !",
+ "hist.debarras.2.bravo": "Broyée, planches comprises ! rm -r ne demande rien et ne rend rien : regarde toujours avec ls avant, et ne t'en sers que dans le terrain de jeu.",
+ "hist.meuble.planche": "Une vieille planche toute vermoulue.",
+ "hist.indice.rmdir": "« {nom} » c'est une pièce, pas un objet : rm ne la démolit pas. Une pièce vide se démolit avec rmdir : rmdir {nom}",
+ "hist.indice.plein": "rmdir refuse : « {nom} » n'est pas vide. Pour une pièce pleine, c'est la broyeuse (seulement dans le terrain de jeu !) : {cmd}",
+ "hist.indice.dossier": "Oups, « {nom} » est devenu une pièce, pas une feuille ! Démolis-la avec rmdir {rel}, puis : {cmd}",
+ "hist.indice.chemin": "Presque ! Ce n'est pas arrivé au bon endroit. Tape la commande en entier, avec le chemin : {cmd}",
+ "hist.indice.depuis": "Presque ! Cette commande se tape depuis la grande salle : {terrain} puis {cmd}"
 }

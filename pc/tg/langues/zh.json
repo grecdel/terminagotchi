@@ -1849,5 +1849,18 @@
  "aide.manque.ssh": "✍ {cmd} 需要居民的名字和另一座房子的地址。试试：{ex}",
  "aide.manque.nano": "✍ {cmd} 需要要写字的那张纸的名字。试试：{ex}（退出：Ctrl+X）",
  "aide.manque.git": "✍ {cmd} 后面需要一个动作词。试试：{ex}",
- "aide.manque.bloque": "(如果卡住了：按 Ctrl+C)"
+ "aide.manque.bloque": "(如果卡住了：按 Ctrl+C)",
+ "hist.debarras.titre": "多出来的房间",
+ "hist.debarras.0.dit": "哎呀！来练习一下，建一个多出来的房间：储藏室（debarras）。",
+ "hist.debarras.0.bravo": "崭新的储藏室……可我们用不着，它是空的！",
+ "hist.debarras.1.dit": "没用的空房间？把它拆掉：rmdir 就是拆掉一个空房间。",
+ "hist.debarras.1.bravo": "拆掉啦！rmdir 只拆空房间：什么都不会丢。大人们说“删除空文件夹”。",
+ "hist.debarras.2.dit": "看看 vieille_cabane：里面堆满了木板，所以 rmdir 拒绝了。满满的房间要用粉碎机 rm -r：它会把房间和里面的一切都吞掉，没有回收站。只能在游戏场地里用！",
+ "hist.debarras.2.bravo": "连木板一起粉碎了！rm -r 什么都不问，也什么都不还：一定先用 ls 看一看，而且只在游戏场地里用。",
+ "hist.meuble.planche": "一块被虫蛀的旧木板。",
+ "hist.indice.rmdir": "“{nom}”是房间，不是物品：rm 拆不了它。空房间要用 rmdir 拆：rmdir {nom}",
+ "hist.indice.plein": "rmdir 拒绝了：“{nom}”不是空的。满满的房间要用粉碎机（只能在游戏场地里！）：{cmd}",
+ "hist.indice.dossier": "哎呀，“{nom}”变成了房间，不是纸！先用 rmdir {rel} 拆掉，然后：{cmd}",
+ "hist.indice.chemin": "差一点！它没到正确的地方。把命令完整地打出来，带上路径：{cmd}",
+ "hist.indice.depuis": "差一点！这条命令要在大厅里打：{terrain} 然后 {cmd}"
 }
