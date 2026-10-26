@@ -667,7 +667,8 @@ class Jeu(ctx: Context) {
     fun humeur() = t(Envies.humeurCle(this))
 
     fun titre(): String {
-        return "$nom${if (shiny) " ✨" else ""} · " + t("app.forme_niveau", "forme" to Regles.espece(stade, forme), "n" to niveau)
+        return "$nom${if (shiny) " ✨" else ""} · " + t("app.forme_niveau", "forme" to Regles.espece(stade, forme), "n" to niveau) +
+            Entrainement.titreTexte(this).let { if (it.isEmpty()) "" else " $it" }      // le titre de la salle d'entraînement
     }
 
     fun texteXp(): String {

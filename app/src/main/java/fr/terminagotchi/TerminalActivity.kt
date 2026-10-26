@@ -407,7 +407,7 @@ class TerminalActivity : Activity() {
             "langue" -> { ecrire(langue(ligne.trim().split(Regex("\\s+")).getOrNull(1)), Commandes.ROSE); return }
             "partie" -> { ecrire(menu.commande(ligne.substringAfter(' ', "")), Commandes.ROSE); rafraichir(); return }
             "aide" -> {
-                ecrire(t("term.aide", "ctf" to Mots.terme("ctf", Mots.palier(jeu), true)) + "\n" + t("term.aide.maison") + "\n" + t("env.aide.tel"))
+                ecrire(t("term.aide", "ctf" to Mots.terme("ctf", Mots.palier(jeu), true)) + "\n" + t("term.aide.maison") + "\n" + t("env.aide.tel") + "\n" + t("ent.aide.tel"))
                 return
             }
         }
@@ -550,6 +550,14 @@ class TerminalActivity : Activity() {
                 val debut = sb.length
                 sb.append(m.groupValues[8])
                 sb.setSpan(ForegroundColorSpan(Vert.COULEUR), debut, sb.length, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
+            } else if (m.groupValues[1] == "badge") {          // ¤badge:famille:échelon¤ (salle d'entraînement)
+                val debut = sb.length
+                sb.append("\uFFFC")
+                val d = android.graphics.drawable.BitmapDrawable(resources, Badges.bitmap(m.groupValues[2], m.groupValues[3]))
+                val px = (28 * resources.displayMetrics.density).toInt()
+                d.setBounds(0, 0, px, px)
+                sb.setSpan(android.text.style.ImageSpan(d, android.text.style.DynamicDrawableSpan.ALIGN_BOTTOM),
+                    debut, debut + 1, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
             } else if (m.groupValues[1].isNotEmpty()) {
                 val e = Bestiaire.espece(m.groupValues[1])
                 if (e != null) {

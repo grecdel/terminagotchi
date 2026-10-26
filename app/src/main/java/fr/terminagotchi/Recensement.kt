@@ -99,6 +99,10 @@ object Recensement {
                 .put("nom", jeu.nom).put("nomDate", c.optLong("nomDate"))
                 .put("trait", jeu.trait).put("forme", jeu.forme ?: JSONObject.NULL).put("shiny", jeu.shiny)
                 .put("faim", jeu.faim).put("faimDate", c.optLong("repas")))
+        // salle d'entraînement : compteurs gagnés ici, exercices à vérifier, records (Entrainement.kt)
+        val (ent, snapEnt) = Entrainement.charge(jeu, base.optJSONObject("ent"))
+        charge.put("entrainement", ent)
+        snap.put("ent", snapEnt)
         enCours = true
         return Preparation(cle, c.optString("serveur"), charge, snap)
     }
@@ -131,6 +135,11 @@ object Recensement {
         for (s in Regles.STATS) jeu.stats[s] = srvStats.optInt(s) + ((jeu.stats[s] ?: 0) - snapStats.optInt(s))
         c.put("base", JSONObject().put("xp", srv.optInt("xp")).put("total", srv.optInt("total"))
             .put("colles", srv.optInt("colles")).put("stats", srvStats))
+        srv.optJSONObject("entrainement")?.let { se ->      // (un site pas encore à jour n'en renvoie pas)
+            val ent = p.charge.optJSONObject("entrainement")
+            c.getJSONObject("base").put("ent", Entrainement.appliquer(jeu, se, snap.optJSONObject("ent") ?: JSONObject(),
+                ent?.optJSONArray("runs") ?: JSONArray(), r.optJSONObject("entrainement")))
+        }
         srv.optJSONArray("vus")?.let { a -> for (i in 0 until a.length()) jeu.vus.add(a.getString(i)) }
         srv.optJSONArray("skills")?.let { a ->
             for (i in 0 until a.length()) if (a.getString(i) !in jeu.skills) jeu.skills.add(a.getString(i))

@@ -32,6 +32,9 @@ object Tour {
             Explo.spawn(jeu)                                       // en jouant, un monstre peut surgir
         }
         Envies.apresCommande(jeu, ligne, colle || rappel)          // les 6 envies : usure, plaisirs, poussière, rappel espacé
+        // salle d'entraînement : l'exercice en cours est-il réussi ? (entrainement répond lui-même aux réponses)
+        if (Regles.premierMot(ligne) !in setOf("entrainement", "exercice"))
+            Entrainement.apresCommande(jeu, ligne, colle || rappel, cwd)?.let { msgs.add(it to 0xFFFFD75F.toInt()) }
         return Resultat(mange, msgs, saut)
     }
 

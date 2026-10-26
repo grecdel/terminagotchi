@@ -75,6 +75,9 @@ class Commandes(
             "devine" -> devine(mots.getOrNull(1))
             "etat" -> etat()
             "envies", "envie" -> Reponse(Envies.ecran(jeu), couleur = ROSE)
+            // ---------------------------------------------------- salle d'entraînement (Entrainement.kt)
+            "entrainement", "exercice" -> Reponse(Entrainement.commande(jeu, reste, dossier()), couleur = JAUNE)
+            "badges" -> Reponse(Entrainement.commandeBadges(jeu, reste), couleur = ROSE)
             "renomme" -> renomme(reste)
             // ---------------------------------------------------- progression et jeux
             "arbre", "aile", "ailes", "histoire" -> aile(reste)
