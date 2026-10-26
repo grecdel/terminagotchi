@@ -87,7 +87,7 @@ var hist=lire("tg-hist",[]),hi=hist.length,brouillon="",JRN=slire("tg-jrn")||[];
 function chem(c){return "~"+(c.length?"/"+c.join("/"):"")}
 function invite(){return T.u+"@terminagotchi:"+chem(cwd)+"$"}
 function majInvite(){P.textContent="";var u=D.createElement("span");u.className="tg-u";u.textContent=T.u+"@terminagotchi:";
-var c=D.createElement("span");c.className="tg-ch";c.textContent=chem(cwd);P.appendChild(u);P.appendChild(c);P.appendChild(D.createTextNode("$"))}
+var c=el("span","tg-ch",chem(cwd)),k=el("span","tg-chc",cwd.length>1?"…/"+cwd[cwd.length-1]:chem(cwd));P.appendChild(u);P.appendChild(c);P.appendChild(k);P.appendChild(D.createTextNode("$"))}
 function el(t,c,x){var e=D.createElement(t);if(c)e.className=c;if(x!=null)e.textContent=x;return e}
 function rendre(e){var d,i,it,a;
 if(e.t==="c"){d=el("div","tg-c");d.appendChild(el("span","tg-p",e.p));d.appendChild(D.createTextNode(" "+e.x))}
@@ -139,14 +139,14 @@ secrire("tg-avant",cwd.join("/"));cwd=r.sg;cwdF=0;majInvite();if(r.n.u&&r.n.u!==
 function exemple(){var r=trouver(segs(".")),i;if(r)for(i=0;i<r.n.k.length;i++)if(r.n.k[i].t==="f")return r.n.k[i].n;return "mentions-legales"}
 function cat(a){besoin(function(){if(!a){dire(f(M.usageCat,exemple()));return}var r=trouver(segs(a));
 if(!r){dire(f(M.pasIci,a),"err");suggerer("cat",a);return}if(r.n.t==="d"){dire(f(M.estDossier,a),"err");return}aller(r.n.u,a)})}
-function article(n,note){return [n.n+(n.t==="d"?"/":""),n.u,n.t==="d"?"tg-d":"tg-f",note?n.l:""]}
+function article(n,note){return [n.n+(n.t==="d"?"/":""),n.u,n.t==="d"?"tg-d":"tg-f",note&&norm(n.l)!==n.n?n.l:""]}
 function ls(args){var tout=0,cible="",i;for(i=0;i<args.length;i++){if(args[i].charAt(0)==="-"){if(args[i].indexOf("a")>0)tout=1}else cible=args[i]}
 besoin(function(){var r=trouver(cible?segs(cible):cwd);if(!r){dire(f(M.pasIci,cible),"err");suggerer("ls",cible);return}
 var n=r.n;if(n.t==="f"){liste([article(n)],"g");return}
 if(n.dyn&&!JO){joueurs(function(){ls(args)});return}
 var d=[],fi=[];for(i=0;i<n.k.length;i++)(n.k[i].t==="d"?d:fi).push(n.k[i]);
 if(!d.length&&!fi.length){dire(M.vide,"doux");return}
-var col=!n.dyn&&d.length+fi.length<=16,a=[];
+var col=0,a=[];if(!n.dyn&&d.length+fi.length<=16)for(i=0;i<n.k.length;i++)if(article(n.k[i],1)[3])col=1;
 for(i=0;i<d.length;i++)a.push(article(d[i],col));
 if(fi.length>24&&!tout){if(a.length)liste(a,col?"col":"g");dire(f(M.nbFichiers,"",fi.length),"doux");return}
 if(col){for(i=0;i<fi.length;i++)a.push(article(fi[i],1));liste(a,"col");return}
@@ -156,7 +156,7 @@ if(!m){dire(f(M.usageFind,"bra"));return}
 besoin(function(){var q=norm(m),res=[],x,B=fils(RAC,"bestiaire");
 for(i=0;i<RAC.k.length;i++){x=RAC.k[i];if(norm(x.n+" "+x.l).indexOf(q)>=0)res.push(["~/"+x.n+(x.t==="d"?"/":""),x.u,x.t==="d"?"tg-d":"tg-f",x.l])}
 for(i=0;i<B.k.length;i++){x=B.k[i];if(x.fam&&norm(x.n+" "+x.l).indexOf(q)>=0)res.push(["~/bestiaire/"+x.n+"/",x.u,"tg-d",x.l])}
-for(i=0;i<PL.e.length;i++){x=PL.e[i];if(norm(x[0]+" "+x[1]).indexOf(q)>=0)res.push(["~/bestiaire/"+x[2]+"/"+x[0],"/bestiaire/"+x[0],"tg-f",x[1]===x[0]?"":x[1]])}
+for(i=0;i<PL.e.length;i++){x=PL.e[i];if(norm(x[0]+" "+x[1]).indexOf(q)>=0)res.push(["~/bestiaire/"+x[2]+"/"+x[0],"/bestiaire/"+x[0],"tg-f",norm(x[1])===x[0]?"":x[1]])}
 if(!res.length){dire(f(M.rien,m),"err");return}dire(f(M.resultats,"",res.length),"doux");liste(res.slice(0,40),"col");if(res.length>40)dire("…","doux")})}
 function tree(){besoin(function(){var a=[["~","/","tg-d",""]],i,j,x,y,der,ss,B;
 for(i=0;i<RAC.k.length;i++){x=RAC.k[i];der=i===RAC.k.length-1;a.push([x.n+(x.t==="d"?"/":""),x.u,x.t==="d"?"tg-d":"tg-f",x.l,der?"└── ":"├── "]);
@@ -233,7 +233,7 @@ export const CSS_TERMINAL = `
 .tg-ouvrir:hover{color:var(--ambre)}
 .tg-ouvert .tg-ouvrir{display:none}
 .tg-cache{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
-.tg-panneau{background:rgba(5,11,8,.97);border-top:3px solid var(--bord-vif);box-shadow:0 -8px 24px rgba(0,0,0,.5)}
+.tg-panneau{background:var(--ecran);border-top:3px solid var(--bord-vif);box-shadow:0 -8px 24px rgba(0,0,0,.5)}
 .tg-sortie{max-height:min(38vh,320px);overflow-y:auto;padding:8px 16px 2px;color:var(--texte);overflow-wrap:anywhere}
 .tg-sortie:empty{display:none}
 .tg-c{color:var(--vert)}.tg-p{color:var(--doux)}
@@ -248,7 +248,7 @@ export const CSS_TERMINAL = `
 .tg-n{color:var(--doux)}
 .tg-ligne{display:flex;align-items:center;gap:8px;margin:0;padding:6px 8px 8px 16px}
 .tg-invite{color:var(--vert);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:55%;flex:none}
-.tg-u{color:var(--doux)}
+.tg-u{color:var(--doux)}.tg-chc{display:none}
 .tg-ligne input{flex:1;min-width:4em;margin:0;padding:4px 2px;background:transparent;border:0;color:var(--vert);caret-color:var(--vert);font:inherit;font-size:20px}
 .tg-ligne input::placeholder{color:var(--bord-vif)}
 .tg-ligne input:focus{outline:0}.tg-ligne:focus-within{box-shadow:inset 0 -2px 0 var(--ambre)}
@@ -256,6 +256,6 @@ export const CSS_TERMINAL = `
 .tg-fermer:hover{color:var(--ambre)}
 .tg-fermer:focus-visible,.tg-ouvrir:focus-visible,.tg-l a:focus-visible{outline:3px solid var(--ambre);outline-offset:2px}
 html.tg-ouvert body{padding-bottom:64px}
-@media (max-width:760px){.tg-u{display:none}.tg-sortie{max-height:32vh;padding-inline:12px}.tg-ligne{padding-inline-start:12px}.tg-ligne input{font-size:18px}.tg-invite{max-width:48%}}
+@media (max-width:760px){.tg-u,.tg-ch{display:none}.tg-chc{display:inline}.tg-sortie{max-height:32vh;padding-inline:12px}.tg-ligne{padding-inline-start:12px}.tg-ligne input{font-size:18px}.tg-invite{max-width:48%}}
 @media (prefers-reduced-motion:reduce){.tg *{transition:none!important;animation:none!important}}
 `;

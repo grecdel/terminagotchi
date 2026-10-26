@@ -470,6 +470,33 @@ console.log("Plusieurs parties, jetons TG-…, code de secours, connexion au sit
   verifier(!r.t.includes("Bidule"), "se déconnecter du site ferme la session");
 }
 
+console.log("Mini-terminal du site (ls, cd, cat…)");
+{
+  r = await appel("GET", "/api/plan?lang=de");
+  const pl = r.j;
+  verifier(r.statut === 200 && /max-age/.test(r.h.get("cache-control") || ""), "/api/plan répond (et se met en cache)");
+  verifier(pl?.r?.some(([n, t, u]) => n === "bestiaire" && t === "d" && u === "/bestiaire") && pl.r.some(([n, t]) => n === "mentions-legales" && t === "f")
+    && pl.r.some(([n, , u, l]) => n === "joueurs" && u === "" && l === "Spieler"), "plan : dossiers et fichiers de la racine, libellés traduits");
+  verifier(pl?.e?.length === 150 && pl.e.some(([id, nom, f]) => id === "braisillon" && nom === "Braisillon" && f === "demons"), "plan : les 150 bestioles publiques et leur famille");
+  verifier(pl?.f?.length === 10 && pl.f.some(([s, , , u]) => s === "betes-monstrueuses" && u === "/bestiaire?famille=B%C3%AAtes+monstrueuses"), "plan : les familles en dossiers tapables");
+  const chemins = { "/": "", "/bestiaire": "bestiaire", "/bestiaire?famille=D%C3%A9mons": "bestiaire/demons", "/bestiaire/braisillon": "bestiaire/braisillon",
+    "/joueur/Grec": "joueurs/Grec", "/captures?shiny=1": "captures/shiny", "/mentions-legales": "mentions-legales" };
+  const rates = [];
+  for (const [p, c] of Object.entries(chemins)) {
+    r = await appel("GET", p);
+    const m = r.t.match(/<script type="application\/json" id="tg-d">([\s\S]*?)<\/script>/);
+    const d = m && JSON.parse(m[1]);
+    if (d?.c !== c) rates.push(p + " → " + d?.c);
+  }
+  verifier(rates.length === 0, "chaque page sait où elle est (~/bestiaire/demons…)" + (rates.length ? " : " + rates.join(", ") : ""));
+  r = await appel("GET", "/bestiaire/braisillon?lang=ar");
+  const d = JSON.parse(r.t.match(/id="tg-d">([\s\S]*?)<\/script>/)[1]);
+  verifier(d.fi === 1 && d.l === "ar" && d.s.ouvrir === "افتح الطرفية" && d.ls.length === 14, "barre : fichier repéré, textes dans la langue de la page");
+  verifier(/<div id="tg" class="tg" dir="ltr" hidden>/.test(r.t) && r.t.includes('aria-controls="tg-panneau"') && r.t.includes('id="tg-saisie"'),
+    "barre : cachée sans JavaScript, bouton et champ accessibles");
+  verifier(!/<script[^>]+src=/.test(r.t), "aucun script externe");
+}
+
 console.log("Pied de page, pages pour les adultes, polices locales");
 {
   r = await appel("GET", "/classement");
