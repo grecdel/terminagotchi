@@ -4,29 +4,45 @@ import android.graphics.Bitmap
 
 /**
  * Les badges de la salle d'entraînement (portage de pc/tg/badges.py, mêmes dessins et mêmes couleurs ;
- * le site a les siens dans site/src/entrainement.js).
+ * le site a les siens dans site/src/entrainement.js ; vecteurs communs des dessins : donnees/entrainement/vecteurs.json).
  *
  * Les badges appartiennent à la PARTIE (ce que l'enfant sait faire), pas à la créature (elle gagne de l'XP).
- * 8 familles, 5 échelons : Bois → Bronze → Argent → Or → Diamant, à 1 / 5 / 15 / 30 / 50 exercices réussis
- * dans la famille ; le Diamant demande en plus au moins une médaille d'or (ou de diamant) en temps.
- * Dessin 14 × 14 : . transparent, o contour, f fond, h reflet, i dessin, k/K détail.
- * Dans le terminal de l'appli : la balise ¤badge:<famille>:<échelon>¤ (famille « cache » = « ??? »).
+ * 8 familles, 5 grades (des tailles d'informatique) : Bit → Octet → Kilo → Méga → Giga, à 1 / 5 / 15 / 30 / 50
+ * exercices réussis dans la famille ; le Giga demande en plus au moins une médaille d'or (ou de diamant) en temps.
+ * Chaque grade a ses galons sous l'écusson (1, 2, 3 chevrons ; + pistes dorées au Méga ; ailes lumineuses et puce
+ * au Giga) et 0 à 3 étoiles au-dessus : le chemin vers le grade suivant (ETOILES ; au Giga : 75 / 100 / 150).
+ * Écusson 14 × 14 : . transparent, o contour, f fond, h reflet, i dessin, k/K détail.
+ * Badge complet (ecusson) 18 × 28 : étoiles lignes 0-3 (x = 0, 6, 12), écusson en (2, 4), galons derrière
+ * (a b c : couleurs du grade ; d e g pistes dorées ; q r s pistes lumineuses ; z y x p la puce).
+ * Dans le terminal de l'appli : la balise ¤badge:<famille>:<grade>~<étoiles>¤ (famille « cache » = « ??? » ;
+ * sans ~ : l'écusson seul).
  */
 object Badges {
     val FAMILLES = listOf("explorateur", "batisseur", "demenageur", "nettoyeur", "lecteur", "detective", "plombier", "cuisinier")
-    val ECHELONS = listOf("bois", "bronze", "argent", "or", "diamant")
+    val ECHELONS = listOf("bit", "octet", "kilo", "mega", "giga")
     val SEUILS = listOf(1, 5, 15, 30, 50)
+    /** Les étoiles de chaque grade : réussites pour ★, ★★, ★★★. */
+    val ETOILES = listOf(listOf(2, 3, 4), listOf(8, 10, 13), listOf(19, 23, 27), listOf(35, 40, 45), listOf(75, 100, 150))
+    /** Les anciens noms (vieilles sauvegardes : le titre choisi). */
+    val ANCIENS = mapOf("bois" to "bit", "bronze" to "octet", "argent" to "kilo", "or" to "mega", "diamant" to "giga")
 
-    /** contour, fond, reflet, dessin, détail */
+    /** contour, fond, reflet, dessin, détail (vert circuit → cyan → bleu → violet → or) */
     val COULEURS: Map<String, List<String>> = mapOf(
-        "bois" to listOf("#3a2a1a", "#76583a", "#987654", "#efe0c4", "#4a3522"),
-        "bronze" to listOf("#6b3510", "#d0782a", "#f6ad62", "#fff3e0", "#7a3c0c"),
-        "argent" to listOf("#4a525e", "#aab5c2", "#e6edf4", "#323a47", "#6b7685"),
-        "or" to listOf("#6b4700", "#e8b71c", "#fff27a", "#4f3300", "#a36f00"),
-        "diamant" to listOf("#0b4a66", "#3fcfff", "#d2f8ff", "#06324a", "#1a7fae"),
+        "bit" to listOf("#0d3b1e", "#2f9e4f", "#86e89a", "#eaffe9", "#17602f"),
+        "octet" to listOf("#08404d", "#22b0c6", "#a6f3ff", "#062f3a", "#127688"),
+        "kilo" to listOf("#152a78", "#4072f0", "#b1c8ff", "#f0f4ff", "#2240b0"),
+        "mega" to listOf("#3d0f60", "#a050e6", "#e2b8ff", "#fff0ff", "#5e1f92"),
+        "giga" to listOf("#6b4700", "#e8b71c", "#fff27a", "#4f3300", "#a36f00"),
         "cache" to listOf("#3a3a44", "#5a5a66", "#6e6e7a", "#8a8a96", "#4a4a55"),
     )
     const val ETINCELLE = "#ffffff"
+    val FIXES = mapOf('d' to "#4a3000", 'e' to "#d9a41a", 'g' to "#fff27a", 'q' to "#0b3f55", 'r' to "#3fd6ff", 's' to "#ffffff", 'z' to "#0c0c10", 'y' to "#4a4a5e", 'x' to "#262630", 'p' to "#d8d8e0")
+    const val ETOILE_ON = "#ffd84a"
+    const val ETOILE_OFF = "#3c3c4a"
+    const val LARGEUR = 18
+    const val HAUTEUR = 28
+    const val BX = 2
+    const val BY = 4
 
     val FORME = listOf(
         "...oooooooo...",
@@ -58,44 +74,167 @@ object Badges {
     )
     private val ETINCELLES = listOf(1 to 12, 0 to 12, 2 to 12, 1 to 11, 1 to 13)
 
-    /** La grille 14 × 14 (« #rrggbb » ou null). famille ou échelon null (ou « cache ») : la famille pas encore découverte. */
-    fun grille(famille: String?, echelon: String?): List<List<String?>> {
-        val cache = famille == null || echelon == null || famille == "cache" || echelon !in ECHELONS
+    /** Les galons : (première ligne, lignes de 18 pixels), derrière l'écusson. */
+    val GALONS: Map<String, Pair<Int, List<String>>> = mapOf(
+        "bit" to (16 to listOf(
+            ".......aaa........",
+            ".....aabbbaa......",
+            "...aabbcccbbaa....",
+            "..abbccaaaccbba...",
+            ".abccaa...aaccba..",
+            ".acaa.......aaca..",
+            "..a...........a...",
+        )),
+        "octet" to (16 to listOf(
+            ".......aaa........",
+            ".....aabbbaa......",
+            "...aabbcccbbaa....",
+            "..abbccaaaccbba...",
+            ".abccaabbbaaccba..",
+            ".acaabbcccbbaaca..",
+            "..abbccaaaccbba...",
+            ".abccaa...aaccba..",
+            ".acaa.......aaca..",
+            "..a...........a...",
+        )),
+        "kilo" to (16 to listOf(
+            ".......aaa........",
+            ".....aabbbaa......",
+            "...aabbcccbbaa....",
+            "..abbccaaaccbba...",
+            ".abccaabbbaaccba..",
+            ".acaabbcccbbaaca..",
+            "..abbccaaaccbba...",
+            ".abccaabbbaaccba..",
+            ".acaabbcccbbaaca..",
+            "..abbccaaaccbba...",
+            ".abccaa...aaccba..",
+            ".acaa.......aaca..",
+        )),
+        "mega" to (7 to listOf(
+            "d................d",
+            "gd..............dg",
+            "ed..............de",
+            "egd............dge",
+            "ed..............de",
+            "egd............dge",
+            "ed..............de",
+            "egd............dge",
+            "ed..............de",
+            "ded....aaa.....ded",
+            ".ded.aabbbaa..ded.",
+            "..daabbcccbbaaed..",
+            "..abbccaaaccbba...",
+            ".abccaabbbaaccba..",
+            ".acaabbcccbbaaca..",
+            "..abbccaaaccbba...",
+            ".abccaabbbaaccba..",
+            ".acaabbcccbbaaca..",
+            "..abbccaaaccbba...",
+            ".abccaa...aaccba..",
+            ".acaa.......aaca..",
+        )),
+        "giga" to (4 to listOf(
+            "q................q",
+            "sq..............qs",
+            "rsq............qsr",
+            "rrq............qrr",
+            "rsq............qsr",
+            "rrq............qrr",
+            "rsq............qsr",
+            "rrq............qrr",
+            "rsq............qsr",
+            "rrq............qrr",
+            "rsq............qsr",
+            "rrq............qrr",
+            "qrrq...aaa....qrrq",
+            ".qrrqaabbbaa.qrrq.",
+            "..qaabpcpcpbaarq..",
+            "..abbzyyyyyzbba...",
+            ".abcczxsxxxzccba..",
+            ".acaazxxxxxzaaca..",
+            "..abbcpapapcbba...",
+            ".abccaabbbaaccba..",
+            ".acaabbcccbbaaca..",
+            "..abbccaaaccbba...",
+            ".abccaa...aaccba..",
+            ".acaa.......aaca..",
+        )),
+    )
+    private val ETOILE = listOf("..x..", ".xxx.", "xxxxx", ".x.x.")
+    private val X_ETOILES = listOf(0, 6, 12)
+
+    /** L'écusson seul : grille 14 × 14 (« #rrggbb » ou null). famille ou grade null (ou « cache ») : pas encore découvert. */
+    fun grille(famille: String?, echelon: String?): List<MutableList<String?>> {
+        val cache = famille == null || famille == "cache" || famille !in ICONES || echelon !in ECHELONS
         val c = COULEURS.getValue(if (cache) "cache" else echelon!!)
         val pal = mapOf('o' to c[0], 'f' to c[1], 'h' to c[2], 'i' to c[3], 'k' to c[4], 'K' to c[4])
         val g = FORME.map { l -> l.map { pal[it] }.toMutableList() }
         val ic = ICONES.getValue(if (cache) "cache" else famille!!)
         ic.forEachIndexed { y, l -> l.forEachIndexed { x, ch -> if (ch != '.') g[3 + y][3 + x] = pal[ch] } }
-        if (echelon == "diamant" && !cache) for ((y, x) in ETINCELLES) g[y][x] = ETINCELLE
+        if (echelon == "giga" && !cache) for ((y, x) in ETINCELLES) g[y][x] = ETINCELLE
         return g
     }
 
-    /** L'échelon atteint (0…4, ou -1) avec n réussites et `ors` médailles d'or ou de diamant. */
+    /** Le grade seul : grille 18 × 28 (null = transparent). */
+    fun galons(echelon: String?): List<MutableList<String?>> {
+        val g = List(HAUTEUR) { MutableList<String?>(LARGEUR) { null } }
+        if (echelon !in ECHELONS) return g
+        val c = COULEURS.getValue(echelon!!)
+        val pal = FIXES + mapOf('a' to c[0], 'b' to c[2], 'c' to c[1])
+        val (y0, lignes) = GALONS.getValue(echelon)
+        lignes.forEachIndexed { y, l -> l.forEachIndexed { x, ch -> if (ch != '.') g[y0 + y][x] = pal[ch] } }
+        return g
+    }
+
+    /** Le badge complet 18 × 28 : galons, écusson, 3 étoiles (0 à 3 allumées). Pas encore découvert : l'écusson gris seul. */
+    fun ecusson(famille: String?, echelon: String?, etoiles: Int = 0): List<MutableList<String?>> {
+        val cache = famille == null || famille == "cache" || famille !in ICONES || echelon !in ECHELONS
+        val g = galons(if (cache) null else echelon)
+        grille(famille, echelon).forEachIndexed { y, l -> l.forEachIndexed { x, c -> if (c != null) g[BY + y][BX + x] = c } }
+        if (!cache) X_ETOILES.forEachIndexed { i, x0 ->
+            ETOILE.forEachIndexed { y, l -> l.forEachIndexed { x, ch -> if (ch == 'x') g[y][x0 + x] = if (i < etoiles) ETOILE_ON else ETOILE_OFF } }
+        }
+        return g
+    }
+
+    /** Le grade atteint (0…4, ou -1) avec n réussites et `ors` médailles d'or ou de diamant. */
     fun echelonDe(n: Int, ors: Int = 0): Int {
         var k = -1
         SEUILS.forEachIndexed { i, s -> if (n >= s && (i < 4 || ors >= 1)) k = i }
         return k
     }
 
+    /** Les étoiles (0…3) dans le grade k avec n réussites. */
+    fun etoilesDe(n: Int, k: Int): Int = if (k < 0) 0 else ETOILES[k].count { n >= it }
+
+    /** Les réussites de la prochaine étoile dans le grade k, ou null. */
+    fun prochaineEtoile(n: Int, k: Int): Int? = if (k < 0) null else ETOILES[k].firstOrNull { n < it }
+
+    fun texteEtoiles(n: Int) = "★".repeat(n) + "☆".repeat(3 - n)
+
     fun argb(h: String): Int = (0xFF000000L or h.substring(1).toLong(16)).toInt()
 
-    /** Le reflet de l'échelon (couleur des noms et des titres). */
+    /** Le reflet du grade (couleur des noms et des titres). */
     fun couleur(echelon: String?): Int = argb(COULEURS.getValue(echelon?.takeIf { it in ECHELONS } ?: "cache")[2])
 
     private val images = HashMap<String, Bitmap>()
 
-    /** Le badge en image (14 × 14 pixels agrandis `echelle` fois, bords nets). */
-    fun bitmap(famille: String?, echelon: String?, echelle: Int = 4): Bitmap {
-        val cle = "$famille-$echelon-$echelle"
+    /** Le badge en image, bords nets : l'écusson seul (etoiles null, 14 × 14) ou complet (18 × 28), agrandi `echelle` fois. */
+    fun bitmap(famille: String?, echelon: String?, echelle: Int = 4, etoiles: Int? = null): Bitmap {
+        val cle = "$famille-$echelon-$echelle-$etoiles"
         images[cle]?.let { return it }
-        val g = grille(famille, echelon)
-        val px = IntArray(14 * 14)
-        for (y in 0 until 14) for (x in 0 until 14) px[y * 14 + x] = g[y][x]?.let { argb(it) } ?: 0
-        val b = Bitmap.createScaledBitmap(Bitmap.createBitmap(px, 14, 14, Bitmap.Config.ARGB_8888), 14 * echelle, 14 * echelle, false)
+        val g = if (etoiles == null) grille(famille, echelon) else ecusson(famille, echelon, etoiles)
+        val h = g.size
+        val w = g[0].size
+        val px = IntArray(w * h)
+        for (y in 0 until h) for (x in 0 until w) px[y * w + x] = g[y][x]?.let { argb(it) } ?: 0
+        val b = Bitmap.createScaledBitmap(Bitmap.createBitmap(px, w, h, Bitmap.Config.ARGB_8888), w * echelle, h * echelle, false)
         images[cle] = b
         return b
     }
 
-    /** La balise du terminal (TerminalActivity.miseEnForme la remplace par l'image). */
-    fun balise(famille: String?, echelon: String?) = "¤badge:${famille ?: "cache"}:${echelon ?: "cache"}¤"
+    /** La balise du terminal (TerminalActivity.miseEnForme la remplace par l'image) ; avec étoiles : le badge complet. */
+    fun balise(famille: String?, echelon: String?, etoiles: Int? = null) =
+        "¤badge:${famille ?: "cache"}:${echelon ?: "cache"}${if (etoiles != null) "~$etoiles" else ""}¤"
 }

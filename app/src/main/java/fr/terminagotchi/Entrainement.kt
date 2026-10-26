@@ -12,7 +12,7 @@ import java.security.SecureRandom
  *   entrainement [famille]      un exercice (alias : exercice)
  *   entrainement <réponse>      répondre à un exercice de lecture
  *   entrainement fin            ranger l'exercice
- *   badges · badges titre [n|auto] · badges records
+ *   badges · badges titre [n|auto] · badges records · badges grades (Bit, Octet… expliqués)
  *
  * L'exercice se passe dans ~/terrain_terminagotchi/salle_entrainement (le terrain de la partie active) ;
  * rien n'est touché ailleurs. Réussi quand le résultat est là (Tour.apresCommande → apresCommande) ou quand
@@ -179,7 +179,16 @@ object Entrainement {
         val e = jeu.module("entrainement")
         for (k in listOf("compteurs", "familles", "records", "hebdo", "hebdo_compte")) if (e.optJSONObject(k) == null) e.put(k, JSONObject())
         for (k in listOf("envoyer", "sym")) if (e.optJSONArray(k) == null) e.put(k, JSONArray())
+        e.optString("titre").takeIf { it.isNotEmpty() }?.let { e.put("titre", migrerTitre(it)) }
         return e
+    }
+
+    /** Vieilles sauvegardes : le titre choisi « explorateur:argent » devient « explorateur:kilo ». */
+    fun migrerTitre(x: String): String {
+        val i = x.indexOf(':')
+        if (i < 0) return x
+        val nouveau = Badges.ANCIENS[x.substring(i + 1)] ?: return x
+        return x.substring(0, i + 1) + nouveau
     }
 
     fun fam(e: JSONObject, f: String): JSONObject {
@@ -210,6 +219,8 @@ object Entrainement {
         val x = fam(e, f)
         return Badges.echelonDe(x.optInt("n"), x.optInt("or") + x.optInt("diamant"))
     }
+
+    fun etoiles(e: JSONObject, f: String): Int = Badges.etoilesDe(fam(e, f).optInt("n"), echelon(e, f))
 
     // ---------------------------------------------------------------- la salle (seulement dans le terrain)
     fun salle(jeu: Jeu) = File(jeu.terrain, SALLE)
@@ -396,7 +407,8 @@ object Entrainement {
     }
 
     fun nomFamille(f: String) = t("ent.famille.$f")
-    fun nomEchelon(e: String) = t("ent.echelon.$e")
+    fun nomEchelon(e: String) = t("ent.grade.$e")
+    fun nomMedaille(m: String) = t("ent.medaille.$m")
 
     // ---------------------------------------------------------------- titres
     class Titre(val id: String, val texte: String, val couleur: String)
@@ -431,7 +443,7 @@ object Entrainement {
         return tous.firstOrNull { it.id == choix } ?: tous.firstOrNull()
     }
 
-    /** « « Explorateur d'Or » » pour l'en-tête (ou "" sans titre) ; arc-en-ciel avec §…§ dans le terminal. */
+    /** « « Explorateur Kilo » » pour l'en-tête (ou "" sans titre) ; arc-en-ciel avec §…§ dans le terminal. */
     fun titreTexte(jeu: Jeu, terminal: Boolean = false): String {
         val x = titreAffiche(jeu) ?: return ""
         return if (terminal && x.couleur == "arc") "§« ${x.texte} »§" else "« ${x.texte} »"
@@ -513,6 +525,7 @@ object Entrainement {
         val s = maxOf(0.1, Math.round((maintenant() - c.optLong("debut")) / 100.0) / 10.0)
         val m = medaille(typ, s)
         val avant = echelon(e, f)
+        val etAvant = etoiles(e, f)
         val x = fam(e, f)
         x.put("n", x.optInt("n") + 1)
         x.put(m, x.optInt(m) + 1)
@@ -530,13 +543,15 @@ object Entrainement {
         jeu.ajouterXp(xp)
         Envies.plaisir(jeu, "jeu", "defi")
         val sec = "%.1f".format(java.util.Locale.ROOT, s)
-        val out = mutableListOf(t("ent.reussi", "s" to sec, "icone" to ICONE_MEDAILLE[m], "medaille" to nomEchelon(m), "xp" to xp, "nom" to jeu.nom))
+        val out = mutableListOf(t("ent.reussi", "s" to sec, "icone" to ICONE_MEDAILLE[m], "medaille" to nomMedaille(m), "xp" to xp, "nom" to jeu.nom))
         if (nouveau && rec != null) out.add(t("ent.record", "avant" to "%.1f".format(java.util.Locale.ROOT, rec.optDouble("t"))))
         val apres = echelon(e, f)
         if (apres > avant) {
             val en = Badges.ECHELONS[apres]
-            out.add(Badges.balise(f, en) + " " + t("ent.echelon_monte", "badge" to nomFamille(f), "echelon" to nomEchelon(en), "cmd" to "`badges`"))
+            out.add(Badges.balise(f, en, 0) + " " + t("ent.echelon_monte", "badge" to nomFamille(f), "echelon" to nomEchelon(en), "cmd" to "`badges`"))
             jeu.log("🏅 " + t("ent.echelon_log", "badge" to nomFamille(f), "echelon" to nomEchelon(en)))
+        } else if (apres == avant && etoiles(e, f) > etAvant) {
+            out.add(t("ent.etoile", "badge" to nomFamille(f), "etoiles" to Badges.texteEtoiles(etoiles(e, f))))
         }
         jeu.log(t("ent.reussi_log", "s" to sec, "icone" to ICONE_MEDAILLE[m]))
         jeu.dire(out[0], 12)
@@ -617,13 +632,13 @@ object Entrainement {
                 continue
             }
             val en = if (k >= 0) Badges.ECHELONS[k] else null
-            val prog = if (k + 1 < Badges.ECHELONS.size) {
-                val s = Badges.SEUILS[k + 1]
-                if (k + 1 == 4 && x.optInt("n") >= s) t("ent.badges.manque_or")
-                else t("ent.badges.progres", "n" to x.optInt("n"), "s" to s, "echelon" to nomEchelon(Badges.ECHELONS[k + 1]))
-            } else t("ent.badges.max")
-            out.add(Badges.balise(if (en != null) f else null, en) + "  " + nomFamille(f) + " · " +
-                (if (en != null) nomEchelon(en) else t("ent.badges.decouvrir")) + "   " + prog)
+            if (en == null) {
+                out.add(Badges.balise(null, null) + "  " + nomFamille(f) + " · " + t("ent.badges.decouvrir") + "   " +
+                    t("ent.badges.progres", "n" to x.optInt("n"), "s" to Badges.SEUILS[0], "echelon" to nomEchelon(Badges.ECHELONS[0])))
+                continue
+            }
+            val n = etoiles(e, f)
+            out.add(Badges.balise(f, en, n) + "  " + nomFamille(f) + " · " + nomEchelon(en) + " " + Badges.texteEtoiles(n) + "   " + progres(e, f))
         }
         out.add("")
         titreAffiche(jeu)?.let {
@@ -631,7 +646,37 @@ object Entrainement {
         }
         val hc = e.optJSONObject("hebdo_compte") ?: JSONObject()
         for (f in Badges.FAMILLES) if (hc.optInt(f) > 0) out.add(t("ent.hebdo.compte", "badge" to nomFamille(f), "n" to hc.optInt(f)))
+        out.add(t("ent.badges.grades", "cmd" to "`badges grades`"))
         out.add(t("ent.badges.pied", "cmd" to "`$COMMANDE`", "rec" to "`badges records`"))
+        return out.joinToString("\n")
+    }
+
+    /** Le texte de progression d'un badge gagné : vers le grade suivant, ou vers l'étoile suivante au Giga. */
+    fun progres(e: JSONObject, f: String): String {
+        val n = fam(e, f).optInt("n")
+        val k = echelon(e, f)
+        if (k + 1 < Badges.ECHELONS.size) {
+            val s = Badges.SEUILS[k + 1]
+            return if (k + 1 == 4 && n >= s) t("ent.badges.manque_or")
+            else t("ent.badges.progres", "n" to n, "s" to s, "echelon" to nomEchelon(Badges.ECHELONS[k + 1]))
+        }
+        val s = Badges.prochaineEtoile(n, k) ?: return t("ent.badges.max")
+        return t("ent.badges.etoile", "n" to n, "s" to s)
+    }
+
+    /** Les 5 grades expliqués (Bit, Octet… : des tailles d'informatique), avec leurs galons et les étoiles. */
+    fun ecranGrades(): String {
+        val out = mutableListOf(t("ent.grades.titre"), "")
+        Badges.ECHELONS.forEachIndexed { k, en ->
+            out.add(Badges.balise("explorateur", en, 0) + "  " + nomEchelon(en) + " · " + t("ent.grades.seuil", "n" to Badges.SEUILS[k]) +
+                (if (k == 4) " " + t("ent.badges.manque_or") else ""))
+        }
+        out.add("")
+        out.add(t("ent.grades.intro"))
+        for (en in Badges.ECHELONS) out.add("  " + nomEchelon(en) + " : " + t("ent.grades.$en"))
+        out.add("")
+        out.add(t("ent.grades.galons"))
+        out.add(t("ent.grades.etoiles", "n" to Badges.ETOILES[4][2]))
         return out.joinToString("\n")
     }
 
@@ -684,6 +729,7 @@ object Entrainement {
         return when (m.firstOrNull()?.lowercase()) {
             "titre", "titres" -> ecranTitres(jeu, m.getOrNull(1))
             "records", "record" -> ecranRecords(jeu)
+            "grades", "grade", "echelons", "echelon", "échelons", "échelon", "aide", "etoiles", "étoiles" -> ecranGrades()
             else -> ecranBadges(jeu)
         }
     }

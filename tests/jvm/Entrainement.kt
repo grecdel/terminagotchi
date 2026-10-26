@@ -1,7 +1,7 @@
 /*
  * Test JVM (hors téléphone) de la salle d'entraînement, portage de pc/outils/test_entrainement.py : tirage commun
  * (donnees/entrainement/vecteurs.json), chaque exercice fait avec les vraies commandes (bash) dans la salle du terrain,
- * puis le tour de jeu (Tour.apresCommande) ; badges, échelons, titres, Star de la semaine, synchro.
+ * puis le tour de jeu (Tour.apresCommande) ; badges, grades (Bit → Giga), galons, étoiles, titres, Star de la semaine, synchro.
  *
  *   kotlinc -cp <imitations>:<appli.jar> tests/jvm/Entrainement.kt -d entrainement.jar
  *   java -cp <imitations>:<appli.jar>:entrainement.jar:kotlin-stdlib.jar EntrainementKt app/src/main/assets donnees/entrainement/vecteurs.json
@@ -98,12 +98,25 @@ fun main(args: Array<String>) {
         "${med.length()} médailles identiques")
     val ech = v.getJSONArray("echelons")
     verifier((0 until ech.length()).all { ech.getJSONObject(it).let { m -> Badges.echelonDe(m.getInt("n"), m.getInt("or")) == m.getInt("echelon") } },
-        "échelons identiques (Diamant : une médaille d'or en plus)")
+        "grades identiques (Giga : une médaille d'or en plus)")
+    verifier((0 until ech.length()).all { ech.getJSONObject(it).let { m -> Badges.etoilesDe(m.getInt("n"), m.getInt("echelon")) == m.getInt("etoiles") } },
+        "étoiles identiques (au Giga : 75 / 100 / 150)")
+    val ecu = v.getJSONArray("ecussons")
+    fun empreinte(g: List<List<String?>>): String = java.security.MessageDigest.getInstance("SHA-256")
+        .digest(g.joinToString("/") { l -> l.joinToString(",") { it ?: "" } }.toByteArray()).joinToString("") { "%02x".format(it) }
+    verifier((0 until ecu.length()).all { ecu.getJSONObject(it).let { m ->
+        empreinte(Badges.ecusson(if (m.isNull("famille")) null else m.getString("famille"),
+            if (m.isNull("echelon")) null else m.getString("echelon"), m.getInt("etoiles"))) == m.getString("empreinte") } },
+        "${ecu.length()} badges complets identiques au pixel près (galons, étoiles)")
+    val px = Badges.ECHELONS.map { e -> Badges.galons(e).sumOf { l -> l.count { it != null } } }
+    verifier(px == px.sorted() && px.toSet().size == 5, "les galons grandissent à chaque grade ($px)")
+    verifier(Entrainement.migrerTitre("explorateur:argent") == "explorateur:kilo" && Entrainement.migrerTitre("touche") == "touche",
+        "vieille sauvegarde : « Explorateur d'Argent » devient « Explorateur Kilo »")
     val sem = v.getJSONArray("semaines")
     verifier((0 until sem.length()).all { sem.getJSONObject(it).let { m -> Entrainement.semaine(m.getLong("t") * 1000) == m.getString("semaine") } },
         "semaines ISO identiques")
-    verifier(Badges.grille("explorateur", "diamant")[1][12] == "#ffffff" && Badges.grille(null, null)[0][3] == "#3a3a44",
-        "les dessins des badges (étincelle du diamant, « ??? » gris)")
+    verifier(Badges.grille("explorateur", "giga")[1][12] == "#ffffff" && Badges.grille(null, null)[0][3] == "#3a3a44",
+        "les dessins des badges (étincelle du Giga, « ??? » gris)")
 
     println("Avant le terrain, avant les commandes")
     verifier("première leçon" in texte(Entrainement.commande(jeu, "", shell.dossier)), "pas de terrain : on continue la première leçon")
@@ -186,24 +199,31 @@ fun main(args: Array<String>) {
     val pb = Entrainement.generer("bat_pieces", cours()!!.getString("v"), cours()!!.getLong("n"))
     bash("mkdir ${pb.pieces[0]}", S)
     val monte = tape("mkdir ${pb.pieces[1]}")
-    verifier(Entrainement.echelon(Entrainement.e(jeu), "batisseur") == 1 && monte.messages.any { "¤badge:batisseur:bronze¤" in it.first },
-        "5e réussite : badge Bâtisseur en Bronze (avec son image)")
+    verifier(Entrainement.echelon(Entrainement.e(jeu), "batisseur") == 1 && monte.messages.any { "¤badge:batisseur:octet~0¤" in it.first },
+        "5e réussite : badge Bâtisseur en Octet (avec son image)")
     regler("nettoyeur", 50, 0)
-    verifier(Entrainement.echelon(Entrainement.e(jeu), "nettoyeur") == 3, "50 réussites sans médaille d'or : encore Or")
+    verifier(Entrainement.echelon(Entrainement.e(jeu), "nettoyeur") == 3, "50 réussites sans médaille d'or : encore Méga")
     regler("nettoyeur", 50, 1)
-    verifier(Entrainement.echelon(Entrainement.e(jeu), "nettoyeur") == 4, "… avec une médaille d'or : Diamant")
+    verifier(Entrainement.echelon(Entrainement.e(jeu), "nettoyeur") == 4, "… avec une médaille d'or : Giga")
     val ecran = Entrainement.ecranBadges(jeu)
-    verifier("¤badge:nettoyeur:diamant¤" in ecran && "Diamant" in ecran && "Bronze" in ecran, "badges : une image et l'échelon par famille")
-    verifier(Entrainement.titreAffiche(jeu)?.texte == "Nettoyeur de Diamant", "le titre affiché est le plus beau : « Nettoyeur de Diamant »")
+    verifier("¤badge:nettoyeur:giga~0¤" in ecran && "Giga ☆☆☆" in ecran && "Octet" in ecran && "50/75 → ★" in ecran,
+        "badges : une image complète, le grade et ses étoiles par famille")
+    verifier(Entrainement.titreAffiche(jeu)?.texte == "Nettoyeur Giga", "le titre affiché est le plus beau : « Nettoyeur Giga »")
+    verifier("`badges grades`" in ecran && "8 bits" in Entrainement.commandeBadges(jeu, "grades")
+        && Regex("¤badge:explorateur:[a-z]+~0¤").findAll(Entrainement.commandeBadges(jeu, "grades")).count() == 5,
+        "badges grades : les 5 grades, leurs galons et ce qu'ils veulent dire")
+    regler("plombier", 9)
+    verifier("¤badge:plombier:octet~1¤" in Entrainement.ecranBadges(jeu) && "9/15 → Kilo" in Entrainement.ecranBadges(jeu), "9 réussites : Octet ★☆☆, 9/15 → Kilo")
+    regler("plombier", 0)
     val liste = texte(Entrainement.ecranTitres(jeu, null))
     val n = liste.lines().indexOfFirst { "Élève de la salle" in it }
     Entrainement.ecranTitres(jeu, n.toString())
     verifier(Entrainement.titreAffiche(jeu)?.texte == "Élève de la salle", "on choisit son titre (badges titre $n)")
     Entrainement.ecranTitres(jeu, "auto")
-    verifier(Entrainement.titreAffiche(jeu)?.texte == "Nettoyeur de Diamant", "auto : le plus beau titre revient")
+    verifier(Entrainement.titreAffiche(jeu)?.texte == "Nettoyeur Giga", "auto : le plus beau titre revient")
     for (f in Badges.FAMILLES) regler(f, 30, 1)
     verifier(Entrainement.titreAffiche(jeu)?.couleur == "arc" && "§« Légende de la salle »§" in Entrainement.ecranBadges(jeu),
-        "8 familles en Or : « Légende de la salle » (arc-en-ciel)")
+        "8 familles en Méga : « Légende de la salle » (arc-en-ciel)")
 
     println("Star de la semaine (gardée une semaine)")
     Entrainement.e(jeu).put("hebdo", JSONObject().put("semaine", Entrainement.semainePrecedente()).put("familles", JSONArray().put("lecteur")))

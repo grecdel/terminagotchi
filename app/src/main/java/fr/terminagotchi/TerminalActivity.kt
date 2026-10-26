@@ -550,12 +550,14 @@ class TerminalActivity : Activity() {
                 val debut = sb.length
                 sb.append(m.groupValues[8])
                 sb.setSpan(ForegroundColorSpan(Vert.COULEUR), debut, sb.length, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
-            } else if (m.groupValues[1] == "badge") {          // ¤badge:famille:échelon¤ (salle d'entraînement)
+            } else if (m.groupValues[1] == "badge") {          // ¤badge:famille:grade~étoiles¤ (salle d'entraînement)
                 val debut = sb.length
                 sb.append("\uFFFC")
-                val d = android.graphics.drawable.BitmapDrawable(resources, Badges.bitmap(m.groupValues[2], m.groupValues[3]))
-                val px = (28 * resources.displayMetrics.density).toInt()
-                d.setBounds(0, 0, px, px)
+                val etoiles = m.groupValues[6].toIntOrNull()        // avec ~n : le badge complet (étoiles, galons)
+                val d = android.graphics.drawable.BitmapDrawable(resources, Badges.bitmap(m.groupValues[2], m.groupValues[3], 4, etoiles))
+                val dp = resources.displayMetrics.density
+                if (etoiles == null) d.setBounds(0, 0, (28 * dp).toInt(), (28 * dp).toInt())
+                else d.setBounds(0, 0, (36 * dp).toInt(), (56 * dp).toInt())
                 sb.setSpan(android.text.style.ImageSpan(d, android.text.style.DynamicDrawableSpan.ALIGN_BOTTOM),
                     debut, debut + 1, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
             } else if (m.groupValues[1].isNotEmpty()) {
