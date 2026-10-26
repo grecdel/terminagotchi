@@ -9,8 +9,8 @@ package fr.terminagotchi
  *    (« Un monstre sauvage : {nom} ! », « {nom} rejoint ta troupe »). Chaque phrase est entière : prête à traduire.
  *
  * 2) terme("ram", palier) : le jargon arrive progressivement, dans la langue choisie (clés « terme.xxx »).
- *    palier 0 = l'image seule (« la mémoire de la maison »), 1 = l'image et le vrai mot
- *    (« la mémoire de la maison (la RAM) »), 2 = le vrai mot seul (« la RAM »).
+ *    palier 0 = l'image seule (« la mémoire du monde »), 1 = l'image et le vrai mot
+ *    (« la mémoire du monde (la RAM) »), 2 = le vrai mot seul (« la RAM »).
  *    palier(niveau, lecons) : niveau < 7 → 0, 7 à 11 → 1, 12 et plus → 2 ;
  *    ou, si c'est plus haut, 8 leçons terminées → 1, 14 → 2.
  */

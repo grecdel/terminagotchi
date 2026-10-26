@@ -151,7 +151,7 @@ object Regles {
 
     /**
      * Le lexique : toutes les commandes utiles du terminal Android.
-     * Fil rouge : l'ordinateur est une grande maison. Chaque commande a une image (la maison)
+     * Fil rouge : l'ordinateur est un monde à explorer (le Terminaworld). Chaque commande a une image (le monde)
      * et une explication technique ; l'affichage suit le palier de vocabulaire (voir Mots.kt).
      * Les mêmes phrases existent sur PC (pc/tg/lexique.py).
      */

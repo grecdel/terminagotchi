@@ -1,4 +1,4 @@
-"""Expliquer chaque commande et chacune de ses options, en mots d'enfant (la grande maison).
+"""Expliquer chaque commande et chacune de ses options, en mots d'enfant (le monde à explorer).
 
 1) OPTIONS : pour chaque commande, ce que veut dire chaque option utilisée dans le jeu (-r, -a, 444, +x…)
    et les symboles (> >> | . .. ~ *). Les textes sont dans les langues : « opt.<clé> », commençant par le

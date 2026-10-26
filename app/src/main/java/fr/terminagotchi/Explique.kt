@@ -3,7 +3,7 @@ package fr.terminagotchi
 import org.json.JSONArray
 
 /**
- * Expliquer chaque commande et chacune de ses options, en mots d'enfant (la grande maison), puis pour les grands
+ * Expliquer chaque commande et chacune de ses options, en mots d'enfant (le monde à explorer), puis pour les grands
  * (portage de pc/tg/explique.py : mêmes tables, mêmes textes « opt.* », « optg.* », « grand.* », « diff.* »).
  *
  *  - le lexique : sous chaque commande, « Pour les grands : … » et ses options (TerminalActivity.remplirLexique) ;

@@ -34,7 +34,7 @@ const fr = {
     intro: "Terminagotchi est une petite créature virtuelle qui grandit quand votre enfant tape des commandes dans un terminal, comme les informaticiens. Il est pensé pour les enfants dès 7 ans.",
     apprendTitre: "Ce qu'apprend votre enfant",
     apprend: "Les vraies commandes du terminal : se déplacer dans les dossiers, créer et ranger des fichiers, lire et chercher dans des textes, comprendre les droits, faire le ménage, puis découvrir le réseau, les scripts et Git.",
-    histoire: "Sur PC, tout est raconté dans une histoire, « La Maison endormie » : l'enfant trouve un œuf dans une vieille maison, l'ordinateur, et la réveille pièce par pièce. Chaque pièce pose un vrai problème, et les commandes sont les outils pour le résoudre.",
+    histoire: "Sur PC, tout est raconté dans une histoire, « L'éveil du Terminaworld » : l'enfant trouve un œuf à l'entrée d'un monde endormi, le Terminaworld (l'ordinateur), et le réveille lieu par lieu, de la forêt du Grenier à la tour des nuages. Chaque lieu pose un vrai problème, et les commandes sont les outils pour le résoudre.",
     sansTitre: "Ce qu'il n'y a pas",
     sans: [
       "Pas de publicité.",
@@ -118,7 +118,7 @@ const en = {
     intro: "Terminagotchi is a small virtual creature that grows when your child types commands in a terminal, just like programmers do. It is designed for children aged 7 and up.",
     apprendTitre: "What your child learns",
     apprend: "Real terminal commands: moving between folders, creating and organising files, reading and searching text, understanding permissions, cleaning up, then discovering networks, scripts and Git.",
-    histoire: "On PC, everything is told as a story, “The Sleeping House” (La Maison endormie): the child finds an egg in an old house, the computer, and wakes it up room by room. Each room is a real problem, and the commands are the tools to solve it.",
+    histoire: "On PC, everything is told as a story, “The Awakening of the Terminaworld” (L'éveil du Terminaworld): the child finds an egg at the entrance of a sleeping world, the Terminaworld (the computer), and wakes it up place by place, from the Attic Forest to the tower in the clouds. Each place is a real problem, and the commands are the tools to solve it.",
     sansTitre: "What there isn't",
     sans: [
       "No ads.",
@@ -202,7 +202,7 @@ const es = {
     intro: "Terminagotchi es una pequeña criatura virtual que crece cuando su hijo o hija escribe comandos en un terminal, como los informáticos. Está pensado para niños a partir de 7 años.",
     apprendTitre: "Lo que aprende su hijo",
     apprend: "Los comandos reales del terminal: moverse entre carpetas, crear y ordenar archivos, leer y buscar en textos, entender los permisos, hacer limpieza y luego descubrir la red, los scripts y Git.",
-    histoire: "En PC, todo se cuenta como una historia, «La casa dormida» (La Maison endormie): el niño encuentra un huevo en una casa vieja, el ordenador, y la despierta habitación por habitación. Cada habitación plantea un problema real, y los comandos son las herramientas para resolverlo.",
+    histoire: "En PC, todo se cuenta como una historia, «El despertar del Terminaworld» (L'éveil du Terminaworld): el niño encuentra un huevo a la entrada de un mundo dormido, el Terminaworld (el ordenador), y lo despierta lugar por lugar, del bosque del Desván a la torre de las nubes. Cada lugar plantea un problema real, y los comandos son las herramientas para resolverlo.",
     sansTitre: "Lo que no hay",
     sans: [
       "Sin publicidad.",
@@ -286,7 +286,7 @@ const de = {
     intro: "Terminagotchi ist ein kleines virtuelles Wesen, das wächst, wenn Ihr Kind Befehle in ein Terminal tippt, wie Informatiker. Es ist für Kinder ab 7 Jahren gedacht.",
     apprendTitre: "Was Ihr Kind lernt",
     apprend: "Echte Terminal-Befehle: sich zwischen Ordnern bewegen, Dateien anlegen und ordnen, Texte lesen und durchsuchen, Rechte verstehen, aufräumen, dann Netzwerk, Skripte und Git entdecken.",
-    histoire: "Auf dem PC wird alles als Geschichte erzählt, „Das schlafende Haus“ (La Maison endormie): Das Kind findet ein Ei in einem alten Haus, dem Computer, und weckt es Zimmer für Zimmer auf. Jedes Zimmer stellt ein echtes Problem, und die Befehle sind die Werkzeuge, um es zu lösen.",
+    histoire: "Auf dem PC wird alles als Geschichte erzählt, „Das Erwachen der Terminaworld“ (L'éveil du Terminaworld): Das Kind findet am Eingang einer schlafenden Welt, der Terminaworld (dem Computer), ein Ei und weckt sie Ort für Ort auf, vom Dachbodenwald bis zum Turm in den Wolken. Jeder Ort stellt ein echtes Problem, und die Befehle sind die Werkzeuge, um es zu lösen.",
     sansTitre: "Was es nicht gibt",
     sans: [
       "Keine Werbung.",
@@ -370,7 +370,7 @@ const it = {
     intro: "Terminagotchi è una piccola creatura virtuale che cresce quando vostro figlio scrive comandi in un terminale, come gli informatici. È pensato per bambini dai 7 anni in su.",
     apprendTitre: "Cosa impara vostro figlio",
     apprend: "I veri comandi del terminale: muoversi tra le cartelle, creare e ordinare file, leggere e cercare nei testi, capire i permessi, fare pulizia, poi scoprire la rete, gli script e Git.",
-    histoire: "Su PC tutto è raccontato in una storia, «La casa addormentata» (La Maison endormie): il bambino trova un uovo in una vecchia casa, il computer, e la risveglia stanza dopo stanza. Ogni stanza pone un problema vero, e i comandi sono gli strumenti per risolverlo.",
+    histoire: "Su PC tutto è raccontato in una storia, «Il risveglio del Terminaworld» (L'éveil du Terminaworld): il bambino trova un uovo all'ingresso di un mondo addormentato, il Terminaworld (il computer), e lo risveglia luogo dopo luogo, dalla foresta della Soffitta alla torre tra le nuvole. Ogni luogo pone un problema vero, e i comandi sono gli strumenti per risolverlo.",
     sansTitre: "Cosa non c'è",
     sans: [
       "Niente pubblicità.",
@@ -454,7 +454,7 @@ const pt = {
     intro: "O Terminagotchi é uma pequena criatura virtual que cresce quando o seu filho escreve comandos num terminal, como os informáticos. Foi pensado para crianças a partir dos 7 anos.",
     apprendTitre: "O que o seu filho aprende",
     apprend: "Comandos reais do terminal: andar entre pastas, criar e arrumar ficheiros, ler e pesquisar em textos, perceber as permissões, fazer limpezas e depois descobrir a rede, os scripts e o Git.",
-    histoire: "No PC, tudo é contado como uma história, «A casa adormecida» (La Maison endormie): a criança encontra um ovo numa casa velha, o computador, e acorda-a divisão a divisão. Cada divisão coloca um problema real, e os comandos são as ferramentas para o resolver.",
+    histoire: "No PC, tudo é contado como uma história, «O despertar do Terminaworld» (L'éveil du Terminaworld): a criança encontra um ovo à entrada de um mundo adormecido, o Terminaworld (o computador), e acorda-o lugar a lugar, da floresta do Sótão à torre nas nuvens. Cada lugar coloca um problema real, e os comandos são as ferramentas para o resolver.",
     sansTitre: "O que não há",
     sans: [
       "Sem publicidade.",
@@ -538,7 +538,7 @@ const zh = {
     intro: "Terminagotchi 是一只小小的虚拟生物，孩子像程序员一样在终端里输入命令，它就会长大。它适合 7 岁及以上的孩子。",
     apprendTitre: "孩子能学到什么",
     apprend: "真正的终端命令：在文件夹之间移动，创建和整理文件，阅读和搜索文本，理解权限，清理文件，然后认识网络、脚本和 Git。",
-    histoire: "在电脑版里，一切都在一个故事中展开：“沉睡的房子”（La Maison endormie）。孩子在一座老房子——也就是电脑——里发现一颗蛋，然后一个房间一个房间地唤醒它。每个房间都有一个真正的问题，命令就是解决问题的工具。",
+    histoire: "在电脑版里，一切都在一个故事中展开：“Terminaworld 的苏醒”（L'éveil du Terminaworld）。孩子在一个沉睡世界——Terminaworld，也就是电脑——的入口发现一颗蛋，然后一个地方一个地方地唤醒它，从阁楼森林一直到云中高塔。每个地方都有一个真正的问题，命令就是解决问题的工具。",
     sansTitre: "这里没有的东西",
     sans: [
       "没有广告。",
@@ -622,7 +622,7 @@ const ru = {
     intro: "Terminagotchi — маленькое виртуальное существо, которое растёт, когда ваш ребёнок вводит команды в терминале, как программисты. Игра рассчитана на детей от 7 лет.",
     apprendTitre: "Чему учится ваш ребёнок",
     apprend: "Настоящим командам терминала: переходить между папками, создавать и упорядочивать файлы, читать и искать в текстах, понимать права доступа, наводить порядок, а потом знакомиться с сетью, скриптами и Git.",
-    histoire: "На ПК всё рассказано в виде истории «Спящий дом» (La Maison endormie): ребёнок находит яйцо в старом доме — компьютере — и будит его комната за комнатой. В каждой комнате настоящая задача, а команды — инструменты, чтобы её решить.",
+    histoire: "На ПК всё рассказано в виде истории «Пробуждение Terminaworld» (L'éveil du Terminaworld): ребёнок находит яйцо у входа в спящий мир — Terminaworld, то есть компьютер, — и будит его место за местом, от леса Чердак до башни в облаках. В каждом месте настоящая задача, а команды — инструменты, чтобы её решить.",
     sansTitre: "Чего здесь нет",
     sans: [
       "Нет рекламы.",
@@ -706,7 +706,7 @@ const ja = {
     intro: "Terminagotchi は、お子さんがプログラマーのようにターミナルでコマンドを打つと育つ、小さなバーチャルないきものです。7 歳以上のお子さん向けに作られています。",
     apprendTitre: "お子さんが学ぶこと",
     apprend: "本物のターミナルのコマンド：フォルダーの移動、ファイルの作成と整理、テキストの閲覧と検索、権限の理解、片付け、そしてネットワーク、スクリプト、Git へと進みます。",
-    histoire: "PC 版では、すべてが「眠れる家」（La Maison endormie）という物語として語られます。子どもは古い家、つまりコンピューターの中でたまごを見つけ、部屋をひとつずつ目覚めさせていきます。どの部屋にも本当の問題があり、コマンドはそれを解くための道具です。",
+    histoire: "PC 版では、すべてが「Terminaworld の めざめ」（L'éveil du Terminaworld）という物語として語られます。子どもは ねむっている せかい、Terminaworld（つまりコンピューター）の いりぐちで たまごを見つけ、やねうらの もりから くもの とうまで、ばしょを ひとつずつ めざめさせていきます。どの ばしょにも本当の問題があり、コマンドはそれを解くための道具です。",
     sansTitre: "ないもの",
     sans: [
       "広告はありません。",
@@ -790,7 +790,7 @@ const hi = {
     intro: "Terminagotchi एक छोटा-सा आभासी जीव है, जो तब बड़ा होता है जब आपका बच्चा प्रोग्रामरों की तरह टर्मिनल में कमांड टाइप करता है। यह 7 साल और उससे बड़े बच्चों के लिए बनाया गया है।",
     apprendTitre: "आपका बच्चा क्या सीखता है",
     apprend: "टर्मिनल की असली कमांड: फ़ोल्डरों के बीच आना-जाना, फ़ाइलें बनाना और सजाना, टेक्स्ट पढ़ना और उसमें खोजना, अनुमतियाँ समझना, सफ़ाई करना, और फिर नेटवर्क, स्क्रिप्ट और Git को जानना।",
-    histoire: "PC पर सब कुछ एक कहानी में बताया जाता है, “सोया हुआ घर” (La Maison endormie): बच्चे को एक पुराने घर — यानी कंप्यूटर — में एक अंडा मिलता है, और वह उसे कमरा-दर-कमरा जगाता है। हर कमरे में एक असली समस्या है, और कमांड उसे हल करने के औज़ार हैं।",
+    histoire: "PC पर सब कुछ एक कहानी में बताया जाता है, “Terminaworld का जागना” (L'éveil du Terminaworld): बच्चे को एक सोती हुई दुनिया — Terminaworld, यानी कंप्यूटर — के प्रवेश-द्वार पर एक अंडा मिलता है, और वह उसे स्थान-दर-स्थान जगाता है, अटारी के जंगल से बादलों की मीनार तक। हर स्थान में एक असली समस्या है, और कमांड उसे सुलझाने के औज़ार हैं।",
     sansTitre: "जो यहाँ नहीं है",
     sans: [
       "कोई विज्ञापन नहीं।",
@@ -874,7 +874,7 @@ const ar = {
     intro: "Terminagotchi مخلوق افتراضي صغير يكبر عندما يكتب طفلكم أوامر في الطرفية، مثل المبرمجين. اللعبة مصمّمة للأطفال من سن 7 سنوات.",
     apprendTitre: "ماذا يتعلّم طفلكم",
     apprend: "أوامر الطرفية الحقيقية: التنقّل بين المجلدات، إنشاء الملفات وترتيبها، قراءة النصوص والبحث فيها، فهم الصلاحيات، التنظيف، ثم اكتشاف الشبكة والسكربتات وGit.",
-    histoire: "على الحاسوب، تُروى كل الأشياء في قصة اسمها «البيت النائم» (La Maison endormie): يجد الطفل بيضة في بيت قديم هو الحاسوب، ويوقظه غرفةً بعد غرفة. في كل غرفة مشكلة حقيقية، والأوامر هي الأدوات لحلّها.",
+    histoire: "على الحاسوب، تُروى كل الأشياء في قصة اسمها «استيقاظ Terminaworld» (L'éveil du Terminaworld): يجد الطفل بيضة عند مدخل عالم نائم هو Terminaworld، أي الحاسوب، ويوقظه مكانًا بعد مكان، من غابة العلّية إلى برج الغيوم. في كل مكان مشكلة حقيقية، والأوامر هي الأدوات لحلّها.",
     sansTitre: "ما ليس موجودًا",
     sans: [
       "لا إعلانات.",
@@ -958,7 +958,7 @@ const bn = {
     intro: "Terminagotchi একটি ছোট ভার্চুয়াল প্রাণী, যা বড় হয় যখন আপনার সন্তান প্রোগ্রামারদের মতো টার্মিনালে কমান্ড টাইপ করে। এটি ৭ বছর ও তার বেশি বয়সী শিশুদের জন্য তৈরি।",
     apprendTitre: "আপনার সন্তান কী শেখে",
     apprend: "টার্মিনালের আসল কমান্ড: ফোল্ডারের মধ্যে চলাফেরা, ফাইল তৈরি ও গোছানো, লেখা পড়া ও খোঁজা, অনুমতি বোঝা, পরিষ্কার করা, তারপর নেটওয়ার্ক, স্ক্রিপ্ট ও Git চেনা।",
-    histoire: "PC-তে সবকিছু একটি গল্পে বলা হয়, “ঘুমন্ত বাড়ি” (La Maison endormie): শিশু একটি পুরোনো বাড়িতে — মানে কম্পিউটারে — একটি ডিম খুঁজে পায়, আর ঘরের পর ঘর সেটিকে জাগিয়ে তোলে। প্রতিটি ঘরে একটি সত্যিকারের সমস্যা, আর কমান্ডগুলো তা সমাধানের হাতিয়ার।",
+    histoire: "PC-তে সবকিছু একটি গল্পে বলা হয়, “Terminaworld-এর জেগে ওঠা” (L'éveil du Terminaworld): শিশু এক ঘুমন্ত পৃথিবীর — Terminaworld, মানে কম্পিউটারের — প্রবেশপথে একটি ডিম খুঁজে পায়, আর চিলেকোঠার বন থেকে মেঘের মিনার পর্যন্ত জায়গার পর জায়গা সেটিকে জাগায়। প্রতিটি জায়গায় একটি আসল সমস্যা আছে, আর কমান্ডগুলো তা সমাধানের যন্ত্র।",
     sansTitre: "যা এখানে নেই",
     sans: [
       "কোনো বিজ্ঞাপন নেই।",
@@ -1042,7 +1042,7 @@ const id = {
     intro: "Terminagotchi adalah makhluk virtual kecil yang tumbuh ketika anak Anda mengetik perintah di terminal, seperti para pemrogram. Gim ini dirancang untuk anak usia 7 tahun ke atas.",
     apprendTitre: "Apa yang dipelajari anak Anda",
     apprend: "Perintah terminal yang sungguhan: berpindah antarfolder, membuat dan merapikan berkas, membaca dan mencari teks, memahami izin akses, bersih-bersih, lalu mengenal jaringan, skrip, dan Git.",
-    histoire: "Di PC, semuanya diceritakan dalam sebuah kisah, “Rumah yang Tertidur” (La Maison endormie): anak menemukan sebutir telur di sebuah rumah tua, yaitu komputer, lalu membangunkannya ruang demi ruang. Setiap ruang punya masalah nyata, dan perintah-perintah adalah alat untuk menyelesaikannya.",
+    histoire: "Di PC, semuanya diceritakan dalam sebuah kisah, “Bangunnya Terminaworld” (L'éveil du Terminaworld): anak menemukan sebutir telur di pintu masuk sebuah dunia yang tertidur, Terminaworld (yaitu komputer), lalu membangunkannya tempat demi tempat, dari Hutan Loteng sampai menara di awan. Setiap tempat punya masalah nyata, dan perintah-perintah adalah alat untuk menyelesaikannya.",
     sansTitre: "Yang tidak ada",
     sans: [
       "Tanpa iklan.",
@@ -1126,7 +1126,7 @@ const ur = {
     intro: "Terminagotchi ایک چھوٹی سی مجازی مخلوق ہے جو اس وقت بڑی ہوتی ہے جب آپ کا بچہ پروگرامروں کی طرح ٹرمینل میں کمانڈ لکھتا ہے۔ یہ 7 سال اور اس سے بڑے بچوں کے لیے بنایا گیا ہے۔",
     apprendTitre: "آپ کا بچہ کیا سیکھتا ہے",
     apprend: "ٹرمینل کی اصل کمانڈز: فولڈروں کے درمیان آنا جانا، فائلیں بنانا اور ترتیب دینا، متن پڑھنا اور اس میں تلاش کرنا، اجازتیں سمجھنا، صفائی کرنا، اور پھر نیٹ ورک، اسکرپٹ اور Git کو جاننا۔",
-    histoire: "PC پر سب کچھ ایک کہانی میں بیان ہوتا ہے، “سویا ہوا گھر” (La Maison endormie): بچے کو ایک پرانے گھر، یعنی کمپیوٹر، میں ایک انڈا ملتا ہے اور وہ اسے کمرہ بہ کمرہ جگاتا ہے۔ ہر کمرے میں ایک حقیقی مسئلہ ہے، اور کمانڈز اسے حل کرنے کے اوزار ہیں۔",
+    histoire: "PC پر سب کچھ ایک کہانی میں بیان ہوتا ہے، “Terminaworld کا جاگنا” (L'éveil du Terminaworld): بچے کو ایک سوتی ہوئی دنیا، Terminaworld یعنی کمپیوٹر، کے داخلی دروازے پر ایک انڈا ملتا ہے اور وہ اسے مقام بہ مقام جگاتا ہے، اٹاری کے جنگل سے بادلوں کے مینار تک۔ ہر مقام میں ایک حقیقی مسئلہ ہے، اور کمانڈز اسے حل کرنے کے اوزار ہیں۔",
     sansTitre: "جو یہاں نہیں ہے",
     sans: [
       "کوئی اشتہار نہیں۔",

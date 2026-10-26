@@ -158,7 +158,7 @@ const fr = {
   bestiaire: {
     titre: "Bestiaire",
     h1: "📖 Bestiaire",
-    intro: "150 espèces de bestioles se cachent dans le terrain de jeu, réparties en 10 familles. Chacune grandit en 5 stades, du bébé à l'ancien, et peut changer de couleurs selon l'endroit où elle vit : ce sont ses variantes.",
+    intro: "150 espèces de bestioles se cachent dans le Terminaworld, réparties en 10 familles. Chacune grandit en 5 stades, du bébé à l'ancien, et peut changer de couleurs selon l'endroit où elle vit : ce sont ses variantes.",
     raretesTitre: "Les couleurs de rareté",
     raretesTexte: "La couleur d'une carte dit si l'espèce est facile à trouver. Mais chaque bestiole capturée tire aussi au sort sa propre rareté : deux bestioles de la même espèce ne sont jamais tout à fait pareilles.",
     famille: "Famille :",
@@ -359,7 +359,7 @@ const en = {
   bestiaire: {
     titre: "Bestiary",
     h1: "📖 Bestiary",
-    intro: "150 kinds of critters hide in the playground, in 10 families. Each one grows through 5 stages, from baby to elder, and can wear other colours depending on where it lives: those are its variants.",
+    intro: "150 kinds of critters hide in the Terminaworld, in 10 families. Each one grows through 5 stages, from baby to elder, and can wear other colours depending on where it lives: those are its variants.",
     raretesTitre: "Rarity colours",
     raretesTexte: "A card's colour tells you if the species is easy to find. But every critter you catch also gets its own rarity by luck: two critters of the same kind are never quite the same.",
     famille: "Family:",
@@ -559,7 +559,7 @@ const es = {
   bestiaire: {
     titre: "Bestiario",
     h1: "📖 Bestiario",
-    intro: "150 especies de bichos se esconden en el terreno de juego, en 10 familias. Cada una crece en 5 etapas, de bebé a anciana, y puede tener otros colores según el lugar donde vive: son sus variantes.",
+    intro: "150 especies de bichos se esconden en el Terminaworld, en 10 familias. Cada una crece en 5 etapas, de bebé a anciana, y puede tener otros colores según el lugar donde vive: son sus variantes.",
     raretesTitre: "Los colores de rareza",
     raretesTexte: "El color de una tarjeta te dice si la especie es fácil de encontrar. Pero cada bicho que atrapas también sortea su propia rareza: dos bichos de la misma especie nunca son del todo iguales.",
     famille: "Familia:",
@@ -759,7 +759,7 @@ const de = {
   bestiaire: {
     titre: "Tierbuch",
     h1: "📖 Tierbuch",
-    intro: "150 Arten von Tierchen verstecken sich im Spielgelände, in 10 Familien. Jede wächst in 5 Stufen vom Baby bis uralt und kann je nach Wohnort andere Farben haben: das sind ihre Varianten.",
+    intro: "150 Arten von Tierchen verstecken sich in der Terminaworld, in 10 Familien. Jede wächst in 5 Stufen vom Baby bis uralt und kann je nach Wohnort andere Farben haben: das sind ihre Varianten.",
     raretesTitre: "Die Seltenheitsfarben",
     raretesTexte: "Die Farbe einer Karte zeigt, ob die Art leicht zu finden ist. Aber jedes gefangene Tierchen bekommt auch seine eigene Seltenheit ausgelost: Zwei Tierchen derselben Art sind nie ganz gleich.",
     famille: "Familie:",
@@ -960,7 +960,7 @@ const it = {
   bestiaire: {
     titre: "Bestiario",
     h1: "📖 Bestiario",
-    intro: "150 specie di bestioline si nascondono nel terreno di gioco, in 10 famiglie. Ognuna cresce in 5 stadi, da neonato ad anziano, e può avere altri colori secondo il posto dove vive: sono le sue varianti.",
+    intro: "150 specie di bestioline si nascondono nel Terminaworld, in 10 famiglie. Ognuna cresce in 5 stadi, da neonato ad anziano, e può avere altri colori secondo il posto dove vive: sono le sue varianti.",
     raretesTitre: "I colori della rarità",
     raretesTexte: "Il colore di una carta ti dice se la specie è facile da trovare. Ma ogni bestiolina catturata estrae anche la sua rarità: due bestioline della stessa specie non sono mai del tutto uguali.",
     famille: "Famiglia:",
@@ -1160,7 +1160,7 @@ const pt = {
   bestiaire: {
     titre: "Bestiário",
     h1: "📖 Bestiário",
-    intro: "150 espécies de bichinhos escondem-se no terreno de jogo, em 10 famílias. Cada uma cresce em 5 fases, de bebé a anciã, e pode ter outras cores conforme o sítio onde vive: são as suas variantes.",
+    intro: "150 espécies de bichinhos escondem-se no Terminaworld, em 10 famílias. Cada uma cresce em 5 fases, de bebé a anciã, e pode ter outras cores conforme o sítio onde vive: são as suas variantes.",
     raretesTitre: "As cores da raridade",
     raretesTexte: "A cor de uma carta diz se a espécie é fácil de encontrar. Mas cada bichinho apanhado também sorteia a sua própria raridade: dois bichinhos da mesma espécie nunca são bem iguais.",
     famille: "Família:",
@@ -1358,7 +1358,7 @@ const zh = {
   bestiaire: {
     titre: "图鉴",
     h1: "📖 图鉴",
-    intro: "游戏场地里藏着 150 种小怪兽，分成 10 个家族。每一种都会经历 5 个阶段，从幼崽长到远古，还会因为住的地方不同而换上别的颜色：这就是它的变种。",
+    intro: "Terminaworld 里藏着 150 种小怪兽，分成 10 个家族。每一种都会经历 5 个阶段，从幼崽长到远古，还会因为住的地方不同而换上别的颜色：这就是它的变种。",
     raretesTitre: "稀有度的颜色",
     raretesTexte: "卡片的颜色告诉你这个物种好不好找。不过每只抓到的小怪兽还会抽出自己的稀有度：同一种的两只小怪兽永远不会完全一样。",
     famille: "家族：",
@@ -1558,7 +1558,7 @@ const ru = {
   bestiaire: {
     titre: "Бестиарий",
     h1: "📖 Бестиарий",
-    intro: "На игровом поле прячутся 150 видов зверушек из 10 семейств. Каждая растёт в 5 стадий, от крохи до древней, и может менять цвета в зависимости от того, где живёт: это её варианты.",
+    intro: "В Terminaworld прячутся 150 видов зверушек из 10 семейств. Каждая растёт в 5 стадий, от крохи до древней, и может менять цвета в зависимости от того, где живёт: это её варианты.",
     raretesTitre: "Цвета редкости",
     raretesTexte: "Цвет карточки показывает, легко ли найти этот вид. Но каждая пойманная зверушка ещё и получает свою редкость по жребию: две зверушки одного вида никогда не бывают совсем одинаковыми.",
     famille: "Семейство:",
@@ -1757,7 +1757,7 @@ const ja = {
   bestiaire: {
     titre: "ずかん",
     h1: "📖 ずかん",
-    intro: "あそび場には 150 しゅるいのモンスターがかくれていて、10 のなかまにわかれているよ。どれも あかちゃんから ちょうろうまで 5 だんかいで そだち、すんでいる場所によって ちがう色になることもあるよ。それが「バリエーション」だよ。",
+    intro: "Terminaworld には 150 しゅるいのモンスターがかくれていて、10 のなかまにわかれているよ。どれも あかちゃんから ちょうろうまで 5 だんかいで そだち、すんでいる場所によって ちがう色になることもあるよ。それが「バリエーション」だよ。",
     raretesTitre: "めずらしさの色",
     raretesTexte: "カードの色は、そのしゅるいが見つけやすいかどうかを教えてくれるよ。でも、つかまえたモンスターは 1 ぴきずつ、自分だけのめずらしさを くじで決めるんだ。同じしゅるいでも まったく同じ子はいないよ。",
     famille: "なかま：",
@@ -1957,7 +1957,7 @@ const hi = {
   bestiaire: {
     titre: "जीवों की किताब",
     h1: "📖 जीवों की किताब",
-    intro: "खेल के मैदान में 150 तरह के जीव छिपे हैं, 10 परिवारों में। हर जीव शिशु से प्राचीन तक 5 चरणों में बढ़ता है, और जहाँ रहता है उसके हिसाब से उसके रंग बदल सकते हैं: ये उसके रूपांतर हैं।",
+    intro: "Terminaworld में 150 तरह के जीव छिपे हैं, 10 परिवारों में। हर जीव शिशु से प्राचीन तक 5 चरणों में बढ़ता है, और जहाँ रहता है उसके हिसाब से उसके रंग बदल सकते हैं: ये उसके रूपांतर हैं।",
     raretesTitre: "दुर्लभता के रंग",
     raretesTexte: "कार्ड का रंग बताता है कि वह जीव आसानी से मिलता है या नहीं। पर हर पकड़ा गया जीव अपनी दुर्लभता भी किस्मत से पाता है: एक ही तरह के दो जीव कभी बिल्कुल एक जैसे नहीं होते।",
     famille: "परिवार:",
@@ -2159,7 +2159,7 @@ const ar = {
   bestiaire: {
     titre: "كتاب المخلوقات",
     h1: "📖 كتاب المخلوقات",
-    intro: "تختبئ في ساحة اللعب 150 نوعًا من المخلوقات، موزّعة على 10 عائلات. كل نوع يكبر عبر 5 مراحل، من رضيع إلى عتيق، وقد تتغيّر ألوانه حسب المكان الذي يعيش فيه: هذه هي أشكاله المختلفة.",
+    intro: "تختبئ في Terminaworld 150 نوعًا من المخلوقات، موزّعة على 10 عائلات. كل نوع يكبر عبر 5 مراحل، من رضيع إلى عتيق، وقد تتغيّر ألوانه حسب المكان الذي يعيش فيه: هذه هي أشكاله المختلفة.",
     raretesTitre: "ألوان الندرة",
     raretesTexte: "لون البطاقة يخبرك إن كان النوع سهل الإيجاد. لكن كل مخلوق تصطاده يحصل أيضًا على ندرته الخاصة بالقرعة: مخلوقان من النوع نفسه لا يتشابهان تمامًا أبدًا.",
     famille: "العائلة:",
@@ -2359,7 +2359,7 @@ const bn = {
   bestiaire: {
     titre: "প্রাণীর বই",
     h1: "📖 প্রাণীর বই",
-    intro: "খেলার মাঠে 150 রকমের প্রাণী লুকিয়ে আছে, 10টি পরিবারে। প্রতিটি শিশু থেকে প্রাচীন পর্যন্ত 5টি ধাপে বড় হয়, আর যেখানে থাকে সেই অনুযায়ী তার রং বদলাতে পারে: এগুলো তার রূপভেদ।",
+    intro: "Terminaworld-এ 150 রকমের প্রাণী লুকিয়ে আছে, 10টি পরিবারে। প্রতিটি শিশু থেকে প্রাচীন পর্যন্ত 5টি ধাপে বড় হয়, আর যেখানে থাকে সেই অনুযায়ী তার রং বদলাতে পারে: এগুলো তার রূপভেদ।",
     raretesTitre: "বিরলতার রং",
     raretesTexte: "কার্ডের রং বলে দেয় প্রজাতিটি সহজে পাওয়া যায় কি না। তবে ধরা পড়া প্রতিটি প্রাণী ভাগ্যের জোরে নিজের বিরলতাও পায়: একই প্রজাতির দুটি প্রাণী কখনো পুরোপুরি এক রকম হয় না।",
     famille: "পরিবার:",
@@ -2560,7 +2560,7 @@ const id = {
   bestiaire: {
     titre: "Buku Makhluk",
     h1: "📖 Buku Makhluk",
-    intro: "150 jenis makhluk bersembunyi di arena bermain, dalam 10 keluarga. Masing-masing tumbuh dalam 5 tahap, dari bayi sampai tetua, dan bisa punya warna lain tergantung tempat tinggalnya: itulah variannya.",
+    intro: "150 jenis makhluk bersembunyi di Terminaworld, dalam 10 keluarga. Masing-masing tumbuh dalam 5 tahap, dari bayi sampai tetua, dan bisa punya warna lain tergantung tempat tinggalnya: itulah variannya.",
     raretesTitre: "Warna kelangkaan",
     raretesTexte: "Warna kartu memberi tahu apakah spesies itu mudah ditemukan. Tapi setiap makhluk yang kamu tangkap juga mengundi kelangkaannya sendiri: dua makhluk dari spesies yang sama tidak pernah benar-benar sama.",
     famille: "Keluarga:",
@@ -2761,7 +2761,7 @@ const ur = {
   bestiaire: {
     titre: "جانداروں کی کتاب",
     h1: "📖 جانداروں کی کتاب",
-    intro: "کھیل کے میدان میں 150 قسم کی مخلوقات چھپی ہیں، 10 خاندانوں میں۔ ہر ایک ننھے سے قدیم تک 5 مرحلوں میں بڑی ہوتی ہے، اور جہاں رہتی ہے اس کے حساب سے اس کے رنگ بدل سکتے ہیں: یہ اس کی شکلیں ہیں۔",
+    intro: "Terminaworld میں 150 قسم کی مخلوقات چھپی ہیں، 10 خاندانوں میں۔ ہر ایک ننھے سے قدیم تک 5 مرحلوں میں بڑی ہوتی ہے، اور جہاں رہتی ہے اس کے حساب سے اس کے رنگ بدل سکتے ہیں: یہ اس کی شکلیں ہیں۔",
     raretesTitre: "نایابی کے رنگ",
     raretesTexte: "کارڈ کا رنگ بتاتا ہے کہ وہ قسم آسانی سے ملتی ہے یا نہیں۔ لیکن ہر پکڑی گئی مخلوق قسمت سے اپنی نایابی بھی پاتی ہے: ایک ہی قسم کی دو مخلوقات کبھی بالکل ایک جیسی نہیں ہوتیں۔",
     famille: "خاندان:",

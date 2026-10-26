@@ -1,20 +1,25 @@
-"""« La Maison endormie » : le fil conducteur du Terminagotchi (PC), en 10 chapitres.
+"""« L'éveil du Terminaworld » (titre provisoire, une seule clé : lex.ch.maison) : le fil conducteur du
+Terminagotchi (PC), en 10 chapitres. Ancien nom : « La Maison endormie ».
 
-L'enfant trouve un œuf dans une vieille maison abandonnée : l'ordinateur. La maison s'est endormie
-et les monstres de 10 familles se sont installés chacun dans une pièce. Avec sa créature, il réveille
-la maison pièce par pièce. Chaque chapitre a un vrai problème à résoudre ; les commandes sont les
-outils pour le résoudre.
+Le monde à explorer : terrain_terminagotchi = le Terminaworld (sa racine = le carrefour), ~ = le camp de base,
+dossier = un lieu, fichier = un objet, texte = un parchemin, dossier caché = un passage secret, tree = la carte du
+monde. Les lieux gardent les vieux noms écrits sur leurs panneaux (les vrais dossiers ne changent pas, aucune
+sauvegarde n'est cassée) : vestibule (l'entrée du monde), grenier (une forêt), cave (une caverne), bibliotheque
+(engloutie dans le lagon), salle_des_machines (au pied du volcan), dortoir (un vallon de brume), tour (dans les
+nuages), coeur (le cœur du monde). L'enfant trouve un œuf à l'entrée du monde endormi : l'ordinateur. Les monstres
+de 10 familles se sont installés chacun dans un lieu. Avec sa créature, il réveille le monde lieu par lieu.
+Chaque chapitre a un vrai problème à résoudre ; les commandes sont les outils pour le résoudre.
 
    1 reveil        Le réveil                 pwd, ls, cd              (on trouve l'œuf)
-   2 nid           Le nid                    mkdir, touch, >, cat     (une chambre et un repas)
-   3 grenier       Le grenier des Sylvestres tree, mv, cp, rm         (des lianes ont tout mélangé)
-   4 cave          La cave des Démons        whoami, sudo -h, chmod   (ils volent la nourriture)
-   5 bibliotheque  La bibliothèque           find, less, grep, head, wc (un livre a disparu)
-   6 machines      La salle des machines     free, du, df, rm         (la maison étouffe)
-   7 dortoir       Le dortoir                ps, &, jobs, kill        (des fantômes refusent de dormir)
+   2 nid           Le nid                    mkdir, touch, >, cat     (un nid et un repas)
+   3 grenier       La forêt du Grenier       tree, mv, cp, rm         (des lianes ont tout mélangé)
+   4 cave          La caverne des Démons     whoami, sudo -h, chmod   (ils volent la nourriture)
+   5 bibliotheque  La bibliothèque engloutie find, less, grep, head, wc (un livre a disparu)
+   6 machines      La salle des machines du volcan  free, du, df, rm  (le monde étouffe)
+   7 dortoir       Le dortoir des brumes     ps, &, jobs, kill        (des fantômes refusent de dormir)
    8 atelier       L'atelier des Constructs  scripts, chmod +x, alias, git
-   9 tour          La tour des Célestes      ping, ip, curl, nslookup, ssh -V
-  10 coeur         Le cœur de la maison      rev, ls -a, find, cat >, grep | wc, puis Abyssor
+   9 tour          La tour des nuages        ping, ip, curl, nslookup, ssh -V
+  10 coeur         Le cœur du monde          rev, ls -a, find, cat >, grep | wc, puis Abyssor
   (+ telephone : le jardin du téléphone, seulement dans Termux, hors compte)
 
 Liberté : après le chapitre 2, les ailes 3 à 9 se réveillent dans l'ordre qu'on veut. On choisit

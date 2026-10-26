@@ -5,22 +5,27 @@ import org.json.JSONObject
 import java.io.File
 
 /**
- * « La Maison endormie » : le fil conducteur du Terminagotchi, en 10 chapitres (portage de pc/tg/histoire.py).
+ * « L'éveil du Terminaworld » (titre provisoire, une seule clé : lex.ch.maison) : le fil conducteur du
+ * Terminagotchi, en 10 chapitres (portage de pc/tg/histoire.py). Ancien nom : « La Maison endormie ».
  *
- * L'enfant trouve un œuf dans une vieille maison endormie : le téléphone. Les monstres de 10 familles se sont
- * installés chacun dans une pièce. Avec sa créature, il réveille la maison pièce par pièce. Chaque chapitre a un
- * vrai problème à résoudre ; les commandes sont les outils pour le résoudre.
+ * Le monde à explorer : terrain_terminagotchi = le Terminaworld (sa racine = le carrefour), ~ = le camp de base,
+ * dossier = un lieu, fichier = un objet, texte = un parchemin, dossier caché = un passage secret, tree = la carte
+ * du monde. Les lieux gardent les vieux noms écrits sur leurs panneaux (les vrais dossiers ne changent pas) :
+ * vestibule (l'entrée du monde), grenier (une forêt), cave (une caverne), bibliotheque (engloutie), etc.
+ * L'enfant trouve un œuf à l'entrée du monde endormi : le téléphone. Les monstres de 10 familles se sont installés
+ * chacun dans un lieu. Avec sa créature, il réveille le monde lieu par lieu. Chaque chapitre a un vrai problème à
+ * résoudre ; les commandes sont les outils pour le résoudre.
  *
  *    1 reveil        Le réveil                 pwd, ls, cd              (on trouve l'œuf)
- *    2 nid           Le nid                    mkdir, touch, rmdir, rm -r, >, cat   (une chambre, une pièce en trop, un repas)
- *    3 grenier       Le grenier des Sylvestres ls -R, mv, cp, rm        (des lianes ont tout mélangé)
- *    4 cave          La cave des Démons        whoami, id, chmod        (ils volent la nourriture)
- *    5 bibliotheque  La bibliothèque           find, cat, grep, head, wc, et les tuyaux | sort
- *    6 machines      La salle des machines     free, du, rm, df, uptime, uname, getprop
- *    7 dortoir       Le dortoir                ps, ps | wc, date        (des fantômes refusent de dormir)
+ *    2 nid           Le nid                    mkdir, touch, rmdir, rm -r, >, cat   (un nid, un lieu en trop, un repas)
+ *    3 grenier       La forêt du Grenier       ls -R, mv, cp, rm        (des lianes ont tout mélangé)
+ *    4 cave          La caverne des Démons     whoami, id, chmod        (ils volent la nourriture)
+ *    5 bibliotheque  La bibliothèque engloutie find, cat, grep, head, wc, et les tuyaux | sort
+ *    6 machines      La salle des machines du volcan  free, du, rm, df, uptime, uname, getprop
+ *    7 dortoir       Le dortoir des brumes     ps, ps | wc, date        (des fantômes refusent de dormir)
  *    8 atelier       L'atelier des Constructs  scripts (sh, ~/.tgrc, for, if), puis le Doom à construire
- *    9 tour          La tour des Célestes      ping, ifconfig, hostname, web
- *   10 coeur         Le cœur de la maison      rev, ls -a, find, cat >, grep | wc, puis Abyssor
+ *    9 tour          La tour des nuages        ping, ifconfig, hostname, web
+ *   10 coeur         Le cœur du monde          rev, ls -a, find, cat >, grep | wc, puis Abyssor
  *   (+ telephone : le jardin du téléphone, ouvre, lampe, sms… hors compte des ailes)
  *
  * Mêmes règles que sur PC : après le chapitre 2, les ailes 3 à 9 se réveillent dans l'ordre qu'on veut. On choisit

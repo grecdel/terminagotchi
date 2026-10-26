@@ -1,19 +1,19 @@
 """Le lexique, devenu le « carnet d'aventure » : toutes les commandes, rangées par chapitres et par
-univers, chacune avec le moment de l'histoire où on l'a apprise (histoire.noter : « Le grenier des
-Sylvestres », « avant l'histoire », « en liberté »…), puis les souvenirs (chapitres réveillés,
+univers, chacune avec le moment de l'histoire où on l'a apprise (histoire.noter : « La forêt du
+Grenier », « avant l'histoire », « en liberté »…), puis les souvenirs (chapitres réveillés,
 quêtes, titres, objets).
 
   blanc     = déjà goûtée (sur n'importe lequel de tes appareils)
   gris      = à découvrir ici
   🔒 sombre = existe dans un autre univers (l'appli Android) : pas ici
 
-Fil rouge : l'ordinateur est une grande maison que la créature visite avec l'enfant.
-Chaque commande a une IMAGE (la maison) et une explication TECHNIQUE ; l'affichage
+Fil rouge : l'ordinateur est un monde à explorer, le Terminaworld, que la créature parcourt avec l'enfant.
+Chaque commande a une IMAGE (le monde) et une explication TECHNIQUE ; l'affichage
 suit le palier de vocabulaire (voir mots.py) : l'image seule, puis l'image et la
 technique côte à côte, puis la technique avec l'image en petit rappel.
 Les mêmes phrases existent dans l'appli Android (Regles.LEXIQUE dans Jeu.kt).
 Sous chaque commande qui a besoin de quelque chose après elle : un exemple prêt à taper depuis le
-terrain de jeu (« ↳ exemple : mkdir cabane », voir exemples.py).
+Terminaworld (« ↳ exemple : mkdir cabane », voir exemples.py).
 """
 from . import core, exemples, explique
 from .langue import t

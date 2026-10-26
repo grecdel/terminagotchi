@@ -9,8 +9,8 @@
    (voir langue.py) ; l'élision n'est appliquée qu'en français.
 
 2) terme(cle, palier) : le jargon arrive progressivement.
-   palier 0 = l'image seule          « la mémoire de la maison »
-   palier 1 = l'image et le vrai mot « la mémoire de la maison (la RAM) »
+   palier 0 = l'image seule          « la mémoire du monde »
+   palier 1 = l'image et le vrai mot « la mémoire du monde (la RAM) »
    palier 2 = le vrai mot seul       « la RAM »
    palier_de(niveau, lecons) choisit le palier (mêmes seuils sur PC et Android) :
      - par le niveau de la créature : < 7 → 0, 7 à 11 → 1, 12 et plus → 2 ;
@@ -50,7 +50,7 @@ SEUIL_LECONS = (8, 14)       # nombre de leçons terminées pour passer au palie
 
 # Les mots eux-mêmes sont dans les fichiers de langue (langues/xx.json), clés « terme.<clé> » :
 # [image seule, image + vrai mot, vrai mot seul]. Exemple en français :
-#   "terme.ram": ["la mémoire de la maison", "la mémoire de la maison (la RAM)", "la RAM"]
+#   "terme.ram": ["la mémoire du monde", "la mémoire du monde (la RAM)", "la RAM"]
 
 
 def _cles():
@@ -81,8 +81,9 @@ def terme(cle, p=0, majuscule=False):
 
 def termes(p=0):
     """Tous les termes d'un palier, pour remplir des modèles : « {ram} », « {Processeur} » (majuscule)…
-    Attention au genre : « pièce » est féminin mais « dossier » masculin ; les modèles évitent
-    donc les adjectifs accordés et utilisent les formes avec article (« {un_dossier} »)."""
+    Attention au genre : en français « lieu »/« dossier » et « objet »/« fichier » sont masculins, mais pas
+    forcément dans les autres langues ; les modèles évitent donc les adjectifs accordés et utilisent les formes
+    avec article (« {un_dossier} »)."""
     t = {k: terme(k, p) for k in _cles()}
     t.update({k[0].upper() + k[1:]: terme(k, p, majuscule=True) for k in _cles()})
     return t
