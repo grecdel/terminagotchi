@@ -328,8 +328,8 @@ st = tape("grep -rl ABYSSOR ~/terrain_terminagotchi | wc -l")
 st = tape(f"echo {n + 1} > coeur/reponse.txt")
 verifier(lecon(st) == ("coeur2", 2) and "nombre" in (st.get("indice_lecon") or ""), "mauvais nombre : Abyssor secoue la tête")
 st = tape("grep -rl ABYSSOR ~/terrain_terminagotchi | wc -l > coeur/reponse.txt")
-verifier(histoire.fini(st, "coeur"), "bonne réponse : le cœur bat, le monde est réveillé")
-verifier("Le monde est réveillé" in texte(app.render(dict(st, dressage=None), 0, True)), "écran de fin")
+verifier(histoire.fini(st, "coeur"), "bonne réponse : le cœur bat, le Terminaworld est réveillé")
+verifier("Le Terminaworld est réveillé" in texte(app.render(dict(st, dressage=None), 0, True)), "écran de fin")
 
 print("9. Migration des anciennes sauvegardes")
 

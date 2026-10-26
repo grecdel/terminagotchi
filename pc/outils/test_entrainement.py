@@ -214,10 +214,10 @@ def regler(f, n, ors=0):
     modifier(g)
 regler("batisseur", 4)
 lancer("bat_pieces")
-for x in ("cave", "jardin", "grenier", "salon", "bureau", "chambre", "garage", "veranda", "atelier", "cuisine",
-          "bibliotheque", "couloir"):
+for x in ("grotte", "foret", "lagon", "desert", "prairie", "canyon", "glacier", "marais", "clairiere", "colline",
+          "plage", "jungle"):
     bash(f"mkdir -p {x}", S)
-st = app.etape(spontane=False, defis=False, extra=["mkdir cave"], cwd=str(S))
+st = app.etape(spontane=False, defis=False, extra=["mkdir grotte"], cwd=str(S))
 verifier(B.echelon_de(st["entrainement"]["familles"]["batisseur"]["n"]) == 1, "5e réussite : badge Bâtisseur en Octet")
 verifier("badge Bâtisseur : Octet" in " ".join(st["log"]), "« badge Bâtisseur : Octet » dans le journal")
 regler("nettoyeur", 50, 0)

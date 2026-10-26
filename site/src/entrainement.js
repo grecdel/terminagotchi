@@ -18,8 +18,8 @@ export const ETOILES = [[2, 3, 4], [8, 10, 13], [19, 23, 27], [35, 40, 45], [63,
 export const MEDAILLES = ["bronze", "argent", "or", "diamant"];
 export const ICONE_MEDAILLE = { bronze: "🥉", argent: "🥈", or: "🥇", diamant: "💎" };
 
-const PIECES = ["cave", "grenier", "cuisine", "salon", "jardin", "atelier", "bureau", "chambre", "garage", "veranda", "bibliotheque", "couloir"];
-const COINS = ["coffre", "placard", "tiroir", "armoire", "etagere", "malle", "panier", "boite"];
+const PIECES = ["grotte", "foret", "lagon", "desert", "prairie", "canyon", "glacier", "marais", "clairiere", "colline", "plage", "jungle"];
+const COINS = ["coffre", "terrier", "creux", "tente", "cabane", "rocher", "panier", "boite"];
 const OBJETS = ["pomme", "balle", "cle", "lampe", "livre", "carte", "plume", "bougie", "boussole", "flute", "tambour", "etoile", "coquillage",
   "gomme", "crayon", "bille"];
 const MOTS = ["licorne", "dragon", "fusee", "volcan", "pirate", "robot", "comete", "tortue", "cactus", "biscuit", "nuage", "sirene"];

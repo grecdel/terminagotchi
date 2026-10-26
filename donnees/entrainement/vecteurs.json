@@ -4,252 +4,252 @@
 "type": "exp_chemin",
 "valeur": "9f5fa6f22fde5166619939c9b145d8ac6e9574663974ecb59510a9c9dff04f99",
 "k": 0,
-"empreinte": "exp_chemin|coins=tiroir,panier|i=0|j=1|pieces=grenier,couloir,bibliotheque",
+"empreinte": "exp_chemin|coins=creux,panier|i=0|j=1|pieces=foret,jungle,plage",
 "reponse": null
 },
 {
 "type": "exp_chemin",
 "valeur": "9f5fa6f22fde5166619939c9b145d8ac6e9574663974ecb59510a9c9dff04f99",
 "k": 1,
-"empreinte": "exp_chemin|coins=malle,tiroir|i=1|j=0|pieces=grenier,chambre,jardin",
+"empreinte": "exp_chemin|coins=rocher,creux|i=1|j=0|pieces=foret,marais,prairie",
 "reponse": null
 },
 {
 "type": "exp_chemin",
 "valeur": "9f5fa6f22fde5166619939c9b145d8ac6e9574663974ecb59510a9c9dff04f99",
 "k": 3,
-"empreinte": "exp_chemin|coins=malle,etagere|i=2|j=1|pieces=cave,jardin,atelier",
+"empreinte": "exp_chemin|coins=rocher,cabane|i=2|j=1|pieces=grotte,prairie,canyon",
 "reponse": null
 },
 {
 "type": "exp_chemin",
 "valeur": "9f5fa6f22fde5166619939c9b145d8ac6e9574663974ecb59510a9c9dff04f99",
 "k": 99,
-"empreinte": "exp_chemin|coins=armoire,coffre|i=2|j=0|pieces=couloir,grenier,bureau",
+"empreinte": "exp_chemin|coins=tente,coffre|i=2|j=0|pieces=jungle,foret,glacier",
 "reponse": null
 },
 {
 "type": "exp_cle",
 "valeur": "9f5fa6f22fde5166619939c9b145d8ac6e9574663974ecb59510a9c9dff04f99",
 "k": 0,
-"empreinte": "exp_cle|coins=tiroir,panier|i=0|j=1|pieces=grenier,couloir,bibliotheque",
+"empreinte": "exp_cle|coins=creux,panier|i=0|j=1|pieces=foret,jungle,plage",
 "reponse": null
 },
 {
 "type": "exp_cle",
 "valeur": "9f5fa6f22fde5166619939c9b145d8ac6e9574663974ecb59510a9c9dff04f99",
 "k": 1,
-"empreinte": "exp_cle|coins=malle,tiroir|i=1|j=0|pieces=grenier,chambre,jardin",
+"empreinte": "exp_cle|coins=rocher,creux|i=1|j=0|pieces=foret,marais,prairie",
 "reponse": null
 },
 {
 "type": "exp_cle",
 "valeur": "9f5fa6f22fde5166619939c9b145d8ac6e9574663974ecb59510a9c9dff04f99",
 "k": 3,
-"empreinte": "exp_cle|coins=malle,etagere|i=2|j=1|pieces=cave,jardin,atelier",
+"empreinte": "exp_cle|coins=rocher,cabane|i=2|j=1|pieces=grotte,prairie,canyon",
 "reponse": null
 },
 {
 "type": "exp_cle",
 "valeur": "9f5fa6f22fde5166619939c9b145d8ac6e9574663974ecb59510a9c9dff04f99",
 "k": 99,
-"empreinte": "exp_cle|coins=armoire,coffre|i=2|j=0|pieces=couloir,grenier,bureau",
+"empreinte": "exp_cle|coins=tente,coffre|i=2|j=0|pieces=jungle,foret,glacier",
 "reponse": null
 },
 {
 "type": "bat_pieces",
 "valeur": "9f5fa6f22fde5166619939c9b145d8ac6e9574663974ecb59510a9c9dff04f99",
 "k": 0,
-"empreinte": "bat_pieces|pieces=grenier,couloir",
+"empreinte": "bat_pieces|pieces=foret,jungle",
 "reponse": null
 },
 {
 "type": "bat_pieces",
 "valeur": "9f5fa6f22fde5166619939c9b145d8ac6e9574663974ecb59510a9c9dff04f99",
 "k": 1,
-"empreinte": "bat_pieces|pieces=grenier,chambre",
+"empreinte": "bat_pieces|pieces=foret,marais",
 "reponse": null
 },
 {
 "type": "bat_pieces",
 "valeur": "9f5fa6f22fde5166619939c9b145d8ac6e9574663974ecb59510a9c9dff04f99",
 "k": 3,
-"empreinte": "bat_pieces|pieces=cave,jardin",
+"empreinte": "bat_pieces|pieces=grotte,prairie",
 "reponse": null
 },
 {
 "type": "bat_pieces",
 "valeur": "9f5fa6f22fde5166619939c9b145d8ac6e9574663974ecb59510a9c9dff04f99",
 "k": 99,
-"empreinte": "bat_pieces|pieces=couloir,grenier",
+"empreinte": "bat_pieces|pieces=jungle,foret",
 "reponse": null
 },
 {
 "type": "bat_objets",
 "valeur": "9f5fa6f22fde5166619939c9b145d8ac6e9574663974ecb59510a9c9dff04f99",
 "k": 0,
-"empreinte": "bat_objets|objets=bille,crayon|pieces=grenier",
+"empreinte": "bat_objets|objets=bille,crayon|pieces=foret",
 "reponse": null
 },
 {
 "type": "bat_objets",
 "valeur": "9f5fa6f22fde5166619939c9b145d8ac6e9574663974ecb59510a9c9dff04f99",
 "k": 1,
-"empreinte": "bat_objets|objets=crayon,gomme|pieces=grenier",
+"empreinte": "bat_objets|objets=crayon,gomme|pieces=foret",
 "reponse": null
 },
 {
 "type": "bat_objets",
 "valeur": "9f5fa6f22fde5166619939c9b145d8ac6e9574663974ecb59510a9c9dff04f99",
 "k": 3,
-"empreinte": "bat_objets|objets=livre,pomme|pieces=cave",
+"empreinte": "bat_objets|objets=livre,pomme|pieces=grotte",
 "reponse": null
 },
 {
 "type": "bat_objets",
 "valeur": "9f5fa6f22fde5166619939c9b145d8ac6e9574663974ecb59510a9c9dff04f99",
 "k": 99,
-"empreinte": "bat_objets|objets=tambour,carte|pieces=couloir",
+"empreinte": "bat_objets|objets=tambour,carte|pieces=jungle",
 "reponse": null
 },
 {
 "type": "dem_mv",
 "valeur": "9f5fa6f22fde5166619939c9b145d8ac6e9574663974ecb59510a9c9dff04f99",
 "k": 0,
-"empreinte": "dem_mv|objets=plume|pieces=grenier,couloir",
+"empreinte": "dem_mv|objets=plume|pieces=foret,jungle",
 "reponse": null
 },
 {
 "type": "dem_mv",
 "valeur": "9f5fa6f22fde5166619939c9b145d8ac6e9574663974ecb59510a9c9dff04f99",
 "k": 1,
-"empreinte": "dem_mv|objets=crayon|pieces=grenier,chambre",
+"empreinte": "dem_mv|objets=crayon|pieces=foret,marais",
 "reponse": null
 },
 {
 "type": "dem_mv",
 "valeur": "9f5fa6f22fde5166619939c9b145d8ac6e9574663974ecb59510a9c9dff04f99",
 "k": 3,
-"empreinte": "dem_mv|objets=bille|pieces=cave,jardin",
+"empreinte": "dem_mv|objets=bille|pieces=grotte,prairie",
 "reponse": null
 },
 {
 "type": "dem_mv",
 "valeur": "9f5fa6f22fde5166619939c9b145d8ac6e9574663974ecb59510a9c9dff04f99",
 "k": 99,
-"empreinte": "dem_mv|objets=plume|pieces=couloir,grenier",
+"empreinte": "dem_mv|objets=plume|pieces=jungle,foret",
 "reponse": null
 },
 {
 "type": "dem_cp",
 "valeur": "9f5fa6f22fde5166619939c9b145d8ac6e9574663974ecb59510a9c9dff04f99",
 "k": 0,
-"empreinte": "dem_cp|objets=plume|pieces=grenier,couloir",
+"empreinte": "dem_cp|objets=plume|pieces=foret,jungle",
 "reponse": null
 },
 {
 "type": "dem_cp",
 "valeur": "9f5fa6f22fde5166619939c9b145d8ac6e9574663974ecb59510a9c9dff04f99",
 "k": 1,
-"empreinte": "dem_cp|objets=crayon|pieces=grenier,chambre",
+"empreinte": "dem_cp|objets=crayon|pieces=foret,marais",
 "reponse": null
 },
 {
 "type": "dem_cp",
 "valeur": "9f5fa6f22fde5166619939c9b145d8ac6e9574663974ecb59510a9c9dff04f99",
 "k": 3,
-"empreinte": "dem_cp|objets=bille|pieces=cave,jardin",
+"empreinte": "dem_cp|objets=bille|pieces=grotte,prairie",
 "reponse": null
 },
 {
 "type": "dem_cp",
 "valeur": "9f5fa6f22fde5166619939c9b145d8ac6e9574663974ecb59510a9c9dff04f99",
 "k": 99,
-"empreinte": "dem_cp|objets=plume|pieces=couloir,grenier",
+"empreinte": "dem_cp|objets=plume|pieces=jungle,foret",
 "reponse": null
 },
 {
 "type": "net_rm",
 "valeur": "9f5fa6f22fde5166619939c9b145d8ac6e9574663974ecb59510a9c9dff04f99",
 "k": 0,
-"empreinte": "net_rm|n=3|objets=bille|pieces=grenier",
+"empreinte": "net_rm|n=3|objets=bille|pieces=foret",
 "reponse": null
 },
 {
 "type": "net_rm",
 "valeur": "9f5fa6f22fde5166619939c9b145d8ac6e9574663974ecb59510a9c9dff04f99",
 "k": 1,
-"empreinte": "net_rm|n=2|objets=crayon|pieces=grenier",
+"empreinte": "net_rm|n=2|objets=crayon|pieces=foret",
 "reponse": null
 },
 {
 "type": "net_rm",
 "valeur": "9f5fa6f22fde5166619939c9b145d8ac6e9574663974ecb59510a9c9dff04f99",
 "k": 3,
-"empreinte": "net_rm|n=2|objets=livre|pieces=cave",
+"empreinte": "net_rm|n=2|objets=livre|pieces=grotte",
 "reponse": null
 },
 {
 "type": "net_rm",
 "valeur": "9f5fa6f22fde5166619939c9b145d8ac6e9574663974ecb59510a9c9dff04f99",
 "k": 99,
-"empreinte": "net_rm|n=3|objets=tambour|pieces=couloir",
+"empreinte": "net_rm|n=3|objets=tambour|pieces=jungle",
 "reponse": null
 },
 {
 "type": "net_rmdir",
 "valeur": "9f5fa6f22fde5166619939c9b145d8ac6e9574663974ecb59510a9c9dff04f99",
 "k": 0,
-"empreinte": "net_rmdir|objets=tambour|pieces=grenier,couloir,bibliotheque",
+"empreinte": "net_rmdir|objets=tambour|pieces=foret,jungle,plage",
 "reponse": null
 },
 {
 "type": "net_rmdir",
 "valeur": "9f5fa6f22fde5166619939c9b145d8ac6e9574663974ecb59510a9c9dff04f99",
 "k": 1,
-"empreinte": "net_rmdir|objets=carte|pieces=grenier,chambre,jardin",
+"empreinte": "net_rmdir|objets=carte|pieces=foret,marais,prairie",
 "reponse": null
 },
 {
 "type": "net_rmdir",
 "valeur": "9f5fa6f22fde5166619939c9b145d8ac6e9574663974ecb59510a9c9dff04f99",
 "k": 3,
-"empreinte": "net_rmdir|objets=gomme|pieces=cave,jardin,atelier",
+"empreinte": "net_rmdir|objets=gomme|pieces=grotte,prairie,canyon",
 "reponse": null
 },
 {
 "type": "net_rmdir",
 "valeur": "9f5fa6f22fde5166619939c9b145d8ac6e9574663974ecb59510a9c9dff04f99",
 "k": 99,
-"empreinte": "net_rmdir|objets=lampe|pieces=couloir,grenier,bureau",
+"empreinte": "net_rmdir|objets=lampe|pieces=jungle,foret,glacier",
 "reponse": null
 },
 {
 "type": "net_rmr",
 "valeur": "9f5fa6f22fde5166619939c9b145d8ac6e9574663974ecb59510a9c9dff04f99",
 "k": 0,
-"empreinte": "net_rmr|objets=plume,coquillage,bougie|pieces=grenier,couloir",
+"empreinte": "net_rmr|objets=plume,coquillage,bougie|pieces=foret,jungle",
 "reponse": null
 },
 {
 "type": "net_rmr",
 "valeur": "9f5fa6f22fde5166619939c9b145d8ac6e9574663974ecb59510a9c9dff04f99",
 "k": 1,
-"empreinte": "net_rmr|objets=crayon,lampe,tambour|pieces=grenier,chambre",
+"empreinte": "net_rmr|objets=crayon,lampe,tambour|pieces=foret,marais",
 "reponse": null
 },
 {
 "type": "net_rmr",
 "valeur": "9f5fa6f22fde5166619939c9b145d8ac6e9574663974ecb59510a9c9dff04f99",
 "k": 3,
-"empreinte": "net_rmr|objets=bille,balle,carte|pieces=cave,jardin",
+"empreinte": "net_rmr|objets=bille,balle,carte|pieces=grotte,prairie",
 "reponse": null
 },
 {
 "type": "net_rmr",
 "valeur": "9f5fa6f22fde5166619939c9b145d8ac6e9574663974ecb59510a9c9dff04f99",
 "k": 99,
-"empreinte": "net_rmr|objets=plume,lampe,livre|pieces=couloir,grenier",
+"empreinte": "net_rmr|objets=plume,lampe,livre|pieces=jungle,foret",
 "reponse": null
 },
 {
@@ -368,29 +368,29 @@
 "type": "det_find",
 "valeur": "9f5fa6f22fde5166619939c9b145d8ac6e9574663974ecb59510a9c9dff04f99",
 "k": 0,
-"empreinte": "det_find|coins=tiroir,panier|i=0|j=1|objet=pomme|pieces=grenier,couloir,bibliotheque",
-"reponse": "grenier"
+"empreinte": "det_find|coins=creux,panier|i=0|j=1|objet=pomme|pieces=foret,jungle,plage",
+"reponse": "foret"
 },
 {
 "type": "det_find",
 "valeur": "9f5fa6f22fde5166619939c9b145d8ac6e9574663974ecb59510a9c9dff04f99",
 "k": 1,
-"empreinte": "det_find|coins=malle,tiroir|i=1|j=0|objet=carte|pieces=grenier,chambre,jardin",
-"reponse": "chambre"
+"empreinte": "det_find|coins=rocher,creux|i=1|j=0|objet=carte|pieces=foret,marais,prairie",
+"reponse": "marais"
 },
 {
 "type": "det_find",
 "valeur": "9f5fa6f22fde5166619939c9b145d8ac6e9574663974ecb59510a9c9dff04f99",
 "k": 3,
-"empreinte": "det_find|coins=malle,etagere|i=2|j=1|objet=balle|pieces=cave,jardin,atelier",
-"reponse": "atelier"
+"empreinte": "det_find|coins=rocher,cabane|i=2|j=1|objet=balle|pieces=grotte,prairie,canyon",
+"reponse": "canyon"
 },
 {
 "type": "det_find",
 "valeur": "9f5fa6f22fde5166619939c9b145d8ac6e9574663974ecb59510a9c9dff04f99",
 "k": 99,
-"empreinte": "det_find|coins=armoire,coffre|i=2|j=0|objet=livre|pieces=couloir,grenier,bureau",
-"reponse": "bureau"
+"empreinte": "det_find|coins=tente,coffre|i=2|j=0|objet=livre|pieces=jungle,foret,glacier",
+"reponse": "glacier"
 },
 {
 "type": "plo_ecrit",
@@ -536,252 +536,252 @@
 "type": "exp_chemin",
 "valeur": "f5ba7feb881a8dfc4181a5396eb1de041852624d420ba9697c76f4202461ea55",
 "k": 0,
-"empreinte": "exp_chemin|coins=armoire,boite|i=2|j=1|pieces=grenier,couloir,atelier",
+"empreinte": "exp_chemin|coins=tente,boite|i=2|j=1|pieces=foret,jungle,canyon",
 "reponse": null
 },
 {
 "type": "exp_chemin",
 "valeur": "f5ba7feb881a8dfc4181a5396eb1de041852624d420ba9697c76f4202461ea55",
 "k": 1,
-"empreinte": "exp_chemin|coins=coffre,armoire|i=2|j=0|pieces=salon,atelier,cave",
+"empreinte": "exp_chemin|coins=coffre,tente|i=2|j=0|pieces=desert,canyon,grotte",
 "reponse": null
 },
 {
 "type": "exp_chemin",
 "valeur": "f5ba7feb881a8dfc4181a5396eb1de041852624d420ba9697c76f4202461ea55",
 "k": 10,
-"empreinte": "exp_chemin|coins=placard,malle|i=0|j=1|pieces=garage,cave,cuisine",
+"empreinte": "exp_chemin|coins=terrier,rocher|i=0|j=1|pieces=clairiere,grotte,lagon",
 "reponse": null
 },
 {
 "type": "exp_chemin",
 "valeur": "f5ba7feb881a8dfc4181a5396eb1de041852624d420ba9697c76f4202461ea55",
 "k": 99,
-"empreinte": "exp_chemin|coins=armoire,boite|i=2|j=0|pieces=atelier,bureau,garage",
+"empreinte": "exp_chemin|coins=tente,boite|i=2|j=0|pieces=canyon,glacier,clairiere",
 "reponse": null
 },
 {
 "type": "exp_cle",
 "valeur": "f5ba7feb881a8dfc4181a5396eb1de041852624d420ba9697c76f4202461ea55",
 "k": 0,
-"empreinte": "exp_cle|coins=armoire,boite|i=2|j=1|pieces=grenier,couloir,atelier",
+"empreinte": "exp_cle|coins=tente,boite|i=2|j=1|pieces=foret,jungle,canyon",
 "reponse": null
 },
 {
 "type": "exp_cle",
 "valeur": "f5ba7feb881a8dfc4181a5396eb1de041852624d420ba9697c76f4202461ea55",
 "k": 1,
-"empreinte": "exp_cle|coins=coffre,armoire|i=2|j=0|pieces=salon,atelier,cave",
+"empreinte": "exp_cle|coins=coffre,tente|i=2|j=0|pieces=desert,canyon,grotte",
 "reponse": null
 },
 {
 "type": "exp_cle",
 "valeur": "f5ba7feb881a8dfc4181a5396eb1de041852624d420ba9697c76f4202461ea55",
 "k": 10,
-"empreinte": "exp_cle|coins=placard,malle|i=0|j=1|pieces=garage,cave,cuisine",
+"empreinte": "exp_cle|coins=terrier,rocher|i=0|j=1|pieces=clairiere,grotte,lagon",
 "reponse": null
 },
 {
 "type": "exp_cle",
 "valeur": "f5ba7feb881a8dfc4181a5396eb1de041852624d420ba9697c76f4202461ea55",
 "k": 99,
-"empreinte": "exp_cle|coins=armoire,boite|i=2|j=0|pieces=atelier,bureau,garage",
+"empreinte": "exp_cle|coins=tente,boite|i=2|j=0|pieces=canyon,glacier,clairiere",
 "reponse": null
 },
 {
 "type": "bat_pieces",
 "valeur": "f5ba7feb881a8dfc4181a5396eb1de041852624d420ba9697c76f4202461ea55",
 "k": 0,
-"empreinte": "bat_pieces|pieces=grenier,couloir",
+"empreinte": "bat_pieces|pieces=foret,jungle",
 "reponse": null
 },
 {
 "type": "bat_pieces",
 "valeur": "f5ba7feb881a8dfc4181a5396eb1de041852624d420ba9697c76f4202461ea55",
 "k": 1,
-"empreinte": "bat_pieces|pieces=salon,atelier",
+"empreinte": "bat_pieces|pieces=desert,canyon",
 "reponse": null
 },
 {
 "type": "bat_pieces",
 "valeur": "f5ba7feb881a8dfc4181a5396eb1de041852624d420ba9697c76f4202461ea55",
 "k": 10,
-"empreinte": "bat_pieces|pieces=garage,cave",
+"empreinte": "bat_pieces|pieces=clairiere,grotte",
 "reponse": null
 },
 {
 "type": "bat_pieces",
 "valeur": "f5ba7feb881a8dfc4181a5396eb1de041852624d420ba9697c76f4202461ea55",
 "k": 99,
-"empreinte": "bat_pieces|pieces=atelier,bureau",
+"empreinte": "bat_pieces|pieces=canyon,glacier",
 "reponse": null
 },
 {
 "type": "bat_objets",
 "valeur": "f5ba7feb881a8dfc4181a5396eb1de041852624d420ba9697c76f4202461ea55",
 "k": 0,
-"empreinte": "bat_objets|objets=bougie,crayon|pieces=grenier",
+"empreinte": "bat_objets|objets=bougie,crayon|pieces=foret",
 "reponse": null
 },
 {
 "type": "bat_objets",
 "valeur": "f5ba7feb881a8dfc4181a5396eb1de041852624d420ba9697c76f4202461ea55",
 "k": 1,
-"empreinte": "bat_objets|objets=gomme,coquillage|pieces=salon",
+"empreinte": "bat_objets|objets=gomme,coquillage|pieces=desert",
 "reponse": null
 },
 {
 "type": "bat_objets",
 "valeur": "f5ba7feb881a8dfc4181a5396eb1de041852624d420ba9697c76f4202461ea55",
 "k": 10,
-"empreinte": "bat_objets|objets=cle,etoile|pieces=garage",
+"empreinte": "bat_objets|objets=cle,etoile|pieces=clairiere",
 "reponse": null
 },
 {
 "type": "bat_objets",
 "valeur": "f5ba7feb881a8dfc4181a5396eb1de041852624d420ba9697c76f4202461ea55",
 "k": 99,
-"empreinte": "bat_objets|objets=cle,bougie|pieces=atelier",
+"empreinte": "bat_objets|objets=cle,bougie|pieces=canyon",
 "reponse": null
 },
 {
 "type": "dem_mv",
 "valeur": "f5ba7feb881a8dfc4181a5396eb1de041852624d420ba9697c76f4202461ea55",
 "k": 0,
-"empreinte": "dem_mv|objets=gomme|pieces=grenier,couloir",
+"empreinte": "dem_mv|objets=gomme|pieces=foret,jungle",
 "reponse": null
 },
 {
 "type": "dem_mv",
 "valeur": "f5ba7feb881a8dfc4181a5396eb1de041852624d420ba9697c76f4202461ea55",
 "k": 1,
-"empreinte": "dem_mv|objets=gomme|pieces=salon,atelier",
+"empreinte": "dem_mv|objets=gomme|pieces=desert,canyon",
 "reponse": null
 },
 {
 "type": "dem_mv",
 "valeur": "f5ba7feb881a8dfc4181a5396eb1de041852624d420ba9697c76f4202461ea55",
 "k": 10,
-"empreinte": "dem_mv|objets=boussole|pieces=garage,cave",
+"empreinte": "dem_mv|objets=boussole|pieces=clairiere,grotte",
 "reponse": null
 },
 {
 "type": "dem_mv",
 "valeur": "f5ba7feb881a8dfc4181a5396eb1de041852624d420ba9697c76f4202461ea55",
 "k": 99,
-"empreinte": "dem_mv|objets=coquillage|pieces=atelier,bureau",
+"empreinte": "dem_mv|objets=coquillage|pieces=canyon,glacier",
 "reponse": null
 },
 {
 "type": "dem_cp",
 "valeur": "f5ba7feb881a8dfc4181a5396eb1de041852624d420ba9697c76f4202461ea55",
 "k": 0,
-"empreinte": "dem_cp|objets=gomme|pieces=grenier,couloir",
+"empreinte": "dem_cp|objets=gomme|pieces=foret,jungle",
 "reponse": null
 },
 {
 "type": "dem_cp",
 "valeur": "f5ba7feb881a8dfc4181a5396eb1de041852624d420ba9697c76f4202461ea55",
 "k": 1,
-"empreinte": "dem_cp|objets=gomme|pieces=salon,atelier",
+"empreinte": "dem_cp|objets=gomme|pieces=desert,canyon",
 "reponse": null
 },
 {
 "type": "dem_cp",
 "valeur": "f5ba7feb881a8dfc4181a5396eb1de041852624d420ba9697c76f4202461ea55",
 "k": 10,
-"empreinte": "dem_cp|objets=boussole|pieces=garage,cave",
+"empreinte": "dem_cp|objets=boussole|pieces=clairiere,grotte",
 "reponse": null
 },
 {
 "type": "dem_cp",
 "valeur": "f5ba7feb881a8dfc4181a5396eb1de041852624d420ba9697c76f4202461ea55",
 "k": 99,
-"empreinte": "dem_cp|objets=coquillage|pieces=atelier,bureau",
+"empreinte": "dem_cp|objets=coquillage|pieces=canyon,glacier",
 "reponse": null
 },
 {
 "type": "net_rm",
 "valeur": "f5ba7feb881a8dfc4181a5396eb1de041852624d420ba9697c76f4202461ea55",
 "k": 0,
-"empreinte": "net_rm|n=3|objets=bougie|pieces=grenier",
+"empreinte": "net_rm|n=3|objets=bougie|pieces=foret",
 "reponse": null
 },
 {
 "type": "net_rm",
 "valeur": "f5ba7feb881a8dfc4181a5396eb1de041852624d420ba9697c76f4202461ea55",
 "k": 1,
-"empreinte": "net_rm|n=4|objets=gomme|pieces=salon",
+"empreinte": "net_rm|n=4|objets=gomme|pieces=desert",
 "reponse": null
 },
 {
 "type": "net_rm",
 "valeur": "f5ba7feb881a8dfc4181a5396eb1de041852624d420ba9697c76f4202461ea55",
 "k": 10,
-"empreinte": "net_rm|n=3|objets=cle|pieces=garage",
+"empreinte": "net_rm|n=3|objets=cle|pieces=clairiere",
 "reponse": null
 },
 {
 "type": "net_rm",
 "valeur": "f5ba7feb881a8dfc4181a5396eb1de041852624d420ba9697c76f4202461ea55",
 "k": 99,
-"empreinte": "net_rm|n=2|objets=cle|pieces=atelier",
+"empreinte": "net_rm|n=2|objets=cle|pieces=canyon",
 "reponse": null
 },
 {
 "type": "net_rmdir",
 "valeur": "f5ba7feb881a8dfc4181a5396eb1de041852624d420ba9697c76f4202461ea55",
 "k": 0,
-"empreinte": "net_rmdir|objets=lampe|pieces=grenier,couloir,atelier",
+"empreinte": "net_rmdir|objets=lampe|pieces=foret,jungle,canyon",
 "reponse": null
 },
 {
 "type": "net_rmdir",
 "valeur": "f5ba7feb881a8dfc4181a5396eb1de041852624d420ba9697c76f4202461ea55",
 "k": 1,
-"empreinte": "net_rmdir|objets=pomme|pieces=salon,atelier,cave",
+"empreinte": "net_rmdir|objets=pomme|pieces=desert,canyon,grotte",
 "reponse": null
 },
 {
 "type": "net_rmdir",
 "valeur": "f5ba7feb881a8dfc4181a5396eb1de041852624d420ba9697c76f4202461ea55",
 "k": 10,
-"empreinte": "net_rmdir|objets=balle|pieces=garage,cave,cuisine",
+"empreinte": "net_rmdir|objets=balle|pieces=clairiere,grotte,lagon",
 "reponse": null
 },
 {
 "type": "net_rmdir",
 "valeur": "f5ba7feb881a8dfc4181a5396eb1de041852624d420ba9697c76f4202461ea55",
 "k": 99,
-"empreinte": "net_rmdir|objets=lampe|pieces=atelier,bureau,garage",
+"empreinte": "net_rmdir|objets=lampe|pieces=canyon,glacier,clairiere",
 "reponse": null
 },
 {
 "type": "net_rmr",
 "valeur": "f5ba7feb881a8dfc4181a5396eb1de041852624d420ba9697c76f4202461ea55",
 "k": 0,
-"empreinte": "net_rmr|objets=gomme,flute,boussole|pieces=grenier,couloir",
+"empreinte": "net_rmr|objets=gomme,flute,boussole|pieces=foret,jungle",
 "reponse": null
 },
 {
 "type": "net_rmr",
 "valeur": "f5ba7feb881a8dfc4181a5396eb1de041852624d420ba9697c76f4202461ea55",
 "k": 1,
-"empreinte": "net_rmr|objets=gomme,balle,etoile|pieces=salon,atelier",
+"empreinte": "net_rmr|objets=gomme,balle,etoile|pieces=desert,canyon",
 "reponse": null
 },
 {
 "type": "net_rmr",
 "valeur": "f5ba7feb881a8dfc4181a5396eb1de041852624d420ba9697c76f4202461ea55",
 "k": 10,
-"empreinte": "net_rmr|objets=boussole,bougie,gomme|pieces=garage,cave",
+"empreinte": "net_rmr|objets=boussole,bougie,gomme|pieces=clairiere,grotte",
 "reponse": null
 },
 {
 "type": "net_rmr",
 "valeur": "f5ba7feb881a8dfc4181a5396eb1de041852624d420ba9697c76f4202461ea55",
 "k": 99,
-"empreinte": "net_rmr|objets=coquillage,cle,bille|pieces=atelier,bureau",
+"empreinte": "net_rmr|objets=coquillage,cle,bille|pieces=canyon,glacier",
 "reponse": null
 },
 {
@@ -900,29 +900,29 @@
 "type": "det_find",
 "valeur": "f5ba7feb881a8dfc4181a5396eb1de041852624d420ba9697c76f4202461ea55",
 "k": 0,
-"empreinte": "det_find|coins=armoire,boite|i=2|j=1|objet=lampe|pieces=grenier,couloir,atelier",
-"reponse": "atelier"
+"empreinte": "det_find|coins=tente,boite|i=2|j=1|objet=lampe|pieces=foret,jungle,canyon",
+"reponse": "canyon"
 },
 {
 "type": "det_find",
 "valeur": "f5ba7feb881a8dfc4181a5396eb1de041852624d420ba9697c76f4202461ea55",
 "k": 1,
-"empreinte": "det_find|coins=coffre,armoire|i=2|j=0|objet=carte|pieces=salon,atelier,cave",
-"reponse": "cave"
+"empreinte": "det_find|coins=coffre,tente|i=2|j=0|objet=carte|pieces=desert,canyon,grotte",
+"reponse": "grotte"
 },
 {
 "type": "det_find",
 "valeur": "f5ba7feb881a8dfc4181a5396eb1de041852624d420ba9697c76f4202461ea55",
 "k": 10,
-"empreinte": "det_find|coins=placard,malle|i=0|j=1|objet=balle|pieces=garage,cave,cuisine",
-"reponse": "garage"
+"empreinte": "det_find|coins=terrier,rocher|i=0|j=1|objet=balle|pieces=clairiere,grotte,lagon",
+"reponse": "clairiere"
 },
 {
 "type": "det_find",
 "valeur": "f5ba7feb881a8dfc4181a5396eb1de041852624d420ba9697c76f4202461ea55",
 "k": 99,
-"empreinte": "det_find|coins=armoire,boite|i=2|j=0|objet=tambour|pieces=atelier,bureau,garage",
-"reponse": "garage"
+"empreinte": "det_find|coins=tente,boite|i=2|j=0|objet=tambour|pieces=canyon,glacier,clairiere",
+"reponse": "clairiere"
 },
 {
 "type": "plo_ecrit",
@@ -1068,252 +1068,252 @@
 "type": "exp_chemin",
 "valeur": "359aa7560cab0dfca88ac934c57f9bc072259995704143484e52f2664be47b92",
 "k": 0,
-"empreinte": "exp_chemin|coins=panier,placard|i=1|j=0|pieces=chambre,salon,garage",
+"empreinte": "exp_chemin|coins=panier,terrier|i=1|j=0|pieces=marais,desert,clairiere",
 "reponse": null
 },
 {
 "type": "exp_chemin",
 "valeur": "359aa7560cab0dfca88ac934c57f9bc072259995704143484e52f2664be47b92",
 "k": 1,
-"empreinte": "exp_chemin|coins=armoire,coffre|i=2|j=0|pieces=cave,salon,chambre",
+"empreinte": "exp_chemin|coins=tente,coffre|i=2|j=0|pieces=grotte,desert,marais",
 "reponse": null
 },
 {
 "type": "exp_chemin",
 "valeur": "359aa7560cab0dfca88ac934c57f9bc072259995704143484e52f2664be47b92",
 "k": 17,
-"empreinte": "exp_chemin|coins=panier,coffre|i=2|j=1|pieces=garage,jardin,bureau",
+"empreinte": "exp_chemin|coins=panier,coffre|i=2|j=1|pieces=clairiere,prairie,glacier",
 "reponse": null
 },
 {
 "type": "exp_chemin",
 "valeur": "359aa7560cab0dfca88ac934c57f9bc072259995704143484e52f2664be47b92",
 "k": 99,
-"empreinte": "exp_chemin|coins=placard,coffre|i=0|j=0|pieces=bibliotheque,grenier,cave",
+"empreinte": "exp_chemin|coins=terrier,coffre|i=0|j=0|pieces=plage,foret,grotte",
 "reponse": null
 },
 {
 "type": "exp_cle",
 "valeur": "359aa7560cab0dfca88ac934c57f9bc072259995704143484e52f2664be47b92",
 "k": 0,
-"empreinte": "exp_cle|coins=panier,placard|i=1|j=0|pieces=chambre,salon,garage",
+"empreinte": "exp_cle|coins=panier,terrier|i=1|j=0|pieces=marais,desert,clairiere",
 "reponse": null
 },
 {
 "type": "exp_cle",
 "valeur": "359aa7560cab0dfca88ac934c57f9bc072259995704143484e52f2664be47b92",
 "k": 1,
-"empreinte": "exp_cle|coins=armoire,coffre|i=2|j=0|pieces=cave,salon,chambre",
+"empreinte": "exp_cle|coins=tente,coffre|i=2|j=0|pieces=grotte,desert,marais",
 "reponse": null
 },
 {
 "type": "exp_cle",
 "valeur": "359aa7560cab0dfca88ac934c57f9bc072259995704143484e52f2664be47b92",
 "k": 17,
-"empreinte": "exp_cle|coins=panier,coffre|i=2|j=1|pieces=garage,jardin,bureau",
+"empreinte": "exp_cle|coins=panier,coffre|i=2|j=1|pieces=clairiere,prairie,glacier",
 "reponse": null
 },
 {
 "type": "exp_cle",
 "valeur": "359aa7560cab0dfca88ac934c57f9bc072259995704143484e52f2664be47b92",
 "k": 99,
-"empreinte": "exp_cle|coins=placard,coffre|i=0|j=0|pieces=bibliotheque,grenier,cave",
+"empreinte": "exp_cle|coins=terrier,coffre|i=0|j=0|pieces=plage,foret,grotte",
 "reponse": null
 },
 {
 "type": "bat_pieces",
 "valeur": "359aa7560cab0dfca88ac934c57f9bc072259995704143484e52f2664be47b92",
 "k": 0,
-"empreinte": "bat_pieces|pieces=chambre,salon",
+"empreinte": "bat_pieces|pieces=marais,desert",
 "reponse": null
 },
 {
 "type": "bat_pieces",
 "valeur": "359aa7560cab0dfca88ac934c57f9bc072259995704143484e52f2664be47b92",
 "k": 1,
-"empreinte": "bat_pieces|pieces=cave,salon",
+"empreinte": "bat_pieces|pieces=grotte,desert",
 "reponse": null
 },
 {
 "type": "bat_pieces",
 "valeur": "359aa7560cab0dfca88ac934c57f9bc072259995704143484e52f2664be47b92",
 "k": 17,
-"empreinte": "bat_pieces|pieces=garage,jardin",
+"empreinte": "bat_pieces|pieces=clairiere,prairie",
 "reponse": null
 },
 {
 "type": "bat_pieces",
 "valeur": "359aa7560cab0dfca88ac934c57f9bc072259995704143484e52f2664be47b92",
 "k": 99,
-"empreinte": "bat_pieces|pieces=bibliotheque,grenier",
+"empreinte": "bat_pieces|pieces=plage,foret",
 "reponse": null
 },
 {
 "type": "bat_objets",
 "valeur": "359aa7560cab0dfca88ac934c57f9bc072259995704143484e52f2664be47b92",
 "k": 0,
-"empreinte": "bat_objets|objets=plume,coquillage|pieces=chambre",
+"empreinte": "bat_objets|objets=plume,coquillage|pieces=marais",
 "reponse": null
 },
 {
 "type": "bat_objets",
 "valeur": "359aa7560cab0dfca88ac934c57f9bc072259995704143484e52f2664be47b92",
 "k": 1,
-"empreinte": "bat_objets|objets=lampe,plume|pieces=cave",
+"empreinte": "bat_objets|objets=lampe,plume|pieces=grotte",
 "reponse": null
 },
 {
 "type": "bat_objets",
 "valeur": "359aa7560cab0dfca88ac934c57f9bc072259995704143484e52f2664be47b92",
 "k": 17,
-"empreinte": "bat_objets|objets=coquillage,tambour|pieces=garage",
+"empreinte": "bat_objets|objets=coquillage,tambour|pieces=clairiere",
 "reponse": null
 },
 {
 "type": "bat_objets",
 "valeur": "359aa7560cab0dfca88ac934c57f9bc072259995704143484e52f2664be47b92",
 "k": 99,
-"empreinte": "bat_objets|objets=tambour,crayon|pieces=bibliotheque",
+"empreinte": "bat_objets|objets=tambour,crayon|pieces=plage",
 "reponse": null
 },
 {
 "type": "dem_mv",
 "valeur": "359aa7560cab0dfca88ac934c57f9bc072259995704143484e52f2664be47b92",
 "k": 0,
-"empreinte": "dem_mv|objets=tambour|pieces=chambre,salon",
+"empreinte": "dem_mv|objets=tambour|pieces=marais,desert",
 "reponse": null
 },
 {
 "type": "dem_mv",
 "valeur": "359aa7560cab0dfca88ac934c57f9bc072259995704143484e52f2664be47b92",
 "k": 1,
-"empreinte": "dem_mv|objets=carte|pieces=cave,salon",
+"empreinte": "dem_mv|objets=carte|pieces=grotte,desert",
 "reponse": null
 },
 {
 "type": "dem_mv",
 "valeur": "359aa7560cab0dfca88ac934c57f9bc072259995704143484e52f2664be47b92",
 "k": 17,
-"empreinte": "dem_mv|objets=plume|pieces=garage,jardin",
+"empreinte": "dem_mv|objets=plume|pieces=clairiere,prairie",
 "reponse": null
 },
 {
 "type": "dem_mv",
 "valeur": "359aa7560cab0dfca88ac934c57f9bc072259995704143484e52f2664be47b92",
 "k": 99,
-"empreinte": "dem_mv|objets=plume|pieces=bibliotheque,grenier",
+"empreinte": "dem_mv|objets=plume|pieces=plage,foret",
 "reponse": null
 },
 {
 "type": "dem_cp",
 "valeur": "359aa7560cab0dfca88ac934c57f9bc072259995704143484e52f2664be47b92",
 "k": 0,
-"empreinte": "dem_cp|objets=tambour|pieces=chambre,salon",
+"empreinte": "dem_cp|objets=tambour|pieces=marais,desert",
 "reponse": null
 },
 {
 "type": "dem_cp",
 "valeur": "359aa7560cab0dfca88ac934c57f9bc072259995704143484e52f2664be47b92",
 "k": 1,
-"empreinte": "dem_cp|objets=carte|pieces=cave,salon",
+"empreinte": "dem_cp|objets=carte|pieces=grotte,desert",
 "reponse": null
 },
 {
 "type": "dem_cp",
 "valeur": "359aa7560cab0dfca88ac934c57f9bc072259995704143484e52f2664be47b92",
 "k": 17,
-"empreinte": "dem_cp|objets=plume|pieces=garage,jardin",
+"empreinte": "dem_cp|objets=plume|pieces=clairiere,prairie",
 "reponse": null
 },
 {
 "type": "dem_cp",
 "valeur": "359aa7560cab0dfca88ac934c57f9bc072259995704143484e52f2664be47b92",
 "k": 99,
-"empreinte": "dem_cp|objets=plume|pieces=bibliotheque,grenier",
+"empreinte": "dem_cp|objets=plume|pieces=plage,foret",
 "reponse": null
 },
 {
 "type": "net_rm",
 "valeur": "359aa7560cab0dfca88ac934c57f9bc072259995704143484e52f2664be47b92",
 "k": 0,
-"empreinte": "net_rm|n=4|objets=plume|pieces=chambre",
+"empreinte": "net_rm|n=4|objets=plume|pieces=marais",
 "reponse": null
 },
 {
 "type": "net_rm",
 "valeur": "359aa7560cab0dfca88ac934c57f9bc072259995704143484e52f2664be47b92",
 "k": 1,
-"empreinte": "net_rm|n=4|objets=lampe|pieces=cave",
+"empreinte": "net_rm|n=4|objets=lampe|pieces=grotte",
 "reponse": null
 },
 {
 "type": "net_rm",
 "valeur": "359aa7560cab0dfca88ac934c57f9bc072259995704143484e52f2664be47b92",
 "k": 17,
-"empreinte": "net_rm|n=2|objets=coquillage|pieces=garage",
+"empreinte": "net_rm|n=2|objets=coquillage|pieces=clairiere",
 "reponse": null
 },
 {
 "type": "net_rm",
 "valeur": "359aa7560cab0dfca88ac934c57f9bc072259995704143484e52f2664be47b92",
 "k": 99,
-"empreinte": "net_rm|n=3|objets=tambour|pieces=bibliotheque",
+"empreinte": "net_rm|n=3|objets=tambour|pieces=plage",
 "reponse": null
 },
 {
 "type": "net_rmdir",
 "valeur": "359aa7560cab0dfca88ac934c57f9bc072259995704143484e52f2664be47b92",
 "k": 0,
-"empreinte": "net_rmdir|objets=plume|pieces=chambre,salon,garage",
+"empreinte": "net_rmdir|objets=plume|pieces=marais,desert,clairiere",
 "reponse": null
 },
 {
 "type": "net_rmdir",
 "valeur": "359aa7560cab0dfca88ac934c57f9bc072259995704143484e52f2664be47b92",
 "k": 1,
-"empreinte": "net_rmdir|objets=etoile|pieces=cave,salon,chambre",
+"empreinte": "net_rmdir|objets=etoile|pieces=grotte,desert,marais",
 "reponse": null
 },
 {
 "type": "net_rmdir",
 "valeur": "359aa7560cab0dfca88ac934c57f9bc072259995704143484e52f2664be47b92",
 "k": 17,
-"empreinte": "net_rmdir|objets=crayon|pieces=garage,jardin,bureau",
+"empreinte": "net_rmdir|objets=crayon|pieces=clairiere,prairie,glacier",
 "reponse": null
 },
 {
 "type": "net_rmdir",
 "valeur": "359aa7560cab0dfca88ac934c57f9bc072259995704143484e52f2664be47b92",
 "k": 99,
-"empreinte": "net_rmdir|objets=balle|pieces=bibliotheque,grenier,cave",
+"empreinte": "net_rmdir|objets=balle|pieces=plage,foret,grotte",
 "reponse": null
 },
 {
 "type": "net_rmr",
 "valeur": "359aa7560cab0dfca88ac934c57f9bc072259995704143484e52f2664be47b92",
 "k": 0,
-"empreinte": "net_rmr|objets=tambour,balle,flute|pieces=chambre,salon",
+"empreinte": "net_rmr|objets=tambour,balle,flute|pieces=marais,desert",
 "reponse": null
 },
 {
 "type": "net_rmr",
 "valeur": "359aa7560cab0dfca88ac934c57f9bc072259995704143484e52f2664be47b92",
 "k": 1,
-"empreinte": "net_rmr|objets=carte,coquillage,livre|pieces=cave,salon",
+"empreinte": "net_rmr|objets=carte,coquillage,livre|pieces=grotte,desert",
 "reponse": null
 },
 {
 "type": "net_rmr",
 "valeur": "359aa7560cab0dfca88ac934c57f9bc072259995704143484e52f2664be47b92",
 "k": 17,
-"empreinte": "net_rmr|objets=plume,tambour,bougie|pieces=garage,jardin",
+"empreinte": "net_rmr|objets=plume,tambour,bougie|pieces=clairiere,prairie",
 "reponse": null
 },
 {
 "type": "net_rmr",
 "valeur": "359aa7560cab0dfca88ac934c57f9bc072259995704143484e52f2664be47b92",
 "k": 99,
-"empreinte": "net_rmr|objets=plume,flute,balle|pieces=bibliotheque,grenier",
+"empreinte": "net_rmr|objets=plume,flute,balle|pieces=plage,foret",
 "reponse": null
 },
 {
@@ -1432,29 +1432,29 @@
 "type": "det_find",
 "valeur": "359aa7560cab0dfca88ac934c57f9bc072259995704143484e52f2664be47b92",
 "k": 0,
-"empreinte": "det_find|coins=panier,placard|i=1|j=0|objet=balle|pieces=chambre,salon,garage",
-"reponse": "salon"
+"empreinte": "det_find|coins=panier,terrier|i=1|j=0|objet=balle|pieces=marais,desert,clairiere",
+"reponse": "desert"
 },
 {
 "type": "det_find",
 "valeur": "359aa7560cab0dfca88ac934c57f9bc072259995704143484e52f2664be47b92",
 "k": 1,
-"empreinte": "det_find|coins=armoire,coffre|i=2|j=0|objet=pomme|pieces=cave,salon,chambre",
-"reponse": "chambre"
+"empreinte": "det_find|coins=tente,coffre|i=2|j=0|objet=pomme|pieces=grotte,desert,marais",
+"reponse": "marais"
 },
 {
 "type": "det_find",
 "valeur": "359aa7560cab0dfca88ac934c57f9bc072259995704143484e52f2664be47b92",
 "k": 17,
-"empreinte": "det_find|coins=panier,coffre|i=2|j=1|objet=pomme|pieces=garage,jardin,bureau",
-"reponse": "bureau"
+"empreinte": "det_find|coins=panier,coffre|i=2|j=1|objet=pomme|pieces=clairiere,prairie,glacier",
+"reponse": "glacier"
 },
 {
 "type": "det_find",
 "valeur": "359aa7560cab0dfca88ac934c57f9bc072259995704143484e52f2664be47b92",
 "k": 99,
-"empreinte": "det_find|coins=placard,coffre|i=0|j=0|objet=tambour|pieces=bibliotheque,grenier,cave",
-"reponse": "bibliotheque"
+"empreinte": "det_find|coins=terrier,coffre|i=0|j=0|objet=tambour|pieces=plage,foret,grotte",
+"reponse": "plage"
 },
 {
 "type": "plo_ecrit",
@@ -1600,252 +1600,252 @@
 "type": "exp_chemin",
 "valeur": "0fbaba32c573a4b4b66e8e3bcb84303fe1959db0cb4be10578d04c2d2cc6f079",
 "k": 0,
-"empreinte": "exp_chemin|coins=boite,placard|i=1|j=1|pieces=couloir,bureau,bibliotheque",
+"empreinte": "exp_chemin|coins=boite,terrier|i=1|j=1|pieces=jungle,glacier,plage",
 "reponse": null
 },
 {
 "type": "exp_chemin",
 "valeur": "0fbaba32c573a4b4b66e8e3bcb84303fe1959db0cb4be10578d04c2d2cc6f079",
 "k": 1,
-"empreinte": "exp_chemin|coins=tiroir,etagere|i=2|j=0|pieces=bibliotheque,chambre,couloir",
+"empreinte": "exp_chemin|coins=creux,cabane|i=2|j=0|pieces=plage,marais,jungle",
 "reponse": null
 },
 {
 "type": "exp_chemin",
 "valeur": "0fbaba32c573a4b4b66e8e3bcb84303fe1959db0cb4be10578d04c2d2cc6f079",
 "k": 24,
-"empreinte": "exp_chemin|coins=coffre,placard|i=0|j=1|pieces=cuisine,grenier,bureau",
+"empreinte": "exp_chemin|coins=coffre,terrier|i=0|j=1|pieces=lagon,foret,glacier",
 "reponse": null
 },
 {
 "type": "exp_chemin",
 "valeur": "0fbaba32c573a4b4b66e8e3bcb84303fe1959db0cb4be10578d04c2d2cc6f079",
 "k": 99,
-"empreinte": "exp_chemin|coins=malle,panier|i=1|j=0|pieces=salon,chambre,atelier",
+"empreinte": "exp_chemin|coins=rocher,panier|i=1|j=0|pieces=desert,marais,canyon",
 "reponse": null
 },
 {
 "type": "exp_cle",
 "valeur": "0fbaba32c573a4b4b66e8e3bcb84303fe1959db0cb4be10578d04c2d2cc6f079",
 "k": 0,
-"empreinte": "exp_cle|coins=boite,placard|i=1|j=1|pieces=couloir,bureau,bibliotheque",
+"empreinte": "exp_cle|coins=boite,terrier|i=1|j=1|pieces=jungle,glacier,plage",
 "reponse": null
 },
 {
 "type": "exp_cle",
 "valeur": "0fbaba32c573a4b4b66e8e3bcb84303fe1959db0cb4be10578d04c2d2cc6f079",
 "k": 1,
-"empreinte": "exp_cle|coins=tiroir,etagere|i=2|j=0|pieces=bibliotheque,chambre,couloir",
+"empreinte": "exp_cle|coins=creux,cabane|i=2|j=0|pieces=plage,marais,jungle",
 "reponse": null
 },
 {
 "type": "exp_cle",
 "valeur": "0fbaba32c573a4b4b66e8e3bcb84303fe1959db0cb4be10578d04c2d2cc6f079",
 "k": 24,
-"empreinte": "exp_cle|coins=coffre,placard|i=0|j=1|pieces=cuisine,grenier,bureau",
+"empreinte": "exp_cle|coins=coffre,terrier|i=0|j=1|pieces=lagon,foret,glacier",
 "reponse": null
 },
 {
 "type": "exp_cle",
 "valeur": "0fbaba32c573a4b4b66e8e3bcb84303fe1959db0cb4be10578d04c2d2cc6f079",
 "k": 99,
-"empreinte": "exp_cle|coins=malle,panier|i=1|j=0|pieces=salon,chambre,atelier",
+"empreinte": "exp_cle|coins=rocher,panier|i=1|j=0|pieces=desert,marais,canyon",
 "reponse": null
 },
 {
 "type": "bat_pieces",
 "valeur": "0fbaba32c573a4b4b66e8e3bcb84303fe1959db0cb4be10578d04c2d2cc6f079",
 "k": 0,
-"empreinte": "bat_pieces|pieces=couloir,bureau",
+"empreinte": "bat_pieces|pieces=jungle,glacier",
 "reponse": null
 },
 {
 "type": "bat_pieces",
 "valeur": "0fbaba32c573a4b4b66e8e3bcb84303fe1959db0cb4be10578d04c2d2cc6f079",
 "k": 1,
-"empreinte": "bat_pieces|pieces=bibliotheque,chambre",
+"empreinte": "bat_pieces|pieces=plage,marais",
 "reponse": null
 },
 {
 "type": "bat_pieces",
 "valeur": "0fbaba32c573a4b4b66e8e3bcb84303fe1959db0cb4be10578d04c2d2cc6f079",
 "k": 24,
-"empreinte": "bat_pieces|pieces=cuisine,grenier",
+"empreinte": "bat_pieces|pieces=lagon,foret",
 "reponse": null
 },
 {
 "type": "bat_pieces",
 "valeur": "0fbaba32c573a4b4b66e8e3bcb84303fe1959db0cb4be10578d04c2d2cc6f079",
 "k": 99,
-"empreinte": "bat_pieces|pieces=salon,chambre",
+"empreinte": "bat_pieces|pieces=desert,marais",
 "reponse": null
 },
 {
 "type": "bat_objets",
 "valeur": "0fbaba32c573a4b4b66e8e3bcb84303fe1959db0cb4be10578d04c2d2cc6f079",
 "k": 0,
-"empreinte": "bat_objets|objets=boussole,livre|pieces=couloir",
+"empreinte": "bat_objets|objets=boussole,livre|pieces=jungle",
 "reponse": null
 },
 {
 "type": "bat_objets",
 "valeur": "0fbaba32c573a4b4b66e8e3bcb84303fe1959db0cb4be10578d04c2d2cc6f079",
 "k": 1,
-"empreinte": "bat_objets|objets=balle,tambour|pieces=bibliotheque",
+"empreinte": "bat_objets|objets=balle,tambour|pieces=plage",
 "reponse": null
 },
 {
 "type": "bat_objets",
 "valeur": "0fbaba32c573a4b4b66e8e3bcb84303fe1959db0cb4be10578d04c2d2cc6f079",
 "k": 24,
-"empreinte": "bat_objets|objets=tambour,pomme|pieces=cuisine",
+"empreinte": "bat_objets|objets=tambour,pomme|pieces=lagon",
 "reponse": null
 },
 {
 "type": "bat_objets",
 "valeur": "0fbaba32c573a4b4b66e8e3bcb84303fe1959db0cb4be10578d04c2d2cc6f079",
 "k": 99,
-"empreinte": "bat_objets|objets=etoile,crayon|pieces=salon",
+"empreinte": "bat_objets|objets=etoile,crayon|pieces=desert",
 "reponse": null
 },
 {
 "type": "dem_mv",
 "valeur": "0fbaba32c573a4b4b66e8e3bcb84303fe1959db0cb4be10578d04c2d2cc6f079",
 "k": 0,
-"empreinte": "dem_mv|objets=boussole|pieces=couloir,bureau",
+"empreinte": "dem_mv|objets=boussole|pieces=jungle,glacier",
 "reponse": null
 },
 {
 "type": "dem_mv",
 "valeur": "0fbaba32c573a4b4b66e8e3bcb84303fe1959db0cb4be10578d04c2d2cc6f079",
 "k": 1,
-"empreinte": "dem_mv|objets=bougie|pieces=bibliotheque,chambre",
+"empreinte": "dem_mv|objets=bougie|pieces=plage,marais",
 "reponse": null
 },
 {
 "type": "dem_mv",
 "valeur": "0fbaba32c573a4b4b66e8e3bcb84303fe1959db0cb4be10578d04c2d2cc6f079",
 "k": 24,
-"empreinte": "dem_mv|objets=crayon|pieces=cuisine,grenier",
+"empreinte": "dem_mv|objets=crayon|pieces=lagon,foret",
 "reponse": null
 },
 {
 "type": "dem_mv",
 "valeur": "0fbaba32c573a4b4b66e8e3bcb84303fe1959db0cb4be10578d04c2d2cc6f079",
 "k": 99,
-"empreinte": "dem_mv|objets=bille|pieces=salon,chambre",
+"empreinte": "dem_mv|objets=bille|pieces=desert,marais",
 "reponse": null
 },
 {
 "type": "dem_cp",
 "valeur": "0fbaba32c573a4b4b66e8e3bcb84303fe1959db0cb4be10578d04c2d2cc6f079",
 "k": 0,
-"empreinte": "dem_cp|objets=boussole|pieces=couloir,bureau",
+"empreinte": "dem_cp|objets=boussole|pieces=jungle,glacier",
 "reponse": null
 },
 {
 "type": "dem_cp",
 "valeur": "0fbaba32c573a4b4b66e8e3bcb84303fe1959db0cb4be10578d04c2d2cc6f079",
 "k": 1,
-"empreinte": "dem_cp|objets=bougie|pieces=bibliotheque,chambre",
+"empreinte": "dem_cp|objets=bougie|pieces=plage,marais",
 "reponse": null
 },
 {
 "type": "dem_cp",
 "valeur": "0fbaba32c573a4b4b66e8e3bcb84303fe1959db0cb4be10578d04c2d2cc6f079",
 "k": 24,
-"empreinte": "dem_cp|objets=crayon|pieces=cuisine,grenier",
+"empreinte": "dem_cp|objets=crayon|pieces=lagon,foret",
 "reponse": null
 },
 {
 "type": "dem_cp",
 "valeur": "0fbaba32c573a4b4b66e8e3bcb84303fe1959db0cb4be10578d04c2d2cc6f079",
 "k": 99,
-"empreinte": "dem_cp|objets=bille|pieces=salon,chambre",
+"empreinte": "dem_cp|objets=bille|pieces=desert,marais",
 "reponse": null
 },
 {
 "type": "net_rm",
 "valeur": "0fbaba32c573a4b4b66e8e3bcb84303fe1959db0cb4be10578d04c2d2cc6f079",
 "k": 0,
-"empreinte": "net_rm|n=2|objets=boussole|pieces=couloir",
+"empreinte": "net_rm|n=2|objets=boussole|pieces=jungle",
 "reponse": null
 },
 {
 "type": "net_rm",
 "valeur": "0fbaba32c573a4b4b66e8e3bcb84303fe1959db0cb4be10578d04c2d2cc6f079",
 "k": 1,
-"empreinte": "net_rm|n=2|objets=balle|pieces=bibliotheque",
+"empreinte": "net_rm|n=2|objets=balle|pieces=plage",
 "reponse": null
 },
 {
 "type": "net_rm",
 "valeur": "0fbaba32c573a4b4b66e8e3bcb84303fe1959db0cb4be10578d04c2d2cc6f079",
 "k": 24,
-"empreinte": "net_rm|n=2|objets=tambour|pieces=cuisine",
+"empreinte": "net_rm|n=2|objets=tambour|pieces=lagon",
 "reponse": null
 },
 {
 "type": "net_rm",
 "valeur": "0fbaba32c573a4b4b66e8e3bcb84303fe1959db0cb4be10578d04c2d2cc6f079",
 "k": 99,
-"empreinte": "net_rm|n=3|objets=etoile|pieces=salon",
+"empreinte": "net_rm|n=3|objets=etoile|pieces=desert",
 "reponse": null
 },
 {
 "type": "net_rmdir",
 "valeur": "0fbaba32c573a4b4b66e8e3bcb84303fe1959db0cb4be10578d04c2d2cc6f079",
 "k": 0,
-"empreinte": "net_rmdir|objets=bougie|pieces=couloir,bureau,bibliotheque",
+"empreinte": "net_rmdir|objets=bougie|pieces=jungle,glacier,plage",
 "reponse": null
 },
 {
 "type": "net_rmdir",
 "valeur": "0fbaba32c573a4b4b66e8e3bcb84303fe1959db0cb4be10578d04c2d2cc6f079",
 "k": 1,
-"empreinte": "net_rmdir|objets=tambour|pieces=bibliotheque,chambre,couloir",
+"empreinte": "net_rmdir|objets=tambour|pieces=plage,marais,jungle",
 "reponse": null
 },
 {
 "type": "net_rmdir",
 "valeur": "0fbaba32c573a4b4b66e8e3bcb84303fe1959db0cb4be10578d04c2d2cc6f079",
 "k": 24,
-"empreinte": "net_rmdir|objets=boussole|pieces=cuisine,grenier,bureau",
+"empreinte": "net_rmdir|objets=boussole|pieces=lagon,foret,glacier",
 "reponse": null
 },
 {
 "type": "net_rmdir",
 "valeur": "0fbaba32c573a4b4b66e8e3bcb84303fe1959db0cb4be10578d04c2d2cc6f079",
 "k": 99,
-"empreinte": "net_rmdir|objets=carte|pieces=salon,chambre,atelier",
+"empreinte": "net_rmdir|objets=carte|pieces=desert,marais,canyon",
 "reponse": null
 },
 {
 "type": "net_rmr",
 "valeur": "0fbaba32c573a4b4b66e8e3bcb84303fe1959db0cb4be10578d04c2d2cc6f079",
 "k": 0,
-"empreinte": "net_rmr|objets=boussole,coquillage,cle|pieces=couloir,bureau",
+"empreinte": "net_rmr|objets=boussole,coquillage,cle|pieces=jungle,glacier",
 "reponse": null
 },
 {
 "type": "net_rmr",
 "valeur": "0fbaba32c573a4b4b66e8e3bcb84303fe1959db0cb4be10578d04c2d2cc6f079",
 "k": 1,
-"empreinte": "net_rmr|objets=bougie,pomme,coquillage|pieces=bibliotheque,chambre",
+"empreinte": "net_rmr|objets=bougie,pomme,coquillage|pieces=plage,marais",
 "reponse": null
 },
 {
 "type": "net_rmr",
 "valeur": "0fbaba32c573a4b4b66e8e3bcb84303fe1959db0cb4be10578d04c2d2cc6f079",
 "k": 24,
-"empreinte": "net_rmr|objets=crayon,boussole,cle|pieces=cuisine,grenier",
+"empreinte": "net_rmr|objets=crayon,boussole,cle|pieces=lagon,foret",
 "reponse": null
 },
 {
 "type": "net_rmr",
 "valeur": "0fbaba32c573a4b4b66e8e3bcb84303fe1959db0cb4be10578d04c2d2cc6f079",
 "k": 99,
-"empreinte": "net_rmr|objets=bille,livre,bougie|pieces=salon,chambre",
+"empreinte": "net_rmr|objets=bille,livre,bougie|pieces=desert,marais",
 "reponse": null
 },
 {
@@ -1964,29 +1964,29 @@
 "type": "det_find",
 "valeur": "0fbaba32c573a4b4b66e8e3bcb84303fe1959db0cb4be10578d04c2d2cc6f079",
 "k": 0,
-"empreinte": "det_find|coins=boite,placard|i=1|j=1|objet=etoile|pieces=couloir,bureau,bibliotheque",
-"reponse": "bureau"
+"empreinte": "det_find|coins=boite,terrier|i=1|j=1|objet=etoile|pieces=jungle,glacier,plage",
+"reponse": "glacier"
 },
 {
 "type": "det_find",
 "valeur": "0fbaba32c573a4b4b66e8e3bcb84303fe1959db0cb4be10578d04c2d2cc6f079",
 "k": 1,
-"empreinte": "det_find|coins=tiroir,etagere|i=2|j=0|objet=cle|pieces=bibliotheque,chambre,couloir",
-"reponse": "couloir"
+"empreinte": "det_find|coins=creux,cabane|i=2|j=0|objet=cle|pieces=plage,marais,jungle",
+"reponse": "jungle"
 },
 {
 "type": "det_find",
 "valeur": "0fbaba32c573a4b4b66e8e3bcb84303fe1959db0cb4be10578d04c2d2cc6f079",
 "k": 24,
-"empreinte": "det_find|coins=coffre,placard|i=0|j=1|objet=etoile|pieces=cuisine,grenier,bureau",
-"reponse": "cuisine"
+"empreinte": "det_find|coins=coffre,terrier|i=0|j=1|objet=etoile|pieces=lagon,foret,glacier",
+"reponse": "lagon"
 },
 {
 "type": "det_find",
 "valeur": "0fbaba32c573a4b4b66e8e3bcb84303fe1959db0cb4be10578d04c2d2cc6f079",
 "k": 99,
-"empreinte": "det_find|coins=malle,panier|i=1|j=0|objet=cle|pieces=salon,chambre,atelier",
-"reponse": "chambre"
+"empreinte": "det_find|coins=rocher,panier|i=1|j=0|objet=cle|pieces=desert,marais,canyon",
+"reponse": "marais"
 },
 {
 "type": "plo_ecrit",
@@ -2132,252 +2132,252 @@
 "type": "exp_chemin",
 "valeur": "4e6fb5902cdc9e0637ac6d0ac4f6cef2a173024fff5667f98498a2df9427a6f7",
 "k": 0,
-"empreinte": "exp_chemin|coins=malle,coffre|i=2|j=0|pieces=cave,veranda,atelier",
+"empreinte": "exp_chemin|coins=rocher,coffre|i=2|j=0|pieces=grotte,colline,canyon",
 "reponse": null
 },
 {
 "type": "exp_chemin",
 "valeur": "4e6fb5902cdc9e0637ac6d0ac4f6cef2a173024fff5667f98498a2df9427a6f7",
 "k": 1,
-"empreinte": "exp_chemin|coins=etagere,placard|i=2|j=0|pieces=salon,couloir,jardin",
+"empreinte": "exp_chemin|coins=cabane,terrier|i=2|j=0|pieces=desert,jungle,prairie",
 "reponse": null
 },
 {
 "type": "exp_chemin",
 "valeur": "4e6fb5902cdc9e0637ac6d0ac4f6cef2a173024fff5667f98498a2df9427a6f7",
 "k": 31,
-"empreinte": "exp_chemin|coins=placard,malle|i=1|j=1|pieces=couloir,bureau,salon",
+"empreinte": "exp_chemin|coins=terrier,rocher|i=1|j=1|pieces=jungle,glacier,desert",
 "reponse": null
 },
 {
 "type": "exp_chemin",
 "valeur": "4e6fb5902cdc9e0637ac6d0ac4f6cef2a173024fff5667f98498a2df9427a6f7",
 "k": 99,
-"empreinte": "exp_chemin|coins=etagere,tiroir|i=0|j=1|pieces=bureau,chambre,garage",
+"empreinte": "exp_chemin|coins=cabane,creux|i=0|j=1|pieces=glacier,marais,clairiere",
 "reponse": null
 },
 {
 "type": "exp_cle",
 "valeur": "4e6fb5902cdc9e0637ac6d0ac4f6cef2a173024fff5667f98498a2df9427a6f7",
 "k": 0,
-"empreinte": "exp_cle|coins=malle,coffre|i=2|j=0|pieces=cave,veranda,atelier",
+"empreinte": "exp_cle|coins=rocher,coffre|i=2|j=0|pieces=grotte,colline,canyon",
 "reponse": null
 },
 {
 "type": "exp_cle",
 "valeur": "4e6fb5902cdc9e0637ac6d0ac4f6cef2a173024fff5667f98498a2df9427a6f7",
 "k": 1,
-"empreinte": "exp_cle|coins=etagere,placard|i=2|j=0|pieces=salon,couloir,jardin",
+"empreinte": "exp_cle|coins=cabane,terrier|i=2|j=0|pieces=desert,jungle,prairie",
 "reponse": null
 },
 {
 "type": "exp_cle",
 "valeur": "4e6fb5902cdc9e0637ac6d0ac4f6cef2a173024fff5667f98498a2df9427a6f7",
 "k": 31,
-"empreinte": "exp_cle|coins=placard,malle|i=1|j=1|pieces=couloir,bureau,salon",
+"empreinte": "exp_cle|coins=terrier,rocher|i=1|j=1|pieces=jungle,glacier,desert",
 "reponse": null
 },
 {
 "type": "exp_cle",
 "valeur": "4e6fb5902cdc9e0637ac6d0ac4f6cef2a173024fff5667f98498a2df9427a6f7",
 "k": 99,
-"empreinte": "exp_cle|coins=etagere,tiroir|i=0|j=1|pieces=bureau,chambre,garage",
+"empreinte": "exp_cle|coins=cabane,creux|i=0|j=1|pieces=glacier,marais,clairiere",
 "reponse": null
 },
 {
 "type": "bat_pieces",
 "valeur": "4e6fb5902cdc9e0637ac6d0ac4f6cef2a173024fff5667f98498a2df9427a6f7",
 "k": 0,
-"empreinte": "bat_pieces|pieces=cave,veranda",
+"empreinte": "bat_pieces|pieces=grotte,colline",
 "reponse": null
 },
 {
 "type": "bat_pieces",
 "valeur": "4e6fb5902cdc9e0637ac6d0ac4f6cef2a173024fff5667f98498a2df9427a6f7",
 "k": 1,
-"empreinte": "bat_pieces|pieces=salon,couloir",
+"empreinte": "bat_pieces|pieces=desert,jungle",
 "reponse": null
 },
 {
 "type": "bat_pieces",
 "valeur": "4e6fb5902cdc9e0637ac6d0ac4f6cef2a173024fff5667f98498a2df9427a6f7",
 "k": 31,
-"empreinte": "bat_pieces|pieces=couloir,bureau",
+"empreinte": "bat_pieces|pieces=jungle,glacier",
 "reponse": null
 },
 {
 "type": "bat_pieces",
 "valeur": "4e6fb5902cdc9e0637ac6d0ac4f6cef2a173024fff5667f98498a2df9427a6f7",
 "k": 99,
-"empreinte": "bat_pieces|pieces=bureau,chambre",
+"empreinte": "bat_pieces|pieces=glacier,marais",
 "reponse": null
 },
 {
 "type": "bat_objets",
 "valeur": "4e6fb5902cdc9e0637ac6d0ac4f6cef2a173024fff5667f98498a2df9427a6f7",
 "k": 0,
-"empreinte": "bat_objets|objets=carte,flute|pieces=cave",
+"empreinte": "bat_objets|objets=carte,flute|pieces=grotte",
 "reponse": null
 },
 {
 "type": "bat_objets",
 "valeur": "4e6fb5902cdc9e0637ac6d0ac4f6cef2a173024fff5667f98498a2df9427a6f7",
 "k": 1,
-"empreinte": "bat_objets|objets=etoile,lampe|pieces=salon",
+"empreinte": "bat_objets|objets=etoile,lampe|pieces=desert",
 "reponse": null
 },
 {
 "type": "bat_objets",
 "valeur": "4e6fb5902cdc9e0637ac6d0ac4f6cef2a173024fff5667f98498a2df9427a6f7",
 "k": 31,
-"empreinte": "bat_objets|objets=bougie,cle|pieces=couloir",
+"empreinte": "bat_objets|objets=bougie,cle|pieces=jungle",
 "reponse": null
 },
 {
 "type": "bat_objets",
 "valeur": "4e6fb5902cdc9e0637ac6d0ac4f6cef2a173024fff5667f98498a2df9427a6f7",
 "k": 99,
-"empreinte": "bat_objets|objets=bille,cle|pieces=bureau",
+"empreinte": "bat_objets|objets=bille,cle|pieces=glacier",
 "reponse": null
 },
 {
 "type": "dem_mv",
 "valeur": "4e6fb5902cdc9e0637ac6d0ac4f6cef2a173024fff5667f98498a2df9427a6f7",
 "k": 0,
-"empreinte": "dem_mv|objets=flute|pieces=cave,veranda",
+"empreinte": "dem_mv|objets=flute|pieces=grotte,colline",
 "reponse": null
 },
 {
 "type": "dem_mv",
 "valeur": "4e6fb5902cdc9e0637ac6d0ac4f6cef2a173024fff5667f98498a2df9427a6f7",
 "k": 1,
-"empreinte": "dem_mv|objets=pomme|pieces=salon,couloir",
+"empreinte": "dem_mv|objets=pomme|pieces=desert,jungle",
 "reponse": null
 },
 {
 "type": "dem_mv",
 "valeur": "4e6fb5902cdc9e0637ac6d0ac4f6cef2a173024fff5667f98498a2df9427a6f7",
 "k": 31,
-"empreinte": "dem_mv|objets=carte|pieces=couloir,bureau",
+"empreinte": "dem_mv|objets=carte|pieces=jungle,glacier",
 "reponse": null
 },
 {
 "type": "dem_mv",
 "valeur": "4e6fb5902cdc9e0637ac6d0ac4f6cef2a173024fff5667f98498a2df9427a6f7",
 "k": 99,
-"empreinte": "dem_mv|objets=boussole|pieces=bureau,chambre",
+"empreinte": "dem_mv|objets=boussole|pieces=glacier,marais",
 "reponse": null
 },
 {
 "type": "dem_cp",
 "valeur": "4e6fb5902cdc9e0637ac6d0ac4f6cef2a173024fff5667f98498a2df9427a6f7",
 "k": 0,
-"empreinte": "dem_cp|objets=flute|pieces=cave,veranda",
+"empreinte": "dem_cp|objets=flute|pieces=grotte,colline",
 "reponse": null
 },
 {
 "type": "dem_cp",
 "valeur": "4e6fb5902cdc9e0637ac6d0ac4f6cef2a173024fff5667f98498a2df9427a6f7",
 "k": 1,
-"empreinte": "dem_cp|objets=pomme|pieces=salon,couloir",
+"empreinte": "dem_cp|objets=pomme|pieces=desert,jungle",
 "reponse": null
 },
 {
 "type": "dem_cp",
 "valeur": "4e6fb5902cdc9e0637ac6d0ac4f6cef2a173024fff5667f98498a2df9427a6f7",
 "k": 31,
-"empreinte": "dem_cp|objets=carte|pieces=couloir,bureau",
+"empreinte": "dem_cp|objets=carte|pieces=jungle,glacier",
 "reponse": null
 },
 {
 "type": "dem_cp",
 "valeur": "4e6fb5902cdc9e0637ac6d0ac4f6cef2a173024fff5667f98498a2df9427a6f7",
 "k": 99,
-"empreinte": "dem_cp|objets=boussole|pieces=bureau,chambre",
+"empreinte": "dem_cp|objets=boussole|pieces=glacier,marais",
 "reponse": null
 },
 {
 "type": "net_rm",
 "valeur": "4e6fb5902cdc9e0637ac6d0ac4f6cef2a173024fff5667f98498a2df9427a6f7",
 "k": 0,
-"empreinte": "net_rm|n=4|objets=carte|pieces=cave",
+"empreinte": "net_rm|n=4|objets=carte|pieces=grotte",
 "reponse": null
 },
 {
 "type": "net_rm",
 "valeur": "4e6fb5902cdc9e0637ac6d0ac4f6cef2a173024fff5667f98498a2df9427a6f7",
 "k": 1,
-"empreinte": "net_rm|n=4|objets=etoile|pieces=salon",
+"empreinte": "net_rm|n=4|objets=etoile|pieces=desert",
 "reponse": null
 },
 {
 "type": "net_rm",
 "valeur": "4e6fb5902cdc9e0637ac6d0ac4f6cef2a173024fff5667f98498a2df9427a6f7",
 "k": 31,
-"empreinte": "net_rm|n=3|objets=bougie|pieces=couloir",
+"empreinte": "net_rm|n=3|objets=bougie|pieces=jungle",
 "reponse": null
 },
 {
 "type": "net_rm",
 "valeur": "4e6fb5902cdc9e0637ac6d0ac4f6cef2a173024fff5667f98498a2df9427a6f7",
 "k": 99,
-"empreinte": "net_rm|n=3|objets=bille|pieces=bureau",
+"empreinte": "net_rm|n=3|objets=bille|pieces=glacier",
 "reponse": null
 },
 {
 "type": "net_rmdir",
 "valeur": "4e6fb5902cdc9e0637ac6d0ac4f6cef2a173024fff5667f98498a2df9427a6f7",
 "k": 0,
-"empreinte": "net_rmdir|objets=gomme|pieces=cave,veranda,atelier",
+"empreinte": "net_rmdir|objets=gomme|pieces=grotte,colline,canyon",
 "reponse": null
 },
 {
 "type": "net_rmdir",
 "valeur": "4e6fb5902cdc9e0637ac6d0ac4f6cef2a173024fff5667f98498a2df9427a6f7",
 "k": 1,
-"empreinte": "net_rmdir|objets=livre|pieces=salon,couloir,jardin",
+"empreinte": "net_rmdir|objets=livre|pieces=desert,jungle,prairie",
 "reponse": null
 },
 {
 "type": "net_rmdir",
 "valeur": "4e6fb5902cdc9e0637ac6d0ac4f6cef2a173024fff5667f98498a2df9427a6f7",
 "k": 31,
-"empreinte": "net_rmdir|objets=balle|pieces=couloir,bureau,salon",
+"empreinte": "net_rmdir|objets=balle|pieces=jungle,glacier,desert",
 "reponse": null
 },
 {
 "type": "net_rmdir",
 "valeur": "4e6fb5902cdc9e0637ac6d0ac4f6cef2a173024fff5667f98498a2df9427a6f7",
 "k": 99,
-"empreinte": "net_rmdir|objets=coquillage|pieces=bureau,chambre,garage",
+"empreinte": "net_rmdir|objets=coquillage|pieces=glacier,marais,clairiere",
 "reponse": null
 },
 {
 "type": "net_rmr",
 "valeur": "4e6fb5902cdc9e0637ac6d0ac4f6cef2a173024fff5667f98498a2df9427a6f7",
 "k": 0,
-"empreinte": "net_rmr|objets=flute,balle,plume|pieces=cave,veranda",
+"empreinte": "net_rmr|objets=flute,balle,plume|pieces=grotte,colline",
 "reponse": null
 },
 {
 "type": "net_rmr",
 "valeur": "4e6fb5902cdc9e0637ac6d0ac4f6cef2a173024fff5667f98498a2df9427a6f7",
 "k": 1,
-"empreinte": "net_rmr|objets=pomme,coquillage,cle|pieces=salon,couloir",
+"empreinte": "net_rmr|objets=pomme,coquillage,cle|pieces=desert,jungle",
 "reponse": null
 },
 {
 "type": "net_rmr",
 "valeur": "4e6fb5902cdc9e0637ac6d0ac4f6cef2a173024fff5667f98498a2df9427a6f7",
 "k": 31,
-"empreinte": "net_rmr|objets=carte,gomme,plume|pieces=couloir,bureau",
+"empreinte": "net_rmr|objets=carte,gomme,plume|pieces=jungle,glacier",
 "reponse": null
 },
 {
 "type": "net_rmr",
 "valeur": "4e6fb5902cdc9e0637ac6d0ac4f6cef2a173024fff5667f98498a2df9427a6f7",
 "k": 99,
-"empreinte": "net_rmr|objets=boussole,coquillage,tambour|pieces=bureau,chambre",
+"empreinte": "net_rmr|objets=boussole,coquillage,tambour|pieces=glacier,marais",
 "reponse": null
 },
 {
@@ -2496,29 +2496,29 @@
 "type": "det_find",
 "valeur": "4e6fb5902cdc9e0637ac6d0ac4f6cef2a173024fff5667f98498a2df9427a6f7",
 "k": 0,
-"empreinte": "det_find|coins=malle,coffre|i=2|j=0|objet=balle|pieces=cave,veranda,atelier",
-"reponse": "atelier"
+"empreinte": "det_find|coins=rocher,coffre|i=2|j=0|objet=balle|pieces=grotte,colline,canyon",
+"reponse": "canyon"
 },
 {
 "type": "det_find",
 "valeur": "4e6fb5902cdc9e0637ac6d0ac4f6cef2a173024fff5667f98498a2df9427a6f7",
 "k": 1,
-"empreinte": "det_find|coins=etagere,placard|i=2|j=0|objet=lampe|pieces=salon,couloir,jardin",
-"reponse": "jardin"
+"empreinte": "det_find|coins=cabane,terrier|i=2|j=0|objet=lampe|pieces=desert,jungle,prairie",
+"reponse": "prairie"
 },
 {
 "type": "det_find",
 "valeur": "4e6fb5902cdc9e0637ac6d0ac4f6cef2a173024fff5667f98498a2df9427a6f7",
 "k": 31,
-"empreinte": "det_find|coins=placard,malle|i=1|j=1|objet=livre|pieces=couloir,bureau,salon",
-"reponse": "bureau"
+"empreinte": "det_find|coins=terrier,rocher|i=1|j=1|objet=livre|pieces=jungle,glacier,desert",
+"reponse": "glacier"
 },
 {
 "type": "det_find",
 "valeur": "4e6fb5902cdc9e0637ac6d0ac4f6cef2a173024fff5667f98498a2df9427a6f7",
 "k": 99,
-"empreinte": "det_find|coins=etagere,tiroir|i=0|j=1|objet=balle|pieces=bureau,chambre,garage",
-"reponse": "bureau"
+"empreinte": "det_find|coins=cabane,creux|i=0|j=1|objet=balle|pieces=glacier,marais,clairiere",
+"reponse": "glacier"
 },
 {
 "type": "plo_ecrit",
@@ -2664,252 +2664,252 @@
 "type": "exp_chemin",
 "valeur": "b66c7a282c92118b020943a18efa92114a18263f784e47153af3a103838363b1",
 "k": 0,
-"empreinte": "exp_chemin|coins=coffre,placard|i=0|j=0|pieces=grenier,chambre,atelier",
+"empreinte": "exp_chemin|coins=coffre,terrier|i=0|j=0|pieces=foret,marais,canyon",
 "reponse": null
 },
 {
 "type": "exp_chemin",
 "valeur": "b66c7a282c92118b020943a18efa92114a18263f784e47153af3a103838363b1",
 "k": 1,
-"empreinte": "exp_chemin|coins=placard,panier|i=2|j=0|pieces=jardin,salon,grenier",
+"empreinte": "exp_chemin|coins=terrier,panier|i=2|j=0|pieces=prairie,desert,foret",
 "reponse": null
 },
 {
 "type": "exp_chemin",
 "valeur": "b66c7a282c92118b020943a18efa92114a18263f784e47153af3a103838363b1",
 "k": 38,
-"empreinte": "exp_chemin|coins=coffre,tiroir|i=2|j=1|pieces=salon,garage,veranda",
+"empreinte": "exp_chemin|coins=coffre,creux|i=2|j=1|pieces=desert,clairiere,colline",
 "reponse": null
 },
 {
 "type": "exp_chemin",
 "valeur": "b66c7a282c92118b020943a18efa92114a18263f784e47153af3a103838363b1",
 "k": 99,
-"empreinte": "exp_chemin|coins=armoire,panier|i=0|j=0|pieces=atelier,cave,veranda",
+"empreinte": "exp_chemin|coins=tente,panier|i=0|j=0|pieces=canyon,grotte,colline",
 "reponse": null
 },
 {
 "type": "exp_cle",
 "valeur": "b66c7a282c92118b020943a18efa92114a18263f784e47153af3a103838363b1",
 "k": 0,
-"empreinte": "exp_cle|coins=coffre,placard|i=0|j=0|pieces=grenier,chambre,atelier",
+"empreinte": "exp_cle|coins=coffre,terrier|i=0|j=0|pieces=foret,marais,canyon",
 "reponse": null
 },
 {
 "type": "exp_cle",
 "valeur": "b66c7a282c92118b020943a18efa92114a18263f784e47153af3a103838363b1",
 "k": 1,
-"empreinte": "exp_cle|coins=placard,panier|i=2|j=0|pieces=jardin,salon,grenier",
+"empreinte": "exp_cle|coins=terrier,panier|i=2|j=0|pieces=prairie,desert,foret",
 "reponse": null
 },
 {
 "type": "exp_cle",
 "valeur": "b66c7a282c92118b020943a18efa92114a18263f784e47153af3a103838363b1",
 "k": 38,
-"empreinte": "exp_cle|coins=coffre,tiroir|i=2|j=1|pieces=salon,garage,veranda",
+"empreinte": "exp_cle|coins=coffre,creux|i=2|j=1|pieces=desert,clairiere,colline",
 "reponse": null
 },
 {
 "type": "exp_cle",
 "valeur": "b66c7a282c92118b020943a18efa92114a18263f784e47153af3a103838363b1",
 "k": 99,
-"empreinte": "exp_cle|coins=armoire,panier|i=0|j=0|pieces=atelier,cave,veranda",
+"empreinte": "exp_cle|coins=tente,panier|i=0|j=0|pieces=canyon,grotte,colline",
 "reponse": null
 },
 {
 "type": "bat_pieces",
 "valeur": "b66c7a282c92118b020943a18efa92114a18263f784e47153af3a103838363b1",
 "k": 0,
-"empreinte": "bat_pieces|pieces=grenier,chambre",
+"empreinte": "bat_pieces|pieces=foret,marais",
 "reponse": null
 },
 {
 "type": "bat_pieces",
 "valeur": "b66c7a282c92118b020943a18efa92114a18263f784e47153af3a103838363b1",
 "k": 1,
-"empreinte": "bat_pieces|pieces=jardin,salon",
+"empreinte": "bat_pieces|pieces=prairie,desert",
 "reponse": null
 },
 {
 "type": "bat_pieces",
 "valeur": "b66c7a282c92118b020943a18efa92114a18263f784e47153af3a103838363b1",
 "k": 38,
-"empreinte": "bat_pieces|pieces=salon,garage",
+"empreinte": "bat_pieces|pieces=desert,clairiere",
 "reponse": null
 },
 {
 "type": "bat_pieces",
 "valeur": "b66c7a282c92118b020943a18efa92114a18263f784e47153af3a103838363b1",
 "k": 99,
-"empreinte": "bat_pieces|pieces=atelier,cave",
+"empreinte": "bat_pieces|pieces=canyon,grotte",
 "reponse": null
 },
 {
 "type": "bat_objets",
 "valeur": "b66c7a282c92118b020943a18efa92114a18263f784e47153af3a103838363b1",
 "k": 0,
-"empreinte": "bat_objets|objets=crayon,livre|pieces=grenier",
+"empreinte": "bat_objets|objets=crayon,livre|pieces=foret",
 "reponse": null
 },
 {
 "type": "bat_objets",
 "valeur": "b66c7a282c92118b020943a18efa92114a18263f784e47153af3a103838363b1",
 "k": 1,
-"empreinte": "bat_objets|objets=cle,bougie|pieces=jardin",
+"empreinte": "bat_objets|objets=cle,bougie|pieces=prairie",
 "reponse": null
 },
 {
 "type": "bat_objets",
 "valeur": "b66c7a282c92118b020943a18efa92114a18263f784e47153af3a103838363b1",
 "k": 38,
-"empreinte": "bat_objets|objets=lampe,gomme|pieces=salon",
+"empreinte": "bat_objets|objets=lampe,gomme|pieces=desert",
 "reponse": null
 },
 {
 "type": "bat_objets",
 "valeur": "b66c7a282c92118b020943a18efa92114a18263f784e47153af3a103838363b1",
 "k": 99,
-"empreinte": "bat_objets|objets=carte,gomme|pieces=atelier",
+"empreinte": "bat_objets|objets=carte,gomme|pieces=canyon",
 "reponse": null
 },
 {
 "type": "dem_mv",
 "valeur": "b66c7a282c92118b020943a18efa92114a18263f784e47153af3a103838363b1",
 "k": 0,
-"empreinte": "dem_mv|objets=gomme|pieces=grenier,chambre",
+"empreinte": "dem_mv|objets=gomme|pieces=foret,marais",
 "reponse": null
 },
 {
 "type": "dem_mv",
 "valeur": "b66c7a282c92118b020943a18efa92114a18263f784e47153af3a103838363b1",
 "k": 1,
-"empreinte": "dem_mv|objets=lampe|pieces=jardin,salon",
+"empreinte": "dem_mv|objets=lampe|pieces=prairie,desert",
 "reponse": null
 },
 {
 "type": "dem_mv",
 "valeur": "b66c7a282c92118b020943a18efa92114a18263f784e47153af3a103838363b1",
 "k": 38,
-"empreinte": "dem_mv|objets=flute|pieces=salon,garage",
+"empreinte": "dem_mv|objets=flute|pieces=desert,clairiere",
 "reponse": null
 },
 {
 "type": "dem_mv",
 "valeur": "b66c7a282c92118b020943a18efa92114a18263f784e47153af3a103838363b1",
 "k": 99,
-"empreinte": "dem_mv|objets=flute|pieces=atelier,cave",
+"empreinte": "dem_mv|objets=flute|pieces=canyon,grotte",
 "reponse": null
 },
 {
 "type": "dem_cp",
 "valeur": "b66c7a282c92118b020943a18efa92114a18263f784e47153af3a103838363b1",
 "k": 0,
-"empreinte": "dem_cp|objets=gomme|pieces=grenier,chambre",
+"empreinte": "dem_cp|objets=gomme|pieces=foret,marais",
 "reponse": null
 },
 {
 "type": "dem_cp",
 "valeur": "b66c7a282c92118b020943a18efa92114a18263f784e47153af3a103838363b1",
 "k": 1,
-"empreinte": "dem_cp|objets=lampe|pieces=jardin,salon",
+"empreinte": "dem_cp|objets=lampe|pieces=prairie,desert",
 "reponse": null
 },
 {
 "type": "dem_cp",
 "valeur": "b66c7a282c92118b020943a18efa92114a18263f784e47153af3a103838363b1",
 "k": 38,
-"empreinte": "dem_cp|objets=flute|pieces=salon,garage",
+"empreinte": "dem_cp|objets=flute|pieces=desert,clairiere",
 "reponse": null
 },
 {
 "type": "dem_cp",
 "valeur": "b66c7a282c92118b020943a18efa92114a18263f784e47153af3a103838363b1",
 "k": 99,
-"empreinte": "dem_cp|objets=flute|pieces=atelier,cave",
+"empreinte": "dem_cp|objets=flute|pieces=canyon,grotte",
 "reponse": null
 },
 {
 "type": "net_rm",
 "valeur": "b66c7a282c92118b020943a18efa92114a18263f784e47153af3a103838363b1",
 "k": 0,
-"empreinte": "net_rm|n=2|objets=crayon|pieces=grenier",
+"empreinte": "net_rm|n=2|objets=crayon|pieces=foret",
 "reponse": null
 },
 {
 "type": "net_rm",
 "valeur": "b66c7a282c92118b020943a18efa92114a18263f784e47153af3a103838363b1",
 "k": 1,
-"empreinte": "net_rm|n=2|objets=cle|pieces=jardin",
+"empreinte": "net_rm|n=2|objets=cle|pieces=prairie",
 "reponse": null
 },
 {
 "type": "net_rm",
 "valeur": "b66c7a282c92118b020943a18efa92114a18263f784e47153af3a103838363b1",
 "k": 38,
-"empreinte": "net_rm|n=2|objets=lampe|pieces=salon",
+"empreinte": "net_rm|n=2|objets=lampe|pieces=desert",
 "reponse": null
 },
 {
 "type": "net_rm",
 "valeur": "b66c7a282c92118b020943a18efa92114a18263f784e47153af3a103838363b1",
 "k": 99,
-"empreinte": "net_rm|n=2|objets=carte|pieces=atelier",
+"empreinte": "net_rm|n=2|objets=carte|pieces=canyon",
 "reponse": null
 },
 {
 "type": "net_rmdir",
 "valeur": "b66c7a282c92118b020943a18efa92114a18263f784e47153af3a103838363b1",
 "k": 0,
-"empreinte": "net_rmdir|objets=boussole|pieces=grenier,chambre,atelier",
+"empreinte": "net_rmdir|objets=boussole|pieces=foret,marais,canyon",
 "reponse": null
 },
 {
 "type": "net_rmdir",
 "valeur": "b66c7a282c92118b020943a18efa92114a18263f784e47153af3a103838363b1",
 "k": 1,
-"empreinte": "net_rmdir|objets=balle|pieces=jardin,salon,grenier",
+"empreinte": "net_rmdir|objets=balle|pieces=prairie,desert,foret",
 "reponse": null
 },
 {
 "type": "net_rmdir",
 "valeur": "b66c7a282c92118b020943a18efa92114a18263f784e47153af3a103838363b1",
 "k": 38,
-"empreinte": "net_rmdir|objets=boussole|pieces=salon,garage,veranda",
+"empreinte": "net_rmdir|objets=boussole|pieces=desert,clairiere,colline",
 "reponse": null
 },
 {
 "type": "net_rmdir",
 "valeur": "b66c7a282c92118b020943a18efa92114a18263f784e47153af3a103838363b1",
 "k": 99,
-"empreinte": "net_rmdir|objets=lampe|pieces=atelier,cave,veranda",
+"empreinte": "net_rmdir|objets=lampe|pieces=canyon,grotte,colline",
 "reponse": null
 },
 {
 "type": "net_rmr",
 "valeur": "b66c7a282c92118b020943a18efa92114a18263f784e47153af3a103838363b1",
 "k": 0,
-"empreinte": "net_rmr|objets=gomme,coquillage,cle|pieces=grenier,chambre",
+"empreinte": "net_rmr|objets=gomme,coquillage,cle|pieces=foret,marais",
 "reponse": null
 },
 {
 "type": "net_rmr",
 "valeur": "b66c7a282c92118b020943a18efa92114a18263f784e47153af3a103838363b1",
 "k": 1,
-"empreinte": "net_rmr|objets=lampe,boussole,bougie|pieces=jardin,salon",
+"empreinte": "net_rmr|objets=lampe,boussole,bougie|pieces=prairie,desert",
 "reponse": null
 },
 {
 "type": "net_rmr",
 "valeur": "b66c7a282c92118b020943a18efa92114a18263f784e47153af3a103838363b1",
 "k": 38,
-"empreinte": "net_rmr|objets=flute,lampe,balle|pieces=salon,garage",
+"empreinte": "net_rmr|objets=flute,lampe,balle|pieces=desert,clairiere",
 "reponse": null
 },
 {
 "type": "net_rmr",
 "valeur": "b66c7a282c92118b020943a18efa92114a18263f784e47153af3a103838363b1",
 "k": 99,
-"empreinte": "net_rmr|objets=flute,bougie,balle|pieces=atelier,cave",
+"empreinte": "net_rmr|objets=flute,bougie,balle|pieces=canyon,grotte",
 "reponse": null
 },
 {
@@ -3028,29 +3028,29 @@
 "type": "det_find",
 "valeur": "b66c7a282c92118b020943a18efa92114a18263f784e47153af3a103838363b1",
 "k": 0,
-"empreinte": "det_find|coins=coffre,placard|i=0|j=0|objet=cle|pieces=grenier,chambre,atelier",
-"reponse": "grenier"
+"empreinte": "det_find|coins=coffre,terrier|i=0|j=0|objet=cle|pieces=foret,marais,canyon",
+"reponse": "foret"
 },
 {
 "type": "det_find",
 "valeur": "b66c7a282c92118b020943a18efa92114a18263f784e47153af3a103838363b1",
 "k": 1,
-"empreinte": "det_find|coins=placard,panier|i=2|j=0|objet=boussole|pieces=jardin,salon,grenier",
-"reponse": "grenier"
+"empreinte": "det_find|coins=terrier,panier|i=2|j=0|objet=boussole|pieces=prairie,desert,foret",
+"reponse": "foret"
 },
 {
 "type": "det_find",
 "valeur": "b66c7a282c92118b020943a18efa92114a18263f784e47153af3a103838363b1",
 "k": 38,
-"empreinte": "det_find|coins=coffre,tiroir|i=2|j=1|objet=gomme|pieces=salon,garage,veranda",
-"reponse": "veranda"
+"empreinte": "det_find|coins=coffre,creux|i=2|j=1|objet=gomme|pieces=desert,clairiere,colline",
+"reponse": "colline"
 },
 {
 "type": "det_find",
 "valeur": "b66c7a282c92118b020943a18efa92114a18263f784e47153af3a103838363b1",
 "k": 99,
-"empreinte": "det_find|coins=armoire,panier|i=0|j=0|objet=etoile|pieces=atelier,cave,veranda",
-"reponse": "atelier"
+"empreinte": "det_find|coins=tente,panier|i=0|j=0|objet=etoile|pieces=canyon,grotte,colline",
+"reponse": "canyon"
 },
 {
 "type": "plo_ecrit",

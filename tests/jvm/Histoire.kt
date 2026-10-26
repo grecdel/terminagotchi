@@ -336,8 +336,8 @@ fun main(args: Array<String>) {
     tape("echo ${n + 1} > coeur/reponse.txt")
     verifier(lecon() == ("coeur2" to 2) && "nombre" in (jeu.indiceLecon ?: ""), "mauvais nombre : Abyssor secoue la tête")
     tape("grep -rl ABYSSOR ~/terrain_terminagotchi | wc -l > coeur/reponse.txt")
-    verifier(Histoire.fini(jeu, "coeur"), "bonne réponse : le cœur bat, le monde est réveillé")
-    verifier("Le monde est réveillé" in ecran(), "écran de fin")
+    verifier(Histoire.fini(jeu, "coeur"), "bonne réponse : le cœur bat, le Terminaworld est réveillé")
+    verifier("Le Terminaworld est réveillé" in ecran(), "écran de fin")
 
     println("9. Migration des anciennes sauvegardes Android")
     jeu.sauver()

@@ -56,9 +56,9 @@ MEDAILLES = ("bronze", "argent", "or", "diamant")
 ICONE_MEDAILLE = {"bronze": "🥉", "argent": "🥈", "or": "🥇", "diamant": "💎"}
 MAX_ENVOI = 100
 
-PIECES = ["cave", "grenier", "cuisine", "salon", "jardin", "atelier", "bureau", "chambre", "garage", "veranda",
-          "bibliotheque", "couloir"]
-COINS = ["coffre", "placard", "tiroir", "armoire", "etagere", "malle", "panier", "boite"]
+PIECES = ["grotte", "foret", "lagon", "desert", "prairie", "canyon", "glacier", "marais", "clairiere", "colline",
+          "plage", "jungle"]
+COINS = ["coffre", "terrier", "creux", "tente", "cabane", "rocher", "panier", "boite"]
 OBJETS = ["pomme", "balle", "cle", "lampe", "livre", "carte", "plume", "bougie", "boussole", "flute", "tambour",
           "etoile", "coquillage", "gomme", "crayon", "bille"]
 MOTS = ["licorne", "dragon", "fusee", "volcan", "pirate", "robot", "comete", "tortue", "cactus", "biscuit", "nuage",

@@ -31,9 +31,9 @@ object Entrainement {
     val MEDAILLES = listOf("bronze", "argent", "or", "diamant")
     val ICONE_MEDAILLE = mapOf("bronze" to "🥉", "argent" to "🥈", "or" to "🥇", "diamant" to "💎")
 
-    val PIECES = listOf("cave", "grenier", "cuisine", "salon", "jardin", "atelier", "bureau", "chambre", "garage", "veranda",
-        "bibliotheque", "couloir")
-    val COINS = listOf("coffre", "placard", "tiroir", "armoire", "etagere", "malle", "panier", "boite")
+    val PIECES = listOf("grotte", "foret", "lagon", "desert", "prairie", "canyon", "glacier", "marais", "clairiere", "colline",
+        "plage", "jungle")
+    val COINS = listOf("coffre", "terrier", "creux", "tente", "cabane", "rocher", "panier", "boite")
     val OBJETS = listOf("pomme", "balle", "cle", "lampe", "livre", "carte", "plume", "bougie", "boussole", "flute", "tambour",
         "etoile", "coquillage", "gomme", "crayon", "bille")
     val MOTS = listOf("licorne", "dragon", "fusee", "volcan", "pirate", "robot", "comete", "tortue", "cactus", "biscuit", "nuage",
