@@ -452,12 +452,12 @@ def defi_tick(state, lines, spontaneous, proba=1.5 / 300):
         return
     for line in lines:
         if not est_colle(line) and first_word(line) == d["cmd"]:
-            t = time.time() - d["start"]
+            dt = time.time() - d["start"]        # (pas « t » : ce nom cache la traduction t() plus bas)
             best = state["records"].get(d["cmd"])
-            state["records"][d["cmd"]] = t if best is None else min(best, t)
-            rec = tr("core.defi.record") if best is None or t < best else ""
-            log(state, tr("core.defi.reussi.log", cmd=d["cmd"], s=f"{t:.1f}", record=rec))
-            say(state, tr("core.defi.reussi.dit", s=f"{t:.1f}", record=rec), 8)
+            state["records"][d["cmd"]] = dt if best is None else min(best, dt)
+            rec = tr("core.defi.record") if best is None or dt < best else ""
+            log(state, tr("core.defi.reussi.log", cmd=d["cmd"], s=f"{dt:.1f}", record=rec))
+            say(state, tr("core.defi.reussi.dit", s=f"{dt:.1f}", record=rec), 8)
             state["stats"]["Agilité"] += 2
             state["defi"] = None
             animer(state, "victoire")
