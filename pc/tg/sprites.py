@@ -4,18 +4,7 @@ import random
 from . import core
 from .plateforme import RESET, bg, fg
 
-EGG_SPRITE = [
-    "....wwww....",
-    "...wwwwww...",
-    "..wwwswwww..",
-    "..wwwwwwsw..",
-    ".wwswwwwwww.",
-    ".wwwwwwwsww.",
-    ".wwwwswwwww.",
-    ".wwwwwwwwww.",
-    "..wwwwwwww..",
-    "...wwwwww...",
-]
+# l'œuf : celui de son type (oeufs.py, dessins de donnees/oeufs/), intact puis fissuré (couleurs « #rrggbb »)
 BABY = [
     "............",
     "....bbbb....",
@@ -96,7 +85,9 @@ def get_sprite(state, st=None):
     if st is None:
         st = core.stage(core.level(state["xp"]))
     if st == 0:
-        return EGG_SPRITE
+        from . import oeufs
+        i = state.get("intro")
+        return oeufs.petit(oeufs.type_de(state), len(i.get("faits", [])) if isinstance(i, dict) else 0)
     if st == 1:
         return BABY
     br = state.get("branch") or core.dominant(state)
@@ -118,13 +109,28 @@ def render_sprite(rows, pal):
             if ca is None and cb is None:
                 s += " "
             elif cb is None:
-                s += fg(ca) + "▀" + RESET
+                s += _fg(ca) + "▀" + RESET
             elif ca is None:
-                s += fg(cb) + "▄" + RESET
+                s += _fg(cb) + "▄" + RESET
             else:
-                s += fg(ca) + bg(cb) + "▀" + RESET
+                s += _fg(ca) + _bg(cb) + "▀" + RESET
         out.append(s)
     return out, w
+
+
+def _fg(c):
+    """Couleur xterm-256 (entier) ou 24 bits (« #rrggbb », les œufs) → séquence du terminal."""
+    if isinstance(c, str):
+        from .bestiaire import fg24
+        return fg24(c)
+    return fg(c)
+
+
+def _bg(c):
+    if isinstance(c, str):
+        from .bestiaire import bg24
+        return bg24(c)
+    return bg(c)
 
 
 def body_color(state):
@@ -142,6 +148,9 @@ def palette(state, blink=False):
     body = body_color(state)
     if state.get("shiny"):
         body = SHINY.get(body, 219)
+    if core.stage(core.level(state["xp"])) == 0:          # l'œuf : les couleurs de son dessin
+        from . import oeufs
+        return oeufs.palette(oeufs.type_de(state))
     return {"b": body, "e": body if blink else 16, "k": 211, "m": 52 if state["hunger"] >= 30 else 16,
             "h": 180, "w": 230, "s": 180, "c": 136, "a": 250, "l": 51}
 
@@ -161,7 +170,9 @@ def creature(state, aura=None, phase=0):
 
 
 def x256(n):
-    """Couleur xterm-256 → (r, g, b)."""
+    """Couleur xterm-256 → (r, g, b) (une couleur « #rrggbb » des œufs passe telle quelle)."""
+    if isinstance(n, str):
+        return tuple(int(n[i:i + 2], 16) for i in (1, 3, 5))
     base = [(0, 0, 0), (128, 0, 0), (0, 128, 0), (128, 128, 0), (0, 0, 128), (128, 0, 128), (0, 128, 128),
             (192, 192, 192), (128, 128, 128), (255, 0, 0), (0, 255, 0), (255, 255, 0), (0, 0, 255),
             (255, 0, 255), (0, 255, 255), (255, 255, 255)]

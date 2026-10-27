@@ -174,11 +174,49 @@ verifier(len(st["intro"]["faits"]) == 3, "« echo » sans message ne compte pas"
 
 print("5. Les fêlures et l'animation de l'œuf (mêmes images qu'Android)")
 fel = [sum(r.count("f") for r in intro.image_oeuf(n)) for n in range(4)]
-verifier(fel[0] == 0 < fel[1] < fel[2] < fel[3], f"3 stades de fêlure : {fel} pixels de fêlure")
+imgs = [intro.image_oeuf(n) for n in range(4)]
+verifier(fel[0] == 0 < fel[1] < fel[3] and len({tuple(x) for x in imgs}) == 4,
+         f"3 stades de fêlure : intact, une fêlure qui luit, le dessin fissuré, une grande fêlure ({fel} pixels qui luisent)")
+from tg import oeufs as O
+src = (RACINE / "donnees" / "oeufs" / "oeufs.json").read_text(encoding="utf-8")
+verifier((RACINE / "pc" / "tg" / "oeufs.json").read_text(encoding="utf-8") == src
+         and (RACINE / "app" / "src" / "main" / "assets" / "oeufs.json").read_text(encoding="utf-8") == src,
+         "oeufs.json : une seule source (donnees/oeufs/), recopiée à l'identique pour PC et Android")
+verifier(O.types() == list(G.TYPES) and all((RACINE / "donnees" / "oeufs" / f"oeuf_{ty}_{e}.png").is_file()
+                                            for ty in G.TYPES for e in O.donnees()["etats"]),
+         "un œuf par type de biome (9), chacun dessiné en 3 états (intact, fissure, eclosion)")
+W0, H0 = O.taille()
+ok = True
+for ty in O.types():
+    x = O.donnees()["types"][ty]
+    pal = O.palette(ty)
+    for taille in ("grand", "petit"):
+        w, h = O.taille(taille)
+        for e, rows in x[taille].items():
+            ok &= len(rows) == h and all(len(r) == w for r in rows) and all(c == "." or c in pal for r in rows for c in r)
+            ok &= sum(c != "." for r in rows for c in r) > w * h // 6
+    ok &= len(x["palette"]) <= 36 and len(x["feles"][0]) >= 6 and len(x["feles"][1]) >= 8
+    ok &= intro.image_oeuf(0, "", 0, ty) != intro.image_oeuf(0, "", 0, "feu" if ty != "feu" else "eau")
+verifier(ok and (W0, H0) == (intro.W_OEUF, intro.H_OEUF), f"les 9 œufs : {W0}×{H0} pixels (petit {O.taille('petit')}), palette limitée, contour net")
 verifier(intro.image_oeuf(1, "remue", 1) != intro.image_oeuf(1, "remue", 3), "il remue (penche à gauche, à droite)")
 verifier(any("h" in r for r in intro.image_oeuf(1, "brille", 0)) and any("y" in r for r in intro.image_oeuf(1, "brille", 0)),
          "il brille (étincelles)")
 verifier(intro.image_oeuf(3, "eclot", 7) is None, "à la fin de l'éclosion : la créature prend la place")
+neuf = core.migrate(core.new_state("Zoé"))
+intro.nouvelle_partie(neuf)
+verifier(neuf["oeuf_type"] in G.TYPES and G.g_(neuf)["type_c"] == neuf["oeuf_type"] == O.type_de(neuf),
+         f"nouvelle partie : un œuf {neuf['oeuf_type']}, et le compagnon qui en sort est du même type")
+verifier(len({core.new_state("Zoé")["oeuf_type"] for _ in range(300)}) == 9, "le type de l'œuf est tiré au hasard parmi les 9")
+vieux = core.migrate(core.new_state("Vieux"))
+vieux.pop("oeuf_type")
+vieux["guide"]["type_c"] = "roche"
+from tg import sprites as SP
+verifier(O.type_de(core.migrate(vieux)) == "roche" and G.g_(vieux)["type_c"] == "roche"
+         and SP.get_sprite(vieux, 0) == O.petit("roche") and SP.palette(vieux)["A"] == O.palette("roche")["A"],
+         "une ancienne partie garde le type de son compagnon ; son œuf (écran principal) est l'œuf de ce type")
+verifier(intro.image_oeuf(2, "", 0, "glace") == [r for r in O.donnees()["types"]["glace"]["grand"]["fissure"]]
+         and intro.image_oeuf(3, "eclot", 4, "glace") != intro.image_oeuf(3, "eclot", 1, "glace"),
+         "2 fêlures : le dessin fissuré ; l'éclosion : le dessin éclos")
 for nom in ("oeuf_1", "oeuf_2", "oeuf_3", "eclosion"):
     f, ips = intro.animation(nom, st)
     verifier(len(f) >= 8 and ips > 0, f"animation {nom} : {len(f)} images")

@@ -287,9 +287,11 @@ def dominant(state):
 
 def new_state(name, langue_code="fr"):
     now = time.time()
+    from . import oeufs
     return {"name": name, "langue": langue_code, "shiny": False, "born": now, "last_tick": now, "xp": 0, "hunger": 80.0, "total": 0,
             "stats": {v["stat"]: 0 for v in CATEGORIES.values()}, "seen": [], "log": [],
-            "offsets": {}, "version": VERSION}
+            "offsets": {}, "version": VERSION,
+            "oeuf_type": random.choice(oeufs.types())}    # le type de l'œuf, et du compagnon qui en sort (oeufs.py)
 
 
 def nom_propre(nom):

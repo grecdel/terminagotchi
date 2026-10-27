@@ -30,7 +30,7 @@ pour quatre raisons (jamais un piège, jamais une punition) :
    6 heures). Pas de mort, pas de punition, pas de série à tenir.
 
 Le type d'une bestiole : celui de sa variante (biomes.json, recopie de donnees/biomes.json, même règle que
-donnees/verifier_biomes.py). Le compagnon reçoit un type une fois pour toutes : celui de sa forme
+donnees/verifier_biomes.py). Le compagnon reçoit un type une fois pour toutes : celui de son œuf (une nouvelle partie, oeufs.py), sinon celui de sa forme
 (Intelligence → Machine, Force → Feu, Agilité → Ciel, Endurance → Roche) s'il en a déjà une, sinon
 TYPES[somme des codes des lettres de son nom % 9].
 
@@ -176,6 +176,8 @@ def type_du_jour(d=None):
 
 # ---------------------------------------------------------------- l'état
 def type_compagnon_initial(state):
+    if state.get("oeuf_type") in TYPES:                 # une nouvelle partie : le type de son œuf (oeufs.py)
+        return state["oeuf_type"]
     if state.get("branch") in TYPE_BRANCHE:
         return TYPE_BRANCHE[state["branch"]]
     return TYPES[sum(ord(c) for c in state.get("name", "")) % len(TYPES)]

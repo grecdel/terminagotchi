@@ -133,7 +133,8 @@ object Guide {
         if (!g.has("t")) g.put("t", now)
         if (!g.has("sortie_t")) g.put("sortie_t", now)
         if (!g.has("cree")) g.put("cree", now)
-        if (g.optString("type_c") !in TYPES) g.put("type_c", typeCompagnonInitial(jeu.nom, jeu.forme))
+        if (g.optString("type_c") !in TYPES)     // une nouvelle partie : le type de son œuf (Oeufs.kt), sinon forme / nom
+            g.put("type_c", jeu.extra.optString("oeuf_type").takeIf { it in TYPES } ?: typeCompagnonInitial(jeu.nom, jeu.forme))
         val id = g.optString("id")
         if (id != "compagnon" && capture(jeu, id) == null) g.put("id", "compagnon")      // la bestiole n'est plus là
         return g

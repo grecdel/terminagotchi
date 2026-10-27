@@ -98,11 +98,13 @@ verifier(G.type_du_jour(__import__("datetime").date(1970, 1, 1)) == "feu"
          and G.type_du_jour(__import__("datetime").date(1970, 1, 10)) == "feu", "le type du jour tourne sur les 9 types")
 
 print("Une ancienne partie : le compagnon est le guide")
-core.modifier(lambda s: s.pop("guide", None))
+core.modifier(lambda s: (s.pop("guide", None), s.pop("oeuf_type", None)))     # une partie d'avant (ni guide, ni œuf à type)
 st = core.load()
 core.migrate(st)
 verifier(st["guide"]["id"] == "compagnon", "après migration, le guide est le compagnon")
 verifier(st["guide"]["type_c"] == G.TYPES[sum(map(ord, "Pixel")) % 9], "le compagnon reçoit un type (d'après son nom)")
+verifier(G.type_compagnon_initial({"name": "Pixel", "oeuf_type": "ombre"}) == "ombre",
+         "une nouvelle partie : le compagnon a le type de son œuf (oeufs.py)")
 st2 = {"name": "Zoé", "branch": "Force"}
 verifier(G.type_compagnon_initial(st2) == "feu", "un compagnon de forme Force est de type Feu")
 r = sans(subprocess.run([sys.executable, str(RACINE / "pc"), "guide"], capture_output=True, text=True).stdout)

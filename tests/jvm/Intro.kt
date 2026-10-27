@@ -19,6 +19,7 @@ import fr.terminagotchi.Intro
 import fr.terminagotchi.Jeu
 import fr.terminagotchi.Langue
 import fr.terminagotchi.Maison
+import fr.terminagotchi.Oeufs
 import fr.terminagotchi.Parties
 import fr.terminagotchi.Peintre
 import fr.terminagotchi.Shell
@@ -246,29 +247,41 @@ fun main(args: Array<String>) {
     val eq = Intro.contenu(j, "equipe").second.joinToString()
     verifier("`equipe`" in eq && "`guide <nom>`" in eq, "l'écran de l'équipe donne les commandes Android")
 
-    println("6. Les images de l'œuf : les mêmes qu'au PC (pc/tg/intro.py)")
+    println("6. Les images de l'œuf : les mêmes qu'au PC (pc/tg/intro.py), pour les 9 types")
     val combos = mutableListOf<Triple<Int, String, Int>>()
     for (n in 1..4) combos.addAll(Intro.reaction(n))
     for (f in 0..3) combos.add(Triple(f, "", 0))
+    val tous = Guide.TYPES.flatMap { ty -> combos.map { ty to it } }
     val py = ProcessBuilder("python3", "-c", "import json,sys;sys.path.insert(0,'${File(depot, "pc").path}');from tg import intro;" +
-        "print(json.dumps([intro.image_oeuf(f,n,k) for f,n,k in json.loads(sys.argv[1])]))",
-        JSONArray(combos.map { JSONArray().put(it.first).put(it.second).put(it.third) }).toString())
+        "print(json.dumps([intro.image_oeuf(f,n,k,ty) for ty,f,n,k in json.loads(sys.argv[1])]))",
+        JSONArray(tous.map { (ty, c) -> JSONArray().put(ty).put(c.first).put(c.second).put(c.third) }).toString())
         .redirectErrorStream(true).start()
     val pyOut = py.inputStream.readBytes().toString(Charsets.UTF_8).trim()
     py.waitFor()
-    val attendu = JSONArray(combos.map { c -> Intro.imageOeuf(c.first, c.second, c.third)?.let { JSONArray(it) } ?: JSONObject.NULL })
+    val attendu = JSONArray(tous.map { (ty, c) -> Intro.imageOeuf(c.first, c.second, c.third, ty)?.let { JSONArray(it) } ?: JSONObject.NULL })
     verifier(try { JSONArray(pyOut).toString() == attendu.toString() } catch (e: Exception) { false },
-        "${combos.size} images de l'œuf identiques sur PC et Android")
+        "${tous.size} images de l'œuf identiques sur PC et Android (${combos.size} par type × ${Guide.TYPES.size} types)")
+    val pyPal = ProcessBuilder("python3", "-c", "import json,sys;sys.path.insert(0,'${File(depot, "pc").path}');from tg import oeufs;" +
+        "print(json.dumps({t:{k:int(v[1:],16) for k,v in sorted(oeufs.palette(t).items())} for t in oeufs.types()}))").redirectErrorStream(true).start()
+    val palPc = JSONObject(pyPal.inputStream.readBytes().toString(Charsets.UTF_8).trim())
+    verifier(Guide.TYPES.all { ty -> Oeufs.palette(ty).all { (c, v) -> palPc.getJSONObject(ty).optInt(c.toString(), -1) == (v and 0xFFFFFF) } &&
+        Oeufs.palette(ty).size == palPc.getJSONObject(ty).length() }, "les couleurs des 9 œufs : les mêmes qu'au PC")
+    verifier(File(depot, "donnees/oeufs/oeufs.json").readText() == File(assets, "oeufs.json").readText(), "assets/oeufs.json = donnees/oeufs/oeufs.json")
     val fel = (0..3).map { f -> Intro.imageOeuf(f)!!.sumOf { r -> r.count { it == 'f' } } }
-    verifier(fel[0] == 0 && fel[0] < fel[1] && fel[1] < fel[2] && fel[2] < fel[3], "3 stades de fêlure : $fel")
+    verifier(fel[0] == 0 && fel[0] < fel[1] && fel[1] < fel[3] && (0..3).map { Intro.imageOeuf(it) }.toSet().size == 4,
+        "3 stades de fêlure (intact, une fêlure qui luit, fissuré, une grande fêlure) : $fel")
     verifier(Intro.imageOeuf(3, "eclot", 7) == null, "fin de l'éclosion : la créature prend la place")
-
+    verifier(Oeufs.typeDe(j) == Guide.g(j).optString("type_c") && j.extra.optString("oeuf_type") == Oeufs.typeDe(j),
+        "nouvelle partie : un œuf ${Oeufs.typeDe(j)}, et le compagnon qui en sort est du même type")
     println("7. Anciennes parties : rien ne se ferme")
     Parties.nouvelle(app)
     val v = PartieI(app)
     v.jeu.nom = "Vieux"
     verifier(Intro.fonctions().all { Intro.ouvert(v.jeu, it.id) } && Intro.eclos(v.jeu) && !Intro.enCours(v.jeu),
         "une partie sans « debloc » : tout est ouvert, pas d'œuf qui attend")
+    Guide.g(v.jeu).put("type_c", "roche")
+    verifier(Oeufs.typeDe(v.jeu) == "roche" && Sprites.lignes(v.jeu, 0) == Oeufs.petit("roche") && Guide.g(v.jeu).optString("type_c") == "roche",
+        "une ancienne partie garde le type de son compagnon ; son œuf (écran principal, widget) est l'œuf de ce type")
     Histoire.h(v.jeu).getJSONArray("faits").put("t0")
     Intro.verifier(v.jeu)
     verifier(Intro.deb(v.jeu).getJSONArray("file").length() == 0 && Intro.aMontrer(v.jeu) == null, "et jamais d'écran « nouveau » pour un ancien joueur")

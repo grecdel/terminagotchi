@@ -126,10 +126,10 @@ class IntroVue(ctx: Context, private val jeu: Jeu, private val creature: () -> B
         val a = anim
         if (a != null) {
             val (f, nom, k) = a[minOf(animK, a.size - 1)]
-            return Intro.pixOeuf(f, nom, k) ?: creatureEnPix()
+            return Intro.pixOeuf(f, nom, k, Oeufs.typeDe(jeu)) ?: creatureEnPix()
         }
         val fele = minOf(3, Intro.faits(jeu).size)
-        return if (fele > 0 && phase % 6 == 0) Intro.pixOeuf(fele, "remue", 1) else null
+        return if (fele > 0 && phase % 6 == 0) Intro.pixOeuf(fele, "remue", 1, Oeufs.typeDe(jeu)) else null
     }
 
     /** À la fin de l'éclosion : la créature (sa première image) dans le cadre de l'œuf. */

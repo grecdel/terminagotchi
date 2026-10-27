@@ -8,18 +8,10 @@ import android.graphics.RectF
 
 /** Pixel art de la créature (mêmes dessins que la version PC). */
 object Sprites {
-    private val OEUF = listOf(
-        "....wwww....",
-        "...wwwwww...",
-        "..wwwswwww..",
-        "..wwwwwwsw..",
-        ".wwswwwwwww.",
-        ".wwwwwwwsww.",
-        ".wwwwswwwww.",
-        ".wwwwwwwwww.",
-        "..wwwwwwww..",
-        "...wwwwww...",
-    )
+    // l'œuf : celui de son type (Oeufs.kt, dessins de donnees/oeufs/), intact puis fissuré (couleurs ARGB)
+    private fun oeuf(jeu: Jeu): List<String> =
+        Oeufs.petit(Oeufs.typeDe(jeu), jeu.extra.optJSONObject("intro")?.optJSONArray("faits")?.length() ?: 0).ifEmpty { listOf("....") }
+
     private val BEBE = listOf(
         "............",
         "....bbbb....",
@@ -92,7 +84,7 @@ object Sprites {
 
     /** Le dessin de la créature à son stade actuel, ou au stade st (pour rejouer une évolution). */
     fun lignes(jeu: Jeu, st: Int = jeu.stade): List<String> = when (st) {
-        0 -> OEUF
+        0 -> oeuf(jeu)
         1 -> BEBE
         else -> {
             val f = jeu.forme ?: jeu.dominant()
@@ -117,9 +109,13 @@ object Sprites {
             'a' to 250, 'l' to 51)
     }
 
+    /** Les couleurs à dessiner (ARGB) : celles du dessin de l'œuf au stade 0, sinon la palette xterm convertie. */
+    private fun couleurs(jeu: Jeu, cligne: Boolean, st: Int = jeu.stade): Map<Char, Int> =
+        if (st == 0) Oeufs.palette(Oeufs.typeDe(jeu)) else palette(jeu, cligne).mapValues { x256(it.value) }
+
     // ------------------------------------------------------------ animations automatiques (moteur AnimAuto)
     /** Lignes de caractères + palette xterm → image en indices + palette 0xRRGGBB (comme sprites._indexer sur PC). */
-    fun indexer(rows: List<String>, pal: Map<Char, Int>): AnimAuto.Sprite {
+    fun indexer(rows: List<String>, pal: Map<Char, Int>, argb: Boolean = false): AnimAuto.Sprite {
         val w = rows.maxOf { it.length }
         val codes = mutableListOf<Int>()
         val octets = ByteArray(w * rows.size)
@@ -130,7 +126,7 @@ object Sprites {
                 octets[y * w + x] = (codes.indexOf(c) + 1).toByte()
             }
         }
-        return AnimAuto.Sprite(w, rows.size, octets, IntArray(codes.size) { x256(codes[it]) and 0xFFFFFF })
+        return AnimAuto.Sprite(w, rows.size, octets, IntArray(codes.size) { (if (argb) codes[it] else x256(codes[it])) and 0xFFFFFF })
     }
 
     /** Coupe les bords vides communs à toutes les images (hauteur gardée paire, comme sprites._recadrer). */
@@ -157,7 +153,7 @@ object Sprites {
     fun animation(jeu: Jeu, nom: String): AnimAuto.Anim {
         val pal = palette(jeu, false)
         val st = jeu.stade
-        val img = indexer(lignes(jeu, st), pal)
+        val img = if (st == 0) indexer(lignes(jeu, 0), couleurs(jeu, false, 0), true) else indexer(lignes(jeu, st), pal)
         val de = if (nom == "evolution" && st > 0) indexer(lignes(jeu, st - 1), pal) else null
         return recadrer(AnimAuto.images(img, nom, de))
     }
@@ -179,7 +175,7 @@ object Sprites {
     /** Dessine la créature sur un cadre fixe de 18×16 pixels (pour qu'elle ne « saute » pas en grandissant). */
     fun bitmap(jeu: Jeu, echelle: Int, cligne: Boolean = false): Bitmap {
         val rows = lignes(jeu)
-        val pal = palette(jeu, cligne)
+        val pal = couleurs(jeu, cligne)
         val largeur = 18
         val hauteur = 16
         val bmp = Bitmap.createBitmap(largeur * echelle, hauteur * echelle, Bitmap.Config.ARGB_8888)
@@ -195,7 +191,7 @@ object Sprites {
             row.forEachIndexed { i, ch ->
                 val code = pal[ch]
                 if (code != null) {
-                    p.color = x256(code)
+                    p.color = code
                     c.drawRect(((ox + i) * echelle).toFloat(), ((oy + j) * echelle).toFloat(),
                         ((ox + i + 1) * echelle).toFloat(), ((oy + j + 1) * echelle).toFloat(), p)
                 }

@@ -29,6 +29,7 @@ object Intro {
     @Volatile private var donnees: JSONObject? = null
 
     fun init(ctx: android.content.Context) {
+        Oeufs.init(ctx)
         if (chargeur != null) return
         val app = ctx.applicationContext ?: ctx
         chargeur = { try { app.assets.open("intro.json").bufferedReader().use { it.readText() } } catch (e: Exception) { null } }
@@ -102,6 +103,7 @@ object Intro {
         jeu.extra.put("intro", JSONObject().put("etat", "oeuf").put("faits", JSONArray()).put("erreur", false))
         jeu.extra.put("debloc", JSONObject().put("mode", "progressif").put("ouverts", JSONArray()).put("presentes", JSONArray())
             .put("file", JSONArray()))
+        Oeufs.choisir(jeu)                      // l'œuf reçoit son type, le compagnon qui en sortira le même
     }
 
     /** Vrai pendant que l'œuf attend ses commandes : il n'éclot pas avant la fin de la liste (l'XP s'arrête à 9). */
@@ -278,55 +280,20 @@ object Intro {
         pix(chaines(d().optJSONObject("scenes")?.optJSONArray(nom)), p)
     }
 
-    val PALETTE_OEUF = mapOf('w' to 0xFFFFFFD7.toInt(), 'W' to 0xFFD7AF87.toInt(), 'f' to 0xFF5F3A1E.toInt(),
-        'h' to 0xFFFFF7A0.toInt(), 'y' to 0xFFFFD75F.toInt(), 'c' to 0xFFFFFFFF.toInt())
-    const val W_OEUF = 16
-    const val H_OEUF = 14
+    /** Le cadre de l'œuf de l'intro (oeufs.json, taille « grand »). */
+    const val W_OEUF = 26
+    const val H_OEUF = 26
 
     /**
-     * Une image de l'œuf (16×14 pixels, lignes de caractères), même calcul que intro.image_oeuf sur PC : fele = nombre
-     * de fêlures (0 à 3) ; nom = remue (il penche), brille (il luit, des étincelles), craque (la nouvelle fêlure
-     * éclaire), eclot (la coquille s'ouvre ; null à la fin : la créature prend la place).
+     * Une image de l'œuf de type ty (26×26 pixels, lignes de caractères), même calcul que intro.image_oeuf sur PC :
+     * fele = nombre de fêlures (0 à 3 : intact, une fêlure qui luit, le dessin fissuré, une grande fêlure) ; nom = remue
+     * (il penche), brille (son contour luit, des étincelles), craque (la fêlure éclaire), eclot (il tremble puis s'ouvre ;
+     * null à la fin : la créature prend la place). Les dessins : Oeufs.kt.
      */
-    fun imageOeuf(fele: Int, nom: String = "", k: Int = 0): List<String>? {
-        val base = chaines(d().optJSONArray("oeuf"))
-        val g = Array(H_OEUF) { CharArray(W_OEUF) { '.' } }
-        val dx = when {
-            nom == "remue" -> intArrayOf(0, -1, 0, 1)[k % 4]
-            (nom == "craque" || nom == "eclot") && k < 2 -> intArrayOf(1, -1)[k % 2]
-            else -> 0
-        }
-        if (nom == "eclot" && k >= 6) return null
-        val monte = if (nom == "eclot") mapOf(3 to 1, 4 to 2, 5 to 4)[k] ?: 0 else 0
-        for ((y, r) in base.withIndex()) for ((x, ch) in r.withIndex()) {
-            if (ch == '.') continue
-            val yy = y + 3 - (if (y < 5) monte else 0)
-            val xx = x + 2 + dx
-            if (yy in 0 until H_OEUF && xx in 0 until W_OEUF) g[yy][xx] = if (nom == "brille" && k % 2 == 0 && ch == 'w') 'h' else ch
-        }
-        val feles = d().optJSONArray("feles") ?: JSONArray()
-        val n = minOf(3, fele)
-        for (j in 0 until minOf(n, feles.length())) {
-            val f = feles.getJSONArray(j)
-            for (q in 0 until f.length()) {
-                val pt = f.getJSONArray(q)
-                val x = pt.getInt(0)
-                val y = pt.getInt(1)
-                val yy = y + 3 - (if (y < 5) monte else 0)
-                val xx = x + 2 + dx
-                if (yy in 0 until H_OEUF && xx in 0 until W_OEUF && g[yy][xx] != '.')
-                    g[yy][xx] = if (nom == "craque" && j == n - 1 && k % 2 == 0) 'c' else 'f'
-            }
-        }
-        if (nom == "brille" || (nom == "eclot" && k >= 3)) {
-            val pts = if (k % 2 == 0) listOf(1 to 2, 14 to 4, 0 to 9, 15 to 11, 8 to 0) else listOf(2 to 6, 13 to 1, 1 to 12, 14 to 8, 7 to 13)
-            for ((x, y) in pts) if (g[y][x] == '.') g[y][x] = 'y'
-        }
-        return g.map { String(it) }
-    }
+    fun imageOeuf(fele: Int, nom: String = "", k: Int = 0, ty: String = "feu"): List<String>? = Oeufs.image(ty, fele, nom, k)
 
-    fun pixOeuf(fele: Int, nom: String = "", k: Int = 0): Carte.Pix? =
-        imageOeuf(fele, nom, k)?.let { rows -> pixCache.getOrPut("o:$fele:$nom:$k") { pix(rows, PALETTE_OEUF) } }
+    fun pixOeuf(fele: Int, nom: String = "", k: Int = 0, ty: String = "feu"): Carte.Pix? =
+        imageOeuf(fele, nom, k, ty)?.let { rows -> pixCache.getOrPut("o:$ty:$fele:$nom:$k") { pix(rows, Oeufs.palette(ty)) } }
 
     /** Les images d'une réaction de l'œuf à la n-ième bonne commande : (fêlures, nom, k). */
     fun reaction(n: Int): List<Triple<Int, String, Int>> = when (n) {
@@ -447,8 +414,9 @@ object Intro {
      */
     fun dessinerOeuf(p: Peintre, jeu: Jeu, l: Float, image: Carte.Pix? = null): Rendu {
         val fele = minOf(3, faits(jeu).size)
-        val oeuf = image ?: pixOeuf(fele)!!
-        val e = 6f
+        val ty = Oeufs.typeDe(jeu)
+        val oeuf = image ?: pixOeuf(fele, ty = ty)!!
+        val e = 5f
         val xD = MARGE + W_OEUF * e + 12f
         val lD = l - xD - MARGE
         val lignes = liste()
@@ -458,13 +426,16 @@ object Intro {
         val ast = couper(p, astuce(jeu), l - 2 * MARGE - 22f, 12.5f)
         val ou = couper(p, t("intro.ou.tel"), l - 2 * MARGE, 11.5f)
         val nomL = couper(p, jeu.nom, lD, 16f, gras = true)
-        val hHaut = maxOf(H_OEUF * e, nomL.size * 21f + 20f + 18f + 16f)
+        val typeL = couper(p, t("intro.type.$ty"), lD, 12f)
+        val hHaut = maxOf(H_OEUF * e, nomL.size * 21f + 20f + typeL.size * 16f + 4f + 18f + 16f)
         val h = MARGE + hHaut + 14f + textes.sumOf { it.size } * 19f + 8f * lignes.size + 8f + ast.size * 17f + 8f + ou.size * 15f + MARGE
         cadre(p, l, h)
         p.pixels(oeuf, MARGE, MARGE, e)
         var y = MARGE
         for (x in nomL) { p.texte(x, xD, y + 16f, 16f, Carte.TEXTE, gras = true); y += 21f }
         p.texte(t("intro.oeuf.titre"), xD, y + 13f, 12f, Carte.DOUX); y += 20f
+        for (x in typeL) { p.texte(x, xD, y + 12f, 12f, Carte.AMBRE); y += 16f }
+        y += 4f
         p.texte(titreListe(jeu), xD, y + 13f, 12.5f, Carte.AMBRE, gras = true); y += 18f
         for (k in lignes.indices) p.rect(xD + k * 20f, y + 2f, 14f, 8f, if (lignes[k].id in f) Carte.VERT else Carte.BORD)
         y = MARGE + hHaut + 14f

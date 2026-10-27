@@ -359,44 +359,16 @@ def ecran_intro(n, total=None):
     return out
 
 
-PALETTE_OEUF = {"w": "#ffffd7", "W": "#d7af87", "f": "#5f3a1e", "h": "#fff7a0", "y": "#ffd75f", "c": "#ffffff"}
-W_OEUF, H_OEUF = 16, 14
+W_OEUF, H_OEUF = 26, 26                 # le cadre de l'œuf de l'intro (oeufs.json, taille « grand »)
 
 
-def image_oeuf(fele, nom="", k=0):
-    """Une image de l'œuf (16×14 pixels, lignes de caractères) : fele = nombre de fêlures (0 à 3) ;
-    nom = « remue » (il penche), « brille » (il luit, des étincelles), « craque » (la nouvelle fêlure
-    éclaire), « eclot » (la coquille s'ouvre ; None à la fin : la créature prend la place). Même calcul qu'Intro.kt."""
-    base = donnees()["oeuf"]
-    grille = [["."] * W_OEUF for _ in range(H_OEUF)]
-    dx = 0
-    if nom == "remue":
-        dx = (0, -1, 0, 1)[k % 4]
-    elif nom in ("craque", "eclot") and k < 2:
-        dx = (1, -1)[k % 2]
-    if nom == "eclot" and k >= 6:
-        return None
-    monte = {3: 1, 4: 2, 5: 4}.get(k, 0) if nom == "eclot" else 0     # la coquille s'ouvre : le haut s'envole
-    for y, r in enumerate(base):
-        for x, ch in enumerate(r):
-            if ch == ".":
-                continue
-            yy, xx = y + 3 - (monte if y < 5 else 0), x + 2 + dx
-            if 0 <= yy < H_OEUF and 0 <= xx < W_OEUF:
-                grille[yy][xx] = "h" if (nom == "brille" and k % 2 == 0 and ch == "w") else ch
-    feles = donnees()["feles"]
-    n = min(3, fele)
-    for j, f in enumerate(feles[:n]):
-        for x, y in f:
-            yy, xx = y + 3 - (monte if y < 5 else 0), x + 2 + dx
-            if 0 <= yy < H_OEUF and 0 <= xx < W_OEUF and grille[yy][xx] != ".":
-                grille[yy][xx] = "c" if (nom == "craque" and j == n - 1 and k % 2 == 0) else "f"
-    if nom == "brille" or (nom == "eclot" and k >= 3):     # des étincelles autour
-        pts = ((1, 2), (14, 4), (0, 9), (15, 11), (8, 0)) if k % 2 == 0 else ((2, 6), (13, 1), (1, 12), (14, 8), (7, 13))
-        for x, y in pts:
-            if grille[y][x] == ".":
-                grille[y][x] = "y"
-    return ["".join(r) for r in grille]
+def image_oeuf(fele, nom="", k=0, ty="feu"):
+    """Une image de l'œuf de type ty (26×26 pixels, lignes de caractères) : fele = nombre de fêlures (0 à 3 :
+    intact, une fêlure qui luit, le dessin fissuré, une grande fêlure) ; nom = « remue » (il penche), « brille »
+    (son contour luit, des étincelles), « craque » (la fêlure éclaire), « eclot » (il tremble puis s'ouvre ; None à
+    la fin : la créature prend la place). Les dessins : oeufs.py. Même calcul qu'Intro.kt / Oeufs.kt."""
+    from . import oeufs
+    return oeufs.image(ty, fele, nom, k)
 
 
 def reaction(n):
@@ -414,13 +386,15 @@ def reaction(n):
 
 def lignes_oeuf(fele, nom="", k=0, state=None):
     """L'œuf en demi-blocs ; à la fin de l'éclosion, la créature (si state est donné)."""
-    rows = image_oeuf(fele, nom, k)
+    from . import oeufs
+    ty = oeufs.type_de(state or {})
+    rows = image_oeuf(fele, nom, k, ty)
     if rows is None:
         if state is not None:
             from . import sprites
             return sprites.render_sprite(sprites.get_sprite(state, 1), sprites.palette(state))[0]
-        rows = image_oeuf(3)
-    return _demi_blocs(rows, PALETTE_OEUF)
+        rows = image_oeuf(3, ty=ty)
+    return _demi_blocs(rows, oeufs.palette(ty))
 
 
 def animation(nom, state):
@@ -434,9 +408,11 @@ def lignes_ecran_oeuf(state, frame=0, image=None):
     l'astuce du moment, où taper."""
     i = i_(state)
     fele = min(3, len(i["faits"]))
-    oeuf = list(image) if image else lignes_oeuf(fele, "remue" if frame % 6 == 0 and fele else "", 1)
+    oeuf = list(image) if image else lignes_oeuf(fele, "remue" if frame % 6 == 0 and fele else "", 1, state)
     droite = [f"{BOLD}{state['name']}{RESET} · 🥚 " + t("intro.oeuf.titre"),
-              f"{DIM}" + t("app.caractere", trait=core.nom_trait(state["trait"])) + RESET, ""]
+              f"{DIM}" + t("app.caractere", trait=core.nom_trait(state["trait"])) + RESET]
+    from . import oeufs
+    droite += [f"{fg(214)}{x}{RESET}" for x in envelopper(t("intro.type." + oeufs.type_de(state)), 40)] + [""]
     b = core.bulle_courante(state)
     if b:
         droite += [f"{BOLD}» {x}{RESET}" for x in envelopper(b[0], 40)]
@@ -461,7 +437,9 @@ def lignes_prompt(state):
     """Dans l'invite du shell, juste après une bonne commande : le petit œuf qui réagit et la liste."""
     i = i_(state)
     fele = min(3, len(i["faits"]))
-    oeuf = lignes_oeuf(fele, "brille" if fele else "", 0)
+    oeuf = lignes_oeuf(fele, "brille" if fele else "", 0, state)
+    while oeuf and not oeuf[0].strip():          # le haut du cadre (la place de l'éclosion) : rien à montrer ici
+        oeuf.pop(0)
     liste = lignes_liste(state)
     out = []
     for k in range(max(len(oeuf), len(liste))):
@@ -482,7 +460,9 @@ def pour_prompt(state):
     evt = i.get("evt")
     if retient(state) and not i.get("liste_vue"):
         i["liste_vue"] = True
-        return [""] + lignes_prompt(state) + ["  " + DIM + t("intro.ou.pc") + RESET]
+        from . import oeufs
+        return [""] + lignes_prompt(state) + ["  " + fg(214) + t("intro.type." + oeufs.type_de(state)) + RESET,
+                                              "  " + DIM + t("intro.ou.pc") + RESET]
     if evt and i.get("vu_prompt") != evt[1]:
         i["vu_prompt"] = evt[1]
         if retient(state):
