@@ -109,6 +109,7 @@ def hors_zone():
 st = app.etape(spontane=False, defis=False)
 hors_avant = hors_zone()
 sans_grands = []
+sans_vrai = []
 stats = collections.Counter()
 grind = collections.Counter()
 blocages = []
@@ -148,6 +149,8 @@ for _ in range(900):
         ecran = ANSI.sub("", app.render(st, 0, False))
         if "🧑 Pour les grands :" not in ecran:
             sans_grands.append((les["id"], st["step"]))
+        if "💻" not in ecran and not les["steps"][st["step"]]["cmd"].startswith(("termux-", "am ", "pm ", "ouvre", "miam")):
+            sans_vrai.append((les["id"], st["step"]))         # G-10 : « dans un vrai terminal… » à chaque étape
         depuis = [l for l in ecran.splitlines() if "📁" in l]      # « 📁 à taper depuis … : cd ~/… » sous la commande
         m = re.search(r"(cd ~/[^\s`]+)", (st.get("indice_lecon") or "") + " " + " ".join(depuis))
         if m and m.group(1) != c and suivi != (les["id"], st["step"]) and not c.startswith("cd ") \
@@ -213,6 +216,7 @@ verifier(m[0]["lieu"] == "racine" and {"regles", "armurerie", "archives"} <= vus
          f"sur la carte : la Racine, la salle des règles, l'armurerie, les archives dévoilées ({sorted(vus)})")
 verifier(hors_zone() == hors_avant, f"rien n'est écrit hors de la zone d'aventure ({sorted(hors_zone() - hors_avant)[:3]})")
 verifier(not sans_grands, f"chaque étape montrée a sa version des grands {sans_grands[:5]}")
+verifier(not sans_vrai, f"chaque étape montrée a sa ligne « 💻 Dans un vrai terminal… » {sans_vrai[:5]}")
 print("4. Anti-remplissage")
 st = tape("date")
 avant = st["xp"]

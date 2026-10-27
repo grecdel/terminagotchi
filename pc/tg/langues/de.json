@@ -2727,5 +2727,6 @@
  "sa.on": "🧩 Modus „Aufgabe ohne Hilfe“: Ich sage dir das Ziel, du findest den Befehl. (`tg sansaide off` zum Zurückschalten.)",
  "sa.off": "Normaler Modus: Ich zeige dir den Befehl jedes Schritts.",
  "core.colle.doigts": "✋ Kopieren und Einfügen: Ich esse nur, was deine Finger tippen. Tippe den Befehl selbst, Buchstabe für Buchstabe (Leerzeichen zählen!).",
- "mini.quitter": "zum Beenden: `exit`"
+ "mini.quitter": "zum Beenden: `exit`",
+ "app.pas_ici": "⌨ Hier gehen nur die Tasten des Spiels. Tippe deine Befehle in dein Terminal, nach dem $-Zeichen (oder `tg installer`, damit ich darin wohne)."
 }

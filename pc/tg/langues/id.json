@@ -2729,5 +2729,6 @@
  "sa.on": "🧩 Mode “tantangan tanpa bantuan”: aku beri tujuannya, kamu cari perintahnya. (`tg sansaide off` untuk kembali.)",
  "sa.off": "Mode biasa: aku menampilkan perintah setiap langkah.",
  "core.colle.doigts": "✋ Salin-tempel: aku hanya makan yang diketik jarimu. Ketik sendiri perintahnya, huruf demi huruf (spasi juga dihitung!).",
- "mini.quitter": "untuk keluar: `exit`"
+ "mini.quitter": "untuk keluar: `exit`",
+ "app.pas_ici": "⌨ Di sini hanya tombol permainan yang berfungsi. Ketik perintahmu di terminal, setelah tanda $ (atau `tg installer` agar aku tinggal di sana)."
 }

@@ -2732,5 +2732,6 @@
  "sa.on": "🧩 “No-help challenge” mode: I tell you the goal, you find the command. (`tg sansaide off` to go back.)",
  "sa.off": "Normal mode: I show you the command for each step.",
  "core.colle.doigts": "✋ Copy-paste: I only eat what your fingers type. Type the command yourself, letter by letter (spaces count!).",
- "mini.quitter": "to quit: `exit`"
+ "mini.quitter": "to quit: `exit`",
+ "app.pas_ici": "⌨ Here, only the game's keys work. Type your commands in your terminal, after the $ sign (or `tg installer` so I live in it)."
 }

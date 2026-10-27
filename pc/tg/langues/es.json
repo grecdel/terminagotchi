@@ -2727,5 +2727,6 @@
  "sa.on": "🧩 Modo «reto sin ayuda»: te digo el objetivo y tú encuentras el comando. (`tg sansaide off` para volver.)",
  "sa.off": "Modo normal: te muestro el comando de cada paso.",
  "core.colle.doigts": "✋ Copiar y pegar: solo como lo que escriben tus dedos. Escribe el comando tú mismo, letra a letra (¡los espacios cuentan!).",
- "mini.quitter": "para salir: `exit`"
+ "mini.quitter": "para salir: `exit`",
+ "app.pas_ici": "⌨ Aquí solo funcionan las teclas del juego. Escribe tus comandos en tu terminal, después del signo $ (o `tg installer` para que viva en ella)."
 }

@@ -235,5 +235,17 @@ verifier("copie" not in quetes.modeles(20, {"histoire": {"faits": ["t0"]}}) and 
          "pas de quête « Photocopie » avant la leçon de cp")
 verifier("Pour les grands" in ecran or "💻" in ecran, "le panneau de la leçon a sa version des grands / vrai terminal")
 
+print("9. tg mini : un vrai shell (Tab, Ctrl+C qui arrête la commande et pas le jeu, alias gardés)")
+from tg import mini  # noqa: E402
+(T / "grenier" / "fouillis").mkdir(parents=True, exist_ok=True)
+verifier(mini.completer(f"cd {T}/gren") == f"cd {T}/grenier/", "Tab complète « gren » en « grenier/ »")
+c = Coquille(HOME)
+c.lancer('alias zz="echo ZZ"')
+t0 = time.time()
+_s, code, _d = c.lancer("sleep 20", 30, interrompre=lambda: time.time() - t0 > 1)
+verifier(code != 0 and time.time() - t0 < 5, f"Ctrl+C arrête la commande en cours (code {code})")
+verifier(c.lancer("zz")[0].strip() == "ZZ", "… et le shell reste là : l'alias marche encore")
+c.fermer()
+
 print(f"\n{ok} réussis, {ko} échoués   (HOME={HOME})")
 sys.exit(1 if ko else 0)

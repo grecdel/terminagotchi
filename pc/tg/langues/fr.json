@@ -2732,5 +2732,6 @@
  "sa.on": "🧩 Mode « défi sans aide » : je te dis le but, à toi de trouver la commande. (`tg sansaide off` pour revenir.)",
  "sa.off": "Mode normal : je te montre la commande de chaque étape.",
  "core.colle.doigts": "✋ Copier-coller : je ne mange que ce que tes doigts tapent. Tape la commande toi-même, lettre par lettre (les espaces comptent !).",
- "mini.quitter": "pour quitter : `exit`"
+ "mini.quitter": "pour quitter : `exit`",
+ "app.pas_ici": "⌨ Ici, ce sont seulement les touches du jeu. Tape tes commandes dans ton terminal, après le signe $ (ou `tg installer` pour que je vive dedans)."
 }

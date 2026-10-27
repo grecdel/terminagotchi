@@ -24,6 +24,7 @@ import fr.terminagotchi.Maison
 import fr.terminagotchi.Regles
 import fr.terminagotchi.Shell
 import fr.terminagotchi.Tour
+import fr.terminagotchi.Vrai
 import java.io.File
 
 class ActifsS(private val dir: File) : android.content.res.AssetManager() {
@@ -60,6 +61,7 @@ fun main(args: Array<String>) {
     val racineAvant = Racine.dossier(jeu.home).walkTopDown().filter { it.name != "terminaworld.log" }
         .associate { it.path to (if (it.isFile) it.readText() else "/") }
     val sansGrands = mutableListOf<String>()
+    val sansVrai = mutableListOf<String>()
     val commandes = Commandes(app, jeu, { shell.dossier })
     var sortie = ""
     var code = 0
@@ -127,6 +129,7 @@ fun main(args: Array<String>) {
         } else {
             val e = c.etapes[jeu.etape]
             if ("🧑 " !in (jeu.texteLecon() ?: "")) sansGrands += "${c.id}.${jeu.etape}"
+            if ("💻" !in (jeu.texteLecon() ?: "") && Vrai.ligne(e.cmd) != null) sansVrai += "${c.id}.${jeu.etape}"   // G-10
             val vise = if (e.cmd.startsWith("echo ?")) e.cmd.replaceFirst("?", sortie.trim().split(Regex("\\s+")).lastOrNull() ?: "0")
                 else e.cmd
             val m = aile.find((jeu.indiceLecon ?: "") + " " + (jeu.texteLecon() ?: "").lines().filter { "📁" in it }.joinToString(" "))
@@ -183,6 +186,7 @@ fun main(args: Array<String>) {
         .associate { it.path to (if (it.isFile) it.readText() else "/") }
     verifS(racineApres == racineAvant, "rien n'a été écrit dans la Racine simulée (lecture seule)")
     verifS(sansGrands.isEmpty(), "chaque étape montrée a sa version des grands $sansGrands")
+    verifS(sansVrai.isEmpty(), "chaque étape montrée a sa ligne « 💻 Dans un vrai terminal… » $sansVrai")
     println("4. Anti-remplissage")
     tape("date")
     val avant = jeu.xp

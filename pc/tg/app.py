@@ -848,6 +848,8 @@ def fenetre(once):
                     state = core.modifier(lambda s: s["config"].update(aura=not s["config"].get("aura", True)))
                 elif k == "q":
                     break
+                elif k and len(k) == 1 and k.isalnum():   # P1-5 : des lettres tapées ici ne sont pas des commandes
+                    state = core.modifier(lambda s: core.say(s, t("app.pas_ici"), 10)) or state
     except KeyboardInterrupt:
         pass
     print(RESET + "\n" + t("app.a_plus_tard"))
