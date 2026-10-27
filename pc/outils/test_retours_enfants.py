@@ -87,6 +87,8 @@ for c in ("pwd", "ls", "cd ~"):
     tape(c)
 for c in ("cd terrain_terminagotchi", "ls", "cd vestibule", "ls"):     # chapitre 1 : la vieille porte, l'œuf
     tape(c)
+for c in ("cd /", "ls", "pwd", "cd ~", f"cd {T / 'vestibule'}"):     # puis le voyage jusqu'à la Racine
+    tape(c)
 niveau(3)
 for c in ("cd ..", "mkdir nid", "touch nid/lit.txt",                  # chapitre 2 : le nid
           "mkdir debarras", "rmdir debarras", "rm -r vieille_cabane"):  # et une pièce en trop
@@ -156,6 +158,8 @@ for i in range(terrain_aide := 12):
 verifier(not st.get("terrain_perdu") and (T / "nid" / "repas.txt").is_file(),
          f"l'enfant n'y arrive pas : reconstruit tout seul après {terrain_aide} commandes")
 st = tape("echo poire >> nid/repas.txt", T)
+for c in ("cat /etc/hostname", "ls /bin", "ls /var/log", "ls -l /etc/hostname"):    # puis les lieux du gardien
+    st = tape(c)
 verifier(histoire.fini(st, "cave"), "la cave est réveillée malgré deux effacements")
 st = tape("cd ~/terrain_terminagotchi/grenier")
 verifier(st["histoire"]["chap"] == "grenier", "entrer dans le grenier le choisit")
@@ -370,8 +374,8 @@ verifier(explique.options("ps aux | wc -l") == [("aux", "aux"), ("|", "tuyau"), 
 fiche = texte(explique.fiche(st, "rm"))
 verifier("« récursif »" in fiche and "--recursive" in fiche and "Pour les grands" in fiche and "rmdir" in fiche,
          "tg explique rm : image, -r (« récursif » / --recursive), pour les grands, différences avec rmdir")
-verifier("Pour les grands" not in " ".join(explique.phrases({"xp": 0}, "-r", "recursif_rm")),
-         "palier 0 : la leçon ne montre que l'image")
+verifier("Pour les grands" in " ".join(explique.phrases({"xp": 0}, "-r", "recursif_rm")),
+         "palier 0 aussi : l'image ET, juste à côté, la version des grands (G-32)")
 verifier("--recursive" in langue.sans_marques(" ".join(explique.phrases({"xp": 10 * 11 ** 2}, "-r", "recursif_rm"))),
          "palier 1 et plus : la ligne pour les grands suit l'image")
 verifier("Pour les grands" in texte(lexique.lignes(st)), "le lexique a ses lignes « Pour les grands » et ses options")

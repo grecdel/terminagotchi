@@ -116,8 +116,12 @@ def render(state, frame, interactif, anim=None):
             for x in envelopper(lecons.tx(step["dit"]), 78):
                 lines.append(f" {x}")
             lines.append(f"   {fg(226)}➜ `{piege(step['cmd'])}`{RESET}")
+            grands = lecons.adulte(step)                          # G-32 : 🧑 la version des grands, toujours là
+            if grands:
+                for x in envelopper("🧑 " + grands, 76):
+                    lines.append(f"   {DIM}{x}{RESET}")
             for montre, cle in explique.nouvelles(state, step["cmd"]):      # 💡 Le -r veut dire…
-                for k, p in enumerate(explique.phrases(state, montre, cle)):   # (+ pour les grands, palier ≥ 1)
+                for k, p in enumerate(explique.phrases(state, montre, cle)):   # (+ pour les grands)
                     for x in envelopper(p, 74 - 2 * k):
                         lines.append(f"   {'  ' * k}{DIM}{x}{RESET}")
             if " nid/" in " " + step["cmd"] or step["cmd"].endswith(" nid") or "reserve.txt" in step["cmd"] \

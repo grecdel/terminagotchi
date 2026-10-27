@@ -28,6 +28,7 @@ import fr.terminagotchi.Explique
 import fr.terminagotchi.Explo
 import fr.terminagotchi.Animations
 import fr.terminagotchi.Histoire
+import fr.terminagotchi.Racine
 import fr.terminagotchi.Jeu
 import fr.terminagotchi.Langue
 import fr.terminagotchi.Recensement
@@ -120,6 +121,7 @@ fun main(args: Array<String>) {
     niveau(2)
     for (c in listOf("pwd", "ls", "cd ~")) tape(c)
     for (c in listOf("cd terrain_terminagotchi", "ls", "cd vestibule", "ls")) tape(c)     // chapitre 1 : la vieille porte, l'œuf
+    for (c in listOf("cd /", "ls", "pwd", "cd ~", "cd ${Racine.HOME}/terrain_terminagotchi/vestibule")) tape(c)   // la Racine
     niveau(3)
     for (c in listOf("cd ..", "mkdir nid", "touch nid/lit.txt",                          // chapitre 2 : le nid
             "mkdir debarras", "rmdir debarras", "rm -r vieille_cabane")) tape(c, T)        // et une pièce en trop
@@ -175,6 +177,7 @@ fun main(args: Array<String>) {
     verifier(Terrain.perdu(jeu) == null && File(T, "nid/repas.txt").isFile,
         "l'enfant n'y arrive pas : reconstruit tout seul après ${Terrain.AIDE_AUTO} commandes")
     tape("echo poire >> nid/repas.txt", T)
+    for (c in listOf("cat /etc/hostname", "ls /bin", "ls /var/log", "ls -l /etc/hostname")) tape(c)   // les lieux du gardien
     verifier(Histoire.fini(jeu, "cave"), "la cave est réveillée malgré deux effacements")
     tape("cd ~/terrain_terminagotchi/grenier")
     verifier(Histoire.chap(jeu) == "grenier", "entrer dans le grenier le choisit")

@@ -28,10 +28,18 @@ class Etape(
     val exact: Boolean = false,
     val expert: Boolean = false,
     val params: Map<String, String> = emptyMap(),
+    /** la version « pour les grands » (G-32) ; par défaut la clé <étape>.adulte, à côté de <étape>.dit */
+    val adulteCle: String? = null,
 ) {
     val dit: String get() = Histoire.tx(ditCle, params)
     val bravo: String get() = Histoire.tx(bravoCle, params)
     val astuce: String? get() = astuceCle?.let { Histoire.tx(it, params) }
+    /** « Pour les grands : … » (précis et technique, avec le parallèle du vrai terminal), ou null */
+    val adulte: String? get() {
+        val c = adulteCle ?: if (ditCle.endsWith(".dit")) ditCle.removeSuffix(".dit") + ".adulte" else return null
+        if (!Langue.existe(Histoire.cle(c))) return null
+        return t("grand.ligne", "texte" to Histoire.tx(c, params))
+    }
 }
 
 /** Une commande du lexique : son image (la maison), son explication technique, sa section (clés de langue). */
@@ -715,6 +723,7 @@ class Jeu(ctx: Context) {
             } else {
                 val e = c.etapes[etape]
                 out.add("${c.titre} (${etape + 1}/${c.etapes.size}) · ${e.dit}\n➜ `${Regles.piege(e.cmd)}`")
+                e.adulte?.let { out.add("🧑 $it") }                              // G-32 : la version des grands, toujours là
                 for ((montre, cle) in Explique.nouvelles(this, e.cmd))          // 💡 Le -r veut dire… (+ pour les grands)
                     Explique.phrases(this, montre, cle).forEachIndexed { k, p -> out.add("  ".repeat(k) + p) }
                 if (DEPUIS.any { e.cmd.startsWith(it) } || " nid/" in " " + e.cmd || e.cmd.endsWith(" nid") || "reserve.txt" in e.cmd) {

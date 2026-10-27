@@ -42,7 +42,8 @@ object Mots {
     /** Les clés du vocabulaire progressif (« terme.<clé> » dans assets/langues/xx.json : 3 paliers). */
     val CLES = listOf("mefiance", "pv", "atk", "def", "vit", "int", "stats", "ram", "processeur", "executable", "ctf",
         "dossier", "dossiers", "fichier", "fichiers", "un_dossier", "un_fichier", "rendre_executable", "processus",
-        "disque", "dns", "ip", "arborescence", "terrain", "droits", "script", "cache", "administrateur", "reseau")
+        "disque", "dns", "ip", "arborescence", "terrain", "droits", "script", "cache", "administrateur", "reseau",
+        "racine", "village", "camp", "chemin_absolu", "chemin_relatif", "systeme")
 
     fun palier(niveau: Int, lecons: Int = 0): Int {
         val p = if (niveau >= SEUIL_NIVEAU[1]) 2 else if (niveau >= SEUIL_NIVEAU[0]) 1 else 0

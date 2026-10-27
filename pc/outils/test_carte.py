@@ -10,7 +10,12 @@
      les passages secrets n'apparaissent qu'après `ls -a` ; `tree` dévoile tout un coin ;
   4. les objets (note, recette, carte postale, coffre) ; un dossier géant n'est pas exploré ;
   5. la légende ne liste que les commandes rencontrées ; mode colonnes aligné dans les 14 langues ;
-     mode texte (terminal étroit ou sans couleur) ; les textes existent dans les 14 langues.
+     mode texte (terminal étroit ou sans couleur) ; les textes existent dans les 14 langues ;
+  6. le Terminaworld = tout l'ordinateur (G-33) : la carte part de la Racine /, les lieux du système sont des
+     repères dans la brume tant qu'on ne les a pas visités, puis le village, ton camp de base, la zone d'aventure ;
+     ◉ et le panneau « la Racine → … » suivent l'enfant partout ; visiter un lieu du système le présente
+     (enfant + grands) ; écrire hors de la zone d'aventure : un avertissement gentil, rien n'est bloqué ni écrit
+     par le jeu ; le carnet des lieux (lexique) avec la version des grands.
 Le même modèle est testé sur Android par tests/jvm/Carte.kt.
 """
 import json
@@ -86,7 +91,8 @@ h = histoire.h_(st)
 h["faits"].append("t0")
 tape(st, "pwd", "")
 ns = maison.noeuds(st)
-verifier(ns[0]["genre"] == "camp" and ns[0]["ici"], "le camp de base (~/terrain_terminagotchi) : tu es ici")
+verifier(ns[0]["genre"] == "zone" and ns[0]["ici"] and ns[0]["etiquette"] == "la zone d'aventure",
+         "la zone d'aventure (~/terrain_terminagotchi) : tu es ici")
 verifier(ligne_de(ns, "vestibule")["brume"] and ligne_de(ns, "vestibule")["etiquette"] == "???",
          "vestibule pas encore visité : dans la brume")
 verifier(ligne_de(ns, "nid") is None, "le nid n'est pas encore posé par l'histoire : invisible")
@@ -196,8 +202,79 @@ verifier("├── grenier/" in t and "SEP" not in t and maison.SEP not in t an
          "mode texte : tree annoté (sans colonnes)")
 cles = [k for k in langue._charger("fr") if k.startswith(("carte.monde.", "carte.biome."))]
 manque = {code: [k for k in cles if k not in langue._charger(code)] for code in langue.LANGUES}
-verifier(len(cles) >= 39 and not any(manque.values()), f"{len(cles)} textes de la carte dans les 14 langues")
+cles += [k for k in langue._charger("fr") if k.startswith("lieu.")] + ["carte.absolu", "carte.lieu.decouvert", "carte.prudence.systeme"]
+manque = {code: [k for k in cles if k not in langue._charger(code)] for code in langue.LANGUES}
+verifier(len(cles) >= 70 and not any(manque.values()), f"{len(cles)} textes de la carte et des lieux dans les 14 langues")
 verifier(len(st["maison"]["montres"]) <= 800 and len(st["maison"]["empreinte"]) <= 400, "la sauvegarde reste petite")
+
+print("6. Le Terminaworld = tout l'ordinateur : la carte part de la Racine")
+HOME = Path.home()
+
+
+def dehors(st, ligne, cwd):
+    """Une ligne tapée hors de la zone d'aventure (cwd absolu)."""
+    cmd = core.first_word(ligne)
+    if cmd and cmd not in st["seen"]:
+        st["seen"].append(cmd)
+    st["bubble"], st["bulles"] = None, []
+    maison.suivre(st, [ligne], str(cwd))
+    return " | ".join([(st.get("bubble") or [""])[0]] + [b[0] for b in st.get("bulles", [])])
+
+
+tape(st, "cd ~/terrain_terminagotchi/grenier", "grenier")
+m = maison.monde(st)
+verifier(m[0]["lieu"] == "racine" and m[0]["nom"] == "/" and m[0]["prof"] == 0, "1re ligne : la Racine /")
+reperes = [n for n in m if n["genre"] == "systeme"]
+verifier(reperes and all(Path(n["abs"]).is_dir() for n in reperes) and {n["nom"] for n in reperes} >= {"etc", "usr"},
+         f"les lieux du système qui existent ici sont des repères : {[n['nom'] for n in reperes]}")
+verifier(all(n["brume"] and n["etiquette"] == "???" for n in reperes), "jamais visités : dans la brume")
+camp = next(n for n in m if n["lieu"] == "camp")
+zone = next(n for n in m if n["genre"] == "zone")
+verifier(camp["abs"] == str(HOME) and camp["etiquette"] == "ton camp de base", "ton camp de base = ~ (le vrai dossier personnel)")
+verifier(m.index(camp) < m.index(zone) and zone["prof"] == camp["prof"] + 1 and zone["nom"] == T.name,
+         "la zone d'aventure est sous le camp de base")
+verifier(any(n["lieu"] == "village" and n["abs"] == str(HOME.parent) for n in m), "le village = le dossier au-dessus du camp")
+verifier(ligne_de(m, "grenier")["ici"] and ligne_de(m, "grenier")["prof"] == zone["prof"] + 1, "◉ dans la zone, sous la zone d'aventure")
+c = texte(maison.carte(st, "texte"))
+verifier(c.index("la Racine") < c.index("ton camp de base") < c.index("la zone d'aventure") < c.index("Grenier"),
+         "la carte, de haut en bas : la Racine → … → ton camp → la zone d'aventure → les lieux")
+verifier(f"Tu es ici : {T / 'grenier'}" in c, "le panneau donne le chemin absolu complet")
+verifier("🚇 la Racine → " in c and "→ ton camp de base → la zone d'aventure → Grenier" in c, "… lu lieu par lieu, comme une ligne de métro")
+verifier("part de la Racine (absolu)" in c, "absolu / relatif expliqué sous la carte")
+verifier(len(maison.verifier_largeur(maison.carte(st, "colonnes"))) == 1, "mode colonnes : toujours aligné avec la Racine")
+b = dehors(st, "cd /", Path("/"))
+m = maison.monde(st)
+verifier(m[0]["ici"] and "la Racine" in b and "Pour les grands" in b, "cd / : ◉ à la Racine, présentée (enfant + grands)")
+b = dehors(st, "cat /etc/hostname", Path("/"))
+etc = next(n for n in maison.monde(st) if n["nom"] == "etc")
+verifier(not etc["brume"] and etc["etiquette"] == "la salle des règles" and "la salle des règles" in b,
+         "cat /etc/hostname : la salle des règles se dévoile et se présente")
+b = dehors(st, "cd /etc", Path("/etc"))
+m = maison.monde(st)
+verifier(next(n for n in m if n["nom"] == "etc")["ici"] and not any(n["ici"] for n in m if n["genre"] != "systeme"),
+         "cd /etc : ◉ sur la salle des règles")
+verifier("🚇 la Racine → la salle des règles" in texte(maison.carte(st, "texte")), "le panneau : la Racine → la salle des règles")
+print("   … écrire hors de la zone d'aventure : un rappel gentil (le jeu ne bloque ni n'écrit rien)")
+st["maison"]["prudence"] = 0
+b = dehors(st, "touch essai", Path("/etc"))
+verifier("lieu du système" in b and "Permission denied" in b and "Pour les grands" in b, f"touch dans /etc : « on regarde, on ne touche pas » ({b[:60]}…)")
+verifier(not Path("/etc/essai").exists(), "le jeu n'a rien exécuté ni écrit : il lit seulement ce qui a été tapé")
+st["maison"]["prudence"] = 0
+verifier("lieu du système" in dehors(st, "echo coucou > /tmp/x.txt", HOME), "echo … > /tmp/… depuis le camp : rappel « lieu du système »")
+st["maison"]["prudence"] = 0
+verifier("zone d'aventure" in dehors(st, "mkdir cabane", HOME), "mkdir dans le camp de base : « seulement dans la zone d'aventure »")
+st["maison"]["prudence"] = 0
+verifier(dehors(st, "echo \"alias miam='sh ~/x.sh'\" >> ~/.bashrc", HOME) == "", "les réglages du camp (~/.bashrc) des leçons : pas de rappel")
+st["maison"]["prudence"] = 0
+verifier(dehors(st, "ls /etc > /dev/null", HOME) == "", "lire et jeter dans le trou noir (/dev/null) : pas de rappel")
+st["maison"]["prudence"] = 0
+verifier(dehors(st, "cp /etc/hostname ~/terrain_terminagotchi/", HOME) == "", "copier DEPUIS la salle des règles vers la zone : permis")
+st["maison"]["prudence"] = 0
+verifier(dehors(st, "mkdir ~/terrain_terminagotchi/cabane2", HOME) == "", "bâtir dans la zone d'aventure : aucun rappel")
+from tg import lexique  # noqa: E402
+lx = texte(lexique.lignes_lieux(st))
+verifier(all(maison.nom_lieu(l) in lx for _c, l in maison.LIEUX_CARNET) and lx.count("Pour les grands") == len(maison.LIEUX_CARNET),
+         "le carnet des lieux : chaque lieu, son image et la version des grands")
 
 print(f"\n{ok} réussis, {ko} échoués   (HOME={os.environ['HOME']})")
 sys.exit(1 if ko else 0)

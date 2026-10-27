@@ -28,7 +28,7 @@ os.environ.pop("HISTFILE", None)
 RACINE = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(RACINE / "pc"))
 
-from tg import app, core, explo, histoire, langue, maison, quetes, tirage  # noqa: E402
+from tg import app, core, explique, explo, histoire, langue, maison, quetes, tirage  # noqa: E402
 
 HOME = Path.home()
 T = core.TERRAIN
@@ -119,7 +119,25 @@ st = tape("ls")
 verifier(lecon(st) == ("reveil1", 2), "ls dans la grande salle")
 st = tape("cd vestibule")
 st = tape("ls")
-verifier(histoire.fini(st, "reveil") and h(st)["chap"] == "nid", "l'œuf est trouvé : chapitre 1 fini, chapitre 2")
+verifier(lecon(st) == ("racine", 0) and not histoire.fini(st, "reveil"), f"l'œuf est trouvé : « Voyage jusqu'à la Racine » ({lecon(st)})")
+ecran = texte(app.render(st, 0, True))
+verifier("Voyage jusqu'à la Racine" in ecran and "d /`" in ecran and "🧑 Pour les grands :" in ecran,
+         "l'écran : la leçon de la Racine, et sous la commande la version des grands (G-32)")
+st = tape("ls /")
+verifier(lecon(st) == ("racine", 0), "ls / depuis le vestibule : il faut d'abord aller à la Racine")
+st = tape("cd /")
+verifier(lecon(st) == ("racine", 1) and "la Racine" in bulles(st), f"cd / : la Racine, présentée par la créature ({lecon(st)})")
+st = tape("ls")
+st = tape("pwd")
+verifier(lecon(st) == ("racine", 3), "ls et pwd à la Racine")
+ecran = texte(app.render(st, 0, True))
+verifier(str(HOME) in ecran, f"cd ~ : l'écran donne le chemin complet du camp ({HOME})")
+st = tape("cd ~")
+verifier(lecon(st) == ("racine", 4) and str(HOME) in bulles(st), "cd ~ : le camp de base, son chemin complet depuis la Racine")
+st = tape("cd vestibule")
+verifier(lecon(st) == ("racine", 4), "cd vestibule depuis le camp : raté (le vestibule est dans la zone d'aventure)")
+st = tape(f"cd {T / 'vestibule'}")
+verifier(histoire.fini(st, "reveil") and h(st)["chap"] == "nid", "le chemin absolu du vestibule : chapitre 1 fini, chapitre 2")
 verifier("CRAC" in bulles(st), "texte de fin du chapitre dit par la créature")
 verifier("veilleuse" in st["quetes"]["objets"], "récompense du chapitre : une veilleuse")
 
@@ -223,6 +241,15 @@ n_dem = sum(1 for v in vus if B.espece(v["espece"])["famille"] == "Démons")
 verifier(n_dem >= 6, f"les Démons sortent plus souvent : {n_dem}/40")
 core.modifier(lambda s: s.__setitem__("sauvages", []))
 st = tape("echo poire >> nid/repas.txt")
+verifier(lecon(st) == ("gardien", 0) and not histoire.fini(st, "cave"), f"après le cadenas : « Les lieux du gardien » ({lecon(st)})")
+avant_gardien = fichiers_hors_terrain()
+st = tape("cat /etc/hostname")
+verifier(lecon(st) == ("gardien", 1) and "la salle des règles" in bulles(st) and "Pour les grands" in bulles(st),
+         "cat /etc/hostname : la salle des règles, présentée (enfant + grands)")
+st = tape("ls /bin")
+st = tape("ls /var/log")
+st = tape("ls -l /etc/hostname")
+verifier(fichiers_hors_terrain() == avant_gardien, "les lieux du gardien : rien n'est écrit hors de la zone d'aventure")
 verifier(histoire.fini(st, "cave") and "gardien_des_cles" in st["quetes"]["titres"], "la cave est réveillée : titre « Gardien des clés »")
 verifier((T / "nid" / "decorations" / "cadenas_dore.txt").is_file(), "objet gagné : nid/decorations/cadenas_dore.txt")
 verifier(histoire.famille_attiree(st) is None, "plus de chapitre en cours : plus d'attirance d'histoire")
@@ -297,15 +324,18 @@ verifier(quetes.generer(autre, "g1", 5) != quetes.generer(st, "g1", 5) or quetes
 verifier(set(quetes.modeles(5)) < set(quetes.modeles(12)), "la difficulté des quêtes générées suit le niveau")
 
 print("7. La carte et le journal")
-st = tape("cat /etc/hostname")
-verifier("terres sauvages" in bulles(st), "lire /etc/hostname : avertissement des terres sauvages (lecture seule)")
+core.modifier(lambda s: s["maison"].__setitem__("averti", 0))
+st = tape("cat /etc/os-release")
+verifier("lieu du système" in bulles(st), "relire la salle des règles : rappel « on regarde, on ne touche pas » (lecture seule)")
 carte = app.commande_histoire("carte", [])
 print("\n".join("     " + l for l in carte.split("\n")))
 c = texte(carte)
 verifier("Grenier" in c and "Cave" in c and "Tour" in c, "pièces visitées révélées")
 verifier("Dortoir" not in c and "░░░░" in c, "pièces jamais visitées dans le brouillard")
 verifier("◉" in c and "★" in c and "✓" in c, "◉ tu es ici, ★ quêtes, ✓ réveillée")
-verifier("Terres sauvages" in c, "les terres sauvages apparaissent sur la carte")
+verifier(c.index("la Racine") < c.index("la zone d'aventure") and "la salle des règles" in c and "l'armurerie" in c,
+         "la carte part de la Racine ; les lieux du système visités (salle des règles, armurerie) sont dévoilés")
+verifier("🚇 la Racine → " in c, "le panneau : le chemin depuis la Racine, lieu par lieu")
 verifier(len(maison.verifier_largeur(maison.carte(core.load()))) == 1, "toutes les lignes du plan ont la même largeur")
 core.modifier(lambda s: s["sauvages"].append({"f": "x", "e": next(e["nom"] for e in B.publiques() if e["famille"] == "Célestes"),
                                               "zone": "nuage", "shiny": False, "v": "classique"}))
@@ -369,7 +399,7 @@ s = ancienne(lesson=1, step=1)
 verifier(s["histoire"]["chap"] == "reveil" and lecon(s) == ("reveil1", 0), "en train de construire le terrain → la vieille porte")
 s = ancienne(lesson=0, step=0)
 verifier(lecon(s) == ("t0", 0) and not s["histoire"]["faits"], "toute nouvelle partie : rien de fait")
-verifier(s["histoire"]["v"] == 3, "nouvelle sauvegarde : v3")
+verifier(s["histoire"]["v"] == 4, "nouvelle sauvegarde : v4")
 
 
 def v1(faits, step, ailes=("reveil",), chap="nid"):
@@ -382,7 +412,13 @@ def v1(faits, step, ailes=("reveil",), chap="nid"):
 
 
 s = v1(["t0", "reveil1"], 2)
-verifier(lecon(s) == ("nid0", 2) and s["histoire"]["v"] == 3, f"v1 en plein nid0 (3/3) : même leçon, même étape {lecon(s)}")
+verifier(lecon(s) == ("nid0", 2) and s["histoire"]["v"] == 4, f"v1 en plein nid0 (3/3) : même leçon, même étape {lecon(s)}")
+verifier("racine" in s["histoire"]["faits"], "v3 → v4 : chapitre 1 fini, le voyage jusqu'à la Racine compte comme fait")
+s = v1(["t0", "reveil1", "nid0", "debarras", "nid1", "secrets", "cave0", "t3"], 0, ailes=("reveil", "nid", "cave"), chap=None)
+verifier("gardien" in s["histoire"]["faits"] and histoire.fini(s, "cave"), "v3 → v4 : la cave finie, les lieux du gardien comptent comme faits")
+s = v1(["t0", "reveil1", "nid0", "debarras", "nid1", "secrets", "cave0"], 1, ailes=("reveil", "nid"), chap="cave")
+verifier(lecon(s) == ("t3", 1) and "gardien" not in s["histoire"]["faits"],
+         f"v3 → v4 en pleine cave : même étape, les lieux du gardien viendront à la fin {lecon(s)}")
 s = v1(["t0", "reveil1", "nid0"], 1)
 verifier(lecon(s) == ("debarras", 0) and s["histoire"]["pas"].get("nid1") == 1,
          f"v1 en plein garde-manger : d'abord la pièce en trop, l'étape du repas est gardée {lecon(s)}")
@@ -450,6 +486,29 @@ for code in ("fr", "en", "ja", "ar"):
     verifier("ABYSSOR" in langue.t("hist.meuble.griffure") and "ABYSSOR" not in langue.t("hist.meuble.abyssor"),
              f"{code} : ABYSSOR en majuscules sur les griffures seulement (l'énigme compte juste)")
 langue.definir("fr")
+
+print("11. La version des grands à chaque étape (G-32)")
+from tg import lecons  # noqa: E402
+etapes_toutes = [s_ for c in histoire.CHAPITRES for lid in c["lecons"] if lid in histoire.NOUVELLES or lid in lecons.PAR_ID
+                 for s_ in histoire.lecon_def(lid)["steps"]]
+etapes_toutes += [s_ for lid in lecons.PAR_ID for s_ in lecons.PAR_ID[lid]["steps"]]
+manque = {}
+for code in langue.LANGUES:
+    d = langue._charger(code)
+    m = sorted({(s_["dit"][0] if isinstance(s_["dit"], tuple) else s_["dit"])[:-4] + ".adulte" for s_ in etapes_toutes} - set(d))
+    if m:
+        manque[code] = m[:4]
+verifier(not manque, f"{len(etapes_toutes)} étapes : chacune a sa version des grands (.adulte), dans les 14 langues {manque}")
+for code in ("fr", "en", "zh", "ar"):
+    langue.definir(code)
+    pref = langue.t("grand.ligne", texte="")
+    sans = [s_["cmd"] for s_ in etapes_toutes if not (lecons.adulte(s_) or "").startswith(pref.strip()[:3])]
+    verifier(not sans and not re.search(r"\{[a-z_]+\}", "".join(lecons.adulte(s_) for s_ in etapes_toutes)),
+             f"{code} : chaque étape affiche « {pref.strip()} … », remplie {sans[:3]}")
+langue.definir("fr")
+verifier("Pour les grands" in " ".join(explique.phrases({"xp": 0}, "-a", "all")), "les options aussi, dès le palier 0")
+verifier("Pour les grands" in texte(explique.fiche(core.load(), "rm")) and "unlink" in texte(explique.fiche(core.load(), "rm")),
+         "tg explique rm : les voisines (rm, rmdir, rm -r) ont aussi leur version des grands")
 
 print(f"\n{ok} réussis, {ko} échoués   (HOME={HOME})")
 sys.exit(1 if ko else 0)

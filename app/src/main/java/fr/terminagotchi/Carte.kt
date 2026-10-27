@@ -56,11 +56,16 @@ object Carte {
         "jardin" to (0xFF66B843 to 0xFF6B4A2C)).mapValues { (_, v) -> v.first.toInt() to v.second.toInt() }
     val SOLS = mapOf("camp" to (0xFFD9B47A to 0xFF7B5534), "lieu" to (0xFF5AA63A to 0xFF6B4A2C),
         "porte" to (0xFF8FA9C2 to 0xFF3D5A73), "secret" to (0xFF4B3A6B to 0xFF251C38),
-        "brume" to (0xFF6A6F78 to 0xFF3A3D44)).mapValues { (_, v) -> v.first.toInt() to v.second.toInt() }
+        "brume" to (0xFF6A6F78 to 0xFF3A3D44),
+        // la Racine (bois), le village, ton camp de base, la zone d'aventure, les lieux du système (pierre)
+        "racine" to (0xFF8A5A30 to 0xFF4A2E18), "village" to (0xFFE0C48A to 0xFF8A6A3A), "camp_base" to (0xFFD9B47A to 0xFF7B5534),
+        "zone" to (0xFF86D45A to 0xFF2F6B2C), "chemin" to (0xFF9CC4AA to 0xFF4C6A58), "systeme" to (0xFFA7ACB4 to 0xFF5D6168),
+    ).mapValues { (_, v) -> v.first.toInt() to v.second.toInt() }
 
     fun sol(n: Maison.Noeud): Pair<Int, Int> = when {
         n.brume || n.garde == "fermee" -> SOLS.getValue("brume")           // une région fermée est grise
         n.genre == "piece" -> SOLS_PIECES[n.biome] ?: SOLS.getValue("lieu")
+        n.genre in SOLS && n.genre != "lieu" -> SOLS.getValue(n.genre)
         n.genre in setOf("region", "parcelle", "lieu") && n.biome in Maison.BIOMES ->
             Maison.BIOMES.getValue(n.biome!!).let { it.principale to it.sombre }
         !n.dossier -> n.parent?.let { sol(it) } ?: SOLS.getValue("lieu")
@@ -104,10 +109,22 @@ object Carte {
         "secret" to listOf("..PPPP..", ".PkkkkP.", "PkkkkkkP", "PkkYkkkP", "PkkkkkkP", "PkkkkkkP", "PkkkkkkP", "PPPPPPPP"),
         "cle" to listOf("........", ".YYY....", "Y...Y...", "Y...YYYY", ".YYY..Y.", "......YY", "........", "........"),
         "brume" to listOf("........", "..ff....", ".ffff.f.", "ffFfffff", "fffffFf.", ".FffFff.", "..FFFF..", "........"),
+        // la Racine (un arbre et ses racines), le village, la zone d'aventure (le sac), les lieux du système
+        "arbre" to listOf("..gGg...", ".gGgGg..", "gGgGgGg.", ".gGgGg..", "...n....", "...n....", "..NnN...", ".N.n.N.."),
+        "village" to listOf("..r..r..", ".rrrrrr.", "rrrrrrrr", ".eeeeee.", ".ekeeke.", ".eeeeee.", ".ekeeke.", "........"),
+        "sac" to listOf("..nnn...", ".n...n..", ".nNNNn..", "nNnnnNn.", "nNnYnNn.", "nNnnnNn.", "nNNNNNn.", "........"),
+        "outils" to listOf("..SSSS..", "..S..S..", "rrrrrrrr", "rYYrrYYr", "rrrrrrrr", "rrrrrrrr", "DDDDDDDD", "........"),
+        "feuille" to listOf("......o.", "....ooo.", "..oooYo.", ".ooYoo..", ".oYoo...", ".Yoo....", "Y.......", "........"),
+        "prise" to listOf("..s..s..", "..s..s..", ".ssssss.", ".SSSSSS.", "..SSSS..", "...kk...", "...kk...", "....kk.."),
+        "boule" to listOf("..PPPP..", ".PpcwpP.", "PpcppppP", "PppppppP", ".PppppP.", "..PPPP..", ".NnnnnN.", "NNNNNNNN"),
         "epingle" to listOf("..RRR...", ".RRwRR..", ".RRRRR..", "..RRR...", "...k....", "...k....", "...k....", "........"),
         "etoile" to listOf("..y..", "..y..", "yywyy", "..y..", "..y.."),
         "petite_etoile" to listOf(".....", "..y..", ".ywy.", "..y..", "....."),
     )
+    /** l'icône d'un lieu du Terminaworld (hors de la zone d'aventure) */
+    val ICONES_LIEUX = mapOf("racine" to "arbre", "village" to "village", "camp" to "camp", "zone" to "sac", "chemin" to "plante",
+        "armurerie" to "outils", "portails" to "prise", "regles" to "note", "miroir" to "boule", "vague" to "feuille",
+        "archives" to "livre", "systeme" to "coffre")
     /** l'icône d'un lieu de l'histoire */
     val ICONES_PIECES = mapOf("vestibule" to "oeuf", "nid" to "nid", "grenier" to "plante", "cave" to "cadenas",
         "bibliotheque" to "livre", "salle_des_machines" to "feu", "dortoir" to "fantome", "atelier" to "marteau",
@@ -123,6 +140,8 @@ object Carte {
 
     fun nomIcone(n: Maison.Noeud): String = when {
         n.brume -> "brume"
+        n.lieu != null -> ICONES_LIEUX[n.lieu!!] ?: "coffre"
+        n.genre == "zone" -> "sac"
         n.genre == "piece" -> ICONES_PIECES[n.biome] ?: "plante"
         n.genre == "region" || (n.genre == "parcelle" && n.biome != null) -> n.biome ?: "plante"
         n.genre == "parcelle" -> "plante"
@@ -168,6 +187,9 @@ object Carte {
     }
 
     // ---------------------------------------------------------------- dessiner
+    /** la commande écrite au-dessus de la colonne `tree` : toute la carte part de la Racine */
+    const val INVITE_TREE = "~$ tree -F /"
+
     class Ligne(val n: Maison.Noeud, val y: Float, val xTuile: Float)
 
     /** Taille du dessin (largeur, hauteur) en dp, pour la même liste. */
@@ -221,7 +243,7 @@ object Carte {
         }
         gauche += 12f
         val xTree = gauche + 12f
-        var droite = xTree + p.mesure("~/terrain_terminagotchi$ tree -F", TAILLE, mono = true)
+        var droite = xTree + p.mesure(INVITE_TREE, TAILLE, mono = true)
         for (n in noeuds) {
             var w = p.mesure(Maison.texteTree(n), TAILLE, mono = true)
             if (n.ici) w += 12f + p.mesure("◉", TAILLE, gras = true)
@@ -240,7 +262,7 @@ object Carte {
         p.rect(0f, HAUT_TITRE - 2f, largeur, 2f, BORD)
         for ((i, c) in listOf(0xFFFF5A5A.toInt(), 0xFFFFC94D.toInt(), VERT).withIndex()) p.rect(MARGE + i * 11f, 13f, 7f, 7f, c)
         p.texte(titre, MARGE + 40f, 22f, TAILLE_TITRE, VERT, gras = true)
-        p.texte("~/terrain_terminagotchi$ tree -F", xTree, HAUT_TITRE + 16f, TAILLE, BORD_VIF, mono = true)
+        p.texte(INVITE_TREE, xTree, HAUT_TITRE + 16f, TAILLE, BORD_VIF, mono = true)
         p.rect(gauche + 2f, HAUT_TITRE + 4f, 2f, hRangs + 18f, BORD)
 
         // 3. les rangées (une rayure sur deux), les pointillés qui relient chaque lieu à son parent

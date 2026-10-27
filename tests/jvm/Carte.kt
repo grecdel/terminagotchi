@@ -139,7 +139,7 @@ fun main(args: Array<String>) {
     h.put("chap", "reveil")
     tapeC("pwd", "")
     var ns = Maison.noeuds(jeuC)
-    verif(ns[0].genre == "camp" && ns[0].ici, "le camp de base : tu es ici")
+    verif(ns[0].genre == "zone" && ns[0].ici && ns[0].etiquette == "la zone d'aventure", "la zone d'aventure : tu es ici")
     verif(ligneDe(ns, "vestibule")!!.brume && ligneDe(ns, "vestibule")!!.etiquette == "???", "vestibule pas encore visité : brume")
     verif(ligneDe(ns, "nid") == null, "le nid pas encore posé : invisible")
     verif(ligneDe(ns, ".cachette") == null, "pas de passage secret avant `ls -a`")

@@ -134,6 +134,7 @@ fun main(args: Array<String>) {
     var p = nouvellePartie("Pixel")
     reveil(p)
     verif(Histoire.fini(p.jeu, "reveil") && Histoire.chap(p.jeu) == "nid", "chapitre 1 fini : ${p.lecon()} niveau ${p.jeu.niveau}")
+    verif("racine" in faits(p), "le chapitre 1 passe par « Voyage jusqu'à la Racine » (les commandes affichées suffisent)")
     p.suite("cd ..", "mkdir nid")
     verif(p.lecon() == ("nid0" to 2) && "(3/3)" in p.ecran() && "touch nid/lit.txt".replace(" ", "\u00a0") !in p.ecran(),
         "cd .., mkdir nid → ${p.lecon()} (3/3 à l'écran)")
@@ -246,7 +247,8 @@ fun main(args: Array<String>) {
     p.tape("ls")
     verif(Histoire.fini(p.jeu, "nid") && "debarras" in faits(p) && Histoire.chapitreCourant(p.jeu) == null,
         "v1 chapitre 2 fini : rien à refaire (la leçon compte comme faite)")
-    verif(Histoire.h(p.jeu).optInt("v") == 3 && "secrets" in faits(p), "sauvegarde passée en v3 (passages secrets comptés)")
+    verif(Histoire.h(p.jeu).optInt("v") == 4 && "secrets" in faits(p) && "racine" in faits(p),
+        "sauvegarde passée en v4 (passages secrets et voyage jusqu'à la Racine comptés)")
 
     println("6. Filet de sécurité : une leçon dont toutes les étapes sont faites se termine")
     p = nouvellePartie("Filet")

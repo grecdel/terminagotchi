@@ -10,10 +10,17 @@ nuages), coeur (le cœur du monde). L'enfant trouve un œuf à l'entrée du mond
 de 10 familles se sont installés chacun dans un lieu. Avec sa créature, il réveille le monde lieu par lieu.
 Chaque chapitre a un vrai problème à résoudre ; les commandes sont les outils pour le résoudre.
 
-   1 reveil        Le réveil                 pwd, ls, cd              (on trouve l'œuf)
+Le Terminaworld, c'est TOUT l'ordinateur (docs/programme.md § 2.0 bis) : la Racine /, le village /home, ton camp
+de base ~, la zone d'aventure ~/terrain_terminagotchi (le seul lieu où l'on bâtit et casse) et les lieux du système
+(/etc, /bin, /tmp, /var/log, /dev, /proc), visités en lecture seule. Deux leçons y emmènent : « Voyage jusqu'à la
+Racine » (fin du chapitre 1 : cd /, ls, pwd, cd ~, chemin absolu / relatif) et « Les lieux du gardien » (fin du
+chapitre 4, niveau 6 du programme « cadenas » : /etc, /bin, /var/log, ls -l : regarder, pas toucher).
+Chaque étape a sa version « pour les grands » (clé <étape>.adulte, G-32), affichée juste sous la commande.
+
+   1 reveil        Le réveil                 pwd, ls, cd, puis cd / (on trouve l'œuf, puis le voyage jusqu'à la Racine)
    2 nid           Le nid                    mkdir, touch, >, cat, ls -a (un nid, un repas, un passage secret)
    3 grenier       La forêt du Grenier       tree, mv, cp, rm         (des lianes ont tout mélangé)
-   4 cave          La caverne des Démons     whoami, sudo -h, chmod   (ils volent la nourriture)
+   4 cave          La caverne des Démons     whoami, sudo -h, chmod, puis les lieux du gardien (/etc, /bin, /var/log)
    5 bibliotheque  La bibliothèque engloutie find, less, grep, head, wc (un livre a disparu)
    6 machines      La salle des machines du volcan  free, du, df, rm  (le monde étouffe)
    7 dortoir       Le dortoir des brumes     ps, &, jobs, kill        (des fantômes refusent de dormir)
@@ -72,6 +79,18 @@ def _n(lid, i, **k):
 
 LS = r"^(ls|dir|gci|get-childitem)\b"
 LIRE = r"^(cat|type|gc|get-content|less|more|head|tail)\b"
+# la Racine et le camp de base (pour les étapes « ici_abs » / « ou_abs » : un lieu hors de la zone d'aventure)
+from pathlib import Path as _Path  # noqa: E402
+RACINE = str(_Path(_Path.home().anchor or "/"))
+CAMP = str(_Path.home())
+
+
+def _q(chemin):
+    """Un chemin prêt à taper (entre guillemets s'il contient une espace : C:\\Users\\Jean Dupont…)."""
+    return f'"{chemin}"' if " " in chemin else chemin
+
+
+VESTIBULE_ABS = _q(str(_Path.home() / "terrain_terminagotchi" / "vestibule"))
 
 # ---------------------------------------------------------------- les leçons de l'histoire
 NOUVELLES = {
@@ -80,6 +99,16 @@ NOUVELLES = {
         _n("reveil1", 1, cmd=C("ls", "dir"), re=LS, ou=""),
         _n("reveil1", 2, cmd="cd vestibule", ici="vestibule"),
         _n("reveil1", 3, cmd=C("ls", "dir"), re=LS, ou="vestibule"),
+    ]},
+    # « Voyage jusqu'à la Racine » (G-33, niveau 1 du programme) : le Terminaworld est tout l'ordinateur. On va à la
+    # Racine, on regarde, on lit le panneau, on rentre au camp, puis on retourne au vestibule par un chemin absolu.
+    "racine": {"titre": "hist.racine.titre", "skill": None, "steps": [
+        _n("racine", 0, cmd="cd /", ici_abs=RACINE),
+        _n("racine", 1, cmd=C("ls", "dir"), re=LS, ou_abs=RACINE),
+        _n("racine", 2, cmd="pwd", re=r"^(pwd|get-location|gl)\b", ou_abs=RACINE),
+        _n("racine", 3, cmd="cd ~", ici_abs=CAMP, dit=("hist.racine.3.dit", {"chemin": CAMP}),
+           bravo=("hist.racine.3.bravo", {"chemin": CAMP})),
+        _n("racine", 4, cmd=f"cd {VESTIBULE_ABS}", ici="vestibule"),
     ]},
     "nid0": {"titre": "lec.t1.titre", "skill": "Bâtisseur", "steps": [
         _n("nid0", 0, cmd="cd ..", ici="", exact=True),
@@ -94,12 +123,11 @@ NOUVELLES = {
     ]},
     "nid1": {"titre": "lec.t2.titre", "skill": None, "steps": [_ref("t2", 0), _ref("t2", 1)]},
     # mini-leçon « pont » (G-05) : les passages secrets (ls -a) juste avant l'ouverture de l'exploration, dont les
-    # cachettes, les quêtes et les épreuves de dressage en ont besoin. astuce = la version des grands.
+    # cachettes, les quêtes et les épreuves de dressage en ont besoin (la version des grands : hist.secrets.<i>.adulte).
     "secrets": {"titre": "hist.secrets.titre", "skill": None, "steps": [
         _n("secrets", 0, cmd=C("ls -a", "dir -Force"), re=r"^(ls\s+-\w*[aA]|dir\s+(-force|/a)|gci\s+-force|get-childitem\s+-force)",
-           ou="", astuce="hist.secrets.0.adulte"),
-        _n("secrets", 1, cmd=C("cat .mot_secret.txt", "type .mot_secret.txt"), re=LIRE + r".*\.mot_secret", ou="",
-           astuce="hist.secrets.1.adulte"),
+           ou=""),
+        _n("secrets", 1, cmd=C("cat .mot_secret.txt", "type .mot_secret.txt"), re=LIRE + r".*\.mot_secret", ou=""),
     ]},
     "grenier0": {"titre": "hist.grenier0.titre", "skill": "Explorateur", "steps": [
         _entree("grenier"),
@@ -112,6 +140,18 @@ NOUVELLES = {
         _entree("cave"),
         _ref("systeme0", 0),
         _n("cave0", 2, cmd="sudo -h", re=r"^sudo\s+(-h|--help|-V)\b", astuce="hist.cave0.2.astuce", win=False),
+    ]},
+    # « Les lieux du gardien » (G-33, niveau 6 du programme « cadenas ») : la salle des règles, l'armurerie et les
+    # archives, en lecture seule ; ls -l montre que seul root (le gardien) peut y écrire. Rien n'est écrit hors de la
+    # zone d'aventure, sudo n'est jamais utilisé.
+    "gardien": {"titre": "hist.gardien.titre", "skill": None, "steps": [
+        _n("gardien", 0, cmd=C("cat /etc/hostname", "hostname"),
+           re=r"^((cat|less|more|head|tail|type|gc|get-content)\b.*[\\/]etc[\\/]hostname|hostname\b)"),
+        _n("gardien", 1, cmd=C("ls /bin", "dir C:\\Windows\\System32"),
+           re=r"^(ls|dir|gci|get-childitem)\b.*([\\/](usr[\\/])?s?bin\b|system32)"),
+        _n("gardien", 2, cmd=C("ls /var/log", "dir C:\\Windows\\Logs"),
+           re=r"^(ls|dir|gci|get-childitem)\b.*([\\/]var[\\/]log|windows[\\/]logs)"),
+        _n("gardien", 3, cmd="ls -l /etc/hostname", re=r"^(ls\s+-\w*l|stat)\b.*[\\/]etc[\\/]", win=False),
     ]},
     "biblio0": {"titre": "hist.biblio0.titre", "skill": None, "steps": [
         _entree("bibliotheque"),
@@ -193,14 +233,14 @@ EXPERT = {
 }
 
 CHAPITRES = [
-    {"id": "reveil", "n": 1, "piece": "vestibule", "famille": None, "lecons": ["t0", "reveil1"], "niveaux": [2, 2],
+    {"id": "reveil", "n": 1, "piece": "vestibule", "famille": None, "lecons": ["t0", "reveil1", "racine"], "niveaux": [2, 2, 2],
      "objet": "veilleuse"},
     {"id": "nid", "n": 2, "piece": "nid", "famille": None, "lecons": ["nid0", "debarras", "nid1", "secrets"],
      "niveaux": [3, 3, 4, 4],
      "objet": "coussin"},
     {"id": "grenier", "n": 3, "piece": "grenier", "famille": "Sylvestres", "lecons": ["grenier0", "t4"],
      "objet": "plante", "titre": "jardinier"},
-    {"id": "cave", "n": 4, "piece": "cave", "famille": "Démons", "lecons": ["cave0", "t3"],
+    {"id": "cave", "n": 4, "piece": "cave", "famille": "Démons", "lecons": ["cave0", "t3", "gardien"],
      "objet": "cadenas_dore", "titre": "gardien_des_cles"},
     {"id": "bibliotheque", "n": 5, "piece": "bibliotheque", "famille": "Abyssaux", "lecons": ["biblio0", "biblio1"],
      "objet": "marque_page", "titre": "bibliothecaire"},
@@ -253,7 +293,18 @@ def h_(state):
         _version_v2(state, h)
     if h["v"] < 3:
         _version_v3(state, h)
+    if h["v"] < 4:
+        _version_v4(state, h)
     return h
+
+
+def _version_v4(state, h):
+    """Sauvegarde v3 → v4 : « Voyage jusqu'à la Racine » finit le chapitre 1, « Les lieux du gardien » le chapitre 4.
+    Un chapitre déjà fini les compte comme faites ; une partie en plein chapitre les fera à la fin."""
+    h["v"] = 4
+    for chap, lid in (("reveil", "racine"), ("cave", "gardien")):
+        if chap in h["ailes"] and lid not in h["faits"]:
+            h["faits"].append(lid)
 
 
 def _version_v3(state, h):
@@ -728,7 +779,20 @@ def finir_lecon(state, les):
         state["step"] = h["pas"].pop(nouv, 0) if nouv else 0
 
 
+def _abs_ok(cwd, lieu):
+    return bool(cwd) and os.path.normcase(os.path.normpath(str(cwd))) == os.path.normcase(os.path.normpath(lieu))
+
+
+def _ou_ok(step, cwd):
+    """La commande est tapée au bon endroit : « ou » (un lieu de la zone d'aventure) ou « ou_abs » (un chemin absolu)."""
+    if "ou_abs" in step:
+        return _abs_ok(cwd, step["ou_abs"])
+    return "ou" not in step or maison.dans(cwd, step["ou"])
+
+
 def _ici_ok(step, cwd):
+    if "ici_abs" in step:
+        return _abs_ok(cwd, step["ici_abs"])
     if "ici" not in step or not cwd:
         return False
     if step.get("exact"):
@@ -758,7 +822,7 @@ def tick_lecon(state, lines, cwds):
     avant = (les["id"], state["step"])
     for line, cwd in tapees:
         step = les["steps"][state["step"]]
-        ok = "re" in step and re.search(step["re"], line, re.I) and ("ou" not in step or maison.dans(cwd, step["ou"]))
+        ok = "re" in step and re.search(step["re"], line, re.I) and _ou_ok(step, cwd)
         if ok or _ici_ok(step, cwd):
             if not avancer(state, les):
                 state["indice_lecon"] = None
@@ -790,7 +854,11 @@ def indice(state, step, lignes, tapees):
             if re.search(step["re"], l, re.I) and not maison.dans(cwd, step["ou"]):
                 return t("hist.indice.piece", piece=maison.nom_piece(step["ou"]) if step["ou"] else
                          maison.nom_piece("grande_salle"), cmd=f"cd ~/{T().name}/{step['ou']}".rstrip("/"))
-    if "ici" in step:
+    if "ou_abs" in step and "re" in step:
+        for l, cwd in tapees:
+            if re.search(step["re"], l, re.I) and not _ou_ok(step, cwd):
+                return t("hist.indice.racine", cmd="cd /")
+    if "ici" in step or "ici_abs" in step:
         return None
     conseil = _indice_rm(step, tapees)
     if conseil:
@@ -884,7 +952,7 @@ def migrer(state):
     """Range la progression d'avant (tronc commun + arbre) dans les chapitres, sans rien perdre."""
     if isinstance(state.get("histoire"), dict):
         return state
-    h = {"v": 2, "chap": "reveil", "faits": [], "ailes": [], "pas": {}, "ouverts": [], "annonce": None,
+    h = {"v": 4, "chap": "reveil", "faits": [], "ailes": [], "pas": {}, "ouverts": [], "annonce": None,
          "carnet": {}, "meubles": [], "suggere": []}
     L, s = state.get("lesson", 0), state.get("step", 0)
     faits, pas = [], {}
@@ -936,6 +1004,10 @@ def migrer(state):
         courant = c["id"] if c else courant
     if "nid1" in faits:
         fait("secrets")                     # le tronc commun fini : l'exploration était déjà ouverte (v3)
+    if "reveil1" in faits:
+        fait("racine")                      # le chapitre 1 était fini (v4)
+    if "t3" in faits and "cave0" in faits:
+        fait("gardien")
     h["faits"], h["pas"] = faits, pas
     state["histoire"] = h
     for c in CHAPITRES:

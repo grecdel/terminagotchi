@@ -86,7 +86,7 @@ class TerminalActivity : Activity() {
         )
 
         jeu = Jeu(this)
-        shell = Shell(jeu.home)
+        shell = Shell(jeu.home).also { s -> s.journal = { jeu.journal.toList() } }
         commandes = Commandes(this, jeu, { shell.dossier }) { texte, couleur ->
             if (texte.isNotEmpty()) ecrire(texte, couleur)
             rafraichir()
@@ -314,11 +314,11 @@ class TerminalActivity : Activity() {
         } else {
             val dossierMot = mot.substringBeforeLast('/', "")
             val prefixe = mot.substringAfterLast('/')
-            val base = when {
-                dossierMot.isEmpty() && mot.startsWith("/") -> File("/")
+            val base = when {           // les chemins du Terminaworld (Racine.kt) : / est la Racine simulée
+                dossierMot.isEmpty() && mot.startsWith("/") -> Racine.reel(jeu.home, "/")
                 dossierMot.isEmpty() -> shell.dossier
-                dossierMot.startsWith("~") -> File(jeu.home, dossierMot.removePrefix("~").removePrefix("/"))
-                dossierMot.startsWith("/") -> File(dossierMot)
+                dossierMot.startsWith("~") || dossierMot.startsWith("/") || dossierMot.startsWith("..") ->
+                    Racine.reel(jeu.home, Racine.resoudre(shell.virtuel(), dossierMot))
                 else -> File(shell.dossier, dossierMot)
             }
             val avant = if (mot.contains('/')) mot.substringBeforeLast('/') + "/" else ""
@@ -695,7 +695,7 @@ class TerminalActivity : Activity() {
             introVue = nv
             nv
         }
-        v.chemin = jeu.home.path
+        v.chemin = Racine.HOME              // ce que montre pwd au camp de base (le Terminaworld simulé, Racine.kt)
         when (mode) {
             "ecran" -> v.montrerEcran(ecranIntro.coerceIn(1, v.nbEcrans()))
             "oeuf" -> v.montrerOeuf()
@@ -771,6 +771,7 @@ class TerminalActivity : Activity() {
         val c = Langue.codeValide(code) ?: return t("app.langue.inconnue", "code" to code) + "\n" + liste
         jeu.changerLangue(c)
         jeu.sauver()
+        Racine.preparer(jeu.home)                 // la salle des règles (/etc/motd…) parle la nouvelle langue
         textesFixes()
         WidgetCreature.majTous(this)
         if (lexiqueVue.visibility == View.VISIBLE) remplirLexique()
@@ -855,6 +856,10 @@ class TerminalActivity : Activity() {
                 sb.setSpan(ForegroundColorSpan(0xFF9A9AB0.toInt()), e, sb.length, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
             }
         }
+        // les lieux du Terminaworld (tout le système de fichiers) : image et, pour les grands, la réalité
+        val dl = sb.length
+        Vert.ajouter(sb, "\n" + Maison.lignesLieux().joinToString("\n") + "\n")
+        sb.setSpan(ForegroundColorSpan(0xFFD7D7AF.toInt()), dl, sb.length, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
         val d = sb.length
         Vert.ajouter(sb, Histoire.souvenirs(jeu).joinToString("\n"))
         sb.setSpan(ForegroundColorSpan(0xFFAFAFFF.toInt()), d, sb.length, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)

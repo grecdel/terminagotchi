@@ -11,7 +11,7 @@
  *      vérifiable), on la réveille, on change d'aile sans perdre l'étape atteinte ;
  *   3. une pièce secrète (ls -a, cd .placard_secret), une quête d'habitant (les chaussettes), le tableau des annonces
  *      (quêtes générées), la quête du jour, suivre une quête ;
- *   4. la carte (brouillard, ★, ◉, largeur des cases) et le journal ; les terres sauvages ; le carnet d'aventure ;
+ *   4. la carte (brouillard, ★, ◉, largeur des cases, la Racine et les lieux du système) et le journal ; le carnet d'aventure ;
  *   5. le cœur s'ouvre à 5 ailes ; Abyssor (réponse comptée en direct) ;
  *   6. migration d'anciennes sauvegardes Android (tronc commun, branches de l'arbre, étape en cours) sans rien perdre ;
  *   7. rien n'est jamais écrit hors du terrain ; toutes les clés construites existent dans les 14 langues ;
@@ -27,6 +27,7 @@ import fr.terminagotchi.Commandes
 import fr.terminagotchi.Dressage
 import fr.terminagotchi.Explo
 import fr.terminagotchi.Histoire
+import fr.terminagotchi.Racine
 import fr.terminagotchi.Jeu
 import fr.terminagotchi.Langue
 import fr.terminagotchi.Maison
@@ -159,7 +160,17 @@ fun main(args: Array<String>) {
     verifier(lecon() == ("reveil1" to 2), "ls dans la grande salle")
     tape("cd vestibule")
     tape("ls")
-    verifier(Histoire.fini(jeu, "reveil") && Histoire.chap(jeu) == "nid", "l'œuf est trouvé : chapitre 1 fini, chapitre 2")
+    verifier(lecon() == ("racine" to 0) && !Histoire.fini(jeu, "reveil"), "l'œuf est trouvé : « Voyage jusqu'à la Racine » ${lecon()}")
+    verifier("Voyage jusqu'à la Racine" in ecran() && "🧑 Pour les grands :" in ecran(), "l'écran : la leçon de la Racine et la version des grands (G-32)")
+    tape("cd /")
+    verifier(lecon() == ("racine" to 1) && shell.chemin() == "/" && "la Racine" in bulles(), "cd / : la Racine (simulée), présentée ${lecon()}")
+    tape("ls")
+    verifier(shell.executer("pwd") == "/", "pwd à la Racine : /")
+    tape("pwd")
+    tape("cd ~")
+    verifier(lecon() == ("racine" to 4) && Racine.HOME in bulles(), "cd ~ : le camp de base, ${Racine.HOME}")
+    tape("cd ${Racine.HOME}/terrain_terminagotchi/vestibule")
+    verifier(Histoire.fini(jeu, "reveil") && Histoire.chap(jeu) == "nid", "chemin absolu jusqu'au vestibule : chapitre 1 fini, chapitre 2")
     verifier("CRAC" in bulles(), "texte de fin du chapitre dit par la créature")
     verifier("veilleuse" in ql("objets"), "récompense du chapitre : une veilleuse")
 
@@ -229,6 +240,9 @@ fun main(args: Array<String>) {
     val nDem = vus.count { Bestiaire.espece(it.getString("espece"))!!.famille == "Démons" }
     verifier(nDem >= 6, "les Démons sortent plus souvent : $nDem/40")
     tape("echo poire >> nid/repas.txt")
+    verifier(lecon() == ("gardien" to 0), "après le cadenas : « Les lieux du gardien » ${lecon()}")
+    for (c in listOf("cat /etc/hostname", "ls /bin", "ls /var/log", "ls -l /etc/hostname")) tape(c)
+    verifier("la salle des règles" in bulles() || "regles" in liste(Maison.m(jeu).optJSONArray("lieux")), "la salle des règles est présentée")
     verifier(Histoire.fini(jeu, "cave") && "gardien_des_cles" in ql("titres"), "la cave est réveillée : titre « Gardien des clés »")
     verifier(File(T, "nid/decorations/cadenas_dore.txt").isFile, "objet gagné : nid/decorations/cadenas_dore.txt")
     verifier(Histoire.familleAttiree(jeu) == null, "plus de chapitre en cours : plus d'attirance d'histoire")
@@ -305,14 +319,16 @@ fun main(args: Array<String>) {
         "la difficulté des quêtes générées suit le niveau")
 
     println("7. La carte et le journal")
+    jeu.bulle = ""; jeu.bulles.clear()
     tape("cat /proc/sys/kernel/hostname")
-    verifier("terres sauvages" in bulles(), "lire /proc/sys/kernel/hostname : avertissement des terres sauvages (lecture seule)")
+    verifier("le miroir des habitants" in bulles(), "lire /proc/sys/kernel/hostname : le miroir des habitants, présenté (lecture seule)")
     val carte = tape("carte")
     println(carte.lines().joinToString("\n") { "     $it" })
     verifier("Grenier" in carte && "Cave" in carte && "Tour" in carte, "pièces visitées révélées")
     verifier("Dortoir" !in carte && "░░░░" in carte, "pièces jamais visitées dans le brouillard")
     verifier("◉" in carte && "★" in carte && "✓" in carte, "◉ tu es ici, ★ quêtes, ✓ réveillée")
-    verifier("Terres sauvages" in carte, "les terres sauvages apparaissent sur la carte")
+    verifier(carte.indexOf("la Racine") in 0 until carte.indexOf("la zone d'aventure") && "la salle des règles" in carte && "le miroir des habitants" in carte,
+        "la carte part de la Racine ; les lieux du système visités sont dévoilés")
     verifier(Maison.verifierLargeur(Maison.carte(jeu)).size == 1, "toutes les lignes du plan ont la même largeur")
     val celeste = Bestiaire.publiques().first { it.famille == "Célestes" }
     Dressage.commencer(jeu, celeste)

@@ -4,12 +4,12 @@ import org.json.JSONArray
 
 /**
  * Expliquer chaque commande et chacune de ses options, en mots d'enfant (le monde à explorer), puis pour les grands
- * (portage de pc/tg/explique.py : mêmes tables, mêmes textes « opt.* », « optg.* », « grand.* », « diff.* »).
+ * (portage de pc/tg/explique.py : mêmes tables, mêmes textes « opt.* », « optg.* », « grand.* », « diff.* », « diffg.* »).
  *
  *  - le lexique : sous chaque commande, « Pour les grands : … » et ses options (TerminalActivity.remplirLexique) ;
  *  - les leçons et l'histoire : la première fois qu'une option ou un symbole apparaît dans la commande d'une étape,
  *    la leçon l'explique (« 💡 Le -r veut dire… ») ; à la réussite, la créature le redit dans une bulle, une seule
- *    fois (module « explique », liste « vues »). La version des grands suit, à partir du palier 1 (Mots.kt) ;
+ *    fois (module « explique », liste « vues »). La version des grands suit, toujours, à tous les paliers (G-32) ;
  *  - la commande « explique rm » : la fiche complète d'une commande (image, exemple, options, voisines).
  */
 object Explique {
@@ -39,7 +39,8 @@ object Explique {
         "ssh" to mapOf("-V" to "version"),
         "python3" to mapOf("-m" to "module"),
     )
-    val SYMBOLES = mapOf(">" to "ecrase", ">>" to "ajoute", "|" to "tuyau", "." to "ici", ".." to "avant", "~" to "chambre", "*" to "etoile")
+    val SYMBOLES = mapOf(">" to "ecrase", ">>" to "ajoute", "|" to "tuyau", "." to "ici", ".." to "avant", "~" to "chambre", "*" to "etoile",
+        "/" to "racine")
     val VOISINES = mapOf("rm" to "rm", "rmdir" to "rm", "cp" to "cp_mv", "mv" to "cp_mv", "cat" to "lire", "head" to "lire",
         "tail" to "lire", "less" to "lire", "touch" to "touch_mkdir", "mkdir" to "touch_mkdir", "echo" to "redir", "ls" to "ls",
         "ps" to "ps_kill", "kill" to "ps_kill")
@@ -68,6 +69,7 @@ object Explique {
                         val c = if (m.startsWith("..")) ".." else if (m.startsWith("~")) "~" else "."
                         ajouter(c, SYMBOLES[c])
                     }
+                    m.startsWith("/") && !m.startsWith("//") -> ajouter("/", SYMBOLES["/"])   // un chemin absolu : il part de la Racine
                 }
                 if ('*' in m && !m.startsWith("-")) ajouter("*", SYMBOLES["*"])
             }
@@ -82,9 +84,9 @@ object Explique {
     fun grandCommande(nom: String, technique: String? = null): String? =
         if (Langue.existe("grand.$nom")) grand("grand.$nom") else technique?.let { t("grand.ligne", "texte" to it) }
 
-    /** L'image (la créature), puis la version des grands à partir du palier 1. */
-    fun phrases(jeu: Jeu, montre: String, cle: String): List<String> =
-        listOf(phrase(montre, cle)) + if (Mots.palier(jeu) >= 1) listOf(grand("optg.$cle")) else emptyList()
+    /** L'image (la créature), puis la version des grands, toujours (G-32). */
+    @Suppress("UNUSED_PARAMETER")
+    fun phrases(jeu: Jeu, montre: String, cle: String): List<String> = listOf(phrase(montre, cle), grand("optg.$cle"))
 
     private fun vues(jeu: Jeu): JSONArray = jeu.module("explique").optJSONArray("vues")
         ?: JSONArray().also { jeu.module("explique").put("vues", it) }
@@ -132,7 +134,7 @@ object Explique {
             out.add("  ↳ " + t("lex.exemple", "ex" to it))
         }
         if (opts.isNotEmpty()) { out.add(""); out.add(t("explique.options")); out.addAll(opts.map { "   $it" }) }
-        if (diff != null) { out.add(""); out.add(t("explique.diff")); out.add("   " + t("diff.$diff")) }
+        if (diff != null) { out.add(""); out.add(t("explique.diff")); out.add("   " + t("diff.$diff")); out.add("   " + grand("diffg.$diff")) }
         out.add("")
         out.add(t("explique.aide", "ex" to "explique rm"))
         return out.joinToString("\n")

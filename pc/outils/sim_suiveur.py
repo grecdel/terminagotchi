@@ -13,7 +13,11 @@ Vérifie (programme d'apprentissage, docs/programme.md §1.8 et §3) :
   - aucune commande « de remplissage » en dehors de l'œuf du réveil (G-04) ;
   - `ls -a` est enseigné avant que l'exploration (les monstres) ne s'ouvre (G-05) ;
   - spammer une commande déjà goûtée ne donne plus d'XP (anti-remplissage) ;
-  - les épreuves de dressage tirées n'exigent que des notions déjà rencontrées (G-06), à plusieurs moments du parcours.
+  - les épreuves de dressage tirées n'exigent que des notions déjà rencontrées (G-06), à plusieurs moments du parcours ;
+  - le Terminaworld = tout l'ordinateur (G-33) : « Voyage jusqu'à la Racine » (chapitre 1) et « Les lieux du gardien »
+    (chapitre 4) sont faits en tapant ce que l'écran montre, la Racine et les lieux du système sont visités et
+    dévoilés sur la carte, et rien n'est écrit hors de la zone d'aventure (à part les réglages du jeu) ;
+  - chaque étape montrée a sa version « pour les grands » sous la commande (G-32).
 Code de sortie 1 en cas d'échec. Les monstres sont coupés pendant le parcours (on mesure l'histoire).
 """
 import builtins
@@ -42,7 +46,7 @@ for k in ("no_proxy", "NO_PROXY"):
     os.environ.pop(k, None)
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
-from tg import app, core, dressage, explo, histoire  # noqa: E402
+from tg import app, core, dressage, explo, histoire, maison  # noqa: E402
 from tg import bestiaire as B  # noqa: E402
 
 HOME = Path.home()
@@ -96,7 +100,18 @@ def a_taper(st, les):
     return c
 
 
+def hors_zone():
+    """Les fichiers du HOME hors de la zone d'aventure (sans les réglages cachés du jeu, de git et du shell)."""
+    out = set()
+    for racine, dossiers, fichiers in os.walk(HOME):
+        dossiers[:] = [d for d in dossiers if not d.startswith(".") and Path(racine, d) != T]
+        out |= {os.path.join(racine, f) for f in fichiers if not f.startswith(".")}
+    return out
+
+
 st = app.etape(spontane=False, defis=False)
+hors_avant = hors_zone()
+sans_grands = []
 stats = collections.Counter()
 grind = collections.Counter()
 blocages = []
@@ -132,6 +147,8 @@ for _ in range(900):
     else:
         c = a_taper(st, les)
         ecran = ANSI.sub("", app.render(st, 0, False))
+        if "🧑 Pour les grands :" not in ecran:
+            sans_grands.append((les["id"], st["step"]))
         depuis = [l for l in ecran.splitlines() if "📁" in l]      # « 📁 à taper depuis … : cd ~/… » sous la commande
         m = re.search(r"(cd ~/[^\s`]+)", (st.get("indice_lecon") or "") + " " + " ".join(depuis))
         if m and m.group(1) != c and suivi != (les["id"], st["step"]) and not c.startswith("cd ") \
@@ -172,6 +189,18 @@ print("3. ls -a avant les monstres (G-05)")
 verifier(explo_avant_ls_a is False, "l'exploration ne s'ouvre qu'après la leçon des passages secrets")
 verifier("secrets" in h["faits"] and h["faits"].index("secrets") < h["faits"].index("grenier0"),
          "les passages secrets sont appris au chapitre 2")
+print("3 bis. Le Terminaworld = tout l'ordinateur (G-33), la version des grands (G-32)")
+verifier({"racine", "gardien"} <= set(h["faits"]) and h["faits"].index("racine") < h["faits"].index("nid0"),
+         "« Voyage jusqu'à la Racine » faite au chapitre 1, « Les lieux du gardien » à la cave")
+racine = [x for x in log if x[1] == "racine"]
+verifier([x[3] for x in racine][:4] == ["cd /", "ls", "pwd", "cd ~"] and racine[-1][3].startswith("cd /"),
+         f"la Racine : cd /, ls, pwd, cd ~, puis un chemin absolu ({[x[3] for x in racine]})")
+m = maison.monde(st)
+vus = {n["lieu"] for n in m if n["genre"] == "systeme" and not n["brume"]}
+verifier(m[0]["lieu"] == "racine" and {"regles", "armurerie", "archives"} <= vus,
+         f"sur la carte : la Racine, la salle des règles, l'armurerie, les archives dévoilées ({sorted(vus)})")
+verifier(hors_zone() == hors_avant, f"rien n'est écrit hors de la zone d'aventure ({sorted(hors_zone() - hors_avant)[:3]})")
+verifier(not sans_grands, f"chaque étape montrée a sa version des grands {sans_grands[:5]}")
 print("4. Anti-remplissage")
 st = tape("date")
 avant = st["xp"]

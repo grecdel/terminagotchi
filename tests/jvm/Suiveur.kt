@@ -2,11 +2,14 @@
  * Test JVM « l'élève qui suit les consignes » (portage de pc/outils/sim_suiveur.py), SANS aucune triche sur l'XP :
  * une NOUVELLE PARTIE, puis l'enfant tape exactement ce que l'écran affiche (➜ la commande de l'étape ; si la leçon
  * attend un niveau, une commande pas encore goûtée), et entre dans les ailes pour les choisir (cd ~/terrain…/<lieu>).
- * Les commandes passent par Commandes.kt (intégrées) ou bash, « cd » par Shell.kt, puis le tour du jeu.
+ * Les commandes passent par Commandes.kt (intégrées) ou Shell.kt (le shell de l'appli, dans le Terminaworld simulé de
+ * Racine.kt : `cd /`, `ls /bin`, `cat /etc/hostname`), puis le tour du jeu.
  *
  * Vérifie (docs/programme.md §3) : les 10 chapitres finis sans blocage ; aucune commande « de remplissage » après le
  * réveil (G-04) ; l'exploration ne s'ouvre qu'après la mini-leçon des passages secrets (ls -a, G-05) ; les épreuves
- * des dressages qui arrivent n'exigent que des notions rencontrées (G-06) ; répéter une commande ne donne plus d'XP.
+ * des dressages qui arrivent n'exigent que des notions rencontrées (G-06) ; répéter une commande ne donne plus d'XP ;
+ * « Voyage jusqu'à la Racine » et « Les lieux du gardien » faits dans le Terminaworld simulé, sans rien écrire dans
+ * la Racine (G-33) ; chaque étape montrée a sa version « pour les grands » (G-32).
  * Les monstres qui apparaissent sont laissés de côté (abandon) : on mesure l'histoire.
  *   kotlinc -cp <imitations>:<appli.jar> tests/jvm/Suiveur.kt -d suiveur.jar
  *   java -cp <imitations>:<appli.jar>:suiveur.jar:kotlin-stdlib.jar SuiveurKt app/src/main/assets
@@ -16,6 +19,8 @@ import fr.terminagotchi.Dressage
 import fr.terminagotchi.Histoire
 import fr.terminagotchi.Jeu
 import fr.terminagotchi.Langue
+import fr.terminagotchi.Racine
+import fr.terminagotchi.Maison
 import fr.terminagotchi.Regles
 import fr.terminagotchi.Shell
 import fr.terminagotchi.Tour
@@ -52,6 +57,9 @@ fun main(args: Array<String>) {
     jeu.nom = "Pixel"
     jeu.sauver()
     val shell = Shell(jeu.home)
+    val racineAvant = Racine.dossier(jeu.home).walkTopDown().filter { it.name != "terminaworld.log" }
+        .associate { it.path to (if (it.isFile) it.readText() else "/") }
+    val sansGrands = mutableListOf<String>()
     val commandes = Commandes(app, jeu, { shell.dossier })
     var sortie = ""
 
@@ -59,15 +67,8 @@ fun main(args: Array<String>) {
         val mot = cmd.trim().split(Regex("\\s+"))[0]
         if (mot == "cd") shell.executer(cmd)
         else {
-            sortie = commandes.executer(cmd)?.texte ?: run {
-                val pb = ProcessBuilder("bash", "-c", cmd).directory(shell.dossier).redirectErrorStream(true)
-                pb.environment()["HOME"] = jeu.home.absolutePath
-                pb.environment()["LC_ALL"] = "C.UTF-8"
-                val p = pb.start()
-                val s = p.inputStream.readBytes().toString(Charsets.UTF_8)
-                p.waitFor()
-                s
-            }
+            // le vrai shell de l'appli (Shell.kt), dans le Terminaworld simulé (Racine.kt) : / = la Racine, ~ = /home/explorateur
+            sortie = commandes.executer(cmd)?.texte ?: shell.executer(cmd)
         }
         // « edite » ouvre l'éditeur de l'appli : l'enfant y change une ligne et enregistre (ce que fait l'écran d'édition)
         Regex("^edite\\s+(\\S+)").find(cmd.trim())?.let { m ->
@@ -117,6 +118,7 @@ fun main(args: Array<String>) {
             remplissage[chap] = (remplissage[chap] ?: 0) + 1
         } else {
             val e = c.etapes[jeu.etape]
+            if ("🧑 " !in (jeu.texteLecon() ?: "")) sansGrands += "${c.id}.${jeu.etape}"
             val vise = if (e.cmd.startsWith("echo ?")) e.cmd.replaceFirst("?", sortie.trim().split(Regex("\\s+")).lastOrNull() ?: "0")
                 else e.cmd
             val m = aile.find((jeu.indiceLecon ?: "") + " " + (jeu.texteLecon() ?: "").lines().filter { "📁" in it }.joinToString(" "))
@@ -149,7 +151,20 @@ fun main(args: Array<String>) {
     println("2. ls -a avant les monstres (G-05), dressages (G-06)")
     verifS(exploAvantSecrets == false, "l'exploration ne s'ouvre qu'après la leçon des passages secrets")
     verifS(dressages >= 1 && epreuvesInconnues.isEmpty(), "$dressages dressage(s) en route : aucune épreuve aux notions inconnues $epreuvesInconnues")
-    println("3. Anti-remplissage")
+    println("3. Le Terminaworld simulé (G-33), la version des grands (G-32)")
+    val fa = Histoire.faits(jeu)
+    verifS("racine" in fa && "gardien" in fa && fa.indexOf("racine") < fa.indexOf("nid0"),
+        "« Voyage jusqu'à la Racine » au chapitre 1, « Les lieux du gardien » à la cave")
+    verifS(trace.filter { " racine " in it }.map { it.substringAfterLast(" racine ").substringAfter(' ') } ==
+        listOf("cd /", "ls", "pwd", "cd ~", "cd ${Racine.HOME}/terrain_terminagotchi/vestibule"),
+        "la Racine : cd /, ls, pwd, cd ~, chemin absolu (${trace.filter { " racine " in it }})")
+    val vus = Maison.monde(jeu).filter { it.genre == "systeme" && !it.brume }.mapNotNull { it.lieu }.toSet()
+    verifS(vus.containsAll(listOf("regles", "armurerie", "archives")), "sur la carte : salle des règles, armurerie, archives dévoilées $vus")
+    val racineApres = Racine.dossier(jeu.home).walkTopDown().filter { it.name != "terminaworld.log" }
+        .associate { it.path to (if (it.isFile) it.readText() else "/") }
+    verifS(racineApres == racineAvant, "rien n'a été écrit dans la Racine simulée (lecture seule)")
+    verifS(sansGrands.isEmpty(), "chaque étape montrée a sa version des grands $sansGrands")
+    println("4. Anti-remplissage")
     tape("date")
     val avant = jeu.xp
     repeat(5) { tape("date") }

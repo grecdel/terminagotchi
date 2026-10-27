@@ -109,6 +109,17 @@ def _entrees():
     ]
 
 
+def lignes_lieux(state):
+    """Les lieux du Terminaworld (tout l'ordinateur) : chemin, nom, image ; et pour les grands, la réalité."""
+    from . import maison
+    out = ["", f"{fg(147)}{BOLD}" + t("lex.ch.lieux") + RESET, f"  {DIM}" + t("lex.lieux.aide") + RESET]
+    for chemin, lieu in maison.LIEUX_CARNET:
+        out.append(f"  {maison.ICONES_LIEUX.get(lieu, '📁')} {fg(255)}{BOLD}{chemin:<24}{RESET} {maison.nom_lieu(lieu)} : "
+                   + t(f"lieu.{lieu}.i"))
+        out.append(f"  {' ' * 27}{DIM}" + t("grand.ligne", texte=t(f"lieu.{lieu}.t")) + RESET)
+    return out
+
+
 def explication(image, technique, p):
     """Palier 0 : l'image · palier 1 : l'image — la technique · palier 2 : la technique (l'image)."""
     if p <= 0 or image == technique:
@@ -186,7 +197,7 @@ def lignes(state):
               f" {DIM}" + t("lex.legende") + RESET,
               f" {fg(110)}↳ " + t("lex.exemples.ou", cmd=f"cd ~/{core.TERRAIN.name}") + RESET,
               f" {fg(110)}📖 " + t("lex.explique", ex="tg explique rm") + RESET]
-    return entete + sortie + souvenirs(state)
+    return entete + sortie + lignes_lieux(state) + souvenirs(state)
 
 
 def images():

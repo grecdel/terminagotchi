@@ -83,7 +83,7 @@ class CarteVue(ctx: Context, private val jeu: Jeu, private val creature: () -> B
 
     /** Relit le terrain (après une commande) : ce qui apparaît scintille 8 secondes. */
     fun rafraichir() {
-        noeuds = try { Maison.noeuds(jeu, marquer = true) } catch (e: Exception) { android.util.Log.e("TG", "carte", e); emptyList() }
+        noeuds = try { Maison.monde(jeu, marquer = true) } catch (e: Exception) { android.util.Log.e("TG", "carte", e); emptyList() }
         pied = try { Maison.pied(jeu) } catch (e: Exception) { emptyList() }
         titre = Carte.titre(jeu)
         val now = System.currentTimeMillis()

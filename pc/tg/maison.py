@@ -26,8 +26,19 @@ fichier) et la sortie de `tree` à droite, ligne par ligne. Elle ne montre que c
 Après mkdir, touch, rm, mv, cp, une ligne « 🗺 la carte a poussé : + parcelle_3/ » passe dans l'invite.
 Le même modèle est porté sur Android (Maison.kt, dessiné par CarteVue.kt).
 
-Terres sauvages : tout ce qui est hors de la maison du jeu (/etc…). On peut y regarder (lecture
-seule), le jeu prévient : on ne touche à rien là-bas. Le jeu n'y écrit jamais rien.
+Le Terminaworld, c'est TOUT l'ordinateur (docs/programme.md § 2.0 bis, décision du propriétaire) :
+  /                          la Racine (le pied du grand arbre, d'où partent tous les chemins)
+  /home                      le village
+  ~ (/home/<nom>)            ton camp de base
+  ~/terrain_terminagotchi    la zone d'aventure : le SEUL lieu où le jeu fait bâtir et détruire
+  /etc                       la salle des règles du monde
+  /bin, /usr                 l'armurerie des commandes
+  /tmp                       le terrain vague (il s'efface tout seul)
+  /var/log                   les archives
+  /dev, /proc                les lieux magiques (portails des machines, miroir des habitants)
+La carte (monde) part de la Racine : les lieux du système sont des repères fixes, dans la brume tant qu'on ne les a
+pas visités ; le chemin descend jusqu'au camp de base puis à la zone d'aventure. Les lieux du système se visitent en
+lecture seule : le jeu n'y écrit jamais et prévient gentiment si l'enfant essaie d'y écrire (prudence).
 """
 import os
 import re
@@ -46,6 +57,23 @@ ICONES = {"vestibule": "🥚", "nid": "🏠", "grenier": "🌿", "cave": "🔒",
           "salle_des_machines": "🔥", "dortoir": "👻", "atelier": "🔧", "tour": "📡", "coeur": "💜",
           "recoins": "🚪", "sauvage": "🌲", "jardin": "📱"}
 PRUDENCE = ("rm", "rmdir", "mv", "chmod", "chown", "del", "remove-item", "move-item", "ren")
+# les commandes qui écrivent (prudence) : tous leurs chemins comptent, sauf pour cp (seulement la destination)
+ECRIT = PRUDENCE + ("mkdir", "md", "touch", "new-item", "ni", "cp", "copy", "copy-item", "ln", "tee", "truncate",
+                    "set-content", "add-content", "out-file")
+
+# ---------------------------------------------------------------- le Terminaworld = tout le système de fichiers
+# Les lieux du système, repères fixes sous la Racine (nom du dossier, lieu) ; textes lieu.<lieu>.nom / .i / .t.
+LIEUX_SYSTEME = (("bin", "armurerie"), ("dev", "portails"), ("etc", "regles"), ("proc", "miroir"), ("tmp", "vague"),
+                 ("usr", "armurerie"), ("var/log", "archives"))
+# leurs icônes (emojis larges de 2 colonnes : cases alignées)
+ICONES_LIEUX = {"racine": "🌳", "village": "🏡", "camp": "⛺", "zone": "🎒", "chemin": "🌿", "armurerie": "🧰",
+                "portails": "🔌", "regles": "📋", "miroir": "🔮", "vague": "🍂", "archives": "📓", "systeme": "📁"}
+# le carnet des lieux (lexique) : chemin, lieu
+LIEUX_CARNET = (("/", "racine"), ("/home", "village"), ("~", "camp"), ("~/terrain_terminagotchi", "zone"),
+                ("/etc", "regles"), ("/bin, /usr", "armurerie"), ("/tmp", "vague"), ("/var/log", "archives"),
+                ("/dev", "portails"), ("/proc", "miroir"))
+# les écritures permises hors de la zone d'aventure : les réglages du camp que les leçons font écrire
+REGLAGES = (".bashrc", ".zshrc", ".bash_aliases", ".profile", ".tgrc", ".gitconfig")
 
 # ---------------------------------------------------------------- le monde dessiné
 # Les régions du monde (donnees/biomes.json : id → emoji, couleur principale, sombre, claire ; vérifié par
@@ -69,7 +97,10 @@ SOLS_PIECES = {
     "coeur": ("#ff6fa8", "#7a2a55"), "jardin": ("#66b843", "#6b4a2c"),
 }
 SOLS = {"camp": ("#d9b47a", "#7b5534"), "lieu": ("#5aa63a", "#6b4a2c"), "porte": ("#8fa9c2", "#3d5a73"),
-        "secret": ("#4b3a6b", "#251c38"), "brume": ("#6a6f78", "#3a3d44")}
+        "secret": ("#4b3a6b", "#251c38"), "brume": ("#6a6f78", "#3a3d44"),
+        # la Racine (bois), le village, ton camp de base, la zone d'aventure, les lieux du système (pierre)
+        "racine": ("#8a5a30", "#4a2e18"), "village": ("#e0c48a", "#8a6a3a"), "camp_base": ("#d9b47a", "#7b5534"),
+        "zone": ("#86d45a", "#2f6b2c"), "chemin": ("#9cc4aa", "#4c6a58"), "systeme": ("#a7acb4", "#5d6168")}
 EMOJIS = {"camp": "⛺", "porte": "🌀", "lieu": "🌳", "note": "📜", "recette": "📝", "image": "🌅", "coffre": "📦",
           "secret": "🔑", "secret_objet": "🔑", "brume": "░░", "suite": "··"}
 TEXTES = {".txt", ".md", ".log", ".csv", ".json", ".ini", ".cfg", ".conf", ".yml", ".yaml", ".html", ".xml", ""}
@@ -209,17 +240,90 @@ def _noter(state, ligne, cur, precedent):
                 m["ls_a"] = True
 
 
+def racine():
+    """La Racine du système de fichiers : / (ou C:\\ sous Windows)."""
+    return Path(Path.home().anchor or "/")
+
+
+def chaine():
+    """Le chemin de la Racine jusqu'au camp de base : [(dossier, lieu)], lieu = racine, chemin (un dossier de
+    passage, comme /var dans /var/home/lou), village (le parent du camp, /home) ou camp (~)."""
+    home = Path.home()
+    parts = home.parts
+    out = [(Path(parts[0]), "racine")]
+    p = Path(parts[0])
+    for i, x in enumerate(parts[1:], 1):
+        p = p / x
+        out.append((p, "camp" if i == len(parts) - 1 else "village" if i == len(parts) - 2 else "chemin"))
+    return out
+
+
+def _sous(chemin, dossier):
+    c, d = os.path.normpath(str(chemin)), os.path.normpath(str(dossier))
+    return c == d or c.startswith(d.rstrip(os.sep) + os.sep)
+
+
+def lieu_de(chemin):
+    """Le lieu du Terminaworld d'un chemin absolu : « zone » (et ce qu'elle contient), camp, village, racine, un lieu
+    du système (regles, armurerie…), « chemin » (un dossier de passage vers le camp) ou « systeme » (ailleurs)."""
+    if chemin is None:
+        return None
+    c = os.path.normpath(str(chemin))
+    if rel(c) is not None:
+        return "zone"
+    for p, lieu in reversed(chaine()):
+        if c == os.path.normpath(str(p)):
+            return lieu
+    if _sous(c, Path.home()):
+        return "camp"
+    for nom, lieu in LIEUX_SYSTEME:
+        if _sous(c, racine() / nom):
+            return lieu
+    return "systeme"
+
+
+def nom_lieu(lieu):
+    return t(f"lieu.{lieu}.nom")
+
+
+def hors_zone(chemin):
+    """« camp » : dans le camp de base mais pas dans la zone d'aventure ; « systeme » : hors du camp ; None : dans la
+    zone (ou /dev/null, le trou noir où l'on peut tout jeter)."""
+    c = os.path.normpath(str(chemin))
+    if rel(c) is not None or c in (os.devnull, "/dev/null"):
+        return None
+    return "camp" if _sous(c, Path.home()) else "systeme"
+
+
 def _visiter(state, cwd):
     m = m_(state)
     r = rel(cwd)
     if r is None:
-        if not str(cwd).startswith(str(Path.home())) and str(cwd) not in m["sauvage"]:
-            m["sauvage"] = (m["sauvage"] + [str(cwd)])[-20:]
-            avertir_sauvage(state)
+        if not _sous(cwd, Path.home()) or os.path.normpath(str(cwd)) == os.path.normpath(str(Path.home().parent)):
+            nouveau = str(cwd) not in m["sauvage"]
+            if nouveau:
+                m["sauvage"] = (m["sauvage"] + [str(cwd)])[-20:]
+            visiter_systeme(state, cwd, nouveau)
         return
     if r not in m["visites"]:
         m["visites"].append(r)
         del m["visites"][:-300]
+
+
+def visiter_systeme(state, chemin, nouveau=True):  # noqa: ARG001 (nouveau : gardé pour les appels)
+    """Un lieu du système visité : la 1re fois, la créature le présente (enfant + grands) ; ensuite, un rappel
+    « on regarde, on ne touche pas » de temps en temps."""
+    m = m_(state)
+    lieu = lieu_de(chemin)
+    deja = m.setdefault("lieux", [])
+    if lieu and lieu not in deja and lieu not in ("zone", "camp", "chemin"):
+        deja.append(lieu)
+        m["averti"] = time.time()
+        core.say(state, t("carte.lieu.decouvert", icone=ICONES_LIEUX.get(lieu, "📁"), nom=nom_lieu(lieu),
+                          image=t(f"lieu.{lieu}.i")), 14)
+        core.say(state, t("grand.ligne", texte=t(f"lieu.{lieu}.t")), 16)
+        return
+    avertir_sauvage(state)                      # (une fois toutes les 10 minutes au plus)
 
 
 def avertir_sauvage(state):
@@ -229,19 +333,52 @@ def avertir_sauvage(state):
         core.say(state, t("carte.sauvage.dit"), 12)
 
 
+def _cibles(ligne, cwd):
+    """Les chemins qu'une commande va écrire : (mot tapé, chemin absolu) ; les > et >> comptent aussi."""
+    out = []
+    base = Path(cwd) if cwd else Path.home()
+
+    def absolu(x):
+        x = x.strip("'\"")
+        if x.startswith("~"):
+            return Path(os.path.expanduser(x))
+        return Path(x) if os.path.isabs(x) else base / x
+    for morceau in _SEP.split(ligne.strip()):
+        for m in re.finditer(r"(?<![0-9&])>>?\s*([^\s|;&<>]+)", morceau):
+            out.append((m.group(1), absolu(m.group(1))))
+        mots = re.sub(r"\d?>>?\s*[^\s|;&<>]+", " ", morceau.split("|")[0]).split()
+        if not mots or mots[0].lower() not in ECRIT:
+            continue
+        args = [x for x in mots[1:] if not x.startswith("-") and not re.fullmatch(r"[0-7]{3,4}|[ugoa]*[+=-][rwxst]+", x)]
+        if mots[0].lower() in ("cp", "copy", "copy-item", "ln"):
+            args = args[-1:]
+        out += [(x, absolu(x)) for x in args]
+    return out
+
+
 def _prudence(state, ligne, cwd):
-    """Une commande qui casse ou modifie, tapée hors de la maison du jeu : un petit rappel."""
-    mots = ligne.split()
-    if not mots or mots[0].lower() not in PRUDENCE:
-        return
-    hors = rel(cwd) is None if cwd else False
-    for x in mots[1:]:
-        if x.startswith(("/", "~")) and "terrain_terminagotchi" not in x:
-            hors = True
+    """Une commande qui écrit hors de la zone d'aventure : un rappel gentil. Dans un lieu du système, « on regarde,
+    on ne touche pas » (et le gardien dirait non de toute façon) ; dans le camp de base, « seulement dans la zone
+    d'aventure ». Les réglages du camp que les leçons font écrire (~/.bashrc…) ne comptent pas."""
+    pire = None
+    for mot, chemin in _cibles(ligne, cwd):
+        h = hors_zone(chemin)
+        if h == "camp" and (chemin.name in REGLAGES and chemin.parent == Path.home() or ".config" in chemin.parts):
+            continue
+        if h == "systeme" or (h == "camp" and pire is None):
+            pire = (h, mot, chemin)
+    if not pire:
+        return None
     m = m_(state)
-    if hors and time.time() - m.get("prudence", 0) > 120:
-        m["prudence"] = time.time()
+    if time.time() - m.get("prudence", 0) <= 120:
+        return pire[0]
+    m["prudence"] = time.time()
+    if pire[0] == "systeme":
+        core.say(state, t("carte.prudence.systeme", lieu=nom_lieu(lieu_de(pire[2])), chemin=str(pire[2])), 14)
+        core.say(state, t("grand.ligne", texte=t("carte.prudence.adulte")), 16)
+    else:
         core.say(state, t("carte.prudence.dit", terrain=f"~/{T().name}"), 12)
+    return pire[0]
 
 
 def suivre(state, lignes, cwd=None):
@@ -262,10 +399,13 @@ def suivre(state, lignes, cwd=None):
             _prudence(state, l, cur)
             change = change or any((core.first_word(x) or "") in CHANGE for x in _SEP.split(l.strip()))
             for x in l.split()[1:]:
-                if x.startswith("/") and not x.startswith(str(Path.home())) and os.path.exists(x):
-                    avertir_sauvage(state)              # regarder un fichier du système (lecture seule)
-                    if "/etc" not in m["sauvage"]:
-                        m["sauvage"].append("/etc" if x.startswith("/etc") else os.path.dirname(x) or "/")
+                x = x.strip("'\"")
+                if os.path.isabs(x) and not _sous(x, Path.home()) and os.path.exists(x):
+                    d = x if os.path.isdir(x) else os.path.dirname(x) or "/"
+                    nouveau = d not in m["sauvage"]       # regarder un lieu du système (lecture seule)
+                    if nouveau:
+                        m["sauvage"] = (m["sauvage"] + [d])[-20:]
+                    visiter_systeme(state, d, nouveau)
                     break
         apres.append(cur)
     if cwd:
@@ -374,7 +514,7 @@ def genre(r, dossier):
     parts = r.split("/") if r else []
     nom = parts[-1] if parts else ""
     if not r:
-        return "camp", None
+        return "zone", None
     if nom.startswith("."):
         return ("secret" if dossier else "secret_objet"), None
     region = next((p for i, p in enumerate(parts) if i > 0 and parts[i - 1] == "biome" and p in BIOMES), None)
@@ -408,8 +548,12 @@ def etiquette(state, n):
         return "???"
     if g == "suite":
         return t("carte.monde.autres", n=n["suite"])
+    if g == "zone":
+        return nom_lieu("zone")
+    if n.get("lieu"):                                   # la Racine, le village, ton camp, les lieux du système
+        return nom_lieu(n["lieu"]) if n["lieu"] != "chemin" else n["nom"]
     if g == "camp":
-        return t("carte.monde.camp") if not n["rel"] else t("carte.monde.campement")
+        return t("carte.monde.campement")
     if g == "piece":
         return nom_piece(b)
     if g == "region":
@@ -537,6 +681,84 @@ def noeuds(state, marquer=False):
     return out
 
 
+def monde(state, marquer=False):
+    """Toute la carte du Terminaworld, depuis la Racine : la Racine, les lieux du système (repères fixes, dans la
+    brume tant qu'ils ne sont pas visités), le chemin jusqu'au village et au camp de base, puis la zone d'aventure
+    (les lignes de noeuds, décalées). Mêmes clés que noeuds() + « abs » (le chemin absolu) et « lieu »."""
+    m = m_(state)
+    zone = noeuds(state, marquer=marquer)
+    vus = [os.path.normpath(v) for v in m["sauvage"]]
+    montres = set(m["montres"])
+    ch = chaine()
+    out = []
+
+    def ajouter(chemin, nom, prof, branches, genre, lieu, brume):
+        cle = "@" + ("~" if brume else "") + str(chemin)
+        n = {"rel": str(chemin), "abs": str(chemin), "nom": nom, "prof": prof, "dossier": True, "genre": genre, "biome": None,
+             "lieu": lieu, "brume": brume, "nouveau": cle not in montres, "ici": False, "marques": "", "garde": "",
+             "branches": branches, "suite": 0, "cle": cle}
+        n["etiquette"] = "???" if brume else etiquette(state, n)
+        out.append(n)
+        return n
+
+    ajouter(ch[0][0], str(ch[0][0]), 0, "", "racine", "racine", False)
+    premier = ch[1][0].name if len(ch) > 1 else None
+    for nom, lieu in LIEUX_SYSTEME:
+        d = racine() / nom
+        if nom.split("/")[0] == premier or not d.is_dir():
+            continue
+        vu = any(_sous(v, d) for v in vus)
+        ajouter(d, nom, 1, "├── ", "systeme", lieu, not vu)
+    avant = ""
+    for k, (d, lieu) in enumerate(ch[1:], 1):
+        ajouter(d, d.name, k, avant + "└── ", "camp_base" if lieu == "camp" else lieu, lieu, False)
+        avant += "    "
+    base = len(ch)
+    for n in zone:
+        n = dict(n)
+        n["abs"] = str(T() / n["rel"]) if n["rel"] and n["genre"] != "suite" else str(T())
+        if n["prof"] == 0:
+            n["nom"], n["branches"] = T().name, avant + "└── "
+        else:
+            n["branches"] = avant + "    " + n["branches"]
+        n["prof"] += base
+        out.append(n)
+    # ◉ hors de la zone : le lieu le plus proche sur la carte (la Racine au pire)
+    ici_ = ici(state)
+    if ici_ and rel(ici_) is None:
+        proches = [n for n in out if n.get("lieu") and _sous(ici_, n["abs"])]
+        if proches:
+            max(proches, key=lambda n: len(n["abs"]))["ici"] = True
+    if marquer:
+        m["montres"] = (m["montres"] + [n["cle"] for n in out[:len(out) - len(zone)] if n["nouveau"]])[-800:]
+    return out
+
+
+def chemin_lieux(chemin):
+    """« la Racine → le village → ton camp de base → la zone d'aventure → Grenier » : un chemin absolu lu lieu par
+    lieu, comme une ligne de métro (le panneau de pwd)."""
+    if not chemin:
+        return ""
+    c = Path(os.path.normpath(str(chemin)))
+    morceaux = []
+    p = None
+    for x in c.parts:
+        p = Path(x) if p is None else p / x
+        lieu = lieu_de(p)
+        r = rel(p)
+        if r == "":
+            morceaux.append(nom_lieu("zone"))
+        elif r is not None:
+            morceaux.append(nom_piece(r) if r in PIECES or r == "jardin" else x)
+        elif lieu in ("racine", "village", "camp") and os.path.normpath(str(p)) in [os.path.normpath(str(d)) for d, _ in chaine()]:
+            morceaux.append(nom_lieu(lieu))
+        elif lieu not in ("chemin", "systeme", "camp") and any(os.path.normpath(str(racine() / n)) == os.path.normpath(str(p)) for n, _ in LIEUX_SYSTEME):
+            morceaux.append(nom_lieu(lieu))
+        elif not (p.name == "var" and lieu == "systeme" and len(c.parts) > 2 and c.parts[2] == "log"):
+            morceaux.append(x)
+    return " → ".join(morceaux)
+
+
 def legende(state):
     """Les commandes du monde déjà rencontrées (dans l'ordre où on les apprend) : textes avec `…` en vert."""
     vues = {str(c).lower() for c in state.get("seen", [])}
@@ -567,6 +789,8 @@ def sol(n, parent=None):
         return SOLS["brume"]
     if g == "piece":
         return SOLS_PIECES.get(b, SOLS["lieu"])
+    if n.get("lieu") and g in ("systeme",):
+        return SOLS["systeme"]
     if g in ("region", "parcelle", "lieu") and b in BIOMES:
         return BIOMES[b][1], BIOMES[b][2]
     if g in ("note", "recette", "image", "coffre", "secret_objet"):
@@ -578,6 +802,8 @@ def emoji(n):
     g, b = n["genre"], n["biome"]
     if n["brume"]:
         return EMOJIS["brume"]
+    if n.get("lieu") or g == "zone":
+        return ICONES_LIEUX.get(n.get("lieu") or "zone", "📁")
     if g == "piece":
         return ICONES.get(b, "🌳")
     if g in ("region", "parcelle") and b in BIOMES:
@@ -600,7 +826,7 @@ def _tuile(n, parents, couleur=True):
 
 def _texte_tree(n, couleur=True):
     """La ligne de `tree` (avec / après les dossiers, comme `tree -F`)."""
-    nom = n["nom"] + ("/" if n["dossier"] and n["rel"] else "")
+    nom = n["nom"] + ("/" if n["dossier"] and n["nom"] not in (".", "/") and not n["nom"].endswith(("/", "\\")) else "")
     if n["genre"] == "suite":
         nom = "… " + t("carte.monde.autres", n=n["suite"])
     if couleur:
@@ -642,7 +868,7 @@ def carte(state, mode=None):
     from . import histoire
     mode = mode or mode_auto()
     couleur = mode == "colonnes"
-    ns = noeuds(state, marquer=True)
+    ns = monde(state, marquer=True)
     lignes = [f" {fg(213)}── 🗺  " + t("carte.monde.titre", nom=state["name"]) + f" ──{RESET}", ""]
     if couleur:
         parents = {}
@@ -666,11 +892,10 @@ def carte(state, mode=None):
             else:
                 lignes.append(" " + _texte_tree(n, False) + "  " + lab + _signes(n, False))
     lignes.append("")
-    r = rel(ici(state)) if ici(state) else None
-    if r is not None:
-        lignes.append(" ◉ " + t("carte.ici", lieu=(f"~/{T().name}/{r}" if r else f"~/{T().name}")))
-    elif ici(state):
-        lignes.append(" ◉ " + t("carte.dehors", lieu=ici(state)))
+    if ici(state):                    # le panneau de pwd : le chemin complet depuis la Racine, lu lieu par lieu
+        lignes.append(" ◉ " + t("carte.ici", lieu=os.path.normpath(ici(state))))
+        lignes.append(f"   {fg(84) if couleur else ''}🚇 " + chemin_lieux(ici(state)) + (RESET if couleur else ""))
+    lignes.append(f" {DIM}" + t("carte.absolu") + RESET)
     lignes.append(f" {DIM}" + t("carte.legende") + RESET)
     leg = legende(state) or [t("carte.monde.legende.rien")]
     cur = " " + t("carte.monde.legende")
@@ -682,9 +907,7 @@ def carte(state, mode=None):
     lignes.append(cur)
     trouves, total = _secrets(state)
     lignes.append(" " + t("carte.secrets", n=trouves, total=total))
-    if m_(state)["sauvage"]:
-        lignes.append(f"   {DIM}{nom_piece('sauvage')} :{RESET} " + raccourcir(", ".join(m_(state)["sauvage"][-4:]), 60)
-                      + f" {DIM}" + t("carte.sauvage.lecture") + RESET)
+    lignes.append(f" {DIM}" + t("carte.sauvage.lecture") + RESET)
     if not histoire.piece_ouverte(state, "vestibule"):
         lignes.append(" " + t("carte.vide"))
     return lignes

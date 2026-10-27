@@ -318,6 +318,22 @@ def tx(v):
     return t(cle, **d)
 
 
+def adulte(step):
+    """G-32 : la version « pour les grands » d'une étape (clé <étape>.adulte à côté de <étape>.dit, mêmes paramètres),
+    précédée de « Pour les grands : », ou None si l'étape n'en a pas."""
+    from .langue import brut
+    v = step.get("dit")
+    cle, p = (v[0], v[1]) if isinstance(v, (tuple, list)) else (v, {})
+    if not cle or not str(cle).endswith(".dit"):
+        return None
+    ca = str(cle)[:-4] + ".adulte"
+    if brut(ca) is None:
+        return None
+    p = dict(p)
+    p.update(step.get("params") or {})
+    return t("grand.ligne", texte=tx((ca, p)))
+
+
 def nom_branche(b):
     return t("branche." + b)
 

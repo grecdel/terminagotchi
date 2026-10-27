@@ -16,10 +16,10 @@ import java.io.File
  * chacun dans un lieu. Avec sa créature, il réveille le monde lieu par lieu. Chaque chapitre a un vrai problème à
  * résoudre ; les commandes sont les outils pour le résoudre.
  *
- *    1 reveil        Le réveil                 pwd, ls, cd              (on trouve l'œuf)
+ *    1 reveil        Le réveil                 pwd, ls, cd, puis cd / (l'œuf, puis le voyage jusqu'à la Racine)
  *    2 nid           Le nid                    mkdir, touch, rmdir, rm -r, >, cat   (un nid, un lieu en trop, un repas)
  *    3 grenier       La forêt du Grenier       ls -R, mv, cp, rm        (des lianes ont tout mélangé)
- *    4 cave          La caverne des Démons     whoami, id, chmod        (ils volent la nourriture)
+ *    4 cave          La caverne des Démons     whoami, id, chmod, puis les lieux du gardien (/etc, /bin, /var/log)
  *    5 bibliotheque  La bibliothèque engloutie find, cat, grep, head, wc, et les tuyaux | sort
  *    6 machines      La salle des machines du volcan  free, du, rm, df, uptime, uname, getprop
  *    7 dortoir       Le dortoir des brumes     ps, ps | wc, date        (des fantômes refusent de dormir)
@@ -27,6 +27,12 @@ import java.io.File
  *    9 tour          La tour des nuages        ping, ifconfig, hostname, web
  *   10 coeur         Le cœur du monde          rev, ls -a, find, cat >, grep | wc, puis Abyssor
  *   (+ telephone : le jardin du téléphone, ouvre, lampe, sms… hors compte des ailes)
+ *
+ * Le Terminaworld, c'est TOUT le système de fichiers, simulé par Racine.kt (/, /home, ~ = /home/explorateur, /etc, /bin,
+ * /tmp, /var/log, /dev, /proc) : « Voyage jusqu'à la Racine » (fin du chapitre 1) et « Les lieux du gardien » (fin du
+ * chapitre 4) y emmènent, en lecture seule. Une étape dont « ou » ou « ici » commence par / attend un lieu du
+ * Terminaworld hors de la zone d'aventure (« / », « /home/explorateur »). Chaque étape a sa version « pour les grands »
+ * (clé <étape>.adulte, Etape.adulte, G-32).
  *
  * Mêmes règles que sur PC : après le chapitre 2, les ailes 3 à 9 se réveillent dans l'ordre qu'on veut. On choisit
  * une aile en y entrant (cd grenier) ou avec « aile <nom> ». On peut changer d'aile en cours de route : l'étape
@@ -58,10 +64,10 @@ object Histoire {
     )
 
     val CHAPITRES = listOf(
-        Chapitre("reveil", 1, "vestibule", null, listOf("t0", "reveil1"), listOf(2, 2), "veilleuse"),
+        Chapitre("reveil", 1, "vestibule", null, listOf("t0", "reveil1", "racine"), listOf(2, 2, 2), "veilleuse"),
         Chapitre("nid", 2, "nid", null, listOf("nid0", "debarras", "nid1", "secrets"), listOf(3, 3, 4, 4), "coussin"),
         Chapitre("grenier", 3, "grenier", "Sylvestres", listOf("grenier0", "t4"), null, "plante", "jardinier"),
-        Chapitre("cave", 4, "cave", "Démons", listOf("cave0", "t3"), null, "cadenas_dore", "gardien_des_cles"),
+        Chapitre("cave", 4, "cave", "Démons", listOf("cave0", "t3", "gardien"), null, "cadenas_dore", "gardien_des_cles"),
         Chapitre("bibliotheque", 5, "bibliotheque", "Abyssaux", listOf("biblio0", "biblio1", "tuyaux0", "tuyaux1"), null,
             "marque_page", "bibliothecaire"),
         Chapitre("machines", 6, "salle_des_machines", "Élémentaires", listOf("machines0", "systeme1", "systeme2"), null,
@@ -112,8 +118,9 @@ object Histoire {
 
     /** Une étape nouvelle : textes hist.<leçon>.<i>.dit / .bravo. */
     private fun n(lid: String, i: Int, cmd: String, re: String? = null, fs: ((Jeu) -> Boolean)? = null, ou: String? = null,
-                  ici: String? = null, exact: Boolean = false, expert: Boolean = false, astuce: String? = null, cree: String? = null) =
-        Etape("hist.$lid.$i.dit", cmd, "hist.$lid.$i.bravo", re?.let { r(it) }, fs, astuce, cree, ou, ici, exact, expert)
+                  ici: String? = null, exact: Boolean = false, expert: Boolean = false, astuce: String? = null, cree: String? = null,
+                  params: Map<String, String> = emptyMap()) =
+        Etape("hist.$lid.$i.dit", cmd, "hist.$lid.$i.bravo", re?.let { r(it) }, fs, astuce, cree, ou, ici, exact, expert, params)
 
     /** Une étape propre au téléphone : textes hista.<leçon>.<i>.dit / .bravo. */
     private fun a(lid: String, i: Int, cmd: String, re: String) = Etape("hista.$lid.$i.dit", cmd, "hista.$lid.$i.bravo", r(re))
@@ -136,6 +143,14 @@ object Histoire {
                 n("reveil1", 2, "cd vestibule", ici = "vestibule"),
                 n("reveil1", 3, "ls", re = LS, ou = "vestibule"),
             )),
+            // « Voyage jusqu'à la Racine » (G-33) : le Terminaworld est tout le système de fichiers (simulé, Racine.kt)
+            "racine" to Lecon("hist.racine.titre", null, 1, listOf(
+                n("racine", 0, "cd /", ici = "/"),
+                n("racine", 1, "ls", re = LS, ou = "/"),
+                n("racine", 2, "pwd", re = "^(pwd|get-location|gl)\\b", ou = "/"),
+                n("racine", 3, "cd ~", ici = Racine.HOME, params = mapOf("chemin" to Racine.HOME)),
+                n("racine", 4, "cd ${Racine.HOME}/terrain_terminagotchi/vestibule", ici = "vestibule"),
+            )),
             "nid0" to Lecon("lec.t1.titre", "Bâtisseur", 1, listOf(
                 n("nid0", 0, "cd ..", ici = "", exact = true),
                 ref("t1", 2),
@@ -148,12 +163,10 @@ object Histoire {
                 n("debarras", 2, "rm -r vieille_cabane", fs = { !File(it.terrain, "vieille_cabane").exists() && it.terrain.isDirectory }),
             )),
             "nid1" to Lecon("lec.t2.titre", null, 1, listOf(ref("t2", 0), ref("t2", 1))),
-            // mini-leçon « pont » (G-05) : les passages secrets (ls -a) juste avant l'ouverture de l'exploration ;
-            // l'astuce est la version des grands
+            // mini-leçon « pont » (G-05) : les passages secrets (ls -a) juste avant l'ouverture de l'exploration
             "secrets" to Lecon("hist.secrets.titre", null, 1, listOf(
-                n("secrets", 0, "ls -a", re = "^(ls\\s+-\\w*[aA]|dir\\s+(-force|/a)|gci\\s+-force|get-childitem\\s+-force)", ou = "",
-                    astuce = "hist.secrets.0.adulte"),
-                n("secrets", 1, "cat .mot_secret.txt", re = "$LIRE.*\\.mot_secret", ou = "", astuce = "hist.secrets.1.adulte"),
+                n("secrets", 0, "ls -a", re = "^(ls\\s+-\\w*[aA]|dir\\s+(-force|/a)|gci\\s+-force|get-childitem\\s+-force)", ou = ""),
+                n("secrets", 1, "cat .mot_secret.txt", re = "$LIRE.*\\.mot_secret", ou = ""),
             )),
             // pas de tree sur le téléphone : ls -R montre le plan
             "grenier0" to Lecon("hist.grenier0.titre", "Explorateur", 1, listOf(
@@ -164,6 +177,14 @@ object Histoire {
             )),
             // pas de sudo sur le téléphone : id montre les clubs (les groupes) de l'utilisateur
             "cave0" to Lecon("hist.cave0.titre", null, 1, listOf(entree("cave"), ref("systeme0", 0), ref("systeme0", 1))),
+            // « Les lieux du gardien » (G-33) : la salle des règles, l'armurerie, les archives, en lecture seule
+            "gardien" to Lecon("hist.gardien.titre", null, 1, listOf(
+                n("gardien", 0, "cat /etc/hostname", re = "^(cat|head|tail|more|less)\\b.*/etc/hostname"),
+                n("gardien", 1, "ls /bin", re = "^ls\\b.*/(usr/)?s?bin\\b"),
+                n("gardien", 2, "ls /var/log", re = "^ls\\b.*/var/log"),
+                Etape("hist.gardien.3.dit", "ls -l /etc/hostname", "hista.gardien.3.bravo", r("^(ls\\s+-\\w*l|stat)\\b.*/etc/"),
+                    adulteCle = "hista.gardien.3.adulte"),
+            )),
             "biblio0" to Lecon("hist.biblio0.titre", null, 1, listOf(
                 entree("bibliotheque"),
                 n("biblio0", 1, "find . -name \"*abysses*\"", re = "^(find|get-childitem|gci|dir)\\b.*abyss"),
@@ -251,7 +272,16 @@ object Histoire {
         if (!h.has("born")) h.put("born", System.currentTimeMillis() / 1000)
         if (h.optInt("v", 1) < 2) versionV2(jeu, h)
         if (h.optInt("v", 1) < 3) versionV3(h)
+        if (h.optInt("v", 1) < 4) versionV4(h)
         return h
+    }
+
+    /** Sauvegarde v3 → v4 : « Voyage jusqu'à la Racine » finit le chapitre 1, « Les lieux du gardien » le chapitre 4. Un
+     *  chapitre déjà fini les compte comme faites ; une partie en plein chapitre les fera à la fin. */
+    private fun versionV4(h: JSONObject) {
+        h.put("v", 4)
+        if ("reveil" in liste(h, "ailes")) ajouter(h, "faits", "racine")
+        if ("cave" in liste(h, "ailes")) ajouter(h, "faits", "gardien")
     }
 
     /** Sauvegarde v2 → v3 : la mini-leçon « passages secrets » (secrets) finit le chapitre 2. Un chapitre 2 déjà fini
@@ -638,9 +668,19 @@ object Histoire {
         else jeu.etape = leconId(jeu)?.let { prendrePas(jeu, it) } ?: 0
     }
 
+    /** Un lieu du Terminaworld hors de la zone d'aventure (« / », « /home/explorateur ») : le chemin virtuel exact. */
+    private fun absOk(jeu: Jeu, cwd: String?, lieu: String) = cwd != null && Racine.virtuel(jeu.home, cwd) == lieu
+
+    private fun ouOk(jeu: Jeu, e: Etape, cwd: String?): Boolean = when {
+        e.ou == null -> true
+        e.ou.startsWith("/") -> absOk(jeu, cwd, e.ou)
+        else -> Maison.dans(jeu, cwd, e.ou)
+    }
+
     private fun iciOk(jeu: Jeu, e: Etape, cwd: String?): Boolean {
         val ici = e.ici ?: return false
         if (cwd == null) return false
+        if (ici.startsWith("/")) return absOk(jeu, cwd, ici)
         return if (e.exact) Maison.rel(jeu, cwd) == ici else Maison.dans(jeu, cwd, ici)
     }
 
@@ -662,7 +702,7 @@ object Histoire {
         val avant = les.id to jeu.etape
         for ((ligne, cwd) in tapees) {
             val e = les.etapes[jeu.etape]
-            val ok = e.re?.containsMatchIn(ligne) == true && (e.ou == null || Maison.dans(jeu, cwd, e.ou))
+            val ok = e.re?.containsMatchIn(ligne) == true && ouOk(jeu, e, cwd)
             if (ok || iciOk(jeu, e, cwd)) {
                 if (!avancer(jeu, les)) { jeu.indiceLecon = null; return }
             }
@@ -686,7 +726,10 @@ object Histoire {
     /** Un indice quand c'est presque ça (mauvais endroit, faute de frappe, mauvais nombre…). */
     fun indice(jeu: Jeu, e: Etape, tapees: List<Pair<String, String?>>): String? {
         if (e.bravoCle == "hist.coeur2.2.bravo" && File(jeu.terrain, "coeur/reponse.txt").isFile) return t("hist.indice.nombre")
-        if (e.ou != null && e.re != null) {
+        if (e.ou != null && e.ou.startsWith("/") && e.re != null) {
+            for ((l, cwd) in tapees) if (e.re.containsMatchIn(l) && !ouOk(jeu, e, cwd)) return t("hist.indice.racine", "cmd" to "cd /")
+        }
+        if (e.ou != null && !e.ou.startsWith("/") && e.re != null) {
             for ((l, cwd) in tapees) if (e.re.containsMatchIn(l) && !Maison.dans(jeu, cwd, e.ou)) {
                 return t("hist.indice.piece", "piece" to Maison.nomPiece(if (e.ou.isNotEmpty()) e.ou else "grande_salle"),
                     "cmd" to "cd ~/${jeu.terrain.name}/${e.ou}".trimEnd('/'))
@@ -827,6 +870,8 @@ object Histoire {
             }
         }
         if ("nid1" in faits) fait("secrets")       // le tronc commun fini : l'exploration était déjà ouverte (v3)
+        if ("reveil1" in faits) fait("racine")     // le chapitre 1 était fini (v4)
+        if ("t3" in faits && "cave0" in faits) fait("gardien")
         val h = JSONObject().put("v", 2).put("chap", "reveil").put("faits", JSONArray(faits)).put("ailes", JSONArray())
             .put("pas", pas).put("ouverts", JSONArray()).put("carnet", JSONObject()).put("meubles", JSONArray())
             .put("suggere", JSONArray()).put("born", System.currentTimeMillis() / 1000)

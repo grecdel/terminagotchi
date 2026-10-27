@@ -12,14 +12,12 @@
      créature le redit dans une bulle et ne le répète plus (state["options_vues"]) ;
    - la commande « tg explique rm » (ou « explique rm ») : la fiche complète d'une commande.
 4) Pour les grands : sous chaque explication imagée, l'explication technique exacte (« grand.<commande> »,
-   « optg.<clé> », avec les noms longs des options GNU : --recursive, --all, --human-readable…).
-   Lexique et fiche : toujours. Leçons et bulles : à partir du palier 1 de vocabulaire (mots.py) ;
-   au palier 0, seulement l'image (la version technique reste dans « explique »).
+   « optg.<clé> », « diffg.<groupe> », avec les noms longs des options GNU : --recursive, --all, --human-readable…).
+   Partout et à tous les paliers (G-32, décision du propriétaire) : l'enfant a l'image, l'adulte juste à côté.
 Mêmes tables dans l'appli Android (Explique.kt).
 """
 from . import core
 from .langue import brut, t
-from .mots import palier
 from .plateforme import DIM, RESET, BOLD, fg
 
 OPTIONS = {
@@ -48,7 +46,8 @@ OPTIONS = {
     "ssh": {"-V": "version"},
     "python3": {"-m": "module"},
 }
-SYMBOLES = {">": "ecrase", ">>": "ajoute", "|": "tuyau", ".": "ici", "..": "avant", "~": "chambre", "*": "etoile"}
+SYMBOLES = {">": "ecrase", ">>": "ajoute", "|": "tuyau", ".": "ici", "..": "avant", "~": "chambre", "*": "etoile",
+            "/": "racine"}
 VOISINES = {"rm": "rm", "rmdir": "rm", "cp": "cp_mv", "mv": "cp_mv", "cat": "lire", "head": "lire", "tail": "lire",
             "less": "lire", "touch": "touch_mkdir", "mkdir": "touch_mkdir", "echo": "redir", "ls": "ls",
             "ps": "ps_kill", "kill": "ps_kill"}
@@ -89,6 +88,8 @@ def options(ligne):
             elif m in (".", "..", "~") or m.startswith(("../", "~/")):
                 cle = ".." if m.startswith("..") else "~" if m.startswith("~") else "."
                 ajouter(cle, SYMBOLES[cle])
+            elif m.startswith("/") and not m.startswith("//"):
+                ajouter("/", SYMBOLES["/"])                           # un chemin absolu : il part de la Racine
             if "*" in m and not m.startswith("-"):
                 ajouter("*", SYMBOLES["*"])
     return out
@@ -112,11 +113,8 @@ def grand_commande(nom, technique=None):
 
 
 def phrases(state, montre, cle):
-    """L'image (la créature), puis la version des grands à partir du palier 1."""
-    out = [phrase(montre, cle)]
-    if palier(state) >= 1:
-        out.append(grand("optg." + cle))
-    return out
+    """L'image (la créature), puis la version des grands, toujours (G-32)."""
+    return [phrase(montre, cle), grand("optg." + cle)]
 
 
 def nouvelles(state, cmd):
@@ -180,6 +178,7 @@ def fiche(state, cmd):
     if opts:
         out += ["", f" {BOLD}" + t("explique.options") + RESET] + ["   " + o for o in opts]
     if diff:
-        out += ["", f" {BOLD}" + t("explique.diff") + RESET, "   " + t("diff." + diff)]
+        out += ["", f" {BOLD}" + t("explique.diff") + RESET, "   " + t("diff." + diff),
+                f"   {DIM}" + grand("diffg." + diff) + RESET]
     out.append(f"\n {DIM}" + t("explique.aide", ex="tg explique rm") + RESET)
     return out
