@@ -326,7 +326,10 @@ console.log("Salle d'entraînement : exercices vérifiés, records, badges, Star
   const auj = new Date().toISOString().slice(0, 10);
   let r = await appel("POST", "/api/sync", { cle: cleTel, corps: { appareil: "android", vus: ["mkdir", "rm", "rmdir"] } });
   const g = r.j.graines.find((x) => x.id.startsWith(auj));
-  const run = (id, type, n, t, extra = {}) => ({ id, type, g: g.id, n, t, d: Date.now(), e: E.empreinte(type, E.generer(type, g.valeur, n)), ...extra });
+  // un enfant fait ses exercices l'un après l'autre (deux exercices vérifiés ne se chevauchent jamais)
+  const jour0 = Date.parse(auj + "T00:00:00Z");
+  let horloge = Math.max(jour0 + 60_000, Date.now() - 3 * 3_600_000);
+  const run = (id, type, n, t, extra = {}) => ({ id, type, g: g.id, n, t, d: (horloge += 90_000), e: E.empreinte(type, E.generer(type, g.valeur, n)), ...extra });
   const runs = [
     run("e00000000001", "bat_pieces", 0, 9.4),                                  // honnête (diamant : ≤ 15 s)
     run("e00000000002", "bat_pieces", 1, 12, { e: "bat_pieces|pieces=cave,salon" }),   // empreinte inventée
@@ -335,6 +338,7 @@ console.log("Salle d'entraînement : exercices vérifiés, records, badges, Star
     run("e00000000005", "plo_tuyau", 3, 40),                                    // commandes jamais tapées (grep, wc)
     { id: "e00000000006", type: "net_rmdir", g: "", n: 0, t: 18, d: Date.now(), e: "x" },   // sans graine (hors ligne)
     run("e00000000007", "net_rmr", 4, 14),
+    run("e00000000008", "bat_pieces", 5, 11), run("e00000000009", "bat_pieces", 6, 13), run("e0000000000b", "bat_pieces", 7, 16),
   ];
   r = await appel("POST", "/api/sync", { cle: cleTel, corps: { appareil: "android", entrainement: {
     deltas: { batisseur: { n: 4, diamant: 1, or: 1, bronze: 2 }, nettoyeur: { n: 3, argent: 3 } },
@@ -354,6 +358,46 @@ console.log("Salle d'entraînement : exercices vérifiés, records, badges, Star
   r = await appel("POST", "/api/sync", { cle: cleTel, corps: { appareil: "android", entrainement: { runs: [runs[0]], deltas: {} } } });
   verifier(r.j.entrainement.verdicts.e00000000001 === true && r.j.etat.entrainement.familles.batisseur.n === 4,
     "un exercice renvoyé deux fois n'est pas compté deux fois");
+  // anti-triche (la réponse se calcule depuis la graine : le serveur juge le temps, la date, le rythme)
+  const bots = [
+    run("e0000000000c", "exp_chemin", 8, 3.5),                                  // 3,5 s : passait avant (minimum 3 s), plus maintenant
+    run("e0000000000d", "lec_cat", 9, E.tempsMinimum("lec_cat")),               // pile le minimum plausible : vérifié
+    { ...run("e0000000000e", "dem_mv", 10, 12), d: horloge - 87_000 },         // commencé avant la fin du précédent
+    { ...run("e0000000000f", "dem_cp", 11, 12), d: jour0 - 3 * 86_400_000 },   // daté 3 jours avant sa graine
+    { ...run("e000000000a0", "net_rm", 12, 12), d: Date.now() + 86_400_000 },  // daté demain
+  ];
+  r = await appel("POST", "/api/sync", { cle: cleTel, corps: { appareil: "android", vus: ["mkdir", "rm", "rmdir", "cd", "cat", "mv", "cp"],
+    entrainement: { runs: bots, deltas: { explorateur: { n: 500, diamant: 500 } } } } });
+  const vb = r.j.entrainement?.verdicts || {};
+  const grs = r.j.graines;
+  verifier(vb.e0000000000c === false && E.tempsMinimum("exp_chemin") >= 5, `temps sous le minimum plausible du type (${E.tempsMinimum("exp_chemin")} s) : non vérifié`);
+  verifier(vb.e0000000000d === true, "au minimum plausible : vérifié");
+  verifier(vb.e0000000000e === false, "deux exercices en même temps : le second n'est pas vérifié");
+  verifier(vb.e0000000000f === false && vb.e000000000a0 === false, "date hors du jour de la graine (avant, ou dans le futur) : non vérifié");
+  verifier(r.j.etat.entrainement.verifies?.explorateur?.n === 0 && r.j.etat.entrainement.familles.explorateur.n === 500,
+    "compteurs envoyés par le jeu (500 💎) : gardés pour le jeu, jamais comptés comme vérifiés");
+  r = await appel("GET", "/api/profil/Grec");
+  verifier(!r.j.entrainement?.familles?.explorateur?.echelon && r.j.entrainement.familles.explorateur.nonVerifies === 500,
+    "profil : pas de grade Explorateur avec des compteurs non vérifiés (500 « non vérifiés » affichés à part)");
+  r = await appel("GET", "/joueur/Grec");
+  verifier(r.t.includes("pas encore vérifié"), "profil HTML : les exercices non vérifiés sont signalés");
+  const jj = await env.DB.prepare("SELECT id FROM joueurs WHERE pseudo = 'Grec'").first();
+  const demain = jour0 + 86_400_000 + 3_600_000;
+  for (let i = 0; i < E.MAX_VERIFIES_JOUR; i++) {
+    await env.DB.prepare("INSERT INTO exercices (id, joueur, partie, famille, type, temps, medaille, date, semaine, graine, n, verifie) VALUES (?, ?, '9', 'lecteur', 'lec_cat', 10, 'diamant', ?, ?, NULL, NULL, 1)")
+      .bind("f" + String(i).padStart(11, "0"), jj.id, demain + i * 20_000, E.semaine(demain)).run();
+  }
+  const gd = grs.find((x) => x.id.startsWith(new Date(demain).toISOString().slice(0, 10)));
+  const trop = { id: "e000000000a1", type: "lec_cat", g: gd.id, n: 0, t: 10, d: demain + 3_600_000, e: E.empreinte("lec_cat", E.generer("lec_cat", gd.valeur, 0)) };
+  const sauveNow = Date.now;
+  Date.now = () => demain + 3_700_000;
+  try {
+    r = await appel("POST", "/api/sync", { cle: cleTel, corps: { appareil: "android", entrainement: { runs: [trop] } } });
+  } finally {
+    Date.now = sauveNow;
+  }
+  verifier(r.j.entrainement?.verdicts?.e000000000a1 === false, `plus de ${E.MAX_VERIFIES_JOUR} exercices vérifiés le même jour : non vérifié`);
+  await env.DB.prepare("DELETE FROM exercices WHERE partie = '9'").run();
   // la semaine dernière : une Star par famille (calculée une fois, la semaine suivante)
   const j = await env.DB.prepare("SELECT id FROM joueurs WHERE pseudo = 'Grec'").first();
   const avant = Date.now() - 7 * 86_400_000;

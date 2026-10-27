@@ -107,8 +107,20 @@ export function medaille(typ, s) {
   return s <= par ? "diamant" : s <= 2 * par ? "or" : s <= 4 * par ? "argent" : "bronze";
 }
 
-/** Le temps le plus court plausible pour un exercice (en secondes). */
-export const tempsMinimum = (typ) => Math.max(2, TYPES[typ][2] / 5);
+/**
+ * Le temps le plus court plausible pour un exercice (en secondes) : lire la consigne puis taper la plus courte
+ * solution à la main (≈ 4 touches par seconde, sans copier-coller), calibré par type. Plus rapide : un script
+ * (la réponse se calcule depuis la graine), le temps est gardé mais « non vérifié ».
+ */
+export const MINIMUM = {
+  exp_chemin: 5, exp_cle: 8, bat_pieces: 5, bat_objets: 8, dem_mv: 6, dem_cp: 6, net_rm: 6, net_rmdir: 6, net_rmr: 5,
+  lec_cat: 5, lec_head: 6, lec_tail: 6, det_grep: 7, det_find: 8, plo_ecrit: 6, plo_ajout: 8, plo_tuyau: 9,
+  cui_lancer: 5, cui_ecrire: 12,
+};
+export const tempsMinimum = (typ) => Math.max(MINIMUM[typ] ?? 5, TYPES[typ][2] / 5);
+/** Au plus tant d'exercices vérifiés par joueur et par jour (au-delà : gardés, « non vérifiés ») ; un enfant ne fait
+ * pas d'exercices en même temps (deux exercices vérifiés ne se chevauchent jamais dans le temps). */
+export const MAX_VERIFIES_JOUR = 60;
 
 /** La semaine ISO (UTC) d'un instant en millisecondes : « 2026-W43 ». */
 export function semaine(ms = Date.now()) {

@@ -252,7 +252,12 @@ async function verifierCaptures(env, joueur, etat, envoyees, vusEnvoyes = []) {
  *   runs    : les exercices réussis à vérifier { id, type, g (graine), n (compteur), t (secondes), d (date), e (empreinte) } ;
  *   records : son meilleur temps par exercice { t, g, n, d }.
  * Un exercice est vérifié si la graine est bien celle d'un appareil du joueur, si (graine, n) n'a jamais servi, si
- * l'enfant avait déjà tapé ses commandes, si l'empreinte est celle du tirage refait ici et si le temps est plausible.
+ * l'enfant avait déjà tapé ses commandes, si l'empreinte est celle du tirage refait ici, si le temps est plausible
+ * (ENT.tempsMinimum, par type), si sa date tombe le jour de sa graine, s'il ne chevauche aucun autre exercice
+ * vérifié et s'il en reste moins de ENT.MAX_VERIFIES_JOUR ce jour-là. La réponse d'un exercice se calcule depuis
+ * la graine (il le faut pour jouer hors ligne) : ces contrôles jugent donc le rythme, pas la réponse.
+ * Les deltas ne servent qu'au jeu (sa progression locale) : grades, titres, badges du profil, records publics et
+ * Star de la semaine ne comptent que les exercices vérifiés (verifiesDe, recomptés ici).
  * Un record est « vérifié » quand il correspond à un exercice vérifié ; sinon il est gardé, marqué non vérifié.
  */
 async function posteDuJoueur(env, joueur, poste, cache) {
@@ -299,6 +304,24 @@ async function synchroEntrainement(env, joueur, partie, avant, envoi, vus) {
     else if (ENT.empreinte(run.type, ENT.generer(run.type, await valeurGraine(env, joueur.id, m[2], m[1]), run.n)) !== run.e) raison = "ne correspond pas au tirage";
     else if (t < ENT.tempsMinimum(run.type)) raison = "temps impossible";
     const date = Math.min(maintenant, Math.max(Number(run.d) || 0, maintenant - 8 * JOUR_MS));
+    if (!raison) {
+      // la date annoncée doit tomber le jour de la graine (fuseaux horaires compris), jamais dans le futur
+      const jourG = Date.parse(m[1] + "T00:00:00Z");
+      const d = Number(run.d);
+      if (!(d >= jourG - 14 * 3_600_000 && d <= jourG + JOUR_MS + 14 * 3_600_000 && d <= maintenant + 60_000)) raison = "date hors du jour de la graine";
+    }
+    if (!raison) {
+      // un enfant fait un exercice à la fois : pas de chevauchement avec un autre exercice vérifié (0,5 s de marge)
+      const chev = await env.DB.prepare("SELECT 1 AS ok FROM exercices WHERE joueur = ? AND verifie = 1 AND date > ? AND date - temps * 1000 < ?")
+        .bind(joueur.id, date - t * 1000 + 500, date - 500).first();
+      if (chev) raison = "en même temps qu'un autre exercice";
+    }
+    if (!raison) {
+      const j0 = Math.floor(date / JOUR_MS) * JOUR_MS;
+      const nb = await env.DB.prepare("SELECT COUNT(*) AS c FROM exercices WHERE joueur = ? AND verifie = 1 AND date >= ? AND date < ?")
+        .bind(joueur.id, j0, j0 + JOUR_MS).first();
+      if ((nb?.c ?? 0) >= ENT.MAX_VERIFIES_JOUR) raison = "trop d'exercices ce jour-là";
+    }
     const ligne = [run.id, joueur.id, partie, ENT.TYPES[run.type][0], run.type, t, ENT.medaille(run.type, t), date, ENT.semaine(date)];
     const sql = "INSERT OR IGNORE INTO exercices (id, joueur, partie, famille, type, temps, medaille, date, semaine, graine, n, verifie) "
       + "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
@@ -320,7 +343,23 @@ async function synchroEntrainement(env, joueur, partie, avant, envoi, vus) {
       : false;
     garder(typ, { t, v, d: entier(r.d, 4e12) });
   }
+  // les grades, titres et badges publics ne comptent QUE les exercices vérifiés (recomptés ici, jamais envoyés par le
+  // jeu) ; e.familles garde les compteurs du jeu (sa progression locale, sur tous ses appareils), « non vérifiés »
+  e.verifies = await verifiesDe(env, joueur.id, partie);
   return { etat: e, verdicts };
+}
+
+/** Les compteurs (réussites, médailles) des seuls exercices vérifiés d'une partie, par famille. */
+async function verifiesDe(env, joueurId, partie) {
+  const v = Object.fromEntries(ENT.FAMILLES.map((f) => [f, Object.fromEntries(["n", ...ENT.MEDAILLES].map((k) => [k, 0]))]));
+  const r = await env.DB.prepare("SELECT famille, medaille, COUNT(*) AS c FROM exercices WHERE joueur = ? AND partie = ? AND verifie = 1 "
+    + "GROUP BY famille, medaille").bind(joueurId, partie).all();
+  for (const x of r.results) {
+    if (!v[x.famille]) continue;
+    v[x.famille].n += x.c;
+    if (Object.hasOwn(v[x.famille], x.medaille)) v[x.famille][x.medaille] += x.c;
+  }
+  return v;
 }
 
 /** Donne la « Star de la semaine » de la semaine passée dans chaque famille (une fois par semaine). Renvoie cette semaine-là. */
@@ -772,16 +811,20 @@ async function profilPublic(env, pseudo) {
 
 /** Badges, titre, records et Stars de la semaine d'un joueur (sa meilleure partie, ses Stars sur toutes ses parties). */
 async function entrainementPublic(env, joueurId, ent) {
-  const e = { ...ENT.etatVide(), ...(ent && typeof ent === "object" ? ent : {}) };
-  e.familles = { ...(e.familles || {}) };
+  const brut = { ...ENT.etatVide(), ...(ent && typeof ent === "object" ? ent : {}) };
   const st = await starsDe(env, joueurId);
+  // grades et titres : seulement les exercices vérifiés (e.verifies, recomptés par le serveur) et les records vérifiés
+  const recordsTous = Object.entries(brut.records || {}).filter(([typ, r]) => Object.hasOwn(ENT.TYPES, typ) && r && Number(r.t) > 0);
+  const e = { familles: { ...(brut.verifies && typeof brut.verifies === "object" ? brut.verifies : {}) },
+    records: Object.fromEntries(recordsTous.filter(([, r]) => r.v === true)) };
+  const local = { familles: { ...(brut.familles || {}) } };
   const familles = Object.fromEntries(ENT.FAMILLES.map((f) => {
     const x = ENT.fam(e, f);
     const k = ENT.echelon(e, f);
-    return [f, { n: x.n, or: x.or + x.diamant, echelon: k >= 0 ? ENT.ECHELONS[k] : null, etoiles: ENT.etoilesDe(x.n, k) }];
+    return [f, { n: x.n, or: x.or + x.diamant, echelon: k >= 0 ? ENT.ECHELONS[k] : null, etoiles: ENT.etoilesDe(x.n, k),
+      nonVerifies: Math.max(0, ENT.fam(local, f).n - x.n) }];
   }));
-  const records = Object.fromEntries(Object.entries(e.records || {}).filter(([typ, r]) => Object.hasOwn(ENT.TYPES, typ) && r && Number(r.t) > 0)
-    .map(([typ, r]) => [typ, { t: Number(r.t), v: r.v === true }]));
+  const records = Object.fromEntries(recordsTous.map(([typ, r]) => [typ, { t: Number(r.t), v: r.v === true }]));
   return { familles, titre: ENT.titres(e, st.familles)[0] || null, records, stars: st.compte };
 }
 
@@ -1402,6 +1445,7 @@ function sectionEntrainement(L, ent) {
     const nom = `${E.familles[f]} · ${E.echelonsNoms[x.echelon]} ${et}`;
     return `<figure class="ech" title="${echapper(nom)}">${ENT.svgBadge(f, x.echelon, 3, nom, x.etoiles || 0)}<figcaption>${echapper(E.familles[f])}<br><span class="doux">${echapper(E.echelonsNoms[x.echelon])} ${et} · ${echapper(E.reussis(x.n))}</span></figcaption></figure>`;
   }).join("");
+  const nonV = ENT.FAMILLES.reduce((a, f) => a + (ent.familles[f]?.nonVerifies || 0), 0);
   const stars = Object.entries(ent.stars || {}).filter(([f]) => E.familles[f])
     .map(([f, n]) => `<span class="badge" style="color:#ffaf00">${echapper(E.starCompte(E.familles[f], n))}</span>`).join("");
   const recs = Object.keys(ENT.TYPES).filter((typ) => ent.records[typ]).map((typ) => {
@@ -1412,6 +1456,7 @@ function sectionEntrainement(L, ent) {
   return `<h2>${echapper(E.profil)}</h2>
 ${ent.titre ? `<p>${E.titreLigne(titreEnt(L, ent.titre))}</p>` : ""}
 ${badges ? `<div class="echelle">${badges}</div>` : `<p class="doux">${echapper(E.aucunBadge)}</p>`}
+${nonV ? `<p class="doux">${echapper(E.nonVerifies(nonV))}</p>` : ""}
 ${stars ? `<div>${stars}</div>` : ""}
 ${recs ? `<h2>${echapper(E.records)} <a class="petit" href="/records">/records</a></h2>${fenetre("~/records", `<table>${recs}</table>`)}` : ""}`;
 }
