@@ -68,7 +68,10 @@ object Terrain {
         when (Histoire.leconId(jeu)) {
             "nid0" -> if (etape >= 2 && !nid.isDirectory) reculer(1)                 // le lit va dans le nid : il faut le refaire
             "nid1" -> if (etape >= 1 && !Indices.contient(repas, "pomme")) reculer(0)  // cat : on réécrit le repas
-            "t3" -> if (nid.isDirectory && !repas.isFile) remettreRepas()            // la leçon des droits a besoin du repas
+            "t3" -> if (nid.isDirectory && !repas.isFile) {                          // la leçon des droits a besoin du repas
+                remettreRepas()
+                reculer(1)          // le repas remis n'a plus son cadenas : on le remet (chmod 444) avant le >> refusé
+            }
             "biblio1" -> if (etape == 0 && nid.isDirectory && !repas.isFile) remettreRepas()   // (la loupe aussi)
             "t4" -> if (nid.isDirectory) {
                 if (etape == 0 && !repas.isFile) remettreRepas()

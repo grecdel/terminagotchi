@@ -92,6 +92,12 @@ object Intro {
     }
 
     /** Une nouvelle partie avec l'intro : l'œuf, la liste de commandes, tout le reste fermé. */
+    /** Le nom de l'œuf, sans caractères de contrôle (échappements, retournement du texte), 16 au plus (P1-6). */
+    fun nomPropre(nom: String): String = nom.filter { c ->
+        val t = Character.getType(c)
+        t != Character.CONTROL.toInt() && t != Character.FORMAT.toInt()
+    }.trim().take(16)
+
     fun nouvellePartie(jeu: Jeu) {
         jeu.extra.put("intro", JSONObject().put("etat", "oeuf").put("faits", JSONArray()).put("erreur", false))
         jeu.extra.put("debloc", JSONObject().put("mode", "progressif").put("ouverts", JSONArray()).put("presentes", JSONArray())
@@ -163,18 +169,28 @@ object Intro {
     // ---------------------------------------------------------------- la liste de commandes de l'œuf
     /** Après le repas (Jeu.manger) : une commande de la liste fait réagir l'œuf ; la dernière le fait éclore.
      *  Renvoie vrai si l'œuf vient d'éclore avec cette commande (elle ne valide pas déjà la leçon 1). */
-    fun apresCommande(jeu: Jeu, ligne: String?, ignoree: Boolean): Boolean {
+    fun apresCommande(jeu: Jeu, ligne: String?, ignoree: Boolean, code: Int? = null): Boolean {
         if (!retient(jeu) || ligne == null || ignoree || Regles.estColle(ligne)) return false
         val i = i(jeu)
         val f = faits(jeu)
-        val c = liste().firstOrNull { it.id !in f && it.re.containsMatchIn(ligne.trim()) } ?: return false
-        f.add(c.id)
-        i.put("faits", JSONArray(f))
-        val n = f.size
-        i.put("evt", JSONArray().put(n).put(System.currentTimeMillis()))
-        if (n >= liste().size) { finir(jeu); return true }
-        jeu.anim = "oeuf_$n" to System.currentTimeMillis()
-        jeu.dire(t("intro.reagit.$n"), 8)
+        // G-34 : `pwd; ls` compte pour les deux ; `PWD` (majuscules) ou une commande qui a échoué ne compte pas
+        val parts = Verif.couper(ligne.trim(), listOf("&&", ";"))
+        val trouves = mutableListOf<Ligne>()
+        for ((k, p) in parts.withIndex()) {
+            val c0 = if (k == parts.size - 1 || code == 0) code else null
+            if ((c0 != null && c0 != 0) || !Verif.casseOk(Verif.premier(p.first))) continue
+            liste().firstOrNull { it.id !in f && it !in trouves && it.re.containsMatchIn(p.first.trim()) }?.let { trouves.add(it) }
+        }
+        if (trouves.isEmpty()) return false
+        for (c in trouves) {
+            f.add(c.id)
+            i.put("faits", JSONArray(f))
+            val n = f.size
+            i.put("evt", JSONArray().put(n).put(System.currentTimeMillis()))
+            if (n >= liste().size) { finir(jeu); return true }
+            jeu.anim = "oeuf_$n" to System.currentTimeMillis()
+            jeu.dire(t("intro.reagit.$n"), 8)
+        }
         jeu.log("🥚 ✔ ${ligne.trim()}")
         return false
     }

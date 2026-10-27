@@ -125,6 +125,8 @@ def reparer_lecon(state):
             (lid == "t3" or step == 0):
         if _ecrire(nid / "repas.txt", "pomme\n"):               # les droits (et la loupe) ont besoin du repas
             remis.append("nid/repas.txt")
+            if lid == "t3":
+                reculer(1)          # le repas remis n'a plus son cadenas : on le remet (chmod 444) avant le >> refusé
     elif lid == "t4" and nid.is_dir():
         if step == 0 and not (nid / "repas.txt").is_file():
             if _ecrire(nid / "repas.txt", "pomme\n"):

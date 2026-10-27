@@ -165,13 +165,13 @@ object Histoire {
             "nid1" to Lecon("lec.t2.titre", null, 1, listOf(ref("t2", 0), ref("t2", 1))),
             // mini-leçon « pont » (G-05) : les passages secrets (ls -a) juste avant l'ouverture de l'exploration
             "secrets" to Lecon("hist.secrets.titre", null, 1, listOf(
-                n("secrets", 0, "ls -a", re = "^(ls\\s+-\\w*[aA]|dir\\s+(-force|/a)|gci\\s+-force|get-childitem\\s+-force)", ou = ""),
+                n("secrets", 0, "ls -a", re = Verif.LS_A, ou = ""),
                 n("secrets", 1, "cat .mot_secret.txt", re = "$LIRE.*\\.mot_secret", ou = ""),
             )),
             // pas de tree sur le téléphone : ls -R montre le plan
             "grenier0" to Lecon("hist.grenier0.titre", "Explorateur", 1, listOf(
                 entree("grenier"),
-                n("grenier0", 1, "ls -R", re = "^(tree|ls\\s+-\\w*R)\\b"),
+                n("grenier0", 1, "ls -R", re = "^(tree|ls(\\s+-\\w+)*\\s+-\\w*R)\\b"),
                 n("grenier0", 2, "mv fouillis/ours_en_peluche.txt ../nid/", fs = { File(it.terrain, "nid/ours_en_peluche.txt").isFile },
                     cree = "nid/ours_en_peluche.txt"),
             )),
@@ -179,10 +179,10 @@ object Histoire {
             "cave0" to Lecon("hist.cave0.titre", null, 1, listOf(entree("cave"), ref("systeme0", 0), ref("systeme0", 1))),
             // « Les lieux du gardien » (G-33) : la salle des règles, l'armurerie, les archives, en lecture seule
             "gardien" to Lecon("hist.gardien.titre", null, 1, listOf(
-                n("gardien", 0, "cat /etc/hostname", re = "^(cat|head|tail|more|less)\\b.*/etc/hostname"),
+                n("gardien", 0, "cat /etc/hostname", re = "^((cat|head|tail|more|less)\\b.*/etc/hostname|hostname\\b)"),
                 n("gardien", 1, "ls /bin", re = "^ls\\b.*/(usr/)?s?bin\\b"),
                 n("gardien", 2, "ls /var/log", re = "^ls\\b.*/var/log"),
-                Etape("hist.gardien.3.dit", "ls -l /etc/hostname", "hista.gardien.3.bravo", r("^(ls\\s+-\\w*l|stat)\\b.*/etc/"),
+                Etape("hist.gardien.3.dit", "ls -l /etc/hostname", "hista.gardien.3.bravo", r(Verif.LS_L + ".*/etc/"),
                     adulteCle = "hista.gardien.3.adulte"),
             )),
             "biblio0" to Lecon("hist.biblio0.titre", null, 1, listOf(
@@ -216,8 +216,8 @@ object Histoire {
             )),
             "tour0" to Lecon("lec.reseau0.titre", "Radar", 1, listOf(
                 entree("tour"),
-                Etape("lec.reseau0.0.dit", "ping -c 3 example.com", "lec.reseau0.0.bravo", r("^ping\\b")),
-                Etape("lec.reseau0.1.dit", "ifconfig", "lec.reseau0.1.bravo", r("^(ip|ifconfig|ipconfig)\\b")),
+                Etape("lec.reseau0.0.dit", "ping -c 3 example.com", "lec.reseau0.0.bravo", r("^ping\\b"), reseau = true),
+                Etape("lec.reseau0.1.dit", "ifconfig", "lec.reseau0.1.bravo", r("^(ip|ifconfig|ipconfig)\\b"), reseau = true),
             )),
             // pas de curl, nslookup ni ssh sur le téléphone : le nom de la maison, puis le navigateur comme facteur
             "tour1" to Lecon("lec.reseau1.titre", "Facteur", 1, listOf(
@@ -227,7 +227,7 @@ object Histoire {
             "coeur0" to Lecon("hist.coeur0.titre", null, 1, listOf(
                 entree("coeur"),
                 n("coeur0", 1, "rev message_brouille.txt", re = "(^|\\s)rev\\b.*message"),
-                n("coeur0", 2, "ls -a", re = "^(ls\\s+-\\w*a|dir\\s+-force|gci\\s+-force|get-childitem\\s+-force)", ou = "coeur"),
+                n("coeur0", 2, "ls -a", re = Verif.LS_A, ou = "coeur"),
                 n("coeur0", 3, "cd .porte_secrete", ici = "coeur/.porte_secrete"),
             )),
             "coeur1" to Lecon("hist.coeur1.titre", null, 1, listOf(
@@ -684,7 +684,7 @@ object Histoire {
         return if (e.exact) Maison.rel(jeu, cwd) == ici else Maison.dans(jeu, cwd, ici)
     }
 
-    private fun tickLecon(jeu: Jeu, tapees: List<Pair<String, String?>>) {
+    private fun tickLecon(jeu: Jeu, tapees: List<Pair<String, String?>>, morcs: List<Verif.Morceau> = emptyList()) {
         // filet de sécurité : un chapitre dont toutes les leçons sont faites se termine (le suivant démarre)
         chapitreCourant(jeu)?.let { c -> if (c.lecons.all { it in faits(jeu) }) finirChapitre(jeu, c) }
         val les = leconCourante(jeu) ?: return
@@ -700,10 +700,10 @@ object Histoire {
             jeu.animer("parle")
         }
         val avant = les.id to jeu.etape
-        for ((ligne, cwd) in tapees) {
+        for (m in morcs) {
             val e = les.etapes[jeu.etape]
-            val ok = e.re?.containsMatchIn(ligne) == true && ouOk(jeu, e, cwd)
-            if (ok || iciOk(jeu, e, cwd)) {
+            val ok = Verif.motifOk(jeu, e, m.texte, m.avant) && Verif.resultatOk(jeu, e, m) && ouOk(jeu, e, m.avant.path)
+            if (ok || (iciOk(jeu, e, m.apres.path) && (m.code == null || m.code == 0))) {
                 if (!avancer(jeu, les)) { jeu.indiceLecon = null; return }
             }
         }
@@ -715,7 +715,7 @@ object Histoire {
         }
         if (avant != (les.id to jeu.etape)) jeu.indiceLecon = null
         else if (tapees.isNotEmpty()) {
-            val conseil = indice(jeu, les.etapes[jeu.etape], tapees)
+            val conseil = indice(jeu, les.etapes[jeu.etape], tapees, morcs)
             if (conseil != null && conseil != jeu.indiceLecon) {
                 jeu.indiceLecon = conseil
                 jeu.dire("💡 $conseil", 12)
@@ -724,7 +724,68 @@ object Histoire {
     }
 
     /** Un indice quand c'est presque ça (mauvais endroit, faute de frappe, mauvais nombre…). */
-    fun indice(jeu: Jeu, e: Etape, tapees: List<Pair<String, String?>>): String? {
+    /** Le nom d'un lieu de la zone d'aventure pour un enfant (« » = le carrefour). */
+    fun nomLieu(rel: String) = Maison.nomPiece(if (rel.isEmpty()) "grande_salle" else rel.substringBefore('/'))
+
+    /** La commande de l'étape a été tapée mais n'a pas marché : POURQUOI (majuscules, nom mal écrit, mauvais lieu). */
+    private fun indiceResultat(jeu: Jeu, e: Etape, morcs: List<Verif.Morceau>): String? {
+        for (m in morcs) {
+            val meme = e.re == null && Verif.premier(m.texte) == Verif.premier(e.cmd)        // étape « fichier »
+            if (!meme && !Verif.motifOk(jeu, e, m.texte, m.avant)) {
+                val bas = Verif.premier(m.texte)
+                if (bas.isNotEmpty() && bas != bas.lowercase() && Verif.motifOk(jeu, e, m.texte.replaceFirst(bas, bas.lowercase()), m.avant))
+                    return t("lec.indice.minuscules", "cmd" to e.cmd, "tape" to bas)
+                continue
+            }
+            if (!meme && Verif.resultatOk(jeu, e, m) && ouOk(jeu, e, m.avant.path)) continue
+            val manque = Verif.cheminsManquants(jeu, m.texte, m.avant)
+            if (manque.isNotEmpty()) {
+                val p = manque[0]
+                Verif.nomProche(jeu, p, m.avant)?.let { (proche, casse) ->
+                    return t(if (casse) "lec.indice.casse" else "lec.indice.nom", "tape" to p, "proche" to proche)
+                }
+                val lieu = Verif.lieuAttendu(jeu, e)
+                if (lieu != null && Maison.rel(jeu, m.avant.path) != lieu)
+                    return t("lec.indice.lieu", "lieu" to nomLieu(lieu), "cmd" to Verif.cdVers(jeu, lieu), "etape" to e.cmd)
+                return t("lec.indice.manque", "nom" to p)
+            }
+            if (m.code != null && m.code != 0 && !meme && !e.echoue) return t("lec.indice.rate", "cmd" to e.cmd)
+        }
+        return null
+    }
+
+    /** Une étape « va à … » : `cd -`, un lieu qui n'est pas là où l'enfant est, une faute. */
+    private fun indiceCd(jeu: Jeu, e: Etape, morcs: List<Verif.Morceau>): String? {
+        for (m in morcs) {
+            val g = Regex("^(cd|pushd)\\s+(.+)$").find(m.texte.trim()) ?: continue
+            val arg = g.groupValues[2].trim().trim('\'', '"')
+            if (arg == "-") return if (e.ici != null) null else t("lec.indice.cd_moins", "cmd" to e.cmd)
+            if (e.ici == null) continue
+            val f = Verif.fichier(jeu, arg, m.avant)
+            if (m.code != 0 && m.code != null && f != null && !f.isDirectory) {
+                Verif.nomProche(jeu, arg, m.avant)?.let { (proche, casse) ->
+                    return t(if (casse) "lec.indice.casse" else "lec.indice.nom", "tape" to arg, "proche" to proche)
+                }
+                val cmd = if (e.cmd.startsWith("cd ~") || e.cmd.startsWith("cd /") || e.ici.startsWith("/")) e.cmd else Verif.cdVers(jeu, e.ici)
+                return t("lec.indice.cd_pas_ici", "nom" to arg, "cmd" to cmd)
+            }
+        }
+        return null
+    }
+
+    /** Une commande juste mais différente de celle de l'étape : la féliciter, et dire ce que l'étape voulait. */
+    private fun indiceVariante(jeu: Jeu, e: Etape, morcs: List<Verif.Morceau>): String? {
+        val cles = Verif.mots(e.cmd).drop(1).map { it.first }.filter { !it.startsWith("-") && it.length >= 3 }
+            .map { it.trimEnd('/').substringAfterLast('/').substringBeforeLast('.').trim('*').lowercase() }.filter { it.length >= 3 }
+        for (m in morcs) {
+            if (m.code != 0 || Verif.motifOk(jeu, e, m.texte, m.avant)) continue
+            if (Verif.premier(m.texte).lowercase() == Verif.premier(e.cmd).lowercase() || cles.any { it in m.texte.lowercase() })
+                return t("lec.indice.variante", "cmd" to e.cmd)
+        }
+        return null
+    }
+
+    fun indice(jeu: Jeu, e: Etape, tapees: List<Pair<String, String?>>, morcs: List<Verif.Morceau> = emptyList()): String? {
         if (e.bravoCle == "hist.coeur2.2.bravo" && File(jeu.terrain, "coeur/reponse.txt").isFile) return t("hist.indice.nombre")
         if (e.ou != null && e.ou.startsWith("/") && e.re != null) {
             for ((l, cwd) in tapees) if (e.re.containsMatchIn(l) && !ouOk(jeu, e, cwd)) return t("hist.indice.racine", "cmd" to "cd /")
@@ -735,11 +796,13 @@ object Histoire {
                     "cmd" to "cd ~/${jeu.terrain.name}/${e.ou}".trimEnd('/'))
             }
         }
-        if (e.ici != null) return null
+        if (e.ici != null) return indiceCd(jeu, e, morcs)
         val lignes = tapees.map { it.first }
+        indiceCd(jeu, e, morcs)?.let { return it }
         indiceRm(jeu, e, tapees)?.let { return it }
+        indiceResultat(jeu, e, morcs)?.let { return it }
         if (Indices.fauteDeFrappe(lignes, e.cmd, chiffres = true) == null) indiceChemin(jeu, e, tapees)?.let { return it }
-        return Indices.lecon(jeu, e, lignes)
+        return Indices.lecon(jeu, e, lignes) ?: indiceVariante(jeu, e, morcs)
     }
 
     private val RECURSIF = Regex("^-\\w*[rR]")
@@ -893,12 +956,15 @@ object Histoire {
 
     // ---------------------------------------------------------------- à chaque tour de jeu
     /** Après une commande tapée (ligne), ou de temps en temps (ligne = null) ; cwd : le dossier courant du terminal. */
-    fun tick(jeu: Jeu, ligne: String?, colle: Boolean, cwd: File? = null) {
+    fun tick(jeu: Jeu, ligne: String?, colle: Boolean, cwd: File? = null, code: Int? = null) {
         h(jeu)
+        val depart = Maison.ici(jeu)?.let { File(it) } ?: cwd ?: jeu.home
         val tapees = Maison.suivre(jeu, ligne, colle, cwd)
         meubler(jeu)
         visiteAile(jeu, tapees.map { it.second } + Maison.ici(jeu))
-        tickLecon(jeu, tapees)
+        // G-34 : chaque morceau de la ligne (`cd / && ls`) est jugé sur son résultat (code de sortie du shell)
+        val morcs = tapees.flatMap { (l, _) -> Verif.morceaux(jeu, l, depart, cwd ?: depart, code) }
+        tickLecon(jeu, morcs.map { it.texte to it.avant.path }, morcs)
         meubler(jeu)
         Quetes.tick(jeu, tapees)
         noter(jeu)

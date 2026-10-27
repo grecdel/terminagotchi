@@ -492,18 +492,34 @@ MOTS_PASSER = ("p", "passer", "skip", "q")
 
 
 def jouer_ecrans(demander, effacer=None):
-    """Montre les écrans de l'intro. Renvoie le nom tapé (on peut taper le nom de l'œuf à tout moment) ou None."""
+    """Montre les écrans de l'intro, puis demande le nom de l'œuf (avec confirmation). Un mot tapé sur un écran ne
+    devient JAMAIS le nom (« Je m'appelle jouer », simulation de Tom) : il fait juste passer à l'écran suivant."""
     n = len(donnees()["ecrans"])
     for k in range(1, n + 1):
         if effacer:
             effacer()
         print("\n".join(ecran_intro(k, n)))
-        try:
-            r = demander(f"   {DIM}" + t("intro.touches.pc") + f"{RESET} ").strip()
-        except (KeyboardInterrupt, EOFError):
-            raise
+        r = demander(f"   {DIM}" + t("intro.touches.pc2") + f"{RESET} ").strip()
         if r.lower() in MOTS_PASSER:
-            return None
-        if r:
-            return r
-    return None
+            break
+    return demander_nom(demander)
+
+
+def nom_propre(nom):
+    """Le nom de l'œuf, sans caractères de contrôle (séquences d'échappement, retournement du texte), 16 au plus."""
+    import unicodedata
+    return "".join(c for c in (nom or "") if unicodedata.category(c) not in ("Cc", "Cf")).strip()[:16]
+
+
+def demander_nom(demander):
+    """« Comment veux-tu appeler ton œuf ? » puis « Ton œuf s'appellera « X ». C'est bien ça ? » (Entrée = oui, un
+    autre mot = ce nom-là à la place)."""
+    nom = ""
+    while not nom:
+        nom = nom_propre(demander(f"   {fg(226)}🥚 " + t("intro.nom.question") + f"{RESET} "))
+    while True:
+        r = nom_propre(demander(f"   {fg(213)}" + t("intro.nom.confirme", nom=nom) + f"{RESET} "))
+        from .accueil import oui
+        if not r or oui(r):
+            return nom
+        nom = r

@@ -12,6 +12,10 @@ class Shell(private val home: File) {
     var dossier: File = home
     /** le journal du jeu, recopié dans les archives (/var/log/terminaworld.log) quand on va les lire */
     var journal: () -> List<String> = { emptyList() }
+    /** le code de sortie de la dernière commande (0 = réussie) : les étapes sont validées sur le résultat (G-34) */
+    var code: Int = 0
+    /** le dossier d'avant le dernier `cd` (pour `cd -`, « d'où tu viens ») */
+    var precedent: File? = null
 
     companion object {
         /** le shell du téléphone (sous la JVM des tests : celui de l'ordinateur) */
@@ -43,21 +47,39 @@ class Shell(private val home: File) {
         // $HOME, ${HOME} et ~ désignent le camp du Terminaworld (/home/explorateur), jamais le vrai dossier de l'appli
         val ligne = Racine.developper(brute)
         val mots = ligne.trim().split(Regex("\\s+"))
+        code = 0
+        // `cd x && ls`, `cd x; ls` : le cd change le dossier de l'appli, puis le reste est lancé là (comme un vrai shell)
+        if (mots.firstOrNull() == "cd") Verif.couper(ligne.trim(), listOf("&&", ";")).takeIf { it.size > 1 }?.let { parts ->
+            val sorties = mutableListOf<String>()
+            for ((k, p) in parts.withIndex()) {
+                sorties.add(executer(p.first))
+                if (code != 0 && parts.getOrNull(k)?.second == "&&") break
+            }
+            return sorties.filter { it.isNotEmpty() }.joinToString("\n")
+        }
+        if (mots.firstOrNull() == "cd" && mots.drop(1).joinToString(" ").trim() == "-") {     // cd - : d'où tu viens
+            val p = precedent
+            if (p != null && p.isDirectory) { precedent = dossier; dossier = p; return virtuel() }
+            code = 1
+            return t("mini.cd_introuvable", "cible" to "-")
+        }
         if (mots.firstOrNull() == "cd") {
             val arg = mots.drop(1).joinToString(" ").trim('\'', '"')
             val v = Racine.resoudre(virtuel(), Racine.versVirtuel(home, arg))
             val cible = Racine.reel(home, v).let { f -> try { f.canonicalFile } catch (e: Exception) { f } }
             return if (cible.isDirectory && Racine.atteignable(home, cible)) {
+                precedent = dossier
                 dossier = cible
                 ""
             } else {
+                code = 1
                 t("mini.cd_introuvable", "cible" to arg)
             }
         }
         if (mots.size == 1 && mots[0] == "pwd") return virtuel()
         if (!dossier.isDirectory || !Racine.atteignable(home, dossier)) dossier = home
         if (ligne.length > LIGNE_MAX) return t("shell.trop_long", "n" to ligne.length)
-        Racine.refus(home, dossier, ligne)?.let { return it }
+        Racine.refus(home, dossier, ligne)?.let { code = 1; return it }
         val vraie = Racine.traduire(home, dossier, ligne)
         if ("log" in ligne || virtuel().startsWith("/var")) Racine.archiver(home, journal())
         val avant = Garde.pids()
@@ -92,6 +114,7 @@ class Shell(private val home: File) {
             lecteur.start()
             val fini = p.waitFor(20, TimeUnit.SECONDS)
             if (!fini) p.destroy()
+            code = if (fini) (try { p.exitValue() } catch (e: Exception) { 1 }) else 124
             // le numéro du sh est la toute première chose écrite
             for (i in 0 until 20) { if (synchronized(sb) { sb.indexOf("\u0001", 1) } > 0) break; Thread.sleep(5) }
             var brut = synchronized(sb) { sb.toString() }
@@ -113,7 +136,7 @@ class Shell(private val home: File) {
         } catch (e: Exception) {
             Garde.nettoyer(sh, avant)
             if (e.message?.contains("E2BIG") == true || e.message?.contains("too long") == true) t("shell.trop_long", "n" to ligne.length)
-            else t("shell.erreur", "msg" to e.message)
+            else run { code = 126; t("shell.erreur", "msg" to e.message) }
         }
         // le gardien des coulisses : tout ce qui a bougé hors du camp est remis, les liens qui mènent dehors enlevés
         val notes = ArrayList<String>()

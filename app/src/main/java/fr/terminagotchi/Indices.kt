@@ -104,7 +104,10 @@ object Indices {
             val ici = File(jeu.terrain, rel)
             val ailleurs = File(jeu.home, nom).exists() || File(jeu.home, rel).exists() ||
                 (jeu.terrain.isDirectory && jeu.terrain.walkTopDown().any { it.name == nom && it != ici })
-            if (ailleurs) return t("lec.indice.endroit", "cmd" to "cd ~/${jeu.terrain.name}")
+            if (ailleurs) {                          // le BON lieu, calculé d'après la commande (G-34)
+                val lieu = Verif.lieuAttendu(jeu, e) ?: ""
+                return t("lec.indice.lieu", "lieu" to Histoire.nomLieu(lieu), "cmd" to Verif.cdVers(jeu, lieu), "etape" to cmd)
+            }
         }
         return null
     }

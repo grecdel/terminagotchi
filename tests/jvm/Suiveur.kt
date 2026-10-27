@@ -62,13 +62,18 @@ fun main(args: Array<String>) {
     val sansGrands = mutableListOf<String>()
     val commandes = Commandes(app, jeu, { shell.dossier })
     var sortie = ""
+    var code = 0
 
     fun tape(cmd: String) {
         val mot = cmd.trim().split(Regex("\\s+"))[0]
-        if (mot == "cd") shell.executer(cmd)
+        if (mot == "cd") { val s = shell.executer(cmd); code = shell.code; if (code != 0) sortie = s }
         else {
             // le vrai shell de l'appli (Shell.kt), dans le Terminaworld simulé (Racine.kt) : / = la Racine, ~ = /home/explorateur
-            sortie = commandes.executer(cmd)?.texte ?: shell.executer(cmd)
+            val interne = commandes.executer(cmd)
+            sortie = interne?.texte ?: shell.executer(cmd)
+            code = if (interne != null) 0 else shell.code
+            // sous la JVM, le shell est celui de l'ordinateur : les commandes propres au téléphone n'y sont pas (artefact)
+            if (code == 127 && mot in setOf("getprop", "settings", "dumpsys", "cmd", "am", "pm")) code = 0
         }
         // « edite » ouvre l'éditeur de l'appli : l'enfant y change une ligne et enregistre (ce que fait l'écran d'édition)
         Regex("^edite\\s+(\\S+)").find(cmd.trim())?.let { m ->
@@ -76,9 +81,12 @@ fun main(args: Array<String>) {
             if (f.isFile) f.writeText(if (f.name == "reglages.txt") f.readText().replace("vitesse = 4", "vitesse = 6")
                 else f.readText().replaceFirst(".", "#"))
         }
-        Tour.apresCommande(jeu, cmd, colle = false, rappel = false, hasard = false, cwd = shell.dossier)
+        // le code de sortie est passé comme le fait l'écran (G-34 : une commande ratée ne valide rien)
+        Tour.apresCommande(jeu, cmd, colle = false, rappel = false, hasard = false, cwd = shell.dossier, code = code)
         Tour.periodique(jeu, shell.dossier)
     }
+    val fausses = mutableListOf<String>()
+    val echecsMontres = mutableListOf<String>()
 
     val stats = linkedMapOf<String, Int>()
     val remplissage = linkedMapOf<String, Int>()
@@ -137,7 +145,15 @@ fun main(args: Array<String>) {
             bloque = trace.last() + " (dossier ${shell.dossier}, indice ${jeu.indiceLecon})"
             break
         }
+        val avantPas = Histoire.leconCourante(jeu)?.let { it.id to jeu.etape }
         tape(cmd)
+        val so = sortie.lowercase()
+        if (jeu.niveau >= c.niveau && ("no such file" in so || "cannot open" in so || "introuvable" in so))
+            echecsMontres += "${avantPas} « $cmd » dans ${shell.virtuel()}"       // G-34 : la commande montrée échoue là
+        val apresPas = Histoire.leconCourante(jeu)?.let { it.id to jeu.etape }
+        if (avantPas != null && apresPas != avantPas && code != 0 &&
+            c.etapes.getOrNull(avantPas.second)?.let { it.echoue || it.reseau } != true)
+            fausses += "${avantPas} « $cmd » (code $code)"                         // G-34 : bravo pour une commande ratée
     }
     println("chapitres finis : ${Histoire.ailes(jeu)} · niveau ${jeu.niveau} · xp ${jeu.xp}")
     for ((k, v) in stats) println("   %-14s commandes %4d   dont remplissage %4d".format(k, v, remplissage[k] ?: 0))
@@ -148,6 +164,9 @@ fun main(args: Array<String>) {
     verifS(remplissage.filterKeys { it != "reveil" }.values.sum() == 0, "aucune commande de remplissage après le réveil (G-04) : $remplissage")
     verifS((remplissage["reveil"] ?: 0) <= 4, "l'œuf : au plus 4 premières commandes (${remplissage["reveil"] ?: 0})")
     verifS(stats.values.sum() < 200, "parcours guidé en ${stats.values.sum()} commandes")
+    println("1 bis. Validé sur le résultat (G-34)")
+    verifS(fausses.isEmpty(), "aucune étape validée par une commande qui a échoué $fausses")
+    verifS(echecsMontres.isEmpty(), "aucune commande montrée qui échoue là où l'enfant est $echecsMontres")
     println("2. ls -a avant les monstres (G-05), dressages (G-06)")
     verifS(exploAvantSecrets == false, "l'exploration ne s'ouvre qu'après la leçon des passages secrets")
     verifS(dressages >= 1 && epreuvesInconnues.isEmpty(), "$dressages dressage(s) en route : aucune épreuve aux notions inconnues $epreuvesInconnues")

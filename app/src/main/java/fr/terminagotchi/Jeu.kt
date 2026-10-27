@@ -30,6 +30,10 @@ class Etape(
     val params: Map<String, String> = emptyMap(),
     /** la version « pour les grands » (G-32) ; par défaut la clé <étape>.adulte, à côté de <étape>.dit */
     val adulteCle: String? = null,
+    /** l'étape veut voir un refus (le cadenas : `>>` sur un fichier protégé répond « Permission denied ») */
+    val echoue: Boolean = false,
+    /** le réseau peut manquer (école, avion) : avoir essayé la commande suffit, le jeu explique la réponse */
+    val reseau: Boolean = false,
 ) {
     val dit: String get() = Histoire.tx(ditCle, params)
     val bravo: String get() = Histoire.tx(bravoCle, params)
@@ -375,12 +379,12 @@ class Jeu(ctx: Context) {
         )),
         Lecon("lec.t3.titre", "Gardien", 1, listOf(
             Etape("lec.t3.0.dit", "ls -l nid",
-                "lec.t3.0.bravo", re = r("^(ls\\s+-\\w*l|stat)\\b")),
+                "lec.t3.0.bravo", re = r(Verif.LS_L)),
             Etape("lec.t3.1.dit", "chmod 444 nid/repas.txt",
                 "lec.t3.1.bravo",
                 fs = { val f = File(it.terrain, "nid/repas.txt"); f.isFile && !f.canWrite() }),
             Etape("lec.t3.2.dit", "echo poire >> nid/repas.txt",
-                "lec.t3.2.bravo", re = r(">>.*repas")),
+                "lec.t3.2.bravo", re = r(Verif.ajoute("repas")), echoue = true),
         )),
         Lecon("lec.t4.titre", "Nettoyeur", 1, listOf(
             Etape("lec.t4.0.dit", "cp nid/repas.txt nid/secours.txt",
@@ -640,7 +644,7 @@ class Jeu(ctx: Context) {
     val FENETRE_REPAS = 10
 
     /** Mange une commande. Renvoie false si elle a été refusée (collée). */
-    fun manger(ligne: String, colle: Boolean, rappel: Boolean = false): Boolean {
+    fun manger(ligne: String, colle: Boolean, rappel: Boolean = false, code: Int? = null): Boolean {
         if (colle || Regles.estColle(ligne)) {
             colles++
             log(t("core.colle.log"))
@@ -652,6 +656,12 @@ class Jeu(ctx: Context) {
         if (cmd.isEmpty()) return false
         if (rappel) {
             log(t("jeu.mange.rappel", "cmd" to cmd))
+            return false
+        }
+        if (code != null && code != 0) {        // la commande a échoué : elle nourrit un peu, sans XP ni nouveau goût (G-34)
+            faim = (faim + 1).coerceAtMost(100.0)
+            log(t("core.rate.log", "cmd" to cmd))
+            animer("confus")
             return false
         }
         total++
@@ -760,12 +770,14 @@ class Jeu(ctx: Context) {
                 out.add(t("leca.prochaine", "n" to c.niveau, "xp" to manque))
             } else {
                 val e = c.etapes[etape]
-                out.add("${c.titre} (${etape + 1}/${c.etapes.size}) · ${e.dit}\n➜ `${Regles.piege(e.cmd)}`")
+                out.add("${c.titre} (${etape + 1}/${c.etapes.size}) · ${e.dit}\n➜ ${Verif.commandeMontree(this, e)}")
                 e.adulte?.let { out.add("🧑 $it") }                              // G-32 : la version des grands, toujours là
+                Vrai.ligne(e.cmd)?.let { out.add(it) }                           // G-10 : 💻 et dans un vrai terminal ?
                 for ((montre, cle) in Explique.nouvelles(this, e.cmd))          // 💡 Le -r veut dire… (+ pour les grands)
                     Explique.phrases(this, montre, cle).forEachIndexed { k, p -> out.add("  ".repeat(k) + p) }
-                if (DEPUIS.any { e.cmd.startsWith(it) } || " nid/" in " " + e.cmd || e.cmd.endsWith(" nid") || "reserve.txt" in e.cmd) {
-                    out.add(t("app.lecon.depuis", "terrain" to Mots.terme("terrain", Mots.palier(this)), "cmd" to "cd ~/${terrain.name}"))
+                Verif.lieuAttendu(this, e)?.let { lieu ->                      // 📁 d'où la commande marche (calculé, G-34)
+                    out.add(t("app.lecon.depuis", "terrain" to (if (lieu.isEmpty()) Mots.terme("terrain", Mots.palier(this))
+                        else Maison.nomPiece(lieu.substringBefore('/'))), "cmd" to Verif.cdVers(this, lieu)))
                 }
                 e.astuce?.let { out.add(it) }
                 indiceLecon?.let { out.add("💡 $it") }
@@ -776,9 +788,6 @@ class Jeu(ctx: Context) {
         Quetes.ligneSuivie(this)?.let { out.add(it) }
         return out.joinToString("\n").ifEmpty { null }
     }
-
-    /** les commandes à taper depuis le terrain (pas depuis la pièce de l'aile) */
-    private val DEPUIS = listOf("cat coeur", "chmod 444 coeur", "echo ? > coeur", "cp -r grenier", "rm -r vieille_cabane")
 
     fun infoWidget(): String {
         val b = bulleActive()

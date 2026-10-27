@@ -70,7 +70,7 @@ object Arbre {
                 Lecon("lec.systeme0.titre", "Vigie", 1, listOf(
                     Etape("arbre.systeme0.0.dit", "whoami",
                         "arbre.systeme0.0.bravo",
-                        re = r("^whoami\\b")),
+                        re = r("^(whoami|id(\\s+-un?)?(\\s|$))")),
                     Etape("arbre.systeme0.1.dit", "id",
                         "arbre.systeme0.1.bravo", re = r("^id\\b")),
                     Etape("lec.systeme0.1.dit", "ps",
@@ -80,7 +80,7 @@ object Arbre {
                 Lecon("lec.systeme1.titre", "Intendant", 1, listOf(
                     Etape("lec.systeme1.0.dit", "df -h",
                         "lec.systeme1.0.bravo", re = r("^df\\b")),
-                    Etape("lec.systeme1.1.dit", "du -sh terrain_terminagotchi",
+                    Etape("lec.systeme1.1.dit", "du -sh ~/terrain_terminagotchi",
                         "lec.systeme1.1.bravo", re = r("^du\\b"),
                         astuceCle = "arbre.systeme1.1.astuce"),
                     Etape("arbre.systeme1.2.dit", "uptime",

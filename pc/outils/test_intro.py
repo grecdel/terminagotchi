@@ -104,24 +104,34 @@ for c in D["checklist"]:
     verifier(re.search(c["re"], intro.commande_de(c), re.I) is not None, f"« {intro.commande_de(c)} » est reconnue par sa règle")
 verifier(not re.search(D["checklist"][2]["re"], "echo", re.I), "« echo » tout seul ne compte pas (il faut un message)")
 
-print("2. Les écrans du début : Entrée = suite, p = passer, ou le nom tout de suite")
-reponses = iter(["", "", "", ""])
+print("2. Les écrans du début : Entrée = suite, p = passer, puis le nom (demandé et confirmé)")
+reponses = iter(["", "", "", "", "Brindille", ""])
+invites = []
 with redirect_stdout(io.StringIO()) as buf:
-    nom = intro.jouer_ecrans(lambda _invite="": next(reponses))
+    nom = intro.jouer_ecrans(lambda _invite="": (invites.append(_invite), next(reponses))[1])
 ecrans = buf.getvalue()
-verifier(nom is None, "4 fois Entrée : les 4 écrans, puis on demande le nom")
+verifier(nom == "Brindille", "4 fois Entrée : les 4 écrans, puis le nom demandé, puis Entrée = oui")
+verifier("Brindille" in propre(invites[-1]) and "?" in propre(invites[-1]),
+         f"le nom est confirmé ({propre(invites[-1]).strip()!r})")
 p = propre(ecrans)
 for k in (1, 2, 3, 4):
     verifier(langue.t(f"intro.e.titre.{k}") in p, f"écran {k} : « {langue.t(f'intro.e.titre.{k}')} »")
 verifier("vrai terminal" in p and "invite de commande" in p, "l'écran 3 dit ce qu'est l'invite de commande et que c'est un vrai terminal")
 verifier("▀" in ecrans or "▄" in ecrans, "chaque écran a sa scène en pixels (demi-blocs)")
 with redirect_stdout(io.StringIO()):
-    verifier(intro.jouer_ecrans(lambda _i="": "p") is None, "p : passer l'intro")
-    verifier(intro.jouer_ecrans(lambda _i="": "Brindille") == "Brindille", "taper un nom : l'intro s'arrête, l'œuf a son nom")
+    r = iter(["p", "Brindille", "oui"])
+    verifier(intro.jouer_ecrans(lambda _i="": next(r)) == "Brindille", "p : passer l'intro (le nom est quand même demandé)")
+    # simulation de Tom (P1-6) : un mot tapé sur un écran ne devient pas le nom de l'œuf
+    r = iter(["jouer", "oui", "", "", "Pixou", ""])
+    verifier(intro.jouer_ecrans(lambda _i="": next(r)) == "Pixou", "« jouer » tapé à l'écran 1 n'est PAS le nom de l'œuf")
+    r = iter(["", "", "", "", "jouer", "Pixou", ""])
+    verifier(intro.jouer_ecrans(lambda _i="": next(r)) == "Pixou", "« Ton œuf s'appellera « jouer » ? » : un autre nom le remplace")
+    r = iter(["", "", "", "", "\x1b[2JZoé\u202e", ""])
+    verifier(intro.jouer_ecrans(lambda _i="": next(r)) == "[2JZoé", "le nom perd ses caractères de contrôle")
 
 print("3. Nouvelle partie : l'œuf seul, l'invite et la liste")
 (HOME / ".bash_history").touch()
-reponses = iter(["", "Pixou"])
+reponses = iter(["", "", "", "", "Pixou", ""])
 builtins.input = lambda _invite="": next(reponses)
 with redirect_stdout(io.StringIO()):
     app.creer_si_besoin(avec_intro=True)
@@ -315,7 +325,7 @@ verifier(propre(maison.carte(st, "colonnes")) and len(maison.verifier_largeur(ma
          "la carte en colonnes reste alignée")
 
 print("13. Une nouvelle partie depuis le menu (parties.nouvelle) peut commencer par l'intro")
-reponses = iter(["oui", "", "", "", "", "Mimi"])
+reponses = iter(["oui", "", "", "", "", "Mimi", ""])
 with redirect_stdout(io.StringIO()):
     msg = accueil.nouvelle(lambda _i="": next(reponses), avec_intro=True)
 st = core.load()

@@ -16,19 +16,21 @@ object Tour {
     const val ROSE = 0xFFFF87FF.toInt()
 
     /** hasard = false : aucun monstre n'apparaît au hasard (tests). */
-    fun apresCommande(jeu: Jeu, ligne: String, colle: Boolean, rappel: Boolean = false, hasard: Boolean = true, cwd: java.io.File? = null): Resultat {
+    /** code : le code de sortie de la commande (Shell.code ; null = inconnu) : une commande ratée ne valide rien (G-34). */
+    fun apresCommande(jeu: Jeu, ligne: String, colle: Boolean, rappel: Boolean = false, hasard: Boolean = true, cwd: java.io.File? = null,
+                      code: Int? = null): Resultat {
         val msgs = mutableListOf<Pair<String, Int>>()
         var saut = 0
         jeu.tick()
-        val mange = jeu.manger(ligne, colle, rappel)
+        val mange = jeu.manger(ligne, colle, rappel, code)
         // l'œuf et sa liste (Intro.kt) : la commande qui le fait éclore ne valide pas déjà la leçon 1
-        val eclot = Intro.apresCommande(jeu, ligne, colle || rappel)
+        val eclot = Intro.apresCommande(jeu, ligne, colle || rappel, code)
         Terrain.verifier(jeu, ligne, colle)?.let { msgs.add(it to 0xFFFFAF5F.toInt()) }   // terrain effacé : le reconstruire
-        Histoire.tick(jeu, if (eclot) null else ligne, colle, cwd)
+        Histoire.tick(jeu, if (eclot) null else ligne, colle, cwd, code)
         if (!colle && !rappel) Defis.verifier(jeu, ligne)?.let { msgs.add(it to 0xFFFFD75F.toInt()); saut = 8 }
         val combats = Intro.ouvert(jeu, "combats")              // les monstres arrivent avec leur présentation
         if (combats) Explo.verifier(jeu)?.let { msgs.add(it to ROSE) }
-        Dressage.verifier(jeu, ligne, colle)?.let { msgs.add(it to ROSE); saut = 8 }
+        Dressage.verifier(jeu, ligne, colle, code)?.let { msgs.add(it to ROSE); saut = 8 }
         Equipe.apresCommande(jeu, colle || rappel)?.let { msgs.add(it to 0xFFFFAF00.toInt()) }
         if (combats) Explo.attirer(jeu, ligne, colle || rappel)    // la commande d'une famille l'attire
         if (hasard && !colle && !rappel && combats && Explo.debloquee(jeu) && !Dressage.actif(jeu) && Random.nextInt(25) == 0) {

@@ -73,6 +73,8 @@ class TerminalActivity : Activity() {
     private var animJouee = System.currentTimeMillis()   // on ne rejoue pas les événements d'avant l'ouverture
     // l'intro (Intro.kt, IntroVue) : l'écran du début montré (0 : aucun), la confirmation de « debloquer tout »
     private var ecranIntro = 0
+    /** le nom proposé pour l'œuf, en attente de confirmation (« Ton œuf s'appellera … ? ») */
+    private var nomPropose: String? = null
     private var introVue: IntroVue? = null
     private var confirmerDeblocage = false
     private var ambiance = System.currentTimeMillis() + AMBIANCE
@@ -387,6 +389,10 @@ class TerminalActivity : Activity() {
             rafraichir()
             return
         }
+        if (!jeu.existe && nomPropose != null && ligne.isEmpty() && !menu.ouvert) {   // Entrée : le nom est confirmé
+            naitre(nomPropose!!)
+            return
+        }
         if (!jeu.existe && ecranIntro > 0 && ligne.isEmpty() && !menu.ouvert) {   // Entrée : l'écran suivant
             actionIntro("suivant")
             return
@@ -415,16 +421,18 @@ class TerminalActivity : Activity() {
         if (ligne.isEmpty() || enCours) return
 
         if (!jeu.existe) {
-            jeu.nom = ligne.take(16)
-            jeu.shiny = false   // le compagnon ne naît jamais shiny (pas de rareté)
-            Intro.nouvellePartie(jeu)              // l'œuf seul, sa liste de commandes ; le jeu s'ouvre petit à petit
-            ecranIntro = 0
-            jeu.log(t("app.oeuf_apparu", "trait" to Regles.nomTrait(jeu.trait)))
-            jeu.dire(t("term.toc_toc"), 10)
-            jeu.sauver()
-            WidgetCreature.majTous(this)
-            ecrire(t("intro.ou.tel") + "\n" + t("intro.astuce.0"), Commandes.ROSE)
-            rafraichir()
+            // P1-6 : un mot tapé sur les premiers écrans fait passer à la suite (« jouer » n'est pas un nom) ; ensuite
+            // le nom est demandé, puis confirmé (oui / Entrée), ou remplacé par un autre mot
+            val nb = introVue?.nbEcrans() ?: 4
+            if (ecranIntro in 1 until nb && nomPropose == null) { actionIntro("suivant"); return }
+            val p = nomPropose
+            if (p == null || !MenuParties.oui(ligne)) {
+                nomPropose = Intro.nomPropre(ligne).ifEmpty { null }
+                ecrire("> $ligne", 0xFF5FD787.toInt())
+                nomPropose?.let { ecrire(t("intro.nom.confirme.tel", "nom" to it), Commandes.ROSE) } ?: ecrire(t("intro.nom.tel"), Commandes.ROSE)
+                return
+            }
+            naitre(p)
             return
         }
 
@@ -473,7 +481,7 @@ class TerminalActivity : Activity() {
         val mot = Regles.premierMot(ligne)
         if (Combat.enCours(jeu) && mot in Combat.SANS_SHELL) {
             ecrire(t("dressa.combat.coup", "cmd" to mot), 0xFF9A9AB0.toInt())
-            try { apresCommande(ligne, etaitColle, etaitRappel) } catch (e: Exception) { android.util.Log.e("TG", "après « $ligne »", e) }
+            try { apresCommande(ligne, etaitColle, etaitRappel, null) } catch (e: Exception) { android.util.Log.e("TG", "après « $ligne »", e) }
             return
         }
 
@@ -504,7 +512,7 @@ class TerminalActivity : Activity() {
                     ecrire(t("term.fait"), 0xFF9A9AB0.toInt())
                 }
                 try {
-                    apresCommande(ligne, etaitColle, etaitRappel)
+                    apresCommande(ligne, etaitColle, etaitRappel, shell.code)
                 } catch (e: Exception) {
                     android.util.Log.e("TG", "après la commande « $ligne »", e)
                 } finally {
@@ -513,6 +521,22 @@ class TerminalActivity : Activity() {
                 }
             }
         }
+    }
+
+    /** L'œuf a son nom (confirmé) : la partie commence. */
+    private fun naitre(nom: String) {
+        nomPropose = null
+        saisie.setText("")
+        jeu.nom = nom
+        jeu.shiny = false   // le compagnon ne naît jamais shiny (pas de rareté)
+        Intro.nouvellePartie(jeu)              // l'œuf seul, sa liste de commandes ; le jeu s'ouvre petit à petit
+        ecranIntro = 0
+        jeu.log(t("app.oeuf_apparu", "trait" to Regles.nomTrait(jeu.trait)))
+        jeu.dire(t("term.toc_toc"), 10)
+        jeu.sauver()
+        WidgetCreature.majTous(this)
+        ecrire(t("intro.ou.tel") + "\n" + t("intro.astuce.0"), Commandes.ROSE)
+        rafraichir()
     }
 
     private fun verrouillerFocus(v: View) {
@@ -561,9 +585,10 @@ class TerminalActivity : Activity() {
         jeu.sauver()
     }
 
-    private fun apresCommande(ligne: String, etaitColle: Boolean, etaitRappel: Boolean = false) {
+    /** code : le code de sortie (0 pour une commande du jeu, Shell.code pour le shell, null si inconnu). */
+    private fun apresCommande(ligne: String, etaitColle: Boolean, etaitRappel: Boolean = false, code: Int? = 0) {
         // le tour de jeu (créature, terrain, leçons, défi, dressage et combat, troupe, attirance, monstres) : voir Tour.kt
-        val tour = Tour.apresCommande(jeu, ligne, etaitColle, etaitRappel, cwd = shell.dossier)
+        val tour = Tour.apresCommande(jeu, ligne, etaitColle, etaitRappel, cwd = shell.dossier, code = code)
         val mange = tour.mange
         for ((m, c) in tour.messages) ecrire(m, c)
         Maison.dernierePousse?.let { ecrire(it, 0xFF9A9AB0.toInt()); Maison.dernierePousse = null }   // 🗺 la carte a poussé : + …

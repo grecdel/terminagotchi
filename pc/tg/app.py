@@ -692,6 +692,8 @@ def creer_si_besoin(avec_intro=None):
             core.animer(state, "salut")
             state["notifs"] = []
             core.save(state)
+    if avec_intro and sys.stdin.isatty() and "--une-fois" not in sys.argv:
+        compagnon.proposer()                  # G-03 : une seule fenêtre, le vrai terminal avec la créature dedans
 
 
 RYTHME = 1.5          # secondes entre deux étapes de jeu

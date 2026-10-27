@@ -159,6 +159,11 @@ def prompt(etape):
     except OSError:
         ici = None
     statut = None
+    if not any(a.startswith("--statut") for a in sys.argv) and est_installe() and not a_jour():
+        try:
+            installer()                         # un ancien bloc : remis à jour (il passera le code de sortie)
+        except OSError:
+            pass
     for a in sys.argv:                         # --statut=$? : le code de sortie de la commande (crochet d'invite)
         if a.startswith("--statut="):
             try:
@@ -278,6 +283,45 @@ def desinstaller():
         except OSError:
             pass
     return sorted(set(faits))
+
+
+def a_jour():
+    """Le bloc installé passe bien le code de sortie à l'invite (versions d'avant : non)."""
+    for chemin in _blocs():
+        try:
+            txt = chemin.read_text(encoding="utf-8")
+        except OSError:
+            continue
+        if DEBUT in txt and "--statut" not in txt.split(DEBUT, 1)[1].split(FIN, 1)[0]:
+            return False
+    return True
+
+
+def proposer(demander=input, lancer=True):
+    """G-03 : au premier lancement sur PC, tout se passe dans UNE fenêtre. La créature propose de s'installer dans
+    l'invite du terminal (Entrée = oui), puis ouvre ce terminal ici même : l'enfant y tape ses commandes et lit, sous
+    chaque invite, ce que dit la créature et la commande à taper. En sortant (exit), on revient au jeu."""
+    if IS_WIN or est_installe() and a_jour():
+        faits = True
+    else:
+        r = demander(f"\n   {fg(226)}🏠 " + t("intro.pc.installer") + f"{RESET} ").strip()
+        from .accueil import oui
+        if r and not oui(r):
+            print("   " + t("intro.pc.plus_tard"))
+            return False
+        faits = bool(installer())
+    if not faits or IS_WIN:
+        print("   " + t("intro.ou.pc"))
+        return False
+    print(f"\n   {fg(78)}" + t("intro.pc.lance") + RESET + "\n")
+    if not lancer:
+        return True
+    shell = os.environ.get("SHELL") or shutil.which("bash") or "sh"
+    try:
+        subprocess.call([shell, "-i"], env=dict(os.environ, TG_DANS_LE_JEU="1"))
+    except OSError:
+        print("   " + t("intro.ou.pc"))
+    return True
 
 
 def est_installe():

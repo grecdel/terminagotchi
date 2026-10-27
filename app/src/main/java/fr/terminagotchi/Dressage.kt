@@ -506,13 +506,14 @@ object Dressage {
     }
 
     /** Après chaque commande (ou périodiquement si ligne == null). Renvoie un message à afficher, ou null. */
-    fun verifier(jeu: Jeu, ligne: String?, colle: Boolean): String? {
+    /** code : le code de sortie de la commande (null = inconnu) : une commande ratée ne compte pas (G-34). */
+    fun verifier(jeu: Jeu, ligne: String?, colle: Boolean, code: Int? = null): String? {
         val d = etat(jeu) ?: return null
         if (Combat.enCours(jeu)) {                  // le combat d'abord : chaque commande tapée est un coup
             if (ligne != null && !colle && !Regles.estColle(ligne)) Combat.coup(jeu, ligne)
             return null
         }
-        if (ligne != null && !colle) {
+        if (ligne != null && !colle && (code == null || code == 0)) {
             val l = d.getJSONArray("lignes")
             l.put(ligne)
             while (l.length() > 200) l.remove(0)
@@ -855,7 +856,13 @@ object Dressage {
         sb.texte(col(2), 0xFF87D7FF.toInt(), true).texte(f(ep.explication) + "\n", 0xFFD0D0E0.toInt())
         val duree = d.optInt("duree")
         val montre = r == null || ep.fam == "Rencontre" || d.optBoolean("exemple_tout_de_suite") || r <= duree * (1 - partExemple(jeu))
-        if (montre) sb.texte(col(3), 0xFF87FF87.toInt(), true).texte("`" + Regles.piege(Mots.remplir(ep.exemple, valeurs)) + "`\n", 0xFF87FF87.toInt())
+        // P2-2 : le lieu et la commande sur la MÊME ligne (« cd ~/…/repaire_x puis mkdir enclos »)
+        val dansRepaire = Maison.dans(jeu, Maison.ici(jeu), "${d.getString("zone")}/${repaire(nom)}")
+        val montree = Regles.piege(Mots.remplir(ep.exemple, valeurs)).let { x ->
+            if (ep.fam == "Rencontre" || dansRepaire) "`$x`"
+            else t("comp.lecon.puis", "cd" to Regles.piege("cd ~/terrain_terminagotchi/${d.getString("zone")}/${repaire(nom)}"), "cmd" to x)
+        }
+        if (montre) sb.texte(col(3), 0xFF87FF87.toInt(), true).texte(montree + "\n", 0xFF87FF87.toInt())
         else sb.texte(col(3), 0xFF87FF87.toInt(), true)
             .texte(t("dressa.exemple_dans", "s" to r!! - (duree * (1 - partExemple(jeu))).toInt()) + "\n", 0xFF808098.toInt())
         d.optString("indice").ifEmpty { null }?.let { sb.texte(col(5), 0xFFFFAF00.toInt(), true).texte(it + "\n", 0xFFFFAF00.toInt()) }

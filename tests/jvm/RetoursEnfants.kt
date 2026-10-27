@@ -71,15 +71,18 @@ val T: File get() = jeu.terrain
 fun tape(cmd: String, ou: File? = null) {
     if (ou != null) shell.dossier = ou
     if (!shell.dossier.isDirectory) shell.dossier = jeu.home
-    if (cmd.trim().split(" ")[0] == "cd") shell.executer(cmd)
+    var code: Int? = 0
+    if (cmd.trim().split(" ")[0] == "cd") { shell.executer(cmd); code = shell.code }
     else {
         val pb = ProcessBuilder("bash", "-c", cmd).directory(shell.dossier).redirectErrorStream(true)
         pb.environment()["HOME"] = jeu.home.absolutePath
         val p = pb.start()
         p.inputStream.readBytes()
-        p.waitFor()
+        code = p.waitFor()
+        if (code == 127) code = null       // commande absente de la machine de test (ping…) : là, le code est inconnu
     }
-    Tour.apresCommande(jeu, cmd, colle = false, rappel = false, hasard = false, cwd = shell.dossier)
+    // le code de sortie est passé comme le fait l'écran (G-34 : une commande ratée ne valide rien)
+    Tour.apresCommande(jeu, cmd, colle = false, rappel = false, hasard = false, cwd = shell.dossier, code = code)
 }
 
 fun niveau(n: Int) { jeu.xp = maxOf(jeu.xp, 10 * (n - 1) * (n - 1)) }
@@ -176,6 +179,8 @@ fun main(args: Array<String>) {
     for (i in 0 until Terrain.AIDE_AUTO) tape(listOf("date", "whoami", "ls", "pwd")[i % 4])
     verifier(Terrain.perdu(jeu) == null && File(T, "nid/repas.txt").isFile,
         "l'enfant n'y arrive pas : reconstruit tout seul après ${Terrain.AIDE_AUTO} commandes")
+    verifier(lec() == ("t3" to 1), "le repas remis a perdu son cadenas : on refait chmod 444 avant le >> refusé")
+    tape("chmod 444 nid/repas.txt", T)
     tape("echo poire >> nid/repas.txt", T)
     for (c in listOf("cat /etc/hostname", "ls /bin", "ls /var/log", "ls -l /etc/hostname")) tape(c)   // les lieux du gardien
     verifier(Histoire.fini(jeu, "cave"), "la cave est réveillée malgré deux effacements")

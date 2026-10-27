@@ -659,6 +659,20 @@ def tick(state, lignes):
             if combat.coup(state, l):
                 break
         return
+    # G-34 : une commande qui a échoué (code de sortie ≠ 0, ou un chemin qui n'existe pas là où elle a été tapée) ne
+    # compte pas pour une épreuve (`cat corrompu.txt` hors du repaire, `mkdir enclos` dans le grenier…)
+    from . import maison, verif
+    ok_l = []
+    for k, l in enumerate(lignes):
+        if core.est_colle(l):
+            continue
+        st = core.statut_de(lignes, k)
+        if st not in (None, 0):
+            continue
+        if k == len(lignes) - 1 and st is None and verif.chemins_manquants(l, maison.ici(state)):
+            continue
+        ok_l.append(l)
+    toutes, tapees = tapees, ok_l
     d["lignes"] = (d["lignes"] + tapees)[-200:]
     c = contexte(state)
     progres = False
@@ -683,11 +697,12 @@ def tick(state, lignes):
         if any(f.endswith(":examiner") for f in d["faites"]):
             d["examine"] = True
         core.say(state, au_hasard("dress.progres", nom=d["espece"], n=n, total=len(d["taches"])), 6)
-    elif tapees:
-        conseil = indice(state, c, tapees)
+    elif toutes:
+        conseil = indice(state, c, toutes)
         if conseil and conseil != d.get("indice"):
             d["indice"] = conseil
             core.say(state, "💡 " + conseil, 12)
+            core.terminal(state, "💡 " + conseil)          # aussi dans le terminal de l'enfant
             core.animer(state, "parle")
     r = reste(state)
     if r is not None and r <= 0:
@@ -882,10 +897,12 @@ def lignes_ecran(state, largeur_txt=62):
     if expl:
         for k, l in enumerate(envelopper(expl, largeur_txt)):
             out.append(f" {fg(117)}{col['comment'] if k == 0 else vide}{RESET}{l}")
+    dedans = au_repaire(state)
     if ex:
         seuil = d["duree"] * (1 - bonus(state)["exemple"]) if d["duree"] else None
         if r is None or fid.startswith("Rencontre:") or d.get("exemple_tout_de_suite") or r <= d["duree"] - seuil:
-            out.append(f" {fg(120)}{BOLD}{col['tape']}{RESET}{fg(120)}`{piege(ex)}`{RESET}")
+            # P2-2 : le lieu et la commande sur la MÊME ligne (« cd ~/…/repaire_x puis mkdir enclos »)
+            out.append(f" {fg(120)}{BOLD}{col['tape']}{RESET}{fg(120)}{commande_epreuve(state, fid, ex)}{RESET}")
         else:
             out.append(f" {fg(120)}{col['tape']}{RESET}{DIM}"
                        + t("dress.exemple_dans", s=f"{r - (d['duree'] - seuil):.0f}") + RESET)
@@ -899,10 +916,29 @@ def lignes_ecran(state, largeur_txt=62):
     else:
         ou = f"~/{T.name}/{d['zone']}/{repaire(d['espece'])}"
     if ou.startswith("~/") and not fid.startswith("Rencontre:"):
-        out.append(f" {fg(246)}{col['dabord']}{RESET}" + t("dress.passe_porte", cmd=f"{fg(120)}cd {ou}{RESET}"))
+        if not dedans and not ex:
+            out.append(f" {fg(246)}{col['dabord']}{RESET}" + t("dress.passe_porte", cmd=f"{fg(120)}cd {ou}{RESET}"))
     else:
         out.append(f" {fg(246)}{col['ou']}{RESET}{DIM}{ou}{RESET}")
     return out
+
+
+def au_repaire(state):
+    """L'enfant est déjà dans le repaire du monstre en cours de dressage."""
+    from . import maison
+    d = state.get("dressage")
+    if not d:
+        return False
+    return maison.dans(maison.ici(state), f"{d['zone']}/{repaire(d['espece'])}")
+
+
+def commande_epreuve(state, fid, ex):
+    """La commande de l'épreuve telle qu'on la montre : précédée du cd vers le repaire si l'enfant n'y est pas."""
+    from .plateforme import piege
+    d = state["dressage"]
+    if fid.startswith("Rencontre:") or au_repaire(state):
+        return f"`{piege(ex)}`"
+    return t("comp.lecon.puis", cd=piege(f"cd ~/{T.name}/{d['zone']}/{repaire(d['espece'])}"), cmd=piege(ex))
 
 
 def _lignes_combat(cb, largeur_txt=62):

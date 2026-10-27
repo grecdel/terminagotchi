@@ -157,6 +157,8 @@ for i in range(terrain_aide := 12):
     st = tape(["date", "whoami", "ls", "pwd"][i % 4])
 verifier(not st.get("terrain_perdu") and (T / "nid" / "repas.txt").is_file(),
          f"l'enfant n'y arrive pas : reconstruit tout seul après {terrain_aide} commandes")
+verifier(lec(st) == ("t3", 1), "le repas remis a perdu son cadenas : on refait chmod 444 avant le >> refusé")
+st = tape("chmod 444 nid/repas.txt", T)
 st = tape("echo poire >> nid/repas.txt", T)
 for c in ("cat /etc/hostname", "ls /bin", "ls /var/log", "ls -l /etc/hostname"):    # puis les lieux du gardien
     st = tape(c)
