@@ -2653,5 +2653,20 @@
  ],
  "racine.refus.adulte": "le terminal de l'appli simule l'arborescence d'un vrai Linux : / et les lieux du système sont en lecture seule, ~ correspond au dossier privé de l'appli. Sur un ordinateur, écrire dans /etc échouerait aussi (« Permission denied ») sans `sudo`.",
  "racine.motd": "Bienvenue dans le Terminaworld ! Ici, c'est la salle des règles : on regarde, on ne touche pas.",
- "racine.osrelease": "Ce fichier est un décor : sur un vrai Linux, /etc/os-release donne le nom et la version du système."
+ "racine.osrelease": "Ce fichier est un décor : sur un vrai Linux, /etc/os-release donne le nom et la version du système.",
+ "lec.indice.lieu": "Bonne commande, mais pas au bon endroit ! Elle se tape depuis le lieu {lieu}. Va d'abord là-bas : `{cmd}`, puis tape `{etape}`.",
+ "lec.indice.nom": "Presque ! Il n'y a pas de « {tape} » ici. Tu voulais dire « {proche} » ? Vérifie les lettres.",
+ "lec.indice.casse": "Attention aux majuscules ! Pour l'ordinateur, « {tape} » et « {proche} » sont deux noms différents. Écris « {proche} ».",
+ "lec.indice.manque": "« {nom} » n'existe pas là où tu es. Tape `ls` pour voir ce qu'il y a ici, ou `pwd` pour savoir où tu es.",
+ "lec.indice.absent": "L'outil « {cmd} » n'est pas installé sur cet ordinateur : ce n'est pas ta faute !",
+ "lec.indice.minuscules": "Attention : les commandes s'écrivent en minuscules. Tape `{cmd}`, pas « {tape} ».",
+ "lec.indice.rate": "La commande a répondu par une erreur, donc l'étape n'est pas encore faite. Relis le message, corrige, et réessaie : `{cmd}`",
+ "lec.indice.variante": "✔ Ta commande marche aussi, bravo ! Mais cette étape veut te faire découvrir `{cmd}` : essaie-la pour voir la différence.",
+ "lec.indice.cd_moins": "`cd -` t'a ramené au lieu d'avant (celui d'où tu viens). Ici, l'étape veut : `{cmd}`",
+ "lec.indice.cd_pas_ici": "Il n'y a pas de lieu « {nom} » là où tu es. Ce chemin-là marche depuis n'importe où : `{cmd}`",
+ "core.inconnue.casse": "« {cmd} » avec des majuscules n'existe pas : les commandes s'écrivent en minuscules. Tape `{proche}`.",
+ "comp.lecon.puis": "`{cd}` puis `{cmd}`",
+ "vrai.pareil": "💻 Dans un vrai terminal (Linux, macOS) : `{cmd}` marche pareil.",
+ "vrai.mac": "💻 Dans un vrai terminal : pareil sous Linux ; sur macOS, tape plutôt `{mac}`.",
+ "vrai.absent": "💻 Dans un vrai terminal : `{cmd}` n'est pas installé partout ; un adulte peut l'ajouter (il faudra son mot de passe)."
 }

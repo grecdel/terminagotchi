@@ -2648,5 +2648,20 @@
  ],
  "racine.refus.adulte": "o terminal da app simula a árvore de um Linux verdadeiro: / e os lugares do sistema são só de leitura, ~ é a pasta privada da app. Num computador, escrever em /etc também falharia («Permission denied») sem `sudo`.",
  "racine.motd": "Bem-vindo ao Terminaworld! Esta é a sala das regras: olhamos, não tocamos.",
- "racine.osrelease": "Este ficheiro é um cenário: num Linux verdadeiro, /etc/os-release dá o nome e a versão do sistema."
+ "racine.osrelease": "Este ficheiro é um cenário: num Linux verdadeiro, /etc/os-release dá o nome e a versão do sistema.",
+ "lec.indice.lieu": "Comando certo, mas no lugar errado! Ele se digita a partir do lugar {lieu}. Vá até lá primeiro: `{cmd}`, depois digite `{etape}`.",
+ "lec.indice.nom": "Quase! Não há nenhum “{tape}” aqui. Você quis dizer “{proche}”? Confira as letras.",
+ "lec.indice.casse": "Cuidado com as maiúsculas! Para o computador, “{tape}” e “{proche}” são dois nomes diferentes. Escreva “{proche}”.",
+ "lec.indice.manque": "“{nom}” não existe onde você está. Digite `ls` para ver o que há aqui, ou `pwd` para saber onde você está.",
+ "lec.indice.absent": "A ferramenta “{cmd}” não está instalada neste computador: não é culpa sua!",
+ "lec.indice.minuscules": "Atenção: os comandos se escrevem em minúsculas. Digite `{cmd}`, não “{tape}”.",
+ "lec.indice.rate": "O comando respondeu com um erro, então a etapa ainda não está feita. Leia a mensagem, corrija e tente de novo: `{cmd}`",
+ "lec.indice.variante": "✔ Seu comando também funciona, parabéns! Mas esta etapa quer que você descubra `{cmd}`: experimente para ver a diferença.",
+ "lec.indice.cd_moins": "`cd -` levou você de volta ao lugar anterior (de onde você veio). Aqui, a etapa quer: `{cmd}`",
+ "lec.indice.cd_pas_ici": "Não há nenhum lugar “{nom}” onde você está. Este caminho funciona de qualquer lugar: `{cmd}`",
+ "core.inconnue.casse": "“{cmd}” com maiúsculas não existe: os comandos se escrevem em minúsculas. Digite `{proche}`.",
+ "comp.lecon.puis": "`{cd}` depois `{cmd}`",
+ "vrai.pareil": "💻 Num terminal de verdade (Linux, macOS): `{cmd}` funciona igual.",
+ "vrai.mac": "💻 Num terminal de verdade: igual no Linux; no macOS, digite `{mac}`.",
+ "vrai.absent": "💻 Num terminal de verdade: `{cmd}` não está instalado em todo lugar; um adulto pode adicioná-lo (vai precisar da senha dele)."
 }

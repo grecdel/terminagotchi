@@ -46,7 +46,7 @@ for k in ("no_proxy", "NO_PROXY"):
     os.environ.pop(k, None)
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
-from tg import app, core, dressage, explo, histoire, maison  # noqa: E402
+from tg import app, core, dressage, explo, histoire, lecons, maison  # noqa: E402
 from tg import bestiaire as B  # noqa: E402
 
 HOME = Path.home()
@@ -67,26 +67,23 @@ def verifier(c, m):
 
 
 cwd = HOME
+from tg.coquille import Coquille  # noqa: E402
+# (C.UTF-8 pour les outils : sans locale fr installée, certains rev bouclent sur les accents)
+SHELL = Coquille(HOME, env=dict(os.environ, LC_ALL="C.UTF-8"))
 derniere_sortie = ""
+dernier_code = 0
 
 
 def tape(cmd):
     """L'enfant tape une commande : « cd » change le dossier du terminal, le reste s'exécute vraiment."""
-    global cwd, derniere_sortie
-    m = re.match(r"^cd\s*(.*)$", cmd)
-    if m:
-        arg = m.group(1).strip() or "~"
-        p = Path(os.path.expanduser(arg)) if arg.startswith("~") else (cwd / arg)
-        if p.is_dir():
-            cwd = p.resolve()
-    else:
-        # (C.UTF-8 pour les outils : sans locale fr installée, certains rev bouclent sur les accents)
-        r = subprocess.run(["bash", "-c", cmd], cwd=str(cwd), stdout=subprocess.PIPE, stderr=subprocess.STDOUT,
-                           stdin=subprocess.DEVNULL, timeout=30, env=dict(os.environ, LC_ALL="C.UTF-8"))
-        derniere_sortie = r.stdout.decode("utf-8", "replace")
+    global cwd, derniere_sortie, dernier_code
+    # un shell qui reste ouvert, comme un vrai terminal (cd, alias, tâches de fond, cd x && ls)
+    derniere_sortie, dernier_code, d = SHELL.lancer(cmd)
+    cwd = Path(d)
     with open(HOME / ".bash_history", "a") as f:
         f.write(cmd + "\n")
-    return app.etape(spontane=False, defis=False, cwd=str(cwd))
+    # le code de sortie est passé comme le fait le crochet d'invite (tg prompt --statut=$?)
+    return app.etape(spontane=False, defis=False, cwd=str(cwd), statut=dernier_code)
 
 
 def a_taper(st, les):
@@ -119,6 +116,8 @@ log = []
 explo_avant_ls_a = None
 notions_apres = {}
 suivi = None
+echecs_montres = []
+fausses = []
 ANSI = re.compile(r"\x1b\[[0-9;?]*[A-Za-z]")
 for _ in range(900):
     les, _e = histoire.lecon_courante(st)
@@ -165,7 +164,17 @@ for _ in range(900):
         break
     if explo.debloque(st) and chap not in notions_apres:      # les monstres arrivent : leurs épreuves comptent
         notions_apres[chap] = dressage.rencontrees(st)
+    etait = (les["id"], st["step"])
     st = tape(c)
+    if c == les["steps"][etait[1]]["cmd"] or c == a_taper(st, les):
+        sortie = derniere_sortie.lower()
+        if "no such file" in sortie or "cannot open" in sortie or "cannot access" in sortie:
+            echecs_montres.append((etait, c, str(cwd)))      # G-34 : la commande montrée échoue là où l'enfant est
+    apres = histoire.lecon_courante(st)[0]
+    if (apres and (apres["id"], st["step"]) != etait or not apres) and dernier_code != 0 \
+            and not any(les["steps"][etait[1]].get(k) for k in ("echoue", "reseau", "absent_ok")) \
+            and les["steps"][etait[1]].get("fs") != "colis" and not c.startswith("sleep"):
+        fausses.append((etait, c, dernier_code))             # G-34 : « bravo » pour une commande qui a échoué
 
 h = histoire.h_(st)
 print("chapitres finis :", h["ailes"], "· niveau", core.level(st["xp"]), "· xp", st["xp"])
@@ -184,7 +193,10 @@ r = subprocess.run(["git", "-C", str(T / "carnet"), "log", "--format=%an"], capt
 verifier(r.returncode == 0 and "Pixel" in r.stdout, f"git : le carnet est signé au nom de la créature (G-07) : {r.stdout.strip()!r}")
 r = subprocess.run(["git", "config", "--global", "user.name"], capture_output=True, text=True)
 verifier(not r.stdout.strip(), "git : la configuration globale n'est pas touchée")
-verifier(h.get("colis_secours") and (T / "colis.html").is_file(), "curl sans réseau : colis de secours, pas de blocage (G-08)")
+verifier(h.get("colis_secours") and lecons.FS["colis"](), "curl sans réseau : colis de secours, pas de blocage (G-08)")
+print("2 bis. Validé sur le résultat (G-34)")
+verifier(not fausses, f"aucune étape validée par une commande qui a échoué {fausses[:4]}")
+verifier(not echecs_montres, f"aucune commande montrée qui échoue là où l'enfant est (No such file) {echecs_montres[:4]}")
 print("3. ls -a avant les monstres (G-05)")
 verifier(explo_avant_ls_a is False, "l'exploration ne s'ouvre qu'après la leçon des passages secrets")
 verifier("secrets" in h["faits"] and h["faits"].index("secrets") < h["faits"].index("grenier0"),

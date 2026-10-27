@@ -115,19 +115,25 @@ def render(state, frame, interactif, anim=None):
                                                 n=state["step"] + 1, total=len(les["steps"])) + RESET)
             for x in envelopper(lecons.tx(step["dit"]), 78):
                 lines.append(f" {x}")
-            lines.append(f"   {fg(226)}➜ `{piege(step['cmd'])}`{RESET}")
+            lines.append(f"   {fg(226)}➜ {compagnon.commande_montree(state, step)}{RESET}")
             grands = lecons.adulte(step)                          # G-32 : 🧑 la version des grands, toujours là
             if grands:
                 for x in envelopper("🧑 " + grands, 76):
+                    lines.append(f"   {DIM}{x}{RESET}")
+            from . import vrai
+            v = vrai.ligne(step)                                  # G-10 : 💻 et dans un vrai terminal ?
+            if v:
+                for x in envelopper(v, 76):
                     lines.append(f"   {DIM}{x}{RESET}")
             for montre, cle in explique.nouvelles(state, step["cmd"]):      # 💡 Le -r veut dire…
                 for k, p in enumerate(explique.phrases(state, montre, cle)):   # (+ pour les grands)
                     for x in envelopper(p, 74 - 2 * k):
                         lines.append(f"   {'  ' * k}{DIM}{x}{RESET}")
-            if " nid/" in " " + step["cmd"] or step["cmd"].endswith(" nid") or "reserve.txt" in step["cmd"] \
-                    or step["cmd"].startswith(("cat coeur", "chmod 444 coeur", "echo ? > coeur", "cp -r grenier", "rm -r vieille_cabane")):
-                lines.append(f"   {DIM}" + t("app.lecon.depuis", terrain=terme("terrain", palier(state)),
-                                            cmd=f"cd ~/{core.TERRAIN.name}") + RESET)
+            from . import verif
+            lieu = verif.lieu_attendu(state, step)               # 📁 d'où la commande marche (calculé, G-34)
+            if lieu is not None:
+                lines.append(f"   {DIM}" + t("app.lecon.depuis", terrain=histoire.nom_lieu(lieu) if lieu else
+                                            terme("terrain", palier(state)), cmd=verif.cd_vers(lieu)) + RESET)
             if step.get("astuce"):
                 lines.append(f"   {DIM}{lecons.tx(step['astuce'])}{RESET}")
             if state.get("indice_lecon"):
@@ -294,8 +300,8 @@ def render_dressage(state, interactif, anim=None):
 
 def boucle_jeu(state, lines, spontane=True, rythme=1.5, defis=True, cwd=None):
     core.tick(state)
-    for line in lines:
-        core.feed(state, line)
+    for k, line in enumerate(lines):
+        core.feed(state, line, core.statut_de(lines, k))   # une commande ratée ne donne pas de points (G-34)
     lines = intro.tick(state, lines)          # l'œuf : sa liste, ses fêlures, l'éclosion (la suite : après l'éclosion)
     exemples.tick(state, lines)               # mkdir tout seul… : une bulle avec la commande à taper
     terrain.tick(state, lines)                # terrain effacé : le reconstruire, reprendre la leçon
@@ -312,9 +318,11 @@ def boucle_jeu(state, lines, spontane=True, rythme=1.5, defis=True, cwd=None):
     intro.verifier(state)                     # les fonctions qui s'ouvrent maintenant (présentées une par une)
 
 
-def etape(spontane=True, rythme=1.5, defis=True, avant_save=None, extra=None, cwd=None):
+def etape(spontane=True, rythme=1.5, defis=True, avant_save=None, extra=None, cwd=None, statut=None):
     """Charge, fait vivre la créature, sauvegarde, puis envoie les notifications.
-    cwd : le dossier courant du terminal (donné par l'invite du shell), pour la carte de la maison."""
+    cwd : le dossier courant du terminal (donné par l'invite du shell), pour la carte de la maison.
+    statut : le code de sortie de la dernière commande ($?, donné par l'invite) : une étape n'est validée que si la
+    commande a marché (verif.py)."""
     with core.verrou():
         state = core.load()
         if state is None:
@@ -322,6 +330,7 @@ def etape(spontane=True, rythme=1.5, defis=True, avant_save=None, extra=None, cw
         core.migrate(state)
         lines = core.read_new_lines(state) + list(extra or [])
         avant = state["total"]
+        core.DERNIER.update(ligne=lines[-1] if lines and statut is not None else None, statut=statut)
         boucle_jeu(state, lines, spontane, rythme, defis, cwd)
         state["_vient_de_manger"] = state["total"] > avant
         if avant_save:

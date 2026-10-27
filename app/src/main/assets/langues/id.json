@@ -2650,5 +2650,20 @@
  ],
  "racine.refus.adulte": "terminal aplikasi meniru pohon Linux sungguhan: / dan tempat sistem hanya bisa dibaca, ~ adalah folder pribadi aplikasi. Di komputer, menulis ke /etc tanpa `sudo` juga akan gagal (\"Permission denied\").",
  "racine.motd": "Selamat datang di Terminaworld! Ini ruang aturan: kita melihat, tidak menyentuh.",
- "racine.osrelease": "Berkas ini hanya hiasan: di Linux sungguhan, /etc/os-release berisi nama dan versi sistem."
+ "racine.osrelease": "Berkas ini hanya hiasan: di Linux sungguhan, /etc/os-release berisi nama dan versi sistem.",
+ "lec.indice.lieu": "Perintahnya benar, tapi tempatnya salah! Ini diketik dari tempat {lieu}. Pergi ke sana dulu: `{cmd}`, lalu ketik `{etape}`.",
+ "lec.indice.nom": "Hampir! Di sini tidak ada “{tape}”. Maksudmu “{proche}”? Periksa hurufnya.",
+ "lec.indice.casse": "Hati-hati dengan huruf besar! Bagi komputer, “{tape}” dan “{proche}” adalah dua nama berbeda. Tulis “{proche}”.",
+ "lec.indice.manque": "“{nom}” tidak ada di tempatmu sekarang. Ketik `ls` untuk melihat isinya, atau `pwd` untuk tahu kamu di mana.",
+ "lec.indice.absent": "Alat “{cmd}” tidak terpasang di komputer ini: itu bukan salahmu!",
+ "lec.indice.minuscules": "Perhatian: perintah ditulis dengan huruf kecil. Ketik `{cmd}`, bukan “{tape}”.",
+ "lec.indice.rate": "Perintahnya menjawab dengan galat, jadi langkah ini belum selesai. Baca pesannya, perbaiki, lalu coba lagi: `{cmd}`",
+ "lec.indice.variante": "✔ Perintahmu juga berhasil, hebat! Tapi langkah ini ingin kamu mengenal `{cmd}`: coba untuk melihat bedanya.",
+ "lec.indice.cd_moins": "`cd -` membawamu kembali ke tempat sebelumnya (tempat asalmu). Di sini, langkahnya ingin: `{cmd}`",
+ "lec.indice.cd_pas_ici": "Tidak ada tempat “{nom}” di tempatmu sekarang. Jalur ini bisa dipakai dari mana saja: `{cmd}`",
+ "core.inconnue.casse": "“{cmd}” dengan huruf besar tidak ada: perintah ditulis dengan huruf kecil. Ketik `{proche}`.",
+ "comp.lecon.puis": "`{cd}` lalu `{cmd}`",
+ "vrai.pareil": "💻 Di terminal sungguhan (Linux, macOS): `{cmd}` bekerja sama persis.",
+ "vrai.mac": "💻 Di terminal sungguhan: sama di Linux; di macOS, ketik `{mac}` saja.",
+ "vrai.absent": "💻 Di terminal sungguhan: `{cmd}` tidak terpasang di semua komputer; orang dewasa bisa memasangnya (perlu kata sandinya)."
 }

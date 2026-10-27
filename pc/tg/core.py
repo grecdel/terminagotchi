@@ -122,6 +122,18 @@ def parse_line(line):
     return line.strip() or None
 
 
+# le code de sortie de la DERNIÈRE commande lue, quand le crochet d'invite le donne (`tg prompt --statut=$?`) :
+# {"ligne": texte, "statut": n}. Les autres lignes ont un code inconnu (None). Voir verif.py.
+DERNIER = {"ligne": None, "statut": None}
+
+
+def statut_de(lignes, i):
+    """Le code de sortie de lignes[i] (0 = réussi), ou None s'il est inconnu."""
+    if i == len(lignes) - 1 and DERNIER["ligne"] is not None and lignes[i] == DERNIER["ligne"]:
+        return DERNIER["statut"]
+    return None
+
+
 def first_word(line):
     words = line.split()
     if not words:
@@ -364,7 +376,16 @@ def commande_proche(cmd):
 FENETRE_REPAS = 10      # une commande répétée dans les 10 dernières ne donne plus d'XP (anti-remplissage)
 
 
-def feed(state, line):
+def terminal(state, texte):
+    """Un message à montrer AUSSI dans le terminal de l'enfant, sous sa commande (le compagnon de l'invite l'affiche
+    une fois, puis l'oublie) : indices, mises en garde, erreurs expliquées (G-34, comme sur Android)."""
+    file = state.setdefault("terminal", [])
+    if texte and texte not in file:
+        file.append(texte)
+        del file[:-6]
+
+
+def feed(state, line, statut=None):
     if est_colle(line):
         state["colles"] += 1
         log(state, t("core.colle.log"))
@@ -374,12 +395,27 @@ def feed(state, line):
     cmd = first_word(line)
     if not cmd:
         return
+    brut = os.path.basename(line.split()[0])
+    if not IS_WIN and brut != brut.lower() and commande_existe(cmd) and not commande_existe(brut):
+        msg = t("core.inconnue.casse", cmd=brut, proche=cmd)        # PWD, Ls : les commandes s'écrivent en minuscules
+        say(state, msg, 8)
+        terminal(state, msg)
+        log(state, t("core.inconnue.log", cmd=brut))
+        animer(state, "confus")
+        return
     cat = next((k for k, v in CATEGORIES.items() if cmd in v["cmds"]), None)
     if not cat and not cmd.startswith(("termux-", "./", "/")) and not commande_existe(cmd):
-        proche = commande_proche(cmd)
-        say(state, (t("core.inconnue.proche", cmd=cmd, proche=proche) if proche
-                    else t("core.inconnue", cmd=cmd)), 8)
+        from . import verif
+        proche = verif.collee(brut) or commande_proche(cmd)          # cdvestibule → cd vestibule, ls-a → ls -a
+        msg = (t("core.inconnue.proche", cmd=cmd, proche=proche) if proche else t("core.inconnue", cmd=cmd))
+        say(state, msg, 8)
+        terminal(state, msg)
         log(state, t("core.inconnue.log", cmd=cmd))
+        animer(state, "confus")
+        return
+    if statut not in (None, 0):                 # la commande a échoué : elle nourrit un peu, sans XP ni nouveau goût
+        state["hunger"] = min(100.0, state["hunger"] + 1)
+        log(state, t("core.rate.log", cmd=cmd))
         animer(state, "confus")
         return
     state["total"] += 1

@@ -125,21 +125,20 @@ NOUVELLES = {
     # mini-leçon « pont » (G-05) : les passages secrets (ls -a) juste avant l'ouverture de l'exploration, dont les
     # cachettes, les quêtes et les épreuves de dressage en ont besoin (la version des grands : hist.secrets.<i>.adulte).
     "secrets": {"titre": "hist.secrets.titre", "skill": None, "steps": [
-        _n("secrets", 0, cmd=C("ls -a", "dir -Force"), re=r"^(ls\s+-\w*[aA]|dir\s+(-force|/a)|gci\s+-force|get-childitem\s+-force)",
-           ou=""),
+        _n("secrets", 0, cmd=C("ls -a", "dir -Force"), re=lecons.LS_A, ou=""),
         _n("secrets", 1, cmd=C("cat .mot_secret.txt", "type .mot_secret.txt"), re=LIRE + r".*\.mot_secret", ou=""),
     ]},
     "grenier0": {"titre": "hist.grenier0.titre", "skill": "Explorateur", "steps": [
         _entree("grenier"),
-        _n("grenier0", 1, cmd=C("tree", "tree /f"), re=r"^(tree|ls\s+-\w*R)\b",
-           astuce=C(("hist.grenier0.1.astuce", {"cmd": installer("tree")}), None)),
+        _n("grenier0", 1, cmd=C("tree", "tree /f"), re=r"^(tree|ls(\s+-\w+)*\s+-\w*R)\b", repli=["ls -R"],
+           astuce=C("hist.grenier0.1.astuce2", None)),
         _n("grenier0", 2, cmd=C(f"mv fouillis{S}ours_en_peluche.txt ..{S}nid{S}",
                                 f"move fouillis{S}ours_en_peluche.txt ..{S}nid{S}"), fs="ours"),
     ]},
     "cave0": {"titre": "hist.cave0.titre", "skill": None, "steps": [
         _entree("cave"),
         _ref("systeme0", 0),
-        _n("cave0", 2, cmd="sudo -h", re=r"^sudo\s+(-h|--help|-V)\b", astuce="hist.cave0.2.astuce", win=False),
+        _n("cave0", 2, cmd="sudo -h", absent_ok=True, re=r"^sudo\s+(-h|--help|-V|--version)(\s|$)", astuce="hist.cave0.2.astuce", win=False),
     ]},
     # « Les lieux du gardien » (G-33, niveau 6 du programme « cadenas ») : la salle des règles, l'armurerie et les
     # archives, en lecture seule ; ls -l montre que seul root (le gardien) peut y écrire. Rien n'est écrit hors de la
@@ -151,7 +150,7 @@ NOUVELLES = {
            re=r"^(ls|dir|gci|get-childitem)\b.*([\\/](usr[\\/])?s?bin\b|system32)"),
         _n("gardien", 2, cmd=C("ls /var/log", "dir C:\\Windows\\Logs"),
            re=r"^(ls|dir|gci|get-childitem)\b.*([\\/]var[\\/]log|windows[\\/]logs)"),
-        _n("gardien", 3, cmd="ls -l /etc/hostname", re=r"^(ls\s+-\w*l|stat)\b.*[\\/]etc[\\/]", win=False),
+        _n("gardien", 3, cmd="ls -l /etc/hostname", re=lecons.LS_L + r".*[\\/]etc[\\/]", win=False),
     ]},
     "biblio0": {"titre": "hist.biblio0.titre", "skill": None, "steps": [
         _entree("bibliotheque"),
@@ -194,15 +193,14 @@ NOUVELLES = {
     ]},
     "tour2": {"titre": "lec.reseau2.titre", "skill": "Cartographe", "steps": [
         _ref("reseau2", 0),
-        _n("tour2", 1, cmd="ssh -V", re=r"^ssh\s+-V\b"),
+        _n("tour2", 1, cmd="ssh -V", re=r"^ssh\s+-V\b", absent_ok=True),
         dict(_ref("reseau2", 1), expert=True),
     ]},
     "coeur0": {"titre": "hist.coeur0.titre", "skill": None, "steps": [
         _entree("coeur"),
         _n("coeur0", 1, cmd="rev message_brouille.txt", re=r"(^|\s)rev\b.*message", win=False,
            astuce="hist.coeur0.1.astuce"),
-        _n("coeur0", 2, cmd=C("ls -a", "dir -Force"), re=r"^(ls\s+-\w*a|dir\s+-force|gci\s+-force|get-childitem\s+-force)",
-           ou="coeur"),
+        _n("coeur0", 2, cmd=C("ls -a", "dir -Force"), re=lecons.LS_A, ou="coeur"),
         _n("coeur0", 3, cmd="cd .porte_secrete", ici="coeur/.porte_secrete"),
     ]},
     "coeur1": {"titre": "hist.coeur1.titre", "skill": None, "steps": [
@@ -403,9 +401,20 @@ def niveau_requis(state, c, i):
     return max(1, min(n, core.level(xp_appris(state))))
 
 
+def _repli(s):
+    """Un outil absent de cet ordinateur (tree…) : l'étape montre sa commande de repli installée (ls -R)."""
+    if not s.get("repli"):
+        return s
+    from . import verif
+    for c in [s["cmd"]] + list(s["repli"]):
+        if verif.commande_installee(c.split()[0]):
+            return s if c == s["cmd"] else dict(s, cmd=c)
+    return s
+
+
 def etapes(state, lid):
     niv = core.level(state.get("xp", 0))
-    return [s for s in lecon_def(lid)["steps"]
+    return [_repli(s) for s in lecon_def(lid)["steps"]
             if (not s.get("expert") or niv >= NIVEAU_EXPERT) and not (IS_WIN and s.get("win") is False)]
 
 
@@ -800,7 +809,7 @@ def _ici_ok(step, cwd):
     return maison.dans(cwd, step["ici"])
 
 
-def tick_lecon(state, lines, cwds):
+def tick_lecon(state, lines, cwds, avants=None):
     # filet de sécurité : un chapitre dont toutes les leçons sont faites se termine (le suivant démarre)
     c = chapitre_courant(state)
     if c and all(x in h_(state)["faits"] for x in c["lecons"]):
@@ -818,12 +827,26 @@ def tick_lecon(state, lines, cwds):
         else:
             core.say(state, t("lec.annonce"), 10)
         core.animer(state, "parle")
-    tapees = [(l, c) for l, c in zip(lines, cwds) if not est_colle(l)]
+    # G-34 : chaque morceau de ligne (`cd / && ls`) est jugé sur son RÉSULTAT (code de sortie, chemins qui existent
+    # depuis le dossier où il a été tapé, commande installée et écrite en minuscules), pas seulement sur son texte
+    from . import verif
+    avants = list(avants) if avants else [None] * len(lines)
+    morcs = []
+    for k, (line, cwd) in enumerate(zip(lines, cwds)):
+        if est_colle(line):
+            continue
+        morcs += verif.morceaux(line, avants[k] or cwd, core.statut_de(lines, k))
+    tapees = [(m.texte, m.avant) for m in morcs]
     avant = (les["id"], state["step"])
-    for line, cwd in tapees:
+    for m in morcs:
         step = les["steps"][state["step"]]
-        ok = "re" in step and re.search(step["re"], line, re.I) and _ou_ok(step, cwd)
-        if ok or _ici_ok(step, cwd):
+        ok = verif.motif_ok(step, m.texte, m.avant) and verif.resultat_ok(step, m) and _ou_ok(step, m.avant)
+        if ok or (_ici_ok(step, m.apres) and m.statut in (None, 0)):
+            absent = [w for w in (verif.premier(x) for x, _ in verif._couper(m.texte, ("|",)))
+                      if w and not verif.commande_installee(w)]
+            if ok and absent:                        # l'outil n'est pas là : on le dit au lieu d'un simple bravo
+                core.say(state, t("lec.indice.absent", cmd=absent[0]), 12)
+                core.terminal(state, t("lec.indice.absent", cmd=absent[0]))
             if not avancer(state, les):
                 state["indice_lecon"] = None
                 return
@@ -839,14 +862,96 @@ def tick_lecon(state, lines, cwds):
         state["indice_lecon"] = None
     elif tapees:
         step = les["steps"][state["step"]]
-        conseil = indice(state, step, [l for l, _ in tapees], tapees)
+        conseil = indice(state, step, [l for l, _ in tapees], tapees, morcs)
         if conseil and conseil != state.get("indice_lecon"):
             state["indice_lecon"] = conseil
             core.say(state, "💡 " + conseil, 12)
+        if conseil:
+            core.terminal(state, "💡 " + conseil)            # aussi dans le terminal de l'enfant (compagnon)
 
 
-def indice(state, step, lignes, tapees):
+def nom_lieu(rel):
+    """Le nom d'un lieu de la zone d'aventure pour un enfant (« » = le carrefour)."""
+    return maison.nom_piece(rel.split("/")[0] if rel else "grande_salle")
+
+
+def _indice_resultat(state, step, morcs):
+    """La commande de l'étape a été tapée, mais elle n'a pas marché : dire POURQUOI (majuscules, outil absent, nom mal
+    écrit, pas au bon endroit) avec la commande qui marche d'où l'enfant est."""
+    from . import verif
+    for m in morcs:
+        meme = "re" not in step and verif.premier(m.texte) == verif.premier(step["cmd"])   # étape « fichier »
+        if not meme and not verif.motif_ok(step, m.texte, m.avant):
+            bas = verif.premier(m.texte)
+            if bas and bas != bas.lower() and not IS_WIN and verif.motif_ok(step, m.texte.replace(bas, bas.lower(), 1),
+                                                                             m.avant):
+                return t("lec.indice.minuscules", cmd=step["cmd"], tape=bas)
+            continue
+        if not meme and verif.resultat_ok(step, m) and _ou_ok(step, m.avant):
+            continue
+        for x, _ in verif._couper(m.texte, ("|",)):
+            mot = verif.premier(x)
+            if mot and not verif.commande_installee(mot):
+                return t("lec.indice.absent", cmd=mot) + (" " + lecons.tx(step["astuce"]) if step.get("astuce") else "")
+        manque = verif.chemins_manquants(m.texte, m.avant)
+        if manque:
+            p = manque[0]
+            proche = verif.nom_proche(p, m.avant)
+            if proche:
+                return t("lec.indice.casse" if proche[1] else "lec.indice.nom", tape=p, proche=proche[0])
+            lieu = verif.lieu_attendu(state, step)
+            if lieu is not None and maison.rel(m.avant) != lieu:
+                return t("lec.indice.lieu", lieu=nom_lieu(lieu), cmd=verif.cd_vers(lieu), etape=step["cmd"])
+            return t("lec.indice.manque", nom=p)
+        if m.statut and not meme:
+            return t("lec.indice.rate", cmd=step["cmd"])
+    return None
+
+
+def _indice_cd(state, step, morcs):
+    """Une étape « va à … » : `cd -` (le lieu d'avant), un lieu qui n'est pas là où l'enfant est, une faute."""
+    from . import verif
+    for m in morcs:
+        g = re.match(r"^(cd|pushd)\s+(.+)$", m.texte.strip())
+        if not g:
+            continue
+        arg = g.group(2).strip().strip("'\"")
+        if arg == "-":
+            return t("lec.indice.cd_moins", cmd=step["cmd"])
+        if "ici" not in step and "ici_abs" not in step:
+            continue
+        if m.apres == m.avant and arg not in (".", "") and not os.path.isdir(verif._abs(arg, m.avant)):
+            proche = verif.nom_proche(arg, m.avant)
+            if proche:
+                return t("lec.indice.casse" if proche[1] else "lec.indice.nom", tape=arg, proche=proche[0])
+            return t("lec.indice.cd_pas_ici", nom=arg, cmd=step["cmd"] if "ici" not in step or step["cmd"].startswith(
+                ("cd ~", "cd /")) else verif.cd_vers(step["ici"]))
+    return None
+
+
+def _indice_variante(state, step, morcs):
+    """Une commande juste, mais différente de celle de l'étape : la féliciter, et dire ce que l'étape voulait."""
+    from . import verif
+    import os.path as op
+    cles = set()
+    for w, _c in verif.mots(step["cmd"])[1:]:
+        if w.startswith("-") or len(w) < 3:
+            continue
+        b = op.splitext(op.basename(w.rstrip("/")))[0].strip("*")
+        if len(b) >= 3:
+            cles.add(b.lower())
+    for m in morcs:
+        if m.statut != 0 or verif.motif_ok(step, m.texte, m.avant):
+            continue
+        tape = m.texte.lower()
+        if verif.premier(m.texte).lower() == verif.premier(step["cmd"]).lower() or any(c in tape for c in cles):
+            return t("lec.indice.variante", cmd=step["cmd"])
+    return None
+
+
+def indice(state, step, lignes, tapees, morcs=None):
     """Un indice quand c'est presque ça (mauvais endroit, faute de frappe, mauvais nombre…)."""
+    morcs = morcs or []
     if step.get("fs") == "reponse" and (T() / "coeur" / "reponse.txt").is_file():
         return t("hist.indice.nombre")
     if "ou" in step and "re" in step:
@@ -859,8 +964,8 @@ def indice(state, step, lignes, tapees):
             if re.search(step["re"], l, re.I) and not _ou_ok(step, cwd):
                 return t("hist.indice.racine", cmd="cd /")
     if "ici" in step or "ici_abs" in step:
-        return None
-    conseil = _indice_rm(step, tapees)
+        return _indice_cd(state, step, morcs)
+    conseil = _indice_cd(state, step, morcs) or _indice_rm(step, tapees) or _indice_resultat(state, step, morcs)
     if conseil:
         return conseil
     from . import dressage
@@ -868,7 +973,7 @@ def indice(state, step, lignes, tapees):
         conseil = _indice_chemin(step, tapees)
         if conseil:
             return conseil
-    return lecons.indice(step, lignes)
+    return lecons.indice(step, lignes, state) or _indice_variante(state, step, morcs)
 
 
 def _cible(cwd, mot):
@@ -1076,7 +1181,7 @@ def page_secours(titre, texte):
             "<body>\n<h1>" + html.escape(titre) + "</h1>\n<p>" + html.escape(texte) + "</p>\n</body>\n</html>\n")
 
 
-CURL_COLIS = r"^curl(\.exe)?\b.*-o\s*\S*colis\.html"
+CURL_COLIS = r"^(curl(\.exe)?\b.*-o|wget\b.*-O)\s*\S*colis\.html"
 
 
 def colis_hors_ligne(state, lines, cwds):
@@ -1096,7 +1201,10 @@ def colis_hors_ligne(state, lines, cwds):
         if cwd and (Path(cwd) / "colis.html").is_file():
             return False                                # arrivé ailleurs : l'indice dit où le taper
         nom = state.get("name", "")
-        if not _ecrire("colis.html", page_secours(t("hist.colis.titre"), t("hist.colis.texte", nom=nom))):
+        # posé LÀ où la commande a été tapée (la tour…), pour que l'étape suivante (head -n 5 colis.html) y marche
+        ici = maison.rel(cwd) if cwd else None
+        rel = f"{ici}/colis.html" if ici else "colis.html"
+        if not _ecrire(rel, page_secours(t("hist.colis.titre"), t("hist.colis.texte", nom=nom))):
             return False
         h_(state)["colis_secours"] = True
         core.log(state, t("hist.colis.log"))
@@ -1109,12 +1217,18 @@ def colis_hors_ligne(state, lines, cwds):
 # ---------------------------------------------------------------- à chaque étape de jeu
 def tick(state, lines, cwd=None):
     h_(state)
+    depart = maison.ici(state)
     cwds = maison.suivre(state, lines, cwd)
+    # le dossier où chaque ligne a été tapée : celui d'après la ligne d'avant ; pour la dernière, si elle ne change
+    # pas de dossier, celui que donne l'invite (le plus sûr)
+    avants = ([depart] + cwds[:-1]) if cwds else []
+    if lines and cwd and not re.search(r"(^|[;&|]\s*)(cd|pushd|set-location|sl)\b", lines[-1].strip(), re.I):
+        avants[-1] = str(cwd)
     meubler(state)
     _visite_aile(state, cwds + [maison.ici(state)])
     signer_carnet(state)
     colis_hors_ligne(state, lines, cwds)
-    tick_lecon(state, lines, cwds)
+    tick_lecon(state, lines, cwds, avants)
     meubler(state)
     from . import quetes
     quetes.tick(state, lines, cwds)

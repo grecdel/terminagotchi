@@ -2654,5 +2654,20 @@
  ],
  "racine.refus.adulte": "应用的终端模拟了真正 Linux 的目录树：/ 和系统的地方都是只读的，~ 是应用的私有文件夹。在电脑上，没有 `sudo` 往 /etc 写东西同样会失败（“Permission denied”）。",
  "racine.motd": "欢迎来到 Terminaworld！这里是规则大厅：只看，不碰。",
- "racine.osrelease": "这个文件是布景：在真正的 Linux 上，/etc/os-release 给出系统的名字和版本。"
+ "racine.osrelease": "这个文件是布景：在真正的 Linux 上，/etc/os-release 给出系统的名字和版本。",
+ "lec.indice.lieu": "命令对了，但位置不对！要在 {lieu} 里输入。先去那里：`{cmd}`，然后输入 `{etape}`。",
+ "lec.indice.nom": "差一点！这里没有“{tape}”。你是想写“{proche}”吗？检查一下字母。",
+ "lec.indice.casse": "注意大小写！对电脑来说，“{tape}”和“{proche}”是两个不同的名字。请写“{proche}”。",
+ "lec.indice.manque": "你所在的地方没有“{nom}”。输入 `ls` 看看这里有什么，或输入 `pwd` 知道你在哪里。",
+ "lec.indice.absent": "这台电脑上没有安装工具“{cmd}”：这不是你的错！",
+ "lec.indice.minuscules": "注意：命令要用小写字母写。输入 `{cmd}`，不是“{tape}”。",
+ "lec.indice.rate": "命令返回了错误，所以这一步还没完成。读一读提示，改正后再试一次：`{cmd}`",
+ "lec.indice.variante": "✔ 你的命令也能用，真棒！不过这一步想让你认识 `{cmd}`：试试看有什么不同。",
+ "lec.indice.cd_moins": "`cd -` 把你带回了上一个地方（你来的地方）。这一步要的是：`{cmd}`",
+ "lec.indice.cd_pas_ici": "你所在的地方没有叫“{nom}”的地点。这条路径在哪里都能用：`{cmd}`",
+ "core.inconnue.casse": "带大写字母的“{cmd}”不存在：命令要用小写字母写。输入 `{proche}`。",
+ "comp.lecon.puis": "`{cd}` 然后 `{cmd}`",
+ "vrai.pareil": "💻 在真正的终端里（Linux、macOS）：`{cmd}` 用法一样。",
+ "vrai.mac": "💻 在真正的终端里：Linux 上一样；在 macOS 上请改用 `{mac}`。",
+ "vrai.absent": "💻 在真正的终端里：`{cmd}` 并不是到处都装了；大人可以安装它（需要大人的密码）。"
 }

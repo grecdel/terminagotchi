@@ -2648,5 +2648,20 @@
  ],
  "racine.refus.adulte": "la terminal de la app simula el árbol de un Linux real: / y los lugares del sistema son de solo lectura, ~ es la carpeta privada de la app. En un ordenador, escribir en /etc también fallaría («Permission denied») sin `sudo`.",
  "racine.motd": "¡Bienvenido al Terminaworld! Esta es la sala de las reglas: miramos, no tocamos.",
- "racine.osrelease": "Este archivo es un decorado: en un Linux real, /etc/os-release da el nombre y la versión del sistema."
+ "racine.osrelease": "Este archivo es un decorado: en un Linux real, /etc/os-release da el nombre y la versión del sistema.",
+ "lec.indice.lieu": "¡Buen comando, pero no en el buen sitio! Se escribe desde el lugar {lieu}. Ve allí primero: `{cmd}`, y luego escribe `{etape}`.",
+ "lec.indice.nom": "¡Casi! Aquí no hay ningún «{tape}». ¿Querías decir «{proche}»? Revisa las letras.",
+ "lec.indice.casse": "¡Cuidado con las mayúsculas! Para el ordenador, «{tape}» y «{proche}» son dos nombres distintos. Escribe «{proche}».",
+ "lec.indice.manque": "«{nom}» no existe donde estás. Escribe `ls` para ver qué hay aquí, o `pwd` para saber dónde estás.",
+ "lec.indice.absent": "La herramienta «{cmd}» no está instalada en este ordenador: ¡no es culpa tuya!",
+ "lec.indice.minuscules": "Atención: los comandos se escriben en minúsculas. Escribe `{cmd}`, no «{tape}».",
+ "lec.indice.rate": "El comando respondió con un error, así que el paso aún no está hecho. Lee el mensaje, corrige y vuelve a intentarlo: `{cmd}`",
+ "lec.indice.variante": "✔ ¡Tu comando también funciona, bravo! Pero este paso quiere que descubras `{cmd}`: pruébalo para ver la diferencia.",
+ "lec.indice.cd_moins": "`cd -` te ha llevado de vuelta al lugar anterior (de donde venías). Aquí, el paso quiere: `{cmd}`",
+ "lec.indice.cd_pas_ici": "No hay ningún lugar «{nom}» donde estás. Este camino funciona desde cualquier sitio: `{cmd}`",
+ "core.inconnue.casse": "«{cmd}» con mayúsculas no existe: los comandos se escriben en minúsculas. Escribe `{proche}`.",
+ "comp.lecon.puis": "`{cd}` y luego `{cmd}`",
+ "vrai.pareil": "💻 En una terminal de verdad (Linux, macOS): `{cmd}` funciona igual.",
+ "vrai.mac": "💻 En una terminal de verdad: igual en Linux; en macOS, escribe mejor `{mac}`.",
+ "vrai.absent": "💻 En una terminal de verdad: `{cmd}` no está instalado en todas partes; un adulto puede añadirlo (hará falta su contraseña)."
 }

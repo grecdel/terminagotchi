@@ -2648,5 +2648,20 @@
  ],
  "racine.refus.adulte": "das Terminal der App simuliert den Baum eines echten Linux: / und die Orte des Systems sind schreibgeschützt, ~ ist der private Ordner der App. Auf einem Computer würde Schreiben in /etc ohne `sudo` ebenfalls scheitern („Permission denied“).",
  "racine.motd": "Willkommen in der Terminaworld! Das ist der Saal der Regeln: Wir schauen, wir fassen nichts an.",
- "racine.osrelease": "Diese Datei ist Kulisse: Auf einem echten Linux nennt /etc/os-release den Namen und die Version des Systems."
+ "racine.osrelease": "Diese Datei ist Kulisse: Auf einem echten Linux nennt /etc/os-release den Namen und die Version des Systems.",
+ "lec.indice.lieu": "Richtiger Befehl, aber am falschen Ort! Er wird am Ort {lieu} getippt. Geh zuerst dorthin: `{cmd}`, dann tippe `{etape}`.",
+ "lec.indice.nom": "Fast! Hier gibt es kein „{tape}“. Meintest du „{proche}“? Prüfe die Buchstaben.",
+ "lec.indice.casse": "Achtung, Groß- und Kleinschreibung! Für den Computer sind „{tape}“ und „{proche}“ zwei verschiedene Namen. Schreib „{proche}“.",
+ "lec.indice.manque": "„{nom}“ gibt es dort nicht, wo du bist. Tippe `ls`, um zu sehen, was hier ist, oder `pwd`, um zu wissen, wo du bist.",
+ "lec.indice.absent": "Das Werkzeug „{cmd}“ ist auf diesem Computer nicht installiert: Das ist nicht deine Schuld!",
+ "lec.indice.minuscules": "Achtung: Befehle werden kleingeschrieben. Tippe `{cmd}`, nicht „{tape}“.",
+ "lec.indice.rate": "Der Befehl hat mit einem Fehler geantwortet, also ist der Schritt noch nicht geschafft. Lies die Meldung, verbessere und versuch es nochmal: `{cmd}`",
+ "lec.indice.variante": "✔ Dein Befehl funktioniert auch, super! Aber dieser Schritt will dir `{cmd}` zeigen: Probier ihn aus und sieh den Unterschied.",
+ "lec.indice.cd_moins": "`cd -` hat dich zum vorherigen Ort zurückgebracht (woher du kamst). Hier will der Schritt: `{cmd}`",
+ "lec.indice.cd_pas_ici": "Dort, wo du bist, gibt es keinen Ort „{nom}“. Dieser Pfad funktioniert von überall: `{cmd}`",
+ "core.inconnue.casse": "„{cmd}“ mit Großbuchstaben gibt es nicht: Befehle werden kleingeschrieben. Tippe `{proche}`.",
+ "comp.lecon.puis": "`{cd}` dann `{cmd}`",
+ "vrai.pareil": "💻 In einem echten Terminal (Linux, macOS): `{cmd}` funktioniert genauso.",
+ "vrai.mac": "💻 In einem echten Terminal: genauso unter Linux; unter macOS tippst du besser `{mac}`.",
+ "vrai.absent": "💻 In einem echten Terminal: `{cmd}` ist nicht überall installiert; ein Erwachsener kann es hinzufügen (sein Passwort wird gebraucht)."
 }

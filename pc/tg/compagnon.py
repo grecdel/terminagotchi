@@ -58,12 +58,66 @@ def ligne(state):
         return f"{tete}  {fg(214)}💭 {r}{RESET}"
     les, _ = lecons.lecon_courante(state)
     if les and lvl >= les["niveau"]:
-        return f"{tete}  {DIM}" + t("comp.lecon", cmd=piege(les["steps"][state["step"]]["cmd"])) + RESET
+        return f"{tete}  {DIM}" + t("comp.lecon2", cmd=commande_montree(state, les["steps"][state["step"]])) + RESET
     from . import quetes
     suivie = quetes.ligne_suivie(state)
     if suivie:
         return f"{tete}  {DIM}{suivie}{RESET}"
     return tete
+
+
+def commande_montree(state, step, cwd=None):
+    """La commande de l'étape telle qu'on la montre : précédée du « cd » qui y mène quand l'enfant n'est pas là où elle
+    se tape (une seule ligne : « cd ~/terrain_terminagotchi/grenier puis mv … »), avec les lettres sosies."""
+    from . import maison, verif
+    cmd = piege(step["cmd"])
+    try:
+        ici = cwd or maison.ici(state)
+        if not verif.au_bon_endroit(state, step, ici):
+            return t("comp.lecon.puis", cd=piege(verif.cd_vers(verif.lieu_attendu(state, step))), cmd=cmd)
+    except Exception:                                # noqa: BLE001 (le compagnon ne doit jamais planter)
+        pass
+    if step["cmd"].startswith("less "):
+        return t("comp.lecon.less", cmd=cmd)
+    return f"`{cmd}`"
+
+
+def maison_ici(state):
+    from . import maison
+    return maison.ici(state)
+
+
+def annonces(state):
+    """Ce que l'enfant doit lire dans SON terminal (G-34) : le bravo, puis la nouvelle étape (son texte, la commande,
+    la version des grands, le vrai terminal) quand elle change, et les messages importants (indices, mises en garde,
+    erreurs expliquées). Une seule fois chacun."""
+    from .langue import sans_marques  # noqa: F401
+    out = []
+    try:
+        from . import verif
+        e = verif.expliquer(core.DERNIER["ligne"], core.DERNIER["statut"], maison_ici(state))
+    except Exception:                                # noqa: BLE001
+        e = None
+    if e:
+        out.append(f"{fg(214)}{e}{RESET}")
+    for x in state.pop("terminal", []) or []:
+        out.append(f"{fg(214)}{x}{RESET}")
+    les, _ = lecons.lecon_courante(state)
+    if les and core.level(state["xp"]) >= les["niveau"]:
+        cle = f"{les['id']}:{state['step']}"
+        if state.get("term_etape") != cle:
+            state["term_etape"] = cle
+            step = les["steps"][state["step"]]
+            out.append(f"{fg(213)}📖 {lecons.tx(step['dit'])}{RESET}")
+            out.append(f"   {fg(226)}➜ {commande_montree(state, step)}{RESET}")
+            g = lecons.adulte(step)
+            if g:
+                out.append(f"   {DIM}🧑 {g}{RESET}")
+            from . import vrai
+            v = vrai.ligne(step)
+            if v:
+                out.append(f"   {DIM}{v}{RESET}")
+    return out
 
 
 def coin(state):
@@ -88,6 +142,9 @@ def prompt(etape):
 
     def rendre(state):
         s = ligne(state)
+        dire = annonces(state)
+        if dire:
+            s = "\n".join(dire) + RESET + "\n" + s
         if state["config"]["compagnon"] == "coin":
             s = coin(state) + s
         from . import intro
@@ -101,7 +158,14 @@ def prompt(etape):
         ici = os.getcwd()                      # le dossier du terminal : la carte de la maison le suit
     except OSError:
         ici = None
-    etape(spontane=True, rythme=8, defis=True, avant_save=rendre, cwd=ici)
+    statut = None
+    for a in sys.argv:                         # --statut=$? : le code de sortie de la commande (crochet d'invite)
+        if a.startswith("--statut="):
+            try:
+                statut = int(a.split("=", 1)[1])
+            except ValueError:
+                pass
+    etape(spontane=True, rythme=8, defis=True, avant_save=rendre, cwd=ici, statut=statut)
     if sortie:
         sys.stdout.write(sortie[0] + RESET + "\n")
         sys.stdout.flush()
@@ -123,31 +187,31 @@ def _blocs():
     shell = os.environ.get("SHELL", "")
     bashrc, zshrc = home / ".bashrc", home / ".zshrc"
     if not IS_WIN and (shell.endswith("bash") or bashrc.exists() or OSK == "android"):
-        blocs[bashrc] = (f'__tg_prompt() {{ history -a; "{exe}" "{app}" prompt; }}\n'
+        blocs[bashrc] = (f'__tg_prompt() {{ local s=$?; history -a; "{exe}" "{app}" prompt --statut=$s; }}\n'
                          'PROMPT_COMMAND="__tg_prompt${PROMPT_COMMAND:+; $PROMPT_COMMAND}"\n'
                          f"alias tg='\"{exe}\" \"{app}\"'\n"
                          "alias carte='tg carte'; alias quetes='tg quetes'; alias explique='tg explique'\n"
                          "alias entrainement='tg entrainement'; alias exercice='tg entrainement'; alias badges='tg badges'\n"
-                         "alias guide='tg guide'; alias types='tg types'; alias equipe='tg equipe'")
+                         "alias guide='tg guide'; alias types='tg types'; alias equipe='tg equipe'; alias aide='tg aide'")
     if not IS_WIN and (shell.endswith("zsh") or zshrc.exists() or OSK == "mac"):
         blocs[zshrc] = ("setopt INC_APPEND_HISTORY\n"
-                        f'__tg_prompt() {{ "{exe}" "{app}" prompt }}\n'
+                        f'__tg_prompt() {{ local s=$?; "{exe}" "{app}" prompt --statut=$s }}\n'
                         "autoload -Uz add-zsh-hook && add-zsh-hook precmd __tg_prompt\n"
                         f"alias tg='\"{exe}\" \"{app}\"'\n"
                         "alias carte='tg carte'; alias quetes='tg quetes'; alias explique='tg explique'\n"
                         "alias entrainement='tg entrainement'; alias exercice='tg entrainement'; alias badges='tg badges'\n"
-                        "alias guide='tg guide'; alias types='tg types'; alias equipe='tg equipe'")
+                        "alias guide='tg guide'; alias types='tg types'; alias equipe='tg equipe'; alias aide='tg aide'")
     fish = home / ".config" / "fish"
     if not IS_WIN and fish.is_dir():
         blocs[fish / "conf.d" / "terminagotchi.fish"] = (
-            f'function __tg_prompt --on-event fish_prompt\n    "{exe}" "{app}" prompt\nend\n'
+            f'function __tg_prompt --on-event fish_prompt\n    "{exe}" "{app}" prompt --statut=$status\nend\n'
             f'function tg\n    "{exe}" "{app}" $argv\nend\n'
             'function carte\n    tg carte\nend\nfunction quetes\n    tg quetes $argv\nend\n'
             'function explique\n    tg explique $argv\nend\n'
             'function entrainement\n    tg entrainement $argv\nend\nfunction exercice\n    tg entrainement $argv\nend\n'
             'function badges\n    tg badges $argv\nend\n'
             'function guide\n    tg guide $argv\nend\nfunction types\n    tg types\nend\n'
-            'function equipe\n    tg equipe $argv\nend')
+            'function equipe\n    tg equipe $argv\nend\nfunction aide\n    tg aide $argv\nend')
     for ps in ("powershell", "pwsh"):
         if shutil.which(ps):
             try:

@@ -2656,5 +2656,20 @@
  ],
  "racine.refus.adulte": "アプリのターミナルは本物の Linux のツリーを再現しています。/ とシステムの場所は読み取り専用で、~ はアプリ専用のフォルダです。パソコンでも `sudo` なしで /etc に書き込むと失敗します（「Permission denied」）。",
  "racine.motd": "Terminaworld へ ようこそ！ ここは きまりの へや：みるだけ、さわらないよ。",
- "racine.osrelease": "このファイルは飾りです。本物の Linux では、/etc/os-release にシステムの名前とバージョンが書かれています。"
+ "racine.osrelease": "このファイルは飾りです。本物の Linux では、/etc/os-release にシステムの名前とバージョンが書かれています。",
+ "lec.indice.lieu": "コマンドは合っているけど、場所がちがうよ！{lieu} で打つんだ。まずそこへ行こう：`{cmd}`、それから `{etape}` と打ってね。",
+ "lec.indice.nom": "おしい！ここには「{tape}」はないよ。「{proche}」のことかな？文字をたしかめてね。",
+ "lec.indice.casse": "大文字に気をつけて！コンピューターにとって「{tape}」と「{proche}」は別の名前なんだ。「{proche}」と書いてね。",
+ "lec.indice.manque": "「{nom}」は今いる場所にはないよ。`ls` でここに何があるか見るか、`pwd` でどこにいるか知ろう。",
+ "lec.indice.absent": "このコンピューターには「{cmd}」という道具が入っていないよ。きみのせいじゃないよ！",
+ "lec.indice.minuscules": "注意：コマンドは小文字で書くよ。「{tape}」じゃなくて `{cmd}` と打ってね。",
+ "lec.indice.rate": "コマンドがエラーで答えたから、このステップはまだ終わっていないよ。メッセージを読んで、直して、もう一度：`{cmd}`",
+ "lec.indice.variante": "✔ きみのコマンドでもできたね、すごい！でもこのステップでは `{cmd}` を知ってほしいんだ。ためして、ちがいを見てみよう。",
+ "lec.indice.cd_moins": "`cd -` で前の場所（来たところ）にもどったよ。ここでは、このステップは `{cmd}` を待っているよ。",
+ "lec.indice.cd_pas_ici": "今いる場所には「{nom}」という場所はないよ。この道ならどこからでも行けるよ：`{cmd}`",
+ "core.inconnue.casse": "大文字の「{cmd}」はないよ。コマンドは小文字で書くんだ。`{proche}` と打ってね。",
+ "comp.lecon.puis": "`{cd}` のあと `{cmd}`",
+ "vrai.pareil": "💻 本物のターミナル（Linux、macOS）でも：`{cmd}` は同じように使えるよ。",
+ "vrai.mac": "💻 本物のターミナルでは：Linux は同じ。macOS では `{mac}` と打とう。",
+ "vrai.absent": "💻 本物のターミナルでは：`{cmd}` はどこにでも入っているわけじゃないよ。大人が入れられるよ（大人のパスワードがいるよ）。"
 }

@@ -186,19 +186,29 @@ def tick(state, lignes):
         cmd = core.first_word(l)
         if not cmd:
             continue
-        c = next((c for c in checklist() if c["id"] not in i["faits"] and re.search(c["re"], l.strip(), re.I)), None)
-        if c is None:
-            if not core.commande_existe(cmd) and not cmd.startswith(("./", "/")):
+        # G-34 : `pwd; ls` compte pour les deux ; `PWD` (majuscules) ou une commande qui a échoué ne compte pas
+        from . import verif
+        trouves = []
+        for m in verif.morceaux(l, None, core.statut_de(lignes, k)):
+            if m.statut not in (None, 0) or not verif.casse_ok(verif.premier(m.texte)):
+                continue
+            c = next((c for c in checklist() if c["id"] not in i["faits"] and c not in trouves
+                      and re.search(c["re"], m.texte.strip(), re.I)), None)
+            if c is not None:
+                trouves.append(c)
+        if not trouves:
+            if not core.commande_existe(cmd) and not cmd.startswith(("./", "/")) or core.statut_de(lignes, k):
                 i["erreur"] = True                 # une erreur : le petit tutoriel dit que ce n'est pas grave
             continue
-        i["faits"].append(c["id"])
-        n = len(i["faits"])
-        i["evt"] = [n, time.time()]
-        if n >= len(checklist()):
-            finir(state)
-            return list(lignes[k + 1:])
-        state["anim"] = [f"oeuf_{n}", time.time()]
-        core.say(state, t(f"intro.reagit.{n}"), 8)
+        for c in trouves:
+            i["faits"].append(c["id"])
+            n = len(i["faits"])
+            i["evt"] = [n, time.time()]
+            if n >= len(checklist()):
+                finir(state)
+                return list(lignes[k + 1:])
+            state["anim"] = [f"oeuf_{n}", time.time()]
+            core.say(state, t(f"intro.reagit.{n}"), 8)
         core.log(state, f"🥚 ✔ {l.strip()}")
     return []
 

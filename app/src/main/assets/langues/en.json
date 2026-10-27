@@ -2653,5 +2653,20 @@
  ],
  "racine.refus.adulte": "the app's terminal simulates the tree of a real Linux: / and the system places are read-only, ~ is the app's private folder. On a computer, writing to /etc would fail too (\"Permission denied\") without `sudo`.",
  "racine.motd": "Welcome to the Terminaworld! This is the hall of rules: we look, we don't touch.",
- "racine.osrelease": "This file is scenery: on a real Linux, /etc/os-release gives the name and version of the system."
+ "racine.osrelease": "This file is scenery: on a real Linux, /etc/os-release gives the name and version of the system.",
+ "lec.indice.lieu": "Right command, wrong place! It must be typed from {lieu}. Go there first: `{cmd}`, then type `{etape}`.",
+ "lec.indice.nom": "Almost! There is no “{tape}” here. Did you mean “{proche}”? Check the letters.",
+ "lec.indice.casse": "Watch the capital letters! For the computer, “{tape}” and “{proche}” are two different names. Write “{proche}”.",
+ "lec.indice.manque": "“{nom}” doesn't exist where you are. Type `ls` to see what is here, or `pwd` to know where you are.",
+ "lec.indice.absent": "The tool “{cmd}” is not installed on this computer: it's not your fault!",
+ "lec.indice.minuscules": "Careful: commands are written in small letters. Type `{cmd}`, not “{tape}”.",
+ "lec.indice.rate": "The command answered with an error, so the step is not done yet. Read the message, fix it and try again: `{cmd}`",
+ "lec.indice.variante": "✔ Your command works too, well done! But this step wants you to discover `{cmd}`: try it and see the difference.",
+ "lec.indice.cd_moins": "`cd -` took you back to the previous place (where you came from). Here, the step wants: `{cmd}`",
+ "lec.indice.cd_pas_ici": "There is no place “{nom}” where you are. This path works from anywhere: `{cmd}`",
+ "core.inconnue.casse": "“{cmd}” with capital letters doesn't exist: commands are written in small letters. Type `{proche}`.",
+ "comp.lecon.puis": "`{cd}` then `{cmd}`",
+ "vrai.pareil": "💻 In a real terminal (Linux, macOS): `{cmd}` works the same.",
+ "vrai.mac": "💻 In a real terminal: the same on Linux; on macOS, type `{mac}` instead.",
+ "vrai.absent": "💻 In a real terminal: `{cmd}` is not installed everywhere; an adult can add it (their password will be needed)."
 }

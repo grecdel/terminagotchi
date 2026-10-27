@@ -54,7 +54,7 @@ FS = {
     "secours":  lambda: (T / "nid" / "secours.txt").is_file(),
     "reserve":  lambda: (T / "reserve.txt").is_file(),
     "supprime": lambda: not (T / "reserve.txt").exists(),
-    "colis":    lambda: (T / "colis.html").is_file(),
+    "colis":    lambda: (T / "colis.html").is_file() or any(p.is_file() for p in T.glob("*/colis.html")),
     "carnet":   lambda: (T / "carnet" / ".git").is_dir(),
     "journal":  lambda: (T / "carnet" / "journal.txt").is_file(),
     "commit":   _commit_fait,
@@ -63,6 +63,13 @@ FS = {
 }
 
 CD = r"^(cd|set-location|sl)\s+"
+# `ls -l`, `ls -la`, `ls -al`, `ls -l -a`, `ls -lh` : le l peut être n'importe où dans les options (G-34)
+LS_L = r"^(ls(\s+-\w+)*\s+-\w*l\w*(\s|$)|stat\b)"
+# `ls -a`, `ls -la`, `ls -l -a`, `ls --all`, `ls -A`
+LS_A = r"^(ls(\s+-\w+)*\s+(-\w*[aA]\w*|--all|--almost-all)(\s|$)|dir\s+(-force|/a)|gci\s+-force|get-childitem\s+-force)"
+# ajouter à la fin d'un fichier : `>> f`, `>> ./f`, `| tee -a f`
+def AJOUTE(nom):
+    return rf"(>>\s*|\btee\s+(-\w+\s+)*-\w*a\w*\s+)(\S*[/\\])?{nom}"
 
 # ---------------------------------------------------------------- tronc commun
 TRONC = [
@@ -100,13 +107,13 @@ TRONC = [
     {"titre": "lec.t3.titre", "skill": "Gardien", "niveau": 5, "steps": [
         {"dit": "lec.t3.0.dit",
          "cmd": C("ls -l nid", f"attrib nid{S}repas.txt"),
-         "re": r"^(ls\s+-\w*l|attrib|get-acl|icacls|stat)\b",
+         "re": LS_L[:-1] + r"|attrib\b|get-acl\b|icacls\b)",
          "bravo": C("lec.t3.0.bravo", "lec.t3.0.bravo.win")},
         {"dit": "lec.t3.1.dit",
          "cmd": C(f"chmod 444 nid{S}repas.txt", f"attrib +r nid{S}repas.txt"), "fs": "protege",
          "bravo": "lec.t3.1.bravo"},
         {"dit": "lec.t3.2.dit",
-         "cmd": f"echo poire >> nid{S}repas.txt", "re": r">>.*repas",
+         "cmd": f"echo poire >> nid{S}repas.txt", "re": AJOUTE(r"repas"), "echoue": True,
          "bravo": "lec.t3.2.bravo"},
     ]},
     {"titre": "lec.t4.titre", "skill": "Nettoyeur", "niveau": 6, "steps": [
@@ -129,15 +136,17 @@ ARBRE = {
     "Réseau": {"stat": "Agilité", "icone": "📡", "desc": "lec.reseau.desc", "lecons": [
         {"titre": "lec.reseau0.titre", "skill": "Radar", "steps": [
             {"dit": "lec.reseau0.0.dit",
-             "cmd": C("ping -c 3 example.com", "ping -n 3 example.com"), "re": r"^ping\b",
+             "cmd": C("ping -c 3 example.com", "ping -n 3 example.com"), "re": r"^ping\b", "reseau": True,
              "bravo": "lec.reseau0.0.bravo"},
-            {"dit": "lec.reseau0.1.dit", "cmd": C("ip a", "ipconfig", mac="ifconfig", android="ifconfig"),
+            {"dit": "lec.reseau0.1.dit", "cmd": C("ip a", "ipconfig", mac="ifconfig", android="ifconfig"), "reseau": True,
+             "repli": ["ifconfig"],
              "re": r"^(ip|ifconfig|ipconfig)\b",
              "bravo": "lec.reseau0.1.bravo"},
         ]},
         {"titre": "lec.reseau1.titre", "skill": "Facteur", "steps": [
             {"dit": "lec.reseau1.0.dit",
-             "cmd": C("curl -I https://example.com", "curl.exe -I https://example.com"), "re": r"^curl(\.exe)?\b",
+             "cmd": C("curl -I https://example.com", "curl.exe -I https://example.com"), "re": r"^(curl(\.exe)?|wget)\b",
+             "reseau": True,
              "bravo": "lec.reseau1.0.bravo"},
             {"dit": "lec.reseau1.1.dit",
              "cmd": C("curl -o colis.html https://example.com", "curl.exe -o colis.html https://example.com"),
@@ -148,12 +157,12 @@ ARBRE = {
              "re": r"^(head|get-content|gc|cat|type)\b.*colis", "bravo": "lec.reseau1.2.bravo"},
         ]},
         {"titre": "lec.reseau2.titre", "skill": "Cartographe", "steps": [
-            {"dit": "lec.reseau2.0.dit", "cmd": "nslookup example.com",
-             "re": r"^(nslookup|dig|resolve-dnsname)\b",
+            {"dit": "lec.reseau2.0.dit", "cmd": "nslookup example.com", "reseau": True, "repli": ["host example.com"],
+             "re": r"^(nslookup|dig|host|resolve-dnsname)\b",
              "bravo": "lec.reseau2.0.bravo"},
             {"dit": "lec.reseau2.1.dit",
              "cmd": C("traceroute example.com", "tracert example.com"), "re": r"^(traceroute|tracert|tracepath|mtr)\b",
-             "astuce": C(("lec.reseau2.1.astuce", {"cmd": installer("traceroute")}), None),
+             "reseau": True, "repli": ["tracepath example.com"], "astuce": C("lec.reseau2.1.astuce2", None),
              "bravo": "lec.reseau2.1.bravo"},
         ]},
     ]},
@@ -177,7 +186,7 @@ ARBRE = {
         ]},
         {"titre": "lec.git2.titre", "skill": "Chronomancien", "steps": [
             {"dit": "lec.git2.0.dit", "cmd": 'echo "jour 2" >> journal.txt',
-             "re": r">>\s*journal", "bravo": "lec.git2.0.bravo"},
+             "re": AJOUTE("journal"), "bravo": "lec.git2.0.bravo"},
             {"dit": "lec.git2.1.dit", "cmd": "git diff", "re": r"^git\s+diff",
              "bravo": "lec.git2.1.bravo"},
             {"dit": "lec.git2.2.dit", "cmd": "git log", "re": r"^git\s+log",
@@ -216,7 +225,7 @@ ARBRE = {
     ]},
     "Système": {"stat": "Force", "icone": "⚙", "desc": "lec.systeme.desc", "lecons": [
         {"titre": "lec.systeme0.titre", "skill": "Vigie", "steps": [
-            {"dit": "lec.systeme0.0.dit", "cmd": "whoami", "re": r"^whoami\b",
+            {"dit": "lec.systeme0.0.dit", "cmd": "whoami", "re": r"^(whoami|id(\s+-un?)?(\s|$))",
              "bravo": "lec.systeme0.0.bravo"},
             {"dit": "lec.systeme0.1.dit", "cmd": C("ps aux", "Get-Process", android="ps"),
              "re": r"^(ps|get-process|gps|tasklist|top|htop)\b",
@@ -227,7 +236,7 @@ ARBRE = {
              "re": r"^(df|get-psdrive|gdr)\b", "bravo": "lec.systeme1.0.bravo"},
             {"dit": "lec.systeme1.1.dit",
              "cmd": C("du -sh ~/terrain_terminagotchi", "Get-ChildItem ~/terrain_terminagotchi -Recurse | Measure-Object Length -Sum"),
-             "re": r"^(du|get-childitem|gci|dir|ls)\b.*terrain", "bravo": "lec.systeme1.1.bravo"},
+             "re": r"^(du|get-childitem|gci|dir|ls)\b.*(terrain|\s\.\.?[/\\]?\s*$)", "bravo": "lec.systeme1.1.bravo"},
         ]},
         {"titre": "lec.systeme2.titre", "skill": "Chasseur", "steps": [
             {"dit": "lec.systeme2.0.dit",
@@ -236,7 +245,7 @@ ARBRE = {
             {"dit": "lec.systeme2.1.dit", "cmd": C("jobs", "Get-Process notepad"), "re": r"^(jobs|get-process|gps|ps)\b",
              "bravo": "lec.systeme2.1.bravo"},
             {"dit": "lec.systeme2.2.dit", "cmd": C("kill %1", "Stop-Process -Name notepad"),
-             "re": r"^(kill|stop-process|spps|taskkill)\b", "bravo": "lec.systeme2.2.bravo"},
+             "re": r"^(kill|pkill|killall|stop-process|spps|taskkill)\b", "bravo": "lec.systeme2.2.bravo"},
         ]},
     ]},
 }
@@ -370,7 +379,7 @@ CREE = {"nid": "nid", "repas": "nid/repas.txt", "secours": "nid/secours.txt", "r
         "colis": "colis.html", "carnet": "carnet", "journal": "carnet/journal.txt"}
 
 
-def indice(step, lignes):
+def indice(step, lignes, state=None):
     """Une étape PRESQUE réussie : le texte d'un indice clair, ou None."""
     from . import dressage
     from pathlib import Path
@@ -387,7 +396,10 @@ def indice(step, lignes):
         nom = rel.split("/")[-1]
         if (Path.home() / nom).exists() or (Path.home() / rel).exists() or (T.is_dir() and any(
                 p for p in T.rglob(nom) if p != T / rel)):
-            return t("lec.indice.endroit", cmd=f"cd ~/{T.name}")
+            from . import verif
+            from .histoire import nom_lieu
+            lieu = (verif.lieu_attendu(state, step) if state is not None else None) or ""
+            return t("lec.indice.lieu", lieu=nom_lieu(lieu), cmd=verif.cd_vers(lieu), etape=cmd)
     return None
 
 
