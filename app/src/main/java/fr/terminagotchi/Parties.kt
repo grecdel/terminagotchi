@@ -58,10 +58,18 @@ object Parties {
         null
     }
 
-    private fun ecrire(f: File, o: JSONObject) {
-        val tmp = File(f.parentFile, f.name + ".tmp")
-        tmp.writeText(o.toString())
-        if (!tmp.renameTo(f)) { f.writeText(o.toString()); tmp.delete() }
+    private fun ecrire(f: File, o: JSONObject) = ecrireTexte(f, Garde.sceller(o))
+
+    /** Écriture atomique (.tmp puis renommage), signalée au gardien des coulisses (Garde) : ce n'est pas une attaque. */
+    fun ecrireTexte(f: File, texte: String) {
+        val tmp = File(f.parentFile, f.name.removeSuffix(".json") + ".tmp")
+        try {
+            tmp.writeText(texte)
+            if (!tmp.renameTo(f)) { f.writeText(texte); tmp.delete() }
+        } finally {
+            Garde.noter(f)
+            Garde.noter(tmp)
+        }
     }
 
     /** L'index, créé au premier passage : la sauvegarde d'avant devient la partie 1, active. */

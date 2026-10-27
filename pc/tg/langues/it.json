@@ -2684,5 +2684,18 @@
  "vrai.absent": "💻 In un vero terminale: `{cmd}` non è installato ovunque; un adulto può aggiungerlo (servirà la sua password).",
  "vrai.win": "💻 In PowerShell (Windows): `{cmd}` funziona allo stesso modo; su Linux e macOS il comando cambia un po'.",
  "hist.grenier0.1.astuce2": "Se `tree` non c'è: `ls -R` mostra la stessa cosa. (Per installare `tree`, chiedi a un adulto: servirà la sua password.)",
- "lec.reseau2.1.astuce2": "Se `traceroute` manca, prova `tracepath`, o chiedi a un adulto di installarlo (servirà la sua password)."
+ "lec.reseau2.1.astuce2": "Se `traceroute` manca, prova `tracepath`, o chiedi a un adulto di installarlo (servirà la sua password).",
+ "core.sur.lien": "🔗 Attenzione: {lien} è un collegamento simbolico (porta a {cible}, fuori dalla mia zona). Non scrivo mai attraverso un collegamento, per non rovinare niente altrove. Per toglierlo (se ne va solo il collegamento, non quello che mostra): `{cmd}`",
+ "core.sur.lien.adulte": "Per i grandi: il gioco scrive solo in ~/terrain_terminagotchi e ~/.terminagotchi, e rifiuta qualsiasi percorso che passi per un collegamento simbolico (potrebbe portare ai vostri veri file o a un altro repository git). {lien} resta com'è; non è stato scritto niente attraverso di esso.",
+ "core.sur.lien.court": "🔗 {lien} è un collegamento simbolico: non ci scrivo attraverso.",
+ "core.sur.droits": "🔒 Non riesco più a entrare in {chemin}: i permessi sono stati tolti (con `chmod`?). Per ridarmi la chiave: `{cmd}`",
+ "core.sur.plein": "💾 Non c'è più posto per scrivere in {chemin} (il disco è pieno?). Libera un po' di spazio: riprovo da solo.",
+ "core.sur.systeme": "⚠ Il computer ha rifiutato una scrittura in {chemin} ({erreur}). Riprovo al prossimo turno.",
+ "core.sur.bug": "😵 Ops, sono inciampato in un bug. Non si è perso niente. Per i grandi: i dettagli sono in {fichier}.",
+ "core.sur.restaure": "🩹 Il mio salvataggio era rovinato: ho ripreso la mia ultima copia buona ({copie}). Il file rovinato è tenuto accanto, in ~/.terminagotchi ({casse}).",
+ "core.sur.inaccessible": "🔒 Non riesco ad aprire il mio salvataggio in {chemin}: i permessi sono stati tolti. Non si è perso niente! Per ridarmi la chiave: `{cmd}`",
+ "core.sur.abimee": "🩹 Il mio salvataggio {chemin} è rovinato e non ho nessuna copia buona. Non lo cancello: rilancia `tg`, lo metterò da parte prima di far schiudere un uovo nuovo.",
+ "core.sur.abimee.nouvelle": "🩹 Il vecchio salvataggio era rovinato (e senza copia): l'ho tenuto in {casse}, non si cancella niente. Arriva un uovo nuovo.",
+ "core.sur.pas_sauve": "💾 Non sono riuscito a salvare la partita: {raison} Continua lo stesso, riprovo al prossimo turno.",
+ "core.sur.plus_de_sauvegarde": "🥚 Il mio salvataggio è sparito da ~/.terminagotchi. Chiudi questa finestra (q) e rilancia `tg`."
 }

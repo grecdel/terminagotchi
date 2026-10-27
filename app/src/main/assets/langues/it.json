@@ -2663,5 +2663,16 @@
  "comp.lecon.puis": "`{cd}` poi `{cmd}`",
  "vrai.pareil": "💻 In un vero terminale (Linux, macOS): `{cmd}` funziona allo stesso modo.",
  "vrai.mac": "💻 In un vero terminale: uguale su Linux; su macOS scrivi invece `{mac}`.",
- "vrai.absent": "💻 In un vero terminale: `{cmd}` non è installato ovunque; un adulto può aggiungerlo (servirà la sua password)."
+ "vrai.absent": "💻 In un vero terminale: `{cmd}` non è installato ovunque; un adulto può aggiungerlo (servirà la sua password).",
+ "garde.repare": "🛡️ Il tuo comando è andato a toccare le quinte dell'app (dove tengo il salvataggio e la Radice): ho rimesso tutto com'era. Qui si gioca nel campo: `cd ~`",
+ "garde.repare.adulte": "la shell del telefono ha gli stessi permessi dell'app e può raggiungere la sua cartella privata. Prima di ogni comando il gioco fotografa quella cartella (fuori dal campo); dopo, rimette ciò che è stato modificato o cancellato e toglie ciò che è stato aggiunto ({n} elemento/i qui).",
+ "garde.lien": "🔗 Ho tolto {liens}: questo collegamento simbolico portava fuori dal campo. Un collegamento che resta nel campo (o che mostra un luogo della Radice) funziona sempre.",
+ "garde.lien.adulte": "un collegamento simbolico verso la cartella privata dell'app o verso il vero sistema permetterebbe di scriverci dal campo: il gioco li cancella dopo ogni comando (solo il collegamento, mai la sua destinazione).",
+ "garde.processus": "🧹 {n} programma/i avviato/i dal tuo comando giravano ancora in sottofondo: li ho fermati, avrebbero scaricato la batteria.",
+ "garde.processus.adulte": "ogni riga gira in una sua sessione (setsid); quando finisce, tutto ciò che ha avviato (lavori con &, nohup, setsid) viene ucciso (kill -9). Ogni processo ha inoltre al massimo {s} s di calcolo.",
+ "garde.sceau": "🩹 Il mio salvataggio è stato modificato fuori dal gioco: riprendo la mia ultima copia buona.",
+ "garde.sceau.sans": "🩹 Il mio salvataggio è stato modificato fuori dal gioco e non ho una copia buona: lo tengo comunque, per non perderti.",
+ "garde.illisible": "🩹 Il mio salvataggio era rovinato: ho ripreso la mia copia di riserva, non si è perso niente.",
+ "garde.perdue": "🩹 Il mio salvataggio era rovinato e senza copia: l'ho messo da parte (sauvegarde.json.refusee) e arriva un uovo nuovo.",
+ "shell.trop_long": "Questa riga è troppo lunga per il terminale del telefono ({n} caratteri): dividila in più comandi."
 }

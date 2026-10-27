@@ -318,8 +318,9 @@ def preparer(typ, p):
         return False
     S = salle()
     try:
-        if S.is_symlink() or (S.exists() and not S.is_dir()):
-            return False
+        from . import sur
+        if S.is_symlink() or (S.exists() and not S.is_dir()) or not sur.sur(S):
+            return False                                     # la zone ou la salle est un lien : on ne touche à rien
         S.mkdir(exist_ok=True)
         if S.resolve().parent != T.resolve():
             return False

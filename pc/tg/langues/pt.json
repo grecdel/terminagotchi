@@ -2684,5 +2684,18 @@
  "vrai.absent": "💻 Num terminal de verdade: `{cmd}` não está instalado em todo lugar; um adulto pode adicioná-lo (vai precisar da senha dele).",
  "vrai.win": "💻 No PowerShell (Windows): `{cmd}` funciona igual; no Linux e no macOS o comando muda um pouco.",
  "hist.grenier0.1.astuce2": "Se `tree` não estiver lá: `ls -R` mostra a mesma coisa. (Para instalar `tree`, peça a um adulto: vai precisar da senha dele.)",
- "lec.reseau2.1.astuce2": "Se `traceroute` não existir, tente `tracepath`, ou peça a um adulto para instalá-lo (vai precisar da senha dele)."
+ "lec.reseau2.1.astuce2": "Se `traceroute` não existir, tente `tracepath`, ou peça a um adulto para instalá-lo (vai precisar da senha dele).",
+ "core.sur.lien": "🔗 Atenção: {lien} é uma ligação simbólica (leva a {cible}, fora da minha zona). Nunca escrevo através de uma ligação, para não estragar nada noutro lado. Para a tirar (só a ligação desaparece, não o que ela mostra): `{cmd}`",
+ "core.sur.lien.adulte": "Para os crescidos: o jogo só escreve em ~/terrain_terminagotchi e ~/.terminagotchi, e recusa qualquer caminho que passe por uma ligação simbólica (poderia levar aos seus ficheiros reais ou a outro repositório git). {lien} fica como está; nada foi escrito através dela.",
+ "core.sur.lien.court": "🔗 {lien} é uma ligação simbólica: não escrevo através dela.",
+ "core.sur.droits": "🔒 Já não consigo entrar em {chemin}: as permissões foram retiradas (com `chmod`?). Para me devolveres a chave: `{cmd}`",
+ "core.sur.plein": "💾 Já não há espaço para escrever em {chemin} (o disco está cheio?). Liberta um pouco de espaço: volto a tentar sozinho.",
+ "core.sur.systeme": "⚠ O computador recusou uma escrita em {chemin} ({erreur}). Volto a tentar na próxima volta.",
+ "core.sur.bug": "😵 Ups, tropecei num bug. Nada se perdeu. Para os crescidos: os pormenores estão guardados em {fichier}.",
+ "core.sur.restaure": "🩹 O meu jogo guardado estava estragado: voltei à minha última cópia boa ({copie}). O ficheiro estragado fica ao lado, em ~/.terminagotchi ({casse}).",
+ "core.sur.inaccessible": "🔒 Não consigo abrir o meu jogo guardado em {chemin}: as permissões foram retiradas. Nada se perdeu! Para me devolveres a chave: `{cmd}`",
+ "core.sur.abimee": "🩹 O meu jogo guardado {chemin} está estragado e não tenho nenhuma cópia boa. Não o apago: volta a lançar `tg`, ponho-o de lado antes de chocar um ovo novo.",
+ "core.sur.abimee.nouvelle": "🩹 O jogo guardado antigo estava estragado (e sem cópia): guardei-o em {casse}, nada foi apagado. Vem aí um ovo novo.",
+ "core.sur.pas_sauve": "💾 Não consegui guardar o jogo: {raison} Continua na mesma, volto a tentar na próxima volta.",
+ "core.sur.plus_de_sauvegarde": "🥚 O meu jogo guardado desapareceu de ~/.terminagotchi. Fecha esta janela (q) e volta a lançar `tg`."
 }

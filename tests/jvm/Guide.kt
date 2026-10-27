@@ -126,6 +126,7 @@ fun main(args: Array<String>) {
     val f = Parties.fichierActif(app)
     val o = JSONObject(f.readText())
     o.getJSONObject("extra").remove("guide")
+    o.remove("sceau")                       // une sauvegarde d'avant le sceau (Garde.kt)
     f.writeText(o.toString())
     jeu.recharger()
     verifier(Guide.actuel(jeu).id == "compagnon", "après migration, le guide est le compagnon")

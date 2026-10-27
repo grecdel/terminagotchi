@@ -2668,5 +2668,16 @@
  "comp.lecon.puis": "`{cd}` then `{cmd}`",
  "vrai.pareil": "💻 In a real terminal (Linux, macOS): `{cmd}` works the same.",
  "vrai.mac": "💻 In a real terminal: the same on Linux; on macOS, type `{mac}` instead.",
- "vrai.absent": "💻 In a real terminal: `{cmd}` is not installed everywhere; an adult can add it (their password will be needed)."
+ "vrai.absent": "💻 In a real terminal: `{cmd}` is not installed everywhere; an adult can add it (their password will be needed).",
+ "garde.repare": "🛡️ Your command went poking around backstage in the app (where I keep my save and the Root): I put everything back as it was. Here, we play in the camp: `cd ~`",
+ "garde.repare.adulte": "the phone's shell has the same rights as the app and can reach its private folder. Before each command, the game takes a snapshot of that folder (outside the camp); afterwards, it puts back what was changed or deleted and removes what was added ({n} item(s) here).",
+ "garde.lien": "🔗 I removed {liens}: this symbolic link led out of the camp. A link that stays inside the camp (or shows a place of the Root) still works.",
+ "garde.lien.adulte": "a symbolic link to the app's private folder or to the real system would let you write there from the camp: the game deletes them after each command (only the link, never its target).",
+ "garde.processus": "🧹 {n} program(s) started by your command were still running in the background: I stopped them, they would have drained the battery.",
+ "garde.processus.adulte": "each line runs in its own session (setsid); when it ends, everything it started (jobs with &, nohup, setsid) is killed (kill -9). Each process also gets at most {s} s of CPU time.",
+ "garde.sceau": "🩹 My save was changed outside the game: I'm going back to my last good copy.",
+ "garde.sceau.sans": "🩹 My save was changed outside the game and I have no good backup copy: I'm keeping it anyway, so I don't lose you.",
+ "garde.illisible": "🩹 My save was damaged: I went back to my backup copy, nothing is lost.",
+ "garde.perdue": "🩹 My save was damaged with no backup copy: I kept it aside (sauvegarde.json.refusee) and a new egg is coming.",
+ "shell.trop_long": "This line is too long for the phone's terminal ({n} characters): split it into several commands."
 }

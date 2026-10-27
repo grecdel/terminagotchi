@@ -110,7 +110,14 @@ class Mini:
 
     def jouer(self, extra=None):
         avant = self.state["total"] if self.state else None
-        st = self.etape(spontane=True, rythme=1.5, defis=True, extra=extra)
+        try:
+            st = self.etape(spontane=True, rythme=1.5, defis=True, extra=extra)
+        except (core.Probleme, OSError) as e:      # sauvegarde inaccessible : on le dit, tg mini reste ouvert
+            from . import sur
+            msg = str(e) if isinstance(e, core.Probleme) else sur.message_os(e)
+            if not self.sortie or self.sortie[-1] != msg:
+                self.sortie.append(msg)
+            st = None
         if st:
             if avant is not None and st["total"] > avant:
                 self.saut = 3

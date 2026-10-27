@@ -2668,5 +2668,16 @@
  "comp.lecon.puis": "`{cd}` puis `{cmd}`",
  "vrai.pareil": "💻 Dans un vrai terminal (Linux, macOS) : `{cmd}` marche pareil.",
  "vrai.mac": "💻 Dans un vrai terminal : pareil sous Linux ; sur macOS, tape plutôt `{mac}`.",
- "vrai.absent": "💻 Dans un vrai terminal : `{cmd}` n'est pas installé partout ; un adulte peut l'ajouter (il faudra son mot de passe)."
+ "vrai.absent": "💻 Dans un vrai terminal : `{cmd}` n'est pas installé partout ; un adulte peut l'ajouter (il faudra son mot de passe).",
+ "garde.repare": "🛡️ Ta commande est allée toucher les coulisses de l'appli (là où je range ma sauvegarde et la Racine) : j'ai tout remis comme avant. Ici, on joue dans le camp : `cd ~`",
+ "garde.repare.adulte": "le shell du téléphone a les mêmes droits que l'appli et peut atteindre son dossier privé. Avant chaque commande, le jeu photographie ce dossier (hors du camp) ; après, il remet ce qui a été modifié ou effacé et enlève ce qui a été ajouté ({n} élément(s) ici).",
+ "garde.lien": "🔗 J'ai enlevé {liens} : ce lien symbolique menait hors du camp. Un lien qui reste dans le camp (ou qui montre un lieu de la Racine) marche toujours.",
+ "garde.lien.adulte": "un lien symbolique vers le dossier privé de l'appli ou vers le vrai système permettrait d'y écrire depuis le camp : le jeu les supprime après chaque commande (le lien seulement, jamais sa cible).",
+ "garde.processus": "🧹 {n} programme(s) lancé(s) par ta commande tournaient encore en arrière-plan : je les ai arrêtés, ils auraient vidé la batterie.",
+ "garde.processus.adulte": "chaque ligne tourne dans sa propre session (setsid) ; quand elle se termine, tout ce qu'elle a lancé (tâches avec &, nohup, setsid) est tué (kill -9). Chaque processus a aussi {s} s de calcul au plus.",
+ "garde.sceau": "🩹 Ma sauvegarde a été modifiée en dehors du jeu : je reprends ma dernière bonne copie.",
+ "garde.sceau.sans": "🩹 Ma sauvegarde a été modifiée en dehors du jeu et je n'ai pas de bonne copie de secours : je la garde quand même, pour ne pas te perdre.",
+ "garde.illisible": "🩹 Ma sauvegarde était abîmée : j'ai repris ma copie de secours, rien n'est perdu.",
+ "garde.perdue": "🩹 Ma sauvegarde était abîmée et sans copie de secours : je l'ai gardée à côté (sauvegarde.json.refusee) et un nouvel œuf arrive.",
+ "shell.trop_long": "Cette ligne est trop longue pour le terminal du téléphone ({n} caractères) : coupe-la en plusieurs commandes."
 }

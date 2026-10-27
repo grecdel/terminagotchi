@@ -109,7 +109,10 @@ class Bureau:
 
     # --------------------------------------------------------- boucles
     def _jeu(self):
-        st = self.etape(spontane=True, rythme=1.5, defis=True)
+        try:
+            st = self.etape(spontane=True, rythme=1.5, defis=True)
+        except (core.Probleme, OSError):           # sauvegarde inaccessible : la fenêtre reste, réessaie plus tard
+            st = None
         if st:
             if self.total is not None and st["total"] > self.total:
                 self.saut = [-6, -12, -15, -12, -6, 0]

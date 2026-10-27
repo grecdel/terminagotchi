@@ -2686,5 +2686,18 @@
  "vrai.absent": "💻 Di terminal sungguhan: `{cmd}` tidak terpasang di semua komputer; orang dewasa bisa memasangnya (perlu kata sandinya).",
  "vrai.win": "💻 Di PowerShell (Windows): `{cmd}` bekerja sama; di Linux dan macOS perintahnya sedikit berbeda.",
  "hist.grenier0.1.astuce2": "Kalau `tree` tidak ada: `ls -R` menampilkan hal yang sama. (Untuk memasang `tree`, minta tolong orang dewasa: perlu kata sandinya.)",
- "lec.reseau2.1.astuce2": "Kalau `traceroute` tidak ada, coba `tracepath`, atau minta orang dewasa memasangnya (perlu kata sandinya)."
+ "lec.reseau2.1.astuce2": "Kalau `traceroute` tidak ada, coba `tracepath`, atau minta orang dewasa memasangnya (perlu kata sandinya).",
+ "core.sur.lien": "🔗 Hati-hati: {lien} adalah tautan simbolik (menuju {cible}, di luar zonaku). Aku tidak pernah menulis lewat tautan, supaya tidak merusak apa pun di tempat lain. Untuk menghapusnya (hanya tautannya yang hilang, bukan yang ditunjuknya): `{cmd}`",
+ "core.sur.lien.adulte": "Untuk orang dewasa: game hanya menulis di ~/terrain_terminagotchi dan ~/.terminagotchi, dan menolak setiap jalur yang melewati tautan simbolik (bisa menuju berkas asli Anda atau repositori git lain). {lien} dibiarkan apa adanya; tidak ada yang ditulis lewat tautan itu.",
+ "core.sur.lien.court": "🔗 {lien} adalah tautan simbolik: aku tidak menulis lewat tautan itu.",
+ "core.sur.droits": "🔒 Aku tidak bisa masuk ke {chemin} lagi: izinnya dicabut (dengan `chmod`?). Untuk mengembalikan kunciku: `{cmd}`",
+ "core.sur.plein": "💾 Tidak ada tempat lagi untuk menulis di {chemin} (disknya penuh?). Kosongkan sedikit ruang: aku akan mencoba lagi sendiri.",
+ "core.sur.systeme": "⚠ Komputer menolak menulis di {chemin} ({erreur}). Aku coba lagi di giliran berikutnya.",
+ "core.sur.bug": "😵 Ups, aku tersandung bug. Tidak ada yang hilang. Untuk orang dewasa: rinciannya disimpan di {fichier}.",
+ "core.sur.restaure": "🩹 Simpananku rusak: aku kembali ke salinan bagus terakhir ({copie}). Berkas yang rusak disimpan di sebelahnya, di ~/.terminagotchi ({casse}).",
+ "core.sur.inaccessible": "🔒 Aku tidak bisa membuka simpananku di {chemin}: izinnya dicabut. Tidak ada yang hilang! Untuk mengembalikan kunciku: `{cmd}`",
+ "core.sur.abimee": "🩹 Simpananku {chemin} rusak dan aku tidak punya salinan cadangan yang bagus. Aku tidak menghapusnya: jalankan `tg` lagi, aku akan menyisihkannya sebelum menetaskan telur baru.",
+ "core.sur.abimee.nouvelle": "🩹 Simpanan lama rusak (dan tanpa cadangan): aku menyimpannya di {casse}, tidak ada yang dihapus. Telur baru datang.",
+ "core.sur.pas_sauve": "💾 Aku tidak bisa menyimpan permainan: {raison} Permainan tetap berlanjut, aku coba lagi di giliran berikutnya.",
+ "core.sur.plus_de_sauvegarde": "🥚 Simpananku hilang dari ~/.terminagotchi. Tutup jendela ini (q) lalu jalankan `tg` lagi."
 }

@@ -2663,5 +2663,16 @@
  "comp.lecon.puis": "`{cd}` depois `{cmd}`",
  "vrai.pareil": "💻 Num terminal de verdade (Linux, macOS): `{cmd}` funciona igual.",
  "vrai.mac": "💻 Num terminal de verdade: igual no Linux; no macOS, digite `{mac}`.",
- "vrai.absent": "💻 Num terminal de verdade: `{cmd}` não está instalado em todo lugar; um adulto pode adicioná-lo (vai precisar da senha dele)."
+ "vrai.absent": "💻 Num terminal de verdade: `{cmd}` não está instalado em todo lugar; um adulto pode adicioná-lo (vai precisar da senha dele).",
+ "garde.repare": "🛡️ O teu comando foi mexer nos bastidores da app (onde guardo o meu jogo e a Raiz): pus tudo como estava. Aqui joga-se no acampamento: `cd ~`",
+ "garde.repare.adulte": "a shell do telemóvel tem os mesmos direitos que a app e consegue chegar à sua pasta privada. Antes de cada comando, o jogo fotografa essa pasta (fora do acampamento); depois, repõe o que foi alterado ou apagado e tira o que foi acrescentado ({n} elemento(s) aqui).",
+ "garde.lien": "🔗 Tirei {liens}: esta ligação simbólica levava para fora do acampamento. Uma ligação que fica no acampamento (ou que mostra um lugar da Raiz) continua a funcionar.",
+ "garde.lien.adulte": "uma ligação simbólica para a pasta privada da app ou para o sistema real permitiria escrever lá a partir do acampamento: o jogo apaga-as depois de cada comando (só a ligação, nunca o destino).",
+ "garde.processus": "🧹 {n} programa(s) lançado(s) pelo teu comando ainda corriam em segundo plano: parei-os, iam gastar a bateria.",
+ "garde.processus.adulte": "cada linha corre na sua própria sessão (setsid); quando acaba, tudo o que lançou (tarefas com &, nohup, setsid) é morto (kill -9). Cada processo tem também no máximo {s} s de cálculo.",
+ "garde.sceau": "🩹 O meu jogo guardado foi alterado fora do jogo: volto à minha última cópia boa.",
+ "garde.sceau.sans": "🩹 O meu jogo guardado foi alterado fora do jogo e não tenho nenhuma cópia boa: guardo-o mesmo assim, para não te perder.",
+ "garde.illisible": "🩹 O meu jogo guardado estava estragado: voltei à minha cópia de segurança, nada se perdeu.",
+ "garde.perdue": "🩹 O meu jogo guardado estava estragado e sem cópia: pus-o de lado (sauvegarde.json.refusee) e vem aí um ovo novo.",
+ "shell.trop_long": "Esta linha é demasiado comprida para o terminal do telemóvel ({n} caracteres): divide-a em vários comandos."
 }

@@ -74,8 +74,14 @@ def commande(m):
 
 def reconstruire(state, m):
     """Le jeu reconstruit lui-même ce qui manque (après AIDE_AUTO commandes sans réussite)."""
-    (T() / "nid").mkdir(parents=True, exist_ok=True)
-    if "carnet" in m and shutil.which("git"):
+    from . import sur
+    if not sur.sur(T() / "nid"):
+        return                                                  # la zone (ou le nid) est un lien : on ne bâtit rien
+    try:
+        (T() / "nid").mkdir(parents=True, exist_ok=True)
+    except OSError:
+        return
+    if "carnet" in m and shutil.which("git") and sur.sur(T() / "carnet") and not (T() / "carnet").exists():
         try:
             subprocess.run(["git", "init", "-q", str(T() / "carnet")], timeout=20,
                            stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
@@ -84,10 +90,15 @@ def reconstruire(state, m):
 
 
 def _ecrire(p, texte, executable=False):
-    p.parent.mkdir(parents=True, exist_ok=True)
-    p.write_text(texte, encoding="utf-8")
-    if executable and not IS_WIN:
-        os.chmod(p, 0o755)
+    """Écrit un fichier de la zone ; False si c'est impossible (droits retirés, lien symbolique refusé : sur.py)."""
+    try:
+        p.parent.mkdir(parents=True, exist_ok=True)
+        p.write_text(texte, encoding="utf-8")
+        if executable and not IS_WIN:
+            os.chmod(p, 0o755)
+        return True
+    except OSError:
+        return False
 
 
 def reparer_lecon(state):
@@ -112,17 +123,17 @@ def reparer_lecon(state):
         reculer(0)                                              # cat : on réécrit le repas
     elif lid in ("t3", "biblio1") and nid.is_dir() and not (nid / "repas.txt").is_file() and \
             (lid == "t3" or step == 0):
-        _ecrire(nid / "repas.txt", "pomme\n")                    # les droits (et la loupe) ont besoin du repas
-        remis.append("nid/repas.txt")
+        if _ecrire(nid / "repas.txt", "pomme\n"):               # les droits (et la loupe) ont besoin du repas
+            remis.append("nid/repas.txt")
     elif lid == "t4" and nid.is_dir():
         if step == 0 and not (nid / "repas.txt").is_file():
-            _ecrire(nid / "repas.txt", "pomme\n")
-            remis.append("nid/repas.txt")
+            if _ecrire(nid / "repas.txt", "pomme\n"):
+                remis.append("nid/repas.txt")
         elif step == 1 and not fs["secours"]() and not fs["reserve"]():
             reculer(0)
             if not (nid / "repas.txt").is_file():
-                _ecrire(nid / "repas.txt", "pomme\n")
-                remis.append("nid/repas.txt")
+                if _ecrire(nid / "repas.txt", "pomme\n"):
+                    remis.append("nid/repas.txt")
     elif lid == "git0" and step >= 1 and not fs["carnet"]():
         reculer(0)
     elif lid == "git1" and step >= 1 and not fs["journal"]():
@@ -130,8 +141,8 @@ def reparer_lecon(state):
     elif lid == "scripts0" and nid.is_dir() and step >= 1 and not fs["miam"]():
         reculer(0)
     elif lid == "scripts1" and nid.is_dir() and not fs["miam"]():
-        _ecrire(les.MIAM, C('echo "Miam !"\n', 'Write-Output "Miam !"\n'), executable=False)
-        remis.append("nid/" + les.MIAM.name)
+        if _ecrire(les.MIAM, C('echo "Miam !"\n', 'Write-Output "Miam !"\n'), executable=False):
+            remis.append("nid/" + les.MIAM.name)
     elif lid == "reseau1" and step >= 2 and not fs["colis"]():
         reculer(1)
     return remis, recule

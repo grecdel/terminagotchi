@@ -2663,5 +2663,16 @@
  "comp.lecon.puis": "`{cd}` dann `{cmd}`",
  "vrai.pareil": "💻 In einem echten Terminal (Linux, macOS): `{cmd}` funktioniert genauso.",
  "vrai.mac": "💻 In einem echten Terminal: genauso unter Linux; unter macOS tippst du besser `{mac}`.",
- "vrai.absent": "💻 In einem echten Terminal: `{cmd}` ist nicht überall installiert; ein Erwachsener kann es hinzufügen (sein Passwort wird gebraucht)."
+ "vrai.absent": "💻 In einem echten Terminal: `{cmd}` ist nicht überall installiert; ein Erwachsener kann es hinzufügen (sein Passwort wird gebraucht).",
+ "garde.repare": "🛡️ Dein Befehl hat hinter den Kulissen der App herumgewühlt (wo ich meinen Spielstand und die Wurzel aufbewahre): Ich habe alles wiederhergestellt. Hier spielen wir im Lager: `cd ~`",
+ "garde.repare.adulte": "die Shell des Telefons hat dieselben Rechte wie die App und kann ihren privaten Ordner erreichen. Vor jedem Befehl macht das Spiel ein Foto dieses Ordners (außerhalb des Lagers); danach stellt es Geändertes oder Gelöschtes wieder her und entfernt Hinzugefügtes ({n} Element(e) hier).",
+ "garde.lien": "🔗 Ich habe {liens} entfernt: Dieser symbolische Link führte aus dem Lager hinaus. Ein Link, der im Lager bleibt (oder einen Ort der Wurzel zeigt), funktioniert weiter.",
+ "garde.lien.adulte": "ein symbolischer Link zum privaten Ordner der App oder zum echten System würde es erlauben, vom Lager aus dorthin zu schreiben: Das Spiel löscht solche Links nach jedem Befehl (nur den Link, nie sein Ziel).",
+ "garde.processus": "🧹 {n} Programm(e), die dein Befehl gestartet hat, liefen noch im Hintergrund: Ich habe sie gestoppt, sie hätten den Akku leer gemacht.",
+ "garde.processus.adulte": "jede Zeile läuft in einer eigenen Sitzung (setsid); wenn sie endet, wird alles, was sie gestartet hat (Jobs mit &, nohup, setsid), beendet (kill -9). Jeder Prozess hat außerdem höchstens {s} s Rechenzeit.",
+ "garde.sceau": "🩹 Mein Spielstand wurde außerhalb des Spiels verändert: Ich nehme meine letzte gute Kopie.",
+ "garde.sceau.sans": "🩹 Mein Spielstand wurde außerhalb des Spiels verändert und ich habe keine gute Sicherungskopie: Ich behalte ihn trotzdem, damit ich dich nicht verliere.",
+ "garde.illisible": "🩹 Mein Spielstand war beschädigt: Ich habe meine Sicherungskopie genommen, nichts ist verloren.",
+ "garde.perdue": "🩹 Mein Spielstand war beschädigt und ohne Sicherungskopie: Ich habe ihn beiseitegelegt (sauvegarde.json.refusee) und ein neues Ei kommt.",
+ "shell.trop_long": "Diese Zeile ist zu lang für das Terminal des Telefons ({n} Zeichen): Teile sie in mehrere Befehle auf."
 }

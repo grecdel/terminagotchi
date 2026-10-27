@@ -2663,5 +2663,16 @@
  "comp.lecon.puis": "`{cd}` y luego `{cmd}`",
  "vrai.pareil": "💻 En una terminal de verdad (Linux, macOS): `{cmd}` funciona igual.",
  "vrai.mac": "💻 En una terminal de verdad: igual en Linux; en macOS, escribe mejor `{mac}`.",
- "vrai.absent": "💻 En una terminal de verdad: `{cmd}` no está instalado en todas partes; un adulto puede añadirlo (hará falta su contraseña)."
+ "vrai.absent": "💻 En una terminal de verdad: `{cmd}` no está instalado en todas partes; un adulto puede añadirlo (hará falta su contraseña).",
+ "garde.repare": "🛡️ Tu comando fue a tocar los bastidores de la app (donde guardo mi partida y la Raíz): lo he dejado todo como estaba. Aquí se juega en el campamento: `cd ~`",
+ "garde.repare.adulte": "el shell del teléfono tiene los mismos permisos que la app y puede llegar a su carpeta privada. Antes de cada comando, el juego fotografía esa carpeta (fuera del campamento); después, repone lo modificado o borrado y quita lo añadido ({n} elemento(s) aquí).",
+ "garde.lien": "🔗 He quitado {liens}: este enlace simbólico llevaba fuera del campamento. Un enlace que se queda en el campamento (o que muestra un lugar de la Raíz) sigue funcionando.",
+ "garde.lien.adulte": "un enlace simbólico a la carpeta privada de la app o al sistema real permitiría escribir allí desde el campamento: el juego los borra después de cada comando (solo el enlace, nunca su destino).",
+ "garde.processus": "🧹 {n} programa(s) lanzado(s) por tu comando seguían en segundo plano: los he parado, habrían gastado la batería.",
+ "garde.processus.adulte": "cada línea se ejecuta en su propia sesión (setsid); al terminar, todo lo que lanzó (tareas con &, nohup, setsid) se mata (kill -9). Cada proceso tiene además {s} s de cálculo como máximo.",
+ "garde.sceau": "🩹 Mi partida guardada se modificó fuera del juego: vuelvo a mi última copia buena.",
+ "garde.sceau.sans": "🩹 Mi partida guardada se modificó fuera del juego y no tengo ninguna copia buena: la conservo igualmente, para no perderte.",
+ "garde.illisible": "🩹 Mi partida guardada estaba dañada: he recuperado mi copia de seguridad, no se ha perdido nada.",
+ "garde.perdue": "🩹 Mi partida guardada estaba dañada y sin copia: la he guardado aparte (sauvegarde.json.refusee) y llega un huevo nuevo.",
+ "shell.trop_long": "Esta línea es demasiado larga para el terminal del teléfono ({n} caracteres): divídela en varios comandos."
 }

@@ -49,7 +49,8 @@ object Racine {
     /** les vrais fichiers de périphériques que l'on peut utiliser (lire, ou jeter dans le trou noir) */
     val VRAIS = setOf("/dev/null", "/dev/zero", "/dev/random", "/dev/urandom")
     /** les commandes qui écrivent (tous leurs chemins comptent, sauf cp et ln : la destination) */
-    val ECRIT = setOf("mkdir", "touch", "rm", "rmdir", "mv", "cp", "chmod", "chown", "chgrp", "ln", "tee", "truncate", "dd", "edite")
+    val ECRIT = setOf("mkdir", "touch", "rm", "rmdir", "mv", "cp", "chmod", "chown", "chgrp", "ln", "tee", "truncate", "dd", "edite",
+        "install", "shred", "mkfifo", "mknod", "unlink", "rename")
 
     fun dossier(home: File): File = File(home.parentFile ?: home, "racine")
 
@@ -133,6 +134,43 @@ object Racine {
         else { f.setWritable(false, false); f.setReadable(true, false) }
     }
 
+    /** Remet la Racine en lecture seule (après chaque commande : `chmod -R u+w` ne dure pas). */
+    fun reverrouiller(home: File) {
+        val r = dossier(home)
+        if (r.isDirectory) try { verrouiller(r) } catch (e: Exception) {}
+    }
+
+    /** Un dossier où le shell peut se placer : le camp, la Racine simulée, ou le vrai /proc (pas /proc/self/cwd…). */
+    fun atteignable(home: File, d: File): Boolean {
+        val c = try { d.canonicalPath } catch (e: Exception) { return false }
+        val h = try { home.canonicalPath } catch (e: Exception) { home.path }
+        val r = try { dossier(home).canonicalPath } catch (e: Exception) { dossier(home).path }
+        return c == h || c.startsWith("$h/") || c == r || c.startsWith("$r/") || c == "/proc" ||
+            Regex("^/proc/(self|\\d+)(/.*)?$").matches(c)
+    }
+
+    /**
+     * `$HOME`, `${HOME}` et `~` (en début de mot) deviennent le camp du Terminaworld (/home/explorateur) avant tout :
+     * le vrai dossier de l'appli n'est jamais atteint par `$HOME/..`. Rien n'est changé entre apostrophes ('$HOME').
+     */
+    fun developper(ligne: String): String {
+        val sb = StringBuilder()
+        var i = 0
+        var simple = false
+        while (i < ligne.length) {
+            val c = ligne[i]
+            if (c == '\'' ) { simple = !simple; sb.append(c); i++; continue }
+            if (!simple && c == '\\' && i + 1 < ligne.length) { sb.append(c).append(ligne[i + 1]); i += 2; continue }
+            if (!simple && c == '$') {
+                val m = Regex("^(\\$\\{HOME\\}|\\\$HOME(?![A-Za-z0-9_]))").find(ligne.substring(i))
+                if (m != null) { sb.append(HOME); i += m.value.length; continue }
+            }
+            sb.append(c)
+            i++
+        }
+        return sb.toString()
+    }
+
     private fun deverrouiller(f: File) {
         f.setWritable(true, true)
         if (f.isDirectory) f.listFiles()?.forEach { deverrouiller(it) }
@@ -186,7 +224,9 @@ object Racine {
     }
 
     // ---------------------------------------------------------------- traduire une ligne et sa sortie
-    private val CHEMIN = Regex("(?<=^|[\\s=<>|;&(])(['\"]?)(/[^\\s;|&<>()'\"]*|\\.\\.(?:/[^\\s;|&<>()'\"]*)?)")
+    // un chemin absolu, un chemin qui commence par .., ou un chemin relatif qui remonte (./.., nid/../..)
+    private val CHEMIN = Regex("(?<=^|[\\s=<>|;&(])(['\"]?)(/[^\\s;|&<>()'\"]*|\\.\\.(?:/[^\\s;|&<>()'\"]*)?|" +
+        "(?:[^\\s;|&<>()'\"/=$`]+/)+\\.\\.(?=/|[\\s;|&<>()'\"]|$)(?:/[^\\s;|&<>()'\"]*)?)")
     private val SEP = Regex("\\s*(?:&&|\\|\\||;)\\s*")
 
     /** Les chemins tapés (absolus, ou qui remontent avec ..) traduits en vrais chemins pour le shell. */
@@ -223,7 +263,7 @@ object Racine {
     fun cibles(courant: String, ligne: String): List<Pair<String, String>> {
         val out = mutableListOf<Pair<String, String>>()
         for (morceau in ligne.trim().split(SEP)) {
-            for (m in Regex("(?<![0-9&])>>?\\s*([^\\s|;&<>]+)").findAll(morceau)) {
+            for (m in Regex(">[>|]?\\s*(?!&)([^\\s|;&<>]+)").findAll(morceau)) {
                 val x = m.groupValues[1].trim('\'', '"')
                 out.add(x to resoudre(courant, x))
             }
@@ -231,10 +271,17 @@ object Racine {
             val mots = premier.trim().split(Regex("\\s+")).filter { it.isNotEmpty() }
             if (mots.isEmpty()) continue
             val cmd = mots[0].lowercase().substringAfterLast('/')
-            if (cmd !in ECRIT) continue
+            // sed -i (modifie le fichier sur place) : tous ses fichiers ; sans -i, sed ne fait que lire
+            val sedI = cmd == "sed" && mots.drop(1).any { it == "--in-place" || it.startsWith("--in-place=") || Regex("^-[a-zA-Z]*i.*").matches(it) }
+            if (cmd !in ECRIT && !sedI) continue
             var args = mots.drop(1).filter { !it.startsWith("-") && !Regex("[0-7]{3,4}|[ugoa]*[+=-][rwxst]+").matches(it) }
             if (cmd == "dd") args = mots.drop(1).filter { it.startsWith("of=") }.map { it.removePrefix("of=") }
-            if (cmd == "cp" || cmd == "ln") args = args.takeLast(1)
+            if (sedI && mots.drop(1).none { it == "-e" || it.startsWith("--expression") || it == "-f" }) args = args.drop(1)
+            // ln -s : seul le lien compte (sa cible peut être n'importe où : un lien qui mène dehors est enlevé après) ;
+            // un lien « dur » (ln sans -s, cp -l) partage le fichier : sa source compte aussi
+            val dur = (cmd == "ln" && mots.drop(1).none { it.startsWith("-") && "s" in it && !it.startsWith("--") || it == "--symbolic" }) ||
+                (cmd == "cp" && mots.drop(1).any { it == "-l" || it == "--link" || Regex("^-[a-zA-Z]*l[a-zA-Z]*$").matches(it) })
+            if ((cmd == "cp" || cmd == "ln") && !dur) args = args.takeLast(1)
             for (a in args) { val x = a.trim('\'', '"'); out.add(x to resoudre(courant, x)) }
         }
         return out
@@ -243,8 +290,19 @@ object Racine {
     /** Une commande qui écrirait hors du camp de base (dans un lieu du système) : le refus expliqué, sinon null. */
     fun refus(home: File, cwdReel: File, ligne: String): String? {
         val courant = virtuel(home, cwdReel.path)
+        val camp = try { home.canonicalPath } catch (e: Exception) { home.path }
+        // le vrai chemin (liens suivis) d'une cible : un lien du camp vers la Racine ne permet pas d'y écrire
+        fun vrai(v: String): String {
+            var f: File? = reel(home, v)
+            while (f != null && !f.exists() && !java.nio.file.Files.isSymbolicLink(f.toPath())) f = f.parentFile
+            val c = try { f?.canonicalPath } catch (e: Exception) { null } ?: return v
+            if (c == camp || c.startsWith("$camp/")) return v
+            val w = virtuel(home, c)
+            return if (w != c || c.startsWith("/proc") || c in VRAIS) w else "/" + c.substringAfterLast('/')   // les coulisses : jamais leur vrai chemin
+        }
         val v = cibles(courant, ligne).map { (m, v) -> m to (if (versVirtuel(home, m) != m) versVirtuel(home, m) else v) }
-            .firstOrNull { (_, v) -> !dansCamp(v) && v !in VRAIS }?.second ?: return null
+            .map { (_, v) -> if (dansCamp(v)) vrai(v) else v }
+            .firstOrNull { v -> !dansCamp(v) && v !in VRAIS } ?: return null
         val cmd = Regles.premierMot(ligne).ifEmpty { "sh" }
         return "$cmd: $v: Permission denied\n" +
             t("racine.refus", "lieu" to t("lieu.${lieu(v)}.nom"), "cmd" to "cd ~/terrain_terminagotchi") + "\n" +

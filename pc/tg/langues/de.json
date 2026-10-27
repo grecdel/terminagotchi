@@ -2684,5 +2684,18 @@
  "vrai.absent": "💻 In einem echten Terminal: `{cmd}` ist nicht überall installiert; ein Erwachsener kann es hinzufügen (sein Passwort wird gebraucht).",
  "vrai.win": "💻 In PowerShell (Windows): `{cmd}` funktioniert genauso; unter Linux und macOS ist der Befehl etwas anders.",
  "hist.grenier0.1.astuce2": "Wenn `tree` fehlt: `ls -R` zeigt dasselbe. (Um `tree` zu installieren, frag einen Erwachsenen: Sein Passwort wird gebraucht.)",
- "lec.reseau2.1.astuce2": "Wenn `traceroute` fehlt, probier `tracepath`, oder bitte einen Erwachsenen, es zu installieren (sein Passwort wird gebraucht)."
+ "lec.reseau2.1.astuce2": "Wenn `traceroute` fehlt, probier `tracepath`, oder bitte einen Erwachsenen, es zu installieren (sein Passwort wird gebraucht).",
+ "core.sur.lien": "🔗 Achtung: {lien} ist ein symbolischer Link (er führt zu {cible}, außerhalb meiner Zone). Ich schreibe nie durch einen Link, damit woanders nichts kaputtgeht. Zum Entfernen (nur der Link verschwindet, nicht das, worauf er zeigt): `{cmd}`",
+ "core.sur.lien.adulte": "Für die Großen: Das Spiel schreibt nur in ~/terrain_terminagotchi und ~/.terminagotchi und verweigert jeden Pfad, der über einen symbolischen Link führt (er könnte zu Ihren echten Dateien oder zu einem anderen Git-Repository führen). {lien} bleibt, wie er ist; durch ihn wurde nichts geschrieben.",
+ "core.sur.lien.court": "🔗 {lien} ist ein symbolischer Link: Ich schreibe nicht durch ihn.",
+ "core.sur.droits": "🔒 Ich komme nicht mehr in {chemin}: Die Rechte wurden entzogen (mit `chmod`?). Um mir den Schlüssel zurückzugeben: `{cmd}`",
+ "core.sur.plein": "💾 Kein Platz mehr zum Schreiben in {chemin} (ist die Festplatte voll?). Mach ein bisschen Platz frei: Ich versuche es von selbst noch einmal.",
+ "core.sur.systeme": "⚠ Der Computer hat das Schreiben in {chemin} verweigert ({erreur}). Ich versuche es in der nächsten Runde noch einmal.",
+ "core.sur.bug": "😵 Hoppla, ich bin über einen Fehler gestolpert. Nichts ist verloren. Für die Großen: Die Einzelheiten stehen in {fichier}.",
+ "core.sur.restaure": "🩹 Mein Spielstand war beschädigt: Ich habe meine letzte gute Kopie genommen ({copie}). Die beschädigte Datei liegt daneben, in ~/.terminagotchi ({casse}).",
+ "core.sur.inaccessible": "🔒 Ich kann meinen Spielstand in {chemin} nicht öffnen: Die Rechte wurden entzogen. Nichts ist verloren! Um mir den Schlüssel zurückzugeben: `{cmd}`",
+ "core.sur.abimee": "🩹 Mein Spielstand {chemin} ist beschädigt und ich habe keine gute Sicherungskopie. Ich lösche ihn nicht: Starte `tg` noch einmal, ich lege ihn beiseite, bevor ein neues Ei schlüpft.",
+ "core.sur.abimee.nouvelle": "🩹 Der alte Spielstand war beschädigt (und ohne Sicherungskopie): Ich habe ihn in {casse} aufbewahrt, nichts ist gelöscht. Ein neues Ei kommt.",
+ "core.sur.pas_sauve": "💾 Ich konnte das Spiel nicht speichern: {raison} Es geht trotzdem weiter, ich versuche es in der nächsten Runde noch einmal.",
+ "core.sur.plus_de_sauvegarde": "🥚 Mein Spielstand ist aus ~/.terminagotchi verschwunden. Schließ dieses Fenster (q) und starte `tg` noch einmal."
 }

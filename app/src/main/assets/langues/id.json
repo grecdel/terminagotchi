@@ -2665,5 +2665,16 @@
  "comp.lecon.puis": "`{cd}` lalu `{cmd}`",
  "vrai.pareil": "💻 Di terminal sungguhan (Linux, macOS): `{cmd}` bekerja sama persis.",
  "vrai.mac": "💻 Di terminal sungguhan: sama di Linux; di macOS, ketik `{mac}` saja.",
- "vrai.absent": "💻 Di terminal sungguhan: `{cmd}` tidak terpasang di semua komputer; orang dewasa bisa memasangnya (perlu kata sandinya)."
+ "vrai.absent": "💻 Di terminal sungguhan: `{cmd}` tidak terpasang di semua komputer; orang dewasa bisa memasangnya (perlu kata sandinya).",
+ "garde.repare": "🛡️ Perintahmu mengutak-atik belakang panggung aplikasi (tempat aku menyimpan simpananku dan Akar): semuanya sudah kukembalikan seperti semula. Di sini, kita bermain di perkemahan: `cd ~`",
+ "garde.repare.adulte": "shell ponsel punya hak yang sama dengan aplikasi dan bisa menjangkau folder pribadinya. Sebelum setiap perintah, game memotret folder itu (di luar perkemahan); sesudahnya, game mengembalikan yang diubah atau dihapus dan membuang yang ditambahkan ({n} item di sini).",
+ "garde.lien": "🔗 Aku menghapus {liens}: tautan simbolik ini menuju ke luar perkemahan. Tautan yang tetap di dalam perkemahan (atau menunjukkan tempat di Akar) tetap berfungsi.",
+ "garde.lien.adulte": "tautan simbolik ke folder pribadi aplikasi atau ke sistem asli akan memungkinkan menulis ke sana dari perkemahan: game menghapusnya setelah setiap perintah (hanya tautannya, tidak pernah tujuannya).",
+ "garde.processus": "🧹 {n} program yang dijalankan perintahmu masih berjalan di latar belakang: sudah kuhentikan, kalau tidak baterainya bisa habis.",
+ "garde.processus.adulte": "setiap baris berjalan di sesinya sendiri (setsid); saat selesai, semua yang dijalankannya (tugas dengan &, nohup, setsid) dimatikan (kill -9). Setiap proses juga mendapat paling banyak {s} dtk waktu hitung.",
+ "garde.sceau": "🩹 Simpananku diubah di luar game: aku kembali ke salinan bagus terakhir.",
+ "garde.sceau.sans": "🩹 Simpananku diubah di luar game dan aku tidak punya salinan cadangan yang bagus: tetap kusimpan, supaya aku tidak kehilanganmu.",
+ "garde.illisible": "🩹 Simpananku rusak: aku kembali ke salinan cadangan, tidak ada yang hilang.",
+ "garde.perdue": "🩹 Simpananku rusak dan tanpa cadangan: kusisihkan (sauvegarde.json.refusee) dan telur baru datang.",
+ "shell.trop_long": "Baris ini terlalu panjang untuk terminal ponsel ({n} karakter): pecah menjadi beberapa perintah."
 }

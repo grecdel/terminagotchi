@@ -522,7 +522,9 @@ class Commandes(
             nom.startsWith("/") -> File(nom)
             else -> File(dossier(), nom)
         }
-        if (!f.canonicalPath.startsWith(jeu.home.canonicalPath)) {
+        val camp = jeu.home.canonicalPath
+        val c = try { f.canonicalPath } catch (e: Exception) { "" }
+        if (c != camp && !c.startsWith("$camp/")) {        // liens suivis : jamais hors du camp (coulisses, Racine)
             return Reponse(t("edite.hors_maison"), couleur = ORANGE)
         }
         if (f.isDirectory) return Reponse(t("edite.dossier", "nom" to f.name), couleur = ORANGE)

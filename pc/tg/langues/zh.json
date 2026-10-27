@@ -2690,5 +2690,18 @@
  "vrai.absent": "💻 在真正的终端里：`{cmd}` 并不是到处都装了；大人可以安装它（需要大人的密码）。",
  "vrai.win": "💻 在 PowerShell（Windows）里：`{cmd}` 用法一样；在 Linux 和 macOS 上命令稍有不同。",
  "hist.grenier0.1.astuce2": "如果没有 `tree`：`ls -R` 能显示同样的内容。（要安装 `tree`，请找大人帮忙：需要大人的密码。）",
- "lec.reseau2.1.astuce2": "如果没有 `traceroute`，试试 `tracepath`，或者请大人安装它（需要大人的密码）。"
+ "lec.reseau2.1.astuce2": "如果没有 `traceroute`，试试 `tracepath`，或者请大人安装它（需要大人的密码）。",
+ "core.sur.lien": "🔗 注意：{lien} 是一个符号链接（它通向 {cible}，在我的区域外面）。我从不穿过链接写东西，免得弄坏别处的东西。要去掉它（只去掉链接，不会去掉它指向的东西）：`{cmd}`",
+ "core.sur.lien.adulte": "给大人看：游戏只在 ~/terrain_terminagotchi 和 ~/.terminagotchi 里写入，并拒绝任何经过符号链接的路径（它可能通向您真正的文件或另一个 git 仓库）。{lien} 保持原样；没有任何东西穿过它被写入。",
+ "core.sur.lien.court": "🔗 {lien} 是一个符号链接：我不穿过它写东西。",
+ "core.sur.droits": "🔒 我进不去 {chemin} 了：它的权限被拿走了（用了 `chmod`？）。把钥匙还给我：`{cmd}`",
+ "core.sur.plein": "💾 {chemin} 里没有地方写了（磁盘满了？）。腾出一点空间：我会自己再试一次。",
+ "core.sur.systeme": "⚠ 电脑拒绝在 {chemin} 里写入（{erreur}）。下一轮我再试。",
+ "core.sur.bug": "😵 哎呀，我被一个 bug 绊倒了。什么都没丢。给大人看：详细情况记在 {fichier}。",
+ "core.sur.restaure": "🩹 我的存档坏了：我用回了最后一份好的副本（{copie}）。坏掉的文件放在旁边，在 ~/.terminagotchi 里（{casse}）。",
+ "core.sur.inaccessible": "🔒 我打不开 {chemin} 里的存档：它的权限被拿走了。什么都没丢！把钥匙还给我：`{cmd}`",
+ "core.sur.abimee": "🩹 我的存档 {chemin} 坏了，而且没有好的备份。我不会删掉它：再运行一次 `tg`，我会先把它放到一边，再孵一个新蛋。",
+ "core.sur.abimee.nouvelle": "🩹 旧存档坏了（也没有备份）：我把它保存在 {casse}，什么都没删。一个新蛋来了。",
+ "core.sur.pas_sauve": "💾 我没能保存游戏：{raison} 游戏照样继续，下一轮我再试。",
+ "core.sur.plus_de_sauvegarde": "🥚 我的存档从 ~/.terminagotchi 里不见了。关掉这个窗口（q），再运行 `tg`。"
 }

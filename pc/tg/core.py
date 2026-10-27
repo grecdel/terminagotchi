@@ -9,6 +9,9 @@ from pathlib import Path
 from .langue import au_hasard, t
 from .langue import t as tr
 from .plateforme import GEST, IS_WIN, est_colle, piege
+from . import sur as _sur
+
+_sur.installer()        # le jeu n'écrit jamais à travers un lien symbolique (sur.py)
 
 VERSION = "0.4"
 SAVE_DIR = Path.home() / ".terminagotchi"
@@ -340,7 +343,8 @@ def tick(state):
     rate = 1440 if "Gardien" in state["skills"] else 720
     rate *= 1 + min(1.0, state["stats"].get("Endurance", 0) / 100)   # l'Endurance fait durer le repas
     avant = state["hunger"]
-    state["hunger"] = max(0.0, state["hunger"] - (now - state["last_tick"]) / rate)
+    ecoule = max(0.0, now - state.get("last_tick", now))       # l'horloge qui recule ne nourrit pas
+    state["hunger"] = min(100.0, max(0.0, state["hunger"] - ecoule / rate))
     if avant >= 30 > state["hunger"]:
         notif(state, t("core.notif.faim"))
     elif avant > 0 == state["hunger"]:
@@ -536,23 +540,32 @@ def mood(h):
 
 @contextmanager
 def verrou(delai=3.0):
-    """Empêche deux processus (fenêtre, invite, bureau, veille) d'écrire en même temps."""
-    SAVE_DIR.mkdir(parents=True, exist_ok=True)
+    """Empêche deux processus (fenêtre, invite, bureau, veille) d'écrire en même temps.
+    Si le verrou ne peut pas être posé (droits retirés, disque plein), on continue sans : l'écriture dira pourquoi."""
     t0, fd = time.time(), None
-    while True:
+    try:
+        SAVE_DIR.mkdir(parents=True, exist_ok=True)
+    except OSError:
+        t0 = None
+    while t0 is not None:
         try:
-            fd = os.open(LOCK_FILE, os.O_CREAT | os.O_EXCL | os.O_WRONLY)
+            fd = os.open(LOCK_FILE, os.O_CREAT | os.O_EXCL | os.O_WRONLY | getattr(os, "O_NOFOLLOW", 0))
             break
         except FileExistsError:
-            try:
-                if time.time() - LOCK_FILE.stat().st_mtime > 10:   # verrou abandonné
-                    LOCK_FILE.unlink()
-                    continue
-            except OSError:
+            pass
+        except OSError:
+            break                                         # droits retirés, disque plein : pas de verrou possible
+        try:
+            if time.time() - LOCK_FILE.lstat().st_mtime > 10:   # verrou abandonné
+                LOCK_FILE.unlink()
                 continue
-            if time.time() - t0 > delai:
-                break
-            time.sleep(0.03)
+        except FileNotFoundError:
+            continue
+        except OSError:
+            break
+        if time.time() - t0 > delai:
+            break
+        time.sleep(0.03)
     try:
         yield
     finally:
@@ -576,18 +589,129 @@ def modifier(fn):
     return state
 
 
-def load():
+# copies de secours de la sauvegarde (la plus récente d'abord) : save.json.bak, .bak2, .bak3
+SECOURS = [SAVE_DIR / "save.json.bak", SAVE_DIR / "save.json.bak2", SAVE_DIR / "save.json.bak3"]
+SECOURS_DELAI = 300       # secondes entre deux rotations des copies de secours
+
+
+class Probleme(Exception):
+    """Un souci que l'on explique à l'enfant (et à l'adulte) au lieu d'une trace Python."""
+
+
+def _secours():
+    return [SAVE_DIR / f.name for f in SECOURS]
+
+
+def _lire_etat(f):
+    """L'état rangé dans f (un dict), ou None s'il est illisible ; OSError si le fichier ne peut pas être ouvert."""
     try:
-        state = json.loads(SAVE_FILE.read_text(encoding="utf-8"))
-    except (OSError, ValueError):
+        o = json.loads(f.read_text(encoding="utf-8"))
+    except ValueError:
         return None
+    return o if isinstance(o, dict) and "xp" in o and "name" in o else None
+
+
+def etat_sauvegarde():
+    """« absente », « ok », « inaccessible » (droits) ou « abimee » (illisible, aucune copie de secours bonne)."""
+    f = SAVE_DIR / "save.json"
+    try:
+        if not f.exists() and not f.is_symlink():
+            return "absente"
+        if _lire_etat(f) is not None:
+            return "ok"
+    except OSError:
+        return "inaccessible"
+    for b in _secours():
+        try:
+            if _lire_etat(b) is not None:
+                return "ok"
+        except OSError:
+            pass
+    return "abimee"
+
+
+def _restaurer():
+    """save.json est illisible : la plus récente copie de secours bonne le remplace ; le fichier abîmé est gardé à
+    côté (save.json.casse-<date>), jamais effacé. Renvoie l'état restauré (avec la note pour la créature) ou None."""
+    f = SAVE_DIR / "save.json"
+    for b in _secours():
+        try:
+            st = _lire_etat(b)
+        except OSError:
+            continue
+        if st is None:
+            continue
+        casse = SAVE_DIR / ("save.json.casse-" + time.strftime("%Y%m%d-%H%M%S"))
+        try:
+            if f.exists() or f.is_symlink():
+                os.replace(f, casse)
+            st["_restaure"] = {"de": b.name, "casse": casse.name}
+            _ecrire_sauvegarde(st)
+        except OSError:
+            pass                              # lecture seule : on joue quand même avec la copie
+        return st
+    return None
+
+
+def load():
+    """L'état du jeu, ou None s'il n'y a pas (encore) de sauvegarde, ou si elle est abîmée sans copie de secours
+    (etat_sauvegarde() dit lequel). OSError (droits retirés…) : remonte, l'appelant l'explique."""
+    f = SAVE_DIR / "save.json"
+    try:
+        state = _lire_etat(f)
+    except FileNotFoundError:
+        return None
+    if state is None:
+        state = _restaurer()
+        if state is None:
+            return None
     from . import bestiaire, langue
     langue.appliquer(state)                 # la langue choisie est rangée dans la sauvegarde
     return bestiaire.migrer(state)
 
 
-def save(state):
+def _ecrire_sauvegarde(state, avec_secours=False):
+    from . import sur
     SAVE_DIR.mkdir(parents=True, exist_ok=True)
-    tmp = SAVE_FILE.with_suffix(".tmp")
-    tmp.write_text(json.dumps(state, ensure_ascii=False), encoding="utf-8")
-    tmp.replace(SAVE_FILE)
+    f = SAVE_DIR / "save.json"
+    tmp = f.with_suffix(".tmp")
+    data = json.dumps(state, ensure_ascii=False).encode("utf-8")
+    try:
+        if tmp.is_symlink():
+            tmp.unlink()
+        fd = sur.ouvrir_nofollow(tmp)
+        with os.fdopen(fd, "wb") as fh:
+            fh.write(data)
+    except OSError:
+        try:
+            tmp.unlink()
+        except OSError:
+            pass
+        raise
+    if avec_secours:
+        _tourner_secours(f)
+    os.replace(tmp, f)                       # atomique : la sauvegarde n'est jamais à moitié écrite
+
+
+def _tourner_secours(f):
+    """La sauvegarde actuelle (si elle est bonne) devient save.json.bak ; les anciennes reculent d'un cran.
+    Au plus une fois toutes les SECOURS_DELAI secondes (pas à chaque tour de jeu)."""
+    sec = _secours()
+    try:
+        if sec[0].exists() and time.time() - sec[0].stat().st_mtime < SECOURS_DELAI:
+            return
+        if _lire_etat(f) is None:
+            return                           # jamais une copie abîmée dans les secours
+        for a, b in zip(reversed(sec[:-1]), reversed(sec[1:])):
+            if a.exists() and not a.is_symlink():
+                os.replace(a, b)
+        from . import sur
+        fd = sur.ouvrir_nofollow(sec[0])
+        with os.fdopen(fd, "wb") as fh:
+            fh.write(f.read_bytes())
+    except OSError:
+        pass                                 # les secours sont un bonus : jamais bloquants
+
+
+def save(state):
+    _ecrire_sauvegarde(state, avec_secours=True)

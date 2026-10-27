@@ -1154,9 +1154,16 @@ def signer_carnet(state):
     import subprocess
     if not shutil.which("git"):
         return False
+    from . import sur
+    if not sur.depot_git_sur(depot):
+        # le carnet est un lien vers un autre projet (ou son .git renvoie ailleurs) : on n'y touche jamais
+        if sur.lien_genant(depot) and sur.lien_genant(depot) not in sur.ALERTES:
+            sur.ALERTES.append(sur.lien_genant(depot))
+        return False
 
     def cfg(*a):
-        return subprocess.run(["git", "-C", str(depot), "config", *a], capture_output=True, text=True,
+        local = ["--local"] if len(a) > 1 else []        # écrire : seulement dans carnet/.git/config
+        return subprocess.run(["git", "-C", str(depot), "config", *local, *a], capture_output=True, text=True,
                               timeout=10).stdout.strip()
     try:
         if cfg("user.name") and cfg("user.email"):

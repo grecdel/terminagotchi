@@ -2689,5 +2689,18 @@
  "vrai.absent": "💻 Dans un vrai terminal : `{cmd}` n'est pas installé partout ; un adulte peut l'ajouter (il faudra son mot de passe).",
  "vrai.win": "💻 Dans PowerShell (Windows) : `{cmd}` marche pareil ; sous Linux et macOS, la commande change un peu.",
  "hist.grenier0.1.astuce2": "Si `tree` n'est pas là : `ls -R` montre la même chose. (Pour installer `tree`, demande à un adulte : il faudra son mot de passe.)",
- "lec.reseau2.1.astuce2": "Si `traceroute` est absent, essaie `tracepath`, ou demande à un adulte de l'installer (il faudra son mot de passe)."
+ "lec.reseau2.1.astuce2": "Si `traceroute` est absent, essaie `tracepath`, ou demande à un adulte de l'installer (il faudra son mot de passe).",
+ "core.sur.lien": "🔗 Attention : {lien} est un lien symbolique (il mène à {cible}, hors de ma zone). Je n'écris jamais à travers un lien, pour ne rien abîmer ailleurs. Pour l'enlever (seul le lien part, pas ce qu'il montre) : `{cmd}`",
+ "core.sur.lien.adulte": "Pour les grands : le jeu n'écrit que dans ~/terrain_terminagotchi et ~/.terminagotchi, et refuse tout chemin qui passe par un lien symbolique (il pourrait mener à vos vrais fichiers ou à un autre dépôt git). {lien} est laissé tel quel ; rien n'a été écrit à travers.",
+ "core.sur.lien.court": "🔗 {lien} est un lien symbolique : je n'écris pas à travers.",
+ "core.sur.droits": "🔒 Je ne peux plus entrer dans {chemin} : ses droits ont été retirés (avec `chmod` ?). Pour me rendre la clé : `{cmd}`",
+ "core.sur.plein": "💾 Plus de place pour écrire dans {chemin} (le disque est plein ?). Libère un peu de place : je réessaie tout seul.",
+ "core.sur.systeme": "⚠ L'ordinateur a refusé une écriture dans {chemin} ({erreur}). Je réessaie au prochain tour.",
+ "core.sur.bug": "😵 Oups, j'ai trébuché sur un bug. Rien n'est perdu. Pour les grands : les détails sont rangés dans {fichier}.",
+ "core.sur.restaure": "🩹 Ma sauvegarde était abîmée : j'ai repris ma dernière bonne copie ({copie}). Le fichier abîmé est gardé à côté, dans ~/.terminagotchi ({casse}).",
+ "core.sur.inaccessible": "🔒 Je ne peux pas ouvrir ma sauvegarde dans {chemin} : ses droits ont été retirés. Rien n'est perdu ! Pour me rendre la clé : `{cmd}`",
+ "core.sur.abimee": "🩹 Ma sauvegarde {chemin} est abîmée et je n'ai pas de bonne copie de secours. Je ne l'efface pas : relance `tg`, je la rangerai à côté avant de faire éclore un nouvel œuf.",
+ "core.sur.abimee.nouvelle": "🩹 L'ancienne sauvegarde était abîmée (et sans copie de secours) : je l'ai gardée dans {casse}, rien n'est effacé. Un nouvel œuf arrive.",
+ "core.sur.pas_sauve": "💾 Je n'ai pas pu enregistrer la partie : {raison} Elle continue quand même, je réessaie au prochain tour.",
+ "core.sur.plus_de_sauvegarde": "🥚 Ma sauvegarde a disparu de ~/.terminagotchi. Ferme cette fenêtre (q) puis relance `tg`."
 }

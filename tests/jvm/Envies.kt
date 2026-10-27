@@ -109,6 +109,7 @@ fun main(args: Array<String>) {
     val o = JSONObject(f.readText())
     o.getJSONObject("extra").remove("envies")
     o.put("total", 120).put("xp", 300)
+    o.remove("sceau")                       // une sauvegarde d'avant le sceau (Garde.kt)
     f.writeText(o.toString())
     jeu.recharger()
     jeu.tick()

@@ -11,7 +11,7 @@ import subprocess
 from . import (compagnon, core, dressage, entrainement, envies, equipe, guide, exemples, explique, explo, histoire, intro, lecons, lexique,
                maison, notif, quetes, recense, registre, sprites, terrain)
 from .bestiaire import arc_en_ciel
-from . import langue
+from . import langue, sur
 from .langue import ajuster, envelopper, largeur, raccourcir, t
 from .mots import palier, terme
 
@@ -298,37 +298,85 @@ def render_dressage(state, interactif, anim=None):
 
 # ================================================================ étape de jeu (partagée par tous les modes)
 
+def _sans_planter(state, fn, *a, **k):
+    """Un module du tour de jeu qui bute sur le système (droits retirés, disque plein, lien refusé) : la créature
+    l'explique, et les autres modules continuent (jamais de trace Python à l'écran)."""
+    try:
+        return fn(*a, **k)
+    except OSError as e:
+        msg = sur.message_os(e)
+        if msg not in state.get("_dit_os", []):
+            state.setdefault("_dit_os", []).append(msg)
+            core.say(state, msg, 16)
+        return None
+
+
 def boucle_jeu(state, lines, spontane=True, rythme=1.5, defis=True, cwd=None):
     core.tick(state)
     for k, line in enumerate(lines):
         core.feed(state, line, core.statut_de(lines, k))   # une commande ratée ne donne pas de points (G-34)
-    lines = intro.tick(state, lines)          # l'œuf : sa liste, ses fêlures, l'éclosion (la suite : après l'éclosion)
-    exemples.tick(state, lines)               # mkdir tout seul… : une bulle avec la commande à taper
-    terrain.tick(state, lines)                # terrain effacé : le reconstruire, reprendre la leçon
-    histoire.tick(state, lines, cwd)          # la Maison endormie : visites, chapitres, quêtes
-    dressage.tick(state, lines)
-    equipe.tick(state, lines)
+    if state.get("_restaure"):                # save.json était abîmé : on a repris une copie de secours
+        r = state.pop("_restaure")
+        core.say(state, t("core.sur.restaure", copie=r.get("de", "?"), casse=r.get("casse", "?")), 20)
+    if core.TERRAIN.is_symlink():             # la zone d'aventure est un lien : rien n'y est construit
+        sur.ALERTES.append(str(core.TERRAIN))
+    _ok = lambda fn, *a, **k: _sans_planter(state, fn, *a, **k)
+    r = _ok(intro.tick, state, lines)         # l'œuf : sa liste, ses fêlures, l'éclosion
+    lines = lines if r is None else r
+    _ok(exemples.tick, state, lines)          # mkdir tout seul… : une bulle avec la commande à taper
+    _ok(terrain.tick, state, lines)           # terrain effacé : le reconstruire, reprendre la leçon
+    _ok(histoire.tick, state, lines, cwd)     # la Maison endormie : visites, chapitres, quêtes
+    _ok(dressage.tick, state, lines)
+    _ok(equipe.tick, state, lines)
     if intro.ouvert(state, "combats"):        # les monstres arrivent avec leur présentation (intro.json)
-        explo.tick(state, spontane, proba=rythme / 480, jeu=sum(1 for l in lines if not core.est_colle(l)), lignes=lines)
-    core.defi_tick(state, lines, spontaneous=spontane and defis, proba=rythme / 300)
-    envies.tick(state, lines)                 # les 6 envies : usure, plaisirs, poussière, rappel espacé
-    entrainement.tick(state, lines)           # salle d'entraînement : l'exercice en cours est-il réussi ?
-    guide.tick(state, lines)                  # le guide : talents, fatigue, envie de sortir, régions gardées
+        _ok(explo.tick, state, spontane, proba=rythme / 480, jeu=sum(1 for l in lines if not core.est_colle(l)),
+            lignes=lines)
+    _ok(core.defi_tick, state, lines, spontaneous=spontane and defis, proba=rythme / 300)
+    _ok(envies.tick, state, lines)            # les 6 envies : usure, plaisirs, poussière, rappel espacé
+    _ok(entrainement.tick, state, lines)      # salle d'entraînement : l'exercice en cours est-il réussi ?
+    _ok(guide.tick, state, lines)             # le guide : talents, fatigue, envie de sortir, régions gardées
     core.idle_talk(state, proba=min(1.0, 0.08 * rythme / 1.5))
-    intro.verifier(state)                     # les fonctions qui s'ouvrent maintenant (présentées une par une)
+    _ok(intro.verifier, state)                # les fonctions qui s'ouvrent maintenant (présentées une par une)
+    sur.alertes(state)                        # un lien symbolique a été refusé : la créature dit lequel
+    state.pop("_dit_os", None)
+
+
+def probleme_sauvegarde():
+    """La sauvegarde ne peut pas être lue : le message à montrer (droits retirés, fichier abîmé), sinon None."""
+    try:
+        e = core.etat_sauvegarde()
+    except OSError:
+        e = "inaccessible"
+    d = sur.relatif(core.SAVE_DIR)
+    if e == "inaccessible":
+        return t("core.sur.inaccessible", chemin=d, cmd=f"chmod -R u+rwX {d}")
+    if e == "abimee":
+        return t("core.sur.abimee", chemin=d + "/save.json")
+    return None
 
 
 def etape(spontane=True, rythme=1.5, defis=True, avant_save=None, extra=None, cwd=None, statut=None):
     """Charge, fait vivre la créature, sauvegarde, puis envoie les notifications.
     cwd : le dossier courant du terminal (donné par l'invite du shell), pour la carte de la maison.
     statut : le code de sortie de la dernière commande ($?, donné par l'invite) : une étape n'est validée que si la
-    commande a marché (verif.py)."""
+    commande a marché (verif.py).
+    Ne plante jamais sur une erreur du système : une sauvegarde illisible lève core.Probleme (message gentil),
+    une sauvegarde impossible (disque plein, droits) est dite par la créature, et la partie continue en mémoire."""
     with core.verrou():
-        state = core.load()
+        try:
+            state = core.load()
+        except OSError as e:
+            raise core.Probleme(probleme_sauvegarde() or sur.message_os(e))
         if state is None:
+            msg = probleme_sauvegarde()
+            if msg:
+                raise core.Probleme(msg)
             return None
         core.migrate(state)
-        lines = core.read_new_lines(state) + list(extra or [])
+        try:
+            lines = core.read_new_lines(state) + list(extra or [])
+        except OSError:
+            lines = list(extra or [])
         avant = state["total"]
         core.DERNIER.update(ligne=lines[-1] if lines and statut is not None else None, statut=statut)
         boucle_jeu(state, lines, spontane, rythme, defis, cwd)
@@ -336,7 +384,12 @@ def etape(spontane=True, rythme=1.5, defis=True, avant_save=None, extra=None, cw
         if avant_save:
             avant_save(state)
         a_envoyer, state["notifs"] = state["notifs"], []
-        core.save(state)
+        try:
+            core.save(state)
+        except OSError as e:
+            msg = t("core.sur.pas_sauve", raison=sur.message_os(e))
+            core.say(state, msg, 20)
+            state["_pas_sauve"] = msg
     try:
         if intro.ouvert(state, "extras"):          # les notifications arrivent avec leur présentation (intro.json)
             notif.envoyer(state, a_envoyer)
@@ -344,7 +397,10 @@ def etape(spontane=True, rythme=1.5, defis=True, avant_save=None, extra=None, cw
     except Exception:
         pass
     if SYNC_AUTO:
-        recense.synchroniser_en_fond()
+        try:
+            recense.synchroniser_en_fond()
+        except Exception:
+            pass
     return state
 
 
@@ -571,12 +627,48 @@ def menu_recensement(clav):
 
 # ================================================================ modes
 
+def _dire_une_fois(msg, delai=3600):
+    """Le crochet d'invite ne doit jamais gêner : un souci est dit une fois par heure au plus (sur stderr)."""
+    import tempfile
+    marque = os.path.join(tempfile.gettempdir(), f"tg_prompt_{os.getuid() if hasattr(os, 'getuid') else 0}")
+    try:
+        if time.time() - os.path.getmtime(marque) < delai:
+            return
+    except OSError:
+        pass
+    try:                                       # jamais à travers un lien (/tmp est partagé) : O_NOFOLLOW, sans vider
+        fd = os.open(marque, os.O_WRONLY | os.O_CREAT | getattr(os, "O_NOFOLLOW", 0), 0o600)
+        try:
+            os.utime(fd) if os.utime in os.supports_fd else None
+        finally:
+            os.close(fd)
+    except OSError:
+        pass
+    print(msg, file=sys.stderr)
+
+
 def creer_si_besoin(avec_intro=None):
     """Premier lancement : la créature est créée. avec_intro (par défaut : une vraie personne au clavier) :
     les écrans de l'intro, puis l'œuf et sa liste de commandes, et le jeu qui s'ouvre petit à petit (intro.py).
-    Sans personne au clavier (scripts, tests), tout est ouvert tout de suite."""
-    if core.load() is not None:
-        return
+    Sans personne au clavier (scripts, tests), tout est ouvert tout de suite.
+    Une sauvegarde qui existe mais ne se lit pas n'est JAMAIS remplacée en silence : droits retirés → on explique et
+    on s'arrête ; fichier abîmé sans copie de secours → on le range à côté (save.json.casse-…), on le dit, puis
+    seulement on fait éclore un nouvel œuf."""
+    try:
+        if core.load() is not None:
+            return
+    except OSError:
+        pass
+    etat = core.etat_sauvegarde()
+    if etat == "inaccessible":
+        raise core.Probleme(probleme_sauvegarde())
+    if etat == "abimee":
+        casse = core.SAVE_DIR / ("save.json.casse-" + time.strftime("%Y%m%d-%H%M%S"))
+        try:
+            os.replace(core.SAVE_FILE, casse)
+        except OSError:
+            raise core.Probleme(probleme_sauvegarde())
+        print(t("core.sur.abimee.nouvelle", casse=sur.relatif(casse)))
     if avec_intro is None:
         avec_intro = sys.stdin.isatty() and sys.stdout.isatty()
     try:
@@ -661,7 +753,24 @@ def fenetre(once):
             while True:
                 now = time.time()
                 if state is None or now - dernier >= RYTHME:
-                    state = etape(spontane=not once)
+                    try:
+                        nouveau = etape(spontane=not once)
+                    except (core.Probleme, OSError) as e:
+                        # sauvegarde inaccessible (chmod 000…) : la fenêtre reste ouverte, explique et réessaie
+                        _ecran(str(e) if isinstance(e, core.Probleme) else sur.message_os(e))
+                        if once:
+                            break
+                        k = clav.touche(RYTHME * 2)
+                        if k and k.lower() == "q":
+                            break
+                        dernier = time.time()
+                        continue
+                    if nouveau is None:
+                        _ecran(t("core.sur.plus_de_sauvegarde"))
+                        if once or (clav.touche(RYTHME * 2) or "").lower() == "q":
+                            break
+                        continue
+                    state = nouveau
                     dernier = now
                     frame += 1
                     evt = state.get("anim")
@@ -742,7 +851,17 @@ def veille():
     print(t("app.veille"))
     try:
         while True:
-            st = etape(spontane=True, rythme=30, defis=False)
+            try:
+                st = etape(spontane=True, rythme=30, defis=False)
+            except (core.Probleme, OSError) as e:          # la veille ne meurt jamais : elle explique et attend
+                st = None
+                print("\r" + time.strftime("%H:%M ") + (str(e) if isinstance(e, core.Probleme) else sur.message_os(e)),
+                      flush=True)
+            except Exception:
+                st = None
+                sur.noter_trace()
+            if st and st.get("_pas_sauve"):
+                print("\r" + time.strftime("%H:%M ") + st["_pas_sauve"], flush=True)
             if st:
                 print(f"\r{time.strftime('%H:%M')} " + t("app.veille.ligne", nom=st["name"], n=core.level(st["xp"]),
                                                          faim=int(st["hunger"])) + "   ", end="", flush=True)
@@ -811,16 +930,43 @@ def commande_guide(mode, args):
 
 
 def main():
+    """Le point d'entrée : jamais de trace Python à l'enfant. Une erreur du système (droits, disque plein) est
+    expliquée ; une erreur imprévue est rangée dans ~/.terminagotchi/erreurs.log pour un adulte."""
+    try:
+        _main()
+    except KeyboardInterrupt:
+        print(RESET)
+    except core.Probleme as e:
+        print(RESET + str(e))
+        raise SystemExit(1)
+    except OSError as e:
+        print(RESET + sur.message_os(e))
+        raise SystemExit(1)
+    except Exception:
+        f = sur.noter_trace()
+        print(RESET + t("core.sur.bug", fichier=sur.relatif(f) if f else "?"))
+        raise SystemExit(1)
+
+
+def _main():
     langue.installer_rendu()                   # les commandes à taper en vert (`…` dans les textes)
     args = [a for a in sys.argv[1:] if not a.startswith("--")]
     mode = args[0].lower() if args else ""
-    if core.load() is None:                    # pas encore de sauvegarde : la langue du système
+    try:
+        rien = core.load() is None
+    except OSError:
+        rien = False
+    if rien:                                   # pas encore de sauvegarde : la langue du système
         langue.definir(langue.detecter())
     if mode == "prompt":                       # appelé par le shell : ne doit jamais gêner
         try:
             compagnon.prompt(etape)
+        except core.Probleme as e:             # la créature ne se tait pas sans dire pourquoi (une fois par heure)
+            _dire_une_fois(str(e))
+        except OSError as e:
+            _dire_une_fois(sur.message_os(e))
         except Exception:
-            pass
+            sur.noter_trace()
         return
     if mode in ("aide", "help", "-h"):
         print(aide())

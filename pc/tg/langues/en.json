@@ -2689,5 +2689,18 @@
  "vrai.absent": "💻 In a real terminal: `{cmd}` is not installed everywhere; an adult can add it (their password will be needed).",
  "vrai.win": "💻 In PowerShell (Windows): `{cmd}` works the same; on Linux and macOS the command is a bit different.",
  "hist.grenier0.1.astuce2": "If `tree` isn't there: `ls -R` shows the same thing. (To install `tree`, ask an adult: their password will be needed.)",
- "lec.reseau2.1.astuce2": "If `traceroute` is missing, try `tracepath`, or ask an adult to install it (their password will be needed)."
+ "lec.reseau2.1.astuce2": "If `traceroute` is missing, try `tracepath`, or ask an adult to install it (their password will be needed).",
+ "core.sur.lien": "🔗 Careful: {lien} is a symbolic link (it leads to {cible}, outside my zone). I never write through a link, so nothing gets damaged elsewhere. To remove it (only the link goes, not what it points to): `{cmd}`",
+ "core.sur.lien.adulte": "For grown-ups: the game only writes in ~/terrain_terminagotchi and ~/.terminagotchi, and refuses any path that goes through a symbolic link (it could lead to your real files or to another git repository). {lien} is left as it is; nothing was written through it.",
+ "core.sur.lien.court": "🔗 {lien} is a symbolic link: I don't write through it.",
+ "core.sur.droits": "🔒 I can't get into {chemin} any more: its permissions were removed (with `chmod`?). To give me the key back: `{cmd}`",
+ "core.sur.plein": "💾 No more room to write in {chemin} (is the disk full?). Free up a little space: I'll try again by myself.",
+ "core.sur.systeme": "⚠ The computer refused to write in {chemin} ({erreur}). I'll try again next turn.",
+ "core.sur.bug": "😵 Oops, I tripped over a bug. Nothing is lost. For grown-ups: the details are stored in {fichier}.",
+ "core.sur.restaure": "🩹 My save was damaged: I went back to my last good copy ({copie}). The damaged file is kept next to it, in ~/.terminagotchi ({casse}).",
+ "core.sur.inaccessible": "🔒 I can't open my save in {chemin}: its permissions were removed. Nothing is lost! To give me the key back: `{cmd}`",
+ "core.sur.abimee": "🩹 My save {chemin} is damaged and I have no good backup copy. I won't erase it: run `tg` again, I'll put it aside before hatching a new egg.",
+ "core.sur.abimee.nouvelle": "🩹 The old save was damaged (with no backup copy): I kept it in {casse}, nothing is erased. A new egg is coming.",
+ "core.sur.pas_sauve": "💾 I couldn't save the game: {raison} It goes on anyway, I'll try again next turn.",
+ "core.sur.plus_de_sauvegarde": "🥚 My save has disappeared from ~/.terminagotchi. Close this window (q) and run `tg` again."
 }

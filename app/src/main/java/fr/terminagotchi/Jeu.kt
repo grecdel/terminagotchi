@@ -391,6 +391,9 @@ class Jeu(ctx: Context) {
         )),
     )
 
+    /** Ce qui s'est passé au chargement (sauvegarde modifiée hors du jeu, abîmée…), dit une fois par la créature. */
+    var alerteChargement: String? = null
+
     init {
         charger()
     }
@@ -432,11 +435,37 @@ class Jeu(ctx: Context) {
         charger()
     }
 
+    /**
+     * La sauvegarde active, vérifiée : son sceau (Garde) doit être bon, sinon (modifiée hors du jeu, abîmée) on prend
+     * la copie de secours scellée (sauvegarde.json.bak) ; sans bonne copie, on garde quand même la créature (jamais
+     * effacée), et on le dit. Le fichier refusé est rangé à côté (sauvegarde.json.refusee), jamais effacé.
+     */
+    private fun lireVerifie(fichier: File): JSONObject? {
+        val bak = File(fichier.parentFile, fichier.name + ".bak")
+        fun essai(f: File): Pair<JSONObject?, Boolean> = try {
+            val txt = f.readText()
+            val o = JSONObject(txt)
+            o to Garde.acceptable(txt)
+        } catch (e: Exception) { null to false }
+        val (o, bon) = essai(fichier)
+        if (o != null && bon) return o
+        val (b, bbon) = if (bak.isFile) essai(bak) else (null to false)
+        if (b != null && bbon) {
+            try { fichier.copyTo(File(fichier.parentFile, fichier.name + ".refusee"), overwrite = true) } catch (e: Exception) {}
+            alerteChargement = if (o == null) "garde.illisible" else "garde.sceau"
+            return b
+        }
+        if (o != null) { alerteChargement = "garde.sceau.sans"; return o }
+        if (b != null) { alerteChargement = "garde.illisible"; return b }
+        if (fichier.exists()) alerteChargement = "garde.perdue"
+        return null
+    }
+
     private fun charger() {
         val fichier = Parties.fichierActif(app)
-        if (!fichier.exists()) { choisirLangue(null); return }
+        if (!fichier.exists() && !File(fichier.parentFile, fichier.name + ".bak").isFile) { choisirLangue(null); return }
         try {
-            val o = JSONObject(fichier.readText())
+            val o = lireVerifie(fichier) ?: throw IllegalStateException("sauvegarde illisible")
             partie = o.optString("partie").ifEmpty { partie }
             nom = o.optString("nom")
             xp = o.optInt("xp")
@@ -465,8 +494,13 @@ class Jeu(ctx: Context) {
             Bestiaire.migrer(extra)          // anciennes espèces → nouveau bestiaire, « finale » → « ancien »
             choisirLangue(o.optString("langue").ifEmpty { null })
         } catch (e: Exception) {
-            // sauvegarde illisible : on repart de zéro plutôt que de planter
+            // sauvegarde illisible et sans copie de secours : rangée à côté (jamais effacée), puis on repart de zéro
+            try { fichier.copyTo(File(fichier.parentFile, fichier.name + ".refusee"), overwrite = true) } catch (x: Exception) {}
             choisirLangue(null)
+        }
+        alerteChargement?.let { k ->
+            log(t(k))
+            dire(t(k), 14)
         }
     }
 
@@ -519,9 +553,10 @@ class Jeu(ctx: Context) {
         // si l'écran d'accueil a changé de partie entre-temps (rappel en arrière-plan…),
         // cette créature s'enregistre dans SON rangement et n'écrase pas la nouvelle partie active
         val fichier = Parties.fichierDe(app, partie)
-        val tmp = File(fichier.parentFile, fichier.name.removeSuffix(".json") + ".tmp")
-        tmp.writeText(o.toString())
-        tmp.renameTo(fichier)
+        // scellée (Garde : une sauvegarde modifiée hors du jeu est reconnue), avec sa copie de secours scellée
+        val texte = Garde.sceller(o)
+        Parties.ecrireTexte(fichier, texte)
+        if (fichier == Parties.fichierActif(app)) Parties.ecrireTexte(File(fichier.parentFile, fichier.name + ".bak"), texte)
     }
 
     // ------------------------------------------------------------ vie de la créature
@@ -570,7 +605,8 @@ class Jeu(ctx: Context) {
         val now = System.currentTimeMillis()
         // ms par point de faim : 2 fois plus lent qu'avant les envies (Envies.kt) ; Gardien double encore
         val rate = if ("Gardien" in skills) 1_440_000.0 else 720_000.0
-        faim = (faim - (now - dernierTick) / rate).coerceAtLeast(0.0)
+        // l'horloge qui recule (réglage du téléphone) ne nourrit pas : faim entre 0 et 100
+        faim = (faim - (now - dernierTick).coerceAtLeast(0L) / rate).coerceIn(0.0, 100.0)
         dernierTick = now
         Envies.temps(this)                  // les autres envies : usure lente, repos, poussière du terrain
     }
