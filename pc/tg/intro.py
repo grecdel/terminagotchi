@@ -261,8 +261,16 @@ def lignes_liste(state, couleur=True):
 
 # ---------------------------------------------------------------- les écrans (merci, fonctions)
 def a_montrer(state):
+    """L'écran « Nouveau : … » à montrer, ou None. P2-6 : pas en pleine étape de leçon (il attend qu'elle soit réussie),
+    sauf l'écran « merci » de l'éclosion."""
     d = d_(state)
-    return d["file"][0] if d["file"] else None
+    if not d["file"]:
+        return None
+    if d["file"][0] not in ("merci", "merci2"):
+        from . import histoire
+        if histoire.en_pleine_etape(state):
+            return None
+    return d["file"][0]
 
 
 def lu(state):

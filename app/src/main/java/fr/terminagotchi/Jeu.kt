@@ -683,7 +683,7 @@ class Jeu(ctx: Context) {
         if (stat != null) {
             stats[stat] = (stats[stat] ?: 0) + 1
             gain += 1
-            msg += " +${Regles.court(stat)}"
+            if (Mots.palier(this) >= 1) msg += " +${Regles.court(stat)}"     // « +END » : du jargon pour un débutant (P2-5)
         }
         if (cmd in Commandes.CREATURE) {
             val maintenant = System.currentTimeMillis()
@@ -762,6 +762,7 @@ class Jeu(ctx: Context) {
     fun texteLecon(): String? {
         val out = mutableListOf<String>()
         val c = Histoire.leconCourante(this)
+        if (Placement.actif(this)) out.add("🧩 " + Placement.but(this))          // G-13 : le test « je connais déjà »
         if (c != null) {
             out.add(t("hist.ecran.chapitre", "icone" to (Maison.ICONES[c.chap.piece] ?: "📖"),
                 "chapitre" to Histoire.nomChapitre(c.chap.id), "n" to c.chap.n) + " · " + c.etiquette)
@@ -770,6 +771,7 @@ class Jeu(ctx: Context) {
                 out.add(t("leca.prochaine", "n" to c.niveau, "xp" to manque))
             } else {
                 val e = c.etapes[etape]
+                if (c.id == "t0" && etape == 0 && Placement.etat(this).isEmpty()) out.add("🧩 " + t("plac.propose.tel"))
                 out.add("${c.titre} (${etape + 1}/${c.etapes.size}) · ${e.dit}\n➜ ${Verif.commandeMontree(this, e)}")
                 e.adulte?.let { out.add("🧑 $it") }                              // G-32 : la version des grands, toujours là
                 Vrai.ligne(e.cmd)?.let { out.add(it) }                           // G-10 : 💻 et dans un vrai terminal ?

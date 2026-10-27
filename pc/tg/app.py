@@ -66,7 +66,8 @@ def render(state, frame, interactif, anim=None):
     if intro.ouvert(state, "envies"):             # les jauges des envies arrivent avec leur présentation
         right += [f"{jauges[0]}  {DIM}{envies.humeur(state)}{RESET}",
                   jauges[1] + (f"  {fg(214)}💭 {envies.ICONES[m['e']]} {envies.nom(m['e'])}{RESET}" if m else "")]
-    right += [stats, t("app.competences_bestioles", n=nb_sk, b=sum(state["collection"].values()))]
+    if intro.ouvert(state, "equipe"):             # P2-5 : INT AGI FOR END (du jargon à 7 ans) avec l'équipe seulement
+        right += [stats, t("app.competences_bestioles", n=nb_sk, b=sum(state["collection"].values()))]
     if state.get("captures") and intro.ouvert(state, "equipe"):     # le guide (tg guide) : en tête de l'équipe
         gm = guide.actuel(state)
         right.append(f"🧭 {guide.ICONES[gm[2]]} {gm[1]} {DIM}· {t('guide.talent.' + guide.TALENTS[gm[2]])}{RESET}")
@@ -100,6 +101,9 @@ def render(state, frame, interactif, anim=None):
         for x in envelopper(t("app.terrain.pourquoi"), 78):
             lines.append(f"   {DIM}{x}{RESET}")
     les, etiquette = lecons.lecon_courante(state)
+    from . import placement
+    if placement.actif(state):                    # G-13 : le petit test « je connais déjà »
+        lines.append(title_line("🧩 " + placement.but(state), 213))
     if les:
         ch = histoire.PAR_CHAP[les["chap"]]
         lines.append(title_line(t("hist.ecran.chapitre", icone=maison.ICONES.get(ch["piece"], "📖"),
@@ -149,10 +153,11 @@ def render(state, frame, interactif, anim=None):
     if suivie:
         lines.append(f" {fg(214)}{suivie}{RESET}")
 
-    lines.append(title_line(t("app.digere", os=DISTRO or OS_NAMES[OSK])))
-    lc = max(largeur(core.nom_stat(v["stat"])) for v in core.CATEGORIES.values()) + 2
-    for k, v in core.CATEGORIES.items():
-        lines.append(f" {fg(v['color'])}{ajuster(core.nom_stat(v['stat']), lc)}{RESET}{core.EXAMPLES[OSK][k]}")
+    if intro.ouvert(state, "equipe"):             # « Ce que je digère (Ubuntu) : git, curl » : plus tard (P2-5)
+        lines.append(title_line(t("app.digere", os=DISTRO or OS_NAMES[OSK])))
+        lc = max(largeur(core.nom_stat(v["stat"])) for v in core.CATEGORIES.values()) + 2
+        for k, v in core.CATEGORIES.items():
+            lines.append(f" {fg(v['color'])}{ajuster(core.nom_stat(v['stat']), lc)}{RESET}{core.EXAMPLES[OSK][k]}")
 
     lines.append(title_line(t("app.journal")))
     if state["total"] == 0:
@@ -971,7 +976,27 @@ def _main():
             sur.noter_trace()
         return
     if mode in ("aide", "help", "-h"):
+        st = core.load()
+        if st is not None and not (len(args) > 1 and args[1].lower() in ("tout", "all")):
+            core.migrate(st)                   # P2-7 : coincé ? d'abord la leçon en cours, où la taper, et pourquoi
+            try:
+                ici = os.getcwd()
+            except OSError:
+                ici = None
+            with core.verrou():
+                st = core.load() or st
+                core.migrate(st)
+                texte = histoire.aide_lecon(st, ici)
+                core.save(st)
+            print("\n".join(texte) + "\n")    # d'abord la leçon en cours, puis la liste du jeu
         print(aide())
+        return
+    if mode in ("placement", "sansaide"):      # G-13 : le test « je connais déjà », le mode défi sans aide
+        creer_si_besoin()
+        from . import placement
+        sortie = []
+        core.modifier(lambda s: sortie.append(placement.commande(s, args[1:] if mode == "sansaide" else [])))
+        print(sortie[0] if sortie else "")
         return
     if mode == "debloquer":                    # tg debloquer tout : pour les parents et les tests (confirmation)
         creer_si_besoin()

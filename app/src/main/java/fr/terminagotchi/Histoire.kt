@@ -628,7 +628,28 @@ object Histoire {
     }
 
     /** Une étape réussie. Renvoie true s'il reste des étapes dans la leçon. */
+    /** G-13 : le test « je connais déjà » réussi : les leçons du chapitre sont comptées faites, le chapitre se termine. */
+    fun validerChapitre(jeu: Jeu, cid: String) {
+        val c = PAR_CHAP[cid] ?: return
+        val h = h(jeu)
+        for (lid in c.lecons) ajouter(h, "faits", lid)
+        jeu.etape = 0
+        jeu.ajouterXp(XP_LECON_SURE * c.lecons.size)
+        finirChapitre(jeu, c)
+    }
+
+    /** le moment où la dernière étape a été réussie (P2-3 : les monstres et les nouveautés attendent ce moment) */
+    var dernierPas = 0L
+
+    /** Une étape est montrée et l'enfant y travaille : monstre, défi éclair, écran « Nouveau » attendent (P2-3, P2-6). */
+    fun enPleineEtape(jeu: Jeu): Boolean {
+        val c = try { leconCourante(jeu) } catch (e: Exception) { null } ?: return false
+        if (jeu.niveau < c.niveau) return false
+        return System.currentTimeMillis() - dernierPas > 2000
+    }
+
     private fun avancer(jeu: Jeu, les: Courante): Boolean {
+        dernierPas = System.currentTimeMillis()
         val e = les.etapes[jeu.etape]
         jeu.log("✔ ${e.cmd}")
         jeu.dire(e.bravo, 12)
@@ -699,6 +720,7 @@ object Histoire {
             } else jeu.dire(t("lec.annonce"), 10)
             jeu.animer("parle")
         }
+        if (Placement.actif(jeu)) { Placement.tick(jeu, morcs); return }   // G-13 : le test « je connais déjà » d'abord
         val avant = les.id to jeu.etape
         for (m in morcs) {
             val e = les.etapes[jeu.etape]
@@ -716,6 +738,7 @@ object Histoire {
         if (avant != (les.id to jeu.etape)) jeu.indiceLecon = null
         else if (tapees.isNotEmpty()) {
             val conseil = indice(jeu, les.etapes[jeu.etape], tapees, morcs)
+            Placement.rateUneFois(jeu, les.etapes[jeu.etape])     // mode sans aide : 3 essais ratés montrent la commande
             if (conseil != null && conseil != jeu.indiceLecon) {
                 jeu.indiceLecon = conseil
                 jeu.dire("💡 $conseil", 12)
@@ -724,6 +747,29 @@ object Histoire {
     }
 
     /** Un indice quand c'est presque ça (mauvais endroit, faute de frappe, mauvais nombre…). */
+    /** `aide` quand on est coincé (P2-7) : la leçon en cours, où la taper, la commande exacte (avec le cd), pourquoi. */
+    fun aideLecon(jeu: Jeu): String {
+        val out = mutableListOf(t("aide.lecon.titre"))
+        val c = leconCourante(jeu)
+        if (c == null || jeu.niveau < c.niveau) out.add(t("aide.lecon.aucune"))
+        else {
+            val e = c.etapes[jeu.etape]
+            out.add(t("aide.lecon.etape", "titre" to c.titre, "n" to jeu.etape + 1, "total" to c.etapes.size))
+            out.add(t("aide.lecon.pourquoi", "dit" to e.dit))
+            val ici = Maison.ici(jeu)
+            val r = ici?.let { Maison.rel(jeu, it) }
+            val la = if (r != null) nomLieu(r) else ici?.let { Racine.virtuel(jeu.home, it) } ?: "?"
+            val lieu = Verif.lieuAttendu(jeu, e)
+            out.add(if (lieu != null && !Verif.auBonEndroit(jeu, e, ici)) t("aide.lecon.ou", "ici" to la, "lieu" to nomLieu(lieu))
+                else t("aide.lecon.ok_ici", "ici" to la))
+            Placement.montrer(jeu, e)                                   // mode sans aide : `aide` montre la commande
+            out.add(t("aide.lecon.tape", "cmd" to Verif.commandeMontree(jeu, e, ici)))
+            jeu.indiceLecon?.let { out.add("💡 $it") }
+        }
+        out.add(t("aide.lecon.tout.tel"))
+        return out.joinToString("\n")
+    }
+
     /** Le nom d'un lieu de la zone d'aventure pour un enfant (« » = le carrefour). */
     fun nomLieu(rel: String) = Maison.nomPiece(if (rel.isEmpty()) "grande_salle" else rel.substringBefore('/'))
 

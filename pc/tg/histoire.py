@@ -748,8 +748,10 @@ def _finir_chapitre(state, c):
 def avancer(state, les):
     """Une étape réussie. Renvoie True s'il reste des étapes dans la leçon."""
     step = les["steps"][state["step"]]
+    state["pas_t"] = __import__("time").time()          # P2-3 : les monstres et les nouveautés attendent ce moment
     core.log(state, f"✔ {step['cmd']}")
     core.say(state, lecons.tx(step["bravo"]), 12)
+    core.terminal(state, "✔ " + lecons.tx(step["bravo"]))   # le bravo aussi dans le terminal de l'enfant (P1-4)
     from . import explique
     explique.apres_reussite(state, step["cmd"])           # -r, >>, 444… : expliqués une fois (explique.py)
     state["step"] += 1
@@ -837,6 +839,10 @@ def tick_lecon(state, lines, cwds, avants=None):
             continue
         morcs += verif.morceaux(line, avants[k] or cwd, core.statut_de(lines, k))
     tapees = [(m.texte, m.avant) for m in morcs]
+    from . import placement
+    if placement.actif(state):                  # G-13 : le test « je connais déjà » passe avant la leçon
+        placement.tick(state, morcs)
+        return
     avant = (les["id"], state["step"])
     for m in morcs:
         step = les["steps"][state["step"]]
@@ -863,11 +869,54 @@ def tick_lecon(state, lines, cwds, avants=None):
     elif tapees:
         step = les["steps"][state["step"]]
         conseil = indice(state, step, [l for l, _ in tapees], tapees, morcs)
+        placement.rate_une_fois(state, step)          # mode sans aide : 3 essais ratés montrent la commande
         if conseil and conseil != state.get("indice_lecon"):
             state["indice_lecon"] = conseil
             core.say(state, "💡 " + conseil, 12)
         if conseil:
             core.terminal(state, "💡 " + conseil)            # aussi dans le terminal de l'enfant (compagnon)
+
+
+def en_pleine_etape(state):
+    """Une étape de leçon est montrée et l'enfant y travaille (elle ne vient pas d'être réussie) : un monstre, un défi
+    éclair ou un écran « Nouveau » attendent la fin de l'étape au lieu de cacher la leçon (P2-3, P2-6)."""
+    import time
+    try:
+        les, _ = lecon_courante(state)
+    except Exception:                       # noqa: BLE001
+        return False
+    if not les or core.level(state.get("xp", 0)) < les["niveau"]:
+        return False
+    return time.time() - state.get("pas_t", 0) > 2
+
+
+def aide_lecon(state, cwd=None, tel=False):
+    """`aide` quand on est coincé (P2-7) : la leçon en cours, l'étape, où la taper (comparé au dossier où l'enfant est),
+    la commande exacte (avec le cd qui y mène), pourquoi, et le dernier indice."""
+    from . import compagnon, verif
+    out = [t("aide.lecon.titre")]
+    les, etiquette = lecon_courante(state)
+    if not les or core.level(state.get("xp", 0)) < les["niveau"]:
+        out.append(t("aide.lecon.aucune"))
+    else:
+        step = les["steps"][state["step"]]
+        out.append(t("aide.lecon.etape", titre=lecons.tx(les["titre"]), n=state["step"] + 1, total=len(les["steps"])))
+        out.append(t("aide.lecon.pourquoi", dit=lecons.tx(step["dit"])))
+        ici = cwd or maison.ici(state)
+        r = maison.rel(ici) if ici else None
+        la = nom_lieu(r) if r is not None else (str(ici).replace(str(_Path.home()), "~", 1) if ici else "?")
+        lieu = verif.lieu_attendu(state, step)
+        if lieu is not None and not verif.au_bon_endroit(state, step, ici):
+            out.append(t("aide.lecon.ou", ici=la, lieu=nom_lieu(lieu)))
+        else:
+            out.append(t("aide.lecon.ok_ici", ici=la))
+        from . import placement
+        placement.montrer(state, step)          # mode sans aide : `aide` montre la commande
+        out.append(t("aide.lecon.tape", cmd=compagnon.commande_montree(state, step, ici)))
+        if state.get("indice_lecon"):
+            out.append("💡 " + state["indice_lecon"])
+    out.append(t("aide.lecon.tout"))
+    return out
 
 
 def nom_lieu(rel):

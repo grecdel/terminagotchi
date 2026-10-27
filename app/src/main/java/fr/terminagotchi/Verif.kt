@@ -237,6 +237,7 @@ object Verif {
 
     /** La commande de l'étape telle qu'on la montre : précédée du « cd » qui y mène si l'enfant n'est pas au bon lieu. */
     fun commandeMontree(jeu: Jeu, e: Etape, cwd: String? = Maison.ici(jeu)): String {
+        if (Placement.cache(jeu, e)) return t("sa.cache")          // G-13 : mode « défi sans aide »
         val cmd = Regles.piege(e.cmd)
         return try {
             if (!auBonEndroit(jeu, e, cwd)) t("comp.lecon.puis", "cd" to Regles.piege(cdVers(jeu, lieuAttendu(jeu, e)!!)), "cmd" to cmd)
@@ -247,6 +248,10 @@ object Verif {
     // ---------------------------------------------------------------- fautes collées, casse, noms proches
     private val CONNUES = listOf("mkdir", "rmdir", "touch", "chmod", "whoami", "grep", "find", "head", "tail", "echo", "cat",
         "pwd", "cd", "ls", "cp", "mv", "rm", "wc", "du", "df", "ps", "rev")
+
+    /** des commandes courantes (pour reconnaître `PWD`, `Ls`… écrites en majuscules) */
+    val MOTS_CONNUS: Set<String> = CONNUES.toSet() + setOf("date", "id", "uname", "hostname", "uptime", "free", "sort", "uniq",
+        "ping", "ifconfig", "clear", "history", "sleep", "kill", "jobs", "tree", "less", "more", "stat", "file", "tee")
 
     /** `cdvestibule` → `cd vestibule`, `ls-a` → `ls -a`, `cd/` → `cd /`, `cd..` → `cd ..` (ou null). */
     fun collee(mot: String): String? {

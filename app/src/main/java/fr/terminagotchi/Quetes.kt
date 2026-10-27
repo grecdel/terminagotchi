@@ -326,11 +326,16 @@ object Quetes {
     const val NB_ANNONCES = 3
 
     /** La difficulté suit le niveau : de plus en plus de sortes de quêtes, et plus cachées. */
-    fun modeles(niveau: Int): List<String> {
+    /** la leçon qui apprend ce dont une quête générée a besoin (P2-13 : pas de « Photocopie » avant la leçon de cp) */
+    private val BESOIN = mapOf("perdu" to "t4", "copie" to "t4", "proteger" to "t3", "compter" to "nid1", "mot" to "biblio1")
+
+    fun modeles(niveau: Int, jeu: Jeu? = null): List<String> {
         val m = MODELES_FACILES.toMutableList()
         if (niveau >= 7) m += MODELES_MOYENS
         if (niveau >= 12) m += MODELES_DURS
-        return m
+        if (jeu == null) return m
+        val faits = Histoire.faits(jeu)
+        return m.filter { BESOIN[it] == null || BESOIN[it] in faits }.ifEmpty { listOf("construire") }
     }
 
     private fun piecesLibres(jeu: Jeu) =
@@ -340,7 +345,7 @@ object Quetes {
     fun generer(jeu: Jeu, sel: String, niveau: Int): Pair<JSONObject, Map<String, Any>> {
         val r = PyHasard(Histoire.graine(jeu) + ":gen:" + sel)
         val pieces = piecesLibres(jeu).ifEmpty { listOf("vestibule") }
-        val m = r.choix(modeles(niveau))
+        val m = r.choix(modeles(niveau, jeu))
         val piece = r.choix(pieces)
         val k = sel.replace(Regex("[^\\p{L}\\p{N}_]"), "").takeLast(6)
         val p = JSONObject().put("piece", piece)

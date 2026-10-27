@@ -237,7 +237,10 @@ object Intro {
     fun titreListe(jeu: Jeu) = t("intro.liste.titre", "n" to faits(jeu).size, "total" to liste().size)
 
     // ---------------------------------------------------------------- les écrans à présenter (merci, fonctions)
+    /** L'écran « Nouveau : … » à montrer, ou null. P2-6 : pas en pleine étape de leçon (il attend qu'elle soit réussie),
+     *  sauf l'écran « merci » de l'éclosion. */
     fun aMontrer(jeu: Jeu): String? = if (!jeu.existe || retient(jeu)) null else lst(deb(jeu), "file").firstOrNull()
+        ?.takeIf { it == "merci" || it == "merci2" || !Histoire.enPleineEtape(jeu) }
 
     fun lu(jeu: Jeu) {
         val d = deb(jeu)

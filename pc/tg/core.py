@@ -403,6 +403,7 @@ def feed(state, line, statut=None):
         state["colles"] += 1
         log(state, t("core.colle.log"))
         say(state, au_hasard("core.colle"), 10)
+        terminal(state, t("core.colle.doigts"))     # P2-8 : dans le terminal, ce qu'il faut faire (taper au clavier)
         animer(state, "colere")
         return
     cmd = first_word(line)
@@ -449,7 +450,9 @@ def feed(state, line, statut=None):
     if cat:
         state["stats"][CATEGORIES[cat]["stat"]] += 1
         gain += 1
-        msg += " +" + nom_stat(CATEGORIES[cat]["stat"], court=True)
+        from .mots import palier
+        if palier(state) >= 1:                   # « +END » : du jargon pour un enfant qui débute (P2-5)
+            msg += " +" + nom_stat(CATEGORIES[cat]["stat"], court=True)
     if cmd not in state["seen"]:
         state["seen"].append(cmd)
         gain += 5
@@ -495,8 +498,9 @@ def defi_tick(state, lines, spontaneous, proba=1.5 / 300):
     d = state["defi"]
     if not d:
         if spontaneous and stage(level(state["xp"])) >= 1 and random.random() < proba:
-            from . import intro
-            if intro.ouvert(state, "combats"):         # les défis éclair arrivent avec les monstres (intro.json)
+            from . import histoire, intro
+            # les défis éclair arrivent avec les monstres (intro.json), jamais en pleine étape de leçon (P2-3)
+            if intro.ouvert(state, "combats") and not histoire.en_pleine_etape(state):
                 defi_start(state)
         return
     for line in lines:

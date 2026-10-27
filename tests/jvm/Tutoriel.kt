@@ -174,7 +174,7 @@ fun main(args: Array<String>) {
     verif("touch nid/lit.txt" in (p.jeu.indiceLecon ?: "") && "cd ~/terrain" !in (p.jeu.indiceLecon ?: ""),
         "touch lit.txt dans la grande salle : l'indice donne la commande entière (${p.jeu.indiceLecon})")
     p.suite("cd nid", "touch nid/lit.txt")
-    verif("carrefour" in (p.jeu.indiceLecon ?: ""), "touch nid/lit.txt depuis le nid : « depuis la grande salle » (${p.jeu.indiceLecon})")
+    verif("carrefour" in (p.jeu.indiceLecon ?: "").lowercase(), "touch nid/lit.txt depuis le nid : « depuis la grande salle » (${p.jeu.indiceLecon})")
     p.tape("touch lit.txt")
     verif("nid0" in faits(p), "touch lit.txt dans le nid : validé")
     p = nouvellePartie("Dans le nid")

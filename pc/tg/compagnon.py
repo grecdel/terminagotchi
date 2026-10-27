@@ -69,7 +69,9 @@ def ligne(state):
 def commande_montree(state, step, cwd=None):
     """La commande de l'étape telle qu'on la montre : précédée du « cd » qui y mène quand l'enfant n'est pas là où elle
     se tape (une seule ligne : « cd ~/terrain_terminagotchi/grenier puis mv … »), avec les lettres sosies."""
-    from . import maison, verif
+    from . import maison, placement, verif
+    if placement.cache(state, step):                 # G-13 : mode « défi sans aide » : à toi de trouver !
+        return t("sa.cache")
     cmd = piege(step["cmd"])
     try:
         ici = cwd or maison.ici(state)
@@ -108,6 +110,9 @@ def annonces(state):
         if state.get("term_etape") != cle:
             state["term_etape"] = cle
             step = les["steps"][state["step"]]
+            from . import placement
+            if les["id"] == "t0" and state["step"] == 0 and not placement.p_(state).get("etat"):
+                out.append(f"{DIM}🧩 " + t("plac.propose") + RESET)       # G-13 : « je connais déjà un peu »
             out.append(f"{fg(213)}📖 {lecons.tx(step['dit'])}{RESET}")
             out.append(f"   {fg(226)}➜ {commande_montree(state, step)}{RESET}")
             g = lecons.adulte(step)

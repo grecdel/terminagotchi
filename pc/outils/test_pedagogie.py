@@ -192,5 +192,48 @@ verifier(verif.collee("ls-a") == "ls -a" and verif.collee("cd/") == "cd /" and v
          "fautes collées : ls-a → ls -a, cd/ → cd /, cdvestibule → cd vestibule")
 verifier(verif.nom_proche("Nid", str(T)) == ("nid", True), "« Nid » : seule la casse diffère de « nid »")
 
+print("7. Hugo : le test « je connais déjà » et le mode défi sans aide (G-13)")
+from tg import placement  # noqa: E402
+core.modifier(lambda s: (s["histoire"].update(faits=[], ailes=[], chap="reveil"), s.__setitem__("step", 0),
+                         s.__setitem__("placement", {}), s["config"].pop("sans_aide", None)))
+SH.lancer("cd ~")
+msg = []
+core.modifier(lambda s: msg.append(placement.commande(s, [])))
+verifier("4" in propre(msg[0]) and placement.actif(core.load()), f"tg placement : le test commence ({propre(msg[0])[:60]!r})")
+for c in ("pwd", "cd /", "cd", "ls -la"):
+    tape(c)
+st = core.load()
+verifier(histoire.fini(st, "reveil") and st["config"].get("sans_aide"), "4 défis réussis : chapitre 1 validé, mode sans aide")
+les, _ = histoire.lecon_courante(st)
+step = les["steps"][st["step"]]
+verifier("trouver" in propre(compagnon.commande_montree(st, step)), "sans aide : la commande est cachée, seulement le but")
+with core.verrou():
+    s2 = core.load()
+    texte = propre(histoire.aide_lecon(s2, str(HOME)))
+    core.save(s2)
+verifier(step["cmd"].split()[0] in texte and "trouver" not in propre(compagnon.commande_montree(core.load(), step)),
+         "`aide` montre la commande (et elle reste visible)")
+core.modifier(lambda s: s.__setitem__("placement", {}))
+core.modifier(lambda s: placement.commande(s, ["off"]))
+verifier(not core.load()["config"].get("sans_aide"), "tg sansaide off : retour au mode normal")
+core.modifier(lambda s: (s["histoire"].update(faits=[], ailes=[], chap="reveil"), s.__setitem__("placement", {})))
+core.modifier(lambda s: placement.commande(s, []))
+for c in ("ls", "ls", "ls", "ls", "ls", "ls", "ls", "ls", "ls", "ls", "ls"):
+    tape(c)
+verifier(p := core.load()["placement"].get("etat") == "rate", "10 lignes sans réussir : le test s'arrête, on fait le chapitre 1 avec l'aide")
+
+print("8. Pas de jargon au début, aide, quêtes")
+st = core.load()
+from tg import intro  # noqa: E402
+_ouvert = intro.ouvert
+intro.ouvert = lambda s, f: False if f == "equipe" else _ouvert(s, f)      # l'équipe pas encore présentée
+ecran = propre(app.render(st, 0, False))
+intro.ouvert = _ouvert
+verifier("INT " not in ecran and "Ce que je digère" not in ecran, "écran du début : ni « INT AGI FOR END » ni « Ce que je digère »")
+from tg import quetes  # noqa: E402
+verifier("copie" not in quetes.modeles(20, {"histoire": {"faits": ["t0"]}}) and "copie" in quetes.modeles(20, {"histoire": {"faits": ["t4"]}}),
+         "pas de quête « Photocopie » avant la leçon de cp")
+verifier("Pour les grands" in ecran or "💻" in ecran, "le panneau de la leçon a sa version des grands / vrai terminal")
+
 print(f"\n{ok} réussis, {ko} échoués   (HOME={HOME})")
 sys.exit(1 if ko else 0)

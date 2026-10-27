@@ -33,8 +33,14 @@ object Tour {
         Dressage.verifier(jeu, ligne, colle, code)?.let { msgs.add(it to ROSE); saut = 8 }
         Equipe.apresCommande(jeu, colle || rappel)?.let { msgs.add(it to 0xFFFFAF00.toInt()) }
         if (combats) Explo.attirer(jeu, ligne, colle || rappel)    // la commande d'une famille l'attire
-        if (hasard && !colle && !rappel && combats && Explo.debloquee(jeu) && !Dressage.actif(jeu) && Random.nextInt(25) == 0) {
-            Explo.spawn(jeu)                                       // en jouant, un monstre peut surgir
+        if (hasard && !colle && !rappel && combats && Explo.debloquee(jeu) && !Dressage.actif(jeu)) {
+            val attend = jeu.module("explo").optBoolean("attend")
+            if (attend && !Histoire.enPleineEtape(jeu)) {              // il attendait la fin de l'étape : le voilà
+                jeu.module("explo").remove("attend"); Explo.spawn(jeu)
+            } else if (Random.nextInt(25) == 0) {                     // en jouant, un monstre peut surgir…
+                if (Histoire.enPleineEtape(jeu)) jeu.module("explo").put("attend", true)   // … sans cacher la leçon (P2-3)
+                else Explo.spawn(jeu)
+            }
         }
         Envies.apresCommande(jeu, ligne, colle || rappel)          // les 6 envies : usure, plaisirs, poussière, rappel espacé
         Guide.apresCommande(jeu, ligne, colle || rappel, cwd)?.let { msgs.add(it to ROSE) }   // le guide : talents, fatigue, régions
@@ -53,7 +59,7 @@ object Tour {
         Histoire.tick(jeu, null, false, cwd)
         Defis.verifier(jeu, null)
         val combats = Intro.ouvert(jeu, "combats")
-        if (combats && jeu.existe && jeu.stade >= 1 && Defis.actif(jeu) == null && !Dressage.actif(jeu) && Random.nextInt(60) == 0) Defis.lancer(jeu)
+        if (combats && jeu.existe && jeu.stade >= 1 && Defis.actif(jeu) == null && !Dressage.actif(jeu) && !Histoire.enPleineEtape(jeu) && Random.nextInt(60) == 0) Defis.lancer(jeu)
         if (combats) Explo.verifier(jeu)?.let { msgs.add(it to ROSE) }
         Dressage.verifier(jeu, null, false)?.let { msgs.add(it to ROSE) }
         Intro.verifier(jeu)

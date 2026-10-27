@@ -156,6 +156,11 @@ def check(state):
             core.animer(state, "ko")
 
 
+def histoire_en_pleine_etape(state):
+    from . import histoire
+    return histoire.en_pleine_etape(state)
+
+
 def tick(state, spontane, proba=1.5 / 480, jeu=0, lignes=()):
     """jeu = nombre de commandes tapées à la main : les monstres n'apparaissent qu'en jouant."""
     attirer(state, lignes)
@@ -167,8 +172,14 @@ def tick(state, spontane, proba=1.5 / 480, jeu=0, lignes=()):
         spawn(state)
     elif state.get("dressage"):
         pass                                          # pas de nouveau monstre pendant un dressage
-    elif jeu and random.random() < min(0.5, 0.04 * jeu):   # ~1 monstre toutes les 25 commandes
+    elif state.get("monstre_attend") and not histoire_en_pleine_etape(state):
+        state["monstre_attend"] = False         # il attendait la fin de l'étape de la leçon : le voilà
         spawn(state)
+    elif jeu and random.random() < min(0.5, 0.04 * jeu):   # ~1 monstre toutes les 25 commandes
+        if histoire_en_pleine_etape(state):
+            state["monstre_attend"] = True      # P2-3 : il ne cache pas la leçon, il arrive quand l'étape est réussie
+        else:
+            spawn(state)
     check(state)
 
 

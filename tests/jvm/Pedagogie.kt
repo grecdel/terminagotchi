@@ -11,6 +11,7 @@ import fr.terminagotchi.Histoire
 import fr.terminagotchi.Intro
 import fr.terminagotchi.Jeu
 import fr.terminagotchi.Langue
+import fr.terminagotchi.Placement
 import fr.terminagotchi.Racine
 import fr.terminagotchi.Shell
 import fr.terminagotchi.Tour
@@ -143,6 +144,22 @@ fun main(args: Array<String>) {
     tape("echo poire | tee -a nid/repas.txt")
     verifP(lec().first != "t3", "… | tee -a nid/repas.txt refusé par le cadenas : l'étape est faite (${lec()})")
     File(jeu.terrain, "nid/repas.txt").setWritable(true)
+
+    println("5. Hugo : le test « je connais déjà » et le mode défi sans aide (G-13)")
+    h.put("ailes", JSONArray()); h.put("faits", JSONArray()); h.put("chap", "reveil"); jeu.etape = 0
+    jeu.module("placement").put("etat", ""); jeu.module("sansaide").put("on", false)
+    shell.executer("cd ~")
+    val debut = Placement.commande(jeu, emptyList())
+    verifP(Placement.actif(jeu) && "4" in debut, "placement : le test commence")
+    for (c in listOf("pwd", "cd /", "cd ~", "ls -la")) tape(c)
+    verifP(Histoire.fini(jeu, "reveil") && Placement.sansAide(jeu), "4 défis réussis : chapitre 1 validé, mode sans aide (${Placement.etat(jeu)})")
+    val e2 = Histoire.leconCourante(jeu)!!.etapes[jeu.etape]
+    verifP("trouver" in propre(Verif.commandeMontree(jeu, e2)), "sans aide : la commande est cachée")
+    val aide = propre(Histoire.aideLecon(jeu))
+    verifP(e2.cmd.split(" ")[0] in aide && "trouver" !in propre(Verif.commandeMontree(jeu, e2)), "`aide` montre la commande, où la taper et pourquoi")
+    Placement.commande(jeu, listOf("off"))
+    verifP(!Placement.sansAide(jeu), "sansaide off : mode normal")
+    verifP("copie" !in fr.terminagotchi.Quetes.modeles(20, jeu) || "t4" in Histoire.faits(jeu), "pas de quête « Photocopie » avant la leçon de cp")
 
     println("\n$okP réussis, $koP échoués")
     System.exit(if (koP > 0) 1 else 0)

@@ -219,7 +219,10 @@ object Guide {
     }
 
     fun aideTalent(tal: String) = t(if (tal == "secrets") "guide.talent.secrets.aide" else "guide.talent.aide", "cmds" to AFFICHE_TALENT[tal])
-    fun astuce(tal: String) = t("guide.astuce.$tal", "cmd" to ASTUCES[tal])
+    // sur le téléphone, `rm -i` ne peut pas poser sa question (le terminal de l'appli n'a pas de clavier pour la commande) :
+    // la broyeuse prudente regarde d'abord avec `ls` (rapport Sophie n° 14)
+    fun astuce(tal: String) = if (tal == "nettoyeur") t("guide.astuce.nettoyeur.tel", "cmd" to "ls")
+        else t("guide.astuce.$tal", "cmd" to ASTUCES[tal])
 
     /** `troupe <nom>` met aussi cette bestiole en tête : elle devient le guide. */
     fun suivreChoixEquipe(jeu: Jeu, id: String) {

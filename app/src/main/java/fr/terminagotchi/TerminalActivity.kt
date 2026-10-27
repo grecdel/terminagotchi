@@ -354,7 +354,15 @@ class TerminalActivity : Activity() {
             "read-only file system" in s -> t("term.err.lecture_seule")
             "not found" in s && Regles.premierMot(ligne).isNotEmpty() -> {
                 jeu.animer("confus")
-                t("term.err.inconnue", "cmd" to Regles.premierMot(ligne))
+                // P2-10 : une faute collée (`cdvestibule`, `ls-a`, `cd/`) ou des majuscules (`PWD`) : la bonne commande
+                val brut = ligne.trim().split(Regex("\\s+"))[0]
+                val colle = Verif.collee(brut)
+                when {
+                    brut != brut.lowercase() && Verif.collee(brut.lowercase()) == null && brut.lowercase() in Verif.MOTS_CONNUS ->
+                        t("core.inconnue.casse", "cmd" to brut, "proche" to brut.lowercase())
+                    colle != null -> t("core.inconnue.proche", "cmd" to brut, "proche" to colle)
+                    else -> t("term.err.inconnue", "cmd" to Regles.premierMot(ligne))
+                }
             }
             "file exists" in s -> t("term.err.existe")
             "is a directory" in s -> t("term.err.est_dossier")
@@ -455,7 +463,20 @@ class TerminalActivity : Activity() {
                 if (non != null) ecrire(non, 0xFFFFAF5F.toInt()) else if (lexiqueVue.visibility != View.VISIBLE) basculerLexique()
                 return
             }
+            "placement", "sansaide" -> {                  // G-13 : le test « je connais déjà », le mode défi sans aide
+                val mots = ligne.trim().split(Regex("\\s+"))
+                ecrire(Placement.commande(jeu, if (mots[0].lowercase() == "sansaide") mots.drop(1).ifEmpty { listOf("on") } else emptyList()),
+                    Commandes.ROSE)
+                jeu.sauver()
+                rafraichir()
+                return
+            }
             "aide" -> {
+                // P2-7 : coincé ? d'abord la leçon en cours, où la taper, la commande exacte et pourquoi (« aide tout » : la liste)
+                if (ligne.trim().split(Regex("\\s+")).getOrNull(1)?.lowercase() !in setOf("tout", "all")) {
+                    ecrire(Histoire.aideLecon(jeu), Commandes.ROSE)
+                    return
+                }
                 ecrire(t("term.aide", "ctf" to Mots.terme("ctf", Mots.palier(jeu), true)) + "\n" + t("term.aide.maison") + "\n" + t("env.aide.tel") + "\n" + t("ent.aide.tel"))
                 return
             }
@@ -1003,7 +1024,8 @@ class TerminalActivity : Activity() {
         titre.text = if (!jeu.existe) t("term.oeuf_mysterieux") else if (jeu.shiny) miseEnForme("§${jeu.titre()}§", null) else jeu.titre()
         faim.text = if (jeu.existe) Envies.compact(jeu) + "  " + Envies.emoji(jeu) else jeu.texteFaim()
         xp.text = jeu.texteXp()
-        stats.text = jeu.texteStats() + if (Explo.captures(jeu).length() > 0 && Intro.ouvert(jeu, "equipe")) Guide.actuel(jeu).let { "  🧭 ${Guide.ICONES[it.type]} ${it.nom}" } else ""
+        // P2-5 : « INT AGI FOR END » n'apparaît qu'avec l'équipe (avant, c'est du jargon pour un enfant de 7 ans)
+        stats.text = (if (Intro.ouvert(jeu, "equipe")) jeu.texteStats() else "") + if (Explo.captures(jeu).length() > 0 && Intro.ouvert(jeu, "equipe")) Guide.actuel(jeu).let { "  🧭 ${Guide.ICONES[it.type]} ${it.nom}" } else ""
         invite.text = if (::menu.isInitialized && menu.ouvert) ">" else if (jeu.existe) "${shell.chemin()} $" else t("term.invite_nom")
         val b = jeu.bulleActive()
         bulle.visibility = if (b.isEmpty()) View.GONE else View.VISIBLE

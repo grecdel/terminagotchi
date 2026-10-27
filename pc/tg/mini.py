@@ -56,11 +56,35 @@ def argv_shell(cmd):
     return ["/bin/sh", "-c", cmd]
 
 
+def completer(tampon):
+    """Tab : complète le dernier mot avec les noms de fichiers et dossiers (le plus long début commun)."""
+    avant, _, mot = tampon.rpartition(" ")
+    tete, _, debut = mot.rpartition("/")
+    base = os.path.expanduser(tete) if tete else ("/" if mot.startswith("/") else ".")
+    try:
+        noms = [n for n in os.listdir(base or "/") if n.startswith(debut) and (debut.startswith(".") or not n.startswith("."))]
+    except OSError:
+        return tampon
+    if not noms:
+        return tampon
+    commun = os.path.commonprefix(noms)
+    if len(noms) == 1 and os.path.isdir(os.path.join(base or "/", commun)):
+        commun += "/"
+    elif len(noms) == 1:
+        commun += " "
+    return (avant + " " if avant else "") + (tete + "/" if tete or mot.startswith("/") else "") + commun
+
+
 class Mini:
     def __init__(self, etape):
         self.etape = etape
         self.clav = Clavier()
         self.tampon = ""
+        self.histo, self.pos = [], None           # ↑ ↓ : les commandes d'avant
+        self.sh = None                             # un shell qui reste ouvert (alias, tâches, cd -, &&) : coquille.py
+        if not IS_WIN and shutil.which("bash"):
+            from .coquille import Coquille
+            self.sh = Coquille(os.getcwd(), env=dict(os.environ, PAGER="cat", GIT_PAGER="cat"), rc=True)
         self.sortie = [f"{DIM}" + t("mini.accueil1"), t("mini.accueil2") + RESET]
         self.frame = 0
         self.state = None
@@ -78,6 +102,19 @@ class Mini:
             self.sortie = []
         elif premier in ("aide", "help"):
             self.sortie += [f"{DIM}" + l for l in langue.liste("mini.aide")] + [RESET]
+        elif self.sh and premier not in PLEIN_ECRAN:
+            # le même shell d'une ligne à l'autre : `cd x && ls`, `cd -`, `alias miam=…` puis `miam`, `sleep 9 &` puis
+            # `jobs` et `kill %1` ; Ctrl+C arrête la commande en cours (pas tg mini) ; le code de sortie va au jeu
+            texte, code, d = self.sh.lancer(ligne, DELAI, interrompre=lambda: "\x03" in self.clav.lire(0))
+            try:
+                os.chdir(d)
+            except OSError:
+                pass
+            for l in texte.rstrip("\n").splitlines():
+                self.sortie.append(ANSI.sub("", l.expandtabs(4)))
+            self.sortie = self.sortie[-300:]
+            self.jouer(extra=[ligne], statut=code)
+            return
         elif premier in ("cd", "set-location", "sl"):
             cible = os.path.expandvars(os.path.expanduser(" ".join(mots[1:]) or "~"))
             try:
@@ -108,10 +145,10 @@ class Mini:
         self.sortie = self.sortie[-300:]
         self.jouer(extra=[ligne])
 
-    def jouer(self, extra=None):
+    def jouer(self, extra=None, statut=None):
         avant = self.state["total"] if self.state else None
         try:
-            st = self.etape(spontane=True, rythme=1.5, defis=True, extra=extra)
+            st = self.etape(spontane=True, rythme=1.5, defis=True, extra=extra, statut=statut, cwd=os.getcwd())
         except (core.Probleme, OSError) as e:      # sauvegarde inaccessible : on le dit, tg mini reste ouvert
             from . import sur
             msg = str(e) if isinstance(e, core.Probleme) else sur.message_os(e)
@@ -123,6 +160,13 @@ class Mini:
                 self.saut = 3
             self.state = st
         self.dernier_jeu = time.time()
+
+    def histoire(self, sens):
+        if not self.histo:
+            return
+        self.pos = (len(self.histo) if self.pos is None else self.pos) + sens
+        self.pos = max(0, min(len(self.histo), self.pos))
+        self.tampon = self.histo[self.pos] if self.pos < len(self.histo) else ""
 
     # ------------------------------------------------------------ affichage
     def cols(self):
@@ -203,17 +247,28 @@ class Mini:
                     if time.time() - self.dernier_jeu > 1.5:
                         self.jouer()
                     self.dessiner()
-                    saisie = re.sub(r"\x1b(\[[0-9;?]*[A-Za-z~]|O.)?", "", self.clav.lire(0.35))
+                    brut = self.clav.lire(0.35)
+                    for fl, sens in (("\x1b[A", -1), ("\x1bOA", -1), ("\x1b[B", 1), ("\x1bOB", 1)):
+                        if fl in brut:                       # ↑ ↓ : l'historique (comme un vrai terminal)
+                            self.histoire(sens)
+                    saisie = re.sub(r"\x1b(\[[0-9;?]*[A-Za-z~]|O.)?", "", brut)
                     for c in saisie:
                         if c in ("\r", "\n"):
                             ligne, self.tampon = self.tampon.strip(), ""
+                            self.pos = None
                             if ligne:
+                                if not self.histo or self.histo[-1] != ligne:
+                                    self.histo = (self.histo + [ligne])[-200:]
                                 self.executer(ligne)
                                 self.dessiner()
                         elif c in ("\x7f", "\x08"):
                             self.tampon = self.tampon[:-1]
-                        elif c == "\x03":
-                            raise KeyboardInterrupt
+                        elif c == "\x03":               # Ctrl+C : efface la ligne (exit pour quitter)
+                            if not self.tampon:
+                                self.sortie.append(f"{DIM}^C · " + t("mini.quitter") + RESET)
+                            self.tampon = ""
+                        elif c == "\t":                 # Tab : complète le nom (comme un vrai terminal)
+                            self.tampon = completer(self.tampon)
                         elif c == "\x15":                    # Ctrl+U : effacer la ligne
                             self.tampon = ""
                         elif c.isprintable() or c == " ":

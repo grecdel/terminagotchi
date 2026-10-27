@@ -234,8 +234,13 @@ MODELES_DURS = ("mot",)
 NB_ANNONCES = 3
 
 
-def modeles(niveau):
-    """La difficulté suit le niveau : de plus en plus de sortes de quêtes, et plus cachées."""
+# la leçon qui apprend ce dont une quête générée a besoin (P2-13 : pas de « Photocopie » avant la leçon de cp)
+BESOIN = {"perdu": "t4", "copie": "t4", "proteger": "t3", "compter": "nid1", "mot": "biblio1"}
+
+
+def modeles(niveau, state=None):
+    """La difficulté suit le niveau : de plus en plus de sortes de quêtes, et plus cachées. Seulement les quêtes dont
+    les commandes ont déjà été apprises (state donné)."""
     m = list(MODELES_FACILES)
     if niveau >= 7:
         m += MODELES_MOYENS
@@ -243,6 +248,10 @@ def modeles(niveau):
         m += MODELES_DURS
     if IS_WIN and "proteger" in m:
         m.remove("proteger")
+    if state is not None:
+        from . import histoire
+        faits = histoire.h_(state)["faits"]
+        m = [x for x in m if BESOIN.get(x) is None or BESOIN[x] in faits] or ["construire"]
     return m
 
 
@@ -255,7 +264,7 @@ def generer(state, sel, niveau):
     """Une quête tirée d'un modèle : {"m": modèle, "p": paramètres, "pose": {fichier: contenu}}."""
     r = random.Random(f"{state.get('partie') or '1'}:{int(state.get('born', 0))}:gen:{sel}")
     pieces = _pieces_libres(state) or ["vestibule"]
-    m = r.choice(modeles(niveau))
+    m = r.choice(modeles(niveau, state))
     piece = r.choice(pieces)
     k = re.sub(r"\W", "", str(sel))[-6:]
     p = {"piece": piece}
