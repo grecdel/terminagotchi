@@ -93,6 +93,9 @@ object Garde {
         photo = parcourir(home, b)
     }
 
+    /** Une écriture du jeu (sauvegarde…) : jamais au milieu de la comparaison d'après commande (apres). */
+    fun <T> pendant(bloc: () -> T): T = synchronized(verrou) { bloc() }
+
     /** Le jeu vient d'écrire ce fichier lui-même (sauvegarde, rangement des parties) : ce n'est pas une attaque. */
     fun noter(f: File) = synchronized(verrou) {
         val p = photo ?: return@synchronized

@@ -305,7 +305,9 @@ class Jeu(ctx: Context) {
 
     /** identifiant de la partie (« 1 » = la sauvegarde d'avant les parties multiples, voir Parties.kt) */
     var partie = Parties.active(app)
+    /** sans caractères de contrôle ni de mise en forme (ESC, NUL, RLO…), d'où qu'il vienne (saisie, sauvegarde, site) */
     var nom = ""
+        set(v) { field = v.filter { c -> Character.getType(c).toByte() != Character.CONTROL && Character.getType(c).toByte() != Character.FORMAT }.trim() }
     var xp = 0
     var faim = 80.0
     var total = 0

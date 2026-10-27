@@ -292,7 +292,16 @@ def new_state(name, langue_code="fr"):
             "offsets": {}, "version": VERSION}
 
 
+def nom_propre(nom):
+    """Le nom de la créature sans caractères de contrôle ni de mise en forme (ESC, NUL, RLO…) : ils iraient tels quels
+    au terminal (effacer l'écran, retourner le texte) et sur le site, où d'autres joueurs le voient."""
+    import unicodedata
+    return "".join(c for c in str(nom or "") if unicodedata.category(c) not in ("Cc", "Cf", "Cs")).strip()[:16]
+
+
 def migrate(state):
+    if isinstance(state.get("name"), str) and nom_propre(state["name"]) != state["name"].strip()[:16]:
+        state["name"] = nom_propre(state["name"]) or "Pixel"
     defaults = {"trait": random.choice(TRAITS), "langue": "fr", "skills": [], "lesson": 0, "step": 0,
                 "bubble": None, "defi": None, "records": {}, "offsets": {}, "arbre": {},
                 "branche": None, "cherche": {}, "sauvages": [], "collection": {}, "explo": False, "dressage": None,
@@ -665,6 +674,8 @@ def load():
         state = _restaurer()
         if state is None:
             return None
+    if isinstance(state.get("name"), str) and nom_propre(state["name"]) != state["name"].strip()[:16]:
+        state["name"] = nom_propre(state["name"]) or "Pixel"          # ESC, RLO, NUL : jamais jusqu'au terminal
     from . import bestiaire, langue
     langue.appliquer(state)                 # la langue choisie est rangée dans la sauvegarde
     return bestiaire.migrer(state)

@@ -252,6 +252,11 @@ verifier(gardes and "casse" in dit, f"… `tg` la range à côté et le dit avan
 verifier(core.load()["name"] == "Nouveau", "… puis un nouvel œuf")
 
 print("4. Divers")
+core.modifier(lambda s: s.__setitem__("name", "\x1b[2J\u202eGRO\x00/x"))
+st, err = etape()
+rendu = app.render(st, 0, False)
+verifier("\x1b[2J" not in rendu and "\u202e" not in rendu and "\x00" not in rendu,
+         f"nom avec ESC[2J, RLO, NUL : nettoyé ({core.load()['name']!r})")
 s = core.load()
 s["hunger"] = 90
 s["last_tick"] = time.time() + 3 * 86400

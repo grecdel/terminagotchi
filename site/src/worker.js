@@ -481,7 +481,8 @@ function fusionner(etat, envoi, appareil, verdicts = new Map()) {
   if (e.shiny === undefined && typeof v.shiny === "boolean") e.shiny = v.shiny;
   // le nom : celui du compte reste, sauf renommage plus récent (un appareil fraîchement relié ne l'écrase pas)
   if (typeof v.nom === "string" && v.nom.trim() && (!e.nom || (Number(v.nomDate) || 0) > e.nomDate)) {
-    e.nom = v.nom.trim().slice(0, 16);
+    // sans caractères de contrôle ni de mise en forme (ESC, NUL, RLO…) : le nom est montré à d'autres joueurs
+    e.nom = v.nom.replace(/[\p{Cc}\p{Cf}]/gu, "").trim().slice(0, 16) || e.nom || "?";
     e.nomDate = Number(v.nomDate) || 0;
   }
   if (!e.trait && typeof v.trait === "string") e.trait = v.trait.slice(0, 20);

@@ -61,7 +61,7 @@ object Parties {
     private fun ecrire(f: File, o: JSONObject) = ecrireTexte(f, Garde.sceller(o))
 
     /** Écriture atomique (.tmp puis renommage), signalée au gardien des coulisses (Garde) : ce n'est pas une attaque. */
-    fun ecrireTexte(f: File, texte: String) {
+    fun ecrireTexte(f: File, texte: String) = Garde.pendant {
         val tmp = File(f.parentFile, f.name.removeSuffix(".json") + ".tmp")
         try {
             tmp.writeText(texte)

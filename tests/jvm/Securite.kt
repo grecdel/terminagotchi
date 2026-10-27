@@ -172,6 +172,9 @@ fun main(args: Array<String>) {
     jeu.dernierTick = System.currentTimeMillis() + 3 * 86_400_000L
     jeu.tick()
     verifS(jeu.faim in 0.0..100.0, "l'horloge recule de 3 jours : faim ${"%.0f".format(jeu.faim)} (entre 0 et 100)")
+    jeu.nom = "\u001b[2J\u202ePix\u0000el"
+    verifS(jeu.nom == "[2JPixel", "nom avec ESC, RLO, NUL : nettoyé (${jeu.nom})")
+    jeu.nom = "Pixel"
     verifS(canari.readText() == "app\n" && File(dehors, "important.txt").readText() == "hôte\n", "à la fin : rien n'a changé hors du camp")
 
     println("\n$okS réussis, $koS échoués")
