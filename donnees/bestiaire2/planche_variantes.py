@@ -1,6 +1,6 @@
 """planche_variantes.py <famille> : planche de contrôle des VARIANTES d'une famille (images/).
 Une ligne par variante dessinée (classique en premier), 5 stades côte à côte, bandeau par espèce."""
-import json, sys
+import json, sys, unicodedata
 from pathlib import Path
 from PIL import Image, ImageDraw, ImageFont
 ICI = Path(__file__).resolve().parent
@@ -13,6 +13,7 @@ rows = []
 for e in b:
     for v in e["variantes"]:
         base = ICI / "images" / f"{e['numero']:03d}_{e['id']}_{v['id']}"
+        base = Path(unicodedata.normalize("NFKD", str(base)).encode("ascii", "ignore").decode())
         if not Path(f"{base}_bebe.png").exists():
             continue
         ims = []

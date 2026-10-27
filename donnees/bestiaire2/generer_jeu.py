@@ -18,6 +18,7 @@ import json
 import random
 import shutil
 import sys
+import unicodedata
 import zlib
 from pathlib import Path
 
@@ -121,6 +122,8 @@ def note(qualite, score_variante, puissance, shiny):
 # ---------------------------------------------------------------- images
 def charger(fichier):
     p = ICI / "images" / fichier
+    if not p.exists():  # les fichiers sont nommés sans accent (forêt -> foret)
+        p = ICI / "images" / unicodedata.normalize("NFKD", fichier).encode("ascii", "ignore").decode()
     return Image.open(p).convert("RGBA") if p.exists() else None
 
 
