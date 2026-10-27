@@ -85,6 +85,7 @@ Les étapes « expert » n'apparaissent qu'à partir du niveau 10.
 |---|---|---|---|---|---|
 | 1 | vestibule | `t0` Où suis-je ? | `pwd` · `ls` · `cd ~` | re | 2 |
 | 1 | | `reveil1` Le vieux chemin | `cd terrain_terminagotchi` · `ls` · `cd vestibule` · `ls` (l'œuf « trouvé ») | ici / re+ou | 2 |
+| 1 | | `racine` Voyage jusqu'à la Racine *(nouveau)* | `cd /` · `ls` · `pwd` · `cd ~` · `cd ~/terrain_terminagotchi/vestibule` (chemin absolu) | ici / ou / ici | 2 |
 | 2 | nid | `nid0` Construire mon nid | `cd ..` · `mkdir nid` · `touch nid/lit.txt` | ici / fs | 3 |
 | 2 | | `debarras` Un lieu en trop | `mkdir debarras` · `rmdir debarras` · `rm -r vieille_cabane` | fs | 3 |
 | 2 | | `nid1` Le garde-manger | `echo pomme > nid/repas.txt` · `cat nid/repas.txt` | fs / re | 4 |
@@ -93,6 +94,7 @@ Les étapes « expert » n'apparaissent qu'à partir du niveau 10.
 | 3 | | `t4` Nettoyeur | `cp nid/repas.txt nid/secours.txt` · `mv nid/secours.txt reserve.txt` · `rm reserve.txt` · *expert :* `cp -r grenier/fouillis grenier/fouillis_secours` | fs | |
 | 4 | cave (Démons) | `cave0` | entrée · `whoami` · `sudo -h` (pas sous Windows) | re | |
 | 4 | | `t3` Gardien | `ls -l nid` · `chmod 444 nid/repas.txt` · `echo poire >> nid/repas.txt` (doit échouer) | re / fs / re | |
+| 4 | | `gardien` La visite du gardien *(nouveau)* | `cat /etc/hostname` · `ls /bin` · `ls /var/log` · `ls -l /etc/hostname` (lecture seule) | re | |
 | 5 | bibliothèque (Abyssaux) | `biblio0` | entrée · `find . -name "*abysses*"` · `less …/livre_des_abysses.txt` | re | |
 | 5 | | `biblio1` | `grep pomme nid/repas.txt` · `head -n 3 …` · `wc -l …` · *expert :* `grep -rn TRESOR .` | re | |
 | 6 | salle des machines (Élémentaires) | `machines0` | entrée · `free -h` · `du -sh *` · `rm vieux_carton.bin` | re / fs | |
@@ -346,6 +348,31 @@ Conséquences sur le programme :
   (le site vu comme un dossier `~`) : réutiliser l'idée. Effort : **L**.
 - **Windows** : `C:\` = la Racine, `C:\Users` = le village ; le parcours complet est conseillé sous WSL.
 
+**État (octobre 2026, branche `nouveau-bestiaire`)** — fait sur PC et Android :
+
+- textes : chaque lieu a son image, son nom et sa version des grands (`lieu.*`, 14 langues) ; vocabulaire en
+  3 paliers (`terme.racine`, `village`, `camp`, `chemin_absolu`, `chemin_relatif`, `systeme`), section « lieux »
+  du lexique, `explique /` ;
+- carte (`maison.monde`, `Maison.monde`) : la Racine en haut, les lieux du système dans la brume tant qu'ils ne
+  sont pas visités, le chemin Racine → village → camp de base → zone d'aventure, « ◉ Tu es ici : <chemin absolu> »,
+  la ligne de métro 🚇, la règle absolu / relatif, « on regarde, on ne touche pas » ;
+- leçon **« Voyage jusqu'à la Racine »** (`racine`, fin du chapitre 1 : `cd /`, `ls`, `pwd`, `cd ~`, puis un
+  chemin absolu jusqu'au vestibule) et quête **« La visite du gardien »** (`gardien`, fin du chapitre de la cave :
+  `cat /etc/hostname`, `ls /bin`, `ls /var/log`, `ls -l /etc/hostname`) ; les sauvegardes existantes les reçoivent
+  (migration v4) ;
+- garde-fous : 1re visite d'un lieu du système = présentation enfant + grands ; écrire vers un lieu du système
+  (`>`, `mkdir`, `touch`, `rm`, `mv`, `cp`, `chmod`…) → « le gardien dit non » expliqué ; écrire dans le camp hors
+  de la zone d'aventure → petit rappel ; `sudo` jamais demandé ;
+- **Android** : `Racine.kt` simule l'arbre (`/`, `/bin`, `/usr/bin` = les commandes de l'appli, `/etc/hostname`
+  = `terminaworld`, `os-release`, `hosts`, `motd`, `/dev/null`, `/proc`, `/tmp`, `/var/log/terminaworld.log` =
+  le journal du jeu, `/home/explorateur` = `~`) ; `cd`, `pwd`, `ls`, `cat`… marchent avec des chemins absolus
+  et relatifs ; toute écriture hors du camp est refusée comme un vrai « Permission denied », expliquée ; la sortie
+  ne montre jamais le vrai dossier de l'appli.
+
+Reste à faire : visites des niveaux 4 à 6 et des mondes (`/dev` au niveau 4, `/tmp` au niveau 5, `/usr/bin` +
+`which` au niveau 6, `/proc` au Poste de Contrôle, `/var/log` réel à la Citadelle) ; régions lointaines (`/opt`,
+`/srv`, `/mnt`…) ; vue Windows (`C:\`).
+
 Légende de faisabilité sur le téléphone : ✅ marche déjà · 🟡 à adapter (contenu ou commande intégrée) ·
 ❌ à ajouter dans `Shell.kt`/`TerminalActivity.kt` · ⛔ impossible sans gros chantier (mettre une variante).
 
@@ -406,8 +433,8 @@ corriger une erreur, réutiliser une ligne, compléter un nom et arrêter une co
 | **Vrai terminal** | « Dans un vrai terminal Linux/macOS, c'est pareil : ton camp de base s'appelle `/home/ton_nom` (`/Users/ton_nom` sur macOS), et `~` est son raccourci. » |
 | **Visuel** | La carte qui pousse (déjà faite) avec un pointillé animé du trajet de `cd` ; « ◉ tu es ici » ; un chemin absolu dessiné comme une ligne de métro depuis la racine. |
 | **Exercices** | (A) `pwd`, `ls`, `cd vestibule`, `cd ..` · (A) `cd /`, `ls`, `cd /home`, `ls`, `cd ~` (visite en lecture) · (B) « va dans le grenier en une seule commande depuis la Racine » (`cd ~/terrain_terminagotchi/grenier` ou chemin absolu complet) · (C) « ramène-moi au camp de base » (contrôle *ici*) · (C) « écris le chemin complet du nid » (réponse) · (D) salle d'entraînement « explorateur ». |
-| **Android** | ✅ dans `~` ; `/`, `/home` ❌ (vue simulée du Terminaworld, § 2.0 bis) ; `tree` ❌ (intégrée). |
-| **Existant** | ch. 1 (`t0`, `reveil1`), `nid0` (`cd ..`). Manque : chemin absolu/relatif expliqué, `tree` sur Android. |
+| **Android** | ✅ dans `~` ; `/`, `/home`, `/etc`, `/bin` ✅ (vue simulée du Terminaworld en lecture seule, `Racine.kt`, § 2.0 bis) ; `tree` ❌ (intégrée). |
+| **Existant** | ch. 1 (`t0`, `reveil1`, **`racine`** « Voyage jusqu'à la Racine » : `cd /`, `ls`, `pwd`, `cd ~`, chemin absolu), `nid0` (`cd ..`) ; absolu / relatif expliqué sur la carte et dans la leçon. Manque : `tree` sur Android. |
 
 ### 2.4 Niveau 2 — Bâtir et ranger
 
@@ -756,12 +783,12 @@ superviser des agents qui codent.)
 | Programme | Contenu actuel réutilisé |
 |---|---|
 | Niveau 0 | (nouveau) + messages `term.err.*`, `core.inconnue.proche`, `aide.manque.bloque`, mini-terminal du site |
-| Niveau 1 | ch. 1 (`t0`, `reveil1`), `nid0.0`, `grenier0.1` (`tree`) |
+| Niveau 1 | ch. 1 (`t0`, `reveil1`, `racine`), `nid0.0`, `grenier0.1` (`tree`) |
 | Niveau 2 | `nid0`, `debarras`, `t4`, `machines0.3` |
 | Niveau 3 | `nid1.1`, `biblio0`, `biblio1`, `coeur0` (`ls -a`), `coeur1.0` |
 | Niveau 4 | `nid1.0`, `t3.2`, `tuyaux0/1` (Android → PC), `coeur1.1`, `coeur2.1` |
 | Niveau 5 | (nouveau) + envies (`rm .cache/*.tmp`) |
-| Niveau 6 | `cave0`, `t3`, `coeur1.2` |
+| Niveau 6 | `cave0`, `t3`, `gardien`, `coeur1.2` |
 | Forge | `scripts0-2`, `atelier0`, `createur0-2` |
 | Citadelle | CTF Android, D « sécurité/crypto/bugs », CTF web |
 | Port | `tour0`, `reseau1`, `tour2`, CTF web |
@@ -817,8 +844,8 @@ dans la progression ; **P3** = confort, cohérence, expert. Effort : **S** = moi
 | G-28 | **Chapitre « atelier » surchargé** sur PC (scripts + alias + 3 leçons git = 6 leçons) | `CHAPITRES` | Séparer Forge et Bibliothèque du Temps | P3 | S |
 | G-29 | **Windows** : parcours PowerShell partiel (pas de `sudo`, `rev`, `free`, `sleep &`) | `C()`, `win=False` | Afficher clairement « parcours Windows » et recommander WSL / Git Bash pour le programme complet | P3 | S |
 | G-30 | **Pas de révision espacée** ni de mesure « notion acquise » | `entrainement.py` (seulement « vus ») | Carnet de notions (acquise au cran C/D, date) qui pilote la salle d'entraînement et les défis | P3 | M |
-| G-32 | **La double explication enfant + adulte n'est pas systématique** : dans les leçons, la version technique (« Pour les grands : … ») n'apparaît qu'à partir du palier 1 et seulement pour les options nouvelles ; au palier 0 l'adulte ne voit que l'image ; les `bravo` donnent juste « les grands disent… » | `explique.nouvelles/phrases`, `app.render`, `lec.*.bravo` | Principe 8 (§ 2.0) : chaque étape a `enfant`, `adulte`, `vrai` toujours affichés (côte à côte sur PC, repliable sur téléphone) ; test : aucune étape sans les 3 clés dans les 14 langues | P1 | L |
-| G-33 | **Le Terminaworld s'arrête à `~/terrain_terminagotchi`** : la Racine, le village, `/etc`, `/usr/bin`, `/tmp`, `/var/log`, `/dev`, `/proc` ne sont pas des lieux du jeu (seules 3 quêtes « terres sauvages » lisent `/`, `/etc/os-release`, `/etc/hostname`) ; `pwd` n'est jamais lu depuis la Racine ; sur Android l'arbre réel (`/system`, `/data`, pas de `/home`) ne correspond pas | `quetes.py` (q19, q28, q39), `Maison.kt`, `Carte.kt`, `Shell.kt` | § 2.0 bis : toute l'arborescence comme carte, visites en lecture seule aux niveaux 1, 3, 4, 5, 6 et dans les mondes ; vue simulée sur Android ; garde-fou « regarder, pas toucher » | P1 | L |
+| G-32 | **La double explication enfant + adulte n'est pas systématique** : dans les leçons, la version technique (« Pour les grands : … ») n'apparaît qu'à partir du palier 1 et seulement pour les options nouvelles ; au palier 0 l'adulte ne voit que l'image ; les `bravo` donnent juste « les grands disent… » | `explique.nouvelles/phrases`, `app.render`, `lec.*.bravo` | Principe 8 (§ 2.0) : chaque étape a `enfant`, `adulte`, `vrai` toujours affichés (côte à côte sur PC, repliable sur téléphone) ; test : aucune étape sans les 3 clés dans les 14 langues | P1 | L — 🟡 **en bonne voie** : chaque étape de chaque leçon (PC et Android, 14 langues) a sa version des grands affichée sous la commande (« 🧑 … »), `explique` montre toujours la phrase technique ; test : `test_histoire.py` § 11, `tests/jvm/Racine.kt`. Reste : la clé `vrai` séparée et l'affichage côte à côte / repliable |
+| G-33 | **Le Terminaworld s'arrête à `~/terrain_terminagotchi`** : la Racine, le village, `/etc`, `/usr/bin`, `/tmp`, `/var/log`, `/dev`, `/proc` ne sont pas des lieux du jeu (seules 3 quêtes « terres sauvages » lisent `/`, `/etc/os-release`, `/etc/hostname`) ; `pwd` n'est jamais lu depuis la Racine ; sur Android l'arbre réel (`/system`, `/data`, pas de `/home`) ne correspond pas | `quetes.py` (q19, q28, q39), `Maison.kt`, `Carte.kt`, `Shell.kt` | § 2.0 bis : toute l'arborescence comme carte, visites en lecture seule aux niveaux 1, 3, 4, 5, 6 et dans les mondes ; vue simulée sur Android ; garde-fou « regarder, pas toucher » | P1 | L — 🟡 **en bonne voie** : Racine, village, camp, zone, `/etc`, `/bin`, `/var/log` sur la carte et dans 2 leçons (ch. 1 `racine`, cave `gardien`), vue simulée sur Android (`Racine.kt`), garde-fous ; voir l'état au § 2.0 bis |
 | G-31 | **Les outils de test donnent de l'XP en douce** (`niveau(n)` dans `test_retours_enfants.py`, `Tutoriel.kt` aussi par endroits) : les murs d'XP et les incohérences d'accueil passent inaperçus 🟡 **en partie** (`3a6f9fd`) : `pc/outils/sim_suiveur.py` et `tests/jvm/Suiveur.kt` font les 10 chapitres sans triche (hors ligne, sans identité git) ; les anciens tests gardent `niveau(n)`. | `pc/outils`, `tests/jvm` | Personas sans triche (§ 5) dans la CI | P3 | M |
 
 ### 3.2 Les 10 écarts les plus importants (dans l'ordre)
@@ -1066,7 +1093,7 @@ exercice et CTF :
 |---|---|---|
 | Ctrl+C (niveau 0, Contrôle, Atelier) | bouton ⏹ + Ctrl du clavier matériel : `process.destroy()` (puis `destroyForcibly()`), message « STOP » | S |
 | `history`, `!!` (niveau 0) | commandes intégrées sur `jeu.historique` | S |
-| Vue simulée du Terminaworld en lecture seule : `/`, `/home/<nom>`, `/etc`, `/usr/bin`, `/tmp`, `/var/log`, `/dev/null`, `/proc` (§ 2.0 bis) | couche de chemins virtuels pour `ls`, `cd`, `cat`, `pwd`, `find`, `tree` | L |
+| Vue simulée du Terminaworld en lecture seule : `/`, `/home/<nom>`, `/etc`, `/usr/bin`, `/tmp`, `/var/log`, `/dev/null`, `/proc` (§ 2.0 bis) | couche de chemins virtuels pour `ls`, `cd`, `cat`, `pwd`, `find`, `tree` — ✅ **fait** (`Racine.kt` + `Shell.kt` : traduction des chemins, sortie réécrite, écritures refusées et expliquées ; test `tests/jvm/Racine.kt`) | L |
 | `tree` (niveau 1) | commande intégrée (même dessin que `Carte.kt`, en texte) | S |
 | `less`, `more` (niveau 3) | lecteur page par page intégré (espace, `q`, `/mot`) dans la zone de sortie | M |
 | `man` (niveau 6) | intégrée : fiche `explique` + `cmd --help` de toybox | S |
