@@ -28,8 +28,10 @@ Terminaworld, tu apprends vraiment à te servir du terminal.
 ## Ce que le jeu offre
 
 ### 🥚 Un œuf, puis une créature à élever
-- **9 œufs**, un par type (Feu, Eau, Glace, Plante, Roche, Ciel, Ombre, Machine, Poison). Le tien est tiré au sort et
-  donne son type à ta créature.
+- **9 œufs**, un par type (Feu, Eau, Glace, Plante, Roche, Ciel, Ombre, Machine, Poison).
+- **Ta créature est unique et tirée au hasard** : personne ne choisit son œuf, pour personne. Deux enfants ne
+  commencent jamais tout à fait avec la même compagne, et chacun découvre la sienne au moment où elle éclot.
+  Elle prend le type de son œuf.
 - Elle grandit en 5 stades (bébé → enfant → ado → adulte → ancien), avec de vrais changements de forme.
 - Elle a **6 envies** : faim, jeu, curiosité, exploration, sommeil, propreté. Chaque envie se satisfait avec un type de
   commande différent.
@@ -41,8 +43,23 @@ Terminaworld, tu apprends vraiment à te servir du terminal.
   Constructs, Aberrations) de 15 espèces chacune.
 - Des **variantes selon l'habitat** (volcan, forêt, glacier, ruines, corail…) : plus de 680 au total, chacune dessinée
   dans ses 5 stades.
-- Le **dressage** remplace la capture : réussis une petite suite de vraies commandes avant la fin du temps et la
-  créature rejoint ta troupe. La **rareté** dépend de chaque individu, montrée par une aura.
+- La **rareté** dépend de chaque individu (ses forces et sa variante), et se voit à l'aura autour de sa silhouette.
+- Les créatures sauvages apparaissent au hasard pendant que tu joues : chaque joueur croise les siennes.
+
+### 🤝 Le dressage : gagner la confiance d'une créature
+Ici, on n'attrape pas les créatures : on **crée un lien** avec elles.
+
+Quand une créature sauvage apparaît, ta compagne et elle se retrouvent face à face, avec leurs forces affichées en
+couleur. Pour l'approcher, il faut d'abord **enquêter avec le terminal** : l'examiner, chercher d'où elle vient,
+fouiller les lieux où elle se cache… Puis vient l'épreuve : une petite suite de **vraies commandes** à réussir avant
+la fin du temps. Chercher dans le lexique est permis : on apprend en jouant, pas en récitant.
+
+Si tu réussis, la créature te fait confiance et **rejoint ta troupe** de son plein gré. Ce que ça apporte au jeu :
+- chaque nouvelle créature est la **preuve d'une commande maîtrisée**, pas une affaire de chance ;
+- plus les créatures sont rares, plus l'épreuve demande de savoir-faire : la collection grandit avec le niveau ;
+- les créatures dressées peuvent devenir ton **guide**, vivent dans le **biome** de ton monde et t'accompagnent dans
+  les épreuves ;
+- on apprend aussi le respect du vivant : on gagne une amie, on ne l'enferme pas.
 
 ![Quelques créatures et leurs évolutions](docs/img/creatures.png)
 
@@ -70,10 +87,28 @@ selon le type, régions gardées, épreuves à type, fatigue.
 - **14 langues** : français, anglais, espagnol, allemand, italien, portugais, chinois, russe, japonais, hindi, arabe,
   bengali, indonésien, ourdou.
 - **Hors ligne** : le jeu se joue sans internet.
-- Le **site du recensement** (optionnel) : ton profil, la galerie des créatures, les records, une chasse au trésor
-  façon CTF, et la même créature synchronisée entre PC et téléphone.
 - **Sûr pour les enfants** : sur téléphone, le jeu ne peut rien abîmer en dehors de son camp de base, et la
   sauvegarde est protégée et copiée.
+
+### 🌐 Le site du recensement
+Adresse actuelle : **https://terminagotchi.grecdel.workers.dev** (bientôt **terminagotchi.com**).
+
+Le jeu se suffit à lui-même et marche **sans internet**. Le site est un **bonus facultatif**, pour ceux qui veulent :
+- **un profil** pour ta créature, ses badges, ses titres et sa troupe, créé en une commande depuis le jeu (`tg compte`),
+  sans adresse mail ;
+- **la même créature sur le PC et le téléphone**, synchronisée (`tg sync`), avec un code de secours si tu perds un
+  appareil ;
+- **le bestiaire complet** : les 150 espèces, leurs variantes et leurs évolutions ;
+- **la galerie des dressages** (seulement si tu l'acceptes) et les **records de la salle d'entraînement**, avec la
+  « Star de la semaine » ;
+- **une chasse au trésor façon CTF** : des drapeaux cachés dans le site lui-même, à trouver avec de vraies commandes
+  (`curl`, `grep`…), puis à valider dans le jeu ;
+- **une navigation au terminal** : le site s'explore à la souris, ou au clavier avec `ls`, `cd`, `cat`, `tree`…
+  comme dans le jeu.
+
+Les résultats envoyés au site sont **vérifiés par le serveur** : pas de records truqués.
+
+*Certaines de ces nouveautés (salle d'entraînement, navigation au terminal) arrivent avec la prochaine mise à jour du site.*
 
 ---
 
