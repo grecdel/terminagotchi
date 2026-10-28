@@ -139,6 +139,23 @@ Captures envoyées par le propriétaire (projet Coucou), gardées dans `docs/ins
   ne sont pas repris : le propriétaire a écarté les accessoires au profit des badges et des auras.
 
 
+## L'espace de travail de Terminagotchi (souhait du propriétaire, 28 octobre)
+
+Le propriétaire adore l'interface des captures Coucou (`docs/inspirations/coucou_1.png` à `_4.png`) et veut
+travailler l'**espace de travail** du jeu dans cet esprit : fond très sombre, panneaux arrondis aux bords fins,
+typographie nette, accents de couleur lumineux, tout synchronisé. À **maquetter en priorité vendredi** (avant toute
+implémentation), PC d'abord puis adaptation téléphone. Première proposition de disposition :
+- **Barre du haut** : l'île (créature miniature, état, équipe en pastilles, réglages, son).
+- **Colonne de gauche** : *Explorateur* = l'arborescence du terrain / du Terminaworld (le lieu courant surligné) ;
+  *Envies* de la créature avec leurs jauges ; *Équipe*.
+- **Centre** : le **terminal** (l'outil principal), avec la **vue déployée** de la dernière commande juste au-dessus
+  (blocs qui s'allument, tuyaux animés).
+- **À droite en haut** : la **créature en direct** dans son état (grande, animée).
+- **À droite en bas** : un panneau qui change selon le contexte — la **carte** du Terminaworld (où l'on est), la
+  **machine à états** (« le cerveau »), le **graphe des tuyaux** d'une commande, ou la leçon en cours.
+- Thème « terminal rétro × pixel art 16-bit » conservé pour la créature et les illustrations ; les panneaux prennent
+  le style de Coucou. Mode grand écran pour la classe.
+
 ## Phase 4 — Dimanche et début de semaine : les fondations du programme
 
 1. **Charte de rigueur** (§ 7.1) : `donnees/programme.json` (fiches notions : enfant, grands, vrai terminal,
