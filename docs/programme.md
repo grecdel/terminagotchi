@@ -1160,6 +1160,15 @@ exercice et CTF :
 > côté ludique, fun et rigoureux, et devenir une référence. »
 > Cette partie complète les mondes du § 2.9 à 2.18 ; elle ne remplace rien.
 
+### 7.0 La ligne directrice (décision du propriétaire, 28 octobre 2026)
+
+**Le terminal est la porte d'entrée et l'outil principal de tout le jeu.** La tech et l'informatique sont au cœur de
+l'expérience : chaque module, quel que soit son sujet (réseau, radio, matériel, IA, cryptographie, maths…), se
+**pratique d'abord au terminal** — lancer des programmes, fabriquer et démarrer des machines virtuelles, interroger
+le matériel, monter un petit serveur, compiler, mesurer. Les écrans, animations et mini-jeux **illustrent** ce que
+font les commandes ; ils ne les remplacent jamais. Une notion qui ne peut pas se toucher au terminal est rattachée à
+une commande qui la montre (même en lecture), ou à une simulation pilotée par des commandes.
+
 ### 7.1 La charte de rigueur (s'applique à TOUS les modules, tronc commun compris)
 
 Une image d'enfant est un **raccourci**, jamais une erreur. Chaque notion du jeu est décrite par une **fiche
