@@ -1,122 +1,149 @@
 # Terminagotchi
 
-**Un tamagotchi qui se nourrit des commandes que tu tapes, et qui t'apprend le terminal.**
-Pour les enfants à partir de 7 ans… et pour tous les grands qui n'ont jamais osé ouvrir un terminal.
+**Une créature à élever, un monde à réveiller… et le terminal pour seul outil.**
 
-![Le Terminaworld](docs/img/terminaworld.jpg)
+Terminagotchi est un jeu où ta créature se nourrit des **vraies commandes** que tu tapes. En prenant soin d'elle,
+tu apprends le terminal, l'outil des informaticiens, des administrateurs, des développeurs et des hackers éthiques,
+du tout premier `ls` jusqu'aux réseaux, à la cybersécurité, à la cryptographie et à l'IA.
 
-> 🚧 **Le jeu est en plein développement.** Les versions « essai » (voir plus bas) contiennent toutes les nouveautés,
-> elles peuvent encore avoir des défauts. Les retours sont les bienvenus dans les *Issues*.
+![Le Terminaworld se réveille](docs/img/reveil_monde.gif)
+
+> 🚧 **En plein développement.** Les versions « essai » contiennent toutes les nouveautés et peuvent encore avoir
+> des défauts. Tes retours sont les bienvenus dans les *Issues*.
+
+---
+
+## Pour qui ?
+
+| | |
+|---|---|
+| 🧒 **Les enfants, dès 7 ans** | Une créature à nourrir, un monde magique à explorer, des créatures à rencontrer. On joue… et sans s'en rendre compte, on tape de vraies commandes. |
+| 🧑‍💻 **Les ados et les adultes qui débutent** | Le terminal fait peur ? Ici, chaque commande est expliquée en trois niveaux : l'image simple, l'explication exacte et ce que fait un vrai terminal. Un test de placement saute ce que tu sais déjà. |
+| 🛠 **Les curieux et les passionnés** | Réseaux et protocoles, ondes radio et LoRa, matériel et machines virtuelles, cybersécurité en « boîtes » simulées, cryptographie, blockchain expliquée de l'intérieur, IA, open source : on va loin, et toujours en pratique. |
+| 🏫 **Les écoles et les clubs** | Un parcours structuré, rigoureux et vérifié, qui marche hors ligne, sans compte et sans données personnelles. Un mode classe et des fiches de séance sont prévus. |
 
 ---
 
 ## L'histoire : l'éveil du Terminaworld
 
-Le **Terminaworld** est un monde magique qui vit à l'intérieur de ton ordinateur. Au centre pousse un arbre immense,
+Le **Terminaworld** est un monde qui vit à l'intérieur de ton ordinateur. Au centre pousse un arbre immense,
 **la Racine** (`/`), d'où partent tous les chemins. Mais le monde s'est endormi : tout est gris, figé.
 
-Au camp de base, au pied de l'arbre, un vieux terminal clignote encore… et un œuf attend dans son nid.
-Tape tes premières commandes : le monde se réveille, l'œuf éclot, et ta créature devient ton guide.
+Au camp de base, au pied de l'arbre, un vieil ordinateur est encore branché aux racines… et un œuf attend dans
+son nid. Tape ta première commande : la lumière remonte dans l'arbre, le monde se réveille, et l'œuf commence à
+bouger.
 
-![Le camp de base](docs/img/camp.jpg)
+![Le camp de base se réveille](docs/img/reveil_camp.gif)
 
-Chaque lieu du jeu est un **vrai dossier** de ton ordinateur, chaque objet un **vrai fichier**. Quand tu explores le
-Terminaworld, tu apprends vraiment à te servir du terminal.
+Chaque lieu du jeu est un **vrai dossier** de ton ordinateur, chaque objet un **vrai fichier**. Explorer le
+Terminaworld, c'est apprendre pour de vrai à se servir de son ordinateur.
 
 ---
 
-## Ce que le jeu offre
+## Ta créature
 
-### 🥚 Un œuf, puis une créature à élever
-- **9 œufs**, un par type (Feu, Eau, Glace, Plante, Roche, Ciel, Ombre, Machine, Poison).
-- **Ta créature est unique et tirée au hasard** : personne ne choisit son œuf, pour personne. Deux enfants ne
-  commencent jamais tout à fait avec la même compagne, et chacun découvre la sienne au moment où elle éclot.
-  Elle prend le type de son œuf.
-- Elle grandit en 5 stades (bébé → enfant → ado → adulte → ancien), avec de vrais changements de forme.
-- Elle a **6 envies** : faim, jeu, curiosité, exploration, sommeil, propreté. Chaque envie se satisfait avec un type de
-  commande différent.
+**Ton œuf est tiré au hasard**, pour tout le monde : personne ne le choisit, et chacun découvre sa créature quand
+elle éclot. Il existe 9 œufs, un par type (Feu, Eau, Glace, Plante, Roche, Ciel, Ombre, Machine, Poison). Chaque
+commande que tu tapes le fait bouger, le fêle… jusqu'à l'éclosion.
 
-![Les 9 œufs](docs/img/oeufs.png)
+![Les 9 œufs](docs/img/oeufs.gif)
 
-### 🐾 Un bestiaire de 150 créatures
-- 10 familles fantastiques (Démons, Élémentaires, Morts-vivants, Bêtes, Sylvestres, Arthropodes, Abyssaux, Célestes,
-  Constructs, Aberrations) de 15 espèces chacune.
-- Des **variantes selon l'habitat** (volcan, forêt, glacier, ruines, corail…) : plus de 680 au total, chacune dessinée
-  dans ses 5 stades.
-- La **rareté** dépend de chaque individu (ses forces et sa variante), et se voit à l'aura autour de sa silhouette.
-- Les créatures sauvages apparaissent au hasard pendant que tu joues : chaque joueur croise les siennes.
+Ta créature grandit en **5 stades** (bébé, enfant, ado, adulte, ancien), avec de vrais changements de forme. Elle
+a **6 envies** (faim, jeu, curiosité, exploration, sommeil, propreté), et chaque envie se satisfait avec un type de
+commande différent. Elle te guide, t'explique, te félicite, et apprend avec toi.
+
+![Des créatures qui évoluent](docs/img/evolutions.gif)
+
+---
+
+## 150 créatures à rencontrer, et un lien à créer
+
+- **10 familles** : Démons, Élémentaires, Morts-vivants, Bêtes, Sylvestres, Arthropodes, Abyssaux, Célestes,
+  Constructs, Aberrations, de 15 espèces chacune.
+- **Plus de 680 variantes** selon l'habitat (volcan, forêt, glacier, ruines, corail…), chacune dessinée dans ses
+  5 stades. Les créatures sauvages apparaissent au hasard pendant que tu joues.
+- La **rareté** dépend de chaque individu, et se voit à l'aura autour de sa silhouette.
 
 ### 🤝 Le dressage : gagner la confiance d'une créature
-Ici, on n'attrape pas les créatures : on **crée un lien** avec elles.
 
-Quand une créature sauvage apparaît, ta compagne et elle se retrouvent face à face, avec leurs forces affichées en
-couleur. Pour l'approcher, il faut d'abord **enquêter avec le terminal** : l'examiner, chercher d'où elle vient,
-fouiller les lieux où elle se cache… Puis vient l'épreuve : une petite suite de **vraies commandes** à réussir avant
-la fin du temps. Chercher dans le lexique est permis : on apprend en jouant, pas en récitant.
+Ici, on n'attrape pas les créatures : on **crée un lien** avec elles. Quand une créature sauvage apparaît, ta
+compagne et elle se retrouvent face à face. Pour l'approcher, il faut **enquêter avec le terminal** : l'examiner,
+chercher d'où elle vient, fouiller les lieux où elle se cache. Vient ensuite l'épreuve : une petite suite de
+**vraies commandes** à réussir à temps. Chercher dans le lexique est permis : on apprend en jouant.
 
-Si tu réussis, la créature te fait confiance et **rejoint ta troupe** de son plein gré. Ce que ça apporte au jeu :
-- chaque nouvelle créature est la **preuve d'une commande maîtrisée**, pas une affaire de chance ;
-- plus les créatures sont rares, plus l'épreuve demande de savoir-faire : la collection grandit avec le niveau ;
-- les créatures dressées peuvent devenir ton **guide**, vivent dans le **biome** de ton monde et t'accompagnent dans
-  les épreuves ;
-- on apprend aussi le respect du vivant : on gagne une amie, on ne l'enferme pas.
+Si tu réussis, elle te fait confiance et **rejoint ta troupe**. Chaque créature est la preuve d'une commande
+maîtrisée, les plus rares demandent le plus de savoir-faire, et elles peuvent devenir ton guide.
 
-![Quelques créatures et leurs évolutions](docs/img/creatures.png)
+---
 
-### 📚 Un vrai cours de terminal, du tout débutant à l'expert
-- Des leçons pas à pas racontées par ta créature : se repérer, créer et ranger, lire et chercher, brancher les
-  commandes entre elles, les jokers, les droits…
-- Chaque explication existe en **trois niveaux** : la version enfant, une ligne « Pour les grands », et une ligne
-  « 💻 Dans un vrai terminal… ».
-- Le jeu vérifie que la commande **a vraiment marché** (pas seulement ce qui a été tapé), accepte les autres bonnes
-  façons de faire, et donne des indices clairs (faute de frappe, majuscule, mauvais endroit).
-- Pour ceux qui savent déjà : un **test de placement** et un mode **« défi sans aide »**.
-- `carte` dessine ton vrai terrain en pixel art à côté de la sortie de `tree`, et se dévoile au fil des découvertes.
-- Une **salle d'entraînement** avec des exercices chronométrés et des badges qui montent en grade comme chez les
-  militaires : Bit → Octet → Kilo → Méga → Giga → Téra → Péta → Exa, avec galons et étoiles.
+## Ce que tu vas apprendre
 
-Après le tronc commun viennent des **mondes avancés**, ouverts selon ce qui t'intéresse : la Forge (programmation), la
-Citadelle (cybersécurité défensive), le Port (réseaux), la Bibliothèque du Temps (git), la Salle des Données, le Poste
-de Contrôle (administration), l'Atelier (robots) et l'Observatoire de l'IA. *(en cours de construction)*
+Tout passe par **le terminal**, l'outil principal du jeu : lancer des programmes, explorer, chercher, protéger,
+construire. Les animations montrent ce que font les commandes, elles ne les remplacent jamais.
 
-### 🧭 Une équipe et des guides
-Ta créature de départ te guide, puis celle que tu mets en tête d'équipe. Changer de guide a un intérêt : talents
-selon le type, régions gardées, épreuves à type, fatigue.
+**Le tronc commun** (✅ jouable) : se repérer, créer et ranger, lire et chercher, brancher les commandes entre
+elles, les jokers, les droits. Chaque étape est expliquée pour les enfants, pour les grands et « dans un vrai
+terminal », et le jeu vérifie que la commande **a vraiment marché**.
 
-### 🌍 Et aussi
-- **14 langues** : français, anglais, espagnol, allemand, italien, portugais, chinois, russe, japonais, hindi, arabe,
-  bengali, indonésien, ourdou.
-- **Hors ligne** : le jeu se joue sans internet.
-- **Sûr pour les enfants** : sur téléphone, le jeu ne peut rien abîmer en dehors de son camp de base, et la
-  sauvegarde est protégée et copiée.
+**Puis les mondes avancés**, ouverts selon ce qui t'intéresse (🚧 en construction) :
 
-### 🌐 Le site du recensement
-Adresse actuelle : **https://terminagotchi.grecdel.workers.dev** (bientôt **terminagotchi.com**).
+| Monde | Ce qu'on y apprend |
+|---|---|
+| ⚓ Le Port | les réseaux : adresses, ports, TCP et UDP, routage, box, HTTPS |
+| 📡 La Tour des Ondes | les ondes radio, le Wi-Fi et le Bluetooth, LoRa et les réseaux maillés (Meshtastic) |
+| 🛡 La Citadelle | la cybersécurité défensive : attaques simulées, et des « boîtes » à percer puis à réparer |
+| 🗝 La Crypte des Codes | la cryptographie (des codes anciens au chiffrement moderne) et la blockchain construite à la main |
+| ⚙ La Salle des Machines | le matériel, le démarrage, le système, les machines virtuelles, les serveurs et le cloud |
+| 🔨 La Forge | la programmation, les scripts, son premier jeu, son site web, le multimédia |
+| 🛠 La Guilde des Bâtisseurs Libres | l'open source, compiler, contribuer (à Terminagotchi lui-même !), l'impression 3D |
+| 🔭 L'Observatoire de l'IA | comment une IA apprend et se trompe, et comment piloter des assistants |
+| 📊 La Salle des Données | trier, compter, chercher, et les bases de données (SQL) |
+| 🎛 Le Poste de Contrôle | administrer un système Linux de A à Z |
+| ⏳ La Bibliothèque du Temps | git : remonter le temps de ses fichiers |
+| 🤖 L'Atelier | Raspberry Pi, robots, électronique embarquée |
+| 🔢 Les Ponts des Nombres | les maths dont tu as besoin, au moment où tu en as besoin |
 
-Le jeu se suffit à lui-même et marche **sans internet**. Le site est un **bonus facultatif**, pour ceux qui veulent :
-- **un profil** pour ta créature, ses badges, ses titres et sa troupe, créé en une commande depuis le jeu (`tg compte`),
-  sans adresse mail ;
-- **la même créature sur le PC et le téléphone**, synchronisée (`tg sync`), avec un code de secours si tu perds un
-  appareil ;
-- **le bestiaire complet** : les 150 espèces, leurs variantes et leurs évolutions ;
-- **la galerie des dressages** (seulement si tu l'acceptes) et les **records de la salle d'entraînement**, avec la
-  « Star de la semaine » ;
-- **une chasse au trésor façon CTF** : des drapeaux cachés dans le site lui-même, à trouver avec de vraies commandes
-  (`curl`, `grep`…), puis à valider dans le jeu ;
-- **une navigation au terminal** : le site s'explore à la souris, ou au clavier avec `ls`, `cd`, `cat`, `tree`…
-  comme dans le jeu.
+Les exploits dans chaque monde font rencontrer de nouvelles créatures et des variantes rares.
 
-Les résultats envoyés au site sont **vérifiés par le serveur** : pas de records truqués.
+---
 
-*Certaines de ces nouveautés (salle d'entraînement, navigation au terminal) arrivent avec la prochaine mise à jour du site.*
+## Et aussi
+
+- 🏋 **Une salle d'entraînement** avec des exercices chronométrés et des badges qui montent en grade : Bit, Octet,
+  Kilo, Méga, Giga, Téra, Péta, Exa, avec galons et étoiles.
+- 🗺 **La carte qui pousse** : ton vrai terrain dessiné en pixel art, qui se dévoile au fil de tes découvertes.
+- 🌍 **14 langues** : français, anglais, espagnol, allemand, italien, portugais, chinois, russe, japonais, hindi,
+  arabe, bengali, indonésien, ourdou.
+- 📴 **Hors ligne** : le jeu se joue sans internet.
+- 🔒 **Sans risque** : sur téléphone, le jeu ne peut rien abîmer en dehors de son terrain de jeu ; la sauvegarde
+  est protégée.
+- 🚫 **Aucun achat, aucune publicité.**
+
+### 🌐 Le site du recensement (facultatif)
+
+Adresse actuelle : **https://terminagotchi.grecdel.workers.dev** (bientôt **terminagotchi.com**). Pour ceux qui le
+veulent : un profil créé en une commande (sans adresse mail), la même créature sur PC et téléphone, le bestiaire
+complet, la galerie des dressages (si tu l'acceptes), les records et la « Star de la semaine », une chasse au
+trésor façon CTF, et une navigation au clavier comme dans le jeu. Les résultats sont vérifiés par le serveur.
+
+---
+
+## Bientôt
+
+- 🖥 **L'espace de travail** : terminal, carte, créature en direct et « cerveau » de la créature (son code qui
+  s'allume pendant qu'elle vit) dans une seule fenêtre.
+- 🔍 **La vue déployée** : chaque commande se décompose, chaque morceau s'allume à son tour, les tuyaux s'animent.
+- 🐾 **Ta créature sur ton bureau** et dans une petite île en haut de l'écran, avec son menu (PC et Android).
+- 🥚 **L'œuf physique** : un projet open source pour transférer ta créature dans un vrai œuf imprimé en 3D, avec
+  un petit écran.
 
 ---
 
 ## Installer
 
-Les fichiers se trouvent dans la page **[Releases](../../releases)** du dépôt :
+Les fichiers se trouvent dans la page **[Releases](../../releases)** :
 - les versions **`v0.1.x`** sont les versions stables ;
-- les **pré-versions `essai-N`** contiennent toutes les nouveautés (nouveau bestiaire, intro, œufs…).
+- les **pré-versions `essai-N`** contiennent toutes les nouveautés.
 
 ### 📱 Sur Android
 1. Ouvre la page **Releases** sur ton téléphone et télécharge le fichier `.apk`.
@@ -133,20 +160,18 @@ Il faut seulement **Python 3** (déjà installé sur Linux et macOS).
    python3 terminagotchi-essai.pyz
    ```
    (ou `terminagotchi.pyz` pour la version stable)
-3. La créature propose de s'installer dans ton terminal. Ensuite, la commande `tg` suffit :
-   `tg aide` montre tout ce qu'on peut faire, `tg carte` la carte, `tg entrainement` un exercice…
+3. La créature propose de s'installer dans ton terminal. Ensuite, `tg` suffit : `tg aide` montre tout ce qu'on peut
+   faire.
 
 Depuis le code source : `git clone` ce dépôt, puis `python3 pc` dans le dossier.
 
+**Bon à savoir** : au début, seuls l'œuf et quelques commandes sont visibles, le reste se débloque petit à petit.
+Pour tout ouvrir d'un coup : `debloquer tout` (téléphone) ou `tg debloquer tout` (PC). Les commandes copiées-collées
+ne rapportent rien : il faut les taper.
+
 ---
 
-## Pour les parents
+## Contribuer
 
-- Au début, seuls l'œuf et quelques commandes sont visibles ; le reste se débloque petit à petit.
-  Pour tout ouvrir d'un coup : `debloquer tout` (téléphone) ou `tg debloquer tout` (PC).
-- Les commandes copiées-collées ne rapportent rien : il faut les taper.
-- Aucun achat, aucune publicité.
-
-## Contributions
-
-Le code est public sur ce dépôt. Les idées, retours d'enfants et corrections de traduction sont les bienvenus dans les *Issues*.
+Le code est public. Idées, retours de joueurs de tous âges, corrections de traduction et relectures par des
+enseignants ou des spécialistes sont les bienvenus dans les *Issues*.
