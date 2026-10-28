@@ -15,6 +15,7 @@
 4. [Le parcours d'accueil proposé (de l'œuf aux fonctions)](#4-le-parcours-daccueil-proposé)
 5. [Plan de simulation (personas, mesures, outillage)](#5-plan-de-simulation)
 6. [Annexes : format de données commun, vérificateur statique, chantier Shell.kt](#6-annexes)
+7. [Vers la référence : rigueur, protocoles réseau, Salle des Machines, comprendre l'IA, boîtes de la Citadelle, récompenses, en classe](#7-vers-la-référence--rigueur-modules-complémentaires-et-salles-de-classe)
 
 ---
 
@@ -533,6 +534,9 @@ flowchart TD
     X --> CTRL[🎛 Le Poste de Contrôle<br/>administration système]
     X --> ATEL[🤖 L'Atelier<br/>Raspberry Pi, robots]
     X --> IA[🔭 L'Observatoire de l'IA<br/>outils et agents]
+    X --> MACH[⚙ La Salle des Machines<br/>matériel et infrastructure]
+    MACH -. pont .-> CTRL
+    MACH -. pont .-> PORT
     FORGE -. pont .-> CTRL
     CIT -. pont .-> CTRL
     CIT -. pont .-> DATA
@@ -1138,3 +1142,197 @@ exercice et CTF :
   `/home/claude/depot-android/tests/jvm/Tutoriel.kt`, `RetoursEnfants.kt`, `tests/scenario.sh`.
 - Simulation écrite pour cette analyse :
   `/tmp/claude-0/-home-claude/cfd82251-4fa5-55cd-8b51-4f0548d9aa8a/scratchpad/sim_suiveur.py`.
+
+
+---
+
+## 7. Vers la référence : rigueur, modules complémentaires et salles de classe
+
+> Ajouté le 28 octobre 2026 à la demande du propriétaire : « chaque module doit être le plus juste, le plus complet,
+> le plus simple et le plus poussé possible ; Terminagotchi doit pouvoir entrer dans les salles de classe pour son
+> côté ludique, fun et rigoureux, et devenir une référence. »
+> Cette partie complète les mondes du § 2.9 à 2.18 ; elle ne remplace rien.
+
+### 7.1 La charte de rigueur (s'applique à TOUS les modules, tronc commun compris)
+
+Une image d'enfant est un **raccourci**, jamais une erreur. Chaque notion du jeu est décrite par une **fiche
+notion** dans `donnees/programme.json` (§ 6.1), avec obligatoirement :
+
+| Champ | Rôle | Exemple (DNS) |
+|---|---|---|
+| `enfant` | la phrase imagée (7-9 ans) | « L'annuaire du port : tu donnes un nom, il te donne le numéro du quai. » |
+| `grands` | la phrase exacte (« Pour les grands ») | « Le DNS traduit un nom de domaine en adresse IP (enregistrements A / AAAA). » |
+| `vrai_terminal` | la commande réelle et ce qu'elle affiche vraiment | `host example.com` → `example.com has address …` |
+| `limite_image` | **où l'image s'arrête** (dit à l'enfant au bon moment) | « Un vrai annuaire ne change pas toutes les heures ; le DNS, si (durée de vie TTL). » |
+| `idees_fausses` | les erreurs fréquentes à démonter | « Internet et le Web, ce n'est pas la même chose. » |
+| `sources` | la référence qui fait foi | page `man`, RFC, documentation officielle, ANSSI, CNIL |
+| `relu_par` | qui a validé la fiche (rôle, date) | « enseignant NSI, 2026-11 » |
+
+Règles :
+1. **Aucune fiche sans source** ; le vérificateur statique (§ 6.2) refuse une étape dont la notion n'a pas de
+   `sources` ni de `grands`.
+2. **Les sorties montrées sont réelles** : chaque `vrai_terminal` est rejoué en CI sur une vraie machine Linux
+   (et sur l'émulateur Android quand c'est applicable) ; si la sortie change (nouvelle version d'un outil), le test
+   casse et la fiche est revue.
+3. **Les unités et le vocabulaire sont justes** dès le début, même simplifiés : on dit « octet » (pas « byte » en
+   français), on distingue Ko (1000) et Kio (1024) au niveau « grands », on dit « adresse IP » et pas « IP » tout
+   court, « logiciel malveillant » plutôt que « virus » quand ce n'en est pas un.
+4. **Relecture humaine** : un comité de relecture (enseignants de technologie, de SNT et de NSI, un administrateur
+   système, un spécialiste réseau, un spécialiste sécurité, un spécialiste IA, un orthophoniste ou enseignant de
+   primaire pour la lisibilité) valide chaque monde avant sa sortie ; leurs noms (avec accord) sont crédités.
+5. **Les simplifications sont progressives** : un même mot revient trois fois, de plus en plus précis (enfant →
+   grands → vrai terminal), et les paliers avancés « corrigent » explicitement les raccourcis des paliers simples.
+
+### 7.2 ⚓ Le Port — compléments : les protocoles (paliers P6 à P11)
+
+Les paliers P1 à P5 (§ 2.12) restent. On ajoute le **réseau simulé du Terminaworld** : chaque **biome est une
+machine** avec son adresse (`feu.terminaworld`, 10.0.0.1 ; `eau.terminaworld`, 10.0.0.2…), la Racine est le
+routeur, le camp de base est la box. Les paquets sont des **petits messagers en pixel art** qui voyagent sur la
+carte : on les voit partir, être routés, se perdre, revenir. Tout est **local** (fichiers et processus du jeu,
+`localhost`), jamais une vraie cible extérieure ; quand une commande réelle est utile (`ping`, `tracepath`), elle
+vise d'abord `localhost` puis, avec l'accord d'un adulte, un domaine public prévu pour ça (`example.com`).
+
+| Palier | Notion (juste et complète) | Image enfant | Commandes réelles | Mini-jeu / animation | Limite de l'image |
+|---|---|---|---|---|---|
+| P6 Les enveloppes dans les enveloppes | le **modèle en couches** (application, transport, réseau, liaison ; correspondance avec le modèle OSI au niveau grands) | une lettre glissée dans une enveloppe, elle-même dans un colis, lui-même dans un camion | `curl -v localhost:8000` (on lit les couches visibles) | emballer/déballer un message couche par couche, dans le bon ordre | les couches ne sont pas des objets physiques |
+| P7 Les quais et les portes | **adresse IP** + **port** ; IPv4 et IPv6 ; adresses privées et publiques ; `localhost` | le numéro du quai + le numéro de la porte du hangar | `ip a`, `ss -tuln` (portes ouvertes), `python3 -m http.server 8000` puis `ss -tln` | ouvrir/fermer des portes du hangar, voir qui écoute | une machine peut avoir plusieurs adresses |
+| P8 Recommandé ou carte postale | **TCP** (connexion, accusés de réception, ordre, renvoi) vs **UDP** (rapide, sans garantie) ; quand utiliser l'un ou l'autre (web vs jeu en ligne, vidéo, DNS) | la lettre recommandée avec accusé de réception vs la carte postale | `ss -t` / `ss -u`, `curl` (TCP), `host` (UDP) | course : un messager TCP qui revient chercher les paquets perdus vs un messager UDP qui file | « perdu » ne veut pas dire « volé » |
+| P9 Les phares et les relais | **routage** : passerelle, table de routage, sauts, TTL ; pourquoi un paquet passe par plusieurs machines | des phares qui se passent la lumière de proche en proche | `ip route`, `tracepath localhost` puis `tracepath example.com` (adulte), `ping -c 3` et lecture du `ttl=` | guider un messager de phare en phare ; un phare éteint = un détour | le chemin peut changer à chaque paquet |
+| P10 Le gardien de l'immeuble | **box**, **DHCP** (adresse distribuée), **NAT** (une adresse publique pour toute la maison), Wi-Fi / câble / 4G-5G / fibre (supports physiques, notions) | le gardien qui donne un numéro d'appartement aux nouveaux et trie le courrier de tout l'immeuble | `ip route` (passerelle), `ip neigh`, `nmcli` (lecture, PC) | ajouter des appareils dans la maison, voir le gardien leur donner un numéro | le Wi-Fi n'est pas « Internet », c'est le dernier mètre |
+| P11 L'enveloppe scellée | **HTTPS / TLS** : chiffrement, **certificat**, autorité de certification, cadenas du navigateur ; ce que le chiffrement protège et ne protège pas | une enveloppe scellée à la cire avec un sceau vérifié par le notaire | `curl -vI https://example.com` (lire le certificat), `openssl s_client` (expert, lecture) | reconnaître un vrai sceau d'un faux | le cadenas prouve à QUI on parle, pas que le site est honnête |
+
+Bonus du Port (palier libre) : **le courrier électronique** (SMTP / IMAP, notions), **le Web n'est pas Internet**,
+**la latence et le débit** (mesurés avec `ping` et le temps de `curl`), **les câbles sous-marins** (carte animée).
+
+Prérequis ajoutés : P6 après P3 ; P7-P8 après P6 ; P9 après P7 ; P10 et P11 après P9. Pont vers la Citadelle :
+P7 (ports ouverts) est requis pour la boîte « Le hangar ouvert » (§ 7.5).
+
+### 7.3 ⚙ La Salle des Machines — nouveau monde : matériel et infrastructure
+
+**Prérequis** : niveaux 0-3 (lire et chercher). Ponts : Poste de Contrôle K2 (ressources) pour M4, Port P7 pour M6.
+**Image** : la salle des machines d'un grand bateau-ordinateur, sous le camp de base. Chaque pièce de l'ordinateur
+y est un personnage ou un atelier. **Vrai monde** : « Tout ce que tu tapes finit en électricité qui passe dans ces
+pièces. Les techniciens et les architectes d'infrastructure connaissent cette salle par cœur. »
+Visuel commun : un **ordinateur ouvert en pixel art** dont les pièces s'allument quand une commande les interroge,
+et un mini-jeu **« Monte ta machine »** (glisser les pièces, vérifier qu'elles sont compatibles, démarrer).
+
+| Palier | Notion (juste et complète) | Image enfant | Commandes réelles | Mini-jeu | Android |
+|---|---|---|---|---|---|
+| M1 Les organes de la machine | **processeur** (cœurs, fréquence), **mémoire vive** (rapide, effacée à l'extinction), **stockage** (disque, SSD, persistant), **carte mère**, **alimentation**, **carte graphique** ; entrées / sorties | le cuisinier (processeur), le plan de travail (mémoire), le garde-manger (stockage), la ville qui relie tout (carte mère) | `lscpu`, `nproc`, `free -h`, `lsblk`, `lspci`, `lsusb`, `cat /proc/cpuinfo \| head` | « Monte ta machine » niveau 1 | `cat /proc/cpuinfo`, `getprop ro.product.model` ✅ |
+| M2 Des 0 et des 1 | **bit**, **octet**, binaire, hexadécimal ; texte = des nombres (ASCII, UTF-8) ; unités (Ko / Mo / Go et Kio / Mio / Gio) — relié aux grades Bit / Octet / Kilo… de la salle d'entraînement | des interrupteurs allumés / éteints | `echo -n A \| xxd`, `printf '%x\n' 65`, `stat -c %s fichier`, `du -h` | allumer les bons interrupteurs pour écrire son prénom | ✅ (`xxd` intégré si absent) |
+| M3 Le réveil de la machine | **démarrage** : micrologiciel (UEFI / BIOS), chargeur d'amorçage, **noyau**, premier programme (`systemd` / init), session | la machine qui se réveille étage par étage | `uptime`, `dmesg \| head` (si autorisé), `systemd-analyze` (PC), `uname -r` | remettre les étapes du démarrage dans l'ordre | `uname -a` ✅, le reste raconté |
+| M4 Le chef d'orchestre | **système d'exploitation** : noyau, pilotes, processus, mémoire, fichiers, utilisateurs ; logiciel libre et propriétaire, licences ; distributions | le chef d'orchestre qui donne la parole à chaque musicien | `uname -a`, `cat /etc/os-release`, `lsmod \| head` (PC), `ps`, `which` | associer chaque tâche au bon musicien | ✅ partiel |
+| M5 La maison dans la maison | **virtualisation** (machine virtuelle) et **conteneurs** ; pourquoi on isole ; image, instance | une maison de poupée complète à l'intérieur de la maison | notions + `cat /proc/1/cgroup` (lecture) ; avec un adulte : `podman run --rm alpine echo bonjour` | ranger des applications dans des boîtes étanches | ⛔ raconté |
+| M6 Les fermes de serveurs | **serveur**, **datacenter**, **cloud** (louer la machine d'un autre), redondance, **sauvegarde 3-2-1**, panne et reprise ; énergie et refroidissement ; **sobriété numérique** (impact environnemental, mesures simples) | une ferme où des milliers de machines-vaches donnent du lait-données, refroidies par des ventilateurs géants | `df -h`, `tar czf` (sauvegarde, pont), `sha256sum` ; calcul de la taille de sa collection | survivre à une panne : la sauvegarde 3-2-1 sauve la ferme | ✅ |
+| M7 Monte ta machine (épreuve) | synthèse : choisir des pièces pour un besoin (jouer, dessiner, faire un serveur, un robot), compatibilité, budget, consommation | le grand atelier | — | épreuve finale chronométrée, drapeau `TG{…}` | ✅ |
+
+**Contrôle** : réponses lues dans la sortie réelle (« combien de cœurs a ta machine ? ») ; la réponse attendue est
+calculée par le jeu sur la même machine, donc toujours juste.
+
+### 7.4 🔭 L'Observatoire de l'IA — compléments : comprendre l'IA (paliers O5 à O9)
+
+Les paliers O1 à O4 (§ 2.17 : donner une mission, vérifier, secrets, superviser un agent) restent. On ajoute
+**comprendre comment marche une IA**, entièrement **hors ligne** et **sur les données du jeu** (la collection de
+l'enfant, les textes du jeu), pour que ce soit concret et sans compte à créer.
+
+| Palier | Notion (juste et complète) | Image enfant | Activité (vraies commandes, données du jeu) | Limite de l'image |
+|---|---|---|---|---|
+| O5 Apprendre avec des exemples | **apprentissage automatique** : des exemples étiquetés → une règle ; entraînement / test ; erreur | le dresseur qui montre 20 créatures en disant « Feu » ou « pas Feu » | trier la collection (`sort`, `awk`) ; un petit « devineur de type » du jeu (`devine-type`) qui apprend sur 20 créatures et se trompe sur la 21e | l'IA ne « comprend » pas comme nous |
+| O6 Les données font l'IA | **biais** : si on ne montre que des créatures de volcan, le devineur croit que tout est Feu ; qualité, quantité, représentativité | une loupe qui ne regarde qu'un coin du monde | refaire l'entraînement avec des données déséquilibrées, compter avec `uniq -c` | — |
+| O7 Le devineur de mots | **modèle de langage** : prédire le mot suivant à partir de statistiques ; pourquoi il peut **inventer** (hallucination) avec assurance | le perroquet géant qui a lu toute la bibliothèque | construire une table de paires de mots avec `tr`, `sort`, `uniq -c` sur l'histoire du jeu ; générer des phrases ; voir qu'elles sonnent juste mais peuvent être fausses | les vrais modèles sont bien plus grands et plus fins, mais le principe « deviner la suite » est juste |
+| O8 L'esprit critique | vérifier une réponse (sources, recoupement), **vie privée** (ce qu'on ne confie pas), droits d'auteur, deepfakes, **coût énergétique** | le détective qui ne croit rien sans preuve | un « assistant » fictif donne 5 réponses, l'enfant vérifie avec les commandes et le lexique et trouve les 2 fausses | — |
+| O9 Le chef d'équipe d'agents | (suite d'O4) découper une tâche, donner des consignes claires, relire, tester, **refuser** une action dangereuse, garder la main | le capitaine d'un équipage de robots | journal d'un agent fictif, `diff`, tests, arrêt d'urgence | — |
+
+### 7.5 🛡 La Citadelle — compléments : les **boîtes** façon Hack The Box / Root-Me, entièrement simulées
+
+**Principe** : une **boîte** est un petit monde-piège fabriqué par le jeu dans `~/terrain_terminagotchi/citadelle/boites/<nom>/`
+(Android : la vue simulée). Elle contient des lieux, des fichiers, parfois un **service local factice** (un petit
+serveur du jeu sur `localhost`, arrêté à la fin). Elle se joue en **deux manches** :
+
+1. **Manche Enquête (attaque simulée)** : trouver la faiblesse et récupérer le **drapeau d'entrée** puis le
+   **drapeau du donjon** (l'équivalent « user » et « root », dans le vocabulaire du jeu).
+2. **Manche Rempart (défense)** : **corriger** la faiblesse ; l'**inspecteur** du jeu rejoue l'attaque et vérifie
+   qu'elle ne marche plus. La boîte n'est « maîtrisée » qu'après les deux manches.
+
+**Règles éthiques et légales, affichées et rappelées** :
+- on n'attaque **que** les boîtes du jeu, qui t'appartiennent ; jamais un autre ordinateur, un site, un réseau ;
+- au niveau grands : l'accès frauduleux à un système informatique est un délit (en France, article 323-1 du
+  Code pénal) ; les plateformes d'entraînement existent justement pour apprendre sans enfreindre la loi ;
+- **aucun outil offensif réel**, aucun code malveillant, aucune technique utilisable contre un vrai système hors
+  du terrain : les boîtes enseignent les **réflexes** (énumérer, lire, vérifier les droits, ne pas laisser de
+  secrets en clair) qui servent d'abord à **défendre**.
+
+Catégories (de Facile à Expert, chacune avec son créature-gardien et ses variantes à gagner) :
+
+| Catégorie | Faiblesse simulée | Ce qu'on apprend à trouver | Ce qu'on apprend à corriger |
+|---|---|---|---|
+| Énumération | lieux et fichiers cachés, noms trompeurs | `ls -la`, `find`, `tree -a`, `file` | ranger, nommer, ne rien cacher d'important « par obscurité » |
+| Droits mal réglés | fichier secret lisible par tous, script modifiable par tous | `ls -l`, `stat`, `find -perm` | `chmod`, `chown` (raconté), principe du moindre privilège |
+| Secrets oubliés | mot de passe en clair dans une config, dans l'historique, dans une sauvegarde | `grep -r`, `cat ~/.historique_fictif`, `tar tzf` | coffre à secrets, `chmod 600`, rotation du secret |
+| Le hangar ouvert (pont Port P7) | un service factice écoute sur un port et répond trop | `ss -tln`, `curl localhost:PORT`, `curl -v` | arrêter le service inutile, n'exposer que le nécessaire |
+| Scripts trop naïfs | un script du jeu fait confiance à ce qu'on lui donne (injection **dans le bac à sable**) | lire le script (`cat`), trouver l'entrée non vérifiée | guillemets, validation, liste blanche |
+| Codes secrets | encodages et chiffrements simples : base64, César, empreintes | `base64 -d`, `tr`, `sha256sum` | encodage ≠ chiffrement ; bon chiffrement ; mots de passe hachés et salés (notions) |
+| Enquête numérique (forensique) | journaux, dates, fichiers modifiés après l'attaque | `grep`, `find -newer`, `stat`, `sort \| uniq -c` | journaliser, horodater, conserver les preuves |
+| Ingénierie sociale | message piégé, faux facteur (C6) | repérer les indices | ne jamais donner un secret, vérifier par un autre canal |
+
+Format technique d'une boîte (`donnees/boites/<nom>.json`, partagé PC / Android) : niveau, catégorie, prérequis
+(notions), fabrication du terrain (fichiers, droits, service factice), drapeaux, indices progressifs (3 niveaux),
+script de vérification de la manche Rempart, récompense (créature / variante, badge), textes en 14 langues.
+Le site du recensement affiche les boîtes maîtrisées (comme les drapeaux CTF actuels), sans jamais révéler les
+solutions.
+
+### 7.6 Les mondes font apparaître des créatures (récompenses)
+
+Apprendre fait **rencontrer** de nouvelles créatures et variantes, qu'il faut ensuite **dresser** (on ne les reçoit
+pas toutes faites). Chaque monde a ses créatures attirées (selon le type de biome) et ses variantes rares :
+
+| Monde | Types attirés | Variante rare débloquée par… |
+|---|---|---|
+| 🔨 La Forge | Machine, Feu | finir un palier sans indice ; le premier programme qui marche du premier coup |
+| 🛡 La Citadelle | Ombre, Poison | maîtriser une boîte (deux manches) → variante **« glitch »** de son gardien |
+| ⚓ Le Port | Ciel (et Foudre), Eau | un messager guidé sans perte (P9) ; le sceau vérifié (P11) |
+| ⏳ La Bibliothèque du Temps | Roche, Ombre | retrouver une version perdue (`git log`, `git checkout`) |
+| 📊 La Salle des Données | Eau, Glace | une statistique juste sur sa propre collection |
+| 🎛 Le Poste de Contrôle | Machine, Roche | arrêter tous les processus suspects d'une vague |
+| ⚙ La Salle des Machines | Machine, Roche | « Monte ta machine » réussi au premier démarrage |
+| 🤖 L'Atelier | Machine, Plante | le robot simulé qui évite tous les obstacles |
+| 🔭 L'Observatoire de l'IA | Ciel, Glace | trouver toutes les réponses fausses de l'assistant fictif (O8) |
+| 🏋 La salle d'entraînement | tous | une série parfaite → une créature légendaire à dresser |
+| ⛰ Le Sommet | légendaires | 3 mondes maîtrisés |
+
+Règles : les rencontres débloquées s'ajoutent au tirage normal (elles ne le remplacent pas) ; les variantes rares
+gardent un **tirage au hasard** (on les rencontre plus souvent, on ne les reçoit pas) ; tout reste **hors ligne** et
+vérifiable par le site comme les autres dressages.
+
+### 7.7 Terminagotchi en classe
+
+Objectif : qu'un enseignant puisse l'utiliser **demain matin**, sans compte, sans installation compliquée, sans
+données personnelles, et en sachant exactement ce que ses élèves apprennent.
+
+| Besoin | Proposition |
+|---|---|
+| **Mode classe** | l'enseignant crée une classe sur le site (sans adresse mail d'élève) ; les élèves rejoignent avec un code de classe et un **pseudonyme** ; aucune donnée personnelle d'élève (CNIL / RGPD des mineurs) ; données effaçables à la fin de l'année |
+| **Tableau de bord enseignant** | notions acquises par élève et par classe (crans A à D), étapes où la classe bloque, temps passé ; export CSV ; jamais de classement public des élèves |
+| **Séances clés en main** | une **fiche enseignant** par palier : objectif, durée (45 / 55 min), prérequis, déroulé, questions d'oral, trace écrite à imprimer, prolongements débranchés (activités sans ordinateur) |
+| **Correspondance avec les programmes** | tableau indicatif par palier (à faire valider par des enseignants avant publication) : technologie et sciences numériques au collège, **SNT** en seconde (Internet, Web, données, informatique embarquée), **NSI** en première et terminale (architecture matérielle et systèmes d'exploitation, réseaux et routage, sécurisation des communications), cadre de compétences numériques **CRCN / Pix** |
+| **Projection** | mode grand écran (police agrandie, contraste fort) pour faire la séance au tableau |
+| **Postes de l'école** | version PC sans installation (`python3 terminagotchi.pyz`), fonctionnement **hors ligne**, terrain de jeu isolé dans le dossier de l'élève ; version navigateur envisagée (le terminal du site) pour les salles sans Python |
+| **Accessibilité** | police adaptée à la dyslexie (option), palettes pour daltoniens, sons désactivables, compatibilité lecteur d'écran sur le site, rythme sans pression de temps (les chronos sont facultatifs en classe) |
+| **Évaluation** | les crans A-D existants, des **défis de classe** (toute la classe contre une vague de la Citadelle), un **certificat de monde** imprimable |
+| **Validation** | comité de relecture (§ 7.1), **classes pilotes** volontaires, mesure avant / après (petit test de positionnement, déjà présent : `placement`) |
+| **Confiance** | code public, pas de publicité, pas d'achat, pas de collecte inutile ; page « Pour les enseignants et les parents » sur le site |
+
+### 7.8 Ordre de mise en œuvre proposé (après les priorités en cours)
+
+1. **Charte de rigueur** : format `programme.json` avec les champs du § 7.1, vérificateur statique, rejeu des
+   sorties en CI — sur le tronc commun d'abord (c'est ce que tout le monde joue).
+2. **Récompenses par monde** (§ 7.6) : rapide, motive toutes les suites.
+3. **Le Port P1 → P11** avec le réseau simulé du Terminaworld (biomes = machines).
+4. **La Citadelle C1 → C7** puis les **boîtes** (3 boîtes Faciles d'abord : Énumération, Droits, Secrets).
+5. **La Salle des Machines M1 → M7** avec « Monte ta machine ».
+6. **L'Observatoire O1 → O9**.
+7. **Mode classe** et fiches enseignant, en parallèle de la recherche de relecteurs et de classes pilotes.
+8. Les autres mondes (Forge, Temps, Données, Contrôle, Atelier) au même niveau d'exigence, puis le Sommet.
+
+Chaque monde suit le même cycle : fiches notions → étapes PC et Android → tests automatiques → simulations de
+personas (§ 5) → relecture humaine → sortie.
