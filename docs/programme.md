@@ -15,7 +15,7 @@
 4. [Le parcours d'accueil proposé (de l'œuf aux fonctions)](#4-le-parcours-daccueil-proposé)
 5. [Plan de simulation (personas, mesures, outillage)](#5-plan-de-simulation)
 6. [Annexes : format de données commun, vérificateur statique, chantier Shell.kt](#6-annexes)
-7. [Vers la référence : rigueur, protocoles réseau, Salle des Machines, comprendre l'IA, boîtes de la Citadelle, récompenses, en classe, cryptographie et blockchain, mathématiques par la pratique, illustrations des mondes](#7-vers-la-référence--rigueur-modules-complémentaires-et-salles-de-classe)
+7. [Vers la référence : rigueur, protocoles réseau, Salle des Machines, comprendre l'IA, boîtes de la Citadelle, récompenses, en classe, cryptographie et blockchain, mathématiques par la pratique, illustrations des mondes, radio et LoRa, open source et DIY, VM, SQL, web, multimédia, Linux, embarqué](#7-vers-la-référence--rigueur-modules-complémentaires-et-salles-de-classe)
 
 ---
 
@@ -544,6 +544,11 @@ flowchart TD
     MATHS[🔢 Les Ponts des Nombres<br/>maths à la demande] -. pont .-> CRYPTE
     MATHS -. pont .-> MACH
     MATHS -. pont .-> IA
+    PORT --> ONDES[📡 La Tour des Ondes<br/>radio, LoRa, mesh]
+    X --> GUILDE[🛠 La Guilde des Bâtisseurs Libres<br/>open source et DIY]
+    GUILDE -. pont .-> FORGE
+    GUILDE -. pont .-> TEMPS
+    GUILDE -. pont .-> ATEL
     FORGE -. pont .-> CTRL
     CIT -. pont .-> CTRL
     CIT -. pont .-> DATA
@@ -1339,7 +1344,7 @@ données personnelles, et en sachant exactement ce que ses élèves apprennent.
 | **Validation** | comité de relecture (§ 7.1), **classes pilotes** volontaires, mesure avant / après (petit test de positionnement, déjà présent : `placement`) |
 | **Confiance** | code public, pas de publicité, pas d'achat, pas de collecte inutile ; page « Pour les enseignants et les parents » sur le site |
 
-### 7.8 Ordre de mise en œuvre proposé (après les priorités en cours)
+### 7.8 Ordre de mise en œuvre proposé (après les priorités en cours) — remplacé par le § 7.14
 
 1. **Charte de rigueur** : format `programme.json` avec les champs du § 7.1, vérificateur statique, rejeu des
    sorties en CI — sur le tronc commun d'abord (c'est ce que tout le monde joue).
@@ -1511,3 +1516,69 @@ Les Ponts des Nombres se construisent **au fil de l'eau** : chaque monde livré 
 besoin (et leurs prérequis), en commençant par la Crypte (division, modulo, puissances, probabilités) et la Salle
 des Machines (binaire, hexadécimal, unités). La recherche `maths <mots>` et le graphe des prérequis sont faits une
 fois, en même temps que la charte de rigueur (étape 1).
+
+### 7.11 📡 La Tour des Ondes — la radio, LoRa et les réseaux maillés (quartier du Port)
+
+**Prérequis** : Port P7 (adresses et ports), Salle des Machines M2 (unités). **Image** : une tour sur la falaise
+au-dessus du port, avec des antennes qui vibrent en couleurs selon la fréquence. **Vrai monde** : « Ton téléphone
+parle en même temps en Wi-Fi, Bluetooth, 4G et GPS : ce sont des ondes, chacune sur sa bande. »
+
+| Palier | Notion (juste et complète) | Commandes réelles | Mini-jeu / animation | Matériel |
+|---|---|---|---|---|
+| W1 Les ondes | fréquence (Hz), longueur d'onde, amplitude, portée vs débit vs énergie ; atténuation (murs, distance) | `nmcli dev wifi list` (canal, signal), `iw dev`, `iwconfig` | onde animée dont on règle la fréquence ; un mur qui l'affaiblit | aucun |
+| W2 Le spectre | Wi-Fi 2,4 / 5 / 6 GHz, Bluetooth, 4G / 5G, GPS, FM, LoRa (868 MHz en Europe) ; bandes libres et bandes réservées | `bluetoothctl` (scan), `rfkill list`, `nmcli radio` | ranger chaque technologie sur la règle du spectre | aucun |
+| W3 Parler loin avec peu | **LoRa** : modulation à étalement de spectre, longue portée, très faible débit et énergie ; LoRaWAN (passerelles) vs maillage direct | lecture guidée + calculs avec `bc` (temps d'émission d'un message) | le petit message qui traverse la vallée | aucun |
+| W4 Le maillage (mesh) | **réseau maillé** : chaque appareil relaie les autres, pas d'antenne centrale ni d'Internet ; nombre de sauts, redondance ; projets ouverts **Meshtastic** et **MeshCore** | le **réseau simulé du Terminaworld** en mode mesh : `mesh-envoie feu "bonjour"`, `mesh-coupe glace`, `mesh-route` (commandes du jeu) | éteindre des nœuds et voir le message trouver un autre chemin | aucun |
+| W5 Le vrai réseau maillé | installer et piloter un nœud Meshtastic en ligne de commande | `pip install meshtastic` (avec un adulte), `meshtastic --info`, `meshtastic --sendtext "bonjour"`, `meshtastic --nodes` | carte des nœuds de la classe / du quartier | carte ESP32 LoRa (~30 €) |
+| W6 Écouter le ciel | radio logicielle (**SDR**) : capter et décoder des signaux en **réception seulement** (capteurs météo, avions, radio FM) | `rtl_test`, `rtl_fm`, `rtl_433`, `dump1090` | les avions qui apparaissent sur la carte du Terminaworld | clé SDR (~30 €) |
+
+**Règle technique affichée** : écouter les signaux publics est libre ; **émettre est réglementé** (bandes, puissance,
+temps d'émission). Le jeu n'émet jamais lui-même ; en W5, on reste dans la bande libre 868 MHz et ses limites.
+**Lien** : l'œuf physique (ESP32) pourra parler LoRa en maillage avec les autres œufs (projet de fin, § 7.17).
+**Créatures** : Ciel / Foudre ; variante rare « onde » quand le message passe malgré 3 nœuds coupés.
+
+### 7.12 🛠 La Guilde des Bâtisseurs Libres — open source et DIY (au bord de la Forge)
+
+**Prérequis** : niveaux 0-4 ; ponts : Bibliothèque du Temps (git) pour G4. **Image** : une guilde d'artisans qui
+partagent leurs plans sur un grand mur. **Vrai monde** : « La plupart des logiciels qui font tourner Internet sont
+libres : n'importe qui peut lire leur code, l'améliorer et le partager. Terminagotchi aussi. »
+
+| Palier | Notion | Commandes réelles | Activité |
+|---|---|---|---|
+| G1 Le libre | logiciel libre / open source, les 4 libertés, licences (GPL, MIT, Creative Commons pour les images) ; libre ≠ gratuit | `cat LICENSE`, `dnf info` / `apt show` (lire la licence), `ls /usr/share/licenses` | retrouver la licence de 5 logiciels installés |
+| G2 Lire du vrai code | explorer un projet réel | `git clone` de **Terminagotchi lui-même**, `tree -L 2`, `grep -rn "faim"`, `less` | « Trouve où ta créature décide qu'elle a faim » |
+| G3 Compiler | du texte au programme : compilateur, binaire, bibliothèques | `gcc bonjour.c -o bonjour && ./bonjour`, `make`, `file bonjour`, `ldd` | compiler et lancer son premier programme C |
+| G4 Contribuer | signaler un bug, proposer une traduction, corriger un texte ; branche, commit, demande de fusion | `git switch -c`, `git diff`, `git commit` (pont Temps) | corriger une vraie faute dans un fichier de langue du jeu ; contributions retenues **créditées** dans le jeu (créature « contributeur ») |
+| G5 Fabriquer des objets | **DIY matériel** : impression 3D par le code, fichiers STL | `openscad -o piece.stl piece.scad`, `head piece.stl` | générer une petite pièce (porte-clé de sa créature) |
+| G6 Redonner vie | **reconditionner un vieux PC** : préparer une clé USB Linux, installer, mettre à jour ; sobriété numérique | `lsblk`, `dd` / `cp` vers la clé (avec un adulte, vérification du bon disque), `sha256sum` de l'image | « un PC sauvé » (certificat) |
+
+**Créatures** : Machine / Plante ; variante rare « artisan » à la première contribution acceptée.
+
+### 7.13 Compléments de mondes existants (tous au terminal)
+
+| Où | Ajout | Commandes réelles |
+|---|---|---|
+| Salle des Machines M5 → **M5 bis « Ta propre machine virtuelle »** | créer, démarrer, se connecter, casser sans risque, détruire et recréer une VM ; conteneur jetable ; instantanés | `podman run --rm -it alpine sh`, `podman ps`, `qemu-img create`, `virt-install` (avec un adulte), `virsh list`, `virsh snapshot-create` |
+| Salle des Données → **D-SQL « La base de données »** | tables, lignes, colonnes, requêtes `SELECT / WHERE / ORDER BY / COUNT / GROUP BY / JOIN` sur **sa propre collection** de créatures | `sqlite3 collection.db`, `.tables`, `.schema`, `SELECT nom FROM creatures WHERE type='Feu';` |
+| Port + Forge → **« Ton site web »** | HTML, CSS, servir une page, la voir dans le navigateur, la publier (notions d'hébergement) | `nano index.html`, `python3 -m http.server 8000`, `curl localhost:8000` |
+| Forge → **« L'atelier multimédia »** | images, sons, vidéos en ligne de commande | `convert`/`magick` (GIF animé de sa créature), `ffmpeg -i … -ss … -t …`, `sox -n bip.wav synth 0.3 sine 440`, `exiftool` (métadonnées, pont vie privée) |
+| Poste de Contrôle → **« Linux de A à Z »** | distributions, installation (en VM d'abord), paquets, mises à jour, services, utilisateurs | `cat /etc/os-release`, `dnf` / `apt` (avec un adulte), `systemctl status`, `useradd` (dans une VM) |
+| Atelier → **« L'embarqué et le temps réel »** | microcontrôleur vs ordinateur, capteurs, temps réel ; ESP32 / Arduino programmés depuis le terminal | `arduino-cli compile / upload`, `screen /dev/ttyUSB0 115200`, `esptool.py` |
+
+### 7.14 Ordre de mise en œuvre mis à jour (remplace le § 7.8)
+
+1. Charte de rigueur + `programme.json` + vérificateur + rejeu des sorties en CI ; recherche `maths` et graphe des
+   prérequis (§ 7.10).
+2. Récompenses par monde (§ 7.6, 7.11, 7.12).
+3. Le Port P1 → P11 avec le réseau simulé du Terminaworld (biomes = machines).
+4. La Citadelle C1 → C7, puis les boîtes (Faciles d'abord). 4 bis. La Crypte des Codes K1 → K8, B1 → B6.
+5. La Salle des Machines M1 → M7 avec la VM réelle (M5 bis).
+6. La Tour des Ondes W1 → W4 (sans matériel), puis W5-W6.
+7. La Guilde des Bâtisseurs Libres G1 → G6.
+8. L'Observatoire de l'IA O1 → O9.
+9. Salle des Données (dont SQL), Forge (dont site web et multimédia), Contrôle (dont Linux de A à Z), Temps,
+   Atelier (dont l'embarqué), puis le Sommet.
+10. Mode classe et fiches enseignant, en parallèle (relecteurs, classes pilotes).
+
+Pour chaque monde : fiches notions (et fiches maths liées) → étapes PC et Android → tests → simulations de personas
+→ relecture humaine → illustrations (entrée du monde, gardiens, animations) → sortie.
