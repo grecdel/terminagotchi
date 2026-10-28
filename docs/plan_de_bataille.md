@@ -111,6 +111,18 @@ menu). À faire :
 - **Contrôle** : tests (le compagnon ne lit aucune donnée personnelle), essais sur Fedora GNOME Wayland, Windows,
   Android ; captures et GIF envoyés au propriétaire.
 
+## Idée à maquetter : la « vue déployée » d'une commande
+
+Demande du propriétaire (28 octobre, d'après une vidéo Instagram qu'il a aimée) : voir la commande **se déployer** —
+chaque morceau de la syntaxe s'allume à son tour pour montrer **où on en est**, et les **connexions** se dessinent.
+Pour Terminagotchi : après (ou pendant) une commande, la ligne se décompose en blocs colorés (commande, options,
+arguments, chemins, `|`, `>`, `&&`) qui s'illuminent dans l'ordre d'exécution ; les **tuyaux** deviennent de vrais
+tuyaux animés où l'on voit passer les lignes de texte d'une commande à l'autre ; les **chemins** se relient au lieu
+correspondant sur la carte du Terminaworld ; une redirection `>` montre le flux qui tombe dans le fichier ; une
+commande réseau montre le messager qui part et revient. Mode « pas à pas » (Entrée pour avancer) et mode
+automatique ; disponible sur PC (terminal, en couleurs ANSI) et Android (vue graphique), activable avec
+`deploie <commande>` ou automatiquement dans les leçons. À maquetter avant toute implémentation (règle des visuels).
+
 ## Phase 4 — Dimanche et début de semaine : les fondations du programme
 
 1. **Charte de rigueur** (§ 7.1) : `donnees/programme.json` (fiches notions : enfant, grands, vrai terminal,
