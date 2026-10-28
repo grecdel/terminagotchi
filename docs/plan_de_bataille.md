@@ -67,16 +67,21 @@ ni ses dessins : notre créature reste celle du joueur, avec ses sprites et ses 
 Existant : `pc/tg/bureau.py` (`tg bureau`, tkinter : petite carte toujours au premier plan, respire, cligne, bulle,
 menu). À faire :
 - **PC** : vraie transparence (sans carte sombre) sur Linux — GTK4 / XWayland ou Qt ; fallback tkinter conservé
-  pour Windows et macOS ; la créature **marche** le long du bas de l'écran, s'assoit, dort, s'étire ; clic = réaction
-  et son, double-clic = cœur, triple clic = petite phrase, glisser = la déplacer, clic droit = menu (taille, son,
-  dormir, rester sur place, ouvrir le terminal, quitter) ; **réactions locales** à l'activité (on tape → elle mange
+  pour Windows et macOS ; la créature **marche** le long du bas de l'écran, s'assoit, dort, s'étire ; clic = le petit menu (voir plus bas),
+  double-clic = cœur, triple clic = petite phrase, glisser = la déplacer ; **réactions locales** à l'activité (on tape → elle mange
   les miettes de commandes ; inactivité → elle s'endort ; batterie faible → elle bâille), **sans jamais lire** ce qui
   est tapé ni le titre des fenêtres ; lancement automatique à l'ouverture de session (option) ; installation par
   `tg bureau installer`.
 - **Android** : une **bulle flottante** au-dessus des autres applications (permission « Afficher par-dessus les autres
   applications », demandée avec une explication) : la créature se balade sur le bord de l'écran, se range dans un
-  coin, un appui ouvre le terminal du jeu, un appui long la déplace, glisser vers le bas pour la ranger ; même
+  coin, un appui ouvre le petit menu, un appui long la déplace, glisser vers le bas pour la ranger ; même
   comportement que sur PC ; économe en batterie (animation en pause quand l'écran est éteint).
+- **Le petit menu** (demande du propriétaire, 28 octobre) : un **clic** sur la créature (PC) ou un **appui** (Android)
+  ouvre un petit menu rond en pixel art autour d'elle, dans le style du jeu : **Jouer** (ouvre le jeu / le terminal),
+  **Terminal** (ouvre directement l'invite), **Nourrir / s'occuper** (ses envies du moment), **Carte**, **Équipe**
+  (choisir la créature affichée), **Réglages** (taille, son, vitesse, rester sur place, dormir, lancement au
+  démarrage, notifications, langue), **La ranger / Quitter**. Les réactions (cœur, petite phrase) passent sur le
+  double-clic et le triple clic ; le glisser déplace la créature. Le menu se ferme en cliquant ailleurs.
 - **Animations nécessaires** (catalogue § 7.15, à ajouter) : marche, assise, sommeil, étirement, bâillement, réaction
   au clic, cœur, mange — pour le stade bébé d'abord (créature de départ), puis les autres stades.
 - **Contrôle** : tests (le compagnon ne lit aucune donnée personnelle), essais sur Fedora GNOME Wayland, Windows,
