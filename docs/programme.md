@@ -15,7 +15,7 @@
 4. [Le parcours d'accueil proposé (de l'œuf aux fonctions)](#4-le-parcours-daccueil-proposé)
 5. [Plan de simulation (personas, mesures, outillage)](#5-plan-de-simulation)
 6. [Annexes : format de données commun, vérificateur statique, chantier Shell.kt](#6-annexes)
-7. [Vers la référence : rigueur, protocoles réseau, Salle des Machines, comprendre l'IA, boîtes de la Citadelle, récompenses, en classe, cryptographie et blockchain](#7-vers-la-référence--rigueur-modules-complémentaires-et-salles-de-classe)
+7. [Vers la référence : rigueur, protocoles réseau, Salle des Machines, comprendre l'IA, boîtes de la Citadelle, récompenses, en classe, cryptographie et blockchain, mathématiques par la pratique, illustrations des mondes](#7-vers-la-référence--rigueur-modules-complémentaires-et-salles-de-classe)
 
 ---
 
@@ -541,6 +541,9 @@ flowchart TD
     CRYPTE -. pont .-> CIT
     CRYPTE -. pont .-> PORT
     CRYPTE -. pont .-> TEMPS
+    MATHS[🔢 Les Ponts des Nombres<br/>maths à la demande] -. pont .-> CRYPTE
+    MATHS -. pont .-> MACH
+    MATHS -. pont .-> IA
     FORGE -. pont .-> CTRL
     CIT -. pont .-> CTRL
     CIT -. pont .-> DATA
@@ -1401,3 +1404,86 @@ NSI, les mathématiques (arithmétique modulaire pour César et Diffie-Hellman),
 
 **Ordre** : ce monde se place dans le § 7.8 juste après la Citadelle (étape 4 bis), puisque ses paliers K1-K4
 servent aux boîtes « Codes secrets ».
+
+### 7.10 🔢 Les Ponts des Nombres — les mathématiques par la pratique, toujours à portée de main
+
+> Ajouté le 28 octobre 2026 à la demande du propriétaire : intégrer les mathématiques par la pratique, **sans
+> jamais bloquer** un joueur qui ne connaît pas la notion. « Il faut laisser la possibilité de dire *je ne connais
+> pas cette partie en mathématiques*, et le jeu doit avoir derrière une base mathématique, basique et poussée, pour
+> l'apprendre et répondre aux questions. »
+
+#### 7.10.1 Le principe : un pont, jamais un mur
+
+- Toute étape d'un monde qui utilise une notion mathématique la **déclare** dans sa fiche (`maths: ["modulo", …]`).
+- Avant l'étape, la créature demande simplement : « Tu connais le **reste d'une division** ? » avec trois réponses :
+  **oui** · **un peu** · **pas du tout**. Le joueur peut aussi taper à tout moment `maths` (ou `tg maths`) ou
+  `je ne connais pas`.
+- « Pas du tout » ou « un peu » ouvre un **Pont des Nombres** : une mini-leçon de 3 à 8 minutes, puis on revient
+  exactement où on était. Rien n'est perdu, rien n'est fermé.
+- Les ponts suivent le **graphe des prérequis** : si le joueur ne connaît pas le modulo, le jeu vérifie qu'il connaît
+  la division ; sinon il commence par elle. On descend aussi loin que nécessaire (jusqu'au comptage s'il le faut).
+- Le jeu **retient** les notions acquises (crans A-D comme pour le terminal) et ne repose plus la question ;
+  la salle d'entraînement propose des rappels espacés.
+- Les mathématiques se font **avec le terminal** dès que c'est possible : `echo $((17 % 5))`, `bc`, `seq`, `awk`,
+  `sort -n`, `factor`, et en pixel art (la roue de César = l'horloge du modulo ; les interrupteurs = le binaire).
+
+#### 7.10.2 La base mathématique du jeu (hors ligne)
+
+Chaque notion est une **fiche** au même format que la charte de rigueur (§ 7.1) — `enfant`, `grands`,
+`vrai_terminal`, `limite_image`, `idees_fausses`, `sources`, `relu_par` — plus :
+- `prerequis` (autres notions), `niveau` (indicatif : primaire, collège, lycée, supérieur) ;
+- 3 **exemples résolus** pas à pas ;
+- un **générateur d'exercices** (nombres tirés au hasard, correction automatique, explication de l'erreur typique) ;
+- une **animation** pixel art quand elle aide (partage de bonbons pour la division, horloge pour le modulo…).
+
+Le joueur **pose ses questions** avec `maths <mots>` (ex. `maths pourquoi on met un exposant`) : la recherche
+utilise le même moteur hors ligne que le lexique des commandes (synonymes, racines, 14 langues) et renvoie la fiche
+la plus proche, ses exemples et un exercice. **Pas d'IA qui invente** : chaque réponse vient d'une fiche vérifiée.
+(Évolution possible, à décider plus tard : une aide en ligne facultative, toujours appuyée sur les fiches.)
+
+Les notions, regroupées par îlots (tout est relié par des ponts sur la carte) :
+
+| Îlot | Notions (de basique à poussé) | Utilisées par |
+|---|---|---|
+| Les nombres | comptage, numération et position des chiffres, nombres négatifs, comparaison, ordre de grandeur | tout le jeu |
+| Les opérations | addition, soustraction, multiplication, **division euclidienne** (quotient et **reste**), priorités, parenthèses | Forge, Données, Crypte |
+| Puissances et bases | puissances, puissances de 2 et de 10, **binaire**, **hexadécimal**, conversions, unités (Ko / Kio) | Salle des Machines M2, Crypte K1 |
+| Proportions | proportionnalité, **pourcentages**, échelles, vitesses et débits | Port (débit, latence), Machines (énergie) |
+| Statistiques | effectifs, **moyenne**, **médiane**, étendue, fréquences, histogrammes | Données, Observatoire O5-O6, Crypte K2 (fréquences des lettres) |
+| Probabilités | hasard, probabilité simple, **dénombrement** (combien de mots de passe possibles), loi des grands nombres (notions) | Crypte K4, K7, B4 ; tirages du jeu |
+| Logique | vrai / faux, **ET / OU / NON**, tables de vérité, conditions | Forge (`if`, `&&`, `||`), Salle des Machines (portes logiques) |
+| Arithmétique | multiples, diviseurs, **nombres premiers**, décomposition (`factor`), **PGCD**, **modulo** (« l'horloge »), **puissance modulo** | Crypte K2, K6 (Diffie-Hellman, RSA en notions) |
+| Fonctions et croissance | fonction, tableau de valeurs, **croissance linéaire / exponentielle**, **logarithme** (« combien de fois doubler ») | Crypte B4 (difficulté), K4 (force d'un mot de passe), Port P9 (TTL) |
+| Algorithmes | suite d'instructions, boucle, **complexité** (pourquoi certains problèmes sont trop longs), recherche, tri | Forge, Données, Crypte |
+| Graphes | sommets, arêtes, **chemin le plus court**, arbre (l'arborescence des dossiers est un arbre !) | Tronc commun (carte), Port P9 (routage) |
+| Géométrie et repères | coordonnées, pixels, distances, symétries | Carte, biome, Atelier (robot) |
+| Vers l'IA (poussé) | vecteurs, distance entre deux points, **moyenne pondérée**, idée de « pente » et de minimum (descente de gradient en image), matrices (notions) | Observatoire O5-O7 |
+
+#### 7.10.3 L'exemple de bout en bout (Crypte, K6 Diffie-Hellman)
+
+1. La créature : « Pour ce coffre, on utilise le **modulo**. Tu connais ? » → « pas du tout ».
+2. Le graphe vérifie la **division euclidienne** : « Tu sais partager 17 bonbons entre 5 amis ? » → « oui ».
+3. Pont « Modulo » : l'horloge à 5 cases en pixel art, `echo $((17 % 5))`, 3 exemples, 5 exercices générés.
+4. Pont « Puissance modulo » (même méthode), puis retour au coffre : le mélange de peintures, puis les vrais nombres.
+5. Au niveau grands, la ligne « Pour aller plus loin » cite le théorème et la source ; la fiche est notée acquise.
+
+#### 7.10.4 Rendu : le monde et les illustrations
+
+- **Sur la carte du Terminaworld** : chaque monde avancé a son lieu dessiné et animé, cohérent avec l'illustration
+  de l'intro (la Racine au centre). La **Crypte des Codes** est sous la Racine : un escalier s'ouvre entre les
+  racines du camp de base quand le monde se débloque ; les **Ponts des Nombres** sont des passerelles de pierre
+  lumineuses entre les îlots, qui s'allument à chaque notion acquise.
+- **Illustrations à produire** (même style 16-bit que l'intro et les créatures) : une illustration d'entrée par
+  monde (Forge, Citadelle, Port, Temps, Données, Contrôle, Salle des Machines, Atelier, Observatoire, Crypte, Ponts
+  des Nombres, Sommet), les **créatures-gardiennes** de chaque monde (dont les sphinx de la Crypte), les boîtes de
+  la Citadelle, et les petites animations pédagogiques (messagers du Port, chaîne de blocs qui se brise, roue de
+  César, horloge du modulo, interrupteurs binaires, ordinateur ouvert de la Salle des Machines).
+- Ces visuels sont générés et contrôlés comme les variantes (fond uni, détourage, planche de validation envoyée au
+  propriétaire avant intégration).
+
+#### 7.10.5 Place dans l'ordre de mise en œuvre (§ 7.8)
+
+Les Ponts des Nombres se construisent **au fil de l'eau** : chaque monde livré apporte les fiches maths dont il a
+besoin (et leurs prérequis), en commençant par la Crypte (division, modulo, puissances, probabilités) et la Salle
+des Machines (binaire, hexadécimal, unités). La recherche `maths <mots>` et le graphe des prérequis sont faits une
+fois, en même temps que la charte de rigueur (étape 1).
