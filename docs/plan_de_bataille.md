@@ -6,6 +6,11 @@
 
 ## Règles de conduite pour toute la semaine
 
+- **Visuels d'intégration d'abord (règle du propriétaire, 28 octobre)** : avant d'implémenter quoi que ce soit de
+  visible (écran, illustration dans le jeu, créature du bureau, île, menu, nouveau monde, animation), préparer des
+  **maquettes d'intégration** (captures simulées PC et téléphone montrant le rendu final dans le jeu) et les envoyer
+  au propriétaire ; on n'écrit le code qu'après son accord.
+
 - **Budget** : un gros agent à la fois, deux au maximum s'ils touchent des fichiers différents. Un point d'étape
   avec le propriétaire à la fin de chaque phase. Les variantes et illustrations (ChatGPT dans Chrome, peu coûteuses)
   avancent chaque jour en parallèle, quand le PC du propriétaire est allumé.
