@@ -1593,6 +1593,7 @@ Pour chaque monde : fiches notions (et fiches maths liées) → étapes PC et An
 | A1 | Le Terminaworld vivant (la Racine au centre, les 9 biomes autour) — `monde.png` | ✅ |
 | A2 | Le Terminaworld endormi (même vue, gris, petite lumière verte au pied de l'arbre) — `dort.png` | ✅ |
 | A3 | Le camp de base : nid au centre, ordinateur branché aux racines, feu, sac, panneau — `camp2.png` (version endormie calculée par le jeu) | ✅ |
+| A3 bis | L'œuf qui apparaît dans le nid « en téléchargement » (ligne de pixels par ligne de pixels, barre de progression, scintillement vert) — animation calculée par le jeu à partir des 9 œufs | ⬜ |
 | A4 | Le Terminaworld vu en carte du jeu (vue de dessus, chaque monde à sa place, brume sur les lieux non découverts) | ⬜ |
 
 #### B. L'entrée de chaque monde (une scène 16:9 par lieu, et sa vignette pour la carte)

@@ -39,7 +39,11 @@
      `donnees/illustrations/` dès vendredi 16 h (le scratchpad peut disparaître) ;
    - le camp apparaît d'abord **endormi** (même image désaturée et assombrie par le code), puis à la première
      commande : l'écran de l'ordinateur s'allume, la lumière remonte les câbles et l'arbre, la couleur revient ;
-     l'œuf du type tiré apparaît dans le nid ;
+     l'œuf du type tiré apparaît dans le nid **« en téléchargement »** (demande du propriétaire, 28 octobre) : il se
+     matérialise au fur et à mesure, ligne de pixels par ligne de pixels, avec une petite barre de progression et un
+     pourcentage façon terminal (`réception de l'œuf… 37 %`), des pixels verts qui scintillent sur le bord en cours
+     d'écriture, puis un petit éclat quand il est complet (PC : rendu ligne par ligne en demi-blocs ; Android :
+     balayage animé) ;
    - Android : vraies images (assets réduits proprement) ; PC : version demi-blocs la plus lisible possible ;
    - captures de démonstration envoyées au propriétaire.
 3. **APK d'essai** (commit final sans `[skip ci]`), lien envoyé au propriétaire : c'est la version qu'il attend
