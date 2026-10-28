@@ -15,7 +15,7 @@
 4. [Le parcours d'accueil proposé (de l'œuf aux fonctions)](#4-le-parcours-daccueil-proposé)
 5. [Plan de simulation (personas, mesures, outillage)](#5-plan-de-simulation)
 6. [Annexes : format de données commun, vérificateur statique, chantier Shell.kt](#6-annexes)
-7. [Vers la référence : rigueur, protocoles réseau, Salle des Machines, comprendre l'IA, boîtes de la Citadelle, récompenses, en classe](#7-vers-la-référence--rigueur-modules-complémentaires-et-salles-de-classe)
+7. [Vers la référence : rigueur, protocoles réseau, Salle des Machines, comprendre l'IA, boîtes de la Citadelle, récompenses, en classe, cryptographie et blockchain](#7-vers-la-référence--rigueur-modules-complémentaires-et-salles-de-classe)
 
 ---
 
@@ -537,6 +537,10 @@ flowchart TD
     X --> MACH[⚙ La Salle des Machines<br/>matériel et infrastructure]
     MACH -. pont .-> CTRL
     MACH -. pont .-> PORT
+    X --> CRYPTE[🗝 La Crypte des Codes<br/>cryptographie et blockchain]
+    CRYPTE -. pont .-> CIT
+    CRYPTE -. pont .-> PORT
+    CRYPTE -. pont .-> TEMPS
     FORGE -. pont .-> CTRL
     CIT -. pont .-> CTRL
     CIT -. pont .-> DATA
@@ -1296,6 +1300,7 @@ pas toutes faites). Chaque monde a ses créatures attirées (selon le type de bi
 | 🎛 Le Poste de Contrôle | Machine, Roche | arrêter tous les processus suspects d'une vague |
 | ⚙ La Salle des Machines | Machine, Roche | « Monte ta machine » réussi au premier démarrage |
 | 🤖 L'Atelier | Machine, Plante | le robot simulé qui évite tous les obstacles |
+| 🗝 La Crypte des Codes | Ombre, Glace | réparer la chaîne de blocs (B2) sans indice ; légendaire au bout de B6 |
 | 🔭 L'Observatoire de l'IA | Ciel, Glace | trouver toutes les réponses fausses de l'assistant fictif (O8) |
 | 🏋 La salle d'entraînement | tous | une série parfaite → une créature légendaire à dresser |
 | ⛰ Le Sommet | légendaires | 3 mondes maîtrisés |
@@ -1329,6 +1334,7 @@ données personnelles, et en sachant exactement ce que ses élèves apprennent.
 2. **Récompenses par monde** (§ 7.6) : rapide, motive toutes les suites.
 3. **Le Port P1 → P11** avec le réseau simulé du Terminaworld (biomes = machines).
 4. **La Citadelle C1 → C7** puis les **boîtes** (3 boîtes Faciles d'abord : Énumération, Droits, Secrets).
+   4 bis. **La Crypte des Codes** : cryptographie K1 → K8, puis blockchain B1 → B6.
 5. **La Salle des Machines M1 → M7** avec « Monte ta machine ».
 6. **L'Observatoire O1 → O9**.
 7. **Mode classe** et fiches enseignant, en parallèle de la recherche de relecteurs et de classes pilotes.
@@ -1336,3 +1342,62 @@ données personnelles, et en sachant exactement ce que ses élèves apprennent.
 
 Chaque monde suit le même cycle : fiches notions → étapes PC et Android → tests automatiques → simulations de
 personas (§ 5) → relecture humaine → sortie.
+
+### 7.9 🗝 La Crypte des Codes — nouveau monde : cryptographie et blockchain
+
+> Ajouté le 28 octobre 2026 à la demande du propriétaire. Monde à part entière (la cryptographie est trop vaste
+> pour tenir dans un palier de la Citadelle) ; la Citadelle et le Port s'y appuient par des ponts.
+
+**Prérequis** : niveaux 0-4 (brancher les commandes : `|`, `>`). Ponts : Citadelle C5 (empreintes) ↔ K3 ;
+Port P11 (HTTPS) ← K6 ; Bibliothèque du Temps (git utilise des empreintes) ← K3 ; Forge F2 (boucles) → B4.
+**Image** : une crypte souterraine sous la Racine, gardée par des créatures-sphinx, pleine de coffres, de sceaux et
+de grimoires codés. **Vrai monde** : « Chaque fois que tu vois un cadenas dans ton navigateur, que tu déverrouilles
+ton téléphone ou que tu envoies un message, la cryptographie travaille pour toi. »
+
+Toutes les activités se font **hors ligne**, sur des fichiers du terrain, avec de vrais outils (`base64`, `tr`,
+`sha256sum`, `openssl`, `gpg` sur PC ; équivalents intégrés sur Android quand l'outil manque).
+
+#### Partie A — la cryptographie
+
+| Palier | Notion (juste et complète) | Image enfant | Commandes réelles | Mini-jeu / animation | Limite de l'image / idée fausse |
+|---|---|---|---|---|---|
+| K1 Cacher n'est pas chiffrer | **encodage** (base64, hexadécimal) : tout le monde peut le défaire ; ≠ **chiffrement** (il faut une clé) ; stéganographie (notions) | écrire en langue des signes : ce n'est pas secret, c'est juste une autre écriture | `echo bonjour \| base64`, `base64 -d`, `xxd` | démasquer 5 messages « secrets » qui ne sont qu'encodés | « base64 protège mes mots de passe » → faux |
+| K2 Les codes anciens | **substitution** (César, ROT13), **Vigenère** ; **analyse de fréquences** (pourquoi ils sont cassés) | la roue de César en pixel art | `tr 'a-z' 'd-za-c'`, `tr 'a-z' 'n-za-m'`, `fold -w1 \| sort \| uniq -c \| sort -rn` | casser un message en comptant les lettres | un code « inventé maison » est presque toujours cassable |
+| K3 Les empreintes | **fonction de hachage** (SHA-256) : même entrée → même empreinte, un caractère change tout (effet avalanche), impossible de revenir en arrière ; intégrité ; collisions (notions) ; MD5 et SHA-1 dépassés | l'empreinte digitale d'un fichier | `sha256sum`, `sha256sum -c`, `echo -n a \| sha256sum` puis `b` | changer une lettre et voir toute l'empreinte changer | une empreinte n'est pas un chiffrement : on ne la « déchiffre » pas |
+| K4 Les mots de passe | stockage **haché et salé**, fonctions lentes (bcrypt, Argon2 — notions), **attaque par dictionnaire**, longueur > complexité, **phrase de passe**, gestionnaire de mots de passe, double authentification | le gardien qui ne connaît pas le mot de passe, seulement son empreinte | `openssl passwd -6` (sel visible), `sha256sum` d'une liste de mots, `wc -l` | trouver en 1 seconde les mots de passe faibles d'une fausse base, voir que les phrases de passe résistent | « un mot de passe compliqué et court est plus sûr » → faux |
+| K5 Le coffre à une clé | **chiffrement symétrique** (AES) : une même clé ferme et ouvre ; clé vs mot de passe (dérivation de clé) ; le problème : comment partager la clé ? | le coffre dont les deux amis ont un double de la clé | `openssl enc -aes-256-cbc -pbkdf2 -in parchemin.txt -out parchemin.enc`, puis `-d` | enfermer un parchemin, le donner à la créature qui l'ouvre | sans la clé, ce n'est pas « difficile », c'est **infaisable** en pratique |
+| K6 Le cadenas ouvert | **chiffrement asymétrique** : paire clé publique / clé privée ; **échange de clés** (Diffie-Hellman, l'analogie du mélange de peintures) ; **signature** numérique ; **certificats** (pont P11) | des cadenas ouverts distribués à tous : n'importe qui peut fermer la boîte, seul toi as la clé | `gpg --gen-key` (dans un dossier du terrain), `gpg -e`, `gpg -d`, `gpg --sign` / `--verify` ; `openssl genpkey` (grands) | mélange de peintures animé : la couleur secrète commune sans jamais l'envoyer | la clé **privée** ne se donne jamais, même à un ami |
+| K7 Le hasard | importance de **l'aléa** (clés, sels), pseudo-hasard vs vrai hasard | le dé pipé contre le vrai dé | `head -c 16 /dev/urandom \| xxd`, `openssl rand -hex 16` | deviner le « hasard » d'un générateur mal fait | un hasard prévisible casse le meilleur chiffrement |
+| K8 Demain | **ordinateurs quantiques** et cryptographie post-quantique (notions, sans exagération) ; chiffrement de bout en bout ; métadonnées | — (palier de vocabulaire, grands) | lecture guidée | quiz « vrai / faux / on ne sait pas encore » | — |
+
+#### Partie B — la blockchain (après K3 et K6)
+
+Construite **à la main, dans le terminal**, pour comprendre sans mystère : chaque bloc est un fichier, chaque lien
+est une empreinte. Le **réseau simulé du Terminaworld** (§ 7.2, les biomes = machines) sert de réseau de nœuds.
+
+| Palier | Notion (juste et complète) | Image enfant | Commandes réelles | Mini-jeu / animation | Limite / idée fausse |
+|---|---|---|---|---|---|
+| B1 Le grand registre | **registre** (journal de faits) ; pourquoi on veut qu'il soit infalsifiable et partagé | le grand livre du village où l'on note qui a donné quoi | `cat registre.txt`, `echo "…" >> registre.txt` | — | un registre n'est pas forcément une blockchain |
+| B2 La chaîne d'empreintes | **bloc** = données + empreinte du bloc précédent ; modifier un ancien bloc casse toute la suite | des maillons : chaque maillon porte l'empreinte du précédent | `sha256sum bloc1 > lien` ; script du jeu `chaine-verifie` ; l'enfant modifie un vieux bloc et voit la chaîne se briser | la chaîne qui se brise maillon par maillon | — |
+| B3 Plusieurs copies | **registre distribué** : chaque nœud (biome) a sa copie ; **consensus** : la majorité fait foi | les 9 biomes gardent chacun une copie du livre | `diff` entre les copies des biomes, `sha256sum` des copies | un biome tricheur est démasqué parce que sa copie diffère | la majorité peut aussi se tromper (attaque des 51 %) |
+| B4 La preuve de travail | **minage** : trouver un nombre (nonce) qui donne une empreinte commençant par des zéros ; difficulté ; **coût énergétique** ; autre méthode : preuve d'enjeu (notions) | chercher la bonne clé parmi des milliers, au hasard | une boucle `for n in $(seq 1 100000)` + `sha256sum` (difficulté réglée pour durer quelques secondes) ; `time` | voir le temps exploser quand on ajoute un zéro | miner ne « crée » pas de valeur par magie |
+| B5 Les signatures des échanges | **transactions signées** (pont K6) : seul le propriétaire de la clé privée peut donner | le sceau personnel en bas de chaque ligne | `gpg --sign`, `gpg --verify` sur des lignes du registre | une fausse ligne sans sceau valide est rejetée | perdre sa clé privée = tout perdre |
+| B6 Usages et limites | à quoi ça sert vraiment (registre partagé sans chef unique), quand une base de données suffit ; **contrats intelligents** (notions) ; **crypto-monnaies** : forte volatilité, arnaques, aucun conseil d'investissement ; énergie ; vie privée (tout est public pour toujours) | le détective qui pèse le pour et le contre | lecture guidée, quiz | « Blockchain ou pas ? » : 8 situations à trier | « blockchain = sûr / anonyme / gratuit » → faux |
+
+**Le registre du recensement** : en épreuve finale (B6), l'enfant vérifie avec ses propres commandes un **registre
+chaîné** que le jeu tient de son parcours (chaque étape réussie = un bloc portant l'empreinte du précédent). C'est
+l'idée, chère au propriétaire, d'un parcours **prouvable** : on ne la présente pas comme une crypto-monnaie, mais
+comme un **carnet de bord infalsifiable** que l'enfant sait lui-même contrôler.
+
+**Règles** : aucune vraie crypto-monnaie, aucun portefeuille, aucun achat, aucun minage réel sur la machine (le
+« minage » du jeu est volontairement minuscule et s'arrête seul) ; au niveau grands, rappel que ce n'est **pas un
+conseil financier**.
+
+**Créatures** : la Crypte attire les types **Ombre** et **Glace** ; variante rare à rencontrer quand la chaîne de
+B2 est réparée sans indice, et une légendaire « gardienne du registre » au bout de B6.
+
+**Classe** : correspondances indicatives (à valider) avec la sécurisation des communications et le chiffrement en
+NSI, les mathématiques (arithmétique modulaire pour César et Diffie-Hellman), l'éducation aux médias (arnaques).
+
+**Ordre** : ce monde se place dans le § 7.8 juste après la Citadelle (étape 4 bis), puisque ses paliers K1-K4
+servent aux boîtes « Codes secrets ».
