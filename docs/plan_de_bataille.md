@@ -123,6 +123,22 @@ commande réseau montre le messager qui part et revient. Mode « pas à pas » (
 automatique ; disponible sur PC (terminal, en couleurs ANSI) et Android (vue graphique), activable avec
 `deploie <commande>` ou automatiquement dans les leçons. À maquetter avant toute implémentation (règle des visuels).
 
+Captures envoyées par le propriétaire (projet Coucou), gardées dans `docs/inspirations/coucou_1.png` à `_4.png` :
+- **Le laboratoire (captures 1-2)** : trois panneaux synchronisés — à gauche le **code**, avec la ligne en cours
+  d'exécution surlignée ; à droite en bas la **machine à états** (états reliés par des traits, l'état actif qui
+  brille, les transitions qui s'allument) ; à droite en haut la **créature en direct** dans cet état ; une liste
+  d'états avec des interrupteurs pour forcer un état. Adaptation Terminagotchi : **« Le cerveau de ta créature »** —
+  son vrai code (faim, jeu, sommeil, mange, confus, colère, content, KO, évolution…) qui se surligne pendant qu'elle
+  vit, sa machine à états qui s'allume, et elle qui s'anime à côté ; l'enfant peut basculer un état pour voir le
+  code réagir. Sert à la Forge (machines à états, `if`/`case`), à la Guilde (G2 « lire le code de ta créature ») et
+  à la vue déployée des commandes (blocs de la commande à gauche, graphe des tuyaux au milieu, résultat à droite).
+  Sur PC dans une fenêtre dédiée (`tg cerveau`, `tg deploie …`) ; sur Android en vue graphique.
+- **L'île avec question (captures 3-4)** : la créature pose une question avec des boutons de réponse ; une rangée de
+  pastilles montre ce qui tourne. Adaptation : quiz de leçon et choix rapides (« Quel guide pour la Citadelle ? ») dans
+  l'île ; les pastilles = les créatures de l'équipe avec leur état (dort, a faim, prête). Les accessoires (lunettes…)
+  ne sont pas repris : le propriétaire a écarté les accessoires au profit des badges et des auras.
+
+
 ## Phase 4 — Dimanche et début de semaine : les fondations du programme
 
 1. **Charte de rigueur** (§ 7.1) : `donnees/programme.json` (fiches notions : enfant, grands, vrai terminal,
