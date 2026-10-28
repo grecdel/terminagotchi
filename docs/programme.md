@@ -1396,6 +1396,21 @@ comme un **carnet de bord infalsifiable** que l'enfant sait lui-même contrôler
 « minage » du jeu est volontairement minuscule et s'arrête seul) ; au niveau grands, rappel que ce n'est **pas un
 conseil financier**.
 
+**Décision du propriétaire (28 octobre 2026) — but strictement pédagogique** : la blockchain et tout ce qui s'en
+approche aujourd'hui (crypto-monnaies, **NFT**, jetons, contrats intelligents, finance décentralisée, « web3 ») est
+**expliqué**, illustré par l'exemple construit dans le terminal, jamais **implémenté comme une fonctionnalité** du jeu :
+aucune monnaie, aucun jeton, aucun NFT (pas même des créatures « uniques à posséder »), aucun portefeuille, aucune
+vente, aucun échange contre de l'argent, aucune visée commerciale. Le palier B6 ajoute donc :
+
+| Sujet expliqué | Ce qu'on apprend (juste et nuancé) |
+|---|---|
+| NFT | un NFT est une ligne d'un registre qui pointe vers un objet (souvent une simple adresse) ; posséder la ligne ne donne ni l'image ni ses droits d'auteur ; marché spéculatif, arnaques fréquentes |
+| Jetons et contrats intelligents | un programme stocké sur la chaîne qui s'exécute tout seul ; un bug y est souvent définitif |
+| Finance décentralisée, « web3 » | promesses et limites ; risques de perte totale ; rappel : pas un conseil financier |
+| Repérer une arnaque | promesse de gains garantis, urgence, demande de « phrase secrète » ou de clé privée → toujours une arnaque |
+
+Les créatures du jeu restent des **créatures à dresser**, jamais des objets à vendre ou à échanger contre de l'argent.
+
 **Créatures** : la Crypte attire les types **Ombre** et **Glace** ; variante rare à rencontrer quand la chaîne de
 B2 est réparée sans indice, et une légendaire « gardienne du registre » au bout de B6.
 
