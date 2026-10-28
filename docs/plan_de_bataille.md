@@ -57,6 +57,31 @@
 2. Un agent de corrections sur les points **critiques** et **importants** du rapport ; nouvel APK d'essai ;
    point avec le propriétaire.
 
+## Phase 3 bis — La créature qui vit sur le bureau (PC et Android), inspirée de Mochi Desktop
+
+Référence montrée par le propriétaire : <https://github.com/miflow13/mochi-desktop> (MIT, Python + GTK4, Fedora GNOME).
+Ce qui plaît : une petite créature **sans fenêtre visible** qui vit sur le bureau, se promène, dort, réagit aux clics
+et à l'activité de l'ordinateur, sans rien espionner. On s'en inspire (idées et comportements), sans copier son code
+ni ses dessins : notre créature reste celle du joueur, avec ses sprites et ses 5 stades.
+
+Existant : `pc/tg/bureau.py` (`tg bureau`, tkinter : petite carte toujours au premier plan, respire, cligne, bulle,
+menu). À faire :
+- **PC** : vraie transparence (sans carte sombre) sur Linux — GTK4 / XWayland ou Qt ; fallback tkinter conservé
+  pour Windows et macOS ; la créature **marche** le long du bas de l'écran, s'assoit, dort, s'étire ; clic = réaction
+  et son, double-clic = cœur, triple clic = petite phrase, glisser = la déplacer, clic droit = menu (taille, son,
+  dormir, rester sur place, ouvrir le terminal, quitter) ; **réactions locales** à l'activité (on tape → elle mange
+  les miettes de commandes ; inactivité → elle s'endort ; batterie faible → elle bâille), **sans jamais lire** ce qui
+  est tapé ni le titre des fenêtres ; lancement automatique à l'ouverture de session (option) ; installation par
+  `tg bureau installer`.
+- **Android** : une **bulle flottante** au-dessus des autres applications (permission « Afficher par-dessus les autres
+  applications », demandée avec une explication) : la créature se balade sur le bord de l'écran, se range dans un
+  coin, un appui ouvre le terminal du jeu, un appui long la déplace, glisser vers le bas pour la ranger ; même
+  comportement que sur PC ; économe en batterie (animation en pause quand l'écran est éteint).
+- **Animations nécessaires** (catalogue § 7.15, à ajouter) : marche, assise, sommeil, étirement, bâillement, réaction
+  au clic, cœur, mange — pour le stade bébé d'abord (créature de départ), puis les autres stades.
+- **Contrôle** : tests (le compagnon ne lit aucune donnée personnelle), essais sur Fedora GNOME Wayland, Windows,
+  Android ; captures et GIF envoyés au propriétaire.
+
 ## Phase 4 — Dimanche et début de semaine : les fondations du programme
 
 1. **Charte de rigueur** (§ 7.1) : `donnees/programme.json` (fiches notions : enfant, grands, vrai terminal,

@@ -1653,6 +1653,12 @@ Pour chaque monde : fiches notions (et fiches maths liées) → étapes PC et An
 | E15 | Le partage de bonbons (division et reste) | Ponts des Nombres | ⬜ |
 | E16 | La pièce 3D qui sort de l'imprimante ; le vieux PC qui reprend vie | Guilde G5-G6 | ⬜ |
 
+#### E bis. La créature sur le bureau (PC et Android)
+
+| # | Animation | Statut |
+|---|---|---|
+| EB1 | Marche, assise, sommeil, étirement, bâillement, réaction au clic, cœur, mange — stade bébé de chaque espèce de départ, puis les autres stades | ⬜ |
+
 #### F. Le site et la présentation
 
 | # | Sujet | Statut |
