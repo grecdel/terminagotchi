@@ -1385,7 +1385,7 @@ est une empreinte. Le **réseau simulé du Terminaworld** (§ 7.2, les biomes = 
 | B3 Plusieurs copies | **registre distribué** : chaque nœud (biome) a sa copie ; **consensus** : la majorité fait foi | les 9 biomes gardent chacun une copie du livre | `diff` entre les copies des biomes, `sha256sum` des copies | un biome tricheur est démasqué parce que sa copie diffère | la majorité peut aussi se tromper (attaque des 51 %) |
 | B4 La preuve de travail | **minage** : trouver un nombre (nonce) qui donne une empreinte commençant par des zéros ; difficulté ; **coût énergétique** ; autre méthode : preuve d'enjeu (notions) | chercher la bonne clé parmi des milliers, au hasard | une boucle `for n in $(seq 1 100000)` + `sha256sum` (difficulté réglée pour durer quelques secondes) ; `time` | voir le temps exploser quand on ajoute un zéro | miner ne « crée » pas de valeur par magie |
 | B5 Les signatures des échanges | **transactions signées** (pont K6) : seul le propriétaire de la clé privée peut donner | le sceau personnel en bas de chaque ligne | `gpg --sign`, `gpg --verify` sur des lignes du registre | une fausse ligne sans sceau valide est rejetée | perdre sa clé privée = tout perdre |
-| B6 Usages et limites | à quoi ça sert vraiment (registre partagé sans chef unique), quand une base de données suffit ; **contrats intelligents** (notions) ; **crypto-monnaies** : forte volatilité, arnaques, aucun conseil d'investissement ; énergie ; vie privée (tout est public pour toujours) | le détective qui pèse le pour et le contre | lecture guidée, quiz | « Blockchain ou pas ? » : 8 situations à trier | « blockchain = sûr / anonyme / gratuit » → faux |
+| B6 Les applications | comment fonctionnent techniquement les **crypto-monnaies**, les **NFT** et les **contrats intelligents** (tableau ci-dessous) ; registre partagé sans autorité centrale vs base de données classique ; tout ce qui est inscrit reste lisible | la vitrine des inventions du registre | lecture guidée, petites démonstrations sur le registre du terrain | « Comment ça marche ? » : relier chaque application aux briques construites (B1-B5) | « blockchain = anonyme » → faux techniquement : les adresses sont publiques |
 
 **Le registre du recensement** : en épreuve finale (B6), l'enfant vérifie avec ses propres commandes un **registre
 chaîné** que le jeu tient de son parcours (chaque étape réussie = un bloc portant l'empreinte du précédent). C'est
@@ -1393,29 +1393,29 @@ l'idée, chère au propriétaire, d'un parcours **prouvable** : on ne la présen
 comme un **carnet de bord infalsifiable** que l'enfant sait lui-même contrôler.
 
 **Règles** : aucune vraie crypto-monnaie, aucun portefeuille, aucun achat, aucun minage réel sur la machine (le
-« minage » du jeu est volontairement minuscule et s'arrête seul) ; au niveau grands, rappel que ce n'est **pas un
-conseil financier**.
+« minage » du jeu est volontairement minuscule et s'arrête seul).
 
-**Décision du propriétaire (28 octobre 2026) — but strictement pédagogique** : la blockchain et tout ce qui s'en
-approche aujourd'hui (crypto-monnaies, **NFT**, jetons, contrats intelligents, finance décentralisée, « web3 ») est
-**expliqué**, illustré par l'exemple construit dans le terminal, jamais **implémenté comme une fonctionnalité** du jeu :
-aucune monnaie, aucun jeton, aucun NFT (pas même des créatures « uniques à posséder »), aucun portefeuille, aucune
-vente, aucun échange contre de l'argent, aucune visée commerciale. Le palier B6 ajoute donc :
+**Décision du propriétaire (28 octobre 2026) — explication technique uniquement** : la blockchain et ce qui s'en
+approche (crypto-monnaies, **NFT**, jetons, contrats intelligents) est **expliqué techniquement**, illustré par
+l'exemple construit dans le terminal : *comment ça fonctionne*, pas *ce qu'il faut en penser*. Le jeu ne donne ni
+avis ni éducation financière, et n'implémente aucune de ces fonctionnalités : aucune monnaie, aucun jeton, aucun NFT,
+aucun portefeuille, aucune vente, aucun achat. Le palier B6 devient donc purement technique :
 
-| Sujet expliqué | Ce qu'on apprend (juste et nuancé) |
-|---|---|
-| NFT | un NFT est une ligne d'un registre qui pointe vers un objet (souvent une simple adresse) ; posséder la ligne ne donne ni l'image ni ses droits d'auteur ; marché spéculatif, arnaques fréquentes |
-| Jetons et contrats intelligents | un programme stocké sur la chaîne qui s'exécute tout seul ; un bug y est souvent définitif |
-| Finance décentralisée, « web3 » | promesses et limites ; risques de perte totale ; rappel : pas un conseil financier |
-| Repérer une arnaque | promesse de gains garantis, urgence, demande de « phrase secrète » ou de clé privée → toujours une arnaque |
+| Sujet | Ce qu'on explique (fonctionnement) | Lien avec ce qui a été construit |
+|---|---|---|
+| Crypto-monnaie | une transaction = une ligne signée « telle adresse transfère tant à telle adresse » ; une **adresse** est dérivée d'une clé publique (une empreinte) ; le solde n'est stocké nulle part, il se **recalcule** en relisant la chaîne | B2 (chaîne), B5 (signatures), K3 (empreintes) |
+| NFT | un **jeton** identifié par un numéro unique, inscrit dans un registre, associé à un propriétaire (une adresse) ; il contient en général un **lien** vers l'objet (image, fichier), pas l'objet lui-même | B1 (registre), K3 |
+| Contrat intelligent | un **programme** enregistré dans la chaîne, exécuté de la même façon par tous les nœuds ; ses règles s'appliquent toutes seules ; une fois inscrit, il est difficile à modifier | B3 (consensus), Forge (programmes) |
+| Consensus | preuve de travail et preuve d'enjeu : deux façons de décider quel bloc est ajouté | B3, B4 |
 
-Les créatures du jeu restent des **créatures à dresser**, jamais des objets à vendre ou à échanger contre de l'argent.
+La seule règle de prudence gardée est technique : **la clé privée ne se communique jamais** (c'est ce qui permet de
+signer, K6 / B5).
 
 **Créatures** : la Crypte attire les types **Ombre** et **Glace** ; variante rare à rencontrer quand la chaîne de
 B2 est réparée sans indice, et une légendaire « gardienne du registre » au bout de B6.
 
 **Classe** : correspondances indicatives (à valider) avec la sécurisation des communications et le chiffrement en
-NSI, les mathématiques (arithmétique modulaire pour César et Diffie-Hellman), l'éducation aux médias (arnaques).
+NSI, les mathématiques (arithmétique modulaire pour César et Diffie-Hellman).
 
 **Ordre** : ce monde se place dans le § 7.8 juste après la Citadelle (étape 4 bis), puisque ses paliers K1-K4
 servent aux boîtes « Codes secrets ».
