@@ -1502,11 +1502,7 @@ Les notions, regroupées par îlots (tout est relié par des ponts sur la carte)
   de l'intro (la Racine au centre). La **Crypte des Codes** est sous la Racine : un escalier s'ouvre entre les
   racines du camp de base quand le monde se débloque ; les **Ponts des Nombres** sont des passerelles de pierre
   lumineuses entre les îlots, qui s'allument à chaque notion acquise.
-- **Illustrations à produire** (même style 16-bit que l'intro et les créatures) : une illustration d'entrée par
-  monde (Forge, Citadelle, Port, Temps, Données, Contrôle, Salle des Machines, Atelier, Observatoire, Crypte, Ponts
-  des Nombres, Sommet), les **créatures-gardiennes** de chaque monde (dont les sphinx de la Crypte), les boîtes de
-  la Citadelle, et les petites animations pédagogiques (messagers du Port, chaîne de blocs qui se brise, roue de
-  César, horloge du modulo, interrupteurs binaires, ordinateur ouvert de la Salle des Machines).
+- **Illustrations à produire** : la liste complète et à jour est le **§ 7.15** (catalogue des illustrations).
 - Ces visuels sont générés et contrôlés comme les variantes (fond uni, détourage, planche de validation envoyée au
   propriétaire avant intégration).
 
@@ -1582,3 +1578,89 @@ libres : n'importe qui peut lire leur code, l'améliorer et le partager. Termina
 
 Pour chaque monde : fiches notions (et fiches maths liées) → étapes PC et Android → tests → simulations de personas
 → relecture humaine → illustrations (entrée du monde, gardiens, animations) → sortie.
+
+### 7.15 🎨 Catalogue des illustrations à produire
+
+> Même style que l'intro et les créatures : pixel art 16-bit façon SNES, contours sombres, couleurs vives. Scènes
+> en 16:9 ; personnages et objets sur fond uni (magenta, vert ou bleu selon les couleurs du sujet), détourés.
+> Chaque lot est envoyé au propriétaire en **planche de validation** avant intégration. Statut : ✅ fait · 🟡 à
+> refaire · ⬜ à faire. Les fichiers validés vont dans `donnees/illustrations/`.
+
+#### A. L'intro et le camp de base
+
+| # | Illustration | Statut |
+|---|---|---|
+| A1 | Le Terminaworld vivant (la Racine au centre, les 9 biomes autour) — `monde.png` | ✅ |
+| A2 | Le Terminaworld endormi (même vue, gris, petite lumière verte au pied de l'arbre) — `dort.png` | ✅ |
+| A3 | Le camp de base : nid au centre, ordinateur branché aux racines, feu, sac, panneau — `camp2.png` (version endormie calculée par le jeu) | ✅ |
+| A4 | Le Terminaworld vu en carte du jeu (vue de dessus, chaque monde à sa place, brume sur les lieux non découverts) | ⬜ |
+
+#### B. L'entrée de chaque monde (une scène 16:9 par lieu, et sa vignette pour la carte)
+
+| # | Lieu | Ce qu'on doit voir | Statut |
+|---|---|---|---|
+| B1 | Le Carrefour | une place au pied de la Racine avec toutes les portes des mondes et leurs symboles | ⬜ |
+| B2 | 🔨 La Forge | atelier de forgerons-programmeurs, enclumes et parchemins de code lumineux | ⬜ |
+| B3 | 🛡 La Citadelle | forteresse à remparts, tours de guet, glitchs qui rôdent au loin | ⬜ |
+| B4 | ⚓ Le Port | port de bateaux-messagers, quais numérotés, phares, annuaire géant | ⬜ |
+| B5 | 📡 La Tour des Ondes | tour sur la falaise au-dessus du port, antennes qui vibrent en couleurs, ondes visibles | ⬜ |
+| B6 | ⏳ La Bibliothèque du Temps | bibliothèque aux étagères infinies, livres-versions reliés par des fils | ⬜ |
+| B7 | 📊 La Salle des Données | grande salle de tri, cristaux-tableaux, colonnes de chiffres lumineux | ⬜ |
+| B8 | 🎛 Le Poste de Contrôle | salle de contrôle d'un vaisseau, jauges, habitants-processus au travail | ⬜ |
+| B9 | ⚙ La Salle des Machines | salle des machines sous le camp : processeur-cuisinier, mémoire-plan de travail, disques | ⬜ |
+| B10 | 🤖 L'Atelier | établi avec petits robots, cartes électroniques, LED | ⬜ |
+| B11 | 🔭 L'Observatoire de l'IA | observatoire où des robots-assistants reçoivent des missions | ⬜ |
+| B12 | 🗝 La Crypte des Codes | crypte sous la Racine, sphinx gardiens, coffres, sceaux, grimoires codés ; l'escalier qui s'ouvre entre les racines du camp | ⬜ |
+| B13 | 🛠 La Guilde des Bâtisseurs Libres | guilde d'artisans, grand mur de plans partagés, imprimante 3D, vieux PC réparés | ⬜ |
+| B14 | 🔢 Les Ponts des Nombres | îlots reliés par des passerelles de pierre qui s'allument | ⬜ |
+| B15 | 🏋 La salle d'entraînement | gymnase, cibles, tableau des grades Bit → Exa | ⬜ |
+| B16 | ⛰ Le Sommet | sommet au-dessus des nuages d'où l'on voit tout le Terminaworld | ⬜ |
+
+#### C. Les gardiens et créatures des mondes (fond uni, 5 stades quand c'est une créature à dresser)
+
+| # | Sujet | Statut |
+|---|---|---|
+| C1 | Le gardien de chaque monde (un par lieu B2 à B16) | ⬜ |
+| C2 | Les sphinx de la Crypte et la légendaire « gardienne du registre » | ⬜ |
+| C3 | Les variantes rares débloquées par les mondes (« glitch », « onde », « artisan »…, § 7.6) | ⬜ |
+| C4 | La créature « contributeur » de la Guilde | ⬜ |
+| C5 | Les anomalies de la Citadelle (glitchs, virus fictif, cheval de Troie, « le Verrouilleur ») | ⬜ |
+
+#### D. Les boîtes de la Citadelle (une vignette par boîte)
+
+| # | Sujet | Statut |
+|---|---|---|
+| D1 | Énumération, Droits mal réglés, Secrets oubliés, Le hangar ouvert, Scripts trop naïfs, Codes secrets, Enquête numérique, Ingénierie sociale | ⬜ |
+
+#### E. Les animations pédagogiques (petites séquences d'images)
+
+| # | Animation | Module | Statut |
+|---|---|---|---|
+| E1 | Messagers-paquets qui voyagent, se perdent, sont routés de phare en phare | Port P6-P9 | ⬜ |
+| E2 | Lettre recommandée (TCP) contre carte postale (UDP) | Port P8 | ⬜ |
+| E3 | Le gardien de l'immeuble (box, DHCP, NAT) | Port P10 | ⬜ |
+| E4 | L'enveloppe scellée et le sceau vérifié (HTTPS) | Port P11 | ⬜ |
+| E5 | Ondes de fréquences différentes, mur qui les affaiblit ; règle du spectre | Tour des Ondes W1-W2 | ⬜ |
+| E6 | Message LoRa qui saute de nœud en nœud, nœuds qu'on éteint | Tour des Ondes W4 | ⬜ |
+| E7 | Ordinateur ouvert dont les pièces s'allument ; « Monte ta machine » | Salle des Machines M1, M7 | ⬜ |
+| E8 | Interrupteurs binaires ; la machine qui se réveille étage par étage | Salle des Machines M2-M3 | ⬜ |
+| E9 | La maison dans la maison (machine virtuelle, conteneur) ; la ferme de serveurs | Salle des Machines M5-M6 | ⬜ |
+| E10 | Roue de César ; horloge du modulo ; mélange de peintures (échange de clés) | Crypte K2, K6 ; Ponts des Nombres | ⬜ |
+| E11 | Chaîne de blocs qui se brise maillon par maillon ; copies des 9 biomes | Crypte B2-B3 | ⬜ |
+| E12 | Le devineur de type et le perroquet géant (modèle de langage) | Observatoire O5-O7 | ⬜ |
+| E13 | Cadenas r/w/x pour moi, mon club, les autres | Tronc commun, niveau 6 | ⬜ |
+| E14 | Les couches réseau : enveloppe dans enveloppe dans colis | Port P6 | ⬜ |
+| E15 | Le partage de bonbons (division et reste) | Ponts des Nombres | ⬜ |
+| E16 | La pièce 3D qui sort de l'imprimante ; le vieux PC qui reprend vie | Guilde G5-G6 | ⬜ |
+
+#### F. Le site et la présentation
+
+| # | Sujet | Statut |
+|---|---|---|
+| F1 | Bannière de la page de présentation (Terminaworld + œufs), version large et version téléphone | ⬜ |
+| F2 | Une image par monde pour la page « ce que le jeu enseigne » (reprend B2 à B16) | ⬜ |
+| F3 | Visuels de la page « Pour les enseignants et les parents » | ⬜ |
+
+**Ordre de production** : A4 et B1 (la carte et le Carrefour), puis, pour chaque monde, ses visuels B, C, D, E
+**juste avant** son développement (ordre du § 7.14 : Port et Tour des Ondes, Citadelle, Crypte, Salle des Machines,
+Guilde, Observatoire…). Les illustrations avancent chaque jour en parallèle des variantes.

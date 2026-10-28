@@ -80,8 +80,8 @@ mode classe en parallèle. Pour chaque monde : fiches → étapes PC et Android 
   famille finie ; scripts `scratchpad/capt.sh`, `com.sh`, nettoyages `violet.py`, `trou.py`, `brume.py [v|b]`,
   `aile.py`, `ailebleue.py`, `fumee.py`, `frange.py` (à recopier dans `donnees/bestiaire2/outils/` pour ne pas les
   perdre).
-- Illustrations des mondes (entrée de chaque monde, gardiens, animations pédagogiques), en commençant par la Crypte
-  sous la Racine et le Port.
+- Illustrations : suivre le **catalogue du § 7.15** de `docs/programme.md` (carte et Carrefour d'abord, puis chaque
+  monde juste avant son développement), planche de validation au propriétaire, statuts mis à jour dans le catalogue.
 
 ## Phase finale — L'œuf physique (projet open source)
 
