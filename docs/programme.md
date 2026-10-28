@@ -1658,6 +1658,7 @@ Pour chaque monde : fiches notions (et fiches maths liées) → étapes PC et An
 | # | Animation | Statut |
 |---|---|---|
 | EB1 | Marche, assise, sommeil, étirement, bâillement, réaction au clic, cœur, mange — stade bébé de chaque espèce de départ, puis les autres stades | ⬜ |
+| EB2 | L'île du haut de l'écran : mini-créature qui respire, coucou, sautille, yeux qui suivent le pointeur, saut entre le bureau et l'île ; icônes des pastilles et des boutons | ⬜ |
 
 #### F. Le site et la présentation
 

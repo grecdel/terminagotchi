@@ -82,6 +82,25 @@ menu). À faire :
   (choisir la créature affichée), **Réglages** (taille, son, vitesse, rester sur place, dormir, lancement au
   démarrage, notifications, langue), **La ranger / Quitter**. Les réactions (cœur, petite phrase) passent sur le
   double-clic et le triple clic ; le glisser déplace la créature. Le menu se ferme en cliquant ailleurs.
+- **L'île du haut de l'écran** (inspiration montrée par le propriétaire : <https://github.com/Louis-CFM/coucou>, l'« île »
+  du haut de l'écran qui s'ouvre avec les interactions ; idées seulement, aucun code ni dessin repris) :
+  - **au repos** : une petite **pilule** translucide en haut au centre de l'écran, avec la mini-créature qui
+    respire et 2-3 pastilles d'état (faim, XP, nouveauté) ; elle peut aussi se placer en bas ou sur un côté ;
+  - **au survol ou au clic**, la pilule **s'agrandit en douceur** en un panneau : la créature parle dans une bulle
+    (leçon du moment, « un monstre est apparu ! », « j'ai faim »), les **boutons d'action** (Jouer, Terminal,
+    Nourrir, Carte, Réglages), et un **mini-terminal** intégré pour taper une commande sans rien ouvrir ;
+  - **les événements** du jeu (monstre apparu, étape réussie, badge gagné, envie urgente) font **s'ouvrir l'île
+    toute seule** quelques secondes, avec une petite animation, puis elle se replie ;
+  - **effets** : fond sombre avec des particules de pixels qui s'écartent du pointeur, la créature qui fait coucou,
+    sautille, et dont les yeux suivent la souris ;
+  - **Linux** : île collée au bord du haut avec les bureaux qui le permettent (layer-shell : Sway, Hyprland,
+    KDE…), petite fenêtre sans bordure en haut sur GNOME ; **Windows / macOS** : fenêtre sans bordure toujours
+    au premier plan ;
+  - **Android** : la même île en haut de l'écran (fenêtre par-dessus les autres applications, même autorisation
+    que la bulle), plus la **notification permanente** déjà prévue ; un appui l'agrandit ;
+  - réglable : activée ou non, position, ouverture automatique sur événement oui/non, discrète en plein écran.
+  La créature du bureau et l'île sont **la même créature** : quand l'île s'ouvre, la créature du bureau peut y
+  « sauter ».
 - **Animations nécessaires** (catalogue § 7.15, à ajouter) : marche, assise, sommeil, étirement, bâillement, réaction
   au clic, cœur, mange — pour le stade bébé d'abord (créature de départ), puis les autres stades.
 - **Contrôle** : tests (le compagnon ne lit aucune donnée personnelle), essais sur Fedora GNOME Wayland, Windows,
