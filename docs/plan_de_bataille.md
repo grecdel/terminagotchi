@@ -264,3 +264,40 @@ Ce qu'on peut reprendre, adapté à notre esprit (éducatif, défensif, sans aff
 - **Un monde partagé (site)** : des événements de communauté coopératifs (« réveiller ensemble le biome Glace »),
   des cartes réseau partagées entre joueurs, une bibliothèque de petits scripts écrits par les joueurs (Guilde,
   relus avant publication) — jamais d'attaque d'un joueur contre un autre, jamais de commerce.
+
+### Validé par le propriétaire (29 octobre) : le Grand Maillage
+
+Retenus : l'exploration où l'enfant **dessine lui-même la carte réseau**, le **mode survie**, le **camp de base =
+`localhost`**, et le **monde à découvrir partagé**. À maquetter puis concevoir en détail :
+
+**Le Grand Maillage** — une « galaxie » numérique **infinie**, générée procéduralement, faite de nœuds (machines,
+relais, îlots de données) reliés entre eux, au-delà du Terminaworld. On n'y va que **par le terminal**, à partir de
+son `localhost` (le camp de base).
+- **Exploration** : aucune carte fournie ; chaque saut se fait avec de vraies commandes du réseau simulé (`ping`,
+  `tracepath`, `ip route`, `ssh` vers un nœud, `ls` / `cat` sur place), et l'enfant **dessine sa carte** (un
+  fichier de carte qu'il complète lui-même ; la carte du jeu ne montre que ce qu'il a relevé).
+- **Mode survie** : ressources limitées pendant une expédition (énergie de la créature, nombre de sauts, place dans
+  le sac = taille des fichiers transportés) ; tout ce qui est trouvé ne compte qu'une fois **ramené au localhost**
+  (`cp`, `mv`, `scp`), sinon c'est perdu au retour forcé ; on peut poser des **relais** (points de sauvegarde) pour
+  aller plus loin.
+- **Ce qu'on y trouve** : rencontres de créatures propres au Maillage (variantes « réseau »), **événements**
+  (tempête de paquets, nœud qui s'éteint, relais en panne à réparer), **défis particuliers** (énigmes de
+  configuration, petites boîtes de la Citadelle, chiffres de la Crypte), fragments d'histoire du Terminaworld.
+- **Monde partagé (avec le site)** : la galaxie est la même pour tous ; les nœuds découverts portent le nom de leur
+  découvreur ; événements de communauté coopératifs (rallumer ensemble une région éteinte) ; on peut partager ses
+  relevés de carte.
+- **Progression** : les régions proches sont faciles ; plus on s'éloigne, plus les nœuds demandent des notions
+  avancées (redirections, droits, réseau, crypto, scripts) — le Maillage devient le terrain de jeu de tous les
+  mondes.
+
+**Mode « Arène » (joueurs expérimentés, JcJ)** — à concevoir avec garde-fous :
+- **facultatif**, débloqué seulement après le tronc commun et plusieurs mondes ; pour les mineurs, activé par un
+  parent ou un enseignant (ou réservé à une classe / un club) ;
+- **attaque-défense façon CTF** : chaque joueur défend un **avant-poste simulé** sur le serveur du jeu (sa machine
+  du Maillage) et tente de prendre le drapeau des autres avant-postes — tout est **simulé dans le jeu**, jamais
+  la vraie machine d'un joueur, jamais Internet ;
+- **pas de discussion libre entre inconnus** (messages prédéfinis seulement), pas de perte définitive (on perd des
+  points de saison, pas sa créature ni ses fichiers), saisons courtes, classement par équipes possible ;
+- règles d'éthique et rappel légal affichés à l'entrée (comme la Citadelle).
+
+Ordre : après le Port (le réseau simulé en est la base) et la Citadelle (pour l'Arène).
