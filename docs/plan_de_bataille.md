@@ -202,7 +202,7 @@ terminagotchi ; option LoRa pour que les œufs se parlent en maillage (§ 7.11).
 
 ## Propositions à valider (29 octobre)
 
-### La satiété : pourquoi bien nourrir sa créature, sans mort ni corvée
+### ✅ Validé (29 octobre) — La satiété : pourquoi bien nourrir sa créature, sans mort ni corvée
 
 Constat : aujourd'hui la faim descend d'un point toutes les 12 minutes (720 s, 24 min avec le talent Gardien) : on
 passe de « rassasiée » à « vide » en **environ 20 h**, même si l'enfant n'a pas joué. Trop rapide pour un jeu où
@@ -301,3 +301,24 @@ son `localhost` (le camp de base).
 - règles d'éthique et rappel légal affichés à l'entrée (comme la Citadelle).
 
 Ordre : après le Port (le réseau simulé en est la base) et la Citadelle (pour l'Arène).
+
+### Validé par le propriétaire (29 octobre, suite) : l'extraction et le convoi
+
+**Ce qu'on rapporte du Grand Maillage** (esprit « Dark Zone » : le butin n'est à soi qu'une fois extrait au localhost) :
+1. œufs rares et variantes « Maillage » (néon, données, glitch) introuvables ailleurs ;
+2. fragments de code : vrais petits scripts à assembler, qui débloquent des commandes de la créature et des outils
+   (scanner, relais plus puissant, sac plus grand) ;
+3. de quoi agrandir et décorer le localhost (la base devient une petite machine qu'on améliore) ;
+4. cartes et relais : chaque nœud rapporté s'ajoute à la carte partagée avec le nom du découvreur ;
+5. archives et fichiers chiffrés (ouverts dans la Crypte) qui racontent pourquoi le Terminaworld s'est endormi ;
+6. nourriture rare (bonus temporaires, lien avec la satiété) ;
+7. Arène : récompenses cosmétiques et titres uniquement.
+
+Risque : énergie à zéro ou « déconnexion » loin de la base → on perd ce qui n'est pas encore rapporté, jamais la
+créature ni ce qui est déjà au localhost.
+
+**Le convoi à défendre** : un paquet de données doit traverser plusieurs nœuds jusqu'à destination. On le protège au
+vrai terminal : surveiller le trafic (`tail -f`), poser des règles de pare-feu simulé, changer de route, vérifier
+l'empreinte (`sha256sum`) à l'arrivée pour prouver qu'il n'a pas été modifié. Coopératif d'abord ; version Arène
+ensuite (une équipe escorte, l'autre intercepte, puis on inverse). Notions : routage (Port P9), pare-feu
+(Citadelle), intégrité (Crypte K3).
