@@ -199,3 +199,68 @@ terminagotchi ; option LoRa pour que les œufs se parlent en maillage (§ 7.11).
 - Le nom de domaine `terminagotchi.com` (pas encore branché sur le site).
 - Valider les planches d'illustrations au fil de l'eau.
 - Trouver, s'il le peut, des enseignants relecteurs et des classes pilotes.
+
+## Propositions à valider (29 octobre)
+
+### La satiété : pourquoi bien nourrir sa créature, sans mort ni corvée
+
+Constat : aujourd'hui la faim descend d'un point toutes les 12 minutes (720 s, 24 min avec le talent Gardien) : on
+passe de « rassasiée » à « vide » en **environ 20 h**, même si l'enfant n'a pas joué. Trop rapide pour un jeu où
+nourrir demande de vraies commandes, et injuste pour un enfant qui ne joue pas tous les jours.
+
+Proposition (à valider par le propriétaire avant code) :
+1. **Rythme** : la faim ne descend que pendant les **heures d'éveil** (7 h - 21 h, la créature dort la nuit comme
+   l'enfant) et environ **3 fois plus lentement** : de rassasiée à affamée en ~2 jours de vie réelle, jamais de
+   chute brutale. **Mode vacances / école** (réglage, ou automatique en mode classe hors des heures de cours) : la
+   faim est en pause.
+2. **Quatre états** au lieu d'une simple jauge :
+   - **Rassasiée (80-100)** : bonus (voir 3) ;
+   - **En forme (40-80)** : normal ;
+   - **Affamée (15-40)** : petits malus ;
+   - **En veille (0-15)** : la créature se met en veille (yeux mi-clos, couleurs ternes). **Jamais de mort**, et
+     **l'apprentissage n'est jamais bloqué** : leçons, carte, lexique restent accessibles. Elle se réveille avec
+     un « repas complet » (3 à 5 commandes variées).
+3. **Ce que rapporte une créature rassasiée** :
+   - **Concentration** : +20 % d'XP sur les commandes et les leçons ;
+   - **Dressage facilité** : quelques secondes de plus aux épreuves et un indice gratuit ;
+   - **Rencontres** : les créatures sauvages sont attirées par une compagne en pleine forme (plus de rencontres,
+     un peu plus de chances de variante rare) ;
+   - **Évolution** : pour passer au stade suivant, il faut, en plus de l'XP, être restée **bien nourrie** un
+     certain nombre de jours (pas forcément d'affilée) — le soin compte, comme dans un vrai tamagotchi ;
+   - **Lien** : chaque jour bien nourrie ajoute des points de lien, qui débloquent des phrases, des réactions et,
+     à la longue, un talent propre à la créature ;
+   - **Aura et biome** : l'aura brille davantage, et son coin de biome fleurit.
+4. **Ce que coûte la faim** : moins d'XP, pas de dressage ni d'épreuve de type, le guide est grognon (indices plus
+   courts), l'aura pâlit, le biome se fane ; en veille, l'équipe peut choisir un autre guide.
+5. **Nourrir intelligemment** (pédagogie) : chaque **famille de commandes** est un **aliment** (se repérer,
+   bâtir, lire et chercher, brancher, protéger…). Un repas **varié** nourrit beaucoup plus qu'une même commande
+   répétée (rendements décroissants : `ls` dix fois de suite ne rassasie pas), les **nouvelles commandes** (« nouveau
+   goût ») nourrissent le plus, une commande **ratée** nourrit à peine. Une petite « assiette » montre les familles
+   déjà mangées aujourd'hui : ça pousse naturellement à varier et à découvrir.
+6. **Série de soins** : X jours de suite « en forme ou mieux » → badge et petite récompense ; une journée manquée ne
+   remet pas tout à zéro (on perd un cran, pas la série entière).
+7. **Longue absence** : au-delà de quelques semaines, la créature part se reposer dans son biome (rien n'est perdu,
+   on la retrouve en revenant) ; l'héritage reste réservé aux très longues absences.
+
+### Inspirations : CYBERLIFE (et Autonomous System Zero)
+
+CYBERLIFE (Steam, sorti le 27 octobre 2026) : jeu de piratage **entièrement au terminal**, monde unique partagé,
+réseau découvert **saut par saut sans carte**, entreprises à pénétrer, « localhost » comme refuge, butin à ramener,
+cinq **classes-métiers avec leurs propres commandes**, pas de jauge de vitesse de frappe (« l'observation, pas la
+vitesse »), les actions laissent des **traces** dans des journaux. Autonomous System Zero (OneManSprint) : pas
+encore sorti, page vide (stratégie / hacking / 4X en ligne) — à revoir à sa sortie.
+
+Ce qu'on peut reprendre, adapté à notre esprit (éducatif, défensif, sans affrontement entre joueurs, sans argent) :
+- **Le Port découvert saut par saut** : dans le réseau simulé (biomes = machines), la carte réseau n'est pas
+  donnée ; on la dessine soi-même avec `ip route`, `ping`, `tracepath`, et on la garde dans son carnet.
+- **Le camp de base = `localhost`** : tout ce qu'on trouve dans le Terminaworld ne compte que **ramené et rangé au
+  camp** (apprend `cp`, `mv`, `scp` dans le réseau simulé, la sauvegarde).
+- **Les métiers** : à la sortie du tronc commun, on choisit une **spécialité** (Explorateur, Bâtisseur, Défenseur,
+  Messager, Développeur…), chacune avec ses propres commandes avancées et ses épreuves — liée à l'orientation des
+  mondes (§ 2.9) ; on peut en changer.
+- **L'observation avant la vitesse** : principe déjà retenu (les chronos restent facultatifs) ; à afficher.
+- **Les traces** : chaque action laisse une ligne dans un journal du jeu ; dans la Citadelle, on apprend à les lire
+  (défendre) et à comprendre pourquoi on ne peut pas « passer sans laisser de trace ».
+- **Un monde partagé (site)** : des événements de communauté coopératifs (« réveiller ensemble le biome Glace »),
+  des cartes réseau partagées entre joueurs, une bibliothèque de petits scripts écrits par les joueurs (Guilde,
+  relus avant publication) — jamais d'attaque d'un joueur contre un autre, jamais de commerce.
