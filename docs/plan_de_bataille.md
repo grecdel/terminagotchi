@@ -312,7 +312,7 @@ Ordre : après le Port (le réseau simulé en est la base) et la Citadelle (pour
 4. cartes et relais : chaque nœud rapporté s'ajoute à la carte partagée avec le nom du découvreur ;
 5. archives et fichiers chiffrés (ouverts dans la Crypte) qui racontent pourquoi le Terminaworld s'est endormi ;
 6. nourriture rare (bonus temporaires, lien avec la satiété) ;
-7. Arène : récompenses cosmétiques et titres uniquement.
+7. Arène : titres, badges et place au classement uniquement. **Pas d'objets cosmétiques sur les créatures** (essai passé d'accessoires superposés aux images : rendu pas joli, refusé par le propriétaire le 29 octobre).
 
 Risque : énergie à zéro ou « déconnexion » loin de la base → on perd ce qui n'est pas encore rapporté, jamais la
 créature ni ce qui est déjà au localhost.
