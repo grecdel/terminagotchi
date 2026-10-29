@@ -1,1 +1,2 @@
 059_mammouroc : trop proche d'un mammouth réel (vs Magmastodonte) — à surveiller
+113_scintipede_cosmique : l'adulte garde un bout des antennes de l'ancien (à refaire)
