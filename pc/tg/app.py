@@ -1199,7 +1199,7 @@ def _main():
         mini.lancer(etape)
     elif mode == "bureau":
         from . import bureau
-        bureau.lancer(etape)
+        bureau.lancer(etape, args[1:])
     elif mode == "veille":
         veille()
     elif mode in ("combat", "monstre", "monstres"):
