@@ -35,7 +35,8 @@ object Vie {
         var finsSens = IntArray(0)
         var finsSet = BooleanArray(0)
         var amp = 1
-        var souffle: IntArray? = null      // haut, fin, xc
+        var souffle: IntArray? = null      // haut, fin, xc (null : pas de respiration)
+        var ampSouffle = 0                 // étirement au sommet, en 16es de pixel
     }
 
     fun lum(c: Int): Int = ((c shr 16 and 255) * 299 + (c shr 8 and 255) * 587 + (c and 255) * 114) / 1000
@@ -211,6 +212,7 @@ object Vie {
         a.amp = if (maxOf(w, h) < 36) 1 else 2
         val finSouffle = haut + (bas - haut) * 3 / 5
         a.souffle = if (finSouffle - haut >= 3) intArrayOf(haut, finSouffle, cx2 / 2) else null
+        a.ampSouffle = souffleMax(h)
         return true
     }
 
@@ -259,7 +261,10 @@ object Vie {
     }
 
     // ------------------------------------------------------------ le temps qui passe
-    /** (paupière 0|1|2, regard -1|0|1, souffle 0|1|2, phase de l'ondulation) à l'image t. */
+    /** L'étirement de la respiration au sommet, en 16es de pixel : presque rien pour un bébé, 1,5 pixel pour un grand. */
+    fun souffleMax(h: Int) = if (h < 25) 9 else if (h < 40) 16 else 24
+
+    /** (paupière 0|1|2, regard -1|0|1, souffle 0 à 100 en cosinus doux sur 16 images, phase de l'ondulation) à l'image t. */
     fun programme(a: Analyse, t: Int): IntArray {
         val b = t / BLOC
         val i = t % BLOC
@@ -281,8 +286,7 @@ object Vie {
             val g0 = (6 + (hsh ushr 14) % 12).toInt()
             if (i >= g0 && i < g0 + 7) regard = if ((hsh ushr 17) % 2 == 1L) 1 else -1
         }
-        val s = SIN[(t / 2) % 16]
-        val souffle = if (s >= 60) 2 else if (s >= 10) 1 else 0
+        val souffle = (100 - SIN[(t + 4) % 16]) / 2
         return intArrayOf(paup, regard, souffle, t % 16)
     }
 
@@ -324,23 +328,23 @@ object Vie {
             if (a.finsSens[n] == 1) y += dep else x += dep
             if (x in 0 until W2 && y in 0 until H2) out[y * W2 + x] = src[q]
         }
-        val sf = a.souffle
-        if (sf != null && souffle != 0) {
-            val haut = sf[0] + PAD; val fin = sf[1] + PAD; val xc = sf[2] + PAD
-            val y0: Int; val y1: Int
-            if (souffle == 1) { val q4 = (fin - haut) / 4; y0 = haut + q4; y1 = fin - q4 } else { y0 = haut; y1 = fin }
-            for (y in y0..y1) {
-                val ligne = out.copyOfRange(y * W2, (y + 1) * W2)
-                val nv = ligne.copyOf()
-                for (x in 1..xc) nv[x - 1] = ligne[x]
-                for (x in W2 - 2 downTo xc) nv[x + 1] = ligne[x]
-                System.arraycopy(nv, 0, out, y * W2, W2)
-            }
-            if (souffle == 2) {
-                val lev = haut + (fin - haut) / 2
-                for (y in 1..lev) System.arraycopy(out, y * W2, out, (y - 1) * W2, W2)
+        // la respiration : un léger étirement vers le haut, pieds fixes ; chaque ligne prend la ligne d'origine la plus
+        // proche (le décalage grandit doucement des pieds au sommet : aucune ligne de coupure)
+        var res = out
+        if (a.souffle != null && souffle != 0) {
+            val amp = a.ampSouffle * souffle / 100
+            if (amp != 0) {
+                val bas = H2 - 1
+                val H16 = h * 16
+                val nv = IntArray(W2 * H2)
+                for (y in 0 until H2) {
+                    val d = bas - y
+                    val sy = bas - (2 * d * H16 + H16 + amp) / (2 * (H16 + amp))
+                    if (sy >= 0) System.arraycopy(out, sy * W2, nv, y * W2, W2)
+                }
+                res = nv
             }
         }
-        return ByteArray(out.size) { out[it].toByte() }
+        return ByteArray(res.size) { res[it].toByte() }
     }
 }

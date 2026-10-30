@@ -134,7 +134,7 @@ fun main(args: Array<String>) {
     verifV(vivants * 100 >= n * 90, "la vie anime $vivants images sur $n")
     val e = Bestiaire.espece("ectoplouf")!!
     val st = AnimAuto.images(Bestiaire.image(e, "bebe")!!, "statique")
-    verifV(st.images.size == Vie.CYCLE && st.images.map { it.toList() }.toSet().size > 8, "au repos : 64 images de vie, qui changent")
+    verifV(st.images.size == Vie.CYCLE && st.images.map { it.toList() }.toSet().size > 4, "au repos : 64 images de vie, qui changent")
 
     println("\n$okV réussis, $koV échoués")
     if (koV > 0) System.exit(1)

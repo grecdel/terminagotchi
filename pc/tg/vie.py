@@ -5,7 +5,9 @@ Tout part de l'image fixe d'un stade (pixels indexés, palette en entiers 0xRRGG
   - les YEUX sont cherchés automatiquement : petites taches sombres (ou lumineuses) bien entourées par le corps,
     dans le haut de la silhouette, de préférence par paires à la même hauteur ; leurs reflets clairs vont avec ;
   - l'ÉPAISSEUR de la silhouette (distance au vide) sépare le corps (épais) des parties fines qui en dépassent ;
-  - le HAUT DU CORPS (le haut de la partie épaisse) gonfle d'un pixel de chaque côté et se soulève d'un pixel.
+  - la RESPIRATION étire doucement la créature vers le haut, les pieds fixes : chaque ligne monte d'autant plus
+    qu'elle est haute (0 aux pieds, 1 à 1,5 pixel au sommet selon la taille), sur une courbe en cosinus de
+    16 images ; chaque ligne prend la ligne d'origine la plus proche (pas de ligne de coupure).
 Si une détection échoue (pas d'yeux sûrs, pas de partie fine…), on n'anime pas cette partie ; si le résultat
 risque d'être cassé (trop de pixels perdus ou ajoutés), analyser() renvoie None et l'appelant garde l'animation
 d'avant (anim_auto : écrasement doux de toute l'image). Jamais d'image vide ou cassée.
@@ -266,6 +268,7 @@ def analyser(w, h, o, pal):
             a.amp = 1 if max(w, h) < 36 else 2
             fin_souffle = haut + (bas - haut) * 3 // 5
             a.souffle = (haut, fin_souffle, cx2 // 2) if fin_souffle - haut >= 3 else None
+        a.amp_souffle = souffle_max(h)
         if not a.yeux and not a.fins and a.souffle is None:
             return None
         bande = 0 if a.souffle is None else a.souffle[1] - a.souffle[0] + 1
@@ -294,9 +297,14 @@ def analyse_gardee(w, h, o, pal):
 
 
 # ---------------------------------------------------------------- le temps qui passe
+def souffle_max(h):
+    """L'étirement au sommet, en 16es de pixel : presque rien pour un bébé, 1,5 pixel pour un grand."""
+    return 9 if h < 25 else (16 if h < 40 else 24)
+
+
 def programme(a, t):
     """Ce que fait la créature à l'image t : (paupière 0 ouverte | 1 mi-close | 2 fermée, regard -1 | 0 | 1,
-    souffle 0 | 1 | 2, phase de l'ondulation)."""
+    souffle 0 à 100 (cosinus doux sur 16 images), phase de l'ondulation)."""
     b = t // BLOC
     i = t % BLOC
     hsh = _melange(a.graine ^ ((b * 0x9E3779B1) & M32))
@@ -318,8 +326,7 @@ def programme(a, t):
             g0 = 6 + (hsh >> 14) % 12
             if g0 <= i < g0 + 7:
                 regard = 1 if (hsh >> 17) % 2 else -1
-    s = SIN[(t // 2) % 16]
-    souffle = 2 if s >= 60 else (1 if s >= 10 else 0)
+    souffle = (100 - SIN[(t + 4) % 16]) // 2           # SIN décalé de 4 = cosinus : 0 → 100 → 0 en 16 images
     return paup, regard, souffle, t % 16
 
 
@@ -367,29 +374,20 @@ def image(a, t):
             x += dep
         if 0 <= x < W2 and 0 <= y < H2:
             out[y * W2 + x] = src[q]
-    # 3. le haut du corps respire : il s'élargit d'un pixel de chaque côté, puis se soulève d'un pixel
+    # 3. la respiration : un léger étirement vers le haut, les pieds fixes ; chaque ligne d'arrivée prend la ligne
+    #    d'origine la plus proche (le décalage grandit doucement des pieds au sommet : aucune ligne de coupure)
     if a.souffle is not None and souffle:
-        haut, fin, xc = a.souffle
-        haut += PAD
-        fin += PAD
-        xc += PAD
-        if souffle == 1:
-            q4 = (fin - haut) // 4
-            y0, y1 = haut + q4, fin - q4
-        else:
-            y0, y1 = haut, fin
-        for y in range(y0, y1 + 1):
-            ligne = out[y * W2:(y + 1) * W2]
-            nv = list(ligne)
-            for x in range(1, xc + 1):
-                nv[x - 1] = ligne[x]
-            for x in range(W2 - 2, xc - 1, -1):
-                nv[x + 1] = ligne[x]
-            out[y * W2:(y + 1) * W2] = nv
-        if souffle == 2:
-            lev = haut + (fin - haut) // 2
-            for y in range(1, lev + 1):
-                out[(y - 1) * W2:y * W2] = out[y * W2:(y + 1) * W2]
+        amp = a.amp_souffle * souffle // 100           # en 16es de pixel
+        if amp:
+            bas = H2 - 1
+            H16 = h * 16
+            nv = [0] * (W2 * H2)
+            for y in range(H2):
+                d = bas - y
+                sy = bas - (2 * d * H16 + H16 + amp) // (2 * (H16 + amp))
+                if sy >= 0:
+                    nv[y * W2:(y + 1) * W2] = out[sy * W2:(sy + 1) * W2]
+            out = nv
     return W2, H2, bytes(out)
 
 

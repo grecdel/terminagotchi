@@ -136,7 +136,18 @@ def main():
     verifier(avec_yeux * 100 >= n * 25, f"des yeux trouvés sur {avec_yeux} images")
     e = B.espece("ectoplouf")
     W, H, fr, _ = anim_auto.toiles(e, "bebe", "classique", "statique")
-    verifier(len(fr) == vie.CYCLE and len(set(fr)) > 8, "au repos : 64 images de vie, qui changent")
+    W2_, H2_, fr2, _ = anim_auto.toiles(B.espece("chaosmere"), "adulte", "classique", "statique")
+    verifier(len(fr) == vie.CYCLE and len(set(fr)) > 4 and len(set(fr2)) > 16,
+             f"au repos : 64 images de vie, qui changent ({len(set(fr))} différentes pour un bébé, {len(set(fr2))} pour un adulte)")
+    a2 = vie.analyser(*B.image(B.espece("chaosmere"), "adulte")[:3],
+                      [int(c[1:], 16) for c in B.image(B.espece("chaosmere"), "adulte")[3]])
+    sauts = 0
+    for t in range(16):                         # la respiration : jamais plus d'un pixel d'écart d'une image à l'autre
+        H0 = vie.image(a2, t)
+        H1 = vie.image(a2, t + 1)
+        haut = lambda im: next(y for y in range(im[1]) if any(im[2][y * im[0]:(y + 1) * im[0]]))
+        sauts = max(sauts, abs(haut(H0) - haut(H1)))
+    verifier(sauts <= 1, "respiration douce : le sommet ne bouge jamais de plus d'un pixel d'une image à l'autre")
     vieux = anim_auto._calculer(4, 4, bytes([1] * 16), [0x808080], "statique")
     verifier(len(vieux[2]) == 8, "une image trop petite garde l'animation d'avant (8 images)")
     a = vie.analyser(*B.image(e, "bebe")[:3], [int(c[1:], 16) for c in B.image(e, "bebe")[3]])
@@ -145,7 +156,7 @@ def main():
     blocs = [sorted(t % vie.BLOC for t in fermes if t // vie.BLOC == b) for b in range(vie.CYCLE // vie.BLOC)]
     verifier(fermes and blocs[0] != blocs[1], "les clignements ne tombent pas au même moment d'un bloc à l'autre "
                                               f"(rythme irrégulier : {blocs})")
-    verifier(any(p[1] for p in prog) and any(p[2] == 2 for p in prog), "petits regards et respiration au programme")
+    verifier(any(p[1] for p in prog) and any(p[2] >= 90 for p in prog) and any(p[2] == 0 for p in prog), "petits regards et respiration au programme")
 
     print("3. Auras : décor, reflet, éclat selon le soin")
     plein = [True] * 100
