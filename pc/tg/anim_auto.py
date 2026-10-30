@@ -14,6 +14,7 @@ import sys
 import time
 
 from . import bestiaire as B
+from . import vie
 
 ANIMS = ["statique", "mange", "attaque", "salut", "parle", "dort", "content", "affame", "confus", "colere",
          "victoire", "ko", "evolution"]
@@ -344,6 +345,16 @@ class _Ctx:
 
 
 def _statique(c):
+    """Au repos : la vie dans la créature (vie.py : yeux qui clignent, haut du corps qui respire, parties fines qui
+    ondulent, petits regards), 64 images ; si rien n'est sûr sur cette image, l'écrasement doux d'avant (8 images)."""
+    a = vie.analyse_gardee(c.w, c.h, c.spr[2], c.pal)
+    if a is not None:
+        for k in range(vie.CYCLE):
+            W2, H2, img = vie.image(a, k)
+            t = c.toile()
+            t.sprite((W2, H2, img), c.cx, c.base, W2, H2)
+            c.garder(t)
+        return
     sy = (100, 99, 97, 96, 96, 97, 99, 100)
     sx = (100, 100, 101, 102, 102, 101, 100, 100)
     for f in range(8):
@@ -676,6 +687,7 @@ def _calculer(w, h, octets, palette, nom, de=None):
         H += 1
     c = _Ctx(spr, W, H, sp)
     c.top = c.base - spr[1]
+    c.pal = pal[:N]
     f = {"statique": _statique, "mange": _mange, "attaque": _attaque, "salut": _salut, "parle": _parle,
          "dort": _dort, "content": _content, "affame": _affame, "confus": _confus, "colere": _colere,
          "victoire": _victoire, "ko": _ko}.get(nom)
@@ -699,10 +711,8 @@ def images(w, h, octets, palette, nom, de=None):
     return W, H, fr, [_hex(x) for x in pal]
 
 
-def lignes(e, stade, vid, nom, teinte=None, aura=None):
-    """(images en lignes de terminal, images par seconde) pour une espèce du bestiaire, ou None.
-    Pour « evolution », stade est le stade d'arrivée : on part du stade précédent.
-    aura : palier d'aura de rareté (aura.py) qui respire autour de la silhouette, image après image."""
+def toiles(e, stade, vid, nom, teinte=None):
+    """(W, H, [octets par image], palette "#rrggbb" teintée) d'une animation d'une espèce du bestiaire, ou None."""
     img = B.image(e, stade, vid)
     if not img:
         return None
@@ -716,10 +726,56 @@ def lignes(e, stade, vid, nom, teinte=None, aura=None):
     pal = [_hex(x) for x in pal]
     if teinte is not None:
         pal = [B.decaler(x, teinte) if k < n_teinte else x for k, x in enumerate(pal)]
-    if aura:
-        from . import aura as A
-        if A.visible(aura, terminal=True):
-            return [A.lignes(W, H, A.depuis_octets(W, H, x, pal), aura, k) for k, x in enumerate(fr)], IPS
+    return W, H, fr, pal
+
+
+class Paresseux:
+    """Une liste d'images calculées seulement quand on les montre (et gardées) : les rendus fins coûtent plus cher,
+    et une animation en temps réel saute des images plutôt que de tout calculer d'avance."""
+    def __init__(self, n, faire):
+        self.n, self.faire, self.vu = n, faire, {}
+
+    def __len__(self):
+        return self.n
+
+    def __getitem__(self, k):
+        if isinstance(k, slice):
+            return [self[i] for i in range(*k.indices(self.n))]
+        if k < 0:
+            k += self.n
+        if not 0 <= k < self.n:
+            raise IndexError(k)
+        if k not in self.vu:
+            self.vu[k] = self.faire(k)
+        return self.vu[k]
+
+    def __iter__(self):
+        return (self[k] for k in range(self.n))
+
+
+def lignes(e, stade, vid, nom, teinte=None, aura=None, fin=False, eclat=None):
+    """(images en lignes de terminal, images par seconde) pour une espèce du bestiaire, ou None.
+    Pour « evolution », stade est le stade d'arrivée : on part du stade précédent.
+    aura : palier d'aura de rareté (aura.py) qui respire autour de la silhouette, image après image ;
+    fin : le rendu le plus fin du terminal (rendu_fin.py : vraie image ou quadrants), calculé image par image ;
+    eclat : l'éclat de l'aura selon le soin (aura.eclat), normal si None."""
+    r = toiles(e, stade, vid, nom, teinte)
+    if r is None:
+        return None
+    W, H, fr, pal = r
+    if fin:                                   # sans les marges vides communes à toutes les images
+        from .sprites import _recadrer
+        W, H, fr = _recadrer(W, H, fr)
+    from . import aura as A
+    ec = A.ECLAT_NORMAL if eclat is None else eclat
+    if fin:
+        from . import rendu_fin
+        mode = rendu_fin.mode()
+        if mode != "demi":
+            return Paresseux(len(fr), lambda k: rendu_fin.lignes(W, H, A.depuis_octets(W, H, fr[k], pal), aura, k,
+                                                                 ec, mode)[0]), IPS
+    if aura and A.visible(aura, terminal=True):
+        return Paresseux(len(fr), lambda k: A.lignes(W, H, A.depuis_octets(W, H, fr[k], pal), aura, k, ec)), IPS
     return [B.lignes_image(W, H, x, pal) for x in fr], IPS
 
 

@@ -319,7 +319,7 @@ object AnimAuto {
     }
 
     // ------------------------------------------------------------ les animations
-    private class Ctx(val spr: Spr, val largeur: Int, val hauteur: Int, val sp: Int) {
+    private class Ctx(val spr: Spr, val largeur: Int, val hauteur: Int, val sp: Int, val pal: IntArray = IntArray(0)) {
         val w = spr.w
         val h = spr.h
         val cx = largeur / 2
@@ -339,7 +339,20 @@ object AnimAuto {
         fun garder(t: Toile) { frames.add(t.px) }
     }
 
+    /** Au repos : la vie dans la créature (Vie.kt : yeux qui clignent, haut du corps qui respire, parties fines qui
+     *  ondulent, petits regards), 64 images ; si rien n'est sûr sur cette image, l'écrasement doux d'avant (8 images). */
     private fun statique(c: Ctx) {
+        val a = Vie.analyseGardee(c.w, c.h, c.spr.o, c.pal)
+        if (a != null) {
+            val W2 = Vie.largeur(a); val H2 = Vie.hauteur(a)
+            for (k in 0 until Vie.CYCLE) {
+                val img = Vie.image(a, k)
+                val t = c.toile()
+                t.sprite(Spr(W2, H2, IntArray(img.size) { img[it].toInt() and 0xFF }), c.cx, c.base, W2, H2)
+                c.garder(t)
+            }
+            return
+        }
         val sy = intArrayOf(100, 99, 97, 96, 96, 97, 99, 100)
         val sx = intArrayOf(100, 100, 101, 102, 102, 101, 100, 100)
         for (f in 0 until 8) {
@@ -683,7 +696,7 @@ object AnimAuto {
         val W = D + 2 * mx
         var H = lh + mt + 2
         if (H % 2 != 0) H += 1
-        val c = Ctx(spr, W, H, sp)
+        val c = Ctx(spr, W, H, sp, base)
         when (nom) {
             "statique" -> statique(c)
             "mange" -> mange(c)
@@ -706,6 +719,36 @@ object AnimAuto {
 
     /** Variante pratique : à partir d'un Sprite. */
     fun images(s: Sprite, nom: String, de: Sprite? = null): Anim = images(s.w, s.h, s.octets, s.palette, nom, de)
+
+    private var paletteGardee: Triple<Any, Double?, IntArray>? = null
+
+    /**
+     * UNE image de l'animation (numéro k, modulo leur nombre) en Bitmap agrandie sans lissage : pour la vie au repos,
+     * calculée image par image au moment de l'afficher (pas 64 grandes images en mémoire).
+     */
+    fun bitmap(anim: Anim, k: Int, echelle: Int, teinte: Double?): Bitmap {
+        val g = paletteGardee
+        val pal = if (g != null && g.first === anim && g.second == teinte) g.third else {
+            val p = anim.palette.copyOf()
+            if (teinte != null) for (i in 0 until anim.nTeinte) p[i] = Bestiaire.decaler(p[i] and 0xFFFFFF, teinte) or 0xFF000000.toInt()
+            paletteGardee = Triple(anim, teinte, p)
+            p
+        }
+        val e = maxOf(1, echelle)
+        val W = anim.largeur; val H = anim.hauteur
+        val img = anim.images[Math.floorMod(k, anim.images.size)]
+        val ligne = IntArray(W * e)
+        val bmp = Bitmap.createBitmap(W * e, H * e, Bitmap.Config.ARGB_8888)
+        for (y in 0 until H) {
+            for (x in 0 until W) {
+                val v = img[y * W + x].toInt() and 0xFF
+                val col = if (v == 0) 0 else pal[v - 1]
+                for (a in 0 until e) ligne[x * e + a] = col
+            }
+            for (b in 0 until e) bmp.setPixels(ligne, 0, W * e, 0, y * e + b, W * e, 1)
+        }
+        return bmp
+    }
 
     /**
      * Les images en Bitmap agrandies sans lissage (echelle × echelle par pixel).
