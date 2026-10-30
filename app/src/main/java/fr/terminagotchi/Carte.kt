@@ -26,6 +26,8 @@ interface Peintre {
     fun lueur(x: Float, y: Float, r: Float, couleur: Int) {}
     /** Le bébé de l'espèce tirée (sprite du stade 1) debout à (x centre, y pieds), haut de h. */
     fun bebe(x: Float, y: Float, h: Float): Boolean = creature(x, y, h)
+    /** Les pixels du bébé (pour son fondu digital), ou null : il est alors dessiné d'un coup (bebe). */
+    fun bebePix(): Carte.Pix? = null
 }
 
 object Carte {

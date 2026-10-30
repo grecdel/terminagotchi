@@ -101,6 +101,14 @@ class PeintreI(val g: java.awt.Graphics2D, val jeu: Jeu?) : Peintre {
         g.paint = java.awt.RadialGradientPaint(x, y, r, floatArrayOf(0f, 1f), arrayOf(java.awt.Color(couleur, true), java.awt.Color(couleur and 0xFFFFFF, true)))
         g.fill(java.awt.geom.Ellipse2D.Float(x - r, y - r, 2 * r, 2 * r))
     }
+    override fun bebePix(): Carte.Pix? {
+        val j = jeu ?: return null
+        val f = System.getProperty("tg.portraits")?.let { File(it, j.extra.optString("espece_compagnon") + "/classique_bebe.png") }
+        if (f != null && f.isFile) { val b = javax.imageio.ImageIO.read(f); return Carte.Pix(b.width, b.height, b.getRGB(0, 0, b.width, b.height, null, 0, b.width)) }
+        val b = try { Sprites.bitmap(j, 8, st = 1) } catch (e: Exception) { return null }
+        val px = IntArray(b.width * b.height); b.getPixels(px, 0, b.width, 0, 0, b.width, b.height)
+        return Carte.Pix(b.width, b.height, px)
+    }
     override fun bebe(x: Float, y: Float, h: Float): Boolean {
         val j = jeu ?: return false
         // comme IntroVue : le portrait du bébé (assets/portraits, en .webp que java ne lit pas : une copie .png dans le
@@ -434,8 +442,17 @@ fun main(args: Array<String>) {
         "l'œuf à 50 % : le haut reçu, la ligne en cours en vert, le bas en contour")
     verifier(Oeufs.aDesFins() && Scenes.oeuf(Oeufs.typeDe(s7), Scenes.moment(s7, 1_005_000L))?.second == 4, "l'écran de l'œuf utilise l'œuf fin (104×104)")
     Intro.i(s7).put("faits", JSONArray(listOf("pwd", "ls", "echo", "whoami"))).put("etat", "fini").put("evt", JSONArray().put(4).put(2_000_000L))
-    val fins = listOf(300L, 900L, 1500L, 4000L).map { Scenes.moment(s7, 2_000_000L + it).phase }
-    verifier(fins == listOf("telech", "eclat", "eclot", "ne"), "4e commande : 100 %, l'éclat, l'éclosion, le bébé ($fins)")
+    val fins = listOf(300L, 900L, 1500L, 3000L, 5000L).map { Scenes.moment(s7, 2_000_000L + it).phase }
+    verifier(fins == listOf("telech", "eclat", "eclot", "fondu", "ne"), "4e commande : 100 %, l'éclat, l'œuf se fêle et s'ouvre, le fondu digital, né ($fins)")
+    val ks = (0 until 14).map { Scenes.moment(s7, 2_000_000L + 1250L + it * 100L).k }
+    verifier(ks == ks.sorted() && ks.first() == 0 && ks.last() == Scenes.ECLOT.size - 1, "l'éclosion image par image : fêlures, tremblement, coquille ouverte")
+    val bb = Carte.Pix(20, 20, IntArray(400) { 0xFF884422.toInt() })
+    val vus = listOf(0.1f, 0.4f, 0.7f, 1f).map { f -> Scenes.fondu(bb, f, 0).px.count { (it ushr 24) == 255 } }
+    verifier(vus[0] < vus[1] && vus[1] < vus[2] && vus[2] <= vus[3] && vus[3] == 400, "le bébé apparaît pixel par pixel ($vus)")
+    verifier(Scenes.fondu(bb, 0.4f, 0).px.any { (it ushr 24) == 255 && ((it shr 8) and 255) > 200 }, "les pixels qui arrivent brillent en vert « matrix »")
+    val nait = Langue.t("intro.merci.titre", "nom" to s7.nom)
+    verifier(Intro.etape(s7, Scenes.moment(s7, 2_003_000L)).second != nait && Intro.etape(s7, Scenes.moment(s7, 2_005_000L)).second == nait,
+        "« ${s7.nom} est né ! » arrive après l'apparition du bébé")
     verifier(Intro.prochaineImage(s7, "merci", 2_000_500L) != null && Intro.prochaineImage(s7, "merci", 2_060_000L) == null, "l'écran bouge pendant l'animation, puis s'arrête")
 
     println("10. Les 14 langues")
@@ -479,7 +496,8 @@ fun main(args: Array<String>) {
             apercu(sortie, "scene_4_reception_87", q) { Intro.dessinerOeuf(it, q, 360f, null, T + 25_000) }
             Intro.i(q).put("faits", JSONArray(listOf("pwd", "ls", "echo", "whoami"))).put("etat", "fini").put("evt", JSONArray().put(4).put(T + 30_000))
             q.xp = 10
-            for (ms in listOf(300L, 900L, 1300L, 1700L, 4000L)) apercu(sortie, "scene_5_eclosion_%04d".format(ms), q) { Intro.dessinerCarte(it, q, "merci", 360f, "/home/lea", T + 30_000 + ms) }
+            for (ms in listOf(300L, 900L, 1500L, 1900L, 2250L, 2700L, 3100L, 3500L, 3900L, 6000L))
+                apercu(sortie, "scene_5_eclosion_%04d".format(ms), q) { Intro.dessinerCarte(it, q, "merci", 360f, "/home/lea", T + 30_000 + ms) }
             apercu(sortie, "scene_5_ici", q) { Intro.dessinerCarte(it, q, "merci2", 360f, "/home/lea", T + 40_000) }
             Intro.hauteurMax = 430f
             apercu(sortie, "scene_4_petit_ecran", q.also { Intro.i(it).put("etat", "oeuf").put("faits", JSONArray(listOf("pwd"))) }) { Intro.dessinerOeuf(it, q, 360f, null, T + 6000) }

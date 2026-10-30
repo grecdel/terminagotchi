@@ -7,8 +7,9 @@ Produit :
   - app/src/main/assets/intro/{monde,dort,camp}.jpg : Android, réduites proprement (Lanczos), JPEG qualité 80 (couleurs
     en 4:2:2, les lueurs vertes restent nettes) ; le camp en 1152×648 (il est recadré en carré sur le téléphone), le
     monde endormi ou vivant en 960 de large (montrés en entier) ; environ 700 Ko pour les trois ;
-  - pc/tg/illustrations.bin : PC, les trois images en 240×135 (deux fois la résolution d'un terminal de 120 colonnes en
-    demi-blocs), RVB sur 5 bits par couleur, compressé (zlib), lu par pc/tg/scenes.py sans aucune bibliothèque.
+  - pc/tg/illustrations.bin : PC, les trois images en 384×216 (assez pour une vraie image dans un terminal qui sait
+    les afficher, et réduites à la volée pour les sextants ou les demi-blocs), RVB sur 5 bits par couleur, compressé
+    (zlib), lu par pc/tg/scenes.py sans aucune bibliothèque.
 Le camp endormi n'est PAS une image à part : le jeu le calcule (désaturé, assombri, bleui), comme sur les maquettes.
 Format de illustrations.bin : b"TGI1", puis pour chaque image : nom (1 octet de longueur + ASCII), largeur, hauteur
 (2 octets chacun, gros-boutiste), longueur des données (4 octets), données zlib (RVB, ligne par ligne).
@@ -25,7 +26,7 @@ ANDROID = os.path.join(DEPOT, "app", "src", "main", "assets", "intro")
 PC = os.path.join(DEPOT, "pc", "tg", "illustrations.bin")
 
 IMAGES = {"monde": ("monde.png", 960), "dort": ("dort.png", 960), "camp": ("camp2.png", 1152)}
-PC_TAILLE = (240, 135)
+PC_TAILLE = (384, 216)
 
 
 def main():

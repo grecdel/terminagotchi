@@ -233,7 +233,7 @@ object Scenes {
 
     /** Où en est l'intro : phase dort | eveil | telech | eclat | eclot | ne ; te = secondes depuis le début de la phase ;
      *  pct = l'œuf reçu ; k = numéro d'image (le scintillement). */
-    class Moment(val phase: String, val te: Float, val pct: Float, val k: Int)
+    class Moment(val phase: String, val te: Float, val pct: Float, val k: Int, val f: Float = 1f)
 
     fun moment(jeu: Jeu, t: Long): Moment {
         val i = Intro.i(jeu)
@@ -257,12 +257,57 @@ object Scenes {
         val k = ((t / 83) % 1_000_000L).toInt()
         if (!fini || pct < 100f) return Moment("telech", (t - depart) / 1000f, pct, k)
         val eclat = tl.optDouble("eclat", 0.7).toFloat()
-        val eclot = tl.optDouble("eclot", 1.0).toFloat()
+        val eclot = tl.optDouble("eclot", 1.4).toFloat()
+        val fondu = tl.optDouble("fondu", 1.6).toFloat()
         var x = if (depart > 0) (t - depart) / 1000f - (100 - de) / vit else 99f
         if (x < eclat) return Moment("eclat", x, 100f, (x * 10).toInt())
         x -= eclat
-        if (x < eclot) return Moment("eclot", x, 100f, (x * 6 / eclot).toInt())
-        return Moment("ne", x, 100f, k)
+        if (x < eclot) return Moment("eclot", x, 100f, minOf(ECLOT.size - 1, (x / eclot * ECLOT.size).toInt()))
+        x -= eclot
+        if (x < fondu) return Moment("fondu", x, 100f, k, x / fondu)
+        return Moment("ne", x - fondu, 100f, k)
+    }
+
+    /** L'éclosion image par image (comme scenes.ECLOT sur PC) : il se fêle (une, deux, trois fêlures qui éclairent),
+     *  tremble, la coquille éclate et s'ouvre (à partir de OUVERT). */
+    val ECLOT = listOf(Triple(1, "craque", 0), Triple(1, "craque", 1), Triple(2, "craque", 0), Triple(2, "craque", 1),
+        Triple(3, "craque", 0), Triple(3, "craque", 1), Triple(3, "craque", 2), Triple(3, "remue", 0), Triple(3, "remue", 2),
+        Triple(3, "eclot", 0), Triple(3, "eclot", 1), Triple(3, "eclot", 3), Triple(3, "eclot", 4), Triple(3, "eclot", 5))
+    const val OUVERT = 11
+
+    // ---------------------------------------------------------------- le fondu digital du bébé
+    private val BAYER = arrayOf(intArrayOf(0, 32, 8, 40, 2, 34, 10, 42), intArrayOf(48, 16, 56, 24, 50, 18, 58, 26),
+        intArrayOf(12, 44, 4, 36, 14, 46, 6, 38), intArrayOf(60, 28, 52, 20, 62, 30, 54, 22), intArrayOf(3, 35, 11, 43, 1, 33, 9, 41),
+        intArrayOf(51, 19, 59, 27, 49, 17, 57, 25), intArrayOf(15, 47, 7, 39, 13, 45, 5, 37), intArrayOf(63, 31, 55, 23, 61, 29, 53, 21))
+
+    /** L'ordre d'arrivée d'un pixel dans le fondu digital (0 à 1) : une trame de Bayer 8×8 mêlée de hasard. */
+    fun ordre(x: Int, y: Int): Float = (BAYER[y % 8][x % 8] + 0.5f) / 64f * 0.55f + h(x, y, 5) * 0.45f
+
+    private var fonduBuf: Carte.Pix? = null
+
+    /** Le bébé (src, ARGB) qui apparaît en fondu digital, f de 0 à 1 : chaque pixel arrive à son tour (ordre) ; ceux
+     *  qui viennent d'arriver brillent en vert « matrix » puis prennent leur vraie couleur ; une ligne sur trois un peu
+     *  plus sombre (balayage) et une ligne claire qui descend. g = la taille d'un « pixel » du fondu (en pixels de src). */
+    fun fondu(src: Carte.Pix, f: Float, k: Int, g: Int = 1): Carte.Pix {
+        val b = fonduBuf?.takeIf { it.w == src.w && it.h == src.h } ?: Carte.Pix(src.w, src.h, IntArray(src.px.size)).also { fonduBuf = it }
+        val p = minOf(1f, f * 1.25f)
+        val ligne = (f * 1.1f * src.h).toInt()
+        for (y in 0 until src.h) {
+            val sombre = f < 0.95f && ((y / g + k) % 3 == 0)
+            for (x in 0 until src.w) {
+                val i = y * src.w + x
+                val q = src.px[i]
+                if ((q ushr 24) < 16) { b.px[i] = 0; continue }
+                val o = ordre(x / g, y / g)
+                if (o > p) { b.px[i] = if (o - p < 0.06f && h(x / g, y / g, k) < 0.5f) alpha(VERT, 40) else 0; continue }
+                val d = (p - o) / 0.2f
+                var c = if (d < 1f) melange((0xFF shl 24) or 0x9CFFB4, q or (0xFF shl 24), d) else q
+                if (y / g == ligne / g || y / g == ligne / g - 1) c = melange(c, 0xFFFFFFFF.toInt(), 0.3f)
+                else if (sombre) c = melange(c, 0xFF000000.toInt(), 0.28f)
+                b.px[i] = (c and 0xFFFFFF) or (q and 0xFF000000.toInt())
+            }
+        }
+        return b
     }
 
     /** Vrai tant que l'image bouge (réveil, réception, éclat, éclosion, étincelles du bébé) : la vue se redessine. */
@@ -350,8 +395,8 @@ object Scenes {
                 b to F
             }
             "eclat" -> img(0, "brille", m.k)?.let { it to F }
-            "eclot" -> img(3, "eclot", minOf(5, m.k))?.let { it to F }
-            "ne" -> img(3, "eclot", 5)?.let { it to F }
+            "eclot" -> ECLOT[m.k.coerceIn(0, ECLOT.size - 1)].let { (fe, nom, k) -> img(fe, nom, k) }?.let { it to F }
+            "fondu", "ne" -> img(3, "eclot", 5)?.let { it to F }
             else -> null
         }
     }

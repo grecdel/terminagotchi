@@ -398,7 +398,7 @@ def ecran_intro(n, total=None, cols=None, rangs=None):
     mode = scenes.mode_couleurs()
     tl = scenes.taille(cols, rangs, len(texte) + 6)
     if mode and tl and e.get("image") and scenes.disponible("camp" if e["image"] == "camp_dort" else e["image"]):
-        dessin = scenes.illustration(e["image"], tl[0], tl[1], mode, " ")
+        dessin = scenes.illustration(e["image"], tl[0], tl[1], mode, " ")       # image, sextants… (scenes.rendu)
     elif mode:
         dessin = ["   " + l for l in scene(e["scene"])]
     out = [""] + dessin + [""]
@@ -500,10 +500,13 @@ def textes_etape(state, m, larg):
         coul = fg(78) if ph == "eveil" else ""
         out += [coul + x + RESET for x in envelopper(t("intro.camp.dort" if ph == "dort" else "intro.eveil"), larg)]
         return out
-    if ph == "ne":
+    if ph == "ne":                          # « … est né ! » seulement quand le bébé est là (après le fondu)
         return [f"{BOLD}{fg(213)}" + t("intro.merci.titre", nom=state.get("name", "")) + f"{RESET}   " + points(5)] + \
             envelopper(t("intro.merci", nom=state.get("name", "")), larg)
     titre, reste = titre_type(ty)
+    if ph in ("eclot", "fondu"):
+        n = len(checklist())
+        return [f"{BOLD}{fg(213)}{titre}{RESET}   " + points(5), fg(78) + "✓ " + t("intro.eclot", n=n, total=n) + RESET]
     out = [f"{BOLD}{fg(213)}{titre}{RESET}   " + points(4)]
     out += envelopper(reste + " " + t("intro.nourris"), larg)
     out.append(ligne_reception(state, m["pct"], larg))
@@ -520,7 +523,8 @@ def dessin_scene(state, quand, cols, rangs, reserve, marge=" "):
     m = scenes.moment(state, quand)
     tl = scenes.taille(cols, rangs, reserve)
     if tl:
-        return scenes.lignes(scenes.scene(state, tl[0], tl[1], quand, m), tl[0], tl[1], mode, marge)
+        return scenes.peindre(lambda w, h, pa: scenes.scene(state, w, h, quand, m, 0.5, pa), tl[0], tl[1] // 2, None,
+                              mode, marge)
     if rangs - reserve >= 13 and cols >= 32:
         return scenes.oeuf_seul(state, m, mode, "  ")
     return []
@@ -535,7 +539,7 @@ def duree_anim(nom):
     if n == 1:
         return scenes.camp().get("duree", 3.4) + scenes.cible(1) / vit + 0.3
     if n >= len(checklist()):
-        return (100 - scenes.cible(n - 1)) / vit + tl.get("eclat", 0.7) + tl.get("eclot", 1.0) + 0.8
+        return (100 - scenes.cible(n - 1)) / vit + tl.get("eclat", 0.7) + tl.get("eclot", 1.4) + tl.get("fondu", 1.6) + 0.8
     return (scenes.cible(n) - scenes.cible(n - 1)) / vit + 0.3
 
 
@@ -547,13 +551,38 @@ def debut_anim(state, nom):
     return evt[1] if len(evt) > 1 and evt[1] else time.time()
 
 
-def animation(nom, state, ips=8):
+class Images:
+    """Les images d'une animation, calculées seulement quand on les montre (une vraie image coûte plus cher)."""
+
+    def __init__(self, n, fn):
+        self.n, self.fn, self.vu = n, fn, {}
+
+    def __len__(self):
+        return self.n
+
+    def __getitem__(self, k):
+        if k < 0:
+            k += self.n
+        if not 0 <= k < self.n:
+            raise IndexError(k)
+        if k not in self.vu:
+            self.vu = {k: self.fn(k)}
+        return self.vu[k]
+
+    def __iter__(self):
+        return (self[k] for k in range(self.n))
+
+
+def animation(nom, state, ips=None):
     """(images, ips) d'une animation de l'intro (« oeuf_1 » à « oeuf_3 », « eclosion ») pour la fenêtre : l'écran
-    entier (Ecran) à chaque instant, depuis la commande (le camp qui se réveille, l'œuf qui arrive, qui éclot)."""
+    entier (Ecran) à chaque instant, depuis la commande (le camp qui se réveille, l'œuf qui arrive, qui éclot, le bébé
+    qui apparaît). Moins d'images par seconde quand ce sont de vraies images."""
+    from . import scenes
+    ips = ips or (4 if scenes.rendu() in scenes.GRAPHIQUES else 8)
     t0 = debut_anim(state, nom)
     c, r = _terminal()
     n = max(8, int(duree_anim(nom) * ips) + 1)
-    return [Ecran(lignes_ecran_oeuf(state, 0, None, t0 + k / ips, c, r)) for k in range(n)], ips
+    return Images(n, lambda k: Ecran(lignes_ecran_oeuf(state, 0, None, t0 + k / ips, c, r))), ips
 
 
 def lignes_ecran_oeuf(state, frame=0, image=None, quand=None, cols=None, rangs=None):
@@ -602,7 +631,9 @@ def bloc_prompt(state, quand, cols=None, rangs=None):
         out += [f"  {fg(78)}{x}{RESET}" for x in envelopper(t("intro.camp.reveil"), larg)]
     elif ph == "telech":
         out += [f"  {fg(214)}{x}{RESET}" for x in envelopper(t("intro.type." + ty), larg)]
-    if ph not in ("dort", "eveil", "ne"):
+    elif ph in ("eclot", "fondu"):
+        out.append(f"  {fg(78)}✓ " + t("intro.eclot", n=len(checklist()), total=len(checklist())) + RESET)
+    if ph not in ("dort", "eveil", "ne", "eclot", "fondu"):
         out.append("  " + ligne_reception(state, m["pct"], cols - 4))
     if ph != "ne":
         out += ["  " + x for x in liste_courte(state, cols - 4)]
@@ -625,27 +656,35 @@ def animer_ici():
         return False
 
 
-def images_prompt(state, nom, ips=10):
-    """Les images de l'invite pour une commande de la liste (la dernière : l'état final)."""
+def images_prompt(state, nom):
+    """L'image finale de l'invite pour une commande de la liste ; l'animation qui y mène (si l'invite peut animer)
+    est notée dans ANIM_PROMPT et jouée par jouer_prompt."""
     t0 = debut_anim(state, nom)
-    fin = t0 + duree_anim(nom)
-    if not animer_ici():
-        return [bloc_prompt(state, fin)]
-    c, r = _terminal()
-    n = int(duree_anim(nom) * ips) + 1
-    return [bloc_prompt(state, t0 + k / ips, c, r) for k in range(n)]
+    d = duree_anim(nom)
+    del ANIM_PROMPT[:]
+    if animer_ici():
+        ANIM_PROMPT.append((state, t0, d))
+    return bloc_prompt(state, t0 + d)
 
 
-def jouer_prompt(flux, ips=10):
-    """Joue les images en attente au même endroit du terminal (le curseur revient au début ; la dernière image est
-    écrite ensuite par l'invite). Ctrl+C l'arrête."""
+def jouer_prompt(flux, ips=12):
+    """Joue l'animation en attente au même endroit du terminal, en temps réel (chaque image montre l'instant où elle
+    est prête : une vraie image, plus lente à fabriquer, saute des instants au lieu de ralentir). Le curseur revient
+    au début ; l'image finale est écrite ensuite par l'invite. Ctrl+C l'arrête."""
     if not ANIM_PROMPT:
         return
+    state, t0, d = ANIM_PROMPT[0]
+    c, r = _terminal()
+    debut = time.time()
     try:
-        for img in ANIM_PROMPT:
+        while True:
+            x = time.time() - debut
+            if x >= d:
+                break
+            img = bloc_prompt(state, t0 + x, c, r)
             flux.write("\x1b[J" + "\n".join(img) + RESET + "\n" + f"\x1b[{len(img)}A\r")
             flux.flush()
-            time.sleep(1 / ips)
+            time.sleep(max(0.0, 1 / ips - (time.time() - debut - x)))
     except KeyboardInterrupt:
         pass
     finally:
@@ -680,10 +719,7 @@ def pour_prompt(state):
     if evt and i.get("vu_prompt") != evt[1]:
         i["vu_prompt"] = evt[1]
         nom = "eclosion" if not retient(state) else f"oeuf_{max(1, min(3, evt[0]))}"
-        imgs = images_prompt(state, nom)
-        del ANIM_PROMPT[:]
-        ANIM_PROMPT.extend(imgs[:-1])
-        out = list(imgs[-1])
+        out = list(images_prompt(state, nom))
         if retient(state):
             return out
         cid = a_montrer(state)

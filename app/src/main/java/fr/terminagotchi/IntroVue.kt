@@ -98,12 +98,14 @@ class IntroVue(ctx: Context, private val jeu: Jeu, private val creature: () -> B
             toile?.drawCircle(x, y, r, pLueur)
         }
 
+        override fun bebePix(): Carte.Pix? = bebePixC ?: bebeBitmap()?.let { b ->
+            val px = IntArray(b.width * b.height)
+            b.getPixels(px, 0, b.width, 0, 0, b.width, b.height)
+            Carte.Pix(b.width, b.height, px).also { bebePixC = it }
+        }
+
         override fun bebe(x: Float, y: Float, h: Float): Boolean {
-            // le portrait peint du bébé de l'espèce tirée (assets/portraits), sinon son sprite du jeu
-            val b = bebeBmp ?: (try {
-                jeu.extra.optString("espece_compagnon").takeIf { it.isNotEmpty() }?.let { Bestiaire.espece(it) }
-                    ?.let { Bestiaire.portrait(it, "classique", "bebe") } ?: Sprites.bitmap(jeu, 8, st = 1)
-            } catch (e: Exception) { null })?.also { bebeBmp = it } ?: return creature(x, y, h)
+            val b = bebeBitmap() ?: return creature(x, y, h)
             val w = h * b.width / maxOf(1, b.height)
             dst.set(x - w / 2, y - h, x + w / 2, y)
             toile?.drawBitmap(b, null, dst, pPix)
@@ -115,6 +117,13 @@ class IntroVue(ctx: Context, private val jeu: Jeu, private val creature: () -> B
     private val pLisse = Paint(Paint.FILTER_BITMAP_FLAG or Paint.ANTI_ALIAS_FLAG)
     private val pLueur = Paint(Paint.ANTI_ALIAS_FLAG)
     private var bebeBmp: Bitmap? = null
+    private var bebePixC: Carte.Pix? = null
+
+    /** Le portrait peint du bébé de l'espèce tirée (assets/portraits), sinon son sprite du jeu. */
+    private fun bebeBitmap(): Bitmap? = bebeBmp ?: (try {
+        jeu.extra.optString("espece_compagnon").takeIf { it.isNotEmpty() }?.let { Bestiaire.espece(it) }
+            ?.let { Bestiaire.portrait(it, "classique", "bebe") } ?: Sprites.bitmap(jeu, 8, st = 1)
+    } catch (e: Exception) { null })?.also { bebeBmp = it }
 
     /** L'intro en images bouge (réveil, réception de l'œuf, éclosion) : l'image suivante, au bon rythme. */
     private val image = Runnable { invalidate() }

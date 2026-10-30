@@ -554,16 +554,29 @@ object Intro {
         val (oeuf, _) = Scenes.oeuf(ty, m) ?: return
         val o = c.optJSONObject("oeuf") ?: org.json.JSONObject()
         val (nx, ny) = (c.optJSONArray("nid")?.let { it.optDouble(0).toFloat() to it.optDouble(1).toFloat() } ?: (760f to 545f))
-        if (m.phase == "ne") {
+        val ox = o.optDouble("x", 545.0).toFloat(); val oy = o.optDouble("y", 196.0).toFloat(); val cote = o.optDouble("cote", 430.0).toFloat()
+        if (m.phase == "ne" || m.phase == "fondu") {
+            // la coquille ouverte glisse vers le bord du nid ; le bébé apparaît en fondu digital, puis les étincelles
+            val f = if (m.phase == "fondu") m.f else 1f
+            val g0 = minOf(1f, f / 0.35f)
+            val g = g0 * g0 * (3 - 2 * g0)
             val b = c.optJSONObject("bebe") ?: org.json.JSONObject()
             val (bx, by) = vers(b.optDouble("x", 835.0).toFloat(), b.optDouble("bas", 612.0).toFloat())
             val bh = b.optDouble("haut", 330.0).toFloat() * e
-            p.lueur(bx, by - bh * 0.55f, bh * 1.2f, 0x73FFF096)
+            p.lueur(bx, by - bh * 0.55f, bh * 1.2f, ((0x73 * f).toInt() shl 24) or 0xFFF096)
+            if (m.phase == "fondu") p.lueur(bx, by - bh * 0.5f, bh * 0.95f, (((0.75f - 0.55f * f) * 255).toInt() shl 24) or 0x5CFF95)
             val q = c.optJSONObject("coquille") ?: org.json.JSONObject()
-            val (qx, qy) = vers(q.optDouble("x", 365.0).toFloat(), q.optDouble("y", 300.0).toFloat())
-            val qc = q.optDouble("cote", 300.0).toFloat() * e
+            val qx0 = q.optDouble("x", 365.0).toFloat(); val qy0 = q.optDouble("y", 300.0).toFloat(); val qc0 = q.optDouble("cote", 300.0).toFloat()
+            val (qx, qy) = vers(ox + (qx0 - ox) * g, oy + (qy0 - oy) * g)
+            val qc = (cote + (qc0 - cote) * g) * e
             p.image(oeuf, 0, 0, oeuf.w, oeuf.h, qx, qy, qc, qc, false)
-            p.bebe(bx, by, bh)
+            val bp = if (m.phase == "fondu") p.bebePix() else null
+            if (bp != null) {
+                val w = bh * bp.w / maxOf(1, bp.h)
+                val grain = maxOf(1, bp.h / 34)                   // des « pixels » de fondu bien visibles
+                p.image(Scenes.fondu(bp, f, m.k, grain), 0, 0, bp.w, bp.h, bx - w / 2, by - bh, w, bh, false, m.k * 1000 + (f * 999).toInt())
+            } else if (m.phase == "ne") p.bebe(bx, by, bh)
+            if (m.phase == "fondu") return
             val etincelles = listOf(-170 to -230, 150 to -250, 210 to -120, -230 to -90, 60 to -300, -60 to -280)
             for ((j, d) in etincelles.withIndex()) {
                 val vis = ((m.k / 3 + j) % 3) != 0
@@ -576,10 +589,13 @@ object Intro {
             return
         }
         val (gx, gy) = vers(nx, ny - 60f)
-        val ox = o.optDouble("x", 545.0).toFloat(); val oy = o.optDouble("y", 196.0).toFloat(); val cote = o.optDouble("cote", 430.0).toFloat()
         val (X, Y) = vers(ox, oy)
-        if (m.phase == "telech") p.lueur(gx, gy, 150f * e, 0x595CFF95)
-        else p.lueur(gx, gy - 40f * e, 260f * e, if (m.phase == "eclat") 0xB3FFF5B4.toInt() else 0x80FFF096.toInt())
+        when {
+            m.phase == "telech" -> p.lueur(gx, gy, 150f * e, 0x595CFF95)
+            m.phase == "eclot" && m.k >= Scenes.OUVERT - 1 ->               // la coquille éclate : un éclair blanc
+                p.lueur(gx, gy - 60f * e, 330f * e, if (m.k < Scenes.OUVERT + 1) 0xF2FFFFE6.toInt() else 0x99FFFAD2.toInt())
+            else -> p.lueur(gx, gy - 40f * e, 260f * e, if (m.phase == "eclat") 0xB3FFF5B4.toInt() else 0x80FFF096.toInt())
+        }
         p.image(oeuf, 0, 0, oeuf.w, oeuf.h, X, Y, cote * e, cote * e, false, if (m.phase == "telech") m.k else 0)
     }
 
@@ -649,6 +665,7 @@ object Intro {
         "dort" -> Triple(3, t("intro.e.titre.3"), t("intro.camp.dort"))
         "eveil" -> Triple(3, t("intro.e.titre.3"), t("intro.eveil"))
         "ne" -> Triple(5, t("intro.merci.titre", "nom" to jeu.nom), t("intro.merci", "nom" to jeu.nom))
+        "eclot", "fondu" -> Triple(5, titreType(Oeufs.typeDe(jeu)).first, "✓ " + t("intro.eclot", "n" to liste().size, "total" to liste().size))
         else -> titreType(Oeufs.typeDe(jeu)).let { (a, b) -> Triple(4, a, b + " " + t("intro.nourris")) }
     }
 
@@ -713,7 +730,9 @@ object Intro {
         val lt = l - 2 * MARGE
         val m = Scenes.moment(jeu, quand)
         val avecImage = cid == "merci"
-        val (titre0, paras0) = if (avecImage) t("intro.merci.titre", "nom" to jeu.nom) to listOf(t("intro.merci", "nom" to jeu.nom))
+        // « … est né ! » seulement quand le bébé est là (après le fondu) ; avant : l'œuf qui éclot
+        val (titre0, paras0) = if (avecImage && m.phase != "ne") etape(jeu, m).let { it.second to listOf(it.third) }
+            else if (avecImage) t("intro.merci.titre", "nom" to jeu.nom) to listOf(t("intro.merci", "nom" to jeu.nom))
             else t("intro.ici.titre") to (listOf(t("intro.recap")) + liste().map { t("intro.r.${it.id}") } +
                 listOf(t("intro.ici", "chemin" to chemin), t("intro.suite", "chapitre" to t("hist.reveil.titre"))))
         val titre = couper(p, titre0, lt, 17f, gras = true)
@@ -748,7 +767,7 @@ object Intro {
         val m = Scenes.moment(jeu, quand)
         return when (m.phase) {
             "dort" -> null
-            "eveil", "eclat", "eclot" -> 33L
+            "eveil", "eclat", "eclot", "fondu" -> 33L
             "telech" -> 50L
             else -> if (m.te < 8f) 80L else null
         }

@@ -329,8 +329,55 @@ os.environ["TG_COULEURS"] = "0"
 verifier(not any("▀" in l for l in intro.bloc_prompt(s7, 1020.0, 120, 50)), "sans couleurs (NO_COLOR, TERM=dumb) : pas d'image")
 os.environ["TG_COULEURS"] = "24"
 s7["intro"].update(faits=["pwd", "ls", "echo", "whoami"], etat="fini", evt=[4, 1030.0])
-fins = [SC.moment(s7, 1030 + x)["phase"] for x in (0.3, 0.9, 1.5, 4.0)]
-verifier(fins == ["telech", "eclat", "eclot", "ne"], f"4e commande : 100 %, petit éclat, éclosion, le bébé ({fins})")
+fins = [SC.moment(s7, 1030 + x)["phase"] for x in (0.3, 0.9, 1.5, 3.0, 5.0)]
+verifier(fins == ["telech", "eclat", "eclot", "fondu", "ne"],
+         f"4e commande : 100 %, petit éclat, l'œuf se fêle et s'ouvre, le bébé en fondu digital, puis né ({fins})")
+ks = [SC.moment(s7, 1030 + 1.25 + x * 0.1)["k"] for x in range(14)]
+verifier(ks == sorted(ks) and ks[0] == 0 and ks[-1] == len(SC.ECLOT) - 1 and SC.ECLOT[0][1] == "craque" and SC.ECLOT[-1] == (3, "eclot", 5),
+         "l'éclosion : les fêlures qui éclairent, l'œuf qui tremble, la coquille qui s'ouvre, image par image")
+b_ = SC._bebe(s7)
+vus = [sum(1 for q in SC.fondu(b_[0], b_[1], b_[2], f, 0) if q is not None and q[3] == 255) for f in (0.1, 0.4, 0.7, 1.0)]
+tot = sum(1 for q in b_[0] if q is not None)
+verifier(vus[0] < vus[1] < vus[2] <= vus[3] == tot, f"le bébé apparaît pixel par pixel ({vus} sur {tot})")
+f4 = SC.fondu(b_[0], b_[1], b_[2], 0.4, 0)
+verifier(any(q is not None and q[1] > 200 and q[0] < 200 for q in f4), "les pixels qui arrivent brillent en vert « matrix »")
+nais = langue.t("intro.merci.titre", nom="Noisette")
+verifier(nais not in plat(intro.lignes_ecran_oeuf(s7, quand=1033.0, cols=120, rangs=60))
+         and nais in plat(intro.lignes_ecran_oeuf(s7, quand=1036.0, cols=120, rangs=60)),
+         "« Noisette est né ! » arrive après l'apparition du bébé, pas avant")
+print("5d. Plus de détail dans le terminal : sextants, quadrants, vraies images (Kitty, iTerm2, sixel)")
+verifier(SC.sextant(1) == "\U0001FB00" and SC.sextant(62) == "\U0001FB3B" and SC.sextant(21) == "▌" and SC.sextant(63) == "█"
+         and len({SC.sextant(p_) for p_ in range(64)}) == 64, "les 64 sextants (U+1FB00…U+1FB3B, ▌ ▐ █ et l'espace)")
+verifier(SC.deux_couleurs([(0, 0, 0)] * 3 + [(250, 250, 250)] * 3)[0] == 0b111000, "chaque case : ses deux couleurs, au bon endroit")
+for r_ in ("sextants", "quadrants", "demi"):
+    os.environ["TG_IMAGES"] = r_
+    l_ = intro.dessin_scene(s7, 1036.0, 120, 50, 6)
+    verifier(len(l_) >= 30 and max(largeur(propre(x)) for x in l_) <= 121, f"{r_} : la scène sur {len(l_)} lignes de 120 colonnes")
+os.environ["TG_IMAGES"] = "sextants"
+verifier(any(0x1FB00 <= ord(ch) <= 0x1FB3B for x in intro.dessin_scene(s7, 1036.0, 120, 50, 6) for ch in x), "sextants : 2×3 pixels par case")
+import base64 as B64, zlib as Z  # noqa: E401,E402
+os.environ["TG_IMAGES"] = "kitty"
+l_ = intro.dessin_scene(s7, 1036.0, 120, 50, 6)
+m_ = re.search(r"\x1b_Ga=T,f=100,q=2,C=1,i=4242,p=1,c=(\d+),r=(\d+)", l_[0])
+donnees_ = "".join(re.findall(r"\x1b_G[^;]*;([^\x1b]*)\x1b\\", l_[0]))
+png_ = B64.b64decode(donnees_)
+verifier(m_ and int(m_.group(2)) == len(l_) and png_[:8] == b"\x89PNG\r\n\x1a\n" and png_[16:24] == bytes([0, 0, 1, 128, 0, 0, 0, 216]),
+         "Kitty : une vraie image PNG 384×216, posée sur les cases de la scène, sans réponse du terminal (q=2)")
+verifier(l_[0].count("\x1b7") == 1 and l_[0].endswith("\x1b8") and all(x == "" for x in l_[1:]),
+         "l'image ne déplace pas le curseur : le texte vient juste dessous")
+os.environ["TG_IMAGES"] = "iterm"
+verifier("\x1b]1337;File=inline=1;" in intro.dessin_scene(s7, 1036.0, 120, 50, 6)[0], "iTerm2 : l'image en ligne")
+os.environ["TG_IMAGES"] = "sixel"
+l_ = intro.dessin_scene(s7, 1036.0, 120, 50, 6)
+six = l_[0][l_[0].index("\x1bP"):]
+verifier(six.startswith("\x1bP0;1;0q\"1;1;640;360") and six.count("-") >= 59 and "\x1b\\" in six and len(l_) == 18,
+         "sixel : l'image 640×360, 255 couleurs au plus, sur 18 lignes (cases de 10×20)")
+os.environ.pop("TG_IMAGES")
+verifier((RACINE / "pc/tg/oeufs_fins.json").read_bytes() == (RACINE / "app/src/main/assets/oeufs_fins.json").read_bytes()
+         and SC.oeuf_fin("plante", 0)[1:] == (104, 104),
+         "pc/tg/oeufs_fins.json = la copie d'Android (à recopier si generer_oeufs.py change) ; l'œuf fin pour les vraies images")
+verifier(SC.capacites()["graphique"] is None, "hors d'un vrai terminal (tests, fichier) : jamais de vraie image, pas de question au terminal")
+
 f_, _ = intro.animation("eclosion", s7)
 verifier(all(isinstance(x, intro.Ecran) for x in f_) and "▀" in "".join(f_[-1]), "l'animation de la fenêtre : l'écran entier, image par image")
 
