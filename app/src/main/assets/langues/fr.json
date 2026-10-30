@@ -1318,6 +1318,7 @@
  "term.btn.terminal": "⌨ Terminal",
  "term.btn.lexique": "📖 Lexique",
  "aura.legende": "✨ La lueur autour d'une bestiole montre sa rareté : vert = peu commune, bleu = rare, violet = épique, or = légendaire, rose = mythique, arc-en-ciel = shiny.",
+ "aura.soin": "La lueur suit aussi le soin : bien nourrie et bien soignée, elle brille plus fort ; si elle a faim, elle pâlit (rien de grave : nourris-la et elle revient).",
  "aura.on": "✨ Aura de rareté affichée autour de ta créature.",
  "aura.off": "Aura de rareté cachée.",
  "aura.bouton": "Aura de rareté (afficher ou cacher)",

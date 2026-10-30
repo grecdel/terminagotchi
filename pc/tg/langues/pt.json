@@ -313,6 +313,7 @@
  "aura.etat": "✨ Aura de raridade em volta da sua criatura: {etat} · `tg aura on` · `tg aura off` (janela principal: tecla [u])",
  "aura.aide": "  `tg aura on|off`               a aura de raridade em volta da sua criatura (janela principal: tecla [u])",
  "aura.legende": "✨ O brilho em volta de um bichinho mostra a raridade dele: verde = pouco comum, azul = raro, roxo = épico, dourado = lendário, rosa = mítico, arco-íris = shiny.",
+ "aura.soin": "O brilho também acompanha os cuidados: bem alimentada e bem cuidada, brilha mais; se tiver fome, fica pálido (nada grave: alimenta-a e ele volta).",
  "app.options.titre": "Opções",
  "app.options.notifs": "Notificações: {etat}",
  "app.options.aucun_systeme": "nenhum sistema encontrado",

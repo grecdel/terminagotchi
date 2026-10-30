@@ -1315,6 +1315,7 @@
  "term.btn.terminal": "⌨ Terminal",
  "term.btn.lexique": "📖 Kamus",
  "aura.legende": "✨ Cahaya di sekitar hewan menunjukkan kelangkaannya: hijau = agak langka, biru = langka, ungu = epik, emas = legendaris, merah muda = mitos, pelangi = shiny.",
+ "aura.soin": "Cahayanya juga mengikuti perawatan: kalau kenyang dan dirawat baik, ia bersinar lebih terang; kalau lapar, cahayanya memudar (tidak apa-apa: beri makan dan cahayanya kembali).",
  "aura.on": "✨ Aura kelangkaan ditampilkan di sekitar makhlukmu.",
  "aura.off": "Aura kelangkaan disembunyikan.",
  "aura.bouton": "Aura kelangkaan (tampilkan atau sembunyikan)",

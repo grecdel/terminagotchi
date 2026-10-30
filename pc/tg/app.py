@@ -11,7 +11,7 @@ import subprocess
 from . import (compagnon, core, dressage, entrainement, envies, equipe, guide, exemples, explique, explo, histoire, intro, lecons, lexique,
                maison, notif, quetes, recense, registre, sprites, terrain)
 from .bestiaire import arc_en_ciel
-from . import langue, sur
+from . import langue, rendu_fin, sur
 from .langue import ajuster, envelopper, largeur, raccourcir, t
 from .mots import palier, terme
 
@@ -26,8 +26,9 @@ def title_line(text, color=244):
 _ANSI = re.compile(r"\x1b\[[0-9;]*m")
 
 
-def render(state, frame, interactif, anim=None):
-    """anim : les lignes d'une image d'animation à afficher à la place du dessin habituel."""
+def render(state, frame, interactif, anim=None, tic=None):
+    """anim : les lignes d'une image d'animation à afficher à la place du dessin habituel ; tic : l'image de vie de la
+    créature au repos (dessin_guide)."""
     d = state.get("dressage")
     if d and not d.get("fenetre"):          # pas de fenêtre possible (pas d'écran graphique) : on l'affiche ici
         return render_dressage(state, interactif, anim)
@@ -43,7 +44,7 @@ def render(state, frame, interactif, anim=None):
         w = max(len(_ANSI.sub("", l)) for l in anim)
         sprite = list(anim)
     else:
-        sprite, w = dessin_guide(state, frame)                         # le guide (+ son aura de rareté, tg aura)
+        sprite, w = dessin_guide(state, frame, tic)                    # le guide (+ son aura de rareté, tg aura)
         sprite = ([" " * w] + sprite) if frame % 2 else (sprite + [" " * w])
     lg = max(20, w)
     left = ["  " + line + " " * (lg - w) for line in sprite]
@@ -190,24 +191,48 @@ def touches(state):
 _CACHE_GUIDE = {}
 
 
-def dessin_guide(state, frame=0):
+VIE_IPS = 8           # la créature de l'écran principal vit à 8 images par seconde (vie.py) ; on saute des images
+
+
+def dessin_guide(state, frame=0, tic=None):
     """La créature de l'écran principal : le GUIDE actuel (le compagnon, ou la bestiole en tête de l'équipe,
-    à son stade, dans sa variante, avec son aura de rareté), sinon le compagnon sorti de l'œuf."""
+    à son stade, dans sa variante, avec son aura de rareté), sinon le compagnon sorti de l'œuf. Elle vit (yeux qui
+    clignent, respiration, ondulations : vie.py) au rendu le plus fin du terminal (rendu_fin.py), et son aura brille
+    selon le soin (aura.eclat). tic : le numéro de l'image de vie (la fenêtre le prend sur l'horloge : des images
+    sautées, jamais de retard)."""
+    from . import aura as A
+    from . import rendu_fin
+    tic = tic or 0
+    ec = A.eclat(state)
+    mode = rendu_fin.mode()
     m = guide.actuel(state)
     ind = m[3]
+    r = None
     if ind is not None:
-        cle = (ind.get("id"), equipe.stade(ind), ind.get("variante"), ind.get("shiny"), bool(aura_ecran(state) is not None))
+        cle = ("ind", ind.get("id"), equipe.stade(ind), ind.get("variante"), ind.get("shiny"),
+               bool(aura_ecran(state) is not None), aura_active(state), ec, mode)
         r = _CACHE_GUIDE.get(cle)
         if r is None:
             try:
-                r = equipe.animation(ind, "statique", aura=aura_active(state))
+                r = equipe.animation(ind, "statique", aura=aura_active(state), fin=True, eclat=ec)
             except Exception:
                 r = None
             _CACHE_GUIDE.clear()
             _CACHE_GUIDE[cle] = r
-        if r and r[0]:
-            image = r[0][frame % len(r[0])]
-            return list(image), max(largeur(l) for l in image)
+    elif sprites.espece_compagnon(state) and core.stage(core.level(state["xp"])) >= 1:
+        cle = ("compagnon", state.get("espece_compagnon"), core.stage(core.level(state["xp"])), state.get("shiny"),
+               aura_ecran(state), ec, mode)
+        r = _CACHE_GUIDE.get(cle)
+        if r is None:
+            try:
+                r = sprites.animation(state, "statique", aura_ecran(state), fin=True, eclat=ec)
+            except Exception:
+                r = None
+            _CACHE_GUIDE.clear()
+            _CACHE_GUIDE[cle] = r
+    if r and len(r[0]):
+        image = r[0][tic % len(r[0])]
+        return list(image), max(largeur(l) for l in image if "\x1b7" not in l)
     return sprites.creature(state, aura_ecran(state), frame)
 
 
@@ -723,7 +748,7 @@ def commande_aura(args):
     if choix in ("on", "off"):
         core.modifier(lambda s: s["config"].update(aura=choix == "on"))
     etat = f"{fg(78)}{t('app.on')}{RESET}" if aura.active(core.load()) else f"{fg(203)}{t('app.off')}{RESET}"
-    return " " + t("aura.etat", etat=etat) + f"\n {DIM}" + t("aura.legende") + RESET
+    return " " + t("aura.etat", etat=etat) + f"\n {DIM}" + t("aura.legende") + "\n " + t("aura.soin") + RESET
 
 
 def _preparer_anim(state, nom):
@@ -837,7 +862,7 @@ def fenetre(once):
                         elif random.random() < 0.3:
                             anim = _preparer_anim(state, random.choice(["statique", "salut", "content"]))
                 image = anim[0][anim[2] % len(anim[0])] if anim else None
-                _ecran(render(state, frame, interactif, image))
+                _ecran(render(state, frame, interactif, image, int(time.time() * VIE_IPS)))
                 if once:
                     break
                 if anim:
@@ -845,11 +870,12 @@ def fenetre(once):
                     anim[2] += 1
                     if anim[2] >= anim[3]:
                         anim = None
-                else:
-                    k = clav.touche(max(0.05, RYTHME - (time.time() - dernier)))
+                else:                                  # au repos : la créature vit (8 images/s, sautées si lent)
+                    k = clav.touche(max(0.05, min(1 / VIE_IPS, RYTHME - (time.time() - dernier))))
                 if not k:
                     continue
                 anim = None
+                rendu_fin.effacer()
                 clear()
                 if intro.a_montrer(state) and not intro.en_cours(state) and k.lower() != "q":
                     if k in ("\r", "\n", " "):          # Entrée : l'écran de présentation est lu
@@ -890,6 +916,7 @@ def fenetre(once):
                     state = core.modifier(lambda s: core.say(s, msg, 10)) or state
     except KeyboardInterrupt:
         pass
+    rendu_fin.effacer()
     print(RESET + "\n" + t("app.a_plus_tard"))
 
 

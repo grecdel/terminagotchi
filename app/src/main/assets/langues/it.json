@@ -1313,6 +1313,7 @@
  "term.btn.terminal": "⌨ Terminale",
  "term.btn.lexique": "📖 Lessico",
  "aura.legende": "✨ Il bagliore attorno a una bestiolina mostra la sua rarità: verde = non comune, blu = raro, viola = epico, oro = leggendario, rosa = mitico, arcobaleno = shiny.",
+ "aura.soin": "La luce segue anche le cure: ben nutrita e ben curata, brilla di più; se ha fame, impallidisce (niente di grave: dalle da mangiare e torna).",
  "aura.on": "✨ Aura di rarità visibile attorno alla tua creatura.",
  "aura.off": "Aura di rarità nascosta.",
  "aura.bouton": "Aura di rarità (mostra o nascondi)",

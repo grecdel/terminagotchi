@@ -14,8 +14,18 @@ L'échelle (les couleurs sont celles de bestiaire.COULEUR_RARETE) :
     mythique     rose   · 3 pixels + reflet
     shiny        arc-en-ciel · 3 pixels + reflet + étincelles (prioritaire sur la rareté)
 
+Par-dessus la lueur, le DÉCOR (calculé en entiers, identique sur Android, en demi-pixels pour les rendus fins) :
+    particules  de petits pixels qui montent autour de la créature (plus nombreux quand c'est plus rare)
+    reflet      une bande claire qui passe sur la créature elle-même (légendaire, mythique, shiny)
+    étincelles  de petites étoiles qui scintillent au bord de la silhouette (shiny)
+
+L'ÉCLAT suit le soin (satiété et envies, voir eclat()) : l'aura brille davantage quand la créature est bien
+soignée ou rassasiée, et pâlit quand elle est négligée — jamais de mort ni de punition, juste une lueur plus douce.
+    3 rayonnante (bien soignée) · 2 normale · 1 pâle (affamée) · 0 très pâle, sans particules (en veille)
+
 Même calcul sur Android (app/…/Aura.kt). Dans le terminal, les pixels de l'aura deviennent des
-demi-blocs colorés (la couleur est assombrie selon la force : on suppose un fond sombre).
+demi-blocs colorés (la couleur est assombrie selon la force : on suppose un fond sombre) ; rendu_fin.py s'en sert
+pour les vraies images (Kitty, iTerm2, sixel) et les quadrants.
 """
 import colorsys
 import math
@@ -63,6 +73,35 @@ def palier_compagnon(state):
 def active(state):
     """L'aura autour de la créature de l'écran principal (réglage de la partie, `tg aura on|off`)."""
     return bool(state.get("config", {}).get("aura", True))
+
+
+ECLAT_FORCE = (45, 70, 100, 125)          # % de la force de la lueur, selon l'éclat 0 à 3
+ECLAT_NORMAL = 2
+
+
+def eclat(state):
+    """L'éclat de l'aura selon le soin (0 à 3) : la faim compte pour 60 %, les envies jeu, curiosité, exploration et
+    sommeil pour 40 %. Rassasiée et bien soignée (≥ 80) → 3 ; en forme (≥ 40) → 2 ; affamée (≥ 15) → 1 ; en veille → 0."""
+    try:
+        faim = float(state.get("hunger", 80))
+        v = (state.get("envies") or {}).get("v") or {}
+        autres = [float(v[k]) for k in ("jeu", "curiosite", "explorer", "sommeil") if k in v]
+        moy = sum(autres) / len(autres) if autres else faim
+        return niveau_soin(int(faim), int(moy))
+    except (TypeError, ValueError, AttributeError):
+        return ECLAT_NORMAL
+
+
+def niveau_soin(faim, envies):
+    """faim et moyenne des envies (0 à 100, entiers) → éclat 0 à 3 (le même calcul en Kotlin)."""
+    soin = (faim * 6 + envies * 4) // 10
+    if faim < 15:
+        return 0
+    if soin >= 80 and faim >= 70:
+        return 3
+    if soin >= 40 and faim >= 30:
+        return 2
+    return 1
 
 
 def visible(nom, terminal=False):
@@ -133,9 +172,11 @@ def _hasard(x, y, n):
     return (v ^ (v >> 16)) & 0xFFFF
 
 
-def calque(w, h, plein, nom, phase=PHASE_FIXE):
-    """L'aura seule : (W, H, R, pixels (r, g, b, a) ou None), toile agrandie de R = rayon du palier."""
+def calque(w, h, plein, nom, phase=PHASE_FIXE, eclat=ECLAT_NORMAL):
+    """L'aura seule : (W, H, R, pixels (r, g, b, a) ou None), toile agrandie de R = rayon du palier.
+    eclat (0 à 3) : la lueur plus forte (bien soignée) ou plus pâle (négligée)."""
     p = PALIERS.get(nom) or PALIERS["commune"]
+    ef = ECLAT_FORCE[max(0, min(3, eclat))]
     r = p.rayon
     W, H, dist = distances(w, h, plein, r)
     out = [None] * (W * H)
@@ -149,7 +190,7 @@ def calque(w, h, plein, nom, phase=PHASE_FIXE):
         if chute <= 0:
             continue
         vague = 0.78 + 0.22 * math.sin(tour - 0.9 * (d - 1))       # la lueur respire, de la silhouette vers l'extérieur
-        a = p.force * chute * vague
+        a = p.force * chute * vague * ef / 100
         if base is None:                                             # shiny : arc-en-ciel qui glisse
             t = ((x + y) / max(8, W + H) * 1.6 + (phase % PHASES) / PHASES) % 1.0
             c = tuple(int(v * 255) for v in colorsys.hsv_to_rgb(t, 0.55, 1.0))
@@ -161,23 +202,159 @@ def calque(w, h, plein, nom, phase=PHASE_FIXE):
             if e:
                 c = tuple(int(v + (255 - v) * 0.55 * e) for v in c)
                 a += 60 * e * chute
-        if nom == "shiny" and d <= 2.2 and _hasard(x, y, phase // 2) % 23 == 0:
-            c, a = (255, 255, 255), 255                              # étincelle
+        if eclat == 0:                                               # en veille : une lueur grise et douce
+            g = (c[0] + c[1] + c[2]) // 3
+            c = ((c[0] + g) // 2, (c[1] + g) // 2, (c[2] + g) // 2)
         out[k] = (c[0], c[1], c[2], max(0, min(255, int(a))))
     return W, H, r, out
 
 
-def composer(w, h, couleurs, nom, phase=PHASE_FIXE):
-    """La bestiole posée sur son aura : (W, H, pixels (r, g, b, a) ou None). couleurs : "#rrggbb" ou None."""
+# ---------------------------------------------------------------- le décor : particules, étincelles, reflet (entiers)
+CYCLE_DECOR = 32                 # particules et reflet : 32 images (4 s à 8 images par seconde)
+PARTICULES = {"commune": 0, "peu commune": 4, "rare": 6, "épique": 8, "légendaire": 10, "mythique": 12, "shiny": 12}
+ARC = (0xFF7A7A, 0xFFC56B, 0xFFF27A, 0x7DFF9B, 0x7AC8FF, 0xC59BFF)     # les particules d'un shiny
+REFLET = ("légendaire", "mythique", "shiny")                             # le reflet qui passe SUR la créature
+SIN = (0, 38, 71, 92, 100, 92, 71, 38, 0, -38, -71, -92, -100, -92, -71, -38)
+M32 = 0xFFFFFFFF
+
+
+def _mel(v):
+    v &= M32
+    v = ((v ^ (v >> 15)) * 0x2C1B3C6D) & M32
+    v = ((v ^ (v >> 12)) * 0x297A2D39) & M32
+    return v ^ (v >> 15)
+
+
+def _clair(c, pct):
+    r, g, b = c >> 16 & 255, c >> 8 & 255, c & 255
+    return ((r + (255 - r) * pct // 100) << 16) | ((g + (255 - g) * pct // 100) << 8) | (b + (255 - b) * pct // 100)
+
+
+def decor(w, h, plein, nom, phase=PHASE_FIXE, eclat=ECLAT_NORMAL):
+    """Les petits points du décor, en DEMI-pixels sur la toile de l'aura (2W × 2H, W = w + 2R) :
+    [(x2, y2, 0xRRGGBB, alpha 0..255, devant)] ; devant = False : derrière la créature (particules), True : par-dessus
+    (étincelles). Calcul en entiers (Aura.kt donne la même liste)."""
+    p = PALIERS.get(nom) or PALIERS["commune"]
+    r = p.rayon
+    W, H = w + 2 * r, h + 2 * r
+    eclat = max(0, min(3, eclat))
+    ef = ECLAT_FORCE[eclat]
+    out = []
+    n = PARTICULES.get(nom, 0) * (0, 1, 2, 3)[eclat] // 2
+    ph = phase % CYCLE_DECOR
+    graine = (w * 131 + h * 7 + ORDRE.index(nom) * 1013) if nom in ORDRE else w * 131 + h
+    base = 0xFFFFFF if p.couleur is None else int(p.couleur[1:], 16)
+    a0 = min(255, (p.force + 40) * ef // 100)
+    bords = []                                               # les bords gauche et droit de chaque ligne
+    for y in range(h):
+        xs = [x for x in range(w) if plein[y * w + x]]
+        bords.append((xs[0], xs[-1]) if xs else None)
+    for i in range(n):
+        hs = _mel(graine * 7919 + i * 104729 + 17)
+        vie_ = 14 + (hs >> 8) % 12
+        age = (ph + (hs >> 16) % CYCLE_DECOR) % CYCLE_DECOR
+        if age >= vie_:
+            continue
+        y0 = h // 3 + (hs >> 3) % max(1, h - h // 3)          # elles partent du bord de la silhouette, en bas
+        b = bords[y0]
+        if b is None:
+            continue
+        ecart = (hs >> 24) % (r + 1)
+        x0 = 2 * (r + b[0] - 1 - ecart) if hs & 1 else 2 * (r + b[1] + 1 + ecart) + 1
+        x2 = x0 + SIN[(age * 2 + i * 3) % 16] // 50
+        y2 = 2 * (y0 + r) - age * (h + 2 * r) // vie_
+        if not (0 <= x2 < 2 * W and 0 <= y2 < 2 * H):
+            continue
+        sx, sy = x2 // 2 - r, y2 // 2 - r
+        if 0 <= sx < w and 0 <= sy < h and plein[sy * w + sx]:
+            continue                                         # derrière la créature : caché
+        a = a0 * min(age + 1, 3, vie_ - age) // 3
+        c = ARC[i % 6] if p.couleur is None else _clair(base, 45)
+        out.append((x2, y2, c, a, False))
+    if nom == "shiny" and eclat > 0:                         # les étincelles : de petites étoiles au bord
+        bord = []
+        for y in range(H):
+            for x in range(W):
+                sx, sy = x - r, y - r
+                if 0 <= sx < w and 0 <= sy < h and plein[sy * w + sx]:
+                    continue
+                if any(0 <= sx + a < w and 0 <= sy + b < h and plein[(sy + b) * w + sx + a]
+                       for b in (-1, 0, 1) for a in (-1, 0, 1)):
+                    bord.append((x, y))
+        if bord:
+            fente = phase // 4
+            etape = phase % 4
+            bras = (1, 3, 4, 2)[etape]
+            for j in range(3):
+                hs = _mel(graine * 31 + fente * 977 + j * 1013 + 5)
+                x, y = bord[hs % len(bord)]
+                cx2, cy2 = 2 * x + 1, 2 * y + 1
+                out.append((cx2, cy2, 0xFFFFFF, 255, True))
+                for k in range(1, bras + 1):
+                    a = 255 - 200 * k // (bras + 1)
+                    c = 0xFFF6C8 if k > 1 else 0xFFFFFF
+                    for dx, dy in ((k, 0), (-k, 0), (0, k), (0, -k)):
+                        if 0 <= cx2 + dx < 2 * W and 0 <= cy2 + dy < 2 * H:
+                            out.append((cx2 + dx, cy2 + dy, c, a, True))
+    return out
+
+
+def reflet(nom, phase, W, H):
+    """La position du reflet qui passe en diagonale SUR la créature (x + y sur la toile), ou None (pas de reflet
+    pour ce palier, ou entre deux passages)."""
+    if nom not in REFLET:
+        return None
+    ph = phase % CYCLE_DECOR
+    if ph >= 20:
+        return None
+    return ph * (W + H + 8) // 20 - 4
+
+
+def lustrer(c, x, y, pos):
+    """Une couleur de la créature éclaircie par le reflet (c en 0xRRGGBB)."""
+    if pos is None:
+        return c
+    d = abs(x + y - pos)
+    if d > 2:
+        return c
+    return _clair(c, (3 - d) * 18)
+
+
+def composer(w, h, couleurs, nom, phase=PHASE_FIXE, eclat=ECLAT_NORMAL):
+    """La bestiole posée sur son aura : (W, H, pixels (r, g, b, a) ou None). couleurs : "#rrggbb" ou None.
+    Le décor est posé au pixel près (demi-pixels arrondis) : particules derrière, étincelles devant, reflet dessus."""
     plein = [c is not None for c in couleurs]
-    W, H, r, aur = calque(w, h, plein, nom, phase)
+    W, H, r, aur = calque(w, h, plein, nom, phase, eclat)
     out = list(aur)
+    dec = decor(w, h, plein, nom, phase, eclat)
+    for x2, y2, c, a, devant in dec:
+        if not devant:
+            _poser_point(out, W, x2 // 2, y2 // 2, c, a)
+    pos = reflet(nom, phase, W, H)
     for y in range(h):
         for x in range(w):
             c = couleurs[y * w + x]
             if c is not None:
-                out[(y + r) * W + x + r] = _rgb(c) + (255,)
+                v = lustrer(int(c[1:7], 16), x + r, y + r, pos)
+                out[(y + r) * W + x + r] = (v >> 16, v >> 8 & 255, v & 255, 255)
+    for x2, y2, c, a, devant in dec:
+        if devant:
+            _poser_point(out, W, x2 // 2, y2 // 2, c, a)
     return W, H, out
+
+
+def _poser_point(out, W, x, y, c, a):
+    """Un point du décor mélangé à ce qui est déjà là (on garde le plus visible)."""
+    k = y * W + x
+    if k < 0 or k >= len(out) or a <= 0:
+        return
+    v = out[k]
+    nv = (c >> 16, c >> 8 & 255, c & 255)
+    if v is None or v[3] < 255:
+        a2 = a if v is None else max(a, v[3])
+        out[k] = nv + (min(255, a2),)
+    else:                                                   # sur la créature (étincelle) : mélange
+        out[k] = tuple(v[i] + (nv[i] - v[i]) * a // 255 for i in range(3)) + (255,)
 
 
 # ---------------------------------------------------------------- terminal (demi-blocs)
@@ -193,13 +370,13 @@ def _sur_fond(px):
     return "#%02x%02x%02x" % (int(px[0] * f), int(px[1] * f), int(px[2] * f))
 
 
-def lignes(w, h, couleurs, nom, phase=PHASE_FIXE):
+def lignes(w, h, couleurs, nom, phase=PHASE_FIXE, eclat=ECLAT_NORMAL):
     """Lignes de demi-blocs de la bestiole entourée de son aura (sans aura si le palier est invisible
     dans le terminal, par exemple « commune »)."""
     from . import bestiaire as B
     if not visible(nom, terminal=True):
         return lignes_brutes(w, h, couleurs)
-    W, H, px = composer(w, h, couleurs, nom, phase)
+    W, H, px = composer(w, h, couleurs, nom, phase, eclat)
     if H % 2:
         px += [None] * W
         H += 1

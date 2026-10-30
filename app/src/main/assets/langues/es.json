@@ -1313,6 +1313,7 @@
  "term.btn.terminal": "⌨ Terminal",
  "term.btn.lexique": "📖 Léxico",
  "aura.legende": "✨ El brillo alrededor de un bicho muestra su rareza: verde = poco común, azul = raro, violeta = épico, dorado = legendario, rosa = mítico, arcoíris = shiny.",
+ "aura.soin": "El brillo también sigue los cuidados: bien alimentada y bien cuidada, brilla más; si tiene hambre, palidece (nada grave: dale de comer y vuelve).",
  "aura.on": "✨ Aura de rareza visible alrededor de tu criatura.",
  "aura.off": "Aura de rareza oculta.",
  "aura.bouton": "Aura de rareza (mostrar u ocultar)",

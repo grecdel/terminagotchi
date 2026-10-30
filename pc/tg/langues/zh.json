@@ -313,6 +313,7 @@
  "aura.etat": "✨ 你的生物周围的稀有度光环：{etat} · `tg aura on` · `tg aura off`（主窗口：按 [u] 键）",
  "aura.aide": "  `tg aura on|off`               你的生物周围的稀有度光环（主窗口：按 [u] 键）",
  "aura.legende": "✨ 小怪兽周围的光芒表示它的稀有度：绿色 = 少见，蓝色 = 稀有，紫色 = 史诗，金色 = 传说，粉色 = 神话，彩虹 = shiny。",
+ "aura.soin": "光芒也跟着照顾变化：吃饱了、照顾得好，它会更亮；饿了，光就会变淡（没关系：喂喂它，光就回来了）。",
  "app.options.titre": "设置",
  "app.options.notifs": "通知：{etat}",
  "app.options.aucun_systeme": "没有找到通知系统",

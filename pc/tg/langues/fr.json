@@ -313,6 +313,7 @@
  "aura.etat": "✨ Aura de rareté autour de ta créature : {etat} · `tg aura on` · `tg aura off` (fenêtre principale : touche [u])",
  "aura.aide": "  `tg aura on|off`               l'aura de rareté autour de ta créature (fenêtre principale : touche [u])",
  "aura.legende": "✨ La lueur autour d'une bestiole montre sa rareté : vert = peu commune, bleu = rare, violet = épique, or = légendaire, rose = mythique, arc-en-ciel = shiny.",
+ "aura.soin": "La lueur suit aussi le soin : bien nourrie et bien soignée, elle brille plus fort ; si elle a faim, elle pâlit (rien de grave : nourris-la et elle revient).",
  "app.options.titre": "Options",
  "app.options.notifs": "Notifications : {etat}",
  "app.options.aucun_systeme": "aucun système détecté",

@@ -305,10 +305,12 @@ def _recadrer(W, H, frames):
     return nw, nh, out
 
 
-def animation(state, nom, aura=None):
+def animation(state, nom, aura=None, fin=False, eclat=None):
     """La créature principale joue une animation automatique (moteur anim_auto) : (lignes par image, ips).
-    aura : palier d'aura (aura.py) qui respire autour d'elle pendant l'animation."""
+    aura : palier d'aura (aura.py) qui respire autour d'elle pendant l'animation ; fin : rendu le plus fin du
+    terminal (rendu_fin.py, images calculées quand on les montre) ; eclat : l'éclat de l'aura selon le soin."""
     from . import anim_auto
+    from . import aura as A
     from .bestiaire import lignes_image
     pal = palette(state)
     st = core.stage(core.level(state["xp"]))
@@ -319,10 +321,16 @@ def animation(state, nom, aura=None):
     W, H, frames, pal2, _ = anim_auto._calculer(w, h, o, p, nom, de)
     W, H, frames = _recadrer(W, H, frames)
     hexa = ["#%06x" % c for c in pal2]
+    ec = A.ECLAT_NORMAL if eclat is None else eclat
+    if fin:
+        from . import rendu_fin
+        mode = rendu_fin.mode()
+        if mode != "demi":
+            return anim_auto.Paresseux(len(frames), lambda k: rendu_fin.lignes(
+                W, H, A.depuis_octets(W, H, frames[k], hexa), aura, k, ec, mode)[0]), anim_auto.IPS
     if aura:
-        from . import aura as A
         if A.visible(aura, terminal=True):
-            return [A.lignes(W, H, A.depuis_octets(W, H, f, hexa), aura, k) for k, f in enumerate(frames)], anim_auto.IPS
+            return [A.lignes(W, H, A.depuis_octets(W, H, f, hexa), aura, k, ec) for k, f in enumerate(frames)], anim_auto.IPS
     return [lignes_image(W, H, f, hexa) for f in frames], anim_auto.IPS
 
 

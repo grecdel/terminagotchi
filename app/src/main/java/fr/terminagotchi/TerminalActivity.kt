@@ -199,8 +199,15 @@ class TerminalActivity : Activity() {
         animer()
     }
 
+    override fun onPause() {
+        super.onPause()
+        ecranVisible = false                      // écran éteint ou appli cachée : la vie se met en pause
+    }
+
     override fun onResume() {
         super.onResume()
+        ecranVisible = true
+        if (!vieEnMarche) { vieEnMarche = true; handler.postDelayed({ pasVie() }, VIE_PAS) }
         if (::jeu.isInitialized && !enCours) {
             jeu.recharger()        // le Doom ou l'éditeur ont pu changer des choses
             vuNotif = NotifVie.modifie
@@ -1228,7 +1235,64 @@ class TerminalActivity : Activity() {
 
     private fun avecAura(b: android.graphics.Bitmap, echelle: Int, palier: String?, phase: Int): android.graphics.Bitmap {
         if (palier == null || echelle <= 0 || !auraVisible()) return b
-        return try { Aura.entourer(b, echelle, palier, phase) } catch (e: Exception) { b }
+        return try { Aura.entourer(b, echelle, palier, phase, eclat = eclatAura()) } catch (e: Exception) { b }
+    }
+
+    // ------------------------------------------------------------ la vie au repos (Vie.kt) : 8 images par seconde
+    private var ecranVisible = false
+    private var vieEnMarche = false
+    private var eclatGarde = Aura.ECLAT_NORMAL to 0L
+
+    /** L'éclat de l'aura selon le soin (faim et envies), relu toutes les 2 secondes. */
+    private fun eclatAura(): Int {
+        val now = System.currentTimeMillis()
+        if (now - eclatGarde.second > 2000) eclatGarde = (if (jeu.existe) Aura.eclat(jeu) else Aura.ECLAT_NORMAL) to now
+        return eclatGarde.first
+    }
+
+    private class VieEcran(val cle: String, val anim: AnimAuto.Anim, val echelle: Int, val teinte: Double?, val palier: String?)
+    private var vieEcran: VieEcran? = null
+
+    /** L'animation de vie de la créature de l'en-tête (le guide de l'équipe, ou le compagnon d'une espèce), ou null
+     *  (l'œuf, la créature dessinée d'une ancienne partie, Abyssor et ses animations faites main). */
+    private fun vieCourante(): VieEcran? = try { vieCalculee() } catch (e: Exception) { null }
+
+    private fun vieCalculee(): VieEcran? {
+        if (!::jeu.isInitialized || !jeu.existe || jeu.stade < 1) return null
+        val ind = guideCapture()
+        val cle: String
+        if (ind != null) {
+            cle = listOf("ind", ind.optString("id"), Equipe.stade(ind), ind.optString("variante"), ind.optBoolean("shiny")).joinToString("|")
+            vieEcran?.takeIf { it.cle == cle }?.let { return it }
+            val e = Bestiaire.espece(ind.optString("espece")) ?: return null
+            if (Animations.dispo(e.id)) return null
+            val a = Animations.auto(e, Equipe.stade(ind), ind.optString("variante", "classique"), "statique") ?: return null
+            vieEcran = VieEcran(cle, Sprites.recadrer(a), 3, if (ind.optBoolean("shiny")) ind.optDouble("teinte", 0.5) else null,
+                Aura.palierInd(ind))
+        } else {
+            if (jeu.especeCompagnon == null) return null
+            cle = listOf("compagnon", jeu.especeCompagnon, jeu.stade, jeu.shiny).joinToString("|")
+            vieEcran?.takeIf { it.cle == cle }?.let { return it }
+            vieEcran = VieEcran(cle, Sprites.animation(jeu, "statique"), Sprites.echelle(jeu, 12), null, Aura.palierCompagnon(jeu))
+        }
+        return vieEcran
+    }
+
+    /** Une image de vie (clignement, respiration, ondulation, regard) prise sur l'horloge : si le téléphone est lent,
+     *  on saute des images au lieu de ralentir ; en pause quand l'écran est éteint (onPause). */
+    private fun pasVie() {
+        if (!ecranVisible) { vieEnMarche = false; return }
+        if (lecture == null && ::jeu.isInitialized && !Dressage.actif(jeu)) {
+            try {
+                vieCourante()?.let { v ->
+                    val tic = (android.os.SystemClock.uptimeMillis() / VIE_PAS).toInt()
+                    creature.setImageBitmap(avecAura(AnimAuto.bitmap(v.anim, tic, v.echelle, v.teinte), v.echelle, v.palier, tic))
+                }
+            } catch (e: Exception) {
+                android.util.Log.e("TG", "vie", e)
+            }
+        }
+        handler.postDelayed({ pasVie() }, VIE_PAS)
     }
 
     /** Le petit bouton ✨ posé dans le coin de la créature : affiche ou cache son aura (réglage de la partie). */
@@ -1263,7 +1327,7 @@ class TerminalActivity : Activity() {
     private fun basculerAura() {
         val on = Aura.basculer(jeu)
         jeu.sauver()
-        ecrire(if (on) t("aura.on") + "\n" + t("aura.legende") else t("aura.off"), Commandes.BLEU)
+        ecrire(if (on) t("aura.on") + "\n" + t("aura.legende") + "\n" + t("aura.soin") else t("aura.off"), Commandes.BLEU)
         rafraichir()
         saisie.requestFocus()
     }
@@ -1271,6 +1335,8 @@ class TerminalActivity : Activity() {
     companion object {
         /** millisecondes entre deux petites animations d'ambiance */
         private const val AMBIANCE = 25_000L
+        /** millisecondes entre deux images de vie au repos (8 images par seconde) */
+        private const val VIE_PAS = 125L
     }
 
     private fun animer() {
@@ -1283,6 +1349,8 @@ class TerminalActivity : Activity() {
         }
         if (lecture != null) {
             // une animation est en cours : pas de clignement
+        } else if (ecranVisible && vieCourante() != null) {
+            // la vie au repos (pasVie) s'occupe de la créature : clignements, respiration, aura
         } else if (cligne > 0) {
             cligne--
             if (cligne == 0) creature.setImageBitmap(imageCreature(false))

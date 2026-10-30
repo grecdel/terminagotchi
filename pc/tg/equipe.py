@@ -174,10 +174,11 @@ def choisir(state, nom):
 
 
 # ---------------------------------------------------------------- tg anime
-def animation(ind, quoi, aura=False):
+def animation(ind, quoi, aura=False, fin=False, eclat=None):
     """(images, ips) d'une bestiole de la troupe : à son stade, dans sa variante, avec sa teinte shiny.
     Abyssor garde ses animations faites main ; toutes les autres espèces passent par anim_auto.
-    aura=True : son aura de rareté respire autour d'elle (aura.py)."""
+    aura=True : son aura de rareté respire autour d'elle (aura.py) ; fin : rendu le plus fin du terminal
+    (rendu_fin.py) ; eclat : l'éclat de l'aura selon le soin (aura.eclat)."""
     s = stade(ind)
     if anime(ind["espece"]):
         avant = s
@@ -192,7 +193,13 @@ def animation(ind, quoi, aura=False):
         return None
     teinte = ind.get("teinte", 0.5) if ind.get("shiny") else None
     from . import aura as A
-    return anim_auto.lignes(e, s, ind.get("variante", "classique"), quoi, teinte, A.palier_ind(ind) if aura else None)
+    return anim_auto.lignes(e, s, ind.get("variante", "classique"), quoi, teinte, A.palier_ind(ind) if aura else None,
+                            fin, eclat)
+
+
+def _eclat(state):
+    from . import aura as A
+    return A.eclat(state)
 
 
 def derouler(frames, ips, tours, titre=None):
@@ -232,7 +239,7 @@ def jouer(state, args, tours=None):
     if quoi == "evolution" and stade(ind) == "bebe":
         print(" " + t("eq.encore_bebe", nom=ind["espece"]))
         return
-    r = animation(ind, quoi, aura=True)
+    r = animation(ind, quoi, aura=True, fin=True, eclat=_eclat(state))
     if r is None:
         from . import aura as A
         print("\n".join(B.dessin(B.espece(ind["espece"]), ind.get("shiny"), stade=stade(ind),

@@ -1313,6 +1313,7 @@
  "term.btn.terminal": "⌨ Terminal",
  "term.btn.lexique": "📖 Lexikon",
  "aura.legende": "✨ Das Leuchten um ein Tierchen zeigt seine Seltenheit: grün = ungewöhnlich, blau = selten, violett = episch, gold = legendär, rosa = mythisch, Regenbogen = shiny.",
+ "aura.soin": "Der Schein folgt auch der Pflege: gut gefüttert und gut versorgt leuchtet es stärker; hat es Hunger, wird er blasser (nicht schlimm: füttere es und er kommt zurück).",
  "aura.on": "✨ Seltenheits-Aura um deine Kreatur wird angezeigt.",
  "aura.off": "Seltenheits-Aura ausgeblendet.",
  "aura.bouton": "Seltenheits-Aura (zeigen oder verbergen)",
