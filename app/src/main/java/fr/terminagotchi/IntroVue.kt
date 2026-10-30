@@ -99,7 +99,11 @@ class IntroVue(ctx: Context, private val jeu: Jeu, private val creature: () -> B
         }
 
         override fun bebe(x: Float, y: Float, h: Float): Boolean {
-            val b = bebeBmp ?: (try { Sprites.bitmap(jeu, 8, st = 1) } catch (e: Exception) { null })?.also { bebeBmp = it } ?: return creature(x, y, h)
+            // le portrait peint du bébé de l'espèce tirée (assets/portraits), sinon son sprite du jeu
+            val b = bebeBmp ?: (try {
+                jeu.extra.optString("espece_compagnon").takeIf { it.isNotEmpty() }?.let { Bestiaire.espece(it) }
+                    ?.let { Bestiaire.portrait(it, "classique", "bebe") } ?: Sprites.bitmap(jeu, 8, st = 1)
+            } catch (e: Exception) { null })?.also { bebeBmp = it } ?: return creature(x, y, h)
             val w = h * b.width / maxOf(1, b.height)
             dst.set(x - w / 2, y - h, x + w / 2, y)
             toile?.drawBitmap(b, null, dst, pPix)

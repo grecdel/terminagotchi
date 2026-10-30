@@ -103,6 +103,16 @@ class PeintreI(val g: java.awt.Graphics2D, val jeu: Jeu?) : Peintre {
     }
     override fun bebe(x: Float, y: Float, h: Float): Boolean {
         val j = jeu ?: return false
+        // comme IntroVue : le portrait du bébé (assets/portraits, en .webp que java ne lit pas : une copie .png dans le
+        // dossier -Dtg.portraits, si on l'a préparée), sinon son sprite du jeu
+        val id = j.extra.optString("espece_compagnon")
+        val f = System.getProperty("tg.portraits")?.let { File(it, "$id/classique_bebe.png") }
+        if (f != null && f.isFile) {
+            val b = javax.imageio.ImageIO.read(f)
+            val w = h * b.width / b.height
+            image(Carte.Pix(b.width, b.height, b.getRGB(0, 0, b.width, b.height, null, 0, b.width)), 0, 0, b.width, b.height, x - w / 2, y - h, w, h, false, 0)
+            return true
+        }
         val b = try { Sprites.bitmap(j, 8, st = 1) } catch (e: Exception) { return false }
         val px = IntArray(b.width * b.height); b.getPixels(px, 0, b.width, 0, 0, b.width, b.height)
         val w = h * b.width / b.height
@@ -459,7 +469,7 @@ fun main(args: Array<String>) {
         for (n in 1..3) apercu(sortie, "tel_1_intro_$n", d.jeu) { Intro.dessinerEcran(it, n, 3, 360f) }
         apercu(sortie, "tel_2_oeuf_liste", d.jeu) { Intro.dessinerOeuf(it, d.jeu, 360f) }
         run {                                    // le déroulé en images, instant par instant (étapes 3 à 5)
-            val q = PartieI(app).jeu.also { it.changerLangue("fr"); it.nom = "Noisette"; Intro.nouvellePartie(it); Oeufs.choisir(it, "plante") }
+            val q = PartieI(app).jeu.also { it.changerLangue("fr"); it.nom = "Noisette"; Intro.nouvellePartie(it); Oeufs.choisir(it, "plante"); it.extra.put("espece_compagnon", "glandouille") }
             val T = 3_000_000L
             apercu(sortie, "scene_3_camp_dort", q) { Intro.dessinerOeuf(it, q, 360f, null, T) }
             Intro.i(q).put("faits", JSONArray(listOf("pwd"))).put("evt", JSONArray().put(1).put(T)).put("eveil", T)
