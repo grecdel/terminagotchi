@@ -450,6 +450,11 @@ fun main(args: Array<String>) {
     val vus = listOf(0.1f, 0.4f, 0.7f, 1f).map { f -> Scenes.fondu(bb, f, 0).px.count { (it ushr 24) == 255 } }
     verifier(vus[0] < vus[1] && vus[1] < vus[2] && vus[2] <= vus[3] && vus[3] == 400, "le bébé apparaît pixel par pixel ($vus)")
     verifier(Scenes.fondu(bb, 0.4f, 0).px.any { (it ushr 24) == 255 && ((it shr 8) and 255) > 200 }, "les pixels qui arrivent brillent en vert « matrix »")
+    val coq = Carte.Pix(8, 10, IntArray(80) { 0xFF0A780A.toInt() })
+    val vis = listOf(0f, 0.5f, 1f).map { x -> Scenes.dissoudre(coq, x).px.count { (it ushr 24) != 0 } }
+    verifier(vis[0] == 80 && vis[2] == 0 && vis[1] in 1..79 && Scenes.dissoudre(coq, 0.5f).px.take(5 * 8).any { (it ushr 24) in 1..254 },
+        "la coquille se dissout en pixels verts qui s'envolent et s'éteignent ($vis)")
+    verifier(Scenes.oeuf(Oeufs.typeDe(s7), Scenes.moment(s7, 2_006_000L)) == null, "après le fondu : plus de coquille, seul le bébé reste dans le nid")
     val nait = Langue.t("intro.merci.titre", "nom" to s7.nom)
     verifier(Intro.etape(s7, Scenes.moment(s7, 2_003_000L)).second != nait && Intro.etape(s7, Scenes.moment(s7, 2_005_000L)).second == nait,
         "« ${s7.nom} est né ! » arrive après l'apparition du bébé")
@@ -496,7 +501,7 @@ fun main(args: Array<String>) {
             apercu(sortie, "scene_4_reception_87", q) { Intro.dessinerOeuf(it, q, 360f, null, T + 25_000) }
             Intro.i(q).put("faits", JSONArray(listOf("pwd", "ls", "echo", "whoami"))).put("etat", "fini").put("evt", JSONArray().put(4).put(T + 30_000))
             q.xp = 10
-            for (ms in listOf(300L, 900L, 1500L, 1900L, 2250L, 2700L, 3100L, 3500L, 3900L, 6000L))
+            for (ms in listOf(1500L, 2250L, 2800L, 3100L, 3400L, 3700L, 4100L, 6000L))
                 apercu(sortie, "scene_5_eclosion_%04d".format(ms), q) { Intro.dessinerCarte(it, q, "merci", 360f, "/home/lea", T + 30_000 + ms) }
             apercu(sortie, "scene_5_ici", q) { Intro.dessinerCarte(it, q, "merci2", 360f, "/home/lea", T + 40_000) }
             Intro.hauteurMax = 430f

@@ -16,9 +16,10 @@ Le camp de base, pendant l'intro (paramètres : intro.json « illustrations ») 
   3. l'œuf du type tiré arrive dans le nid « en téléchargement » : ligne de pixels par ligne de pixels, la ligne en
      cours scintille en vert, le bas n'est qu'un contour pointillé ; chaque commande de la liste en apporte un
      morceau (cibles : 37 %, 62 %, 87 %, 100 %) ; petit éclat quand il est complet ;
-  4. il éclot : il se fêle, la coquille éclate et s'ouvre (ECLOT), puis le vrai bébé de l'espèce tirée apparaît en
-     fondu digital (pixels qui arrivent dans un ordre de Bayer mêlé de hasard, lueur verte « matrix », lignes de
-     balayage), et seulement ensuite « … est né ! ».
+  4. il éclot : il se fêle, la coquille éclate et s'ouvre (ECLOT), puis la coquille se dissout en pixels verts qui
+     s'envolent et s'éteignent (dissoudre) pendant que le vrai bébé de l'espèce tirée apparaît en fondu digital au
+     même endroit (pixels qui arrivent dans un ordre de Bayer mêlé de hasard, lueur verte « matrix », lignes de
+     balayage) ; à la fin, seul le bébé reste dans le nid, et seulement alors « … est né ! ».
 moment(state, t) dit où en est l'intro à l'instant t ; scene(state, W, H, t) en fait les pixels ; dessiner() les
 lignes du terminal. Repli : terminal trop petit → l'œuf seul (26×26) ; sans couleurs 24 bits → 256 couleurs ; sans couleurs
 du tout (NO_COLOR, TERM=dumb, console linux) → pas d'image, le texte seul.
@@ -489,6 +490,36 @@ def _poser_ech(fond, W, H, calque, cw, ch, x0, y0, dw, dh):
                 fond[Y * W + X] = (int(f[0] + (q[0] - f[0]) * a), int(f[1] + (q[1] - f[1]) * a), int(f[2] + (q[2] - f[2]) * a))
 
 
+FIN_COQUILLE = 0.55          # dans le fondu : la coquille a fini de se dissoudre
+DEBUT_BEBE = 0.12            # dans le fondu : le bébé commence à apparaître
+
+
+def dissoudre(cal, w, h, s, k):
+    """La coquille qui se dissout (s de 0 à 1) : chaque pixel, à son tour (ordre), devient vert pâle puis vert,
+    s'envole en dérivant un peu et s'éteint. Renvoie (calque, w, h + haut, haut) : le calque a « haut » lignes de
+    plus au-dessus, la place de l'envol."""
+    haut = h // 2
+    h2 = h + haut
+    out = [None] * (w * h2)
+    for y in range(h):
+        for x in range(w):
+            q = cal[y * w + x]
+            if q is None or q[3] == 0:
+                continue
+            d = ordre(x, y) * 0.6
+            if s <= d:
+                out[(y + haut) * w + x] = (VERT + (255,)) if d - s < 0.05 else q
+                continue
+            t = (s - d) / 0.4
+            if t >= 1:
+                continue
+            yy = y + haut - int(t * haut * (0.6 + 0.8 * _h(x, y, 9)))
+            xx = x + int((_h(x, y, 3) - 0.5) * 6 * t)
+            if 0 <= xx < w and 0 <= yy < h2:
+                out[yy * w + xx] = (VERT_PALE if t < 0.25 else VERT) + (int(255 * (1 - t)),)
+    return out, w, h2, haut
+
+
 BAYER = [[0, 32, 8, 40, 2, 34, 10, 42], [48, 16, 56, 24, 50, 18, 58, 26], [12, 44, 4, 36, 14, 46, 6, 38],
          [60, 28, 52, 20, 62, 30, 54, 22], [3, 35, 11, 43, 1, 33, 9, 41], [51, 19, 59, 27, 49, 17, 57, 25],
          [15, 47, 7, 39, 13, 45, 5, 37], [63, 31, 55, 23, 61, 29, 53, 21]]
@@ -610,28 +641,30 @@ def scene(state, W, H, t, m=None, posx=0.5, pa=1.0):
         if img:
             poser_oeuf(img, ax, ay, D)
         return px
-    # fondu (le bébé apparaît) puis ne : la coquille ouverte glisse vers le bord du nid, le bébé au centre
+    # fondu : la coquille ouverte se dissout en pixels verts qui s'envolent et s'éteignent, pendant que le bébé apparaît
+    # en fondu digital au même endroit ; ne : seul le bébé reste dans le nid
     f = m.get("f", 1.0) if ph == "fondu" else 1.0
-    cq = c.get("coquille", {"x": 365, "y": 300, "cote": 300})
-    qx, qy = vers(cq["x"] + cq["cote"] / 2, cq["y"] + cq["cote"] * 24.5 / 26)
-    g = min(1.0, f / 0.35)
-    g = g * g * (3 - 2 * g)
-    Dq = D + (cq["cote"] * e - D) * g
-    bb = c.get("bebe", {"x": 835, "bas": 612, "haut": 330})
+    bb = c.get("bebe", {"x": 762, "bas": 612, "haut": 330})
     bx, by = vers(bb["x"], bb["bas"])
     bh = bb["haut"] * e
     _lueur(px, W, H, bx, by - bh * 0.55, bh * 1.1, (255, 240, 150), 0.35 * f, pa)
     if ph == "fondu":
         _lueur(px, W, H, bx, by - bh * 0.5, bh * 0.9, VERT, 0.5 * (1 - f) + 0.15, pa)
-    coq = _oeuf(ty, 3, "eclot", 5, Dq)
-    if coq:
-        poser_oeuf(coq, ax + (qx - ax) * g, ay + (qy - ay) * g, Dq)
+        sc = min(1.0, f / FIN_COQUILLE)
+        coq = _oeuf(ty, 3, "eclot", 5, D) if sc < 1 else None
+        if coq:
+            g, gw, gh, F = coq
+            rgba = len(next((q for q in g if q is not None), (0, 0, 0, 0))) == 4
+            cal, cw2, ch2, haut = dissoudre(g if rgba else [None if q is None else q + (255,) for q in g], gw, gh, sc, m["k"])
+            d = D if F > 1 else max(1, int(D / gw + 0.2)) * gw
+            ech = d / gh
+            _poser_ech(px, W, H, cal, cw2, ch2, ax - d / pa / 2, ay - d * 24.5 / 26 - haut * ech, d / pa, ch2 * ech)
     b = _bebe(state)
     if b:
         cal, w, h = b
         s = max(1, int(round(bh / h)))
         if ph == "fondu":
-            cal = fondu(cal, w, h, f, m["k"])
+            cal = fondu(cal, w, h, max(0.0, min(1.0, (f - DEBUT_BEBE) / (1 - DEBUT_BEBE))), m["k"])
         _poser_ech(px, W, H, cal, w, h, bx - w * s / pa / 2, by - h * s, w * s / pa, h * s)
     if ph == "ne":
         for j, (dx, dy) in enumerate(((-170, -230), (150, -250), (210, -120), (-230, -90), (60, -300), (-60, -280))):

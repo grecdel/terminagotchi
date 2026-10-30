@@ -329,7 +329,7 @@ os.environ["TG_COULEURS"] = "0"
 verifier(not any("▀" in l for l in intro.bloc_prompt(s7, 1020.0, 120, 50)), "sans couleurs (NO_COLOR, TERM=dumb) : pas d'image")
 os.environ["TG_COULEURS"] = "24"
 s7["intro"].update(faits=["pwd", "ls", "echo", "whoami"], etat="fini", evt=[4, 1030.0])
-fins = [SC.moment(s7, 1030 + x)["phase"] for x in (0.3, 0.9, 1.5, 3.0, 5.0)]
+fins = [SC.moment(s7, 1030 + x)["phase"] for x in (0.3, 0.9, 1.5, 3.0, 5.5)]
 verifier(fins == ["telech", "eclat", "eclot", "fondu", "ne"],
          f"4e commande : 100 %, petit éclat, l'œuf se fêle et s'ouvre, le bébé en fondu digital, puis né ({fins})")
 ks = [SC.moment(s7, 1030 + 1.25 + x * 0.1)["k"] for x in range(14)]
@@ -341,6 +341,13 @@ tot = sum(1 for q in b_[0] if q is not None)
 verifier(vus[0] < vus[1] < vus[2] <= vus[3] == tot, f"le bébé apparaît pixel par pixel ({vus} sur {tot})")
 f4 = SC.fondu(b_[0], b_[1], b_[2], 0.4, 0)
 verifier(any(q is not None and q[1] > 200 and q[0] < 200 for q in f4), "les pixels qui arrivent brillent en vert « matrix »")
+coq_ = [(10, 120, 10, 255)] * (8 * 10)
+d0, d5, d1 = (SC.dissoudre(coq_, 8, 10, x, 0) for x in (0.0, 0.5, 1.0))
+visibles = lambda d: sum(1 for q in d[0] if q is not None)  # noqa: E731
+verifier(visibles(d0) == 80 and visibles(d1) == 0 and 0 < visibles(d5) < 80
+         and any(q is not None and q[3] < 255 and q[1] > 200 for q in d5[0][:d5[3] * 8]),
+         "la coquille se dissout en pixels verts qui s'envolent (au-dessus d'elle) et s'éteignent ; à la fin, plus rien")
+verifier(SC.moment(s7, 1036.0)["phase"] == "ne" and SC.FIN_COQUILLE < 1, "après le fondu : seul le bébé reste dans le nid (plus de coquille)")
 nais = langue.t("intro.merci.titre", nom="Noisette")
 verifier(nais not in plat(intro.lignes_ecran_oeuf(s7, quand=1033.0, cols=120, rangs=60))
          and nais in plat(intro.lignes_ecran_oeuf(s7, quand=1036.0, cols=120, rangs=60)),

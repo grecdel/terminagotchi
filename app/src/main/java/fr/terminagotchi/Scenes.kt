@@ -16,7 +16,9 @@ import org.json.JSONObject
  *  3. l'œuf du type tiré arrive « en téléchargement » (telecharge : ligne de pixels par ligne de pixels sur l'œuf fin
  *     104×104 d'Oeufs.fin, la ligne en cours scintille en vert, le bas n'est qu'un contour pointillé) ; chaque commande
  *     en apporte un morceau (cibles 37, 62, 87, 100 %) ; petit éclat à 100 % ;
- *  4. il éclot : la coquille reste dans le nid, le vrai bébé de l'espèce tirée sort (Peintre.bebe).
+ *  4. il éclot : il se fêle, la coquille éclate et s'ouvre (ECLOT), puis elle se dissout en pixels verts qui
+ *     s'envolent (dissoudre) pendant que le vrai bébé de l'espèce tirée apparaît en fondu digital (fondu) ; à la fin,
+ *     seul le bébé reste dans le nid.
  * moment(jeu, t) dit où en est l'intro à l'instant t (ms) ; Intro.kt dessine (dessinerEcran, dessinerOeuf, dessinerCarte).
  */
 object Scenes {
@@ -283,6 +285,34 @@ object Scenes {
     /** L'ordre d'arrivée d'un pixel dans le fondu digital (0 à 1) : une trame de Bayer 8×8 mêlée de hasard. */
     fun ordre(x: Int, y: Int): Float = (BAYER[y % 8][x % 8] + 0.5f) / 64f * 0.55f + h(x, y, 5) * 0.45f
 
+    const val FIN_COQUILLE = 0.55f      // dans le fondu : la coquille a fini de se dissoudre
+    const val DEBUT_BEBE = 0.12f        // dans le fondu : le bébé commence à apparaître
+    private var dissBuf: Carte.Pix? = null
+
+    /** La coquille qui se dissout (s de 0 à 1) : chaque pixel, à son tour (ordre, en « pixels » de g×g), devient vert
+     *  puis s'envole en dérivant un peu et s'éteint. Le calque rendu a h/2 lignes de plus au-dessus (la place de
+     *  l'envol) : la coquille est en bas. Le même tampon est réutilisé d'une image à l'autre. */
+    fun dissoudre(src: Carte.Pix, s: Float, g: Int = 1): Carte.Pix {
+        val haut = src.h / 2
+        val h2 = src.h + haut
+        val b = dissBuf?.takeIf { it.w == src.w && it.h == h2 } ?: Carte.Pix(src.w, h2, IntArray(src.w * h2)).also { dissBuf = it }
+        java.util.Arrays.fill(b.px, 0)
+        for (y in 0 until src.h) for (x in 0 until src.w) {
+            val q = src.px[y * src.w + x]
+            if ((q ushr 24) == 0) continue
+            val gx = x / g; val gy = y / g
+            val d = ordre(gx, gy) * 0.6f
+            if (s <= d) { b.px[(y + haut) * src.w + x] = if (d - s < 0.05f) VERT else q; continue }
+            val t = (s - d) / 0.4f
+            if (t >= 1f) continue
+            val yy = y + haut - (t * haut * (0.6f + 0.8f * h(gx, gy, 9))).toInt()
+            val xx = x + ((h(gx, gy, 3) - 0.5f) * 6 * g * t).toInt()
+            if (xx in 0 until src.w && yy in 0 until h2)
+                b.px[yy * src.w + xx] = alpha(if (t < 0.25f) VERT_PALE else VERT, (255 * (1 - t)).toInt())
+        }
+        return b
+    }
+
     private var fonduBuf: Carte.Pix? = null
 
     /** Le bébé (src, ARGB) qui apparaît en fondu digital, f de 0 à 1 : chaque pixel arrive à son tour (ordre) ; ceux
@@ -396,7 +426,8 @@ object Scenes {
             }
             "eclat" -> img(0, "brille", m.k)?.let { it to F }
             "eclot" -> ECLOT[m.k.coerceIn(0, ECLOT.size - 1)].let { (fe, nom, k) -> img(fe, nom, k) }?.let { it to F }
-            "fondu", "ne" -> img(3, "eclot", 5)?.let { it to F }
+            "fondu" -> img(3, "eclot", 5)?.let { it to F }
+            "ne" -> null                                         // seul le bébé reste dans le nid
             else -> null
         }
     }

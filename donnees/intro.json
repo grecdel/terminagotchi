@@ -7,10 +7,11 @@
   "illustrations : l'intro en images (PC : pc/tg/scenes.py, Android : Scenes.kt) ; coordonnées en pixels de l'image d'origine (taille).",
   "  camp : le camp de base (camp2.png) ; dort = comment le code l'endort (couleur, lumiere, bleu, melange) ; ordi, nid = centres ;",
   "  chemins = la lumière qui remonte les câbles puis l'arbre à la 1re commande (t = départ en s, vitesse en px/s) ; couleur_vitesse ;",
-  "  fondu, fin = la couleur qui revient derrière (s) ; oeuf = le cadre 26×26 de l'œuf dans le nid ; coquille, bebe = l'éclosion ;",
+  "  fondu, fin = la couleur qui revient derrière (s) ; oeuf = le cadre 26×26 de l'œuf dans le nid ; bebe = où le bébé apparaît ;",
   "  cadrage = la position horizontale du recadrage au téléphone (0 gauche, 1 droite) ; telechargement = l'œuf qui arrive :",
   "  cibles[n] = pourcentage reçu après n commandes de la liste, vitesse en %/s ; eclat (l'œuf complet brille), eclot (il",
-  "  se fêle, la coquille éclate et s'ouvre) et fondu (le bébé apparaît en fondu digital) en secondes.",
+  "  se fêle, la coquille éclate et s'ouvre) et fondu (la coquille se dissout en pixels verts qui",
+  "  s'envolent, le bébé apparaît en fondu digital ; à la fin, seul le bébé reste dans le nid) en secondes.",
   "checklist : les commandes qui nourrissent l'œuf (textes intro.l.<id> et intro.r.<id>) ; re = l'expression qui la reconnaît.",
   "deblocages : chaque fonction du jeu et ce qui l'ouvre (toutes les conditions de « quand » doivent être vraies) :",
   "  eclos = l'œuf a éclos · niveau = niveau atteint · lecons = leçons finies · chapitres = chapitres finis ·",
@@ -298,13 +299,8 @@
     "y": 196,
     "cote": 430
    },
-   "coquille": {
-    "x": 365,
-    "y": 300,
-    "cote": 300
-   },
    "bebe": {
-    "x": 835,
+    "x": 762,
     "bas": 612,
     "haut": 330
    },
@@ -325,7 +321,7 @@
    "vitesse": 24,
    "eclat": 0.7,
    "eclot": 1.4,
-   "fondu": 1.6
+   "fondu": 2.0
   }
  },
  "scenes": {

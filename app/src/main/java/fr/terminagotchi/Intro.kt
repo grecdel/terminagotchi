@@ -551,43 +551,48 @@ object Intro {
         }
         if (m.phase == "dort") return
         val ty = Oeufs.typeDe(jeu)
-        val (oeuf, _) = Scenes.oeuf(ty, m) ?: return
         val o = c.optJSONObject("oeuf") ?: org.json.JSONObject()
         val (nx, ny) = (c.optJSONArray("nid")?.let { it.optDouble(0).toFloat() to it.optDouble(1).toFloat() } ?: (760f to 545f))
         val ox = o.optDouble("x", 545.0).toFloat(); val oy = o.optDouble("y", 196.0).toFloat(); val cote = o.optDouble("cote", 430.0).toFloat()
         if (m.phase == "ne" || m.phase == "fondu") {
-            // la coquille ouverte glisse vers le bord du nid ; le bébé apparaît en fondu digital, puis les étincelles
+            // la coquille se dissout en pixels verts qui s'envolent ; le bébé apparaît en fondu digital au même endroit ;
+            // à la fin, seul le bébé reste dans le nid
             val f = if (m.phase == "fondu") m.f else 1f
-            val g0 = minOf(1f, f / 0.35f)
-            val g = g0 * g0 * (3 - 2 * g0)
             val b = c.optJSONObject("bebe") ?: org.json.JSONObject()
-            val (bx, by) = vers(b.optDouble("x", 835.0).toFloat(), b.optDouble("bas", 612.0).toFloat())
+            val (bx, by) = vers(b.optDouble("x", 762.0).toFloat(), b.optDouble("bas", 612.0).toFloat())
             val bh = b.optDouble("haut", 330.0).toFloat() * e
             p.lueur(bx, by - bh * 0.55f, bh * 1.2f, ((0x73 * f).toInt() shl 24) or 0xFFF096)
-            if (m.phase == "fondu") p.lueur(bx, by - bh * 0.5f, bh * 0.95f, (((0.75f - 0.55f * f) * 255).toInt() shl 24) or 0x5CFF95)
-            val q = c.optJSONObject("coquille") ?: org.json.JSONObject()
-            val qx0 = q.optDouble("x", 365.0).toFloat(); val qy0 = q.optDouble("y", 300.0).toFloat(); val qc0 = q.optDouble("cote", 300.0).toFloat()
-            val (qx, qy) = vers(ox + (qx0 - ox) * g, oy + (qy0 - oy) * g)
-            val qc = (cote + (qc0 - cote) * g) * e
-            p.image(oeuf, 0, 0, oeuf.w, oeuf.h, qx, qy, qc, qc, false)
+            if (m.phase == "fondu") {
+                p.lueur(bx, by - bh * 0.5f, bh * 0.95f, (((0.75f - 0.55f * f) * 255).toInt() shl 24) or 0x5CFF95)
+                val sc = minOf(1f, f / Scenes.FIN_COQUILLE)
+                val coq = if (sc < 1f) Scenes.oeuf(ty, m)?.first else null
+                if (coq != null) {
+                    val d = Scenes.dissoudre(coq, sc, maxOf(1, coq.w / 52))
+                    val (X, Y) = vers(ox, oy)
+                    val ech = cote * e / coq.h
+                    p.image(d, 0, 0, d.w, d.h, X, Y - (d.h - coq.h) * ech, d.w * ech, d.h * ech, false, m.k * 1000 + (sc * 999).toInt())
+                }
+            }
+            val fb = if (m.phase == "fondu") ((f - Scenes.DEBUT_BEBE) / (1 - Scenes.DEBUT_BEBE)).coerceIn(0f, 1f) else 1f
             val bp = if (m.phase == "fondu") p.bebePix() else null
             if (bp != null) {
                 val w = bh * bp.w / maxOf(1, bp.h)
                 val grain = maxOf(1, bp.h / 34)                   // des « pixels » de fondu bien visibles
-                p.image(Scenes.fondu(bp, f, m.k, grain), 0, 0, bp.w, bp.h, bx - w / 2, by - bh, w, bh, false, m.k * 1000 + (f * 999).toInt())
+                p.image(Scenes.fondu(bp, fb, m.k, grain), 0, 0, bp.w, bp.h, bx - w / 2, by - bh, w, bh, false, m.k * 1000 + (fb * 999).toInt() + 7)
             } else if (m.phase == "ne") p.bebe(bx, by, bh)
             if (m.phase == "fondu") return
             val etincelles = listOf(-170 to -230, 150 to -250, 210 to -120, -230 to -90, 60 to -300, -60 to -280)
-            for ((j, d) in etincelles.withIndex()) {
+            for ((j, dd) in etincelles.withIndex()) {
                 val vis = ((m.k / 3 + j) % 3) != 0
                 if (!vis) continue
-                val (X, Y) = vers(b.optDouble("x", 835.0).toFloat() + d.first, b.optDouble("bas", 612.0).toFloat() - 60f + d.second)
+                val (X, Y) = vers(b.optDouble("x", 762.0).toFloat() + dd.first, b.optDouble("bas", 612.0).toFloat() - 60f + dd.second)
                 val r = (if (j % 2 == 1) 10f else 14f) * e + 2f
                 p.lueur(X, Y, r * 2.2f, 0xCCFFD75F.toInt())
                 p.rect(X - r / 2, Y - r / 2, r, r, 0xFFFFF7A0.toInt())
             }
             return
         }
+        val (oeuf, _) = Scenes.oeuf(ty, m) ?: return
         val (gx, gy) = vers(nx, ny - 60f)
         val (X, Y) = vers(ox, oy)
         when {
