@@ -331,6 +331,8 @@ def lieu_attendu(state, step):
     (n'importe où, ou un lieu hors de la zone : la Racine…)."""
     if "ou" in step:
         return step["ou"]
+    if "depuis" in step:                     # `cd ..` : le lieu d'où l'on remonte (C1)
+        return step["depuis"]
     if any(k in step for k in ("ici", "ici_abs", "ou_abs")):
         return None
     lire, creer = _chemins_commande(step.get("cmd") or "")
@@ -376,6 +378,9 @@ def au_bon_endroit(state, step, cwd):
         return True
     if "ou" in step:
         return maison.dans(cwd, lieu)
+    if "depuis" in step:                     # `cd ..` mène au carrefour depuis n'importe lequel de ses lieux
+        r = maison.rel(cwd) if cwd else None
+        return r is not None and r != "" and os.path.dirname(r.replace("\\", "/")) == step.get("ici", "")
     return maison.rel(cwd) == lieu if cwd else False
 
 
@@ -398,6 +403,41 @@ def collee(mot, connues=None):
                 if not commande_installee(c):
                     continue
                 return f"{c} {reste}"
+    return None
+
+
+def ponctuation(mot):
+    """I9 : `pwd,` `ls.` → la commande sans la ponctuation collée (ou None)."""
+    net = (mot or "").rstrip(",.;:!?")
+    return net if net and net != mot and commande_installee(net) and casse_ok(net) else None
+
+
+def mot_de_l_oeuf(mot):
+    """I9 : `bonjour` tout seul → `echo bonjour` quand c'est une commande de la liste de l'œuf (ou None)."""
+    try:
+        from . import intro
+        for c in intro.checklist():
+            cmd = intro.commande_de(c)
+            if cmd.split()[0] == "echo" and cmd.split()[1:2] == [mot]:
+                return cmd
+    except Exception:                                # noqa: BLE001
+        pass
+    return None
+
+
+def barre_oubliee(mot, cwd):
+    """I9 : `nidrepas.txt` → `nid/repas.txt` : un lieu d'ici collé au nom d'un objet qu'il contient (ou None)."""
+    if not mot or "/" in mot or "\\" in mot or os.path.lexists(_abs(mot, cwd)):
+        return None
+    base = cwd or str(Path.home())
+    try:
+        dossiers = [d for d in os.listdir(base) if os.path.isdir(os.path.join(base, d))]
+    except OSError:
+        return None
+    for d in sorted(dossiers, key=len, reverse=True):
+        reste = mot[len(d):]
+        if mot.startswith(d) and reste and os.path.lexists(os.path.join(base, d, reste)):
+            return f"{d}/{reste}"
     return None
 
 
@@ -483,7 +523,8 @@ def expliquer(ligne, statut, cwd):
                     p = _abs(w, m.avant)
                     d = os.path.dirname(p.rstrip("/"))
                     if os.path.isdir(d) and not os.access(d, os.W_OK):
-                        return t("core.err.refuse", nom=w)
+                        # le cadenas est sur le dossier (/etc), pas sur l'objet qu'on voulait créer (coucou.txt)
+                        return t("core.err.refuse", nom=os.path.dirname(w.rstrip("/")) or m.avant or w)
         manque = chemins_manquants(m.texte, m.avant)
         if manque:
             from . import maison

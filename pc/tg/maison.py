@@ -374,8 +374,10 @@ def _prudence(state, ligne, cwd):
         return pire[0]
     m["prudence"] = time.time()
     if pire[0] == "systeme":
-        core.say(state, t("carte.prudence.systeme", lieu=nom_lieu(lieu_de(pire[2])), chemin=str(pire[2])), 14)
-        core.terminal(state, t("carte.prudence.systeme", lieu=nom_lieu(lieu_de(pire[2])), chemin=str(pire[2])))
+        # « un lieu du système est un lieu du système » : un lieu sans nom est désigné par son chemin
+        nom = str(pire[2]) if lieu_de(pire[2]) == "systeme" else nom_lieu(lieu_de(pire[2]))
+        core.say(state, t("carte.prudence.systeme", lieu=nom, chemin=str(pire[2])), 14)
+        core.terminal(state, t("carte.prudence.systeme", lieu=nom, chemin=str(pire[2])))
         core.say(state, t("grand.ligne", texte=t("carte.prudence.adulte")), 16)
     else:
         core.say(state, t("carte.prudence.dit", terrain=f"~/{T().name}"), 12)

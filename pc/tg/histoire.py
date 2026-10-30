@@ -111,7 +111,8 @@ NOUVELLES = {
         _n("racine", 4, cmd=f"cd {VESTIBULE_ABS}", ici="vestibule"),
     ]},
     "nid0": {"titre": "lec.t1.titre", "skill": "Bâtisseur", "steps": [
-        _n("nid0", 0, cmd="cd ..", ici="", exact=True),
+        # « depuis » : le lieu d'où `cd ..` mène au carrefour (C1 : depuis le camp, `cd ..` mène au village, pas ici)
+        _n("nid0", 0, cmd="cd ..", ici="", exact=True, depuis="vestibule"),
         _ref("t1", 2),
         _n("nid0", 2, cmd=C(f"touch nid{S}lit.txt", f"New-Item nid{S}lit.txt"), fs="lit"),
     ]},
@@ -868,7 +869,7 @@ def tick_lecon(state, lines, cwds, avants=None):
         state["indice_lecon"] = None
     elif tapees:
         step = les["steps"][state["step"]]
-        conseil = indice(state, step, [l for l, _ in tapees], tapees, morcs)
+        conseil = placement.masquer(state, step, indice(state, step, [l for l, _ in tapees], tapees, morcs))
         placement.rate_une_fois(state, step)          # mode sans aide : 3 essais ratés montrent la commande
         if conseil and conseil != state.get("indice_lecon"):
             state["indice_lecon"] = conseil
@@ -896,7 +897,13 @@ def aide_lecon(state, cwd=None, tel=False):
     from . import compagnon, verif
     out = [t("aide.lecon.titre")]
     les, etiquette = lecon_courante(state)
-    if not les or core.level(state.get("xp", 0)) < les["niveau"]:
+    from . import intro
+    if intro.en_cours(state):                   # I1 : pendant l'œuf, la prochaine commande de sa liste
+        p = intro.prochaine(state)
+        out.append("🥚 " + t("intro.liste.titre", n=len(intro.i_(state)["faits"]), total=len(intro.checklist())))
+        if p:
+            out.append(t("aide.lecon.tape", cmd=f"`{intro.commande_de(p)}`"))
+    elif not les or core.level(state.get("xp", 0)) < les["niveau"]:
         out.append(t("aide.lecon.aucune"))
     else:
         step = les["steps"][state["step"]]
@@ -940,11 +947,15 @@ def _indice_resultat(state, step, morcs):
             continue
         for x, _ in verif._couper(m.texte, ("|",)):
             mot = verif.premier(x)
+            if mot and not verif.commande_installee(mot) and verif.ponctuation(mot):     # I9 : `pwd,`
+                return t("core.inconnue.proche", cmd=mot, proche=verif.ponctuation(mot))
             if mot and not verif.commande_installee(mot):
                 return t("lec.indice.absent", cmd=mot) + (" " + lecons.tx(step["astuce"]) if step.get("astuce") else "")
         manque = verif.chemins_manquants(m.texte, m.avant)
         if manque:
             p = manque[0]
+            if verif.barre_oubliee(p, m.avant):                            # I9 : nidrepas.txt → nid/repas.txt
+                return t("lec.indice.barre", tape=p, proche=verif.barre_oubliee(p, m.avant))
             proche = verif.nom_proche(p, m.avant)
             if proche:
                 return t("lec.indice.casse" if proche[1] else "lec.indice.nom", tape=p, proche=proche[0])
@@ -952,9 +963,27 @@ def _indice_resultat(state, step, morcs):
             if lieu is not None and maison.rel(m.avant) != lieu:
                 return t("lec.indice.lieu", lieu=nom_lieu(lieu), cmd=verif.cd_vers(lieu), etape=step["cmd"])
             return t("lec.indice.manque", nom=p)
+        if m.statut == 1 and not meme and grep_rien(m.texte):
+            return grep_rien(m.texte)
         if m.statut and not meme:
             return t("lec.indice.rate", cmd=step["cmd"])
     return None
+
+
+def grep_rien(texte):
+    """C3 : grep n'a trouvé aucune ligne (code 1) : le dire, et comment regarder le fichier (au lieu de « une erreur »)."""
+    from . import verif
+    parts = [p for p, _ in verif._couper(texte, ("|",))]
+    k = next((i for i, p in enumerate(parts) if verif.premier(p) == "grep"), None)
+    if k is None or any(w.startswith("-") and ("r" in w or "R" in w) for w, _c in verif.mots(parts[k])):
+        return None
+    args = [w for w, _c in verif.mots(parts[k])[1:] if not w.startswith("-")]
+    if not args:
+        return None
+    fichier = args[1] if len(args) > 1 else next((w for w, _c in verif.mots(parts[k - 1])[1:] if not w.startswith("-")),
+                                                  None) if k > 0 else None
+    ok = fichier and fichier not in (".", "..") and not fichier.endswith(("/", "\\"))
+    return t("lec.indice.grep_rien", mot=args[0], cmd=f"cat {fichier}") if ok else None
 
 
 def _indice_cd(state, step, morcs):
@@ -969,6 +998,10 @@ def _indice_cd(state, step, morcs):
             return t("lec.indice.cd_moins", cmd=step["cmd"])
         if "ici" not in step and "ici_abs" not in step:
             continue
+        if step.get("depuis") and not _ici_ok(step, m.apres) and not verif.au_bon_endroit(state, step, m.avant):
+            # C1 : `cd ..` tapé ailleurs (le camp, la Racine) ne mène pas au carrefour : partir du bon lieu
+            return t("lec.indice.lieu", lieu=nom_lieu(step["depuis"]), cmd=verif.cd_vers(step["depuis"]),
+                     etape=step["cmd"])
         if m.apres == m.avant and arg not in (".", "") and not os.path.isdir(verif._abs(arg, m.avant)):
             proche = verif.nom_proche(arg, m.avant)
             if proche:
@@ -1014,7 +1047,8 @@ def indice(state, step, lignes, tapees, morcs=None):
                 return t("hist.indice.racine", cmd="cd /")
     if "ici" in step or "ici_abs" in step:
         return _indice_cd(state, step, morcs)
-    conseil = _indice_cd(state, step, morcs) or _indice_rm(step, tapees) or _indice_resultat(state, step, morcs)
+    conseil = _indice_cd(state, step, morcs) or _indice_rm(step, tapees) or _indice_barre(step, morcs) \
+        or _indice_resultat(state, step, morcs)
     if conseil:
         return conseil
     from . import dressage
@@ -1049,6 +1083,19 @@ def _indice_rm(step, tapees):
                 p = _cible(cwd, a)
                 if p.is_dir() and any(p.iterdir()):
                     return t("hist.indice.plein", nom=a.rstrip("/\\"), cmd=step["cmd"])
+    return None
+
+
+def _indice_barre(step, morcs):
+    """I9 : `touch nidlit.txt` quand l'étape veut `nid/lit.txt` : la barre / oubliée (le fichier collé est créé)."""
+    from . import verif
+    attendus = [w for w, _c in verif.mots(step.get("cmd") or "")[1:] if "/" in w]
+    for m in morcs:
+        for w, _c in verif.mots(m.texte)[1:]:
+            for a in attendus:
+                if "/" not in w and w == a.replace("/", "", 1) and a.split("/")[0] and \
+                        os.path.isdir(os.path.join(m.avant or "", a.split("/")[0])):
+                    return t("lec.indice.barre", tape=w, proche=a)
     return None
 
 

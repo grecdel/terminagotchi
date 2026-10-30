@@ -601,6 +601,7 @@ def commencer(state, sauvage):
         "debut": time.time(), "duree": None if premiere else DUREE[rar] + bo["temps"] + debutant, "x": {}, "lecon": premiere,
         "ind": ind, "rarete": rar, "variante": ind.get("variante", "classique"),
         "mefiance": 100 - bo["mefiance"], "seconde": bo["seconde_chance"], "examine": False,
+        "exemple_tout_de_suite": n_caps < 5,           # I10 : un débutant voit l'exemple tout de suite
     }
     if rar in ULTIMES:
         state.setdefault("dressage_essais", {})[e["nom"]] = jour
@@ -930,6 +931,37 @@ def au_repaire(state):
     if not d:
         return False
     return maison.dans(maison.ici(state), f"{d['zone']}/{repaire(d['espece'])}")
+
+
+def ligne_terminal(state):
+    """I3 : l'épreuve du monstre en cours, sur une ligne, pour le terminal de l'enfant (sur PC, la fenêtre du
+    face-à-face peut manquer) : « 🐾 Scarabouille : le but ➜ la commande » (la commande quand l'exemple est montré)."""
+    from . import maison
+    from .plateforme import piege
+    d = state.get("dressage")
+    if not d:
+        return None
+    if combat.en_cours(state):
+        return f"🐾 {d['espece']} · " + t("dress.combat.coups") + " `ls`"
+    x = tache_courante(state)
+    if x is None:
+        return None
+    fid = next(f for f in d["taches"] if _par_id(f) is x)
+    p = palier(state)
+    but = t(x["but"], **termes(p), nom_min=nom_fichier(d["espece"]), nom=d["espece"])
+    _expl, ex = aide(fid, d["espece"], p)
+    r = reste(state)
+    ex = re.sub(r"\s{2,}", " ", ex) if ex else ex
+    montre = bool(ex)
+    if montre and r is not None and not fid.startswith("Rencontre:") and not d.get("exemple_tout_de_suite"):
+        montre = r <= d["duree"] * bonus(state)["exemple"]
+    if not montre:
+        return f"🐾 {d['espece']} : {but}"
+    if fid.startswith("Rencontre:examiner") and maison.rel(maison.ici(state)) != "":
+        cmd = t("comp.lecon.puis", cd=piege(f"cd ~/{T.name}"), cmd=piege(ex))
+    else:
+        cmd = commande_epreuve(state, fid, ex)
+    return f"🐾 {d['espece']} : {but} ➜ {cmd}"
 
 
 def commande_epreuve(state, fid, ex):

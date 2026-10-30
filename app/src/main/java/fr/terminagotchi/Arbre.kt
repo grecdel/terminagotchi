@@ -22,6 +22,14 @@ class Branche(
 object Arbre {
     private fun r(p: String) = Regex(p, RegexOption.IGNORE_CASE)
 
+    /** le lieu de la liste de courses (chapitre 5, la bibliothèque) et son fichier */
+    const val BIBLIO = "bibliotheque"
+    const val COURSES = "$BIBLIO/courses.txt"
+
+    /** ~/.tgrc (avec le point : le fichier que le shell charge) contient la fonction miam */
+    fun tgrcMiam(jeu: Jeu): Boolean =
+        try { Regex("miam\\s*\\(\\)").containsMatchIn(File(jeu.home, ".tgrc").readText()) } catch (e: Exception) { false }
+
     /** Cherche un fichier par son nom n'importe où dans la maison (sur 5 niveaux). */
     fun trouve(jeu: Jeu, nom: String): File? =
         jeu.home.walkTopDown().maxDepth(5).firstOrNull { it.isFile && it.name == nom }
@@ -99,26 +107,28 @@ object Arbre {
                     Etape("arbre.tuyaux0.0.dit", "ls | wc -l",
                         "arbre.tuyaux0.0.bravo", re = r("\\|\\s*wc\\b"),
                         astuceCle = "arbre.tuyaux0.0.astuce"),
+                    // C3 : la liste de courses se fait dans la bibliothèque (« 📁 » sur chaque étape) ; un dressage qui
+                    // emmène l'enfant ailleurs ne valide plus les étapes dans un autre lieu
                     Etape("arbre.tuyaux0.1.dit", "echo banane > courses.txt",
                         "arbre.tuyaux0.1.bravo",
-                        fs = { trouve(it, "courses.txt") != null }),
+                        fs = { File(it.terrain, COURSES).isFile }, ou = BIBLIO),
                     Etape("arbre.tuyaux0.2.dit", "echo pomme >> courses.txt",
                         "arbre.tuyaux0.2.bravo",
-                        re = r(">>\\s*courses")),
+                        re = r("pomme.*>>\\s*courses"), ou = BIBLIO),
                     Etape("arbre.tuyaux0.3.dit", "echo cerise >> courses.txt",
-                        "arbre.tuyaux0.3.bravo", re = r("cerise.*>>\\s*courses")),
+                        "arbre.tuyaux0.3.bravo", re = r("cerise.*>>\\s*courses"), ou = BIBLIO),
                     Etape("arbre.tuyaux0.4.dit", "sort courses.txt",
-                        "arbre.tuyaux0.4.bravo", re = r("^sort\\b")),
+                        "arbre.tuyaux0.4.bravo", re = r("^sort\\b"), ou = BIBLIO),
                 )),
                 Lecon("arbre.tuyaux1.titre", "Tamiseur", 1, listOf(
                     Etape("arbre.tuyaux1.0.dit", "cat courses.txt | grep pomme",
                         "arbre.tuyaux1.0.bravo",
-                        re = r("\\|\\s*grep\\b")),
+                        re = r("\\|\\s*grep\\b"), ou = BIBLIO),
                     Etape("arbre.tuyaux1.1.dit", "sort courses.txt > triee.txt",
-                        "arbre.tuyaux1.1.bravo", fs = { trouve(it, "triee.txt") != null }),
+                        "arbre.tuyaux1.1.bravo", fs = { File(it.terrain, "$BIBLIO/triee.txt").isFile }, ou = BIBLIO),
                     Etape("arbre.tuyaux1.2.dit", "cat triee.txt",
                         "arbre.tuyaux1.2.bravo",
-                        re = r("^cat\\b.*triee")),
+                        re = r("^cat\\b.*triee"), ou = BIBLIO),
                 )),
             )),
             "scripts" to Branche("scripts", "branche.Scripts", "🧪", "Intelligence", "lec.scripts.desc", listOf(
@@ -134,7 +144,10 @@ object Arbre {
                 Lecon("lec.scripts1.titre", "Inventeur", 1, listOf(
                     Etape("arbre.scripts1.0.dit", "echo 'miam() { echo \"Miam !\"; }' >> ~/.tgrc",
                         "arbre.scripts1.0.bravo",
-                        re = r("miam\\s*\\(\\).*>>\\s*~?/?\\S*tgrc")),
+                        // C4 : `~/tgrc` (sans le point) n'est pas le fichier chargé par le shell : la fonction doit
+                        // vraiment arriver dans ~/.tgrc
+                        re = r("miam\\s*\\(\\).*>>\\s*(~/|\\\$HOME/|\\\$\\{HOME\\}/|/home/explorateur/)\\.tgrc(\\s|$|;|&)"),
+                        fs = { tgrcMiam(it) }),
                     Etape("lec.scripts1.2.dit", "miam",
                         "arbre.scripts1.1.bravo",
                         re = r("^miam\\s*$")),

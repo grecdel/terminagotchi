@@ -208,6 +208,7 @@ object Verif {
     /** Le lieu de la zone d'aventure (« » = le carrefour) d'où la commande de l'étape marche, ou null (partout). */
     fun lieuAttendu(jeu: Jeu, e: Etape): String? {
         e.ou?.let { return if (it.startsWith("/")) null else it }
+        e.depuis?.let { return it }                       // `cd ..` : le lieu d'où l'on remonte (C1)
         if (e.ici != null) return null
         val (lire, creer) = cheminsCommande(e.cmd)
         if (lire.isEmpty() && creer.isEmpty()) return null
@@ -230,6 +231,10 @@ object Verif {
     fun auBonEndroit(jeu: Jeu, e: Etape, cwd: String?): Boolean {
         val lieu = lieuAttendu(jeu, e) ?: return true
         if (e.ou != null) return Maison.dans(jeu, cwd, lieu)
+        if (e.depuis != null) {                           // `cd ..` mène au carrefour depuis n'importe lequel de ses lieux
+            val r = cwd?.let { Maison.rel(jeu, it) } ?: return false
+            return r.isNotEmpty() && r.substringBeforeLast('/', "") == (e.ici ?: "")
+        }
         return cwd != null && Maison.rel(jeu, cwd) == lieu
     }
 

@@ -127,6 +127,13 @@ def cache(state, step):
     return cle not in vu and state.get("sa_essais", {}).get(cle, 0) < 3
 
 
+def masquer(state, step, texte):
+    """I2 : en mode sans aide, un indice ne donne pas la commande de l'étape (tant qu'elle est cachée)."""
+    if not texte or not cache(state, step) or not step.get("cmd"):
+        return texte
+    return texte.replace(step["cmd"], "…")
+
+
 def montrer(state, step):
     """`aide` en mode sans aide : la commande de l'étape devient visible."""
     les_id = (state.get("histoire") or {}).get("chap")

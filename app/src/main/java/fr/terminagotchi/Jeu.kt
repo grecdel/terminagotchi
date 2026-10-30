@@ -34,6 +34,8 @@ class Etape(
     val echoue: Boolean = false,
     /** le réseau peut manquer (école, avion) : avoir essayé la commande suffit, le jeu explique la réponse */
     val reseau: Boolean = false,
+    /** `cd ..` : le lieu d'où l'on remonte jusqu'à « ici » (C1 : depuis le camp, `cd ..` ne mène pas au carrefour) */
+    val depuis: String? = null,
 ) {
     val dit: String get() = Histoire.tx(ditCle, params)
     val bravo: String get() = Histoire.tx(bravoCle, params)
@@ -771,22 +773,27 @@ class Jeu(ctx: Context) {
         if (c != null) {
             out.add(t("hist.ecran.chapitre", "icone" to (Maison.ICONES[c.chap.piece] ?: "📖"),
                 "chapitre" to Histoire.nomChapitre(c.chap.id), "n" to c.chap.n) + " · " + c.etiquette)
-            if (niveau < c.niveau) {
+            if (Placement.actif(this)) {
+                // I2 : pendant le test « je connais déjà », seul le défi est montré (pas la commande de la leçon)
+            } else if (niveau < c.niveau) {
                 val manque = 10 * (c.niveau - 1) * (c.niveau - 1) - xp
                 out.add(t("leca.prochaine", "n" to c.niveau, "xp" to manque))
             } else {
                 val e = c.etapes[etape]
                 if (c.id == "t0" && etape == 0 && Placement.etat(this).isEmpty()) out.add("🧩 " + t("plac.propose.tel"))
                 out.add("${c.titre} (${etape + 1}/${c.etapes.size}) · ${e.dit}\n➜ ${Verif.commandeMontree(this, e)}")
-                e.adulte?.let { out.add("🧑 $it") }                              // G-32 : la version des grands, toujours là
-                Vrai.ligne(e.cmd)?.let { out.add(it) }                           // G-10 : 💻 et dans un vrai terminal ?
-                for ((montre, cle) in Explique.nouvelles(this, e.cmd))          // 💡 Le -r veut dire… (+ pour les grands)
-                    Explique.phrases(this, montre, cle).forEachIndexed { k, p -> out.add("  ".repeat(k) + p) }
+                val cachee = Placement.cache(this, e)                           // I2 : mode sans aide, rien ne la donne
+                if (!cachee) {
+                    e.adulte?.let { out.add("🧑 $it") }                          // G-32 : la version des grands, toujours là
+                    Vrai.ligne(e.cmd)?.let { out.add(it) }                       // G-10 : 💻 et dans un vrai terminal ?
+                    for ((montre, cle) in Explique.nouvelles(this, e.cmd))      // 💡 Le -r veut dire… (+ pour les grands)
+                        Explique.phrases(this, montre, cle).forEachIndexed { k, p -> out.add("  ".repeat(k) + p) }
+                }
                 Verif.lieuAttendu(this, e)?.let { lieu ->                      // 📁 d'où la commande marche (calculé, G-34)
                     out.add(t("app.lecon.depuis", "terrain" to (if (lieu.isEmpty()) Mots.terme("terrain", Mots.palier(this))
                         else Maison.nomPiece(lieu.substringBefore('/'))), "cmd" to Verif.cdVers(this, lieu)))
                 }
-                e.astuce?.let { out.add(it) }
+                if (!cachee) e.astuce?.let { out.add(it) }
                 indiceLecon?.let { out.add("💡 $it") }
             }
         } else {

@@ -742,6 +742,36 @@ def _ecran(texte):
     sys.stdout.flush()
 
 
+def _terminal_possible():
+    """Entrée peut ramener l'enfant dans son terminal (le compagnon y est installé, hors Windows)."""
+    try:
+        return not IS_WIN and sys.stdin.isatty() and compagnon.est_installe()
+    except Exception:                                # noqa: BLE001
+        return False
+
+
+def _retour_terminal(clav):
+    """I5 : après `exit`, la fenêtre du jeu n'écoute que ses touches ; Entrée rouvre le terminal (ou, si la fenêtre a
+    été ouverte depuis le terminal du jeu, la ferme pour y revenir). Renvoie True, « sortir » ou False."""
+    if not _terminal_possible():
+        return False
+    if os.environ.get("TG_DANS_LE_JEU"):
+        return "sortir"
+    import shutil
+    import subprocess
+    clav.normal()
+    try:
+        clear()
+        print(f"\n   {fg(78)}" + t("intro.pc.lance") + RESET + "\n")
+        shell = os.environ.get("SHELL") or shutil.which("bash") or "sh"
+        subprocess.call([shell, "-i"], env=dict(os.environ, TG_DANS_LE_JEU="1"))
+    except OSError:
+        return False
+    finally:
+        clav.brut()
+    return True
+
+
 def fenetre(once):
     if "--defi" in sys.argv:
         core.modifier(core.defi_start)
@@ -825,6 +855,13 @@ def fenetre(once):
                     if k in ("\r", "\n", " "):          # Entrée : l'écran de présentation est lu
                         state = core.modifier(intro.lu) or state
                     continue
+                if k in ("\r", "\n"):                    # I5 : Entrée = retourner dans le terminal (après `exit`)
+                    r = _retour_terminal(clav)
+                    if r == "sortir":
+                        break
+                    if r:
+                        clear()
+                        continue
                 k = k.lower()
                 fid = TOUCHES.get(k)
                 if fid and not intro.ouvert(state, fid):
@@ -849,7 +886,8 @@ def fenetre(once):
                 elif k == "q":
                     break
                 elif k and len(k) == 1 and k.isalnum():   # P1-5 : des lettres tapées ici ne sont pas des commandes
-                    state = core.modifier(lambda s: core.say(s, t("app.pas_ici"), 10)) or state
+                    msg = t("app.pas_ici.entree") if _terminal_possible() else t("app.pas_ici")
+                    state = core.modifier(lambda s: core.say(s, msg, 10)) or state
     except KeyboardInterrupt:
         pass
     print(RESET + "\n" + t("app.a_plus_tard"))
@@ -990,7 +1028,8 @@ def _main():
                 core.migrate(st)
                 texte = histoire.aide_lecon(st, ici)
                 core.save(st)
-            print("\n".join(texte) + "\n")    # d'abord la leçon en cours, puis la liste du jeu
+            print("\n".join(texte) + "\n")    # I1 : seulement la leçon en cours (la liste du jeu : tg aide tout)
+            return
         print(aide())
         return
     if mode in ("placement", "sansaide"):      # G-13 : le test « je connais déjà », le mode défi sans aide

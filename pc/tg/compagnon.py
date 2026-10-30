@@ -56,9 +56,27 @@ def ligne(state):
     r = envies.rappel_recent(state)
     if r:                                          # l'envie du moment (au plus une fois toutes les 12 commandes)
         return f"{tete}  {fg(214)}💭 {r}{RESET}"
+    try:                                           # I3 : le monstre en cours de dressage, sur sa propre ligne
+        from . import dressage
+        monstre = dressage.ligne_terminal(state)
+    except Exception:                              # noqa: BLE001 (le compagnon ne doit jamais planter)
+        monstre = None
+    monstre = f"\n   {fg(214)}{monstre}{RESET}" if monstre else ""
     les, _ = lecons.lecon_courante(state)
     if les and lvl >= les["niveau"]:
-        return f"{tete}  {DIM}" + t("comp.lecon2", cmd=commande_montree(state, les["steps"][state["step"]])) + RESET
+        return f"{tete}  {DIM}" + t("comp.lecon2", cmd=commande_montree(state, les["steps"][state["step"]])) + RESET + monstre
+    try:                                           # I8 : entre deux chapitres, le cd (depuis n'importe où) d'un lieu
+        from . import histoire
+        if histoire.bandeau(state) and histoire.fini(state, "nid") and not histoire.chapitre_courant(state):
+            libre = next((c for c in histoire.AILES if not histoire.fini(state, c)), None)
+            if libre:
+                piece = histoire.PAR_CHAP[libre]["piece"]
+                return f"{tete}  {DIM}🗺 " + t("comp.lecon2", cmd=f"`{piege(f'cd ~/{core.TERRAIN.name}/{piece}')}`") \
+                    + RESET + monstre
+    except Exception:                              # noqa: BLE001
+        pass
+    if monstre:
+        return tete + monstre
     from . import quetes
     suivie = quetes.ligne_suivie(state)
     if suivie:
@@ -115,13 +133,14 @@ def annonces(state):
                 out.append(f"{DIM}🧩 " + t("plac.propose") + RESET)       # G-13 : « je connais déjà un peu »
             out.append(f"{fg(213)}📖 {lecons.tx(step['dit'])}{RESET}")
             out.append(f"   {fg(226)}➜ {commande_montree(state, step)}{RESET}")
-            g = lecons.adulte(step)
-            if g:
-                out.append(f"   {DIM}🧑 {g}{RESET}")
-            from . import vrai
-            v = vrai.ligne(step)
-            if v:
-                out.append(f"   {DIM}{v}{RESET}")
+            if not placement.cache(state, step):        # I2 : le mode sans aide ne donne pas la commande ici non plus
+                g = lecons.adulte(step)
+                if g:
+                    out.append(f"   {DIM}🧑 {g}{RESET}")
+                from . import vrai
+                v = vrai.ligne(step)
+                if v:
+                    out.append(f"   {DIM}{v}{RESET}")
     return out
 
 
@@ -190,6 +209,16 @@ def commande():
     return exe, arg0
 
 
+def _ps2(zsh=False):
+    """C2 : l'invite de suite (`>`, une apostrophe ou un guillemet pas fermé) dit comment en sortir (Ctrl+C)."""
+    txt = t("comp.ps2").replace("!", ".")
+    for a, b in (("\\", "\\\\"), ('"', '\\"'), ("$", "\\$"), ("`", "\\`")):
+        txt = txt.replace(a, b)
+    if zsh:
+        txt = txt.replace("%", "%%")
+    return f'PS2="{txt}"\n'
+
+
 def _blocs():
     exe, app = commande()
     home = Path.home()
@@ -198,7 +227,7 @@ def _blocs():
     bashrc, zshrc = home / ".bashrc", home / ".zshrc"
     if not IS_WIN and (shell.endswith("bash") or bashrc.exists() or OSK == "android"):
         blocs[bashrc] = (f'__tg_prompt() {{ local s=$?; history -a; "{exe}" "{app}" prompt --statut=$s; }}\n'
-                         'PROMPT_COMMAND="__tg_prompt${PROMPT_COMMAND:+; $PROMPT_COMMAND}"\n'
+                         'PROMPT_COMMAND="__tg_prompt${PROMPT_COMMAND:+; $PROMPT_COMMAND}"\n' + _ps2() +
                          f"alias tg='\"{exe}\" \"{app}\"'\n"
                          "alias carte='tg carte'; alias quetes='tg quetes'; alias explique='tg explique'\n"
                          "alias entrainement='tg entrainement'; alias exercice='tg entrainement'; alias badges='tg badges'\n"
@@ -206,7 +235,7 @@ def _blocs():
     if not IS_WIN and (shell.endswith("zsh") or zshrc.exists() or OSK == "mac"):
         blocs[zshrc] = ("setopt INC_APPEND_HISTORY\n"
                         f'__tg_prompt() {{ local s=$?; "{exe}" "{app}" prompt --statut=$s }}\n'
-                        "autoload -Uz add-zsh-hook && add-zsh-hook precmd __tg_prompt\n"
+                        "autoload -Uz add-zsh-hook && add-zsh-hook precmd __tg_prompt\n" + _ps2(zsh=True) +
                         f"alias tg='\"{exe}\" \"{app}\"'\n"
                         "alias carte='tg carte'; alias quetes='tg quetes'; alias explique='tg explique'\n"
                         "alias entrainement='tg entrainement'; alias exercice='tg entrainement'; alias badges='tg badges'\n"
@@ -292,12 +321,13 @@ def desinstaller():
 
 def a_jour():
     """Le bloc installé passe bien le code de sortie à l'invite (versions d'avant : non)."""
-    for chemin in _blocs():
+    for chemin, bloc in _blocs().items():
         try:
             txt = chemin.read_text(encoding="utf-8")
         except OSError:
             continue
-        if DEBUT in txt and "--statut" not in txt.split(DEBUT, 1)[1].split(FIN, 1)[0]:
+        installe = txt.split(DEBUT, 1)[1].split(FIN, 1)[0] if DEBUT in txt else None
+        if installe is not None and ("--statut" not in installe or ("PS2=" in bloc and "PS2=" not in installe)):
             return False
     return True
 

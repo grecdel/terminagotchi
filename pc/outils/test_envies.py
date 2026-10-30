@@ -315,8 +315,8 @@ r = subprocess.run([sys.executable, str(RACINE / "pc"), "envies"], capture_outpu
 sortie = langue.sans_marques(r.stdout)
 verifier(all(E.nom(k) in sortie for k in E.ENVIES) and "rm .cache/*.tmp" in sortie and "sleep 10" in sortie
          and "Pour les grands" in sortie, "tg envies : l'état détaillé, et comment satisfaire chacune")
-r = subprocess.run([sys.executable, str(RACINE / "pc"), "aide"], capture_output=True, text=True)
-verifier("tg envies" in langue.sans_marques(r.stdout), "tg aide mentionne tg envies")
+r = subprocess.run([sys.executable, str(RACINE / "pc"), "aide", "tout"], capture_output=True, text=True)
+verifier("tg envies" in langue.sans_marques(r.stdout), "tg aide tout mentionne tg envies")
 verifier("tg envies" in langue.sans_marques("\n".join(lexique.lignes(core.load()))), "le lexique mentionne tg envies")
 verifier(any("envies" in e["cmd"] for e in registre.chercher("envie")), "la recherche trouve tg envies")
 verifier(not any("envies" in k for k in json.loads(json.dumps(core.load().get("compte", {})))),

@@ -347,7 +347,7 @@ class TerminalActivity : Activity() {
     private fun expliquer(sortie: String, ligne: String): String? {
         val s = sortie.lowercase()
         return when {
-            "no such file" in s || "dossier introuvable" in s || (Regles.premierMot(ligne) == "cd" && s.isNotBlank()) ->
+            "no such file" in s || "dossier introuvable" in s || (Regles.premierMot(ligne) == "cd" && s.isNotBlank() && shell.code != 0) ->   // I6 : `cd -` affiche le lieu
                 t("term.err.introuvable")
             "permission denied" in s ->
                 t("term.err.refuse")
@@ -361,6 +361,9 @@ class TerminalActivity : Activity() {
                     brut != brut.lowercase() && Verif.collee(brut.lowercase()) == null && brut.lowercase() in Verif.MOTS_CONNUS ->
                         t("core.inconnue.casse", "cmd" to brut, "proche" to brut.lowercase())
                     colle != null -> t("core.inconnue.proche", "cmd" to brut, "proche" to colle)
+                    // I9 : `pwd,` (une virgule collée) → pwd
+                    brut.trimEnd(',', '.', ';', ':', '!', '?').let { it != brut && it.lowercase() in Verif.MOTS_CONNUS } ->
+                        t("core.inconnue.proche", "cmd" to brut, "proche" to brut.trimEnd(',', '.', ';', ':', '!', '?'))
                     else -> t("term.err.inconnue", "cmd" to Regles.premierMot(ligne))
                 }
             }
@@ -529,7 +532,7 @@ class TerminalActivity : Activity() {
                 (Exemples.apres(jeu, ligne, resultat) ?: expliquer(resultat, ligne))?.let { ecrire(it, 0xFFFFAF5F.toInt()) }
                 val change = majObservatoire(ligne)
                 if (lexiqueVue.visibility == View.VISIBLE) basculerLexique()
-                if (resultat.isEmpty() && !change) {
+                if (resultat.isEmpty() && !change && shell.code == 0) {      // C3 : pas de « ✓ Fait » après un échec
                     ecrire(t("term.fait"), 0xFF9A9AB0.toInt())
                 }
                 try {

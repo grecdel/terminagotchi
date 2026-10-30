@@ -238,7 +238,9 @@ def astuce(state):
     """Le petit tutoriel de l'invite, une chose à la fois : Entrée, l'erreur, ↑, Tab."""
     i = i_(state)
     if i.get("erreur") and len(i["faits"]) < 2:
-        return t("intro.astuce.erreur")
+        return t("intro.astuce.erreur") + " " + t("intro.astuce.ctrlc")
+    if len(i["faits"]) == 1:                 # C2 : l'invite « > » (une apostrophe pas fermée) se quitte avec Ctrl+C
+        return t("intro.astuce.1") + " " + t("intro.astuce.ctrlc")
     return t(f"intro.astuce.{min(len(i['faits']), 3)}")
 
 
@@ -290,7 +292,15 @@ def contenu(state, cid, chemin=None, tel=False):
     """(titre, [paragraphes]) d'un écran : merci, merci2, ou une fonction qui s'ouvre."""
     nom = state.get("name", "")
     if cid == "merci":
-        return t("intro.merci.titre", nom=nom), [t("intro.merci", nom=nom), t("intro.recap")] + \
+        titre = t("intro.merci.titre", nom=nom)
+        try:                                     # l'espèce du bébé, nommée comme sur Android (« Bébé Engrenaille »)
+            from . import bestiaire as B
+            e = B.espece(state.get("espece_compagnon")) if state.get("espece_compagnon") else None
+            if e:
+                titre += " · " + t("forme.stade", stade=t("stade.1"), forme=e["nom"])
+        except Exception:                        # noqa: BLE001
+            pass
+        return titre, [t("intro.merci", nom=nom), t("intro.recap")] + \
             [t(f"intro.r.{c['id']}") for c in checklist()]
     if cid == "merci2":
         from pathlib import Path

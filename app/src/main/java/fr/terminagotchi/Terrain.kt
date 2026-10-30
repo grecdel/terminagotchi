@@ -81,13 +81,17 @@ object Terrain {
                 }
             }
             "scripts0" -> if (nid.isDirectory && etape >= 1 && !trouve("miam.sh")) reculer(0)
-            "scripts1", "scripts2" -> if (nid.isDirectory && !trouve("miam.sh")) {
-                ecrire(File(nid, "miam.sh"), "echo \"Miam !\"\n", executable = Histoire.leconId(jeu) == "scripts2")
-                remis.add("nid/miam.sh")
+            "scripts1", "scripts2" -> {
+                if (nid.isDirectory && !trouve("miam.sh")) {
+                    ecrire(File(nid, "miam.sh"), "echo \"Miam !\"\n", executable = Histoire.leconId(jeu) == "scripts2")
+                    remis.add("nid/miam.sh")
+                }
+                // C4 : la fonction miam n'est pas (ou plus) dans ~/.tgrc : `miam` ne peut pas marcher, on la refait
+                if (Histoire.leconId(jeu) == "scripts1" && etape >= 1 && !Arbre.tgrcMiam(jeu)) reculer(0)
             }
             // les leçons du téléphone : la liste de courses, la carte du Doom
-            "tuyaux0" -> if (etape >= 2 && !trouve("courses.txt")) reculer(1)
-            "tuyaux1" -> if (etape >= 2 && !trouve("triee.txt")) reculer(1)
+            "tuyaux0" -> if (etape >= 2 && !File(jeu.terrain, Arbre.COURSES).isFile) reculer(1)
+            "tuyaux1" -> if (etape >= 2 && !File(jeu.terrain, "${Arbre.BIBLIO}/triee.txt").isFile) reculer(1)
             "createur0" -> if (etape >= 1 && !File(jeu.terrain, "jeu/carte.txt").isFile) reculer(0)
         }
         return remis to recule

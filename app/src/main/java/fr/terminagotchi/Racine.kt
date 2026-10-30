@@ -305,7 +305,8 @@ object Racine {
             .firstOrNull { v -> !dansCamp(v) && v !in VRAIS } ?: return null
         val cmd = Regles.premierMot(ligne).ifEmpty { "sh" }
         return "$cmd: $v: Permission denied\n" +
-            t("racine.refus", "lieu" to t("lieu.${lieu(v)}.nom"), "cmd" to "cd ~/terrain_terminagotchi") + "\n" +
-            t("grand.ligne", "texte" to t("racine.refus.adulte"))
+            t("racine.refus", "lieu" to (if (lieu(v) == "systeme") v else t("lieu.${lieu(v)}.nom")), "cmd" to "cd ~/terrain_terminagotchi") + "\n" +
+            // I7 : sur un vrai Linux, /tmp est ouvert à tous ; ici, c'est une particularité du téléphone
+            t("grand.ligne", "texte" to t(if (lieu(v) == "vague") "racine.refus.adulte.tmp" else "racine.refus.adulte"))
     }
 }

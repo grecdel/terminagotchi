@@ -451,6 +451,7 @@ object Dressage {
             .put("duree", if (premiere) 0 else (DUREE[rar] ?: 90) + bonusTemps(jeu) + debutant)
             .put("mefiance", 100 - bonusMefiance(jeu)).put("seconde", (jeu.stats["Endurance"] ?: 0) >= 20)
             .put("ind", ind).put("rarete", rar).put("variante", ind.optString("variante", "classique")).put("examine", false)
+            .put("exemple_tout_de_suite", nCaps < 5)    // I10 : un débutant voit l'exemple tout de suite (pas d'attente)
         if (rar in ULTIMES) essais.put(e.nom, jour)
         m.put("en_cours", d)
         val c = ctx(jeu, d)
@@ -865,7 +866,7 @@ object Dressage {
         if (montre) sb.texte(col(3), 0xFF87FF87.toInt(), true).texte(montree + "\n", 0xFF87FF87.toInt())
         else sb.texte(col(3), 0xFF87FF87.toInt(), true)
             .texte(t("dressa.exemple_dans", "s" to r!! - (duree * (1 - partExemple(jeu))).toInt()) + "\n", 0xFF808098.toInt())
-        d.optString("indice").ifEmpty { null }?.let { sb.texte(col(5), 0xFFFFAF00.toInt(), true).texte(it + "\n", 0xFFFFAF00.toInt()) }
+        d.optString("indice").ifEmpty { null }?.let { sb.texte(col(5).let { c -> if (c.endsWith(" ")) c else "$c " }, 0xFFFFAF00.toInt(), true).texte(it + "\n", 0xFFFFAF00.toInt()) }
         val ou = when (ep.cle) {
             "Rencontre:examiner" -> "~/terrain_terminagotchi"
             "Rencontre:repaire" -> t("dress.nimporte_ou")

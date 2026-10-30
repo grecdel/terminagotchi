@@ -87,6 +87,10 @@ object Placement {
         return (s.optJSONObject("essais")?.optInt(cle(jeu, e)) ?: 0) < 3
     }
 
+    /** I2 : en mode sans aide, un indice ne donne pas la commande de l'étape (tant qu'elle est cachée). */
+    fun masquer(jeu: Jeu, e: Etape, texte: String?): String? =
+        if (texte == null || !cache(jeu, e)) texte else texte.replace(e.cmd, "…")
+
     fun montrer(jeu: Jeu, e: Etape) {
         val s = jeu.module("sansaide")
         val vu = s.optJSONArray("vu") ?: JSONArray().also { s.put("vu", it) }

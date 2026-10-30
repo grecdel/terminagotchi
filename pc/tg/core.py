@@ -2,6 +2,7 @@
 import json
 import os
 import random
+import re
 import time
 from contextlib import contextmanager
 from pathlib import Path
@@ -374,7 +375,8 @@ BUILTINS = {"cd", "echo", "export", "alias", "history", "type", "source", ".", "
             "true", "false", "printf", "wait", "trap", "exec", "eval", "help", "tg", "clear",
             "carte", "quetes", "explique",          # carte, quetes : les raccourcis du jeu (tg carte, tg quetes)
             "entrainement", "exercice", "badges",   # la salle d'entraînement (tg entrainement, tg badges)
-            "guide", "types", "equipe"}             # le guide (tg guide, tg types, tg equipe)
+            "guide", "types", "equipe",             # le guide (tg guide, tg types, tg equipe)
+            "aide"}                                 # I1 : alias aide='tg aide' (installé avec le compagnon)
 
 
 def commande_existe(cmd):
@@ -415,7 +417,7 @@ def feed(state, line, statut=None):
         animer(state, "colere")
         return
     cmd = first_word(line)
-    if not cmd:
+    if not cmd or cmd in ("exit", "logout"):       # I5 : quitter le terminal n'est pas un repas
         return
     brut = os.path.basename(line.split()[0])
     if not IS_WIN and brut != brut.lower() and commande_existe(cmd) and not commande_existe(brut):
@@ -425,10 +427,18 @@ def feed(state, line, statut=None):
         log(state, t("core.inconnue.log", cmd=brut))
         animer(state, "confus")
         return
+    # I6 : un alias ou une fonction créés par l'enfant (alias miam=…, miam() {…}) sont de vraies commandes
+    persos = state.setdefault("alias_shell", [])
+    for nom in re.findall(r"(?:^|[;&|]\s*)(?:alias\s+([\w.:-]+)=|function\s+([\w.:-]+)|([\w.:-]+)\s*\(\)\s*\{)", line):
+        nom = next((x for x in nom if x), None)
+        if nom and nom not in persos:
+            persos.append(nom)
+            del persos[:-30]
     cat = next((k for k, v in CATEGORIES.items() if cmd in v["cmds"]), None)
-    if not cat and not cmd.startswith(("termux-", "./", "/")) and not commande_existe(cmd):
+    if not cat and not cmd.startswith(("termux-", "./", "/")) and not commande_existe(cmd) and cmd not in persos:
         from . import verif
-        proche = verif.collee(brut) or commande_proche(cmd)          # cdvestibule → cd vestibule, ls-a → ls -a
+        proche = verif.collee(brut) or verif.ponctuation(brut) or verif.mot_de_l_oeuf(cmd) or commande_proche(cmd)
+        # cdvestibule → cd vestibule, ls-a → ls -a, pwd, → pwd (I9), bonjour → echo bonjour (la liste de l'œuf, I9)
         msg = (t("core.inconnue.proche", cmd=cmd, proche=proche) if proche else t("core.inconnue", cmd=cmd))
         say(state, msg, 8)
         terminal(state, msg)

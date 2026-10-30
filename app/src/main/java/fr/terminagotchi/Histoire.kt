@@ -119,8 +119,9 @@ object Histoire {
     /** Une étape nouvelle : textes hist.<leçon>.<i>.dit / .bravo. */
     private fun n(lid: String, i: Int, cmd: String, re: String? = null, fs: ((Jeu) -> Boolean)? = null, ou: String? = null,
                   ici: String? = null, exact: Boolean = false, expert: Boolean = false, astuce: String? = null, cree: String? = null,
-                  params: Map<String, String> = emptyMap()) =
-        Etape("hist.$lid.$i.dit", cmd, "hist.$lid.$i.bravo", re?.let { r(it) }, fs, astuce, cree, ou, ici, exact, expert, params)
+                  params: Map<String, String> = emptyMap(), depuis: String? = null) =
+        Etape("hist.$lid.$i.dit", cmd, "hist.$lid.$i.bravo", re?.let { r(it) }, fs, astuce, cree, ou, ici, exact, expert, params,
+            depuis = depuis)
 
     /** Une étape propre au téléphone : textes hista.<leçon>.<i>.dit / .bravo. */
     private fun a(lid: String, i: Int, cmd: String, re: String) = Etape("hista.$lid.$i.dit", cmd, "hista.$lid.$i.bravo", r(re))
@@ -152,7 +153,7 @@ object Histoire {
                 n("racine", 4, "cd ${Racine.HOME}/terrain_terminagotchi/vestibule", ici = "vestibule"),
             )),
             "nid0" to Lecon("lec.t1.titre", "Bâtisseur", 1, listOf(
-                n("nid0", 0, "cd ..", ici = "", exact = true),
+                n("nid0", 0, "cd ..", ici = "", exact = true, depuis = "vestibule"),
                 ref("t1", 2),
                 n("nid0", 2, "touch nid/lit.txt", fs = { File(it.terrain, "nid/lit.txt").isFile }, cree = "nid/lit.txt"),
             )),
@@ -737,7 +738,7 @@ object Histoire {
         }
         if (avant != (les.id to jeu.etape)) jeu.indiceLecon = null
         else if (tapees.isNotEmpty()) {
-            val conseil = indice(jeu, les.etapes[jeu.etape], tapees, morcs)
+            val conseil = Placement.masquer(jeu, les.etapes[jeu.etape], indice(jeu, les.etapes[jeu.etape], tapees, morcs))
             Placement.rateUneFois(jeu, les.etapes[jeu.etape])     // mode sans aide : 3 essais ratés montrent la commande
             if (conseil != null && conseil != jeu.indiceLecon) {
                 jeu.indiceLecon = conseil
@@ -795,9 +796,23 @@ object Histoire {
                     return t("lec.indice.lieu", "lieu" to nomLieu(lieu), "cmd" to Verif.cdVers(jeu, lieu), "etape" to e.cmd)
                 return t("lec.indice.manque", "nom" to p)
             }
+            if (m.code == 1 && !meme) grepRien(m.texte)?.let { return it }
             if (m.code != null && m.code != 0 && !meme && !e.echoue) return t("lec.indice.rate", "cmd" to e.cmd)
         }
         return null
+    }
+
+    /** C3 : grep n'a trouvé aucune ligne (code 1) : le dire, et comment regarder le fichier (au lieu de « une erreur »). */
+    fun grepRien(texte: String): String? {
+        val parts = Verif.couper(texte, listOf("|")).map { it.first }
+        val k = parts.indexOfFirst { Verif.premier(it) == "grep" }
+        if (k < 0) return null
+        if (Verif.mots(parts[k]).any { it.first.startsWith("-") && it.first.any { c -> c == 'r' || c == 'R' } }) return null
+        val args = Verif.mots(parts[k]).drop(1).map { it.first }.filter { !it.startsWith("-") }
+        val mot = args.firstOrNull() ?: return null
+        val fichier = args.getOrNull(1) ?: if (k > 0) Verif.mots(parts[k - 1]).drop(1).map { it.first }
+            .firstOrNull { !it.startsWith("-") } else null
+        return if (fichier != null && fichier != "." && fichier != ".." && !fichier.endsWith("/")) t("lec.indice.grep_rien", "mot" to mot, "cmd" to "cat $fichier") else null
     }
 
     /** Une étape « va à … » : `cd -`, un lieu qui n'est pas là où l'enfant est, une faute. */
@@ -807,6 +822,9 @@ object Histoire {
             val arg = g.groupValues[2].trim().trim('\'', '"')
             if (arg == "-") return if (e.ici != null) null else t("lec.indice.cd_moins", "cmd" to e.cmd)
             if (e.ici == null) continue
+            if (e.depuis != null && Maison.rel(jeu, m.apres.path) != e.ici && !Verif.auBonEndroit(jeu, e, m.avant.path))
+                // C1 : `cd ..` tapé ailleurs (le camp, la Racine) ne mène pas au carrefour : partir du bon lieu
+                return t("lec.indice.lieu", "lieu" to nomLieu(e.depuis), "cmd" to Verif.cdVers(jeu, e.depuis), "etape" to e.cmd)
             val f = Verif.fichier(jeu, arg, m.avant)
             if (m.code != 0 && m.code != null && f != null && !f.isDirectory) {
                 Verif.nomProche(jeu, arg, m.avant)?.let { (proche, casse) ->
