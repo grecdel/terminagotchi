@@ -15,7 +15,16 @@ Les lignes de caractères : « . » transparent, A…Z puis 0…9 les couleurs d
 effets de l'animation (même rôle qu'avant) : f fêlure qui luit, c éclair blanc, h halo du contour, y étincelle.
 « feles » : les pixels de la 1re fêlure (dessinée sur l'œuf intact) et de la 3e (sur l'œuf fissuré), calculés
 ici pour chaque type (un trait en zigzag qui ne sort pas de la coquille). « etincelles » : 2 jeux de 5 points.
+
+Pour l'écran de l'œuf d'Android (grand écran, beaucoup de pixels), une 3e version, FINE (FIN fois plus détaillée que
+« grand », même cadrage : un pixel de « grand » = un carré FIN×FIN) :  app/src/main/assets/oeufs_fins.json
+(Android seulement : le terminal du PC garde « grand », en demi-blocs). Par type : « palette » (NB_FIN couleurs au
+plus, communes aux 3 états), et pour chaque état les indices des pixels (0 transparent, k+1 la couleur k), ligne par
+ligne, compressés (zlib) puis en base64 ; « feles » : les mêmes fêlures que « grand », tracées en fin (2 pixels
+d'épaisseur). « etincelles » : les points de « grand » au centre de leur carré. Lu par Oeufs.fin (Oeufs.kt).
 """
+import base64
+import zlib
 import json
 import sys
 from pathlib import Path
@@ -31,6 +40,8 @@ ETATS = ["intact", "fissure", "eclosion"]
 NB_COULEURS = 22
 CHIFFRES = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"
 TAILLES = {"grand": (26, 26, 16), "petit": (18, 16, 12)}      # cadre W, H, largeur du corps
+FIN = 4                                                         # la version fine : 4 fois « grand » (104×104)
+NB_FIN = 32
 # la lueur des fêlures et du halo, par type (claire sur un œuf sombre, vive sur un œuf clair : on la voit)
 LUEUR = {"feu": "#ffd36b", "eau": "#2a6cff", "glace": "#8a5cff", "plante": "#e6ff8a", "roche": "#ffc45a",
          "ciel": "#ffae00", "ombre": "#f0a0ff", "machine": "#7ff6ff", "poison": "#d4ff4a"}
@@ -92,11 +103,12 @@ def contour(a):
     return a
 
 
-def poser(a, W, H, cx, yb, f):
-    """Place l'image réduite dans le cadre W×H : corps au milieu, bas du corps 1 pixel au-dessus du bas."""
+def poser(a, W, H, cx, yb, f, px=1):
+    """Place l'image réduite dans le cadre W×H : corps au milieu, bas du corps 1 pixel au-dessus du bas (px : la
+    taille d'un pixel de « grand » dans ce cadre, FIN pour la version fine : même cadrage)."""
     out = np.zeros((H, W, 4), np.uint8)
     ox = int(round(W / 2 - cx * f))
-    oy = int(H - 2 - round(yb * f))
+    oy = int(H - 2 * px - round(yb * f))
     for y in range(a.shape[0]):
         for x in range(a.shape[1]):
             X, Y = x + ox, y + oy
@@ -138,6 +150,41 @@ def trait(rows, pts, b):
     return out
 
 
+def octets_fins(c, pal_img):
+    """Une image fine → indices (0 transparent, k+1 couleur k de la palette), zlib, base64."""
+    q = np.asarray(Image.fromarray(c[..., :3]).quantize(palette=pal_img, dither=Image.Dither.NONE)).astype(np.uint8) + 1
+    q[c[..., 3] == 0] = 0
+    return base64.b64encode(zlib.compress(q.tobytes(), 9)).decode("ascii")
+
+
+def trait_fin(a, pts, b):
+    """Les pixels d'un zigzag sur l'image fine, 2 pixels d'épaisseur, seulement sur la coquille."""
+    rows = ["".join("X" if a[y, x, 3] else "." for x in range(a.shape[1])) for y in range(a.shape[0])]
+    out = []
+    for x, y in trait(rows, pts, b):
+        for dx, dy in ((0, 0), (1, 0), (0, 1), (1, 1)):
+            X, Y = x + dx, y + dy
+            if Y < len(rows) and X < len(rows[Y]) and rows[Y][X] != "." and [X, Y] not in out:
+                out.append([X, Y])
+    return out
+
+
+def fins(ty, imgs, mesures, lb0):
+    """La version fine d'un type (voir le début du fichier)."""
+    W, H, LB = TAILLES["grand"]
+    f = LB * FIN / lb0
+    cadres = [contour(poser(reduire(i, f), W * FIN, H * FIN, m[1], m[2], f, FIN)) for i, m in zip(imgs, mesures)]
+    pts = np.concatenate([c[c[..., 3] > 0][:, :3] for c in cadres])
+    q = Image.fromarray(pts.reshape(1, -1, 3)).quantize(NB_FIN, method=Image.MEDIANCUT)
+    pal = q.getpalette()[:3 * NB_FIN]
+    d = {"palette": ["#%02x%02x%02x" % tuple(pal[k:k + 3]) for k in range(0, len(pal), 3)], "lueur": LUEUR[ty]}
+    for e, c in zip(ETATS, cadres):
+        d[e] = octets_fins(c, q)
+    mi = ["".join("X" if cadres[0][y, x, 3] else "." for x in range(W * FIN)) for y in range(H * FIN)]
+    d["feles"] = [trait_fin(cadres[0], FELE1, boite(mi)), trait_fin(cadres[1], FELE3, boite(mi))]
+    return d
+
+
 def etincelles(W, H):
     a = [(1, 3), (W - 2, 5), (0, H * 2 // 3), (W - 1, H - 5), (W // 2, 0)]
     b = [(2, H // 2 - 2), (W - 3, 1), (1, H - 3), (W - 2, H // 2 + 1), (W // 2 - 2, 1)]
@@ -150,6 +197,11 @@ def main():
     for nom, (W, H, LB) in TAILLES.items():
         sortie["tailles"][nom] = [W, H]
     sortie["etincelles"] = etincelles(*TAILLES["grand"][:2])
+    W, H = TAILLES["grand"][:2]
+    fin = {"_doc": "Les œufs en version fine (Android). Généré par donnees/bestiaire2/generer_oeufs.py : ne pas modifier.",
+           "version": 1, "etats": ETATS, "taille": [W * FIN, H * FIN], "fin": FIN, "effets": {"c": "#ffffff"},
+           "etincelles": [[[x * FIN + FIN // 2, y * FIN + FIN // 2] for x, y in jeu] for jeu in sortie["etincelles"]],
+           "types": {}}
     for ty in types():
         imgs = [nettoyer(Image.open(SRC / f"oeuf_{ty}_{e}.png").convert("RGBA")) for e in ETATS]
         mesures = [corps(np.asarray(i)) for i in imgs]
@@ -165,9 +217,13 @@ def main():
         g = d["grand"]
         d["feles"] = [trait(g["intact"], FELE1, boite(g["intact"])), trait(g["fissure"], FELE3, boite(g["intact"]))]
         sortie["types"][ty] = d
+        fin["types"][ty] = fins(ty, imgs, mesures, lb0)
     texte = json.dumps(sortie, ensure_ascii=False, indent=1) + "\n"
     for p in (SRC / "oeufs.json", RACINE / "pc/tg/oeufs.json", RACINE / "app/src/main/assets/oeufs.json"):
         p.write_text(texte, encoding="utf-8")
+    t_fin = json.dumps(fin, ensure_ascii=False, separators=(",", ":")) + "\n"
+    (RACINE / "app/src/main/assets/oeufs_fins.json").write_text(t_fin, encoding="utf-8")
+    print(f"oeufs_fins.json (Android) {len(t_fin) // 1024} Ko, {fin['taille'][0]}×{fin['taille'][1]} pixels")
     print(f"{len(sortie['types'])} types × {len(ETATS)} états × {len(TAILLES)} tailles, oeufs.json {len(texte) // 1024} Ko")
     if "--apercu" in sys.argv:
         apercu(sortie, Path(sys.argv[sys.argv.index("--apercu") + 1]))

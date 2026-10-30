@@ -2510,7 +2510,7 @@
  "intro.suivant": "Avanti ▶",
  "intro.passer": "Salta ⏭",
  "intro.nom.tel": "Come si chiama il tuo uovo? Scrivi il suo nome in basso, poi Invio ⏎",
- "intro.oeuf.titre": "un uovo misterioso",
+ "intro.oeuf.titre": "uovo {type}",
  "intro.type.feu": "Un uovo di Fuoco! È tutto caldo, come una piccola brace…",
  "intro.type.eau": "Un uovo d'Acqua! È fresco fresco e fa le bolle…",
  "intro.type.glace": "Un uovo di Ghiaccio! È tutto freddo…",

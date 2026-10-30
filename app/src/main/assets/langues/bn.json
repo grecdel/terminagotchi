@@ -2516,7 +2516,7 @@
  "intro.suivant": "পরের ▶",
  "intro.passer": "বাদ দাও ⏭",
  "intro.nom.tel": "তোমার ডিমের নাম কী? নিচে নামটা লেখো, তারপর Enter ⏎",
- "intro.oeuf.titre": "একটা রহস্যময় ডিম",
+ "intro.oeuf.titre": "{type} ডিম",
  "intro.type.feu": "আগুনের ডিম! ছোট্ট একটা অঙ্গারের মতো গরম গরম…",
  "intro.type.eau": "জলের ডিম! ঠান্ডা ঠান্ডা, আর বুদবুদ ছাড়ে…",
  "intro.type.glace": "বরফের ডিম! একদম ঠান্ডা…",

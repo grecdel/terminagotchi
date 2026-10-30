@@ -73,9 +73,12 @@ object Regles {
     fun nomTrait(s: String) = Langue.ou("trait.$s", s)
     fun nomStade(n: Int) = t("stade.$n")
     fun nomForme(f: String?) = if (f == null) "" else Langue.ou("forme.$f", f)
-    /** « Bébé », « Ado Hacker »… */
-    fun espece(stade: Int, forme: String?) =
-        if (stade >= 2 && forme != null) t("forme.stade", "stade" to nomStade(stade), "forme" to nomForme(forme)) else nomStade(stade)
+    /** « Bébé », « Ado Hacker »… ; un compagnon espèce du bestiaire (especeC, son id) : « Bébé Gouttelin ». */
+    fun espece(stade: Int, forme: String?, especeC: String? = null): String {
+        val e = if (stade >= 1 && !especeC.isNullOrEmpty()) Bestiaire.espece(especeC) else null
+        return if (e != null) t("forme.stade", "stade" to nomStade(stade), "forme" to e.nom)
+        else if (stade >= 2 && forme != null) t("forme.stade", "stade" to nomStade(stade), "forme" to nomForme(forme)) else nomStade(stade)
+    }
 
     val CATEGORIES: Map<String, Set<String>> = mapOf(
         "Intelligence" to setOf("git", "python", "python3", "sh", "bash", "alias", "vi", "nano", "awk", "sed"),
@@ -405,6 +408,8 @@ class Jeu(ctx: Context) {
     }
 
     val existe: Boolean get() = nom.isNotEmpty()
+    /** l'espèce du compagnon (id du bestiaire, tirée avec l'œuf : Oeufs.choisir), null pour une partie d'avant */
+    val especeCompagnon: String? get() = extra.optString("espece_compagnon").takeIf { it.isNotEmpty() }
     val niveau: Int get() = Regles.niveau(xp)
     val stade: Int get() = Regles.stade(niveau)
 
@@ -630,7 +635,7 @@ class Jeu(ctx: Context) {
                 dire(t("core.eclot.dit"), 10)
             } else {
                 if (forme == null) forme = dominant()
-                log(t("core.evolution.log", "forme" to Regles.espece(Regles.stade(apres), forme)))
+                log(t("core.evolution.log", "forme" to Regles.espece(Regles.stade(apres), forme, especeCompagnon)))
                 dire(t("core.evolution.dit"), 10)
             }
         } else {
@@ -741,7 +746,7 @@ class Jeu(ctx: Context) {
     fun humeur() = t(Envies.humeurCle(this))
 
     fun titre(): String {
-        return "$nom${if (shiny) " ✨" else ""} · " + t("app.forme_niveau", "forme" to Regles.espece(stade, forme), "n" to niveau) +
+        return "$nom${if (shiny) " ✨" else ""} · " + t("app.forme_niveau", "forme" to Regles.espece(stade, forme, especeCompagnon), "n" to niveau) +
             Entrainement.titreTexte(this).let { if (it.isEmpty()) "" else " $it" }      // le titre de la salle d'entraînement
     }
 

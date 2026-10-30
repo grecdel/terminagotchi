@@ -254,6 +254,11 @@ def forme(state, lvl=None):
     lvl = level(state["xp"]) if lvl is None else lvl
     st = stage(lvl)
     nom = t(f"stade.{st}")
+    if st >= 1 and state.get("espece_compagnon"):        # une espèce du bestiaire : « Bébé Gouttelin »
+        from . import bestiaire as B
+        e = B.espece(state["espece_compagnon"])
+        if e:
+            return t("forme.stade", stade=nom, forme=e["nom"])
     if st >= 2 and state.get("branch"):
         nom = t("forme.stade", stade=nom, forme=t("forme." + state["branch"]))
     return nom
@@ -288,10 +293,11 @@ def dominant(state):
 def new_state(name, langue_code="fr"):
     now = time.time()
     from . import oeufs
+    ty = random.choice(oeufs.types())             # le type de l'œuf et du compagnon, puis son espèce (oeufs.py)
     return {"name": name, "langue": langue_code, "shiny": False, "born": now, "last_tick": now, "xp": 0, "hunger": 80.0, "total": 0,
             "stats": {v["stat"]: 0 for v in CATEGORIES.values()}, "seen": [], "log": [],
             "offsets": {}, "version": VERSION,
-            "oeuf_type": random.choice(oeufs.types())}    # le type de l'œuf, et du compagnon qui en sort (oeufs.py)
+            "oeuf_type": ty, "espece_compagnon": oeufs.espece_depart(ty)}   # l'œuf : son type, l'espèce qui en sort
 
 
 def nom_propre(nom):

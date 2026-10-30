@@ -392,7 +392,7 @@ def lignes_oeuf(fele, nom="", k=0, state=None):
     if rows is None:
         if state is not None:
             from . import sprites
-            return sprites.render_sprite(sprites.get_sprite(state, 1), sprites.palette(state))[0]
+            return sprites.render_sprite(sprites.get_sprite(state, 1), sprites.palette(state, st=1))[0]
         rows = image_oeuf(3, ty=ty)
     return _demi_blocs(rows, oeufs.palette(ty))
 
@@ -409,9 +409,9 @@ def lignes_ecran_oeuf(state, frame=0, image=None):
     i = i_(state)
     fele = min(3, len(i["faits"]))
     oeuf = list(image) if image else lignes_oeuf(fele, "remue" if frame % 6 == 0 and fele else "", 1, state)
-    droite = [f"{BOLD}{state['name']}{RESET} · 🥚 " + t("intro.oeuf.titre"),
+    from . import guide, oeufs
+    droite = [f"{BOLD}{state['name']}{RESET} · 🥚 " + t("intro.oeuf.titre", type=guide.nom_type(oeufs.type_de(state))),
               f"{DIM}" + t("app.caractere", trait=core.nom_trait(state["trait"])) + RESET]
-    from . import oeufs
     droite += [f"{fg(214)}{x}{RESET}" for x in envelopper(t("intro.type." + oeufs.type_de(state)), 40)] + [""]
     b = core.bulle_courante(state)
     if b:

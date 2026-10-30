@@ -80,6 +80,39 @@ def overlay(base, ovl):
     return rows
 
 
+# Le compagnon d'une partie récente EST une espèce du bestiaire (state["espece_compagnon"], tirée avec l'œuf : oeufs.py).
+# Ses stades suivent ceux du jeu (mêmes niveaux, mêmes noms) : Bébé → bebe, Ado → ado, Adulte → adulte.
+# Une partie d'avant (sans espèce) garde la petite créature dessinée ci-dessus. Même règle sur Android (Sprites.kt).
+STADE_ESPECE = {1: "bebe", 2: "ado", 3: "adulte"}
+CARS = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789abcdefghijklmnopqrstuvwxyz!#$%&*+-=@^~"   # un caractère par couleur
+_CACHE_ESPECE = {}
+
+
+def espece_compagnon(state):
+    """L'espèce du compagnon (fiche du bestiaire), ou None (une partie d'avant : la créature d'origine)."""
+    if not isinstance(state, dict) or not state.get("espece_compagnon"):
+        return None
+    from . import bestiaire as B
+    return B.espece(state["espece_compagnon"])
+
+
+def _dessin_espece(e, st, shiny=False):
+    """(lignes de caractères, palette caractère → « #rrggbb ») de l'espèce e au stade st du jeu (1 à 3)."""
+    cle = (e["id"], st, bool(shiny))
+    if cle not in _CACHE_ESPECE:
+        from . import bestiaire as B
+        img = B.image(e, STADE_ESPECE.get(st, "adulte"))
+        if not img:
+            _CACHE_ESPECE[cle] = None
+        else:
+            w, h, octets, pal = img
+            if shiny:
+                pal = [B.decaler(c, 0.5) for c in pal]
+            rows = ["".join(CARS[o - 1] if o else "." for o in octets[y * w:(y + 1) * w]) for y in range(h)]
+            _CACHE_ESPECE[cle] = (rows, {CARS[k]: c for k, c in enumerate(pal[:len(CARS)])})
+    return _CACHE_ESPECE[cle]
+
+
 def get_sprite(state, st=None):
     """Le dessin de la créature (à son stade actuel, ou au stade st, pour rejouer une évolution)."""
     if st is None:
@@ -88,6 +121,10 @@ def get_sprite(state, st=None):
         from . import oeufs
         i = state.get("intro")
         return oeufs.petit(oeufs.type_de(state), len(i.get("faits", [])) if isinstance(i, dict) else 0)
+    e = espece_compagnon(state)
+    d = _dessin_espece(e, st, state.get("shiny")) if e else None
+    if d:
+        return d[0]
     if st == 1:
         return BABY
     br = state.get("branch") or core.dominant(state)
@@ -144,13 +181,24 @@ def body_color(state):
 SHINY = {39: 220, 78: 51, 203: 129, 221: 255, 141: 219}   # couleur normale → couleur shiny
 
 
-def palette(state, blink=False):
+def palette(state, blink=False, st=None):
+    """Caractère → couleur de la créature (st : un autre stade que l'actuel, ex. le bébé à la fin de l'éclosion)."""
     body = body_color(state)
     if state.get("shiny"):
         body = SHINY.get(body, 219)
-    if core.stage(core.level(state["xp"])) == 0:          # l'œuf : les couleurs de son dessin
+    st = core.stage(core.level(state["xp"])) if st is None else st
+    if st == 0:                                            # l'œuf : les couleurs de son dessin
         from . import oeufs
         return oeufs.palette(oeufs.type_de(state))
+    e = espece_compagnon(state)
+    if e:                                                  # une espèce : les couleurs de ses dessins (tous stades)
+        pal = {}
+        for s_ in STADE_ESPECE:
+            d = _dessin_espece(e, s_, state.get("shiny"))
+            if d:
+                pal.update(d[1])
+        if pal:
+            return pal
     return {"b": body, "e": body if blink else 16, "k": 211, "m": 52 if state["hunger"] >= 30 else 16,
             "h": 180, "w": 230, "s": 180, "c": 136, "a": 250, "l": 51}
 
@@ -267,7 +315,7 @@ def animation(state, nom, aura=None):
     w, h, o, p = _indexer(get_sprite(state, st), pal)
     de = None
     if nom == "evolution" and st > 0:
-        de = _indexer(get_sprite(state, st - 1), pal)
+        de = _indexer(get_sprite(state, st - 1), palette(state, st=st - 1))    # l'image d'avant, ses couleurs
     W, H, frames, pal2, _ = anim_auto._calculer(w, h, o, p, nom, de)
     W, H, frames = _recadrer(W, H, frames)
     hexa = ["#%06x" % c for c in pal2]

@@ -35,10 +35,10 @@ object Parties {
 
     class Resume(
         val id: String, val nom: String, val niveau: Int, val stade: Int, val forme: String?,
-        val shiny: Boolean, val date: Long, val active: Boolean,
+        val shiny: Boolean, val date: Long, val active: Boolean, val especeC: String? = null,
     ) {
-        /** « Bébé », « Ado Hacker »… (dans la langue choisie) */
-        val espece: String get() = Regles.espece(stade, forme)
+        /** « Bébé », « Ado Hacker », « Bébé Gouttelin »… (dans la langue choisie) */
+        val espece: String get() = Regles.espece(stade, forme, especeC)
         val icone: String get() = when (stade) { 0 -> "🥚"; 1 -> "🐣"; 2 -> "🐥"; else -> "🐲" }
     }
 
@@ -107,7 +107,8 @@ object Parties {
         val n = Regles.niveau(xp)
         val forme = if (o.has("forme") && !o.isNull("forme")) o.optString("forme") else null
         val date = o.optLong("maj").takeIf { it > 0 } ?: f.lastModified()
-        return Resume(id, o.optString("nom"), n, Regles.stade(n), forme, o.optBoolean("shiny"), date, active)
+        val especeC = o.optJSONObject("extra")?.optString("espece_compagnon")?.takeIf { it.isNotEmpty() }
+        return Resume(id, o.optString("nom"), n, Regles.stade(n), forme, o.optBoolean("shiny"), date, active, especeC)
     }
 
     /** Les parties de l'appareil, dans l'ordre de création (la partie active est marquée). */

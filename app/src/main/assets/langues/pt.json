@@ -2510,7 +2510,7 @@
  "intro.suivant": "Seguinte ▶",
  "intro.passer": "Saltar ⏭",
  "intro.nom.tel": "Como se chama o teu ovo? Escreve o nome em baixo e carrega em Enter ⏎",
- "intro.oeuf.titre": "um ovo misterioso",
+ "intro.oeuf.titre": "ovo {type}",
  "intro.type.feu": "Um ovo de Fogo! Está quentinho, como uma brasinha…",
  "intro.type.eau": "Um ovo de Água! Está fresquinho e faz bolhas…",
  "intro.type.glace": "Um ovo de Gelo! Está todo frio…",

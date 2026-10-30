@@ -221,6 +221,58 @@ for nom in ("oeuf_1", "oeuf_2", "oeuf_3", "eclosion"):
     f, ips = intro.animation(nom, st)
     verifier(len(f) >= 8 and ips > 0, f"animation {nom} : {len(f)} images")
 
+print("5b. Le bébé qui sort de l'œuf : une vraie espèce de départ, du type de l'œuf")
+src = (RACINE / "donnees" / "oeufs" / "depart.json").read_text(encoding="utf-8")
+verifier((RACINE / "pc" / "tg" / "depart.json").read_text(encoding="utf-8") == src
+         and (RACINE / "app" / "src" / "main" / "assets" / "depart.json").read_text(encoding="utf-8") == src,
+         "depart.json : une seule source (donnees/oeufs/), recopiée à l'identique pour PC et Android")
+dep = O.departs()
+bons = all(len(dep.get(ty, [])) >= 2 and all(B.espece(i) and B.espece(i)["id"] == i and G.type_de(i) == ty
+                                              and B.image(B.espece(i), "bebe") for i in dep[ty]) for ty in G.TYPES)
+verifier(bons, "chaque type a 2 ou 3 espèces de départ, de ce type dans leur forme classique, avec un dessin de bébé")
+verifier(not any(B.espece(i).get("secrete") for l in dep.values() for i in l), "aucune espèce secrète au départ")
+parties_ = [core.new_state("Zoé") for _ in range(300)]
+verifier(all(p_["espece_compagnon"] in dep[p_["oeuf_type"]] for p_ in parties_)
+         and len({p_["espece_compagnon"] for p_ in parties_}) >= 20,
+         "nouvelle partie : l'espèce est tirée au hasard dans la liste du type de l'œuf")
+s6 = core.migrate(core.new_state("Lilou"))
+intro.nouvelle_partie(s6)
+s6["espece_compagnon"] = "gouttelin"
+e6 = B.espece("gouttelin")
+w, h, o, pal = B.image(e6, "bebe")
+SP._CACHE_ESPECE.clear()
+s6["xp"] = 10
+rows = SP.get_sprite(s6)
+verifier(len(rows) == h and all(len(r) == w for r in rows)
+         and [SP.palette(s6).get(c) for r in rows for c in r] == [pal[v - 1] if v else None for v in o[:w * h]],
+         f"au stade bébé, le compagnon EST un {e6['nom']} bébé (le dessin du bestiaire, pixel par pixel)")
+verifier(core.forme(s6) == "Bébé Gouttelin" and s6["name"] == "Lilou", "il s'appelle toujours Lilou ; son espèce : Bébé Gouttelin")
+s6["xp"] = 0
+fin = intro.lignes_oeuf(3, "eclot", 7, s6)
+attendu = SP.render_sprite(SP.get_sprite(s6, 1), SP.palette(s6, st=1))[0]
+verifier(fin == attendu and "\x1b[38;2;" in "".join(fin), "fin de l'éclosion : le Gouttelin bébé, avec ses couleurs (plus le rond générique)")
+for xp, stade_ in ((160, "ado"), (810, "adulte")):
+    s6["xp"] = xp
+    w, h, _, _ = B.image(e6, stade_)
+    r_ = SP.get_sprite(s6)
+    verifier(len(r_) == h and max(len(x) for x in r_) == w, f"il évolue normalement : niveau {core.level(xp)}, {core.forme(s6)}")
+s6["xp"] = 10
+f, ips = SP.animation(s6, "evolution")
+verifier(len(f) > 4, "l'animation d'éclosion/évolution marche avec l'espèce")
+vieux2 = core.migrate(core.new_state("Ancien"))
+vieux2.pop("espece_compagnon")
+vieux2["xp"] = 10
+verifier(SP.get_sprite(vieux2) == SP.BABY and core.forme(vieux2) == "Bébé",
+         "une partie d'avant (sans espèce) garde sa créature d'origine")
+r6 = parties._resume(dict(s6, xp=10), "9", False, HOME)
+verifier(r6["espece"] == "Bébé Gouttelin", "la liste des parties montre l'espèce")
+s6["intro"] = {"etat": "oeuf", "faits": [], "evt": None, "erreur": False}
+s6["oeuf_type"] = "glace"
+s6.get("guide", {}).pop("type_c", None)
+texte = plat(intro.lignes_ecran_oeuf(s6))
+verifier("mystérieux" not in texte and "œuf Glace" in texte and "Un œuf Glace !" in texte,
+         "écran de l'œuf : « œuf Glace » (plus « un œuf mystérieux » au-dessus de « Un œuf Glace ! »)")
+
 print("6. La dernière commande : l'éclosion, la créature dit merci")
 st = tape("echo bonjour")
 verifier(intro.eclos(st) and core.stage(core.level(st["xp"])) == 1 and core.level(st["xp"]) == 2,

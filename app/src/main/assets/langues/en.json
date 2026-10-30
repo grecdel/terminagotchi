@@ -2515,7 +2515,7 @@
  "intro.suivant": "Next ▶",
  "intro.passer": "Skip ⏭",
  "intro.nom.tel": "What is your egg's name? Type it at the bottom, then Enter ⏎",
- "intro.oeuf.titre": "a mysterious egg",
+ "intro.oeuf.titre": "{type} egg",
  "intro.type.feu": "A Fire egg! It's all warm, like a little ember…",
  "intro.type.eau": "A Water egg! It's nice and cool, and it makes bubbles…",
  "intro.type.glace": "An Ice egg! It's all cold…",

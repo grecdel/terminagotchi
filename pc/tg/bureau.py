@@ -156,8 +156,10 @@ class Bureau:
 
         rows = sprites.get_sprite(st)
         pal = sprites.palette(st, blink=self.blink > 0)
-        sw = max(len(r) for r in rows) * PX
-        sh = len(rows) * PX
+        # une espèce du bestiaire est plus grande (jusqu'à 44 pixels) : ses pixels rétrécissent pour tenir
+        px = max(2, min(PX, (W - 30) // max(len(r) for r in rows), (H - 70) // len(rows)))
+        sw = max(len(r) for r in rows) * px
+        sh = len(rows) * px
         respire = round(math.sin(self.frame / 6) * 2)
         saut = self.saut.pop(0) if self.saut else 0
         x0 = (W - sw) // 2
@@ -171,8 +173,8 @@ class Bureau:
                 code = pal.get(c)
                 if code is None:
                     continue
-                x, y = x0 + i * PX, y0 + j * PX
-                cv.create_rectangle(x, y, x + PX, y + PX, fill=hexa(code), outline="")
+                x, y = x0 + i * px, y0 + j * px
+                cv.create_rectangle(x, y, x + px, y + px, fill=hexa(code), outline="")
 
         # textes flottants
         for f in list(self.flottants):

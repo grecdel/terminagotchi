@@ -96,7 +96,7 @@ def _resume(s, i, est_active, f):
     except OSError:
         date = 0
     branche = s.get("branch") or (max(s["stats"], key=s["stats"].get) if s.get("stats") and any(s["stats"].values()) else None)
-    return {"id": i, "nom": s.get("name", ""), "niveau": n, "espece": core.forme({"xp": xp, "branch": branche}, n),
+    return {"id": i, "nom": s.get("name", ""), "niveau": n, "espece": core.forme({"xp": xp, "branch": branche, "espece_compagnon": s.get("espece_compagnon")}, n),
             "shiny": bool(s.get("shiny")), "date": date, "active": est_active}
 
 

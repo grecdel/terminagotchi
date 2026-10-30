@@ -82,8 +82,35 @@ object Sprites {
         return rows
     }
 
+    // Le compagnon d'une partie récente EST une espèce du bestiaire (extra « espece_compagnon », tirée avec l'œuf :
+    // Oeufs.kt). Ses stades suivent ceux du jeu (mêmes niveaux, mêmes noms) : Bébé → bebe, Ado → ado, Adulte → adulte.
+    // Une partie d'avant (sans espèce) garde la petite créature dessinée ci-dessus. Même règle sur PC (sprites.py).
+    val STADE_ESPECE = mapOf(1 to "bebe", 2 to "ado", 3 to "adulte")
+    private const val CARS = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789abcdefghijklmnopqrstuvwxyz!#$%&*+-=@^~"
+    private val cacheEspece = HashMap<String, Pair<List<String>, Map<Char, Int>>?>()
+
+    /** L'espèce du compagnon, ou null (une partie d'avant : la créature d'origine). */
+    fun especeCompagnon(jeu: Jeu): Bestiaire.Espece? =
+        jeu.extra.optString("espece_compagnon").takeIf { it.isNotEmpty() }?.let { Bestiaire.espece(it) }
+
+    /** (lignes de caractères, palette caractère → ARGB) de l'espèce e au stade st du jeu (1 à 3). */
+    private fun dessinEspece(e: Bestiaire.Espece, st: Int, shiny: Boolean): Pair<List<String>, Map<Char, Int>>? =
+        synchronized(cacheEspece) {
+            cacheEspece.getOrPut("${e.id}/$st/$shiny") {
+                val img = Bestiaire.image(e, STADE_ESPECE[st] ?: "adulte") ?: return@getOrPut null
+                val pal = img.palette.map { if (shiny) Bestiaire.decaler(it, 0.5) else it }
+                val rows = (0 until img.h).map { y ->
+                    String(CharArray(img.w) { x -> val o = img.octets[y * img.w + x].toInt() and 0xFF; if (o == 0) '.' else CARS[o - 1] })
+                }
+                rows to pal.take(CARS.length).withIndex().associate { (k, c) -> CARS[k] to (0xFF000000.toInt() or (c and 0xFFFFFF)) }
+            }
+        }
+
+    private fun dessinCompagnon(jeu: Jeu, st: Int): Pair<List<String>, Map<Char, Int>>? =
+        if (st < 1) null else especeCompagnon(jeu)?.let { dessinEspece(it, st, jeu.shiny) }
+
     /** Le dessin de la créature à son stade actuel, ou au stade st (pour rejouer une évolution). */
-    fun lignes(jeu: Jeu, st: Int = jeu.stade): List<String> = when (st) {
+    fun lignes(jeu: Jeu, st: Int = jeu.stade): List<String> = dessinCompagnon(jeu, st)?.first ?: when (st) {
         0 -> oeuf(jeu)
         1 -> BEBE
         else -> {
@@ -110,8 +137,9 @@ object Sprites {
     }
 
     /** Les couleurs à dessiner (ARGB) : celles du dessin de l'œuf au stade 0, sinon la palette xterm convertie. */
-    private fun couleurs(jeu: Jeu, cligne: Boolean, st: Int = jeu.stade): Map<Char, Int> =
-        if (st == 0) Oeufs.palette(Oeufs.typeDe(jeu)) else palette(jeu, cligne).mapValues { x256(it.value) }
+    fun couleurs(jeu: Jeu, cligne: Boolean, st: Int = jeu.stade): Map<Char, Int> =
+        if (st == 0) Oeufs.palette(Oeufs.typeDe(jeu))
+        else dessinCompagnon(jeu, st)?.second ?: palette(jeu, cligne).mapValues { x256(it.value) }
 
     // ------------------------------------------------------------ animations automatiques (moteur AnimAuto)
     /** Lignes de caractères + palette xterm → image en indices + palette 0xRRGGBB (comme sprites._indexer sur PC). */
@@ -151,10 +179,10 @@ object Sprites {
 
     /** La créature principale joue une animation automatique (mange, evolution, victoire, ko, dort, affame, colere…). */
     fun animation(jeu: Jeu, nom: String): AnimAuto.Anim {
-        val pal = palette(jeu, false)
         val st = jeu.stade
-        val img = if (st == 0) indexer(lignes(jeu, 0), couleurs(jeu, false, 0), true) else indexer(lignes(jeu, st), pal)
-        val de = if (nom == "evolution" && st > 0) indexer(lignes(jeu, st - 1), pal) else null
+        // couleurs ARGB du stade (l'œuf, l'espèce, ou la créature d'origine) ; l'image d'avant avec SES couleurs
+        val img = indexer(lignes(jeu, st), couleurs(jeu, false, st), true)
+        val de = if (nom == "evolution" && st > 0) indexer(lignes(jeu, st - 1), couleurs(jeu, false, st - 1), true) else null
         return recadrer(AnimAuto.images(img, nom, de))
     }
 
@@ -172,12 +200,22 @@ object Sprites {
         return Color.rgb(g, g, g)
     }
 
-    /** Dessine la créature sur un cadre fixe de 18×16 pixels (pour qu'elle ne « saute » pas en grandissant). */
-    fun bitmap(jeu: Jeu, echelle: Int, cligne: Boolean = false): Bitmap {
-        val rows = lignes(jeu)
-        val pal = couleurs(jeu, cligne)
-        val largeur = 18
-        val hauteur = 16
+    private fun cadre(rows: List<String>): Pair<Int, Int> = maxOf(18, rows.maxOf { it.length }) to maxOf(16, rows.size + 1)
+
+    /** La taille réelle d'un pixel dans bitmap(jeu, echelle0) (plus petite pour une grande espèce) : pour l'aura. */
+    fun echelle(jeu: Jeu, echelle0: Int, st: Int = jeu.stade): Int {
+        val (l, h) = cadre(lignes(jeu, st))
+        return maxOf(1, Math.round(echelle0 * minOf(18f / l, 16f / h)))
+    }
+
+    /** Dessine la créature sur un cadre fixe de 18×16 pixels (pour qu'elle ne « saute » pas en grandissant). Une espèce
+     *  du bestiaire est plus grande (jusqu'à 44 pixels) : le cadre s'agrandit et ses pixels rétrécissent d'autant, pour
+     *  que l'image garde à peu près la même taille (widget, notification). */
+    fun bitmap(jeu: Jeu, echelle0: Int, cligne: Boolean = false, st: Int = jeu.stade): Bitmap {
+        val rows = lignes(jeu, st)
+        val pal = couleurs(jeu, cligne, st)
+        val (largeur, hauteur) = cadre(rows)
+        val echelle = echelle(jeu, echelle0, st)
         val bmp = Bitmap.createBitmap(largeur * echelle, hauteur * echelle, Bitmap.Config.ARGB_8888)
         val c = Canvas(bmp)
         val p = Paint()

@@ -2523,7 +2523,7 @@
  "intro.suivant": "Siguiente ▶",
  "intro.passer": "Saltar ⏭",
  "intro.nom.tel": "¿Cómo se llama tu huevo? Escribe su nombre abajo y pulsa Intro ⏎",
- "intro.oeuf.titre": "un huevo misterioso",
+ "intro.oeuf.titre": "huevo {type}",
  "intro.type.feu": "¡Un huevo de Fuego! Está calentito, como una brasa pequeña…",
  "intro.type.eau": "¡Un huevo de Agua! Está fresquito y hace burbujas…",
  "intro.type.glace": "¡Un huevo de Hielo! Está muy frío…",

@@ -3,7 +3,9 @@
 Données : oeufs.json (copie exacte de donnees/oeufs/oeufs.json, comme app/src/main/assets/oeufs.json), fabriqué
 par donnees/bestiaire2/generer_oeufs.py depuis les dessins donnees/oeufs/oeuf_<type>_<etat>.png.
 Nouvelle partie : l'œuf reçoit un type au hasard (state["oeuf_type"]) et le compagnon qui en sort reçoit le MÊME
-type (guide : type_c). Une ancienne partie garde le type de son compagnon ; son œuf (s'il faut le montrer) est
+type (guide : type_c), et une ESPÈCE de départ de ce type (state["espece_compagnon"], liste fixe de depart.json,
+copie exacte de donnees/oeufs/depart.json) : le bébé qui sort de l'œuf, puis le compagnon du jeu (sprites.py). Une
+partie d'avant (sans « espece_compagnon ») garde sa créature d'origine. Une ancienne partie garde le type de son compagnon ; son œuf (s'il faut le montrer) est
 celui de ce type. Même calcul sur Android : Oeufs.kt. Tests : pc/outils/test_intro.py, tests/jvm/Intro.kt.
 
 image(ty, fele, nom, k) : l'œuf de l'intro (lignes de caractères), le même rôle que l'ancien œuf blanc :
@@ -16,6 +18,7 @@ import pkgutil
 import random
 
 _D = {}
+_DEP = {}
 
 
 def donnees():
@@ -28,10 +31,24 @@ def types():
     return list(donnees()["types"])
 
 
+def departs():
+    """Type → [ids des espèces de départ] (depart.json, le même fichier sur Android)."""
+    if not _DEP:
+        _DEP.update(json.loads(pkgutil.get_data(__package__, "depart.json").decode("utf-8"))["depart"])
+    return _DEP
+
+
+def espece_depart(ty, rnd=random):
+    """Une espèce de départ du type ty (son id), tirée au hasard dans la liste fixe."""
+    liste = departs().get(ty) or [x for l in departs().values() for x in l]
+    return rnd.choice(liste)
+
+
 def choisir(state, ty=None):
-    """Une nouvelle partie : le type de l'œuf, et le même pour le compagnon qui en sortira."""
+    """Une nouvelle partie : le type de l'œuf, le même pour le compagnon qui en sortira, et son espèce."""
     ty = ty if ty in types() else random.choice(types())
     state["oeuf_type"] = ty
+    state["espece_compagnon"] = espece_depart(ty)
     g = state.get("guide")
     if isinstance(g, dict):
         g["type_c"] = ty

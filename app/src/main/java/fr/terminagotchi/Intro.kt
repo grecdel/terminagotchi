@@ -433,7 +433,7 @@ object Intro {
         p.pixels(oeuf, MARGE, MARGE, e)
         var y = MARGE
         for (x in nomL) { p.texte(x, xD, y + 16f, 16f, Carte.TEXTE, gras = true); y += 21f }
-        p.texte(t("intro.oeuf.titre"), xD, y + 13f, 12f, Carte.DOUX); y += 20f
+        p.texte(t("intro.oeuf.titre", "type" to Guide.nomType(ty)), xD, y + 13f, 12f, Carte.DOUX); y += 20f
         for (x in typeL) { p.texte(x, xD, y + 12f, 12f, Carte.AMBRE); y += 16f }
         y += 4f
         p.texte(titreListe(jeu), xD, y + 13f, 12.5f, Carte.AMBRE, gras = true); y += 18f

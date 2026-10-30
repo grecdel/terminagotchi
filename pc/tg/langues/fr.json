@@ -2528,7 +2528,7 @@
  "intro.suivant": "Suivant ▶",
  "intro.passer": "Passer ⏭",
  "intro.nom.tel": "Comment s'appelle ton œuf ? Tape son nom en bas, puis Entrée ⏎",
- "intro.oeuf.titre": "un œuf mystérieux",
+ "intro.oeuf.titre": "œuf {type}",
  "intro.type.feu": "Un œuf Feu ! Il est tout chaud, comme une petite braise…",
  "intro.type.eau": "Un œuf Eau ! Il est tout frais et il fait des bulles…",
  "intro.type.glace": "Un œuf Glace ! Il est tout froid…",

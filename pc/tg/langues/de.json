@@ -2523,7 +2523,7 @@
  "intro.suivant": "Weiter ▶",
  "intro.passer": "Überspringen ⏭",
  "intro.nom.tel": "Wie heißt dein Ei? Tippe seinen Namen unten ein, dann Enter ⏎",
- "intro.oeuf.titre": "ein geheimnisvolles Ei",
+ "intro.oeuf.titre": "{type}-Ei",
  "intro.type.feu": "Ein Feuer-Ei! Es ist ganz warm, wie eine kleine Glut…",
  "intro.type.eau": "Ein Wasser-Ei! Es ist schön kühl und macht Blubberblasen…",
  "intro.type.glace": "Ein Eis-Ei! Es ist ganz kalt…",

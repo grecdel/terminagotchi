@@ -22,6 +22,7 @@ import fr.terminagotchi.Maison
 import fr.terminagotchi.Oeufs
 import fr.terminagotchi.Parties
 import fr.terminagotchi.Peintre
+import fr.terminagotchi.Regles
 import fr.terminagotchi.Shell
 import fr.terminagotchi.Sprites
 import fr.terminagotchi.Tour
@@ -273,6 +274,59 @@ fun main(args: Array<String>) {
     verifier(Intro.imageOeuf(3, "eclot", 7) == null, "fin de l'éclosion : la créature prend la place")
     verifier(Oeufs.typeDe(j) == Guide.g(j).optString("type_c") && j.extra.optString("oeuf_type") == Oeufs.typeDe(j),
         "nouvelle partie : un œuf ${Oeufs.typeDe(j)}, et le compagnon qui en sort est du même type")
+    println("6b. Le bébé qui sort de l'œuf : une vraie espèce de départ (la même règle qu'au PC)")
+    verifier(File(depot, "donnees/oeufs/depart.json").readText() == File(assets, "depart.json").readText(), "assets/depart.json = donnees/oeufs/depart.json")
+    val pyDep = ProcessBuilder("python3", "-c", "import json,sys;sys.path.insert(0,'${File(depot, "pc").path}');from tg import oeufs;" +
+        "print(json.dumps(oeufs.departs()))").redirectErrorStream(true).start()
+    val depPc = JSONObject(pyDep.inputStream.readBytes().toString(Charsets.UTF_8).trim())
+    verifier(Guide.TYPES.all { ty -> Oeufs.departs()[ty]?.size in 2..3 && Oeufs.departs()[ty] == (0 until depPc.getJSONArray(ty).length()).map { depPc.getJSONArray(ty).getString(it) } &&
+        Oeufs.departs()[ty]!!.all { Bestiaire.espece(it)?.id == it && Guide.typeDe(Bestiaire.espece(it)) == ty } }, "les espèces de départ : les mêmes qu'au PC, 2 ou 3 par type, du bon type")
+    verifier(j.especeCompagnon in Oeufs.departs()[Oeufs.typeDe(j)]!!, "nouvelle partie : un ${j.especeCompagnon} est sorti de l'œuf ${Oeufs.typeDe(j)}")
+    val tirages = (1..300).map { val x = Jeu(app); x.extra = JSONObject(); Oeufs.choisir(x); x.extra.optString("oeuf_type") to x.especeCompagnon }
+    verifier(tirages.all { (ty, e) -> e in Oeufs.departs()[ty]!! } && tirages.map { it.second }.toSet().size >= 20, "l'espèce est tirée au hasard dans la liste du type")
+    val g = Jeu(app)
+    g.extra = JSONObject().put("espece_compagnon", "gouttelin")
+    val pySp = ProcessBuilder("python3", "-c", "import json,sys;sys.path.insert(0,'${File(depot, "pc").path}');from tg import sprites;" +
+        "s={'espece_compagnon':'gouttelin','xp':10,'hunger':80,'stats':{}};" +
+        "print(json.dumps([[sprites.get_sprite(s,k),{c:int(v[1:],16) for c,v in sprites.palette(s,st=k).items()}] for k in (1,2,3)]))").redirectErrorStream(true).start()
+    val spPc = JSONArray(pySp.inputStream.readBytes().toString(Charsets.UTF_8).trim())
+    verifier((1..3).all { k -> val a = spPc.getJSONArray(k - 1)
+        Sprites.lignes(g, k) == (0 until a.getJSONArray(0).length()).map { a.getJSONArray(0).getString(it) } &&
+        Sprites.couleurs(g, false, k).all { (c, v) -> a.getJSONObject(1).optInt(c.toString(), -1) == (v and 0xFFFFFF) } },
+        "le compagnon Gouttelin : bébé, ado, adulte dessinés pixel par pixel comme au PC")
+    verifier(Regles.espece(1, null, "gouttelin") == "Bébé Gouttelin" && Regles.espece(3, "Force", "gouttelin") == "Adulte Gouttelin",
+        "son nom d'espèce : « Bébé Gouttelin », puis « Adulte Gouttelin »")
+    g.xp = 10
+    val bm = Sprites.bitmap(g, 12)
+    verifier(bm.width <= 18 * 12 + 24 && bm.height <= 16 * 12 + 24 && Sprites.animation(g, "evolution").images.size > 4,
+        "image du widget à la même taille qu'avant (${bm.width}×${bm.height}), animation d'évolution qui marche")
+    verifier(Langue.t("intro.oeuf.titre", "type" to Guide.nomType("glace")) == "œuf Glace", "écran de l'œuf : « œuf Glace » (plus « un œuf mystérieux »)")
+
+    println("6c. L'œuf fin (préparé pour l'écran de l'œuf, 4 fois plus détaillé)")
+    verifier(Oeufs.aDesFins(), "assets/oeufs_fins.json se lit")
+    var finOk = true
+    for (ty in Guide.TYPES) for (c in combos) {
+        val lo = Intro.imageOeuf(c.first, c.second, c.third, ty)
+        val hi = Oeufs.fin(ty, c.first, c.second, c.third)
+        if ((lo == null) != (hi == null)) finOk = false
+        if (lo == null || hi == null) continue
+        if (hi.w != 26 * 4 || hi.h != 26 * 4) finOk = false
+        // même silhouette : un pixel de l'œuf « grand » = un carré 4×4 de l'œuf fin, plein à moitié au moins (± les bords)
+        var pareil = 0; var total = 0
+        for (y in 0 until 26) for (x in 0 until 26) {
+            val plein = (0 until 16).count { hi.px[(y * 4 + it / 4) * hi.w + x * 4 + it % 4] != 0 } >= 8
+            total++; if (plein == (lo[y][x] != '.')) pareil++
+        }
+        if (pareil < total * 0.88) finOk = false     // 92 à 99 % ; décalé d'un seul gros pixel : 77 à 86 %
+    }
+    verifier(finOk, "les ${Guide.TYPES.size * combos.size} images fines suivent l'œuf actuel (même silhouette, même animation)")
+    verifier(Oeufs.fin("glace", 1, "remue", 1)!!.px.toList() != Oeufs.fin("glace", 1, "remue", 3)!!.px.toList() &&
+        Oeufs.fin("glace", 1, "brille", 0)!!.px.toList() != Oeufs.fin("glace", 1)!!.px.toList() &&
+        Oeufs.fin("glace", 2, "craque", 0)!!.px.toList() != Oeufs.fin("glace", 2, "craque", 1)!!.px.toList(),
+        "l'œuf fin remue, brille, craque")
+    val couleursFin = Oeufs.fin("machine", 0)!!.px.toSet().size
+    verifier(couleursFin in 12..34, "palette limitée ($couleursFin couleurs), fichier léger (${File(assets, "oeufs_fins.json").length() / 1024} Ko)")
+
     println("7. Anciennes parties : rien ne se ferme")
     Parties.nouvelle(app)
     val v = PartieI(app)
@@ -282,6 +336,8 @@ fun main(args: Array<String>) {
     Guide.g(v.jeu).put("type_c", "roche")
     verifier(Oeufs.typeDe(v.jeu) == "roche" && Sprites.lignes(v.jeu, 0) == Oeufs.petit("roche") && Guide.g(v.jeu).optString("type_c") == "roche",
         "une ancienne partie garde le type de son compagnon ; son œuf (écran principal, widget) est l'œuf de ce type")
+    verifier(v.jeu.especeCompagnon == null && Sprites.lignes(v.jeu, 1)[1] == "....bbbb...." && Regles.espece(1, null, v.jeu.especeCompagnon) == Langue.t("stade.1"),
+        "une partie d'avant (sans espèce) garde sa créature d'origine")
     Histoire.h(v.jeu).getJSONArray("faits").put("t0")
     Intro.verifier(v.jeu)
     verifier(Intro.deb(v.jeu).getJSONArray("file").length() == 0 && Intro.aMontrer(v.jeu) == null, "et jamais d'écran « nouveau » pour un ancien joueur")

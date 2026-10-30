@@ -2529,7 +2529,7 @@
  "intro.suivant": "下一页 ▶",
  "intro.passer": "跳过 ⏭",
  "intro.nom.tel": "你的蛋叫什么名字？在下面输入名字，然后按回车 ⏎",
- "intro.oeuf.titre": "一颗神秘的蛋",
+ "intro.oeuf.titre": "{type}蛋",
  "intro.type.feu": "一颗火之蛋！它暖暖的，像一小块炭火……",
  "intro.type.eau": "一颗水之蛋！它凉凉的，还会冒泡泡……",
  "intro.type.glace": "一颗冰之蛋！它冷冰冰的……",

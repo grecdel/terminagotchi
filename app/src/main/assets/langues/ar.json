@@ -2515,7 +2515,7 @@
  "intro.suivant": "التالي ▶",
  "intro.passer": "تخطٍّ ⏭",
  "intro.nom.tel": "ما اسم بيضتك؟ اكتب اسمها في الأسفل، ثم Enter ⏎",
- "intro.oeuf.titre": "بيضة غامضة",
+ "intro.oeuf.titre": "بيضة {type}",
  "intro.type.feu": "بيضة نار! إنها دافئة جدًا، مثل جمرة صغيرة…",
  "intro.type.eau": "بيضة ماء! إنها باردة لطيفة وتصنع فقاعات…",
  "intro.type.glace": "بيضة جليد! إنها باردة جدًا…",

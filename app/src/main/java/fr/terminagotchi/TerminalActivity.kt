@@ -1141,10 +1141,11 @@ class TerminalActivity : Activity() {
         val anim = try { Sprites.animation(jeu, nom) } catch (e: Exception) {
             android.util.Log.e("TG", "animation $nom", e); return
         }
-        val imgs = AnimAuto.bitmaps(anim, 8, null)
+        val e = if (jeu.especeCompagnon != null) 3 else 8         // une espèce du bestiaire : plus grande, pixels plus petits
+        val imgs = AnimAuto.bitmaps(anim, e, null)
         if (imgs.isEmpty()) return
         val n = if (nom == "evolution") imgs.size else minOf(2 * imgs.size, maxOf(imgs.size, 3 * anim.ips))
-        demarrer(imgs, anim.ips, n, 8, Aura.palierCompagnon(jeu))
+        demarrer(imgs, anim.ips, n, e, Aura.palierCompagnon(jeu))
     }
 
     /** echelle, palier : pour dessiner l'aura de rareté autour des images (0 / null : sans aura). */
@@ -1211,7 +1212,7 @@ class TerminalActivity : Activity() {
             } catch (e: Exception) { null }?.also { imageGuide = cle to it }
             if (b != null) return avecAura(b, 3, Aura.palierInd(ind), 2 * frame)
         }
-        return avecAura(Sprites.bitmap(jeu, 12, cligne), 12, if (jeu.existe) Aura.palierCompagnon(jeu) else null, 2 * frame)
+        return avecAura(Sprites.bitmap(jeu, 12, cligne), Sprites.echelle(jeu, 12), if (jeu.existe) Aura.palierCompagnon(jeu) else null, 2 * frame)
     }
 
     /** Pour les écrans de présentation : la créature (ou son guide) en petit. */

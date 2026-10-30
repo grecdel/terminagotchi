@@ -2525,7 +2525,7 @@
  "intro.suivant": "Lanjut ▶",
  "intro.passer": "Lewati ⏭",
  "intro.nom.tel": "Siapa nama telurmu? Ketik namanya di bawah, lalu Enter ⏎",
- "intro.oeuf.titre": "telur misterius",
+ "intro.oeuf.titre": "telur {type}",
  "intro.type.feu": "Telur Api! Hangat sekali, seperti bara kecil…",
  "intro.type.eau": "Telur Air! Sejuk segar dan mengeluarkan gelembung…",
  "intro.type.glace": "Telur Es! Dingin sekali…",
