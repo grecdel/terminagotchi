@@ -745,6 +745,9 @@ class TerminalActivity : Activity() {
             nv
         }
         v.chemin = Racine.HOME              // ce que montre pwd au camp de base (le Terminaworld simulé, Racine.kt)
+        // la place de l'intro au-dessus de l'invite (l'illustration rétrécit s'il le faut ; la sortie : 140 dp)
+        val fondH = findViewById<View>(R.id.fond).height.takeIf { it > 0 } ?: resources.displayMetrics.heightPixels
+        Intro.hauteurMax = fondH / resources.displayMetrics.density - (if (mode == "ecran") 150f else 300f)
         when (mode) {
             "ecran" -> v.montrerEcran(ecranIntro.coerceIn(1, v.nbEcrans()))
             "oeuf" -> v.montrerOeuf()

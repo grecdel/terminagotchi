@@ -24,7 +24,12 @@ object Tour {
         jeu.tick()
         val mange = jeu.manger(ligne, colle, rappel, code)
         // l'œuf et sa liste (Intro.kt) : la commande qui le fait éclore ne valide pas déjà la leçon 1
+        val avant = if (Intro.retient(jeu)) Intro.faits(jeu) else null
         val eclot = Intro.apresCommande(jeu, ligne, colle || rappel, code)
+        if (avant != null) {                                      // « ✓ pwd — où suis-je ? », « ✓ 4/4 — l'œuf éclot ! »
+            for (id in Intro.faits(jeu) - avant.toSet()) msgs.add("✓ " + t("intro.l.$id") to 0xFF5FD787.toInt())
+            if (eclot) msgs.add("✓ " + t("intro.eclot", "n" to Intro.liste().size, "total" to Intro.liste().size) to 0xFF5FD787.toInt())
+        }
         Terrain.verifier(jeu, ligne, colle)?.let { msgs.add(it to 0xFFFFAF5F.toInt()) }   // terrain effacé : le reconstruire
         Histoire.tick(jeu, if (eclot) null else ligne, colle, cwd, code)
         if (!colle && !rappel) Defis.verifier(jeu, ligne)?.let { msgs.add(it to 0xFFFFD75F.toInt()); saut = 8 }

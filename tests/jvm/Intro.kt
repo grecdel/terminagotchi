@@ -23,6 +23,7 @@ import fr.terminagotchi.Oeufs
 import fr.terminagotchi.Parties
 import fr.terminagotchi.Peintre
 import fr.terminagotchi.Regles
+import fr.terminagotchi.Scenes
 import fr.terminagotchi.Shell
 import fr.terminagotchi.Sprites
 import fr.terminagotchi.Tour
@@ -82,6 +83,31 @@ class PeintreI(val g: java.awt.Graphics2D, val jeu: Jeu?) : Peintre {
     override fun mesure(s: String, taille: Float, mono: Boolean, gras: Boolean): Float {
         val (f, txt) = pourTexte(s, taille, mono, gras)
         return g.getFontMetrics(f).stringWidth(txt).toFloat()
+    }
+    private val images = java.util.IdentityHashMap<Carte.Pix, Pair<BufferedImage, Int>>()
+    override fun image(p: Carte.Pix, sx: Int, sy: Int, sw: Int, sh: Int, x: Float, y: Float, w: Float, h: Float, lisse: Boolean, version: Int) {
+        val (b, v) = images[p] ?: (BufferedImage(p.w, p.h, BufferedImage.TYPE_INT_ARGB) to Int.MIN_VALUE)
+        if (v != version) b.setRGB(0, 0, p.w, p.h, p.px, 0, p.w)
+        images[p] = b to version
+        val t = g.transform
+        g.setRenderingHint(RenderingHints.KEY_INTERPOLATION, if (lisse) RenderingHints.VALUE_INTERPOLATION_BILINEAR else RenderingHints.VALUE_INTERPOLATION_NEAREST_NEIGHBOR)
+        g.translate(x.toDouble(), y.toDouble())
+        g.scale((w / sw).toDouble(), (h / sh).toDouble())
+        g.drawImage(b, 0, 0, sw, sh, sx, sy, sx + sw, sy + sh, null)
+        g.transform = t
+    }
+    override fun lueur(x: Float, y: Float, r: Float, couleur: Int) {
+        if (r <= 0f) return
+        g.paint = java.awt.RadialGradientPaint(x, y, r, floatArrayOf(0f, 1f), arrayOf(java.awt.Color(couleur, true), java.awt.Color(couleur and 0xFFFFFF, true)))
+        g.fill(java.awt.geom.Ellipse2D.Float(x - r, y - r, 2 * r, 2 * r))
+    }
+    override fun bebe(x: Float, y: Float, h: Float): Boolean {
+        val j = jeu ?: return false
+        val b = try { Sprites.bitmap(j, 8, st = 1) } catch (e: Exception) { return false }
+        val px = IntArray(b.width * b.height); b.getPixels(px, 0, b.width, 0, 0, b.width, b.height)
+        val w = h * b.width / b.height
+        image(Carte.Pix(b.width, b.height, px), 0, 0, b.width, b.height, x - w / 2, y - h, w, h, false, 0)
+        return true
     }
     override fun creature(x: Float, y: Float, h: Float): Boolean {
         val j = jeu ?: return false
@@ -149,6 +175,8 @@ fun main(args: Array<String>) {
     val app = AppareilI(File(dossier, "app").apply { mkdirs() }, assets)
     Langue.init(app)
     Langue.definir("fr")
+    Scenes.chargeur = { nom -> File(assets, "intro/$nom.jpg").takeIf { it.isFile }?.let { javax.imageio.ImageIO.read(it) }?.let { b ->
+        Carte.Pix(b.width, b.height, b.getRGB(0, 0, b.width, b.height, null, 0, b.width)) } }
     Intro.init(app)
     val fr = JSONObject(File(assets, "langues/fr.json").readText())
 
@@ -371,21 +399,53 @@ fun main(args: Array<String>) {
     verifier(Guide.actuel(j).ind != null && ns["biome/feu"]?.garde == "", "le guide est feu : la région feu peut grandir")
     Guide.choisir(j, j.nom)
 
+    println("9b. L'intro en images (Scenes.kt) : le camp endormi, le réveil, l'œuf « en téléchargement », l'éclosion")
+    verifier(Scenes.disponible() && Scenes.image("monde") != null && Scenes.image("dort") != null, "les trois illustrations (assets/intro/*.jpg)")
+    val campI = Scenes.image("camp")!!
+    val dortI = Scenes.image("camp_dort")!!
+    fun sat(px: IntArray) = px.indices.step(97).map { val c = px[it]; maxOf((c shr 16) and 255, (c shr 8) and 255, c and 255) - minOf((c shr 16) and 255, (c shr 8) and 255, c and 255) }.average()
+    verifier(sat(dortI.px) < sat(campI.px) * 0.3, "le camp endormi : la même image désaturée et assombrie par le code")
+    Parties.nouvelle(app)
+    val s7 = PartieI(app).jeu.also { it.changerLangue("fr"); it.nom = "Noisette"; Intro.nouvellePartie(it) }
+    verifier(Scenes.moment(s7, 5000L).phase == "dort", "avant la 1re commande : le camp dort")
+    Intro.i(s7).put("faits", JSONArray(listOf("pwd"))).put("evt", JSONArray().put(1).put(1_000_000L)).put("eveil", 1_000_000L)
+    val ph = listOf(200L, 2000L, 3300L, 3600L).map { Scenes.moment(s7, 1_000_000L + it).phase }
+    verifier(ph == listOf("eveil", "eveil", "eveil", "telech"), "1re commande : le camp se réveille, puis l'œuf arrive ($ph)")
+    val e1 = Scenes.eveil(0.3f)!!.px.copyOf()
+    val e2 = Scenes.eveil(2.0f)!!.px.copyOf()
+    verifier(sat(e1) < sat(e2) && sat(e2) <= sat(campI.px) * 1.05, "la couleur revient peu à peu derrière la lumière")
+    verifier(Scenes.lumieres(1.0f).size >= 3, "des lumières remontent les câbles et l'arbre")
+    val pc = listOf(3500L, 4000L, 5000L, 9000L).map { Math.round(Scenes.moment(s7, 1_000_000L + it).pct) }
+    verifier(pc[0] < pc[1] && pc[1] < pc[2] && pc[2] == 37 && pc[3] == 37, "réception : 0 → 37 % après la 1re commande ($pc)")
+    val gT = IntArray(10 * 20) { 0xFF010101.toInt() }
+    val o = IntArray(gT.size)
+    Scenes.telecharge(gT, 10, 20, 50f, 3, 1, o)
+    verifier((0 until 80).all { o[it] == gT[it] } && (90 until 100).any { o[it] == Scenes.VERT || o[it] == Scenes.VERT_PALE } && (120 until 200).all { (o[it] ushr 24) < 255 },
+        "l'œuf à 50 % : le haut reçu, la ligne en cours en vert, le bas en contour")
+    verifier(Oeufs.aDesFins() && Scenes.oeuf(Oeufs.typeDe(s7), Scenes.moment(s7, 1_005_000L))?.second == 4, "l'écran de l'œuf utilise l'œuf fin (104×104)")
+    Intro.i(s7).put("faits", JSONArray(listOf("pwd", "ls", "echo", "whoami"))).put("etat", "fini").put("evt", JSONArray().put(4).put(2_000_000L))
+    val fins = listOf(300L, 900L, 1500L, 4000L).map { Scenes.moment(s7, 2_000_000L + it).phase }
+    verifier(fins == listOf("telech", "eclat", "eclot", "ne"), "4e commande : 100 %, l'éclat, l'éclosion, le bébé ($fins)")
+    verifier(Intro.prochaineImage(s7, "merci", 2_000_500L) != null && Intro.prochaineImage(s7, "merci", 2_060_000L) == null, "l'écran bouge pendant l'animation, puis s'arrête")
+
     println("10. Les 14 langues")
     for (code in Langue.LANGUES.keys) {
         Langue.definir(code)
         val textes = mutableListOf(Intro.texteListe(j), Intro.titreListe(j), Intro.astuce(j), Langue.t("intro.ou.tel"),
             Langue.t("intro.nom.tel"), Langue.t("intro.suivant"), Langue.t("intro.passer"), Langue.t("intro.ok.tel"),
             Intro.bloque(t.jeu.also { Intro.deb(it).put("mode", "progressif").put("ouverts", JSONArray()) }, "carte") ?: "")
-        for (n in 1..4) textes += listOf(Langue.t("intro.e.titre.$n"), Langue.t("intro.e.texte.$n"))
+        for (n in 1..3) textes += listOf(Langue.t("intro.e.titre.$n"), Langue.t("intro.e.texte.$n"))
+        for (k in listOf("e.texte.oeuf", "camp.dort", "eveil", "nourris")) textes += Langue.t("intro.$k")
+        textes += Langue.t("intro.recoit", "pct" to 37) + Langue.t("intro.eclot", "n" to 4, "total" to 4)
+        for (ty in Oeufs.types()) Intro.titreType(ty).let { (a, b) -> verifier(a.isNotEmpty() && b.isNotEmpty() && a != b, "$code : titre « $a »".take(60)) }
         for (c in listOf("merci", "merci2") + ids.drop(1)) Intro.contenu(j, c, "/x").let { textes += it.first; textes += it.second }
         val bruts = textes.flatMap { cles(fr, it) }
         verifier(bruts.isEmpty() && textes.none { s -> s.lines().any { it.count { c -> c == '`' } % 2 == 1 } },
             "$code : intro, liste, merci et 11 écrans traduits" + if (bruts.isNotEmpty()) " ($bruts)" else "")
         // tout tient dans la largeur d'un téléphone (aucune ligne dessinée ne déborde)
-        val r = listOf(apercu(null, null, j) { Intro.dessinerEcran(it, 3, 4, 360f) }, apercu(null, null, j) { Intro.dessinerOeuf(it, j, 360f) },
-            apercu(null, null, j) { Intro.dessinerCarte(it, j, "merci", 360f) })
-        verifier(r.all { it.h in 150f..900f }, "$code : écrans dessinés (${r.map { it.h.toInt() }} dp de haut)")
+        val r = listOf(apercu(null, null, j) { Intro.dessinerEcran(it, 3, 3, 360f) }, apercu(null, null, j) { Intro.dessinerOeuf(it, j, 360f) },
+            apercu(null, null, j) { Intro.dessinerCarte(it, j, "merci", 360f) }, apercu(null, null, j) { Intro.dessinerCarte(it, j, "merci2", 360f) })
+        verifier(r.all { it.h in 150f..1100f }, "$code : écrans dessinés (${r.map { it.h.toInt() }} dp de haut)")
     }
     Langue.definir("fr")
 
@@ -396,8 +456,25 @@ fun main(args: Array<String>) {
         d.jeu.changerLangue("fr")
         d.jeu.nom = "Pixou"
         Intro.nouvellePartie(d.jeu)
-        for (n in 1..4) apercu(sortie, "tel_1_intro_$n", d.jeu) { Intro.dessinerEcran(it, n, 4, 360f) }
+        for (n in 1..3) apercu(sortie, "tel_1_intro_$n", d.jeu) { Intro.dessinerEcran(it, n, 3, 360f) }
         apercu(sortie, "tel_2_oeuf_liste", d.jeu) { Intro.dessinerOeuf(it, d.jeu, 360f) }
+        run {                                    // le déroulé en images, instant par instant (étapes 3 à 5)
+            val q = PartieI(app).jeu.also { it.changerLangue("fr"); it.nom = "Noisette"; Intro.nouvellePartie(it); Oeufs.choisir(it, "plante") }
+            val T = 3_000_000L
+            apercu(sortie, "scene_3_camp_dort", q) { Intro.dessinerOeuf(it, q, 360f, null, T) }
+            Intro.i(q).put("faits", JSONArray(listOf("pwd"))).put("evt", JSONArray().put(1).put(T)).put("eveil", T)
+            for (ms in listOf(400L, 1100L, 1800L, 2600L)) apercu(sortie, "scene_3_reveil_%04d".format(ms), q) { Intro.dessinerOeuf(it, q, 360f, null, T + ms) }
+            for (ms in listOf(4200L, 6000L)) apercu(sortie, "scene_4_reception_%04d".format(ms), q) { Intro.dessinerOeuf(it, q, 360f, null, T + ms) }
+            Intro.i(q).put("faits", JSONArray(listOf("pwd", "ls", "echo"))).put("evt", JSONArray().put(3).put(T + 20_000))
+            apercu(sortie, "scene_4_reception_87", q) { Intro.dessinerOeuf(it, q, 360f, null, T + 25_000) }
+            Intro.i(q).put("faits", JSONArray(listOf("pwd", "ls", "echo", "whoami"))).put("etat", "fini").put("evt", JSONArray().put(4).put(T + 30_000))
+            q.xp = 10
+            for (ms in listOf(300L, 900L, 1300L, 1700L, 4000L)) apercu(sortie, "scene_5_eclosion_%04d".format(ms), q) { Intro.dessinerCarte(it, q, "merci", 360f, "/home/lea", T + 30_000 + ms) }
+            apercu(sortie, "scene_5_ici", q) { Intro.dessinerCarte(it, q, "merci2", 360f, "/home/lea", T + 40_000) }
+            Intro.hauteurMax = 430f
+            apercu(sortie, "scene_4_petit_ecran", q.also { Intro.i(it).put("etat", "oeuf").put("faits", JSONArray(listOf("pwd"))) }) { Intro.dessinerOeuf(it, q, 360f, null, T + 6000) }
+            Intro.hauteurMax = 0f
+        }
         for ((k, c) in listOf("ls", "pwd", "whoami").withIndex()) {
             val avant = Intro.faits(d.jeu).size
             d.tape(c)
@@ -421,7 +498,7 @@ fun main(args: Array<String>) {
         apercu(sortie, "tel_7_nouveau_envies", d.jeu) { Intro.dessinerCarte(it, d.jeu, "envies", 360f) }
         apercu(sortie, "tel_7_nouveau_equipe", d.jeu) { Intro.dessinerCarte(it, d.jeu, "equipe", 360f) }
         Langue.definir("ja")
-        apercu(sortie, "tel_8_ja_intro_3", d.jeu) { Intro.dessinerEcran(it, 3, 4, 360f) }
+        apercu(sortie, "tel_8_ja_intro_3", d.jeu) { Intro.dessinerEcran(it, 3, 3, 360f) }
         Langue.definir("fr")
         verifier(File(sortie, "tel_5_merci.png").isFile, "aperçus écrits")
     }

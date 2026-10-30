@@ -18,7 +18,7 @@ import org.json.JSONObject
  *     présentée par la créature en un écran au moment où elle s'ouvre ; avant, ses commandes répondent gentiment
  *     « pas encore » et ses éléments d'écran sont cachés.
  * Données : assets/intro.json (copie exacte de donnees/intro.json, comme pc/tg/intro.json).
- * Sauvegarde : jeu.extra « intro » {etat: oeuf | fini, faits, evt, erreur} et « debloc » {mode: progressif | ancien | tout,
+ * Sauvegarde : jeu.extra « intro » {etat: oeuf | fini, faits, evt, erreur, eveil (l'heure de la 1re commande, ms)} et « debloc » {mode: progressif | ancien | tout,
  * ouverts, presentes, file}. Une ancienne partie (sans « debloc ») : tout reste ouvert, rien n'est présenté.
  * « debloquer tout » (parents, tests) ouvre tout d'un coup après confirmation. Tests : tests/jvm/Intro.kt.
  * Le dessin passe par un Peintre (comme Carte.kt) : IntroVue sur un Canvas, le test JVM sur une image Java.
@@ -30,6 +30,7 @@ object Intro {
 
     fun init(ctx: android.content.Context) {
         Oeufs.init(ctx)
+        Scenes.init(ctx)
         if (chargeur != null) return
         val app = ctx.applicationContext ?: ctx
         chargeur = { try { app.assets.open("intro.json").bufferedReader().use { it.readText() } } catch (e: Exception) { null } }
@@ -189,9 +190,10 @@ object Intro {
             i.put("faits", JSONArray(f))
             val n = f.size
             i.put("evt", JSONArray().put(n).put(System.currentTimeMillis()))
+            if (n == 1 && i.optLong("eveil", 0L) == 0L) i.put("eveil", System.currentTimeMillis())   // le camp se rallume
             if (n >= liste().size) { finir(jeu); return true }
             jeu.anim = "oeuf_$n" to System.currentTimeMillis()
-            jeu.dire(t("intro.reagit.$n"), 8)
+            jeu.dire(t("intro.recoit", "pct" to Scenes.cible(n)), 8)
         }
         jeu.log("🥚 ✔ ${ligne.trim()}")
         return false
@@ -376,7 +378,7 @@ object Intro {
     }
 
     /** Un écran du début (n de 1 à total) : la scène, le titre, le texte, les points, Passer / Suivant. */
-    fun dessinerEcran(p: Peintre, n: Int, total: Int, l: Float): Rendu {
+    fun dessinerEcranAncien(p: Peintre, n: Int, total: Int, l: Float): Rendu {
         val ecr = d().optJSONArray("ecrans")?.optJSONObject(n - 1)
         val sc = scene(ecr?.optString("scene") ?: "monde")
         val haut = 2000f
@@ -412,7 +414,7 @@ object Intro {
      * L'écran de l'œuf : l'œuf (image donnée : une image de son animation, sinon l'œuf et ses fêlures), son nom, la
      * liste de commandes (✔ / ➜ / ·, commandes en vert), l'astuce du moment et où taper.
      */
-    fun dessinerOeuf(p: Peintre, jeu: Jeu, l: Float, image: Carte.Pix? = null): Rendu {
+    fun dessinerOeufAncien(p: Peintre, jeu: Jeu, l: Float, image: Carte.Pix? = null): Rendu {
         val fele = minOf(3, faits(jeu).size)
         val ty = Oeufs.typeDe(jeu)
         val oeuf = image ?: pixOeuf(fele, ty = ty)!!
@@ -455,7 +457,8 @@ object Intro {
     }
 
     /** Un écran de présentation : la créature (ou son guide) et le titre, les paragraphes, OK ▶. */
-    fun dessinerCarte(p: Peintre, jeu: Jeu, cid: String, l: Float, chemin: String = "~"): Rendu {
+    fun dessinerCarte(p: Peintre, jeu: Jeu, cid: String, l: Float, chemin: String = "~", quand: Long = System.currentTimeMillis()): Rendu {
+        if ((cid == "merci" || cid == "merci2") && Scenes.disponible()) return dessinerMerci(p, jeu, cid, l, chemin, quand)
         val (titre, paras) = contenu(jeu, cid, chemin)
         val icone = fonction(cid)?.icone
         val hC = 64f
@@ -480,5 +483,274 @@ object Intro {
         val s = t("intro.ok.tel")
         val b = bouton(p, s, l - MARGE - (p.mesure(s, 13f, gras = true) + 26f), y, true, "ok")
         return Rendu(l, h, listOf(b))
+    }
+
+    // ---------------------------------------------------------------- l'intro en images (maquettes intro_telephone.png)
+    // L'illustration en haut (vraies images, Scenes.kt), puis les 5 points des étapes, le titre, le texte, et ce qu'il
+    // faut taper ; l'invite de commande du téléphone reste en dessous (TerminalActivity). Sans les images (assets
+    // absents) : les anciens dessins en pixels (dessinerEcranAncien, dessinerOeufAncien).
+    /** La hauteur (dp) que l'intro peut prendre au-dessus de l'invite (TerminalActivity) ; 0 : pas de limite. */
+    @Volatile var hauteurMax = 0f
+    const val NB_ETAPES = 5
+    const val BLANC = 0xFFF0F0F5.toInt()
+    const val GRIS = 0xFFC8C9D4.toInt()
+    const val FOND2 = 0xFF0B0D12.toInt()
+    const val TRAIT = 0xFF262A36.toInt()
+    const val VERT2 = 0xFF5FD787.toInt()
+    const val JAUNE2 = 0xFFFFD75F.toInt()
+
+    /** La hauteur de l'illustration : presque carrée (maquette), plus petite s'il faut laisser la place au texte. */
+    private fun hIllu(l: Float, hTexte: Float): Float {
+        var h = l * 0.95f
+        if (hauteurMax > 0f) h = minOf(h, hauteurMax - hTexte)
+        return if (h < 110f) 0f else h
+    }
+
+    /** Une illustration recadrée (cover) dans (0, 0, l, h) ; renvoie (x, y) d'origine → (x, y) à l'écran. */
+    private fun illustration(p: Peintre, img: Carte.Pix, l: Float, h: Float, posx: Float, version: Int = 0): (Float, Float) -> Pair<Float, Float> {
+        val e = maxOf(l / img.w, h / img.h)
+        val cw = l / e
+        val ch = h / e
+        val x0 = (img.w - cw) * posx
+        val y0 = (img.h - ch) / 2
+        p.image(img, x0.toInt(), y0.toInt(), cw.toInt(), ch.toInt(), 0f, 0f, l, h, true, version)
+        val s = img.w / Scenes.taille().first
+        return { x, y -> (x * s - x0) * e to (y * s - y0) * e }
+    }
+
+    private fun points(p: Peintre, n: Int, l: Float, y: Float) {
+        val larg = (NB_ETAPES - 1) * 12f + 22f
+        var x = l / 2 - larg / 2
+        for (k in 1..NB_ETAPES) {
+            val w = if (k == n) 18f else 6f
+            p.rect(x, y, w, 6f, if (k == n) Carte.VERT else 0xFF333645.toInt())
+            x += w + 6f
+        }
+    }
+
+    /** Le camp de base dessiné au moment m (endormi, qui se réveille, l'œuf qui arrive, qui éclot, le bébé). */
+    fun dessinerCamp(p: Peintre, jeu: Jeu, m: Scenes.Moment, l: Float, h: Float) {
+        if (h <= 0f) return
+        val posx = Scenes.cadrage(jeu, m)
+        val img = when (m.phase) {
+            "dort" -> Scenes.image("camp_dort")
+            "eveil" -> Scenes.eveil(m.te)
+            else -> Scenes.image("camp")
+        } ?: return
+        val vers = illustration(p, img, l, h, posx, if (m.phase == "eveil") (m.te * 30).toInt() else 0)
+        val c = Scenes.camp()
+        val e = vers(1f, 0f).first - vers(0f, 0f).first           // dp par pixel d'origine
+        if (m.phase == "eveil") {
+            for ((x, y, f) in Scenes.lumieres(m.te)) {
+                val (X, Y) = vers(x, y)
+                val a = (f * 230).toInt().coerceIn(0, 255)
+                p.lueur(X, Y, 70f * e + 8f, (a shl 24) or 0x5CFF95)
+                p.lueur(X, Y, 16f * e + 3f, (a shl 24) or 0xFFFFFF)
+            }
+            return
+        }
+        if (m.phase == "dort") return
+        val ty = Oeufs.typeDe(jeu)
+        val (oeuf, _) = Scenes.oeuf(ty, m) ?: return
+        val o = c.optJSONObject("oeuf") ?: org.json.JSONObject()
+        val (nx, ny) = (c.optJSONArray("nid")?.let { it.optDouble(0).toFloat() to it.optDouble(1).toFloat() } ?: (760f to 545f))
+        if (m.phase == "ne") {
+            val b = c.optJSONObject("bebe") ?: org.json.JSONObject()
+            val (bx, by) = vers(b.optDouble("x", 835.0).toFloat(), b.optDouble("bas", 612.0).toFloat())
+            val bh = b.optDouble("haut", 330.0).toFloat() * e
+            p.lueur(bx, by - bh * 0.55f, bh * 1.2f, 0x73FFF096)
+            val q = c.optJSONObject("coquille") ?: org.json.JSONObject()
+            val (qx, qy) = vers(q.optDouble("x", 365.0).toFloat(), q.optDouble("y", 300.0).toFloat())
+            val qc = q.optDouble("cote", 300.0).toFloat() * e
+            p.image(oeuf, 0, 0, oeuf.w, oeuf.h, qx, qy, qc, qc, false)
+            p.bebe(bx, by, bh)
+            val etincelles = listOf(-170 to -230, 150 to -250, 210 to -120, -230 to -90, 60 to -300, -60 to -280)
+            for ((j, d) in etincelles.withIndex()) {
+                val vis = ((m.k / 3 + j) % 3) != 0
+                if (!vis) continue
+                val (X, Y) = vers(b.optDouble("x", 835.0).toFloat() + d.first, b.optDouble("bas", 612.0).toFloat() - 60f + d.second)
+                val r = (if (j % 2 == 1) 10f else 14f) * e + 2f
+                p.lueur(X, Y, r * 2.2f, 0xCCFFD75F.toInt())
+                p.rect(X - r / 2, Y - r / 2, r, r, 0xFFFFF7A0.toInt())
+            }
+            return
+        }
+        val (gx, gy) = vers(nx, ny - 60f)
+        val ox = o.optDouble("x", 545.0).toFloat(); val oy = o.optDouble("y", 196.0).toFloat(); val cote = o.optDouble("cote", 430.0).toFloat()
+        val (X, Y) = vers(ox, oy)
+        if (m.phase == "telech") p.lueur(gx, gy, 150f * e, 0x595CFF95)
+        else p.lueur(gx, gy - 40f * e, 260f * e, if (m.phase == "eclat") 0xB3FFF5B4.toInt() else 0x80FFF096.toInt())
+        p.image(oeuf, 0, 0, oeuf.w, oeuf.h, X, Y, cote * e, cote * e, false, if (m.phase == "telech") m.k else 0)
+    }
+
+    /** La boîte « réception de l'œuf… 37 % » et sa barre, en bas de l'illustration. */
+    private fun reception(p: Peintre, pct: Float, l: Float, h: Float) {
+        val x = MARGE; val w = l - 2 * MARGE; val y = h - 54f
+        p.rect(x, y, w, 42f, 0x595CFF95)
+        p.rect(x + 1f, y + 1f, w - 2f, 40f, 0xE6050709.toInt())
+        p.texte(t("intro.recoit", "pct" to pct.toInt()), x + 12f, y + 17f, 12f, JAUNE2, mono = true, gras = true)
+        p.rect(x + 12f, y + 26f, w - 24f, 6f, 0xFF1D3326.toInt())
+        val f = (w - 24f) * pct / 100f
+        if (f > 0) { p.lueur(x + 12f + f, y + 29f, 14f, 0x995CFF95.toInt()); p.rect(x + 12f, y + 26f, f, 6f, Carte.VERT) }
+    }
+
+    /** Titre (blanc, gras) puis texte (gris) sous l'illustration ; renvoie le y suivant. mesure seulement si !dessin. */
+    private fun titreTexte(p: Peintre, titre: List<String>, texte: List<String>, y0: Float, dessin: Boolean): Float {
+        var y = y0
+        for (x in titre) { if (dessin) p.texte(x, MARGE, y + 17f, 17f, BLANC, gras = true); y += 23f }
+        y += 4f
+        for (x in texte) { if (dessin) Carte.texteVert(p, x, MARGE, y + 13f, 13f, GRIS); y += 19f }
+        return y
+    }
+
+    /** Un écran du début (n de 1 à total) : l'illustration, les points, le titre, le texte, Passer / Suivant. */
+    fun dessinerEcran(p: Peintre, n: Int, total: Int, l: Float): Rendu {
+        val ecr = d().optJSONArray("ecrans")?.optJSONObject(n - 1)
+        val nomImg = ecr?.optString("image") ?: ""
+        val img = if (nomImg.isNotEmpty()) Scenes.image(nomImg) else null
+        if (img == null) return dessinerEcranAncien(p, n, total, l)
+        val titre = couper(p, t("intro.e.titre.$n"), l - 2 * MARGE, 17f, gras = true)
+        val dernier = n >= total
+        val texte = couper(p, t("intro.e.texte.$n") + if (dernier) " " + t("intro.e.texte.oeuf") else "", l - 2 * MARGE, 13f)
+        val nom = if (dernier) couper(p, t("intro.nom.tel"), l - 2 * MARGE, 13.5f, gras = true) else emptyList()
+        val hTexte = 14f + 6f + 14f + titre.size * 23f + 4f + texte.size * 19f + nom.size * 20f + 14f + (if (dernier) 0f else 46f) + MARGE
+        val hI = hIllu(l, hTexte)
+        val h = hI + hTexte
+        p.rect(0f, 0f, l, h, FOND2)
+        if (hI > 0) {
+            illustration(p, img, l, hI, if (nomImg == "camp_dort") 0.12f else 0.5f)
+            p.rect(0f, hI, l, 1f, TRAIT)
+        }
+        var y = hI + 14f
+        points(p, n, l, y)
+        y = titreTexte(p, titre, texte, y + 20f, true)
+        y += 4f
+        for (x in nom) { p.texte(x, MARGE, y + 13.5f, 13.5f, Carte.VERT, gras = true); y += 20f }
+        y += 10f
+        val boutons = mutableListOf<Bouton>()
+        if (!dernier) {
+            boutons.add(bouton(p, t("intro.passer"), MARGE, y, false, "passer"))
+            val s = t("intro.suivant")
+            boutons.add(bouton(p, s, l - MARGE - (p.mesure(s, 13f, gras = true) + 26f), y, true, "suivant"))
+        }
+        return Rendu(l, h, boutons)
+    }
+
+    /** « Un œuf Plante ! Il sent bon l'herbe… » → (« Un œuf Plante ! », « Il sent bon l'herbe… ») (comme sur PC). */
+    fun titreType(ty: String): Pair<String, String> {
+        val x = t("intro.type.$ty")
+        val m = Regex("[!！]\\s*").find(x)
+        if (m == null || m.range.last + 1 >= x.length) return t("intro.oeuf.titre", "type" to Guide.nomType(ty)) to x
+        return x.substring(0, m.range.last + 1).trim() to x.substring(m.range.last + 1).trim()
+    }
+
+    /** Le titre et le texte de l'étape (3 : le camp, 4 : l'œuf qui arrive, 5 : né) et le numéro de l'étape. */
+    fun etape(jeu: Jeu, m: Scenes.Moment): Triple<Int, String, String> = when (m.phase) {
+        "dort" -> Triple(3, t("intro.e.titre.3"), t("intro.camp.dort"))
+        "eveil" -> Triple(3, t("intro.e.titre.3"), t("intro.eveil"))
+        "ne" -> Triple(5, t("intro.merci.titre", "nom" to jeu.nom), t("intro.merci", "nom" to jeu.nom))
+        else -> titreType(Oeufs.typeDe(jeu)).let { (a, b) -> Triple(4, a, b + " " + t("intro.nourris")) }
+    }
+
+    /**
+     * L'écran de l'œuf (étapes 3 et 4) : le camp (endormi, qui se réveille, l'œuf qui arrive « en téléchargement »),
+     * la barre de réception, les points, le titre et le texte de l'étape, la liste en petit (✓ fait, ○ à faire),
+     * l'astuce du moment. image : l'ancienne image d'animation (seulement sans les illustrations).
+     */
+    fun dessinerOeuf(p: Peintre, jeu: Jeu, l: Float, image: Carte.Pix? = null, quand: Long = System.currentTimeMillis()): Rendu {
+        if (!Scenes.disponible()) return dessinerOeufAncien(p, jeu, l, image)
+        val m = Scenes.moment(jeu, quand)
+        val (n, titre0, texte0) = etape(jeu, m)
+        val lt = l - 2 * MARGE
+        val titre = couper(p, titre0, lt, 17f, gras = true)
+        val texte = couper(p, texte0, lt, 13f)
+        val f = faits(jeu)
+        val items = liste().map { (if (it.id in f) "✓ " else "○ ") + commandeDe(it) }
+        val lignesListe = mutableListOf<MutableList<Int>>(mutableListOf())
+        var cur = 0f
+        for ((k, s) in items.withIndex()) {
+            val w = p.mesure(s, 11.5f, mono = true) + 16f
+            if (cur + w > lt - 20f && lignesListe.last().isNotEmpty()) { lignesListe.add(mutableListOf()); cur = 0f }
+            lignesListe.last().add(k); cur += w
+        }
+        val ast = couper(p, astuce(jeu), lt - 20f, 12f)
+        val ou = if (m.phase == "dort") couper(p, t("intro.ou.tel"), lt - 20f, 11.5f) else emptyList()
+        val hListe = 10f + 17f + lignesListe.size * 18f + 6f + ast.size * 16f + (if (ou.isEmpty()) 0f else 4f + ou.size * 15f) + 8f
+        val hTexte = 14f + 6f + 14f + titre.size * 23f + 4f + texte.size * 19f + 10f + hListe + 6f
+        val hI = hIllu(l, hTexte)
+        val h = hI + hTexte
+        p.rect(0f, 0f, l, h, FOND2)
+        dessinerCamp(p, jeu, m, l, hI)
+        if (hI > 0) {
+            if (m.phase == "telech" || m.phase == "eclat") reception(p, m.pct, l, hI)
+            p.rect(0f, hI, l, 1f, TRAIT)
+        }
+        var y = hI + 14f
+        points(p, n, l, y)
+        y = titreTexte(p, titre, texte, y + 20f, true) + 10f
+        // la liste, comme une petite fenêtre de terminal
+        p.rect(MARGE, y, lt, hListe, TRAIT)
+        p.rect(MARGE + 1f, y + 1f, lt - 2f, hListe - 2f, 0xFF090B0F.toInt())
+        var yy = y + 10f
+        p.texte(titreListe(jeu), MARGE + 10f, yy + 11.5f, 11.5f, Carte.DOUX, mono = true); yy += 17f
+        for (ligne in lignesListe) {
+            var x = MARGE + 10f
+            for (k in ligne) {
+                val fait = liste()[k].id in f
+                p.texte(items[k], x, yy + 11.5f, 11.5f, if (fait) VERT2 else Carte.DOUX, mono = true)
+                x += p.mesure(items[k], 11.5f, mono = true) + 16f
+            }
+            yy += 18f
+        }
+        yy += 6f
+        for (x in ast) { Carte.texteVert(p, x, MARGE + 10f, yy + 12f, 12f, Carte.AMBRE); yy += 16f }
+        if (ou.isNotEmpty()) { yy += 4f; for (x in ou) { p.texte(x, MARGE + 10f, yy + 11.5f, 11.5f, Carte.DOUX); yy += 15f } }
+        return Rendu(l, h, emptyList())
+    }
+
+    /** L'étape 5 : le camp où le bébé vient d'éclore (merci), puis le récapitulatif et « où sommes-nous » (merci2). */
+    fun dessinerMerci(p: Peintre, jeu: Jeu, cid: String, l: Float, chemin: String, quand: Long): Rendu {
+        val lt = l - 2 * MARGE
+        val m = Scenes.moment(jeu, quand)
+        val avecImage = cid == "merci"
+        val (titre0, paras0) = if (avecImage) t("intro.merci.titre", "nom" to jeu.nom) to listOf(t("intro.merci", "nom" to jeu.nom))
+            else t("intro.ici.titre") to (listOf(t("intro.recap")) + liste().map { t("intro.r.${it.id}") } +
+                listOf(t("intro.ici", "chemin" to chemin), t("intro.suite", "chapitre" to t("hist.reveil.titre"))))
+        val titre = couper(p, titre0, lt, 17f, gras = true)
+        val paras = paras0.map { couper(p, it, lt, 13f) }
+        val hParas = paras.sumOf { it.size } * 19f + paras.size * 6f
+        val hTexte = 14f + 6f + 14f + titre.size * 23f + 4f + hParas + 10f + 40f + MARGE
+        val hI = if (avecImage) hIllu(l, hTexte) else 0f
+        val h = hI + hTexte
+        p.rect(0f, 0f, l, h, FOND2)
+        if (hI > 0) {
+            dessinerCamp(p, jeu, m, l, hI)
+            p.rect(0f, hI, l, 1f, TRAIT)
+        }
+        var y = hI + 14f
+        points(p, NB_ETAPES, l, y)
+        y += 20f
+        for (x in titre) { p.texte(x, MARGE, y + 17f, 17f, BLANC, gras = true); y += 23f }
+        y += 4f
+        for (para in paras) { for (x in para) { Carte.texteVert(p, x, MARGE, y + 13f, 13f, GRIS); y += 19f }; y += 6f }
+        y += 4f
+        val s = t("intro.suivant")
+        p.rect(MARGE, y, lt, 38f, 0x805CFF95.toInt())
+        p.rect(MARGE + 1f, y + 1f, lt - 2f, 36f, 0xFF143323.toInt())
+        p.texte(s, l / 2 - p.mesure(s, 14f, gras = true) / 2, y + 24f, 14f, Carte.VERT, gras = true)
+        return Rendu(l, h, listOf(Bouton(MARGE, y, lt, 38f, "ok")))
+    }
+
+    /** Vrai tant que l'écran de l'intro bouge (la vue se redessine) ; le délai conseillé avant l'image suivante (ms). */
+    fun prochaineImage(jeu: Jeu, mode: String, quand: Long = System.currentTimeMillis()): Long? {
+        if (!Scenes.disponible() || !jeu.existe) return null
+        if (mode != "oeuf" && mode != "merci") return null
+        val m = Scenes.moment(jeu, quand)
+        return when (m.phase) {
+            "dort" -> null
+            "eveil", "eclat", "eclot" -> 33L
+            "telech" -> 50L
+            else -> if (m.te < 8f) 80L else null
+        }
     }
 }

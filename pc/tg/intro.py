@@ -602,7 +602,7 @@ def bloc_prompt(state, quand, cols=None, rangs=None):
         out += [f"  {fg(78)}{x}{RESET}" for x in envelopper(t("intro.camp.reveil"), larg)]
     elif ph == "telech":
         out += [f"  {fg(214)}{x}{RESET}" for x in envelopper(t("intro.type." + ty), larg)]
-    if ph not in ("dort", "eveil"):
+    if ph not in ("dort", "eveil", "ne"):
         out.append("  " + ligne_reception(state, m["pct"], cols - 4))
     if ph != "ne":
         out += ["  " + x for x in liste_courte(state, cols - 4)]

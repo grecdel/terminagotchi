@@ -18,6 +18,14 @@ interface Peintre {
     fun mesure(s: String, taille: Float, mono: Boolean = false, gras: Boolean = false): Float
     /** La créature de l'enfant debout à (x centre, y pieds), haute de h ; false si elle n'est pas dessinable (épingle). */
     fun creature(x: Float, y: Float, h: Float): Boolean = false
+    /** Une image : la partie (sx, sy, sw, sh) de p dans le rectangle (x, y, w, h) ; lisse = filtrée (une illustration),
+     *  sinon de gros pixels nets. version change quand les pixels de p ont changé (une animation qui réutilise p). */
+    fun image(p: Carte.Pix, sx: Int, sy: Int, sw: Int, sh: Int, x: Float, y: Float, w: Float, h: Float,
+              lisse: Boolean = true, version: Int = 0) {}
+    /** Une lueur ronde : couleur (ARGB) au centre, transparente au bord (rayon r). */
+    fun lueur(x: Float, y: Float, r: Float, couleur: Int) {}
+    /** Le bébé de l'espèce tirée (sprite du stade 1) debout à (x centre, y pieds), haut de h. */
+    fun bebe(x: Float, y: Float, h: Float): Boolean = creature(x, y, h)
 }
 
 object Carte {

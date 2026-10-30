@@ -12,7 +12,9 @@ import android.view.View
 /**
  * L'intro dessinée (Intro.kt) à la place de l'observatoire du terminal : les écrans du début, l'œuf et sa liste de
  * commandes (avec ses animations : il remue, brille, se fêle, éclot), puis les écrans de présentation (merci, chaque
- * fonction qui s'ouvre). Tout passe par le Peintre d'Intro (le même dessin que les aperçus du test JVM).
+ * fonction qui s'ouvre). Tout passe par le Peintre d'Intro (le même dessin que les aperçus du test JVM). L'intro en
+ * images (Scenes.kt : le camp qui se réveille, l'œuf « en téléchargement », l'éclosion) se redessine toute seule tant
+ * qu'elle bouge (Intro.prochaineImage : 20 à 30 images par seconde).
  * action : ce qu'a touché l'enfant (« suivant », « passer », « ok »).
  * creature : l'image de la créature (son guide) pour les écrans de présentation.
  */
@@ -74,6 +76,50 @@ class IntroVue(ctx: Context, private val jeu: Jeu, private val creature: () -> B
             toile?.drawBitmap(b, null, dst, pPix)
             return true
         }
+
+        override fun image(p: Carte.Pix, sx: Int, sy: Int, sw: Int, sh: Int, x: Float, y: Float, w: Float, h: Float,
+                           lisse: Boolean, version: Int) {
+            val t = toile ?: return
+            val (b, v) = images[p] ?: run {
+                if (images.size > 24) images.clear()
+                val nb = Bitmap.createBitmap(p.w, p.h, Bitmap.Config.ARGB_8888)
+                nb.setPixels(p.px, 0, p.w, 0, 0, p.w, p.h)
+                (nb to version).also { images[p] = it }
+            }
+            if (v != version) { b.setPixels(p.px, 0, p.w, 0, 0, p.w, p.h); images[p] = b to version }
+            src.set(sx, sy, sx + sw, sy + sh)
+            dst.set(x, y, x + w, y + h)
+            t.drawBitmap(b, src, dst, if (lisse) pLisse else pPix)
+        }
+
+        override fun lueur(x: Float, y: Float, r: Float, couleur: Int) {
+            if (r <= 0f) return
+            pLueur.shader = android.graphics.RadialGradient(x, y, r, couleur, couleur and 0x00FFFFFF, android.graphics.Shader.TileMode.CLAMP)
+            toile?.drawCircle(x, y, r, pLueur)
+        }
+
+        override fun bebe(x: Float, y: Float, h: Float): Boolean {
+            val b = bebeBmp ?: (try { Sprites.bitmap(jeu, 8, st = 1) } catch (e: Exception) { null })?.also { bebeBmp = it } ?: return creature(x, y, h)
+            val w = h * b.width / maxOf(1, b.height)
+            dst.set(x - w / 2, y - h, x + w / 2, y)
+            toile?.drawBitmap(b, null, dst, pPix)
+            return true
+        }
+    }
+    private val images = java.util.IdentityHashMap<Carte.Pix, Pair<Bitmap, Int>>()
+    private val src = android.graphics.Rect()
+    private val pLisse = Paint(Paint.FILTER_BITMAP_FLAG or Paint.ANTI_ALIAS_FLAG)
+    private val pLueur = Paint(Paint.ANTI_ALIAS_FLAG)
+    private var bebeBmp: Bitmap? = null
+
+    /** L'intro en images bouge (réveil, réception de l'œuf, éclosion) : l'image suivante, au bon rythme. */
+    private val image = Runnable { invalidate() }
+
+    private fun suite() {
+        val m = if (mode == "carte" && cid == "merci") "merci" else mode
+        val d = Intro.prochaineImage(jeu, m) ?: return
+        removeCallbacks(image)
+        postDelayed(image, d)
     }
 
     init { isClickable = true }
@@ -119,6 +165,7 @@ class IntroVue(ctx: Context, private val jeu: Jeu, private val creature: () -> B
     override fun onDetachedFromWindow() {
         removeCallbacks(respire)
         removeCallbacks(pas)
+        removeCallbacks(image)
         super.onDetachedFromWindow()
     }
 
@@ -170,6 +217,7 @@ class IntroVue(ctx: Context, private val jeu: Jeu, private val creature: () -> B
         toile = null
         canvas.restore()
         if ((rendu.h * d).toInt() != height) requestLayout()
+        suite()
     }
 
     override fun onTouchEvent(e: MotionEvent): Boolean {
