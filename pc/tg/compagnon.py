@@ -196,6 +196,8 @@ def prompt(etape):
                 pass
     etape(spontane=True, rythme=8, defis=True, avant_save=rendre, cwd=ici, statut=statut)
     if sortie:
+        from . import intro
+        intro.jouer_prompt(sys.stdout)          # le camp qui se réveille, l'œuf qui arrive (puis l'image finale)
         sys.stdout.write(sortie[0] + RESET + "\n")
         sys.stdout.flush()
 

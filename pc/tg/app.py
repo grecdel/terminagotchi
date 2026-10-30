@@ -31,7 +31,7 @@ def render(state, frame, interactif, anim=None):
     d = state.get("dressage")
     if d and not d.get("fenetre"):          # pas de fenêtre possible (pas d'écran graphique) : on l'affiche ici
         return render_dressage(state, interactif, anim)
-    if intro.en_cours(state):               # l'œuf seul, sa liste de commandes et l'invite (intro.py)
+    if isinstance(anim, intro.Ecran) or intro.en_cours(state):   # le camp, l'œuf qui arrive, la liste (intro.py)
         lignes = intro.lignes_ecran_oeuf(state, frame, anim)
         return "\n".join(lignes + ["", title_line(t("app.journal"))] + [" " + l for l in state["log"][-3:]]) + "\n"
     cid = intro.a_montrer(state) if interactif else None

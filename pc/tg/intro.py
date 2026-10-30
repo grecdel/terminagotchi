@@ -1,19 +1,23 @@
 """L'introduction du jeu et le déblocage progressif (même règles sur Android : Intro.kt).
 
-Nouvelle partie (une vraie personne au clavier) :
-  1. quelques écrans (scènes en pixels) : le Terminaworld s'est endormi, seules les commandes tapées dans
-     l'invite de commande peuvent le réveiller ; Entrée = suite, p = passer, ou tape directement le nom de l'œuf ;
-  2. l'œuf seul, l'invite et une petite liste de 4 commandes (pwd, ls, echo, whoami) ; chaque bonne commande
-     fait réagir l'œuf (il remue, brille, se fêle : 3 fêlures) ; un petit tutoriel de l'invite arrive pas à pas
-     (où taper et Entrée, une erreur n'est pas grave, ↑ rappelle, Tab complète) ;
-  3. la 4e commande : l'œuf éclot, la créature dit merci, explique ce qu'on vient de faire (les vraies
-     commandes), où on est (le camp de base, ce que pwd a montré) et la suite (le chapitre 1) ;
+Nouvelle partie (une vraie personne au clavier), en 5 étapes (maquettes docs/maquettes/intro_*.png, images :
+scenes.py) :
+  1. le Terminaworld vivant, 2. le monde endormi, 3. le camp de base endormi (3 écrans illustrés en demi-blocs ;
+     Entrée = suite, p = passer), puis le nom de l'œuf qui va arriver ;
+  3 bis. l'invite et une petite liste de 4 commandes (pwd, ls, echo, whoami) ; la 1re rallume le camp (l'écran de
+     l'ordinateur s'allume, la lumière remonte les câbles et l'arbre, la couleur revient) ;
+  4. l'œuf du type tiré arrive « en téléchargement » dans le nid (réception de l'œuf… 37 %) : chaque commande de la
+     liste en apporte un morceau ; un petit tutoriel de l'invite arrive pas à pas (où taper et Entrée, une erreur
+     n'est pas grave, ↑ rappelle, Tab complète) ;
+  5. la 4e commande : l'œuf est complet (petit éclat), il éclot sur le vrai bébé de l'espèce tirée, la créature dit
+     merci, explique ce qu'on vient de faire (les vraies commandes), où on est (le camp de base, ce que pwd a
+     montré) et la suite (le chapitre 1) ;
   4. le reste du jeu s'ouvre petit à petit (table « deblocages » de intro.json, la même pour Android) : chaque
      fonction est présentée par la créature en un écran au moment où elle s'ouvre. Avant, ses commandes
      répondent gentiment « pas encore » (jamais une erreur).
 
 Données : intro.json (copie exacte de donnees/intro.json, comme app/src/main/assets/intro.json).
-Sauvegarde : state["intro"] = {etat: "oeuf" | "fini", faits: [ids], evt, erreur}, state["debloc"] =
+Sauvegarde : state["intro"] = {etat: "oeuf" | "fini", faits: [ids], evt, erreur, eveil (l'heure de la 1re commande)}, state["debloc"] =
 {mode: "progressif" | "ancien", ouverts, presentes, file (les écrans à montrer : merci, merci2, puis les fonctions)}.
 Une ancienne partie (sans « debloc ») : tout reste ouvert (mode « ancien »), rien n'est présenté (pas d'écran
 « nouveau » pour ce qu'un joueur connaît déjà) ; ses fonctions sont notées au fur et à mesure.
@@ -204,11 +208,14 @@ def tick(state, lignes):
             i["faits"].append(c["id"])
             n = len(i["faits"])
             i["evt"] = [n, time.time()]
+            if n == 1 and not i.get("eveil"):
+                i["eveil"] = i["evt"][1]          # la 1re commande rallume le camp (scenes.py)
             if n >= len(checklist()):
                 finir(state)
                 return list(lignes[k + 1:])
             state["anim"] = [f"oeuf_{n}", time.time()]
-            core.say(state, t(f"intro.reagit.{n}"), 8)
+            from . import scenes
+            core.say(state, t("intro.recoit", pct=scenes.cible(n)), 8)
         core.log(state, f"🥚 ✔ {l.strip()}")
     return []
 
@@ -357,13 +364,46 @@ def scene(nom):
     return _demi_blocs(donnees()["scenes"][nom], donnees()["palette"], donnees()["palette"]["k"])
 
 
-def ecran_intro(n, total=None):
-    """Un écran de l'intro : la scène, le titre, le texte (PC)."""
+def _terminal():
+    import shutil
+    try:
+        return shutil.get_terminal_size((100, 40))
+    except (OSError, ValueError):
+        return 100, 40
+
+
+def texte_ecran(n):
+    """Le texte d'un écran du début (le dernier annonce l'œuf qui va arriver et demande son nom)."""
+    x = t(f"intro.e.texte.{n}")
+    if n == len(donnees()["ecrans"]):
+        x += " " + t("intro.e.texte.oeuf")
+    return x
+
+
+def points(n, total=5):
+    """Les 5 étapes de l'intro, comme les points du téléphone : ● l'étape du moment."""
+    return " ".join((fg(84) + "●" if k == n else fg(240) + "•") for k in range(1, total + 1)) + RESET
+
+
+def ecran_intro(n, total=None, cols=None, rangs=None):
+    """Un écran de l'intro : l'illustration en demi-blocs (sinon la petite scène en pixels), le titre, le texte (PC)."""
+    from . import scenes
     e = donnees()["ecrans"][n - 1]
     total = total or len(donnees()["ecrans"])
-    out = [""] + ["   " + l for l in scene(e["scene"])] + [""]
-    out.append(f"   {BOLD}{fg(213)}" + t(f"intro.e.titre.{n}") + RESET + f"  {DIM}{n}/{total}{RESET}")
-    for x in envelopper(t(f"intro.e.texte.{n}"), 60):
+    c, r = _terminal()
+    cols, rangs = cols or c, rangs or r
+    larg = max(30, min(cols - 6, 76))
+    texte = envelopper(texte_ecran(n), larg)
+    dessin = []
+    mode = scenes.mode_couleurs()
+    tl = scenes.taille(cols, rangs, len(texte) + 6)
+    if mode and tl and e.get("image") and scenes.disponible("camp" if e["image"] == "camp_dort" else e["image"]):
+        dessin = scenes.illustration(e["image"], tl[0], tl[1], mode, " ")
+    elif mode:
+        dessin = ["   " + l for l in scene(e["scene"])]
+    out = [""] + dessin + [""]
+    out.append(f"   {BOLD}{fg(213)}" + t(f"intro.e.titre.{n}") + RESET + f"   {points(n)}  {DIM}{n}/{total}{RESET}")
+    for x in texte:
         out.append("   " + x)
     out.append("")
     return out
@@ -407,54 +447,219 @@ def lignes_oeuf(fele, nom="", k=0, state=None):
     return _demi_blocs(rows, oeufs.palette(ty))
 
 
-def animation(nom, state):
-    """(images, ips) d'une animation de l'intro (« oeuf_1 » à « oeuf_3 », « eclosion ») pour la fenêtre."""
-    n = 4 if nom == "eclosion" else int(nom.split("_")[1])
-    return [lignes_oeuf(f, x, k, state) for f, x, k in reaction(n)], 6
+class Ecran(list):
+    """Une image d'animation de l'intro : l'écran entier (la scène et ses textes), pas seulement l'œuf."""
 
 
-def lignes_ecran_oeuf(state, frame=0, image=None):
-    """L'écran de l'œuf (fenêtre PC) : l'œuf (ou image : une image de son animation), son nom, la liste,
-    l'astuce du moment, où taper."""
+def titre_type(ty):
+    """« Un œuf Plante ! Il sent bon l'herbe… » → (« Un œuf Plante ! », « Il sent bon l'herbe… ») : le titre de
+    l'étape 4 et son texte (la 1re phrase de intro.type.<ty>, dans toutes les langues)."""
+    from . import guide
+    x = t("intro.type." + ty)
+    m = re.search(r"[!！]\s*", x)
+    if not m or m.end() >= len(x):
+        return t("intro.oeuf.titre", type=guide.nom_type(ty)), x
+    return x[:m.end()].strip(), x[m.end():].strip()
+
+
+def barre_reception(pct, larg=30):
+    """« réception de l'œuf… 37 % ███████░░░░ » (façon terminal)."""
+    n = max(0, min(larg, round(larg * pct / 100)))
+    return f"{BOLD}{fg(221)}" + t("intro.recoit", pct=int(pct)) + f"{RESET} {fg(84)}" + "█" * n + fg(22) + "░" * (larg - n) + RESET
+
+
+def liste_courte(state, larg=200):
+    """« Nourris l'œuf : 1/4   ✔ pwd   ○ ls   ○ echo bonjour   ○ whoami » (sur une ligne, comme la maquette ; sur
+    deux si elle ne tient pas en larg colonnes). Renvoie une liste de lignes."""
     i = i_(state)
-    fele = min(3, len(i["faits"]))
-    oeuf = list(image) if image else lignes_oeuf(fele, "remue" if frame % 6 == 0 and fele else "", 1, state)
+    morceaux = [(fg(78) + "✔ " if c["id"] in i["faits"] else DIM + "○ ") + commande_de(c) + RESET for c in checklist()]
+    titre = DIM + t("intro.liste.titre", n=len(i["faits"]), total=len(checklist())) + RESET
+    une = titre + "   " + "   ".join(morceaux)
+    if largeur(une) <= larg:
+        return [une]
+    return [titre, "  ".join(morceaux)]
+
+
+def ligne_reception(state, pct, larg=200):
+    """La barre de réception, plus courte (et sans « œuf Plante ») dans un terminal étroit."""
     from . import guide, oeufs
-    droite = [f"{BOLD}{state['name']}{RESET} · 🥚 " + t("intro.oeuf.titre", type=guide.nom_type(oeufs.type_de(state))),
-              f"{DIM}" + t("app.caractere", trait=core.nom_trait(state["trait"])) + RESET]
-    droite += [f"{fg(214)}{x}{RESET}" for x in envelopper(t("intro.type." + oeufs.type_de(state)), 40)] + [""]
-    b = core.bulle_courante(state)
-    if b:
-        droite += [f"{BOLD}» {x}{RESET}" for x in envelopper(b[0], 40)]
-    out = []
-    for k in range(max(len(oeuf), len(droite))):
-        g = oeuf[k] if k < len(oeuf) else " " * W_OEUF
-        g += " " * max(0, W_OEUF - largeur(g))
-        out.append("  " + g + "   " + (droite[k] if k < len(droite) else ""))
-    out.append("")
-    titre = t("intro.liste.titre", n=len(i["faits"]), total=len(checklist()))
-    out.append(fg(226) + "── 🥚 " + titre + " " + "─" * max(3, 44 - largeur(titre)) + RESET)
-    out += lignes_liste(state)
-    out.append("")
-    for x in envelopper("💡 " + astuce(state), 74):
-        out.append(f"  {fg(214)}{x}{RESET}")
-    for x in envelopper(t("intro.ou.pc"), 74):
-        out.append(f"  {DIM}{x}{RESET}")
+    suite = f"  {DIM}🥚 " + t("intro.oeuf.titre", type=guide.nom_type(oeufs.type_de(state))) + RESET
+    lab = largeur(t("intro.recoit", pct=int(pct))) + 1
+    if lab + 30 + largeur(suite) <= larg:
+        return barre_reception(pct) + suite
+    return barre_reception(pct, max(6, min(30, larg - lab)))
+
+
+def textes_etape(state, m, larg):
+    """Le titre et le texte de l'étape du moment (3 : le camp ; 4 : l'œuf du type tiré qui arrive ; 5 : né)."""
+    from . import guide, oeufs
+    ph = m["phase"]
+    ty = oeufs.type_de(state)
+    if ph in ("dort", "eveil"):
+        out = [f"{BOLD}{fg(213)}" + t("intro.e.titre.3") + f"{RESET}   " + points(3)]
+        coul = fg(78) if ph == "eveil" else ""
+        out += [coul + x + RESET for x in envelopper(t("intro.camp.dort" if ph == "dort" else "intro.eveil"), larg)]
+        return out
+    if ph == "ne":
+        return [f"{BOLD}{fg(213)}" + t("intro.merci.titre", nom=state.get("name", "")) + f"{RESET}   " + points(5)] + \
+            envelopper(t("intro.merci", nom=state.get("name", "")), larg)
+    titre, reste = titre_type(ty)
+    out = [f"{BOLD}{fg(213)}{titre}{RESET}   " + points(4)]
+    out += envelopper(reste + " " + t("intro.nourris"), larg)
+    out.append(ligne_reception(state, m["pct"], larg))
     return out
+
+
+def dessin_scene(state, quand, cols, rangs, reserve, marge=" "):
+    """Le camp de base en demi-blocs à l'instant quand (la plus grande scène qui laisse reserve lignes au texte) ;
+    repli : l'œuf seul (petit terminal), ou rien (pas de couleurs, pas de place)."""
+    from . import scenes
+    mode = scenes.mode_couleurs()
+    if not mode or not scenes.disponible():
+        return []
+    m = scenes.moment(state, quand)
+    tl = scenes.taille(cols, rangs, reserve)
+    if tl:
+        return scenes.lignes(scenes.scene(state, tl[0], tl[1], quand, m), tl[0], tl[1], mode, marge)
+    if rangs - reserve >= 13 and cols >= 32:
+        return scenes.oeuf_seul(state, m, mode, "  ")
+    return []
+
+
+def duree_anim(nom):
+    """Combien de temps dure l'animation d'une commande de la liste (« oeuf_1 » : le réveil puis le début de l'œuf)."""
+    from . import scenes
+    tl = scenes.params().get("telechargement", {})
+    vit = tl.get("vitesse", 24)
+    n = 4 if nom == "eclosion" else int(nom.split("_")[1])
+    if n == 1:
+        return scenes.camp().get("duree", 3.4) + scenes.cible(1) / vit + 0.3
+    if n >= len(checklist()):
+        return (100 - scenes.cible(n - 1)) / vit + tl.get("eclat", 0.7) + tl.get("eclot", 1.0) + 0.8
+    return (scenes.cible(n) - scenes.cible(n - 1)) / vit + 0.3
+
+
+def debut_anim(state, nom):
+    i = i_(state)
+    evt = i.get("evt") or [0, time.time()]
+    if nom == "oeuf_1" and i.get("eveil"):
+        return i["eveil"]
+    return evt[1] if len(evt) > 1 and evt[1] else time.time()
+
+
+def animation(nom, state, ips=8):
+    """(images, ips) d'une animation de l'intro (« oeuf_1 » à « oeuf_3 », « eclosion ») pour la fenêtre : l'écran
+    entier (Ecran) à chaque instant, depuis la commande (le camp qui se réveille, l'œuf qui arrive, qui éclot)."""
+    t0 = debut_anim(state, nom)
+    c, r = _terminal()
+    n = max(8, int(duree_anim(nom) * ips) + 1)
+    return [Ecran(lignes_ecran_oeuf(state, 0, None, t0 + k / ips, c, r)) for k in range(n)], ips
+
+
+def lignes_ecran_oeuf(state, frame=0, image=None, quand=None, cols=None, rangs=None):
+    """L'écran de l'œuf (fenêtre PC) : le camp de base (endormi, qui se réveille, l'œuf qui arrive), le titre et le
+    texte de l'étape, la liste, l'astuce du moment, où taper. image : une image d'animation (Ecran) déjà prête."""
+    if isinstance(image, Ecran):
+        return list(image)
+    from . import guide, oeufs, scenes
+    quand = quand or time.time()
+    c, r = _terminal()
+    cols, rangs = cols or c, rangs or r
+    larg = max(30, min(74, cols - 6))
+    i = i_(state)
+    m = scenes.moment(state, quand)
+    tete = f"  {BOLD}{state['name']}{RESET}"
+    if m["phase"] not in ("dort", "eveil"):
+        tete += " · 🥚 " + t("intro.oeuf.titre", type=guide.nom_type(oeufs.type_de(state)))
+    tete += f"  {DIM}" + t("app.caractere", trait=core.nom_trait(state["trait"])) + RESET
+    textes = ["  " + x for x in textes_etape(state, m, larg)]
+    titre = t("intro.liste.titre", n=len(i["faits"]), total=len(checklist()))
+    bas = ["", fg(226) + "── 🥚 " + titre + " " + "─" * max(3, 44 - largeur(titre)) + RESET] + lignes_liste(state) + [""]
+    for x in envelopper("💡 " + astuce(state), larg):
+        bas.append(f"  {fg(214)}{x}{RESET}")
+    for x in envelopper(t("intro.ou.pc"), larg):
+        bas.append(f"  {DIM}{x}{RESET}")
+    reserve = 2 + len(textes) + len(bas) + 6            # + le journal de la fenêtre
+    dessin = dessin_scene(state, quand, cols, rangs, reserve)
+    return dessin + [tete] + textes + bas
+
+
+def bloc_prompt(state, quand, cols=None, rangs=None):
+    """Ce que l'invite du shell montre pendant l'intro (comme intro_pc_terminal.png) : le camp en demi-blocs, puis
+    « Le camp de base se réveille… », « réception de l'œuf… 37 % ███░░ », la liste sur une ligne."""
+    from . import guide, oeufs, scenes
+    c, r = _terminal()
+    cols, rangs = cols or c, rangs or r
+    larg = max(30, cols - 6)
+    m = scenes.moment(state, quand)
+    ph = m["phase"]
+    i = i_(state)
+    ty = oeufs.type_de(state)
+    out = []
+    if ph == "dort":
+        out += [f"  {fg(78)}{x}{RESET}" for x in envelopper(t("intro.camp.dort"), larg)]
+    elif ph == "eveil" or (ph == "telech" and len(i["faits"]) <= 1):
+        out += [f"  {fg(78)}{x}{RESET}" for x in envelopper(t("intro.camp.reveil"), larg)]
+    elif ph == "telech":
+        out += [f"  {fg(214)}{x}{RESET}" for x in envelopper(t("intro.type." + ty), larg)]
+    if ph not in ("dort", "eveil"):
+        out.append("  " + ligne_reception(state, m["pct"], cols - 4))
+    if ph != "ne":
+        out += ["  " + x for x in liste_courte(state, cols - 4)]
+    if ph == "dort":
+        out += [f"  {fg(214)}{x}{RESET}" for x in envelopper("💡 " + astuce(state), larg)]
+        out += [f"  {DIM}{x}{RESET}" for x in envelopper(t("intro.ou.pc"), larg)]
+    return [""] + dessin_scene(state, quand, cols, rangs, len(out) + 4) + out
+
+
+ANIM_PROMPT = []          # les images à jouer dans le terminal avant la dernière (compagnon.prompt → jouer_prompt)
+
+
+def animer_ici():
+    """Vrai si l'invite peut jouer une animation (un vrai terminal, pas les tests ni TG_SANS_ANIM)."""
+    import os
+    import sys
+    try:
+        return sys.stdout.isatty() and not os.environ.get("TG_SANS_ANIM")
+    except (AttributeError, ValueError, OSError):
+        return False
+
+
+def images_prompt(state, nom, ips=10):
+    """Les images de l'invite pour une commande de la liste (la dernière : l'état final)."""
+    t0 = debut_anim(state, nom)
+    fin = t0 + duree_anim(nom)
+    if not animer_ici():
+        return [bloc_prompt(state, fin)]
+    c, r = _terminal()
+    n = int(duree_anim(nom) * ips) + 1
+    return [bloc_prompt(state, t0 + k / ips, c, r) for k in range(n)]
+
+
+def jouer_prompt(flux, ips=10):
+    """Joue les images en attente au même endroit du terminal (le curseur revient au début ; la dernière image est
+    écrite ensuite par l'invite). Ctrl+C l'arrête."""
+    if not ANIM_PROMPT:
+        return
+    try:
+        for img in ANIM_PROMPT:
+            flux.write("\x1b[J" + "\n".join(img) + RESET + "\n" + f"\x1b[{len(img)}A\r")
+            flux.flush()
+            time.sleep(1 / ips)
+    except KeyboardInterrupt:
+        pass
+    finally:
+        del ANIM_PROMPT[:]
+        try:
+            flux.write("\x1b[J")
+            flux.flush()
+        except (OSError, ValueError):
+            pass
 
 
 def lignes_prompt(state):
-    """Dans l'invite du shell, juste après une bonne commande : le petit œuf qui réagit et la liste."""
-    i = i_(state)
-    fele = min(3, len(i["faits"]))
-    oeuf = lignes_oeuf(fele, "brille" if fele else "", 0, state)
-    while oeuf and not oeuf[0].strip():          # le haut du cadre (la place de l'éclosion) : rien à montrer ici
-        oeuf.pop(0)
-    liste = lignes_liste(state)
-    out = []
-    for k in range(max(len(oeuf), len(liste))):
-        out.append((oeuf[k] if k < len(oeuf) else " " * W_OEUF) + "  " + (liste[k] if k < len(liste) else ""))
-    return out
+    """Dans l'invite du shell, juste après une bonne commande : le camp, l'œuf qui arrive et la liste."""
+    return bloc_prompt(state, time.time())
 
 
 def commande_de(c):
@@ -464,19 +669,28 @@ def commande_de(c):
 
 
 def pour_prompt(state):
-    """Ce que l'invite du shell montre au-dessus de sa ligne, une seule fois : la liste au début, l'œuf qui
-    réagit après une bonne commande, puis chaque écran à présenter (merci, nouveautés). Marque ce qui est montré."""
+    """Ce que l'invite du shell montre au-dessus de sa ligne, une seule fois : le camp endormi et la liste au début,
+    puis après chaque bonne commande le camp qui se réveille / l'œuf qui arrive (animé : ANIM_PROMPT), l'éclosion,
+    puis chaque écran à présenter (merci, nouveautés). Marque ce qui est montré."""
     i = i_(state)
     evt = i.get("evt")
     if retient(state) and not i.get("liste_vue"):
         i["liste_vue"] = True
-        from . import oeufs
-        return [""] + lignes_prompt(state) + ["  " + fg(214) + t("intro.type." + oeufs.type_de(state)) + RESET,
-                                              "  " + DIM + t("intro.ou.pc") + RESET]
+        return bloc_prompt(state, time.time())
     if evt and i.get("vu_prompt") != evt[1]:
         i["vu_prompt"] = evt[1]
+        nom = "eclosion" if not retient(state) else f"oeuf_{max(1, min(3, evt[0]))}"
+        imgs = images_prompt(state, nom)
+        del ANIM_PROMPT[:]
+        ANIM_PROMPT.extend(imgs[:-1])
+        out = list(imgs[-1])
         if retient(state):
-            return [""] + lignes_prompt(state)
+            return out
+        cid = a_montrer(state)
+        if cid:
+            out += lignes_ecran(state, cid)[:-1]
+            lu(state)
+        return out
     cid = a_montrer(state)
     if cid and not retient(state):
         lignes = lignes_ecran(state, cid)[:-1]

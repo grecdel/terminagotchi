@@ -3,7 +3,13 @@
   "L'introduction du jeu et le déblocage progressif (PC : pc/tg/intro.py, Android : Intro.kt).",
   "UNE seule source : donnees/intro.json, recopiée telle quelle dans pc/tg/intro.json et app/src/main/assets/intro.json",
   "(les tests pc/outils/test_intro.py et tests/jvm/Intro.kt vérifient que les copies sont identiques).",
-  "ecrans : les écrans de l'intro (textes intro.e.titre.N / intro.e.texte.N, une scène en pixels chacun).",
+  "ecrans : les écrans de l'intro avant le nom (textes intro.e.titre.N / intro.e.texte.N ; image = l'illustration, scene = le dessin en pixels de secours).",
+  "illustrations : l'intro en images (PC : pc/tg/scenes.py, Android : Scenes.kt) ; coordonnées en pixels de l'image d'origine (taille).",
+  "  camp : le camp de base (camp2.png) ; dort = comment le code l'endort (couleur, lumiere, bleu, melange) ; ordi, nid = centres ;",
+  "  chemins = la lumière qui remonte les câbles puis l'arbre à la 1re commande (t = départ en s, vitesse en px/s) ; couleur_vitesse ;",
+  "  fondu, fin = la couleur qui revient derrière (s) ; oeuf = le cadre 26×26 de l'œuf dans le nid ; coquille, bebe = l'éclosion ;",
+  "  cadrage = la position horizontale du recadrage au téléphone (0 gauche, 1 droite) ; telechargement = l'œuf qui arrive :",
+  "  cibles[n] = pourcentage reçu après n commandes de la liste, vitesse en %/s, eclat et eclot en s.",
   "checklist : les commandes qui nourrissent l'œuf (textes intro.l.<id> et intro.r.<id>) ; re = l'expression qui la reconnaît.",
   "deblocages : chaque fonction du jeu et ce qui l'ouvre (toutes les conditions de « quand » doivent être vraies) :",
   "  eclos = l'œuf a éclos · niveau = niveau atteint · lecons = leçons finies · chapitres = chapitres finis ·",
@@ -51,21 +57,275 @@
  "ecrans": [
   {
    "n": 1,
-   "scene": "monde"
+   "scene": "monde",
+   "image": "monde"
   },
   {
    "n": 2,
-   "scene": "dort"
+   "scene": "dort",
+   "image": "dort"
   },
   {
    "n": 3,
-   "scene": "invite"
-  },
-  {
-   "n": 4,
-   "scene": "oeuf"
+   "scene": "invite",
+   "image": "camp_dort"
   }
  ],
+ "illustrations": {
+  "camp": {
+   "taille": [
+    1533,
+    863
+   ],
+   "dort": {
+    "couleur": 0.15,
+    "lumiere": 0.38,
+    "bleu": [
+     20,
+     28,
+     60
+    ],
+    "melange": 0.25
+   },
+   "ordi": [
+    312,
+    408
+   ],
+   "nid": [
+    760,
+    545
+   ],
+   "chemins": [
+    {
+     "t": 0.45,
+     "pts": [
+      [
+       185,
+       452
+      ],
+      [
+       140,
+       458
+      ],
+      [
+       105,
+       490
+      ],
+      [
+       92,
+       530
+      ],
+      [
+       118,
+       565
+      ],
+      [
+       165,
+       585
+      ]
+     ]
+    },
+    {
+     "t": 0.45,
+     "pts": [
+      [
+       175,
+       440
+      ],
+      [
+       118,
+       420
+      ],
+      [
+       98,
+       380
+      ],
+      [
+       138,
+       330
+      ],
+      [
+       185,
+       262
+      ],
+      [
+       225,
+       207
+      ],
+      [
+       300,
+       178
+      ],
+      [
+       390,
+       140
+      ],
+      [
+       450,
+       108
+      ],
+      [
+       525,
+       82
+      ]
+     ]
+    },
+    {
+     "t": 0.75,
+     "pts": [
+      [
+       385,
+       405
+      ],
+      [
+       400,
+       362
+      ],
+      [
+       425,
+       316
+      ],
+      [
+       456,
+       265
+      ],
+      [
+       485,
+       215
+      ],
+      [
+       512,
+       160
+      ],
+      [
+       540,
+       72
+      ],
+      [
+       548,
+       0
+      ]
+     ]
+    },
+    {
+     "t": 1.5,
+     "pts": [
+      [
+       787,
+       395
+      ],
+      [
+       787,
+       300
+      ],
+      [
+       787,
+       178
+      ],
+      [
+       787,
+       0
+      ]
+     ]
+    },
+    {
+     "t": 1.75,
+     "pts": [
+      [
+       787,
+       232
+      ],
+      [
+       835,
+       280
+      ],
+      [
+       880,
+       315
+      ]
+     ]
+    },
+    {
+     "t": 1.9,
+     "pts": [
+      [
+       995,
+       68
+      ],
+      [
+       1040,
+       100
+      ],
+      [
+       1080,
+       140
+      ],
+      [
+       1100,
+       195
+      ],
+      [
+       1120,
+       240
+      ],
+      [
+       1165,
+       300
+      ],
+      [
+       1215,
+       350
+      ],
+      [
+       1300,
+       400
+      ],
+      [
+       1470,
+       432
+      ]
+     ]
+    }
+   ],
+   "vitesse": 620,
+   "couleur_vitesse": 360,
+   "fondu": 0.4,
+   "fin": 2.9,
+   "duree": 3.4,
+   "oeuf": {
+    "x": 545,
+    "y": 196,
+    "cote": 430
+   },
+   "coquille": {
+    "x": 365,
+    "y": 300,
+    "cote": 300
+   },
+   "bebe": {
+    "x": 835,
+    "bas": 612,
+    "haut": 330
+   },
+   "cadrage": {
+    "eveil": 0.12,
+    "oeuf": 0.5,
+    "ne": 0.45
+   }
+  },
+  "telechargement": {
+   "cibles": [
+    0,
+    37,
+    62,
+    87,
+    100
+   ],
+   "vitesse": 24,
+   "eclat": 0.7,
+   "eclot": 1.0
+  }
+ },
  "scenes": {
   "monde": [
    "ssssssssssssssssssssssyyysss",
