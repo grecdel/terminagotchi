@@ -162,6 +162,15 @@ def indexer(img, pal_img):
     return q
 
 
+def ecrire_portrait(t):
+    eid, vid, s, im = t
+    im2 = im.copy()
+    im2.thumbnail((160, 160), Image.LANCZOS)
+    for base in (RACINE / "app/src/main/assets/portraits", RACINE / "site/public/portraits"):
+        (base / eid).mkdir(parents=True, exist_ok=True)
+        im2.save(base / eid / f"{vid}_{s}.webp", "WEBP", quality=88, method=6)
+
+
 def main():
     src = {}
     for f, fam, ep in A.FAMILLES:
@@ -236,12 +245,11 @@ def main():
         (dossier / "sprites.bin").write_bytes(bin_)
     for base in (RACINE / "app/src/main/assets/portraits", RACINE / "site/public/portraits"):
         shutil.rmtree(base, ignore_errors=True)
-    for eid, vid, s, im in portraits:
-        im2 = im.copy()
-        im2.thumbnail((160, 160), Image.LANCZOS)
-        for base in (RACINE / "app/src/main/assets/portraits", RACINE / "site/public/portraits"):
-            (base / eid).mkdir(parents=True, exist_ok=True)
-            im2.save(base / eid / f"{vid}_{s}.webp", "WEBP", quality=88, method=6)
+    # les portraits (plusieurs milliers de webp) : en parallèle sur tous les cœurs
+    import os
+    from multiprocessing import Pool
+    with Pool(os.cpu_count() or 2) as pool:
+        pool.map(ecrire_portrait, portraits, chunksize=8)
     print(f"{len(especes)} espèces + {len(secretes)} secrète(s), {len(sprites)} espèces-variantes dessinées")
     print(f"bestiaire.json {len(texte)//1024} Ko, sprites.bin {len(bin_)//1024} Ko, paliers {seuils}")
     # anti-triche : données du tirage pour le site et vecteurs de test communs (Python / Kotlin / JS)

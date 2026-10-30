@@ -179,7 +179,8 @@ verifier(r.statut === 200 && r.t.includes("Braisillon") && r.t.includes("terrain
 verifier(["bebe", "enfant", "ado", "adulte", "ancien"].every((s) => r.t.includes(`/portraits/braisillon/classique_${s}.webp`)), "fiche : les 5 stades en portrait");
 verifier(r.t.includes("/portraits/braisillon/lave_adulte.webp") && r.t.includes("Démons") && r.t.includes("environ 1 apparition sur"), "fiche : variantes dessinées, famille, fréquence");
 r = await appel("GET", "/bestiaire/gargouflamme");
-verifier(r.t.includes("pas encore dessinée") && !r.t.includes("/portraits/gargouflamme/canyon_"), "fiche : une variante pas encore dessinée montre la forme classique");
+// toutes les variantes sont dessinées depuis le 30 octobre : la fiche les montre toutes, sans mention « pas encore dessinée »
+verifier(!r.t.includes("pas encore dessinée") && r.t.includes("/portraits/gargouflamme/montagne_"), "fiche : toutes les variantes sont dessinées");
 r = await appel("GET", "/bestiaire/zzz");
 verifier(r.statut === 404, "espèce inconnue : 404");
 r = await appel("GET", "/joueur/Grec");
