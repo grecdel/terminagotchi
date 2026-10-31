@@ -1,0 +1,43 @@
+{
+ "version": 1,
+ "note": "Le réseau simulé du Terminaworld (docs/programme.md § 2.12 et § 7.2) : chaque biome est une machine. Lu par pc/tg/port.py et app/…/Port.kt (copies pc/tg/port.json et app/src/main/assets/port.json, identiques). Les adresses sont des adresses de BOUCLE LOCALE (127.0.0.0/8, RFC 1122 § 3.2.1.3) : une vraie commande qui les vise ne sort jamais de la machine. Le camp de base est localhost (127.0.0.1) ; la Racine est le routeur. Aucune adresse de ce fichier n'est jamais contactée sur un vrai réseau.",
+ "domaine": "terminaworld",
+ "reseau": "127.42.0.0/24",
+ "phare": {"port": 8042, "sceau": 8443, "serveur_enfant": 8000, "repos_minutes": 30},
+ "machines": [
+  {"id": "camp", "adresse": "127.0.0.1", "nom": "localhost", "icone": "⛺", "role": "camp"},
+  {"id": "racine", "adresse": "127.42.0.1", "icone": "🌳", "role": "routeur"},
+  {"id": "feu", "adresse": "127.42.0.2", "icone": "🔥", "role": "biome"},
+  {"id": "eau", "adresse": "127.42.0.3", "icone": "💧", "role": "biome"},
+  {"id": "glace", "adresse": "127.42.0.4", "icone": "❄", "role": "biome"},
+  {"id": "plante", "adresse": "127.42.0.5", "icone": "🌿", "role": "biome"},
+  {"id": "roche", "adresse": "127.42.0.6", "icone": "⛰", "role": "biome"},
+  {"id": "ciel", "adresse": "127.42.0.7", "icone": "⚡", "role": "biome"},
+  {"id": "ombre", "adresse": "127.42.0.8", "icone": "🌑", "role": "biome"},
+  {"id": "machine", "adresse": "127.42.0.9", "icone": "⚙", "role": "biome"},
+  {"id": "poison", "adresse": "127.42.0.10", "icone": "☠", "role": "biome"}
+ ],
+ "liens": [
+  ["camp", "racine"], ["racine", "plante"], ["racine", "eau"], ["racine", "roche"], ["racine", "ciel"],
+  ["plante", "poison"], ["plante", "eau"], ["eau", "glace"], ["ciel", "glace"], ["ciel", "roche"],
+  ["roche", "feu"], ["feu", "machine"], ["machine", "ombre"], ["ombre", "poison"]
+ ],
+ "ttl": 8,
+ "panne": "roche",
+ "course": {"paquets": 6, "perdus": [2, 5], "desordre": [4, 3]},
+ "couches": ["application", "transport", "reseau", "liaison"],
+ "gardien": {"box": "192.168.1.1", "publique": "203.0.113.7", "premier": 23,
+             "appareils": ["tablette", "console", "montre"]},
+ "sceaux": [
+  {"nom": "phare.terminaworld", "signe_par": "phare.terminaworld", "raison": "auto"},
+  {"nom": "phare.terminaworld", "signe_par": "notaire", "raison": "ok"},
+  {"nom": "phare.terminaworld.example", "signe_par": "notaire", "raison": "nom"},
+  {"nom": "phare.terminaworld", "signe_par": "notaire", "raison": "perime"}
+ ],
+ "pages": ["camp", "racine", "feu", "eau", "glace", "plante", "roche", "ciel", "ombre", "machine", "poison"],
+ "ponts": {
+  "ssh": {"vers": ["atelier", "controle"], "lecon": "port4"},
+  "curl": {"vers": ["observatoire", "citadelle"], "lecon": "port3"},
+  "ports_ouverts": {"vers": ["citadelle.hangar_ouvert", "ondes", "machines.m6"], "lecon": "port7"}
+ }
+}

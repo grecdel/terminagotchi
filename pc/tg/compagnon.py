@@ -245,7 +245,7 @@ def _ps2(zsh=False):
 # `deploie cat x | grep y` : le « # » de l'alias coupe le reste de la ligne (le tuyau n'est pas lancé), et la
 # ligne entière est relue dans l'historique (history -a). Avec des guillemets ça marche aussi partout.
 DEPLOIE = ("alias deploie='history -a 2>/dev/null; tg deploie --historique #'\n"
-           "alias espace='tg espace'; alias cerveau='tg cerveau'")
+           "alias espace='tg espace'; alias cerveau='tg cerveau'; alias port='tg port'")
 
 
 def _blocs():
@@ -283,7 +283,7 @@ def _blocs():
             'function guide\n    tg guide $argv\nend\nfunction types\n    tg types\nend\n'
             'function equipe\n    tg equipe $argv\nend\nfunction aide\n    tg aide $argv\nend\n'
             'function deploie\n    tg deploie $argv\nend\nfunction espace\n    tg espace $argv\nend\n'
-            'function cerveau\n    tg cerveau $argv\nend')
+            'function cerveau\n    tg cerveau $argv\nend\nfunction port\n    tg port $argv\nend')
     for ps in ("powershell", "pwsh"):
         if shutil.which(ps):
             try:
@@ -303,7 +303,8 @@ def _blocs():
                                        'function guide { tg guide @args }\nfunction types { tg types }\n'
                                        'function equipe { tg equipe @args }\n'
                                        'function deploie { tg deploie @args }\nfunction espace { tg espace @args }\n'
-                                       'function cerveau { tg cerveau @args }')
+                                       'function cerveau { tg cerveau @args }\n'
+                                       'function port { tg port @args }')
     return blocs
 
 
@@ -362,7 +363,8 @@ def a_jour():
         except OSError:
             continue
         installe = txt.split(DEBUT, 1)[1].split(FIN, 1)[0] if DEBUT in txt else None
-        if installe is not None and ("--statut" not in installe or ("PS2=" in bloc and "PS2=" not in installe)):
+        if installe is not None and ("--statut" not in installe or ("PS2=" in bloc and "PS2=" not in installe)
+                                     or ("port='tg port'" in bloc and "port='tg port'" not in installe)):
             return False
     return True
 

@@ -182,8 +182,9 @@ def main():
                 err(f"exploit {x['id']} : récompense inconnue {x.get('recompense')}")
             if x.get("recompense") == "variante" and not m.get("types"):
                 err(f"exploit {x['id']} : une variante sans type de monde")
+        par_espece = {f"{e['id']}:{v['id']}" for e in best["especes"] for v in e["variantes"]}
         for v in m.get("variantes_reservees", []):
-            if v not in variantes:
+            if v not in variantes and v not in par_espece:
                 err(f"monde {m['id']} : variante réservée inconnue {v}")
     # 7. le rejeu
     for ref in P.get("rejeu", {}):

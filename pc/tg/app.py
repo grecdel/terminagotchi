@@ -108,7 +108,8 @@ def render(state, frame, interactif, anim=None, tic=None):
         lines.append(title_line("🧩 " + placement.but(state), 213))
     if les:
         ch = histoire.PAR_CHAP[les["chap"]]
-        lines.append(title_line(t("hist.ecran.chapitre", icone=maison.ICONES.get(ch["piece"], "📖"),
+        lines.append(title_line(t("hist.ecran.monde" if ch.get("monde") else "hist.ecran.chapitre",
+                                  icone=maison.ICONES.get(ch["piece"], "📖"),
                                   chapitre=histoire.nom_chapitre(ch["id"]), n=ch["n"]), 213))
         if lvl < les["niveau"]:
             lines.append(title_line(t("app.lecon.niveau_requis", etiquette=etiquette, n=les["niveau"])))
@@ -1173,6 +1174,10 @@ def _main():
             core.modifier(lambda s: s["config"].update(notifs=choix == "on"))
         on = core.load()["config"].get("notifs", True)
         print(t("app.options.notifs", etat=f"{fg(78)}{t('app.on')}{RESET}" if on else f"{fg(203)}{t('app.off')}{RESET}"))
+        return
+    if mode == "port":                         # tg port … : le réseau simulé du Terminaworld (le monde du Port)
+        from . import port
+        port.commande(args[1:])
         return
     if mode in ("deploie", "déploie"):         # tg deploie <commande> : la vue déployée (sans la lancer)
         from . import deploie

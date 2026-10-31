@@ -71,13 +71,15 @@ object Recompenses {
     fun reussi(genre: String, types: List<String>, e: Bestiaire.Espece, c: JSONObject): Boolean =
         if (genre == "legendaire") rarete(c) == "légendaire" else Guide.typeDe(e, c.optString("variante", "classique")) in types
 
-    fun reservee(jeu: Jeu, vid: String): Boolean {
+    /** La variante est réservée par un monde dont aucun exploit n'est encore réussi : pour toutes les espèces
+     *  (« orage ») ou pour une seule (« plumange:orage »). */
+    fun reservee(jeu: Jeu, vid: String, eid: String = ""): Boolean {
         val faits = etat(jeu).getJSONObject("exploits")
         val ms = mondes()
         for (i in 0 until ms.length()) {
             val m = ms.getJSONObject(i)
             val res = m.optJSONArray("variantes_reservees") ?: continue
-            if ((0 until res.length()).none { res.getString(it) == vid }) continue
+            if ((0 until res.length()).none { res.getString(it) == vid || res.getString(it) == "$eid:$vid" }) continue
             val ex = m.optJSONArray("exploits") ?: JSONArray()
             if ((0 until ex.length()).none { faits.has(ex.getJSONObject(it).optString("id")) }) return true
         }
@@ -116,7 +118,7 @@ object Recompenses {
             r = cands[i]
         }
         repeat(4) {
-            if (!reservee(jeu, r.second.optString("variante", "classique"))) return r to texte
+            if (!reservee(jeu, r.second.optString("variante", "classique"), r.first.id)) return r to texte
             r = tirerUn() ?: return r to texte
         }
         return r to texte

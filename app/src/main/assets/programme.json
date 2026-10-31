@@ -1199,6 +1199,11 @@
      "cmd": "curl -sI https://example.com",
      "motif": "^HTTP/\\S+ 200",
      "rejeu": "reseau"
+    },
+    {
+     "prepare": "python3 -m http.server 8773 --bind 127.0.0.1 --directory . >/dev/null 2>&1 & echo $! > pid; for i in 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20; do curl -s -o /dev/null http://127.0.0.1:8773/ && break; sleep 0.3; done",
+     "cmd": "curl -s http://127.0.0.1:8773/ | grep -c '<h1>Directory listing'; kill $(cat pid)",
+     "sortie": "1"
     }
    ],
    "limite_image": "prog.curl.limite",
@@ -1270,6 +1275,315 @@
    "sources": [
     "man 8 traceroute",
     "RFC 792 (ICMP Time Exceeded)"
+   ],
+   "relu_par": null
+  },
+  "localhost": {
+   "motif": "\\b(localhost|127\\.0\\.0\\.1)\\b",
+   "enfant": "port.f.localhost.enfant",
+   "grands": "port.f.localhost.grands",
+   "vrai_terminal": [
+    {
+     "cmd": "getent hosts localhost",
+     "motif": "^(127\\.0\\.0\\.1|::1)\\s+.*\\blocalhost\\b",
+     "outil": "getent"
+    },
+    {
+     "cmd": "ping -c 1 -W 2 127.42.0.2 | grep -o '1 received'",
+     "sortie": "1 received",
+     "si": "ping -c 1 -W 2 127.42.0.2"
+    }
+   ],
+   "limite_image": "port.f.localhost.limite",
+   "idees_fausses": [
+    "port.f.localhost.idee"
+   ],
+   "sources": [
+    "RFC 1122, § 3.2.1.3 (127.0.0.0/8, la boucle locale)",
+    "RFC 6761, § 6.3 (le nom localhost)",
+    "man 5 hosts : https://man7.org/linux/man-pages/man5/hosts.5.html"
+   ],
+   "relu_par": null
+  },
+  "hosts": {
+   "motif": "(\\bhosts\\b|annuaire|^getent\\b|^resolve-dnsname\\b|^dscacheutil\\b)",
+   "enfant": "port.f.hosts.enfant",
+   "grands": "port.f.hosts.grands",
+   "vrai_terminal": [
+    {
+     "prepare": "printf '127.0.0.1\\tlocalhost camp\\n127.42.0.2\\tfeu.terminaworld feu\\n' > annuaire.txt",
+     "cmd": "grep feu annuaire.txt",
+     "sortie": "127.42.0.2\tfeu.terminaworld feu"
+    },
+    {
+     "cmd": "grep -c localhost /etc/hosts",
+     "motif": "^[1-9]\\d*$"
+    }
+   ],
+   "limite_image": "port.f.hosts.limite",
+   "idees_fausses": [
+    "port.f.hosts.idee"
+   ],
+   "sources": [
+    "man 5 hosts : https://man7.org/linux/man-pages/man5/hosts.5.html",
+    "man 1 getent",
+    "RFC 1034 et RFC 1035 (DNS)"
+   ],
+   "relu_par": null
+  },
+  "http": {
+   "motif": "^(curl|curl\\.exe)\\b.*(\\s-\\w*[Io]\\b|https?://)",
+   "enfant": "port.f.http.enfant",
+   "grands": "port.f.http.grands",
+   "vrai_terminal": [
+    {
+     "prepare": "python3 -m http.server 8765 --bind 127.0.0.1 --directory . >/dev/null 2>&1 & echo $! > pid; for i in 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20; do curl -s -o /dev/null http://127.0.0.1:8765/ && break; sleep 0.3; done",
+     "cmd": "curl -sI http://127.0.0.1:8765/ | head -n 1; kill $(cat pid)",
+     "motif": "^HTTP/1\\.0 200 OK"
+    },
+    {
+     "prepare": "python3 -m http.server 8766 --bind 127.0.0.1 --directory . >/dev/null 2>&1 & echo $! > pid; for i in 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20; do curl -s -o /dev/null http://127.0.0.1:8766/ && break; sleep 0.3; done",
+     "cmd": "curl -s -o /dev/null -w '%{http_code}\\n' http://127.0.0.1:8766/absent; kill $(cat pid)",
+     "sortie": "404"
+    }
+   ],
+   "limite_image": "port.f.http.limite",
+   "idees_fausses": [
+    "port.f.http.idee"
+   ],
+   "sources": [
+    "RFC 9110 (HTTP : méthodes, codes 200 et 404, en-têtes)",
+    "RFC 9112 (HTTP/1.1)",
+    "curl(1) : https://curl.se/docs/manpage.html"
+   ],
+   "relu_par": null
+  },
+  "ssh_cles": {
+   "motif": "(^ssh-keygen\\b|cle_du_port|^(tg\\s+)?port\\s+t[eé]l[eé]porteur|teleporteur)",
+   "enfant": "port.f.ssh_cles.enfant",
+   "grands": "port.f.ssh_cles.grands",
+   "vrai_terminal": [
+    {
+     "cmd": "ssh-keygen -q -t ed25519 -N '' -C explorateur -f cle && cut -d ' ' -f 1,3 cle.pub",
+     "sortie": "ssh-ed25519 explorateur",
+     "outil": "ssh-keygen"
+    },
+    {
+     "cmd": "ssh-keygen -q -t ed25519 -N '' -C explorateur -f cle && stat -c %a cle",
+     "sortie": "600",
+     "outil": "ssh-keygen"
+    }
+   ],
+   "limite_image": "port.f.ssh_cles.limite",
+   "idees_fausses": [
+    "port.f.ssh_cles.idee"
+   ],
+   "sources": [
+    "OpenSSH, ssh-keygen(1) : https://man.openbsd.org/ssh-keygen",
+    "RFC 8709 (Ed25519 dans SSH)",
+    "RFC 4251 (architecture de SSH)"
+   ],
+   "relu_par": null
+  },
+  "serveur": {
+   "motif": "(http\\.server|^serveur\\b|:8000\\b)",
+   "enfant": "port.f.serveur.enfant",
+   "grands": "port.f.serveur.grands",
+   "vrai_terminal": [
+    {
+     "prepare": "mkdir quai; echo 'Bienvenue sur mon quai' > quai/index.html; python3 -m http.server 8770 --bind 127.0.0.1 --directory quai >/dev/null 2>&1 & echo $! > pid; for i in 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20; do curl -s -o /dev/null http://127.0.0.1:8770/ && break; sleep 0.3; done",
+     "cmd": "curl -s http://127.0.0.1:8770/; kill $(cat pid)",
+     "sortie": "Bienvenue sur mon quai"
+    },
+    {
+     "prepare": "python3 -m http.server 8771 --bind 127.0.0.1 --directory . >/dev/null 2>&1 & echo $! > pid; for i in 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20; do curl -s -o /dev/null http://127.0.0.1:8771/ && break; sleep 0.3; done",
+     "cmd": "curl -sI http://127.0.0.1:8771/ | grep -c '^Server: SimpleHTTP'; kill $(cat pid)",
+     "sortie": "1"
+    }
+   ],
+   "limite_image": "port.f.serveur.limite",
+   "idees_fausses": [
+    "port.f.serveur.idee"
+   ],
+   "sources": [
+    "Python, http.server : https://docs.python.org/3/library/http.server.html (« not recommended for production »)",
+    "man 7 ip (adresse d'écoute 127.0.0.1 ou 0.0.0.0)"
+   ],
+   "relu_par": null
+  },
+  "couches": {
+   "motif": "(^(curl|curl\\.exe)\\b.*\\s-\\w*v\\b|^(tg\\s+)?port\\s+couches|couches\\.txt)",
+   "enfant": "port.f.couches.enfant",
+   "grands": "port.f.couches.grands",
+   "vrai_terminal": [
+    {
+     "prepare": "python3 -m http.server 8767 --bind 127.0.0.1 --directory . >/dev/null 2>&1 & echo $! > pid; for i in 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20; do curl -s -o /dev/null http://127.0.0.1:8767/ && break; sleep 0.3; done",
+     "cmd": "curl -sv -o /dev/null http://127.0.0.1:8767/ 2>&1 | grep -c '^> GET / HTTP/1.1'; kill $(cat pid)",
+     "sortie": "1"
+    },
+    {
+     "prepare": "python3 -m http.server 8772 --bind 127.0.0.1 --directory . >/dev/null 2>&1 & echo $! > pid; for i in 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20; do curl -s -o /dev/null http://127.0.0.1:8772/ && break; sleep 0.3; done",
+     "cmd": "curl -sv -o /dev/null http://127.0.0.1:8772/ 2>&1 | grep -E 'Connected to'; kill $(cat pid)",
+     "motif": "Connected to 127\\.0\\.0\\.1 \\(127\\.0\\.0\\.1\\) port 8772"
+    }
+   ],
+   "limite_image": "port.f.couches.limite",
+   "idees_fausses": [
+    "port.f.couches.idee"
+   ],
+   "sources": [
+    "RFC 1122 (les couches de l'Internet : application, transport, Internet, lien)",
+    "ISO/IEC 7498-1 (le modèle OSI en 7 couches)",
+    "RFC 9293 (TCP)",
+    "RFC 791 (IP)"
+   ],
+   "relu_par": null
+  },
+  "ports": {
+   "motif": "(^(ss|netstat)\\b|^(tg\\s+)?port\\s+carte\\b)",
+   "enfant": "port.f.ports.enfant",
+   "grands": "port.f.ports.grands",
+   "vrai_terminal": [
+    {
+     "prepare": "python3 -m http.server 8768 --bind 127.0.0.1 --directory . >/dev/null 2>&1 & echo $! > pid; for i in 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20; do curl -s -o /dev/null http://127.0.0.1:8768/ && break; sleep 0.3; done",
+     "cmd": "ss -tln | grep -c '127.0.0.1:8768'; kill $(cat pid)",
+     "sortie": "1",
+     "outil": "ss"
+    },
+    {
+     "cmd": "ss -tln | head -n 1",
+     "motif": "^State\\s+Recv-Q\\s+Send-Q\\s+Local Address:Port",
+     "outil": "ss"
+    }
+   ],
+   "limite_image": "port.f.ports.limite",
+   "idees_fausses": [
+    "port.f.ports.idee"
+   ],
+   "sources": [
+    "man 8 ss : https://man7.org/linux/man-pages/man8/ss.8.html",
+    "RFC 6335 (numéros de port)",
+    "IANA, Service Name and Transport Protocol Port Number Registry"
+   ],
+   "relu_par": null
+  },
+  "tcp_udp": {
+   "motif": "(^ss\\s+-\\w*[tu]|^netstat\\b.*\\b(tcp|udp)\\b|^(tg\\s+)?port\\s+course\\b)",
+   "enfant": "port.f.tcp_udp.enfant",
+   "grands": "port.f.tcp_udp.grands",
+   "vrai_terminal": [
+    {
+     "cmd": "ss -t | head -n 1",
+     "motif": "Recv-Q\\s+Send-Q",
+     "outil": "ss"
+    },
+    {
+     "cmd": "ss -u -a | head -n 1",
+     "motif": "Recv-Q\\s+Send-Q",
+     "outil": "ss"
+    }
+   ],
+   "limite_image": "port.f.tcp_udp.limite",
+   "idees_fausses": [
+    "port.f.tcp_udp.idee"
+   ],
+   "sources": [
+    "RFC 9293 (TCP)",
+    "RFC 768 (UDP)",
+    "man 7 tcp, man 7 udp"
+   ],
+   "relu_par": null
+  },
+  "routage": {
+   "motif": "(^ip\\s+(-\\d\\s+)?r(oute)?\\b|^route\\s+print|^netstat\\s+-\\w*r|^(tracepath|traceroute|tracert)\\b|^(tg\\s+)?port\\s+(messager|guide|[eé]teins|rallume|route)\\b)",
+   "enfant": "port.f.routage.enfant",
+   "grands": "port.f.routage.grands",
+   "vrai_terminal": [
+    {
+     "cmd": "tracepath -n 127.0.0.1",
+     "motif": "reached",
+     "outil": "tracepath"
+    },
+    {
+     "cmd": "ping -c 1 -W 2 127.0.0.1 | grep -o 'ttl=[0-9]*'",
+     "sortie": "ttl=64",
+     "si": "ping -c 1 -W 2 127.0.0.1"
+    },
+    {
+     "cmd": "ip route show table local | grep -c '127.0.0.0/8'",
+     "motif": "^[1-9]$",
+     "outil": "ip"
+    }
+   ],
+   "limite_image": "port.f.routage.limite",
+   "idees_fausses": [
+    "port.f.routage.idee"
+   ],
+   "sources": [
+    "man 8 ip-route : https://man7.org/linux/man-pages/man8/ip-route.8.html",
+    "man 8 tracepath",
+    "RFC 791 (IP, durée de vie TTL)",
+    "RFC 1812 (routeurs)"
+   ],
+   "relu_par": null
+  },
+  "box_nat": {
+   "motif": "(\\|\\s*grep\\s+default\\b|^ip\\s+(-\\d\\s+)?n(eigh(bour)?)?\\b|^arp\\b|^ipconfig\\b.*passerelle|^(tg\\s+)?port\\s+gardien\\b)",
+   "enfant": "port.f.box_nat.enfant",
+   "grands": "port.f.box_nat.grands",
+   "vrai_terminal": [
+    {
+     "cmd": "ip -4 route show default",
+     "motif": "^default via \\S+",
+     "si": "ip -4 route show default | grep -q default"
+    },
+    {
+     "cmd": "ip neigh > /dev/null; echo $?",
+     "sortie": "0",
+     "outil": "ip"
+    }
+   ],
+   "limite_image": "port.f.box_nat.limite",
+   "idees_fausses": [
+    "port.f.box_nat.idee"
+   ],
+   "sources": [
+    "RFC 2131 (DHCP)",
+    "RFC 1918 (adresses privées)",
+    "RFC 3022 (NAT)",
+    "RFC 5737 (adresses de documentation)",
+    "man 8 ip-neighbour"
+   ],
+   "relu_par": null
+  },
+  "tls": {
+   "motif": "(https://|--cacert\\b|^(tg\\s+)?port\\s+sceau\\b)",
+   "enfant": "port.f.tls.enfant",
+   "grands": "port.f.tls.grands",
+   "vrai_terminal": [
+    {
+     "prepare": "openssl req -x509 -newkey rsa:2048 -nodes -days 2 -keyout k.pem -out c.pem -subj /CN=localhost -addext subjectAltName=DNS:localhost,IP:127.0.0.1 >/dev/null 2>&1; python3 -c \"import http.server,ssl;s=http.server.HTTPServer(('127.0.0.1',8769),http.server.SimpleHTTPRequestHandler);c=ssl.SSLContext(ssl.PROTOCOL_TLS_SERVER);c.load_cert_chain('c.pem','k.pem');s.socket=c.wrap_socket(s.socket,server_side=True);s.serve_forever()\" >/dev/null 2>&1 & echo $! > pid; for i in 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20; do curl -s -k -o /dev/null https://127.0.0.1:8769/ && break; sleep 0.3; done",
+     "cmd": "curl -sS https://localhost:8769/ 2>&1; echo \"code $?\"; kill $(cat pid)",
+     "motif": "self.signed certificate",
+     "outil": "openssl"
+    },
+    {
+     "prepare": "openssl req -x509 -newkey rsa:2048 -nodes -days 2 -keyout k.pem -out c.pem -subj /CN=localhost -addext subjectAltName=DNS:localhost,IP:127.0.0.1 >/dev/null 2>&1; python3 -c \"import http.server,ssl;s=http.server.HTTPServer(('127.0.0.1',8769),http.server.SimpleHTTPRequestHandler);c=ssl.SSLContext(ssl.PROTOCOL_TLS_SERVER);c.load_cert_chain('c.pem','k.pem');s.socket=c.wrap_socket(s.socket,server_side=True);s.serve_forever()\" >/dev/null 2>&1 & echo $! > pid; for i in 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20; do curl -s -k -o /dev/null https://127.0.0.1:8769/ && break; sleep 0.3; done",
+     "cmd": "curl -sS --cacert c.pem -o /dev/null -w '%{http_code}\\n' https://localhost:8769/; kill $(cat pid)",
+     "sortie": "200",
+     "outil": "openssl"
+    }
+   ],
+   "limite_image": "port.f.tls.limite",
+   "idees_fausses": [
+    "port.f.tls.idee"
+   ],
+   "sources": [
+    "RFC 8446 (TLS 1.3)",
+    "RFC 5280 (certificats X.509)",
+    "RFC 9110, § 4.2.2 (https)",
+    "curl(1), --cacert : https://curl.se/docs/manpage.html#--cacert",
+    "man 1 openssl-req"
    ],
    "relu_par": null
   },
@@ -1394,6 +1708,21 @@
   "dortoir1.1": {
    "maths": [
     "modulo"
+   ]
+  },
+  "port1.2": {
+   "maths": [
+    "pourcentages"
+   ]
+  },
+  "port8.2": {
+   "maths": [
+    "comptage"
+   ]
+  },
+  "port9.4": {
+   "maths": [
+    "comptage"
    ]
   }
  },
@@ -1550,6 +1879,65 @@
   "coeur2.1": {
    "egal_jeu": "traces_abyssor",
    "pourquoi": "la réponse attendue par Abyssor = ce que compte bash"
+  },
+  "port0.1": {
+   "contient": [
+    "panneau.txt",
+    "annuaire.txt",
+    "carnet_de_bord.txt",
+    "quai"
+   ],
+   "pourquoi": "hist.port0.1.bravo : le panneau, l'annuaire, le carnet de bord et le quai"
+  },
+  "port1.2": {
+   "motif": "3 packets transmitted, 3 received, 0% packet loss",
+   "pourquoi": "hist.port1.2.bravo : 3 échos, 0 % perdu"
+  },
+  "port2.2": {
+   "sortie": "127.42.0.2\tfeu.terminaworld feu",
+   "pourquoi": "hist.port2.2.bravo : feu → 127.42.0.2"
+  },
+  "port3.0": {
+   "motif": "^HTTP/1\\.1 200 OK",
+   "pourquoi": "hist.port3.0.bravo : 200 OK"
+  },
+  "port3.1": {
+   "lignes": 3,
+   "motif": "eau\\.terminaworld \\(127\\.42\\.0\\.3\\)",
+   "pourquoi": "hist.port3.1.bravo : les 3 premières lignes"
+  },
+  "port3.3": {
+   "motif": "^HTTP/1\\.1 404 Not Found",
+   "pourquoi": "hist.port3.3.bravo : 404"
+  },
+  "port4.2": {
+   "motif": "^ssh-ed25519 \\S+ explorateur$",
+   "pourquoi": "hist.port4.2.bravo : ssh-ed25519 … explorateur"
+  },
+  "port5.2": {
+   "sortie": "Bienvenue sur mon quai",
+   "pourquoi": "hist.port5.2.bravo : ta page"
+  },
+  "port6.0": {
+   "motif": "^> GET / HTTP/1\\.1",
+   "pourquoi": "hist.port6.0.bravo : > GET / HTTP/1.1 (l'application)"
+  },
+  "port7.1": {
+   "motif": "127\\.0\\.0\\.1:8042\\b",
+   "pourquoi": "hist.port7.1.bravo : 127.0.0.1:8042, la porte du phare"
+  },
+  "port9.1": {
+   "motif": "reached",
+   "pourquoi": "hist.port9.1.bravo : un seul saut"
+  },
+  "port11.0": {
+   "code": "non0",
+   "motif": "self.signed certificate",
+   "pourquoi": "hist.port11.0.bravo : curl refuse le sceau"
+  },
+  "port11.1": {
+   "motif": "/feu\\s",
+   "pourquoi": "hist.port11.1.bravo : la page du phare, scellée"
   }
  },
  "maths": {
@@ -1996,7 +2384,56 @@
      "recompense": "variante"
     }
    ],
-   "variantes_reservees": []
+   "variantes_reservees": [
+    "plumange:orage",
+    "tortunivers:lagon",
+    "empyria:nuage"
+   ],
+   "requis": [
+    "n4"
+   ],
+   "paliers": [
+    "port0",
+    "port1",
+    "port2",
+    "port3",
+    "port4",
+    "port5",
+    "port6",
+    "port7",
+    "port8",
+    "port9",
+    "port10",
+    "port11"
+   ],
+   "attirance": {
+    "cmds": [
+     "ping",
+     "curl",
+     "ip",
+     "ssh",
+     "ss",
+     "hostname"
+    ],
+    "familles": [
+     "Célestes"
+    ]
+   },
+   "ponts": {
+    "ssh": [
+     "atelier",
+     "controle"
+    ],
+    "curl": [
+     "observatoire",
+     "citadelle"
+    ],
+    "ports_ouverts": [
+     "citadelle.hangar_ouvert",
+     "ondes",
+     "machines.m6"
+    ]
+   }
   },
   {
    "id": "temps",
@@ -2172,5 +2609,28 @@
     "ip": "ifconfig"
    }
   }
+ },
+ "tronc": {
+  "note": "niveau du tronc commun → chapitres de l'histoire qui l'enseignent (§ 2.19) ; un monde s'ouvre quand tous les chapitres de ses niveaux requis sont finis (arbre du Carrefour, § 2.9)",
+  "n0": [
+   "reveil"
+  ],
+  "n1": [
+   "reveil"
+  ],
+  "n2": [
+   "nid"
+  ],
+  "n3": [
+   "bibliotheque"
+  ],
+  "n4": [
+   "nid",
+   "bibliotheque"
+  ],
+  "n5": [],
+  "n6": [
+   "cave"
+  ]
  }
 }

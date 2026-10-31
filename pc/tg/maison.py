@@ -55,7 +55,7 @@ AILES = ("grenier", "cave", "bibliotheque", "salle_des_machines", "dortoir", "at
 PIECES = ("vestibule", "nid") + AILES + ("coeur",)
 ICONES = {"vestibule": "🥚", "nid": "🏠", "grenier": "🌿", "cave": "🔒", "bibliotheque": "📚",
           "salle_des_machines": "🔥", "dortoir": "👻", "atelier": "🔧", "tour": "📡", "coeur": "💜",
-          "recoins": "🚪", "sauvage": "🌲", "jardin": "📱"}
+          "recoins": "🚪", "sauvage": "🌲", "jardin": "📱", "port": "⚓"}
 PRUDENCE = ("rm", "rmdir", "mv", "chmod", "chown", "del", "remove-item", "move-item", "ren")
 # les commandes qui écrivent (prudence) : tous leurs chemins comptent, sauf pour cp (seulement la destination)
 ECRIT = PRUDENCE + ("mkdir", "md", "touch", "new-item", "ni", "cp", "copy", "copy-item", "ln", "tee", "truncate",

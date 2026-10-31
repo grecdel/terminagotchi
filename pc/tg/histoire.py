@@ -259,6 +259,13 @@ CHAPITRES = [
     {"id": "telephone", "n": 0, "piece": "jardin", "famille": None, "android": True,
      "lecons": ["android0", "android1", "android2", "android3"], "objet": "antenne"},
 ]
+# phase 5 : les mondes du Carrefour (docs/programme.md § 2.9, § 7.14), un par un. Le premier : le Port (port.py).
+from . import port as _port  # noqa: E402
+NOUVELLES.update(_port.LECONS)
+CHAPITRES.append(_port.CHAPITRE)
+lecons.FS.update(_port.FS)
+lecons.CREE.update(_port.CREE)
+MONDES = tuple(c["piece"] for c in CHAPITRES if c.get("monde"))
 PAR_CHAP = {c["id"]: c for c in CHAPITRES}
 AILES = [c["id"] for c in CHAPITRES if 3 <= c["n"] <= 9]
 
@@ -351,6 +358,8 @@ def ouvert(state, cid):
         return fini(state, "reveil")
     if cid == "coeur":
         return nb_ailes(state) >= AILES_POUR_LE_COEUR
+    if c.get("monde"):                      # un monde du Carrefour : ses prérequis du tronc commun (programme.json)
+        return _port.ouvert(state)
     return fini(state, "nid")
 
 
@@ -420,7 +429,14 @@ def _repli(s):
 def etapes(state, lid):
     niv = core.level(state.get("xp", 0))
     return [_repli(s) for s in lecon_def(lid)["steps"]
-            if (not s.get("expert") or niv >= NIVEAU_EXPERT) and not (IS_WIN and s.get("win") is False)]
+            if (not s.get("expert") or niv >= NIVEAU_EXPERT) and not (IS_WIN and s.get("win") is False)
+            and not (s.get("outil") and not _outil(s["outil"]))]
+
+
+def _outil(nom):
+    """Un outil dont une étape a besoin (openssl, ssh-keygen) : sans lui, l'étape n'est pas montrée (le monde continue)."""
+    import shutil
+    return shutil.which(nom) is not None
 
 
 def chapitre_courant(state):
@@ -574,6 +590,8 @@ def _meubles(state, p):
         return {"vieille_cabane/planche_1.txt": dire(state, "hist.meuble.planche"),
                 "vieille_cabane/planche_2.txt": dire(state, "hist.meuble.planche"),
                 ".mot_secret.txt": dire(state, "hist.meuble.mot_secret", nom=state.get("name", ""))}
+    if p == "port":
+        return _port.meubles(state)
     if p == "coeur":
         m = {"coeur/message_brouille.txt": "\n".join(l[::-1] for l in dire(state, "hist.meuble.message").split("\n")),
              "coeur/.porte_secrete/abyssor_dort.txt": dire(state, "hist.meuble.abyssor")}
@@ -610,6 +628,8 @@ BESOINS = {
     "coeur0": [("coeur/message_brouille.txt", None), ("coeur/.porte_secrete/abyssor_dort.txt", None)],
     "coeur1": [(f, 1) for f in FRAGMENTS],
     "coeur2": [("coeur/.porte_secrete/abyssor_dort.txt", None)],
+    "port0": [("port/panneau.txt", None)],
+    "port2": [("port/annuaire.txt", None)],
 }
 
 
@@ -626,7 +646,7 @@ def meubler(state):
         except OSError:
             return []
     poses = []
-    for p in maison.PIECES + ("jardin",):
+    for p in maison.PIECES + ("jardin",) + MONDES:
         if p == "nid" or not piece_ouverte(state, p) and not (p == "vestibule" and lid == "reveil1"):
             continue
         d = T() / p
@@ -661,6 +681,8 @@ def meubler(state):
                     continue
                 _ecrire(rel, tous[rel], binaire=isinstance(tous[rel], bytes))
                 poses.append(rel)
+    if lid and lid in _port.LECONS:              # le Port : le phare s'allume pour les leçons qui le visitent
+        _port.meubler(state, lid, state.get("step", 0))
     return poses
 
 
@@ -675,6 +697,8 @@ def choisir(state, cid, dit=True):
     if not ouvert(state, cid):
         if cid == "coeur":
             return t("hist.coeur.ferme", n=nb_ailes(state), total=AILES_POUR_LE_COEUR)
+        if c.get("monde"):
+            return t("port.ferme", chapitre=nom_chapitre(cid), manque=", ".join(_port.manque(state)))
         return t("hist.aile.fermee", chapitre=nom_chapitre(cid))
     h = h_(state)
     if h.get("chap") == cid and chapitre_courant(state):
@@ -735,6 +759,7 @@ def _finir_chapitre(state, c):
     core.add_xp(state, 30)
     quetes.recompenser(state, {"objet": c.get("objet"), "titre": c.get("titre")}, souvenir=("chap", c["id"]))
     h["chap"] = None
+    _port.annonce(state)                         # un monde du Carrefour qui vient de s'ouvrir
     if c["id"] == "reveil":
         h["chap"] = "nid"
     elif c["id"] == "nid":
@@ -759,6 +784,12 @@ def avancer(state, les):
     core.terminal(state, "✔ " + lecons.tx(step["bravo"]))   # le bravo aussi dans le terminal de l'enfant (P1-4)
     from . import explique
     explique.apres_reussite(state, step["cmd"])           # -r, >>, 444… : expliqués une fois (explique.py)
+    if step.get("exploit"):                               # un exploit d'un monde (§ 7.6) : des rencontres rares
+        from . import recompenses
+        msg = recompenses.exploit(state, step["exploit"])
+        if msg:
+            core.log(state, msg)
+            core.say(state, msg, 16)
     state["step"] += 1
     core.animer(state, "content")
     from . import satiete
@@ -831,7 +862,8 @@ def tick_lecon(state, lines, cwds, avants=None):
         state["annonce"] = les["titre"]
         if les["chap"] not in h["ouverts"]:
             h["ouverts"].append(les["chap"])
-            core.log(state, t("hist.chapitre.log", n=PAR_CHAP[les["chap"]]["n"], chapitre=nom_chapitre(les["chap"])))
+            core.log(state, t("hist.monde.log" if PAR_CHAP[les["chap"]].get("monde") else "hist.chapitre.log",
+                              n=PAR_CHAP[les["chap"]]["n"], chapitre=nom_chapitre(les["chap"])))
             core.say(state, dire(state, f"hist.{les['chap']}.debut"), 18)
         else:
             core.say(state, t("lec.annonce"), 10)
@@ -1361,6 +1393,8 @@ def lignes_ailes(state):
             etat = f"{fg(226)}" + t("hist.menu.libre") + RESET
         elif cid == "coeur":
             etat = DIM + t("hist.coeur.ferme", n=nb_ailes(state), total=AILES_POUR_LE_COEUR) + RESET
+        elif c.get("monde"):
+            etat = DIM + t("port.ferme.court", manque=", ".join(_port.manque(state))) + RESET
         else:
             etat = DIM + t("hist.menu.fermee") + RESET
         faits = sum(1 for x in c["lecons"] if x in h_(state)["faits"])

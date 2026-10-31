@@ -102,10 +102,13 @@ def reussi(genre, types, e, champs):
 
 
 def reservee(state, e, vid):
-    """La variante est réservée par un monde dont aucun exploit n'est encore réussi."""
+    """La variante est réservée par un monde dont aucun exploit n'est encore réussi. Une réservation vaut pour toutes
+    les espèces (« orage ») ou pour une seule (« plumange:orage », l'identifiant de l'espèce avant les deux-points)."""
     faits = r_(state)["exploits"]
+    eid = (e.get("id") if isinstance(e, dict) else getattr(e, "id", None)) or ""
     for m in mondes():
-        if vid in m.get("variantes_reservees", []) and not any(x["id"] in faits for x in m.get("exploits", [])):
+        res = m.get("variantes_reservees", [])
+        if (vid in res or f"{eid}:{vid}" in res) and not any(x["id"] in faits for x in m.get("exploits", [])):
             return True
     return False
 
