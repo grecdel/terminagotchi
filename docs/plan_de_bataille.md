@@ -299,6 +299,33 @@ juste après son lancement, `time` ou les commandes du jeu ne sont plus pris pou
 plusieurs mondes s'ouvrent ensemble (Port et Crypte), ils sont annoncés un par tour. Reste : les illustrations B12/C2/E10/E11, la décision sur un garde-fou `gpg` dans le shell
 (rapport, CR1).
 
+**⚙ La Salle des Machines — codée (31 octobre).** 11 fiches (`donnees/machines/outils/fiches_machines.py`, rejeu bash
+vert), leçons sm0 → sm10 (65 étapes) sur PC (`pc/tg/machines.py`) et Android (`Machines.kt`, `MachinesDessin.kt`),
+ouverte après les niveaux 0 à 3 du tronc (lire et chercher) ; chapitre `machinerie`, dossier `machines`, commande
+`machines …` (alias `machines='tg machines'`). Paliers M1 → M7 en **lecture seule** sur la vraie machine (jamais de
+`sudo`, rien d'écrit hors du terrain, ni nom de machine, ni nom d'utilisateur, ni numéro de série, ni adresse MAC
+enregistrés) : les organes (`nproc`, `free -h`, `lsblk`, `lspci`, `lsusb`, `/proc/cpuinfo` ; le téléphone : `getprop`),
+l'ordinateur ouvert dont les pièces s'allument quand une commande les interroge (`machines ouvre`, et dans la vue
+déployée `tg deploie nproc` / écran Espace), des 0 et des 1 (`printf %x`, `xxd -b`, son prénom en interrupteurs, jamais
+gardé ; Ko / Kio sur une photo de 1 Mio), le réveil étage par étage avec les vraies valeurs (UEFI ou BIOS, noyau,
+premier programme ; `dmesg` et `systemd-analyze` acceptés même refusés), le chef d'orchestre (système, licences,
+distributions), la maison dans la maison (`/proc/1/cgroup`, boîte détectée), M5 bis **avec un adulte** (rien ne
+s'installe ; `conteneur_jetable.sh` se lit, explique avant de télécharger, lance un conteneur alpine `--rm
+--network=none` rangé dans `machines/conteneurs/` ; `qemu-img create` d'un disque qcow2 dans le terrain ; `virsh -r` ;
+aucune `virt-install` ; tout raconté sur Android et quand l'outil manque), la ferme de serveurs, l'énergie et la
+sauvegarde 3-2-1 (`tar`, `sha256sum`, copies au disque 2 et « loin », incendie fictif, `sha256sum -c`, restauration)
+et « Monte ta machine » (niveau 1 en sm2, épreuve en sm10 : besoin tiré par partie, pièces génériques, budget en points
+fictifs, aucune marque ni prix, drapeau `TG{…}`). Les réponses (cœurs, mémoire, noyau) sont calculées par le jeu sur
+la même machine ; le rejeu bash compare (`egal_jeu`). Ponts des Nombres : hexadécimal, binaire, puissances,
+multiplication, addition (jamais bloquants). Exploit « Monte ta machine réussi au premier démarrage »
+(`machines.premier_demarrage`) ; variantes existantes réservées : `chaudrogre:mecanique`, `homardeur:mecanique`,
+`golemmur:desert`, `magmastodonte:canyon` ; 14 langues ; données `donnees/machines.json`, vecteurs communs
+`donnees/machines/vecteurs.json` ; tests `pc/outils/test_machines.py`, `tests/jvm/Machines.kt`, simulation
+`pc/outils/sim_machines.py` → `docs/simulations/rapport_machines.md`, captures `pc/outils/capture_machines.py`.
+Prompts d'illustrations envoyés au propriétaire (à valider), repli dessiné en attendant. Reste : les illustrations
+B9/C1/C3/E7/E8/E9, les portes logiques (§ 7.10), les étapes `podman` / `qemu-img` / `virsh` jouées seulement en CI, le
+nom (l'aile du volcan s'appelle déjà « la salle des machines »).
+
 **▚ Le glitch — codé (31 octobre, décisions du propriétaire).** Un effet de l'INDIVIDU, comme le shiny (drapeau
 `glitch`, indépendant de la variante et du shiny) : l'image se dérègle comme un vieil écran, fabriquée à partir de
 l'image de la créature (aucune illustration). Au repos le style A (liseré rose/cyan des couches décalées, 2 tranches
