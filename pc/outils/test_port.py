@@ -155,6 +155,7 @@ print("3. L'arbre du Carrefour")
 import builtins  # noqa: E402
 builtins.input = lambda p="": "Pixel"
 app.creer_si_besoin()                                       # premier lancement : la partie est créée
+AVANT = fichiers_hors_terrain()        # ce que l'installation a posé (.bashrc, profil et cache PowerShell en CI…)
 st = core.load()
 verifier(not histoire.ouvert(st, "port") and "Le nid" in histoire.choisir(st, "port", dit=False), "fermé au début (il manque le nid…)")
 verifier(any("s'ouvre après" in ANSI.sub("", l) for l in histoire.lignes_ailes(st)), "le menu des lieux dit ce qui manque")
@@ -261,7 +262,7 @@ verifier(port.indice(pas["python3 -m http.server 8000 --bind 127.0.0.1 --directo
 
 print("6. Sécurité et langues")
 port.eteindre_phare()
-nouveaux = sorted(x for x in fichiers_hors_terrain() if not x.endswith(".bash_history") and "/.terminagotchi/" not in x)
+nouveaux = sorted(x for x in fichiers_hors_terrain() - AVANT if not x.endswith(".bash_history") and "/.terminagotchi/" not in x)
 verifier(not nouveaux, f"rien d'écrit hors du terrain et de ~/.terminagotchi ({nouveaux[:3]})")
 cmds = " ".join(s.get("cmd") or "" for lid in port.LECONS for s in port.LECONS[lid]["steps"])
 hotes = set(re.findall(r"https?://([^/:\s]+)", cmds))
