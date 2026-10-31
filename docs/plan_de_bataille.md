@@ -202,7 +202,21 @@ terminagotchi ; option LoRa pour que les œufs se parlent en maillage (§ 7.11).
 
 ## Propositions à valider (29 octobre)
 
-### ✅ Validé (29 octobre) — La satiété : pourquoi bien nourrir sa créature, sans mort ni corvée
+### ✅ Validé (29 octobre) — ✅ Codé (31 octobre, PC et Android) — La satiété : pourquoi bien nourrir sa créature, sans mort ni corvée
+
+**✅ Codé** : `pc/tg/satiete.py` et `Satiete.kt` (mêmes règles, vecteurs communs `donnees/satiete/vecteurs.json`),
+tests `pc/outils/test_satiete.py`, simulation de 14 jours `pc/outils/sim_satiete.py`, `tests/jvm/Satiete.kt`.
+Valeurs retenues : 2160 s d'éveil par point (7 h - 21 h), soit ~23 points par jour ; rassasiée ≥ 80, en forme ≥ 40,
+affamée ≥ 15, en veille en dessous (réveil : 3 commandes différentes) ; XP +20 % / −20 % / −40 % (jamais de perte sur
+les leçons) ; dressage rassasiée +15 s et exemple tout de suite ; rencontres ×1,25 ; aliments : nouveau goût 8, puis
+4-3-2-2-1,5 par famille et par jour, répétée ou ratée 0,5 ; 6 familles (🧭 se repérer, 🧱 bâtir, 🔍 lire et chercher,
+🔌 brancher, 🔑 protéger, 🔭 observer), assiette complète +10 faim et +5 XP ; jour soigné = jour qui finit au moins en
+forme (ou 3 commandes différentes en forme pendant le jeu) ; évolution : 3 jours soignés pour Bébé → Ado, 7 pour
+Ado → Adulte (l'XP en trop attend, jamais perdue, et ne bloque aucune leçon) ; série : médailles à 3, 7, 14, 30 jours,
+un jour fini affamée retire un cran ; lien : phrases à 3 jours, cœur à 7, talent « Cœur fidèle » (faim ×1,25 plus
+lente) à 30 ; longue absence : 21 jours ; mode vacances `tg vacances` / `vacances`. Reste : la mise en pause
+automatique du mode classe (le mode classe n'existe pas encore), la variante rare plus fréquente (le tirage est vérifié
+par le serveur), et l'aura du compagnon de départ (il n'a pas d'aura : à maquetter).
 
 Constat : aujourd'hui la faim descend d'un point toutes les 12 minutes (720 s, 24 min avec le talent Gardien) : on
 passe de « rassasiée » à « vide » en **environ 20 h**, même si l'enfant n'a pas joué. Trop rapide pour un jeu où
