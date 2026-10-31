@@ -302,6 +302,7 @@ class Jeu(ctx: Context) {
         Bestiaire.charger(ctx.applicationContext)
         Animations.init(ctx)
         Guide.init(ctx)
+        Programme.init(ctx)
         Intro.init(ctx)
     }
 

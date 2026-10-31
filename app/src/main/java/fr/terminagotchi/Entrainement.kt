@@ -563,6 +563,7 @@ object Entrainement {
         } else if (apres == avant && etoiles(e, f) > etAvant) {
             out.add(t("ent.etoile", "badge" to nomFamille(f), "etoiles" to Badges.texteEtoiles(etoiles(e, f))))
         }
+        Recompenses.serie(jeu, m)?.let { out.add(it); jeu.log(it) }      // 5 médailles d'or de suite : une série parfaite (§ 7.6)
         jeu.log(t("ent.reussi_log", "s" to sec, "icone" to ICONE_MEDAILLE[m]))
         jeu.dire(out[0], 12)
         jeu.animer("victoire")

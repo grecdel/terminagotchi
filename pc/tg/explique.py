@@ -175,6 +175,8 @@ def fiche(state, cmd):
     ex = exemples.lexique(entree[0] if entree else nom)
     if ex:
         out.append(f"  {fg(110)}↳ " + t("lex.exemple", ex=ex) + RESET)
+    from . import programme                      # charte de rigueur : où l'image s'arrête, l'idée fausse
+    out += [f"  {DIM}{x}{RESET}" for x in programme.lignes_fiche(cmd)]
     if opts:
         out += ["", f" {BOLD}" + t("explique.options") + RESET] + ["   " + o for o in opts]
     if diff:

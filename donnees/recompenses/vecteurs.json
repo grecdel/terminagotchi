@@ -1,0 +1,8076 @@
+{
+ "note": "Généré par pc/outils/vecteurs_phase4.py ; chaque tirage gardé est un tirage exact de (valeur, n) : le serveur le vérifie comme les autres (site/test/tirage.mjs).",
+ "conf": {
+  "bonus_variante": 3,
+  "essais_variante": 4,
+  "bonus_legendaire": 1,
+  "essais_legendaire": 8,
+  "serie_parfaite": 5
+ },
+ "cas": [
+  {
+   "monde": "forge",
+   "exploit": "forge.sans_indice",
+   "genre": "variante",
+   "types": [
+    "machine",
+    "feu"
+   ],
+   "valeur": "0000000000000000000000000000000000000000000000000000000000000000",
+   "n0": 0,
+   "attendu": {
+    "n": 0,
+    "champs": {
+     "espece": "Heaumbre",
+     "variante": "ombre",
+     "shiny": false,
+     "marque": "un museau qui sent le café",
+     "humeur": "paresseuse",
+     "taille": 196.9,
+     "qualite": 0.685,
+     "potentiel": 77,
+     "stats": {
+      "PV": 55,
+      "ATK": 49,
+      "DEF": 50,
+      "VIT": 46,
+      "INT": 50
+     },
+     "note": 69.1,
+     "rarete": "rare",
+     "stade": "ado"
+    }
+   }
+  },
+  {
+   "monde": "forge",
+   "exploit": "forge.sans_indice",
+   "genre": "variante",
+   "types": [
+    "machine",
+    "feu"
+   ],
+   "valeur": "0000000000000000000000000000000000000000000000000000000000000000",
+   "n0": 17,
+   "attendu": {
+    "n": 17,
+    "champs": {
+     "espece": "Plouftin",
+     "variante": "classique",
+     "shiny": false,
+     "marque": "un grain de beauté en forme de #",
+     "humeur": "taquine",
+     "taille": 35.8,
+     "qualite": 0.855,
+     "potentiel": 85,
+     "stats": {
+      "PV": 35,
+      "ATK": 28,
+      "DEF": 29,
+      "VIT": 36,
+      "INT": 55
+     },
+     "note": 51.3,
+     "rarete": "peu commune",
+     "stade": "ado"
+    }
+   }
+  },
+  {
+   "monde": "forge",
+   "exploit": "forge.sans_indice",
+   "genre": "variante",
+   "types": [
+    "machine",
+    "feu"
+   ],
+   "valeur": "0000000000000000000000000000000000000000000000000000000000000000",
+   "n0": 60,
+   "attendu": {
+    "n": 61,
+    "champs": {
+     "espece": "Pyrodrac",
+     "variante": "cendres",
+     "shiny": false,
+     "marque": "une marque en forme de flèche →",
+     "humeur": "curieuse",
+     "taille": 195.6,
+     "qualite": 0.836,
+     "potentiel": 79,
+     "stats": {
+      "PV": 46,
+      "ATK": 54,
+      "DEF": 46,
+      "VIT": 82,
+      "INT": 49
+     },
+     "note": 79.3,
+     "rarete": "épique",
+     "stade": "enfant"
+    }
+   }
+  },
+  {
+   "monde": "forge",
+   "exploit": "forge.sans_indice",
+   "genre": "variante",
+   "types": [
+    "machine",
+    "feu"
+   ],
+   "valeur": "0000000000000000000000000000000000000000000000000000000000000000",
+   "n0": 123,
+   "attendu": {
+    "n": 123,
+    "champs": {
+     "espece": "Louvacier",
+     "variante": "classique",
+     "shiny": false,
+     "marque": "un museau qui sent le café",
+     "humeur": "timide",
+     "taille": 72.0,
+     "qualite": 0.726,
+     "potentiel": 72,
+     "stats": {
+      "PV": 46,
+      "ATK": 46,
+      "DEF": 39,
+      "VIT": 43,
+      "INT": 27
+     },
+     "note": 46.8,
+     "rarete": "peu commune",
+     "stade": "ado"
+    }
+   }
+  },
+  {
+   "monde": "forge",
+   "exploit": "forge.sans_indice",
+   "genre": "variante",
+   "types": [
+    "machine",
+    "feu"
+   ],
+   "valeur": "ffffffffffffffff000000000000000000000000000000000000000000000000",
+   "n0": 0,
+   "attendu": {
+    "n": 0,
+    "champs": {
+     "espece": "Séraphibou",
+     "variante": "nuage",
+     "shiny": false,
+     "marque": "un grain de beauté en forme de #",
+     "humeur": "calme",
+     "taille": 104.6,
+     "qualite": 0.716,
+     "potentiel": 73,
+     "stats": {
+      "PV": 44,
+      "ATK": 49,
+      "DEF": 38,
+      "VIT": 69,
+      "INT": 46
+     },
+     "note": 64.0,
+     "rarete": "rare",
+     "stade": "bebe"
+    }
+   }
+  },
+  {
+   "monde": "forge",
+   "exploit": "forge.sans_indice",
+   "genre": "variante",
+   "types": [
+    "machine",
+    "feu"
+   ],
+   "valeur": "ffffffffffffffff000000000000000000000000000000000000000000000000",
+   "n0": 17,
+   "attendu": {
+    "n": 17,
+    "champs": {
+     "espece": "Momiaou",
+     "variante": "desert",
+     "shiny": false,
+     "marque": "un ronronnement à 440 Hz",
+     "humeur": "têtue",
+     "taille": 101.2,
+     "qualite": 0.398,
+     "potentiel": 43,
+     "stats": {
+      "PV": 42,
+      "ATK": 47,
+      "DEF": 41,
+      "VIT": 47,
+      "INT": 27
+     },
+     "note": 42.8,
+     "rarete": "commune",
+     "stade": "enfant"
+    }
+   }
+  },
+  {
+   "monde": "forge",
+   "exploit": "forge.sans_indice",
+   "genre": "variante",
+   "types": [
+    "machine",
+    "feu"
+   ],
+   "valeur": "ffffffffffffffff000000000000000000000000000000000000000000000000",
+   "n0": 60,
+   "attendu": {
+    "n": 61,
+    "champs": {
+     "espece": "Sulfurette",
+     "variante": "volcan",
+     "shiny": false,
+     "marque": "un hoquet en code Morse",
+     "humeur": "joyeuse",
+     "taille": 112.3,
+     "qualite": 0.205,
+     "potentiel": 17,
+     "stats": {
+      "PV": 38,
+      "ATK": 39,
+      "DEF": 33,
+      "VIT": 41,
+      "INT": 25
+     },
+     "note": 30.1,
+     "rarete": "commune",
+     "stade": "ado"
+    }
+   }
+  },
+  {
+   "monde": "forge",
+   "exploit": "forge.sans_indice",
+   "genre": "variante",
+   "types": [
+    "machine",
+    "feu"
+   ],
+   "valeur": "ffffffffffffffff000000000000000000000000000000000000000000000000",
+   "n0": 123,
+   "attendu": {
+    "n": 125,
+    "champs": {
+     "espece": "Ressortine",
+     "variante": "classique",
+     "shiny": false,
+     "marque": "un museau qui sent le café",
+     "humeur": "rêveuse",
+     "taille": 78.9,
+     "qualite": 0.025,
+     "potentiel": 10,
+     "stats": {
+      "PV": 31,
+      "ATK": 34,
+      "DEF": 28,
+      "VIT": 38,
+      "INT": 22
+     },
+     "note": 4.7,
+     "rarete": "commune",
+     "stade": "bebe"
+    }
+   }
+  },
+  {
+   "monde": "forge",
+   "exploit": "forge.sans_indice",
+   "genre": "variante",
+   "types": [
+    "machine",
+    "feu"
+   ],
+   "valeur": "9e3779b97f4a7c15f39cc0605cedc8341082276bf3a27251f86c6a11d0c18e95",
+   "n0": 0,
+   "attendu": {
+    "n": 0,
+    "champs": {
+     "espece": "Clopinou",
+     "variante": "classique",
+     "shiny": false,
+     "marque": "une crête en forme d'accolade {",
+     "humeur": "taquine",
+     "taille": 31.1,
+     "qualite": 0.882,
+     "potentiel": 87,
+     "stats": {
+      "PV": 42,
+      "ATK": 44,
+      "DEF": 56,
+      "VIT": 48,
+      "INT": 31
+     },
+     "note": 57.2,
+     "rarete": "peu commune",
+     "stade": "ado"
+    }
+   }
+  },
+  {
+   "monde": "forge",
+   "exploit": "forge.sans_indice",
+   "genre": "variante",
+   "types": [
+    "machine",
+    "feu"
+   ],
+   "valeur": "9e3779b97f4a7c15f39cc0605cedc8341082276bf3a27251f86c6a11d0c18e95",
+   "n0": 17,
+   "attendu": {
+    "n": 20,
+    "champs": {
+     "espece": "Engrenaille",
+     "variante": "classique",
+     "shiny": false,
+     "marque": "une voix qui résonne comme dans une grotte",
+     "humeur": "fougueuse",
+     "taille": 259.8,
+     "qualite": 0.715,
+     "potentiel": 68,
+     "stats": {
+      "PV": 44,
+      "ATK": 49,
+      "DEF": 51,
+      "VIT": 49,
+      "INT": 31
+     },
+     "note": 49.3,
+     "rarete": "peu commune",
+     "stade": "adulte"
+    }
+   }
+  },
+  {
+   "monde": "forge",
+   "exploit": "forge.sans_indice",
+   "genre": "variante",
+   "types": [
+    "machine",
+    "feu"
+   ],
+   "valeur": "9e3779b97f4a7c15f39cc0605cedc8341082276bf3a27251f86c6a11d0c18e95",
+   "n0": 60,
+   "attendu": {
+    "n": 60,
+    "champs": {
+     "espece": "Cendrouille",
+     "variante": "cendres",
+     "shiny": false,
+     "marque": "une tache en forme de @ sur le dos",
+     "humeur": "têtue",
+     "taille": 84.6,
+     "qualite": 0.415,
+     "potentiel": 42,
+     "stats": {
+      "PV": 45,
+      "ATK": 28,
+      "DEF": 41,
+      "VIT": 26,
+      "INT": 35
+     },
+     "note": 40.6,
+     "rarete": "commune",
+     "stade": "ado"
+    }
+   }
+  },
+  {
+   "monde": "forge",
+   "exploit": "forge.sans_indice",
+   "genre": "variante",
+   "types": [
+    "machine",
+    "feu"
+   ],
+   "valeur": "9e3779b97f4a7c15f39cc0605cedc8341082276bf3a27251f86c6a11d0c18e95",
+   "n0": 123,
+   "attendu": {
+    "n": 123,
+    "champs": {
+     "espece": "Krillou",
+     "variante": "corail",
+     "shiny": false,
+     "marque": "un ronronnement à 440 Hz",
+     "humeur": "courageuse",
+     "taille": 33.1,
+     "qualite": 0.606,
+     "potentiel": 54,
+     "stats": {
+      "PV": 33,
+      "ATK": 39,
+      "DEF": 41,
+      "VIT": 43,
+      "INT": 22
+     },
+     "note": 55.9,
+     "rarete": "peu commune",
+     "stade": "bebe"
+    }
+   }
+  },
+  {
+   "monde": "forge",
+   "exploit": "forge.sans_indice",
+   "genre": "variante",
+   "types": [
+    "machine",
+    "feu"
+   ],
+   "valeur": "8000000000000001fac71cefac71cefac71cefac71cefac71cefac71ce00",
+   "n0": 0,
+   "attendu": {
+    "n": 0,
+    "champs": {
+     "espece": "Félicorne",
+     "variante": "soleil",
+     "shiny": false,
+     "marque": "des empreintes en forme de 0 et de 1",
+     "humeur": "taquine",
+     "taille": 191.4,
+     "qualite": 0.796,
+     "potentiel": 79,
+     "stats": {
+      "PV": 51,
+      "ATK": 52,
+      "DEF": 47,
+      "VIT": 51,
+      "INT": 33
+     },
+     "note": 73.6,
+     "rarete": "rare",
+     "stade": "adulte"
+    }
+   }
+  },
+  {
+   "monde": "forge",
+   "exploit": "forge.sans_indice",
+   "genre": "variante",
+   "types": [
+    "machine",
+    "feu"
+   ],
+   "valeur": "8000000000000001fac71cefac71cefac71cefac71cefac71cefac71ce00",
+   "n0": 17,
+   "attendu": {
+    "n": 20,
+    "champs": {
+     "espece": "Volcarnage",
+     "variante": "lave",
+     "shiny": false,
+     "marque": "un grain de beauté en forme de #",
+     "humeur": "calme",
+     "taille": 695.4,
+     "qualite": 0.763,
+     "potentiel": 78,
+     "stats": {
+      "PV": 57,
+      "ATK": 67,
+      "DEF": 55,
+      "VIT": 55,
+      "INT": 61
+     },
+     "note": 72.2,
+     "rarete": "rare",
+     "stade": "adulte"
+    }
+   }
+  },
+  {
+   "monde": "forge",
+   "exploit": "forge.sans_indice",
+   "genre": "variante",
+   "types": [
+    "machine",
+    "feu"
+   ],
+   "valeur": "8000000000000001fac71cefac71cefac71cefac71cefac71cefac71ce00",
+   "n0": 60,
+   "attendu": {
+    "n": 60,
+    "champs": {
+     "espece": "Lanternix",
+     "variante": "classique",
+     "shiny": false,
+     "marque": "une voix qui résonne comme dans une grotte",
+     "humeur": "fougueuse",
+     "taille": 30.8,
+     "qualite": 0.092,
+     "potentiel": 10,
+     "stats": {
+      "PV": 34,
+      "ATK": 23,
+      "DEF": 31,
+      "VIT": 37,
+      "INT": 46
+     },
+     "note": 10.9,
+     "rarete": "commune",
+     "stade": "enfant"
+    }
+   }
+  },
+  {
+   "monde": "forge",
+   "exploit": "forge.sans_indice",
+   "genre": "variante",
+   "types": [
+    "machine",
+    "feu"
+   ],
+   "valeur": "8000000000000001fac71cefac71cefac71cefac71cefac71cefac71ce00",
+   "n0": 123,
+   "attendu": {
+    "n": 123,
+    "champs": {
+     "espece": "Zapiot",
+     "variante": "classique",
+     "shiny": false,
+     "marque": "une queue en forme de tilde ~",
+     "humeur": "taquine",
+     "taille": 25.6,
+     "qualite": 0.439,
+     "potentiel": 48,
+     "stats": {
+      "PV": 34,
+      "ATK": 27,
+      "DEF": 32,
+      "VIT": 38,
+      "INT": 51
+     },
+     "note": 29.6,
+     "rarete": "commune",
+     "stade": "enfant"
+    }
+   }
+  },
+  {
+   "monde": "forge",
+   "exploit": "forge.premier_coup",
+   "genre": "variante",
+   "types": [
+    "machine",
+    "feu"
+   ],
+   "valeur": "0000000000000000000000000000000000000000000000000000000000000000",
+   "n0": 0,
+   "attendu": {
+    "n": 0,
+    "champs": {
+     "espece": "Heaumbre",
+     "variante": "ombre",
+     "shiny": false,
+     "marque": "un museau qui sent le café",
+     "humeur": "paresseuse",
+     "taille": 196.9,
+     "qualite": 0.685,
+     "potentiel": 77,
+     "stats": {
+      "PV": 55,
+      "ATK": 49,
+      "DEF": 50,
+      "VIT": 46,
+      "INT": 50
+     },
+     "note": 69.1,
+     "rarete": "rare",
+     "stade": "ado"
+    }
+   }
+  },
+  {
+   "monde": "forge",
+   "exploit": "forge.premier_coup",
+   "genre": "variante",
+   "types": [
+    "machine",
+    "feu"
+   ],
+   "valeur": "0000000000000000000000000000000000000000000000000000000000000000",
+   "n0": 17,
+   "attendu": {
+    "n": 17,
+    "champs": {
+     "espece": "Plouftin",
+     "variante": "classique",
+     "shiny": false,
+     "marque": "un grain de beauté en forme de #",
+     "humeur": "taquine",
+     "taille": 35.8,
+     "qualite": 0.855,
+     "potentiel": 85,
+     "stats": {
+      "PV": 35,
+      "ATK": 28,
+      "DEF": 29,
+      "VIT": 36,
+      "INT": 55
+     },
+     "note": 51.3,
+     "rarete": "peu commune",
+     "stade": "ado"
+    }
+   }
+  },
+  {
+   "monde": "forge",
+   "exploit": "forge.premier_coup",
+   "genre": "variante",
+   "types": [
+    "machine",
+    "feu"
+   ],
+   "valeur": "0000000000000000000000000000000000000000000000000000000000000000",
+   "n0": 60,
+   "attendu": {
+    "n": 61,
+    "champs": {
+     "espece": "Pyrodrac",
+     "variante": "cendres",
+     "shiny": false,
+     "marque": "une marque en forme de flèche →",
+     "humeur": "curieuse",
+     "taille": 195.6,
+     "qualite": 0.836,
+     "potentiel": 79,
+     "stats": {
+      "PV": 46,
+      "ATK": 54,
+      "DEF": 46,
+      "VIT": 82,
+      "INT": 49
+     },
+     "note": 79.3,
+     "rarete": "épique",
+     "stade": "enfant"
+    }
+   }
+  },
+  {
+   "monde": "forge",
+   "exploit": "forge.premier_coup",
+   "genre": "variante",
+   "types": [
+    "machine",
+    "feu"
+   ],
+   "valeur": "0000000000000000000000000000000000000000000000000000000000000000",
+   "n0": 123,
+   "attendu": {
+    "n": 123,
+    "champs": {
+     "espece": "Louvacier",
+     "variante": "classique",
+     "shiny": false,
+     "marque": "un museau qui sent le café",
+     "humeur": "timide",
+     "taille": 72.0,
+     "qualite": 0.726,
+     "potentiel": 72,
+     "stats": {
+      "PV": 46,
+      "ATK": 46,
+      "DEF": 39,
+      "VIT": 43,
+      "INT": 27
+     },
+     "note": 46.8,
+     "rarete": "peu commune",
+     "stade": "ado"
+    }
+   }
+  },
+  {
+   "monde": "forge",
+   "exploit": "forge.premier_coup",
+   "genre": "variante",
+   "types": [
+    "machine",
+    "feu"
+   ],
+   "valeur": "ffffffffffffffff000000000000000000000000000000000000000000000000",
+   "n0": 0,
+   "attendu": {
+    "n": 0,
+    "champs": {
+     "espece": "Séraphibou",
+     "variante": "nuage",
+     "shiny": false,
+     "marque": "un grain de beauté en forme de #",
+     "humeur": "calme",
+     "taille": 104.6,
+     "qualite": 0.716,
+     "potentiel": 73,
+     "stats": {
+      "PV": 44,
+      "ATK": 49,
+      "DEF": 38,
+      "VIT": 69,
+      "INT": 46
+     },
+     "note": 64.0,
+     "rarete": "rare",
+     "stade": "bebe"
+    }
+   }
+  },
+  {
+   "monde": "forge",
+   "exploit": "forge.premier_coup",
+   "genre": "variante",
+   "types": [
+    "machine",
+    "feu"
+   ],
+   "valeur": "ffffffffffffffff000000000000000000000000000000000000000000000000",
+   "n0": 17,
+   "attendu": {
+    "n": 17,
+    "champs": {
+     "espece": "Momiaou",
+     "variante": "desert",
+     "shiny": false,
+     "marque": "un ronronnement à 440 Hz",
+     "humeur": "têtue",
+     "taille": 101.2,
+     "qualite": 0.398,
+     "potentiel": 43,
+     "stats": {
+      "PV": 42,
+      "ATK": 47,
+      "DEF": 41,
+      "VIT": 47,
+      "INT": 27
+     },
+     "note": 42.8,
+     "rarete": "commune",
+     "stade": "enfant"
+    }
+   }
+  },
+  {
+   "monde": "forge",
+   "exploit": "forge.premier_coup",
+   "genre": "variante",
+   "types": [
+    "machine",
+    "feu"
+   ],
+   "valeur": "ffffffffffffffff000000000000000000000000000000000000000000000000",
+   "n0": 60,
+   "attendu": {
+    "n": 61,
+    "champs": {
+     "espece": "Sulfurette",
+     "variante": "volcan",
+     "shiny": false,
+     "marque": "un hoquet en code Morse",
+     "humeur": "joyeuse",
+     "taille": 112.3,
+     "qualite": 0.205,
+     "potentiel": 17,
+     "stats": {
+      "PV": 38,
+      "ATK": 39,
+      "DEF": 33,
+      "VIT": 41,
+      "INT": 25
+     },
+     "note": 30.1,
+     "rarete": "commune",
+     "stade": "ado"
+    }
+   }
+  },
+  {
+   "monde": "forge",
+   "exploit": "forge.premier_coup",
+   "genre": "variante",
+   "types": [
+    "machine",
+    "feu"
+   ],
+   "valeur": "ffffffffffffffff000000000000000000000000000000000000000000000000",
+   "n0": 123,
+   "attendu": {
+    "n": 125,
+    "champs": {
+     "espece": "Ressortine",
+     "variante": "classique",
+     "shiny": false,
+     "marque": "un museau qui sent le café",
+     "humeur": "rêveuse",
+     "taille": 78.9,
+     "qualite": 0.025,
+     "potentiel": 10,
+     "stats": {
+      "PV": 31,
+      "ATK": 34,
+      "DEF": 28,
+      "VIT": 38,
+      "INT": 22
+     },
+     "note": 4.7,
+     "rarete": "commune",
+     "stade": "bebe"
+    }
+   }
+  },
+  {
+   "monde": "forge",
+   "exploit": "forge.premier_coup",
+   "genre": "variante",
+   "types": [
+    "machine",
+    "feu"
+   ],
+   "valeur": "9e3779b97f4a7c15f39cc0605cedc8341082276bf3a27251f86c6a11d0c18e95",
+   "n0": 0,
+   "attendu": {
+    "n": 0,
+    "champs": {
+     "espece": "Clopinou",
+     "variante": "classique",
+     "shiny": false,
+     "marque": "une crête en forme d'accolade {",
+     "humeur": "taquine",
+     "taille": 31.1,
+     "qualite": 0.882,
+     "potentiel": 87,
+     "stats": {
+      "PV": 42,
+      "ATK": 44,
+      "DEF": 56,
+      "VIT": 48,
+      "INT": 31
+     },
+     "note": 57.2,
+     "rarete": "peu commune",
+     "stade": "ado"
+    }
+   }
+  },
+  {
+   "monde": "forge",
+   "exploit": "forge.premier_coup",
+   "genre": "variante",
+   "types": [
+    "machine",
+    "feu"
+   ],
+   "valeur": "9e3779b97f4a7c15f39cc0605cedc8341082276bf3a27251f86c6a11d0c18e95",
+   "n0": 17,
+   "attendu": {
+    "n": 20,
+    "champs": {
+     "espece": "Engrenaille",
+     "variante": "classique",
+     "shiny": false,
+     "marque": "une voix qui résonne comme dans une grotte",
+     "humeur": "fougueuse",
+     "taille": 259.8,
+     "qualite": 0.715,
+     "potentiel": 68,
+     "stats": {
+      "PV": 44,
+      "ATK": 49,
+      "DEF": 51,
+      "VIT": 49,
+      "INT": 31
+     },
+     "note": 49.3,
+     "rarete": "peu commune",
+     "stade": "adulte"
+    }
+   }
+  },
+  {
+   "monde": "forge",
+   "exploit": "forge.premier_coup",
+   "genre": "variante",
+   "types": [
+    "machine",
+    "feu"
+   ],
+   "valeur": "9e3779b97f4a7c15f39cc0605cedc8341082276bf3a27251f86c6a11d0c18e95",
+   "n0": 60,
+   "attendu": {
+    "n": 60,
+    "champs": {
+     "espece": "Cendrouille",
+     "variante": "cendres",
+     "shiny": false,
+     "marque": "une tache en forme de @ sur le dos",
+     "humeur": "têtue",
+     "taille": 84.6,
+     "qualite": 0.415,
+     "potentiel": 42,
+     "stats": {
+      "PV": 45,
+      "ATK": 28,
+      "DEF": 41,
+      "VIT": 26,
+      "INT": 35
+     },
+     "note": 40.6,
+     "rarete": "commune",
+     "stade": "ado"
+    }
+   }
+  },
+  {
+   "monde": "forge",
+   "exploit": "forge.premier_coup",
+   "genre": "variante",
+   "types": [
+    "machine",
+    "feu"
+   ],
+   "valeur": "9e3779b97f4a7c15f39cc0605cedc8341082276bf3a27251f86c6a11d0c18e95",
+   "n0": 123,
+   "attendu": {
+    "n": 123,
+    "champs": {
+     "espece": "Krillou",
+     "variante": "corail",
+     "shiny": false,
+     "marque": "un ronronnement à 440 Hz",
+     "humeur": "courageuse",
+     "taille": 33.1,
+     "qualite": 0.606,
+     "potentiel": 54,
+     "stats": {
+      "PV": 33,
+      "ATK": 39,
+      "DEF": 41,
+      "VIT": 43,
+      "INT": 22
+     },
+     "note": 55.9,
+     "rarete": "peu commune",
+     "stade": "bebe"
+    }
+   }
+  },
+  {
+   "monde": "forge",
+   "exploit": "forge.premier_coup",
+   "genre": "variante",
+   "types": [
+    "machine",
+    "feu"
+   ],
+   "valeur": "8000000000000001fac71cefac71cefac71cefac71cefac71cefac71ce00",
+   "n0": 0,
+   "attendu": {
+    "n": 0,
+    "champs": {
+     "espece": "Félicorne",
+     "variante": "soleil",
+     "shiny": false,
+     "marque": "des empreintes en forme de 0 et de 1",
+     "humeur": "taquine",
+     "taille": 191.4,
+     "qualite": 0.796,
+     "potentiel": 79,
+     "stats": {
+      "PV": 51,
+      "ATK": 52,
+      "DEF": 47,
+      "VIT": 51,
+      "INT": 33
+     },
+     "note": 73.6,
+     "rarete": "rare",
+     "stade": "adulte"
+    }
+   }
+  },
+  {
+   "monde": "forge",
+   "exploit": "forge.premier_coup",
+   "genre": "variante",
+   "types": [
+    "machine",
+    "feu"
+   ],
+   "valeur": "8000000000000001fac71cefac71cefac71cefac71cefac71cefac71ce00",
+   "n0": 17,
+   "attendu": {
+    "n": 20,
+    "champs": {
+     "espece": "Volcarnage",
+     "variante": "lave",
+     "shiny": false,
+     "marque": "un grain de beauté en forme de #",
+     "humeur": "calme",
+     "taille": 695.4,
+     "qualite": 0.763,
+     "potentiel": 78,
+     "stats": {
+      "PV": 57,
+      "ATK": 67,
+      "DEF": 55,
+      "VIT": 55,
+      "INT": 61
+     },
+     "note": 72.2,
+     "rarete": "rare",
+     "stade": "adulte"
+    }
+   }
+  },
+  {
+   "monde": "forge",
+   "exploit": "forge.premier_coup",
+   "genre": "variante",
+   "types": [
+    "machine",
+    "feu"
+   ],
+   "valeur": "8000000000000001fac71cefac71cefac71cefac71cefac71cefac71ce00",
+   "n0": 60,
+   "attendu": {
+    "n": 60,
+    "champs": {
+     "espece": "Lanternix",
+     "variante": "classique",
+     "shiny": false,
+     "marque": "une voix qui résonne comme dans une grotte",
+     "humeur": "fougueuse",
+     "taille": 30.8,
+     "qualite": 0.092,
+     "potentiel": 10,
+     "stats": {
+      "PV": 34,
+      "ATK": 23,
+      "DEF": 31,
+      "VIT": 37,
+      "INT": 46
+     },
+     "note": 10.9,
+     "rarete": "commune",
+     "stade": "enfant"
+    }
+   }
+  },
+  {
+   "monde": "forge",
+   "exploit": "forge.premier_coup",
+   "genre": "variante",
+   "types": [
+    "machine",
+    "feu"
+   ],
+   "valeur": "8000000000000001fac71cefac71cefac71cefac71cefac71cefac71ce00",
+   "n0": 123,
+   "attendu": {
+    "n": 123,
+    "champs": {
+     "espece": "Zapiot",
+     "variante": "classique",
+     "shiny": false,
+     "marque": "une queue en forme de tilde ~",
+     "humeur": "taquine",
+     "taille": 25.6,
+     "qualite": 0.439,
+     "potentiel": 48,
+     "stats": {
+      "PV": 34,
+      "ATK": 27,
+      "DEF": 32,
+      "VIT": 38,
+      "INT": 51
+     },
+     "note": 29.6,
+     "rarete": "commune",
+     "stade": "enfant"
+    }
+   }
+  },
+  {
+   "monde": "citadelle",
+   "exploit": "citadelle.boite",
+   "genre": "variante",
+   "types": [
+    "ombre",
+    "poison"
+   ],
+   "valeur": "0000000000000000000000000000000000000000000000000000000000000000",
+   "n0": 0,
+   "attendu": {
+    "n": 0,
+    "champs": {
+     "espece": "Heaumbre",
+     "variante": "ombre",
+     "shiny": false,
+     "marque": "un museau qui sent le café",
+     "humeur": "paresseuse",
+     "taille": 196.9,
+     "qualite": 0.685,
+     "potentiel": 77,
+     "stats": {
+      "PV": 55,
+      "ATK": 49,
+      "DEF": 50,
+      "VIT": 46,
+      "INT": 50
+     },
+     "note": 69.1,
+     "rarete": "rare",
+     "stade": "ado"
+    }
+   }
+  },
+  {
+   "monde": "citadelle",
+   "exploit": "citadelle.boite",
+   "genre": "variante",
+   "types": [
+    "ombre",
+    "poison"
+   ],
+   "valeur": "0000000000000000000000000000000000000000000000000000000000000000",
+   "n0": 17,
+   "attendu": {
+    "n": 17,
+    "champs": {
+     "espece": "Plouftin",
+     "variante": "classique",
+     "shiny": false,
+     "marque": "un grain de beauté en forme de #",
+     "humeur": "taquine",
+     "taille": 35.8,
+     "qualite": 0.855,
+     "potentiel": 85,
+     "stats": {
+      "PV": 35,
+      "ATK": 28,
+      "DEF": 29,
+      "VIT": 36,
+      "INT": 55
+     },
+     "note": 51.3,
+     "rarete": "peu commune",
+     "stade": "ado"
+    }
+   }
+  },
+  {
+   "monde": "citadelle",
+   "exploit": "citadelle.boite",
+   "genre": "variante",
+   "types": [
+    "ombre",
+    "poison"
+   ],
+   "valeur": "0000000000000000000000000000000000000000000000000000000000000000",
+   "n0": 60,
+   "attendu": {
+    "n": 63,
+    "champs": {
+     "espece": "Mammouroc",
+     "variante": "ossuaire",
+     "shiny": false,
+     "marque": "un œil qui clignote en binaire",
+     "humeur": "taquine",
+     "taille": 586.2,
+     "qualite": 0.201,
+     "potentiel": 25,
+     "stats": {
+      "PV": 59,
+      "ATK": 62,
+      "DEF": 48,
+      "VIT": 54,
+      "INT": 32
+     },
+     "note": 43.3,
+     "rarete": "commune",
+     "stade": "adulte"
+    }
+   }
+  },
+  {
+   "monde": "citadelle",
+   "exploit": "citadelle.boite",
+   "genre": "variante",
+   "types": [
+    "ombre",
+    "poison"
+   ],
+   "valeur": "0000000000000000000000000000000000000000000000000000000000000000",
+   "n0": 123,
+   "attendu": {
+    "n": 123,
+    "champs": {
+     "espece": "Louvacier",
+     "variante": "classique",
+     "shiny": false,
+     "marque": "un museau qui sent le café",
+     "humeur": "timide",
+     "taille": 72.0,
+     "qualite": 0.726,
+     "potentiel": 72,
+     "stats": {
+      "PV": 46,
+      "ATK": 46,
+      "DEF": 39,
+      "VIT": 43,
+      "INT": 27
+     },
+     "note": 46.8,
+     "rarete": "peu commune",
+     "stade": "ado"
+    }
+   }
+  },
+  {
+   "monde": "citadelle",
+   "exploit": "citadelle.boite",
+   "genre": "variante",
+   "types": [
+    "ombre",
+    "poison"
+   ],
+   "valeur": "ffffffffffffffff000000000000000000000000000000000000000000000000",
+   "n0": 0,
+   "attendu": {
+    "n": 0,
+    "champs": {
+     "espece": "Séraphibou",
+     "variante": "nuage",
+     "shiny": false,
+     "marque": "un grain de beauté en forme de #",
+     "humeur": "calme",
+     "taille": 104.6,
+     "qualite": 0.716,
+     "potentiel": 73,
+     "stats": {
+      "PV": 44,
+      "ATK": 49,
+      "DEF": 38,
+      "VIT": 69,
+      "INT": 46
+     },
+     "note": 64.0,
+     "rarete": "rare",
+     "stade": "bebe"
+    }
+   }
+  },
+  {
+   "monde": "citadelle",
+   "exploit": "citadelle.boite",
+   "genre": "variante",
+   "types": [
+    "ombre",
+    "poison"
+   ],
+   "valeur": "ffffffffffffffff000000000000000000000000000000000000000000000000",
+   "n0": 17,
+   "attendu": {
+    "n": 20,
+    "champs": {
+     "espece": "Tentaclou",
+     "variante": "classique",
+     "shiny": false,
+     "marque": "des rayures comme un code-barres",
+     "humeur": "taquine",
+     "taille": 25.5,
+     "qualite": 0.459,
+     "potentiel": 46,
+     "stats": {
+      "PV": 42,
+      "ATK": 29,
+      "DEF": 41,
+      "VIT": 21,
+      "INT": 39
+     },
+     "note": 29.7,
+     "rarete": "commune",
+     "stade": "enfant"
+    }
+   }
+  },
+  {
+   "monde": "citadelle",
+   "exploit": "citadelle.boite",
+   "genre": "variante",
+   "types": [
+    "ombre",
+    "poison"
+   ],
+   "valeur": "ffffffffffffffff000000000000000000000000000000000000000000000000",
+   "n0": 60,
+   "attendu": {
+    "n": 60,
+    "champs": {
+     "espece": "Lampignon",
+     "variante": "champignonniere",
+     "shiny": false,
+     "marque": "un grain de beauté en forme de #",
+     "humeur": "curieuse",
+     "taille": 89.5,
+     "qualite": 0.705,
+     "potentiel": 75,
+     "stats": {
+      "PV": 40,
+      "ATK": 39,
+      "DEF": 42,
+      "VIT": 48,
+      "INT": 71
+     },
+     "note": 62.3,
+     "rarete": "peu commune",
+     "stade": "bebe"
+    }
+   }
+  },
+  {
+   "monde": "citadelle",
+   "exploit": "citadelle.boite",
+   "genre": "variante",
+   "types": [
+    "ombre",
+    "poison"
+   ],
+   "valeur": "ffffffffffffffff000000000000000000000000000000000000000000000000",
+   "n0": 123,
+   "attendu": {
+    "n": 123,
+    "champs": {
+     "espece": "Scorpiquant",
+     "variante": "classique",
+     "shiny": false,
+     "marque": "des rayures comme un code-barres",
+     "humeur": "fougueuse",
+     "taille": 221.5,
+     "qualite": 0.234,
+     "potentiel": 24,
+     "stats": {
+      "PV": 37,
+      "ATK": 48,
+      "DEF": 48,
+      "VIT": 47,
+      "INT": 29
+     },
+     "note": 22.6,
+     "rarete": "commune",
+     "stade": "ado"
+    }
+   }
+  },
+  {
+   "monde": "citadelle",
+   "exploit": "citadelle.boite",
+   "genre": "variante",
+   "types": [
+    "ombre",
+    "poison"
+   ],
+   "valeur": "9e3779b97f4a7c15f39cc0605cedc8341082276bf3a27251f86c6a11d0c18e95",
+   "n0": 0,
+   "attendu": {
+    "n": 2,
+    "champs": {
+     "espece": "Papillombre",
+     "variante": "classique",
+     "shiny": false,
+     "marque": "des oreilles légèrement pixelisées",
+     "humeur": "timide",
+     "taille": 75.4,
+     "qualite": 0.905,
+     "potentiel": 85,
+     "stats": {
+      "PV": 32,
+      "ATK": 45,
+      "DEF": 34,
+      "VIT": 57,
+      "INT": 42
+     },
+     "note": 57.5,
+     "rarete": "peu commune",
+     "stade": "enfant"
+    }
+   }
+  },
+  {
+   "monde": "citadelle",
+   "exploit": "citadelle.boite",
+   "genre": "variante",
+   "types": [
+    "ombre",
+    "poison"
+   ],
+   "valeur": "9e3779b97f4a7c15f39cc0605cedc8341082276bf3a27251f86c6a11d0c18e95",
+   "n0": 17,
+   "attendu": {
+    "n": 17,
+    "champs": {
+     "espece": "Tentaclou",
+     "variante": "marais",
+     "shiny": false,
+     "marque": "un éternuement qui fait des étincelles",
+     "humeur": "têtue",
+     "taille": 37.4,
+     "qualite": 0.423,
+     "potentiel": 38,
+     "stats": {
+      "PV": 41,
+      "ATK": 25,
+      "DEF": 43,
+      "VIT": 18,
+      "INT": 38
+     },
+     "note": 40.0,
+     "rarete": "commune",
+     "stade": "enfant"
+    }
+   }
+  },
+  {
+   "monde": "citadelle",
+   "exploit": "citadelle.boite",
+   "genre": "variante",
+   "types": [
+    "ombre",
+    "poison"
+   ],
+   "valeur": "9e3779b97f4a7c15f39cc0605cedc8341082276bf3a27251f86c6a11d0c18e95",
+   "n0": 60,
+   "attendu": {
+    "n": 60,
+    "champs": {
+     "espece": "Cendrouille",
+     "variante": "cendres",
+     "shiny": false,
+     "marque": "une tache en forme de @ sur le dos",
+     "humeur": "têtue",
+     "taille": 84.6,
+     "qualite": 0.415,
+     "potentiel": 42,
+     "stats": {
+      "PV": 45,
+      "ATK": 28,
+      "DEF": 41,
+      "VIT": 26,
+      "INT": 35
+     },
+     "note": 40.6,
+     "rarete": "commune",
+     "stade": "ado"
+    }
+   }
+  },
+  {
+   "monde": "citadelle",
+   "exploit": "citadelle.boite",
+   "genre": "variante",
+   "types": [
+    "ombre",
+    "poison"
+   ],
+   "valeur": "9e3779b97f4a7c15f39cc0605cedc8341082276bf3a27251f86c6a11d0c18e95",
+   "n0": 123,
+   "attendu": {
+    "n": 123,
+    "champs": {
+     "espece": "Krillou",
+     "variante": "corail",
+     "shiny": false,
+     "marque": "un ronronnement à 440 Hz",
+     "humeur": "courageuse",
+     "taille": 33.1,
+     "qualite": 0.606,
+     "potentiel": 54,
+     "stats": {
+      "PV": 33,
+      "ATK": 39,
+      "DEF": 41,
+      "VIT": 43,
+      "INT": 22
+     },
+     "note": 55.9,
+     "rarete": "peu commune",
+     "stade": "bebe"
+    }
+   }
+  },
+  {
+   "monde": "citadelle",
+   "exploit": "citadelle.boite",
+   "genre": "variante",
+   "types": [
+    "ombre",
+    "poison"
+   ],
+   "valeur": "8000000000000001fac71cefac71cefac71cefac71cefac71cefac71ce00",
+   "n0": 0,
+   "attendu": {
+    "n": 1,
+    "champs": {
+     "espece": "Heaumbre",
+     "variante": "classique",
+     "shiny": false,
+     "marque": "des rayures comme un code-barres",
+     "humeur": "bavarde",
+     "taille": 200.4,
+     "qualite": 0.595,
+     "potentiel": 59,
+     "stats": {
+      "PV": 52,
+      "ATK": 45,
+      "DEF": 46,
+      "VIT": 44,
+      "INT": 48
+     },
+     "note": 44.3,
+     "rarete": "commune",
+     "stade": "bebe"
+    }
+   }
+  },
+  {
+   "monde": "citadelle",
+   "exploit": "citadelle.boite",
+   "genre": "variante",
+   "types": [
+    "ombre",
+    "poison"
+   ],
+   "valeur": "8000000000000001fac71cefac71cefac71cefac71cefac71cefac71ce00",
+   "n0": 17,
+   "attendu": {
+    "n": 18,
+    "champs": {
+     "espece": "Goulichon",
+     "variante": "classique",
+     "shiny": false,
+     "marque": "un éternuement qui fait des étincelles",
+     "humeur": "courageuse",
+     "taille": 91.4,
+     "qualite": 0.713,
+     "potentiel": 72,
+     "stats": {
+      "PV": 39,
+      "ATK": 42,
+      "DEF": 36,
+      "VIT": 36,
+      "INT": 40
+     },
+     "note": 44.9,
+     "rarete": "commune",
+     "stade": "enfant"
+    }
+   }
+  },
+  {
+   "monde": "citadelle",
+   "exploit": "citadelle.boite",
+   "genre": "variante",
+   "types": [
+    "ombre",
+    "poison"
+   ],
+   "valeur": "8000000000000001fac71cefac71cefac71cefac71cefac71cefac71ce00",
+   "n0": 60,
+   "attendu": {
+    "n": 60,
+    "champs": {
+     "espece": "Lanternix",
+     "variante": "classique",
+     "shiny": false,
+     "marque": "une voix qui résonne comme dans une grotte",
+     "humeur": "fougueuse",
+     "taille": 30.8,
+     "qualite": 0.092,
+     "potentiel": 10,
+     "stats": {
+      "PV": 34,
+      "ATK": 23,
+      "DEF": 31,
+      "VIT": 37,
+      "INT": 46
+     },
+     "note": 10.9,
+     "rarete": "commune",
+     "stade": "enfant"
+    }
+   }
+  },
+  {
+   "monde": "citadelle",
+   "exploit": "citadelle.boite",
+   "genre": "variante",
+   "types": [
+    "ombre",
+    "poison"
+   ],
+   "valeur": "8000000000000001fac71cefac71cefac71cefac71cefac71cefac71ce00",
+   "n0": 123,
+   "attendu": {
+    "n": 123,
+    "champs": {
+     "espece": "Zapiot",
+     "variante": "classique",
+     "shiny": false,
+     "marque": "une queue en forme de tilde ~",
+     "humeur": "taquine",
+     "taille": 25.6,
+     "qualite": 0.439,
+     "potentiel": 48,
+     "stats": {
+      "PV": 34,
+      "ATK": 27,
+      "DEF": 32,
+      "VIT": 38,
+      "INT": 51
+     },
+     "note": 29.6,
+     "rarete": "commune",
+     "stade": "enfant"
+    }
+   }
+  },
+  {
+   "monde": "port",
+   "exploit": "port.messager",
+   "genre": "variante",
+   "types": [
+    "ciel",
+    "eau"
+   ],
+   "valeur": "0000000000000000000000000000000000000000000000000000000000000000",
+   "n0": 0,
+   "attendu": {
+    "n": 1,
+    "champs": {
+     "espece": "Scintipède",
+     "variante": "classique",
+     "shiny": false,
+     "marque": "des rayures comme un code-barres",
+     "humeur": "bavarde",
+     "taille": 76.9,
+     "qualite": 0.128,
+     "potentiel": 13,
+     "stats": {
+      "PV": 36,
+      "ATK": 43,
+      "DEF": 42,
+      "VIT": 46,
+      "INT": 23
+     },
+     "note": 15.2,
+     "rarete": "commune",
+     "stade": "bebe"
+    }
+   }
+  },
+  {
+   "monde": "port",
+   "exploit": "port.messager",
+   "genre": "variante",
+   "types": [
+    "ciel",
+    "eau"
+   ],
+   "valeur": "0000000000000000000000000000000000000000000000000000000000000000",
+   "n0": 17,
+   "attendu": {
+    "n": 17,
+    "champs": {
+     "espece": "Plouftin",
+     "variante": "classique",
+     "shiny": false,
+     "marque": "un grain de beauté en forme de #",
+     "humeur": "taquine",
+     "taille": 35.8,
+     "qualite": 0.855,
+     "potentiel": 85,
+     "stats": {
+      "PV": 35,
+      "ATK": 28,
+      "DEF": 29,
+      "VIT": 36,
+      "INT": 55
+     },
+     "note": 51.3,
+     "rarete": "peu commune",
+     "stade": "ado"
+    }
+   }
+  },
+  {
+   "monde": "port",
+   "exploit": "port.messager",
+   "genre": "variante",
+   "types": [
+    "ciel",
+    "eau"
+   ],
+   "valeur": "0000000000000000000000000000000000000000000000000000000000000000",
+   "n0": 60,
+   "attendu": {
+    "n": 60,
+    "champs": {
+     "espece": "Libellance",
+     "variante": "classique",
+     "shiny": false,
+     "marque": "des yeux de deux couleurs",
+     "humeur": "fougueuse",
+     "taille": 268.6,
+     "qualite": 0.989,
+     "potentiel": 97,
+     "stats": {
+      "PV": 49,
+      "ATK": 53,
+      "DEF": 47,
+      "VIT": 84,
+      "INT": 60
+     },
+     "note": 71.1,
+     "rarete": "rare",
+     "stade": "ado"
+    }
+   }
+  },
+  {
+   "monde": "port",
+   "exploit": "port.messager",
+   "genre": "variante",
+   "types": [
+    "ciel",
+    "eau"
+   ],
+   "valeur": "0000000000000000000000000000000000000000000000000000000000000000",
+   "n0": 123,
+   "attendu": {
+    "n": 123,
+    "champs": {
+     "espece": "Louvacier",
+     "variante": "classique",
+     "shiny": false,
+     "marque": "un museau qui sent le café",
+     "humeur": "timide",
+     "taille": 72.0,
+     "qualite": 0.726,
+     "potentiel": 72,
+     "stats": {
+      "PV": 46,
+      "ATK": 46,
+      "DEF": 39,
+      "VIT": 43,
+      "INT": 27
+     },
+     "note": 46.8,
+     "rarete": "peu commune",
+     "stade": "ado"
+    }
+   }
+  },
+  {
+   "monde": "port",
+   "exploit": "port.messager",
+   "genre": "variante",
+   "types": [
+    "ciel",
+    "eau"
+   ],
+   "valeur": "ffffffffffffffff000000000000000000000000000000000000000000000000",
+   "n0": 0,
+   "attendu": {
+    "n": 0,
+    "champs": {
+     "espece": "Séraphibou",
+     "variante": "nuage",
+     "shiny": false,
+     "marque": "un grain de beauté en forme de #",
+     "humeur": "calme",
+     "taille": 104.6,
+     "qualite": 0.716,
+     "potentiel": 73,
+     "stats": {
+      "PV": 44,
+      "ATK": 49,
+      "DEF": 38,
+      "VIT": 69,
+      "INT": 46
+     },
+     "note": 64.0,
+     "rarete": "rare",
+     "stade": "bebe"
+    }
+   }
+  },
+  {
+   "monde": "port",
+   "exploit": "port.messager",
+   "genre": "variante",
+   "types": [
+    "ciel",
+    "eau"
+   ],
+   "valeur": "ffffffffffffffff000000000000000000000000000000000000000000000000",
+   "n0": 17,
+   "attendu": {
+    "n": 18,
+    "champs": {
+     "espece": "Auréolin",
+     "variante": "classique",
+     "shiny": false,
+     "marque": "un éternuement qui fait des étincelles",
+     "humeur": "timide",
+     "taille": 34.0,
+     "qualite": 0.193,
+     "potentiel": 19,
+     "stats": {
+      "PV": 31,
+      "ATK": 39,
+      "DEF": 34,
+      "VIT": 36,
+      "INT": 38
+     },
+     "note": 16.9,
+     "rarete": "commune",
+     "stade": "bebe"
+    }
+   }
+  },
+  {
+   "monde": "port",
+   "exploit": "port.messager",
+   "genre": "variante",
+   "types": [
+    "ciel",
+    "eau"
+   ],
+   "valeur": "ffffffffffffffff000000000000000000000000000000000000000000000000",
+   "n0": 60,
+   "attendu": {
+    "n": 60,
+    "champs": {
+     "espece": "Lampignon",
+     "variante": "champignonniere",
+     "shiny": false,
+     "marque": "un grain de beauté en forme de #",
+     "humeur": "curieuse",
+     "taille": 89.5,
+     "qualite": 0.705,
+     "potentiel": 75,
+     "stats": {
+      "PV": 40,
+      "ATK": 39,
+      "DEF": 42,
+      "VIT": 48,
+      "INT": 71
+     },
+     "note": 62.3,
+     "rarete": "peu commune",
+     "stade": "bebe"
+    }
+   }
+  },
+  {
+   "monde": "port",
+   "exploit": "port.messager",
+   "genre": "variante",
+   "types": [
+    "ciel",
+    "eau"
+   ],
+   "valeur": "ffffffffffffffff000000000000000000000000000000000000000000000000",
+   "n0": 123,
+   "attendu": {
+    "n": 126,
+    "champs": {
+     "espece": "Étoilapin",
+     "variante": "classique",
+     "shiny": false,
+     "marque": "un ronronnement à 440 Hz",
+     "humeur": "timide",
+     "taille": 32.6,
+     "qualite": 0.864,
+     "potentiel": 83,
+     "stats": {
+      "PV": 40,
+      "ATK": 42,
+      "DEF": 36,
+      "VIT": 42,
+      "INT": 30
+     },
+     "note": 52.9,
+     "rarete": "peu commune",
+     "stade": "adulte"
+    }
+   }
+  },
+  {
+   "monde": "port",
+   "exploit": "port.messager",
+   "genre": "variante",
+   "types": [
+    "ciel",
+    "eau"
+   ],
+   "valeur": "9e3779b97f4a7c15f39cc0605cedc8341082276bf3a27251f86c6a11d0c18e95",
+   "n0": 0,
+   "attendu": {
+    "n": 0,
+    "champs": {
+     "espece": "Clopinou",
+     "variante": "classique",
+     "shiny": false,
+     "marque": "une crête en forme d'accolade {",
+     "humeur": "taquine",
+     "taille": 31.1,
+     "qualite": 0.882,
+     "potentiel": 87,
+     "stats": {
+      "PV": 42,
+      "ATK": 44,
+      "DEF": 56,
+      "VIT": 48,
+      "INT": 31
+     },
+     "note": 57.2,
+     "rarete": "peu commune",
+     "stade": "ado"
+    }
+   }
+  },
+  {
+   "monde": "port",
+   "exploit": "port.messager",
+   "genre": "variante",
+   "types": [
+    "ciel",
+    "eau"
+   ],
+   "valeur": "9e3779b97f4a7c15f39cc0605cedc8341082276bf3a27251f86c6a11d0c18e95",
+   "n0": 17,
+   "attendu": {
+    "n": 17,
+    "champs": {
+     "espece": "Tentaclou",
+     "variante": "marais",
+     "shiny": false,
+     "marque": "un éternuement qui fait des étincelles",
+     "humeur": "têtue",
+     "taille": 37.4,
+     "qualite": 0.423,
+     "potentiel": 38,
+     "stats": {
+      "PV": 41,
+      "ATK": 25,
+      "DEF": 43,
+      "VIT": 18,
+      "INT": 38
+     },
+     "note": 40.0,
+     "rarete": "commune",
+     "stade": "enfant"
+    }
+   }
+  },
+  {
+   "monde": "port",
+   "exploit": "port.messager",
+   "genre": "variante",
+   "types": [
+    "ciel",
+    "eau"
+   ],
+   "valeur": "9e3779b97f4a7c15f39cc0605cedc8341082276bf3a27251f86c6a11d0c18e95",
+   "n0": 60,
+   "attendu": {
+    "n": 62,
+    "champs": {
+     "espece": "Écumane",
+     "variante": "brume",
+     "shiny": false,
+     "marque": "un ventre qui affiche l'heure",
+     "humeur": "calme",
+     "taille": 206.4,
+     "qualite": 0.706,
+     "potentiel": 70,
+     "stats": {
+      "PV": 50,
+      "ATK": 51,
+      "DEF": 50,
+      "VIT": 50,
+      "INT": 34
+     },
+     "note": 70.5,
+     "rarete": "rare",
+     "stade": "enfant"
+    }
+   }
+  },
+  {
+   "monde": "port",
+   "exploit": "port.messager",
+   "genre": "variante",
+   "types": [
+    "ciel",
+    "eau"
+   ],
+   "valeur": "9e3779b97f4a7c15f39cc0605cedc8341082276bf3a27251f86c6a11d0c18e95",
+   "n0": 123,
+   "attendu": {
+    "n": 123,
+    "champs": {
+     "espece": "Krillou",
+     "variante": "corail",
+     "shiny": false,
+     "marque": "un ronronnement à 440 Hz",
+     "humeur": "courageuse",
+     "taille": 33.1,
+     "qualite": 0.606,
+     "potentiel": 54,
+     "stats": {
+      "PV": 33,
+      "ATK": 39,
+      "DEF": 41,
+      "VIT": 43,
+      "INT": 22
+     },
+     "note": 55.9,
+     "rarete": "peu commune",
+     "stade": "bebe"
+    }
+   }
+  },
+  {
+   "monde": "port",
+   "exploit": "port.messager",
+   "genre": "variante",
+   "types": [
+    "ciel",
+    "eau"
+   ],
+   "valeur": "8000000000000001fac71cefac71cefac71cefac71cefac71cefac71ce00",
+   "n0": 0,
+   "attendu": {
+    "n": 0,
+    "champs": {
+     "espece": "Félicorne",
+     "variante": "soleil",
+     "shiny": false,
+     "marque": "des empreintes en forme de 0 et de 1",
+     "humeur": "taquine",
+     "taille": 191.4,
+     "qualite": 0.796,
+     "potentiel": 79,
+     "stats": {
+      "PV": 51,
+      "ATK": 52,
+      "DEF": 47,
+      "VIT": 51,
+      "INT": 33
+     },
+     "note": 73.6,
+     "rarete": "rare",
+     "stade": "adulte"
+    }
+   }
+  },
+  {
+   "monde": "port",
+   "exploit": "port.messager",
+   "genre": "variante",
+   "types": [
+    "ciel",
+    "eau"
+   ],
+   "valeur": "8000000000000001fac71cefac71cefac71cefac71cefac71cefac71ce00",
+   "n0": 17,
+   "attendu": {
+    "n": 17,
+    "champs": {
+     "espece": "Givrarde",
+     "variante": "brume",
+     "shiny": false,
+     "marque": "des rayures comme un code-barres",
+     "humeur": "calme",
+     "taille": 186.8,
+     "qualite": 0.123,
+     "potentiel": 16,
+     "stats": {
+      "PV": 48,
+      "ATK": 51,
+      "DEF": 39,
+      "VIT": 35,
+      "INT": 38
+     },
+     "note": 37.7,
+     "rarete": "commune",
+     "stade": "bebe"
+    }
+   }
+  },
+  {
+   "monde": "port",
+   "exploit": "port.messager",
+   "genre": "variante",
+   "types": [
+    "ciel",
+    "eau"
+   ],
+   "valeur": "8000000000000001fac71cefac71cefac71cefac71cefac71cefac71ce00",
+   "n0": 60,
+   "attendu": {
+    "n": 63,
+    "champs": {
+     "espece": "Nébuline",
+     "variante": "classique",
+     "shiny": false,
+     "marque": "un ronronnement à 440 Hz",
+     "humeur": "têtue",
+     "taille": 33.5,
+     "qualite": 0.875,
+     "potentiel": 88,
+     "stats": {
+      "PV": 55,
+      "ATK": 40,
+      "DEF": 44,
+      "VIT": 30,
+      "INT": 44
+     },
+     "note": 55.7,
+     "rarete": "peu commune",
+     "stade": "bebe"
+    }
+   }
+  },
+  {
+   "monde": "port",
+   "exploit": "port.messager",
+   "genre": "variante",
+   "types": [
+    "ciel",
+    "eau"
+   ],
+   "valeur": "8000000000000001fac71cefac71cefac71cefac71cefac71cefac71ce00",
+   "n0": 123,
+   "attendu": {
+    "n": 123,
+    "champs": {
+     "espece": "Zapiot",
+     "variante": "classique",
+     "shiny": false,
+     "marque": "une queue en forme de tilde ~",
+     "humeur": "taquine",
+     "taille": 25.6,
+     "qualite": 0.439,
+     "potentiel": 48,
+     "stats": {
+      "PV": 34,
+      "ATK": 27,
+      "DEF": 32,
+      "VIT": 38,
+      "INT": 51
+     },
+     "note": 29.6,
+     "rarete": "commune",
+     "stade": "enfant"
+    }
+   }
+  },
+  {
+   "monde": "port",
+   "exploit": "port.sceau",
+   "genre": "variante",
+   "types": [
+    "ciel",
+    "eau"
+   ],
+   "valeur": "0000000000000000000000000000000000000000000000000000000000000000",
+   "n0": 0,
+   "attendu": {
+    "n": 1,
+    "champs": {
+     "espece": "Scintipède",
+     "variante": "classique",
+     "shiny": false,
+     "marque": "des rayures comme un code-barres",
+     "humeur": "bavarde",
+     "taille": 76.9,
+     "qualite": 0.128,
+     "potentiel": 13,
+     "stats": {
+      "PV": 36,
+      "ATK": 43,
+      "DEF": 42,
+      "VIT": 46,
+      "INT": 23
+     },
+     "note": 15.2,
+     "rarete": "commune",
+     "stade": "bebe"
+    }
+   }
+  },
+  {
+   "monde": "port",
+   "exploit": "port.sceau",
+   "genre": "variante",
+   "types": [
+    "ciel",
+    "eau"
+   ],
+   "valeur": "0000000000000000000000000000000000000000000000000000000000000000",
+   "n0": 17,
+   "attendu": {
+    "n": 17,
+    "champs": {
+     "espece": "Plouftin",
+     "variante": "classique",
+     "shiny": false,
+     "marque": "un grain de beauté en forme de #",
+     "humeur": "taquine",
+     "taille": 35.8,
+     "qualite": 0.855,
+     "potentiel": 85,
+     "stats": {
+      "PV": 35,
+      "ATK": 28,
+      "DEF": 29,
+      "VIT": 36,
+      "INT": 55
+     },
+     "note": 51.3,
+     "rarete": "peu commune",
+     "stade": "ado"
+    }
+   }
+  },
+  {
+   "monde": "port",
+   "exploit": "port.sceau",
+   "genre": "variante",
+   "types": [
+    "ciel",
+    "eau"
+   ],
+   "valeur": "0000000000000000000000000000000000000000000000000000000000000000",
+   "n0": 60,
+   "attendu": {
+    "n": 60,
+    "champs": {
+     "espece": "Libellance",
+     "variante": "classique",
+     "shiny": false,
+     "marque": "des yeux de deux couleurs",
+     "humeur": "fougueuse",
+     "taille": 268.6,
+     "qualite": 0.989,
+     "potentiel": 97,
+     "stats": {
+      "PV": 49,
+      "ATK": 53,
+      "DEF": 47,
+      "VIT": 84,
+      "INT": 60
+     },
+     "note": 71.1,
+     "rarete": "rare",
+     "stade": "ado"
+    }
+   }
+  },
+  {
+   "monde": "port",
+   "exploit": "port.sceau",
+   "genre": "variante",
+   "types": [
+    "ciel",
+    "eau"
+   ],
+   "valeur": "0000000000000000000000000000000000000000000000000000000000000000",
+   "n0": 123,
+   "attendu": {
+    "n": 123,
+    "champs": {
+     "espece": "Louvacier",
+     "variante": "classique",
+     "shiny": false,
+     "marque": "un museau qui sent le café",
+     "humeur": "timide",
+     "taille": 72.0,
+     "qualite": 0.726,
+     "potentiel": 72,
+     "stats": {
+      "PV": 46,
+      "ATK": 46,
+      "DEF": 39,
+      "VIT": 43,
+      "INT": 27
+     },
+     "note": 46.8,
+     "rarete": "peu commune",
+     "stade": "ado"
+    }
+   }
+  },
+  {
+   "monde": "port",
+   "exploit": "port.sceau",
+   "genre": "variante",
+   "types": [
+    "ciel",
+    "eau"
+   ],
+   "valeur": "ffffffffffffffff000000000000000000000000000000000000000000000000",
+   "n0": 0,
+   "attendu": {
+    "n": 0,
+    "champs": {
+     "espece": "Séraphibou",
+     "variante": "nuage",
+     "shiny": false,
+     "marque": "un grain de beauté en forme de #",
+     "humeur": "calme",
+     "taille": 104.6,
+     "qualite": 0.716,
+     "potentiel": 73,
+     "stats": {
+      "PV": 44,
+      "ATK": 49,
+      "DEF": 38,
+      "VIT": 69,
+      "INT": 46
+     },
+     "note": 64.0,
+     "rarete": "rare",
+     "stade": "bebe"
+    }
+   }
+  },
+  {
+   "monde": "port",
+   "exploit": "port.sceau",
+   "genre": "variante",
+   "types": [
+    "ciel",
+    "eau"
+   ],
+   "valeur": "ffffffffffffffff000000000000000000000000000000000000000000000000",
+   "n0": 17,
+   "attendu": {
+    "n": 18,
+    "champs": {
+     "espece": "Auréolin",
+     "variante": "classique",
+     "shiny": false,
+     "marque": "un éternuement qui fait des étincelles",
+     "humeur": "timide",
+     "taille": 34.0,
+     "qualite": 0.193,
+     "potentiel": 19,
+     "stats": {
+      "PV": 31,
+      "ATK": 39,
+      "DEF": 34,
+      "VIT": 36,
+      "INT": 38
+     },
+     "note": 16.9,
+     "rarete": "commune",
+     "stade": "bebe"
+    }
+   }
+  },
+  {
+   "monde": "port",
+   "exploit": "port.sceau",
+   "genre": "variante",
+   "types": [
+    "ciel",
+    "eau"
+   ],
+   "valeur": "ffffffffffffffff000000000000000000000000000000000000000000000000",
+   "n0": 60,
+   "attendu": {
+    "n": 60,
+    "champs": {
+     "espece": "Lampignon",
+     "variante": "champignonniere",
+     "shiny": false,
+     "marque": "un grain de beauté en forme de #",
+     "humeur": "curieuse",
+     "taille": 89.5,
+     "qualite": 0.705,
+     "potentiel": 75,
+     "stats": {
+      "PV": 40,
+      "ATK": 39,
+      "DEF": 42,
+      "VIT": 48,
+      "INT": 71
+     },
+     "note": 62.3,
+     "rarete": "peu commune",
+     "stade": "bebe"
+    }
+   }
+  },
+  {
+   "monde": "port",
+   "exploit": "port.sceau",
+   "genre": "variante",
+   "types": [
+    "ciel",
+    "eau"
+   ],
+   "valeur": "ffffffffffffffff000000000000000000000000000000000000000000000000",
+   "n0": 123,
+   "attendu": {
+    "n": 126,
+    "champs": {
+     "espece": "Étoilapin",
+     "variante": "classique",
+     "shiny": false,
+     "marque": "un ronronnement à 440 Hz",
+     "humeur": "timide",
+     "taille": 32.6,
+     "qualite": 0.864,
+     "potentiel": 83,
+     "stats": {
+      "PV": 40,
+      "ATK": 42,
+      "DEF": 36,
+      "VIT": 42,
+      "INT": 30
+     },
+     "note": 52.9,
+     "rarete": "peu commune",
+     "stade": "adulte"
+    }
+   }
+  },
+  {
+   "monde": "port",
+   "exploit": "port.sceau",
+   "genre": "variante",
+   "types": [
+    "ciel",
+    "eau"
+   ],
+   "valeur": "9e3779b97f4a7c15f39cc0605cedc8341082276bf3a27251f86c6a11d0c18e95",
+   "n0": 0,
+   "attendu": {
+    "n": 0,
+    "champs": {
+     "espece": "Clopinou",
+     "variante": "classique",
+     "shiny": false,
+     "marque": "une crête en forme d'accolade {",
+     "humeur": "taquine",
+     "taille": 31.1,
+     "qualite": 0.882,
+     "potentiel": 87,
+     "stats": {
+      "PV": 42,
+      "ATK": 44,
+      "DEF": 56,
+      "VIT": 48,
+      "INT": 31
+     },
+     "note": 57.2,
+     "rarete": "peu commune",
+     "stade": "ado"
+    }
+   }
+  },
+  {
+   "monde": "port",
+   "exploit": "port.sceau",
+   "genre": "variante",
+   "types": [
+    "ciel",
+    "eau"
+   ],
+   "valeur": "9e3779b97f4a7c15f39cc0605cedc8341082276bf3a27251f86c6a11d0c18e95",
+   "n0": 17,
+   "attendu": {
+    "n": 17,
+    "champs": {
+     "espece": "Tentaclou",
+     "variante": "marais",
+     "shiny": false,
+     "marque": "un éternuement qui fait des étincelles",
+     "humeur": "têtue",
+     "taille": 37.4,
+     "qualite": 0.423,
+     "potentiel": 38,
+     "stats": {
+      "PV": 41,
+      "ATK": 25,
+      "DEF": 43,
+      "VIT": 18,
+      "INT": 38
+     },
+     "note": 40.0,
+     "rarete": "commune",
+     "stade": "enfant"
+    }
+   }
+  },
+  {
+   "monde": "port",
+   "exploit": "port.sceau",
+   "genre": "variante",
+   "types": [
+    "ciel",
+    "eau"
+   ],
+   "valeur": "9e3779b97f4a7c15f39cc0605cedc8341082276bf3a27251f86c6a11d0c18e95",
+   "n0": 60,
+   "attendu": {
+    "n": 62,
+    "champs": {
+     "espece": "Écumane",
+     "variante": "brume",
+     "shiny": false,
+     "marque": "un ventre qui affiche l'heure",
+     "humeur": "calme",
+     "taille": 206.4,
+     "qualite": 0.706,
+     "potentiel": 70,
+     "stats": {
+      "PV": 50,
+      "ATK": 51,
+      "DEF": 50,
+      "VIT": 50,
+      "INT": 34
+     },
+     "note": 70.5,
+     "rarete": "rare",
+     "stade": "enfant"
+    }
+   }
+  },
+  {
+   "monde": "port",
+   "exploit": "port.sceau",
+   "genre": "variante",
+   "types": [
+    "ciel",
+    "eau"
+   ],
+   "valeur": "9e3779b97f4a7c15f39cc0605cedc8341082276bf3a27251f86c6a11d0c18e95",
+   "n0": 123,
+   "attendu": {
+    "n": 123,
+    "champs": {
+     "espece": "Krillou",
+     "variante": "corail",
+     "shiny": false,
+     "marque": "un ronronnement à 440 Hz",
+     "humeur": "courageuse",
+     "taille": 33.1,
+     "qualite": 0.606,
+     "potentiel": 54,
+     "stats": {
+      "PV": 33,
+      "ATK": 39,
+      "DEF": 41,
+      "VIT": 43,
+      "INT": 22
+     },
+     "note": 55.9,
+     "rarete": "peu commune",
+     "stade": "bebe"
+    }
+   }
+  },
+  {
+   "monde": "port",
+   "exploit": "port.sceau",
+   "genre": "variante",
+   "types": [
+    "ciel",
+    "eau"
+   ],
+   "valeur": "8000000000000001fac71cefac71cefac71cefac71cefac71cefac71ce00",
+   "n0": 0,
+   "attendu": {
+    "n": 0,
+    "champs": {
+     "espece": "Félicorne",
+     "variante": "soleil",
+     "shiny": false,
+     "marque": "des empreintes en forme de 0 et de 1",
+     "humeur": "taquine",
+     "taille": 191.4,
+     "qualite": 0.796,
+     "potentiel": 79,
+     "stats": {
+      "PV": 51,
+      "ATK": 52,
+      "DEF": 47,
+      "VIT": 51,
+      "INT": 33
+     },
+     "note": 73.6,
+     "rarete": "rare",
+     "stade": "adulte"
+    }
+   }
+  },
+  {
+   "monde": "port",
+   "exploit": "port.sceau",
+   "genre": "variante",
+   "types": [
+    "ciel",
+    "eau"
+   ],
+   "valeur": "8000000000000001fac71cefac71cefac71cefac71cefac71cefac71ce00",
+   "n0": 17,
+   "attendu": {
+    "n": 17,
+    "champs": {
+     "espece": "Givrarde",
+     "variante": "brume",
+     "shiny": false,
+     "marque": "des rayures comme un code-barres",
+     "humeur": "calme",
+     "taille": 186.8,
+     "qualite": 0.123,
+     "potentiel": 16,
+     "stats": {
+      "PV": 48,
+      "ATK": 51,
+      "DEF": 39,
+      "VIT": 35,
+      "INT": 38
+     },
+     "note": 37.7,
+     "rarete": "commune",
+     "stade": "bebe"
+    }
+   }
+  },
+  {
+   "monde": "port",
+   "exploit": "port.sceau",
+   "genre": "variante",
+   "types": [
+    "ciel",
+    "eau"
+   ],
+   "valeur": "8000000000000001fac71cefac71cefac71cefac71cefac71cefac71ce00",
+   "n0": 60,
+   "attendu": {
+    "n": 63,
+    "champs": {
+     "espece": "Nébuline",
+     "variante": "classique",
+     "shiny": false,
+     "marque": "un ronronnement à 440 Hz",
+     "humeur": "têtue",
+     "taille": 33.5,
+     "qualite": 0.875,
+     "potentiel": 88,
+     "stats": {
+      "PV": 55,
+      "ATK": 40,
+      "DEF": 44,
+      "VIT": 30,
+      "INT": 44
+     },
+     "note": 55.7,
+     "rarete": "peu commune",
+     "stade": "bebe"
+    }
+   }
+  },
+  {
+   "monde": "port",
+   "exploit": "port.sceau",
+   "genre": "variante",
+   "types": [
+    "ciel",
+    "eau"
+   ],
+   "valeur": "8000000000000001fac71cefac71cefac71cefac71cefac71cefac71ce00",
+   "n0": 123,
+   "attendu": {
+    "n": 123,
+    "champs": {
+     "espece": "Zapiot",
+     "variante": "classique",
+     "shiny": false,
+     "marque": "une queue en forme de tilde ~",
+     "humeur": "taquine",
+     "taille": 25.6,
+     "qualite": 0.439,
+     "potentiel": 48,
+     "stats": {
+      "PV": 34,
+      "ATK": 27,
+      "DEF": 32,
+      "VIT": 38,
+      "INT": 51
+     },
+     "note": 29.6,
+     "rarete": "commune",
+     "stade": "enfant"
+    }
+   }
+  },
+  {
+   "monde": "temps",
+   "exploit": "temps.version",
+   "genre": "variante",
+   "types": [
+    "roche",
+    "ombre"
+   ],
+   "valeur": "0000000000000000000000000000000000000000000000000000000000000000",
+   "n0": 0,
+   "attendu": {
+    "n": 0,
+    "champs": {
+     "espece": "Heaumbre",
+     "variante": "ombre",
+     "shiny": false,
+     "marque": "un museau qui sent le café",
+     "humeur": "paresseuse",
+     "taille": 196.9,
+     "qualite": 0.685,
+     "potentiel": 77,
+     "stats": {
+      "PV": 55,
+      "ATK": 49,
+      "DEF": 50,
+      "VIT": 46,
+      "INT": 50
+     },
+     "note": 69.1,
+     "rarete": "rare",
+     "stade": "ado"
+    }
+   }
+  },
+  {
+   "monde": "temps",
+   "exploit": "temps.version",
+   "genre": "variante",
+   "types": [
+    "roche",
+    "ombre"
+   ],
+   "valeur": "0000000000000000000000000000000000000000000000000000000000000000",
+   "n0": 17,
+   "attendu": {
+    "n": 17,
+    "champs": {
+     "espece": "Plouftin",
+     "variante": "classique",
+     "shiny": false,
+     "marque": "un grain de beauté en forme de #",
+     "humeur": "taquine",
+     "taille": 35.8,
+     "qualite": 0.855,
+     "potentiel": 85,
+     "stats": {
+      "PV": 35,
+      "ATK": 28,
+      "DEF": 29,
+      "VIT": 36,
+      "INT": 55
+     },
+     "note": 51.3,
+     "rarete": "peu commune",
+     "stade": "ado"
+    }
+   }
+  },
+  {
+   "monde": "temps",
+   "exploit": "temps.version",
+   "genre": "variante",
+   "types": [
+    "roche",
+    "ombre"
+   ],
+   "valeur": "0000000000000000000000000000000000000000000000000000000000000000",
+   "n0": 60,
+   "attendu": {
+    "n": 63,
+    "champs": {
+     "espece": "Mammouroc",
+     "variante": "ossuaire",
+     "shiny": false,
+     "marque": "un œil qui clignote en binaire",
+     "humeur": "taquine",
+     "taille": 586.2,
+     "qualite": 0.201,
+     "potentiel": 25,
+     "stats": {
+      "PV": 59,
+      "ATK": 62,
+      "DEF": 48,
+      "VIT": 54,
+      "INT": 32
+     },
+     "note": 43.3,
+     "rarete": "commune",
+     "stade": "adulte"
+    }
+   }
+  },
+  {
+   "monde": "temps",
+   "exploit": "temps.version",
+   "genre": "variante",
+   "types": [
+    "roche",
+    "ombre"
+   ],
+   "valeur": "0000000000000000000000000000000000000000000000000000000000000000",
+   "n0": 123,
+   "attendu": {
+    "n": 124,
+    "champs": {
+     "espece": "Groinfer",
+     "variante": "ruines",
+     "shiny": false,
+     "marque": "une ombre qui a un pixel de retard",
+     "humeur": "timide",
+     "taille": 73.7,
+     "qualite": 0.341,
+     "potentiel": 34,
+     "stats": {
+      "PV": 33,
+      "ATK": 31,
+      "DEF": 28,
+      "VIT": 32,
+      "INT": 20
+     },
+     "note": 37.8,
+     "rarete": "commune",
+     "stade": "bebe"
+    }
+   }
+  },
+  {
+   "monde": "temps",
+   "exploit": "temps.version",
+   "genre": "variante",
+   "types": [
+    "roche",
+    "ombre"
+   ],
+   "valeur": "ffffffffffffffff000000000000000000000000000000000000000000000000",
+   "n0": 0,
+   "attendu": {
+    "n": 3,
+    "champs": {
+     "espece": "Crabouille",
+     "variante": "sable",
+     "shiny": false,
+     "marque": "une petite cicatrice en forme de point-virgule",
+     "humeur": "timide",
+     "taille": 93.9,
+     "qualite": 0.979,
+     "potentiel": 92,
+     "stats": {
+      "PV": 42,
+      "ATK": 47,
+      "DEF": 47,
+      "VIT": 54,
+      "INT": 35
+     },
+     "note": 75.5,
+     "rarete": "épique",
+     "stade": "enfant"
+    }
+   }
+  },
+  {
+   "monde": "temps",
+   "exploit": "temps.version",
+   "genre": "variante",
+   "types": [
+    "roche",
+    "ombre"
+   ],
+   "valeur": "ffffffffffffffff000000000000000000000000000000000000000000000000",
+   "n0": 17,
+   "attendu": {
+    "n": 17,
+    "champs": {
+     "espece": "Momiaou",
+     "variante": "desert",
+     "shiny": false,
+     "marque": "un ronronnement à 440 Hz",
+     "humeur": "têtue",
+     "taille": 101.2,
+     "qualite": 0.398,
+     "potentiel": 43,
+     "stats": {
+      "PV": 42,
+      "ATK": 47,
+      "DEF": 41,
+      "VIT": 47,
+      "INT": 27
+     },
+     "note": 42.8,
+     "rarete": "commune",
+     "stade": "enfant"
+    }
+   }
+  },
+  {
+   "monde": "temps",
+   "exploit": "temps.version",
+   "genre": "variante",
+   "types": [
+    "roche",
+    "ombre"
+   ],
+   "valeur": "ffffffffffffffff000000000000000000000000000000000000000000000000",
+   "n0": 60,
+   "attendu": {
+    "n": 60,
+    "champs": {
+     "espece": "Lampignon",
+     "variante": "champignonniere",
+     "shiny": false,
+     "marque": "un grain de beauté en forme de #",
+     "humeur": "curieuse",
+     "taille": 89.5,
+     "qualite": 0.705,
+     "potentiel": 75,
+     "stats": {
+      "PV": 40,
+      "ATK": 39,
+      "DEF": 42,
+      "VIT": 48,
+      "INT": 71
+     },
+     "note": 62.3,
+     "rarete": "peu commune",
+     "stade": "bebe"
+    }
+   }
+  },
+  {
+   "monde": "temps",
+   "exploit": "temps.version",
+   "genre": "variante",
+   "types": [
+    "roche",
+    "ombre"
+   ],
+   "valeur": "ffffffffffffffff000000000000000000000000000000000000000000000000",
+   "n0": 123,
+   "attendu": {
+    "n": 123,
+    "champs": {
+     "espece": "Scorpiquant",
+     "variante": "classique",
+     "shiny": false,
+     "marque": "des rayures comme un code-barres",
+     "humeur": "fougueuse",
+     "taille": 221.5,
+     "qualite": 0.234,
+     "potentiel": 24,
+     "stats": {
+      "PV": 37,
+      "ATK": 48,
+      "DEF": 48,
+      "VIT": 47,
+      "INT": 29
+     },
+     "note": 22.6,
+     "rarete": "commune",
+     "stade": "ado"
+    }
+   }
+  },
+  {
+   "monde": "temps",
+   "exploit": "temps.version",
+   "genre": "variante",
+   "types": [
+    "roche",
+    "ombre"
+   ],
+   "valeur": "9e3779b97f4a7c15f39cc0605cedc8341082276bf3a27251f86c6a11d0c18e95",
+   "n0": 0,
+   "attendu": {
+    "n": 2,
+    "champs": {
+     "espece": "Papillombre",
+     "variante": "classique",
+     "shiny": false,
+     "marque": "des oreilles légèrement pixelisées",
+     "humeur": "timide",
+     "taille": 75.4,
+     "qualite": 0.905,
+     "potentiel": 85,
+     "stats": {
+      "PV": 32,
+      "ATK": 45,
+      "DEF": 34,
+      "VIT": 57,
+      "INT": 42
+     },
+     "note": 57.5,
+     "rarete": "peu commune",
+     "stade": "enfant"
+    }
+   }
+  },
+  {
+   "monde": "temps",
+   "exploit": "temps.version",
+   "genre": "variante",
+   "types": [
+    "roche",
+    "ombre"
+   ],
+   "valeur": "9e3779b97f4a7c15f39cc0605cedc8341082276bf3a27251f86c6a11d0c18e95",
+   "n0": 17,
+   "attendu": {
+    "n": 17,
+    "champs": {
+     "espece": "Tentaclou",
+     "variante": "marais",
+     "shiny": false,
+     "marque": "un éternuement qui fait des étincelles",
+     "humeur": "têtue",
+     "taille": 37.4,
+     "qualite": 0.423,
+     "potentiel": 38,
+     "stats": {
+      "PV": 41,
+      "ATK": 25,
+      "DEF": 43,
+      "VIT": 18,
+      "INT": 38
+     },
+     "note": 40.0,
+     "rarete": "commune",
+     "stade": "enfant"
+    }
+   }
+  },
+  {
+   "monde": "temps",
+   "exploit": "temps.version",
+   "genre": "variante",
+   "types": [
+    "roche",
+    "ombre"
+   ],
+   "valeur": "9e3779b97f4a7c15f39cc0605cedc8341082276bf3a27251f86c6a11d0c18e95",
+   "n0": 60,
+   "attendu": {
+    "n": 60,
+    "champs": {
+     "espece": "Cendrouille",
+     "variante": "cendres",
+     "shiny": false,
+     "marque": "une tache en forme de @ sur le dos",
+     "humeur": "têtue",
+     "taille": 84.6,
+     "qualite": 0.415,
+     "potentiel": 42,
+     "stats": {
+      "PV": 45,
+      "ATK": 28,
+      "DEF": 41,
+      "VIT": 26,
+      "INT": 35
+     },
+     "note": 40.6,
+     "rarete": "commune",
+     "stade": "ado"
+    }
+   }
+  },
+  {
+   "monde": "temps",
+   "exploit": "temps.version",
+   "genre": "variante",
+   "types": [
+    "roche",
+    "ombre"
+   ],
+   "valeur": "9e3779b97f4a7c15f39cc0605cedc8341082276bf3a27251f86c6a11d0c18e95",
+   "n0": 123,
+   "attendu": {
+    "n": 124,
+    "champs": {
+     "espece": "Lichonarque",
+     "variante": "ruines",
+     "shiny": false,
+     "marque": "une petite cicatrice en forme de point-virgule",
+     "humeur": "taquine",
+     "taille": 183.0,
+     "qualite": 0.681,
+     "potentiel": 65,
+     "stats": {
+      "PV": 56,
+      "ATK": 60,
+      "DEF": 59,
+      "VIT": 58,
+      "INT": 62
+     },
+     "note": 73.2,
+     "rarete": "rare",
+     "stade": "ado"
+    }
+   }
+  },
+  {
+   "monde": "temps",
+   "exploit": "temps.version",
+   "genre": "variante",
+   "types": [
+    "roche",
+    "ombre"
+   ],
+   "valeur": "8000000000000001fac71cefac71cefac71cefac71cefac71cefac71ce00",
+   "n0": 0,
+   "attendu": {
+    "n": 3,
+    "champs": {
+     "espece": "Heaumbre",
+     "variante": "montagne",
+     "shiny": false,
+     "marque": "une antenne qui capte la radio",
+     "humeur": "timide",
+     "taille": 191.4,
+     "qualite": 0.519,
+     "potentiel": 51,
+     "stats": {
+      "PV": 54,
+      "ATK": 44,
+      "DEF": 43,
+      "VIT": 40,
+      "INT": 48
+     },
+     "note": 57.1,
+     "rarete": "peu commune",
+     "stade": "ado"
+    }
+   }
+  },
+  {
+   "monde": "temps",
+   "exploit": "temps.version",
+   "genre": "variante",
+   "types": [
+    "roche",
+    "ombre"
+   ],
+   "valeur": "8000000000000001fac71cefac71cefac71cefac71cefac71cefac71ce00",
+   "n0": 17,
+   "attendu": {
+    "n": 18,
+    "champs": {
+     "espece": "Goulichon",
+     "variante": "classique",
+     "shiny": false,
+     "marque": "un éternuement qui fait des étincelles",
+     "humeur": "courageuse",
+     "taille": 91.4,
+     "qualite": 0.713,
+     "potentiel": 72,
+     "stats": {
+      "PV": 39,
+      "ATK": 42,
+      "DEF": 36,
+      "VIT": 36,
+      "INT": 40
+     },
+     "note": 44.9,
+     "rarete": "commune",
+     "stade": "enfant"
+    }
+   }
+  },
+  {
+   "monde": "temps",
+   "exploit": "temps.version",
+   "genre": "variante",
+   "types": [
+    "roche",
+    "ombre"
+   ],
+   "valeur": "8000000000000001fac71cefac71cefac71cefac71cefac71cefac71ce00",
+   "n0": 60,
+   "attendu": {
+    "n": 61,
+    "champs": {
+     "espece": "Rouillot",
+     "variante": "canyon",
+     "shiny": false,
+     "marque": "des taches disposées comme une constellation",
+     "humeur": "rêveuse",
+     "taille": 28.9,
+     "qualite": 0.908,
+     "potentiel": 91,
+     "stats": {
+      "PV": 41,
+      "ATK": 43,
+      "DEF": 39,
+      "VIT": 45,
+      "INT": 27
+     },
+     "note": 76.2,
+     "rarete": "épique",
+     "stade": "bebe"
+    }
+   }
+  },
+  {
+   "monde": "temps",
+   "exploit": "temps.version",
+   "genre": "variante",
+   "types": [
+    "roche",
+    "ombre"
+   ],
+   "valeur": "8000000000000001fac71cefac71cefac71cefac71cefac71cefac71ce00",
+   "n0": 123,
+   "attendu": {
+    "n": 126,
+    "champs": {
+     "espece": "Ricanos",
+     "variante": "classique",
+     "shiny": false,
+     "marque": "une crête en forme d'accolade {",
+     "humeur": "courageuse",
+     "taille": 102.4,
+     "qualite": 0.667,
+     "potentiel": 70,
+     "stats": {
+      "PV": 48,
+      "ATK": 48,
+      "DEF": 38,
+      "VIT": 44,
+      "INT": 31
+     },
+     "note": 44.3,
+     "rarete": "commune",
+     "stade": "enfant"
+    }
+   }
+  },
+  {
+   "monde": "donnees",
+   "exploit": "donnees.statistique",
+   "genre": "variante",
+   "types": [
+    "eau",
+    "glace"
+   ],
+   "valeur": "0000000000000000000000000000000000000000000000000000000000000000",
+   "n0": 0,
+   "attendu": {
+    "n": 0,
+    "champs": {
+     "espece": "Heaumbre",
+     "variante": "ombre",
+     "shiny": false,
+     "marque": "un museau qui sent le café",
+     "humeur": "paresseuse",
+     "taille": 196.9,
+     "qualite": 0.685,
+     "potentiel": 77,
+     "stats": {
+      "PV": 55,
+      "ATK": 49,
+      "DEF": 50,
+      "VIT": 46,
+      "INT": 50
+     },
+     "note": 69.1,
+     "rarete": "rare",
+     "stade": "ado"
+    }
+   }
+  },
+  {
+   "monde": "donnees",
+   "exploit": "donnees.statistique",
+   "genre": "variante",
+   "types": [
+    "eau",
+    "glace"
+   ],
+   "valeur": "0000000000000000000000000000000000000000000000000000000000000000",
+   "n0": 17,
+   "attendu": {
+    "n": 20,
+    "champs": {
+     "espece": "Raiyon",
+     "variante": "aurore",
+     "shiny": false,
+     "marque": "une tache en forme de @ sur le dos",
+     "humeur": "timide",
+     "taille": 246.2,
+     "qualite": 0.873,
+     "potentiel": 83,
+     "stats": {
+      "PV": 41,
+      "ATK": 54,
+      "DEF": 42,
+      "VIT": 70,
+      "INT": 56
+     },
+     "note": 81.4,
+     "rarete": "épique",
+     "stade": "ado"
+    }
+   }
+  },
+  {
+   "monde": "donnees",
+   "exploit": "donnees.statistique",
+   "genre": "variante",
+   "types": [
+    "eau",
+    "glace"
+   ],
+   "valeur": "0000000000000000000000000000000000000000000000000000000000000000",
+   "n0": 60,
+   "attendu": {
+    "n": 60,
+    "champs": {
+     "espece": "Libellance",
+     "variante": "classique",
+     "shiny": false,
+     "marque": "des yeux de deux couleurs",
+     "humeur": "fougueuse",
+     "taille": 268.6,
+     "qualite": 0.989,
+     "potentiel": 97,
+     "stats": {
+      "PV": 49,
+      "ATK": 53,
+      "DEF": 47,
+      "VIT": 84,
+      "INT": 60
+     },
+     "note": 71.1,
+     "rarete": "rare",
+     "stade": "ado"
+    }
+   }
+  },
+  {
+   "monde": "donnees",
+   "exploit": "donnees.statistique",
+   "genre": "variante",
+   "types": [
+    "eau",
+    "glace"
+   ],
+   "valeur": "0000000000000000000000000000000000000000000000000000000000000000",
+   "n0": 123,
+   "attendu": {
+    "n": 125,
+    "champs": {
+     "espece": "Givrarde",
+     "variante": "aurore",
+     "shiny": false,
+     "marque": "une antenne qui capte la radio",
+     "humeur": "calme",
+     "taille": 255.6,
+     "qualite": 0.988,
+     "potentiel": 98,
+     "stats": {
+      "PV": 60,
+      "ATK": 63,
+      "DEF": 52,
+      "VIT": 47,
+      "INT": 52
+     },
+     "note": 90.3,
+     "rarete": "légendaire",
+     "stade": "bebe"
+    }
+   }
+  },
+  {
+   "monde": "donnees",
+   "exploit": "donnees.statistique",
+   "genre": "variante",
+   "types": [
+    "eau",
+    "glace"
+   ],
+   "valeur": "ffffffffffffffff000000000000000000000000000000000000000000000000",
+   "n0": 0,
+   "attendu": {
+    "n": 2,
+    "champs": {
+     "espece": "Krillou",
+     "variante": "glace",
+     "shiny": false,
+     "marque": "une tache en forme de @ sur le dos",
+     "humeur": "paresseuse",
+     "taille": 28.5,
+     "qualite": 0.124,
+     "potentiel": 13,
+     "stats": {
+      "PV": 25,
+      "ATK": 32,
+      "DEF": 34,
+      "VIT": 36,
+      "INT": 20
+     },
+     "note": 29.0,
+     "rarete": "commune",
+     "stade": "adulte"
+    }
+   }
+  },
+  {
+   "monde": "donnees",
+   "exploit": "donnees.statistique",
+   "genre": "variante",
+   "types": [
+    "eau",
+    "glace"
+   ],
+   "valeur": "ffffffffffffffff000000000000000000000000000000000000000000000000",
+   "n0": 17,
+   "attendu": {
+    "n": 17,
+    "champs": {
+     "espece": "Momiaou",
+     "variante": "desert",
+     "shiny": false,
+     "marque": "un ronronnement à 440 Hz",
+     "humeur": "têtue",
+     "taille": 101.2,
+     "qualite": 0.398,
+     "potentiel": 43,
+     "stats": {
+      "PV": 42,
+      "ATK": 47,
+      "DEF": 41,
+      "VIT": 47,
+      "INT": 27
+     },
+     "note": 42.8,
+     "rarete": "commune",
+     "stade": "enfant"
+    }
+   }
+  },
+  {
+   "monde": "donnees",
+   "exploit": "donnees.statistique",
+   "genre": "variante",
+   "types": [
+    "eau",
+    "glace"
+   ],
+   "valeur": "ffffffffffffffff000000000000000000000000000000000000000000000000",
+   "n0": 60,
+   "attendu": {
+    "n": 62,
+    "champs": {
+     "espece": "Louvacier",
+     "variante": "toundra",
+     "shiny": false,
+     "marque": "des pattes de longueur différente",
+     "humeur": "taquine",
+     "taille": 93.9,
+     "qualite": 0.978,
+     "potentiel": 97,
+     "stats": {
+      "PV": 50,
+      "ATK": 53,
+      "DEF": 41,
+      "VIT": 45,
+      "INT": 30
+     },
+     "note": 74.4,
+     "rarete": "rare",
+     "stade": "bebe"
+    }
+   }
+  },
+  {
+   "monde": "donnees",
+   "exploit": "donnees.statistique",
+   "genre": "variante",
+   "types": [
+    "eau",
+    "glace"
+   ],
+   "valeur": "ffffffffffffffff000000000000000000000000000000000000000000000000",
+   "n0": 123,
+   "attendu": {
+    "n": 123,
+    "champs": {
+     "espece": "Scorpiquant",
+     "variante": "classique",
+     "shiny": false,
+     "marque": "des rayures comme un code-barres",
+     "humeur": "fougueuse",
+     "taille": 221.5,
+     "qualite": 0.234,
+     "potentiel": 24,
+     "stats": {
+      "PV": 37,
+      "ATK": 48,
+      "DEF": 48,
+      "VIT": 47,
+      "INT": 29
+     },
+     "note": 22.6,
+     "rarete": "commune",
+     "stade": "ado"
+    }
+   }
+  },
+  {
+   "monde": "donnees",
+   "exploit": "donnees.statistique",
+   "genre": "variante",
+   "types": [
+    "eau",
+    "glace"
+   ],
+   "valeur": "9e3779b97f4a7c15f39cc0605cedc8341082276bf3a27251f86c6a11d0c18e95",
+   "n0": 0,
+   "attendu": {
+    "n": 0,
+    "champs": {
+     "espece": "Clopinou",
+     "variante": "classique",
+     "shiny": false,
+     "marque": "une crête en forme d'accolade {",
+     "humeur": "taquine",
+     "taille": 31.1,
+     "qualite": 0.882,
+     "potentiel": 87,
+     "stats": {
+      "PV": 42,
+      "ATK": 44,
+      "DEF": 56,
+      "VIT": 48,
+      "INT": 31
+     },
+     "note": 57.2,
+     "rarete": "peu commune",
+     "stade": "ado"
+    }
+   }
+  },
+  {
+   "monde": "donnees",
+   "exploit": "donnees.statistique",
+   "genre": "variante",
+   "types": [
+    "eau",
+    "glace"
+   ],
+   "valeur": "9e3779b97f4a7c15f39cc0605cedc8341082276bf3a27251f86c6a11d0c18e95",
+   "n0": 17,
+   "attendu": {
+    "n": 17,
+    "champs": {
+     "espece": "Tentaclou",
+     "variante": "marais",
+     "shiny": false,
+     "marque": "un éternuement qui fait des étincelles",
+     "humeur": "têtue",
+     "taille": 37.4,
+     "qualite": 0.423,
+     "potentiel": 38,
+     "stats": {
+      "PV": 41,
+      "ATK": 25,
+      "DEF": 43,
+      "VIT": 18,
+      "INT": 38
+     },
+     "note": 40.0,
+     "rarete": "commune",
+     "stade": "enfant"
+    }
+   }
+  },
+  {
+   "monde": "donnees",
+   "exploit": "donnees.statistique",
+   "genre": "variante",
+   "types": [
+    "eau",
+    "glace"
+   ],
+   "valeur": "9e3779b97f4a7c15f39cc0605cedc8341082276bf3a27251f86c6a11d0c18e95",
+   "n0": 60,
+   "attendu": {
+    "n": 61,
+    "champs": {
+     "espece": "Cocondor",
+     "variante": "classique",
+     "shiny": false,
+     "marque": "des empreintes en forme de 0 et de 1",
+     "humeur": "timide",
+     "taille": 197.1,
+     "qualite": 0.723,
+     "potentiel": 72,
+     "stats": {
+      "PV": 84,
+      "ATK": 43,
+      "DEF": 67,
+      "VIT": 37,
+      "INT": 58
+     },
+     "note": 57.3,
+     "rarete": "peu commune",
+     "stade": "bebe"
+    }
+   }
+  },
+  {
+   "monde": "donnees",
+   "exploit": "donnees.statistique",
+   "genre": "variante",
+   "types": [
+    "eau",
+    "glace"
+   ],
+   "valeur": "9e3779b97f4a7c15f39cc0605cedc8341082276bf3a27251f86c6a11d0c18e95",
+   "n0": 123,
+   "attendu": {
+    "n": 123,
+    "champs": {
+     "espece": "Krillou",
+     "variante": "corail",
+     "shiny": false,
+     "marque": "un ronronnement à 440 Hz",
+     "humeur": "courageuse",
+     "taille": 33.1,
+     "qualite": 0.606,
+     "potentiel": 54,
+     "stats": {
+      "PV": 33,
+      "ATK": 39,
+      "DEF": 41,
+      "VIT": 43,
+      "INT": 22
+     },
+     "note": 55.9,
+     "rarete": "peu commune",
+     "stade": "bebe"
+    }
+   }
+  },
+  {
+   "monde": "donnees",
+   "exploit": "donnees.statistique",
+   "genre": "variante",
+   "types": [
+    "eau",
+    "glace"
+   ],
+   "valeur": "8000000000000001fac71cefac71cefac71cefac71cefac71cefac71ce00",
+   "n0": 0,
+   "attendu": {
+    "n": 0,
+    "champs": {
+     "espece": "Félicorne",
+     "variante": "soleil",
+     "shiny": false,
+     "marque": "des empreintes en forme de 0 et de 1",
+     "humeur": "taquine",
+     "taille": 191.4,
+     "qualite": 0.796,
+     "potentiel": 79,
+     "stats": {
+      "PV": 51,
+      "ATK": 52,
+      "DEF": 47,
+      "VIT": 51,
+      "INT": 33
+     },
+     "note": 73.6,
+     "rarete": "rare",
+     "stade": "adulte"
+    }
+   }
+  },
+  {
+   "monde": "donnees",
+   "exploit": "donnees.statistique",
+   "genre": "variante",
+   "types": [
+    "eau",
+    "glace"
+   ],
+   "valeur": "8000000000000001fac71cefac71cefac71cefac71cefac71cefac71ce00",
+   "n0": 17,
+   "attendu": {
+    "n": 17,
+    "champs": {
+     "espece": "Givrarde",
+     "variante": "brume",
+     "shiny": false,
+     "marque": "des rayures comme un code-barres",
+     "humeur": "calme",
+     "taille": 186.8,
+     "qualite": 0.123,
+     "potentiel": 16,
+     "stats": {
+      "PV": 48,
+      "ATK": 51,
+      "DEF": 39,
+      "VIT": 35,
+      "INT": 38
+     },
+     "note": 37.7,
+     "rarete": "commune",
+     "stade": "bebe"
+    }
+   }
+  },
+  {
+   "monde": "donnees",
+   "exploit": "donnees.statistique",
+   "genre": "variante",
+   "types": [
+    "eau",
+    "glace"
+   ],
+   "valeur": "8000000000000001fac71cefac71cefac71cefac71cefac71cefac71ce00",
+   "n0": 60,
+   "attendu": {
+    "n": 60,
+    "champs": {
+     "espece": "Lanternix",
+     "variante": "classique",
+     "shiny": false,
+     "marque": "une voix qui résonne comme dans une grotte",
+     "humeur": "fougueuse",
+     "taille": 30.8,
+     "qualite": 0.092,
+     "potentiel": 10,
+     "stats": {
+      "PV": 34,
+      "ATK": 23,
+      "DEF": 31,
+      "VIT": 37,
+      "INT": 46
+     },
+     "note": 10.9,
+     "rarete": "commune",
+     "stade": "enfant"
+    }
+   }
+  },
+  {
+   "monde": "donnees",
+   "exploit": "donnees.statistique",
+   "genre": "variante",
+   "types": [
+    "eau",
+    "glace"
+   ],
+   "valeur": "8000000000000001fac71cefac71cefac71cefac71cefac71cefac71ce00",
+   "n0": 123,
+   "attendu": {
+    "n": 124,
+    "champs": {
+     "espece": "Raiyon",
+     "variante": "classique",
+     "shiny": false,
+     "marque": "un hoquet en code Morse",
+     "humeur": "timide",
+     "taille": 250.6,
+     "qualite": 0.31,
+     "potentiel": 28,
+     "stats": {
+      "PV": 34,
+      "ATK": 45,
+      "DEF": 32,
+      "VIT": 61,
+      "INT": 49
+     },
+     "note": 28.2,
+     "rarete": "commune",
+     "stade": "enfant"
+    }
+   }
+  },
+  {
+   "monde": "controle",
+   "exploit": "controle.vague",
+   "genre": "variante",
+   "types": [
+    "machine",
+    "roche"
+   ],
+   "valeur": "0000000000000000000000000000000000000000000000000000000000000000",
+   "n0": 0,
+   "attendu": {
+    "n": 0,
+    "champs": {
+     "espece": "Heaumbre",
+     "variante": "ombre",
+     "shiny": false,
+     "marque": "un museau qui sent le café",
+     "humeur": "paresseuse",
+     "taille": 196.9,
+     "qualite": 0.685,
+     "potentiel": 77,
+     "stats": {
+      "PV": 55,
+      "ATK": 49,
+      "DEF": 50,
+      "VIT": 46,
+      "INT": 50
+     },
+     "note": 69.1,
+     "rarete": "rare",
+     "stade": "ado"
+    }
+   }
+  },
+  {
+   "monde": "controle",
+   "exploit": "controle.vague",
+   "genre": "variante",
+   "types": [
+    "machine",
+    "roche"
+   ],
+   "valeur": "0000000000000000000000000000000000000000000000000000000000000000",
+   "n0": 17,
+   "attendu": {
+    "n": 17,
+    "champs": {
+     "espece": "Plouftin",
+     "variante": "classique",
+     "shiny": false,
+     "marque": "un grain de beauté en forme de #",
+     "humeur": "taquine",
+     "taille": 35.8,
+     "qualite": 0.855,
+     "potentiel": 85,
+     "stats": {
+      "PV": 35,
+      "ATK": 28,
+      "DEF": 29,
+      "VIT": 36,
+      "INT": 55
+     },
+     "note": 51.3,
+     "rarete": "peu commune",
+     "stade": "ado"
+    }
+   }
+  },
+  {
+   "monde": "controle",
+   "exploit": "controle.vague",
+   "genre": "variante",
+   "types": [
+    "machine",
+    "roche"
+   ],
+   "valeur": "0000000000000000000000000000000000000000000000000000000000000000",
+   "n0": 60,
+   "attendu": {
+    "n": 60,
+    "champs": {
+     "espece": "Libellance",
+     "variante": "classique",
+     "shiny": false,
+     "marque": "des yeux de deux couleurs",
+     "humeur": "fougueuse",
+     "taille": 268.6,
+     "qualite": 0.989,
+     "potentiel": 97,
+     "stats": {
+      "PV": 49,
+      "ATK": 53,
+      "DEF": 47,
+      "VIT": 84,
+      "INT": 60
+     },
+     "note": 71.1,
+     "rarete": "rare",
+     "stade": "ado"
+    }
+   }
+  },
+  {
+   "monde": "controle",
+   "exploit": "controle.vague",
+   "genre": "variante",
+   "types": [
+    "machine",
+    "roche"
+   ],
+   "valeur": "0000000000000000000000000000000000000000000000000000000000000000",
+   "n0": 123,
+   "attendu": {
+    "n": 124,
+    "champs": {
+     "espece": "Groinfer",
+     "variante": "ruines",
+     "shiny": false,
+     "marque": "une ombre qui a un pixel de retard",
+     "humeur": "timide",
+     "taille": 73.7,
+     "qualite": 0.341,
+     "potentiel": 34,
+     "stats": {
+      "PV": 33,
+      "ATK": 31,
+      "DEF": 28,
+      "VIT": 32,
+      "INT": 20
+     },
+     "note": 37.8,
+     "rarete": "commune",
+     "stade": "bebe"
+    }
+   }
+  },
+  {
+   "monde": "controle",
+   "exploit": "controle.vague",
+   "genre": "variante",
+   "types": [
+    "machine",
+    "roche"
+   ],
+   "valeur": "ffffffffffffffff000000000000000000000000000000000000000000000000",
+   "n0": 0,
+   "attendu": {
+    "n": 3,
+    "champs": {
+     "espece": "Crabouille",
+     "variante": "sable",
+     "shiny": false,
+     "marque": "une petite cicatrice en forme de point-virgule",
+     "humeur": "timide",
+     "taille": 93.9,
+     "qualite": 0.979,
+     "potentiel": 92,
+     "stats": {
+      "PV": 42,
+      "ATK": 47,
+      "DEF": 47,
+      "VIT": 54,
+      "INT": 35
+     },
+     "note": 75.5,
+     "rarete": "épique",
+     "stade": "enfant"
+    }
+   }
+  },
+  {
+   "monde": "controle",
+   "exploit": "controle.vague",
+   "genre": "variante",
+   "types": [
+    "machine",
+    "roche"
+   ],
+   "valeur": "ffffffffffffffff000000000000000000000000000000000000000000000000",
+   "n0": 17,
+   "attendu": {
+    "n": 17,
+    "champs": {
+     "espece": "Momiaou",
+     "variante": "desert",
+     "shiny": false,
+     "marque": "un ronronnement à 440 Hz",
+     "humeur": "têtue",
+     "taille": 101.2,
+     "qualite": 0.398,
+     "potentiel": 43,
+     "stats": {
+      "PV": 42,
+      "ATK": 47,
+      "DEF": 41,
+      "VIT": 47,
+      "INT": 27
+     },
+     "note": 42.8,
+     "rarete": "commune",
+     "stade": "enfant"
+    }
+   }
+  },
+  {
+   "monde": "controle",
+   "exploit": "controle.vague",
+   "genre": "variante",
+   "types": [
+    "machine",
+    "roche"
+   ],
+   "valeur": "ffffffffffffffff000000000000000000000000000000000000000000000000",
+   "n0": 60,
+   "attendu": {
+    "n": 60,
+    "champs": {
+     "espece": "Lampignon",
+     "variante": "champignonniere",
+     "shiny": false,
+     "marque": "un grain de beauté en forme de #",
+     "humeur": "curieuse",
+     "taille": 89.5,
+     "qualite": 0.705,
+     "potentiel": 75,
+     "stats": {
+      "PV": 40,
+      "ATK": 39,
+      "DEF": 42,
+      "VIT": 48,
+      "INT": 71
+     },
+     "note": 62.3,
+     "rarete": "peu commune",
+     "stade": "bebe"
+    }
+   }
+  },
+  {
+   "monde": "controle",
+   "exploit": "controle.vague",
+   "genre": "variante",
+   "types": [
+    "machine",
+    "roche"
+   ],
+   "valeur": "ffffffffffffffff000000000000000000000000000000000000000000000000",
+   "n0": 123,
+   "attendu": {
+    "n": 123,
+    "champs": {
+     "espece": "Scorpiquant",
+     "variante": "classique",
+     "shiny": false,
+     "marque": "des rayures comme un code-barres",
+     "humeur": "fougueuse",
+     "taille": 221.5,
+     "qualite": 0.234,
+     "potentiel": 24,
+     "stats": {
+      "PV": 37,
+      "ATK": 48,
+      "DEF": 48,
+      "VIT": 47,
+      "INT": 29
+     },
+     "note": 22.6,
+     "rarete": "commune",
+     "stade": "ado"
+    }
+   }
+  },
+  {
+   "monde": "controle",
+   "exploit": "controle.vague",
+   "genre": "variante",
+   "types": [
+    "machine",
+    "roche"
+   ],
+   "valeur": "9e3779b97f4a7c15f39cc0605cedc8341082276bf3a27251f86c6a11d0c18e95",
+   "n0": 0,
+   "attendu": {
+    "n": 3,
+    "champs": {
+     "espece": "Fourmidable",
+     "variante": "classique",
+     "shiny": false,
+     "marque": "une ombre qui a un pixel de retard",
+     "humeur": "paresseuse",
+     "taille": 72.1,
+     "qualite": 0.193,
+     "potentiel": 19,
+     "stats": {
+      "PV": 31,
+      "ATK": 30,
+      "DEF": 28,
+      "VIT": 29,
+      "INT": 33
+     },
+     "note": 13.7,
+     "rarete": "commune",
+     "stade": "adulte"
+    }
+   }
+  },
+  {
+   "monde": "controle",
+   "exploit": "controle.vague",
+   "genre": "variante",
+   "types": [
+    "machine",
+    "roche"
+   ],
+   "valeur": "9e3779b97f4a7c15f39cc0605cedc8341082276bf3a27251f86c6a11d0c18e95",
+   "n0": 17,
+   "attendu": {
+    "n": 20,
+    "champs": {
+     "espece": "Engrenaille",
+     "variante": "classique",
+     "shiny": false,
+     "marque": "une voix qui résonne comme dans une grotte",
+     "humeur": "fougueuse",
+     "taille": 259.8,
+     "qualite": 0.715,
+     "potentiel": 68,
+     "stats": {
+      "PV": 44,
+      "ATK": 49,
+      "DEF": 51,
+      "VIT": 49,
+      "INT": 31
+     },
+     "note": 49.3,
+     "rarete": "peu commune",
+     "stade": "adulte"
+    }
+   }
+  },
+  {
+   "monde": "controle",
+   "exploit": "controle.vague",
+   "genre": "variante",
+   "types": [
+    "machine",
+    "roche"
+   ],
+   "valeur": "9e3779b97f4a7c15f39cc0605cedc8341082276bf3a27251f86c6a11d0c18e95",
+   "n0": 60,
+   "attendu": {
+    "n": 60,
+    "champs": {
+     "espece": "Cendrouille",
+     "variante": "cendres",
+     "shiny": false,
+     "marque": "une tache en forme de @ sur le dos",
+     "humeur": "têtue",
+     "taille": 84.6,
+     "qualite": 0.415,
+     "potentiel": 42,
+     "stats": {
+      "PV": 45,
+      "ATK": 28,
+      "DEF": 41,
+      "VIT": 26,
+      "INT": 35
+     },
+     "note": 40.6,
+     "rarete": "commune",
+     "stade": "ado"
+    }
+   }
+  },
+  {
+   "monde": "controle",
+   "exploit": "controle.vague",
+   "genre": "variante",
+   "types": [
+    "machine",
+    "roche"
+   ],
+   "valeur": "9e3779b97f4a7c15f39cc0605cedc8341082276bf3a27251f86c6a11d0c18e95",
+   "n0": 123,
+   "attendu": {
+    "n": 124,
+    "champs": {
+     "espece": "Lichonarque",
+     "variante": "ruines",
+     "shiny": false,
+     "marque": "une petite cicatrice en forme de point-virgule",
+     "humeur": "taquine",
+     "taille": 183.0,
+     "qualite": 0.681,
+     "potentiel": 65,
+     "stats": {
+      "PV": 56,
+      "ATK": 60,
+      "DEF": 59,
+      "VIT": 58,
+      "INT": 62
+     },
+     "note": 73.2,
+     "rarete": "rare",
+     "stade": "ado"
+    }
+   }
+  },
+  {
+   "monde": "controle",
+   "exploit": "controle.vague",
+   "genre": "variante",
+   "types": [
+    "machine",
+    "roche"
+   ],
+   "valeur": "8000000000000001fac71cefac71cefac71cefac71cefac71cefac71ce00",
+   "n0": 0,
+   "attendu": {
+    "n": 3,
+    "champs": {
+     "espece": "Heaumbre",
+     "variante": "montagne",
+     "shiny": false,
+     "marque": "une antenne qui capte la radio",
+     "humeur": "timide",
+     "taille": 191.4,
+     "qualite": 0.519,
+     "potentiel": 51,
+     "stats": {
+      "PV": 54,
+      "ATK": 44,
+      "DEF": 43,
+      "VIT": 40,
+      "INT": 48
+     },
+     "note": 57.1,
+     "rarete": "peu commune",
+     "stade": "ado"
+    }
+   }
+  },
+  {
+   "monde": "controle",
+   "exploit": "controle.vague",
+   "genre": "variante",
+   "types": [
+    "machine",
+    "roche"
+   ],
+   "valeur": "8000000000000001fac71cefac71cefac71cefac71cefac71cefac71ce00",
+   "n0": 17,
+   "attendu": {
+    "n": 17,
+    "champs": {
+     "espece": "Givrarde",
+     "variante": "brume",
+     "shiny": false,
+     "marque": "des rayures comme un code-barres",
+     "humeur": "calme",
+     "taille": 186.8,
+     "qualite": 0.123,
+     "potentiel": 16,
+     "stats": {
+      "PV": 48,
+      "ATK": 51,
+      "DEF": 39,
+      "VIT": 35,
+      "INT": 38
+     },
+     "note": 37.7,
+     "rarete": "commune",
+     "stade": "bebe"
+    }
+   }
+  },
+  {
+   "monde": "controle",
+   "exploit": "controle.vague",
+   "genre": "variante",
+   "types": [
+    "machine",
+    "roche"
+   ],
+   "valeur": "8000000000000001fac71cefac71cefac71cefac71cefac71cefac71ce00",
+   "n0": 60,
+   "attendu": {
+    "n": 61,
+    "champs": {
+     "espece": "Rouillot",
+     "variante": "canyon",
+     "shiny": false,
+     "marque": "des taches disposées comme une constellation",
+     "humeur": "rêveuse",
+     "taille": 28.9,
+     "qualite": 0.908,
+     "potentiel": 91,
+     "stats": {
+      "PV": 41,
+      "ATK": 43,
+      "DEF": 39,
+      "VIT": 45,
+      "INT": 27
+     },
+     "note": 76.2,
+     "rarete": "épique",
+     "stade": "bebe"
+    }
+   }
+  },
+  {
+   "monde": "controle",
+   "exploit": "controle.vague",
+   "genre": "variante",
+   "types": [
+    "machine",
+    "roche"
+   ],
+   "valeur": "8000000000000001fac71cefac71cefac71cefac71cefac71cefac71ce00",
+   "n0": 123,
+   "attendu": {
+    "n": 126,
+    "champs": {
+     "espece": "Ricanos",
+     "variante": "classique",
+     "shiny": false,
+     "marque": "une crête en forme d'accolade {",
+     "humeur": "courageuse",
+     "taille": 102.4,
+     "qualite": 0.667,
+     "potentiel": 70,
+     "stats": {
+      "PV": 48,
+      "ATK": 48,
+      "DEF": 38,
+      "VIT": 44,
+      "INT": 31
+     },
+     "note": 44.3,
+     "rarete": "commune",
+     "stade": "enfant"
+    }
+   }
+  },
+  {
+   "monde": "machines",
+   "exploit": "machines.premier_demarrage",
+   "genre": "variante",
+   "types": [
+    "machine",
+    "roche"
+   ],
+   "valeur": "0000000000000000000000000000000000000000000000000000000000000000",
+   "n0": 0,
+   "attendu": {
+    "n": 0,
+    "champs": {
+     "espece": "Heaumbre",
+     "variante": "ombre",
+     "shiny": false,
+     "marque": "un museau qui sent le café",
+     "humeur": "paresseuse",
+     "taille": 196.9,
+     "qualite": 0.685,
+     "potentiel": 77,
+     "stats": {
+      "PV": 55,
+      "ATK": 49,
+      "DEF": 50,
+      "VIT": 46,
+      "INT": 50
+     },
+     "note": 69.1,
+     "rarete": "rare",
+     "stade": "ado"
+    }
+   }
+  },
+  {
+   "monde": "machines",
+   "exploit": "machines.premier_demarrage",
+   "genre": "variante",
+   "types": [
+    "machine",
+    "roche"
+   ],
+   "valeur": "0000000000000000000000000000000000000000000000000000000000000000",
+   "n0": 17,
+   "attendu": {
+    "n": 17,
+    "champs": {
+     "espece": "Plouftin",
+     "variante": "classique",
+     "shiny": false,
+     "marque": "un grain de beauté en forme de #",
+     "humeur": "taquine",
+     "taille": 35.8,
+     "qualite": 0.855,
+     "potentiel": 85,
+     "stats": {
+      "PV": 35,
+      "ATK": 28,
+      "DEF": 29,
+      "VIT": 36,
+      "INT": 55
+     },
+     "note": 51.3,
+     "rarete": "peu commune",
+     "stade": "ado"
+    }
+   }
+  },
+  {
+   "monde": "machines",
+   "exploit": "machines.premier_demarrage",
+   "genre": "variante",
+   "types": [
+    "machine",
+    "roche"
+   ],
+   "valeur": "0000000000000000000000000000000000000000000000000000000000000000",
+   "n0": 60,
+   "attendu": {
+    "n": 60,
+    "champs": {
+     "espece": "Libellance",
+     "variante": "classique",
+     "shiny": false,
+     "marque": "des yeux de deux couleurs",
+     "humeur": "fougueuse",
+     "taille": 268.6,
+     "qualite": 0.989,
+     "potentiel": 97,
+     "stats": {
+      "PV": 49,
+      "ATK": 53,
+      "DEF": 47,
+      "VIT": 84,
+      "INT": 60
+     },
+     "note": 71.1,
+     "rarete": "rare",
+     "stade": "ado"
+    }
+   }
+  },
+  {
+   "monde": "machines",
+   "exploit": "machines.premier_demarrage",
+   "genre": "variante",
+   "types": [
+    "machine",
+    "roche"
+   ],
+   "valeur": "0000000000000000000000000000000000000000000000000000000000000000",
+   "n0": 123,
+   "attendu": {
+    "n": 124,
+    "champs": {
+     "espece": "Groinfer",
+     "variante": "ruines",
+     "shiny": false,
+     "marque": "une ombre qui a un pixel de retard",
+     "humeur": "timide",
+     "taille": 73.7,
+     "qualite": 0.341,
+     "potentiel": 34,
+     "stats": {
+      "PV": 33,
+      "ATK": 31,
+      "DEF": 28,
+      "VIT": 32,
+      "INT": 20
+     },
+     "note": 37.8,
+     "rarete": "commune",
+     "stade": "bebe"
+    }
+   }
+  },
+  {
+   "monde": "machines",
+   "exploit": "machines.premier_demarrage",
+   "genre": "variante",
+   "types": [
+    "machine",
+    "roche"
+   ],
+   "valeur": "ffffffffffffffff000000000000000000000000000000000000000000000000",
+   "n0": 0,
+   "attendu": {
+    "n": 3,
+    "champs": {
+     "espece": "Crabouille",
+     "variante": "sable",
+     "shiny": false,
+     "marque": "une petite cicatrice en forme de point-virgule",
+     "humeur": "timide",
+     "taille": 93.9,
+     "qualite": 0.979,
+     "potentiel": 92,
+     "stats": {
+      "PV": 42,
+      "ATK": 47,
+      "DEF": 47,
+      "VIT": 54,
+      "INT": 35
+     },
+     "note": 75.5,
+     "rarete": "épique",
+     "stade": "enfant"
+    }
+   }
+  },
+  {
+   "monde": "machines",
+   "exploit": "machines.premier_demarrage",
+   "genre": "variante",
+   "types": [
+    "machine",
+    "roche"
+   ],
+   "valeur": "ffffffffffffffff000000000000000000000000000000000000000000000000",
+   "n0": 17,
+   "attendu": {
+    "n": 17,
+    "champs": {
+     "espece": "Momiaou",
+     "variante": "desert",
+     "shiny": false,
+     "marque": "un ronronnement à 440 Hz",
+     "humeur": "têtue",
+     "taille": 101.2,
+     "qualite": 0.398,
+     "potentiel": 43,
+     "stats": {
+      "PV": 42,
+      "ATK": 47,
+      "DEF": 41,
+      "VIT": 47,
+      "INT": 27
+     },
+     "note": 42.8,
+     "rarete": "commune",
+     "stade": "enfant"
+    }
+   }
+  },
+  {
+   "monde": "machines",
+   "exploit": "machines.premier_demarrage",
+   "genre": "variante",
+   "types": [
+    "machine",
+    "roche"
+   ],
+   "valeur": "ffffffffffffffff000000000000000000000000000000000000000000000000",
+   "n0": 60,
+   "attendu": {
+    "n": 60,
+    "champs": {
+     "espece": "Lampignon",
+     "variante": "champignonniere",
+     "shiny": false,
+     "marque": "un grain de beauté en forme de #",
+     "humeur": "curieuse",
+     "taille": 89.5,
+     "qualite": 0.705,
+     "potentiel": 75,
+     "stats": {
+      "PV": 40,
+      "ATK": 39,
+      "DEF": 42,
+      "VIT": 48,
+      "INT": 71
+     },
+     "note": 62.3,
+     "rarete": "peu commune",
+     "stade": "bebe"
+    }
+   }
+  },
+  {
+   "monde": "machines",
+   "exploit": "machines.premier_demarrage",
+   "genre": "variante",
+   "types": [
+    "machine",
+    "roche"
+   ],
+   "valeur": "ffffffffffffffff000000000000000000000000000000000000000000000000",
+   "n0": 123,
+   "attendu": {
+    "n": 123,
+    "champs": {
+     "espece": "Scorpiquant",
+     "variante": "classique",
+     "shiny": false,
+     "marque": "des rayures comme un code-barres",
+     "humeur": "fougueuse",
+     "taille": 221.5,
+     "qualite": 0.234,
+     "potentiel": 24,
+     "stats": {
+      "PV": 37,
+      "ATK": 48,
+      "DEF": 48,
+      "VIT": 47,
+      "INT": 29
+     },
+     "note": 22.6,
+     "rarete": "commune",
+     "stade": "ado"
+    }
+   }
+  },
+  {
+   "monde": "machines",
+   "exploit": "machines.premier_demarrage",
+   "genre": "variante",
+   "types": [
+    "machine",
+    "roche"
+   ],
+   "valeur": "9e3779b97f4a7c15f39cc0605cedc8341082276bf3a27251f86c6a11d0c18e95",
+   "n0": 0,
+   "attendu": {
+    "n": 3,
+    "champs": {
+     "espece": "Fourmidable",
+     "variante": "classique",
+     "shiny": false,
+     "marque": "une ombre qui a un pixel de retard",
+     "humeur": "paresseuse",
+     "taille": 72.1,
+     "qualite": 0.193,
+     "potentiel": 19,
+     "stats": {
+      "PV": 31,
+      "ATK": 30,
+      "DEF": 28,
+      "VIT": 29,
+      "INT": 33
+     },
+     "note": 13.7,
+     "rarete": "commune",
+     "stade": "adulte"
+    }
+   }
+  },
+  {
+   "monde": "machines",
+   "exploit": "machines.premier_demarrage",
+   "genre": "variante",
+   "types": [
+    "machine",
+    "roche"
+   ],
+   "valeur": "9e3779b97f4a7c15f39cc0605cedc8341082276bf3a27251f86c6a11d0c18e95",
+   "n0": 17,
+   "attendu": {
+    "n": 20,
+    "champs": {
+     "espece": "Engrenaille",
+     "variante": "classique",
+     "shiny": false,
+     "marque": "une voix qui résonne comme dans une grotte",
+     "humeur": "fougueuse",
+     "taille": 259.8,
+     "qualite": 0.715,
+     "potentiel": 68,
+     "stats": {
+      "PV": 44,
+      "ATK": 49,
+      "DEF": 51,
+      "VIT": 49,
+      "INT": 31
+     },
+     "note": 49.3,
+     "rarete": "peu commune",
+     "stade": "adulte"
+    }
+   }
+  },
+  {
+   "monde": "machines",
+   "exploit": "machines.premier_demarrage",
+   "genre": "variante",
+   "types": [
+    "machine",
+    "roche"
+   ],
+   "valeur": "9e3779b97f4a7c15f39cc0605cedc8341082276bf3a27251f86c6a11d0c18e95",
+   "n0": 60,
+   "attendu": {
+    "n": 60,
+    "champs": {
+     "espece": "Cendrouille",
+     "variante": "cendres",
+     "shiny": false,
+     "marque": "une tache en forme de @ sur le dos",
+     "humeur": "têtue",
+     "taille": 84.6,
+     "qualite": 0.415,
+     "potentiel": 42,
+     "stats": {
+      "PV": 45,
+      "ATK": 28,
+      "DEF": 41,
+      "VIT": 26,
+      "INT": 35
+     },
+     "note": 40.6,
+     "rarete": "commune",
+     "stade": "ado"
+    }
+   }
+  },
+  {
+   "monde": "machines",
+   "exploit": "machines.premier_demarrage",
+   "genre": "variante",
+   "types": [
+    "machine",
+    "roche"
+   ],
+   "valeur": "9e3779b97f4a7c15f39cc0605cedc8341082276bf3a27251f86c6a11d0c18e95",
+   "n0": 123,
+   "attendu": {
+    "n": 124,
+    "champs": {
+     "espece": "Lichonarque",
+     "variante": "ruines",
+     "shiny": false,
+     "marque": "une petite cicatrice en forme de point-virgule",
+     "humeur": "taquine",
+     "taille": 183.0,
+     "qualite": 0.681,
+     "potentiel": 65,
+     "stats": {
+      "PV": 56,
+      "ATK": 60,
+      "DEF": 59,
+      "VIT": 58,
+      "INT": 62
+     },
+     "note": 73.2,
+     "rarete": "rare",
+     "stade": "ado"
+    }
+   }
+  },
+  {
+   "monde": "machines",
+   "exploit": "machines.premier_demarrage",
+   "genre": "variante",
+   "types": [
+    "machine",
+    "roche"
+   ],
+   "valeur": "8000000000000001fac71cefac71cefac71cefac71cefac71cefac71ce00",
+   "n0": 0,
+   "attendu": {
+    "n": 3,
+    "champs": {
+     "espece": "Heaumbre",
+     "variante": "montagne",
+     "shiny": false,
+     "marque": "une antenne qui capte la radio",
+     "humeur": "timide",
+     "taille": 191.4,
+     "qualite": 0.519,
+     "potentiel": 51,
+     "stats": {
+      "PV": 54,
+      "ATK": 44,
+      "DEF": 43,
+      "VIT": 40,
+      "INT": 48
+     },
+     "note": 57.1,
+     "rarete": "peu commune",
+     "stade": "ado"
+    }
+   }
+  },
+  {
+   "monde": "machines",
+   "exploit": "machines.premier_demarrage",
+   "genre": "variante",
+   "types": [
+    "machine",
+    "roche"
+   ],
+   "valeur": "8000000000000001fac71cefac71cefac71cefac71cefac71cefac71ce00",
+   "n0": 17,
+   "attendu": {
+    "n": 17,
+    "champs": {
+     "espece": "Givrarde",
+     "variante": "brume",
+     "shiny": false,
+     "marque": "des rayures comme un code-barres",
+     "humeur": "calme",
+     "taille": 186.8,
+     "qualite": 0.123,
+     "potentiel": 16,
+     "stats": {
+      "PV": 48,
+      "ATK": 51,
+      "DEF": 39,
+      "VIT": 35,
+      "INT": 38
+     },
+     "note": 37.7,
+     "rarete": "commune",
+     "stade": "bebe"
+    }
+   }
+  },
+  {
+   "monde": "machines",
+   "exploit": "machines.premier_demarrage",
+   "genre": "variante",
+   "types": [
+    "machine",
+    "roche"
+   ],
+   "valeur": "8000000000000001fac71cefac71cefac71cefac71cefac71cefac71ce00",
+   "n0": 60,
+   "attendu": {
+    "n": 61,
+    "champs": {
+     "espece": "Rouillot",
+     "variante": "canyon",
+     "shiny": false,
+     "marque": "des taches disposées comme une constellation",
+     "humeur": "rêveuse",
+     "taille": 28.9,
+     "qualite": 0.908,
+     "potentiel": 91,
+     "stats": {
+      "PV": 41,
+      "ATK": 43,
+      "DEF": 39,
+      "VIT": 45,
+      "INT": 27
+     },
+     "note": 76.2,
+     "rarete": "épique",
+     "stade": "bebe"
+    }
+   }
+  },
+  {
+   "monde": "machines",
+   "exploit": "machines.premier_demarrage",
+   "genre": "variante",
+   "types": [
+    "machine",
+    "roche"
+   ],
+   "valeur": "8000000000000001fac71cefac71cefac71cefac71cefac71cefac71ce00",
+   "n0": 123,
+   "attendu": {
+    "n": 126,
+    "champs": {
+     "espece": "Ricanos",
+     "variante": "classique",
+     "shiny": false,
+     "marque": "une crête en forme d'accolade {",
+     "humeur": "courageuse",
+     "taille": 102.4,
+     "qualite": 0.667,
+     "potentiel": 70,
+     "stats": {
+      "PV": 48,
+      "ATK": 48,
+      "DEF": 38,
+      "VIT": 44,
+      "INT": 31
+     },
+     "note": 44.3,
+     "rarete": "commune",
+     "stade": "enfant"
+    }
+   }
+  },
+  {
+   "monde": "atelier",
+   "exploit": "atelier.robot",
+   "genre": "variante",
+   "types": [
+    "machine",
+    "plante"
+   ],
+   "valeur": "0000000000000000000000000000000000000000000000000000000000000000",
+   "n0": 0,
+   "attendu": {
+    "n": 2,
+    "champs": {
+     "espece": "Racinelle",
+     "variante": "forêt",
+     "shiny": false,
+     "marque": "un œil qui clignote en binaire",
+     "humeur": "curieuse",
+     "taille": 36.2,
+     "qualite": 0.468,
+     "potentiel": 49,
+     "stats": {
+      "PV": 39,
+      "ATK": 29,
+      "DEF": 34,
+      "VIT": 33,
+      "INT": 64
+     },
+     "note": 45.9,
+     "rarete": "commune",
+     "stade": "enfant"
+    }
+   }
+  },
+  {
+   "monde": "atelier",
+   "exploit": "atelier.robot",
+   "genre": "variante",
+   "types": [
+    "machine",
+    "plante"
+   ],
+   "valeur": "0000000000000000000000000000000000000000000000000000000000000000",
+   "n0": 17,
+   "attendu": {
+    "n": 17,
+    "champs": {
+     "espece": "Plouftin",
+     "variante": "classique",
+     "shiny": false,
+     "marque": "un grain de beauté en forme de #",
+     "humeur": "taquine",
+     "taille": 35.8,
+     "qualite": 0.855,
+     "potentiel": 85,
+     "stats": {
+      "PV": 35,
+      "ATK": 28,
+      "DEF": 29,
+      "VIT": 36,
+      "INT": 55
+     },
+     "note": 51.3,
+     "rarete": "peu commune",
+     "stade": "ado"
+    }
+   }
+  },
+  {
+   "monde": "atelier",
+   "exploit": "atelier.robot",
+   "genre": "variante",
+   "types": [
+    "machine",
+    "plante"
+   ],
+   "valeur": "0000000000000000000000000000000000000000000000000000000000000000",
+   "n0": 60,
+   "attendu": {
+    "n": 60,
+    "champs": {
+     "espece": "Libellance",
+     "variante": "classique",
+     "shiny": false,
+     "marque": "des yeux de deux couleurs",
+     "humeur": "fougueuse",
+     "taille": 268.6,
+     "qualite": 0.989,
+     "potentiel": 97,
+     "stats": {
+      "PV": 49,
+      "ATK": 53,
+      "DEF": 47,
+      "VIT": 84,
+      "INT": 60
+     },
+     "note": 71.1,
+     "rarete": "rare",
+     "stade": "ado"
+    }
+   }
+  },
+  {
+   "monde": "atelier",
+   "exploit": "atelier.robot",
+   "genre": "variante",
+   "types": [
+    "machine",
+    "plante"
+   ],
+   "valeur": "0000000000000000000000000000000000000000000000000000000000000000",
+   "n0": 123,
+   "attendu": {
+    "n": 126,
+    "champs": {
+     "espece": "Pétalouette",
+     "variante": "prairie",
+     "shiny": false,
+     "marque": "des pattes de longueur différente",
+     "humeur": "bavarde",
+     "taille": 31.9,
+     "qualite": 0.306,
+     "potentiel": 25,
+     "stats": {
+      "PV": 25,
+      "ATK": 34,
+      "DEF": 23,
+      "VIT": 45,
+      "INT": 28
+     },
+     "note": 33.0,
+     "rarete": "commune",
+     "stade": "adulte"
+    }
+   }
+  },
+  {
+   "monde": "atelier",
+   "exploit": "atelier.robot",
+   "genre": "variante",
+   "types": [
+    "machine",
+    "plante"
+   ],
+   "valeur": "ffffffffffffffff000000000000000000000000000000000000000000000000",
+   "n0": 0,
+   "attendu": {
+    "n": 0,
+    "champs": {
+     "espece": "Séraphibou",
+     "variante": "nuage",
+     "shiny": false,
+     "marque": "un grain de beauté en forme de #",
+     "humeur": "calme",
+     "taille": 104.6,
+     "qualite": 0.716,
+     "potentiel": 73,
+     "stats": {
+      "PV": 44,
+      "ATK": 49,
+      "DEF": 38,
+      "VIT": 69,
+      "INT": 46
+     },
+     "note": 64.0,
+     "rarete": "rare",
+     "stade": "bebe"
+    }
+   }
+  },
+  {
+   "monde": "atelier",
+   "exploit": "atelier.robot",
+   "genre": "variante",
+   "types": [
+    "machine",
+    "plante"
+   ],
+   "valeur": "ffffffffffffffff000000000000000000000000000000000000000000000000",
+   "n0": 17,
+   "attendu": {
+    "n": 17,
+    "champs": {
+     "espece": "Momiaou",
+     "variante": "desert",
+     "shiny": false,
+     "marque": "un ronronnement à 440 Hz",
+     "humeur": "têtue",
+     "taille": 101.2,
+     "qualite": 0.398,
+     "potentiel": 43,
+     "stats": {
+      "PV": 42,
+      "ATK": 47,
+      "DEF": 41,
+      "VIT": 47,
+      "INT": 27
+     },
+     "note": 42.8,
+     "rarete": "commune",
+     "stade": "enfant"
+    }
+   }
+  },
+  {
+   "monde": "atelier",
+   "exploit": "atelier.robot",
+   "genre": "variante",
+   "types": [
+    "machine",
+    "plante"
+   ],
+   "valeur": "ffffffffffffffff000000000000000000000000000000000000000000000000",
+   "n0": 60,
+   "attendu": {
+    "n": 60,
+    "champs": {
+     "espece": "Lampignon",
+     "variante": "champignonniere",
+     "shiny": false,
+     "marque": "un grain de beauté en forme de #",
+     "humeur": "curieuse",
+     "taille": 89.5,
+     "qualite": 0.705,
+     "potentiel": 75,
+     "stats": {
+      "PV": 40,
+      "ATK": 39,
+      "DEF": 42,
+      "VIT": 48,
+      "INT": 71
+     },
+     "note": 62.3,
+     "rarete": "peu commune",
+     "stade": "bebe"
+    }
+   }
+  },
+  {
+   "monde": "atelier",
+   "exploit": "atelier.robot",
+   "genre": "variante",
+   "types": [
+    "machine",
+    "plante"
+   ],
+   "valeur": "ffffffffffffffff000000000000000000000000000000000000000000000000",
+   "n0": 123,
+   "attendu": {
+    "n": 124,
+    "champs": {
+     "espece": "Araignoir",
+     "variante": "forêt",
+     "shiny": false,
+     "marque": "un œil qui clignote en binaire",
+     "humeur": "courageuse",
+     "taille": 244.2,
+     "qualite": 0.97,
+     "potentiel": 97,
+     "stats": {
+      "PV": 48,
+      "ATK": 51,
+      "DEF": 61,
+      "VIT": 54,
+      "INT": 33
+     },
+     "note": 85.3,
+     "rarete": "légendaire",
+     "stade": "enfant"
+    }
+   }
+  },
+  {
+   "monde": "atelier",
+   "exploit": "atelier.robot",
+   "genre": "variante",
+   "types": [
+    "machine",
+    "plante"
+   ],
+   "valeur": "9e3779b97f4a7c15f39cc0605cedc8341082276bf3a27251f86c6a11d0c18e95",
+   "n0": 0,
+   "attendu": {
+    "n": 0,
+    "champs": {
+     "espece": "Clopinou",
+     "variante": "classique",
+     "shiny": false,
+     "marque": "une crête en forme d'accolade {",
+     "humeur": "taquine",
+     "taille": 31.1,
+     "qualite": 0.882,
+     "potentiel": 87,
+     "stats": {
+      "PV": 42,
+      "ATK": 44,
+      "DEF": 56,
+      "VIT": 48,
+      "INT": 31
+     },
+     "note": 57.2,
+     "rarete": "peu commune",
+     "stade": "ado"
+    }
+   }
+  },
+  {
+   "monde": "atelier",
+   "exploit": "atelier.robot",
+   "genre": "variante",
+   "types": [
+    "machine",
+    "plante"
+   ],
+   "valeur": "9e3779b97f4a7c15f39cc0605cedc8341082276bf3a27251f86c6a11d0c18e95",
+   "n0": 17,
+   "attendu": {
+    "n": 18,
+    "champs": {
+     "espece": "Mycélix",
+     "variante": "classique",
+     "shiny": false,
+     "marque": "des rayures comme un code-barres",
+     "humeur": "paresseuse",
+     "taille": 270.2,
+     "qualite": 0.99,
+     "potentiel": 98,
+     "stats": {
+      "PV": 56,
+      "ATK": 68,
+      "DEF": 64,
+      "VIT": 72,
+      "INT": 40
+     },
+     "note": 72.3,
+     "rarete": "rare",
+     "stade": "enfant"
+    }
+   }
+  },
+  {
+   "monde": "atelier",
+   "exploit": "atelier.robot",
+   "genre": "variante",
+   "types": [
+    "machine",
+    "plante"
+   ],
+   "valeur": "9e3779b97f4a7c15f39cc0605cedc8341082276bf3a27251f86c6a11d0c18e95",
+   "n0": 60,
+   "attendu": {
+    "n": 60,
+    "champs": {
+     "espece": "Cendrouille",
+     "variante": "cendres",
+     "shiny": false,
+     "marque": "une tache en forme de @ sur le dos",
+     "humeur": "têtue",
+     "taille": 84.6,
+     "qualite": 0.415,
+     "potentiel": 42,
+     "stats": {
+      "PV": 45,
+      "ATK": 28,
+      "DEF": 41,
+      "VIT": 26,
+      "INT": 35
+     },
+     "note": 40.6,
+     "rarete": "commune",
+     "stade": "ado"
+    }
+   }
+  },
+  {
+   "monde": "atelier",
+   "exploit": "atelier.robot",
+   "genre": "variante",
+   "types": [
+    "machine",
+    "plante"
+   ],
+   "valeur": "9e3779b97f4a7c15f39cc0605cedc8341082276bf3a27251f86c6a11d0c18e95",
+   "n0": 123,
+   "attendu": {
+    "n": 126,
+    "champs": {
+     "espece": "Lianaconda",
+     "variante": "classique",
+     "shiny": false,
+     "marque": "un hoquet en code Morse",
+     "humeur": "joyeuse",
+     "taille": 265.8,
+     "qualite": 0.565,
+     "potentiel": 52,
+     "stats": {
+      "PV": 47,
+      "ATK": 49,
+      "DEF": 42,
+      "VIT": 55,
+      "INT": 36
+     },
+     "note": 42.5,
+     "rarete": "commune",
+     "stade": "adulte"
+    }
+   }
+  },
+  {
+   "monde": "atelier",
+   "exploit": "atelier.robot",
+   "genre": "variante",
+   "types": [
+    "machine",
+    "plante"
+   ],
+   "valeur": "8000000000000001fac71cefac71cefac71cefac71cefac71cefac71ce00",
+   "n0": 0,
+   "attendu": {
+    "n": 0,
+    "champs": {
+     "espece": "Félicorne",
+     "variante": "soleil",
+     "shiny": false,
+     "marque": "des empreintes en forme de 0 et de 1",
+     "humeur": "taquine",
+     "taille": 191.4,
+     "qualite": 0.796,
+     "potentiel": 79,
+     "stats": {
+      "PV": 51,
+      "ATK": 52,
+      "DEF": 47,
+      "VIT": 51,
+      "INT": 33
+     },
+     "note": 73.6,
+     "rarete": "rare",
+     "stade": "adulte"
+    }
+   }
+  },
+  {
+   "monde": "atelier",
+   "exploit": "atelier.robot",
+   "genre": "variante",
+   "types": [
+    "machine",
+    "plante"
+   ],
+   "valeur": "8000000000000001fac71cefac71cefac71cefac71cefac71cefac71ce00",
+   "n0": 17,
+   "attendu": {
+    "n": 17,
+    "champs": {
+     "espece": "Givrarde",
+     "variante": "brume",
+     "shiny": false,
+     "marque": "des rayures comme un code-barres",
+     "humeur": "calme",
+     "taille": 186.8,
+     "qualite": 0.123,
+     "potentiel": 16,
+     "stats": {
+      "PV": 48,
+      "ATK": 51,
+      "DEF": 39,
+      "VIT": 35,
+      "INT": 38
+     },
+     "note": 37.7,
+     "rarete": "commune",
+     "stade": "bebe"
+    }
+   }
+  },
+  {
+   "monde": "atelier",
+   "exploit": "atelier.robot",
+   "genre": "variante",
+   "types": [
+    "machine",
+    "plante"
+   ],
+   "valeur": "8000000000000001fac71cefac71cefac71cefac71cefac71cefac71ce00",
+   "n0": 60,
+   "attendu": {
+    "n": 60,
+    "champs": {
+     "espece": "Lanternix",
+     "variante": "classique",
+     "shiny": false,
+     "marque": "une voix qui résonne comme dans une grotte",
+     "humeur": "fougueuse",
+     "taille": 30.8,
+     "qualite": 0.092,
+     "potentiel": 10,
+     "stats": {
+      "PV": 34,
+      "ATK": 23,
+      "DEF": 31,
+      "VIT": 37,
+      "INT": 46
+     },
+     "note": 10.9,
+     "rarete": "commune",
+     "stade": "enfant"
+    }
+   }
+  },
+  {
+   "monde": "atelier",
+   "exploit": "atelier.robot",
+   "genre": "variante",
+   "types": [
+    "machine",
+    "plante"
+   ],
+   "valeur": "8000000000000001fac71cefac71cefac71cefac71cefac71cefac71ce00",
+   "n0": 123,
+   "attendu": {
+    "n": 125,
+    "champs": {
+     "espece": "Pétalouette",
+     "variante": "classique",
+     "shiny": false,
+     "marque": "des pattes de longueur différente",
+     "humeur": "curieuse",
+     "taille": 27.0,
+     "qualite": 0.745,
+     "potentiel": 72,
+     "stats": {
+      "PV": 34,
+      "ATK": 40,
+      "DEF": 29,
+      "VIT": 52,
+      "INT": 36
+     },
+     "note": 46.8,
+     "rarete": "peu commune",
+     "stade": "enfant"
+    }
+   }
+  },
+  {
+   "monde": "crypte",
+   "exploit": "crypte.chaine",
+   "genre": "variante",
+   "types": [
+    "ombre",
+    "glace"
+   ],
+   "valeur": "0000000000000000000000000000000000000000000000000000000000000000",
+   "n0": 0,
+   "attendu": {
+    "n": 0,
+    "champs": {
+     "espece": "Heaumbre",
+     "variante": "ombre",
+     "shiny": false,
+     "marque": "un museau qui sent le café",
+     "humeur": "paresseuse",
+     "taille": 196.9,
+     "qualite": 0.685,
+     "potentiel": 77,
+     "stats": {
+      "PV": 55,
+      "ATK": 49,
+      "DEF": 50,
+      "VIT": 46,
+      "INT": 50
+     },
+     "note": 69.1,
+     "rarete": "rare",
+     "stade": "ado"
+    }
+   }
+  },
+  {
+   "monde": "crypte",
+   "exploit": "crypte.chaine",
+   "genre": "variante",
+   "types": [
+    "ombre",
+    "glace"
+   ],
+   "valeur": "0000000000000000000000000000000000000000000000000000000000000000",
+   "n0": 17,
+   "attendu": {
+    "n": 20,
+    "champs": {
+     "espece": "Raiyon",
+     "variante": "aurore",
+     "shiny": false,
+     "marque": "une tache en forme de @ sur le dos",
+     "humeur": "timide",
+     "taille": 246.2,
+     "qualite": 0.873,
+     "potentiel": 83,
+     "stats": {
+      "PV": 41,
+      "ATK": 54,
+      "DEF": 42,
+      "VIT": 70,
+      "INT": 56
+     },
+     "note": 81.4,
+     "rarete": "épique",
+     "stade": "ado"
+    }
+   }
+  },
+  {
+   "monde": "crypte",
+   "exploit": "crypte.chaine",
+   "genre": "variante",
+   "types": [
+    "ombre",
+    "glace"
+   ],
+   "valeur": "0000000000000000000000000000000000000000000000000000000000000000",
+   "n0": 60,
+   "attendu": {
+    "n": 63,
+    "champs": {
+     "espece": "Mammouroc",
+     "variante": "ossuaire",
+     "shiny": false,
+     "marque": "un œil qui clignote en binaire",
+     "humeur": "taquine",
+     "taille": 586.2,
+     "qualite": 0.201,
+     "potentiel": 25,
+     "stats": {
+      "PV": 59,
+      "ATK": 62,
+      "DEF": 48,
+      "VIT": 54,
+      "INT": 32
+     },
+     "note": 43.3,
+     "rarete": "commune",
+     "stade": "adulte"
+    }
+   }
+  },
+  {
+   "monde": "crypte",
+   "exploit": "crypte.chaine",
+   "genre": "variante",
+   "types": [
+    "ombre",
+    "glace"
+   ],
+   "valeur": "0000000000000000000000000000000000000000000000000000000000000000",
+   "n0": 123,
+   "attendu": {
+    "n": 125,
+    "champs": {
+     "espece": "Givrarde",
+     "variante": "aurore",
+     "shiny": false,
+     "marque": "une antenne qui capte la radio",
+     "humeur": "calme",
+     "taille": 255.6,
+     "qualite": 0.988,
+     "potentiel": 98,
+     "stats": {
+      "PV": 60,
+      "ATK": 63,
+      "DEF": 52,
+      "VIT": 47,
+      "INT": 52
+     },
+     "note": 90.3,
+     "rarete": "légendaire",
+     "stade": "bebe"
+    }
+   }
+  },
+  {
+   "monde": "crypte",
+   "exploit": "crypte.chaine",
+   "genre": "variante",
+   "types": [
+    "ombre",
+    "glace"
+   ],
+   "valeur": "ffffffffffffffff000000000000000000000000000000000000000000000000",
+   "n0": 0,
+   "attendu": {
+    "n": 2,
+    "champs": {
+     "espece": "Krillou",
+     "variante": "glace",
+     "shiny": false,
+     "marque": "une tache en forme de @ sur le dos",
+     "humeur": "paresseuse",
+     "taille": 28.5,
+     "qualite": 0.124,
+     "potentiel": 13,
+     "stats": {
+      "PV": 25,
+      "ATK": 32,
+      "DEF": 34,
+      "VIT": 36,
+      "INT": 20
+     },
+     "note": 29.0,
+     "rarete": "commune",
+     "stade": "adulte"
+    }
+   }
+  },
+  {
+   "monde": "crypte",
+   "exploit": "crypte.chaine",
+   "genre": "variante",
+   "types": [
+    "ombre",
+    "glace"
+   ],
+   "valeur": "ffffffffffffffff000000000000000000000000000000000000000000000000",
+   "n0": 17,
+   "attendu": {
+    "n": 17,
+    "champs": {
+     "espece": "Momiaou",
+     "variante": "desert",
+     "shiny": false,
+     "marque": "un ronronnement à 440 Hz",
+     "humeur": "têtue",
+     "taille": 101.2,
+     "qualite": 0.398,
+     "potentiel": 43,
+     "stats": {
+      "PV": 42,
+      "ATK": 47,
+      "DEF": 41,
+      "VIT": 47,
+      "INT": 27
+     },
+     "note": 42.8,
+     "rarete": "commune",
+     "stade": "enfant"
+    }
+   }
+  },
+  {
+   "monde": "crypte",
+   "exploit": "crypte.chaine",
+   "genre": "variante",
+   "types": [
+    "ombre",
+    "glace"
+   ],
+   "valeur": "ffffffffffffffff000000000000000000000000000000000000000000000000",
+   "n0": 60,
+   "attendu": {
+    "n": 62,
+    "champs": {
+     "espece": "Louvacier",
+     "variante": "toundra",
+     "shiny": false,
+     "marque": "des pattes de longueur différente",
+     "humeur": "taquine",
+     "taille": 93.9,
+     "qualite": 0.978,
+     "potentiel": 97,
+     "stats": {
+      "PV": 50,
+      "ATK": 53,
+      "DEF": 41,
+      "VIT": 45,
+      "INT": 30
+     },
+     "note": 74.4,
+     "rarete": "rare",
+     "stade": "bebe"
+    }
+   }
+  },
+  {
+   "monde": "crypte",
+   "exploit": "crypte.chaine",
+   "genre": "variante",
+   "types": [
+    "ombre",
+    "glace"
+   ],
+   "valeur": "ffffffffffffffff000000000000000000000000000000000000000000000000",
+   "n0": 123,
+   "attendu": {
+    "n": 123,
+    "champs": {
+     "espece": "Scorpiquant",
+     "variante": "classique",
+     "shiny": false,
+     "marque": "des rayures comme un code-barres",
+     "humeur": "fougueuse",
+     "taille": 221.5,
+     "qualite": 0.234,
+     "potentiel": 24,
+     "stats": {
+      "PV": 37,
+      "ATK": 48,
+      "DEF": 48,
+      "VIT": 47,
+      "INT": 29
+     },
+     "note": 22.6,
+     "rarete": "commune",
+     "stade": "ado"
+    }
+   }
+  },
+  {
+   "monde": "crypte",
+   "exploit": "crypte.chaine",
+   "genre": "variante",
+   "types": [
+    "ombre",
+    "glace"
+   ],
+   "valeur": "9e3779b97f4a7c15f39cc0605cedc8341082276bf3a27251f86c6a11d0c18e95",
+   "n0": 0,
+   "attendu": {
+    "n": 2,
+    "champs": {
+     "espece": "Papillombre",
+     "variante": "classique",
+     "shiny": false,
+     "marque": "des oreilles légèrement pixelisées",
+     "humeur": "timide",
+     "taille": 75.4,
+     "qualite": 0.905,
+     "potentiel": 85,
+     "stats": {
+      "PV": 32,
+      "ATK": 45,
+      "DEF": 34,
+      "VIT": 57,
+      "INT": 42
+     },
+     "note": 57.5,
+     "rarete": "peu commune",
+     "stade": "enfant"
+    }
+   }
+  },
+  {
+   "monde": "crypte",
+   "exploit": "crypte.chaine",
+   "genre": "variante",
+   "types": [
+    "ombre",
+    "glace"
+   ],
+   "valeur": "9e3779b97f4a7c15f39cc0605cedc8341082276bf3a27251f86c6a11d0c18e95",
+   "n0": 17,
+   "attendu": {
+    "n": 17,
+    "champs": {
+     "espece": "Tentaclou",
+     "variante": "marais",
+     "shiny": false,
+     "marque": "un éternuement qui fait des étincelles",
+     "humeur": "têtue",
+     "taille": 37.4,
+     "qualite": 0.423,
+     "potentiel": 38,
+     "stats": {
+      "PV": 41,
+      "ATK": 25,
+      "DEF": 43,
+      "VIT": 18,
+      "INT": 38
+     },
+     "note": 40.0,
+     "rarete": "commune",
+     "stade": "enfant"
+    }
+   }
+  },
+  {
+   "monde": "crypte",
+   "exploit": "crypte.chaine",
+   "genre": "variante",
+   "types": [
+    "ombre",
+    "glace"
+   ],
+   "valeur": "9e3779b97f4a7c15f39cc0605cedc8341082276bf3a27251f86c6a11d0c18e95",
+   "n0": 60,
+   "attendu": {
+    "n": 61,
+    "champs": {
+     "espece": "Cocondor",
+     "variante": "classique",
+     "shiny": false,
+     "marque": "des empreintes en forme de 0 et de 1",
+     "humeur": "timide",
+     "taille": 197.1,
+     "qualite": 0.723,
+     "potentiel": 72,
+     "stats": {
+      "PV": 84,
+      "ATK": 43,
+      "DEF": 67,
+      "VIT": 37,
+      "INT": 58
+     },
+     "note": 57.3,
+     "rarete": "peu commune",
+     "stade": "bebe"
+    }
+   }
+  },
+  {
+   "monde": "crypte",
+   "exploit": "crypte.chaine",
+   "genre": "variante",
+   "types": [
+    "ombre",
+    "glace"
+   ],
+   "valeur": "9e3779b97f4a7c15f39cc0605cedc8341082276bf3a27251f86c6a11d0c18e95",
+   "n0": 123,
+   "attendu": {
+    "n": 123,
+    "champs": {
+     "espece": "Krillou",
+     "variante": "corail",
+     "shiny": false,
+     "marque": "un ronronnement à 440 Hz",
+     "humeur": "courageuse",
+     "taille": 33.1,
+     "qualite": 0.606,
+     "potentiel": 54,
+     "stats": {
+      "PV": 33,
+      "ATK": 39,
+      "DEF": 41,
+      "VIT": 43,
+      "INT": 22
+     },
+     "note": 55.9,
+     "rarete": "peu commune",
+     "stade": "bebe"
+    }
+   }
+  },
+  {
+   "monde": "crypte",
+   "exploit": "crypte.chaine",
+   "genre": "variante",
+   "types": [
+    "ombre",
+    "glace"
+   ],
+   "valeur": "8000000000000001fac71cefac71cefac71cefac71cefac71cefac71ce00",
+   "n0": 0,
+   "attendu": {
+    "n": 1,
+    "champs": {
+     "espece": "Heaumbre",
+     "variante": "classique",
+     "shiny": false,
+     "marque": "des rayures comme un code-barres",
+     "humeur": "bavarde",
+     "taille": 200.4,
+     "qualite": 0.595,
+     "potentiel": 59,
+     "stats": {
+      "PV": 52,
+      "ATK": 45,
+      "DEF": 46,
+      "VIT": 44,
+      "INT": 48
+     },
+     "note": 44.3,
+     "rarete": "commune",
+     "stade": "bebe"
+    }
+   }
+  },
+  {
+   "monde": "crypte",
+   "exploit": "crypte.chaine",
+   "genre": "variante",
+   "types": [
+    "ombre",
+    "glace"
+   ],
+   "valeur": "8000000000000001fac71cefac71cefac71cefac71cefac71cefac71ce00",
+   "n0": 17,
+   "attendu": {
+    "n": 18,
+    "champs": {
+     "espece": "Goulichon",
+     "variante": "classique",
+     "shiny": false,
+     "marque": "un éternuement qui fait des étincelles",
+     "humeur": "courageuse",
+     "taille": 91.4,
+     "qualite": 0.713,
+     "potentiel": 72,
+     "stats": {
+      "PV": 39,
+      "ATK": 42,
+      "DEF": 36,
+      "VIT": 36,
+      "INT": 40
+     },
+     "note": 44.9,
+     "rarete": "commune",
+     "stade": "enfant"
+    }
+   }
+  },
+  {
+   "monde": "crypte",
+   "exploit": "crypte.chaine",
+   "genre": "variante",
+   "types": [
+    "ombre",
+    "glace"
+   ],
+   "valeur": "8000000000000001fac71cefac71cefac71cefac71cefac71cefac71ce00",
+   "n0": 60,
+   "attendu": {
+    "n": 60,
+    "champs": {
+     "espece": "Lanternix",
+     "variante": "classique",
+     "shiny": false,
+     "marque": "une voix qui résonne comme dans une grotte",
+     "humeur": "fougueuse",
+     "taille": 30.8,
+     "qualite": 0.092,
+     "potentiel": 10,
+     "stats": {
+      "PV": 34,
+      "ATK": 23,
+      "DEF": 31,
+      "VIT": 37,
+      "INT": 46
+     },
+     "note": 10.9,
+     "rarete": "commune",
+     "stade": "enfant"
+    }
+   }
+  },
+  {
+   "monde": "crypte",
+   "exploit": "crypte.chaine",
+   "genre": "variante",
+   "types": [
+    "ombre",
+    "glace"
+   ],
+   "valeur": "8000000000000001fac71cefac71cefac71cefac71cefac71cefac71ce00",
+   "n0": 123,
+   "attendu": {
+    "n": 123,
+    "champs": {
+     "espece": "Zapiot",
+     "variante": "classique",
+     "shiny": false,
+     "marque": "une queue en forme de tilde ~",
+     "humeur": "taquine",
+     "taille": 25.6,
+     "qualite": 0.439,
+     "potentiel": 48,
+     "stats": {
+      "PV": 34,
+      "ATK": 27,
+      "DEF": 32,
+      "VIT": 38,
+      "INT": 51
+     },
+     "note": 29.6,
+     "rarete": "commune",
+     "stade": "enfant"
+    }
+   }
+  },
+  {
+   "monde": "crypte",
+   "exploit": "crypte.b6",
+   "genre": "legendaire",
+   "types": [
+    "ombre",
+    "glace"
+   ],
+   "valeur": "0000000000000000000000000000000000000000000000000000000000000000",
+   "n0": 0,
+   "attendu": {
+    "n": 0,
+    "champs": {
+     "espece": "Heaumbre",
+     "variante": "ombre",
+     "shiny": false,
+     "marque": "un museau qui sent le café",
+     "humeur": "paresseuse",
+     "taille": 196.9,
+     "qualite": 0.685,
+     "potentiel": 77,
+     "stats": {
+      "PV": 55,
+      "ATK": 49,
+      "DEF": 50,
+      "VIT": 46,
+      "INT": 50
+     },
+     "note": 69.1,
+     "rarete": "rare",
+     "stade": "ado"
+    }
+   }
+  },
+  {
+   "monde": "crypte",
+   "exploit": "crypte.b6",
+   "genre": "legendaire",
+   "types": [
+    "ombre",
+    "glace"
+   ],
+   "valeur": "0000000000000000000000000000000000000000000000000000000000000000",
+   "n0": 17,
+   "attendu": {
+    "n": 17,
+    "champs": {
+     "espece": "Plouftin",
+     "variante": "classique",
+     "shiny": false,
+     "marque": "un grain de beauté en forme de #",
+     "humeur": "taquine",
+     "taille": 35.8,
+     "qualite": 0.855,
+     "potentiel": 85,
+     "stats": {
+      "PV": 35,
+      "ATK": 28,
+      "DEF": 29,
+      "VIT": 36,
+      "INT": 55
+     },
+     "note": 51.3,
+     "rarete": "peu commune",
+     "stade": "ado"
+    }
+   }
+  },
+  {
+   "monde": "crypte",
+   "exploit": "crypte.b6",
+   "genre": "legendaire",
+   "types": [
+    "ombre",
+    "glace"
+   ],
+   "valeur": "0000000000000000000000000000000000000000000000000000000000000000",
+   "n0": 60,
+   "attendu": {
+    "n": 60,
+    "champs": {
+     "espece": "Libellance",
+     "variante": "classique",
+     "shiny": false,
+     "marque": "des yeux de deux couleurs",
+     "humeur": "fougueuse",
+     "taille": 268.6,
+     "qualite": 0.989,
+     "potentiel": 97,
+     "stats": {
+      "PV": 49,
+      "ATK": 53,
+      "DEF": 47,
+      "VIT": 84,
+      "INT": 60
+     },
+     "note": 71.1,
+     "rarete": "rare",
+     "stade": "ado"
+    }
+   }
+  },
+  {
+   "monde": "crypte",
+   "exploit": "crypte.b6",
+   "genre": "legendaire",
+   "types": [
+    "ombre",
+    "glace"
+   ],
+   "valeur": "0000000000000000000000000000000000000000000000000000000000000000",
+   "n0": 123,
+   "attendu": {
+    "n": 125,
+    "champs": {
+     "espece": "Givrarde",
+     "variante": "aurore",
+     "shiny": false,
+     "marque": "une antenne qui capte la radio",
+     "humeur": "calme",
+     "taille": 255.6,
+     "qualite": 0.988,
+     "potentiel": 98,
+     "stats": {
+      "PV": 60,
+      "ATK": 63,
+      "DEF": 52,
+      "VIT": 47,
+      "INT": 52
+     },
+     "note": 90.3,
+     "rarete": "légendaire",
+     "stade": "bebe"
+    }
+   }
+  },
+  {
+   "monde": "crypte",
+   "exploit": "crypte.b6",
+   "genre": "legendaire",
+   "types": [
+    "ombre",
+    "glace"
+   ],
+   "valeur": "ffffffffffffffff000000000000000000000000000000000000000000000000",
+   "n0": 0,
+   "attendu": {
+    "n": 0,
+    "champs": {
+     "espece": "Séraphibou",
+     "variante": "nuage",
+     "shiny": false,
+     "marque": "un grain de beauté en forme de #",
+     "humeur": "calme",
+     "taille": 104.6,
+     "qualite": 0.716,
+     "potentiel": 73,
+     "stats": {
+      "PV": 44,
+      "ATK": 49,
+      "DEF": 38,
+      "VIT": 69,
+      "INT": 46
+     },
+     "note": 64.0,
+     "rarete": "rare",
+     "stade": "bebe"
+    }
+   }
+  },
+  {
+   "monde": "crypte",
+   "exploit": "crypte.b6",
+   "genre": "legendaire",
+   "types": [
+    "ombre",
+    "glace"
+   ],
+   "valeur": "ffffffffffffffff000000000000000000000000000000000000000000000000",
+   "n0": 17,
+   "attendu": {
+    "n": 17,
+    "champs": {
+     "espece": "Momiaou",
+     "variante": "desert",
+     "shiny": false,
+     "marque": "un ronronnement à 440 Hz",
+     "humeur": "têtue",
+     "taille": 101.2,
+     "qualite": 0.398,
+     "potentiel": 43,
+     "stats": {
+      "PV": 42,
+      "ATK": 47,
+      "DEF": 41,
+      "VIT": 47,
+      "INT": 27
+     },
+     "note": 42.8,
+     "rarete": "commune",
+     "stade": "enfant"
+    }
+   }
+  },
+  {
+   "monde": "crypte",
+   "exploit": "crypte.b6",
+   "genre": "legendaire",
+   "types": [
+    "ombre",
+    "glace"
+   ],
+   "valeur": "ffffffffffffffff000000000000000000000000000000000000000000000000",
+   "n0": 60,
+   "attendu": {
+    "n": 60,
+    "champs": {
+     "espece": "Lampignon",
+     "variante": "champignonniere",
+     "shiny": false,
+     "marque": "un grain de beauté en forme de #",
+     "humeur": "curieuse",
+     "taille": 89.5,
+     "qualite": 0.705,
+     "potentiel": 75,
+     "stats": {
+      "PV": 40,
+      "ATK": 39,
+      "DEF": 42,
+      "VIT": 48,
+      "INT": 71
+     },
+     "note": 62.3,
+     "rarete": "peu commune",
+     "stade": "bebe"
+    }
+   }
+  },
+  {
+   "monde": "crypte",
+   "exploit": "crypte.b6",
+   "genre": "legendaire",
+   "types": [
+    "ombre",
+    "glace"
+   ],
+   "valeur": "ffffffffffffffff000000000000000000000000000000000000000000000000",
+   "n0": 123,
+   "attendu": {
+    "n": 124,
+    "champs": {
+     "espece": "Araignoir",
+     "variante": "forêt",
+     "shiny": false,
+     "marque": "un œil qui clignote en binaire",
+     "humeur": "courageuse",
+     "taille": 244.2,
+     "qualite": 0.97,
+     "potentiel": 97,
+     "stats": {
+      "PV": 48,
+      "ATK": 51,
+      "DEF": 61,
+      "VIT": 54,
+      "INT": 33
+     },
+     "note": 85.3,
+     "rarete": "légendaire",
+     "stade": "enfant"
+    }
+   }
+  },
+  {
+   "monde": "crypte",
+   "exploit": "crypte.b6",
+   "genre": "legendaire",
+   "types": [
+    "ombre",
+    "glace"
+   ],
+   "valeur": "9e3779b97f4a7c15f39cc0605cedc8341082276bf3a27251f86c6a11d0c18e95",
+   "n0": 0,
+   "attendu": {
+    "n": 0,
+    "champs": {
+     "espece": "Clopinou",
+     "variante": "classique",
+     "shiny": false,
+     "marque": "une crête en forme d'accolade {",
+     "humeur": "taquine",
+     "taille": 31.1,
+     "qualite": 0.882,
+     "potentiel": 87,
+     "stats": {
+      "PV": 42,
+      "ATK": 44,
+      "DEF": 56,
+      "VIT": 48,
+      "INT": 31
+     },
+     "note": 57.2,
+     "rarete": "peu commune",
+     "stade": "ado"
+    }
+   }
+  },
+  {
+   "monde": "crypte",
+   "exploit": "crypte.b6",
+   "genre": "legendaire",
+   "types": [
+    "ombre",
+    "glace"
+   ],
+   "valeur": "9e3779b97f4a7c15f39cc0605cedc8341082276bf3a27251f86c6a11d0c18e95",
+   "n0": 17,
+   "attendu": {
+    "n": 17,
+    "champs": {
+     "espece": "Tentaclou",
+     "variante": "marais",
+     "shiny": false,
+     "marque": "un éternuement qui fait des étincelles",
+     "humeur": "têtue",
+     "taille": 37.4,
+     "qualite": 0.423,
+     "potentiel": 38,
+     "stats": {
+      "PV": 41,
+      "ATK": 25,
+      "DEF": 43,
+      "VIT": 18,
+      "INT": 38
+     },
+     "note": 40.0,
+     "rarete": "commune",
+     "stade": "enfant"
+    }
+   }
+  },
+  {
+   "monde": "crypte",
+   "exploit": "crypte.b6",
+   "genre": "legendaire",
+   "types": [
+    "ombre",
+    "glace"
+   ],
+   "valeur": "9e3779b97f4a7c15f39cc0605cedc8341082276bf3a27251f86c6a11d0c18e95",
+   "n0": 60,
+   "attendu": {
+    "n": 60,
+    "champs": {
+     "espece": "Cendrouille",
+     "variante": "cendres",
+     "shiny": false,
+     "marque": "une tache en forme de @ sur le dos",
+     "humeur": "têtue",
+     "taille": 84.6,
+     "qualite": 0.415,
+     "potentiel": 42,
+     "stats": {
+      "PV": 45,
+      "ATK": 28,
+      "DEF": 41,
+      "VIT": 26,
+      "INT": 35
+     },
+     "note": 40.6,
+     "rarete": "commune",
+     "stade": "ado"
+    }
+   }
+  },
+  {
+   "monde": "crypte",
+   "exploit": "crypte.b6",
+   "genre": "legendaire",
+   "types": [
+    "ombre",
+    "glace"
+   ],
+   "valeur": "9e3779b97f4a7c15f39cc0605cedc8341082276bf3a27251f86c6a11d0c18e95",
+   "n0": 123,
+   "attendu": {
+    "n": 123,
+    "champs": {
+     "espece": "Krillou",
+     "variante": "corail",
+     "shiny": false,
+     "marque": "un ronronnement à 440 Hz",
+     "humeur": "courageuse",
+     "taille": 33.1,
+     "qualite": 0.606,
+     "potentiel": 54,
+     "stats": {
+      "PV": 33,
+      "ATK": 39,
+      "DEF": 41,
+      "VIT": 43,
+      "INT": 22
+     },
+     "note": 55.9,
+     "rarete": "peu commune",
+     "stade": "bebe"
+    }
+   }
+  },
+  {
+   "monde": "crypte",
+   "exploit": "crypte.b6",
+   "genre": "legendaire",
+   "types": [
+    "ombre",
+    "glace"
+   ],
+   "valeur": "8000000000000001fac71cefac71cefac71cefac71cefac71cefac71ce00",
+   "n0": 0,
+   "attendu": {
+    "n": 0,
+    "champs": {
+     "espece": "Félicorne",
+     "variante": "soleil",
+     "shiny": false,
+     "marque": "des empreintes en forme de 0 et de 1",
+     "humeur": "taquine",
+     "taille": 191.4,
+     "qualite": 0.796,
+     "potentiel": 79,
+     "stats": {
+      "PV": 51,
+      "ATK": 52,
+      "DEF": 47,
+      "VIT": 51,
+      "INT": 33
+     },
+     "note": 73.6,
+     "rarete": "rare",
+     "stade": "adulte"
+    }
+   }
+  },
+  {
+   "monde": "crypte",
+   "exploit": "crypte.b6",
+   "genre": "legendaire",
+   "types": [
+    "ombre",
+    "glace"
+   ],
+   "valeur": "8000000000000001fac71cefac71cefac71cefac71cefac71cefac71ce00",
+   "n0": 17,
+   "attendu": {
+    "n": 17,
+    "champs": {
+     "espece": "Givrarde",
+     "variante": "brume",
+     "shiny": false,
+     "marque": "des rayures comme un code-barres",
+     "humeur": "calme",
+     "taille": 186.8,
+     "qualite": 0.123,
+     "potentiel": 16,
+     "stats": {
+      "PV": 48,
+      "ATK": 51,
+      "DEF": 39,
+      "VIT": 35,
+      "INT": 38
+     },
+     "note": 37.7,
+     "rarete": "commune",
+     "stade": "bebe"
+    }
+   }
+  },
+  {
+   "monde": "crypte",
+   "exploit": "crypte.b6",
+   "genre": "legendaire",
+   "types": [
+    "ombre",
+    "glace"
+   ],
+   "valeur": "8000000000000001fac71cefac71cefac71cefac71cefac71cefac71ce00",
+   "n0": 60,
+   "attendu": {
+    "n": 60,
+    "champs": {
+     "espece": "Lanternix",
+     "variante": "classique",
+     "shiny": false,
+     "marque": "une voix qui résonne comme dans une grotte",
+     "humeur": "fougueuse",
+     "taille": 30.8,
+     "qualite": 0.092,
+     "potentiel": 10,
+     "stats": {
+      "PV": 34,
+      "ATK": 23,
+      "DEF": 31,
+      "VIT": 37,
+      "INT": 46
+     },
+     "note": 10.9,
+     "rarete": "commune",
+     "stade": "enfant"
+    }
+   }
+  },
+  {
+   "monde": "crypte",
+   "exploit": "crypte.b6",
+   "genre": "legendaire",
+   "types": [
+    "ombre",
+    "glace"
+   ],
+   "valeur": "8000000000000001fac71cefac71cefac71cefac71cefac71cefac71ce00",
+   "n0": 123,
+   "attendu": {
+    "n": 127,
+    "champs": {
+     "espece": "Essaimpereur",
+     "variante": "desert",
+     "shiny": false,
+     "marque": "des pattes de longueur différente",
+     "humeur": "paresseuse",
+     "taille": 562.8,
+     "qualite": 0.86,
+     "potentiel": 87,
+     "stats": {
+      "PV": 70,
+      "ATK": 67,
+      "DEF": 62,
+      "VIT": 66,
+      "INT": 46
+     },
+     "note": 87.3,
+     "rarete": "légendaire",
+     "stade": "bebe"
+    }
+   }
+  },
+  {
+   "monde": "observatoire",
+   "exploit": "observatoire.fausses",
+   "genre": "variante",
+   "types": [
+    "ciel",
+    "glace"
+   ],
+   "valeur": "0000000000000000000000000000000000000000000000000000000000000000",
+   "n0": 0,
+   "attendu": {
+    "n": 1,
+    "champs": {
+     "espece": "Scintipède",
+     "variante": "classique",
+     "shiny": false,
+     "marque": "des rayures comme un code-barres",
+     "humeur": "bavarde",
+     "taille": 76.9,
+     "qualite": 0.128,
+     "potentiel": 13,
+     "stats": {
+      "PV": 36,
+      "ATK": 43,
+      "DEF": 42,
+      "VIT": 46,
+      "INT": 23
+     },
+     "note": 15.2,
+     "rarete": "commune",
+     "stade": "bebe"
+    }
+   }
+  },
+  {
+   "monde": "observatoire",
+   "exploit": "observatoire.fausses",
+   "genre": "variante",
+   "types": [
+    "ciel",
+    "glace"
+   ],
+   "valeur": "0000000000000000000000000000000000000000000000000000000000000000",
+   "n0": 17,
+   "attendu": {
+    "n": 20,
+    "champs": {
+     "espece": "Raiyon",
+     "variante": "aurore",
+     "shiny": false,
+     "marque": "une tache en forme de @ sur le dos",
+     "humeur": "timide",
+     "taille": 246.2,
+     "qualite": 0.873,
+     "potentiel": 83,
+     "stats": {
+      "PV": 41,
+      "ATK": 54,
+      "DEF": 42,
+      "VIT": 70,
+      "INT": 56
+     },
+     "note": 81.4,
+     "rarete": "épique",
+     "stade": "ado"
+    }
+   }
+  },
+  {
+   "monde": "observatoire",
+   "exploit": "observatoire.fausses",
+   "genre": "variante",
+   "types": [
+    "ciel",
+    "glace"
+   ],
+   "valeur": "0000000000000000000000000000000000000000000000000000000000000000",
+   "n0": 60,
+   "attendu": {
+    "n": 60,
+    "champs": {
+     "espece": "Libellance",
+     "variante": "classique",
+     "shiny": false,
+     "marque": "des yeux de deux couleurs",
+     "humeur": "fougueuse",
+     "taille": 268.6,
+     "qualite": 0.989,
+     "potentiel": 97,
+     "stats": {
+      "PV": 49,
+      "ATK": 53,
+      "DEF": 47,
+      "VIT": 84,
+      "INT": 60
+     },
+     "note": 71.1,
+     "rarete": "rare",
+     "stade": "ado"
+    }
+   }
+  },
+  {
+   "monde": "observatoire",
+   "exploit": "observatoire.fausses",
+   "genre": "variante",
+   "types": [
+    "ciel",
+    "glace"
+   ],
+   "valeur": "0000000000000000000000000000000000000000000000000000000000000000",
+   "n0": 123,
+   "attendu": {
+    "n": 125,
+    "champs": {
+     "espece": "Givrarde",
+     "variante": "aurore",
+     "shiny": false,
+     "marque": "une antenne qui capte la radio",
+     "humeur": "calme",
+     "taille": 255.6,
+     "qualite": 0.988,
+     "potentiel": 98,
+     "stats": {
+      "PV": 60,
+      "ATK": 63,
+      "DEF": 52,
+      "VIT": 47,
+      "INT": 52
+     },
+     "note": 90.3,
+     "rarete": "légendaire",
+     "stade": "bebe"
+    }
+   }
+  },
+  {
+   "monde": "observatoire",
+   "exploit": "observatoire.fausses",
+   "genre": "variante",
+   "types": [
+    "ciel",
+    "glace"
+   ],
+   "valeur": "ffffffffffffffff000000000000000000000000000000000000000000000000",
+   "n0": 0,
+   "attendu": {
+    "n": 0,
+    "champs": {
+     "espece": "Séraphibou",
+     "variante": "nuage",
+     "shiny": false,
+     "marque": "un grain de beauté en forme de #",
+     "humeur": "calme",
+     "taille": 104.6,
+     "qualite": 0.716,
+     "potentiel": 73,
+     "stats": {
+      "PV": 44,
+      "ATK": 49,
+      "DEF": 38,
+      "VIT": 69,
+      "INT": 46
+     },
+     "note": 64.0,
+     "rarete": "rare",
+     "stade": "bebe"
+    }
+   }
+  },
+  {
+   "monde": "observatoire",
+   "exploit": "observatoire.fausses",
+   "genre": "variante",
+   "types": [
+    "ciel",
+    "glace"
+   ],
+   "valeur": "ffffffffffffffff000000000000000000000000000000000000000000000000",
+   "n0": 17,
+   "attendu": {
+    "n": 18,
+    "champs": {
+     "espece": "Auréolin",
+     "variante": "classique",
+     "shiny": false,
+     "marque": "un éternuement qui fait des étincelles",
+     "humeur": "timide",
+     "taille": 34.0,
+     "qualite": 0.193,
+     "potentiel": 19,
+     "stats": {
+      "PV": 31,
+      "ATK": 39,
+      "DEF": 34,
+      "VIT": 36,
+      "INT": 38
+     },
+     "note": 16.9,
+     "rarete": "commune",
+     "stade": "bebe"
+    }
+   }
+  },
+  {
+   "monde": "observatoire",
+   "exploit": "observatoire.fausses",
+   "genre": "variante",
+   "types": [
+    "ciel",
+    "glace"
+   ],
+   "valeur": "ffffffffffffffff000000000000000000000000000000000000000000000000",
+   "n0": 60,
+   "attendu": {
+    "n": 62,
+    "champs": {
+     "espece": "Louvacier",
+     "variante": "toundra",
+     "shiny": false,
+     "marque": "des pattes de longueur différente",
+     "humeur": "taquine",
+     "taille": 93.9,
+     "qualite": 0.978,
+     "potentiel": 97,
+     "stats": {
+      "PV": 50,
+      "ATK": 53,
+      "DEF": 41,
+      "VIT": 45,
+      "INT": 30
+     },
+     "note": 74.4,
+     "rarete": "rare",
+     "stade": "bebe"
+    }
+   }
+  },
+  {
+   "monde": "observatoire",
+   "exploit": "observatoire.fausses",
+   "genre": "variante",
+   "types": [
+    "ciel",
+    "glace"
+   ],
+   "valeur": "ffffffffffffffff000000000000000000000000000000000000000000000000",
+   "n0": 123,
+   "attendu": {
+    "n": 126,
+    "champs": {
+     "espece": "Étoilapin",
+     "variante": "classique",
+     "shiny": false,
+     "marque": "un ronronnement à 440 Hz",
+     "humeur": "timide",
+     "taille": 32.6,
+     "qualite": 0.864,
+     "potentiel": 83,
+     "stats": {
+      "PV": 40,
+      "ATK": 42,
+      "DEF": 36,
+      "VIT": 42,
+      "INT": 30
+     },
+     "note": 52.9,
+     "rarete": "peu commune",
+     "stade": "adulte"
+    }
+   }
+  },
+  {
+   "monde": "observatoire",
+   "exploit": "observatoire.fausses",
+   "genre": "variante",
+   "types": [
+    "ciel",
+    "glace"
+   ],
+   "valeur": "9e3779b97f4a7c15f39cc0605cedc8341082276bf3a27251f86c6a11d0c18e95",
+   "n0": 0,
+   "attendu": {
+    "n": 0,
+    "champs": {
+     "espece": "Clopinou",
+     "variante": "classique",
+     "shiny": false,
+     "marque": "une crête en forme d'accolade {",
+     "humeur": "taquine",
+     "taille": 31.1,
+     "qualite": 0.882,
+     "potentiel": 87,
+     "stats": {
+      "PV": 42,
+      "ATK": 44,
+      "DEF": 56,
+      "VIT": 48,
+      "INT": 31
+     },
+     "note": 57.2,
+     "rarete": "peu commune",
+     "stade": "ado"
+    }
+   }
+  },
+  {
+   "monde": "observatoire",
+   "exploit": "observatoire.fausses",
+   "genre": "variante",
+   "types": [
+    "ciel",
+    "glace"
+   ],
+   "valeur": "9e3779b97f4a7c15f39cc0605cedc8341082276bf3a27251f86c6a11d0c18e95",
+   "n0": 17,
+   "attendu": {
+    "n": 17,
+    "champs": {
+     "espece": "Tentaclou",
+     "variante": "marais",
+     "shiny": false,
+     "marque": "un éternuement qui fait des étincelles",
+     "humeur": "têtue",
+     "taille": 37.4,
+     "qualite": 0.423,
+     "potentiel": 38,
+     "stats": {
+      "PV": 41,
+      "ATK": 25,
+      "DEF": 43,
+      "VIT": 18,
+      "INT": 38
+     },
+     "note": 40.0,
+     "rarete": "commune",
+     "stade": "enfant"
+    }
+   }
+  },
+  {
+   "monde": "observatoire",
+   "exploit": "observatoire.fausses",
+   "genre": "variante",
+   "types": [
+    "ciel",
+    "glace"
+   ],
+   "valeur": "9e3779b97f4a7c15f39cc0605cedc8341082276bf3a27251f86c6a11d0c18e95",
+   "n0": 60,
+   "attendu": {
+    "n": 62,
+    "champs": {
+     "espece": "Écumane",
+     "variante": "brume",
+     "shiny": false,
+     "marque": "un ventre qui affiche l'heure",
+     "humeur": "calme",
+     "taille": 206.4,
+     "qualite": 0.706,
+     "potentiel": 70,
+     "stats": {
+      "PV": 50,
+      "ATK": 51,
+      "DEF": 50,
+      "VIT": 50,
+      "INT": 34
+     },
+     "note": 70.5,
+     "rarete": "rare",
+     "stade": "enfant"
+    }
+   }
+  },
+  {
+   "monde": "observatoire",
+   "exploit": "observatoire.fausses",
+   "genre": "variante",
+   "types": [
+    "ciel",
+    "glace"
+   ],
+   "valeur": "9e3779b97f4a7c15f39cc0605cedc8341082276bf3a27251f86c6a11d0c18e95",
+   "n0": 123,
+   "attendu": {
+    "n": 123,
+    "champs": {
+     "espece": "Krillou",
+     "variante": "corail",
+     "shiny": false,
+     "marque": "un ronronnement à 440 Hz",
+     "humeur": "courageuse",
+     "taille": 33.1,
+     "qualite": 0.606,
+     "potentiel": 54,
+     "stats": {
+      "PV": 33,
+      "ATK": 39,
+      "DEF": 41,
+      "VIT": 43,
+      "INT": 22
+     },
+     "note": 55.9,
+     "rarete": "peu commune",
+     "stade": "bebe"
+    }
+   }
+  },
+  {
+   "monde": "observatoire",
+   "exploit": "observatoire.fausses",
+   "genre": "variante",
+   "types": [
+    "ciel",
+    "glace"
+   ],
+   "valeur": "8000000000000001fac71cefac71cefac71cefac71cefac71cefac71ce00",
+   "n0": 0,
+   "attendu": {
+    "n": 0,
+    "champs": {
+     "espece": "Félicorne",
+     "variante": "soleil",
+     "shiny": false,
+     "marque": "des empreintes en forme de 0 et de 1",
+     "humeur": "taquine",
+     "taille": 191.4,
+     "qualite": 0.796,
+     "potentiel": 79,
+     "stats": {
+      "PV": 51,
+      "ATK": 52,
+      "DEF": 47,
+      "VIT": 51,
+      "INT": 33
+     },
+     "note": 73.6,
+     "rarete": "rare",
+     "stade": "adulte"
+    }
+   }
+  },
+  {
+   "monde": "observatoire",
+   "exploit": "observatoire.fausses",
+   "genre": "variante",
+   "types": [
+    "ciel",
+    "glace"
+   ],
+   "valeur": "8000000000000001fac71cefac71cefac71cefac71cefac71cefac71ce00",
+   "n0": 17,
+   "attendu": {
+    "n": 17,
+    "champs": {
+     "espece": "Givrarde",
+     "variante": "brume",
+     "shiny": false,
+     "marque": "des rayures comme un code-barres",
+     "humeur": "calme",
+     "taille": 186.8,
+     "qualite": 0.123,
+     "potentiel": 16,
+     "stats": {
+      "PV": 48,
+      "ATK": 51,
+      "DEF": 39,
+      "VIT": 35,
+      "INT": 38
+     },
+     "note": 37.7,
+     "rarete": "commune",
+     "stade": "bebe"
+    }
+   }
+  },
+  {
+   "monde": "observatoire",
+   "exploit": "observatoire.fausses",
+   "genre": "variante",
+   "types": [
+    "ciel",
+    "glace"
+   ],
+   "valeur": "8000000000000001fac71cefac71cefac71cefac71cefac71cefac71ce00",
+   "n0": 60,
+   "attendu": {
+    "n": 63,
+    "champs": {
+     "espece": "Nébuline",
+     "variante": "classique",
+     "shiny": false,
+     "marque": "un ronronnement à 440 Hz",
+     "humeur": "têtue",
+     "taille": 33.5,
+     "qualite": 0.875,
+     "potentiel": 88,
+     "stats": {
+      "PV": 55,
+      "ATK": 40,
+      "DEF": 44,
+      "VIT": 30,
+      "INT": 44
+     },
+     "note": 55.7,
+     "rarete": "peu commune",
+     "stade": "bebe"
+    }
+   }
+  },
+  {
+   "monde": "observatoire",
+   "exploit": "observatoire.fausses",
+   "genre": "variante",
+   "types": [
+    "ciel",
+    "glace"
+   ],
+   "valeur": "8000000000000001fac71cefac71cefac71cefac71cefac71cefac71ce00",
+   "n0": 123,
+   "attendu": {
+    "n": 123,
+    "champs": {
+     "espece": "Zapiot",
+     "variante": "classique",
+     "shiny": false,
+     "marque": "une queue en forme de tilde ~",
+     "humeur": "taquine",
+     "taille": 25.6,
+     "qualite": 0.439,
+     "potentiel": 48,
+     "stats": {
+      "PV": 34,
+      "ATK": 27,
+      "DEF": 32,
+      "VIT": 38,
+      "INT": 51
+     },
+     "note": 29.6,
+     "rarete": "commune",
+     "stade": "enfant"
+    }
+   }
+  },
+  {
+   "monde": "entrainement",
+   "exploit": "entrainement.serie_parfaite",
+   "genre": "legendaire",
+   "types": [],
+   "valeur": "0000000000000000000000000000000000000000000000000000000000000000",
+   "n0": 0,
+   "attendu": {
+    "n": 0,
+    "champs": {
+     "espece": "Heaumbre",
+     "variante": "ombre",
+     "shiny": false,
+     "marque": "un museau qui sent le café",
+     "humeur": "paresseuse",
+     "taille": 196.9,
+     "qualite": 0.685,
+     "potentiel": 77,
+     "stats": {
+      "PV": 55,
+      "ATK": 49,
+      "DEF": 50,
+      "VIT": 46,
+      "INT": 50
+     },
+     "note": 69.1,
+     "rarete": "rare",
+     "stade": "ado"
+    }
+   }
+  },
+  {
+   "monde": "entrainement",
+   "exploit": "entrainement.serie_parfaite",
+   "genre": "legendaire",
+   "types": [],
+   "valeur": "0000000000000000000000000000000000000000000000000000000000000000",
+   "n0": 17,
+   "attendu": {
+    "n": 17,
+    "champs": {
+     "espece": "Plouftin",
+     "variante": "classique",
+     "shiny": false,
+     "marque": "un grain de beauté en forme de #",
+     "humeur": "taquine",
+     "taille": 35.8,
+     "qualite": 0.855,
+     "potentiel": 85,
+     "stats": {
+      "PV": 35,
+      "ATK": 28,
+      "DEF": 29,
+      "VIT": 36,
+      "INT": 55
+     },
+     "note": 51.3,
+     "rarete": "peu commune",
+     "stade": "ado"
+    }
+   }
+  },
+  {
+   "monde": "entrainement",
+   "exploit": "entrainement.serie_parfaite",
+   "genre": "legendaire",
+   "types": [],
+   "valeur": "0000000000000000000000000000000000000000000000000000000000000000",
+   "n0": 60,
+   "attendu": {
+    "n": 60,
+    "champs": {
+     "espece": "Libellance",
+     "variante": "classique",
+     "shiny": false,
+     "marque": "des yeux de deux couleurs",
+     "humeur": "fougueuse",
+     "taille": 268.6,
+     "qualite": 0.989,
+     "potentiel": 97,
+     "stats": {
+      "PV": 49,
+      "ATK": 53,
+      "DEF": 47,
+      "VIT": 84,
+      "INT": 60
+     },
+     "note": 71.1,
+     "rarete": "rare",
+     "stade": "ado"
+    }
+   }
+  },
+  {
+   "monde": "entrainement",
+   "exploit": "entrainement.serie_parfaite",
+   "genre": "legendaire",
+   "types": [],
+   "valeur": "0000000000000000000000000000000000000000000000000000000000000000",
+   "n0": 123,
+   "attendu": {
+    "n": 125,
+    "champs": {
+     "espece": "Givrarde",
+     "variante": "aurore",
+     "shiny": false,
+     "marque": "une antenne qui capte la radio",
+     "humeur": "calme",
+     "taille": 255.6,
+     "qualite": 0.988,
+     "potentiel": 98,
+     "stats": {
+      "PV": 60,
+      "ATK": 63,
+      "DEF": 52,
+      "VIT": 47,
+      "INT": 52
+     },
+     "note": 90.3,
+     "rarete": "légendaire",
+     "stade": "bebe"
+    }
+   }
+  },
+  {
+   "monde": "entrainement",
+   "exploit": "entrainement.serie_parfaite",
+   "genre": "legendaire",
+   "types": [],
+   "valeur": "ffffffffffffffff000000000000000000000000000000000000000000000000",
+   "n0": 0,
+   "attendu": {
+    "n": 0,
+    "champs": {
+     "espece": "Séraphibou",
+     "variante": "nuage",
+     "shiny": false,
+     "marque": "un grain de beauté en forme de #",
+     "humeur": "calme",
+     "taille": 104.6,
+     "qualite": 0.716,
+     "potentiel": 73,
+     "stats": {
+      "PV": 44,
+      "ATK": 49,
+      "DEF": 38,
+      "VIT": 69,
+      "INT": 46
+     },
+     "note": 64.0,
+     "rarete": "rare",
+     "stade": "bebe"
+    }
+   }
+  },
+  {
+   "monde": "entrainement",
+   "exploit": "entrainement.serie_parfaite",
+   "genre": "legendaire",
+   "types": [],
+   "valeur": "ffffffffffffffff000000000000000000000000000000000000000000000000",
+   "n0": 17,
+   "attendu": {
+    "n": 17,
+    "champs": {
+     "espece": "Momiaou",
+     "variante": "desert",
+     "shiny": false,
+     "marque": "un ronronnement à 440 Hz",
+     "humeur": "têtue",
+     "taille": 101.2,
+     "qualite": 0.398,
+     "potentiel": 43,
+     "stats": {
+      "PV": 42,
+      "ATK": 47,
+      "DEF": 41,
+      "VIT": 47,
+      "INT": 27
+     },
+     "note": 42.8,
+     "rarete": "commune",
+     "stade": "enfant"
+    }
+   }
+  },
+  {
+   "monde": "entrainement",
+   "exploit": "entrainement.serie_parfaite",
+   "genre": "legendaire",
+   "types": [],
+   "valeur": "ffffffffffffffff000000000000000000000000000000000000000000000000",
+   "n0": 60,
+   "attendu": {
+    "n": 60,
+    "champs": {
+     "espece": "Lampignon",
+     "variante": "champignonniere",
+     "shiny": false,
+     "marque": "un grain de beauté en forme de #",
+     "humeur": "curieuse",
+     "taille": 89.5,
+     "qualite": 0.705,
+     "potentiel": 75,
+     "stats": {
+      "PV": 40,
+      "ATK": 39,
+      "DEF": 42,
+      "VIT": 48,
+      "INT": 71
+     },
+     "note": 62.3,
+     "rarete": "peu commune",
+     "stade": "bebe"
+    }
+   }
+  },
+  {
+   "monde": "entrainement",
+   "exploit": "entrainement.serie_parfaite",
+   "genre": "legendaire",
+   "types": [],
+   "valeur": "ffffffffffffffff000000000000000000000000000000000000000000000000",
+   "n0": 123,
+   "attendu": {
+    "n": 124,
+    "champs": {
+     "espece": "Araignoir",
+     "variante": "forêt",
+     "shiny": false,
+     "marque": "un œil qui clignote en binaire",
+     "humeur": "courageuse",
+     "taille": 244.2,
+     "qualite": 0.97,
+     "potentiel": 97,
+     "stats": {
+      "PV": 48,
+      "ATK": 51,
+      "DEF": 61,
+      "VIT": 54,
+      "INT": 33
+     },
+     "note": 85.3,
+     "rarete": "légendaire",
+     "stade": "enfant"
+    }
+   }
+  },
+  {
+   "monde": "entrainement",
+   "exploit": "entrainement.serie_parfaite",
+   "genre": "legendaire",
+   "types": [],
+   "valeur": "9e3779b97f4a7c15f39cc0605cedc8341082276bf3a27251f86c6a11d0c18e95",
+   "n0": 0,
+   "attendu": {
+    "n": 0,
+    "champs": {
+     "espece": "Clopinou",
+     "variante": "classique",
+     "shiny": false,
+     "marque": "une crête en forme d'accolade {",
+     "humeur": "taquine",
+     "taille": 31.1,
+     "qualite": 0.882,
+     "potentiel": 87,
+     "stats": {
+      "PV": 42,
+      "ATK": 44,
+      "DEF": 56,
+      "VIT": 48,
+      "INT": 31
+     },
+     "note": 57.2,
+     "rarete": "peu commune",
+     "stade": "ado"
+    }
+   }
+  },
+  {
+   "monde": "entrainement",
+   "exploit": "entrainement.serie_parfaite",
+   "genre": "legendaire",
+   "types": [],
+   "valeur": "9e3779b97f4a7c15f39cc0605cedc8341082276bf3a27251f86c6a11d0c18e95",
+   "n0": 17,
+   "attendu": {
+    "n": 17,
+    "champs": {
+     "espece": "Tentaclou",
+     "variante": "marais",
+     "shiny": false,
+     "marque": "un éternuement qui fait des étincelles",
+     "humeur": "têtue",
+     "taille": 37.4,
+     "qualite": 0.423,
+     "potentiel": 38,
+     "stats": {
+      "PV": 41,
+      "ATK": 25,
+      "DEF": 43,
+      "VIT": 18,
+      "INT": 38
+     },
+     "note": 40.0,
+     "rarete": "commune",
+     "stade": "enfant"
+    }
+   }
+  },
+  {
+   "monde": "entrainement",
+   "exploit": "entrainement.serie_parfaite",
+   "genre": "legendaire",
+   "types": [],
+   "valeur": "9e3779b97f4a7c15f39cc0605cedc8341082276bf3a27251f86c6a11d0c18e95",
+   "n0": 60,
+   "attendu": {
+    "n": 60,
+    "champs": {
+     "espece": "Cendrouille",
+     "variante": "cendres",
+     "shiny": false,
+     "marque": "une tache en forme de @ sur le dos",
+     "humeur": "têtue",
+     "taille": 84.6,
+     "qualite": 0.415,
+     "potentiel": 42,
+     "stats": {
+      "PV": 45,
+      "ATK": 28,
+      "DEF": 41,
+      "VIT": 26,
+      "INT": 35
+     },
+     "note": 40.6,
+     "rarete": "commune",
+     "stade": "ado"
+    }
+   }
+  },
+  {
+   "monde": "entrainement",
+   "exploit": "entrainement.serie_parfaite",
+   "genre": "legendaire",
+   "types": [],
+   "valeur": "9e3779b97f4a7c15f39cc0605cedc8341082276bf3a27251f86c6a11d0c18e95",
+   "n0": 123,
+   "attendu": {
+    "n": 123,
+    "champs": {
+     "espece": "Krillou",
+     "variante": "corail",
+     "shiny": false,
+     "marque": "un ronronnement à 440 Hz",
+     "humeur": "courageuse",
+     "taille": 33.1,
+     "qualite": 0.606,
+     "potentiel": 54,
+     "stats": {
+      "PV": 33,
+      "ATK": 39,
+      "DEF": 41,
+      "VIT": 43,
+      "INT": 22
+     },
+     "note": 55.9,
+     "rarete": "peu commune",
+     "stade": "bebe"
+    }
+   }
+  },
+  {
+   "monde": "entrainement",
+   "exploit": "entrainement.serie_parfaite",
+   "genre": "legendaire",
+   "types": [],
+   "valeur": "8000000000000001fac71cefac71cefac71cefac71cefac71cefac71ce00",
+   "n0": 0,
+   "attendu": {
+    "n": 0,
+    "champs": {
+     "espece": "Félicorne",
+     "variante": "soleil",
+     "shiny": false,
+     "marque": "des empreintes en forme de 0 et de 1",
+     "humeur": "taquine",
+     "taille": 191.4,
+     "qualite": 0.796,
+     "potentiel": 79,
+     "stats": {
+      "PV": 51,
+      "ATK": 52,
+      "DEF": 47,
+      "VIT": 51,
+      "INT": 33
+     },
+     "note": 73.6,
+     "rarete": "rare",
+     "stade": "adulte"
+    }
+   }
+  },
+  {
+   "monde": "entrainement",
+   "exploit": "entrainement.serie_parfaite",
+   "genre": "legendaire",
+   "types": [],
+   "valeur": "8000000000000001fac71cefac71cefac71cefac71cefac71cefac71ce00",
+   "n0": 17,
+   "attendu": {
+    "n": 17,
+    "champs": {
+     "espece": "Givrarde",
+     "variante": "brume",
+     "shiny": false,
+     "marque": "des rayures comme un code-barres",
+     "humeur": "calme",
+     "taille": 186.8,
+     "qualite": 0.123,
+     "potentiel": 16,
+     "stats": {
+      "PV": 48,
+      "ATK": 51,
+      "DEF": 39,
+      "VIT": 35,
+      "INT": 38
+     },
+     "note": 37.7,
+     "rarete": "commune",
+     "stade": "bebe"
+    }
+   }
+  },
+  {
+   "monde": "entrainement",
+   "exploit": "entrainement.serie_parfaite",
+   "genre": "legendaire",
+   "types": [],
+   "valeur": "8000000000000001fac71cefac71cefac71cefac71cefac71cefac71ce00",
+   "n0": 60,
+   "attendu": {
+    "n": 60,
+    "champs": {
+     "espece": "Lanternix",
+     "variante": "classique",
+     "shiny": false,
+     "marque": "une voix qui résonne comme dans une grotte",
+     "humeur": "fougueuse",
+     "taille": 30.8,
+     "qualite": 0.092,
+     "potentiel": 10,
+     "stats": {
+      "PV": 34,
+      "ATK": 23,
+      "DEF": 31,
+      "VIT": 37,
+      "INT": 46
+     },
+     "note": 10.9,
+     "rarete": "commune",
+     "stade": "enfant"
+    }
+   }
+  },
+  {
+   "monde": "entrainement",
+   "exploit": "entrainement.serie_parfaite",
+   "genre": "legendaire",
+   "types": [],
+   "valeur": "8000000000000001fac71cefac71cefac71cefac71cefac71cefac71ce00",
+   "n0": 123,
+   "attendu": {
+    "n": 127,
+    "champs": {
+     "espece": "Essaimpereur",
+     "variante": "desert",
+     "shiny": false,
+     "marque": "des pattes de longueur différente",
+     "humeur": "paresseuse",
+     "taille": 562.8,
+     "qualite": 0.86,
+     "potentiel": 87,
+     "stats": {
+      "PV": 70,
+      "ATK": 67,
+      "DEF": 62,
+      "VIT": 66,
+      "INT": 46
+     },
+     "note": 87.3,
+     "rarete": "légendaire",
+     "stade": "bebe"
+    }
+   }
+  },
+  {
+   "monde": "sommet",
+   "exploit": "sommet.trois_mondes",
+   "genre": "legendaire",
+   "types": [],
+   "valeur": "0000000000000000000000000000000000000000000000000000000000000000",
+   "n0": 0,
+   "attendu": {
+    "n": 0,
+    "champs": {
+     "espece": "Heaumbre",
+     "variante": "ombre",
+     "shiny": false,
+     "marque": "un museau qui sent le café",
+     "humeur": "paresseuse",
+     "taille": 196.9,
+     "qualite": 0.685,
+     "potentiel": 77,
+     "stats": {
+      "PV": 55,
+      "ATK": 49,
+      "DEF": 50,
+      "VIT": 46,
+      "INT": 50
+     },
+     "note": 69.1,
+     "rarete": "rare",
+     "stade": "ado"
+    }
+   }
+  },
+  {
+   "monde": "sommet",
+   "exploit": "sommet.trois_mondes",
+   "genre": "legendaire",
+   "types": [],
+   "valeur": "0000000000000000000000000000000000000000000000000000000000000000",
+   "n0": 17,
+   "attendu": {
+    "n": 17,
+    "champs": {
+     "espece": "Plouftin",
+     "variante": "classique",
+     "shiny": false,
+     "marque": "un grain de beauté en forme de #",
+     "humeur": "taquine",
+     "taille": 35.8,
+     "qualite": 0.855,
+     "potentiel": 85,
+     "stats": {
+      "PV": 35,
+      "ATK": 28,
+      "DEF": 29,
+      "VIT": 36,
+      "INT": 55
+     },
+     "note": 51.3,
+     "rarete": "peu commune",
+     "stade": "ado"
+    }
+   }
+  },
+  {
+   "monde": "sommet",
+   "exploit": "sommet.trois_mondes",
+   "genre": "legendaire",
+   "types": [],
+   "valeur": "0000000000000000000000000000000000000000000000000000000000000000",
+   "n0": 60,
+   "attendu": {
+    "n": 60,
+    "champs": {
+     "espece": "Libellance",
+     "variante": "classique",
+     "shiny": false,
+     "marque": "des yeux de deux couleurs",
+     "humeur": "fougueuse",
+     "taille": 268.6,
+     "qualite": 0.989,
+     "potentiel": 97,
+     "stats": {
+      "PV": 49,
+      "ATK": 53,
+      "DEF": 47,
+      "VIT": 84,
+      "INT": 60
+     },
+     "note": 71.1,
+     "rarete": "rare",
+     "stade": "ado"
+    }
+   }
+  },
+  {
+   "monde": "sommet",
+   "exploit": "sommet.trois_mondes",
+   "genre": "legendaire",
+   "types": [],
+   "valeur": "0000000000000000000000000000000000000000000000000000000000000000",
+   "n0": 123,
+   "attendu": {
+    "n": 125,
+    "champs": {
+     "espece": "Givrarde",
+     "variante": "aurore",
+     "shiny": false,
+     "marque": "une antenne qui capte la radio",
+     "humeur": "calme",
+     "taille": 255.6,
+     "qualite": 0.988,
+     "potentiel": 98,
+     "stats": {
+      "PV": 60,
+      "ATK": 63,
+      "DEF": 52,
+      "VIT": 47,
+      "INT": 52
+     },
+     "note": 90.3,
+     "rarete": "légendaire",
+     "stade": "bebe"
+    }
+   }
+  },
+  {
+   "monde": "sommet",
+   "exploit": "sommet.trois_mondes",
+   "genre": "legendaire",
+   "types": [],
+   "valeur": "ffffffffffffffff000000000000000000000000000000000000000000000000",
+   "n0": 0,
+   "attendu": {
+    "n": 0,
+    "champs": {
+     "espece": "Séraphibou",
+     "variante": "nuage",
+     "shiny": false,
+     "marque": "un grain de beauté en forme de #",
+     "humeur": "calme",
+     "taille": 104.6,
+     "qualite": 0.716,
+     "potentiel": 73,
+     "stats": {
+      "PV": 44,
+      "ATK": 49,
+      "DEF": 38,
+      "VIT": 69,
+      "INT": 46
+     },
+     "note": 64.0,
+     "rarete": "rare",
+     "stade": "bebe"
+    }
+   }
+  },
+  {
+   "monde": "sommet",
+   "exploit": "sommet.trois_mondes",
+   "genre": "legendaire",
+   "types": [],
+   "valeur": "ffffffffffffffff000000000000000000000000000000000000000000000000",
+   "n0": 17,
+   "attendu": {
+    "n": 17,
+    "champs": {
+     "espece": "Momiaou",
+     "variante": "desert",
+     "shiny": false,
+     "marque": "un ronronnement à 440 Hz",
+     "humeur": "têtue",
+     "taille": 101.2,
+     "qualite": 0.398,
+     "potentiel": 43,
+     "stats": {
+      "PV": 42,
+      "ATK": 47,
+      "DEF": 41,
+      "VIT": 47,
+      "INT": 27
+     },
+     "note": 42.8,
+     "rarete": "commune",
+     "stade": "enfant"
+    }
+   }
+  },
+  {
+   "monde": "sommet",
+   "exploit": "sommet.trois_mondes",
+   "genre": "legendaire",
+   "types": [],
+   "valeur": "ffffffffffffffff000000000000000000000000000000000000000000000000",
+   "n0": 60,
+   "attendu": {
+    "n": 60,
+    "champs": {
+     "espece": "Lampignon",
+     "variante": "champignonniere",
+     "shiny": false,
+     "marque": "un grain de beauté en forme de #",
+     "humeur": "curieuse",
+     "taille": 89.5,
+     "qualite": 0.705,
+     "potentiel": 75,
+     "stats": {
+      "PV": 40,
+      "ATK": 39,
+      "DEF": 42,
+      "VIT": 48,
+      "INT": 71
+     },
+     "note": 62.3,
+     "rarete": "peu commune",
+     "stade": "bebe"
+    }
+   }
+  },
+  {
+   "monde": "sommet",
+   "exploit": "sommet.trois_mondes",
+   "genre": "legendaire",
+   "types": [],
+   "valeur": "ffffffffffffffff000000000000000000000000000000000000000000000000",
+   "n0": 123,
+   "attendu": {
+    "n": 124,
+    "champs": {
+     "espece": "Araignoir",
+     "variante": "forêt",
+     "shiny": false,
+     "marque": "un œil qui clignote en binaire",
+     "humeur": "courageuse",
+     "taille": 244.2,
+     "qualite": 0.97,
+     "potentiel": 97,
+     "stats": {
+      "PV": 48,
+      "ATK": 51,
+      "DEF": 61,
+      "VIT": 54,
+      "INT": 33
+     },
+     "note": 85.3,
+     "rarete": "légendaire",
+     "stade": "enfant"
+    }
+   }
+  },
+  {
+   "monde": "sommet",
+   "exploit": "sommet.trois_mondes",
+   "genre": "legendaire",
+   "types": [],
+   "valeur": "9e3779b97f4a7c15f39cc0605cedc8341082276bf3a27251f86c6a11d0c18e95",
+   "n0": 0,
+   "attendu": {
+    "n": 0,
+    "champs": {
+     "espece": "Clopinou",
+     "variante": "classique",
+     "shiny": false,
+     "marque": "une crête en forme d'accolade {",
+     "humeur": "taquine",
+     "taille": 31.1,
+     "qualite": 0.882,
+     "potentiel": 87,
+     "stats": {
+      "PV": 42,
+      "ATK": 44,
+      "DEF": 56,
+      "VIT": 48,
+      "INT": 31
+     },
+     "note": 57.2,
+     "rarete": "peu commune",
+     "stade": "ado"
+    }
+   }
+  },
+  {
+   "monde": "sommet",
+   "exploit": "sommet.trois_mondes",
+   "genre": "legendaire",
+   "types": [],
+   "valeur": "9e3779b97f4a7c15f39cc0605cedc8341082276bf3a27251f86c6a11d0c18e95",
+   "n0": 17,
+   "attendu": {
+    "n": 17,
+    "champs": {
+     "espece": "Tentaclou",
+     "variante": "marais",
+     "shiny": false,
+     "marque": "un éternuement qui fait des étincelles",
+     "humeur": "têtue",
+     "taille": 37.4,
+     "qualite": 0.423,
+     "potentiel": 38,
+     "stats": {
+      "PV": 41,
+      "ATK": 25,
+      "DEF": 43,
+      "VIT": 18,
+      "INT": 38
+     },
+     "note": 40.0,
+     "rarete": "commune",
+     "stade": "enfant"
+    }
+   }
+  },
+  {
+   "monde": "sommet",
+   "exploit": "sommet.trois_mondes",
+   "genre": "legendaire",
+   "types": [],
+   "valeur": "9e3779b97f4a7c15f39cc0605cedc8341082276bf3a27251f86c6a11d0c18e95",
+   "n0": 60,
+   "attendu": {
+    "n": 60,
+    "champs": {
+     "espece": "Cendrouille",
+     "variante": "cendres",
+     "shiny": false,
+     "marque": "une tache en forme de @ sur le dos",
+     "humeur": "têtue",
+     "taille": 84.6,
+     "qualite": 0.415,
+     "potentiel": 42,
+     "stats": {
+      "PV": 45,
+      "ATK": 28,
+      "DEF": 41,
+      "VIT": 26,
+      "INT": 35
+     },
+     "note": 40.6,
+     "rarete": "commune",
+     "stade": "ado"
+    }
+   }
+  },
+  {
+   "monde": "sommet",
+   "exploit": "sommet.trois_mondes",
+   "genre": "legendaire",
+   "types": [],
+   "valeur": "9e3779b97f4a7c15f39cc0605cedc8341082276bf3a27251f86c6a11d0c18e95",
+   "n0": 123,
+   "attendu": {
+    "n": 123,
+    "champs": {
+     "espece": "Krillou",
+     "variante": "corail",
+     "shiny": false,
+     "marque": "un ronronnement à 440 Hz",
+     "humeur": "courageuse",
+     "taille": 33.1,
+     "qualite": 0.606,
+     "potentiel": 54,
+     "stats": {
+      "PV": 33,
+      "ATK": 39,
+      "DEF": 41,
+      "VIT": 43,
+      "INT": 22
+     },
+     "note": 55.9,
+     "rarete": "peu commune",
+     "stade": "bebe"
+    }
+   }
+  },
+  {
+   "monde": "sommet",
+   "exploit": "sommet.trois_mondes",
+   "genre": "legendaire",
+   "types": [],
+   "valeur": "8000000000000001fac71cefac71cefac71cefac71cefac71cefac71ce00",
+   "n0": 0,
+   "attendu": {
+    "n": 0,
+    "champs": {
+     "espece": "Félicorne",
+     "variante": "soleil",
+     "shiny": false,
+     "marque": "des empreintes en forme de 0 et de 1",
+     "humeur": "taquine",
+     "taille": 191.4,
+     "qualite": 0.796,
+     "potentiel": 79,
+     "stats": {
+      "PV": 51,
+      "ATK": 52,
+      "DEF": 47,
+      "VIT": 51,
+      "INT": 33
+     },
+     "note": 73.6,
+     "rarete": "rare",
+     "stade": "adulte"
+    }
+   }
+  },
+  {
+   "monde": "sommet",
+   "exploit": "sommet.trois_mondes",
+   "genre": "legendaire",
+   "types": [],
+   "valeur": "8000000000000001fac71cefac71cefac71cefac71cefac71cefac71ce00",
+   "n0": 17,
+   "attendu": {
+    "n": 17,
+    "champs": {
+     "espece": "Givrarde",
+     "variante": "brume",
+     "shiny": false,
+     "marque": "des rayures comme un code-barres",
+     "humeur": "calme",
+     "taille": 186.8,
+     "qualite": 0.123,
+     "potentiel": 16,
+     "stats": {
+      "PV": 48,
+      "ATK": 51,
+      "DEF": 39,
+      "VIT": 35,
+      "INT": 38
+     },
+     "note": 37.7,
+     "rarete": "commune",
+     "stade": "bebe"
+    }
+   }
+  },
+  {
+   "monde": "sommet",
+   "exploit": "sommet.trois_mondes",
+   "genre": "legendaire",
+   "types": [],
+   "valeur": "8000000000000001fac71cefac71cefac71cefac71cefac71cefac71ce00",
+   "n0": 60,
+   "attendu": {
+    "n": 60,
+    "champs": {
+     "espece": "Lanternix",
+     "variante": "classique",
+     "shiny": false,
+     "marque": "une voix qui résonne comme dans une grotte",
+     "humeur": "fougueuse",
+     "taille": 30.8,
+     "qualite": 0.092,
+     "potentiel": 10,
+     "stats": {
+      "PV": 34,
+      "ATK": 23,
+      "DEF": 31,
+      "VIT": 37,
+      "INT": 46
+     },
+     "note": 10.9,
+     "rarete": "commune",
+     "stade": "enfant"
+    }
+   }
+  },
+  {
+   "monde": "sommet",
+   "exploit": "sommet.trois_mondes",
+   "genre": "legendaire",
+   "types": [],
+   "valeur": "8000000000000001fac71cefac71cefac71cefac71cefac71cefac71ce00",
+   "n0": 123,
+   "attendu": {
+    "n": 127,
+    "champs": {
+     "espece": "Essaimpereur",
+     "variante": "desert",
+     "shiny": false,
+     "marque": "des pattes de longueur différente",
+     "humeur": "paresseuse",
+     "taille": 562.8,
+     "qualite": 0.86,
+     "potentiel": 87,
+     "stats": {
+      "PV": 70,
+      "ATK": 67,
+      "DEF": 62,
+      "VIT": 66,
+      "INT": 46
+     },
+     "note": 87.3,
+     "rarete": "légendaire",
+     "stade": "bebe"
+    }
+   }
+  }
+ ]
+}

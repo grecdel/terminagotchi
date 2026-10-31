@@ -54,6 +54,8 @@ class Commandes(
         // une fonction pas encore ouverte (Intro.kt, intro.json) : « pas encore », jamais une erreur
         val nom = if (cmd == "equipe" && reste.split(Regex("\\s+"))[0].lowercase() == "guide") "guide" else cmd
         Intro.bloque(jeu, nom, reste)?.let { return Reponse(it, couleur = ORANGE) }
+        // « je ne connais pas » : jamais bloquant, on ouvre un Pont des Nombres (Maths.kt)
+        if (Maths.estInconnu(ligne)) return Reponse(Maths.commande(jeu, ligne.trim()), couleur = BLEU)
         return when (cmd) {
             // ---------------------------------------------------- téléphone
             "applis" -> applis(reste)
@@ -125,6 +127,7 @@ class Commandes(
             "site" -> site(reste)
             "bestiaire" -> Reponse(Explo.fiche(jeu, reste), couleur = ROSE)
             "explique" -> Reponse(Explique.fiche(jeu, reste), couleur = BLEU)
+            "maths" -> Reponse(Maths.commande(jeu, reste), couleur = BLEU)
             "sync" -> sync()
             "indice" -> Reponse(Ctf.indice(jeu, reste), couleur = VERT)
             "edite" -> edite(reste)

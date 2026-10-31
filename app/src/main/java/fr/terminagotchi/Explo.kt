@@ -100,6 +100,12 @@ object Explo {
             r = Tirage.apparition(jeu, abyssorPermis && !premier, attire) ?: auHasard(abyssorPermis && !premier, attire)
             if (!premier || facile(r.first, r.second)) break
         }
+        if (!premier) {                                                 // les exploits des mondes (Recompenses.kt, § 7.6)
+            val (choisie, msg) = Recompenses.apparition(jeu, r!!) {
+                Tirage.apparition(jeu, abyssorPermis, attire) ?: auHasard(abyssorPermis, attire) }
+            r = choisie
+            msg?.let { jeu.log(it); jeu.dire(it, 10) }
+        }
         if (attirance(jeu) != null) etat(jeu).remove("attirance")      // une commande attire UNE apparition
         val (e, ind) = r!!
         File(jeu.terrain, ind.optString("zone")).mkdirs()

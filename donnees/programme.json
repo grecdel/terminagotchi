@@ -1,0 +1,2176 @@
+{
+ "version": 1,
+ "note": "Fiches notions de la charte de rigueur (docs/programme.md § 7.1, § 6.1), Ponts des Nombres (§ 7.10) et récompenses par monde (§ 7.6). Les textes sont des clés de langue (14 langues). Vérifié par pc/outils/verifier_programme.py ; sorties rejouées dans bash par pc/outils/rejeu_bash.py.",
+ "notions": {
+  "pwd": {
+   "motif": "^pwd\\b",
+   "enfant": "lex.pwd.i",
+   "grands": "grand.pwd",
+   "vrai_terminal": [
+    {
+     "prepare": "mkdir -p lieu/sous",
+     "cmd": "cd lieu/sous && pwd",
+     "motif": "/lieu/sous$"
+    }
+   ],
+   "limite_image": "prog.pwd.limite",
+   "idees_fausses": [
+    "prog.pwd.idee"
+   ],
+   "sources": [
+    "POSIX.1-2024, pwd : https://pubs.opengroup.org/onlinepubs/9799919799/utilities/pwd.html",
+    "man 1 pwd"
+   ],
+   "relu_par": null
+  },
+  "ls": {
+   "motif": "^ls(\\s|$)",
+   "enfant": "lex.ls.i",
+   "grands": "grand.ls",
+   "vrai_terminal": [
+    {
+     "prepare": "mkdir boite; touch b.txt a.txt",
+     "cmd": "ls",
+     "sortie": "a.txt\nb.txt\nboite"
+    }
+   ],
+   "limite_image": "prog.ls.limite",
+   "idees_fausses": [
+    "prog.ls.idee"
+   ],
+   "sources": [
+    "POSIX.1-2024, ls : https://pubs.opengroup.org/onlinepubs/9799919799/utilities/ls.html",
+    "man 1 ls"
+   ],
+   "relu_par": null
+  },
+  "ls_a": {
+   "motif": "^ls(\\s+-\\w+)*\\s+-\\w*[aA]",
+   "enfant": "opt.all",
+   "grands": "optg.all",
+   "vrai_terminal": [
+    {
+     "prepare": "touch .secret visible",
+     "cmd": "ls -a",
+     "sortie": ".\n..\n.secret\nvisible"
+    }
+   ],
+   "limite_image": "prog.ls_a.limite",
+   "idees_fausses": [
+    "prog.ls_a.idee"
+   ],
+   "sources": [
+    "POSIX.1-2024, ls : https://pubs.opengroup.org/onlinepubs/9799919799/utilities/ls.html",
+    "man 1 ls"
+   ],
+   "relu_par": null
+  },
+  "ls_l": {
+   "motif": "^ls(\\s+-\\w+)*\\s+-\\w*l",
+   "enfant": "opt.long",
+   "grands": "optg.long",
+   "vrai_terminal": [
+    {
+     "prepare": "printf abc > f; chmod 644 f",
+     "cmd": "ls -l f",
+     "motif": "^-rw-r--r-- 1 \\S+ \\S+ 3 .* f$"
+    }
+   ],
+   "limite_image": "prog.ls_l.limite",
+   "idees_fausses": [
+    "prog.ls_l.idee"
+   ],
+   "sources": [
+    "POSIX.1-2024, ls : https://pubs.opengroup.org/onlinepubs/9799919799/utilities/ls.html",
+    "man 1 ls"
+   ],
+   "relu_par": null
+  },
+  "ls_r": {
+   "motif": "^(tree|ls(\\s+-\\w+)*\\s+-\\w*R)\\b",
+   "enfant": "lex.tree.i",
+   "grands": "grand.tree",
+   "vrai_terminal": [
+    {
+     "prepare": "mkdir -p a/b; touch a/b/c",
+     "cmd": "ls -R a",
+     "sortie": "a:\nb\n\na/b:\nc"
+    }
+   ],
+   "limite_image": "prog.ls_r.limite",
+   "idees_fausses": [
+    "prog.ls_r.idee"
+   ],
+   "sources": [
+    "POSIX.1-2024, ls : https://pubs.opengroup.org/onlinepubs/9799919799/utilities/ls.html",
+    "man 1 ls"
+   ],
+   "relu_par": null
+  },
+  "cd": {
+   "motif": "^cd\\b",
+   "enfant": "lex.cd.i",
+   "grands": "grand.cd",
+   "vrai_terminal": [
+    {
+     "prepare": "mkdir -p nid",
+     "cmd": "cd nid && pwd",
+     "motif": "/nid$"
+    },
+    {
+     "cmd": "cd && pwd",
+     "sortie": "{HOME}"
+    }
+   ],
+   "limite_image": "prog.cd.limite",
+   "idees_fausses": [
+    "prog.cd.idee"
+   ],
+   "sources": [
+    "POSIX.1-2024, cd : https://pubs.opengroup.org/onlinepubs/9799919799/utilities/cd.html",
+    "man 1 cd"
+   ],
+   "relu_par": null
+  },
+  "camp": {
+   "motif": "(^|\\s)~(/|\\s|$)",
+   "enfant": "opt.chambre",
+   "grands": "optg.chambre",
+   "vrai_terminal": [
+    {
+     "cmd": "echo ~",
+     "sortie": "{HOME}"
+    }
+   ],
+   "limite_image": "prog.camp.limite",
+   "idees_fausses": [
+    "prog.camp.idee"
+   ],
+   "sources": [
+    "Bash, Tilde Expansion : https://www.gnu.org/software/bash/manual/html_node/Tilde-Expansion.html"
+   ],
+   "relu_par": null
+  },
+  "parent": {
+   "motif": "(^|[\\s/])\\.\\.(/|\\s|$)",
+   "enfant": "opt.avant",
+   "grands": "optg.avant",
+   "vrai_terminal": [
+    {
+     "prepare": "mkdir -p a/b",
+     "cmd": "cd a/b && cd .. && pwd",
+     "motif": "/a$"
+    }
+   ],
+   "limite_image": "prog.parent.limite",
+   "idees_fausses": [
+    "prog.parent.idee"
+   ],
+   "sources": [
+    "POSIX.1-2024, Base Definitions 4.16 Pathname Resolution",
+    "man 7 path_resolution"
+   ],
+   "relu_par": null
+  },
+  "racine": {
+   "motif": "(^|\\s)/",
+   "enfant": "opt.racine",
+   "grands": "optg.racine",
+   "vrai_terminal": [
+    {
+     "cmd": "cd / && pwd",
+     "sortie": "/"
+    }
+   ],
+   "limite_image": "prog.racine.limite",
+   "idees_fausses": [
+    "prog.racine.idee"
+   ],
+   "sources": [
+    "Filesystem Hierarchy Standard 3.0 : https://refspecs.linuxfoundation.org/FHS_3.0/fhs/index.html",
+    "man 7 hier"
+   ],
+   "relu_par": null
+  },
+  "mkdir": {
+   "motif": "^mkdir\\b",
+   "enfant": "lex.mkdir.i",
+   "grands": "grand.mkdir",
+   "vrai_terminal": [
+    {
+     "cmd": "mkdir cabane && ls",
+     "sortie": "cabane"
+    },
+    {
+     "prepare": "mkdir cabane",
+     "cmd": "mkdir cabane",
+     "code": "non0",
+     "motif": "File exists"
+    }
+   ],
+   "limite_image": "prog.mkdir.limite",
+   "idees_fausses": [
+    "prog.mkdir.idee"
+   ],
+   "sources": [
+    "POSIX.1-2024, mkdir : https://pubs.opengroup.org/onlinepubs/9799919799/utilities/mkdir.html",
+    "man 1 mkdir"
+   ],
+   "relu_par": null
+  },
+  "touch": {
+   "motif": "^touch\\b",
+   "enfant": "lex.touch.i",
+   "grands": "grand.touch",
+   "vrai_terminal": [
+    {
+     "cmd": "touch lit.txt && wc -c < lit.txt",
+     "sortie": "0"
+    }
+   ],
+   "limite_image": "prog.touch.limite",
+   "idees_fausses": [
+    "prog.touch.idee"
+   ],
+   "sources": [
+    "POSIX.1-2024, touch : https://pubs.opengroup.org/onlinepubs/9799919799/utilities/touch.html",
+    "man 1 touch"
+   ],
+   "relu_par": null
+  },
+  "rmdir": {
+   "motif": "^rmdir\\b",
+   "enfant": "reg.img.rmdir",
+   "grands": "grand.rmdir",
+   "vrai_terminal": [
+    {
+     "prepare": "mkdir vide",
+     "cmd": "rmdir vide && ls",
+     "sortie": ""
+    },
+    {
+     "prepare": "mkdir plein; touch plein/x",
+     "cmd": "rmdir plein",
+     "code": "non0",
+     "motif": "Directory not empty"
+    }
+   ],
+   "limite_image": "prog.rmdir.limite",
+   "idees_fausses": [
+    "prog.rmdir.idee"
+   ],
+   "sources": [
+    "POSIX.1-2024, rmdir : https://pubs.opengroup.org/onlinepubs/9799919799/utilities/rmdir.html",
+    "man 1 rmdir"
+   ],
+   "relu_par": null
+  },
+  "rm": {
+   "motif": "^rm\\s",
+   "enfant": "lex.rm.i",
+   "grands": "grand.rm",
+   "vrai_terminal": [
+    {
+     "prepare": "mkdir d",
+     "cmd": "rm d",
+     "code": "non0",
+     "motif": "Is a directory"
+    }
+   ],
+   "limite_image": "prog.rm.limite",
+   "idees_fausses": [
+    "prog.rm.idee"
+   ],
+   "sources": [
+    "POSIX.1-2024, rm : https://pubs.opengroup.org/onlinepubs/9799919799/utilities/rm.html",
+    "man 1 rm"
+   ],
+   "relu_par": null
+  },
+  "rm_r": {
+   "motif": "^rm(\\s+-\\w+)*\\s+-\\w*[rR]",
+   "enfant": "opt.recursif_rm",
+   "grands": "optg.recursif_rm",
+   "vrai_terminal": [
+    {
+     "prepare": "mkdir -p c/d; touch c/d/e",
+     "cmd": "rm -r c && ls",
+     "sortie": ""
+    }
+   ],
+   "limite_image": "prog.rm_r.limite",
+   "idees_fausses": [
+    "prog.rm_r.idee"
+   ],
+   "sources": [
+    "POSIX.1-2024, rm : https://pubs.opengroup.org/onlinepubs/9799919799/utilities/rm.html",
+    "man 1 rm"
+   ],
+   "relu_par": null
+  },
+  "cp": {
+   "motif": "^cp\\b",
+   "enfant": "lex.cp.i",
+   "grands": "grand.cp",
+   "vrai_terminal": [
+    {
+     "prepare": "echo pomme > a",
+     "cmd": "cp a b && cat b",
+     "sortie": "pomme"
+    },
+    {
+     "prepare": "echo pomme > a; echo vieux > b",
+     "cmd": "cp a b && cat b",
+     "sortie": "pomme"
+    }
+   ],
+   "limite_image": "prog.cp.limite",
+   "idees_fausses": [
+    "prog.cp.idee"
+   ],
+   "sources": [
+    "POSIX.1-2024, cp : https://pubs.opengroup.org/onlinepubs/9799919799/utilities/cp.html",
+    "man 1 cp"
+   ],
+   "relu_par": null
+  },
+  "mv": {
+   "motif": "^mv\\b",
+   "enfant": "lex.mv.i",
+   "grands": "grand.mv",
+   "vrai_terminal": [
+    {
+     "prepare": "echo x > a",
+     "cmd": "mv a b && ls",
+     "sortie": "b"
+    }
+   ],
+   "limite_image": "prog.mv.limite",
+   "idees_fausses": [
+    "prog.mv.idee"
+   ],
+   "sources": [
+    "POSIX.1-2024, mv : https://pubs.opengroup.org/onlinepubs/9799919799/utilities/mv.html",
+    "man 1 mv"
+   ],
+   "relu_par": null
+  },
+  "echo": {
+   "motif": "^echo\\b",
+   "enfant": "reg.img.echo",
+   "grands": "grand.echo",
+   "vrai_terminal": [
+    {
+     "cmd": "echo \"bonjour   le monde\"",
+     "sortie": "bonjour   le monde"
+    },
+    {
+     "cmd": "echo bonjour   le monde",
+     "sortie": "bonjour le monde"
+    }
+   ],
+   "limite_image": "prog.echo.limite",
+   "idees_fausses": [
+    "prog.echo.idee"
+   ],
+   "sources": [
+    "POSIX.1-2024, echo : https://pubs.opengroup.org/onlinepubs/9799919799/utilities/echo.html",
+    "man 1 echo"
+   ],
+   "relu_par": null
+  },
+  "redir": {
+   "motif": "(^|[^>2&])>(\\s|[^>&])",
+   "enfant": "opt.ecrase",
+   "grands": "optg.ecrase",
+   "vrai_terminal": [
+    {
+     "prepare": "echo vieux > f",
+     "cmd": "echo neuf > f && cat f",
+     "sortie": "neuf"
+    }
+   ],
+   "limite_image": "prog.redir.limite",
+   "idees_fausses": [
+    "prog.redir.idee"
+   ],
+   "sources": [
+    "Bash, Redirections : https://www.gnu.org/software/bash/manual/html_node/Redirections.html"
+   ],
+   "relu_par": null
+  },
+  "ajout": {
+   "motif": ">>",
+   "enfant": "opt.ajoute",
+   "grands": "optg.ajoute",
+   "vrai_terminal": [
+    {
+     "prepare": "echo pomme > f",
+     "cmd": "echo poire >> f && cat f",
+     "sortie": "pomme\npoire"
+    },
+    {
+     "cmd": "echo poire >> neuf && cat neuf",
+     "sortie": "poire"
+    }
+   ],
+   "limite_image": "prog.ajout.limite",
+   "idees_fausses": [
+    "prog.ajout.idee"
+   ],
+   "sources": [
+    "Bash, Redirections : https://www.gnu.org/software/bash/manual/html_node/Redirections.html"
+   ],
+   "relu_par": null
+  },
+  "cat": {
+   "motif": "(^|\\|\\s*)cat\\b",
+   "enfant": "lex.cat.i",
+   "grands": "grand.cat",
+   "vrai_terminal": [
+    {
+     "prepare": "printf 'a\\nb\\n' > f",
+     "cmd": "cat f",
+     "sortie": "a\nb"
+    }
+   ],
+   "limite_image": "prog.cat.limite",
+   "idees_fausses": [
+    "prog.cat.idee"
+   ],
+   "sources": [
+    "POSIX.1-2024, cat : https://pubs.opengroup.org/onlinepubs/9799919799/utilities/cat.html",
+    "man 1 cat"
+   ],
+   "relu_par": null
+  },
+  "less": {
+   "motif": "^less\\b",
+   "enfant": "lex.less.i",
+   "grands": "grand.less",
+   "vrai_terminal": [
+    {
+     "prepare": "printf 'a\\nb\\n' > f",
+     "cmd": "less f",
+     "sortie": "a\nb",
+     "outil": "less"
+    }
+   ],
+   "limite_image": "prog.less.limite",
+   "idees_fausses": [
+    "prog.less.idee"
+   ],
+   "sources": [
+    "man 1 less : https://man7.org/linux/man-pages/man1/less.1.html"
+   ],
+   "relu_par": null
+  },
+  "head": {
+   "motif": "^head\\b",
+   "enfant": "lex.head.i",
+   "grands": "grand.head",
+   "vrai_terminal": [
+    {
+     "prepare": "seq 1 20 > f",
+     "cmd": "head f | wc -l",
+     "sortie": "10"
+    },
+    {
+     "prepare": "seq 1 20 > f",
+     "cmd": "head -n 3 f",
+     "sortie": "1\n2\n3"
+    }
+   ],
+   "limite_image": "prog.head.limite",
+   "idees_fausses": [
+    "prog.head.idee"
+   ],
+   "sources": [
+    "POSIX.1-2024, head : https://pubs.opengroup.org/onlinepubs/9799919799/utilities/head.html",
+    "man 1 head"
+   ],
+   "relu_par": null
+  },
+  "wc": {
+   "motif": "\\bwc\\b",
+   "enfant": "lex.wc.i",
+   "grands": "grand.wc",
+   "vrai_terminal": [
+    {
+     "cmd": "printf 'a\\nb' | wc -l",
+     "sortie": "1"
+    },
+    {
+     "cmd": "printf 'é' | wc -c",
+     "sortie": "2"
+    }
+   ],
+   "limite_image": "prog.wc.limite",
+   "idees_fausses": [
+    "prog.wc.idee"
+   ],
+   "sources": [
+    "POSIX.1-2024, wc : https://pubs.opengroup.org/onlinepubs/9799919799/utilities/wc.html",
+    "man 1 wc"
+   ],
+   "relu_par": null
+  },
+  "grep": {
+   "motif": "\\bgrep\\b",
+   "enfant": "lex.grep.i",
+   "grands": "grand.grep",
+   "vrai_terminal": [
+    {
+     "prepare": "printf 'Pomme\\npomme verte\\npoire\\n' > f",
+     "cmd": "grep pomme f",
+     "sortie": "pomme verte"
+    },
+    {
+     "prepare": "printf 'Pomme\\npomme verte\\npoire\\n' > f",
+     "cmd": "grep -i pomme f",
+     "sortie": "Pomme\npomme verte"
+    }
+   ],
+   "limite_image": "prog.grep.limite",
+   "idees_fausses": [
+    "prog.grep.idee"
+   ],
+   "sources": [
+    "POSIX.1-2024, grep : https://pubs.opengroup.org/onlinepubs/9799919799/utilities/grep.html",
+    "man 1 grep"
+   ],
+   "relu_par": null
+  },
+  "find": {
+   "motif": "^find\\b",
+   "enfant": "lex.find.i",
+   "grands": "grand.find",
+   "vrai_terminal": [
+    {
+     "prepare": "mkdir -p a/b; touch a/b/livre.txt",
+     "cmd": "find . -name \"livre*\"",
+     "sortie": "./a/b/livre.txt"
+    }
+   ],
+   "limite_image": "prog.find.limite",
+   "idees_fausses": [
+    "prog.find.idee"
+   ],
+   "sources": [
+    "POSIX.1-2024, find : https://pubs.opengroup.org/onlinepubs/9799919799/utilities/find.html",
+    "man 1 find"
+   ],
+   "relu_par": null
+  },
+  "sort": {
+   "motif": "\\bsort\\b",
+   "enfant": "lex.sort.i",
+   "grands": "grand.sort",
+   "vrai_terminal": [
+    {
+     "cmd": "printf '9\\n10\\n' | sort",
+     "sortie": "10\n9"
+    },
+    {
+     "cmd": "printf '9\\n10\\n' | sort -n",
+     "sortie": "9\n10"
+    }
+   ],
+   "limite_image": "prog.sort.limite",
+   "idees_fausses": [
+    "prog.sort.idee"
+   ],
+   "sources": [
+    "POSIX.1-2024, sort : https://pubs.opengroup.org/onlinepubs/9799919799/utilities/sort.html",
+    "man 1 sort"
+   ],
+   "relu_par": null
+  },
+  "tuyau": {
+   "motif": "\\|",
+   "enfant": "opt.tuyau",
+   "grands": "optg.tuyau",
+   "vrai_terminal": [
+    {
+     "cmd": "printf 'a\\nb\\nc\\n' | wc -l",
+     "sortie": "3"
+    }
+   ],
+   "limite_image": "prog.tuyau.limite",
+   "idees_fausses": [
+    "prog.tuyau.idee"
+   ],
+   "sources": [
+    "Bash, Pipelines : https://www.gnu.org/software/bash/manual/html_node/Pipelines.html"
+   ],
+   "relu_par": null
+  },
+  "rev": {
+   "motif": "(^|\\s)rev\\b",
+   "enfant": "lex.rev.i",
+   "grands": "grand.rev",
+   "vrai_terminal": [
+    {
+     "cmd": "printf 'ab\\ncd\\n' | rev",
+     "sortie": "ba\ndc",
+     "outil": "rev"
+    }
+   ],
+   "limite_image": "prog.rev.limite",
+   "idees_fausses": [
+    "prog.rev.idee"
+   ],
+   "sources": [
+    "util-linux, rev : https://man7.org/linux/man-pages/man1/rev.1.html"
+   ],
+   "relu_par": null
+  },
+  "chmod": {
+   "motif": "^chmod\\b",
+   "enfant": "lex.chmod.i",
+   "grands": "grand.chmod",
+   "vrai_terminal": [
+    {
+     "prepare": "echo pomme > f",
+     "cmd": "chmod 444 f && ls -l f",
+     "motif": "^-r--r--r-- "
+    },
+    {
+     "prepare": "echo pomme > f; chmod 444 f",
+     "cmd": "rm f && ls",
+     "sortie": ""
+    }
+   ],
+   "limite_image": "prog.chmod.limite",
+   "idees_fausses": [
+    "prog.chmod.idee"
+   ],
+   "sources": [
+    "POSIX.1-2024, chmod : https://pubs.opengroup.org/onlinepubs/9799919799/utilities/chmod.html",
+    "man 1 chmod"
+   ],
+   "relu_par": null
+  },
+  "whoami": {
+   "motif": "^whoami\\b",
+   "enfant": "lex.whoami.i",
+   "grands": "grand.whoami",
+   "vrai_terminal": [
+    {
+     "cmd": "whoami",
+     "sortie": "{USER}"
+    }
+   ],
+   "limite_image": "prog.whoami.limite",
+   "idees_fausses": [
+    "prog.whoami.idee"
+   ],
+   "sources": [
+    "GNU coreutils, whoami : https://www.gnu.org/software/coreutils/manual/html_node/whoami-invocation.html",
+    "man 1 whoami"
+   ],
+   "relu_par": null
+  },
+  "id": {
+   "motif": "^id\\b",
+   "enfant": "arbre.systeme0.1.bravo",
+   "grands": "grand.id",
+   "vrai_terminal": [
+    {
+     "cmd": "id -u root",
+     "sortie": "0"
+    }
+   ],
+   "limite_image": "prog.id.limite",
+   "idees_fausses": [
+    "prog.id.idee"
+   ],
+   "sources": [
+    "POSIX.1-2024, id : https://pubs.opengroup.org/onlinepubs/9799919799/utilities/id.html",
+    "man 1 id"
+   ],
+   "relu_par": null
+  },
+  "sudo": {
+   "motif": "^sudo\\b",
+   "enfant": "lex.sudo.i",
+   "grands": "grand.sudo",
+   "vrai_terminal": [
+    {
+     "cmd": "sudo -h",
+     "motif": "usage: sudo",
+     "outil": "sudo"
+    }
+   ],
+   "limite_image": "prog.sudo.limite",
+   "idees_fausses": [
+    "prog.sudo.idee"
+   ],
+   "sources": [
+    "sudo(8) : https://www.sudo.ws/docs/man/sudo.man/"
+   ],
+   "relu_par": null
+  },
+  "systeme": {
+   "motif": "(^|\\s)/(etc|bin|usr|var)\\b",
+   "enfant": "lieu.regles.i",
+   "grands": "lieu.regles.t",
+   "vrai_terminal": [
+    {
+     "cmd": "ls -l /etc/hostname",
+     "motif": "^-rw-r--r-- 1 root root ",
+     "outil": "/etc/hostname"
+    }
+   ],
+   "limite_image": "prog.systeme.limite",
+   "idees_fausses": [
+    "prog.systeme.idee"
+   ],
+   "sources": [
+    "Filesystem Hierarchy Standard 3.0 : https://refspecs.linuxfoundation.org/FHS_3.0/fhs/index.html",
+    "man 7 hier"
+   ],
+   "relu_par": null
+  },
+  "hostname": {
+   "motif": "(^hostname\\b|/etc/hostname)",
+   "enfant": "aide.reseau.hote",
+   "grands": "hist.gardien.0.adulte",
+   "vrai_terminal": [
+    {
+     "cmd": "hostname",
+     "motif": "^\\S+$",
+     "outil": "hostname"
+    }
+   ],
+   "limite_image": "prog.hostname.limite",
+   "idees_fausses": [
+    "prog.hostname.idee"
+   ],
+   "sources": [
+    "man 1 hostname",
+    "man 5 hostname : https://man7.org/linux/man-pages/man5/hostname.5.html"
+   ],
+   "relu_par": null
+  },
+  "ps": {
+   "motif": "^ps\\b",
+   "enfant": "lex.ps.i",
+   "grands": "grand.ps",
+   "vrai_terminal": [
+    {
+     "cmd": "sleep 5 & ps -o comm= -p $!; kill $!",
+     "sortie": "sleep"
+    }
+   ],
+   "limite_image": "prog.ps.limite",
+   "idees_fausses": [
+    "prog.ps.idee"
+   ],
+   "sources": [
+    "POSIX.1-2024, ps : https://pubs.opengroup.org/onlinepubs/9799919799/utilities/ps.html",
+    "man 1 ps"
+   ],
+   "relu_par": null
+  },
+  "fond": {
+   "motif": "(&\\s*$|^jobs\\b)",
+   "enfant": "lec.systeme2.0.bravo",
+   "grands": "lec.systeme2.0.adulte",
+   "vrai_terminal": [
+    {
+     "cmd": "sleep 30 & jobs; kill %1",
+     "motif": "^\\[1\\]\\+\\s+Running\\s+sleep 30 &$"
+    }
+   ],
+   "limite_image": "prog.fond.limite",
+   "idees_fausses": [
+    "prog.fond.idee"
+   ],
+   "sources": [
+    "Bash, Job Control : https://www.gnu.org/software/bash/manual/html_node/Job-Control-Basics.html",
+    "POSIX.1-2024, jobs : https://pubs.opengroup.org/onlinepubs/9799919799/utilities/jobs.html"
+   ],
+   "relu_par": null
+  },
+  "kill": {
+   "motif": "^kill\\b",
+   "enfant": "lex.kill.i",
+   "grands": "grand.kill",
+   "vrai_terminal": [
+    {
+     "cmd": "sleep 30 & kill %1; wait %1; echo $?",
+     "sortie": "143"
+    }
+   ],
+   "limite_image": "prog.kill.limite",
+   "idees_fausses": [
+    "prog.kill.idee"
+   ],
+   "sources": [
+    "POSIX.1-2024, kill : https://pubs.opengroup.org/onlinepubs/9799919799/utilities/kill.html",
+    "man 1 kill"
+   ],
+   "relu_par": null
+  },
+  "free": {
+   "motif": "^free\\b",
+   "enfant": "lex.free.i",
+   "grands": "grand.free",
+   "vrai_terminal": [
+    {
+     "cmd": "free -h | head -n 1",
+     "motif": "total\\s+used\\s+free",
+     "outil": "free"
+    }
+   ],
+   "limite_image": "prog.free.limite",
+   "idees_fausses": [
+    "prog.free.idee"
+   ],
+   "sources": [
+    "procps, free : https://man7.org/linux/man-pages/man1/free.1.html"
+   ],
+   "relu_par": null
+  },
+  "du": {
+   "motif": "^du\\b",
+   "enfant": "lex.du.i",
+   "grands": "grand.du",
+   "vrai_terminal": [
+    {
+     "prepare": "head -c 2000000 /dev/zero > gros",
+     "cmd": "du -sh gros",
+     "motif": "^2\\.0M\\s+gros$"
+    }
+   ],
+   "limite_image": "prog.du.limite",
+   "idees_fausses": [
+    "prog.du.idee"
+   ],
+   "sources": [
+    "POSIX.1-2024, du : https://pubs.opengroup.org/onlinepubs/9799919799/utilities/du.html",
+    "man 1 du"
+   ],
+   "relu_par": null
+  },
+  "df": {
+   "motif": "^df\\b",
+   "enfant": "lex.df.i",
+   "grands": "grand.df",
+   "vrai_terminal": [
+    {
+     "cmd": "df -h / | head -n 1",
+     "motif": "^Filesystem\\s+Size\\s+Used\\s+Avail\\s+Use%\\s+Mounted on$"
+    }
+   ],
+   "limite_image": "prog.df.limite",
+   "idees_fausses": [
+    "prog.df.idee"
+   ],
+   "sources": [
+    "POSIX.1-2024, df : https://pubs.opengroup.org/onlinepubs/9799919799/utilities/df.html",
+    "man 1 df"
+   ],
+   "relu_par": null
+  },
+  "uptime": {
+   "motif": "^uptime\\b",
+   "enfant": "lex.uptime.i",
+   "grands": "grand.uptime",
+   "vrai_terminal": [
+    {
+     "cmd": "uptime",
+     "motif": "up .*load average",
+     "outil": "uptime"
+    }
+   ],
+   "limite_image": "prog.uptime.limite",
+   "idees_fausses": [
+    "prog.uptime.idee"
+   ],
+   "sources": [
+    "procps, uptime : https://man7.org/linux/man-pages/man1/uptime.1.html"
+   ],
+   "relu_par": null
+  },
+  "uname": {
+   "motif": "^uname\\b",
+   "enfant": "reg.img.uname",
+   "grands": "grand.uname",
+   "vrai_terminal": [
+    {
+     "cmd": "uname -s",
+     "sortie": "Linux"
+    }
+   ],
+   "limite_image": "prog.uname.limite",
+   "idees_fausses": [
+    "prog.uname.idee"
+   ],
+   "sources": [
+    "POSIX.1-2024, uname : https://pubs.opengroup.org/onlinepubs/9799919799/utilities/uname.html",
+    "man 1 uname"
+   ],
+   "relu_par": null
+  },
+  "getprop": {
+   "motif": "^getprop\\b",
+   "enfant": "arbre.systeme2.1.bravo",
+   "grands": "arbre.systeme2.1.adulte",
+   "vrai_terminal": [
+    {
+     "cmd": "getprop ro.product.model",
+     "rejeu": "telephone"
+    }
+   ],
+   "limite_image": "prog.getprop.limite",
+   "idees_fausses": [
+    "prog.getprop.idee"
+   ],
+   "sources": [
+    "Android, propriétés système : https://source.android.com/docs/core/architecture/configuration/add-system-properties"
+   ],
+   "relu_par": null
+  },
+  "date": {
+   "motif": "^date\\b",
+   "enfant": "lex.date.i",
+   "grands": "grand.date",
+   "vrai_terminal": [
+    {
+     "cmd": "date -u -d @0 +%Y-%m-%d",
+     "sortie": "1970-01-01"
+    }
+   ],
+   "limite_image": "prog.date.limite",
+   "idees_fausses": [
+    "prog.date.idee"
+   ],
+   "sources": [
+    "POSIX.1-2024, date : https://pubs.opengroup.org/onlinepubs/9799919799/utilities/date.html",
+    "man 1 date"
+   ],
+   "relu_par": null
+  },
+  "script": {
+   "motif": "^(sh|bash)\\s+\\S",
+   "enfant": "lec.scripts0.0.bravo",
+   "grands": "lec.scripts0.1.adulte",
+   "vrai_terminal": [
+    {
+     "prepare": "echo 'echo \"Miam !\"' > miam.sh",
+     "cmd": "sh miam.sh",
+     "sortie": "Miam !"
+    },
+    {
+     "prepare": "echo 'echo \"Miam !\"' > miam.sh",
+     "cmd": "./miam.sh",
+     "code": "non0",
+     "motif": "Permission denied"
+    }
+   ],
+   "limite_image": "prog.script.limite",
+   "idees_fausses": [
+    "prog.script.idee"
+   ],
+   "sources": [
+    "POSIX.1-2024, sh : https://pubs.opengroup.org/onlinepubs/9799919799/utilities/sh.html",
+    "man 1 sh"
+   ],
+   "relu_par": null
+  },
+  "alias": {
+   "motif": "(^alias\\b|^miam$)",
+   "enfant": "lex.alias.i",
+   "grands": "grand.alias",
+   "vrai_terminal": [
+    {
+     "cmd": "shopt -s expand_aliases\nalias miam='echo Miam !'\nmiam",
+     "sortie": "Miam !"
+    }
+   ],
+   "limite_image": "prog.alias.limite",
+   "idees_fausses": [
+    "prog.alias.idee"
+   ],
+   "sources": [
+    "Bash, Aliases : https://www.gnu.org/software/bash/manual/html_node/Aliases.html",
+    "POSIX.1-2024, alias : https://pubs.opengroup.org/onlinepubs/9799919799/utilities/alias.html"
+   ],
+   "relu_par": null
+  },
+  "fonction": {
+   "motif": "(\\(\\)\\s*\\{|^ouvre\\s+com\\.)",
+   "enfant": "arbre.scripts1.0.bravo",
+   "grands": "arbre.scripts1.0.adulte",
+   "vrai_terminal": [
+    {
+     "cmd": "salut() { echo \"Salut $1\"; }; salut Pixel",
+     "sortie": "Salut Pixel"
+    }
+   ],
+   "limite_image": "prog.fonction.limite",
+   "idees_fausses": [
+    "prog.fonction.idee"
+   ],
+   "sources": [
+    "Bash, Shell Functions : https://www.gnu.org/software/bash/manual/html_node/Shell-Functions.html"
+   ],
+   "relu_par": null
+  },
+  "config_shell": {
+   "motif": "(\\.bashrc|\\.tgrc|^source\\b)",
+   "enfant": "lec.scripts2.0.bravo",
+   "grands": "lec.scripts2.1.adulte",
+   "vrai_terminal": [
+    {
+     "prepare": "echo 'X=42' > rc",
+     "cmd": "source ./rc; echo $X",
+     "sortie": "42"
+    }
+   ],
+   "limite_image": "prog.config_shell.limite",
+   "idees_fausses": [
+    "prog.config_shell.idee"
+   ],
+   "sources": [
+    "Bash, Bash Startup Files : https://www.gnu.org/software/bash/manual/html_node/Bash-Startup-Files.html"
+   ],
+   "relu_par": null
+  },
+  "boucle": {
+   "motif": "^for\\b",
+   "enfant": "arbre.scripts2.0.bravo",
+   "grands": "arbre.scripts2.0.adulte",
+   "vrai_terminal": [
+    {
+     "cmd": "for i in 1 2 3; do echo \"Miam $i\"; done; echo $i",
+     "sortie": "Miam 1\nMiam 2\nMiam 3\n3"
+    }
+   ],
+   "limite_image": "prog.boucle.limite",
+   "idees_fausses": [
+    "prog.boucle.idee"
+   ],
+   "sources": [
+    "Bash, Looping Constructs : https://www.gnu.org/software/bash/manual/html_node/Looping-Constructs.html"
+   ],
+   "relu_par": null
+  },
+  "condition": {
+   "motif": "^if\\b",
+   "enfant": "arbre.scripts2.1.bravo",
+   "grands": "arbre.scripts2.1.adulte",
+   "vrai_terminal": [
+    {
+     "prepare": "touch miam.sh",
+     "cmd": "if [ -f miam.sh ]; then echo oui; else echo non; fi",
+     "sortie": "oui"
+    },
+    {
+     "cmd": "if [-f miam.sh]; then echo oui; fi",
+     "motif": "command not found"
+    }
+   ],
+   "limite_image": "prog.condition.limite",
+   "idees_fausses": [
+    "prog.condition.idee"
+   ],
+   "sources": [
+    "Bash, Conditional Constructs : https://www.gnu.org/software/bash/manual/html_node/Conditional-Constructs.html",
+    "POSIX.1-2024, test : https://pubs.opengroup.org/onlinepubs/9799919799/utilities/test.html"
+   ],
+   "relu_par": null
+  },
+  "git_depot": {
+   "motif": "^git\\s+(init|status)\\b",
+   "enfant": "lec.git0.0.bravo",
+   "grands": "lec.git0.0.adulte",
+   "vrai_terminal": [
+    {
+     "cmd": "git init -q carnet && ls -a carnet",
+     "sortie": ".\n..\n.git",
+     "outil": "git"
+    }
+   ],
+   "limite_image": "prog.git_depot.limite",
+   "idees_fausses": [
+    "prog.git_depot.idee"
+   ],
+   "sources": [
+    "git-init : https://git-scm.com/docs/git-init",
+    "git-status : https://git-scm.com/docs/git-status"
+   ],
+   "relu_par": null
+  },
+  "git_photo": {
+   "motif": "^git\\s+(add|commit)\\b",
+   "enfant": "lec.git1.2.bravo",
+   "grands": "lec.git1.2.adulte",
+   "vrai_terminal": [
+    {
+     "prepare": "git init -q c",
+     "outil": "git",
+     "cmd": "cd c && echo 'jour 1' > j.txt && git add j.txt && git -c user.name=P -c user.email=p@exemple.org commit -q -m premier && git log --format=%s",
+     "sortie": "premier"
+    }
+   ],
+   "limite_image": "prog.git_photo.limite",
+   "idees_fausses": [
+    "prog.git_photo.idee"
+   ],
+   "sources": [
+    "git-add : https://git-scm.com/docs/git-add",
+    "git-commit : https://git-scm.com/docs/git-commit"
+   ],
+   "relu_par": null
+  },
+  "git_histoire": {
+   "motif": "^git\\s+(diff|log)\\b",
+   "enfant": "lec.git2.1.bravo",
+   "grands": "lec.git2.2.adulte",
+   "vrai_terminal": [
+    {
+     "prepare": "git init -q c && cd c && echo 'jour 1' > j.txt && git add j.txt && git -c user.name=P -c user.email=p@exemple.org commit -q -m premier",
+     "cmd": "cd c && echo 'jour 2' >> j.txt && git diff | grep '^+jour'",
+     "sortie": "+jour 2",
+     "outil": "git"
+    }
+   ],
+   "limite_image": "prog.git_histoire.limite",
+   "idees_fausses": [
+    "prog.git_histoire.idee"
+   ],
+   "sources": [
+    "git-diff : https://git-scm.com/docs/git-diff",
+    "git-log : https://git-scm.com/docs/git-log"
+   ],
+   "relu_par": null
+  },
+  "ping": {
+   "motif": "^ping\\b",
+   "enfant": "lex.ping.i",
+   "grands": "grand.ping",
+   "vrai_terminal": [
+    {
+     "cmd": "ping -c 1 -W 2 127.0.0.1 | grep transmitted",
+     "motif": "1 packets transmitted, 1 received",
+     "si": "ping -c 1 -W 2 127.0.0.1"
+    }
+   ],
+   "limite_image": "prog.ping.limite",
+   "idees_fausses": [
+    "prog.ping.idee"
+   ],
+   "sources": [
+    "iputils, ping : https://man7.org/linux/man-pages/man8/ping.8.html",
+    "RFC 792 (ICMP)"
+   ],
+   "relu_par": null
+  },
+  "ip": {
+   "motif": "^(ip|ifconfig|ipconfig)\\b",
+   "enfant": "lex.ip.i",
+   "grands": "grand.ip",
+   "vrai_terminal": [
+    {
+     "cmd": "ip -4 addr show lo",
+     "motif": "inet 127\\.0\\.0\\.1/8",
+     "outil": "ip"
+    }
+   ],
+   "limite_image": "prog.ip.limite",
+   "idees_fausses": [
+    "prog.ip.idee"
+   ],
+   "sources": [
+    "iproute2, ip-address : https://man7.org/linux/man-pages/man8/ip-address.8.html",
+    "RFC 1122 (127.0.0.0/8)"
+   ],
+   "relu_par": null
+  },
+  "curl": {
+   "motif": "^curl\\b",
+   "enfant": "lex.curl.i",
+   "grands": "grand.curl",
+   "vrai_terminal": [
+    {
+     "cmd": "curl -sI https://example.com",
+     "motif": "^HTTP/\\S+ 200",
+     "rejeu": "reseau"
+    }
+   ],
+   "limite_image": "prog.curl.limite",
+   "idees_fausses": [
+    "prog.curl.idee"
+   ],
+   "sources": [
+    "curl(1) : https://curl.se/docs/manpage.html",
+    "RFC 9110 (HTTP)"
+   ],
+   "relu_par": null
+  },
+  "dns": {
+   "motif": "^(nslookup|host|dig)\\b",
+   "enfant": "lex.nslookup.i",
+   "grands": "grand.nslookup",
+   "vrai_terminal": [
+    {
+     "cmd": "nslookup example.com",
+     "motif": "Address",
+     "rejeu": "reseau"
+    }
+   ],
+   "limite_image": "prog.dns.limite",
+   "idees_fausses": [
+    "prog.dns.idee"
+   ],
+   "sources": [
+    "RFC 1034 et RFC 1035 (DNS)",
+    "man 1 nslookup"
+   ],
+   "relu_par": null
+  },
+  "ssh": {
+   "motif": "^ssh\\b",
+   "enfant": "lex.ssh.i",
+   "grands": "grand.ssh",
+   "vrai_terminal": [
+    {
+     "cmd": "ssh -V",
+     "motif": "OpenSSH",
+     "outil": "ssh"
+    }
+   ],
+   "limite_image": "prog.ssh.limite",
+   "idees_fausses": [
+    "prog.ssh.idee"
+   ],
+   "sources": [
+    "OpenSSH, ssh(1) : https://man.openbsd.org/ssh",
+    "RFC 4251 (SSH)"
+   ],
+   "relu_par": null
+  },
+  "traceroute": {
+   "motif": "^(traceroute|tracepath)\\b",
+   "enfant": "lec.reseau2.1.bravo",
+   "grands": "lec.reseau2.1.adulte",
+   "vrai_terminal": [
+    {
+     "cmd": "traceroute example.com",
+     "rejeu": "reseau"
+    }
+   ],
+   "limite_image": "prog.traceroute.limite",
+   "idees_fausses": [
+    "prog.traceroute.idee"
+   ],
+   "sources": [
+    "man 8 traceroute",
+    "RFC 792 (ICMP Time Exceeded)"
+   ],
+   "relu_par": null
+  },
+  "termux": {
+   "motif": "^termux-",
+   "enfant": "lec.android0.0.bravo",
+   "grands": "lec.android0.0.adulte",
+   "vrai_terminal": [
+    {
+     "cmd": "termux-toast \"Coucou !\"",
+     "rejeu": "telephone"
+    }
+   ],
+   "limite_image": "prog.termux.limite",
+   "idees_fausses": [
+    "prog.termux.idee"
+   ],
+   "sources": [
+    "Termux:API : https://wiki.termux.com/wiki/Termux:API"
+   ],
+   "relu_par": null
+  },
+  "am": {
+   "motif": "^(am|pm)\\s",
+   "enfant": "lec.android1.1.dit",
+   "grands": "lec.android1.1.adulte",
+   "vrai_terminal": [
+    {
+     "cmd": "pm list packages | grep settings",
+     "rejeu": "telephone"
+    }
+   ],
+   "limite_image": "prog.am.limite",
+   "idees_fausses": [
+    "prog.am.idee"
+   ],
+   "sources": [
+    "Android Debug Bridge, am et pm : https://developer.android.com/tools/adb#am"
+   ],
+   "relu_par": null
+  },
+  "appli": {
+   "motif": "^(lampe|vibre|batterie|applis|ouvre|web|carte|dis|partage|sms)\\b",
+   "enfant": "arbre.telephone0.0.bravo",
+   "grands": "arbre.telephone0.0.adulte",
+   "vrai_terminal": [
+    {
+     "cmd": "lampe on",
+     "rejeu": "jeu"
+    }
+   ],
+   "limite_image": "prog.appli.limite",
+   "idees_fausses": [
+    "prog.appli.idee"
+   ],
+   "sources": [
+    "Android, CameraManager.setTorchMode : https://developer.android.com/reference/android/hardware/camera2/CameraManager"
+   ],
+   "relu_par": null
+  },
+  "createur": {
+   "motif": "^(doom|edite)\\b",
+   "enfant": "arbre.createur0.0.bravo",
+   "grands": "arbre.createur0.0.adulte",
+   "vrai_terminal": [
+    {
+     "cmd": "doom",
+     "rejeu": "jeu"
+    }
+   ],
+   "limite_image": "prog.createur.limite",
+   "idees_fausses": [
+    "prog.createur.idee"
+   ],
+   "sources": [
+    "Format texte des niveaux : app/src/main/java/fr/terminagotchi/Doom.kt"
+   ],
+   "relu_par": null
+  }
+ },
+ "etapes": {
+  "t3.1": {
+   "maths": [
+    "binaire"
+   ]
+  },
+  "coeur1.2": {
+   "maths": [
+    "binaire"
+   ]
+  },
+  "systeme2.0": {
+   "maths": [
+    "division"
+   ]
+  },
+  "biblio1.2": {
+   "maths": [
+    "comptage"
+   ]
+  },
+  "dortoir1.0": {
+   "maths": [
+    "comptage"
+   ]
+  },
+  "tuyaux0.0": {
+   "maths": [
+    "comptage"
+   ]
+  },
+  "machines0.2": {
+   "maths": [
+    "puissances"
+   ]
+  },
+  "systeme1.0": {
+   "maths": [
+    "puissances"
+   ]
+  },
+  "dortoir1.1": {
+   "maths": [
+    "modulo"
+   ]
+  }
+ },
+ "rejeu": {
+  "reveil1.1": {
+   "sortie": "vestibule",
+   "pourquoi": "hist.reveil1.1.adulte : « ici, un seul dossier, vestibule »"
+  },
+  "reveil1.3": {
+   "contient": [
+    "oeuf_tout_chaud.txt"
+   ],
+   "pourquoi": "hist.reveil1.3.adulte (corrigé : ls montre les objets du vestibule, dont l'œuf)"
+  },
+  "racine.1": {
+   "contient": [
+    "bin",
+    "etc",
+    "home",
+    "tmp",
+    "var",
+    "dev",
+    "proc"
+   ],
+   "pourquoi": "hist.racine.1.adulte"
+  },
+  "racine.2": {
+   "sortie": "/",
+   "pourquoi": "hist.racine.2.bravo : « Le panneau dit seulement / »"
+  },
+  "nid1.1": {
+   "sortie": "pomme",
+   "pourquoi": "lec.t2.1.bravo : « Une pomme »"
+  },
+  "secrets.0": {
+   "contient": [
+    ".",
+    "..",
+    ".mot_secret.txt"
+   ],
+   "pourquoi": "hist.secrets.0.bravo"
+  },
+  "debarras.1": {
+   "sortie": "",
+   "pourquoi": "rmdir : pas de message quand ça marche"
+  },
+  "debarras.2": {
+   "sortie": "",
+   "pourquoi": "hist.debarras.2.bravo : « ne demande rien et ne rend rien »"
+  },
+  "grenier0.1": {
+   "motif": "ours_en_peluche\\.txt",
+   "pourquoi": "hist.grenier0.2 : l'ours est dans le fouillis"
+  },
+  "grenier0.2": {
+   "sortie": "",
+   "pourquoi": "mv : silencieux"
+  },
+  "t3.0": {
+   "motif": "repas\\.txt$",
+   "pourquoi": "lec.t3.0 : ls -l montre les droits de repas.txt"
+  },
+  "t3.1": {
+   "apres": "ls -l nid/repas.txt",
+   "motif": "^-r--r--r-- ",
+   "pourquoi": "lec.t3.1.adulte : r--r--r--"
+  },
+  "t3.2": {
+   "code": "non0",
+   "motif": "Permission denied",
+   "pourquoi": "lec.t3.2.adulte : « Permission denied »"
+  },
+  "t4.0": {
+   "sortie": ""
+  },
+  "t4.1": {
+   "sortie": ""
+  },
+  "t4.2": {
+   "sortie": ""
+  },
+  "cave0.1": {
+   "sortie": "{USER}",
+   "pourquoi": "lec.systeme0.0.bravo : ton nom d'utilisateur"
+  },
+  "gardien.0": {
+   "motif": "^\\S+$",
+   "pourquoi": "hist.gardien.0 : le nom du monde"
+  },
+  "gardien.3": {
+   "motif": "^-rw-r--r-- 1 root root ",
+   "pourquoi": "hist.gardien.3.adulte : root, rw-r--r--"
+  },
+  "biblio0.1": {
+   "motif": "livre_des_abysses\\.txt$",
+   "pourquoi": "hist.biblio0.1.bravo : Trouvé !"
+  },
+  "biblio1.0": {
+   "sortie": "pomme",
+   "pourquoi": "le cadenas a tenu : le repas n'a que la pomme"
+  },
+  "biblio1.1": {
+   "lignes": 3,
+   "pourquoi": "head -n 3 : 3 lignes"
+  },
+  "machines0.2": {
+   "plus_gros": "vieux_carton.bin",
+   "pourquoi": "hist.machines0.2.bravo : « Le vieux_carton.bin pèse lourd »"
+  },
+  "systeme2.1": {
+   "motif": "sleep",
+   "pourquoi": "lec.systeme2.1.bravo : la tâche, avec son numéro"
+  },
+  "scripts0.1": {
+   "sortie": "Miam !",
+   "pourquoi": "le script dit Miam !"
+  },
+  "scripts1.2": {
+   "sortie": "Miam !",
+   "pourquoi": "lec.scripts1.2.bravo : MIAM !"
+  },
+  "git1.0": {
+   "apres": "git status --porcelain",
+   "sortie": "?? journal.txt",
+   "pourquoi": "lec.git1.0.bravo : « non suivi »"
+  },
+  "git2.1": {
+   "motif": "^\\+jour 2$",
+   "pourquoi": "lec.git2.1.bravo : + = ligne ajoutée"
+  },
+  "git2.2": {
+   "motif": "premier souvenir",
+   "pourquoi": "git log : le message du commit"
+  },
+  "coeur0.1": {
+   "motif": "passage secret",
+   "pourquoi": "hist.coeur0.1.bravo : le message parle d'un passage secret"
+  },
+  "coeur0.2": {
+   "contient": [
+    ".porte_secrete"
+   ],
+   "pourquoi": "hist.coeur0.2.bravo"
+  },
+  "coeur1.0": {
+   "lignes": 3,
+   "dossiers": [
+    "coeur/.porte_secrete",
+    "grenier",
+    "tour"
+   ],
+   "pourquoi": "hist.coeur1.0.bravo : un ici, un dans le Grenier, un dans la Tour"
+  },
+  "coeur2.1": {
+   "egal_jeu": "traces_abyssor",
+   "pourquoi": "la réponse attendue par Abyssor = ce que compte bash"
+  }
+ },
+ "maths": {
+  "comptage": {
+   "fiche": true,
+   "titre": "maths.comptage.titre",
+   "question": "maths.comptage.question",
+   "prerequis": [],
+   "niveau": "primaire",
+   "enfant": "maths.comptage.enfant",
+   "grands": "maths.comptage.grands",
+   "vrai_terminal": [
+    {
+     "cmd": "seq 5 | wc -l",
+     "sortie": "5"
+    }
+   ],
+   "limite_image": "maths.comptage.limite",
+   "idees_fausses": [
+    "maths.comptage.idee"
+   ],
+   "exemples": [
+    "maths.comptage.ex1",
+    "maths.comptage.ex2",
+    "maths.comptage.ex3"
+   ],
+   "exercice": {
+    "type": "comptage",
+    "consigne": "maths.comptage.exo",
+    "erreur": "maths.comptage.erreur"
+   },
+   "mots_cles": "maths.comptage.kw",
+   "sources": [
+    "Bash, Shell Arithmetic : https://www.gnu.org/software/bash/manual/html_node/Shell-Arithmetic.html",
+    "Programmes de mathématiques des cycles 2 à 4 (éduscol) : https://eduscol.education.fr/"
+   ],
+   "relu_par": null
+  },
+  "addition": {
+   "fiche": true,
+   "titre": "maths.addition.titre",
+   "question": "maths.addition.question",
+   "prerequis": [
+    "comptage"
+   ],
+   "niveau": "primaire",
+   "enfant": "maths.addition.enfant",
+   "grands": "maths.addition.grands",
+   "vrai_terminal": [
+    {
+     "cmd": "echo $((7 + 5))",
+     "sortie": "12"
+    }
+   ],
+   "limite_image": "maths.addition.limite",
+   "idees_fausses": [
+    "maths.addition.idee"
+   ],
+   "exemples": [
+    "maths.addition.ex1",
+    "maths.addition.ex2",
+    "maths.addition.ex3"
+   ],
+   "exercice": {
+    "type": "addition",
+    "consigne": "maths.addition.exo",
+    "erreur": "maths.addition.erreur"
+   },
+   "mots_cles": "maths.addition.kw",
+   "sources": [
+    "Bash, Shell Arithmetic : https://www.gnu.org/software/bash/manual/html_node/Shell-Arithmetic.html",
+    "Programmes de mathématiques des cycles 2 à 4 (éduscol) : https://eduscol.education.fr/"
+   ],
+   "relu_par": null
+  },
+  "soustraction": {
+   "fiche": true,
+   "titre": "maths.soustraction.titre",
+   "question": "maths.soustraction.question",
+   "prerequis": [
+    "addition"
+   ],
+   "niveau": "primaire",
+   "enfant": "maths.soustraction.enfant",
+   "grands": "maths.soustraction.grands",
+   "vrai_terminal": [
+    {
+     "cmd": "echo $((3 - 5))",
+     "sortie": "-2"
+    }
+   ],
+   "limite_image": "maths.soustraction.limite",
+   "idees_fausses": [
+    "maths.soustraction.idee"
+   ],
+   "exemples": [
+    "maths.soustraction.ex1",
+    "maths.soustraction.ex2",
+    "maths.soustraction.ex3"
+   ],
+   "exercice": {
+    "type": "soustraction",
+    "consigne": "maths.soustraction.exo",
+    "erreur": "maths.soustraction.erreur"
+   },
+   "mots_cles": "maths.soustraction.kw",
+   "sources": [
+    "Bash, Shell Arithmetic : https://www.gnu.org/software/bash/manual/html_node/Shell-Arithmetic.html",
+    "Programmes de mathématiques des cycles 2 à 4 (éduscol) : https://eduscol.education.fr/"
+   ],
+   "relu_par": null
+  },
+  "multiplication": {
+   "fiche": true,
+   "titre": "maths.multiplication.titre",
+   "question": "maths.multiplication.question",
+   "prerequis": [
+    "addition"
+   ],
+   "niveau": "primaire",
+   "enfant": "maths.multiplication.enfant",
+   "grands": "maths.multiplication.grands",
+   "vrai_terminal": [
+    {
+     "cmd": "echo $((6 * 7))",
+     "sortie": "42"
+    }
+   ],
+   "limite_image": "maths.multiplication.limite",
+   "idees_fausses": [
+    "maths.multiplication.idee"
+   ],
+   "exemples": [
+    "maths.multiplication.ex1",
+    "maths.multiplication.ex2",
+    "maths.multiplication.ex3"
+   ],
+   "exercice": {
+    "type": "multiplication",
+    "consigne": "maths.multiplication.exo",
+    "erreur": "maths.multiplication.erreur"
+   },
+   "mots_cles": "maths.multiplication.kw",
+   "sources": [
+    "Bash, Shell Arithmetic : https://www.gnu.org/software/bash/manual/html_node/Shell-Arithmetic.html",
+    "Programmes de mathématiques des cycles 2 à 4 (éduscol) : https://eduscol.education.fr/"
+   ],
+   "relu_par": null
+  },
+  "division": {
+   "fiche": true,
+   "titre": "maths.division.titre",
+   "question": "maths.division.question",
+   "prerequis": [
+    "multiplication",
+    "soustraction"
+   ],
+   "niveau": "primaire",
+   "enfant": "maths.division.enfant",
+   "grands": "maths.division.grands",
+   "vrai_terminal": [
+    {
+     "cmd": "echo $((17 / 5))",
+     "sortie": "3"
+    },
+    {
+     "cmd": "echo $((1 / 0))",
+     "code": "non0",
+     "motif": "division by 0"
+    }
+   ],
+   "limite_image": "maths.division.limite",
+   "idees_fausses": [
+    "maths.division.idee"
+   ],
+   "exemples": [
+    "maths.division.ex1",
+    "maths.division.ex2",
+    "maths.division.ex3"
+   ],
+   "exercice": {
+    "type": "division",
+    "consigne": "maths.division.exo",
+    "erreur": "maths.division.erreur"
+   },
+   "mots_cles": "maths.division.kw",
+   "sources": [
+    "Bash, Shell Arithmetic : https://www.gnu.org/software/bash/manual/html_node/Shell-Arithmetic.html",
+    "Programmes de mathématiques des cycles 2 à 4 (éduscol) : https://eduscol.education.fr/"
+   ],
+   "relu_par": null
+  },
+  "modulo": {
+   "fiche": true,
+   "titre": "maths.modulo.titre",
+   "question": "maths.modulo.question",
+   "prerequis": [
+    "division"
+   ],
+   "niveau": "college",
+   "enfant": "maths.modulo.enfant",
+   "grands": "maths.modulo.grands",
+   "vrai_terminal": [
+    {
+     "cmd": "echo $((17 % 5))",
+     "sortie": "2"
+    },
+    {
+     "cmd": "echo $((-7 % 3))",
+     "sortie": "-1"
+    }
+   ],
+   "limite_image": "maths.modulo.limite",
+   "idees_fausses": [
+    "maths.modulo.idee"
+   ],
+   "exemples": [
+    "maths.modulo.ex1",
+    "maths.modulo.ex2",
+    "maths.modulo.ex3"
+   ],
+   "exercice": {
+    "type": "modulo",
+    "consigne": "maths.modulo.exo",
+    "erreur": "maths.modulo.erreur"
+   },
+   "mots_cles": "maths.modulo.kw",
+   "sources": [
+    "Bash, Shell Arithmetic : https://www.gnu.org/software/bash/manual/html_node/Shell-Arithmetic.html",
+    "Programmes de mathématiques des cycles 2 à 4 (éduscol) : https://eduscol.education.fr/"
+   ],
+   "relu_par": null
+  },
+  "puissances": {
+   "fiche": true,
+   "titre": "maths.puissances.titre",
+   "question": "maths.puissances.question",
+   "prerequis": [
+    "multiplication"
+   ],
+   "niveau": "college",
+   "enfant": "maths.puissances.enfant",
+   "grands": "maths.puissances.grands",
+   "vrai_terminal": [
+    {
+     "cmd": "echo $((2**10))",
+     "sortie": "1024"
+    },
+    {
+     "cmd": "echo $((2**63))",
+     "sortie": "-9223372036854775808"
+    }
+   ],
+   "limite_image": "maths.puissances.limite",
+   "idees_fausses": [
+    "maths.puissances.idee"
+   ],
+   "exemples": [
+    "maths.puissances.ex1",
+    "maths.puissances.ex2",
+    "maths.puissances.ex3"
+   ],
+   "exercice": {
+    "type": "puissances",
+    "consigne": "maths.puissances.exo",
+    "erreur": "maths.puissances.erreur"
+   },
+   "mots_cles": "maths.puissances.kw",
+   "sources": [
+    "Bash, Shell Arithmetic : https://www.gnu.org/software/bash/manual/html_node/Shell-Arithmetic.html",
+    "D. Knuth, The Art of Computer Programming, vol. 1 § 1.2 et vol. 2 § 4.1"
+   ],
+   "relu_par": null
+  },
+  "binaire": {
+   "fiche": true,
+   "titre": "maths.binaire.titre",
+   "question": "maths.binaire.question",
+   "prerequis": [
+    "puissances",
+    "addition"
+   ],
+   "niveau": "college",
+   "enfant": "maths.binaire.enfant",
+   "grands": "maths.binaire.grands",
+   "vrai_terminal": [
+    {
+     "cmd": "echo $((2#1011))",
+     "sortie": "11"
+    }
+   ],
+   "limite_image": "maths.binaire.limite",
+   "idees_fausses": [
+    "maths.binaire.idee"
+   ],
+   "exemples": [
+    "maths.binaire.ex1",
+    "maths.binaire.ex2",
+    "maths.binaire.ex3"
+   ],
+   "exercice": {
+    "type": "binaire",
+    "consigne": "maths.binaire.exo",
+    "erreur": "maths.binaire.erreur"
+   },
+   "mots_cles": "maths.binaire.kw",
+   "sources": [
+    "Bash, Shell Arithmetic : https://www.gnu.org/software/bash/manual/html_node/Shell-Arithmetic.html",
+    "D. Knuth, The Art of Computer Programming, vol. 1 § 1.2 et vol. 2 § 4.1"
+   ],
+   "relu_par": null
+  },
+  "hexadecimal": {
+   "fiche": false,
+   "titre": "maths.hexadecimal.titre",
+   "prerequis": [
+    "binaire",
+    "division"
+   ]
+  },
+  "pourcentages": {
+   "fiche": false,
+   "titre": "maths.pourcentages.titre",
+   "prerequis": [
+    "multiplication",
+    "division"
+   ]
+  },
+  "moyenne": {
+   "fiche": false,
+   "titre": "maths.moyenne.titre",
+   "prerequis": [
+    "addition",
+    "division"
+   ]
+  },
+  "nombres_premiers": {
+   "fiche": false,
+   "titre": "maths.nombres_premiers.titre",
+   "prerequis": [
+    "division"
+   ]
+  },
+  "pgcd": {
+   "fiche": false,
+   "titre": "maths.pgcd.titre",
+   "prerequis": [
+    "modulo"
+   ]
+  },
+  "puissance_modulo": {
+   "fiche": false,
+   "titre": "maths.puissance_modulo.titre",
+   "prerequis": [
+    "modulo",
+    "puissances"
+   ]
+  },
+  "probabilites": {
+   "fiche": false,
+   "titre": "maths.probabilites.titre",
+   "prerequis": [
+    "division"
+   ]
+  },
+  "logarithme": {
+   "fiche": false,
+   "titre": "maths.logarithme.titre",
+   "prerequis": [
+    "puissances"
+   ]
+  },
+  "logique": {
+   "fiche": false,
+   "titre": "maths.logique.titre",
+   "prerequis": []
+  }
+ },
+ "recompenses": {
+  "bonus_variante": 3,
+  "essais_variante": 4,
+  "bonus_legendaire": 1,
+  "essais_legendaire": 8,
+  "serie_parfaite": 5
+ },
+ "mondes": [
+  {
+   "id": "forge",
+   "types": [
+    "machine",
+    "feu"
+   ],
+   "maths": [
+    "logique"
+   ],
+   "exploits": [
+    {
+     "id": "forge.sans_indice",
+     "nom": "recomp.forge.sans_indice",
+     "recompense": "variante"
+    },
+    {
+     "id": "forge.premier_coup",
+     "nom": "recomp.forge.premier_coup",
+     "recompense": "variante"
+    }
+   ],
+   "variantes_reservees": []
+  },
+  {
+   "id": "citadelle",
+   "types": [
+    "ombre",
+    "poison"
+   ],
+   "maths": [],
+   "exploits": [
+    {
+     "id": "citadelle.boite",
+     "nom": "recomp.citadelle.boite",
+     "recompense": "variante"
+    }
+   ],
+   "variantes_reservees": []
+  },
+  {
+   "id": "port",
+   "types": [
+    "ciel",
+    "eau"
+   ],
+   "maths": [
+    "pourcentages"
+   ],
+   "exploits": [
+    {
+     "id": "port.messager",
+     "nom": "recomp.port.messager",
+     "recompense": "variante"
+    },
+    {
+     "id": "port.sceau",
+     "nom": "recomp.port.sceau",
+     "recompense": "variante"
+    }
+   ],
+   "variantes_reservees": []
+  },
+  {
+   "id": "temps",
+   "types": [
+    "roche",
+    "ombre"
+   ],
+   "maths": [],
+   "exploits": [
+    {
+     "id": "temps.version",
+     "nom": "recomp.temps.version",
+     "recompense": "variante"
+    }
+   ],
+   "variantes_reservees": []
+  },
+  {
+   "id": "donnees",
+   "types": [
+    "eau",
+    "glace"
+   ],
+   "maths": [
+    "moyenne"
+   ],
+   "exploits": [
+    {
+     "id": "donnees.statistique",
+     "nom": "recomp.donnees.statistique",
+     "recompense": "variante"
+    }
+   ],
+   "variantes_reservees": []
+  },
+  {
+   "id": "controle",
+   "types": [
+    "machine",
+    "roche"
+   ],
+   "maths": [],
+   "exploits": [
+    {
+     "id": "controle.vague",
+     "nom": "recomp.controle.vague",
+     "recompense": "variante"
+    }
+   ],
+   "variantes_reservees": []
+  },
+  {
+   "id": "machines",
+   "types": [
+    "machine",
+    "roche"
+   ],
+   "maths": [
+    "binaire",
+    "puissances"
+   ],
+   "exploits": [
+    {
+     "id": "machines.premier_demarrage",
+     "nom": "recomp.machines.premier_demarrage",
+     "recompense": "variante"
+    }
+   ],
+   "variantes_reservees": []
+  },
+  {
+   "id": "atelier",
+   "types": [
+    "machine",
+    "plante"
+   ],
+   "maths": [],
+   "exploits": [
+    {
+     "id": "atelier.robot",
+     "nom": "recomp.atelier.robot",
+     "recompense": "variante"
+    }
+   ],
+   "variantes_reservees": []
+  },
+  {
+   "id": "crypte",
+   "types": [
+    "ombre",
+    "glace"
+   ],
+   "maths": [
+    "division",
+    "modulo",
+    "puissances"
+   ],
+   "exploits": [
+    {
+     "id": "crypte.chaine",
+     "nom": "recomp.crypte.chaine",
+     "recompense": "variante"
+    },
+    {
+     "id": "crypte.b6",
+     "nom": "recomp.crypte.b6",
+     "recompense": "legendaire"
+    }
+   ],
+   "variantes_reservees": []
+  },
+  {
+   "id": "observatoire",
+   "types": [
+    "ciel",
+    "glace"
+   ],
+   "maths": [],
+   "exploits": [
+    {
+     "id": "observatoire.fausses",
+     "nom": "recomp.observatoire.fausses",
+     "recompense": "variante"
+    }
+   ],
+   "variantes_reservees": []
+  },
+  {
+   "id": "entrainement",
+   "types": [],
+   "maths": [],
+   "exploits": [
+    {
+     "id": "entrainement.serie_parfaite",
+     "nom": "recomp.entrainement.serie_parfaite",
+     "recompense": "legendaire"
+    }
+   ],
+   "variantes_reservees": []
+  },
+  {
+   "id": "sommet",
+   "types": [],
+   "maths": [],
+   "exploits": [
+    {
+     "id": "sommet.trois_mondes",
+     "nom": "recomp.sommet.trois_mondes",
+     "recompense": "legendaire"
+    }
+   ],
+   "variantes_reservees": []
+  }
+ ],
+ "plateformes": {
+  "android": {
+   "absent": [
+    "tree",
+    "less",
+    "man",
+    "git",
+    "curl",
+    "sudo",
+    "nslookup",
+    "ssh",
+    "traceroute",
+    "jobs"
+   ],
+   "remplacement": {
+    "tree": "ls -R",
+    "less": "cat",
+    "sudo": "id",
+    "ip": "ifconfig"
+   }
+  }
+ }
+}

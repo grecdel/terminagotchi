@@ -133,6 +133,7 @@ object Explique {
         (m?.let { Exemples.lexique(it) } ?: Exemples.LEXIQUE[nom]?.let { Exemples.remplir(it) })?.let {
             out.add("  ↳ " + t("lex.exemple", "ex" to it))
         }
+        out.addAll(Programme.lignesFiche(demande).map { "  $it" })    // charte de rigueur : limite de l'image, idée fausse
         if (opts.isNotEmpty()) { out.add(""); out.add(t("explique.options")); out.addAll(opts.map { "   $it" }) }
         if (diff != null) { out.add(""); out.add(t("explique.diff")); out.add("   " + t("diff.$diff")); out.add("   " + grand("diffg.$diff")) }
         out.add("")

@@ -122,6 +122,16 @@ def spawn(state):
         e, ind = r or _au_hasard(zone_de, abyssor_permis and not premier, attire)
         if not premier or facile(e, ind):
             break
+    if not premier:                                 # les exploits des mondes (recompenses.py, § 7.6)
+        from . import recompenses
+
+        def _suivant():
+            return tirage.apparition(state, zone_de, abyssor_permis, attire) or _au_hasard(zone_de, abyssor_permis,
+                                                                                           attire)
+        (e, ind), msg = recompenses.apparition(state, (e, ind), _suivant)
+        if msg:
+            core.log(state, msg)
+            core.say(state, msg, 10)
     if attire:
         state["attirance"] = None                   # une commande attire UNE apparition
     shiny, vid = ind["shiny"], ind["variante"]

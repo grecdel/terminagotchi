@@ -8,7 +8,7 @@ import time
 
 import subprocess
 
-from . import (compagnon, core, dressage, entrainement, envies, equipe, guide, exemples, explique, explo, histoire, intro, lecons, lexique,
+from . import (compagnon, core, dressage, entrainement, envies, equipe, guide, exemples, explique, explo, histoire, intro, lecons, lexique, maths,
                maison, notif, quetes, recense, registre, sprites, terrain)
 from .bestiaire import arc_en_ciel
 from . import langue, rendu_fin, satiete, sur
@@ -1091,6 +1091,13 @@ def _main():
         from . import deploie
         brut_args = [a for a in sys.argv[2:]]      # garder --pas et --historique (args a retiré les « -- »)
         deploie.commande(brut_args)
+        return
+    if mode == "maths" or (mode == "je" and maths.mots_reponse(" ".join(args)) == "non"):
+        creer_si_besoin()                      # tg maths … : les Ponts des Nombres (« tg je ne connais pas » aussi)
+        sortie = []
+        reste = args[1:] if mode == "maths" else args
+        core.modifier(lambda s: sortie.extend(maths.commande(s, reste)))
+        print("\n".join(sortie))
         return
     if mode == "explique":                     # tg explique rm : la fiche d'une commande et de ses options
         st = core.load() or {}

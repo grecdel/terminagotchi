@@ -82,7 +82,7 @@ object Recherche {
      * latin, grec ou cyrillique (en hindi, bengali, ourdou ou arabe, les signes font partie des lettres) ;
      * pour le chinois et le japonais (pas d'espaces) : chaque caractère et chaque paire de caractères.
      */
-    private fun mots(t: String): List<String> {
+    fun mots(t: String): List<String> {
         val n = Normalizer.normalize(t.lowercase(), Normalizer.Form.NFD)
         val sb = StringBuilder()
         var prec = 0
@@ -120,7 +120,7 @@ object Recherche {
         for ((canon, variantes) in SYNONYMES) for (v in variantes.split(" ")) for (m in mots(v)) putIfAbsent(racine(m), canon)
     }
 
-    private fun concepts(t: String): Set<String> =
+    fun concepts(t: String): Set<String> =
         mots(t).filter { it !in STOP }.map { RACINE_CONCEPT[racine(it)] ?: racine(it) }.toSet()
 
     /** Une commande : clé de sa description, clé de ses mots-clés, clé de son image (la maison). */

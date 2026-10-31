@@ -715,6 +715,11 @@ def reussir(state, cwd=None):
         core.log(state, "🏅 " + t("ent.echelon_log", badge=nom_famille(f), echelon=nom_echelon(en)))
     elif apres == avant and etoiles(e, f) > et_avant:
         out.append(t("ent.etoile", badge=nom_famille(f), etoiles=B.texte_etoiles(etoiles(e, f))))
+    from . import recompenses                           # 5 médailles d'or de suite : une série parfaite (§ 7.6)
+    exploit = recompenses.serie(state, m)
+    if exploit:
+        out.append(exploit)
+        core.log(state, exploit)
     core.log(state, t("ent.reussi_log", s=f"{s:.1f}", icone=ICONE_MEDAILLE[m]))
     core.say(state, out[0], 12)
     core.animer(state, "victoire")
