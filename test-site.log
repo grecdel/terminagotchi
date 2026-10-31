@@ -1,0 +1,242 @@
+Inscription
+  ✔ inscription OK, clé reçue
+  ✔ pseudo déjà pris (insensible à la casse)
+  ✔ pseudo invalide refusé
+  ✔ fausse clé refusée
+Liaison d'un 2e appareil
+  ✔ code de liaison : RUBHB6
+  ✔ le PC est relié au même joueur
+  ✔ un code ne sert qu'une fois
+Synchro et fusion
+  ✔ 1re synchro du téléphone
+  ✔ XP additionnée des deux appareils (200)
+  ✔ stats additionnées
+  ✔ commandes goûtées : union
+  ✔ collection : maximum par espèce
+  ✔ records : meilleur temps
+  ✔ nom : un appareil relié n'écrase pas le nom du compte
+  ✔ nom : un renommage plus récent gagne
+  ✔ caractère : le premier reste
+  ✔ faim : la valeur la plus récente
+  ✔ badge Multi-plateforme délivré
+  ✔ valeurs négatives ignorées, gros nombres plafonnés
+Classement et profil
+  ✔ classement trié par XP
+  ✔ profil public (niveau 5, #1, 2 appareils)
+  ✔ le profil public ne contient aucune clé
+CTF web (drapeaux personnels vérifiés par le serveur)
+  ✔ épreuve 1 : drapeau seulement dans l'en-tête
+  ✔ robots.txt indique la cachette
+  ✔ épreuve 3 : mauvais mot refusé
+  ✔ épreuve 4 : cookie visiteur, pas de drapeau
+  ✔ épreuves 2 à 5 : drapeaux trouvés
+  ✔ chaque joueur a des drapeaux différents
+  ✔ le drapeau d'un autre joueur est refusé
+  ✔ 5/5 drapeaux validés, badge final
+  ✔ valider deux fois ne redonne pas de badge
+Badges et pages
+  ✔ badges : recensé + multi + 5 épreuves + final = 8
+  ✔ page publique du badge
+  ✔ un faux badge est signalé
+  ✔ page /
+  ✔ page /classement
+  ✔ page /joueur/Grec
+  ✔ page /ctf
+  ✔ page /nimporte
+  ✔ profil : créature dessinée + badges
+  ✔ le nom est échappé (pas d'injection HTML)
+Bestiaire et galerie des captures
+  ✔ captures : doublons et captures invalides refusés (2 gardées)
+  ✔ galerie : rien sans l'accord du joueur
+  ✔ accord de partage enregistré
+  ✔ galerie : captures visibles, écriture RGB
+  ✔ galerie : une ancienne capture (Glitchou) devient la nouvelle espèce de même numéro (Runodrake), en portrait
+  ✔ galerie : filtre shiny
+  ✔ un vieux réglage de partage n'écrase pas le plus récent
+  ✔ glossaire : 150 espèces
+  ✔ glossaire : 150 portraits classiques adultes, aucune variante shiny
+  ✔ glossaire : filtre des 10 légendaires
+  ✔ fiche d'espèce
+  ✔ fiche : les 5 stades en portrait
+  ✔ fiche : variantes dessinées, famille, fréquence
+  ✔ fiche : toutes les variantes sont dessinées
+  ✔ espèce inconnue : 404
+  ✔ profil : collection dessinée + lien vers ses captures
+Langues de l'interface
+  ✔ 14 langues : fr en es de it pt zh ru ja hi ar bn id ur
+  ✔ par défaut : français, sans cookie
+  ✔ UTF-8 annoncé (en-tête + meta)
+  ✔ ?lang=en : page en anglais
+  ✔ ?lang=en pose le cookie lang=en
+  ✔ cookie lang=de : allemand
+  ✔ Accept-Language pt-BR : portugais
+  ✔ priorité : ?lang avant cookie avant Accept-Language
+  ✔ priorité : cookie avant Accept-Language
+  ✔ langue inconnue ignorée, puis Accept-Language
+  ✔ lecture d'Accept-Language (q=0 ignoré, région ignorée)
+  ✔ arabe : dir=rtl
+  ✔ ourdou : dir=rtl
+  ✔ sélecteur : les 14 langues, chacune écrite dans sa langue
+  ✔ fiche en anglais : interface traduite, habitat traduit, chemin inchangé
+  ✔ les descriptions des bestioles restent en français
+  ✔ filtres : valeurs françaises dans l'URL, libellés traduits
+  ✔ badges : titre traduit selon leur type
+  ✔ CTF en texte : traduit, drapeau toujours caché dans l'en-tête
+  ✔ l'API reste en français (lue par l'appli)
+  ✔ dictionnaires cohérents
+Anti-triche : graines et captures vérifiées
+  ✔ la synchro donne 8 graines signées (hier → dans 6 jours)
+  ✔ le secret n'apparaît jamais dans la réponse
+  ✔ chaque appareil a sa propre graine
+  ✔ capture honnête : vérifiée
+  ✔ stats gonflées / faux shiny : non vérifiée
+  ✔ même (graine, compteur) une 2e fois : non vérifiée
+  ✔ compteur ≥ 200 : non vérifiée
+  ✔ graine d'un autre joueur : non vérifiée
+  ✔ capture sans graine (ancienne sauvegarde) : gardée, non vérifiée
+  ✔ évolution instantanée refusée (reste ado)
+  ✔ évolution en 3 h : acceptée
+  ✔ une capture vérifiée ne change ni de stats ni de stade trop vite
+  ✔ attirance par git (déjà tapée) : vérifiée
+  ✔ attirance par chmod jamais tapée : non vérifiée
+  ✔ attirance annoncée après coup : non vérifiée
+  ✔ chmod envoyé avec la capture : attirance des Démons vérifiée
+  ✔ profil : 5 captures vérifiées comptées à part
+  ✔ galerie : vérifiées (✔) et non vérifiées affichées
+  ✔ faux glitch : non vérifié
+  ✔ « gardien » d'une autre espèce : non vérifié
+  ✔ le gardien Ricanombre (#79) : vérifié, glitch false comme le serveur le refait
+  ✔ sans graine : gardé glitch, non vérifié
+  ✔ galerie : la bestiole glitch est redessinée par le script de l'effet, son nom porte ▚
+  ✔ profil : l'espèce dont le joueur a un glitch est montrée glitch
+  ✔ sans SECRET_GRAINES : aucune graine, rien n'est vérifié
+Salle d'entraînement : exercices vérifiés, records, badges, Star de la semaine
+  ✔ exercices honnêtes : vérifiés
+  ✔ empreinte inventée : non vérifié
+  ✔ (graine, compteur) déjà utilisé : non vérifié
+  ✔ temps impossible (0,5 s) : non vérifié
+  ✔ commandes jamais tapées : non vérifié
+  ✔ sans graine : gardé, non vérifié
+  ✔ les compteurs s'additionnent (badges de la partie)
+  ✔ record vérifié par le tirage refait
+  ✔ record sans graine : « non vérifié » ; record impossible : refusé
+  ✔ un exercice renvoyé deux fois n'est pas compté deux fois
+  ✔ temps sous le minimum plausible du type (5 s) : non vérifié
+  ✔ au minimum plausible : vérifié
+  ✔ deux exercices en même temps : le second n'est pas vérifié
+  ✔ date hors du jour de la graine (avant, ou dans le futur) : non vérifié
+  ✔ compteurs envoyés par le jeu (500 💎) : gardés pour le jeu, jamais comptés comme vérifiés
+  ✔ profil : pas de grade Explorateur avec des compteurs non vérifiés (500 « non vérifiés » affichés à part)
+  ✔ profil HTML : les exercices non vérifiés sont signalés
+  ✔ plus de 60 exercices vérifiés le même jour : non vérifié
+  ✔ Star de la semaine (Lecteur) : portée cette semaine
+  ✔ le site compte combien de fois on l'a eue
+  ✔ /records : les temps vérifiés, avec leur médaille
+  ✔ /records : rien de non vérifié, Stars et badges en pixels
+  ✔ /api/records (JSON)
+  ✔ profil : badges, records (vérifiés ou non) et Stars
+  ✔ profil JSON : grades, étoiles et Stars (4 réussites : Bit ★★★)
+  ✔ profil : le badge complet (galons, étoiles) et son grade
+  ✔ /records : les 8 grades, leurs galons et ce qu'ils veulent dire
+  ✔ /records traduit (japonais)
+  ✔ 266 pages rendues sans trou (14 langues × 19 pages)
+Plusieurs parties, jetons TG-…, code de secours, connexion au site
+  ✔ inscription : code de secours donné une fois (TG-GYZN-W7FQ-A3AW)
+  ✔ une 2e partie ne se mélange pas à la 1re
+  ✔ sync sans identifiant = partie 1 (compatibilité)
+  ✔ /api/parties liste les 2 créatures
+  ✔ le profil montre la meilleure créature
+  ✔ identifiant de partie invalide refusé
+  ✔ migration : la créature existante devient la partie 1
+  ✔ … et la synchro de la partie 1 continue dessus
+  ✔ jeton lisible : TG-F8G9-WZ
+  ✔ compte lier TG-… relie l'appareil
+  ✔ faux code de secours refusé
+  ✔ le code de secours rend le compte
+  ✔ le code de secours n'est pas stocké en clair
+  ✔ un nouveau code de secours remplace l'ancien
+  ✔ après déconnexion, la clé de l'appareil ne marche plus
+  ✔ compte site : lien à usage unique
+  ✔ le lien ouvre une session (cookie HttpOnly)
+  ✔ le lien ne marche qu'une fois
+  ✔ page Mon compte : pseudo, créatures, bouton « lier un appareil »
+  ✔ le site affiche un jeton TG-… : TG-T5QX-ZK
+  ✔ … qui relie un appareil depuis le terminal
+  ✔ sans session : la page explique « compte site »
+  ✔ se déconnecter du site ferme la session
+Mini-terminal du site (ls, cd, cat…)
+  ✔ /api/plan répond (et se met en cache)
+  ✔ plan : dossiers et fichiers de la racine, libellés traduits
+  ✔ plan : les 150 bestioles publiques et leur famille
+  ✔ plan : les familles en dossiers tapables
+  ✔ chaque page sait où elle est (~/bestiaire/demons…)
+  ✔ barre : fichier repéré, textes dans la langue de la page
+  ✔ barre : cachée sans JavaScript, bouton et champ accessibles
+  ✔ barre : fermée par défaut, bouton « naviguer au clavier » traduit
+  ✔ aucun script externe
+Pied de page, pages pour les adultes, polices locales
+  ✔ pied de page : code, contact, soutenir, parents, mentions, confidentialité
+  ✔ polices hébergées sur le site : aucun appel à Google Fonts
+  ✔ soutenir : pour les adultes, « bientôt » tant qu'aucun lien n'est rempli
+  ✔ parents (anglais) : ce que fait le jeu sur l'ordinateur
+  ✔ confidentialité : enfants, IP, cookies, durées, CNIL
+  ✔ confidentialité en arabe : résumé traduit + texte français qui fait foi (ltr)
+  ✔ mentions légales : hébergeur, éditeur, modèle à vérifier, crédits, licence
+Suppression d'un compte et durées de conservation
+  ✔ suppression refusée sans recopier le pseudo
+  ✔ DELETE /api/compte avec la clé : compte supprimé
+  ✔ aucune donnée orpheline après la suppression
+  ✔ le profil public a disparu
+  ✔ la clé ne marche plus
+  ✔ CORS : DELETE autorisé
+  ✔ purge : compte inactif depuis plus de 36 mois effacé, les autres gardés
+  ✔ purge : adresses IP de plus de 24 h effacées
+
+179 réussis, 0 échoués
+Vecteurs communs (donnees/anti_triche/vecteurs.json)
+  ✔ splitmix64 0000000000000000…
+  ✔ splitmix64 ffffffffffffffff…
+  ✔ 343/343 tirages identiques au Python
+  ✔ les vecteurs couvrent des shiny et Abyssor
+  ✔ les vecteurs couvrent l'attirance d'une famille
+Attirance (la commande tapée attire une famille)
+  ✔ 10 familles, une commande chacune
+  ✔ pas d'attirance déclarée : tirage normal
+  ✔ famille attirée par une commande déjà tapée : acceptée
+  ✔ commande jamais tapée : refusée
+  ✔ famille inconnue : refusée
+  ✔ Démons : 10.0 % sans attirance, 30.4 % avec
+Comparaison d'une capture
+  ✔ capture conforme : aucun écart
+  ✔ stats gonflées et faux shiny repérés
+Le glitch (tirage 13, à part : compteur + 2^20)
+  ✔ 240 tirages du glitch identiques au Python
+  ✔ les gardiens des 3 boîtes codées
+  ✔ « gardien » : seulement l'espèce gardienne d'une boîte codée
+  ✔ faux glitch repéré
+  ✔ une capture d'avant le glitch (sans le champ) reste conforme
+  ✔ glitch.js : fnv1a-64 identique
+  ✔ glitch.js : 48/48 images identiques au Python
+  ✔ glitch.js : 285 instants, mêmes éclairs
+  ✔ le script des pages se lit (navigateur)
+Évolution plausible
+  ✔ bébé → ancien : 2450 XP
+  ✔ en 1 minute (120 XP au plus), un bébé devient au mieux enfant
+  ✔ en 1 heure, il peut devenir ado
+  ✔ on ne rajeunit pas
+Salle d'entraînement (donnees/entrainement/vecteurs.json)
+  ✔ 456/456 exercices identiques au Python
+  ✔ 152 médailles identiques
+  ✔ grades identiques (Giga : 1 médaille d'or ; Téra 3, Péta 6, Exa 10 de diamant ; Exa : chaque exercice)
+  ✔ étoiles identiques (à l'Exa : 600 / 800 / 1000)
+  ✔ 65 badges complets identiques au pixel près (galons, étoiles)
+  ✔ les galons grandissent à chaque grade (56, 99, 140, 195, 225, 245, 271, 495)
+  ✔ Exa : seulement quand chaque exercice de la famille est réussi (sinon Péta)
+  ✔ semaines ISO identiques
+  ✔ commandes déjà tapées : vérifiées
+  ✔ badges en SVG (étincelle du Giga, « ??? » gris)
+Récompenses par monde (donnees/recompenses/vecteurs.json) : le serveur accepte les créatures favorisées
+  ✔ 288/288 créatures favorisées identiques au tirage du serveur 
+  ✔ le compteur gardé reste dans la fenêtre d'essais (jamais au-delà, jamais deux fois le même)
+
+38 réussis, 0 échoués

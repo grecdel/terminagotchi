@@ -1,0 +1,90 @@
+== wrangler whoami
+
+ ⛅️ wrangler 3.114.17 (update available 4.156.0)
+[masqué]--------
+
+[33m▲ [43;33m[[43;30mWARNING[43;33m][0m [1mThe version of Wrangler you are using is now out-of-date.[0m
+
+  Please update to the latest version to prevent critical errors.
+  Run `npm install --save-dev wrangler@4` to update to the latest version.
+  After installation, run Wrangler with `npx wrangler`.
+
+
+Getting User settings...
+ℹ️  The API Token is read from the CLOUDFLARE_API_TOKEN environment variable.
+👋 You are logged in with an User API Token. Unable to retrieve email for this user. Are you missing the `User->User Details->Read` permission?
+┌─────────────────────────────┬──────────────────────────────────┐
+│ Account Name                │ Account ID                       │
+├─────────────────────────────┼──────────────────────────────────┤
+│ Grecdel@gmail.com's Account │ dd4e714b80e17e3ace9d3a08c5a04a7d │
+└─────────────────────────────┴──────────────────────────────────┘
+🔓 To see token permissions visit https://dash.cloudflare.com/profile/api-tokens.
+== d1 list
+[
+  {
+    "uuid": "f47f5b1f-9f4c-4b2f-9df2-1c5b26cf9be6",
+    "name": "terminagotchi",
+    "created_at": "2026-10-24T19:06:33.231Z",
+    "version": "production",
+    "num_tables": 0,
+    "file_size": 151552,
+    "jurisdiction": null
+  }
+]
+Base : f47f5b1f-9f4c-4b2f-9df2-1c5b26cf9be6
+
+ ⛅️ wrangler 3.114.17 (update available 4.156.0)
+[masqué]--------
+
+[33m▲ [43;33m[[43;30mWARNING[43;33m][0m [1mThe version of Wrangler you are using is now out-of-date.[0m
+
+  Please update to the latest version to prevent critical errors.
+  Run `npm install --save-dev wrangler@4` to update to the latest version.
+  After installation, run Wrangler with `npx wrangler`.
+
+
+[33m▲ [43;33m[[43;30mWARNING[43;33m][0m [1m⚠️ This process may take some time, during which your D1 database will be unavailable to serve queries.[0m
+
+
+🌀 Executing on remote database terminagotchi (f47f5b1f-9f4c-4b2f-9df2-1c5b26cf9be6):
+🌀 To execute on your local development database, remove the --remote flag from your wrangler command.
+Note: if the execution fails to complete, your DB will return to its original state and you can safely retry.
+├ Checking if file needs uploading
+│
+🌀 File already uploaded. Processing.
+🌀 Starting import...
+🌀 Processed 19 queries.
+🚣 Executed 19 queries in 2.61ms (2 rows read, 0 rows written)
+   Database is currently at bookmark [masqué]6d9eb1d815767ce44c3.
+[
+  {
+    "results": [
+      {
+        "Total queries executed": 19,
+        "Rows read": 2,
+        "Rows written": 0,
+        "Database size (MB)": "0.15"
+      }
+    ],
+    "success": true,
+    "finalBookmark": "[masqué]6d9eb1d815767ce44c3",
+    "meta": {
+      "served_by": "v3-prod",
+      "served_by_region": "ENAM",
+      "served_by_colo": "ORD",
+      "served_by_primary": true,
+      "timings": {
+        "sql_duration_ms": 2.6093
+      },
+      "duration": 2.6093,
+      "changes": 1,
+      "last_row_id": 0,
+      "changed_db": true,
+      "size_after": 151552,
+      "rows_read": 2,
+      "rows_written": 0,
+      "num_tables": 12,
+      "total_attempts": 1
+    }
+  }
+]

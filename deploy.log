@@ -1,0 +1,24 @@
+
+ ⛅️ wrangler 3.114.17 (update available 4.156.0)
+------------------------------------------------
+
+[33m▲ [43;33m[[43;30mWARNING[43;33m][0m [1mThe version of Wrangler you are using is now out-of-date.[0m
+
+  Please update to the latest version to prevent critical errors.
+  Run `npm install --save-dev wrangler@4` to update to the latest version.
+  After installation, run Wrangler with `npx wrangler`.
+
+
+🌀 Building list of assets...
+🌀 Starting asset upload...
+No files to upload. Proceeding with deployment...
+Total Upload: 1041.80 KiB / gzip: 218.98 KiB
+Worker Startup Time: 2 ms
+Your worker has access to the following bindings:
+- D1 Databases:
+  - DB: terminagotchi (f47f5b1f-9f4c-4b2f-9df2-1c5b26cf9be6)
+Uploaded terminagotchi (5.07 sec)
+Deployed terminagotchi triggers (0.48 sec)
+  schedule: 17 3 * * *
+Current Version ID: 7a164bc1-28ee-4e7d-8ade-e74ee64f79e8
+terminagotchi.com répond : 200
