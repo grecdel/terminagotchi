@@ -196,6 +196,8 @@ object Histoire {
                 ref("t2", 2),
                 n("biblio1", 1, "head -n 3 etagere_c/coin_poussiereux/livre_des_abysses.txt", re = "^(head|get-content|gc)\\b.*abysses"),
                 n("biblio1", 2, "wc -l etagere_c/coin_poussiereux/livre_des_abysses.txt", re = "^(wc\\b|get-content.*measure-object|gc.*measure)"),
+                n("biblio1", 4, "cat etagere_c/coin_poussiereux/livre_des_abysses.txt | grep Abyssor",
+                    re = "\\|\\s*(grep|select-string|sls|findstr)\\b.*abyssor"),   // le premier vrai tuyau
                 n("biblio1", 3, "grep -rn TRESOR .", re = "^(grep\\s+-\\w*r|select-string|sls)\\b.*tresor", expert = true),
             )),
             "machines0" to Lecon("hist.machines0.titre", null, 1, listOf(

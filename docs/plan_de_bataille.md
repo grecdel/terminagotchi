@@ -143,6 +143,32 @@ Captures envoyées par le propriétaire (projet Coucou), gardées dans `docs/ins
   ne sont pas repris : le propriétaire a écarté les accessoires au profit des badges et des auras.
 
 
+## ✅ Codé (31 octobre) — Thèmes, interface évolutive, personnalisation de l'espace (maquettes validées)
+
+Maquettes validées par le propriétaire (Game Boy inversé : fond #0F380F, texte vert clair). Code :
+- `pc/tg/apparence.py` / `Apparence.kt`, données `donnees/apparence.json` (copies `pc/tg/apparence.json`,
+  `app/src/main/assets/apparence.json`), vecteurs communs `donnees/apparence/vecteurs.json`, tests
+  `pc/outils/test_apparence.py` et `tests/jvm/Apparence.kt` (contraste WCAG de chaque thème : texte ≥ 4,5, texte doux et
+  blocs ≥ 3 ; calendrier ; migration ; dispositions identiques Python / Kotlin) ;
+- **9 thèmes** par rôles de couleur (sombre, clair, pastel, Matrix, ambre, Game Boy, océan, contraste élevé,
+  daltonien) : recoloration de la liste de dessin (espace, bureau, île, téléphone, bulle de l'espace), carte teintée en
+  Matrix / ambre / Game Boy, sprites jamais touchés ; dans un vrai terminal, seules les couleurs vives changent (thèmes
+  sombres) ; `tg theme <nom>` / `theme <nom>` ; synchronisé par le recensement (le plus récent gagne : champs
+  `theme` / `themeDate` du worker — **le site doit être redéployé** pour que le serveur garde le thème) ;
+- **interface évolutive** : œuf + invite → éclosion (île) → t0 (Explorateur, Envies) → fin du chapitre 1 (Carte,
+  Leçon) → nid1 (vue déployée, assiette) → 1re capture (Équipe) → « La loupe du détective » (Tuyaux ; nouvelle étape
+  `cat … | grep Abyssor`, PC et Android) → scripts0 (Cerveau) ; animation d'arrivée (bord doré, « nouveau ») et
+  phrase `app.pan.<id>.dit` ; places endormies en pointillés (PC) ; « Tout afficher » (Options › Pour les grands,
+  après un calcul pour les grands, réversible) ; anciennes parties : tout visible, thème Sombre, disposition Classique ;
+- **options** réorganisées (PC terminal : Apparence, Ma créature partout, Notifications, Compte, Pour les grands ;
+  PC fenêtre : roue dentée de `tg espace` ; Android : `options`) ;
+- **personnalisation** : PC `tg espace` bouton ✎ (et `ranger`) : grille 24 × 20, glisser par la poignée, agrandir par
+  le coin, ✕ pour cacher, tiroir des dalles cachées, Disposition d'origine, « Ma disposition » ; dispositions
+  classique / terminal géant / créature au centre / classe ; Android : appui long sur une bande, ≡ pour la déplacer,
+  tailles P / M / G, ordre des onglets, dispositions ; les dalles pas encore découvertes n'apparaissent pas.
+- Captures : `pc/outils/capture_apparence.py` (PC), `/home/claude/outils/themes/VraiTel.kt` (téléphone) ; textes :
+  `donnees/apparence/outils/textes_apparence.py` (14 langues).
+
 ## L'espace de travail de Terminagotchi (souhait du propriétaire, 28 octobre)
 
 **✅ Codé (31 octobre, PC et Android, d'après les maquettes validées `docs/maquettes/espace_travail_*.png`)** :

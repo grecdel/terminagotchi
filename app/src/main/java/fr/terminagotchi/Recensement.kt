@@ -98,7 +98,8 @@ object Recensement {
             .put("valeurs", JSONObject()
                 .put("nom", jeu.nom).put("nomDate", c.optLong("nomDate"))
                 .put("trait", jeu.trait).put("forme", jeu.forme ?: JSONObject.NULL).put("shiny", jeu.shiny)
-                .put("faim", jeu.faim).put("faimDate", c.optLong("repas")))
+                .put("faim", jeu.faim).put("faimDate", c.optLong("repas"))
+                .put("theme", Apparence.cleTheme(jeu)).put("themeDate", Apparence.a(jeu).optLong("theme_date")))
         // salle d'entraînement : compteurs gagnés ici, exercices à vérifier, records (Entrainement.kt)
         val (ent, snapEnt) = Entrainement.charge(jeu, base.optJSONObject("ent"))
         charge.put("entrainement", ent)
@@ -170,6 +171,10 @@ object Recensement {
             if (pa.optLong("date") >= (c.optJSONObject("partage")?.optLong("date") ?: 0L)) c.put("partage", pa)
         }
         if (srv.has("shiny")) jeu.shiny = srv.optBoolean("shiny")
+        if (srv.optLong("themeDate") > Apparence.a(jeu).optLong("theme_date")) {   // le thème le plus récent gagne
+            val th = srv.optString("theme")
+            if (Apparence.choisirTheme(jeu, th)) Apparence.a(jeu).put("theme_date", srv.optLong("themeDate"))
+        }
         val nom = srv.optString("nom")
         if (nom.isNotEmpty()) {
             jeu.nom = nom

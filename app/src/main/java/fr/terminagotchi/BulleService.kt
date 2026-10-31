@@ -500,17 +500,20 @@ class BulleService : Service() {
         if (a.lisse) min(max(h / dp(120f) * dens * 1.0f, 0.7f * h / a.ref), 1.35f * h / a.ref).let { if (it.isNaN()) 1f else it }
         else max(1, Math.round(h / a.ref)).toFloat()
 
+    /** Une couleur de l'île et du menu dans le thème de la partie (Apparence) ; les sprites ne changent pas. */
+    private fun th(c: Int): Int = if (::jeu.isInitialized) Apparence.theme(jeu).couleur(c) else c
+
     private fun pilule(cv: Canvas, r: RectF, fond: Int, bord: Int, rayon: Float = r.height() / 2) {
-        pinceau.style = Paint.Style.FILL; pinceau.color = fond
+        pinceau.style = Paint.Style.FILL; pinceau.color = th(fond)
         cv.drawRoundRect(r, rayon, rayon, pinceau)
-        pinceau.style = Paint.Style.STROKE; pinceau.color = bord; pinceau.strokeWidth = dp(1f)
+        pinceau.style = Paint.Style.STROKE; pinceau.color = th(bord); pinceau.strokeWidth = dp(1f)
         cv.drawRoundRect(r, rayon, rayon, pinceau)
         pinceau.style = Paint.Style.FILL
     }
 
     private fun texte(cv: Canvas, s: String, x: Float, y: Float, taille: Float, couleur: Int, gras: Boolean = false,
                       align: Paint.Align = Paint.Align.LEFT, mono: Boolean = false) {
-        pinceau.textSize = taille; pinceau.color = couleur; pinceau.textAlign = align
+        pinceau.textSize = taille; pinceau.color = th(couleur); pinceau.textAlign = align
         pinceau.typeface = if (mono) Typeface.MONOSPACE else if (gras) Typeface.DEFAULT_BOLD else Typeface.DEFAULT
         cv.drawText(s, x, y + taille * 0.35f, pinceau)
     }

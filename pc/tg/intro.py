@@ -161,6 +161,9 @@ def verifier(state):
         core.log(state, t("deb.nouveau.log", nom=f["emoji"] + " " + t(f"deb.{fid}.titre")))
         core.say(state, t("deb.nouveau.dit", nom=t(f"deb.{fid}.titre")), 10)
         core.animer(state, "content")
+    from . import apparence                  # les panneaux de l'espace de travail qui apparaissent maintenant
+    apparence.a_(state)
+    apparence.verifier(state)
 
 
 def tout_debloquer(state):

@@ -82,7 +82,9 @@ def _charge(state):
         "valeurs": {"nom": state["name"], "nomDate": c.get("nomDate", 0), "trait": state.get("trait", ""),
                     "shiny": bool(state.get("shiny")),
                     "forme": state.get("branch"), "faim": state["hunger"],
-                    "faimDate": int(state.get("repas_t", 0) * 1000)},
+                    "faimDate": int(state.get("repas_t", 0) * 1000),
+                    "theme": state.get("config", {}).get("theme") or "sombre",
+                    "themeDate": int(state.get("config", {}).get("theme_date") or 0)},
     }
     from . import entrainement
     charge["entrainement"], snap["ent"] = entrainement.charge(state, base.get("ent"))
@@ -129,6 +131,11 @@ def _appliquer(state, srv, snap):
         c["partage"] = srv["partage"]
     if "shiny" in srv:
         state["shiny"] = bool(srv["shiny"])
+    if int(srv.get("themeDate") or 0) > int(state.get("config", {}).get("theme_date") or 0):   # le plus récent gagne
+        from . import apparence
+        if srv.get("theme") in apparence.donnees()["themes"]:
+            state.setdefault("config", {})["theme"] = srv["theme"]
+            state["config"]["theme_date"] = int(srv["themeDate"])
     if srv.get("faimDate", 0) > state.get("repas_t", 0) * 1000:
         state["hunger"] = float(srv.get("faim", state["hunger"]))
         state["repas_t"] = srv["faimDate"] / 1000

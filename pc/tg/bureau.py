@@ -426,8 +426,18 @@ class Controleur:
     def scene_ile(self):
         if not self.album:
             return [], []
-        return S.scene_ile(self.ile, self.info_ile(), self.album, self.mini, self.t, self.pointeur_ile, self.equipe,
+        L, Z = S.scene_ile(self.ile, self.info_ile(), self.album, self.mini, self.t, self.pointeur_ile, self.equipe,
                            self.c)
+        return self._theme(L), Z
+
+    def _theme(self, L):
+        """La liste de dessin dans les couleurs du thème de la partie (les sprites ne changent pas)."""
+        try:
+            from . import apparence
+            return apparence.recolorer(L, apparence.theme(self.state)) if self.state else L
+        except Exception as e:                      # noqa: BLE001
+            noter(f"thème : {e!r}")
+            return L
 
     def clic_ile(self, x, y, zones):
         a = self._zone(zones, x, y)
@@ -468,8 +478,9 @@ class Controleur:
     def scene(self, ox=0, largeur=None):
         if not self.album:
             return [], []
-        return S.scene_creature(self.c, self.album, self.vue, self.regl, largeur or self.largeur, ZONE_H, self.sol,
+        L, Z = S.scene_creature(self.c, self.album, self.vue, self.regl, largeur or self.largeur, ZONE_H, self.sol,
                                 ox, self.t, (self.state or {}).get("name", ""))
+        return self._theme(L), Z
 
 
 # ================================================================ ouvrir le jeu dans un terminal

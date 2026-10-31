@@ -110,14 +110,64 @@ class EspaceVue(ctx: Context, jeu: Jeu, private val dossier: () -> java.io.File,
         zones = EspaceDessin.dessiner(toile, modele, width.toFloat(), height.toFloat(), d)
     }
 
+    private var appuiX = 0f
+    private var appuiY = 0f
+    private var longFait = false
+    /** Appui long sur une bande (créature, vue déployée) : le mode « ranger mon espace ». */
+    private val appuiLong = Runnable {
+        val sur = zones.filter { it.dedans(appuiX, appuiY) }.map { it.action }
+        if (!etat.rangement && !etat.options && sur.any { it.startsWith("bande:") }) {
+            longFait = true
+            etat.rangement = true
+            performHapticFeedback(0)   // HapticFeedbackConstants.LONG_PRESS
+            requestLayout(); invalidate()
+        }
+    }
+
     override fun onTouchEvent(e: MotionEvent): Boolean {
-        if (e.action != MotionEvent.ACTION_UP) return true
-        val a = zones.lastOrNull { it.dedans(e.x, e.y) }?.action ?: return true
-        if (etat.toucher(a)) requestLayout()
-        performClick()
-        invalidate()
+        when (e.action) {
+            MotionEvent.ACTION_DOWN -> {
+                appuiX = e.x; appuiY = e.y; longFait = false
+                val a = zones.lastOrNull { it.dedans(e.x, e.y) }?.action
+                if (etat.rangement && a != null && a.startsWith("rg:tenir:")) {
+                    modele.glisse = a.removePrefix("rg:tenir:") to e.y
+                    performHapticFeedback(0)   // HapticFeedbackConstants.LONG_PRESS
+                    invalidate()
+                } else postDelayed(appuiLong, 500)
+                return true
+            }
+            MotionEvent.ACTION_MOVE -> {
+                if (Math.abs(e.x - appuiX) + Math.abs(e.y - appuiY) > 12 * d) removeCallbacks(appuiLong)
+                modele.glisse?.let { modele.glisse = it.first to e.y; invalidate() }
+                return true
+            }
+            MotionEvent.ACTION_CANCEL -> { removeCallbacks(appuiLong); modele.glisse = null; invalidate(); return true }
+            MotionEvent.ACTION_UP -> {
+                removeCallbacks(appuiLong)
+                val g = modele.glisse
+                if (g != null) {                       // la bande lâchée : à la place la plus proche
+                    modele.glisse = null
+                    val places = zones.filter { it.action.startsWith("rg:place:") }
+                    val i = places.minByOrNull { Math.abs(it.y + it.h / 2 - e.y) }?.action?.removePrefix("rg:place:")?.toIntOrNull()
+                    if (i != null) etat.deplacerBande(g.first, i)
+                    requestLayout(); invalidate()
+                    return true
+                }
+                if (longFait) return true
+                val a = zones.lastOrNull { it.dedans(e.x, e.y) }?.action ?: return true
+                val avant = etat.rangement || etat.options
+                if (etat.toucher(a) || avant != (etat.rangement || etat.options)) requestLayout()
+                etat.question?.let { q -> demanderQuestion?.invoke(q.first) }
+                performClick()
+                invalidate()
+                return true
+            }
+        }
         return true
     }
+
+    /** TerminalActivity écrit la question des grands dans le terminal (la réponse s'y tape). */
+    var demanderQuestion: ((String) -> Unit)? = null
 
     override fun performClick(): Boolean { super.performClick(); return true }
 
@@ -222,9 +272,11 @@ class EspaceVue(ctx: Context, jeu: Jeu, private val dossier: () -> java.io.File,
         }
 
         override fun photo(nom: String, x: Float, y: Float, w: Float, h: Float, r0: Float) {
-            val b = monde ?: try {
+            val base = monde ?: try {
                 context.assets.open("intro/monde.jpg").use { BitmapFactory.decodeStream(it) }.also { monde = it }
             } catch (e: Exception) { null } ?: return
+            val th = nom.substringAfter(':', "")
+            val b = if (th.isEmpty()) base else bitmaps.getOrPut("monde:$th") { teinter(base, Apparence.Theme(th)) }
             val k = cv ?: return
             val ech = maxOf(w / b.width, h / b.height)
             val sw = w / ech; val sh = h / ech
@@ -237,5 +289,22 @@ class EspaceVue(ctx: Context, jeu: Jeu, private val dossier: () -> java.io.File,
             k.drawBitmap(b, Rect(sx, sy, sx + sw.toInt(), sy + sh.toInt()), RectF(x, y, x + w, y + h), pImg)
             k.restore()
         }
+    }
+
+    /** La carte du monde dans la teinte du thème (Matrix, ambre : niveaux de gris teintés ; Game Boy : 4 verts). */
+    private fun teinter(b: Bitmap, th: Apparence.Theme): Bitmap {
+        val w = b.width; val h = b.height
+        val px = IntArray(w * h)
+        b.getPixels(px, 0, w, 0, 0, w, h)
+        val gb = intArrayOf(0x0F380F, 0x306230, 0x8BAC0F, 0x9BBC0F)
+        val t = th.carte
+        val col = (t as? org.json.JSONArray)?.let { intArrayOf(it.getInt(0), it.getInt(1), it.getInt(2)) }
+        for (i in px.indices) {
+            val p = px[i]
+            val v = ((p shr 16 and 255) * 0.299 + (p shr 8 and 255) * 0.587 + (p and 255) * 0.114).toInt()
+            px[i] = (0xFF shl 24) or (if (col == null) gb[minOf(3, v * 4 / 256)]
+                else ((col[0] * v / 255) shl 16) or ((col[1] * v / 255) shl 8) or (col[2] * v / 255))
+        }
+        return Bitmap.createBitmap(px, w, h, Bitmap.Config.ARGB_8888)
     }
 }

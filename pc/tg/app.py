@@ -538,6 +538,9 @@ def lancer_detache(mode):
 
 
 def menu_options(state, clav):
+    """Les options, rangées en sections : Apparence (thème, disposition, langue), Ma créature partout,
+    Notifications, Compte, Pour les grands (« Tout afficher », protégé par une petite question)."""
+    from . import apparence
     msg = ""
     while True:
         st = core.load() or state
@@ -546,24 +549,39 @@ def menu_options(state, clav):
         moteur = notif.systeme()
         installe = compagnon.est_installe()
         onoff = lambda b: f"{fg(78)}{t('app.on')}{RESET}" if b else f"{fg(203)}{t('app.off')}{RESET}"
+        sec = lambda cle: print(f"\n {fg(221)}{BOLD}{t(cle).upper()}{RESET}")
+        th = apparence.theme(st)
+        _rects, dispo = apparence.disposition(st)
         clear()
-        print(f" {fg(213)}── ⚙ " + t("app.options.titre") + f" ──{RESET}\n")
-        print(" 1. " + t("app.options.notifs", etat=onoff(cfg["notifs"]))
+        print(f" {fg(213)}── ⚙ " + t("app.options.titre") + f" ──{RESET}")
+        sec("app.opt.apparence")
+        print("  1. " + t("app.options.theme", nom=f"{BOLD}{t('app.theme.' + th.cle)}{RESET}") + "  " + apercu_theme(th))
+        print(f"     {DIM}" + t("app.options.theme.terminal") + RESET)
+        print("  2. " + t("app.options.dispo", nom=f"{BOLD}{t('app.dispo.' + dispo)}{RESET}"))
+        print("  3. " + t("app.options.langue", langue=f"{BOLD}{langue.LANGUES[langue.courante()]}{RESET}")
+              + f" {DIM}(tg langue xx){RESET}")
+        print(f"     {DIM}" + t("app.options.ranger") + RESET)
+        sec("app.opt.creature")
+        print("  4. " + t("app.options.compagnon", etat=onoff(installe)))
+        print("  5. " + t("app.options.style", style=f"{BOLD}{t('app.style.' + cfg['compagnon'])}{RESET}")
+              + f" {DIM}({t('app.style.ligne')} / {t('app.style.coin')}){RESET}")
+        print("  6. " + t("app.options.bureau") + f" {DIM}(PC){RESET}")
+        sec("app.opt.notifications")
+        print("  7. " + t("app.options.notifs", etat=onoff(cfg["notifs"]))
               + f"  {DIM}({moteur or t('app.options.aucun_systeme')}){RESET}")
         if moteur == "android":
-            print(" 2. " + t("app.options.permanente", etat=onoff(cfg["permanente"])))
+            print("  8. " + t("app.options.permanente", etat=onoff(cfg["permanente"])))
         else:
-            print(" 2. " + t("app.options.permanente", etat=f"{DIM}{t('app.options.permanente.pc')}{RESET}"))
-        print(" 3. " + t("app.options.compagnon", etat=onoff(installe)))
-        print(" 4. " + t("app.options.style", style=f"{BOLD}{t('app.style.' + cfg['compagnon'])}{RESET}")
-              + f" {DIM}({t('app.style.ligne')} / {t('app.style.coin')}){RESET}")
-        print(" 5. " + t("app.options.test"))
-        print(" 6. " + t("app.options.bureau") + f" {DIM}(PC){RESET}")
+            print("  8. " + t("app.options.permanente", etat=f"{DIM}{t('app.options.permanente.pc')}{RESET}"))
+        print("  9. " + t("app.options.test"))
+        sec("app.opt.compte")
         c = st.get("compte", {})
-        print(" 7. " + t("app.options.recensement", pseudo=f"{BOLD}{c.get('pseudo') or t('app.options.pas_de_compte')}{RESET}")
+        print(" 10. " + t("app.options.recensement", pseudo=f"{BOLD}{c.get('pseudo') or t('app.options.pas_de_compte')}{RESET}")
               + f" {DIM}" + t("app.options.recensement.meme") + RESET)
-        print(" 8. " + t("app.options.langue", langue=f"{BOLD}{langue.LANGUES[langue.courante()]}{RESET}")
-              + f" {DIM}(tg langue xx){RESET}")
+        sec("app.opt.grands")
+        print(" 11. " + t("app.options.tout", etat=onoff(apparence.a_(st).get("tout"))))
+        print(f"     {DIM}" + t("app.opt.tout.aide") + RESET)
+        print(f"     {DIM}" + t("app.options.debloquer") + RESET)
         print(f"\n {DIM}" + t("app.options.mini1"))
         print(" " + t("app.options.mini2") + RESET)
         if msg:
@@ -573,28 +591,97 @@ def menu_options(state, clav):
         if not r:
             return
         if r == "1":
-            core.modifier(lambda s: s["config"].update(notifs=not s["config"]["notifs"]))
-        elif r == "2" and moteur == "android":
-            core.modifier(lambda s: s["config"].update(permanente=not s["config"]["permanente"]))
-            notif.permanente(core.load())
+            msg = menu_theme(clav)
+        elif r == "2":
+            ordre = apparence.donnees()["ordre_dispositions"]
+            mienne = apparence.a_(st).get("mienne")
+            ordre = [o for o in ordre if o != "mienne" or mienne]
+            suivant = ordre[(ordre.index(dispo) + 1) % len(ordre)] if dispo in ordre else ordre[0]
+            core.modifier(lambda s: apparence.choisir_disposition(s, suivant))
         elif r == "3":
+            msg = menu_langue(clav)
+        elif r == "4":
             faits = compagnon.desinstaller() if installe else compagnon.installer()
             msg = (t("app.retire" if installe else "app.installe", liste=", ".join(faits))
                    + ("" if installe else "\n " + t("app.options.nouveau_terminal"))) if faits \
                 else t("app.options.aucun_shell")
-        elif r == "4":
-            core.modifier(lambda s: s["config"].update(compagnon="coin" if s["config"]["compagnon"] == "ligne" else "ligne"))
         elif r == "5":
+            core.modifier(lambda s: s["config"].update(compagnon="coin" if s["config"]["compagnon"] == "ligne" else "ligne"))
+        elif r == "6":
+            msg = t("app.options.bureau.ok") if lancer_detache("bureau") else t("app.options.bureau.echec")
+        elif r == "7":
+            core.modifier(lambda s: s["config"].update(notifs=not s["config"]["notifs"]))
+        elif r == "8" and moteur == "android":
+            core.modifier(lambda s: s["config"].update(permanente=not s["config"]["permanente"]))
+            notif.permanente(core.load())
+        elif r == "9":
             ok = notif.envoyer(st, [t("app.options.test.texte", nom=st["name"])], forcer=True)
             msg = t("app.options.test.ok") if ok else t("app.options.test.echec")
             if moteur == "android":
                 notif.permanente(st)
-        elif r == "6":
-            msg = t("app.options.bureau.ok") if lancer_detache("bureau") else t("app.options.bureau.echec")
-        elif r == "7":
+        elif r == "10":
             menu_recensement(clav)
-        elif r == "8":
-            msg = menu_langue(clav)
+        elif r == "11":
+            msg = basculer_tout_afficher(clav)
+
+
+def apercu_theme(th):
+    """Un aperçu d'une ligne : la vue déployée de « cat lianes.txt | grep gland » dans les couleurs du thème."""
+    from . import apparence
+    out = ""
+    for mot, g in (("cat", "vert"), ("lianes.txt", "cyan"), ("|", "violet"), ("grep", "vert"), ("gland", "bleu")):
+        c = (th if not th.clair else apparence.Theme("sombre")).acc[g]
+        out += f"\033[38;2;{c[0]};{c[1]};{c[2]}m{BOLD}{mot}{RESET} "
+    return out
+
+
+def menu_theme(clav):
+    from . import apparence
+    clear()
+    print(f" {fg(213)}── 🎨 " + t("app.opt.theme") + f" ──{RESET}\n")
+    print(f" {DIM}" + t("app.opt.theme.aide") + RESET + "\n")
+    st = core.load() or {}
+    actuel = apparence.cle_theme(st)
+    cles = apparence.ordre()
+    for i, cle in enumerate(cles, 1):
+        marque = f"{fg(78)}●{RESET}" if cle == actuel else " "
+        nom = t("app.theme." + cle)
+        print(f" {marque} {i}. {nom}{' ' * max(1, 26 - len(nom))}{apercu_theme(apparence.Theme(cle))}")
+    r = clav.demander("\n " + t("app.choix") + " ").strip().lower()
+    if not r:
+        return ""
+    if r.isdigit() and 1 <= int(r) <= len(cles):
+        r = cles[int(r) - 1]
+    if r not in cles:
+        return t("app.theme.liste", liste=" ".join(cles))
+    core.modifier(lambda s: apparence.choisir_theme(s, r))
+    apparence.activer(core.load())
+    return t("app.theme.ok", nom=t("app.theme." + r))
+
+
+def basculer_tout_afficher(clav, question=None):
+    """« Tout afficher » : l'éteindre tout de suite ; l'allumer après une petite question pour les grands."""
+    from . import apparence
+    st = core.load() or {}
+    if apparence.a_(st).get("tout"):
+        core.modifier(lambda s: apparence.tout_afficher(s, False))
+        return t("app.options.tout", etat=t("app.off"))
+    q, rep = question or apparence.question_adulte()
+    r = clav.demander(" 🔒 " + t("app.tout.question", q=q) + " ").strip()
+    if r != rep:
+        return t("app.tout.non")
+    core.modifier(lambda s: apparence.tout_afficher(s, True))
+    return "🔓 " + t("app.tout.ok")
+
+
+def commande_theme(args):
+    """tg theme [nom] : choisir le thème (sans nom : la liste)."""
+    from . import apparence
+    cles = apparence.ordre()
+    if args and args[0] in cles:
+        core.modifier(lambda s: apparence.choisir_theme(s, args[0]))
+        return t("app.theme.ok", nom=t("app.theme." + args[0]))
+    return t("app.theme.liste", liste=" ".join(cles))
 
 
 def changer_langue(code):
@@ -1102,6 +1189,10 @@ def _main():
     if mode == "explique":                     # tg explique rm : la fiche d'une commande et de ses options
         st = core.load() or {}
         print("\n".join(explique.fiche(st, " ".join(args[1:]))))
+        return
+    if mode in ("theme", "thème"):             # tg theme [nom] : le thème (couleurs du terminal, espace, bureau)
+        creer_si_besoin()
+        print(commande_theme([a.lower() for a in args[1:]]))
         return
     if mode == "langue":
         if len(args) > 1:

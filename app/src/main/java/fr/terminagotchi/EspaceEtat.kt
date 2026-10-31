@@ -82,6 +82,41 @@ class EspaceEtat(private val jeu: Jeu, private val dossier: () -> java.io.File, 
         val r = BureauVie.Resume(jeu.total, jeu.lecon, jeu.etape, jeu.faim, jeu.module("dressage").has("en_cours"))
         for (k in BureauVie.evenements(resume, r)) { ile.annoncer(t(k)); break }
         resume = r
+        apparence(maintenant)
+    }
+
+    // ------------------------------------------------------------ l'apparence (thème, interface évolutive, rangement)
+    val arrivees = HashMap<String, Double>()
+    var rangement = false
+    var options = false
+    /** la petite question des grands (avant « Tout afficher ») : TerminalActivity lit la réponse dans le terminal */
+    var question: Pair<String, String>? = null
+    var bulleNeuve: String? = null
+
+    fun apparence(maintenant: Double) {
+        val m = modele
+        m.theme = Apparence.theme(jeu)
+        val vis = Apparence.visibles(jeu)
+        m.onglets = Apparence.onglets(jeu)
+        if (m.onglet !in m.onglets) m.onglet = "terminal"
+        m.ordreOnglets = Apparence.ordreOnglets(jeu)
+        m.bandes = Apparence.bandes(jeu).filter { it.id != "deploie" || "deploie" in vis }
+        m.caches = Apparence.caches(jeu).filter { it != "deploie" || "deploie" in vis }
+        m.envies_visibles = "envies" in vis
+        if ("equipe" !in vis) m.equipe = emptyList()
+        m.dispo = Apparence.nomDisposition(jeu)
+        m.tout = Apparence.a(jeu).optBoolean("tout")
+        m.mienne = Apparence.a(jeu).has("mienne")
+        val neufs = Apparence.prendreAnnonces(jeu)
+        for (n in neufs) arrivees[n] = maintenant
+        if (neufs.isNotEmpty()) {
+            bulleNeuve = t("app.pan.${neufs.last()}.dit")
+            ile.annoncer(bulleNeuve!!)
+            creature.reagir("salut")
+            val de = Apparence.d().getJSONObject("telephone").getJSONObject("onglet_de")
+            m.onglets.firstOrNull { de.optString(it, "") in neufs }?.let { m.onglet = it }
+            jeu.sauver()
+        }
     }
 
     /** La vue déployée d'une ligne (les lignes des tuyaux : calculer(), à part, car elles lancent des commandes sûres). */
@@ -131,6 +166,9 @@ class EspaceEtat(private val jeu: Jeu, private val dossier: () -> java.io.File, 
     fun preparer(maintenant: Double) {
         val m = modele
         m.t = maintenant
+        m.arrivees = arrivees.mapValues { maintenant - it.value }.filterValues { it < EspaceDessin.ARRIVEE }
+        m.rangement = rangement
+        m.options = options
         m.etat = cerveau.etat
         m.anime = BureauVie.animer(creature)
         m.mini = BureauVie.miniVie(creature, maintenant)
@@ -139,6 +177,7 @@ class EspaceEtat(private val jeu: Jeu, private val dossier: () -> java.io.File, 
 
     /** Un toucher sur une zone du dessin. Renvoie vrai si la hauteur peut changer (onglet). */
     fun toucher(a: String): Boolean {
+        if (a.startsWith("rg:") || a.startsWith("opt:")) { reglerApparence(a); return true }
         when {
             a.startsWith("onglet:") -> { modele.onglet = a.substringAfter(":"); return true }
             a.startsWith("forcer:") -> {
@@ -153,4 +192,31 @@ class EspaceEtat(private val jeu: Jeu, private val dossier: () -> java.io.File, 
         }
         return false
     }
+
+    /** Les touches du mode rangement et des options. Renvoie la question des grands à poser, s'il y en a une. */
+    fun reglerApparence(a: String) {
+        val p = a.split(":")
+        when {
+            a == "rg:fini" -> rangement = false
+            a == "rg:origine" -> Apparence.origine(jeu)
+            a == "rg:mienne" -> { Apparence.enregistrerMienne(jeu); ile.annoncer(t("esp.rg.enregistree")) }
+            a.startsWith("rg:taille:") -> Apparence.tailler(jeu, p[2], p[3])
+            a.startsWith("rg:cacher:") -> Apparence.cacher(jeu, p[2], true)
+            a.startsWith("rg:remettre:") -> Apparence.cacher(jeu, p[2], false)
+            a.startsWith("rg:onglet:") -> Apparence.avancerOnglet(jeu, p[2])
+            a.startsWith("rg:dispo:") -> Apparence.choisirDisposition(jeu, p[2])
+            a == "opt:fermer" -> options = false
+            a.startsWith("opt:theme:") -> Apparence.choisirTheme(jeu, p[2])
+            a.startsWith("opt:dispo:") -> Apparence.choisirDisposition(jeu, p[2])
+            a == "opt:ranger" -> { options = false; rangement = true }
+            a == "opt:tout" -> if (Apparence.a(jeu).optBoolean("tout")) Apparence.toutAfficher(jeu, false)
+                else { question = Apparence.questionAdulte(); options = false }
+            else -> return
+        }
+        jeu.sauver()
+        apparence(modele.t)
+    }
+
+    /** Une bande tenue (appui long) puis lâchée à la place i. */
+    fun deplacerBande(id: String, i: Int) { Apparence.deplacer(jeu, id, i); jeu.sauver(); apparence(modele.t) }
 }

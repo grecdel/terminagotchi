@@ -19,12 +19,14 @@ import sys
 import time
 from pathlib import Path
 
+from . import apparence as A
 from . import bureau as B
 from . import bureau_vie as V
 from . import cerveau as CV
 from . import core
 from . import deploie as D
 from . import espace_scene as S
+from . import langue
 from .langue import sans_marques, t
 
 IPS = 20
@@ -114,6 +116,11 @@ class Espace(B.Controleur):
         self.a_dire = []
         self.tape_t = 0.0
         self.son = False
+        self.rangement = False            # le mode « ranger mon espace »
+        self.glisse = None                # (dalle, « dalle » | « coin », case de départ, (x0, y0) du clic)
+        self.options = False              # le panneau des options (roue dentée)
+        self.question = None              # (question, réponse) pour les grands, avant « Tout afficher »
+        self.arrivees = {}                # panneau → heure de son apparition (animation d'arrivée)
         super().__init__(etape, 600, 400)
         self.c.regl = dict(self.regl, sur_place=True)
         self.c.changer("assis", 4)
@@ -125,6 +132,42 @@ class Espace(B.Controleur):
     def jeu(self):
         super().jeu()
         self.c.regl = dict(self.regl, sur_place=True)
+        self._annonces()
+
+    def _theme(self, L):
+        return L                                     # l'île ouverte dans l'espace : recolorée avec toute la scène
+
+    def _annonces(self):
+        """Les panneaux qui viennent d'apparaître : l'animation d'arrivée et la phrase de la créature."""
+        st = self.state
+        if not st:
+            return
+        try:
+            a = A.a_(st)
+        except Exception:                            # noqa: BLE001
+            return
+        neufs = list(a.get("annonces") or [])
+        if not neufs:
+            return
+        for n in neufs:
+            self.arrivees[n] = self.t
+        self.vue.dire(t(f"app.pan.{neufs[-1]}.dit"), self.t, 6.0)
+        if "carte" in neufs:
+            self.onglet = "carte"
+        for o in ("tuyaux", "cerveau"):
+            if o in neufs:
+                self.onglet = o
+        self.c.reagir("salut")
+        self._modifier(lambda s_: A.a_(s_).__setitem__("annonces", []))
+
+    def _modifier(self, f):
+        try:
+            st = core.modifier(f)
+            if st:
+                self.state = st
+                A.activer(st)
+        except (core.Probleme, OSError) as e:
+            B.noter(f"apparence : {e!r}")
 
     def _avant_save(self, st):
         super()._avant_save(st)
@@ -281,6 +324,10 @@ class Espace(B.Controleur):
             return
         self.lignes.append(self.invite() + [(ligne, S.TEXTE, True)])
         self.historique_pos = None
+        if self.question:
+            self.mini.saisie = ""
+            self.repondre_question(ligne)
+            return
         try:
             mots = shlex.split(ligne)
         except ValueError:
@@ -315,6 +362,19 @@ class Espace(B.Controleur):
                 self.cv.forcer(mots[1])
             if premier in ("carte", "map"):           # la carte est aussi une vraie commande du jeu (tg carte)
                 self._jeu_tg(["carte"], ligne)
+            return
+        if premier in ("theme", "thème", "ranger", "options"):
+            self.mini.saisie = ""
+            self.mini.historique.append(ligne)
+            if premier == "ranger":
+                self.clic_rangement("ranger")
+            elif premier == "options":
+                self.options = True
+            elif len(mots) > 1 and mots[1] in A.ordre():
+                self._modifier(lambda s_: A.choisir_theme(s_, mots[1]))
+                self.ecrire("🎨 " + t("app.theme.ok", nom=t("app.theme." + mots[1])), S.VERT)
+            else:
+                self.ecrire(t("app.theme.liste", liste=" ".join(A.ordre())), S.DOUX)
             return
         if premier == "classe":
             self.mini.saisie = ""
@@ -362,6 +422,15 @@ class Espace(B.Controleur):
     # ------------------------------------------------ clics
     def clic(self, x, y, zones):
         a = self._zone(zones, x, y)
+        if self.options:
+            self.clic_options(a)
+            return
+        if a and (a.startswith("rg:") or a == "ranger"):
+            self.clic_rangement(a)
+            return
+        if a == "reglages":
+            self.options = True
+            return
         if not a:
             return
         if self.ile_ouverte and a.startswith(("ile:", "menu:")):
@@ -398,6 +467,103 @@ class Espace(B.Controleur):
             self.son = not self.son
         elif a.startswith("lieu:"):
             self.onglet = "carte"
+
+    # ------------------------------------------------ ranger son espace
+    def clic_rangement(self, a):
+        st = self.state
+        if a == "ranger":
+            self.rangement = not self.rangement
+            self.options = False
+            if self.rangement and st and A.disposition(st)[1] == "classe":
+                self._modifier(lambda s_: A.choisir_disposition(s_, "classique"))
+            return
+        if not st:
+            return
+        if a == "rg:fini":
+            self.rangement = False
+        elif a == "rg:origine":
+            self._modifier(A.origine)
+        elif a == "rg:mienne":
+            self._modifier(A.enregistrer_mienne)
+            self.vue.dire(t("esp.rg.enregistree"), self.t, 4.0)
+        elif a.startswith("rg:cacher:"):
+            k = a.rsplit(":", 1)[1]
+            self._modifier(lambda s_: A.modifier(s_, k, cacher=True))
+        elif a.startswith("rg:remettre:"):
+            k = a.rsplit(":", 1)[1]
+            self._modifier(lambda s_: A.modifier(s_, k, cacher=False))
+
+    def appui(self, x, y, zones):
+        """Le bouton de la souris s'enfonce : en mode rangement, sur une poignée ou un coin, la dalle est prise."""
+        if not self.rangement or not self.state:
+            return False
+        a = self._zone(zones, x, y)
+        if a and a.startswith(("rg:dalle:", "rg:coin:")):
+            k = a.rsplit(":", 1)[1]
+            cases, _nom = A.disposition(self.state)
+            if k in cases:
+                self.glisse = (k, "dalle" if a.startswith("rg:dalle:") else "coin", list(cases[k]), (x, y), (x, y))
+                return True
+        return False
+
+    def bouger(self, x, y):
+        if self.glisse:
+            self.glisse = self.glisse[:4] + ((x, y),)
+
+    def lacher(self, x, y, zones):
+        """La dalle est lâchée : elle s'aimante sur la grille (déplacée ou agrandie par crans)."""
+        if not self.glisse:
+            self.clic(x, y, zones)
+            return
+        self.bouger(x, y)
+        k, case = self.glisse[0], self._case_visee()
+        if abs(x - self.glisse[3][0]) + abs(y - self.glisse[3][1]) < 4:
+            self.glisse = None
+            self.clic(x, y, zones)
+            return
+        self.glisse = None
+        self._modifier(lambda s_: A.modifier(s_, k, case=case))
+
+    # ------------------------------------------------ les options (roue dentée)
+    def clic_options(self, a):
+        st = self.state
+        if a in (None, "opt:fermer"):
+            self.options = False
+            return
+        if a == "opt:panneau" or not st:
+            return
+        if a.startswith("opt:theme:"):
+            cle = a.rsplit(":", 1)[1]
+            self._modifier(lambda s_: A.choisir_theme(s_, cle))
+        elif a.startswith("opt:dispo:"):
+            nom = a.rsplit(":", 1)[1]
+            self._modifier(lambda s_: A.choisir_disposition(s_, nom))
+        elif a == "opt:ranger":
+            self.options = False
+            self.clic_rangement("ranger")
+        elif a == "opt:tout":
+            if A.a_(st).get("tout"):
+                self._modifier(lambda s_: A.tout_afficher(s_, False))
+            else:
+                q, rep = A.question_adulte()
+                self.question = (q, rep)
+                self.options = False
+                self.ecrire("🔒 " + t("app.tout.question", q=q), S.JAUNE)
+        elif a == "opt:notifs":
+            self._modifier(lambda s_: s_["config"].__setitem__("notifs", not s_["config"].get("notifs", True)))
+        elif a == "opt:bureau":
+            from .app import lancer_detache
+            lancer_detache("bureau")
+
+    def repondre_question(self, ligne):
+        """La réponse des grands à la question de « Tout afficher » (tapée dans le terminal de l'espace)."""
+        q, rep = self.question
+        self.question = None
+        if ligne.strip() == rep:
+            self._modifier(lambda s_: A.tout_afficher(s_, True))
+            self.ecrire("🔓 " + t("app.tout.ok"), S.VERT)
+        else:
+            self.ecrire(t("app.tout.non"), S.DOUX)
 
     # ------------------------------------------------ ce qu'on dessine
     def _lecon(self):
@@ -467,7 +633,58 @@ class Espace(B.Controleur):
             self.ile.ouverture = 1.0
             self.ile.etat = "ouverte"
             m["ile_ouverte"] = self.scene_ile()
+        self._modele_apparence(m, st)
         return m
+
+    def _modele_apparence(self, m, st):
+        """Le thème, les panneaux déjà apparus, la disposition, le mode rangement et les options."""
+        try:
+            th = A.theme(st) if st else A.Theme("sombre")
+            vis = A.visibles(st) if st else None
+            cases, nom = A.disposition(st) if st else (A.preset("classique"), "classique")
+        except Exception as e:                       # noqa: BLE001 — l'apparence ne casse jamais l'espace
+            B.noter(f"apparence : {e!r}")
+            th, vis, cases, nom = A.Theme("sombre"), None, A.preset("classique"), "classique"
+        m["theme"] = th
+        m["photo"] = "monde:" + th.cle if th.carte else "monde"
+        if vis is not None:
+            m["visibles"] = vis
+            m["onglets"] = A.onglets(st)
+            m["assiette_visible"] = "assiette" in vis
+            if "equipe" not in vis:
+                m["equipe"], m["monstre"] = [], None
+        if nom == "classe":
+            m["classe"] = True
+        else:
+            m["cases"] = cases
+        m["caches"] = A.caches(st) if st else []
+        m["rangement"] = self.rangement
+        m["arrivees"] = {k: self.t - v for k, v in self.arrivees.items() if self.t - v < S.ARRIVEE}
+        if self.glisse and self.glisse[4]:
+            k, mode, case0, p0, (x, y) = self.glisse
+            r0 = A.rect_de(case0)
+            r = (r0[0] + x - p0[0], r0[1] + y - p0[1], r0[2], r0[3]) if mode == "dalle" else \
+                (r0[0], r0[1], max(120, r0[2] + x - p0[0]), max(120, r0[3] + y - p0[1]))
+            m["glisse"] = (k, mode, r, self._case_visee())
+        m["options"] = self._options_modele(st, th, nom) if self.options else None
+
+    def _case_visee(self):
+        k, mode, case0, p0, (x, y) = self.glisse
+        g = A.grille()
+        sx = (g["w"] + g["ecart"]) / g["colonnes"]
+        sy = (g["h"] + g["ecart"]) / g["rangees"]
+        c, r, w, h = case0
+        if mode == "dalle":
+            c, r = c + round((x - p0[0]) / sx), r + round((y - p0[1]) / sy)
+        else:
+            w, h = w + round((x - p0[0]) / sx), h + round((y - p0[1]) / sy)
+        return A.borner([c, r, w, h])
+
+    def _options_modele(self, st, th, nom):
+        cfg = (st or {}).get("config", {})
+        return {"theme": th.cle, "dispo": nom, "tout": bool(A.a_(st).get("tout")) if st else False,
+                "notifs": bool(cfg.get("notifs", True)), "question": self.question[0] if self.question else None,
+                "langue": langue.LANGUES.get(langue.courante(), "")}
 
     def _bulle(self, st):
         bub = st.get("bubble")
@@ -665,9 +882,11 @@ class FenetreGtk:
         da.set_draw_func(self._dessiner)
         da.set_focusable(True)
         win.set_child(da)
-        clic = Gtk.GestureClick()
-        clic.connect("pressed", lambda g, n, x, y: self._clic(x, y))
-        da.add_controller(clic)
+        glisser = Gtk.GestureDrag()              # un clic, ou un glisser-déposer (mode rangement)
+        glisser.connect("drag-begin", lambda g, x, y: self._appui(x, y))
+        glisser.connect("drag-update", lambda g, dx, dy: self._bouger(dx, dy))
+        glisser.connect("drag-end", lambda g, dx, dy: self._lacher(dx, dy))
+        da.add_controller(glisser)
         clav = Gtk.EventControllerKey()
         clav.connect("key-pressed", self._touche)
         win.add_controller(clav)
@@ -689,6 +908,20 @@ class FenetreGtk:
     def _clic(self, x, y):
         e, ox, oy = self.echelle
         self.ctl.clic((x - ox) / e, (y - oy) / e, self.zones)
+
+    def _logique(self, x, y):
+        e, ox, oy = self.echelle
+        return (x - ox) / e, (y - oy) / e
+
+    def _appui(self, x, y):
+        self.depart = (x, y)
+        self.ctl.appui(*self._logique(x, y), self.zones)
+
+    def _bouger(self, dx, dy):
+        self.ctl.bouger(*self._logique(self.depart[0] + dx, self.depart[1] + dy))
+
+    def _lacher(self, dx, dy):
+        self.ctl.lacher(*self._logique(self.depart[0] + dx, self.depart[1] + dy), self.zones)
 
     def _touche(self, ctrl, keyval, keycode, etat):
         Gdk = self.Gdk
@@ -725,7 +958,8 @@ class FenetreGtk:
         ox, oy = (w - W * e) / 2, (h - H * e) / 2
         self.echelle = (e, ox, oy)
         self.zones = Z
-        cr.set_source_rgb(9 / 255, 11 / 255, 16 / 255)
+        f0 = L[0][5] if L and L[0][0] == "rect" else (9, 11, 16)
+        cr.set_source_rgb(f0[0] / 255, f0[1] / 255, f0[2] / 255)
         cr.paint()
         peindre_cairo(self, cr, S.a_l_echelle(L, e, ox, oy))
 
@@ -820,7 +1054,7 @@ def peindre_cairo(f, cr, liste):
             _, nom, x, y, w, h = op
             s = f.photos.get(nom)
             if s is None and nom not in f.photos:
-                data = pkgutil.get_data(__package__, "carte_monde.png") if nom == "monde" else None
+                data = S.photo_png(nom)
                 s = f.photos[nom] = cairo.ImageSurface.create_from_png(io.BytesIO(data)) if data else None
             if s is None:
                 continue
@@ -864,7 +1098,9 @@ class FenetreTk:
         self.racine.configure(bg="#090b10")
         self.can = tk.Canvas(self.racine, bg="#090b10", highlightthickness=0)
         self.can.pack(fill="both", expand=True)
-        self.can.bind("<Button-1>", lambda e: self._clic(e.x, e.y))
+        self.can.bind("<Button-1>", lambda e: self.ctl.appui(*self._logique(e.x, e.y), self.zones))
+        self.can.bind("<B1-Motion>", lambda e: self.ctl.bouger(*self._logique(e.x, e.y)))
+        self.can.bind("<ButtonRelease-1>", lambda e: self.ctl.lacher(*self._logique(e.x, e.y), self.zones))
         self.racine.bind("<Key>", self._touche)
         self.photos = {}
         self.images = {}
@@ -881,6 +1117,10 @@ class FenetreTk:
     def _clic(self, x, y):
         e, ox, oy = self.echelle
         self.ctl.clic((x - ox) / e, (y - oy) / e, self.zones)
+
+    def _logique(self, x, y):
+        e, ox, oy = self.echelle
+        return (x - ox) / e, (y - oy) / e
 
     def _touche(self, ev):
         c = self.ctl
@@ -911,7 +1151,8 @@ class FenetreTk:
             B.noter(f"espace tk : {e!r}")
         self.racine.after(int(1000 / 12), self._image)
 
-    def _hex(self, c, fond=(15, 17, 24)):
+    def _hex(self, c, fond=None):
+        fond = fond or getattr(self, "mix", (15, 17, 24))   # tkinter n'a pas de transparence : mêlée au panneau
         a = c[3] / 255 if len(c) > 3 else 1
         r, g, b = (int(c[i] * a + fond[i] * (1 - a)) for i in range(3))
         return f"#{r:02x}{g:02x}{b:02x}"
@@ -923,6 +1164,9 @@ class FenetreTk:
         e = min(w / W, h / H)
         ox, oy = (w - W * e) / 2, (h - H * e) / 2
         self.echelle, self.zones = (e, ox, oy), Z
+        th = A.theme(self.ctl.state) if self.ctl.state else A.Theme("sombre")
+        self.mix = th.r["panneau"]
+        can.configure(bg="#%02x%02x%02x" % th.r["fond"])
         can.delete("all")
         self.images = {}
         for op in S.a_l_echelle(L, e, ox, oy):

@@ -31,6 +31,7 @@ object Intro {
     fun init(ctx: android.content.Context) {
         Oeufs.init(ctx)
         Scenes.init(ctx)
+        Apparence.init(ctx)
         if (chargeur != null) return
         val app = ctx.applicationContext ?: ctx
         chargeur = { try { app.assets.open("intro.json").bufferedReader().use { it.readText() } } catch (e: Exception) { null } }
@@ -158,6 +159,8 @@ object Intro {
             jeu.dire(t("deb.nouveau.dit", "nom" to t("deb.${f.id}.titre")), 10)
             jeu.animer("content")
         }
+        Apparence.a(jeu)                                   // les panneaux de l'espace qui apparaissent maintenant
+        Apparence.verifier(jeu)
     }
 
     /** « debloquer tout » : toutes les fonctions ouvertes d'un coup, l'œuf éclos (pour les parents et les tests). */

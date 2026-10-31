@@ -1,0 +1,519 @@
+{
+ "_doc": "Apparence de Terminagotchi (PC : pc/tg/apparence.py ; Android : Apparence.kt ; copie exacte dans pc/tg/apparence.json et app/src/main/assets/apparence.json). themes : palettes par rôle (neutres : fond, panneau, panneau2, terminal, pale, doux, texte, encre ; bord : multiplicateur d'opacité des bords fins ; accents : remplacent les 8 couleurs du thème sombre ; teinte : recoloration de la carte du monde). Le nom affiché est la clé de langue app.theme.<id>. panneaux : le calendrier de l'interface évolutive (mêmes conditions que intro.json « deblocages », plus une_lecon : au moins une de ces leçons faite). grille : la grille de l'espace PC (colonnes, rangées) ; dispositions : rectangles en cases [colonne, rangée, largeur, hauteur]. telephone : bandes du téléphone (ordre, tailles P M G) et ordre des onglets.",
+ "version": 1,
+ "ordre": [
+  "sombre",
+  "clair",
+  "pastel",
+  "matrix",
+  "ambre",
+  "gameboy",
+  "ocean",
+  "contraste",
+  "daltonien"
+ ],
+ "themes": {
+  "sombre": {
+   "clair": false,
+   "fond": "#090B10",
+   "panneau": "#0F1118",
+   "panneau2": "#141720",
+   "terminal": "#0A0C11",
+   "pale": "#5C6476",
+   "doux": "#8A93A6",
+   "texte": "#E9ECF2",
+   "encre": "#FFFFFF",
+   "bord": 1.0,
+   "accents": {
+    "vert": "#3DDC84",
+    "orange": "#FF9F43",
+    "jaune": "#FFD54F",
+    "violet": "#B284FF",
+    "bleu": "#5FAFFF",
+    "cyan": "#4DD0E1",
+    "rose": "#FF79C6",
+    "rouge": "#FF5F6D"
+   },
+   "teinte": null
+  },
+  "clair": {
+   "clair": true,
+   "fond": "#EEF1F5",
+   "panneau": "#FFFFFF",
+   "panneau2": "#F3F5F8",
+   "terminal": "#FBFCFD",
+   "pale": "#8C93A3",
+   "doux": "#5B6375",
+   "texte": "#161A23",
+   "encre": "#0B0E14",
+   "bord": 1.6,
+   "accents": {
+    "vert": "#11894A",
+    "orange": "#C9620A",
+    "jaune": "#A87A00",
+    "violet": "#6E44E0",
+    "bleu": "#1B6FD8",
+    "cyan": "#00838F",
+    "rose": "#C2257A",
+    "rouge": "#D12E3E"
+   },
+   "teinte": null
+  },
+  "pastel": {
+   "clair": true,
+   "fond": "#F7EFE6",
+   "panneau": "#FFFAF4",
+   "panneau2": "#F6ECE2",
+   "terminal": "#FFFDF9",
+   "pale": "#B0A3B8",
+   "doux": "#7D6F8A",
+   "texte": "#3E3550",
+   "encre": "#5A4A70",
+   "bord": 1.5,
+   "accents": {
+    "vert": "#2F7F5A",
+    "orange": "#B0602A",
+    "jaune": "#8A6A12",
+    "violet": "#7653B8",
+    "bleu": "#3A72AE",
+    "cyan": "#2A7F86",
+    "rose": "#B04F82",
+    "rouge": "#BA4650"
+   },
+   "teinte": null
+  },
+  "matrix": {
+   "clair": false,
+   "fond": "#000300",
+   "panneau": "#020B04",
+   "panneau2": "#041408",
+   "terminal": "#000500",
+   "pale": "#1E6B30",
+   "doux": "#38B858",
+   "texte": "#C4FFD0",
+   "encre": "#00FF41",
+   "bord": 1.6,
+   "accents": {
+    "vert": "#00FF41",
+    "orange": "#D0FF3A",
+    "jaune": "#F2FFD6",
+    "violet": "#2EE6C8",
+    "bleu": "#7DFFB8",
+    "cyan": "#00C896",
+    "rose": "#B4FF7A",
+    "rouge": "#FF4D4D"
+   },
+   "teinte": [
+    0,
+    255,
+    65
+   ]
+  },
+  "ambre": {
+   "clair": false,
+   "fond": "#0D0800",
+   "panneau": "#140C01",
+   "panneau2": "#1C1203",
+   "terminal": "#0F0900",
+   "pale": "#7A5420",
+   "doux": "#C88A2E",
+   "texte": "#FFCC70",
+   "encre": "#FFB000",
+   "bord": 1.5,
+   "accents": {
+    "vert": "#FFB000",
+    "orange": "#FF7A1A",
+    "jaune": "#FFE7A8",
+    "violet": "#E0905A",
+    "bleu": "#FFD47A",
+    "cyan": "#F2C230",
+    "rose": "#FF9C78",
+    "rouge": "#FF4F30"
+   },
+   "teinte": [
+    255,
+    176,
+    0
+   ]
+  },
+  "gameboy": {
+   "clair": false,
+   "fond": "#0F380F",
+   "panneau": "#1A4419",
+   "panneau2": "#22501F",
+   "terminal": "#0C300C",
+   "pale": "#5E8A2A",
+   "doux": "#8BAC0F",
+   "texte": "#C4DC6A",
+   "encre": "#9BBC0F",
+   "bord": 1.8,
+   "accents": {
+    "vert": "#9BBC0F",
+    "orange": "#D0E070",
+    "jaune": "#E0F0A0",
+    "violet": "#8BAC0F",
+    "bleu": "#B8D058",
+    "cyan": "#A8C838",
+    "rose": "#C8E080",
+    "rouge": "#E8F8B0"
+   },
+   "teinte": "gameboy"
+  },
+  "ocean": {
+   "clair": false,
+   "fond": "#04121C",
+   "panneau": "#081C2A",
+   "panneau2": "#0C2536",
+   "terminal": "#05141F",
+   "pale": "#4F7487",
+   "doux": "#8DB2C4",
+   "texte": "#E2F5FB",
+   "encre": "#BFF0FF",
+   "bord": 1.3,
+   "accents": {
+    "vert": "#3FE0B0",
+    "orange": "#FF9A6B",
+    "jaune": "#FFD98A",
+    "violet": "#9C8CFF",
+    "bleu": "#4FB3FF",
+    "cyan": "#3DE3EC",
+    "rose": "#FF84AC",
+    "rouge": "#FF6670"
+   },
+   "teinte": null
+  },
+  "contraste": {
+   "clair": false,
+   "fond": "#000000",
+   "panneau": "#000000",
+   "panneau2": "#0E0E0E",
+   "terminal": "#000000",
+   "pale": "#C8C8C8",
+   "doux": "#E6E6E6",
+   "texte": "#FFFFFF",
+   "encre": "#FFFFFF",
+   "bord": 5.0,
+   "accents": {
+    "vert": "#00FF66",
+    "orange": "#FFA500",
+    "jaune": "#FFFF00",
+    "violet": "#DDB0FF",
+    "bleu": "#6CCBFF",
+    "cyan": "#00FFFF",
+    "rose": "#FF8AD8",
+    "rouge": "#FF5A5A"
+   },
+   "teinte": null
+  },
+  "daltonien": {
+   "clair": false,
+   "fond": "#0A0B10",
+   "panneau": "#111319",
+   "panneau2": "#171A22",
+   "terminal": "#0B0C11",
+   "pale": "#666C7C",
+   "doux": "#9AA1B2",
+   "texte": "#F0F0F0",
+   "encre": "#FFFFFF",
+   "bord": 1.2,
+   "accents": {
+    "vert": "#1FB892",
+    "orange": "#E69F00",
+    "jaune": "#FFFFFF",
+    "violet": "#CC79A7",
+    "bleu": "#56B4E9",
+    "cyan": "#F0E442",
+    "rose": "#D55E00",
+    "rouge": "#D55E00"
+   },
+   "teinte": null
+  }
+ },
+ "panneaux": [
+  {
+   "id": "ile",
+   "quand": {
+    "eclos": true
+   }
+  },
+  {
+   "id": "explorateur",
+   "quand": {
+    "eclos": true,
+    "lecons": [
+     "t0"
+    ]
+   }
+  },
+  {
+   "id": "envies",
+   "quand": {
+    "eclos": true,
+    "lecons": [
+     "t0"
+    ]
+   }
+  },
+  {
+   "id": "carte",
+   "quand": {
+    "eclos": true,
+    "chapitres": [
+     "reveil"
+    ]
+   }
+  },
+  {
+   "id": "deploie",
+   "quand": {
+    "eclos": true,
+    "lecons": [
+     "nid1"
+    ]
+   }
+  },
+  {
+   "id": "assiette",
+   "quand": {
+    "eclos": true,
+    "lecons": [
+     "nid1"
+    ]
+   }
+  },
+  {
+   "id": "equipe",
+   "quand": {
+    "eclos": true,
+    "captures": 1
+   }
+  },
+  {
+   "id": "tuyaux",
+   "quand": {
+    "eclos": true,
+    "une_lecon": [
+     "biblio1",
+     "coeur2",
+     "android2"
+    ]
+   }
+  },
+  {
+   "id": "cerveau",
+   "quand": {
+    "eclos": true,
+    "une_lecon": [
+     "scripts0"
+    ]
+   }
+  }
+ ],
+ "toujours": [
+  "terminal",
+  "direct"
+ ],
+ "grille": {
+  "colonnes": 24,
+  "rangees": 20,
+  "x": 16,
+  "y": 96,
+  "w": 1888,
+  "h": 968,
+  "ecart": 16,
+  "min": [
+   3,
+   3
+  ]
+ },
+ "dalles": [
+  "explorateur",
+  "envies",
+  "equipe",
+  "deploie",
+  "terminal",
+  "direct",
+  "contexte"
+ ],
+ "dalle_de": {
+  "explorateur": "explorateur",
+  "envies": "envies",
+  "equipe": "equipe",
+  "deploie": "deploie",
+  "direct": "direct",
+  "contexte": "carte"
+ },
+ "dispositions": {
+  "classique": {
+   "explorateur": [
+    0,
+    0,
+    4,
+    9
+   ],
+   "envies": [
+    0,
+    9,
+    4,
+    5
+   ],
+   "equipe": [
+    0,
+    14,
+    4,
+    6
+   ],
+   "deploie": [
+    4,
+    0,
+    12,
+    7
+   ],
+   "terminal": [
+    4,
+    7,
+    12,
+    13
+   ],
+   "direct": [
+    16,
+    0,
+    8,
+    8
+   ],
+   "contexte": [
+    16,
+    8,
+    8,
+    12
+   ]
+  },
+  "terminal_geant": {
+   "deploie": [
+    0,
+    0,
+    16,
+    6
+   ],
+   "terminal": [
+    0,
+    6,
+    16,
+    14
+   ],
+   "direct": [
+    16,
+    0,
+    8,
+    7
+   ],
+   "contexte": [
+    16,
+    7,
+    8,
+    13
+   ]
+  },
+  "creature_centre": {
+   "explorateur": [
+    0,
+    0,
+    5,
+    9
+   ],
+   "envies": [
+    0,
+    9,
+    5,
+    5
+   ],
+   "equipe": [
+    0,
+    14,
+    5,
+    6
+   ],
+   "direct": [
+    5,
+    0,
+    12,
+    11
+   ],
+   "terminal": [
+    5,
+    11,
+    12,
+    9
+   ],
+   "contexte": [
+    17,
+    0,
+    7,
+    20
+   ]
+  }
+ },
+ "ordre_dispositions": [
+  "classique",
+  "terminal_geant",
+  "creature_centre",
+  "classe",
+  "mienne"
+ ],
+ "telephone": {
+  "bandes": [
+   "creature",
+   "deploie"
+  ],
+  "tailles": {
+   "P": 0.7,
+   "M": 1.0,
+   "G": 1.35
+  },
+  "onglets": [
+   "terminal",
+   "carte",
+   "cerveau",
+   "equipe"
+  ],
+  "onglet_de": {
+   "carte": "carte",
+   "cerveau": "cerveau",
+   "equipe": "equipe"
+  },
+  "dispositions": {
+   "classique": {
+    "bandes": [
+     [
+      "creature",
+      "M"
+     ],
+     [
+      "deploie",
+      "M"
+     ]
+    ]
+   },
+   "terminal_geant": {
+    "bandes": [
+     [
+      "deploie",
+      "M"
+     ]
+    ]
+   },
+   "creature_centre": {
+    "bandes": [
+     [
+      "creature",
+      "G"
+     ],
+     [
+      "deploie",
+      "P"
+     ]
+    ]
+   }
+  }
+ }
+}

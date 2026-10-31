@@ -169,6 +169,9 @@ NOUVELLES = {
         _n("biblio1", 2, cmd=C(f"wc -l etagere_c{S}coin_poussiereux{S}livre_des_abysses.txt",
                                f"Get-Content etagere_c{S}coin_poussiereux{S}livre_des_abysses.txt | Measure-Object -Line"),
            re=r"^(wc\b|get-content.*measure-object|gc.*measure)"),
+        _n("biblio1", 4, cmd=C(f"cat etagere_c{S}coin_poussiereux{S}livre_des_abysses.txt | grep Abyssor",
+                               f"Get-Content etagere_c{S}coin_poussiereux{S}livre_des_abysses.txt | Select-String Abyssor"),
+           re=r"\|\s*(grep|select-string|sls|findstr)\b.*abyssor"),             # le premier vrai tuyau
         _n("biblio1", 3, cmd=C("grep -rn TRESOR .", "Select-String -Path * -Pattern TRESOR"),
            re=r"^(grep\s+-\w*r|select-string|sls)\b.*tresor", expert=True),
     ]},

@@ -724,6 +724,11 @@ def load():
         state["name"] = nom_propre(state["name"]) or "Pixel"          # ESC, RLO, NUL : jamais jusqu'au terminal
     from . import bestiaire, langue
     langue.appliquer(state)                 # la langue choisie est rangée dans la sauvegarde
+    try:
+        from . import apparence
+        apparence.activer(state)            # le thème : les couleurs du texte dans le terminal
+    except Exception:                       # noqa: BLE001 — une apparence abîmée ne bloque jamais le jeu
+        pass
     return bestiaire.migrer(state)
 
 

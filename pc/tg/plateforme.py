@@ -90,7 +90,13 @@ BOLD = "\033[1m"
 DIM = "\033[2m"
 
 
+THEME_ANSI = None       # le thème des couleurs du texte (apparence.activer) ; None = les couleurs d'origine
+
+
 def fg(n):
+    if THEME_ANSI is not None:
+        from .apparence import ansi
+        return ansi(n, THEME_ANSI)
     return f"\033[38;5;{n}m"
 
 

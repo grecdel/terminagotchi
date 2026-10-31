@@ -77,6 +77,8 @@ class TerminalActivity : Activity() {
     private var nomPropose: String? = null
     private var introVue: IntroVue? = null
     private var confirmerDeblocage = false
+    /** la question des grands avant « Tout afficher » (options de l'espace) : la réponse se tape ici */
+    private var questionAdulte: Pair<String, String>? = null
     private var ambiance = System.currentTimeMillis() + AMBIANCE
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -400,6 +402,18 @@ class TerminalActivity : Activity() {
         val etaitRappel = rappel != null && ligne == rappel
         rappel = null
         posHisto = -1
+        questionAdulte?.let { q ->                    // « Tout afficher » : la réponse des grands
+            questionAdulte = null
+            saisie.setText("")
+            ecrire("> $ligne", 0xFF5FD787.toInt())
+            if (ligne.trim() == q.second) {
+                Apparence.toutAfficher(jeu, true)
+                jeu.sauver()
+                ecrire("🔓 " + t("app.tout.ok"), Commandes.ROSE)
+                espace?.let { it.etat.apparence(it.maintenant()); it.requestLayout(); it.invalidate() }
+            } else ecrire(t("app.tout.non"), Commandes.ROSE)
+            return
+        }
         if (confirmerDeblocage) {                    // « debloquer tout » : oui / non (dans les 14 langues)
             confirmerDeblocage = false
             saisie.setText("")
@@ -486,6 +500,24 @@ class TerminalActivity : Activity() {
                     jeu.module("espace").put("classe", espace?.classe == true)
                     jeu.sauver()
                 } else if (espace == null) ouvrirEspace(false) else fermerEspace()
+                return
+            }
+            "theme", "thème" -> {                     // le thème (espace, bulle, couleurs du terminal)
+                val mot = ligne.trim().split(Regex("\\s+")).getOrNull(1)?.lowercase()
+                if (mot != null && Apparence.choisirTheme(jeu, mot)) {
+                    jeu.sauver()
+                    themeEcran()
+                    espace?.let { it.etat.apparence(it.maintenant()); it.invalidate() }
+                    ecrire("🎨 " + t("app.theme.ok", "nom" to t("app.theme.$mot")), Commandes.ROSE)
+                } else ecrire(t("app.theme.liste", "liste" to Apparence.ordre().joinToString(" ")), Commandes.ROSE)
+                return
+            }
+            "options", "ranger" -> {                  // les options (thème, disposition, tout afficher), ranger l'espace
+                if (espace == null) ouvrirEspace(false, dire = false)
+                espace?.let {
+                    if (Regles.premierMot(ligne) == "ranger") it.etat.rangement = true else it.etat.options = true
+                    it.requestLayout(); it.invalidate()
+                }
                 return
             }
             "deploie", "déploie" -> {                 // la vue déployée d'une commande (sans la lancer)
@@ -855,8 +887,12 @@ class TerminalActivity : Activity() {
             panneau.layoutParams = (panneau.layoutParams as android.widget.FrameLayout.LayoutParams).also {
                 it.height = android.widget.FrameLayout.LayoutParams.MATCH_PARENT; it.setMargins(0, 0, 0, 0)
             }
-            panneau.setBackgroundColor(EspaceDessin.FOND)
-            findViewById<View>(R.id.fond).setBackgroundColor(EspaceDessin.FOND)
+            v.demanderQuestion = { q ->
+                questionAdulte = v.etat.question
+                v.etat.question = null
+                ecrire("🔒 " + t("app.tout.question", "q" to q), Commandes.ROSE)
+            }
+            themeEcran()
             sortie.textSize = if (classe) 17f else 13f
             panneau.requestLayout()
             jeu.module("espace").put("ouvert", true).put("classe", classe)
@@ -918,7 +954,7 @@ class TerminalActivity : Activity() {
 
     /** petit : en plus petit (la carte de la maison tient dans la largeur de l'écran). */
     private fun ecrire(texte: String, couleur: Int? = null, petit: Boolean = false) {
-        val s = miseEnForme(texte, couleur)
+        val s = miseEnForme(texte, couleur?.let { Apparence.theme(jeu).texte(it) })
         if (petit) s.setSpan(android.text.style.RelativeSizeSpan(0.85f), 0, s.length, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
         if (sortie.length() > 0) sortie.append("\n")
         sortie.append(s)
@@ -1487,5 +1523,13 @@ class TerminalActivity : Activity() {
         }
         lancerAnimation()
         handler.postDelayed({ animer() }, 420)
+    }
+
+    /** Le fond de l'espace dans la couleur du thème (le terminal en dessous garde son fond sombre). */
+    private fun themeEcran() {
+        if (espace == null) return
+        val th = Apparence.theme(jeu)
+        findViewById<LinearLayout>(R.id.panneau).setBackgroundColor(th.couleur(EspaceDessin.FOND))
+        findViewById<View>(R.id.fond).setBackgroundColor(th.couleur(EspaceDessin.FOND))
     }
 }

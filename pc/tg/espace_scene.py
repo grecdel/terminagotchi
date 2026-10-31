@@ -138,35 +138,42 @@ def fleche(L, x1, y1, x2, y2, couleur, ep=1.5, tirets=None, pointe=7):
 
 # ---------------------------------------------------------------- la disposition
 class Mise:
-    """Les rectangles des panneaux (coordonnées logiques)."""
+    """Les rectangles des panneaux (coordonnées logiques). cases : la disposition de la partie ({dalle: [c, r, w, h]},
+    apparence.disposition) ; sans cases : la disposition classique. intro : l'œuf et l'invite seuls, au centre."""
 
-    def __init__(self, classe=False):
+    def __init__(self, classe=False, cases=None, intro=False):
         self.classe = classe
+        self.haut = None
         if classe:
             self.W, self.H = 1600, 900
-            g = None
-            d0, dw = 1600 - 16 - 540, 540
-            c0 = 16
-        else:
-            self.W, self.H = 1920, 1080
-            g = (16, 296)
-            d0, dw = 1308, 596
-            c0 = 328
-        self.haut = (0, 0, self.W, 92)
-        bas = self.H - 16
-        if g:
-            self.explorateur = (g[0], 96, g[1], 448)
-            self.envies = (g[0], 558, g[1], 232)
-            self.equipe = (g[0], 804, g[1], bas - 804)
-        else:
+            d0, dw, c0 = 1600 - 16 - 540, 540, 16
+            bas = self.H - 16
+            self.haut = (0, 0, self.W, 92)
             self.explorateur = self.envies = self.equipe = None
-        cw = d0 - 16 - c0
-        hd = 332
-        self.deploie = (c0, 96, cw, hd)
-        self.terminal = (c0, 96 + hd + 16, cw, bas - (96 + hd + 16))
-        hc = 412 if not classe else 340
-        self.direct = (d0, 96, dw, hc)
-        self.contexte = (d0, 96 + hc + 16, dw, bas - (96 + hc + 16))
+            cw = d0 - 16 - c0
+            hd = 332
+            self.deploie = (c0, 96, cw, hd)
+            self.terminal = (c0, 96 + hd + 16, cw, bas - (96 + hd + 16))
+            hc = 340
+            self.direct = (d0, 96, dw, hc)
+            self.contexte = (d0, 96 + hc + 16, dw, bas - (96 + hc + 16))
+            return
+        self.W, self.H = 1920, 1080
+        self.haut = (0, 0, self.W, 92)
+        if intro:
+            self.explorateur = self.envies = self.equipe = self.deploie = self.contexte = None
+            self.direct = (520, 110, 880, 400)
+            self.terminal = (520, 526, 880, 538)
+            return
+        from . import apparence
+        if cases is None:
+            cases = apparence.preset("classique")
+        for k in ("explorateur", "envies", "equipe", "deploie", "terminal", "direct", "contexte"):
+            setattr(self, k, apparence.rect_de(cases[k]) if k in cases else None)
+
+    def rects(self):
+        return {k: getattr(self, k) for k in ("explorateur", "envies", "equipe", "deploie", "terminal", "direct",
+                                              "contexte") if getattr(self, k)}
 
 
 # ---------------------------------------------------------------- l'île (barre du haut)
@@ -224,6 +231,13 @@ def haut(L, Z, m, mise):
     L.append(("cercle", x + 19, 47, 19, BORD_FORT, 1))
     L.append(("texte", x + 19, 47, "⚙", 15, DOUX, False, "c", False))
     Z.append((x, 28, 38, 38, "reglages"))
+    if m.get("ranger_possible", True) and not mise.classe:
+        x -= 48
+        rg = m.get("rangement")
+        L.append(("ellipse", x + 19, 47, 19, 19, _a(JAUNE, 40) if rg else PANNEAU))
+        L.append(("cercle", x + 19, 47, 19, _a(JAUNE, 200) if rg else BORD_FORT, 1))
+        L.append(("texte", x + 19, 47, "✎", 15, JAUNE if rg else DOUX, False, "c", False))
+        Z.append((x, 28, 38, 38, "ranger"))
     x -= 48
     L.append(("ellipse", x + 19, 47, 19, 19, PANNEAU))
     L.append(("cercle", x + 19, 47, 19, BORD_FORT, 1))
@@ -282,6 +296,8 @@ def envies(L, Z, m, r):
                   "d", True))
         yy += 26
     # l'assiette du jour (satiété)
+    if not m.get("assiette_visible", True):
+        return
     yy += 4
     L.append(("ligne", x + 16, yy - 8, x + w - 16, yy - 8, BORD, 1, None))
     L.append(("texte", x + 16, yy + 8, t("esp.assiette"), 12, DOUX, False, "g", False))
@@ -695,9 +711,12 @@ def direct(L, Z, m, r, t_):
 def contexte(L, Z, m, r, t_):
     x, y, w, h = r
     L.append(("rrect", x, y, w, h, 14, PANNEAU, BORD, 1))
+    ongs = m.get("onglets") or ONGLETS
     ong = m.get("onglet", "carte")
+    if ong not in ongs:
+        ong = ongs[0]
     xx = x + 14
-    for o in ONGLETS:
+    for o in ongs:
         lib = t("esp.onglet." + o)
         ow = lt(lib, 13.5) + 30
         if o == ong:
@@ -721,7 +740,7 @@ def contexte(L, Z, m, r, t_):
 def carte(L, Z, m, zone, t_, pied):
     x, y, w, h = zone
     L.append(("rrect", x - 1, y - 1, w + 2, h + 2, 10, None, BORD_FORT, 1))
-    L.append(("photo", "monde", x, y, w, h))
+    L.append(("photo", m.get("photo", "monde"), x, y, w, h))
     ici = m.get("ici_piece")
     lieux = m.get("lieux", {})
     chemin = (m.get("deploie") or {}).get("lieu_piece")
@@ -962,27 +981,256 @@ def lecon(L, Z, m, zone):
 
 
 # ---------------------------------------------------------------- tout
+DESSINS = {"explorateur": lambda L, Z, m, r, t_: explorateur(L, Z, m, r),
+           "envies": lambda L, Z, m, r, t_: envies(L, Z, m, r),
+           "equipe": lambda L, Z, m, r, t_: equipe(L, Z, m, r),
+           "deploie": lambda L, Z, m, r, t_: vue_deployee(L, Z, m, r),
+           "terminal": terminal, "direct": direct, "contexte": contexte}
+ARRIVEE = 4.0          # secondes : l'animation d'arrivée d'un panneau
+
+
+def fantome(L, r):
+    """Une place encore endormie : un fin pointillé discret."""
+    x, y, w, h = r
+    c, ti = (255, 255, 255, 26), (6, 8, 0)
+    for x1, y1, x2, y2 in ((x, y, x + w, y), (x, y + h, x + w, y + h), (x, y, x, y + h), (x + w, y, x + w, y + h)):
+        L.append(("ligne", x1, y1, x2, y2, c, 1, ti))
+
+
+def arrivee(L, r, age, texte):
+    """Un panneau qui vient d'apparaître : un bord doré qui pulse puis s'efface, la pastille « nouveau »."""
+    x, y, w, h = r
+    k = max(0.0, 1.0 - age / ARRIVEE)
+    if k <= 0:
+        return
+    pul = 0.6 + 0.4 * math.sin(age * 6)
+    L.append(("rrect", x - 6, y - 6, w + 12, h + 12, 19, None, _a(JAUNE, int(70 * k * pul)), 7))
+    L.append(("rrect", x - 1, y - 1, w + 2, h + 2, 15, None, _a(JAUNE, int(235 * k)), 2.2))
+    if age < ARRIVEE * 0.8:
+        chip(L, x + w - 14, y, "✦ " + texte, JAUNE, 11.5, fond=(30, 26, 12, 255), ancre="d")
+
+
+def dalle_visible(m, k):
+    v = m.get("visibles")
+    if v is None:
+        return True
+    if k == "contexte":
+        return bool(m.get("onglets"))
+    return k in v
+
+
 def scene(m, t_=0.0):
-    """(liste de dessin, zones, (W, H) logiques) de tout l'espace de travail."""
-    mise = Mise(m.get("classe", False))
+    """(liste de dessin, zones, (W, H) logiques) de tout l'espace de travail, dans les couleurs du thème."""
+    v = m.get("visibles")
+    intro = v is not None and "ile" not in v and not m.get("classe")
+    mise = Mise(m.get("classe", False), m.get("cases"), intro)
     L = [("rect", 0, 0, mise.W, mise.H, FOND)]
     Z = []
-    haut(L, Z, m, mise)
-    if mise.explorateur:
-        explorateur(L, Z, m, mise.explorateur)
-        envies(L, Z, m, mise.envies)
-        equipe(L, Z, m, mise.equipe)
-    vue_deployee(L, Z, m, mise.deploie)
-    terminal(L, Z, m, mise.terminal, t_)
-    direct(L, Z, m, mise.direct, t_)
-    contexte(L, Z, m, mise.contexte, t_)
+    if intro:
+        L.append(("rrect", 20, 28, 36, 36, 10, _a(VERT, 30), _a(VERT, 140), 1))
+        L.append(("texte", 38, 46, ">_", 14, VERT, True, "c", True))
+        L.append(("texte", 68, 37, "Terminagotchi", 17, TEXTE, True, "g", False))
+        L.append(("texte", 68, 59, m.get("chapitre", ""), 13, DOUX, False, "g", False))
+    else:
+        haut(L, Z, m, mise)
+    rg = m.get("rangement") and not mise.classe and not intro
+    rects = mise.rects()
+    for k, r in rects.items():
+        if dalle_visible(m, k):
+            DESSINS[k](L, Z, m, r, t_)
+        elif not rg and not intro:
+            fantome(L, r)
+    arr = m.get("arrivees") or {}
+    pan_de = {"explorateur": ("explorateur",), "envies": ("envies", "assiette"), "equipe": ("equipe",),
+              "deploie": ("deploie",), "direct": ("direct",), "contexte": ("carte", "cerveau", "tuyaux")}
+    for k, r in rects.items():
+        if not dalle_visible(m, k):
+            continue
+        ages = [arr[p] for p in pan_de.get(k, ()) if p in arr]
+        if ages:
+            neuf = [p for p in pan_de[k] if p in arr]
+            arrivee(L, r, min(ages), t("esp.nouvel_onglet") if k == "contexte" and "carte" not in neuf
+                    else t("esp.nouveau"))
+    if "ile" in arr and not intro:
+        pil = next((op for op in L if op[0] == "rrect" and op[2] == 16 and op[4] == 62), None)
+        if pil:
+            arrivee(L, (pil[1], 16, pil[3], 62), arr["ile"], t("esp.nouveau"))
+    if rg:
+        rangement(L, Z, m, mise)
     ile = m.get("ile_ouverte")
     if ile:                                   # l'île de la créature du bureau, ouverte sous la barre
         Li, Zi = ile
         dx = mise.W / 2 - 450
         L.extend(decaler(Li, dx, 70))
         Z.extend((zx + dx, zy + 70, zw, zh, a) for zx, zy, zw, zh, a in Zi)
+    th = m.get("theme")
+    from . import apparence
+    L = apparence.recolorer(L, th)
+    if m.get("options"):                      # les vignettes des thèmes sont déjà dans leurs propres couleurs
+        O, vignettes = [], []
+        options(O, Z, m, mise, vignettes)
+        L += apparence.recolorer(O, th) + vignettes
     return L, Z, (mise.W, mise.H)
+
+
+# ---------------------------------------------------------------- les options (roue dentée)
+def apercu_theme(L, x, y, w, h, cle):  # noqa: E302
+    """La vignette d'un thème : un petit espace (panneaux, terminal, blocs de la vue déployée) dans ses couleurs."""
+    from . import apparence
+    th = apparence.Theme(cle)
+    P = []
+    P.append(("rrect", x, y, w, h, 8, FOND, BORD_FORT, 1))
+    P.append(("rrect", x + 6, y + 6, w * 0.22, h - 12, 5, PANNEAU, BORD, 1))
+    P.append(("rrect", x + 10 + w * 0.22, y + 6, w * 0.5, h * 0.36, 5, PANNEAU, BORD, 1))
+    P.append(("rrect", x + 10 + w * 0.22, y + 10 + h * 0.36, w * 0.5, h * 0.64 - 16, 5, TERM, BORD, 1))
+    P.append(("rrect", x + 14 + w * 0.72, y + 6, w * 0.28 - 20, h - 12, 5, PANNEAU, BORD, 1))
+    bx = x + 16 + w * 0.22
+    for c, lw in ((VERT, 16), (CYAN, 26), (VIOLET, 6), (VERT, 18), (BLEU, 18)):
+        P.append(("rrect", bx, y + 14, lw, 10, 3, _a(c, 50), c, 1))
+        bx += lw + 4
+    for i, c in enumerate((TEXTE, DOUX, VERT, TEXTE)):
+        P.append(("rrect", x + 16 + w * 0.22, y + 18 + h * 0.36 + 9 * i, w * (0.4 - 0.07 * (i % 2)), 3, 1, c, None, 0))
+    for i, c in enumerate((ORANGE, ROSE, JAUNE, VERT, VIOLET)):
+        P.append(("rrect", x + 12, y + 14 + 8 * i, w * 0.22 - 12, 3, 1, _a(c, 220), None, 0))
+    L.extend(apparence.recolorer(P, th))
+
+
+def options(L, Z, m, mise, vignettes=None):
+    """Le panneau des options de l'espace : Apparence (thème, disposition, ranger), créature, pour les grands."""
+    from . import apparence
+    o = m["options"]
+    Z.clear()
+    L.append(("rect", 0, 0, mise.W, mise.H, (3, 4, 7, 170)))
+    x, y, w, h = mise.W / 2 - 640, 70, 1280, mise.H - 110
+    L.append(("rrect", x, y, w, h, 20, PANNEAU, BORD_FORT, 1))
+    Z.append((x, y, w, h, "opt:panneau"))
+    L.append(("texte", x + 30, y + 38, "⚙  " + t("app.options.titre"), 22, TEXTE, True, "g", False))
+    L.append(("texte", x + w - 30, y + 38, "✕", 18, DOUX, False, "d", False))
+    Z.append((x + w - 60, y + 14, 50, 50, "opt:fermer"))
+    cx = x + 30
+    yy = y + 86
+    L.append(("texte", cx, yy, t("app.opt.apparence").upper(), 12, JAUNE, True, "g", False))
+    yy += 28
+    L.append(("texte", cx, yy, t("app.opt.theme"), 14.5, TEXTE, True, "g", False))
+    L.append(("texte", cx + 90, yy, t("app.opt.theme.aide"), 12.5, PALE, False, "g", False))
+    tw, th_ = 214, 120
+    for i, cle in enumerate(apparence.ordre()):
+        col, lig = i % 5, i // 5
+        vx, vy = cx + col * (tw + 24), yy + 22 + lig * (th_ + 44)
+        sel = cle == o["theme"]
+        apercu_theme(vignettes if vignettes is not None else L, vx, vy, tw, th_, cle)
+        L.append(("rrect", vx - 4, vy - 4, tw + 8, th_ + 8, 11, None, _a(JAUNE, 230) if sel else BORD, 2 if sel else 1))
+        L.append(("texte", vx + 2, vy + th_ + 17, ("● " if sel else "") + t("app.theme." + cle), 13,
+                  JAUNE if sel else TEXTE, sel, "g", False))
+        Z.append((vx - 4, vy - 4, tw + 8, th_ + 30, "opt:theme:" + cle))
+    yy += 22 + 2 * (th_ + 44) + 14
+    L.append(("texte", cx, yy, t("app.opt.dispo"), 14.5, TEXTE, True, "g", False))
+    xx = cx
+    for nom in apparence.donnees()["ordre_dispositions"]:
+        sel = nom == o["dispo"]
+        xx += bouton(L, Z, xx, yy + 16, t("app.dispo." + nom), "opt:dispo:" + nom, JAUNE if sel else TEXTE,
+                     _a(JAUNE, 30) if sel else None, _a(JAUNE, 200) if sel else None) + 10
+    bouton(L, Z, xx + 10, yy + 16, "✎ " + t("esp.rg.titre") + "…", "opt:ranger", VERT, _a(VERT, 26), _a(VERT, 140))
+    yy += 76
+    L.append(("texte", cx, yy, t("app.opt.creature").upper(), 12, JAUNE, True, "g", False))
+    yy += 18
+    bw = bouton(L, Z, cx, yy, t("app.options.bureau"), "opt:bureau")
+    bouton(L, Z, cx + bw + 12, yy, t("app.options.notifs", etat=t("app.on") if o["notifs"] else t("app.off")),
+           "opt:notifs")
+    L.append(("texte", x + w - 30, yy + 17, t("app.options.langue", langue=o["langue"]) + "  (tg langue xx)", 13,
+              DOUX, False, "d", False))
+    yy += 62
+    L.append(("rrect", cx - 10, yy - 14, w - 40, 104, 14, _a(JAUNE, 12), _a(JAUNE, 110), 1))
+    L.append(("texte", cx + 6, yy + 6, t("app.opt.grands").upper(), 12, JAUNE, True, "g", False))
+    L.append(("texte", cx + 6, yy + 36, t("app.opt.tout"), 15, TEXTE, True, "g", False))
+    L.append(("texte", cx + 6, yy + 62, t("app.opt.tout.aide"), 12.5, DOUX, False, "g", False))
+    on = o["tout"]
+    tx = x + w - 96
+    L.append(("rrect", tx, yy + 23, 52, 26, 13, _a(JAUNE, 70) if on else (255, 255, 255, 20),
+              _a(JAUNE, 200) if on else BORD_FORT, 1))
+    L.append(("ellipse", tx + (39 if on else 13), yy + 36, 9, 9, JAUNE if on else DOUX))
+    Z.append((tx - 10, yy + 14, 72, 44, "opt:tout"))
+
+
+# ---------------------------------------------------------------- ranger son espace (mode rangement)
+NOMS_DALLES = ("explorateur", "envies", "equipe", "deploie", "terminal", "direct", "contexte")
+
+
+def poignees(L, Z, k, r, actif=False):
+    x, y, w, h = r
+    c = JAUNE if actif else (255, 255, 255, 170)
+    L.append(("rrect", x, y, w, h, 14, None, _a(c, 200) if actif else (255, 255, 255, 90), 1.5))
+    nom = t("esp.dalle." + k)
+    pw = lt(nom, 12) + 46
+    L.append(("rrect", x + w / 2 - pw / 2, y - 12, pw, 26, 13, (24, 27, 36, 255), _a(c, 220), 1))
+    L.append(("texte", x + w / 2, y + 1, "⠿  " + nom, 12, c if actif else TEXTE, True, "c", False))
+    Z.append((x + w / 2 - pw / 2, y - 14, pw, 30, "rg:dalle:" + k))
+    if k != "terminal":                        # le terminal ne se cache jamais
+        L.append(("ellipse", x + w - 4, y + 4, 13, 13, (40, 22, 26, 255)))
+        L.append(("cercle", x + w - 4, y + 4, 13, _a(ROUGE, 200), 1.2))
+        L.append(("texte", x + w - 4, y + 4, "✕", 12, ROUGE, True, "c", False))
+        Z.append((x + w - 17, y - 9, 26, 26, "rg:cacher:" + k))
+    L.append(("poly", [(x + w - 4, y + h - 30), (x + w - 4, y + h - 4), (x + w - 30, y + h - 4)], _a(c, 230)))
+    Z.append((x + w - 34, y + h - 34, 34, 34, "rg:coin:" + k))
+
+
+def bouton(L, Z, x, y, texte, action, c=TEXTE, fond=None, bord=None, taille=13.5, gras=False):
+    w = lt(texte, taille) + 30
+    L.append(("rrect", x, y, w, 34, 10, fond or (255, 255, 255, 14), bord or BORD_FORT, 1))
+    L.append(("texte", x + w / 2, y + 17, texte, taille, c, gras, "c", False))
+    Z.append((x, y, w, 34, action))
+    return w
+
+
+def rangement(L, Z, m, mise):
+    """Le mode « ranger mon espace » : la grille, les poignées, le coin pour agrandir, ✕ pour cacher, le tiroir des
+    dalles cachées et le bandeau (Disposition d'origine, Enregistrer comme « Ma disposition », Terminé).
+    Les dalles pas encore découvertes n'apparaissent pas (ni dans l'espace, ni dans le tiroir)."""
+    from . import apparence
+    g = apparence.grille()
+    Z.clear()
+    L.append(("rect", 0, 0, mise.W, mise.H, (5, 7, 10, 120)))
+    for c in range(g["colonnes"] + 1):
+        for r in range(g["rangees"] + 1):
+            x, y, _w, _h = apparence.rect_de([c, r, 1, 1])
+            L.append(("ellipse", x - g["ecart"] / 2, y - g["ecart"] / 2, 1.3, 1.3, (255, 255, 255, 40)))
+    gl = m.get("glisse")                       # (dalle, mode « dalle » | « coin », (x, y, w, h) sous la souris, case visée)
+    if gl and gl[3]:
+        x, y, w, h = apparence.rect_de(gl[3])
+        L.append(("rrect", x, y, w, h, 14, _a(JAUNE, 22), _a(JAUNE, 200), 2))
+    for k, r in mise.rects().items():
+        if not dalle_visible(m, k) or (gl and gl[0] == k):
+            continue
+        poignees(L, Z, k, r)
+    if gl:
+        k, _mode, r, _case = gl
+        x, y, w, h = r
+        L.append(("rrect", x + 10, y + 14, w, h, 16, (0, 0, 0, 120), None, 0))
+        DESSINS[k](L, [], m, r, m.get("t", 0.0))
+        poignees(L, [], k, r, actif=True)
+    # le bandeau, à la place de l'île
+    L.append(("rect", 0, 0, mise.W, 92, FOND))
+    L.append(("rrect", 16, 14, mise.W - 32, 64, 18, _a(JAUNE, 18), _a(JAUNE, 160), 1.5))
+    L.append(("texte", 40, 36, "✎  " + t("esp.rg.titre"), 18, JAUNE, True, "g", False))
+    L.append(("texte", 40, 60, t("esp.rg.aide"), 13, DOUX, False, "g", False))
+    x = mise.W - 36
+    for txt, a, c, f in ((t("esp.rg.fini"), "rg:fini", VERT, _a(VERT, 40)),
+                         (t("esp.rg.mienne"), "rg:mienne", TEXTE, None),
+                         (t("esp.rg.origine"), "rg:origine", TEXTE, None)):
+        x -= lt(txt, 13.5) + 30
+        bouton(L, Z, x, 29, txt, a, c, f, _a(c, 150) if f else None, gras=bool(f))
+        x -= 12
+    caches = [k for k in m.get("caches", []) if k in NOMS_DALLES and dalle_visible(m, k)]
+    if caches:
+        noms = [t("esp.dalle." + k) for k in caches]
+        tw = max(404, 32 + sum(lt("+ " + n, 12.5) + 38 for n in noms))
+        tx, ty = mise.W - 16 - tw, mise.H - 130
+        L.append(("rrect", tx, ty, tw, 114, 14, PANNEAU2, _a(JAUNE, 120), 1.5))
+        L.append(("texte", tx + 16, ty + 20, t("esp.rg.cachees").upper(), 11, DOUX, True, "g", False))
+        xx = tx + 16
+        for k, n in zip(caches, noms):
+            xx += bouton(L, Z, xx, ty + 38, "+ " + n, "rg:remettre:" + k, VERT, _a(VERT, 22), _a(VERT, 120), 12.5) + 8
+        L.append(("texte", tx + 16, ty + 94, t("esp.rg.remettre"), 12, PALE, False, "g", False))
 
 
 def decaler(liste, dx, dy):
@@ -1093,8 +1341,30 @@ def photo_pil(nom):
     import io
     import pkgutil
     from PIL import Image
-    data = pkgutil.get_data(__package__, "carte_monde.png") if nom == "monde" else None
-    return Image.open(io.BytesIO(data)).convert("RGBA") if data else None
+    base, _, th = nom.partition(":")             # « monde:matrix » : la carte teintée du thème
+    data = pkgutil.get_data(__package__, "carte_monde.png") if base == "monde" else None
+    if not data:
+        return None
+    im = Image.open(io.BytesIO(data)).convert("RGBA")
+    if th:
+        from . import apparence
+        im = apparence.teinter_image(im, apparence.Theme(th))
+    return im
+
+
+def photo_png(nom):
+    """L'illustration en PNG (fenêtre GTK) : la carte teintée si PIL est là, sinon la carte d'origine."""
+    import io
+    import pkgutil
+    if ":" in nom:
+        try:
+            im = photo_pil(nom)
+            b = io.BytesIO()
+            im.save(b, "PNG")
+            return b.getvalue()
+        except Exception:                        # noqa: BLE001 — sans PIL : la carte d'origine
+            pass
+    return pkgutil.get_data(__package__, "carte_monde.png") if nom.partition(":")[0] == "monde" else None
 
 
 def vers_pil(liste, taille, image=None):

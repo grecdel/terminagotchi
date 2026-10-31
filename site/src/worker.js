@@ -487,6 +487,11 @@ function fusionner(etat, envoi, appareil, verdicts = new Map()) {
   }
   if (!e.trait && typeof v.trait === "string") e.trait = v.trait.slice(0, 20);
   if (!e.forme && STATS.includes(v.forme)) e.forme = v.forme;
+  // le thème (apparence) : le plus récent gagne, un nom court en minuscules seulement
+  if (typeof v.theme === "string" && /^[a-z]{2,12}$/.test(v.theme) && (Number(v.themeDate) || 0) > (e.themeDate || 0)) {
+    e.theme = v.theme;
+    e.themeDate = Number(v.themeDate) || 0;
+  }
   if ((Number(v.faimDate) || 0) > e.faimDate) {
     e.faim = Math.max(0, Math.min(100, Number(v.faim) || 0));
     e.faimDate = Number(v.faimDate);
