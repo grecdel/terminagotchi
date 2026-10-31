@@ -151,6 +151,7 @@ def main():
         B.poser(im, A.recolorer(Li, th), (B.L_ - BS.ILE_L) // 2, 34, (BS.ILE_L, BS.ILE_H))
         im.convert("RGB").save(out / f"bureau_{cle}.png")
     # ------------------------------------------------ les options dans le terminal (le vrai menu, rendu)
+    core.modifier(lambda s: A.choisir_disposition(s, "classique"))
     import io
     from contextlib import redirect_stdout
     from tg import plateforme
