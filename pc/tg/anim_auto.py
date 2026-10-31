@@ -729,6 +729,20 @@ def toiles(e, stade, vid, nom, teinte=None):
     return W, H, fr, pal
 
 
+def vie_de(e, stade, vid, teinte=None):
+    """(analyse de vie, palette en entiers, teintée pour un shiny) de l'image d'un stade, ou None (rien de sûr)."""
+    img = B.image(e, stade, vid)
+    if not img:
+        return None
+    w, h, o, pal = img
+    spr = _rogner(w, h, o)
+    if teinte is not None:
+        pal = [B.decaler(x, teinte) for x in pal]
+    p = [_int(x) for x in pal]
+    a = vie.analyse_gardee(spr[0], spr[1], spr[2], [_int(x) for x in img[3]])
+    return None if a is None else (a, p)
+
+
 class Paresseux:
     """Une liste d'images calculées seulement quand on les montre (et gardées) : les rendus fins coûtent plus cher,
     et une animation en temps réel saute des images plutôt que de tout calculer d'avance."""
@@ -758,7 +772,16 @@ def lignes(e, stade, vid, nom, teinte=None, aura=None, fin=False, eclat=None):
     Pour « evolution », stade est le stade d'arrivée : on part du stade précédent.
     aura : palier d'aura de rareté (aura.py) qui respire autour de la silhouette, image après image ;
     fin : le rendu le plus fin du terminal (rendu_fin.py : vraie image ou quadrants), calculé image par image ;
-    eclat : l'éclat de l'aura selon le soin (aura.eclat), normal si None."""
+    eclat : l'éclat de l'aura selon le soin (aura.eclat), normal si None.
+    « statique » en rendu fin : la vie au pixel fin (vie.image_fine / vie.couleurs_texte, rendu_fin.lignes_vie)."""
+    from . import aura as A
+    if nom == "statique" and fin:
+        v = vie_de(e, stade, vid, teinte)
+        if v is not None:
+            from . import rendu_fin
+            mode = rendu_fin.mode()
+            ec = A.ECLAT_NORMAL if eclat is None else eclat
+            return Paresseux(vie.CYCLE, lambda k: rendu_fin.lignes_vie(v[0], v[1], k, aura, ec, mode)[0]), IPS
     r = toiles(e, stade, vid, nom, teinte)
     if r is None:
         return None

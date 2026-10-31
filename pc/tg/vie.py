@@ -6,8 +6,16 @@ Tout part de l'image fixe d'un stade (pixels indexés, palette en entiers 0xRRGG
     dans le haut de la silhouette, de préférence par paires à la même hauteur ; leurs reflets clairs vont avec ;
   - l'ÉPAISSEUR de la silhouette (distance au vide) sépare le corps (épais) des parties fines qui en dépassent ;
   - la RESPIRATION étire doucement la créature vers le haut, les pieds fixes : chaque ligne monte d'autant plus
-    qu'elle est haute (0 aux pieds, 1 à 1,5 pixel au sommet selon la taille), sur une courbe en cosinus de
-    16 images ; chaque ligne prend la ligne d'origine la plus proche (pas de ligne de coupure).
+    qu'elle est haute, sur une courbe en cosinus de 16 images.
+
+Les mouvements se font PLUS FINEMENT QUE LE SPRITE (sinon chaque gros pixel saute d'un coup) :
+  - image_fine(a, t, F) : la créature agrandie F fois au plus proche voisin, puis respiration et ondulations
+    calculées sur cette grande image (Android, vraies images Kitty / iTerm2 / sixel) : à chaque image, aucune ligne
+    et aucun pixel ne bouge de plus d'UN pixel de l'image finale (2 à 5 pixels au sommet sur tout le cycle) ;
+  - couleurs_texte(a, pal, t) : pour les rendus en texte (demi-blocs, quadrants), où l'on ne peut pas être plus fin
+    que le sprite, la respiration « superpose les dimensions » : chaque pixel mélange sa couleur et celle de la
+    ligne voisine selon la fraction du décalage (moins d'un demi-pixel : la silhouette ne saute jamais) ;
+  - image(a, t) : au pixel du sprite, seulement les yeux (listes, petites vignettes, anim_auto « statique »).
 Si une détection échoue (pas d'yeux sûrs, pas de partie fine…), on n'anime pas cette partie ; si le résultat
 risque d'être cassé (trop de pixels perdus ou ajoutés), analyser() renvoie None et l'appelant garde l'animation
 d'avant (anim_auto : écrasement doux de toute l'image). Jamais d'image vide ou cassée.
@@ -271,8 +279,7 @@ def analyser(w, h, o, pal):
         a.amp_souffle = souffle_max(h)
         if not a.yeux and not a.fins and a.souffle is None:
             return None
-        bande = 0 if a.souffle is None else a.souffle[1] - a.souffle[0] + 1
-        haut_max = n0 + n0 // 8 + 2 * bande + 4          # la respiration ajoute au plus 2 pixels par ligne
+        haut_max = n0 + n0 // 8 + 4
         for t in range(CYCLE):                         # garde-fou : aucune image cassée
             W2, H2, img = image(a, t)
             n = sum(1 for v in img if v)
@@ -297,9 +304,19 @@ def analyse_gardee(w, h, o, pal):
 
 
 # ---------------------------------------------------------------- le temps qui passe
+ONDE_FINE = 3                # ondulation : au plus 3 pixels fins au bout d'un appendice (jamais plus d'1 par image)
+SOUFFLE_TEXTE = 44           # respiration en texte : au plus 0,44 pixel du sprite (mélange de couleurs, sans saut)
+
+
 def souffle_max(h):
-    """L'étirement au sommet, en 16es de pixel : presque rien pour un bébé, 1,5 pixel pour un grand."""
-    return 9 if h < 25 else (16 if h < 40 else 24)
+    """L'étirement de la respiration au sommet, en pixels fins (de l'image agrandie) : 3 pour un bébé, 5 pour un
+    grand ; le cosinus garde chaque pas sous un pixel."""
+    return 3 if h < 25 else (4 if h < 40 else 5)
+
+
+def _rond(n, d):
+    """n / d arrondi au plus proche (d > 0), comme Math.floorDiv(2n + d, 2d)."""
+    return (2 * n + d) // (2 * d)
 
 
 def programme(a, t):
@@ -330,14 +347,10 @@ def programme(a, t):
     return paup, regard, souffle, t % 16
 
 
-def image(a, t):
-    """L'image de vie numéro t : (largeur, hauteur, octets) — l'image d'origine agrandie de PAD à gauche, à droite et
-    en haut (les pieds restent sur la dernière ligne)."""
-    w, h = a.w, a.h
-    W2, H2 = w + 2 * PAD, h + PAD
-    paup, regard, souffle, ph = programme(a, t)
+def _yeux_a(a, paup, regard):
+    """L'image d'origine (indices) avec les yeux du moment : regard décalé, paupières mi-closes ou fermées."""
+    w = a.w
     src = list(a.o)
-    # 1. les yeux (dans l'image d'origine)
     for oe in a.yeux:
         dec = 0
         if regard and all(0 <= x + regard < w and a.o[y * w + x + regard] for x, y in oe.px):
@@ -356,39 +369,116 @@ def image(a, t):
                 for x, y in oe.px:
                     if y == oe.y1:
                         src[y * w + x + dec] = oe.trait
-    # 2. posé sur la toile agrandie, les parties fines qui ondulent
+    return src
+
+
+def image(a, t):
+    """L'image de vie numéro t au pixel du sprite (seulement les yeux : clignement, regard) : (largeur, hauteur,
+    octets) — l'image d'origine agrandie de PAD à gauche, à droite et en haut (les pieds sur la dernière ligne)."""
+    w, h = a.w, a.h
+    W2, H2 = w + 2 * PAD, h + PAD
+    paup, regard, _, _ = programme(a, t)
+    src = _yeux_a(a, paup, regard)
     out = [0] * (W2 * H2)
+    for y in range(h):
+        out[(y + PAD) * W2 + PAD:(y + PAD) * W2 + PAD + w] = src[y * w:(y + 1) * w]
+    return W2, H2, bytes(out)
+
+
+def decalages(a, t, F):
+    """Les mouvements fins de l'image t (agrandie F fois) : ([pour chaque ligne de l'image finale, de combien elle est
+    montée], [déplacement de chaque pixel fin des appendices, dans l'ordre (rang, indice)]), en pixels fins."""
+    h = a.h
+    HF = (h + PAD) * F
+    _, _, souffle, ph = programme(a, t)
+    amp = a.amp_souffle * souffle if a.souffle is not None else 0       # en centièmes de pixel fin
+    bas = HF - 1
+    Hf = h * F * 100
+    lignes = [(bas - y) - _rond((bas - y) * Hf, Hf + amp) for y in range(HF)]
+    ondes = [_rond(ONDE_FINE * min(rang, 4) * SIN[(ph - rang) % 16], 400)
+             for _, (rang, _) in sorted(a.fins.items(), key=lambda e: (e[1][0], e[0]))]
+    return lignes, ondes
+
+
+def image_fine(a, t, F=4):
+    """L'image de vie numéro t agrandie F fois : (largeur, hauteur, octets indexés). Les yeux au pixel du sprite ;
+    les appendices ondulent et le corps respire au pixel fin (jamais plus d'un pixel fin par image)."""
+    w, h = a.w, a.h
+    W2, H2 = w + 2 * PAD, h + PAD
+    WF, HF = W2 * F, H2 * F
+    paup, regard, _, _ = programme(a, t)
+    src = _yeux_a(a, paup, regard)
+    lignes, ondes = decalages(a, t, F)
+    out = bytearray(WF * HF)
     for y in range(h):
         for x in range(w):
             q = y * w + x
-            if src[q] and q not in a.fins:
-                out[(y + PAD) * W2 + x + PAD] = src[q]
+            v = src[q]
+            if v and q not in a.fins:
+                b = ((y + PAD) * F) * WF + (x + PAD) * F
+                for j in range(F):
+                    out[b + j * WF:b + j * WF + F] = bytes((v,)) * F
     fins = sorted(a.fins.items(), key=lambda e: (e[1][0], e[0]))
-    for q, (rang, sens) in fins:
-        r = min(rang, 4)
-        dep = _div(a.amp * r * SIN[(ph - rang) % 16], 400)
-        x, y = q % w + PAD, q // w + PAD
+    for (q, (rang, sens)), dep in zip(fins, ondes):
+        v = src[q]
+        if not v:
+            continue
+        X0, Y0 = (q % w + PAD) * F, (q // w + PAD) * F
         if sens:
-            y += dep
+            Y0 += dep
         else:
-            x += dep
-        if 0 <= x < W2 and 0 <= y < H2:
-            out[y * W2 + x] = src[q]
-    # 3. la respiration : un léger étirement vers le haut, les pieds fixes ; chaque ligne d'arrivée prend la ligne
-    #    d'origine la plus proche (le décalage grandit doucement des pieds au sommet : aucune ligne de coupure)
-    if a.souffle is not None and souffle:
-        amp = a.amp_souffle * souffle // 100           # en 16es de pixel
-        if amp:
-            bas = H2 - 1
-            H16 = h * 16
-            nv = [0] * (W2 * H2)
-            for y in range(H2):
-                d = bas - y
-                sy = bas - (2 * d * H16 + H16 + amp) // (2 * (H16 + amp))
-                if sy >= 0:
-                    nv[y * W2:(y + 1) * W2] = out[sy * W2:(sy + 1) * W2]
-            out = nv
-    return W2, H2, bytes(out)
+            X0 += dep
+        for j in range(F):
+            Y = Y0 + j
+            if 0 <= Y < HF:
+                for i in range(F):
+                    if 0 <= X0 + i < WF:
+                        out[Y * WF + X0 + i] = v
+    if any(lignes):                                    # la respiration : chaque ligne prend sa ligne d'origine
+        bas = HF - 1
+        nv = bytearray(WF * HF)
+        for y in range(HF):
+            sy = y + lignes[y]
+            if 0 <= sy < HF:
+                nv[y * WF:(y + 1) * WF] = out[sy * WF:(sy + 1) * WF]
+        out = nv
+    return WF, HF, bytes(out)
+
+
+def couleurs_texte(a, pal, t):
+    """L'image de vie t pour un rendu en texte (au pixel du sprite) : liste de couleurs 0xRRGGBB ou None (W2 × H2).
+    Les yeux, et une respiration en fondu : chaque ligne mélange sa couleur avec celle de la ligne du dessous selon
+    la fraction du décalage (moins d'un demi-pixel : la silhouette ne bouge pas, la lumière glisse doucement)."""
+    w, h = a.w, a.h
+    W2, H2 = w + 2 * PAD, h + PAD
+    paup, regard, souffle, _ = programme(a, t)
+    src = _yeux_a(a, paup, regard)
+    base = [None] * (W2 * H2)
+    for y in range(h):
+        for x in range(w):
+            v = src[y * w + x]
+            if v:
+                base[(y + PAD) * W2 + x + PAD] = pal[v - 1]
+    amp = SOUFFLE_TEXTE * souffle // 100 if a.souffle is not None else 0
+    if not amp:
+        return base
+    out = list(base)
+    bas = H2 - 1
+    for y in range(H2 - 1):
+        d = bas - y
+        s100 = bas * 100 - d * h * 10000 // (h * 100 + amp)
+        lo, f = s100 // 100, s100 % 100
+        if f == 0 or lo + 1 > bas:
+            continue
+        for x in range(W2):
+            c0, c1 = base[lo * W2 + x], base[(lo + 1) * W2 + x]
+            if c0 is None or c1 is None:
+                out[y * W2 + x] = c0 if f < 50 else c1
+            else:
+                out[y * W2 + x] = ((((c0 >> 16) * (100 - f) + (c1 >> 16) * f) // 100) << 16
+                                   | (((c0 >> 8 & 255) * (100 - f) + (c1 >> 8 & 255) * f) // 100) << 8
+                                   | ((c0 & 255) * (100 - f) + (c1 & 255) * f) // 100)
+    return out
 
 
 def images(a, n=CYCLE, debut=0):
@@ -410,7 +500,7 @@ def _demo(args):
     if a is None:
         print(" Rien de sûr à animer : on garde l'animation d'avant.")
         return
-    print(f" yeux : {len(a.yeux)} · parties fines : {len(a.fins)} px · souffle : {a.souffle}")
+    print(f" yeux : {len(a.yeux)} · parties fines : {len(a.fins)} px · souffle : {a.souffle} (vrai rendu : rendu_fin)")
     sys.stdout.write("\033[?25l")
     try:
         for t in range(2 * CYCLE):

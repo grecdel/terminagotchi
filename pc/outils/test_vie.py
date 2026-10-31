@@ -62,6 +62,10 @@ def calculer(sp):
     r = {"analyse": None if a is None else {"yeux": [[list(p) for p in e.px] for e in a.yeux],
                                           "fins": len(a.fins), "souffle": None if a.souffle is None else list(a.souffle)}}
     r["vie"] = [] if a is None else [fnv(vie.image(a, t)[2]) for t in range(vie.CYCLE)]
+    r["fine4"] = [] if a is None else [fnv(vie.image_fine(a, t, 4)[2]) for t in range(0, vie.CYCLE, 3)]
+    r["fine3"] = [] if a is None else [fnv(vie.image_fine(a, t, 3)[2]) for t in range(0, 20, 2)]
+    r["texte"] = [] if a is None else [fnv(",".join(str(c) for c in vie.couleurs_texte(a, pal, t)).encode())
+                                       for t in range(0, 16, 2)]
     W, H, fr, _, _ = anim_auto._calculer(w, h, o, pal, "statique")
     r["statique"] = [W, H, len(fr), fnv(b"".join(fr))]
     W, H, fr, _, _ = anim_auto._calculer(w, h, o, pal, "content")
@@ -109,6 +113,7 @@ def main():
     t0 = time.time()
     n = vivants = avec_yeux = 0
     casses = []
+    saut_fin, fine_casse = [], []
     for e in B.especes():
         for var in e.get("variantes") or [{"id": "classique"}]:
             for st in B.STADES:
@@ -122,6 +127,20 @@ def main():
                     continue
                 vivants += 1
                 avec_yeux += bool(a.yeux)
+                for F in (3, 4):
+                    avant = vie.decalages(a, 0, F)
+                    for t in range(1, 17):
+                        apres = vie.decalages(a, t, F)
+                        if any(abs(x - y) > 1 for x, y in zip(avant[0], apres[0])) or \
+                                any(abs(x - y) > 1 for x, y in zip(avant[1], apres[1])):
+                            saut_fin.append(f"{e['id']}/{var['id']}/{st} ×{F} @{t}")
+                            break
+                        avant = apres
+                if var["id"] == "classique":
+                    WF, HF, fi = vie.image_fine(a, 8, 4)
+                    k = sum(1 for x in fi if x)
+                    if k * 100 < sum(1 for x in o[:w * h] if x) * 16 * 85 or len(fi) != WF * HF:
+                        fine_casse.append(f"{e['id']}/{st}")
                 n0 = sum(1 for x in o[:w * h] if x)
                 for t in range(vie.CYCLE):
                     W2, H2, im = vie.image(a, t)
@@ -131,23 +150,31 @@ def main():
                         casses.append(f"{e['id']}/{var['id']}/{st}@{t}")
                         break
     verifier(n > 3000, f"{n} images du bestiaire passées en revue ({time.time() - t0:.0f} s)")
+    verifier(not saut_fin, "à chaque image, aucune ligne et aucun pixel d'appendice ne bouge de plus d'UN pixel de "
+                           "l'image finale (×3 et ×4)" + (f" : {saut_fin[:5]}" if saut_fin else ""))
+    verifier(not fine_casse, "image fine (×4, au plus fort du souffle) : jamais vide ni tronquée"
+             + (f" : {fine_casse[:5]}" if fine_casse else ""))
     verifier(not casses, "aucune image de vie vide, tronquée ou hors palette" + (f" : {casses[:5]}" if casses else ""))
     verifier(vivants * 100 >= n * 90, f"la vie anime {vivants} images sur {n} (sinon : l'animation d'avant)")
     verifier(avec_yeux * 100 >= n * 25, f"des yeux trouvés sur {avec_yeux} images")
     e = B.espece("ectoplouf")
     W, H, fr, _ = anim_auto.toiles(e, "bebe", "classique", "statique")
     W2_, H2_, fr2, _ = anim_auto.toiles(B.espece("chaosmere"), "adulte", "classique", "statique")
-    verifier(len(fr) == vie.CYCLE and len(set(fr)) > 4 and len(set(fr2)) > 16,
-             f"au repos : 64 images de vie, qui changent ({len(set(fr))} différentes pour un bébé, {len(set(fr2))} pour un adulte)")
+    verifier(len(fr) == vie.CYCLE and len(set(fr)) >= 3 and len(set(fr2)) >= 3,
+             f"au pixel du sprite (listes) : 64 images, les yeux clignent ({len(set(fr))} et {len(set(fr2))} images "
+             "différentes) ; respiration et ondulations seulement au pixel fin")
     a2 = vie.analyser(*B.image(B.espece("chaosmere"), "adulte")[:3],
                       [int(c[1:], 16) for c in B.image(B.espece("chaosmere"), "adulte")[3]])
-    sauts = 0
-    for t in range(16):                         # la respiration : jamais plus d'un pixel d'écart d'une image à l'autre
-        H0 = vie.image(a2, t)
-        H1 = vie.image(a2, t + 1)
-        haut = lambda im: next(y for y in range(im[1]) if any(im[2][y * im[0]:(y + 1) * im[0]]))
-        sauts = max(sauts, abs(haut(H0) - haut(H1)))
-    verifier(sauts <= 1, "respiration douce : le sommet ne bouge jamais de plus d'un pixel d'une image à l'autre")
+    sommet = max(max(vie.decalages(a2, t, 4)[0]) for t in range(16))
+    verifier(4 <= sommet <= 6, f"un adulte respire de {sommet} pixels fins au sommet (×4 : environ 1,25 pixel du sprite)")
+    a3 = vie.analyser(*B.image(e, "bebe")[:3], [int(c[1:], 16) for c in B.image(e, "bebe")[3]])
+    sommet = max(max(vie.decalages(a3, t, 4)[0]) for t in range(16))
+    verifier(2 <= sommet <= 3, f"un bébé respire de {sommet} pixels fins au sommet")
+    fines = [vie.image_fine(a2, t, 4)[2] for t in range(16)]
+    verifier(len(set(fines)) >= 12, f"au pixel fin, la respiration change presque à chaque image ({len(set(fines))} sur 16)")
+    tx = [vie.couleurs_texte(a3, [int(c[1:], 16) for c in B.image(e, "bebe")[3]], t) for t in range(16)]
+    verifier(len(set(map(tuple, tx))) > 4 and all([c is None for c in x] == [c is None for c in tx[0]] for x in tx),
+             "en texte : la lumière glisse (fondu de couleurs) mais la silhouette ne saute jamais")
     vieux = anim_auto._calculer(4, 4, bytes([1] * 16), [0x808080], "statique")
     verifier(len(vieux[2]) == 8, "une image trop petite garde l'animation d'avant (8 images)")
     a = vie.analyser(*B.image(e, "bebe")[:3], [int(c[1:], 16) for c in B.image(e, "bebe")[3]])

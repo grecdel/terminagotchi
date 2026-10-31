@@ -251,6 +251,92 @@ def lignes(w, h, couleurs, nom=None, phase=A.PHASE_FIXE, eclat=A.ECLAT_NORMAL, r
     return _poser(sixel_transparent(W2, H2, _reduire(W, H, px, W2, H2)), cols, rangs), cols
 
 
+# ---------------------------------------------------------------- la vie au repos (vie.py), au pixel fin
+def composer_vie(a, pal, t, nom, eclat, F=F_IMAGE):
+    """(W·F, H·F, pixels (r, g, b, a) ou None) : l'image de vie t agrandie F fois (respiration et ondulations au pixel
+    fin : vie.image_fine), sur sa lueur, avec le décor de l'aura (calculés sur le masque au pixel du sprite)."""
+    from . import vie
+    W2, H2, img = vie.image(a, t)
+    WF0, HF0, fine = vie.image_fine(a, t, F)
+    plein = [v != 0 for v in img]
+    if nom and A.visible(nom):
+        W, H, r, aur = A.calque(W2, H2, plein, nom, t, eclat)
+        dec = A.decor(W2, H2, plein, nom, t, eclat)
+        pos = A.reflet(nom, t, W, H)
+    else:
+        W, H, r, aur, dec, pos = W2, H2, 0, [None] * (W2 * H2), [], None
+    WF, HF = W * F, H * F
+    out = [None] * (WF * HF)
+    for y in range(H):
+        for x in range(W):
+            v = aur[y * W + x]
+            if v is not None and v[3]:
+                for j in range(F):
+                    b = (y * F + j) * WF + x * F
+                    out[b:b + F] = [v] * F
+    cote = max(1, F // 2)
+
+    def point(x2, y2, c, al):
+        X, Y = x2 * F // 2, y2 * F // 2
+        nv = (c >> 16, c >> 8 & 255, c & 255)
+        for j in range(cote):
+            for i in range(cote):
+                if 0 <= X + i < WF and 0 <= Y + j < HF:
+                    k = (Y + j) * WF + X + i
+                    q = out[k]
+                    if q is None or q[3] < 255:
+                        out[k] = nv + (max(al, 0 if q is None else q[3]),)
+                    else:
+                        out[k] = tuple(q[m] + (nv[m] - q[m]) * al // 255 for m in range(3)) + (255,)
+    for x2, y2, c, al, devant in dec:
+        if not devant:
+            point(x2, y2, c, al)
+    o = r * F
+    cache = {}
+    for y in range(HF0):
+        for x in range(WF0):
+            v = fine[y * WF0 + x]
+            if v:
+                sx, sy = x // F + r, y // F + r
+                cle = (v, (sx + sy - pos) if pos is not None and abs(sx + sy - pos) <= 2 else None)
+                c = cache.get(cle)
+                if c is None:
+                    q = A.lustrer(pal[v - 1], sx, sy, pos)
+                    c = cache[cle] = (q >> 16, q >> 8 & 255, q & 255, 255)
+                out[(y + o) * WF + x + o] = c
+    for x2, y2, c, al, devant in dec:
+        if devant:
+            point(x2, y2, c, al)
+    return WF, HF, out
+
+
+def lignes_vie(a, pal, t, nom=None, eclat=A.ECLAT_NORMAL, rendu=None):
+    """(lignes, largeur) de l'image de vie t : vraie image au pixel fin (Kitty, iTerm2, sixel), sinon le texte avec la
+    respiration en fondu de couleurs (vie.couleurs_texte : pas de saut d'un gros pixel)."""
+    from . import vie
+    r = rendu or mode()
+    if r in ("kitty", "iterm", "sixel"):
+        W, H, px = composer_vie(a, pal, t, nom if nom and A.visible(nom) else None, eclat)
+        cols, rangs = W // F_IMAGE, -(-(H // F_IMAGE) // 2)
+        if r == "kitty":
+            from .scenes import kitty
+            _UTILISE["kitty"] = True
+            return _poser(kitty(png_rgba(W, H, px), cols, rangs, IDENT), cols, rangs), cols
+        if r == "iterm":
+            from .scenes import iterm
+            return _poser(iterm(png_rgba(W, H, px), cols, rangs), cols, rangs), cols
+        try:
+            from .scenes import capacites
+            cw, ch = capacites()["cellule"]
+        except Exception:                                # noqa: BLE001
+            cw, ch = 10, 20
+        W2, H2 = cols * cw, rangs * ch // 6 * 6
+        return _poser(sixel_transparent(W2, H2, _reduire(W, H, px, W2, H2)), cols, rangs), cols
+    cs = vie.couleurs_texte(a, pal, t)
+    W2, H2 = a.w + 2 * vie.PAD, a.h + vie.PAD
+    return lignes(W2, H2, [None if c is None else "#%06x" % c for c in cs], nom, t, eclat, r)
+
+
 def effacer():
     """Retire l'image Kitty de la créature (en quittant l'écran principal : elle ne reste pas sur les menus)."""
     if _UTILISE["kitty"]:

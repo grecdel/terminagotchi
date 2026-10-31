@@ -231,8 +231,7 @@ object Vie {
             a.yeux = yeux(w, h, o, lum)
             if (!fins(a, epaisseur(w, h, o))) { a.souffle = null; a.finsSet = BooleanArray(w * h) }
             if (a.yeux.isEmpty() && a.finsIdx.isEmpty() && a.souffle == null) return null
-            val bande = a.souffle?.let { it[1] - it[0] + 1 } ?: 0
-            val hautMax = n0 + n0 / 8 + 2 * bande + 4
+            val hautMax = n0 + n0 / 8 + 4
             for (t in 0 until CYCLE) {
                 val n = image(a, t).count { it.toInt() != 0 }
                 if (n * 100 < n0 * 88 || n > hautMax) return null
@@ -261,8 +260,14 @@ object Vie {
     }
 
     // ------------------------------------------------------------ le temps qui passe
-    /** L'étirement de la respiration au sommet, en 16es de pixel : presque rien pour un bébé, 1,5 pixel pour un grand. */
-    fun souffleMax(h: Int) = if (h < 25) 9 else if (h < 40) 16 else 24
+    /** Ondulation : au plus 3 pixels fins au bout d'un appendice (jamais plus d'1 par image). */
+    const val ONDE_FINE = 3
+
+    /** L'étirement de la respiration au sommet, en pixels fins : 3 pour un bébé, 5 pour un grand. */
+    fun souffleMax(h: Int) = if (h < 25) 3 else if (h < 40) 4 else 5
+
+    /** n / d arrondi au plus proche (d > 0), comme vie._rond en Python. */
+    private fun rond(n: Int, d: Int) = Math.floorDiv(2 * n + d, 2 * d)
 
     /** (paupière 0|1|2, regard -1|0|1, souffle 0 à 100 en cosinus doux sur 16 images, phase de l'ondulation) à l'image t. */
     fun programme(a: Analyse, t: Int): IntArray {
@@ -294,12 +299,9 @@ object Vie {
     fun largeur(a: Analyse) = a.w + 2 * PAD
     fun hauteur(a: Analyse) = a.h + PAD
 
-    /** L'image de vie numéro t (octets indexés, largeur(a) × hauteur(a), pieds sur la dernière ligne). */
-    fun image(a: Analyse, t: Int): ByteArray {
-        val w = a.w; val h = a.h
-        val W2 = w + 2 * PAD; val H2 = h + PAD
-        val p = programme(a, t)
-        val paup = p[0]; val regard = p[1]; val souffle = p[2]; val ph = p[3]
+    /** L'image d'origine avec les yeux du moment (regard décalé, paupières mi-closes ou fermées). */
+    private fun yeuxA(a: Analyse, paup: Int, regard: Int): IntArray {
+        val w = a.w
         val src = a.o.copyOf()
         for (oe in a.yeux) {
             var dec = 0
@@ -315,36 +317,71 @@ object Vie {
                 if (paup == 2 && hh >= 2) for (q in oe.px) if (q[1] == oe.y1) src[q[1] * w + q[0] + dec] = oe.trait
             }
         }
-        val out = IntArray(W2 * H2)
+        return src
+    }
+
+    /** L'image de vie numéro t au pixel du sprite (seulement les yeux : clignement, regard), largeur(a) × hauteur(a). */
+    fun image(a: Analyse, t: Int): ByteArray {
+        val w = a.w; val h = a.h
+        val W2 = w + 2 * PAD; val H2 = h + PAD
+        val p = programme(a, t)
+        val src = yeuxA(a, p[0], p[1])
+        val out = ByteArray(W2 * H2)
+        for (y in 0 until h) for (x in 0 until w) out[(y + PAD) * W2 + x + PAD] = src[y * w + x].toByte()
+        return out
+    }
+
+    /** Les mouvements fins de l'image t agrandie F fois : (de combien monte chaque ligne de l'image finale,
+     *  déplacement de chaque pixel des appendices dans l'ordre de finsIdx), en pixels fins. */
+    fun decalages(a: Analyse, t: Int, F: Int): Pair<IntArray, IntArray> {
+        val HF = (a.h + PAD) * F
+        val p = programme(a, t)
+        val amp = if (a.souffle != null) a.ampSouffle * p[2] else 0
+        val bas = HF - 1
+        val Hf = a.h * F * 100
+        val lignes = IntArray(HF) { y -> (bas - y) - rond((bas - y) * Hf, Hf + amp) }
+        val ondes = IntArray(a.finsIdx.size) { n ->
+            rond(ONDE_FINE * minOf(a.finsRang[n], 4) * SIN[Math.floorMod(p[3] - a.finsRang[n], 16)], 400)
+        }
+        return lignes to ondes
+    }
+
+    /** L'image de vie t agrandie F fois (octets indexés, largeur(a)·F × hauteur(a)·F) : yeux au pixel du sprite,
+     *  ondulations et respiration au pixel fin (jamais plus d'un pixel fin par image). */
+    fun imageFine(a: Analyse, t: Int, F: Int): ByteArray {
+        val w = a.w; val h = a.h
+        val WF = (w + 2 * PAD) * F; val HF = (h + PAD) * F
+        val p = programme(a, t)
+        val src = yeuxA(a, p[0], p[1])
+        val (lignes, ondes) = decalages(a, t, F)
+        var out = ByteArray(WF * HF)
         for (y in 0 until h) for (x in 0 until w) {
             val q = y * w + x
-            if (src[q] != 0 && !a.finsSet[q]) out[(y + PAD) * W2 + x + PAD] = src[q]
-        }
-        for (n in a.finsIdx.indices) {
-            val q = a.finsIdx[n]; val rang = a.finsRang[n]
-            val r = minOf(rang, 4)
-            val dep = Math.floorDiv(a.amp * r * SIN[Math.floorMod(ph - rang, 16)], 400)
-            var x = q % w + PAD; var y = q / w + PAD
-            if (a.finsSens[n] == 1) y += dep else x += dep
-            if (x in 0 until W2 && y in 0 until H2) out[y * W2 + x] = src[q]
-        }
-        // la respiration : un léger étirement vers le haut, pieds fixes ; chaque ligne prend la ligne d'origine la plus
-        // proche (le décalage grandit doucement des pieds au sommet : aucune ligne de coupure)
-        var res = out
-        if (a.souffle != null && souffle != 0) {
-            val amp = a.ampSouffle * souffle / 100
-            if (amp != 0) {
-                val bas = H2 - 1
-                val H16 = h * 16
-                val nv = IntArray(W2 * H2)
-                for (y in 0 until H2) {
-                    val d = bas - y
-                    val sy = bas - (2 * d * H16 + H16 + amp) / (2 * (H16 + amp))
-                    if (sy >= 0) System.arraycopy(out, sy * W2, nv, y * W2, W2)
-                }
-                res = nv
+            val v = src[q]
+            if (v != 0 && !a.finsSet[q]) {
+                val b = (y + PAD) * F * WF + (x + PAD) * F
+                for (j in 0 until F) java.util.Arrays.fill(out, b + j * WF, b + j * WF + F, v.toByte())
             }
         }
-        return ByteArray(res.size) { res[it].toByte() }
+        for (n in a.finsIdx.indices) {
+            val q = a.finsIdx[n]
+            val v = src[q]
+            if (v == 0) continue
+            var X0 = (q % w + PAD) * F; var Y0 = (q / w + PAD) * F
+            if (a.finsSens[n] == 1) Y0 += ondes[n] else X0 += ondes[n]
+            for (j in 0 until F) {
+                val Y = Y0 + j
+                if (Y in 0 until HF) for (i in 0 until F) if (X0 + i in 0 until WF) out[Y * WF + X0 + i] = v.toByte()
+            }
+        }
+        if (lignes.any { it != 0 }) {
+            val nv = ByteArray(WF * HF)
+            for (y in 0 until HF) {
+                val sy = y + lignes[y]
+                if (sy in 0 until HF) System.arraycopy(out, sy * WF, nv, y * WF, WF)
+            }
+            out = nv
+        }
+        return out
     }
 }

@@ -20,7 +20,10 @@ object AnimAuto {
     /** Une animation : toile largeur × hauteur, images en indices, palette étendue en ARGB.
      *  Les nTeinte premières couleurs sont celles de la bestiole (décalées pour les shiny). */
     class Anim(val largeur: Int, val hauteur: Int, val images: List<ByteArray>, val palette: IntArray,
-               val nTeinte: Int, val ips: Int = IPS)
+               val nTeinte: Int, val ips: Int = IPS, val vie: VieInfo? = null)
+
+    /** « statique » : la vie (Vie.kt) posée en (x0, y0) sur la toile ; bitmap() la dessine alors au pixel fin. */
+    class VieInfo(val analyse: Vie.Analyse, val x0: Int, val y0: Int)
 
     val ANIMS = listOf("statique", "mange", "attaque", "salut", "parle", "dort", "content", "affame", "confus",
         "colere", "victoire", "ko", "evolution")
@@ -329,6 +332,7 @@ object AnimAuto {
         val right = left + w
         val e = if (maxOf(w, h) >= 40) 2 else 1
         val frames = ArrayList<ByteArray>()
+        var vie: VieInfo? = null
 
         fun toile() = Toile(largeur, hauteur, sp)
 
@@ -345,6 +349,7 @@ object AnimAuto {
         val a = Vie.analyseGardee(c.w, c.h, c.spr.o, c.pal)
         if (a != null) {
             val W2 = Vie.largeur(a); val H2 = Vie.hauteur(a)
+            c.vie = VieInfo(a, c.cx - W2 / 2, c.base - H2)
             for (k in 0 until Vie.CYCLE) {
                 val img = Vie.image(a, k)
                 val t = c.toile()
@@ -714,7 +719,7 @@ object AnimAuto {
             else -> throw IllegalArgumentException("animation inconnue : $nom")
         }
         val argb = IntArray(pal.size) { pal[it] or 0xFF000000.toInt() }
-        return Anim(W, H, c.frames, argb, nTeinte)
+        return Anim(W, H, c.frames, argb, nTeinte, vie = c.vie)
     }
 
     /** Variante pratique : à partir d'un Sprite. */
@@ -736,6 +741,25 @@ object AnimAuto {
         }
         val e = maxOf(1, echelle)
         val W = anim.largeur; val H = anim.hauteur
+        val v = anim.vie
+        if (v != null) {                     // la vie au pixel fin : respiration et ondulations sans gros saut
+            val a = v.analyse
+            val fine = Vie.imageFine(a, k, e)
+            val WF = Vie.largeur(a) * e; val HF = Vie.hauteur(a) * e
+            val px = IntArray(W * e * H * e)
+            val ox = v.x0 * e; val oy = v.y0 * e
+            for (y in 0 until HF) {
+                val Y = oy + y
+                if (Y < 0 || Y >= H * e) continue
+                for (x in 0 until WF) {
+                    val X = ox + x
+                    if (X < 0 || X >= W * e) continue
+                    val c = fine[y * WF + x].toInt() and 0xFF
+                    if (c != 0) px[Y * W * e + X] = pal[c - 1]
+                }
+            }
+            return Bitmap.createBitmap(px, W * e, H * e, Bitmap.Config.ARGB_8888)
+        }
         val img = anim.images[Math.floorMod(k, anim.images.size)]
         val ligne = IntArray(W * e)
         val bmp = Bitmap.createBitmap(W * e, H * e, Bitmap.Config.ARGB_8888)

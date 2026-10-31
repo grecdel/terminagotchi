@@ -165,6 +165,9 @@ object Sprites {
             if (y < y0) y0 = y; if (y > y1) y1 = y; if (x < x0) x0 = x; if (x > x1) x1 = x
         }
         if (x1 < 0) return a
+        if (a.vie != null) {               // la vie au pixel fin monte et ondule un peu au-delà des images au pixel du sprite
+            x0 = maxOf(0, x0 - 1); x1 = minOf(W - 1, x1 + 1); y0 = maxOf(0, y0 - 2)
+        }
         y0 -= y0 % 2
         val nw = x1 - x0 + 1
         var nh = y1 - y0 + 1
@@ -174,7 +177,8 @@ object Sprites {
             for (y in 0 until nh) if (y0 + y < H) System.arraycopy(f, (y0 + y) * W + x0, b, y * nw, nw)
             b
         }
-        return AnimAuto.Anim(nw, nh, out, a.palette, a.nTeinte, a.ips)
+        val vie = a.vie?.let { AnimAuto.VieInfo(it.analyse, it.x0 - x0, it.y0 - y0) }
+        return AnimAuto.Anim(nw, nh, out, a.palette, a.nTeinte, a.ips, vie)
     }
 
     /** La créature principale joue une animation automatique (mange, evolution, victoire, ko, dort, affame, colere…). */

@@ -96,10 +96,14 @@ fun main(args: Array<String>) {
                 if (r.isNull(k)) x == null else x == r.getInt(k)
             }
         }
+        val f4 = if (a == null) emptyList() else (0 until Vie.CYCLE step 3).map { fnv(Vie.imageFine(a, it, 4)) }
+        val f3 = if (a == null) emptyList() else (0 until 20 step 2).map { fnv(Vie.imageFine(a, it, 3)) }
+        val finOk = f4 == longs(att.getJSONArray("fine4")) && f3 == longs(att.getJSONArray("fine3"))
         val st = anim("statique") == longs(att.getJSONArray("statique"))
         val co = anim("content") == longs(att.getJSONArray("content"))
-        verifV(memes && vieK == vieAtt && st && co && decorOk && refletOk,
+        verifV(memes && vieK == vieAtt && finOk && st && co && decorOk && refletOk,
             "${sp.getString("nom")} : yeux ${if (memes) "=" else "≠"}, vie ${if (vieK == vieAtt) "=" else "≠"}, " +
+                "pixel fin ×4 et ×3 ${if (finOk) "=" else "≠"}, " +
                 "statique ${if (st) "=" else "≠"}, content ${if (co) "=" else "≠"}, décor ${if (decorOk) "=" else "≠"}, " +
                 "reflet ${if (refletOk) "=" else "≠"}")
     }
@@ -112,6 +116,7 @@ fun main(args: Array<String>) {
     Bestiaire.chargerDonnees(File(assets, "bestiaire.json").readText()) { File(assets, "sprites.bin").readBytes() }
     var n = 0; var vivants = 0
     val casses = ArrayList<String>()
+    val sautsFins = ArrayList<String>()
     val t0 = System.currentTimeMillis()
     for (e in Bestiaire.especes) for (va in e.variantes) for (st in Equipe.STADES) {
         val img = Bestiaire.image(e, st, va.id) ?: continue
@@ -119,6 +124,17 @@ fun main(args: Array<String>) {
         val oi = IntArray(img.w * img.h) { img.octets[it].toInt() and 0xFF }
         val a = Vie.analyser(img.w, img.h, oi, img.palette) ?: continue
         vivants++
+        for (F in intArrayOf(3, 4)) {
+            var avant = Vie.decalages(a, 0, F)
+            for (t in 1..16) {
+                val apres = Vie.decalages(a, t, F)
+                if (avant.first.indices.any { Math.abs(avant.first[it] - apres.first[it]) > 1 } ||
+                    avant.second.indices.any { Math.abs(avant.second[it] - apres.second[it]) > 1 }) {
+                    sautsFins.add("${e.id}/${va.id}/$st ×$F @$t"); break
+                }
+                avant = apres
+            }
+        }
         val n0 = oi.count { it != 0 }
         for (t in 0 until Vie.CYCLE) {
             val im = Vie.image(a, t)
@@ -130,11 +146,23 @@ fun main(args: Array<String>) {
         }
     }
     verifV(n > 3000, "$n images passées en revue (${(System.currentTimeMillis() - t0) / 1000} s)")
+    verifV(sautsFins.isEmpty(), "à chaque image, aucune ligne ni pixel d'appendice ne bouge de plus d'UN pixel de l'image finale" +
+        if (sautsFins.isEmpty()) "" else " : ${sautsFins.take(5)}")
     verifV(casses.isEmpty(), "aucune image de vie vide, tronquée ou hors palette" + if (casses.isEmpty()) "" else " : ${casses.take(5)}")
     verifV(vivants * 100 >= n * 90, "la vie anime $vivants images sur $n")
     val e = Bestiaire.espece("ectoplouf")!!
     val st = AnimAuto.images(Bestiaire.image(e, "bebe")!!, "statique")
-    verifV(st.images.size == Vie.CYCLE && st.images.map { it.toList() }.toSet().size > 4, "au repos : 64 images de vie, qui changent")
+    verifV(st.images.size == Vie.CYCLE && st.images.map { it.toList() }.toSet().size >= 3, "au pixel du sprite : 64 images, les yeux clignent")
+
+    // Android : AnimAuto.bitmap dessine la vie au pixel fin sur la toile recadrée (même place qu'au pixel du sprite)
+    val rec = fr.terminagotchi.Sprites.recadrer(st)
+    val rv = rec.vie
+    // le dessin réel commence PAD pixels après le coin de la vie : il faut ≥ 1 pixel de marge sur les côtés (ondulation)
+    // et ≥ 2 au-dessus (respiration), et rien ne doit dépasser en bas
+    verifV(rv != null && rv.x0 + Vie.PAD >= 1 && rv.y0 + Vie.PAD >= 2 &&
+        rv.x0 + Vie.largeur(rv.analyse) - Vie.PAD + 1 <= rec.largeur && rv.y0 + Vie.hauteur(rv.analyse) <= rec.hauteur,
+        "la vie au pixel fin garde sa place sur la toile recadrée (en-tête Android) : " +
+            "${rv?.x0},${rv?.y0} sur ${rec.largeur}×${rec.hauteur}")
 
     println("\n$okV réussis, $koV échoués")
     if (koV > 0) System.exit(1)

@@ -315,6 +315,15 @@ def animation(state, nom, aura=None, fin=False, eclat=None):
     pal = palette(state)
     st = core.stage(core.level(state["xp"]))
     w, h, o, p = _indexer(get_sprite(state, st), pal)
+    if nom == "statique" and fin:                      # la vie au pixel fin (rendu_fin.lignes_vie)
+        from . import rendu_fin, vie
+        cw, ch, co = anim_auto._rogner(w, h, o)
+        a = vie.analyse_gardee(cw, ch, co, p)
+        if a is not None:
+            mode = rendu_fin.mode()
+            ec0 = A.ECLAT_NORMAL if eclat is None else eclat
+            return anim_auto.Paresseux(vie.CYCLE, lambda k: rendu_fin.lignes_vie(a, p, k, aura, ec0, mode)[0]), \
+                anim_auto.IPS
     de = None
     if nom == "evolution" and st > 0:
         de = _indexer(get_sprite(state, st - 1), palette(state, st=st - 1))    # l'image d'avant, ses couleurs
