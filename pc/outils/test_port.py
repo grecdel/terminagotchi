@@ -262,7 +262,8 @@ verifier(port.indice(pas["python3 -m http.server 8000 --bind 127.0.0.1 --directo
 
 print("6. Sécurité et langues")
 port.eteindre_phare()
-nouveaux = sorted(x for x in fichiers_hors_terrain() - AVANT if not x.endswith(".bash_history") and "/.terminagotchi/" not in x)
+nouveaux = sorted(x for x in fichiers_hors_terrain() - AVANT if not x.endswith(".bash_history") and "/.terminagotchi/" not in x
+                  and "/.cache/powershell/" not in x)     # le cache de PowerShell lui-même (tg installer lit $PROFILE)
 verifier(not nouveaux, f"rien d'écrit hors du terrain et de ~/.terminagotchi ({nouveaux[:3]})")
 cmds = " ".join(s.get("cmd") or "" for lid in port.LECONS for s in port.LECONS[lid]["steps"])
 hotes = set(re.findall(r"https?://([^/:\s]+)", cmds))
