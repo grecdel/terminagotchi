@@ -121,7 +121,7 @@ Les exploits dans chaque monde font rencontrer de nouvelles créatures et des va
 
 ### 🌐 Le site du recensement (facultatif)
 
-Adresse actuelle : **https://terminagotchi.grecdel.workers.dev** (bientôt **terminagotchi.com**). Pour ceux qui le
+Adresse : **https://terminagotchi.com**. Pour ceux qui le
 veulent : un profil créé en une commande (sans adresse mail), la même créature sur PC et téléphone, le bestiaire
 complet, la galerie des dressages (si tu l'acceptes), les records et la « Star de la semaine », une chasse au
 trésor façon CTF, et une navigation au clavier comme dans le jeu. Les résultats sont vérifiés par le serveur.
