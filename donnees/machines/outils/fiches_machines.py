@@ -37,7 +37,7 @@ FICHES = dict([
     fiche("peripheriques", r"(/proc/cpuinfo|^lspci\b|^lsusb\b|^getprop\b|machines\s+monte\s+1\b)", [
         {"cmd": "grep -c ^processor /proc/cpuinfo | grep -cE '^[1-9]'", "sortie": "1"},
         {"cmd": "head -n 1 /proc/cpuinfo | cut -d: -f1 | tr -d ' \\t'", "sortie": "processor"},
-        {"cmd": "lspci | head -n 1 | grep -cE '^[0-9a-f]{2}:[0-9a-f]{2}\\.[0-7] '", "sortie": "1", "outil": "lspci"},
+        {"cmd": "lspci | head -n 1 | grep -cE '^([0-9a-f]{4,}:)?[0-9a-f]{2}:[0-9a-f]{2}\\.[0-7] '", "sortie": "1", "outil": "lspci"},
         {"cmd": "getprop ro.product.model", "rejeu": "telephone", "motif": r"\S"}],
         ["man 8 lspci (pciutils) : https://man7.org/linux/man-pages/man8/lspci.8.html", "man 8 lsusb (usbutils)",
          "man 5 proc, /proc/cpuinfo : https://man7.org/linux/man-pages/man5/proc_cpuinfo.5.html",

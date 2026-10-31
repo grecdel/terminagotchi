@@ -2460,7 +2460,7 @@
      "sortie": "processor"
     },
     {
-     "cmd": "lspci | head -n 1 | grep -cE '^[0-9a-f]{2}:[0-9a-f]{2}\\.[0-7] '",
+     "cmd": "lspci | head -n 1 | grep -cE '^([0-9a-f]{4,}:)?[0-9a-f]{2}:[0-9a-f]{2}\\.[0-7] '",
      "sortie": "1",
      "outil": "lspci"
     },
