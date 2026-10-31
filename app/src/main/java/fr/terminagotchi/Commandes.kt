@@ -80,6 +80,10 @@ class Commandes(
             "devine" -> devine(mots.getOrNull(1))
             "etat" -> etat()
             "envies", "envie" -> Reponse(Envies.ecran(jeu), couleur = ROSE)
+            // la satiété : l'état, l'assiette du jour, la série ; « vacances [oui|non] » met la faim en pause
+            "satiete", "satiété" -> Reponse((listOf(t("sat.ecran.titre")) + Satiete.lignes(jeu.also { it.tick() }).map { "  $it" }).joinToString("\n"), couleur = ROSE)
+            "vacances" -> Reponse(Satiete.vacances(jeu, when (mots.getOrNull(1)?.lowercase()) {
+                "oui", "on", "yes" -> true; "non", "off", "no" -> false; else -> null }), couleur = ROSE)
             // ---------------------------------------------------- salle d'entraînement (Entrainement.kt)
             "entrainement", "exercice" -> Reponse(Entrainement.commande(jeu, reste, dossier()), couleur = JAUNE)
             "badges" -> Reponse(Entrainement.commandeBadges(jeu, reste), couleur = ROSE)
@@ -640,7 +644,7 @@ class Commandes(
         val JAUNE = 0xFFFFD787.toInt()
         val VERT = 0xFF87FFAF.toInt()
         val ORANGE = 0xFFFFAF5F.toInt()
-        val CREATURE = setOf("caresse", "danse", "parle", "joue", "devine", "etat", "renomme", "envies", "envie")
+        val CREATURE = setOf("caresse", "danse", "parle", "joue", "devine", "etat", "renomme", "envies", "envie", "satiete", "vacances")
         val TELEPHONE = setOf("applis", "ouvre", "web", "carte", "appelle", "sms", "partage", "lampe", "vibre",
             "batterie", "dis", "reglages")
     }

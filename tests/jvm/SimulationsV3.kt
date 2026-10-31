@@ -4,7 +4,7 @@
  *   C5. chapitre 8, « Mon premier niveau » / « Les réglages » : `edite carte.txt` tapé dans un repaire (où un dressage
  *       a emmené l'enfant) ne valide jamais ; l'étape a maintenant son lieu (la salle de jeu) : la leçon montre le cd,
  *       `aide` ne dit plus « c'est le bon endroit », l'indice dit d'y aller ; depuis la salle de jeu, l'étape passe ;
- *   I13. un lieu sans nom traduit (repaire d'un habitat : mecanique, abyssal…) n'affiche plus la clé brute
+ *   I13. un lieu d'habitat (mecanique, abyssal…) a un vrai nom (« Atelier des engrenages »), jamais la clé brute
  *       « carte.piece.mecanique » ;
  *   I14. « non » à « Ton œuf s'appellera X. C'est bien ça ? » est reconnu (14 langues) et ne devient pas un nom.
  *
@@ -81,7 +81,7 @@ fun main(args: Array<String>) {
     verifierW("terrain_terminagotchi/jeu" in ind, "l'indice dit d'aller dans la salle de jeu : $ind")
     val aR = Vert.sansMarques(Histoire.aideLecon(jeuW))
     verifierW("C'est le bon endroit" !in aR && "Salle de jeu" in aR, "aide dans le repaire : pas « le bon endroit », va à la salle de jeu")
-    verifierW("carte.piece" !in aR && "mecanique" in aR, "I13 : aide nomme le repaire sans clé brute : $aR")
+    verifierW("carte.piece" !in aR && "Atelier des engrenages" in aR, "I13 : aide nomme le repaire (vrai nom, sans clé brute) : $aR")
     val lec = Vert.sansMarques(jeuW.texteLecon() ?: "")
     verifierW("terrain_terminagotchi/jeu" in lec, "la leçon montre le cd de la salle de jeu")
     val carte = File(salle, "carte.txt")
@@ -90,8 +90,10 @@ fun main(args: Array<String>) {
     verifierW(lecW() == ("createur1" to 1), "depuis la salle de jeu, la carte modifiée valide l'étape (${lecW()})")
 
     println("I13. Les lieux sans nom traduit")
-    verifierW(Maison.nomPiece("mecanique") == "mecanique", "mecanique : « ${Maison.nomPiece("mecanique")} »")
-    verifierW(Maison.nomPiece("eau_petillante") == "eau petillante", "eau_petillante : « ${Maison.nomPiece("eau_petillante")} »")
+    // suite du rapport v3 : les lieux d'habitat ont de vrais noms (14 langues) ; un dossier inconnu garde son nom
+    verifierW(Maison.nomPiece("mecanique") == "Atelier des engrenages", "mecanique : « ${Maison.nomPiece("mecanique")} »")
+    verifierW(Maison.nomPiece("eau_petillante") == "Source pétillante", "eau_petillante : « ${Maison.nomPiece("eau_petillante")} »")
+    verifierW(Maison.nomPiece("dossier_perso") == "dossier perso", "un dossier inconnu : « ${Maison.nomPiece("dossier_perso")} »")
     verifierW(Maison.nomPiece("jeu") == "Salle de jeu", "jeu : « ${Maison.nomPiece("jeu")} »")
     verifierW(Maison.nomPiece("grenier") == "Grenier", "grenier : « ${Maison.nomPiece("grenier")} »")
 

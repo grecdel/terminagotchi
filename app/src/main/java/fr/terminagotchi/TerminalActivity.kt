@@ -1053,7 +1053,9 @@ class TerminalActivity : Activity() {
     // ------------------------------------------------------------ affichage
     private fun rafraichir() {
         titre.text = if (!jeu.existe) t("term.oeuf_mysterieux") else if (jeu.shiny) miseEnForme("§${jeu.titre()}§", null) else jeu.titre()
-        faim.text = if (jeu.existe) Envies.compact(jeu) + "  " + Envies.emoji(jeu) else jeu.texteFaim()
+        // les 6 envies, puis l'état de la satiété et la petite assiette du jour (Satiete.kt)
+        faim.text = if (jeu.existe) Envies.compact(jeu) + "  " + Envies.emoji(jeu) + "\n" + Satiete.ligneEtat(jeu) + "  🍽 " + Satiete.assiette(jeu)
+            else jeu.texteFaim()
         xp.text = jeu.texteXp()
         // P2-5 : « INT AGI FOR END » n'apparaît qu'avec l'équipe (avant, c'est du jargon pour un enfant de 7 ans)
         stats.text = (if (Intro.ouvert(jeu, "equipe")) jeu.texteStats() else "") + if (Explo.captures(jeu).length() > 0 && Intro.ouvert(jeu, "equipe")) Guide.actuel(jeu).let { "  🧭 ${Guide.ICONES[it.type]} ${it.nom}" } else ""
@@ -1211,8 +1213,8 @@ class TerminalActivity : Activity() {
         ambiance = now + AMBIANCE
         val h = java.util.Calendar.getInstance().get(java.util.Calendar.HOUR_OF_DAY)
         when {
-            h >= 21 || h < 7 -> jouerCreature("dort")
-            jeu.faim < 30 -> jouerCreature("affame")
+            h >= 21 || h < 7 || Satiete.etat(jeu) == "veille" -> jouerCreature("dort")   // la nuit, ou en veille
+            Satiete.affamee(jeu) -> jouerCreature("affame")
             Random.nextDouble() < 0.3 -> jouerCreature(listOf("statique", "salut", "content").random())
         }
     }

@@ -286,7 +286,7 @@ object Guide {
     fun apresDefi(jeu: Jeu): String? {
         val m = actuel(jeu)
         val ty = typeDuJour()
-        if (efficacite(m.type, ty) <= 1) return null
+        if (efficacite(m.type, ty) <= 1 || Satiete.affamee(jeu)) return null     // affamée : pas de bonus du jour
         jeu.ajouterXp(BONUS_DEFI)
         val texte = t("guide.defi.bonus", "icone" to ICONES[m.type], "nom" to m.nom, "type" to nomType(ty), "xp" to BONUS_DEFI)
         jeu.log(texte)
@@ -362,7 +362,8 @@ object Guide {
                 jeu.ajouterXp(1)
                 if (now - g.optLong("astuce_t") >= ASTUCE_DELAI && Intro.ouvert(jeu, "equipe")) {
                     g.put("astuce_t", now)
-                    jeu.dire("${ICONES[m.type]} ${m.nom} : " + astuce(tal), 10)
+                    // affamée : le guide grogne au lieu de donner son astuce (Satiete.kt)
+                    jeu.dire("${ICONES[m.type]} ${m.nom} : " + (if (Satiete.affamee(jeu)) t("sat.guide.grognon", "cmd" to "envies") else astuce(tal)), 10)
                 }
             }
             val equipe = membres(jeu)

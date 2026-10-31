@@ -11,7 +11,7 @@ import subprocess
 from . import (compagnon, core, dressage, entrainement, envies, equipe, guide, exemples, explique, explo, histoire, intro, lecons, lexique,
                maison, notif, quetes, recense, registre, sprites, terrain)
 from .bestiaire import arc_en_ciel
-from . import langue, rendu_fin, sur
+from . import langue, rendu_fin, satiete, sur
 from .langue import ajuster, envelopper, largeur, raccourcir, t
 from .mots import palier, terme
 
@@ -66,7 +66,8 @@ def render(state, frame, interactif, anim=None, tic=None):
     ]
     if intro.ouvert(state, "envies"):             # les jauges des envies arrivent avec leur présentation
         right += [f"{jauges[0]}  {DIM}{envies.humeur(state)}{RESET}",
-                  jauges[1] + (f"  {fg(214)}💭 {envies.ICONES[m['e']]} {envies.nom(m['e'])}{RESET}" if m else "")]
+                  jauges[1] + (f"  {fg(214)}💭 {envies.ICONES[m['e']]} {envies.nom(m['e'])}{RESET}" if m else ""),
+                  f"{satiete.ligne_etat(state)}  {DIM}🍽{RESET} {satiete.assiette(state)}"]   # l'assiette du jour
     if intro.ouvert(state, "equipe"):             # P2-5 : INT AGI FOR END (du jargon à 7 ans) avec l'équipe seulement
         right += [stats, t("app.competences_bestioles", n=nb_sk, b=sum(state["collection"].values()))]
     if state.get("captures") and intro.ouvert(state, "equipe"):     # le guide (tg guide) : en tête de l'équipe
@@ -855,9 +856,9 @@ def fenetre(once):
                             anim = _preparer_anim(state, evt[0]) or anim
                     elif not once and anim is None and now >= ambiance and not intro.en_cours(state):
                         ambiance = now + AMBIANCE
-                        if _nuit():
+                        if _nuit() or satiete.etat(state) == "veille":      # la nuit, ou en veille : elle dort
                             anim = _preparer_anim(state, "dort")
-                        elif state["hunger"] < 30:
+                        elif satiete.affamee(state):
                             anim = _preparer_anim(state, "affame")
                         elif random.random() < 0.3:
                             anim = _preparer_anim(state, random.choice(["statique", "salut", "content"]))
@@ -946,7 +947,7 @@ def veille():
 
 def aide():
     return "\n".join(langue.remplir(l, {}) for l in langue.liste("app.aide") + langue.liste("app.aide.histoire")
-                     + [t("env.aide"), t("aura.aide"), t("ent.aide")])
+                     + [t("env.aide"), t("sat.aide"), t("aura.aide"), t("ent.aide")])
 
 
 def commande_histoire(mode, args):
@@ -1127,6 +1128,19 @@ def _main():
             etape(spontane=False, defis=False, cwd=ici)        # les dernières commandes tapées d'abord
             core.modifier(lambda s: sortie.extend(entrainement.commande_texte(s, args[1:], ici)))
         print("\n".join(sortie))
+        return
+    if mode == "vacances":                     # tg vacances [oui|non] : la faim en pause (vacances, école)
+        creer_si_besoin()
+        choix = args[1].lower() if len(args) > 1 else ""
+        on = True if choix in ("on", "oui", "yes") else False if choix in ("off", "non", "no") else None
+        sortie = []
+        core.modifier(lambda s: sortie.append(satiete.vacances(s, on)))
+        print(sortie[0] if sortie else "")
+        return
+    if mode == "satiete":                      # tg satiete : l'état, l'assiette du jour, la série de soins
+        creer_si_besoin()
+        st = core.modifier(lambda s: core.tick(s))
+        print("\n".join([f" {fg(213)}{BOLD}" + t("sat.ecran.titre") + RESET] + ["  " + x for x in satiete.lignes(st)]))
         return
     if mode == "envies":                       # tg envies : les 6 envies, et comment faire plaisir à chacune
         creer_si_besoin()

@@ -17,6 +17,7 @@ import fr.terminagotchi.Parties
 import fr.terminagotchi.Quetes
 import fr.terminagotchi.Recherche
 import fr.terminagotchi.Regles
+import fr.terminagotchi.Satiete
 import fr.terminagotchi.Shell
 import fr.terminagotchi.Tour
 import fr.terminagotchi.Vert
@@ -130,7 +131,10 @@ fun main(args: Array<String>) {
     jeu.faim = 50.0
     jeu.dernierTick = System.currentTimeMillis() - 7200_000L
     jeu.tick()
-    verifier(proche(jeu.faim, 40.0, 0.1), "la faim descend 2 fois moins vite : −10 en 2 h (${jeu.faim})")
+    // satiété : seulement de 7 h à 21 h, 2160 s d'éveil par point (et l'Endurance, comme sur PC)
+    val maint = System.currentTimeMillis() / 1000.0
+    val baisse = Satiete.secondesEveil(maint - 7200, maint) / Satiete.taux(endurance = jeu.stats["Endurance"] ?: 0)
+    verifier(proche(jeu.faim, 50.0 - baisse, 0.1), "la faim descend 3 fois moins vite, seulement le jour : −${"%.1f".format(baisse)} en 2 h (${jeu.faim})")
 
     println("Envie du moment et rappels espacés")
     regler("faim" to 90.0, "jeu" to 20.0, "curiosite" to 80.0, "explorer" to 80.0, "sommeil" to 80.0)
@@ -138,7 +142,7 @@ fun main(args: Array<String>) {
     verifier(m?.optString("e") == "jeu" && m.optString("cmd") in setOf("defi", "donjon", "ctf", "joue pierre"),
         "la plus basse sous ${Envies.SEUIL} : jeu → ${m?.optString("cmd")}")
     regler("faim" to 20.0, "jeu" to 10.0)
-    verifier(Envies.moment(jeu)?.optString("e") == "faim", "la faim urgente (< 30) passe toujours devant")
+    verifier(Envies.moment(jeu)?.optString("e") == "faim", "la faim urgente (affamée, < 40) passe toujours devant")
     regler("faim" to 90.0, "jeu" to 80.0)
     verifier(Envies.moment(jeu) == null, "tout va bien : pas d'envie du moment")
     val vues = mutableSetOf<String>()

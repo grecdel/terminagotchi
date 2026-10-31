@@ -70,12 +70,21 @@ object Aura {
         }
     }
 
+    /** L'éclat d'après les 4 états de la satiété (le même calcul que aura.niveau_satiete en Python). */
+    fun niveauSatiete(faim: Int, envies: Int, veille: Boolean = false): Int = when {
+        // d'après les 4 états de la satiété (Satiete.kt) : veille 0, affamée 1, en forme 2, rassasiée et bien soignée 3
+        veille || faim < Satiete.AFFAMEE -> 0
+        faim < Satiete.FORME -> 1
+        faim >= Satiete.RASSASIEE && envies >= 50 -> 3
+        else -> 2
+    }
+
     /** L'éclat de l'aura de la créature selon le soin : la faim (60 %), les envies jeu, curiosité, exploration et
      *  sommeil (40 %). */
     fun eclat(jeu: Jeu): Int = try {
         val faim = jeu.faim
         val autres = listOf("jeu", "curiosite", "explorer", "sommeil").map { Envies.valeur(jeu, it) }
-        niveauSoin(faim.toInt(), autres.average().toInt())
+        niveauSatiete(faim.toInt(), autres.average().toInt(), jeu.extra.optJSONObject("satiete")?.optBoolean("veille") == true)
     } catch (e: Exception) { ECLAT_NORMAL }
 
     /** Le réglage de la partie (bouton ✨ de l'écran principal) : affichée par défaut. */

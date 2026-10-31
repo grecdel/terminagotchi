@@ -33,7 +33,7 @@ class Rappels : BroadcastReceiver() {
                     }
                     val n = jeu.module("notifs")
                     val maintenant = System.currentTimeMillis()
-                    if (Intro.ouvert(jeu, "extras") && n.optBoolean("actives", true) && jeu.faim < 30 && maintenant - n.optLong("faim", 0) > 3 * 3600_000L) {
+                    if (Intro.ouvert(jeu, "extras") && n.optBoolean("actives", true) && Satiete.affamee(jeu) && !Satiete.absente(jeu) && maintenant - n.optLong("faim", 0) > 3 * 3600_000L) {
                         n.put("faim", maintenant)
                         notifier(context, t("rappel.faim.titre", "nom" to jeu.nom),
                             Regles.auHasard(Regles.FAIM) + " " + t("rappel.toucher"))

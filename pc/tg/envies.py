@@ -62,7 +62,7 @@ SOIR, MATIN = 20, 7
 POUSSIERE_INTERVALLE = 45 * 60
 POUSSIERE_MAX = 8
 SEUIL = 40.0
-FAIM_URGENTE = 30.0
+FAIM_URGENTE = 40.0                  # = « affamée » (satiete.FORME)
 SATISFAITE = 60.0
 MERCI = 15.0                         # un plaisir d'au moins 15 points sur l'envie du moment : merci (elle repart)
 PROCHES = 10.0
@@ -417,9 +417,11 @@ def tick(state, lignes):
 def humeur_cle(state):
     """L'humeur combine les envies : la faim d'abord (la santé), puis les envies à zéro, puis la moyenne."""
     vals = valeurs(state)
-    if vals["faim"] <= 0:
-        return "humeur.vide"
-    if vals["faim"] < FAIM_URGENTE:
+    from . import satiete
+    e = satiete.etat(state)
+    if e == "veille":
+        return "sat.etat.veille"                       # en veille (jamais de mort) : un repas complet la réveille
+    if e == "affamee":
         return "humeur.affame"
     zeros = sum(1 for k, x in vals.items() if k != "faim" and x < 1)
     if zeros >= 2:
@@ -481,6 +483,12 @@ def ecran(state):
     out.append(" " + (t("env.ecran.moment", icone=ICONES[m["e"]], envie=nom(m["e"]), cmd=m["cmd"]) if m
                       else t("env.ecran.aucune", nom=state["name"])))
     out.append(" " + t("env.ecran.humeur", humeur=humeur(state)))
+    out.append("")
+    from . import satiete
+    out.append(f" {fg(213)}{BOLD}" + t("sat.ecran.titre") + RESET)      # la satiété : état, assiette, série, vacances
+    for x in satiete.lignes(state):
+        for l in envelopper(x, 76):
+            out.append(f"  {l}")
     out.append("")
     for cle in ("env.cache.enfant", "env.cache.grands"):
         for l in envelopper(t(cle, lsa="`" + C("ls -a", "dir -Force") + "`"), 76):

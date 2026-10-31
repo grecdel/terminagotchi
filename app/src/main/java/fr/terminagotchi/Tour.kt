@@ -40,9 +40,12 @@ object Tour {
         if (combats) Explo.attirer(jeu, ligne, colle || rappel)    // la commande d'une famille l'attire
         if (hasard && !colle && !rappel && combats && Explo.debloquee(jeu) && !Dressage.actif(jeu)) {
             val attend = jeu.module("explo").optBoolean("attend")
-            if (attend && !Histoire.enPleineEtape(jeu)) {              // il attendait la fin de l'étape : le voilà
+            if (Satiete.affamee(jeu)) {
+                // trop faim pour dresser : les monstres attendent qu'elle ait mangé (Satiete.kt)
+            } else if (attend && !Histoire.enPleineEtape(jeu)) {       // il attendait la fin de l'étape : le voilà
                 jeu.module("explo").remove("attend"); Explo.spawn(jeu)
-            } else if (Random.nextInt(25) == 0) {                     // en jouant, un monstre peut surgir…
+            } else if (Random.nextDouble() < 0.04 * (if (Satiete.rassasiee(jeu)) Satiete.RENCONTRES else 1.0)) {
+                // en jouant, un monstre peut surgir (1 fois sur 25 ; 1 sur 20 quand elle est rassasiée : elle les attire)…
                 if (Histoire.enPleineEtape(jeu)) jeu.module("explo").put("attend", true)   // … sans cacher la leçon (P2-3)
                 else Explo.spawn(jeu)
             }

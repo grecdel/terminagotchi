@@ -113,7 +113,10 @@ verifier(abs(e["sommeil"] - attendu) < 0.1, f"sans jouer elle se repose toute se
 regler(faim=50)
 modifier(lambda s: s.update(last_tick=time.time() - 7200))
 st = etape()
-verifier(abs(st["hunger"] - (50 - 7200 / 720)) < 0.1, f"la faim descend 2 fois moins vite : −10 en 2 h ({st['hunger']:.1f})")
+from tg import satiete as S  # noqa: E402
+eveil = S.secondes_eveil(time.time() - 7200, time.time())   # satiété : seulement de 7 h à 21 h, 2160 s par point
+verifier(abs(st["hunger"] - (50 - eveil / S.taux(endurance=st["stats"].get("Endurance", 0)))) < 0.1,
+         f"la faim descend 3 fois moins vite, seulement le jour : −{eveil / S.taux(endurance=st['stats'].get('Endurance', 0)):.1f} en 2 h ({st['hunger']:.1f})")
 
 print("Envie du moment et rappels espacés")
 regler(faim=90, jeu=20, curiosite=80, explorer=80, sommeil=80)
@@ -122,7 +125,7 @@ m = E.moment(st)
 verifier(m and m["e"] == "jeu" and m["cmd"] == "tg defi", f"la plus basse sous {E.SEUIL:g} : jeu → tg defi ({m})")
 regler(faim=20, jeu=10, curiosite=80, explorer=80, sommeil=80)
 st = etape()
-verifier(E.moment(st)["e"] == "faim", "la faim urgente (< 30) passe toujours devant")
+verifier(E.moment(st)["e"] == "faim", "la faim urgente (affamée, < 40) passe toujours devant")
 regler(faim=90, jeu=80, curiosite=80, explorer=80, sommeil=80)
 st = etape()
 verifier(E.moment(st) is None, "tout va bien : pas d'envie du moment")

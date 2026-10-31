@@ -24,7 +24,11 @@ def visage(state):
         return "( ◯ )"
     if state.get("_vient_de_manger"):
         return "(^▽^)"
-    if state["hunger"] < 30:
+    from . import satiete
+    e = satiete.etat(state)
+    if e == "veille":
+        return "(－_－)zᶻ"                            # en veille : yeux mi-clos (un repas complet la réveille)
+    if e == "affamee":
         return "(╥_╥)"
     if state["defi"]:
         return "(ʘ_ʘ)"
@@ -37,9 +41,13 @@ def ligne(state):
     lo, hi = 10 * (lvl - 1) ** 2, 10 * lvl ** 2
     pct = int(100 * (state["xp"] - lo) / max(1, hi - lo))
     coul = sprites.body_color(state)
-    faim = sprites.bar(state["hunger"], 100, 5).replace("█", "▰").replace("░", "▱")
-    faim_c = 78 if state["hunger"] >= 60 else 221 if state["hunger"] >= 30 else 203
-    tete = f"{fg(coul)}{visage(state)}{RESET} {BOLD}{state['name']}{RESET} {DIM}{t('dress.niv', n=lvl)} {pct}%{RESET} {fg(faim_c)}{faim}{RESET}"
+    from . import satiete
+    # v3 : la jauge de faim a son étiquette (🍎), pour ne pas la confondre avec le % d'XP juste à côté
+    faim = "🍎" + sprites.bar(state["hunger"], 100, 5).replace("█", "▰").replace("░", "▱")
+    e = satiete.etat(state)
+    faim_c = {"rassasiee": 78, "forme": 78, "affamee": 221}.get(e, 203)
+    tete = (f"{fg(coul)}{visage(state)}{RESET} {BOLD}{state['name']}{RESET} {DIM}{t('dress.niv', n=lvl)} {pct}%{RESET} "
+            f"{fg(faim_c)}{faim}{RESET}" + (f" {fg(faim_c)}{satiete.ICONES_ETAT[e]}{RESET}" if e != "forme" else ""))
 
     try:                                           # I3 : le monstre en cours de dressage, sur sa propre ligne
         from . import dressage
@@ -121,11 +129,17 @@ def annonces(state):
         e = None
     if e:
         out.append(f"{fg(214)}{e}{RESET}")
-    for x in state.pop("terminal", []) or []:
+    term = state.pop("terminal", []) or []
+    for x in term:
         out.append(f"{fg(214)}{x}{RESET}")
+    erreur = bool(e) or core.DERNIER["statut"] not in (None, 0) or any(not x.startswith("✔") for x in term)
     les, _ = lecons.lecon_courante(state)
     if les and core.level(state["xp"]) >= les["niveau"]:
         cle = f"{les['id']}:{state['step']}"
+        if state.get("term_etape") == cle and erreur:
+            # v3 : après une erreur, la commande attendue est réaffichée (plus besoin de taper `aide` à chaque fois)
+            step = les["steps"][state["step"]]
+            out.append(f"   {fg(226)}➜ " + t("comp.rappel", cmd=commande_montree(state, step)) + RESET)
         if state.get("term_etape") != cle:
             state["term_etape"] = cle
             step = les["steps"][state["step"]]

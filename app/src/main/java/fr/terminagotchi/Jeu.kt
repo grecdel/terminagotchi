@@ -614,20 +614,22 @@ class Jeu(ctx: Context) {
     fun dominant(): String =
         if (stats.values.all { it == 0 }) Regles.STATS.random() else stats.maxByOrNull { it.value }!!.key
 
+    /** la dernière notification de la faim (« j'ai faim », « en veille ») : l'écran la montre une fois */
+    var notifFaim: String? = null
+
     fun tick() {
-        val now = System.currentTimeMillis()
-        // ms par point de faim : 2 fois plus lent qu'avant les envies (Envies.kt) ; Gardien double encore
-        val rate = if ("Gardien" in skills) 1_440_000.0 else 720_000.0
+        // la faim ne baisse que de 7 h à 21 h, 3 fois plus lentement qu'avant, rien en vacances (Satiete.kt) ;
         // l'horloge qui recule (réglage du téléphone) ne nourrit pas : faim entre 0 et 100
-        faim = (faim - (now - dernierTick).coerceAtLeast(0L) / rate).coerceIn(0.0, 100.0)
-        dernierTick = now
+        if (existe) Satiete.tick(this)?.let { notifFaim = it } else dernierTick = System.currentTimeMillis()
         Envies.temps(this)                  // les autres envies : usure lente, repos, poussière du terrain
     }
 
     fun ajouterXp(n: Int) {
         val avant = niveau
+        val xpAvant = xp
         xp += n
         if (Intro.retient(this)) xp = minOf(xp, 9)         // l'œuf n'éclot qu'à la fin de sa liste de commandes (Intro.kt)
+        if (existe) Satiete.retenir(this, xpAvant)          // grandir demande aussi des jours soignés (l'XP en trop attend)
         val apres = niveau
         if (apres <= avant) return
         animer(if (Regles.stade(apres) > Regles.stade(avant)) "evolution" else "content")
@@ -665,8 +667,10 @@ class Jeu(ctx: Context) {
             log(t("jeu.mange.rappel", "cmd" to cmd))
             return false
         }
-        if (code != null && code != 0) {        // la commande a échoué : elle nourrit un peu, sans XP ni nouveau goût (G-34)
-            faim = (faim + 1).coerceAtMost(100.0)
+        // v3 : une fonction du jeu « pas encore » ouverte (aura, envies…) ne nourrit pas et ne donne pas d'XP
+        if (Intro.bloque(this, cmd, ligne.trim().substringAfter(' ', "").trim()) != null) return false
+        if (code != null && code != 0) {        // la commande a échoué : elle nourrit à peine, sans XP ni nouveau goût (G-34)
+            Satiete.repas(this, cmd, ratee = true)
             log(t("core.rate.log", "cmd" to cmd))
             animer("confus")
             return false
@@ -678,7 +682,7 @@ class Jeu(ctx: Context) {
         val derniers = repas.optJSONArray("derniers")?.let { a -> (0 until a.length()).map { a.getString(it) } } ?: emptyList()
         repas.put("derniers", org.json.JSONArray((derniers + cmd).takeLast(FENETRE_REPAS)))
         if (cmd in derniers && cmd in vus) {
-            faim = (faim + 3).coerceAtMost(100.0)
+            Satiete.repas(this, cmd, repetee = true)          // la même commande de suite : elle nourrit à peine
             module("compte").put("repas", System.currentTimeMillis())
             log(t("core.mange", "cmd" to cmd))
             animer("mange")
@@ -695,13 +699,14 @@ class Jeu(ctx: Context) {
         if (cmd in Commandes.CREATURE) {
             val maintenant = System.currentTimeMillis()
             if (maintenant - (dernierJeu[cmd] ?: 0L) < 60_000) {
-                faim = (faim + 1).coerceAtMost(100.0)
+                Satiete.repas(this, cmd, repetee = true)
                 log(msg + t("jeu.mange.deja_joue"))
                 return true
             }
             dernierJeu[cmd] = maintenant
         }
-        if (vus.add(cmd)) {
+        val nouvelle = vus.add(cmd)
+        if (nouvelle) {
             gain += 5
             msg += t("core.mange.nouveau")
         }
@@ -709,11 +714,11 @@ class Jeu(ctx: Context) {
             gain *= 2
             msg += " ×2"
         }
-        faim = (faim + 3).coerceAtMost(100.0)
+        Satiete.repas(this, cmd, nouvelle = nouvelle)      // l'aliment de sa famille (nouveau goût, assiette, veille)
         module("compte").put("repas", System.currentTimeMillis())
         log(msg)
         animer("mange")
-        ajouterXp(gain)
+        Satiete.gagnerXp(this, gain)                       // +20 % rassasiée, −20 % affamée (Satiete.kt)
         return true
     }
 
@@ -738,6 +743,9 @@ class Jeu(ctx: Context) {
         if (bulleActive().isNotEmpty()) return
         when {
             stade == 0 -> dire(Regles.auHasard(Regles.OEUF))
+            // le lien : ses phrases à elle (après quelques jours soignés)
+            Satiete.lien(this) >= Satiete.LIEN_PHRASES && kotlin.random.Random.nextDouble() < 0.3 ->
+                dire(Langue.auHasard("sat.lien.phrases", "nom" to nom))
             // la faim et les autres envies passent par Envies.kt (rappels espacés)
             else -> dire(Regles.TRAITS[trait]?.let { Regles.auHasard(it) } ?: "…")
         }

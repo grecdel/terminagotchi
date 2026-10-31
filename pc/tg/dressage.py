@@ -594,6 +594,10 @@ def commencer(state, sauvage):
     taches = choisir_epreuves(e, premiere, rar, n_caps, rencontrees(state))
     bo = bonus(state)
     debutant = TEMPS_DEBUTANT if n_caps < 5 else 0
+    from . import satiete
+    repue = satiete.rassasiee(state)           # rassasiée : quelques secondes de plus et l'exemple tout de suite
+    if repue:
+        debutant += satiete.DRESSAGE_TEMPS
     fam_de = {id(x): f for f, v in EPREUVES.items() for x in v}
     state["dressage"] = {
         "sauvage": sauvage["f"], "espece": e["nom"], "shiny": sauvage.get("shiny", False), "zone": sauvage["zone"],
@@ -601,7 +605,7 @@ def commencer(state, sauvage):
         "debut": time.time(), "duree": None if premiere else DUREE[rar] + bo["temps"] + debutant, "x": {}, "lecon": premiere,
         "ind": ind, "rarete": rar, "variante": ind.get("variante", "classique"),
         "mefiance": 100 - bo["mefiance"], "seconde": bo["seconde_chance"], "examine": False,
-        "exemple_tout_de_suite": n_caps < 5,           # I10 : un débutant voit l'exemple tout de suite
+        "exemple_tout_de_suite": n_caps < 5 or repue,  # I10 : un débutant voit l'exemple tout de suite
     }
     if rar in ULTIMES:
         state.setdefault("dressage_essais", {})[e["nom"]] = jour

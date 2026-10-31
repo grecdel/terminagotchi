@@ -328,6 +328,8 @@ def migrate(state):
     from . import intro
     intro.i_(state)                        # l'intro et le déblocage (une ancienne partie : tout reste ouvert)
     intro.d_(state)
+    from . import satiete
+    satiete.s_(state)                      # la satiété (une ancienne partie : 3 jours soignés offerts, en forme)
     for k, v in {"notifs": True, "permanente": True, "compagnon": "ligne", "bulle": True}.items():
         state["config"].setdefault(k, v)
     state["version"] = VERSION
@@ -335,10 +337,13 @@ def migrate(state):
 
 
 def add_xp(state, n):
+    xp_avant = state["xp"]
     old = level(state["xp"])
     state["xp"] += n
     if isinstance(state.get("intro"), dict) and state["intro"].get("etat") == "oeuf":
         state["xp"] = min(state["xp"], 9)    # l'œuf n'éclot qu'à la fin de sa liste de commandes (intro.py)
+    from . import satiete
+    satiete.retenir(state, xp_avant)   # grandir demande aussi des jours soignés (l'XP en trop est gardée)
     new = level(state["xp"])
     if new <= old:
         return
@@ -357,18 +362,10 @@ def add_xp(state, n):
 
 
 def tick(state):
-    now = time.time()
-    # secondes par point de faim : 2 fois plus lent qu'avant les envies (envies.py) ; Gardien double encore
-    rate = 1440 if "Gardien" in state["skills"] else 720
-    rate *= 1 + min(1.0, state["stats"].get("Endurance", 0) / 100)   # l'Endurance fait durer le repas
-    avant = state["hunger"]
-    ecoule = max(0.0, now - state.get("last_tick", now))       # l'horloge qui recule ne nourrit pas
-    state["hunger"] = min(100.0, max(0.0, state["hunger"] - ecoule / rate))
-    if avant >= 30 > state["hunger"]:
-        notif(state, t("core.notif.faim"))
-    elif avant > 0 == state["hunger"]:
-        notif(state, t("core.notif.epuise"))
-    state["last_tick"] = now
+    """La faim baisse avec le temps : seulement de 7 h à 21 h, 3 fois plus lentement qu'avant, rien en vacances
+    (satiete.py : les 4 états, la veille, les jours soignés)."""
+    from . import satiete
+    satiete.tick(state)
 
 
 BUILTINS = {"cd", "echo", "export", "alias", "history", "type", "source", ".", "exit", "for", "if", "while",
@@ -460,8 +457,15 @@ def feed(state, line, statut=None):
         log(state, t("core.inconnue.log", cmd=cmd))
         animer(state, "confus")
         return
-    if statut not in (None, 0):                 # la commande a échoué : elle nourrit un peu, sans XP ni nouveau goût
-        state["hunger"] = min(100.0, state["hunger"] + 1)
+    from . import satiete
+    if cmd == "tg" or cmd in BUILTINS:          # v3 : une fonction du jeu « pas encore » ouverte ne nourrit pas
+        from . import intro
+        mots = line.split()
+        sous = mots[1].lower() if cmd == "tg" and len(mots) > 1 else cmd
+        if intro.bloque(state, sous):
+            return
+    if statut not in (None, 0):                 # la commande a échoué : elle nourrit à peine, sans XP ni nouveau goût
+        satiete.repas(state, cmd, ratee=True)
         log(state, t("core.rate.log", cmd=cmd))
         animer(state, "confus")
         return
@@ -472,7 +476,7 @@ def feed(state, line, statut=None):
     repetee = cmd in derniers and cmd in state["seen"]
     state["derniers"] = (derniers + [cmd])[-FENETRE_REPAS:]
     if repetee:
-        state["hunger"] = min(100.0, state["hunger"] + 3)
+        satiete.repas(state, cmd, repetee=True)    # la même commande de suite : elle nourrit à peine
         state["repas_t"] = time.time()
         log(state, t("core.mange", cmd=cmd))
         animer(state, "mange")
@@ -486,7 +490,8 @@ def feed(state, line, statut=None):
         from .mots import palier
         if palier(state) >= 1:                   # « +END » : du jargon pour un enfant qui débute (P2-5)
             msg += " +" + nom_stat(CATEGORIES[cat]["stat"], court=True)
-    if cmd not in state["seen"]:
+    nouvelle = cmd not in state["seen"]
+    if nouvelle:
         state["seen"].append(cmd)
         gain += 5
         msg += t("core.mange.nouveau")
@@ -503,11 +508,11 @@ def feed(state, line, statut=None):
           and not cmd.startswith(("./", ".\\"))):
         gain *= 3
         msg += t("core.mange.creation")
-    state["hunger"] = min(100.0, state["hunger"] + 3)
+    satiete.repas(state, cmd, nouvelle=nouvelle)  # l'aliment de sa famille (nouveau goût, assiette, veille)
     state["repas_t"] = time.time()
     log(state, msg)
     animer(state, "mange")
-    add_xp(state, gain)
+    satiete.gagner_xp(state, gain)              # +20 % rassasiée, −20 % affamée (satiete.py)
 
 # ================================================================ défis éclair
 
@@ -570,6 +575,10 @@ def idle_talk(state, proba=0.08):
     if st == 0:
         say(state, au_hasard("core.oeuf"))
     else:                      # la faim et les autres envies passent par envies.py (rappels espacés)
+        from . import satiete
+        if satiete.lien(state) >= satiete.LIEN_PHRASES and random.random() < 0.3:
+            say(state, au_hasard("sat.lien.phrases", nom=state["name"]))     # le lien : ses phrases à elle
+            return
         say(state, au_hasard("trait." + state["trait"] + ".phrases"))
 
 

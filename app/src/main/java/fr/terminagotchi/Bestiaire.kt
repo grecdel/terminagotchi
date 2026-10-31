@@ -469,7 +469,8 @@ object Bestiaire {
     fun lieu(zone: String): String {
         val base = zone.substringBefore('/')
         val prof = zone.count { it == '/' }.coerceAtMost(3)
-        return (habitats[base] ?: base) + listOf("", " " + t("exp.recoin"), " " + t("exp.cachette"),
+        // v3 : le vrai nom du lieu dans la langue choisie (« Atelier des engrenages »), sinon celui du bestiaire
+        return Langue.ou("carte.piece.$base", habitats[base] ?: base) + listOf("", " " + t("exp.recoin"), " " + t("exp.cachette"),
             " " + t("exp.sanctuaire"))[prof]
     }
 

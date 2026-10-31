@@ -128,7 +128,8 @@ def condition(state, q):
     from . import histoire
     if q.get("eclos") and not eclos(state):
         return False
-    if core.level(state.get("xp", 0)) < q.get("niveau", 0):
+    from . import satiete
+    if satiete.niveau_appris(state) < q.get("niveau", 0):   # l'XP mise de côté avant une évolution compte aussi
         return False
     if q.get("lecons") or q.get("chapitres") or q.get("ailes"):
         h = histoire.h_(state)

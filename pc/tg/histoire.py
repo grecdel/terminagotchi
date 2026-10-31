@@ -399,7 +399,8 @@ def niveau_requis(state, c, i):
         n = min(12, 5 + nb_ailes(state) + i)
     if c["id"] == "reveil":
         return n
-    return max(1, min(n, core.level(xp_appris(state))))
+    from . import satiete                  # une évolution qui attend des jours soignés ne bloque jamais une leçon
+    return max(1, min(n, core.level(xp_appris(state)), satiete.plafond(state)))
 
 
 def _repli(s):
@@ -757,8 +758,9 @@ def avancer(state, les):
     explique.apres_reussite(state, step["cmd"])           # -r, >>, 444… : expliqués une fois (explique.py)
     state["step"] += 1
     core.animer(state, "content")
+    from . import satiete
     if state["step"] < len(les["steps"]):
-        core.add_xp(state, 5)
+        satiete.gagner_xp(state, 5, lecon=True)          # +20 % si elle est rassasiée (jamais moins : leçon)
         return True
     finir_lecon(state, les)
     return False
@@ -782,7 +784,8 @@ def finir_lecon(state, les):
     stat = {"tour": "Agilité", "atelier": "Intelligence", "dortoir": "Force", "machines": "Force", "cave": "Force"}
     if c["id"] in stat:
         state["stats"][stat[c["id"]]] += 5
-    core.add_xp(state, 20)
+    from . import satiete
+    satiete.gagner_xp(state, 20, lecon=True)
     state["annonce"] = None
     if all(x in h["faits"] for x in c["lecons"]):
         _finir_chapitre(state, c)

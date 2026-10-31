@@ -130,7 +130,7 @@ object Intro {
     /** Toutes les conditions de « quand » sont vraies. */
     fun condition(jeu: Jeu, q: JSONObject): Boolean {
         if (q.optBoolean("eclos") && !eclos(jeu)) return false
-        if (jeu.niveau < q.optInt("niveau", 0)) return false
+        if (Satiete.niveauAppris(jeu) < q.optInt("niveau", 0)) return false   // l'XP mise de côté compte aussi
         val lecons = chaines(q.optJSONArray("lecons"))
         val chapitres = chaines(q.optJSONArray("chapitres"))
         if (lecons.isNotEmpty() || chapitres.isNotEmpty() || q.has("ailes")) {

@@ -87,13 +87,14 @@ def eclat(state):
         v = (state.get("envies") or {}).get("v") or {}
         autres = [float(v[k]) for k in ("jeu", "curiosite", "explorer", "sommeil") if k in v]
         moy = sum(autres) / len(autres) if autres else faim
-        return niveau_soin(int(faim), int(moy))
+        veille = bool((state.get("satiete") or {}).get("veille"))
+        return niveau_satiete(int(faim), int(moy), veille)
     except (TypeError, ValueError, AttributeError):
         return ECLAT_NORMAL
 
 
 def niveau_soin(faim, envies):
-    """faim et moyenne des envies (0 à 100, entiers) → éclat 0 à 3 (le même calcul en Kotlin)."""
+    """(Avant la satiété, gardé pour les vecteurs de donnees/vie/vecteurs.json.) faim et moyenne des envies → éclat."""
     soin = (faim * 6 + envies * 4) // 10
     if faim < 15:
         return 0
@@ -102,6 +103,20 @@ def niveau_soin(faim, envies):
     if soin >= 40 and faim >= 30:
         return 2
     return 1
+
+
+def niveau_satiete(faim, envies, veille=False):
+    """L'éclat d'après les 4 états de la satiété (satiete.py ; le même calcul en Kotlin, vérifié par
+    donnees/satiete/vecteurs.json) : en veille → 0 ; affamée → 1 ; en forme → 2 ; rassasiée et envies au moins
+    moyennes (≥ 50) → 3."""
+    from .satiete import AFFAMEE, FORME, RASSASIEE
+    if veille or faim < AFFAMEE:
+        return 0
+    if faim < FORME:
+        return 1
+    if faim >= RASSASIEE and envies >= 50:
+        return 3
+    return 2
 
 
 def visible(nom, terminal=False):

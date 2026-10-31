@@ -443,7 +443,8 @@ object Dressage {
         val premiere = (0 until faites.length()).none { faites.getString(it) == e.famille }
         val nCaps = Explo.captures(jeu).length()
         val taches = choisirEpreuves(e, premiere, rar, nCaps, rencontrees(jeu))
-        val debutant = if (nCaps < 5) TEMPS_DEBUTANT else 0
+        val repue = Satiete.rassasiee(jeu)            // rassasiée : quelques secondes de plus et l'exemple tout de suite
+        val debutant = (if (nCaps < 5) TEMPS_DEBUTANT else 0) + (if (repue) Satiete.DRESSAGE_TEMPS else 0)
         val zone = ind.optString("zone").ifEmpty { e.zone }
         val d = JSONObject().put("espece", e.nom).put("shiny", shiny).put("zone", zone)
             .put("taches", JSONArray(taches.map { it.cle })).put("faites", JSONArray()).put("lignes", JSONArray())
@@ -451,7 +452,7 @@ object Dressage {
             .put("duree", if (premiere) 0 else (DUREE[rar] ?: 90) + bonusTemps(jeu) + debutant)
             .put("mefiance", 100 - bonusMefiance(jeu)).put("seconde", (jeu.stats["Endurance"] ?: 0) >= 20)
             .put("ind", ind).put("rarete", rar).put("variante", ind.optString("variante", "classique")).put("examine", false)
-            .put("exemple_tout_de_suite", nCaps < 5)    // I10 : un débutant voit l'exemple tout de suite (pas d'attente)
+            .put("exemple_tout_de_suite", nCaps < 5 || repue)    // I10 : un débutant voit l'exemple tout de suite (pas d'attente)
         if (rar in ULTIMES) essais.put(e.nom, jour)
         m.put("en_cours", d)
         val c = ctx(jeu, d)

@@ -350,7 +350,8 @@ object Histoire {
         val n = c.niveaux?.let { it[minOf(i, it.size - 1)] }
             ?: minOf(12, 5 + nbAiles(jeu) + i)               // les ailes : la difficulté suit le nombre d'ailes réveillées
         if (c.id == "reveil") return n
-        return maxOf(1, minOf(n, Regles.niveau(xpAppris(jeu))))
+        // une évolution qui attend des jours soignés (Satiete.kt) ne bloque jamais une leçon
+        return maxOf(1, minOf(n, Regles.niveau(xpAppris(jeu)), Satiete.plafond(jeu)))
     }
 
     fun etapes(jeu: Jeu, lid: String): List<Etape> =
@@ -658,7 +659,7 @@ object Histoire {
         jeu.etape++
         jeu.animer("content")
         if (jeu.etape < les.etapes.size) {
-            jeu.ajouterXp(5)
+            Satiete.gagnerXp(jeu, 5, lecon = true)          // +20 % si elle est rassasiée (jamais moins : leçon)
             return true
         }
         finirLecon(jeu, les)
@@ -683,7 +684,7 @@ object Histoire {
             jeu.dire(t("hist.lecon.finie.dit"), 12)
         }
         STAT[c.id]?.let { jeu.stats[it] = (jeu.stats[it] ?: 0) + 5 }
-        jeu.ajouterXp(20)
+        Satiete.gagnerXp(jeu, 20, lecon = true)
         h.remove("annonce")
         val f = faits(jeu)
         if (c.lecons.all { it in f }) finirChapitre(jeu, c)

@@ -4,7 +4,7 @@
 
   I11. pendant l'œuf, l'invite garde l'astuce du moment (« pas grave », Ctrl+C, ↑, Tab) après la 1re commande ;
   I12. pas de faux « n'est pas une commande » : `pwd; ls` (le ; collé) ; `cd/home/…/vestibule` → « cd /home/… » ;
-  I13. un lieu sans nom traduit (repaire d'habitat) garde son nom de dossier, jamais « carte.piece.mecanique » ;
+  I13. un lieu d'habitat a un vrai nom (« Atelier des engrenages »), un dossier inconnu garde son nom, jamais la clé ;
   I14. « non » à « Ton œuf s'appellera X. C'est bien ça ? » redemande le nom (il ne s'appelle pas « non ») ;
   I15. le nom tapé sur le dernier écran de l'intro (« Donne-lui d'abord un nom ! ») est proposé, pas ignoré ;
   I16. l'épreuve du monstre en cours reste sous l'invite même quand la commande a laissé un message.
@@ -118,8 +118,10 @@ verifier(core.first_word("pwd;") == "pwd" and core.first_word("ls|wc") == "ls", 
 core.save(st)
 
 print("I13. les lieux sans nom traduit")
-verifier(maison.nom_piece("mecanique") == "mecanique", f"mecanique : {maison.nom_piece('mecanique')!r}")
-verifier(maison.nom_piece("eau_petillante") == "eau petillante", f"eau_petillante : {maison.nom_piece('eau_petillante')!r}")
+# suite du rapport v3 : les lieux d'habitat ont maintenant de vrais noms (14 langues), jamais la clé brute
+verifier(maison.nom_piece("mecanique") == "Atelier des engrenages", f"mecanique : {maison.nom_piece('mecanique')!r}")
+verifier(maison.nom_piece("eau_petillante") == "Source pétillante", f"eau_petillante : {maison.nom_piece('eau_petillante')!r}")
+verifier(maison.nom_piece("dossier_perso") == "dossier perso", "un dossier sans nom garde son nom de dossier")
 verifier(maison.nom_piece("grenier") == "Grenier", "grenier : Grenier")
 verifier(maison.nom_piece("jeu") == "Salle de jeu", "jeu : Salle de jeu")
 

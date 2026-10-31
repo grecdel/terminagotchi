@@ -380,7 +380,8 @@ def apres_defi(state):
     """Défi éclair réussi : si le guide est fort contre le type du jour, +5 XP."""
     m = actuel(state)
     ty = type_du_jour()
-    if efficacite(m[2], ty) <= 1:
+    from . import satiete
+    if efficacite(m[2], ty) <= 1 or satiete.affamee(state):     # affamée : pas de bonus de l'épreuve du jour
         return None
     core.add_xp(state, BONUS_DEFI)
     texte = t("guide.defi.bonus", icone=ICONES[m[2]], nom=m[1], type=nom_type(ty), xp=BONUS_DEFI)
@@ -467,7 +468,11 @@ def tick(state, lignes):
             core.add_xp(state, bonus)
             if now - g["astuce_t"] >= ASTUCE_DELAI and intro.ouvert(state, "equipe"):
                 g["astuce_t"] = now
-                core.say(state, f"{ICONES[m[2]]} {m[1]} : " + astuce(tal), 10)
+                from . import satiete
+                if satiete.affamee(state):                # affamée : le guide grogne au lieu de donner son astuce
+                    core.say(state, f"{ICONES[m[2]]} {m[1]} : " + t("sat.guide.grognon", cmd="tg envies"), 10)
+                else:
+                    core.say(state, f"{ICONES[m[2]]} {m[1]} : " + astuce(tal), 10)
         if f >= FATIGUE_ALERTE and now - g["fatigue_dit"] >= FATIGUE_DELAI and len(membres(state)) > 1:
             g["fatigue_dit"] = now
             core.say(state, t("guide.fatigue.dit", nom=m[1], cmd=cmd_guide()), 12)

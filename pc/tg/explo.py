@@ -89,7 +89,8 @@ def _au_hasard(zone_de, abyssor_permis, attire):
 
 def lieu(zone):
     base = zone.split("/")[0]
-    nom = B.HABITATS.get(base, base)
+    from .langue import brut                # v3 : le vrai nom du lieu dans la langue choisie, sinon celui du bestiaire
+    nom = t("carte.piece." + base) if brut("carte.piece." + base) is not None else B.HABITATS.get(base, base)
     prof = zone.count("/")
     return nom + ["", " " + t("exp.recoin"), " " + t("exp.cachette"), " " + t("exp.sanctuaire")][min(prof, 3)]
 
@@ -162,7 +163,9 @@ def histoire_en_pleine_etape(state):
 
 
 def tick(state, spontane, proba=1.5 / 480, jeu=0, lignes=()):
-    """jeu = nombre de commandes tapées à la main : les monstres n'apparaissent qu'en jouant."""
+    """jeu = nombre de commandes tapées à la main : les monstres n'apparaissent qu'en jouant (pas quand elle a faim :
+    satiete.py)."""
+    from . import satiete
     attirer(state, lignes)
     if not debloque(state):
         return
@@ -172,10 +175,13 @@ def tick(state, spontane, proba=1.5 / 480, jeu=0, lignes=()):
         spawn(state)
     elif state.get("dressage"):
         pass                                          # pas de nouveau monstre pendant un dressage
-    elif state.get("monstre_attend") and not histoire_en_pleine_etape(state):
+    elif state.get("monstre_attend") and not histoire_en_pleine_etape(state) and not satiete.affamee(state):
         state["monstre_attend"] = False         # il attendait la fin de l'étape de la leçon : le voilà
         spawn(state)
-    elif jeu and random.random() < min(0.5, 0.04 * jeu):   # ~1 monstre toutes les 25 commandes
+    elif jeu and satiete.affamee(state):
+        pass                                    # trop faim pour dresser : les monstres attendent qu'elle ait mangé
+    elif jeu and random.random() < min(0.5, 0.04 * jeu * (satiete.RENCONTRES if satiete.rassasiee(state) else 1)):
+        # ~1 monstre toutes les 25 commandes (toutes les 20 quand elle est rassasiée : elle les attire)
         if histoire_en_pleine_etape(state):
             state["monstre_attend"] = True      # P2-3 : il ne cache pas la leçon, il arrive quand l'étape est réussie
         else:

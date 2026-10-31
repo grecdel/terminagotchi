@@ -46,7 +46,8 @@ object Envies {
     const val POUSSIERE_INTERVALLE = 45 * 60_000L
     const val POUSSIERE_MAX = 8
     const val SEUIL = 40.0
-    const val FAIM_URGENTE = 30.0
+    /** = « affamée » (Satiete.FORME) */
+    const val FAIM_URGENTE = 40.0
     const val SATISFAITE = 60.0
     /** un plaisir d'au moins 15 points sur l'envie du moment : merci (elle repart) */
     const val MERCI = 15.0
@@ -363,8 +364,10 @@ object Envies {
     fun humeurCle(jeu: Jeu): String {
         val vals = valeurs(jeu)
         val faim = vals.getValue("faim")
-        if (faim <= 0) return "humeur.vide"
-        if (faim < FAIM_URGENTE) return "humeur.affame"
+        when (Satiete.etat(jeu)) {
+            "veille" -> return "sat.etat.veille"            // en veille (jamais de mort) : un repas complet la réveille
+            "affamee" -> return "humeur.affame"
+        }
         val zeros = vals.count { it.key != "faim" && it.value < 1 }
         return when {
             zeros >= 2 -> "humeur.grognon"
@@ -382,6 +385,7 @@ object Envies {
         "humeur.triste" -> "😢"
         "humeur.grognon" -> "😠"
         "humeur.affame" -> "😟"
+        "sat.etat.veille" -> "💤"
         else -> "😵"
     }
 
@@ -426,6 +430,9 @@ object Envies {
         out.add(if (m != null) t("env.ecran.moment", "icone" to ICONES[m.getString("e")], "envie" to nom(m.getString("e")), "cmd" to m.getString("cmd"))
             else t("env.ecran.aucune", "nom" to jeu.nom))
         out.add(t("env.ecran.humeur", "humeur" to "${emoji(jeu)} ${t(humeurCle(jeu))}"))
+        out.add("")
+        out.add(t("sat.ecran.titre"))                       // la satiété : état, assiette, série, vacances
+        Satiete.lignes(jeu).forEach { out.add("  $it") }
         out.add("")
         out.add(t("env.cache.enfant", "lsa" to "`ls -a`"))
         out.add(t("env.cache.grands"))
