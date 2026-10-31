@@ -366,6 +366,64 @@ def _messager_anime(cmd, dest, phase, largeur):
             f"{fg(ANSI['chemin'])}{BOLD}🏝 {dest}{RESET}")
 
 
+# ---------------------------------------------------------------- les cadenas qui s'allument (la Citadelle)
+OPTIONS_CHMOD = {"-R", "-v", "-c", "-f", "--recursive", "--verbose", "--changes", "--silent", "--quiet"}
+MODE_CHMOD = re.compile(r"[0-7]{1,4}|[ugoa]*(?:[-+=][rwx]*)+(?:,[ugoa]*(?:[-+=][rwx]*)+)*")
+
+
+def droits(ligne, dossier=None):
+    """Les cadenas d'une ligne (spécification commune, Deploie.kt, vecteurs donnees/citadelle/vecteurs.json) :
+    [{seg, cmd, mode, fichier, avant, apres, octal, suppose}] pour chaque `chmod MODE fichier` (le mode du fichier
+    est lu dans dossier s'il existe, sinon on suppose rw-r--r--) et chaque `umask NNN` (le mode d'un fichier neuf)."""
+    from . import citadelle
+    out = []
+    bl = blocs(ligne)
+    for c in chaines(bl):
+        for e in c["etapes"]:
+            m = [x.rstrip(")") for x, _op in mots(e["texte"])]
+            cmd = e["cmd"].lstrip("(")
+            seg = next((b["seg"] for b in bl if b["g"] == "commande" and b["i"] - 1 == e["debut"]), 0)
+            if cmd == "chmod":
+                args = [x for x in m[1:] if x not in OPTIONS_CHMOD]
+                if len(args) < 2 or not MODE_CHMOD.fullmatch(args[0]):
+                    continue
+                f = _nu(args[1])
+                actuel = None
+                if dossier and not any(ch in f for ch in "*?["):
+                    try:
+                        actuel = os.stat(os.path.join(dossier, f)).st_mode & 0o777
+                    except OSError:
+                        actuel = None
+                base = actuel if actuel is not None else 0o644
+                apres = citadelle.chmod_mode(args[0], base)
+                if apres is None:
+                    continue
+                out.append({"seg": seg, "cmd": "chmod", "mode": args[0], "fichier": f, "avant": citadelle.mode_texte(base),
+                            "apres": citadelle.mode_texte(apres), "octal": f"{apres:03o}", "suppose": actuel is None})
+            elif cmd == "umask" and len(m) >= 2 and re.fullmatch(r"[0-7]{1,4}", m[1]):
+                apres = citadelle.umask_mode(int(m[1], 8))
+                out.append({"seg": seg, "cmd": "umask", "mode": m[1], "fichier": "", "avant": "rw-rw-rw-",
+                            "apres": citadelle.mode_texte(apres), "octal": f"{apres:03o}", "suppose": False})
+    return out
+
+
+def _texte_mode(x):
+    v = 0
+    for i, ch in enumerate(x):
+        if ch != "-":
+            v |= 1 << (8 - i)
+    return v
+
+
+def _cadenas_anime(x, phase):
+    """Les trois cadenas (moi, mon club, les autres) : d'abord comme avant, puis ils s'allument ou s'éteignent."""
+    from . import citadelle
+    avant, apres = _texte_mode(x["avant"]), _texte_mode(x["apres"])
+    if phase < 0.45:
+        return citadelle.grille(avant)
+    return citadelle.grille(apres, avant)
+
+
 # ---------------------------------------------------------------- les mots pour le dire
 def nom_genre(g):
     return t("dep.genre." + g)
@@ -586,6 +644,18 @@ def ecran(ligne, bl, actif, sorties, phase=0.0, largeur=80, dossier=None, pas=Fa
                 out.append(_messager_anime(x["cmd"], x["dest"], phase % 1.0, largeur))
                 out.append(f"  {DIM}" + t("dep.messager", cmd=x["cmd"], dest=x["dest"]) + " " +
                            t("dep.messager.local" if x["local"] else "dep.messager.dehors") + RESET)
+    if b["g"] == "commande":                     # chmod, umask : les cadenas r w x qui s'allument (la Citadelle)
+        for x in droits(ligne, dossier):
+            if x["seg"] == b["seg"]:
+                out.append("")
+                if x["cmd"] == "chmod":
+                    out.append(f"  {fg(ANSI['commande'])}🔒 " + t("dep.droits", f=x["fichier"], avant=x["avant"],
+                                                                apres=x["apres"], octal=x["octal"]) + RESET)
+                    if x["suppose"]:
+                        out.append(f"  {DIM}" + t("dep.droits.suppose", f=x["fichier"]) + RESET)
+                else:
+                    out.append(f"  {fg(ANSI['commande'])}🎭 " + t("dep.droits.masque", apres=x["apres"], octal=x["octal"]) + RESET)
+                out += ["  " + l for l in _cadenas_anime(x, phase % 1.0)]
     if actif == n and sorties:
         for c, s in zip(chs, sorties):
             if s and len(c["etapes"]) > 1:
@@ -598,8 +668,10 @@ def ecran(ligne, bl, actif, sorties, phase=0.0, largeur=80, dossier=None, pas=Fa
 
 
 def _reseau(b, ligne):
-    """Le bloc est une commande réseau qui envoie un messager (son animation dure comme celle d'un tuyau)."""
-    return b["g"] == "commande" and any(x["seg"] == b["seg"] for x in messager(ligne))
+    """Le bloc est une commande réseau qui envoie un messager, ou un chmod / umask dont les cadenas changent (son
+    animation dure comme celle d'un tuyau)."""
+    return b["g"] == "commande" and (any(x["seg"] == b["seg"] for x in messager(ligne)) or
+                                     any(x["seg"] == b["seg"] for x in droits(ligne)))
 
 
 def jouer(ligne, dossier=None, pas=False, sortie=None, clavier=None, ips=12):

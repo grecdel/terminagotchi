@@ -1,0 +1,82 @@
+{
+ "version": 1,
+ "note": "La Citadelle (cybersécurité DÉFENSIVE, docs/programme.md § 2.11 et § 7.5). Lu par pc/tg/citadelle.py et app/…/Citadelle.kt (copies pc/tg/citadelle.json et app/src/main/assets/citadelle.json, identiques). Toutes les « attaques » sont fausses : des fichiers texte et, sur PC, des processus sleep renommés, fabriqués par le jeu dans ~/terrain_terminagotchi/citadelle/ seulement. Aucune adresse de ce fichier n'est jamais contactée : 198.51.100.0/24 et 203.0.113.0/24 sont des adresses de documentation (RFC 5737), port-du-terminaworld.example un nom réservé (RFC 2606). Aucun mot de passe réel : seulement des exemples.",
+ "journal": {
+  "lignes": 90, "debut": "06:00:00", "pas_secondes": 41, "date": "2026-10-31",
+  "visiteurs": ["198.51.100.7", "198.51.100.12", "198.51.100.23"],
+  "noms": ["sentinelle", "gardien", "forgeron"],
+  "portes": ["porte-nord", "porte-sud", "poterne"],
+  "intrus": "203.0.113.66", "intrus_de": 20, "intrus_a": 70, "intrus_porte": "poterne",
+  "intrus_noms": ["admin", "root", "gardien", "test", "invite"],
+  "erreurs_visiteurs": [5, 77]
+ },
+ "glitchs": ["remparts/virus_fictif_1.glitch", "tours/est/virus_fictif_2.glitch", "cour/virus_fictif_3.glitch",
+             "cuisines/.virus_fictif_4.glitch"],
+ "ver": ["remparts/nord/virus_fictif_5.glitch", "tours/ouest/virus_fictif_6.glitch"],
+ "ver_toutes": 3,
+ "decor": ["remparts/plan_des_remparts.txt", "tours/est/longue_vue.txt", "tours/ouest/cloche.txt", "cour/puits.txt",
+           "cuisines/marmite.txt", "remparts/nord/drapeau_du_vent.txt"],
+ "processus": ["miner_fictif", "flood_fictif"],
+ "processus_secondes": 900,
+ "pid_fictif": 4242,
+ "tresor": ["carte.txt", "couronne.txt", "epee.txt"],
+ "tresor_altere": "couronne.txt",
+ "parchemins": ["charte.txt", "chanson.txt", "recette.txt", "histoire.txt"],
+ "mot_de_passe_exemple": "licorne-violette-exemple",
+ "mauvaise_cle_exemple": "mauvaise-cle",
+ "lien_faux": "http://port-du-terminaworld.example/urgent",
+ "facteur": [
+  {"id": "adresse", "vrai": true}, {"id": "urgence", "vrai": true}, {"id": "secret", "vrai": true},
+  {"id": "papier", "vrai": false}, {"id": "heure", "vrai": false}, {"id": "longue", "vrai": false}
+ ],
+ "mots_nb": 128,
+ "mots": ["abyssor", "ambrelune", "anguillon", "araignoir", "astralame", "aureolin", "bavonge", "bavouille", "boulonnet", "bourdonjon", "bourrasquet", "braisillon", "brumaleine", "cailloute", "calmaree", "cauchemarre", "cendrouille", "chaosmere", "chaudrogre", "chaudronne", "chauvecroc", "cheneroc", "cigalarme", "ciliacle", "clopinou", "cocondor", "corbouh", "cornichaud", "crabouille", "cranard", "croquefleur", "cyclonaute", "drakosse", "drapouille", "eclipsard", "ecorcerf", "ectoplouf", "ecumane", "empyria", "engrenaille", "essaimpereur", "etincelot", "etoilapin", "felicorne", "filcomete", "flamouche", "follanterne", "fondelin", "forgerain", "fouinroc", "fourmidable", "fractalis", "fulgurox", "fumerole", "galetard", "gargouflamme", "givrarde", "givrichon", "glandouille", "gloupi", "golemmur", "goulichon", "gouttelin", "greffon", "groinfer", "heaumbre", "heaumeur", "hibourreau", "homardeur", "horlogrif", "hurlombre", "infernaille", "infernarque", "krillou", "lampignon", "lampiotte", "lanternix", "lianaconda", "libellance", "lichonarque", "louvacier", "lumignon", "lunacorne", "magmastodonte", "mammouroc", "mantelame", "marionnoire", "milgriffe", "millepince", "miroeil", "mixtrouille", "momiaou", "mousselin", "mutaloupe", "mycelix", "nautiloque", "nebuline", "nenuphage", "noctilune", "ombrachne", "ondulame", "osselet", "oursomont", "pantinou", "papillombre", "parasouris", "pavegarde", "petalouette", "plouftin", "plumange", "poulpiot", "pucerise", "pupillarque", "pyrodrac", "racinelle", "raiyon", "recifort", "ressortine", "ricanombre", "ricanos", "ronceau", "rouillot", "rugisoleil", "rugissire", "runodrake", "scarabouille", "scintipede", "scorpiquant"],
+ "force": [
+  {"id": "court", "exemple": "Soleil1!", "bits": 20},
+  {"id": "mots4", "exemple": "plumange-braisillon-tortunivers-empyria", "mots": 4, "liste": 128},
+  {"id": "mots6", "exemple": "6 mots parmi 128", "mots": 6, "liste": 128},
+  {"id": "des6", "exemple": "6 mots parmi 7776", "mots": 6, "liste": 7776}
+ ],
+ "essais_par_seconde": 1000000000,
+ "boites": [
+  {"id": "enumeration", "niveau": "facile", "categorie": "enumeration",
+   "fichiers": [
+    {"chemin": "LISEZ_MOI.txt", "texte": "cit.boite.enumeration.lisez", "mode": "644"},
+    {"chemin": "salle_vide.txt", "texte": "cit.boite.enumeration.vide", "mode": "644"},
+    {"chemin": ".cave_oubliee/note.txt", "drapeau": "entree", "texte": "cit.boite.note", "mode": "644"},
+    {"chemin": ".cave_oubliee/.plus_profond/plan_du_donjon.txt", "drapeau": "donjon", "texte": "cit.boite.plan", "mode": "644"}
+   ],
+   "dossiers": {".cave_oubliee": "755", ".cave_oubliee/.plus_profond": "755"},
+   "rempart": [{"chemin": ".cave_oubliee", "fermer_autres": "rwx"}]},
+  {"id": "droits", "niveau": "facile", "categorie": "droits",
+   "fichiers": [
+    {"chemin": "LISEZ_MOI.txt", "texte": "cit.boite.droits.lisez", "mode": "644"},
+    {"chemin": "journal_secret.txt", "drapeau": "entree", "texte": "cit.boite.journal", "mode": "644"},
+    {"chemin": "ronde.sh", "drapeau": "donjon", "texte": "cit.boite.ronde", "mode": "757", "script": true}
+   ],
+   "dossiers": {},
+   "rempart": [{"chemin": "journal_secret.txt", "fermer_autres": "r"}, {"chemin": "ronde.sh", "fermer_autres": "w"}]},
+  {"id": "secrets", "niveau": "facile", "categorie": "secrets",
+   "fichiers": [
+    {"chemin": "LISEZ_MOI.txt", "texte": "cit.boite.secrets.lisez", "mode": "644"},
+    {"chemin": ".historique_fictif", "drapeau": "entree", "texte": "cit.boite.historique", "mode": "644"},
+    {"chemin": "config.ini", "drapeau": "donjon", "texte": "cit.boite.config", "mode": "644"}
+   ],
+   "dossiers": {},
+   "rempart": [{"chemin": ".historique_fictif", "absent": true}, {"chemin": "config.ini", "fermer_autres": "r"},
+               {"rotation": true}]}
+ ],
+ "a_venir": ["hangar", "scripts", "codes", "forensique", "social"],
+ "vague": {"glitchs": ["remparts/vague_1.glitch", "tours/est/.vague_2.glitch", "cour/vague_3.glitch"],
+           "secret": "secrets_du_pont_levis.txt", "processus": "vague_fictif"},
+ "ponts": {
+  "curl": {"de": "port", "lecon": "cit11"},
+  "find_newer": {"vers": ["temps"], "lecon": "cit5"},
+  "ps_kill": {"de": "controle", "lecon": "cit7"},
+  "sort_uniq": {"de": "donnees", "lecon": "cit4"},
+  "tar": {"de": "controle", "lecon": "cit9"}
+ },
+ "carte": {"note": "positions des lieux de la Citadelle sur son plan (0-1), PC et Android",
+  "porte": [0.5, 0.92], "cour": [0.5, 0.58], "remparts": [0.12, 0.40], "tours": [0.88, 0.40], "cuisines": [0.28, 0.80],
+  "tresor": [0.72, 0.80], "journaux": [0.5, 0.22], "boites": [0.5, 0.06]}
+}

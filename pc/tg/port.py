@@ -245,6 +245,8 @@ def page(chemin, hote=None):
         for m in machines():
             lignes.append(f"/{m['id']:<8} {m['icone']} {nom_complet(m['id'])} ({m['adresse']})")
         return 200, "\n".join(lignes) + "\n"
+    if c == "courrier":                      # la Citadelle (le faux facteur) : le vrai courrier du capitaine
+        return 200, t("cit.page.courrier") + "\n" + t("port.page.pied", port=_ports()[0]) + "\n"
     mid = chercher(c)
     if mid and mid in donnees()["pages"]:
         m = machine(mid)

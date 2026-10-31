@@ -139,7 +139,7 @@ def statut_de(lignes, i):
 
 
 def first_word(line):
-    words = line.split()
+    words = line.lstrip("( ").split()                 # `(umask 077; touch f)` : la commande de la petite bulle
     if not words:
         return None
     # v3 (I12) : `pwd; ls`, `ls|wc` : le premier mot s'arrête au séparateur du shell collé (pas « pwd; »)
@@ -416,7 +416,9 @@ def feed(state, line, statut=None):
         return
     if not line.split():
         return
-    tete = re.split(r"[;&|<>]", line.split()[0])[0] or line.split()[0]
+    if not line.lstrip("( ").split():
+        return
+    tete = re.split(r"[;&|<>]", line.lstrip("( ").split()[0])[0] or line.lstrip("( ").split()[0]
     if "/" in tete and not tete.startswith(("/", ".", "~")) and not commande_existe(tete):
         # v3 (I12) : `cd/home/lea/…/vestibule`, `ls/etc` : l'espace oubliée (et pas « vestibule n'est pas une commande »)
         from . import verif

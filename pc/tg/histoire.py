@@ -260,12 +260,18 @@ CHAPITRES = [
      "lecons": ["android0", "android1", "android2", "android3"], "objet": "antenne"},
 ]
 # phase 5 : les mondes du Carrefour (docs/programme.md § 2.9, § 7.14), un par un. Le premier : le Port (port.py).
+# Le deuxième : la Citadelle (citadelle.py). Chaque monde est un module : LECONS, CHAPITRE, FS, CREE, meubles,
+# meubler, ouvert, manque, annonce, indice, surveiller.
 from . import port as _port  # noqa: E402
-NOUVELLES.update(_port.LECONS)
-CHAPITRES.append(_port.CHAPITRE)
-lecons.FS.update(_port.FS)
-lecons.CREE.update(_port.CREE)
+from . import citadelle as _cit  # noqa: E402
+MONDES_MODS = {"port": _port, "citadelle": _cit}
+for _m in MONDES_MODS.values():
+    NOUVELLES.update(_m.LECONS)
+    CHAPITRES.append(_m.CHAPITRE)
+    lecons.FS.update(_m.FS)
+    lecons.CREE.update(_m.CREE)
 MONDES = tuple(c["piece"] for c in CHAPITRES if c.get("monde"))
+_CMDS_CIT = {s_.get("cmd") for l_ in _cit.LECONS.values() for s_ in l_["steps"]}
 PAR_CHAP = {c["id"]: c for c in CHAPITRES}
 AILES = [c["id"] for c in CHAPITRES if 3 <= c["n"] <= 9]
 
@@ -359,7 +365,7 @@ def ouvert(state, cid):
     if cid == "coeur":
         return nb_ailes(state) >= AILES_POUR_LE_COEUR
     if c.get("monde"):                      # un monde du Carrefour : ses prérequis du tronc commun (programme.json)
-        return _port.ouvert(state)
+        return MONDES_MODS[cid].ouvert(state)
     return fini(state, "nid")
 
 
@@ -590,8 +596,8 @@ def _meubles(state, p):
         return {"vieille_cabane/planche_1.txt": dire(state, "hist.meuble.planche"),
                 "vieille_cabane/planche_2.txt": dire(state, "hist.meuble.planche"),
                 ".mot_secret.txt": dire(state, "hist.meuble.mot_secret", nom=state.get("name", ""))}
-    if p == "port":
-        return _port.meubles(state)
+    if p in MONDES_MODS:
+        return MONDES_MODS[p].meubles(state)
     if p == "coeur":
         m = {"coeur/message_brouille.txt": "\n".join(l[::-1] for l in dire(state, "hist.meuble.message").split("\n")),
              "coeur/.porte_secrete/abyssor_dort.txt": dire(state, "hist.meuble.abyssor")}
@@ -681,8 +687,9 @@ def meubler(state):
                     continue
                 _ecrire(rel, tous[rel], binaire=isinstance(tous[rel], bytes))
                 poses.append(rel)
-    if lid and lid in _port.LECONS:              # le Port : le phare s'allume pour les leçons qui le visitent
-        _port.meubler(state, lid, state.get("step", 0))
+    for _m in MONDES_MODS.values():              # les mondes : le phare du Port, les attaques fictives de la Citadelle…
+        if lid and lid in _m.LECONS:
+            _m.meubler(state, lid, state.get("step", 0))
     return poses
 
 
@@ -698,7 +705,7 @@ def choisir(state, cid, dit=True):
         if cid == "coeur":
             return t("hist.coeur.ferme", n=nb_ailes(state), total=AILES_POUR_LE_COEUR)
         if c.get("monde"):
-            return t("port.ferme", chapitre=nom_chapitre(cid), manque=", ".join(_port.manque(state)))
+            return t("port.ferme", chapitre=nom_chapitre(cid), manque=", ".join(MONDES_MODS[cid].manque(state)))
         return t("hist.aile.fermee", chapitre=nom_chapitre(cid))
     h = h_(state)
     if h.get("chap") == cid and chapitre_courant(state):
@@ -759,7 +766,8 @@ def _finir_chapitre(state, c):
     core.add_xp(state, 30)
     quetes.recompenser(state, {"objet": c.get("objet"), "titre": c.get("titre")}, souvenir=("chap", c["id"]))
     h["chap"] = None
-    _port.annonce(state)                         # un monde du Carrefour qui vient de s'ouvrir
+    for _m in MONDES_MODS.values():              # un monde du Carrefour qui vient de s'ouvrir
+        _m.annonce(state)
     if c["id"] == "reveil":
         h["chap"] = "nid"
     elif c["id"] == "nid":
@@ -1086,6 +1094,8 @@ def indice(state, step, lignes, tapees, morcs=None):
     if "ici" in step or "ici_abs" in step:
         return _indice_cd(state, step, morcs)
     conseil = _port.indice(step, tapees)                  # le Port : un trou « … » recopié, un messager perdu
+    if not conseil and step.get("cmd") in _CMDS_CIT:      # la Citadelle : un trou « ? », une clé d'exemple oubliée…
+        conseil = _cit.indice(step, tapees)
     if conseil:
         return conseil
     conseil = _indice_cd(state, step, morcs) or _indice_rm(step, tapees) or _indice_barre(step, morcs) \
@@ -1372,7 +1382,8 @@ def tick(state, lines, cwd=None):
     _visite_aile(state, cwds + [maison.ici(state)])
     signer_carnet(state)
     colis_hors_ligne(state, lines, cwds)
-    _port.surveiller(state, lines)                # le Port : une lanterne ouverte à tout le réseau ? la créature prévient
+    for _m in MONDES_MODS.values():               # le Port : une lanterne ouverte ? la Citadelle : un cadeau lancé ?
+        _m.surveiller(state, lines)
     tick_lecon(state, lines, cwds, avants)
     meubler(state)
     from . import quetes
@@ -1398,7 +1409,7 @@ def lignes_ailes(state):
         elif cid == "coeur":
             etat = DIM + t("hist.coeur.ferme", n=nb_ailes(state), total=AILES_POUR_LE_COEUR) + RESET
         elif c.get("monde"):
-            etat = DIM + t("port.ferme.court", manque=", ".join(_port.manque(state))) + RESET
+            etat = DIM + t("port.ferme.court", manque=", ".join(MONDES_MODS[cid].manque(state))) + RESET
         else:
             etat = DIM + t("hist.menu.fermee") + RESET
         faits = sum(1 for x in c["lecons"] if x in h_(state)["faits"])

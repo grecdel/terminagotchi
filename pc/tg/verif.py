@@ -296,6 +296,10 @@ def resultat_ok(step, m):
         # le réseau peut manquer (école, avion) et l'outil peut ne pas être installé : avoir essayé suffit, le jeu
         # explique alors pourquoi ça n'a pas répondu (voir histoire.tick_lecon) ; une faute de chemin compte encore
         return not chemins_manquants(m.texte, m.avant)
+    if step.get("tout_code"):
+        # openssl -d avec une mauvaise clé : refusé 255 fois sur 256 (bad decrypt), mais un rembourrage valide par hasard
+        # rend du charabia avec le code 0 ; l'enfant ne peut rien y faire, les deux réponses comptent
+        return not chemins_manquants(m.texte, m.avant)
     if step.get("echoue"):
         if m.statut is not None:
             return m.statut != 0 or racine          # root écrit quand même : on ne bloque pas la leçon

@@ -1179,6 +1179,10 @@ def _main():
         from . import port
         port.commande(args[1:])
         return
+    if mode == "citadelle":                    # tg citadelle … : la Citadelle (cadenas, boîtes, inspecteur, vague)
+        from . import citadelle
+        citadelle.commande(args[1:])
+        return
     if mode in ("deploie", "déploie"):         # tg deploie <commande> : la vue déployée (sans la lancer)
         from . import deploie
         brut_args = [a for a in sys.argv[2:]]      # garder --pas et --historique (args a retiré les « -- »)
