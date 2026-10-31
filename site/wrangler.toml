@@ -1,7 +1,8 @@
 name = "terminagotchi"
 main = "src/worker.js"
 compatibility_date = "2024-09-23"
-workers_dev = true
+# Ancienne adresse *.workers.dev désactivée : le site vit sur terminagotchi.com (domaine branché dans Cloudflare)
+workers_dev = false
 
 # images des animations (public/anim/…)
 [assets]
