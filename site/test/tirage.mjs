@@ -91,5 +91,22 @@ console.log("Salle d'entraînement (donnees/entrainement/vecteurs.json)");
     "badges en SVG (étincelle du Giga, « ??? » gris)");
 }
 
+console.log("Récompenses par monde (donnees/recompenses/vecteurs.json) : le serveur accepte les créatures favorisées");
+{
+  // Une faveur d'exploit (pc/tg/recompenses.py) choisit seulement QUEL compteur garder parmi quelques-uns : la créature
+  // gardée doit être exactement le tirage du serveur pour ce (graine, compteur), sinon elle serait refusée.
+  const VR = JSON.parse(readFileSync(new URL("../../donnees/recompenses/vecteurs.json", import.meta.url), "utf8"));
+  let bons = 0;
+  const mauvais = [];
+  for (const c of VR.cas) {
+    const { champs } = tirer(c.valeur, c.attendu.n, false, null);
+    if (differences(c.attendu.champs, champs).length === 0 && JSON.stringify(champs) === JSON.stringify(c.attendu.champs)) bons++;
+    else mauvais.push(`${c.exploit} n=${c.attendu.n}`);
+  }
+  verifier(bons === VR.cas.length, `${bons}/${VR.cas.length} créatures favorisées identiques au tirage du serveur ${mauvais.slice(0, 2).join(", ")}`);
+  verifier(VR.cas.every((c) => c.attendu.n >= c.n0 && c.attendu.n < c.n0 + VR.conf["essais_" + c.genre]),
+    "le compteur gardé reste dans la fenêtre d'essais (jamais au-delà, jamais deux fois le même)");
+}
+
 console.log(`\n${ok} réussis, ${ko} échoués`);
 if (ko) process.exit(1);

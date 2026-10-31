@@ -196,7 +196,11 @@ def aide(state, ligne):
 
 
 def tick(state, lignes):
-    """Après les commandes tapées : une bulle claire pour chaque commande à qui il manque quelque chose."""
+    """Après les commandes tapées : une bulle claire pour chaque commande à qui il manque quelque chose.
+    « je ne connais pas » ou « maths … » tapés dans le vrai terminal (le shell répond « command not found ») : la
+    créature ouvre quand même le Pont des Nombres (maths.tick)."""
+    from . import maths
+    maths.tick(state, lignes)
     for ligne in lignes:
         if core.est_colle(ligne):
             continue

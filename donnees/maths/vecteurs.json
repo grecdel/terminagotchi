@@ -2179,17 +2179,17 @@
   {
    "langue": "en",
    "question": "remainder",
-   "attendu": null
+   "attendu": "modulo"
   },
   {
    "langue": "en",
    "question": "power",
-   "attendu": null
+   "attendu": "puissances"
   },
   {
    "langue": "en",
    "question": "binary",
-   "attendu": null
+   "attendu": "binaire"
   },
   {
    "langue": "en",
@@ -2199,7 +2199,7 @@
   {
    "langue": "en",
    "question": "count",
-   "attendu": null
+   "attendu": "comptage"
   }
  ],
  "tous_prerequis": {

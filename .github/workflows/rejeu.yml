@@ -1,0 +1,43 @@
+name: Charte de rigueur (rejeu des sorties réelles)
+
+# docs/programme.md § 7.1, règle 2 : ce que le jeu montre ou affirme d'une commande est rejoué sur une vraie machine
+# Linux, dans un terrain jetable. Si une sortie change (nouvelle version d'un outil), le test casse et la fiche est revue.
+on:
+  push:
+    branches: [nouveau-bestiaire, main]
+    paths: ["donnees/programme.json", "donnees/maths/**", "donnees/recompenses/**", "pc/**", "app/src/main/assets/langues/**",
+            "app/src/main/java/fr/terminagotchi/Histoire.kt", "app/src/main/java/fr/terminagotchi/Jeu.kt",
+            ".github/workflows/rejeu.yml"]
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  rejeu:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Les outils des fiches (les commandes rejouées)
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq tree iproute2 iputils-ping openssh-client dnsutils bsdextrautils >/dev/null || true
+          bash --version | head -n 1
+
+      - name: Vérificateur de la charte (fiches, étapes, orphelines, 14 langues)
+        run: python3 pc/outils/verifier_programme.py
+
+      - name: Vecteurs communs à jour (Python, Kotlin, serveur)
+        run: python3 pc/outils/vecteurs_phase4.py --verifier
+
+      - name: Rejeu des sorties dans un vrai bash (fiches et histoire du PC)
+        run: LC_ALL=C.UTF-8 python3 pc/outils/rejeu_bash.py
+
+      - name: Ponts des Nombres et récompenses
+        run: python3 pc/outils/test_programme.py

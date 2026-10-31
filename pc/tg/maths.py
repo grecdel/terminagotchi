@@ -288,3 +288,28 @@ def commande(state, args, cmd="tg maths"):
     if not mid:
         return [t("maths.rien", cmd=cmd)]
     return ecran_fiche(state, mid, cmd)
+
+
+def tick(state, lignes):
+    """Les lignes tapées dans le vrai terminal : « je ne connais pas » (ou « maths … », que le shell ne connaît pas)
+    ouvrent le pont dans le terminal de l'enfant et dans une bulle. Rien d'autre n'est jamais bloqué."""
+    from . import core
+    for ligne in lignes:
+        if core.est_colle(ligne):
+            continue
+        mots = ligne.strip().split()
+        if not mots:
+            continue
+        if mots[0].lower() == "maths":
+            sortie = commande(state, mots[1:])
+        elif mots_reponse(ligne) == "non" and len(mots) >= 2:
+            sortie = commande(state, mots)
+        else:
+            continue
+        if sortie:
+            term = state.setdefault("terminal", [])
+            # le jeu venait de dire « « je » n'est pas une commande » : ici, ce n'en était pas une, c'était une demande
+            debut = t("core.inconnue", cmd=mots[0]).split("»")[0]
+            term[:] = [x for x in term if not (isinstance(x, str) and x.startswith(debut))]
+            term.extend(sortie)
+            core.say(state, sortie[0], 12)

@@ -60,8 +60,8 @@ def rgb(c, a=255):
 
 def lt(texte, taille, mono=False):
     """La largeur d'un texte (approchée, comme la créature du bureau ; en chasse fixe : 0,6 cadratin)."""
-    if mono:
-        return sum(1.2 if ord(c) >= 0x2E80 else 0.6 for c in texte) * taille
+    if mono:          # 0,602 cadratin : l'avance exacte de DejaVu Sans Mono (1233/2048), la police des terminaux
+        return sum(1.204 if ord(c) >= 0x2E80 else 0.602 for c in texte) * taille
     return V.largeur_texte(texte, taille) * 0.98
 
 
@@ -1063,7 +1063,7 @@ def _police(sz, gras, mono, texte):
     from PIL import ImageFont
     ecriture = "cjk" if any(0x2E80 <= ord(ch) <= 0xFFEF for ch in texte) else \
         ("sym" if any(0x2190 <= ord(ch) < 0x2E80 for ch in texte) else "")
-    cle = (round(sz * 2) / 2, gras, mono, ecriture)
+    cle = (round(sz, 2), gras, mono, ecriture)        # la taille exacte (la mise en page compte au centième)
     if cle not in _POLICES:
         if mono:
             noms = ["DejaVuSansMono-Bold.ttf" if gras else "DejaVuSansMono.ttf"]
@@ -1077,7 +1077,9 @@ def _police(sz, gras, mono, texte):
         f = None
         for n in noms:
             try:
-                f = ImageFont.truetype(n, max(4, int(round(sz))))
+                # taille fractionnaire (15,5 px), comme la mise en page : arrondie à 16 px, chaque morceau coloré était
+                # 3 % plus large que prévu et le suivant le recouvrait (« découvrirls -R », « …terminagotchipu… »)
+                f = ImageFont.truetype(n, max(4.0, float(sz)))
                 break
             except OSError:
                 continue
@@ -1207,7 +1209,9 @@ def vers_pil(liste, taille, image=None):
             _, x, y, s, sz, c, gras, ancre, mono = op
             if not s or c[3] == 0:
                 continue
-            s = _SANS_EMOJI.sub("", s)            # (captures : pas de police d'emoji ici ; les fenêtres les dessinent)
+            # (captures : pas de police d'emoji ici ; les fenêtres les dessinent) : un blanc de la même largeur, pour
+            # que les morceaux suivants de la ligne restent à leur place
+            s = _SANS_EMOJI.sub(lambda m: "" if m.group() in "\ufe0f\u200d" else "  " if mono else " ", s)
             if not s.strip():
                 continue
             f = _police(sz, gras, mono, s)

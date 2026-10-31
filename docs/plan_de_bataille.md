@@ -176,6 +176,31 @@ implémentation), PC d'abord puis adaptation téléphone. Première proposition 
 
 ## Phase 4 — Dimanche et début de semaine : les fondations du programme
 
+**✅ Codé (31 octobre, PC et Android, 14 langues)** :
+- charte : `donnees/programme.json` (copié dans `pc/tg/` et les assets Android), 63 fiches notions (enfant, grands,
+  vrai terminal, limite de l'image, idée fausse, sources, `relu_par` vide en attendant le comité), `pc/tg/programme.py`
+  / `Programme.kt` (`explique` montre la limite et l'idée fausse) ; `pc/outils/verifier_programme.py` (chaque étape PC
+  et Android a sa fiche, aucune orpheline, 14 langues, copies identiques) ; `pc/outils/rejeu_bash.py` (chaque vraie
+  sortie des fiches dans un bash neuf sur un terrain jetable, puis toute l'histoire du PC jouée en vrai bash avec les
+  affirmations du jeu vérifiées) et le workflow `.github/workflows/rejeu.yml` ; écart trouvé et corrigé :
+  `hist.reveil1.3.adulte` (« `ls` montre le fichier de l'œuf » : bash en montre 6) ;
+- Ponts des Nombres : graphe des prérequis (comptage → addition → soustraction / multiplication → division → modulo ;
+  puissances → binaire ; passerelles à venir : hexadécimal, pourcentages, moyenne…), `maths <question>` (`tg maths`,
+  même moteur que `cherche`), « je ne connais pas » (seul ou après `maths`) jamais bloquant, pile de retour ; fiches
+  comptage, addition, soustraction, multiplication, division, modulo, puissances, binaire, chacune avec 3 exemples et
+  un exercice généré dont la réponse est vérifiée par bash ; `pc/tg/maths.py` / `Maths.kt`, vecteurs
+  `donnees/maths/vecteurs.json` ;
+- récompenses par monde : `pc/tg/recompenses.py` / `Recompenses.kt` ; un exploit donne des faveurs (3 rencontres :
+  le jeu garde, parmi 4 compteurs de la graine, la première créature du monde en variante rare ; 1 rencontre légendaire
+  parmi 8) ; variantes réservées par monde ; série parfaite (5 médailles d'or) ; **le tirage serveur n'a pas changé** :
+  chaque créature gardée est le tirage exact d'un (graine, compteur), vecteurs `donnees/recompenses/vecteurs.json`
+  vérifiés en Python, Kotlin et JavaScript (`site/test/tirage.mjs`) ;
+- coquilles de l'espace de travail PC : polices des captures et de la fenêtre à la taille exacte (les commandes vertes
+  recouvraient l'espace d'avant : « découvrirls -R », « …terminagotchipu… »).
+Reste : brancher les exploits sur les mondes quand ils existeront (aujourd'hui seule la série parfaite de la salle
+d'entraînement en déclenche), la question « Tu connais… ? » posée avant une étape qui déclare `maths` (les étapes des
+mondes), l'animation pixel art des ponts, la relecture humaine des fiches (`relu_par`).
+
 1. **Charte de rigueur** (§ 7.1) : `donnees/programme.json` (fiches notions : enfant, grands, vrai terminal,
    limite de l'image, idées fausses, sources), `pc/outils/verifier_programme.py`, rejeu des sorties réelles en CI,
    d'abord sur le **tronc commun**.
