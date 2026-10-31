@@ -5,7 +5,7 @@
 Vérifie donnees/programme.json :
   1. chaque fiche notion a ses champs (enfant, grands, vrai_terminal, limite_image, idees_fausses, sources ; relu_par
      présent, même vide) ; aucune fiche sans source ; les textes existent dans les 14 langues (PC et Android) ;
-  2. chaque étape de leçon (PC : lecons.py et histoire.py ; Android : Histoire.kt, Jeu.kt, Arbre.kt, Port.kt, Citadelle.kt) renvoie à au
+  2. chaque étape de leçon (PC : lecons.py et histoire.py ; Android : Histoire.kt, Jeu.kt, Arbre.kt, Port.kt, Citadelle.kt, Crypte.kt) renvoie à au
      moins une fiche (par le motif de la notion) ;
   3. aucune fiche n'est orpheline : chaque fiche sert au moins une étape (PC ou Android) ;
   4. les copies pc/tg/programme.json et app/src/main/assets/programme.json sont identiques à donnees/programme.json ;
@@ -56,7 +56,7 @@ def etapes_android():
     tests/jvm/Programme.kt)."""
     out = []
     k = RACINE / "app/src/main/java/fr/terminagotchi"
-    for f in ("Histoire.kt", "Jeu.kt", "Arbre.kt", "Port.kt", "Citadelle.kt"):
+    for f in ("Histoire.kt", "Jeu.kt", "Arbre.kt", "Port.kt", "Citadelle.kt", "Crypte.kt"):
         src = (k / f).read_text(encoding="utf-8")
         for m in re.finditer(r'\b[na]\("\w+", \d+, ' + _CHAINE, src):
             out.append(m.group(1))

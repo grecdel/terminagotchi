@@ -264,7 +264,8 @@ CHAPITRES = [
 # meubler, ouvert, manque, annonce, indice, surveiller.
 from . import port as _port  # noqa: E402
 from . import citadelle as _cit  # noqa: E402
-MONDES_MODS = {"port": _port, "citadelle": _cit}
+from . import crypte as _cry  # noqa: E402         le troisième : la Crypte des Codes (crypte.py)
+MONDES_MODS = {"port": _port, "citadelle": _cit, "crypte": _cry}
 for _m in MONDES_MODS.values():
     NOUVELLES.update(_m.LECONS)
     CHAPITRES.append(_m.CHAPITRE)
@@ -272,6 +273,7 @@ for _m in MONDES_MODS.values():
     lecons.CREE.update(_m.CREE)
 MONDES = tuple(c["piece"] for c in CHAPITRES if c.get("monde"))
 _CMDS_CIT = {s_.get("cmd") for l_ in _cit.LECONS.values() for s_ in l_["steps"]}
+_CMDS_CRY = {s_.get("cmd") for l_ in _cry.LECONS.values() for s_ in l_["steps"]}
 PAR_CHAP = {c["id"]: c for c in CHAPITRES}
 AILES = [c["id"] for c in CHAPITRES if 3 <= c["n"] <= 9]
 
@@ -1096,6 +1098,8 @@ def indice(state, step, lignes, tapees, morcs=None):
     conseil = _port.indice(step, tapees)                  # le Port : un trou « … » recopié, un messager perdu
     if not conseil and step.get("cmd") in _CMDS_CIT:      # la Citadelle : un trou « ? », une clé d'exemple oubliée…
         conseil = _cit.indice(step, tapees)
+    if not conseil and step.get("cmd") in _CMDS_CRY:      # la Crypte : un trou « ? », gpg sans --homedir…
+        conseil = _cry.indice(step, tapees)
     if conseil:
         return conseil
     conseil = _indice_cd(state, step, morcs) or _indice_rm(step, tapees) or _indice_barre(step, morcs) \

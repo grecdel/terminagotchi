@@ -374,7 +374,11 @@ BUILTINS = {"cd", "echo", "export", "alias", "history", "type", "source", ".", "
             "carte", "quetes", "explique",          # carte, quetes : les raccourcis du jeu (tg carte, tg quetes)
             "entrainement", "exercice", "badges",   # la salle d'entraînement (tg entrainement, tg badges)
             "guide", "types", "equipe",             # le guide (tg guide, tg types, tg equipe)
-            "aide"}                                 # I1 : alias aide='tg aide' (installé avec le compagnon)
+            "aide",                                 # I1 : alias aide='tg aide' (installé avec le compagnon)
+            # les alias du jeu posés par tg installer (le compagnon) : ce sont des commandes, pas des fautes
+            "deploie", "espace", "cerveau", "port", "citadelle", "crypte",
+            # les mots-clés du shell (time sh mineur.sh 3 : « time » n'est pas un programme, mais il existe)
+            "time", "case", "until", "function", "select", "command", "builtin", "local", "declare", "times"}
 
 
 def commande_existe(cmd):

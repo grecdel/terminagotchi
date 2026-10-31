@@ -245,7 +245,7 @@ def _ps2(zsh=False):
 # `deploie cat x | grep y` : le « # » de l'alias coupe le reste de la ligne (le tuyau n'est pas lancé), et la
 # ligne entière est relue dans l'historique (history -a). Avec des guillemets ça marche aussi partout.
 DEPLOIE = ("alias deploie='history -a 2>/dev/null; tg deploie --historique #'\n"
-           "alias espace='tg espace'; alias cerveau='tg cerveau'; alias port='tg port'; alias citadelle='tg citadelle'")
+           "alias espace='tg espace'; alias cerveau='tg cerveau'; alias port='tg port'; alias citadelle='tg citadelle'; alias crypte='tg crypte'")
 
 
 def _blocs():
@@ -284,7 +284,8 @@ def _blocs():
             'function equipe\n    tg equipe $argv\nend\nfunction aide\n    tg aide $argv\nend\n'
             'function deploie\n    tg deploie $argv\nend\nfunction espace\n    tg espace $argv\nend\n'
             'function cerveau\n    tg cerveau $argv\nend\nfunction port\n    tg port $argv\nend\n'
-            'function citadelle\n    tg citadelle $argv\nend')
+            'function citadelle\n    tg citadelle $argv\nend\n'
+            'function crypte\n    tg crypte $argv\nend')
     for ps in ("powershell", "pwsh"):
         if shutil.which(ps):
             try:
@@ -306,7 +307,8 @@ def _blocs():
                                        'function deploie { tg deploie @args }\nfunction espace { tg espace @args }\n'
                                        'function cerveau { tg cerveau @args }\n'
                                        'function port { tg port @args }\n'
-                                       'function citadelle { tg citadelle @args }')
+                                       'function citadelle { tg citadelle @args }\n'
+                                       'function crypte { tg crypte @args }')
     return blocs
 
 
@@ -367,7 +369,8 @@ def a_jour():
         installe = txt.split(DEBUT, 1)[1].split(FIN, 1)[0] if DEBUT in txt else None
         if installe is not None and ("--statut" not in installe or ("PS2=" in bloc and "PS2=" not in installe)
                                      or ("port='tg port'" in bloc and "port='tg port'" not in installe)
-                                     or ("citadelle='tg citadelle'" in bloc and "citadelle='tg citadelle'" not in installe)):
+                                     or ("citadelle='tg citadelle'" in bloc and "citadelle='tg citadelle'" not in installe)
+                                     or ("crypte='tg crypte'" in bloc and "crypte='tg crypte'" not in installe)):
             return False
     return True
 

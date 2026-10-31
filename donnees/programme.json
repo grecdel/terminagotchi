@@ -2035,6 +2035,376 @@
     "ANSSI, Recommandations pour la définition d'une politique de filtrage réseau d'un pare-feu (2013)"
    ],
    "relu_par": null
+  },
+  "encodage": {
+   "motif": "(base64|xxd|crypte\\s+demasque)",
+   "enfant": "cr.f.encodage.enfant",
+   "grands": "cr.f.encodage.grands",
+   "vrai_terminal": [
+    {
+     "cmd": "echo bonjour | base64",
+     "sortie": "Ym9uam91cgo="
+    },
+    {
+     "cmd": "echo Ym9uam91cgo= | base64 -d",
+     "sortie": "bonjour"
+    },
+    {
+     "cmd": "printf 'Hi' | od -An -tx1",
+     "sortie": " 48 69"
+    },
+    {
+     "cmd": "echo 626f6e6a6f7572 | xxd -r -p",
+     "sortie": "bonjour",
+     "outil": "xxd"
+    }
+   ],
+   "limite_image": "cr.f.encodage.limite",
+   "idees_fausses": [
+    "cr.f.encodage.idee"
+   ],
+   "sources": [
+    "RFC 4648 (base16, base32, base64) : https://www.rfc-editor.org/rfc/rfc4648",
+    "man 1 base64 (GNU coreutils), man 1 xxd, man 1 od",
+    "ANSSI, Guide de sélection d'algorithmes cryptographiques (2021) : encodage ≠ chiffrement"
+   ],
+   "relu_par": null
+  },
+  "substitution": {
+   "motif": "(^tr\\b|\\|\\s*tr\\b|mystere|crypte\\s+roue)",
+   "enfant": "cr.f.substitution.enfant",
+   "grands": "cr.f.substitution.grands",
+   "vrai_terminal": [
+    {
+     "cmd": "echo bonjour | tr 'a-z' 'd-za-c'",
+     "sortie": "erqmrxu"
+    },
+    {
+     "cmd": "echo erqmrxu | tr 'd-za-c' 'a-z'",
+     "sortie": "bonjour"
+    },
+    {
+     "cmd": "echo uryyb | tr 'a-z' 'n-za-m'",
+     "sortie": "hello"
+    },
+    {
+     "cmd": "echo eeeab | grep -o '[a-z]' | sort | uniq -c | sort -rn | head -n 1",
+     "sortie": "      3 e"
+    }
+   ],
+   "limite_image": "cr.f.substitution.limite",
+   "idees_fausses": [
+    "cr.f.substitution.idee"
+   ],
+   "sources": [
+    "POSIX.1-2024, tr : https://pubs.opengroup.org/onlinepubs/9799919799/utilities/tr.html",
+    "Simon Singh, Histoire des codes secrets (1999) : César, al-Kindi (analyse de fréquences), Vigenère, Kasiski",
+    "D. Kahn, The Codebreakers (1967)"
+   ],
+   "relu_par": null
+  },
+  "hachage": {
+   "motif": "(\\|\\s*sha256sum|crypte\\s+avalanche|sceaux)",
+   "enfant": "cr.f.hachage.enfant",
+   "grands": "cr.f.hachage.grands",
+   "vrai_terminal": [
+    {
+     "cmd": "echo -n a | sha256sum",
+     "sortie": "ca978112ca1bbdcafac231b39a23dc4da786eff8147c4e72b9807785afee48bb  -"
+    },
+    {
+     "cmd": "echo -n b | sha256sum",
+     "sortie": "3e23e8160039594a33894f6564e1b1348bbd7a0088d42c4acb73eeaed59c009d  -"
+    },
+    {
+     "prepare": "printf 'sort\\n' > s; sha256sum s > sceaux; printf 'sort!\\n' > s",
+     "cmd": "sha256sum -c sceaux",
+     "code": "non0",
+     "motif": "^s: FAILED$"
+    }
+   ],
+   "limite_image": "cr.f.hachage.limite",
+   "idees_fausses": [
+    "cr.f.hachage.idee"
+   ],
+   "sources": [
+    "FIPS 180-4 (SHA-256) : https://csrc.nist.gov/pubs/fips/180-4/upd1/final",
+    "man 1 sha256sum (GNU coreutils)",
+    "M. Stevens et al., SHAttered (2017) : la première collision SHA-1"
+   ],
+   "relu_par": null
+  },
+  "mots_de_passe": {
+   "motif": "(base_fictive|dictionnaire\\.sh|openssl\\s+passwd)",
+   "enfant": "cr.f.mots_de_passe.enfant",
+   "grands": "cr.f.mots_de_passe.grands",
+   "vrai_terminal": [
+    {
+     "cmd": "openssl passwd -6 -salt abcdefgh licorne",
+     "sortie": "$6$abcdefgh$LBfJchvsjtkLn7O11D7NsWSuRtEB44nhzqe/jwDYwsdvaAAIzZl6ZZfTbPRWrK.ZADurJUQYLPM4n5EnWbpwa/",
+     "outil": "openssl"
+    },
+    {
+     "cmd": "printf %s soleil | sha256sum | cut -c1-64",
+     "sortie": "e93e24c1b877a15df5e4a8cbb20f351b891b750779cf5e8fb99119a7142d89cf"
+    },
+    {
+     "cmd": "echo $((128**4))",
+     "sortie": "268435456"
+    }
+   ],
+   "limite_image": "cr.f.mots_de_passe.limite",
+   "idees_fausses": [
+    "cr.f.mots_de_passe.idee"
+   ],
+   "sources": [
+    "NIST SP 800-63B (rév. 2024) : longueur plutôt que complexité, listes de mots de passe compromis",
+    "U. Drepper, Unix crypt using SHA-256 and SHA-512 (2007) : https://www.akkadia.org/drepper/SHA-crypt.txt",
+    "RFC 9106 (Argon2)",
+    "man 1 openssl-passwd : https://docs.openssl.org/3.0/man1/openssl-passwd/"
+   ],
+   "relu_par": null
+  },
+  "symetrique": {
+   "motif": "(parchemin\\.(txt|enc)|crypte\\s+donne\\s+parchemin)",
+   "enfant": "cr.f.symetrique.enfant",
+   "grands": "cr.f.symetrique.grands",
+   "vrai_terminal": [
+    {
+     "prepare": "echo 'pour ma creature' > p",
+     "cmd": "openssl enc -aes-256-cbc -pbkdf2 -in p -out p.enc -pass pass:sphinx-de-givre-exemple && head -c 8 p.enc",
+     "sortie": "Salted__",
+     "outil": "openssl"
+    },
+    {
+     "prepare": "echo 'pour ma creature' > p; openssl enc -aes-256-cbc -pbkdf2 -in p -out p.enc -pass pass:sphinx-de-givre-exemple",
+     "cmd": "openssl enc -d -aes-256-cbc -pbkdf2 -in p.enc -pass pass:sphinx-de-givre-exemple",
+     "sortie": "pour ma creature",
+     "outil": "openssl"
+    }
+   ],
+   "limite_image": "cr.f.symetrique.limite",
+   "idees_fausses": [
+    "cr.f.symetrique.idee"
+   ],
+   "sources": [
+    "FIPS 197 (AES)",
+    "RFC 8018 (PBKDF2)",
+    "man 1 openssl-enc : https://docs.openssl.org/3.0/man1/openssl-enc/"
+   ],
+   "relu_par": null
+  },
+  "asymetrique": {
+   "motif": "(crypte\\s+peintures|\\$\\(\\(\\s*5|quick-gen-key|\\s-e\\s+-r\\s|crypte\\s+donne\\s+secret|message\\.txt)",
+   "enfant": "cr.f.asymetrique.enfant",
+   "grands": "cr.f.asymetrique.grands",
+   "vrai_terminal": [
+    {
+     "cmd": "echo $((5**6 % 23)) $((5**15 % 23)) $((19**6 % 23)) $((8**15 % 23))",
+     "sortie": "8 19 2 2"
+    },
+    {
+     "cmd": "mkdir -m 700 t && gpg --homedir t --batch --passphrase '' --quick-gen-key sphinx@crypte.example >/dev/null 2>&1 && echo 'le sceau' > m && gpg --homedir t --batch --clearsign m 2>/dev/null && gpg --homedir t --verify m.asc 2>&1 | grep -c 'Good signature'; gpgconf --homedir t --kill gpg-agent",
+     "sortie": "1",
+     "outil": "gpg"
+    },
+    {
+     "cmd": "mkdir -m 700 t && gpg --homedir t --batch --passphrase '' --quick-gen-key sphinx@crypte.example >/dev/null 2>&1 && echo 'pour elle' > s && gpg --homedir t --batch -e -r sphinx@crypte.example -o s.gpg s 2>/dev/null && gpg --homedir t --batch -d s.gpg 2>/dev/null; gpgconf --homedir t --kill gpg-agent",
+     "sortie": "pour elle",
+     "outil": "gpg"
+    }
+   ],
+   "limite_image": "cr.f.asymetrique.limite",
+   "idees_fausses": [
+    "cr.f.asymetrique.idee"
+   ],
+   "sources": [
+    "W. Diffie et M. Hellman, New Directions in Cryptography (1976)",
+    "RFC 9580 (OpenPGP, 2024)",
+    "GnuPG, manuel : https://www.gnupg.org/documentation/manuals/gnupg/",
+    "RFC 8446 (TLS 1.3 : échange de clés et certificats, pont vers le Port)"
+   ],
+   "relu_par": null
+  },
+  "hasard": {
+   "motif": "(/dev/u?random|openssl\\s+rand|crypte\\s+de\\b)",
+   "enfant": "cr.f.hasard.enfant",
+   "grands": "cr.f.hasard.grands",
+   "vrai_terminal": [
+    {
+     "cmd": "head -c 16 /dev/urandom | wc -c",
+     "sortie": "16"
+    },
+    {
+     "cmd": "openssl rand -hex 16 | tr -d '\\n' | wc -c",
+     "sortie": "32",
+     "outil": "openssl"
+    },
+    {
+     "cmd": "x=6; echo $(( (5*x+3) % 8 ))",
+     "sortie": "1"
+    }
+   ],
+   "limite_image": "cr.f.hasard.limite",
+   "idees_fausses": [
+    "cr.f.hasard.idee"
+   ],
+   "sources": [
+    "man 4 urandom, man 2 getrandom",
+    "NIST SP 800-90A (générateurs déterministes)",
+    "Debian DSA-1571-1 (2008) : des clés OpenSSL devinables"
+   ],
+   "relu_par": null
+  },
+  "post_quantique": {
+   "motif": "crypte\\s+quiz",
+   "enfant": "cr.f.post_quantique.enfant",
+   "grands": "cr.f.post_quantique.grands",
+   "vrai_terminal": [
+    {
+     "cmd": "echo $((256 / 2))",
+     "sortie": "128"
+    }
+   ],
+   "limite_image": "cr.f.post_quantique.limite",
+   "idees_fausses": [
+    "cr.f.post_quantique.idee"
+   ],
+   "sources": [
+    "NIST FIPS 203 (ML-KEM), FIPS 204 (ML-DSA), FIPS 205 (SLH-DSA), août 2024",
+    "P. Shor, Algorithms for quantum computation (1994) ; L. Grover (1996)",
+    "ANSSI, Avis sur la migration vers la cryptographie post-quantique (2022, mis à jour 2023)"
+   ],
+   "relu_par": null
+  },
+  "registre": {
+   "motif": "(registre\\.txt|crypte\\s+registre)",
+   "enfant": "cr.f.registre.enfant",
+   "grands": "cr.f.registre.grands",
+   "vrai_terminal": [
+    {
+     "prepare": "printf 'Pixel a donne 3 glands\\n' > registre.txt",
+     "cmd": "echo 'Lune donne 2 plumes' >> registre.txt; cat registre.txt",
+     "sortie": "Pixel a donne 3 glands\nLune donne 2 plumes"
+    }
+   ],
+   "limite_image": "cr.f.registre.limite",
+   "idees_fausses": [
+    "cr.f.registre.idee"
+   ],
+   "sources": [
+    "S. Nakamoto, Bitcoin: A Peer-to-Peer Electronic Cash System (2008), § 1-2 (le registre)",
+    "POSIX.1-2024, Shell Command Language, redirections (>>)"
+   ],
+   "relu_par": null
+  },
+  "chaine_blocs": {
+   "motif": "(chaine/|verifie_chaine|crypte\\s+chaine|archives/)",
+   "enfant": "cr.f.chaine_blocs.enfant",
+   "grands": "cr.f.chaine_blocs.grands",
+   "vrai_terminal": [
+    {
+     "prepare": "printf 'bloc: 0\\n' > b0; printf 'precedent: %s\\n' \"$(sha256sum b0 | cut -c1-64)\" > b1",
+     "cmd": "test \"$(sha256sum b0 | cut -c1-64)\" = \"$(cut -d' ' -f2 b1)\" && echo OK; echo triche >> b0; test \"$(sha256sum b0 | cut -c1-64)\" = \"$(cut -d' ' -f2 b1)\" || echo CASSE",
+     "sortie": "OK\nCASSE"
+    }
+   ],
+   "limite_image": "cr.f.chaine_blocs.limite",
+   "idees_fausses": [
+    "cr.f.chaine_blocs.idee"
+   ],
+   "sources": [
+    "S. Haber et W. S. Stornetta, How to time-stamp a digital document (1991)",
+    "S. Nakamoto (2008), § 3-4 (serveur d'horodatage, chaîne d'empreintes)",
+    "Pro Git, chap. 10 (les objets de git)"
+   ],
+   "relu_par": null
+  },
+  "consensus": {
+   "motif": "(copies/|crypte\\s+consensus)",
+   "enfant": "cr.f.consensus.enfant",
+   "grands": "cr.f.consensus.grands",
+   "vrai_terminal": [
+    {
+     "prepare": "for i in 1 2 3; do echo vrai > c$i; done; echo triche > c4",
+     "cmd": "sha256sum c1 c2 c3 c4 | cut -c1-64 | sort | uniq -c | sort -rn | awk '{print $1}'",
+     "sortie": "3\n1"
+    }
+   ],
+   "limite_image": "cr.f.consensus.limite",
+   "idees_fausses": [
+    "cr.f.consensus.idee"
+   ],
+   "sources": [
+    "L. Lamport, R. Shostak, M. Pease, The Byzantine Generals Problem (1982)",
+    "S. Nakamoto (2008), § 5 et 11 (le réseau, la majorité honnête)"
+   ],
+   "relu_par": null
+  },
+  "preuve_travail": {
+   "motif": "(mineur\\.sh|crypte\\s+mine)",
+   "enfant": "cr.f.preuve_travail.enfant",
+   "grands": "cr.f.preuve_travail.grands",
+   "vrai_terminal": [
+    {
+     "cmd": "for n in $(seq 1 1000); do h=$(printf 'bloc5%s' $n | sha256sum); case $h in 00*) echo $n; break;; esac; done",
+     "sortie": "139"
+    }
+   ],
+   "limite_image": "cr.f.preuve_travail.limite",
+   "idees_fausses": [
+    "cr.f.preuve_travail.idee"
+   ],
+   "sources": [
+    "A. Back, Hashcash (2002)",
+    "S. Nakamoto (2008), § 4 (preuve de travail)",
+    "Cambridge Centre for Alternative Finance, Bitcoin Electricity Consumption Index"
+   ],
+   "relu_par": null
+  },
+  "signature": {
+   "motif": "(echange|crypte\\s+signe)",
+   "enfant": "cr.f.signature.enfant",
+   "grands": "cr.f.signature.grands",
+   "vrai_terminal": [
+    {
+     "cmd": "mkdir -m 700 t && gpg --homedir t --batch --passphrase '' --quick-gen-key sphinx@crypte.example >/dev/null 2>&1 && echo 'Pixel donne 2 glands' > e && gpg --homedir t --batch --clearsign e 2>/dev/null && sed -i 's/2 glands/20 glands/' e.asc && gpg --homedir t --verify e.asc 2>&1 | grep -c 'BAD signature'; gpgconf --homedir t --kill gpg-agent",
+     "sortie": "1",
+     "outil": "gpg"
+    }
+   ],
+   "limite_image": "cr.f.signature.limite",
+   "idees_fausses": [
+    "cr.f.signature.idee"
+   ],
+   "sources": [
+    "RFC 9580 (OpenPGP), signatures en texte clair",
+    "S. Nakamoto (2008), § 2 (transactions : une chaîne de signatures)"
+   ],
+   "relu_par": null
+  },
+  "applications": {
+   "motif": "(crypte\\s+(vitrine|recensement)|carnet_de_bord|grep\\s+-h\\s+donnees)",
+   "enfant": "cr.f.applications.enfant",
+   "grands": "cr.f.applications.grands",
+   "vrai_terminal": [
+    {
+     "prepare": "mkdir c; printf 'donnees: a\\n' > c/bloc_0.txt; printf 'donnees: b\\n' > c/bloc_1.txt",
+     "cmd": "grep -h donnees c/bloc_*.txt",
+     "sortie": "donnees: a\ndonnees: b"
+    }
+   ],
+   "limite_image": "cr.f.applications.limite",
+   "idees_fausses": [
+    "cr.f.applications.idee"
+   ],
+   "sources": [
+    "S. Nakamoto (2008)",
+    "V. Buterin, Ethereum White Paper (2014) : contrats intelligents",
+    "EIP-721 (jetons non fongibles) : https://eips.ethereum.org/EIPS/eip-721",
+    "Décision du propriétaire (28 octobre 2026) : explication technique uniquement, aucun avis"
+   ],
+   "relu_par": null
   }
  },
  "etapes": {
@@ -2111,6 +2481,41 @@
   "cit12.2": {
    "maths": [
     "puissances"
+   ]
+  },
+  "cr1.2": {
+   "maths": [
+    "hexadecimal"
+   ]
+  },
+  "cr2.4": {
+   "maths": [
+    "modulo"
+   ]
+  },
+  "cr4.2": {
+   "maths": [
+    "puissances"
+   ]
+  },
+  "cr6.1": {
+   "maths": [
+    "puissance_modulo"
+   ]
+  },
+  "cr7.3": {
+   "maths": [
+    "modulo"
+   ]
+  },
+  "cr12.1": {
+   "maths": [
+    "puissances"
+   ]
+  },
+  "cr12.2": {
+   "maths": [
+    "probabilites"
    ]
   }
  },
@@ -2398,6 +2803,105 @@
   "cit14.1": {
    "sortie": "boites/droits/ronde.sh",
    "pourquoi": "hist.cit14.1.bravo : ronde.sh, modifiable par tous"
+  },
+  "cr1.0": {
+   "sortie": "Ym9uam91cgo=",
+   "pourquoi": "hist.cr1.0.bravo : Ym9uam91cgo="
+  },
+  "cr1.1": {
+   "motif": "dragon-exemple",
+   "pourquoi": "hist.cr1.1.bravo : n'importe qui peut le lire"
+  },
+  "cr2.0": {
+   "sortie": "erqmrxu",
+   "pourquoi": "hist.cr2.0.bravo : erqmrxu"
+  },
+  "cr2.2": {
+   "motif": "^rot treize se decode",
+   "pourquoi": "hist.cr2.2.bravo : la même commande décode"
+  },
+  "cr3.0": {
+   "sortie": "ca978112ca1bbdcafac231b39a23dc4da786eff8147c4e72b9807785afee48bb  -",
+   "pourquoi": "hist.cr3.0.bravo"
+  },
+  "cr3.3": {
+   "code": "non0",
+   "motif": "grimoires/sort_2\\.txt: FAILED",
+   "pourquoi": "hist.cr3.3.bravo : sort_2 FAILED"
+  },
+  "cr4.2": {
+   "motif": "lune -> soleil",
+   "contient": [
+    "123456",
+    "licorne"
+   ],
+   "pourquoi": "hist.cr4.2.bravo : soleil, 123456, licorne"
+  },
+  "cr4.3": {
+   "motif": "^\\$6\\$[./0-9A-Za-z]{1,16}\\$[./0-9A-Za-z]{86}$",
+   "outil": "openssl",
+   "pourquoi": "hist.cr4.3.bravo : $6$, le sel"
+  },
+  "cr5.2": {
+   "sortie": "Salted__",
+   "outil": "openssl",
+   "pourquoi": "hist.cr5.2.bravo : Salted__"
+  },
+  "cr6.1": {
+   "sortie": "8",
+   "pourquoi": "hist.cr6.1.bravo : 8"
+  },
+  "cr6.6": {
+   "motif": "Good signature",
+   "outil": "gpg",
+   "pourquoi": "hist.cr6.6.bravo : Good signature"
+  },
+  "cr7.1": {
+   "motif": "^[0-9a-f]{32}$",
+   "outil": "openssl",
+   "pourquoi": "hist.cr7.1.bravo : 32 chiffres hexadécimaux"
+  },
+  "cr10.1": {
+   "motif": "^[0-9a-f]{64}  chaine/bloc_0\\.txt$",
+   "pourquoi": "hist.cr10.1.bravo : 64 signes"
+  },
+  "cr10.2": {
+   "code": 0,
+   "motif": "maillon 3 -> 4 : OK",
+   "pourquoi": "hist.cr10.2.bravo : tous les maillons OK"
+  },
+  "cr10.4": {
+   "code": "non0",
+   "motif": "maillon 1 -> 2 : CASSÉ",
+   "pourquoi": "hist.cr10.4.bravo : CASSÉ au maillon 1 → 2"
+  },
+  "cr11.1": {
+   "motif": "^\\s+8 [0-9a-f]{64}$",
+   "pourquoi": "hist.cr11.1.bravo : 8 pareilles, 1 différente"
+  },
+  "cr11.2": {
+   "code": "non0",
+   "motif": "^> .*100",
+   "pourquoi": "hist.cr11.2.bravo : la ligne trafiquée"
+  },
+  "cr12.1": {
+   "motif": "^nonce = 139$",
+   "pourquoi": "hist.cr12.1.bravo : nonce = 139"
+  },
+  "cr12.2": {
+   "motif": "^nonce = 2615$",
+   "pourquoi": "hist.cr12.2.bravo : 2615 essais"
+  },
+  "cr13.2": {
+   "code": "non0",
+   "motif": "BAD signature",
+   "outil": "gpg",
+   "pourquoi": "hist.cr13.2.bravo : BAD signature"
+  },
+  "cr14.2": {
+   "code": 0,
+   "motif": "maillon 0 -> 1 : OK",
+   "pourquoi": "hist.cr14.2.bravo : le carnet de bord tient"
   }
  },
  "maths": {
@@ -3076,7 +3580,10 @@
    "maths": [
     "division",
     "modulo",
-    "puissances"
+    "puissances",
+    "puissance_modulo",
+    "hexadecimal",
+    "probabilites"
    ],
    "exploits": [
     {
@@ -3090,7 +3597,65 @@
      "recompense": "legendaire"
     }
    ],
-   "variantes_reservees": []
+   "variantes_reservees": [
+    "heaumbre:crypte",
+    "fractalis:cristal",
+    "givrarde:aurore",
+    "lichonarque:crypte"
+   ],
+   "requis": [
+    "n4"
+   ],
+   "paliers": [
+    "cr0",
+    "cr1",
+    "cr2",
+    "cr3",
+    "cr4",
+    "cr5",
+    "cr6",
+    "cr7",
+    "cr8",
+    "cr9",
+    "cr10",
+    "cr11",
+    "cr12",
+    "cr13",
+    "cr14"
+   ],
+   "attirance": {
+    "cmds": [
+     "base64",
+     "tr",
+     "sha256sum",
+     "openssl",
+     "gpg"
+    ],
+    "familles": [
+     "Morts-vivants"
+    ]
+   },
+   "ponts": {
+    "sha256sum": [
+     "citadelle"
+    ],
+    "openssl": [
+     "citadelle"
+    ],
+    "https": [
+     "port"
+    ],
+    "git": [
+     "temps"
+    ],
+    "boucles": [
+     "forge"
+    ],
+    "diff": [
+     "citadelle"
+    ]
+   },
+   "gardienne": "lichonarque:crypte"
   },
   {
    "id": "observatoire",

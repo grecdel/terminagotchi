@@ -424,6 +424,36 @@ def _cadenas_anime(x, phase):
     return citadelle.grille(apres, avant)
 
 
+# ---------------------------------------------------------------- la roue de César (la Crypte des Codes)
+def roue(ligne):
+    """Les roues d'une ligne (spécification commune, Deploie.kt, vecteurs donnees/crypte/vecteurs.json) :
+    [{seg, de, vers, decalage}] pour chaque `tr DE VERS` qui fait tourner l'alphabet (César, ROT13)."""
+    from . import crypte
+    out = []
+    bl = blocs(ligne)
+    for c in chaines(bl):
+        for e in c["etapes"]:
+            if e["cmd"] != "tr":
+                continue
+            args = [_nu(x) for x, _op in mots(e["texte"])[1:] if not x.startswith("-")]
+            if len(args) < 2:
+                continue
+            k = crypte.rotation(args[0], args[1])
+            if k is None:
+                continue
+            seg = next((b["seg"] for b in bl if b["g"] == "commande" and b["i"] - 1 == e["debut"]), 0)
+            out.append({"seg": seg, "de": args[0], "vers": args[1], "decalage": k})
+    return out
+
+
+def _roue_anime(x, phase):
+    """La roue tourne lettre par lettre jusqu'au décalage, puis chaque lettre montre sa sœur décalée."""
+    from . import crypte
+    k = x["decalage"]
+    tour = k if phase >= 0.6 else int(round(k * phase / 0.6))
+    return crypte.roue_lignes(tour)
+
+
 # ---------------------------------------------------------------- les mots pour le dire
 def nom_genre(g):
     return t("dep.genre." + g)
@@ -656,6 +686,12 @@ def ecran(ligne, bl, actif, sorties, phase=0.0, largeur=80, dossier=None, pas=Fa
                 else:
                     out.append(f"  {fg(ANSI['commande'])}🎭 " + t("dep.droits.masque", apres=x["apres"], octal=x["octal"]) + RESET)
                 out += ["  " + l for l in _cadenas_anime(x, phase % 1.0)]
+    if b["g"] == "commande":                     # tr 'a-z' 'd-za-c' : la roue de César qui tourne (la Crypte)
+        for x in roue(ligne):
+            if x["seg"] == b["seg"]:
+                out.append("")
+                out.append(f"  {fg(ANSI['commande'])}🎡 " + t("dep.roue", de=x["de"], vers=x["vers"], k=x["decalage"]) + RESET)
+                out += ["  " + l for l in _roue_anime(x, phase % 1.0)]
     if actif == n and sorties:
         for c, s in zip(chs, sorties):
             if s and len(c["etapes"]) > 1:
@@ -671,7 +707,8 @@ def _reseau(b, ligne):
     """Le bloc est une commande réseau qui envoie un messager, ou un chmod / umask dont les cadenas changent (son
     animation dure comme celle d'un tuyau)."""
     return b["g"] == "commande" and (any(x["seg"] == b["seg"] for x in messager(ligne)) or
-                                     any(x["seg"] == b["seg"] for x in droits(ligne)))
+                                     any(x["seg"] == b["seg"] for x in droits(ligne)) or
+                                     any(x["seg"] == b["seg"] for x in roue(ligne)))
 
 
 def jouer(ligne, dossier=None, pas=False, sortie=None, clavier=None, ips=12):

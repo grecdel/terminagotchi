@@ -131,10 +131,13 @@ def histoire():
     from tg import citadelle as C_
     jeu_port = f"{sys.executable} -c \"import sys; sys.path.insert(0, '{RACINE / 'pc'}'); from tg import port; port.commande(sys.argv[1:])\""
     jeu_cit = jeu_port.replace("port; port.", "citadelle; citadelle.")
+    jeu_cry = jeu_port.replace("port; port.", "crypte; crypte.")
+    from tg import crypte as K_
 
     def tape(cmd):
         vrai = re.sub(r"^port\b", jeu_port, cmd)          # l'alias port='tg port' (posé par tg installer)
         vrai = re.sub(r"(^|;\s*)citadelle\b", lambda m: m.group(1) + jeu_cit, vrai)   # et citadelle='tg citadelle'
+        vrai = re.sub(r"(^|;\s*)crypte\b", lambda m: m.group(1) + jeu_cry, vrai)       # et crypte='tg crypte'
         etat["sortie"], etat["code"], d = shell.lancer(vrai)
         etat["cwd"] = Path(d)
         with open(home / ".bash_history", "a") as f:
@@ -151,10 +154,10 @@ def histoire():
         h = H.h_(st)
         if not les:
             reste = [a for a in H.AILES if not H.fini(st, a)]
-            if H.fini(st, "citadelle") or h["chap"] in ("reveil", "nid"):
+            if H.fini(st, "crypte") or h["chap"] in ("reveil", "nid"):
                 break
             if H.fini(st, "coeur"):                 # le tronc et les ailes faits : les mondes du Carrefour, dans l'ordre
-                reste = ["port"] if not H.fini(st, "port") else ["citadelle"]
+                reste = [m_ for m_ in ("port", "citadelle", "crypte") if not H.fini(st, m_)][:1]
             cible = "coeur" if not reste and H.ouvert(st, "coeur") else (reste[0] if reste else None)
             if not cible:
                 break
@@ -192,6 +195,14 @@ def histoire():
         if les["id"] == "cit16" and i == 2:           # la grande vague : tout réparer avant le tableau
             c = ('find . -name "*.glitch" -delete; kill ' + " ".join(str(p) for p, _n in C_.fictifs_vivants()) +
                  " 2>/dev/null; chmod 600 " + C_.donnees()["vague"]["secret"] + "; citadelle tableau")
+        if c == "crypte roue ?":                     # la Crypte : l'enfant compte les lettres, lit le dé, les copies…
+            c = f"crypte roue {K_.decalage(K_._graine(st))}"
+        if c == "crypte de ?":
+            c = f"crypte de {K_.de_suite(K_._graine(st), K_.donnees()['de']['montres'] + 1)[-1]}"
+        if c == "crypte quiz ? ? ? ? ? ?":
+            c = "crypte quiz " + " ".join(K_.bonnes_reponses(K_._graine(st)))
+        if "copies/?/" in c or c == "crypte consensus ?":
+            c = c.replace("?", K_.tricheur(K_._graine(st)))
         if c.endswith(" &") and "http.server" in c:
             c = c[:-2] + " >/dev/null 2>&1 &"       # (les lignes du serveur n'encombrent pas la suite)
         lieu = step.get("ou") if step.get("ou") is not None else None
@@ -258,8 +269,10 @@ def histoire():
     verifier(H.fini(st, "coeur"), f"l'histoire est allée jusqu'au bout ({h['ailes']})")
     verifier(H.fini(st, "port"), "le Port, premier monde du Carrefour, est allé jusqu'au bout (P0 → P11)")
     verifier(H.fini(st, "citadelle"), "la Citadelle, deuxième monde, est allée jusqu'au bout (cit0 → cit16)")
+    verifier(H.fini(st, "crypte"), "la Crypte des Codes, troisième monde, est allée jusqu'au bout (cr0 → cr14)")
     P_.eteindre_phare()
     C_.arreter_fictifs()
+    K_.tuer_agents()
     manquent = sorted(set(attendus) - vus)
     verifier(not manquent, f"toutes les étapes décrites ont été rejouées {manquent}")
     shell.fermer()
