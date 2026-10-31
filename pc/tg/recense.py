@@ -17,7 +17,7 @@ from . import core
 from . import tirage
 from .langue import t
 
-INFO = "https://raw.githubusercontent.com/grecdel/terminagotchi-android/site-info/url.txt"
+INFO = "https://raw.githubusercontent.com/grecdel/terminagotchi/site-info/url.txt"
 APPAREIL = "pc"
 INTERVALLE = 60          # secondes minimum entre deux synchros automatiques
 COMPTEURS = ("xp", "total", "colles")

@@ -11,7 +11,7 @@ import java.net.URL
  * et renvoie la créature commune. Les appels réseau ne se font jamais sur l'écran (fil séparé).
  */
 object Recensement {
-    private const val INFO = "https://raw.githubusercontent.com/grecdel/terminagotchi-android/site-info/url.txt"
+    private const val INFO = "https://raw.githubusercontent.com/grecdel/terminagotchi/site-info/url.txt"
     const val APPAREIL = "android"
     private const val INTERVALLE = 60_000L
 

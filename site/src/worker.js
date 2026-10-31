@@ -13,7 +13,7 @@ import { barreTerminal, planSite, CSS_TERMINAL } from "./terminal.js";
 
 // ====================================================================== réglages à remplir
 
-const DEPOT = "https://github.com/grecdel/terminagotchi-android";
+const DEPOT = "https://github.com/grecdel/terminagotchi";
 const CONTACT = "contact@terminagotchi.com";
 /** Liens de dons (page /soutenir). Une plateforme n'est affichée que si son lien est rempli. */
 const DONS = { liberapay: "", kofi: "", github: "" };

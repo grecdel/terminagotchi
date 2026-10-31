@@ -546,7 +546,7 @@ console.log("Mini-terminal du site (ls, cd, cat…)");
 console.log("Pied de page, pages pour les adultes, polices locales");
 {
   r = await appel("GET", "/classement");
-  verifier(["/parents", "/soutenir", "/confidentialite", "/mentions-legales", "mailto:contact@terminagotchi.com", "github.com/grecdel/terminagotchi-android"]
+  verifier(["/parents", "/soutenir", "/confidentialite", "/mentions-legales", "mailto:contact@terminagotchi.com", "github.com/grecdel/terminagotchi"]
     .every((x) => r.t.includes(`href="${x.startsWith("/") || x.startsWith("mailto") ? x : "https://" + x}"`)), "pied de page : code, contact, soutenir, parents, mentions, confidentialité");
   verifier(!/googleapis|gstatic/.test(r.t) && r.t.includes("/polices/vt323-latin-400-normal.woff2") && r.t.includes("@font-face"),
     "polices hébergées sur le site : aucun appel à Google Fonts");
