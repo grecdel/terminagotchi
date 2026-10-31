@@ -107,6 +107,7 @@ class TerminalActivity : Activity() {
             plusTard = { ecrire(it, Commandes.BLEU) })
         Rappels.programmer(this)
         essais(intent)
+        handler.postDelayed({ commandeExterne(intent) }, 400)      // une commande tapée dans l'île de la bulle
         if (android.os.Build.VERSION.SDK_INT >= 33 &&
             checkSelfPermission("android.permission.POST_NOTIFICATIONS") != android.content.pm.PackageManager.PERMISSION_GRANTED) {
             requestPermissions(arrayOf("android.permission.POST_NOTIFICATIONS"), 1)
@@ -207,6 +208,7 @@ class TerminalActivity : Activity() {
     override fun onResume() {
         super.onResume()
         ecranVisible = true
+        Bulle.reprendre(this)                     // la permission « par-dessus les autres applis » vient d'être donnée
         if (!vieEnMarche) { vieEnMarche = true; handler.postDelayed({ pasVie() }, VIE_PAS) }
         if (::jeu.isInitialized && !enCours) {
             jeu.recharger()        // le Doom ou l'éditeur ont pu changer des choses
@@ -588,6 +590,16 @@ class TerminalActivity : Activity() {
         essais(intent)
         rafraichir()
         saisie.requestFocus()
+        handler.postDelayed({ commandeExterne(intent) }, 200)
+    }
+
+    /** Une commande tapée dans le mini-terminal de l'île (BulleService) : lancée ici, comme si l'enfant l'avait tapée. */
+    private fun commandeExterne(i: android.content.Intent?) {
+        val c = i?.getStringExtra("tg_commande")?.trim() ?: return
+        i.removeExtra("tg_commande")
+        if (c.isEmpty() || !jeu.existe || enCours || menu.ouvert) return
+        saisie.setText(c)
+        valider()
     }
 
     /**

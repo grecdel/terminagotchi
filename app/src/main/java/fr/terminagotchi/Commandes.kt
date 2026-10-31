@@ -127,6 +127,8 @@ class Commandes(
             "doom" -> doom()
             "notifs" -> notifs(reste)
             "notif" -> notifVie(reste)
+            // la bulle : la créature se promène par-dessus les autres applis (BulleService.kt)
+            "bulle" -> Reponse(Bulle.commande(act, jeu, reste), couleur = ROSE)
             else -> null
         }
     }
