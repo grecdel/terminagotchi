@@ -109,6 +109,8 @@ verifier(130 <= n <= 280 and m_ <= 4, f"sans graine aussi : gardien {n}/1600 (�
 
 print("4. L'image dans toutes les sorties")
 from tg import equipe, poses  # noqa: E402
+# Horloge de l'effet figée « au repos » : sinon le test échoue s'il tombe pile pendant un éclair (≈ 4 % du temps).
+G.etat = lambda g, t=None: ("A", 0)
 ind = {"id": "a1b2c3d4e5", "espece": "Ombrachne", "variante": "classique", "stade": "adulte", "glitch": True,
        "rarete": "rare"}
 normal = dict(ind, glitch=False)
