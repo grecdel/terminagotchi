@@ -56,6 +56,8 @@ class Commandes(
         Intro.bloque(jeu, nom, reste)?.let { return Reponse(it, couleur = ORANGE) }
         // « je ne connais pas » : jamais bloquant, on ouvre un Pont des Nombres (Maths.kt)
         if (Maths.estInconnu(ligne)) return Reponse(Maths.commande(jeu, ligne.trim()), couleur = BLEU)
+        // `echo -n A | xxd -b` : le xxd du téléphone n'a pas -b, l'appli le fait (la Salle des Machines, M2)
+        Machines.xxdB(ligne)?.let { return Reponse(it, couleur = BLEU) }
         return when (cmd) {
             // ---------------------------------------------------- téléphone
             "applis" -> applis(reste)
@@ -143,6 +145,8 @@ class Commandes(
             // ---------------------------------------------------- la Crypte des Codes (Crypte.kt, CryptePgp.kt) : dans le terrain
             "crypte" -> Reponse(Crypte.commande(jeu, reste, dossier()), couleur = BLEU)
             "gpg", "gpg2" -> Reponse(Crypte.gpg(jeu, ligne.trim(), dossier()), couleur = BLEU)
+            // ---------------------------------------------------- la Salle des Machines (Machines.kt) : lecture seule
+            "machines" -> Reponse(Machines.commande(jeu, reste, dossier()), couleur = BLEU)
             "sync" -> sync()
             "indice" -> Reponse(Ctf.indice(jeu, reste), couleur = VERT)
             "edite" -> edite(reste)

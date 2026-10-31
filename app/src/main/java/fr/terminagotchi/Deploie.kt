@@ -270,6 +270,23 @@ object Deploie {
         return out
     }
 
+    // ------------------------------------------------------------ l'ordinateur ouvert (la Salle des Machines)
+    class Pieces(val seg: Int, val cmd: String, val pieces: List<String>)
+
+    /** Les pièces qu'interroge chaque commande d'une ligne (même spécification que deploie.pieces sur PC, vecteurs
+     *  donnees/machines/vecteurs.json) : nproc allume le processeur, free la mémoire… */
+    fun pieces(ligne: String): List<Pieces> {
+        val out = mutableListOf<Pieces>()
+        val bl = blocs(ligne)
+        for (c in chaines(bl)) for (e in c.etapes) {
+            val ps = Machines.piecesDe(e.texte)
+            if (ps.isEmpty()) continue
+            val seg = bl.firstOrNull { it.g == "commande" && it.i - 1 == e.debut }?.seg ?: 0
+            out.add(Pieces(seg, e.cmd, ps))
+        }
+        return out
+    }
+
     // ------------------------------------------------------------ les cadenas qui s'allument (la Citadelle)
     private val OPTIONS_CHMOD = setOf("-R", "-v", "-c", "-f", "--recursive", "--verbose", "--changes", "--silent", "--quiet")
     private val MODE_CHMOD = Regex("[0-7]{1,4}|[ugoa]*(?:[-+=][rwx]*)+(?:,[ugoa]*(?:[-+=][rwx]*)+)*")
@@ -363,11 +380,14 @@ object Deploie {
         /** la roue de César d'un tr (la Crypte) : elle tourne jusqu'au décalage */
         val roues: List<Roue> = try { roue(ligne) } catch (e: Exception) { emptyList() }
         fun roueDe(b: Bloc): Roue? = if (b.g == "commande") roues.firstOrNull { it.seg == b.seg } else null
+        /** les pièces d'un nproc, free, lsblk… (la Salle des Machines) : l'ordinateur ouvert s'allume */
+        val ordinateur: List<Pieces> = try { pieces(ligne) } catch (e: Exception) { emptyList() }
+        fun piecesDe(b: Bloc): Pieces? = if (b.g == "commande") ordinateur.firstOrNull { it.seg == b.seg } else null
 
         fun avancer(dt: Double) {
             t += dt
             val b = blocs[actif - 1]
-            val reseau = messagerDe(b) != null || droitsDe(b) != null || roueDe(b) != null
+            val reseau = messagerDe(b) != null || droitsDe(b) != null || roueDe(b) != null || piecesDe(b) != null
             val duree = if (b.g == "tuyau" || b.g == "redirection" || reseau) 2.4 else 1.2
             phase = if (b.g in setOf("tuyau", "redirection", "chemin") || reseau) t / duree else minOf(1.0, t / duree)
             if (auto && t >= duree && actif < blocs.size) { actif += 1; t = 0.0 }

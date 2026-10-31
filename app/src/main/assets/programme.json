@@ -2405,6 +2405,367 @@
     "Décision du propriétaire (28 octobre 2026) : explication technique uniquement, aucun avis"
    ],
    "relu_par": null
+  },
+  "organes": {
+   "motif": "(^nproc\\b|^lscpu\\b|^free\\b|^lsblk\\b|machines\\s+(coeurs|memoire|ouvre))",
+   "enfant": "ma.f.organes.enfant",
+   "grands": "ma.f.organes.grands",
+   "vrai_terminal": [
+    {
+     "cmd": "nproc | grep -cE '^[1-9][0-9]*$'",
+     "sortie": "1"
+    },
+    {
+     "cmd": "test \"$(nproc)\" -le \"$(grep -c ^processor /proc/cpuinfo)\" && echo ok",
+     "sortie": "ok"
+    },
+    {
+     "cmd": "free -h | head -n 1 | awk '{print $1}'",
+     "sortie": "total"
+    },
+    {
+     "cmd": "lsblk -d -o TYPE | head -n 1",
+     "sortie": "TYPE",
+     "outil": "lsblk"
+    },
+    {
+     "cmd": "nproc",
+     "rejeu": "telephone",
+     "motif": "^[1-9][0-9]*$"
+    }
+   ],
+   "limite_image": "ma.f.organes.limite",
+   "idees_fausses": [
+    "ma.f.organes.idee"
+   ],
+   "sources": [
+    "man 1 nproc (GNU coreutils) : https://www.gnu.org/software/coreutils/manual/html_node/nproc-invocation.html",
+    "man 1 free (procps-ng), man 1 lscpu et man 8 lsblk (util-linux)",
+    "Documentation du noyau Linux, The /proc Filesystem (meminfo) : https://docs.kernel.org/filesystems/proc.html",
+    "Programme de NSI (première) : architecture matérielle, modèle de von Neumann"
+   ],
+   "relu_par": null
+  },
+  "peripheriques": {
+   "motif": "(/proc/cpuinfo|^lspci\\b|^lsusb\\b|^getprop\\b|machines\\s+monte\\s+1\\b)",
+   "enfant": "ma.f.peripheriques.enfant",
+   "grands": "ma.f.peripheriques.grands",
+   "vrai_terminal": [
+    {
+     "cmd": "grep -c ^processor /proc/cpuinfo | grep -cE '^[1-9]'",
+     "sortie": "1"
+    },
+    {
+     "cmd": "head -n 1 /proc/cpuinfo | cut -d: -f1 | tr -d ' \\t'",
+     "sortie": "processor"
+    },
+    {
+     "cmd": "lspci | head -n 1 | grep -cE '^[0-9a-f]{2}:[0-9a-f]{2}\\.[0-7] '",
+     "sortie": "1",
+     "outil": "lspci"
+    },
+    {
+     "cmd": "getprop ro.product.model",
+     "rejeu": "telephone",
+     "motif": "\\S"
+    }
+   ],
+   "limite_image": "ma.f.peripheriques.limite",
+   "idees_fausses": [
+    "ma.f.peripheriques.idee"
+   ],
+   "sources": [
+    "man 8 lspci (pciutils) : https://man7.org/linux/man-pages/man8/lspci.8.html",
+    "man 8 lsusb (usbutils)",
+    "man 5 proc, /proc/cpuinfo : https://man7.org/linux/man-pages/man5/proc_cpuinfo.5.html",
+    "Android, propriétés système (getprop) : https://source.android.com/docs/core/architecture/configuration/add-system-properties"
+   ],
+   "relu_par": null
+  },
+  "binaire": {
+   "motif": "(printf\\s+['\\\"]?%x|xxd\\s+-\\w*b|\\bod\\b|machines\\s+(interrupteurs|allume))",
+   "enfant": "ma.f.binaire.enfant",
+   "grands": "ma.f.binaire.grands",
+   "vrai_terminal": [
+    {
+     "cmd": "printf '%x\\n' 65",
+     "sortie": "41"
+    },
+    {
+     "cmd": "printf A | od -An -tx1",
+     "sortie": " 41"
+    },
+    {
+     "cmd": "printf '\\303\\251' | od -An -tx1",
+     "sortie": " c3 a9"
+    },
+    {
+     "cmd": "echo $((2#01000001))",
+     "sortie": "65"
+    },
+    {
+     "cmd": "echo -n A | xxd -b",
+     "motif": "^00000000: 01000001 +A$",
+     "outil": "xxd"
+    }
+   ],
+   "limite_image": "ma.f.binaire.limite",
+   "idees_fausses": [
+    "ma.f.binaire.idee"
+   ],
+   "sources": [
+    "ANSI X3.4-1986 (ASCII), ISO/IEC 646",
+    "RFC 3629 (UTF-8) : https://www.rfc-editor.org/rfc/rfc3629",
+    "The Unicode Standard, chap. 3 (UTF-8)",
+    "man 1 xxd, man 1 od ; POSIX.1-2024, printf"
+   ],
+   "relu_par": null
+  },
+  "unites": {
+   "motif": "(stat\\b.*%s|wc\\s+-c|photo\\.bin|machines\\s+unit)",
+   "enfant": "ma.f.unites.enfant",
+   "grands": "ma.f.unites.grands",
+   "vrai_terminal": [
+    {
+     "cmd": "head -c 1048576 /dev/zero > f && stat -c %s f",
+     "sortie": "1048576"
+    },
+    {
+     "prepare": "head -c 1048576 /dev/zero > photo.bin",
+     "cmd": "wc -c photo.bin",
+     "sortie": "1048576 photo.bin"
+    },
+    {
+     "cmd": "echo $((1024*1024)) $((1000*1000))",
+     "sortie": "1048576 1000000"
+    },
+    {
+     "cmd": "numfmt --to=iec 1048576",
+     "sortie": "1.0M"
+    },
+    {
+     "cmd": "numfmt --to=si 1048576",
+     "sortie": "1.1M"
+    }
+   ],
+   "limite_image": "ma.f.unites.limite",
+   "idees_fausses": [
+    "ma.f.unites.idee"
+   ],
+   "sources": [
+    "CEI 80000-13:2008 (préfixes binaires Ki, Mi, Gi)",
+    "BIPM, Le Système international d'unités, 9e édition (2019) : préfixes k, M, G",
+    "man 1 numfmt, man 1 stat (GNU coreutils)"
+   ],
+   "relu_par": null
+  },
+  "demarrage": {
+   "motif": "(^uname\\s+-\\w*r|^uptime\\b|/proc/uptime|^dmesg\\b|systemd-analyze|machines\\s+r[eé]veil)",
+   "enfant": "ma.f.demarrage.enfant",
+   "grands": "ma.f.demarrage.grands",
+   "vrai_terminal": [
+    {
+     "cmd": "uname -s",
+     "sortie": "Linux"
+    },
+    {
+     "cmd": "awk '{print ($1 > 0)}' /proc/uptime",
+     "sortie": "1"
+    },
+    {
+     "cmd": "uptime | grep -c 'load average'",
+     "sortie": "1"
+    }
+   ],
+   "limite_image": "ma.f.demarrage.limite",
+   "idees_fausses": [
+    "ma.f.demarrage.idee"
+   ],
+   "sources": [
+    "UEFI Specification 2.10 (UEFI Forum, 2022) : https://uefi.org/specifications",
+    "man 7 bootup (systemd) : https://www.freedesktop.org/software/systemd/man/latest/bootup.html",
+    "man 1 systemd-analyze ; man 1 dmesg ; Documentation du noyau, sysctl kernel.dmesg_restrict",
+    "The Linux kernel user's and administrator's guide, boot : https://docs.kernel.org/admin-guide/"
+   ],
+   "relu_par": null
+  },
+  "systeme_exploitation": {
+   "motif": "(^uname\\b|os-release|^ps\\b|^which\\s+ls|^command\\s+-v\\s+ls|^lsmod\\b|/proc/modules|machines\\s+(orchestre|licences?))",
+   "enfant": "ma.f.systeme_exploitation.enfant",
+   "grands": "ma.f.systeme_exploitation.grands",
+   "vrai_terminal": [
+    {
+     "cmd": "uname -s",
+     "sortie": "Linux"
+    },
+    {
+     "cmd": ". /etc/os-release && test -n \"$ID\" && echo ok",
+     "sortie": "ok"
+    },
+    {
+     "cmd": "command -v ls",
+     "motif": "^/(usr/)?bin/ls$"
+    },
+    {
+     "cmd": "ps -p 1 -o pid= | tr -d ' '",
+     "sortie": "1"
+    },
+    {
+     "cmd": "getprop ro.build.version.release",
+     "rejeu": "telephone",
+     "motif": "^[0-9]+"
+    }
+   ],
+   "limite_image": "ma.f.systeme_exploitation.limite",
+   "idees_fausses": [
+    "ma.f.systeme_exploitation.idee"
+   ],
+   "sources": [
+    "man 5 os-release : https://www.freedesktop.org/software/systemd/man/latest/os-release.html",
+    "man 1 uname, man 1 ps, man 8 lsmod",
+    "Free Software Foundation, Qu'est-ce que le logiciel libre ? https://www.gnu.org/philosophy/free-sw.fr.html",
+    "Linux, fichier COPYING (GPL version 2) ; Open Source Initiative, licence MIT"
+   ],
+   "relu_par": null
+  },
+  "virtualisation": {
+   "motif": "(/proc/(1|self)/cgroup|machines\\s+(bo[iî]te|range))",
+   "enfant": "ma.f.virtualisation.enfant",
+   "grands": "ma.f.virtualisation.grands",
+   "vrai_terminal": [
+    {
+     "cmd": "test -r /proc/1/cgroup && echo lisible",
+     "sortie": "lisible"
+    },
+    {
+     "cmd": "grep -c ':' /proc/self/cgroup | grep -cE '^[1-9]'",
+     "sortie": "1"
+    }
+   ],
+   "limite_image": "ma.f.virtualisation.limite",
+   "idees_fausses": [
+    "ma.f.virtualisation.idee"
+   ],
+   "sources": [
+    "man 7 cgroups, man 7 namespaces : https://man7.org/linux/man-pages/man7/cgroups.7.html",
+    "G. Popek et R. Goldberg, Formal requirements for virtualizable third generation architectures (1974)",
+    "Open Container Initiative, Image et Runtime Specifications : https://opencontainers.org/",
+    "KVM : https://www.linux-kvm.org/"
+   ],
+   "relu_par": null
+  },
+  "machine_virtuelle": {
+   "motif": "(podman|qemu-img|virsh|conteneur_jetable|machines\\s+(adulte|conteneur|vm)|^command\\s+-v\\s+podman)",
+   "enfant": "ma.f.machine_virtuelle.enfant",
+   "grands": "ma.f.machine_virtuelle.grands",
+   "vrai_terminal": [
+    {
+     "cmd": "qemu-img create -f qcow2 d.qcow2 1G",
+     "motif": "^Formatting 'd\\.qcow2', fmt=qcow2 .*size=1073741824",
+     "outil": "qemu-img"
+    },
+    {
+     "prepare": "qemu-img create -f qcow2 d.qcow2 1G >/dev/null",
+     "cmd": "qemu-img info d.qcow2 | grep '^virtual size'",
+     "sortie": "virtual size: 1 GiB (1073741824 bytes)",
+     "outil": "qemu-img"
+    },
+    {
+     "cmd": "podman run --rm --network=none docker.io/library/alpine:3.20 echo bonjour",
+     "sortie": "bonjour",
+     "rejeu": "reseau"
+    }
+   ],
+   "limite_image": "ma.f.machine_virtuelle.limite",
+   "idees_fausses": [
+    "ma.f.machine_virtuelle.idee"
+   ],
+   "sources": [
+    "Podman, podman-run(1) (--rm, --root, --runroot) : https://docs.podman.io/en/latest/markdown/podman-run.1.html",
+    "QEMU, qemu-img : https://www.qemu.org/docs/master/tools/qemu-img.html",
+    "libvirt, virsh(1) (lecture seule -r, snapshot-create-as) : https://libvirt.org/manpages/virsh.html",
+    "Image officielle Alpine Linux : https://hub.docker.com/_/alpine"
+   ],
+   "relu_par": null
+  },
+  "datacenter": {
+   "motif": "(^df\\b|^du\\b|machines\\s+(ferme|[eé]nergie))",
+   "enfant": "ma.f.datacenter.enfant",
+   "grands": "ma.f.datacenter.grands",
+   "vrai_terminal": [
+    {
+     "cmd": "df -h . | head -n 1 | awk '{print $1}'",
+     "sortie": "Filesystem"
+    },
+    {
+     "cmd": "echo $((300 * 8760)) $((300 * 8760 / 1000))",
+     "sortie": "2628000 2628"
+    }
+   ],
+   "limite_image": "ma.f.datacenter.limite",
+   "idees_fausses": [
+    "ma.f.datacenter.idee"
+   ],
+   "sources": [
+    "NIST SP 800-145, The NIST Definition of Cloud Computing (2011)",
+    "ADEME et Arcep, Évaluation de l'impact environnemental du numérique en France (2022)",
+    "The Green Grid, PUE : A Comprehensive Examination of the Metric (2012)",
+    "man 1 df, man 1 du (GNU coreutils)"
+   ],
+   "relu_par": null
+  },
+  "sauvegarde_321": {
+   "motif": "(sauvegarde\\.(tar\\.gz|sha256)|ferme/|machines\\s+panne|^tar\\s+-?x)",
+   "enfant": "ma.f.sauvegarde_321.enfant",
+   "grands": "ma.f.sauvegarde_321.grands",
+   "vrai_terminal": [
+    {
+     "prepare": "echo creatures > c",
+     "cmd": "tar czf s.tgz c && tar tzf s.tgz",
+     "sortie": "c"
+    },
+    {
+     "prepare": "echo creatures > c; tar czf s.tgz c; sha256sum s.tgz > s.sha256",
+     "cmd": "sha256sum -c s.sha256",
+     "sortie": "s.tgz: OK"
+    },
+    {
+     "prepare": "echo creatures > c; tar czf s.tgz c; rm c; mkdir l; cp s.tgz l/",
+     "cmd": "tar xzf l/s.tgz && cat c",
+     "sortie": "creatures"
+    }
+   ],
+   "limite_image": "ma.f.sauvegarde_321.limite",
+   "idees_fausses": [
+    "ma.f.sauvegarde_321.idee"
+   ],
+   "sources": [
+    "US-CERT (CISA), Data Backup Options (2012) : la règle 3-2-1",
+    "ANSSI, Guide d'hygiène informatique (2017), mesure 37 : définir et appliquer une politique de sauvegarde",
+    "man 1 tar (GNU tar), man 1 sha256sum (GNU coreutils)"
+   ],
+   "relu_par": null
+  },
+  "assemblage": {
+   "motif": "machines\\s+(monte|demarre|drapeau)",
+   "enfant": "ma.f.assemblage.enfant",
+   "grands": "ma.f.assemblage.grands",
+   "vrai_terminal": [
+    {
+     "cmd": "echo $((65 + 20 + 5 + 4 + 120))",
+     "sortie": "214"
+    }
+   ],
+   "limite_image": "ma.f.assemblage.limite",
+   "idees_fausses": [
+    "ma.f.assemblage.idee"
+   ],
+   "sources": [
+    "JEDEC JESD79-4 (DDR4) et JESD79-5 (DDR5) : deux types de mémoire qui ne se remplacent pas",
+    "Intel, ATX12V Power Supply Design Guide : l'alimentation doit couvrir la consommation",
+    "Décision du propriétaire (§ 7.3) : pièces génériques, sans marque ni prix réel ; budget en points fictifs"
+   ],
+   "relu_par": null
   }
  },
  "etapes": {
@@ -2516,6 +2877,31 @@
   "cr12.2": {
    "maths": [
     "probabilites"
+   ]
+  },
+  "sm3.0": {
+   "maths": [
+    "hexadecimal"
+   ]
+  },
+  "sm3.3": {
+   "maths": [
+    "binaire"
+   ]
+  },
+  "sm3.5": {
+   "maths": [
+    "puissances"
+   ]
+  },
+  "sm8.3": {
+   "maths": [
+    "multiplication"
+   ]
+  },
+  "sm10.1": {
+   "maths": [
+    "addition"
    ]
   }
  },
@@ -2902,6 +3288,74 @@
    "code": 0,
    "motif": "maillon 0 -> 1 : OK",
    "pourquoi": "hist.cr14.2.bravo : le carnet de bord tient"
+  },
+  "sm1.0": {
+   "motif": "^[1-9][0-9]*$",
+   "egal_jeu": "coeurs",
+   "pourquoi": "hist.sm1.0.bravo : le nombre de cœurs (le jeu compte aussi)"
+  },
+  "sm1.2": {
+   "motif": "^Mem:\\s+\\S+",
+   "pourquoi": "hist.sm1.2.bravo : la ligne « Mem », colonne « total »"
+  },
+  "sm2.1": {
+   "motif": "^[1-9][0-9]*$",
+   "egal_jeu": "cpuinfo",
+   "pourquoi": "hist.sm2.1.bravo : une fiche par unité de calcul"
+  },
+  "sm3.0": {
+   "sortie": "41",
+   "pourquoi": "hist.sm3.0.bravo : 41"
+  },
+  "sm3.1": {
+   "motif": "^00000000: 01000001 +A$",
+   "outil": "xxd",
+   "pourquoi": "hist.sm3.1.bravo : 01000001"
+  },
+  "sm3.4": {
+   "sortie": "1048576 photo.bin",
+   "pourquoi": "hist.sm3.4.bravo : 1 048 576 octets"
+  },
+  "sm4.0": {
+   "egal_jeu": "noyau",
+   "pourquoi": "hist.sm4.0.bravo : la version du noyau (le jeu la lit aussi)"
+  },
+  "sm4.1": {
+   "motif": "load average",
+   "pourquoi": "hist.sm4.1.adulte : la charge moyenne"
+  },
+  "sm5.0": {
+   "motif": "^Linux \\S+ \\S+",
+   "pourquoi": "hist.sm5.0.bravo : le nom du noyau, sa version, le processeur"
+  },
+  "sm5.3": {
+   "motif": "^/(usr/)?bin/ls$",
+   "pourquoi": "hist.sm5.3.bravo : souvent /usr/bin"
+  },
+  "sm7.6": {
+   "motif": "^Formatting 'disque_virtuel\\.qcow2', fmt=qcow2 .*size=1073741824",
+   "outil": "qemu-img",
+   "pourquoi": "hist.sm7.6.bravo : 1 Gio annoncé"
+  },
+  "sm7.7": {
+   "motif": "^virtual size: 1 GiB \\(1073741824 bytes\\)$",
+   "outil": "qemu-img",
+   "pourquoi": "hist.sm7.7.bravo : virtual size"
+  },
+  "sm8.0": {
+   "motif": "^Filesystem\\s+Size\\s+Used\\s+Avail\\s+Use%\\s+Mounted on$",
+   "pourquoi": "hist.sm8.0.bravo : taille, utilisé, disponible"
+  },
+  "sm9.0": {
+   "contient": [
+    "disque_2",
+    "loin"
+   ],
+   "pourquoi": "hist.sm9.0.bravo : disque_2 et loin"
+  },
+  "sm9.7": {
+   "sortie": "sauvegarde.tar.gz: OK",
+   "pourquoi": "hist.sm9.7.bravo : OK"
   }
  },
  "maths": {
@@ -3544,7 +3998,10 @@
    ],
    "maths": [
     "binaire",
-    "puissances"
+    "hexadecimal",
+    "puissances",
+    "multiplication",
+    "addition"
    ],
    "exploits": [
     {
@@ -3553,7 +4010,64 @@
      "recompense": "variante"
     }
    ],
-   "variantes_reservees": []
+   "variantes_reservees": [
+    "chaudrogre:mecanique",
+    "homardeur:mecanique",
+    "golemmur:desert",
+    "magmastodonte:canyon"
+   ],
+   "requis": [
+    "n0",
+    "n1",
+    "n2",
+    "n3"
+   ],
+   "paliers": [
+    "sm0",
+    "sm1",
+    "sm2",
+    "sm3",
+    "sm4",
+    "sm5",
+    "sm6",
+    "sm7",
+    "sm8",
+    "sm9",
+    "sm10"
+   ],
+   "chapitre": "machinerie",
+   "attirance": {
+    "cmds": [
+     "nproc",
+     "lscpu",
+     "free",
+     "lsblk",
+     "lspci",
+     "uname"
+    ],
+    "familles": [
+     "Constructs"
+    ]
+   },
+   "ponts": {
+    "ressources": [
+     "controle"
+    ],
+    "ports": [
+     "port"
+    ],
+    "sha256sum": [
+     "citadelle",
+     "crypte"
+    ],
+    "tar": [
+     "citadelle",
+     "controle"
+    ],
+    "binaire": [
+     "crypte"
+    ]
+   }
   },
   {
    "id": "atelier",
