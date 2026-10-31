@@ -145,6 +145,20 @@ Captures envoyées par le propriétaire (projet Coucou), gardées dans `docs/ins
 
 ## L'espace de travail de Terminagotchi (souhait du propriétaire, 28 octobre)
 
+**✅ Codé (31 octobre, PC et Android, d'après les maquettes validées `docs/maquettes/espace_travail_*.png`)** :
+- PC : `tg espace` (GTK 4, repli tkinter ; `tg espace classe` grand écran ; `tg espace texte` dans un terminal d'au
+  moins 150 × 40), `pc/tg/espace.py` (réutilise `bureau.Controleur` : jeu, album, île, mini-terminal) et
+  `pc/tg/espace_scene.py` (liste de dessin, captures PIL : `pc/outils/capture_espace.py`) ;
+- vue déployée : `pc/tg/deploie.py` / `Deploie.kt` (`deploie <commande>`, `deploie --pas …`, alias bash/zsh qui coupe
+  le tuyau par un `#` et relit l'historique ; récap automatique après une étape de leçon composée) ;
+- cerveau : `pc/tg/cerveau.py` / `Cerveau.kt` (`tg cerveau`, onglet Cerveau) : un vrai `case` shell interprété ligne
+  par ligne (vérifié identique à bash), états forçables ;
+- Android : commande `espace` (`espace classe`), `deploie`, `cerveau` ; `EspaceEtat.kt` (logique testée JVM),
+  `EspaceDessin.kt` (dessin, interface `Toile`), `EspaceVue.kt` (View) au-dessus du terminal existant ;
+- vecteurs communs `donnees/espace/vecteurs.json`, tests `pc/outils/test_espace.py`, `tests/jvm/Espace.kt`.
+Reste : le messager des commandes réseau dans la vue déployée, la carte du PC en fenêtre reliée aux vrais lieux
+système (/etc…), la vraie transparence des panneaux sous tkinter.
+
 Le propriétaire adore l'interface des captures Coucou (`docs/inspirations/coucou_1.png` à `_4.png`) et veut
 travailler l'**espace de travail** du jeu dans cet esprit : fond très sombre, panneaux arrondis aux bords fins,
 typographie nette, accents de couleur lumineux, tout synchronisé. À **maquetter en priorité vendredi** (avant toute

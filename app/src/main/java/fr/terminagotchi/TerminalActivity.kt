@@ -192,6 +192,9 @@ class TerminalActivity : Activity() {
         }
         jeu.sauver()
         rafraichir()
+        if (jeu.existe && jeu.module("espace").optBoolean("ouvert")) {      // l'espace de travail était ouvert
+            handler.post { ouvrirEspace(jeu.module("espace").optBoolean("classe"), dire = false) }
+        }
         saisie.requestFocus()
         handler.postDelayed({
             (getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager)
@@ -476,6 +479,33 @@ class TerminalActivity : Activity() {
                 } else ecrire(t("deb.tout.non"), Commandes.ROSE)
                 return
             }
+            "espace" -> {                             // l'espace de travail (vue graphique au-dessus du terminal)
+                val mot = ligne.trim().split(Regex("\\s+")).getOrNull(1)?.lowercase()
+                if (mot == "classe" || mot == "class") {
+                    if (espace == null) ouvrirEspace(true) else espace?.classe = !(espace?.classe ?: false)
+                    jeu.module("espace").put("classe", espace?.classe == true)
+                    jeu.sauver()
+                } else if (espace == null) ouvrirEspace(false) else fermerEspace()
+                return
+            }
+            "deploie", "déploie" -> {                 // la vue déployée d'une commande (sans la lancer)
+                val reste = ligne.trim().substringAfter(' ', "").trim()
+                val pas = reste.startsWith("--pas")
+                val cmd = reste.removePrefix("--pas").trim().ifEmpty { espace?.modele?.vue?.ligne ?: jeu.historique.dropLast(1).lastOrNull() ?: "" }
+                if (cmd.isEmpty()) { ecrire(t("dep.aide"), Commandes.ROSE); return }
+                if (espace == null) ouvrirEspace(false, dire = false)
+                espace?.onglet("terminal")
+                espace?.deployer(cmd, auto = !pas)
+                ecrire("▸ " + t("esp.deploie_ok"), 0xFFB284FF.toInt())
+                return
+            }
+            "cerveau" -> {                            // le cerveau de ta créature (et forcer un état : cerveau dort)
+                if (espace == null) ouvrirEspace(false, dire = false)
+                espace?.onglet("cerveau")
+                val etat = ligne.trim().split(Regex("\\s+")).getOrNull(1)?.lowercase()
+                if (etat != null) espace?.cerveau?.forcer(Cerveau.ETATS.firstOrNull { it == etat || Cerveau.nomEtat(it) == etat })
+                return
+            }
             "lexique" -> {                            // le carnet d'aventure (comme le bouton 📖)
                 val non = Intro.bloque(jeu, "lexique")
                 if (non != null) ecrire(non, 0xFFFFAF5F.toInt()) else if (lexiqueVue.visibility != View.VISIBLE) basculerLexique()
@@ -503,7 +533,8 @@ class TerminalActivity : Activity() {
         val interne = commandes.executer(ligne)
         if (interne != null) {
             // la carte qui pousse s'ouvre à la place de l'observatoire (le texte reste en secours)
-            if (interne.carte && ouvrirCarte()) ecrire("🗺 " + Carte.titre(jeu), interne.couleur)
+            if (interne.carte && espace != null) { espace?.onglet("carte"); ecrire(interne.texte, interne.couleur, interne.petit) }
+            else if (interne.carte && ouvrirCarte()) ecrire("🗺 " + Carte.titre(jeu), interne.couleur)
             else ecrire(interne.texte, interne.couleur, interne.petit)
             if (lexiqueVue.visibility == View.VISIBLE) basculerLexique()
             interne.aller?.let {
@@ -636,8 +667,17 @@ class TerminalActivity : Activity() {
 
     /** code : le code de sortie (0 pour une commande du jeu, Shell.code pour le shell, null si inconnu). */
     private fun apresCommande(ligne: String, etaitColle: Boolean, etaitRappel: Boolean = false, code: Int? = 0) {
+        val etapeAvant = jeu.lecon to jeu.etape
         // le tour de jeu (créature, terrain, leçons, défi, dressage et combat, troupe, attirance, monstres) : voir Tour.kt
         val tour = Tour.apresCommande(jeu, ligne, etaitColle, etaitRappel, cwd = shell.dossier, code = code)
+        try {
+            espace?.let { it.rafraichir(code); it.deployer(ligne) }
+            // une étape de leçon réussie avec une commande composée : la ligne des blocs et l'astuce (comme sur PC)
+            if ((jeu.lecon to jeu.etape) != etapeAvant && code == 0 && Deploie.composee(ligne)) {
+                ecrire("▸ " + t("dep.recap") + " " + Deploie.compacte(Deploie.blocs(ligne)), 0xFFB284FF.toInt())
+                ecrire("▸ " + t("dep.astuce", "cmd" to "deploie $ligne"), 0xFF9A9AB0.toInt())
+            }
+        } catch (e: Exception) { android.util.Log.e("TG", "espace", e) }
         val mange = tour.mange
         for ((m, c) in tour.messages) ecrire(m, c)
         Maison.dernierePousse?.let { ecrire(it, 0xFF9A9AB0.toInt()); Maison.dernierePousse = null }   // 🗺 la carte a poussé : + …
@@ -795,6 +835,59 @@ class TerminalActivity : Activity() {
 
     // ------------------------------------------------------------ la carte qui pousse
     private var carteVue: CarteVue? = null
+    private var espace: EspaceVue? = null
+
+    /** L'espace de travail : la vue graphique (île, onglets, créature en direct, vue déployée, carte, cerveau, équipe)
+     *  au-dessus du terminal, qui prend tout l'écran. Le terminal, les touches et la saisie restent les mêmes. */
+    private fun ouvrirEspace(classe: Boolean, dire: Boolean = true) {
+        if (espace != null || !jeu.existe) return
+        try {
+            val panneau = findViewById<LinearLayout>(R.id.panneau)
+            fermerCarte()
+            val v = EspaceVue(this, jeu, { shell.dossier }, { shell.chemin() })
+            v.classe = classe
+            panneau.addView(v, 0, LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT))
+            espace = v
+            panneau.getChildAt(1).visibility = View.GONE                    // l'en-tête (créature, titre, ✕)
+            (chemin.parent as View).visibility = View.GONE                   // l'observatoire
+            val cadre = defile.parent as View
+            cadre.layoutParams = (cadre.layoutParams as LinearLayout.LayoutParams).also { it.height = 0; it.weight = 1f }
+            panneau.layoutParams = (panneau.layoutParams as android.widget.FrameLayout.LayoutParams).also {
+                it.height = android.widget.FrameLayout.LayoutParams.MATCH_PARENT; it.setMargins(0, 0, 0, 0)
+            }
+            panneau.setBackgroundColor(EspaceDessin.FOND)
+            findViewById<View>(R.id.fond).setBackgroundColor(EspaceDessin.FOND)
+            sortie.textSize = if (classe) 17f else 13f
+            panneau.requestLayout()
+            jeu.module("espace").put("ouvert", true).put("classe", classe)
+            jeu.sauver()
+            jeu.historique.lastOrNull()?.takeIf { Regles.premierMot(it) !in setOf("espace", "deploie", "cerveau") }?.let { v.deployer(it) }
+            if (dire) ecrire(t("esp.tel.ouvert"), Commandes.ROSE)
+        } catch (e: Exception) {
+            android.util.Log.e("TG", "espace", e)
+        }
+    }
+
+    private fun fermerEspace() {
+        val v = espace ?: return
+        val panneau = findViewById<LinearLayout>(R.id.panneau)
+        panneau.removeView(v)
+        espace = null
+        panneau.getChildAt(0).visibility = View.VISIBLE
+        (chemin.parent as View).visibility = View.VISIBLE
+        val d = resources.displayMetrics.density
+        val cadre = defile.parent as View
+        cadre.layoutParams = (cadre.layoutParams as LinearLayout.LayoutParams).also { it.height = (140 * d).toInt(); it.weight = 0f }
+        panneau.layoutParams = (panneau.layoutParams as android.widget.FrameLayout.LayoutParams).also {
+            it.height = android.widget.FrameLayout.LayoutParams.WRAP_CONTENT; val m = (8 * d).toInt(); it.setMargins(m, m, m, m)
+        }
+        panneau.setBackgroundResource(R.drawable.panneau)
+        findViewById<View>(R.id.fond).setBackgroundColor(0x55000000)
+        sortie.textSize = 12f
+        jeu.module("espace").put("ouvert", false)
+        jeu.sauver()
+        ecrire(t("esp.tel.ferme"), Commandes.ROSE)
+    }
 
     /** Ouvre (ou rafraîchit) la carte dessinée à la place de l'observatoire. Faux si elle n'a pas pu s'ouvrir. */
     private fun ouvrirCarte(): Boolean = try {
