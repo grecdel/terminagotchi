@@ -50,7 +50,8 @@ def test_poses():
     verifier(poses.especes() == bebes, f"les {len(bebes)} bébés de départ ont leurs poses")
     tete, _ = poses.donnees()
     verifier(tete["poses"] == ["marche1", "marche2", "marche3", "marche4", "assis", "dort", "etire", "baille",
-                               "sursaut", "coeur", "mange", "salut", "cligne"], "12 poses dessinées + « cligne » (calculée)")
+                               "sursaut", "coeur", "mange", "salut", "cligne", "bouche1", "bouche2", "bouche3"],
+             "12 poses dessinées + « cligne » et la mâchoire « bouche1 » à « bouche3 » (calculées)")
     diff_cligne = 0
     for esp in bebes:
         idx, _p = poses.poses_indexees(esp)
@@ -218,6 +219,72 @@ def test_animation():
     verifier(a.images("cligne") and a.images("cligne")[0].rgba != a.images("assis")[0].rgba, "l'album a sa pose « cligne »")
     L, _ = S.scene_creature(c, a, S.VueCreature(), V.DEFAUTS, 1000, 440, 430)
     verifier(any(op[0] == "imgt" for op in L), "le dessin déforme la pose à la taille de l'écran (imgt)")
+
+
+PHRASES = ["Coucou, on joue ?", "J'ai un peu faim… Tape `date` !", "我很喜欢你哦。", "Привет!"]
+
+
+def test_machoire():
+    print("La mâchoire : manger, parler ; le sommeil sans « z » dessinés")
+    verifier([V.pose_bouche(n) for n in (0, 0.1, 0.3, 0.5, 0.7, 0.9, 1)] ==
+             ["assis", "assis", "bouche1", "bouche2", "bouche2", "bouche3", "bouche3"], "pose_bouche : 0 fermée → 1 grande ouverte")
+    sans, avec = [], 0
+    for esp in poses.especes():
+        idx, _p = poses.poses_indexees(esp)
+        if all(idx[b][2] == idx["assis"][2] for b in ("bouche1", "bouche2", "bouche3")):
+            sans.append(esp)
+        elif len({idx[b][2] for b in ("assis", "bouche1", "bouche2", "bouche3")}) == 4:
+            avec += 1
+    verifier(avec == 25 and sorted(sans) == ["boulonnet", "zyeuton"],
+             f"25 bébés ouvrent la bouche en 3 étapes ; sans bouche : {sans}")
+    sys.path.insert(0, str(RACINE / "donnees/bestiaire2/outils"))
+    try:
+        import numpy as np
+        import poses_bureau as PB
+        from PIL import Image
+        restes = []
+        for d in sorted((RACINE / "donnees/bestiaire2/animations").iterdir()):
+            esp = d.name.split("_", 1)[1]
+            a = np.array(Image.open(d / "dort.png").convert("RGBA"))
+            a[..., 3] = np.where(a[..., 3] > 0, 255, 0)
+            o, _e, _a, _d = PB.nettoyer(a, "dort")
+            _s, zz = PB.sans_zzz(o, esp)
+            cad = poses.album_dessine(esp).image("dort", 0)
+            n_final = sum(1 for k in range(3, len(cad.rgba), 4) if cad.rgba[k])
+            if zz.sum() < 20 or n_final != int((o[..., 3] > 0).sum() - zz.sum()):
+                restes.append(esp)
+        verifier(not restes, "dort : les « z » dessinés sont retirés sur les 27 bébés, rien d'autre"
+                 + (f" {restes}" if restes else ""))
+    except ImportError:
+        pass
+    c = V.Creature(1000, {}, hasard=random.Random(9))
+    c.bouche = (0.3, -0.35)
+    c.changer("mange", 4.0)
+    vus, miettes = set(), []
+    for _ in range(40):
+        c.tick(0.1)
+        an = V.animer(c)
+        vus.add(an.etat)
+        miettes.append(max([e[3] for e in an.effets if e[0] == "miette"], default=0))
+    verifier({"assis", "bouche1", "bouche2", "bouche3"} <= vus and "mange" not in vus,
+             "manger : la bouche s'ouvre et se ferme (pose neutre, sans la miette dessinée)")
+    verifier(miettes[-1] == 0 and max(miettes) > 0.1 and miettes[15] < max(miettes), "la miette rapetisse en 3 bouchées")
+    for ph in PHRASES:
+        verifier(V.syllabes(ph) and abs(V.duree_parole(ph) - sum(d for d, _ in V.syllabes(ph))) < 1e-9, f"syllabes : « {ph} »")
+    c = V.Creature(1000, {}, hasard=random.Random(10))
+    c.changer("marche")
+    c.parler(PHRASES[0])
+    verifier(c.etat == "assis", "elle s'arrête de marcher pour parler")
+    bouches = set()
+    for _ in range(int(V.duree_parole(PHRASES[0]) / 0.05)):
+        c.tick(0.05)
+        bouches.add(V.animer(c).etat)
+    verifier({"bouche2", "bouche3"} & bouches and "assis" in bouches, f"elle parle : la bouche suit les syllabes {sorted(bouches)}")
+    c.tick(0.5)
+    verifier(c.parle() is None and V.animer(c).etat in ("assis", "cligne"), "après la phrase, la bouche se ferme")
+    c.parler(PHRASES[1])
+    c.tick(0.1)
+    verifier(V.mini_vie(c, 0.1)[0].startswith("bouche"), "dans l'île aussi, la mini-créature parle")
 
 
 def test_clics():
@@ -410,7 +477,7 @@ def test_controleur():
     verifier(c.c.etat == "mange" and c.vue.flottants, "une commande comptée : elle mange (« +miam »)")
     st["sauvages"] = [{"f": "x"}]
     c.jeu()
-    verifier(c.ile.etat == "evenement" and c.c.etat == "salut", "un monstre apparaît : l'île s'ouvre, elle fait signe")
+    verifier(c.ile.etat == "evenement" and c.c.parole is not None, "un monstre apparaît : l'île s'ouvre, elle l'annonce")
     L, z = c.scene()
     cr = next(e for e in z if e[4] == "creature")
     c.appui(cr[0] + cr[2] / 2, cr[1] + cr[3] / 2, z)
@@ -491,6 +558,7 @@ def main():
     test_albums()
     test_creature()
     test_animation()
+    test_machoire()
     test_clics()
     test_menu()
     test_ile()

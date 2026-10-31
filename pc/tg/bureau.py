@@ -104,7 +104,7 @@ class Controleur:
                     self.bip()
             for cle, texte in V.evenements(self.resume, r, self.notifs):
                 if self.ile.annoncer(sans_marques(texte or t(cle)), self.t) and self.c.etat != "dort":
-                    self.c.reagir("salut")          # elle fait signe : « regarde en haut ! »
+                    self.c.parler(sans_marques(texte or t(cle)))     # elle l'annonce : la bouche bouge dans l'île
                 break
         self.notifs = []
         self.resume = r
@@ -145,6 +145,8 @@ class Controleur:
         except Exception as e:                      # noqa: BLE001
             noter(f"album : {e!r}")
         self.album = a or self.album
+        if self.album is not None:
+            self.c.bouche = self.album.bouche or V.BOUCHE_DEFAUT
         self.equipe = []
         try:
             from . import bestiaire as B
@@ -236,8 +238,14 @@ class Controleur:
                 self.bip()
         elif g == "triple":
             self.fermer_menu()
-            self.c.reagir("salut")
-            self.vue.dire(random.choice(langue.liste("bur.phrases")), self.t)
+            self.dire(random.choice(langue.liste("bur.phrases")))
+
+    def dire(self, texte, duree=None):
+        """Elle dit texte : une bulle, et sa bouche bouge au rythme des syllabes (assise)."""
+        texte = sans_marques(texte)
+        self.c.changer("assis", V.duree_parole(texte) + 0.8)
+        self.c.parler(texte)
+        self.vue.dire(texte, self.t, duree or max(4.0, V.duree_parole(texte) + 2.0))
 
     @staticmethod
     def _zone(zones, x, y):
@@ -296,7 +304,7 @@ class Controleur:
             ph = envies.phrase(st)
             if ph:
                 self.texte_ile = (sans_marques(ph), self.t + 12)
-                self.vue.dire(ph, self.t, 10)
+                self.dire(ph, 10)
         except Exception as e:                      # noqa: BLE001
             noter(f"envies : {e!r}")
         lignes.append(("♥ " + t("bur.caresser"), "action:caresser"))
@@ -879,11 +887,16 @@ class FenetresGtk:
         return s[0]
 
     def _peindre(self, cr, liste):
-        cairo, math_ = self.cairo, __import__("math")
+        cairo = self.cairo
         cr.set_operator(cairo.OPERATOR_SOURCE)
         cr.set_source_rgba(0, 0, 0, 0)
         cr.paint()
         cr.set_operator(cairo.OPERATOR_OVER)
+        self._peindre_liste(cr, liste)
+
+    def _peindre_liste(self, cr, liste):
+        """Dessine la liste par-dessus ce qui est déjà là (l'espace de travail s'en sert pour les créatures)."""
+        cairo, math_ = self.cairo, __import__("math")
 
         def coul(c):
             cr.set_source_rgba(c[0] / 255, c[1] / 255, c[2] / 255, c[3] / 255)

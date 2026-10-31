@@ -78,6 +78,8 @@ class Creature:
         self.prec = None                # (état, image) d'avant le dernier changement
         self.t_trans = TRANSITION       # temps depuis le dernier changement d'état
         self.cligne = self.h.uniform(1.5, 4.0)       # le prochain clignement (secondes)
+        self.parole = None              # (texte, début) : elle parle (la mâchoire suit les syllabes)
+        self.bouche = BOUCHE_DEFAUT     # où est sa bouche : fractions du corps depuis les pieds (album)
 
     # ------------------------------------------------ changer d'état
     def changer(self, etat, duree=None):
@@ -102,6 +104,22 @@ class Creature:
             return                       # elle dort : les miettes attendront
         self.force_dodo = False
         self.changer(quoi)
+
+    def parler(self, texte):
+        """Elle dit texte : la bouche s'ouvre à chaque syllabe (assise ; elle s'arrête de marcher pour parler)."""
+        self.parole = (str(texte), self.t)
+        if self.etat in ("marche", "dort"):
+            self.changer("assis", duree_parole(texte) + 0.6)
+
+    def parle(self):
+        """L'ouverture de la bouche (0 à 1) pour la parole en cours, ou None."""
+        if self.parole is None:
+            return None
+        texte, debut = self.parole
+        if self.t - debut > duree_parole(texte):
+            self.parole = None
+            return None
+        return parole_niveau(texte, self.t - debut)
 
     def dormir(self):
         self.force_dodo = True
@@ -269,7 +287,10 @@ def animer(c):
     souffle = math.sin(2 * math.pi * t / 3.2)
     if etat in ("assis", "coeur", "salut", "mange", "etire", "baille"):
         a.sy, a.sx = 1 + 0.016 * souffle, 1 - 0.007 * souffle
-    if etat == "assis" and c.cligne < 0:
+    parole = c.parle() if etat in ("assis", "marche") else None
+    if parole is not None and etat == "assis":
+        a.etat = pose_bouche(parole)                   # elle parle : la mâchoire suit les syllabes
+    elif etat == "assis" and c.cligne < 0:
         a.etat = "cligne"
     elif etat == "dort":
         lent = math.sin(2 * math.pi * t / 4.6)
@@ -299,18 +320,29 @@ def animer(c):
             q = math.sin(math.pi * (u - 0.55) / 0.17)
             a.sy, a.sx = 1 - 0.1 * q, 1 + 0.06 * q    # elle atterrit
     elif etat == "mange":
-        if p < 0.3:                                   # la miette arrive
-            q = _doux(p / 0.3)
-            a.effets.append(("miette", 1.0 - 0.58 * q, -0.3 - 0.18 * math.sin(math.pi * q), 0.13, _doux(p / 0.08)))
-        elif p < 0.9:                                 # trois bouchées
-            q = (p - 0.3) / 0.6 * 3
-            bouchee = int(q)
-            bosse = math.sin(math.pi * (q - bouchee))
-            a.sy *= 1 - 0.055 * bosse
-            a.sx *= 1 + 0.03 * bosse
-            reste = 1 - (bouchee + _doux(q - bouchee)) / 3
-            if reste > 0.05:
-                a.effets.append(("miette", 0.42, -0.28, 0.13 * reste ** 0.5, 1.0))
+        # la pose assise (sans la miette dessinée) : la miette arrive devant la bouche, puis trois bouchées ; à chaque
+        # bouchée, la bouche s'ouvre, la miette entre (elle rapetisse), la bouche se ferme avec un petit écrasement
+        bx, by = c.bouche
+        a.etat = "assis"
+        if p < 0.25:
+            q = _doux(p / 0.25)
+            a.effets.append(("miette", bx + 0.55 * (1 - q), by - 0.15 * math.sin(math.pi * q), 0.13, _doux(p / 0.06)))
+            a.etat = pose_bouche(0.6 * _doux((p - 0.17) / 0.08))
+        elif p < 0.94:
+            q = (p - 0.25) / 0.69 * 3
+            n = int(q)
+            v = q - n
+            ouvre = math.sin(math.pi * min(1.0, v / 0.6))          # ouverte, puis fermée à 60 % de la bouchée
+            a.etat = pose_bouche(ouvre)
+            if v > 0.55:
+                bosse = math.sin(math.pi * (v - 0.55) / 0.45)
+                a.sy *= 1 - 0.05 * bosse
+                a.sx *= 1 + 0.03 * bosse
+            # la miette attend devant la bouche ouverte, puis entre quand elle se ferme (elle rapetisse)
+            entre = _doux((v - 0.35) / 0.25)
+            reste = 1 - (n + entre) / 3
+            if reste > 0.04:
+                a.effets.append(("miette", bx + 0.12 * (1 - entre), by + 0.02, 0.14 * reste ** 0.5, 1.0))
     elif etat == "coeur":
         a.dy = -abs(math.sin(u * 5.5)) * 2.5 * (1 - p)
         a.effets.append(("coeur", 0.32 + 0.05 * math.sin(u * 4), -(0.95 + 0.6 * p), 0.16 + 0.1 * p, 1 - _doux(p)))
@@ -337,9 +369,75 @@ def animer(c):
 
 
 def mini_vie(c, t):
-    """La mini-créature de l'île : elle respire et cligne avec la créature du bureau. (etat, sx, sy)"""
+    """La mini-créature de l'île : elle respire, cligne et parle avec la créature du bureau. (etat, sx, sy)"""
     souffle = math.sin(2 * math.pi * t / 3.2)
-    return ("cligne" if c is not None and c.cligne < 0 else "assis"), 1 - 0.007 * souffle, 1 + 0.016 * souffle
+    niveau = c.parle() if c is not None else None
+    if niveau is not None:
+        etat = pose_bouche(niveau)
+    else:
+        etat = "cligne" if c is not None and c.cligne < 0 else "assis"
+    return etat, 1 - 0.007 * souffle, 1 + 0.016 * souffle
+
+
+# ---------------------------------------------------------------- la mâchoire (manger, parler)
+BOUCHE_DEFAUT = (0.12, -0.3)        # sans bouche connue : un peu devant, au tiers de la hauteur
+POSES_BOUCHE = ("assis", "bouche1", "bouche2", "bouche3")     # fermée, au tiers, aux deux tiers, grande ouverte
+
+
+def pose_bouche(niveau):
+    """La pose de la mâchoire pour une ouverture de 0 (fermée) à 1 (grande ouverte) : les images de poses.bin (les
+    mêmes en Python et en Kotlin : BureauVie.poseBouche)."""
+    k = int(max(0.0, min(1.0, niveau)) * 3 + 0.5)
+    return POSES_BOUCHE[k]
+
+
+SYLLABE = 0.16          # secondes par syllabe
+VOYELLES = set("aeiouyàâäéèêëîïôöùûüÿœæ")
+PAUSES = {".": 0.3, "!": 0.3, "?": 0.3, "…": 0.35, ",": 0.18, ";": 0.2, ":": 0.2, " ": 0.04}
+
+
+def syllabes(texte):
+    """Le texte coupé pour la bouche : [(durée, amplitude)] ; amplitude 0 = une pause. Une syllabe = un groupe de
+    voyelles (écritures latines, cyrillique : chaque lettre-voyelle) ; les écritures sans voyelles séparées (chinois,
+    japonais, arabe, hindi…) : une ouverture tous les deux caractères. Même découpage en Kotlin."""
+    out = []
+    dans_voyelle = False
+    autres = 0
+    k = 0
+    for ch in str(texte).lower():
+        if ch in PAUSES:
+            out.append((PAUSES[ch], 0.0))
+            dans_voyelle = False
+            continue
+        latin = ch.isascii() or ch in VOYELLES or "\u00c0" <= ch <= "\u024f"
+        if latin or "\u0400" <= ch <= "\u04ff":
+            voyelle = ch in VOYELLES or ch in "аеёиоуыэюя"
+            if voyelle and not dans_voyelle:
+                out.append((SYLLABE, 0.75 if k % 2 else 1.0))
+                k += 1
+            dans_voyelle = voyelle
+        elif ch.isalpha():
+            autres += 1
+            if autres % 2 == 1:
+                out.append((SYLLABE, 0.75 if k % 2 else 1.0))
+                k += 1
+    return out
+
+
+def duree_parole(texte):
+    return sum(d for d, _a in syllabes(texte))
+
+
+def parole_niveau(texte, t):
+    """L'ouverture de la bouche (0 à 1) au temps t (secondes) d'une phrase : elle s'ouvre et se ferme à chaque
+    syllabe, reste fermée pendant les pauses. 0 après la fin."""
+    if t < 0:
+        return 0.0
+    for d, a in syllabes(texte):
+        if t < d:
+            return a * math.sin(math.pi * t / d) if a else 0.0
+        t -= d
+    return 0.0
 
 
 

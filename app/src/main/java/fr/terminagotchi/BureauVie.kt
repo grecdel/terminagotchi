@@ -56,6 +56,10 @@ object BureauVie {
         /** l'image d'avant le dernier changement (état, image, miroir) et le temps depuis ce changement */
         var prec: Triple<String, Int, Boolean>? = null; private set
         var tTrans = TRANSITION; private set
+        /** elle parle : (texte, début) ; la mâchoire suit les syllabes */
+        var parole: Pair<String, Double>? = null; private set
+        /** où est sa bouche : fractions du corps depuis les pieds (album) */
+        var bouche: Pair<Float, Float> = BOUCHE_DEFAUT
         /** le prochain clignement (secondes) ; négatif pendant le clignement */
         var cligne = 1.5 + h.nextDouble() * 2.5; private set
 
@@ -79,6 +83,19 @@ object BureauVie {
         }
 
         fun dormir() { forceDodo = true; changer("dort", 600.0) }
+
+        /** Elle dit texte : la bouche s'ouvre à chaque syllabe (assise ; elle s'arrête de marcher pour parler). */
+        fun parler(texte: String) {
+            parole = texte to t
+            if (etat == "marche" || etat == "dort") changer("assis", dureeParole(texte) + 0.6)
+        }
+
+        /** L'ouverture de la bouche (0 à 1) pour la parole en cours, ou null. */
+        fun parle(): Double? {
+            val (texte, debut) = parole ?: return null
+            if (t - debut > dureeParole(texte)) { parole = null; return null }
+            return paroleNiveau(texte, t - debut)
+        }
 
         fun tick(dt0: Double, s: Signaux = Signaux()) {
             val dt = dt0.coerceIn(0.0, 0.5)
@@ -184,8 +201,9 @@ object BureauVie {
         if (a.etat in setOf("assis", "coeur", "salut", "mange", "etire", "baille")) {
             a.sy = (1 + 0.016 * souffle).toFloat(); a.sx = (1 - 0.007 * souffle).toFloat()
         }
+        val parle = if (a.etat == "assis" || a.etat == "marche") c.parle() else null
         when (a.etat) {
-            "assis" -> if (c.cligne < 0) a.etat = "cligne"
+            "assis" -> if (parle != null) a.etat = poseBouche(parle) else if (c.cligne < 0) a.etat = "cligne"
             "dort" -> {
                 val lent = sin(2 * PI * t / 4.6)
                 a.sy = (1 + 0.024 * lent).toFloat(); a.sx = (1 - 0.01 * lent).toFloat()
@@ -208,18 +226,28 @@ object BureauVie {
                 }
                 u < 0.72 -> { val q = sin(PI * (u - 0.55) / 0.17); a.sy = (1 - 0.1 * q).toFloat(); a.sx = (1 + 0.06 * q).toFloat() }
             }
-            "mange" -> when {
-                p < 0.3 -> {
-                    val q = doux(p / 0.3)
-                    a.effets.add(Effet("miette", (1.0 - 0.58 * q).toFloat(), (-0.3 - 0.18 * sin(PI * q)).toFloat(), 0.13f, doux(p / 0.08).toFloat()))
-                }
-                p < 0.9 -> {
-                    val q = (p - 0.3) / 0.6 * 3
-                    val bouchee = q.toInt()
-                    val bosse = sin(PI * (q - bouchee))
-                    a.sy *= (1 - 0.055 * bosse).toFloat(); a.sx *= (1 + 0.03 * bosse).toFloat()
-                    val reste = 1 - (bouchee + doux(q - bouchee)) / 3
-                    if (reste > 0.05) a.effets.add(Effet("miette", 0.42f, -0.28f, (0.13 * sqrt(reste)).toFloat(), 1f))
+            "mange" -> {
+                // la pose assise (sans la miette dessinée) : la miette arrive devant la bouche, puis trois bouchées
+                val bx = c.bouche.first.toDouble(); val by = c.bouche.second.toDouble()
+                a.etat = "assis"
+                if (p < 0.25) {
+                    val q = doux(p / 0.25)
+                    a.effets.add(Effet("miette", (bx + 0.55 * (1 - q)).toFloat(), (by - 0.15 * sin(PI * q)).toFloat(), 0.13f, doux(p / 0.06).toFloat()))
+                    a.etat = poseBouche(0.6 * doux((p - 0.17) / 0.08))
+                } else if (p < 0.94) {
+                    val q = (p - 0.25) / 0.69 * 3
+                    val n = q.toInt()
+                    val v = q - n
+                    a.etat = poseBouche(sin(PI * min(1.0, v / 0.6)))
+                    if (v > 0.55) {
+                        val bosse = sin(PI * (v - 0.55) / 0.45)
+                        a.sy *= (1 - 0.05 * bosse).toFloat(); a.sx *= (1 + 0.03 * bosse).toFloat()
+                    }
+                    // la miette attend devant la bouche ouverte, puis entre quand elle se ferme (elle rapetisse)
+                    val entre = doux((v - 0.35) / 0.25)
+                    val reste = 1 - (n + entre) / 3
+                    if (reste > 0.04) a.effets.add(Effet("miette", (bx + 0.12 * (1 - entre)).toFloat(), (by + 0.02).toFloat(),
+                        (0.14 * sqrt(reste)).toFloat(), 1f))
                 }
             }
             "coeur" -> {
@@ -251,7 +279,55 @@ object BureauVie {
     /** La mini-créature de l'île respire et cligne avec la créature de la bulle : (état, sx, sy). */
     fun miniVie(c: Creature?, t: Double): Triple<String, Float, Float> {
         val s = sin(2 * PI * t / 3.2)
-        return Triple(if (c != null && c.cligne < 0) "cligne" else "assis", (1 - 0.007 * s).toFloat(), (1 + 0.016 * s).toFloat())
+        val parle = c?.parle()
+        val etat = if (parle != null) poseBouche(parle) else if (c != null && c.cligne < 0) "cligne" else "assis"
+        return Triple(etat, (1 - 0.007 * s).toFloat(), (1 + 0.016 * s).toFloat())
+    }
+
+    // ------------------------------------------------------------ la mâchoire (manger, parler), comme bureau_vie.py
+    val BOUCHE_DEFAUT = 0.12f to -0.3f
+    val POSES_BOUCHE = listOf("assis", "bouche1", "bouche2", "bouche3")
+
+    /** La pose de la mâchoire pour une ouverture de 0 (fermée) à 1 (grande ouverte) : les images de poses.bin. */
+    fun poseBouche(niveau: Double): String = POSES_BOUCHE[(niveau.coerceIn(0.0, 1.0) * 3 + 0.5).toInt()]
+
+    const val SYLLABE = 0.16
+    private const val VOYELLES = "aeiouyàâäéèêëîïôöùûüÿœæ"
+    private val PAUSES = mapOf('.' to 0.3, '!' to 0.3, '?' to 0.3, '…' to 0.35, ',' to 0.18, ';' to 0.2, ':' to 0.2, ' ' to 0.04)
+
+    /** Le texte coupé pour la bouche : (durée, amplitude) ; amplitude 0 = une pause (même découpage qu'en Python). */
+    fun syllabes(texte: String): List<Pair<Double, Double>> {
+        val out = mutableListOf<Pair<Double, Double>>()
+        var dansVoyelle = false
+        var autres = 0
+        var k = 0
+        for (ch in texte.lowercase()) {
+            val pause = PAUSES[ch]
+            if (pause != null) { out.add(pause to 0.0); dansVoyelle = false; continue }
+            val latin = ch.code < 128 || ch in VOYELLES || ch in '\u00c0'..'\u024f'
+            if (latin || ch in '\u0400'..'\u04ff') {
+                val voyelle = ch in VOYELLES || ch in "аеёиоуыэюя"
+                if (voyelle && !dansVoyelle) { out.add(SYLLABE to (if (k % 2 == 1) 0.75 else 1.0)); k++ }
+                dansVoyelle = voyelle
+            } else if (ch.isLetter()) {
+                autres++
+                if (autres % 2 == 1) { out.add(SYLLABE to (if (k % 2 == 1) 0.75 else 1.0)); k++ }
+            }
+        }
+        return out
+    }
+
+    fun dureeParole(texte: String): Double = syllabes(texte).sumOf { it.first }
+
+    /** L'ouverture de la bouche (0 à 1) au temps t d'une phrase : une ouverture par syllabe, fermée aux pauses. */
+    fun paroleNiveau(texte: String, t0: Double): Double {
+        if (t0 < 0) return 0.0
+        var t = t0
+        for ((d, a) in syllabes(texte)) {
+            if (t < d) return if (a > 0) a * sin(PI * t / d) else 0.0
+            t -= d
+        }
+        return 0.0
     }
 
     /**

@@ -227,7 +227,7 @@ class BulleService : Service() {
         }
         val r = BureauVie.Resume(jeu.total, jeu.lecon, jeu.etape, jeu.faim, jeu.module("dressage").has("en_cours"))
         for (cle in BureauVie.evenements(resume, r)) {
-            if (prefs().getBoolean("ile", true) && ile.annoncer(t(cle)) && creature.etat != "dort") creature.reagir("salut")
+            if (prefs().getBoolean("ile", true) && ile.annoncer(t(cle)) && creature.etat != "dort") creature.parler(t(cle))
             break
         }
         resume = r
@@ -244,6 +244,7 @@ class BulleService : Service() {
         if (cle != cleAlbum || album == null) {
             cleAlbum = cle
             album = albumChoisi(choix) ?: try { Poses.album(jeu) } catch (e: Exception) { album }
+            creature.bouche = album?.bouche ?: BureauVie.BOUCHE_DEFAUT
             bitmaps.clear()
             vueCreature?.let { majFenetreCreature() }
         }
@@ -382,9 +383,16 @@ class BulleService : Service() {
             }
             "double" -> { fermerMenu(); creature.reagir("coeur")
                 flottants.add(Triple("♥", SystemClock.elapsedRealtime(), 0xFFFF5F6D.toInt())) }
-            "triple" -> { fermerMenu(); creature.reagir("salut")
-                phrase = (Langue.liste("bur.phrases").randomOrNull() ?: "") to SystemClock.elapsedRealtime() + 5000 }
+            "triple" -> { fermerMenu(); dire(Langue.liste("bur.phrases").randomOrNull() ?: "") }
         }
+    }
+
+    /** Elle dit texte : une bulle, et sa bouche bouge au rythme des syllabes (assise). */
+    private fun dire(texte: String, secondes: Double? = null) {
+        val s = Vert.rendre(texte).toString()
+        creature.changer("assis", BureauVie.dureeParole(s) + 0.8)
+        creature.parler(s)
+        phrase = s to SystemClock.elapsedRealtime() + ((secondes ?: maxOf(4.0, BureauVie.dureeParole(s) + 2.0)) * 1000).toLong()
     }
 
     private fun ouvrirJeu(commande: String? = null) {
@@ -405,7 +413,7 @@ class BulleService : Service() {
             "ranger" -> { fermerMenu(); ranger() }
             "soccuper" -> {
                 val l = Envies.valeurs(jeu).map { (k, v) -> "${Envies.nom(k)}  " + "▰".repeat((v / 20).toInt().coerceIn(0, 5)) + "▱".repeat(5 - (v / 20).toInt().coerceIn(0, 5)) to null as String? }
-                Envies.phrase(jeu)?.let { phrase = it to SystemClock.elapsedRealtime() + 8000 }
+                Envies.phrase(jeu)?.let { dire(it, 8.0) }
                 ouvrirMenu(Panneau(t("bur.menu.soccuper"), l + ("♥ " + t("bur.caresser") to "caresser")))
             }
             "caresser" -> geste("double")
@@ -529,7 +537,11 @@ class BulleService : Service() {
                 when (f.genre) {
                     "z" -> texte(cv, "z", ex, ey, et, Color.argb((al * 0.9f).toInt(), 190, 215, 255), true, Paint.Align.CENTER)
                     "coeur" -> texte(cv, "♥", ex, ey, et, Color.argb(al, 255, 95, 140), true, Paint.Align.CENTER)
-                    "miette" -> { pinceau.color = Color.argb(al, 232, 176, 74); cv.drawOval(RectF(ex - et / 2, ey - et / 2.4f, ex + et / 2, ey + et / 2.4f), pinceau) }
+                    "miette" -> {                                    // un petit biscuit : bord brun, cœur doré
+                        val b = dp(1.5f)
+                        pinceau.color = Color.argb(al, 74, 38, 18); cv.drawOval(RectF(ex - et / 2 - b, ey - et / 2.4f - b, ex + et / 2 + b, ey + et / 2.4f + b), pinceau)
+                        pinceau.color = Color.argb(al, 246, 196, 92); cv.drawOval(RectF(ex - et / 2, ey - et / 2.4f, ex + et / 2, ey + et / 2.4f), pinceau)
+                    }
                 }
             }
             val now = SystemClock.elapsedRealtime()
@@ -730,7 +742,7 @@ class BulleService : Service() {
                 null -> {}
                 "fermer" -> ile.fermer()
                 "creature" -> creature.reagir("coeur")
-                "soccuper" -> Envies.phrase(jeu)?.let { phrase = it to SystemClock.elapsedRealtime() + 10000 }
+                "soccuper" -> Envies.phrase(jeu)?.let { dire(it, 10.0) }
                 else -> { ile.fermer(); action(z) }
             }
             return true

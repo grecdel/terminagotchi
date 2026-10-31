@@ -148,9 +148,10 @@ def scene_creature(c, album, vue, regl, zone_l, zone_h, sol, ox=0, t_=0.0, nom="
             L.append(("texte", ex, ey, "z", et, (190, 215, 255, int(230 * fa)), True, "c", False))
         elif genre == "coeur":
             L.append(("texte", ex, ey, "♥", et, (255, 95, 140, int(255 * fa)), True, "c", False))
-        elif genre == "miette":
-            L.append(("ellipse", ex, ey, et / 2, et / 2.4, (232, 176, 74, int(255 * fa))))
-            L.append(("ellipse", ex - et / 7, ey - et / 7, et / 6, et / 7, (255, 226, 150, int(255 * fa))))
+        elif genre == "miette":                         # un petit biscuit bien visible : bord brun, cœur doré
+            L.append(("ellipse", ex, ey, et / 2 + 1.5, et / 2.4 + 1.5, (74, 38, 18, int(255 * fa))))
+            L.append(("ellipse", ex, ey, et / 2, et / 2.4, (246, 196, 92, int(255 * fa))))
+            L.append(("ellipse", ex - et / 7, ey - et / 7, et / 6, et / 7, (255, 236, 170, int(255 * fa))))
     zones.append((c.x - ox - largeur_corps / 2, sol - c.air - haut_corps, largeur_corps, haut_corps + 6, "creature"))
     haut = py - cad.ay * e * an.sy                          # le haut de l'image
     # petits textes qui montent

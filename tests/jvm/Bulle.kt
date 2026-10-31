@@ -31,12 +31,12 @@ fun main(args: Array<String>) {
     println("Les poses dessinées (poses.bin)")
     verifB(Poses.lire(File(assets, "poses.bin").readBytes()), "poses.bin se lit")
     verifB(Poses.especes().size == 27, "27 bébés de départ (${Poses.especes().size})")
-    val attendu = mapOf("braisillon" to 3894205544L, "glandouille" to 215722427L, "lunacorne" to 3925680037L)
+    val attendu = mapOf("braisillon" to 120405394L, "glandouille" to 1008333504L, "lunacorne" to 2261508286L)
     for ((e, h) in attendu) {
         val (idx, pal) = Poses.indexees(e)!!
         var hh = 0x811C9DC5L
         for (v in idx.values) { for (i in 4 until v.size) hh = ((hh xor v[i].toLong()) * 0x01000193L) and 0xFFFFFFFFL }
-        verifB(hh == h && pal.size == 48 && idx.size == 13, "$e : 13 poses (dont « cligne »), mêmes octets qu'en Python (empreinte $hh)")
+        verifB(hh == h && pal.size == 48 && idx.size == 16, "$e : 16 poses (dont « cligne » et la mâchoire), mêmes octets qu'en Python (empreinte $hh)")
     }
     val g = Poses.indexees("glandouille")!!.first.getValue("assis")
     verifB(g[0] == 131 && g[1] == 127 && g[2] == 65 && g[3] == 127, "glandouille assis : 131 × 127, ancre (65, 127) comme en Python")
@@ -109,6 +109,36 @@ fun main(args: Array<String>) {
     verifB(rots.any { it > 2 } && rots.any { it < -2 }, "salut : elle se balance")
     val durees = (0 until 20).map { c.changer("etire"); c.duree }.toSet()
     verifB(durees.size > 10, "les durées changent un peu à chaque fois")
+
+    println("La mâchoire : manger, parler")
+    verifB(listOf(0.0, 0.1, 0.3, 0.5, 0.7, 0.9, 1.0).map { BureauVie.poseBouche(it) } ==
+        listOf("assis", "assis", "bouche1", "bouche2", "bouche2", "bouche3", "bouche3"), "poseBouche : 0 fermée → 1 grande ouverte")
+    // mêmes valeurs qu'en Python (bureau_vie.duree_parole, parole_niveau à 0 ; 0,3 ; 0,6 ; 0,9 s)
+    val ref = listOf(
+        Triple("Coucou, on joue ?", 1.24, listOf(0.0, 0.287, 0.9239, 0.0)),
+        Triple("J'ai un peu faim… Tape `date` !", 2.17, listOf(0.0, 0.6929, 0.0, 0.0)),
+        Triple("我很喜欢你哦。", 0.48, listOf(0.0, 0.287, 0.0, 0.0)),
+        Triple("Привет!", 0.62, listOf(0.0, 0.287, 0.0, 0.0)))
+    for ((ph, d, niv) in ref) {
+        val calc = listOf(0, 3, 6, 9).map { Math.round(BureauVie.paroleNiveau(ph, it / 10.0) * 10000) / 10000.0 }
+        verifB(Math.abs(BureauVie.dureeParole(ph) - d) < 1e-6 && calc == niv, "« $ph » : mêmes syllabes qu'en Python ($calc)")
+    }
+    val a13 = Poses.dessine("glandouille")!!
+    verifB(listOf("bouche1", "bouche2", "bouche3").all { a13.images(it)[0].argb.contentEquals(a13.images("assis")[0].argb).not() }
+        && a13.bouche != null, "glandouille : 3 ouvertures de bouche, et sa place")
+    val rob = Poses.dessine("boulonnet")!!
+    verifB(rob.bouche == null && rob.images("bouche3")[0].argb.contentEquals(rob.images("assis")[0].argb), "boulonnet (robot) : pas de bouche")
+    c = BureauVie.Creature(1000f, h = java.util.Random(9))
+    c.changer("mange", 4.0)
+    val vus = mutableSetOf<String>()
+    repeat(40) { c.tick(0.1); vus.add(BureauVie.animer(c).etat) }
+    verifB(vus.containsAll(listOf("assis", "bouche1", "bouche2", "bouche3")) && "mange" !in vus, "manger : la bouche s'ouvre et se ferme, 3 bouchées")
+    c.changer("marche"); c.parler("Coucou, on joue ?")
+    verifB(c.etat == "assis", "elle s'arrête de marcher pour parler")
+    val bs = mutableSetOf<String>()
+    repeat(24) { c.tick(0.05); bs.add(BureauVie.animer(c).etat) }
+    verifB("bouche3" in bs || "bouche2" in bs, "elle parle : la mâchoire bouge ($bs)")
+    verifB(BureauVie.miniVie(c, 0.0).first.let { it == "assis" || it.startsWith("bouche") }, "dans l'île, la mini-créature parle aussi")
 
     println("Les gestes")
     val ge = BureauVie.Gestes()

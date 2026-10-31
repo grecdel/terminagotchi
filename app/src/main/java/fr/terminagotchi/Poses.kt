@@ -8,7 +8,8 @@ import java.util.zip.Inflater
 /**
  * Les poses de la créature de la bulle et de l'île (comme pc/tg/poses.py) : dessinées pour les 27 bébés de départ
  * (assets/poses.bin, fabriqué par donnees/bestiaire2/outils/poses_bureau.py : marche1 à marche4, assis, dort, etire,
- * baille, sursaut, coeur, mange, salut, et « cligne » : assis les yeux fermés, calculée), calculées (AnimAuto, Vie) pour les autres stades et les autres espèces.
+ * baille, sursaut, coeur, mange, salut ; calculées : « cligne », assis les yeux fermés, et la mâchoire « bouche1 » à
+ * « bouche3 », assis la bouche ouverte au tiers, aux deux tiers, en grand ; « dort » sans ses « z » dessinés), calculées (AnimAuto, Vie) pour les autres stades et les autres espèces.
  *
  * Format : "TGPO" | version | longueur de l'en-tête (4 octets) | en-tête JSON | blocs zlib (un par espèce, les octets
  * indexés des 12 poses bout à bout). Une espèce ne se décompresse que si elle est affichée.
@@ -25,7 +26,9 @@ object Poses {
     class Cadre(val w: Int, val h: Int, val argb: IntArray, val ax: Int, val ay: Int, val cle: String)
 
     /** Les images de chaque état ; ref : la hauteur de la pose assise ; lisse : dessin fin (sinon gros pixels). */
-    class Album(val etats: Map<String, List<Cadre>>, val ref: Int, val lisse: Boolean, val dessine: Boolean) {
+    class Album(val etats: Map<String, List<Cadre>>, val ref: Int, val lisse: Boolean, val dessine: Boolean,
+                /** la bouche (x, y) en fractions du corps depuis les pieds, ou null */
+                val bouche: Pair<Float, Float>? = null) {
         fun images(etat: String): List<Cadre> = etats[etat]?.takeIf { it.isNotEmpty() } ?: etats.getValue("assis")
         fun image(etat: String, t: Int): Cadre { val l = images(etat); return l[Math.floorMod(t, l.size)] }
     }
@@ -107,8 +110,12 @@ object Poses {
         val etats = LinkedHashMap<String, List<Cadre>>()
         etats["marche"] = (1..4).map { cad.getValue("marche$it") }
         for (e in ETATS.drop(1)) etats[e] = listOf(cad.getValue(e))
-        cad["cligne"]?.let { etats["cligne"] = listOf(it) }          // assis, les yeux fermés (le clignement)
-        return Album(etats, cad.getValue("assis").h, lisse = true, dessine = true)
+        for (e in listOf("cligne", "bouche1", "bouche2", "bouche3"))     // les yeux fermés, la mâchoire
+            cad[e]?.let { etats[e] = listOf(it) }
+        val a = cad.getValue("assis")
+        val b = tete?.optJSONObject("especes")?.optJSONObject(espece)?.optJSONArray("bouche")
+        val bouche = if (b == null) null else ((b.getDouble(0) - a.ax) / a.w).toFloat() to ((b.getDouble(1) - a.ay) / a.h).toFloat()
+        return Album(etats, a.h, lisse = true, dessine = true, bouche = bouche)
     }
 
     /** Une animation indexée (AnimAuto) en cadres ARGB, l'ancre au milieu et en bas de la silhouette. */

@@ -297,6 +297,70 @@ def gif(sortie, album, nom="bureau.gif", planche=None):
     return len(images)
 
 
+def gif_parle(sortie, album, nom="parle.gif", planche=None):
+    """Elle parle, à la taille réelle : deux petites phrases dans sa bulle, la bouche suit les syllabes ; puis l'île
+    s'ouvre sur un événement et la mini-créature l'annonce en parlant."""
+    regl = dict(V.DEFAUTS)
+    Lz, Hz = 520, 300
+    ips = 12
+    c = V.Creature(Lz, regl, x=300, hasard=random.Random(5))
+    c.cligne = 2.5
+    vue = S.VueCreature()
+    phrases = ["Coucou ! On tape une commande ensemble ?", "J'ai vu une bestiole passer par là…"]
+    fond = Image.new("RGBA", (Lz, Hz))
+    d = ImageDraw.Draw(fond)
+    for y in range(Hz):
+        d.line([(0, y), (Lz, y)], fill=(20 + y // 25, 22 + y // 35, 44 + y // 18, 255))
+    images = []
+    t = 0.0
+
+    def image(L, extra=None):
+        im = fond.copy()
+        im.alpha_composite(S.vers_pil(L, (Lz, Hz)))
+        if extra is not None:
+            im.alpha_composite(extra)
+        images.append(im)
+
+    for ph in phrases:
+        c.changer("assis", V.duree_parole(ph) + 1.0)
+        c.parler(ph)
+        vue.dire(ph, t, V.duree_parole(ph) + 0.9)
+        for _ in range(int((V.duree_parole(ph) + 0.9) * ips)):
+            c.tick(1 / ips, {"inactif": 1})
+            t += 1 / ips
+            L, _ = S.scene_creature(c, album, vue, regl, Lz, Hz, Hz - 16, 0, t)
+            image(L)
+    # l'île s'ouvre sur un événement, la mini-créature parle
+    ile = V.Ile()
+    texte = "Un monstre est apparu !"
+    ile.annoncer(texte)
+    c.parler(texte)
+    for _ in range(int((V.duree_parole(texte) + 0.8) * ips)):
+        c.tick(1 / ips, {"inactif": 1})
+        ile.tick(1 / ips, t)
+        t += 1 / ips
+        L, _ = S.scene_creature(c, album, S.VueCreature(), regl, Lz, Hz, Hz - 16, 0, t)
+        Li, _ = S.scene_ile(ile, {"nom": "Noisette", "faim": 38, "xp": 62}, album, V.MiniTerminal(Path.home()), t,
+                            None, (), c)
+        haut = S.vers_pil(Li, (S.ILE_L, 70))
+        calque = Image.new("RGBA", (Lz, Hz))
+        calque.alpha_composite(haut.crop(((S.ILE_L - Lz) // 2, 0, (S.ILE_L + Lz) // 2, 70)), (0, 4))
+        image(L, calque)
+    pal = [im.convert("RGB").quantize(colors=255, method=Image.Quantize.MEDIANCUT) for im in images]
+    pal[0].save(sortie / nom, save_all=True, append_images=pal[1:], duration=1000 // ips, loop=0, disposal=1)
+    if planche:
+        col, tw, th = 10, Lz // 2, Hz // 2
+        p = Image.new("RGB", (col * tw, ((len(images) + col - 1) // col) * th))
+        dd = ImageDraw.Draw(p)
+        for k, im in enumerate(images):
+            x, y = (k % col) * tw, (k // col) * th
+            p.paste(im.convert("RGB").resize((tw, th)), (x, y))
+            dd.text((x + tw - 4, y + 4), str(k), font=police(11), fill=(255, 255, 120), anchor="ra")
+        p.save(planche)
+    gif_parle.images = images
+    return len(images)
+
+
 def main():
     sortie = Path(sys.argv[1] if len(sys.argv) > 1 else ".")
     sortie.mkdir(parents=True, exist_ok=True)
@@ -308,6 +372,7 @@ def main():
     captures_pc(sortie, album, info)
     captures_android(sortie, album, info)
     print("images du GIF :", gif(sortie, album, planche=sortie.parent / "gif_images.png"))
+    print("images du GIF « elle parle » :", gif_parle(sortie, album, planche=sortie.parent / "parle_images.png"))
     planche = Image.new("RGB", (12 * 150, 3 * 170), (24, 26, 36))
     d = ImageDraw.Draw(planche)
     for j, esp in enumerate(["braisillon", "zapiot", "lunacorne"]):

@@ -38,8 +38,9 @@ class Album:
     """Les images de chaque état (« marche » : plusieurs images, les autres : une ou plusieurs).
     ref : la hauteur de référence (la pose assise) ; lisse : dessin fin (mise à l'échelle douce) ou gros pixels."""
 
-    def __init__(self, etats, ref, lisse, dessine, nom):
+    def __init__(self, etats, ref, lisse, dessine, nom, bouche=None):
         self.etats, self.ref, self.lisse, self.dessine, self.nom = etats, max(1, ref), lisse, dessine, nom
+        self.bouche = bouche            # (x, y) de la bouche en fractions du corps depuis les pieds, ou None
 
     def images(self, etat):
         return self.etats.get(etat) or self.etats["assis"]
@@ -129,9 +130,14 @@ def album_dessine(espece_id, teinte=None, nom=None):
     etats = {"marche": [cad[f"marche{k}"] for k in (1, 2, 3, 4)]}
     for e in ETATS[1:]:
         etats[e] = [cad[e]]
-    if "cligne" in cad:                                   # assis, les yeux fermés (le clignement)
-        etats["cligne"] = [cad["cligne"]]
-    return Album(etats, cad["assis"].h, True, True, nom or espece_id)
+    for e in ("cligne", "bouche1", "bouche2", "bouche3"):   # les yeux fermés, la mâchoire
+        if e in cad:
+            etats[e] = [cad[e]]
+    tete, _ = donnees()
+    b = tete["especes"][espece_id].get("bouche")
+    a = cad["assis"]
+    bouche = None if not b else ((b[0] - a.ax) / a.w, (b[1] - a.ay) / a.h)
+    return Album(etats, cad["assis"].h, True, True, nom or espece_id, bouche)
 
 
 def _cadres_toile(W, H, frames, pal, cle, ax=None, ay=None):
