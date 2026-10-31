@@ -67,8 +67,21 @@ object CitadelleDessin {
         tl.rrect(x, y, w, h, 16 * z, 0xFF101320.toInt(), a(EspaceDessin.CYAN, 90), 1.2f * z)
         val lieux = listOf("porte", "cour", "remparts", "tours", "cuisines", "tresor", "journaux", "boites")
         val mx = 40 * z; val my = 24 * z
+        // le tableau de garde : des étiquettes qui passent à la ligne quand la place manque (téléphone en portrait)
+        val ind = Citadelle.tableau(glitchs.size, processus, secrets)
+        val etiq = ind.map { (nom, v, vert) -> Triple((if (vert) "✔ " else "✖ ") + t("cit.tableau.$nom") + " " + v, vert, 0f) }
+        val dispo = w - 28 * z
+        val taille = 11 * z
+        val rangees = mutableListOf(mutableListOf<Pair<String, Boolean>>())
+        var lg = 0f
+        for ((s, vert, _) in etiq) {
+            val bw = minOf(tl.mesure(s, taille, true) + 18 * z, dispo)
+            if (lg > 0 && lg + bw > dispo) { rangees.add(mutableListOf()); lg = 0f }
+            rangees.last().add(s to vert); lg += bw + 8 * z
+        }
+        val bas = rangees.size * 28 * z + 2 * z
         fun px(id: String) = x + mx + pos(id).first * (w - 2 * mx)
-        fun py(id: String) = y + my + pos(id).second * (h - 2 * my - 30 * z)
+        fun py(id: String) = y + my + pos(id).second * (h - 2 * my - bas)
         for (l in lieux) if (l != "cour") tl.ligne(px("cour"), py("cour"), px(l), py(l), a(EspaceDessin.CYAN, 80), 1.4f * z, 4 * z, 4 * z)
         val touches = glitchs.map { it.substringBefore('/') }.toSet()
         for (l in lieux) {
@@ -80,15 +93,17 @@ object CitadelleDessin {
             tl.rrect(px(l) - bw / 2, py(l) - 11 * z, bw, 22 * z, 11 * z, 0xFF141826.toInt(), a(c, 210), 1.5f * z)
             tl.texte(nom, px(l), py(l), 11.5f * z, EspaceDessin.TEXTE, true, 'c')
         }
-        val ind = Citadelle.tableau(glitchs.size, processus, secrets)
-        var bx = x + 14 * z
-        for ((nom, v, vert) in ind) {
-            val s = (if (vert) "✔ " else "✖ ") + t("cit.tableau.$nom") + " " + v
-            val bw = tl.mesure(s, 11 * z, true) + 18 * z
-            tl.rrect(bx, y + h - 30 * z, bw, 22 * z, 11 * z, a(if (vert) EspaceDessin.VERT else EspaceDessin.ROUGE, 30),
-                a(if (vert) EspaceDessin.VERT else EspaceDessin.ROUGE, 180), 1.2f * z)
-            tl.texte(s, bx + bw / 2, y + h - 19 * z, 11 * z, EspaceDessin.TEXTE, true, 'c')
-            bx += bw + 8 * z
+        rangees.forEachIndexed { k, r ->
+            var bx = x + 14 * z
+            val by = y + h - 30 * z - (rangees.size - 1 - k) * 28 * z
+            for ((s, vert) in r) {
+                val bw = minOf(tl.mesure(s, taille, true) + 18 * z, dispo)
+                val tt = if (tl.mesure(s, taille, true) + 18 * z > dispo) taille * dispo / (tl.mesure(s, taille, true) + 18 * z) else taille
+                tl.rrect(bx, by, bw, 22 * z, 11 * z, a(if (vert) EspaceDessin.VERT else EspaceDessin.ROUGE, 30),
+                    a(if (vert) EspaceDessin.VERT else EspaceDessin.ROUGE, 180), 1.2f * z)
+                tl.texte(s, bx + bw / 2, by + 11 * z, tt, EspaceDessin.TEXTE, true, 'c')
+                bx += bw + 8 * z
+            }
         }
     }
 

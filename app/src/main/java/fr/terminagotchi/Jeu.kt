@@ -307,6 +307,7 @@ class Jeu(ctx: Context) {
         Programme.init(ctx)
         Port.init(ctx)
         Citadelle.init(ctx)
+        Crypte.init(ctx)
         Intro.init(ctx)
     }
 

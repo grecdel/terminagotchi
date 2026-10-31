@@ -136,10 +136,13 @@ class Commandes(
             "ss" -> Reponse(Port.ss(ligne.trim()), couleur = BLEU)
             // ---------------------------------------------------- la Citadelle (Citadelle.kt) : tout reste dans le terrain
             "citadelle" -> Reponse(Citadelle.commande(jeu, reste, dossier()), couleur = BLEU)
-            "openssl" -> Reponse(Citadelle.openssl(jeu, ligne.trim(), dossier()), couleur = BLEU)
+            "openssl" -> Reponse(Crypte.openssl(ligne.trim()) ?: Citadelle.openssl(jeu, ligne.trim(), dossier()), couleur = BLEU)
             "diff" -> Reponse(Citadelle.diff(jeu, ligne.trim(), dossier()).first, couleur = BLEU)
             "shuf" -> Reponse(Citadelle.shuf(jeu, ligne.trim(), dossier()), couleur = BLEU)
             "kill" -> Citadelle.kill(jeu, reste)?.let { Reponse(it, couleur = BLEU) }   // un processus fantôme, sinon le vrai shell
+            // ---------------------------------------------------- la Crypte des Codes (Crypte.kt, CryptePgp.kt) : dans le terrain
+            "crypte" -> Reponse(Crypte.commande(jeu, reste, dossier()), couleur = BLEU)
+            "gpg", "gpg2" -> Reponse(Crypte.gpg(jeu, ligne.trim(), dossier()), couleur = BLEU)
             "sync" -> sync()
             "indice" -> Reponse(Ctf.indice(jeu, reste), couleur = VERT)
             "edite" -> edite(reste)

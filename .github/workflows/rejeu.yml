@@ -7,6 +7,8 @@ on:
     branches: [nouveau-bestiaire, main]
     paths: ["donnees/programme.json", "donnees/maths/**", "donnees/recompenses/**", "donnees/port/**", "donnees/port.json",
             "donnees/citadelle/**", "donnees/citadelle.json", "app/src/main/java/fr/terminagotchi/Citadelle.kt",
+            "donnees/crypte/**", "donnees/crypte.json", "app/src/main/java/fr/terminagotchi/Crypte.kt",
+            "app/src/main/java/fr/terminagotchi/CryptePgp.kt",
             "pc/**", "app/src/main/assets/langues/**", "app/src/main/java/fr/terminagotchi/Port.kt",
             "app/src/main/java/fr/terminagotchi/Histoire.kt", "app/src/main/java/fr/terminagotchi/Jeu.kt",
             ".github/workflows/rejeu.yml"]
@@ -29,7 +31,7 @@ jobs:
       - name: Les outils des fiches (les commandes rejouées)
         run: |
           sudo apt-get update -qq
-          sudo apt-get install -y -qq tree iproute2 iputils-ping iputils-tracepath openssh-client dnsutils bsdextrautils openssl >/dev/null || true
+          sudo apt-get install -y -qq tree iproute2 iputils-ping iputils-tracepath openssh-client dnsutils bsdextrautils openssl xxd gnupg >/dev/null || true
           bash --version | head -n 1
 
       - name: Vérificateur de la charte (fiches, étapes, orphelines, 14 langues)
@@ -40,6 +42,7 @@ jobs:
           python3 pc/outils/vecteurs_phase4.py --verifier
           python3 pc/outils/vecteurs_port.py --verifier
           python3 pc/outils/vecteurs_citadelle.py --verifier
+          python3 pc/outils/vecteurs_crypte.py --verifier
 
       - name: Rejeu des sorties dans un vrai bash (fiches et histoire du PC)
         run: LC_ALL=C.UTF-8 python3 pc/outils/rejeu_bash.py
@@ -70,3 +73,15 @@ jobs:
           set -o pipefail
           LC_ALL=C.UTF-8 python3 pc/outils/sim_citadelle.py 2>&1 | tee /tmp/simc.out || {
             grep -E "✖|Error|Traceback|line [0-9]" /tmp/simc.out | head -20 | sed 's/^/::error::/'; exit 1; }
+
+      - name: La Crypte des Codes (codes, empreintes, coffres, gpg dans le terrain, chaîne de blocs)
+        run: |
+          set -o pipefail
+          LC_ALL=C.UTF-8 python3 pc/outils/test_crypte.py 2>&1 | tee /tmp/cry.out || {
+            grep -E "✖|Error|Traceback|line [0-9]" /tmp/cry.out | head -20 | sed 's/^/::error::/'; exit 1; }
+
+      - name: Trois enfants descendent dans la Crypte (docs/simulations/rapport_crypte.md)
+        run: |
+          set -o pipefail
+          LC_ALL=C.UTF-8 python3 pc/outils/sim_crypte.py 2>&1 | tee /tmp/simk.out || {
+            grep -E "✖|Error|Traceback|line [0-9]" /tmp/simk.out | head -20 | sed 's/^/::error::/'; exit 1; }

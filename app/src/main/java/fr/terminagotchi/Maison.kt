@@ -42,7 +42,7 @@ object Maison {
     val ICONES = mapOf("vestibule" to "🥚", "nid" to "🏠", "grenier" to "🌿", "cave" to "🔒", "bibliotheque" to "📚",
         "salle_des_machines" to "🔥", "dortoir" to "👻", "atelier" to "🔧", "tour" to "📡", "coeur" to "💜",
         "recoins" to "🚪", "sauvage" to "🌲", "jardin" to "📱", "port" to "⚓",
-        "citadelle" to "🏰")
+        "citadelle" to "🏰", "crypte" to "🗝")
     val PRUDENCE = setOf("rm", "rmdir", "mv", "chmod", "chown", "del", "remove-item", "move-item", "ren")
 
     /** Une région du monde (donnees/biomes.json, vérifié par tests/jvm/Carte.kt) : emoji, principale, sombre, claire. */

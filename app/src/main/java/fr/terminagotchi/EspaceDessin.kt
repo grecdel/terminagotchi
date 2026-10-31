@@ -384,8 +384,10 @@ object EspaceDessin {
         if (fy + 34 * z > y + h) return
         val msg = v.messagerDe(b)
         val dr = v.droitsDe(b)
+        val ro = v.roueDe(b)
         if (msg != null) PortDessin.messager(tl, msg, v.phase, x + 14 * z, fy, w - 28 * z, 34 * z, z)   // le Port
         else if (dr != null) CitadelleDessin.cadenas(tl, dr, v.phase, x + 14 * z, fy, w - 28 * z, minOf(78 * z, y + h - fy), z)   // la Citadelle
+        else if (ro != null) CrypteDessin.roue(tl, ro.decalage, v.phase, x + 14 * z, fy, w - 28 * z, minOf(170 * z, y + h - fy), z)   // la Crypte
         else flux(tl, v, x + 14 * z, fy, w - 28 * z, 34 * z, z)
     }
 

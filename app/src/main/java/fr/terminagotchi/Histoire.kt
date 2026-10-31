@@ -85,6 +85,8 @@ object Histoire {
         Chapitre("port", 11, "port", "Célestes", Port.IDS, null, "phare_miniature", "capitaine_du_port", monde = true),
         // le deuxième : la Citadelle (Citadelle.kt), la cybersécurité défensive
         Chapitre("citadelle", 12, "citadelle", "Démons", Citadelle.IDS, null, "bouclier_miniature", "gardien_de_la_citadelle", monde = true),
+        // le troisième : la Crypte des Codes (Crypte.kt), la cryptographie et la blockchain (explication technique)
+        Chapitre("crypte", 13, "crypte", "Morts-vivants", Crypte.IDS, null, "sceau_miniature", "sphinx_de_la_crypte", monde = true),
     )
     val MONDES = CHAPITRES.filter { it.monde }.map { it.piece }
     val PAR_CHAP = CHAPITRES.associateBy { it.id }
@@ -260,6 +262,7 @@ object Histoire {
         tout.putAll(nouvelles)
         tout.putAll(Port.lecons(jeu))
         tout.putAll(Citadelle.lecons(jeu))
+        tout.putAll(Crypte.lecons(jeu))
         return tout
     }
 
@@ -340,8 +343,8 @@ object Histoire {
     }
 
     /** Un monde du Carrefour : ses prérequis du tronc commun (programme.json), monde par monde. */
-    fun mondeOuvert(jeu: Jeu, cid: String) = if (cid == "citadelle") Citadelle.ouvert(jeu) else Port.ouvert(jeu)
-    fun mondeManque(jeu: Jeu, cid: String) = if (cid == "citadelle") Citadelle.manque(jeu) else Port.manque(jeu)
+    fun mondeOuvert(jeu: Jeu, cid: String) = when (cid) { "citadelle" -> Citadelle.ouvert(jeu); "crypte" -> Crypte.ouvert(jeu); else -> Port.ouvert(jeu) }
+    fun mondeManque(jeu: Jeu, cid: String) = when (cid) { "citadelle" -> Citadelle.manque(jeu); "crypte" -> Crypte.manque(jeu); else -> Port.manque(jeu) }
 
     /** La pièce existe dans la maison de cette partie (sa porte a été posée). */
     fun pieceOuverte(jeu: Jeu, p: String): Boolean {
@@ -481,6 +484,7 @@ object Histoire {
         "atelier" -> mapOf("atelier/plan_de_travail.txt" to dire(jeu, "hist.meuble.plan"))
         "port" -> Port.meubles(jeu)
         "citadelle" -> Citadelle.meubles(jeu)
+        "crypte" -> Crypte.meubles(jeu)
         // la vieille cabane pleine de planches de la leçon « Une pièce en trop » (seulement par BESOINS)
         "nid" -> linkedMapOf("vieille_cabane/planche_1.txt" to dire(jeu, "hist.meuble.planche"),
             "vieille_cabane/planche_2.txt" to dire(jeu, "hist.meuble.planche"),
@@ -565,6 +569,7 @@ object Histoire {
         }
         if (lid in Port.IDS) Port.meubler(jeu, lid)          // le Port : le phare s'allume pour les leçons qui le visitent
         if (lid in Citadelle.IDS) Citadelle.meubler(jeu, lid)   // la Citadelle : les attaques fictives au bon moment
+        if (lid in Crypte.IDS) Crypte.meubler(jeu, lid)         // la Crypte : le grimoire touché, la chaîne, les clés d'exemple
         return poses
     }
 
@@ -641,6 +646,7 @@ object Histoire {
         mettreChap(jeu, null)
         Port.annonce(jeu)                              // un monde du Carrefour qui vient de s'ouvrir
         Citadelle.annonce(jeu)
+        Crypte.annonce(jeu)
         when {
             c.id == "reveil" -> mettreChap(jeu, "nid")
             c.id == "nid" -> jeu.dire(dire(jeu, "hist.libre.dit"), 16)
@@ -892,6 +898,7 @@ object Histoire {
         val lignes = tapees.map { it.first }
         Port.indice(jeu, e, tapees)?.let { return it }            // le Port : un trou « … » recopié, un messager perdu
         Citadelle.indice(jeu, e, tapees)?.let { return it }       // la Citadelle : un trou « ? », un sudo, un drapeau faux
+        Crypte.indice(jeu, e, tapees)?.let { return it }          // la Crypte : gpg sans --homedir, une mauvaise roue…
         indiceCd(jeu, e, morcs)?.let { return it }
         indiceRm(jeu, e, tapees)?.let { return it }
         indiceResultat(jeu, e, morcs)?.let { return it }

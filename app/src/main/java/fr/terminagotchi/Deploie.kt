@@ -251,6 +251,25 @@ object Deploie {
         return out
     }
 
+    // ------------------------------------------------------------ la roue de César (la Crypte des Codes)
+    class Roue(val seg: Int, val de: String, val vers: String, val decalage: Int)
+
+    /** Les roues d'une ligne (même spécification que deploie.roue sur PC, vecteurs donnees/crypte/vecteurs.json) :
+     *  chaque `tr DE VERS` qui fait tourner l'alphabet (César, ROT13). */
+    fun roue(ligne: String): List<Roue> {
+        val out = mutableListOf<Roue>()
+        val bl = blocs(ligne)
+        for (c in chaines(bl)) for (e in c.etapes) {
+            if (e.cmd != "tr") continue
+            val args = mots(e.texte).drop(1).map { it.first }.filter { !it.startsWith("-") }.map { nu(it) }
+            if (args.size < 2) continue
+            val k = Crypte.rotation(args[0], args[1]) ?: continue
+            val seg = bl.firstOrNull { it.g == "commande" && it.i - 1 == e.debut }?.seg ?: 0
+            out.add(Roue(seg, args[0], args[1], k))
+        }
+        return out
+    }
+
     // ------------------------------------------------------------ les cadenas qui s'allument (la Citadelle)
     private val OPTIONS_CHMOD = setOf("-R", "-v", "-c", "-f", "--recursive", "--verbose", "--changes", "--silent", "--quiet")
     private val MODE_CHMOD = Regex("[0-7]{1,4}|[ugoa]*(?:[-+=][rwx]*)+(?:,[ugoa]*(?:[-+=][rwx]*)+)*")
@@ -341,11 +360,14 @@ object Deploie {
         /** les cadenas d'un chmod / umask (la Citadelle) : ils s'allument ou s'éteignent */
         val cadenas: List<Droits> = try { droits(ligne) } catch (e: Exception) { emptyList() }
         fun droitsDe(b: Bloc): Droits? = if (b.g == "commande") cadenas.firstOrNull { it.seg == b.seg } else null
+        /** la roue de César d'un tr (la Crypte) : elle tourne jusqu'au décalage */
+        val roues: List<Roue> = try { roue(ligne) } catch (e: Exception) { emptyList() }
+        fun roueDe(b: Bloc): Roue? = if (b.g == "commande") roues.firstOrNull { it.seg == b.seg } else null
 
         fun avancer(dt: Double) {
             t += dt
             val b = blocs[actif - 1]
-            val reseau = messagerDe(b) != null || droitsDe(b) != null
+            val reseau = messagerDe(b) != null || droitsDe(b) != null || roueDe(b) != null
             val duree = if (b.g == "tuyau" || b.g == "redirection" || reseau) 2.4 else 1.2
             phase = if (b.g in setOf("tuyau", "redirection", "chemin") || reseau) t / duree else minOf(1.0, t / duree)
             if (auto && t >= duree && actif < blocs.size) { actif += 1; t = 0.0 }
