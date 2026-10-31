@@ -181,6 +181,9 @@ verifier(st["histoire"].get("mondes_annonces") == ["port"] and "port" in " ".joi
          "annoncé une fois (journal et créature)")
 verifier((T / "port" / "panneau.txt").is_file() and (T / "port" / "annuaire.txt").read_text().startswith("127.0.0.1\tlocalhost"),
          "le port est meublé (panneau, annuaire au format de /etc/hosts…)")
+st, _ = tape("pwd")
+verifier(st["histoire"].get("mondes_annonces") == ["port", "crypte"],
+         "la Crypte, ouverte en même temps, est annoncée au tour suivant (une nouvelle à la fois)")
 
 print("4. La traversée du Port, comme un enfant")
 st, _ = tape("cd ~/terrain_terminagotchi/port")

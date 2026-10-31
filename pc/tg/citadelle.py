@@ -534,7 +534,10 @@ def lancer_fictifs(noms):
         vivants.append({"pid": p.pid, "nom": nom})
     try:
         _fichier_pids().parent.mkdir(parents=True, exist_ok=True)
-        _fichier_pids().write_text(json.dumps([x for x in vivants if _vivant(x["pid"], x["nom"])]), encoding="utf-8")
+        # les tout nouveaux sont gardés sans relire leur nom : juste après le fork, /proc/PID/cmdline peut encore être
+        # celui de Python (avant l'exec de bash), et le processus serait oublié (il resterait 15 min sans être vu)
+        _fichier_pids().write_text(json.dumps([x for x in vivants if x["pid"] in out or _vivant(x["pid"], x["nom"])]),
+                                   encoding="utf-8")
     except OSError:
         pass
     return out

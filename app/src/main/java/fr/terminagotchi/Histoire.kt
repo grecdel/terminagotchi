@@ -644,9 +644,7 @@ object Histoire {
         jeu.ajouterXp(30)
         Quetes.recompenser(jeu, objet = c.objet, titre = c.titre, souvenir = listOf("chap", c.id))
         mettreChap(jeu, null)
-        Port.annonce(jeu)                              // un monde du Carrefour qui vient de s'ouvrir
-        Citadelle.annonce(jeu)
-        Crypte.annonce(jeu)
+        annoncerMonde(jeu)                             // un monde du Carrefour qui vient de s'ouvrir
         when {
             c.id == "reveil" -> mettreChap(jeu, "nid")
             c.id == "nid" -> jeu.dire(dire(jeu, "hist.libre.dit"), 16)
@@ -1057,8 +1055,18 @@ object Histoire {
 
     // ---------------------------------------------------------------- à chaque tour de jeu
     /** Après une commande tapée (ligne), ou de temps en temps (ligne = null) ; cwd : le dossier courant du terminal. */
+    /** Annonce UN monde du Carrefour qui vient de s'ouvrir ; s'il y en a d'autres (le Port et la Crypte s'ouvrent
+     *  ensemble), le suivant attend le tour d'après : une nouvelle à la fois (comme histoire.annoncer_monde sur PC). */
+    fun annoncerMonde(jeu: Jeu): Boolean {
+        val h = h(jeu)
+        if (Port.annonce(jeu) || Citadelle.annonce(jeu) || Crypte.annonce(jeu)) { h.put("annonce_attente", true); return true }
+        h.remove("annonce_attente")
+        return false
+    }
+
     fun tick(jeu: Jeu, ligne: String?, colle: Boolean, cwd: File? = null, code: Int? = null) {
-        h(jeu)
+        val hh = h(jeu)
+        if (hh.optBoolean("annonce_attente")) annoncerMonde(jeu)
         val depart = Maison.ici(jeu)?.let { File(it) } ?: cwd ?: jeu.home
         val tapees = Maison.suivre(jeu, ligne, colle, cwd)
         meubler(jeu)

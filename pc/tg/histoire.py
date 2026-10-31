@@ -768,8 +768,7 @@ def _finir_chapitre(state, c):
     core.add_xp(state, 30)
     quetes.recompenser(state, {"objet": c.get("objet"), "titre": c.get("titre")}, souvenir=("chap", c["id"]))
     h["chap"] = None
-    for _m in MONDES_MODS.values():              # un monde du Carrefour qui vient de s'ouvrir
-        _m.annonce(state)
+    annoncer_monde(state)                         # un monde du Carrefour qui vient de s'ouvrir
     if c["id"] == "reveil":
         h["chap"] = "nid"
     elif c["id"] == "nid":
@@ -1373,8 +1372,22 @@ def colis_hors_ligne(state, lines, cwds):
 
 
 # ---------------------------------------------------------------- à chaque étape de jeu
+def annoncer_monde(state):
+    """Annonce UN monde du Carrefour qui vient de s'ouvrir ; s'il y en a d'autres (le Port et la Crypte s'ouvrent
+    ensemble), le suivant attend le tour d'après : une nouvelle à la fois."""
+    h = h_(state)
+    for _m in MONDES_MODS.values():
+        if _m.annonce(state):
+            h["annonce_attente"] = True
+            return True
+    h.pop("annonce_attente", None)
+    return False
+
+
 def tick(state, lines, cwd=None):
-    h_(state)
+    h = h_(state)
+    if h.get("annonce_attente"):
+        annoncer_monde(state)
     depart = maison.ici(state)
     cwds = maison.suivre(state, lines, cwd)
     # le dossier où chaque ligne a été tapée : celui d'après la ligne d'avant ; pour la dernière, si elle ne change

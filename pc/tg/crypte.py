@@ -33,6 +33,7 @@ import re
 import shutil
 import subprocess
 import sys
+import textwrap
 import time
 import unicodedata
 from pathlib import Path
@@ -940,7 +941,7 @@ def lignes_roue(state, arg):
     except ValueError:
         return [t("cr.roue.aide")]
     essai = cesar(mystere, -n)
-    out = [f" {_c(213)}{BOLD}🎡 " + t("cr.roue.titre") + RESET, ""] + roue_lignes(n) + ["", "  " + essai[:160]]
+    out = [f" {_c(213)}{BOLD}🎡 " + t("cr.roue.titre") + RESET, ""] + roue_lignes(n) + [""] + ["  " + x for x in textwrap.wrap(essai[:160], 76)]
     if n == k:
         noter("roue", f"{n} (ok)")
         out += ["", f"  {_c(78)}✔ " + t("cr.roue.ok", n=n) + RESET]

@@ -185,6 +185,9 @@ fun main(args: Array<String>) {
     Histoire.tick(jeuPo, "ls", false, jeuPo.home, 0)        // le filet : le chapitre 5 fini se termine
     verifierPo(Histoire.fini(jeuPo, "bibliotheque") && Histoire.ouvert(jeuPo, "port"), "nid et bibliothèque finis : le Port s'ouvre")
     verifierPo(lst(h.optJSONArray("mondes_annonces")) == listOf("port") && !Port.annonce(jeuPo), "annoncé une seule fois")
+    Histoire.tick(jeuPo, "pwd", false, jeuPo.home, 0)
+    verifierPo(lst(h.optJSONArray("mondes_annonces")) == listOf("port", "crypte"),
+        "la Crypte, ouverte en même temps, est annoncée au tour suivant (une nouvelle à la fois)")
     verifierPo(File(jeuPo.terrain, "port/annuaire.txt").isFile && File(jeuPo.terrain, "port/panneau.txt").readText().contains("Pixel"),
         "le port est meublé (panneau, annuaire, carnet de bord, quai, téléporteur)")
     verifierPo(Histoire.lignesAiles(jeuPo).any { "Le Port" in it }, "le menu des lieux montre le Port")

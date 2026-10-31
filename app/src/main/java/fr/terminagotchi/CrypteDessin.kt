@@ -30,7 +30,9 @@ object CrypteDessin {
         tl.cercle(cx, cy, r * 0.70f, a(EspaceDessin.VIOLET, 180), 1.6f * z)
         tl.cercle(cx, cy, r * 0.42f, a(EspaceDessin.DOUX, 90), 1f * z)
         val taille = (r * 0.17f).coerceIn(6 * z, 13 * z)
+        val petite = r < 34 * z                  // roue minuscule (vue déployée du téléphone) : seulement le « a » et sa sœur
         for (i in 0 until 26) {
+            if (petite && i != 0) continue
             val ang = -PI / 2 + 2 * PI * i / 26
             tl.texte(Crypte.ALPHA[i].toString(), cx + (r * 0.86f * cos(ang)).toFloat(), cy + (r * 0.86f * sin(ang)).toFloat(), taille,
                 if (i == 0) EspaceDessin.JAUNE else EspaceDessin.TEXTE, i == 0, 'c', true)
@@ -44,16 +46,26 @@ object CrypteDessin {
         // à droite : l'alphabet clair et l'alphabet codé, et l'exemple « bonjour »
         val tx = cx + r + 18 * z
         val tw = x + w - tx - 10 * z
-        if (tw > 80 * z) {
-            val kk = Math.round(tour).toInt()
+        val kk = Math.round(tour).toInt()
+        if (tw > 200 * z) {                      // écran large : les deux alphabets côte à côte, puis l'exemple
             val pas = tw / 26
             val tt = min(12 * z, pas * 1.25f)
+            val bas = h >= 108 * z                 // assez de hauteur pour l'exemple sous les alphabets ?
+            val y1 = if (bas) y + 30 * z else y + h / 2 - 9 * z
             for (i in 0 until 26) {
-                tl.texte(Crypte.ALPHA[i].toString(), tx + pas * (i + 0.5f), y + 30 * z, tt, EspaceDessin.TEXTE, false, 'c', true)
-                tl.texte(Crypte.cesar(Crypte.ALPHA[i].toString(), kk), tx + pas * (i + 0.5f), y + 48 * z, tt, EspaceDessin.VIOLET, true, 'c', true)
+                tl.texte(Crypte.ALPHA[i].toString(), tx + pas * (i + 0.5f), y1, tt, EspaceDessin.TEXTE, false, 'c', true)
+                tl.texte(Crypte.cesar(Crypte.ALPHA[i].toString(), kk), tx + pas * (i + 0.5f), y1 + 18 * z, tt, EspaceDessin.VIOLET, true, 'c', true)
             }
-            tl.texte("bonjour → " + Crypte.cesar("bonjour", kk), tx, y + 76 * z, 13 * z, EspaceDessin.TEXTE, true, 'g', true)
-            tl.texte("(a + $kk) mod 26", tx, y + 96 * z, 11.5f * z, EspaceDessin.DOUX, false, 'g', true)
+            if (bas) {
+                tl.texte("bonjour → " + Crypte.cesar("bonjour", kk), tx, y + 76 * z, 13 * z, EspaceDessin.TEXTE, true, 'g', true)
+                tl.texte("(a + $kk) mod 26", tx, y + 96 * z, 11.5f * z, EspaceDessin.DOUX, false, 'g', true)
+            }
+        } else if (tw > 60 * z) {                // téléphone : l'exemple sur trois lignes, à la taille de la place
+            val tt = min(13 * z, 13 * z * tw / tl.mesure("(a + 25) mod 26", 13 * z, false, true).coerceAtLeast(1f))
+            val y0 = cy - 2.2f * tt
+            tl.texte("bonjour", tx, y0, tt, EspaceDessin.TEXTE, true, 'g', true)
+            tl.texte("→ " + Crypte.cesar("bonjour", kk), tx, y0 + 1.6f * tt, tt, EspaceDessin.VIOLET, true, 'g', true)
+            tl.texte("(a + $kk) mod 26", tx, y0 + 3.4f * tt, tt * 0.9f, EspaceDessin.DOUX, false, 'g', true)
         }
     }
 

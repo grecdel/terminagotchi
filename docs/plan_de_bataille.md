@@ -269,6 +269,36 @@ variantes Démons (`ricanombre:arcane`…) sont retournées au tirage normal le 
 propriétaire (à valider), repli dessiné en attendant. Reste : les illustrations B3/C1/C3/C5/D1/E13/E17-E19, les cinq
 autres catégories de boîtes.
 
+**🗝 La Crypte des Codes — codée (31 octobre).** 14 fiches (`donnees/crypte/outils/fiches_crypte.py`, rejeu bash
+vert), leçons cr0 → cr14 (63 étapes) sur PC (`pc/tg/crypte.py`) et Android (`Crypte.kt`, `CryptePgp.kt`,
+`CrypteDessin.kt`), ouverte après les niveaux 0 à 4 du tronc commun (l'escalier sous la Racine). Cryptographie K1 → K8 :
+encoder n'est pas chiffrer (base64, hexadécimal, 5 messages « secrets » démasqués), César / ROT13 / analyse de
+fréquences (grimoire mystère au décalage propre à chaque partie, `crypte roue`), empreintes SHA-256 (effet avalanche,
+sceaux vérifiés par `sha256sum -c`), mots de passe (base FICTIVE, attaque par dictionnaire lue avant d'être lancée,
+sel `openssl passwd -6`), coffre à une clé (`openssl enc` avec la clé d'EXEMPLE), cadenas ouvert (peintures de
+Diffie-Hellman, `gpg` TOUJOURS `--homedir .trousseau` dans le terrain, clés RSA d'exemple `@crypte.example`, chiffrer
+pour la créature, signer, vérifier), hasard (`/dev/urandom`, `openssl rand`, le dé truqué d'un glitch), demain (quiz
+vrai / faux / on ne sait pas encore : quantique, post-quantique, métadonnées). Blockchain B1 → B6, explication
+technique uniquement : registre modifiable sans trace, chaîne d'empreintes que l'enfant casse puis répare
+(`verifie_chaine.sh`, `crypte chaine`), copies des 9 biomes et biome tricheur (consensus), minage minuscule
+(`mineur.sh`, au plus 3 zéros, s'arrête seul ; table 16^d), transactions signées ajoutées à la chaîne (`crypte
+signe`), vitrine du fonctionnement (monnaie, NFT, contrats, consensus : aucune monnaie, aucun jeton, aucun achat, aucun
+avis) et carnet de bord infalsifiable vérifié par l'enfant (`crypte recensement`). Sur le téléphone, `gpg` et `openssl`
+sont intégrés (sous-ensemble OpenPGP : RSA, signatures v4, clearsign, chiffrement SEIPD/MDC ; `passwd -6`), testés dans
+les deux sens contre les vrais outils. Ponts des Nombres : hexadécimal, modulo, puissances, puissance modulo,
+probabilités (jamais bloquants). Vue déployée : la roue de César qui tourne pour `tr 'a-z' 'd-za-c'` (`tg deploie`,
+écran Espace). Exploits : « chaîne réparée sans indice » (`crypte.chaine`, rencontres favorisées d'une variante rare Ombre ou
+Glace) et « carnet de bord vérifié » au bout de B6 (`crypte.b6`, une rencontre légendaire favorisée) ; variantes
+existantes réservées à la Crypte (visibles après un de ses exploits) : `heaumbre:crypte`, `fractalis:cristal`,
+`givrarde:aurore`, `lichonarque:crypte` (proposée comme « gardienne du registre » — à confirmer) ; 14 langues ; données `donnees/crypte.json`, vecteurs
+communs `donnees/crypte/vecteurs.json` ; tests `pc/outils/test_crypte.py`, `tests/jvm/Crypte.kt`, simulation
+`pc/outils/sim_crypte.py` → `docs/simulations/rapport_crypte.md`, captures `pc/outils/capture_crypte.py`. Prompts
+d'illustrations envoyés au propriétaire (à valider), repli dessiné en attendant. Au passage : le tableau de garde de
+la Citadelle replie ses étiquettes rouges sur téléphone, un processus fictif de la grande vague n'est plus oublié
+juste après son lancement, `time` ou les commandes du jeu ne sont plus pris pour des fautes de frappe, et quand
+plusieurs mondes s'ouvrent ensemble (Port et Crypte), ils sont annoncés un par tour. Reste : les illustrations B12/C2/E10/E11, la décision sur un garde-fou `gpg` dans le shell
+(rapport, CR1).
+
 **▚ Le glitch — codé (31 octobre, décisions du propriétaire).** Un effet de l'INDIVIDU, comme le shiny (drapeau
 `glitch`, indépendant de la variante et du shiny) : l'image se dérègle comme un vieil écran, fabriquée à partir de
 l'image de la créature (aucune illustration). Au repos le style A (liseré rose/cyan des couches décalées, 2 tranches
