@@ -1650,6 +1650,7 @@
  "carte.piece.recoins": "الزوايا",
  "carte.piece.sauvage": "أماكن النظام",
  "carte.piece.jardin": "الحديقة",
+ "carte.piece.jeu": "غرفة الألعاب",
  "carte.legende": "◉ أنت هنا · ▶ جارٍ · ✓ مستيقظ · ★ مهمة · 🐾 وحوش · ░ لم يُزر بعد",
  "carte.ici": "أنت هنا: {lieu}",
  "carte.absolu": "الدرب الذي يبدأ بـ / ينطلق من الجذر (مطلق)؛ وإلا فهو ينطلق من مكانك (نسبي).",

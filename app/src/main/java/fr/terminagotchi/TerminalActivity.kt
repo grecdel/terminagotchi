@@ -446,6 +446,12 @@ class TerminalActivity : Activity() {
             val nb = introVue?.nbEcrans() ?: 4
             if (ecranIntro in 1 until nb && nomPropose == null) { actionIntro("suivant"); return }
             val p = nomPropose
+            if (p != null && MenuParties.non(ligne)) {          // v3 (I14) : « non » → on redemande le nom
+                nomPropose = null
+                ecrire("> $ligne", 0xFF5FD787.toInt())
+                ecrire(t("intro.nom.tel"), Commandes.ROSE)
+                return
+            }
             if (p == null || !MenuParties.oui(ligne)) {
                 nomPropose = Intro.nomPropre(ligne).ifEmpty { null }
                 ecrire("> $ligne", 0xFF5FD787.toInt())

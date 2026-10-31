@@ -142,7 +142,8 @@ def first_word(line):
     words = line.split()
     if not words:
         return None
-    w = words[0].lower()
+    # v3 (I12) : `pwd; ls`, `ls|wc` : le premier mot s'arrête au séparateur du shell collé (pas « pwd; »)
+    w = (re.split(r"[;&|<>]", words[0])[0] or words[0]).lower()
     if w.startswith(("./", ".\\")):
         return w
     return os.path.basename(w).removesuffix(".exe") if w != "curl.exe" else "curl.exe"
@@ -416,10 +417,24 @@ def feed(state, line, statut=None):
         terminal(state, t("core.colle.doigts"))     # P2-8 : dans le terminal, ce qu'il faut faire (taper au clavier)
         animer(state, "colere")
         return
+    if not line.split():
+        return
+    tete = re.split(r"[;&|<>]", line.split()[0])[0] or line.split()[0]
+    if "/" in tete and not tete.startswith(("/", ".", "~")) and not commande_existe(tete):
+        # v3 (I12) : `cd/home/lea/…/vestibule`, `ls/etc` : l'espace oubliée (et pas « vestibule n'est pas une commande »)
+        from . import verif
+        proche = verif.collee(tete)
+        if proche:
+            msg = t("core.inconnue.proche", cmd=tete, proche=proche)
+            say(state, msg, 8)
+            terminal(state, msg)
+            log(state, t("core.inconnue.log", cmd=tete))
+            animer(state, "confus")
+            return
     cmd = first_word(line)
     if not cmd or cmd in ("exit", "logout"):       # I5 : quitter le terminal n'est pas un repas
         return
-    brut = os.path.basename(line.split()[0])
+    brut = os.path.basename(tete)
     if not IS_WIN and brut != brut.lower() and commande_existe(cmd) and not commande_existe(brut):
         msg = t("core.inconnue.casse", cmd=brut, proche=cmd)        # PWD, Ls : les commandes s'écrivent en minuscules
         say(state, msg, 8)

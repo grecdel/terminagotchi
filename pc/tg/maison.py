@@ -136,7 +136,10 @@ def m_(state):
 
 
 def nom_piece(p):
-    return t("carte.piece." + p)
+    """Le nom d'un lieu ; v3 (I13) : un lieu sans nom traduit (repaire d'un habitat : mecanique, abyssal…) garde son nom
+    de dossier, jamais la clé brute « carte.piece.mecanique »."""
+    from .langue import brut
+    return t("carte.piece." + p) if brut("carte.piece." + p) is not None else p.replace("_", " ")
 
 
 def rel(chemin):

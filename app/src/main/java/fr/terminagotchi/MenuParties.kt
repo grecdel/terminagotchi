@@ -58,6 +58,12 @@ class MenuParties(
             return r.isNotEmpty() && Langue.LANGUES.keys.any { code -> Langue.valeurs("part.oui", code).any { norm(it) == r } }
         }
 
+        /** « non » dans n'importe laquelle des 14 langues (v3, I14 : « non » n'est pas un nom d'œuf). */
+        fun non(reponse: String): Boolean {
+            val r = norm(reponse)
+            return r.isNotEmpty() && Langue.LANGUES.keys.any { code -> Langue.valeurs("part.non", code).any { norm(it) == r } }
+        }
+
         /** L'action du menu que désigne une réponse (chiffre ou mot) : continuer, nouvelle, charger, compte, ou null. */
         fun action(reponse: String): String? {
             val r = norm(reponse)

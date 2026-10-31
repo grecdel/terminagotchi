@@ -1650,6 +1650,7 @@
  "carte.piece.recoins": "Recoins",
  "carte.piece.sauvage": "Lieux du système",
  "carte.piece.jardin": "Jardin",
+ "carte.piece.jeu": "Salle de jeu",
  "carte.legende": "◉ tu es ici · ▶ en cours · ✓ réveillé · ★ quête · 🐾 monstres · ░ pas encore visité",
  "carte.ici": "Tu es ici : {lieu}",
  "carte.absolu": "Un chemin qui commence par / part de la Racine (absolu) ; sinon, il part de là où tu es (relatif).",

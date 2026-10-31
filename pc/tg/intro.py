@@ -637,8 +637,11 @@ def bloc_prompt(state, quand, cols=None, rangs=None):
         out.append("  " + ligne_reception(state, m["pct"], cols - 4))
     if ph != "ne":
         out += ["  " + x for x in liste_courte(state, cols - 4)]
-    if ph == "dort":
+    if ph not in ("ne", "eclot", "fondu"):
+        # v3 (I11) : l'astuce du moment reste sous la liste pendant tout l'œuf (« pas grave », Ctrl+C, ↑, Tab),
+        # pas seulement avant la première commande
         out += [f"  {fg(214)}{x}{RESET}" for x in envelopper("💡 " + astuce(state), larg)]
+    if ph == "dort":
         out += [f"  {DIM}{x}{RESET}" for x in envelopper(t("intro.ou.pc"), larg)]
     return [""] + dessin_scene(state, quand, cols, rangs, len(out) + 4) + out
 
@@ -750,7 +753,18 @@ def jouer_ecrans(demander, effacer=None):
         r = demander(f"   {DIM}" + t("intro.touches.pc2") + f"{RESET} ").strip()
         if r.lower() in MOTS_PASSER:
             break
+        # v3 (I15) : le dernier écran dit « Donne-lui d'abord un nom ! » : un mot tapé là est le nom proposé
+        if k == n and nom_propre(r):
+            return demander_nom(demander, propose=nom_propre(r))
     return demander_nom(demander)
+
+
+def non(reponse):
+    """Vrai si la réponse est « non » dans l'une des 14 langues (part.non)."""
+    from . import langue
+    from .accueil import _norm
+    r = _norm(reponse)
+    return bool(r) and any(r in {_norm(x) for x in (langue._charger(c).get("part.non") or [])} for c in langue.LANGUES)
 
 
 def nom_propre(nom):
@@ -759,15 +773,15 @@ def nom_propre(nom):
     return "".join(c for c in (nom or "") if unicodedata.category(c) not in ("Cc", "Cf")).strip()[:16]
 
 
-def demander_nom(demander):
+def demander_nom(demander, propose=""):
     """« Comment veux-tu appeler ton œuf ? » puis « Ton œuf s'appellera « X ». C'est bien ça ? » (Entrée = oui, un
-    autre mot = ce nom-là à la place)."""
-    nom = ""
-    while not nom:
-        nom = nom_propre(demander(f"   {fg(226)}🥚 " + t("intro.nom.question") + f"{RESET} "))
+    autre mot = ce nom-là à la place, « non » = la question du nom revient)."""
+    from .accueil import oui
+    nom = propose
     while True:
+        while not nom:
+            nom = nom_propre(demander(f"   {fg(226)}🥚 " + t("intro.nom.question") + f"{RESET} "))
         r = nom_propre(demander(f"   {fg(213)}" + t("intro.nom.confirme", nom=nom) + f"{RESET} "))
-        from .accueil import oui
         if not r or oui(r):
             return nom
-        nom = r
+        nom = "" if non(r) else r          # v3 (I14) : « non » n'est pas un nom d'œuf, on redemande

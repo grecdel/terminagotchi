@@ -91,7 +91,9 @@ object Maison {
 
     private fun liste(o: JSONObject, k: String) = Quetes.liste(o, k)
 
-    fun nomPiece(p: String) = t("carte.piece.$p")
+    /** Le nom d'un lieu ; v3 (I13) : un lieu sans nom traduit (repaire d'un habitat : mecanique, abyssal…) garde son nom
+     *  de dossier, jamais la clé brute « carte.piece.mecanique ». */
+    fun nomPiece(p: String) = Langue.ou("carte.piece.$p", p.replace('_', ' '))
 
     private fun normal(chemin: String): String = try {
         java.nio.file.Paths.get(chemin).normalize().toString()

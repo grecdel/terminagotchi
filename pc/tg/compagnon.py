@@ -41,10 +41,17 @@ def ligne(state):
     faim_c = 78 if state["hunger"] >= 60 else 221 if state["hunger"] >= 30 else 203
     tete = f"{fg(coul)}{visage(state)}{RESET} {BOLD}{state['name']}{RESET} {DIM}{t('dress.niv', n=lvl)} {pct}%{RESET} {fg(faim_c)}{faim}{RESET}"
 
+    try:                                           # I3 : le monstre en cours de dressage, sur sa propre ligne
+        from . import dressage
+        monstre = dressage.ligne_terminal(state)
+    except Exception:                              # noqa: BLE001 (le compagnon ne doit jamais planter)
+        monstre = None
+    monstre = f"\n   {fg(214)}{monstre}{RESET}" if monstre else ""
     nouveaux = state.get("nlog", 0) - state.get("prompt_vu", 0)
     if nouveaux > 0:
         msgs = [m[6:] for m in state["log"][-min(nouveaux, 2):]]
-        return f"{tete}  {' · '.join(msgs)}"
+        # v3 (I16) : presque chaque commande laisse un message (« a mangé… ») : l'épreuve du monstre reste dessous
+        return f"{tete}  {' · '.join(msgs)}" + monstre
     if state["defi"]:
         return f"{tete}  {fg(226)}" + t("comp.defi", cmd=piege(state["defi"]["cmd"])) + RESET
     from . import intro
@@ -56,12 +63,6 @@ def ligne(state):
     r = envies.rappel_recent(state)
     if r:                                          # l'envie du moment (au plus une fois toutes les 12 commandes)
         return f"{tete}  {fg(214)}💭 {r}{RESET}"
-    try:                                           # I3 : le monstre en cours de dressage, sur sa propre ligne
-        from . import dressage
-        monstre = dressage.ligne_terminal(state)
-    except Exception:                              # noqa: BLE001 (le compagnon ne doit jamais planter)
-        monstre = None
-    monstre = f"\n   {fg(214)}{monstre}{RESET}" if monstre else ""
     les, _ = lecons.lecon_courante(state)
     if les and lvl >= les["niveau"]:
         return f"{tete}  {DIM}" + t("comp.lecon2", cmd=commande_montree(state, les["steps"][state["step"]])) + RESET + monstre

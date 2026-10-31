@@ -24,6 +24,8 @@ object Arbre {
 
     /** le lieu de la liste de courses (chapitre 5, la bibliothèque) et son fichier */
     const val BIBLIO = "bibliotheque"
+    /** le dossier du Doom-like (carte.txt, reglages.txt) dans la zone d'aventure */
+    const val JEU = "jeu"
     const val COURSES = "$BIBLIO/courses.txt"
 
     /** ~/.tgrc (avec le point : le fichier que le shell charge) contient la fonction miam */
@@ -170,12 +172,14 @@ object Arbre {
                         re = r("^cd\\s+.*jeu\\s*$")),
                     Etape("arbre.createur0.2.dit", "cat carte.txt",
                         "arbre.createur0.2.bravo",
-                        re = r("^cat\\b.*carte")),
+                        re = r("^cat\\b.*carte"), ou = JEU),
                 )),
                 Lecon("arbre.createur1.titre", "Architecte", 1, listOf(
+                    // v3 (C5) : le lieu « jeu » : tapée ailleurs (un dressage emmène dans un repaire), `edite carte.txt`
+                    // ouvrirait un fichier vide et l'étape ne passerait jamais
                     Etape("arbre.createur1.0.dit", "edite carte.txt",
                         "arbre.createur1.0.bravo",
-                        fs = { Doom.carteModifiee(dossierJeu) }),
+                        fs = { Doom.carteModifiee(dossierJeu) }, ou = JEU),
                     Etape("arbre.createur1.1.dit", "doom",
                         "arbre.createur1.1.bravo",
                         re = r("^doom\\b")),
@@ -183,7 +187,7 @@ object Arbre {
                 Lecon("arbre.createur2.titre", "Ingénieur", 1, listOf(
                     Etape("arbre.createur2.0.dit", "edite reglages.txt",
                         "arbre.createur2.0.bravo",
-                        fs = { Doom.reglagesModifies(dossierJeu) }),
+                        fs = { Doom.reglagesModifies(dossierJeu) }, ou = JEU),
                     Etape("arbre.createur2.1.dit", "doom",
                         "arbre.createur2.1.bravo",
                         re = r("^doom\\b")),

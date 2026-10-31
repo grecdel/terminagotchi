@@ -1706,6 +1706,7 @@
  "carte.piece.recoins": "Nooks",
  "carte.piece.sauvage": "System places",
  "carte.piece.jardin": "Garden",
+ "carte.piece.jeu": "Game room",
  "carte.legende": "◉ you are here · ▶ in progress · ✓ awake · ★ quest · 🐾 monsters · ░ not visited yet",
  "carte.ici": "You are here: {lieu}",
  "carte.absolu": "A path that starts with / leaves from the Root (absolute); otherwise it leaves from where you are (relative).",

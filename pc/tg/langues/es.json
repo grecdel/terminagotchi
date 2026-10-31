@@ -1701,6 +1701,7 @@
  "carte.piece.recoins": "Rincones",
  "carte.piece.sauvage": "Lugares del sistema",
  "carte.piece.jardin": "Jardín",
+ "carte.piece.jeu": "Sala de juegos",
  "carte.legende": "◉ estás aquí · ▶ en curso · ✓ despierto · ★ misión · 🐾 monstruos · ░ aún sin visitar",
  "carte.ici": "Estás aquí: {lieu}",
  "carte.absolu": "Un camino que empieza por / sale de la Raíz (absoluto); si no, sale de donde estás (relativo).",

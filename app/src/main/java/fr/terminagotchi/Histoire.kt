@@ -854,8 +854,10 @@ object Histoire {
         if (e.ou != null && e.ou.startsWith("/") && e.re != null) {
             for ((l, cwd) in tapees) if (e.re.containsMatchIn(l) && !ouOk(jeu, e, cwd)) return t("hist.indice.racine", "cmd" to "cd /")
         }
-        if (e.ou != null && !e.ou.startsWith("/") && e.re != null) {
-            for ((l, cwd) in tapees) if (e.re.containsMatchIn(l) && !Maison.dans(jeu, cwd, e.ou)) {
+        // v3 (C5) : une étape « fichier » (edite carte.txt) tapée hors de son lieu : le même indice « pas au bon endroit »
+        if (e.ou != null && !e.ou.startsWith("/")) {
+            for ((l, cwd) in tapees) if ((e.re?.containsMatchIn(l) ?: (Verif.premier(l).lowercase() == Verif.premier(e.cmd).lowercase()))
+                && !Maison.dans(jeu, cwd, e.ou)) {
                 return t("hist.indice.piece", "piece" to Maison.nomPiece(if (e.ou.isNotEmpty()) e.ou else "grande_salle"),
                     "cmd" to "cd ~/${jeu.terrain.name}/${e.ou}".trimEnd('/'))
             }

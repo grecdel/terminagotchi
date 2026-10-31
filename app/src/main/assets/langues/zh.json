@@ -1651,6 +1651,7 @@
  "carte.piece.recoins": "角落",
  "carte.piece.sauvage": "系统的地方",
  "carte.piece.jardin": "花园",
+ "carte.piece.jeu": "游戏室",
  "carte.legende": "◉ 你在这里 · ▶ 进行中 · ✓ 已唤醒 · ★ 任务 · 🐾 怪兽 · ░ 还没去过",
  "carte.ici": "你在这里：{lieu}",
  "carte.absolu": "以 / 开头的路从树根出发（绝对）；否则就从你所在的地方出发（相对）。",
