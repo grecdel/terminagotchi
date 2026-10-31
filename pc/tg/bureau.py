@@ -29,7 +29,7 @@ from pathlib import Path
 
 from . import bureau_scene as S
 from . import bureau_vie as V
-from . import core, langue, poses, signaux
+from . import core, glitch, langue, poses, signaux
 from .langue import sans_marques, t
 from .plateforme import IS_WIN, OSK
 
@@ -128,7 +128,7 @@ class Controleur:
         ind = None
         if choix:
             ind = next((c for c in st.get("captures", []) if c.get("id") == choix), None)
-        cle = (ind.get("id"), ind.get("stade"), ind.get("shiny")) if ind else \
+        cle = (ind.get("id"), ind.get("stade"), ind.get("shiny"), ind.get("glitch")) if ind else \
             (st.get("espece_compagnon"), core.stage(core.level(st["xp"])), st.get("shiny"))
         if cle == self.cle_album and self.album:
             return
@@ -140,7 +140,8 @@ class Controleur:
                 e = B.espece(ind.get("espece", ""))
                 if e:
                     stade = ind.get("stade", "bebe")
-                    a = poses.album_espece(e["id"], "ancien" if stade == "finale" else stade, ind.get("shiny"))
+                    a = poses.album_espece(e["id"], "ancien" if stade == "finale" else stade, ind.get("shiny"),
+                                           glitch.de(ind))
             a = a or poses.album(st)
         except Exception as e:                      # noqa: BLE001
             noter(f"album : {e!r}")
@@ -156,7 +157,8 @@ class Controleur:
                 e = B.espece(ind.get("espece", ""))
                 if e:
                     al = poses.album_espece(e["id"], "bebe" if ind.get("stade", "bebe") == "bebe" else
-                                            ("ancien" if ind.get("stade") == "finale" else ind.get("stade")), ind.get("shiny"))
+                                            ("ancien" if ind.get("stade") == "finale" else ind.get("stade")), ind.get("shiny"),
+                                            glitch.de(ind))
                     if al:
                         self.equipe.append((al, S.BLEU))
         except Exception as e:                      # noqa: BLE001

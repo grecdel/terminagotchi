@@ -52,6 +52,12 @@ Tous les calculs sont en entiers. Vecteurs de test communs : donnees/anti_triche
                     note = min(1000, (N + 7000) // 14000)
       rareté      : le dernier palier dont le seuil (× 10, arrondi) ≤ note ; Abyssor : « mythique »
 
+  13. glitch      : un tirage À PART, qui ne change rien aux 12 premiers (sauvegardes et dressages déjà enregistrés
+                    gardent leur tirage) : r = Hasard(valeur, compteur + 2^20).entier(4096) ;
+                    glitch = (r == 0) — 1 chance sur 4096 —, ou (r < 512) — 1 chance sur 8 — si l'individu est le
+                    GARDIEN d'une boîte de la Citadelle maîtrisée (champ « gardien » : la boîte ; recompenses.py).
+                    Le serveur refait ce tirage ; il accepte « gardien » si l'espèce est bien le gardien de cette boîte.
+
   L'attirance ne change QUE le tirage 1 (chaque tirage consomme toujours un seul nombre) : shiny,
   qualité, stats… restent ceux du compteur. Le serveur refait le tirage avec la famille déclarée et
   vérifie qu'elle est plausible : une vraie famille, dont la commande fait partie des commandes que
@@ -66,6 +72,9 @@ VERSION = 1
 MAX_APPARITIONS = 200          # apparitions au plus par graine (par jour et par appareil)
 POIDS_STADES = [35, 35, 20, 10]
 ATTIRANCE = 4                  # la famille attirée pèse 4 fois plus lourd (≈ 10 % → ≈ 30 % des apparitions)
+CHANCE_GLITCH = 4096           # glitch : 1 chance sur 4096 (le shiny : 1 sur 100 ; les deux : 1 sur 409 600)
+CHANCE_GLITCH_GARDIEN = 8      # le gardien d'une boîte maîtrisée de la Citadelle : 1 chance sur 8
+COMPTEUR_GLITCH = 1 << 20      # le glitch se tire à part : compteur + 2^20 (jamais utilisé par une apparition)
 
 
 def poids_especes(pub, attire=None):
@@ -162,6 +171,26 @@ def tirer(valeur, compteur, abyssor_permis=False, attire=None):
     if shiny:
         champs["teinte"] = teinte / 1000
     return e, champs
+
+
+def glitch(valeur, compteur, gardien=False):
+    """13. L'individu (graine, compteur) est-il glitch ? gardien : c'est le gardien d'une boîte maîtrisée."""
+    r = Hasard(valeur, COMPTEUR_GLITCH + compteur).entier(CHANCE_GLITCH)
+    return r < CHANCE_GLITCH // CHANCE_GLITCH_GARDIEN if gardien else r == 0
+
+
+def glitch_au_hasard(gardien=False, rnd=None):
+    """Sans graine (tirage local, non vérifié) : mêmes chances."""
+    import random
+    r = (rnd or random).randrange(CHANCE_GLITCH)
+    return r < CHANCE_GLITCH // CHANCE_GLITCH_GARDIEN if gardien else r == 0
+
+
+def valeur_de(state, ind):
+    """La valeur (hexadécimal) de la graine d'un individu tiré d'une graine encore en cache, ou None."""
+    gid = ind.get("graine")
+    v = ((state.get("compte") or {}).get("graines") or {}).get(gid) if gid else None
+    return v if isinstance(v, str) and len(v) >= 16 and isinstance(ind.get("n"), int) else None
 
 
 # ---------------------------------------------------------------- les graines en cache (state["compte"])

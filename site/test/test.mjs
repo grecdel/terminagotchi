@@ -3,6 +3,7 @@
 import { DatabaseSync } from "node:sqlite";
 import { readFileSync } from "node:fs";
 import worker from "../src/worker.js";
+import { glitchDe, GARDIENS } from "../src/tirage.js";
 
 function faireD1() {
   const db = new DatabaseSync(":memory:");
@@ -313,6 +314,32 @@ console.log("Anti-triche : graines et captures vérifiées");
   verifier(r.j.capturesVerifiees === 5, "profil : 5 captures vérifiées comptées à part");
   r = await appel("GET", "/captures");
   verifier(r.t.includes("✔ vérifiée") && r.t.includes("non vérifiée") && r.t.includes("/portraits/"), "galerie : vérifiées (✔) et non vérifiées affichées");
+  // le glitch (tirage 13, à part) : le serveur le refait ; « gardien » n'est accepté que pour l'espèce gardienne d'une boîte codée
+  const libres = [];
+  for (let n = 20; n < 200; n++) libres.push(n);
+  const nFauxG = libres.find((n) => !glitchDe(g.valeur, n));
+  const fauxGlitch = { ...capt2("dddddd0020", nFauxG), glitch: true };
+  const nG = libres.find((n) => n !== nFauxG && tirer(g.valeur, n).champs.espece !== "Ricanombre");
+  const fauxGardien = { ...capt2("dddddd0021", nG), gardien: "enumeration" };
+  const nR = libres.find((n) => tirer(g.valeur, n).champs.espece === GARDIENS.enumeration && n !== nFauxG && n !== nG);
+  const vraiGardien = nR !== undefined ? { ...capt2("dddddd0022", nR), gardien: "enumeration", ...(glitchDe(g.valeur, nR, true) && { glitch: true }) } : null;
+  const nV = libres.find((n) => ![nFauxG, nG, nR].includes(n) && glitchDe(g.valeur, n));
+  const vraiGlitch = nV !== undefined ? { ...capt2("dddddd0023", nV), glitch: true } : null;
+  const brut = { ...capt2("dddddd0024", 0), id: "dddddd0024", graine: undefined, n: undefined, glitch: true };
+  r = await appel("POST", "/api/sync", { cle: cleTel, corps: { appareil: "android", collection: { [brut.espece]: 1 }, captures: [fauxGlitch, fauxGardien, brut,
+    ...(vraiGardien ? [vraiGardien] : []), ...(vraiGlitch ? [vraiGlitch] : [])] } });
+  const parG = Object.fromEntries(r.j.etat.captures.map((c) => [c.id, c]));
+  verifier(parG.dddddd0020?.verifie === false && parG.dddddd0020.raison === "ne correspond pas au tirage", "faux glitch : non vérifié");
+  verifier(parG.dddddd0021?.verifie === false && parG.dddddd0021.raison === "gardien impossible", "« gardien » d'une autre espèce : non vérifié");
+  if (vraiGardien) verifier(parG.dddddd0022?.verifie === true && parG.dddddd0022.gardien === "enumeration" && (parG.dddddd0022.glitch === true) === (vraiGardien.glitch === true),
+    `le gardien Ricanombre (#${nR}) : vérifié, glitch ${vraiGardien.glitch === true} comme le serveur le refait`);
+  if (vraiGlitch) verifier(parG.dddddd0023?.verifie === true && parG.dddddd0023.glitch === true, `un vrai glitch (#${nV}) : vérifié`);
+  verifier(parG.dddddd0024?.verifie === false && parG.dddddd0024.glitch === true, "sans graine : gardé glitch, non vérifié");
+  r = await appel("GET", "/captures");
+  verifier(r.t.includes('data-glitch="dddddd0024"') && r.t.includes("<script>(()=>{") && r.t.includes("glitchnom") && r.t.includes(" ▚"),
+    "galerie : la bestiole glitch est redessinée par le script de l'effet, son nom porte ▚");
+  r = await appel("GET", "/joueur/Grec");
+  verifier(r.t.includes("data-glitch=") && r.t.includes("glitchnom"), "profil : l'espèce dont le joueur a un glitch est montrée glitch");
   const sansSecret = { DB: env.DB };
   const rs = await worker.fetch(new Request(ORIGINE + "/api/sync", { method: "POST", headers: { authorization: "Bearer " + cleTel },
     body: JSON.stringify({ appareil: "android", captures: [capt2("dddddd0009", 7)] }) }), sansSecret);
@@ -439,7 +466,7 @@ for (const l of LANGUES) {
   for (const p of pages) {
     r = await appel("GET", p + (p.includes("?") ? "&" : "?") + "lang=" + l);
     const bon = r.t.startsWith("<!doctype html>") && langDe(r.t) === `${l}/${["ar", "ur"].includes(l) ? "rtl" : "ltr"}`
-      && !/undefined|\[object |NaN|function \(|=>/.test(r.t.replace(/<style>[\s\S]*?<\/style>/, ""));
+      && !/undefined|\[object |NaN|function \(|=>/.test(r.t.replace(/<style>[\s\S]*?<\/style>/, "").replace(/<script>[\s\S]*?<\/script>/g, ""));
     if (bon) rendues++; else rates.push(l + p);
   }
 }

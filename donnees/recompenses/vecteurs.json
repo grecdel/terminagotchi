@@ -5,6 +5,8 @@
   "essais_variante": 4,
   "bonus_legendaire": 1,
   "essais_legendaire": 8,
+  "bonus_gardien": 5,
+  "essais_gardien": 16,
   "serie_parfaite": 5
  },
  "cas": [
@@ -1099,11 +1101,12 @@
   {
    "monde": "citadelle",
    "exploit": "citadelle.boite",
-   "genre": "variante",
+   "genre": "gardien",
    "types": [
     "ombre",
     "poison"
    ],
+   "cible": "ricanombre",
    "valeur": "0000000000000000000000000000000000000000000000000000000000000000",
    "n0": 0,
    "attendu": {
@@ -1133,11 +1136,12 @@
   {
    "monde": "citadelle",
    "exploit": "citadelle.boite",
-   "genre": "variante",
+   "genre": "gardien",
    "types": [
     "ombre",
     "poison"
    ],
+   "cible": "ricanombre",
    "valeur": "0000000000000000000000000000000000000000000000000000000000000000",
    "n0": 17,
    "attendu": {
@@ -1167,45 +1171,47 @@
   {
    "monde": "citadelle",
    "exploit": "citadelle.boite",
-   "genre": "variante",
+   "genre": "gardien",
    "types": [
     "ombre",
     "poison"
    ],
+   "cible": "ricanombre",
    "valeur": "0000000000000000000000000000000000000000000000000000000000000000",
    "n0": 60,
    "attendu": {
-    "n": 63,
+    "n": 60,
     "champs": {
-     "espece": "Mammouroc",
-     "variante": "ossuaire",
+     "espece": "Libellance",
+     "variante": "classique",
      "shiny": false,
-     "marque": "un œil qui clignote en binaire",
-     "humeur": "taquine",
-     "taille": 586.2,
-     "qualite": 0.201,
-     "potentiel": 25,
+     "marque": "des yeux de deux couleurs",
+     "humeur": "fougueuse",
+     "taille": 268.6,
+     "qualite": 0.989,
+     "potentiel": 97,
      "stats": {
-      "PV": 59,
-      "ATK": 62,
-      "DEF": 48,
-      "VIT": 54,
-      "INT": 32
+      "PV": 49,
+      "ATK": 53,
+      "DEF": 47,
+      "VIT": 84,
+      "INT": 60
      },
-     "note": 43.3,
-     "rarete": "commune",
-     "stade": "adulte"
+     "note": 71.1,
+     "rarete": "rare",
+     "stade": "ado"
     }
    }
   },
   {
    "monde": "citadelle",
    "exploit": "citadelle.boite",
-   "genre": "variante",
+   "genre": "gardien",
    "types": [
     "ombre",
     "poison"
    ],
+   "cible": "ricanombre",
    "valeur": "0000000000000000000000000000000000000000000000000000000000000000",
    "n0": 123,
    "attendu": {
@@ -1235,11 +1241,12 @@
   {
    "monde": "citadelle",
    "exploit": "citadelle.boite",
-   "genre": "variante",
+   "genre": "gardien",
    "types": [
     "ombre",
     "poison"
    ],
+   "cible": "ricanombre",
    "valeur": "ffffffffffffffff000000000000000000000000000000000000000000000000",
    "n0": 0,
    "attendu": {
@@ -1269,32 +1276,33 @@
   {
    "monde": "citadelle",
    "exploit": "citadelle.boite",
-   "genre": "variante",
+   "genre": "gardien",
    "types": [
     "ombre",
     "poison"
    ],
+   "cible": "ricanombre",
    "valeur": "ffffffffffffffff000000000000000000000000000000000000000000000000",
    "n0": 17,
    "attendu": {
-    "n": 20,
+    "n": 17,
     "champs": {
-     "espece": "Tentaclou",
-     "variante": "classique",
+     "espece": "Momiaou",
+     "variante": "desert",
      "shiny": false,
-     "marque": "des rayures comme un code-barres",
-     "humeur": "taquine",
-     "taille": 25.5,
-     "qualite": 0.459,
-     "potentiel": 46,
+     "marque": "un ronronnement à 440 Hz",
+     "humeur": "têtue",
+     "taille": 101.2,
+     "qualite": 0.398,
+     "potentiel": 43,
      "stats": {
       "PV": 42,
-      "ATK": 29,
+      "ATK": 47,
       "DEF": 41,
-      "VIT": 21,
-      "INT": 39
+      "VIT": 47,
+      "INT": 27
      },
-     "note": 29.7,
+     "note": 42.8,
      "rarete": "commune",
      "stade": "enfant"
     }
@@ -1303,11 +1311,12 @@
   {
    "monde": "citadelle",
    "exploit": "citadelle.boite",
-   "genre": "variante",
+   "genre": "gardien",
    "types": [
     "ombre",
     "poison"
    ],
+   "cible": "ricanombre",
    "valeur": "ffffffffffffffff000000000000000000000000000000000000000000000000",
    "n0": 60,
    "attendu": {
@@ -1337,11 +1346,12 @@
   {
    "monde": "citadelle",
    "exploit": "citadelle.boite",
-   "genre": "variante",
+   "genre": "gardien",
    "types": [
     "ombre",
     "poison"
    ],
+   "cible": "ricanombre",
    "valeur": "ffffffffffffffff000000000000000000000000000000000000000000000000",
    "n0": 123,
    "attendu": {
@@ -1371,45 +1381,47 @@
   {
    "monde": "citadelle",
    "exploit": "citadelle.boite",
-   "genre": "variante",
+   "genre": "gardien",
    "types": [
     "ombre",
     "poison"
    ],
+   "cible": "ricanombre",
    "valeur": "9e3779b97f4a7c15f39cc0605cedc8341082276bf3a27251f86c6a11d0c18e95",
    "n0": 0,
    "attendu": {
-    "n": 2,
+    "n": 0,
     "champs": {
-     "espece": "Papillombre",
+     "espece": "Clopinou",
      "variante": "classique",
      "shiny": false,
-     "marque": "des oreilles légèrement pixelisées",
-     "humeur": "timide",
-     "taille": 75.4,
-     "qualite": 0.905,
-     "potentiel": 85,
+     "marque": "une crête en forme d'accolade {",
+     "humeur": "taquine",
+     "taille": 31.1,
+     "qualite": 0.882,
+     "potentiel": 87,
      "stats": {
-      "PV": 32,
-      "ATK": 45,
-      "DEF": 34,
-      "VIT": 57,
-      "INT": 42
+      "PV": 42,
+      "ATK": 44,
+      "DEF": 56,
+      "VIT": 48,
+      "INT": 31
      },
-     "note": 57.5,
+     "note": 57.2,
      "rarete": "peu commune",
-     "stade": "enfant"
+     "stade": "ado"
     }
    }
   },
   {
    "monde": "citadelle",
    "exploit": "citadelle.boite",
-   "genre": "variante",
+   "genre": "gardien",
    "types": [
     "ombre",
     "poison"
    ],
+   "cible": "ricanombre",
    "valeur": "9e3779b97f4a7c15f39cc0605cedc8341082276bf3a27251f86c6a11d0c18e95",
    "n0": 17,
    "attendu": {
@@ -1439,45 +1451,47 @@
   {
    "monde": "citadelle",
    "exploit": "citadelle.boite",
-   "genre": "variante",
+   "genre": "gardien",
    "types": [
     "ombre",
     "poison"
    ],
+   "cible": "ricanombre",
    "valeur": "9e3779b97f4a7c15f39cc0605cedc8341082276bf3a27251f86c6a11d0c18e95",
    "n0": 60,
    "attendu": {
-    "n": 60,
+    "n": 66,
     "champs": {
-     "espece": "Cendrouille",
-     "variante": "cendres",
+     "espece": "Ricanombre",
+     "variante": "classique",
      "shiny": false,
-     "marque": "une tache en forme de @ sur le dos",
-     "humeur": "têtue",
-     "taille": 84.6,
-     "qualite": 0.415,
-     "potentiel": 42,
+     "marque": "une ombre qui a un pixel de retard",
+     "humeur": "courageuse",
+     "taille": 28.7,
+     "qualite": 0.086,
+     "potentiel": 12,
      "stats": {
-      "PV": 45,
-      "ATK": 28,
-      "DEF": 41,
-      "VIT": 26,
-      "INT": 35
+      "PV": 31,
+      "ATK": 19,
+      "DEF": 23,
+      "VIT": 34,
+      "INT": 54
      },
-     "note": 40.6,
+     "note": 9.4,
      "rarete": "commune",
-     "stade": "ado"
+     "stade": "enfant"
     }
    }
   },
   {
    "monde": "citadelle",
    "exploit": "citadelle.boite",
-   "genre": "variante",
+   "genre": "gardien",
    "types": [
     "ombre",
     "poison"
    ],
+   "cible": "ricanombre",
    "valeur": "9e3779b97f4a7c15f39cc0605cedc8341082276bf3a27251f86c6a11d0c18e95",
    "n0": 123,
    "attendu": {
@@ -1507,32 +1521,33 @@
   {
    "monde": "citadelle",
    "exploit": "citadelle.boite",
-   "genre": "variante",
+   "genre": "gardien",
    "types": [
     "ombre",
     "poison"
    ],
+   "cible": "ricanombre",
    "valeur": "8000000000000001fac71cefac71cefac71cefac71cefac71cefac71ce00",
    "n0": 0,
    "attendu": {
-    "n": 1,
+    "n": 2,
     "champs": {
-     "espece": "Heaumbre",
+     "espece": "Ricanombre",
      "variante": "classique",
      "shiny": false,
      "marque": "des rayures comme un code-barres",
-     "humeur": "bavarde",
-     "taille": 200.4,
-     "qualite": 0.595,
-     "potentiel": 59,
+     "humeur": "têtue",
+     "taille": 24.1,
+     "qualite": 0.334,
+     "potentiel": 32,
      "stats": {
-      "PV": 52,
-      "ATK": 45,
-      "DEF": 46,
-      "VIT": 44,
-      "INT": 48
+      "PV": 36,
+      "ATK": 23,
+      "DEF": 26,
+      "VIT": 38,
+      "INT": 56
      },
-     "note": 44.3,
+     "note": 24.3,
      "rarete": "commune",
      "stade": "bebe"
     }
@@ -1541,45 +1556,47 @@
   {
    "monde": "citadelle",
    "exploit": "citadelle.boite",
-   "genre": "variante",
+   "genre": "gardien",
    "types": [
     "ombre",
     "poison"
    ],
+   "cible": "ricanombre",
    "valeur": "8000000000000001fac71cefac71cefac71cefac71cefac71cefac71ce00",
    "n0": 17,
    "attendu": {
-    "n": 18,
+    "n": 17,
     "champs": {
-     "espece": "Goulichon",
-     "variante": "classique",
+     "espece": "Givrarde",
+     "variante": "brume",
      "shiny": false,
-     "marque": "un éternuement qui fait des étincelles",
-     "humeur": "courageuse",
-     "taille": 91.4,
-     "qualite": 0.713,
-     "potentiel": 72,
+     "marque": "des rayures comme un code-barres",
+     "humeur": "calme",
+     "taille": 186.8,
+     "qualite": 0.123,
+     "potentiel": 16,
      "stats": {
-      "PV": 39,
-      "ATK": 42,
-      "DEF": 36,
-      "VIT": 36,
-      "INT": 40
+      "PV": 48,
+      "ATK": 51,
+      "DEF": 39,
+      "VIT": 35,
+      "INT": 38
      },
-     "note": 44.9,
+     "note": 37.7,
      "rarete": "commune",
-     "stade": "enfant"
+     "stade": "bebe"
     }
    }
   },
   {
    "monde": "citadelle",
    "exploit": "citadelle.boite",
-   "genre": "variante",
+   "genre": "gardien",
    "types": [
     "ombre",
     "poison"
    ],
+   "cible": "ricanombre",
    "valeur": "8000000000000001fac71cefac71cefac71cefac71cefac71cefac71ce00",
    "n0": 60,
    "attendu": {
@@ -1609,11 +1626,1132 @@
   {
    "monde": "citadelle",
    "exploit": "citadelle.boite",
-   "genre": "variante",
+   "genre": "gardien",
    "types": [
     "ombre",
     "poison"
    ],
+   "cible": "ricanombre",
+   "valeur": "8000000000000001fac71cefac71cefac71cefac71cefac71cefac71ce00",
+   "n0": 123,
+   "attendu": {
+    "n": 123,
+    "champs": {
+     "espece": "Zapiot",
+     "variante": "classique",
+     "shiny": false,
+     "marque": "une queue en forme de tilde ~",
+     "humeur": "taquine",
+     "taille": 25.6,
+     "qualite": 0.439,
+     "potentiel": 48,
+     "stats": {
+      "PV": 34,
+      "ATK": 27,
+      "DEF": 32,
+      "VIT": 38,
+      "INT": 51
+     },
+     "note": 29.6,
+     "rarete": "commune",
+     "stade": "enfant"
+    }
+   }
+  },
+  {
+   "monde": "citadelle",
+   "exploit": "citadelle.boite.droits",
+   "genre": "gardien",
+   "types": [
+    "ombre",
+    "poison"
+   ],
+   "cible": "heaumbre",
+   "valeur": "0000000000000000000000000000000000000000000000000000000000000000",
+   "n0": 0,
+   "attendu": {
+    "n": 0,
+    "champs": {
+     "espece": "Heaumbre",
+     "variante": "ombre",
+     "shiny": false,
+     "marque": "un museau qui sent le café",
+     "humeur": "paresseuse",
+     "taille": 196.9,
+     "qualite": 0.685,
+     "potentiel": 77,
+     "stats": {
+      "PV": 55,
+      "ATK": 49,
+      "DEF": 50,
+      "VIT": 46,
+      "INT": 50
+     },
+     "note": 69.1,
+     "rarete": "rare",
+     "stade": "ado"
+    }
+   }
+  },
+  {
+   "monde": "citadelle",
+   "exploit": "citadelle.boite.droits",
+   "genre": "gardien",
+   "types": [
+    "ombre",
+    "poison"
+   ],
+   "cible": "heaumbre",
+   "valeur": "0000000000000000000000000000000000000000000000000000000000000000",
+   "n0": 17,
+   "attendu": {
+    "n": 17,
+    "champs": {
+     "espece": "Plouftin",
+     "variante": "classique",
+     "shiny": false,
+     "marque": "un grain de beauté en forme de #",
+     "humeur": "taquine",
+     "taille": 35.8,
+     "qualite": 0.855,
+     "potentiel": 85,
+     "stats": {
+      "PV": 35,
+      "ATK": 28,
+      "DEF": 29,
+      "VIT": 36,
+      "INT": 55
+     },
+     "note": 51.3,
+     "rarete": "peu commune",
+     "stade": "ado"
+    }
+   }
+  },
+  {
+   "monde": "citadelle",
+   "exploit": "citadelle.boite.droits",
+   "genre": "gardien",
+   "types": [
+    "ombre",
+    "poison"
+   ],
+   "cible": "heaumbre",
+   "valeur": "0000000000000000000000000000000000000000000000000000000000000000",
+   "n0": 60,
+   "attendu": {
+    "n": 60,
+    "champs": {
+     "espece": "Libellance",
+     "variante": "classique",
+     "shiny": false,
+     "marque": "des yeux de deux couleurs",
+     "humeur": "fougueuse",
+     "taille": 268.6,
+     "qualite": 0.989,
+     "potentiel": 97,
+     "stats": {
+      "PV": 49,
+      "ATK": 53,
+      "DEF": 47,
+      "VIT": 84,
+      "INT": 60
+     },
+     "note": 71.1,
+     "rarete": "rare",
+     "stade": "ado"
+    }
+   }
+  },
+  {
+   "monde": "citadelle",
+   "exploit": "citadelle.boite.droits",
+   "genre": "gardien",
+   "types": [
+    "ombre",
+    "poison"
+   ],
+   "cible": "heaumbre",
+   "valeur": "0000000000000000000000000000000000000000000000000000000000000000",
+   "n0": 123,
+   "attendu": {
+    "n": 123,
+    "champs": {
+     "espece": "Louvacier",
+     "variante": "classique",
+     "shiny": false,
+     "marque": "un museau qui sent le café",
+     "humeur": "timide",
+     "taille": 72.0,
+     "qualite": 0.726,
+     "potentiel": 72,
+     "stats": {
+      "PV": 46,
+      "ATK": 46,
+      "DEF": 39,
+      "VIT": 43,
+      "INT": 27
+     },
+     "note": 46.8,
+     "rarete": "peu commune",
+     "stade": "ado"
+    }
+   }
+  },
+  {
+   "monde": "citadelle",
+   "exploit": "citadelle.boite.droits",
+   "genre": "gardien",
+   "types": [
+    "ombre",
+    "poison"
+   ],
+   "cible": "heaumbre",
+   "valeur": "ffffffffffffffff000000000000000000000000000000000000000000000000",
+   "n0": 0,
+   "attendu": {
+    "n": 0,
+    "champs": {
+     "espece": "Séraphibou",
+     "variante": "nuage",
+     "shiny": false,
+     "marque": "un grain de beauté en forme de #",
+     "humeur": "calme",
+     "taille": 104.6,
+     "qualite": 0.716,
+     "potentiel": 73,
+     "stats": {
+      "PV": 44,
+      "ATK": 49,
+      "DEF": 38,
+      "VIT": 69,
+      "INT": 46
+     },
+     "note": 64.0,
+     "rarete": "rare",
+     "stade": "bebe"
+    }
+   }
+  },
+  {
+   "monde": "citadelle",
+   "exploit": "citadelle.boite.droits",
+   "genre": "gardien",
+   "types": [
+    "ombre",
+    "poison"
+   ],
+   "cible": "heaumbre",
+   "valeur": "ffffffffffffffff000000000000000000000000000000000000000000000000",
+   "n0": 17,
+   "attendu": {
+    "n": 17,
+    "champs": {
+     "espece": "Momiaou",
+     "variante": "desert",
+     "shiny": false,
+     "marque": "un ronronnement à 440 Hz",
+     "humeur": "têtue",
+     "taille": 101.2,
+     "qualite": 0.398,
+     "potentiel": 43,
+     "stats": {
+      "PV": 42,
+      "ATK": 47,
+      "DEF": 41,
+      "VIT": 47,
+      "INT": 27
+     },
+     "note": 42.8,
+     "rarete": "commune",
+     "stade": "enfant"
+    }
+   }
+  },
+  {
+   "monde": "citadelle",
+   "exploit": "citadelle.boite.droits",
+   "genre": "gardien",
+   "types": [
+    "ombre",
+    "poison"
+   ],
+   "cible": "heaumbre",
+   "valeur": "ffffffffffffffff000000000000000000000000000000000000000000000000",
+   "n0": 60,
+   "attendu": {
+    "n": 60,
+    "champs": {
+     "espece": "Lampignon",
+     "variante": "champignonniere",
+     "shiny": false,
+     "marque": "un grain de beauté en forme de #",
+     "humeur": "curieuse",
+     "taille": 89.5,
+     "qualite": 0.705,
+     "potentiel": 75,
+     "stats": {
+      "PV": 40,
+      "ATK": 39,
+      "DEF": 42,
+      "VIT": 48,
+      "INT": 71
+     },
+     "note": 62.3,
+     "rarete": "peu commune",
+     "stade": "bebe"
+    }
+   }
+  },
+  {
+   "monde": "citadelle",
+   "exploit": "citadelle.boite.droits",
+   "genre": "gardien",
+   "types": [
+    "ombre",
+    "poison"
+   ],
+   "cible": "heaumbre",
+   "valeur": "ffffffffffffffff000000000000000000000000000000000000000000000000",
+   "n0": 123,
+   "attendu": {
+    "n": 123,
+    "champs": {
+     "espece": "Scorpiquant",
+     "variante": "classique",
+     "shiny": false,
+     "marque": "des rayures comme un code-barres",
+     "humeur": "fougueuse",
+     "taille": 221.5,
+     "qualite": 0.234,
+     "potentiel": 24,
+     "stats": {
+      "PV": 37,
+      "ATK": 48,
+      "DEF": 48,
+      "VIT": 47,
+      "INT": 29
+     },
+     "note": 22.6,
+     "rarete": "commune",
+     "stade": "ado"
+    }
+   }
+  },
+  {
+   "monde": "citadelle",
+   "exploit": "citadelle.boite.droits",
+   "genre": "gardien",
+   "types": [
+    "ombre",
+    "poison"
+   ],
+   "cible": "heaumbre",
+   "valeur": "9e3779b97f4a7c15f39cc0605cedc8341082276bf3a27251f86c6a11d0c18e95",
+   "n0": 0,
+   "attendu": {
+    "n": 0,
+    "champs": {
+     "espece": "Clopinou",
+     "variante": "classique",
+     "shiny": false,
+     "marque": "une crête en forme d'accolade {",
+     "humeur": "taquine",
+     "taille": 31.1,
+     "qualite": 0.882,
+     "potentiel": 87,
+     "stats": {
+      "PV": 42,
+      "ATK": 44,
+      "DEF": 56,
+      "VIT": 48,
+      "INT": 31
+     },
+     "note": 57.2,
+     "rarete": "peu commune",
+     "stade": "ado"
+    }
+   }
+  },
+  {
+   "monde": "citadelle",
+   "exploit": "citadelle.boite.droits",
+   "genre": "gardien",
+   "types": [
+    "ombre",
+    "poison"
+   ],
+   "cible": "heaumbre",
+   "valeur": "9e3779b97f4a7c15f39cc0605cedc8341082276bf3a27251f86c6a11d0c18e95",
+   "n0": 17,
+   "attendu": {
+    "n": 17,
+    "champs": {
+     "espece": "Tentaclou",
+     "variante": "marais",
+     "shiny": false,
+     "marque": "un éternuement qui fait des étincelles",
+     "humeur": "têtue",
+     "taille": 37.4,
+     "qualite": 0.423,
+     "potentiel": 38,
+     "stats": {
+      "PV": 41,
+      "ATK": 25,
+      "DEF": 43,
+      "VIT": 18,
+      "INT": 38
+     },
+     "note": 40.0,
+     "rarete": "commune",
+     "stade": "enfant"
+    }
+   }
+  },
+  {
+   "monde": "citadelle",
+   "exploit": "citadelle.boite.droits",
+   "genre": "gardien",
+   "types": [
+    "ombre",
+    "poison"
+   ],
+   "cible": "heaumbre",
+   "valeur": "9e3779b97f4a7c15f39cc0605cedc8341082276bf3a27251f86c6a11d0c18e95",
+   "n0": 60,
+   "attendu": {
+    "n": 60,
+    "champs": {
+     "espece": "Cendrouille",
+     "variante": "cendres",
+     "shiny": false,
+     "marque": "une tache en forme de @ sur le dos",
+     "humeur": "têtue",
+     "taille": 84.6,
+     "qualite": 0.415,
+     "potentiel": 42,
+     "stats": {
+      "PV": 45,
+      "ATK": 28,
+      "DEF": 41,
+      "VIT": 26,
+      "INT": 35
+     },
+     "note": 40.6,
+     "rarete": "commune",
+     "stade": "ado"
+    }
+   }
+  },
+  {
+   "monde": "citadelle",
+   "exploit": "citadelle.boite.droits",
+   "genre": "gardien",
+   "types": [
+    "ombre",
+    "poison"
+   ],
+   "cible": "heaumbre",
+   "valeur": "9e3779b97f4a7c15f39cc0605cedc8341082276bf3a27251f86c6a11d0c18e95",
+   "n0": 123,
+   "attendu": {
+    "n": 123,
+    "champs": {
+     "espece": "Krillou",
+     "variante": "corail",
+     "shiny": false,
+     "marque": "un ronronnement à 440 Hz",
+     "humeur": "courageuse",
+     "taille": 33.1,
+     "qualite": 0.606,
+     "potentiel": 54,
+     "stats": {
+      "PV": 33,
+      "ATK": 39,
+      "DEF": 41,
+      "VIT": 43,
+      "INT": 22
+     },
+     "note": 55.9,
+     "rarete": "peu commune",
+     "stade": "bebe"
+    }
+   }
+  },
+  {
+   "monde": "citadelle",
+   "exploit": "citadelle.boite.droits",
+   "genre": "gardien",
+   "types": [
+    "ombre",
+    "poison"
+   ],
+   "cible": "heaumbre",
+   "valeur": "8000000000000001fac71cefac71cefac71cefac71cefac71cefac71ce00",
+   "n0": 0,
+   "attendu": {
+    "n": 1,
+    "champs": {
+     "espece": "Heaumbre",
+     "variante": "classique",
+     "shiny": false,
+     "marque": "des rayures comme un code-barres",
+     "humeur": "bavarde",
+     "taille": 200.4,
+     "qualite": 0.595,
+     "potentiel": 59,
+     "stats": {
+      "PV": 52,
+      "ATK": 45,
+      "DEF": 46,
+      "VIT": 44,
+      "INT": 48
+     },
+     "note": 44.3,
+     "rarete": "commune",
+     "stade": "bebe"
+    }
+   }
+  },
+  {
+   "monde": "citadelle",
+   "exploit": "citadelle.boite.droits",
+   "genre": "gardien",
+   "types": [
+    "ombre",
+    "poison"
+   ],
+   "cible": "heaumbre",
+   "valeur": "8000000000000001fac71cefac71cefac71cefac71cefac71cefac71ce00",
+   "n0": 17,
+   "attendu": {
+    "n": 17,
+    "champs": {
+     "espece": "Givrarde",
+     "variante": "brume",
+     "shiny": false,
+     "marque": "des rayures comme un code-barres",
+     "humeur": "calme",
+     "taille": 186.8,
+     "qualite": 0.123,
+     "potentiel": 16,
+     "stats": {
+      "PV": 48,
+      "ATK": 51,
+      "DEF": 39,
+      "VIT": 35,
+      "INT": 38
+     },
+     "note": 37.7,
+     "rarete": "commune",
+     "stade": "bebe"
+    }
+   }
+  },
+  {
+   "monde": "citadelle",
+   "exploit": "citadelle.boite.droits",
+   "genre": "gardien",
+   "types": [
+    "ombre",
+    "poison"
+   ],
+   "cible": "heaumbre",
+   "valeur": "8000000000000001fac71cefac71cefac71cefac71cefac71cefac71ce00",
+   "n0": 60,
+   "attendu": {
+    "n": 60,
+    "champs": {
+     "espece": "Lanternix",
+     "variante": "classique",
+     "shiny": false,
+     "marque": "une voix qui résonne comme dans une grotte",
+     "humeur": "fougueuse",
+     "taille": 30.8,
+     "qualite": 0.092,
+     "potentiel": 10,
+     "stats": {
+      "PV": 34,
+      "ATK": 23,
+      "DEF": 31,
+      "VIT": 37,
+      "INT": 46
+     },
+     "note": 10.9,
+     "rarete": "commune",
+     "stade": "enfant"
+    }
+   }
+  },
+  {
+   "monde": "citadelle",
+   "exploit": "citadelle.boite.droits",
+   "genre": "gardien",
+   "types": [
+    "ombre",
+    "poison"
+   ],
+   "cible": "heaumbre",
+   "valeur": "8000000000000001fac71cefac71cefac71cefac71cefac71cefac71ce00",
+   "n0": 123,
+   "attendu": {
+    "n": 123,
+    "champs": {
+     "espece": "Zapiot",
+     "variante": "classique",
+     "shiny": false,
+     "marque": "une queue en forme de tilde ~",
+     "humeur": "taquine",
+     "taille": 25.6,
+     "qualite": 0.439,
+     "potentiel": 48,
+     "stats": {
+      "PV": 34,
+      "ATK": 27,
+      "DEF": 32,
+      "VIT": 38,
+      "INT": 51
+     },
+     "note": 29.6,
+     "rarete": "commune",
+     "stade": "enfant"
+    }
+   }
+  },
+  {
+   "monde": "citadelle",
+   "exploit": "citadelle.boite.secrets",
+   "genre": "gardien",
+   "types": [
+    "ombre",
+    "poison"
+   ],
+   "cible": "cranard",
+   "valeur": "0000000000000000000000000000000000000000000000000000000000000000",
+   "n0": 0,
+   "attendu": {
+    "n": 0,
+    "champs": {
+     "espece": "Heaumbre",
+     "variante": "ombre",
+     "shiny": false,
+     "marque": "un museau qui sent le café",
+     "humeur": "paresseuse",
+     "taille": 196.9,
+     "qualite": 0.685,
+     "potentiel": 77,
+     "stats": {
+      "PV": 55,
+      "ATK": 49,
+      "DEF": 50,
+      "VIT": 46,
+      "INT": 50
+     },
+     "note": 69.1,
+     "rarete": "rare",
+     "stade": "ado"
+    }
+   }
+  },
+  {
+   "monde": "citadelle",
+   "exploit": "citadelle.boite.secrets",
+   "genre": "gardien",
+   "types": [
+    "ombre",
+    "poison"
+   ],
+   "cible": "cranard",
+   "valeur": "0000000000000000000000000000000000000000000000000000000000000000",
+   "n0": 17,
+   "attendu": {
+    "n": 17,
+    "champs": {
+     "espece": "Plouftin",
+     "variante": "classique",
+     "shiny": false,
+     "marque": "un grain de beauté en forme de #",
+     "humeur": "taquine",
+     "taille": 35.8,
+     "qualite": 0.855,
+     "potentiel": 85,
+     "stats": {
+      "PV": 35,
+      "ATK": 28,
+      "DEF": 29,
+      "VIT": 36,
+      "INT": 55
+     },
+     "note": 51.3,
+     "rarete": "peu commune",
+     "stade": "ado"
+    }
+   }
+  },
+  {
+   "monde": "citadelle",
+   "exploit": "citadelle.boite.secrets",
+   "genre": "gardien",
+   "types": [
+    "ombre",
+    "poison"
+   ],
+   "cible": "cranard",
+   "valeur": "0000000000000000000000000000000000000000000000000000000000000000",
+   "n0": 60,
+   "attendu": {
+    "n": 60,
+    "champs": {
+     "espece": "Libellance",
+     "variante": "classique",
+     "shiny": false,
+     "marque": "des yeux de deux couleurs",
+     "humeur": "fougueuse",
+     "taille": 268.6,
+     "qualite": 0.989,
+     "potentiel": 97,
+     "stats": {
+      "PV": 49,
+      "ATK": 53,
+      "DEF": 47,
+      "VIT": 84,
+      "INT": 60
+     },
+     "note": 71.1,
+     "rarete": "rare",
+     "stade": "ado"
+    }
+   }
+  },
+  {
+   "monde": "citadelle",
+   "exploit": "citadelle.boite.secrets",
+   "genre": "gardien",
+   "types": [
+    "ombre",
+    "poison"
+   ],
+   "cible": "cranard",
+   "valeur": "0000000000000000000000000000000000000000000000000000000000000000",
+   "n0": 123,
+   "attendu": {
+    "n": 123,
+    "champs": {
+     "espece": "Louvacier",
+     "variante": "classique",
+     "shiny": false,
+     "marque": "un museau qui sent le café",
+     "humeur": "timide",
+     "taille": 72.0,
+     "qualite": 0.726,
+     "potentiel": 72,
+     "stats": {
+      "PV": 46,
+      "ATK": 46,
+      "DEF": 39,
+      "VIT": 43,
+      "INT": 27
+     },
+     "note": 46.8,
+     "rarete": "peu commune",
+     "stade": "ado"
+    }
+   }
+  },
+  {
+   "monde": "citadelle",
+   "exploit": "citadelle.boite.secrets",
+   "genre": "gardien",
+   "types": [
+    "ombre",
+    "poison"
+   ],
+   "cible": "cranard",
+   "valeur": "ffffffffffffffff000000000000000000000000000000000000000000000000",
+   "n0": 0,
+   "attendu": {
+    "n": 0,
+    "champs": {
+     "espece": "Séraphibou",
+     "variante": "nuage",
+     "shiny": false,
+     "marque": "un grain de beauté en forme de #",
+     "humeur": "calme",
+     "taille": 104.6,
+     "qualite": 0.716,
+     "potentiel": 73,
+     "stats": {
+      "PV": 44,
+      "ATK": 49,
+      "DEF": 38,
+      "VIT": 69,
+      "INT": 46
+     },
+     "note": 64.0,
+     "rarete": "rare",
+     "stade": "bebe"
+    }
+   }
+  },
+  {
+   "monde": "citadelle",
+   "exploit": "citadelle.boite.secrets",
+   "genre": "gardien",
+   "types": [
+    "ombre",
+    "poison"
+   ],
+   "cible": "cranard",
+   "valeur": "ffffffffffffffff000000000000000000000000000000000000000000000000",
+   "n0": 17,
+   "attendu": {
+    "n": 31,
+    "champs": {
+     "espece": "Crânard",
+     "variante": "ombre",
+     "shiny": false,
+     "marque": "une plume de pixel derrière l'oreille",
+     "humeur": "paresseuse",
+     "taille": 32.4,
+     "qualite": 0.754,
+     "potentiel": 78,
+     "stats": {
+      "PV": 47,
+      "ATK": 34,
+      "DEF": 49,
+      "VIT": 31,
+      "INT": 44
+     },
+     "note": 65.8,
+     "rarete": "rare",
+     "stade": "enfant"
+    }
+   }
+  },
+  {
+   "monde": "citadelle",
+   "exploit": "citadelle.boite.secrets",
+   "genre": "gardien",
+   "types": [
+    "ombre",
+    "poison"
+   ],
+   "cible": "cranard",
+   "valeur": "ffffffffffffffff000000000000000000000000000000000000000000000000",
+   "n0": 60,
+   "attendu": {
+    "n": 60,
+    "champs": {
+     "espece": "Lampignon",
+     "variante": "champignonniere",
+     "shiny": false,
+     "marque": "un grain de beauté en forme de #",
+     "humeur": "curieuse",
+     "taille": 89.5,
+     "qualite": 0.705,
+     "potentiel": 75,
+     "stats": {
+      "PV": 40,
+      "ATK": 39,
+      "DEF": 42,
+      "VIT": 48,
+      "INT": 71
+     },
+     "note": 62.3,
+     "rarete": "peu commune",
+     "stade": "bebe"
+    }
+   }
+  },
+  {
+   "monde": "citadelle",
+   "exploit": "citadelle.boite.secrets",
+   "genre": "gardien",
+   "types": [
+    "ombre",
+    "poison"
+   ],
+   "cible": "cranard",
+   "valeur": "ffffffffffffffff000000000000000000000000000000000000000000000000",
+   "n0": 123,
+   "attendu": {
+    "n": 123,
+    "champs": {
+     "espece": "Scorpiquant",
+     "variante": "classique",
+     "shiny": false,
+     "marque": "des rayures comme un code-barres",
+     "humeur": "fougueuse",
+     "taille": 221.5,
+     "qualite": 0.234,
+     "potentiel": 24,
+     "stats": {
+      "PV": 37,
+      "ATK": 48,
+      "DEF": 48,
+      "VIT": 47,
+      "INT": 29
+     },
+     "note": 22.6,
+     "rarete": "commune",
+     "stade": "ado"
+    }
+   }
+  },
+  {
+   "monde": "citadelle",
+   "exploit": "citadelle.boite.secrets",
+   "genre": "gardien",
+   "types": [
+    "ombre",
+    "poison"
+   ],
+   "cible": "cranard",
+   "valeur": "9e3779b97f4a7c15f39cc0605cedc8341082276bf3a27251f86c6a11d0c18e95",
+   "n0": 0,
+   "attendu": {
+    "n": 0,
+    "champs": {
+     "espece": "Clopinou",
+     "variante": "classique",
+     "shiny": false,
+     "marque": "une crête en forme d'accolade {",
+     "humeur": "taquine",
+     "taille": 31.1,
+     "qualite": 0.882,
+     "potentiel": 87,
+     "stats": {
+      "PV": 42,
+      "ATK": 44,
+      "DEF": 56,
+      "VIT": 48,
+      "INT": 31
+     },
+     "note": 57.2,
+     "rarete": "peu commune",
+     "stade": "ado"
+    }
+   }
+  },
+  {
+   "monde": "citadelle",
+   "exploit": "citadelle.boite.secrets",
+   "genre": "gardien",
+   "types": [
+    "ombre",
+    "poison"
+   ],
+   "cible": "cranard",
+   "valeur": "9e3779b97f4a7c15f39cc0605cedc8341082276bf3a27251f86c6a11d0c18e95",
+   "n0": 17,
+   "attendu": {
+    "n": 31,
+    "champs": {
+     "espece": "Crânard",
+     "variante": "ossuaire",
+     "shiny": false,
+     "marque": "une plume de pixel derrière l'oreille",
+     "humeur": "fougueuse",
+     "taille": 34.0,
+     "qualite": 0.136,
+     "potentiel": 8,
+     "stats": {
+      "PV": 37,
+      "ATK": 22,
+      "DEF": 40,
+      "VIT": 20,
+      "INT": 33
+     },
+     "note": 23.8,
+     "rarete": "commune",
+     "stade": "enfant"
+    }
+   }
+  },
+  {
+   "monde": "citadelle",
+   "exploit": "citadelle.boite.secrets",
+   "genre": "gardien",
+   "types": [
+    "ombre",
+    "poison"
+   ],
+   "cible": "cranard",
+   "valeur": "9e3779b97f4a7c15f39cc0605cedc8341082276bf3a27251f86c6a11d0c18e95",
+   "n0": 60,
+   "attendu": {
+    "n": 60,
+    "champs": {
+     "espece": "Cendrouille",
+     "variante": "cendres",
+     "shiny": false,
+     "marque": "une tache en forme de @ sur le dos",
+     "humeur": "têtue",
+     "taille": 84.6,
+     "qualite": 0.415,
+     "potentiel": 42,
+     "stats": {
+      "PV": 45,
+      "ATK": 28,
+      "DEF": 41,
+      "VIT": 26,
+      "INT": 35
+     },
+     "note": 40.6,
+     "rarete": "commune",
+     "stade": "ado"
+    }
+   }
+  },
+  {
+   "monde": "citadelle",
+   "exploit": "citadelle.boite.secrets",
+   "genre": "gardien",
+   "types": [
+    "ombre",
+    "poison"
+   ],
+   "cible": "cranard",
+   "valeur": "9e3779b97f4a7c15f39cc0605cedc8341082276bf3a27251f86c6a11d0c18e95",
+   "n0": 123,
+   "attendu": {
+    "n": 123,
+    "champs": {
+     "espece": "Krillou",
+     "variante": "corail",
+     "shiny": false,
+     "marque": "un ronronnement à 440 Hz",
+     "humeur": "courageuse",
+     "taille": 33.1,
+     "qualite": 0.606,
+     "potentiel": 54,
+     "stats": {
+      "PV": 33,
+      "ATK": 39,
+      "DEF": 41,
+      "VIT": 43,
+      "INT": 22
+     },
+     "note": 55.9,
+     "rarete": "peu commune",
+     "stade": "bebe"
+    }
+   }
+  },
+  {
+   "monde": "citadelle",
+   "exploit": "citadelle.boite.secrets",
+   "genre": "gardien",
+   "types": [
+    "ombre",
+    "poison"
+   ],
+   "cible": "cranard",
+   "valeur": "8000000000000001fac71cefac71cefac71cefac71cefac71cefac71ce00",
+   "n0": 0,
+   "attendu": {
+    "n": 0,
+    "champs": {
+     "espece": "Félicorne",
+     "variante": "soleil",
+     "shiny": false,
+     "marque": "des empreintes en forme de 0 et de 1",
+     "humeur": "taquine",
+     "taille": 191.4,
+     "qualite": 0.796,
+     "potentiel": 79,
+     "stats": {
+      "PV": 51,
+      "ATK": 52,
+      "DEF": 47,
+      "VIT": 51,
+      "INT": 33
+     },
+     "note": 73.6,
+     "rarete": "rare",
+     "stade": "adulte"
+    }
+   }
+  },
+  {
+   "monde": "citadelle",
+   "exploit": "citadelle.boite.secrets",
+   "genre": "gardien",
+   "types": [
+    "ombre",
+    "poison"
+   ],
+   "cible": "cranard",
+   "valeur": "8000000000000001fac71cefac71cefac71cefac71cefac71cefac71ce00",
+   "n0": 17,
+   "attendu": {
+    "n": 17,
+    "champs": {
+     "espece": "Givrarde",
+     "variante": "brume",
+     "shiny": false,
+     "marque": "des rayures comme un code-barres",
+     "humeur": "calme",
+     "taille": 186.8,
+     "qualite": 0.123,
+     "potentiel": 16,
+     "stats": {
+      "PV": 48,
+      "ATK": 51,
+      "DEF": 39,
+      "VIT": 35,
+      "INT": 38
+     },
+     "note": 37.7,
+     "rarete": "commune",
+     "stade": "bebe"
+    }
+   }
+  },
+  {
+   "monde": "citadelle",
+   "exploit": "citadelle.boite.secrets",
+   "genre": "gardien",
+   "types": [
+    "ombre",
+    "poison"
+   ],
+   "cible": "cranard",
+   "valeur": "8000000000000001fac71cefac71cefac71cefac71cefac71cefac71ce00",
+   "n0": 60,
+   "attendu": {
+    "n": 60,
+    "champs": {
+     "espece": "Lanternix",
+     "variante": "classique",
+     "shiny": false,
+     "marque": "une voix qui résonne comme dans une grotte",
+     "humeur": "fougueuse",
+     "taille": 30.8,
+     "qualite": 0.092,
+     "potentiel": 10,
+     "stats": {
+      "PV": 34,
+      "ATK": 23,
+      "DEF": 31,
+      "VIT": 37,
+      "INT": 46
+     },
+     "note": 10.9,
+     "rarete": "commune",
+     "stade": "enfant"
+    }
+   }
+  },
+  {
+   "monde": "citadelle",
+   "exploit": "citadelle.boite.secrets",
+   "genre": "gardien",
+   "types": [
+    "ombre",
+    "poison"
+   ],
+   "cible": "cranard",
    "valeur": "8000000000000001fac71cefac71cefac71cefac71cefac71cefac71ce00",
    "n0": 123,
    "attendu": {

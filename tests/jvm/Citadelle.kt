@@ -265,16 +265,18 @@ fun main(args: Array<String>) {
     verifierCi("JAMAIS" in (sorties["curl -s http://localhost:8042/courrier"] ?: ""), "le pont curl : le phare du Port (dans l'appli) répond /courrier")
     verifierCi("Pixel" in (sorties["openssl enc -d -aes-256-cbc -pbkdf2 -in lettre.enc -pass pass:${Citadelle.PASSE}"] ?: ""), "le coffre s'ouvre avec la clé d'exemple")
     val ex = Recompenses.etat(jeuCi).getJSONObject("exploits").keys().asSequence().toList()
-    verifierCi("citadelle.boite" in ex && "citadelle.vague" in ex, "les deux exploits de la Citadelle")
+    verifierCi(ex.containsAll(listOf("citadelle.boite", "citadelle.boite.droits", "citadelle.boite.secrets", "citadelle.vague")),
+        "les exploits de la Citadelle : les trois boîtes maîtrisées et la grande vague")
+    verifierCi(Recompenses.boitesMaitrisees(jeuCi) == listOf("enumeration", "droits", "secrets"), "les gardiens des trois boîtes sont rencontrables (glitch)")
     verifierCi("bouclier_miniature" in lstCi(fr.terminagotchi.Quetes.q(jeuCi).optJSONArray("objets")), "récompense du monde : un bouclier miniature")
     verifierCi(Citadelle.fictifsVivants(jeuCi).isEmpty(), "plus aucun processus fantôme")
 
-    println("5. Les variantes réservées, le dessin")
+    println("5. Les variantes Démons au tirage normal, le dessin")
     val j2 = Jeu(AppareilCi(File(dossier, "j2").apply { mkdirs() }, assets))
-    verifierCi(Recompenses.reservee(j2, "arcane", "ricanombre") && !Recompenses.reservee(j2, "arcane", "lumignon"),
-        "ricanombre:arcane réservée (aux Démons de la Citadelle) tant qu'aucun exploit")
+    verifierCi(!Recompenses.reservee(j2, "arcane", "ricanombre") && !Recompenses.reservee(j2, "toxique", "sulfurette"),
+        "ricanombre:arcane, sulfurette:toxique… au tirage normal (la récompense de la Citadelle : le glitch des gardiens)")
     Recompenses.exploit(j2, "citadelle.boite")
-    verifierCi(!Recompenses.reservee(j2, "arcane", "ricanombre") && !Recompenses.reservee(j2, "toxique", "sulfurette"), "après un exploit : libérées")
+    verifierCi(Recompenses.gardienDe(j2, fr.terminagotchi.Bestiaire.espece("ricanombre")!!) == "enumeration", "après la boîte : son gardien, Ricanombre")
     val tl = ToileCi()
     CitadelleDessin.cadenas(tl, Deploie.droits("chmod 600 coffre.txt")[0], 0.8, 0f, 0f, 400f, 120f, 1f)
     CitadelleDessin.plan(tl, listOf("remparts/x.glitch"), 1, 0, 0.3, 0f, 0f, 400f, 300f, 1f)

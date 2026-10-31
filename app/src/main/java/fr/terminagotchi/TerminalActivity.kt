@@ -731,17 +731,27 @@ class TerminalActivity : Activity() {
 
     /**
      * Mise en forme spéciale : ¤id:variante:stade*teinte+~n¤ = dessin d'une bestiole (voir Bestiaire.balise :
-     * * = shiny avec sa teinte, + = grand portrait, ~n = aura de rareté), §texte§ = écriture arc-en-ciel (RGB).
+     * * = shiny avec sa teinte, + = grand portrait, ~n = aura de rareté, !graine = glitch), §texte§ = écriture
+     * arc-en-ciel (RGB).
      */
+    /** Un portrait peint d'une bestiole glitch : la teinte shiny cuite dans l'image d'abord, puis l'effet
+     *  (un pixel de créature ≈ largeur / 48, comme sur le site). */
+    private fun glitchPortrait(b: android.graphics.Bitmap, teinte: Double?, g: Glitch.Spec): android.graphics.Bitmap = try {
+        val base = if (teinte == null) b else android.graphics.Bitmap.createBitmap(b.width, b.height, android.graphics.Bitmap.Config.ARGB_8888).also {
+            android.graphics.Canvas(it).drawBitmap(b, 0f, 0f, android.graphics.Paint().apply { setColorFilter(Bestiaire.filtreTeinte(teinte)) })
+        }
+        Glitch.bitmap(base, g, maxOf(1, Math.round(b.width / 48f)))
+    } catch (x: Exception) { b }
+
     private fun miseEnForme(texte: String, couleur: Int?): SpannableStringBuilder {
         val sb = SpannableStringBuilder()
-        val motif = Regex("¤([a-z0-9_]+)(?::([^:¤*+~]+))?(?::([a-z]+))?(?:\\*([0-9.]*))?(\\+)?(?:~([0-9]))?¤|§([^§]*)§|`([^`\n]+)`")
+        val motif = Regex("¤([a-z0-9_]+)(?::([^:¤*+~!]+))?(?::([a-z]+))?(?:\\*([0-9.]*))?(\\+)?(?:~([0-9]))?(?:!([0-9a-f]+))?¤|§([^§]*)§|`([^`\n]+)`")
         var i = 0
         for (m in motif.findAll(texte)) {
             sb.append(texte, i, m.range.first)
-            if (m.groups[8] != null) {                    // `commande` : en vert (voir Vert.kt)
+            if (m.groups[9] != null) {                    // `commande` : en vert (voir Vert.kt)
                 val debut = sb.length
-                sb.append(m.groupValues[8])
+                sb.append(m.groupValues[9])
                 sb.setSpan(ForegroundColorSpan(Vert.COULEUR), debut, sb.length, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
             } else if (m.groupValues[1] == "badge") {          // ¤badge:famille:grade~étoiles¤ (salle d'entraînement)
                 val debut = sb.length
@@ -768,17 +778,20 @@ class TerminalActivity : Activity() {
                         ?: (if (Animations.dispo(e.id)) Animations.detaille(e.id, stade) else null)
                     // l'aura de rareté autour des petits dessins (troupe, collection) : la bestiole garde sa taille
                     val aura = if (detail == null) Aura.deCode(m.groupValues[6].toIntOrNull()) else null
-                    val petit = detail ?: Bestiaire.bitmap(e, shiny, 4, stade, vid, teinte)
+                    // glitch (!graine) : l'effet au repos (style A), après la teinte shiny
+                    val glitch = Glitch.repos(m.groupValues[7].ifEmpty { null })
+                    val petit = detail?.let { if (glitch == null) it else glitchPortrait(it, if (shiny) teinte else null, glitch) }
+                        ?: Bestiaire.bitmap(e, shiny, 4, stade, vid, teinte, glitch)
                     val img = if (aura == null) petit else try { Aura.entourer(petit, 4, aura, garder = true) } catch (x: Exception) { petit }
                     val d = android.graphics.drawable.BitmapDrawable(resources, img)
-                    if (detail != null && shiny) d.colorFilter = Bestiaire.filtreTeinte(teinte)
+                    if (detail != null && shiny && glitch == null) d.colorFilter = Bestiaire.filtreTeinte(teinte)
                     val px = ((if (detail != null) 160 else 40) * resources.displayMetrics.density).toInt()
                     d.setBounds(0, 0, px * img.width / maxOf(1, petit.width), px * img.height / maxOf(1, petit.height))
                     sb.setSpan(android.text.style.ImageSpan(d, android.text.style.DynamicDrawableSpan.ALIGN_BOTTOM),
                         debut, debut + 1, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
                 }
             } else {
-                arcEnCiel(sb, m.groupValues[7])
+                arcEnCiel(sb, m.groupValues[8])
             }
             i = m.range.last + 1
         }
@@ -1368,7 +1381,8 @@ class TerminalActivity : Activity() {
     private fun imageCreature(cligne: Boolean): android.graphics.Bitmap {
         val ind = guideCapture()
         if (ind != null) {
-            val cle = listOf(ind.optString("id"), Equipe.stade(ind), ind.optString("variante"), ind.optBoolean("shiny")).joinToString("|")
+            val cle = listOf(ind.optString("id"), Equipe.stade(ind), ind.optString("variante"), ind.optBoolean("shiny"),
+                ind.optBoolean("glitch")).joinToString("|")
             val b = imageGuide?.takeIf { it.first == cle }?.second ?: try {
                 Animations.pour(ind, "statique", Equipe.stade(ind), 3)?.first?.firstOrNull()
             } catch (e: Exception) { null }?.also { imageGuide = cle to it }
@@ -1399,7 +1413,8 @@ class TerminalActivity : Activity() {
         return eclatGarde.first
     }
 
-    private class VieEcran(val cle: String, val anim: AnimAuto.Anim, val echelle: Int, val teinte: Double?, val palier: String?)
+    private class VieEcran(val cle: String, val anim: AnimAuto.Anim, val echelle: Int, val teinte: Double?, val palier: String?,
+                           val glitch: String? = null)
     private var vieEcran: VieEcran? = null
 
     /** L'animation de vie de la créature de l'en-tête (le guide de l'équipe, ou le compagnon d'une espèce), ou null
@@ -1411,13 +1426,15 @@ class TerminalActivity : Activity() {
         val ind = guideCapture()
         val cle: String
         if (ind != null) {
-            cle = listOf("ind", ind.optString("id"), Equipe.stade(ind), ind.optString("variante"), ind.optBoolean("shiny")).joinToString("|")
+            cle = listOf("ind", ind.optString("id"), Equipe.stade(ind), ind.optString("variante"), ind.optBoolean("shiny"),
+                ind.optBoolean("glitch")).joinToString("|")
             vieEcran?.takeIf { it.cle == cle }?.let { return it }
             val e = Bestiaire.espece(ind.optString("espece")) ?: return null
             if (Animations.dispo(e.id)) return null
             val a = Animations.auto(e, Equipe.stade(ind), ind.optString("variante", "classique"), "statique") ?: return null
-            vieEcran = VieEcran(cle, Sprites.recadrer(a), 3, if (ind.optBoolean("shiny")) ind.optDouble("teinte", 0.5) else null,
-                Aura.palierInd(ind))
+            val g = Glitch.de(ind)
+            vieEcran = VieEcran(cle, Sprites.recadrer(a, if (g != null) 2 else 0), 3,
+                if (ind.optBoolean("shiny")) ind.optDouble("teinte", 0.5) else null, Aura.palierInd(ind), g)
         } else {
             if (jeu.especeCompagnon == null) return null
             cle = listOf("compagnon", jeu.especeCompagnon, jeu.stade, jeu.shiny).joinToString("|")
@@ -1435,7 +1452,9 @@ class TerminalActivity : Activity() {
             try {
                 vieCourante()?.let { v ->
                     val tic = (android.os.SystemClock.uptimeMillis() / VIE_PAS).toInt()
-                    creature.setImageBitmap(avecAura(AnimAuto.bitmap(v.anim, tic, v.echelle, v.teinte), v.echelle, v.palier, tic))
+                    // glitch : style A au repos, un éclair C de temps en temps (l'horloge murale, comme sur PC)
+                    creature.setImageBitmap(avecAura(AnimAuto.bitmap(v.anim, tic, v.echelle, v.teinte, Glitch.maintenant(v.glitch)),
+                        v.echelle, v.palier, tic))
                 }
             } catch (e: Exception) {
                 android.util.Log.e("TG", "vie", e)

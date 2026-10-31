@@ -1,7 +1,7 @@
 // Anti-triche : le JavaScript du serveur donne EXACTEMENT les mêmes tirages que le PC et l'appli.
 // Lancer :  node --no-warnings test/tirage.mjs
 import { readFileSync } from "node:fs";
-import { Hasard, tirer, differences, stadePlausible, xpPourGrandir, attirancePlausible, FAMILLES } from "../src/tirage.js";
+import { Hasard, tirer, differences, stadePlausible, xpPourGrandir, attirancePlausible, FAMILLES, glitchDe, gardienPlausible, GARDIENS } from "../src/tirage.js";
 
 const V = JSON.parse(readFileSync(new URL("../../donnees/anti_triche/vecteurs.json", import.meta.url), "utf8"));
 let ok = 0;
@@ -54,6 +54,37 @@ verifier(differences(c, t0.attendu).length === 0, "capture conforme : aucun éca
 c.stats.ATK += 5;
 c.shiny = true;
 verifier(differences(c, t0.attendu).join() === "shiny,stats.ATK", "stats gonflées et faux shiny repérés");
+
+console.log("Le glitch (tirage 13, à part : compteur + 2^20)");
+verifier(V.glitchs.every((x) => glitchDe(x.valeur, x.n, x.gardien) === x.glitch) && V.glitchs.filter((x) => x.glitch).length > 10,
+  `${V.glitchs.length} tirages du glitch identiques au Python`);
+verifier(Object.keys(GARDIENS).join() === "enumeration,droits,secrets" && GARDIENS.secrets === "Crânard", "les gardiens des 3 boîtes codées");
+verifier(gardienPlausible(undefined, "Ricanombre") === false && gardienPlausible("enumeration", "Ricanombre") === true
+  && gardienPlausible("enumeration", "Crânard") === undefined && gardienPlausible("hangar", "Ombrachne") === undefined,
+  "« gardien » : seulement l'espèce gardienne d'une boîte codée");
+{
+  const t1 = { ...V.tirages[0].attendu, glitch: false };
+  verifier(differences({ ...V.tirages[0].attendu, glitch: true }, t1).join() === "glitch", "faux glitch repéré");
+  verifier(differences({ ...V.tirages[0].attendu }, { ...t1, glitch: true }).length === 0,
+    "une capture d'avant le glitch (sans le champ) reste conforme");
+}
+{
+  const VG = JSON.parse(readFileSync(new URL("../../donnees/glitch/vecteurs.json", import.meta.url), "utf8"));
+  const G = await import("../src/glitch.js");
+  const { createHash } = await import("node:crypto");
+  verifier(VG.fnv.every((f) => G.fnv(f.texte).toString() === f.h), "glitch.js : fnv1a-64 identique");
+  const agrandir = (w, h, px, s) => { const o = []; for (let y = 0; y < h * s; y++) for (let x = 0; x < w * s; x++) o.push(px[Math.floor(y / s) * w + Math.floor(x / s)]); return o; };
+  const ratesG = VG.cas.filter((c) => {
+    const im = VG.images[c.image];
+    const o = G.appliquer(im.w * c.s, im.h * c.s, agrandir(im.w, im.h, im.px.map((x) => parseInt(x, 16)), c.s), c.graine, c.style, c.phase, c.s);
+    return createHash("sha256").update(o.map((p) => p.toString(16).padStart(8, "0")).join("")).digest("hex") !== c.empreinte;
+  });
+  verifier(ratesG.length === 0, `glitch.js : ${VG.cas.length - ratesG.length}/${VG.cas.length} images identiques au Python`);
+  verifier(VG.eclairs.every((x) => JSON.stringify(G.etat(x.graine, x.t)) === JSON.stringify(x.etat)), `glitch.js : ${VG.eclairs.length} instants, mêmes éclairs`);
+  let ok2 = true;
+  try { new Function(G.SCRIPT_GLITCH); } catch { ok2 = false; }
+  verifier(ok2 && G.SCRIPT_GLITCH.includes("data-glitch") && !G.SCRIPT_GLITCH.includes("export "), "le script des pages se lit (navigateur)");
+}
 
 console.log("Évolution plausible");
 verifier(xpPourGrandir("bebe", "ancien") === 2450, "bébé → ancien : 2450 XP");

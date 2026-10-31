@@ -476,7 +476,8 @@ def ecrire_fiche(e, shiny, zone, ind=None, p=0):
     ind = ind or B.individu(e, shiny, zone)
     st = B.texte_stats(ind["stats"], p)
     var = ind.get("variante", "classique")
-    champs = [(t("dress.fiche.nom"), e["nom"] + (" ✨ " + t("dress.fiche.shiny") if shiny else "")),
+    champs = [(t("dress.fiche.nom"), e["nom"] + (" ✨ " + t("dress.fiche.shiny") if shiny else "")
+               + (" ▚ " + t("dress.fiche.glitch") if ind.get("glitch") else "")),
               (t("dress.fiche.numero"), f"#{e['numero']:03d}"),
               (t("dress.fiche.rarete"), t("dress.fiche.rarete.val", rarete=B.nom_rarete(ind["rarete"]), note=ind["note"])),
               (t("dress.fiche.variante"), var),
@@ -619,7 +620,7 @@ def commencer(state, sauvage):
         if x["prep"] and cle not in preparees:     # un même fichier n'est préparé qu'une fois
             preparees.add(cle)
             x["prep"](c)
-    eclat = " ✨" if sauvage.get("shiny") else ""
+    eclat = (" ✨" if sauvage.get("shiny") else "") + (" ▚" if ind.get("glitch") else "")
     core.notif(state, t("dress.apparait", nom=e["nom"], eclat=eclat))
     if premiere:
         core.say(state, t("dress.premiere", nom=e["nom"], eclat=eclat, famille=e["famille"]), 14)
@@ -739,9 +740,10 @@ def reussir(state):
     fams = state.setdefault("dressage_familles", [])
     if e["famille"] not in fams:
         fams.append(e["famille"])
-    titre = e["nom"] + (" ✨ SHINY" if d["shiny"] else "")
+    titre = e["nom"] + (" ✨ SHINY" if d["shiny"] else "") + (" ▚ GLITCH" if ind.get("glitch") else "")
     core.log(state, t("dress.reussi.log", titre=titre, s=ind["dresse"], rarete=B.nom_rarete(ind["rarete"])))
-    core.say(state, t("dress.reussi.dit", nom=e["nom"], eclat=" ✨" if d["shiny"] else "", marque=ind["marque"]), 14)
+    core.say(state, t("dress.reussi.dit", nom=e["nom"], eclat=(" ✨" if d["shiny"] else "") + (" ▚" if ind.get("glitch") else ""),
+                      marque=ind["marque"]), 14)
     core.notif(state, t("dress.reussi.notif", titre=titre))
     core.animer(state, "victoire")
     st = e.get("stat")
@@ -790,10 +792,12 @@ def jauge(valeur, maxi, largeur, inverse=False):
 
 
 def petit_dessin(e, shiny, ind=None):
-    """Le monstre en gros pixels (son vrai stade et sa variante) ; Abyssor : version détaillée réduite."""
+    """Le monstre en gros pixels (son vrai stade et sa variante) ; Abyssor : version détaillée réduite.
+    Un individu glitch suit l'horloge (la fenêtre du face-à-face se redessine : un éclair de temps en temps)."""
     if ind and B.image(e):
+        from . import glitch as G
         return B.dessin(e, shiny, stade=ind.get("stade", "adulte"), vid=ind.get("variante", "classique"),
-                        teinte=ind.get("teinte", 0.5))
+                        teinte=ind.get("teinte", 0.5), glitch=G.maintenant(ind))
     if e.get("sprite_grand"):
         g = dict(e)
         g["sprite_grand"] = [r[::2] for r in e["sprite_grand"][::2]]
@@ -847,7 +851,7 @@ def lignes_ecran(state, largeur_txt=62):
         sb = bete.get("stats") or eb["stats"]
         st_f = "  ".join(f"{fg(COUL_STAT.get(k, 250))}{B.nom_stat(k, pc)}{RESET} {BOLD}{sb[k]}{RESET}"
                          for k in ("ATK", "DEF", "VIT") if k in sb)
-        gauche_txt = [f"{BOLD}{B.nom_affiche(eb, bete.get('shiny'), B.rarete_de(bete))}{RESET} {DIM}· "
+        gauche_txt = [f"{BOLD}{B.nom_affiche(eb, bete.get('shiny'), B.rarete_de(bete), bete.get('glitch'))}{RESET} {DIM}· "
                       + B.nom_stade(bete.get("stade", "bebe")) + RESET, st_f,
                       f"{fg(250)}{ajuster(terme('pv', pc, majuscule=True), 8)}{RESET} " + combat.coeurs(*cb["moi"])]
     else:
@@ -868,7 +872,7 @@ def lignes_ecran(state, largeur_txt=62):
     else:
         st_m = f"{DIM}" + t("dress.stats_cachees", stats=terme("stats", p)) + RESET
     rar = d.get("rarete") or "commune"
-    droite_txt = [f"{BOLD}{B.nom_affiche(e, d['shiny'], rar if d.get('examine') else None)}{RESET} "
+    droite_txt = [f"{BOLD}{B.nom_affiche(e, d['shiny'], rar if d.get('examine') else None, ind.get('glitch'))}{RESET} "
                   f"{DIM}#{e['numero']:03d}{RESET} "
                   + (B.libelle_rarete(rar) if d.get("examine") else f"{DIM}" + t("dress.rarete_cachee") + RESET), st_m,
                   f"{fg(213)}{terme('mefiance', p)}{RESET} {jauge(mef, 100, 12, inverse=True)} {mef:3.0f} %"]

@@ -155,7 +155,7 @@ def ecran_equipe(state):
         repos = f" {fg(117)}" + t("eq.repos", min=max(1, round((c["repos"] - time.time()) / 60))) + RESET if dort else ""
         ty = guide.type_ind(c)
         envie = " " + t("guide.ecran.sortir") if c.get("id") in sortir else ""
-        lignes.append(f" {marque}{B.nom_affiche(e, c.get('shiny'), B.rarete_de(c))} {DIM}· {guide.ICONES[ty]} {guide.nom_type(ty)}"
+        lignes.append(f" {marque}{B.nom_affiche(e, c.get('shiny'), B.rarete_de(c), c.get('glitch'))} {DIM}· {guide.ICONES[ty]} {guide.nom_type(ty)}"
                       f" · {B.nom_stade(s)}{' · ' + var if var != 'classique' else ''} · {B.nom_rarete(B.rarete_de(c))} · {barre}{RESET}"
                       f"{repos}{envie}")
     lignes += ["", f" {DIM}" + t("eq.pied") + RESET]
@@ -193,8 +193,9 @@ def animation(ind, quoi, aura=False, fin=False, eclat=None):
         return None
     teinte = ind.get("teinte", 0.5) if ind.get("shiny") else None
     from . import aura as A
+    from . import glitch as G
     return anim_auto.lignes(e, s, ind.get("variante", "classique"), quoi, teinte, A.palier_ind(ind) if aura else None,
-                            fin, eclat)
+                            fin, eclat, G.de(ind))
 
 
 def _eclat(state):
@@ -242,15 +243,16 @@ def jouer(state, args, tours=None):
     r = animation(ind, quoi, aura=True, fin=True, eclat=_eclat(state))
     if r is None:
         from . import aura as A
+        from . import glitch as G
         print("\n".join(B.dessin(B.espece(ind["espece"]), ind.get("shiny"), stade=stade(ind),
                                  vid=ind.get("variante", "classique"), teinte=ind.get("teinte", 0.5),
-                                 aura=A.palier_ind(ind))))
+                                 aura=A.palier_ind(ind), glitch=G.de(ind))))
         print(f" {DIM}" + t("eq.pas_d_image", nom=ind["espece"]) + RESET)
         return
     frames, ips = r
     if tours is None:
         tours = 1 if quoi == "evolution" else 3
-    titre = f" {B.nom_affiche(B.espece(ind['espece']), ind.get('shiny'), B.rarete_de(ind))} {DIM}· {B.nom_stade(stade(ind))} · {quoi}{RESET}"
+    titre = f" {B.nom_affiche(B.espece(ind['espece']), ind.get('shiny'), B.rarete_de(ind), ind.get('glitch'))} {DIM}· {B.nom_stade(stade(ind))} · {quoi}{RESET}"
     derouler(frames, ips, tours, titre)
     if quoi == "evolution":
         print(f" {BOLD}" + t("eq.nouvelle_forme", nom=ind["espece"], stade=B.nom_stade(stade(ind))) + RESET)

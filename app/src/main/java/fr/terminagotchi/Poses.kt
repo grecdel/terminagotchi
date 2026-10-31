@@ -40,7 +40,22 @@ object Poses {
         }
         /** le bord avant du corps à la hauteur de la bouche (fraction de la largeur depuis les pieds) */
         val bord: Float by lazy { bordDevant(images("assis")[0], (bouche ?: (0f to -0.3f)).second) }
-        fun image(etat: String, t: Int): Cadre { val l = images(etat); return l[Math.floorMod(t, l.size)] }
+        /** la graine d'un individu glitch (Glitch.de) : l'effet se pose sur chaque image montrée */
+        var glitch: String? = null
+        private val glitchees = HashMap<String, Cadre>()
+        fun image(etat: String, t: Int): Cadre {
+            val l = images(etat)
+            val c = l[Math.floorMod(t, l.size)]
+            val sp = Glitch.maintenant(glitch) ?: return c
+            val cle = "${c.cle}/${System.identityHashCode(c)}/${sp.style}${sp.phase}"
+            return glitchees.getOrPut(cle) {
+                if (glitchees.size > 400) glitchees.clear()
+                val w2 = c.w + 4                                   // 2 pixels de chaque côté pour le liseré
+                val px = IntArray(w2 * c.h)
+                for (y in 0 until c.h) System.arraycopy(c.argb, y * c.w, px, y * w2 + 2, c.w)
+                Cadre(w2, c.h, Glitch.sur(w2, c.h, px, sp), c.ax + 2, c.ay, "${c.cle}/glitch/${sp.graine}/${sp.style}${sp.phase}")
+            }
+        }
     }
 
     /** une pose absente prend celle-ci (album calculé, ancien poses.bin) */
@@ -174,7 +189,10 @@ object Poses {
     }
 
     /** L'album d'une bestiole de l'équipe : dessinée au stade bébé si possible, sinon l'animation de son stade. */
-    fun albumEspece(espece: Bestiaire.Espece, stade: String, shiny: Boolean): Album? {
+    fun albumEspece(espece: Bestiaire.Espece, stade: String, shiny: Boolean, glitch: String? = null): Album? =
+        albumEspece0(espece, stade, shiny)?.also { it.glitch = glitch }
+
+    private fun albumEspece0(espece: Bestiaire.Espece, stade: String, shiny: Boolean): Album? {
         if (stade == "bebe") dessine(espece.id, if (shiny) 0.5 else null)?.let { return it }
         val img = Bestiaire.image(espece, if (stade == "finale") "ancien" else stade) ?: return null
         val etats = LinkedHashMap<String, List<Cadre>>()

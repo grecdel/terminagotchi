@@ -6,7 +6,14 @@ Chaque monde (programme.json, « mondes ») a ses types attirés et ses exploits
                    (pas « classique »), sinon la première d'un type du monde, sinon la toute première ;
   - « legendaire » (bonus_legendaire rencontre) : jusqu'à essais_legendaire compteurs, la première légendaire,
                    sinon la toute première.
+  - « gardien »    (bonus_gardien rencontres) : jusqu'à essais_gardien compteurs, le premier GARDIEN de la boîte
+                   maîtrisée (« gardiens » du monde : boîte → espèce), sinon le tout premier.
 Les variantes « réservées » d'un monde (variantes_reservees) n'apparaissent qu'une fois un de ses exploits réussi.
+
+Le glitch (glitch.py, tirage.glitch) : chaque créature a 1 chance sur 4096 d'être glitch ; le gardien d'une boîte
+maîtrisée de la Citadelle (exploit « gardien », champ « boite »), chaque fois qu'il apparaît, 1 chance sur 8.
+L'individu le déclare (« gardien » : la boîte) pour que le serveur refasse le même tirage. On ne le reçoit jamais :
+il faut le rencontrer, puis le dresser.
 
 Le tirage lui-même ne change PAS (pc/tg/tirage.py, Tirage.kt, site/src/tirage.js) : chaque créature reste le tirage
 exact d'un (graine, compteur), vérifié par le serveur comme les autres. Le jeu choisit seulement QUEL compteur il
@@ -49,6 +56,34 @@ def r_(state):
     return r
 
 
+def gardiens():
+    """{boîte: identifiant de l'espèce gardienne} (les 8 boîtes de la Citadelle, codées ou annoncées)."""
+    out = {}
+    for m in mondes():
+        out.update(m.get("gardiens", {}))
+    return out
+
+
+def boites_maitrisees(state):
+    """Les boîtes maîtrisées (leur exploit « gardien » est réussi)."""
+    faits = r_(state)["exploits"]
+    return [x["boite"] for m in mondes() for x in m.get("exploits", [])
+            if x.get("recompense") == "gardien" and x.get("boite") and x["id"] in faits]
+
+
+def gardien_de(state, e):
+    """La boîte maîtrisée dont cette espèce est le gardien, ou None."""
+    eid = (e.get("id") if isinstance(e, dict) else getattr(e, "id", None)) or ""
+    g = gardiens()
+    return next((b for b in boites_maitrisees(state) if g.get(b) == eid), None)
+
+
+def _nom_espece(eid):
+    from . import bestiaire
+    e = bestiaire.espece(eid)
+    return e["nom"] if e else eid
+
+
 def exploit(state, eid, maintenant=None):
     """Un exploit réussi : la faveur qu'il donne. Renvoie le texte à dire, ou None (inconnu, ou déjà fait)."""
     m, x = exploit_def(eid)
@@ -60,6 +95,8 @@ def exploit(state, eid, maintenant=None):
     r["exploits"][eid] = int(maintenant if maintenant is not None else time.time())
     n = conf().get("bonus_" + x["recompense"], 1)
     r["faveurs"].append({"exploit": eid, "reste": n})
+    if x["recompense"] == "gardien":
+        return t("recomp.gardien", boite=t("cit.boite." + x["boite"]), espece=_nom_espece(gardiens().get(x["boite"], "")))
     return t("recomp.exploit", exploit=t(x["nom"]), n=n)
 
 
@@ -83,8 +120,15 @@ def _rarete(c):
     return bestiaire.rarete_de(c)
 
 
-def choisir(candidats, genre, types):
-    """L'indice du candidat gardé parmi [(espèce, champs)] (dans l'ordre des compteurs)."""
+def _id(e):
+    return (e.get("id") if isinstance(e, dict) else getattr(e, "id", None)) or ""
+
+
+def choisir(candidats, genre, types, cible=None):
+    """L'indice du candidat gardé parmi [(espèce, champs)] (dans l'ordre des compteurs).
+    cible : l'espèce gardienne (genre « gardien »)."""
+    if genre == "gardien":
+        return next((i for i, (e, _c) in enumerate(candidats) if _id(e) == cible), 0)
     if genre == "legendaire":
         return next((i for i, (_e, c) in enumerate(candidats) if _rarete(c) == "légendaire"), 0)
     rare = next((i for i, (e, c) in enumerate(candidats)
@@ -94,8 +138,10 @@ def choisir(candidats, genre, types):
     return next((i for i, (e, c) in enumerate(candidats) if _type(e, c.get("variante")) in types), 0)
 
 
-def reussi(genre, types, e, champs):
+def reussi(genre, types, e, champs, cible=None):
     """Le candidat gardé est bien celui que l'exploit attire (sinon : la rencontre normale)."""
+    if genre == "gardien":
+        return _id(e) == cible
     if genre == "legendaire":
         return _rarete(champs) == "légendaire"
     return _type(e, champs.get("variante")) in types
@@ -113,13 +159,33 @@ def reservee(state, e, vid):
     return False
 
 
-def favoriser(valeur, n0, genre, types, abyssor_permis=False, attire=None):
+def favoriser(valeur, n0, genre, types, abyssor_permis=False, attire=None, cible=None):
     """Spécification pure (vecteurs communs) : le compteur gardé et le tirage, de n0 à n0 + essais − 1."""
     from . import tirage
     essais = conf().get("essais_" + genre, 1)
     cands = [tirage.tirer(valeur, n0 + k, abyssor_permis, attire) for k in range(essais)]
-    i = choisir(cands, genre, types)
+    i = choisir(cands, genre, types, cible)
     return n0 + i, cands[i][1]
+
+
+def marquer_glitch(state, e, ind):
+    """Après le choix de l'apparition : le gardien d'une boîte maîtrisée le déclare (« gardien »), puis le glitch est
+    tiré (à part : tirage.glitch, de la même graine ; au hasard sans graine). Renvoie le texte à dire, ou None."""
+    from . import tirage
+    b = gardien_de(state, e)
+    if b:
+        ind["gardien"] = b
+    else:
+        ind.pop("gardien", None)
+    v = tirage.valeur_de(state, ind)
+    g = tirage.glitch(v, ind["n"], bool(b)) if v else tirage.glitch_au_hasard(bool(b))
+    if g:
+        ind["glitch"] = True
+    else:
+        ind.pop("glitch", None)
+    if not g:
+        return None
+    return t("recomp.glitch_gardien" if b else "recomp.glitch", espece=ind.get("espece", ""))
 
 
 def apparition(state, premiere, tirer_un):
@@ -132,16 +198,17 @@ def apparition(state, premiere, tirer_un):
     if f:
         m, x = exploit_def(f["exploit"])
         genre, types = x["recompense"], m.get("types", [])
+        cible = m.get("gardiens", {}).get(x.get("boite")) if genre == "gardien" else None
         essais = conf().get("essais_" + genre, 1)
         while len(cands) < essais:
             c = tirer_un()
             if c is None:
                 break
             cands.append(c)
-        i = choisir([(e, ind) for e, ind in cands], genre, types)
+        i = choisir([(e, ind) for e, ind in cands], genre, types, cible)
         f["reste"] -= 1
         r_(state)["faveurs"] = [g for g in r_(state)["faveurs"] if g.get("reste", 0) > 0]
-        if reussi(genre, types, *cands[i]):
+        if reussi(genre, types, *cands[i], cible=cible):
             texte = t("recomp.rencontre", exploit=t(x["nom"]))
         e, ind = cands[i]
     else:

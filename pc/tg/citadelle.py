@@ -812,7 +812,7 @@ LECONS = {
            re=r"(^grep\s+(-\w*r\w*\s+)+.*TG.*droits|select-string.*TG)"),
         _n("cit14", 3, cmd="citadelle drapeau ?", fs="cit_drapeaux_droits"),
         _n("cit14", 4, cmd="chmod o-rwx boites/droits/*", fs="cit_rempart_droits", win=False),
-        _n("cit14", 5, cmd="citadelle inspecteur droits", fs="cit_inspecte_droits"),
+        _n("cit14", 5, cmd="citadelle inspecteur droits", fs="cit_inspecte_droits", exploit="citadelle.boite.droits"),
     ]},
     # boîte 3 (Facile) : Secrets oubliés — un secret en clair, ça s'efface et ça se change
     "cit15": {"titre": "hist.cit15.titre", "skill": None, "steps": [
@@ -824,7 +824,7 @@ LECONS = {
         _n("cit15", 3, cmd=C("rm boites/secrets/.historique_fictif", "Remove-Item -Force boites/secrets/.historique_fictif"),
            fs="cit_historique"),
         _n("cit15", 4, cmd="citadelle rotation secrets", fs="cit_rotation"),
-        _n("cit15", 5, cmd="citadelle inspecteur secrets", fs="cit_inspecte_secrets"),
+        _n("cit15", 5, cmd="citadelle inspecteur secrets", fs="cit_inspecte_secrets", exploit="citadelle.boite.secrets"),
     ]},
     # C7 la grande vague : le pare-feu (notions) et le tableau de garde
     "cit16": {"titre": "hist.cit16.titre", "skill": None, "steps": [

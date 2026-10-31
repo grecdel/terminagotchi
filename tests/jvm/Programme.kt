@@ -114,7 +114,8 @@ fun main(args: Array<String>) {
     val rdiff = mutableListOf<String>()
     for (i in 0 until cas.length()) {
         val x = cas.getJSONObject(i)
-        val (nGarde, champs) = Recompenses.favoriser(x.getString("valeur"), x.getLong("n0"), x.getString("genre"), liste(x.getJSONArray("types")))
+        val (nGarde, champs) = Recompenses.favoriser(x.getString("valeur"), x.getLong("n0"), x.getString("genre"), liste(x.getJSONArray("types")),
+            cible = x.optString("cible").ifEmpty { null })
         val att = x.getJSONObject("attendu")
         if (nGarde != att.getLong("n") || champs.toString() != att.getJSONObject("champs").toString())
             rdiff.add("${x.getString("exploit")} n0=${x.getLong("n0")} → $nGarde (Python ${att.getLong("n")})")

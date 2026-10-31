@@ -115,6 +115,29 @@ export function tirer(valeur, compteur, abyssorPermis = false, attire = null) {
 }
 
 /**
+ * 13. Le glitch (tirage À PART, pc/tg/tirage.py) : Hasard(valeur, compteur + 2^20).entier(4096) ; glitch si 0
+ * (1 chance sur 4096), ou si < 512 (1 chance sur 8) pour le gardien d'une boîte maîtrisée de la Citadelle.
+ */
+export function glitchDe(valeur, compteur, gardien = false) {
+  const r = new Hasard(valeur, D.compteur_glitch + compteur).entier(D.chance_glitch);
+  return gardien ? r < D.chance_glitch / D.chance_glitch_gardien : r === 0;
+}
+
+/** Les gardiens des boîtes codées de la Citadelle : { boîte: nom de l'espèce }. */
+export const GARDIENS = D.gardiens;
+
+/**
+ * « gardien » déclaré par une capture : plausible si c'est une boîte codée dont l'espèce est le gardien.
+ * Renvoie true (gardien), false (rien de déclaré) ou undefined (impossible). Le serveur ne sait pas quelles boîtes
+ * le joueur a maîtrisées (tout se joue hors ligne) : il vérifie seulement que l'espèce garde bien cette boîte.
+ */
+export function gardienPlausible(gardien, espece) {
+  if (gardien === undefined || gardien === null || gardien === "") return false;
+  if (typeof gardien !== "string" || !Object.hasOwn(GARDIENS, gardien)) return undefined;
+  return GARDIENS[gardien] === espece ? true : undefined;
+}
+
+/**
  * Compare une capture envoyée par un appareil au tirage refait par le serveur.
  * Renvoie la liste des champs qui ne correspondent pas (vide = conforme).
  */
@@ -132,6 +155,9 @@ export function differences(c, champs) {
   for (const [k, v] of Object.entries(champs.stats)) pareil("stats." + k, Number(c.stats?.[k]), v);
   if (c.rarete !== undefined) pareil("rarete", c.rarete, champs.rarete);
   if (champs.shiny) pareil("teinte", Math.round(Number(c.teinte) * 1000), Math.round(champs.teinte * 1000));
+  // le glitch (champs.glitch, ajouté par le serveur) : un faux glitch est repéré ; une capture d'une version du jeu
+  // d'avant le glitch (sans le champ) reste conforme, elle est simplement gardée sans glitch
+  if (c.glitch === true && champs.glitch !== undefined) pareil("glitch", true, champs.glitch);
   return ecarts;
 }
 

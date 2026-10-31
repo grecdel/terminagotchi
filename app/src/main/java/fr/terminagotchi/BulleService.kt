@@ -259,7 +259,7 @@ class BulleService : Service() {
             val c = caps.getJSONObject(i)
             if (c.optString("id") == id) {
                 val e = Bestiaire.espece(c.optString("espece")) ?: return null
-                return try { Poses.albumEspece(e, c.optString("stade", "bebe"), c.optBoolean("shiny")) } catch (x: Exception) { null }
+                return try { Poses.albumEspece(e, c.optString("stade", "bebe"), c.optBoolean("shiny"), Glitch.de(c)) } catch (x: Exception) { null }
             }
         }
         return null

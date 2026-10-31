@@ -5,7 +5,8 @@
  */
 
 import BESTIAIRE from "./bestiaire.js";
-import { tirer, differences, stadePlausible, attirancePlausible, MAX_APPARITIONS, PAR_NOM_T, TIRAGE } from "./tirage.js";
+import { tirer, differences, stadePlausible, attirancePlausible, MAX_APPARITIONS, PAR_NOM_T, TIRAGE, glitchDe, gardienPlausible } from "./tirage.js";
+import { SCRIPT_GLITCH, REPERE as REPERE_GLITCH } from "./glitch.js";
 import { LANGUES, NOMS_LANGUES, LOCALES, RTL, choisirLangue, cookieLangue, textes, libelle } from "./i18n.js";
 import { confidentialiteFr, mentionsFr } from "./legal_fr.js";
 import * as ENT from "./entrainement.js";
@@ -227,7 +228,11 @@ async function verifierCaptures(env, joueur, etat, envoyees, vusEnvoyes = []) {
     if (!postes.get(poste)) { non("graine d'un autre joueur"); continue; }
     const attire = attirancePlausible(c.attire, vus);
     if (attire === undefined) { non("attirance impossible"); continue; }
-    const { champs } = tirer(await valeurGraine(env, joueur.id, poste, jour), n, c.espece === "Abyssor", attire);
+    const gardien = gardienPlausible(c.gardien, c.espece);
+    if (gardien === undefined) { non("gardien impossible"); continue; }
+    const valeur = await valeurGraine(env, joueur.id, poste, jour);
+    const { champs } = tirer(valeur, n, c.espece === "Abyssor", attire);
+    champs.glitch = glitchDe(valeur, n, gardien);
     if (differences(c, champs).length) { non("ne correspond pas au tirage"); continue; }
     const i0 = TIRAGE.stades.indexOf(champs.stade);
     const voulu = TIRAGE.stades.includes(c.stade) ? c.stade : champs.stade;
@@ -446,6 +451,7 @@ function fusionner(etat, envoi, appareil, verdicts = new Map()) {
         humeur: t.humeur, taille: t.taille, qualite: t.qualite, potentiel: t.potentiel, stats: t.stats, note: t.note,
         rarete: t.rarete, zone, stade: v.stade, stade0: t.stade, depuis: v.depuis, teinte: t.teinte ?? 0,
         graine: c.graine, n: c.n, verifie: true, ...(typeof c.attire === "string" && { attire: c.attire }),
+        ...(c.glitch === true && t.glitch && { glitch: true }), ...(typeof c.gardien === "string" && { gardien: c.gardien }),
       });
       connues.add(c.id);
       continue;
@@ -457,7 +463,7 @@ function fusionner(etat, envoi, appareil, verdicts = new Map()) {
       humeur: c.humeur, taille: Math.max(0, Math.min(1000, Number(c.taille) || 0)), potentiel: entier(c.potentiel, 100),
       stats: st, zone,
       stade: STADES_B.includes(c.stade) || TIRAGE.stades.includes(c.stade) ? c.stade : "enfant",
-      teinte: Math.max(0, Math.min(1, Number(c.teinte) || 0)),
+      teinte: Math.max(0, Math.min(1, Number(c.teinte) || 0)), ...(c.glitch === true && { glitch: true }),
       verifie: false, ...(v?.raison && { raison: v.raison }),
     });
     connues.add(c.id);
@@ -810,6 +816,9 @@ async function profilPublic(env, pseudo) {
     appareils: Object.keys(e.appareils || {}), inscrit: new Date(j.cree).toISOString(),
     shiny: e.shiny === true, captures: (e.captures || []).length,
     capturesVerifiees: (e.captures || []).filter((c) => c.verifie === true).length, partage: e.partage?.actif === true,
+    // les bestioles glitch (très rares), montrées sur le profil seulement si le joueur partage ses captures
+    glitchs: e.partage?.actif === true ? (e.captures || []).filter((c) => c.glitch === true).slice(0, 24)
+      .map((c) => ({ id: c.id, espece: c.espece, stade: c.stade, variante: c.variante, shiny: c.shiny === true, teinte: c.teinte })) : [],
     badges: b.results.map((x) => ({ ...x, lien: "/badge/" + x.id })),
     entrainement: await entrainementPublic(env, j.id, e.entrainement),
   };
@@ -1097,6 +1106,7 @@ code{padding:2px 6px;line-height:1.5;overflow-wrap:anywhere}
 pre{padding:12px;overflow-x:auto;text-align:left}
 .ltr{direction:ltr;unicode-bidi:isolate}
 .creature{image-rendering:pixelated;max-width:100%;height:auto}
+.glitchnom{color:#ff2878;text-shadow:1px 0 #28e6ff,-1px 0 rgba(255,40,120,.6)}
 .rgb{background:linear-gradient(90deg,#ff6b6b,#ffd75f,#5cff95,#5fd7ff,#c58cff,#ff7aa8,#ff6b6b);background-size:200% auto;
  -webkit-background-clip:text;background-clip:text;color:transparent;animation:rgb 4s linear infinite}
 @keyframes rgb{to{background-position:200% center}}
@@ -1368,10 +1378,16 @@ async function pageJoueur(env, L, pseudo) {
     const e = especeDe(nom);
     if (e && n) parEspece.set(e, (parEspece.get(e) || 0) + n);
   }
+  // une espèce dont le joueur a une bestiole glitch : elle est montrée glitch (son portrait, son stade)
+  const glitchsParEspece = new Map();
+  for (const c of p.glitchs || []) {
+    const e = especeDe(c.espece);
+    if (e && e.portrait && !glitchsParEspece.has(e)) glitchsParEspece.set(e, { ...c, glitch: true, stade: stadePortrait(c.stade), variante: varianteDessinee(e, c.variante) });
+  }
   const coll = [...parEspece].sort((a, b) => a[0].numero - b[0].numero).map(([e, n]) =>
     `<a class="bestiole" style="--r:${COULEUR_RARETE[e.rarete]}" href="${e.secrete ? `/captures?joueur=${encodeURIComponent(p.pseudo)}` : `/bestiaire/${e.id}`}">
      <div class="haut"><span>${numero(e)}</span><span class="fam" title="${echapper(lib(L, "familles", e.famille))}">${e.icone}</span></div>
-     <div class="ecran">${visuel(L, e)}</div><div class="nom-b">${bdi(e.nom)} <bdi>×${n}</bdi></div></a>`).join("");
+     <div class="ecran">${visuel(L, e, glitchsParEspece.get(e))}</div><div class="nom-b">${glitchsParEspece.has(e) ? nomGlitch(bdi(e.nom)) : bdi(e.nom)} <bdi>×${n}</bdi></div></a>`).join("");
   const collHtml = coll ? `<p class="doux">${J.nbEspeces(parEspece.size)}</p><div class="grille-b">${coll}</div>`
     : `<span class="doux">${J.aucuneBestiole}</span>`;
   const comp = p.competences.map((c) => `<span class="badge">◇ ${bdi(c)}</span>`).join("")
@@ -1394,7 +1410,7 @@ async function pageJoueur(env, L, pseudo) {
 <h2>${J.badges}</h2><div>${badges}</div>
 ${sectionEntrainement(L, p.entrainement)}
 <h2>${J.competences} <span class="doux petit">${J.declarees}</span></h2><div>${comp}</div>
-<h2>${J.collection}</h2>${collHtml}
+<h2>${J.collection}</h2>${collHtml}${scriptGlitch(collHtml)}
 ${p.partage ? `<p style="margin-top:20px"><a href="/captures?joueur=${encodeURIComponent(p.pseudo)}">${J.voirCaptures}</a></p>` : ""}
 <p class="doux petit" style="margin-top:32px">${J.inscrit(new Date(p.inscrit).toLocaleDateString(L.locale))} ·
 <a href="/api/profil/${encodeURIComponent(p.pseudo)}">${J.json}</a></p>`, J.description(p.nom, p.pseudo, p.niveau));
@@ -1492,12 +1508,24 @@ const varianteDessinee = (e, vid) => (e.variantes.some((v) => v.id === vid && v.
 /** Le stade d'une capture : nouveaux stades, ou anciens (enfant…finale) ramenés aux nouveaux. */
 const stadePortrait = (s) => (TIRAGE.stades.includes(s) ? s : s === "finale" ? "ancien" : STADES_B.includes(s) ? s : "adulte");
 
-/** Le dessin d'une bestiole : son portrait (variante, stade, teinte shiny), l'animation d'Abyssor, sinon le petit sprite. */
+/** Le nom d'une bestiole glitch : lettres rose et cyan, et le repère ▚ (comme ✨ pour un shiny). */
+function nomGlitch(html) {
+  return `<span class="glitchnom">${html} ${REPERE_GLITCH}</span>`;
+}
+
+/** Le script de l'effet glitch, à poser une fois dans une page qui montre une bestiole glitch. */
+const scriptGlitch = (html) => (html.includes("data-glitch=") ? `<script>${SCRIPT_GLITCH}</script>` : "");
+
+/** Le dessin d'une bestiole : son portrait (variante, stade, teinte shiny), l'animation d'Abyssor, sinon le petit sprite.
+ *  Une bestiole glitch (c.glitch) : son portrait est redessiné par le script de l'effet (glitch.js, SCRIPT_GLITCH). */
 function visuel(L, e, c = {}, anim = "statique") {
+  c = c || {};
   const filtre = c.shiny ? ` style="filter:hue-rotate(${Math.round((c.teinte || 0.5) * 360)}deg)"` : "";
   if (e.portrait) {
     const stade = stadePortrait(c.stade);
-    return imgPortrait(e, varianteDessinee(e, c.variante), stade, `${e.nom} (${lib(L, "stadesB", stade)})`, filtre);
+    const g = c.glitch === true && typeof c.id === "string"
+      ? ` data-glitch="${echapper(c.id)}"${c.shiny ? ` data-teinte="${Math.round((c.teinte || 0.5) * 360)}"` : ""}` : "";
+    return imgPortrait(e, varianteDessinee(e, c.variante), stade, `${e.nom} (${lib(L, "stadesB", stade)})`, filtre + g);
   }
   if (!ANIMEES.has(e.id)) return svgBestiole(e, c.shiny, 6);
   const stade = STADES_B.includes(c.stade) ? c.stade : "adulte";
@@ -1637,7 +1665,8 @@ async function pageCaptures(env, L, url) {
   // l'espèce d'une capture : tirage vérifié, nouveau nom, ou ancien nom (bestiaire v1)
   const especeCapture = (c) => (c.verifie === true && PAR_NOM_T[c.espece] ? PAR_ID[PAR_NOM_T[c.espece].id] : null) || especeDe(c.espece);
   caps = caps.filter((c) => especeCapture(c) && (!shinySeul || c.shiny) && (!rarete || c.rarete === rarete));
-  caps.sort((a, b) => (b.shiny - a.shiny) || ((b.verifie === true) - (a.verifie === true)) || (b.date - a.date));
+  caps.sort((a, b) => ((b.glitch === true) - (a.glitch === true)) || (b.shiny - a.shiny)
+    || ((b.verifie === true) - (a.verifie === true)) || (b.date - a.date));
   const total = caps.length;
   caps = caps.slice(0, 120);
   const cartes = caps.map((c) => {
@@ -1648,7 +1677,8 @@ async function pageCaptures(env, L, url) {
     // rareté : celle de l'individu (nouveau bestiaire) ; les anciennes captures n'en ont pas
     const rar = COULEUR_RARETE[c.rarete] ? c.rarete : null;
     const brille = c.shiny || ["légendaire", "mythique"].includes(rar);
-    const nom = brille ? `<span class="rgb">${bdi(e.nom)}${c.shiny ? " ✨" : ""}</span>` : bdi(e.nom);
+    const nom0 = brille ? `<span class="rgb">${bdi(e.nom)}${c.shiny ? " ✨" : ""}</span>` : bdi(e.nom);
+    const nom = c.glitch === true ? nomGlitch(nom0) : nom0;
     const stade = e.portrait ? stadePortrait(c.stade) : STADES_B.includes(c.stade) ? c.stade : "adulte";
     const vid = e.portrait ? varianteDessinee(e, c.variante) : "classique";
     const variante = c.variante && c.variante !== "classique" ? e.variantes.find((v) => v.id === c.variante) : null;
@@ -1675,7 +1705,7 @@ ${cartes ? `<div class="grille-b" style="grid-template-columns:repeat(auto-fill,
     : `<div class="carte"><p class="doux">${K.aucune}</p></div>`}
 <h2>${K.apparaitre}</h2>
 <div class="carte"><p>${K.apparaitreTexte}</p>
-<p class="doux">${K.declarees}</p></div>`,
+<p class="doux">${K.declarees}</p></div>${scriptGlitch(cartes)}`,
   K.description);
 }
 

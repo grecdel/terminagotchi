@@ -58,10 +58,12 @@ def recompenses_vecteurs():
     for m in programme.donnees()["mondes"]:
         for x in m["exploits"]:
             genre = x["recompense"]
+            cible = m.get("gardiens", {}).get(x.get("boite")) if genre == "gardien" else None
             for g in GRAINES:
                 for n0 in (0, 17, 60, 123):
-                    n, champs = recompenses.favoriser(g, n0, genre, m["types"])
+                    n, champs = recompenses.favoriser(g, n0, genre, m["types"], cible=cible)
                     cas.append({"monde": m["id"], "exploit": x["id"], "genre": genre, "types": m["types"],
+                                **({"cible": cible} if cible else {}),
                                 "valeur": g, "n0": n0, "attendu": {"n": n, "champs": champs}})
     return {"note": "Généré par pc/outils/vecteurs_phase4.py ; chaque tirage gardé est un tirage exact de "
                     "(valeur, n) : le serveur le vérifie comme les autres (site/test/tirage.mjs).",

@@ -46,7 +46,23 @@ def donnees_site():
         "marques": d["marques"], "humeurs": d["humeurs"], "stades": B.STADES,
         "poids_stades": T.POIDS_STADES, "max_apparitions": T.MAX_APPARITIONS,
         "attirance": T.ATTIRANCE, "familles": B.familles(), "especes": especes,
+        "chance_glitch": T.CHANCE_GLITCH, "chance_glitch_gardien": T.CHANCE_GLITCH_GARDIEN,
+        "compteur_glitch": T.COMPTEUR_GLITCH, "gardiens": gardiens_codes(),
     }
+
+
+def gardiens_codes():
+    """{boîte: nom de l'espèce gardienne} des boîtes de la Citadelle déjà codées (citadelle.json « boites ») : le
+    serveur n'accepte « gardien » que pour elles (programme.json, monde citadelle, « gardiens »)."""
+    prog = json.loads((RACINE / "pc/tg/programme.json").read_text(encoding="utf-8"))
+    cit = json.loads((RACINE / "pc/tg/citadelle.json").read_text(encoding="utf-8"))
+    codees = [b["id"] for b in cit["boites"]]
+    g = {}
+    for m in prog["mondes"]:
+        for b, eid in m.get("gardiens", {}).items():
+            if b in codees:
+                g[b] = B.espece(eid)["nom"]
+    return g
 
 
 def vecteurs():
@@ -78,8 +94,19 @@ def vecteurs():
         if cle and trouves[cle] < 3:
             trouves[cle] += 1
             tirages.append({"valeur": g, "n": n, "abyssor": False, "attendu": c})
+    # le glitch (tirage 13, à part) : normal et gardien, sur toutes les graines ; puis des glitchs cherchés exprès
+    glitchs = [{"valeur": g, "n": n, "gardien": gd, "glitch": T.glitch(g, n, gd)}
+               for g in GRAINES for n in range(0, 200, 7) for gd in (False, True)]
+    for g in GRAINES:
+        vus = 0
+        for n in range(200, 40000):
+            if T.glitch(g, n):
+                glitchs.append({"valeur": g, "n": n, "gardien": False, "glitch": True})
+                vus += 1
+                if vus == 2:
+                    break
     return {"version": T.VERSION, "note": "graines factices ; spécification dans pc/tg/tirage.py",
-            "splitmix": sorties, "tirages": tirages}
+            "splitmix": sorties, "tirages": tirages, "glitchs": glitchs}
 
 
 def main():

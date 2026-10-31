@@ -80,7 +80,7 @@ object Equipe {
             val v = c.optString("variante", "classique")
             sb.append(if (c.optString("id") == act?.optString("id")) "★ " else "   ")
                 .append(Bestiaire.balise(c)).append(" ")
-                .append(Bestiaire.nomAffiche(e, c.optBoolean("shiny"), r))
+                .append(Bestiaire.nomAffiche(e, c.optBoolean("shiny"), r, c.optBoolean("glitch")))
                 .append(Guide.typeInd(c).let { ty -> " · ${Guide.ICONES[ty]} ${Guide.nomType(ty)}" }).append(" · ${nomStade(s)}")
                 .append(if (v != "classique") " · $v" else "").append(" · ${Bestiaire.nomRarete(r)} · ")
                 .append(if (seuil != null) "${c.optInt("xp")}/$seuil XP" else t("eq.stade_max"))
@@ -189,7 +189,7 @@ object Animations {
     }
 
     /** Les images d'une bestiole (individu) pour une animation : faites main pour Abyssor, automatiques sinon. */
-    fun pour(ind: JSONObject, anim: String, stade: String, echelle: Int): Pair<List<Bitmap>, Int>? {
+    fun pour(ind: JSONObject, anim: String, stade: String, echelle: Int, glitch: Boolean = true): Pair<List<Bitmap>, Int>? {
         val e = Bestiaire.espece(ind.optString("espece")) ?: return null
         val shiny = ind.optBoolean("shiny")
         val teinte = ind.optDouble("teinte", 0.5)
@@ -198,7 +198,8 @@ object Animations {
             return p to ips(e.id)
         }
         val a = auto(e, stade, ind.optString("variante", "classique"), anim) ?: return null
-        return AnimAuto.bitmaps(a, echelle, if (shiny) teinte else null) to a.ips
+        // un individu glitch : l'effet au repos (style A) sur chaque image, après la teinte shiny
+        return AnimAuto.bitmaps(a, echelle, if (shiny) teinte else null, if (glitch) Glitch.repos(Glitch.de(ind)) else null) to a.ips
     }
 
     /** anime <nom> [animation] : une petite fenêtre qui joue l'animation. */
@@ -212,7 +213,15 @@ object Animations {
             if (i <= 0) return t("eq.encore_bebe", "nom" to e.nom)
             if (dispo(e.id)) stade = Equipe.STADES[i - 1]       // les animations faites main partent du stade d'avant
         }
-        val (imgs, ips) = pour(ind, anim, stade, if (dispo(e.id)) 5 else 6) ?: return t("eq.pas_d_image", "nom" to anim)
+        val ech = if (dispo(e.id)) 5 else 6
+        val g = if (dispo(e.id)) null else Glitch.de(ind)
+        val (imgs, ips) = pour(ind, anim, stade, ech, glitch = false) ?: return t("eq.pas_d_image", "nom" to anim)
+        // glitch : chaque image au style A, un éclair C de temps en temps (selon l'horloge)
+        val glitchees = HashMap<String, Bitmap>()
+        fun image(i: Int): Bitmap {
+            val sp = Glitch.maintenant(g) ?: return imgs[i]
+            return glitchees.getOrPut("$i/${sp.style}${sp.phase}") { Glitch.bitmap(imgs[i], sp, ech) }
+        }
         if (imgs.isEmpty()) return t("eq.pas_d_image", "nom" to anim)
         val dp = act.resources.displayMetrics.density
         val vue = ImageView(act).apply {
@@ -220,10 +229,10 @@ object Animations {
             scaleType = ImageView.ScaleType.FIT_CENTER
             if (ind.optBoolean("shiny") && dispo(e.id)) colorFilter = Bestiaire.filtreTeinte(ind.optDouble("teinte", 0.5))
         }
-        vue.setImageBitmap(imgs[0])
+        vue.setImageBitmap(image(0))
         val r = Bestiaire.rareteDe(ind)
         val titre = TextView(act).apply {
-            text = "${e.nom}${if (ind.optBoolean("shiny")) " ✨" else ""} · ${Equipe.nomStade(Equipe.stade(ind))} · $anim"
+            text = "${e.nom}${if (ind.optBoolean("shiny")) " ✨" else ""}${if (g != null) " " + Glitch.REPERE else ""} · ${Equipe.nomStade(Equipe.stade(ind))} · $anim"
             setTextColor(Bestiaire.COULEUR_RARETE[r] ?: 0xFFFFAF00.toInt()); textSize = 15f; gravity = Gravity.CENTER
         }
         val boite = LinearLayout(act).apply {
@@ -241,7 +250,7 @@ object Animations {
                 if (!dlg.isShowing) return
                 k++
                 if (k >= imgs.size * tours) { if (anim != "evolution") k = 0 else return }
-                vue.setImageBitmap(imgs[k % imgs.size])
+                vue.setImageBitmap(image(k % imgs.size))
                 h.postDelayed(this, pause)
             }
         }

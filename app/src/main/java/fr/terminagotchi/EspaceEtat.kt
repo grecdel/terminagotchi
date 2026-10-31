@@ -63,7 +63,7 @@ class EspaceEtat(private val jeu: Jeu, private val dossier: () -> java.io.File, 
                 val c = caps.optJSONObject(i) ?: continue
                 val e = Bestiaire.espece(c.optString("espece")) ?: continue
                 val st = c.optString("stade", "bebe").ifEmpty { "bebe" }
-                val al = try { Poses.albumEspece(e, st, c.optBoolean("shiny")) } catch (x: Exception) { null }
+                val al = try { Poses.albumEspece(e, st, c.optBoolean("shiny"), Glitch.de(c)) } catch (x: Exception) { null }
                 eq.add(EspaceDessin.Membre(al, c.optString("nom").ifEmpty { e.nom }, e.nom + " · " + Equipe.nomStade(st), "pret", false))
             }
         } catch (e: Exception) { }

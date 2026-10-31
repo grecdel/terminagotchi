@@ -132,6 +132,11 @@ def spawn(state):
         if msg:
             core.log(state, msg)
             core.say(state, msg, 10)
+    from . import recompenses as R_
+    msg = R_.marquer_glitch(state, e, ind)          # le glitch : tiré à part (tirage.glitch), très rare
+    if msg:
+        core.log(state, msg)
+        core.say(state, msg, 10)
     if attire:
         state["attirance"] = None                   # une commande attire UNE apparition
     shiny, vid = ind["shiny"], ind["variante"]
@@ -204,12 +209,13 @@ def _carte_individu(ind):
     if e is None:
         return []
     r = B.rarete_de(ind)
-    from . import aura
+    from . import aura, glitch
     sp = B.dessin(e, ind.get("shiny"), grand=True, stade=ind.get("stade", "adulte"), vid=ind.get("variante", "classique"),
-                  teinte=ind.get("teinte", 0.5), aura=aura.palier_ind(ind))     # l'aura montre sa rareté
+                  teinte=ind.get("teinte", 0.5), aura=aura.palier_ind(ind),     # l'aura montre sa rareté
+                  glitch=glitch.de(ind))
     var = ind.get("variante", "classique")
     infos = [
-        f"{B.nom_affiche(e, ind.get('shiny'), r)} {DIM}#{e['numero']:03d} · {RESET}{B.libelle_rarete(r)}"
+        f"{B.nom_affiche(e, ind.get('shiny'), r, ind.get('glitch'))} {DIM}#{e['numero']:03d} · {RESET}{B.libelle_rarete(r)}"
         f"{DIM} · {e['famille']}{' · ' + var if var != 'classique' else ''}{RESET}",
         f"{DIM}" + t("exp.signe") + f"{RESET} {ind.get('marque', '?')}",
         f"{DIM}" + t("exp.humeur", humeur=ind.get("humeur", "?"), cm=ind.get("taille", "?"), pot=ind.get("potentiel", "?")) + RESET,

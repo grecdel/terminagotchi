@@ -745,7 +745,8 @@ class Espace(B.Controleur):
                 continue
             stade = ind.get("stade", "bebe")
             try:
-                al = poses.album_espece(e["id"], "ancien" if stade == "finale" else stade, ind.get("shiny"))
+                from . import glitch as G
+                al = poses.album_espece(e["id"], "ancien" if stade == "finale" else stade, ind.get("shiny"), G.de(ind))
             except Exception:                        # noqa: BLE001
                 al = None
             s = "dort" if V.maintenant() % 60 < 20 and ind is st.get("captures", [])[0] else "pret"

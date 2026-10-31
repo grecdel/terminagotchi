@@ -385,8 +385,8 @@ object Bestiaire {
      * Son vrai stade et sa variante ; shiny = palette décalée de « teinte ». Abyssor garde son ancien dessin.
      */
     fun bitmap(e: Espece, shiny: Boolean = false, echelle: Int = 5, stade: String = "adulte",
-               vid: String = "classique", teinte: Double = 0.5): Bitmap {
-        val cle = "${e.id}-$vid-$stade-$shiny-$teinte-$echelle"
+               vid: String = "classique", teinte: Double = 0.5, glitch: Glitch.Spec? = null): Bitmap {
+        val cle = "${e.id}-$vid-$stade-$shiny-$teinte-$echelle" + (glitch?.let { "-g${it.graine}${it.style}${it.phase}" } ?: "")
         images[cle]?.let { return it }
         val img = image(e, stade, vid)
         val bmp = if (img == null) bitmapAncien(e, shiny, echelle) else {
@@ -394,11 +394,12 @@ object Bestiaire {
             val n = maxOf(img.w, img.h)
             val ox = (n - img.w) / 2
             val oy = n - img.h
-            val px = IntArray(n * n)
+            var px = IntArray(n * n)
             for (y in 0 until img.h) for (x in 0 until img.w) {
                 val k = img.octets[y * img.w + x].toInt() and 0xFF
                 if (k != 0) px[(y + oy) * n + x + ox] = pal[k - 1]
             }
+            px = Glitch.sur(n, n, px, glitch)                 // le glitch par-dessus la teinte shiny
             val b = Bitmap.createBitmap(px, n, n, Bitmap.Config.ARGB_8888)
             Bitmap.createScaledBitmap(b, n * echelle, n * echelle, false)
         }
@@ -480,24 +481,25 @@ object Bestiaire {
 
     /**
      * Balise de dessin pour le terminal de l'appli : ¤id:variante:stade*teinte+~n¤
-     * (* = shiny, avec sa teinte ; + = grand portrait ; ~n = aura de rareté, palier n de Aura.ORDRE).
-     * Remplacée par l'image à l'affichage.
+     * (* = shiny, avec sa teinte ; + = grand portrait ; ~n = aura de rareté, palier n de Aura.ORDRE ;
+     * !graine = glitch, la graine de l'individu en hexadécimal). Remplacée par l'image à l'affichage.
      */
     fun balise(e: Espece, vid: String = "classique", stade: String = "adulte", shiny: Boolean = false,
-               teinte: Double = 0.5, grand: Boolean = false, aura: String? = null): String =
+               teinte: Double = 0.5, grand: Boolean = false, aura: String? = null, glitch: String? = null): String =
         "¤${e.id}:$vid:$stade" + (if (shiny) "*$teinte" else "") + (if (grand) "+" else "") +
-            (if (aura != null) "~${Aura.code(aura)}" else "") + "¤"
+            (if (aura != null) "~${Aura.code(aura)}" else "") +
+            (if (glitch != null && glitch.matches(Regex("[0-9a-f]{1,20}"))) "!$glitch" else "") + "¤"
 
     /** Une bestiole de la troupe, avec son aura de rareté (aura = false pour la dessiner sans). */
     fun balise(ind: JSONObject, grand: Boolean = false, aura: Boolean = true): String {
         val e = espece(ind.optString("espece")) ?: return ""
         return balise(e, ind.optString("variante", "classique"), Equipe.stade(ind), ind.optBoolean("shiny"),
-            ind.optDouble("teinte", 0.5), grand, if (aura) Aura.palierInd(ind) else null)
+            ind.optDouble("teinte", 0.5), grand, if (aura) Aura.palierInd(ind) else null, Glitch.de(ind))
     }
 
-    /** Nom à afficher : §arc-en-ciel§ pour les shiny, les légendaires et les mythiques. */
-    fun nomAffiche(e: Espece, shiny: Boolean = false, rareteInd: String? = null): String {
-        val nom = e.nom + if (shiny) " ✨" else ""
+    /** Nom à afficher : §arc-en-ciel§ pour les shiny, les légendaires et les mythiques ; glitch : le repère ▚. */
+    fun nomAffiche(e: Espece, shiny: Boolean = false, rareteInd: String? = null, glitch: Boolean = false): String {
+        val nom = e.nom + (if (shiny) " ✨" else "") + (if (glitch) " " + Glitch.REPERE else "")
         val r = rareteInd ?: if (e.rarete == "mythique") "mythique" else null
         return if (shiny || r == "légendaire" || r == "mythique") "§$nom§" else nom
     }

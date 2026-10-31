@@ -2781,6 +2781,8 @@
   "essais_variante": 4,
   "bonus_legendaire": 1,
   "essais_legendaire": 8,
+  "bonus_gardien": 5,
+  "essais_gardien": 16,
   "serie_parfaite": 5
  },
  "mondes": [
@@ -2820,7 +2822,20 @@
     {
      "id": "citadelle.boite",
      "nom": "recomp.citadelle.boite",
-     "recompense": "variante"
+     "recompense": "gardien",
+     "boite": "enumeration"
+    },
+    {
+     "id": "citadelle.boite.droits",
+     "nom": "recomp.citadelle.boite.droits",
+     "recompense": "gardien",
+     "boite": "droits"
+    },
+    {
+     "id": "citadelle.boite.secrets",
+     "nom": "recomp.citadelle.boite.secrets",
+     "recompense": "gardien",
+     "boite": "secrets"
     },
     {
      "id": "citadelle.vague",
@@ -2828,12 +2843,17 @@
      "recompense": "variante"
     }
    ],
-   "variantes_reservees": [
-    "ricanombre:arcane",
-    "ombrachne:crypte",
-    "flamouche:marais",
-    "sulfurette:toxique"
-   ],
+   "variantes_reservees": [],
+   "gardiens": {
+    "enumeration": "ricanombre",
+    "droits": "heaumbre",
+    "secrets": "cranard",
+    "hangar": "ombrachne",
+    "scripts": "marionnoire",
+    "codes": "torsillon",
+    "forensique": "osselet",
+    "social": "drapouille"
+   },
    "requis": [
     "n4",
     "n6"

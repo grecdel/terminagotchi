@@ -17,6 +17,11 @@ object Tirage {
     /** La famille attirée (sa commande « attiree_par » vient d'être tapée) pèse 4 fois plus lourd au tirage 1. */
     const val ATTIRANCE = 4L
     private val POIDS_STADES = listOf(35L, 35L, 20L, 10L)
+    /** Le glitch (tirage 13, À PART : compteur + 2^20) : 1 chance sur 4096 ; le gardien d'une boîte maîtrisée de la
+     *  Citadelle, 1 chance sur 8 (comme pc/tg/tirage.py). */
+    const val CHANCE_GLITCH = 4096
+    const val CHANCE_GLITCH_GARDIEN = 8
+    const val COMPTEUR_GLITCH = 1L shl 20
 
     class Hasard(valeur: String, compteur: Long) {
         private var etat: Long = java.lang.Long.parseUnsignedLong(valeur.substring(0, 16), 16) xor
@@ -103,6 +108,26 @@ object Tirage {
             .put("stade", stade)
         if (shiny) champs.put("teinte", teinte / 1000.0)
         return Resultat(e, champs)
+    }
+
+    /** 13. L'individu (graine, compteur) est-il glitch ? gardien : c'est le gardien d'une boîte maîtrisée. */
+    fun glitch(valeur: String, compteur: Long, gardien: Boolean = false): Boolean {
+        val r = Hasard(valeur, COMPTEUR_GLITCH + compteur).entier(CHANCE_GLITCH)
+        return if (gardien) r < CHANCE_GLITCH / CHANCE_GLITCH_GARDIEN else r == 0
+    }
+
+    /** Sans graine (tirage local, non vérifié) : mêmes chances. */
+    fun glitchAuHasard(gardien: Boolean = false): Boolean {
+        val r = kotlin.random.Random.nextInt(CHANCE_GLITCH)
+        return if (gardien) r < CHANCE_GLITCH / CHANCE_GLITCH_GARDIEN else r == 0
+    }
+
+    /** La valeur de la graine d'un individu tiré d'une graine encore en cache, ou null. */
+    fun valeurDe(jeu: Jeu, ind: JSONObject): String? {
+        val gid = ind.optString("graine").ifEmpty { return null }
+        if (!ind.has("n")) return null
+        val v = Recensement.compte(jeu).optJSONObject("graines")?.optString(gid) ?: return null
+        return v.takeIf { it.length >= 16 }
     }
 
     // ---------------------------------------------------------------- les graines en cache (module « compte »)

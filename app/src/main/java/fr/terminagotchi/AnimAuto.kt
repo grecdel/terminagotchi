@@ -731,7 +731,7 @@ object AnimAuto {
      * UNE image de l'animation (numéro k, modulo leur nombre) en Bitmap agrandie sans lissage : pour la vie au repos,
      * calculée image par image au moment de l'afficher (pas 64 grandes images en mémoire).
      */
-    fun bitmap(anim: Anim, k: Int, echelle: Int, teinte: Double?): Bitmap {
+    fun bitmap(anim: Anim, k: Int, echelle: Int, teinte: Double?, glitch: Glitch.Spec? = null): Bitmap {
         val g = paletteGardee
         val pal = if (g != null && g.first === anim && g.second == teinte) g.third else {
             val p = anim.palette.copyOf()
@@ -758,7 +758,13 @@ object AnimAuto {
                     if (c != 0) px[Y * W * e + X] = pal[c - 1]
                 }
             }
-            return Bitmap.createBitmap(px, W * e, H * e, Bitmap.Config.ARGB_8888)
+            // le glitch par-dessus la vie (un pixel de créature = e pixels fins), comme rendu_fin.composer_vie sur PC
+            return Bitmap.createBitmap(Glitch.sur(W * e, H * e, px, glitch, e), W * e, H * e, Bitmap.Config.ARGB_8888)
+        }
+        if (glitch != null) {                  // le glitch : sur l'image au pixel de créature, puis agrandie
+            val img = anim.images[Math.floorMod(k, anim.images.size)]
+            val px = IntArray(W * H) { val v = img[it].toInt() and 0xFF; if (v == 0) 0 else pal[v - 1] }
+            return agrandir(Glitch.sur(W, H, px, glitch), W, H, e)
         }
         val img = anim.images[Math.floorMod(k, anim.images.size)]
         val ligne = IntArray(W * e)
@@ -779,13 +785,27 @@ object AnimAuto {
      * teinte (0..1, null = normal) : shiny, décalage de teinte des couleurs de la bestiole seulement
      * (Bestiaire.decaler, comme B.decaler dans anim_auto.lignes sur PC).
      */
-    fun bitmaps(anim: Anim, echelle: Int, teinte: Double?): List<Bitmap> {
+    /** Des pixels ARGB (W × H) agrandis sans lissage (e × e par pixel). */
+    fun agrandir(px: IntArray, W: Int, H: Int, e: Int): Bitmap {
+        val ligne = IntArray(W * e)
+        val bmp = Bitmap.createBitmap(W * e, H * e, Bitmap.Config.ARGB_8888)
+        for (y in 0 until H) {
+            for (x in 0 until W) { val c = px[y * W + x]; for (a in 0 until e) ligne[x * e + a] = c }
+            for (b in 0 until e) bmp.setPixels(ligne, 0, W * e, 0, y * e + b, W * e, 1)
+        }
+        return bmp
+    }
+
+    fun bitmaps(anim: Anim, echelle: Int, teinte: Double?, glitch: Glitch.Spec? = null): List<Bitmap> {
         val pal = anim.palette.copyOf()
         if (teinte != null) {
             for (k in 0 until anim.nTeinte) pal[k] = Bestiaire.decaler(pal[k] and 0xFFFFFF, teinte) or 0xFF000000.toInt()
         }
         val e = maxOf(1, echelle)
         val W = anim.largeur; val H = anim.hauteur
+        if (glitch != null) return anim.images.map { img ->
+            agrandir(Glitch.sur(W, H, IntArray(W * H) { val v = img[it].toInt() and 0xFF; if (v == 0) 0 else pal[v - 1] }, glitch), W, H, e)
+        }
         val ligne = IntArray(W * e)
         return anim.images.map { img ->
             val bmp = Bitmap.createBitmap(W * e, H * e, Bitmap.Config.ARGB_8888)

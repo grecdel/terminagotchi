@@ -178,10 +178,17 @@ def main():
                 err(f"monde {m['id']} : notion de maths inconnue {mt}")
         for x in m.get("exploits", []):
             cle(x["nom"], f"exploit {x['id']}")
-            if x.get("recompense") not in ("variante", "legendaire"):
+            if x.get("recompense") not in ("variante", "legendaire", "gardien"):
                 err(f"exploit {x['id']} : récompense inconnue {x.get('recompense')}")
+            if x.get("recompense") == "gardien":
+                gid = m.get("gardiens", {}).get(x.get("boite"))
+                if not any(e["id"] == gid and not e.get("secrete") for e in best["especes"]):
+                    err(f"exploit {x['id']} : pas de gardien pour la boîte {x.get('boite')}")
             if x.get("recompense") == "variante" and not m.get("types"):
                 err(f"exploit {x['id']} : une variante sans type de monde")
+        gs = list(m.get("gardiens", {}).values())
+        if len(set(gs)) != len(gs) or not all(any(e["id"] == g for e in best["especes"]) for g in gs):
+            err(f"monde {m['id']} : gardiens inconnus ou en double {gs}")
         par_espece = {f"{e['id']}:{v['id']}" for e in best["especes"] for v in e["variantes"]}
         for v in m.get("variantes_reservees", []):
             if v not in variantes and v not in par_espece:

@@ -459,7 +459,7 @@ object Dressage {
         c.d.mkdirs()
         for (t in taches) t.prep?.invoke(c)
         ecrireFiche(jeu, e, ind)
-        val eclat = if (shiny) " ✨" else ""
+        val eclat = (if (shiny) " ✨" else "") + (if (ind.optBoolean("glitch")) " " + Glitch.REPERE else "")
         jeu.dire(if (premiere) t("dress.premiere", "nom" to e.nom, "eclat" to eclat, "famille" to e.famille)
             else t("dress.debut",
                 "nom" to e.nom, "eclat" to eclat), 12)
@@ -480,7 +480,8 @@ object Dressage {
         fun ligne(i: Int, v: String) = "  " + Langue.ajuster(etiquettes[i], n) + " : " + v + "\n"
         fiche(jeu, e.nom).writeText(
             "══════════ " + t("dress.fiche.titre") + " ══════════\n" +
-                ligne(0, e.nom + if (ind.optBoolean("shiny")) " ✨ " + t("dress.fiche.shiny") else "") +
+                ligne(0, e.nom + (if (ind.optBoolean("shiny")) " ✨ " + t("dress.fiche.shiny") else "") +
+                    (if (ind.optBoolean("glitch")) " ${Glitch.REPERE} " + t("dress.fiche.glitch") else "")) +
                 ligne(1, "#%03d".format(e.numero)) +
                 ligne(2, t("dress.fiche.rarete.val", "rarete" to Bestiaire.nomRarete(Bestiaire.rareteDe(ind)),
                     "note" to (ind.opt("note") ?: "?"))) +
@@ -572,10 +573,11 @@ object Dressage {
         jeu.module("equipe").put("active", ind.getString("id"))
         val fams = jeu.module("dressage").optJSONArray("familles") ?: JSONArray().also { jeu.module("dressage").put("familles", it) }
         if ((0 until fams.length()).none { fams.getString(it) == e.famille }) fams.put(e.famille)
-        val titre = e.nom + if (shiny) " ✨ SHINY" else ""
+        val glitch = ind.optBoolean("glitch")
+        val titre = e.nom + (if (shiny) " ✨ SHINY" else "") + (if (glitch) " ${Glitch.REPERE} GLITCH" else "")
         jeu.log(t("dress.reussi.log", "titre" to titre, "s" to ecoule, "rarete" to Bestiaire.nomRarete(rar)))
         jeu.dire(t("dressa.reussi.dit",
-            "nom" to e.nom, "eclat" to (if (shiny) " ✨" else ""), "marque" to ind.optString("marque")), 14)
+            "nom" to e.nom, "eclat" to (if (shiny) " ✨" else "") + (if (glitch) " " + Glitch.REPERE else ""), "marque" to ind.optString("marque")), 14)
         jeu.animer("victoire")
         finale = ind to "victoire"
         val st = if (e.stat in jeu.stats) e.stat else Regles.STATS.random()
@@ -794,21 +796,23 @@ object Dressage {
         if (bete != null && eb != null) {
             val sB = Equipe.stade(bete)
             image(gauche ?: (if (Animations.dispo(eb.id)) Animations.pixels(eb.id, sB, "statique", 3)?.firstOrNull() else null)
-                ?: Bestiaire.bitmap(eb, bete.optBoolean("shiny"), 3, sB, bete.optString("variante", "classique"), bete.optDouble("teinte", 0.5)))
+                ?: Bestiaire.bitmap(eb, bete.optBoolean("shiny"), 3, sB, bete.optString("variante", "classique"), bete.optDouble("teinte", 0.5),
+                    Glitch.maintenant(Glitch.de(bete))))
         } else image(gauche ?: Sprites.bitmap(jeu, 6, false))
         sb.texte("   VS   ", 0xFFFF5050.toInt(), true, 1.3f)
         val ind = d.optJSONObject("ind")
         val stadeM = ind?.let { Equipe.stade(it) } ?: "adulte"
         val shinyM = d.optBoolean("shiny")
         image((if (Animations.dispo(e.id)) Animations.pixels(e.id, stadeM, "statique", 3)?.firstOrNull() else null)
-            ?: Bestiaire.bitmap(e, shinyM, 3, stadeM, d.optString("variante", "classique"), ind?.optDouble("teinte", 0.5) ?: 0.5))
+            ?: Bestiaire.bitmap(e, shinyM, 3, stadeM, d.optString("variante", "classique"), ind?.optDouble("teinte", 0.5) ?: 0.5,
+                Glitch.maintenant(Glitch.de(ind))))
         sb.append("\n")
         val COUL_FAM = mapOf("Intelligence" to 0xFF00AFFF.toInt(), "Agilité" to 0xFF5FD787.toInt(),
             "Force" to 0xFFFF5F5F.toInt(), "Endurance" to 0xFFFFD75F.toInt())
         val pc = if (p < 2) 0 else 2               // les cœurs : l'image seule, ou le vrai mot court
         if (bete != null && eb != null && cb != null) {
             val r = Bestiaire.rareteDe(bete)
-            sb.texte("◀ " + Bestiaire.nomAffiche(eb, bete.optBoolean("shiny"), r) + " · " + Equipe.nomStade(Equipe.stade(bete)) + "  ", 0xFFFFFFFF.toInt(), true)
+            sb.texte("◀ " + Bestiaire.nomAffiche(eb, bete.optBoolean("shiny"), r, bete.optBoolean("glitch")) + " · " + Equipe.nomStade(Equipe.stade(bete)) + "  ", 0xFFFFFFFF.toInt(), true)
             val st = bete.optJSONObject("stats")?.let { o -> o.keys().asSequence().associateWith { o.optInt(it) } } ?: eb.stats
             for (k in listOf("ATK", "DEF", "VIT")) st[k]?.let { v -> sb.texte(Mots.nomStat(k, pc), COUL_STAT[k] ?: -1, true); sb.texte(" $v  ", 0xFFE0E0F0.toInt()) }
             sb.texte(Mots.terme("pv", pc, true) + " ", 0xFFBCBCBC.toInt()).coeurs(cb.getJSONArray("moi")).append("\n")
@@ -819,7 +823,7 @@ object Dressage {
         }
         val rar = d.optString("rarete").ifEmpty { "commune" }
         val examine = d.optBoolean("examine")
-        sb.texte("▶ ${e.nom}${if (shinyM) " ✨" else ""}", if (examine) Bestiaire.COULEUR_RARETE[rar] ?: -1 else 0xFFFFFFFF.toInt(), true)
+        sb.texte("▶ ${e.nom}${if (shinyM) " ✨" else ""}${if (ind?.optBoolean("glitch") == true) " " + Glitch.REPERE else ""}", if (examine) Bestiaire.COULEUR_RARETE[rar] ?: -1 else 0xFFFFFFFF.toInt(), true)
         sb.texte("  #%03d ".format(e.numero) + (if (examine) Bestiaire.nomRarete(rar) else t("dress.rarete_cachee")) + " · ${Equipe.nomStade(stadeM)}  ", 0xFF9090A8.toInt())
         val statsM = ind?.optJSONObject("stats")?.let { o -> LinkedHashMap(o.keys().asSequence().associateWith { o.optInt(it) }) } ?: e.stats
         if (examine || cb?.optBoolean("vu") == true) {

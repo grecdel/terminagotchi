@@ -106,6 +106,7 @@ object Explo {
             r = choisie
             msg?.let { jeu.log(it); jeu.dire(it, 10) }
         }
+        Recompenses.marquerGlitch(jeu, r!!.first, r.second)?.let { jeu.log(it); jeu.dire(it, 10) }   // très rare
         if (attirance(jeu) != null) etat(jeu).remove("attirance")      // une commande attire UNE apparition
         val (e, ind) = r!!
         File(jeu.terrain, ind.optString("zone")).mkdirs()
@@ -137,7 +138,7 @@ object Explo {
         val e = Bestiaire.espece(ind.optString("espece")) ?: return ind.optString("espece")
         val r = Bestiaire.rareteDe(ind)
         val v = ind.optString("variante", "classique")
-        return Bestiaire.balise(ind) + " " + Bestiaire.nomAffiche(e, ind.optBoolean("shiny"), r) +
+        return Bestiaire.balise(ind) + " " + Bestiaire.nomAffiche(e, ind.optBoolean("shiny"), r, ind.optBoolean("glitch")) +
             "  #%03d · ".format(e.numero) + Bestiaire.nomRarete(r) + " · ${e.famille}" + (if (v != "classique") " · $v" else "") + "\n" +
             "   " + t("exp.signe") + " ${ind.optString("marque", "?")}\n" +
             "   " + t("exp.humeur", "humeur" to ind.optString("humeur", "?"),

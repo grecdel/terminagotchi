@@ -767,20 +767,26 @@ class Paresseux:
         return (self[k] for k in range(self.n))
 
 
-def lignes(e, stade, vid, nom, teinte=None, aura=None, fin=False, eclat=None):
+def lignes(e, stade, vid, nom, teinte=None, aura=None, fin=False, eclat=None, glitch=None):
     """(images en lignes de terminal, images par seconde) pour une espèce du bestiaire, ou None.
     Pour « evolution », stade est le stade d'arrivée : on part du stade précédent.
     aura : palier d'aura de rareté (aura.py) qui respire autour de la silhouette, image après image ;
     fin : le rendu le plus fin du terminal (rendu_fin.py : vraie image ou quadrants), calculé image par image ;
     eclat : l'éclat de l'aura selon le soin (aura.eclat), normal si None.
-    « statique » en rendu fin : la vie au pixel fin (vie.image_fine / vie.couleurs_texte, rendu_fin.lignes_vie)."""
+    « statique » en rendu fin : la vie au pixel fin (vie.image_fine / vie.couleurs_texte, rendu_fin.lignes_vie).
+    glitch : la graine d'un individu glitch (glitch.py) : chaque image au style A, un éclair C de temps en temps
+    (selon l'horloge), par-dessus l'animation et la teinte shiny."""
     from . import aura as A
+    from . import glitch as G
     if nom == "statique" and fin:
         v = vie_de(e, stade, vid, teinte)
         if v is not None:
             from . import rendu_fin
             mode = rendu_fin.mode()
             ec = A.ECLAT_NORMAL if eclat is None else eclat
+            if glitch:
+                return G.Images(vie.CYCLE, lambda k, g: rendu_fin.lignes_vie(v[0], v[1], k, aura, ec, mode, g)[0],
+                                glitch), IPS
             return Paresseux(vie.CYCLE, lambda k: rendu_fin.lignes_vie(v[0], v[1], k, aura, ec, mode)[0]), IPS
     r = toiles(e, stade, vid, nom, teinte)
     if r is None:
@@ -789,8 +795,24 @@ def lignes(e, stade, vid, nom, teinte=None, aura=None, fin=False, eclat=None):
     if fin:                                   # sans les marges vides communes à toutes les images
         from .sprites import _recadrer
         W, H, fr = _recadrer(W, H, fr)
-    from . import aura as A
+        if glitch:                            # (2 pixels de chaque côté pour le liseré du glitch)
+            fr = [b"".join(b"\0\0" + f[y * W:(y + 1) * W] + b"\0\0" for y in range(H)) for f in fr]
+            W += 4
     ec = A.ECLAT_NORMAL if eclat is None else eclat
+    if glitch:
+        mode = None
+        if fin:
+            from . import rendu_fin
+            mode = rendu_fin.mode()
+
+        def faire(k, g):
+            c = G.hexa(W, H, A.depuis_octets(W, H, fr[k], pal), g)
+            if mode and mode != "demi":
+                return rendu_fin.lignes(W, H, c, aura, k, ec, mode)[0]
+            if aura and A.visible(aura, terminal=True):
+                return A.lignes(W, H, c, aura, k, ec)
+            return A.lignes_brutes(W, H, c)
+        return G.Images(len(fr), faire, glitch), IPS
     if fin:
         from . import rendu_fin
         mode = rendu_fin.mode()

@@ -520,7 +520,7 @@ object Citadelle {
                 n("cit14", 2, "grep -r \"TG{\" boites/droits", re = "^grep\\s+(-\\w*r\\w*\\s+)+.*TG.*droits"),
                 n("cit14", 3, "citadelle drapeau ?", fs = drapeaux("droits")),
                 n("cit14", 4, "chmod o-rwx boites/droits/*", fs = rempart("droits")),
-                n("cit14", 5, "citadelle inspecteur droits", fs = inspecte("droits")),
+                n("cit14", 5, "citadelle inspecteur droits", fs = inspecte("droits"), exploit = "citadelle.boite.droits"),
             )),
             "cit15" to Lecon("hist.cit15.titre", null, 1, listOf(
                 n("cit15", 0, "ls -la boites/secrets", re = "^ls\\b.*-\\w*a.*secrets|^ls\\b.*secrets.*-\\w*a", ou = "citadelle"),
@@ -528,7 +528,7 @@ object Citadelle {
                 n("cit15", 2, "citadelle drapeau ?", fs = drapeaux("secrets")),
                 n("cit15", 3, "rm boites/secrets/.historique_fictif", fs = { j -> !File(dossier(j), "boites/secrets/.historique_fictif").exists() }),
                 n("cit15", 4, "citadelle rotation secrets", fs = { j -> dansCarnet(j, "rotation") }),
-                n("cit15", 5, "citadelle inspecteur secrets", fs = inspecte("secrets")),
+                n("cit15", 5, "citadelle inspecteur secrets", fs = inspecte("secrets"), exploit = "citadelle.boite.secrets"),
             )),
             "cit16" to Lecon("hist.cit16.titre", null, 1, listOf(
                 n("cit16", 0, "ss -tln", re = "^(ss\\s+-\\w*l|netstat\\b)"),

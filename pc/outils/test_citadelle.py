@@ -225,11 +225,14 @@ verifier((T / "citadelle" / "lettre.enc").read_bytes()[:8] == b"Salted__", "la l
 verifier("JAMAIS" in sorties.get("curl -s http://localhost:8042/courrier", ""), "le pont curl : le phare du Port répond /courrier")
 verifier(oct((T / "citadelle" / "carnet_secret.txt").stat().st_mode & 0o777) == "0o600", "umask 077 : le carnet secret est né en 600")
 r_ = recompenses.r_(st)
-verifier("citadelle.boite" in r_["exploits"] and "citadelle.vague" in r_["exploits"], "les deux exploits de la Citadelle")
+verifier({"citadelle.boite", "citadelle.boite.droits", "citadelle.boite.secrets", "citadelle.vague"} <= set(r_["exploits"]),
+         "les exploits de la Citadelle : les trois boîtes maîtrisées et la grande vague")
+verifier(recompenses.boites_maitrisees(st) == ["enumeration", "droits", "secrets"]
+         and recompenses.gardien_de(st, {"id": "cranard"}) == "secrets", "les gardiens des trois boîtes sont rencontrables (glitch)")
 verifier("bouclier_miniature" in st["quetes"]["objets"] and st["quetes"]["titre"] == "gardien_de_la_citadelle",
          "récompenses : le bouclier miniature et le titre de Gardien de la Citadelle")
-verifier(not recompenses.reservee(st, {"id": "ricanombre"}, "arcane") and recompenses.reservee({}, {"id": "ricanombre"}, "arcane")
-         and not recompenses.reservee({}, {"id": "lumignon"}, "arcane"), "variantes réservées aux Démons : ricanombre:arcane libérée")
+verifier(not recompenses.reservee({}, {"id": "ricanombre"}, "arcane") and not recompenses.reservee({}, {"id": "sulfurette"}, "toxique"),
+         "les 4 variantes Démons sont au tirage normal (la récompense de la Citadelle : le glitch des gardiens)")
 verifier(st["citadelle"]["proprietaires"].get("tour_de_guet.txt") == "sentinelle:veilleurs", "chown simulé : seul le registre change")
 verifier(not C.fictifs_vivants(), "plus aucun processus fictif en vie")
 

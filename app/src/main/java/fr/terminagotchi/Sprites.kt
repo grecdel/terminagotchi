@@ -158,7 +158,7 @@ object Sprites {
     }
 
     /** Coupe les bords vides communs à toutes les images (hauteur gardée paire, comme sprites._recadrer). */
-    fun recadrer(a: AnimAuto.Anim): AnimAuto.Anim {
+    fun recadrer(a: AnimAuto.Anim, marge: Int = 0): AnimAuto.Anim {
         val W = a.largeur; val H = a.hauteur
         var x0 = W; var y0 = H; var x1 = -1; var y1 = -1
         for (f in a.images) for (y in 0 until H) for (x in 0 until W) if (f[y * W + x].toInt() != 0) {
@@ -168,6 +168,7 @@ object Sprites {
         if (a.vie != null) {               // la vie au pixel fin monte et ondule un peu au-delà des images au pixel du sprite
             x0 = maxOf(0, x0 - 1); x1 = minOf(W - 1, x1 + 1); y0 = maxOf(0, y0 - 2)
         }
+        x0 = maxOf(0, x0 - marge); x1 = minOf(W - 1, x1 + marge)          // (le liseré d'un glitch)
         y0 -= y0 % 2
         val nw = x1 - x0 + 1
         var nh = y1 - y0 + 1

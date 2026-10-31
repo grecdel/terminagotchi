@@ -38,8 +38,11 @@ class Album:
     """Les images de chaque état (« marche » : plusieurs images, les autres : une ou plusieurs).
     ref : la hauteur de référence (la pose assise) ; lisse : dessin fin (mise à l'échelle douce) ou gros pixels."""
 
+    glitch = None                       # la graine d'un individu glitch (glitch.py) : l'effet sur chaque image montrée
+
     def __init__(self, etats, ref, lisse, dessine, nom, bouche=None, levre=None):
         self.etats, self.ref, self.lisse, self.dessine, self.nom = etats, max(1, ref), lisse, dessine, nom
+        self._glitchees = {}
         self.bouche = bouche            # (x, y) de la bouche en fractions du corps depuis les pieds, ou None
         self.levre = levre              # largeur de la bouche en fraction de la largeur du corps, ou None
         self.bord = bord_devant(self.images("assis")[0], (bouche or (0.0, -0.3))[1])
@@ -51,7 +54,21 @@ class Album:
 
     def image(self, etat, t):
         im = self.images(etat)
-        return im[t % len(im)]
+        c = im[t % len(im)]
+        if not self.glitch:
+            return c
+        from . import glitch as G                     # par-dessus la pose : style A, un éclair C de temps en temps
+        st, ph = G.etat(self.glitch)
+        cle = (c.cle, id(c), st, ph)
+        g = self._glitchees.get(cle)
+        if g is None:
+            if len(self._glitchees) > 400:
+                self._glitchees.clear()
+            w2, vide = c.w + 4, b"\0" * 8                 # 2 pixels de chaque côté pour le liseré
+            rg = b"".join(vide + bytes(c.rgba[4 * y * c.w:4 * (y + 1) * c.w]) + vide for y in range(c.h))
+            g = self._glitchees[cle] = Cadre(w2, c.h, G.rgba(w2, c.h, rg, (self.glitch, st, ph)), c.ax + 2, c.ay,
+                                             f"{c.cle}/glitch/{self.glitch}/{st}{ph}")
+        return g
 
 
 # une pose absente prend celle-ci (album procédural, ancien poses.bin)
@@ -230,13 +247,17 @@ def album(state):
     return album_lignes(rows, pal, f"lignes/{st}/{state.get('espece_compagnon')}")
 
 
-def album_espece(espece_id, stade="bebe", shiny=False):
-    """L'album d'une bestiole de l'équipe (choisie pour le bureau) : dessinée au stade bébé si possible."""
+def album_espece(espece_id, stade="bebe", shiny=False, glitch=None):
+    """L'album d'une bestiole de l'équipe (choisie pour le bureau) : dessinée au stade bébé si possible.
+    glitch : la graine d'un individu glitch (glitch.de(ind)) : l'effet se pose sur chaque image (Album.image)."""
     from . import bestiaire as B
     teinte = 0.5 if shiny else None
+    a = None
     if stade == "bebe":
         a = album_dessine(espece_id, teinte)
-        if a:
-            return a
-    e = B.espece(espece_id)
-    return album_procedural(e, stade, teinte) if e else None
+    if a is None:
+        e = B.espece(espece_id)
+        a = album_procedural(e, stade, teinte) if e else None
+    if a is not None and glitch:
+        a.glitch = glitch
+    return a

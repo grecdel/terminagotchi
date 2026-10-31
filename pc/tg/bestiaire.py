@@ -240,14 +240,19 @@ def bg24(h):
     return f"\033[48;2;{r};{g};{b}m"
 
 
-def dessin(e, shiny=False, grand=False, stade="adulte", vid="classique", teinte=0.5, aura=None, phase=None):
+def dessin(e, shiny=False, grand=False, stade="adulte", vid="classique", teinte=0.5, aura=None, phase=None, glitch=None):
     """La bestiole en pixel art pour le terminal (2 pixels verticaux par caractère).
     Les espèces du nouveau bestiaire ont une image par stade et par variante ; Abyssor garde son dessin.
-    aura : palier d'aura de rareté (voir aura.py) à dessiner autour de la silhouette, ou None."""
+    aura : palier d'aura de rareté (voir aura.py) à dessiner autour de la silhouette, ou None.
+    glitch : la graine d'un individu glitch (style A, au repos) ou (graine, style, phase) : glitch.py, après le shiny."""
     if aura:
         from . import aura as A
-        w, h, couleurs = pixels(e, shiny, grand, stade, vid, teinte)
+        w, h, couleurs = pixels(e, shiny, grand, stade, vid, teinte, glitch)
         return A.lignes(w, h, couleurs, aura, A.PHASE_FIXE if phase is None else phase)
+    if glitch:
+        from . import aura as A
+        w, h, couleurs = pixels(e, shiny, grand, stade, vid, teinte, glitch)
+        return A.lignes_brutes(w, h, couleurs)
     img = image(e, stade, vid)
     if img:
         w, h, octets, pal = img
@@ -257,8 +262,17 @@ def dessin(e, shiny=False, grand=False, stade="adulte", vid="classique", teinte=
     return _dessin_ancien(e, shiny, grand)
 
 
-def pixels(e, shiny=False, grand=False, stade="adulte", vid="classique", teinte=0.5):
-    """(largeur, hauteur, couleurs "#rrggbb" ou None) : l'image d'une bestiole pixel par pixel (pour l'aura)."""
+def pixels(e, shiny=False, grand=False, stade="adulte", vid="classique", teinte=0.5, glitch=None):
+    """(largeur, hauteur, couleurs "#rrggbb" ou None) : l'image d'une bestiole pixel par pixel (pour l'aura) ;
+    glitch : l'effet glitch par-dessus (graine, ou (graine, style, phase))."""
+    w, h, c = _pixels(e, shiny, grand, stade, vid, teinte)
+    if glitch:
+        from . import glitch as G
+        c = G.hexa(w, h, c, glitch)
+    return w, h, c
+
+
+def _pixels(e, shiny=False, grand=False, stade="adulte", vid="classique", teinte=0.5):
     img = image(e, stade, vid)
     if img:
         w, h, octets, pal = img
@@ -315,10 +329,19 @@ def arc_en_ciel(texte, decalage=0.0):
     return out + RESET
 
 
-def nom_affiche(e, shiny=False, rarete_ind=None):
-    """Nom coloré : arc-en-ciel pour les shiny, les légendaires et les mythiques ; couleur de rareté sinon."""
-    nom = e["nom"] + (" ✨" if shiny else "")
+def nom_glitch(texte):
+    """Écriture glitch : les lettres en rose et cyan, comme le liseré de l'image."""
+    return "".join(f"\033[38;2;{255 if k % 2 == 0 else 40};{40 if k % 2 == 0 else 230};{120 if k % 2 == 0 else 255}m{c}"
+                   for k, c in enumerate(texte)) + RESET
+
+
+def nom_affiche(e, shiny=False, rarete_ind=None, glitch=False):
+    """Nom coloré : arc-en-ciel pour les shiny, les légendaires et les mythiques ; couleur de rareté sinon.
+    glitch : le repère ▚ (glitch.REPERE) et, sauf shiny, les lettres rose et cyan."""
+    nom = e["nom"] + (" ✨" if shiny else "") + (" ▚" if glitch else "")
     r = rarete_ind or ("mythique" if e.get("rarete") == "mythique" else None)
+    if glitch and not shiny:
+        return nom_glitch(nom)
     if shiny or r in ("légendaire", "mythique"):
         return arc_en_ciel(nom)
     if r:

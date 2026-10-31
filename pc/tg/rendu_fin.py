@@ -252,9 +252,10 @@ def lignes(w, h, couleurs, nom=None, phase=A.PHASE_FIXE, eclat=A.ECLAT_NORMAL, r
 
 
 # ---------------------------------------------------------------- la vie au repos (vie.py), au pixel fin
-def composer_vie(a, pal, t, nom, eclat, F=F_IMAGE):
+def composer_vie(a, pal, t, nom, eclat, F=F_IMAGE, glitch=None):
     """(W·F, H·F, pixels (r, g, b, a) ou None) : l'image de vie t agrandie F fois (respiration et ondulations au pixel
-    fin : vie.image_fine), sur sa lueur, avec le décor de l'aura (calculés sur le masque au pixel du sprite)."""
+    fin : vie.image_fine), sur sa lueur, avec le décor de l'aura (calculés sur le masque au pixel du sprite).
+    glitch : (graine, style, phase) d'un individu glitch : l'effet sur la créature (pixel de créature = F pixels fins)."""
     from . import vie
     W2, H2, img = vie.image(a, t)
     WF0, HF0, fine = vie.image_fine(a, t, F)
@@ -293,6 +294,7 @@ def composer_vie(a, pal, t, nom, eclat, F=F_IMAGE):
             point(x2, y2, c, al)
     o = r * F
     cache = {}
+    calque = [0] * (WF0 * HF0) if glitch else None
     for y in range(HF0):
         for x in range(WF0):
             v = fine[y * WF0 + x]
@@ -303,20 +305,29 @@ def composer_vie(a, pal, t, nom, eclat, F=F_IMAGE):
                 if c is None:
                     q = A.lustrer(pal[v - 1], sx, sy, pos)
                     c = cache[cle] = (q >> 16, q >> 8 & 255, q & 255, 255)
-                out[(y + o) * WF + x + o] = c
+                if calque is not None:
+                    calque[y * WF0 + x] = 0xFF000000 | c[0] << 16 | c[1] << 8 | c[2]
+                else:
+                    out[(y + o) * WF + x + o] = c
+    if calque is not None:                             # le glitch, par-dessus la vie (et le shiny déjà dans pal)
+        from . import glitch as G
+        for i, p in enumerate(G.appliquer(WF0, HF0, calque, glitch[0], glitch[1], glitch[2], F)):
+            if p >> 24:
+                out[(i // WF0 + o) * WF + i % WF0 + o] = (p >> 16 & 255, p >> 8 & 255, p & 255, 255)
     for x2, y2, c, al, devant in dec:
         if devant:
             point(x2, y2, c, al)
     return WF, HF, out
 
 
-def lignes_vie(a, pal, t, nom=None, eclat=A.ECLAT_NORMAL, rendu=None):
+def lignes_vie(a, pal, t, nom=None, eclat=A.ECLAT_NORMAL, rendu=None, glitch=None):
     """(lignes, largeur) de l'image de vie t : vraie image au pixel fin (Kitty, iTerm2, sixel), sinon le texte avec la
-    respiration en fondu de couleurs (vie.couleurs_texte : pas de saut d'un gros pixel)."""
+    respiration en fondu de couleurs (vie.couleurs_texte : pas de saut d'un gros pixel).
+    glitch : (graine, style, phase) d'un individu glitch (glitch.py), ou None."""
     from . import vie
     r = rendu or mode()
     if r in ("kitty", "iterm", "sixel"):
-        W, H, px = composer_vie(a, pal, t, nom if nom and A.visible(nom) else None, eclat)
+        W, H, px = composer_vie(a, pal, t, nom if nom and A.visible(nom) else None, eclat, glitch=glitch)
         cols, rangs = W // F_IMAGE, -(-(H // F_IMAGE) // 2)
         if r == "kitty":
             from .scenes import kitty
@@ -334,7 +345,11 @@ def lignes_vie(a, pal, t, nom=None, eclat=A.ECLAT_NORMAL, rendu=None):
         return _poser(sixel_transparent(W2, H2, _reduire(W, H, px, W2, H2)), cols, rangs), cols
     cs = vie.couleurs_texte(a, pal, t)
     W2, H2 = a.w + 2 * vie.PAD, a.h + vie.PAD
-    return lignes(W2, H2, [None if c is None else "#%06x" % c for c in cs], nom, t, eclat, r)
+    hexa = [None if c is None else "#%06x" % c for c in cs]
+    if glitch:
+        from . import glitch as G
+        hexa = G.hexa(W2, H2, hexa, glitch)
+    return lignes(W2, H2, hexa, nom, t, eclat, r)
 
 
 def effacer():
