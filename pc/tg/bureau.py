@@ -416,7 +416,8 @@ class Controleur:
     def scene_ile(self):
         if not self.album:
             return [], []
-        return S.scene_ile(self.ile, self.info_ile(), self.album, self.mini, self.t, self.pointeur_ile, self.equipe)
+        return S.scene_ile(self.ile, self.info_ile(), self.album, self.mini, self.t, self.pointeur_ile, self.equipe,
+                           self.c)
 
     def clic_ile(self, x, y, zones):
         a = self._zone(zones, x, y)
@@ -907,6 +908,21 @@ class FenetresGtk:
                 cr.get_source().set_filter(cairo.FILTER_GOOD if lisse else cairo.FILTER_NEAREST)
                 cr.paint()
                 cr.restore()
+            elif k == "imgt":
+                # déformation continue autour des pieds, à la résolution de l'écran (cairo rééchantillonne une fois)
+                _, cad, ax, ay, e, miroir, lisse, sx, sy, rot, alpha = op
+                if alpha <= 0.01:
+                    continue
+                cr.save()
+                cr.translate(ax, ay)
+                if rot:
+                    cr.rotate(-math_.radians(rot))
+                cr.scale((-e if miroir else e) * sx, e * sy)
+                cr.translate(-cad.ax, -cad.ay)
+                cr.set_source_surface(self._surface(cad), 0, 0)
+                cr.get_source().set_filter(cairo.FILTER_GOOD if lisse else cairo.FILTER_NEAREST)
+                cr.paint_with_alpha(alpha) if alpha < 1 else cr.paint()
+                cr.restore()
             elif k == "rrect":
                 _, x, y, w, h, r, f, b, ep = op
                 rrect(x, y, w, h, r)
@@ -1080,6 +1096,10 @@ class FenetresTk:
                 _, cad, x, y, e, _m, _l = op
                 xs += [x, x + cad.w * e]
                 ys += [y, y + cad.h * e]
+            elif op[0] == "imgt":
+                _, cad, ax, ay, e, _m, _l, sx, sy, _r, _a = op
+                xs += [ax - cad.w * e * sx, ax + cad.w * e * sx]
+                ys += [ay - cad.h * e * sy - 30, ay + 4]
         if not xs:
             return 0, 0, 10, 10
         return (int(min(xs)) - marge, int(min(ys)) - marge, int(max(xs) - min(xs)) + 2 * marge,
@@ -1130,6 +1150,16 @@ class FenetresTk:
             self.images[cle] = p
         return p
 
+    def _photo2(self, cad, ex, ey, miroir):
+        cle = (cad.cle, ex, ey, miroir)
+        p = self.images.get(cle)
+        if p is None:
+            p = self.tk.PhotoImage(data=_png_base64(cad, ex, miroir, ey), format="png")
+            if len(self.images) > 300:
+                self.images.clear()
+            self.images[cle] = p
+        return p
+
     def _peindre(self, w, liste, dx, dy):
         cv = w.cv
         cv.delete("all")
@@ -1138,6 +1168,15 @@ class FenetresTk:
             if k == "img":
                 _, cad, x, y, e, miroir, lisse = op
                 cv.create_image(int(x + dx), int(y + dy), image=self._photo(cad, e, miroir), anchor="nw")
+            elif k == "imgt":
+                # tkinter : pas de rotation ni de fondu ; l'étirement est arrondi au pour-cent (images gardées)
+                _, cad, ax, ay, e, miroir, lisse, sx, sy, rot, alpha = op
+                if alpha < 0.5:
+                    continue
+                ex, ey = round(e * sx, 2), round(e * sy, 2)
+                p = self._photo2(cad, ex, ey, miroir)
+                pax = (cad.w - cad.ax if miroir else cad.ax) * ex
+                cv.create_image(int(ax + dx - pax), int(ay + dy - cad.ay * ey), image=p, anchor="nw")
             elif k == "rrect":
                 _, x, y, ww, hh, r, f, b, ep = op
                 if f is None and b is None:
@@ -1168,19 +1207,21 @@ class FenetresTk:
                                anchor={"g": "w", "c": "center", "d": "e"}[ancre])
 
 
-def _png_base64(cad, e, miroir):
-    """Une image (cadre) agrandie ou réduite au plus proche, en PNG (base64) pour tkinter (sans bibliothèque)."""
+def _png_base64(cad, e, miroir, ey=None):
+    """Une image (cadre) agrandie ou réduite au plus proche, en PNG (base64) pour tkinter (sans bibliothèque).
+    ey : une autre échelle en hauteur (étirement)."""
     import base64
     import struct
     import zlib
-    W, H = max(1, round(cad.w * e)), max(1, round(cad.h * e))
+    ey = e if ey is None else ey
+    W, H = max(1, round(cad.w * e)), max(1, round(cad.h * ey))
     src = cad.rgba
     xs = [min(cad.w - 1, int(x / e)) for x in range(W)]
     if miroir:
         xs = [cad.w - 1 - x for x in xs]
     brut = bytearray()
     for y in range(H):
-        sy = min(cad.h - 1, int(y / e)) * cad.w
+        sy = min(cad.h - 1, int(y / ey)) * cad.w
         brut.append(0)
         for x in xs:
             k = 4 * (sy + x)

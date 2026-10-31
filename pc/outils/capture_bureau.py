@@ -242,42 +242,59 @@ def ile_android(im, k, album, nom, humeur, dit):
     poser(im, agrandir(L, k), 0, 0, im.size)
 
 
-def gif(sortie, album, nom="bureau.gif"):
-    """La créature marche, s'assoit, s'étire, mange, fait un cœur, salue et s'endort (bande du bas d'un bureau)."""
+def gif(sortie, album, nom="bureau.gif", planche=None):
+    """À la taille réelle (créature « moyenne », 12 images par seconde comme à l'écran) : marche → assise (elle
+    respire, cligne) → bâille → dort (« z » qui montent) → se réveille en s'étirant → mange (miette, 3 bouchées) →
+    cœur → salue. Chaque changement passe par une transition (fondu, tassement, rebond)."""
     regl = dict(V.DEFAUTS)
-    Lz, Hz = 900, 260
-    c = V.Creature(Lz, regl, x=640, hasard=random.Random(11))
+    Lz, Hz = 520, 230
+    ips = 12
+    c = V.Creature(Lz, regl, x=430, hasard=random.Random(21))
     c.dir = -1
-    plan = [(0, "marche", 4.0), (40, "assis", 1.5), (55, "etire", 2.4), (79, "mange", 2.6), (105, "coeur", 2.6),
-            (131, "salut", 2.4), (155, "baille", 2.6), (181, "dort", 3.0)]
-    images = []
-    vue = S.VueCreature()
+    plan = [("marche", 3.2), ("assis", 2.8), ("baille", None), ("dort", 4.2), ("etire", None), ("mange", None),
+            ("coeur", None), ("salut", None), ("assis", 1.2)]
+    noms = {"marche": "marche", "assis": "assise (respire, cligne)", "baille": "bâille", "dort": "dort",
+            "etire": "réveil : s'étire", "mange": "mange", "coeur": "double-clic : un cœur", "salut": "triple clic : coucou"}
     fond = Image.new("RGBA", (Lz, Hz))
     d = ImageDraw.Draw(fond)
     for y in range(Hz):
         d.line([(0, y), (Lz, y)], fill=(20 + y // 20, 22 + y // 30, 44 + y // 15, 255))
-    for f in range(212):
-        for debut, etat, duree in plan:
-            if f == debut:
-                if etat == "dort":
-                    c.dormir()
-                else:
-                    c.changer(etat, duree)
-                if etat == "mange":
-                    vue.flotter("+miam")
-                if etat == "coeur":
-                    vue.flotter("♥", S.ROUGE)
-        c.tick(0.1, {"inactif": 1})
-        vue.tick(0.1)
-        L, _ = S.scene_creature(c, album, vue, regl, Lz, Hz, Hz - 14)
-        im = fond.copy()
-        im.alpha_composite(S.vers_pil(L, (Lz, Hz)))
-        ImageDraw.Draw(im).text((14, 16), {"marche": "marche", "assis": "assise", "etire": "s'étire", "mange": "mange",
-                                           "coeur": "double-clic : un cœur", "salut": "triple clic : coucou",
-                                           "baille": "bâille", "dort": "dort"}.get(c.etat, c.etat),
-                                 font=police(16, True), fill=(160, 170, 190))
-        images.append(im.convert("P", palette=Image.ADAPTIVE, colors=255))
-    images[0].save(sortie / nom, save_all=True, append_images=images[1:], duration=100, loop=0, disposal=2)
+    vue = S.VueCreature()
+    images, etiquettes = [], []
+    for etat, duree in plan:
+        if etat == "dort":
+            c.dormir()
+            c.duree = duree
+        else:
+            c.changer(etat, duree)
+        c.cligne = 99 if etat == "marche" else (0.9 if etat == "assis" else c.cligne)
+        n = int(round(c.duree * ips))
+        for _ in range(n):
+            c.tick(1 / ips, {"inactif": 1})
+            if c.etat != etat:                         # (la vie ne décide pas à notre place pendant le film)
+                c.etat = etat
+            L, _ = S.scene_creature(c, album, vue, regl, Lz, Hz, Hz - 16)
+            im = fond.copy()
+            im.alpha_composite(S.vers_pil(L, (Lz, Hz)))
+            ImageDraw.Draw(im).text((12, 14), noms.get(etat, etat), font=police(15, True), fill=(160, 170, 190))
+            images.append(im)
+            etiquettes.append(etat)
+    pal = [im.convert("RGB").quantize(colors=255, method=Image.Quantize.MEDIANCUT) for im in images]
+    pal[0].save(sortie / nom, save_all=True, append_images=pal[1:], duration=1000 // ips, loop=0, disposal=1,
+                optimize=False)
+    if planche:                                         # toutes les images, pour les vérifier une par une
+        n = len(images)
+        col = 12
+        tw, th = Lz // 2, Hz // 2
+        p = Image.new("RGB", (col * tw, ((n + col - 1) // col) * th), (0, 0, 0))
+        dd = ImageDraw.Draw(p)
+        for k, im in enumerate(images):
+            x, y = (k % col) * tw, (k // col) * th
+            p.paste(im.convert("RGB").resize((tw, th)), (x, y))
+            dd.text((x + tw - 4, y + 4), str(k), font=police(11), fill=(255, 255, 120), anchor="ra")
+        p.save(planche)
+    gif.images, gif.etiquettes = images, etiquettes
+    return len(images)
 
 
 def main():
@@ -290,7 +307,7 @@ def main():
             "texte": "Quelle commande garde seulement les lignes qui contiennent « gland » ?"}
     captures_pc(sortie, album, info)
     captures_android(sortie, album, info)
-    gif(sortie, album)
+    print("images du GIF :", gif(sortie, album, planche=sortie.parent / "gif_images.png"))
     planche = Image.new("RGB", (12 * 150, 3 * 170), (24, 26, 36))
     d = ImageDraw.Draw(planche)
     for j, esp in enumerate(["braisillon", "zapiot", "lunacorne"]):

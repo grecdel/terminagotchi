@@ -7,6 +7,7 @@ import kotlin.math.hypot
 import kotlin.math.max
 import kotlin.math.min
 import kotlin.math.sin
+import kotlin.math.sqrt
 
 /**
  * La vie de la créature de la bulle et de l'île, sans aucune fenêtre (comme pc/tg/bureau_vie.py) : ce qu'elle fait,
@@ -23,6 +24,9 @@ object BureauVie {
     const val BATTERIE_BASSE = 15
     const val IPS_MARCHE = 6
     const val IPS = 8
+    /** secondes : tassement de l'ancienne pose, court fondu, étirement et rebond de la nouvelle (comme bureau_vie.py) */
+    const val TRANSITION = 0.36
+    const val CLIGNEMENT = 0.14
 
     /** (clé, symbole, angle) : Jouer en haut, comme sur PC et sur la maquette */
     val MENU = listOf(Triple("jouer", "▶", 90.0), Triple("terminal", ">_", 42.0), Triple("soccuper", "♥", 4.0),
@@ -49,10 +53,21 @@ object BureauVie {
         private var forceDodo = false
         private var battT = 0.0
         var bord = 40f
+        /** l'image d'avant le dernier changement (état, image, miroir) et le temps depuis ce changement */
+        var prec: Triple<String, Int, Boolean>? = null; private set
+        var tTrans = TRANSITION; private set
+        /** le prochain clignement (secondes) ; négatif pendant le clignement */
+        var cligne = 1.5 + h.nextDouble() * 2.5; private set
 
         fun changer(e: String, d: Double? = null) {
+            if (e != etat || tEtat > TRANSITION) {
+                val im = image()
+                prec = Triple(im.first.first, im.first.second, im.second.second)
+                tTrans = 0.0
+            }
             etat = e; tEtat = 0.0
-            duree = d ?: DUREES[e] ?: 4.0
+            // des durées un peu au hasard : elle ne fait jamais tout au même rythme
+            duree = d ?: ((DUREES[e] ?: 4.0) * (0.8 + h.nextDouble() * 0.55))
             if (e == "marche" && (surPlace || rangee)) { etat = "assis"; duree = 6 + h.nextDouble() * 6 }
         }
 
@@ -67,7 +82,9 @@ object BureauVie {
 
         fun tick(dt0: Double, s: Signaux = Signaux()) {
             val dt = dt0.coerceIn(0.0, 0.5)
-            t += dt; tEtat += dt
+            t += dt; tEtat += dt; tTrans += dt
+            cligne -= dt
+            if (cligne < -CLIGNEMENT) cligne = if (h.nextDouble() > 0.2) 2.2 + h.nextDouble() * 4.3 else 0.35
             if (porte) return
             if (air > 0f) {
                 vy += (900 * dt).toFloat()
@@ -129,6 +146,112 @@ object BureauVie {
             else if (etat == "salut") dy = -abs(sin(tEtat * 5)) * 2
             return (etat to (tEtat * IPS).toInt()) to (dy.toFloat() to (miroir && etat != "dort"))     // les « z Z » à l'endroit
         }
+
+        /** Pour les tests : forcer le prochain clignement. */
+        fun clignerDans(s: Double) { cligne = s }
+    }
+
+    /**
+     * Ce qu'on dessine à un instant (comme bureau_vie.Anime) : la pose, sa déformation autour des pieds (sx, sy, rot en
+     * degrés, dy en dp), le miroir, son opacité, l'ancienne pose qui s'efface pendant une transition, l'ombre et les
+     * petits effets (genre « z », « coeur », « miette » ; x, y en fractions du corps depuis les pieds ; taille ;
+     * opacité). Les déformations sont continues : appliquées à la résolution de l'écran.
+     */
+    class Anime(var etat: String, var k: Int, var dy: Float, val miroir: Boolean) {
+        var sx = 1f; var sy = 1f; var rot = 0f; var opacite = 1f; var ombre = 1f
+        var ancien: Ancien? = null
+        val effets = mutableListOf<Effet>()
+    }
+    class Ancien(val etat: String, val k: Int, val opacite: Float, val miroir: Boolean)
+    class Effet(val genre: String, val x: Float, val y: Float, val taille: Float, val opacite: Float)
+
+    private fun doux(x0: Double): Double { val x = x0.coerceIn(0.0, 1.0); return x * x * (3 - 2 * x) }
+
+    private fun enveloppe(p: Double, monte: Double = 0.3, descend: Double = 0.7): Double = when {
+        p < monte -> doux(p / monte)
+        p < descend -> 1.0
+        else -> 1.0 - doux((p - descend) / (1 - descend))
+    }
+
+    /** L'image animée de la créature (même calcul que bureau_vie.animer). */
+    fun animer(c: Creature): Anime {
+        val im = c.image()
+        val a = Anime(im.first.first, im.first.second, im.second.first, im.second.second)
+        val u = c.tEtat; val d = max(0.1, c.duree); val t = c.t
+        val p = min(1.0, u / d)
+        if (c.porte || c.air > 0) { a.ombre = max(0.3f, 1 - c.air / 300f); a.sy = 1.04f; a.sx = 0.97f; return a }
+        val souffle = sin(2 * PI * t / 3.2)
+        if (a.etat in setOf("assis", "coeur", "salut", "mange", "etire", "baille")) {
+            a.sy = (1 + 0.016 * souffle).toFloat(); a.sx = (1 - 0.007 * souffle).toFloat()
+        }
+        when (a.etat) {
+            "assis" -> if (c.cligne < 0) a.etat = "cligne"
+            "dort" -> {
+                val lent = sin(2 * PI * t / 4.6)
+                a.sy = (1 + 0.024 * lent).toFloat(); a.sx = (1 - 0.01 * lent).toFloat()
+                for (i in 0 until 3) {
+                    val ph = ((t / 1.6 + i / 3.0) % 1.0)
+                    a.effets.add(Effet("z", (0.28 + 0.22 * ph).toFloat(), (-(0.95 + 0.5 * ph)).toFloat(),
+                        (0.14 + 0.2 * ph).toFloat(), sin(PI * ph).toFloat()))
+                }
+            }
+            "etire", "baille" -> {
+                val e = enveloppe(p)
+                if (a.etat == "etire") { a.sy *= (1 + 0.07 * e).toFloat(); a.sx *= (1 - 0.04 * e).toFloat() }
+                else { a.sy *= (1 + 0.045 * e).toFloat(); a.sx *= (1 + 0.02 * e).toFloat(); a.rot = (-3.0 * e).toFloat() }
+            }
+            "sursaut" -> when {
+                u < 0.55 -> {
+                    val hh = sin(PI * u / 0.55)
+                    a.dy = (-hh * 18).toFloat(); a.ombre = (1 - 0.45 * hh).toFloat()
+                    if (u < 0.08) { a.sy = 0.9f; a.sx = 1.06f } else { a.sy = (1 + 0.05 * hh).toFloat(); a.sx = (1 - 0.03 * hh).toFloat() }
+                }
+                u < 0.72 -> { val q = sin(PI * (u - 0.55) / 0.17); a.sy = (1 - 0.1 * q).toFloat(); a.sx = (1 + 0.06 * q).toFloat() }
+            }
+            "mange" -> when {
+                p < 0.3 -> {
+                    val q = doux(p / 0.3)
+                    a.effets.add(Effet("miette", (1.0 - 0.58 * q).toFloat(), (-0.3 - 0.18 * sin(PI * q)).toFloat(), 0.13f, doux(p / 0.08).toFloat()))
+                }
+                p < 0.9 -> {
+                    val q = (p - 0.3) / 0.6 * 3
+                    val bouchee = q.toInt()
+                    val bosse = sin(PI * (q - bouchee))
+                    a.sy *= (1 - 0.055 * bosse).toFloat(); a.sx *= (1 + 0.03 * bosse).toFloat()
+                    val reste = 1 - (bouchee + doux(q - bouchee)) / 3
+                    if (reste > 0.05) a.effets.add(Effet("miette", 0.42f, -0.28f, (0.13 * sqrt(reste)).toFloat(), 1f))
+                }
+            }
+            "coeur" -> {
+                a.dy = (-abs(sin(u * 5.5)) * 2.5 * (1 - p)).toFloat()
+                a.effets.add(Effet("coeur", (0.32 + 0.05 * sin(u * 4)).toFloat(), (-(0.95 + 0.6 * p)).toFloat(),
+                    (0.16 + 0.1 * p).toFloat(), (1 - doux(p)).toFloat()))
+            }
+            "salut" -> a.rot = (5.0 * sin(2 * PI * u / 0.55) * (if (p > 0.8) 1 - doux((p - 0.8) / 0.2) else 1.0)).toFloat()
+        }
+        val pr = c.prec
+        if (pr != null && c.tTrans < TRANSITION) {
+            val q = c.tTrans / TRANSITION
+            val fondu = doux((q - 0.35) / 0.3)
+            if (q < 0.5) { val ta = doux(q * 2); a.sy *= (1 - 0.08 * ta).toFloat(); a.sx *= (1 + 0.05 * ta).toFloat() }
+            else {
+                val q2 = (q - 0.5) * 2
+                a.sy *= (0.92 + 0.08 * doux(q2) + 0.05 * sin(PI * q2)).toFloat()
+                a.sx *= (1.05 - 0.05 * doux(q2) - 0.03 * sin(PI * q2)).toFloat()
+                a.dy -= (1.5 * sin(PI * q2)).toFloat()
+            }
+            if ((pr.first != a.etat || pr.second != a.k) && pr.first != c.etat && fondu < 1) {
+                a.ancien = Ancien(pr.first, pr.second, (1 - fondu).toFloat(), pr.third)
+                a.opacite = fondu.toFloat()
+            }
+        }
+        return a
+    }
+
+    /** La mini-créature de l'île respire et cligne avec la créature de la bulle : (état, sx, sy). */
+    fun miniVie(c: Creature?, t: Double): Triple<String, Float, Float> {
+        val s = sin(2 * PI * t / 3.2)
+        return Triple(if (c != null && c.cligne < 0) "cligne" else "assis", (1 - 0.007 * s).toFloat(), (1 + 0.016 * s).toFloat())
     }
 
     /**

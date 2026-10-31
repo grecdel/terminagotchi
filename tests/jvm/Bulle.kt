@@ -31,12 +31,12 @@ fun main(args: Array<String>) {
     println("Les poses dessinées (poses.bin)")
     verifB(Poses.lire(File(assets, "poses.bin").readBytes()), "poses.bin se lit")
     verifB(Poses.especes().size == 27, "27 bébés de départ (${Poses.especes().size})")
-    val attendu = mapOf("braisillon" to 697930007L, "glandouille" to 566876390L, "lunacorne" to 2984212012L)
+    val attendu = mapOf("braisillon" to 3894205544L, "glandouille" to 215722427L, "lunacorne" to 3925680037L)
     for ((e, h) in attendu) {
         val (idx, pal) = Poses.indexees(e)!!
         var hh = 0x811C9DC5L
-        for (n in Poses.NOMS) { val v = idx.getValue(n); for (i in 4 until v.size) hh = ((hh xor v[i].toLong()) * 0x01000193L) and 0xFFFFFFFFL }
-        verifB(hh == h && pal.size == 48, "$e : mêmes octets qu'en Python (empreinte $hh)")
+        for (v in idx.values) { for (i in 4 until v.size) hh = ((hh xor v[i].toLong()) * 0x01000193L) and 0xFFFFFFFFL }
+        verifB(hh == h && pal.size == 48 && idx.size == 13, "$e : 13 poses (dont « cligne »), mêmes octets qu'en Python (empreinte $hh)")
     }
     val g = Poses.indexees("glandouille")!!.first.getValue("assis")
     verifB(g[0] == 131 && g[1] == 127 && g[2] == 65 && g[3] == 127, "glandouille assis : 131 × 127, ancre (65, 127) comme en Python")
@@ -81,6 +81,34 @@ fun main(args: Array<String>) {
     verifB(c.rangee && (c.x == c.bord || c.x == c.largeur - c.bord), "rangée dans un coin")
     repeat(500) { c.tick(0.1, BureauVie.Signaux(1.0)) }
     verifB(c.etat != "marche", "rangée : elle ne se promène plus")
+
+    println("La vie dans chaque pose et les transitions")
+    c = BureauVie.Creature(1000f, h = java.util.Random(8))
+    c.changer("assis", 10.0); repeat(10) { c.tick(0.1, BureauVie.Signaux(1.0)) }
+    val ys = (0 until 40).map { c.tick(0.1, BureauVie.Signaux(1.0)); BureauVie.animer(c).sy }
+    verifB(ys.maxOrNull()!! - ys.minOrNull()!! > 0.02f, "assise : elle respire (sy de ${ys.minOrNull()} à ${ys.maxOrNull()})")
+    c.clignerDans(-0.05)
+    verifB(BureauVie.animer(c).etat == "cligne", "assise : elle cligne des yeux")
+    c.changer("baille"); c.tick(0.05)
+    var an = BureauVie.animer(c)
+    verifB(an.ancien?.etat == "assis" && an.sy < 1f, "changement de pose : l'ancienne se tasse avant de laisser la place")
+    repeat(3) { c.tick(0.05) }
+    an = BureauVie.animer(c)
+    verifB(an.ancien != null && an.opacite in 0.01f..0.99f, "puis un court fondu croisé")
+    repeat(5) { c.tick(0.05) }
+    verifB(BureauVie.animer(c).ancien == null, "transition finie en ${BureauVie.TRANSITION} s")
+    c.dormir(); repeat(10) { c.tick(0.1) }
+    an = BureauVie.animer(c)
+    verifB(an.effets.count { it.genre == "z" } == 3 && !an.miroir, "dort : des « z » qui montent (et pas à l'envers)")
+    c.changer("mange", 3.0); c.tick(0.3)
+    verifB(BureauVie.animer(c).effets.any { it.genre == "miette" }, "mange : la miette arrive")
+    repeat(28) { c.tick(0.1) }
+    verifB(BureauVie.animer(c).effets.none { it.genre == "miette" }, "trois bouchées : la miette a disparu")
+    c.changer("salut", 2.0); c.tick(0.6)
+    val rots = (0 until 12).map { c.tick(0.05); BureauVie.animer(c).rot }
+    verifB(rots.any { it > 2 } && rots.any { it < -2 }, "salut : elle se balance")
+    val durees = (0 until 20).map { c.changer("etire"); c.duree }.toSet()
+    verifB(durees.size > 10, "les durées changent un peu à chaque fois")
 
     println("Les gestes")
     val ge = BureauVie.Gestes()

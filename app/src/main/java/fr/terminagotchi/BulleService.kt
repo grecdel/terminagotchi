@@ -469,15 +469,21 @@ class BulleService : Service() {
     private val pinceau = Paint(Paint.ANTI_ALIAS_FLAG)
     private val pinceauImage = Paint()
 
-    /** Dessine un cadre, son ancre en (ax, ay) écran, à l'échelle e. */
-    private fun dessinerCadre(cv: Canvas, c: Poses.Cadre, ax: Float, ay: Float, e: Float, miroir: Boolean, lisse: Boolean) {
+    /** Dessine un cadre, son ancre (les pieds) en (ax, ay) écran, à l'échelle e, déformé autour des pieds (sx, sy,
+     *  rot en degrés) et plus ou moins opaque : la déformation se fait à la résolution de l'écran (pas de gros pixel). */
+    private fun dessinerCadre(cv: Canvas, c: Poses.Cadre, ax: Float, ay: Float, e: Float, miroir: Boolean, lisse: Boolean,
+                              sx: Float = 1f, sy: Float = 1f, rot: Float = 0f, opacite: Float = 1f) {
+        if (opacite <= 0.01f) return
         pinceauImage.isFilterBitmap = lisse
+        pinceauImage.alpha = (255 * opacite.coerceIn(0f, 1f)).toInt()
         val b = bitmap(c)
         cv.save()
-        if (miroir) { cv.translate(ax, 0f); cv.scale(-1f, 1f); cv.translate(-ax, 0f) }
-        val x0 = ax - c.ax * e; val y0 = ay - c.ay * e
-        cv.drawBitmap(b, Rect(0, 0, c.w, c.h), RectF(x0, y0, x0 + c.w * e, y0 + c.h * e), pinceauImage)
+        cv.translate(ax, ay)
+        if (rot != 0f) cv.rotate(-rot)
+        cv.scale(if (miroir) -sx else sx, sy)
+        cv.drawBitmap(b, Rect(0, 0, c.w, c.h), RectF(-c.ax * e, -c.ay * e, (c.w - c.ax) * e, (c.h - c.ay) * e), pinceauImage)
         cv.restore()
+        pinceauImage.alpha = 255
     }
 
     private fun echelle(a: Poses.Album, h: Float): Float =
@@ -506,13 +512,26 @@ class BulleService : Service() {
             val w = width.toFloat(); val h = height.toFloat()
             val haut = taille()
             val e = echelle(a, haut)
-            val (img, mouv) = creature.image()
-            val c = a.image(img.first, img.second)
+            val an = BureauVie.animer(creature)
+            val c = a.image(an.etat, an.k)
             val sol = h - dp(6f)
             val ref = a.images("assis")[0]
-            pinceau.color = Color.argb(70, 0, 0, 0)
-            cv.drawOval(RectF(w / 2 - ref.w * e * 0.36f, sol - dp(3f), w / 2 + ref.w * e * 0.36f, sol + dp(3f)), pinceau)
-            dessinerCadre(cv, c, w / 2, sol + dp(mouv.first), e, mouv.second, a.lisse)
+            val om = an.ombre
+            pinceau.color = Color.argb((70 * om).toInt(), 0, 0, 0)
+            cv.drawOval(RectF(w / 2 - ref.w * e * 0.36f * om, sol - dp(3f) * om, w / 2 + ref.w * e * 0.36f * om, sol + dp(3f) * om), pinceau)
+            val pied = sol + dp(an.dy)
+            an.ancien?.let { v -> dessinerCadre(cv, a.image(v.etat, v.k), w / 2, pied, e, v.miroir, a.lisse, an.sx, an.sy, an.rot, v.opacite) }
+            dessinerCadre(cv, c, w / 2, pied, e, an.miroir, a.lisse, an.sx, an.sy, an.rot, an.opacite)
+            val lc = ref.w * e; val hc = ref.h * e
+            for (f in an.effets) {                                       // « z », cœur, miette
+                val ex = w / 2 + (if (an.miroir) -1 else 1) * f.x * lc; val ey = pied + f.y * hc; val et = max(dp(6f), f.taille * hc)
+                val al = (255 * f.opacite.coerceIn(0f, 1f)).toInt()
+                when (f.genre) {
+                    "z" -> texte(cv, "z", ex, ey, et, Color.argb((al * 0.9f).toInt(), 190, 215, 255), true, Paint.Align.CENTER)
+                    "coeur" -> texte(cv, "♥", ex, ey, et, Color.argb(al, 255, 95, 140), true, Paint.Align.CENTER)
+                    "miette" -> { pinceau.color = Color.argb(al, 232, 176, 74); cv.drawOval(RectF(ex - et / 2, ey - et / 2.4f, ex + et / 2, ey + et / 2.4f), pinceau) }
+                }
+            }
             val now = SystemClock.elapsedRealtime()
             for ((s, t0, coul) in flottants) {
                 val age = (now - t0) / 1000f
@@ -644,11 +663,12 @@ class BulleService : Service() {
             val evt = ile.etat == "evenement"
             val bord = if (evt) 0x96FF5F6D.toInt() else 0x1EFFFFFF
             pilule(cv, RectF(dp(1f), dp(1f), w - dp(1f), h - dp(1f)), 0xEC0E1018.toInt(), bord, if (ile.etat == "ouverte") dp(24f) else (h - dp(2f)) / 2)
-            val c = a.image("assis", (now * BureauVie.IPS).toInt())
+            val (etatMini, msx, msy) = BureauVie.miniVie(creature, now)          // elle respire et cligne
+            val c = a.image(etatMini, (now * BureauVie.IPS).toInt())
             val z = mutableListOf<Pair<RectF, String>>()
             if (ile.etat != "ouverte") {
-                val e = (h - dp(10f)) / a.ref * (1 + 0.03f * sin(now * 2.4).toFloat())
-                dessinerCadre(cv, c, dp(14f) + c.ax * e, h - dp(4f), e, false, a.lisse)
+                val e = (h - dp(10f)) / a.ref
+                dessinerCadre(cv, c, dp(14f) + c.ax * e, h - dp(4f), e, false, a.lisse, msx, msy)
                 var x = dp(22f) + c.w * e
                 if (evt) texte(cv, Langue.raccourcir(ile.evenement ?: "", 30), x, h / 2, dp(14f), 0xFFE9ECF2.toInt())
                 else for ((coul, s) in listOf(0xFFFF9F43.toInt() to t("bur.ile.faim", "n" to jeu.faim.toInt()),
@@ -661,7 +681,7 @@ class BulleService : Service() {
                 val e = dp(80f) / a.ref
                 val eImg = if (a.lisse) e else max(1, (dp(80f) / a.ref).toInt()).toFloat()
                 pilule(cv, RectF(dp(16f), dp(16f), dp(112f), dp(112f)), 0x10FFFFFF, 0x00000000, dp(16f))
-                dessinerCadre(cv, c, dp(64f), dp(104f) - abs(sin(now * 3)).toFloat() * dp(3f), eImg, false, a.lisse)
+                dessinerCadre(cv, c, dp(64f), dp(104f) - abs(sin(now * 3)).toFloat() * dp(3f), eImg, false, a.lisse, msx, msy)
                 z.add(RectF(dp(16f), dp(16f), dp(112f), dp(112f)) to "creature")
                 pinceau.color = 0xFF3DDC84.toInt(); cv.drawCircle(dp(130f), dp(28f), dp(4f), pinceau)
                 texte(cv, jeu.nom, dp(140f), dp(28f), dp(14f), 0xFFE9ECF2.toInt(), true)

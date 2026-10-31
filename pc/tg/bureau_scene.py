@@ -2,6 +2,10 @@
 
 Chaque fenêtre (GTK 4, tkinter, ou une capture simulée avec PIL pour les tests et les maquettes) dessine la même liste :
     ("img", cadre, x, y, echelle, miroir, lisse)          une image de poses.py (coin haut gauche)
+    ("imgt", cadre, ax, ay, echelle, miroir, lisse, sx, sy, rot, opacite)
+                                                          une image posée par son ancre (ax, ay : les pieds), déformée
+                                                          autour des pieds (sx, sy, rot en degrés) et plus ou moins
+                                                          opaque : la vie et les transitions (bureau_vie.animer)
     ("rrect", x, y, w, h, rayon, fond, bord, epaisseur)   rectangle arrondi (couleurs (r, g, b, a) ou None)
     ("ellipse", cx, cy, rx, ry, fond)                     ombre, pastille
     ("arc", cx, cy, rx, ry, couleur, epaisseur)           le cercle pointillé du menu
@@ -124,20 +128,31 @@ def scene_creature(c, album, vue, regl, zone_l, zone_h, sol, ox=0, t_=0.0, nom="
     zones = []
     taille = V.TAILLES.get(regl.get("taille"), 104)
     e = echelle(album, taille)
-    etat, k, dy, miroir = c.image()
-    cad = album.image(etat, k)
-    ax = (cad.w - cad.ax) if miroir else cad.ax
-    x0 = c.x - ox - ax * e
-    y0 = sol - c.air + dy - cad.ay * e
-    # ombre au sol (plus petite quand elle est en l'air)
+    an = V.animer(c)
+    cad = album.image(an.etat, an.k)
     ref = album.images("assis")[0]
     largeur_corps = ref.w * e
-    f = max(0.3, 1 - c.air / 300)
-    L.append(("ellipse", c.x - ox, sol + 2, largeur_corps * 0.36 * f, 5 * f, (0, 0, 0, int(70 * f))))
-    L.append(("img", cad, x0, y0, e, miroir, album.lisse))
     haut_corps = ref.h * e
+    px, py = c.x - ox, sol - c.air + an.dy                 # les pieds, à l'écran
+    # ombre au sol (plus petite quand elle est en l'air ou qu'elle saute)
+    f = max(0.3, 1 - c.air / 300) * an.ombre
+    L.append(("ellipse", c.x - ox, sol + 2, largeur_corps * 0.36 * f, 5 * f, (0, 0, 0, int(70 * f))))
+    if an.ancien is not None:                              # l'ancienne pose s'efface pendant la transition
+        vieux = album.image(an.ancien[0], an.ancien[1])
+        L.append(("imgt", vieux, px, py, e, an.ancien[3], album.lisse, an.sx, an.sy, an.rot, an.ancien[2]))
+    L.append(("imgt", cad, px, py, e, an.miroir, album.lisse, an.sx, an.sy, an.rot, an.opacite))
+    for genre, fx, fy, ft, fa in an.effets:                 # « z », cœur, miette
+        sens = -1 if an.miroir else 1
+        ex, ey, et = px + sens * fx * largeur_corps, py + fy * haut_corps, max(6.0, ft * haut_corps)
+        if genre == "z":
+            L.append(("texte", ex, ey, "z", et, (190, 215, 255, int(230 * fa)), True, "c", False))
+        elif genre == "coeur":
+            L.append(("texte", ex, ey, "♥", et, (255, 95, 140, int(255 * fa)), True, "c", False))
+        elif genre == "miette":
+            L.append(("ellipse", ex, ey, et / 2, et / 2.4, (232, 176, 74, int(255 * fa))))
+            L.append(("ellipse", ex - et / 7, ey - et / 7, et / 6, et / 7, (255, 226, 150, int(255 * fa))))
     zones.append((c.x - ox - largeur_corps / 2, sol - c.air - haut_corps, largeur_corps, haut_corps + 6, "creature"))
-    haut = sol - c.air - cad.ay * e + dy                     # le haut de l'image
+    haut = py - cad.ay * e * an.sy                          # le haut de l'image
     # petits textes qui montent
     for txt, age, coul in vue.flottants:
         L.append(("texte", c.x - ox + largeur_corps * 0.45, haut + 12 - age * 30, sans_marques(txt), 14,
@@ -200,7 +215,7 @@ def rect_ile(ouverture, evenement=False):
     return (ILE_L - w) / 2, 6, w, h
 
 
-def scene_ile(ile, info, album_mini, mini, t_=0.0, pointeur=None, equipe=()):
+def scene_ile(ile, info, album_mini, mini, t_=0.0, pointeur=None, equipe=(), creature=None):
     """(liste de dessin, zones) de l'île. info : {"nom", "faim", "xp", "texte", "titre", "dans_equipe"} ;
     album_mini : l'album de la créature ; mini : le MiniTerminal ; equipe : [(album, couleur d'état)]."""
     L, zones = [], []
@@ -209,11 +224,12 @@ def scene_ile(ile, info, album_mini, mini, t_=0.0, pointeur=None, equipe=()):
     rayon = min(h / 2, 26) if ile.ouverture < 0.4 or evt else 26
     L.append(("rrect", x, y, w, h, rayon, FOND, _a(ROUGE, 150) if evt else BORD, 1.5 if evt else 1))
     zones.append((x, y, w, h, "ile"))
-    cad = album_mini.image("assis", int(t_ * V.IPS))
+    etat_mini, msx, msy = V.mini_vie(creature, t_)
+    cad = album_mini.image(etat_mini, int(t_ * V.IPS))
     if ile.ouverture < 0.6 or evt:
         # la pilule : la mini-créature qui respire, et 2-3 pastilles d'état
-        e = (h - 10) / max(1, album_mini.ref) * (1 + 0.03 * math.sin(t_ * 2.4))
-        L.append(("img", cad, x + 12, y + h - 4 - cad.ay * e, e, False, album_mini.lisse))
+        e = (h - 10) / max(1, album_mini.ref)
+        L.append(("imgt", cad, x + 12 + cad.ax * e, y + h - 4, e, False, album_mini.lisse, msx, msy, 0.0, 1.0))
         xx = x + 18 + cad.w * e
         if evt:
             L.append(("texte", xx + 4, y + h / 2, sans_marques(ile.evenement or ""), 14, TEXTE, False, "g", False))
@@ -252,8 +268,7 @@ def scene_ile(ile, info, album_mini, mini, t_=0.0, pointeur=None, equipe=()):
         e = float(max(1, int(104 / album_mini.ref)))
     hop = -abs(math.sin(t_ * 3)) * 4 if ile.etat == "ouverte" else 0
     regarde = pointeur is not None and pointeur[0] < cx + 80            # elle se tourne vers le pointeur
-    L.append(("img", cad, cx + 80 - (cad.w - cad.ax if regarde else cad.ax) * e, cy + 138 + hop - cad.ay * e, e,
-              regarde, album_mini.lisse))
+    L.append(("imgt", cad, cx + 80, cy + 138 + hop, e, regarde, album_mini.lisse, msx, msy, 0.0, 1.0))
     zones.append((cx + 18, cy + 22, 124, 124, "ile:creature"))
     tx = cx + 166
     L.append(("ellipse", tx + 4, cy + 34, 4, 4, _f(VERT, a)))
@@ -352,6 +367,34 @@ def vers_pil(liste, taille, fond=None, police=None, police_mono=None, image=None
                 a = im.getchannel("A").point(lambda v: 255 if v > 110 else 0)
                 im.putalpha(a)
             img.alpha_composite(im, (int(round(x + ox)), int(round(y + oy))))
+            continue
+        if k == "imgt":
+            _, cad, ax, ay, e, miroir, lisse, sx, sy, rot, alpha = op
+            if alpha <= 0.01:
+                continue
+            im = Image.frombytes("RGBA", (cad.w, cad.h), bytes(cad.rgba))
+            cx_ = cad.ax
+            if miroir:
+                im = im.transpose(Image.FLIP_LEFT_RIGHT)
+                cx_ = cad.w - cad.ax
+            ex, ey = e * sx, e * sy
+            # tout le calcul à la taille de l'écran : déformation continue, rééchantillonnée une seule fois
+            nw, nh = max(1, round(cad.w * ex)), max(1, round(cad.h * ey))
+            im = im.resize((nw, nh), Image.LANCZOS if lisse and ex < 1 else Image.BILINEAR if lisse else Image.NEAREST)
+            pax, pay = cx_ * ex, cad.ay * ey                     # les pieds dans l'image redimensionnée
+            if abs(rot) > 0.05:
+                marge = int(max(nw, nh) * 0.3) + 2
+                grand = Image.new("RGBA", (nw + 2 * marge, nh + 2 * marge))
+                grand.paste(im, (marge, marge))
+                im = grand.rotate(rot, resample=Image.BICUBIC if lisse else Image.NEAREST,
+                                  center=(pax + marge, pay + marge))
+                pax, pay = pax + marge, pay + marge
+            a = im.getchannel("A")
+            a = a.point(lambda v: (255 if v > 110 else 0) if lisse else v)
+            if alpha < 1:
+                a = a.point(lambda v: int(v * alpha))
+            im.putalpha(a)
+            img.alpha_composite(im, (int(round(ax + ox - pax)), int(round(ay + oy - pay))))
             continue
         c = calque()
         d = ImageDraw.Draw(c)

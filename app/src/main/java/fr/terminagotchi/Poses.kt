@@ -8,7 +8,7 @@ import java.util.zip.Inflater
 /**
  * Les poses de la créature de la bulle et de l'île (comme pc/tg/poses.py) : dessinées pour les 27 bébés de départ
  * (assets/poses.bin, fabriqué par donnees/bestiaire2/outils/poses_bureau.py : marche1 à marche4, assis, dort, etire,
- * baille, sursaut, coeur, mange, salut), calculées (AnimAuto, Vie) pour les autres stades et les autres espèces.
+ * baille, sursaut, coeur, mange, salut, et « cligne » : assis les yeux fermés, calculée), calculées (AnimAuto, Vie) pour les autres stades et les autres espèces.
  *
  * Format : "TGPO" | version | longueur de l'en-tête (4 octets) | en-tête JSON | blocs zlib (un par espèce, les octets
  * indexés des 12 poses bout à bout). Une espèce ne se décompresse que si elle est affichée.
@@ -76,18 +76,19 @@ object Poses {
         val e = tete?.optJSONObject("especes")?.optJSONObject(espece) ?: return null
         val brut = gonfler(blocs, e.getInt("o"), e.getInt("n"))
         val cad = e.getJSONArray("cadres")
+        val noms = tete!!.getJSONArray("poses")
         val pal = e.getJSONArray("pal")
         val palette = IntArray(pal.length()) { java.lang.Long.parseLong(pal.getString(it).substring(1), 16).toInt() }
         val out = LinkedHashMap<String, IntArray>()
         var k = 0
-        for (i in NOMS.indices) {
+        for (i in 0 until noms.length()) {
             val c = cad.getJSONArray(i)
             val w = c.getInt(0); val h = c.getInt(1)
             val v = IntArray(4 + w * h)
             v[0] = w; v[1] = h; v[2] = c.getInt(2); v[3] = c.getInt(3)
             for (p in 0 until w * h) v[4 + p] = brut[k + p].toInt() and 255
             k += w * h
-            out[NOMS[i]] = v
+            out[noms.getString(i)] = v
         }
         val r = out to palette
         synchronized(indexees) { indexees[espece] = r }
@@ -106,6 +107,7 @@ object Poses {
         val etats = LinkedHashMap<String, List<Cadre>>()
         etats["marche"] = (1..4).map { cad.getValue("marche$it") }
         for (e in ETATS.drop(1)) etats[e] = listOf(cad.getValue(e))
+        cad["cligne"]?.let { etats["cligne"] = listOf(it) }          // assis, les yeux fermés (le clignement)
         return Album(etats, cad.getValue("assis").h, lisse = true, dessine = true)
     }
 

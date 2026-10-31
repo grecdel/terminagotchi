@@ -129,6 +129,8 @@ def album_dessine(espece_id, teinte=None, nom=None):
     etats = {"marche": [cad[f"marche{k}"] for k in (1, 2, 3, 4)]}
     for e in ETATS[1:]:
         etats[e] = [cad[e]]
+    if "cligne" in cad:                                   # assis, les yeux fermés (le clignement)
+        etats["cligne"] = [cad["cligne"]]
     return Album(etats, cad["assis"].h, True, True, nom or espece_id)
 
 

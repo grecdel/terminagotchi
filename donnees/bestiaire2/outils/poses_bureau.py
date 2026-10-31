@@ -9,13 +9,14 @@ Pour chaque pose :
      pour les poses sans décor : marche, assis ; plus de 40, ou plus de 30 s'il est petit, pour les autres) ;
   2. l'image est recadrée sur ce qui reste ; on note l'ANCRE : le milieu du corps et le bas du corps (les pieds),
      pour que la créature ne saute pas d'une pose à l'autre ;
-  3. les 12 poses d'une espèce partagent une palette de COULEURS (48) couleurs au plus (0 = transparent) : à l'œil,
+  3. une 13e pose est calculée : « cligne » (assis, les yeux fermés, pris dans la pose « coeur ») ;
+  4. les 13 poses d'une espèce partagent une palette de COULEURS (48) couleurs au plus (0 = transparent) : à l'œil,
      on ne voit pas de différence avec 255 couleurs, et le fichier est presque deux fois plus petit ; les petits
      décors (cœur, gouttes, éclats) pèsent DECOR fois plus dans le choix des couleurs, pour garder leurs teintes vives.
 
 Format du fichier (le même pour Python et Kotlin, lu par pc/tg/poses.py et app/…/Poses.kt) :
     "TGPO" | version (1 octet) | longueur de l'en-tête (4 octets, gros-boutiste) | en-tête JSON (UTF-8) | blocs
-    en-tête = {"version": 1, "poses": [12 noms], "especes": {"braisillon": {"o": début du bloc (après l'en-tête),
+    en-tête = {"version": 1, "poses": [13 noms], "especes": {"braisillon": {"o": début du bloc (après l'en-tête),
                "n": taille du bloc, "pal": ["#rrggbb", …], "cadres": [[w, h, ax, ay], … 12]}}}
     bloc = zlib(les octets indexés des 12 poses, ligne par ligne, mis bout à bout)
 Une espèce ne se décompresse que si elle est affichée.
@@ -38,6 +39,7 @@ DEPOT = ICI.parents[1]
 POSES = ["marche1", "marche2", "marche3", "marche4",
          "assis", "dort", "etire", "baille",
          "sursaut", "coeur", "mange", "salut"]
+SORTIE = POSES + ["cligne"]          # + une pose calculée : « assis » les yeux fermés (le clignement)
 SANS_DECOR = {"marche1", "marche2", "marche3", "marche4", "assis"}
 SORTIES = [DEPOT / "pc/tg/poses.bin", DEPOT / "app/src/main/assets/poses.bin"]
 VERSION = 1
@@ -77,6 +79,50 @@ def nettoyer(rgba, pose):
     return out, enleve, ancre, decor
 
 
+def cligne(A, ancre_a, C, ancre_c, decor_c):
+    """« assis » les yeux fermés : on pose « coeur » (sans son cœur) sur « assis » (même posture, yeux fermés), au
+    meilleur décalage près, et on reprend seulement les deux taches qui changent le plus dans le haut du corps (les
+    yeux). Si rien ne colle (posture trop différente), « assis » reste tel quel : la créature ne cligne pas."""
+    C = C.copy()
+    C[decor_c] = 0
+    H, W = A.shape[:2]
+    plein = A[..., 3] > 0
+    meilleur = None
+    for dx in range(-8, 9):
+        for dy in range(-8, 9):
+            ox, oy = ancre_a[0] - ancre_c[0] + dx, ancre_a[1] - ancre_c[1] + dy
+            Cs = np.zeros_like(A)
+            y0, x0 = max(0, oy), max(0, ox)
+            y1, x1 = min(H, oy + C.shape[0]), min(W, ox + C.shape[1])
+            if y1 <= y0 or x1 <= x0:
+                continue
+            Cs[y0:y1, x0:x1] = C[y0 - oy:y1 - oy, x0 - ox:x1 - ox]
+            m = plein & (Cs[..., 3] > 0)
+            if m.sum() < 0.6 * plein.sum():
+                continue
+            diff = np.abs(A[..., :3].astype(int) - Cs[..., :3].astype(int)).sum(2)
+            score = (diff[m] < 60).mean()
+            if meilleur is None or score > meilleur[0]:
+                meilleur = (score, Cs)
+    if meilleur is None or meilleur[0] < 0.3:
+        return A.copy()
+    Cs = meilleur[1]
+    diff = np.abs(A[..., :3].astype(int) - Cs[..., :3].astype(int)).sum(2)
+    m = ndimage.binary_opening(plein & (Cs[..., 3] > 0) & (diff > 90), iterations=1)
+    lab, k = ndimage.label(m)
+    if not k:
+        return A.copy()
+    ys = np.nonzero(plein)[0]
+    haut = ys.min() + 0.75 * (ys.max() - ys.min())
+    tailles = ndimage.sum(m, lab, range(1, k + 1))
+    cand = sorted(((t, i + 1) for i, t in enumerate(tailles)
+                   if t > 15 and ndimage.center_of_mass(m, lab, i + 1)[0] < haut), reverse=True)
+    yeux = ndimage.binary_dilation(np.isin(lab, [i for _t, i in cand[:2]]), iterations=2) & plein & (Cs[..., 3] > 0)
+    B = A.copy()
+    B[yeux] = Cs[yeux]
+    return B
+
+
 def espece_de(dossier):
     return dossier.name.split("_", 1)[1]
 
@@ -90,6 +136,8 @@ def traiter(dossier):
         out, enleve, ancre, decor = nettoyer(rgba, p)
         images.append((out, ancre, decor))
         controles.append((rgba, enleve))
+    a, c = images[POSES.index("assis")], images[POSES.index("coeur")]
+    images.append((cligne(a[0], a[1], c[0], c[1], c[2]), a[1], np.zeros(a[0].shape[:2], dtype=bool)))
     # une palette commune aux 12 poses : on colle les pixels opaques bout à bout ; les petits décors (cœur, « z Z »,
     # gouttes) comptent DECOR fois plus, sinon leurs couleurs vives se perdent dans celles du corps
     pixels = np.concatenate([im[im[..., 3] > 0][:, :3] for im, _a, _d in images]
@@ -142,7 +190,7 @@ def construire():
         z = zlib.compress(e["octets"], 9)
         especes[nom] = {"o": len(blocs), "n": len(z), "pal": e["pal"], "cadres": e["cadres"]}
         blocs += z
-    tete = json.dumps({"version": VERSION, "poses": POSES, "especes": especes}, ensure_ascii=False,
+    tete = json.dumps({"version": VERSION, "poses": SORTIE, "especes": especes}, ensure_ascii=False,
                       separators=(",", ":"), sort_keys=True).encode("utf-8")
     return b"TGPO" + bytes([VERSION]) + struct.pack(">I", len(tete)) + tete + bytes(blocs), controles
 

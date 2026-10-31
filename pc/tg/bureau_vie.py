@@ -30,6 +30,8 @@ BATTERIE_BASSE = 15    # % (sans chargeur) : elle bâille de temps en temps et m
 DUREES = {"etire": 2.4, "baille": 2.6, "sursaut": 1.2, "coeur": 2.6, "mange": 2.6, "salut": 2.4}
 IPS_MARCHE = 6         # images par seconde du cycle de marche (4 images dessinées)
 IPS = 8                # images par seconde des autres animations
+TRANSITION = 0.36      # secondes : tassement de l'ancienne pose, fondu, étirement et rebond de la nouvelle
+CLIGNEMENT = 0.14      # secondes : yeux fermés
 
 
 def reglages(state):
@@ -73,12 +75,20 @@ class Creature:
         self.force_dodo = False         # « dormir » demandé dans les réglages
         self.batt_t = 0.0
         self.apres = None               # l'état qui suit une réaction
+        self.prec = None                # (état, image) d'avant le dernier changement
+        self.t_trans = TRANSITION       # temps depuis le dernier changement d'état
+        self.cligne = self.h.uniform(1.5, 4.0)       # le prochain clignement (secondes)
 
     # ------------------------------------------------ changer d'état
     def changer(self, etat, duree=None):
+        if etat != self.etat or self.t_etat > TRANSITION:
+            im = self.image()
+            self.prec = (im[0], im[1], im[3])          # l'image d'avant (et son miroir), qui s'efface en fondu
+            self.t_trans = 0.0
         self.etat = etat
         self.t_etat = 0.0
-        self.duree = DUREES.get(etat, 4.0) if duree is None else duree
+        # des durées un peu au hasard : elle ne fait jamais tout au même rythme
+        self.duree = DUREES.get(etat, 4.0) * self.h.uniform(0.8, 1.35) if duree is None else duree
         if etat == "marche" and self.regl.get("sur_place"):
             self.etat = "assis"
             self.duree = self.h.uniform(6, 12)
@@ -111,6 +121,10 @@ class Creature:
         dt = max(0.0, min(dt, 0.5))
         self.t += dt
         self.t_etat += dt
+        self.t_trans += dt
+        self.cligne -= dt
+        if self.cligne < -CLIGNEMENT:
+            self.cligne = self.h.uniform(2.2, 6.5) if self.h.random() > 0.2 else 0.35     # parfois deux de suite
         if self.porte:
             return
         # la chute après un glisser
@@ -205,6 +219,128 @@ class Creature:
         elif self.etat == "salut":
             dy = -abs(math.sin(self.t_etat * 5)) * 3
         return self.etat, int(self.t_etat * IPS), dy, miroir and self.etat != "dort"     # les « z Z » restent à l'endroit
+
+
+# ---------------------------------------------------------------- la vie dans chaque pose (pour le dessin)
+class Anime:
+    """Ce qu'on dessine à un instant : la pose (etat, k), sa déformation autour des pieds (sx, sy : échelles, rot :
+    degrés, dy : pixels logiques), le miroir, son opacité, l'ancienne pose qui s'efface pendant une transition
+    (ancien : (etat, k, opacité, miroir) ou None), l'ombre (échelle) et les petits effets :
+    [(genre, x, y, taille, opacité)] avec x, y en fractions de la largeur et de la hauteur du corps, depuis les pieds (y négatif = vers le haut) ; genre : « z », « coeur », « miette ».
+    Toutes les déformations sont continues : on les applique à la résolution de l'écran (un pas = un pixel d'écran,
+    jamais un gros pixel du dessin)."""
+    __slots__ = ("etat", "k", "dy", "miroir", "sx", "sy", "rot", "ancien", "ombre", "effets", "opacite")
+
+    def __init__(self, etat, k, dy, miroir):
+        self.etat, self.k, self.dy, self.miroir = etat, k, dy, miroir
+        self.sx = self.sy = 1.0
+        self.rot = 0.0
+        self.ancien = None
+        self.ombre = 1.0
+        self.effets = []
+        self.opacite = 1.0
+
+
+def _doux(x):
+    """0 → 1 en douceur (début et fin lents)."""
+    x = min(1.0, max(0.0, x))
+    return x * x * (3 - 2 * x)
+
+
+def _enveloppe(p, monte=0.3, descend=0.7):
+    """Monte en douceur, tient, puis redescend en douceur (bâille, s'étire)."""
+    if p < monte:
+        return _doux(p / monte)
+    if p < descend:
+        return 1.0
+    return 1.0 - _doux((p - descend) / (1 - descend))
+
+
+def animer(c):
+    """L'image animée de la créature c (voir Anime)."""
+    etat, k, dy, miroir = c.image()
+    a = Anime(etat, k, dy, miroir)
+    u, d, t = c.t_etat, max(0.1, c.duree), c.t
+    p = min(1.0, u / d)
+    if c.porte or c.air > 0:
+        a.ombre = max(0.3, 1 - c.air / 300)
+        a.sy, a.sx = 1.04, 0.97                       # tenue à bout de bras, un peu étirée
+        return a
+    souffle = math.sin(2 * math.pi * t / 3.2)
+    if etat in ("assis", "coeur", "salut", "mange", "etire", "baille"):
+        a.sy, a.sx = 1 + 0.016 * souffle, 1 - 0.007 * souffle
+    if etat == "assis" and c.cligne < 0:
+        a.etat = "cligne"
+    elif etat == "dort":
+        lent = math.sin(2 * math.pi * t / 4.6)
+        a.sy, a.sx = 1 + 0.024 * lent, 1 - 0.01 * lent
+        for i in range(3):
+            ph = (t / 1.6 + i / 3) % 1
+            a.effets.append(("z", 0.28 + 0.22 * ph, -(0.95 + 0.5 * ph), 0.14 + 0.2 * ph, math.sin(math.pi * ph)))
+    elif etat in ("etire", "baille"):
+        e = _enveloppe(p)
+        if etat == "etire":
+            a.sy *= 1 + 0.07 * e
+            a.sx *= 1 - 0.04 * e
+        else:
+            a.sy *= 1 + 0.045 * e
+            a.sx *= 1 + 0.02 * e
+            a.rot = -3.0 * e
+    elif etat == "sursaut":
+        if u < 0.55:
+            h = math.sin(math.pi * u / 0.55)
+            a.dy = -h * 18
+            a.ombre = 1 - 0.45 * h
+            if u < 0.08:
+                a.sy, a.sx = 0.9, 1.06                # elle se tasse pour sauter
+            else:
+                a.sy, a.sx = 1 + 0.05 * h, 1 - 0.03 * h
+        elif u < 0.72:
+            q = math.sin(math.pi * (u - 0.55) / 0.17)
+            a.sy, a.sx = 1 - 0.1 * q, 1 + 0.06 * q    # elle atterrit
+    elif etat == "mange":
+        if p < 0.3:                                   # la miette arrive
+            q = _doux(p / 0.3)
+            a.effets.append(("miette", 1.0 - 0.58 * q, -0.3 - 0.18 * math.sin(math.pi * q), 0.13, _doux(p / 0.08)))
+        elif p < 0.9:                                 # trois bouchées
+            q = (p - 0.3) / 0.6 * 3
+            bouchee = int(q)
+            bosse = math.sin(math.pi * (q - bouchee))
+            a.sy *= 1 - 0.055 * bosse
+            a.sx *= 1 + 0.03 * bosse
+            reste = 1 - (bouchee + _doux(q - bouchee)) / 3
+            if reste > 0.05:
+                a.effets.append(("miette", 0.42, -0.28, 0.13 * reste ** 0.5, 1.0))
+    elif etat == "coeur":
+        a.dy = -abs(math.sin(u * 5.5)) * 2.5 * (1 - p)
+        a.effets.append(("coeur", 0.32 + 0.05 * math.sin(u * 4), -(0.95 + 0.6 * p), 0.16 + 0.1 * p, 1 - _doux(p)))
+    elif etat == "salut":
+        a.rot = 5.0 * math.sin(2 * math.pi * u / 0.55) * (1 - _doux((p - 0.8) / 0.2) if p > 0.8 else 1)
+    # la transition (TRANSITION secondes, 4 images à l'écran) : l'ancienne pose se tasse, la nouvelle prend le relais
+    # par un court fondu croisé au moment le plus tassé, puis s'étire avec un rebond d'un pixel
+    if c.prec is not None and c.t_trans < TRANSITION:
+        q = c.t_trans / TRANSITION
+        fondu = _doux((q - 0.35) / 0.3)
+        if q < 0.5:
+            tasse = _doux(q * 2)
+            a.sy *= 1 - 0.08 * tasse
+            a.sx *= 1 + 0.05 * tasse
+        else:
+            q2 = (q - 0.5) * 2
+            a.sy *= 0.92 + 0.08 * _doux(q2) + 0.05 * math.sin(math.pi * q2)
+            a.sx *= 1.05 - 0.05 * _doux(q2) - 0.03 * math.sin(math.pi * q2)
+            a.dy -= 1.5 * math.sin(math.pi * q2)
+        if c.prec[:2] != (a.etat, a.k) and c.prec[0] != etat and fondu < 1:
+            a.ancien = (c.prec[0], c.prec[1], 1 - fondu, c.prec[2])
+            a.opacite = fondu
+    return a
+
+
+def mini_vie(c, t):
+    """La mini-créature de l'île : elle respire et cligne avec la créature du bureau. (etat, sx, sy)"""
+    souffle = math.sin(2 * math.pi * t / 3.2)
+    return ("cligne" if c is not None and c.cligne < 0 else "assis"), 1 - 0.007 * souffle, 1 + 0.016 * souffle
+
 
 
 # ---------------------------------------------------------------- clic, double-clic, triple clic, glisser

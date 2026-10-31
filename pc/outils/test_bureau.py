@@ -50,7 +50,12 @@ def test_poses():
     verifier(poses.especes() == bebes, f"les {len(bebes)} bébés de départ ont leurs poses")
     tete, _ = poses.donnees()
     verifier(tete["poses"] == ["marche1", "marche2", "marche3", "marche4", "assis", "dort", "etire", "baille",
-                               "sursaut", "coeur", "mange", "salut"], "12 poses, dans l'ordre")
+                               "sursaut", "coeur", "mange", "salut", "cligne"], "12 poses dessinées + « cligne » (calculée)")
+    diff_cligne = 0
+    for esp in bebes:
+        idx, _p = poses.poses_indexees(esp)
+        diff_cligne += idx["cligne"][2] != idx["assis"][2] and idx["cligne"][:2] == idx["assis"][:2]
+    verifier(diff_cligne >= 20, f"« cligne » : assis les yeux fermés pour {diff_cligne} bébés sur 27")
     from scipy import ndimage  # noqa: F401  (outil de contrôle seulement)
     import numpy as np
     loin, ancres, couleurs = [], [], []
@@ -156,6 +161,63 @@ def test_creature():
     k.changer("marche")
     k.dir = -1
     verifier(k.image()[3] is True, "elle marche vers la gauche : l'image est retournée")
+
+
+def test_animation():
+    print("La vie dans chaque pose et les transitions")
+    c = V.Creature(1000, {}, hasard=random.Random(8))
+    c.changer("assis", 10)
+    for _ in range(10):
+        c.tick(0.1, {"inactif": 1})
+    ys = []
+    for _ in range(40):
+        c.tick(0.1, {"inactif": 1})
+        ys.append(V.animer(c).sy)
+    verifier(max(ys) - min(ys) > 0.02, f"assise : elle respire (sy de {min(ys):.3f} à {max(ys):.3f})")
+    c.cligne = -0.05
+    verifier(V.animer(c).etat == "cligne", "assise : elle cligne des yeux")
+    c.changer("baille")
+    c.tick(0.05)
+    an = V.animer(c)
+    verifier(an.ancien is not None and an.ancien[0] == "assis" and an.sy < 1, "changement : l'ancienne pose se tasse")
+    for _ in range(3):
+        c.tick(0.05)
+    an = V.animer(c)
+    verifier(an.ancien is not None and 0.01 < an.opacite < 0.99, "puis un court fondu croisé")
+    for _ in range(5):
+        c.tick(0.05)
+    verifier(V.animer(c).ancien is None, f"transition finie en {V.TRANSITION} s")
+    c.dormir()
+    for _ in range(10):
+        c.tick(0.1)
+    an = V.animer(c)
+    verifier(sum(1 for e in an.effets if e[0] == "z") == 3 and not an.miroir, "dort : des « z » qui montent, à l'endroit")
+    c.changer("mange", 3.0)
+    c.tick(0.3)
+    verifier(any(e[0] == "miette" for e in V.animer(c).effets), "mange : la miette arrive")
+    for _ in range(28):
+        c.tick(0.1)
+    verifier(not any(e[0] == "miette" for e in V.animer(c).effets), "trois bouchées : la miette a disparu")
+    c.changer("salut", 2.0)
+    c.tick(0.5)
+    rots = []
+    for _ in range(12):
+        c.tick(0.05)
+        rots.append(V.animer(c).rot)
+    verifier(max(rots) > 2 and min(rots) < -2, "salut : elle se balance")
+    c.changer("sursaut")
+    c.tick(0.25)
+    an = V.animer(c)
+    verifier(an.dy < -10 and an.ombre < 0.8, "sursaut : un saut, l'ombre rétrécit")
+    durees = set()
+    for _ in range(20):
+        c.changer("etire")
+        durees.add(round(c.duree, 3))
+    verifier(len(durees) > 10, "les durées changent un peu à chaque fois")
+    a = poses.album(partie())
+    verifier(a.images("cligne") and a.images("cligne")[0].rgba != a.images("assis")[0].rgba, "l'album a sa pose « cligne »")
+    L, _ = S.scene_creature(c, a, S.VueCreature(), V.DEFAUTS, 1000, 440, 430)
+    verifier(any(op[0] == "imgt" for op in L), "le dessin déforme la pose à la taille de l'écran (imgt)")
 
 
 def test_clics():
@@ -412,8 +474,8 @@ def test_dessin():
     c = V.Creature(1920, {}, x=1265, hasard=random.Random(2))
     vue = S.VueCreature()
     L, z = S.scene_creature(c, a, vue, V.DEFAUTS, 1920, 440, 430)
-    img = [e for e in L if e[0] == "img"]
-    verifier(len(img) == 1 and abs(img[0][2] + img[0][1].ax * img[0][4] - 1265) < 2, "la créature est posée sur son ancre")
+    img = [e for e in L if e[0] == "imgt"]
+    verifier(len(img) == 1 and abs(img[0][2] - 1265) < 2, "la créature est posée sur son ancre")
     ile = V.Ile()
     L, z = S.scene_ile(ile, {"nom": "Noisette", "faim": 38, "xp": 62}, a, V.MiniTerminal("/tmp"), 0)
     verifier([e[4] for e in z] == ["ile"] and abs(z[0][2] - S.PILULE_W) < 1, "au repos : une pilule")
@@ -428,6 +490,7 @@ def main():
     test_poses()
     test_albums()
     test_creature()
+    test_animation()
     test_clics()
     test_menu()
     test_ile()
