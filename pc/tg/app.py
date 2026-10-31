@@ -947,7 +947,7 @@ def veille():
 
 def aide():
     return "\n".join(langue.remplir(l, {}) for l in langue.liste("app.aide") + langue.liste("app.aide.histoire")
-                     + [t("env.aide"), t("sat.aide"), t("aura.aide"), t("ent.aide")])
+                     + [t("env.aide"), t("sat.aide"), t("aura.aide"), t("ent.aide"), t("esp.aide")])
 
 
 def commande_histoire(mode, args):
@@ -1087,6 +1087,11 @@ def _main():
         on = core.load()["config"].get("notifs", True)
         print(t("app.options.notifs", etat=f"{fg(78)}{t('app.on')}{RESET}" if on else f"{fg(203)}{t('app.off')}{RESET}"))
         return
+    if mode in ("deploie", "déploie"):         # tg deploie <commande> : la vue déployée (sans la lancer)
+        from . import deploie
+        brut_args = [a for a in sys.argv[2:]]      # garder --pas et --historique (args a retiré les « -- »)
+        deploie.commande(brut_args)
+        return
     if mode == "explique":                     # tg explique rm : la fiche d'une commande et de ses options
         st = core.load() or {}
         print("\n".join(explique.fiche(st, " ".join(args[1:]))))
@@ -1214,6 +1219,12 @@ def _main():
     elif mode == "bureau":
         from . import bureau
         bureau.lancer(etape, args[1:])
+    elif mode == "espace":                     # l'espace de travail (fenêtre dédiée, classe, ou texte)
+        from . import espace
+        espace.lancer(etape, args[1:])
+    elif mode == "cerveau":                    # le cerveau de ta créature (son code d'états qui vit)
+        from . import cerveau
+        cerveau.lancer(etape, args[1:])
     elif mode == "veille":
         veille()
     elif mode in ("combat", "monstre", "monstres"):

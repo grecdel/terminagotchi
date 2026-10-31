@@ -141,6 +141,12 @@ def annonces(state):
             step = les["steps"][state["step"]]
             out.append(f"   {fg(226)}➜ " + t("comp.rappel", cmd=commande_montree(state, step)) + RESET)
         if state.get("term_etape") != cle:
+            if state.get("term_etape") and not erreur:      # l'étape d'avant vient d'être réussie
+                try:
+                    from . import deploie
+                    out.extend(deploie.recap_lecon(core.DERNIER.get("ligne")))
+                except Exception:                    # noqa: BLE001
+                    pass
             state["term_etape"] = cle
             step = les["steps"][state["step"]]
             from . import placement
@@ -236,6 +242,12 @@ def _ps2(zsh=False):
     return f'PS2="{txt}"\n'
 
 
+# `deploie cat x | grep y` : le « # » de l'alias coupe le reste de la ligne (le tuyau n'est pas lancé), et la
+# ligne entière est relue dans l'historique (history -a). Avec des guillemets ça marche aussi partout.
+DEPLOIE = ("alias deploie='history -a 2>/dev/null; tg deploie --historique #'\n"
+           "alias espace='tg espace'; alias cerveau='tg cerveau'")
+
+
 def _blocs():
     exe, app = commande()
     home = Path.home()
@@ -248,7 +260,8 @@ def _blocs():
                          f"alias tg='\"{exe}\" \"{app}\"'\n"
                          "alias carte='tg carte'; alias quetes='tg quetes'; alias explique='tg explique'\n"
                          "alias entrainement='tg entrainement'; alias exercice='tg entrainement'; alias badges='tg badges'\n"
-                         "alias guide='tg guide'; alias types='tg types'; alias equipe='tg equipe'; alias aide='tg aide'")
+                         "alias guide='tg guide'; alias types='tg types'; alias equipe='tg equipe'; alias aide='tg aide'\n"
+                         + DEPLOIE)
     if not IS_WIN and (shell.endswith("zsh") or zshrc.exists() or OSK == "mac"):
         blocs[zshrc] = ("setopt INC_APPEND_HISTORY\n"
                         f'__tg_prompt() {{ local s=$?; "{exe}" "{app}" prompt --statut=$s }}\n'
@@ -256,7 +269,8 @@ def _blocs():
                         f"alias tg='\"{exe}\" \"{app}\"'\n"
                         "alias carte='tg carte'; alias quetes='tg quetes'; alias explique='tg explique'\n"
                         "alias entrainement='tg entrainement'; alias exercice='tg entrainement'; alias badges='tg badges'\n"
-                        "alias guide='tg guide'; alias types='tg types'; alias equipe='tg equipe'; alias aide='tg aide'")
+                        "alias guide='tg guide'; alias types='tg types'; alias equipe='tg equipe'; alias aide='tg aide'\n"
+                        "setopt INTERACTIVE_COMMENTS\n" + DEPLOIE)
     fish = home / ".config" / "fish"
     if not IS_WIN and fish.is_dir():
         blocs[fish / "conf.d" / "terminagotchi.fish"] = (
@@ -267,7 +281,9 @@ def _blocs():
             'function entrainement\n    tg entrainement $argv\nend\nfunction exercice\n    tg entrainement $argv\nend\n'
             'function badges\n    tg badges $argv\nend\n'
             'function guide\n    tg guide $argv\nend\nfunction types\n    tg types\nend\n'
-            'function equipe\n    tg equipe $argv\nend\nfunction aide\n    tg aide $argv\nend')
+            'function equipe\n    tg equipe $argv\nend\nfunction aide\n    tg aide $argv\nend\n'
+            'function deploie\n    tg deploie $argv\nend\nfunction espace\n    tg espace $argv\nend\n'
+            'function cerveau\n    tg cerveau $argv\nend')
     for ps in ("powershell", "pwsh"):
         if shutil.which(ps):
             try:
@@ -285,7 +301,9 @@ def _blocs():
                                        'function entrainement { tg entrainement @args }\n'
                                        'function exercice { tg entrainement @args }\nfunction badges { tg badges @args }\n'
                                        'function guide { tg guide @args }\nfunction types { tg types }\n'
-                                       'function equipe { tg equipe @args }')
+                                       'function equipe { tg equipe @args }\n'
+                                       'function deploie { tg deploie @args }\nfunction espace { tg espace @args }\n'
+                                       'function cerveau { tg cerveau @args }')
     return blocs
 
 

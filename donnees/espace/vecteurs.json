@@ -1,0 +1,2988 @@
+{
+ "deploie": [
+  {
+   "ligne": "cat lianes.txt | grep -i gland",
+   "blocs": [
+    [
+     "cat",
+     "commande",
+     1,
+     0,
+     "",
+     "cat"
+    ],
+    [
+     "lianes.txt",
+     "chemin",
+     2,
+     0,
+     "",
+     "cat"
+    ],
+    [
+     "|",
+     "tuyau",
+     3,
+     0,
+     "",
+     "cat"
+    ],
+    [
+     "grep",
+     "commande",
+     4,
+     1,
+     "",
+     "grep"
+    ],
+    [
+     "-i",
+     "option",
+     5,
+     1,
+     "",
+     "grep"
+    ],
+    [
+     "gland",
+     "argument",
+     6,
+     1,
+     "motif",
+     "grep"
+    ]
+   ],
+   "chaines": [
+    {
+     "etapes": [
+      [
+       "cat",
+       0,
+       1,
+       "cat lianes.txt"
+      ],
+      [
+       "grep",
+       3,
+       5,
+       "grep -i gland"
+      ]
+     ],
+     "redir": null
+    }
+   ],
+   "sure": [
+    true
+   ]
+  },
+  {
+   "ligne": "ls | grep a > liste.txt",
+   "blocs": [
+    [
+     "ls",
+     "commande",
+     1,
+     0,
+     "",
+     "ls"
+    ],
+    [
+     "|",
+     "tuyau",
+     2,
+     0,
+     "",
+     "ls"
+    ],
+    [
+     "grep",
+     "commande",
+     3,
+     1,
+     "",
+     "grep"
+    ],
+    [
+     "a",
+     "argument",
+     4,
+     1,
+     "motif",
+     "grep"
+    ],
+    [
+     ">",
+     "redirection",
+     5,
+     1,
+     "",
+     "grep"
+    ],
+    [
+     "liste.txt",
+     "chemin",
+     6,
+     1,
+     "cible",
+     "grep"
+    ]
+   ],
+   "chaines": [
+    {
+     "etapes": [
+      [
+       "ls",
+       0,
+       0,
+       "ls"
+      ],
+      [
+       "grep",
+       2,
+       3,
+       "grep a"
+      ]
+     ],
+     "redir": [
+      ">",
+      "liste.txt",
+      5,
+      4
+     ]
+    }
+   ],
+   "sure": [
+    true
+   ]
+  },
+  {
+   "ligne": "cd grenier && ls -la",
+   "blocs": [
+    [
+     "cd",
+     "commande",
+     1,
+     0,
+     "",
+     "cd"
+    ],
+    [
+     "grenier",
+     "chemin",
+     2,
+     0,
+     "",
+     "cd"
+    ],
+    [
+     "&&",
+     "lien",
+     3,
+     0,
+     "",
+     "cd"
+    ],
+    [
+     "ls",
+     "commande",
+     4,
+     1,
+     "",
+     "ls"
+    ],
+    [
+     "-la",
+     "option",
+     5,
+     1,
+     "",
+     "ls"
+    ]
+   ],
+   "chaines": [
+    {
+     "etapes": [
+      [
+       "cd",
+       0,
+       1,
+       "cd grenier"
+      ]
+     ],
+     "redir": null
+    },
+    {
+     "etapes": [
+      [
+       "ls",
+       3,
+       4,
+       "ls -la"
+      ]
+     ],
+     "redir": null
+    }
+   ],
+   "sure": [
+    false,
+    true
+   ]
+  },
+  {
+   "ligne": "ls -a",
+   "blocs": [
+    [
+     "ls",
+     "commande",
+     1,
+     0,
+     "",
+     "ls"
+    ],
+    [
+     "-a",
+     "option",
+     2,
+     0,
+     "",
+     "ls"
+    ]
+   ],
+   "chaines": [
+    {
+     "etapes": [
+      [
+       "ls",
+       0,
+       1,
+       "ls -a"
+      ]
+     ],
+     "redir": null
+    }
+   ],
+   "sure": [
+    true
+   ]
+  },
+  {
+   "ligne": "grep \"a | b\" f.txt 2>/dev/null",
+   "blocs": [
+    [
+     "grep",
+     "commande",
+     1,
+     0,
+     "",
+     "grep"
+    ],
+    [
+     "\"a | b\"",
+     "argument",
+     2,
+     0,
+     "motif",
+     "grep"
+    ],
+    [
+     "f.txt",
+     "chemin",
+     3,
+     0,
+     "",
+     "grep"
+    ],
+    [
+     "2>",
+     "redirection",
+     4,
+     0,
+     "",
+     "grep"
+    ],
+    [
+     "/dev/null",
+     "chemin",
+     5,
+     0,
+     "cible",
+     "grep"
+    ]
+   ],
+   "chaines": [
+    {
+     "etapes": [
+      [
+       "grep",
+       0,
+       2,
+       "grep \"a | b\" f.txt"
+      ]
+     ],
+     "redir": null
+    }
+   ],
+   "sure": [
+    true
+   ]
+  },
+  {
+   "ligne": "head -n 3 repas.txt",
+   "blocs": [
+    [
+     "head",
+     "commande",
+     1,
+     0,
+     "",
+     "head"
+    ],
+    [
+     "-n",
+     "option",
+     2,
+     0,
+     "",
+     "head"
+    ],
+    [
+     "3",
+     "argument",
+     3,
+     0,
+     "valeur",
+     "head"
+    ],
+    [
+     "repas.txt",
+     "chemin",
+     4,
+     0,
+     "",
+     "head"
+    ]
+   ],
+   "chaines": [
+    {
+     "etapes": [
+      [
+       "head",
+       0,
+       3,
+       "head -n 3 repas.txt"
+      ]
+     ],
+     "redir": null
+    }
+   ],
+   "sure": [
+    true
+   ]
+  },
+  {
+   "ligne": "chmod +x miam.sh",
+   "blocs": [
+    [
+     "chmod",
+     "commande",
+     1,
+     0,
+     "",
+     "chmod"
+    ],
+    [
+     "+x",
+     "option",
+     2,
+     0,
+     "",
+     "chmod"
+    ],
+    [
+     "miam.sh",
+     "chemin",
+     3,
+     0,
+     "",
+     "chmod"
+    ]
+   ],
+   "chaines": [
+    {
+     "etapes": [
+      [
+       "chmod",
+       0,
+       2,
+       "chmod +x miam.sh"
+      ]
+     ],
+     "redir": null
+    }
+   ],
+   "sure": [
+    false
+   ]
+  },
+  {
+   "ligne": "find . -name \"*.txt\" | wc -l",
+   "blocs": [
+    [
+     "find",
+     "commande",
+     1,
+     0,
+     "",
+     "find"
+    ],
+    [
+     ".",
+     "chemin",
+     2,
+     0,
+     "",
+     "find"
+    ],
+    [
+     "-name",
+     "option",
+     3,
+     0,
+     "",
+     "find"
+    ],
+    [
+     "\"*.txt\"",
+     "argument",
+     4,
+     0,
+     "motif",
+     "find"
+    ],
+    [
+     "|",
+     "tuyau",
+     5,
+     0,
+     "",
+     "find"
+    ],
+    [
+     "wc",
+     "commande",
+     6,
+     1,
+     "",
+     "wc"
+    ],
+    [
+     "-l",
+     "option",
+     7,
+     1,
+     "",
+     "wc"
+    ]
+   ],
+   "chaines": [
+    {
+     "etapes": [
+      [
+       "find",
+       0,
+       3,
+       "find . -name \"*.txt\""
+      ],
+      [
+       "wc",
+       5,
+       6,
+       "wc -l"
+      ]
+     ],
+     "redir": null
+    }
+   ],
+   "sure": [
+    true
+   ]
+  },
+  {
+   "ligne": "echo bonjour >> journal.txt",
+   "blocs": [
+    [
+     "echo",
+     "commande",
+     1,
+     0,
+     "",
+     "echo"
+    ],
+    [
+     "bonjour",
+     "argument",
+     2,
+     0,
+     "texte",
+     "echo"
+    ],
+    [
+     ">>",
+     "redirection",
+     3,
+     0,
+     "",
+     "echo"
+    ],
+    [
+     "journal.txt",
+     "chemin",
+     4,
+     0,
+     "cible",
+     "echo"
+    ]
+   ],
+   "chaines": [
+    {
+     "etapes": [
+      [
+       "echo",
+       0,
+       1,
+       "echo bonjour"
+      ]
+     ],
+     "redir": [
+      ">>",
+      "journal.txt",
+      3,
+      2
+     ]
+    }
+   ],
+   "sure": [
+    true
+   ]
+  },
+  {
+   "ligne": "sort -n notes.csv|uniq -c",
+   "blocs": [
+    [
+     "sort",
+     "commande",
+     1,
+     0,
+     "",
+     "sort"
+    ],
+    [
+     "-n",
+     "option",
+     2,
+     0,
+     "",
+     "sort"
+    ],
+    [
+     "notes.csv",
+     "chemin",
+     3,
+     0,
+     "",
+     "sort"
+    ],
+    [
+     "|",
+     "tuyau",
+     4,
+     0,
+     "",
+     "sort"
+    ],
+    [
+     "uniq",
+     "commande",
+     5,
+     1,
+     "",
+     "uniq"
+    ],
+    [
+     "-c",
+     "option",
+     6,
+     1,
+     "",
+     "uniq"
+    ]
+   ],
+   "chaines": [
+    {
+     "etapes": [
+      [
+       "sort",
+       0,
+       2,
+       "sort -n notes.csv"
+      ],
+      [
+       "uniq",
+       4,
+       5,
+       "uniq -c"
+      ]
+     ],
+     "redir": null
+    }
+   ],
+   "sure": [
+    true
+   ]
+  },
+  {
+   "ligne": "cat a.txt|sort|uniq -c|sort -rn|head -3",
+   "blocs": [
+    [
+     "cat",
+     "commande",
+     1,
+     0,
+     "",
+     "cat"
+    ],
+    [
+     "a.txt",
+     "chemin",
+     2,
+     0,
+     "",
+     "cat"
+    ],
+    [
+     "|",
+     "tuyau",
+     3,
+     0,
+     "",
+     "cat"
+    ],
+    [
+     "sort",
+     "commande",
+     4,
+     1,
+     "",
+     "sort"
+    ],
+    [
+     "|",
+     "tuyau",
+     5,
+     1,
+     "",
+     "sort"
+    ],
+    [
+     "uniq",
+     "commande",
+     6,
+     2,
+     "",
+     "uniq"
+    ],
+    [
+     "-c",
+     "option",
+     7,
+     2,
+     "",
+     "uniq"
+    ],
+    [
+     "|",
+     "tuyau",
+     8,
+     2,
+     "",
+     "uniq"
+    ],
+    [
+     "sort",
+     "commande",
+     9,
+     3,
+     "",
+     "sort"
+    ],
+    [
+     "-rn",
+     "option",
+     10,
+     3,
+     "",
+     "sort"
+    ],
+    [
+     "|",
+     "tuyau",
+     11,
+     3,
+     "",
+     "sort"
+    ],
+    [
+     "head",
+     "commande",
+     12,
+     4,
+     "",
+     "head"
+    ],
+    [
+     "-3",
+     "option",
+     13,
+     4,
+     "",
+     "head"
+    ]
+   ],
+   "chaines": [
+    {
+     "etapes": [
+      [
+       "cat",
+       0,
+       1,
+       "cat a.txt"
+      ],
+      [
+       "sort",
+       3,
+       3,
+       "sort"
+      ],
+      [
+       "uniq",
+       5,
+       6,
+       "uniq -c"
+      ],
+      [
+       "sort",
+       8,
+       9,
+       "sort -rn"
+      ],
+      [
+       "head",
+       11,
+       12,
+       "head -3"
+      ]
+     ],
+     "redir": null
+    }
+   ],
+   "sure": [
+    true
+   ]
+  },
+  {
+   "ligne": "mkdir -p nid/coin ; touch nid/coin/oeuf.txt",
+   "blocs": [
+    [
+     "mkdir",
+     "commande",
+     1,
+     0,
+     "",
+     "mkdir"
+    ],
+    [
+     "-p",
+     "option",
+     2,
+     0,
+     "",
+     "mkdir"
+    ],
+    [
+     "nid/coin",
+     "chemin",
+     3,
+     0,
+     "",
+     "mkdir"
+    ],
+    [
+     ";",
+     "lien",
+     4,
+     0,
+     "",
+     "mkdir"
+    ],
+    [
+     "touch",
+     "commande",
+     5,
+     1,
+     "",
+     "touch"
+    ],
+    [
+     "nid/coin/oeuf.txt",
+     "chemin",
+     6,
+     1,
+     "",
+     "touch"
+    ]
+   ],
+   "chaines": [
+    {
+     "etapes": [
+      [
+       "mkdir",
+       0,
+       2,
+       "mkdir -p nid/coin"
+      ]
+     ],
+     "redir": null
+    },
+    {
+     "etapes": [
+      [
+       "touch",
+       4,
+       5,
+       "touch nid/coin/oeuf.txt"
+      ]
+     ],
+     "redir": null
+    }
+   ],
+   "sure": [
+    false,
+    false
+   ]
+  },
+  {
+   "ligne": "rm -r vieux_carton || echo rate",
+   "blocs": [
+    [
+     "rm",
+     "commande",
+     1,
+     0,
+     "",
+     "rm"
+    ],
+    [
+     "-r",
+     "option",
+     2,
+     0,
+     "",
+     "rm"
+    ],
+    [
+     "vieux_carton",
+     "chemin",
+     3,
+     0,
+     "",
+     "rm"
+    ],
+    [
+     "||",
+     "lien",
+     4,
+     0,
+     "",
+     "rm"
+    ],
+    [
+     "echo",
+     "commande",
+     5,
+     1,
+     "",
+     "echo"
+    ],
+    [
+     "rate",
+     "argument",
+     6,
+     1,
+     "texte",
+     "echo"
+    ]
+   ],
+   "chaines": [
+    {
+     "etapes": [
+      [
+       "rm",
+       0,
+       2,
+       "rm -r vieux_carton"
+      ]
+     ],
+     "redir": null
+    },
+    {
+     "etapes": [
+      [
+       "echo",
+       4,
+       5,
+       "echo rate"
+      ]
+     ],
+     "redir": null
+    }
+   ],
+   "sure": [
+    false,
+    true
+   ]
+  },
+  {
+   "ligne": "wc -l < liste.txt",
+   "blocs": [
+    [
+     "wc",
+     "commande",
+     1,
+     0,
+     "",
+     "wc"
+    ],
+    [
+     "-l",
+     "option",
+     2,
+     0,
+     "",
+     "wc"
+    ],
+    [
+     "<",
+     "redirection",
+     3,
+     0,
+     "",
+     "wc"
+    ],
+    [
+     "liste.txt",
+     "chemin",
+     4,
+     0,
+     "cible",
+     "wc"
+    ]
+   ],
+   "chaines": [
+    {
+     "etapes": [
+      [
+       "wc",
+       0,
+       1,
+       "wc -l"
+      ]
+     ],
+     "redir": null
+    }
+   ],
+   "sure": [
+    true
+   ]
+  },
+  {
+   "ligne": "tr a-z A-Z < cri.txt > CRI.txt",
+   "blocs": [
+    [
+     "tr",
+     "commande",
+     1,
+     0,
+     "",
+     "tr"
+    ],
+    [
+     "a-z",
+     "argument",
+     2,
+     0,
+     "motif",
+     "tr"
+    ],
+    [
+     "A-Z",
+     "argument",
+     3,
+     0,
+     "motif",
+     "tr"
+    ],
+    [
+     "<",
+     "redirection",
+     4,
+     0,
+     "",
+     "tr"
+    ],
+    [
+     "cri.txt",
+     "chemin",
+     5,
+     0,
+     "cible",
+     "tr"
+    ],
+    [
+     ">",
+     "redirection",
+     6,
+     0,
+     "",
+     "tr"
+    ],
+    [
+     "CRI.txt",
+     "chemin",
+     7,
+     0,
+     "cible",
+     "tr"
+    ]
+   ],
+   "chaines": [
+    {
+     "etapes": [
+      [
+       "tr",
+       0,
+       2,
+       "tr a-z A-Z"
+      ]
+     ],
+     "redir": [
+      ">",
+      "CRI.txt",
+      6,
+      5
+     ]
+    }
+   ],
+   "sure": [
+    true
+   ]
+  },
+  {
+   "ligne": "VAR=1 echo $VAR",
+   "blocs": [
+    [
+     "VAR=1",
+     "argument",
+     1,
+     0,
+     "variable",
+     ""
+    ],
+    [
+     "echo",
+     "commande",
+     2,
+     0,
+     "",
+     "echo"
+    ],
+    [
+     "$VAR",
+     "argument",
+     3,
+     0,
+     "texte",
+     "echo"
+    ]
+   ],
+   "chaines": [
+    {
+     "etapes": [
+      [
+       "",
+       0,
+       2,
+       "VAR=1 echo $VAR"
+      ]
+     ],
+     "redir": null
+    }
+   ],
+   "sure": [
+    false
+   ]
+  },
+  {
+   "ligne": "ping -c 3 exemple.org &",
+   "blocs": [
+    [
+     "ping",
+     "commande",
+     1,
+     0,
+     "",
+     "ping"
+    ],
+    [
+     "-c",
+     "option",
+     2,
+     0,
+     "",
+     "ping"
+    ],
+    [
+     "3",
+     "argument",
+     3,
+     0,
+     "valeur",
+     "ping"
+    ],
+    [
+     "exemple.org",
+     "chemin",
+     4,
+     0,
+     "",
+     "ping"
+    ],
+    [
+     "&",
+     "lien",
+     5,
+     0,
+     "",
+     "ping"
+    ]
+   ],
+   "chaines": [
+    {
+     "etapes": [
+      [
+       "ping",
+       0,
+       3,
+       "ping -c 3 exemple.org"
+      ]
+     ],
+     "redir": null
+    }
+   ],
+   "sure": [
+    false
+   ]
+  },
+  {
+   "ligne": "ls ~/terrain_terminagotchi/grenier",
+   "blocs": [
+    [
+     "ls",
+     "commande",
+     1,
+     0,
+     "",
+     "ls"
+    ],
+    [
+     "~/terrain_terminagotchi/grenier",
+     "chemin",
+     2,
+     0,
+     "",
+     "ls"
+    ]
+   ],
+   "chaines": [
+    {
+     "etapes": [
+      [
+       "ls",
+       0,
+       1,
+       "ls ~/terrain_terminagotchi/grenier"
+      ]
+     ],
+     "redir": null
+    }
+   ],
+   "sure": [
+    true
+   ]
+  },
+  {
+   "ligne": "cp grenier/lianes.txt .",
+   "blocs": [
+    [
+     "cp",
+     "commande",
+     1,
+     0,
+     "",
+     "cp"
+    ],
+    [
+     "grenier/lianes.txt",
+     "chemin",
+     2,
+     0,
+     "",
+     "cp"
+    ],
+    [
+     ".",
+     "chemin",
+     3,
+     0,
+     "",
+     "cp"
+    ]
+   ],
+   "chaines": [
+    {
+     "etapes": [
+      [
+       "cp",
+       0,
+       2,
+       "cp grenier/lianes.txt ."
+      ]
+     ],
+     "redir": null
+    }
+   ],
+   "sure": [
+    false
+   ]
+  },
+  {
+   "ligne": "mv fouillis rangement",
+   "blocs": [
+    [
+     "mv",
+     "commande",
+     1,
+     0,
+     "",
+     "mv"
+    ],
+    [
+     "fouillis",
+     "chemin",
+     2,
+     0,
+     "",
+     "mv"
+    ],
+    [
+     "rangement",
+     "chemin",
+     3,
+     0,
+     "",
+     "mv"
+    ]
+   ],
+   "chaines": [
+    {
+     "etapes": [
+      [
+       "mv",
+       0,
+       2,
+       "mv fouillis rangement"
+      ]
+     ],
+     "redir": null
+    }
+   ],
+   "sure": [
+    false
+   ]
+  },
+  {
+   "ligne": "rev parchemin",
+   "blocs": [
+    [
+     "rev",
+     "commande",
+     1,
+     0,
+     "",
+     "rev"
+    ],
+    [
+     "parchemin",
+     "chemin",
+     2,
+     0,
+     "",
+     "rev"
+    ]
+   ],
+   "chaines": [
+    {
+     "etapes": [
+      [
+       "rev",
+       0,
+       1,
+       "rev parchemin"
+      ]
+     ],
+     "redir": null
+    }
+   ],
+   "sure": [
+    true
+   ]
+  },
+  {
+   "ligne": "tree",
+   "blocs": [
+    [
+     "tree",
+     "commande",
+     1,
+     0,
+     "",
+     "tree"
+    ]
+   ],
+   "chaines": [
+    {
+     "etapes": [
+      [
+       "tree",
+       0,
+       0,
+       "tree"
+      ]
+     ],
+     "redir": null
+    }
+   ],
+   "sure": [
+    true
+   ]
+  },
+  {
+   "ligne": "tail -n 2 journal.txt | rev",
+   "blocs": [
+    [
+     "tail",
+     "commande",
+     1,
+     0,
+     "",
+     "tail"
+    ],
+    [
+     "-n",
+     "option",
+     2,
+     0,
+     "",
+     "tail"
+    ],
+    [
+     "2",
+     "argument",
+     3,
+     0,
+     "valeur",
+     "tail"
+    ],
+    [
+     "journal.txt",
+     "chemin",
+     4,
+     0,
+     "",
+     "tail"
+    ],
+    [
+     "|",
+     "tuyau",
+     5,
+     0,
+     "",
+     "tail"
+    ],
+    [
+     "rev",
+     "commande",
+     6,
+     1,
+     "",
+     "rev"
+    ]
+   ],
+   "chaines": [
+    {
+     "etapes": [
+      [
+       "tail",
+       0,
+       3,
+       "tail -n 2 journal.txt"
+      ],
+      [
+       "rev",
+       5,
+       5,
+       "rev"
+      ]
+     ],
+     "redir": null
+    }
+   ],
+   "sure": [
+    true
+   ]
+  },
+  {
+   "ligne": "grep -rn gland .",
+   "blocs": [
+    [
+     "grep",
+     "commande",
+     1,
+     0,
+     "",
+     "grep"
+    ],
+    [
+     "-rn",
+     "option",
+     2,
+     0,
+     "",
+     "grep"
+    ],
+    [
+     "gland",
+     "argument",
+     3,
+     0,
+     "motif",
+     "grep"
+    ],
+    [
+     ".",
+     "chemin",
+     4,
+     0,
+     "",
+     "grep"
+    ]
+   ],
+   "chaines": [
+    {
+     "etapes": [
+      [
+       "grep",
+       0,
+       3,
+       "grep -rn gland ."
+      ]
+     ],
+     "redir": null
+    }
+   ],
+   "sure": [
+    true
+   ]
+  },
+  {
+   "ligne": "cd ..",
+   "blocs": [
+    [
+     "cd",
+     "commande",
+     1,
+     0,
+     "",
+     "cd"
+    ],
+    [
+     "..",
+     "chemin",
+     2,
+     0,
+     "",
+     "cd"
+    ]
+   ],
+   "chaines": [
+    {
+     "etapes": [
+      [
+       "cd",
+       0,
+       1,
+       "cd .."
+      ]
+     ],
+     "redir": null
+    }
+   ],
+   "sure": [
+    false
+   ]
+  },
+  {
+   "ligne": "echo 'un | deux' | wc -w",
+   "blocs": [
+    [
+     "echo",
+     "commande",
+     1,
+     0,
+     "",
+     "echo"
+    ],
+    [
+     "'un | deux'",
+     "argument",
+     2,
+     0,
+     "texte",
+     "echo"
+    ],
+    [
+     "|",
+     "tuyau",
+     3,
+     0,
+     "",
+     "echo"
+    ],
+    [
+     "wc",
+     "commande",
+     4,
+     1,
+     "",
+     "wc"
+    ],
+    [
+     "-w",
+     "option",
+     5,
+     1,
+     "",
+     "wc"
+    ]
+   ],
+   "chaines": [
+    {
+     "etapes": [
+      [
+       "echo",
+       0,
+       1,
+       "echo 'un | deux'"
+      ],
+      [
+       "wc",
+       3,
+       4,
+       "wc -w"
+      ]
+     ],
+     "redir": null
+    }
+   ],
+   "sure": [
+    true
+   ]
+  },
+  {
+   "ligne": "cat lianes.txt | grep gland | wc -l > total.txt",
+   "blocs": [
+    [
+     "cat",
+     "commande",
+     1,
+     0,
+     "",
+     "cat"
+    ],
+    [
+     "lianes.txt",
+     "chemin",
+     2,
+     0,
+     "",
+     "cat"
+    ],
+    [
+     "|",
+     "tuyau",
+     3,
+     0,
+     "",
+     "cat"
+    ],
+    [
+     "grep",
+     "commande",
+     4,
+     1,
+     "",
+     "grep"
+    ],
+    [
+     "gland",
+     "argument",
+     5,
+     1,
+     "motif",
+     "grep"
+    ],
+    [
+     "|",
+     "tuyau",
+     6,
+     1,
+     "",
+     "grep"
+    ],
+    [
+     "wc",
+     "commande",
+     7,
+     2,
+     "",
+     "wc"
+    ],
+    [
+     "-l",
+     "option",
+     8,
+     2,
+     "",
+     "wc"
+    ],
+    [
+     ">",
+     "redirection",
+     9,
+     2,
+     "",
+     "wc"
+    ],
+    [
+     "total.txt",
+     "chemin",
+     10,
+     2,
+     "cible",
+     "wc"
+    ]
+   ],
+   "chaines": [
+    {
+     "etapes": [
+      [
+       "cat",
+       0,
+       1,
+       "cat lianes.txt"
+      ],
+      [
+       "grep",
+       3,
+       4,
+       "grep gland"
+      ],
+      [
+       "wc",
+       6,
+       7,
+       "wc -l"
+      ]
+     ],
+     "redir": [
+      ">",
+      "total.txt",
+      9,
+      8
+     ]
+    }
+   ],
+   "sure": [
+    true
+   ]
+  }
+ ],
+ "cerveau": {
+  "programme": [
+   "# {commentaire}",
+   "case \"$etat\" in",
+   "  content)",
+   "    [ $faim -lt 30 ] && etat=faim",
+   "    [ $sommeil -lt 20 ] && etat=dort",
+   "    [ $jeu -lt 30 ] && etat=joue",
+   "    if commande_ratee; then etat=confus",
+   "    elif commande_tapee; then etat=mange",
+   "    fi ;;",
+   "  faim)",
+   "    if commande_tapee; then",
+   "      etat=mange",
+   "    fi ;;",
+   "  mange)",
+   "    faim=$((faim + repas))",
+   "    [ $faim -gt 100 ] && faim=100",
+   "    etat=content ;;",
+   "  joue)",
+   "    jeu=$((jeu + 10))",
+   "    etat=content ;;",
+   "  dort)",
+   "    sommeil=$((sommeil + 10))",
+   "    [ $sommeil -ge 90 ] && etat=content ;;",
+   "  confus)",
+   "    dire \"{phrase}\"",
+   "    etat=content ;;",
+   "esac"
+  ],
+  "transitions": [
+   [
+    "content",
+    "faim"
+   ],
+   [
+    "content",
+    "dort"
+   ],
+   [
+    "content",
+    "joue"
+   ],
+   [
+    "content",
+    "confus"
+   ],
+   [
+    "content",
+    "mange"
+   ],
+   [
+    "faim",
+    "mange"
+   ],
+   [
+    "mange",
+    "content"
+   ],
+   [
+    "joue",
+    "content"
+   ],
+   [
+    "dort",
+    "content"
+   ],
+   [
+    "confus",
+    "content"
+   ]
+  ],
+  "sequences": [
+   {
+    "depart": "content",
+    "var": {
+     "faim": 25,
+     "jeu": 50,
+     "sommeil": 70,
+     "repas": 0
+    },
+    "tours": [
+     {
+      "signaux": {},
+      "force": null,
+      "de": "content",
+      "vers": "faim",
+      "etat": "faim",
+      "var": {
+       "faim": 25,
+       "jeu": 50,
+       "sommeil": 70,
+       "repas": 0
+      },
+      "lignes": [
+       [
+        1,
+        "fait"
+       ],
+       [
+        2,
+        "fait"
+       ],
+       [
+        3,
+        "vrai"
+       ],
+       [
+        4,
+        "faux"
+       ],
+       [
+        5,
+        "faux"
+       ],
+       [
+        6,
+        "faux"
+       ],
+       [
+        7,
+        "faux"
+       ],
+       [
+        8,
+        "fait"
+       ]
+      ],
+      "dit": null
+     },
+     {
+      "signaux": {
+       "commande_tapee": true
+      },
+      "force": null,
+      "de": "faim",
+      "vers": "mange",
+      "etat": "mange",
+      "var": {
+       "faim": 25,
+       "jeu": 50,
+       "sommeil": 70,
+       "repas": 0
+      },
+      "lignes": [
+       [
+        1,
+        "fait"
+       ],
+       [
+        9,
+        "fait"
+       ],
+       [
+        10,
+        "vrai"
+       ],
+       [
+        11,
+        "fait"
+       ],
+       [
+        12,
+        "fait"
+       ]
+      ],
+      "dit": null
+     },
+     {
+      "signaux": {},
+      "force": null,
+      "de": "mange",
+      "vers": "content",
+      "etat": "content",
+      "var": {
+       "faim": 25,
+       "jeu": 50,
+       "sommeil": 70,
+       "repas": 0
+      },
+      "lignes": [
+       [
+        1,
+        "fait"
+       ],
+       [
+        13,
+        "fait"
+       ],
+       [
+        14,
+        "fait"
+       ],
+       [
+        15,
+        "faux"
+       ],
+       [
+        16,
+        "fait"
+       ]
+      ],
+      "dit": null
+     },
+     {
+      "signaux": {},
+      "force": null,
+      "de": "content",
+      "vers": "faim",
+      "etat": "faim",
+      "var": {
+       "faim": 25,
+       "jeu": 50,
+       "sommeil": 70,
+       "repas": 0
+      },
+      "lignes": [
+       [
+        1,
+        "fait"
+       ],
+       [
+        2,
+        "fait"
+       ],
+       [
+        3,
+        "vrai"
+       ],
+       [
+        4,
+        "faux"
+       ],
+       [
+        5,
+        "faux"
+       ],
+       [
+        6,
+        "faux"
+       ],
+       [
+        7,
+        "faux"
+       ],
+       [
+        8,
+        "fait"
+       ]
+      ],
+      "dit": null
+     }
+    ]
+   },
+   {
+    "depart": "content",
+    "var": {
+     "faim": 60,
+     "jeu": 20,
+     "sommeil": 70,
+     "repas": 8
+    },
+    "tours": [
+     {
+      "signaux": {},
+      "force": null,
+      "de": "content",
+      "vers": "joue",
+      "etat": "joue",
+      "var": {
+       "faim": 60,
+       "jeu": 20,
+       "sommeil": 70,
+       "repas": 8
+      },
+      "lignes": [
+       [
+        1,
+        "fait"
+       ],
+       [
+        2,
+        "fait"
+       ],
+       [
+        3,
+        "faux"
+       ],
+       [
+        4,
+        "faux"
+       ],
+       [
+        5,
+        "vrai"
+       ],
+       [
+        6,
+        "faux"
+       ],
+       [
+        7,
+        "faux"
+       ],
+       [
+        8,
+        "fait"
+       ]
+      ],
+      "dit": null
+     },
+     {
+      "signaux": {},
+      "force": null,
+      "de": "joue",
+      "vers": "content",
+      "etat": "content",
+      "var": {
+       "faim": 60,
+       "jeu": 30,
+       "sommeil": 70,
+       "repas": 8
+      },
+      "lignes": [
+       [
+        1,
+        "fait"
+       ],
+       [
+        17,
+        "fait"
+       ],
+       [
+        18,
+        "fait"
+       ],
+       [
+        19,
+        "fait"
+       ]
+      ],
+      "dit": null
+     },
+     {
+      "signaux": {
+       "commande_tapee": true,
+       "commande_ratee": true
+      },
+      "force": null,
+      "de": "content",
+      "vers": "confus",
+      "etat": "confus",
+      "var": {
+       "faim": 60,
+       "jeu": 30,
+       "sommeil": 70,
+       "repas": 8
+      },
+      "lignes": [
+       [
+        1,
+        "fait"
+       ],
+       [
+        2,
+        "fait"
+       ],
+       [
+        3,
+        "faux"
+       ],
+       [
+        4,
+        "faux"
+       ],
+       [
+        5,
+        "faux"
+       ],
+       [
+        6,
+        "vrai"
+       ],
+       [
+        8,
+        "fait"
+       ]
+      ],
+      "dit": null
+     },
+     {
+      "signaux": {},
+      "force": null,
+      "de": "confus",
+      "vers": "content",
+      "etat": "content",
+      "var": {
+       "faim": 60,
+       "jeu": 30,
+       "sommeil": 70,
+       "repas": 8
+      },
+      "lignes": [
+       [
+        1,
+        "fait"
+       ],
+       [
+        23,
+        "fait"
+       ],
+       [
+        24,
+        "fait"
+       ],
+       [
+        25,
+        "fait"
+       ]
+      ],
+      "dit": "{phrase}"
+     }
+    ]
+   },
+   {
+    "depart": "content",
+    "var": {
+     "faim": 60,
+     "jeu": 60,
+     "sommeil": 10,
+     "repas": 0
+    },
+    "tours": [
+     {
+      "signaux": {},
+      "force": null,
+      "de": "content",
+      "vers": "dort",
+      "etat": "dort",
+      "var": {
+       "faim": 60,
+       "jeu": 60,
+       "sommeil": 10,
+       "repas": 0
+      },
+      "lignes": [
+       [
+        1,
+        "fait"
+       ],
+       [
+        2,
+        "fait"
+       ],
+       [
+        3,
+        "faux"
+       ],
+       [
+        4,
+        "vrai"
+       ],
+       [
+        5,
+        "faux"
+       ],
+       [
+        6,
+        "faux"
+       ],
+       [
+        7,
+        "faux"
+       ],
+       [
+        8,
+        "fait"
+       ]
+      ],
+      "dit": null
+     },
+     {
+      "signaux": {},
+      "force": null,
+      "de": "dort",
+      "vers": "dort",
+      "etat": "dort",
+      "var": {
+       "faim": 60,
+       "jeu": 60,
+       "sommeil": 20,
+       "repas": 0
+      },
+      "lignes": [
+       [
+        1,
+        "fait"
+       ],
+       [
+        20,
+        "fait"
+       ],
+       [
+        21,
+        "fait"
+       ],
+       [
+        22,
+        "faux"
+       ]
+      ],
+      "dit": null
+     },
+     {
+      "signaux": {},
+      "force": null,
+      "de": "dort",
+      "vers": "dort",
+      "etat": "dort",
+      "var": {
+       "faim": 60,
+       "jeu": 60,
+       "sommeil": 30,
+       "repas": 0
+      },
+      "lignes": [
+       [
+        1,
+        "fait"
+       ],
+       [
+        20,
+        "fait"
+       ],
+       [
+        21,
+        "fait"
+       ],
+       [
+        22,
+        "faux"
+       ]
+      ],
+      "dit": null
+     },
+     {
+      "signaux": {},
+      "force": null,
+      "de": "dort",
+      "vers": "dort",
+      "etat": "dort",
+      "var": {
+       "faim": 60,
+       "jeu": 60,
+       "sommeil": 40,
+       "repas": 0
+      },
+      "lignes": [
+       [
+        1,
+        "fait"
+       ],
+       [
+        20,
+        "fait"
+       ],
+       [
+        21,
+        "fait"
+       ],
+       [
+        22,
+        "faux"
+       ]
+      ],
+      "dit": null
+     },
+     {
+      "signaux": {},
+      "force": null,
+      "de": "dort",
+      "vers": "dort",
+      "etat": "dort",
+      "var": {
+       "faim": 60,
+       "jeu": 60,
+       "sommeil": 50,
+       "repas": 0
+      },
+      "lignes": [
+       [
+        1,
+        "fait"
+       ],
+       [
+        20,
+        "fait"
+       ],
+       [
+        21,
+        "fait"
+       ],
+       [
+        22,
+        "faux"
+       ]
+      ],
+      "dit": null
+     },
+     {
+      "signaux": {},
+      "force": null,
+      "de": "dort",
+      "vers": "dort",
+      "etat": "dort",
+      "var": {
+       "faim": 60,
+       "jeu": 60,
+       "sommeil": 60,
+       "repas": 0
+      },
+      "lignes": [
+       [
+        1,
+        "fait"
+       ],
+       [
+        20,
+        "fait"
+       ],
+       [
+        21,
+        "fait"
+       ],
+       [
+        22,
+        "faux"
+       ]
+      ],
+      "dit": null
+     },
+     {
+      "signaux": {},
+      "force": null,
+      "de": "dort",
+      "vers": "dort",
+      "etat": "dort",
+      "var": {
+       "faim": 60,
+       "jeu": 60,
+       "sommeil": 70,
+       "repas": 0
+      },
+      "lignes": [
+       [
+        1,
+        "fait"
+       ],
+       [
+        20,
+        "fait"
+       ],
+       [
+        21,
+        "fait"
+       ],
+       [
+        22,
+        "faux"
+       ]
+      ],
+      "dit": null
+     },
+     {
+      "signaux": {},
+      "force": null,
+      "de": "dort",
+      "vers": "dort",
+      "etat": "dort",
+      "var": {
+       "faim": 60,
+       "jeu": 60,
+       "sommeil": 80,
+       "repas": 0
+      },
+      "lignes": [
+       [
+        1,
+        "fait"
+       ],
+       [
+        20,
+        "fait"
+       ],
+       [
+        21,
+        "fait"
+       ],
+       [
+        22,
+        "faux"
+       ]
+      ],
+      "dit": null
+     },
+     {
+      "signaux": {},
+      "force": null,
+      "de": "dort",
+      "vers": "content",
+      "etat": "content",
+      "var": {
+       "faim": 60,
+       "jeu": 60,
+       "sommeil": 90,
+       "repas": 0
+      },
+      "lignes": [
+       [
+        1,
+        "fait"
+       ],
+       [
+        20,
+        "fait"
+       ],
+       [
+        21,
+        "fait"
+       ],
+       [
+        22,
+        "vrai"
+       ]
+      ],
+      "dit": null
+     },
+     {
+      "signaux": {},
+      "force": null,
+      "de": "content",
+      "vers": "content",
+      "etat": "content",
+      "var": {
+       "faim": 60,
+       "jeu": 60,
+       "sommeil": 90,
+       "repas": 0
+      },
+      "lignes": [
+       [
+        1,
+        "fait"
+       ],
+       [
+        2,
+        "fait"
+       ],
+       [
+        3,
+        "faux"
+       ],
+       [
+        4,
+        "faux"
+       ],
+       [
+        5,
+        "faux"
+       ],
+       [
+        6,
+        "faux"
+       ],
+       [
+        7,
+        "faux"
+       ],
+       [
+        8,
+        "fait"
+       ]
+      ],
+      "dit": null
+     },
+     {
+      "signaux": {
+       "commande_tapee": true
+      },
+      "force": null,
+      "de": "content",
+      "vers": "mange",
+      "etat": "mange",
+      "var": {
+       "faim": 60,
+       "jeu": 60,
+       "sommeil": 90,
+       "repas": 0
+      },
+      "lignes": [
+       [
+        1,
+        "fait"
+       ],
+       [
+        2,
+        "fait"
+       ],
+       [
+        3,
+        "faux"
+       ],
+       [
+        4,
+        "faux"
+       ],
+       [
+        5,
+        "faux"
+       ],
+       [
+        6,
+        "faux"
+       ],
+       [
+        7,
+        "vrai"
+       ],
+       [
+        8,
+        "fait"
+       ]
+      ],
+      "dit": null
+     }
+    ]
+   },
+   {
+    "depart": "content",
+    "var": {
+     "faim": 95,
+     "jeu": 60,
+     "sommeil": 60,
+     "repas": 8
+    },
+    "tours": [
+     {
+      "signaux": {
+       "commande_tapee": true
+      },
+      "force": null,
+      "de": "content",
+      "vers": "mange",
+      "etat": "mange",
+      "var": {
+       "faim": 95,
+       "jeu": 60,
+       "sommeil": 60,
+       "repas": 8
+      },
+      "lignes": [
+       [
+        1,
+        "fait"
+       ],
+       [
+        2,
+        "fait"
+       ],
+       [
+        3,
+        "faux"
+       ],
+       [
+        4,
+        "faux"
+       ],
+       [
+        5,
+        "faux"
+       ],
+       [
+        6,
+        "faux"
+       ],
+       [
+        7,
+        "vrai"
+       ],
+       [
+        8,
+        "fait"
+       ]
+      ],
+      "dit": null
+     },
+     {
+      "signaux": {},
+      "force": null,
+      "de": "mange",
+      "vers": "content",
+      "etat": "content",
+      "var": {
+       "faim": 100,
+       "jeu": 60,
+       "sommeil": 60,
+       "repas": 8
+      },
+      "lignes": [
+       [
+        1,
+        "fait"
+       ],
+       [
+        13,
+        "fait"
+       ],
+       [
+        14,
+        "fait"
+       ],
+       [
+        15,
+        "vrai"
+       ],
+       [
+        16,
+        "fait"
+       ]
+      ],
+      "dit": null
+     },
+     {
+      "signaux": {},
+      "force": "dort",
+      "de": "dort",
+      "vers": "dort",
+      "etat": "dort",
+      "var": {
+       "faim": 100,
+       "jeu": 60,
+       "sommeil": 70,
+       "repas": 8
+      },
+      "lignes": [
+       [
+        1,
+        "fait"
+       ],
+       [
+        20,
+        "fait"
+       ],
+       [
+        21,
+        "fait"
+       ],
+       [
+        22,
+        "faux"
+       ]
+      ],
+      "dit": null
+     },
+     {
+      "signaux": {},
+      "force": "dort",
+      "de": "dort",
+      "vers": "dort",
+      "etat": "dort",
+      "var": {
+       "faim": 100,
+       "jeu": 60,
+       "sommeil": 80,
+       "repas": 8
+      },
+      "lignes": [
+       [
+        1,
+        "fait"
+       ],
+       [
+        20,
+        "fait"
+       ],
+       [
+        21,
+        "fait"
+       ],
+       [
+        22,
+        "faux"
+       ]
+      ],
+      "dit": null
+     },
+     {
+      "signaux": {},
+      "force": "confus",
+      "de": "confus",
+      "vers": "content",
+      "etat": "confus",
+      "var": {
+       "faim": 100,
+       "jeu": 60,
+       "sommeil": 80,
+       "repas": 8
+      },
+      "lignes": [
+       [
+        1,
+        "fait"
+       ],
+       [
+        23,
+        "fait"
+       ],
+       [
+        24,
+        "fait"
+       ],
+       [
+        25,
+        "fait"
+       ]
+      ],
+      "dit": "{phrase}"
+     },
+     {
+      "signaux": {},
+      "force": null,
+      "de": "confus",
+      "vers": "content",
+      "etat": "content",
+      "var": {
+       "faim": 100,
+       "jeu": 60,
+       "sommeil": 80,
+       "repas": 8
+      },
+      "lignes": [
+       [
+        1,
+        "fait"
+       ],
+       [
+        23,
+        "fait"
+       ],
+       [
+        24,
+        "fait"
+       ],
+       [
+        25,
+        "fait"
+       ]
+      ],
+      "dit": "{phrase}"
+     }
+    ]
+   },
+   {
+    "depart": "faim",
+    "var": {
+     "faim": 10,
+     "jeu": 80,
+     "sommeil": 80,
+     "repas": 4
+    },
+    "tours": [
+     {
+      "signaux": {},
+      "force": null,
+      "de": "faim",
+      "vers": "faim",
+      "etat": "faim",
+      "var": {
+       "faim": 10,
+       "jeu": 80,
+       "sommeil": 80,
+       "repas": 4
+      },
+      "lignes": [
+       [
+        1,
+        "fait"
+       ],
+       [
+        9,
+        "fait"
+       ],
+       [
+        10,
+        "faux"
+       ],
+       [
+        12,
+        "fait"
+       ]
+      ],
+      "dit": null
+     },
+     {
+      "signaux": {
+       "commande_tapee": true
+      },
+      "force": null,
+      "de": "faim",
+      "vers": "mange",
+      "etat": "mange",
+      "var": {
+       "faim": 10,
+       "jeu": 80,
+       "sommeil": 80,
+       "repas": 4
+      },
+      "lignes": [
+       [
+        1,
+        "fait"
+       ],
+       [
+        9,
+        "fait"
+       ],
+       [
+        10,
+        "vrai"
+       ],
+       [
+        11,
+        "fait"
+       ],
+       [
+        12,
+        "fait"
+       ]
+      ],
+      "dit": null
+     },
+     {
+      "signaux": {},
+      "force": null,
+      "de": "mange",
+      "vers": "content",
+      "etat": "content",
+      "var": {
+       "faim": 14,
+       "jeu": 80,
+       "sommeil": 80,
+       "repas": 4
+      },
+      "lignes": [
+       [
+        1,
+        "fait"
+       ],
+       [
+        13,
+        "fait"
+       ],
+       [
+        14,
+        "fait"
+       ],
+       [
+        15,
+        "faux"
+       ],
+       [
+        16,
+        "fait"
+       ]
+      ],
+      "dit": null
+     },
+     {
+      "signaux": {},
+      "force": "joue",
+      "de": "joue",
+      "vers": "content",
+      "etat": "joue",
+      "var": {
+       "faim": 14,
+       "jeu": 90,
+       "sommeil": 80,
+       "repas": 4
+      },
+      "lignes": [
+       [
+        1,
+        "fait"
+       ],
+       [
+        17,
+        "fait"
+       ],
+       [
+        18,
+        "fait"
+       ],
+       [
+        19,
+        "fait"
+       ]
+      ],
+      "dit": null
+     },
+     {
+      "signaux": {},
+      "force": "mange",
+      "de": "mange",
+      "vers": "content",
+      "etat": "mange",
+      "var": {
+       "faim": 18,
+       "jeu": 90,
+       "sommeil": 80,
+       "repas": 4
+      },
+      "lignes": [
+       [
+        1,
+        "fait"
+       ],
+       [
+        13,
+        "fait"
+       ],
+       [
+        14,
+        "fait"
+       ],
+       [
+        15,
+        "faux"
+       ],
+       [
+        16,
+        "fait"
+       ]
+      ],
+      "dit": null
+     }
+    ]
+   }
+  ]
+ }
+}
