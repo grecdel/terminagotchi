@@ -298,8 +298,9 @@ def resultat_ok(step, m):
         return not chemins_manquants(m.texte, m.avant)
     if step.get("tout_code"):
         # openssl -d avec une mauvaise clé : refusé 255 fois sur 256 (bad decrypt), mais un rembourrage valide par hasard
-        # rend du charabia avec le code 0 ; l'enfant ne peut rien y faire, les deux réponses comptent
-        return not chemins_manquants(m.texte, m.avant)
+        # rend du charabia avec le code 0 ; l'enfant ne peut rien y faire, les deux réponses comptent. dmesg refusé,
+        # systemd-analyze dans un conteneur : un refus normal compte aussi. Jamais « commande introuvable » (127 : `Lsblk`).
+        return not chemins_manquants(m.texte, m.avant) and m.statut != 127
     if step.get("echoue"):
         if m.statut is not None:
             return m.statut != 0 or racine          # root écrit quand même : on ne bloque pas la leçon

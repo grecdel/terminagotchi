@@ -265,7 +265,10 @@ CHAPITRES = [
 from . import port as _port  # noqa: E402
 from . import citadelle as _cit  # noqa: E402
 from . import crypte as _cry  # noqa: E402         le troisième : la Crypte des Codes (crypte.py)
-MONDES_MODS = {"port": _port, "citadelle": _cit, "crypte": _cry}
+from . import machines as _mac  # noqa: E402       le quatrième : la Salle des Machines (machines.py, chapitre « machinerie »)
+MONDES_MODS = {"port": _port, "citadelle": _cit, "crypte": _cry, "machinerie": _mac}
+# le lieu de chaque monde (la Salle des Machines : chapitre « machinerie », lieu « machines »)
+PIECES_MODS = {_m.CHAPITRE["piece"]: _m for _m in MONDES_MODS.values()}
 for _m in MONDES_MODS.values():
     NOUVELLES.update(_m.LECONS)
     CHAPITRES.append(_m.CHAPITRE)
@@ -274,6 +277,7 @@ for _m in MONDES_MODS.values():
 MONDES = tuple(c["piece"] for c in CHAPITRES if c.get("monde"))
 _CMDS_CIT = {s_.get("cmd") for l_ in _cit.LECONS.values() for s_ in l_["steps"]}
 _CMDS_CRY = {s_.get("cmd") for l_ in _cry.LECONS.values() for s_ in l_["steps"]}
+_CMDS_MAC = {s_.get("cmd") for l_ in _mac.LECONS.values() for s_ in l_["steps"]}
 PAR_CHAP = {c["id"]: c for c in CHAPITRES}
 AILES = [c["id"] for c in CHAPITRES if 3 <= c["n"] <= 9]
 
@@ -442,8 +446,11 @@ def etapes(state, lid):
 
 
 def _outil(nom):
-    """Un outil dont une étape a besoin (openssl, ssh-keygen) : sans lui, l'étape n'est pas montrée (le monde continue)."""
+    """Un outil dont une étape a besoin (openssl, ssh-keygen ; ou un fichier du système comme /proc/cpuinfo, absent sur
+    macOS) : sans lui, l'étape n'est pas montrée (le monde continue)."""
     import shutil
+    if nom.startswith("/"):
+        return os.path.exists(nom)
     return shutil.which(nom) is not None
 
 
@@ -598,8 +605,8 @@ def _meubles(state, p):
         return {"vieille_cabane/planche_1.txt": dire(state, "hist.meuble.planche"),
                 "vieille_cabane/planche_2.txt": dire(state, "hist.meuble.planche"),
                 ".mot_secret.txt": dire(state, "hist.meuble.mot_secret", nom=state.get("name", ""))}
-    if p in MONDES_MODS:
-        return MONDES_MODS[p].meubles(state)
+    if p in PIECES_MODS:
+        return PIECES_MODS[p].meubles(state)
     if p == "coeur":
         m = {"coeur/message_brouille.txt": "\n".join(l[::-1] for l in dire(state, "hist.meuble.message").split("\n")),
              "coeur/.porte_secrete/abyssor_dort.txt": dire(state, "hist.meuble.abyssor")}
@@ -1099,6 +1106,8 @@ def indice(state, step, lignes, tapees, morcs=None):
         conseil = _cit.indice(step, tapees)
     if not conseil and step.get("cmd") in _CMDS_CRY:      # la Crypte : un trou « ? », gpg sans --homedir…
         conseil = _cry.indice(step, tapees)
+    if not conseil and step.get("cmd") in _CMDS_MAC:      # la Salle des Machines : un sudo, une mauvaise réponse…
+        conseil = _mac.indice(step, tapees)
     if conseil:
         return conseil
     conseil = _indice_cd(state, step, morcs) or _indice_rm(step, tapees) or _indice_barre(step, morcs) \

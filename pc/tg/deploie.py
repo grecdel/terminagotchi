@@ -454,6 +454,29 @@ def _roue_anime(x, phase):
     return crypte.roue_lignes(tour)
 
 
+# ---------------------------------------------------------------- l'ordinateur ouvert (la Salle des Machines)
+def pieces(ligne):
+    """Les pièces qu'interroge chaque commande d'une ligne (spécification commune, Deploie.kt, vecteurs
+    donnees/machines/vecteurs.json) : [{seg, cmd, pieces}] — nproc allume le processeur, free la mémoire…"""
+    from . import machines
+    out = []
+    bl = blocs(ligne)
+    for c in chaines(bl):
+        for e in c["etapes"]:
+            ps = machines.pieces_de(e["texte"])
+            if not ps:
+                continue
+            seg = next((b["seg"] for b in bl if b["g"] == "commande" and b["i"] - 1 == e["debut"]), 0)
+            out.append({"seg": seg, "cmd": e["cmd"], "pieces": ps})
+    return out
+
+
+def _ordinateur_anime(x, phase):
+    """Les pièces interrogées s'allument (après un court instant), puis restent allumées."""
+    from . import machines
+    return machines.dessin_ordinateur(x["pieces"] if phase >= 0.3 else [])
+
+
 # ---------------------------------------------------------------- les mots pour le dire
 def nom_genre(g):
     return t("dep.genre." + g)
@@ -692,6 +715,13 @@ def ecran(ligne, bl, actif, sorties, phase=0.0, largeur=80, dossier=None, pas=Fa
                 out.append("")
                 out.append(f"  {fg(ANSI['commande'])}🎡 " + t("dep.roue", de=x["de"], vers=x["vers"], k=x["decalage"]) + RESET)
                 out += ["  " + l for l in _roue_anime(x, phase % 1.0)]
+    if b["g"] == "commande":                     # nproc, free, lsblk… : l'ordinateur ouvert s'allume (la Salle des Machines)
+        for x in pieces(ligne):
+            if x["seg"] == b["seg"]:
+                out.append("")
+                noms = ", ".join(t("ma.piece." + p) for p in x["pieces"])
+                out.append(f"  {fg(ANSI['commande'])}🔩 " + t("dep.piece", piece=noms) + RESET)
+                out += _ordinateur_anime(x, phase % 1.0)
     if actif == n and sorties:
         for c, s in zip(chs, sorties):
             if s and len(c["etapes"]) > 1:
@@ -708,7 +738,8 @@ def _reseau(b, ligne):
     animation dure comme celle d'un tuyau)."""
     return b["g"] == "commande" and (any(x["seg"] == b["seg"] for x in messager(ligne)) or
                                      any(x["seg"] == b["seg"] for x in droits(ligne)) or
-                                     any(x["seg"] == b["seg"] for x in roue(ligne)))
+                                     any(x["seg"] == b["seg"] for x in roue(ligne)) or
+                                     any(x["seg"] == b["seg"] for x in pieces(ligne)))
 
 
 def jouer(ligne, dossier=None, pas=False, sortie=None, clavier=None, ips=12):

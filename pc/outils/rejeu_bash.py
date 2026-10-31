@@ -14,7 +14,8 @@ doit être ce qu'affiche un vrai bash.
    « rejeu » (« leçon.étape »), la vraie sortie est comparée à ce que le jeu en dit (texte cité dans « pourquoi »).
    Puis les mondes (phase 5), le Port : le phare du jeu s'allume sur 127.0.0.1, l'enfant tape les vraies
    commandes (curl, ss, ip, tracepath, ssh-keygen, http.server --bind 127.0.0.1…) et celles du jeu (`port …`, l'alias
-   de tg installer) ; une affirmation dont l'outil manque (« outil ») est sautée et comptée.
+   de tg installer) ; une affirmation dont l'outil manque (« outil ») est sautée et comptée. La Salle des Machines :
+   ce qui dépend de la machine (cœurs, noyau) est comparé à ce que le jeu calcule sur la même machine (« egal_jeu »).
 Utilisé en CI (.github/workflows/rejeu.yml) sur une vraie machine Linux.
 """
 import os
@@ -132,12 +133,15 @@ def histoire():
     jeu_port = f"{sys.executable} -c \"import sys; sys.path.insert(0, '{RACINE / 'pc'}'); from tg import port; port.commande(sys.argv[1:])\""
     jeu_cit = jeu_port.replace("port; port.", "citadelle; citadelle.")
     jeu_cry = jeu_port.replace("port; port.", "crypte; crypte.")
+    jeu_mac = jeu_port.replace("port; port.", "machines; machines.")
     from tg import crypte as K_
+    from tg import machines as M_
 
     def tape(cmd):
         vrai = re.sub(r"^port\b", jeu_port, cmd)          # l'alias port='tg port' (posé par tg installer)
         vrai = re.sub(r"(^|;\s*)citadelle\b", lambda m: m.group(1) + jeu_cit, vrai)   # et citadelle='tg citadelle'
         vrai = re.sub(r"(^|;\s*)crypte\b", lambda m: m.group(1) + jeu_cry, vrai)       # et crypte='tg crypte'
+        vrai = re.sub(r"(^|;\s*)machines\b", lambda m: m.group(1) + jeu_mac, vrai)     # et machines='tg machines'
         etat["sortie"], etat["code"], d = shell.lancer(vrai)
         etat["cwd"] = Path(d)
         with open(home / ".bash_history", "a") as f:
@@ -154,10 +158,10 @@ def histoire():
         h = H.h_(st)
         if not les:
             reste = [a for a in H.AILES if not H.fini(st, a)]
-            if H.fini(st, "crypte") or h["chap"] in ("reveil", "nid"):
+            if H.fini(st, "machinerie") or h["chap"] in ("reveil", "nid"):
                 break
             if H.fini(st, "coeur"):                 # le tronc et les ailes faits : les mondes du Carrefour, dans l'ordre
-                reste = [m_ for m_ in ("port", "citadelle", "crypte") if not H.fini(st, m_)][:1]
+                reste = [m_ for m_ in ("port", "citadelle", "crypte", "machinerie") if not H.fini(st, m_)][:1]
             cible = "coeur" if not reste and H.ouvert(st, "coeur") else (reste[0] if reste else None)
             if not cible:
                 break
@@ -203,6 +207,28 @@ def histoire():
             c = "crypte quiz " + " ".join(K_.bonnes_reponses(K_._graine(st)))
         if "copies/?/" in c or c == "crypte consensus ?":
             c = c.replace("?", K_.tricheur(K_._graine(st)))
+        gm = M_._graine(st)                          # la Salle des Machines : l'enfant lit l'écran (nproc, free -h…)
+        if c == "machines coeurs ?":
+            c = f"machines coeurs {M_.coeurs()}"
+        if c == "machines memoire ?":
+            c = f"machines memoire {(M_.memoire_kio() or 0) / 1024 ** 2:.1f}"
+        if c == "machines monte 1 ? ? ? ? ? ?":
+            c = "machines monte 1 P1 C1 M1 S1 G0 A1"
+        if c == "machines interrupteurs ?":
+            c = "machines interrupteurs Pixel"
+        if c == "machines allume ?":
+            c = "machines allume " + M_.bits(ord(M_.lettre_defi(st.get("name", ""))))
+        if c == "machines reveil ? ? ? ? ?":
+            c = "machines reveil " + " ".join(M_.reveil_reponse(gm))
+        if c == "machines orchestre ? ? ? ? ?":
+            c = "machines orchestre " + " ".join(l for _n, _i, l in M_.orchestre(gm))
+        if c == "machines range ? ? ? ?":
+            c = "machines range " + " ".join(r for _n, _i, r in M_.range_boites(gm))
+        if c == "machines monte ? ? ? ? ? ?":
+            c = "machines monte " + {"jouer": "P2 C1 M2 S1 G1 A2", "dessiner": "P2 C1 M2 S2 G0 A1",
+                                     "serveur": "P3 C2 M3 S3 G0 A2", "robot": "P4 C3 M3 S1 G0 A1"}[M_.besoin_epreuve(gm)]
+        if c == "machines drapeau ?":
+            c = "machines drapeau " + M_.drapeau(gm)
         if c.endswith(" &") and "http.server" in c:
             c = c[:-2] + " >/dev/null 2>&1 &"       # (les lignes du serveur n'encombrent pas la suite)
         lieu = step.get("ou") if step.get("ou") is not None else None
@@ -211,7 +237,11 @@ def histoire():
         if voulu is not None and not c.startswith("cd ") and (core.TERRAIN / voulu).resolve() != etat["cwd"].resolve() \
                 and (core.TERRAIN / voulu).is_dir():
             st = tape(f"cd ~/terrain_terminagotchi/{voulu}".rstrip("/"))
-        cle = f"{les['id']}.{i}"
+        # la clé « leçon.étape » compte TOUTES les étapes de la leçon : une étape cachée parce que son outil manque
+        # (xxd, lspci, qemu-img…) ne décale pas les suivantes
+        orig = next((k for k, x in enumerate(H.lecon_def(les["id"])["steps"])
+                     if x is step or (x.get("dit"), x.get("bravo")) == (step.get("dit"), step.get("bravo"))), i)
+        cle = f"{les['id']}.{orig}"
         if derniere == (cle, c):
             print(f"  · bloqué sur {cle} ({c}) : on s'arrête là")
             break
@@ -262,6 +292,13 @@ def histoire():
                         else float(m.group(1).replace(",", "."))
                 gros = max(lignes, key=taille).split()[-1] if lignes else None
                 verifier(gros == a["plus_gros"], f"{nom} : le plus lourd est {gros!r}{pq}")
+            if a.get("egal_jeu") == "coeurs":            # la Salle des Machines : le jeu calcule sur la même machine
+                verifier(s.strip().isdigit() and int(s.strip()) in M_.coeurs_justes(),
+                         f"{nom} : bash dit {s.strip()!r}, le jeu accepte {sorted(M_.coeurs_justes())}{pq}")
+            if a.get("egal_jeu") == "cpuinfo":
+                verifier(s.strip() == str(M_.processeurs_cpuinfo()), f"{nom} : bash compte {s.strip()!r}, le jeu {M_.processeurs_cpuinfo()}{pq}")
+            if a.get("egal_jeu") == "noyau":
+                verifier(s.strip() == M_.noyau(), f"{nom} : bash dit {s.strip()!r}, le jeu lit {M_.noyau()!r}{pq}")
             if a.get("egal_jeu") == "traces_abyssor":
                 n = (s.split() or ["?"])[-1]
                 verifier(n == str(H.traces_abyssor()), f"{nom} : bash compte {n}, le jeu attend {H.traces_abyssor()}{pq}")
@@ -270,6 +307,7 @@ def histoire():
     verifier(H.fini(st, "port"), "le Port, premier monde du Carrefour, est allé jusqu'au bout (P0 → P11)")
     verifier(H.fini(st, "citadelle"), "la Citadelle, deuxième monde, est allée jusqu'au bout (cit0 → cit16)")
     verifier(H.fini(st, "crypte"), "la Crypte des Codes, troisième monde, est allée jusqu'au bout (cr0 → cr14)")
+    verifier(H.fini(st, "machinerie"), "la Salle des Machines, quatrième monde, est allée jusqu'au bout (sm0 → sm10)")
     P_.eteindre_phare()
     C_.arreter_fictifs()
     K_.tuer_agents()

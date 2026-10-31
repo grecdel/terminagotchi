@@ -1,0 +1,1753 @@
+{
+ "note": "généré par pc/outils/vecteurs_machines.py ; vérifié par tests/jvm/Machines.kt",
+ "pieces": [
+  {
+   "ligne": "nproc",
+   "pieces": [
+    "processeur"
+   ]
+  },
+  {
+   "ligne": "lscpu | head -20",
+   "pieces": [
+    "processeur"
+   ]
+  },
+  {
+   "ligne": "free -h",
+   "pieces": [
+    "memoire"
+   ]
+  },
+  {
+   "ligne": "cat /proc/meminfo | head -3",
+   "pieces": [
+    "memoire"
+   ]
+  },
+  {
+   "ligne": "lsblk",
+   "pieces": [
+    "stockage"
+   ]
+  },
+  {
+   "ligne": "df -h .",
+   "pieces": [
+    "stockage"
+   ]
+  },
+  {
+   "ligne": "du -sh .",
+   "pieces": [
+    "stockage"
+   ]
+  },
+  {
+   "ligne": "lspci",
+   "pieces": [
+    "carte_mere"
+   ]
+  },
+  {
+   "ligne": "lspci | grep -i vga",
+   "pieces": [
+    "carte_mere"
+   ]
+  },
+  {
+   "ligne": "lsusb",
+   "pieces": [
+    "usb"
+   ]
+  },
+  {
+   "ligne": "uptime",
+   "pieces": [
+    "alimentation"
+   ]
+  },
+  {
+   "ligne": "cat /proc/uptime",
+   "pieces": [
+    "alimentation"
+   ]
+  },
+  {
+   "ligne": "cat /proc/cpuinfo | head -5",
+   "pieces": [
+    "processeur"
+   ]
+  },
+  {
+   "ligne": "grep -c ^processor /proc/cpuinfo",
+   "pieces": [
+    "processeur"
+   ]
+  },
+  {
+   "ligne": "getprop ro.product.model",
+   "pieces": [
+    "carte_mere"
+   ]
+  },
+  {
+   "ligne": "machines coeurs 4",
+   "pieces": [
+    "processeur"
+   ]
+  },
+  {
+   "ligne": "machines memoire 7.8",
+   "pieces": [
+    "memoire"
+   ]
+  },
+  {
+   "ligne": "nproc && free -h; lsblk || df -h",
+   "pieces": [
+    "processeur",
+    "memoire",
+    "stockage"
+   ]
+  },
+  {
+   "ligne": "ls",
+   "pieces": []
+  },
+  {
+   "ligne": "echo nproc",
+   "pieces": []
+  },
+  {
+   "ligne": "stat -c %s photo.bin",
+   "pieces": [
+    "stockage"
+   ]
+  },
+  {
+   "ligne": "lsmod | head -5",
+   "pieces": [
+    "carte_mere"
+   ]
+  },
+  {
+   "ligne": "Nproc",
+   "pieces": [
+    "processeur"
+   ]
+  },
+  {
+   "ligne": "uname -r",
+   "pieces": []
+  }
+ ],
+ "deploie": [
+  {
+   "ligne": "nproc",
+   "pieces": [
+    {
+     "seg": 0,
+     "cmd": "nproc",
+     "pieces": [
+      "processeur"
+     ]
+    }
+   ]
+  },
+  {
+   "ligne": "lscpu | head -20",
+   "pieces": [
+    {
+     "seg": 0,
+     "cmd": "lscpu",
+     "pieces": [
+      "processeur"
+     ]
+    }
+   ]
+  },
+  {
+   "ligne": "free -h",
+   "pieces": [
+    {
+     "seg": 0,
+     "cmd": "free",
+     "pieces": [
+      "memoire"
+     ]
+    }
+   ]
+  },
+  {
+   "ligne": "cat /proc/meminfo | head -3",
+   "pieces": [
+    {
+     "seg": 0,
+     "cmd": "cat",
+     "pieces": [
+      "memoire"
+     ]
+    }
+   ]
+  },
+  {
+   "ligne": "lsblk",
+   "pieces": [
+    {
+     "seg": 0,
+     "cmd": "lsblk",
+     "pieces": [
+      "stockage"
+     ]
+    }
+   ]
+  },
+  {
+   "ligne": "df -h .",
+   "pieces": [
+    {
+     "seg": 0,
+     "cmd": "df",
+     "pieces": [
+      "stockage"
+     ]
+    }
+   ]
+  },
+  {
+   "ligne": "du -sh .",
+   "pieces": [
+    {
+     "seg": 0,
+     "cmd": "du",
+     "pieces": [
+      "stockage"
+     ]
+    }
+   ]
+  },
+  {
+   "ligne": "lspci",
+   "pieces": [
+    {
+     "seg": 0,
+     "cmd": "lspci",
+     "pieces": [
+      "carte_mere"
+     ]
+    }
+   ]
+  },
+  {
+   "ligne": "lspci | grep -i vga",
+   "pieces": [
+    {
+     "seg": 0,
+     "cmd": "lspci",
+     "pieces": [
+      "carte_mere"
+     ]
+    }
+   ]
+  },
+  {
+   "ligne": "lsusb",
+   "pieces": [
+    {
+     "seg": 0,
+     "cmd": "lsusb",
+     "pieces": [
+      "usb"
+     ]
+    }
+   ]
+  },
+  {
+   "ligne": "uptime",
+   "pieces": [
+    {
+     "seg": 0,
+     "cmd": "uptime",
+     "pieces": [
+      "alimentation"
+     ]
+    }
+   ]
+  },
+  {
+   "ligne": "cat /proc/uptime",
+   "pieces": [
+    {
+     "seg": 0,
+     "cmd": "cat",
+     "pieces": [
+      "alimentation"
+     ]
+    }
+   ]
+  },
+  {
+   "ligne": "cat /proc/cpuinfo | head -5",
+   "pieces": [
+    {
+     "seg": 0,
+     "cmd": "cat",
+     "pieces": [
+      "processeur"
+     ]
+    }
+   ]
+  },
+  {
+   "ligne": "grep -c ^processor /proc/cpuinfo",
+   "pieces": [
+    {
+     "seg": 0,
+     "cmd": "grep",
+     "pieces": [
+      "processeur"
+     ]
+    }
+   ]
+  },
+  {
+   "ligne": "getprop ro.product.model",
+   "pieces": [
+    {
+     "seg": 0,
+     "cmd": "getprop",
+     "pieces": [
+      "carte_mere"
+     ]
+    }
+   ]
+  },
+  {
+   "ligne": "machines coeurs 4",
+   "pieces": [
+    {
+     "seg": 0,
+     "cmd": "machines",
+     "pieces": [
+      "processeur"
+     ]
+    }
+   ]
+  },
+  {
+   "ligne": "machines memoire 7.8",
+   "pieces": [
+    {
+     "seg": 0,
+     "cmd": "machines",
+     "pieces": [
+      "memoire"
+     ]
+    }
+   ]
+  },
+  {
+   "ligne": "nproc && free -h; lsblk || df -h",
+   "pieces": [
+    {
+     "seg": 0,
+     "cmd": "nproc",
+     "pieces": [
+      "processeur"
+     ]
+    },
+    {
+     "seg": 1,
+     "cmd": "free",
+     "pieces": [
+      "memoire"
+     ]
+    },
+    {
+     "seg": 2,
+     "cmd": "lsblk",
+     "pieces": [
+      "stockage"
+     ]
+    },
+    {
+     "seg": 3,
+     "cmd": "df",
+     "pieces": [
+      "stockage"
+     ]
+    }
+   ]
+  },
+  {
+   "ligne": "ls",
+   "pieces": []
+  },
+  {
+   "ligne": "echo nproc",
+   "pieces": []
+  },
+  {
+   "ligne": "stat -c %s photo.bin",
+   "pieces": [
+    {
+     "seg": 0,
+     "cmd": "stat",
+     "pieces": [
+      "stockage"
+     ]
+    }
+   ]
+  },
+  {
+   "ligne": "lsmod | head -5",
+   "pieces": [
+    {
+     "seg": 0,
+     "cmd": "lsmod",
+     "pieces": [
+      "carte_mere"
+     ]
+    }
+   ]
+  },
+  {
+   "ligne": "Nproc",
+   "pieces": [
+    {
+     "seg": 0,
+     "cmd": "nproc",
+     "pieces": [
+      "processeur"
+     ]
+    }
+   ]
+  },
+  {
+   "ligne": "uname -r",
+   "pieces": []
+  }
+ ],
+ "interrupteurs": [
+  {
+   "mot": "A",
+   "octets": [
+    [
+     "A",
+     [
+      "01000001"
+     ]
+    ]
+   ]
+  },
+  {
+   "mot": "Zoé",
+   "octets": [
+    [
+     "Z",
+     [
+      "01011010"
+     ]
+    ],
+    [
+     "o",
+     [
+      "01101111"
+     ]
+    ],
+    [
+     "é",
+     [
+      "11000011",
+      "10101001"
+     ]
+    ]
+   ]
+  },
+  {
+   "mot": "Léa",
+   "octets": [
+    [
+     "L",
+     [
+      "01001100"
+     ]
+    ],
+    [
+     "é",
+     [
+      "11000011",
+      "10101001"
+     ]
+    ],
+    [
+     "a",
+     [
+      "01100001"
+     ]
+    ]
+   ]
+  },
+  {
+   "mot": "Hugo",
+   "octets": [
+    [
+     "H",
+     [
+      "01001000"
+     ]
+    ],
+    [
+     "u",
+     [
+      "01110101"
+     ]
+    ],
+    [
+     "g",
+     [
+      "01100111"
+     ]
+    ],
+    [
+     "o",
+     [
+      "01101111"
+     ]
+    ]
+   ]
+  },
+  {
+   "mot": "Ñandú",
+   "octets": [
+    [
+     "Ñ",
+     [
+      "11000011",
+      "10010001"
+     ]
+    ],
+    [
+     "a",
+     [
+      "01100001"
+     ]
+    ],
+    [
+     "n",
+     [
+      "01101110"
+     ]
+    ],
+    [
+     "d",
+     [
+      "01100100"
+     ]
+    ],
+    [
+     "ú",
+     [
+      "11000011",
+      "10111010"
+     ]
+    ]
+   ]
+  },
+  {
+   "mot": "字",
+   "octets": [
+    [
+     "字",
+     [
+      "11100101",
+      "10101101",
+      "10010111"
+     ]
+    ]
+   ]
+  },
+  {
+   "mot": "🐉",
+   "octets": [
+    [
+     "🐉",
+     [
+      "11110000",
+      "10011111",
+      "10010000",
+      "10001001"
+     ]
+    ]
+   ]
+  },
+  {
+   "mot": "Pixel",
+   "octets": [
+    [
+     "P",
+     [
+      "01010000"
+     ]
+    ],
+    [
+     "i",
+     [
+      "01101001"
+     ]
+    ],
+    [
+     "x",
+     [
+      "01111000"
+     ]
+    ],
+    [
+     "e",
+     [
+      "01100101"
+     ]
+    ],
+    [
+     "l",
+     [
+      "01101100"
+     ]
+    ]
+   ]
+  }
+ ],
+ "lettres": [
+  {
+   "nom": "Pixel",
+   "lettre": "P",
+   "bits": "01010000"
+  },
+  {
+   "nom": "élodie",
+   "lettre": "E",
+   "bits": "01000101"
+  },
+  {
+   "nom": "Œuf",
+   "lettre": "U",
+   "bits": "01010101"
+  },
+  {
+   "nom": "123",
+   "lettre": "A",
+   "bits": "01000001"
+  },
+  {
+   "nom": "",
+   "lettre": "A",
+   "bits": "01000001"
+  },
+  {
+   "nom": "zébulon",
+   "lettre": "Z",
+   "bits": "01011010"
+  },
+  {
+   "nom": "Ñ",
+   "lettre": "N",
+   "bits": "01001110"
+  }
+ ],
+ "unites": [
+  {
+   "n": 1048576,
+   "octets": 1048576,
+   "ko": 1048.576,
+   "kio": 1024.0,
+   "mo": 1.048576,
+   "mio": 1.0,
+   "go": 0.001048576,
+   "gio": 0.0009765625
+  },
+  {
+   "n": 1000,
+   "octets": 1000,
+   "ko": 1.0,
+   "kio": 0.9765625,
+   "mo": 0.001,
+   "mio": 0.00095367431640625,
+   "go": 1e-06,
+   "gio": 9.313225746154785e-07
+  },
+  {
+   "n": 1024,
+   "octets": 1024,
+   "ko": 1.024,
+   "kio": 1.0,
+   "mo": 0.001024,
+   "mio": 0.0009765625,
+   "go": 1.024e-06,
+   "gio": 9.5367431640625e-07
+  },
+  {
+   "n": 1000000000,
+   "octets": 1000000000,
+   "ko": 1000000.0,
+   "kio": 976562.5,
+   "mo": 1000.0,
+   "mio": 953.67431640625,
+   "go": 1.0,
+   "gio": 0.9313225746154785
+  },
+  {
+   "n": 1099511627776,
+   "octets": 1099511627776,
+   "ko": 1099511627.776,
+   "kio": 1073741824.0,
+   "mo": 1099511.627776,
+   "mio": 1048576.0,
+   "go": 1099.511627776,
+   "gio": 1024.0
+  }
+ ],
+ "memoire": [
+  {
+   "reponse": "7.8",
+   "kio": 8148544,
+   "ok": true
+  },
+  {
+   "reponse": "7,8",
+   "kio": 8148544,
+   "ok": true
+  },
+  {
+   "reponse": "8",
+   "kio": 8148544,
+   "ok": true
+  },
+  {
+   "reponse": "7.8Gi",
+   "kio": 8148544,
+   "ok": true
+  },
+  {
+   "reponse": "8.3 Go",
+   "kio": 8148544,
+   "ok": true
+  },
+  {
+   "reponse": "16",
+   "kio": 8148544,
+   "ok": false
+  },
+  {
+   "reponse": "512",
+   "kio": 524288,
+   "ok": true
+  },
+  {
+   "reponse": "512Mi",
+   "kio": 524288,
+   "ok": true
+  },
+  {
+   "reponse": "0.5",
+   "kio": 524288,
+   "ok": true
+  },
+  {
+   "reponse": "15",
+   "kio": 16314880,
+   "ok": true
+  },
+  {
+   "reponse": "15Gi",
+   "kio": 16314880,
+   "ok": true
+  },
+  {
+   "reponse": "16",
+   "kio": 16314880,
+   "ok": true
+  },
+  {
+   "reponse": "31",
+   "kio": 32611072,
+   "ok": true
+  },
+  {
+   "reponse": "abc",
+   "kio": 8148544,
+   "ok": false
+  },
+  {
+   "reponse": "",
+   "kio": 8148544,
+   "ok": false
+  },
+  {
+   "reponse": "7800 Mi",
+   "kio": 8148544,
+   "ok": true
+  },
+  {
+   "reponse": "7.8",
+   "kio": 0,
+   "ok": false
+  },
+  {
+   "reponse": "8148544",
+   "kio": 8148544,
+   "ok": true
+  },
+  {
+   "reponse": "8148544 kB",
+   "kio": 8148544,
+   "ok": true
+  },
+  {
+   "reponse": "9000000",
+   "kio": 8148544,
+   "ok": false
+  },
+  {
+   "reponse": "60000",
+   "kio": 8148544,
+   "ok": false
+  }
+ ],
+ "parties": [
+  {
+   "graine": "1:0",
+   "reveil": [
+    [
+     "A",
+     "micrologiciel"
+    ],
+    [
+     "B",
+     "chargeur"
+    ],
+    [
+     "C",
+     "init"
+    ],
+    [
+     "D",
+     "session"
+    ],
+    [
+     "E",
+     "noyau"
+    ]
+   ],
+   "reponse": [
+    "A",
+    "B",
+    "E",
+    "C",
+    "D"
+   ],
+   "orchestre": [
+    [
+     1,
+     "partage",
+     "B"
+    ],
+    [
+     2,
+     "retrouver",
+     "D"
+    ],
+    [
+     3,
+     "frere",
+     "E"
+    ],
+    [
+     4,
+     "ecran",
+     "A"
+    ],
+    [
+     5,
+     "place",
+     "C"
+    ]
+   ],
+   "range": [
+    [
+     1,
+     "copies",
+     "c"
+    ],
+    [
+     2,
+     "noyau",
+     "v"
+    ],
+    [
+     3,
+     "valise",
+     "c"
+    ],
+    [
+     4,
+     "bizarre",
+     "v"
+    ]
+   ],
+   "besoin": "jouer",
+   "drapeau": "TG{jouer-c097abc8}"
+  },
+  {
+   "graine": "2:1730000000",
+   "reveil": [
+    [
+     "A",
+     "micrologiciel"
+    ],
+    [
+     "B",
+     "noyau"
+    ],
+    [
+     "C",
+     "init"
+    ],
+    [
+     "D",
+     "session"
+    ],
+    [
+     "E",
+     "chargeur"
+    ]
+   ],
+   "reponse": [
+    "A",
+    "E",
+    "B",
+    "C",
+    "D"
+   ],
+   "orchestre": [
+    [
+     1,
+     "place",
+     "C"
+    ],
+    [
+     2,
+     "partage",
+     "B"
+    ],
+    [
+     3,
+     "retrouver",
+     "D"
+    ],
+    [
+     4,
+     "frere",
+     "E"
+    ],
+    [
+     5,
+     "ecran",
+     "A"
+    ]
+   ],
+   "range": [
+    [
+     1,
+     "copies",
+     "c"
+    ],
+    [
+     2,
+     "bizarre",
+     "v"
+    ],
+    [
+     3,
+     "noyau",
+     "v"
+    ],
+    [
+     4,
+     "valise",
+     "c"
+    ]
+   ],
+   "besoin": "dessiner",
+   "drapeau": "TG{dessiner-3af18f4f}"
+  },
+  {
+   "graine": "7:42",
+   "reveil": [
+    [
+     "A",
+     "noyau"
+    ],
+    [
+     "B",
+     "init"
+    ],
+    [
+     "C",
+     "session"
+    ],
+    [
+     "D",
+     "chargeur"
+    ],
+    [
+     "E",
+     "micrologiciel"
+    ]
+   ],
+   "reponse": [
+    "E",
+    "D",
+    "A",
+    "B",
+    "C"
+   ],
+   "orchestre": [
+    [
+     1,
+     "retrouver",
+     "D"
+    ],
+    [
+     2,
+     "place",
+     "C"
+    ],
+    [
+     3,
+     "partage",
+     "B"
+    ],
+    [
+     4,
+     "ecran",
+     "A"
+    ],
+    [
+     5,
+     "frere",
+     "E"
+    ]
+   ],
+   "range": [
+    [
+     1,
+     "noyau",
+     "v"
+    ],
+    [
+     2,
+     "bizarre",
+     "v"
+    ],
+    [
+     3,
+     "valise",
+     "c"
+    ],
+    [
+     4,
+     "copies",
+     "c"
+    ]
+   ],
+   "besoin": "jouer",
+   "drapeau": "TG{jouer-5316e1a6}"
+  },
+  {
+   "graine": "partie:3",
+   "reveil": [
+    [
+     "A",
+     "init"
+    ],
+    [
+     "B",
+     "noyau"
+    ],
+    [
+     "C",
+     "session"
+    ],
+    [
+     "D",
+     "chargeur"
+    ],
+    [
+     "E",
+     "micrologiciel"
+    ]
+   ],
+   "reponse": [
+    "E",
+    "D",
+    "B",
+    "A",
+    "C"
+   ],
+   "orchestre": [
+    [
+     1,
+     "retrouver",
+     "D"
+    ],
+    [
+     2,
+     "frere",
+     "E"
+    ],
+    [
+     3,
+     "place",
+     "C"
+    ],
+    [
+     4,
+     "partage",
+     "B"
+    ],
+    [
+     5,
+     "ecran",
+     "A"
+    ]
+   ],
+   "range": [
+    [
+     1,
+     "bizarre",
+     "v"
+    ],
+    [
+     2,
+     "noyau",
+     "v"
+    ],
+    [
+     3,
+     "valise",
+     "c"
+    ],
+    [
+     4,
+     "copies",
+     "c"
+    ]
+   ],
+   "besoin": "robot",
+   "drapeau": "TG{robot-dea80bbe}"
+  },
+  {
+   "graine": "9:1761900000",
+   "reveil": [
+    [
+     "A",
+     "init"
+    ],
+    [
+     "B",
+     "noyau"
+    ],
+    [
+     "C",
+     "chargeur"
+    ],
+    [
+     "D",
+     "session"
+    ],
+    [
+     "E",
+     "micrologiciel"
+    ]
+   ],
+   "reponse": [
+    "E",
+    "C",
+    "B",
+    "A",
+    "D"
+   ],
+   "orchestre": [
+    [
+     1,
+     "place",
+     "C"
+    ],
+    [
+     2,
+     "retrouver",
+     "D"
+    ],
+    [
+     3,
+     "frere",
+     "E"
+    ],
+    [
+     4,
+     "ecran",
+     "A"
+    ],
+    [
+     5,
+     "partage",
+     "B"
+    ]
+   ],
+   "range": [
+    [
+     1,
+     "copies",
+     "c"
+    ],
+    [
+     2,
+     "noyau",
+     "v"
+    ],
+    [
+     3,
+     "valise",
+     "c"
+    ],
+    [
+     4,
+     "bizarre",
+     "v"
+    ]
+   ],
+   "besoin": "robot",
+   "drapeau": "TG{robot-e9f2c8f2}"
+  },
+  {
+   "graine": "4:1700000123",
+   "reveil": [
+    [
+     "A",
+     "micrologiciel"
+    ],
+    [
+     "B",
+     "noyau"
+    ],
+    [
+     "C",
+     "session"
+    ],
+    [
+     "D",
+     "chargeur"
+    ],
+    [
+     "E",
+     "init"
+    ]
+   ],
+   "reponse": [
+    "A",
+    "D",
+    "B",
+    "E",
+    "C"
+   ],
+   "orchestre": [
+    [
+     1,
+     "retrouver",
+     "D"
+    ],
+    [
+     2,
+     "ecran",
+     "A"
+    ],
+    [
+     3,
+     "partage",
+     "B"
+    ],
+    [
+     4,
+     "place",
+     "C"
+    ],
+    [
+     5,
+     "frere",
+     "E"
+    ]
+   ],
+   "range": [
+    [
+     1,
+     "valise",
+     "c"
+    ],
+    [
+     2,
+     "bizarre",
+     "v"
+    ],
+    [
+     3,
+     "copies",
+     "c"
+    ],
+    [
+     4,
+     "noyau",
+     "v"
+    ]
+   ],
+   "besoin": "robot",
+   "drapeau": "TG{robot-dea66dd2}"
+  }
+ ],
+ "montages": [
+  {
+   "choix": [
+    "P1",
+    "C1",
+    "M1",
+    "S1",
+    "G0",
+    "A1"
+   ],
+   "besoin": "ecole",
+   "problemes": [],
+   "points": 12,
+   "watts": 62,
+   "fournit": 150,
+   "coeurs": 4,
+   "gio": 8,
+   "go": 500
+  },
+  {
+   "choix": [
+    "P2",
+    "C2",
+    "M3",
+    "S1",
+    "G0",
+    "A1"
+   ],
+   "besoin": "ecole",
+   "problemes": [
+    "prise"
+   ],
+   "points": 20,
+   "watts": 99,
+   "fournit": 150,
+   "coeurs": 8,
+   "gio": 16,
+   "go": 500
+  },
+  {
+   "choix": [
+    "P1",
+    "C1",
+    "M3",
+    "S1",
+    "G0",
+    "A1"
+   ],
+   "besoin": "ecole",
+   "problemes": [
+    "memoire"
+   ],
+   "points": 15,
+   "watts": 64,
+   "fournit": 150,
+   "coeurs": 4,
+   "gio": 16,
+   "go": 500
+  },
+  {
+   "choix": [
+    "P3",
+    "C2",
+    "M3",
+    "S1",
+    "G2",
+    "A1"
+   ],
+   "besoin": "ecole",
+   "problemes": [
+    "alimentation"
+   ],
+   "points": 37,
+   "watts": 409,
+   "fournit": 150,
+   "coeurs": 16,
+   "gio": 16,
+   "go": 500
+  },
+  {
+   "choix": [
+    "P2",
+    "C1",
+    "M2",
+    "S1",
+    "G1",
+    "A2"
+   ],
+   "besoin": "jouer",
+   "problemes": [],
+   "points": 25,
+   "watts": 214,
+   "fournit": 450,
+   "coeurs": 8,
+   "gio": 16,
+   "go": 500
+  },
+  {
+   "choix": [
+    "P2",
+    "C1",
+    "M1",
+    "S1",
+    "G0",
+    "A2"
+   ],
+   "besoin": "jouer",
+   "problemes": [
+    "besoin:graphique",
+    "besoin:gio"
+   ],
+   "points": 17,
+   "watts": 92,
+   "fournit": 450,
+   "coeurs": 8,
+   "gio": 8,
+   "go": 500
+  },
+  {
+   "choix": [
+    "P3",
+    "C2",
+    "M4",
+    "S2",
+    "G2",
+    "A3"
+   ],
+   "besoin": "jouer",
+   "problemes": [
+    "budget"
+   ],
+   "points": 51,
+   "watts": 416,
+   "fournit": 750,
+   "coeurs": 16,
+   "gio": 64,
+   "go": 2000
+  },
+  {
+   "choix": [
+    "P2",
+    "C1",
+    "M2",
+    "S2",
+    "G0",
+    "A1"
+   ],
+   "besoin": "dessiner",
+   "problemes": [],
+   "points": 20,
+   "watts": 96,
+   "fournit": 150,
+   "coeurs": 8,
+   "gio": 16,
+   "go": 2000
+  },
+  {
+   "choix": [
+    "P1",
+    "C1",
+    "M2",
+    "S1",
+    "G0",
+    "A1"
+   ],
+   "besoin": "dessiner",
+   "problemes": [
+    "besoin:go",
+    "besoin:coeurs"
+   ],
+   "points": 14,
+   "watts": 64,
+   "fournit": 150,
+   "coeurs": 4,
+   "gio": 16,
+   "go": 500
+  },
+  {
+   "choix": [
+    "P3",
+    "C2",
+    "M3",
+    "S3",
+    "G0",
+    "A2"
+   ],
+   "besoin": "serveur",
+   "problemes": [],
+   "points": 30,
+   "watts": 164,
+   "fournit": 450,
+   "coeurs": 16,
+   "gio": 16,
+   "go": 8000
+  },
+  {
+   "choix": [
+    "P3",
+    "C2",
+    "M3",
+    "S3",
+    "G1",
+    "A2"
+   ],
+   "besoin": "serveur",
+   "problemes": [
+    "budget",
+    "besoin:sans_graphique"
+   ],
+   "points": 36,
+   "watts": 284,
+   "fournit": 450,
+   "coeurs": 16,
+   "gio": 16,
+   "go": 8000
+  },
+  {
+   "choix": [
+    "P4",
+    "C3",
+    "M3",
+    "S1",
+    "G0",
+    "A1"
+   ],
+   "besoin": "robot",
+   "problemes": [],
+   "points": 16,
+   "watts": 27,
+   "fournit": 150,
+   "coeurs": 4,
+   "gio": 16,
+   "go": 500
+  },
+  {
+   "choix": [
+    "P4",
+    "C2",
+    "M3",
+    "S1",
+    "G0",
+    "A1"
+   ],
+   "besoin": "robot",
+   "problemes": [
+    "budget",
+    "besoin:watts",
+    "besoin:mini"
+   ],
+   "points": 18,
+   "watts": 44,
+   "fournit": 150,
+   "coeurs": 4,
+   "gio": 16,
+   "go": 500
+  },
+  {
+   "choix": [
+    "P2",
+    "C1",
+    "M2",
+    "S1",
+    "G1",
+    "A2"
+   ],
+   "besoin": "robot",
+   "problemes": [
+    "budget",
+    "besoin:watts",
+    "besoin:mini"
+   ],
+   "points": 25,
+   "watts": 214,
+   "fournit": 450,
+   "coeurs": 8,
+   "gio": 16,
+   "go": 500
+  },
+  {
+   "choix": [
+    "p2",
+    "c1",
+    "m2"
+   ],
+   "besoin": "ecole",
+   "problemes": [
+    "manque:stockage",
+    "manque:graphique",
+    "manque:alimentation"
+   ],
+   "points": 13,
+   "watts": 90,
+   "fournit": 0,
+   "coeurs": 8,
+   "gio": 16,
+   "go": 0
+  },
+  {
+   "choix": [
+    "P2",
+    "P1",
+    "C1",
+    "M2",
+    "S1",
+    "G0",
+    "A1"
+   ],
+   "besoin": "ecole",
+   "problemes": [
+    "double:processeur"
+   ],
+   "points": 17,
+   "watts": 94,
+   "fournit": 150,
+   "coeurs": 8,
+   "gio": 16,
+   "go": 500
+  },
+  {
+   "choix": [
+    "X9"
+   ],
+   "besoin": "ecole",
+   "problemes": [
+    "inconnu:X9",
+    "manque:processeur",
+    "manque:carte_mere",
+    "manque:memoire",
+    "manque:stockage",
+    "manque:graphique",
+    "manque:alimentation"
+   ],
+   "points": 0,
+   "watts": 0,
+   "fournit": 0,
+   "coeurs": 0,
+   "gio": 0,
+   "go": 0
+  },
+  {
+   "choix": [],
+   "besoin": "jouer",
+   "problemes": [
+    "manque:processeur",
+    "manque:carte_mere",
+    "manque:memoire",
+    "manque:stockage",
+    "manque:graphique",
+    "manque:alimentation"
+   ],
+   "points": 0,
+   "watts": 0,
+   "fournit": 0,
+   "coeurs": 0,
+   "gio": 0,
+   "go": 0
+  }
+ ],
+ "boites": [
+  {
+   "cpuinfo": "flags\t\t: fpu vme hypervisor sse",
+   "cgroup": "0::/",
+   "dockerenv": false,
+   "containerenv": false,
+   "vm": true,
+   "conteneur": null
+  },
+  {
+   "cpuinfo": "flags\t\t: fpu vme sse",
+   "cgroup": "0::/init.scope",
+   "dockerenv": false,
+   "containerenv": false,
+   "vm": false,
+   "conteneur": null
+  },
+  {
+   "cpuinfo": "",
+   "cgroup": "12:pids:/docker/0123abc",
+   "dockerenv": false,
+   "containerenv": false,
+   "vm": false,
+   "conteneur": "conteneur"
+  },
+  {
+   "cpuinfo": "",
+   "cgroup": "0::/",
+   "dockerenv": true,
+   "containerenv": false,
+   "vm": false,
+   "conteneur": "docker"
+  },
+  {
+   "cpuinfo": "",
+   "cgroup": "0::/",
+   "dockerenv": false,
+   "containerenv": true,
+   "vm": false,
+   "conteneur": "podman"
+  },
+  {
+   "cpuinfo": "flags : hypervisor",
+   "cgroup": "0::/kubepods/x",
+   "dockerenv": false,
+   "containerenv": false,
+   "vm": true,
+   "conteneur": "conteneur"
+  },
+  {
+   "cpuinfo": "Features : fp asimd",
+   "cgroup": "0::/",
+   "dockerenv": false,
+   "containerenv": false,
+   "vm": false,
+   "conteneur": null
+  }
+ ],
+ "energie": [
+  {
+   "watts": 300,
+   "heures": 8760,
+   "wh": 2628000,
+   "kwh": 2628.0
+  },
+  {
+   "watts": 65,
+   "heures": 24,
+   "wh": 1560,
+   "kwh": 1.56
+  },
+  {
+   "watts": 5,
+   "heures": 8760,
+   "wh": 43800,
+   "kwh": 43.8
+  }
+ ]
+}
