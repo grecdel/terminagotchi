@@ -10,7 +10,8 @@ Pour chaque pose :
   2. l'image est recadrée sur ce qui reste ; on note l'ANCRE : le milieu du corps et le bas du corps (les pieds),
      pour que la créature ne saute pas d'une pose à l'autre ;
   3. les 12 poses d'une espèce partagent une palette de COULEURS (48) couleurs au plus (0 = transparent) : à l'œil,
-     on ne voit pas de différence avec 255 couleurs, et le fichier est presque deux fois plus petit.
+     on ne voit pas de différence avec 255 couleurs, et le fichier est presque deux fois plus petit ; les petits
+     décors (cœur, gouttes, éclats) pèsent DECOR fois plus dans le choix des couleurs, pour garder leurs teintes vives.
 
 Format du fichier (le même pour Python et Kotlin, lu par pc/tg/poses.py et app/…/Poses.kt) :
     "TGPO" | version (1 octet) | longueur de l'en-tête (4 octets, gros-boutiste) | en-tête JSON (UTF-8) | blocs
@@ -41,6 +42,7 @@ SANS_DECOR = {"marche1", "marche2", "marche3", "marche4", "assis"}
 SORTIES = [DEPOT / "pc/tg/poses.bin", DEPOT / "app/src/main/assets/poses.bin"]
 VERSION = 1
 COULEURS = 48
+DECOR = 40
 
 
 def nettoyer(rgba, pose):
@@ -71,7 +73,8 @@ def nettoyer(rgba, pose):
     out[..., 3] = np.where(garde[y0:y1, x0:x1], 255, 0)
     cy, cx = np.nonzero(lab[y0:y1, x0:x1] == corps)
     ancre = (int(round((cx.min() + cx.max()) / 2)), int(cy.max()) + 1)
-    return out, enleve, ancre
+    decor = garde[y0:y1, x0:x1] & (lab[y0:y1, x0:x1] != corps)
+    return out, enleve, ancre, decor
 
 
 def espece_de(dossier):
@@ -84,18 +87,20 @@ def traiter(dossier):
     for p in POSES:
         rgba = np.array(Image.open(dossier / f"{p}.png").convert("RGBA"))
         rgba[..., 3] = np.where(rgba[..., 3] > 0, 255, 0)
-        out, enleve, ancre = nettoyer(rgba, p)
-        images.append((out, ancre))
+        out, enleve, ancre, decor = nettoyer(rgba, p)
+        images.append((out, ancre, decor))
         controles.append((rgba, enleve))
-    # une palette commune aux 12 poses : on colle les pixels opaques bout à bout
-    pixels = np.concatenate([im[im[..., 3] > 0][:, :3] for im, _ in images])
+    # une palette commune aux 12 poses : on colle les pixels opaques bout à bout ; les petits décors (cœur, « z Z »,
+    # gouttes) comptent DECOR fois plus, sinon leurs couleurs vives se perdent dans celles du corps
+    pixels = np.concatenate([im[im[..., 3] > 0][:, :3] for im, _a, _d in images]
+                            + [np.repeat(im[d][:, :3], DECOR, axis=0) for im, _a, d in images if d.any()])
     bande = Image.fromarray(pixels.reshape(1, -1, 3), "RGB")
     q = bande.quantize(colors=COULEURS, method=Image.Quantize.MEDIANCUT, dither=Image.Dither.NONE)
     pal_plate = q.getpalette()[:3 * COULEURS]
     nb = int(np.array(q).max()) + 1
     pal = ["#%02x%02x%02x" % tuple(pal_plate[3 * k:3 * k + 3]) for k in range(nb)]
     cadres, octets = [], bytearray()
-    for im, (ax, ay) in images:
+    for im, (ax, ay), _d in images:
         h, w = im.shape[:2]
         rgb = Image.fromarray(np.ascontiguousarray(im[..., :3]), "RGB")
         idx = np.array(rgb.quantize(palette=q, dither=Image.Dither.NONE), dtype=np.uint16) + 1

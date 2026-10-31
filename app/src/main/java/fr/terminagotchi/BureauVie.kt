@@ -127,7 +127,7 @@ object BureauVie {
             var dy = 0.0
             if (etat == "sursaut" && tEtat < 0.5) dy = -sin(tEtat / 0.5 * PI) * 10
             else if (etat == "salut") dy = -abs(sin(tEtat * 5)) * 2
-            return (etat to (tEtat * IPS).toInt()) to (dy.toFloat() to miroir)
+            return (etat to (tEtat * IPS).toInt()) to (dy.toFloat() to (miroir && etat != "dort"))     // les « z Z » à l'endroit
         }
     }
 
@@ -196,21 +196,25 @@ object BureauVie {
         fun touche(px: Float, py: Float) = px in x..(x + w) && py in y..(y + h)
     }
 
-    /** Les boutons du menu rond autour de la créature (comme bureau_vie.menu_positions), dans une zone l × hz. */
+    /** Les boutons du menu rond autour de la créature (comme bureau_vie.menu_positions), dans une zone l × hz ;
+     *  sur un écran étroit, l'ovale se resserre en largeur et garde sa hauteur. Rend aussi (cx, cy, rx, ry). */
     fun menuPositions(cx0: Float, cyCorps: Float, hautCreature: Float, libelles: Map<String, String>, taille: Float,
-                      l: Float, hz: Float, rayonMin: Float): Pair<List<Bouton>, Triple<Float, Float, Float>> {
+                      l: Float, hz: Float, rayonMin: Float): Pair<List<Bouton>, FloatArray> {
         val bh = taille + 22f * taille / 14f
         val larg = MENU.map { largeurTexte(libelles[it.first] ?: it.first, taille) + bh + 18f * taille / 14f }
         val r = max(rayonMin, hautCreature * 1.9f)
         val demi = (larg.maxOrNull() ?: 0f) / 2
-        val cx = cx0.coerceIn(min(r + demi, l / 2), max(l - r - demi, l / 2))
-        val cy = max(cyCorps - r * 0.5f, r * 0.82f + bh)
+        val marge = 8f * taille / 14f
+        val rx = max(rayonMin * 0.4f, min(r, (l - 2 * demi - 2 * marge) / 2))
+        val ry = r * 0.82f
+        val cx = cx0.coerceIn(min(rx + demi + marge, l / 2), max(l - rx - demi - marge, l / 2))
+        val cy = max(cyCorps - r * 0.5f, ry + bh / 2 + marge)
         val out = MENU.mapIndexed { i, (cle, sym, ang) ->
             val a = Math.toRadians(ang)
-            val bx = cx + r * cos(a).toFloat(); val by = cy - r * sin(a).toFloat() * 0.82f
+            val bx = cx + rx * cos(a).toFloat(); val by = cy - ry * sin(a).toFloat()
             Bouton(cle, sym, libelles[cle] ?: cle, bx - larg[i] / 2, (by - bh / 2).coerceAtMost(hz - bh), larg[i], bh)
         }
-        return out to Triple(cx, cy, r)
+        return out to floatArrayOf(cx, cy, rx, ry)
     }
 
     /** L'île : « repos » (pilule), « ouverte », « evenement » (ouverte toute seule quelques secondes). */

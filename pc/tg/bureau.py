@@ -183,15 +183,16 @@ class Controleur:
             self.fermer_menu()
 
     # ------------------------------------------------ les gestes sur la créature (coordonnées de la zone)
-    def appui(self, x, y):
+    def appui(self, x, y, zones=None):
         self.derniere_action = self.t
         self.clics.appuyer(x, y, V.maintenant())
+        self.sur_creature = zones is None or self._sur(zones, x, y, "creature")
         self.prise = (x - self.c.x, (self.sol - self.c.air) - y)
 
     def bouge(self, x, y, zones):
         if self.clics.bouger(x, y, V.maintenant()):
             if not self.c.porte:
-                if self._sur(zones, x, y, "creature"):
+                if getattr(self, "sur_creature", False):
                     self.c.prendre()
                     self.fermer_menu()
                 else:
@@ -771,7 +772,7 @@ class FenetresGtk:
     def _appui(self, win, x, y):
         self._depart = (x, y)
         if win.nom == "creature":
-            self.ctl.appui(x, y)
+            self.ctl.appui(x, y, self.zones["creature"])
 
     def _bouge(self, win, ge, dx, dy):
         if win.nom == "creature":
@@ -1019,7 +1020,7 @@ class FenetresTk:
 
     def _appui(self, w, e):
         if w.nom == "creature":
-            self.ctl.appui(e.x + self._ox(w), e.y + self.geo["creature"][1])
+            self.ctl.appui(e.x + self._ox(w), e.y + self.geo["creature"][1], self.zones["creature"])
         self._depart = (e.x, e.y)
 
     def _bouge(self, w, e):

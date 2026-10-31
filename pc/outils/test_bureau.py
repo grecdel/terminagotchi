@@ -189,6 +189,13 @@ def test_menu():
                 if not (b[i][3] + b[i][5] <= b[j][3] or b[j][3] + b[j][5] <= b[i][3]
                         or b[i][4] + b[i][6] <= b[j][4] or b[j][4] + b[j][6] <= b[i][4])]
         verifier(not chev, "aucun bouton n'en chevauche un autre")
+    for x in (40, 196, 360):                       # un téléphone (393 dp de large), comme la bulle Android
+        b2, _ = V.menu_positions(x, 380, 56, lib, largeur=393, hauteur=420)
+        chev = [(i, j) for i in range(7) for j in range(i + 1, 7)
+                if not (b2[i][3] + b2[i][5] <= b2[j][3] or b2[j][3] + b2[j][5] <= b2[i][3]
+                        or b2[i][4] + b2[i][6] <= b2[j][4] or b2[j][4] + b2[j][6] <= b2[i][4])]
+        verifier(not chev and all(e[3] >= 0 and e[3] + e[5] <= 393 for e in b2),
+                 f"écran étroit : le menu tient sans chevauchement (x = {x})")
     haut = min(b, key=lambda e: e[4])
     verifier(haut[0] == "jouer", "« Jouer » en haut, comme sur la maquette")
     verifier(V.touche(b, b[1][3] + 5, b[1][4] + 5) == b[1][0], "un clic sur un bouton le trouve")
@@ -344,12 +351,26 @@ def test_controleur():
     verifier(c.ile.etat == "evenement" and c.c.etat == "salut", "un monstre apparaît : l'île s'ouvre, elle fait signe")
     L, z = c.scene()
     cr = next(e for e in z if e[4] == "creature")
-    c.appui(cr[0] + cr[2] / 2, cr[1] + cr[3] / 2)
+    c.appui(cr[0] + cr[2] / 2, cr[1] + cr[3] / 2, z)
     c.relache(cr[0] + cr[2] / 2, cr[1] + cr[3] / 2, z)
     time.sleep(0.4)
     c.tick()
     L, z = c.scene()
     verifier(c.vue.menu and sum(1 for e in z if e[4].startswith("menu:")) == 7, "un clic : le menu rond s'ouvre")
+    c.fermer_menu()
+    L, z = c.scene()
+    cr = next(e for e in z if e[4] == "creature")
+    mx, my = cr[0] + cr[2] / 2, cr[1] + cr[3] / 2
+    c.appui(mx, my, z)
+    c.bouge(mx + 30, my - 150, z)
+    verifier(c.c.porte and c.c.air > 100, "glisser depuis la créature : on la soulève")
+    c.relache(mx + 30, my - 150, z)
+    verifier(not c.c.porte, "relâchée, elle retombe")
+    c.appui(5, 5, z)
+    c.bouge(200, 5, z)
+    verifier(not c.c.porte, "glisser ailleurs ne l'attrape pas")
+    c.relache(200, 5, z)
+    c.vue.menu = True
     c.action("menu:reglages")
     verifier(c.vue.panneau and len(c.vue.panneau[1]) == 12, "Réglages : 12 réglages")
     c.action("reg:taille")

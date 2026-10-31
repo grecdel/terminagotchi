@@ -146,7 +146,8 @@ def scene_creature(c, album, vue, regl, zone_l, zone_h, sol, ox=0, t_=0.0, nom="
     if vue.menu:
         boutons, (cx, cy, r) = V.menu_positions(c.x - ox, sol - c.air - haut_corps / 2, haut_corps, libelles_menu(),
                                                 largeur=zone_l, hauteur=zone_h)
-        L.append(("arc", cx, cy, r, r * 0.82, (255, 255, 255, 26), 1))
+        ry = max(150.0, haut_corps * V.RAYON_MENU) * 0.82
+        L.append(("arc", cx, cy, r, ry, (255, 255, 255, 26), 1))
         for cle, sym, lib, bx, by, bw, bh in boutons:
             accent = ICONES[cle]
             if cle == "jouer":

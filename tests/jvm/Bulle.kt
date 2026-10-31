@@ -31,7 +31,7 @@ fun main(args: Array<String>) {
     println("Les poses dessinées (poses.bin)")
     verifB(Poses.lire(File(assets, "poses.bin").readBytes()), "poses.bin se lit")
     verifB(Poses.especes().size == 27, "27 bébés de départ (${Poses.especes().size})")
-    val attendu = mapOf("braisillon" to 747212141L, "glandouille" to 1694262367L, "lunacorne" to 3511689144L)
+    val attendu = mapOf("braisillon" to 697930007L, "glandouille" to 566876390L, "lunacorne" to 2984212012L)
     for ((e, h) in attendu) {
         val (idx, pal) = Poses.indexees(e)!!
         var hh = 0x811C9DC5L
@@ -105,6 +105,14 @@ fun main(args: Array<String>) {
             !(b[i].x + b[i].w <= b[j].x || b[j].x + b[j].w <= b[i].x || b[i].y + b[i].h <= b[j].y || b[j].y + b[j].h <= b[i].y) } }
         verifB(b.size == 7 && !chev && b.all { it.x >= 0 && it.x + it.w <= 1080 && it.y >= 0 }, "7 boutons dans l'écran, sans chevauchement (x = $x)")
         verifB(b.minByOrNull { it.y }!!.cle == "jouer", "« Jouer » en haut")
+    }
+    // un vrai téléphone : 393 dp de large, textes de 14 dp (× 2,75 pixels par dp)
+    val k = 2.75f
+    for (x in listOf(40f, 196f, 360f)) {
+        val (b, _) = BureauVie.menuPositions(x * k, 380f * k, 56f * k, lib, 14f * k, 393f * k, 420f * k, 150f * k)
+        val chev = b.indices.any { i -> (i + 1 until b.size).any { j ->
+            !(b[i].x + b[i].w <= b[j].x || b[j].x + b[j].w <= b[i].x || b[i].y + b[i].h <= b[j].y || b[j].y + b[j].h <= b[i].y) } }
+        verifB(!chev && b.all { it.x >= 0 && it.x + it.w <= 393 * k && it.y >= 0 }, "téléphone étroit : le menu tient dans l'écran (x = $x dp)")
     }
     val ile = BureauVie.Ile()
     ile.basculer(); repeat(20) { ile.tick(0.05) }

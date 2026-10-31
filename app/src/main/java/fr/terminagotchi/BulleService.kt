@@ -565,11 +565,10 @@ class BulleService : Service() {
             val pan = panneau
             if (pan == null) {
                 val lib = BureauVie.MENU.associate { it.first to t("bur.menu." + it.first) }
-                val (b, cercle) = BureauVie.menuPositions(creature.x, sol - haut / 2, haut, lib, dp(14f), w, h, dp(120f))
+                val (b, cercle) = BureauVie.menuPositions(creature.x, sol - haut / 2, haut, lib, dp(14f), w, h, dp(150f))
                 boutons = b
                 pinceau.style = Paint.Style.STROKE; pinceau.color = 0x1AFFFFFF; pinceau.strokeWidth = dp(1f)
-                cv.drawOval(RectF(cercle.first - cercle.third, cercle.second - cercle.third * 0.82f,
-                    cercle.first + cercle.third, cercle.second + cercle.third * 0.82f), pinceau)
+                cv.drawOval(RectF(cercle[0] - cercle[2], cercle[1] - cercle[3], cercle[0] + cercle[2], cercle[1] + cercle[3]), pinceau)
                 pinceau.style = Paint.Style.FILL
                 for (bt in b) {
                     val r = RectF(bt.x, bt.y, bt.x + bt.w, bt.y + bt.h)

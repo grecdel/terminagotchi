@@ -204,7 +204,7 @@ class Creature:
             dy = -math.sin(self.t_etat / 0.5 * math.pi) * 14
         elif self.etat == "salut":
             dy = -abs(math.sin(self.t_etat * 5)) * 3
-        return self.etat, int(self.t_etat * IPS), dy, miroir
+        return self.etat, int(self.t_etat * IPS), dy, miroir and self.etat != "dort"     # les « z Z » restent à l'endroit
 
 
 # ---------------------------------------------------------------- clic, double-clic, triple clic, glisser
@@ -278,22 +278,25 @@ def largeur_texte(texte, taille):
 
 def menu_positions(cx, cy_corps, haut_creature, libelles, taille_texte=14, largeur=None, hauteur=None):
     """Les boutons du menu rond : [(clé, symbole, libellé, x, y, w, h)] (x, y : coin haut gauche), et le cercle
-    (cx, cy, r). La créature est en bas du cercle ; le cercle reste dans la zone (largeur × hauteur) si on la donne."""
+    (cx, cy, r). La créature est en bas du cercle ; le cercle reste dans la zone (largeur × hauteur) si on la donne.
+    Sur un écran étroit (téléphone), l'ovale se resserre en largeur et garde sa hauteur."""
     r = max(150.0, haut_creature * RAYON_MENU)
-    cy = cy_corps - r * 0.5
-    if largeur is not None:
-        cx = min(max(cx, r + 90), largeur - r - 90)
-    if hauteur is not None:
-        cy = max(cy, r * 0.62 + 30)
-    out = []
     h = taille_texte + 22
-    for cle, sym, ang in MENU:
-        lib = libelles.get(cle, cle)
-        w = largeur_texte(lib, taille_texte) + h + 18
+    larg = [largeur_texte(libelles.get(cle, cle), taille_texte) + h + 18 for cle, _s, _a in MENU]
+    demi = max(larg) / 2
+    rx, ry = r, r * 0.82
+    if largeur is not None:
+        rx = max(60.0, min(rx, (largeur - 2 * demi - 16) / 2))
+        cx = min(max(cx, rx + demi + 8), largeur - rx - demi - 8)
+    cy = cy_corps - r * 0.5
+    if hauteur is not None:
+        cy = max(cy, ry + h / 2 + 8)
+    out = []
+    for (cle, sym, ang), w in zip(MENU, larg):
         a = math.radians(ang)
-        bx, by = cx + r * math.cos(a), cy - r * math.sin(a) * 0.82
-        out.append((cle, sym, lib, bx - w / 2, by - h / 2, w, h))
-    return out, (cx, cy, r)
+        bx, by = cx + rx * math.cos(a), cy - ry * math.sin(a)
+        out.append((cle, sym, libelles.get(cle, cle), bx - w / 2, by - h / 2, w, h))
+    return out, (cx, cy, rx)
 
 
 def touche(boutons, x, y):
