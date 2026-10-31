@@ -1891,6 +1891,7 @@
   },
   "port1.2": {
    "motif": "3 packets transmitted, 3 received, 0% packet loss",
+   "outil": "ping",
    "pourquoi": "hist.port1.2.bravo : 3 échos, 0 % perdu"
   },
   "port2.2": {
@@ -1912,10 +1913,11 @@
   },
   "port4.2": {
    "motif": "^ssh-ed25519 \\S+ explorateur$",
+   "outil": "ssh-keygen",
    "pourquoi": "hist.port4.2.bravo : ssh-ed25519 … explorateur"
   },
   "port5.2": {
-   "sortie": "Bienvenue sur mon quai",
+   "motif": "^Bienvenue sur mon quai$",
    "pourquoi": "hist.port5.2.bravo : ta page"
   },
   "port6.0": {
@@ -1924,19 +1926,23 @@
   },
   "port7.1": {
    "motif": "127\\.0\\.0\\.1:8042\\b",
+   "outil": "ss",
    "pourquoi": "hist.port7.1.bravo : 127.0.0.1:8042, la porte du phare"
   },
   "port9.1": {
    "motif": "reached",
+   "outil": "tracepath",
    "pourquoi": "hist.port9.1.bravo : un seul saut"
   },
   "port11.0": {
    "code": "non0",
    "motif": "self.signed certificate",
+   "outil": "openssl",
    "pourquoi": "hist.port11.0.bravo : curl refuse le sceau"
   },
   "port11.1": {
    "motif": "/feu\\s",
+   "outil": "openssl",
    "pourquoi": "hist.port11.1.bravo : la page du phare, scellée"
   }
  },

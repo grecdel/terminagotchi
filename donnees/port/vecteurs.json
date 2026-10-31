@@ -1,0 +1,2239 @@
+{
+ "note": "Généré par pc/outils/vecteurs_port.py (pc/tg/port.py, pc/tg/deploie.py) ; vérifié par tests/jvm/Port.kt.",
+ "routes": [
+  {
+   "de": "camp",
+   "vers": "racine",
+   "eteints": [],
+   "chemin": [
+    "camp",
+    "racine"
+   ]
+  },
+  {
+   "de": "camp",
+   "vers": "feu",
+   "eteints": [],
+   "chemin": [
+    "camp",
+    "racine",
+    "roche",
+    "feu"
+   ]
+  },
+  {
+   "de": "camp",
+   "vers": "eau",
+   "eteints": [],
+   "chemin": [
+    "camp",
+    "racine",
+    "eau"
+   ]
+  },
+  {
+   "de": "camp",
+   "vers": "glace",
+   "eteints": [],
+   "chemin": [
+    "camp",
+    "racine",
+    "eau",
+    "glace"
+   ]
+  },
+  {
+   "de": "camp",
+   "vers": "plante",
+   "eteints": [],
+   "chemin": [
+    "camp",
+    "racine",
+    "plante"
+   ]
+  },
+  {
+   "de": "camp",
+   "vers": "roche",
+   "eteints": [],
+   "chemin": [
+    "camp",
+    "racine",
+    "roche"
+   ]
+  },
+  {
+   "de": "camp",
+   "vers": "ciel",
+   "eteints": [],
+   "chemin": [
+    "camp",
+    "racine",
+    "ciel"
+   ]
+  },
+  {
+   "de": "camp",
+   "vers": "ombre",
+   "eteints": [],
+   "chemin": [
+    "camp",
+    "racine",
+    "plante",
+    "poison",
+    "ombre"
+   ]
+  },
+  {
+   "de": "camp",
+   "vers": "machine",
+   "eteints": [],
+   "chemin": [
+    "camp",
+    "racine",
+    "roche",
+    "feu",
+    "machine"
+   ]
+  },
+  {
+   "de": "camp",
+   "vers": "poison",
+   "eteints": [],
+   "chemin": [
+    "camp",
+    "racine",
+    "plante",
+    "poison"
+   ]
+  },
+  {
+   "de": "glace",
+   "vers": "camp",
+   "eteints": [],
+   "chemin": [
+    "glace",
+    "eau",
+    "racine",
+    "camp"
+   ]
+  },
+  {
+   "de": "glace",
+   "vers": "racine",
+   "eteints": [],
+   "chemin": [
+    "glace",
+    "eau",
+    "racine"
+   ]
+  },
+  {
+   "de": "glace",
+   "vers": "feu",
+   "eteints": [],
+   "chemin": [
+    "glace",
+    "ciel",
+    "roche",
+    "feu"
+   ]
+  },
+  {
+   "de": "glace",
+   "vers": "eau",
+   "eteints": [],
+   "chemin": [
+    "glace",
+    "eau"
+   ]
+  },
+  {
+   "de": "glace",
+   "vers": "plante",
+   "eteints": [],
+   "chemin": [
+    "glace",
+    "eau",
+    "plante"
+   ]
+  },
+  {
+   "de": "glace",
+   "vers": "roche",
+   "eteints": [],
+   "chemin": [
+    "glace",
+    "ciel",
+    "roche"
+   ]
+  },
+  {
+   "de": "glace",
+   "vers": "ciel",
+   "eteints": [],
+   "chemin": [
+    "glace",
+    "ciel"
+   ]
+  },
+  {
+   "de": "glace",
+   "vers": "ombre",
+   "eteints": [],
+   "chemin": [
+    "glace",
+    "eau",
+    "plante",
+    "poison",
+    "ombre"
+   ]
+  },
+  {
+   "de": "glace",
+   "vers": "machine",
+   "eteints": [],
+   "chemin": [
+    "glace",
+    "ciel",
+    "roche",
+    "feu",
+    "machine"
+   ]
+  },
+  {
+   "de": "glace",
+   "vers": "poison",
+   "eteints": [],
+   "chemin": [
+    "glace",
+    "eau",
+    "plante",
+    "poison"
+   ]
+  },
+  {
+   "de": "camp",
+   "vers": "racine",
+   "eteints": [
+    "roche"
+   ],
+   "chemin": [
+    "camp",
+    "racine"
+   ]
+  },
+  {
+   "de": "camp",
+   "vers": "feu",
+   "eteints": [
+    "roche"
+   ],
+   "chemin": [
+    "camp",
+    "racine",
+    "plante",
+    "poison",
+    "ombre",
+    "machine",
+    "feu"
+   ]
+  },
+  {
+   "de": "camp",
+   "vers": "eau",
+   "eteints": [
+    "roche"
+   ],
+   "chemin": [
+    "camp",
+    "racine",
+    "eau"
+   ]
+  },
+  {
+   "de": "camp",
+   "vers": "glace",
+   "eteints": [
+    "roche"
+   ],
+   "chemin": [
+    "camp",
+    "racine",
+    "eau",
+    "glace"
+   ]
+  },
+  {
+   "de": "camp",
+   "vers": "plante",
+   "eteints": [
+    "roche"
+   ],
+   "chemin": [
+    "camp",
+    "racine",
+    "plante"
+   ]
+  },
+  {
+   "de": "camp",
+   "vers": "roche",
+   "eteints": [
+    "roche"
+   ],
+   "chemin": null
+  },
+  {
+   "de": "camp",
+   "vers": "ciel",
+   "eteints": [
+    "roche"
+   ],
+   "chemin": [
+    "camp",
+    "racine",
+    "ciel"
+   ]
+  },
+  {
+   "de": "camp",
+   "vers": "ombre",
+   "eteints": [
+    "roche"
+   ],
+   "chemin": [
+    "camp",
+    "racine",
+    "plante",
+    "poison",
+    "ombre"
+   ]
+  },
+  {
+   "de": "camp",
+   "vers": "machine",
+   "eteints": [
+    "roche"
+   ],
+   "chemin": [
+    "camp",
+    "racine",
+    "plante",
+    "poison",
+    "ombre",
+    "machine"
+   ]
+  },
+  {
+   "de": "camp",
+   "vers": "poison",
+   "eteints": [
+    "roche"
+   ],
+   "chemin": [
+    "camp",
+    "racine",
+    "plante",
+    "poison"
+   ]
+  },
+  {
+   "de": "glace",
+   "vers": "camp",
+   "eteints": [
+    "roche"
+   ],
+   "chemin": [
+    "glace",
+    "eau",
+    "racine",
+    "camp"
+   ]
+  },
+  {
+   "de": "glace",
+   "vers": "racine",
+   "eteints": [
+    "roche"
+   ],
+   "chemin": [
+    "glace",
+    "eau",
+    "racine"
+   ]
+  },
+  {
+   "de": "glace",
+   "vers": "feu",
+   "eteints": [
+    "roche"
+   ],
+   "chemin": [
+    "glace",
+    "eau",
+    "plante",
+    "poison",
+    "ombre",
+    "machine",
+    "feu"
+   ]
+  },
+  {
+   "de": "glace",
+   "vers": "eau",
+   "eteints": [
+    "roche"
+   ],
+   "chemin": [
+    "glace",
+    "eau"
+   ]
+  },
+  {
+   "de": "glace",
+   "vers": "plante",
+   "eteints": [
+    "roche"
+   ],
+   "chemin": [
+    "glace",
+    "eau",
+    "plante"
+   ]
+  },
+  {
+   "de": "glace",
+   "vers": "roche",
+   "eteints": [
+    "roche"
+   ],
+   "chemin": null
+  },
+  {
+   "de": "glace",
+   "vers": "ciel",
+   "eteints": [
+    "roche"
+   ],
+   "chemin": [
+    "glace",
+    "ciel"
+   ]
+  },
+  {
+   "de": "glace",
+   "vers": "ombre",
+   "eteints": [
+    "roche"
+   ],
+   "chemin": [
+    "glace",
+    "eau",
+    "plante",
+    "poison",
+    "ombre"
+   ]
+  },
+  {
+   "de": "glace",
+   "vers": "machine",
+   "eteints": [
+    "roche"
+   ],
+   "chemin": [
+    "glace",
+    "eau",
+    "plante",
+    "poison",
+    "ombre",
+    "machine"
+   ]
+  },
+  {
+   "de": "glace",
+   "vers": "poison",
+   "eteints": [
+    "roche"
+   ],
+   "chemin": [
+    "glace",
+    "eau",
+    "plante",
+    "poison"
+   ]
+  },
+  {
+   "de": "camp",
+   "vers": "racine",
+   "eteints": [
+    "roche",
+    "plante"
+   ],
+   "chemin": [
+    "camp",
+    "racine"
+   ]
+  },
+  {
+   "de": "camp",
+   "vers": "feu",
+   "eteints": [
+    "roche",
+    "plante"
+   ],
+   "chemin": null
+  },
+  {
+   "de": "camp",
+   "vers": "eau",
+   "eteints": [
+    "roche",
+    "plante"
+   ],
+   "chemin": [
+    "camp",
+    "racine",
+    "eau"
+   ]
+  },
+  {
+   "de": "camp",
+   "vers": "glace",
+   "eteints": [
+    "roche",
+    "plante"
+   ],
+   "chemin": [
+    "camp",
+    "racine",
+    "eau",
+    "glace"
+   ]
+  },
+  {
+   "de": "camp",
+   "vers": "plante",
+   "eteints": [
+    "roche",
+    "plante"
+   ],
+   "chemin": null
+  },
+  {
+   "de": "camp",
+   "vers": "roche",
+   "eteints": [
+    "roche",
+    "plante"
+   ],
+   "chemin": null
+  },
+  {
+   "de": "camp",
+   "vers": "ciel",
+   "eteints": [
+    "roche",
+    "plante"
+   ],
+   "chemin": [
+    "camp",
+    "racine",
+    "ciel"
+   ]
+  },
+  {
+   "de": "camp",
+   "vers": "ombre",
+   "eteints": [
+    "roche",
+    "plante"
+   ],
+   "chemin": null
+  },
+  {
+   "de": "camp",
+   "vers": "machine",
+   "eteints": [
+    "roche",
+    "plante"
+   ],
+   "chemin": null
+  },
+  {
+   "de": "camp",
+   "vers": "poison",
+   "eteints": [
+    "roche",
+    "plante"
+   ],
+   "chemin": null
+  },
+  {
+   "de": "glace",
+   "vers": "camp",
+   "eteints": [
+    "roche",
+    "plante"
+   ],
+   "chemin": [
+    "glace",
+    "eau",
+    "racine",
+    "camp"
+   ]
+  },
+  {
+   "de": "glace",
+   "vers": "racine",
+   "eteints": [
+    "roche",
+    "plante"
+   ],
+   "chemin": [
+    "glace",
+    "eau",
+    "racine"
+   ]
+  },
+  {
+   "de": "glace",
+   "vers": "feu",
+   "eteints": [
+    "roche",
+    "plante"
+   ],
+   "chemin": null
+  },
+  {
+   "de": "glace",
+   "vers": "eau",
+   "eteints": [
+    "roche",
+    "plante"
+   ],
+   "chemin": [
+    "glace",
+    "eau"
+   ]
+  },
+  {
+   "de": "glace",
+   "vers": "plante",
+   "eteints": [
+    "roche",
+    "plante"
+   ],
+   "chemin": null
+  },
+  {
+   "de": "glace",
+   "vers": "roche",
+   "eteints": [
+    "roche",
+    "plante"
+   ],
+   "chemin": null
+  },
+  {
+   "de": "glace",
+   "vers": "ciel",
+   "eteints": [
+    "roche",
+    "plante"
+   ],
+   "chemin": [
+    "glace",
+    "ciel"
+   ]
+  },
+  {
+   "de": "glace",
+   "vers": "ombre",
+   "eteints": [
+    "roche",
+    "plante"
+   ],
+   "chemin": null
+  },
+  {
+   "de": "glace",
+   "vers": "machine",
+   "eteints": [
+    "roche",
+    "plante"
+   ],
+   "chemin": null
+  },
+  {
+   "de": "glace",
+   "vers": "poison",
+   "eteints": [
+    "roche",
+    "plante"
+   ],
+   "chemin": null
+  },
+  {
+   "de": "camp",
+   "vers": "racine",
+   "eteints": [
+    "racine"
+   ],
+   "chemin": null
+  },
+  {
+   "de": "camp",
+   "vers": "feu",
+   "eteints": [
+    "racine"
+   ],
+   "chemin": null
+  },
+  {
+   "de": "camp",
+   "vers": "eau",
+   "eteints": [
+    "racine"
+   ],
+   "chemin": null
+  },
+  {
+   "de": "camp",
+   "vers": "glace",
+   "eteints": [
+    "racine"
+   ],
+   "chemin": null
+  },
+  {
+   "de": "camp",
+   "vers": "plante",
+   "eteints": [
+    "racine"
+   ],
+   "chemin": null
+  },
+  {
+   "de": "camp",
+   "vers": "roche",
+   "eteints": [
+    "racine"
+   ],
+   "chemin": null
+  },
+  {
+   "de": "camp",
+   "vers": "ciel",
+   "eteints": [
+    "racine"
+   ],
+   "chemin": null
+  },
+  {
+   "de": "camp",
+   "vers": "ombre",
+   "eteints": [
+    "racine"
+   ],
+   "chemin": null
+  },
+  {
+   "de": "camp",
+   "vers": "machine",
+   "eteints": [
+    "racine"
+   ],
+   "chemin": null
+  },
+  {
+   "de": "camp",
+   "vers": "poison",
+   "eteints": [
+    "racine"
+   ],
+   "chemin": null
+  },
+  {
+   "de": "glace",
+   "vers": "camp",
+   "eteints": [
+    "racine"
+   ],
+   "chemin": null
+  },
+  {
+   "de": "glace",
+   "vers": "racine",
+   "eteints": [
+    "racine"
+   ],
+   "chemin": null
+  },
+  {
+   "de": "glace",
+   "vers": "feu",
+   "eteints": [
+    "racine"
+   ],
+   "chemin": [
+    "glace",
+    "ciel",
+    "roche",
+    "feu"
+   ]
+  },
+  {
+   "de": "glace",
+   "vers": "eau",
+   "eteints": [
+    "racine"
+   ],
+   "chemin": [
+    "glace",
+    "eau"
+   ]
+  },
+  {
+   "de": "glace",
+   "vers": "plante",
+   "eteints": [
+    "racine"
+   ],
+   "chemin": [
+    "glace",
+    "eau",
+    "plante"
+   ]
+  },
+  {
+   "de": "glace",
+   "vers": "roche",
+   "eteints": [
+    "racine"
+   ],
+   "chemin": [
+    "glace",
+    "ciel",
+    "roche"
+   ]
+  },
+  {
+   "de": "glace",
+   "vers": "ciel",
+   "eteints": [
+    "racine"
+   ],
+   "chemin": [
+    "glace",
+    "ciel"
+   ]
+  },
+  {
+   "de": "glace",
+   "vers": "ombre",
+   "eteints": [
+    "racine"
+   ],
+   "chemin": [
+    "glace",
+    "eau",
+    "plante",
+    "poison",
+    "ombre"
+   ]
+  },
+  {
+   "de": "glace",
+   "vers": "machine",
+   "eteints": [
+    "racine"
+   ],
+   "chemin": [
+    "glace",
+    "ciel",
+    "roche",
+    "feu",
+    "machine"
+   ]
+  },
+  {
+   "de": "glace",
+   "vers": "poison",
+   "eteints": [
+    "racine"
+   ],
+   "chemin": [
+    "glace",
+    "eau",
+    "plante",
+    "poison"
+   ]
+  },
+  {
+   "de": "camp",
+   "vers": "racine",
+   "eteints": [
+    "roche",
+    "ciel",
+    "plante"
+   ],
+   "chemin": [
+    "camp",
+    "racine"
+   ]
+  },
+  {
+   "de": "camp",
+   "vers": "feu",
+   "eteints": [
+    "roche",
+    "ciel",
+    "plante"
+   ],
+   "chemin": null
+  },
+  {
+   "de": "camp",
+   "vers": "eau",
+   "eteints": [
+    "roche",
+    "ciel",
+    "plante"
+   ],
+   "chemin": [
+    "camp",
+    "racine",
+    "eau"
+   ]
+  },
+  {
+   "de": "camp",
+   "vers": "glace",
+   "eteints": [
+    "roche",
+    "ciel",
+    "plante"
+   ],
+   "chemin": [
+    "camp",
+    "racine",
+    "eau",
+    "glace"
+   ]
+  },
+  {
+   "de": "camp",
+   "vers": "plante",
+   "eteints": [
+    "roche",
+    "ciel",
+    "plante"
+   ],
+   "chemin": null
+  },
+  {
+   "de": "camp",
+   "vers": "roche",
+   "eteints": [
+    "roche",
+    "ciel",
+    "plante"
+   ],
+   "chemin": null
+  },
+  {
+   "de": "camp",
+   "vers": "ciel",
+   "eteints": [
+    "roche",
+    "ciel",
+    "plante"
+   ],
+   "chemin": null
+  },
+  {
+   "de": "camp",
+   "vers": "ombre",
+   "eteints": [
+    "roche",
+    "ciel",
+    "plante"
+   ],
+   "chemin": null
+  },
+  {
+   "de": "camp",
+   "vers": "machine",
+   "eteints": [
+    "roche",
+    "ciel",
+    "plante"
+   ],
+   "chemin": null
+  },
+  {
+   "de": "camp",
+   "vers": "poison",
+   "eteints": [
+    "roche",
+    "ciel",
+    "plante"
+   ],
+   "chemin": null
+  },
+  {
+   "de": "glace",
+   "vers": "camp",
+   "eteints": [
+    "roche",
+    "ciel",
+    "plante"
+   ],
+   "chemin": [
+    "glace",
+    "eau",
+    "racine",
+    "camp"
+   ]
+  },
+  {
+   "de": "glace",
+   "vers": "racine",
+   "eteints": [
+    "roche",
+    "ciel",
+    "plante"
+   ],
+   "chemin": [
+    "glace",
+    "eau",
+    "racine"
+   ]
+  },
+  {
+   "de": "glace",
+   "vers": "feu",
+   "eteints": [
+    "roche",
+    "ciel",
+    "plante"
+   ],
+   "chemin": null
+  },
+  {
+   "de": "glace",
+   "vers": "eau",
+   "eteints": [
+    "roche",
+    "ciel",
+    "plante"
+   ],
+   "chemin": [
+    "glace",
+    "eau"
+   ]
+  },
+  {
+   "de": "glace",
+   "vers": "plante",
+   "eteints": [
+    "roche",
+    "ciel",
+    "plante"
+   ],
+   "chemin": null
+  },
+  {
+   "de": "glace",
+   "vers": "roche",
+   "eteints": [
+    "roche",
+    "ciel",
+    "plante"
+   ],
+   "chemin": null
+  },
+  {
+   "de": "glace",
+   "vers": "ciel",
+   "eteints": [
+    "roche",
+    "ciel",
+    "plante"
+   ],
+   "chemin": null
+  },
+  {
+   "de": "glace",
+   "vers": "ombre",
+   "eteints": [
+    "roche",
+    "ciel",
+    "plante"
+   ],
+   "chemin": null
+  },
+  {
+   "de": "glace",
+   "vers": "machine",
+   "eteints": [
+    "roche",
+    "ciel",
+    "plante"
+   ],
+   "chemin": null
+  },
+  {
+   "de": "glace",
+   "vers": "poison",
+   "eteints": [
+    "roche",
+    "ciel",
+    "plante"
+   ],
+   "chemin": null
+  }
+ ],
+ "tables": [
+  {
+   "machine": "camp",
+   "eteints": [],
+   "table": [
+    [
+     "racine",
+     "racine",
+     1
+    ],
+    [
+     "feu",
+     "racine",
+     3
+    ],
+    [
+     "eau",
+     "racine",
+     2
+    ],
+    [
+     "glace",
+     "racine",
+     3
+    ],
+    [
+     "plante",
+     "racine",
+     2
+    ],
+    [
+     "roche",
+     "racine",
+     2
+    ],
+    [
+     "ciel",
+     "racine",
+     2
+    ],
+    [
+     "ombre",
+     "racine",
+     4
+    ],
+    [
+     "machine",
+     "racine",
+     4
+    ],
+    [
+     "poison",
+     "racine",
+     3
+    ]
+   ]
+  },
+  {
+   "machine": "camp",
+   "eteints": [
+    "roche"
+   ],
+   "table": [
+    [
+     "racine",
+     "racine",
+     1
+    ],
+    [
+     "feu",
+     "racine",
+     6
+    ],
+    [
+     "eau",
+     "racine",
+     2
+    ],
+    [
+     "glace",
+     "racine",
+     3
+    ],
+    [
+     "plante",
+     "racine",
+     2
+    ],
+    [
+     "ciel",
+     "racine",
+     2
+    ],
+    [
+     "ombre",
+     "racine",
+     4
+    ],
+    [
+     "machine",
+     "racine",
+     5
+    ],
+    [
+     "poison",
+     "racine",
+     3
+    ]
+   ]
+  },
+  {
+   "machine": "camp",
+   "eteints": [
+    "roche",
+    "plante"
+   ],
+   "table": [
+    [
+     "racine",
+     "racine",
+     1
+    ],
+    [
+     "eau",
+     "racine",
+     2
+    ],
+    [
+     "glace",
+     "racine",
+     3
+    ],
+    [
+     "ciel",
+     "racine",
+     2
+    ]
+   ]
+  },
+  {
+   "machine": "racine",
+   "eteints": [],
+   "table": [
+    [
+     "camp",
+     "camp",
+     1
+    ],
+    [
+     "feu",
+     "roche",
+     2
+    ],
+    [
+     "eau",
+     "eau",
+     1
+    ],
+    [
+     "glace",
+     "eau",
+     2
+    ],
+    [
+     "plante",
+     "plante",
+     1
+    ],
+    [
+     "roche",
+     "roche",
+     1
+    ],
+    [
+     "ciel",
+     "ciel",
+     1
+    ],
+    [
+     "ombre",
+     "plante",
+     3
+    ],
+    [
+     "machine",
+     "roche",
+     3
+    ],
+    [
+     "poison",
+     "plante",
+     2
+    ]
+   ]
+  },
+  {
+   "machine": "racine",
+   "eteints": [
+    "roche"
+   ],
+   "table": [
+    [
+     "camp",
+     "camp",
+     1
+    ],
+    [
+     "feu",
+     "plante",
+     5
+    ],
+    [
+     "eau",
+     "eau",
+     1
+    ],
+    [
+     "glace",
+     "eau",
+     2
+    ],
+    [
+     "plante",
+     "plante",
+     1
+    ],
+    [
+     "ciel",
+     "ciel",
+     1
+    ],
+    [
+     "ombre",
+     "plante",
+     3
+    ],
+    [
+     "machine",
+     "plante",
+     4
+    ],
+    [
+     "poison",
+     "plante",
+     2
+    ]
+   ]
+  },
+  {
+   "machine": "racine",
+   "eteints": [
+    "roche",
+    "plante"
+   ],
+   "table": [
+    [
+     "camp",
+     "camp",
+     1
+    ],
+    [
+     "eau",
+     "eau",
+     1
+    ],
+    [
+     "glace",
+     "eau",
+     2
+    ],
+    [
+     "ciel",
+     "ciel",
+     1
+    ]
+   ]
+  },
+  {
+   "machine": "feu",
+   "eteints": [],
+   "table": [
+    [
+     "camp",
+     "roche",
+     3
+    ],
+    [
+     "racine",
+     "roche",
+     2
+    ],
+    [
+     "eau",
+     "roche",
+     3
+    ],
+    [
+     "glace",
+     "roche",
+     3
+    ],
+    [
+     "plante",
+     "roche",
+     3
+    ],
+    [
+     "roche",
+     "roche",
+     1
+    ],
+    [
+     "ciel",
+     "roche",
+     2
+    ],
+    [
+     "ombre",
+     "machine",
+     2
+    ],
+    [
+     "machine",
+     "machine",
+     1
+    ],
+    [
+     "poison",
+     "machine",
+     3
+    ]
+   ]
+  },
+  {
+   "machine": "feu",
+   "eteints": [
+    "roche"
+   ],
+   "table": [
+    [
+     "camp",
+     "machine",
+     6
+    ],
+    [
+     "racine",
+     "machine",
+     5
+    ],
+    [
+     "eau",
+     "machine",
+     5
+    ],
+    [
+     "glace",
+     "machine",
+     6
+    ],
+    [
+     "plante",
+     "machine",
+     4
+    ],
+    [
+     "ciel",
+     "machine",
+     6
+    ],
+    [
+     "ombre",
+     "machine",
+     2
+    ],
+    [
+     "machine",
+     "machine",
+     1
+    ],
+    [
+     "poison",
+     "machine",
+     3
+    ]
+   ]
+  },
+  {
+   "machine": "feu",
+   "eteints": [
+    "roche",
+    "plante"
+   ],
+   "table": [
+    [
+     "ombre",
+     "machine",
+     2
+    ],
+    [
+     "machine",
+     "machine",
+     1
+    ],
+    [
+     "poison",
+     "machine",
+     3
+    ]
+   ]
+  }
+ ],
+ "guides": [
+  {
+   "chemin": [
+    "racine",
+    "plante",
+    "poison",
+    "ombre",
+    "machine",
+    "feu"
+   ],
+   "eteints": [],
+   "ok": true,
+   "sauts": [
+    "camp",
+    "racine",
+    "plante",
+    "poison",
+    "ombre",
+    "machine",
+    "feu"
+   ],
+   "raison": "arrive",
+   "ou": "feu",
+   "ttl": 2
+  },
+  {
+   "chemin": [
+    "racine",
+    "plante",
+    "poison",
+    "ombre",
+    "machine",
+    "feu"
+   ],
+   "eteints": [
+    "roche"
+   ],
+   "ok": true,
+   "sauts": [
+    "camp",
+    "racine",
+    "plante",
+    "poison",
+    "ombre",
+    "machine",
+    "feu"
+   ],
+   "raison": "arrive",
+   "ou": "feu",
+   "ttl": 2
+  },
+  {
+   "chemin": [
+    "racine",
+    "roche",
+    "feu"
+   ],
+   "eteints": [],
+   "ok": true,
+   "sauts": [
+    "camp",
+    "racine",
+    "roche",
+    "feu"
+   ],
+   "raison": "arrive",
+   "ou": "feu",
+   "ttl": 5
+  },
+  {
+   "chemin": [
+    "racine",
+    "roche",
+    "feu"
+   ],
+   "eteints": [
+    "roche"
+   ],
+   "ok": false,
+   "sauts": [
+    "camp",
+    "racine"
+   ],
+   "raison": "eteint",
+   "ou": "roche",
+   "ttl": 7
+  },
+  {
+   "chemin": [
+    "camp",
+    "racine",
+    "eau"
+   ],
+   "eteints": [],
+   "ok": true,
+   "sauts": [
+    "camp",
+    "racine",
+    "eau"
+   ],
+   "raison": "arrive",
+   "ou": "eau",
+   "ttl": 6
+  },
+  {
+   "chemin": [
+    "camp",
+    "racine",
+    "eau"
+   ],
+   "eteints": [
+    "roche"
+   ],
+   "ok": true,
+   "sauts": [
+    "camp",
+    "racine",
+    "eau"
+   ],
+   "raison": "arrive",
+   "ou": "eau",
+   "ttl": 6
+  },
+  {
+   "chemin": [
+    "racine",
+    "feu"
+   ],
+   "eteints": [],
+   "ok": false,
+   "sauts": [
+    "camp",
+    "racine"
+   ],
+   "raison": "pas_relie",
+   "ou": "feu",
+   "ttl": 7
+  },
+  {
+   "chemin": [
+    "racine",
+    "feu"
+   ],
+   "eteints": [
+    "roche"
+   ],
+   "ok": false,
+   "sauts": [
+    "camp",
+    "racine"
+   ],
+   "raison": "pas_relie",
+   "ou": "feu",
+   "ttl": 7
+  },
+  {
+   "chemin": [
+    "racine",
+    "volcan"
+   ],
+   "eteints": [],
+   "ok": false,
+   "sauts": [
+    "camp",
+    "racine"
+   ],
+   "raison": "inconnue",
+   "ou": "volcan",
+   "ttl": 7
+  },
+  {
+   "chemin": [
+    "racine",
+    "volcan"
+   ],
+   "eteints": [
+    "roche"
+   ],
+   "ok": false,
+   "sauts": [
+    "camp",
+    "racine"
+   ],
+   "raison": "inconnue",
+   "ou": "volcan",
+   "ttl": 7
+  },
+  {
+   "chemin": [],
+   "eteints": [],
+   "ok": false,
+   "sauts": [
+    "camp"
+   ],
+   "raison": "vide",
+   "ou": null,
+   "ttl": 8
+  },
+  {
+   "chemin": [],
+   "eteints": [
+    "roche"
+   ],
+   "ok": false,
+   "sauts": [
+    "camp"
+   ],
+   "raison": "vide",
+   "ou": null,
+   "ttl": 8
+  },
+  {
+   "chemin": [
+    "feu.terminaworld"
+   ],
+   "eteints": [],
+   "ok": false,
+   "sauts": [
+    "camp"
+   ],
+   "raison": "pas_relie",
+   "ou": "feu",
+   "ttl": 8
+  },
+  {
+   "chemin": [
+    "feu.terminaworld"
+   ],
+   "eteints": [
+    "roche"
+   ],
+   "ok": false,
+   "sauts": [
+    "camp"
+   ],
+   "raison": "pas_relie",
+   "ou": "feu",
+   "ttl": 8
+  },
+  {
+   "chemin": [
+    "127.42.0.1",
+    "127.42.0.3",
+    "127.42.0.4"
+   ],
+   "eteints": [],
+   "ok": true,
+   "sauts": [
+    "camp",
+    "racine",
+    "eau",
+    "glace"
+   ],
+   "raison": "arrive",
+   "ou": "glace",
+   "ttl": 5
+  },
+  {
+   "chemin": [
+    "127.42.0.1",
+    "127.42.0.3",
+    "127.42.0.4"
+   ],
+   "eteints": [
+    "roche"
+   ],
+   "ok": true,
+   "sauts": [
+    "camp",
+    "racine",
+    "eau",
+    "glace"
+   ],
+   "raison": "arrive",
+   "ou": "glace",
+   "ttl": 5
+  },
+  {
+   "chemin": [
+    "racine",
+    "eau",
+    "plante",
+    "eau",
+    "plante",
+    "eau",
+    "plante",
+    "eau",
+    "plante"
+   ],
+   "eteints": [],
+   "ok": false,
+   "sauts": [
+    "camp",
+    "racine",
+    "eau",
+    "plante",
+    "eau",
+    "plante",
+    "eau",
+    "plante",
+    "eau"
+   ],
+   "raison": "ttl",
+   "ou": "plante",
+   "ttl": 0
+  },
+  {
+   "chemin": [
+    "racine",
+    "eau",
+    "plante",
+    "eau",
+    "plante",
+    "eau",
+    "plante",
+    "eau",
+    "plante"
+   ],
+   "eteints": [
+    "roche"
+   ],
+   "ok": false,
+   "sauts": [
+    "camp",
+    "racine",
+    "eau",
+    "plante",
+    "eau",
+    "plante",
+    "eau",
+    "plante",
+    "eau"
+   ],
+   "raison": "ttl",
+   "ou": "plante",
+   "ttl": 0
+  }
+ ],
+ "course": {
+  "tcp": {
+   "recus": [
+    1,
+    2,
+    3,
+    4,
+    5,
+    6
+   ],
+   "envois": 8,
+   "renvoyes": [
+    2,
+    5
+   ],
+   "ordre": true
+  },
+  "udp": {
+   "recus": [
+    1,
+    4,
+    3,
+    6
+   ],
+   "envois": 6,
+   "perdus": [
+    2,
+    5
+   ],
+   "ordre": false
+  }
+ },
+ "noms": [
+  {
+   "nom": "feu",
+   "id": "feu"
+  },
+  {
+   "nom": "FEU",
+   "id": "feu"
+  },
+  {
+   "nom": "feu.terminaworld",
+   "id": "feu"
+  },
+  {
+   "nom": "127.42.0.2",
+   "id": "feu"
+  },
+  {
+   "nom": "localhost",
+   "id": "camp"
+  },
+  {
+   "nom": "127.0.0.1",
+   "id": "camp"
+  },
+  {
+   "nom": "camp",
+   "id": "camp"
+  },
+  {
+   "nom": "volcan",
+   "id": null
+  },
+  {
+   "nom": "eau.terminaworld.",
+   "id": "eau"
+  },
+  {
+   "nom": "racine",
+   "id": "racine"
+  }
+ ],
+ "couches": [
+  {
+   "texte": "application transport reseau liaison",
+   "ok": true
+  },
+  {
+   "texte": "Application Transport Réseau Liaison",
+   "ok": true
+  },
+  {
+   "texte": "liaison reseau transport application",
+   "ok": false
+  },
+  {
+   "texte": "application transport internet lien",
+   "ok": true
+  },
+  {
+   "texte": "lettre enveloppe colis camion",
+   "ok": false
+  },
+  {
+   "texte": "application, transport, réseau, liaison !",
+   "ok": true
+  },
+  {
+   "texte": "application transport reseau",
+   "ok": false
+  }
+ ],
+ "gardien": {
+  "box": "192.168.1.1",
+  "publique": "203.0.113.7",
+  "baux": [
+   [
+    "tablette",
+    "192.168.1.23"
+   ],
+   [
+    "console",
+    "192.168.1.24"
+   ],
+   [
+    "montre",
+    "192.168.1.25"
+   ]
+  ]
+ },
+ "sceaux": [
+  {
+   "graine": "1:0",
+   "ordre": [
+    "ok",
+    "auto",
+    "nom",
+    "perime"
+   ],
+   "vrai": 1
+  },
+  {
+   "graine": "1:1761900000",
+   "ordre": [
+    "perime",
+    "nom",
+    "ok",
+    "auto"
+   ],
+   "vrai": 3
+  },
+  {
+   "graine": "2:1730000000",
+   "ordre": [
+    "auto",
+    "perime",
+    "ok",
+    "nom"
+   ],
+   "vrai": 3
+  },
+  {
+   "graine": "3:42",
+   "ordre": [
+    "auto",
+    "perime",
+    "nom",
+    "ok"
+   ],
+   "vrai": 4
+  },
+  {
+   "graine": "1:1700000000",
+   "ordre": [
+    "perime",
+    "nom",
+    "ok",
+    "auto"
+   ],
+   "vrai": 3
+  }
+ ],
+ "annuaire": [
+  "127.0.0.1\tlocalhost camp",
+  "127.42.0.1\tracine.terminaworld racine",
+  "127.42.0.2\tfeu.terminaworld feu",
+  "127.42.0.3\teau.terminaworld eau",
+  "127.42.0.4\tglace.terminaworld glace",
+  "127.42.0.5\tplante.terminaworld plante",
+  "127.42.0.6\troche.terminaworld roche",
+  "127.42.0.7\tciel.terminaworld ciel",
+  "127.42.0.8\tombre.terminaworld ombre",
+  "127.42.0.9\tmachine.terminaworld machine",
+  "127.42.0.10\tpoison.terminaworld poison"
+ ],
+ "pages": [
+  {
+   "chemin": "/",
+   "code": 200,
+   "premiere": "⚓ Phare du Port — les quais du Terminaworld :"
+  },
+  {
+   "chemin": "/feu",
+   "code": 200,
+   "premiere": "🔥 feu.terminaworld (127.42.0.2)"
+  },
+  {
+   "chemin": "/FEU/",
+   "code": 200,
+   "premiere": "🔥 feu.terminaworld (127.42.0.2)"
+  },
+  {
+   "chemin": "/volcan_perdu",
+   "code": 404,
+   "premiere": "404 : rien à /volcan_perdu sur les quais du port."
+  },
+  {
+   "chemin": "/eau?x=1",
+   "code": 200,
+   "premiere": "💧 eau.terminaworld (127.42.0.3)"
+  },
+  {
+   "chemin": "/camp",
+   "code": 200,
+   "premiere": "⛺ localhost (127.0.0.1)"
+  },
+  {
+   "chemin": "/127.42.0.3",
+   "code": 200,
+   "premiere": "💧 eau.terminaworld (127.42.0.3)"
+  }
+ ],
+ "messagers": [
+  {
+   "ligne": "ping -c 3 localhost",
+   "messagers": [
+    {
+     "seg": 0,
+     "cmd": "ping",
+     "dest": "localhost",
+     "local": true
+    }
+   ]
+  },
+  {
+   "ligne": "curl -I http://localhost:8042/",
+   "messagers": [
+    {
+     "seg": 0,
+     "cmd": "curl",
+     "dest": "localhost:8042",
+     "local": true
+    }
+   ]
+  },
+  {
+   "ligne": "curl -s http://localhost:8042/eau | head -n 3",
+   "messagers": [
+    {
+     "seg": 0,
+     "cmd": "curl",
+     "dest": "localhost:8042",
+     "local": true
+    }
+   ]
+  },
+  {
+   "ligne": "curl -o colis.html http://localhost:8042/feu",
+   "messagers": [
+    {
+     "seg": 0,
+     "cmd": "curl",
+     "dest": "localhost:8042",
+     "local": true
+    }
+   ]
+  },
+  {
+   "ligne": "port messager feu",
+   "messagers": [
+    {
+     "seg": 0,
+     "cmd": "port",
+     "dest": "feu.terminaworld",
+     "local": true
+    }
+   ]
+  },
+  {
+   "ligne": "port guide racine plante poison ombre machine feu",
+   "messagers": [
+    {
+     "seg": 0,
+     "cmd": "port",
+     "dest": "feu.terminaworld",
+     "local": true
+    }
+   ]
+  },
+  {
+   "ligne": "port carte",
+   "messagers": []
+  },
+  {
+   "ligne": "ssh moi@example.com",
+   "messagers": [
+    {
+     "seg": 0,
+     "cmd": "ssh",
+     "dest": "example.com",
+     "local": false
+    }
+   ]
+  },
+  {
+   "ligne": "getent hosts localhost",
+   "messagers": [
+    {
+     "seg": 0,
+     "cmd": "getent",
+     "dest": "localhost",
+     "local": true
+    }
+   ]
+  },
+  {
+   "ligne": "tracepath -n 127.0.0.1",
+   "messagers": [
+    {
+     "seg": 0,
+     "cmd": "tracepath",
+     "dest": "127.0.0.1",
+     "local": true
+    }
+   ]
+  },
+  {
+   "ligne": "nslookup example.com",
+   "messagers": [
+    {
+     "seg": 0,
+     "cmd": "nslookup",
+     "dest": "example.com",
+     "local": false
+    }
+   ]
+  },
+  {
+   "ligne": "ls -l",
+   "messagers": []
+  },
+  {
+   "ligne": "cat x | grep y",
+   "messagers": []
+  },
+  {
+   "ligne": "curl --cacert sceau_du_phare.pem https://localhost:8443",
+   "messagers": [
+    {
+     "seg": 0,
+     "cmd": "curl",
+     "dest": "localhost:8443",
+     "local": true
+    }
+   ]
+  },
+  {
+   "ligne": "ping -c 1 127.42.0.2 && ls",
+   "messagers": [
+    {
+     "seg": 0,
+     "cmd": "ping",
+     "dest": "127.42.0.2",
+     "local": true
+    }
+   ]
+  },
+  {
+   "ligne": "host feu.terminaworld",
+   "messagers": [
+    {
+     "seg": 0,
+     "cmd": "host",
+     "dest": "feu.terminaworld",
+     "local": true
+    }
+   ]
+  },
+  {
+   "ligne": "curl http://[::1]:8000/",
+   "messagers": [
+    {
+     "seg": 0,
+     "cmd": "curl",
+     "dest": "[::1]:8000",
+     "local": true
+    }
+   ]
+  }
+ ]
+}

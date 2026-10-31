@@ -197,6 +197,60 @@ object Deploie {
             }
         }
 
+    // ------------------------------------------------------------ le messager des commandes réseau (le Port)
+    val RESEAU = setOf("ping", "curl", "wget", "ssh", "scp", "nslookup", "host", "dig", "tracepath", "traceroute", "tracert",
+        "getent", "port", "telnet", "nc")
+    private val PORT_MESSAGER = setOf("messager", "guide")
+    private val VALEUR_RESEAU = setOf("-c", "-W", "-w", "-i", "-o", "-p", "-l", "-d", "-H", "-X", "-m", "-A", "-b", "--cacert",
+        "--output", "--connect-timeout", "-t", "-q")
+    private val BIOMES = setOf("racine", "feu", "eau", "glace", "plante", "roche", "ciel", "ombre", "machine", "poison")
+
+    class Messager(val seg: Int, val cmd: String, val dest: String, val local: Boolean)
+
+    private fun hote(mot: String): String {
+        val m = Regex("^[a-z]+://([^/]+)").find(mot)
+        return (m?.groupValues?.get(1) ?: mot.substringBefore('/')).substringAfterLast('@')
+    }
+
+    /** La destination reste dans l'ordinateur (localhost, 127.x, ::1, une machine du Terminaworld). */
+    fun local(dest: String): Boolean {
+        var h = dest.lowercase()
+        h = if (h.startsWith("[")) h.substring(1).substringBefore(']') else if (h.count { it == ':' } == 1) h.substringBefore(':') else h
+        return h == "localhost" || h == "::1" || h == "camp" || h.startsWith("127.") || h.endsWith(".terminaworld") ||
+            h.endsWith(".localhost") || h in BIOMES
+    }
+
+    /** Les messagers d'une ligne (même spécification que deploie.messager sur PC, vecteurs donnees/port/vecteurs.json). */
+    fun messager(ligne: String): List<Messager> {
+        val out = mutableListOf<Messager>()
+        val bl = blocs(ligne)
+        for (c in chaines(bl)) for (e in c.etapes) {
+            val m = mots(e.texte).map { it.first }
+            if (e.cmd !in RESEAU || m.size < 2) continue
+            val args = m.drop(1)
+            val dest: String
+            if (e.cmd == "port") {
+                if (args[0].lowercase() !in PORT_MESSAGER || args.size < 2) continue
+                val d = if (args[0].lowercase() == "guide") args.last() else args[1]
+                dest = if (d == "camp" || d == "localhost" || '.' in d) d else "$d.terminaworld"
+            } else {
+                val libres = mutableListOf<String>()
+                var saute = false
+                for (x in args) {
+                    if (saute) { saute = false; continue }
+                    if (x.startsWith("-")) { saute = x in VALEUR_RESEAU; continue }
+                    libres.add(nu(x))
+                }
+                if (e.cmd == "getent" && libres.isNotEmpty() && libres[0] in setOf("hosts", "ahosts")) libres.removeAt(0)
+                if (libres.isEmpty()) continue
+                dest = hote(libres[0])
+            }
+            val seg = bl.firstOrNull { it.g == "commande" && it.i - 1 == e.debut }?.seg ?: 0
+            out.add(Messager(seg, e.cmd, dest, local(dest)))
+        }
+        return out
+    }
+
     // ------------------------------------------------------------ les mots pour le dire
     fun nomGenre(g: String) = t("dep.genre.$g")
 
@@ -251,12 +305,16 @@ object Deploie {
         var t = 0.0
         var phase = 0.0
         var lieu: Pair<String, String>? = null
+        /** les messagers des commandes réseau (le messager part vers sa destination et revient) */
+        val messagers: List<Messager> = try { messager(ligne) } catch (e: Exception) { emptyList() }
+        fun messagerDe(b: Bloc): Messager? = if (b.g == "commande") messagers.firstOrNull { it.seg == b.seg } else null
 
         fun avancer(dt: Double) {
             t += dt
             val b = blocs[actif - 1]
-            val duree = if (b.g == "tuyau" || b.g == "redirection") 2.4 else 1.2
-            phase = if (b.g in setOf("tuyau", "redirection", "chemin")) t / duree else minOf(1.0, t / duree)
+            val reseau = messagerDe(b) != null
+            val duree = if (b.g == "tuyau" || b.g == "redirection" || reseau) 2.4 else 1.2
+            phase = if (b.g in setOf("tuyau", "redirection", "chemin") || reseau) t / duree else minOf(1.0, t / duree)
             if (auto && t >= duree && actif < blocs.size) { actif += 1; t = 0.0 }
         }
 

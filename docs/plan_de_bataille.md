@@ -182,8 +182,10 @@ Maquettes validées par le propriétaire (Game Boy inversé : fond #0F380F, text
 - Android : commande `espace` (`espace classe`), `deploie`, `cerveau` ; `EspaceEtat.kt` (logique testée JVM),
   `EspaceDessin.kt` (dessin, interface `Toile`), `EspaceVue.kt` (View) au-dessus du terminal existant ;
 - vecteurs communs `donnees/espace/vecteurs.json`, tests `pc/outils/test_espace.py`, `tests/jvm/Espace.kt`.
-Reste : le messager des commandes réseau dans la vue déployée, la carte du PC en fenêtre reliée aux vrais lieux
-système (/etc…), la vraie transparence des panneaux sous tkinter.
+Le messager des commandes réseau dans la vue déployée est fait (31 octobre, avec le Port : `deploie.messager`, PC en
+ANSI et `PortDessin.messager` sur Android, vecteurs `donnees/port/vecteurs.json`) ; seule la fenêtre `tg espace` du
+PC (`espace_scene`) ne le dessine pas encore. Reste : la carte du PC en fenêtre reliée aux vrais lieux système
+(/etc…), la vraie transparence des panneaux sous tkinter.
 
 Le propriétaire adore l'interface des captures Coucou (`docs/inspirations/coucou_1.png` à `_4.png`) et veut
 travailler l'**espace de travail** du jeu dans cet esprit : fond très sombre, panneaux arrondis aux bords fins,
@@ -241,6 +243,15 @@ Salle des Machines (avec VM réelles) → Tour des Ondes → Guilde des Bâtisse
 Données (SQL) / Forge (site web, multimédia) / Contrôle (Linux de A à Z) / Temps / Atelier (embarqué) → Sommet ;
 mode classe en parallèle. Pour chaque monde : fiches → étapes PC et Android → tests → simulations → illustrations
 (planche à valider par le propriétaire) → APK d'essai.
+
+**⚓ Le Port — codé (31 octobre).** 11 fiches (`donnees/port/outils/fiches_port.py`, rejeu bash vert), leçons P0 →
+P11 sur PC (`pc/tg/port.py`) et Android (`Port.kt`, `PortDessin.kt`), ouvert après le nid et la bibliothèque (arbre
+du Carrefour), réseau simulé en boucle locale `127.42.0.0/24` (`donnees/port.json`), vrai phare HTTP/HTTPS sur
+`127.0.0.1` lancé par le jeu (Android : dans l'appli), exploits « messager guidé » et « sceau vérifié » qui libèrent
+`plumange:orage`, `tortunivers:lagon`, `empyria:nuage` ; 14 langues ; tests `pc/outils/test_port.py`,
+`tests/jvm/Port.kt`, simulation `pc/outils/sim_port.py` → `docs/simulations/rapport_port.md`. Maquettes et prompts
+d'illustrations envoyés au propriétaire (à valider). Reste : la carte du réseau dans l'onglet de l'espace (maquette
+seulement), les illustrations B4/C1/C3/E1-E4/E14, P4 (ssh) seulement raconté sur Android, le Grand Maillage.
 
 ## En continu (chaque jour, peu coûteux)
 

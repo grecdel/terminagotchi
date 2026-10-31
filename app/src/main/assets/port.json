@@ -34,6 +34,10 @@
   {"nom": "phare.terminaworld.example", "signe_par": "notaire", "raison": "nom"},
   {"nom": "phare.terminaworld", "signe_par": "notaire", "raison": "perime"}
  ],
+ "carte": {"note": "positions des machines sur le dessin du réseau (0-1, gauche-haut), PC et Android",
+  "camp": [0.05, 0.50], "racine": [0.22, 0.50], "plante": [0.40, 0.18], "eau": [0.42, 0.44], "glace": [0.62, 0.38],
+  "ciel": [0.38, 0.84], "roche": [0.56, 0.70], "feu": [0.78, 0.80], "machine": [0.93, 0.55], "ombre": [0.86, 0.22],
+  "poison": [0.64, 0.10]},
  "pages": ["camp", "racine", "feu", "eau", "glace", "plante", "roche", "ciel", "ombre", "machine", "poison"],
  "ponts": {
   "ssh": {"vers": ["atelier", "controle"], "lecon": "port4"},

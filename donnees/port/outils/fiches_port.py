@@ -128,19 +128,19 @@ ETAPES = {"port1.2": {"maths": ["pourcentages"]}, "port8.2": {"maths": ["comptag
 REJEU = {
     "port0.1": {"contient": ["panneau.txt", "annuaire.txt", "carnet_de_bord.txt", "quai"],
                 "pourquoi": "hist.port0.1.bravo : le panneau, l'annuaire, le carnet de bord et le quai"},
-    "port1.2": {"motif": r"3 packets transmitted, 3 received, 0% packet loss",
+    "port1.2": {"motif": r"3 packets transmitted, 3 received, 0% packet loss", "outil": "ping",
                 "pourquoi": "hist.port1.2.bravo : 3 échos, 0 % perdu"},
     "port2.2": {"sortie": "127.42.0.2\tfeu.terminaworld feu", "pourquoi": "hist.port2.2.bravo : feu → 127.42.0.2"},
     "port3.0": {"motif": r"^HTTP/1\.1 200 OK", "pourquoi": "hist.port3.0.bravo : 200 OK"},
     "port3.1": {"lignes": 3, "motif": r"eau\.terminaworld \(127\.42\.0\.3\)", "pourquoi": "hist.port3.1.bravo : les 3 premières lignes"},
     "port3.3": {"motif": r"^HTTP/1\.1 404 Not Found", "pourquoi": "hist.port3.3.bravo : 404"},
-    "port4.2": {"motif": r"^ssh-ed25519 \S+ explorateur$", "pourquoi": "hist.port4.2.bravo : ssh-ed25519 … explorateur"},
-    "port5.2": {"sortie": "Bienvenue sur mon quai", "pourquoi": "hist.port5.2.bravo : ta page"},
+    "port4.2": {"motif": r"^ssh-ed25519 \S+ explorateur$", "outil": "ssh-keygen", "pourquoi": "hist.port4.2.bravo : ssh-ed25519 … explorateur"},
+    "port5.2": {"motif": r"^Bienvenue sur mon quai$", "pourquoi": "hist.port5.2.bravo : ta page"},
     "port6.0": {"motif": r"^> GET / HTTP/1\.1", "pourquoi": "hist.port6.0.bravo : > GET / HTTP/1.1 (l'application)"},
-    "port7.1": {"motif": r"127\.0\.0\.1:8042\b", "pourquoi": "hist.port7.1.bravo : 127.0.0.1:8042, la porte du phare"},
-    "port9.1": {"motif": r"reached", "pourquoi": "hist.port9.1.bravo : un seul saut"},
-    "port11.0": {"code": "non0", "motif": r"self.signed certificate", "pourquoi": "hist.port11.0.bravo : curl refuse le sceau"},
-    "port11.1": {"motif": r"/feu\s", "pourquoi": "hist.port11.1.bravo : la page du phare, scellée"},
+    "port7.1": {"motif": r"127\.0\.0\.1:8042\b", "outil": "ss", "pourquoi": "hist.port7.1.bravo : 127.0.0.1:8042, la porte du phare"},
+    "port9.1": {"motif": r"reached", "outil": "tracepath", "pourquoi": "hist.port9.1.bravo : un seul saut"},
+    "port11.0": {"code": "non0", "motif": r"self.signed certificate", "outil": "openssl", "pourquoi": "hist.port11.0.bravo : curl refuse le sceau"},
+    "port11.1": {"motif": r"/feu\s", "outil": "openssl", "pourquoi": "hist.port11.1.bravo : la page du phare, scellée"},
 }
 
 

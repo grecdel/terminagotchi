@@ -16,7 +16,7 @@ object Vrai {
     /** I4 : les commandes de l'appli (Commandes.kt) et celles du seul téléphone n'existent pas sur un ordinateur */
     private val APPLI = setOf("doom", "getprop", "dressage", "cherche", "defi", "donjon", "plan", "quetes", "quete",
         "journal", "sac", "equipe", "guide", "types", "bois", "attaque", "ctf", "drapeau", "compte", "site", "bestiaire",
-        "explique", "sync", "indice", "notifs", "notif", "placement", "sansaide", "aide", "carte", "lexique", "arbre") +
+        "explique", "sync", "indice", "notifs", "notif", "placement", "sansaide", "aide", "carte", "lexique", "arbre", "port") +
         Commandes.CREATURE + Commandes.TELEPHONE
 
     fun ligne(cmd: String?): String? {
@@ -26,6 +26,9 @@ object Vrai {
         if (premier in APPLI) return null
         // I4 : l'éditeur de l'appli → nano ; ~/.tgrc (lu par l'appli) → ~/.bashrc ; le camp du téléphone → $HOME
         if (premier == "edite") return t("vrai.autre", "cmd" to "nano" + c.removePrefix("edite"))
+        // le Port : la lanterne de l'appli → le vrai petit serveur de Python, attaché à la boucle locale
+        if (premier == "serveur") return if (c.split(Regex("\\s+")).getOrNull(1)?.toIntOrNull() != null)
+            t("vrai.autre", "cmd" to "python3 -m http.server ${c.split(Regex("\\s+"))[1]} --bind 127.0.0.1") else null
         if (".tgrc" in c) return t("vrai.autre", "cmd" to c.replace(".tgrc", ".bashrc"))
         if (Racine.HOME in c) return t("vrai.autre", "cmd" to c.replace(Racine.HOME, "\$HOME"))
         if (premier in ABSENTS) return t("vrai.absent", "cmd" to premier)

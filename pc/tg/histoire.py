@@ -1085,6 +1085,9 @@ def indice(state, step, lignes, tapees, morcs=None):
                 return t("hist.indice.racine", cmd="cd /")
     if "ici" in step or "ici_abs" in step:
         return _indice_cd(state, step, morcs)
+    conseil = _port.indice(step, tapees)                  # le Port : un trou « … » recopié, un messager perdu
+    if conseil:
+        return conseil
     conseil = _indice_cd(state, step, morcs) or _indice_rm(step, tapees) or _indice_barre(step, morcs) \
         or _indice_resultat(state, step, morcs)
     if conseil:
@@ -1369,6 +1372,7 @@ def tick(state, lines, cwd=None):
     _visite_aile(state, cwds + [maison.ici(state)])
     signer_carnet(state)
     colis_hors_ligne(state, lines, cwds)
+    _port.surveiller(state, lines)                # le Port : une lanterne ouverte à tout le réseau ? la créature prévient
     tick_lecon(state, lines, cwds, avants)
     meubler(state)
     from . import quetes

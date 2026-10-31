@@ -128,6 +128,12 @@ class Commandes(
             "bestiaire" -> Reponse(Explo.fiche(jeu, reste), couleur = ROSE)
             "explique" -> Reponse(Explique.fiche(jeu, reste), couleur = BLEU)
             "maths" -> Reponse(Maths.commande(jeu, reste), couleur = BLEU)
+            // ---------------------------------------------------- le Port (Port.kt) : le réseau, sans jamais sortir du téléphone
+            "port" -> Reponse(Port.commande(jeu, reste), couleur = BLEU)
+            "curl" -> Reponse(Port.curl(jeu, ligne.trim(), dossier()), couleur = BLEU)
+            "nslookup", "host" -> Reponse(Port.nslookup(reste), couleur = BLEU)
+            "serveur" -> Reponse(Port.serveur(jeu, reste), couleur = BLEU)
+            "ss" -> Reponse(Port.ss(ligne.trim()), couleur = BLEU)
             "sync" -> sync()
             "indice" -> Reponse(Ctf.indice(jeu, reste), couleur = VERT)
             "edite" -> edite(reste)

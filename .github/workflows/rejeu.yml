@@ -5,7 +5,8 @@ name: Charte de rigueur (rejeu des sorties réelles)
 on:
   push:
     branches: [nouveau-bestiaire, main]
-    paths: ["donnees/programme.json", "donnees/maths/**", "donnees/recompenses/**", "pc/**", "app/src/main/assets/langues/**",
+    paths: ["donnees/programme.json", "donnees/maths/**", "donnees/recompenses/**", "donnees/port/**", "donnees/port.json",
+            "pc/**", "app/src/main/assets/langues/**", "app/src/main/java/fr/terminagotchi/Port.kt",
             "app/src/main/java/fr/terminagotchi/Histoire.kt", "app/src/main/java/fr/terminagotchi/Jeu.kt",
             ".github/workflows/rejeu.yml"]
   pull_request:
@@ -27,17 +28,25 @@ jobs:
       - name: Les outils des fiches (les commandes rejouées)
         run: |
           sudo apt-get update -qq
-          sudo apt-get install -y -qq tree iproute2 iputils-ping openssh-client dnsutils bsdextrautils >/dev/null || true
+          sudo apt-get install -y -qq tree iproute2 iputils-ping iputils-tracepath openssh-client dnsutils bsdextrautils openssl >/dev/null || true
           bash --version | head -n 1
 
       - name: Vérificateur de la charte (fiches, étapes, orphelines, 14 langues)
         run: python3 pc/outils/verifier_programme.py
 
       - name: Vecteurs communs à jour (Python, Kotlin, serveur)
-        run: python3 pc/outils/vecteurs_phase4.py --verifier
+        run: |
+          python3 pc/outils/vecteurs_phase4.py --verifier
+          python3 pc/outils/vecteurs_port.py --verifier
 
       - name: Rejeu des sorties dans un vrai bash (fiches et histoire du PC)
         run: LC_ALL=C.UTF-8 python3 pc/outils/rejeu_bash.py
 
       - name: Ponts des Nombres et récompenses
         run: python3 pc/outils/test_programme.py
+
+      - name: Le Port (réseau simulé, phare sur 127.0.0.1, traversée P0 → P11)
+        run: LC_ALL=C.UTF-8 python3 pc/outils/test_port.py
+
+      - name: Trois enfants traversent le Port (docs/simulations/rapport_port.md)
+        run: LC_ALL=C.UTF-8 python3 pc/outils/sim_port.py

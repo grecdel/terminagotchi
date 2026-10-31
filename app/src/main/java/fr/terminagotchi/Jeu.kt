@@ -36,6 +36,8 @@ class Etape(
     val reseau: Boolean = false,
     /** `cd ..` : le lieu d'où l'on remonte jusqu'à « ici » (C1 : depuis le camp, `cd ..` ne mène pas au carrefour) */
     val depuis: String? = null,
+    /** un exploit d'un monde (§ 7.6, Recompenses.kt) réussi avec cette étape (le Port : port.messager, port.sceau) */
+    val exploit: String? = null,
 ) {
     val dit: String get() = Histoire.tx(ditCle, params)
     val bravo: String get() = Histoire.tx(bravoCle, params)
@@ -303,6 +305,7 @@ class Jeu(ctx: Context) {
         Animations.init(ctx)
         Guide.init(ctx)
         Programme.init(ctx)
+        Port.init(ctx)
         Intro.init(ctx)
     }
 
@@ -780,7 +783,7 @@ class Jeu(ctx: Context) {
         val c = Histoire.leconCourante(this)
         if (Placement.actif(this)) out.add("🧩 " + Placement.but(this))          // G-13 : le test « je connais déjà »
         if (c != null) {
-            out.add(t("hist.ecran.chapitre", "icone" to (Maison.ICONES[c.chap.piece] ?: "📖"),
+            out.add(t(if (c.chap.monde) "hist.ecran.monde" else "hist.ecran.chapitre", "icone" to (Maison.ICONES[c.chap.piece] ?: "📖"),
                 "chapitre" to Histoire.nomChapitre(c.chap.id), "n" to c.chap.n) + " · " + c.etiquette)
             if (Placement.actif(this)) {
                 // I2 : pendant le test « je connais déjà », seul le défi est montré (pas la commande de la leçon)

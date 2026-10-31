@@ -12,6 +12,9 @@ doit être ce qu'affiche un vrai bash.
 2. L'histoire (tronc commun et ailes du PC) : un enfant virtuel tape exactement les commandes montrées (comme
    sim_suiveur.py), dans un vrai bash qui reste ouvert, HOME temporaire, hors ligne ; pour chaque étape décrite dans
    « rejeu » (« leçon.étape »), la vraie sortie est comparée à ce que le jeu en dit (texte cité dans « pourquoi »).
+   Puis le premier monde, le Port (phase 5) : le phare du jeu s'allume sur 127.0.0.1, l'enfant tape les vraies
+   commandes (curl, ss, ip, tracepath, ssh-keygen, http.server --bind 127.0.0.1…) et celles du jeu (`port …`, l'alias
+   de tg installer) ; une affirmation dont l'outil manque (« outil ») est sautée et comptée.
 Utilisé en CI (.github/workflows/rejeu.yml) sur une vraie machine Linux.
 """
 import os
@@ -111,6 +114,7 @@ def histoire():
     Path(os.environ["HOME"], ".gitconfig").write_text("[user]\n\tuseConfigOnly = true\n[init]\n\tdefaultBranch = main\n")
     for k in ("http_proxy", "https_proxy", "HTTP_PROXY", "HTTPS_PROXY", "ALL_PROXY", "all_proxy"):
         os.environ[k] = "http://127.0.0.1:9"
+    os.environ["NO_PROXY"] = os.environ["no_proxy"] = "localhost,127.0.0.1"     # le Port : la boucle locale, directe
     sys.path.insert(0, str(RACINE / "pc"))
     import builtins
     from tg import app, core, explo, histoire as H
@@ -123,8 +127,12 @@ def histoire():
     shell = Coquille(home, env=dict(os.environ, LC_ALL="C.UTF-8", LANGUAGE="C", LC_MESSAGES="C"))
     etat = {"cwd": home, "sortie": "", "code": 0}
 
+    from tg import port as P_
+    jeu_port = f"{sys.executable} -c \"import sys; sys.path.insert(0, '{RACINE / 'pc'}'); from tg import port; port.commande(sys.argv[1:])\""
+
     def tape(cmd):
-        etat["sortie"], etat["code"], d = shell.lancer(cmd)
+        vrai = re.sub(r"^port\b", jeu_port, cmd)          # l'alias port='tg port' (posé par tg installer)
+        etat["sortie"], etat["code"], d = shell.lancer(vrai)
         etat["cwd"] = Path(d)
         with open(home / ".bash_history", "a") as f:
             f.write(cmd + "\n")
@@ -132,15 +140,18 @@ def histoire():
 
     attendus = P.get("rejeu", {})
     vus = set()
+    sautes = set()
     st = app.etape(spontane=False, defis=False)
     derniere = None
-    for _ in range(900):
+    for _ in range(1200):
         les, _e = H.lecon_courante(st)
         h = H.h_(st)
         if not les:
             reste = [a for a in H.AILES if not H.fini(st, a)]
-            if H.fini(st, "coeur") or h["chap"] in ("reveil", "nid"):
+            if H.fini(st, "port") or h["chap"] in ("reveil", "nid"):
                 break
+            if H.fini(st, "coeur"):
+                reste = ["port"]                    # le tronc et les ailes faits : le premier monde du Carrefour
             cible = "coeur" if not reste and H.ouvert(st, "coeur") else (reste[0] if reste else None)
             if not cible:
                 break
@@ -158,6 +169,12 @@ def histoire():
             c = "sleep 30 &"
         if c.startswith("echo ?"):
             c = c.replace("?", (etat["sortie"].strip().split() or ["0"])[-1], 1)
+        if c == "port guide racine … feu":           # l'enfant trouve le détour sur la carte
+            c = "port guide " + " ".join(P_.route("camp", "feu", P_.p_(st)["eteints"] or ["roche"])[1:])
+        if c == "port sceau ?":
+            c = f"port sceau {P_.vrai_sceau(P_._graine(st))}"
+        if c.endswith(" &") and "http.server" in c:
+            c = c[:-2] + " >/dev/null 2>&1 &"       # (les lignes du serveur n'encombrent pas la suite)
         lieu = step.get("ou") if step.get("ou") is not None else None
         from tg import verif
         voulu = verif.lieu_attendu(st, step) if hasattr(verif, "lieu_attendu") else None
@@ -170,9 +187,20 @@ def histoire():
             break
         derniere = (cle, c)
         st = tape(c)
+        if "http.server" in c:                         # la lanterne met un instant à s'allumer
+            for _ in range(40):
+                if P_.phare_allume(8000):
+                    break
+                __import__("time").sleep(0.2)
         if cle in attendus and cle not in vus:
             vus.add(cle)
             a = attendus[cle]
+            if a.get("outil") and not shutil.which(a["outil"]):
+                print(f"  · {cle} `{c}` sauté ({a['outil']} absent)")
+                sautes.add(cle)
+                global saute
+                saute += 1
+                continue
             sortie, code = etat["sortie"], etat["code"]
             if a.get("apres"):
                 sortie, code, _d = shell.lancer(a["apres"])
@@ -209,6 +237,8 @@ def histoire():
                 verifier(n == str(H.traces_abyssor()), f"{nom} : bash compte {n}, le jeu attend {H.traces_abyssor()}{pq}")
     h = H.h_(st)
     verifier(H.fini(st, "coeur"), f"l'histoire est allée jusqu'au bout ({h['ailes']})")
+    verifier(H.fini(st, "port"), "le Port, premier monde du Carrefour, est allé jusqu'au bout (P0 → P11)")
+    P_.eteindre_phare()
     manquent = sorted(set(attendus) - vus)
     verifier(not manquent, f"toutes les étapes décrites ont été rejouées {manquent}")
     shell.fermer()

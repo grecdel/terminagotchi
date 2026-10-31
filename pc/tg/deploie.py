@@ -52,6 +52,14 @@ SURES = {"cat", "ls", "grep", "egrep", "fgrep", "head", "tail", "wc", "sort", "u
          "expand", "du", "df", "free", "uname", "id", "hostname"}
 DANGER = re.compile(r"\$\(|`|-delete\b|-exec\b|-ok\b|--output|-fprint")
 LIGNES_MAX = 40
+# les commandes réseau : la vue déployée montre le MESSAGER qui part vers la destination et revient (le Port)
+RESEAU = {"ping", "curl", "wget", "ssh", "scp", "nslookup", "host", "dig", "tracepath", "traceroute", "tracert", "getent",
+          "port", "telnet", "nc"}
+# les sous-commandes du Port qui envoient un messager (port messager feu, port guide racine … feu)
+PORT_MESSAGER = {"messager", "guide"}
+# les options réseau suivies d'une valeur (ping -c 3, curl -o fichier, ssh -i cle…)
+VALEUR_RESEAU = {"-c", "-W", "-w", "-i", "-o", "-p", "-l", "-d", "-H", "-X", "-m", "-A", "-b", "--cacert", "--output",
+                 "--connect-timeout", "-t", "-q"}
 
 
 # ---------------------------------------------------------------- découper
@@ -290,6 +298,74 @@ def existe_dans(dossier):
     return existe
 
 
+# ---------------------------------------------------------------- le messager des commandes réseau
+def _hote(mot):
+    """« http://localhost:8042/feu » → « localhost:8042 » ; « moi@machine » → « machine »."""
+    m = re.match(r"^[a-z]+://([^/]+)", mot)
+    h = m.group(1) if m else mot.split("/")[0]
+    return h.split("@")[-1]
+
+
+def local(dest):
+    """Vrai si la destination reste dans l'ordinateur (localhost, 127.x, ::1, une machine du Terminaworld)."""
+    h = (dest or "").lower()
+    if h.startswith("["):
+        h = h[1:].split("]")[0]
+    elif h.count(":") == 1:
+        h = h.split(":")[0]
+    return h in ("localhost", "::1", "camp") or h.startswith("127.") or h.endswith(".terminaworld") or \
+        h.endswith(".localhost") or h in ("racine", "feu", "eau", "glace", "plante", "roche", "ciel", "ombre", "machine",
+                                           "poison")
+
+
+def messager(ligne):
+    """Les messagers d'une ligne (spécification commune, Deploie.kt) : [{seg, cmd, dest, local}] pour chaque commande
+    réseau qui vise une destination : le premier argument (ou, pour `port guide`, le dernier phare) ; jamais lancé."""
+    out = []
+    for c in chaines(blocs(ligne)):
+        for e in c["etapes"]:
+            m = [x for x, _op in mots(e["texte"])]
+            cmd = e["cmd"]
+            if cmd not in RESEAU or len(m) < 2:
+                continue
+            args = m[1:]
+            if cmd == "port":
+                if args[0].lower() not in PORT_MESSAGER or len(args) < 2:
+                    continue
+                dest = args[-1] if args[0].lower() == "guide" else args[1]
+                dest = dest if dest in ("camp", "localhost") or "." in dest else f"{dest}.terminaworld"
+            else:
+                libres, saute = [], False
+                for x in args:
+                    if saute:
+                        saute = False
+                        continue
+                    if x.startswith("-"):
+                        saute = x in VALEUR_RESEAU
+                        continue
+                    libres.append(_nu(x))
+                if cmd == "getent" and libres and libres[0] in ("hosts", "ahosts"):
+                    libres = libres[1:]
+                if not libres:
+                    continue
+                dest = _hote(libres[0])
+            seg = next((b["seg"] for b in blocs(ligne) if b["g"] == "commande" and b["i"] - 1 == e["debut"]), 0)
+            out.append({"seg": seg, "cmd": cmd, "dest": dest, "local": local(dest)})
+    return out
+
+
+def _messager_anime(cmd, dest, phase, largeur):
+    """⛺ curl ─ ─ ✉ ─ ─▶ 🏝 localhost:8042 (aller), puis ◀─ ─ ✉ ─ ─ (retour avec la réponse)."""
+    lg = max(14, min(largeur - len(cmd) - len(dest) - 14, 40))
+    aller = phase < 0.5
+    pos = int((phase * 2 if aller else (1 - phase) * 2) * (lg - 1))
+    piste = "".join("✉" if x == pos else ("─" if (x + int(phase * 10)) % 2 else " ") for x in range(lg))
+    fl = ("─▶" if aller else "─ ") if aller else "─ "
+    debut = "◀" if not aller else " "
+    return (f"  {fg(ANSI['commande'])}{BOLD}⛺ {cmd}{RESET} {debut}{fg(141)}{piste}{RESET}{fl} "
+            f"{fg(ANSI['chemin'])}{BOLD}🏝 {dest}{RESET}")
+
+
 # ---------------------------------------------------------------- les mots pour le dire
 def nom_genre(g):
     return t("dep.genre." + g)
@@ -503,6 +579,13 @@ def ecran(ligne, bl, actif, sorties, phase=0.0, largeur=80, dossier=None, pas=Fa
         lie = lieu(b, dossier)
         if lie:
             out.append(f"  {fg(ANSI['chemin'])}📍 " + t("dep.sur_carte", f=_nu(b["t"]), lieu=lie[1]) + RESET)
+    if b["g"] == "commande":                     # une commande réseau : le messager part et revient
+        for x in messager(ligne):
+            if x["seg"] == b["seg"]:
+                out.append("")
+                out.append(_messager_anime(x["cmd"], x["dest"], phase % 1.0, largeur))
+                out.append(f"  {DIM}" + t("dep.messager", cmd=x["cmd"], dest=x["dest"]) + " " +
+                           t("dep.messager.local" if x["local"] else "dep.messager.dehors") + RESET)
     if actif == n and sorties:
         for c, s in zip(chs, sorties):
             if s and len(c["etapes"]) > 1:
@@ -512,6 +595,11 @@ def ecran(ligne, bl, actif, sorties, phase=0.0, largeur=80, dossier=None, pas=Fa
     out.append("")
     out.append("  " + legende())
     return out
+
+
+def _reseau(b, ligne):
+    """Le bloc est une commande réseau qui envoie un messager (son animation dure comme celle d'un tuyau)."""
+    return b["g"] == "commande" and any(x["seg"] == b["seg"] for x in messager(ligne))
 
 
 def jouer(ligne, dossier=None, pas=False, sortie=None, clavier=None, ips=12):
@@ -554,8 +642,8 @@ def jouer(ligne, dossier=None, pas=False, sortie=None, clavier=None, ips=12):
                 while touche is None:                    # le tuyau bouge en attendant Entrée
                     touche = clav.touche(1 / ips)
                     phase += 1 / (ips * 1.6)
-                    if touche is None and bl[k - 1]["g"] in ("tuyau", "redirection"):
-                        dessiner(ecran(ligne, bl, k, sorties, phase % 1.0 if bl[k - 1]["g"] == "tuyau" else
+                    if touche is None and (bl[k - 1]["g"] in ("tuyau", "redirection") or _reseau(bl[k - 1], ligne)):
+                        dessiner(ecran(ligne, bl, k, sorties, phase % 1.0 if bl[k - 1]["g"] != "redirection" else
                                        min(1.0, phase), largeur, dossier, pas=True) +
                                  [f"  {DIM}" + t("dep.touches") + RESET])
                 if touche.lower() == "q":
@@ -563,7 +651,7 @@ def jouer(ligne, dossier=None, pas=False, sortie=None, clavier=None, ips=12):
                 k += 1
         return
     for k in range(1, len(bl) + 1):
-        anime = bl[k - 1]["g"] in ("tuyau", "redirection")
+        anime = bl[k - 1]["g"] in ("tuyau", "redirection") or _reseau(bl[k - 1], ligne)
         n_images = int(ips * (2.4 if anime else 1.1))
         for f in range(n_images):
             phase = f / max(1, n_images - 1)

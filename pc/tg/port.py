@@ -299,28 +299,29 @@ def dossier_jeu():
 
 def fabriquer_sceau():
     """Le certificat auto-signé du phare (openssl, sur cette machine, valable 10 ans, seulement pour localhost et
-    127.0.0.1) : (certificat, clé) ou None si openssl manque. Le certificat (public) est aussi posé dans le terrain
-    (port/sceau_du_phare.pem) pour `curl --cacert`. La clé ne quitte jamais ~/.terminagotchi/port/."""
+    127.0.0.1) : (certificat, clé) ou None si openssl manque. La clé ne quitte jamais ~/.terminagotchi/port/ ; le
+    certificat public est posé sur le quai par poser_sceau (celui du phare qui tourne vraiment)."""
     d = dossier_jeu()
     cert, cle = d / "sceau.pem", d / "sceau_cle.pem"
     if not (cert.is_file() and cle.is_file()):
         try:
             d.mkdir(parents=True, exist_ok=True)
+            tc, tk = d / f".sceau.{os.getpid()}.pem", d / f".cle.{os.getpid()}.pem"
             r = subprocess.run(["openssl", "req", "-x509", "-newkey", "rsa:2048", "-nodes", "-days", "3650",
-                                "-keyout", str(cle), "-out", str(cert), "-subj", "/CN=localhost",
+                                "-keyout", str(tk), "-out", str(tc), "-subj", "/CN=localhost",
                                 "-addext", "subjectAltName=DNS:localhost,IP:127.0.0.1"],
                                capture_output=True, timeout=30)
             if r.returncode != 0:
                 return None
-            os.chmod(cle, 0o600)
+            os.chmod(tk, 0o600)
+            if not (cert.is_file() and cle.is_file()):      # deux processus en même temps : le premier gagne
+                os.replace(tk, cle)
+                os.replace(tc, cert)
+            for f in (tc, tk):
+                if f.exists():
+                    f.unlink()
         except (OSError, subprocess.SubprocessError):
             return None
-    try:
-        pub = core.TERRAIN / "port" / "sceau_du_phare.pem"
-        if pub.parent.is_dir() and (not pub.is_file() or pub.read_bytes() != cert.read_bytes()):
-            pub.write_bytes(cert.read_bytes())
-    except OSError:
-        pass
     return cert, cle
 
 
@@ -335,17 +336,26 @@ def phare(attendre=True, repos=None):
     serveurs = []
 
     def arreter():
-        for s in serveurs:
+        def un(s):
             try:
                 s.shutdown()
+                s.server_close()
             except Exception:                 # noqa: BLE001
                 pass
+        fils = [threading.Thread(target=un, args=(s,), daemon=True) for s in serveurs]   # tous ensemble (vite)
+        for f in fils:
+            f.start()
+        for f in fils:
+            f.join(5)
     etat["arreter"] = arreter
     G = _gestionnaire(etat)
+    if phare_allume(port):
+        return None                             # déjà allumé : rien à faire
+    sc = fabriquer_sceau()                      # le sceau d'abord : quand le phare répond, il est prêt (pas de course)
     try:
         serveurs.append(ThreadingHTTPServer(("127.0.0.1", port), G))
     except OSError:
-        return None                             # déjà allumé (ou le port est pris) : rien à faire
+        return None                             # le port est pris : rien à faire
     if not IS_WIN and sys.platform.startswith("linux"):
         for m in machines():
             if m["adresse"].startswith("127.42."):
@@ -353,7 +363,6 @@ def phare(attendre=True, repos=None):
                     serveurs.append(ThreadingHTTPServer((m["adresse"], port), G))
                 except OSError:
                     pass
-    sc = fabriquer_sceau()
     if sc:
         try:
             import ssl
@@ -480,16 +489,36 @@ def meubles(state):
             "port/teleporteur.txt": t("port.meuble.teleporteur")}
 
 
-# les leçons dont une étape a besoin du phare allumé
-LECONS_PHARE = ("port3", "port6", "port7", "port11")
+# les leçons dont une étape a besoin du phare allumé (port3, port6, port7, port11), et celles juste avant : histoire.meubler
+# passe avec la leçon d'AVANT le tour où l'étape change, et le phare doit déjà répondre à la toute première commande
+LECONS_PHARE = ("port2", "port3", "port5", "port6", "port7", "port10", "port11")
 
 
 def meubler(state, lid, step):
     """Appelé par histoire.meubler : le phare s'allume pour les leçons qui le visitent ; le sceau est posé."""
     if lid in LECONS_PHARE and dossier().is_dir():
-        assurer_phare()
-        if lid == "port11":
-            fabriquer_sceau()
+        if assurer_phare() and lid == "port11":
+            poser_sceau()
+
+
+def poser_sceau():
+    """Le notaire confie le sceau : le certificat PUBLIC que présente le phare qui tourne vraiment (127.0.0.1:8443) est
+    posé sur le quai (port/sceau_du_phare.pem) ; c'est lui que `curl --cacert` reconnaîtra. Rien ne sort de la machine."""
+    try:
+        import ssl
+        try:
+            pem = ssl.get_server_certificate(("127.0.0.1", _ports()[1]), timeout=3)
+        except TypeError:                                   # Python < 3.10 : sans délai
+            pem = ssl.get_server_certificate(("127.0.0.1", _ports()[1]))
+    except (OSError, ImportError, ValueError):
+        return False
+    try:
+        f = dossier() / "sceau_du_phare.pem"
+        if not f.is_file() or f.read_text(encoding="ascii", errors="replace") != pem:
+            f.write_text(pem, encoding="ascii")
+        return True
+    except OSError:
+        return False
 
 
 # ================================================================ les leçons (même format que histoire.NOUVELLES)
@@ -557,10 +586,10 @@ LECONS = {
     ]},
     # P3 — le facteur (HTTP) : le phare du port répond pour de vrai, sur la boucle locale
     "port3": {"titre": "hist.port3.titre", "skill": None, "steps": [
-        _n("port3", 0, cmd=f"curl -I {U}/", re=CURL + r".*\s-\w*I\b.*(localhost|127\.0\.0\.1):8042"),
-        _n("port3", 1, cmd=f"curl -s {U}/eau | head -n 3", re=CURL + r".*8042/eau\b.*\|\s*head\b"),
+        _n("port3", 0, cmd=f"curl -I {U}/", re=CURL + r".*(\s-\w*I\b|\s--head\b).*(localhost|127\.0\.0\.1):8042"),
+        _n("port3", 1, cmd=f"curl -s {U}/eau | head -n 3", re=CURL + r".*(localhost|127\.0\.0\.1):8042/eau\b.*\|\s*head\b"),
         _n("port3", 2, cmd=f"curl -o colis.html {U}/feu", fs="port_colis"),
-        _n("port3", 3, cmd=f"curl -I {U}/volcan_perdu", re=CURL + r".*\s-\w*I\b.*8042/(?!(eau|feu|glace|plante|roche|ciel|"
+        _n("port3", 3, cmd=f"curl -I {U}/volcan_perdu", re=CURL + r".*(\s-\w*I\b|\s--head\b).*8042/(?!(eau|feu|glace|plante|roche|ciel|"
            r"ombre|machine|poison|racine|camp)\b)\w"),
     ]},
     # P4 — le téléporteur (ssh, notions) : la paire de clés, fabriquée dans le terrain
@@ -573,7 +602,7 @@ LECONS = {
     "port5": {"titre": "hist.port5.titre", "skill": None, "steps": [
         _n("port5", 0, cmd='echo "Bienvenue sur mon quai" > quai/index.html', fs="port_quai"),
         _n("port5", 1, cmd="python3 -m http.server 8000 --bind 127.0.0.1 --directory quai &",
-           re=r"^(python3?|py)\s+-m\s+http\.server\b.*--bind\s+(127\.0\.0\.1|localhost)\b", win=False),
+           re=r"^(python3?|py)\s+-m\s+http\.server\b.*(--bind[=\s]+|\s-b\s+)(127\.0\.0\.1|localhost)\b", win=False),
         _n("port5", 2, cmd="curl http://localhost:8000", re=CURL + r".*(localhost|127\.0\.0\.1):8000"),
         _n("port5", 3, cmd="kill %1", re=r"^kill\b", win=False),
     ]},
@@ -587,7 +616,7 @@ LECONS = {
     "port7": {"titre": "hist.port7.titre", "skill": None, "steps": [
         _n("port7", 0, cmd=C("ss -tln", "netstat -an", mac="netstat -an -p tcp"), re=r"^(ss\s+-\w*l|netstat\b)", absent_ok=True),
         _n("port7", 1, cmd=C("ss -tln | grep 8042", "netstat -an | findstr 8042", mac="netstat -an -p tcp | grep 8042"),
-           re=r"^(ss|netstat)\b.*\|\s*(grep|findstr|select-string)\s+8042", absent_ok=True),
+           re=r"^(ss|netstat)\b.*\|\s*(grep|findstr|select-string)\s+\S*8042", absent_ok=True),
         _n("port7", 2, cmd="port carte", re=PORT + r"carte\b"),
     ]},
     # P8 — recommandé ou carte postale (TCP et UDP)
@@ -619,7 +648,7 @@ LECONS = {
         _n("port11", 0, cmd=f"curl https://localhost:{PORT_SCEAU}", re=CURL + r".*https://(localhost|127\.0\.0\.1):8443",
            echoue=True, outil="openssl"),
         _n("port11", 1, cmd=f"curl --cacert sceau_du_phare.pem https://localhost:{PORT_SCEAU}",
-           re=CURL + r".*--cacert\s+\S*sceau_du_phare\.pem.*https://localhost:8443", outil="openssl"),
+           re=CURL + r".*--cacert[=\s]+\S*sceau_du_phare\.pem.*https://(localhost|127\.0\.0\.1):8443", outil="openssl"),
         _n("port11", 2, cmd="port sceau", re=PORT + r"sceau\s*$"),
         _n("port11", 3, cmd="port sceau ?", fs="port_sceau", exploit="port.sceau"),
     ]},
@@ -651,6 +680,64 @@ def manque(state):
     for n in m.get("requis", []):
         besoin += [c for c in P.get("tronc", {}).get(n, []) if c not in besoin]
     return [histoire.nom_chapitre(c) for c in besoin if not histoire.fini(state, c)]
+
+
+def _repond(hote, port_, delai=0.3):
+    import socket
+    try:
+        with socket.create_connection((hote, port_), timeout=delai):
+            return True
+    except OSError:
+        return False
+
+
+def indice(step, tapees):
+    """Un indice du Port (histoire.indice) : un trou « … » ou « ? » recopié tel quel, un messager perdu, un faux
+    sceau. Le carnet de bord dit ce qui s'est passé (la dernière ligne [guide] ou [sceau])."""
+    fs = step.get("fs")
+    cmd = step.get("cmd") or ""
+    if cmd.startswith("python3 -m http.server") and any(SANS_BIND.search((l or "").strip()) for l, _c in tapees):
+        return t("port.lanterne.ouverte")               # la lanterne ouverte à tout le réseau : jamais « marche aussi »
+    if "localhost" in cmd:                              # http://locahost:8042 : le tuyau | head cache l'erreur de curl
+        for l, _c in tapees:
+            for hote in re.findall(r"https?://([^/:\s]+)", l or ""):
+                if hote not in ("localhost", "127.0.0.1") and not re.match(r"^127\.", hote):
+                    return t("dress.indice.faute", tape=hote, attendu="localhost")
+    quai = donnees()["phare"]["serveur_enfant"]
+    if f":{quai}" in cmd and any(f":{quai}" in (l or "") for l, _c in tapees) and not _repond("127.0.0.1", quai):
+        return t("port.indice.lanterne", port=quai)     # curl tapé trop vite (ou la lanterne éteinte) : refusé (7)
+    if fs not in ("port_guide", "port_sceau"):
+        return None
+    lignes = [l for l, _cwd in tapees if re.match(r"^\s*(tg\s+)?port\s+(guide|sceau)\b", l or "")]
+    if not lignes:
+        return None
+    if any(re.search(r"(…|\.\.\.|\?|<)", l) for l in lignes):
+        return t("port.indice.remplace")
+    if all(len(l.split()) <= (3 if l.split()[0] == "tg" else 2) for l in lignes):      # la liste relue : la règle
+        return t("port.guide.aide" if fs == "port_guide" else "port.sceau.aide")
+    eti = "guide" if fs == "port_guide" else "sceau"
+    der = [l for l in carnet().splitlines() if l.startswith(f"[{eti}]")]
+    if der and re.search(r"\((perdu|faux)\)\s*$", der[-1]):
+        return t(f"port.indice.{eti}")
+    return None
+
+
+SANS_BIND = re.compile(r"^(python3?|py)\s+-m\s+http\.server\b(?!.*(--bind[=\s]+|\s-b\s+)(127\.|localhost|::1))")
+
+
+def surveiller(state, lignes):
+    """Une lanterne allumée SANS --bind 127.0.0.1 écoute sur tout le réseau local (0.0.0.0) : la créature le dit
+    tout de suite, avec la commande pour l'éteindre et la bonne façon de la rallumer (jamais bloquant)."""
+    for l in lignes or []:
+        if SANS_BIND.search((l or "").strip()):
+            msg = t("port.lanterne.ouverte")
+            core.say(state, msg, 16)
+            from . import histoire
+            les, _e = histoire.lecon_courante(state)
+            if not les or les["id"] != "port5":         # pendant P5, c'est l'indice de l'étape qui le dit
+                core.terminal(state, "⚠ " + msg)
+            return True
+    return False
 
 
 def annonce(state):

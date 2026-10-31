@@ -61,6 +61,8 @@ object Histoire {
     class Chapitre(
         val id: String, val n: Int, val piece: String, val famille: String?, val lecons: List<String>,
         val niveaux: List<Int>? = null, val objet: String? = null, val titre: String? = null,
+        /** un monde du Carrefour (phase 5) : il s'ouvre selon ses prérequis du tronc commun (Port.ouvert) */
+        val monde: Boolean = false,
     )
 
     val CHAPITRES = listOf(
@@ -79,7 +81,10 @@ object Histoire {
         Chapitre("coeur", 10, "coeur", "Aberrations", listOf("coeur0", "coeur1", "coeur2"), listOf(10, 11, 12), "couronne", "heros"),
         // le jardin du téléphone (les leçons propres à Android), hors compte des ailes
         Chapitre("telephone", 0, "jardin", null, listOf("telephone0", "telephone1", "telephone2"), null, "antenne"),
+        // phase 5 : les mondes du Carrefour, un par un (docs/programme.md § 7.14). Le premier : le Port (Port.kt).
+        Chapitre("port", 11, "port", "Célestes", Port.IDS, null, "phare_miniature", "capitaine_du_port", monde = true),
     )
+    val MONDES = CHAPITRES.filter { it.monde }.map { it.piece }
     val PAR_CHAP = CHAPITRES.associateBy { it.id }
     val AILES = CHAPITRES.filter { it.n in 3..9 }.map { it.id }
 
@@ -251,6 +256,7 @@ object Histoire {
         val tout = LinkedHashMap<String, Lecon>()
         for ((k, l) in base) tout[k] = expert[k]?.let { Lecon(l.titreCle, l.skill, l.niveau, l.etapes + it) } ?: l
         tout.putAll(nouvelles)
+        tout.putAll(Port.lecons(jeu))
         return tout
     }
 
@@ -327,7 +333,7 @@ object Histoire {
         "reveil" -> true
         "nid" -> fini(jeu, "reveil")
         "coeur" -> nbAiles(jeu) >= AILES_POUR_LE_COEUR
-        else -> fini(jeu, "nid")
+        else -> if (PAR_CHAP[cid]?.monde == true) Port.ouvert(jeu) else fini(jeu, "nid")
     }
 
     /** La pièce existe dans la maison de cette partie (sa porte a été posée). */
@@ -466,6 +472,7 @@ object Histoire {
             "bibliotheque/etagere_c/coin_poussiereux/livre_des_abysses.txt" to Langue.liste("hist.meuble.abysses").joinToString("\n"))
         "salle_des_machines" -> mapOf("salle_des_machines/vieux_carton.bin" to ByteArray(300000))
         "atelier" -> mapOf("atelier/plan_de_travail.txt" to dire(jeu, "hist.meuble.plan"))
+        "port" -> Port.meubles(jeu)
         // la vieille cabane pleine de planches de la leçon « Une pièce en trop » (seulement par BESOINS)
         "nid" -> linkedMapOf("vieille_cabane/planche_1.txt" to dire(jeu, "hist.meuble.planche"),
             "vieille_cabane/planche_2.txt" to dire(jeu, "hist.meuble.planche"),
@@ -498,6 +505,8 @@ object Histoire {
         "coeur0" to listOf("coeur/message_brouille.txt" to null, "coeur/.porte_secrete/abyssor_dort.txt" to null),
         "coeur1" to FRAGMENTS.map { it to 1 },
         "coeur2" to listOf("coeur/.porte_secrete/abyssor_dort.txt" to null),
+        "port0" to listOf("port/panneau.txt" to null),
+        "port2" to listOf("port/annuaire.txt" to null),
     )
 
     /** Pose les portes des pièces ouvertes et leurs meubles (une fois). Jamais hors du terrain.
@@ -511,7 +520,7 @@ object Histoire {
             if (!T.mkdirs() && !T.isDirectory) return emptyList()
         }
         val poses = mutableListOf<String>()
-        for (p in Maison.PIECES + "jardin") {
+        for (p in Maison.PIECES + "jardin" + MONDES) {
             if (p == "nid" || (!pieceOuverte(jeu, p) && !(p == "vestibule" && lid == "reveil1"))) continue
             val d = File(T, p)
             val cle = "piece:$p"
@@ -546,6 +555,7 @@ object Histoire {
                 }
             }
         }
+        if (lid in Port.IDS) Port.meubler(jeu, lid)          // le Port : le phare s'allume pour les leçons qui le visitent
         return poses
     }
 
@@ -556,6 +566,7 @@ object Histoire {
         if (fini(jeu, cid)) return t("hist.aile.deja", "chapitre" to nomChapitre(cid))
         if (!ouvert(jeu, cid)) {
             if (cid == "coeur") return t("hist.coeur.ferme", "n" to nbAiles(jeu), "total" to AILES_POUR_LE_COEUR)
+            if (PAR_CHAP[cid]?.monde == true) return t("port.ferme", "chapitre" to nomChapitre(cid), "manque" to Port.manque(jeu).joinToString(", "))
             return t("hist.aile.fermee", "chapitre" to nomChapitre(cid))
         }
         val h = h(jeu)
@@ -619,6 +630,7 @@ object Histoire {
         jeu.ajouterXp(30)
         Quetes.recompenser(jeu, objet = c.objet, titre = c.titre, souvenir = listOf("chap", c.id))
         mettreChap(jeu, null)
+        Port.annonce(jeu)                              // un monde du Carrefour qui vient de s'ouvrir
         when {
             c.id == "reveil" -> mettreChap(jeu, "nid")
             c.id == "nid" -> jeu.dire(dire(jeu, "hist.libre.dit"), 16)
@@ -658,6 +670,7 @@ object Histoire {
         jeu.log("✔ ${e.cmd}")
         jeu.dire(e.bravo, 12)
         Explique.apresReussite(jeu, e.cmd)          // -r, >>, 444… : expliqués une fois (Explique.kt)
+        e.exploit?.let { x -> Recompenses.exploit(jeu, x)?.let { jeu.log(it); jeu.dire(it, 16) } }   // un exploit d'un monde (§ 7.6)
         jeu.etape++
         jeu.animer("content")
         if (jeu.etape < les.etapes.size) {
@@ -719,7 +732,7 @@ object Histoire {
             h.put("annonce", les.id)
             if (les.chap.id !in liste(h, "ouverts")) {
                 ajouter(h, "ouverts", les.chap.id)
-                jeu.log(t("hist.chapitre.log", "n" to les.chap.n, "chapitre" to nomChapitre(les.chap.id)))
+                jeu.log(t(if (les.chap.monde) "hist.monde.log" else "hist.chapitre.log", "n" to les.chap.n, "chapitre" to nomChapitre(les.chap.id)))
                 jeu.dire(dire(jeu, "hist.${les.chap.id}.debut"), 18)
             } else jeu.dire(t("lec.annonce"), 10)
             jeu.animer("parle")
@@ -867,6 +880,7 @@ object Histoire {
         }
         if (e.ici != null) return indiceCd(jeu, e, morcs)
         val lignes = tapees.map { it.first }
+        Port.indice(jeu, e, tapees)?.let { return it }            // le Port : un trou « … » recopié, un messager perdu
         indiceCd(jeu, e, morcs)?.let { return it }
         indiceRm(jeu, e, tapees)?.let { return it }
         indiceResultat(jeu, e, morcs)?.let { return it }
@@ -1050,6 +1064,7 @@ object Histoire {
                 chap(jeu) == c.id -> "▶ " + t("hist.menu.en_cours")
                 ouvert(jeu, c.id) -> t("hist.menu.libre")
                 c.id == "coeur" -> t("hist.coeur.ferme", "n" to nbAiles(jeu), "total" to AILES_POUR_LE_COEUR)
+                c.monde -> t("port.ferme.court", "manque" to Port.manque(jeu).joinToString(", "))
                 else -> t("hist.menu.fermee")
             }
             val num = if (c.n > 0) "%2d".format(c.n) else " +"

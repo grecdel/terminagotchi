@@ -382,7 +382,9 @@ object EspaceDessin {
         // le flux : la sortie de la 1re commande, le tuyau animé, ce que garde la 2e
         val fy = ey + eh + 12 * z
         if (fy + 34 * z > y + h) return
-        flux(tl, v, x + 14 * z, fy, w - 28 * z, 34 * z, z)
+        val msg = v.messagerDe(b)
+        if (msg != null) PortDessin.messager(tl, msg, v.phase, x + 14 * z, fy, w - 28 * z, 34 * z, z)   // le Port
+        else flux(tl, v, x + 14 * z, fy, w - 28 * z, 34 * z, z)
     }
 
     private fun flux(tl: Toile, v: Deploie.Vue, x: Float, y: Float, w: Float, h: Float, z: Float) {

@@ -36,6 +36,8 @@ def cle(cmd):
     if IS_WIN:
         return "vrai.win", {"cmd": cmd}
     premier = cmd.split()[0]
+    if premier in ("port", "tg"):             # les commandes du jeu (le réseau simulé du Port) : pas d'équivalent tel quel
+        return None
     if premier in ABSENTS:
         return "vrai.absent", {"cmd": premier}
     mac = _mac(cmd)
