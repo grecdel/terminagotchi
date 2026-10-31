@@ -1283,7 +1283,8 @@ serveur du jeu sur `localhost`, arrêté à la fin). Elle se joue en **deux manc
   du terrain : les boîtes enseignent les **réflexes** (énumérer, lire, vérifier les droits, ne pas laisser de
   secrets en clair) qui servent d'abord à **défendre**.
 
-Catégories (de Facile à Expert, chacune avec son créature-gardien et ses variantes à gagner) :
+Catégories (de Facile à Expert, chacune avec sa créature-gardienne, qui devient rencontrable **glitch** quand la
+boîte est maîtrisée : § 7.6) :
 
 | Catégorie | Faiblesse simulée | Ce qu'on apprend à trouver | Ce qu'on apprend à corriger |
 |---|---|---|---|
@@ -1310,7 +1311,7 @@ pas toutes faites). Chaque monde a ses créatures attirées (selon le type de bi
 | Monde | Types attirés | Variante rare débloquée par… |
 |---|---|---|
 | 🔨 La Forge | Machine, Feu | finir un palier sans indice ; le premier programme qui marche du premier coup |
-| 🛡 La Citadelle | Ombre, Poison | maîtriser une boîte (deux manches) → variante **« glitch »** de son gardien |
+| 🛡 La Citadelle | Ombre, Poison | maîtriser une boîte (deux manches) → son **gardien glitch** devient rencontrable |
 | ⚓ Le Port | Ciel (et Foudre), Eau | un messager guidé sans perte (P9) ; le sceau vérifié (P11) |
 | ⏳ La Bibliothèque du Temps | Roche, Ombre | retrouver une version perdue (`git log`, `git checkout`) |
 | 📊 La Salle des Données | Eau, Glace | une statistique juste sur sa propre collection |
@@ -1325,6 +1326,30 @@ pas toutes faites). Chaque monde a ses créatures attirées (selon le type de bi
 Règles : les rencontres débloquées s'ajoutent au tirage normal (elles ne le remplacent pas) ; les variantes rares
 gardent un **tirage au hasard** (on les rencontre plus souvent, on ne les reçoit pas) ; tout reste **hors ligne** et
 vérifiable par le site comme les autres dressages.
+
+**Le glitch (décisions du propriétaire, 31 octobre 2026).** Le glitch est un effet de l'**individu**, comme le shiny
+(indépendant de la variante ; une créature peut être shiny + glitch). Son image est fabriquée à partir de celle de la
+créature : au repos un dérèglement léger (liseré rose et cyan, deux tranches décalées), et toutes les 3 à 5 secondes
+un éclair bref plus fort (couleurs ternies, lignes de balayage, pixels morts, tranches, pixels triés). Le même rendu,
+déterministe, sur PC, Android et le site ; il se pose par-dessus les animations, après la teinte shiny ; repère ▚.
+
+| Boîte | Gardien | Pourquoi |
+|---|---|---|
+| Énumération (la cave oubliée) | Ricanombre (Démons) | il ricane dans les recoins : les dossiers cachés |
+| Droits mal réglés | Heaumbre (Morts-vivants) | une armure qui monte la garde : qui a le droit d'entrer |
+| Secrets oubliés | Crânard (Morts-vivants) | il se cache dans un crâne et en change : un secret caché qu'on remplace (rotation) |
+| Le hangar ouvert | Ombrachne (Démons) | l'araignée guette sur sa toile : un service qui écoute sur un port |
+| Scripts trop naïfs | Marionnoire (Constructs) | elle tire les ficelles : un script fait ce qu'on lui donne |
+| Codes secrets | Torsillon (Aberrations, Poison) | le serpent qui tourne en boucle : le chiffre de César fait tourner l'alphabet |
+| Enquête numérique | Osselet (Morts-vivants) | le chien qui déterre les os : retrouver les traces enterrées |
+| Ingénierie sociale | Drapouille (Morts-vivants) | le fantôme déguisé sous un drap : le faux facteur |
+
+Taux : **partout, 1 chance sur 4096** (shiny + glitch : 1 sur 409 600) ; **le gardien d'une boîte maîtrisée, chaque
+fois qu'il apparaît : 1 chance sur 8** (shiny + glitch : 1 sur 800). Maîtriser une boîte donne aussi 5 rencontres
+favorisées (le jeu essaie 16 compteurs de la graine et garde le premier gardien) : on le rencontre plus souvent, on
+ne le reçoit jamais, il faut le dresser. Le glitch se tire à part (compteur + 2^20) : les tirages déjà enregistrés ne
+changent pas, et le serveur refait le tirage. Les variantes Démons qui étaient réservées à la Citadelle
+(`ricanombre:arcane`, `ombrachne:crypte`, `flamouche:marais`, `sulfurette:toxique`) sont revenues au tirage normal.
 
 ### 7.7 Terminagotchi en classe
 

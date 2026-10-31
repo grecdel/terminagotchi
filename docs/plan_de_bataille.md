@@ -262,12 +262,32 @@ sur Android), `sha256sum`, sauvegarde contre le Verrouilleur, chiffrement `opens
 facteur (hameçonnage, `diff`), phrases de passe d'exemple, les boîtes « énumération », « droits », « secrets »
 (drapeaux déterministes, inspecteur), pare-feu (`ss`) et la grande vague ; pont `curl` depuis le Port. Données
 `donnees/citadelle.json` (adresses RFC 5737, noms RFC 2606), vecteurs communs `donnees/citadelle/vecteurs.json`.
-Vue déployée : les cadenas r/w/x qui s'allument (`tg deploie chmod …`, écran Espace). Exploits « boîte maîtrisée » et
-« vague repoussée » qui libèrent `ricanombre:arcane`, `ombrachne:crypte`, `flamouche:marais`, `sulfurette:toxique`
-(Démons) ; 14 langues ; tests `pc/outils/test_citadelle.py`, `tests/jvm/Citadelle.kt`, simulation
+Vue déployée : les cadenas r/w/x qui s'allument (`tg deploie chmod …`, écran Espace). Exploits : une « boîte
+maîtrisée » par boîte (son gardien devient rencontrable glitch, voir ci-dessous) et « vague repoussée » ; les 4
+variantes Démons (`ricanombre:arcane`…) sont retournées au tirage normal le 31 octobre ; 14 langues ; tests `pc/outils/test_citadelle.py`, `tests/jvm/Citadelle.kt`, simulation
 `pc/outils/sim_citadelle.py` → `docs/simulations/rapport_citadelle.md`. Prompts d'illustrations envoyés au
 propriétaire (à valider), repli dessiné en attendant. Reste : les illustrations B3/C1/C3/C5/D1/E13/E17-E19, les cinq
-autres catégories de boîtes, la variante « glitch » propre à chaque boîte (§ 7.6).
+autres catégories de boîtes.
+
+**▚ Le glitch — codé (31 octobre, décisions du propriétaire).** Un effet de l'INDIVIDU, comme le shiny (drapeau
+`glitch`, indépendant de la variante et du shiny) : l'image se dérègle comme un vieil écran, fabriquée à partir de
+l'image de la créature (aucune illustration). Au repos le style A (liseré rose/cyan des couches décalées, 2 tranches
+décalées), toutes les 3 à 5,5 secondes un éclair de 0,26 s du style C (couleurs ternies cyan/magenta, balayage,
+pixels morts, 7 tranches, bande de pixels triés). Déterministe (graine = l'identifiant de l'individu), spécification
+en entiers dans `pc/tg/glitch.py`, portages `Glitch.kt` et `site/src/glitch.js`, vecteurs `donnees/glitch/vecteurs.json`
+(`pc/outils/vecteurs_glitch.py`). Il se pose par-dessus tout ce qui existait, après la teinte shiny : vie (respiration
+au pixel fin), animations, poses du bureau / de l'île / de la bulle, toutes les sorties du terminal (Kitty, iTerm2,
+sixel, quadrants, demi-blocs), cartes, face-à-face, galerie et profil du site (portrait redessiné dans un canvas).
+Repère du nom : `▚` (1 colonne), lettres rose et cyan. Taux : partout 1 chance sur 4096 (shiny + glitch : 1 sur
+409 600) ; tiré À PART (`tirage.glitch` : compteur + 2^20) pour que les tirages déjà enregistrés ne changent pas, et
+refait par le serveur. Gardiens des 8 boîtes de la Citadelle (`programme.json`, monde citadelle, « gardiens ») :
+Énumération → Ricanombre, Droits → Heaumbre, Secrets → Crânard, Hangar → Ombrachne, Scripts → Marionnoire,
+Codes → Torsillon, Forensique → Osselet, Social → Drapouille. Maîtriser une boîte (exploits `citadelle.boite`,
+`citadelle.boite.droits`, `citadelle.boite.secrets`) donne 5 rencontres favorisées (16 compteurs essayés, le premier
+gardien gardé) ; le gardien d'une boîte maîtrisée, chaque fois qu'il apparaît, est glitch 1 fois sur 8 (shiny +
+glitch : 1 sur 800) ; on ne le reçoit pas, il faut le dresser. Le serveur accepte « gardien » si l'espèce garde bien
+une boîte codée (il ne peut pas savoir ce qui a été maîtrisé hors ligne). Tests `pc/outils/test_glitch.py`,
+`tests/jvm/Glitch.kt`, `site/test/tirage.mjs`, `site/test/test.mjs`. Le site est à redéployer pour la galerie.
 
 ## En continu (chaque jour, peu coûteux)
 
