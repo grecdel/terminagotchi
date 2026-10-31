@@ -12,7 +12,7 @@ doit être ce qu'affiche un vrai bash.
 2. L'histoire (tronc commun et ailes du PC) : un enfant virtuel tape exactement les commandes montrées (comme
    sim_suiveur.py), dans un vrai bash qui reste ouvert, HOME temporaire, hors ligne ; pour chaque étape décrite dans
    « rejeu » (« leçon.étape »), la vraie sortie est comparée à ce que le jeu en dit (texte cité dans « pourquoi »).
-   Puis le premier monde, le Port (phase 5) : le phare du jeu s'allume sur 127.0.0.1, l'enfant tape les vraies
+   Puis les mondes (phase 5), le Port : le phare du jeu s'allume sur 127.0.0.1, l'enfant tape les vraies
    commandes (curl, ss, ip, tracepath, ssh-keygen, http.server --bind 127.0.0.1…) et celles du jeu (`port …`, l'alias
    de tg installer) ; une affirmation dont l'outil manque (« outil ») est sautée et comptée.
 Utilisé en CI (.github/workflows/rejeu.yml) sur une vraie machine Linux.
@@ -128,10 +128,13 @@ def histoire():
     etat = {"cwd": home, "sortie": "", "code": 0}
 
     from tg import port as P_
+    from tg import citadelle as C_
     jeu_port = f"{sys.executable} -c \"import sys; sys.path.insert(0, '{RACINE / 'pc'}'); from tg import port; port.commande(sys.argv[1:])\""
+    jeu_cit = jeu_port.replace("port; port.", "citadelle; citadelle.")
 
     def tape(cmd):
         vrai = re.sub(r"^port\b", jeu_port, cmd)          # l'alias port='tg port' (posé par tg installer)
+        vrai = re.sub(r"(^|;\s*)citadelle\b", lambda m: m.group(1) + jeu_cit, vrai)   # et citadelle='tg citadelle'
         etat["sortie"], etat["code"], d = shell.lancer(vrai)
         etat["cwd"] = Path(d)
         with open(home / ".bash_history", "a") as f:
@@ -148,10 +151,10 @@ def histoire():
         h = H.h_(st)
         if not les:
             reste = [a for a in H.AILES if not H.fini(st, a)]
-            if H.fini(st, "port") or h["chap"] in ("reveil", "nid"):
+            if H.fini(st, "citadelle") or h["chap"] in ("reveil", "nid"):
                 break
-            if H.fini(st, "coeur"):
-                reste = ["port"]                    # le tronc et les ailes faits : le premier monde du Carrefour
+            if H.fini(st, "coeur"):                 # le tronc et les ailes faits : les mondes du Carrefour, dans l'ordre
+                reste = ["port"] if not H.fini(st, "port") else ["citadelle"]
             cible = "coeur" if not reste and H.ouvert(st, "coeur") else (reste[0] if reste else None)
             if not cible:
                 break
@@ -167,12 +170,28 @@ def histoire():
         c = step["cmd"]
         if c.startswith("sleep 300"):
             c = "sleep 30 &"
-        if c.startswith("echo ?"):
+        if c.startswith("echo ?") and not les["id"].startswith("cit"):
             c = c.replace("?", (etat["sortie"].strip().split() or ["0"])[-1], 1)
         if c == "port guide racine … feu":           # l'enfant trouve le détour sur la carte
             c = "port guide " + " ".join(P_.route("camp", "feu", P_.p_(st)["eteints"] or ["roche"])[1:])
         if c == "port sceau ?":
             c = f"port sceau {P_.vrai_sceau(P_._graine(st))}"
+        gr = C_._graine(st)
+        if c == "echo ? > intrus.txt":               # la Citadelle : l'enfant lit la réponse sur l'écran
+            c = f"echo {C_.intrus()} > intrus.txt"
+        if c == "echo ? > altere.txt":
+            c = "echo " + C_.donnees()["tresor_altere"].split(".")[0] + " > altere.txt"
+        if c == "kill ?":
+            c = "kill " + " ".join(str(p) for p, _n in C_.fictifs_vivants())
+        if c == "citadelle facteur ? ? ?":
+            c = "citadelle facteur " + " ".join(map(str, C_.bons_indices(gr)))
+        if c == "citadelle drapeau ?":
+            b = {"cit13": "enumeration", "cit14": "droits", "cit15": "secrets"}[les["id"]]
+            faits = re.findall(rf"^\[drapeau\] {b} (\w+) \(ok\)", C_.carnet(), re.M)
+            c = "citadelle drapeau " + C_.drapeau(gr, b, "donjon" if "entree" in faits else "entree")
+        if les["id"] == "cit16" and i == 2:           # la grande vague : tout réparer avant le tableau
+            c = ('find . -name "*.glitch" -delete; kill ' + " ".join(str(p) for p, _n in C_.fictifs_vivants()) +
+                 " 2>/dev/null; chmod 600 " + C_.donnees()["vague"]["secret"] + "; citadelle tableau")
         if c.endswith(" &") and "http.server" in c:
             c = c[:-2] + " >/dev/null 2>&1 &"       # (les lignes du serveur n'encombrent pas la suite)
         lieu = step.get("ou") if step.get("ou") is not None else None
@@ -238,7 +257,9 @@ def histoire():
     h = H.h_(st)
     verifier(H.fini(st, "coeur"), f"l'histoire est allée jusqu'au bout ({h['ailes']})")
     verifier(H.fini(st, "port"), "le Port, premier monde du Carrefour, est allé jusqu'au bout (P0 → P11)")
+    verifier(H.fini(st, "citadelle"), "la Citadelle, deuxième monde, est allée jusqu'au bout (cit0 → cit16)")
     P_.eteindre_phare()
+    C_.arreter_fictifs()
     manquent = sorted(set(attendus) - vus)
     verifier(not manquent, f"toutes les étapes décrites ont été rejouées {manquent}")
     shell.fermer()

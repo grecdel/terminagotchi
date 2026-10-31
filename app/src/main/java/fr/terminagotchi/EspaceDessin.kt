@@ -383,7 +383,9 @@ object EspaceDessin {
         val fy = ey + eh + 12 * z
         if (fy + 34 * z > y + h) return
         val msg = v.messagerDe(b)
+        val dr = v.droitsDe(b)
         if (msg != null) PortDessin.messager(tl, msg, v.phase, x + 14 * z, fy, w - 28 * z, 34 * z, z)   // le Port
+        else if (dr != null) CitadelleDessin.cadenas(tl, dr, v.phase, x + 14 * z, fy, w - 28 * z, minOf(78 * z, y + h - fy), z)   // la Citadelle
         else flux(tl, v, x + 14 * z, fy, w - 28 * z, 34 * z, z)
     }
 

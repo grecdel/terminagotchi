@@ -134,6 +134,12 @@ class Commandes(
             "nslookup", "host" -> Reponse(Port.nslookup(reste), couleur = BLEU)
             "serveur" -> Reponse(Port.serveur(jeu, reste), couleur = BLEU)
             "ss" -> Reponse(Port.ss(ligne.trim()), couleur = BLEU)
+            // ---------------------------------------------------- la Citadelle (Citadelle.kt) : tout reste dans le terrain
+            "citadelle" -> Reponse(Citadelle.commande(jeu, reste, dossier()), couleur = BLEU)
+            "openssl" -> Reponse(Citadelle.openssl(jeu, ligne.trim(), dossier()), couleur = BLEU)
+            "diff" -> Reponse(Citadelle.diff(jeu, ligne.trim(), dossier()).first, couleur = BLEU)
+            "shuf" -> Reponse(Citadelle.shuf(jeu, ligne.trim(), dossier()), couleur = BLEU)
+            "kill" -> Citadelle.kill(jeu, reste)?.let { Reponse(it, couleur = BLEU) }   // un processus fantôme, sinon le vrai shell
             "sync" -> sync()
             "indice" -> Reponse(Ctf.indice(jeu, reste), couleur = VERT)
             "edite" -> edite(reste)

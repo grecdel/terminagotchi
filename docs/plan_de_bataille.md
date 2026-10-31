@@ -253,6 +253,22 @@ du Carrefour), réseau simulé en boucle locale `127.42.0.0/24` (`donnees/port.j
 d'illustrations envoyés au propriétaire (à valider). Reste : la carte du réseau dans l'onglet de l'espace (maquette
 seulement), les illustrations B4/C1/C3/E1-E4/E14, P4 (ssh) seulement raconté sur Android, le Grand Maillage.
 
+**🏰 La Citadelle — codée (31 octobre).** 13 fiches (`donnees/citadelle/outils/fiches_citadelle.py`, rejeu bash
+vert), leçons cit0 → cit16 (64 étapes) sur PC (`pc/tg/citadelle.py`) et Android (`Citadelle.kt`,
+`CitadelleDessin.kt`), ouverte après le nid, la bibliothèque et la cave (niveaux 4 et 6 du tronc). Paliers C1 à C7 :
+utilisateurs et groupes simulés, chmod/umask (dans le terrain seulement, jamais de `sudo`), registre du gardien,
+glitchs et ver (`find -newer`, pont vers le Temps), cheval de Troie et processus fantômes (`sleep` renommés, simulés
+sur Android), `sha256sum`, sauvegarde contre le Verrouilleur, chiffrement `openssl` avec une clé d'EXEMPLE, faux
+facteur (hameçonnage, `diff`), phrases de passe d'exemple, les boîtes « énumération », « droits », « secrets »
+(drapeaux déterministes, inspecteur), pare-feu (`ss`) et la grande vague ; pont `curl` depuis le Port. Données
+`donnees/citadelle.json` (adresses RFC 5737, noms RFC 2606), vecteurs communs `donnees/citadelle/vecteurs.json`.
+Vue déployée : les cadenas r/w/x qui s'allument (`tg deploie chmod …`, écran Espace). Exploits « boîte maîtrisée » et
+« vague repoussée » qui libèrent `ricanombre:arcane`, `ombrachne:crypte`, `flamouche:marais`, `sulfurette:toxique`
+(Démons) ; 14 langues ; tests `pc/outils/test_citadelle.py`, `tests/jvm/Citadelle.kt`, simulation
+`pc/outils/sim_citadelle.py` → `docs/simulations/rapport_citadelle.md`. Prompts d'illustrations envoyés au
+propriétaire (à valider), repli dessiné en attendant. Reste : les illustrations B3/C1/C3/C5/D1/E13/E17-E19, les cinq
+autres catégories de boîtes, la variante « glitch » propre à chaque boîte (§ 7.6).
+
 ## En continu (chaque jour, peu coûteux)
 
 - Variantes : Abyssaux (en cours, 436 / 682 au 28 octobre), puis Célestes, Constructs, Aberrations ; planche par

@@ -251,6 +251,36 @@ object Deploie {
         return out
     }
 
+    // ------------------------------------------------------------ les cadenas qui s'allument (la Citadelle)
+    private val OPTIONS_CHMOD = setOf("-R", "-v", "-c", "-f", "--recursive", "--verbose", "--changes", "--silent", "--quiet")
+    private val MODE_CHMOD = Regex("[0-7]{1,4}|[ugoa]*(?:[-+=][rwx]*)+(?:,[ugoa]*(?:[-+=][rwx]*)+)*")
+
+    class Droits(val seg: Int, val cmd: String, val mode: String, val fichier: String, val avant: String, val apres: String,
+                 val octal: String, val suppose: Boolean)
+
+    /** Les cadenas d'une ligne (même spécification que deploie.droits sur PC, vecteurs donnees/citadelle/vecteurs.json) :
+     *  chaque `chmod MODE fichier` (le mode du fichier n'est pas lu : on suppose rw-r--r--) et `umask NNN`. */
+    fun droits(ligne: String): List<Droits> {
+        val out = mutableListOf<Droits>()
+        val bl = blocs(ligne)
+        for (c in chaines(bl)) for (e in c.etapes) {
+            val m = mots(e.texte).map { it.first.trimEnd(')') }
+            val cmd = e.cmd.trimStart('(')
+            val seg = bl.firstOrNull { it.g == "commande" && it.i - 1 == e.debut }?.seg ?: 0
+            if (cmd == "chmod") {
+                val args = m.drop(1).filter { it !in OPTIONS_CHMOD }
+                if (args.size < 2 || !MODE_CHMOD.matches(args[0])) continue
+                val base = "644".toInt(8)
+                val apres = Citadelle.chmodMode(args[0], base) ?: continue
+                out.add(Droits(seg, "chmod", args[0], nu(args[1]), Citadelle.modeTexte(base), Citadelle.modeTexte(apres), "%03o".format(apres), true))
+            } else if (cmd == "umask" && m.size >= 2 && Regex("[0-7]{1,4}").matches(m[1])) {
+                val apres = Citadelle.umaskMode(m[1].toInt(8))
+                out.add(Droits(seg, "umask", m[1], "", "rw-rw-rw-", Citadelle.modeTexte(apres), "%03o".format(apres), false))
+            }
+        }
+        return out
+    }
+
     // ------------------------------------------------------------ les mots pour le dire
     fun nomGenre(g: String) = t("dep.genre.$g")
 
@@ -308,11 +338,14 @@ object Deploie {
         /** les messagers des commandes réseau (le messager part vers sa destination et revient) */
         val messagers: List<Messager> = try { messager(ligne) } catch (e: Exception) { emptyList() }
         fun messagerDe(b: Bloc): Messager? = if (b.g == "commande") messagers.firstOrNull { it.seg == b.seg } else null
+        /** les cadenas d'un chmod / umask (la Citadelle) : ils s'allument ou s'éteignent */
+        val cadenas: List<Droits> = try { droits(ligne) } catch (e: Exception) { emptyList() }
+        fun droitsDe(b: Bloc): Droits? = if (b.g == "commande") cadenas.firstOrNull { it.seg == b.seg } else null
 
         fun avancer(dt: Double) {
             t += dt
             val b = blocs[actif - 1]
-            val reseau = messagerDe(b) != null
+            val reseau = messagerDe(b) != null || droitsDe(b) != null
             val duree = if (b.g == "tuyau" || b.g == "redirection" || reseau) 2.4 else 1.2
             phase = if (b.g in setOf("tuyau", "redirection", "chemin") || reseau) t / duree else minOf(1.0, t / duree)
             if (auto && t >= duree && actif < blocs.size) { actif += 1; t = 0.0 }

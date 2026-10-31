@@ -1662,6 +1662,379 @@
     "Format texte des niveaux : app/src/main/java/fr/terminagotchi/Doom.kt"
    ],
    "relu_par": null
+  },
+  "utilisateurs": {
+   "motif": "(groupes\\.txt|habitants\\.txt|^(tg\\s+)?citadelle\\s+chown\\b|^chown\\b|^groups\\b)",
+   "enfant": "cit.f.utilisateurs.enfant",
+   "grands": "cit.f.utilisateurs.grands",
+   "vrai_terminal": [
+    {
+     "prepare": "printf 'veilleurs:x:2001:gardien,sentinelle\\ncuisine:x:1002:forgeron\\n' > groupes.txt",
+     "cmd": "grep veilleurs groupes.txt | cut -d: -f4",
+     "sortie": "gardien,sentinelle"
+    },
+    {
+     "cmd": "id -u",
+     "motif": "^\\d+$"
+    },
+    {
+     "cmd": "touch f; chown root f 2>&1; echo \"code $?\"",
+     "motif": "(Operation not permitted|code 0)"
+    }
+   ],
+   "limite_image": "cit.f.utilisateurs.limite",
+   "idees_fausses": [
+    "cit.f.utilisateurs.idee"
+   ],
+   "sources": [
+    "man 5 passwd : https://man7.org/linux/man-pages/man5/passwd.5.html",
+    "man 5 group : https://man7.org/linux/man-pages/man5/group.5.html",
+    "POSIX.1-2024, chown : https://pubs.opengroup.org/onlinepubs/9799919799/utilities/chown.html",
+    "man 1 id"
+   ],
+   "relu_par": null
+  },
+  "umask": {
+   "motif": "(\\bumask\\b|^(tg\\s+)?citadelle\\s+masque\\b)",
+   "enfant": "cit.f.umask.enfant",
+   "grands": "cit.f.umask.grands",
+   "vrai_terminal": [
+    {
+     "cmd": "(umask 077; touch f); stat -c %a f",
+     "sortie": "600"
+    },
+    {
+     "cmd": "(umask 022; touch f; mkdir d); stat -c %a f d",
+     "sortie": "644\n755"
+    }
+   ],
+   "limite_image": "cit.f.umask.limite",
+   "idees_fausses": [
+    "cit.f.umask.idee"
+   ],
+   "sources": [
+    "POSIX.1-2024, umask : https://pubs.opengroup.org/onlinepubs/9799919799/utilities/umask.html",
+    "man 2 umask : https://man7.org/linux/man-pages/man2/umask.2.html"
+   ],
+   "relu_par": null
+  },
+  "journaux": {
+   "motif": "(acces\\.log|journaux/)",
+   "enfant": "cit.f.journaux.enfant",
+   "grands": "cit.f.journaux.grands",
+   "vrai_terminal": [
+    {
+     "prepare": "printf '2026-10-31 06:00:00 OK 198.51.100.7 porte-nord sentinelle\\n2026-10-31 06:00:41 ECHEC 203.0.113.66 poterne admin\\n2026-10-31 06:01:22 ECHEC 203.0.113.66 poterne root\\n2026-10-31 06:02:03 ECHEC 198.51.100.23 poterne forgeron\\n' > acces.log",
+     "cmd": "grep -c ECHEC acces.log",
+     "sortie": "3"
+    },
+    {
+     "prepare": "printf '2026-10-31 06:00:00 OK 198.51.100.7 porte-nord sentinelle\\n2026-10-31 06:00:41 ECHEC 203.0.113.66 poterne admin\\n2026-10-31 06:01:22 ECHEC 203.0.113.66 poterne root\\n2026-10-31 06:02:03 ECHEC 198.51.100.23 poterne forgeron\\n' > acces.log",
+     "cmd": "grep ECHEC acces.log | cut -d ' ' -f 4 | sort | uniq -c | sort -n",
+     "sortie": "      1 198.51.100.23\n      2 203.0.113.66"
+    },
+    {
+     "prepare": "printf '2026-10-31 06:00:00 OK 198.51.100.7 porte-nord sentinelle\\n2026-10-31 06:00:41 ECHEC 203.0.113.66 poterne admin\\n2026-10-31 06:01:22 ECHEC 203.0.113.66 poterne root\\n2026-10-31 06:02:03 ECHEC 198.51.100.23 poterne forgeron\\n' > acces.log",
+     "cmd": "tail -n 1 acces.log",
+     "sortie": "2026-10-31 06:02:03 ECHEC 198.51.100.23 poterne forgeron"
+    }
+   ],
+   "limite_image": "cit.f.journaux.limite",
+   "idees_fausses": [
+    "cit.f.journaux.idee"
+   ],
+   "sources": [
+    "man 1 grep, man 1 cut, man 1 sort, man 1 uniq (GNU coreutils)",
+    "RFC 5737 (adresses réservées à la documentation : 198.51.100.0/24, 203.0.113.0/24)",
+    "ANSSI, Recommandations de sécurité pour la journalisation des systèmes Microsoft Windows et GNU/Linux (2022)",
+    "man 1 journalctl"
+   ],
+   "relu_par": null
+  },
+  "find_newer": {
+   "motif": "-newer\\b",
+   "enfant": "cit.f.find_newer.enfant",
+   "grands": "cit.f.find_newer.grands",
+   "vrai_terminal": [
+    {
+     "prepare": "touch -d '2020-01-01' vieux; touch -d '2021-01-01' repere; touch neuf",
+     "cmd": "find . -newer repere -type f | sort",
+     "sortie": "./neuf"
+    },
+    {
+     "prepare": "mkdir -p a/b; touch -d '2021-01-01' repere; touch a/b/x.glitch",
+     "cmd": "find . -name '*.glitch'",
+     "sortie": "./a/b/x.glitch"
+    }
+   ],
+   "limite_image": "cit.f.find_newer.limite",
+   "idees_fausses": [
+    "cit.f.find_newer.idee"
+   ],
+   "sources": [
+    "GNU findutils, find : https://www.gnu.org/software/findutils/manual/html_mono/find.html (-newer, -name, -delete)",
+    "POSIX.1-2024, find : https://pubs.opengroup.org/onlinepubs/9799919799/utilities/find.html"
+   ],
+   "relu_par": null
+  },
+  "cheval": {
+   "motif": "cadeau\\.sh",
+   "enfant": "cit.f.cheval.enfant",
+   "grands": "cit.f.cheval.grands",
+   "vrai_terminal": [
+    {
+     "prepare": "printf '#!/bin/sh\\necho surprise\\n' > cadeau.sh; chmod 755 cadeau.sh",
+     "cmd": "chmod -x cadeau.sh; ./cadeau.sh",
+     "code": "non0",
+     "motif": "Permission denied"
+    },
+    {
+     "prepare": "printf '#!/bin/sh\\nrm -f bac/*.txt\\n' > cadeau.sh",
+     "cmd": "grep -n rm cadeau.sh",
+     "sortie": "2:rm -f bac/*.txt"
+    }
+   ],
+   "limite_image": "cit.f.cheval.limite",
+   "idees_fausses": [
+    "cit.f.cheval.idee"
+   ],
+   "sources": [
+    "ANSSI, Guide d'hygiène informatique (2017), mesure 13 : n'installer que des logiciels de confiance",
+    "MITRE ATT&CK, T1204 « User Execution » (l'utilisateur lance lui-même le piège)",
+    "POSIX.1-2024, chmod : https://pubs.opengroup.org/onlinepubs/9799919799/utilities/chmod.html"
+   ],
+   "relu_par": null
+  },
+  "processus_suspects": {
+   "motif": "(fictif|^(tg\\s+)?citadelle\\s+ps\\b)",
+   "enfant": "cit.f.processus_suspects.enfant",
+   "grands": "cit.f.processus_suspects.grands",
+   "vrai_terminal": [
+    {
+     "cmd": "bash -c 'exec -a miner_fictif sleep 30' & sleep 0.5; ps -eo args | grep -c '^miner_fictif 30$'; kill $!",
+     "sortie": "1"
+    },
+    {
+     "cmd": "bash -c 'exec -a flood_fictif sleep 30' & p=$!; sleep 0.3; kill $p; wait $p 2>/dev/null; ps -p $p > /dev/null; echo \"vivant $?\"",
+     "sortie": "vivant 1"
+    }
+   ],
+   "limite_image": "cit.f.processus_suspects.limite",
+   "idees_fausses": [
+    "cit.f.processus_suspects.idee"
+   ],
+   "sources": [
+    "man 1 ps : https://man7.org/linux/man-pages/man1/ps.1.html",
+    "man 1 kill, man 7 signal (SIGTERM)",
+    "bash(1), exec -a nom (le nom affiché du processus)"
+   ],
+   "relu_par": null
+  },
+  "empreinte": {
+   "motif": "(sha256sum|empreintes|\\.sha256\\b|get-filehash)",
+   "enfant": "cit.f.empreinte.enfant",
+   "grands": "cit.f.empreinte.grands",
+   "vrai_terminal": [
+    {
+     "prepare": "printf 'bonjour\\n' > a",
+     "cmd": "sha256sum a",
+     "sortie": "9cec0af545144159bac85c7b908d5e0b9b0ef961497401c5ad8da26f065ad926  a"
+    },
+    {
+     "prepare": "printf 'bonjour\\n' > a; sha256sum a > s; printf 'bonjour!\\n' > a",
+     "cmd": "sha256sum -c s",
+     "code": "non0",
+     "motif": "^a: FAILED$"
+    }
+   ],
+   "limite_image": "cit.f.empreinte.limite",
+   "idees_fausses": [
+    "cit.f.empreinte.idee"
+   ],
+   "sources": [
+    "FIPS 180-4 (SHA-256)",
+    "man 1 sha256sum (GNU coreutils)",
+    "ANSSI, Guide de sélection d'algorithmes cryptographiques (2021)"
+   ],
+   "relu_par": null
+  },
+  "sauvegarde": {
+   "motif": "^tar\\b",
+   "enfant": "cit.f.sauvegarde.enfant",
+   "grands": "cit.f.sauvegarde.grands",
+   "vrai_terminal": [
+    {
+     "prepare": "mkdir p; echo parchemin > p/a.txt",
+     "cmd": "tar czf s.tar.gz p && rm -r p && tar xzf s.tar.gz && cat p/a.txt",
+     "sortie": "parchemin"
+    },
+    {
+     "prepare": "mkdir p; echo x > p/a.txt; tar czf s.tar.gz p",
+     "cmd": "tar tzf s.tar.gz",
+     "sortie": "p/\np/a.txt"
+    }
+   ],
+   "limite_image": "cit.f.sauvegarde.limite",
+   "idees_fausses": [
+    "cit.f.sauvegarde.idee"
+   ],
+   "sources": [
+    "GNU tar : https://www.gnu.org/software/tar/manual/tar.html",
+    "ANSSI et Cybermalveillance.gouv.fr : la règle 3-2-1 des sauvegardes (rançongiciels)"
+   ],
+   "relu_par": null
+  },
+  "chiffrement": {
+   "motif": "(^openssl\\s+enc\\b|^gpg\\b)",
+   "enfant": "cit.f.chiffrement.enfant",
+   "grands": "cit.f.chiffrement.grands",
+   "vrai_terminal": [
+    {
+     "prepare": "echo 'le secret de la créature' > l",
+     "cmd": "openssl enc -aes-256-cbc -pbkdf2 -in l -out l.enc -pass pass:exemple && head -c 8 l.enc",
+     "sortie": "Salted__",
+     "outil": "openssl"
+    },
+    {
+     "prepare": "echo secret > l; openssl enc -aes-256-cbc -pbkdf2 -S 0011223344556677 -in l -out l.enc -pass pass:exemple",
+     "cmd": "openssl enc -d -aes-256-cbc -pbkdf2 -S 0011223344556677 -in l.enc -pass pass:mauvaise",
+     "code": "non0",
+     "motif": "bad decrypt",
+     "outil": "openssl"
+    },
+    {
+     "prepare": "echo secret > l; openssl enc -aes-256-cbc -pbkdf2 -in l -out l.enc -pass pass:exemple",
+     "cmd": "openssl enc -d -aes-256-cbc -pbkdf2 -in l.enc -pass pass:exemple",
+     "sortie": "secret",
+     "outil": "openssl"
+    }
+   ],
+   "limite_image": "cit.f.chiffrement.limite",
+   "idees_fausses": [
+    "cit.f.chiffrement.idee"
+   ],
+   "sources": [
+    "FIPS 197 (AES)",
+    "RFC 8018 (PBKDF2)",
+    "man 1 openssl-enc : https://docs.openssl.org/3.0/man1/openssl-enc/",
+    "GnuPG, gpg --symmetric : https://www.gnupg.org/documentation/manuals/gnupg/"
+   ],
+   "relu_par": null
+  },
+  "hameconnage": {
+   "motif": "(^diff\\b|lettre_du_facteur|^(tg\\s+)?citadelle\\s+facteur\\b|/courrier\\b)",
+   "enfant": "cit.f.hameconnage.enfant",
+   "grands": "cit.f.hameconnage.grands",
+   "vrai_terminal": [
+    {
+     "prepare": "printf 'Bonjour\\nLe capitaine\\n' > vraie; printf 'Bonjour\\nLe capitaine URGENT\\n' > fausse",
+     "cmd": "diff vraie fausse",
+     "code": "non0",
+     "sortie": "2c2\n< Le capitaine\n---\n> Le capitaine URGENT"
+    },
+    {
+     "prepare": "printf 'clique ici : http://port-du-terminaworld.example/urgent\\n' > lettre",
+     "cmd": "grep -o 'http[^ ]*' lettre",
+     "sortie": "http://port-du-terminaworld.example/urgent"
+    }
+   ],
+   "limite_image": "cit.f.hameconnage.limite",
+   "idees_fausses": [
+    "cit.f.hameconnage.idee"
+   ],
+   "sources": [
+    "RFC 2606 (les noms .example sont réservés : ils n'appartiennent à personne)",
+    "Cybermalveillance.gouv.fr, « Hameçonnage » : https://www.cybermalveillance.gouv.fr/",
+    "man 1 diff (GNU diffutils)"
+   ],
+   "relu_par": null
+  },
+  "phrase_de_passe": {
+   "motif": "(^shuf\\b|mots\\.txt|^(tg\\s+)?citadelle\\s+(force|phrase)\\b)",
+   "enfant": "cit.f.phrase_de_passe.enfant",
+   "grands": "cit.f.phrase_de_passe.grands",
+   "vrai_terminal": [
+    {
+     "prepare": "seq 128 > mots.txt",
+     "cmd": "wc -l mots.txt",
+     "sortie": "128 mots.txt"
+    },
+    {
+     "prepare": "seq 128 > mots.txt",
+     "cmd": "shuf -n 4 mots.txt | sort -u | wc -l",
+     "sortie": "4"
+    },
+    {
+     "cmd": "echo $((128**4))",
+     "sortie": "268435456"
+    }
+   ],
+   "limite_image": "cit.f.phrase_de_passe.limite",
+   "idees_fausses": [
+    "cit.f.phrase_de_passe.idee"
+   ],
+   "sources": [
+    "NIST SP 800-63B (2017, rév. 2024) : longueur plutôt que complexité, listes de mots de passe connus",
+    "EFF, Diceware word lists : https://www.eff.org/dice",
+    "ANSSI, Recommandations relatives à l'authentification (2021)",
+    "man 1 shuf (GNU coreutils)"
+   ],
+   "relu_par": null
+  },
+  "boites": {
+   "motif": "(boites/|^(tg\\s+)?citadelle\\s+(bo[iî]tes?|drapeau|inspecteur|rotation)\\b)",
+   "enfant": "cit.f.boites.enfant",
+   "grands": "cit.f.boites.grands",
+   "vrai_terminal": [
+    {
+     "prepare": "mkdir -p b/.cave; echo 'TG{exemple}' > b/.cave/note.txt",
+     "cmd": "grep -r 'TG{' b",
+     "sortie": "b/.cave/note.txt:TG{exemple}"
+    },
+    {
+     "prepare": "mkdir b; echo x > b/ronde.sh; chmod 757 b/ronde.sh; echo y > b/ok.txt; chmod 644 b/ok.txt",
+     "cmd": "find b -perm -o+w",
+     "sortie": "b/ronde.sh"
+    },
+    {
+     "prepare": "mkdir b; echo x > b/s; chmod 757 b/s",
+     "cmd": "chmod o-rwx b/s; stat -c %a b/s",
+     "sortie": "750"
+    }
+   ],
+   "limite_image": "cit.f.boites.limite",
+   "idees_fausses": [
+    "cit.f.boites.idee"
+   ],
+   "sources": [
+    "Code pénal (France), article 323-1 : accès frauduleux à un système de traitement automatisé de données",
+    "ANSSI, Guide d'hygiène informatique (2017) : principe du moindre privilège",
+    "Root-Me et Hack The Box : plateformes d'entraînement légales (on n'attaque que ce qu'on a le droit d'attaquer)"
+   ],
+   "relu_par": null
+  },
+  "pare_feu": {
+   "motif": "^(tg\\s+)?citadelle\\s+(vague|tableau)\\b",
+   "enfant": "cit.f.pare_feu.enfant",
+   "grands": "cit.f.pare_feu.grands",
+   "vrai_terminal": [
+    {
+     "prepare": "python3 -m http.server 8774 --bind 127.0.0.1 >/dev/null 2>&1 & echo $! > pid; for i in 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15; do curl -s -o /dev/null http://127.0.0.1:8774/ && break; sleep 0.3; done",
+     "cmd": "ss -tln | grep -c '127.0.0.1:8774'; kill $(cat pid)",
+     "sortie": "1",
+     "outil": "ss"
+    }
+   ],
+   "limite_image": "cit.f.pare_feu.limite",
+   "idees_fausses": [
+    "cit.f.pare_feu.idee"
+   ],
+   "sources": [
+    "man 8 ss",
+    "man 8 nft (nftables, le pare-feu de Linux)",
+    "ANSSI, Recommandations pour la définition d'une politique de filtrage réseau d'un pare-feu (2013)"
+   ],
+   "relu_par": null
   }
  },
  "etapes": {
@@ -1723,6 +2096,21 @@
   "port9.4": {
    "maths": [
     "comptage"
+   ]
+  },
+  "cit4.1": {
+   "maths": [
+    "comptage"
+   ]
+  },
+  "cit12.0": {
+   "maths": [
+    "puissances"
+   ]
+  },
+  "cit12.2": {
+   "maths": [
+    "puissances"
    ]
   }
  },
@@ -1944,6 +2332,72 @@
    "motif": "/feu\\s",
    "outil": "openssl",
    "pourquoi": "hist.port11.1.bravo : la page du phare, scellée"
+  },
+  "cit1.0": {
+   "motif": "^-rw-r--r-- .*coffre\\.txt$",
+   "pourquoi": "hist.cit1.0.bravo : rw- r-- r-- (tout le monde peut lire)"
+  },
+  "cit3.0": {
+   "motif": "^0[0-7]{3}$",
+   "pourquoi": "hist.cit3.0.bravo : quatre chiffres (souvent 0022)"
+  },
+  "cit4.1": {
+   "sortie": "52",
+   "pourquoi": "hist.cit4.1.bravo : 52 échecs"
+  },
+  "cit4.2": {
+   "motif": "^\\s+50 203\\.0\\.113\\.66$",
+   "pourquoi": "hist.cit4.2.bravo : 50 échecs pour 203.0.113.66"
+  },
+  "cit5.0": {
+   "lignes": 4,
+   "motif": "virus_fictif_1\\.glitch",
+   "pourquoi": "hist.cit5.0.bravo : quatre glitchs"
+  },
+  "cit5.1": {
+   "motif": "\\./remparts/nord/virus_fictif_5\\.glitch",
+   "pourquoi": "hist.cit5.1.bravo : le ver s'est copié"
+  },
+  "cit6.1": {
+   "motif": "rm -f bac_a_sable/tresor_\\*\\.txt",
+   "pourquoi": "hist.cit6.1.bravo : la ligne piégée"
+  },
+  "cit8.1": {
+   "code": "non0",
+   "motif": "tresor/couronne\\.txt: FAILED",
+   "pourquoi": "hist.cit8.1.bravo : la couronne"
+  },
+  "cit9.3": {
+   "motif": "parchemins/charte\\.txt: OK",
+   "code": 0,
+   "pourquoi": "hist.cit9.3.bravo : tout est OK"
+  },
+  "cit10.3": {
+   "motif": "Pixel",
+   "outil": "openssl",
+   "pourquoi": "hist.cit10.3.bravo : la lettre revient en clair"
+  },
+  "cit11.0": {
+   "code": "non0",
+   "motif": "^> .*port-du-terminaworld\\.example",
+   "pourquoi": "hist.cit11.0.bravo : le faux lien"
+  },
+  "cit12.0": {
+   "sortie": "128 mots.txt",
+   "pourquoi": "hist.cit12.0.bravo : 128 mots"
+  },
+  "cit12.1": {
+   "lignes": 4,
+   "pourquoi": "hist.cit12.1.bravo : 4 mots au hasard"
+  },
+  "cit13.2": {
+   "lignes": 2,
+   "motif": "TG\\{enumeration-entree-[0-9a-f]{8}\\}",
+   "pourquoi": "hist.cit13.2.bravo : deux drapeaux"
+  },
+  "cit14.1": {
+   "sortie": "boites/droits/ronde.sh",
+   "pourquoi": "hist.cit14.1.bravo : ronde.sh, modifiable par tous"
   }
  },
  "maths": {
@@ -2359,15 +2813,82 @@
     "ombre",
     "poison"
    ],
-   "maths": [],
+   "maths": [
+    "puissances"
+   ],
    "exploits": [
     {
      "id": "citadelle.boite",
      "nom": "recomp.citadelle.boite",
      "recompense": "variante"
+    },
+    {
+     "id": "citadelle.vague",
+     "nom": "recomp.citadelle.vague",
+     "recompense": "variante"
     }
    ],
-   "variantes_reservees": []
+   "variantes_reservees": [
+    "ricanombre:arcane",
+    "ombrachne:crypte",
+    "flamouche:marais",
+    "sulfurette:toxique"
+   ],
+   "requis": [
+    "n4",
+    "n6"
+   ],
+   "paliers": [
+    "cit0",
+    "cit1",
+    "cit2",
+    "cit3",
+    "cit4",
+    "cit5",
+    "cit6",
+    "cit7",
+    "cit8",
+    "cit9",
+    "cit10",
+    "cit11",
+    "cit12",
+    "cit13",
+    "cit14",
+    "cit15",
+    "cit16"
+   ],
+   "attirance": {
+    "cmds": [
+     "chmod",
+     "sha256sum",
+     "umask",
+     "openssl",
+     "tar"
+    ],
+    "activites": [
+     "ctf"
+    ],
+    "familles": [
+     "Démons"
+    ]
+   },
+   "ponts": {
+    "curl": [
+     "port"
+    ],
+    "find_newer": [
+     "temps"
+    ],
+    "ps_kill": [
+     "controle"
+    ],
+    "sort_uniq": [
+     "donnees"
+    ],
+    "tar": [
+     "controle"
+    ]
+   }
   },
   {
    "id": "port",

@@ -6,6 +6,7 @@ on:
   push:
     branches: [nouveau-bestiaire, main]
     paths: ["donnees/programme.json", "donnees/maths/**", "donnees/recompenses/**", "donnees/port/**", "donnees/port.json",
+            "donnees/citadelle/**", "donnees/citadelle.json", "app/src/main/java/fr/terminagotchi/Citadelle.kt",
             "pc/**", "app/src/main/assets/langues/**", "app/src/main/java/fr/terminagotchi/Port.kt",
             "app/src/main/java/fr/terminagotchi/Histoire.kt", "app/src/main/java/fr/terminagotchi/Jeu.kt",
             ".github/workflows/rejeu.yml"]
@@ -38,6 +39,7 @@ jobs:
         run: |
           python3 pc/outils/vecteurs_phase4.py --verifier
           python3 pc/outils/vecteurs_port.py --verifier
+          python3 pc/outils/vecteurs_citadelle.py --verifier
 
       - name: Rejeu des sorties dans un vrai bash (fiches et histoire du PC)
         run: LC_ALL=C.UTF-8 python3 pc/outils/rejeu_bash.py
@@ -56,3 +58,15 @@ jobs:
           set -o pipefail
           LC_ALL=C.UTF-8 python3 pc/outils/sim_port.py 2>&1 | tee /tmp/sim.out || {
             grep -E "✖|Error|Traceback|line [0-9]" /tmp/sim.out | head -20 | sed 's/^/::error::/'; exit 1; }
+
+      - name: La Citadelle (cadenas, journaux, boîtes, vague ; tout reste dans le terrain)
+        run: |
+          set -o pipefail
+          LC_ALL=C.UTF-8 python3 pc/outils/test_citadelle.py 2>&1 | tee /tmp/cit.out || {
+            grep -E "✖|Error|Traceback|line [0-9]" /tmp/cit.out | head -20 | sed 's/^/::error::/'; exit 1; }
+
+      - name: Trois enfants défendent la Citadelle (docs/simulations/rapport_citadelle.md)
+        run: |
+          set -o pipefail
+          LC_ALL=C.UTF-8 python3 pc/outils/sim_citadelle.py 2>&1 | tee /tmp/simc.out || {
+            grep -E "✖|Error|Traceback|line [0-9]" /tmp/simc.out | head -20 | sed 's/^/::error::/'; exit 1; }

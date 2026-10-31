@@ -182,6 +182,8 @@ object Port {
             for (m in machines()) l.add("/${m.id.padEnd(8)} ${m.icone} ${nomComplet(m.id)} (${m.adresse})")
             return 200 to l.joinToString("\n") + "\n"
         }
+        if (c == "courrier")                        // la Citadelle (le faux facteur) : le vrai courrier du capitaine
+            return 200 to t("cit.page.courrier") + "\n" + t("port.page.pied", "port" to portPhare()) + "\n"
         val id = chercher(c)
         if (id != null && id in liste(donnees(), "pages")) {
             val m = machine(id)!!
