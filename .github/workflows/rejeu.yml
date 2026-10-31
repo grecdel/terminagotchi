@@ -46,7 +46,13 @@ jobs:
         run: python3 pc/outils/test_programme.py
 
       - name: Le Port (réseau simulé, phare sur 127.0.0.1, traversée P0 → P11)
-        run: LC_ALL=C.UTF-8 python3 pc/outils/test_port.py
+        run: |
+          set -o pipefail
+          LC_ALL=C.UTF-8 python3 pc/outils/test_port.py 2>&1 | tee /tmp/port.out || {
+            grep -E "✖|Error|Traceback|line [0-9]" /tmp/port.out | head -20 | sed 's/^/::error::/'; exit 1; }
 
       - name: Trois enfants traversent le Port (docs/simulations/rapport_port.md)
-        run: LC_ALL=C.UTF-8 python3 pc/outils/sim_port.py
+        run: |
+          set -o pipefail
+          LC_ALL=C.UTF-8 python3 pc/outils/sim_port.py 2>&1 | tee /tmp/sim.out || {
+            grep -E "✖|Error|Traceback|line [0-9]" /tmp/sim.out | head -20 | sed 's/^/::error::/'; exit 1; }

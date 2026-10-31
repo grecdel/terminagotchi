@@ -210,7 +210,7 @@ for c in PARCOURS:
     st, s = tape(c)
     sorties[c] = s
     if os.environ.get("TG_DEBUG"):
-        print(f"    · {c} → {lecon(st)} {(s if "8443" in c else s[:70])!r}")
+        print(f"    · {c} → {lecon(st)} {(s if '8443' in c else s[:70])!r}")
     if histoire.fini(st, "port"):
         break
 verifier(histoire.fini(st, "port"), f"le Port est réveillé jusqu'au bout (P0 → P11) {lecon(st)}")
