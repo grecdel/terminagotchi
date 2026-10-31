@@ -147,6 +147,8 @@ class Controleur:
         self.album = a or self.album
         if self.album is not None:
             self.c.bouche = self.album.bouche or V.BOUCHE_DEFAUT
+            self.c.levre = getattr(self.album, "levre", None) if self.album.bouche else None
+            self.c.bord = getattr(self.album, "bord", 0.42)
         self.equipe = []
         try:
             from . import bestiaire as B

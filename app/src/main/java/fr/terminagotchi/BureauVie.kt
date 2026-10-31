@@ -3,6 +3,7 @@ package fr.terminagotchi
 import kotlin.math.PI
 import kotlin.math.abs
 import kotlin.math.cos
+import kotlin.math.floor
 import kotlin.math.hypot
 import kotlin.math.max
 import kotlin.math.min
@@ -20,7 +21,7 @@ import kotlin.math.sqrt
 object BureauVie {
     val TAILLES = linkedMapOf("petite" to 56f, "moyenne" to 76f, "grande" to 100f)        // dp
     val VITESSES = linkedMapOf("lente" to 18f, "normale" to 32f, "rapide" to 54f)        // dp par seconde
-    val DUREES = mapOf("etire" to 2.4, "baille" to 2.6, "sursaut" to 1.2, "coeur" to 2.6, "mange" to 2.6, "salut" to 2.4)
+    val DUREES = mapOf("etire" to 2.4, "baille" to 2.6, "sursaut" to 1.2, "coeur" to 2.6, "mange" to 3.4, "salut" to 2.8)
     const val BATTERIE_BASSE = 15
     const val IPS_MARCHE = 6
     const val IPS = 8
@@ -60,13 +61,17 @@ object BureauVie {
         var parole: Pair<String, Double>? = null; private set
         /** où est sa bouche : fractions du corps depuis les pieds (album) */
         var bouche: Pair<Float, Float> = BOUCHE_DEFAUT
+        /** largeur de sa bouche (fraction de la largeur du corps) ; null : pas de bouche (album) */
+        var levre: Float? = null
+        /** le bord avant du corps à la hauteur de la bouche (album) */
+        var bordCorps = 0.42f
         /** le prochain clignement (secondes) ; négatif pendant le clignement */
         var cligne = 1.5 + h.nextDouble() * 2.5; private set
 
         fun changer(e: String, d: Double? = null) {
             if (e != etat || tEtat > TRANSITION) {
-                val im = image()
-                prec = Triple(im.first.first, im.first.second, im.second.second)
+                val an = animer(this)                  // l'image montrée juste avant (et son miroir), qui s'efface
+                prec = Triple(an.etat, an.k, an.miroir)
                 tTrans = 0.0
             }
             etat = e; tEtat = 0.0
@@ -171,12 +176,15 @@ object BureauVie {
     /**
      * Ce qu'on dessine à un instant (comme bureau_vie.Anime) : la pose, sa déformation autour des pieds (sx, sy, rot en
      * degrés, dy en dp), le miroir, son opacité, l'ancienne pose qui s'efface pendant une transition, l'ombre et les
-     * petits effets (genre « z », « coeur », « miette » ; x, y en fractions du corps depuis les pieds ; taille ;
-     * opacité). Les déformations sont continues : appliquées à la résolution de l'écran.
+     * petits effets (genre « z », « coeur », « etincelle », « miette » ; x, y en fractions du corps depuis les pieds ;
+     * taille : fraction de la hauteur, sauf la miette : diamètre en fraction de la LARGEUR ; opacité). La miette se
+     * dessine DERRIÈRE : fond (la bouche ouverte, ou null), la miette, puis la pose trouée à la bouche ; les autres
+     * effets devant. Les déformations sont continues : appliquées à la résolution de l'écran.
      */
     class Anime(var etat: String, var k: Int, var dy: Float, val miroir: Boolean) {
         var sx = 1f; var sy = 1f; var rot = 0f; var opacite = 1f; var ombre = 1f
         var ancien: Ancien? = null
+        var fond: String? = null
         val effets = mutableListOf<Effet>()
     }
     class Ancien(val etat: String, val k: Int, val opacite: Float, val miroir: Boolean)
@@ -216,7 +224,16 @@ object BureauVie {
             "etire", "baille" -> {
                 val e = enveloppe(p)
                 if (a.etat == "etire") { a.sy *= (1 + 0.07 * e).toFloat(); a.sx *= (1 - 0.04 * e).toFloat() }
-                else { a.sy *= (1 + 0.045 * e).toFloat(); a.sx *= (1 + 0.02 * e).toFloat(); a.rot = (-3.0 * e).toFloat() }
+                else {
+                    a.sy *= (1 + 0.045 * e).toFloat(); a.sx *= (1 + 0.02 * e).toFloat(); a.rot = (-3.0 * e).toFloat()
+                    // la fin du bâillement : fondu vers la bouche grande ouverte, la mâchoire se referme, assise
+                    if (p >= BAILLE_FIN[0]) {
+                        val ferme = doux((p - BAILLE_FIN[1]) / (BAILLE_FIN[2] - BAILLE_FIN[1]))
+                        a.etat = poseBouche(1 - ferme)
+                        val f = doux((p - BAILLE_FIN[0]) / (BAILLE_FIN[1] - BAILLE_FIN[0]))
+                        if (f < 1) { a.ancien = Ancien("baille", a.k, (1 - f).toFloat(), a.miroir); a.opacite = f.toFloat() }
+                    }
+                }
             }
             "sursaut" -> when {
                 u < 0.55 -> {
@@ -226,36 +243,32 @@ object BureauVie {
                 }
                 u < 0.72 -> { val q = sin(PI * (u - 0.55) / 0.17); a.sy = (1 - 0.1 * q).toFloat(); a.sx = (1 + 0.06 * q).toFloat() }
             }
-            "mange" -> {
-                // la pose assise (sans la miette dessinée) : la miette arrive devant la bouche, puis trois bouchées
-                val bx = c.bouche.first.toDouble(); val by = c.bouche.second.toDouble()
-                a.etat = "assis"
-                if (p < 0.25) {
-                    val q = doux(p / 0.25)
-                    a.effets.add(Effet("miette", (bx + 0.55 * (1 - q)).toFloat(), (by - 0.15 * sin(PI * q)).toFloat(), 0.13f, doux(p / 0.06).toFloat()))
-                    a.etat = poseBouche(0.6 * doux((p - 0.17) / 0.08))
-                } else if (p < 0.94) {
-                    val q = (p - 0.25) / 0.69 * 3
-                    val n = q.toInt()
-                    val v = q - n
-                    a.etat = poseBouche(sin(PI * min(1.0, v / 0.6)))
-                    if (v > 0.55) {
-                        val bosse = sin(PI * (v - 0.55) / 0.45)
-                        a.sy *= (1 - 0.05 * bosse).toFloat(); a.sx *= (1 + 0.03 * bosse).toFloat()
-                    }
-                    // la miette attend devant la bouche ouverte, puis entre quand elle se ferme (elle rapetisse)
-                    val entre = doux((v - 0.35) / 0.25)
-                    val reste = 1 - (n + entre) / 3
-                    if (reste > 0.04) a.effets.add(Effet("miette", (bx + 0.12 * (1 - entre)).toFloat(), (by + 0.02).toFloat(),
-                        (0.14 * sqrt(reste)).toFloat(), 1f))
-                }
-            }
+            "mange" -> manger(c, a, p)
             "coeur" -> {
                 a.dy = (-abs(sin(u * 5.5)) * 2.5 * (1 - p)).toFloat()
                 a.effets.add(Effet("coeur", (0.32 + 0.05 * sin(u * 4)).toFloat(), (-(0.95 + 0.6 * p)).toFloat(),
                     (0.16 + 0.1 * p).toFloat(), (1 - doux(p)).toFloat()))
             }
-            "salut" -> a.rot = (5.0 * sin(2 * PI * u / 0.55) * (if (p > 0.8) 1 - doux((p - 0.8) / 0.2) else 1.0)).toFloat()
+            "salut" -> {
+                // coucou : deux ou trois petits sauts (tassement, ombre), bouche ouverte toute contente, balancier
+                a.dy = 0f
+                val n = max(2, min(SAUTS, ((d - SAUT_DEBUT - 0.5) / SAUT).toInt()))
+                val w = (u - SAUT_DEBUT) / SAUT
+                if (w >= 0 && w < n) {
+                    val f = w - floor(w)
+                    if (f < 0.18) {
+                        val q = sin(PI * f / 0.18); a.sy *= (1 - 0.07 * q).toFloat(); a.sx *= (1 + 0.045 * q).toFloat()
+                    } else if (f < 0.82) {
+                        val hh = sin(PI * (f - 0.18) / 0.64)
+                        a.dy = (-SAUT_HAUTEUR * hh).toFloat(); a.ombre = (1 - 0.45 * hh).toFloat()
+                        a.sy *= (1 + 0.04 * hh).toFloat(); a.sx *= (1 - 0.025 * hh).toFloat()
+                    } else {
+                        val q = sin(PI * (f - 0.82) / 0.18); a.sy *= (1 - 0.09 * q).toFloat(); a.sx *= (1 + 0.06 * q).toFloat()
+                    }
+                }
+                if (u >= 0.08 && u < SAUT_DEBUT + n * SAUT + 0.35) a.etat = "salut_ouvert"
+                a.rot = (5.0 * sin(2 * PI * u / 0.55) * (if (p > 0.8) 1 - doux((p - 0.8) / 0.2) else 1.0)).toFloat()
+            }
         }
         val pr = c.prec
         if (pr != null && c.tTrans < TRANSITION) {
@@ -274,6 +287,60 @@ object BureauVie {
             }
         }
         return a
+    }
+
+    val BAILLE_FIN = doubleArrayOf(0.66, 0.72, 0.93)
+    const val SAUTS = 3
+    const val SAUT = 0.42
+    const val SAUT_DEBUT = 0.15
+    const val SAUT_HAUTEUR = 10.0
+    const val BOUCHEES = 3
+
+    /** Trois bouchées, la miette toujours DERRIÈRE la créature (comme bureau_vie.manger). */
+    private fun manger(c: Creature, a: Anime, p: Double) {
+        val bx = c.bouche.first.toDouble(); val by = c.bouche.second.toDouble()
+        a.etat = "assis"
+        val q = (p - 0.04) / 0.92 * BOUCHEES
+        if (q < 0 || q >= BOUCHEES) return
+        val v = q - floor(q)
+        val bordC = c.bordCorps.toDouble()
+        val depart = bordC + 0.32
+        val lv = c.levre
+        if (lv != null) {
+            val taille = 0.6 * lv
+            val ouvre = if (v < 0.5) doux((v - 0.1) / 0.3) else 1 - doux((v - 0.5) / 0.22)
+            val k = (ouvre.coerceIn(0.0, 1.0) * 3 + 0.5).toInt()
+            if (k > 0) { a.fond = POSES_BOUCHE[k]; a.etat = "trou$k" }
+            if (v < 0.72) {
+                val bord = bordC + taille / 2
+                val x: Double; val y: Double
+                if (v < 0.42) {
+                    val m = doux(v / 0.3); x = depart + (bord - depart) * m; y = by - 0.12 * sin(PI * m)
+                } else {
+                    val m = doux((v - 0.42) / 0.1); x = bord + (bx - bord) * m; y = by + 0.01 * m
+                }
+                a.effets.add(Effet("miette", x.toFloat(), y.toFloat(), (taille * (1 - 0.25 * doux((v - 0.5) / 0.22))).toFloat(),
+                    doux(v / 0.08).toFloat()))
+            }
+            if (v > 0.7) {
+                val bosse = sin(PI * (v - 0.7) / 0.3); a.sy *= (1 - 0.05 * bosse).toFloat(); a.sx *= (1 + 0.03 * bosse).toFloat()
+            }
+        } else {
+            val fin = bordC - 0.08
+            if (v < 0.5) {
+                val m = doux(v / 0.5)
+                a.effets.add(Effet("miette", (depart + (fin - depart) * m).toFloat(), (by - 0.1 * sin(PI * m)).toFloat(), 0.09f,
+                    doux(v / 0.08).toFloat()))
+            }
+            if (v >= 0.42 && v < 0.8) {
+                val e = (v - 0.42) / 0.38
+                a.effets.add(Effet("etincelle", (bordC + 0.05).toFloat(), (by - 0.04 - 0.08 * e).toFloat(),
+                    (0.12 + 0.1 * sin(PI * e)).toFloat(), sin(PI * e).toFloat()))
+            }
+            if (v > 0.45 && v < 0.8) {
+                val bosse = sin(PI * (v - 0.45) / 0.35); a.sy *= (1 - 0.05 * bosse).toFloat(); a.sx *= (1 + 0.03 * bosse).toFloat()
+            }
+        }
     }
 
     /** La mini-créature de l'île respire et cligne avec la créature de la bulle : (état, sx, sy). */

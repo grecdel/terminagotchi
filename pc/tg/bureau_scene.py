@@ -121,6 +121,30 @@ def libelles_menu():
     return {cle: t("bur.menu." + cle) for cle, _s, _a in V.MENU}
 
 
+def effets(L, an, px, py, largeur_corps, haut_corps, derriere):
+    """Les petits effets de an (bureau_vie.Anime) : la miette (derrière la créature), les « z », le cœur et
+    l'étincelle (devant)."""
+    sens = -1 if an.miroir else 1
+    for genre, fx, fy, ft, fa in an.effets:
+        if (genre == "miette") != derriere:
+            continue
+        ex, ey = px + sens * fx * largeur_corps, py + fy * haut_corps
+        if genre == "miette":                           # un petit biscuit : bord brun, cœur doré (diamètre : largeur)
+            et = max(3.0, ft * largeur_corps)
+            b = max(1.0, et / 8)
+            L.append(("ellipse", ex, ey, et / 2, et / 2.3, (74, 38, 18, int(255 * fa))))
+            L.append(("ellipse", ex, ey, et / 2 - b, et / 2.3 - b, (246, 196, 92, int(255 * fa))))
+            L.append(("ellipse", ex - et / 7, ey - et / 7, et / 7, et / 8, (255, 236, 170, int(255 * fa))))
+            continue
+        et = max(6.0, ft * haut_corps)
+        if genre == "z":
+            L.append(("texte", ex, ey, "z", et, (190, 215, 255, int(230 * fa)), True, "c", False))
+        elif genre == "coeur":
+            L.append(("texte", ex, ey, "♥", et, (255, 95, 140, int(255 * fa)), True, "c", False))
+        elif genre == "etincelle":
+            L.append(("texte", ex, ey, "✦", et, (255, 226, 120, int(255 * fa)), True, "c", False))
+
+
 def scene_creature(c, album, vue, regl, zone_l, zone_h, sol, ox=0, t_=0.0, nom=""):
     """(liste de dessin, zones) de la créature du bureau. Coordonnées de la ZONE (bande du bas de l'écran) moins ox
     (la fenêtre tkinter qui se déplace avec la créature) ; sol : la ligne des pieds."""
@@ -140,18 +164,13 @@ def scene_creature(c, album, vue, regl, zone_l, zone_h, sol, ox=0, t_=0.0, nom="
     if an.ancien is not None:                              # l'ancienne pose s'efface pendant la transition
         vieux = album.image(an.ancien[0], an.ancien[1])
         L.append(("imgt", vieux, px, py, e, an.ancien[3], album.lisse, an.sx, an.sy, an.rot, an.ancien[2]))
+    # la miette passe DERRIÈRE : la bouche ouverte (fond), la miette, puis la pose trouée à la bouche par-dessus
+    if an.fond is not None:
+        L.append(("imgt", album.image(an.fond, an.k), px, py, e, an.miroir, album.lisse, an.sx, an.sy, an.rot,
+                  an.opacite))
+    effets(L, an, px, py, largeur_corps, haut_corps, derriere=True)
     L.append(("imgt", cad, px, py, e, an.miroir, album.lisse, an.sx, an.sy, an.rot, an.opacite))
-    for genre, fx, fy, ft, fa in an.effets:                 # « z », cœur, miette
-        sens = -1 if an.miroir else 1
-        ex, ey, et = px + sens * fx * largeur_corps, py + fy * haut_corps, max(6.0, ft * haut_corps)
-        if genre == "z":
-            L.append(("texte", ex, ey, "z", et, (190, 215, 255, int(230 * fa)), True, "c", False))
-        elif genre == "coeur":
-            L.append(("texte", ex, ey, "♥", et, (255, 95, 140, int(255 * fa)), True, "c", False))
-        elif genre == "miette":                         # un petit biscuit bien visible : bord brun, cœur doré
-            L.append(("ellipse", ex, ey, et / 2 + 1.5, et / 2.4 + 1.5, (74, 38, 18, int(255 * fa))))
-            L.append(("ellipse", ex, ey, et / 2, et / 2.4, (246, 196, 92, int(255 * fa))))
-            L.append(("ellipse", ex - et / 7, ey - et / 7, et / 6, et / 7, (255, 236, 170, int(255 * fa))))
+    effets(L, an, px, py, largeur_corps, haut_corps, derriere=False)
     zones.append((c.x - ox - largeur_corps / 2, sol - c.air - haut_corps, largeur_corps, haut_corps + 6, "creature"))
     haut = py - cad.ay * e * an.sy                          # le haut de l'image
     # petits textes qui montent

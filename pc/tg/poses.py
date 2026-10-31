@@ -38,16 +38,34 @@ class Album:
     """Les images de chaque état (« marche » : plusieurs images, les autres : une ou plusieurs).
     ref : la hauteur de référence (la pose assise) ; lisse : dessin fin (mise à l'échelle douce) ou gros pixels."""
 
-    def __init__(self, etats, ref, lisse, dessine, nom, bouche=None):
+    def __init__(self, etats, ref, lisse, dessine, nom, bouche=None, levre=None):
         self.etats, self.ref, self.lisse, self.dessine, self.nom = etats, max(1, ref), lisse, dessine, nom
         self.bouche = bouche            # (x, y) de la bouche en fractions du corps depuis les pieds, ou None
+        self.levre = levre              # largeur de la bouche en fraction de la largeur du corps, ou None
+        self.bord = bord_devant(self.images("assis")[0], (bouche or (0.0, -0.3))[1])
 
     def images(self, etat):
+        while etat not in self.etats and etat in REPLI:
+            etat = REPLI[etat]
         return self.etats.get(etat) or self.etats["assis"]
 
     def image(self, etat, t):
         im = self.images(etat)
         return im[t % len(im)]
+
+
+# une pose absente prend celle-ci (album procédural, ancien poses.bin)
+REPLI = {"salut_ouvert": "salut", "trou1": "bouche1", "trou2": "bouche2", "trou3": "bouche3"}
+
+
+def bord_devant(cad, fy):
+    """Le bord avant du corps (du côté où elle regarde : la droite), à la hauteur fy (fraction de la hauteur depuis les
+    pieds, négative), en fraction de la largeur depuis les pieds : la miette passe derrière à partir de là."""
+    y = min(cad.h - 1, max(0, int(round(cad.ay + fy * cad.h))))
+    for x in range(cad.w - 1, -1, -1):
+        if cad.rgba[4 * (y * cad.w + x) + 3] > 0:
+            return (x + 1 - cad.ax) / cad.w
+    return 0.4
 
 
 # ---------------------------------------------------------------- le fichier poses.bin
@@ -130,14 +148,15 @@ def album_dessine(espece_id, teinte=None, nom=None):
     etats = {"marche": [cad[f"marche{k}"] for k in (1, 2, 3, 4)]}
     for e in ETATS[1:]:
         etats[e] = [cad[e]]
-    for e in ("cligne", "bouche1", "bouche2", "bouche3"):   # les yeux fermés, la mâchoire
+    for e in ("cligne", "bouche1", "bouche2", "bouche3", "trou1", "trou2", "trou3", "salut_ouvert"):
         if e in cad:
             etats[e] = [cad[e]]
     tete, _ = donnees()
     b = tete["especes"][espece_id].get("bouche")
     a = cad["assis"]
     bouche = None if not b else ((b[0] - a.ax) / a.w, (b[1] - a.ay) / a.h)
-    return Album(etats, cad["assis"].h, True, True, nom or espece_id, bouche)
+    levre = None if not b or len(b) < 3 else b[2] * 1.25 / a.w        # 1,25 : la bouche dessinée (ouvrir_bouche)
+    return Album(etats, cad["assis"].h, True, True, nom or espece_id, bouche, levre)
 
 
 def _cadres_toile(W, H, frames, pal, cle, ax=None, ay=None):

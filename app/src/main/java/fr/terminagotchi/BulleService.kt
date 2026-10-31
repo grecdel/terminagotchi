@@ -245,6 +245,8 @@ class BulleService : Service() {
             cleAlbum = cle
             album = albumChoisi(choix) ?: try { Poses.album(jeu) } catch (e: Exception) { album }
             creature.bouche = album?.bouche ?: BureauVie.BOUCHE_DEFAUT
+            creature.levre = if (album?.bouche != null) album?.levre else null
+            creature.bordCorps = album?.bord ?: 0.42f
             bitmaps.clear()
             vueCreature?.let { majFenetreCreature() }
         }
@@ -513,6 +515,27 @@ class BulleService : Service() {
         cv.drawText(s, x, y + taille * 0.35f, pinceau)
     }
 
+    /** Les petits effets : la miette (derrière la créature), les « z », le cœur, l'étincelle (devant). */
+    private fun effets(cv: Canvas, an: BureauVie.Anime, px: Float, pied: Float, lc: Float, hc: Float, derriere: Boolean) {
+        for (f in an.effets) {
+            if ((f.genre == "miette") != derriere) continue
+            val ex = px + (if (an.miroir) -1 else 1) * f.x * lc; val ey = pied + f.y * hc
+            val al = (255 * f.opacite.coerceIn(0f, 1f)).toInt()
+            if (f.genre == "miette") {                                   // un petit biscuit : bord brun, cœur doré
+                val et = max(dp(2f), f.taille * lc); val b = max(dp(0.6f), et / 8)
+                pinceau.color = Color.argb(al, 74, 38, 18); cv.drawOval(RectF(ex - et / 2, ey - et / 2.3f, ex + et / 2, ey + et / 2.3f), pinceau)
+                pinceau.color = Color.argb(al, 246, 196, 92); cv.drawOval(RectF(ex - et / 2 + b, ey - et / 2.3f + b, ex + et / 2 - b, ey + et / 2.3f - b), pinceau)
+                continue
+            }
+            val et = max(dp(6f), f.taille * hc)
+            when (f.genre) {
+                "z" -> texte(cv, "z", ex, ey, et, Color.argb((al * 0.9f).toInt(), 190, 215, 255), true, Paint.Align.CENTER)
+                "coeur" -> texte(cv, "♥", ex, ey, et, Color.argb(al, 255, 95, 140), true, Paint.Align.CENTER)
+                "etincelle" -> texte(cv, "✦", ex, ey, et, Color.argb(al, 255, 226, 120), true, Paint.Align.CENTER)
+            }
+        }
+    }
+
     // ------------------------------------------------------------ la créature
     inner class CreatureVue(ctx: Context) : View(ctx) {
         override fun onDraw(cv: Canvas) {
@@ -529,21 +552,12 @@ class BulleService : Service() {
             cv.drawOval(RectF(w / 2 - ref.w * e * 0.36f * om, sol - dp(3f) * om, w / 2 + ref.w * e * 0.36f * om, sol + dp(3f) * om), pinceau)
             val pied = sol + dp(an.dy)
             an.ancien?.let { v -> dessinerCadre(cv, a.image(v.etat, v.k), w / 2, pied, e, v.miroir, a.lisse, an.sx, an.sy, an.rot, v.opacite) }
-            dessinerCadre(cv, c, w / 2, pied, e, an.miroir, a.lisse, an.sx, an.sy, an.rot, an.opacite)
             val lc = ref.w * e; val hc = ref.h * e
-            for (f in an.effets) {                                       // « z », cœur, miette
-                val ex = w / 2 + (if (an.miroir) -1 else 1) * f.x * lc; val ey = pied + f.y * hc; val et = max(dp(6f), f.taille * hc)
-                val al = (255 * f.opacite.coerceIn(0f, 1f)).toInt()
-                when (f.genre) {
-                    "z" -> texte(cv, "z", ex, ey, et, Color.argb((al * 0.9f).toInt(), 190, 215, 255), true, Paint.Align.CENTER)
-                    "coeur" -> texte(cv, "♥", ex, ey, et, Color.argb(al, 255, 95, 140), true, Paint.Align.CENTER)
-                    "miette" -> {                                    // un petit biscuit : bord brun, cœur doré
-                        val b = dp(1.5f)
-                        pinceau.color = Color.argb(al, 74, 38, 18); cv.drawOval(RectF(ex - et / 2 - b, ey - et / 2.4f - b, ex + et / 2 + b, ey + et / 2.4f + b), pinceau)
-                        pinceau.color = Color.argb(al, 246, 196, 92); cv.drawOval(RectF(ex - et / 2, ey - et / 2.4f, ex + et / 2, ey + et / 2.4f), pinceau)
-                    }
-                }
-            }
+            // la miette passe DERRIÈRE : la bouche ouverte (fond), la miette, puis la pose trouée à la bouche
+            an.fond?.let { f -> dessinerCadre(cv, a.image(f, an.k), w / 2, pied, e, an.miroir, a.lisse, an.sx, an.sy, an.rot, an.opacite) }
+            effets(cv, an, w / 2, pied, lc, hc, derriere = true)
+            dessinerCadre(cv, c, w / 2, pied, e, an.miroir, a.lisse, an.sx, an.sy, an.rot, an.opacite)
+            effets(cv, an, w / 2, pied, lc, hc, derriere = false)
             val now = SystemClock.elapsedRealtime()
             for ((s, t0, coul) in flottants) {
                 val age = (now - t0) / 1000f

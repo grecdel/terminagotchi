@@ -27,7 +27,7 @@ DEFAUTS = {"taille": "moyenne", "son": False, "vitesse": "normale", "sur_place":
 SOMMEIL = 300          # secondes sans activité de l'ordinateur : elle s'endort
 REVEIL = 4             # activité depuis moins de 4 s : elle se réveille
 BATTERIE_BASSE = 15    # % (sans chargeur) : elle bâille de temps en temps et marche moins vite
-DUREES = {"etire": 2.4, "baille": 2.6, "sursaut": 1.2, "coeur": 2.6, "mange": 2.6, "salut": 2.4}
+DUREES = {"etire": 2.4, "baille": 2.6, "sursaut": 1.2, "coeur": 2.6, "mange": 3.4, "salut": 2.8}
 IPS_MARCHE = 6         # images par seconde du cycle de marche (4 images dessinées)
 IPS = 8                # images par seconde des autres animations
 TRANSITION = 0.36      # secondes : tassement de l'ancienne pose, fondu, étirement et rebond de la nouvelle
@@ -80,12 +80,14 @@ class Creature:
         self.cligne = self.h.uniform(1.5, 4.0)       # le prochain clignement (secondes)
         self.parole = None              # (texte, début) : elle parle (la mâchoire suit les syllabes)
         self.bouche = BOUCHE_DEFAUT     # où est sa bouche : fractions du corps depuis les pieds (album)
+        self.levre = None               # largeur de sa bouche (fraction de la largeur du corps) ; None : pas de bouche
+        self.bord = 0.42                # le bord avant du corps à la hauteur de la bouche (album.bord)
 
     # ------------------------------------------------ changer d'état
     def changer(self, etat, duree=None):
         if etat != self.etat or self.t_etat > TRANSITION:
-            im = self.image()
-            self.prec = (im[0], im[1], im[3])          # l'image d'avant (et son miroir), qui s'efface en fondu
+            an = animer(self)                          # l'image montrée juste avant (et son miroir), qui s'efface
+            self.prec = (an.etat, an.k, an.miroir)
             self.t_trans = 0.0
         self.etat = etat
         self.t_etat = 0.0
@@ -244,10 +246,14 @@ class Anime:
     """Ce qu'on dessine à un instant : la pose (etat, k), sa déformation autour des pieds (sx, sy : échelles, rot :
     degrés, dy : pixels logiques), le miroir, son opacité, l'ancienne pose qui s'efface pendant une transition
     (ancien : (etat, k, opacité, miroir) ou None), l'ombre (échelle) et les petits effets :
-    [(genre, x, y, taille, opacité)] avec x, y en fractions de la largeur et de la hauteur du corps, depuis les pieds (y négatif = vers le haut) ; genre : « z », « coeur », « miette ».
+    [(genre, x, y, taille, opacité)] avec x, y en fractions de la largeur et de la hauteur du corps, depuis les pieds
+    (y négatif = vers le haut) ; genre : « z », « coeur », « etincelle » (taille : fraction de la hauteur), « miette »
+    (taille : diamètre en fraction de la LARGEUR). La miette est toujours dessinée DERRIÈRE la créature : on dessine
+    fond (la pose bouche ouverte, ou None), la miette, puis la pose (trouée à la bouche : la miette se voit dans la
+    bouche, jamais par-dessus le corps) ; les autres effets se dessinent devant.
     Toutes les déformations sont continues : on les applique à la résolution de l'écran (un pas = un pixel d'écran,
     jamais un gros pixel du dessin)."""
-    __slots__ = ("etat", "k", "dy", "miroir", "sx", "sy", "rot", "ancien", "ombre", "effets", "opacite")
+    __slots__ = ("etat", "k", "dy", "miroir", "sx", "sy", "rot", "ancien", "ombre", "effets", "opacite", "fond")
 
     def __init__(self, etat, k, dy, miroir):
         self.etat, self.k, self.dy, self.miroir = etat, k, dy, miroir
@@ -257,6 +263,7 @@ class Anime:
         self.ombre = 1.0
         self.effets = []
         self.opacite = 1.0
+        self.fond = None
 
 
 def _doux(x):
@@ -307,6 +314,15 @@ def animer(c):
             a.sy *= 1 + 0.045 * e
             a.sx *= 1 + 0.02 * e
             a.rot = -3.0 * e
+            # la fin du bâillement : la pose dessinée cède la place à la bouche grande ouverte (court fondu), puis la
+            # mâchoire se referme (1 → 0) et elle repasse assise, bouche fermée
+            if p >= BAILLE_FIN[0]:
+                ferme = _doux((p - BAILLE_FIN[1]) / (BAILLE_FIN[2] - BAILLE_FIN[1]))
+                a.etat = pose_bouche(1 - ferme)
+                f = _doux((p - BAILLE_FIN[0]) / (BAILLE_FIN[1] - BAILLE_FIN[0]))
+                if f < 1:
+                    a.ancien = ("baille", a.k, 1 - f, a.miroir)
+                    a.opacite = f
     elif etat == "sursaut":
         if u < 0.55:
             h = math.sin(math.pi * u / 0.55)
@@ -320,33 +336,31 @@ def animer(c):
             q = math.sin(math.pi * (u - 0.55) / 0.17)
             a.sy, a.sx = 1 - 0.1 * q, 1 + 0.06 * q    # elle atterrit
     elif etat == "mange":
-        # la pose assise (sans la miette dessinée) : la miette arrive devant la bouche, puis trois bouchées ; à chaque
-        # bouchée, la bouche s'ouvre, la miette entre (elle rapetisse), la bouche se ferme avec un petit écrasement
-        bx, by = c.bouche
-        a.etat = "assis"
-        if p < 0.25:
-            q = _doux(p / 0.25)
-            a.effets.append(("miette", bx + 0.55 * (1 - q), by - 0.15 * math.sin(math.pi * q), 0.13, _doux(p / 0.06)))
-            a.etat = pose_bouche(0.6 * _doux((p - 0.17) / 0.08))
-        elif p < 0.94:
-            q = (p - 0.25) / 0.69 * 3
-            n = int(q)
-            v = q - n
-            ouvre = math.sin(math.pi * min(1.0, v / 0.6))          # ouverte, puis fermée à 60 % de la bouchée
-            a.etat = pose_bouche(ouvre)
-            if v > 0.55:
-                bosse = math.sin(math.pi * (v - 0.55) / 0.45)
-                a.sy *= 1 - 0.05 * bosse
-                a.sx *= 1 + 0.03 * bosse
-            # la miette attend devant la bouche ouverte, puis entre quand elle se ferme (elle rapetisse)
-            entre = _doux((v - 0.35) / 0.25)
-            reste = 1 - (n + entre) / 3
-            if reste > 0.04:
-                a.effets.append(("miette", bx + 0.12 * (1 - entre), by + 0.02, 0.14 * reste ** 0.5, 1.0))
+        manger(c, a, p)
     elif etat == "coeur":
         a.dy = -abs(math.sin(u * 5.5)) * 2.5 * (1 - p)
         a.effets.append(("coeur", 0.32 + 0.05 * math.sin(u * 4), -(0.95 + 0.6 * p), 0.16 + 0.1 * p, 1 - _doux(p)))
     elif etat == "salut":
+        # coucou : deux ou trois petits sauts (tassement au départ et à l'atterrissage, l'ombre rapetisse en l'air),
+        # bouche ouverte toute contente, et le balancier de la main
+        a.dy = 0.0
+        n = max(2, min(SAUTS, int((d - SAUT_DEBUT - 0.5) / SAUT)))
+        w = (u - SAUT_DEBUT) / SAUT
+        if 0 <= w < n:
+            f = w - int(w)
+            if f < 0.18:
+                q = math.sin(math.pi * f / 0.18)
+                a.sy, a.sx = a.sy * (1 - 0.07 * q), a.sx * (1 + 0.045 * q)
+            elif f < 0.82:
+                h = math.sin(math.pi * (f - 0.18) / 0.64)
+                a.dy = -SAUT_HAUTEUR * h
+                a.ombre = 1 - 0.45 * h
+                a.sy, a.sx = a.sy * (1 + 0.04 * h), a.sx * (1 - 0.025 * h)
+            else:
+                q = math.sin(math.pi * (f - 0.82) / 0.18)
+                a.sy, a.sx = a.sy * (1 - 0.09 * q), a.sx * (1 + 0.06 * q)
+        if 0.08 <= u < SAUT_DEBUT + n * SAUT + 0.35:
+            a.etat = "salut_ouvert"
         a.rot = 5.0 * math.sin(2 * math.pi * u / 0.55) * (1 - _doux((p - 0.8) / 0.2) if p > 0.8 else 1)
     # la transition (TRANSITION secondes, 4 images à l'écran) : l'ancienne pose se tasse, la nouvelle prend le relais
     # par un court fondu croisé au moment le plus tassé, puis s'étire avec un rebond d'un pixel
@@ -366,6 +380,63 @@ def animer(c):
             a.ancien = (c.prec[0], c.prec[1], 1 - fondu, c.prec[2])
             a.opacite = fondu
     return a
+
+
+BAILLE_FIN = (0.66, 0.72, 0.93)     # bâillement : fondu vers la bouche grande ouverte, puis la mâchoire se referme
+SAUTS, SAUT, SAUT_DEBUT, SAUT_HAUTEUR = 3, 0.42, 0.15, 10.0       # coucou : sauts, durée d'un saut (s), hauteur (px)
+BOUCHEES = 3
+
+
+def manger(c, a, p):
+    """Trois bouchées. La miette arrive de devant, toujours DERRIÈRE la créature (Anime.fond) : elle disparaît
+    derrière le bord du corps et se voit dans la bouche grande ouverte (la pose trouée), qui se referme dessus avec
+    un petit tassement. Sans bouche (c.levre None) : elle file derrière le corps, un petit tassement, une étincelle."""
+    bx, by = c.bouche
+    a.etat = "assis"
+    q = (p - 0.04) / 0.92 * BOUCHEES
+    if not 0 <= q < BOUCHEES:
+        return
+    v = q - int(q)
+    depart = c.bord + 0.32                                    # devant elle, hors du corps
+    if c.levre is not None:
+        taille = 0.6 * c.levre                                # plus petite que la bouche ouverte
+        if v < 0.5:
+            ouvre = _doux((v - 0.1) / 0.3)
+        else:
+            ouvre = 1 - _doux((v - 0.5) / 0.22)
+        k = int(max(0.0, min(1.0, ouvre)) * 3 + 0.5)
+        if k > 0:
+            a.fond = POSES_BOUCHE[k]
+            a.etat = "trou%d" % k
+        if v < 0.72:
+            # jusqu'au bord du corps (elle attend que la bouche soit grande ouverte), puis vite dans la bouche
+            bord = c.bord + taille / 2
+            if v < 0.42:
+                m = _doux(v / 0.3)
+                x = depart + (bord - depart) * m
+                y = by - 0.12 * math.sin(math.pi * m)
+            else:
+                m = _doux((v - 0.42) / 0.1)
+                x, y = bord + (bx - bord) * m, by + 0.01 * m
+            a.effets.append(("miette", x, y, taille * (1 - 0.25 * _doux((v - 0.5) / 0.22)), _doux(v / 0.08)))
+        if v > 0.7:
+            bosse = math.sin(math.pi * (v - 0.7) / 0.3)
+            a.sy *= 1 - 0.05 * bosse
+            a.sx *= 1 + 0.03 * bosse
+    else:
+        fin = c.bord - 0.08                                   # juste derrière le bord : elle est cachée
+        if v < 0.5:
+            m = _doux(v / 0.5)
+            a.effets.append(("miette", depart + (fin - depart) * m, by - 0.1 * math.sin(math.pi * m), 0.09,
+                             _doux(v / 0.08)))
+        if 0.42 <= v < 0.8:
+            e = (v - 0.42) / 0.38
+            a.effets.append(("etincelle", c.bord + 0.05, by - 0.04 - 0.08 * e, 0.12 + 0.1 * math.sin(math.pi * e),
+                             math.sin(math.pi * e)))
+        if 0.45 < v < 0.8:
+            bosse = math.sin(math.pi * (v - 0.45) / 0.35)
+            a.sy *= 1 - 0.05 * bosse
+            a.sx *= 1 + 0.03 * bosse
 
 
 def mini_vie(c, t):

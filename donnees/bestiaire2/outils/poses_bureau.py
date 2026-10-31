@@ -46,7 +46,11 @@ POSES = ["marche1", "marche2", "marche3", "marche4",
          "sursaut", "coeur", "mange", "salut"]
 # + des poses calculées : « assis » les yeux fermés (le clignement), et la bouche ouverte au tiers, aux deux tiers et
 # en grand (la mâchoire : manger, parler)
-SORTIE = POSES + ["cligne", "bouche1", "bouche2", "bouche3"]
+# les poses calculées : yeux fermés ; la mâchoire (bouche au tiers, aux deux tiers, grande ouverte) ; les mêmes avec
+# l'intérieur de la bouche TROUÉ (transparent) : la miette passe derrière la lèvre et entre dans la bouche (on dessine
+# la bouche ouverte, la miette, puis la pose trouée par-dessus) ; le coucou bouche ouverte, tout content
+SORTIE = POSES + ["cligne", "bouche1", "bouche2", "bouche3", "trou1", "trou2", "trou3", "salut_ouvert"]
+NIVEAU_SALUT = 0.67
 NIVEAUX_BOUCHE = (1 / 3, 2 / 3, 1.0)
 # la bouche, relevée à la main sur la pose assise quand celle du bâillement tombe mal : (x, y, largeur) en pixels
 BOUCHE_MAIN = {"simiosse": (82, 78, 12), "sporichon": (60, 60, 10), "plumange": (66, 60, 10),
@@ -140,7 +144,8 @@ def cligne(A, ancre_a, C, ancre_c, decor_c):
 
 
 def _aligner(A, ancre_a, C, ancre_c, portee=10):
-    """C posée sur A au meilleur décalage (ancres alignées, ± portee) : (score, C dans le repère de A) ou None."""
+    """C posée sur A au meilleur décalage (ancres alignées, ± portee) : (score, C dans le repère de A, ox, oy) ou None
+    (le pixel (x, y) de C tombe en (x + ox, y + oy) sur A)."""
     H, W = A.shape[:2]
     plein = A[..., 3] > 0
     meilleur = None
@@ -159,7 +164,7 @@ def _aligner(A, ancre_a, C, ancre_c, portee=10):
             diff = np.abs(A[..., :3].astype(int) - Cs[..., :3].astype(int)).sum(2)
             score = (diff[m] < 60).mean()
             if meilleur is None or score > meilleur[0]:
-                meilleur = (score, Cs)
+                meilleur = (score, Cs, ox, oy)
     return meilleur
 
 
@@ -234,6 +239,43 @@ def ouvrir_bouche(A, place, niveau, k=4):
     return out.clip(0, 255).astype(np.uint8)
 
 
+def trouer(A, O):
+    """La pose O (bouche ouverte sur A) avec l'intérieur de la bouche transparent : ce qui a changé, moins un pixel
+    de bord (la lèvre reste dessinée, devant la miette)."""
+    dedans = np.abs(O.astype(int) - A.astype(int)).sum(2) > 30
+    dedans = ndimage.binary_erosion(dedans, structure=ndimage.generate_binary_structure(2, 1))
+    T = O.copy()
+    T[dedans] = 0
+    return T
+
+
+def bouche_sur(A, ancre_a, S, ancre_s, place, portee=22):
+    """La bouche de la pose assise A reportée sur la pose S (le coucou) : on cherche le visage (les yeux et la bouche
+    de A) dans S autour des pieds alignés, ± portee pixels. (x, y, largeur) sur S, ou None (visage introuvable)."""
+    x, y, larg = place
+    x0, x1 = max(0, int(x - 2 * larg)), min(A.shape[1], int(x + 2 * larg) + 1)
+    y0, y1 = max(0, int(y - 2.6 * larg)), min(A.shape[0], int(y + larg) + 1)
+    pa = A[y0:y1, x0:x1].astype(int)
+    ma = pa[..., 3] > 0
+    bx, by = ancre_s[0] - ancre_a[0], ancre_s[1] - ancre_a[1]
+    meilleur = None
+    for dy in range(-portee, portee + 1):
+        for dx in range(-portee, portee + 1):
+            ox, oy = bx + dx, by + dy
+            if x0 + ox < 0 or y0 + oy < 0 or x1 + ox > S.shape[1] or y1 + oy > S.shape[0]:
+                continue
+            ps = S[y0 + oy:y1 + oy, x0 + ox:x1 + ox].astype(int)
+            m = ma & (ps[..., 3] > 0)
+            if m.sum() < 0.85 * ma.sum():
+                continue
+            score = (np.abs(pa[..., :3] - ps[..., :3]).sum(2)[m] < 60).mean()
+            if meilleur is None or score > meilleur[0]:
+                meilleur = (score, ox, oy)
+    if meilleur is None or meilleur[0] < 0.33:
+        return None
+    return x + meilleur[1], y + meilleur[2], larg
+
+
 def sans_zzz(o, espece):
     """La pose dort sans les « z » dessinés (la créature du bureau a les siens, animés) : les petits morceaux détachés
     en haut à droite de la tête, de la même couleur, qui se suivent en chaîne (une flamme, un halo, une bulle ou une
@@ -306,6 +348,14 @@ def traiter(dossier, bouches=None):
     ouvertes = [ouvrir_bouche(a[0], place, n) for n in NIVEAUX_BOUCHE]
     for o in ouvertes:                               # la bouche compte comme un décor (ses couleurs sont gardées)
         images.append((o, a[1], np.abs(o.astype(int) - a[0].astype(int)).sum(2) > 30))
+    for o in ouvertes:
+        images.append((trouer(a[0], o), a[1], np.zeros(a[0].shape[:2], dtype=bool)))
+    s = images[POSES.index("salut")]
+    place_s = None if place is None else bouche_sur(a[0], a[1], s[0], s[1], place)
+    salut_ouvert = ouvrir_bouche(s[0], place_s, NIVEAU_SALUT)
+    images.append((salut_ouvert, s[1], np.abs(salut_ouvert.astype(int) - s[0].astype(int)).sum(2) > 30))
+    if bouches is not None:
+        construire.saluts.append((espece, [s[0], salut_ouvert], place_s is not None))
     if bouches is not None:
         bouches.append((espece, [a[0]] + ouvertes, place is not None))
     # une palette commune aux 12 poses : on colle les pixels opaques bout à bout ; les petits décors (cœur, « z Z »,
@@ -327,7 +377,8 @@ def traiter(dossier, bouches=None):
             idx = np.minimum(idx, nb)
         octets += idx.astype(np.uint8).tobytes()
         cadres.append([w, h, ax, ay])
-    bouche = None if place is None else [round(float(place[0]), 1), round(float(place[1]), 1)]
+    bouche = None if place is None else [round(float(place[0]), 1), round(float(place[1]), 1),
+                                         round(float(place[2]), 1)]
     return {"pal": pal, "cadres": cadres, "octets": bytes(octets), "bouche": bouche}, controles
 
 
@@ -380,6 +431,7 @@ def construire():
     dossiers = sorted(d for d in (ICI / "animations").iterdir() if d.is_dir())
     especes, blocs, controles = {}, bytearray(), {}
     construire.bouches = []
+    construire.saluts = []
     for d in dossiers:
         nom = espece_de(d)
         e, ctrl = traiter(d, construire.bouches)
@@ -399,7 +451,9 @@ def main(args):
     if "--planche" in args:
         ecrire_planche(controles, Path(args[args.index("--planche") + 1]))
     if "--bouches" in args:
-        ecrire_bouches(construire.bouches, Path(args[args.index("--bouches") + 1]))
+        chemin = Path(args[args.index("--bouches") + 1])
+        ecrire_bouches(construire.bouches, chemin)
+        ecrire_bouches(construire.saluts, chemin.with_name(chemin.stem + "_coucou" + chemin.suffix))
     print(f"OK {len(controles)} espèces × {len(POSES)} poses, {len(donnees) // 1024} Ko -> "
           + ", ".join(str(s.relative_to(DEPOT)) for s in SORTIES))
 

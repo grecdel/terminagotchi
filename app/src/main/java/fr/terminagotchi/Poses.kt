@@ -9,7 +9,9 @@ import java.util.zip.Inflater
  * Les poses de la créature de la bulle et de l'île (comme pc/tg/poses.py) : dessinées pour les 27 bébés de départ
  * (assets/poses.bin, fabriqué par donnees/bestiaire2/outils/poses_bureau.py : marche1 à marche4, assis, dort, etire,
  * baille, sursaut, coeur, mange, salut ; calculées : « cligne », assis les yeux fermés, et la mâchoire « bouche1 » à
- * « bouche3 », assis la bouche ouverte au tiers, aux deux tiers, en grand ; « dort » sans ses « z » dessinés), calculées (AnimAuto, Vie) pour les autres stades et les autres espèces.
+ * « bouche3 », assis la bouche ouverte au tiers, aux deux tiers, en grand ; « trou1 » à « trou3 », les mêmes avec
+ * l'intérieur de la bouche transparent (la miette passe derrière la lèvre) ; « salut_ouvert », le coucou bouche
+ * ouverte ; « dort » sans ses « z » dessinés), calculées (AnimAuto, Vie) pour les autres stades et les autres espèces.
  *
  * Format : "TGPO" | version | longueur de l'en-tête (4 octets) | en-tête JSON | blocs zlib (un par espèce, les octets
  * indexés des 12 poses bout à bout). Une espèce ne se décompresse que si elle est affichée.
@@ -28,9 +30,27 @@ object Poses {
     /** Les images de chaque état ; ref : la hauteur de la pose assise ; lisse : dessin fin (sinon gros pixels). */
     class Album(val etats: Map<String, List<Cadre>>, val ref: Int, val lisse: Boolean, val dessine: Boolean,
                 /** la bouche (x, y) en fractions du corps depuis les pieds, ou null */
-                val bouche: Pair<Float, Float>? = null) {
-        fun images(etat: String): List<Cadre> = etats[etat]?.takeIf { it.isNotEmpty() } ?: etats.getValue("assis")
+                val bouche: Pair<Float, Float>? = null,
+                /** la largeur de la bouche en fraction de la largeur du corps, ou null */
+                val levre: Float? = null) {
+        fun images(etat: String): List<Cadre> {
+            var e = etat
+            while (etats[e].isNullOrEmpty() && e in REPLI) e = REPLI.getValue(e)
+            return etats[e]?.takeIf { it.isNotEmpty() } ?: etats.getValue("assis")
+        }
+        /** le bord avant du corps à la hauteur de la bouche (fraction de la largeur depuis les pieds) */
+        val bord: Float by lazy { bordDevant(images("assis")[0], (bouche ?: (0f to -0.3f)).second) }
         fun image(etat: String, t: Int): Cadre { val l = images(etat); return l[Math.floorMod(t, l.size)] }
+    }
+
+    /** une pose absente prend celle-ci (album calculé, ancien poses.bin) */
+    val REPLI = mapOf("salut_ouvert" to "salut", "trou1" to "bouche1", "trou2" to "bouche2", "trou3" to "bouche3")
+
+    /** Le bord avant du corps (la droite) à la hauteur fy, en fraction de la largeur depuis les pieds (comme poses.py). */
+    fun bordDevant(c: Cadre, fy: Float): Float {
+        val y = Math.round(c.ay + fy * c.h).coerceIn(0, c.h - 1)
+        for (x in c.w - 1 downTo 0) if ((c.argb[y * c.w + x] ushr 24) != 0) return (x + 1 - c.ax).toFloat() / c.w
+        return 0.4f
     }
 
     private var tete: JSONObject? = null
@@ -110,12 +130,13 @@ object Poses {
         val etats = LinkedHashMap<String, List<Cadre>>()
         etats["marche"] = (1..4).map { cad.getValue("marche$it") }
         for (e in ETATS.drop(1)) etats[e] = listOf(cad.getValue(e))
-        for (e in listOf("cligne", "bouche1", "bouche2", "bouche3"))     // les yeux fermés, la mâchoire
+        for (e in listOf("cligne", "bouche1", "bouche2", "bouche3", "trou1", "trou2", "trou3", "salut_ouvert"))
             cad[e]?.let { etats[e] = listOf(it) }
         val a = cad.getValue("assis")
         val b = tete?.optJSONObject("especes")?.optJSONObject(espece)?.optJSONArray("bouche")
         val bouche = if (b == null) null else ((b.getDouble(0) - a.ax) / a.w).toFloat() to ((b.getDouble(1) - a.ay) / a.h).toFloat()
-        return Album(etats, a.h, lisse = true, dessine = true, bouche = bouche)
+        val levre = if (b == null || b.length() < 3) null else (b.getDouble(2) * 1.25 / a.w).toFloat()
+        return Album(etats, a.h, lisse = true, dessine = true, bouche = bouche, levre = levre)
     }
 
     /** Une animation indexée (AnimAuto) en cadres ARGB, l'ancre au milieu et en bas de la silhouette. */

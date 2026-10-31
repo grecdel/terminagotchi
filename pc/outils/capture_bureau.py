@@ -242,7 +242,14 @@ def ile_android(im, k, album, nom, humeur, dit):
     poser(im, agrandir(L, k), 0, 0, im.size)
 
 
-def gif(sortie, album, nom="bureau.gif", planche=None):
+def regler(c, album):
+    """Comme bureau.Controleur._album : où est la bouche de la créature, sa largeur, le bord avant du corps."""
+    c.bouche = album.bouche or V.BOUCHE_DEFAUT
+    c.levre = album.levre if album.bouche else None
+    c.bord = album.bord
+
+
+def gif(sortie, album, nom="bureau.gif", planche=None, plan=None):
     """À la taille réelle (créature « moyenne », 12 images par seconde comme à l'écran) : marche → assise (elle
     respire, cligne) → bâille → dort (« z » qui montent) → se réveille en s'étirant → mange (miette, 3 bouchées) →
     cœur → salue. Chaque changement passe par une transition (fondu, tassement, rebond)."""
@@ -250,9 +257,10 @@ def gif(sortie, album, nom="bureau.gif", planche=None):
     Lz, Hz = 520, 230
     ips = 12
     c = V.Creature(Lz, regl, x=430, hasard=random.Random(21))
+    regler(c, album)
     c.dir = -1
-    plan = [("marche", 3.2), ("assis", 2.8), ("baille", None), ("dort", 4.2), ("etire", None), ("mange", None),
-            ("coeur", None), ("salut", None), ("assis", 1.2)]
+    plan = plan or [("marche", 3.2), ("assis", 2.8), ("baille", None), ("dort", 4.2), ("etire", None),
+                    ("mange", None), ("coeur", None), ("salut", None), ("assis", 1.2)]
     noms = {"marche": "marche", "assis": "assise (respire, cligne)", "baille": "bâille", "dort": "dort",
             "etire": "réveil : s'étire", "mange": "mange", "coeur": "double-clic : un cœur", "salut": "triple clic : coucou"}
     fond = Image.new("RGBA", (Lz, Hz))
@@ -304,6 +312,7 @@ def gif_parle(sortie, album, nom="parle.gif", planche=None):
     Lz, Hz = 520, 300
     ips = 12
     c = V.Creature(Lz, regl, x=300, hasard=random.Random(5))
+    regler(c, album)
     c.cligne = 2.5
     vue = S.VueCreature()
     phrases = ["Coucou ! On tape une commande ensemble ?", "J'ai vu une bestiole passer par là…"]
@@ -372,6 +381,10 @@ def main():
     captures_pc(sortie, album, info)
     captures_android(sortie, album, info)
     print("images du GIF :", gif(sortie, album, planche=sortie.parent / "gif_images.png"))
+    sans = poses.album_dessine("boulonnet")             # sans bouche : la miette file derrière, une étincelle
+    print("images du GIF sans bouche :", gif(sortie, sans, "mange_sans_bouche.gif",
+                                              planche=sortie.parent / "sans_bouche_images.png",
+                                              plan=[("assis", 0.6), ("mange", None), ("salut", None), ("assis", 0.6)]))
     print("images du GIF « elle parle » :", gif_parle(sortie, album, planche=sortie.parent / "parle_images.png"))
     planche = Image.new("RGB", (12 * 150, 3 * 170), (24, 26, 36))
     d = ImageDraw.Draw(planche)

@@ -50,8 +50,9 @@ def test_poses():
     verifier(poses.especes() == bebes, f"les {len(bebes)} bébés de départ ont leurs poses")
     tete, _ = poses.donnees()
     verifier(tete["poses"] == ["marche1", "marche2", "marche3", "marche4", "assis", "dort", "etire", "baille",
-                               "sursaut", "coeur", "mange", "salut", "cligne", "bouche1", "bouche2", "bouche3"],
-             "12 poses dessinées + « cligne » et la mâchoire « bouche1 » à « bouche3 » (calculées)")
+                               "sursaut", "coeur", "mange", "salut", "cligne", "bouche1", "bouche2", "bouche3",
+                               "trou1", "trou2", "trou3", "salut_ouvert"],
+             "12 poses dessinées + « cligne », la mâchoire, la bouche trouée et le coucou content (calculées)")
     diff_cligne = 0
     for esp in bebes:
         idx, _p = poses.poses_indexees(esp)
@@ -180,7 +181,8 @@ def test_animation():
     c.changer("baille")
     c.tick(0.05)
     an = V.animer(c)
-    verifier(an.ancien is not None and an.ancien[0] == "assis" and an.sy < 1, "changement : l'ancienne pose se tasse")
+    verifier(an.ancien is not None and an.ancien[0] in ("assis", "cligne") and an.sy < 1,
+             "changement : l'ancienne pose se tasse")
     for _ in range(3):
         c.tick(0.05)
     an = V.animer(c)
@@ -257,18 +259,7 @@ def test_machoire():
                  + (f" {restes}" if restes else ""))
     except ImportError:
         pass
-    c = V.Creature(1000, {}, hasard=random.Random(9))
-    c.bouche = (0.3, -0.35)
-    c.changer("mange", 4.0)
-    vus, miettes = set(), []
-    for _ in range(40):
-        c.tick(0.1)
-        an = V.animer(c)
-        vus.add(an.etat)
-        miettes.append(max([e[3] for e in an.effets if e[0] == "miette"], default=0))
-    verifier({"assis", "bouche1", "bouche2", "bouche3"} <= vus and "mange" not in vus,
-             "manger : la bouche s'ouvre et se ferme (pose neutre, sans la miette dessinée)")
-    verifier(miettes[-1] == 0 and max(miettes) > 0.1 and miettes[15] < max(miettes), "la miette rapetisse en 3 bouchées")
+    test_retouches()
     for ph in PHRASES:
         verifier(V.syllabes(ph) and abs(V.duree_parole(ph) - sum(d for d, _ in V.syllabes(ph))) < 1e-9, f"syllabes : « {ph} »")
     c = V.Creature(1000, {}, hasard=random.Random(10))
@@ -285,6 +276,97 @@ def test_machoire():
     c.parler(PHRASES[1])
     c.tick(0.1)
     verifier(V.mini_vie(c, 0.1)[0].startswith("bouche"), "dans l'île aussi, la mini-créature parle")
+
+
+def _sans_miette(L):
+    return [op for op in L if not (op[0] == "ellipse" and op[5][:3] in ((74, 38, 18), (246, 196, 92), (255, 236, 170)))]
+
+
+def test_retouches():
+    """Le bâillement finit bouche fermée ; la miette passe derrière (jamais sur le corps) et entre dans la bouche ;
+    sans bouche, une étincelle ; le coucou sautille, content."""
+    # le bâillement : pose dessinée, puis la mâchoire se referme (3 → 2 → 1 → fermée), et elle finit assise
+    c = V.Creature(1000, {}, hasard=random.Random(9))
+    c.bouche, c.levre = (0.3, -0.35), 0.1
+    c.changer("baille", 3.0)
+    suite = []
+    for _ in range(62):
+        c.tick(0.05)
+        e = V.animer(c).etat
+        if not suite or suite[-1] != e:
+            suite.append(e)
+    verifier(suite[-1] in ("assis", "cligne") and suite[:4] != [] and "baille" in suite
+             and [x for x in suite if x.startswith("bouche") or x == "assis"][-4:] == ["bouche3", "bouche2", "bouche1", "assis"],
+             f"bâiller : la bouche se referme peu à peu, puis bouche fermée {suite}")
+    # manger : la miette toujours dessinée avant la créature, et plus petite que la bouche
+    c.changer("mange", 3.4)
+    vus, ordre, tailles = set(), True, []
+    for _ in range(68):
+        c.tick(0.05)
+        an = V.animer(c)
+        vus.add(an.etat)
+        if an.fond is not None and not an.etat.startswith("trou"):
+            ordre = False
+        tailles += [e[3] for e in an.effets if e[0] == "miette"]
+    verifier({"trou3", "assis"} <= vus and "mange" not in vus, f"manger : la bouche (trouée) s'ouvre et se ferme {sorted(vus)}")
+    verifier(tailles and max(tailles) < c.levre, "la miette est plus petite que la bouche")
+    # le vrai rendu : la miette ne recouvre JAMAIS un pixel du corps, et se voit dans la bouche ouverte
+    try:
+        from PIL import Image, ImageChops
+    except ImportError:
+        return
+    regl = dict(V.DEFAUTS)
+    for esp, bouche in (("glandouille", True), ("boulonnet", False)):
+        a = poses.album_dessine(esp)
+        c = V.Creature(600, regl, x=300, hasard=random.Random(3))
+        c.bouche, c.levre, c.bord = a.bouche or V.BOUCHE_DEFAUT, a.levre if a.bouche else None, a.bord
+        c.dir = 1 if esp == "glandouille" else -1
+        c.changer("mange", 3.4)
+        c.t_trans = 1.0
+        sur_corps = dans_bouche = vue = etincelle = 0
+        for _ in range(68):
+            c.tick(0.05)
+            L, _ = S.scene_creature(c, a, S.VueCreature(), regl, 600, 260, 240)
+            if not any(op[0] == "ellipse" and op[5][:3] == (246, 196, 92) for op in L):
+                etincelle += any(op[0] == "texte" and op[3] == "✦" for op in L)
+                continue
+            r1, r0 = S.vers_pil(L, (600, 260)), S.vers_pil(_sans_miette(L), (600, 260))
+            diff = ImageChops.difference(r1, r0).convert("L").point(lambda v: 255 if v > 8 else 0)
+            corps = S.vers_pil([op for op in L if op[0] == "imgt"][-1:], (600, 260)).getchannel("A") \
+                .point(lambda v: 255 if v > 0 else 0)
+            sur_corps += ImageChops.multiply(diff, corps).getbbox() is not None
+            vue += diff.getbbox() is not None
+            fond = [op for op in L if op[0] == "imgt"]
+            if V.animer(c).fond is not None:
+                trou = ImageChops.subtract(S.vers_pil(fond[-2:-1], (600, 260)).getchannel("A"), corps)
+                dans_bouche += ImageChops.multiply(diff, trou).getbbox() is not None
+        if bouche:
+            verifier(vue and not sur_corps and dans_bouche >= 3,
+                     f"{esp} : la miette passe derrière la lèvre (jamais sur le corps), on la voit dans la bouche "
+                     f"({dans_bouche} images)")
+        else:
+            verifier(vue and not sur_corps and etincelle >= 3,
+                     f"{esp} (sans bouche) : la miette file derrière le corps, puis une étincelle")
+    # coucou : 2 ou 3 petits sauts, tassement à l'atterrissage, ombre, bouche contente, balancier
+    c = V.Creature(1000, {}, hasard=random.Random(4))
+    c.changer("salut", 2.8)
+    dys, etats, sys_, ombres, rots = [], set(), [], [], []
+    for _ in range(56):
+        c.tick(0.05)
+        an = V.animer(c)
+        dys.append(an.dy)
+        etats.add(an.etat)
+        sys_.append(an.sy)
+        ombres.append(an.ombre)
+        rots.append(an.rot)
+    sauts = sum(1 for i in range(1, len(dys)) if dys[i] < -6 <= dys[i - 1])
+    verifier(sauts in (2, 3) and min(dys) < -8, f"coucou : {sauts} petits sauts")
+    verifier(min(sys_) < 0.95 and min(ombres) < 0.7, "tassement à l'atterrissage, l'ombre rétrécit en l'air")
+    verifier("salut_ouvert" in etats and max(rots) > 2 and min(rots) < -2, "bouche contente, et le balancier")
+    a = poses.album_dessine("glandouille")
+    verifier(a.image("salut_ouvert", 0).rgba != a.image("salut", 0).rgba
+             and poses.album_dessine("boulonnet").image("salut_ouvert", 0).rgba
+             == poses.album_dessine("boulonnet").image("salut", 0).rgba, "salut_ouvert : la bouche s'ouvre (pas le robot)")
 
 
 def test_clics():
