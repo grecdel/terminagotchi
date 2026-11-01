@@ -781,6 +781,15 @@ superviser des agents qui codent.)
 | O3 Secrets et clés | une clé d'API = un mot de passe ; variable d'environnement, jamais dans un fichier partagé | `export CLE=…` (fausse), `chmod 600`, `.gitignore` | 🟡 |
 | O4 Superviser un agent | journal d'actions, limites, arrêter (Ctrl+C), revue avant d'accepter | lire le journal de l'agent fictif, `git diff` de ses changements, refuser une action dangereuse (`rm -rf` proposé) | 🟡 |
 
+**Codé (1er novembre, O1 → O4 et O5 → O9 de § 7.4)** — voir `docs/plan_de_bataille.md`. Écarts assumés :
+- **Aucune vraie IA** : l'assistant, les devineurs et les agents sont de petits programmes du jeu (`pc/tg/observatoire.py`,
+  `Observatoire.kt`), déterministes, sans réseau, sans compte, sans clé ; le jeu le dit à chaque palier.
+- O3 : la clé est un EXEMPLE qui ne marche nulle part (`exemple-pas-une-vraie-cle`) ; `curl` n'est pas utilisé.
+- O4 / O9 : les propositions dangereuses (`rm -rf …`, `sudo chmod -R 777 …`) sont du TEXTE ; le jeu ne les lance
+  jamais, même si l'enfant les accepte. Les agents n'écrivent que dans `terrain_terminagotchi/observatoire`.
+- Android (pas de git, chaque ligne a son propre terminal) : O3 `export` et `echo ${#CLE_API}` sur la même ligne ;
+  O4 `diff` au lieu de `git diff` ; Ctrl+C remplacé par `agent stop`. Le téléphone le dit à chaque fois.
+
 ### 2.18 ⛰ Le Sommet — Expert++
 
 **Ouverture** : 3 mondes au palier 3. Pas d'image enfantine obligatoire (palier de vocabulaire 2).
@@ -1268,6 +1277,12 @@ l'enfant, les textes du jeu), pour que ce soit concret et sans compte à créer.
 | O8 L'esprit critique | vérifier une réponse (sources, recoupement), **vie privée** (ce qu'on ne confie pas), droits d'auteur, deepfakes, **coût énergétique** | le détective qui ne croit rien sans preuve | un « assistant » fictif donne 5 réponses, l'enfant vérifie avec les commandes et le lexique et trouve les 2 fausses | — |
 | O9 Le chef d'équipe d'agents | (suite d'O4) découper une tâche, donner des consignes claires, relire, tester, **refuser** une action dangereuse, garder la main | le capitaine d'un équipage de robots | journal d'un agent fictif, `diff`, tests, arrêt d'urgence | — |
 
+**Codé (1er novembre)** — voir `docs/plan_de_bataille.md`. Le devineur de type est un classement par comptes
+(familles et lieux qui votent), sur 20 vraies créatures du bestiaire ; la 21e (Cauchemarre, un Démon de la brume)
+le trompe. Le devineur de mots compte les paires de mots des vraies phrases de l'histoire, dans la langue du joueur
+(en chinois et en japonais, un caractère = un mot). L'assistant fictif d'O8 donne 5 réponses, dont 2 fausses tirées
+au hasard de la partie. Rien n'est envoyé au site.
+
 ### 7.5 🛡 La Citadelle — compléments : les **boîtes** façon Hack The Box / Root-Me, entièrement simulées
 
 **Principe** : une **boîte** est un petit monde-piège fabriqué par le jeu dans `~/terrain_terminagotchi/citadelle/boites/<nom>/`
@@ -1323,7 +1338,7 @@ pas toutes faites). Chaque monde a ses créatures attirées (selon le type de bi
 | ⚙ La Salle des Rouages | Machine, Roche | « Monte ta machine » réussi au premier démarrage |
 | 🤖 L'Atelier | Machine, Plante | le robot simulé qui évite tous les obstacles |
 | 🗝 La Crypte des Codes | Ombre, Glace | réparer la chaîne de blocs (B2) sans indice ; légendaire au bout de B6 |
-| 🔭 L'Observatoire de l'IA | Ciel, Glace | trouver toutes les réponses fausses de l'assistant fictif (O8) |
+| 🔭 L'Observatoire de l'IA | Ciel, Glace | trouver toutes les réponses fausses de l'assistant fictif (O8) — codé : exploit `observatoire.fausses`, variantes EXISTANTES favorisées `seraphibou:cosmique`, `zyeuton:brume`, `mutaloupe:cristal` |
 | 🏋 La salle d'entraînement | tous | une série parfaite → une créature légendaire à dresser |
 | ⛰ Le Sommet | légendaires | 3 mondes maîtrisés |
 
@@ -1694,6 +1709,7 @@ Pour chaque monde : fiches notions (et fiches maths liées) → étapes PC et An
 | E14 | Les couches réseau : enveloppe dans enveloppe dans colis | Port P6 | ⬜ |
 | E15 | Le partage de bonbons (division et reste) | Ponts des Nombres | ⬜ |
 | E16 | La pièce 3D qui sort de l'imprimante ; le vieux PC qui reprend vie | Guilde G5-G6 | ⬜ |
+| E17 | Le capitaine d'un équipage de robots (l'agent Copieur qui s'emballe, le gros bouton d'arrêt) | Observatoire O9 | ⬜ |
 
 #### E bis. La créature sur le bureau (PC et Android)
 

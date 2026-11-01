@@ -406,6 +406,75 @@ les vraies radios (vues seulement par des doublures en test), `type rtl_test` (O
 - `satiete.py` absent de la branche main publique (GU10).
 - Pas de fichier LICENSE pour Terminagotchi lui-même : la Guilde n'affirme aucune licence pour le jeu (question au propriétaire).
 
+**🔭 L'Observatoire de l'IA — codé (1er novembre).**
+
+*Fichiers.*
+- 9 fiches (`donnees/observatoire/outils/fiches_observatoire.py`, rejeu bash), données `donnees/observatoire.json`,
+  textes `donnees/observatoire/outils/textes_observatoire_*.py` (14 langues), vecteurs communs `donnees/observatoire/vecteurs.json`.
+- Leçons ob0 → ob9 sur PC (`pc/tg/observatoire.py`) et sur Android (`Observatoire.kt`, `ObservatoireDessin.kt`).
+- Chapitre et dossier `observatoire`, commandes `observatoire`, `assistant`, `agent`, `devine-type`, `devine-mot`
+  (alias bash/zsh/fish/PowerShell). L'Observatoire s'ouvre après les niveaux 0 à 6 du tronc commun ; annonce du monde
+  à son tour (une à la fois). Icône 🔭, chapitre n° 17, famille Célestes.
+
+*Règles du monde.*
+- **Aucune vraie IA** : l'assistant, le devineur de type, le devineur de mots et les agents sont de petits programmes
+  du jeu, déterministes, lisibles. Aucun appel réseau, aucun compte, aucune clé d'API. Le jeu le dit à chaque palier
+  (« les vraies IA sont bien plus grandes, mais le principe est juste »). Aucune marque d'IA nommée.
+- **Tout reste dans le terrain** (`terrain_terminagotchi/observatoire`). Les agents fictifs n'écrivent que là.
+- **Le danger n'est jamais lancé** : `rm -rf …` et `sudo chmod -R 777 …` proposés par les agents sont du TEXTE, avec
+  un chemin « … » qui ne vise rien ; même accepté, le jeu ne le lance pas et explique pourquoi on refuse.
+  `sudo`, `rm -rf ~`, `chmod -R 777` tapés par l'enfant reçoivent une phrase claire.
+- Rien n'est envoyé au site ; le devineur de mots n'apprend que sur les phrases de l'histoire du jeu.
+
+*Les leçons.*
+- **O1 mission** : consigne floue (l'assistant dit ce qui manque : quoi, quel fichier, quoi chercher), consigne claire,
+  `assistant mission.txt > rapport.txt` (ce que l'assistant DIT va sur la sortie d'erreur, ce qu'il PRODUIT sur la sortie).
+- **O2 vérifier** : l'assistant trie mais oublie une ligne (exprès) ; `wc -l`, `sort … | diff - tri.txt`, `sh test.sh`
+  (ÉCHEC), l'enfant nomme l'oubliée, puis `sort > tri.txt && sh test.sh` (RÉUSSI).
+- **O3 secrets** : une clé EXEMPLE dans un fichier « partagé avec la classe », `grep -n`, `sed -i '/…/d'`, `.env`,
+  `chmod 600`, `.gitignore`, `export`, `observatoire cle` (n'affiche que le début). La clé ne va jamais dans la sauvegarde.
+- **O4 superviser** : Robot-Rangeur et son journal, `git diff`, refuser la proposition dangereuse, valider ; un agent qui tourne
+  en rond, arrêté avec Ctrl+C (limite de 20 s en secours).
+- **O5 apprendre** : 20 vraies créatures du bestiaire étiquetées Feu / pas Feu, `uniq -c`, `devine-type apprends`,
+  `cerveau.txt` (les comptes), la 21e (Cauchemarre, Démon de la brume) le trompe ; l'enfant dit si c'est la famille.
+- **O6 biais** : `volcan.txt` (12 Feu, que des lieux chauds) → 1 sur 5 sur d'autres lieux ; quiz ; réentraîné sur
+  les exemples variés → 5 sur 5, avec la nuance « 5 sur 5 ici ≠ parfait partout ».
+- **O7 devineur de mots** : `tr | sort | uniq -c` sur les vraies phrases de l'histoire (dans la langue du joueur ;
+  chinois et japonais : un caractère = un mot), paires de mots avec `tail` + `paste`, `devine-mot suite` (« 3 chances
+  sur 4 »), `devine-mot phrase` (qui sonne juste mais peut être faux), quiz v/f.
+- **O8 esprit critique** : 5 réponses de l'assistant fictif, dont 2 fausses tirées pour la partie ; l'enfant vérifie
+  avec `wc -l`, `echo $((17 % 5))`, `tr … | uniq -c`, `explique ls`, `explique rm`. Puis : ce qu'on confie / ce qu'on
+  garde (adresse, mot de passe, photo d'un ami, nom et date de naissance) ; 5 nuances (erreurs sûres d'elles,
+  deepfakes, droits d'auteur, énergie des centres de données, « si une IA le dit »), sans peur ni publicité.
+- **O9 chef d'équipe** : découper la tâche, choisir la consigne (claire / floue / dangereuse avec sudo), l'agent
+  Copieur s'emballe (7 copies par commande tapée, 63 au plus) → `agent stop` (fichier STOP), `ls copies | wc -l`,
+  refuser la proposition dangereuse, `diff` du travail du Trieur, `sh tests.sh` (le Compteur s'est trompé : doublons),
+  correction `wc -l < liste.txt > compte.txt`, tests verts, `agent bilan`.
+- Les lettres des quiz restent v/f et c/g dans toutes les langues (expliquées à l'écran), comme l/p à la Guilde.
+
+*Le reste.*
+- Vue déployée : la lunette (« une consigne → un rapport », « des exemples → une devinette », « un texte → la suite
+  probable », « deux textes → les différences », « des lignes → les fréquences », « un travail → RÉUSSI ou ÉCHEC »).
+- Ponts des Nombres, jamais bloquants : effectifs (nouveau), fréquences (nouveau), probabilités (rempli), dans
+  `maths.py` et `Maths.kt` (mêmes tirages, vecteurs communs).
+- Ponts des mondes : sort, uniq, grep → Salle des Données ; export → Poste de Contrôle ; git → Bibliothèque du Temps ;
+  chmod → Citadelle.
+- Exploit « toutes les réponses fausses démasquées » (`observatoire.fausses`), objet loupe de détective (posé, jamais
+  porté), titre « Chef des Robots ». Variantes EXISTANTES favorisées (Ciel / Glace) : `seraphibou:cosmique`,
+  `zyeuton:brume`, `mutaloupe:cristal`. Comme elles n'apparaissent plus avant l'exploit, le test d'attirance donne
+  Célestes 8,0 → 28,0 % au lieu de 28,7 % (`tests/jvm/RetoursEnfants.kt` mis à jour, identique PC / Android).
+- Tests : `pc/outils/test_observatoire.py` (67, dont la consigne comprise et le mot d'exemple du devineur dans chacune
+  des 14 langues), `tests/jvm/Observatoire.kt` (27). Simulation `pc/outils/sim_observatoire.py` →
+  `docs/simulations/rapport_observatoire.md`. Captures `pc/outils/capture_observatoire.py`.
+- Prompts d'illustrations envoyés au propriétaire (B11, vignette, C1, C3, E12, E17 nouveau ; à valider). Un repli
+  dessiné est affiché en attendant (coupole en caractères sur PC, `ObservatoireDessin` sur le téléphone).
+
+*Reste.*
+- Les illustrations.
+- Chinois et japonais : le devineur de mots compte des caractères, pas des mots (ces langues n'ont pas d'espaces).
+  Ce n'est pas dit à l'écran ; à valider (question au propriétaire).
+- Les traductions des 13 autres langues sont faites par Claude : une relecture par des locuteurs serait bienvenue.
+
 **▚ Le glitch — codé (31 octobre, décisions du propriétaire).** Un effet de l'INDIVIDU, comme le shiny (drapeau
 `glitch`, indépendant de la variante et du shiny) : l'image se dérègle comme un vieil écran, fabriquée à partir de
 l'image de la créature (aucune illustration). Au repos le style A (liseré rose/cyan des couches décalées, 2 tranches
