@@ -379,7 +379,7 @@ BUILTINS = {"cd", "echo", "export", "alias", "history", "type", "source", ".", "
             # les alias du jeu posés par tg installer (le compagnon) : ce sont des commandes, pas des fautes
             "deploie", "espace", "cerveau", "port", "citadelle", "crypte", "machines",
             "ondes", "mesh-envoie", "mesh-coupe", "mesh-route", "guilde",
-            "observatoire", "assistant", "agent", "devine-type", "devine-mot", "donnees",
+            "observatoire", "assistant", "agent", "devine-type", "devine-mot", "donnees", "forge",
             # les mots-clés du shell (time sh mineur.sh 3 : « time » n'est pas un programme, mais il existe)
             "time", "case", "until", "function", "select", "command", "builtin", "local", "declare", "times"}
 
@@ -485,6 +485,15 @@ def feed(state, line, statut=None):
         if nom and nom not in persos:
             persos.append(nom)
             del persos[:-30]
+    if re.match(r"^[A-Za-z_]\w*=", tete):          # nom=Pixel, n=3; while … : une boîte qu'on remplit (la Forge)
+        return
+    m_egal = re.match(r"^([A-Za-z_]\w*)\s+=", line.strip())
+    if m_egal and not commande_existe(m_egal.group(1)):     # nom = Pixel : des espaces autour du =
+        msg = t("core.inconnue.egal", cmd=m_egal.group(1))
+        say(state, msg, 8)
+        terminal(state, msg)
+        animer(state, "confus")
+        return
     cat = next((k for k, v in CATEGORIES.items() if cmd in v["cmds"]), None)
     if not cat and not cmd.startswith(("termux-", "./", "/")) and not commande_existe(cmd) and cmd not in persos:
         from . import verif

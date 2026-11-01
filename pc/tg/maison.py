@@ -57,7 +57,7 @@ ICONES = {"vestibule": "🥚", "nid": "🏠", "grenier": "🌿", "cave": "🔒",
           "salle_des_machines": "🔥", "dortoir": "👻", "atelier": "🔧", "tour": "📡", "coeur": "💜",
           "recoins": "🚪", "sauvage": "🌲", "jardin": "📱", "port": "⚓",
           "citadelle": "🏰", "crypte": "🔐", "machines": "🔩", "ondes": "📶", "guilde": "🧰",
-          "observatoire": "🔭", "donnees": "📊"}
+          "observatoire": "🔭", "donnees": "📊", "forge": "🔨"}
 PRUDENCE = ("rm", "rmdir", "mv", "chmod", "chown", "del", "remove-item", "move-item", "ren")
 # les commandes qui écrivent (prudence) : tous leurs chemins comptent, sauf pour cp (seulement la destination)
 ECRIT = PRUDENCE + ("mkdir", "md", "touch", "new-item", "ni", "cp", "copy", "copy-item", "ln", "tee", "truncate",
@@ -99,12 +99,12 @@ SOLS_PIECES = {
     "coeur": ("#ff6fa8", "#7a2a55"), "jardin": ("#66b843", "#6b4a2c"),
 }
 SOLS = {"camp": ("#d9b47a", "#7b5534"), "lieu": ("#5aa63a", "#6b4a2c"), "porte": ("#8fa9c2", "#3d5a73"),
-        "secret": ("#4b3a6b", "#251c38"), "brume": ("#6a6f78", "#3a3d44"),
+        "secret": ("#4b3a6b", "#251c38"), "brume": ("#6a6f78", "#3a3d44"), "jeu": ("#ff9f43", "#8a4a1c"),
         # la Racine (bois), le village, ton camp de base, la zone d'aventure, les lieux du système (pierre)
         "racine": ("#8a5a30", "#4a2e18"), "village": ("#e0c48a", "#8a6a3a"), "camp_base": ("#d9b47a", "#7b5534"),
         "zone": ("#86d45a", "#2f6b2c"), "chemin": ("#9cc4aa", "#4c6a58"), "systeme": ("#a7acb4", "#5d6168")}
 EMOJIS = {"camp": "⛺", "porte": "🌀", "lieu": "🌳", "note": "📜", "recette": "📝", "image": "🌅", "coffre": "📦",
-          "secret": "🔑", "secret_objet": "🔑", "brume": "░░", "suite": "··"}
+          "secret": "🔑", "secret_objet": "🔑", "brume": "░░", "suite": "··", "jeu": "🎮"}
 TEXTES = {".txt", ".md", ".log", ".csv", ".json", ".ini", ".cfg", ".conf", ".yml", ".yaml", ".html", ".xml", ""}
 SCRIPTS = {".sh", ".ps1", ".py", ".bat", ".cmd", ".bash", ".zsh", ".fish", ".js", ".rb", ".pl"}
 IMAGES = {".png", ".jpg", ".jpeg", ".gif", ".bmp", ".webp", ".svg", ".ico", ".tif", ".tiff"}
@@ -536,6 +536,8 @@ def genre(r, dossier):
             return "region", nom
         if re.fullmatch(r"parcelle[_-]?\d*", nom.lower()):
             return "parcelle", region
+        if est_jeu(r):                                # le jeu de l'enfant, posé sur la carte par la Forge (forge carte)
+            return "jeu", None
         bas = nom.lower()
         if bas in ("camp", "nid", "base", "campement", "camp_de_base") or bas.startswith("camp"):
             return "camp", None
@@ -548,6 +550,21 @@ def genre(r, dossier):
     if ext in TEXTES:
         return "note", region
     return "coffre", region
+
+
+def est_jeu(r):
+    """Un dossier du terrain qui est le jeu de l'enfant : il contient le petit fichier « .lieu » posé par `forge carte`."""
+    try:
+        return (T() / r / ".lieu").is_file()
+    except (OSError, ValueError):
+        return False
+
+
+def nom_du_jeu(r):
+    try:
+        return (T() / r / ".lieu").read_text(encoding="utf-8").strip()[:40]
+    except (OSError, ValueError):
+        return ""
 
 
 def etiquette(state, n):
@@ -567,6 +584,8 @@ def etiquette(state, n):
         return nom_piece(b)
     if g == "region":
         return t("carte.monde.region", nom=t("carte.biome." + b))
+    if g == "jeu":
+        return t("carte.monde.jeu", nom=nom_du_jeu(n["rel"]) or n["nom"])
     if g in ("porte", "lieu", "parcelle", "secret", "note", "recette", "image", "coffre"):
         return t("carte.monde." + g)
     if g == "secret_objet":
@@ -667,7 +686,7 @@ def noeuds(state, marquer=False):
                 return
             dernier = i == len(garde) - 1 and not reste
             dedans = dossier and ouvert(c)
-            brume = dossier and not dedans and not e.name.startswith(".")    # un passage secret trouvé se voit
+            brume = dossier and not dedans and not e.name.startswith(".") and not est_jeu(c)   # (le jeu de l'enfant se voit)
             ligne(c, e.name, prof, dossier, avant + ("└── " if dernier else "├── "), brume)
             if dedans and prof < PROFONDEUR and e.name not in IGNORES:
                 tour(e.path, c, prof + 1, avant + ("    " if dernier else "│   "))

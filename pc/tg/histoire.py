@@ -24,7 +24,7 @@ Chaque étape a sa version « pour les grands » (clé <étape>.adulte, G-32), a
    5 bibliotheque  La bibliothèque engloutie find, less, grep, head, wc (un livre a disparu)
    6 machines      La salle des machines du volcan  free, du, df, rm  (le monde étouffe)
    7 dortoir       Le dortoir des brumes     ps, &, jobs, kill        (des fantômes refusent de dormir)
-   8 atelier       L'atelier des Constructs  scripts, chmod +x, alias, git
+   8 atelier       La petite forge des Constructs  scripts, chmod +x, alias, git (§ 2.19 : l'ancien « atelier »)
    9 tour          La tour des nuages        ping, ip, curl, nslookup, ssh -V
   10 coeur         Le cœur du monde          rev, ls -a, find, cat >, grep | wc, puis Abyssor
   (+ telephone : le jardin du téléphone, seulement dans Termux, hors compte)
@@ -270,8 +270,9 @@ from . import ondes as _ond  # noqa: E402         le cinquième : la Tour des On
 from . import guilde as _gui  # noqa: E402        le sixième : la Guilde des Bâtisseurs Libres (guilde.py), au bord de la Forge
 from . import observatoire as _obs  # noqa: E402  le septième : l'Observatoire de l'IA (observatoire.py)
 from . import donnees as _don  # noqa: E402       le huitième : la Salle des Données (donnees.py), sur sa collection
+from . import forge as _for  # noqa: E402         le neuvième : la Forge (forge.py), la programmation
 MONDES_MODS = {"port": _port, "citadelle": _cit, "crypte": _cry, "machinerie": _mac, "ondes": _ond, "guilde": _gui,
-               "observatoire": _obs, "donnees": _don}
+               "observatoire": _obs, "donnees": _don, "forge": _for}
 # le lieu de chaque monde (la Salle des Rouages : chapitre « machinerie », lieu « machines »)
 PIECES_MODS = {_m.CHAPITRE["piece"]: _m for _m in MONDES_MODS.values()}
 for _m in MONDES_MODS.values():
@@ -288,6 +289,8 @@ _CMDS_GUI = {s_.get("cmd") for l_ in _gui.LECONS.values() for s_ in l_["steps"]}
 _CMDS_OBS = {s_.get("cmd") for l_ in _obs.LECONS.values() for s_ in l_["steps"]}
 _CMDS_DON = {s_.get("cmd") for l_ in _don.LECONS.values() for s_ in l_["steps"]} | \
     {r_ for l_ in _don.LECONS.values() for s_ in l_["steps"] for r_ in s_.get("repli", [])}
+_CMDS_FOR = {s_.get("cmd") for l_ in _for.LECONS.values() for s_ in l_["steps"]} | \
+    {r_ for l_ in _for.LECONS.values() for s_ in l_["steps"] for r_ in s_.get("repli", [])}
 
 
 def lecons_qui_ouvrent():
@@ -468,6 +471,8 @@ def _outil(nom):
     import shutil
     if "+" in nom:                          # la Guilde : « gcc+file » (le programme compilé, puis l'outil qui le lit)
         return all(_outil(x) for x in nom.split("+"))
+    if "|" in nom:                          # la Forge : « magick|convert » (l'un ou l'autre)
+        return any(_outil(x) for x in nom.split("|"))
     if nom.startswith("/"):
         return os.path.exists(nom)
     return shutil.which(nom) is not None
@@ -852,6 +857,9 @@ def finir_lecon(state, les):
     else:
         core.log(state, t("hist.lecon.finie.log", titre=lecons.tx(les["titre"])))
         core.say(state, t("hist.lecon.finie.dit"), 12)
+    for _m in MONDES_MODS.values():                     # la Forge : un palier fini sans aucun indice
+        if hasattr(_m, "lecon_finie"):
+            _m.lecon_finie(state, les["id"])
     stat = {"tour": "Agilité", "atelier": "Intelligence", "dortoir": "Force", "machines": "Force", "cave": "Force"}
     if c["id"] in stat:
         state["stats"][stat[c["id"]]] += 5
@@ -1143,6 +1151,8 @@ def indice(state, step, lignes, tapees, morcs=None):
         conseil = _obs.indice(step, tapees)
     if not conseil and step.get("cmd") in _CMDS_DON:      # la Salle des Données : pas encore de tableau, -F, oublié…
         conseil = _don.indice(step, tapees)
+    if not conseil and step.get("cmd") in _CMDS_FOR:      # la Forge : guillemets autour de #!, > au lieu de >>, chmod…
+        conseil = _for.indice(step, tapees)
     if conseil:
         return conseil
     conseil = _indice_cd(state, step, morcs) or _indice_rm(step, tapees) or _indice_barre(step, morcs) \

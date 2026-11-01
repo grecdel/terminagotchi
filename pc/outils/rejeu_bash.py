@@ -19,7 +19,9 @@ doit être ce qu'affiche un vrai bash.
    La Tour des Ondes : les calculs (bc), les capteurs d'exemple anonymisés (grep -o) ; les outils radio absents sont
    sautés (leurs étapes sont cachées), rien n'émet jamais. La Guilde des Bâtisseurs Libres : le git clone échoue (hors
    ligne, aucun clone réseau) et la Guilde pose sa copie du code du jeu ; gcc, file, od, ldd, make ; le petit dépôt
-   git de la contribution (aucun remote) ; OpenSCAD s'il est là ; sha256sum et dd sur des FICHIERS du terrain.
+   git de la contribution (aucun remote) ; OpenSCAD s'il est là ; sha256sum et dd sur des FICHIERS du terrain. La Forge :
+   les recettes sh, les boucles, python3, la devinette jouée par un robot (seq | sh), le site servi sur 127.0.0.1 et lu
+   avec curl, puis éteint (kill %1 : pas de Ctrl+C sans terminal) ; magick, sox, ffmpeg, exiftool sautés s'ils manquent.
 Utilisé en CI (.github/workflows/rejeu.yml) sur une vraie machine Linux.
 """
 import os
@@ -152,6 +154,8 @@ def histoire():
     from tg import observatoire as OB_
     from tg import donnees as DN_
     jeu_don = jeu_port.replace("port; port.commande(sys.argv[1:])", "donnees; sys.exit(donnees.commande(sys.argv[1:]) or 0)")
+    from tg import forge as FO_
+    jeu_for = jeu_port.replace("port; port.commande(sys.argv[1:])", "forge; sys.exit(forge.commande(sys.argv[1:]) or 0)")
     jeu_tg = (f"{sys.executable} -c \"import sys; sys.path.insert(0, '{RACINE / 'pc'}'); from tg import app; "
               f"sys.argv = ['tg'] + sys.argv[1:]; app._main()\"")
 
@@ -181,6 +185,7 @@ def histoire():
         vrai = re.sub(r"(^|;\s*|timeout -s INT 1\s+)(observatoire|assistant|agent|devine-type|devine-mot|explique)(?=\s|$)",
                       lambda m: m.group(1) + jeu_obs[m.group(2)], vrai)      # et les alias de l'Observatoire
         vrai = re.sub(r"(^|;\s*)donnees(?=\s|$)", lambda m: m.group(1) + jeu_don, vrai)   # et donnees='tg donnees'
+        vrai = re.sub(r"(^|;\s*)forge(?=\s|$)", lambda m: m.group(1) + jeu_for, vrai)     # et forge='tg forge'
         vrai = re.sub(r"(^|;\s*|&&\s*)tg(?=\s)", lambda m: m.group(1) + jeu_tg, vrai)   # tg collection --csv, tg donnees …
         etat["sortie"], etat["code"], d = shell.lancer(vrai)
         etat["cwd"] = Path(d)
@@ -214,11 +219,11 @@ def histoire():
         h = H.h_(st)
         if not les:
             reste = [a for a in H.AILES if not H.fini(st, a)]
-            if H.fini(st, "donnees") or h["chap"] in ("reveil", "nid"):
+            if H.fini(st, "forge") or h["chap"] in ("reveil", "nid"):
                 break
             if H.fini(st, "coeur"):                 # le tronc et les ailes faits : les mondes du Carrefour, dans l'ordre
                 reste = [m_ for m_ in ("port", "citadelle", "crypte", "machinerie", "ondes", "guilde", "observatoire",
-                                       "donnees") if not H.fini(st, m_)][:1]
+                                       "donnees", "forge") if not H.fini(st, m_)][:1]
             cible = "coeur" if not reste and H.ouvert(st, "coeur") else (reste[0] if reste else None)
             if not cible:
                 break
@@ -367,6 +372,20 @@ def histoire():
             else:
                 _f, _j, mal_, bon_ = DN_.carnet_soigneur(r_)
                 c = c.replace("s/?/?/", f"s/{mal_}/{bon_}/")
+        if c == "forge code ?":                     # la Forge : l'enfant lit l'écran (echo $?), compte les tours…
+            c = "forge code " + ((etat["sortie"].strip().split() or ["2"])[-1])
+        if c == "forge tours ?":
+            c = "forge tours " + str(FO_.tours_reponse(*FO_.tours_question(FO_._graine(st))))
+        if c == "forge erreur ?":
+            c = "forge erreur IndexError"
+        if c == "forge appareil ?":
+            c = "forge appareil " + FO_.donnees()["photo"]["marque"]
+        if c == "sh question.sh":                   # (pas de clavier ici : la réponse arrive par un tuyau)
+            c = "echo Léa | sh question.sh"
+        if c == "sh mon_jeu/devinette.sh":          # (le robot joue à la place de l'enfant)
+            c = "seq 1 10 | sh mon_jeu/devinette.sh"
+        if c == "fg" and les["id"] == "fo6":         # fg puis Ctrl+C : ici, sans terminal, kill %1
+            c = "kill %1"
         if c.endswith(" &") and "http.server" in c:
             c = c[:-2] + " >/dev/null 2>&1 &"       # (les lignes du serveur n'encombrent pas la suite)
         lieu = step.get("ou") if step.get("ou") is not None else None
@@ -386,10 +405,13 @@ def histoire():
         derniere = (cle, c)
         st = tape(c)
         if "http.server" in c:                         # la lanterne met un instant à s'allumer
+            port_ = int((re.search(r"http\.server\s+(\d+)", c) or re.search(r"(8000)", "8000")).group(1))
             for _ in range(40):
-                if P_.phare_allume(8000):
+                if P_.phare_allume(port_):
                     break
                 __import__("time").sleep(0.2)
+            if les["id"] == "fo6":                    # la Forge vérifie la page servie : un tour de plus, lanterne allumée
+                st = tape("true")
         if cle in attendus and cle not in vus:
             vus.add(cle)
             a = attendus[cle]
@@ -462,10 +484,16 @@ def histoire():
     verifier(H.fini(st, "guilde"), "la Guilde des Bâtisseurs Libres, sixième monde, est allée jusqu'au bout (gu0 → gu6)")
     verifier(H.fini(st, "observatoire"), "l'Observatoire de l'IA, septième monde, est allé jusqu'au bout (ob0 → ob9)")
     verifier(H.fini(st, "donnees"), "la Salle des Données, huitième monde, est allée jusqu'au bout (dn0 → dn6)")
+    verifier(H.fini(st, "forge"), "la Forge, neuvième monde, est allée jusqu'au bout (fo0 → fo7)")
     P_.eteindre_phare()
     C_.arreter_fictifs()
     K_.tuer_agents()
-    manquent = sorted(set(attendus) - vus)
+    # (une étape cachée parce que son outil manque — sox, exiftool… — n'a pas pu être rejouée : sautée et comptée)
+    absents = {k for k in set(attendus) - vus if attendus[k].get("outil") and not shutil.which(attendus[k]["outil"])}
+    for k in sorted(absents):
+        print(f"  · {k} sauté ({attendus[k]['outil']} absent, étape cachée)")
+    saute += len(absents)
+    manquent = sorted(set(attendus) - vus - absents)
     verifier(not manquent, f"toutes les étapes décrites ont été rejouées {manquent}")
     shell.fermer()
 

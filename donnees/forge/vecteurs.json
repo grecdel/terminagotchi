@@ -1,0 +1,678 @@
+{
+ "note": "généré par pc/outils/vecteurs_forge.py ; vérifié par tests/jvm/Forge.kt",
+ "recettes": [
+  {
+   "texte": "",
+   "etat": {
+    "shebang": false,
+    "mkdir": false,
+    "touch": false
+   },
+   "complete": false
+  },
+  {
+   "texte": "#!/bin/sh\n",
+   "etat": {
+    "shebang": true,
+    "mkdir": false,
+    "touch": false
+   },
+   "complete": false
+  },
+  {
+   "texte": "#!/bin/sh\nmkdir -p cabane\n",
+   "etat": {
+    "shebang": true,
+    "mkdir": true,
+    "touch": false
+   },
+   "complete": false
+  },
+  {
+   "texte": "#!/bin/sh\nmkdir -p cabane\ntouch cabane/porte.txt cabane/toit.txt\n",
+   "etat": {
+    "shebang": true,
+    "mkdir": true,
+    "touch": true
+   },
+   "complete": true
+  },
+  {
+   "texte": "mkdir -p cabane\ntouch cabane/porte.txt\n",
+   "etat": {
+    "shebang": false,
+    "mkdir": true,
+    "touch": true
+   },
+   "complete": false
+  },
+  {
+   "texte": "#!/usr/bin/env bash\nmkdir cabane\ntouch cabane/a\n",
+   "etat": {
+    "shebang": true,
+    "mkdir": true,
+    "touch": true
+   },
+   "complete": true
+  },
+  {
+   "texte": "#! /bin/bash\n  mkdir -p cabane\n",
+   "etat": {
+    "shebang": true,
+    "mkdir": true,
+    "touch": false
+   },
+   "complete": false
+  },
+  {
+   "texte": "# !/bin/sh\nmkdir -p cabane\ntouch cabane/porte.txt\n",
+   "etat": {
+    "shebang": false,
+    "mkdir": true,
+    "touch": true
+   },
+   "complete": false
+  },
+  {
+   "texte": "#!/bin/zsh\ntouch cabanes/porte\nmkdir village\n",
+   "etat": {
+    "shebang": true,
+    "mkdir": false,
+    "touch": false
+   },
+   "complete": false
+  },
+  {
+   "texte": "#!/bin/sh\r\nmkdir -p cabane\r\ntouch cabane/porte.txt\r\n",
+   "etat": {
+    "shebang": true,
+    "mkdir": true,
+    "touch": true
+   },
+   "complete": true
+  }
+ ],
+ "tours": [
+  {
+   "graine": "1:0",
+   "a": 3,
+   "z": 7,
+   "n": 5
+  },
+  {
+   "graine": "1:1793534400",
+   "a": 5,
+   "z": 13,
+   "n": 9
+  },
+  {
+   "graine": "2:1700000000",
+   "a": 4,
+   "z": 13,
+   "n": 10
+  },
+  {
+   "graine": "partie:42",
+   "a": 3,
+   "z": 9,
+   "n": 7
+  },
+  {
+   "graine": "1:1730000000",
+   "a": 5,
+   "z": 12,
+   "n": 8
+  },
+  {
+   "graine": "3:9",
+   "a": 2,
+   "z": 10,
+   "n": 9
+  }
+ ],
+ "noms": [
+  {
+   "texte": "La grotte de Pixel",
+   "nom": "La grotte de Pixel"
+  },
+  {
+   "texte": "  Le   donjon  ",
+   "nom": "Le donjon"
+  },
+  {
+   "texte": "Mon jeu! <script>",
+   "nom": "Mon jeu script"
+  },
+  {
+   "texte": "Été & neige",
+   "nom": "Été neige"
+  },
+  {
+   "texte": "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",
+   "nom": "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
+  },
+  {
+   "texte": "L'île aux 3 trésors",
+   "nom": "L'île aux 3 trésors"
+  },
+  {
+   "texte": "",
+   "nom": ""
+  },
+  {
+   "texte": "日本のゲーム",
+   "nom": "日本のゲーム"
+  }
+ ],
+ "surs": [
+  {
+   "texte": "Bravo ! \"Trouvé\"",
+   "sur": "Bravo ! 'Trouvé'"
+  },
+  {
+   "texte": "Plus grand $HOME `id`",
+   "sur": "Plus grand HOME 'id'"
+  },
+  {
+   "texte": "a\\b",
+   "sur": "a/b"
+  },
+  {
+   "texte": "Ça marche !",
+   "sur": "Ça marche !"
+  }
+ ],
+ "photo_sha256": "a45d596bfc95ea51f8fa2656097170e3a2871aaa2fbf5d433e4be6ff1711b248",
+ "photos": [
+  {
+   "nom": "exemple",
+   "base64": "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",
+   "segments": 9,
+   "exif": [
+    [
+     "marque",
+     "Terminacam"
+    ],
+    [
+     "modele",
+     "TC-7"
+    ],
+    [
+     "date",
+     "2026:10:31 15:42:07"
+    ],
+    [
+     "date_orig",
+     "2026:10:31 15:42:07"
+    ],
+    [
+     "description",
+     "Photo d'exemple du jeu Terminagotchi : metadonnees inventees"
+    ],
+    [
+     "lat",
+     "0° 0' 0.00\" N"
+    ],
+    [
+     "lon",
+     "0° 0' 0.00\" E"
+    ]
+   ],
+   "a_exif": true,
+   "sans_sha256": "0b3113124437efd177a7b53c06ef56a84468777da40f40f350d9334cc827f4fd"
+  },
+  {
+   "nom": "sans",
+   "base64": "/9j/2wBDAAYEBAUEBAYFBQUGBgYHCQ4JCQgICRINDQoOFRIWFhUSFBQXGiEcFxgfGRQUHScdHyIjJSUlFhwpLCgkKyEkJST/2wBDAQYGBgkICREJCREkGBQYJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCT/wAARCABgAIADASIAAhEBAxEB/8QAGgABAQEBAQEBAAAAAAAAAAAAAAQGBwUCA//EADgQAAEDAgIECQsFAAAAAAAAAAAREmEFExVCARQjUQQGBxdjZaKk4hYiJCVBRWKDwtHhQ0SCocH/xAAcAQEAAgMBAQEAAAAAAAAAAAAABQcCBAYDAQj/xAAuEQAABgIAAwUIAwAAAAAAAAAAAQIDBBESMQUGIRMUQVGBByIyYXGR0fFyscH/2gAMAwEAAhEDEQA/ANOyQyShkhklj5DgqE7JDJKGSGSMgoTskMkoZIZIyChOyQyShkhkjIKE7JDJKGSGSMgoTskMkoZJ6FKo+J3dvbtplVVWYNWbxBmEyqRIVihNWdGezrwIz2Y9o8ZyQ4TTRWo/34jx2SGSdIPOq1JxS1trVtcqqqTBwEH2ksuvpRIa7NB3asjVXTyJNnZ9B00jlNxDZqaXkryqr9TMYhkhklDJDJLJyHJ0KGSGSUNkNk1sx6UJ2SGSUNkNkZhQnZIZJQ2Q2RmFCdkhklDZDZGYUJ2SYSi1rCL2wu3W52oixp3nQ2ycpOT5llOMOMOtHSiy/wALxFlcgQWJrEuPITkhXZ2VmWjUZao9kN1RKxjN7YWbTc7lVY0bjphw+hULG7/pFm03I5VWdG40NP5NNeuetWMT9uqqvxQcnzE3J4jBalSOiW8rV0O8jItFRlRlWj8xKo4dwmBxF2K0/gpWPuYqOqTfxGZ3d38tDp4AK2GY8PjNoXVv5/4eGyT1Kjw/X7eztsXMqqn2I2yfoPliI9C4Y1HkJpZZWXQ9qM/Cy0Yq/jD7ciWt1o7Sdf0RD92SGSUMkMklsxo0J2SGSUMkMkZhQnZIZJQyQyRmFCdkhklDJDJGYUJ2Sc75Iq7jmLej2LNnO5VfGjcdMZJy/kTpWHYztrj7GVES5MkZKNJzGDPfvV9hMQnnEQJLaT91WF+iug6QyQyShkhkknmIehbjXQdv8EvD+Ga6zzGMX2qqp9j4ZIZJAw+XOGw3kyI7VLLR2o9lXiZloxJSOLS32zadXaT+RfgTskMkoZIZJPZiNoZbFuh7X4PPAK0l8QkS67dV1roRb+hCPUs1bAAGmMQKOCcL1V/mOcntQnB7R5DkdwnWjpRfrxH0jMjsh6GLdD2vwegZ8E/E5mkN325Z3rRV9iHql4y2PL5SPd3zfoMUARM+X3p9T9VddN6IiFqQovdmUs3dX19bHaQYvk394/K+s2hZECX3phL9Vd9N6MyHATYvdnlM3dV19LAAG2NQAAAGfABTojwAAAAAAA82s1nCLOwu3XZ2oiRp3npGIrNZxezsLVp2dyqkaNx9IhM8E4f3uQWabQW+tbI68b35DzQAZiyxbTalh9zZXHpmREWJNOYs09NqWIXNlbYmZVVYgEOR5kgaktp/kd/Qi6fj1FoAPo5AAAAHbwAQwtwAAAAAAAOW8yHX/c/GdSBmhxSPhAct5kOv+5+McyHX/c/GdSBn3hzzAct5kOv+5+M1PEjiR5G676w1zWrf6NtrXfFpVXf0akGKnlqKjMAAB5gAAAD/2Q==",
+   "segments": 8,
+   "exif": [],
+   "a_exif": false,
+   "sans_sha256": "0b3113124437efd177a7b53c06ef56a84468777da40f40f350d9334cc827f4fd"
+  },
+  {
+   "nom": "tronque",
+   "base64": "/9j/4QFmRXhpZgAATU0AKgAAAAgABgEOAAIAAAA9AAAAVgEPAAIAAAALAAAAlAEQAAIAAAAFAAAAoAEyAAIAAAAUAAAApodpAAQAAAABAAAAuoglAAQAAAABAAAA7AAAAABQaG90byBkJ2V4ZW1wbGUgZHUgamV1IFRlcm1pbmFnb3RjaGkgOiBtZXRhZG9ubmVlcyBpbnZlbnRlZXMAAFRlcm1pbmFjYW0AAFRDLTcAADIwMjY6MTA6MzEgMTU6NDI6MDcAAAKQAAAHAAAABDAyMzKQAwACAAAAFAAAANgAAAAAMjAyNjoxMDozMSAxNTo0MjowNwAABQAAAAEAAAAEAgMAAAABAAIAAAACTgAAAAACAAUAAAADAAABLgADAAIAAAACRQAAAAAE",
+   "segments": null,
+   "exif": null,
+   "a_exif": false,
+   "sans_sha256": "4c9e9ef0cd59888999f16ab58b76ddb589aeb20686ef0776aa21e5c12710b725"
+  },
+  {
+   "nom": "pas_jpeg",
+   "base64": "R0lGODlhLi4uLg==",
+   "segments": null,
+   "exif": null,
+   "a_exif": false,
+   "sans_sha256": "8482dea691286619ad10a43fd6d8f998463018bea3f22587a4eab2426a812be0"
+  },
+  {
+   "nom": "vide",
+   "base64": "",
+   "segments": null,
+   "exif": null,
+   "a_exif": false,
+   "sans_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  {
+   "nom": "soi_seul",
+   "base64": "/9j/2Q==",
+   "segments": 0,
+   "exif": [],
+   "a_exif": false,
+   "sans_sha256": "32461d5bd1773012acef0ba15636752949bd7c2ce50f9172159d9f56cf0dd9af"
+  }
+ ],
+ "gifs": [
+  {
+   "base64": "R0lGODlhAgACAPAAAAAAAAAAACH/C05FVFNDQVBFMi4wAwEAAAAh+QQAFAAAACwAAAAAAgACAAACAkQBADs=",
+   "images": 1
+  },
+  {
+   "base64": "R0lGODlhAgACAPAAAAAAAAAAACH/C05FVFNDQVBFMi4wAwEAAAAh+QQAFAAAACwAAAAAAgACAAACAkQBACH5BAAUAAAALAAAAAACAAIAAAICRAEAIfkEABQAAAAsAAAAAAIAAgAAAgJEAQAh+QQAFAAAACwAAAAAAgACAAACAkQBADs=",
+   "images": 4
+  },
+  {
+   "base64": "R0lGODlhAgACAAAAACH/C05FVFNDQVBFMi4wAwEAAAAh+QQAFAAAACwAAAAAAgACAIAAAAAAAAACAkQBACH5BAAUAAAALAAAAAACAAIAgAAAAAAAAAICRAEAIfkEABQAAAAsAAAAAAIAAgCAAAAAAAAAAgJEAQA7",
+   "images": 3
+  },
+  {
+   "base64": "R0lGODlhAgACAPAAAAAAAAAAACH/C05FVFNDQVBFMi4wAwEAAAAh+QQAFAAAACwAAAAAAgACAAACAkQBACH5BAAUAAAALAAAAA==",
+   "images": 1
+  },
+  {
+   "base64": "R0lGODdh",
+   "images": 0
+  },
+  {
+   "base64": "UE5HLi4u",
+   "images": 0
+  },
+  {
+   "base64": "R0lGODlhAgACAPAAAAAAAAAAACH/C05FVFNDQVBFMi4wAwEAAAA7",
+   "images": 0
+  }
+ ],
+ "wavs": [
+  {
+   "base64": "UklGRqS7AABXQVZFZm10IBAAAAABAAEAwF0AAIC7AAACABAAZGF0YYC7AAAAAAMADAAaAC4ARwBiAIAA",
+   "ok": true
+  },
+  {
+   "base64": "UklGRgAAAABXQVZFZm10IA==",
+   "ok": false
+  },
+  {
+   "base64": "UklGWAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+   "ok": false
+  }
+ ],
+ "atelier": [
+  {
+   "ligne": "sh cabane.sh",
+   "forges": [
+    [
+     "sh",
+     "parchemin",
+     "recette",
+     "commandes"
+    ]
+   ],
+   "deploie": [
+    {
+     "seg": 0,
+     "cmd": "sh",
+     "outil": "sh",
+     "objet": "parchemin",
+     "de": "recette",
+     "vers": "commandes"
+    }
+   ]
+  },
+  {
+   "ligne": "./cabane.sh",
+   "forges": [
+    [
+     "sh",
+     "parchemin",
+     "recette",
+     "commandes"
+    ]
+   ],
+   "deploie": [
+    {
+     "seg": 0,
+     "cmd": "cabane.sh",
+     "outil": "sh",
+     "objet": "parchemin",
+     "de": "recette",
+     "vers": "commandes"
+    }
+   ]
+  },
+  {
+   "ligne": "bash salut.sh Léa",
+   "forges": [
+    [
+     "sh",
+     "parchemin",
+     "recette",
+     "commandes"
+    ]
+   ],
+   "deploie": [
+    {
+     "seg": 0,
+     "cmd": "bash",
+     "outil": "sh",
+     "objet": "parchemin",
+     "de": "recette",
+     "vers": "commandes"
+    }
+   ]
+  },
+  {
+   "ligne": "sh tests.sh",
+   "forges": [],
+   "deploie": []
+  },
+  {
+   "ligne": "for i in $(seq 1 10); do mkdir -p v/c_$i; done",
+   "forges": [
+    [
+     "for",
+     "manege",
+     "liste",
+     "tours"
+    ]
+   ],
+   "deploie": [
+    {
+     "seg": 0,
+     "cmd": "for",
+     "outil": "for",
+     "objet": "manege",
+     "de": "liste",
+     "vers": "tours"
+    }
+   ]
+  },
+  {
+   "ligne": "n=3; while [ $n -gt 0 ]; do echo $n; n=$((n - 1)); done",
+   "forges": [
+    [
+     "while",
+     "manege",
+     "condition",
+     "tours"
+    ]
+   ],
+   "deploie": [
+    {
+     "seg": 0,
+     "cmd": "while",
+     "outil": "while",
+     "objet": "manege",
+     "de": "condition",
+     "vers": "tours"
+    }
+   ]
+  },
+  {
+   "ligne": "if [ -f a ]; then echo oui; fi",
+   "forges": [
+    [
+     "if",
+     "aiguillage",
+     "condition",
+     "chemin"
+    ]
+   ],
+   "deploie": [
+    {
+     "seg": 0,
+     "cmd": "if",
+     "outil": "if",
+     "objet": "aiguillage",
+     "de": "condition",
+     "vers": "chemin"
+    }
+   ]
+  },
+  {
+   "ligne": "python3 serpent.py Pixel 3",
+   "forges": [
+    [
+     "python3",
+     "serpent",
+     "programme",
+     "resultat"
+    ]
+   ],
+   "deploie": [
+    {
+     "seg": 0,
+     "cmd": "python3",
+     "outil": "python3",
+     "objet": "serpent",
+     "de": "programme",
+     "vers": "resultat"
+    }
+   ]
+  },
+  {
+   "ligne": "python3 -m http.server 8642 --bind 127.0.0.1 --directory site &",
+   "forges": [
+    [
+     "http.server",
+     "lanterne",
+     "dossier",
+     "pages"
+    ]
+   ],
+   "deploie": [
+    {
+     "seg": 0,
+     "cmd": "python3",
+     "outil": "http.server",
+     "objet": "lanterne",
+     "de": "dossier",
+     "vers": "pages"
+    }
+   ]
+  },
+  {
+   "ligne": "magick -delay 20 -loop 0 a.png b.png c.gif",
+   "forges": [
+    [
+     "magick",
+     "presse",
+     "images",
+     "animation"
+    ]
+   ],
+   "deploie": [
+    {
+     "seg": 0,
+     "cmd": "magick",
+     "outil": "magick",
+     "objet": "presse",
+     "de": "images",
+     "vers": "animation"
+    }
+   ]
+  },
+  {
+   "ligne": "convert a.png b.gif",
+   "forges": [
+    [
+     "magick",
+     "presse",
+     "images",
+     "animation"
+    ]
+   ],
+   "deploie": [
+    {
+     "seg": 0,
+     "cmd": "convert",
+     "outil": "magick",
+     "objet": "presse",
+     "de": "images",
+     "vers": "animation"
+    }
+   ]
+  },
+  {
+   "ligne": "ffmpeg -i f.wav -ss 0.5 -t 0.5 g.wav",
+   "forges": [
+    [
+     "ffmpeg",
+     "ciseaux_sons",
+     "son",
+     "morceau"
+    ]
+   ],
+   "deploie": [
+    {
+     "seg": 0,
+     "cmd": "ffmpeg",
+     "outil": "ffmpeg",
+     "objet": "ciseaux_sons",
+     "de": "son",
+     "vers": "morceau"
+    }
+   ]
+  },
+  {
+   "ligne": "sox -n la.wav synth 0.5 sine 440",
+   "forges": [
+    [
+     "sox",
+     "diapason",
+     "silence",
+     "son"
+    ]
+   ],
+   "deploie": [
+    {
+     "seg": 0,
+     "cmd": "sox",
+     "outil": "sox",
+     "objet": "diapason",
+     "de": "silence",
+     "vers": "son"
+    }
+   ]
+  },
+  {
+   "ligne": "exiftool photo.jpg",
+   "forges": [
+    [
+     "exiftool",
+     "loupe",
+     "photo",
+     "etiquettes"
+    ]
+   ],
+   "deploie": [
+    {
+     "seg": 0,
+     "cmd": "exiftool",
+     "outil": "exiftool",
+     "objet": "loupe",
+     "de": "photo",
+     "vers": "etiquettes"
+    }
+   ]
+  },
+  {
+   "ligne": "seq 1 10 | sh mon_jeu/devinette.sh",
+   "forges": [
+    [
+     "sh",
+     "parchemin",
+     "recette",
+     "commandes"
+    ]
+   ],
+   "deploie": [
+    {
+     "seg": 1,
+     "cmd": "sh",
+     "outil": "sh",
+     "objet": "parchemin",
+     "de": "recette",
+     "vers": "commandes"
+    }
+   ]
+  },
+  {
+   "ligne": "ls",
+   "forges": [],
+   "deploie": []
+  },
+  {
+   "ligne": "echo sh",
+   "forges": [],
+   "deploie": []
+  }
+ ],
+ "textes": {
+  "fr": {
+   "serpent": "# serpent.py : le serpent mécanique de la Forge répète un nom.\n# Lance-le avec : python3 serpent.py NOM FOIS\nimport sys\n\nnom = sys.argv[1]          # le 1er mot après serpent.py (comme $1 dans une recette)\nfois = int(sys.argv[2])    # le 2e mot, transformé en nombre\n\nfor i in range(fois):\n    print(f\"{i + 1}. Sssalut {nom} !\")\n",
+   "devinette": "#!/bin/sh\n# La devinette de la Forge : trouve le nombre entre 1 et 10.\nsecret=$(( $(date +%s) % 10 + 1 ))\nessais=0\nreponse=0\necho \"J'ai choisi un nombre entre 1 et 10. Devine !\"\nwhile [ \"$reponse\" != \"$secret\" ]; do\n  read reponse || exit 1\n  essais=$((essais + 1))\n  if [ \"$reponse\" -lt \"$secret\" ] 2>/dev/null; then\n    echo \"Plus grand !\"\n  elif [ \"$reponse\" -gt \"$secret\" ] 2>/dev/null; then\n    echo \"Plus petit !\"\n  fi\ndone\necho \"Bravo ! Trouvé en $essais essais.\"\n"
+  },
+  "en": {
+   "serpent": "# serpent.py : le serpent mécanique de la Forge répète un nom.\n# Lance-le avec : python3 serpent.py NOM FOIS\nimport sys\n\nnom = sys.argv[1]          # le 1er mot après serpent.py (comme $1 dans une recette)\nfois = int(sys.argv[2])    # le 2e mot, transformé en nombre\n\nfor i in range(fois):\n    print(f\"{i + 1}. Sssalut {nom} !\")\n",
+   "devinette": "#!/bin/sh\n# La devinette de la Forge : trouve le nombre entre 1 et 10.\nsecret=$(( $(date +%s) % 10 + 1 ))\nessais=0\nreponse=0\necho \"J'ai choisi un nombre entre 1 et 10. Devine !\"\nwhile [ \"$reponse\" != \"$secret\" ]; do\n  read reponse || exit 1\n  essais=$((essais + 1))\n  if [ \"$reponse\" -lt \"$secret\" ] 2>/dev/null; then\n    echo \"Plus grand !\"\n  elif [ \"$reponse\" -gt \"$secret\" ] 2>/dev/null; then\n    echo \"Plus petit !\"\n  fi\ndone\necho \"Bravo ! Trouvé en $essais essais.\"\n"
+  },
+  "es": {
+   "serpent": "# serpent.py : le serpent mécanique de la Forge répète un nom.\n# Lance-le avec : python3 serpent.py NOM FOIS\nimport sys\n\nnom = sys.argv[1]          # le 1er mot après serpent.py (comme $1 dans une recette)\nfois = int(sys.argv[2])    # le 2e mot, transformé en nombre\n\nfor i in range(fois):\n    print(f\"{i + 1}. Sssalut {nom} !\")\n",
+   "devinette": "#!/bin/sh\n# La devinette de la Forge : trouve le nombre entre 1 et 10.\nsecret=$(( $(date +%s) % 10 + 1 ))\nessais=0\nreponse=0\necho \"J'ai choisi un nombre entre 1 et 10. Devine !\"\nwhile [ \"$reponse\" != \"$secret\" ]; do\n  read reponse || exit 1\n  essais=$((essais + 1))\n  if [ \"$reponse\" -lt \"$secret\" ] 2>/dev/null; then\n    echo \"Plus grand !\"\n  elif [ \"$reponse\" -gt \"$secret\" ] 2>/dev/null; then\n    echo \"Plus petit !\"\n  fi\ndone\necho \"Bravo ! Trouvé en $essais essais.\"\n"
+  },
+  "de": {
+   "serpent": "# serpent.py : le serpent mécanique de la Forge répète un nom.\n# Lance-le avec : python3 serpent.py NOM FOIS\nimport sys\n\nnom = sys.argv[1]          # le 1er mot après serpent.py (comme $1 dans une recette)\nfois = int(sys.argv[2])    # le 2e mot, transformé en nombre\n\nfor i in range(fois):\n    print(f\"{i + 1}. Sssalut {nom} !\")\n",
+   "devinette": "#!/bin/sh\n# La devinette de la Forge : trouve le nombre entre 1 et 10.\nsecret=$(( $(date +%s) % 10 + 1 ))\nessais=0\nreponse=0\necho \"J'ai choisi un nombre entre 1 et 10. Devine !\"\nwhile [ \"$reponse\" != \"$secret\" ]; do\n  read reponse || exit 1\n  essais=$((essais + 1))\n  if [ \"$reponse\" -lt \"$secret\" ] 2>/dev/null; then\n    echo \"Plus grand !\"\n  elif [ \"$reponse\" -gt \"$secret\" ] 2>/dev/null; then\n    echo \"Plus petit !\"\n  fi\ndone\necho \"Bravo ! Trouvé en $essais essais.\"\n"
+  },
+  "it": {
+   "serpent": "# serpent.py : le serpent mécanique de la Forge répète un nom.\n# Lance-le avec : python3 serpent.py NOM FOIS\nimport sys\n\nnom = sys.argv[1]          # le 1er mot après serpent.py (comme $1 dans une recette)\nfois = int(sys.argv[2])    # le 2e mot, transformé en nombre\n\nfor i in range(fois):\n    print(f\"{i + 1}. Sssalut {nom} !\")\n",
+   "devinette": "#!/bin/sh\n# La devinette de la Forge : trouve le nombre entre 1 et 10.\nsecret=$(( $(date +%s) % 10 + 1 ))\nessais=0\nreponse=0\necho \"J'ai choisi un nombre entre 1 et 10. Devine !\"\nwhile [ \"$reponse\" != \"$secret\" ]; do\n  read reponse || exit 1\n  essais=$((essais + 1))\n  if [ \"$reponse\" -lt \"$secret\" ] 2>/dev/null; then\n    echo \"Plus grand !\"\n  elif [ \"$reponse\" -gt \"$secret\" ] 2>/dev/null; then\n    echo \"Plus petit !\"\n  fi\ndone\necho \"Bravo ! Trouvé en $essais essais.\"\n"
+  },
+  "pt": {
+   "serpent": "# serpent.py : le serpent mécanique de la Forge répète un nom.\n# Lance-le avec : python3 serpent.py NOM FOIS\nimport sys\n\nnom = sys.argv[1]          # le 1er mot après serpent.py (comme $1 dans une recette)\nfois = int(sys.argv[2])    # le 2e mot, transformé en nombre\n\nfor i in range(fois):\n    print(f\"{i + 1}. Sssalut {nom} !\")\n",
+   "devinette": "#!/bin/sh\n# La devinette de la Forge : trouve le nombre entre 1 et 10.\nsecret=$(( $(date +%s) % 10 + 1 ))\nessais=0\nreponse=0\necho \"J'ai choisi un nombre entre 1 et 10. Devine !\"\nwhile [ \"$reponse\" != \"$secret\" ]; do\n  read reponse || exit 1\n  essais=$((essais + 1))\n  if [ \"$reponse\" -lt \"$secret\" ] 2>/dev/null; then\n    echo \"Plus grand !\"\n  elif [ \"$reponse\" -gt \"$secret\" ] 2>/dev/null; then\n    echo \"Plus petit !\"\n  fi\ndone\necho \"Bravo ! Trouvé en $essais essais.\"\n"
+  },
+  "zh": {
+   "serpent": "# serpent.py : le serpent mécanique de la Forge répète un nom.\n# Lance-le avec : python3 serpent.py NOM FOIS\nimport sys\n\nnom = sys.argv[1]          # le 1er mot après serpent.py (comme $1 dans une recette)\nfois = int(sys.argv[2])    # le 2e mot, transformé en nombre\n\nfor i in range(fois):\n    print(f\"{i + 1}. Sssalut {nom} !\")\n",
+   "devinette": "#!/bin/sh\n# La devinette de la Forge : trouve le nombre entre 1 et 10.\nsecret=$(( $(date +%s) % 10 + 1 ))\nessais=0\nreponse=0\necho \"J'ai choisi un nombre entre 1 et 10. Devine !\"\nwhile [ \"$reponse\" != \"$secret\" ]; do\n  read reponse || exit 1\n  essais=$((essais + 1))\n  if [ \"$reponse\" -lt \"$secret\" ] 2>/dev/null; then\n    echo \"Plus grand !\"\n  elif [ \"$reponse\" -gt \"$secret\" ] 2>/dev/null; then\n    echo \"Plus petit !\"\n  fi\ndone\necho \"Bravo ! Trouvé en $essais essais.\"\n"
+  },
+  "ru": {
+   "serpent": "# serpent.py : le serpent mécanique de la Forge répète un nom.\n# Lance-le avec : python3 serpent.py NOM FOIS\nimport sys\n\nnom = sys.argv[1]          # le 1er mot après serpent.py (comme $1 dans une recette)\nfois = int(sys.argv[2])    # le 2e mot, transformé en nombre\n\nfor i in range(fois):\n    print(f\"{i + 1}. Sssalut {nom} !\")\n",
+   "devinette": "#!/bin/sh\n# La devinette de la Forge : trouve le nombre entre 1 et 10.\nsecret=$(( $(date +%s) % 10 + 1 ))\nessais=0\nreponse=0\necho \"J'ai choisi un nombre entre 1 et 10. Devine !\"\nwhile [ \"$reponse\" != \"$secret\" ]; do\n  read reponse || exit 1\n  essais=$((essais + 1))\n  if [ \"$reponse\" -lt \"$secret\" ] 2>/dev/null; then\n    echo \"Plus grand !\"\n  elif [ \"$reponse\" -gt \"$secret\" ] 2>/dev/null; then\n    echo \"Plus petit !\"\n  fi\ndone\necho \"Bravo ! Trouvé en $essais essais.\"\n"
+  },
+  "ja": {
+   "serpent": "# serpent.py : le serpent mécanique de la Forge répète un nom.\n# Lance-le avec : python3 serpent.py NOM FOIS\nimport sys\n\nnom = sys.argv[1]          # le 1er mot après serpent.py (comme $1 dans une recette)\nfois = int(sys.argv[2])    # le 2e mot, transformé en nombre\n\nfor i in range(fois):\n    print(f\"{i + 1}. Sssalut {nom} !\")\n",
+   "devinette": "#!/bin/sh\n# La devinette de la Forge : trouve le nombre entre 1 et 10.\nsecret=$(( $(date +%s) % 10 + 1 ))\nessais=0\nreponse=0\necho \"J'ai choisi un nombre entre 1 et 10. Devine !\"\nwhile [ \"$reponse\" != \"$secret\" ]; do\n  read reponse || exit 1\n  essais=$((essais + 1))\n  if [ \"$reponse\" -lt \"$secret\" ] 2>/dev/null; then\n    echo \"Plus grand !\"\n  elif [ \"$reponse\" -gt \"$secret\" ] 2>/dev/null; then\n    echo \"Plus petit !\"\n  fi\ndone\necho \"Bravo ! Trouvé en $essais essais.\"\n"
+  },
+  "hi": {
+   "serpent": "# serpent.py : le serpent mécanique de la Forge répète un nom.\n# Lance-le avec : python3 serpent.py NOM FOIS\nimport sys\n\nnom = sys.argv[1]          # le 1er mot après serpent.py (comme $1 dans une recette)\nfois = int(sys.argv[2])    # le 2e mot, transformé en nombre\n\nfor i in range(fois):\n    print(f\"{i + 1}. Sssalut {nom} !\")\n",
+   "devinette": "#!/bin/sh\n# La devinette de la Forge : trouve le nombre entre 1 et 10.\nsecret=$(( $(date +%s) % 10 + 1 ))\nessais=0\nreponse=0\necho \"J'ai choisi un nombre entre 1 et 10. Devine !\"\nwhile [ \"$reponse\" != \"$secret\" ]; do\n  read reponse || exit 1\n  essais=$((essais + 1))\n  if [ \"$reponse\" -lt \"$secret\" ] 2>/dev/null; then\n    echo \"Plus grand !\"\n  elif [ \"$reponse\" -gt \"$secret\" ] 2>/dev/null; then\n    echo \"Plus petit !\"\n  fi\ndone\necho \"Bravo ! Trouvé en $essais essais.\"\n"
+  },
+  "ar": {
+   "serpent": "# serpent.py : le serpent mécanique de la Forge répète un nom.\n# Lance-le avec : python3 serpent.py NOM FOIS\nimport sys\n\nnom = sys.argv[1]          # le 1er mot après serpent.py (comme $1 dans une recette)\nfois = int(sys.argv[2])    # le 2e mot, transformé en nombre\n\nfor i in range(fois):\n    print(f\"{i + 1}. Sssalut {nom} !\")\n",
+   "devinette": "#!/bin/sh\n# La devinette de la Forge : trouve le nombre entre 1 et 10.\nsecret=$(( $(date +%s) % 10 + 1 ))\nessais=0\nreponse=0\necho \"J'ai choisi un nombre entre 1 et 10. Devine !\"\nwhile [ \"$reponse\" != \"$secret\" ]; do\n  read reponse || exit 1\n  essais=$((essais + 1))\n  if [ \"$reponse\" -lt \"$secret\" ] 2>/dev/null; then\n    echo \"Plus grand !\"\n  elif [ \"$reponse\" -gt \"$secret\" ] 2>/dev/null; then\n    echo \"Plus petit !\"\n  fi\ndone\necho \"Bravo ! Trouvé en $essais essais.\"\n"
+  },
+  "bn": {
+   "serpent": "# serpent.py : le serpent mécanique de la Forge répète un nom.\n# Lance-le avec : python3 serpent.py NOM FOIS\nimport sys\n\nnom = sys.argv[1]          # le 1er mot après serpent.py (comme $1 dans une recette)\nfois = int(sys.argv[2])    # le 2e mot, transformé en nombre\n\nfor i in range(fois):\n    print(f\"{i + 1}. Sssalut {nom} !\")\n",
+   "devinette": "#!/bin/sh\n# La devinette de la Forge : trouve le nombre entre 1 et 10.\nsecret=$(( $(date +%s) % 10 + 1 ))\nessais=0\nreponse=0\necho \"J'ai choisi un nombre entre 1 et 10. Devine !\"\nwhile [ \"$reponse\" != \"$secret\" ]; do\n  read reponse || exit 1\n  essais=$((essais + 1))\n  if [ \"$reponse\" -lt \"$secret\" ] 2>/dev/null; then\n    echo \"Plus grand !\"\n  elif [ \"$reponse\" -gt \"$secret\" ] 2>/dev/null; then\n    echo \"Plus petit !\"\n  fi\ndone\necho \"Bravo ! Trouvé en $essais essais.\"\n"
+  },
+  "id": {
+   "serpent": "# serpent.py : le serpent mécanique de la Forge répète un nom.\n# Lance-le avec : python3 serpent.py NOM FOIS\nimport sys\n\nnom = sys.argv[1]          # le 1er mot après serpent.py (comme $1 dans une recette)\nfois = int(sys.argv[2])    # le 2e mot, transformé en nombre\n\nfor i in range(fois):\n    print(f\"{i + 1}. Sssalut {nom} !\")\n",
+   "devinette": "#!/bin/sh\n# La devinette de la Forge : trouve le nombre entre 1 et 10.\nsecret=$(( $(date +%s) % 10 + 1 ))\nessais=0\nreponse=0\necho \"J'ai choisi un nombre entre 1 et 10. Devine !\"\nwhile [ \"$reponse\" != \"$secret\" ]; do\n  read reponse || exit 1\n  essais=$((essais + 1))\n  if [ \"$reponse\" -lt \"$secret\" ] 2>/dev/null; then\n    echo \"Plus grand !\"\n  elif [ \"$reponse\" -gt \"$secret\" ] 2>/dev/null; then\n    echo \"Plus petit !\"\n  fi\ndone\necho \"Bravo ! Trouvé en $essais essais.\"\n"
+  },
+  "ur": {
+   "serpent": "# serpent.py : le serpent mécanique de la Forge répète un nom.\n# Lance-le avec : python3 serpent.py NOM FOIS\nimport sys\n\nnom = sys.argv[1]          # le 1er mot après serpent.py (comme $1 dans une recette)\nfois = int(sys.argv[2])    # le 2e mot, transformé en nombre\n\nfor i in range(fois):\n    print(f\"{i + 1}. Sssalut {nom} !\")\n",
+   "devinette": "#!/bin/sh\n# La devinette de la Forge : trouve le nombre entre 1 et 10.\nsecret=$(( $(date +%s) % 10 + 1 ))\nessais=0\nreponse=0\necho \"J'ai choisi un nombre entre 1 et 10. Devine !\"\nwhile [ \"$reponse\" != \"$secret\" ]; do\n  read reponse || exit 1\n  essais=$((essais + 1))\n  if [ \"$reponse\" -lt \"$secret\" ] 2>/dev/null; then\n    echo \"Plus grand !\"\n  elif [ \"$reponse\" -gt \"$secret\" ] 2>/dev/null; then\n    echo \"Plus petit !\"\n  fi\ndone\necho \"Bravo ! Trouvé en $essais essais.\"\n"
+  }
+ }
+}

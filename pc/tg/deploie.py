@@ -602,6 +602,50 @@ def _labo_anime(x, phase):
     return [f"📄 {''.join(tapis)} 📊"]
 
 
+# ---------------------------------------------------------------- l'atelier de la forge (la Forge)
+def forges(ligne):
+    """Les commandes d'une ligne qui FABRIQUENT ou FONT TOURNER quelque chose (spécification commune, Deploie.kt,
+    vecteurs donnees/forge/vecteurs.json) : [{seg, cmd, outil, objet, de, vers}] — sh fait d'une recette des commandes
+    lancées (le parchemin s'enflamme), for et while sont des manèges, if un aiguillage, python3 le serpent mécanique,
+    http.server la lanterne, magick la presse à images… (sh tests.sh reste à la lunette de l'Observatoire.)"""
+    from . import forge
+    out = []
+    bl = blocs(ligne)
+    for c in chaines(bl):
+        for e in c["etapes"]:
+            a = forge.forge_de(e["texte"])
+            if not a or observatoire_lunette(e["texte"]):
+                continue
+            seg = next((b["seg"] for b in bl if b["g"] == "commande" and b["i"] - 1 == e["debut"]), 0)
+            out.append({"seg": seg, "cmd": e["cmd"], "outil": a[0], "objet": a[1], "de": a[2], "vers": a[3]})
+    return out
+
+
+OBJETS = {"parchemin": "📜", "lanterne": "🏮", "serpent": "🐍", "manege": "🎠", "aiguillage": "🔀", "presse": "🖼",
+          "ciseaux_sons": "✂", "diapason": "🎵", "loupe": "🔍"}
+
+
+def _forge_anime(x, phase):
+    """La forge : le parchemin brûle de gauche à droite et ses commandes s'envolent en étincelles (▒ → ✦) ; les
+    manèges tournent ; les autres objets transforment ce qui passe (▣ → ◆)."""
+    L = 30
+    pos = int(phase * (L - 1))
+    if x["objet"] == "parchemin":
+        bande = ["✦" if k < pos and (k + int(phase * 9)) % 3 == 0 else "·" if k < pos else "▒" for k in range(L)]
+        bande[min(pos, L - 1)] = "🔥"
+        return [f"📜 {''.join(bande)} ✨"]
+    if x["objet"] == "manege":
+        bande = ["·"] * L
+        for k in range(0, L, 5):
+            bande[(k + pos) % L] = "◉"
+        bande[L // 2] = "◐◓◑◒"[int(phase * 16) % 4]
+        return [f"🎠 {''.join(bande)} 🔁"]
+    bande = ["·"] * L
+    bande[min(pos, L - 1)] = "▣" if pos < L // 2 else "◆"
+    bande[L // 2] = "🔨"
+    return [f"{OBJETS.get(x['objet'], '🔨')} {''.join(bande)} 🔥"]
+
+
 # ---------------------------------------------------------------- les mots pour le dire
 def nom_genre(g):
     return t("dep.genre." + g)
@@ -874,6 +918,13 @@ def ecran(ligne, bl, actif, sorties, phase=0.0, largeur=80, dossier=None, pas=Fa
                     "dep.labo", outil=x["outil"], instrument=t("dn.instrument." + x["instrument"]),
                     de=t("dn.labo." + x["de"]), vers=t("dn.labo." + x["vers"])) + RESET)
                 out += ["  " + l for l in _labo_anime(x, phase % 1.0)]
+        for x in forges(ligne):                  # sh, for, if, python3, http.server, magick… : l'atelier de la Forge
+            if x["seg"] == b["seg"]:
+                out.append("")
+                out.append(f"  {fg(ANSI['commande'])}{OBJETS.get(x['objet'], '🔨')} " + t(
+                    "dep.forge", outil=x["outil"], objet=t("fo.objet." + x["objet"]),
+                    de=t("fo.mot." + x["de"]), vers=t("fo.mot." + x["vers"])) + RESET)
+                out += ["  " + l for l in _forge_anime(x, phase % 1.0)]
     if actif == n and sorties:
         for c, s in zip(chs, sorties):
             if s and len(c["etapes"]) > 1:
@@ -895,7 +946,8 @@ def _reseau(b, ligne):
                                      any(x["seg"] == b["seg"] for x in antennes(ligne)) or
                                      any(x["seg"] == b["seg"] for x in etablis(ligne)) or
                                      any(x["seg"] == b["seg"] for x in lunettes(ligne)) or
-                                     any(x["seg"] == b["seg"] for x in labos(ligne)))
+                                     any(x["seg"] == b["seg"] for x in labos(ligne)) or
+                                     any(x["seg"] == b["seg"] for x in forges(ligne)))
 
 
 def jouer(ligne, dossier=None, pas=False, sortie=None, clavier=None, ips=12):

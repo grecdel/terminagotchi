@@ -258,6 +258,8 @@ def casse_ok(mot):
     """`PWD`, `Ls` : le nom de la commande en majuscules n'existe pas (Linux, macOS ; Windows s'en moque)."""
     if IS_WIN or not mot or mot == mot.lower():
         return True
+    if re.match(r"^[A-Za-z_]\w*=", mot):    # nom=Pixel : une boîte qu'on remplit (la Forge), pas une commande
+        return True
     return shutil.which(mot) is not None and os.path.basename(shutil.which(mot)) == mot
 
 

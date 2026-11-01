@@ -1,0 +1,124 @@
+{
+ "note": "Généré par donnees/forge/outils/fiches_forge.py ; lu par pc/tg/forge.py et Forge.kt. Tout reste dans le terrain (forge/) ; le site est servi sur 127.0.0.1 seulement ; la photo d'exemple a des métadonnées INVENTÉES (jamais les photos de l'enfant).",
+ "site": {
+  "port": 8642,
+  "plage": 20
+ },
+ "atelier": {
+  "regles": [
+   {
+    "motif": "^python3?\\s+-m\\s+http\\.server\\b",
+    "outil": "http.server",
+    "objet": "lanterne",
+    "de": "dossier",
+    "vers": "pages"
+   },
+   {
+    "motif": "^python3?\\b",
+    "outil": "python3",
+    "objet": "serpent",
+    "de": "programme",
+    "vers": "resultat"
+   },
+   {
+    "motif": "^(sh|bash|dash)\\s+(?!\\S*tests?\\.sh\\b)\\S+\\.sh\\b|^\\./\\S+\\.sh\\b",
+    "outil": "sh",
+    "objet": "parchemin",
+    "de": "recette",
+    "vers": "commandes"
+   },
+   {
+    "motif": "^for\\b",
+    "outil": "for",
+    "objet": "manege",
+    "de": "liste",
+    "vers": "tours"
+   },
+   {
+    "motif": "^while\\b",
+    "outil": "while",
+    "objet": "manege",
+    "de": "condition",
+    "vers": "tours"
+   },
+   {
+    "motif": "^if\\b",
+    "outil": "if",
+    "objet": "aiguillage",
+    "de": "condition",
+    "vers": "chemin"
+   },
+   {
+    "motif": "^(magick|convert)\\b",
+    "outil": "magick",
+    "objet": "presse",
+    "de": "images",
+    "vers": "animation"
+   },
+   {
+    "motif": "^ffmpeg\\b",
+    "outil": "ffmpeg",
+    "objet": "ciseaux_sons",
+    "de": "son",
+    "vers": "morceau"
+   },
+   {
+    "motif": "^sox\\b",
+    "outil": "sox",
+    "objet": "diapason",
+    "de": "silence",
+    "vers": "son"
+   },
+   {
+    "motif": "^exiftool\\b",
+    "outil": "exiftool",
+    "objet": "loupe",
+    "de": "photo",
+    "vers": "etiquettes"
+   }
+  ]
+ },
+ "couleurs": {
+  "lanterne": 229,
+  "serpent": 78,
+  "parchemin": 214,
+  "manege": 213,
+  "aiguillage": 117,
+  "presse": 141,
+  "ciseaux_sons": 203,
+  "diapason": 39,
+  "loupe": 179
+ },
+ "photo": {
+  "base64": "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",
+  "marque": "Terminacam",
+  "modele": "TC-7",
+  "date": "2026:10:31 15:42:07",
+  "gps": [
+   0,
+   0
+  ]
+ },
+ "multimedia": {
+  "sauts": [
+   0,
+   2,
+   4,
+   2
+  ],
+  "fanfare_hz": [
+   523.25,
+   659.25,
+   783.99,
+   1046.5
+  ],
+  "note_s": 0.25
+ },
+ "traceback": [
+  "Traceback (most recent call last):",
+  "  File \"serpent.py\", line 5, in <module>",
+  "    nom = sys.argv[1]",
+  "          ~~~~~~~~^^^",
+  "IndexError: list index out of range"
+ ]
+}

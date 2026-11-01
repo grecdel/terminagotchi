@@ -19,6 +19,8 @@ on:
             "app/src/main/java/fr/terminagotchi/ObservatoireDessin.kt",
             "donnees/donnees/**", "donnees/donnees.json", "app/src/main/java/fr/terminagotchi/Donnees.kt",
             "app/src/main/java/fr/terminagotchi/DonneesAwk.kt", "app/src/main/java/fr/terminagotchi/DonneesSql.kt",
+            "donnees/forge/**", "donnees/forge.json", "app/src/main/java/fr/terminagotchi/Forge.kt",
+            "app/src/main/java/fr/terminagotchi/ForgeDessin.kt",
             "pc/**", "app/src/main/assets/langues/**", "app/src/main/java/fr/terminagotchi/Port.kt",
             "app/src/main/java/fr/terminagotchi/Histoire.kt", "app/src/main/java/fr/terminagotchi/Jeu.kt",
             ".github/workflows/rejeu.yml"]
@@ -41,7 +43,7 @@ jobs:
       - name: Les outils des fiches (les commandes rejouées)
         run: |
           sudo apt-get update -qq
-          sudo apt-get install -y -qq tree iproute2 iputils-ping iputils-tracepath openssh-client dnsutils bsdextrautils openssl xxd gnupg qemu-utils pciutils usbutils bc iw rfkill zsh gcc make file openscad sqlite3 gawk busybox >/dev/null || true
+          sudo apt-get install -y -qq tree iproute2 iputils-ping iputils-tracepath openssh-client dnsutils bsdextrautils openssl xxd gnupg qemu-utils pciutils usbutils bc iw rfkill zsh gcc make file openscad sqlite3 gawk busybox imagemagick ffmpeg sox libimage-exiftool-perl mksh >/dev/null || true
           bash --version | head -n 1
 
       - name: Vérificateur de la charte (fiches, étapes, orphelines, 14 langues)
@@ -59,6 +61,7 @@ jobs:
           python3 pc/outils/vecteurs_observatoire.py --verifier
           python3 pc/outils/vecteurs_donnees.py --verifier
           python3 pc/outils/vecteurs_classe.py --verifier
+          python3 pc/outils/vecteurs_forge.py --verifier
 
       - name: Rejeu des sorties dans un vrai bash (fiches et histoire du PC)
         run: LC_ALL=C.UTF-8 python3 pc/outils/rejeu_bash.py
@@ -177,6 +180,24 @@ jobs:
           set -o pipefail
           LC_ALL=C.UTF-8 python3 pc/outils/test_donnees_outils.py --exiger toybox,busybox 2>&1 | tee /tmp/dnout.out || {
             grep -E "✖|Error|Traceback|line [0-9]" /tmp/dnout.out | head -20 | sed 's/^/::error::/'; exit 1; }
+
+      - name: La Forge (recettes, Python, jeu, site sur 127.0.0.1, multimédia ; rien hors du terrain)
+        run: |
+          set -o pipefail
+          LC_ALL=C.UTF-8 python3 pc/outils/test_forge.py 2>&1 | tee /tmp/forge.out || {
+            grep -E "✖|Error|Traceback|line [0-9]" /tmp/forge.out | head -20 | sed 's/^/::error::/'; exit 1; }
+
+      - name: Les commandes de la Forge avec mksh et toybox (téléphone) et busybox, comparées aux outils GNU
+        run: |
+          set -o pipefail
+          LC_ALL=C.UTF-8 python3 pc/outils/test_forge_outils.py --exiger toybox,mksh 2>&1 | tee /tmp/foout.out || {
+            grep -E "✖|Error|Traceback|line [0-9]" /tmp/foout.out | head -20 | sed 's/^/::error::/'; exit 1; }
+
+      - name: Trois enfants visitent la Forge (docs/simulations/rapport_forge.md)
+        run: |
+          set -o pipefail
+          LC_ALL=C.UTF-8 python3 pc/outils/sim_forge.py 2>&1 | tee /tmp/simfo.out || {
+            grep -E "✖|Error|Traceback|line [0-9]" /tmp/simfo.out | head -20 | sed 's/^/::error::/'; exit 1; }
 
       - name: Trois enfants visitent la Salle des Données (docs/simulations/rapport_donnees.md)
         run: |

@@ -194,6 +194,14 @@ def generer(typ, graine, k):
         total = TOTAUX_CENT[h.entier(len(TOTAUX_CENT))]
         n = h.entier(total + 1)
         return {"n": n, "total": total}, str(n * 100 // total), f"echo $(({n} * 100 / {total}))"
+    # les Ponts des Nombres de la Forge (§ 2.10) : compter les tours d'une boucle, les priorités de calcul
+    if typ == "boucles":
+        a = 1 + h.entier(5)
+        z = a + 2 + h.entier(8)
+        return {"a": a, "z": z}, str(z - a + 1), f"seq {a} {z} | wc -l"
+    if typ == "priorites":
+        a, b, c = 2 + h.entier(8), 2 + h.entier(5), 2 + h.entier(5)
+        return {"a": a, "b": b, "c": c}, str(a + b * c), f"echo $(({a} + {b} * {c}))"
     raise ValueError(typ)
 
 

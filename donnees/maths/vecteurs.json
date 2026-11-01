@@ -5472,6 +5472,558 @@
    },
    "reponse": "17",
    "verif": "echo $((41 - 24))"
+  },
+  {
+   "type": "boucles",
+   "graine": 0,
+   "k": 0,
+   "params": {
+    "a": "4",
+    "z": "8"
+   },
+   "reponse": "5",
+   "verif": "seq 4 8 | wc -l"
+  },
+  {
+   "type": "boucles",
+   "graine": 0,
+   "k": 1,
+   "params": {
+    "a": "2",
+    "z": "8"
+   },
+   "reponse": "7",
+   "verif": "seq 2 8 | wc -l"
+  },
+  {
+   "type": "boucles",
+   "graine": 0,
+   "k": 2,
+   "params": {
+    "a": "5",
+    "z": "8"
+   },
+   "reponse": "4",
+   "verif": "seq 5 8 | wc -l"
+  },
+  {
+   "type": "boucles",
+   "graine": 0,
+   "k": 3,
+   "params": {
+    "a": "4",
+    "z": "8"
+   },
+   "reponse": "5",
+   "verif": "seq 4 8 | wc -l"
+  },
+  {
+   "type": "boucles",
+   "graine": 0,
+   "k": 4,
+   "params": {
+    "a": "1",
+    "z": "10"
+   },
+   "reponse": "10",
+   "verif": "seq 1 10 | wc -l"
+  },
+  {
+   "type": "boucles",
+   "graine": 0,
+   "k": 5,
+   "params": {
+    "a": "1",
+    "z": "5"
+   },
+   "reponse": "5",
+   "verif": "seq 1 5 | wc -l"
+  },
+  {
+   "type": "boucles",
+   "graine": 0,
+   "k": 6,
+   "params": {
+    "a": "5",
+    "z": "14"
+   },
+   "reponse": "10",
+   "verif": "seq 5 14 | wc -l"
+  },
+  {
+   "type": "boucles",
+   "graine": 0,
+   "k": 7,
+   "params": {
+    "a": "3",
+    "z": "7"
+   },
+   "reponse": "5",
+   "verif": "seq 3 7 | wc -l"
+  },
+  {
+   "type": "boucles",
+   "graine": 1761955200,
+   "k": 0,
+   "params": {
+    "a": "2",
+    "z": "9"
+   },
+   "reponse": "8",
+   "verif": "seq 2 9 | wc -l"
+  },
+  {
+   "type": "boucles",
+   "graine": 1761955200,
+   "k": 1,
+   "params": {
+    "a": "1",
+    "z": "9"
+   },
+   "reponse": "9",
+   "verif": "seq 1 9 | wc -l"
+  },
+  {
+   "type": "boucles",
+   "graine": 1761955200,
+   "k": 2,
+   "params": {
+    "a": "5",
+    "z": "9"
+   },
+   "reponse": "5",
+   "verif": "seq 5 9 | wc -l"
+  },
+  {
+   "type": "boucles",
+   "graine": 1761955200,
+   "k": 3,
+   "params": {
+    "a": "3",
+    "z": "10"
+   },
+   "reponse": "8",
+   "verif": "seq 3 10 | wc -l"
+  },
+  {
+   "type": "boucles",
+   "graine": 1761955200,
+   "k": 4,
+   "params": {
+    "a": "2",
+    "z": "7"
+   },
+   "reponse": "6",
+   "verif": "seq 2 7 | wc -l"
+  },
+  {
+   "type": "boucles",
+   "graine": 1761955200,
+   "k": 5,
+   "params": {
+    "a": "2",
+    "z": "6"
+   },
+   "reponse": "5",
+   "verif": "seq 2 6 | wc -l"
+  },
+  {
+   "type": "boucles",
+   "graine": 1761955200,
+   "k": 6,
+   "params": {
+    "a": "1",
+    "z": "8"
+   },
+   "reponse": "8",
+   "verif": "seq 1 8 | wc -l"
+  },
+  {
+   "type": "boucles",
+   "graine": 1761955200,
+   "k": 7,
+   "params": {
+    "a": "3",
+    "z": "12"
+   },
+   "reponse": "10",
+   "verif": "seq 3 12 | wc -l"
+  },
+  {
+   "type": "boucles",
+   "graine": 1099511627783,
+   "k": 0,
+   "params": {
+    "a": "4",
+    "z": "7"
+   },
+   "reponse": "4",
+   "verif": "seq 4 7 | wc -l"
+  },
+  {
+   "type": "boucles",
+   "graine": 1099511627783,
+   "k": 1,
+   "params": {
+    "a": "2",
+    "z": "6"
+   },
+   "reponse": "5",
+   "verif": "seq 2 6 | wc -l"
+  },
+  {
+   "type": "boucles",
+   "graine": 1099511627783,
+   "k": 2,
+   "params": {
+    "a": "1",
+    "z": "6"
+   },
+   "reponse": "6",
+   "verif": "seq 1 6 | wc -l"
+  },
+  {
+   "type": "boucles",
+   "graine": 1099511627783,
+   "k": 3,
+   "params": {
+    "a": "1",
+    "z": "8"
+   },
+   "reponse": "8",
+   "verif": "seq 1 8 | wc -l"
+  },
+  {
+   "type": "boucles",
+   "graine": 1099511627783,
+   "k": 4,
+   "params": {
+    "a": "1",
+    "z": "3"
+   },
+   "reponse": "3",
+   "verif": "seq 1 3 | wc -l"
+  },
+  {
+   "type": "boucles",
+   "graine": 1099511627783,
+   "k": 5,
+   "params": {
+    "a": "2",
+    "z": "7"
+   },
+   "reponse": "6",
+   "verif": "seq 2 7 | wc -l"
+  },
+  {
+   "type": "boucles",
+   "graine": 1099511627783,
+   "k": 6,
+   "params": {
+    "a": "4",
+    "z": "7"
+   },
+   "reponse": "4",
+   "verif": "seq 4 7 | wc -l"
+  },
+  {
+   "type": "boucles",
+   "graine": 1099511627783,
+   "k": 7,
+   "params": {
+    "a": "2",
+    "z": "7"
+   },
+   "reponse": "6",
+   "verif": "seq 2 7 | wc -l"
+  },
+  {
+   "type": "priorites",
+   "graine": 0,
+   "k": 0,
+   "params": {
+    "a": "4",
+    "b": "5",
+    "c": "2"
+   },
+   "reponse": "14",
+   "verif": "echo $((4 + 5 * 2))"
+  },
+  {
+   "type": "priorites",
+   "graine": 0,
+   "k": 1,
+   "params": {
+    "a": "6",
+    "b": "3",
+    "c": "5"
+   },
+   "reponse": "21",
+   "verif": "echo $((6 + 3 * 5))"
+  },
+  {
+   "type": "priorites",
+   "graine": 0,
+   "k": 2,
+   "params": {
+    "a": "6",
+    "b": "2",
+    "c": "5"
+   },
+   "reponse": "16",
+   "verif": "echo $((6 + 2 * 5))"
+  },
+  {
+   "type": "priorites",
+   "graine": 0,
+   "k": 3,
+   "params": {
+    "a": "3",
+    "b": "2",
+    "c": "5"
+   },
+   "reponse": "13",
+   "verif": "echo $((3 + 2 * 5))"
+  },
+  {
+   "type": "priorites",
+   "graine": 0,
+   "k": 4,
+   "params": {
+    "a": "7",
+    "b": "4",
+    "c": "2"
+   },
+   "reponse": "15",
+   "verif": "echo $((7 + 4 * 2))"
+  },
+  {
+   "type": "priorites",
+   "graine": 0,
+   "k": 5,
+   "params": {
+    "a": "2",
+    "b": "5",
+    "c": "2"
+   },
+   "reponse": "12",
+   "verif": "echo $((2 + 5 * 2))"
+  },
+  {
+   "type": "priorites",
+   "graine": 0,
+   "k": 6,
+   "params": {
+    "a": "4",
+    "b": "6",
+    "c": "6"
+   },
+   "reponse": "40",
+   "verif": "echo $((4 + 6 * 6))"
+  },
+  {
+   "type": "priorites",
+   "graine": 0,
+   "k": 7,
+   "params": {
+    "a": "8",
+    "b": "3",
+    "c": "6"
+   },
+   "reponse": "26",
+   "verif": "echo $((8 + 3 * 6))"
+  },
+  {
+   "type": "priorites",
+   "graine": 1761955200,
+   "k": 0,
+   "params": {
+    "a": "5",
+    "b": "6",
+    "c": "2"
+   },
+   "reponse": "17",
+   "verif": "echo $((5 + 6 * 2))"
+  },
+  {
+   "type": "priorites",
+   "graine": 1761955200,
+   "k": 1,
+   "params": {
+    "a": "5",
+    "b": "2",
+    "c": "5"
+   },
+   "reponse": "15",
+   "verif": "echo $((5 + 2 * 5))"
+  },
+  {
+   "type": "priorites",
+   "graine": 1761955200,
+   "k": 2,
+   "params": {
+    "a": "6",
+    "b": "6",
+    "c": "4"
+   },
+   "reponse": "30",
+   "verif": "echo $((6 + 6 * 4))"
+  },
+  {
+   "type": "priorites",
+   "graine": 1761955200,
+   "k": 3,
+   "params": {
+    "a": "6",
+    "b": "4",
+    "c": "4"
+   },
+   "reponse": "22",
+   "verif": "echo $((6 + 4 * 4))"
+  },
+  {
+   "type": "priorites",
+   "graine": 1761955200,
+   "k": 4,
+   "params": {
+    "a": "9",
+    "b": "4",
+    "c": "2"
+   },
+   "reponse": "17",
+   "verif": "echo $((9 + 4 * 2))"
+  },
+  {
+   "type": "priorites",
+   "graine": 1761955200,
+   "k": 5,
+   "params": {
+    "a": "5",
+    "b": "6",
+    "c": "2"
+   },
+   "reponse": "17",
+   "verif": "echo $((5 + 6 * 2))"
+  },
+  {
+   "type": "priorites",
+   "graine": 1761955200,
+   "k": 6,
+   "params": {
+    "a": "6",
+    "b": "4",
+    "c": "3"
+   },
+   "reponse": "18",
+   "verif": "echo $((6 + 4 * 3))"
+  },
+  {
+   "type": "priorites",
+   "graine": 1761955200,
+   "k": 7,
+   "params": {
+    "a": "4",
+    "b": "4",
+    "c": "2"
+   },
+   "reponse": "12",
+   "verif": "echo $((4 + 4 * 2))"
+  },
+  {
+   "type": "priorites",
+   "graine": 1099511627783,
+   "k": 0,
+   "params": {
+    "a": "7",
+    "b": "5",
+    "c": "6"
+   },
+   "reponse": "37",
+   "verif": "echo $((7 + 5 * 6))"
+  },
+  {
+   "type": "priorites",
+   "graine": 1099511627783,
+   "k": 1,
+   "params": {
+    "a": "6",
+    "b": "5",
+    "c": "6"
+   },
+   "reponse": "36",
+   "verif": "echo $((6 + 5 * 6))"
+  },
+  {
+   "type": "priorites",
+   "graine": 1099511627783,
+   "k": 2,
+   "params": {
+    "a": "5",
+    "b": "4",
+    "c": "6"
+   },
+   "reponse": "29",
+   "verif": "echo $((5 + 4 * 6))"
+  },
+  {
+   "type": "priorites",
+   "graine": 1099511627783,
+   "k": 3,
+   "params": {
+    "a": "6",
+    "b": "3",
+    "c": "2"
+   },
+   "reponse": "12",
+   "verif": "echo $((6 + 3 * 2))"
+  },
+  {
+   "type": "priorites",
+   "graine": 1099511627783,
+   "k": 4,
+   "params": {
+    "a": "4",
+    "b": "3",
+    "c": "5"
+   },
+   "reponse": "19",
+   "verif": "echo $((4 + 3 * 5))"
+  },
+  {
+   "type": "priorites",
+   "graine": 1099511627783,
+   "k": 5,
+   "params": {
+    "a": "9",
+    "b": "5",
+    "c": "2"
+   },
+   "reponse": "19",
+   "verif": "echo $((9 + 5 * 2))"
+  },
+  {
+   "type": "priorites",
+   "graine": 1099511627783,
+   "k": 6,
+   "params": {
+    "a": "3",
+    "b": "2",
+    "c": "5"
+   },
+   "reponse": "13",
+   "verif": "echo $((3 + 2 * 5))"
+  },
+  {
+   "type": "priorites",
+   "graine": 1099511627783,
+   "k": 7,
+   "params": {
+    "a": "9",
+    "b": "4",
+    "c": "6"
+   },
+   "reponse": "33",
+   "verif": "echo $((9 + 4 * 6))"
   }
  ],
  "recherches": [
@@ -5578,7 +6130,7 @@
   {
    "langue": "en",
    "question": "multiply",
-   "attendu": "multiplication"
+   "attendu": "priorites"
   },
   {
    "langue": "en",
@@ -5744,6 +6296,16 @@
    "comptage",
    "addition",
    "soustraction"
+  ],
+  "boucles": [
+   "comptage",
+   "addition",
+   "soustraction"
+  ],
+  "priorites": [
+   "comptage",
+   "addition",
+   "multiplication"
   ]
  }
 }
