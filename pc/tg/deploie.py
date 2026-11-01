@@ -681,6 +681,36 @@ def _robot_anime(x, phase):
     return [f"⌨ {''.join(fil)} {PIECES_ROBOT.get(x['piece'], '🤖')}"]
 
 
+# ---------------------------------------------------------------- la cordée (le Sommet)
+def cordees(ligne):
+    """Les commandes d'une ligne qui RELISENT, ÉCLAIRENT ou LANCENT un script, ou qui cherchent avec -print0 (le Sommet,
+    spécification commune avec Deploie.kt, vecteurs donnees/sommet/vecteurs.json) : [{seg, cmd, outil, geste, de, vers}].
+    grep, sed et xargs restent au laboratoire des Données ; wc et diff à la lunette de l'Observatoire ; bash script.sh
+    au parchemin de la Forge."""
+    from . import forge, sommet
+    out = []
+    bl = blocs(ligne)
+    for c in chaines(bl):
+        for e in c["etapes"]:
+            a = sommet.cordee_de(e["texte"])
+            if not a or forge.forge_de(e["texte"]):   # bash script.sh : le parchemin de la Forge s'en charge
+                continue
+            seg = next((b["seg"] for b in bl if b["g"] == "commande" and b["i"] - 1 == e["debut"]), 0)
+            out.append({"seg": seg, "cmd": e["cmd"], "outil": a[0], "geste": a[1], "de": a[2], "vers": a[3]})
+    return out
+
+
+def _cordee_anime(x, phase):
+    """La cordée : le grimpeur (🧗) monte le long de la corde ; en haut, le drapeau (🚩)."""
+    L = 24
+    pos = int(phase * (L - 1))
+    corde = ["─"] * L
+    for k in range(0, L, 5):
+        corde[k] = "┼"
+    corde[min(pos, L - 1)] = "▲"
+    return [f"📄 {''.join(corde)} 🚩"]
+
+
 # ---------------------------------------------------------------- les mots pour le dire
 def nom_genre(g):
     return t("dep.genre." + g)
@@ -966,6 +996,12 @@ def ecran(ligne, bl, actif, sorties, phase=0.0, largeur=80, dossier=None, pas=Fa
                 out.append(f"  {fg(ANSI['commande'])}🤖 " + t("dep.robot", piece=t("at.piece." + x["piece"]),
                                                              sens=t("at.sens." + x["sens"])) + RESET)
                 out += ["  " + l for l in _robot_anime(x, phase % 1.0)]
+        for x in cordees(ligne):                 # bash -n, bash -x, shellcheck, find -print0 : la cordée (le Sommet)
+            if x["seg"] == b["seg"]:
+                out.append("")
+                out.append(f"  {fg(ANSI['commande'])}⛰ " + t("dep.cordee", outil=x["outil"], geste=t("som.cordee.geste." + x["geste"]),
+                                                            de=t("som.cordee." + x["de"]), vers=t("som.cordee." + x["vers"])) + RESET)
+                out += ["  " + l for l in _cordee_anime(x, phase % 1.0)]
     if actif == n and sorties:
         for c, s in zip(chs, sorties):
             if s and len(c["etapes"]) > 1:
@@ -989,7 +1025,8 @@ def _reseau(b, ligne):
                                      any(x["seg"] == b["seg"] for x in lunettes(ligne)) or
                                      any(x["seg"] == b["seg"] for x in labos(ligne)) or
                                      any(x["seg"] == b["seg"] for x in forges(ligne)) or
-                                     any(x["seg"] == b["seg"] for x in robots(ligne)))
+                                     any(x["seg"] == b["seg"] for x in robots(ligne)) or
+                                     any(x["seg"] == b["seg"] for x in cordees(ligne)))
 
 
 def jouer(ligne, dossier=None, pas=False, sortie=None, clavier=None, ips=12):

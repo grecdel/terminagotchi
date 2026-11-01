@@ -4220,6 +4220,278 @@
     "Espressif, esptool (documentation) : https://docs.espressif.com/projects/esptool/"
    ],
    "relu_par": null
+  },
+  "script_robuste": {
+   "motif": "(fragile\\.sh|set -euo pipefail|^echo\\s+\\$\\?|^(tg\\s+)?sommet\\s+(fragile|refuge|plan)\\b|refuge\\.txt|coffre)",
+   "enfant": "som.f.script_robuste.enfant",
+   "grands": "som.f.script_robuste.grands",
+   "vrai_terminal": [
+    {
+     "prepare": "cat > s.sh <<'FIN'\nf=$1\ncp $f coffre/\necho fini\nFIN\nmkdir coffre && touch 'a b'",
+     "cmd": "bash s.sh 'a b' 2>/dev/null; echo $?",
+     "sortie": "fini\n0"
+    },
+    {
+     "prepare": "cat > s.sh <<'FIN'\nset -euo pipefail\nf=$1\ncp $f coffre/\necho fini\nFIN\nmkdir coffre && touch 'a b'",
+     "cmd": "bash s.sh 'a b' 2>/dev/null; echo $?",
+     "sortie": "1"
+    },
+    {
+     "prepare": "cat > s.sh <<'FIN'\nset -euo pipefail\nf=$1\ncp \"$f\" coffre/\necho fini\nFIN\nmkdir coffre && touch 'a b'",
+     "cmd": "bash s.sh 'a b' && ls coffre",
+     "sortie": "fini\na b"
+    },
+    {
+     "cmd": "bash -c 'set -u; echo \"$x\"' 2>&1",
+     "motif": "x: unbound variable",
+     "code": "non0"
+    },
+    {
+     "cmd": "bash -c 'set -o pipefail; false | true'; echo $?",
+     "sortie": "1"
+    }
+   ],
+   "limite_image": "som.f.script_robuste.limite",
+   "idees_fausses": [
+    "som.f.script_robuste.idee"
+   ],
+   "sources": [
+    "GNU Bash, manuel de référence (set, trap, getopts, $( ), <( ), -n, -x) : https://www.gnu.org/software/bash/manual/",
+    "POSIX.1-2024, Shell Command Language (set -e -u, trap, getopts) : https://pubs.opengroup.org/onlinepubs/9799919799/",
+    "ShellCheck (les avertissements SC2086…) : https://www.shellcheck.net/wiki/"
+   ],
+   "relu_par": null
+  },
+  "bivouac_propre": {
+   "motif": "(bivouac\\.sh|sale\\.sh|brouillon|sac\\.txt|\\btrap\\b|\\bmktemp\\b|\\bgetopts\\b|^(tg\\s+)?sommet\\s+(bivouac|restes)\\b)",
+   "enfant": "som.f.bivouac_propre.enfant",
+   "grands": "som.f.bivouac_propre.grands",
+   "vrai_terminal": [
+    {
+     "prepare": "cat > t.sh <<'FIN'\nf=$(mktemp ./b.XXXXXX)\ntrap 'rm -f \"$f\"' EXIT\necho x > \"$f\"\nFIN",
+     "cmd": "bash t.sh; ls b.* 2>/dev/null | wc -l",
+     "sortie": "0"
+    },
+    {
+     "prepare": "cat > t.sh <<'FIN'\nf=$(mktemp ./b.XXXXXX)\necho x > \"$f\"\nFIN",
+     "cmd": "bash t.sh; ls b.* 2>/dev/null | wc -l",
+     "sortie": "1"
+    },
+    {
+     "prepare": "cat > o.sh <<'FIN'\nn=1\nwhile getopts \"n:\" opt; do\n  case $opt in n) n=$OPTARG ;; *) exit 2 ;; esac\ndone\necho \"n=$n\"\nFIN",
+     "cmd": "bash o.sh -n 3",
+     "sortie": "n=3"
+    },
+    {
+     "prepare": "cat > o.sh <<'FIN'\nn=1\nwhile getopts \"n:\" opt; do\n  case $opt in n) n=$OPTARG ;; *) exit 2 ;; esac\ndone\necho \"n=$n\"\nFIN",
+     "cmd": "bash o.sh -z 2>&1",
+     "motif": "illegal option -- z",
+     "code": "non0"
+    },
+    {
+     "cmd": "mktemp ./b.XXXXXX | grep -cE '^\\./b\\.[A-Za-z0-9]{6}$'",
+     "sortie": "1"
+    }
+   ],
+   "limite_image": "som.f.bivouac_propre.limite",
+   "idees_fausses": [
+    "som.f.bivouac_propre.idee"
+   ],
+   "sources": [
+    "GNU Bash, manuel de référence (set, trap, getopts, $( ), <( ), -n, -x) : https://www.gnu.org/software/bash/manual/",
+    "POSIX.1-2024, Shell Command Language (set -e -u, trap, getopts) : https://pubs.opengroup.org/onlinepubs/9799919799/",
+    "GNU coreutils (mktemp, wc) et findutils (find -print0, xargs -0) : https://www.gnu.org/software/coreutils/manual/ ; https://www.gnu.org/software/findutils/manual/"
+   ],
+   "relu_par": null
+  },
+  "regex_avancees": {
+   "motif": "(journal\\.log|alertes\\.txt|^grep\\b.*\\s-\\w*[EoP]|^egrep\\b|^sed\\s+(-\\w+\\s+)*-E|^(tg\\s+)?sommet\\s+(journal|dates|alertes)\\b)",
+   "enfant": "som.f.regex_avancees.enfant",
+   "grands": "som.f.regex_avancees.grands",
+   "vrai_terminal": [
+    {
+     "prepare": "printf '%s\\n' '2026-07-01 [INFO] depart' '  releve du 2026-07-02' '2026-07-02 [ALERTE] vent' '  note : fausse ALERTE' '2026-07-03 [ERREUR] corde' > j.log",
+     "cmd": "grep -cE '^[0-9]{4}-[0-9]{2}-[0-9]{2}' j.log",
+     "sortie": "3"
+    },
+    {
+     "prepare": "printf '%s\\n' '2026-07-01 [INFO] depart' '  releve du 2026-07-02' '2026-07-02 [ALERTE] vent' '  note : fausse ALERTE' '2026-07-03 [ERREUR] corde' > j.log",
+     "cmd": "grep -oE '[0-9]{4}-[0-9]{2}-[0-9]{2}' j.log | sort -u | wc -l",
+     "sortie": "3"
+    },
+    {
+     "prepare": "printf '%s\\n' '2026-07-01 [INFO] depart' '  releve du 2026-07-02' '2026-07-02 [ALERTE] vent' '  note : fausse ALERTE' '2026-07-03 [ERREUR] corde' > j.log",
+     "cmd": "grep -cE 'ALERTE|ERREUR' j.log",
+     "sortie": "3"
+    },
+    {
+     "prepare": "printf '%s\\n' '2026-07-01 [INFO] depart' '  releve du 2026-07-02' '2026-07-02 [ALERTE] vent' '  note : fausse ALERTE' '2026-07-03 [ERREUR] corde' > j.log",
+     "cmd": "grep -E '^[0-9-]{10} \\[(ALERTE|ERREUR)\\]' j.log",
+     "sortie": "2026-07-02 [ALERTE] vent\n2026-07-03 [ERREUR] corde"
+    },
+    {
+     "cmd": "echo '2026-07-03 corde' | sed -E 's/^([0-9]{4})-([0-9]{2})-([0-9]{2})/\\3\\/\\2\\/\\1/'",
+     "sortie": "03/07/2026 corde"
+    }
+   ],
+   "limite_image": "som.f.regex_avancees.limite",
+   "idees_fausses": [
+    "som.f.regex_avancees.idee"
+   ],
+   "sources": [
+    "GNU grep et GNU sed, expressions régulières étendues : https://www.gnu.org/software/grep/manual/ ; https://www.gnu.org/software/sed/manual/",
+    "POSIX.1-2024, Regular Expressions (ERE) : https://pubs.opengroup.org/onlinepubs/9799919799/basedefs/V1_chap09.html"
+   ],
+   "relu_par": null
+  },
+  "one_liners": {
+   "motif": "(eboulis|-print0|xargs\\s+(-\\w+\\s+)*-0|\\$\\(|<\\(|\\bFNR\\b|FILENAME|^(tg\\s+)?sommet\\s+(eboulis|lourd)\\b)",
+   "enfant": "som.f.one_liners.enfant",
+   "grands": "som.f.one_liners.grands",
+   "vrai_terminal": [
+    {
+     "prepare": "mkdir -p e/n && printf 'aaaa' > 'e/n/pierre ronde.txt' && printf 'bb' > e/n/quartz.txt && printf 'cccccc' > e/gros.txt",
+     "cmd": "find e -type f -print0 | xargs -0 wc -c | sort -nr | head -2",
+     "sortie": "12 total\n 6 e/gros.txt"
+    },
+    {
+     "prepare": "mkdir -p e/n && printf 'aaaa' > 'e/n/pierre ronde.txt' && printf 'bb' > e/n/quartz.txt && printf 'cccccc' > e/gros.txt",
+     "cmd": "find e -type f | xargs wc -c 2>&1 | grep -c 'No such file'",
+     "sortie": "2"
+    },
+    {
+     "prepare": "mkdir -p e/n && printf 'aaaa' > 'e/n/pierre ronde.txt' && printf 'bb' > e/n/quartz.txt && printf 'cccccc' > e/gros.txt",
+     "cmd": "echo \"pierres : $(find e -type f | wc -l)\"",
+     "sortie": "pierres : 3"
+    },
+    {
+     "cmd": "diff <(printf 'a\\nb\\n') <(printf 'a\\nc\\n')",
+     "sortie": "2c2\n< b\n---\n> c",
+     "code": 1
+    },
+    {
+     "prepare": "printf 'un\\ndeux\\n' > a.txt && printf 'trois\\n' > b.txt",
+     "cmd": "awk 'FNR==1 {print FILENAME, $1}' a.txt b.txt",
+     "sortie": "a.txt un\nb.txt trois"
+    }
+   ],
+   "limite_image": "som.f.one_liners.limite",
+   "idees_fausses": [
+    "som.f.one_liners.idee"
+   ],
+   "sources": [
+    "GNU Bash, manuel de référence (set, trap, getopts, $( ), <( ), -n, -x) : https://www.gnu.org/software/bash/manual/",
+    "GNU coreutils (mktemp, wc) et findutils (find -print0, xargs -0) : https://www.gnu.org/software/coreutils/manual/ ; https://www.gnu.org/software/findutils/manual/",
+    "The AWK Programming Language (FNR, FILENAME) ; GNU awk : https://www.gnu.org/software/gawk/manual/"
+   ],
+   "relu_par": null
+  },
+  "debogage": {
+   "motif": "(casse\\.sh|boucle\\.sh|^(bash|sh)\\s+-[nx]\\b|shellcheck|strace|^(tg\\s+)?sommet\\s+(casse|ligne|bug|strace)\\b)",
+   "enfant": "som.f.debogage.enfant",
+   "grands": "som.f.debogage.grands",
+   "vrai_terminal": [
+    {
+     "prepare": "printf 'if true\\n  echo oui\\nfi\\n' > c.sh",
+     "cmd": "bash -n c.sh",
+     "motif": "c.sh: line 3: syntax error near unexpected token `fi'",
+     "code": "non0"
+    },
+    {
+     "prepare": "printf 'x=1\\necho $x\\n' > d.sh",
+     "cmd": "bash -x d.sh 2>&1",
+     "sortie": "+ x=1\n+ echo 1\n1"
+    },
+    {
+     "prepare": "printf '#!/bin/bash\\nf=$1\\ncp $f /dev/null\\n' > s.sh",
+     "cmd": "shellcheck s.sh",
+     "motif": "SC2086",
+     "code": "non0",
+     "outil": "shellcheck"
+    },
+    {
+     "cmd": "strace -f -e trace=execve true",
+     "rejeu": "notion (strace peut être interdit dans un conteneur)",
+     "motif": "."
+    }
+   ],
+   "limite_image": "som.f.debogage.limite",
+   "idees_fausses": [
+    "som.f.debogage.idee"
+   ],
+   "sources": [
+    "GNU Bash, manuel de référence (set, trap, getopts, $( ), <( ), -n, -x) : https://www.gnu.org/software/bash/manual/",
+    "ShellCheck (les avertissements SC2086…) : https://www.shellcheck.net/wiki/",
+    "strace(1) : https://man7.org/linux/man-pages/man1/strace.1.html"
+   ],
+   "relu_par": null
+  },
+  "documentation": {
+   "motif": "(^man\\b|^apropos\\b|^whatis\\b|--help|boussole|arrivee|^(tg\\s+)?sommet\\s+(boussole|arrivee|sections)\\b)",
+   "enfant": "som.f.documentation.enfant",
+   "grands": "som.f.documentation.grands",
+   "vrai_terminal": [
+    {
+     "cmd": "bash -c 'help getopts' | head -1",
+     "sortie": "getopts: getopts optstring name [arg ...]"
+    },
+    {
+     "cmd": "grep --help | grep -cE '^ +-o, --only-matching'",
+     "sortie": "1"
+    },
+    {
+     "cmd": "sed --help | grep -cE '^ +-E, -r, --regexp-extended'",
+     "sortie": "1"
+    },
+    {
+     "cmd": "man -f passwd",
+     "rejeu": "les pages de manuel installées changent d'une machine à l'autre",
+     "motif": "."
+    }
+   ],
+   "limite_image": "som.f.documentation.limite",
+   "idees_fausses": [
+    "som.f.documentation.idee"
+   ],
+   "sources": [
+    "man-pages et man-db (sections, man -f, apropos) : https://man7.org/linux/man-pages/man7/man-pages.7.html",
+    "GNU Bash, manuel de référence (set, trap, getopts, $( ), <( ), -n, -x) : https://www.gnu.org/software/bash/manual/",
+    "GNU grep et GNU sed, expressions régulières étendues : https://www.gnu.org/software/grep/manual/ ; https://www.gnu.org/software/sed/manual/"
+   ],
+   "relu_par": null
+  },
+  "defis_sommet": {
+   "motif": "(^(tg\\s+)?sommet\\s+(ctf|drapeau|defi|records)\\b|\\bctf/|porte\\.sh|registre\\.log|\\.frag\\b|^(tg\\s+)?badges\\s+(grades|records)\\b)",
+   "enfant": "som.f.defis_sommet.enfant",
+   "grands": "som.f.defis_sommet.grands",
+   "vrai_terminal": [
+    {
+     "prepare": "printf 'fragment1 = faux\\nfragment1=FAUX\\nok fragment1=cairn fin\\n' > r.log",
+     "cmd": "grep -oE 'fragment1=[a-z]+' r.log",
+     "sortie": "fragment1=cairn"
+    },
+    {
+     "prepare": "mkdir -p 'c/une pierre' && echo fragment2=serac > 'c/une pierre/x.frag' && echo leurre > c/y.txt",
+     "cmd": "find c -name '*.frag' -print0 | xargs -0 cat",
+     "sortie": "fragment2=serac"
+    },
+    {
+     "cmd": "sommet ctf",
+     "rejeu": "commande du jeu",
+     "motif": "."
+    }
+   ],
+   "limite_image": "som.f.defis_sommet.limite",
+   "idees_fausses": [
+    "som.f.defis_sommet.idee"
+   ],
+   "sources": [
+    "GNU Bash, manuel de référence (set, trap, getopts, $( ), <( ), -n, -x) : https://www.gnu.org/software/bash/manual/",
+    "GNU grep et GNU sed, expressions régulières étendues : https://www.gnu.org/software/grep/manual/ ; https://www.gnu.org/software/sed/manual/",
+    "GNU coreutils (mktemp, wc) et findutils (find -print0, xargs -0) : https://www.gnu.org/software/coreutils/manual/ ; https://www.gnu.org/software/findutils/manual/",
+    "Les épreuves « capture the flag » (CTF) : un drapeau à trouver en combinant plusieurs savoir-faire"
+   ],
+   "relu_par": null
   }
  },
  "etapes": {
@@ -4526,6 +4798,21 @@
   "at7.3": {
    "maths": [
     "multiplication"
+   ]
+  },
+  "som1.5": {
+   "maths": [
+    "logique"
+   ]
+  },
+  "som3.3": {
+   "maths": [
+    "comptage"
+   ]
+  },
+  "som7.7": {
+   "maths": [
+    "puissances_10"
    ]
   }
  },
@@ -5425,6 +5712,121 @@
   "at6.5": {
    "egal_jeu": "journal",
    "pourquoi": "hist.at6.5.bravo : les dernières lignes du journal du robot"
+  },
+  "som0.1": {
+   "contient": [
+    "refuge.txt",
+    "carnet_du_sommet.txt"
+   ],
+   "pourquoi": "hist.som0.1.bravo : le refuge"
+  },
+  "som1.2": {
+   "motif": "No such file",
+   "pourquoi": "hist.som1.2.bravo : cp cherche 3 fichiers"
+  },
+  "som1.3": {
+   "sortie": "0",
+   "pourquoi": "hist.som1.3.bravo : le script ment, il répond 0"
+  },
+  "som1.5": {
+   "motif": "\\n1\\Z",
+   "pourquoi": "hist.som1.5.bravo : il s'arrête et répond 1"
+  },
+  "som1.7": {
+   "motif": "unbound variable",
+   "pourquoi": "hist.som1.7.bravo : -u refuse une variable vide"
+  },
+  "som2.2": {
+   "lignes": 1,
+   "pourquoi": "hist.som2.2.bravo : un brouillon oublié"
+  },
+  "som2.5": {
+   "sortie": "1",
+   "pourquoi": "hist.som2.5.bravo : trap a rangé son brouillon"
+  },
+  "som2.6": {
+   "motif": "illegal option -- x",
+   "pourquoi": "hist.som2.6.bravo : getopts refuse -x"
+  },
+  "som3.2": {
+   "egal_jeu": "lignes_datees",
+   "pourquoi": "hist.som3.2.bravo : les lignes qui COMMENCENT par une date"
+  },
+  "som3.3": {
+   "egal_jeu": "dates",
+   "pourquoi": "hist.som3.3.bravo : les dates différentes"
+  },
+  "som3.5": {
+   "egal_jeu": "alertes_partout",
+   "pourquoi": "hist.som3.5.bravo : ALERTE ou ERREUR n'importe où"
+  },
+  "som3.8": {
+   "egal_jeu": "dates_fr",
+   "pourquoi": "hist.som3.8.bravo : les captures \\3/\\2/\\1"
+  },
+  "som4.2": {
+   "motif": "No such file",
+   "pourquoi": "hist.som4.2.bravo : les espaces coupent les noms"
+  },
+  "som4.3": {
+   "egal_jeu": "plus_lourds",
+   "pourquoi": "hist.som4.3.bravo : le total puis les 5 plus lourds"
+  },
+  "som4.5": {
+   "egal_jeu": "nb_pierres",
+   "pourquoi": "hist.som4.5.bravo : $( ) met la sortie dans la phrase"
+  },
+  "som4.6": {
+   "egal_jeu": "diff_nord_sud",
+   "pourquoi": "hist.som4.6.bravo : < seulement au nord, > seulement au sud"
+  },
+  "som4.7": {
+   "egal_jeu": "premieres_lignes",
+   "pourquoi": "hist.som4.7.bravo : FNR repart à 1 dans chaque fichier"
+  },
+  "som5.1": {
+   "motif": "line 8: syntax error near unexpected token `fi'",
+   "pourquoi": "hist.som5.1.bravo : ligne 8"
+  },
+  "som5.4": {
+   "motif": "100\\Z",
+   "pourquoi": "hist.som5.4.bravo : 100 marches"
+  },
+  "som5.5": {
+   "motif": " 0\\Z",
+   "pourquoi": "hist.som5.5.bravo : 0, un résultat faux"
+  },
+  "som5.6": {
+   "motif": "^\\+ totl=1200$",
+   "pourquoi": "hist.som5.6.bravo : la trace montre totl"
+  },
+  "som5.8": {
+   "motif": "5450\\Z",
+   "pourquoi": "hist.som5.8.bravo : le bon total"
+  },
+  "som6.3": {
+   "egal_jeu": "aide_boussole",
+   "pourquoi": "hist.som6.3.bravo : l'aide de l'outil"
+  },
+  "som6.4": {
+   "egal_jeu": "arrivee",
+   "pourquoi": "hist.som6.4.bravo : l'outil répond"
+  },
+  "som6.6": {
+   "motif": "-o, --only-matching",
+   "pourquoi": "hist.som6.6.bravo : l'option -o de grep"
+  },
+  "som7.1": {
+   "egal_jeu": "fragment1",
+   "pourquoi": "hist.som7.1.bravo : seul le vrai fragment correspond"
+  },
+  "som7.2": {
+   "egal_jeu": "fragment2",
+   "pourquoi": "hist.som7.2.bravo : -print0 et -0 gardent l'espace"
+  },
+  "som7.4": {
+   "egal_jeu": "fragment3",
+   "pourquoi": "hist.som7.4.bravo : la porte s'ouvre avec le fragment 1"
   }
  },
  "maths": {
@@ -7328,13 +7730,89 @@
   {
    "id": "sommet",
    "types": [],
-   "maths": [],
+   "requis": [],
+   "ouverture": {
+    "mondes": 3,
+    "palier": 3
+   },
+   "chapitre": "sommet",
+   "paliers": [
+    "som0",
+    "som1",
+    "som2",
+    "som3",
+    "som4",
+    "som5",
+    "som6",
+    "som7"
+   ],
+   "attirance": {
+    "cmds": [
+     "shellcheck",
+     "strace",
+     "xargs",
+     "getopts",
+     "trap",
+     "mktemp",
+     "apropos",
+     "man"
+    ],
+    "activites": [
+     "ctf",
+     "entrainement"
+    ],
+    "familles": []
+   },
+   "ponts": {
+    "set_e": [
+     "forge",
+     "controle"
+    ],
+    "regex": [
+     "donnees",
+     "citadelle"
+    ],
+    "xargs": [
+     "donnees"
+    ],
+    "bash_x": [
+     "forge"
+    ],
+    "man": [
+     "controle"
+    ]
+   },
+   "reutilise": {
+    "entrainement": [
+     "records",
+     "grades:peta",
+     "grades:exa",
+     "graine_du_jour"
+    ]
+   },
    "exploits": [
     {
      "id": "sommet.trois_mondes",
      "nom": "recomp.sommet.trois_mondes",
-     "recompense": "legendaire"
+     "recompense": "legendaire",
+     "bonus": 3,
+     "essais": 16
     }
+   ],
+   "legendaires": [
+    "infernarque",
+    "tellurion",
+    "rugissire",
+    "sylvarque",
+    "essaimpereur",
+    "noctilune",
+    "forgerain",
+    "chaosmere"
+   ],
+   "maths": [
+    "comptage",
+    "logique",
+    "puissances_10"
    ],
    "variantes_reservees": []
   }

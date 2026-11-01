@@ -56,7 +56,7 @@ def etapes_android():
     tests/jvm/Programme.kt)."""
     out = []
     k = RACINE / "app/src/main/java/fr/terminagotchi"
-    for f in ("Histoire.kt", "Jeu.kt", "Arbre.kt", "Port.kt", "Citadelle.kt", "Crypte.kt", "Machines.kt", "Ondes.kt", "Guilde.kt", "Observatoire.kt", "Donnees.kt", "Forge.kt", "Atelier.kt"):
+    for f in ("Histoire.kt", "Jeu.kt", "Arbre.kt", "Port.kt", "Citadelle.kt", "Crypte.kt", "Machines.kt", "Ondes.kt", "Guilde.kt", "Observatoire.kt", "Donnees.kt", "Forge.kt", "Atelier.kt", "Sommet.kt"):
         src = (k / f).read_text(encoding="utf-8")
         for m in re.finditer(r'\b[na]\("\w+", \d+, ' + _CHAINE, src):
             out.append(m.group(1))

@@ -5,7 +5,9 @@ Chaque monde (programme.json, « mondes ») a ses types attirés et ses exploits
                    compteurs de la graine et garde la première créature d'un type du monde dans une variante rare
                    (pas « classique »), sinon la première d'un type du monde, sinon la toute première ;
   - « legendaire » (bonus_legendaire rencontre) : jusqu'à essais_legendaire compteurs, la première légendaire,
-                   sinon la toute première.
+                   sinon la toute première. Un monde qui nomme ses « legendaires » (le Sommet : des espèces légendaires
+                   EXISTANTES, qu'aucun autre monde ne réserve) garde d'abord une de ces espèces, puis une légendaire.
+Un exploit peut fixer lui-même « bonus » (le nombre de rencontres) et « essais » (les compteurs essayés).
   - « gardien »    (bonus_gardien rencontres) : jusqu'à essais_gardien compteurs, le premier GARDIEN de la boîte
                    maîtrisée (« gardiens » du monde : boîte → espèce), sinon le tout premier.
   - « badge »      : AUCUNE faveur de rencontre ; l'exploit fait grandir un badge (la Guilde : « Artisan », guilde.py).
@@ -96,7 +98,7 @@ def exploit(state, eid, maintenant=None):
     r["exploits"][eid] = int(maintenant if maintenant is not None else time.time())
     if x["recompense"] == "badge":                # pas de faveur : un badge qui grandit
         return t("recomp.badge", exploit=t(x["nom"]), badge=t(x.get("badge", "")))
-    n = conf().get("bonus_" + x["recompense"], 1)
+    n = x.get("bonus", conf().get("bonus_" + x["recompense"], 1))
     r["faveurs"].append({"exploit": eid, "reste": n})
     if x["recompense"] == "gardien":
         return t("recomp.gardien", boite=t("cit.boite." + x["boite"]), espece=_nom_espece(gardiens().get(x["boite"], "")))
@@ -128,12 +130,16 @@ def _id(e):
     return (e.get("id") if isinstance(e, dict) else getattr(e, "id", None)) or ""
 
 
-def choisir(candidats, genre, types, cible=None):
+def choisir(candidats, genre, types, cible=None, legendaires=None):
     """L'indice du candidat gardé parmi [(espèce, champs)] (dans l'ordre des compteurs).
-    cible : l'espèce gardienne (genre « gardien »)."""
+    cible : l'espèce gardienne (genre « gardien ») ; legendaires : les espèces que le monde attire d'abord."""
     if genre == "gardien":
         return next((i for i, (e, _c) in enumerate(candidats) if _id(e) == cible), 0)
     if genre == "legendaire":
+        if legendaires:
+            i = next((i for i, (e, _c) in enumerate(candidats) if _id(e) in legendaires), None)
+            if i is not None:
+                return i
         return next((i for i, (_e, c) in enumerate(candidats) if _rarete(c) == "légendaire"), 0)
     rare = next((i for i, (e, c) in enumerate(candidats)
                  if c.get("variante", "classique") != "classique" and _type(e, c.get("variante")) in types), None)
@@ -142,12 +148,12 @@ def choisir(candidats, genre, types, cible=None):
     return next((i for i, (e, c) in enumerate(candidats) if _type(e, c.get("variante")) in types), 0)
 
 
-def reussi(genre, types, e, champs, cible=None):
+def reussi(genre, types, e, champs, cible=None, legendaires=None):
     """Le candidat gardé est bien celui que l'exploit attire (sinon : la rencontre normale)."""
     if genre == "gardien":
         return _id(e) == cible
     if genre == "legendaire":
-        return _rarete(champs) == "légendaire"
+        return _rarete(champs) == "légendaire" or _id(e) in (legendaires or [])
     return _type(e, champs.get("variante")) in types
 
 
@@ -163,12 +169,12 @@ def reservee(state, e, vid):
     return False
 
 
-def favoriser(valeur, n0, genre, types, abyssor_permis=False, attire=None, cible=None):
+def favoriser(valeur, n0, genre, types, abyssor_permis=False, attire=None, cible=None, essais=None, legendaires=None):
     """Spécification pure (vecteurs communs) : le compteur gardé et le tirage, de n0 à n0 + essais − 1."""
     from . import tirage
-    essais = conf().get("essais_" + genre, 1)
+    essais = essais or conf().get("essais_" + genre, 1)
     cands = [tirage.tirer(valeur, n0 + k, abyssor_permis, attire) for k in range(essais)]
-    i = choisir(cands, genre, types, cible)
+    i = choisir(cands, genre, types, cible, legendaires)
     return n0 + i, cands[i][1]
 
 
@@ -203,16 +209,17 @@ def apparition(state, premiere, tirer_un):
         m, x = exploit_def(f["exploit"])
         genre, types = x["recompense"], m.get("types", [])
         cible = m.get("gardiens", {}).get(x.get("boite")) if genre == "gardien" else None
-        essais = conf().get("essais_" + genre, 1)
+        essais = x.get("essais") or conf().get("essais_" + genre, 1)
+        leg = m.get("legendaires") if genre == "legendaire" else None
         while len(cands) < essais:
             c = tirer_un()
             if c is None:
                 break
             cands.append(c)
-        i = choisir([(e, ind) for e, ind in cands], genre, types, cible)
+        i = choisir([(e, ind) for e, ind in cands], genre, types, cible, leg)
         f["reste"] -= 1
         r_(state)["faveurs"] = [g for g in r_(state)["faveurs"] if g.get("reste", 0) > 0]
-        if reussi(genre, types, *cands[i], cible=cible):
+        if reussi(genre, types, *cands[i], cible=cible, legendaires=leg):
             texte = t("recomp.rencontre", exploit=t(x["nom"]))
         e, ind = cands[i]
     else:

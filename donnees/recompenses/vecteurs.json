@@ -9791,6 +9791,17 @@
    "exploit": "sommet.trois_mondes",
    "genre": "legendaire",
    "types": [],
+   "essais": 16,
+   "legendaires": [
+    "infernarque",
+    "tellurion",
+    "rugissire",
+    "sylvarque",
+    "essaimpereur",
+    "noctilune",
+    "forgerain",
+    "chaosmere"
+   ],
    "valeur": "0000000000000000000000000000000000000000000000000000000000000000",
    "n0": 0,
    "attendu": {
@@ -9822,6 +9833,17 @@
    "exploit": "sommet.trois_mondes",
    "genre": "legendaire",
    "types": [],
+   "essais": 16,
+   "legendaires": [
+    "infernarque",
+    "tellurion",
+    "rugissire",
+    "sylvarque",
+    "essaimpereur",
+    "noctilune",
+    "forgerain",
+    "chaosmere"
+   ],
    "valeur": "0000000000000000000000000000000000000000000000000000000000000000",
    "n0": 17,
    "attendu": {
@@ -9853,6 +9875,17 @@
    "exploit": "sommet.trois_mondes",
    "genre": "legendaire",
    "types": [],
+   "essais": 16,
+   "legendaires": [
+    "infernarque",
+    "tellurion",
+    "rugissire",
+    "sylvarque",
+    "essaimpereur",
+    "noctilune",
+    "forgerain",
+    "chaosmere"
+   ],
    "valeur": "0000000000000000000000000000000000000000000000000000000000000000",
    "n0": 60,
    "attendu": {
@@ -9884,6 +9917,17 @@
    "exploit": "sommet.trois_mondes",
    "genre": "legendaire",
    "types": [],
+   "essais": 16,
+   "legendaires": [
+    "infernarque",
+    "tellurion",
+    "rugissire",
+    "sylvarque",
+    "essaimpereur",
+    "noctilune",
+    "forgerain",
+    "chaosmere"
+   ],
    "valeur": "0000000000000000000000000000000000000000000000000000000000000000",
    "n0": 123,
    "attendu": {
@@ -9915,6 +9959,17 @@
    "exploit": "sommet.trois_mondes",
    "genre": "legendaire",
    "types": [],
+   "essais": 16,
+   "legendaires": [
+    "infernarque",
+    "tellurion",
+    "rugissire",
+    "sylvarque",
+    "essaimpereur",
+    "noctilune",
+    "forgerain",
+    "chaosmere"
+   ],
    "valeur": "ffffffffffffffff000000000000000000000000000000000000000000000000",
    "n0": 0,
    "attendu": {
@@ -9946,6 +10001,17 @@
    "exploit": "sommet.trois_mondes",
    "genre": "legendaire",
    "types": [],
+   "essais": 16,
+   "legendaires": [
+    "infernarque",
+    "tellurion",
+    "rugissire",
+    "sylvarque",
+    "essaimpereur",
+    "noctilune",
+    "forgerain",
+    "chaosmere"
+   ],
    "valeur": "ffffffffffffffff000000000000000000000000000000000000000000000000",
    "n0": 17,
    "attendu": {
@@ -9977,6 +10043,17 @@
    "exploit": "sommet.trois_mondes",
    "genre": "legendaire",
    "types": [],
+   "essais": 16,
+   "legendaires": [
+    "infernarque",
+    "tellurion",
+    "rugissire",
+    "sylvarque",
+    "essaimpereur",
+    "noctilune",
+    "forgerain",
+    "chaosmere"
+   ],
    "valeur": "ffffffffffffffff000000000000000000000000000000000000000000000000",
    "n0": 60,
    "attendu": {
@@ -10008,6 +10085,17 @@
    "exploit": "sommet.trois_mondes",
    "genre": "legendaire",
    "types": [],
+   "essais": 16,
+   "legendaires": [
+    "infernarque",
+    "tellurion",
+    "rugissire",
+    "sylvarque",
+    "essaimpereur",
+    "noctilune",
+    "forgerain",
+    "chaosmere"
+   ],
    "valeur": "ffffffffffffffff000000000000000000000000000000000000000000000000",
    "n0": 123,
    "attendu": {
@@ -10039,6 +10127,17 @@
    "exploit": "sommet.trois_mondes",
    "genre": "legendaire",
    "types": [],
+   "essais": 16,
+   "legendaires": [
+    "infernarque",
+    "tellurion",
+    "rugissire",
+    "sylvarque",
+    "essaimpereur",
+    "noctilune",
+    "forgerain",
+    "chaosmere"
+   ],
    "valeur": "9e3779b97f4a7c15f39cc0605cedc8341082276bf3a27251f86c6a11d0c18e95",
    "n0": 0,
    "attendu": {
@@ -10070,6 +10169,17 @@
    "exploit": "sommet.trois_mondes",
    "genre": "legendaire",
    "types": [],
+   "essais": 16,
+   "legendaires": [
+    "infernarque",
+    "tellurion",
+    "rugissire",
+    "sylvarque",
+    "essaimpereur",
+    "noctilune",
+    "forgerain",
+    "chaosmere"
+   ],
    "valeur": "9e3779b97f4a7c15f39cc0605cedc8341082276bf3a27251f86c6a11d0c18e95",
    "n0": 17,
    "attendu": {
@@ -10101,6 +10211,17 @@
    "exploit": "sommet.trois_mondes",
    "genre": "legendaire",
    "types": [],
+   "essais": 16,
+   "legendaires": [
+    "infernarque",
+    "tellurion",
+    "rugissire",
+    "sylvarque",
+    "essaimpereur",
+    "noctilune",
+    "forgerain",
+    "chaosmere"
+   ],
    "valeur": "9e3779b97f4a7c15f39cc0605cedc8341082276bf3a27251f86c6a11d0c18e95",
    "n0": 60,
    "attendu": {
@@ -10132,28 +10253,81 @@
    "exploit": "sommet.trois_mondes",
    "genre": "legendaire",
    "types": [],
+   "essais": 16,
+   "legendaires": [
+    "infernarque",
+    "tellurion",
+    "rugissire",
+    "sylvarque",
+    "essaimpereur",
+    "noctilune",
+    "forgerain",
+    "chaosmere"
+   ],
    "valeur": "9e3779b97f4a7c15f39cc0605cedc8341082276bf3a27251f86c6a11d0c18e95",
    "n0": 123,
    "attendu": {
-    "n": 123,
+    "n": 136,
     "champs": {
-     "espece": "Krillou",
-     "variante": "corail",
+     "espece": "Tellurion",
+     "variante": "classique",
      "shiny": false,
-     "marque": "un ronronnement à 440 Hz",
-     "humeur": "courageuse",
-     "taille": 33.1,
-     "qualite": 0.606,
-     "potentiel": 54,
+     "marque": "une marque en forme de flèche →",
+     "humeur": "têtue",
+     "taille": 694.8,
+     "qualite": 0.044,
+     "potentiel": 8,
      "stats": {
-      "PV": 33,
-      "ATK": 39,
-      "DEF": 41,
-      "VIT": 43,
-      "INT": 22
+      "PV": 47,
+      "ATK": 59,
+      "DEF": 52,
+      "VIT": 44,
+      "INT": 49
      },
-     "note": 55.9,
-     "rarete": "peu commune",
+     "note": 17.6,
+     "rarete": "commune",
+     "stade": "enfant"
+    }
+   }
+  },
+  {
+   "monde": "sommet",
+   "exploit": "sommet.trois_mondes",
+   "genre": "legendaire",
+   "types": [],
+   "essais": 16,
+   "legendaires": [
+    "infernarque",
+    "tellurion",
+    "rugissire",
+    "sylvarque",
+    "essaimpereur",
+    "noctilune",
+    "forgerain",
+    "chaosmere"
+   ],
+   "valeur": "8000000000000001fac71cefac71cefac71cefac71cefac71cefac71ce00",
+   "n0": 0,
+   "attendu": {
+    "n": 15,
+    "champs": {
+     "espece": "Forgerain",
+     "variante": "ruines",
+     "shiny": false,
+     "marque": "un ventre qui affiche l'heure",
+     "humeur": "têtue",
+     "taille": 710.4,
+     "qualite": 0.56,
+     "potentiel": 55,
+     "stats": {
+      "PV": 61,
+      "ATK": 62,
+      "DEF": 50,
+      "VIT": 53,
+      "INT": 60
+     },
+     "note": 68.0,
+     "rarete": "rare",
      "stade": "bebe"
     }
    }
@@ -10163,37 +10337,17 @@
    "exploit": "sommet.trois_mondes",
    "genre": "legendaire",
    "types": [],
-   "valeur": "8000000000000001fac71cefac71cefac71cefac71cefac71cefac71ce00",
-   "n0": 0,
-   "attendu": {
-    "n": 0,
-    "champs": {
-     "espece": "Félicorne",
-     "variante": "soleil",
-     "shiny": false,
-     "marque": "des empreintes en forme de 0 et de 1",
-     "humeur": "taquine",
-     "taille": 191.4,
-     "qualite": 0.796,
-     "potentiel": 79,
-     "stats": {
-      "PV": 51,
-      "ATK": 52,
-      "DEF": 47,
-      "VIT": 51,
-      "INT": 33
-     },
-     "note": 73.6,
-     "rarete": "rare",
-     "stade": "adulte"
-    }
-   }
-  },
-  {
-   "monde": "sommet",
-   "exploit": "sommet.trois_mondes",
-   "genre": "legendaire",
-   "types": [],
+   "essais": 16,
+   "legendaires": [
+    "infernarque",
+    "tellurion",
+    "rugissire",
+    "sylvarque",
+    "essaimpereur",
+    "noctilune",
+    "forgerain",
+    "chaosmere"
+   ],
    "valeur": "8000000000000001fac71cefac71cefac71cefac71cefac71cefac71ce00",
    "n0": 17,
    "attendu": {
@@ -10225,6 +10379,17 @@
    "exploit": "sommet.trois_mondes",
    "genre": "legendaire",
    "types": [],
+   "essais": 16,
+   "legendaires": [
+    "infernarque",
+    "tellurion",
+    "rugissire",
+    "sylvarque",
+    "essaimpereur",
+    "noctilune",
+    "forgerain",
+    "chaosmere"
+   ],
    "valeur": "8000000000000001fac71cefac71cefac71cefac71cefac71cefac71ce00",
    "n0": 60,
    "attendu": {
@@ -10256,6 +10421,17 @@
    "exploit": "sommet.trois_mondes",
    "genre": "legendaire",
    "types": [],
+   "essais": 16,
+   "legendaires": [
+    "infernarque",
+    "tellurion",
+    "rugissire",
+    "sylvarque",
+    "essaimpereur",
+    "noctilune",
+    "forgerain",
+    "chaosmere"
+   ],
    "valeur": "8000000000000001fac71cefac71cefac71cefac71cefac71cefac71ce00",
    "n0": 123,
    "attendu": {

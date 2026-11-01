@@ -270,10 +270,12 @@ from . import ondes as _ond  # noqa: E402         le cinquième : la Tour des On
 from . import guilde as _gui  # noqa: E402        le sixième : la Guilde des Bâtisseurs Libres (guilde.py), au bord de la Forge
 from . import observatoire as _obs  # noqa: E402  le septième : l'Observatoire de l'IA (observatoire.py)
 from . import donnees as _don  # noqa: E402       le huitième : la Salle des Données (donnees.py), sur sa collection
+from . import sommet as _som  # noqa: E402        le Sommet (sommet.py) : 3 mondes au palier 3, Expert++
 from . import forge as _for  # noqa: E402         le neuvième : la Forge (forge.py), la programmation
 from . import atelier as _ate  # noqa: E402       le dixième : l'Atelier (atelier.py, chapitre et lieu « robots »)
 MONDES_MODS = {"port": _port, "citadelle": _cit, "crypte": _cry, "machinerie": _mac, "ondes": _ond, "guilde": _gui,
-               "observatoire": _obs, "donnees": _don, "forge": _for, "robots": _ate}
+               "observatoire": _obs, "donnees": _don, "forge": _for, "robots": _ate,
+               "sommet": _som}
 # le lieu de chaque monde (la Salle des Rouages : chapitre « machinerie », lieu « machines »)
 PIECES_MODS = {_m.CHAPITRE["piece"]: _m for _m in MONDES_MODS.values()}
 for _m in MONDES_MODS.values():
@@ -288,6 +290,7 @@ _CMDS_MAC = {s_.get("cmd") for l_ in _mac.LECONS.values() for s_ in l_["steps"]}
 _CMDS_OND = {s_.get("cmd") for l_ in _ond.LECONS.values() for s_ in l_["steps"]}
 _CMDS_GUI = {s_.get("cmd") for l_ in _gui.LECONS.values() for s_ in l_["steps"]}
 _CMDS_OBS = {s_.get("cmd") for l_ in _obs.LECONS.values() for s_ in l_["steps"]}
+_CMDS_SOM = {s_.get("cmd") for l_ in _som.LECONS.values() for s_ in l_["steps"]}
 _CMDS_DON = {s_.get("cmd") for l_ in _don.LECONS.values() for s_ in l_["steps"]} | \
     {r_ for l_ in _don.LECONS.values() for s_ in l_["steps"] for r_ in s_.get("repli", [])}
 _CMDS_FOR = {s_.get("cmd") for l_ in _for.LECONS.values() for s_ in l_["steps"]} | \
@@ -299,7 +302,8 @@ def lecons_qui_ouvrent():
     """Les leçons qui ouvrent un monde (programme.json, « requis_lecons » ; la Tour des Ondes : Port P7, Machines M2) :
     sa nouvelle est annoncée dès la leçon finie, sans attendre la fin du chapitre."""
     from . import programme
-    return {lid for m in programme.donnees().get("mondes", []) for lid in m.get("requis_lecons", [])}
+    return {lid for m in programme.donnees().get("mondes", []) for lid in m.get("requis_lecons", [])} | \
+        _som.lecons_qui_ouvrent()                     # le Sommet : le palier 3 de chaque monde peut l'ouvrir
 PAR_CHAP = {c["id"]: c for c in CHAPITRES}
 AILES = [c["id"] for c in CHAPITRES if 3 <= c["n"] <= 9]
 
@@ -1151,6 +1155,8 @@ def indice(state, step, lignes, tapees, morcs=None):
         conseil = _gui.indice(step, tapees)
     if not conseil and step.get("cmd") in _CMDS_OBS:      # l'Observatoire : sudo, rm -rf, une consigne floue…
         conseil = _obs.indice(step, tapees)
+    if not conseil and step.get("cmd") in _CMDS_SOM:      # le Sommet : sudo, un « ? », un script lancé sans bash…
+        conseil = _som.indice(step, tapees)
     if not conseil and step.get("cmd") in _CMDS_DON:      # la Salle des Données : pas encore de tableau, -F, oublié…
         conseil = _don.indice(step, tapees)
     if not conseil and step.get("cmd") in _CMDS_FOR:      # la Forge : guillemets autour de #!, > au lieu de >>, chmod…

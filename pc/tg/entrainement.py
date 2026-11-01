@@ -682,8 +682,8 @@ def lignes_exercice(state, c):
     return out
 
 
-def commencer(state, famille=None):
-    """Prépare un nouvel exercice. Renvoie les lignes à afficher."""
+def commencer(state, famille=None, typ=None):
+    """Prépare un nouvel exercice (typ : un exercice imposé, le défi du jour du Sommet). Renvoie les lignes à afficher."""
     e = e_(state)
     if not core.TERRAIN.is_dir():
         return [t("ent.pas_de_terrain")]
@@ -694,9 +694,11 @@ def commencer(state, famille=None):
         if famille not in ouvertes:
             return [t("ent.famille_fermee", badge=nom_famille(famille), cmds=FAMILLE_CMDS[famille])]
         f = famille
+    elif typ in TYPES and TYPES[typ][0] in ouvertes:
+        f = TYPES[typ][0]
     else:
         f = random.choice(ouvertes)
-    typ = random.choice(types_de(state, f))
+    typ = typ if typ in TYPES and type_possible(state, typ) else random.choice(types_de(state, f))
     gid, valeur, n = _graine(state)
     p, emp = generer(typ, valeur, n)
     if not preparer(typ, p):
@@ -747,6 +749,8 @@ def reussir(state, cwd=None):
         core.log(state, "🏅 " + t("ent.echelon_log", badge=nom_famille(f), echelon=nom_echelon(en)))
     elif apres == avant and etoiles(e, f) > et_avant:
         out.append(t("ent.etoile", badge=nom_famille(f), etoiles=B.texte_etoiles(etoiles(e, f))))
+    from . import sommet                                # le défi du jour du Sommet compte les exercices en or
+    sommet.noter_exercice(state, typ, m, c["g"])
     from . import recompenses                           # 5 médailles d'or de suite : une série parfaite (§ 7.6)
     exploit = recompenses.serie(state, m)
     if exploit:

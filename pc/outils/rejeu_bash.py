@@ -24,6 +24,8 @@ doit être ce qu'affiche un vrai bash.
    avec curl, puis éteint (kill %1 : pas de Ctrl+C sans terminal) ; magick, sox, ffmpeg, exiftool sautés s'ils manquent.
    L'Atelier : le robot simulé (echo > robot/led, cat robot/capteur_distance, la vraie boucle for avec le vrai
    cerveau.sh et `atelier pas`) ; ce que lit bash est ce que le jeu a écrit ; Ctrl+C sur la boucle infinie (timeout).
+   Le Sommet : les scripts fournis par le jeu (fragile, bivouac, casse, boucle, boussole, porte du CTF) lancés dans bash ;
+   ce qui dépend de la partie (journal, éboulis, boussole, fragments) est comparé à ce que le jeu calcule (sommet.egal_rejeu).
 Utilisé en CI (.github/workflows/rejeu.yml) sur une vraie machine Linux.
 """
 import os
@@ -160,6 +162,8 @@ def histoire():
     jeu_for = jeu_port.replace("port; port.commande(sys.argv[1:])", "forge; sys.exit(forge.commande(sys.argv[1:]) or 0)")
     from tg import atelier as AT_
     jeu_ate = jeu_port.replace("port; port.commande(sys.argv[1:])", "atelier; sys.exit(atelier.commande(sys.argv[1:]) or 0)")
+    from tg import sommet as SO_
+    jeu_som = jeu_port.replace("port; port.commande(sys.argv[1:])", "sommet; sys.exit(sommet.commande(sys.argv[1:]) or 0)")
     jeu_tg = (f"{sys.executable} -c \"import sys; sys.path.insert(0, '{RACINE / 'pc'}'); from tg import app; "
               f"sys.argv = ['tg'] + sys.argv[1:]; app._main()\"")
 
@@ -191,6 +195,7 @@ def histoire():
         vrai = re.sub(r"(^|;\s*)donnees(?=\s|$)", lambda m: m.group(1) + jeu_don, vrai)   # et donnees='tg donnees'
         vrai = re.sub(r"(^|;\s*)forge(?=\s|$)", lambda m: m.group(1) + jeu_for, vrai)     # et forge='tg forge'
         vrai = re.sub(r"(^|;\s*)atelier(?=\s|$)", lambda m: m.group(1) + jeu_ate, vrai)  # et atelier='tg atelier'
+        vrai = re.sub(r"(^|;\s*)sommet(?=\s|$)", lambda m: m.group(1) + jeu_som, vrai)    # et sommet='tg sommet'
         vrai = re.sub(r"(^|;\s*|&&\s*)tg(?=\s)", lambda m: m.group(1) + jeu_tg, vrai)   # tg collection --csv, tg donnees …
         if cmd.startswith("while true"):                 # l'Atelier : la boucle infinie, arrêtée par Ctrl+C (un vrai SIGINT)
             vrai = "timeout -s INT 2 bash -c " + __import__("shlex").quote(cmd)
@@ -226,11 +231,11 @@ def histoire():
         h = H.h_(st)
         if not les:
             reste = [a for a in H.AILES if not H.fini(st, a)]
-            if H.fini(st, "robots") or h["chap"] in ("reveil", "nid"):
+            if H.fini(st, "sommet") or h["chap"] in ("reveil", "nid"):
                 break
             if H.fini(st, "coeur"):                 # le tronc et les ailes faits : les mondes du Carrefour, dans l'ordre
                 reste = [m_ for m_ in ("port", "citadelle", "crypte", "machinerie", "ondes", "guilde", "observatoire",
-                                       "donnees", "forge", "robots") if not H.fini(st, m_)][:1]
+                                       "donnees", "forge", "robots", "sommet") if not H.fini(st, m_)][:1]
             cible = "coeur" if not reste and H.ouvert(st, "coeur") else (reste[0] if reste else None)
             if not cible:
                 break
@@ -406,6 +411,8 @@ def histoire():
             c = f"atelier reflexe {AT_.reflexe(ga)[2]}"
         if c == "nano cerveau.sh":                   # l'enfant écrit son cerveau dans l'éditeur
             c = "printf '%s' " + __import__("shlex").quote(AT_.cerveau_malin()) + " > cerveau.sh"
+        if les["id"].startswith("som") and les["id"][3:].isdigit():   # le Sommet : l'enfant lit l'écran (mission, fragments…)
+            c = SO_.reponse_rejeu(st, c)
         if c.endswith(" &") and "http.server" in c:
             c = c[:-2] + " >/dev/null 2>&1 &"       # (les lignes du serveur n'encombrent pas la suite)
         lieu = step.get("ou") if step.get("ou") is not None else None
@@ -494,6 +501,8 @@ def histoire():
             if a.get("egal_jeu") in EGAL_ATELIER:          # l'Atelier : bash lit ce que le jeu a écrit pour le robot
                 verifier(EGAL_ATELIER[a["egal_jeu"]](s, AT_.capteur_de(__import__("tg.core", fromlist=["x"]).load()), AT_),
                          f"{nom} : {s[:150]!r}{pq}")
+            if les["id"].startswith("som") and a.get("egal_jeu"):    # le Sommet : ce que le jeu calcule pour cette partie
+                verifier(SO_.egal_rejeu(a["egal_jeu"], s, SO_._graine(st)), f"{nom} : {s[:150]!r}{pq}")
             if a.get("egal_jeu") == "traces_abyssor":
                 n = (s.split() or ["?"])[-1]
                 verifier(n == str(H.traces_abyssor()), f"{nom} : bash compte {n}, le jeu attend {H.traces_abyssor()}{pq}")
@@ -509,6 +518,7 @@ def histoire():
     verifier(H.fini(st, "donnees"), "la Salle des Données, huitième monde, est allée jusqu'au bout (dn0 → dn6)")
     verifier(H.fini(st, "forge"), "la Forge, neuvième monde, est allée jusqu'au bout (fo0 → fo7)")
     verifier(H.fini(st, "robots"), "l'Atelier, dixième monde, est allé jusqu'au bout (at0 → at7)")
+    verifier(H.fini(st, "sommet"), "le Sommet (Expert++), ouvert par 3 mondes au palier 3, est gravi jusqu'au bout (som0 → som7)")
     P_.eteindre_phare()
     C_.arreter_fictifs()
     K_.tuer_agents()

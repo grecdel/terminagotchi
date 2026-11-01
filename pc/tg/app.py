@@ -1205,6 +1205,10 @@ def _main():
         from . import guilde
         guilde.commande(args[1:])
         return
+    if mode == "sommet":                       # tg sommet … : le Sommet (Expert++), scripts fournis par le jeu
+        from . import sommet
+        sommet.commande(args[1:])
+        return
     if mode == "observatoire":                 # tg observatoire … : l'Observatoire de l'IA (aucune vraie IA)
         from . import observatoire
         observatoire.commande(args[1:])
