@@ -3,7 +3,8 @@
 Décisions du propriétaire (31 octobre 2026, docs/programme.md § 7.6) :
   - au repos, le style A (léger) : les couches rouge et bleue décalées (un liseré rose d'un côté, cyan de l'autre)
     et 2 tranches horizontales décalées ;
-  - toutes les quelques secondes, un éclair bref du style C (fort) : couleurs ternies tirées vers le cyan et le
+  - toutes les 3 à 5,5 secondes, une rafale saccadée de 2 ou 3 secousses très courtes du style C (fort), séparées
+    par de brefs retours au style A (1er novembre : « saccade peut-être plus ») ; chaque secousse : couleurs ternies tirées vers le cyan et le
     magenta, lignes de balayage, pixels morts, 7 tranches décalées, une bande de pixels triés ;
   - fabriqué à partir de l'image de la créature (aucune illustration à part), après la teinte shiny ;
   - par-dessus les animations (respiration, poses du bureau…) : l'effet se pose sur chaque image, il ne les remplace pas ;
@@ -34,16 +35,20 @@ Spécification (tout en entiers, identique en Python, Kotlin et JavaScript)
    6. (C) tri : x0 = w0//4 + n(max(1, w0//2)), ww = 2 + n(2) ; chaque colonne x de x0·s à (x0+ww)·s − 1 (< w) : ses
       pixels pleins, de haut en bas, triés par r+g+b croissant (tri stable), reprennent les mêmes places.
 
-  L'éclair (etat) : h = fnv1a-64(« graine:eclair ») ; période = 3000 + h % 2500 ms ; décalage = (h >> 20) % période ;
-  u = (t + décalage) % période ; si u < 260 : style C, phase = ((t + décalage) // période % 4)·2 + (u ≥ 130) ;
-  sinon style A, phase 0 (t en millisecondes).
+  L'éclair (etat) : une petite RAFALE saccadée (décision du propriétaire, 1er novembre : « saccade peut-être plus »).
+  h = fnv1a-64(« graine:eclair ») ; période = 3000 + h % 2500 ms ; décalage = (h >> 20) % période ;
+  t2 = t + décalage ; u = t2 % période ; b = t2 // période (le numéro de la rafale) ;
+  k = 2 + ((h >> 40) + b) % 2 secousses (2 ou 3, en alternance) ; j = u // 200 (la secousse) ;
+  si j < k et u % 200 < 120 : style C, phase = (b % 4)·3 + j (chaque secousse a ses tranches) ;
+  sinon style A, phase 0 (les 80 ms entre deux secousses : un bref retour au repos). t en millisecondes.
 """
 import time
 
 MASQUE = (1 << 64) - 1
 ROSE, CYAN, JAUNE, BLANC = 0xFF2878, 0x28E6FF, 0xF0FF50, 0xFFFFFF
 MORTS = (ROSE, CYAN, JAUNE, BLANC)
-ECLAIR_MS = 260                 # la durée d'un éclair (2 images à 8 par seconde)
+SECOUSSE_MS = 120               # une secousse (style C) de la rafale…
+PAS_MS = 200                    # … puis un retour au repos (style A) jusqu'à la suivante (80 ms)
 REPERE = "▚"                    # le repère du nom (1 colonne dans un terminal), comme le ✨ du shiny
 
 
@@ -151,15 +156,18 @@ def appliquer(w, h, px, graine, style="A", phase=0, s=1):
 
 
 def etat(graine, t_ms=None):
-    """(style, phase) à l'instant t (millisecondes ; maintenant si None) : A au repos, C pendant un éclair."""
+    """(style, phase) à l'instant t (millisecondes ; maintenant si None) : A au repos, C pendant une secousse de la
+    rafale (2 ou 3 secousses de 120 ms, 80 ms de repos entre elles, toutes les 3 à 5,5 secondes)."""
     if t_ms is None:
         t_ms = int(time.time() * 1000)
     hh = fnv(f"{graine}:eclair")
     periode = 3000 + hh % 2500
     t2 = t_ms + (hh >> 20) % periode
-    u = t2 % periode
-    if u < ECLAIR_MS:
-        return "C", (t2 // periode % 4) * 2 + (1 if u >= ECLAIR_MS // 2 else 0)
+    u, b = t2 % periode, t2 // periode
+    k = 2 + ((hh >> 40) + b) % 2
+    j = u // PAS_MS
+    if j < k and u % PAS_MS < SECOUSSE_MS:
+        return "C", (b % 4) * 3 + j
     return "A", 0
 
 
@@ -220,7 +228,7 @@ def rgba(w, h, octets, glitch, s=1):
 
 class Images:
     """Une liste d'images (comme anim_auto.Paresseux) qui suit l'horloge : chaque image k est montrée au style A, ou au
-    style C pendant un éclair ; calculées quand on les montre et gardées (au plus 4 éclairs différents par image)."""
+    style C pendant une secousse ; calculées quand on les montre et gardées (au plus 12 secousses différentes par image)."""
 
     def __init__(self, n, faire, graine_):
         self.n, self.faire, self.graine, self.vu = n, faire, graine_, {}

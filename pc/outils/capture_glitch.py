@@ -9,7 +9,8 @@ Sorties :
                            éclair (C) / shiny + glitch
   glitch_pc_bureau.png     tg bureau : la créature glitch se promène sur le bureau
   glitch_tel.png           la maquette du téléphone (les images viennent du vrai code Kotlin : GlitchTel.kt)
-  glitch_repos_eclair.gif  la respiration au repos (style A) et un éclair (style C) toutes les quelques secondes
+  glitch_saccade.gif       la respiration au repos (style A) et, toutes les 3 à 5,5 secondes, la rafale saccadée :
+                           2 ou 3 secousses très courtes (style C) séparées par de brefs retours au repos (20 images/s)
 """
 import os
 import sys
@@ -123,13 +124,14 @@ def kitty(sortie):
 
 
 def gif(sortie):
-    """8 images par seconde pendant 9 secondes : la vie (respiration, clignements) et l'horloge des éclairs."""
+    """20 images par seconde pendant 9 secondes (pour voir chaque secousse et chaque bref retour au repos) : la vie
+    (respiration, clignements, 8 images par seconde) et l'horloge des rafales."""
     ims = []
     t0 = 1761955200000
-    for k in range(72):
-        tms = t0 + k * 125
+    for k in range(180):
+        tms = t0 + k * 50
         st, ph = G.etat(GLITCH["id"], tms)
-        im = vie_px(GLITCH, k % 64, (GLITCH["id"], st, ph))
+        im = vie_px(GLITCH, (k * 50 // 125) % 64, (GLITCH["id"], st, ph))
         ims.append((im, st))
     W = max(i.width for i, _ in ims) + 40
     H = max(i.height for i, _ in ims) + 40
@@ -138,7 +140,7 @@ def gif(sortie):
         f = Image.new("RGB", (W, H), (12, 14, 18))
         f.paste(im, ((W - im.width) // 2, H - 20 - im.height), im)
         frames.append(f)
-    frames[0].save(sortie / "glitch_repos_eclair.gif", save_all=True, append_images=frames[1:], duration=125, loop=0)
+    frames[0].save(sortie / "glitch_saccade.gif", save_all=True, append_images=frames[1:], duration=50, loop=0)
     return sum(1 for _, s in ims if s == "C")
 
 
@@ -210,7 +212,7 @@ def main():
     sortie.mkdir(parents=True, exist_ok=True)
     terminal(sortie)
     kitty(sortie)
-    print("images d'éclair dans le GIF :", gif(sortie))
+    print("images de secousse (style C) dans le GIF :", gif(sortie))
     bureau(sortie)
     if len(sys.argv) > 2:
         telephone(sortie, Path(sys.argv[2]))

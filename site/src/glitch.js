@@ -1,13 +1,15 @@
 /**
  * L'effet « glitch » d'une créature (même spécification que pc/tg/glitch.py et app/…/Glitch.kt ; vecteurs communs :
  * donnees/glitch/vecteurs.json). Pixels : entiers ARGB 0xAARRGGBB (non signés), transparents si A = 0.
- * Au repos le style A (léger), toutes les quelques secondes un éclair du style C (fort) : voir etat().
+ * Au repos le style A (léger), toutes les 3 à 5,5 secondes une rafale saccadée de 2 ou 3 secousses du style C (fort),
+ * séparées par de brefs retours au style A : voir etat().
  * Ce fichier sert au serveur (tests) ET au navigateur : SCRIPT_GLITCH (en bas) est la version posée dans les pages.
  */
 const M64 = (1n << 64n) - 1n;
 const ROSE = 0xff2878, CYAN = 0x28e6ff, JAUNE = 0xf0ff50, BLANC = 0xffffff;
 const MORTS = [ROSE, CYAN, JAUNE, BLANC];
-export const ECLAIR_MS = 260;
+export const SECOUSSE_MS = 120;
+export const PAS_MS = 200;
 export const REPERE = "▚";
 
 export function fnv(texte) {
@@ -119,22 +121,24 @@ export function appliquer(w, h, px, graine, style = "A", phase = 0, s = 1) {
   return out;
 }
 
-/** [style, phase] à l'instant t (ms) : ["A", 0] au repos, ["C", phase] pendant un éclair. */
+/** [style, phase] à l'instant t (ms) : ["A", 0] au repos, ["C", phase] pendant une secousse de la rafale. */
 export function etat(graine, t = Date.now()) {
   const hh = fnv(`${graine}:eclair`);
   const periode = 3000n + hh % 2500n;
   const t2 = BigInt(Math.floor(t)) + (hh >> 20n) % periode;
-  const u = t2 % periode;
-  if (u < BigInt(ECLAIR_MS)) return ["C", Number((t2 / periode) % 4n) * 2 + (u >= BigInt(ECLAIR_MS / 2) ? 1 : 0)];
+  const u = t2 % periode, b = t2 / periode;
+  const k = 2n + ((hh >> 40n) + b) % 2n;
+  const j = u / BigInt(PAS_MS);
+  if (j < k && u % BigInt(PAS_MS) < BigInt(SECOUSSE_MS)) return ["C", Number((b % 4n) * 3n + j)];
   return ["A", 0];
 }
 
 /**
  * Le script posé dans les pages (bestiaire, profil, galerie) : chaque <img data-glitch="graine"> (portrait d'une
  * capture glitch) est redessiné dans un <canvas> à sa place, teinte shiny d'abord (data-teinte, en degrés), puis
- * l'effet : style A au repos, un éclair C de temps en temps. La taille d'un « pixel de créature » : largeur / 48.
+ * l'effet : style A au repos, une rafale saccadée de secousses C de temps en temps. La taille d'un « pixel de créature » : largeur / 48.
  */
-export const SCRIPT_GLITCH = `(()=>{const M=(1n<<64n)-1n;${fnv.toString()}${Hasard.toString()}const ROSE=${ROSE},CYAN=${CYAN},MORTS=${JSON.stringify(MORTS)},ECLAIR_MS=${ECLAIR_MS},M64=M,plein=${plein.toString()};${exterieur.toString()}${appliquer.toString()}${etat.toString()}
+export const SCRIPT_GLITCH = `(()=>{const M=(1n<<64n)-1n;${fnv.toString()}${Hasard.toString()}const ROSE=${ROSE},CYAN=${CYAN},MORTS=${JSON.stringify(MORTS)},SECOUSSE_MS=${SECOUSSE_MS},PAS_MS=${PAS_MS},M64=M,plein=${plein.toString()};${exterieur.toString()}${appliquer.toString()}${etat.toString()}
 const reduit=matchMedia("(prefers-reduced-motion: reduce)").matches;const fx=[];function prendre(im){const W=im.naturalWidth,H=im.naturalHeight;if(!W||!H)return;const cv=document.createElement("canvas");cv.width=W;cv.height=H;cv.className=im.className;cv.setAttribute("role","img");cv.setAttribute("aria-label",im.alt||"");cv.style.cssText=im.getAttribute("style")||"";cv.style.filter="";cv.style.imageRendering="pixelated";cv.style.width=(im.width||W)+"px";cv.style.height=(im.height||H)+"px";const c=cv.getContext("2d");const t=+im.dataset.teinte||0;if(t&&"filter" in c)c.filter="hue-rotate("+t+"deg)";else if(t)cv.style.filter="hue-rotate("+t+"deg)";c.drawImage(im,0,0);c.filter="none";const d=c.getImageData(0,0,W,H).data;const px=new Array(W*H);for(let i=0;i<W*H;i++)px[i]=((d[4*i+3]<<24)|(d[4*i]<<16)|(d[4*i+1]<<8)|d[4*i+2])>>>0;im.replaceWith(cv);fx.push({c,W,H,px,g:im.dataset.glitch,s:Math.max(1,Math.round(W/48)),vu:{},cle:""});}
 function dessiner(f){const[st,ph]=reduit?["A",0]:etat(f.g);const cle=st+ph;if(cle===f.cle)return;f.cle=cle;let im=f.vu[cle];if(!im){const o=appliquer(f.W,f.H,f.px,f.g,st,ph,f.s);im=f.c.createImageData(f.W,f.H);for(let i=0;i<o.length;i++){const p=o[i];im.data[4*i]=(p>>>16)&255;im.data[4*i+1]=(p>>>8)&255;im.data[4*i+2]=p&255;im.data[4*i+3]=p>>>24;}f.vu[cle]=im;}f.c.putImageData(im,0,0);}
 for(const im of document.querySelectorAll("img[data-glitch]")){if(im.complete)prendre(im);else im.addEventListener("load",()=>prendre(im),{once:true});}

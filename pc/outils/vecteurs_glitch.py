@@ -47,12 +47,12 @@ def vecteurs():
         for s in (1, 3) if nom in ("carre", "ricanombre/bebe") else (1,):
             W, H, P = agrandir(w, h, px, s)
             for graine in ("a1b2c3d4e5", "Crânard:1761955200000"):
-                for style, phase in (("A", 0), ("C", 0), ("C", 3), ("C", 7)):
+                for style, phase in (("A", 0), ("C", 0), ("C", 3), ("C", 7), ("C", 11)):
                     cas.append({"image": nom, "s": s, "graine": graine, "style": style, "phase": phase,
                                 "empreinte": empreinte(G.appliquer(W, H, P, graine, style, phase, s))})
     exemple = G.appliquer(9, 7, imgs[0][3], "a1b2c3d4e5", "C", 1)
     eclairs = [{"graine": g, "t": t, "etat": list(G.etat(g, t))} for g in ("a1b2c3d4e5", "ff00", "Crânard:17")
-               for t in list(range(0, 12000, 130)) + [1761955200123, 2 ** 41 + 77]]
+               for t in list(range(0, 12000, 130)) + list(range(3000, 9000, 50)) + [1761955200123, 2 ** 41 + 77]]
     return {"note": "Généré par pc/outils/vecteurs_glitch.py ; spécification dans pc/tg/glitch.py",
             "images": {nom: {"w": w, "h": h, "px": ["%08x" % p for p in px]} for nom, w, h, px in imgs},
             "cas": cas, "exemple": {"image": "carre", "graine": "a1b2c3d4e5", "style": "C", "phase": 1,

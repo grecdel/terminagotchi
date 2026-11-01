@@ -47,11 +47,34 @@ verifier(["%08x" % p for p in G.appliquer(9, 7, carre, ex["graine"], ex["style"]
 verifier(G.appliquer(9, 7, carre, "x", "A") == G.appliquer(9, 7, carre, "x", "A"), "déterministe")
 verifier(G.appliquer(9, 7, carre, "x", "A") != G.appliquer(9, 7, carre, "y", "A"), "chaque individu a le sien (la graine)")
 c = sum(G.etat("a1b2c3d4e5", t)[0] == "C" for t in range(0, 60000, 10))
-verifier(200 <= c <= 800, f"un éclair de temps en temps : {c * 10} ms de style C par minute (≈ 4 %)")
-eclairs = [t for t in range(0, 20000, 10) if G.etat("a1b2c3d4e5", t)[0] == "C"]
-debuts = [t for t in eclairs if t - 10 not in eclairs]
-verifier(len(debuts) >= 3 and all(3000 <= b - a <= 5500 for a, b in zip(debuts, debuts[1:])),
-         f"toutes les 3 à 5,5 secondes : {debuts}")
+verifier(200 <= c <= 800, f"des secousses de temps en temps : {c * 10} ms de style C par minute (≈ 7 %)")
+# la rafale saccadée (1er novembre) : des instants fixes (indépendant de l'heure), par pas de 10 ms
+for gr_ in ("a1b2c3d4e5", "ff00", "Crânard:17"):
+    et = [(t, G.etat(gr_, t)) for t in range(0, 40000, 10)]
+    secousses = []                                 # [début, fin, phase] de chaque secousse (style C continu)
+    for t, (st, ph) in et:
+        if st == "C" and secousses and secousses[-1][1] == t - 10 and secousses[-1][2] == ph:
+            secousses[-1][1] = t
+        elif st == "C":
+            secousses.append([t, t, ph])
+    rafales = []
+    for sec in secousses:
+        if rafales and sec[0] - rafales[-1][-1][1] < 300:
+            rafales[-1].append(sec)
+        else:
+            rafales.append([sec])
+    entieres = rafales[1:-1]                       # la première et la dernière peuvent être coupées par la fenêtre
+    debuts = [r[0][0] for r in entieres]
+    verifier(len(entieres) >= 5 and all(3000 <= b - a <= 5500 for a, b in zip(debuts, debuts[1:])),
+             f"[{gr_}] une rafale toutes les 3 à 5,5 secondes : {debuts[:6]}…")
+    verifier(all(len(r) in (2, 3) for r in entieres) and {len(r) for r in entieres} == {2, 3},
+             f"[{gr_}] 2 ou 3 secousses par rafale : {[len(r) for r in entieres]}")
+    verifier(all(f - d + 10 == G.SECOUSSE_MS for r in entieres for d, f, _p in r),
+             f"[{gr_}] chaque secousse est très courte ({G.SECOUSSE_MS} ms)")
+    verifier(all(b[0] - a[1] - 10 == G.PAS_MS - G.SECOUSSE_MS for r in entieres for a, b in zip(r, r[1:])),
+             f"[{gr_}] entre deux secousses, un bref retour au repos (style A, {G.PAS_MS - G.SECOUSSE_MS} ms)")
+    verifier(all(len({p for _d, _f, p in r}) == len(r) for r in entieres) and all(0 <= p < 12 for r in entieres for _d, _f, p in r),
+             f"[{gr_}] chaque secousse a sa phase (ses tranches à elle)")
 plein = [p for p in carre if p >> 24]
 verifier(len([p for p in G.appliquer(9, 7, carre, "x", "A") if p >> 24]) > len(plein), "le style A ajoute le liseré rose / cyan")
 
@@ -83,7 +106,7 @@ verifier(not any(m.get("variantes_reservees") for m in recompenses.mondes() if m
 st = {}
 verifier(recompenses.gardien_de(st, {"id": "ricanombre"}) is None, "avant la boîte : pas de gardien")
 msg = recompenses.exploit(st, "citadelle.boite")
-verifier(msg and "Ricanombre" in msg and recompenses.faveur(st)["reste"] == 5, f"boîte maîtrisée : {msg}")
+verifier(msg and "Ricanombre" in msg and recompenses.faveur(st)["reste"] == 15, f"boîte maîtrisée : 15 rencontres favorisées (1er novembre) : {msg}")
 verifier(recompenses.gardien_de(st, {"id": "ricanombre"}) == "enumeration"
          and recompenses.gardien_de(st, {"id": "heaumbre"}) is None, "son gardien (et pas celui d'une autre boîte)")
 # une apparition favorisée : la première gardienne parmi les compteurs essayés, tirage exact (vérifiable)

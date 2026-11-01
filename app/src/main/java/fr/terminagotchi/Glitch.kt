@@ -6,7 +6,8 @@ import org.json.JSONObject
  * L'effet « glitch » d'une créature : portage exact de pc/tg/glitch.py (la spécification y est), le même que le site
  * (site/src/glitch.js) ; vecteurs communs : donnees/glitch/vecteurs.json (tests/jvm/Glitch.kt).
  * Effet de l'INDIVIDU (comme le shiny, indépendant de la variante) : au repos le style A (léger : liseré rose et
- * cyan, 2 tranches décalées), toutes les quelques secondes un éclair bref du style C (fort). Il se pose sur chaque
+ * cyan, 2 tranches décalées), toutes les 3 à 5,5 secondes une rafale saccadée de 2 ou 3 secousses très courtes
+ * du style C (fort), séparées par de brefs retours au style A (1er novembre). Il se pose sur chaque
  * image (vie, animations, poses de la bulle et de l'île), après la teinte shiny ; déterministe (graine = l'individu).
  * Pixels : ARGB (Int), transparents si alpha = 0.
  */
@@ -14,7 +15,9 @@ object Glitch {
     private const val ROSE = 0xFF2878
     private const val CYAN = 0x28E6FF
     private val MORTS = intArrayOf(ROSE, CYAN, 0xF0FF50, 0xFFFFFF)
-    const val ECLAIR_MS = 260L
+    /** une secousse (style C) de la rafale, puis un retour au repos (style A) jusqu'à la suivante (PAS_MS) */
+    const val SECOUSSE_MS = 120L
+    const val PAS_MS = 200L
     /** le repère du nom (1 colonne dans un terminal), comme le ✨ du shiny */
     const val REPERE = "▚"
 
@@ -126,13 +129,17 @@ object Glitch {
         return out
     }
 
-    /** (style, phase) à l'instant t (ms, horloge murale) : ("A", 0) au repos, ("C", phase) pendant un éclair. */
+    /** (style, phase) à l'instant t (ms, horloge murale) : ("A", 0) au repos, ("C", phase) pendant une secousse de la
+     *  rafale (2 ou 3 secousses de 120 ms, 80 ms de repos entre elles, toutes les 3 à 5,5 secondes). */
     fun etat(graine: String, t: Long = System.currentTimeMillis()): Pair<String, Int> {
         val hh = fnv("$graine:eclair")
         val periode = 3000L + java.lang.Long.remainderUnsigned(hh, 2500L)
         val t2 = t + java.lang.Long.remainderUnsigned(hh ushr 20, periode)
         val u = t2 % periode
-        if (u < ECLAIR_MS) return "C" to ((t2 / periode % 4).toInt() * 2 + if (u >= ECLAIR_MS / 2) 1 else 0)
+        val b = t2 / periode
+        val k = 2L + ((hh ushr 40) + b) % 2L
+        val j = u / PAS_MS
+        if (j < k && u % PAS_MS < SECOUSSE_MS) return "C" to ((b % 4L) * 3L + j).toInt()
         return "A" to 0
     }
 
@@ -145,7 +152,7 @@ object Glitch {
     /** La graine si l'individu est glitch, sinon null. */
     fun de(ind: JSONObject?): String? = if (ind != null && ind.optBoolean("glitch")) graine(ind) else null
 
-    /** L'effet à cet instant (style A, ou C pendant un éclair) pour une graine, ou null. */
+    /** L'effet à cet instant (style A, ou C pendant une secousse) pour une graine, ou null. */
     fun maintenant(graine: String?): Spec? = graine?.let { val (s, p) = etat(it); Spec(it, s, p) }
 
     /** L'effet au repos (style A) pour une graine, ou null. */

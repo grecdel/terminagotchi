@@ -84,10 +84,10 @@ fun main(args: Array<String>) {
         val (st, ph) = Glitch.etat(x.getString("graine"), x.getLong("t"))
         st != x.getJSONArray("etat").getString(0) || ph != x.getJSONArray("etat").getInt(1)
     }
-    verifierG(eRates.isEmpty(), "${ecl.length()} instants : mêmes éclairs (style C) qu'en Python")
+    verifierG(eRates.isEmpty(), "${ecl.length()} instants : mêmes secousses (style C, phase) qu'en Python")
     var c = 0
     for (t in 0L until 60_000L step 10) if (Glitch.etat("a1b2c3d4e5", t).first == "C") c++
-    verifierG(c in 200..800, "un éclair de temps en temps : ${c * 10} ms de style C par minute (≈ 4 %)")
+    verifierG(c in 200..800, "des rafales de secousses : ${c * 10} ms de style C par minute (≈ 7 %)")
 
     println("2. Le tirage du glitch (à part, compteur + 2^20)")
     val va = JSONObject(File(depot, "donnees/anti_triche/vecteurs.json").readText())
@@ -115,8 +115,8 @@ fun main(args: Array<String>) {
     val ric = Bestiaire.espece("ricanombre")!!
     verifierG(Recompenses.gardienDe(jeu, ric) == null, "avant la boîte : Ricanombre n'est pas encore un gardien rencontrable")
     val msg = Recompenses.exploit(jeu, "citadelle.boite")
-    verifierG(msg != null && msg.contains("Ricanombre") && Recompenses.faveur(jeu)?.optInt("reste") == 5,
-        "boîte Énumération maîtrisée : $msg")
+    verifierG(msg != null && msg.contains("Ricanombre") && Recompenses.faveur(jeu)?.optInt("reste") == 15,
+        "boîte Énumération maîtrisée : 15 rencontres favorisées (1er novembre) : $msg")
     verifierG(Recompenses.gardienDe(jeu, ric) == "enumeration" && Recompenses.gardienDe(jeu, Bestiaire.espece("heaumbre")!!) == null,
         "Ricanombre garde la boîte Énumération ; Heaumbre attend la boîte des droits")
     Recompenses.exploit(jeu, "citadelle.boite.droits")
