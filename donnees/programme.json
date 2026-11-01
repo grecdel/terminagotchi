@@ -4774,7 +4774,7 @@
    "relu_par": null
   },
   "journaux_systeme": {
-   "motif": "(carnet_de_bord|^journalctl\\b|^dmesg\\b|^tail\\s+(-\\w+\\s+)*-\\w*[fF]|^(tg\\s+)?controle\\s+(journal|alertes)\\b|alerte)",
+   "motif": "(carnet_de_bord|^journalctl\\b|^logcat\\b|^dmesg\\b|^tail\\s+(-\\w+\\s+)*-\\w*[fF]|^(tg\\s+)?controle\\s+(journal|alertes)\\b|alerte)",
    "enfant": "ct.f.journaux_systeme.enfant",
    "grands": "ct.f.journaux_systeme.grands",
    "vrai_terminal": [

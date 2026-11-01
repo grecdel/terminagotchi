@@ -117,7 +117,7 @@ FICHES = dict([
         ["POSIX.1-2024, Environment Variables (chapitre 8) : https://pubs.opengroup.org/onlinepubs/9799919799/basedefs/V1_chap08.html",
          "Bash, Bourne Shell Builtins (export, source) : https://www.gnu.org/software/bash/manual/html_node/Bourne-Shell-Builtins.html",
          "environ(7) : https://man7.org/linux/man-pages/man7/environ.7.html"]),
-    fiche("journaux_systeme", r"(carnet_de_bord|^journalctl\b|^dmesg\b|^tail\s+(-\w+\s+)*-\w*[fF]|"
+    fiche("journaux_systeme", r"(carnet_de_bord|^journalctl\b|^logcat\b|^dmesg\b|^tail\s+(-\w+\s+)*-\w*[fF]|"
                               r"^(tg\s+)?controle\s+(journal|alertes)\b|alerte)", [
         {"prepare": JOURNAL_TEST, "cmd": "grep -c ALERTE j.log", "sortie": "2"},
         {"prepare": JOURNAL_TEST, "cmd": "tail -n 1 j.log", "sortie": "ALERTE d"},
