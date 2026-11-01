@@ -1585,6 +1585,12 @@ libres : n'importe qui peut lire leur code, l'améliorer et le partager. Termina
 
 **Créatures** : Machine / Plante ; variante rare « artisan » à la première contribution acceptée.
 
+**Codée (1er novembre)** — voir `docs/plan_de_bataille.md`. Écarts assumés :
+- G4 corrige une faute dans une COPIE de phrases du jeu (petit dépôt local, sans remote), jamais dans les vrais fichiers de langue.
+- Les crédits sont une structure prête, avec une liste vide.
+- G6 copie l'image vers un FICHIER `cle_usb.img`. La vraie clé est seulement expliquée, avec un adulte.
+- « artisan » est l'exploit `guilde.artisan` (contribution d'exercice prête). Il favorise des variantes EXISTANTES : `engrenaille:mecanique`, `rouillot:rouille`, `lampignon:champignonniere`.
+
 ### 7.13 Compléments de mondes existants (tous au terminal)
 
 | Où | Ajout | Commandes réelles |

@@ -360,6 +360,52 @@ langues ; données `donnees/ondes.json`, vecteurs communs `donnees/ondes/vecteur
 propriétaire (B5, vignette, gardien, C3, E5, E6 ; à valider), repli dessiné en attendant. Reste : les illustrations,
 les vraies radios (vues seulement par des doublures en test), `type rtl_test` (ON9).
 
+**🛠 La Guilde des Bâtisseurs Libres — codée (1er novembre).**
+
+*Fichiers.*
+- 6 fiches (`donnees/guilde/outils/fiches_guilde.py`, rejeu bash).
+- Leçons gu0 → gu6 sur PC (`pc/tg/guilde.py`) et sur Android (`Guilde.kt`, `GuildeDessin.kt`).
+- Chapitre et dossier `guilde`, commandes `guilde …` (alias bash/zsh/fish/PowerShell).
+- La Guilde s'ouvre après les niveaux 0 à 4 du tronc commun. Icône du lieu 🧰 : 🛠 ne passait pas le test de largeur des cartes.
+
+*Règles du monde.*
+- **Tout reste dans le terrain** (`terrain_terminagotchi/guilde`).
+- Jamais `sudo`, rien d'installé, rien de poussé, aucun compte, aucun jeton.
+- **Aucune commande du jeu ne vise `/dev/…`**. La créature réagit à `git push`, `gh pr`, `apt/dnf install` et aux écritures vers `/dev`. Le jeu ne les lance jamais.
+
+*Les leçons.*
+- **G1 le libre** : les 4 libertés (quiz mélangé), la licence MIT du petit projet, les licences de la machine (`/usr/share/licenses`, `/usr/share/doc/*/copyright`, `rpm -q` sur Fedora, sinon le catalogue de la Guilde ; 5 à trouver), libre ≠ gratuit.
+- **G2 lire du vrai code** :
+  - `git clone --depth 1` du dépôt public. Sans réseau, `guilde copie` pose une copie locale des vrais `pc/tg/*.py` du jeu installé, sans rien télécharger, et l'étape ne bloque pas. Dans le rejeu CI, il n'y a pas de clone réseau.
+  - `tree` (repli `find`), `grep -rl faim`, `grep -rn "def etat_de"` : l'enfant trouve lui-même le fichier où sa créature décide qu'elle a faim. La réponse est calculée dans le clone ou la copie réellement présente.
+- **G3 compiler** : `bonjour.c` écrit dans le terrain, `gcc`, `file` (ELF), `od` (7f 45 4c 46), `ldd`, `make` sans Makefile. Si `gcc` manque, c'est raconté, et l'installation est expliquée « avec un adulte ».
+- **G4 contribuer** :
+  - Le travail se fait dans un petit dépôt git LOCAL, sans remote, avec l'identité « Apprenti de la Guilde » dans ce dépôt seulement.
+  - Il contient une COPIE de 6 vraies phrases du jeu avec une faute volontaire. Les fichiers de langue du jeu ne sont pas touchés.
+  - L'enfant fait : branche, correction par `sed -i`, `git diff`, `git commit -am`, `git log`. La demande de fusion est expliquée « avec un adulte », sans lien vers un compte.
+  - Les crédits contributeurs (`CREDITS.txt`) sont une structure prête, avec une liste vide. Aucune donnée inventée ni collectée.
+- **G5 fabriquer** : `porte_cle.scad` (OpenSCAD) aux mesures tirées de la partie, les coordonnées du trou, le volume, `openscad -o …stl` (si OpenSCAD manque, le jeu fabrique la plaque STL), `head` du STL. Aucune imprimante pilotée, aucun achat. Le porte-clé est un fichier, pas un objet porté.
+- **G6 redonner vie** :
+  - `lsblk` en lecture, une fausse image (64 KiB) et son `.sha256`, `sha256sum` et `sha256sum -c`.
+  - Le BON disque est choisi dans un lsblk **fictif** (système, sauvegarde, clé).
+  - `dd if=image of=cle_usb.img` copie de FICHIER à fichier. L'empreinte prouve la copie, puis vient le certificat.
+  - L'écriture sur une vraie clé est seulement expliquée, avec un adulte, `lsblk` d'abord, et l'avertissement que `dd` efface tout. `dd` à l'envers et le disque du système sont expliqués sans danger.
+
+*Le reste.*
+- Vue déployée : l'établi (« texte → programme », « code de la pièce → pièce 3D », « l'image → la clé (ici un fichier) »).
+- Ponts des Nombres, jamais bloquants : hexadécimal, coordonnées, volume. Les deux derniers sont nouveaux, dans `maths.py` et `Maths.kt`.
+- Ponts des mondes : git → Bibliothèque du Temps, gcc → Forge, sha256sum → Crypte, lsblk → Salle des Rouages.
+- Exploit « ta première contribution prête » (`guilde.artisan`, à `guilde fusion`). Variantes existantes réservées (Machine / Plante) : `engrenaille:mecanique`, `rouillot:rouille`, `lampignon:champignonniere`.
+- 14 langues. Données `donnees/guilde.json`, vecteurs communs `donnees/guilde/vecteurs.json`.
+- Tests : `pc/outils/test_guilde.py` (50), `tests/jvm/Guilde.kt` (28). Simulation `pc/outils/sim_guilde.py` → `docs/simulations/rapport_guilde.md`. Captures `pc/outils/capture_guilde.py`. Le rejeu CI installe gcc, make, file et openscad.
+- Prompts d'illustrations envoyés au propriétaire (B13, vignette, C1, C3, C4, E16 ; à valider). Un repli dessiné est affiché en attendant.
+
+*Reste.*
+- Les illustrations.
+- Un vrai `git clone` vu réussir (la machine de test n'a pas de réseau).
+- `satiete.py` absent de la branche main publique (GU10).
+- Pas de fichier LICENSE pour Terminagotchi lui-même : la Guilde n'affirme aucune licence pour le jeu (question au propriétaire).
+
 **▚ Le glitch — codé (31 octobre, décisions du propriétaire).** Un effet de l'INDIVIDU, comme le shiny (drapeau
 `glitch`, indépendant de la variante et du shiny) : l'image se dérègle comme un vieil écran, fabriquée à partir de
 l'image de la créature (aucune illustration). Au repos le style A (liseré rose/cyan des couches décalées, 2 tranches
