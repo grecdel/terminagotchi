@@ -304,9 +304,9 @@ def visibles(state):
 
 
 def onglets(state):
-    """Les onglets du panneau du moment, déjà apparus (PC : carte, cerveau, tuyaux, leçon)."""
+    """Les onglets du panneau du moment, déjà apparus (PC : carte, monde, cerveau, tuyaux, leçon)."""
     v = visibles(state)
-    out = [o for o in ("carte", "cerveau", "tuyaux") if o in v]
+    out = [o for o in ("carte", "monde", "cerveau", "tuyaux") if o in v]
     if "carte" in v:
         out.append("lecon")
     return out

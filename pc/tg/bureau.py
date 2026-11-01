@@ -896,7 +896,7 @@ class FenetresGtk:
                 data = d2
             s = (cairo.ImageSurface.create_for_data(data, cairo.FORMAT_ARGB32, cad.w, cad.h, stride), data)
             if cad.cle:
-                if len(self.surfaces) > 400:
+                if len(self.surfaces) > 1500:            # (le monde des biomes : un dessin par sorte de prisme)
                     self.surfaces.clear()
                 self.surfaces[cad.cle] = s
         return s[0]

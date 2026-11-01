@@ -7,6 +7,7 @@ Même principe que la créature du bureau (bureau_scene.py) : la fenêtre GTK 4,
     ("cercle", cx, cy, r, couleur, epaisseur)                  un anneau
     ("lueur", cx, cy, r, couleur)                              un halo rond (couleur au centre, transparent au bord)
     ("photo", nom, x, y, w, h)                                 une illustration (« monde » : la carte du Terminaworld)
+    ("calque", x, y, w, h, [ordres…])                          des ordres découpés à ce rectangle (le monde des biomes)
 Disposition (maquettes validées docs/maquettes/espace_travail_pc.png et espace_travail_cerveau_pc.png) :
     en haut         l'île : la créature, son état, l'équipe en pastilles, niveau, son, réglages
     à gauche        Explorateur (le Terminaworld, le lieu courant), Envies (jauges, assiette du jour), Équipe
@@ -47,7 +48,7 @@ COUL_STATUT = {"mange": VERT, "dort": VIOLET, "pret": BLEU, "faim": ORANGE, "vei
 LIEUX_CARTE = {"salle_des_machines": (0.16, 0.10), "tour": (0.84, 0.10), "bibliotheque": (0.10, 0.36),
                "coeur": (0.50, 0.29), "atelier": (0.84, 0.36), "cave": (0.86, 0.55), "nid": (0.50, 0.47),
                "vestibule": (0.55, 0.71), "dortoir": (0.85, 0.80), "grenier": (0.27, 0.74)}
-ONGLETS = ("carte", "cerveau", "tuyaux", "lecon")
+ONGLETS = ("carte", "monde", "cerveau", "tuyaux", "lecon")
 
 
 def _a(c, a):
@@ -724,10 +725,15 @@ def contexte(L, Z, m, r, t_):
         L.append(("texte", xx + ow / 2, y + 28, lib, 13.5, TEXTE if o == ong else DOUX, False, "c", False))
         Z.append((xx, y + 12, ow, 32, "onglet:" + o))
         xx += ow + 4
-    L.append(("texte", x + w - 16, y + 28, {"carte": "tree", "cerveau": "cerveau.sh", "tuyaux": "|",
+    L.append(("texte", x + w - 16, y + 28, {"carte": "tree", "cerveau": "cerveau.sh", "tuyaux": "|", "monde": "ls biome",
                                               "lecon": "aide"}[ong], 12, PALE, False, "d", True))
     zone = (x + 14, y + 54, w - 28, h - 54 - 40)
-    if ong == "carte":
+    if ong == "monde" and m.get("monde_vue") is not None:
+        if not m.get("monde_grand"):
+            m["monde_vue"].dessiner(L, Z, (x + 10, y + 52, w - 20, h - 62), t_)
+        else:
+            L.append(("texte", x + w / 2, y + h / 2, t("monde.ouvert_grand"), 13, DOUX, False, "c", False))
+    elif ong == "carte":
         carte(L, Z, m, zone, t_, (x, y + h - 22, w))
     elif ong == "cerveau":
         cerveau(L, Z, m, zone, t_, (x, y + h - 22, w))
@@ -1042,7 +1048,7 @@ def scene(m, t_=0.0):
             fantome(L, r)
     arr = m.get("arrivees") or {}
     pan_de = {"explorateur": ("explorateur",), "envies": ("envies", "assiette"), "equipe": ("equipe",),
-              "deploie": ("deploie",), "direct": ("direct",), "contexte": ("carte", "cerveau", "tuyaux")}
+              "deploie": ("deploie",), "direct": ("direct",), "contexte": ("carte", "monde", "cerveau", "tuyaux")}
     for k, r in rects.items():
         if not dalle_visible(m, k):
             continue
@@ -1057,6 +1063,8 @@ def scene(m, t_=0.0):
             arrivee(L, (pil[1], 16, pil[3], 62), arr["ile"], t("esp.nouveau"))
     if rg:
         rangement(L, Z, m, mise)
+    if m.get("monde_grand") and m.get("monde_vue") is not None and not intro:
+        monde_grand(L, Z, m, mise, t_)
     ile = m.get("ile_ouverte")
     if ile:                                   # l'île de la créature du bureau, ouverte sous la barre
         Li, Zi = ile
@@ -1071,6 +1079,20 @@ def scene(m, t_=0.0):
         options(O, Z, m, mise, vignettes)
         L += apparence.recolorer(O, th) + vignettes
     return L, Z, (mise.W, mise.H)
+
+
+def monde_grand(L, Z, m, mise, t_):
+    """La commande `monde` : le monde des biomes en grand, par-dessus l'espace (Échap ou ✕ pour revenir)."""
+    x, y, w, h = 16, 96, mise.W - 32, mise.H - 112
+    L.append(("rect", 0, 92, mise.W, mise.H - 92, (5, 6, 9, 200)))
+    L.append(("rrect", x, y, w, h, 14, PANNEAU, BORD_FORT, 1))
+    L.append(("texte", x + 18, y + 24, espace_lettres(t("monde.titre").upper()), 12, DOUX, True, "g", False))
+    L.append(("texte", x + w / 2, y + 24, t("monde.aide"), 12, PALE, False, "c", False))
+    L.append(("rrect", x + w - 44, y + 8, 32, 32, 9, (255, 255, 255, 16), BORD_FORT, 1))
+    L.append(("texte", x + w - 28, y + 24, "✕", 15, TEXTE, True, "c", False))
+    Z.append((x, y, w, h, "monde:cadre"))
+    Z.append((x + w - 44, y + 8, 32, 32, "monde:fermer"))
+    m["monde_vue"].dessiner(L, Z, (x + 12, y + 46, w - 24, h - 58), t_, grand=True)
 
 
 # ---------------------------------------------------------------- les options (roue dentée)
@@ -1139,6 +1161,14 @@ def options(L, Z, m, mise, vignettes=None):
            "opt:notifs")
     L.append(("texte", x + w - 30, yy + 17, t("app.options.langue", langue=o["langue"]) + "  (tg langue xx)", 13,
               DOUX, False, "d", False))
+    yy += 52
+    L.append(("texte", cx, yy + 17, t("efx.reglage"), 14.5, TEXTE, True, "g", False))     # effets : tous / essentiels / aucun
+    xx = cx + lt(t("efx.reglage"), 14.5) + 18
+    for niv in ("tous", "essentiels", "aucun"):
+        sel = niv == o.get("effets", "tous")
+        xx += bouton(L, Z, xx, yy, t("efx.niveau." + niv), "opt:effets:" + niv, JAUNE if sel else TEXTE,
+                     _a(JAUNE, 30) if sel else None, _a(JAUNE, 200) if sel else None) + 10
+    L.append(("texte", xx + 10, yy + 17, t("efx.reglage.aide"), 12.5, PALE, False, "g", False))
     yy += 62
     L.append(("rrect", cx - 10, yy - 14, w - 40, 104, 14, _a(JAUNE, 12), _a(JAUNE, 110), 1))
     L.append(("texte", cx + 6, yy + 6, t("app.opt.grands").upper(), 12, JAUNE, True, "g", False))
@@ -1248,6 +1278,8 @@ def decaler(liste, dx, dy):
             out.append((k, [(a + dx, b + dy) for a, b in op[1]], op[2]))
         elif k == "photo":
             out.append((k, op[1], op[2] + dx, op[3] + dy) + tuple(op[4:]))
+        elif k == "calque":
+            out.append((k, op[1] + dx, op[2] + dy, op[3], op[4], decaler(op[5], dx, dy)))
         else:
             out.append(op)
     return out
@@ -1296,6 +1328,9 @@ def a_l_echelle(liste, e, ox=0.0, oy=0.0):
         elif k == "arc":
             _, cx, cy, rx, ry, c, ep = op
             out.append((k, cx * e + ox, cy * e + oy, rx * e, ry * e, c, ep))
+        elif k == "calque":
+            _, x, y, w, h, sous = op
+            out.append((k, x * e + ox, y * e + oy, w * e, h * e, a_l_echelle(sous, e, ox, oy)))
         else:
             out.append(op)
     return out
@@ -1398,6 +1433,15 @@ def vers_pil(liste, taille, image=None):
         k = op[0]
         if k in ("img", "imgt"):
             S.vers_pil([op], (W, H), image=img)
+            continue
+        if k == "calque":                        # une zone découpée (le monde des biomes) : dessinée à part, recadrée
+            _, x, y, w, h, sous = op
+            x0, y0 = max(0, int(round(x))), max(0, int(round(y)))
+            x1, y1 = min(W, int(round(x + w))), min(H, int(round(y + h)))
+            if x1 > x0 and y1 > y0:
+                c = vers_pil(decaler(sous, -x0, -y0), (x1 - x0, y1 - y0), Image.new("RGBA", (x1 - x0, y1 - y0),
+                                                                                   (0, 0, 0, 0)))
+                img.alpha_composite(c, (x0, y0))
             continue
         if k == "rect":
             _, x, y, w, h, c = op

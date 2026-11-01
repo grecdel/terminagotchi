@@ -1382,6 +1382,14 @@ def _main():
     elif mode == "espace":                     # l'espace de travail (fenêtre dédiée, classe, ou texte)
         from . import espace
         espace.lancer(etape, args[1:])
+    elif mode in ("monde", "world"):           # tg monde : le monde des biomes en grand ; tg monde effets <niveau>
+        from . import effets
+        if len(args) > 2 and args[1].lower() == "effets" and args[2].lower() in effets.NIVEAUX:
+            core.modifier(lambda s: s.setdefault("effets", {}).__setitem__("niveau", args[2].lower()))
+            print("✨ " + t("efx.regle", niveau=t("efx.niveau." + args[2].lower())))
+            return
+        from . import espace
+        espace.lancer(etape, ["monde"] + args[1:])
     elif mode == "cerveau":                    # le cerveau de ta créature (son code d'états qui vit)
         from . import cerveau
         cerveau.lancer(etape, args[1:])

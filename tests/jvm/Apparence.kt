@@ -131,7 +131,7 @@ fun main(args: Array<String>) {
     val etapes = listOf<Triple<String, () -> Unit, Set<String>>>(
         Triple("éclosion", { Intro.finir(jeu) }, setOf("ile")),
         Triple("leçon t0", { h.getJSONArray("faits").put("t0") }, setOf("explorateur", "envies")),
-        Triple("fin du chapitre 1", { h.getJSONArray("ailes").put("reveil") }, setOf("carte")),
+        Triple("fin du chapitre 1", { h.getJSONArray("ailes").put("reveil") }, setOf("carte", "monde")),
         Triple("leçon nid1", { h.getJSONArray("faits").put("nid1") }, setOf("deploie", "assiette")),
         Triple("1re créature dressée", { Explo.captures(jeu).put(JSONObject().put("espece", "Gouttelin").put("nom", "Plic")) }, setOf("equipe")),
         Triple("chapitre 5 (le tuyau)", { h.getJSONArray("faits").put("biblio1") }, setOf("tuyaux")),
@@ -144,7 +144,7 @@ fun main(args: Array<String>) {
         verifA(apres - avant == att, "$nom : apparaissent $att (vu : ${apres - avant})")
         verifA(Apparence.prendreAnnonces(jeu).toSet() == att, "$nom : annoncés", true)
     }
-    verifA(Apparence.onglets(jeu) == listOf("terminal", "carte", "cerveau", "equipe"), "complet : Terminal, Carte, Cerveau, Équipe")
+    verifA(Apparence.onglets(jeu) == listOf("terminal", "carte", "monde", "cerveau", "equipe"), "complet : Terminal, Carte, Monde, Cerveau, Équipe")
     verifA((0 until h.getJSONArray("faits").length()).any { h.getJSONArray("faits").getString(it) == "biblio1" } && "tuyaux" in Apparence.visibles(jeu),
         "un panneau mérité le reste")
 
@@ -180,7 +180,7 @@ fun main(args: Array<String>) {
     Apparence.cacher(jeu, "creature", false)
     verifA(Apparence.bandes(jeu).any { it.id == "creature" }, "remettre une bande")
     Apparence.avancerOnglet(jeu, "equipe")
-    verifA(Apparence.onglets(jeu) == listOf("terminal", "carte", "equipe", "cerveau"), "changer l'ordre des onglets")
+    verifA(Apparence.onglets(jeu) == listOf("terminal", "carte", "monde", "equipe", "cerveau"), "changer l'ordre des onglets")
     Apparence.origine(jeu)
     verifA(Apparence.bandes(jeu).map { it.id + it.taille } == listOf("creatureM", "deploieM"), "Disposition d'origine")
     Apparence.choisirTheme(jeu, "gameboy")

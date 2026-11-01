@@ -143,6 +143,8 @@ class EspaceEtat(private val jeu: Jeu, private val dossier: () -> java.io.File, 
 
     /** Le temps passe (dt secondes) : la créature, l'île, la vue déployée, un tour du cerveau toutes les PAS s. */
     fun tick(dt: Double, maintenant: Double) {
+        monde.tick(dt)
+        if (modele.onglet == "monde") relireMonde(false)
         creature.tick(dt)
         ile.tick(dt)
         modele.vue?.avancer(dt)
@@ -166,6 +168,8 @@ class EspaceEtat(private val jeu: Jeu, private val dossier: () -> java.io.File, 
     fun preparer(maintenant: Double) {
         val m = modele
         m.t = maintenant
+        m.monde = monde
+        m.effets = niveauEffets()
         m.arrivees = arrivees.mapValues { maintenant - it.value }.filterValues { it < EspaceDessin.ARRIVEE }
         m.rangement = rangement
         m.options = options
@@ -189,8 +193,66 @@ class EspaceEtat(private val jeu: Jeu, private val dossier: () -> java.io.File, 
             a == "creature" -> creature.reagir("coeur")
             a == "ile" -> ile.fermer()
             a.startsWith("equipe:") -> { modele.onglet = "equipe"; return true }
+            a.startsWith("monde:") -> return monde.toucher(a)
         }
         return false
+    }
+
+    // ------------------------------------------------------------ le monde des biomes et les effets des commandes
+    val monde = MondeVue()
+    private val albums = HashMap<String, Poses.Album?>()
+
+    fun toucherMonde(a: String, x: Float, y: Float) { if (a.startsWith("monde:")) monde.toucher(a, x, y) else toucher(a) }
+
+    fun niveauEffets(): String = jeu.module("effets").optString("niveau", "tous").ifEmpty { "tous" }
+
+    /** L'équipe dans le monde : le guide d'abord (Guide.membres : le compagnon puis les bestioles, les plus récentes). */
+    fun equipeMonde(): List<MondeVue.Info> {
+        val gid = try { Guide.g(jeu).optString("id", "compagnon") } catch (e: Exception) { "compagnon" }
+        val out = mutableListOf<MondeVue.Info>()
+        for (mb in (try { Guide.membres(jeu) } catch (e: Exception) { emptyList() }).take(60)) {
+            val ind = mb.ind
+            if (ind == null) {
+                out.add(MondeVue.Info("compagnon", jeu.nom, mb.type, album, "enfant", gid == "compagnon", modele.especeStade, t("monde.compagnon"), null, false))
+                continue
+            }
+            val e = Bestiaire.espece(ind.optString("espece")) ?: continue
+            val st = ind.optString("stade", "bebe").ifEmpty { "bebe" }
+            val cle = mb.id + "/" + e.id + "/" + st + "/" + ind.optBoolean("shiny") + "/" + ind.optString("variante") + "/" + ind.optBoolean("glitch")
+            val al = albums.getOrPut(cle) { try { Poses.albumEspece(e, st, ind.optBoolean("shiny"), Glitch.de(ind)) } catch (x: Exception) { null } }
+            val rar = try { Bestiaire.rareteDe(ind) } catch (x: Exception) { "commune" }
+            out.add(MondeVue.Info(mb.id, ind.optString("nom").ifEmpty { e.nom }, mb.type, al, st, gid == mb.id, e.nom + " · " + Equipe.nomStade(st),
+                e.description, if (rar == "commune") null else rar, ind.optBoolean("shiny")))
+        }
+        return out.sortedBy { !it.guide }
+    }
+
+    fun relireMonde(forcer: Boolean) {
+        if (!jeu.existe) return
+        try { monde.relire(jeu.terrain, equipeMonde(), Effets.relatif(jeu.terrain, dossier()), forcer) } catch (e: Exception) { }
+    }
+
+    /** Après une commande : ce qui a VRAIMENT changé dans le terrain (photo avant / après) se voit dans le monde ; la
+     *  créature explique dans sa bulle, seulement les 3 premières fois (compteurs dans jeu.module("effets")). */
+    fun effets(ligne: String, avant: Effets.Photo?, code: Int?, sortie: String, dossier: java.io.File) {
+        if (avant == null) return
+        val niveau = niveauEffets()
+        val apres = Effets.photo(jeu.terrain, dossier)
+        val evs = Effets.filtrer(Effets.evenements(ligne, avant, apres, code, sortie), niveau)
+        if (evs.isEmpty()) return
+        for (e in evs) if (e.getString("type") == "lire") try {
+            val f = java.io.File(jeu.terrain, e.getString("chemin"))
+            val ls = org.json.JSONArray(); f.readText().take(2000).split("\n").take(3).forEach { ls.put(it) }; e.put("lignes", ls)
+        } catch (x: Exception) { }
+        monde.preparer(evs)
+        relireMonde(true)
+        monde.lancer(evs)
+        val ef = jeu.module("effets")
+        val dits = ef.optJSONObject("dits") ?: org.json.JSONObject().also { ef.put("dits", it) }
+        val k = Effets.aDire(dits, evs) ?: return
+        if (modele.onglet == "monde") monde.dire(t(k)) else ile.annoncer(t(k))
+        dits.put(k, dits.optInt(k) + 1)
+        jeu.sauver()
     }
 
     /** Les touches du mode rangement et des options. Renvoie la question des grands à poser, s'il y en a une. */
@@ -209,6 +271,7 @@ class EspaceEtat(private val jeu: Jeu, private val dossier: () -> java.io.File, 
             a.startsWith("opt:theme:") -> Apparence.choisirTheme(jeu, p[2])
             a.startsWith("opt:dispo:") -> Apparence.choisirDisposition(jeu, p[2])
             a == "opt:ranger" -> { options = false; rangement = true }
+            a.startsWith("opt:effets:") -> jeu.module("effets").put("niveau", p[2])
             a == "opt:tout" -> if (Apparence.a(jeu).optBoolean("tout")) Apparence.toutAfficher(jeu, false)
                 else { question = Apparence.questionAdulte(); options = false }
             else -> return

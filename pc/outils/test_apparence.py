@@ -120,7 +120,7 @@ verif(A.onglets(st) == [] and A.onglets_telephone([]) == ["terminal"], "pas d'on
 etapes = [
     ("éclosion", lambda s: intro.finir(s), {"ile"}),
     ("leçon t0 « Où suis-je ? »", lambda s: histoire.h_(s)["faits"].append("t0"), {"explorateur", "envies"}),
-    ("fin du chapitre 1", lambda s: histoire.h_(s)["ailes"].append("reveil"), {"carte"}),
+    ("fin du chapitre 1", lambda s: histoire.h_(s)["ailes"].append("reveil"), {"carte", "monde"}),
     ("leçon « Le garde-manger » (nid1)", lambda s: histoire.h_(s)["faits"].append("nid1"), {"deploie", "assiette"}),
     ("première créature dressée", lambda s: s.setdefault("captures", []).append({"id": "c1", "espece": "Gouttelin"}),
      {"equipe"}),
@@ -136,7 +136,8 @@ for nom, f, attendus in etapes:
     verif(set(A.a_(st)["annonces"]) >= attendus, f"{nom} : annoncés (animation et phrase)", True)
     for p in attendus:
         verif(not langue.t(f"app.pan.{p}.dit").startswith("app."), f"la phrase de « {p} »", True)
-verif(A.onglets(st) == ["carte", "cerveau", "tuyaux", "lecon"], "l'espace est complet : Carte, Cerveau, Tuyaux, Leçon")
+verif(A.onglets(st) == ["carte", "monde", "cerveau", "tuyaux", "lecon"],
+      "l'espace est complet : Carte, Monde, Cerveau, Tuyaux, Leçon")
 histoire.h_(st)["faits"].remove("biblio1")
 verif("tuyaux" in A.visibles(st), "un panneau mérité le reste")
 

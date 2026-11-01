@@ -264,6 +264,15 @@
    }
   },
   {
+   "id": "monde",
+   "quand": {
+    "eclos": true,
+    "chapitres": [
+     "reveil"
+    ]
+   }
+  },
+  {
    "id": "deploie",
    "quand": {
     "eclos": true,
@@ -473,11 +482,13 @@
   "onglets": [
    "terminal",
    "carte",
+   "monde",
    "cerveau",
    "equipe"
   ],
   "onglet_de": {
    "carte": "carte",
+   "monde": "monde",
    "cerveau": "cerveau",
    "equipe": "equipe"
   },

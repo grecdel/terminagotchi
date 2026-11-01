@@ -533,6 +533,19 @@ class TerminalActivity : Activity() {
                 ecrire("▸ " + t("esp.deploie_ok"), 0xFFB284FF.toInt())
                 return
             }
+            "monde", "world" -> {                     // le monde des biomes (onglet Monde) ; monde effets tous|essentiels|aucun
+                val mots = ligne.trim().split(Regex("\\s+")).map { it.lowercase() }
+                if (mots.getOrNull(1) == "effets" && mots.getOrNull(2) in Effets.NIVEAUX) {
+                    jeu.module("effets").put("niveau", mots[2]); jeu.sauver()
+                    ecrire("✨ " + t("efx.regle", "niveau" to t("efx.niveau." + mots[2])), Commandes.ROSE)
+                    return
+                }
+                if (espace == null) ouvrirEspace(false, dire = false)
+                espace?.onglet("monde")
+                espace?.etat?.relireMonde(true)
+                ecrire("🗺 " + t("monde.titre"), Commandes.ROSE)
+                return
+            }
             "cerveau" -> {                            // le cerveau de ta créature (et forcer un état : cerveau dort)
                 if (espace == null) ouvrirEspace(false, dire = false)
                 espace?.onglet("cerveau")
@@ -563,6 +576,8 @@ class TerminalActivity : Activity() {
                 return
             }
         }
+        // la photo du terrain avant la commande : ce qui change VRAIMENT se verra dans le monde des biomes (Effets.kt)
+        val photoAvant = if (espace != null && espace?.etat?.niveauEffets() != "aucun") try { Effets.photo(jeu.terrain, shell.dossier) } catch (e: Exception) { null } else null
         // Commandes intégrées (téléphone, créature) : réponse immédiate
         val interne = commandes.executer(ligne)
         if (interne != null) {
@@ -576,6 +591,7 @@ class TerminalActivity : Activity() {
                 majObservatoire(ligne)
             }
             try { apresCommande(ligne, etaitColle, etaitRappel) } catch (e: Exception) { android.util.Log.e("TG", "après « $ligne »", e) }
+            try { espace?.effets(ligne, photoAvant, 0, interne.texte, shell.dossier) } catch (e: Exception) { android.util.Log.e("TG", "effets", e) }
             if (interne.saut > saut) saut = interne.saut
             return
         }
@@ -617,6 +633,7 @@ class TerminalActivity : Activity() {
                 }
                 try {
                     apresCommande(ligne, etaitColle, etaitRappel, shell.code)
+                    espace?.effets(ligne, photoAvant, shell.code, resultat, shell.dossier)
                 } catch (e: Exception) {
                     android.util.Log.e("TG", "après la commande « $ligne »", e)
                 } finally {

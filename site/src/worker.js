@@ -13,6 +13,7 @@ import { enseignantsFr } from "./enseignants_fr.js";
 import * as ENT from "./entrainement.js";
 import * as GUILDE from "./guilde.js";
 import { barreTerminal, planSite, CSS_TERMINAL } from "./terminal.js";
+import MONDE_TEXTES from "./monde_textes.js";
 
 // ====================================================================== réglages à remplir
 
@@ -1916,6 +1917,47 @@ async function pageCompte(requete, env, L, chemin) {
 <form method="post" action="/compte/sortir"><button>${C.sortir}</button></form>`);
 }
 
+/** Le monde des biomes (même génération et mêmes effets que le jeu : public/js/monde_gen.js, effets.js), sur un petit
+ *  terrain d'essai en mémoire dans la page : rien n'est envoyé ni enregistré. La fiche d'une créature s'affiche À LA
+ *  PLACE de la liste ; sur un téléphone, le panneau monte du bas. */
+function pageMonde(L) {
+  const T = MONDE_TEXTES[L.lang] || MONDE_TEXTES.fr;
+  const e = (k) => echapper(T[k] || k);
+  const essais = ["mkdir feu/parcelle_3", "touch plante/parcelle_2/sapin.arbre", "cd plante/parcelle_1", "ls -a", "rm rose.fleur", "echo Salut >> mot.txt", "cat mot.txt", "mv chene.arbre ../parcelle_2/", "chmod a-w ../parcelle_2", "cd ../.. && find . -name \"*.arbre\""];
+  return page(L, T["monde.titre"], `<style>
+.mo{display:grid;grid-template-columns:minmax(0,1fr);gap:14px}
+@media(min-width:960px){.mo{grid-template-columns:minmax(0,1fr) 340px}.mo>#panel{grid-column:2;grid-row:1/span 2;position:sticky;top:12px;align-self:start}}
+.mo .carte-m{background:#131c24;border:2px solid #26384a;border-radius:10px;overflow:hidden}
+.mo .barre-m{display:flex;gap:6px;align-items:center;padding:6px 8px;border-bottom:2px solid #26384a}
+.mo .barre-m button,.mo #panel button{font:inherit;color:inherit;background:#10171d;border:2px solid #26384a;border-radius:6px;min-height:34px;padding:0 8px;cursor:pointer}
+.mo #cwrap{position:relative;background:#0b1a26}.mo #scene{display:block;width:100%;touch-action:none;image-rendering:pixelated;cursor:grab}
+.mo #panel{background:#131c24;border:2px solid #26384a;border-radius:10px;padding:10px;color:#d9f2df}
+.mo #panel h2{font-size:14px;color:#ffd866;margin:0 0 8px}.mo .roster{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:6px}
+.mo .roster button{display:flex;flex-direction:column;align-items:center;padding:4px 2px}.mo .roster img{width:42px;height:42px;object-fit:contain;image-rendering:pixelated}
+.mo .roster button span{font-size:13px;max-width:100%;overflow:hidden;text-overflow:ellipsis}.mo .roster .wait{opacity:.6;border-style:dashed}
+.mo .tchip{border-radius:999px;background:color-mix(in srgb,var(--tc) 25%,#10171d);border-color:var(--tc)}
+.mo .grp h4{display:flex;justify-content:space-between;align-items:center;margin:10px 0 6px;font-weight:normal}
+.mo .refuge{border:2px dashed #a88c3c;border-radius:8px;padding:6px;margin-bottom:8px}.mo .refuge h4{margin:0 0 4px;color:#ffd866}
+.mo .rrow{display:flex;gap:6px;align-items:center}.mo .rrow img{width:30px;height:30px;image-rendering:pixelated}.mo code{color:#3dff7c;background:#050a06;padding:0 4px;border-radius:3px}
+.mo .who{display:flex;gap:10px;align-items:center;margin:8px 0}.mo .bigimg img{width:90px;height:90px;object-fit:contain;image-rendering:pixelated;background:#10171d;border:2px solid #26384a;border-radius:10px}
+.mo .hab{background:#10171d;border:2px solid #26384a;border-radius:8px;padding:6px 8px}.mo .note{color:#8aa596;font-size:15px}
+.mo .retour{color:#3dff7c!important;border-color:#3dff7c!important}.mo .who h3{font-size:15px;margin:0 0 6px;word-break:break-word}
+.mo form button{min-height:30px!important;padding:0 10px!important}.mo #cmd{text-align:start}
+@media(max-width:959px){.mo #panel{position:fixed;left:0;right:0;bottom:0;z-index:20;max-height:70vh;overflow:auto;border-radius:14px 14px 0 0;transform:translateY(105%);transition:transform .28s}.mo #panel.open{transform:none}}
+.mo .term{background:#050a06;border:3px solid #1f3a28;border-radius:10px}.mo #out{height:200px;overflow-y:auto;padding:8px;color:#c9f7d6;font-family:monospace;font-size:14px;white-space:pre-wrap}
+.mo #out .cmd{color:#3dff7c}.mo #out .err{color:#ff8a7a}.mo form{display:flex;gap:6px;padding:6px;border-top:1px solid #1f3a28}.mo #prompt{color:#2b9c52;font-family:monospace;font-size:13px}
+.mo #cmd{flex:1;min-width:0;background:transparent;border:0;outline:0;color:#3dff7c;font-family:monospace;font-size:15px}.mo .essais button{font-family:monospace;font-size:13px;margin:2px;background:#0c1d12;color:#c9f7d6;border:1px solid #23603a;border-radius:6px;padding:2px 6px;cursor:pointer}
+</style>
+<h1>${e("monde.titre")}</h1><p>${e("site.intro")}</p>
+<div class="mo"><section class="carte-m"><div class="barre-m"><button id="rosterBtn">🐾</button><span style="flex:1"></span><button id="moins">−</button><button id="plus">+</button><button id="voir">⌖</button></div>
+<div id="cwrap"><canvas id="scene" aria-label="${e("monde.aide")}"></canvas></div><p class="note" style="margin:6px 10px">${e("monde.aide")}</p></section>
+<aside id="panel" aria-label="${e("monde.mes_creatures").replace(/\s*\(\{n\}\)/, "")}"></aside>
+<section class="term"><div class="barre-m" style="border-color:#1f3a28;color:#2b9c52">${e("site.terminal")}</div><div id="out" aria-live="polite"></div>
+<form id="form" autocomplete="off"><span id="prompt"></span><input id="cmd" spellcheck="false" autocapitalize="off" placeholder="${e("site.placeholder")}" aria-label="${e("site.placeholder")}"><button type="submit">⏎</button></form>
+<div class="essais" style="padding:6px">${e("site.essaie")} ${essais.map((c) => `<button type="button" data-essai="${echapper(c)}">${echapper(c)}</button>`).join("")}</div></section></div>
+<script>window.TG_MONDE=${JSON.stringify({ t: T }).replace(/</g, "\\u003c")}</script><script type="module" src="/js/monde_page.js"></script>`);
+}
+
 async function aiguiller(requete, env, url, chemin, L) {
   if (chemin === "/") return pageAccueil(env, L);
   if (chemin === "/connexion") return pageConnexion(env, L, url);
@@ -1924,6 +1966,7 @@ async function aiguiller(requete, env, url, chemin, L) {
   if (chemin === "/records") return pageRecords(env, L);
   if (chemin === "/ctf") return pageCtf(L, url.origin);
   if (chemin === "/bestiaire") return pageBestiaire(L, url);
+  if (chemin === "/monde") return pageMonde(L);
   if (chemin === "/captures") return pageCaptures(env, L, url);
   if (chemin === "/soutenir") return pageSoutenir(L);
   if (chemin === "/parents") return pageParents(L);

@@ -25,8 +25,10 @@ from . import bureau_vie as V
 from . import cerveau as CV
 from . import core
 from . import deploie as D
+from . import effets as E
 from . import espace_scene as S
 from . import langue
+from . import monde as MO
 from .langue import sans_marques, t
 
 IPS = 20
@@ -34,6 +36,7 @@ LIGNES_MAX = 400
 # les commandes de l'espace lui-même (pas lancées dans le shell)
 PANNEAUX = {"carte": "carte", "map": "carte", "cerveau": "cerveau", "brain": "cerveau", "tuyaux": "tuyaux",
             "lecon": "lecon", "leçon": "lecon"}
+MONDE = {"monde", "world"}             # le monde des biomes en grand (et « monde effets tous|essentiels|aucun »)
 # les commandes du jeu (alias du compagnon) : lancées par tg
 DU_JEU = {"aide", "quetes", "explique", "entrainement", "exercice", "badges", "guide", "types", "equipe", "envies",
           "satiete", "vacances", "lexique", "collection", "bestiaire", "histoire", "journal"}
@@ -121,6 +124,11 @@ class Espace(B.Controleur):
         self.options = False              # le panneau des options (roue dentée)
         self.question = None              # (question, réponse) pour les grands, avant « Tout afficher »
         self.arrivees = {}                # panneau → heure de son apparition (animation d'arrivée)
+        self.monde = MO.Vue()             # le monde des biomes (onglet « Monde », commande `monde` en grand)
+        self.monde_grand = False
+        self.monde_glisse = None          # (x, y du clic, x, y d'avant, bougé ?) : on fait glisser le monde
+        self.albums = {}
+        self.tk = False                   # la fenêtre de repli (tkinter) garde la carte : le monde y serait trop lent
         super().__init__(etape, 600, 400)
         self.c.regl = dict(self.regl, sur_place=True)
         self.c.changer("assis", 4)
@@ -199,6 +207,101 @@ class Espace(B.Controleur):
         self._poser()
         if self.dep:
             self._avancer_deploie(dt)
+        self.monde.tick(dt)
+        if self.monde_grand or self.onglet == "monde":
+            self._monde_relire()
+
+    # ------------------------------------------------ le monde des biomes
+    def niveau_effets(self):
+        return ((self.state or {}).get("effets") or {}).get("niveau", "tous")
+
+    def _monde_relire(self, forcer=False):
+        st = self.state
+        if not st or self.tk:
+            return
+        try:
+            self.monde.relire(core.TERRAIN, self._equipe_monde(st), E.relatif(core.TERRAIN, self.mini.dossier), forcer)
+        except Exception as e:                       # noqa: BLE001 — le monde ne casse jamais l'espace
+            B.noter(f"monde : {e!r}")
+
+    def _equipe_monde(self, st):
+        """L'équipe dans le monde : le guide d'abord, puis le compagnon, puis les bestioles (les plus récentes)."""
+        from . import bestiaire as Bs
+        from . import guide as Gd
+        out = []
+        gid = Gd.g_(st)["id"]
+        for i, nom, ty, ind in Gd.membres(st)[:60]:
+            if ind is None:
+                out.append({"id": "compagnon", "nom": nom, "type": ty, "album": self.album, "stade": "enfant",
+                            "guide": gid == "compagnon", "sous": self._espece_stade(st), "fiche": t("monde.compagnon"),
+                            "rarete": None})
+                continue
+            e = Bs.espece(ind.get("espece"))
+            if not e:
+                continue
+            stade = ind.get("stade", "bebe")
+            al = self._album_ind(ind, e, stade)
+            try:
+                rar = Bs.rarete_de(ind)
+            except Exception:                        # noqa: BLE001
+                rar = None
+            out.append({"id": i, "nom": ind.get("nom") or e["nom"], "type": ty, "album": al, "stade": stade,
+                        "guide": gid == i, "sous": e["nom"] + " · " + Bs.nom_stade(stade), "fiche": e.get("description", ""),
+                        "rarete": None if rar == "commune" else rar, "shiny": bool(ind.get("shiny")),
+                        "volant": e.get("posture") == "volant"})
+        out.sort(key=lambda x: not x["guide"])
+        return out
+
+    def _album_ind(self, ind, e, stade):
+        """L'album d'une bestiole, calculé une seule fois (il était recalculé à chaque image : 0,2 s par image avec
+        4 bestioles ; le glitch reste posé par l'album lui-même)."""
+        from . import glitch as Gl
+        cle = (ind.get("id"), e["id"], stade, bool(ind.get("shiny")), ind.get("variante"), repr(Gl.de(ind)))
+        if cle not in self.albums:
+            try:
+                from . import poses
+                self.albums[cle] = poses.album_espece(e["id"], "ancien" if stade == "finale" else stade,
+                                                      ind.get("shiny"), Gl.de(ind))
+            except Exception:                        # noqa: BLE001
+                self.albums[cle] = None
+        return self.albums[cle]
+
+    def _effets(self, ligne, avant, code, sortie, niveau):
+        """Les effets de la commande dans le monde : ce qui a VRAIMENT changé (photo avant / après)."""
+        apres = E.photo(core.TERRAIN, self.mini.dossier)
+        evs = E.filtrer(E.evenements(ligne, avant, apres, code, "\n".join(str(x) for x in sortie)), niveau)
+        for e in evs:
+            if e["type"] == "lire":                 # le parchemin montre les vraies premières lignes du fichier
+                try:
+                    with open(os.path.join(str(core.TERRAIN), e["chemin"]), encoding="utf-8", errors="replace") as f:
+                        e["lignes"] = [x.rstrip("\n") for x in f.read(2000).split("\n")[:3]]
+                except OSError:
+                    e["lignes"] = []
+        if not evs:
+            return
+        self.monde.preparer(evs)
+        self._monde_relire(forcer=True)
+        self.monde.lancer(evs)
+        st = self.state or {}
+        dits = dict((st.get("effets") or {}).get("dits") or {})
+        k = E.a_dire(dits, evs)
+        if not k:
+            return
+        texte = t(k)
+        if self.monde_grand or self.onglet == "monde":
+            self.monde.dire(texte, 5.0)
+        else:
+            self.vue.dire(texte, self.t, 5.0)
+
+        def compter(s_):
+            ef = s_.setdefault("effets", {})
+            d = ef.setdefault("dits", {})
+            d[k] = d.get(k, 0) + 1
+        self._modifier(compter)
+
+    def regler_effets(self, niveau):
+        if niveau in E.NIVEAUX:
+            self._modifier(lambda s_: s_.setdefault("effets", {}).__setitem__("niveau", niveau))
 
     def _poser(self):
         """La pose de la créature suit son cerveau (les autres moments : elle vit, respire, cligne, s'étire)."""
@@ -363,6 +466,19 @@ class Espace(B.Controleur):
             if premier in ("carte", "map"):           # la carte est aussi une vraie commande du jeu (tg carte)
                 self._jeu_tg(["carte"], ligne)
             return
+        if premier in MONDE:
+            self.mini.saisie = ""
+            self.mini.historique.append(ligne)
+            if len(mots) > 2 and mots[1] == "effets" and mots[2] in E.NIVEAUX:
+                self.regler_effets(mots[2])
+                self.ecrire("✨ " + t("efx.regle", niveau=t("efx.niveau." + mots[2])), S.VERT)
+            elif self.tk:
+                self.ecrire(t("monde.tk"), S.ORANGE)
+            else:
+                self.monde_grand = True
+                self._monde_relire(forcer=True)
+                self.ecrire("🗺 " + t("monde.ouvert"), S.VERT)
+            return
         if premier in ("theme", "thème", "ranger", "options"):
             self.mini.saisie = ""
             self.mini.historique.append(ligne)
@@ -386,10 +502,20 @@ class Espace(B.Controleur):
             self._jeu_tg(mots, ligne)
             return
         self.apres_commande = True
+        niveau = self.niveau_effets()
+        try:
+            avant = E.photo(core.TERRAIN, self.mini.dossier) if niveau != "aucun" and not self.tk else None
+        except OSError:
+            avant = None
         try:
             code, sortie = self.mini.lancer(ligne)
         finally:
             self.apres_commande = False
+        if avant is not None and code is not None:
+            try:
+                self._effets(ligne, avant, code, sortie, niveau)
+            except Exception as e:                   # noqa: BLE001 — un effet ne casse jamais le jeu
+                B.noter(f"effets : {e!r}")
         for l in [x for l0 in sortie for x in str(l0).split("\n")]:
             if l == "@vrai_terminal":
                 self.ecrire(t("bur.ile.vrai_terminal"), S.ORANGE)
@@ -424,6 +550,12 @@ class Espace(B.Controleur):
         a = self._zone(zones, x, y)
         if self.options:
             self.clic_options(a)
+            return
+        if a == "monde:fermer":
+            self.monde_grand = False
+            return
+        if a and a.startswith("monde:"):
+            self.monde.clic(None if a == "monde:cadre" else a, x, y)
             return
         if a and (a.startswith("rg:") or a == "ranger"):
             self.clic_rangement(a)
@@ -494,7 +626,12 @@ class Espace(B.Controleur):
             self._modifier(lambda s_: A.modifier(s_, k, cacher=False))
 
     def appui(self, x, y, zones):
-        """Le bouton de la souris s'enfonce : en mode rangement, sur une poignée ou un coin, la dalle est prise."""
+        """Le bouton de la souris s'enfonce : en mode rangement, sur une poignée ou un coin, la dalle est prise ;
+        sur le monde des biomes, on le fait glisser."""
+        if not self.rangement and not self.options and self._zone(zones, x, y) in ("monde:vue", "monde:objet") or \
+                (not self.rangement and str(self._zone(zones, x, y)).startswith("monde:objet:")):
+            self.monde_glisse = (x, y, x, y, False)
+            return True
         if not self.rangement or not self.state:
             return False
         a = self._zone(zones, x, y)
@@ -507,11 +644,38 @@ class Espace(B.Controleur):
         return False
 
     def bouger(self, x, y):
+        if self.monde_glisse:
+            x0, y0, xp, yp, bouge = self.monde_glisse
+            bouge = bouge or abs(x - x0) + abs(y - y0) > 6
+            if bouge:
+                self.monde.glisser(x - xp, y - yp)
+            self.monde_glisse = (x0, y0, x, y, bouge)
+            return
         if self.glisse:
             self.glisse = self.glisse[:4] + ((x, y),)
 
+    def molette(self, x, y, sens, zones):
+        """La molette sur le monde : zoomer là où est la souris."""
+        if str(self._zone(zones, x, y)).startswith("monde:"):
+            self.monde.zoomer(sens, x, y)
+
+    def echap(self):
+        """Échap : la fiche se referme (la liste revient), puis la région isolée, puis le monde en grand, puis l'île."""
+        if (self.monde_grand or self.onglet == "monde") and self.monde.echap():
+            return
+        if self.monde_grand:
+            self.monde_grand = False
+            return
+        self.ile_ouverte = False
+
     def lacher(self, x, y, zones):
         """La dalle est lâchée : elle s'aimante sur la grille (déplacée ou agrandie par crans)."""
+        if self.monde_glisse:
+            bouge = self.monde_glisse[4]
+            self.monde_glisse = None
+            if not bouge:
+                self.clic(x, y, zones)
+            return
         if not self.glisse:
             self.clic(x, y, zones)
             return
@@ -549,6 +713,8 @@ class Espace(B.Controleur):
                 self.question = (q, rep)
                 self.options = False
                 self.ecrire("🔒 " + t("app.tout.question", q=q), S.JAUNE)
+        elif a.startswith("opt:effets:"):
+            self.regler_effets(a.rsplit(":", 1)[1])
         elif a == "opt:notifs":
             self._modifier(lambda s_: s_["config"].__setitem__("notifs", not s_["config"].get("notifs", True)))
         elif a == "opt:bureau":
@@ -634,6 +800,11 @@ class Espace(B.Controleur):
             self.ile.etat = "ouverte"
             m["ile_ouverte"] = self.scene_ile()
         self._modele_apparence(m, st)
+        if not self.tk:
+            m["monde_vue"] = self.monde
+            m["monde_grand"] = self.monde_grand
+        elif m.get("onglets"):
+            m["onglets"] = [o for o in m["onglets"] if o != "monde"]
         return m
 
     def _modele_apparence(self, m, st):
@@ -683,6 +854,7 @@ class Espace(B.Controleur):
     def _options_modele(self, st, th, nom):
         cfg = (st or {}).get("config", {})
         return {"theme": th.cle, "dispo": nom, "tout": bool(A.a_(st).get("tout")) if st else False,
+                "effets": self.niveau_effets(),
                 "notifs": bool(cfg.get("notifs", True)), "question": self.question[0] if self.question else None,
                 "langue": langue.LANGUES.get(langue.courante(), "")}
 
@@ -744,11 +916,7 @@ class Espace(B.Controleur):
             if not e:
                 continue
             stade = ind.get("stade", "bebe")
-            try:
-                from . import glitch as G
-                al = poses.album_espece(e["id"], "ancien" if stade == "finale" else stade, ind.get("shiny"), G.de(ind))
-            except Exception:                        # noqa: BLE001
-                al = None
+            al = self._album_ind(ind, e, stade)
             s = "dort" if V.maintenant() % 60 < 20 and ind is st.get("captures", [])[0] else "pret"
             pastilles.append((al, s, False))
             lignes.append((al, ind.get("nom") or e["nom"], e["nom"] + " · " + Bs.nom_stade(stade), s,
@@ -891,6 +1059,13 @@ class FenetreGtk:
         clav = Gtk.EventControllerKey()
         clav.connect("key-pressed", self._touche)
         win.add_controller(clav)
+        mol = Gtk.EventControllerScroll.new(Gtk.EventControllerScrollFlags.VERTICAL)   # zoomer dans le monde
+        mol.connect("scroll", self._molette)
+        mouv = Gtk.EventControllerMotion()
+        mouv.connect("motion", lambda c, x, y: setattr(self, "souris", (x, y)))
+        da.add_controller(mol)
+        da.add_controller(mouv)
+        self.souris = (0, 0)
         self.da = da
         win.present()
         da.grab_focus()
@@ -917,6 +1092,10 @@ class FenetreGtk:
     def _appui(self, x, y):
         self.depart = (x, y)
         self.ctl.appui(*self._logique(x, y), self.zones)
+
+    def _molette(self, ctrl, dx, dy):
+        self.ctl.molette(*self._logique(*self.souris), -1 if dy > 0 else 1, self.zones)
+        return True
 
     def _bouger(self, dx, dy):
         self.ctl.bouger(*self._logique(self.depart[0] + dx, self.depart[1] + dy))
@@ -946,7 +1125,7 @@ class FenetreGtk:
         elif nom == "F11":
             c.classe = not c.classe
         elif nom == "Escape":
-            c.ile_ouverte = False
+            c.echap()
         else:
             u = Gdk.keyval_to_unicode(keyval)
             if u and chr(u).isprintable():
@@ -993,7 +1172,14 @@ def peindre_cairo(f, cr, liste):
         if base:
             B.FenetresGtk._peindre_liste(f, cr, base)
             base = []
-        if k == "rect":
+        if k == "calque":                            # une zone découpée : le monde des biomes
+            _, x, y, w, h, sous = op
+            cr.save()
+            cr.rectangle(x, y, w, h)
+            cr.clip()
+            peindre_cairo(f, cr, sous)
+            cr.restore()
+        elif k == "rect":
             _, x, y, w, h, c = op
             coul(c)
             cr.rectangle(x, y, w, h)
@@ -1091,6 +1277,7 @@ class FenetreTk:
     def __init__(self, ctl, tk):
         self.tk = tk
         self.ctl = ctl
+        ctl.tk = True                    # le repli garde la carte (le monde des biomes y serait trop lent)
         self.zones = []
         self.echelle = (1.0, 0.0, 0.0)
         self.racine = tk.Tk()
@@ -1401,6 +1588,7 @@ def lancer(etape, args=()):
     """tg espace [classe] [texte] : la fenêtre dédiée (GTK 4, sinon tkinter), ou le mode texte."""
     args = [a.lower() for a in args]
     classe = "classe" in args or "class" in args
+    grand = "monde" in args or "world" in args          # tg espace monde : le monde des biomes en grand
     force = os.environ.get("TG_ESPACE", "")
     texte = "texte" in args or "text" in args or force == "texte"
     ecran_dispo = bool(os.environ.get("DISPLAY") or os.environ.get("WAYLAND_DISPLAY")) or os.name == "nt" or \
@@ -1409,6 +1597,7 @@ def lancer(etape, args=()):
         if force != "tk":
             try:
                 ctl = Espace(etape, classe)
+                ctl.monde_grand = grand
                 FenetreGtk(ctl).lancer()
                 return
             except (ImportError, ValueError) as e:

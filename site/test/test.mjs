@@ -712,5 +712,35 @@ console.log("Pseudo coloré par les badges de la Guilde (Artisan : progression s
   verifier((await appel("GET", "/records")).statut === 200 && (await appel("GET", "/captures")).statut === 200, "records et galerie s'affichent");
 }
 
+// ---- le monde des biomes (/monde) : même génération et mêmes effets que le jeu (vecteurs communs Python = Kotlin = JS)
+{
+  const G = await import("../public/js/monde_gen.js");
+  const E = await import("../public/js/effets.js");
+  const VM = JSON.parse(readFileSync(new URL("../../donnees/monde/vecteurs.json", import.meta.url), "utf8"));
+  const VE = JSON.parse(readFileSync(new URL("../../donnees/effets/vecteurs.json", import.meta.url), "utf8"));
+  const tri = (o) => Array.isArray(o) ? o.map(tri) : (o && typeof o === "object") ? Object.fromEntries(Object.keys(o).sort().map((k) => [k, tri(o[k])])) : o;
+  const egal = (a, b) => JSON.stringify(tri(JSON.parse(JSON.stringify(a)))) === JSON.stringify(tri(b));
+  verifier(VM.hachage.every(([s, h]) => G.hachage(s) === h), "monde : hachage FNV-1a comme Python et Kotlin");
+  const r = G.hasard(42);
+  verifier(VM.hasard.every((x) => r() === x), "monde : hasard mulberry32 comme Python et Kotlin");
+  verifier(VM.deco.every(([n, t, d]) => egal(G.deco(n, t), d)), "monde : chaque fichier donne le même objet du décor");
+  for (const [i, m] of VM.mondes.entries()) {
+    const w = G.construire(m.terrain), res = G.resume(w);
+    verifier(egal(res, m.monde), `monde ${i} : mêmes hexagones, mêmes cordes, mêmes objets qu'en Python`);
+    const pc = G.placeCreatures(w, ["plante", "feu", "feu", "feu", "eau", "glace", "ombre"].map((t, j) => ["c" + j, t]));
+    verifier(egal(pc.maison, m.maison) && egal(pc.refuge, m.refuge), `monde ${i} : une créature par parcelle, les autres au refuge`);
+  }
+  let okE = 0;
+  for (const v of VE) if (egal(E.evenements(v.ligne, v.avant, v.apres, v.code, v.sortie), v.attendu) && egal(E.evenements(v.ligne, v.avant, v.apres, v.code, v.sortie).map(E.cleDit), v.dit)) okE++;
+  verifier(okE === VE.length, `effets : ${okE}/${VE.length} commandes donnent les mêmes effets qu'en Python et Kotlin`);
+  const page = await appel("GET", "/monde");
+  verifier(page.statut === 200 && page.t.includes("/js/monde_page.js") && page.t.includes("TG_MONDE"), "/monde : la page du monde des biomes s'affiche");
+  const T = (await import("../src/monde_textes.js")).default;
+  verifier(Object.keys(T).length === 14 && Object.values(T).every((x) => Object.keys(x).length === Object.keys(T.fr).length), "/monde : textes dans les 14 langues");
+  const pageEn = await worker.fetch(new Request("http://localhost/monde?lang=en"), env);
+  verifier((await pageEn.text()).includes("The biome world"), "/monde en anglais");
+  verifier(!readFileSync(new URL("../public/js/monde_page.js", import.meta.url), "utf8").match(/mascotte\w*\.png|icone\.png|favicon/), "/monde : la mascotte du site n'apparaît pas dans le monde");
+}
+
 console.log(`\n${ok} réussis, ${ko} échoués`);
 process.exit(ko ? 1 : 0);

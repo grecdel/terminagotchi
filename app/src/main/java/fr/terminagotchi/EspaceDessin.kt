@@ -24,6 +24,9 @@ interface Toile {
               rot: Float = 0f, alpha: Float = 1f)
     /** une illustration (« monde » : la carte du Terminaworld), recadrée pour remplir, coins arrondis */
     fun photo(nom: String, x: Float, y: Float, w: Float, h: Float, r: Float)
+    /** ce qui suit est découpé à ce rectangle (le monde des biomes), jusqu'à declip() */
+    fun clip(x: Float, y: Float, w: Float, h: Float) {}
+    fun declip() {}
 }
 
 /**
@@ -53,7 +56,7 @@ object EspaceDessin {
     val COUL_ENVIES = mapOf("faim" to 0xFFFFA85C.toInt(), "jeu" to ROSE, "curiosite" to JAUNE, "explorer" to VERT,
         "sommeil" to VIOLET, "proprete" to CYAN)
     val COUL_STATUT = mapOf("mange" to VERT, "dort" to VIOLET, "pret" to BLEU, "faim" to ORANGE)
-    val ONGLETS = listOf("terminal", "carte", "cerveau", "equipe")
+    val ONGLETS = listOf("terminal", "carte", "monde", "cerveau", "equipe")
     val LIEUX_CARTE = mapOf("salle_des_machines" to (0.16f to 0.10f), "tour" to (0.84f to 0.10f),
         "bibliotheque" to (0.10f to 0.36f), "coeur" to (0.50f to 0.29f), "atelier" to (0.84f to 0.36f),
         "cave" to (0.86f to 0.55f), "nid" to (0.50f to 0.47f), "vestibule" to (0.55f to 0.71f),
@@ -104,6 +107,9 @@ object EspaceDessin {
         var options = false
         var tout = false
         var mienne = false
+        /** le monde des biomes (onglet « Monde ») et le réglage des effets (tous, essentiels, aucun) */
+        var monde: MondeVue? = null
+        var effets = "tous"
     }
 
     /** Une zone qu'on peut toucher : (x, y, w, h, action). */
@@ -170,6 +176,7 @@ object EspaceDessin {
                 } else deploie(tl, Z, m, mx, y, w - 2 * mx, min(212 * z, reste - 4 * z), z)
             }
             "carte" -> carte(tl, Z, m, mx, y, w - 2 * mx, reste - 6 * z, z)
+            "monde" -> m.monde?.dessiner(tl0, Z, mx, y, w - 2 * mx, reste - 6 * z, z)   // le monde garde ses couleurs
             "cerveau" -> cerveau(tl, Z, m, mx, y, w - 2 * mx, reste - 6 * z, z)
             else -> equipe(tl, Z, m, mx, y, w - 2 * mx, reste - 6 * z, z)
         }
@@ -744,6 +751,15 @@ object EspaceDessin {
         y += 46 * z
         bouton(tl, Z, x, y, lw, "✎ " + t("esp.rg.titre"), "opt:ranger", z, VERT, a(VERT, 26), a(VERT, 140))
         y += 56 * z
+        tl.texte(t("efx.reglage").uppercase(), 20 * z, y, 11.5f * z, DOUX, true)        // effets : tous / essentiels / aucun
+        y += 12 * z
+        val ew = (lw - 12 * z) / 3
+        for ((i, n) in Effets.NIVEAUX.withIndex()) {
+            val sel = n == m.effets
+            bouton(tl, Z, x + i * (ew + 6 * z), y, ew, t("efx.niveau.$n"), "opt:effets:$n", z, if (sel) JAUNE else TEXTE,
+                if (sel) a(JAUNE, 30) else null, if (sel) a(JAUNE, 200) else null, sel)
+        }
+        y += 56 * z
         tl.texte(t("app.opt.grands").uppercase(), 20 * z, y, 11.5f * z, JAUNE, true)
         y += 12 * z
         tl.rrect(x, y, lw, 100 * z, 16 * z, a(JAUNE, 12), a(JAUNE, 120), 1f * z)
@@ -777,4 +793,6 @@ class ToileTheme(private val t: Toile, private val th: Apparence.Theme) : Toile 
         t.cadre(c, ax, ay, e, miroir, lisse, sx, sy, rot, alpha)
     override fun photo(nom: String, x: Float, y: Float, w: Float, h: Float, r: Float) =
         t.photo(if (th.carte != null && ':' !in nom) "$nom:${th.cle}" else nom, x, y, w, h, r)
+    override fun clip(x: Float, y: Float, w: Float, h: Float) = t.clip(x, y, w, h)
+    override fun declip() = t.declip()
 }

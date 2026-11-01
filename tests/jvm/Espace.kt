@@ -61,6 +61,9 @@ fun verifE(c: Boolean, m: String, silencieux: Boolean = false) {
 class ToileJava(val g: java.awt.Graphics2D, val assets: File) : Toile {
     private val images = HashMap<String, BufferedImage>()
     private var monde: BufferedImage? = null
+    private val decoupes = ArrayDeque<java.awt.Shape?>()
+    override fun clip(x: Float, y: Float, w: Float, h: Float) { decoupes.addLast(g.clip); g.clip(java.awt.geom.Rectangle2D.Float(x, y, w, h)) }
+    override fun declip() { g.clip = decoupes.removeLastOrNull() }
     private fun c(x: Int) = Color(x shr 16 and 255, x shr 8 and 255, x and 255, x ushr 24 and 255)
     private fun police(taille: Float, gras: Boolean, mono: Boolean): Font =
         Font(if (mono) "DejaVu Sans Mono" else "Inter", if (gras) Font.BOLD else Font.PLAIN, 1).deriveFont(taille)

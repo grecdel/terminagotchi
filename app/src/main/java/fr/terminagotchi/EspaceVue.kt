@@ -67,6 +67,12 @@ class EspaceVue(ctx: Context, jeu: Jeu, private val dossier: () -> java.io.File,
 
     fun onglet(o: String) { modele.onglet = o; requestLayout(); invalidate() }
 
+    /** Les effets d'une commande dans le monde des biomes (avant : la photo du terrain prise avant la commande). */
+    fun effets(ligne: String, avant: Effets.Photo?, code: Int?, sortie: String, dossier: java.io.File) {
+        etat.effets(ligne, avant, code, sortie, dossier)
+        invalidate()
+    }
+
     // ------------------------------------------------------------ le temps
     private val image = object : Runnable {
         override fun run() {
@@ -113,6 +119,7 @@ class EspaceVue(ctx: Context, jeu: Jeu, private val dossier: () -> java.io.File,
     private var appuiX = 0f
     private var appuiY = 0f
     private var longFait = false
+    private var glisseMonde: FloatArray? = null     // x, y d'avant, bougé (1) : on fait glisser le monde des biomes
     /** Appui long sur une bande (créature, vue déployée) : le mode « ranger mon espace ». */
     private val appuiLong = Runnable {
         val sur = zones.filter { it.dedans(appuiX, appuiY) }.map { it.action }
@@ -129,6 +136,10 @@ class EspaceVue(ctx: Context, jeu: Jeu, private val dossier: () -> java.io.File,
             MotionEvent.ACTION_DOWN -> {
                 appuiX = e.x; appuiY = e.y; longFait = false
                 val a = zones.lastOrNull { it.dedans(e.x, e.y) }?.action
+                if (modele.onglet == "monde" && !etat.rangement && !etat.options && (a == "monde:vue" || a?.startsWith("monde:crea:") == true)) {
+                    glisseMonde = floatArrayOf(e.x, e.y, 0f)
+                    return true
+                }
                 if (etat.rangement && a != null && a.startsWith("rg:tenir:")) {
                     modele.glisse = a.removePrefix("rg:tenir:") to e.y
                     performHapticFeedback(0)   // HapticFeedbackConstants.LONG_PRESS
@@ -137,6 +148,12 @@ class EspaceVue(ctx: Context, jeu: Jeu, private val dossier: () -> java.io.File,
                 return true
             }
             MotionEvent.ACTION_MOVE -> {
+                glisseMonde?.let { g ->
+                    if (g[2] > 0 || Math.abs(e.x - appuiX) + Math.abs(e.y - appuiY) > 12 * d) {
+                        modele.monde?.glisser(e.x - g[0], e.y - g[1]); g[0] = e.x; g[1] = e.y; g[2] = 1f; invalidate()
+                    }
+                    return true
+                }
                 if (Math.abs(e.x - appuiX) + Math.abs(e.y - appuiY) > 12 * d) removeCallbacks(appuiLong)
                 modele.glisse?.let { modele.glisse = it.first to e.y; invalidate() }
                 return true
@@ -144,6 +161,13 @@ class EspaceVue(ctx: Context, jeu: Jeu, private val dossier: () -> java.io.File,
             MotionEvent.ACTION_CANCEL -> { removeCallbacks(appuiLong); modele.glisse = null; invalidate(); return true }
             MotionEvent.ACTION_UP -> {
                 removeCallbacks(appuiLong)
+                val gm = glisseMonde
+                if (gm != null) {
+                    glisseMonde = null
+                    if (gm[2] == 0f) zones.lastOrNull { it.dedans(e.x, e.y) }?.action?.let { a -> etat.toucherMonde(a, e.x, e.y) }
+                    performClick(); invalidate()
+                    return true
+                }
                 val g = modele.glisse
                 if (g != null) {                       // la bande lâchée : à la place la plus proche
                     modele.glisse = null
@@ -256,7 +280,7 @@ class EspaceVue(ctx: Context, jeu: Jeu, private val dossier: () -> java.io.File,
                            rot: Float, alpha: Float) {
             if (alpha <= 0.01f) return
             val b = bitmaps.getOrPut(c.cle) {
-                if (bitmaps.size > 160) bitmaps.clear()
+                if (bitmaps.size > 900) bitmaps.clear()      // (le monde des biomes : un dessin par sorte de prisme)
                 Bitmap.createBitmap(c.argb, c.w, c.h, Bitmap.Config.ARGB_8888)
             }
             val k = cv ?: return
@@ -270,6 +294,9 @@ class EspaceVue(ctx: Context, jeu: Jeu, private val dossier: () -> java.io.File,
             k.restore()
             pImg.alpha = 255
         }
+
+        override fun clip(x: Float, y: Float, w: Float, h: Float) { cv?.save(); cv?.clipRect(x, y, x + w, y + h) }
+        override fun declip() { cv?.restore() }
 
         override fun photo(nom: String, x: Float, y: Float, w: Float, h: Float, r0: Float) {
             val base = monde ?: try {
