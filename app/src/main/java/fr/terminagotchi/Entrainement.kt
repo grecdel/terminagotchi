@@ -434,7 +434,7 @@ object Entrainement {
             }
         }
         if (ech.values.count { it >= 1 } >= 6) out.add(Titre("touche", t("ent.titre.touche"), COULEUR_TOUCHE))
-        out.addAll(Guilde.titres(jeu))                 // les badges de la Guilde : Contributeur, Artisan (nom coloré)
+        out.addAll(Guilde.titres(jeu))                 // les badges de la Guilde : Contributeur, Artisan (pseudo coloré)
         for (f in Badges.FAMILLES.sortedWith(compareBy({ -ech.getValue(it) }, { -fam(e, it).optInt("n") }, { Badges.FAMILLES.indexOf(it) }))) {
             val k = ech.getValue(f)
             if (k >= 1) {
@@ -452,10 +452,19 @@ object Entrainement {
         return tous.firstOrNull { it.id == choix } ?: tous.firstOrNull()
     }
 
-    /** La couleur du NOM du joueur quand le titre affiché est un badge de la Guilde (Artisan, Contributeur), ou null. */
-    fun couleurNom(jeu: Jeu): String? {
+    /** La couleur du PSEUDO du joueur (décision du 1er novembre : le pseudo, pas le nom de la créature) quand le titre
+     *  affiché est un badge de la Guilde (Artisan, Contributeur), ou null. */
+    fun couleurPseudo(jeu: Jeu): String? {
         val x = titreAffiche(jeu) ?: return null
         return if (x.id.substringBefore(":") in setOf("artisan", "contributeur")) x.couleur else null
+    }
+
+    /** Le pseudo (du recensement, ou `pseudo`) pour le terminal : ‹#rrggbb|pseudo› (en couleur et en gras, voir
+     *  TerminalActivity.miseEnForme) quand le titre affiché est un badge de la Guilde ; sinon le pseudo tel quel. */
+    fun pseudoColore(jeu: Jeu, pseudo: String? = null): String {
+        val p = pseudo ?: Recensement.compte(jeu).optString("pseudo")
+        val c = if (p.isEmpty()) null else try { couleurPseudo(jeu) } catch (e: Exception) { null }
+        return if (c == null) p else "‹$c|$p›"
     }
 
     /** « « Explorateur Kilo » » pour l'en-tête (ou "" sans titre) ; arc-en-ciel avec §…§ dans le terminal. */

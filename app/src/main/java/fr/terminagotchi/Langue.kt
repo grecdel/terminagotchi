@@ -140,7 +140,7 @@ object Langue {
         "(?:[\\x20-\\x7E …À-ÖØ-öø-ɏаседорхуіѕԁһј]*[$LAT/_}\\]\"'*…~>)%])?")
     private val LETTRE = Regex("[$LAT]")
     private val ARABE = Regex("[؀-ۿݐ-ݿﭐ-﷿ﹰ-﻿]")
-    private val BALISE = Regex("¤[^¤]*¤|`[^`\n]+`")
+    private val BALISE = Regex("¤[^¤]*¤|`[^`\n]+`|‹#[0-9a-fA-F]{6}\\|[^›\n]+›")
 
     /**
      * En arabe et en ourdou : isole chaque morceau de code latin (LRI … PDI) pour qu'il reste lisible de gauche
@@ -156,7 +156,9 @@ object Langue {
         fun isoler(morceau: String) = CODE.replace(morceau) { m -> if (LETTRE.containsMatchIn(m.value)) LRI + m.value + PDI else m.value }
         for (b in BALISE.findAll(s)) {
             // une commande `…` : isolée de gauche à droite en entier (elle reste verte, voir Vert.kt)
-            val v = if (b.value.startsWith("`")) "`" + LRI + b.value.substring(1, b.value.length - 1) + PDI + "`" else b.value
+            val v = if (b.value.startsWith("`")) "`" + LRI + b.value.substring(1, b.value.length - 1) + PDI + "`"
+                else if (b.value.startsWith("‹")) b.value.substring(0, 9) + LRI + b.value.substring(9, b.value.length - 1) + PDI + "›"   // ‹#rrggbb|pseudo›
+                else b.value
             sb.append(isoler(s.substring(i, b.range.first))).append(v)
             i = b.range.last + 1
         }

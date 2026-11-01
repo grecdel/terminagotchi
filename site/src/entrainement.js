@@ -176,6 +176,8 @@ const ICONES = {
   detective: ["..iiii..", ".i....i.", "i......i", "i......i", ".i....i.", "..iiiik.", "......kk", ".......k"],
   plombier: ["iiiiii..", "kkkkkii.", "iiiiiii.", ".....ii.", ".....ii.", "....iiii", "........", ".....k.."],
   cuisinier: [".i.ii.i.", "iiiiiiii", "iiiiiiii", ".iiiiii.", "..iiii..", "..kkkk..", "..iiii..", "..iiii.."],
+  artisan: ["iiiiii..", "iiiiiik.", "iiiiii..", "...kk...", "...kk...", "...kk...", "...kk...", "...kk..."],   // la Guilde : marteau
+  contributeur: [".ii..ii.", "iiiiiiii", "iiikkiii", "iikkkkii", ".iikkii.", "..iiii..", "...ii...", "........"],   // la Guilde : cœur
   cache: ["..iiii..", ".ii..ii.", ".....ii.", "....ii..", "...ii...", "...ii...", "........", "...ii..."],
 };
 const ETINCELLES = [[1, 12], [0, 12], [2, 12], [1, 11], [1, 13]];

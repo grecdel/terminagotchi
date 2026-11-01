@@ -58,9 +58,7 @@ def render(state, frame, interactif, anim=None, tic=None):
     jauges = envies.compact(state)                # les 6 envies, en petit (tg envies : le détail)
     m = envies.moment(state)
     right = [
-        (arc_en_ciel(state["name"] + " ✨") if state.get("shiny") else
-         f"{BOLD}" + entrainement.colorer(state["name"], entrainement.couleur_nom(state)) if entrainement.couleur_nom(state)
-         else f"{BOLD}{state['name']}{RESET}")
+        (arc_en_ciel(state["name"] + " ✨") if state.get("shiny") else f"{BOLD}{state['name']}{RESET}")
         + " · " + t("app.forme_niveau", forme=forme, n=lvl)
         + (" " + entrainement.titre_colore(state) if entrainement.titres(state) else ""),
         f"{DIM}" + t("app.caractere", trait=core.nom_trait(state["trait"])) + RESET,
@@ -579,7 +577,7 @@ def menu_options(state, clav):
         print("  9. " + t("app.options.test"))
         sec("app.opt.compte")
         c = st.get("compte", {})
-        print(" 10. " + t("app.options.recensement", pseudo=f"{BOLD}{c.get('pseudo') or t('app.options.pas_de_compte')}{RESET}")
+        print(" 10. " + t("app.options.recensement", pseudo=f"{BOLD}" + (entrainement.pseudo_colore(st) if c.get('pseudo') else t('app.options.pas_de_compte')) + RESET)
               + f" {DIM}" + t("app.options.recensement.meme") + RESET)
         sec("app.opt.grands")
         print(" 11. " + t("app.options.tout", etat=onoff(apparence.a_(st).get("tout"))))

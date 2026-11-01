@@ -1641,7 +1641,7 @@ libres : n'importe qui peut lire leur code, l'améliorer et le partager. Termina
 | G1 Le libre | logiciel libre / open source, les 4 libertés, licences (GPL, MIT, Creative Commons pour les images) ; libre ≠ gratuit | `cat LICENSE`, `dnf info` / `apt show` (lire la licence), `ls /usr/share/licenses` | retrouver la licence de 5 logiciels installés |
 | G2 Lire du vrai code | explorer un projet réel | `git clone` de **Terminagotchi lui-même**, `tree -L 2`, `grep -rn "faim"`, `less` | « Trouve où ta créature décide qu'elle a faim » |
 | G3 Compiler | du texte au programme : compilateur, binaire, bibliothèques | `gcc bonjour.c -o bonjour && ./bonjour`, `make`, `file bonjour`, `ldd` | compiler et lancer son premier programme C |
-| G4 Contribuer | signaler un bug, proposer une traduction, corriger un texte ; branche, commit, demande de fusion | `git switch -c`, `git diff`, `git commit` (pont Temps) | corriger une vraie faute dans un fichier de langue du jeu ; contributions retenues **créditées** dans le jeu (pseudo dans les crédits, nom coloré et badge « Contributeur ») |
+| G4 Contribuer | signaler un bug, proposer une traduction, corriger un texte ; branche, commit, demande de fusion | `git switch -c`, `git diff`, `git commit` (pont Temps) | corriger une vraie faute dans un fichier de langue du jeu ; contributions retenues **créditées** dans le jeu (pseudo dans les crédits, badge « Contributeur » et pseudo coloré) |
 | G5 Fabriquer des objets | **DIY matériel** : impression 3D par le code, fichiers STL | `openscad -o piece.stl piece.scad`, `head piece.stl` | générer une petite pièce (porte-clé de sa créature) |
 | G6 Redonner vie | **reconditionner un vieux PC** : préparer une clé USB Linux, installer, mettre à jour ; sobriété numérique | `lsblk`, `dd` / `cp` vers la clé (avec un adulte, vérification du bon disque), `sha256sum` de l'image | « un PC sauvé » (certificat) |
 
@@ -1654,7 +1654,7 @@ et « Contributeur », dessinés comme ceux de la salle d'entraînement (écusso
 - G6 copie l'image vers un FICHIER `cle_usb.img`. La vraie clé est seulement expliquée, avec un adulte.
 - **Licences choisies le 1er novembre** : le code de Terminagotchi est sous **GPL-3.0-or-later** (`LICENSE`, texte
   officiel complet), les images, dessins, textes de l'histoire et sons sous **CC BY-NC-SA 4.0** (`LICENSE-images.md`).
-  G1 se termine par `guilde licence terminagotchi` (les deux licences expliquées) ; G2 se termine par
+  G1 se termine par `guilde licence terminagotchi` (les deux licences expliquées, et la mascotte du site : tous droits réservés) ; G2 se termine par
   `head code_du_jeu/LICENSE` : la copie de la Guilde (PC et téléphone) contient `LICENSE` et `LICENSE-images.md`
   (relus dans `guilde.json`, eux-mêmes relus à la racine du dépôt). `tg aide` (PC) et `aide tout` (téléphone) les citent.
 - « artisan » est l'exploit `guilde.artisan` (contribution d'exercice prête). Depuis le 1er novembre, il ne favorise plus
@@ -1666,9 +1666,23 @@ et « Contributeur », dessinés comme ceux de la salle d'entraînement (écusso
     Kilo (10), Méga (25), Giga (50). Les crédits (`guilde.json` → `credits` → `contributeurs`, entrées
     `{"pseudo", "contributions"}`) sont ajoutés à la main par les mainteneurs, avec l'accord de la personne ; la liste
     livrée est VIDE. Le pseudo du recensement est cherché dans cette liste ;
-  - chacun donne un **titre** (`tg badges titre`) ; quand il est le titre affiché, le **nom** prend sa couleur (Artisan :
-    orange de forge #FFAF5F ; Contributeur : vert des plans validés #5FD787), sur PC et sur le téléphone ;
-  - `guilde badges` (et `tg badges`) dessine les deux badges et leur progression. Le site ne les montre pas encore.
+  - chacun donne un **titre** (`tg badges titre`) ; quand il est le titre affiché, le **pseudo** de l'enfant (celui du
+    recensement) prend sa couleur, en gras (Artisan : orange de forge #FFAF5F ; Contributeur : vert des plans validés
+    #5FD787). **Décision du 1er novembre (09:52)** : la couleur va sur le PSEUDO, jamais sur le nom de la créature.
+    Dans le jeu : options (PC), menu des parties, `compte` / `tg compte`, création et liaison du compte, crédits de la
+    Guilde (`guilde fusion`) ; le téléphone écrit `‹#rrggbb|pseudo›`, que son terminal colore (et isole en arabe et en
+    ourdou). Lisibilité : contraste ≥ 4,5 sur le fond du terminal de chaque thème (le terminal reste sombre, même avec un
+    thème clair) et sur les fonds du site (qui n'a qu'un thème, sombre) — vérifié par les tests ;
+  - `guilde badges` (et `tg badges`) dessine les deux badges et leur progression ;
+  - **sur le site** : la synchro envoie le titre MONTRÉ (`valeurs.titre`, par exemple `artisan:kilo`) et la progression
+    de la Guilde (`guilde: {lecons, contribution}`). Le serveur ne croit que ce qu'il vérifie : il RECALCULE l'échelon
+    « Artisan » à partir des leçons synchronisées (un grade envoyé est ignoré) ; l'échelon « Contributeur » vient
+    SEULEMENT des crédits du dépôt, copiés dans `site/src/guilde_donnees.js` par `fiches_guilde.py` (il faut redéployer
+    le site quand les crédits changent) ; du titre, il ne garde que le nom du badge. Le pseudo est coloré si ce badge
+    est vérifié : profil `/joueur/…` (avec les deux badges dessinés en pixels, comme ceux de la salle d'entraînement),
+    classement (accueil et `/classement`), `/records`, galerie « par … », page d'un badge vérifié. Table
+    `pseudos_guilde` (`site/migrations/0002_pseudo_guilde.sql`, aussi dans `schema.sql`) : pour la vitrine (meilleure
+    partie), le badge choisi et l'échelon Artisan recalculé.
 
 ### 7.13 Compléments de mondes existants (tous au terminal)
 

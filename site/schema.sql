@@ -125,3 +125,14 @@ CREATE TABLE IF NOT EXISTS titres_hebdo (
   PRIMARY KEY (semaine, famille)
 );
 CREATE INDEX IF NOT EXISTS titres_hebdo_joueur ON titres_hebdo (joueur);
+
+-- Migration « pseudo coloré » (1er novembre ; ré-exécutable ; aussi dans migrations/0002_pseudo_guilde.sql).
+-- Pour la vitrine de chaque joueur (sa meilleure partie) : le badge de la Guilde choisi comme titre dans le jeu
+-- (« artisan », « contributeur » ou vide) et l'échelon « Artisan » recalculé par le serveur à partir des leçons de la
+-- Guilde synchronisées. L'échelon « Contributeur » n'est jamais stocké : il vient des crédits du dépôt (src/guilde_donnees.js).
+CREATE TABLE IF NOT EXISTS pseudos_guilde (
+  joueur TEXT PRIMARY KEY,
+  titre TEXT NOT NULL DEFAULT '',
+  artisan TEXT,
+  maj INTEGER NOT NULL
+);

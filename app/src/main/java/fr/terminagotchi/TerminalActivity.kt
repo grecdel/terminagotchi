@@ -747,11 +747,16 @@ class TerminalActivity : Activity() {
 
     private fun miseEnForme(texte: String, couleur: Int?): SpannableStringBuilder {
         val sb = SpannableStringBuilder()
-        val motif = Regex("¤([a-z0-9_]+)(?::([^:¤*+~!]+))?(?::([a-z]+))?(?:\\*([0-9.]*))?(\\+)?(?:~([0-9]))?(?:!([0-9a-f]+))?¤|§([^§]*)§|`([^`\n]+)`")
+        val motif = Regex("¤([a-z0-9_]+)(?::([^:¤*+~!]+))?(?::([a-z]+))?(?:\\*([0-9.]*))?(\\+)?(?:~([0-9]))?(?:!([0-9a-f]+))?¤|§([^§]*)§|`([^`\n]+)`|‹(#[0-9a-fA-F]{6})\\|([^›\n]+)›")
         var i = 0
         for (m in motif.findAll(texte)) {
             sb.append(texte, i, m.range.first)
-            if (m.groups[9] != null) {                    // `commande` : en vert (voir Vert.kt)
+            if (m.groups[10] != null) {                   // ‹#rrggbb|pseudo› : le pseudo coloré par un badge de la Guilde
+                val debut = sb.length
+                sb.append(m.groupValues[11])
+                sb.setSpan(ForegroundColorSpan(android.graphics.Color.parseColor(m.groupValues[10])), debut, sb.length, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
+                sb.setSpan(android.text.style.StyleSpan(android.graphics.Typeface.BOLD), debut, sb.length, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
+            } else if (m.groups[9] != null) {             // `commande` : en vert (voir Vert.kt)
                 val debut = sb.length
                 sb.append(m.groupValues[9])
                 sb.setSpan(ForegroundColorSpan(Vert.COULEUR), debut, sb.length, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
@@ -1196,11 +1201,8 @@ class TerminalActivity : Activity() {
 
     // ------------------------------------------------------------ affichage
     private fun rafraichir() {
-        val couleurNom = if (jeu.existe && !jeu.shiny) Entrainement.couleurNom(jeu) else null   // Artisan, Contributeur : le nom coloré
-        titre.text = if (!jeu.existe) t("term.oeuf_mysterieux") else if (jeu.shiny) miseEnForme("§${jeu.titre()}§", null)
-            else if (couleurNom != null) SpannableString(jeu.titre()).apply {
-                setSpan(ForegroundColorSpan(android.graphics.Color.parseColor(couleurNom)), 0, jeu.nom.length.coerceAtMost(length), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE) }
-            else jeu.titre()
+        // (le nom de la créature n'est jamais coloré par un titre : c'est le PSEUDO qui l'est, voir Entrainement.pseudoColore)
+        titre.text = if (!jeu.existe) t("term.oeuf_mysterieux") else if (jeu.shiny) miseEnForme("§${jeu.titre()}§", null) else jeu.titre()
         // les 6 envies, puis l'état de la satiété et la petite assiette du jour (Satiete.kt)
         faim.text = if (jeu.existe) Envies.compact(jeu) + "  " + Envies.emoji(jeu) + "\n" + Satiete.ligneEtat(jeu) + "  🍽 " + Satiete.assiette(jeu)
             else jeu.texteFaim()

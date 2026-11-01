@@ -99,7 +99,11 @@ object Recensement {
                 .put("nom", jeu.nom).put("nomDate", c.optLong("nomDate"))
                 .put("trait", jeu.trait).put("forme", jeu.forme ?: JSONObject.NULL).put("shiny", jeu.shiny)
                 .put("faim", jeu.faim).put("faimDate", c.optLong("repas"))
-                .put("theme", Apparence.cleTheme(jeu)).put("themeDate", Apparence.a(jeu).optLong("theme_date")))
+                .put("theme", Apparence.cleTheme(jeu)).put("themeDate", Apparence.a(jeu).optLong("theme_date"))
+                // le titre montré : le site colore le pseudo si c'est un badge de la Guilde QU'IL a vérifié lui-même
+                .put("titre", try { Entrainement.titreAffiche(jeu)?.id ?: "" } catch (e: Exception) { "" }))
+            // leçons de la Guilde et contribution : le site en recalcule le badge « Artisan » (jamais le grade envoyé)
+            .put("guilde", try { Guilde.chargeSite(jeu) } catch (e: Exception) { JSONObject() })
         // salle d'entraînement : compteurs gagnés ici, exercices à vérifier, records (Entrainement.kt)
         val (ent, snapEnt) = Entrainement.charge(jeu, base.optJSONObject("ent"))
         charge.put("entrainement", ent)

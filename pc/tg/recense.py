@@ -86,15 +86,31 @@ def _charge(state):
         "captures": state.get("captures", [])[-3000:],
         "partage": c.get("partage", {"actif": False, "date": 0}),
         "valeurs": {"nom": state["name"], "nomDate": c.get("nomDate", 0), "trait": state.get("trait", ""),
+                    "titre": _titre(state),
                     "shiny": bool(state.get("shiny")),
                     "forme": state.get("branch"), "faim": state["hunger"],
                     "faimDate": int(state.get("repas_t", 0) * 1000),
                     "theme": state.get("config", {}).get("theme") or "sombre",
                     "themeDate": int(state.get("config", {}).get("theme_date") or 0)},
     }
-    from . import entrainement
+    from . import entrainement, guilde
+    charge["guilde"] = guilde.charge_site(state)    # leçons de la Guilde et contribution : le site en tire le badge Artisan
     charge["entrainement"], snap["ent"] = entrainement.charge(state, base.get("ent"))
     return charge, snap
+
+
+def _titre(state):
+    """Le titre montré (« artisan:kilo »…) : le site colore le pseudo si c'est un badge de la Guilde QU'IL a vérifié."""
+    from . import entrainement
+    try:
+        return entrainement.titre_affiche_id(state) or ""
+    except (KeyError, TypeError, ValueError):
+        return ""
+
+
+def _colore(st, pseudo):
+    from . import entrainement
+    return entrainement.pseudo_colore(st, pseudo) if st else pseudo
 
 
 def _appliquer(state, srv, snap):
@@ -255,7 +271,7 @@ def commande(args):
         return t("rec.hors_ligne")
     if action == "creer":
         if c.get("cle"):
-            return t("rec.deja_compte", pseudo=c["pseudo"])
+            return t("rec.deja_compte", pseudo=_colore(st, c["pseudo"]))
         if len(args) < 2:
             return t("rec.creer.exemple")
         r = requete(url + "/api/inscription", "POST", {"pseudo": args[1], "appareil": APPAREIL})
@@ -264,7 +280,7 @@ def commande(args):
         _enregistrer(r["pseudo"], r["cle"], url)
         msg = synchroniser(forcer=True) or ""
         secours = ("\n\n" + t("rec.secours.donne", code=r["secours"])) if r.get("secours") else ""
-        return t("rec.bienvenue", pseudo=r["pseudo"], msg=msg, url=f"{url}/joueur/{r['pseudo']}") + secours
+        return t("rec.bienvenue", pseudo=_colore(core.load(), r["pseudo"]), msg=msg, url=f"{url}/joueur/{r['pseudo']}") + secours
     if action in ("lier", "secours"):
         if len(args) < 2:
             return t("rec.lier.exemple" if action == "lier" else "rec.secours.exemple")
@@ -274,7 +290,7 @@ def commande(args):
             return "⚠ " + r.get("erreur", t("rec.err.liaison"))
         _enregistrer(r["pseudo"], r["cle"], url)
         msg = synchroniser(forcer=True) or ""
-        return t("rec.relie", pseudo=r["pseudo"], msg=msg)
+        return t("rec.relie", pseudo=_colore(core.load(), r["pseudo"]), msg=msg)
     if not c.get("cle"):
         return t("rec.sans_compte")
     if action == "code":
@@ -310,7 +326,7 @@ def commande(args):
         return t("rec.oublie")
     dernier = c.get("dernier", 0)
     quand = time.strftime("%H:%M", time.localtime(dernier)) if dernier else t("rec.jamais")
-    return t("rec.resume", pseudo=c["pseudo"], quand=quand, profil=f"{url}/joueur/{c['pseudo']}", ctf=f"{url}/ctf")
+    return t("rec.resume", pseudo=_colore(st, c["pseudo"]), quand=quand, profil=f"{url}/joueur/{c['pseudo']}", ctf=f"{url}/ctf")
 
 
 def site(args):

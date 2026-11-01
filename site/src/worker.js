@@ -11,6 +11,7 @@ import { LANGUES, NOMS_LANGUES, LOCALES, RTL, choisirLangue, cookieLangue, texte
 import { confidentialiteFr, mentionsFr } from "./legal_fr.js";
 import { enseignantsFr } from "./enseignants_fr.js";
 import * as ENT from "./entrainement.js";
+import * as GUILDE from "./guilde.js";
 import { barreTerminal, planSite, CSS_TERMINAL } from "./terminal.js";
 
 // ====================================================================== réglages à remplir
@@ -503,6 +504,10 @@ function fusionner(etat, envoi, appareil, verdicts = new Map()) {
     e.faim = Math.max(0, Math.min(100, Number(v.faim) || 0));
     e.faimDate = Number(v.faimDate);
   }
+  // la Guilde : leçons réussies et contribution prête (le site en recalcule lui-même le badge « Artisan ») ; le titre
+  // montré par le jeu, réduit au nom du badge de la Guilde (« artisan:kilo » → « artisan ») : le dernier envoyé gagne
+  if (envoi.guilde && typeof envoi.guilde === "object") e.guilde = GUILDE.fusionner(e.guilde, envoi.guilde);
+  if (typeof v.titre === "string") e.titreGuilde = GUILDE.badgeDuTitre(v.titre);
   if (APPAREILS.includes(appareil)) e.appareils[appareil] = Date.now();
   return e;
 }
@@ -582,6 +587,7 @@ async function synchroniser(env, joueur, b, partie) {
     .bind(joueur.id).first();
   await env.DB.prepare("UPDATE joueurs SET etat = ?, xp = ?, niveau = ?, maj = ? WHERE id = ?")
     .bind(meilleure.etat, meilleure.xp, meilleure.niveau, maintenant, joueur.id).run();
+  await majPseudoGuilde(env, joueur.id, lireEtat(meilleure));
   const nouveaux = [];
   if (Object.keys(e.appareils).length >= 2) {
     const bd = await donnerBadge(env, joueur.id, "multi", "Multi-plateforme : PC + téléphone");
@@ -591,6 +597,41 @@ async function synchroniser(env, joueur, b, partie) {
   return json({ etat: e, partie, badges: nouveaux, graines: await graines(env, joueur),
     entrainement: { hebdo: { semaine: st.semaine, familles: st.familles }, compte: st.compte, verdicts: ent.verdicts } });
 }
+
+/**
+ * Le pseudo coloré (badges de la Guilde) : la table `pseudos_guilde` garde, pour la vitrine du joueur (sa meilleure
+ * partie), le badge choisi comme titre et l'échelon « Artisan » RECALCULÉ ici ; l'échelon « Contributeur » n'est
+ * jamais stocké : il vient des crédits du dépôt (guilde_donnees.js) à chaque affichage.
+ */
+async function majPseudoGuilde(env, joueurId, e) {
+  await env.DB.prepare("INSERT INTO pseudos_guilde (joueur, titre, artisan, maj) VALUES (?, ?, ?, ?) "
+    + "ON CONFLICT (joueur) DO UPDATE SET titre = excluded.titre, artisan = excluded.artisan, maj = excluded.maj")
+    .bind(joueurId, GUILDE.badgeDuTitre(e.titreGuilde), GUILDE.echelonArtisan(e.guilde), Date.now()).run();
+}
+
+/** Les vitrines de la Guilde de quelques pseudos : Map(pseudo en minuscules → GUILDE.vitrine). */
+async function vitrinesGuilde(env, pseudos) {
+  const uniques = [...new Set(pseudos.filter((x) => typeof x === "string" && x))];
+  const out = new Map(uniques.map((p) => [p.toLowerCase(), GUILDE.vitrine(p, "", null)]));
+  for (let i = 0; i < uniques.length; i += 90) {
+    const lot = uniques.slice(i, i + 90);
+    const r = await env.DB.prepare(`SELECT j.pseudo, g.titre, g.artisan FROM joueurs j JOIN pseudos_guilde g ON g.joueur = j.id `
+      + `WHERE j.pseudo IN (${lot.map(() => "?").join(",")})`).bind(...lot).all();
+    for (const x of r.results) out.set(x.pseudo.toLowerCase(), GUILDE.vitrine(x.pseudo, x.titre, x.artisan));
+  }
+  return out;
+}
+
+/** Un pseudo pour une page : dans la couleur de son badge de la Guilde (et en gras) quand c'est son titre. */
+function pseudoHtml(L, pseudo, vitrines) {
+  const v = vitrines?.get(String(pseudo).toLowerCase());
+  if (!v?.titre) return bdi(pseudo);
+  const T = GUILDE.textes(L.lang);
+  const nom = `${T[v.titre.badge]} ${L.t.ent.echelonsNoms[v.titre.echelon] || ""}`.trim();
+  return `<bdi class="pseudo-g pseudo-${v.titre.badge}" title="${echapper(nom)}">${echapper(pseudo)}</bdi>`;
+}
+
+const lienJoueur = (L, pseudo, vitrines) => `<a href="/joueur/${encodeURIComponent(pseudo)}">${pseudoHtml(L, pseudo, vitrines)}</a>`;
 
 async function listeParties(env, joueur) {
   await migrerParties(env, joueur);
@@ -779,7 +820,7 @@ async function api(requete, env, chemin) {
 
 /** Efface un compte et tout ce qui s'y rattache (toutes les tables qui ont une colonne « joueur »). */
 async function supprimerCompte(env, id) {
-  for (const table of ["cles", "codes", "badges", "apparitions", "parties", "secours", "sessions", "exercices", "titres_hebdo"]) {
+  for (const table of ["cles", "codes", "badges", "apparitions", "parties", "secours", "sessions", "exercices", "titres_hebdo", "pseudos_guilde"]) {
     await env.DB.prepare(`DELETE FROM ${table} WHERE joueur = ?`).bind(id).run();
   }
   // compteurs anti-abus par compte (« sync:<id> », « drapeau:<id> »…)
@@ -822,6 +863,9 @@ async function profilPublic(env, pseudo) {
       .map((c) => ({ id: c.id, espece: c.espece, stade: c.stade, variante: c.variante, shiny: c.shiny === true, teinte: c.teinte })) : [],
     badges: b.results.map((x) => ({ ...x, lien: "/badge/" + x.id })),
     entrainement: await entrainementPublic(env, j.id, e.entrainement),
+    // badges de la Guilde vérifiés par le serveur (Artisan : progression synchronisée ; Contributeur : crédits du
+    // dépôt) et, si l'un d'eux est le titre choisi dans le jeu, la couleur du pseudo
+    guilde: (await vitrinesGuilde(env, [j.pseudo])).get(j.pseudo.toLowerCase()),
   };
 }
 
@@ -1100,6 +1144,7 @@ td.rang{font:12px var(--pixel);color:var(--ambre);width:3em}
 /* ---- badges, puces, jauges */
 .badge{display:inline-flex;gap:8px;align-items:center;background:var(--ecran);padding:4px 12px;margin-block:8px;margin-inline:4px 12px;text-decoration:none;color:var(--texte);box-shadow:${cran("var(--bord)", 3)}}
 .badge.verifie{box-shadow:${cran("var(--vert-fonce)", 3)}}
+.pseudo-g{font-weight:bold}.pseudo-artisan{color:${GUILDE.COULEUR.artisan}}.pseudo-contributeur{color:${GUILDE.COULEUR.contributeur}}
 .barre-xp{height:16px;background:var(--ecran);margin:10px 3px;box-shadow:${cran("var(--bord)", 3)}}
 .barre-xp>i,.jauge>i{display:block;height:100%;background:repeating-linear-gradient(90deg,var(--vert) 0 8px,transparent 8px 10px)}
 code,pre{background:var(--ecran);font-family:${MONO},monospace;font-size:.82em;direction:ltr;unicode-bidi:isolate;color:var(--vert)}
@@ -1299,9 +1344,9 @@ function titreBadge(L, b) {
   return ep ? T.ctf(ep) : b.titre;
 }
 
-function ligneClassement(L, j, i) {
+function ligneClassement(L, j, i, vitrines) {
   const forme = j.forme ? lib(L, "formes", j.forme) : "";
-  return `<tr><td class="rang"><bdi>${i + 1}</bdi></td><td><a href="/joueur/${encodeURIComponent(j.pseudo)}">${bdi(j.pseudo)}</a></td>
+  return `<tr><td class="rang"><bdi>${i + 1}</bdi></td><td>${lienJoueur(L, j.pseudo, vitrines)}</td>
 <td>${bdi(j.nom)} <span class="doux">${echapper(L.t.stades[stadeDe(j.niveau)])} ${echapper(forme)}</span></td>
 <td class="num">${echapper(L.t.niv(j.niveau))}</td><td class="num"><bdi>${j.xp} XP</bdi></td></tr>`;
 }
@@ -1314,9 +1359,10 @@ async function pageAccueil(env, L) {
   const A = L.t.accueil;
   const top = await env.DB.prepare("SELECT pseudo, etat, xp, niveau FROM joueurs ORDER BY xp DESC, cree ASC LIMIT 10").all();
   const n = (await env.DB.prepare("SELECT COUNT(*) AS n FROM joueurs").first()).n;
+  const vit = await vitrinesGuilde(env, top.results.map((j) => j.pseudo));
   const lignes = top.results.map((j, i) => {
     const e = lireEtat(j);
-    return ligneClassement(L, { pseudo: j.pseudo, nom: e.nom || j.pseudo, niveau: j.niveau, xp: j.xp, forme: e.forme }, i);
+    return ligneClassement(L, { pseudo: j.pseudo, nom: e.nom || j.pseudo, niveau: j.niveau, xp: j.xp, forme: e.forme }, i, vit);
   }).join("");
   // la première espèce de chaque famille, en portrait
   const apercu = BESTIAIRE.familles.map((f) => PUBLIQUES.find((e) => e.famille === f.nom && e.portrait)).filter(Boolean)
@@ -1355,9 +1401,10 @@ ${fenetre("~/classement", `${lignes ? tableClassement(L, lignes) : `<p class="do
 async function pageClassement(env, L) {
   const C = L.t.classement;
   const r = await env.DB.prepare("SELECT pseudo, etat, xp, niveau FROM joueurs ORDER BY xp DESC, cree ASC LIMIT 100").all();
+  const vit = await vitrinesGuilde(env, r.results.map((j) => j.pseudo));
   const lignes = r.results.map((j, i) => {
     const e = lireEtat(j);
-    return ligneClassement(L, { pseudo: j.pseudo, nom: e.nom || j.pseudo, niveau: j.niveau, xp: j.xp, forme: e.forme }, i);
+    return ligneClassement(L, { pseudo: j.pseudo, nom: e.nom || j.pseudo, niveau: j.niveau, xp: j.xp, forme: e.forme }, i, vit);
   }).join("");
   return page(L, C.titre, `<h1>${C.h1}</h1><p class="doux">${C.sous}</p>
 ${fenetre("~/classement --top 100", lignes ? tableClassement(L, lignes) : `<p class="doux">${C.personne}</p>`)}`);
@@ -1400,7 +1447,7 @@ async function pageJoueur(env, L, pseudo) {
 <section class="hero">
   <div>
     <h1>${p.shiny ? `<span class="rgb">${bdi(p.nom)} ✨</span>` : bdi(p.nom)}</h1>
-    <p class="doux">${J.ligneCreature(bdi(p.pseudo), echapper(stade), echapper(forme), bdi(p.trait || "?"))}</p>
+    <p class="doux">${J.ligneCreature(pseudoHtml(L, p.pseudo, new Map([[p.pseudo.toLowerCase(), p.guilde]])), echapper(stade), echapper(forme), bdi(p.trait || "?"))}</p>
     <p>${J.ligneNiveau(p.niveau, p.xp, p.rang)}</p>
     <div class="barre-xp"><i style="width:${pct}%"></i></div>
     <div style="margin-top:10px">${stats}</div>
@@ -1410,6 +1457,7 @@ async function pageJoueur(env, L, pseudo) {
 </section>
 <h2>${J.badges}</h2><div>${badges}</div>
 ${sectionEntrainement(L, p.entrainement)}
+${sectionGuilde(L, p.guilde)}
 <h2>${J.competences} <span class="doux petit">${J.declarees}</span></h2><div>${comp}</div>
 <h2>${J.collection}</h2>${collHtml}${scriptGlitch(collHtml)}
 ${p.partage ? `<p style="margin-top:20px"><a href="/captures?joueur=${encodeURIComponent(p.pseudo)}">${J.voirCaptures}</a></p>` : ""}
@@ -1431,7 +1479,9 @@ const MEDAILLE_ICONE = ENT.ICONE_MEDAILLE;
 async function pageRecords(env, L) {
   const E = L.t.ent;
   const d = await donneesRecords(env);
-  const lienJ = (p) => `<a href="/joueur/${encodeURIComponent(p)}">${bdi(p)}</a>`;
+  const vit = await vitrinesGuilde(env, [...Object.values(d.records).flat(), ...Object.values(d.stars), ...Object.values(d.enTete), ...d.palmares]
+    .map((x) => x.pseudo));
+  const lienJ = (p) => lienJoueur(L, p, vit);
   const echelle = ENT.ECHELONS.map((e, k) => `<figure class="ech">${ENT.svgBadge("explorateur", e, 3, E.echelonsNoms[e], 0)}<figcaption><b>${echapper(E.echelonsNoms[e])}</b> · <bdi>${ENT.SEUILS[k]}</bdi><br><span class="doux">${echapper(E.gradesSens[e])}</span></figcaption></figure>`).join("");
   const stars = ENT.FAMILLES.map((f) => {
     const s = d.stars[f];
@@ -1484,6 +1534,18 @@ ${stars ? `<div>${stars}</div>` : ""}
 ${recs ? `<h2>${echapper(E.records)} <a class="petit" href="/records">/records</a></h2>${fenetre("~/records", `<table>${recs}</table>`)}` : ""}`;
 }
 
+/** Les badges de la Guilde sur le profil (dessinés comme ceux de la salle d'entraînement), s'il en a. */
+function sectionGuilde(L, g) {
+  if (!g || !(g.artisan || g.contributeur)) return "";
+  const T = GUILDE.textes(L.lang);
+  const E = L.t.ent;
+  const figs = GUILDE.BADGES.filter((b) => g[b]).map((b) => {
+    const nom = `${T[b]} · ${E.echelonsNoms[g[b]]}`;
+    return `<figure class="ech" title="${echapper(nom)}">${ENT.svgBadge(b, g[b], 3, nom, 0)}<figcaption><span class="pseudo-${b}">${echapper(T[b])}</span><br><span class="doux">${echapper(E.echelonsNoms[g[b]])}</span></figcaption></figure>`;
+  }).join("");
+  return `<h2>🛠 ${echapper(T.titre)}</h2><div class="echelle">${figs}</div>`;
+}
+
 async function pageBadge(env, L, id) {
   const B = L.t.badge;
   const b = await env.DB.prepare("SELECT b.*, j.pseudo FROM badges b JOIN joueurs j ON j.id = b.joueur WHERE b.id = ?").bind(id).first();
@@ -1492,7 +1554,7 @@ async function pageBadge(env, L, id) {
   const titre = titreBadge(L, b);
   return page(L, titre, `<div class="carte" style="max-width:600px;margin:24px auto;text-align:center">
 <div style="font-size:56px">🏅</div><h1>${echapper(titre)}</h1>
-<p>${B.delivre(`<a href="/joueur/${encodeURIComponent(b.pseudo)}"><b>${bdi(b.pseudo)}</b></a>`, `<bdi>${echapper(date)}</bdi>`)}</p>
+<p>${B.delivre(`<b>${lienJoueur(L, b.pseudo, await vitrinesGuilde(env, [b.pseudo]))}</b>`, `<bdi>${echapper(date)}</bdi>`)}</p>
 <p style="color:var(--vert)">${B.verifie}</p>
 <p class="doux">${B.identifiant} : <code>${echapper(b.id)}</code> · <a href="/api/badge/${echapper(b.id)}">${B.preuve}</a></p></div>`,
   B.description(titre, b.pseudo));
@@ -1670,6 +1732,7 @@ async function pageCaptures(env, L, url) {
     || ((b.verifie === true) - (a.verifie === true)) || (b.date - a.date));
   const total = caps.length;
   caps = caps.slice(0, 120);
+  const vit = await vitrinesGuilde(env, caps.map((c) => c.pseudo));
   const cartes = caps.map((c) => {
     const e = especeCapture(c);
     const date = new Date(c.date).toLocaleDateString(L.locale);
@@ -1692,13 +1755,13 @@ async function pageCaptures(env, L, url) {
       <div class="marque" lang="fr" dir="ltr">« <span class="rgb">${echapper(c.marque)}</span> »</div>
       <div class="infos">${echapper(K.humeur(lib(L, "humeurs", c.humeur)))} · <bdi>${c.taille} cm</bdi><br>${K.potentiel} <b style="color:var(--vert)"><bdi>${c.potentiel} %</bdi></b></div>
       ${verif}
-      <div class="infos">${K.par(`<a href="/joueur/${encodeURIComponent(c.pseudo)}">${bdi(c.pseudo)}</a>`, `<bdi>${echapper(date)}</bdi>`)}</div>
+      <div class="infos">${K.par(lienJoueur(L, c.pseudo, vit), `<bdi>${echapper(date)}</bdi>`)}</div>
     </div>`;
   }).join("");
   const lienR = (v, t) => `<a class="puce" href="/captures?${new URLSearchParams({ ...(filtre && { joueur: filtre }), ...(shinySeul && { shiny: "1" }), ...(v && { rarete: v }) })}"${rarete === v ? ' aria-current="true"' : ""}>${t}</a>`;
   return page(L, K.titre, `<h1>${K.h1}</h1>
 <p>${K.intro}
-${filtre ? `${K.de(bdi(filtre))} <a href="/captures">${K.voirTous}</a>` : ""}</p>
+${filtre ? `${K.de(pseudoHtml(L, filtre, vit))} <a href="/captures">${K.voirTous}</a>` : ""}</p>
 <div class="carte"><div class="filtres">${lienR("", K.toutes)}${BESTIAIRE.raretes.map((x) => lienR(x, `<i class="pastille" style="--r:${COULEUR_RARETE[x]}"></i> ${echapper(lib(L, "raretes", x))}`)).join("")}
 <a class="puce" href="/captures?${new URLSearchParams({ ...(filtre && { joueur: filtre }), ...(!shinySeul && { shiny: "1" }) })}"${shinySeul ? ' aria-current="true"' : ""}>${shinySeul ? K.pasQueShiny : `<span class="rgb">${K.shinySeul}</span>`}</a></div></div>
 <p class="doux">${K.resume(total, joueurs, total > 120)}</p>

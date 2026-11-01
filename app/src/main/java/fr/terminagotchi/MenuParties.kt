@@ -83,7 +83,7 @@ class MenuParties(
         val qui = if (jeu.existe) t("part.qui", "nom" to jeu.nom + (if (jeu.shiny) " ✨" else ""),
                 "espece" to Regles.espece(jeu.stade, jeu.forme, jeu.especeCompagnon), "n" to jeu.niveau)
             else t("part.oeuf_sans_nom")
-        val compte = if (Recensement.aUnCompte(jeu)) c.optString("pseudo") else t("part.non_connecte")
+        val compte = if (Recensement.aUnCompte(jeu)) Entrainement.pseudoColore(jeu) else t("part.non_connecte")
         return "┌ Terminagotchi ┐\n" +
             "1  " + t("part.m.continuer") + "    " + qui + "\n" +
             "2  " + t("part.m.nouvelle") + "\n" +

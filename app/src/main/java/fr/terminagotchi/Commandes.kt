@@ -355,7 +355,7 @@ class Commandes(
                 return Reponse(t("rec.adresse.reglee", "url" to u), couleur = BLEU)
             }
             "creer" -> {
-                if (Recensement.aUnCompte(jeu)) return Reponse(t("reca.deja_compte", "pseudo" to c.optString("pseudo")), couleur = ORANGE)
+                if (Recensement.aUnCompte(jeu)) return Reponse(t("reca.deja_compte", "pseudo" to Entrainement.pseudoColore(jeu)), couleur = ORANGE)
                 val pseudo = mots.getOrNull(1) ?: return Reponse(t("rec.creer.exemple"), couleur = ORANGE)
                 var url = ""
                 enLigne({
@@ -367,7 +367,7 @@ class Commandes(
                     if (!r.has("cle")) return@enLigne "⚠ " + r.optString("erreur", t("rec.err.inscription"))
                     relier(r, url)
                     t("reca.bienvenue",
-                        "pseudo" to r.getString("pseudo"), "url" to "$url/joueur/${r.getString("pseudo")}") + texteSecours(r)
+                        "pseudo" to Entrainement.pseudoColore(jeu, r.getString("pseudo")), "url" to "$url/joueur/${r.getString("pseudo")}") + texteSecours(r)
                 }
                 return Reponse(t("reca.inscription"), couleur = BLEU)
             }
@@ -382,7 +382,7 @@ class Commandes(
                 }) { r ->
                     if (!r.has("cle")) return@enLigne "⚠ " + r.optString("erreur", t("rec.err.liaison"))
                     relier(r, url)
-                    t("reca.relie", "pseudo" to r.getString("pseudo"))
+                    t("reca.relie", "pseudo" to Entrainement.pseudoColore(jeu, r.getString("pseudo")))
                 }
                 return Reponse(t("reca.liaison"), couleur = BLEU)
             }
@@ -397,7 +397,7 @@ class Commandes(
                 }) { r ->
                     if (!r.has("cle")) return@enLigne "⚠ " + r.optString("erreur", t("reca.secours.refuse"))
                     relier(r, url)
-                    t("reca.secours.ok", "pseudo" to r.getString("pseudo"))
+                    t("reca.secours.ok", "pseudo" to Entrainement.pseudoColore(jeu, r.getString("pseudo")))
                 }
                 return Reponse(t("reca.secours.cherche"), couleur = BLEU)
             }
@@ -462,7 +462,7 @@ class Commandes(
         val dernier = c.optLong("dernier")
         val quand = if (dernier > 0) java.text.SimpleDateFormat("HH:mm", java.util.Locale.FRANCE).format(java.util.Date(dernier)) else t("rec.jamais")
         val url = c.optString("serveur")
-        return Reponse(t("reca.resume", "pseudo" to c.optString("pseudo"), "quand" to quand,
+        return Reponse(t("reca.resume", "pseudo" to Entrainement.pseudoColore(jeu), "quand" to quand,
             "profil" to "$url/joueur/${c.optString("pseudo")}", "ctf" to "$url/ctf"), couleur = BLEU)
     }
 

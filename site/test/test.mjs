@@ -628,7 +628,7 @@ console.log("Suppression d'un compte et durées de conservation");
   r = await appel("DELETE", "/api/compte", { cle, corps: { confirmer: "efface" } });
   verifier(r.j?.ok === true && r.j.supprime === "Efface", "DELETE /api/compte avec la clé : compte supprimé");
   const restes = [];
-  for (const t of ["cles", "codes", "badges", "apparitions", "parties", "secours", "sessions"]) {
+  for (const t of ["cles", "codes", "badges", "apparitions", "parties", "secours", "sessions", "pseudos_guilde"]) {
     const n = (await env.DB.prepare(`SELECT COUNT(*) AS n FROM ${t} WHERE joueur NOT IN (SELECT id FROM joueurs)`).first()).n;
     if (n) restes.push(t);
   }
@@ -650,6 +650,66 @@ console.log("Suppression d'un compte et durées de conservation");
   verifier(n === 1 && (await appel("GET", "/api/profil/Endormi")).statut === 404 && (await appel("GET", "/api/profil/Grec")).statut === 200,
     `purge : compte inactif depuis plus de ${CONSERVATION.inactifMois} mois effacé, les autres gardés`);
   verifier(!ipRestante, `purge : adresses IP de plus de ${CONSERVATION.ipHeures} h effacées`);
+}
+
+console.log("Pseudo coloré par les badges de la Guilde (Artisan : progression synchronisée ; Contributeur : crédits du dépôt)");
+{
+  const G = await import("../src/guilde.js");
+  const ipG = { "cf-connecting-ip": "10.7.7.7" };
+  const donnees = JSON.parse(readFileSync(new URL("../../donnees/guilde.json", import.meta.url), "utf8"));
+  const DG = (await import("../src/guilde_donnees.js")).default;
+  verifier(JSON.stringify(DG.badges) === JSON.stringify(donnees.badges) && JSON.stringify(DG.credits) === JSON.stringify(donnees.credits.contributeurs),
+    "guilde_donnees.js = donnees/guilde.json (paliers, couleurs, crédits) : relancer fiches_guilde.py sinon");
+  // lisibilité : les deux couleurs sur les fonds sombres du site (le site n'a qu'un thème, sombre)
+  const lum = (h) => { const c = [1, 3, 5].map((i) => parseInt(h.slice(i, i + 2), 16) / 255).map((v) => (v <= 0.03928 ? v / 12.92 : ((v + 0.055) / 1.055) ** 2.4)); return 0.2126 * c[0] + 0.7152 * c[1] + 0.0722 * c[2]; };
+  const contraste = (a, b) => { const [x, y] = [lum(a), lum(b)].sort((u, v) => v - u); return (x + 0.05) / (y + 0.05); };
+  const fonds = ["#08100c", "#0f1a14", "#050b08", "#123322"];
+  verifier(Object.values(G.COULEUR).every((c) => fonds.every((f) => contraste(c, f) >= 4.5)),
+    "couleurs Artisan et Contributeur lisibles sur tous les fonds du site (contraste ≥ 4,5)");
+  verifier(G.palierArtisan(1, false) === 0 && G.palierArtisan(5, false) === 1 && G.palierArtisan(5, true) === 2 && G.palierArtisan(7, true) === 3,
+    "paliers Artisan identiques au jeu (Bit 1 leçon, Octet 3, Kilo 5 + contribution, Méga 7 + contribution)");
+  let r2 = await appel("POST", "/api/inscription", { corps: { pseudo: "Artisane", appareil: "pc" }, entetes: ipG });
+  const cleA = r2.j.cle;
+  // le jeu déclare un grade et un titre Contributeur qu'il n'a pas : ignorés
+  await appel("POST", "/api/sync", { cle: cleA, corps: { appareil: "pc", deltas: { xp: 50 }, valeurs: { nom: "Marteau", nomDate: 1, titre: "contributeur:giga" },
+    guilde: { lecons: ["gu0", "gu1", "gu2", "gu3", "gu4", "faux"], contribution: true, echelon: "exa" } } });
+  r2 = await appel("GET", "/api/profil/Artisane");
+  verifier(r2.j.guilde?.artisan === "kilo" && r2.j.guilde.contributeur === null && r2.j.guilde.titre === null,
+    "Artisan recalculé par le serveur (5 leçons + contribution = Kilo) ; « Contributeur » déclaré par le jeu sans crédits : refusé, pseudo pas coloré");
+  let html = (await appel("GET", "/joueur/Artisane")).t;
+  verifier(!html.includes('class="pseudo-g') && html.includes("badge-px") && /🛠/.test(html), "profil : badge Artisan dessiné, pseudo sans couleur (titre non vérifié)");
+  await appel("POST", "/api/sync", { cle: cleA, corps: { appareil: "pc", valeurs: { titre: "artisan:kilo" }, guilde: { lecons: [] } } });
+  r2 = await appel("GET", "/api/profil/Artisane");
+  verifier(r2.j.guilde?.artisan === "kilo" && r2.j.guilde.titre?.badge === "artisan" && r2.j.guilde.titre.couleur === G.COULEUR.artisan,
+    "titre « Artisan » choisi : les leçons déjà synchronisées restent, le pseudo prend l'orange de forge");
+  html = (await appel("GET", "/joueur/Artisane")).t;
+  verifier(/class="pseudo-g pseudo-artisan" title="Artisan Kilo">Artisane</.test(html), "profil : le pseudo est coloré (orange), pas le nom de la créature");
+  verifier(!/pseudo-artisan[^>]*>Marteau/.test(html), "le nom de la créature n'est jamais coloré");
+  verifier(/pseudo-artisan[^>]*>Artisane/.test((await appel("GET", "/classement")).t), "classement : pseudo coloré");
+  {
+    const B = (await import("../src/bestiaire.js")).default;
+    const e = B.especes[3];
+    await appel("POST", "/api/sync", { cle: cleA, corps: { appareil: "pc", partage: { actif: true, date: 5 }, captures: [{ id: "a7a7a7a7a7", espece: e.nom,
+      date: Date.now() - 1000, marque: B.marques[0], humeur: B.humeurs[0], taille: 7, potentiel: 50, stats: e.stats, zone: "" }] } });
+    verifier(/par <a href="\/joueur\/Artisane"><bdi class="pseudo-g pseudo-artisan"|pseudo-artisan[^>]*>Artisane<\/bdi><\/a>/.test((await appel("GET", "/captures?joueur=Artisane")).t),
+      "galerie : « par … » avec le pseudo coloré");
+  }
+  verifier(/pseudo-artisan[^>]*>Artisane/.test((await appel("GET", "/")).t) || (await env.DB.prepare("SELECT COUNT(*) AS n FROM joueurs").first()).n > 10,
+    "accueil (top 10) : pseudo coloré");
+  // le badge Contributeur ne vient QUE des crédits du dépôt
+  await appel("POST", "/api/sync", { cle: cleA, corps: { appareil: "pc", valeurs: { titre: "contributeur:bit" } } });
+  verifier((await appel("GET", "/api/profil/Artisane")).j.guilde.titre === null, "titre « Contributeur » sans être dans les crédits : pas de couleur");
+  G.CREDITS.push({ pseudo: "artisane", contributions: 3 });
+  r2 = await appel("GET", "/api/profil/Artisane");
+  verifier(r2.j.guilde.contributeur === "octet" && r2.j.guilde.titre?.badge === "contributeur" && r2.j.guilde.titre.couleur === G.COULEUR.contributeur,
+    "dans les crédits (3 contributions, sans tenir compte des majuscules) : badge Contributeur Octet, pseudo vert");
+  html = (await appel("GET", "/joueur/Artisane")).t;
+  verifier(/pseudo-g pseudo-contributeur[^>]*>Artisane/.test(html) && (html.match(/class="badge-px"/g) || []).length >= 2, "profil : pseudo vert et les deux badges de la Guilde dessinés");
+  G.CREDITS.length = 0;
+  verifier((await appel("GET", "/api/profil/Artisane")).j.guilde.titre === null, "retiré des crédits : plus de badge Contributeur ni de couleur");
+  await appel("POST", "/api/sync", { cle: cleA, corps: { appareil: "pc", valeurs: { titre: "artisan:mega" } } });
+  verifier((await appel("GET", "/api/profil/Artisane")).j.guilde.artisan === "kilo", "un grade annoncé dans le titre (« artisan:mega ») ne change pas le grade vérifié");
+  verifier((await appel("GET", "/records")).statut === 200 && (await appel("GET", "/captures")).statut === 200, "records et galerie s'affichent");
 }
 
 console.log(`\n${ok} réussis, ${ko} échoués`);

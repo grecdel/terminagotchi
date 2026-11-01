@@ -24,6 +24,7 @@ import fr.terminagotchi.Jeu
 import fr.terminagotchi.Langue
 import fr.terminagotchi.Quetes
 import fr.terminagotchi.Recompenses
+import fr.terminagotchi.Recensement
 import fr.terminagotchi.Shell
 import fr.terminagotchi.Toile
 import fr.terminagotchi.Tour
@@ -292,8 +293,21 @@ fun main(args: Array<String>) {
     verifierGu(art.echelon == "mega" && art.n == 7 && Guilde.titres(jeuGu).any { it.id == "artisan:mega" && it.couleur == "#ffaf5f" } &&
         Guilde.contributeur(jeuGu).echelon == null, "le badge « Artisan » Méga à la fin de la Guilde ; pas de Contributeur sans crédits")
     Entrainement.e(jeuGu).put("titre", "artisan:mega")
-    verifierGu(Entrainement.couleurNom(jeuGu) == "#ffaf5f" && Guilde.lignesBadges(jeuGu).any { "¤badge:artisan:mega" in it } &&
-        "¤badge:artisan" in Entrainement.ecranBadges(jeuGu), "le titre « Artisan Méga » colore le nom ; les badges dessinés (guilde badges, badges)")
+    verifierGu(Entrainement.couleurPseudo(jeuGu) == "#ffaf5f" && Guilde.lignesBadges(jeuGu).any { "¤badge:artisan:mega" in it } &&
+        "¤badge:artisan" in Entrainement.ecranBadges(jeuGu) && Entrainement.pseudoColore(jeuGu, "Lina") == "‹#ffaf5f|Lina›",
+        "le titre « Artisan Méga » colore le PSEUDO (‹#ffaf5f|Lina›), pas le nom ; les badges dessinés (guilde badges, badges)")
+    Recensement.compte(jeuGu).put("pseudo", "Lina").put("cle", "0".repeat(64)).put("serveur", "https://x.exemple")
+    val prep = Recensement.preparer(jeuGu, true)
+    Recensement.abandonner()
+    Guilde.donnees().getJSONObject("credits").getJSONArray("contributeurs").put(org.json.JSONObject().put("pseudo", "Lina").put("contributions", 1))
+    val creditsGu = Guilde.creditsTexte(jeuGu)
+    val creditsBrut = Guilde.creditsTexte()
+    Guilde.donnees().getJSONObject("credits").put("contributeurs", org.json.JSONArray())
+    verifierGu("‹#ffaf5f|Lina›" in creditsGu && "Lina" in creditsBrut && "‹" !in creditsBrut &&
+        prep?.charge?.getJSONObject("valeurs")?.optString("titre") == "artisan:mega" &&
+        prep!!.charge.getJSONObject("guilde").getJSONArray("lecons").length() == 7 && prep.charge.getJSONObject("guilde").optBoolean("contribution"),
+        "pseudo coloré dans les crédits (pas dans le fichier CREDITS.txt) ; la synchro envoie le titre montré et les leçons (le site recalcule)")
+    Recensement.compte(jeuGu).remove("pseudo"); Recensement.compte(jeuGu).remove("cle")
     Entrainement.e(jeuGu).remove("titre")
     val tl = ToileGu()
     GuildeDessin.etabli(tl, Deploie.Etabli(0, "gcc", "gcc", "texte", "programme"), 0.4, 0f, 0f, 400f, 96f, 1f)

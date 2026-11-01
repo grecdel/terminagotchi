@@ -588,7 +588,7 @@ def titres(state):
                 out.append(("star:" + f, t("ent.titre.star", badge=nom_famille(f)), COULEUR_TITRE["star"]))
     if sum(1 for k in ech.values() if k >= 1) >= 6:
         out.append(("touche", t("ent.titre.touche"), COULEUR_TITRE["touche"]))
-    from . import guilde                       # les badges de la Guilde : Contributeur, Artisan (nom coloré)
+    from . import guilde                       # les badges de la Guilde : Contributeur, Artisan (pseudo coloré)
     out += guilde.titres(state)
     for f in sorted(B.FAMILLES, key=lambda f: (-ech[f], -fam_(e, f)["n"], B.FAMILLES.index(f))):
         if ech[f] >= 1:
@@ -612,14 +612,32 @@ def titre_affiche(state):
     return tous[0][1], tous[0][2]
 
 
-def couleur_nom(state):
-    """La couleur du NOM du joueur quand le titre affiché est un badge de la Guilde (Artisan, Contributeur), ou None."""
+def titre_affiche_id(state):
+    """L'identifiant du titre montré (« artisan:kilo », « explorateur:octet »…), ou None : envoyé au site."""
     tous = titres(state)
     if not tous:
         return None
     choix = e_(state).get("titre")
-    i, _x, c = next((x for x in tous if x[0] == choix), tous[0])
-    return c if i.split(":")[0] in ("artisan", "contributeur") else None
+    return next((i for i, _x, _c in tous if i == choix), tous[0][0])
+
+
+def couleur_pseudo(state):
+    """La couleur du PSEUDO du joueur (décision du 1er novembre : le pseudo, pas le nom de la créature) quand le titre
+    affiché est un badge de la Guilde (Artisan, Contributeur), ou None."""
+    i = titre_affiche_id(state)
+    if not i or i.split(":")[0] not in ("artisan", "contributeur"):
+        return None
+    return next(c for j, _x, c in titres(state) if j == i)
+
+
+def pseudo_colore(state, pseudo=None):
+    """Le pseudo du recensement (ou `pseudo`), dans la couleur du badge de la Guilde choisi comme titre, en gras."""
+    p = pseudo if pseudo is not None else ((state or {}).get("compte") or {}).get("pseudo", "")
+    try:
+        c = couleur_pseudo(state) if state and p else None
+    except (KeyError, TypeError, ValueError):     # une vieille sauvegarde incomplète : le pseudo sans couleur
+        c = None
+    return f"{BOLD}" + colorer(p, c) if c else p
 
 
 def titre_colore(state):

@@ -422,15 +422,29 @@ def bonjour_c():
     return donnees()["code"]["bonjour_c"].replace("@MESSAGE@", msg)
 
 
-def credits_texte():
+def credits_texte(state=None):
+    """Les crédits ; avec `state`, le pseudo du joueur (s'il y est) dans la couleur de son titre de la Guilde."""
+    from .entrainement import pseudo_colore
+    moi = (((state or {}).get("compte") or {}).get("pseudo") or "").strip().lower()
     c = [x for x in donnees()["credits"]["contributeurs"] if isinstance(x, dict) and x.get("pseudo")]
-    return t("gu.meuble.credits") + "\n\n" + ("".join(t("gu.credits.ligne", pseudo=x["pseudo"], n=int(x.get("contributions") or 0))
+    return t("gu.meuble.credits") + "\n\n" + ("".join(t("gu.credits.ligne", pseudo=pseudo_colore(state, x["pseudo"]) if moi and
+                                                       str(x["pseudo"]).strip().lower() == moi else x["pseudo"],
+                                                       n=int(x.get("contributions") or 0))
                                                      + "\n" for x in c) if c else t("gu.credits.vide") + "\n")
+
+
+def charge_site(state):
+    """Ce qui part au site pour le badge « Artisan » : les leçons de la Guilde réussies et la contribution prête.
+    Le site recalcule lui-même le grade (jamais envoyé) ; le badge « Contributeur », lui, ne vient que des crédits."""
+    from . import histoire
+    faits = histoire.h_(state).get("faits", [])
+    return {"lecons": [l for l in donnees()["badges"]["artisan"]["lecons"] if l in faits],
+            "contribution": contribution_prete(state)}
 
 
 # ---------------------------------------------------------------- les badges de la Guilde (1er novembre)
 # Pas de créature « contributeur » ni de variante réservée : deux BADGES qui grandissent, dessinés comme ceux de la salle
-# d'entraînement (badges.py : écusson, galons du grade), et un NOM COLORÉ quand l'un d'eux est le titre affiché.
+# d'entraînement (badges.py : écusson, galons du grade), et un PSEUDO COLORÉ (pas le nom de la créature) quand l'un d'eux est le titre affiché.
 def palier_artisan(lecons, contribution):
     """Le palier du badge « Artisan » (indice dans guilde.json → badges → artisan → paliers, ou -1) avec `lecons`
     leçons de la Guilde réussies et la contribution d'entraînement (G4) prête ou non. On monte dans l'ordre."""
@@ -1165,7 +1179,7 @@ def lignes_fusion(state):
     out = [f" {_c(141)}{BOLD}🔀 " + t("gu.fusion.titre") + RESET, ""]
     out += ["  " + l for l in t("gu.fusion.texte").split("\n")]
     out += ["", f"  {_c(78) if fait else _c(215)}" + (t("gu.fusion.prete") if fait else t("gu.fusion.pas_prete")) + RESET]
-    out += ["", f" {_c(229)}{BOLD}📜 " + t("gu.credits.titre") + RESET] + ["  " + l for l in credits_texte().rstrip().split("\n")]
+    out += ["", f" {_c(229)}{BOLD}📜 " + t("gu.credits.titre") + RESET] + ["  " + l for l in credits_texte(state).rstrip().split("\n")]
     noter("fusion", ("prete" if fait else "pas_prete") + " (ok)")
     return out + ["", "  " + progres_contributeur(state) + f"  {DIM}(`guilde badges`){RESET}"]
 

@@ -5,6 +5,7 @@ paliers, ponts dont la Bibliothèque du Temps pour git, attirance, exploit « ar
 (coordonnées, volume), les maths des étapes et les étapes rejouées dans bash.
 
     python3 donnees/guilde/outils/fiches_guilde.py    écrit donnees/guilde.json, donnees/programme.json et leurs copies
+                                                     (et site/src/guilde_donnees.js : badges et crédits pour le site)
 
 guilde.json garde aussi les textes des licences du jeu (LICENSE : GPL-3.0-or-later pour le code ; LICENSE-images.md :
 CC BY-NC-SA 4.0 pour les images et le lore), relus à la racine du dépôt et posés dans la copie de G2 (`head LICENSE`).
@@ -303,8 +304,28 @@ def rejeu():
     }
 
 
+LANGUES_SITE = ["fr", "en", "es", "de", "it", "pt", "zh", "ru", "ja", "hi", "ar", "bn", "id", "ur"]
+
+
+def site(G):
+    """site/src/guilde_donnees.js : ce dont le site a besoin pour les badges de la Guilde et le pseudo coloré — les
+    paliers et couleurs des deux badges, les CRÉDITS (la seule source du badge « Contributeur » : jamais ce que dit
+    le jeu) et les noms des badges dans les 14 langues (relus dans pc/tg/langues). À redéployer quand les crédits
+    changent."""
+    textes = {}
+    for code in LANGUES_SITE:
+        L = json.loads((D / f"pc/tg/langues/{code}.json").read_text(encoding="utf-8"))
+        textes[code] = {"titre": L["gu.badges.titre"], "artisan": L["gu.badge.artisan"],
+                        "contributeur": L["gu.badge.contributeur"]}
+    d = {"badges": G["badges"], "credits": G["credits"]["contributeurs"], "textes": textes}
+    (D / "site/src/guilde_donnees.js").write_text(
+        "// Généré par donnees/guilde/outils/fiches_guilde.py (depuis donnees/guilde.json) — ne pas modifier à la main.\n"
+        "export default " + json.dumps(d, ensure_ascii=False, separators=(",", ":")) + ";\n", encoding="utf-8")
+
+
 def main():
     G = donnees_guilde()
+    site(G)
     texte_g = json.dumps(G, ensure_ascii=False, indent=1) + "\n"
     (D / "donnees/guilde.json").write_text(texte_g, encoding="utf-8")
     for c in ("pc/tg/guilde.json", "app/src/main/assets/guilde.json"):

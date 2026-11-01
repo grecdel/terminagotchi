@@ -286,16 +286,27 @@ object Guilde {
         return o("code").optString("bonjour_c").replace("@MESSAGE@", msg)
     }
 
-    fun creditsTexte(): String {
+    /** Les crédits ; avec `jeu`, le pseudo du joueur (s'il y est) dans la couleur de son titre de la Guilde. */
+    fun creditsTexte(jeu: Jeu? = null): String {
         val a = o("credits").optJSONArray("contributeurs") ?: JSONArray()
+        val moi = jeu?.let { Recensement.compte(it).optString("pseudo").trim().lowercase() } ?: ""
         val c = (0 until a.length()).mapNotNull { a.optJSONObject(it) }.filter { it.optString("pseudo").isNotEmpty() }
         return t("gu.meuble.credits") + "\n\n" + (if (c.isNotEmpty()) c.joinToString("") {
-            t("gu.credits.ligne", "pseudo" to it.optString("pseudo"), "n" to it.optInt("contributions")) + "\n" } else t("gu.credits.vide") + "\n")
+            val p = it.optString("pseudo")
+            t("gu.credits.ligne", "pseudo" to (if (jeu != null && moi.isNotEmpty() && p.trim().lowercase() == moi) Entrainement.pseudoColore(jeu, p) else p),
+                "n" to it.optInt("contributions")) + "\n" } else t("gu.credits.vide") + "\n")
+    }
+
+    /** Ce qui part au site pour le badge « Artisan » : les leçons de la Guilde réussies et la contribution prête.
+     *  Le site recalcule lui-même le grade (jamais envoyé) ; le badge « Contributeur » ne vient que des crédits. */
+    fun chargeSite(jeu: Jeu): JSONObject {
+        val f = Histoire.h(jeu).optJSONArray("faits")?.let { a -> (0 until a.length()).map { a.getString(it) } } ?: emptyList()
+        return JSONObject().put("lecons", JSONArray(liste(badge("artisan"), "lecons").filter { it in f })).put("contribution", contributionPrete(jeu))
     }
 
     // ---------------------------------------------------------------- les badges de la Guilde (1er novembre)
     // Pas de créature « contributeur » ni de variante réservée : deux BADGES qui grandissent (écusson et grade de Badges.kt)
-    // et un NOM COLORÉ quand l'un d'eux est le titre affiché. Même spécification que guilde.py (vecteurs communs).
+    // et un PSEUDO COLORÉ (pas le nom de la créature) quand l'un d'eux est le titre affiché. Même spécification que guilde.py (vecteurs communs).
     private fun badge(b: String): JSONObject = o("badges").optJSONObject(b) ?: JSONObject()
     private fun paliers(b: String): List<JSONObject> = badge(b).optJSONArray("paliers")?.let { a -> (0 until a.length()).map { a.getJSONObject(it) } } ?: emptyList()
 
@@ -766,7 +777,7 @@ object Guilde {
                     "  " + t("gu.tel.raconte", "outil" to "git")) }
             "fusion", "credits" -> { val ok = corrigee(jeu); noter(jeu, "fusion", (if (ok) "prete" else "pas_prete") + " (ok)")
                 listOf("🔀 " + t("gu.fusion.titre"), "") + bloc("gu.fusion.texte") + listOf("", "  " + t(if (ok) "gu.fusion.prete" else "gu.fusion.pas_prete"), "",
-                    "📜 " + t("gu.credits.titre")) + creditsTexte().trimEnd().split("\n").map { "  $it" } + listOf("", "  " + progresContributeur(jeu) + "  (`guilde badges`)") }
+                    "📜 " + t("gu.credits.titre")) + creditsTexte(jeu).trimEnd().split("\n").map { "  $it" } + listOf("", "  " + progresContributeur(jeu) + "  (`guilde badges`)") }
             "badges", "badge" -> lignesBadges(jeu)
             "piece", "porte_cle" -> { val p = piece(Histoire.graine(jeu)); noter(jeu, "piece", "vue (ok)")
                 listOf("🖨 " + t("gu.piece.titre"), "") + dessinPiece(p).map { "  $it" } + listOf("  " + t("gu.piece.mesures", "L" to p.longueur, "l" to p.largeur, "h" to p.epaisseur), "") + bloc("gu.piece.texte") }

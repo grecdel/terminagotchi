@@ -117,6 +117,13 @@ verifier(LJ["code"] == "GPL-3.0-or-later" and LJ["images"] == "CC-BY-NC-SA-4.0"
          and "Version 3, 29 June 2007" in LJ["fichiers"]["LICENSE"] and len(LJ["fichiers"]["LICENSE"].split("\n")) == 675
          and "https://creativecommons.org/licenses/by-nc-sa/4.0/" in LJ["fichiers"]["LICENSE-images.md"],
          "les licences du jeu (guilde.json) : la GPL v3 complète et LICENSE-images.md, identiques aux fichiers du dépôt")
+MASCOTTE = ("site/public/mascotte.png", "site/public/mascotte_mange.png", "site/public/favicon.png", "site/public/icone.png")
+LI = LJ["fichiers"]["LICENSE-images.md"]
+verifier(all(m in LI for m in MASCOTTE) and "tous droits réservés, les contributeurs de Terminagotchi" in LI
+         and "all rights reserved, the Terminagotchi contributors" in LI and "mascotte" in langue.t("gu.licence.jeu")
+         and all(m in (RACINE / "README.md").read_text(encoding="utf-8") for m in ("mascotte", "tous droits réservés"))
+         and not [f for d in ("pc/tg", "app/src/main/assets") for f in (RACINE / d).rglob("*") if "mascotte" in f.name.lower()],
+         "la mascotte du site : tous droits réservés (LICENSE-images.md FR + EN, README, G1), et jamais dans le jeu")
 verifier("LICENSE" in langue.t("app.licences") and "BY-NC-SA" in langue.t("app.licences") and "app.licences" in
          (RACINE / "pc/tg/app.py").read_text(encoding="utf-8"), "tg aide cite les licences (code GPL, images CC BY-NC-SA)")
 gr = "7:42"
@@ -270,8 +277,24 @@ verifier(en == "mega" and n_l == 7 and c_ and ("artisan:mega", "Artisan Méga", 
          f"le badge « Artisan » grandit avec les leçons et la contribution (Méga à la fin) ; pas de Contributeur sans crédits ({k}, {en}, {n_l}, {c_})")
 from tg import entrainement as E_  # noqa: E402
 st2 = core.modifier(lambda s: E_.e_(s).__setitem__("titre", "artisan:mega"))
-verifier(E_.couleur_nom(st2) == "#ffaf5f" and "\x1b[38;2;255;175;95m" + st2["name"] in str(app.render(st2, 0, False)),
-         "le titre « Artisan Méga » choisi : le nom prend la couleur de l'Artisan (orange de forge)")
+verifier(E_.couleur_pseudo(st2) == "#ffaf5f" and "\x1b[38;2;255;175;95m" + st2["name"] not in str(app.render(st2, 0, False))
+         and E_.pseudo_colore(st2, "Lina") == "\x1b[1m\x1b[38;2;255;175;95mLina\x1b[0m",
+         "le titre « Artisan Méga » choisi : le PSEUDO prend la couleur de l'Artisan (orange de forge), plus le nom de la créature")
+from tg import accueil as A_, recense as R_  # noqa: E402
+from tg import apparence as AP_  # noqa: E402
+_th = AP_.donnees()["themes"]
+_fonds = {k: (v["terminal"] if not v.get("clair") else _th["sombre"]["terminal"]) for k, v in _th.items()}   # le terminal reste sombre
+verifier(all(AP_.contraste(AP_.hexa(G.couleur_badge(b)), AP_.hexa(f)) >= 4.5 for b in ("artisan", "contributeur") for f in _fonds.values()),
+         "pseudo lisible : orange de forge et vert des plans contrastés (≥ 4,5) sur le fond du terminal de chaque thème "
+         + ", ".join(f"{k} {min(AP_.contraste(AP_.hexa(G.couleur_badge(b)), AP_.hexa(f)) for b in ('artisan', 'contributeur')):.1f}" for k, f in _fonds.items()))
+st2 = core.modifier(lambda s: s.setdefault("compte", {}).update(pseudo="Lina", cle="0" * 64, serveur="https://x.exemple"))
+verifier("\x1b[38;2;255;175;95mLina" in A_.ecran_menu(st2) and "\x1b[38;2;255;175;95mLina" in A_.texte_compte(st2)
+         and "\x1b[38;2;255;175;95mLina" in R_.commande([]) and "/joueur/Lina" in ANSI.sub("", R_.commande([]))
+         and R_._charge(st2)[0]["valeurs"]["titre"] == "artisan:mega"
+         and R_._charge(st2)[0]["guilde"] == {"lecons": ["gu0", "gu1", "gu2", "gu3", "gu4", "gu5", "gu6"], "contribution": True},
+         "pseudo coloré dans le menu des parties, `compte` (le lien du profil reste brut) ; la synchro envoie le titre et les leçons")
+core.modifier(lambda s: s.pop("compte", None))
+st2 = core.load()
 o = ANSI.sub("", "\n".join(G.lignes_badges(st2)))
 verifier("Artisan" in o and "Méga" in o and "▀" in o and "Contributeur" in o and langue.t("gu.badge.contributeur.aucune")[:30] in o,
          "guilde badges : les deux écussons dessinés, Artisan Méga, Contributeur pas encore")

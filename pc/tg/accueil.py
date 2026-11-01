@@ -83,9 +83,15 @@ def _etat():
     return st
 
 
+def _pseudo(st):
+    """Le pseudo du compte, coloré quand le titre choisi est un badge de la Guilde (Artisan, Contributeur)."""
+    from . import entrainement
+    return entrainement.pseudo_colore(st) if (st or {}).get("compte", {}).get("pseudo") else ""
+
+
 def ecran_menu(st):
     c = (st or {}).get("compte", {})
-    compte = c.get("pseudo") if c.get("cle") else t("part.non_connecte")
+    compte = _pseudo(st) if c.get("cle") else t("part.non_connecte")
     return "\n".join([
         f"{fg(213)}┌ Terminagotchi ┐{RESET}",
         f"{BOLD}1{RESET}  " + t("part.m.continuer") + "    " + _qui(st),
@@ -135,7 +141,7 @@ def lignes_parties(st):
         ici = {i for i, _ in choix}
         autres = [p for p in c.get("parties_cache", []) if isinstance(p, dict) and str(p.get("partie")) not in ici]
         hors = f" {DIM}" + t("part.hors_ligne") + RESET if _rafraichi["ok"] is False else ""
-        lignes.append(f"{fg(111)}☁ " + t("part.l.compte", pseudo=c.get("pseudo", "?")) + RESET + hors)
+        lignes.append(f"{fg(111)}☁ " + t("part.l.compte", pseudo=_pseudo(st) + fg(111)) + RESET + hors)
         for p in autres:
             n = int(p.get("niveau") or 1)
             choix.append((str(p["partie"]), p.get("nom") or "?"))
@@ -201,7 +207,7 @@ def texte_compte(st):
     d = c.get("dernier", 0)
     import time
     quand = time.strftime("%H:%M", time.localtime(d)) if d else t("rec.jamais")
-    return t("rec.resume", pseudo=c.get("pseudo", "?"), quand=quand, profil=f"{url}/joueur/{c.get('pseudo', '')}", ctf=f"{url}/ctf")
+    return t("rec.resume", pseudo=_pseudo(st) or "?", quand=quand, profil=f"{url}/joueur/{c.get('pseudo', '')}", ctf=f"{url}/ctf")
 
 
 def commande(args, demander=input):
