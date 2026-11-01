@@ -125,6 +125,15 @@ object Maths {
                 Exo(mapOf("n" to "$n", "total" to "$total"), "${n * 100 / total}", "echo \$((${n} * 100 / $total))") }
             "probabilites" -> { val total = TOTAUX_CENT[h.entier(TOTAUX_CENT.size)]; val a = 1 + h.entier(total - 1)
                 Exo(mapOf("a" to "$a", "b" to "${total - a}"), "${a * 100 / total}", "echo \$((${a} * 100 / $total))") }
+            // les Ponts des Nombres de la Salle des Données (§ 2.14) : moyenne, médiane, étendue, pourcentages
+            "moyenne" -> { val m = 10 + h.entier(20); val d1 = h.entier(6); val d2 = h.entier(6); val a = m - d1; val b = m + d2; val c = 3 * m - a - b
+                Exo(mapOf("a" to "$a", "b" to "$b", "c" to "$c"), "$m", "echo \$(( ($a + $b + $c) / 3 ))") }
+            "mediane", "etendue" -> { val v = (0 until (if (typ == "mediane") 5 else 4)).map { 10 + h.entier(40) }
+                val liste = v.joinToString(", ")
+                if (typ == "mediane") Exo(mapOf("liste" to liste), "${v.sorted()[2]}", "printf '%s\\n' " + v.joinToString(" ") + " | sort -n | sed -n '3p'")
+                else Exo(mapOf("liste" to liste), "${v.max() - v.min()}", "echo \$((${v.max()} - ${v.min()}))") }
+            "pourcentages" -> { val total = TOTAUX_CENT[h.entier(TOTAUX_CENT.size)]; val n = h.entier(total + 1)
+                Exo(mapOf("n" to "$n", "total" to "$total"), "${n * 100 / total}", "echo \$((${n} * 100 / $total))") }
             else -> throw IllegalArgumentException(typ)
         }
     }

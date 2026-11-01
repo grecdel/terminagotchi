@@ -94,7 +94,8 @@ class Commandes(
             "renomme" -> renomme(reste)
             // ---------------------------------------------------- progression et jeux
             "arbre", "aile", "ailes", "histoire" -> aile(reste)
-            "collection" -> Reponse(Explo.texteCollection(jeu), couleur = ROSE)
+            "collection" -> if ("--csv" in mots) Reponse(Donnees.collectionCsv(jeu, ligne.trim(), dossier()), couleur = BLEU)
+                else Reponse(Explo.texteCollection(jeu), couleur = ROSE)
             "troupe" -> Reponse(if (reste.isBlank()) Equipe.texte(jeu) else Equipe.choisir(jeu, reste), couleur = ROSE)
             "anime" -> {
                 val m = reste.split(Regex("\\s+")).filter { it.isNotEmpty() }
@@ -158,6 +159,10 @@ class Commandes(
             "agent" -> Reponse(Observatoire.agent(jeu, reste, dossier()), couleur = BLEU)
             "devine-type" -> Reponse(Observatoire.devineType(jeu, reste, dossier()), couleur = BLEU)
             "devine-mot" -> Reponse(Observatoire.devineMot(jeu, reste, dossier()), couleur = BLEU)
+            // ---------------------------------------------------- la Salle des Données (Donnees.kt) : sur sa collection, dans le terrain
+            "donnees" -> Reponse(Donnees.commande(jeu, ligne.trim().substringAfter(' ', ""), dossier()), couleur = BLEU)
+            "awk" -> Donnees.awk(jeu, ligne.trim(), dossier())?.let { Reponse(it, couleur = BLEU) }   // avec un tuyau : le vrai shell
+            "sqlite3" -> Reponse(Donnees.sqlite3(jeu, ligne.trim(), dossier()), couleur = BLEU)
             "sync" -> sync()
             "indice" -> Reponse(Ctf.indice(jeu, reste), couleur = VERT)
             "edite" -> edite(reste)

@@ -408,6 +408,9 @@ object Dressage {
         return emptyList()
     }
 
+    /** Le hasard du tirage des épreuves (les tests le fixent pour être reproductibles ; le jeu garde Random.Default). */
+    @Volatile var hasard: Random = Random.Default
+
     /** Les épreuves de la famille (e.epreuves : les commandes que cette famille aime), selon la rareté de l'individu. */
     private fun epreuvesFamille(e: Bestiaire.Espece, premiere: Boolean, rarete: String, cap: Pair<Int, Int>?,
                                 notions: Set<String>? = null): List<Epreuve> {
@@ -417,11 +420,11 @@ object Dressage {
         var nmax = NIV[rarete] ?: 1
         if (cap != null) { n = minOf(n, cap.first); nmax = minOf(nmax, cap.second) }   // débutant : moins d'épreuves, plus faciles
         val choix = if (rarete in ULTIMES && cap == null) {        // l'épreuve ultime : sa famille + des épreuves d'ailleurs
-            val autres = EPREUVES.filter { it.fam !in fams && it.fam != "Rencontre" && it.niveau >= 2 && connue(it.cle, notions) }.shuffled()
+            val autres = EPREUVES.filter { it.fam !in fams && it.fam != "Rencontre" && it.niveau >= 2 && connue(it.cle, notions) }.shuffled(hasard)
             pool.sortedBy { it.niveau }.takeLast(3) + autres.take(3)
         } else {
             val ok = pool.filter { it.niveau <= nmax }.sortedBy { it.niveau }
-            if (premiere) ok.take(n) else ok.shuffled().take(minOf(n, ok.size)).sortedBy { it.niveau }
+            if (premiere) ok.take(n) else ok.shuffled(hasard).take(minOf(n, ok.size)).sortedBy { it.niveau }
         }
         return choix.distinctBy { it.id }    // pas deux fois la même épreuve
     }

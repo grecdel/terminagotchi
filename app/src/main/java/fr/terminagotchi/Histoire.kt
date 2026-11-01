@@ -96,6 +96,8 @@ object Histoire {
         Chapitre("guilde", 16, "guilde", "Constructs", Guilde.IDS, null, "boite_a_outils", "batisseur_libre", monde = true),
         // le septième : l'Observatoire de l'IA (Observatoire.kt), aucune vraie IA ; lieu observatoire/
         Chapitre("observatoire", 17, "observatoire", "Célestes", Observatoire.IDS, null, "loupe_de_detective", "chef_des_robots", monde = true),
+        // le huitième : la Salle des Données (Donnees.kt), sur sa propre collection ; lieu donnees/
+        Chapitre("donnees", 18, "donnees", "Abyssaux", Donnees.IDS, null, "boulier", "savant_des_donnees", monde = true),
     )
     val MONDES = CHAPITRES.filter { it.monde }.map { it.piece }
     val PAR_CHAP = CHAPITRES.associateBy { it.id }
@@ -276,6 +278,7 @@ object Histoire {
         tout.putAll(Ondes.lecons(jeu))
         tout.putAll(Guilde.lecons(jeu))
         tout.putAll(Observatoire.lecons(jeu))
+        tout.putAll(Donnees.lecons(jeu))
         return tout
     }
 
@@ -358,9 +361,11 @@ object Histoire {
     /** Un monde du Carrefour : ses prérequis du tronc commun (programme.json), monde par monde. */
     fun mondeOuvert(jeu: Jeu, cid: String) = when (cid) { "citadelle" -> Citadelle.ouvert(jeu); "crypte" -> Crypte.ouvert(jeu)
         "machinerie" -> Machines.ouvert(jeu); "ondes" -> Ondes.ouvert(jeu); "guilde" -> Guilde.ouvert(jeu); "observatoire" -> Observatoire.ouvert(jeu)
+        "donnees" -> Donnees.ouvert(jeu)
         else -> Port.ouvert(jeu) }
     fun mondeManque(jeu: Jeu, cid: String) = when (cid) { "citadelle" -> Citadelle.manque(jeu); "crypte" -> Crypte.manque(jeu)
         "machinerie" -> Machines.manque(jeu); "ondes" -> Ondes.manque(jeu); "guilde" -> Guilde.manque(jeu); "observatoire" -> Observatoire.manque(jeu)
+        "donnees" -> Donnees.manque(jeu)
         else -> Port.manque(jeu) }
 
     /** La pièce existe dans la maison de cette partie (sa porte a été posée). */
@@ -506,6 +511,7 @@ object Histoire {
         "ondes" -> Ondes.meubles(jeu)
         "guilde" -> Guilde.meubles(jeu)
         "observatoire" -> Observatoire.meubles(jeu)
+        "donnees" -> Donnees.meubles(jeu)
         // la vieille cabane pleine de planches de la leçon « Une pièce en trop » (seulement par BESOINS)
         "nid" -> linkedMapOf("vieille_cabane/planche_1.txt" to dire(jeu, "hist.meuble.planche"),
             "vieille_cabane/planche_2.txt" to dire(jeu, "hist.meuble.planche"),
@@ -595,6 +601,7 @@ object Histoire {
         if (lid in Ondes.IDS) Ondes.meubler(jeu, lid)           // la Tour des Ondes : le plan, les capteurs d'exemple, les ponts
         if (lid in Guilde.IDS) Guilde.meubler(jeu, lid)         // la Guilde : le petit projet, l'atelier, la fabrique, la fausse clé
         if (lid in Observatoire.IDS) Observatoire.meubler(jeu, lid)   // l'Observatoire : la coupole, l'agent Copieur qui s'emballe
+        if (lid in Donnees.IDS) Donnees.meubler(jeu, lid)         // la Salle des Données : le laboratoire, les ponts des nombres
         return poses
     }
 
@@ -855,7 +862,7 @@ object Histoire {
                 return t("lec.indice.manque", "nom" to p)
             }
             if (m.code == 1 && !meme) grepRien(m.texte)?.let { return it }
-            if (m.code != null && m.code != 0 && !meme && !e.echoue) return t("lec.indice.rate", "cmd" to e.cmd)
+            if (m.code != null && m.code != 0 && !meme && !e.echoue && !e.toutCode) return t("lec.indice.rate", "cmd" to e.cmd)
         }
         return null
     }
@@ -930,6 +937,7 @@ object Histoire {
         Ondes.indice(jeu, e, tapees)?.let { return it }           // la Tour des Ondes : un « ? » recopié, la cible isolée…
         Guilde.indice(jeu, e, tapees)?.let { return it }          // la Guilde : /dev, un sudo, une mauvaise réponse…
         Observatoire.indice(jeu, e, tapees)?.let { return it }    // l'Observatoire : sudo, rm -rf, une consigne floue…
+        Donnees.indice(jeu, e, tapees)?.let { return it }         // la Salle des Données : pas de tableau, -F, oublié, sed sans g…
         indiceCd(jeu, e, morcs)?.let { return it }
         indiceRm(jeu, e, tapees)?.let { return it }
         indiceResultat(jeu, e, morcs)?.let { return it }
@@ -1093,7 +1101,7 @@ object Histoire {
     fun annoncerMonde(jeu: Jeu): Boolean {
         val h = h(jeu)
         if (Port.annonce(jeu) || Citadelle.annonce(jeu) || Crypte.annonce(jeu) || Machines.annonce(jeu) || Ondes.annonce(jeu) || Guilde.annonce(jeu) ||
-            Observatoire.annonce(jeu)) { h.put("annonce_attente", true); return true }
+            Observatoire.annonce(jeu) || Donnees.annonce(jeu)) { h.put("annonce_attente", true); return true }
         h.remove("annonce_attente")
         return false
     }

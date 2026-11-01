@@ -335,6 +335,23 @@ object Deploie {
         return out
     }
 
+    // ------------------------------------------------------------ le laboratoire de tri (la Salle des Données)
+    class LaboD(val seg: Int, val cmd: String, val outil: String, val instrument: String, val de: String, val vers: String)
+
+    /** Les commandes d'une ligne qui trient, coupent, calculent ou interrogent des données (cut, sort, awk, sed, sqlite3…) ;
+     *  wc, uniq -c et grep -c restent à la lunette de l'Observatoire. Même spécification que deploie.labos sur PC. */
+    fun labos(ligne: String): List<LaboD> {
+        val out = mutableListOf<LaboD>()
+        val bl = blocs(ligne)
+        for (c in chaines(bl)) for (e in c.etapes) {
+            val a = Donnees.laboDe(e.texte) ?: continue
+            if (Observatoire.lunetteDe(e.texte) != null) continue
+            val seg = bl.firstOrNull { it.g == "commande" && it.i - 1 == e.debut }?.seg ?: 0
+            out.add(LaboD(seg, e.cmd, a.outil, a.instrument, a.de, a.vers))
+        }
+        return out
+    }
+
     // ------------------------------------------------------------ les cadenas qui s'allument (la Citadelle)
     private val OPTIONS_CHMOD = setOf("-R", "-v", "-c", "-f", "--recursive", "--verbose", "--changes", "--silent", "--quiet")
     private val MODE_CHMOD = Regex("[0-7]{1,4}|[ugoa]*(?:[-+=][rwx]*)+(?:,[ugoa]*(?:[-+=][rwx]*)+)*")
@@ -440,12 +457,15 @@ object Deploie {
         /** la lunette d'un diff, wc, uniq -c, sh tests.sh, assistant… (l'Observatoire) */
         val lunettes: List<Lunette> = try { lunettes(ligne) } catch (e: Exception) { emptyList() }
         fun lunetteDe(b: Bloc): Lunette? = if (b.g == "commande") lunettes.firstOrNull { it.seg == b.seg } else null
+        /** l'instrument d'un cut, sort, awk, sed, sqlite3… (la Salle des Données) */
+        val labos: List<LaboD> = try { labos(ligne) } catch (e: Exception) { emptyList() }
+        fun laboDe(b: Bloc): LaboD? = if (b.g == "commande") labos.firstOrNull { it.seg == b.seg } else null
 
         fun avancer(dt: Double) {
             t += dt
             val b = blocs[actif - 1]
             val reseau = messagerDe(b) != null || droitsDe(b) != null || roueDe(b) != null || piecesDe(b) != null || antenneDe(b) != null || etabliDe(b) != null ||
-                lunetteDe(b) != null
+                lunetteDe(b) != null || laboDe(b) != null
             val duree = if (b.g == "tuyau" || b.g == "redirection" || reseau) 2.4 else 1.2
             phase = if (b.g in setOf("tuyau", "redirection", "chemin") || reseau) t / duree else minOf(1.0, t / duree)
             if (auto && t >= duree && actif < blocs.size) { actif += 1; t = 0.0 }

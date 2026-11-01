@@ -38,6 +38,8 @@ class Etape(
     val depuis: String? = null,
     /** un exploit d'un monde (§ 7.6, Recompenses.kt) réussi avec cette étape (le Port : port.messager, port.sceau) */
     val exploit: String? = null,
+    /** n'importe quel code de sortie convient (grep -c qui ne trouve rien répond 0 avec le code 1 : ce n'est pas une erreur) */
+    val toutCode: Boolean = false,
 ) {
     val dit: String get() = Histoire.tx(ditCle, params)
     val bravo: String get() = Histoire.tx(bravoCle, params)
@@ -312,6 +314,7 @@ class Jeu(ctx: Context) {
         Ondes.init(ctx)
         Guilde.init(ctx)
         Observatoire.init(ctx)
+        Donnees.init(ctx)
         Intro.init(ctx)
     }
 

@@ -221,14 +221,17 @@ fun main(args: Array<String>) {
     println("   … puis la difficulté monte avec les captures")
     val moy = (0 until 14).map { n -> Bestiaire.publiques().map { Dressage.choisirEpreuves(it, false, "rare", n).size }.average() }
     verifier(moy.zipWithNext().all { (a, b) -> a <= b + 1e-9 }, "épreuves par dressage : " + moy.joinToString(" → ") { "%.1f".format(it) })
-    // (le tirage des épreuves est au hasard : le niveau le plus haut vu sur 20 dressages)
-    val niv = listOf(1, 4, 6, 9, 13).map { n -> (0 until 20).maxOf { Dressage.choisirEpreuves(Bestiaire.espece("Braisillon")!!, false, "épique", n).drop(2).maxOf { it.niveau } } }
+    // (le tirage des épreuves est au hasard : le niveau le plus haut vu sur 40 dressages, avec une graine fixe pour que le
+    //  test ne puisse pas échouer au hasard)
+    Dressage.hasard = kotlin.random.Random(20261101)
+    val niv = listOf(1, 4, 6, 9, 13).map { n -> (0 until 40).maxOf { Dressage.choisirEpreuves(Bestiaire.espece("Braisillon")!!, false, "épique", n).drop(2).maxOf { it.niveau } } }
     verifier(niv == niv.sorted() && niv.first() == 1 && niv.last() == 3, "niveau max des épreuves (1, 4, 6, 9, 13 captures) : $niv")
     val grib = Bestiaire.espece("Gribouilleur") ?: Bestiaire.publiques()[0]
     val avecFor = (0 until 14).filter { n -> (0 until 20).any { Dressage.choisirEpreuves(grib, false, "rare", n).any { it.cle == "Code:compte" } } }
     verifier(avecFor.none { it < 8 }, "pas de boucle for avant 8 captures")
     verifier((0 until 20).all { Dressage.choisirEpreuves(Bestiaire.espece("Braisillon")!!, false, "rare", 13).none { it.fam == "Processus" && it.id !in setOf("ps", "heure") } },
         "Processus : seulement ps et date (pas d'épreuve en arrière-plan sur le téléphone)")
+    Dressage.hasard = kotlin.random.Random.Default
 
     println("4. Attirance")
     val N = 1200

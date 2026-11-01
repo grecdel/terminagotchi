@@ -185,6 +185,7 @@ object Verif {
     fun resultatOk(jeu: Jeu, e: Etape, m: Morceau): Boolean {
         if (e.reseau) return cheminsManquants(jeu, m.texte, m.avant).isEmpty()     // hors ligne : avoir essayé suffit
         if (e.echoue) return if (m.code != null) m.code != 0 else cheminsManquants(jeu, m.texte, m.avant).isEmpty()
+        if (e.toutCode) return cheminsManquants(jeu, m.texte, m.avant).isEmpty()
         if (m.code != null) return m.code == 0
         return cheminsManquants(jeu, m.texte, m.avant).isEmpty()
     }
