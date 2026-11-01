@@ -125,6 +125,7 @@ Ce qui vaut pour les trois enfants :
 
 | DN9 | Sur le téléphone (toybox), `cat -n` n'existe pas et `xargs -I{}` ne marche pas : deux commandes de la Salle auraient échoué (vu par `test_donnees_outils.py` en CI, toybox 0.8.11). | Le jeu dit `nl attaques.txt` pour numéroter les lignes, et l'enclos se fait avec `sed 's|.*|enclos/&.txt|' \| xargs touch` (le copiste fabrique les noms, xargs les donne à touch) ; PC et téléphone, 14 langues. |
 | DN10 | `.tables` : le vrai `sqlite3` complète CHAQUE nom à la largeur de la colonne, le dernier aussi (espaces en fin de ligne) ; le jeu ne complétait pas le dernier (vu par le rejeu en CI). | Le jeu (PC et téléphone) écrit exactement comme le vrai outil. |
+| DN12 | La requête SQL de Léa sans guillemets (`COUNT(*)`) est une erreur de syntaxe qui ARRÊTE le shell ; selon la vitesse de la machine, le terminal partagé (`pc/tg/coquille.py`, celui de `tg mini` et des simulations) plantait (BrokenPipeError) au lieu de répondre. Vu en relançant les simulations pendant que d'autres tests tournaient. | `coquille.py` : si le shell s'arrête pendant la commande, son dernier message et le code 2 ; s'il était déjà arrêté, un nouveau shell dans le même dossier rejoue la ligne. |
 
 ### Mineurs (notés)
 

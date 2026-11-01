@@ -38,8 +38,19 @@ class Coquille:
         if self.p.poll() is not None:              # `exit` tapé : un nouveau shell, dans le dernier dossier
             self._demarrer()
         # la ligne seule (les alias définis à la ligne d'avant s'appliquent), l'entrée fermée (cat tout seul…)
-        self._ecrire(f"{cmd}\n" if cmd.strip().startswith("alias ") else f"{{ {cmd}\n}} </dev/null\n")
-        self._ecrire(f"printf '\\n{self.marque} %s %s\\n' \"$?\" \"$PWD\"\n")
+        ligne = f"{cmd}\n" if cmd.strip().startswith("alias ") else f"{{ {cmd}\n}} </dev/null\n"
+        try:
+            self._ecrire(ligne)
+        except BrokenPipeError:                    # le shell était déjà arrêté : un nouveau, et la même ligne
+            self._fin_du_shell()
+            self._demarrer()
+            self._ecrire(ligne)
+        try:
+            self._ecrire(f"printf '\\n{self.marque} %s %s\\n' \"$?\" \"$PWD\"\n")
+        except BrokenPipeError:
+            # le shell s'est arrêté pendant qu'on écrivait (une erreur de syntaxe, `COUNT(*)` sans guillemets, arrête un
+            # bash qui lit son entrée) : son dernier message, le code 2 ; la commande suivante relance un shell
+            return self._fin_du_shell(), 2, self.cwd
         brut, fin = b"", time.time() + delai
         cle = ("\n" + self.marque + " ").encode()
         while cle not in brut:
@@ -56,7 +67,11 @@ class Coquille:
             r, _, _ = select.select([self.p.stdout], [], [], min(reste, 0.5))
             if r:
                 x = os.read(self.p.stdout.fileno(), 65536)
-                if not x:
+                if not x:                          # le shell s'est arrêté : on attend sa fin (le suivant repartira)
+                    try:
+                        self.p.wait(timeout=2)
+                    except subprocess.TimeoutExpired:
+                        pass
                     break
                 brut += x
         texte = brut.decode("utf-8", "replace").replace("__tg_coupe", "")
@@ -69,6 +84,25 @@ class Coquille:
         if dossier:
             self.cwd = dossier.strip()
         return avant, code, self.cwd
+
+    def _fin_du_shell(self):
+        """Ce que le shell a écrit avant de s'arrêter (au plus 2 secondes d'attente)."""
+        brut, fin = b"", time.time() + 2
+        while time.time() < fin:
+            r, _, _ = select.select([self.p.stdout], [], [], 0.2)
+            if not r:
+                if self.p.poll() is not None:
+                    break
+                continue
+            x = os.read(self.p.stdout.fileno(), 65536)
+            if not x:
+                break
+            brut += x
+        try:
+            self.p.wait(timeout=2)
+        except subprocess.TimeoutExpired:
+            pass
+        return brut.decode("utf-8", "replace").rstrip("\n")
 
     def _interrompre(self):
         """Ctrl+C pour la commande en cours : SIGINT à ce que le shell a lancé (le shell, ses alias et son dossier

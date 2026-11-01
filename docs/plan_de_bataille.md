@@ -528,6 +528,11 @@ les vraies radios (vues seulement par des doublures en test), `type rtl_test` (O
   la Salle entre GNU, toybox (compilé en CI) et busybox. Il a trouvé que toybox n'a ni `cat -n` ni `xargs -I` : le jeu
   dit `nl` pour numéroter les lignes et fabrique les noms des fichiers avec `sed` avant `xargs touch` (PC et téléphone).
   `.tables` est écrit comme le vrai `sqlite3` (chaque nom complété, le dernier aussi), vu par le rejeu en CI.
+- Le terminal partagé (`pc/tg/coquille.py` : `tg mini` et les simulations) ne plante plus quand une commande arrête le
+  shell (une erreur de syntaxe comme `COUNT(*)` sans guillemets) : il répond, puis repart dans le même dossier.
+- `sim_machines.py` (Hugo) a échoué une fois en CI puis est passé à la relance, sans que la cause soit retrouvée ici (pas
+  de hasard sans graine ni d'heure trouvés ; 65 essais locaux verts) : la simulation affiche maintenant où il reste
+  bloqué, pour la prochaine fois.
 - Tests : `pc/outils/test_donnees.py` (67), `tests/jvm/Donnees.kt` (29). Simulation `pc/outils/sim_donnees.py` →
   `docs/simulations/rapport_donnees.md`. Captures `pc/outils/capture_donnees.py`. Rejeu d'un seul monde en local :
   `TG_REJEU_MONDE=donnees`.
