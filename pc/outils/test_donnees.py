@@ -169,7 +169,8 @@ mien, code = DN.sqlite_cli(str(tmp / "collection.db"), q)
 verifier(code == 0 and mien.splitlines()[0].split("|")[0] in DN.types_majoritaires(rows7), f"GROUP BY : {mien.splitlines()[0]}")
 mien, _ = DN.sqlite_cli(str(tmp / "collection.db"), "SELECT AVG(attaque) FROM creatures;")
 verifier(abs(float(mien) - DN.moyenne(rows7)) < 1e-9, f"AVG : {mien}")
-verifier(DN.sqlite_cli(str(tmp / "collection.db"), ".tables")[0] == "creatures  especes", ".tables : creatures  especes")
+verifier(DN.sqlite_cli(str(tmp / "collection.db"), ".tables")[0] == "creatures  especes  ",
+         ".tables : creatures  especes (chaque nom complété, comme le vrai sqlite3)")
 verifier(DN.sqlite_cli(str(tmp / "collection.db"), "DELETE FROM creatures;")[1] == 1,
          "le petit sqlite3 de secours ouvre la base en lecture seule")
 if SQLITE3:

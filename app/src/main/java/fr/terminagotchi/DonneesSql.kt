@@ -83,7 +83,7 @@ object DonneesSql {
     fun tablesTexte(noms: List<String>): String {
         if (noms.isEmpty()) return ""
         val w = noms.maxOf { it.length }
-        return noms.sorted().joinToString("  ") { it.padEnd(w) }.trimEnd()
+        return noms.sorted().joinToString("  ") { it.padEnd(w) }   // comme le vrai sqlite3 : le dernier nom est complété aussi
     }
 
     private val LECTURE = Regex("^\\s*(select|with)\\b", RegexOption.IGNORE_CASE)

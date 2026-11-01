@@ -257,12 +257,14 @@ def lignes_resultat(rows_resultat, sep="|"):
 
 
 def tables_texte(noms):
-    """.tables : les noms rangés, en colonnes séparées de 2 espaces (sur une ligne pour quelques tables)."""
+    """.tables : les noms rangés, en colonnes séparées de 2 espaces (sur une ligne pour quelques tables). Comme le vrai
+    outil sqlite3, CHAQUE nom est complété à la largeur de la colonne, le dernier aussi (espaces en fin de ligne : vu
+    par le rejeu en CI, sqlite3 3.45)."""
     noms = sorted(noms)
     if not noms:
         return ""
     w = max(len(n) for n in noms)
-    return "  ".join(n.ljust(w) for n in noms).rstrip()
+    return "  ".join(n.ljust(w) for n in noms)
 
 
 def requetes_base(rows):
