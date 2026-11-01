@@ -326,6 +326,31 @@ Prompts d'illustrations envoyés au propriétaire (à valider), repli dessiné e
 B9/C1/C3/E7/E8/E9, les portes logiques (§ 7.10), les étapes `podman` / `qemu-img` / `virsh` jouées seulement en CI, le
 nom (l'aile du volcan s'appelle déjà « la salle des machines »).
 
+**📡 La Tour des Ondes — codée (1er novembre).** 9 fiches (`donnees/ondes/outils/fiches_ondes.py`, rejeu bash), leçons
+on0 → on10 sur PC (`pc/tg/ondes.py`) et Android (`Ondes.kt`, `OndesDessin.kt`), ouverte après le niveau 4 du tronc et
+les leçons « Les ports » (P7) et « Des 0 et des 1 » (M2) — l'annonce part à la fin de ces leçons ; chapitre et dossier
+`ondes`, commandes `ondes …`, `mesh-route`, `mesh-envoie`, `mesh-coupe` (alias bash/zsh/fish/PowerShell). Règle du
+monde : **écouter est libre, émettre est réglementé ; le jeu n'émet jamais lui-même**. W1 l'onde (fréquence, longueur
+d'onde avec `bc`, le mur qui affaiblit plus les hautes fréquences), W2 les ondes autour de soi et ses radios en
+**lecture seule** (`iw dev`, `nmcli -f CHAN,FREQ,SIGNAL dev wifi list --rescan no`, `nmcli radio`, `rfkill list`,
+`bluetoothctl show` filtré ; jamais `sudo`, `rfkill block`, connexion, appairage ni balayage actif ; vérification sur
+des quantités anonymes — canal, bande, nombre de réseaux — et la leçon explique pourquoi on ne recopie pas les noms
+des voisins : aucun SSID, BSSID ni MAC enregistré ni envoyé), W3 la règle du spectre (10 MHz → 10 GHz, bandes libres /
+réservées), W4 LoRa (chirp, temps d'émission Semtech au µs, la vallée et le plus petit SF, le 1 % = 36 s/h), passerelle
+ou maillage, puis le maillage du Terminaworld (les machines du Port + liens radio, inondation saut par saut, nœud
+coupé, autre chemin) et la tempête (couper 3 nœuds du chemin du moment, le SOS passe). W5 Meshtastic et W6 radio
+logicielle **avec un adulte, jamais obligatoires** (868 MHz, 25 mW, 1 % ; `pip install` seulement expliqué ;
+réception seule ; avions et capteurs fictifs, on garde la température sans l'identifiant ; racontés si le matériel
+manque ; aucune marque, aucun prix, aucun lien d'achat). Vue déployée : les antennes « lit / écoute / émet / change ».
+Ponts des Nombres (fréquence, puissances de 10, longueur d'onde, temps d'émission + pourcentages, division ; jamais
+bloquants). Exploit « Le message qui a traversé la tempête » (`ondes.onde`) ; variantes existantes réservées :
+`zapiot:orage`, `ventouzar:orage`, `cyclonaute:orage` (type Ciel, la Foudre portée par la variante « orage ») ; 14
+langues ; données `donnees/ondes.json`, vecteurs communs `donnees/ondes/vecteurs.json` ; tests
+`pc/outils/test_ondes.py`, `tests/jvm/Ondes.kt`, simulation `pc/outils/sim_ondes.py` →
+`docs/simulations/rapport_ondes.md`, captures `pc/outils/capture_ondes.py`. Prompts d'illustrations envoyés au
+propriétaire (B5, vignette, gardien, C3, E5, E6 ; à valider), repli dessiné en attendant. Reste : les illustrations,
+les vraies radios (vues seulement par des doublures en test), `type rtl_test` (ON9).
+
 **▚ Le glitch — codé (31 octobre, décisions du propriétaire).** Un effet de l'INDIVIDU, comme le shiny (drapeau
 `glitch`, indépendant de la variante et du shiny) : l'image se dérègle comme un vieil écran, fabriquée à partir de
 l'image de la créature (aucune illustration). Au repos le style A (liseré rose/cyan des couches décalées, 2 tranches
