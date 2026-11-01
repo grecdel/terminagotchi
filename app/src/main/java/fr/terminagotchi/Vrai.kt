@@ -17,7 +17,7 @@ object Vrai {
     private val APPLI = setOf("doom", "getprop", "dressage", "cherche", "defi", "donjon", "plan", "quetes", "quete",
         "journal", "sac", "equipe", "guide", "types", "bois", "attaque", "ctf", "drapeau", "compte", "site", "bestiaire",
         "explique", "sync", "indice", "notifs", "notif", "placement", "sansaide", "aide", "carte", "lexique", "arbre", "port", "citadelle", "crypte", "machines", "ondes",
-        "mesh-envoie", "mesh-coupe", "mesh-route", "guilde", "observatoire", "assistant", "agent", "devine-type", "devine-mot", "donnees") +
+        "mesh-envoie", "mesh-coupe", "mesh-route", "guilde", "observatoire", "assistant", "agent", "devine-type", "devine-mot", "donnees", "forge") +
         Commandes.CREATURE + Commandes.TELEPHONE
 
     fun ligne(cmd: String?): String? {

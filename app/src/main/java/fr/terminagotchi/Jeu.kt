@@ -315,6 +315,7 @@ class Jeu(ctx: Context) {
         Guilde.init(ctx)
         Observatoire.init(ctx)
         Donnees.init(ctx)
+        Forge.init(ctx)
         Intro.init(ctx)
     }
 

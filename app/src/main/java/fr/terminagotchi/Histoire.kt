@@ -23,7 +23,7 @@ import java.io.File
  *    5 bibliotheque  La bibliothèque engloutie find, cat, grep, head, wc, et les tuyaux | sort
  *    6 machines      La salle des machines du volcan  free, du, rm, df, uptime, uname, getprop
  *    7 dortoir       Le dortoir des brumes     ps, ps | wc, date        (des fantômes refusent de dormir)
- *    8 atelier       L'atelier des Constructs  scripts (sh, ~/.tgrc, for, if), puis le Doom à construire
+ *    8 atelier       La petite forge des Constructs (§ 2.19) : scripts (sh, ~/.tgrc, for, if), puis le Doom à construire
  *    9 tour          La tour des nuages        ping, ifconfig, hostname, web
  *   10 coeur         Le cœur du monde          rev, ls -a, find, cat >, grep | wc, puis Abyssor
  *   (+ telephone : le jardin du téléphone, ouvre, lampe, sms… hors compte des ailes)
@@ -76,7 +76,7 @@ object Histoire {
             "ventilateur", "mecanicien"),
         Chapitre("dortoir", 7, "dortoir", "Morts-vivants", listOf("dortoir0", "dortoir1"), null, "boite_a_musique", "veilleur"),
         Chapitre("atelier", 8, "atelier", "Constructs",
-            listOf("atelier0", "scripts0", "scripts1", "scripts2", "createur0", "createur1", "createur2"), null, "robot_jouet", "inventeur"),
+            listOf("atelier0", "scripts0", "scripts1", "scripts2", "createur0", "createur1", "createur2"), null, "robot_jouet", "inventeur"),   // « la petite forge des Constructs » (§ 2.19)
         Chapitre("tour", 9, "tour", "Célestes", listOf("tour0", "tour1"), null, "telescope", "astronome"),
         Chapitre("coeur", 10, "coeur", "Aberrations", listOf("coeur0", "coeur1", "coeur2"), listOf(10, 11, 12), "couronne", "heros"),
         // le jardin du téléphone (les leçons propres à Android), hors compte des ailes
@@ -98,6 +98,8 @@ object Histoire {
         Chapitre("observatoire", 17, "observatoire", "Célestes", Observatoire.IDS, null, "loupe_de_detective", "chef_des_robots", monde = true),
         // le huitième : la Salle des Données (Donnees.kt), sur sa propre collection ; lieu donnees/
         Chapitre("donnees", 18, "donnees", "Abyssaux", Donnees.IDS, null, "boulier", "savant_des_donnees", monde = true),
+        // le neuvième : la Forge (Forge.kt), la programmation ; lieu forge/ (l'ancien « atelier » du tronc est la petite forge)
+        Chapitre("forge", 19, "forge", "Constructs", Forge.IDS, null, "marteau_de_forge", "maitre_de_la_forge", monde = true),
     )
     val MONDES = CHAPITRES.filter { it.monde }.map { it.piece }
     val PAR_CHAP = CHAPITRES.associateBy { it.id }
@@ -279,6 +281,7 @@ object Histoire {
         tout.putAll(Guilde.lecons(jeu))
         tout.putAll(Observatoire.lecons(jeu))
         tout.putAll(Donnees.lecons(jeu))
+        tout.putAll(Forge.lecons(jeu))
         return tout
     }
 
@@ -361,11 +364,11 @@ object Histoire {
     /** Un monde du Carrefour : ses prérequis du tronc commun (programme.json), monde par monde. */
     fun mondeOuvert(jeu: Jeu, cid: String) = when (cid) { "citadelle" -> Citadelle.ouvert(jeu); "crypte" -> Crypte.ouvert(jeu)
         "machinerie" -> Machines.ouvert(jeu); "ondes" -> Ondes.ouvert(jeu); "guilde" -> Guilde.ouvert(jeu); "observatoire" -> Observatoire.ouvert(jeu)
-        "donnees" -> Donnees.ouvert(jeu)
+        "donnees" -> Donnees.ouvert(jeu); "forge" -> Forge.ouvert(jeu)
         else -> Port.ouvert(jeu) }
     fun mondeManque(jeu: Jeu, cid: String) = when (cid) { "citadelle" -> Citadelle.manque(jeu); "crypte" -> Crypte.manque(jeu)
         "machinerie" -> Machines.manque(jeu); "ondes" -> Ondes.manque(jeu); "guilde" -> Guilde.manque(jeu); "observatoire" -> Observatoire.manque(jeu)
-        "donnees" -> Donnees.manque(jeu)
+        "donnees" -> Donnees.manque(jeu); "forge" -> Forge.manque(jeu)
         else -> Port.manque(jeu) }
 
     /** La pièce existe dans la maison de cette partie (sa porte a été posée). */
@@ -512,6 +515,7 @@ object Histoire {
         "guilde" -> Guilde.meubles(jeu)
         "observatoire" -> Observatoire.meubles(jeu)
         "donnees" -> Donnees.meubles(jeu)
+        "forge" -> Forge.meubles(jeu)
         // la vieille cabane pleine de planches de la leçon « Une pièce en trop » (seulement par BESOINS)
         "nid" -> linkedMapOf("vieille_cabane/planche_1.txt" to dire(jeu, "hist.meuble.planche"),
             "vieille_cabane/planche_2.txt" to dire(jeu, "hist.meuble.planche"),
@@ -602,6 +606,7 @@ object Histoire {
         if (lid in Guilde.IDS) Guilde.meubler(jeu, lid)         // la Guilde : le petit projet, l'atelier, la fabrique, la fausse clé
         if (lid in Observatoire.IDS) Observatoire.meubler(jeu, lid)   // l'Observatoire : la coupole, l'agent Copieur qui s'emballe
         if (lid in Donnees.IDS) Donnees.meubler(jeu, lid)         // la Salle des Données : le laboratoire, les ponts des nombres
+        if (lid in Forge.IDS) Forge.meubler(jeu, lid)             // la Forge : l'enclume, serpent.py, la devinette, la photo d'exemple
         return poses
     }
 
@@ -744,6 +749,7 @@ object Histoire {
             jeu.log(t("hist.lecon.finie.log", "titre" to les.titre))
             jeu.dire(t("hist.lecon.finie.dit"), 12)
         }
+        Forge.leconFinie(jeu, les.id)                       // la Forge : un palier fini sans aucun indice
         STAT[c.id]?.let { jeu.stats[it] = (jeu.stats[it] ?: 0) + 5 }
         Satiete.gagnerXp(jeu, 20, lecon = true)
         h.remove("annonce")
@@ -938,6 +944,7 @@ object Histoire {
         Guilde.indice(jeu, e, tapees)?.let { return it }          // la Guilde : /dev, un sudo, une mauvaise réponse…
         Observatoire.indice(jeu, e, tapees)?.let { return it }    // l'Observatoire : sudo, rm -rf, une consigne floue…
         Donnees.indice(jeu, e, tapees)?.let { return it }         // la Salle des Données : pas de tableau, -F, oublié, sed sans g…
+        Forge.indice(jeu, e, tapees)?.let { return it }           // la Forge : guillemets autour de #!, > au lieu de >>, un prénom…
         indiceCd(jeu, e, morcs)?.let { return it }
         indiceRm(jeu, e, tapees)?.let { return it }
         indiceResultat(jeu, e, morcs)?.let { return it }
@@ -1101,7 +1108,7 @@ object Histoire {
     fun annoncerMonde(jeu: Jeu): Boolean {
         val h = h(jeu)
         if (Port.annonce(jeu) || Citadelle.annonce(jeu) || Crypte.annonce(jeu) || Machines.annonce(jeu) || Ondes.annonce(jeu) || Guilde.annonce(jeu) ||
-            Observatoire.annonce(jeu) || Donnees.annonce(jeu)) { h.put("annonce_attente", true); return true }
+            Observatoire.annonce(jeu) || Donnees.annonce(jeu) || Forge.annonce(jeu)) { h.put("annonce_attente", true); return true }
         h.remove("annonce_attente")
         return false
     }
@@ -1112,6 +1119,7 @@ object Histoire {
         val depart = Maison.ici(jeu)?.let { File(it) } ?: cwd ?: jeu.home
         val tapees = Maison.suivre(jeu, ligne, colle, cwd)
         Machines.surveiller(jeu, ligne)                // les pièces interrogées s'allument (l'ordinateur ouvert)
+        Forge.surveiller(jeu, ligne)                   // la Forge : la recette de la cabane marche du premier coup ?
         meubler(jeu)
         visiteAile(jeu, tapees.map { it.second } + Maison.ici(jeu))
         // G-34 : chaque morceau de la ligne (`cd / && ls`) est jugé sur son résultat (code de sortie du shell)

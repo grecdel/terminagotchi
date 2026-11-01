@@ -371,7 +371,9 @@ class TerminalActivity : Activity() {
                 // P2-10 : une faute collée (`cdvestibule`, `ls-a`, `cd/`) ou des majuscules (`PWD`) : la bonne commande
                 val brut = ligne.trim().split(Regex("\\s+"))[0]
                 val colle = Verif.collee(brut)
+                val egal = Regex("^([A-Za-z_]\\w*)\\s+=").find(ligne.trim())?.groupValues?.get(1)
                 when {
+                    egal != null -> t("core.inconnue.egal", "cmd" to egal)      // nom = Pixel : des espaces autour du =
                     brut != brut.lowercase() && Verif.collee(brut.lowercase()) == null && brut.lowercase() in Verif.MOTS_CONNUS ->
                         t("core.inconnue.casse", "cmd" to brut, "proche" to brut.lowercase())
                     colle != null -> t("core.inconnue.proche", "cmd" to brut, "proche" to colle)

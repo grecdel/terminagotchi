@@ -109,7 +109,7 @@ object Verif {
     }
 
     /** `PWD`, `Ls` : un nom de commande avec des majuscules n'existe pas. */
-    fun casseOk(mot: String) = mot.isEmpty() || mot == mot.lowercase()
+    fun casseOk(mot: String) = mot.isEmpty() || mot == mot.lowercase() || Regex("^[A-Za-z_]\\w*=").containsMatchIn(mot)   // nom=Pixel (la Forge) : une boîte, pas une commande
 
     /** Le texte ressemble à la commande de l'étape (sur la ligne entière ou sur une partie d'un tuyau). */
     fun motifOk(jeu: Jeu, e: Etape, texte: String, cwd: File): Boolean {

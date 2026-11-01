@@ -678,7 +678,7 @@ object Port {
  * Chacun s'éteint seul après 30 minutes sans visite. decalage : pour les tests JVM (ne pas gêner un vrai 8042).
  */
 object Phare {
-    enum class Genre { PHARE, QUAI }
+    enum class Genre { PHARE, QUAI, SITE }
 
     @Volatile var decalage = 0
     fun reel(port: Int) = port + decalage
@@ -694,7 +694,7 @@ object Phare {
         catch (e: Exception) { return false }
         val s = Serveur(ss, System.currentTimeMillis())
         serveurs[port] = s
-        val quai = File(jeu.terrain, "port/quai").canonicalFile
+        val quai = File(jeu.terrain, if (genre == Genre.SITE) "forge/site" else "port/quai").canonicalFile   // (la Forge : le site de l'enfant)
         Thread({
             ss.soTimeout = 2000
             while (!ss.isClosed) {
@@ -722,7 +722,7 @@ object Phare {
                 val (methode, chemin) = premiere.split(" ").let { (it.getOrNull(0) ?: "GET") to (it.getOrNull(1) ?: "/") }
                 val (code, corps, type) = when (genre) {
                     Genre.PHARE -> Port.page(chemin).let { Triple(it.first, it.second.toByteArray(), "text/plain; charset=utf-8") }
-                    Genre.QUAI -> fichier(quai, chemin)
+                    Genre.QUAI, Genre.SITE -> fichier(quai, chemin)
                 }
                 val raison = if (code == 200) "OK" else "Not Found"
                 val serveur = if (genre == Genre.PHARE) "PhareDuPort/1.0" else "Lanterne/1.0"
@@ -740,7 +740,7 @@ object Phare {
         val c = java.net.URLDecoder.decode(chemin.substringBefore('?'), "UTF-8").trimStart('/')
         val f = File(quai, c.ifEmpty { "index.html" }).let { if (it.isDirectory) File(it, "index.html") else it }.canonicalFile
         if (!f.path.startsWith(quai.path + File.separator) || !f.isFile) return Triple(404, "404\n".toByteArray(), "text/plain")
-        val type = if (f.name.endsWith(".html")) "text/html; charset=utf-8" else "text/plain; charset=utf-8"
+        val type = if (f.name.endsWith(".html")) "text/html; charset=utf-8" else if (f.name.endsWith(".css")) "text/css" else "text/plain; charset=utf-8"
         return Triple(200, f.readBytes(), type)
     }
 }

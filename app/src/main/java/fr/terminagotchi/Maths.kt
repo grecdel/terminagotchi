@@ -134,6 +134,11 @@ object Maths {
                 else Exo(mapOf("liste" to liste), "${v.max() - v.min()}", "echo \$((${v.max()} - ${v.min()}))") }
             "pourcentages" -> { val total = TOTAUX_CENT[h.entier(TOTAUX_CENT.size)]; val n = h.entier(total + 1)
                 Exo(mapOf("n" to "$n", "total" to "$total"), "${n * 100 / total}", "echo \$((${n} * 100 / $total))") }
+            // les Ponts des Nombres de la Forge (§ 2.10) : compter les tours d'une boucle, les priorités de calcul
+            "boucles" -> { val a = 1 + h.entier(5); val z = a + 2 + h.entier(8)
+                Exo(mapOf("a" to "$a", "z" to "$z"), "${z - a + 1}", "seq $a $z | wc -l") }
+            "priorites" -> { val a = 2 + h.entier(8); val b = 2 + h.entier(5); val c = 2 + h.entier(5)
+                Exo(mapOf("a" to "$a", "b" to "$b", "c" to "$c"), "${a + b * c}", "echo \$(($a + $b * $c))") }
             else -> throw IllegalArgumentException(typ)
         }
     }

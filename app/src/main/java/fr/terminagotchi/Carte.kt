@@ -66,7 +66,7 @@ object Carte {
         "jardin" to (0xFF66B843 to 0xFF6B4A2C)).mapValues { (_, v) -> v.first.toInt() to v.second.toInt() }
     val SOLS = mapOf("camp" to (0xFFD9B47A to 0xFF7B5534), "lieu" to (0xFF5AA63A to 0xFF6B4A2C),
         "porte" to (0xFF8FA9C2 to 0xFF3D5A73), "secret" to (0xFF4B3A6B to 0xFF251C38),
-        "brume" to (0xFF6A6F78 to 0xFF3A3D44),
+        "brume" to (0xFF6A6F78 to 0xFF3A3D44), "jeu" to (0xFFFF9F43 to 0xFF8A4A1C),
         // la Racine (bois), le village, ton camp de base, la zone d'aventure, les lieux du système (pierre)
         "racine" to (0xFF8A5A30 to 0xFF4A2E18), "village" to (0xFFE0C48A to 0xFF8A6A3A), "camp_base" to (0xFFD9B47A to 0xFF7B5534),
         "zone" to (0xFF86D45A to 0xFF2F6B2C), "chemin" to (0xFF9CC4AA to 0xFF4C6A58), "systeme" to (0xFFA7ACB4 to 0xFF5D6168),

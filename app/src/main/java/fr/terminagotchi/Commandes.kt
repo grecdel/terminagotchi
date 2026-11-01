@@ -161,6 +161,8 @@ class Commandes(
             "devine-mot" -> Reponse(Observatoire.devineMot(jeu, reste, dossier()), couleur = BLEU)
             // ---------------------------------------------------- la Salle des Données (Donnees.kt) : sur sa collection, dans le terrain
             "donnees" -> Reponse(Donnees.commande(jeu, ligne.trim().substringAfter(' ', ""), dossier()), couleur = BLEU)
+            // ---------------------------------------------------- la Forge (Forge.kt) : les ateliers, la lanterne du site, la photo d'exemple
+            "forge" -> Reponse(Forge.commande(jeu, ligne.trim().substringAfter(' ', ""), dossier()), couleur = BLEU)
             "awk" -> Donnees.awk(jeu, ligne.trim(), dossier())?.let { Reponse(it, couleur = BLEU) }   // avec un tuyau : le vrai shell
             "sqlite3" -> Reponse(Donnees.sqlite3(jeu, ligne.trim(), dossier()), couleur = BLEU)
             "sync" -> sync()

@@ -43,7 +43,7 @@ object Maison {
         "salle_des_machines" to "🔥", "dortoir" to "👻", "atelier" to "🔧", "tour" to "📡", "coeur" to "💜",
         "recoins" to "🚪", "sauvage" to "🌲", "jardin" to "📱", "port" to "⚓",
         "citadelle" to "🏰", "crypte" to "🔐", "machines" to "🔩", "ondes" to "📶", "guilde" to "🧰",
-        "observatoire" to "🔭", "donnees" to "📊")
+        "observatoire" to "🔭", "donnees" to "📊", "forge" to "🔨")
     val PRUDENCE = setOf("rm", "rmdir", "mv", "chmod", "chown", "del", "remove-item", "move-item", "ren")
 
     /** Une région du monde (donnees/biomes.json, vérifié par tests/jvm/Carte.kt) : emoji, principale, sombre, claire. */
@@ -61,7 +61,7 @@ object Maison {
         "poison" to Biome("🧪", 0xFF6A8F2A.toInt(), 0xFF3B4A1C.toInt(), 0xFFB6FF4A.toInt()),
     )
     val EMOJIS = mapOf("camp" to "⛺", "porte" to "🌀", "lieu" to "🌳", "note" to "📜", "recette" to "📝",
-        "image" to "🌅", "coffre" to "📦", "secret" to "🔑", "secret_objet" to "🔑", "brume" to "░░", "suite" to "··")
+        "image" to "🌅", "coffre" to "📦", "secret" to "🔑", "secret_objet" to "🔑", "brume" to "░░", "suite" to "··", "jeu" to "🎮")
     private val TEXTES = setOf("txt", "md", "log", "csv", "json", "ini", "cfg", "conf", "yml", "yaml", "html", "xml", "")
     private val SCRIPTS = setOf("sh", "ps1", "py", "bat", "cmd", "bash", "zsh", "fish", "js", "rb", "pl", "kts")
     private val IMAGES = setOf("png", "jpg", "jpeg", "gif", "bmp", "webp", "svg", "ico", "tif", "tiff")
@@ -382,6 +382,10 @@ object Maison {
         return if (Guide.peutAgrandir(jeu, b)) "" else "visite"
     }
 
+    /** Le jeu de l'enfant posé sur la carte par la Forge (`forge carte`) : un dossier qui contient le petit fichier .lieu. */
+    fun estJeu(jeu: Jeu, r: String): Boolean = r.isNotEmpty() && File(jeu.terrain, "$r/.lieu").isFile
+    fun nomDuJeu(jeu: Jeu, r: String): String = try { File(jeu.terrain, "$r/.lieu").readText().trim().take(40) } catch (e: Exception) { "" }
+
     /** Le nom dessiné à côté de la tuile. */
     fun etiquette(n: Noeud): String {
         if (n.brume) return "???"
@@ -418,13 +422,13 @@ object Maison {
         fun ouvert(r: String) = r in ouverts || arbres.any { it == "" || r == it || r.startsWith("$it/") }
 
         fun ligne(r: String, nom: String, prof: Int, dossier: Boolean, branches: String, brume: Boolean, parent: Noeud?, suite: Int = 0): Noeud {
-            val (g, b) = if (suite > 0) "suite" to null else genre(r, dossier)
+            val (g, b) = if (suite > 0) "suite" to null else if (dossier && estJeu(jeu, r)) "jeu" to null else genre(r, dossier)
             val cle = (if (brume) "~" else "") + r + if (dossier) "/" else ""
             val n = Noeud(r, nom, prof, dossier, g, b, brume, suite == 0 && cle !in montres, branches, suite, cle)
             n.parent = parent
             if (g == "piece" && b != null && b in PIECES) n.marques = if (brume) (if (Quetes.etoile(jeu, b)) "★" else "") else marques(jeu, b)
             n.garde = garde(jeu, n)
-            n.etiquette = etiquette(n)
+            n.etiquette = if (g == "jeu" && !brume) t("carte.monde.jeu", "nom" to nomDuJeu(jeu, r).ifEmpty { nom }) else etiquette(n)
             out.add(n)
             return n
         }
@@ -457,7 +461,7 @@ object Maison {
                 val (e, c, dossier) = x
                 val dernier = i == garde.size - 1 && reste == 0
                 val dedans = dossier && ouvert(c)
-                val brume = dossier && !dedans && !e.name.startsWith(".")         // un passage secret trouvé se voit
+                val brume = dossier && !dedans && !e.name.startsWith(".") && !estJeu(jeu, c)   // un passage secret trouvé se voit (et le jeu de l'enfant)
                 val n = ligne(c, e.name, prof, dossier, avant + if (dernier) "└── " else "├── ", brume, parent)
                 if (dedans && prof < PROFONDEUR && e.name !in IGNORES) tour(e, c, prof + 1, avant + if (dernier) "    " else "│   ", n)
             }

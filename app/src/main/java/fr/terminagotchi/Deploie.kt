@@ -352,6 +352,23 @@ object Deploie {
         return out
     }
 
+    // ------------------------------------------------------------ l'atelier de la forge (la Forge)
+    class ForgeD(val seg: Int, val cmd: String, val outil: String, val objet: String, val de: String, val vers: String)
+
+    /** Les commandes d'une ligne qui fabriquent ou font tourner quelque chose (sh cabane.sh, for, while, if, python3,
+     *  http.server, magick…) ; sh tests.sh reste à la lunette de l'Observatoire. Même spécification que deploie.forges. */
+    fun forges(ligne: String): List<ForgeD> {
+        val out = mutableListOf<ForgeD>()
+        val bl = blocs(ligne)
+        for (c in chaines(bl)) for (e in c.etapes) {
+            val a = Forge.forgeDe(e.texte) ?: continue
+            if (Observatoire.lunetteDe(e.texte) != null) continue
+            val seg = bl.firstOrNull { it.g == "commande" && it.i - 1 == e.debut }?.seg ?: 0
+            out.add(ForgeD(seg, e.cmd, a.outil, a.objet, a.de, a.vers))
+        }
+        return out
+    }
+
     // ------------------------------------------------------------ les cadenas qui s'allument (la Citadelle)
     private val OPTIONS_CHMOD = setOf("-R", "-v", "-c", "-f", "--recursive", "--verbose", "--changes", "--silent", "--quiet")
     private val MODE_CHMOD = Regex("[0-7]{1,4}|[ugoa]*(?:[-+=][rwx]*)+(?:,[ugoa]*(?:[-+=][rwx]*)+)*")
@@ -460,12 +477,15 @@ object Deploie {
         /** l'instrument d'un cut, sort, awk, sed, sqlite3… (la Salle des Données) */
         val labos: List<LaboD> = try { labos(ligne) } catch (e: Exception) { emptyList() }
         fun laboDe(b: Bloc): LaboD? = if (b.g == "commande") labos.firstOrNull { it.seg == b.seg } else null
+        /** l'objet de la forge d'un sh cabane.sh, for, if, python3, http.server, magick… (la Forge) */
+        val forges: List<ForgeD> = try { forges(ligne) } catch (e: Exception) { emptyList() }
+        fun forgeDe(b: Bloc): ForgeD? = if (b.g == "commande") forges.firstOrNull { it.seg == b.seg } else null
 
         fun avancer(dt: Double) {
             t += dt
             val b = blocs[actif - 1]
             val reseau = messagerDe(b) != null || droitsDe(b) != null || roueDe(b) != null || piecesDe(b) != null || antenneDe(b) != null || etabliDe(b) != null ||
-                lunetteDe(b) != null || laboDe(b) != null
+                lunetteDe(b) != null || laboDe(b) != null || forgeDe(b) != null
             val duree = if (b.g == "tuyau" || b.g == "redirection" || reseau) 2.4 else 1.2
             phase = if (b.g in setOf("tuyau", "redirection", "chemin") || reseau) t / duree else minOf(1.0, t / duree)
             if (auto && t >= duree && actif < blocs.size) { actif += 1; t = 0.0 }
