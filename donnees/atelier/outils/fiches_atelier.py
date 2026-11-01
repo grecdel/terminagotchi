@@ -180,7 +180,7 @@ ATELIER = {"id": "atelier", "types": ["machine", "plante"], "requis": ["n4"], "c
            "reutilise": {"chapitres": ["telephone"], "lecons": ["android0", "android3", "telephone0"]},
            "exploits": [{"id": "atelier.robot", "nom": "recomp.atelier.robot", "recompense": "variante"}],
            "maths": ["coordonnees", "logique", "multiplication"],
-           "variantes_reservees": ["tisonnier:mecanique", "groinfer:rouille", "lampignon:forêt"]}
+           "variantes_reservees": ["horlogrif:mecanique", "groinfer:rouille", "lampignon:forêt"]}
 
 
 def maths_fiche(mid, prerequis, niveau, vrai, sources):

@@ -658,7 +658,7 @@ des locuteurs.
   roues bougent), PC (`deploie.robots`) et téléphone (`Deploie.robots`, `AtelierDessin.robot`).
 - Ponts des Nombres, jamais bloquants : coordonnées, logique (nouveau), multiplication.
 - Exploit « un robot qui évite tous les obstacles » (`atelier.robot`). Variantes EXISTANTES favorisées (Machine /
-  Plante, libres) : `tisonnier:mecanique`, `groinfer:rouille`, `lampignon:forêt`.
+  Plante, libres) : `horlogrif:mecanique`, `groinfer:rouille`, `lampignon:forêt`.
 - PowerShell : `echo 1 > robot/led` écrit en UTF-16 sous PowerShell 5 : le jeu lit aussi l'UTF-16. Les boucles et
   `if` du shell sont des étapes bash (cachées sous Windows), donc le défi n'est pas jouable sous Windows pour l'instant.
 - Tests : `pc/outils/test_atelier.py` (traversée réelle, 3 défis, dash / mksh / busybox / toybox comparés à bash),

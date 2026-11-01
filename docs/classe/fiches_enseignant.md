@@ -388,7 +388,7 @@ qui est acquis.
 
 \newpage
 
-# Les mondes du Carrefour (11 à 19)
+# Les mondes du Carrefour (11 à 20)
 
 Après le tronc commun, chaque monde s'ouvre quand les chapitres nécessaires sont faits. Les fiches détaillées
 viendront après les classes pilotes ; en attendant, voici les codes et ce que chaque monde enseigne.
@@ -404,6 +404,7 @@ viendront après les classes pilotes ; en attendant, voici les codes et ce que c
 | 17 · L'Observatoire de l'IA | comprendre l'IA et superviser des outils (aucune vraie IA dans le jeu) | `17-GS-R` | `17-AGS-V` |
 | 18 · La Salle des Données | texte, CSV, statistiques et SQL sur sa propre collection | `18-GS-T` | `18-AGS-X` |
 | 19 · La Forge | programmation : scripts, boucles, Python, son mini-jeu, son site servi sur sa machine, images et sons | `19-GS-V` | `19-AGS-Z` |
+| 20 · L'Atelier des robots | robotique simulée : capteurs et moteurs comme des fichiers, coordonnées, ET / OU / NON, la boucle lire-décider-agir, Raspberry Pi et embarqué racontés (aucun matériel) | `20-GS-B` | `20-AGS-F` |
 
 # Correspondance avec les programmes (indicative)
 

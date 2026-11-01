@@ -264,10 +264,10 @@ carnet = A.carnet()
 verifier(re.findall(r"^\[defi\] .*\((\w+)\)$", carnet, re.M)[:3] == ["choc", "peu", "ok"],
          f"trois défis : le cerveau « trop tard » se cogne, celui qui s'arrête n'explore pas assez, celui qui tourne réussit {re.findall(r'^\[defi\] .*', carnet, re.M)}")
 verifier("atelier.robot" in recompenses.r_(st)["exploits"], "l'exploit « un robot qui évite tous les obstacles »")
-verifier(not recompenses.reservee(st, {"id": "tisonnier"}, "mecanique") and recompenses.reservee({}, {"id": "tisonnier"}, "mecanique")
+verifier(not recompenses.reservee(st, {"id": "horlogrif"}, "mecanique") and recompenses.reservee({}, {"id": "horlogrif"}, "mecanique")
          and recompenses.reservee({}, {"id": "groinfer"}, "rouille") and recompenses.reservee({}, {"id": "lampignon"}, "forêt")
-         and not recompenses.reservee({}, {"id": "tisonnier"}, "rouille"),
-         "tisonnier:mecanique, groinfer:rouille, lampignon:forêt n'apparaissent qu'après l'exploit ; tisonnier:rouille reste libre")
+         and not recompenses.reservee({}, {"id": "horlogrif"}, "neon"),
+         "horlogrif:mecanique, groinfer:rouille, lampignon:forêt n'apparaissent qu'après l'exploit ; horlogrif:neon reste libre")
 j = (DD / "robot" / "journal.txt").read_text(encoding="utf-8").splitlines()
 verifier(len(j) >= 70 and j[-1].startswith("pas ") and "capteur=" in j[-1], f"le journal du robot : une ligne par pas ({len(j)})")
 o = ANSI.sub("", sorties.get("tail -5 robot/journal.txt", ""))

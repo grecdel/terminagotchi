@@ -589,14 +589,14 @@ console.log("Pied de page, pages pour les adultes, polices locales");
     // la page des enseignants : le mode classe 100 % local (pc/tg/classe.py), mêmes codes de séance que le jeu
     const { codeSeance, LETTRES } = await import("../src/enseignants_fr.js");
     const V = JSON.parse(readFileSync(new URL("../../donnees/classe/vecteurs.json", import.meta.url), "utf8"));
-    verifier(LETTRES === V.lettres && V.codes.every((v) => codeSeance(v.n, v.options) === v.code) && V.codes.length === 160,
-      "codes de séance : les 160 vecteurs du jeu (donnees/classe/vecteurs.json) refaits à l'identique");
+    verifier(LETTRES === V.lettres && V.codes.every((v) => codeSeance(v.n, v.options) === v.code) && V.codes.length === 168,
+      "codes de séance : les 168 vecteurs du jeu (donnees/classe/vecteurs.json) refaits à l'identique");
     r = await appel("GET", "/enseignants");
     const codes = [...r.t.matchAll(/<code>(\d\d-[AGS]+-[A-Z])<\/code>/g)].map((m) => m[1]);
-    verifier(r.t.includes("Pour les enseignants et les parents") && new Set(codes).size === 57 && codes.every((c) => V.codes.some((v) => v.code === c))
+    verifier(r.t.includes("Pour les enseignants et les parents") && new Set(codes).size === 60 && codes.every((c) => V.codes.some((v) => v.code === c))
       && r.t.includes("05-GS-K") && r.t.includes("Rien n'est envoyé") && r.t.includes("Reporté") && r.t.includes("avis CNIL")
       && r.t.includes("fiches_enseignant.pdf") && r.t.includes('href="/parents"'),
-      "enseignants : 19 chapitres × 3 codes justes, rien n'est envoyé, tableau de bord en ligne reporté, fiches PDF, lien parents");
+      "enseignants : 20 chapitres × 3 codes justes, rien n'est envoyé, tableau de bord en ligne reporté, fiches PDF, lien parents");
     const contenu = r.t.slice(r.t.indexOf('<div class="texte-long">'), r.t.indexOf("</section>"));
     verifier(contenu.length > 5000 && !/<form|<script|<input|fetch\(|\/api\//.test(contenu),
       "enseignants : le contenu n'a ni formulaire, ni champ, ni script, ni appel à l'API (rien à envoyer)");

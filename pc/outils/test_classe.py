@@ -81,8 +81,8 @@ print("1. Le code de séance")
 r = subprocess.run([sys.executable, str(RACINE / "pc/outils/vecteurs_classe.py"), "--verifier"], capture_output=True, text=True)
 verifier(r.returncode == 0, "vecteurs communs à jour (donnees/classe/vecteurs.json, mêmes codes sur le site)")
 V = json.loads((RACINE / "donnees/classe/vecteurs.json").read_text(encoding="utf-8"))
-verifier(all(C.lire(v["code"]) == {"n": v["n"], "options": v["options"]} for v in V["codes"]) and len(V["codes"]) == 20 * 8,
-         "les 160 codes (chapitres 0 à 19 × 8 combinaisons d'options) se relisent")
+verifier(all(C.lire(v["code"]) == {"n": v["n"], "options": v["options"]} for v in V["codes"]) and len(V["codes"]) == 21 * 8,
+         "les 168 codes (chapitres 0 à 20 × 8 combinaisons d'options) se relisent")
 verifier(C.fabriquer(5, "SG") == "05-GS-K" and C.lire("05 gs k") == {"n": 5, "options": "GS"} and C.lire("05GSK"),
          "05-GS-K (l'exemple de l'aide) : minuscules, espaces et tirets acceptés")
 fautes = 0
@@ -261,8 +261,8 @@ for bloc in re.split(r"\n# Fiche ", fiches)[1:]:
 verifier(not mauvais, f"chaque fiche : codes de son chapitre, toutes ses leçons citées par leur nom ({mauvais[:4]})")
 js = (RACINE / "site/src/enseignants_fr.js").read_text(encoding="utf-8")
 noms = dict((int(n), nom.replace("\\'", "'")) for n, nom in re.findall(r'\[(\d+), "([^"]+)", "', js))
-verifier(len(noms) == 19 and all(noms[c["n"]] == histoire.nom_chapitre(c["id"]) for c in histoire.CHAPITRES if 1 <= c["n"] <= 19),
-         "la page /enseignants : les 19 noms de chapitres et de mondes sont ceux du jeu")
+verifier(len(noms) == 20 and all(noms[c["n"]] == histoire.nom_chapitre(c["id"]) for c in histoire.CHAPITRES if 1 <= c["n"] <= 20),
+         "la page /enseignants : les 20 noms de chapitres et de mondes sont ceux du jeu")
 verifier((RACINE / "docs/classe/fiches_enseignant.pdf").is_file(), "le PDF des fiches existe (pc/outils/fiches_classe.py)")
 r = subprocess.run([sys.executable, str(RACINE / "pc/outils/verifier_langues.py")], capture_output=True, text=True)
 verifier(r.returncode == 0 and all(json.loads((RACINE / f"pc/tg/langues/{l}.json").read_text(encoding="utf-8")).get("classe.bilan.titre")
