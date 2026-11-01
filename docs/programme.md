@@ -654,6 +654,18 @@ depuis le terminal. »
 
 Existant : `scripts0-2`, Q34-35, D « code », Android `createur0-2`. Manque : `$1`, `read`, `while`, Python, F5.
 
+**Codée (1er novembre, F1 → F5, plus « Ton site web » et « L'atelier multimédia » de § 7.13)** — voir
+`docs/plan_de_bataille.md`. Leçons fo0 → fo7. Écarts assumés :
+- F1 : `echo … >` / `>>` ligne à ligne (pas d'éditeur), la cabane = `mkdir -p cabane` + `touch` ; sur le téléphone, `sh`
+  seulement (pas de `chmod +x` / `./`).
+- F2 : sur le téléphone, la boîte et son ouverture sur la même ligne (`nom=Pixel; echo "Bonjour $nom"`, chaque ligne est
+  un nouveau shell) et `read` nourri par un tuyau (`echo Léa | sh question.sh`).
+- F4 : sur le téléphone, le serpent est raconté (le Traceback est montré), puis `doom`.
+- F5 : la devinette (read, while, if), un robot qui joue (`seq 1 10 | sh …`), un donjon généré, `forge carte "…"` pose
+  le jeu sur la carte (fichier `mon_jeu/.lieu`, lieu 🎮).
+- Variantes rares (§ 7.6, existantes) : `fondelin:lave`, `boulonnet:neon`, `tisonnier:mecanique` ; exploits « premier
+  programme du premier coup » et « palier sans indice ». Ponts des Nombres (§ 7.10) : boucles et priorités.
+
 ### 2.11 🛡 La Citadelle — cybersécurité **défensive**
 
 **Règle d'or affichée à l'entrée** : « Ici, on défend. Toutes les attaques sont **fausses** : ce sont des
@@ -1668,6 +1680,11 @@ et « Contributeur », dessinés comme ceux de la salle d'entraînement (écusso
 | Forge → **« L'atelier multimédia »** | images, sons, vidéos en ligne de commande | `convert`/`magick` (GIF animé de sa créature), `ffmpeg -i … -ss … -t …`, `sox -n bip.wav synth 0.3 sine 440`, `exiftool` (métadonnées, pont vie privée) |
 | Poste de Contrôle → **« Linux de A à Z »** | distributions, installation (en VM d'abord), paquets, mises à jour, services, utilisateurs | `cat /etc/os-release`, `dnf` / `apt` (avec un adulte), `systemctl status`, `useradd` (dans une VM) |
 | Atelier → **« L'embarqué et le temps réel »** | microcontrôleur vs ordinateur, capteurs, temps réel ; ESP32 / Arduino programmés depuis le terminal | `arduino-cli compile / upload`, `screen /dev/ttyUSB0 115200`, `esptool.py` |
+
+**« Ton site web » et « L'atelier multimédia » — codés dans la Forge (1er novembre, F6 et F7, leçons fo6 et fo7)** :
+`echo … > site/index.html` au lieu de `nano` ; le serveur est `python3 -m http.server 8642 --bind 127.0.0.1 --directory site &`
+(jamais ouvert au réseau ; 8642 ou le port libre suivant) puis `fg` + Ctrl+C ; « publier » seulement expliqué ;
+`exiftool` seulement sur la photo d'exemple du jeu (métadonnées inventées), puis `exiftool -all=` pour les retirer.
 
 ### 7.14 Ordre de mise en œuvre mis à jour (remplace le § 7.8)
 

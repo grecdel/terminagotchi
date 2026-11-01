@@ -289,7 +289,7 @@
     "vrrrooom les machines tournent de nouveau et les élémentaires se réchauffent près de la lave le monde respire à pleins poumons",
     "hou hou dans le dortoir un vallon plein de brume des fantômes refusent de dormir les morts vivants les réveillent sans arrêt on va les compter en lancer un nous mêmes puis les envoyer au lit",
     "silence tout le monde dort sous la brume les morts vivants bâillent et nous font coucou tu sais qui est réveillé dans le monde et comment le coucher",
-    "au milieu des collines de ferraille dans l atelier les constructs fabriquent des machines qui suivent des recettes toutes seules on va écrire la faire marcher lui donner un surnom et prendre des photos de nos objets avec l appareil magique git",
+    "au milieu des collines de ferraille dans la petite forge les constructs fabriquent des machines qui suivent des recettes toutes seules on va écrire la faire marcher lui donner un surnom et prendre des photos de nos objets avec l appareil magique git",
     "bzzt les constructs applaudissent avec leurs pinces tu as écrit tes propres commandes et pris tes premières photos d objets tu es un vrai inventeur",
     "tout en haut de la tour au milieu des nuages et des éclairs les célestes regardent notre monde n est pas seul on va crier ohé aux autres mondes trouver notre adresse envoyer le facteur et lire l annuaire",
     "ohé ohé les autres mondes ont répondu les célestes nous montrent le tunnel secret ssh qu on ouvrira un jour notre monde n est plus seul",
@@ -314,12 +314,12 @@
      17
     ],
     [
-     "un",
+     "la",
      14
     ],
     [
-     "la",
-     13
+     "un",
+     14
     ],
     [
      "monde",
@@ -331,7 +331,7 @@
     ],
     [
      "l",
-     11
+     10
     ],
     [
      "dans",
@@ -548,8 +548,8 @@
       "donné",
       "de",
       "la",
-      "nuit",
-      "pour"
+      "tour",
+      "au"
      ]
     },
     {
@@ -622,9 +622,9 @@
       "nous",
       "font",
       "la",
-      "cave",
-      "une",
-      "famille"
+      "tour",
+      "au",
+      "fond"
      ]
     },
     {
@@ -1098,7 +1098,7 @@
     "vrrrooom the machines are running again and the elementals are warming up by the lava the world is breathing deeply",
     "woo woo in the dormitory a valley full of mist ghost refuse to sleep the undead keep waking them up we ll count them start one ourselves then send them to bed",
     "silence everyone is asleep under the mist the undead yawn and wave at us you know who is awake in the world and how to put them to bed",
-    "in the middle of the scrap metal hills in the workshop the constructs build machines that follow recipes all by themselves we ll write make it work give it a nickname and take photos of our objects with the magic camera git",
+    "in the middle of the scrap metal hills in the little forge the constructs build machines that follow recipes all by themselves we ll write make it work give it a nickname and take photos of our objects with the magic camera git",
     "bzzt the constructs clap their pincers you wrote your own commands and took your first photos of objects you re a real inventor",
     "at the very top of the tower among clouds and lightning the celestials watch our world is not alone we ll shout ahoy to the other worlds find our address send the mail carrier and read the directory",
     "ahoy ahoy the other worlds answered the celestials show us the secret tunnel ssh which we ll open one day our world is not alone anymore",
@@ -1336,13 +1336,13 @@
      "n": 0,
      "phrase": [
       "the",
-      "tower",
-      "among",
-      "clouds",
+      "sun",
+      "rises",
+      "over",
+      "every",
+      "place",
       "and",
-      "in",
-      "charge",
-      "in"
+      "take"
      ]
     },
     {
@@ -1381,13 +1381,13 @@
      "n": 1,
      "phrase": [
       "the",
-      "pipes",
+      "mountain",
+      "the",
+      "middle",
       "of",
       "the",
-      "pipes",
-      "of",
-      "the",
-      "other"
+      "lagoon",
+      "sleeps"
      ]
     },
     {
@@ -1396,13 +1396,13 @@
      "n": 0,
      "phrase": [
       "the",
-      "vines",
-      "have",
-      "blocked",
+      "very",
+      "softly",
       "the",
-      "machines",
-      "are",
-      "napping"
+      "world",
+      "is",
+      "beating",
+      "everyone"
      ]
     },
     {
@@ -1460,9 +1460,9 @@
       "for",
       "us",
       "the",
-      "sun",
-      "rises",
-      "over"
+      "story",
+      "of",
+      "the"
      ]
     },
     {
@@ -1895,7 +1895,7 @@
     "brrruuum las máquinas vuelven a girar y los elementales se calientan junto a la lava el mundo respira a pleno pulmón",
     "uuuh en el dormitorio un valle lleno de bruma unos fantasma se niegan a dormir los no muertos los despiertan sin parar vamos a contarlos lanzar uno nosotros y luego mandarlos a la cama",
     "silencio todos duermen bajo la bruma los no muertos bostezan y nos saludan sabes quién está despierto en el mundo y cómo acostarlo",
-    "en medio de las colinas de chatarra en el taller los constructos fabrican máquinas que siguen recetas solas vamos a escribir hacerla funcionar darle un apodo y sacar fotos de nuestros objetos con la cámara mágica git",
+    "en medio de las colinas de chatarra en la pequeña forja los constructos fabrican máquinas que siguen recetas solas vamos a escribir hacerla funcionar darle un apodo y sacar fotos de nuestros objetos con la cámara mágica git",
     "bzzt los constructos aplauden con sus pinzas has escrito tus propios comandos y sacado tus primeras fotos de objetos eres un auténtico inventor",
     "en lo más alto de la torre entre nubes y relámpagos los celestes observan nuestro mundo no está solo vamos a gritar eh a los otros mundos encontrar nuestra dirección mandar al cartero y leer la guía",
     "eh eh los otros mundos han contestado los celestes nos enseñan el túnel secreto ssh que abriremos algún día nuestro mundo ya no está solo",
@@ -1913,7 +1913,7 @@
     ],
     [
      "el",
-     23
+     22
     ],
     [
      "en",
@@ -1924,11 +1924,11 @@
      16
     ],
     [
-     "de",
-     15
+     "la",
+     16
     ],
     [
-     "la",
+     "de",
      15
     ],
     [
@@ -1956,7 +1956,7 @@
     [
      "en",
      "el",
-     7
+     6
     ],
     [
      "vamos",
@@ -2167,10 +2167,10 @@
       "cómo",
       "acostarlo",
       "en",
-      "cada",
-      "lugar",
-      "y",
-      "te"
+      "busquemos",
+      "lo",
+      "intentaron",
+      "y"
      ]
     },
     {
@@ -2181,7 +2181,7 @@
       "y",
       "leer",
       "la",
-      "bruma",
+      "comida",
       "los",
       "dientes",
       "prometieron",
@@ -2212,10 +2212,10 @@
       "cómo",
       "acostarlo",
       "en",
-      "este",
-      "mundo",
-      "el",
-      "corazón"
+      "cada",
+      "uno",
+      "nosotros",
+      "con"
      ]
     },
     {
@@ -2226,11 +2226,11 @@
       "y",
       "en",
       "el",
-      "bosque",
-      "y",
-      "en",
-      "y",
-      "cómo"
+      "mundo",
+      "están",
+      "al",
+      "pie",
+      "del"
      ]
     },
     {
@@ -2273,9 +2273,9 @@
       "me",
       "roban",
       "la",
-      "montaña",
-      "los",
-      "carteles"
+      "guía",
+      "eh",
+      "a"
      ]
     },
     {
@@ -2708,7 +2708,7 @@
     "wrrruumm die maschinen laufen wieder und die elementare wärmen sich an der lava die welt atmet tief durch",
     "huhu im schlafsaal einem tal voller nebel wollen gespenster nicht schlafen die untoten wecken sie ständig auf wir zählen sie starten selbst einen und schicken sie dann ins bett",
     "ruhe alle schlafen unter dem nebel die untoten gähnen und winken uns zu du weißt wer in der welt wach ist und wie man ihn schlafen legt",
-    "mitten in den schrotthügeln in der werkstatt bauen die konstrukte maschinen die ganz allein rezepte befolgen wir schreiben bringen es zum laufen geben ihm einen spitznamen und machen fotos von unseren gegenständen mit der magischen kamera git",
+    "mitten in den schrotthügeln in der kleinen schmiede bauen die konstrukte maschinen die ganz allein rezepte befolgen wir schreiben bringen es zum laufen geben ihm einen spitznamen und machen fotos von unseren gegenständen mit der magischen kamera git",
     "bzzt die konstrukte klatschen mit ihren zangen du hast deine eigenen befehle geschrieben und deine ersten fotos von gegenständen gemacht du bist ein echter erfinder",
     "ganz oben im turm zwischen wolken und blitzen beobachten die himmlischen unsere welt ist nicht allein wir rufen ahoi zu den anderen welten finden unsere adresse schicken den briefträger los und lesen das verzeichnis",
     "ahoi ahoi die anderen welten haben geantwortet die himmlischen zeigen uns den geheimen tunnel ssh den wir eines tages öffnen werden unsere welt ist nicht mehr allein",
@@ -2934,6 +2934,10 @@
       1
      ],
      [
+      "kleinen",
+      1
+     ],
+     [
       "lagune",
       1
      ],
@@ -2947,10 +2951,6 @@
      ],
      [
       "wald",
-      1
-     ],
-     [
-      "werkstatt",
       1
      ]
     ]
@@ -3096,9 +3096,9 @@
       "das",
       "buch",
       "der",
-      "lagune",
-      "schläft",
-      "jemand"
+      "kleinen",
+      "schmiede",
+      "bauen"
      ]
     },
     {
@@ -3516,7 +3516,7 @@
     "vrrrooom le macchine girano di nuovo e gli elementali si scaldano vicino alla lava il mondo respira a pieni polmoni",
     "uuuh nel dormitorio una valle piena di nebbia dei fantasma non vogliono dormire i non morti li svegliano di continuo li conteremo ne avvieremo uno noi poi li manderemo a letto",
     "silenzio tutti dormono sotto la nebbia i non morti sbadigliano e ci salutano sai chi è sveglio nel mondo e come metterlo a letto",
-    "in mezzo alle colline di rottami nel laboratorio i costrutti fabbricano macchine che seguono ricette da sole scriveremo la faremo funzionare le daremo un soprannome e scatteremo foto ai nostri oggetti con la macchina fotografica magica git",
+    "in mezzo alle colline di rottami nella piccola fucina i costrutti fabbricano macchine che seguono ricette da sole scriveremo la faremo funzionare le daremo un soprannome e scatteremo foto ai nostri oggetti con la macchina fotografica magica git",
     "bzzt i costrutti applaudono con le loro pinze hai scritto i tuoi comandi e scattato le tue prime foto di oggetti sei un vero inventore",
     "in cima alla torre tra nuvole e fulmini i celesti osservano il nostro mondo non è solo grideremo ehi agli altri mondi troveremo il nostro indirizzo manderemo il postino e leggeremo l elenco",
     "ehi ehi gli altri mondi hanno risposto i celesti ci mostrano il tunnel segreto ssh che apriremo un giorno il nostro mondo non è più solo",
@@ -3863,10 +3863,10 @@
       "mio",
       "brrr",
       "nel",
-      "laboratorio",
-      "i",
-      "messaggi",
-      "sono"
+      "dormitorio",
+      "una",
+      "foresta",
+      "poi"
      ]
     },
     {
@@ -4329,7 +4329,7 @@
     "vrrrum as máquinas voltam a trabalhar e os elementais aquecem se junto à lava o mundo respira a plenos pulmões",
     "uuuh no dormitório um vale cheio de bruma uns fantasma recusam se a dormir os mortos vivos acordam nos sem parar vamos contá los lançar um nós mesmos e depois mandá los para a cama",
     "silêncio todos dormem debaixo da bruma os mortos vivos bocejam e acenam nos sabes quem está acordado no mundo e como o deitar",
-    "no meio das colinas de sucata na oficina os construtos fabricam máquinas que seguem receitas sozinhas vamos escrever pô la a funcionar dar lhe uma alcunha e tirar fotografias aos nossos objetos com a máquina fotográfica mágica git",
+    "no meio das colinas de sucata na pequena forja os construtos fabricam máquinas que seguem receitas sozinhas vamos escrever pô la a funcionar dar lhe uma alcunha e tirar fotografias aos nossos objetos com a máquina fotográfica mágica git",
     "bzzt os construtos aplaudem com as pinças escreveste os teus próprios comandos e tiraste as tuas primeiras fotografias de objetos és um verdadeiro inventor",
     "lá no alto da torre entre nuvens e relâmpagos os celestes observam o nosso mundo não está sozinho vamos gritar olá aos outros mundos encontrar o nosso endereço mandar o carteiro e ler a lista",
     "olá olá os outros mundos responderam os celestes mostram nos o túnel secreto ssh que um dia vamos abrir o nosso mundo já não está sozinho",
@@ -5142,7 +5142,7 @@
     "呜 呜 呜 机 器 又 转 起 来 了 元 素 精 灵 们 在 岩 浆 旁 取 暖 世 界 大 口 大 口 地 呼 吸",
     "呜 呜 在 宿 舍 一 个 满 是 迷 雾 的 山 谷 里 幽 灵 不 肯 睡 觉 亡 灵 们 总 把 它 们 吵 醒 我 们 要 数 数 它 们 自 己 启 动 一 个 再 送 它 们 上 床 睡 觉",
     "嘘 大 家 都 在 迷 雾 下 睡 着 了 亡 灵 们 打 着 哈 欠 向 我 们 挥 手 你 知 道 世 界 里 谁 醒 着 也 知 道 怎 么 让 它 睡 觉 了",
-    "在 废 铁 山 丘 中 间 的 工 坊 里 构 装 体 制 造 会 自 己 照 着 菜 谱 做 的 机 器 我 们 要 写 让 它 运 转 起 来 给 它 起 个 外 号 再 用 神 奇 相 机 git 给 我 们 的 物 品 拍 照",
+    "在 废 铁 山 丘 中 间 的 小 锻 炉 里 构 装 体 制 造 会 自 己 照 着 菜 谱 做 的 机 器 我 们 要 写 让 它 运 转 起 来 给 它 起 个 外 号 再 用 神 奇 相 机 git 给 我 们 的 物 品 拍 照",
     "嗞 嗞 构 装 体 们 用 钳 子 鼓 掌 你 写 了 自 己 的 命 令 还 给 物 品 拍 了 第 一 批 照 片 你 是 真 正 的 发 明 家",
     "在 高 塔 顶 上 在 云 朵 和 闪 电 之 间 天 界 族 注 视 着 我 们 的 世 界 不 是 孤 零 零 的 我 们 要 对 别 的 世 界 喊 喂 找 到 我 们 的 地 址 派 出 邮 递 员 再 翻 翻 通 讯 录",
     "喂 喂 别 的 世 界 回 答 了 天 界 族 给 我 们 看 秘 密 隧 道 ssh 总 有 一 天 我 们 会 打 开 它 我 们 的 世 界 不 再 孤 单 了",
@@ -5276,10 +5276,6 @@
       2
      ],
      [
-      "工",
-      2
-     ],
-     [
       "心",
       2
      ],
@@ -5301,6 +5297,10 @@
      ],
      [
       "发",
+      1
+     ],
+     [
+      "吃",
       1
      ]
     ],
@@ -5411,13 +5411,13 @@
      "n": 1,
      "phrase": [
       "的",
-      "侦",
-      "探",
-      "险",
-      "我",
-      "们",
-      "上",
-      "睡"
+      "发",
+      "明",
+      "家",
+      "伙",
+      "abyssor",
+      "睁",
+      "开"
      ]
     },
     {
@@ -5426,13 +5426,13 @@
      "n": 0,
      "phrase": [
       "的",
-      "名",
-      "字",
-      "词",
-      "你",
-      "看",
-      "秘",
-      "密"
+      "嗯",
+      "差",
+      "不",
+      "再",
+      "给",
+      "它",
+      "们"
      ]
     },
     {
@@ -5474,10 +5474,10 @@
       "世",
       "界",
       "的",
-      "工",
-      "具",
-      "就",
-      "是"
+      "心",
+      "脏",
+      "跳",
+      "得"
      ]
     },
     {
@@ -5955,7 +5955,7 @@
     "вррруум машины снова крутятся а элементали греются у лавы мир дышит полной грудью",
     "у у у в спальне долине полной тумана призраки не хотят спать нежить всё время их будит мы их пересчитаем запустим один сами а потом отправим всех спать",
     "тишина все спят под туманом нежить зевает и машет нам ты знаешь кто не спит в мире и как уложить его спать",
-    "среди холмов из металлолома в мастерской конструкты делают машины которые сами выполняют рецепты мы напишем запустим его дадим ему прозвище и сфотографируем наши предметы волшебным фотоаппаратом git",
+    "среди холмов из металлолома в маленькой кузнице конструкты делают машины которые сами выполняют рецепты мы напишем запустим его дадим ему прозвище и сфотографируем наши предметы волшебным фотоаппаратом git",
     "бззт конструкты хлопают клешнями ты написал свои команды и сделал первые фотографии предметов ты настоящий изобретатель",
     "с самой вершины башни среди облаков и молний небесные смотрят на наш мир не одинок мы крикнем эй другим мирам узнаем наш адрес пошлём почтальона и заглянем в справочник",
     "эй эй другие миры ответили небесные показывают нам тайный туннель ssh который мы однажды откроем наш мир больше не одинок",
@@ -6177,7 +6177,7 @@
       1
      ],
      [
-      "мастерской",
+      "маленькой",
       1
      ],
      [
@@ -6274,8 +6274,8 @@
       "глубине",
       "спит",
       "в",
-      "мастерской",
-      "конструкты"
+      "маленькой",
+      "кузнице"
      ]
     },
     {
@@ -6315,12 +6315,12 @@
      "phrase": [
       "а",
       "в",
-      "мастерской",
+      "маленькой",
+      "кузнице",
       "конструкты",
-      "хлопают",
-      "клешнями",
-      "ты",
-      "разбудил"
+      "делают",
+      "машины",
+      "которые"
      ]
     },
     {
@@ -6768,7 +6768,7 @@
     "ブ ル ル ル ン き か い が ま た ま わ り だ し て エ レ メ ン タ ル た ち は よ う が ん の そ ば で あ っ た ま っ て る せ か い が む ね い っ ぱ い に い き を し て る",
     "ひ ゅ ー ど ろ き り が い っ ぱ い の た に し ん し つ で お ば け の が ね む ろ う と し な い ア ン デ ッ ド が ず っ と お こ し ち ゃ う ん だ か ぞ え て じ ぶ ん で も ひ と つ う ご か し て そ れ か ら ね か せ よ う",
     "し ー ん み ん な き り の し た で ね む っ た よ ア ン デ ッ ド が あ く び を し て て を ふ っ て る せ か い で だ れ が お き て る か ど う ね か せ る か き み は わ か っ た ね",
-    "ス ク ラ ッ プ の お か の ま ん な か こ う ぼ う で は コ ン ス ト ラ ク ト た ち が ひ と り で レ シ ピ に し た が う き か い を つ く っ て る を か い て う ご か し て あ だ な を つ け て ま ほ う の カ メ ラ git で ぼ く た ち の も の の し ゃ し ん を と ろ う",
+    "ス ク ラ ッ プ の 丘 の ま ん な か 小 さ な 鍛 冶 場 で は コ ン ス ト ラ ク ト た ち が ひ と り で レ シ ピ に し た が う 機 械 を 作 っ て い る を 書 い て 動 か し て あ だ な を つ け て 魔 法 の カ メ ラ git で ぼ く た ち の も の の 写 真 を と ろ う",
     "ビ ビ ッ コ ン ス ト ラ ク ト た ち が は さ み で は く し ゅ し て る き み は じ ぶ ん の コ マ ン ド を か い て は じ め て も の の し ゃ し ん を と っ た ほ ん も の の は つ め い か だ ね",
     "と う の て っ ぺ ん く も と か み な り の な か で て ん く う ぞ く が を な が め て る ぼ く た ち の せ か い は ひ と り じ ゃ な い ほ か の せ か い に お ー い っ て さ け ん で じ ぶ ん の じ ゅ う し ょ を し ら べ て ゆ う び ん や さ ん を お く っ て で ん わ ち ょ う を よ も う",
     "お ー い お ー い ほ か の せ か い が こ た え た て ん く う ぞ く が ひ み つ の ト ン ネ ル ssh を み せ て く れ た い つ か ひ ら こ う ね ぼ く た ち の せ か い は も う ひ と り じ ゃ な い",
@@ -6782,7 +6782,7 @@
     ],
     [
      "か",
-     69
+     66
     ],
     [
      "の",
@@ -6797,20 +6797,16 @@
      57
     ],
     [
-     "し",
-     56
+     "ん",
+     55
     ],
     [
-     "ん",
-     56
+     "し",
+     54
     ],
     [
      "が",
      48
-    ],
-    [
-     "う",
-     44
     ],
     [
      "っ",
@@ -6818,7 +6814,11 @@
     ],
     [
      "く",
-     42
+     41
+    ],
+    [
+     "う",
+     40
     ],
     [
      "る",
@@ -6827,14 +6827,14 @@
    ],
    "paires": [
     [
-     "か",
-     "い",
-     23
-    ],
-    [
      "っ",
      "て",
      22
+    ],
+    [
+     "か",
+     "い",
+     21
     ],
     [
      "た",
@@ -6842,13 +6842,13 @@
      13
     ],
     [
-     "て",
-     "る",
-     13
-    ],
-    [
      "せ",
      "か",
+     12
+    ],
+    [
+     "て",
+     "る",
      12
     ],
     [
@@ -6872,17 +6872,17 @@
      10
     ],
     [
-     "し",
-     "ん",
-     9
-    ],
-    [
      "ち",
      "ゃ",
      9
     ],
     [
-     "な",
+     "し",
+     "ん",
+     8
+    ],
+    [
+     "て",
      "い",
      7
     ]
@@ -6933,7 +6933,7 @@
     "か": [
      [
       "い",
-      23
+      21
      ],
      [
       "し",
@@ -6946,10 +6946,6 @@
      [
       "ん",
       4
-     ],
-     [
-      "の",
-      3
      ],
      [
       "み",
@@ -6970,6 +6966,10 @@
      [
       "ぞ",
       2
+     ],
+     [
+      "た",
+      2
      ]
     ],
     "の": [
@@ -6982,23 +6982,23 @@
       6
      ],
      [
-      "し",
+      "た",
       5
      ],
      [
-      "た",
-      5
+      "し",
+      4
      ],
      [
       "を",
       4
      ],
      [
-      "お",
-      3
+      "い",
+      2
      ],
      [
-      "い",
+      "お",
       2
      ],
      [
@@ -7022,12 +7022,12 @@
      "n": 0,
      "phrase": [
       "い",
-      "す",
-      "て",
-      "い",
-      "ち",
-      "ゃ",
-      "っ",
+      "こ",
+      "ん",
+      "で",
+      "お",
+      "ば",
+      "け",
       "て"
      ]
     },
@@ -7037,13 +7037,13 @@
      "n": 1,
      "phrase": [
       "い",
-      "ま",
       "と",
-      "り",
+      "つ",
       "の",
-      "あ",
-      "げ",
-      "ん"
+      "の",
+      "が",
+      "み",
+      "つ"
      ]
     },
     {
@@ -7053,12 +7053,12 @@
      "phrase": [
       "い",
       "き",
-      "み",
-      "な",
       "い",
-      "た",
+      "は",
+      "き",
       "ま",
-      "と"
+      "で",
+      "お"
      ]
     },
     {
@@ -7068,12 +7068,12 @@
      "phrase": [
       "い",
       "ほ",
-      "う",
-      "び",
       "ん",
-      "だ",
-      "れ",
-      "ぞ"
+      "が",
+      "い",
+      "ほ",
+      "か",
+      "し"
      ]
     },
     {
@@ -7082,13 +7082,13 @@
      "n": 0,
      "phrase": [
       "い",
-      "ら",
-      "も",
-      "せ",
+      "ま",
+      "の",
+      "い",
+      "っ",
+      "て",
       "る",
-      "る",
-      "せ",
-      "よ"
+      "パ"
      ]
     },
     {
@@ -7099,11 +7099,11 @@
       "い",
       "ぞ",
       "く",
-      "た",
-      "ほ",
-      "か",
-      "い",
-      "の"
+      "れ",
+      "ぞ",
+      "く",
+      "は",
+      "コ"
      ]
     },
     {
@@ -7112,13 +7112,13 @@
      "n": 0,
      "phrase": [
       "か",
-      "ど",
-      "は",
-      "た",
-      "に",
-      "は",
-      "な",
-      "つ"
+      "い",
+      "が",
+      "め",
+      "ざ",
+      "ん",
+      "で",
+      "い"
      ]
     },
     {
@@ -7127,13 +7127,13 @@
      "n": 1,
      "phrase": [
       "か",
+      "せ",
       "い",
-      "が",
+      "し",
+      "ー",
       "い",
-      "そ",
-      "れ",
-      "ぞ",
-      "く"
+      "で",
+      "も"
      ]
     },
     {
@@ -7142,12 +7142,12 @@
      "n": 0,
      "phrase": [
       "か",
-      "の",
-      "し",
-      "め",
-      "さ",
-      "な",
-      "か",
+      "い",
+      "ち",
+      "ゃ",
+      "っ",
+      "て",
+      "あ",
       "い"
      ]
     },
@@ -7157,13 +7157,13 @@
      "n": 1,
      "phrase": [
       "か",
-      "ぎ",
-      "ょ",
-      "に",
-      "は",
-      "ほ",
-      "ん",
-      "な"
+      "小",
+      "さ",
+      "せ",
+      "か",
+      "せ",
+      "た",
+      "ち"
      ]
     },
     {
@@ -7172,13 +7172,13 @@
      "n": 0,
      "phrase": [
       "か",
-      "に",
-      "ぼ",
-      "く",
-      "だ",
-      "れ",
-      "た",
-      "ぶ"
+      "い",
+      "の",
+      "い",
+      "っ",
+      "て",
+      "る",
+      "パ"
      ]
     },
     {
@@ -7187,13 +7187,13 @@
      "n": 1,
      "phrase": [
       "か",
-      "い",
+      "く",
+      "う",
+      "ぐ",
+      "ち",
       "は",
-      "コ",
-      "ン",
-      "タ",
-      "ル",
-      "た"
+      "じ",
+      "ゃ"
      ]
     }
    ],
@@ -7581,7 +7581,7 @@
     "घर्रर्र मशीनें फिर से चल पड़ीं और तत्व जीव लावा के पास गर्मी ले रहे हैं दुनिया खुलकर साँस ले रही है",
     "हू हू शयनकक्ष में धुंध से भरी एक घाटी में भूत सोने से मना कर रहे हैं प्रेत उन्हें बार बार जगा देते हैं हम उन्हें गिनेंगे ख़ुद एक चलाएँगे फिर सबको सुला देंगे",
     "ख़ामोशी सब धुंध के नीचे सो गए प्रेत जम्हाई लेकर हाथ हिला रहे हैं तुम जानते हो दुनिया में कौन जाग रहा है और उसे कैसे सुलाना है",
-    "कबाड़ की पहाड़ियों के बीच कार्यशाला में यंत्र जीव ऐसी मशीनें बनाते हैं जो ख़ुद नुस्ख़े मानती हैं हम लिखेंगे उसे चलाएँगे उसका उपनाम रखेंगे और जादुई कैमरे git से अपने सामान की तस्वीरें लेंगे",
+    "कबाड़ की पहाड़ियों के बीच छोटे लोहारख़ाने में यंत्र जीव ऐसी मशीनें बनाते हैं जो ख़ुद नुस्ख़े मानती हैं हम लिखेंगे उसे चलाएँगे उसका उपनाम रखेंगे और जादुई कैमरे git से अपने सामान की तस्वीरें लेंगे",
     "भिनभिन यंत्र जीव अपने चिमटों से तालियाँ बजा रहे हैं तुमने अपनी कमांड लिखीं और सामान की पहली तस्वीरें लीं तुम सच्चे आविष्कारक हो",
     "मीनार की चोटी पर बादलों और बिजली के बीच आकाश वासी को देखते हैं हमारी दुनिया अकेली नहीं हम दूसरी दुनियाओं को अरे ओ पुकारेंगे अपना पता ढूँढेंगे डाकिया भेजेंगे और पता पुस्तिका पढ़ेंगे",
     "अरे ओ अरे ओ दूसरी दुनियाओं ने जवाब दिया आकाश वासी हमें गुप्त सुरंग ssh दिखाते हैं जिसे हम एक दिन खोलेंगे हमारी दुनिया अब अकेली नहीं",
@@ -8394,7 +8394,7 @@
     "فرررم عادت الآلات تدور والعناصر تتدفّأ قرب الحمم العالم يتنفس ملء رئتيه",
     "هوو هوو في المهجع وادٍ مليء بالضباب ترفض أشباح أن تنام الموتى الأحياء يوقظونها بلا توقف سنعدّها ونشغّل واحدة بأنفسنا ثم نرسلها إلى النوم",
     "هدوء الجميع نائم تحت الضباب الموتى الأحياء يتثاءبون ويلوّحون لنا صرت تعرف من المستيقظ في العالم وكيف تجعله ينام",
-    "وسط تلال الخردة في الورشة يصنع الآليّون آلات تتبع الوصفات وحدها سنكتب ونشغّلها ونعطيها لقبًا ونلتقط صورًا لأغراضنا بالكاميرا السحرية git",
+    "وسط تلال الخردة في الحدادة الصغيرة يصنع الآليّون آلات تطيع الوصفات وحدها سنكتب ونشغّله ونعطيه لقبًا ونلتقط صورًا لأغراضنا بالكاميرا السحرية git",
     "بزز الآليّون يصفّقون بملاقطهم كتبت أوامرك الخاصة والتقطت أول صور لأغراضك أنت مخترع حقيقي",
     "في أعلى البرج بين الغيوم والبرق يراقب السماويّون عالمنا ليس وحيدًا سننادي يا هوو العوالم الأخرى ونعرف عنواننا ونرسل ساعي البريد ونقرأ الدليل",
     "يا هوو يا هوو أجابت العوالم الأخرى يرينا السماويّون النفق السرّي ssh الذي سنفتحه يومًا ما عالمنا لم يعد وحيدًا",
@@ -8524,6 +8524,10 @@
       1
      ],
      [
+      "الحدادة",
+      1
+     ],
+     [
       "الظلام",
       1
      ],
@@ -8533,10 +8537,6 @@
      ],
      [
       "المهجع",
-      1
-     ],
-     [
-      "الورشة",
       1
      ],
      [
@@ -8632,13 +8632,13 @@
      "n": 0,
      "phrase": [
       "في",
-      "الظلام",
-      "لكن",
-      "العالم",
-      "تيرمينا",
-      "وورلد",
-      "نائم",
-      "تحت"
+      "الحدادة",
+      "الصغيرة",
+      "يصنع",
+      "الآليّون",
+      "يصفّقون",
+      "بملاقطهم",
+      "كتبت"
      ]
     },
     {
@@ -8647,13 +8647,13 @@
      "n": 1,
      "phrase": [
       "في",
-      "الورشة",
-      "يصنع",
-      "الآليّون",
-      "يصفّقون",
-      "بملاقطهم",
-      "كتبت",
-      "أوامرك"
+      "المهجع",
+      "وادٍ",
+      "مليء",
+      "بتيارات",
+      "الهواء",
+      "لنبنِ",
+      "عشًّا"
      ]
     },
     {
@@ -9191,7 +9191,7 @@
     "ভরররুম যন্ত্রগুলো আবার ঘুরছে আর মৌলরা লাভার পাশে গা গরম করছে পৃথিবী বুক ভরে শ্বাস নিচ্ছে",
     "হুউ হুউ শোবার ঘরে কুয়াশায় ভরা এক উপত্যকায় ভূত রা ঘুমোতে চাইছে না প্রেতরা ওদের বারবার জাগিয়ে দেয় আমরা ওদের গুনব নিজেরা একটা চালাব তারপর সবাইকে ঘুম পাড়াব",
     "চুপ সবাই কুয়াশার নিচে ঘুমিয়ে পড়েছে প্রেতরা হাই তুলে হাত নাড়ছে তুমি জানো পৃথিবীতে কে জেগে আছে আর তাকে কীভাবে ঘুম পাড়াতে হয়",
-    "লোহালক্কড়ের টিলার মাঝে কারখানায় যন্ত্রমানবরা এমন যন্ত্র বানায় যা নিজে নিজে রেসিপি মানে আমরা লিখব চালাব একটা ডাকনাম দেব আর জাদুর ক্যামেরা git দিয়ে আমাদের জিনিসপত্রের ছবি তুলব",
+    "লোহালক্কড়ের টিলার মাঝে ছোট কামারশালায় যন্ত্রমানবরা এমন যন্ত্র বানায় যা নিজে নিজে রেসিপি মেনে চলে আমরা একটা লিখব চালাব তার একটা ডাকনাম দেব আর জাদুর ক্যামেরা git দিয়ে আমাদের জিনিসের ছবি তুলব",
     "ঝিঁ ঝিঁ যন্ত্রমানবরা চিমটে দিয়ে হাততালি দিচ্ছে তুমি নিজের কমান্ড লিখেছ আর জিনিসপত্রের প্রথম ছবি তুলেছ তুমি সত্যিকারের আবিষ্কারক",
     "মিনারের চূড়ায় মেঘ আর বিদ্যুতের মাঝে আকাশবাসীরা দেখে আমাদের পৃথিবী একা নয় আমরা অন্য পৃথিবীগুলোকে ওহে ডাকব আমাদের ঠিকানা খুঁজব ডাকপিয়ন পাঠাব আর ঠিকানা বই পড়ব",
     "ওহে ওহে অন্য পৃথিবীরা সাড়া দিয়েছে আকাশবাসীরা আমাদের গোপন সুড়ঙ্গ ssh দেখায় যা একদিন খুলব আমাদের পৃথিবী আর একা নয়",
@@ -9208,12 +9208,12 @@
      8
     ],
     [
-     "তুমি",
+     "একটা",
      8
     ],
     [
-     "একটা",
-     7
+     "তুমি",
+     8
     ],
     [
      "আছে",
@@ -9363,7 +9363,7 @@
       1
      ],
      [
-      "জিনিসপত্রের",
+      "জিনিসের",
       1
      ],
      [
@@ -9383,33 +9383,33 @@
       1
      ]
     ],
-    "তুমি": [
+    "একটা": [
      [
-      "সত্যিকারের",
+      "বাসা",
       2
      ],
      [
-      "terminaworld",
+      "চালাব",
       1
      ],
      [
-      "আমাকে",
+      "ডাকনাম",
       1
      ],
      [
-      "এর",
+      "ডুবে",
       1
      ],
      [
-      "জানো",
+      "দানব",
       1
      ],
      [
-      "নিজের",
+      "বন",
       1
      ],
      [
-      "বেছে",
+      "লিখব",
       1
      ]
     ]
@@ -9980,7 +9980,7 @@
     "brrrum mesin mesin berputar lagi dan para elemental menghangatkan diri di dekat lava dunia bernapas lega",
     "huu huu di asrama sebuah lembah penuh kabut hantu tidak mau tidur para mayat hidup terus membangunkan mereka kita akan menghitung mereka menjalankan satu sendiri lalu menyuruh mereka tidur",
     "sunyi semua tidur di bawah kabut para mayat hidup menguap dan melambai pada kita kamu tahu siapa yang bangun di dunia dan cara menidurkannya",
-    "di tengah bukit bukit besi tua di bengkel para konstruk membuat mesin yang mengikuti resep sendiri kita akan menulis menjalankannya memberinya julukan dan memotret benda benda kita dengan kamera ajaib git",
+    "di tengah bukit bukit besi tua di pandai besi kecil para konstruk merakit mesin yang menuruti resep sendirian kita akan menulis menjalankannya memberinya julukan dan memotret barang barang kita dengan kamera ajaib git",
     "bzzt para konstruk bertepuk tangan dengan capit mereka kamu menulis perintahmu sendiri dan memotret benda bendamu untuk pertama kali kamu penemu sejati",
     "di puncak menara di antara awan dan petir penghuni langit mengamati dunia kita tidak sendirian kita akan berteriak halo ke dunia dunia lain menemukan alamat kita mengirim tukang pos dan membaca buku alamat",
     "halo halo dunia dunia lain menjawab penghuni langit menunjukkan terowongan rahasia ssh yang suatu hari akan kita buka dunia kita tidak sendirian lagi",
@@ -10126,10 +10126,6 @@
       1
      ],
      [
-      "bengkel",
-      1
-     ],
-     [
       "cari",
       1
      ],
@@ -10139,6 +10135,10 @@
      ],
      [
       "dalam",
+      1
+     ],
+     [
+      "dan",
       1
      ]
     ],
@@ -10234,13 +10234,13 @@
      "n": 0,
      "phrase": [
       "di",
-      "dekat",
-      "lava",
-      "dunia",
-      "ini",
-      "penuh",
-      "angin",
-      "ayo"
+      "kaki",
+      "gunung",
+      "berapi",
+      "para",
+      "iblis",
+      "mencoba",
+      "dan"
      ]
     },
     {
@@ -10294,13 +10294,13 @@
      "n": 0,
      "phrase": [
       "di",
-      "dalam",
-      "ada",
-      "sesuatu",
-      "yang",
-      "terlalu",
-      "berat",
-      "lalu"
+      "dan",
+      "boneka",
+      "beruangku",
+      "tersangkut",
+      "di",
+      "cari",
+      "yang"
      ]
     },
     {
@@ -10309,13 +10309,13 @@
      "n": 1,
      "phrase": [
       "di",
-      "bengkel",
-      "para",
-      "elemental",
-      "menyumbat",
-      "pipa",
-      "pipa",
-      "pipa"
+      "cari",
+      "yang",
+      "terlalu",
+      "berat",
+      "lalu",
+      "buang",
+      "brrrum"
      ]
     },
     {
@@ -10341,11 +10341,11 @@
       "dan",
       "jauh",
       "di",
-      "dekat",
-      "lava",
-      "dunia",
-      "lain",
-      "menemukan"
+      "kaki",
+      "gunung",
+      "berapi",
+      "para",
+      "iblis"
      ]
     },
     {
@@ -10793,7 +10793,7 @@
     "گھرررر مشینیں پھر سے چل پڑیں اور عناصر لاوے کے پاس گرمی لے رہے ہیں دنیا کھل کر سانس لے رہی ہے",
     "ہو ہو خواب گاہ میں دھند سے بھری ایک وادی میں بھوت سونے سے انکار کر رہے ہیں بھٹکتی روحیں انہیں بار بار جگا دیتی ہیں ہم انہیں گنیں گے خود ایک چلائیں گے پھر سب کو سلا دیں گے",
     "خاموشی سب دھند کے نیچے سو گئے بھٹکتی روحیں جمائی لے کر ہاتھ ہلا رہی ہیں تم جانتے ہو دنیا میں کون جاگ رہا ہے اور اسے کیسے سلانا ہے",
-    "کباڑ کی پہاڑیوں کے بیچ ورکشاپ میں مشینی مخلوق ایسی مشینیں بناتی ہے جو خود نسخے مانتی ہیں ہم لکھیں گے اسے چلائیں گے اس کا عرفی نام رکھیں گے اور جادوئی کیمرے git سے اپنے سامان کی تصویریں لیں گے",
+    "کباڑ کی پہاڑیوں کے بیچ چھوٹے لوہار خانے میں مشینی مخلوق ایسی مشینیں بناتی ہے جو خود نسخے مانتی ہیں ہم ایک لکھیں گے اسے چلائیں گے اس کا عرفی نام رکھیں گے اور جادوئی کیمرے git سے اپنی چیزوں کی تصویریں لیں گے",
     "بھنبھن مشینی مخلوق اپنے چمٹوں سے تالیاں بجا رہی ہے تم نے اپنی کمانڈز لکھیں اور سامان کی پہلی تصویریں لیں تم سچے موجد ہو",
     "مینار کی چوٹی پر بادلوں اور بجلی کے بیچ آسمانی مخلوق کو دیکھتی ہے ہماری دنیا اکیلی نہیں ہم دوسری دنیاؤں کو ارے او پکاریں گے اپنا پتا ڈھونڈیں گے ڈاکیا بھیجیں گے اور پتا بک پڑھیں گے",
     "ارے او ارے او دوسری دنیاؤں نے جواب دیا آسمانی مخلوق ہمیں خفیہ سرنگ ssh دکھاتی ہے جسے ہم ایک دن کھولیں گے ہماری دنیا اب اکیلی نہیں",
@@ -10835,7 +10835,7 @@
     ],
     [
      "ایک",
-     11
+     12
     ],
     [
      "دنیا",
@@ -11079,11 +11079,11 @@
       "ہے",
       "چلو",
       "ایک",
-      "خاندان",
-      "بس",
-      "گیا",
-      "یہ",
-      "دنیا"
+      "لکھیں",
+      "اور",
+      "بیکار",
+      "چیزیں",
+      "پھینکنا"
      ]
     },
     {
@@ -11097,8 +11097,8 @@
       "سے",
       "بھری",
       "ایک",
-      "وادی",
-      "میں"
+      "خاندان",
+      "بس"
      ]
     },
     {
@@ -11109,11 +11109,11 @@
       "ہے",
       "چلو",
       "ایک",
-      "میں",
-      "عفریتوں",
+      "جنگل",
       "کا",
-      "عرفی",
-      "نام"
+      "دم",
+      "گھٹ",
+      "رہا"
      ]
     },
     {

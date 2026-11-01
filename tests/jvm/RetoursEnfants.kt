@@ -259,10 +259,10 @@ fun main(args: Array<String>) {
         verifier(b > 2 * a, "$fam ($cmd) : %.1f %% sans attirance → %.1f %% avec ($N apparitions vérifiables)".format(a, b))
     }
     verifier(verifiables, "chaque apparition se refait à l'identique avec (graine, compteur, famille attirée)")
-    // le même calcul sur PC (pc/outils/test_retours_enfants.py, même graine) : 10.0 → 29.3 et 8.0 → 28.0 (6.7 avant les variantes réservées à la Tour des Ondes, 7.3 avant celles de la Guilde, 28.7 avant celles de l'Observatoire)
-    verifier("%.1f→%.1f".format(pourcents["Démons"]!!.first, pourcents["Démons"]!!.second) == "10.0→29.3" &&
+    // le même calcul sur PC (pc/outils/test_retours_enfants.py, même graine) : 10.0 → 30.0 et 8.0 → 28.0 (29.3 avant les variantes réservées à la Forge, 6.7 avant les variantes réservées à la Tour des Ondes, 7.3 avant celles de la Guilde, 28.7 avant celles de l'Observatoire)
+    verifier("%.1f→%.1f".format(pourcents["Démons"]!!.first, pourcents["Démons"]!!.second) == "10.0→30.0" &&
         "%.1f→%.1f".format(pourcents["Célestes"]!!.first, pourcents["Célestes"]!!.second) == "8.0→28.0",
-        "mêmes pourcentages que sur PC (Démons 10.0 → 29.3, Célestes 8.0 → 28.0)")
+        "mêmes pourcentages que sur PC (Démons 10.0 → 30.0, Célestes 8.0 → 28.0)")
     verifier("ping" in jeu.vus, "la commande d'attirance fait partie des commandes goûtées (le serveur le vérifie)")
     tape("chmod 600 /dev/null 2>/dev/null; true")
     verifier(Explo.attirance(jeu) == "Démons", "taper chmod attire les Démons")

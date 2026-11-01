@@ -556,6 +556,54 @@ les vraies radios (vues seulement par des doublures en test), `type rtl_test` (O
 - Le petit sqlite3 sur un vrai téléphone (le moteur d'Android n'est pas lancé dans les tests JVM).
 - Les traductions des 13 autres langues sont faites par Claude : une relecture par des locuteurs serait bienvenue.
 
+**🔨 La Forge — codée (1er novembre).**
+
+*Fichiers.*
+- 7 fiches et 2 fiches de maths (`donnees/forge/outils/fiches_forge.py`, rejeu bash), données `donnees/forge.json`
+  (la photo d'exemple aux métadonnées inventées y est en base64), textes `donnees/forge/outils/textes_forge_*.py`
+  (14 langues), vecteurs communs `donnees/forge/vecteurs.json`.
+- Leçons fo0 → fo7 sur PC (`pc/tg/forge.py`) et sur Android (`Forge.kt`, `ForgeDessin.kt`, le site servi par le phare
+  de l'appli dans `Port.kt`). Chapitre et dossier `forge`, commande `forge` (alias bash/zsh/fish/PowerShell). S'ouvre
+  après les niveaux 0 à 4 du tronc commun ; annonce du monde à son tour. Icône 🔨, chapitre n° 19, famille Constructs,
+  objet « petit marteau de forgeron », titre « Maître de la Forge ».
+- « L'atelier des Constructs » s'appelle maintenant « la petite forge des Constructs » (§ 2.19) ; « Atelier » reste
+  pour les robots.
+
+*Règles du monde.*
+- Tout reste dans le terrain : les scripts de l'enfant, son mini-jeu, son site, les images et les sons.
+- **Le site** : `python3 -m http.server … --bind 127.0.0.1 --directory site &`, sur un port libre > 1024 (8642, ou le
+  suivant si pris) ; l'étape vérifie que la page est servie ET que rien n'écoute sur 0.0.0.0/:: ; un serveur lancé sans
+  `--bind` est signalé tout de suite ; arrêt par `fg` puis Ctrl+C. « Publier » est seulement expliqué (avec un adulte),
+  aucun compte, aucun hébergeur cité.
+- **Le multimédia** : seulement les fichiers du jeu (4 images de la créature, une fanfare fabriquée, la photo d'exemple).
+  `exiftool` (ou `forge exif`) sur la photo d'exemple seulement ; `forge exif` / `forge nettoie` refusent tout fichier
+  hors du terrain. On explique comment retirer les métadonnées.
+- Un outil absent (magick, sox, ffmpeg, exiftool, python3, curl, tree) : l'étape est cachée ou remplacée (repli), rien
+  ne bloque. Variantes rares (existantes) : `fondelin:lave`, `boulonnet:neon`, `tisonnier:mecanique` ; exploits
+  « un programme qui marche du premier coup » (première recette complète lancée) et « un palier sans indice ».
+
+*Les leçons.* F0 la porte (enclume.txt) · F1 les recettes (`echo … > / >>`, `#!/bin/sh`, `sh`, `chmod +x`, `./`) ·
+F2 les boîtes (`nom=Pixel`, `$1`, `$#`, `read`) · F3 aiguillage et manèges (`$?`, `if`, `for`, `seq`, les 10 cabanes,
+`while`, les tours) · F4 Python (`python3 -c`, une boucle, `serpent.py`, le Traceback, `sys.argv`) · F5 le mini-jeu
+(devinette.sh, un robot qui joue avec `seq | sh`, le donjon, `forge carte "…"` : le jeu devient un lieu 🎮 sur la carte) ·
+F6 le site (HTML, CSS, le serveur, `curl`, `fg` + Ctrl+C, publier) · F7 l'atelier multimédia (GIF animé, `sox`,
+`ffmpeg`, les métadonnées démasquées puis effacées, le certificat). Ponts des Nombres : boucles (compter les tours) et
+priorités des opérations, aussi dans `Maths.kt`.
+
+*Écarts assumés.*
+- Téléphone (une ligne = un nouveau shell, pas de clavier pour `read`, pas de Python ni d'outils multimédia) : boîte et
+  ouverture sur la même ligne, `echo Léa | sh question.sh`, serpent raconté puis `doom`, `forge serveur` / `forge
+  serveur stop` (le site servi par l'appli sur 127.0.0.1), la photo lue et nettoyée par l'appli.
+- En CI, « fg puis Ctrl+C » est rejoué par `kill %1`.
+- `Ls fantome; echo $?` passe l'étape « $? » (127 n'est pas 0) : sans conséquence.
+
+*Tests.* `pc/outils/test_forge.py` (73), `tests/jvm/Forge.kt` (30), `pc/outils/test_forge_outils.py` (GNU, toybox+mksh,
+busybox), simulation `pc/outils/sim_forge.py` → `docs/simulations/rapport_forge.md`, captures `pc/outils/capture_forge.py`,
+rejeu d'un seul monde : `TG_REJEU_MONDE=forge`.
+
+*Reste.* Les illustrations (prompts B8, vignettes, C1, C3, E20 à E24 envoyés) ; une relecture des 13 traductions par
+des locuteurs.
+
 **▚ Le glitch — codé (31 octobre, décisions du propriétaire).** Un effet de l'INDIVIDU, comme le shiny (drapeau
 `glitch`, indépendant de la variante et du shiny) : l'image se dérègle comme un vieil écran, fabriquée à partir de
 l'image de la créature (aucune illustration). Au repos le style A (liseré rose/cyan des couches décalées, 2 tranches
