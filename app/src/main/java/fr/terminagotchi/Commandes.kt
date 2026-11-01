@@ -147,6 +147,9 @@ class Commandes(
             "gpg", "gpg2" -> Reponse(Crypte.gpg(jeu, ligne.trim(), dossier()), couleur = BLEU)
             // ---------------------------------------------------- la Salle des Machines (Machines.kt) : lecture seule
             "machines" -> Reponse(Machines.commande(jeu, reste, dossier()), couleur = BLEU)
+            // ---------------------------------------------------- la Tour des Ondes (Ondes.kt) : l'appli n'émet jamais
+            "ondes" -> Reponse(Ondes.commande(jeu, reste, dossier()), couleur = BLEU)
+            "mesh-envoie", "mesh-coupe", "mesh-route" -> Reponse(Ondes.commande(jeu, "$cmd $reste", dossier()), couleur = BLEU)
             "sync" -> sync()
             "indice" -> Reponse(Ctf.indice(jeu, reste), couleur = VERT)
             "edite" -> edite(reste)

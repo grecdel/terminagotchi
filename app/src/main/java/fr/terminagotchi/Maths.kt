@@ -82,6 +82,9 @@ object Maths {
     // ---------------------------------------------------------------- les exercices (même hasard que le PC)
     class Exo(val params: Map<String, String>, val reponse: String, val verif: String)
 
+    /** Les fréquences (MHz) des exercices de longueur d'onde : 300 / f est entier (mètres). */
+    val MHZ_ONDE = listOf(1, 2, 3, 4, 5, 6, 10, 12, 15, 20, 25, 30, 50, 60, 75, 100, 150, 300)
+
     fun generer(typ: String, graine: Long, k: Long): Exo {
         val h = Tirage.Hasard(String.format("%016x", graine), k)
         return when (typ) {
@@ -101,6 +104,11 @@ object Maths {
                     "echo \$((" + List(b) { "$a" }.joinToString(" * ") + "))")
             }
             "binaire" -> { val n = 1 + h.entier(31); val bits = Integer.toBinaryString(n); Exo(mapOf("bits" to bits), "$n", "echo \$((2#$bits))") }
+            // les Ponts des Nombres de la Tour des Ondes (§ 7.11), mêmes tirages que pc/tg/maths.py
+            "frequence" -> { val s = 2 + h.entier(5); val f = 2 + h.entier(9); Exo(mapOf("n" to "${f * s}", "s" to "$s"), "$f", "echo \$((${f * s} / $s))") }
+            "puissances_10" -> { val a = 2 + h.entier(8); var p = 1L; repeat(a) { p *= 10 }; Exo(mapOf("a" to "$a"), "$p", "echo \$((10**$a))") }
+            "longueur_onde" -> { val f = MHZ_ONDE[h.entier(MHZ_ONDE.size)]; Exo(mapOf("f" to "$f"), "${300 / f}", "echo \$((300000000 / ${f}000000))") }
+            "temps_emission" -> { val n = 10 + h.entier(31); var d = 1; repeat(h.entier(6)) { d *= 2 }; Exo(mapOf("n" to "$n", "t" to "$d"), "${n * d}", "echo \$(($n * $d))") }
             else -> throw IllegalArgumentException(typ)
         }
     }

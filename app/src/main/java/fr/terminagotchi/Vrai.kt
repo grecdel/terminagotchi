@@ -16,7 +16,8 @@ object Vrai {
     /** I4 : les commandes de l'appli (Commandes.kt) et celles du seul téléphone n'existent pas sur un ordinateur */
     private val APPLI = setOf("doom", "getprop", "dressage", "cherche", "defi", "donjon", "plan", "quetes", "quete",
         "journal", "sac", "equipe", "guide", "types", "bois", "attaque", "ctf", "drapeau", "compte", "site", "bestiaire",
-        "explique", "sync", "indice", "notifs", "notif", "placement", "sansaide", "aide", "carte", "lexique", "arbre", "port", "citadelle", "crypte", "machines") +
+        "explique", "sync", "indice", "notifs", "notif", "placement", "sansaide", "aide", "carte", "lexique", "arbre", "port", "citadelle", "crypte", "machines", "ondes",
+        "mesh-envoie", "mesh-coupe", "mesh-route") +
         Commandes.CREATURE + Commandes.TELEPHONE
 
     fun ligne(cmd: String?): String? {

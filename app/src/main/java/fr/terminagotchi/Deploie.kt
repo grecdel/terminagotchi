@@ -287,6 +287,22 @@ object Deploie {
         return out
     }
 
+    // ------------------------------------------------------------ l'antenne (la Tour des Ondes)
+    class Antenne(val seg: Int, val cmd: String, val radio: String, val sens: String)
+
+    /** Les commandes d'une ligne qui touchent une radio (même spécification que deploie.antennes sur PC, vecteurs
+     *  donnees/ondes/vecteurs.json) : nmcli lit le Wi-Fi, rtl_fm écoute, mesh-envoie simule… */
+    fun antennes(ligne: String): List<Antenne> {
+        val out = mutableListOf<Antenne>()
+        val bl = blocs(ligne)
+        for (c in chaines(bl)) for (e in c.etapes) {
+            val a = Ondes.antenneDe(e.texte) ?: continue
+            val seg = bl.firstOrNull { it.g == "commande" && it.i - 1 == e.debut }?.seg ?: 0
+            out.add(Antenne(seg, e.cmd, a.first, a.second))
+        }
+        return out
+    }
+
     // ------------------------------------------------------------ les cadenas qui s'allument (la Citadelle)
     private val OPTIONS_CHMOD = setOf("-R", "-v", "-c", "-f", "--recursive", "--verbose", "--changes", "--silent", "--quiet")
     private val MODE_CHMOD = Regex("[0-7]{1,4}|[ugoa]*(?:[-+=][rwx]*)+(?:,[ugoa]*(?:[-+=][rwx]*)+)*")
@@ -383,11 +399,14 @@ object Deploie {
         /** les pièces d'un nproc, free, lsblk… (la Salle des Machines) : l'ordinateur ouvert s'allume */
         val ordinateur: List<Pieces> = try { pieces(ligne) } catch (e: Exception) { emptyList() }
         fun piecesDe(b: Bloc): Pieces? = if (b.g == "commande") ordinateur.firstOrNull { it.seg == b.seg } else null
+        /** l'antenne d'un nmcli, rfkill, mesh-envoie… (la Tour des Ondes) */
+        val antennes: List<Antenne> = try { antennes(ligne) } catch (e: Exception) { emptyList() }
+        fun antenneDe(b: Bloc): Antenne? = if (b.g == "commande") antennes.firstOrNull { it.seg == b.seg } else null
 
         fun avancer(dt: Double) {
             t += dt
             val b = blocs[actif - 1]
-            val reseau = messagerDe(b) != null || droitsDe(b) != null || roueDe(b) != null || piecesDe(b) != null
+            val reseau = messagerDe(b) != null || droitsDe(b) != null || roueDe(b) != null || piecesDe(b) != null || antenneDe(b) != null
             val duree = if (b.g == "tuyau" || b.g == "redirection" || reseau) 2.4 else 1.2
             phase = if (b.g in setOf("tuyau", "redirection", "chemin") || reseau) t / duree else minOf(1.0, t / duree)
             if (auto && t >= duree && actif < blocs.size) { actif += 1; t = 0.0 }

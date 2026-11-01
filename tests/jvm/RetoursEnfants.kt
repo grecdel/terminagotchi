@@ -256,10 +256,10 @@ fun main(args: Array<String>) {
         verifier(b > 2 * a, "$fam ($cmd) : %.1f %% sans attirance → %.1f %% avec ($N apparitions vérifiables)".format(a, b))
     }
     verifier(verifiables, "chaque apparition se refait à l'identique avec (graine, compteur, famille attirée)")
-    // le même calcul sur PC (pc/outils/test_retours_enfants.py, même graine) : 10.0 → 29.3 et 6.7 → 28.7
+    // le même calcul sur PC (pc/outils/test_retours_enfants.py, même graine) : 10.0 → 29.3 et 7.3 → 28.7 (6.7 avant les variantes réservées à la Tour des Ondes)
     verifier("%.1f→%.1f".format(pourcents["Démons"]!!.first, pourcents["Démons"]!!.second) == "10.0→29.3" &&
-        "%.1f→%.1f".format(pourcents["Célestes"]!!.first, pourcents["Célestes"]!!.second) == "6.7→28.7",
-        "mêmes pourcentages que sur PC (Démons 10.0 → 29.3, Célestes 6.7 → 28.7)")
+        "%.1f→%.1f".format(pourcents["Célestes"]!!.first, pourcents["Célestes"]!!.second) == "7.3→28.7",
+        "mêmes pourcentages que sur PC (Démons 10.0 → 29.3, Célestes 7.3 → 28.7)")
     verifier("ping" in jeu.vus, "la commande d'attirance fait partie des commandes goûtées (le serveur le vérifie)")
     tape("chmod 600 /dev/null 2>/dev/null; true")
     verifier(Explo.attirance(jeu) == "Démons", "taper chmod attire les Démons")
