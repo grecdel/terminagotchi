@@ -181,7 +181,9 @@ LIBS = ["bash", "git", "python3", "gcc", "firefox", "coreutils", "make"]
 PARCOURS = [
     "ls", "cat mur_des_plans.txt",
     "guilde libertes", "guilde libertes 0 0 0 0", lambda: "guilde libertes " + " ".join(r_ for _n, _i, r_ in G.libertes_cartes(gr)),
-    "cat petit_projet/LICENSE", "ls /usr/share/licenses", "rpm -q --qf '%{LICENSE}\\n' bash",
+    "cat petit_projet/LICENSE", "ls /usr/share/licenses",
+    # rpm -q seulement là où l'étape est montrée (rpm gestionnaire du système) : ailleurs il créerait ~/.rpmdb
+    *(["rpm -q --qf '%{LICENSE}\\n' bash"] if histoire._outil("rpm+/usr/lib/sysimage/rpm") else []),
     "guilde licence ?", "guilde licence licornesoft", *[f"guilde licence {x}" for x in LIBS[:5]],
     "guilde gratuit", "guilde gratuit l l l l", lambda: "guilde gratuit " + " ".join(r_ for _n, _i, r_ in G.gratuit_cartes(gr)),
     "guilde depot", "git clone --depth 1 https://github.com/grecdel/terminagotchi.git code_du_jeu", "guilde copie",
