@@ -59,7 +59,11 @@ def vecteurs():
               "cat robot/moteur", "atelier pas", "tg atelier pas", "sh cerveau.sh", "bash ./cerveau.sh", "time sh cerveau.sh",
               "for i in $(seq 20); do sh cerveau.sh; atelier pas; done", "for i in 1 2 3; do cat robot/capteur_distance; sleep 1; done",
               'd=$(cat robot/capteur_distance); if [ "$d" -lt 10 ]; then echo obstacle; else echo libre; fi',
-              "ls /sys/class/leds", "ls robot", "atelier robot", "echo bonjour", "cat robot/led | head -1 && atelier pas"]
+              "ls /sys/class/leds", "ls robot", "atelier robot", "echo bonjour", "cat robot/led | head -1 && atelier pas",
+              # PowerShell (Windows) : les mêmes pièces du robot (robot\\led, Set-Content, .\\cerveau.ps1, ForEach-Object)
+              "echo 1 > robot\\led", "Set-Content robot\\moteur droite", "Get-Content robot\\capteur_distance",
+              "1..20 | ForEach-Object { .\\cerveau.ps1; atelier pas }", "Measure-Command { .\\cerveau.ps1 }",
+              "powershell -ExecutionPolicy Bypass -File .\\cerveau.ps1", "notepad cerveau.ps1"]
     robots = [{"ligne": l, "robots": [list(a) for a in A.robots_de(l)]} for l in lignes]
     dep = [{"ligne": l, "robots": [{"seg": x["seg"], "cmd": x["cmd"], "piece": x["piece"], "sens": x["sens"]}
                                    for x in deploie.robots(l)]} for l in lignes]

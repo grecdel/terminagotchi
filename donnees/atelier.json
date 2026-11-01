@@ -188,27 +188,42 @@
     "sens": "pense"
    },
    {
-    "motif": ">\\s*\\S*robot/led\\b",
+    "motif": "(?i)(^|\\{\\s*|-file\\s+)\\.[\\\\/]cerveau\\w*\\.ps1\\b",
+    "piece": "cerveau",
+    "sens": "pense"
+   },
+   {
+    "motif": ">\\s*\\S*robot[\\\\/]led\\b",
     "piece": "led",
     "sens": "ecrit"
    },
    {
-    "motif": ">\\s*\\S*robot/moteur\\b",
+    "motif": ">\\s*\\S*robot[\\\\/]moteur\\b",
     "piece": "moteur",
     "sens": "ecrit"
    },
    {
-    "motif": "\\brobot/capteur_distance\\b",
+    "motif": "(?i)^(set-content|add-content|sc)\\s+(-path\\s+)?\\S*robot[\\\\/]led\\b",
+    "piece": "led",
+    "sens": "ecrit"
+   },
+   {
+    "motif": "(?i)^(set-content|add-content|sc)\\s+(-path\\s+)?\\S*robot[\\\\/]moteur\\b",
+    "piece": "moteur",
+    "sens": "ecrit"
+   },
+   {
+    "motif": "\\brobot[\\\\/]capteur_distance\\b",
     "piece": "capteur",
     "sens": "lit"
    },
    {
-    "motif": "\\brobot/led\\b|/sys/class/leds\\b",
+    "motif": "\\brobot[\\\\/]led\\b|/sys/class/leds\\b",
     "piece": "led",
     "sens": "lit"
    },
    {
-    "motif": "\\brobot/moteur\\b",
+    "motif": "\\brobot[\\\\/]moteur\\b",
     "piece": "moteur",
     "sens": "lit"
    }

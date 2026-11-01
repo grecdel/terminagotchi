@@ -659,8 +659,21 @@ des locuteurs.
 - Ponts des Nombres, jamais bloquants : coordonnées, logique (nouveau), multiplication.
 - Exploit « un robot qui évite tous les obstacles » (`atelier.robot`). Variantes EXISTANTES favorisées (Machine /
   Plante, libres) : `horlogrif:mecanique`, `groinfer:rouille`, `lampignon:forêt`.
-- PowerShell : `echo 1 > robot/led` écrit en UTF-16 sous PowerShell 5 : le jeu lit aussi l'UTF-16. Les boucles et
-  `if` du shell sont des étapes bash (cachées sous Windows), donc le défi n'est pas jouable sous Windows pour l'instant.
+- PowerShell : `echo 1 > robot/led` écrit en UTF-16 sous PowerShell 5 : le jeu lit aussi l'UTF-16.
+- **Windows — codé (1er novembre, demande du propriétaire).** Les mêmes étapes en PowerShell 5.1 et 7
+  (`atelier.lecons_pour(True)`) : `Get-Content robot\led`, `if (5 -lt 10) { "vrai" } else { "faux" }`,
+  `1..3 | ForEach-Object { … }`, `while ($true) { … }`, `cerveau.ps1` (`Get-Content robot\capteur_distance`,
+  `if (…) { … } else { … }`, `Set-Content robot\moteur …`, écrit en UTF-8 avec BOM), la boucle
+  `1..20 | ForEach-Object { .\cerveau.ps1; atelier pas }`, `Measure-Command { .\cerveau.ps1 }`,
+  `Get-Content robot\journal.txt -Tail 5`. Même défi, même exploit, vérifiés par le carnet. Seules les étapes propres à
+  Linux restent cachées (`/sys/class/leds`, `command -v`, `crontab`). Politique d'exécution : le terminal du jeu a déjà
+  `-ExecutionPolicy Bypass` pour sa fenêtre ; ailleurs, si Windows refuse le script, le jeu le voit (le moteur reste sur
+  `stop` à chaque pas) et explique le message, avec `powershell -ExecutionPolicy Bypass -File .\cerveau.ps1` (pour une
+  fois) ; jamais `Set-ExecutionPolicy`. Un joueur Windows qui avait fini la leçon sans le défi reçoit l'exploit en
+  réussissant le défi (rattrapage). Textes en 14 langues (les textes tirés de ceux de bash sont fabriqués par
+  `textes_atelier.py`, DERIVES). Tests : `test_windows.py` (partie imitée, script refusé, rattrapage), `test_atelier.py`
+  § 8, et en CI les VRAIS Windows PowerShell 5.1 et PowerShell 7 jouent le défi (`pc/outils/defi_powershell.py`,
+  `.github/workflows/windows.yml`, job `atelier-powershell`). Fiche enseignant (chapitre 20) et PDF à jour.
 - Tests : `pc/outils/test_atelier.py` (traversée réelle, 3 défis, dash / mksh / busybox / toybox comparés à bash),
   `tests/jvm/Atelier.kt` (la boucle déroulée par l'appli avec le vrai `sh`). Simulation `pc/outils/sim_atelier.py` →
   `docs/simulations/rapport_atelier.md`. Captures `pc/outils/capture_atelier.py`. Rejeu d'un seul monde :
@@ -670,7 +683,6 @@ des locuteurs.
 
 *Reste.*
 - Les illustrations ; une relecture des 13 traductions par des locuteurs.
-- Le défi sous Windows (une boucle PowerShell équivalente, sans `sh`) : à décider.
 - La boucle déroulée par l'appli et `edite cerveau.sh` sur un vrai téléphone (APK d'essai).
 
 **⛰ Le Sommet (Expert++) — codé (1er novembre).**

@@ -407,6 +407,14 @@ viendront après les classes pilotes ; en attendant, voici les codes et ce que c
 | 20 · L'Atelier des robots | robotique simulée : capteurs et moteurs comme des fichiers, coordonnées, ET / OU / NON, la boucle lire-décider-agir, Raspberry Pi et embarqué racontés (aucun matériel) | `20-GS-B` | `20-AGS-F` |
 | 23 · Le Sommet | Expert++ (pour les plus grands) : scripts robustes, expressions régulières, débogage, documentation, défis ; s'ouvre quand trois mondes ont leur palier 3 | `23-GS-H` | `23-AGS-N` |
 
+**L'Atelier (chapitre 20) sous Windows.** Le défi du robot existe aussi en PowerShell (Windows PowerShell 5.1 et
+PowerShell 7), avec le même exploit : l'élève écrit `cerveau.ps1` (`Get-Content robot\capteur_distance`,
+`if (…) { … } else { … }`, `Set-Content robot\moteur droite`) et lance sa boucle
+`1..20 | ForEach-Object { .\cerveau.ps1; atelier pas }`. Le terminal du jeu autorise les scripts pour sa seule fenêtre.
+Dans un autre PowerShell, si Windows répond « l'exécution de scripts est désactivée sur ce système », le jeu explique
+le message et propose `powershell -ExecutionPolicy Bypass -File .\cerveau.ps1`, qui ne vaut que pour cette fois. Rien
+à installer : ne modifiez pas la politique d'exécution des postes (pas de `Set-ExecutionPolicy`).
+
 # Correspondance avec les programmes (indicative)
 
 > À faire valider par des enseignants avant publication.

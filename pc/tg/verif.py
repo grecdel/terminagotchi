@@ -150,6 +150,10 @@ CREE = {"mkdir", "touch", "tee", "new-item", "ni"}
 AVEC_VALEUR = {"head": {"-n", "-c"}, "tail": {"-n", "-c"}, "grep": {"-e", "-m", "-A", "-B", "-C", "-f"},
                "find": set(), "du": {"-d", "--max-depth"}, "ls": {"-I", "--hide", "-w"}, "sort": {"-k", "-t"},
                "cp": {"-t"}, "mv": {"-t"}, "chmod": set(), "wc": set(), "tee": set()}
+# PowerShell : Get-Content (et ses alias gc, type, cat) -Tail 5, -TotalCount 3… : le nombre n'est pas un fichier
+_GC = {"-tail", "-totalcount", "-head", "-first", "-last", "-encoding", "-delimiter", "-readcount"}
+for _c in ("get-content", "gc", "type", "cat"):
+    AVEC_VALEUR[_c] = AVEC_VALEUR.get(_c, set()) | _GC
 
 
 def _arguments(cmd, args):
@@ -165,7 +169,7 @@ def _arguments(cmd, args):
             fin = True
             continue
         if not fin and m.startswith("-") and len(m) > 1:
-            if m in vals:
+            if m in vals or m.lower() in vals:
                 saute = True
             if cmd == "find":
                 break                        # find . -name … : le chemin de départ est avant l'expression

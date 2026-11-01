@@ -26,6 +26,15 @@ le défi « le robot qui évite tous les obstacles » (exploit) ; R3 + R4 le vra
 un adulte, raconté ; le journal) ; l'embarqué et le temps réel (microcontrôleur ou ordinateur, le réflexe du robot,
 Arduino et ESP32 depuis le terminal, le téléphone robot de poche). Mêmes règles sur Android (Atelier.kt), vecteurs
 communs donnees/atelier/vecteurs.json.
+
+WINDOWS (PowerShell 5.1 et 7) : les mêmes étapes, en PowerShell (lecons_pour(True)). Le cerveau est cerveau.ps1
+(Get-Content robot\\capteur_distance, if (…) { … } else { … }, Set-Content robot\\moteur …), la boucle
+`1..20 | ForEach-Object { .\\cerveau.ps1; atelier pas }` ; le défi et l'exploit sont vérifiés pareil (le carnet, la
+grille, les chocs, les cases). Le terminal du jeu est lancé avec -ExecutionPolicy Bypass pour sa seule session
+(compagnon.ouvrir_terminal_du_jeu) ; ailleurs, si Windows refuse le script (« l'exécution de scripts est désactivée »),
+le jeu le voit (le moteur reste sur stop) et propose `powershell -ExecutionPolicy Bypass -File .\\cerveau.ps1`, qui ne
+change rien aux réglages de l'ordinateur. Le jeu ne lance jamais Set-ExecutionPolicy. Seules les étapes propres à Linux
+(/sys/class/leds, command -v, crontab) restent cachées sous Windows.
 """
 import hashlib
 import json
@@ -37,7 +46,7 @@ import unicodedata
 
 from . import core
 from .langue import t
-from .plateforme import BOLD, DIM, RESET, fg
+from .plateforme import BOLD, DIM, IS_WIN, RESET, fg
 
 _D = None
 
@@ -340,7 +349,10 @@ def _ecrire(rel, contenu):
     p = core.TERRAIN / rel
     try:
         p.parent.mkdir(parents=True, exist_ok=True)
-        p.write_text(contenu, encoding="utf-8")
+        if isinstance(contenu, bytes):
+            p.write_bytes(contenu)
+        else:   # un script PowerShell : UTF-8 AVEC BOM, sinon Windows PowerShell 5.1 lit les accents de travers
+            p.write_text(contenu, encoding="utf-8-sig" if rel.endswith(".ps1") else "utf-8")
         return True
     except OSError:
         return False
@@ -377,14 +389,41 @@ def cerveau_malin():
                       "fi", ""])
 
 
+def cerveau_exemple_ps():
+    """Le cerveau d'exemple en PowerShell (Windows) : le même, qui fonce toujours."""
+    return "\n".join(["# " + t("at.cerveau.c1"), "# " + t("at.cerveau.c2"),
+                      "$d = [int](Get-Content robot\\capteur_distance)", 'Write-Output "' + t("at.cerveau.vois") + ' $d cm"',
+                      "Set-Content robot\\moteur avance", ""])
+
+
+def cerveau_malin_ps():
+    """Les lignes du cerveau qui tourne devant l'obstacle, en PowerShell (montrées par `atelier aide-cerveau`)."""
+    return "\n".join(["# " + t("at.cerveau.c1"), "$d = [int](Get-Content robot\\capteur_distance)", "if ($d -lt 10) {",
+                      "  Set-Content robot\\moteur droite", "} else {", "  Set-Content robot\\moteur avance", "}", ""])
+
+
+def win():
+    """Windows : le terminal est un PowerShell (lu à chaque appel : les tests le changent)."""
+    return IS_WIN
+
+
+def nom_cerveau():
+    return "cerveau.ps1" if win() else "cerveau.sh"
+
+
+def nom_exemple():
+    return "cerveau_exemple.ps1" if win() else "cerveau_exemple.sh"
+
+
 def meubles(state):
     """Ce que le jeu pose dans l'Atelier quand il s'ouvre : {chemin relatif au terrain: contenu}."""
     a_(state)
-    return {"robots/plan_de_l_atelier.txt": t("at.meuble.plan", nom=state.get("name", "")) + "\n",
+    return {"robots/plan_de_l_atelier.txt": t("at.ps.meuble.plan" if win() else "at.meuble.plan", nom=state.get("name", "")) + "\n",
             f"robots/{CARNET}": t("at.meuble.carnet") + "\n",
             "robots/robot/led": "0\n", "robots/robot/moteur": "stop\n",
             "robots/robot/capteur_distance": f"{capteur_de(state)}\n",
-            "robots/cerveau_exemple.sh": cerveau_exemple()}
+            # Windows : des octets, UTF-8 AVEC BOM (Windows PowerShell 5.1 lit alors les accents des commentaires)
+            "robots/" + nom_exemple(): cerveau_exemple_ps().encode("utf-8-sig") if win() else cerveau_exemple()}
 
 
 def meubler(state, lid, step):
@@ -396,7 +435,7 @@ def meubler(state, lid, step):
     tous = meubles(state)
     for rel, contenu in tous.items():
         if rel.startswith("robots/robot/") or rel.endswith("plan_de_l_atelier.txt") or \
-                (rel.endswith("cerveau_exemple.sh") and lid in ("at4", "at5")):
+                (rel.endswith(("cerveau_exemple.sh", "cerveau_exemple.ps1")) and lid in ("at4", "at5")):
             if not (core.TERRAIN / rel).exists():
                 _ecrire(rel, contenu)
     pont_maths(state, lid, step)
@@ -416,10 +455,15 @@ def pont_maths(state, lid, step):
 
 # ---------------------------------------------------------------- les vérifications des étapes
 def _cerveau_texte():
+    """Le texte du cerveau de l'enfant (cerveau.sh, ou cerveau.ps1 sous Windows : UTF-8, avec ou sans BOM, ou UTF-16
+    si PowerShell 5.1 l'a écrit avec >)."""
     try:
-        return (dossier() / "cerveau.sh").read_text(encoding="utf-8", errors="replace")
+        brut = (dossier() / nom_cerveau()).read_bytes()
     except OSError:
         return None
+    if brut[:2] in (b"\xff\xfe", b"\xfe\xff"):
+        return brut.decode("utf-16", errors="replace")
+    return brut.decode("utf-8-sig", errors="replace")
 
 
 def cerveau_malin_ok(texte):
@@ -427,6 +471,19 @@ def cerveau_malin_ok(texte):
     s = texte or ""
     return bool(re.search(r"\bif\b", s) and re.search(r"-(lt|le|eq|gt|ge|ne)\b|[<>]", s) and re.search(r"capteur_distance", s)
                 and re.search(r"\b(droite|gauche|right|left)\b", s) and re.search(r"\b(avance|forward)\b", s) and re.search(r"\bfi\b", s))
+
+
+def cerveau_malin_ps_ok(texte):
+    """Le cerveau PowerShell a une condition sur la distance (-lt, -le…) et deux actions : tourner et avancer."""
+    s = texte or ""
+    return bool(re.search(r"\bif\s*\(", s, re.I) and re.search(r"-(lt|le|eq|gt|ge|ne)\b", s, re.I)
+                and re.search(r"capteur_distance", s) and re.search(r"\b(droite|gauche|right|left)\b", s)
+                and re.search(r"\b(avance|forward)\b", s) and "}" in s)
+
+
+def malin_ok():
+    t_ = _cerveau_texte()
+    return cerveau_malin_ps_ok(t_) if win() else cerveau_malin_ok(t_)
 
 
 FS = {
@@ -440,10 +497,10 @@ FS = {
     "at_cases": lambda: dans_carnet("cases"),
     "at_verite": lambda: dans_carnet("verite"),
     "at_choix": lambda: dans_carnet("choix"),
-    "at_cerveau": lambda: (dossier() / "cerveau.sh").is_file(),
+    "at_cerveau": lambda: (dossier() / nom_cerveau()).is_file(),
     "at_essai": lambda: dans_carnet("essai_debut"),
     "at_essai_pas": lambda: pas_depuis("essai_debut") >= donnees()["essai"]["pas_min"],
-    "at_malin": lambda: cerveau_malin_ok(_cerveau_texte()),
+    "at_malin": malin_ok,
     "at_defi_debut": lambda: dans_carnet("defi_debut"),
     "at_defi": lambda: dans_carnet("defi"),
     "at_reflexe": lambda: dans_carnet("reflexe"),
@@ -455,6 +512,10 @@ LIRE = r"^(cat|type|gc|get-content|less|more|head|tail)\b"
 AT = r"^(tg\s+)?atelier\s+"
 O = "robots"
 BOUCLE = r"^for\s+\w+\s+in\b.*\bdo\b.*\bsh\s+\S*cerveau\w*\.sh\b.*\batelier\s+pas\b.*\bdone\b"
+R = r"robot[\\/]"                      # robot/led ou robot\led (PowerShell accepte les deux)
+# PowerShell : une boucle (1..20 | ForEach-Object { … }, for (…) { … }, foreach (…) { … }, while (…) { … })
+BOUCLE_PS = r"(?i)(^\s*\d+\s*\.\.\s*\d+\s*\|\s*(foreach-object\b|foreach\b|%)|^\s*(for|foreach|while)\s*\()"
+CMP = r"-(lt|le|gt|ge|eq|ne)"
 
 
 def _n(lid, i, **k):
@@ -463,87 +524,122 @@ def _n(lid, i, **k):
     return d
 
 
-LECONS = {
-    # la porte de l'Atelier
-    "at0": {"titre": "hist.at0.titre", "skill": None, "steps": [
-        {"dit": ("hist.entree.dit", {"piece": O}), "cmd": "cd ~/terrain_terminagotchi/robots", "ici": O,
-         "bravo": ("hist.entree.bravo", {"piece": O})},
-        _n("at0", 1, cmd="ls", re=LS, ou=O),
-        _n("at0", 2, cmd="cat plan_de_l_atelier.txt", re=LIRE + r".*plan_de_l_atelier", ou=O),
-    ]},
-    # R1 allumer une LED (simulée) : tout est fichier
-    "at1": {"titre": "hist.at1.titre", "skill": None, "steps": [
-        _n("at1", 0, cmd="ls robot", re=LS + r".*\brobot\b", ou=O),
-        _n("at1", 1, cmd="cat robot/led", re=LIRE + r".*robot/led\b", ou=O),
-        _n("at1", 2, cmd="echo 1 > robot/led", fs="at_led1", ou=O),
-        _n("at1", 3, cmd="atelier robot", re=AT + r"robot\s*$"),
-        _n("at1", 4, cmd="echo 0 > robot/led", fs="at_led0", ou=O),
-        _n("at1", 5, cmd="cat robot/capteur_distance", re=LIRE + r".*robot/capteur_distance", ou=O),
-    ]},
-    # les capteurs, le moteur et les coordonnées
-    "at2": {"titre": "hist.at2.titre", "skill": None, "steps": [
-        _n("at2", 0, cmd="atelier grille", re=AT + r"grille\b"),
-        _n("at2", 1, cmd="echo avance > robot/moteur", fs="at_avance", ou=O),
-        _n("at2", 2, cmd="atelier pas", fs="at_pas_avance"),
-        _n("at2", 3, cmd="atelier ou ?", fs="at_ou"),
-        _n("at2", 4, cmd="echo droite > robot/moteur", fs="at_droite", ou=O),
-        _n("at2", 5, cmd="atelier pas", fs="at_pas_tourne"),
-        _n("at2", 6, cmd="atelier cases ?", fs="at_cases"),
-    ]},
-    # ET / OU / NON : le robot décide
-    "at3": {"titre": "hist.at3.titre", "skill": None, "steps": [
-        _n("at3", 0, cmd="atelier logique", re=AT + r"logique\b"),
-        _n("at3", 1, cmd="[ 5 -lt 10 ] && echo vrai || echo faux",
-           re=r"^\[\s+\S+\s+-(lt|gt|le|ge|eq|ne)\s+\S+\s+\]\s*$", win=False),
-        _n("at3", 2, cmd='d=$(cat robot/capteur_distance); if [ "$d" -lt 10 ]; then echo obstacle; else echo libre; fi',
-           re=r"^if\s+\[\s+\"?\$\w+\"?\s+-(lt|le|gt|ge|eq|ne)\s+\d+\s+\]", ou=O, win=False),
-        _n("at3", 3, cmd="atelier verite", re=AT + r"v[eé]rit[eé]\s*$"),
-        _n("at3", 4, cmd="atelier verite ? ? ? ?", fs="at_verite"),
-        _n("at3", 5, cmd="atelier choix", re=AT + r"choix\s*$"),
-        _n("at3", 6, cmd="atelier choix ? ? ?", fs="at_choix"),
-    ]},
-    # R2 la boucle du robot : for, while + Ctrl+C, le cerveau, l'essai
-    "at4": {"titre": "hist.at4.titre", "skill": None, "steps": [
-        _n("at4", 0, cmd="for i in 1 2 3; do cat robot/capteur_distance; sleep 1; done",
-           re=r"^for\s+\w+\s+in\s+(\d|\{\d|\$\(seq\b)", ou=O, win=False),
-        _n("at4", 1, cmd="while true; do cat robot/capteur_distance; sleep 1; done",
-           re=r"^while\s+(true|:)", ou=O, win=False, tout_code=True),
-        _n("at4", 2, cmd="cat cerveau_exemple.sh", re=LIRE + r".*cerveau_exemple", ou=O),
-        _n("at4", 3, cmd="cp cerveau_exemple.sh cerveau.sh", fs="at_cerveau", ou=O),
-        _n("at4", 4, cmd="atelier essai", fs="at_essai"),
-        _n("at4", 5, cmd="for i in $(seq 10); do sh cerveau.sh; atelier pas; done", fs="at_essai_pas", ou=O, win=False),
-        _n("at4", 6, cmd="nano cerveau.sh", fs="at_malin", ou=O),
-    ]},
-    # le défi : le robot simulé qui évite tous les obstacles (exploit)
-    "at5": {"titre": "hist.at5.titre", "skill": None, "steps": [
-        _n("at5", 0, cmd="atelier defi", fs="at_defi_debut"),
-        _n("at5", 1, cmd="for i in $(seq 20); do sh cerveau.sh; atelier pas; done", fs="at_defi", ou=O, win=False,
-           exploit="atelier.robot"),
-    ]},
-    # R3 + R4 le vrai Raspberry Pi et le robot autonome (avec un adulte, raconté)
-    "at6": {"titre": "hist.at6.titre", "skill": None, "steps": [
-        _n("at6", 0, cmd="atelier pi", re=AT + r"pi\b"),
-        _n("at6", 1, cmd="ls /sys/class/leds", re=r"^ls\b.*/sys/class/leds", outil="/sys/class/leds", win=False,
-           tout_code=True),
-        _n("at6", 2, cmd="command -v gpioset pinctrl", re=r"^(command\s+-v|which|type)\s+(gpioset|pinctrl)\b", win=False,
-           tout_code=True),
-        _n("at6", 3, cmd="atelier gpio", re=AT + r"gpio\b"),
-        _n("at6", 4, cmd="atelier autonome", re=AT + r"autonome\b"),
-        _n("at6", 5, cmd="tail -5 robot/journal.txt", re=LIRE + r".*robot/journal\.txt", ou=O),
-        _n("at6", 6, cmd="crontab -l", re=r"^crontab\s+-l\b", outil="crontab", win=False, tout_code=True),
-    ]},
-    # L'embarqué et le temps réel (§ 7.13)
-    "at7": {"titre": "hist.at7.titre", "skill": None, "steps": [
-        _n("at7", 0, cmd="atelier embarque", re=AT + r"embarqu[eé]\b"),
-        _n("at7", 1, cmd="time sh cerveau.sh", re=r"^time\s+(sh|bash)\s+\S*cerveau\w*\.sh", ou=O, win=False),
-        _n("at7", 2, cmd="atelier reflexe", re=AT + r"r[eé]flexe\s*$"),
-        _n("at7", 3, cmd="atelier reflexe ?", fs="at_reflexe"),
-        _n("at7", 4, cmd="atelier arduino", re=AT + r"arduino\b"),
-        _n("at7", 5, cmd="command -v arduino-cli esptool.py", re=r"^(command\s+-v|which|type)\s+(arduino-cli|esptool)", win=False,
-           tout_code=True),
-        _n("at7", 6, cmd="atelier telephone", re=AT + r"t[eé]l[eé]phone\b"),
-    ]},
-}
+def _w(lid, i, **k):
+    """Une étape en PowerShell dont les textes changent (if (…) { … }, ForEach-Object, cerveau.ps1…) : hist.<l>.<i>.ps.*"""
+    return _n(lid, i, dit=f"hist.{lid}.{i}.ps.dit", bravo=f"hist.{lid}.{i}.ps.bravo", **k)
+
+
+def boucle_ps(n):
+    return f"1..{n} | ForEach-Object {{ .\\cerveau.ps1; atelier pas }}"
+
+
+def lecons_pour(win_):
+    """Les leçons de l'Atelier pour bash (Linux, macOS) ou pour PowerShell (Windows). Mêmes étapes, mêmes vérifications
+    (fichiers du robot, carnet) ; sous Windows, seules les étapes propres à Linux restent cachées (win=False)."""
+    def C(unix, ps):
+        return ps if win_ else unix
+
+    def N(lid, i, **k):                   # bash : la même étape ; PowerShell : ses textes à elle (hist.<l>.<i>.ps.*)
+        return _w(lid, i, **k) if win_ else _n(lid, i, **k)
+
+    return {
+        # la porte de l'Atelier
+        "at0": {"titre": "hist.at0.titre", "skill": None, "steps": [
+            {"dit": ("hist.entree.dit", {"piece": O}), "cmd": "cd ~/terrain_terminagotchi/robots", "ici": O,
+             "bravo": ("hist.entree.bravo", {"piece": O})},
+            _n("at0", 1, cmd=C("ls", "dir"), re=LS, ou=O),
+            _n("at0", 2, cmd=C("cat plan_de_l_atelier.txt", "type plan_de_l_atelier.txt"), re=LIRE + r".*plan_de_l_atelier", ou=O),
+        ]},
+        # R1 allumer une LED (simulée) : tout est fichier (echo 1 > robot\led est aussi du PowerShell)
+        "at1": {"titre": "hist.at1.titre", "skill": None, "steps": [
+            _n("at1", 0, cmd=C("ls robot", "dir robot"), re=LS + r".*\brobot\b", ou=O),
+            _n("at1", 1, cmd=C("cat robot/led", "Get-Content robot\\led"), re=LIRE + r".*" + R + r"led\b", ou=O),
+            _n("at1", 2, cmd=C("echo 1 > robot/led", "echo 1 > robot\\led"), fs="at_led1", ou=O),
+            _n("at1", 3, cmd="atelier robot", re=AT + r"robot\s*$"),
+            _n("at1", 4, cmd=C("echo 0 > robot/led", "echo 0 > robot\\led"), fs="at_led0", ou=O),
+            _n("at1", 5, cmd=C("cat robot/capteur_distance", "Get-Content robot\\capteur_distance"),
+               re=LIRE + r".*" + R + r"capteur_distance", ou=O),
+        ]},
+        # les capteurs, le moteur et les coordonnées
+        "at2": {"titre": "hist.at2.titre", "skill": None, "steps": [
+            _n("at2", 0, cmd="atelier grille", re=AT + r"grille\b"),
+            _n("at2", 1, cmd=C("echo avance > robot/moteur", "echo avance > robot\\moteur"), fs="at_avance", ou=O),
+            _n("at2", 2, cmd="atelier pas", fs="at_pas_avance"),
+            _n("at2", 3, cmd="atelier ou ?", fs="at_ou"),
+            _n("at2", 4, cmd=C("echo droite > robot/moteur", "echo droite > robot\\moteur"), fs="at_droite", ou=O),
+            _n("at2", 5, cmd="atelier pas", fs="at_pas_tourne"),
+            _n("at2", 6, cmd="atelier cases ?", fs="at_cases"),
+        ]},
+        # ET / OU / NON : le robot décide
+        "at3": {"titre": "hist.at3.titre", "skill": None, "steps": [
+            _n("at3", 0, cmd="atelier logique", re=AT + r"logique\b"),
+            N("at3", 1, **({"cmd": 'if (5 -lt 10) { "vrai" } else { "faux" }',
+                            "re": r"(?i)^if\s*\(\s*\d+\s+" + CMP + r"\s+\d+\s*\)"} if win_ else
+                           {"cmd": "[ 5 -lt 10 ] && echo vrai || echo faux",
+                            "re": r"^\[\s+\S+\s+-(lt|gt|le|ge|eq|ne)\s+\S+\s+\]\s*$", "win": False})),
+            N("at3", 2, ou=O, **({"cmd": '$d = [int](Get-Content robot\\capteur_distance); if ($d -lt 10) { "obstacle" } else { "libre" }',
+                                  "re": r"(?i)^if\s*\(\s*(\[int\]\s*)?(\$\w+|\(\s*(get-content|gc|cat|type)\s+\S*" + R +
+                                        r"capteur_distance\s*\))\s+" + CMP + r"\s+\d+\s*\)"} if win_ else
+                                 {"cmd": 'd=$(cat robot/capteur_distance); if [ "$d" -lt 10 ]; then echo obstacle; else echo libre; fi',
+                                  "re": r"^if\s+\[\s+\"?\$\w+\"?\s+-(lt|le|gt|ge|eq|ne)\s+\d+\s+\]", "win": False})),
+            _n("at3", 3, cmd="atelier verite", re=AT + r"v[eé]rit[eé]\s*$"),
+            _n("at3", 4, cmd="atelier verite ? ? ? ?", fs="at_verite"),
+            _n("at3", 5, cmd="atelier choix", re=AT + r"choix\s*$"),
+            _n("at3", 6, cmd="atelier choix ? ? ?", fs="at_choix"),
+        ]},
+        # R2 la boucle du robot : for, while + Ctrl+C, le cerveau, l'essai
+        "at4": {"titre": "hist.at4.titre", "skill": None, "steps": [
+            N("at4", 0, ou=O, **({"cmd": "1..3 | ForEach-Object { Get-Content robot\\capteur_distance; Start-Sleep 1 }",
+                                  "re": BOUCLE_PS} if win_ else
+                                 {"cmd": "for i in 1 2 3; do cat robot/capteur_distance; sleep 1; done",
+                                  "re": r"^for\s+\w+\s+in\s+(\d|\{\d|\$\(seq\b)", "win": False})),
+            N("at4", 1, ou=O, tout_code=True, **({"cmd": "while ($true) { Get-Content robot\\capteur_distance; Start-Sleep 1 }",
+                                                  "re": r"(?i)^while\s*\(\s*(\$true|1)\s*\)"} if win_ else
+                                                 {"cmd": "while true; do cat robot/capteur_distance; sleep 1; done",
+                                                  "re": r"^while\s+(true|:)", "win": False})),
+            _n("at4", 2, cmd=C("cat cerveau_exemple.sh", "type cerveau_exemple.ps1"), re=LIRE + r".*cerveau_exemple", ou=O),
+            N("at4", 3, cmd=C("cp cerveau_exemple.sh cerveau.sh", "copy cerveau_exemple.ps1 cerveau.ps1"), fs="at_cerveau", ou=O),
+            _n("at4", 4, cmd="atelier essai", fs="at_essai"),
+            _n("at4", 5, cmd=C("for i in $(seq 10); do sh cerveau.sh; atelier pas; done", boucle_ps(10)), fs="at_essai_pas",
+               ou=O, **({} if win_ else {"win": False})),
+            N("at4", 6, cmd=C("nano cerveau.sh", "notepad cerveau.ps1"), fs="at_malin", ou=O),
+        ]},
+        # le défi : le robot simulé qui évite tous les obstacles (exploit)
+        "at5": {"titre": "hist.at5.titre", "skill": None, "steps": [
+            _n("at5", 0, cmd="atelier defi", fs="at_defi_debut"),
+            N("at5", 1, cmd=C("for i in $(seq 20); do sh cerveau.sh; atelier pas; done", boucle_ps(20)), fs="at_defi", ou=O,
+              exploit="atelier.robot", **({} if win_ else {"win": False})),
+        ]},
+        # R3 + R4 le vrai Raspberry Pi et le robot autonome (avec un adulte, raconté)
+        "at6": {"titre": "hist.at6.titre", "skill": None, "steps": [
+            _n("at6", 0, cmd="atelier pi", re=AT + r"pi\b"),
+            _n("at6", 1, cmd="ls /sys/class/leds", re=r"^ls\b.*/sys/class/leds", outil="/sys/class/leds", win=False,
+               tout_code=True),
+            _n("at6", 2, cmd="command -v gpioset pinctrl", re=r"^(command\s+-v|which|type)\s+(gpioset|pinctrl)\b", win=False,
+               tout_code=True),
+            _n("at6", 3, cmd="atelier gpio", re=AT + r"gpio\b"),
+            _n("at6", 4, cmd="atelier autonome", re=AT + r"autonome\b"),
+            N("at6", 5, cmd=C("tail -5 robot/journal.txt", "Get-Content robot\\journal.txt -Tail 5"),
+              re=LIRE + r".*" + R + r"journal\.txt", ou=O),
+            _n("at6", 6, cmd="crontab -l", re=r"^crontab\s+-l\b", outil="crontab", win=False, tout_code=True),
+        ]},
+        # L'embarqué et le temps réel (§ 7.13)
+        "at7": {"titre": "hist.at7.titre", "skill": None, "steps": [
+            _n("at7", 0, cmd="atelier embarque", re=AT + r"embarqu[eé]\b"),
+            N("at7", 1, ou=O, **({"cmd": "Measure-Command { .\\cerveau.ps1 }",
+                                  "re": r"(?i)^measure-command\s*\{.*cerveau\w*\.ps1"} if win_ else
+                                 {"cmd": "time sh cerveau.sh", "re": r"^time\s+(sh|bash)\s+\S*cerveau\w*\.sh", "win": False})),
+            _n("at7", 2, cmd="atelier reflexe", re=AT + r"r[eé]flexe\s*$"),
+            _n("at7", 3, cmd="atelier reflexe ?", fs="at_reflexe"),
+            _n("at7", 4, cmd="atelier arduino", re=AT + r"arduino\b"),
+            _n("at7", 5, cmd="command -v arduino-cli esptool.py", re=r"^(command\s+-v|which|type)\s+(arduino-cli|esptool)", win=False,
+               tout_code=True),
+            _n("at7", 6, cmd="atelier telephone", re=AT + r"t[eé]l[eé]phone\b"),
+        ]},
+    }
+
+
+LECONS = lecons_pour(IS_WIN)
 CHAPITRE = {"id": "robots", "n": 20, "piece": "robots", "famille": "Constructs", "monde": True,
             "lecons": [f"at{i}" for i in range(8)], "objet": "robot_miniature", "titre": "roboticien"}
 
@@ -626,10 +722,15 @@ def indice(step, tapees):
         return t("at.indice.moteur")
     if fs in ("at_led1", "at_led0", "at_avance", "at_droite") and any(re.match(r"^echo\b", l) and ">" not in l for l in lignes):
         return t("at.indice.redirection")
-    if fs in ("at_essai_pas", "at_defi") and any(re.match(r"^for\b", l) and "atelier" not in l for l in lignes):
-        return t("at.indice.boucle")
-    if fs == "at_malin" and (dossier() / "cerveau.sh").is_file() and not cerveau_malin_ok(_cerveau_texte()):
-        return t("at.indice.malin", cmd="atelier aide-cerveau")
+    # (les lignes sont coupées aux « ; » : `for …; do sh cerveau.sh; atelier pas; done` donne quatre morceaux, la
+    # boucle est donc sans `atelier pas` seulement si AUCUN morceau ne l'a)
+    if fs in ("at_essai_pas", "at_defi") and any(re.match(r"^for\b", l) or win() and re.search(BOUCLE_PS, l) for l in lignes) \
+            and not any(re.search(r"\batelier\s+pas\b", l) for l in lignes):
+        return t("at.ps.indice.boucle" if win() else "at.indice.boucle")
+    if fs in ("at_essai_pas", "at_defi") and win() and script_refuse(fs, lignes):
+        return t("at.ps.indice.politique")
+    if fs == "at_malin" and (dossier() / nom_cerveau()).is_file() and not malin_ok():
+        return t("at.ps.indice.malin" if win() else "at.indice.malin", cmd="atelier aide-cerveau")
     if fs == "at_defi":
         der = dernier("defi")
         if der and der.endswith("(choc)"):
@@ -637,6 +738,24 @@ def indice(step, tapees):
         if der and der.endswith("(peu)"):
             return t("at.indice.peu")
     return None
+
+
+def moteurs_depuis(debut):
+    """Les ordres du moteur lus à chaque pas depuis le dernier [debut] du carnet (l'essai, le défi)."""
+    txt = carnet()
+    i = txt.rfind(f"[{debut}]")
+    return re.findall(r"^\[pas\] (\S+) →", txt[i:], re.M) if i >= 0 else []
+
+
+def script_refuse(fs, lignes):
+    """Windows : la boucle a lancé .\\cerveau.ps1 mais le moteur est resté sur « stop » à chaque pas. Le cerveau n'a donc
+    jamais écrit : le plus souvent, Windows a refusé le script (« l'exécution de scripts est désactivée sur ce
+    système », la politique d'exécution). Le jeu ne change jamais ce réglage : il explique, et propose une façon de
+    lancer le script qui ne vaut que pour cette fois (powershell -ExecutionPolicy Bypass -File)."""
+    if not any(re.search(r"(?i)cerveau\w*\.ps1", l) for l in lignes):
+        return False
+    m = moteurs_depuis("defi_debut" if fs == "at_defi" else "essai_debut")
+    return bool(m) and all(x == "stop" for x in m)
 
 
 def surveiller(state, lignes):
@@ -673,7 +792,7 @@ def banniere(largeur=None):
 
 
 def aide():
-    return banniere() + [f" {fg(215)}{BOLD}🤖 " + t("at.aide.titre") + RESET] + _bloc("at.aide.liste")
+    return banniere() + [f" {fg(215)}{BOLD}🤖 " + t("at.aide.titre") + RESET] + _bloc("at.ps.aide.liste" if win() else "at.aide.liste")
 
 
 def _bloc(cle, **p):
@@ -769,7 +888,9 @@ def lignes_pas(state):
             fin = ["", f" {fg(couleur)}{BOLD}" + ("🏆 " if v == "ok" else "✋ ") + t("at.defi." + v, cases=len(d["vus"]),
                                                                                        min=donnees()["defi"]["cases_min"]) + RESET]
             if v != "ok":
-                fin.append("  " + t("at.defi.recommence"))
+                fin.append("  " + t("at.ps.defi.recommence" if win() else "at.defi.recommence"))
+            elif rattraper_exploit(state):
+                fin.append(f" {fg(78)}{BOLD}" + rattraper_exploit(state, donner=True) + RESET)
     vus_dessin = d.get("vus", []) if d and d.get("arene") == r["arene"] else vus
     out = [f" {fg(117)}🤖 " + titre + t("at.pas.ev." + ev, moteur=m) + f"  {DIM}· " + t("at.pas.capteur", cm=cm) + RESET]
     out += _couleur_grille(dessin_grille(r["arene"], a["robot"], vus_dessin, choc=ev == "choc"), choc=ev == "choc")
@@ -850,7 +971,7 @@ def lignes_essai(state):
     noter("essai_debut", "entrainement (ok)")
     out = [f" {fg(117)}{BOLD}🧪 " + t("at.essai.titre") + RESET, ""]
     out += _couleur_grille(dessin_grille("e", a["robot"], a["vus"]))
-    return out + [""] + _bloc("at.essai.texte")
+    return out + [""] + _bloc("at.ps.essai.texte" if win() else "at.essai.texte")
 
 
 def lignes_defi(state):
@@ -865,12 +986,31 @@ def lignes_defi(state):
     D = donnees()["defi"]
     out = [f" {fg(213)}{BOLD}🏁 " + t("at.defi.titre", n=i + 1) + RESET, ""]
     out += _couleur_grille(dessin_grille(i, a["robot"], a["vus"]))
-    return out + [""] + _bloc("at.defi.regles", pas=D["pas"], min=D["cases_min"])
+    return out + [""] + _bloc("at.ps.defi.regles" if win() else "at.defi.regles", pas=D["pas"], min=D["cases_min"])
 
 
 def lignes_aide_cerveau():
+    if win():                                   # Windows : cerveau.ps1, le Bloc-notes, et le refus des scripts expliqué
+        return [f" {fg(213)}{BOLD}🧠 " + t("at.aidec.titre") + RESET, ""] + _bloc("at.ps.aidec.texte") + [""] + \
+            [f"    {fg(117)}{l}{RESET}" for l in cerveau_malin_ps().rstrip("\n").split("\n")] + [""] + \
+            _bloc("at.ps.aidec.fin") + [""] + _bloc("at.ps.politique")
     return [f" {fg(213)}{BOLD}🧠 " + t("at.aidec.titre") + RESET, ""] + _bloc("at.aidec.texte") + [""] + \
         [f"    {fg(117)}{l}{RESET}" for l in cerveau_malin().rstrip("\n").split("\n")] + [""] + _bloc("at.aidec.fin")
+
+
+def rattraper_exploit(state, donner=False):
+    """Un défi réussi alors que la leçon du défi (at5) est déjà finie sans l'exploit : c'est un joueur Windows d'avant
+    la version PowerShell (l'étape était sautée). Le défi réussi lui donne l'exploit, une fois. Renvoie le texte ou None."""
+    from . import histoire, recompenses
+    if "at5" not in histoire.h_(state)["faits"] or "atelier.robot" in recompenses.r_(state)["exploits"]:
+        return None
+    if not donner:
+        return True
+    msg = recompenses.exploit(state, "atelier.robot")
+    if msg:
+        core.log(state, msg)
+        core.say(state, msg, 16)
+    return msg or ""
 
 
 def _raconte(cle, emoji, couleur=215, **p):
@@ -914,7 +1054,7 @@ def commande(args, sortie=None):
             return
         a_(st)
         if sous in ("plan", "regles"):
-            lignes.extend(banniere() + t("at.meuble.plan", nom=st.get("name", "")).split("\n"))
+            lignes.extend(banniere() + t("at.ps.meuble.plan" if win() else "at.meuble.plan", nom=st.get("name", "")).split("\n"))
         elif sous == "robot":
             lignes.extend(lignes_robot(st))
         elif sous == "grille":

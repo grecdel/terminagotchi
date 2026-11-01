@@ -324,4 +324,20 @@ K = {
  # ------------------------------------------------------------------ le téléphone (Android seulement)
  "at.tel.boucle": "🔁 Le téléphone déroule ta boucle : {n} tours (le cerveau, puis le pas du monde).",
  "at.tel.boucle_max": "✋ Au plus {max} tours d'un coup sur le téléphone.",
+ # ------------------------------------------------------------------ Windows : PowerShell (PC seulement ; les textes dérivés
+ # des clés bash — cerveau.ps1, la boucle ForEach-Object… — sont fabriqués par textes_atelier.py, DERIVES)
+ "hist.at3.1.ps.bravo": "vrai ! if ( … ) teste ; PowerShell fait le bloc {{ … }} si c'est vrai, et le bloc après else si c'est faux.",
+ "hist.at3.1.ps.adulte": "-lt veut dire « less than » (plus petit que) ; -gt, « greater than » (plus grand que). PowerShell compare avec les mêmes mots que bash.",
+ "hist.at3.2.ps.bravo": "Ton robot sait décider ! if (…) {{ … }} else {{ … }} : si, alors, sinon.",
+ "hist.at3.2.ps.adulte": "$d = … range une valeur dans une variable ; [int] la change en nombre entier pour bien comparer. C'est exactement ce que fera le cerveau du robot.",
+ "hist.at4.0.ps.bravo": "Trois tours de boucle : ForEach-Object répète, Start-Sleep 1 attend une seconde.",
+ "hist.at4.0.ps.adulte": "1..3 fabrique les nombres 1, 2, 3 ; le tuyau | les donne un par un à ForEach-Object, qui répète le bloc {{ … }}.",
+ "hist.at4.1.ps.adulte": "while ($true) répète tant que c'est vrai… donc toujours. Ctrl+C arrête la commande en cours.",
+ "hist.at4.6.ps.adulte": "N'importe quel éditeur convient (le Bloc-notes, ou un autre). Set-Content robot\\moteur droite écrit dans le fichier, comme echo droite > robot\\moteur. Le jeu vérifie qu'il y a un if, le capteur, avance et une direction.",
+ "hist.at6.5.ps.adulte": "Get-Content … -Tail 5 montre les 5 dernières lignes : les plus récentes, celles qu'on veut voir après une panne.",
+ "hist.at7.1.ps.bravo": "Measure-Command mesure la durée. TotalMilliseconds, c'est le temps qui a vraiment passé, en millisecondes.",
+ "at.ps.aidec.texte": "Ouvre ton cerveau avec `notepad cerveau.ps1` et écris ces lignes, puis enregistre (Ctrl+S) et ferme le Bloc-notes :",
+ "at.ps.aidec.fin": "if (…) {{ … }} else {{ … }} : SI le capteur dit moins de 10 cm, ALORS tourne, SINON avance.",
+ "at.ps.politique": "Si PowerShell écrit « l'exécution de scripts est désactivée sur ce système », ce n'est pas ta faute : Windows bloque les scripts par prudence. Dans le terminal du jeu, ton cerveau marche déjà. Ailleurs, lance-le ainsi, sans rien changer aux réglages de l'ordinateur :\n`1..20 | ForEach-Object {{ powershell -ExecutionPolicy Bypass -File .\\cerveau.ps1; atelier pas }}`\nSi Windows refuse encore : `1..20 | ForEach-Object {{ & ([scriptblock]::Create((Get-Content .\\cerveau.ps1 -Raw))); atelier pas }}`",
+ "at.ps.indice.politique": "Ton robot n'a pas bougé : son moteur est resté sur stop, donc cerveau.ps1 n'a rien écrit. Si PowerShell a affiché « l'exécution de scripts est désactivée », c'est Windows qui a bloqué ton script (pas ta faute). Tape `atelier aide-cerveau` : il montre comment le lancer sans rien changer à l'ordinateur (pour le défi, relance d'abord `atelier defi`).",
 }

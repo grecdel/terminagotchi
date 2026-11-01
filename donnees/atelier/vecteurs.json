@@ -5319,6 +5319,68 @@
      "bouge"
     ]
    ]
+  },
+  {
+   "ligne": "echo 1 > robot\\led",
+   "robots": [
+    [
+     "led",
+     "ecrit"
+    ]
+   ]
+  },
+  {
+   "ligne": "Set-Content robot\\moteur droite",
+   "robots": [
+    [
+     "moteur",
+     "ecrit"
+    ]
+   ]
+  },
+  {
+   "ligne": "Get-Content robot\\capteur_distance",
+   "robots": [
+    [
+     "capteur",
+     "lit"
+    ]
+   ]
+  },
+  {
+   "ligne": "1..20 | ForEach-Object { .\\cerveau.ps1; atelier pas }",
+   "robots": [
+    [
+     "cerveau",
+     "pense"
+    ],
+    [
+     "roues",
+     "bouge"
+    ]
+   ]
+  },
+  {
+   "ligne": "Measure-Command { .\\cerveau.ps1 }",
+   "robots": [
+    [
+     "cerveau",
+     "pense"
+    ]
+   ]
+  },
+  {
+   "ligne": "powershell -ExecutionPolicy Bypass -File .\\cerveau.ps1",
+   "robots": [
+    [
+     "cerveau",
+     "pense"
+    ]
+   ]
+  },
+  {
+   "ligne": "notepad cerveau.ps1",
+   "robots": []
   }
  ],
  "deploie": [
@@ -5514,6 +5576,82 @@
      "sens": "bouge"
     }
    ]
+  },
+  {
+   "ligne": "echo 1 > robot\\led",
+   "robots": [
+    {
+     "seg": 0,
+     "cmd": "echo",
+     "piece": "led",
+     "sens": "ecrit"
+    }
+   ]
+  },
+  {
+   "ligne": "Set-Content robot\\moteur droite",
+   "robots": [
+    {
+     "seg": 0,
+     "cmd": "Set-Content",
+     "piece": "moteur",
+     "sens": "ecrit"
+    }
+   ]
+  },
+  {
+   "ligne": "Get-Content robot\\capteur_distance",
+   "robots": [
+    {
+     "seg": 0,
+     "cmd": "Get-Content",
+     "piece": "capteur",
+     "sens": "lit"
+    }
+   ]
+  },
+  {
+   "ligne": "1..20 | ForEach-Object { .\\cerveau.ps1; atelier pas }",
+   "robots": [
+    {
+     "seg": 1,
+     "cmd": "ForEach-Object",
+     "piece": "cerveau",
+     "sens": "pense"
+    },
+    {
+     "seg": 2,
+     "cmd": "atelier",
+     "piece": "roues",
+     "sens": "bouge"
+    }
+   ]
+  },
+  {
+   "ligne": "Measure-Command { .\\cerveau.ps1 }",
+   "robots": [
+    {
+     "seg": 0,
+     "cmd": "Measure-Command",
+     "piece": "cerveau",
+     "sens": "pense"
+    }
+   ]
+  },
+  {
+   "ligne": "powershell -ExecutionPolicy Bypass -File .\\cerveau.ps1",
+   "robots": [
+    {
+     "seg": 0,
+     "cmd": "powershell",
+     "piece": "cerveau",
+     "sens": "pense"
+    }
+   ]
+  },
+  {
+   "ligne": "notepad cerveau.ps1",
+   "robots": []
   }
  ],
  "malins": [

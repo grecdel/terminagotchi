@@ -11,7 +11,11 @@
      `atelier pas`), avec les erreurs d'un enfant (le cerveau d'exemple qui se cogne, un défi raté puis réussi) :
      exploit « le robot qui évite tous les obstacles », variantes réservées, le robot miniature et le titre ;
   4. les indices ; 5. la vue déployée (le robot) ;
-  6. sécurité : rien hors du terrain, aucun sudo, aucun réseau, AUCUN accès au matériel (ni /dev, ni port série).
+  6. sécurité : rien hors du terrain, aucun sudo, aucun réseau, AUCUN accès au matériel (ni /dev, ni port série) ;
+  7. les commandes du téléphone ;
+  8. Windows (PowerShell) : les mêmes étapes en PowerShell (lecons_pour(True)), le cerveau.ps1, l'indice du script refusé
+     par Windows ; la partie jouée est dans test_windows.py, et les VRAIS PowerShell 5.1 et 7 jouent le défi en CI
+     (pc/outils/defi_powershell.py, .github/workflows/windows.yml).
 """
 import json
 import os
@@ -349,6 +353,41 @@ for boite in ("toybox", "busybox"):
 verifier(ref["sh cerveau.sh && cat robot/moteur"].strip() == "avance" and
          "droite" in ref["echo 0 > robot/capteur_distance && sh cerveau.sh && cat robot/moteur && echo 30 > robot/capteur_distance"],
          "le cerveau malin : avance à 30 cm, tourne à 0 cm (un vrai sh)")
+
+print("8. Windows : la même chose en PowerShell")
+W = A.lecons_pour(True)
+verifier([len(l_["steps"]) for l_ in W.values()] == [len(l_["steps"]) for l_ in A.LECONS.values()]
+         and [s_.get("fs") for l_ in W.values() for s_ in l_["steps"]] == [s_.get("fs") for l_ in A.LECONS.values() for s_ in l_["steps"]]
+         and [s_.get("exploit") for l_ in W.values() for s_ in l_["steps"]] == [s_.get("exploit") for l_ in A.LECONS.values() for s_ in l_["steps"]],
+         "PowerShell : les mêmes étapes, les mêmes vérifications (fichiers du robot, carnet) et le même exploit que bash")
+pw = {s_["cmd"]: s_ for l_ in W.values() for s_ in l_["steps"]}
+verifier(pw.get("1..20 | ForEach-Object { .\\cerveau.ps1; atelier pas }", {}).get("exploit") == "atelier.robot"
+         and "win" not in pw["1..20 | ForEach-Object { .\\cerveau.ps1; atelier pas }"],
+         "le défi n'est plus sauté sous Windows : la boucle ForEach-Object donne l'exploit")
+verifier(A.cerveau_malin_ps_ok(A.cerveau_malin_ps()) and not A.cerveau_malin_ps_ok(A.cerveau_exemple_ps())
+         and not A.cerveau_malin_ps_ok(A.cerveau_malin()) and not A.cerveau_malin_ok(A.cerveau_malin_ps()),
+         "le cerveau malin PowerShell est reconnu ; l'exemple (sans if) et la version bash ne le sont pas sous Windows")
+verifier(all(".ps1" not in s_["cmd"] and "ForEach-Object" not in s_["cmd"] for l_ in A.LECONS.values() for s_ in l_["steps"]),
+         "sous Linux et macOS, rien ne change : les étapes restent en bash")
+A.IS_WIN = True
+try:
+    A.noter("defi_debut", "test (ok)")
+    for _ in range(3):
+        A.noter("pas", "stop → (1 ; 1) E 30 cm (stop)")
+    pol = A.indice(pw["1..20 | ForEach-Object { .\\cerveau.ps1; atelier pas }"],
+                   [("1..20 | ForEach-Object { .\\cerveau.ps1", None), ("atelier pas }", None)])
+    A.noter("defi_debut", "test (ok)")
+    A.noter("pas", "droite → (1 ; 1) S 30 cm (tourne)")
+    pas_pol = A.indice(pw["1..20 | ForEach-Object { .\\cerveau.ps1; atelier pas }"],
+                       [("1..20 | ForEach-Object { .\\cerveau.ps1", None), ("atelier pas }", None)])
+finally:
+    A.IS_WIN = False
+verifier(pol == langue.t("at.ps.indice.politique") and pas_pol != pol,
+         "le moteur resté sur stop malgré .\\cerveau.ps1 : l'indice explique le script refusé par Windows (et seulement alors)")
+x = deploie.robots("1..20 | ForEach-Object { .\\cerveau.ps1; atelier pas }")
+verifier([(y["piece"], y["sens"]) for y in x] == [("cerveau", "pense"), ("roues", "bouge")]
+         and [(y["piece"], y["sens"]) for y in deploie.robots("Set-Content robot\\moteur droite")] == [("moteur", "ecrit")],
+         "la vue déployée comprend aussi PowerShell (.\\cerveau.ps1, Set-Content robot\\moteur)")
 
 print(f"\n{ok} réussis, {ko} échoués   (HOME={HOME})")
 sys.exit(1 if ko else 0)

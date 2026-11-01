@@ -112,6 +112,26 @@ Aucun problème critique ou important ne reste ouvert.
 
 - Après un **choc**, le défi s'arrête, mais la boucle de l'enfant continue ses tours restants (le robot se cogne encore
   et la grille se redessine) : c'est fidèle à un vrai robot, mais un peu long à lire ; le message de fin est clair.
-- Le défi n'est pas jouable sous **Windows** (les boucles `for` et `sh` sont des étapes bash, cachées sous PowerShell) :
-  l'étape est sautée, l'exploit n'est pas donné. Une version PowerShell est à décider.
+- ~~Le défi n'est pas jouable sous **Windows**~~ : fait (1er novembre). Voir § 7.
+
+## 7. Windows : le même parcours en PowerShell (1er novembre)
+
+On a rejoué at4 → at5 « comme sous Windows » (`pc/outils/test_windows.py`) puis pour de vrai sur la machine Windows de
+GitHub, dans Windows PowerShell 5.1 et PowerShell 7 (`pc/outils/defi_powershell.py`).
+
+- **Léa (7 ans)** copie `cerveau_exemple.ps1`, lance la boucle `for ($i=1; $i -le 10; $i++) { … }` : 💥 le choc, comme
+  sous Linux. Elle oublie `atelier pas` dans sa boucle `ForEach-Object` : l'indice lui montre `.\cerveau.ps1` puis
+  `atelier pas` (avant la correction, l'indice de la boucle apparaissait même quand la boucle était juste, parce que
+  la ligne est coupée aux « ; » : corrigé pour bash aussi).
+- **Inès (12 ans)** travaille dans un PowerShell ordinaire de l'école : Windows répond « l'exécution de scripts est
+  désactivée sur ce système ». Son robot reste immobile (moteur sur `stop`) ; le jeu le voit et explique que ce n'est
+  pas sa faute, avec `atelier aide-cerveau` qui donne `powershell -ExecutionPolicy Bypass -File .\cerveau.ps1` (pour
+  cette fois, rien n'est changé sur l'ordinateur). En CI, la fenêtre « Restricted » imitée confirme le message et que
+  les deux façons proposées marchent.
+- **Hugo (15 ans)** écrit son cerveau avec `@' … '@ | Set-Content cerveau.ps1`, puis avec `>` (UTF-16 sous 5.1) : les
+  deux sont reconnus ; le défi réussi donne l'exploit. Un ancien joueur Windows (leçon finie sans le défi) le reçoit en
+  réussissant le défi.
+
+Problème trouvé et corrigé : les textes avec des accolades PowerShell (`{ … }`) cassaient `str.format` ; elles sont
+doublées dans les fichiers de textes (`{{ … }}`), comme `TG{{…}}` ailleurs.
 - Sur un vrai téléphone : la boucle déroulée par l'appli (40 tours au plus) et l'éditeur `edite cerveau.sh`.

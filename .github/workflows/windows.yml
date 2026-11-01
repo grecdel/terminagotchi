@@ -29,3 +29,138 @@ jobs:
         run: |
           $env:PYTHONUTF8 = "1"
           python pc/outils/test_windows.py
+
+  # L'Atelier : le défi du robot joué pour de vrai dans PowerShell (Windows PowerShell 5.1 et PowerShell 7), comme un
+  # enfant : cerveau.ps1, la vraie boucle `1..20 | ForEach-Object { .\cerveau.ps1; atelier pas }`, la commande du jeu
+  # `atelier` définie comme le fait le compagnon ; tout dans un dossier temporaire (USERPROFILE, APPDATA). Le résultat
+  # est vérifié dans la partie : la grille, les chocs, les cases explorées, l'exploit (pc/outils/defi_powershell.py).
+  # La politique d'exécution de Windows n'est JAMAIS changée : le refus des scripts est seulement imité pour une
+  # fenêtre (-ExecutionPolicy Restricted sur un powershell enfant), puis les deux façons de faire proposées à l'enfant
+  # sont essayées dans cette fenêtre-là.
+  atelier-powershell:
+    runs-on: windows-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        shell: [powershell, pwsh]
+    defaults:
+      run:
+        shell: ${{ matrix.shell }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Le défi du robot dans ${{ matrix.shell }}
+        run: |
+          $ErrorActionPreference = "Continue"     # (5.1 : une ligne d'erreur d'un programme redirigée par 2>&1 ne doit pas tout arrêter)
+          $politique = Get-ExecutionPolicy -List | Out-String
+          "PowerShell $($PSVersionTable.PSVersion) ($($PSVersionTable.PSEdition))"
+          $env:PYTHONUTF8 = "1"
+          $env:LANG = "fr_FR.UTF-8"
+          $repo = (Get-Location).Path
+          $T = "$repo\pc\outils\defi_powershell.py"
+          $env:TG_DEFI_TEMP = Join-Path $env:RUNNER_TEMP "tg_atelier_${{ matrix.shell }}"
+          New-Item -ItemType Directory -Force $env:TG_DEFI_TEMP | Out-Null
+          $env:USERPROFILE = $env:TG_DEFI_TEMP
+          $env:HOME = $env:TG_DEFI_TEMP
+          $env:APPDATA = Join-Path $env:TG_DEFI_TEMP "AppData"
+          $env:PYTHONPATH = "$repo\pc"
+          function tg { python -m tg @args }
+          function atelier { tg atelier @args }
+          function verifier($ok, $msg) { if ($ok) { "  OK  $msg" } else { "  ECHEC  $msg"; exit 1 } }
+          function jeu { python $T @args; if ($LASTEXITCODE -ne 0) { "  ECHEC  defi_powershell $args"; exit 1 } }
+          function tape($ligne) { $env:TG_LIGNE = $ligne; jeu tape; Remove-Item Env:\TG_LIGNE }   # ce que l'enfant a tapé
+
+          jeu prepare at3 1
+          Set-Location (python $T dossier)
+
+          # at3 : le robot décide (if de PowerShell)
+          $r = if (5 -lt 10) { "vrai" } else { "faux" }
+          verifier ($r -eq "vrai") "if (5 -lt 10) { `"vrai`" } else { `"faux`" } : $r"
+          tape 'if (5 -lt 10) { "vrai" } else { "faux" }'
+          jeu attend at3 2
+          $d = [int](Get-Content robot\capteur_distance); $r = if ($d -lt 10) { "obstacle" } else { "libre" }
+          verifier ($r -eq "libre") "le capteur ($d cm) : $r"
+          tape '$d = [int](Get-Content robot\capteur_distance); if ($d -lt 10) { "obstacle" } else { "libre" }'
+          jeu attend at3 3
+
+          # at4 : la boucle, le cerveau d'exemple (il fonce) dans la boucle for (…) de PowerShell
+          jeu saute at4 0
+          $l = 1..3 | ForEach-Object { Get-Content robot\capteur_distance; Start-Sleep 1 }
+          verifier ($l.Count -eq 3) "1..3 | ForEach-Object : trois lectures du capteur ($($l -join ', '))"
+          tape '1..3 | ForEach-Object { Get-Content robot\capteur_distance; Start-Sleep 1 }'
+          jeu attend at4 1
+          jeu saute at4 2
+          type cerveau_exemple.ps1
+          tape "type cerveau_exemple.ps1"
+          jeu attend at4 3
+          copy cerveau_exemple.ps1 cerveau.ps1
+          tape "copy cerveau_exemple.ps1 cerveau.ps1"
+          jeu attend at4 4
+          atelier essai
+          tape "atelier essai"
+          for ($i=1; $i -le 10; $i++) { .\cerveau.ps1; atelier pas }
+          tape 'for ($i=1; $i -le 10; $i++) { .\cerveau.ps1; atelier pas }'
+          jeu attend at4 6
+          verifier ((Get-Content carnet_de_l_atelier.txt -Raw) -match '\(choc\)') "le cerveau d'exemple se cogne (CHOC dans la grille d'essai)"
+
+          # l'enfant écrit son cerveau malin, comme dans atelier aide-cerveau (ici avec Set-Content)
+          @'
+          $d = [int](Get-Content robot\capteur_distance)
+          if ($d -lt 10) {
+            Set-Content robot\moteur droite
+          } else {
+            Set-Content robot\moteur avance
+          }
+          '@ | Set-Content cerveau.ps1
+          tape "notepad cerveau.ps1"
+          jeu attend at5 0
+          Set-Content robot\capteur_distance 0
+          .\cerveau.ps1
+          verifier ((Get-Content robot\moteur) -eq "droite") "à 0 cm, le cerveau.ps1 tourne à droite"
+          Set-Content robot\capteur_distance 60
+          .\cerveau.ps1
+          verifier ((Get-Content robot\moteur) -eq "avance") "à 60 cm, il avance"
+
+          # Windows qui refuse les scripts : imité pour UNE fenêtre (rien n'est changé sur la machine)
+          atelier defi
+          tape "atelier defi"
+          jeu attend at5 1
+          $exe = (Get-Process -Id $PID).Path
+          $refus = & $exe -NoProfile -ExecutionPolicy Restricted -Command '.\cerveau.ps1' 2>&1 | Out-String
+          "  (la fenêtre Restricted a répondu : $($refus.Trim().Split([Environment]::NewLine)[0]))"
+          verifier ($refus -match 'disabled|about_Execution_Policies') "Restricted : « running scripts is disabled on this system »"
+          Set-Content robot\moteur stop
+          $essai = & $exe -NoProfile -ExecutionPolicy Restricted -Command '& ([scriptblock]::Create((Get-Content .\cerveau.ps1 -Raw))); Get-Content robot\moteur' 2>&1 | Out-String
+          verifier ($essai.Trim() -eq "avance") "dans cette fenêtre, & ([scriptblock]::Create((Get-Content .\cerveau.ps1 -Raw))) marche ($($essai.Trim()))"
+          Set-Content robot\moteur stop
+          $essai = & $exe -NoProfile -ExecutionPolicy Restricted -Command 'powershell -NoProfile -ExecutionPolicy Bypass -File .\cerveau.ps1; Get-Content robot\moteur' 2>&1 | Out-String
+          verifier ($essai.Trim() -eq "avance") "dans cette fenêtre, powershell -ExecutionPolicy Bypass -File .\cerveau.ps1 marche ($($essai.Trim()))"
+          Set-Content robot\moteur stop
+          1..20 | ForEach-Object { & $exe -NoProfile -ExecutionPolicy Restricted -Command '.\cerveau.ps1' 2>&1 | Out-Null; atelier pas | Out-Null }
+          tape '1..20 | ForEach-Object { .\cerveau.ps1; atelier pas }'
+          jeu attend at5 1
+          jeu indice politique
+
+          # le vrai défi : la boucle de l'enfant, 20 pas
+          atelier defi
+          tape "atelier defi"
+          1..20 | ForEach-Object { .\cerveau.ps1; atelier pas }
+          tape '1..20 | ForEach-Object { .\cerveau.ps1; atelier pas }'
+          jeu verifie
+          jeu attend at6 0
+
+          # at6 et at7 : le journal du robot, le temps du cerveau (Measure-Command)
+          foreach ($c in "pi", "gpio", "autonome") { atelier $c | Out-Null; tape "atelier $c" }
+          Get-Content robot\journal.txt -Tail 5
+          tape "Get-Content robot\journal.txt -Tail 5"
+          jeu attend at7 0
+          atelier embarque | Out-Null
+          tape "atelier embarque"
+          $ms = (Measure-Command { .\cerveau.ps1 }).TotalMilliseconds
+          "  le cerveau décide en $ms ms"
+          tape 'Measure-Command { .\cerveau.ps1 }'
+          jeu attend at7 2
+          verifier ((Get-ExecutionPolicy -List | Out-String) -eq $politique) "la politique d'exécution de la machine n'a pas changé"
+          exit 0
