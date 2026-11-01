@@ -1,0 +1,349 @@
+{
+ "note": "Généré par donnees/guilde/outils/fiches_guilde.py ; lu par pc/tg/guilde.py et Guilde.kt",
+ "libertes": {
+  "situations": [
+   {
+    "id": "jouer",
+    "rep": 0
+   },
+   {
+    "id": "lire",
+    "rep": 1
+   },
+   {
+    "id": "donner",
+    "rep": 2
+   },
+   {
+    "id": "ameliorer",
+    "rep": 3
+   }
+  ]
+ },
+ "gratuit": [
+  {
+   "id": "jeu_ferme",
+   "rep": "p"
+  },
+  {
+   "id": "libre_payant",
+   "rep": "l"
+  },
+  {
+   "id": "appli_pubs",
+   "rep": "p"
+  },
+  {
+   "id": "blender",
+   "rep": "l"
+  }
+ ],
+ "licences": {
+  "a_trouver": 5,
+  "familles": [
+   {
+    "id": "agpl",
+    "nom": "GNU AGPL",
+    "genre": "copyleft",
+    "motif": "GNU AFFERO GENERAL PUBLIC LICENSE|\\bAGPL"
+   },
+   {
+    "id": "lgpl",
+    "nom": "GNU LGPL",
+    "genre": "copyleft",
+    "motif": "GNU (LESSER|LIBRARY) GENERAL PUBLIC LICENSE|\\bLGPL"
+   },
+   {
+    "id": "gpl",
+    "nom": "GNU GPL",
+    "genre": "copyleft",
+    "motif": "GNU GENERAL PUBLIC LICENSE|\\bGPL"
+   },
+   {
+    "id": "mpl",
+    "nom": "Mozilla Public License",
+    "genre": "copyleft",
+    "motif": "Mozilla Public License|\\bMPL-?\\d"
+   },
+   {
+    "id": "apache",
+    "nom": "Apache License",
+    "genre": "permissive",
+    "motif": "Apache License|\\bApache-2"
+   },
+   {
+    "id": "mit",
+    "nom": "MIT",
+    "genre": "permissive",
+    "motif": "\\bMIT\\b|Permission is hereby granted, free of charge"
+   },
+   {
+    "id": "bsd",
+    "nom": "BSD",
+    "genre": "permissive",
+    "motif": "\\bBSD\\b|Redistribution and use in source and binary forms"
+   },
+   {
+    "id": "psf",
+    "nom": "Python Software Foundation License",
+    "genre": "permissive",
+    "motif": "Python Software Foundation|\\bPSF-"
+   },
+   {
+    "id": "zlib",
+    "nom": "zlib",
+    "genre": "permissive",
+    "motif": "\\bzlib License\\b|\\bZlib\\b|provided 'as-is', without any express"
+   },
+   {
+    "id": "cc",
+    "nom": "Creative Commons",
+    "genre": "cc",
+    "motif": "Creative Commons|\\bCC-BY|\\bCC0"
+   },
+   {
+    "id": "domaine_public",
+    "nom": "Public domain",
+    "genre": "domaine",
+    "motif": "public domain|\\bUnlicense\\b"
+   }
+  ],
+  "catalogue": {
+   "bash": "gpl",
+   "coreutils": "gpl",
+   "grep": "gpl",
+   "sed": "gpl",
+   "gawk": "gpl",
+   "gcc": "gpl",
+   "make": "gpl",
+   "git": "gpl",
+   "nano": "gpl",
+   "linux": "gpl",
+   "gimp": "gpl",
+   "inkscape": "gpl",
+   "openscad": "gpl",
+   "vlc": "gpl",
+   "blender": "gpl",
+   "krita": "gpl",
+   "audacity": "gpl",
+   "tar": "gpl",
+   "glibc": "lgpl",
+   "ffmpeg": "lgpl",
+   "libreoffice": "mpl",
+   "firefox": "mpl",
+   "thunderbird": "mpl",
+   "python3": "psf",
+   "python": "psf",
+   "curl": "mit",
+   "nodejs": "mit",
+   "openssl": "apache",
+   "zlib": "zlib",
+   "sqlite": "domaine_public",
+   "sqlite3": "domaine_public"
+  }
+ },
+ "faim": {
+  "marques": [
+   "^def etat_de\\(",
+   "point de faim"
+  ],
+  "fichier_tel": "satiete.py"
+ },
+ "extraits": {
+  "pc/tg/satiete.py": "\"\"\"La satiété (validée le 29 octobre) : pourquoi bien nourrir sa créature, sans mort ni corvée.\nLes mêmes règles que Satiete.kt sur Android ; les calculs communs sont vérifiés par donnees/satiete/vecteurs.json.\n\n1. Rythme : la faim ne baisse que pendant les heures d'éveil (EVEIL h - COUCHER h, heure locale), 3 fois plus\n   lentement qu'avant (SEC_PAR_POINT = 2160 s par point, au lieu de 720) : environ 23 points par jour, donc de\n   rassasiée (80) à affamée (40) en ~2 jours. Le talent Gardien double encore, l'Endurance aussi (jusqu'à ×2), le\n   talent du lien (« Cœur fidèle ») ajoute ×1.25. Mode vacances (`tg vacances` / `vacances`) : la faim est en pause.\n2. Quatre états : rassasiée (≥ 80), en forme (40-80), affamée (15-40), en veille (< 15). Jamais de mort, et\n   l'apprentissage n'est jamais bloqué. La veille dure jusqu'à un « repas complet » : REVEIL_PLATS commandes\n   différentes ; elle se réveille alors au moins « en forme » (REVEIL_FAIM).\n3. Rassasiée : +20 % d'XP sur les commandes et les leçons (XP_PCT, avec les restes gardés : jamais d'arrondi\n   perdu), dressage facilité (+DRESSAGE_TEMPS s et l'exemple tout de suite), plus de rencontres (×RENCONTRES),\n   aura plus vive. Évolution : pour grandir (Bébé → Ado, Ado → Adulte), il faut aussi JOURS_STADE jours soignés\n   (pas forcément d'affilée) ; en attendant, l'XP en trop est mise de côté (« reserve »), jamais perdue, et les\n   leçons ne demandent jamais un niveau plus haut que celui atteint (niveau_appris, plafond). Lien : chaque jour\n   soigné donne un point de lien (phrases à LIEN_PHRASES, réaction à LIEN_REACTION, talent à LIEN_TALENT).\n4. Faim : affamée −20 % d'XP, en veille −40 % ; pas de nouveau dressage ni de bonus de l'épreuve du jour ; le\n   guide grogne au lieu de donner son astuce ; l'aura pâlit.\n5. Aliments : chaque famille de commandes (FAMILLES) est un aliment. Une commande jamais goûtée (« nouveau goût »)\n   nourrit le plus (NOUVEAU) ; ensuite la famille nourrit de moins en moins dans la journée (PAR_FAMILLE) ; une\n   commande répétée de suite ou ratée nourrit à peine (REPETEE, RATEE). L'assiette du jour montre les familles\n   déjà mangées ; l'assiette complète (les 6) : +ASSIETTE_FAIM de faim et +ASSIETTE_XP XP, une fois par jour.\n6. Jour soigné : un jour qui finit au moins « en forme » (même sans jouer : la faim baisse lentement) ; en jouant,\n   il compte dès JOUR_PLATS commandes différentes avec la faim au moins en forme. Il sert à la série de soins, au\n   lien et à l'évolution. Série : chaque jour qui finit affamée ou en veille retire UN cran, jamais tout ; les jours\n   de vacances ne comptent ni pour ni contre ; paliers SERIE_PALIERS : une médaille et un peu d'XP.\n7. Longue absence : sans repas depuis ABSENCE_JOURS jours, elle se repose dans son biome ; au retour, rien n'est\n   perdu et elle revient en forme (RETOUR_FAIM).\n\nSauvegarde : state[\"satiete\"] (local, rien n'est envoyé au serveur). Temps en secondes, dates locales AAAA-MM-JJ.\nTests : pc/outils/test_satiete.py (et la simulation de 14 jours), tests/jvm/Satiete.kt.\n\"\"\"\nimport datetime\nimport time\n\nfrom .langue import au_hasard, t\n\nSEC_PAR_POINT = 2160.0\nEVEIL, COUCHER = 7, 21\nRASSASIEE, FORME, AFFAMEE = 80.0, 40.0, 15.0\nETATS = (\"rassasiee\", \"forme\", \"affamee\", \"veille\")\nICONES_ETAT = {\"rassasiee\": \"😋\", \"forme\": \"🙂\", \"affamee\": \"😟\", \"veille\": \"💤\", \"repos\": \"🌿\"}\nREVEIL_PLATS = 3\nREVEIL_FAIM = 40.0\nXP_PCT = {\"rassasiee\": 20, \"forme\": 0, \"affamee\": -20, \"veille\": -40, \"repos\": 0}\nDRESSAGE_TEMPS = 15\nRENCONTRES = 1.25\nNOUVEAU = 8.0\nPAR_FAMILLE = (4.0, 3.0, 2.0, 2.0, 1.5)\nAUTRE = 2.0\nREPETEE = 0.5\nRATEE = 0.5\nASSIETTE_FAIM = 10.0\nASSIETTE_XP = 5\nJOUR_PLATS = 3\nJOUR_FAIM = 40.0\nJOURS_STADE = {2: 3, 3: 7}          # stade visé → jours soignés demandés (Bébé → Ado : 3, Ado → Adulte : 7)\nSEUIL_STADE = {2: 160, 3: 810}      # XP du premier niveau du stade (niveau 5, niveau 10 : core.level)\nMIGRATION_JOURS = 3                 # une partie d'avant la satiété : 3 jours soignés offerts\nMIGRATION_FAIM = 50.0               # … et au moins « en forme » (l'ancienne faim descendait très vite)\nSERIE_PALIERS = (3, 7, 14, 30)\nSERIE_XP = (10, 15, 20, 30)\nLIEN_PHRASES, LIEN_REACTION, LIEN_TALENT = 3, 7, 30\nTALENT_LENT = 1.25\nABSENCE_JOURS = 21\nRETOUR_FAIM = 60.0\n\nFAMILLES = (\"reperer\", \"batir\", \"lire\", \"brancher\", \"proteger\", \"observer\")\nICONES = {\"reperer\": \"🧭\", \"batir\": \"🧱\", \"lire\": \"🔍\", \"brancher\": \"🔌\", \"proteger\": \"🔑\", \"observer\": \"🔭\"}\nCMDS = {\n    \"reperer\": {\"pwd\", \"ls\", \"dir\", \"cd\", \"tree\", \"gci\", \"get-childitem\", \"set-location\", \"pushd\", \"popd\", \"carte\"},\n    \"batir\": {\"mkdir\", \"touch\", \"echo\", \"cp\", \"mv\", \"rm\", \"rmdir\", \"ln\", \"new-item\", \"copy\", \"move\", \"del\", \"ren\",\n              \"copy-item\", \"move-item\", \"remove-item\", \"add-content\", \"nano\", \"vim\", \"vi\", \"nvim\", \"edite\", \"git\",\n              \"python\", \"python3\", \"py\", \"sh\", \"bash\", \"zsh\", \"alias\", \"make\", \"printf\", \"for\", \"if\", \"while\"},\n    \"lire\": {\"cat\", \"head\", \"tail\", \"less\", \"more\", \"grep\", \"find\", \"wc\", \"sort\", \"uniq\", \"rev\", \"type\", \"diff\",\n             \"get-content\", \"select-string\", \"man\", \"explique\", \"cherche\", \"awk\", \"sed\", \"cut\", \"file\", \"which\"},\n    \"brancher\": {\"ping\", \"curl\", \"curl.exe\", \"wget\", \"ssh\", \"scp\", \"ip\", \"ifconfig\", \"ipconfig\", \"netstat\", \"nslookup\",\n                 \"dig\", \"traceroute\", \"tracert\", \"tracepath\", \"mtr\", \"hostname\", \"test-connection\", \"invoke-webrequest\",\n                 \"iwr\", \"web\", \"applis\", \"ouvre\", \"appelle\", \"sms\", \"partage\", \"lampe\", \"vibre\", \"batterie\", \"dis\",\n                 \"reglages\", \"am\", \"pm\"},\n    \"proteger\": {\"chmod\", \"chown\", \"whoami\", \"id\", \"groups\", \"sudo\", \"umask\", \"attrib\", \"icacls\", \"get-acl\", \"passwd\"},\n    \"observer\": {\"date\", \"cal\", \"uptime\", \"df\", \"du\", \"free\", \"ps\", \"top\", \"htop\", \"btop\", \"uname\", \"kill\", \"killall\",\n                 \"history\", \"getprop\", \"dumpsys\", \"sleep\", \"jobs\", \"systeminfo\", \"tasklist\", \"get-process\", \"get-date\",\n                 \"stat\", \"lsblk\", \"env\"},\n}\nPAR_CMD = {c: f for f, cs in CMDS.items() for c in cs}\n\n\n# ---------------------------------------------------------------- calculs communs (les mêmes en Kotlin)\ndef famille(cmd):\n    \"\"\"L'aliment d'une commande (« reperer »…), ou None (commande de la créature, inconnue…).\"\"\"\n    cmd = (cmd or \"\").lower()\n    if cmd.startswith(\"termux-\"):\n        return \"brancher\"\n    return PAR_CMD.get(cmd)\n\n\ndef etat_de(faim, veille=False):\n    if veille or faim < AFFAMEE:\n        return \"veille\"\n    if faim >= RASSASIEE:\n        return \"rassasiee\"\n    return \"forme\" if faim >= FORME else \"affamee\"\n\n\ndef _local(ts):\n    return datetime.datetime.fromtimestamp(ts)\n\n\ndef jour_de(ts):\n    \"\"\"La date locale AAAA-MM-JJ d'un instant (secondes).\"\"\"\n    return _local(ts).strftime(\"%Y-%m-%d\")\n",
+  "pc/tg/aura.py": "\"\"\"Les auras de rareté : une lueur qui suit la silhouette d'une bestiole et montre sa rareté.\n\nL'aura est calculée depuis le MASQUE de l'image (les pixels non vides) : chaque pixel vide proche de la\nsilhouette reçoit une lueur dont la force baisse avec la distance (1 à 3 pixels selon la rareté). Elle\n« respire » (une vague part de la silhouette vers l'extérieur), les plus rares ont en plus un reflet qui\npasse en diagonale, et les shiny une lueur arc-en-ciel avec quelques étincelles.\n\nL'échelle (les couleurs sont celles de bestiaire.COULEUR_RARETE) :\n    commune      aucune (presque invisible sur les dessins, rien dans le terminal)\n    peu commune  vert   · 1 pixel\n    rare         bleu   · 2 pixels\n    épique       violet · 2 pixels + reflet\n    légendaire   or     · 3 pixels + reflet\n    mythique     rose   · 3 pixels + reflet\n    shiny        arc-en-ciel · 3 pixels + reflet + étincelles (prioritaire sur la rareté)\n\nPar-dessus la lueur, le DÉCOR (calculé en entiers, identique sur Android, en demi-pixels pour les rendus fins) :\n    particules  de petits pixels qui montent autour de la créature (plus nombreux quand c'est plus rare)\n    reflet      une bande claire qui passe sur la créature elle-même (légendaire, mythique, shiny)\n    étincelles  de petites étoiles qui scintillent au bord de la silhouette (shiny)\n\nL'ÉCLAT suit le soin (satiété et envies, voir eclat()) : l'aura brille davantage quand la créature est bien\nsoignée ou rassasiée, et pâlit quand elle est négligée — jamais de mort ni de punition, juste une lueur plus douce.\n    3 rayonnante (bien soignée) · 2 normale · 1 pâle (affamée) · 0 très pâle, sans particules (en veille)\n\nMême calcul sur Android (app/…/Aura.kt). Dans le terminal, les pixels de l'aura deviennent des\ndemi-blocs colorés (la couleur est assombrie selon la force : on suppose un fond sombre) ; rendu_fin.py s'en sert\npour les vraies images (Kitty, iTerm2, sixel) et les quadrants.\n\"\"\"\nimport colorsys\nimport math\n\nfrom .plateforme import RESET\n\nPHASES = 16                     # une respiration complète = 16 images\nPHASE_FIXE = 4                  # image fixe (listes) : la lueur au plus fort\nORDRE = [\"commune\", \"peu commune\", \"rare\", \"épique\", \"légendaire\", \"mythique\", \"shiny\"]\n\n\nclass Palier:\n    def __init__(self, couleur, rayon, force, reflet=False, terminal=True):\n        self.couleur, self.rayon, self.force, self.reflet, self.terminal = couleur, rayon, force, reflet, terminal\n\n\nPALIERS = {\n    \"commune\": Palier(\"#b0b0c0\", 1, 40, terminal=False),\n    \"peu commune\": Palier(\"#5fd787\", 1, 150),\n    \"rare\": Palier(\"#5fafff\", 2, 170),\n    \"épique\": Palier(\"#c77dff\", 2, 195, reflet=True),\n    \"légendaire\": Palier(\"#ffaf00\", 3, 215, reflet=True),\n    \"mythique\": Palier(\"#ff5f87\", 3, 230, reflet=True),\n    \"shiny\": Palier(None, 3, 220, reflet=True),\n}\n\n\ndef palier_de(rarete, shiny=False):\n    \"\"\"Le palier d'aura d'une bestiole : shiny d'abord, sinon sa rareté (commune si inconnue).\"\"\"\n    return \"shiny\" if shiny else (rarete if rarete in PALIERS else \"commune\")\n\n\ndef palier_ind(ind):\n    \"\"\"Le palier d'aura d'une bestiole de la troupe (dict d'individu).\"\"\"\n    from . import bestiaire as B\n    return palier_de(B.rarete_de(ind), ind.get(\"shiny\"))\n\n\ndef palier_compagnon(state):\n    \"\"\"La créature principale n'a pas de rareté et ne naît jamais shiny : pas d'aura (None).\n    Seul un compagnon shiny d'une ancienne sauvegarde (avant cette règle) garde sa lueur arc-en-ciel.\"\"\"\n    return \"shiny\" if state.get(\"shiny\") else None\n\n\ndef active(state):\n    \"\"\"L'aura autour de la créature de l'écran principal (réglage de la partie, `tg aura on|off`).\"\"\"\n    return bool(state.get(\"config\", {}).get(\"aura\", True))\n\n\nECLAT_FORCE = (45, 70, 100, 125)          # % de la force de la lueur, selon l'éclat 0 à 3\nECLAT_NORMAL = 2\n\n\ndef eclat(state):\n    \"\"\"L'éclat de l'aura selon le soin (0 à 3) : la faim compte pour 60 %, les envies jeu, curiosité, exploration et\n    sommeil pour 40 %. Rassasiée et bien soignée (≥ 80) → 3 ; en forme (≥ 40) → 2 ; affamée (≥ 15) → 1 ; en veille → 0.\"\"\"\n    try:\n        faim = float(state.get(\"hunger\", 80))\n        v = (state.get(\"envies\") or {}).get(\"v\") or {}\n        autres = [float(v[k]) for k in (\"jeu\", \"curiosite\", \"explorer\", \"sommeil\") if k in v]\n        moy = sum(autres) / len(autres) if autres else faim\n        veille = bool((state.get(\"satiete\") or {}).get(\"veille\"))\n        return niveau_satiete(int(faim), int(moy), veille)\n    except (TypeError, ValueError, AttributeError):\n        return ECLAT_NORMAL\n\n\ndef niveau_soin(faim, envies):\n    \"\"\"(Avant la satiété, gardé pour les vecteurs de donnees/vie/vecteurs.json.) faim et moyenne des envies → éclat.\"\"\"\n    soin = (faim * 6 + envies * 4) // 10\n    if faim < 15:\n        return 0\n    if soin >= 80 and faim >= 70:\n        return 3\n    if soin >= 40 and faim >= 30:\n        return 2\n    return 1\n\n\ndef niveau_satiete(faim, envies, veille=False):\n    \"\"\"L'éclat d'après les 4 états de la satiété (satiete.py ; le même calcul en Kotlin, vérifié par\n    donnees/satiete/vecteurs.json) : en veille → 0 ; affamée → 1 ; en forme → 2 ; rassasiée et envies au moins\n    moyennes (≥ 50) → 3.\"\"\"\n    from .satiete import AFFAMEE, FORME, RASSASIEE\n    if veille or faim < AFFAMEE:\n        return 0\n    if faim < FORME:\n        return 1\n    if faim >= RASSASIEE and envies >= 50:\n        return 3\n    return 2\n\n",
+  "pc/tg/envies.py": "\"\"\"Les 6 envies de la créature (les mêmes règles que Envies.kt sur Android).\n\n  🍎 faim       n'importe quelle commande la nourrit (core.feed) ; elle descend 2 fois moins vite qu'avant\n  🎮 jeu        un défi éclair (tg defi), un combat, un dressage réussi\n  📚 curiosité  une étape de leçon, une quête finie, une commande jamais goûtée, tg explique, man, --help\n  🧭 explorer   entrer dans une pièce jamais visitée, une pièce secrète (quête « cachette »), ls -a ou find\n                dans la maison du jeu\n  😴 sommeil    elle fatigue en jouant (plus vite le soir) ; `sleep 10` = une vraie sieste (animation « dort ») ;\n                elle se repose aussi toute seule quand on ne joue pas\n  🧹 propreté   de la « poussière » (poussiere_1.tmp…) tombe avec le temps dans un placard caché du terrain de\n                la partie active : ~/terrain_terminagotchi/.cache/ ; la jauge se calcule d'après les VRAIS\n                fichiers .tmp présents. On nettoie avec rm .cache/*.tmp (ou rm -r .cache : le jeu recrée le\n                placard vide). Rien n'est jamais créé ni supprimé hors du terrain, et rien n'est créé tant\n                que le terrain n'existe pas (la leçon 1 le construit).\n\nChaque jauge va de 0 à 100. Pas de mort ni de punition : une envie à zéro rend la créature triste\n(une) ou grognon (plusieurs) ; c'est tout. La faim reste la plus importante : sous FAIM_URGENTE, c'est\ntoujours elle l'envie du moment.\n\nSeuils choisis (documentés aussi dans `tg envies` et testés par pc/outils/test_envies.py) :\n  - usure par commande tapée : jeu 0.7, curiosité 0.6, exploration 0.6, sommeil 0.4 (1.2 le soir, 20 h - 7 h) ;\n  - usure avec le temps : jeu 2/h, curiosité et exploration 1.5/h, jamais en dessous de 25 par le temps seul\n    (en ton absence, elle ne devient pas triste) ;\n  - repos tout seul : après 10 min sans commande, sommeil +25/h ;\n  - sieste : sleep N → sommeil +5 par seconde, au plus +50 (sleep 10) ;\n  - poussière : un fichier toutes les 45 min de temps réel, au plus 8 (propreté = 100 - 12.5 par fichier) ;\n  - envie du moment : la plus basse sous SEUIL (40), tirée au hasard parmi celles à moins de 10 points d'elle ;\n    elle reste la même jusqu'à être satisfaite (≥ 60) ou 15 minutes ;\n  - rappel dans la bulle : au plus un toutes les 12 commandes ET 5 minutes ; le soir, un bâillement au plus\n    toutes les 40 minutes ;\n  - récompense : satisfaire une envie basse (< 60) donne +2 XP (+3 de plus si c'était l'envie du moment), au plus\n    une fois toutes les 2 minutes par envie ; l'envie du moment qui gagne 15 points ou repasse au-dessus de 60 :\n    un merci et l'animation « content ».\n\nSauvegarde : state[\"envies\"] = {\"v\": {envie: valeur}, \"t\": dernier calcul, \"cmd_t\": dernière commande,\n\"moment\": {\"e\", \"cmd\", \"t\"} | None, \"rappel_t\", \"rappel_n\", \"soir_t\", \"vu\": {compteurs}, \"xp_t\": {},\n\"poussiere_t\", \"premiere_poussiere\"}. Les anciennes sauvegardes reçoivent des valeurs moyennes (MIGRATION).\nTout est local (aucun champ envoyé au serveur : l'anti-triche n'est pas concerné).\n\"\"\"\nimport random\n"
+ },
+ "code": {
+  "bonjour_c": "#include <stdio.h>\n\nint main(void) {\n    printf(\"@MESSAGE@\\n\");\n    return 0;\n}\n",
+  "etoiles_c": "#include <stdio.h>\n#include <stdlib.h>\n\n/* ./etoiles 5 : 5 etoiles */\nint main(int argc, char *argv[]) {\n    int n = argc > 1 ? atoi(argv[1]) : 3;\n    if (n > 80) n = 80;\n    for (int i = 0; i < n; i++) putchar('*');\n    putchar('\\n');\n    return 0;\n}\n",
+  "licence_mit": "MIT License\n\nCopyright (c) 2026 La Guilde des Bâtisseurs Libres (projet d'exemple)\n\nPermission is hereby granted, free of charge, to any person obtaining a copy\nof this software and associated documentation files (the \"Software\"), to deal\nin the Software without restriction, including without limitation the rights\nto use, copy, modify, merge, publish, distribute, sublicense, and/or sell\ncopies of the Software, and to permit persons to whom the Software is\nfurnished to do so, subject to the following conditions:\n\nThe above copyright notice and this permission notice shall be included in all\ncopies or substantial portions of the Software.\n\nTHE SOFTWARE IS PROVIDED \"AS IS\", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR\nIMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,\nFITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE\nAUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER\nLIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,\nOUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE\nSOFTWARE.\n"
+ },
+ "contribution": {
+  "entete": [
+   "# Terminagotchi : langues/fr.txt (copie d'exercice de la Guilde)",
+   ""
+  ],
+  "lignes": [
+   {
+    "cle": "core.notif.faim",
+    "texte": "🍽 J'ai faim… tape quelques commandes pour me nourrir !"
+   },
+   {
+    "cle": "qu.journal.rien",
+    "texte": "Rien pour l'instant : continue à jouer !"
+   },
+   {
+    "cle": "hist.racine.1.dit",
+    "texte": "Regarde autour de toi : ce sont les grands lieux du Terminaworld."
+   },
+   {
+    "cle": "qu.cachette.dit",
+    "texte": "Un passage secret ! Personne n'était venu ici depuis des années…"
+   },
+   {
+    "cle": "lec.t2.2.bravo",
+    "texte": "La loupe l'a trouvé ! Les grands disent « chercher dans un fichier »."
+   },
+   {
+    "cle": "hist.sm9.7.bravo",
+    "texte": "OK : l'archive est exactement celle que tu as sauvegardée."
+   }
+  ],
+  "fautes": [
+   {
+    "ligne": 0,
+    "juste": "faim",
+    "faux": "fain"
+   },
+   {
+    "ligne": 1,
+    "juste": "continue",
+    "faux": "contiune"
+   },
+   {
+    "ligne": 2,
+    "juste": "autour",
+    "faux": "autoure"
+   },
+   {
+    "ligne": 3,
+    "juste": "secret",
+    "faux": "secrai"
+   },
+   {
+    "ligne": 4,
+    "juste": "trouvé",
+    "faux": "trouver"
+   },
+   {
+    "ligne": 5,
+    "juste": "exactement",
+    "faux": "exactemment"
+   }
+  ],
+  "apprenti_nom": "Apprenti de la Guilde",
+  "apprenti_email": "apprenti@terminagotchi.invalid",
+  "guilde_nom": "La Guilde",
+  "guilde_email": "guilde@terminagotchi.invalid",
+  "premier_commit": "Textes du jeu (copie pour s'entrainer)"
+ },
+ "piece": {
+  "longueurs": [
+   36,
+   40,
+   44,
+   48
+  ],
+  "largeurs": [
+   16,
+   20,
+   24,
+   28
+  ],
+  "epaisseurs": [
+   3,
+   4,
+   5
+  ],
+  "trou_x": 6,
+  "trou_d": 5
+ },
+ "image": {
+  "octets": 65536,
+  "cle_octets": 131072,
+  "entete": "TERMINAGOTCHI - FAUSSE IMAGE D'EXEMPLE : ce n'est pas un vrai systeme, elle sert a apprendre dd et sha256sum.\n"
+ },
+ "disques": {
+  "noms": [
+   "sda",
+   "sdb"
+  ],
+  "sauvegarde": "1.8T",
+  "systeme": "476.9G",
+  "systeme_racine": "476.3G",
+  "cles": [
+   {
+    "go": 8,
+    "lsblk": "7.5G"
+   },
+   {
+    "go": 16,
+    "lsblk": "14.6G"
+   },
+   {
+    "go": 32,
+    "lsblk": "28.9G"
+   },
+   {
+    "go": 64,
+    "lsblk": "57.7G"
+   }
+  ]
+ },
+ "etabli": {
+  "regles": [
+   {
+    "motif": "^(gcc|cc|clang)\\b",
+    "outil": "gcc",
+    "de": "texte",
+    "vers": "programme"
+   },
+   {
+    "motif": "^make\\b",
+    "outil": "make",
+    "de": "recette",
+    "vers": "programme"
+   },
+   {
+    "motif": "^openscad\\b",
+    "outil": "openscad",
+    "de": "code",
+    "vers": "piece"
+   },
+   {
+    "motif": "^dd\\b",
+    "outil": "dd",
+    "de": "image",
+    "vers": "cle"
+   },
+   {
+    "motif": "^sha256sum\\b",
+    "outil": "sha256sum",
+    "de": "fichier",
+    "vers": "empreinte"
+   },
+   {
+    "motif": "^git\\s+clone\\b",
+    "outil": "git clone",
+    "de": "depot",
+    "vers": "copie"
+   },
+   {
+    "motif": "^git\\s+diff\\b",
+    "outil": "git diff",
+    "de": "version",
+    "vers": "difference"
+   },
+   {
+    "motif": "^git\\s+commit\\b",
+    "outil": "git commit",
+    "de": "changement",
+    "vers": "version"
+   }
+  ]
+ },
+ "credits": {
+  "contributeurs": []
+ },
+ "couleurs": {
+  "gcc": 215,
+  "make": 215,
+  "openscad": 229,
+  "dd": 117,
+  "sha256sum": 78,
+  "git clone": 141,
+  "git diff": 141,
+  "git commit": 141
+ }
+}

@@ -3096,6 +3096,582 @@
    },
    "reponse": "608",
    "verif": "echo $((19 * 32))"
+  },
+  {
+   "type": "coordonnees",
+   "graine": 0,
+   "k": 0,
+   "params": {
+    "a": "9",
+    "b": "12",
+    "y": "5"
+   },
+   "reponse": "3",
+   "verif": "echo $((12 - 9))"
+  },
+  {
+   "type": "coordonnees",
+   "graine": 0,
+   "k": 1,
+   "params": {
+    "a": "4",
+    "b": "9",
+    "y": "3"
+   },
+   "reponse": "5",
+   "verif": "echo $((9 - 4))"
+  },
+  {
+   "type": "coordonnees",
+   "graine": 0,
+   "k": 2,
+   "params": {
+    "a": "1",
+    "b": "11",
+    "y": "3"
+   },
+   "reponse": "10",
+   "verif": "echo $((11 - 1))"
+  },
+  {
+   "type": "coordonnees",
+   "graine": 0,
+   "k": 3,
+   "params": {
+    "a": "9",
+    "b": "16",
+    "y": "8"
+   },
+   "reponse": "7",
+   "verif": "echo $((16 - 9))"
+  },
+  {
+   "type": "coordonnees",
+   "graine": 0,
+   "k": 4,
+   "params": {
+    "a": "2",
+    "b": "10",
+    "y": "5"
+   },
+   "reponse": "8",
+   "verif": "echo $((10 - 2))"
+  },
+  {
+   "type": "coordonnees",
+   "graine": 0,
+   "k": 5,
+   "params": {
+    "a": "7",
+    "b": "10",
+    "y": "5"
+   },
+   "reponse": "3",
+   "verif": "echo $((10 - 7))"
+  },
+  {
+   "type": "coordonnees",
+   "graine": 0,
+   "k": 6,
+   "params": {
+    "a": "5",
+    "b": "9",
+    "y": "4"
+   },
+   "reponse": "4",
+   "verif": "echo $((9 - 5))"
+  },
+  {
+   "type": "coordonnees",
+   "graine": 0,
+   "k": 7,
+   "params": {
+    "a": "8",
+    "b": "15",
+    "y": "4"
+   },
+   "reponse": "7",
+   "verif": "echo $((15 - 8))"
+  },
+  {
+   "type": "coordonnees",
+   "graine": 1761955200,
+   "k": 0,
+   "params": {
+    "a": "7",
+    "b": "17",
+    "y": "5"
+   },
+   "reponse": "10",
+   "verif": "echo $((17 - 7))"
+  },
+  {
+   "type": "coordonnees",
+   "graine": 1761955200,
+   "k": 1,
+   "params": {
+    "a": "3",
+    "b": "10",
+    "y": "8"
+   },
+   "reponse": "7",
+   "verif": "echo $((10 - 3))"
+  },
+  {
+   "type": "coordonnees",
+   "graine": 1761955200,
+   "k": 2,
+   "params": {
+    "a": "5",
+    "b": "16",
+    "y": "7"
+   },
+   "reponse": "11",
+   "verif": "echo $((16 - 5))"
+  },
+  {
+   "type": "coordonnees",
+   "graine": 1761955200,
+   "k": 3,
+   "params": {
+    "a": "2",
+    "b": "4",
+    "y": "2"
+   },
+   "reponse": "2",
+   "verif": "echo $((4 - 2))"
+  },
+  {
+   "type": "coordonnees",
+   "graine": 1761955200,
+   "k": 4,
+   "params": {
+    "a": "4",
+    "b": "12",
+    "y": "0"
+   },
+   "reponse": "8",
+   "verif": "echo $((12 - 4))"
+  },
+  {
+   "type": "coordonnees",
+   "graine": 1761955200,
+   "k": 5,
+   "params": {
+    "a": "2",
+    "b": "13",
+    "y": "0"
+   },
+   "reponse": "11",
+   "verif": "echo $((13 - 2))"
+  },
+  {
+   "type": "coordonnees",
+   "graine": 1761955200,
+   "k": 6,
+   "params": {
+    "a": "8",
+    "b": "18",
+    "y": "6"
+   },
+   "reponse": "10",
+   "verif": "echo $((18 - 8))"
+  },
+  {
+   "type": "coordonnees",
+   "graine": 1761955200,
+   "k": 7,
+   "params": {
+    "a": "7",
+    "b": "19",
+    "y": "5"
+   },
+   "reponse": "12",
+   "verif": "echo $((19 - 7))"
+  },
+  {
+   "type": "coordonnees",
+   "graine": 1099511627783,
+   "k": 0,
+   "params": {
+    "a": "3",
+    "b": "5",
+    "y": "9"
+   },
+   "reponse": "2",
+   "verif": "echo $((5 - 3))"
+  },
+  {
+   "type": "coordonnees",
+   "graine": 1099511627783,
+   "k": 1,
+   "params": {
+    "a": "2",
+    "b": "5",
+    "y": "9"
+   },
+   "reponse": "3",
+   "verif": "echo $((5 - 2))"
+  },
+  {
+   "type": "coordonnees",
+   "graine": 1099511627783,
+   "k": 2,
+   "params": {
+    "a": "3",
+    "b": "7",
+    "y": "4"
+   },
+   "reponse": "4",
+   "verif": "echo $((7 - 3))"
+  },
+  {
+   "type": "coordonnees",
+   "graine": 1099511627783,
+   "k": 3,
+   "params": {
+    "a": "5",
+    "b": "15",
+    "y": "0"
+   },
+   "reponse": "10",
+   "verif": "echo $((15 - 5))"
+  },
+  {
+   "type": "coordonnees",
+   "graine": 1099511627783,
+   "k": 4,
+   "params": {
+    "a": "8",
+    "b": "9",
+    "y": "3"
+   },
+   "reponse": "1",
+   "verif": "echo $((9 - 8))"
+  },
+  {
+   "type": "coordonnees",
+   "graine": 1099511627783,
+   "k": 5,
+   "params": {
+    "a": "9",
+    "b": "13",
+    "y": "0"
+   },
+   "reponse": "4",
+   "verif": "echo $((13 - 9))"
+  },
+  {
+   "type": "coordonnees",
+   "graine": 1099511627783,
+   "k": 6,
+   "params": {
+    "a": "7",
+    "b": "17",
+    "y": "3"
+   },
+   "reponse": "10",
+   "verif": "echo $((17 - 7))"
+  },
+  {
+   "type": "coordonnees",
+   "graine": 1099511627783,
+   "k": 7,
+   "params": {
+    "a": "1",
+    "b": "13",
+    "y": "4"
+   },
+   "reponse": "12",
+   "verif": "echo $((13 - 1))"
+  },
+  {
+   "type": "volume",
+   "graine": 0,
+   "k": 0,
+   "params": {
+    "a": "5",
+    "b": "5",
+    "c": "4"
+   },
+   "reponse": "100",
+   "verif": "echo $((5 * 5 * 4))"
+  },
+  {
+   "type": "volume",
+   "graine": 0,
+   "k": 1,
+   "params": {
+    "a": "3",
+    "b": "3",
+    "c": "2"
+   },
+   "reponse": "18",
+   "verif": "echo $((3 * 3 * 2))"
+  },
+  {
+   "type": "volume",
+   "graine": 0,
+   "k": 2,
+   "params": {
+    "a": "6",
+    "b": "2",
+    "c": "4"
+   },
+   "reponse": "48",
+   "verif": "echo $((6 * 2 * 4))"
+  },
+  {
+   "type": "volume",
+   "graine": 0,
+   "k": 3,
+   "params": {
+    "a": "5",
+    "b": "2",
+    "c": "1"
+   },
+   "reponse": "10",
+   "verif": "echo $((5 * 2 * 1))"
+  },
+  {
+   "type": "volume",
+   "graine": 0,
+   "k": 4,
+   "params": {
+    "a": "2",
+    "b": "4",
+    "c": "4"
+   },
+   "reponse": "32",
+   "verif": "echo $((2 * 4 * 4))"
+  },
+  {
+   "type": "volume",
+   "graine": 0,
+   "k": 5,
+   "params": {
+    "a": "2",
+    "b": "5",
+    "c": "2"
+   },
+   "reponse": "20",
+   "verif": "echo $((2 * 5 * 2))"
+  },
+  {
+   "type": "volume",
+   "graine": 0,
+   "k": 6,
+   "params": {
+    "a": "6",
+    "b": "6",
+    "c": "3"
+   },
+   "reponse": "108",
+   "verif": "echo $((6 * 6 * 3))"
+  },
+  {
+   "type": "volume",
+   "graine": 0,
+   "k": 7,
+   "params": {
+    "a": "4",
+    "b": "3",
+    "c": "3"
+   },
+   "reponse": "36",
+   "verif": "echo $((4 * 3 * 3))"
+  },
+  {
+   "type": "volume",
+   "graine": 1761955200,
+   "k": 0,
+   "params": {
+    "a": "3",
+    "b": "6",
+    "c": "2"
+   },
+   "reponse": "36",
+   "verif": "echo $((3 * 6 * 2))"
+  },
+  {
+   "type": "volume",
+   "graine": 1761955200,
+   "k": 1,
+   "params": {
+    "a": "2",
+    "b": "2",
+    "c": "1"
+   },
+   "reponse": "4",
+   "verif": "echo $((2 * 2 * 1))"
+  },
+  {
+   "type": "volume",
+   "graine": 1761955200,
+   "k": 2,
+   "params": {
+    "a": "6",
+    "b": "6",
+    "c": "4"
+   },
+   "reponse": "144",
+   "verif": "echo $((6 * 6 * 4))"
+  },
+  {
+   "type": "volume",
+   "graine": 1761955200,
+   "k": 3,
+   "params": {
+    "a": "4",
+    "b": "4",
+    "c": "3"
+   },
+   "reponse": "48",
+   "verif": "echo $((4 * 4 * 3))"
+  },
+  {
+   "type": "volume",
+   "graine": 1761955200,
+   "k": 4,
+   "params": {
+    "a": "3",
+    "b": "4",
+    "c": "3"
+   },
+   "reponse": "36",
+   "verif": "echo $((3 * 4 * 3))"
+  },
+  {
+   "type": "volume",
+   "graine": 1761955200,
+   "k": 5,
+   "params": {
+    "a": "3",
+    "b": "6",
+    "c": "1"
+   },
+   "reponse": "18",
+   "verif": "echo $((3 * 6 * 1))"
+  },
+  {
+   "type": "volume",
+   "graine": 1761955200,
+   "k": 6,
+   "params": {
+    "a": "2",
+    "b": "4",
+    "c": "1"
+   },
+   "reponse": "8",
+   "verif": "echo $((2 * 4 * 1))"
+  },
+  {
+   "type": "volume",
+   "graine": 1761955200,
+   "k": 7,
+   "params": {
+    "a": "4",
+    "b": "4",
+    "c": "4"
+   },
+   "reponse": "64",
+   "verif": "echo $((4 * 4 * 4))"
+  },
+  {
+   "type": "volume",
+   "graine": 1099511627783,
+   "k": 0,
+   "params": {
+    "a": "5",
+    "b": "5",
+    "c": "2"
+   },
+   "reponse": "50",
+   "verif": "echo $((5 * 5 * 2))"
+  },
+  {
+   "type": "volume",
+   "graine": 1099511627783,
+   "k": 1,
+   "params": {
+    "a": "3",
+    "b": "5",
+    "c": "2"
+   },
+   "reponse": "30",
+   "verif": "echo $((3 * 5 * 2))"
+  },
+  {
+   "type": "volume",
+   "graine": 1099511627783,
+   "k": 2,
+   "params": {
+    "a": "2",
+    "b": "4",
+    "c": "3"
+   },
+   "reponse": "24",
+   "verif": "echo $((2 * 4 * 3))"
+  },
+  {
+   "type": "volume",
+   "graine": 1099511627783,
+   "k": 3,
+   "params": {
+    "a": "2",
+    "b": "3",
+    "c": "3"
+   },
+   "reponse": "18",
+   "verif": "echo $((2 * 3 * 3))"
+  },
+  {
+   "type": "volume",
+   "graine": 1099511627783,
+   "k": 4,
+   "params": {
+    "a": "2",
+    "b": "3",
+    "c": "4"
+   },
+   "reponse": "24",
+   "verif": "echo $((2 * 3 * 4))"
+  },
+  {
+   "type": "volume",
+   "graine": 1099511627783,
+   "k": 5,
+   "params": {
+    "a": "3",
+    "b": "5",
+    "c": "1"
+   },
+   "reponse": "15",
+   "verif": "echo $((3 * 5 * 1))"
+  },
+  {
+   "type": "volume",
+   "graine": 1099511627783,
+   "k": 6,
+   "params": {
+    "a": "5",
+    "b": "2",
+    "c": "2"
+   },
+   "reponse": "20",
+   "verif": "echo $((5 * 2 * 2))"
+  },
+  {
+   "type": "volume",
+   "graine": 1099511627783,
+   "k": 7,
+   "params": {
+    "a": "3",
+    "b": "4",
+    "c": "3"
+   },
+   "reponse": "36",
+   "verif": "echo $((3 * 4 * 3))"
   }
  ],
  "recherches": [
@@ -3337,6 +3913,16 @@
    "multiplication",
    "soustraction",
    "division"
+  ],
+  "coordonnees": [
+   "comptage",
+   "addition",
+   "soustraction"
+  ],
+  "volume": [
+   "comptage",
+   "addition",
+   "multiplication"
   ]
  }
 }

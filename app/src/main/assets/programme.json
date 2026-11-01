@@ -3037,6 +3037,222 @@
     "ANFR, « Qu'est-ce qu'un récepteur radio ? » : écouter les signaux publics, sans les divulguer"
    ],
    "relu_par": null
+  },
+  "libre": {
+   "motif": "(guilde\\s+(libert\\w*|gratuit\\w*|licences?)\\b|LICENSE\\b|/usr/share/licenses|^rpm\\s+-q\\b)",
+   "enfant": "gu.f.libre.enfant",
+   "grands": "gu.f.libre.grands",
+   "vrai_terminal": [
+    {
+     "prepare": "printf 'MIT License\\n\\nPermission is hereby granted, free of charge\\n' > LICENSE",
+     "cmd": "head -1 LICENSE",
+     "sortie": "MIT License"
+    },
+    {
+     "cmd": "ls /usr/share/licenses | head -1",
+     "motif": "\\S",
+     "outil": "/usr/share/licenses"
+    },
+    {
+     "cmd": "rpm -q --qf '%{LICENSE}\\n' bash",
+     "motif": "GPL",
+     "outil": "rpm",
+     "si": "rpm -q bash"
+    }
+   ],
+   "limite_image": "gu.f.libre.limite",
+   "idees_fausses": [
+    "gu.f.libre.idee"
+   ],
+   "sources": [
+    "Free Software Foundation, « Qu'est-ce que le logiciel libre ? » : https://www.gnu.org/philosophy/free-sw.fr.html",
+    "Open Source Initiative, The Open Source Definition : https://opensource.org/osd",
+    "SPDX License List (identifiants des licences) : https://spdx.org/licenses/",
+    "Creative Commons, les licences : https://creativecommons.org/licenses/?lang=fr",
+    "Fedora Packaging Guidelines, Licensing (%license, /usr/share/licenses) ; Debian Policy § 12.5 (copyright)"
+   ],
+   "relu_par": null
+  },
+  "lire_code": {
+   "motif": "(guilde\\s+(d[eé]p[oô]t|copie|faim)\\b|^git\\s+clone\\b|code_du_jeu)",
+   "enfant": "gu.f.lire_code.enfant",
+   "grands": "gu.f.lire_code.grands",
+   "vrai_terminal": [
+    {
+     "prepare": "mkdir -p jeu/pc/tg && printf 'def etat_de(faim):\\n    return faim\\n' > jeu/pc/tg/satiete.py",
+     "cmd": "grep -rn \"def etat_de\" jeu/pc/tg",
+     "sortie": "jeu/pc/tg/satiete.py:1:def etat_de(faim):"
+    },
+    {
+     "prepare": "mkdir -p jeu/pc/tg && touch jeu/pc/tg/a.py jeu/pc/tg/b.py && echo faim > jeu/pc/tg/b.py",
+     "cmd": "grep -rl faim jeu",
+     "sortie": "jeu/pc/tg/b.py"
+    },
+    {
+     "prepare": "mkdir -p jeu/pc/tg",
+     "cmd": "tree -L 2 jeu",
+     "motif": "── tg$",
+     "outil": "tree"
+    },
+    {
+     "cmd": "git clone --depth 1 https://github.com/grecdel/terminagotchi.git code_du_jeu",
+     "rejeu": "reseau",
+     "motif": "Cloning into"
+    }
+   ],
+   "limite_image": "gu.f.lire_code.limite",
+   "idees_fausses": [
+    "gu.f.lire_code.idee"
+   ],
+   "sources": [
+    "git-clone(1) : https://git-scm.com/docs/git-clone (--depth)",
+    "GNU grep, manuel (-r, -l, -n) : https://www.gnu.org/software/grep/manual/grep.html",
+    "tree(1) : https://oldmanprogrammer.net/source.php?dir=projects/tree ; less(1)",
+    "Free Software Foundation, liberté 1 (étudier le fonctionnement du programme)"
+   ],
+   "relu_par": null
+  },
+  "compiler": {
+   "motif": "(guilde\\s+(compil\\w*|gcc)\\b|^(gcc|cc|clang|make|file|ldd|od)\\b.*(bonjour|etoiles)|bonjour\\.c|etoiles\\.c)",
+   "enfant": "gu.f.compiler.enfant",
+   "grands": "gu.f.compiler.grands",
+   "vrai_terminal": [
+    {
+     "prepare": "printf '#include <stdio.h>\\nint main(void) { puts(\"ok\"); return 0; }\\n' > b.c",
+     "cmd": "gcc b.c -o b && ./b",
+     "sortie": "ok",
+     "outil": "gcc"
+    },
+    {
+     "prepare": "printf '#include <stdio.h>\\nint main(void) { puts(\"ok\"); return 0; }\\n' > b.c && gcc b.c -o b",
+     "cmd": "od -An -tx1 -N4 b",
+     "sortie": " 7f 45 4c 46",
+     "outil": "gcc"
+    },
+    {
+     "prepare": "printf '#include <stdio.h>\\nint main(void) { puts(\"ok\"); return 0; }\\n' > b.c && gcc b.c -o b",
+     "cmd": "file b",
+     "motif": "ELF",
+     "outil": "file",
+     "si": "command -v gcc"
+    },
+    {
+     "prepare": "printf '#include <stdio.h>\\nint main(void) { puts(\"e\"); return 0; }\\n' > e.c",
+     "cmd": "make e >/dev/null && ./e",
+     "sortie": "e",
+     "outil": "make",
+     "si": "command -v gcc"
+    }
+   ],
+   "limite_image": "gu.f.compiler.limite",
+   "idees_fausses": [
+    "gu.f.compiler.idee"
+   ],
+   "sources": [
+    "GCC, manuel (options -o, étapes de la compilation) : https://gcc.gnu.org/onlinedocs/gcc/Overall-Options.html",
+    "GNU make, règles implicites : https://www.gnu.org/software/make/manual/html_node/Implicit-Rules.html",
+    "elf(5) (nombre magique 0x7f 'E' 'L' 'F') : https://man7.org/linux/man-pages/man5/elf.5.html",
+    "ldd(1) : https://man7.org/linux/man-pages/man1/ldd.1.html"
+   ],
+   "relu_par": null
+  },
+  "contribuer": {
+   "motif": "(guilde\\s+(contribu|fusion|credits)\\w*|^git\\s+(switch|checkout|diff|commit|log|status)\\b|langues/fr\\.txt)",
+   "enfant": "gu.f.contribuer.enfant",
+   "grands": "gu.f.contribuer.grands",
+   "vrai_terminal": [
+    {
+     "prepare": "git init -q -b main d && cd d && git config user.name A && git config user.email a@a.invalid && echo fain > t && git add t && git commit -qm 1",
+     "cmd": "cd d && git switch -q -c corrige && sed -i s/fain/faim/ t && git diff --stat | tail -1",
+     "sortie": " 1 file changed, 1 insertion(+), 1 deletion(-)",
+     "outil": "git"
+    },
+    {
+     "prepare": "git init -q -b main d && cd d && git config user.name A && git config user.email a@a.invalid && echo fain > t && git add t && git commit -qm 1 && git switch -q -c corrige && echo faim > t",
+     "cmd": "cd d && git commit -qam 'Corrige une faute' && git log --oneline | wc -l",
+     "sortie": "2",
+     "outil": "git"
+    }
+   ],
+   "limite_image": "gu.f.contribuer.limite",
+   "idees_fausses": [
+    "gu.f.contribuer.idee"
+   ],
+   "sources": [
+    "Pro Git, 5.2 Contribuer à un projet : https://git-scm.com/book/fr/v2/Git-distribu%C3%A9-Contribution-%C3%A0-un-projet",
+    "git-switch(1), git-diff(1), git-commit(1) : https://git-scm.com/docs",
+    "Open Source Guides, « How to Contribute to Open Source » : https://opensource.guide/how-to-contribute/"
+   ],
+   "relu_par": null
+  },
+  "fabriquer": {
+   "motif": "(guilde\\s+(pi[eè]ce|trou|volume|stl)\\b|^openscad\\b|porte_cle\\.(scad|stl))",
+   "enfant": "gu.f.fabriquer.enfant",
+   "grands": "gu.f.fabriquer.grands",
+   "vrai_terminal": [
+    {
+     "cmd": "echo $((40 * 24 * 4))",
+     "sortie": "3840"
+    },
+    {
+     "prepare": "printf 'solid p\\n  facet normal 0 0 1\\n' > p.stl",
+     "cmd": "head -1 p.stl",
+     "sortie": "solid p"
+    },
+    {
+     "cmd": "openscad --version",
+     "motif": "OpenSCAD",
+     "outil": "openscad"
+    }
+   ],
+   "limite_image": "gu.f.fabriquer.limite",
+   "idees_fausses": [
+    "gu.f.fabriquer.idee"
+   ],
+   "sources": [
+    "OpenSCAD User Manual (cube, cylinder, translate, difference ; export STL) : https://en.wikibooks.org/wiki/OpenSCAD_User_Manual",
+    "3D Systems, StereoLithography Interface Specification (format STL, 1989)",
+    "ISO/ASTM 52900:2021, fabrication additive : principes généraux et vocabulaire"
+   ],
+   "relu_par": null
+  },
+  "redonner_vie": {
+   "motif": "(guilde\\s+(sauver|vieux|cl[eé]|disques?|certificat)\\w*|^lsblk\\b|^sha256sum\\b.*(image_linux|cle_usb)|^dd\\b|cle_usb)",
+   "enfant": "gu.f.redonner_vie.enfant",
+   "grands": "gu.f.redonner_vie.grands",
+   "vrai_terminal": [
+    {
+     "prepare": "printf abc > i.iso",
+     "cmd": "sha256sum i.iso",
+     "sortie": "ba7816bf8f01cfea414140de5dae2223b00361a396177a9cb410ff61f20015ad  i.iso"
+    },
+    {
+     "prepare": "printf abc > i.iso && sha256sum i.iso > i.iso.sha256",
+     "cmd": "sha256sum -c i.iso.sha256",
+     "sortie": "i.iso: OK"
+    },
+    {
+     "prepare": "printf abc > i.iso && : > c.img",
+     "cmd": "dd if=i.iso of=c.img bs=64k 2>/dev/null && cmp i.iso c.img && echo pareil",
+     "sortie": "pareil"
+    },
+    {
+     "cmd": "lsblk -d -o NAME,RM,TYPE | head -1",
+     "motif": "^NAME\\s+RM\\s+TYPE",
+     "outil": "lsblk"
+    }
+   ],
+   "limite_image": "gu.f.redonner_vie.limite",
+   "idees_fausses": [
+    "gu.f.redonner_vie.idee"
+   ],
+   "sources": [
+    "lsblk(8), util-linux : https://man7.org/linux/man-pages/man8/lsblk.8.html",
+    "dd(1) et sha256sum(1), GNU coreutils : https://www.gnu.org/software/coreutils/manual/",
+    "Fedora, préparer un support de démarrage (vérifier l'image) : https://docs.fedoraproject.org/en-US/fedora/latest/preparing-boot-media/",
+    "ADEME et Arcep, Évaluation de l'impact environnemental du numérique en France (2022) : la fabrication des terminaux domine l'empreinte"
+   ],
+   "relu_par": null
   }
  },
  "etapes": {
@@ -3208,6 +3424,26 @@
   "on5.6": {
    "maths": [
     "division"
+   ]
+  },
+  "gu3.5": {
+   "maths": [
+    "hexadecimal"
+   ]
+  },
+  "gu5.2": {
+   "maths": [
+    "coordonnees"
+   ]
+  },
+  "gu5.3": {
+   "maths": [
+    "volume"
+   ]
+  },
+  "gu6.3": {
+   "maths": [
+    "hexadecimal"
    ]
   }
  },
@@ -3692,6 +3928,88 @@
   "on10.5": {
    "sortie": "\"temperature_C\": 7.4\n\"temperature_C\": 19.8\n\"temperature_C\": 7.6",
    "pourquoi": "hist.on10.5.bravo : seulement les températures, sans les identifiants"
+  },
+  "gu0.1": {
+   "contient": [
+    "mur_des_plans.txt",
+    "carnet_de_la_guilde.txt",
+    "petit_projet",
+    "atelier"
+   ],
+   "pourquoi": "hist.gu0.1.bravo : un mur de plans, un carnet, un petit projet, un atelier"
+  },
+  "gu1.2": {
+   "motif": "^MIT License$",
+   "pourquoi": "hist.gu1.2.bravo : la licence MIT"
+  },
+  "gu2.3": {
+   "motif": "── tg$",
+   "outil": "tree",
+   "pourquoi": "hist.gu2.3.bravo : pc/tg"
+  },
+  "gu2.4": {
+   "motif": "satiete\\.py$",
+   "pourquoi": "hist.gu2.4.bravo : beaucoup de fichiers parlent de faim"
+  },
+  "gu2.5": {
+   "motif": "satiete\\.py:\\d+:def etat_de\\(",
+   "pourquoi": "hist.gu2.5.bravo : le nom du fichier avant les deux-points"
+  },
+  "gu3.3": {
+   "sortie": "Bonjour ! Je suis ton premier programme compilé.",
+   "outil": "gcc",
+   "pourquoi": "hist.gu3.3.bravo : le premier programme parle"
+  },
+  "gu3.4": {
+   "motif": "ELF",
+   "outil": "file",
+   "pourquoi": "hist.gu3.4.bravo : ELF"
+  },
+  "gu3.5": {
+   "sortie": " 7f 45 4c 46",
+   "outil": "gcc",
+   "pourquoi": "hist.gu3.5.bravo : 7f 45 4c 46"
+  },
+  "gu3.6": {
+   "motif": "libc",
+   "outil": "ldd",
+   "pourquoi": "hist.gu3.6.bravo : libc"
+  },
+  "gu3.7": {
+   "motif": "^\\*\\*\\*\\*\\*$",
+   "outil": "make",
+   "pourquoi": "hist.gu3.7.bravo : make a trouvé la règle"
+  },
+  "gu4.1": {
+   "motif": "nothing to commit",
+   "outil": "git",
+   "pourquoi": "hist.gu4.1.bravo : rien à signaler"
+  },
+  "gu4.5": {
+   "motif": "^@@",
+   "outil": "git",
+   "pourquoi": "hist.gu4.5.bravo : - l'ancienne ligne, + la nouvelle"
+  },
+  "gu4.7": {
+   "lignes": 2,
+   "outil": "git",
+   "pourquoi": "hist.gu4.7.bravo : deux versions"
+  },
+  "gu5.6": {
+   "motif": "^solid",
+   "pourquoi": "hist.gu5.6.bravo : solid, facet, vertex"
+  },
+  "gu6.3": {
+   "sortie": "8b6aeee3edf7547cd49461a29770f0d18ef28607e7d6063a880d1aac2483bc8e  image_linux_exemple.iso",
+   "pourquoi": "hist.gu6.3.bravo : 64 caractères"
+  },
+  "gu6.4": {
+   "sortie": "image_linux_exemple.iso: OK",
+   "pourquoi": "hist.gu6.4.bravo : OK"
+  },
+  "gu6.8": {
+   "sortie": "8b6aeee3edf7547cd49461a29770f0d18ef28607e7d6063a880d1aac2483bc8e  image_linux_exemple.iso\n8b6aeee3edf7547cd49461a29770f0d18ef28607e7d6063a880d1aac2483bc8e  cle_usb.img",
+   "pourquoi": "hist.gu6.8.bravo : deux empreintes identiques"
   }
  },
  "maths": {
@@ -4238,6 +4556,88 @@
     "ETSI EN 300 220-2 : cycle d'utilisation de 1 % dans la bande 868 MHz"
    ],
    "relu_par": null
+  },
+  "coordonnees": {
+   "fiche": true,
+   "titre": "maths.coordonnees.titre",
+   "question": "maths.coordonnees.question",
+   "prerequis": [
+    "soustraction"
+   ],
+   "niveau": "college",
+   "enfant": "maths.coordonnees.enfant",
+   "grands": "maths.coordonnees.grands",
+   "vrai_terminal": [
+    {
+     "cmd": "echo $((10 - 3))",
+     "sortie": "7"
+    },
+    {
+     "cmd": "echo $((24 / 2))",
+     "sortie": "12"
+    }
+   ],
+   "limite_image": "maths.coordonnees.limite",
+   "idees_fausses": [
+    "maths.coordonnees.idee"
+   ],
+   "exemples": [
+    "maths.coordonnees.ex1",
+    "maths.coordonnees.ex2",
+    "maths.coordonnees.ex3"
+   ],
+   "exercice": {
+    "type": "coordonnees",
+    "consigne": "maths.coordonnees.exo",
+    "erreur": "maths.coordonnees.erreur"
+   },
+   "mots_cles": "maths.coordonnees.kw",
+   "sources": [
+    "Programme de mathématiques du cycle 3 et du cycle 4 (se repérer dans le plan, repère orthogonal) : https://eduscol.education.fr/",
+    "OpenSCAD User Manual, Transformations (translate) : https://en.wikibooks.org/wiki/OpenSCAD_User_Manual/Transformations"
+   ],
+   "relu_par": null
+  },
+  "volume": {
+   "fiche": true,
+   "titre": "maths.volume.titre",
+   "question": "maths.volume.question",
+   "prerequis": [
+    "multiplication"
+   ],
+   "niveau": "primaire",
+   "enfant": "maths.volume.enfant",
+   "grands": "maths.volume.grands",
+   "vrai_terminal": [
+    {
+     "cmd": "echo $((40 * 24 * 4))",
+     "sortie": "3840"
+    },
+    {
+     "cmd": "echo $((3840 / 1000))",
+     "sortie": "3"
+    }
+   ],
+   "limite_image": "maths.volume.limite",
+   "idees_fausses": [
+    "maths.volume.idee"
+   ],
+   "exemples": [
+    "maths.volume.ex1",
+    "maths.volume.ex2",
+    "maths.volume.ex3"
+   ],
+   "exercice": {
+    "type": "volume",
+    "consigne": "maths.volume.exo",
+    "erreur": "maths.volume.erreur"
+   },
+   "mots_cles": "maths.volume.kw",
+   "sources": [
+    "Programme de mathématiques du cycle 3 (volume d'un pavé droit) : https://eduscol.education.fr/",
+    "BIPM, Le Système international d'unités, 9e édition (2019) : le mètre cube et ses sous-multiples"
+   ],
+   "relu_par": null
   }
  },
  "recompenses": {
@@ -4647,6 +5047,70 @@
     "zapiot:orage",
     "ventouzar:orage",
     "cyclonaute:orage"
+   ]
+  },
+  {
+   "id": "guilde",
+   "types": [
+    "machine",
+    "plante"
+   ],
+   "requis": [
+    "n4"
+   ],
+   "paliers": [
+    "gu0",
+    "gu1",
+    "gu2",
+    "gu3",
+    "gu4",
+    "gu5",
+    "gu6"
+   ],
+   "chapitre": "guilde",
+   "attirance": {
+    "cmds": [
+     "gcc",
+     "make",
+     "git",
+     "openscad",
+     "dd"
+    ],
+    "familles": [
+     "Constructs",
+     "Sylvestres"
+    ]
+   },
+   "ponts": {
+    "git": [
+     "temps"
+    ],
+    "gcc": [
+     "forge"
+    ],
+    "sha256sum": [
+     "crypte"
+    ],
+    "lsblk": [
+     "machines"
+    ]
+   },
+   "exploits": [
+    {
+     "id": "guilde.artisan",
+     "nom": "recomp.guilde.artisan",
+     "recompense": "variante"
+    }
+   ],
+   "maths": [
+    "coordonnees",
+    "volume",
+    "hexadecimal"
+   ],
+   "variantes_reservees": [
+    "engrenaille:mecanique",
+    "rouillot:rouille",
+    "lampignon:champignonniere"
    ]
   },
   {

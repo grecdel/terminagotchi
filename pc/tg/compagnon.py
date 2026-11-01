@@ -285,7 +285,8 @@ def _garde_gpg():
 # ligne entière est relue dans l'historique (history -a). Avec des guillemets ça marche aussi partout.
 DEPLOIE = ("alias deploie='history -a 2>/dev/null; tg deploie --historique #'\n"
            "alias espace='tg espace'; alias cerveau='tg cerveau'; alias port='tg port'; alias citadelle='tg citadelle'; alias crypte='tg crypte'; alias machines='tg machines'\n"
-           "alias ondes='tg ondes'; alias mesh-envoie='tg ondes mesh-envoie'; alias mesh-coupe='tg ondes mesh-coupe'; alias mesh-route='tg ondes mesh-route'")
+           "alias ondes='tg ondes'; alias mesh-envoie='tg ondes mesh-envoie'; alias mesh-coupe='tg ondes mesh-coupe'; alias mesh-route='tg ondes mesh-route'\n"
+           "alias guilde='tg guilde'")
 
 
 def _blocs():
@@ -329,7 +330,8 @@ def _blocs():
             'function machines\n    tg machines $argv\nend\n'
             'function ondes\n    tg ondes $argv\nend\n'
             'function mesh-envoie\n    tg ondes mesh-envoie $argv\nend\nfunction mesh-coupe\n    tg ondes mesh-coupe $argv\nend\n'
-            'function mesh-route\n    tg ondes mesh-route $argv\nend')
+            'function mesh-route\n    tg ondes mesh-route $argv\nend\n'
+            'function guilde\n    tg guilde $argv\nend')
     for ps in ("powershell", "pwsh"):
         if shutil.which(ps):
             try:
@@ -357,7 +359,8 @@ def _blocs():
                                        'function ondes { tg ondes @args }\n'
                                        'function mesh-envoie { tg ondes mesh-envoie @args }\n'
                                        'function mesh-coupe { tg ondes mesh-coupe @args }\n'
-                                       'function mesh-route { tg ondes mesh-route @args }')
+                                       'function mesh-route { tg ondes mesh-route @args }\n'
+                                       'function guilde { tg guilde @args }')
     return blocs
 
 
@@ -422,7 +425,8 @@ def a_jour():
                                      or ("crypte='tg crypte'" in bloc and "crypte='tg crypte'" not in installe)
                                      or ("machines='tg machines'" in bloc and "machines='tg machines'" not in installe)
                                      or ("mesh-envoie='tg ondes" in bloc and "mesh-envoie='tg ondes" not in installe)
-                                     or ("function __tg_gpg" in bloc and "function __tg_gpg" not in installe)):
+                                     or ("function __tg_gpg" in bloc and "function __tg_gpg" not in installe)
+                                     or ("guilde='tg guilde'" in bloc and "guilde='tg guilde'" not in installe)):
             return False
     return True
 

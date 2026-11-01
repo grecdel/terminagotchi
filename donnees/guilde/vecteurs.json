@@ -1,0 +1,2824 @@
+{
+ "note": "généré par pc/outils/vecteurs_guilde.py ; vérifié par tests/jvm/Guilde.kt",
+ "parties": [
+  {
+   "graine": "1:0",
+   "libertes": [
+    [
+     1,
+     "ameliorer",
+     "3"
+    ],
+    [
+     2,
+     "lire",
+     "1"
+    ],
+    [
+     3,
+     "donner",
+     "2"
+    ],
+    [
+     4,
+     "jouer",
+     "0"
+    ]
+   ],
+   "gratuit": [
+    [
+     1,
+     "blender",
+     "l"
+    ],
+    [
+     2,
+     "libre_payant",
+     "l"
+    ],
+    [
+     3,
+     "appli_pubs",
+     "p"
+    ],
+    [
+     4,
+     "jeu_ferme",
+     "p"
+    ]
+   ],
+   "faute": {
+    "ligne": 3,
+    "juste": "secret",
+    "faux": "secrai"
+   },
+   "texte_faux": "# Terminagotchi : langues/fr.txt (copie d'exercice de la Guilde)\n\ncore.notif.faim = 🍽 J'ai faim… tape quelques commandes pour me nourrir !\nqu.journal.rien = Rien pour l'instant : continue à jouer !\nhist.racine.1.dit = Regarde autour de toi : ce sont les grands lieux du Terminaworld.\nqu.cachette.dit = Un passage secrai ! Personne n'était venu ici depuis des années…\nlec.t2.2.bravo = La loupe l'a trouvé ! Les grands disent « chercher dans un fichier ».\nhist.sm9.7.bravo = OK : l'archive est exactement celle que tu as sauvegardée.\n",
+   "texte_juste": "# Terminagotchi : langues/fr.txt (copie d'exercice de la Guilde)\n\ncore.notif.faim = 🍽 J'ai faim… tape quelques commandes pour me nourrir !\nqu.journal.rien = Rien pour l'instant : continue à jouer !\nhist.racine.1.dit = Regarde autour de toi : ce sont les grands lieux du Terminaworld.\nqu.cachette.dit = Un passage secret ! Personne n'était venu ici depuis des années…\nlec.t2.2.bravo = La loupe l'a trouvé ! Les grands disent « chercher dans un fichier ».\nhist.sm9.7.bravo = OK : l'archive est exactement celle que tu as sauvegardée.\n",
+   "piece": {
+    "longueur": 36,
+    "largeur": 28,
+    "epaisseur": 4,
+    "trou_x": 6,
+    "trou_y": 14,
+    "trou_d": 5
+   },
+   "volume": 4032,
+   "disques": [
+    {
+     "nom": "sda",
+     "taille": "57.7G",
+     "rm": 1,
+     "type": "disk",
+     "point": ""
+    },
+    {
+     "nom": "sda1",
+     "taille": "57.7G",
+     "rm": 1,
+     "type": "part",
+     "point": ""
+    },
+    {
+     "nom": "sdb",
+     "taille": "1.8T",
+     "rm": 1,
+     "type": "disk",
+     "point": ""
+    },
+    {
+     "nom": "sdb1",
+     "taille": "1.8T",
+     "rm": 1,
+     "type": "part",
+     "point": "/media/SAUVEGARDE"
+    },
+    {
+     "nom": "nvme0n1",
+     "taille": "476.9G",
+     "rm": 0,
+     "type": "disk",
+     "point": ""
+    },
+    {
+     "nom": "nvme0n1p1",
+     "taille": "600M",
+     "rm": 0,
+     "type": "part",
+     "point": "/boot/efi"
+    },
+    {
+     "nom": "nvme0n1p2",
+     "taille": "476.3G",
+     "rm": 0,
+     "type": "part",
+     "point": "/"
+    }
+   ],
+   "cle": [
+    "sda",
+    64
+   ]
+  },
+  {
+   "graine": "2:1730000000",
+   "libertes": [
+    [
+     1,
+     "donner",
+     "2"
+    ],
+    [
+     2,
+     "lire",
+     "1"
+    ],
+    [
+     3,
+     "ameliorer",
+     "3"
+    ],
+    [
+     4,
+     "jouer",
+     "0"
+    ]
+   ],
+   "gratuit": [
+    [
+     1,
+     "blender",
+     "l"
+    ],
+    [
+     2,
+     "jeu_ferme",
+     "p"
+    ],
+    [
+     3,
+     "appli_pubs",
+     "p"
+    ],
+    [
+     4,
+     "libre_payant",
+     "l"
+    ]
+   ],
+   "faute": {
+    "ligne": 0,
+    "juste": "faim",
+    "faux": "fain"
+   },
+   "texte_faux": "# Terminagotchi : langues/fr.txt (copie d'exercice de la Guilde)\n\ncore.notif.faim = 🍽 J'ai fain… tape quelques commandes pour me nourrir !\nqu.journal.rien = Rien pour l'instant : continue à jouer !\nhist.racine.1.dit = Regarde autour de toi : ce sont les grands lieux du Terminaworld.\nqu.cachette.dit = Un passage secret ! Personne n'était venu ici depuis des années…\nlec.t2.2.bravo = La loupe l'a trouvé ! Les grands disent « chercher dans un fichier ».\nhist.sm9.7.bravo = OK : l'archive est exactement celle que tu as sauvegardée.\n",
+   "texte_juste": "# Terminagotchi : langues/fr.txt (copie d'exercice de la Guilde)\n\ncore.notif.faim = 🍽 J'ai faim… tape quelques commandes pour me nourrir !\nqu.journal.rien = Rien pour l'instant : continue à jouer !\nhist.racine.1.dit = Regarde autour de toi : ce sont les grands lieux du Terminaworld.\nqu.cachette.dit = Un passage secret ! Personne n'était venu ici depuis des années…\nlec.t2.2.bravo = La loupe l'a trouvé ! Les grands disent « chercher dans un fichier ».\nhist.sm9.7.bravo = OK : l'archive est exactement celle que tu as sauvegardée.\n",
+   "piece": {
+    "longueur": 36,
+    "largeur": 16,
+    "epaisseur": 5,
+    "trou_x": 6,
+    "trou_y": 8,
+    "trou_d": 5
+   },
+   "volume": 2880,
+   "disques": [
+    {
+     "nom": "sda",
+     "taille": "14.6G",
+     "rm": 1,
+     "type": "disk",
+     "point": ""
+    },
+    {
+     "nom": "sda1",
+     "taille": "14.6G",
+     "rm": 1,
+     "type": "part",
+     "point": ""
+    },
+    {
+     "nom": "sdb",
+     "taille": "1.8T",
+     "rm": 1,
+     "type": "disk",
+     "point": ""
+    },
+    {
+     "nom": "sdb1",
+     "taille": "1.8T",
+     "rm": 1,
+     "type": "part",
+     "point": "/media/SAUVEGARDE"
+    },
+    {
+     "nom": "nvme0n1",
+     "taille": "476.9G",
+     "rm": 0,
+     "type": "disk",
+     "point": ""
+    },
+    {
+     "nom": "nvme0n1p1",
+     "taille": "600M",
+     "rm": 0,
+     "type": "part",
+     "point": "/boot/efi"
+    },
+    {
+     "nom": "nvme0n1p2",
+     "taille": "476.3G",
+     "rm": 0,
+     "type": "part",
+     "point": "/"
+    }
+   ],
+   "cle": [
+    "sda",
+    16
+   ]
+  },
+  {
+   "graine": "7:42",
+   "libertes": [
+    [
+     1,
+     "jouer",
+     "0"
+    ],
+    [
+     2,
+     "lire",
+     "1"
+    ],
+    [
+     3,
+     "ameliorer",
+     "3"
+    ],
+    [
+     4,
+     "donner",
+     "2"
+    ]
+   ],
+   "gratuit": [
+    [
+     1,
+     "jeu_ferme",
+     "p"
+    ],
+    [
+     2,
+     "blender",
+     "l"
+    ],
+    [
+     3,
+     "libre_payant",
+     "l"
+    ],
+    [
+     4,
+     "appli_pubs",
+     "p"
+    ]
+   ],
+   "faute": {
+    "ligne": 3,
+    "juste": "secret",
+    "faux": "secrai"
+   },
+   "texte_faux": "# Terminagotchi : langues/fr.txt (copie d'exercice de la Guilde)\n\ncore.notif.faim = 🍽 J'ai faim… tape quelques commandes pour me nourrir !\nqu.journal.rien = Rien pour l'instant : continue à jouer !\nhist.racine.1.dit = Regarde autour de toi : ce sont les grands lieux du Terminaworld.\nqu.cachette.dit = Un passage secrai ! Personne n'était venu ici depuis des années…\nlec.t2.2.bravo = La loupe l'a trouvé ! Les grands disent « chercher dans un fichier ».\nhist.sm9.7.bravo = OK : l'archive est exactement celle que tu as sauvegardée.\n",
+   "texte_juste": "# Terminagotchi : langues/fr.txt (copie d'exercice de la Guilde)\n\ncore.notif.faim = 🍽 J'ai faim… tape quelques commandes pour me nourrir !\nqu.journal.rien = Rien pour l'instant : continue à jouer !\nhist.racine.1.dit = Regarde autour de toi : ce sont les grands lieux du Terminaworld.\nqu.cachette.dit = Un passage secret ! Personne n'était venu ici depuis des années…\nlec.t2.2.bravo = La loupe l'a trouvé ! Les grands disent « chercher dans un fichier ».\nhist.sm9.7.bravo = OK : l'archive est exactement celle que tu as sauvegardée.\n",
+   "piece": {
+    "longueur": 44,
+    "largeur": 20,
+    "epaisseur": 3,
+    "trou_x": 6,
+    "trou_y": 10,
+    "trou_d": 5
+   },
+   "volume": 2640,
+   "disques": [
+    {
+     "nom": "sda",
+     "taille": "28.9G",
+     "rm": 1,
+     "type": "disk",
+     "point": ""
+    },
+    {
+     "nom": "sda1",
+     "taille": "28.9G",
+     "rm": 1,
+     "type": "part",
+     "point": ""
+    },
+    {
+     "nom": "sdb",
+     "taille": "1.8T",
+     "rm": 1,
+     "type": "disk",
+     "point": ""
+    },
+    {
+     "nom": "sdb1",
+     "taille": "1.8T",
+     "rm": 1,
+     "type": "part",
+     "point": "/media/SAUVEGARDE"
+    },
+    {
+     "nom": "nvme0n1",
+     "taille": "476.9G",
+     "rm": 0,
+     "type": "disk",
+     "point": ""
+    },
+    {
+     "nom": "nvme0n1p1",
+     "taille": "600M",
+     "rm": 0,
+     "type": "part",
+     "point": "/boot/efi"
+    },
+    {
+     "nom": "nvme0n1p2",
+     "taille": "476.3G",
+     "rm": 0,
+     "type": "part",
+     "point": "/"
+    }
+   ],
+   "cle": [
+    "sda",
+    32
+   ]
+  },
+  {
+   "graine": "partie:3",
+   "libertes": [
+    [
+     1,
+     "ameliorer",
+     "3"
+    ],
+    [
+     2,
+     "jouer",
+     "0"
+    ],
+    [
+     3,
+     "lire",
+     "1"
+    ],
+    [
+     4,
+     "donner",
+     "2"
+    ]
+   ],
+   "gratuit": [
+    [
+     1,
+     "jeu_ferme",
+     "p"
+    ],
+    [
+     2,
+     "appli_pubs",
+     "p"
+    ],
+    [
+     3,
+     "blender",
+     "l"
+    ],
+    [
+     4,
+     "libre_payant",
+     "l"
+    ]
+   ],
+   "faute": {
+    "ligne": 4,
+    "juste": "trouvé",
+    "faux": "trouver"
+   },
+   "texte_faux": "# Terminagotchi : langues/fr.txt (copie d'exercice de la Guilde)\n\ncore.notif.faim = 🍽 J'ai faim… tape quelques commandes pour me nourrir !\nqu.journal.rien = Rien pour l'instant : continue à jouer !\nhist.racine.1.dit = Regarde autour de toi : ce sont les grands lieux du Terminaworld.\nqu.cachette.dit = Un passage secret ! Personne n'était venu ici depuis des années…\nlec.t2.2.bravo = La loupe l'a trouver ! Les grands disent « chercher dans un fichier ».\nhist.sm9.7.bravo = OK : l'archive est exactement celle que tu as sauvegardée.\n",
+   "texte_juste": "# Terminagotchi : langues/fr.txt (copie d'exercice de la Guilde)\n\ncore.notif.faim = 🍽 J'ai faim… tape quelques commandes pour me nourrir !\nqu.journal.rien = Rien pour l'instant : continue à jouer !\nhist.racine.1.dit = Regarde autour de toi : ce sont les grands lieux du Terminaworld.\nqu.cachette.dit = Un passage secret ! Personne n'était venu ici depuis des années…\nlec.t2.2.bravo = La loupe l'a trouvé ! Les grands disent « chercher dans un fichier ».\nhist.sm9.7.bravo = OK : l'archive est exactement celle que tu as sauvegardée.\n",
+   "piece": {
+    "longueur": 48,
+    "largeur": 28,
+    "epaisseur": 3,
+    "trou_x": 6,
+    "trou_y": 14,
+    "trou_d": 5
+   },
+   "volume": 4032,
+   "disques": [
+    {
+     "nom": "sda",
+     "taille": "1.8T",
+     "rm": 1,
+     "type": "disk",
+     "point": ""
+    },
+    {
+     "nom": "sda1",
+     "taille": "1.8T",
+     "rm": 1,
+     "type": "part",
+     "point": "/media/SAUVEGARDE"
+    },
+    {
+     "nom": "sdb",
+     "taille": "57.7G",
+     "rm": 1,
+     "type": "disk",
+     "point": ""
+    },
+    {
+     "nom": "sdb1",
+     "taille": "57.7G",
+     "rm": 1,
+     "type": "part",
+     "point": ""
+    },
+    {
+     "nom": "nvme0n1",
+     "taille": "476.9G",
+     "rm": 0,
+     "type": "disk",
+     "point": ""
+    },
+    {
+     "nom": "nvme0n1p1",
+     "taille": "600M",
+     "rm": 0,
+     "type": "part",
+     "point": "/boot/efi"
+    },
+    {
+     "nom": "nvme0n1p2",
+     "taille": "476.3G",
+     "rm": 0,
+     "type": "part",
+     "point": "/"
+    }
+   ],
+   "cle": [
+    "sdb",
+    64
+   ]
+  },
+  {
+   "graine": "9:1761900000",
+   "libertes": [
+    [
+     1,
+     "jouer",
+     "0"
+    ],
+    [
+     2,
+     "ameliorer",
+     "3"
+    ],
+    [
+     3,
+     "lire",
+     "1"
+    ],
+    [
+     4,
+     "donner",
+     "2"
+    ]
+   ],
+   "gratuit": [
+    [
+     1,
+     "appli_pubs",
+     "p"
+    ],
+    [
+     2,
+     "libre_payant",
+     "l"
+    ],
+    [
+     3,
+     "jeu_ferme",
+     "p"
+    ],
+    [
+     4,
+     "blender",
+     "l"
+    ]
+   ],
+   "faute": {
+    "ligne": 5,
+    "juste": "exactement",
+    "faux": "exactemment"
+   },
+   "texte_faux": "# Terminagotchi : langues/fr.txt (copie d'exercice de la Guilde)\n\ncore.notif.faim = 🍽 J'ai faim… tape quelques commandes pour me nourrir !\nqu.journal.rien = Rien pour l'instant : continue à jouer !\nhist.racine.1.dit = Regarde autour de toi : ce sont les grands lieux du Terminaworld.\nqu.cachette.dit = Un passage secret ! Personne n'était venu ici depuis des années…\nlec.t2.2.bravo = La loupe l'a trouvé ! Les grands disent « chercher dans un fichier ».\nhist.sm9.7.bravo = OK : l'archive est exactemment celle que tu as sauvegardée.\n",
+   "texte_juste": "# Terminagotchi : langues/fr.txt (copie d'exercice de la Guilde)\n\ncore.notif.faim = 🍽 J'ai faim… tape quelques commandes pour me nourrir !\nqu.journal.rien = Rien pour l'instant : continue à jouer !\nhist.racine.1.dit = Regarde autour de toi : ce sont les grands lieux du Terminaworld.\nqu.cachette.dit = Un passage secret ! Personne n'était venu ici depuis des années…\nlec.t2.2.bravo = La loupe l'a trouvé ! Les grands disent « chercher dans un fichier ».\nhist.sm9.7.bravo = OK : l'archive est exactement celle que tu as sauvegardée.\n",
+   "piece": {
+    "longueur": 44,
+    "largeur": 20,
+    "epaisseur": 5,
+    "trou_x": 6,
+    "trou_y": 10,
+    "trou_d": 5
+   },
+   "volume": 4400,
+   "disques": [
+    {
+     "nom": "sda",
+     "taille": "1.8T",
+     "rm": 1,
+     "type": "disk",
+     "point": ""
+    },
+    {
+     "nom": "sda1",
+     "taille": "1.8T",
+     "rm": 1,
+     "type": "part",
+     "point": "/media/SAUVEGARDE"
+    },
+    {
+     "nom": "sdb",
+     "taille": "7.5G",
+     "rm": 1,
+     "type": "disk",
+     "point": ""
+    },
+    {
+     "nom": "sdb1",
+     "taille": "7.5G",
+     "rm": 1,
+     "type": "part",
+     "point": ""
+    },
+    {
+     "nom": "nvme0n1",
+     "taille": "476.9G",
+     "rm": 0,
+     "type": "disk",
+     "point": ""
+    },
+    {
+     "nom": "nvme0n1p1",
+     "taille": "600M",
+     "rm": 0,
+     "type": "part",
+     "point": "/boot/efi"
+    },
+    {
+     "nom": "nvme0n1p2",
+     "taille": "476.3G",
+     "rm": 0,
+     "type": "part",
+     "point": "/"
+    }
+   ],
+   "cle": [
+    "sdb",
+    8
+   ]
+  },
+  {
+   "graine": "4:1700000123",
+   "libertes": [
+    [
+     1,
+     "jouer",
+     "0"
+    ],
+    [
+     2,
+     "ameliorer",
+     "3"
+    ],
+    [
+     3,
+     "lire",
+     "1"
+    ],
+    [
+     4,
+     "donner",
+     "2"
+    ]
+   ],
+   "gratuit": [
+    [
+     1,
+     "blender",
+     "l"
+    ],
+    [
+     2,
+     "jeu_ferme",
+     "p"
+    ],
+    [
+     3,
+     "appli_pubs",
+     "p"
+    ],
+    [
+     4,
+     "libre_payant",
+     "l"
+    ]
+   ],
+   "faute": {
+    "ligne": 4,
+    "juste": "trouvé",
+    "faux": "trouver"
+   },
+   "texte_faux": "# Terminagotchi : langues/fr.txt (copie d'exercice de la Guilde)\n\ncore.notif.faim = 🍽 J'ai faim… tape quelques commandes pour me nourrir !\nqu.journal.rien = Rien pour l'instant : continue à jouer !\nhist.racine.1.dit = Regarde autour de toi : ce sont les grands lieux du Terminaworld.\nqu.cachette.dit = Un passage secret ! Personne n'était venu ici depuis des années…\nlec.t2.2.bravo = La loupe l'a trouver ! Les grands disent « chercher dans un fichier ».\nhist.sm9.7.bravo = OK : l'archive est exactement celle que tu as sauvegardée.\n",
+   "texte_juste": "# Terminagotchi : langues/fr.txt (copie d'exercice de la Guilde)\n\ncore.notif.faim = 🍽 J'ai faim… tape quelques commandes pour me nourrir !\nqu.journal.rien = Rien pour l'instant : continue à jouer !\nhist.racine.1.dit = Regarde autour de toi : ce sont les grands lieux du Terminaworld.\nqu.cachette.dit = Un passage secret ! Personne n'était venu ici depuis des années…\nlec.t2.2.bravo = La loupe l'a trouvé ! Les grands disent « chercher dans un fichier ».\nhist.sm9.7.bravo = OK : l'archive est exactement celle que tu as sauvegardée.\n",
+   "piece": {
+    "longueur": 36,
+    "largeur": 20,
+    "epaisseur": 4,
+    "trou_x": 6,
+    "trou_y": 10,
+    "trou_d": 5
+   },
+   "volume": 2880,
+   "disques": [
+    {
+     "nom": "sda",
+     "taille": "1.8T",
+     "rm": 1,
+     "type": "disk",
+     "point": ""
+    },
+    {
+     "nom": "sda1",
+     "taille": "1.8T",
+     "rm": 1,
+     "type": "part",
+     "point": "/media/SAUVEGARDE"
+    },
+    {
+     "nom": "sdb",
+     "taille": "14.6G",
+     "rm": 1,
+     "type": "disk",
+     "point": ""
+    },
+    {
+     "nom": "sdb1",
+     "taille": "14.6G",
+     "rm": 1,
+     "type": "part",
+     "point": ""
+    },
+    {
+     "nom": "nvme0n1",
+     "taille": "476.9G",
+     "rm": 0,
+     "type": "disk",
+     "point": ""
+    },
+    {
+     "nom": "nvme0n1p1",
+     "taille": "600M",
+     "rm": 0,
+     "type": "part",
+     "point": "/boot/efi"
+    },
+    {
+     "nom": "nvme0n1p2",
+     "taille": "476.3G",
+     "rm": 0,
+     "type": "part",
+     "point": "/"
+    }
+   ],
+   "cle": [
+    "sdb",
+    16
+   ]
+  },
+  {
+   "graine": "5:5",
+   "libertes": [
+    [
+     1,
+     "ameliorer",
+     "3"
+    ],
+    [
+     2,
+     "donner",
+     "2"
+    ],
+    [
+     3,
+     "lire",
+     "1"
+    ],
+    [
+     4,
+     "jouer",
+     "0"
+    ]
+   ],
+   "gratuit": [
+    [
+     1,
+     "appli_pubs",
+     "p"
+    ],
+    [
+     2,
+     "jeu_ferme",
+     "p"
+    ],
+    [
+     3,
+     "libre_payant",
+     "l"
+    ],
+    [
+     4,
+     "blender",
+     "l"
+    ]
+   ],
+   "faute": {
+    "ligne": 3,
+    "juste": "secret",
+    "faux": "secrai"
+   },
+   "texte_faux": "# Terminagotchi : langues/fr.txt (copie d'exercice de la Guilde)\n\ncore.notif.faim = 🍽 J'ai faim… tape quelques commandes pour me nourrir !\nqu.journal.rien = Rien pour l'instant : continue à jouer !\nhist.racine.1.dit = Regarde autour de toi : ce sont les grands lieux du Terminaworld.\nqu.cachette.dit = Un passage secrai ! Personne n'était venu ici depuis des années…\nlec.t2.2.bravo = La loupe l'a trouvé ! Les grands disent « chercher dans un fichier ».\nhist.sm9.7.bravo = OK : l'archive est exactement celle que tu as sauvegardée.\n",
+   "texte_juste": "# Terminagotchi : langues/fr.txt (copie d'exercice de la Guilde)\n\ncore.notif.faim = 🍽 J'ai faim… tape quelques commandes pour me nourrir !\nqu.journal.rien = Rien pour l'instant : continue à jouer !\nhist.racine.1.dit = Regarde autour de toi : ce sont les grands lieux du Terminaworld.\nqu.cachette.dit = Un passage secret ! Personne n'était venu ici depuis des années…\nlec.t2.2.bravo = La loupe l'a trouvé ! Les grands disent « chercher dans un fichier ».\nhist.sm9.7.bravo = OK : l'archive est exactement celle que tu as sauvegardée.\n",
+   "piece": {
+    "longueur": 40,
+    "largeur": 20,
+    "epaisseur": 4,
+    "trou_x": 6,
+    "trou_y": 10,
+    "trou_d": 5
+   },
+   "volume": 3200,
+   "disques": [
+    {
+     "nom": "sda",
+     "taille": "57.7G",
+     "rm": 1,
+     "type": "disk",
+     "point": ""
+    },
+    {
+     "nom": "sda1",
+     "taille": "57.7G",
+     "rm": 1,
+     "type": "part",
+     "point": ""
+    },
+    {
+     "nom": "sdb",
+     "taille": "1.8T",
+     "rm": 1,
+     "type": "disk",
+     "point": ""
+    },
+    {
+     "nom": "sdb1",
+     "taille": "1.8T",
+     "rm": 1,
+     "type": "part",
+     "point": "/media/SAUVEGARDE"
+    },
+    {
+     "nom": "nvme0n1",
+     "taille": "476.9G",
+     "rm": 0,
+     "type": "disk",
+     "point": ""
+    },
+    {
+     "nom": "nvme0n1p1",
+     "taille": "600M",
+     "rm": 0,
+     "type": "part",
+     "point": "/boot/efi"
+    },
+    {
+     "nom": "nvme0n1p2",
+     "taille": "476.3G",
+     "rm": 0,
+     "type": "part",
+     "point": "/"
+    }
+   ],
+   "cle": [
+    "sda",
+    64
+   ]
+  },
+  {
+   "graine": "8:1762000000",
+   "libertes": [
+    [
+     1,
+     "jouer",
+     "0"
+    ],
+    [
+     2,
+     "donner",
+     "2"
+    ],
+    [
+     3,
+     "lire",
+     "1"
+    ],
+    [
+     4,
+     "ameliorer",
+     "3"
+    ]
+   ],
+   "gratuit": [
+    [
+     1,
+     "libre_payant",
+     "l"
+    ],
+    [
+     2,
+     "blender",
+     "l"
+    ],
+    [
+     3,
+     "appli_pubs",
+     "p"
+    ],
+    [
+     4,
+     "jeu_ferme",
+     "p"
+    ]
+   ],
+   "faute": {
+    "ligne": 5,
+    "juste": "exactement",
+    "faux": "exactemment"
+   },
+   "texte_faux": "# Terminagotchi : langues/fr.txt (copie d'exercice de la Guilde)\n\ncore.notif.faim = 🍽 J'ai faim… tape quelques commandes pour me nourrir !\nqu.journal.rien = Rien pour l'instant : continue à jouer !\nhist.racine.1.dit = Regarde autour de toi : ce sont les grands lieux du Terminaworld.\nqu.cachette.dit = Un passage secret ! Personne n'était venu ici depuis des années…\nlec.t2.2.bravo = La loupe l'a trouvé ! Les grands disent « chercher dans un fichier ».\nhist.sm9.7.bravo = OK : l'archive est exactemment celle que tu as sauvegardée.\n",
+   "texte_juste": "# Terminagotchi : langues/fr.txt (copie d'exercice de la Guilde)\n\ncore.notif.faim = 🍽 J'ai faim… tape quelques commandes pour me nourrir !\nqu.journal.rien = Rien pour l'instant : continue à jouer !\nhist.racine.1.dit = Regarde autour de toi : ce sont les grands lieux du Terminaworld.\nqu.cachette.dit = Un passage secret ! Personne n'était venu ici depuis des années…\nlec.t2.2.bravo = La loupe l'a trouvé ! Les grands disent « chercher dans un fichier ».\nhist.sm9.7.bravo = OK : l'archive est exactement celle que tu as sauvegardée.\n",
+   "piece": {
+    "longueur": 40,
+    "largeur": 16,
+    "epaisseur": 5,
+    "trou_x": 6,
+    "trou_y": 8,
+    "trou_d": 5
+   },
+   "volume": 3200,
+   "disques": [
+    {
+     "nom": "sda",
+     "taille": "14.6G",
+     "rm": 1,
+     "type": "disk",
+     "point": ""
+    },
+    {
+     "nom": "sda1",
+     "taille": "14.6G",
+     "rm": 1,
+     "type": "part",
+     "point": ""
+    },
+    {
+     "nom": "sdb",
+     "taille": "1.8T",
+     "rm": 1,
+     "type": "disk",
+     "point": ""
+    },
+    {
+     "nom": "sdb1",
+     "taille": "1.8T",
+     "rm": 1,
+     "type": "part",
+     "point": "/media/SAUVEGARDE"
+    },
+    {
+     "nom": "nvme0n1",
+     "taille": "476.9G",
+     "rm": 0,
+     "type": "disk",
+     "point": ""
+    },
+    {
+     "nom": "nvme0n1p1",
+     "taille": "600M",
+     "rm": 0,
+     "type": "part",
+     "point": "/boot/efi"
+    },
+    {
+     "nom": "nvme0n1p2",
+     "taille": "476.3G",
+     "rm": 0,
+     "type": "part",
+     "point": "/"
+    }
+   ],
+   "cle": [
+    "sda",
+    16
+   ]
+  }
+ ],
+ "quiz": [
+  {
+   "graine": "1:0",
+   "lettres": "0123",
+   "rep": [
+    "3",
+    "1",
+    "2",
+    "0"
+   ],
+   "ok": true,
+   "justes": [
+    [
+     1,
+     "ameliorer"
+    ],
+    [
+     2,
+     "lire"
+    ],
+    [
+     3,
+     "donner"
+    ],
+    [
+     4,
+     "jouer"
+    ]
+   ]
+  },
+  {
+   "graine": "1:0",
+   "lettres": "0123",
+   "rep": [
+    "0",
+    "2",
+    "1",
+    "3"
+   ],
+   "ok": true,
+   "justes": []
+  },
+  {
+   "graine": "1:0",
+   "lettres": "0123",
+   "rep": [
+    "0",
+    "1"
+   ],
+   "ok": false,
+   "justes": []
+  },
+  {
+   "graine": "1:0",
+   "lettres": "0123",
+   "rep": [
+    "a",
+    "b",
+    "c",
+    "d"
+   ],
+   "ok": false,
+   "justes": []
+  },
+  {
+   "graine": "1:0",
+   "lettres": "0123",
+   "rep": [
+    "3",
+    "1",
+    "2",
+    "9"
+   ],
+   "ok": false,
+   "justes": []
+  },
+  {
+   "graine": "1:0",
+   "lettres": "0123",
+   "rep": [],
+   "ok": false,
+   "justes": []
+  },
+  {
+   "graine": "1:0",
+   "lettres": "lp",
+   "rep": [
+    "l",
+    "l",
+    "p",
+    "p"
+   ],
+   "ok": true,
+   "justes": [
+    [
+     1,
+     "blender"
+    ],
+    [
+     2,
+     "libre_payant"
+    ],
+    [
+     3,
+     "appli_pubs"
+    ],
+    [
+     4,
+     "jeu_ferme"
+    ]
+   ]
+  },
+  {
+   "graine": "1:0",
+   "lettres": "lp",
+   "rep": [
+    "L",
+    "L",
+    "L",
+    "L"
+   ],
+   "ok": true,
+   "justes": [
+    [
+     1,
+     "blender"
+    ],
+    [
+     2,
+     "libre_payant"
+    ]
+   ]
+  },
+  {
+   "graine": "1:0",
+   "lettres": "lp",
+   "rep": [
+    "libre",
+    "pas",
+    "pas",
+    "libre"
+   ],
+   "ok": true,
+   "justes": [
+    [
+     1,
+     "blender"
+    ],
+    [
+     3,
+     "appli_pubs"
+    ]
+   ]
+  },
+  {
+   "graine": "1:0",
+   "lettres": "lp",
+   "rep": [
+    "x",
+    "x",
+    "x",
+    "x"
+   ],
+   "ok": false,
+   "justes": []
+  },
+  {
+   "graine": "2:1730000000",
+   "lettres": "0123",
+   "rep": [
+    "2",
+    "1",
+    "3",
+    "0"
+   ],
+   "ok": true,
+   "justes": [
+    [
+     1,
+     "donner"
+    ],
+    [
+     2,
+     "lire"
+    ],
+    [
+     3,
+     "ameliorer"
+    ],
+    [
+     4,
+     "jouer"
+    ]
+   ]
+  },
+  {
+   "graine": "2:1730000000",
+   "lettres": "0123",
+   "rep": [
+    "0",
+    "3",
+    "1",
+    "2"
+   ],
+   "ok": true,
+   "justes": []
+  },
+  {
+   "graine": "2:1730000000",
+   "lettres": "0123",
+   "rep": [
+    "0",
+    "1"
+   ],
+   "ok": false,
+   "justes": []
+  },
+  {
+   "graine": "2:1730000000",
+   "lettres": "0123",
+   "rep": [
+    "a",
+    "b",
+    "c",
+    "d"
+   ],
+   "ok": false,
+   "justes": []
+  },
+  {
+   "graine": "2:1730000000",
+   "lettres": "0123",
+   "rep": [
+    "2",
+    "1",
+    "3",
+    "9"
+   ],
+   "ok": false,
+   "justes": []
+  },
+  {
+   "graine": "2:1730000000",
+   "lettres": "0123",
+   "rep": [],
+   "ok": false,
+   "justes": []
+  },
+  {
+   "graine": "2:1730000000",
+   "lettres": "lp",
+   "rep": [
+    "l",
+    "p",
+    "p",
+    "l"
+   ],
+   "ok": true,
+   "justes": [
+    [
+     1,
+     "blender"
+    ],
+    [
+     2,
+     "jeu_ferme"
+    ],
+    [
+     3,
+     "appli_pubs"
+    ],
+    [
+     4,
+     "libre_payant"
+    ]
+   ]
+  },
+  {
+   "graine": "2:1730000000",
+   "lettres": "lp",
+   "rep": [
+    "L",
+    "L",
+    "L",
+    "L"
+   ],
+   "ok": true,
+   "justes": [
+    [
+     1,
+     "blender"
+    ],
+    [
+     4,
+     "libre_payant"
+    ]
+   ]
+  },
+  {
+   "graine": "2:1730000000",
+   "lettres": "lp",
+   "rep": [
+    "libre",
+    "pas",
+    "pas",
+    "libre"
+   ],
+   "ok": true,
+   "justes": [
+    [
+     1,
+     "blender"
+    ],
+    [
+     2,
+     "jeu_ferme"
+    ],
+    [
+     3,
+     "appli_pubs"
+    ],
+    [
+     4,
+     "libre_payant"
+    ]
+   ]
+  },
+  {
+   "graine": "2:1730000000",
+   "lettres": "lp",
+   "rep": [
+    "x",
+    "x",
+    "x",
+    "x"
+   ],
+   "ok": false,
+   "justes": []
+  },
+  {
+   "graine": "7:42",
+   "lettres": "0123",
+   "rep": [
+    "0",
+    "1",
+    "3",
+    "2"
+   ],
+   "ok": true,
+   "justes": [
+    [
+     1,
+     "jouer"
+    ],
+    [
+     2,
+     "lire"
+    ],
+    [
+     3,
+     "ameliorer"
+    ],
+    [
+     4,
+     "donner"
+    ]
+   ]
+  },
+  {
+   "graine": "7:42",
+   "lettres": "0123",
+   "rep": [
+    "2",
+    "3",
+    "1",
+    "0"
+   ],
+   "ok": true,
+   "justes": []
+  },
+  {
+   "graine": "7:42",
+   "lettres": "0123",
+   "rep": [
+    "0",
+    "1"
+   ],
+   "ok": false,
+   "justes": []
+  },
+  {
+   "graine": "7:42",
+   "lettres": "0123",
+   "rep": [
+    "a",
+    "b",
+    "c",
+    "d"
+   ],
+   "ok": false,
+   "justes": []
+  },
+  {
+   "graine": "7:42",
+   "lettres": "0123",
+   "rep": [
+    "0",
+    "1",
+    "3",
+    "9"
+   ],
+   "ok": false,
+   "justes": []
+  },
+  {
+   "graine": "7:42",
+   "lettres": "0123",
+   "rep": [],
+   "ok": false,
+   "justes": []
+  },
+  {
+   "graine": "7:42",
+   "lettres": "lp",
+   "rep": [
+    "p",
+    "l",
+    "l",
+    "p"
+   ],
+   "ok": true,
+   "justes": [
+    [
+     1,
+     "jeu_ferme"
+    ],
+    [
+     2,
+     "blender"
+    ],
+    [
+     3,
+     "libre_payant"
+    ],
+    [
+     4,
+     "appli_pubs"
+    ]
+   ]
+  },
+  {
+   "graine": "7:42",
+   "lettres": "lp",
+   "rep": [
+    "L",
+    "L",
+    "L",
+    "L"
+   ],
+   "ok": true,
+   "justes": [
+    [
+     2,
+     "blender"
+    ],
+    [
+     3,
+     "libre_payant"
+    ]
+   ]
+  },
+  {
+   "graine": "7:42",
+   "lettres": "lp",
+   "rep": [
+    "libre",
+    "pas",
+    "pas",
+    "libre"
+   ],
+   "ok": true,
+   "justes": []
+  },
+  {
+   "graine": "7:42",
+   "lettres": "lp",
+   "rep": [
+    "x",
+    "x",
+    "x",
+    "x"
+   ],
+   "ok": false,
+   "justes": []
+  }
+ ],
+ "licences": [
+  {
+   "texte": "MIT License\n\nPermission is hereby granted, free of charge",
+   "famille": "mit"
+  },
+  {
+   "texte": "GNU GENERAL PUBLIC LICENSE\nVersion 3",
+   "famille": "gpl"
+  },
+  {
+   "texte": "GNU LESSER GENERAL PUBLIC LICENSE",
+   "famille": "lgpl"
+  },
+  {
+   "texte": "License: GPL-3+",
+   "famille": "gpl"
+  },
+  {
+   "texte": "License: LGPL-2.1+ and GPL-2+",
+   "famille": "lgpl"
+  },
+  {
+   "texte": "Apache License 2.0",
+   "famille": "apache"
+  },
+  {
+   "texte": "Mozilla Public License Version 2.0",
+   "famille": "mpl"
+  },
+  {
+   "texte": "Redistribution and use in source and binary forms",
+   "famille": "bsd"
+  },
+  {
+   "texte": "BSD-3-Clause",
+   "famille": "bsd"
+  },
+  {
+   "texte": "PYTHON SOFTWARE FOUNDATION LICENSE VERSION 2",
+   "famille": "psf"
+  },
+  {
+   "texte": "The author disclaims copyright. public domain",
+   "famille": "domaine_public"
+  },
+  {
+   "texte": "Creative Commons Attribution 4.0",
+   "famille": "cc"
+  },
+  {
+   "texte": "CC0 1.0",
+   "famille": "cc"
+  },
+  {
+   "texte": "zlib License",
+   "famille": "zlib"
+  },
+  {
+   "texte": "GNU AFFERO GENERAL PUBLIC LICENSE",
+   "famille": "agpl"
+  },
+  {
+   "texte": "submit your work",
+   "famille": null
+  },
+  {
+   "texte": "rien du tout",
+   "famille": null
+  },
+  {
+   "texte": "",
+   "famille": null
+  },
+  {
+   "texte": "Licensed under the AGPL-3.0",
+   "famille": "agpl"
+  },
+  {
+   "texte": "MPL-2.0",
+   "famille": "mpl"
+  }
+ ],
+ "catalogue": [
+  {
+   "nom": "bash",
+   "famille": "gpl",
+   "genre": "copyleft"
+  },
+  {
+   "nom": "Firefox",
+   "famille": "mpl",
+   "genre": "copyleft"
+  },
+  {
+   "nom": "PYTHON3",
+   "famille": "psf",
+   "genre": "permissive"
+  },
+  {
+   "nom": "terminagotchi",
+   "famille": null,
+   "genre": null
+  },
+  {
+   "nom": "gimp",
+   "famille": "gpl",
+   "genre": "copyleft"
+  },
+  {
+   "nom": "openssl",
+   "famille": "apache",
+   "genre": "permissive"
+  },
+  {
+   "nom": "sqlite",
+   "famille": "domaine_public",
+   "genre": "domaine"
+  },
+  {
+   "nom": "  git ",
+   "famille": "gpl",
+   "genre": "copyleft"
+  },
+  {
+   "nom": "inconnu",
+   "famille": null,
+   "genre": null
+  },
+  {
+   "nom": "Blender",
+   "famille": "gpl",
+   "genre": "copyleft"
+  }
+ ],
+ "faim": [
+  {
+   "fichiers": {
+    "pc/tg/satiete.py": "x = 1\ndef etat_de(faim, veille=False):\n    pass\n",
+    "pc/tg/aura.py": "faim < AFFAMEE\n"
+   },
+   "attendus": [
+    "satiete.py"
+   ]
+  },
+  {
+   "fichiers": {
+    "pc/tg/core.py": "rate = 360   # secondes par point de faim\n",
+    "pc/tg/app.py": "faim"
+   },
+   "attendus": [
+    "core.py"
+   ]
+  },
+  {
+   "fichiers": {
+    "a.py": "rien"
+   },
+   "attendus": []
+  },
+  {
+   "fichiers": {},
+   "attendus": []
+  }
+ ],
+ "faim_reponses": [
+  {
+   "reponse": "satiete",
+   "attendus": [
+    "satiete.py"
+   ],
+   "ok": true
+  },
+  {
+   "reponse": "satiete",
+   "attendus": [
+    "core.py"
+   ],
+   "ok": false
+  },
+  {
+   "reponse": "satiete.py",
+   "attendus": [
+    "satiete.py"
+   ],
+   "ok": true
+  },
+  {
+   "reponse": "satiete.py",
+   "attendus": [
+    "core.py"
+   ],
+   "ok": false
+  },
+  {
+   "reponse": "pc/tg/satiete.py",
+   "attendus": [
+    "satiete.py"
+   ],
+   "ok": true
+  },
+  {
+   "reponse": "pc/tg/satiete.py",
+   "attendus": [
+    "core.py"
+   ],
+   "ok": false
+  },
+  {
+   "reponse": "Satiété",
+   "attendus": [
+    "satiete.py"
+   ],
+   "ok": true
+  },
+  {
+   "reponse": "Satiété",
+   "attendus": [
+    "core.py"
+   ],
+   "ok": false
+  },
+  {
+   "reponse": "SATIETE.PY",
+   "attendus": [
+    "satiete.py"
+   ],
+   "ok": true
+  },
+  {
+   "reponse": "SATIETE.PY",
+   "attendus": [
+    "core.py"
+   ],
+   "ok": false
+  },
+  {
+   "reponse": "aura.py",
+   "attendus": [
+    "satiete.py"
+   ],
+   "ok": false
+  },
+  {
+   "reponse": "aura.py",
+   "attendus": [
+    "core.py"
+   ],
+   "ok": false
+  },
+  {
+   "reponse": "",
+   "attendus": [
+    "satiete.py"
+   ],
+   "ok": false
+  },
+  {
+   "reponse": "",
+   "attendus": [
+    "core.py"
+   ],
+   "ok": false
+  },
+  {
+   "reponse": "satiete.py:98",
+   "attendus": [
+    "satiete.py"
+   ],
+   "ok": true
+  },
+  {
+   "reponse": "satiete.py:98",
+   "attendus": [
+    "core.py"
+   ],
+   "ok": false
+  },
+  {
+   "reponse": "code_du_jeu/pc/tg/satiete.py",
+   "attendus": [
+    "satiete.py"
+   ],
+   "ok": true
+  },
+  {
+   "reponse": "code_du_jeu/pc/tg/satiete.py",
+   "attendus": [
+    "core.py"
+   ],
+   "ok": false
+  },
+  {
+   "reponse": "core",
+   "attendus": [
+    "satiete.py"
+   ],
+   "ok": false
+  },
+  {
+   "reponse": "core",
+   "attendus": [
+    "core.py"
+   ],
+   "ok": true
+  },
+  {
+   "reponse": "Satiete.kt",
+   "attendus": [
+    "satiete.py"
+   ],
+   "ok": false
+  },
+  {
+   "reponse": "Satiete.kt",
+   "attendus": [
+    "core.py"
+   ],
+   "ok": false
+  }
+ ],
+ "corrections": [
+  {
+   "graine": "1:0",
+   "texte": "# Terminagotchi : langues/fr.txt (copie d'exercice de la Guilde)\n\ncore.notif.faim = 🍽 J'ai faim… tape quelques commandes pour me nourrir !\nqu.journal.rien = Rien pour l'instant : continue à jouer !\nhist.racine.1.dit = Regarde autour de toi : ce sont les grands lieux du Terminaworld.\nqu.cachette.dit = Un passage secret ! Personne n'était venu ici depuis des années…\nlec.t2.2.bravo = La loupe l'a trouvé ! Les grands disent « chercher dans un fichier ».\nhist.sm9.7.bravo = OK : l'archive est exactement celle que tu as sauvegardée.\n",
+   "ok": true
+  },
+  {
+   "graine": "1:0",
+   "texte": "# Terminagotchi : langues/fr.txt (copie d'exercice de la Guilde)\n\ncore.notif.faim = 🍽 J'ai faim… tape quelques commandes pour me nourrir !\nqu.journal.rien = Rien pour l'instant : continue à jouer !\nhist.racine.1.dit = Regarde autour de toi : ce sont les grands lieux du Terminaworld.\nqu.cachette.dit = Un passage secret ! Personne n'était venu ici depuis des années…\nlec.t2.2.bravo = La loupe l'a trouvé ! Les grands disent « chercher dans un fichier ».\nhist.sm9.7.bravo = OK : l'archive est exactement celle que tu as sauvegardée.",
+   "ok": true
+  },
+  {
+   "graine": "1:0",
+   "texte": "# Terminagotchi : langues/fr.txt (copie d'exercice de la Guilde)\n\ncore.notif.faim = 🍽 J'ai faim… tape quelques commandes pour me nourrir !\nqu.journal.rien = Rien pour l'instant : continue à jouer !\nhist.racine.1.dit = Regarde autour de toi : ce sont les grands lieux du Terminaworld.\nqu.cachette.dit = Un passage secret ! Personne n'était venu ici depuis des années…\nlec.t2.2.bravo = La loupe l'a trouvé ! Les grands disent « chercher dans un fichier ».\nhist.sm9.7.bravo = OK : l'archive est exactement celle que tu as sauvegardée.\n\n\n",
+   "ok": true
+  },
+  {
+   "graine": "1:0",
+   "texte": "# Terminagotchi : langues/fr.txt (copie d'exercice de la Guilde)\n\ncore.notif.faim = 🍽 J'ai faim… tape quelques commandes pour me nourrir !\nqu.journal.rien = Rien pour l'instant : continue à jouer !\nhist.racine.1.dit = Regarde autour de toi : ce sont les grands lieux du Terminaworld.\nqu.cachette.dit = Un passage secrai ! Personne n'était venu ici depuis des années…\nlec.t2.2.bravo = La loupe l'a trouvé ! Les grands disent « chercher dans un fichier ».\nhist.sm9.7.bravo = OK : l'archive est exactement celle que tu as sauvegardée.\n",
+   "ok": false
+  },
+  {
+   "graine": "1:0",
+   "texte": "# Terminagotchi : langues/fr.txt (copie d'exercice de la Guilde)\n\ncore.notif.FAIM = 🍽 J'ai FAIM… tape quelques commandes pour me nourrir !\nqu.journal.rien = Rien pour l'instant : continue à jouer !\nhist.racine.1.dit = Regarde autour de toi : ce sont les grands lieux du Terminaworld.\nqu.cachette.dit = Un passage secret ! Personne n'était venu ici depuis des années…\nlec.t2.2.bravo = La loupe l'a trouvé ! Les grands disent « chercher dans un fichier ».\nhist.sm9.7.bravo = OK : l'archive est exactement celle que tu as sauvegardée.\n",
+   "ok": false
+  },
+  {
+   "graine": "1:0",
+   "texte": "# Terminagotchi : langues/fr.txt (copie d'exercice de la Guilde)\r\n\r\ncore.notif.faim = 🍽 J'ai faim… tape quelques commandes pour me nourrir !\r\nqu.journal.rien = Rien pour l'instant : continue à jouer !\r\nhist.racine.1.dit = Regarde autour de toi : ce sont les grands lieux du Terminaworld.\r\nqu.cachette.dit = Un passage secret ! Personne n'était venu ici depuis des années…\r\nlec.t2.2.bravo = La loupe l'a trouvé ! Les grands disent « chercher dans un fichier ».\r\nhist.sm9.7.bravo = OK : l'archive est exactement celle que tu as sauvegardée.\r\n",
+   "ok": true
+  },
+  {
+   "graine": "1:0",
+   "texte": "",
+   "ok": false
+  },
+  {
+   "graine": "2:1730000000",
+   "texte": "# Terminagotchi : langues/fr.txt (copie d'exercice de la Guilde)\n\ncore.notif.faim = 🍽 J'ai faim… tape quelques commandes pour me nourrir !\nqu.journal.rien = Rien pour l'instant : continue à jouer !\nhist.racine.1.dit = Regarde autour de toi : ce sont les grands lieux du Terminaworld.\nqu.cachette.dit = Un passage secret ! Personne n'était venu ici depuis des années…\nlec.t2.2.bravo = La loupe l'a trouvé ! Les grands disent « chercher dans un fichier ».\nhist.sm9.7.bravo = OK : l'archive est exactement celle que tu as sauvegardée.\n",
+   "ok": true
+  },
+  {
+   "graine": "2:1730000000",
+   "texte": "# Terminagotchi : langues/fr.txt (copie d'exercice de la Guilde)\n\ncore.notif.faim = 🍽 J'ai faim… tape quelques commandes pour me nourrir !\nqu.journal.rien = Rien pour l'instant : continue à jouer !\nhist.racine.1.dit = Regarde autour de toi : ce sont les grands lieux du Terminaworld.\nqu.cachette.dit = Un passage secret ! Personne n'était venu ici depuis des années…\nlec.t2.2.bravo = La loupe l'a trouvé ! Les grands disent « chercher dans un fichier ».\nhist.sm9.7.bravo = OK : l'archive est exactement celle que tu as sauvegardée.",
+   "ok": true
+  },
+  {
+   "graine": "2:1730000000",
+   "texte": "# Terminagotchi : langues/fr.txt (copie d'exercice de la Guilde)\n\ncore.notif.faim = 🍽 J'ai faim… tape quelques commandes pour me nourrir !\nqu.journal.rien = Rien pour l'instant : continue à jouer !\nhist.racine.1.dit = Regarde autour de toi : ce sont les grands lieux du Terminaworld.\nqu.cachette.dit = Un passage secret ! Personne n'était venu ici depuis des années…\nlec.t2.2.bravo = La loupe l'a trouvé ! Les grands disent « chercher dans un fichier ».\nhist.sm9.7.bravo = OK : l'archive est exactement celle que tu as sauvegardée.\n\n\n",
+   "ok": true
+  },
+  {
+   "graine": "2:1730000000",
+   "texte": "# Terminagotchi : langues/fr.txt (copie d'exercice de la Guilde)\n\ncore.notif.faim = 🍽 J'ai fain… tape quelques commandes pour me nourrir !\nqu.journal.rien = Rien pour l'instant : continue à jouer !\nhist.racine.1.dit = Regarde autour de toi : ce sont les grands lieux du Terminaworld.\nqu.cachette.dit = Un passage secret ! Personne n'était venu ici depuis des années…\nlec.t2.2.bravo = La loupe l'a trouvé ! Les grands disent « chercher dans un fichier ».\nhist.sm9.7.bravo = OK : l'archive est exactement celle que tu as sauvegardée.\n",
+   "ok": false
+  },
+  {
+   "graine": "2:1730000000",
+   "texte": "# Terminagotchi : langues/fr.txt (copie d'exercice de la Guilde)\n\ncore.notif.FAIM = 🍽 J'ai FAIM… tape quelques commandes pour me nourrir !\nqu.journal.rien = Rien pour l'instant : continue à jouer !\nhist.racine.1.dit = Regarde autour de toi : ce sont les grands lieux du Terminaworld.\nqu.cachette.dit = Un passage secret ! Personne n'était venu ici depuis des années…\nlec.t2.2.bravo = La loupe l'a trouvé ! Les grands disent « chercher dans un fichier ».\nhist.sm9.7.bravo = OK : l'archive est exactement celle que tu as sauvegardée.\n",
+   "ok": false
+  },
+  {
+   "graine": "2:1730000000",
+   "texte": "# Terminagotchi : langues/fr.txt (copie d'exercice de la Guilde)\r\n\r\ncore.notif.faim = 🍽 J'ai faim… tape quelques commandes pour me nourrir !\r\nqu.journal.rien = Rien pour l'instant : continue à jouer !\r\nhist.racine.1.dit = Regarde autour de toi : ce sont les grands lieux du Terminaworld.\r\nqu.cachette.dit = Un passage secret ! Personne n'était venu ici depuis des années…\r\nlec.t2.2.bravo = La loupe l'a trouvé ! Les grands disent « chercher dans un fichier ».\r\nhist.sm9.7.bravo = OK : l'archive est exactement celle que tu as sauvegardée.\r\n",
+   "ok": true
+  },
+  {
+   "graine": "2:1730000000",
+   "texte": "",
+   "ok": false
+  },
+  {
+   "graine": "7:42",
+   "texte": "# Terminagotchi : langues/fr.txt (copie d'exercice de la Guilde)\n\ncore.notif.faim = 🍽 J'ai faim… tape quelques commandes pour me nourrir !\nqu.journal.rien = Rien pour l'instant : continue à jouer !\nhist.racine.1.dit = Regarde autour de toi : ce sont les grands lieux du Terminaworld.\nqu.cachette.dit = Un passage secret ! Personne n'était venu ici depuis des années…\nlec.t2.2.bravo = La loupe l'a trouvé ! Les grands disent « chercher dans un fichier ».\nhist.sm9.7.bravo = OK : l'archive est exactement celle que tu as sauvegardée.\n",
+   "ok": true
+  },
+  {
+   "graine": "7:42",
+   "texte": "# Terminagotchi : langues/fr.txt (copie d'exercice de la Guilde)\n\ncore.notif.faim = 🍽 J'ai faim… tape quelques commandes pour me nourrir !\nqu.journal.rien = Rien pour l'instant : continue à jouer !\nhist.racine.1.dit = Regarde autour de toi : ce sont les grands lieux du Terminaworld.\nqu.cachette.dit = Un passage secret ! Personne n'était venu ici depuis des années…\nlec.t2.2.bravo = La loupe l'a trouvé ! Les grands disent « chercher dans un fichier ».\nhist.sm9.7.bravo = OK : l'archive est exactement celle que tu as sauvegardée.",
+   "ok": true
+  },
+  {
+   "graine": "7:42",
+   "texte": "# Terminagotchi : langues/fr.txt (copie d'exercice de la Guilde)\n\ncore.notif.faim = 🍽 J'ai faim… tape quelques commandes pour me nourrir !\nqu.journal.rien = Rien pour l'instant : continue à jouer !\nhist.racine.1.dit = Regarde autour de toi : ce sont les grands lieux du Terminaworld.\nqu.cachette.dit = Un passage secret ! Personne n'était venu ici depuis des années…\nlec.t2.2.bravo = La loupe l'a trouvé ! Les grands disent « chercher dans un fichier ».\nhist.sm9.7.bravo = OK : l'archive est exactement celle que tu as sauvegardée.\n\n\n",
+   "ok": true
+  },
+  {
+   "graine": "7:42",
+   "texte": "# Terminagotchi : langues/fr.txt (copie d'exercice de la Guilde)\n\ncore.notif.faim = 🍽 J'ai faim… tape quelques commandes pour me nourrir !\nqu.journal.rien = Rien pour l'instant : continue à jouer !\nhist.racine.1.dit = Regarde autour de toi : ce sont les grands lieux du Terminaworld.\nqu.cachette.dit = Un passage secrai ! Personne n'était venu ici depuis des années…\nlec.t2.2.bravo = La loupe l'a trouvé ! Les grands disent « chercher dans un fichier ».\nhist.sm9.7.bravo = OK : l'archive est exactement celle que tu as sauvegardée.\n",
+   "ok": false
+  },
+  {
+   "graine": "7:42",
+   "texte": "# Terminagotchi : langues/fr.txt (copie d'exercice de la Guilde)\n\ncore.notif.FAIM = 🍽 J'ai FAIM… tape quelques commandes pour me nourrir !\nqu.journal.rien = Rien pour l'instant : continue à jouer !\nhist.racine.1.dit = Regarde autour de toi : ce sont les grands lieux du Terminaworld.\nqu.cachette.dit = Un passage secret ! Personne n'était venu ici depuis des années…\nlec.t2.2.bravo = La loupe l'a trouvé ! Les grands disent « chercher dans un fichier ».\nhist.sm9.7.bravo = OK : l'archive est exactement celle que tu as sauvegardée.\n",
+   "ok": false
+  },
+  {
+   "graine": "7:42",
+   "texte": "# Terminagotchi : langues/fr.txt (copie d'exercice de la Guilde)\r\n\r\ncore.notif.faim = 🍽 J'ai faim… tape quelques commandes pour me nourrir !\r\nqu.journal.rien = Rien pour l'instant : continue à jouer !\r\nhist.racine.1.dit = Regarde autour de toi : ce sont les grands lieux du Terminaworld.\r\nqu.cachette.dit = Un passage secret ! Personne n'était venu ici depuis des années…\r\nlec.t2.2.bravo = La loupe l'a trouvé ! Les grands disent « chercher dans un fichier ».\r\nhist.sm9.7.bravo = OK : l'archive est exactement celle que tu as sauvegardée.\r\n",
+   "ok": true
+  },
+  {
+   "graine": "7:42",
+   "texte": "",
+   "ok": false
+  },
+  {
+   "graine": "partie:3",
+   "texte": "# Terminagotchi : langues/fr.txt (copie d'exercice de la Guilde)\n\ncore.notif.faim = 🍽 J'ai faim… tape quelques commandes pour me nourrir !\nqu.journal.rien = Rien pour l'instant : continue à jouer !\nhist.racine.1.dit = Regarde autour de toi : ce sont les grands lieux du Terminaworld.\nqu.cachette.dit = Un passage secret ! Personne n'était venu ici depuis des années…\nlec.t2.2.bravo = La loupe l'a trouvé ! Les grands disent « chercher dans un fichier ».\nhist.sm9.7.bravo = OK : l'archive est exactement celle que tu as sauvegardée.\n",
+   "ok": true
+  },
+  {
+   "graine": "partie:3",
+   "texte": "# Terminagotchi : langues/fr.txt (copie d'exercice de la Guilde)\n\ncore.notif.faim = 🍽 J'ai faim… tape quelques commandes pour me nourrir !\nqu.journal.rien = Rien pour l'instant : continue à jouer !\nhist.racine.1.dit = Regarde autour de toi : ce sont les grands lieux du Terminaworld.\nqu.cachette.dit = Un passage secret ! Personne n'était venu ici depuis des années…\nlec.t2.2.bravo = La loupe l'a trouvé ! Les grands disent « chercher dans un fichier ».\nhist.sm9.7.bravo = OK : l'archive est exactement celle que tu as sauvegardée.",
+   "ok": true
+  },
+  {
+   "graine": "partie:3",
+   "texte": "# Terminagotchi : langues/fr.txt (copie d'exercice de la Guilde)\n\ncore.notif.faim = 🍽 J'ai faim… tape quelques commandes pour me nourrir !\nqu.journal.rien = Rien pour l'instant : continue à jouer !\nhist.racine.1.dit = Regarde autour de toi : ce sont les grands lieux du Terminaworld.\nqu.cachette.dit = Un passage secret ! Personne n'était venu ici depuis des années…\nlec.t2.2.bravo = La loupe l'a trouvé ! Les grands disent « chercher dans un fichier ».\nhist.sm9.7.bravo = OK : l'archive est exactement celle que tu as sauvegardée.\n\n\n",
+   "ok": true
+  },
+  {
+   "graine": "partie:3",
+   "texte": "# Terminagotchi : langues/fr.txt (copie d'exercice de la Guilde)\n\ncore.notif.faim = 🍽 J'ai faim… tape quelques commandes pour me nourrir !\nqu.journal.rien = Rien pour l'instant : continue à jouer !\nhist.racine.1.dit = Regarde autour de toi : ce sont les grands lieux du Terminaworld.\nqu.cachette.dit = Un passage secret ! Personne n'était venu ici depuis des années…\nlec.t2.2.bravo = La loupe l'a trouver ! Les grands disent « chercher dans un fichier ».\nhist.sm9.7.bravo = OK : l'archive est exactement celle que tu as sauvegardée.\n",
+   "ok": false
+  },
+  {
+   "graine": "partie:3",
+   "texte": "# Terminagotchi : langues/fr.txt (copie d'exercice de la Guilde)\n\ncore.notif.FAIM = 🍽 J'ai FAIM… tape quelques commandes pour me nourrir !\nqu.journal.rien = Rien pour l'instant : continue à jouer !\nhist.racine.1.dit = Regarde autour de toi : ce sont les grands lieux du Terminaworld.\nqu.cachette.dit = Un passage secret ! Personne n'était venu ici depuis des années…\nlec.t2.2.bravo = La loupe l'a trouvé ! Les grands disent « chercher dans un fichier ».\nhist.sm9.7.bravo = OK : l'archive est exactement celle que tu as sauvegardée.\n",
+   "ok": false
+  },
+  {
+   "graine": "partie:3",
+   "texte": "# Terminagotchi : langues/fr.txt (copie d'exercice de la Guilde)\r\n\r\ncore.notif.faim = 🍽 J'ai faim… tape quelques commandes pour me nourrir !\r\nqu.journal.rien = Rien pour l'instant : continue à jouer !\r\nhist.racine.1.dit = Regarde autour de toi : ce sont les grands lieux du Terminaworld.\r\nqu.cachette.dit = Un passage secret ! Personne n'était venu ici depuis des années…\r\nlec.t2.2.bravo = La loupe l'a trouvé ! Les grands disent « chercher dans un fichier ».\r\nhist.sm9.7.bravo = OK : l'archive est exactement celle que tu as sauvegardée.\r\n",
+   "ok": true
+  },
+  {
+   "graine": "partie:3",
+   "texte": "",
+   "ok": false
+  }
+ ],
+ "trous": [
+  {
+   "graine": "1:0",
+   "rep": [
+    "6",
+    "14"
+   ],
+   "ok": true
+  },
+  {
+   "graine": "1:0",
+   "rep": [
+    "[6,",
+    "14]"
+   ],
+   "ok": true
+  },
+  {
+   "graine": "1:0",
+   "rep": [
+    "14",
+    "6"
+   ],
+   "ok": false
+  },
+  {
+   "graine": "1:0",
+   "rep": [
+    "6"
+   ],
+   "ok": false
+  },
+  {
+   "graine": "1:0",
+   "rep": [
+    "6.0",
+    "14,0"
+   ],
+   "ok": true
+  },
+  {
+   "graine": "1:0",
+   "rep": [
+    "a",
+    "b"
+   ],
+   "ok": false
+  },
+  {
+   "graine": "2:1730000000",
+   "rep": [
+    "6",
+    "8"
+   ],
+   "ok": true
+  },
+  {
+   "graine": "2:1730000000",
+   "rep": [
+    "[6,",
+    "8]"
+   ],
+   "ok": true
+  },
+  {
+   "graine": "2:1730000000",
+   "rep": [
+    "8",
+    "6"
+   ],
+   "ok": false
+  },
+  {
+   "graine": "2:1730000000",
+   "rep": [
+    "6"
+   ],
+   "ok": false
+  },
+  {
+   "graine": "2:1730000000",
+   "rep": [
+    "6.0",
+    "8,0"
+   ],
+   "ok": true
+  },
+  {
+   "graine": "2:1730000000",
+   "rep": [
+    "a",
+    "b"
+   ],
+   "ok": false
+  },
+  {
+   "graine": "7:42",
+   "rep": [
+    "6",
+    "10"
+   ],
+   "ok": true
+  },
+  {
+   "graine": "7:42",
+   "rep": [
+    "[6,",
+    "10]"
+   ],
+   "ok": true
+  },
+  {
+   "graine": "7:42",
+   "rep": [
+    "10",
+    "6"
+   ],
+   "ok": false
+  },
+  {
+   "graine": "7:42",
+   "rep": [
+    "6"
+   ],
+   "ok": false
+  },
+  {
+   "graine": "7:42",
+   "rep": [
+    "6.0",
+    "10,0"
+   ],
+   "ok": true
+  },
+  {
+   "graine": "7:42",
+   "rep": [
+    "a",
+    "b"
+   ],
+   "ok": false
+  },
+  {
+   "graine": "partie:3",
+   "rep": [
+    "6",
+    "14"
+   ],
+   "ok": true
+  },
+  {
+   "graine": "partie:3",
+   "rep": [
+    "[6,",
+    "14]"
+   ],
+   "ok": true
+  },
+  {
+   "graine": "partie:3",
+   "rep": [
+    "14",
+    "6"
+   ],
+   "ok": false
+  },
+  {
+   "graine": "partie:3",
+   "rep": [
+    "6"
+   ],
+   "ok": false
+  },
+  {
+   "graine": "partie:3",
+   "rep": [
+    "6.0",
+    "14,0"
+   ],
+   "ok": true
+  },
+  {
+   "graine": "partie:3",
+   "rep": [
+    "a",
+    "b"
+   ],
+   "ok": false
+  }
+ ],
+ "volumes": [
+  {
+   "graine": "1:0",
+   "reponse": "4032",
+   "ok": true
+  },
+  {
+   "graine": "1:0",
+   "reponse": "4032 mm3",
+   "ok": true
+  },
+  {
+   "graine": "1:0",
+   "reponse": "4032mm³",
+   "ok": true
+  },
+  {
+   "graine": "1:0",
+   "reponse": "4.032 cm3",
+   "ok": true
+  },
+  {
+   "graine": "1:0",
+   "reponse": "4,032 cm³",
+   "ok": true
+  },
+  {
+   "graine": "1:0",
+   "reponse": "4033",
+   "ok": false
+  },
+  {
+   "graine": "1:0",
+   "reponse": "abc",
+   "ok": false
+  },
+  {
+   "graine": "1:0",
+   "reponse": "",
+   "ok": false
+  },
+  {
+   "graine": "2:1730000000",
+   "reponse": "2880",
+   "ok": true
+  },
+  {
+   "graine": "2:1730000000",
+   "reponse": "2880 mm3",
+   "ok": true
+  },
+  {
+   "graine": "2:1730000000",
+   "reponse": "2880mm³",
+   "ok": true
+  },
+  {
+   "graine": "2:1730000000",
+   "reponse": "2.88 cm3",
+   "ok": true
+  },
+  {
+   "graine": "2:1730000000",
+   "reponse": "2,88 cm³",
+   "ok": true
+  },
+  {
+   "graine": "2:1730000000",
+   "reponse": "2881",
+   "ok": false
+  },
+  {
+   "graine": "2:1730000000",
+   "reponse": "abc",
+   "ok": false
+  },
+  {
+   "graine": "2:1730000000",
+   "reponse": "",
+   "ok": false
+  },
+  {
+   "graine": "7:42",
+   "reponse": "2640",
+   "ok": true
+  },
+  {
+   "graine": "7:42",
+   "reponse": "2640 mm3",
+   "ok": true
+  },
+  {
+   "graine": "7:42",
+   "reponse": "2640mm³",
+   "ok": true
+  },
+  {
+   "graine": "7:42",
+   "reponse": "2.64 cm3",
+   "ok": true
+  },
+  {
+   "graine": "7:42",
+   "reponse": "2,64 cm³",
+   "ok": true
+  },
+  {
+   "graine": "7:42",
+   "reponse": "2641",
+   "ok": false
+  },
+  {
+   "graine": "7:42",
+   "reponse": "abc",
+   "ok": false
+  },
+  {
+   "graine": "7:42",
+   "reponse": "",
+   "ok": false
+  },
+  {
+   "graine": "partie:3",
+   "reponse": "4032",
+   "ok": true
+  },
+  {
+   "graine": "partie:3",
+   "reponse": "4032 mm3",
+   "ok": true
+  },
+  {
+   "graine": "partie:3",
+   "reponse": "4032mm³",
+   "ok": true
+  },
+  {
+   "graine": "partie:3",
+   "reponse": "4.032 cm3",
+   "ok": true
+  },
+  {
+   "graine": "partie:3",
+   "reponse": "4,032 cm³",
+   "ok": true
+  },
+  {
+   "graine": "partie:3",
+   "reponse": "4033",
+   "ok": false
+  },
+  {
+   "graine": "partie:3",
+   "reponse": "abc",
+   "ok": false
+  },
+  {
+   "graine": "partie:3",
+   "reponse": "",
+   "ok": false
+  }
+ ],
+ "stl": [
+  {
+   "L": 40,
+   "l": 24,
+   "h": 4,
+   "texte": "solid porte_cle\n  facet normal 0 0 -1\n    outer loop\n      vertex 0 0 0\n      vertex 0 24 0\n      vertex 40 24 0\n    endloop\n  endfacet\n  facet normal 0 0 -1\n    outer loop\n      vertex 0 0 0\n      vertex 40 24 0\n      vertex 40 0 0\n    endloop\n  endfacet\n  facet normal 0 0 1\n    outer loop\n      vertex 0 0 4\n      vertex 40 0 4\n      vertex 40 24 4\n    endloop\n  endfacet\n  facet normal 0 0 1\n    outer loop\n      vertex 0 0 4\n      vertex 40 24 4\n      vertex 0 24 4\n    endloop\n  endfacet\n  facet normal 0 -1 0\n    outer loop\n      vertex 0 0 0\n      vertex 40 0 0\n      vertex 40 0 4\n    endloop\n  endfacet\n  facet normal 0 -1 0\n    outer loop\n      vertex 0 0 0\n      vertex 40 0 4\n      vertex 0 0 4\n    endloop\n  endfacet\n  facet normal 0 1 0\n    outer loop\n      vertex 0 24 0\n      vertex 0 24 4\n      vertex 40 24 4\n    endloop\n  endfacet\n  facet normal 0 1 0\n    outer loop\n      vertex 0 24 0\n      vertex 40 24 4\n      vertex 40 24 0\n    endloop\n  endfacet\n  facet normal -1 0 0\n    outer loop\n      vertex 0 0 0\n      vertex 0 0 4\n      vertex 0 24 4\n    endloop\n  endfacet\n  facet normal -1 0 0\n    outer loop\n      vertex 0 0 0\n      vertex 0 24 4\n      vertex 0 24 0\n    endloop\n  endfacet\n  facet normal 1 0 0\n    outer loop\n      vertex 40 0 0\n      vertex 40 24 0\n      vertex 40 24 4\n    endloop\n  endfacet\n  facet normal 1 0 0\n    outer loop\n      vertex 40 0 0\n      vertex 40 24 4\n      vertex 40 0 4\n    endloop\n  endfacet\nendsolid porte_cle\n",
+   "infos": {
+    "n": 12,
+    "binaire": false,
+    "dims": [
+     40.0,
+     24.0,
+     4.0
+    ]
+   }
+  },
+  {
+   "L": 36,
+   "l": 16,
+   "h": 3,
+   "texte": "solid porte_cle\n  facet normal 0 0 -1\n    outer loop\n      vertex 0 0 0\n      vertex 0 16 0\n      vertex 36 16 0\n    endloop\n  endfacet\n  facet normal 0 0 -1\n    outer loop\n      vertex 0 0 0\n      vertex 36 16 0\n      vertex 36 0 0\n    endloop\n  endfacet\n  facet normal 0 0 1\n    outer loop\n      vertex 0 0 3\n      vertex 36 0 3\n      vertex 36 16 3\n    endloop\n  endfacet\n  facet normal 0 0 1\n    outer loop\n      vertex 0 0 3\n      vertex 36 16 3\n      vertex 0 16 3\n    endloop\n  endfacet\n  facet normal 0 -1 0\n    outer loop\n      vertex 0 0 0\n      vertex 36 0 0\n      vertex 36 0 3\n    endloop\n  endfacet\n  facet normal 0 -1 0\n    outer loop\n      vertex 0 0 0\n      vertex 36 0 3\n      vertex 0 0 3\n    endloop\n  endfacet\n  facet normal 0 1 0\n    outer loop\n      vertex 0 16 0\n      vertex 0 16 3\n      vertex 36 16 3\n    endloop\n  endfacet\n  facet normal 0 1 0\n    outer loop\n      vertex 0 16 0\n      vertex 36 16 3\n      vertex 36 16 0\n    endloop\n  endfacet\n  facet normal -1 0 0\n    outer loop\n      vertex 0 0 0\n      vertex 0 0 3\n      vertex 0 16 3\n    endloop\n  endfacet\n  facet normal -1 0 0\n    outer loop\n      vertex 0 0 0\n      vertex 0 16 3\n      vertex 0 16 0\n    endloop\n  endfacet\n  facet normal 1 0 0\n    outer loop\n      vertex 36 0 0\n      vertex 36 16 0\n      vertex 36 16 3\n    endloop\n  endfacet\n  facet normal 1 0 0\n    outer loop\n      vertex 36 0 0\n      vertex 36 16 3\n      vertex 36 0 3\n    endloop\n  endfacet\nendsolid porte_cle\n",
+   "infos": {
+    "n": 12,
+    "binaire": false,
+    "dims": [
+     36.0,
+     16.0,
+     3.0
+    ]
+   }
+  }
+ ],
+ "stl_binaire": {
+  "hex": "62696e61697265206465207465737420202020202020202020202020202020202020202020202020202020202020202020202020202020202020202020202020202020202020202020202020202020200200000000000000000000000000803f000000000000000000000000000028410000000000000000000000000000e84000000040000000000000000000000000803f0000803f0000803f0000803f0000404000004040000040400000004000000040000000400000",
+  "infos": {
+   "n": 2,
+   "binaire": true,
+   "dims": [
+    10.5,
+    7.25,
+    3.0
+   ]
+  }
+ },
+ "stl_mauvais": [
+  {
+   "hex": "",
+   "infos": null
+  },
+  {
+   "hex": "736f6c696420780a656e64736f6c696420780a",
+   "infos": null
+  },
+  {
+   "hex": "000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
+   "infos": {
+    "n": 0,
+    "binaire": true,
+    "dims": [
+     0.0,
+     0.0,
+     0.0
+    ]
+   }
+  },
+  {
+   "hex": "62696e61697265206465207465737420202020202020202020202020202020202020202020202020202020202020202020202020202020202020202020202020202020202020202020202020202020200200000000000000000000000000803f00000000",
+   "infos": null
+  }
+ ],
+ "image": {
+  "octets": 65536,
+  "sha256": "8b6aeee3edf7547cd49461a29770f0d18ef28607e7d6063a880d1aac2483bc8e"
+ },
+ "disques": [
+  {
+   "graine": "1:0",
+   "reponse": "sda",
+   "ok": true,
+   "erreur": "sauvegarde"
+  },
+  {
+   "graine": "1:0",
+   "reponse": "sdb",
+   "ok": false,
+   "erreur": "sauvegarde"
+  },
+  {
+   "graine": "1:0",
+   "reponse": "/dev/sda",
+   "ok": true,
+   "erreur": "sauvegarde"
+  },
+  {
+   "graine": "1:0",
+   "reponse": "nvme0n1",
+   "ok": false,
+   "erreur": "systeme"
+  },
+  {
+   "graine": "1:0",
+   "reponse": "nvme0n1p2",
+   "ok": false,
+   "erreur": "systeme"
+  },
+  {
+   "graine": "1:0",
+   "reponse": "sda1",
+   "ok": false,
+   "erreur": "partition"
+  },
+  {
+   "graine": "1:0",
+   "reponse": "sdz",
+   "ok": false,
+   "erreur": "inconnu"
+  },
+  {
+   "graine": "1:0",
+   "reponse": "",
+   "ok": false,
+   "erreur": "inconnu"
+  },
+  {
+   "graine": "1:0",
+   "reponse": "SDA",
+   "ok": true,
+   "erreur": "sauvegarde"
+  },
+  {
+   "graine": "2:1730000000",
+   "reponse": "sda",
+   "ok": true,
+   "erreur": "sauvegarde"
+  },
+  {
+   "graine": "2:1730000000",
+   "reponse": "sdb",
+   "ok": false,
+   "erreur": "sauvegarde"
+  },
+  {
+   "graine": "2:1730000000",
+   "reponse": "/dev/sda",
+   "ok": true,
+   "erreur": "sauvegarde"
+  },
+  {
+   "graine": "2:1730000000",
+   "reponse": "nvme0n1",
+   "ok": false,
+   "erreur": "systeme"
+  },
+  {
+   "graine": "2:1730000000",
+   "reponse": "nvme0n1p2",
+   "ok": false,
+   "erreur": "systeme"
+  },
+  {
+   "graine": "2:1730000000",
+   "reponse": "sda1",
+   "ok": false,
+   "erreur": "partition"
+  },
+  {
+   "graine": "2:1730000000",
+   "reponse": "sdz",
+   "ok": false,
+   "erreur": "inconnu"
+  },
+  {
+   "graine": "2:1730000000",
+   "reponse": "",
+   "ok": false,
+   "erreur": "inconnu"
+  },
+  {
+   "graine": "2:1730000000",
+   "reponse": "SDA",
+   "ok": true,
+   "erreur": "sauvegarde"
+  },
+  {
+   "graine": "7:42",
+   "reponse": "sda",
+   "ok": true,
+   "erreur": "sauvegarde"
+  },
+  {
+   "graine": "7:42",
+   "reponse": "sdb",
+   "ok": false,
+   "erreur": "sauvegarde"
+  },
+  {
+   "graine": "7:42",
+   "reponse": "/dev/sda",
+   "ok": true,
+   "erreur": "sauvegarde"
+  },
+  {
+   "graine": "7:42",
+   "reponse": "nvme0n1",
+   "ok": false,
+   "erreur": "systeme"
+  },
+  {
+   "graine": "7:42",
+   "reponse": "nvme0n1p2",
+   "ok": false,
+   "erreur": "systeme"
+  },
+  {
+   "graine": "7:42",
+   "reponse": "sda1",
+   "ok": false,
+   "erreur": "partition"
+  },
+  {
+   "graine": "7:42",
+   "reponse": "sdz",
+   "ok": false,
+   "erreur": "inconnu"
+  },
+  {
+   "graine": "7:42",
+   "reponse": "",
+   "ok": false,
+   "erreur": "inconnu"
+  },
+  {
+   "graine": "7:42",
+   "reponse": "SDA",
+   "ok": true,
+   "erreur": "sauvegarde"
+  },
+  {
+   "graine": "partie:3",
+   "reponse": "sda",
+   "ok": false,
+   "erreur": "sauvegarde"
+  },
+  {
+   "graine": "partie:3",
+   "reponse": "sdb",
+   "ok": true,
+   "erreur": "sauvegarde"
+  },
+  {
+   "graine": "partie:3",
+   "reponse": "/dev/sda",
+   "ok": false,
+   "erreur": "sauvegarde"
+  },
+  {
+   "graine": "partie:3",
+   "reponse": "nvme0n1",
+   "ok": false,
+   "erreur": "systeme"
+  },
+  {
+   "graine": "partie:3",
+   "reponse": "nvme0n1p2",
+   "ok": false,
+   "erreur": "systeme"
+  },
+  {
+   "graine": "partie:3",
+   "reponse": "sda1",
+   "ok": false,
+   "erreur": "partition"
+  },
+  {
+   "graine": "partie:3",
+   "reponse": "sdz",
+   "ok": false,
+   "erreur": "inconnu"
+  },
+  {
+   "graine": "partie:3",
+   "reponse": "",
+   "ok": false,
+   "erreur": "inconnu"
+  },
+  {
+   "graine": "partie:3",
+   "reponse": "SDA",
+   "ok": false,
+   "erreur": "sauvegarde"
+  }
+ ],
+ "majmin": {
+  "sda": "8:0",
+  "sda1": "8:1",
+  "sdb": "8:16",
+  "sdb1": "8:17",
+  "nvme0n1": "259:0",
+  "nvme0n1p1": "259:1",
+  "nvme0n1p2": "259:2"
+ },
+ "etabli": [
+  {
+   "ligne": "gcc bonjour.c -o bonjour && ./bonjour",
+   "etablis": [
+    [
+     "gcc",
+     "texte",
+     "programme"
+    ]
+   ]
+  },
+  {
+   "ligne": "cc a.c",
+   "etablis": [
+    [
+     "gcc",
+     "texte",
+     "programme"
+    ]
+   ]
+  },
+  {
+   "ligne": "make etoiles && ./etoiles 5",
+   "etablis": [
+    [
+     "make",
+     "recette",
+     "programme"
+    ]
+   ]
+  },
+  {
+   "ligne": "openscad -o p.stl p.scad",
+   "etablis": [
+    [
+     "openscad",
+     "code",
+     "piece"
+    ]
+   ]
+  },
+  {
+   "ligne": "dd if=image_linux_exemple.iso of=cle_usb.img bs=64k",
+   "etablis": [
+    [
+     "dd",
+     "image",
+     "cle"
+    ]
+   ]
+  },
+  {
+   "ligne": "sha256sum a b | sort",
+   "etablis": [
+    [
+     "sha256sum",
+     "fichier",
+     "empreinte"
+    ]
+   ]
+  },
+  {
+   "ligne": "git clone --depth 1 x y",
+   "etablis": [
+    [
+     "git clone",
+     "depot",
+     "copie"
+    ]
+   ]
+  },
+  {
+   "ligne": "git diff",
+   "etablis": [
+    [
+     "git diff",
+     "version",
+     "difference"
+    ]
+   ]
+  },
+  {
+   "ligne": "git commit -am 'x'",
+   "etablis": [
+    [
+     "git commit",
+     "changement",
+     "version"
+    ]
+   ]
+  },
+  {
+   "ligne": "git status",
+   "etablis": []
+  },
+  {
+   "ligne": "ls",
+   "etablis": []
+  },
+  {
+   "ligne": "echo gcc",
+   "etablis": []
+  },
+  {
+   "ligne": "cp a b",
+   "etablis": []
+  },
+  {
+   "ligne": "git log --oneline; git diff --stat",
+   "etablis": [
+    [
+     "git diff",
+     "version",
+     "difference"
+    ]
+   ]
+  },
+  {
+   "ligne": "guilde stl",
+   "etablis": []
+  }
+ ],
+ "deploie": [
+  {
+   "ligne": "gcc bonjour.c -o bonjour && ./bonjour",
+   "etablis": [
+    {
+     "seg": 0,
+     "cmd": "gcc",
+     "outil": "gcc",
+     "de": "texte",
+     "vers": "programme"
+    }
+   ]
+  },
+  {
+   "ligne": "cc a.c",
+   "etablis": [
+    {
+     "seg": 0,
+     "cmd": "cc",
+     "outil": "gcc",
+     "de": "texte",
+     "vers": "programme"
+    }
+   ]
+  },
+  {
+   "ligne": "make etoiles && ./etoiles 5",
+   "etablis": [
+    {
+     "seg": 0,
+     "cmd": "make",
+     "outil": "make",
+     "de": "recette",
+     "vers": "programme"
+    }
+   ]
+  },
+  {
+   "ligne": "openscad -o p.stl p.scad",
+   "etablis": [
+    {
+     "seg": 0,
+     "cmd": "openscad",
+     "outil": "openscad",
+     "de": "code",
+     "vers": "piece"
+    }
+   ]
+  },
+  {
+   "ligne": "dd if=image_linux_exemple.iso of=cle_usb.img bs=64k",
+   "etablis": [
+    {
+     "seg": 0,
+     "cmd": "dd",
+     "outil": "dd",
+     "de": "image",
+     "vers": "cle"
+    }
+   ]
+  },
+  {
+   "ligne": "sha256sum a b | sort",
+   "etablis": [
+    {
+     "seg": 0,
+     "cmd": "sha256sum",
+     "outil": "sha256sum",
+     "de": "fichier",
+     "vers": "empreinte"
+    }
+   ]
+  },
+  {
+   "ligne": "git clone --depth 1 x y",
+   "etablis": [
+    {
+     "seg": 0,
+     "cmd": "git",
+     "outil": "git clone",
+     "de": "depot",
+     "vers": "copie"
+    }
+   ]
+  },
+  {
+   "ligne": "git diff",
+   "etablis": [
+    {
+     "seg": 0,
+     "cmd": "git",
+     "outil": "git diff",
+     "de": "version",
+     "vers": "difference"
+    }
+   ]
+  },
+  {
+   "ligne": "git commit -am 'x'",
+   "etablis": [
+    {
+     "seg": 0,
+     "cmd": "git",
+     "outil": "git commit",
+     "de": "changement",
+     "vers": "version"
+    }
+   ]
+  },
+  {
+   "ligne": "git status",
+   "etablis": []
+  },
+  {
+   "ligne": "ls",
+   "etablis": []
+  },
+  {
+   "ligne": "echo gcc",
+   "etablis": []
+  },
+  {
+   "ligne": "cp a b",
+   "etablis": []
+  },
+  {
+   "ligne": "git log --oneline; git diff --stat",
+   "etablis": [
+    {
+     "seg": 1,
+     "cmd": "git",
+     "outil": "git diff",
+     "de": "version",
+     "vers": "difference"
+    }
+   ]
+  },
+  {
+   "ligne": "guilde stl",
+   "etablis": []
+  }
+ ]
+}

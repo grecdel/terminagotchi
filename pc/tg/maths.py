@@ -152,6 +152,15 @@ def generer(typ, graine, k):
         n = 10 + h.entier(31)
         d = 2 ** h.entier(6)
         return {"n": n, "t": d}, str(n * d), f"echo $(({n} * {d}))"
+    # les Ponts des Nombres de la Guilde des Bâtisseurs Libres (§ 7.12)
+    if typ == "coordonnees":
+        a = 1 + h.entier(9)
+        b = a + 1 + h.entier(12)
+        y = h.entier(10)
+        return {"a": a, "b": b, "y": y}, str(b - a), f"echo $(({b} - {a}))"
+    if typ == "volume":
+        a, b, c = 2 + h.entier(5), 2 + h.entier(5), 1 + h.entier(4)
+        return {"a": a, "b": b, "c": c}, str(a * b * c), f"echo $(({a} * {b} * {c}))"
     raise ValueError(typ)
 
 

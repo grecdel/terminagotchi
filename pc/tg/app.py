@@ -1195,6 +1195,10 @@ def _main():
         from . import ondes
         ondes.commande(args[1:])
         return
+    if mode == "guilde":                       # tg guilde … : la Guilde des Bâtisseurs Libres (libre, code, fabrique)
+        from . import guilde
+        guilde.commande(args[1:])
+        return
     if mode in ("mesh-envoie", "mesh-coupe", "mesh-route"):     # le maillage du Terminaworld (alias de tg installer)
         from . import ondes
         ondes.commande([mode] + args[1:])

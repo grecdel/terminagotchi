@@ -13,6 +13,8 @@ on:
             "app/src/main/java/fr/terminagotchi/MachinesDessin.kt",
             "donnees/ondes/**", "donnees/ondes.json", "app/src/main/java/fr/terminagotchi/Ondes.kt",
             "app/src/main/java/fr/terminagotchi/OndesDessin.kt",
+            "donnees/guilde/**", "donnees/guilde.json", "app/src/main/java/fr/terminagotchi/Guilde.kt",
+            "app/src/main/java/fr/terminagotchi/GuildeDessin.kt",
             "pc/**", "app/src/main/assets/langues/**", "app/src/main/java/fr/terminagotchi/Port.kt",
             "app/src/main/java/fr/terminagotchi/Histoire.kt", "app/src/main/java/fr/terminagotchi/Jeu.kt",
             ".github/workflows/rejeu.yml"]
@@ -35,7 +37,7 @@ jobs:
       - name: Les outils des fiches (les commandes rejouées)
         run: |
           sudo apt-get update -qq
-          sudo apt-get install -y -qq tree iproute2 iputils-ping iputils-tracepath openssh-client dnsutils bsdextrautils openssl xxd gnupg qemu-utils pciutils usbutils bc iw rfkill zsh >/dev/null || true
+          sudo apt-get install -y -qq tree iproute2 iputils-ping iputils-tracepath openssh-client dnsutils bsdextrautils openssl xxd gnupg qemu-utils pciutils usbutils bc iw rfkill zsh gcc make file openscad >/dev/null || true
           bash --version | head -n 1
 
       - name: Vérificateur de la charte (fiches, étapes, orphelines, 14 langues)
@@ -49,6 +51,7 @@ jobs:
           python3 pc/outils/vecteurs_crypte.py --verifier
           python3 pc/outils/vecteurs_machines.py --verifier
           python3 pc/outils/vecteurs_ondes.py --verifier
+          python3 pc/outils/vecteurs_guilde.py --verifier
 
       - name: Rejeu des sorties dans un vrai bash (fiches et histoire du PC)
         run: LC_ALL=C.UTF-8 python3 pc/outils/rejeu_bash.py
@@ -115,3 +118,15 @@ jobs:
           set -o pipefail
           LC_ALL=C.UTF-8 python3 pc/outils/sim_ondes.py 2>&1 | tee /tmp/simo.out || {
             grep -E "✖|Error|Traceback|line [0-9]" /tmp/simo.out | head -20 | sed 's/^/::error::/'; exit 1; }
+
+      - name: La Guilde des Bâtisseurs Libres (tout reste dans le terrain, jamais de /dev, rien n'est poussé ni installé)
+        run: |
+          set -o pipefail
+          LC_ALL=C.UTF-8 python3 pc/outils/test_guilde.py 2>&1 | tee /tmp/gui.out || {
+            grep -E "✖|Error|Traceback|line [0-9]" /tmp/gui.out | head -20 | sed 's/^/::error::/'; exit 1; }
+
+      - name: Trois enfants visitent la Guilde des Bâtisseurs Libres (docs/simulations/rapport_guilde.md)
+        run: |
+          set -o pipefail
+          LC_ALL=C.UTF-8 python3 pc/outils/sim_guilde.py 2>&1 | tee /tmp/simg.out || {
+            grep -E "✖|Error|Traceback|line [0-9]" /tmp/simg.out | head -20 | sed 's/^/::error::/'; exit 1; }

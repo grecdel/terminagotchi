@@ -267,7 +267,8 @@ from . import citadelle as _cit  # noqa: E402
 from . import crypte as _cry  # noqa: E402         le troisième : la Crypte des Codes (crypte.py)
 from . import machines as _mac  # noqa: E402       le quatrième : la Salle des Rouages (machines.py, chapitre « machinerie »)
 from . import ondes as _ond  # noqa: E402         le cinquième : la Tour des Ondes (ondes.py), quartier du Port
-MONDES_MODS = {"port": _port, "citadelle": _cit, "crypte": _cry, "machinerie": _mac, "ondes": _ond}
+from . import guilde as _gui  # noqa: E402        le sixième : la Guilde des Bâtisseurs Libres (guilde.py), au bord de la Forge
+MONDES_MODS = {"port": _port, "citadelle": _cit, "crypte": _cry, "machinerie": _mac, "ondes": _ond, "guilde": _gui}
 # le lieu de chaque monde (la Salle des Rouages : chapitre « machinerie », lieu « machines »)
 PIECES_MODS = {_m.CHAPITRE["piece"]: _m for _m in MONDES_MODS.values()}
 for _m in MONDES_MODS.values():
@@ -280,6 +281,7 @@ _CMDS_CIT = {s_.get("cmd") for l_ in _cit.LECONS.values() for s_ in l_["steps"]}
 _CMDS_CRY = {s_.get("cmd") for l_ in _cry.LECONS.values() for s_ in l_["steps"]}
 _CMDS_MAC = {s_.get("cmd") for l_ in _mac.LECONS.values() for s_ in l_["steps"]}
 _CMDS_OND = {s_.get("cmd") for l_ in _ond.LECONS.values() for s_ in l_["steps"]}
+_CMDS_GUI = {s_.get("cmd") for l_ in _gui.LECONS.values() for s_ in l_["steps"]}
 
 
 def lecons_qui_ouvrent():
@@ -458,6 +460,8 @@ def _outil(nom):
     """Un outil dont une étape a besoin (openssl, ssh-keygen ; ou un fichier du système comme /proc/cpuinfo, absent sur
     macOS) : sans lui, l'étape n'est pas montrée (le monde continue)."""
     import shutil
+    if "+" in nom:                          # la Guilde : « gcc+file » (le programme compilé, puis l'outil qui le lit)
+        return all(_outil(x) for x in nom.split("+"))
     if nom.startswith("/"):
         return os.path.exists(nom)
     return shutil.which(nom) is not None
@@ -1121,6 +1125,8 @@ def indice(state, step, lignes, tapees, morcs=None):
         conseil = _mac.indice(step, tapees)
     if not conseil and step.get("cmd") in _CMDS_OND:      # la Tour des Ondes : un sudo, une radio qu'on changerait…
         conseil = _ond.indice(step, tapees)
+    if not conseil and step.get("cmd") in _CMDS_GUI:      # la Guilde : /dev, un sudo, un push, une mauvaise réponse…
+        conseil = _gui.indice(step, tapees)
     if conseil:
         return conseil
     conseil = _indice_cd(state, step, morcs) or _indice_rm(step, tapees) or _indice_barre(step, morcs) \

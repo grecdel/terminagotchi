@@ -17,7 +17,9 @@ doit être ce qu'affiche un vrai bash.
    de tg installer) ; une affirmation dont l'outil manque (« outil ») est sautée et comptée. La Salle des Rouages :
    ce qui dépend de la machine (cœurs, noyau) est comparé à ce que le jeu calcule sur la même machine (« egal_jeu »).
    La Tour des Ondes : les calculs (bc), les capteurs d'exemple anonymisés (grep -o) ; les outils radio absents sont
-   sautés (leurs étapes sont cachées), rien n'émet jamais.
+   sautés (leurs étapes sont cachées), rien n'émet jamais. La Guilde des Bâtisseurs Libres : le git clone échoue (hors
+   ligne, aucun clone réseau) et la Guilde pose sa copie du code du jeu ; gcc, file, od, ldd, make ; le petit dépôt
+   git de la contribution (aucun remote) ; OpenSCAD s'il est là ; sha256sum et dd sur des FICHIERS du terrain.
 Utilisé en CI (.github/workflows/rejeu.yml) sur une vraie machine Linux.
 """
 import os
@@ -137,9 +139,11 @@ def histoire():
     jeu_cry = jeu_port.replace("port; port.", "crypte; crypte.")
     jeu_mac = jeu_port.replace("port; port.", "machines; machines.")
     jeu_ond = jeu_port.replace("port; port.", "ondes; ondes.")
+    jeu_gui = jeu_port.replace("port; port.", "guilde; guilde.")
     from tg import crypte as K_
     from tg import machines as M_
     from tg import ondes as O_
+    from tg import guilde as G_
 
     def coupe_suivante(st_):
         """La tempête : un nœud du chemin actuel qui laisse encore assez de chemins (l'enfant lit mesh-route)."""
@@ -163,6 +167,7 @@ def histoire():
         vrai = re.sub(r"(^|;\s*)machines\b", lambda m: m.group(1) + jeu_mac, vrai)     # et machines='tg machines'
         vrai = re.sub(r"(^|;\s*)ondes\b", lambda m: m.group(1) + jeu_ond, vrai)         # et ondes='tg ondes'
         vrai = re.sub(r"(^|;\s*)(mesh-(envoie|coupe|route))\b", lambda m: m.group(1) + jeu_ond + " " + m.group(2), vrai)
+        vrai = re.sub(r"(^|;\s*)guilde\b", lambda m: m.group(1) + jeu_gui, vrai)       # et guilde='tg guilde'
         etat["sortie"], etat["code"], d = shell.lancer(vrai)
         etat["cwd"] = Path(d)
         with open(home / ".bash_history", "a") as f:
@@ -179,10 +184,10 @@ def histoire():
         h = H.h_(st)
         if not les:
             reste = [a for a in H.AILES if not H.fini(st, a)]
-            if H.fini(st, "ondes") or h["chap"] in ("reveil", "nid"):
+            if H.fini(st, "guilde") or h["chap"] in ("reveil", "nid"):
                 break
             if H.fini(st, "coeur"):                 # le tronc et les ailes faits : les mondes du Carrefour, dans l'ordre
-                reste = [m_ for m_ in ("port", "citadelle", "crypte", "machinerie", "ondes") if not H.fini(st, m_)][:1]
+                reste = [m_ for m_ in ("port", "citadelle", "crypte", "machinerie", "ondes", "guilde") if not H.fini(st, m_)][:1]
             cible = "coeur" if not reste and H.ouvert(st, "coeur") else (reste[0] if reste else None)
             if not cible:
                 break
@@ -271,6 +276,26 @@ def histoire():
             c = f"mesh-coupe {coupe_suivante(st)}"
         if c == 'mesh-envoie ? "SOS"':
             c = f'mesh-envoie {O_.o_(st).get("cible") or O_.defi_cible(go)} "SOS"'
+        gg = G_._graine(st)                          # la Guilde : l'enfant lit les situations, le plan, le lsblk fictif…
+        if c == "guilde libertes ? ? ? ?":
+            c = "guilde libertes " + " ".join(r_ for _n, _i, r_ in G_.libertes_cartes(gg))
+        if c == "guilde gratuit ? ? ? ?":
+            c = "guilde gratuit " + " ".join(r_ for _n, _i, r_ in G_.gratuit_cartes(gg))
+        if c == "guilde licence ?":
+            c = "guilde licence " + next(x for x in ("bash", "coreutils", "grep", "sed", "git", "gcc", "make", "python3", "firefox")
+                                         if x not in G_.licences_trouvees())
+        if c == "guilde faim ?":
+            c = "guilde faim " + (G_.faim_fichiers(G_.fichiers_du_code()) or ["satiete.py"])[0]
+        if c == "sed -i 's/?/?/' langues/fr.txt":
+            c = f"sed -i 's/{G_.faute(gg)['faux']}/{G_.faute(gg)['juste']}/' langues/fr.txt"
+        if c == "guilde trou ? ?":
+            c = f"guilde trou {G_.piece(gg)['trou_x']} {G_.piece(gg)['trou_y']}"
+        if c == "guilde volume ?":
+            c = f"guilde volume {G_.volume(gg)}"
+        if c == "guilde disque ?":
+            c = f"guilde disque {G_.cle_disque(gg)[0]}"
+        if c == "less code_du_jeu/pc/tg/satiete.py":
+            c = "less -FX code_du_jeu/pc/tg/satiete.py | head -3"     # (pas de terminal ici : less écrit tout)
         if c.endswith(" &") and "http.server" in c:
             c = c[:-2] + " >/dev/null 2>&1 &"       # (les lignes du serveur n'encombrent pas la suite)
         lieu = step.get("ou") if step.get("ou") is not None else None
@@ -351,6 +376,7 @@ def histoire():
     verifier(H.fini(st, "crypte"), "la Crypte des Codes, troisième monde, est allée jusqu'au bout (cr0 → cr14)")
     verifier(H.fini(st, "machinerie"), "la Salle des Rouages, quatrième monde, est allée jusqu'au bout (sm0 → sm10)")
     verifier(H.fini(st, "ondes"), "la Tour des Ondes, cinquième monde, est allée jusqu'au bout (on0 → on10)")
+    verifier(H.fini(st, "guilde"), "la Guilde des Bâtisseurs Libres, sixième monde, est allée jusqu'au bout (gu0 → gu6)")
     P_.eteindre_phare()
     C_.arreter_fictifs()
     K_.tuer_agents()
