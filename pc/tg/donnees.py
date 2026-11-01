@@ -9,8 +9,10 @@ RÈGLES (affichées à l'entrée, laboratoire.txt) :
   - Les données sont celles de l'ENFANT : sa collection, exportée par le jeu (`tg collection --csv`) dans un fichier
     du terrain. Aucune donnée personnelle (ni pseudo, ni e-mail, ni adresse, ni identifiant) : l'espèce, le type, la
     famille, les stats, la rareté, shiny, la variante, le jour de la capture. Rien n'est envoyé au site, ni ailleurs.
-  - Une collection minuscule (moins de 5 bestioles) ne bloque jamais : le jeu la complète par son JEU D'EXEMPLE
-    (colonne « exemple » = 1), et le dit.
+  - Plus de bestioles d'exemple (1er novembre) : chaque exercice qui en a besoin annonce le NOMBRE MINIMUM de
+    créatures (donnees.json, « minimum » : D1 3, D4 5, D-SQL 5) et OÙ aller les rencontrer ; son étape attend, sans
+    bloquer le reste du jeu (on sort, on dresse, on réexporte, on revient). Le rejeu, les simulations et les tests
+    jouent avec une collection de test fixe (« collection_test », jamais en partie).
   - Le jeu calcule chaque bonne réponse sur LE MÊME fichier, au moment de vérifier (la collection change d'une partie
     à l'autre, et l'enfant peut réexporter après une capture).
   - Tout reste dans le terrain (terrain_terminagotchi/donnees) : collection.csv, collection.db, les rapports.
@@ -72,30 +74,34 @@ def ligne_individu(ind):
     return [ind.get("espece") or "?", guide.type_ind(ind), D["familles"].get(e.get("famille"), "?")] + \
         [str(int(st.get(D["stats"][c], 0))) for c in ("attaque", "defense", "vitesse", "pv", "intelligence")] + \
         [ascii_id(B.rarete_de(ind)), "1" if ind.get("shiny") else "0", ascii_id(ind.get("variante") or "classique"),
-         jour(ind.get("date")), "0"]
-
-
-def ligne_exemple(x):
-    from . import bestiaire as B, guide
-    D = donnees()
-    e = B.espece(x["espece"]) or {}
-    st = x["stats"]
-    return [x["espece"], guide.type_de(e, x["variante"]), D["familles"].get(e.get("famille"), "?")] + \
-        [str(st[D["stats"][c]]) for c in ("attaque", "defense", "vitesse", "pv", "intelligence")] + \
-        [ascii_id(x["rarete"]), "1" if x["shiny"] else "0", ascii_id(x["variante"]), x["jour"], "1"]
+         jour(ind.get("date"))]
 
 
 def lignes_collection(captures):
-    """(lignes du tableau, nombre de lignes d'exemple ajoutées) : la collection, complétée par le jeu d'exemple si elle a
-    moins de min_collection bestioles."""
-    D = donnees()
-    rows = [ligne_individu(c) for c in captures or [] if c.get("espece")]
-    ajout = 0
-    if len(rows) < D["min_collection"]:
-        for x in D["exemples"][:max(0, D["taille_completee"] - len(rows))]:
-            rows.append(ligne_exemple(x))
-            ajout += 1
-    return rows, ajout
+    """Les lignes du tableau : la collection, telle qu'elle est (plus aucune bestiole d'exemple ajoutée)."""
+    return [ligne_individu(c) for c in captures or [] if c.get("espece")]
+
+
+def collection_test():
+    """La collection de TEST (rejeu, simulations, tests) : des captures fixes, jamais données en partie."""
+    import copy
+    return copy.deepcopy(donnees()["collection_test"])
+
+
+def minimum(lid):
+    """Le nombre minimum de créatures demandé par une leçon (0 : aucun)."""
+    return int(donnees()["minimum"].get(lid, 0))
+
+
+def assez(lid, rows=None):
+    """Le tableau collection.csv a assez de lignes pour la leçon."""
+    rows = lignes_du_fichier() if rows is None else rows
+    return rows is not None and len(rows) >= minimum(lid)
+
+
+def lignes_minimum(lid, n, cmd="tg collection --csv > collection.csv"):
+    """« Il te faut au moins X créatures… » et où aller les rencontrer : l'étape attend, rien n'est bloqué."""
+    return [f" {fg(215)}✋ " + t("dn.minimum", min=minimum(lid), n=n) + RESET] + _bloc("dn.minimum.ou", cmd=f"`{cmd}`")
 
 
 def csv_texte(rows):
@@ -273,8 +279,8 @@ def requetes_base(rows):
     S = donnees()["schema"]
     out = [(S["creatures"], ()), (S["especes"], ())]
     for r in rows:
-        out.append(("INSERT INTO creatures VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?)",
-                    tuple(int(r[c]) if c in ("attaque", "defense", "vitesse", "pv", "intelligence", "shiny", "exemple")
+        out.append(("INSERT INTO creatures VALUES (" + ",".join("?" * len(donnees()["colonnes"])) + ")",
+                    tuple(int(r[c]) if c in ("attaque", "defense", "vitesse", "pv", "intelligence", "shiny")
                           else r[c] for c in donnees()["colonnes"])))
     for nom in dict.fromkeys(r["nom"] for r in rows):
         e = B.espece(nom)
@@ -456,7 +462,7 @@ def pont_maths(state, lid, step):
 def _csv_ok():
     r = lignes_du_fichier()
     txt = _lire(CSV) or ""
-    return r is not None and bool(r) and txt.startswith(",".join(donnees()["colonnes"]))
+    return r is not None and bool(r) and txt.startswith(",".join(donnees()["colonnes"])) and assez("dn1", r)
 
 
 def _top3_ok():
@@ -545,6 +551,7 @@ FS = {
     "dn_noms_types": _noms_types_ok,
     "dn_corrige": lambda: _texte_juste("carnet_corrige.txt"),
     "dn_sed_i": lambda: _texte_juste("carnet_du_soigneur.txt"),
+    "dn_calcul": lambda: dans_carnet("calcul") and assez("dn4"),
     "dn_moyenne": lambda: dans_carnet("moyenne"),
     "dn_attaques": _attaques_ok,
     "dn_mediane": lambda: dans_carnet("mediane"),
@@ -553,7 +560,7 @@ FS = {
     "dn_rapport_top": _rapport_top_ok,
     "dn_rapport_moyenne": _rapport_moyenne_ok,
     "dn_bilan": lambda: dans_carnet("bilan"),
-    "dn_base": lambda: (dossier() / "collection.db").is_file() and dans_carnet("base"),
+    "dn_base": lambda: (dossier() / "collection.db").is_file() and dans_carnet("base") and assez("dn6"),
     "dn_sql": lambda: dans_carnet("sql"),
 }
 CREE = {}
@@ -626,14 +633,14 @@ LECONS = {
     ]},
     # D4 la calculatrice des savants : awk
     "dn4": {"titre": "hist.dn4.titre", "skill": None, "steps": [
-        _n("dn4", 0, cmd="donnees calcul", re=DN + r"calcul", ou=O),
+        _n("dn4", 0, cmd="donnees calcul", fs="dn_calcul", ou=O),
         _n("dn4", 1, cmd="awk -F, 'NR<=5 {print $1, $4}' collection.csv", re=AWK_F + r".*\$1.*\$4.*collection\.csv", ou=O,
            win=False),
         _n("dn4", 2, cmd="awk -F, 'NR>1 {s+=$4} END {print s}' collection.csv", re=AWK_F + r".*\+=\s*\$4.*END.*collection\.csv", ou=O,
            win=False),
         _n("dn4", 3, cmd="awk -F, 'NR>1 {s+=$4; n++} END {print s/n}' collection.csv", re=AWK_F + r".*\+=\s*\$4.*END.*/.*collection\.csv",
            ou=O, win=False),
-        _n("dn4", 4, cmd="donnees moyenne ?", fs="dn_moyenne", exploit="donnees.statistique"),
+        _n("dn4", 4, cmd="donnees moyenne ?", fs="dn_moyenne"),   # (l'exploit : seulement sur SA vraie collection)
         _n("dn4", 5, cmd="cut -d, -f4 collection.csv | tail -n +2 | sort -n > attaques.txt", fs="dn_attaques", ou=O),
         _n("dn4", 6, cmd="donnees mediane ?", fs="dn_mediane"),
         _n("dn4", 7, cmd="sed -n '1p;$p' attaques.txt", re=r"^(sed\b.*attaques\.txt|head\b.*attaques\.txt|tail\b.*attaques\.txt)", ou=O),
@@ -736,6 +743,10 @@ def indice(step, tapees):
     if not (dossier() / CSV).is_file() and step.get("fs") != "dn_csv" and any("collection.csv" in l for l in lignes):
         return t("dn.indice.pas_de_csv")
     fs = step.get("fs")
+    for f_, lid in (("dn_csv", "dn1"), ("dn_calcul", "dn4"), ("dn_base", "dn6")):   # pas assez de créatures : où aller
+        rows = lignes_du_fichier()
+        if fs == f_ and rows is not None and not assez(lid, rows):
+            return t("dn.minimum", min=minimum(lid), n=len(rows))
     if fs == "dn_csv":
         if any(re.match(r"^(tg\s+)?collection\b", l) and "--csv" not in l for l in lignes):
             return t("dn.indice.csv_option")
@@ -805,10 +816,13 @@ def _sans_csv():
 
 
 def export_csv(state):
-    """`tg collection --csv` : (le tableau, le message pour l'écran). Le message (sur la sortie d'erreur) dit quand le jeu
-    d'exemple complète une petite collection."""
-    rows, ajout = lignes_collection(state.get("captures", []))
-    msg = t("dn.csv.exemples", n=len(rows) - ajout, k=ajout) if ajout else t("dn.csv.ok", n=len(rows))
+    """`tg collection --csv` : (le tableau, le message pour l'écran). Le message (sur la sortie d'erreur) dit, pour une
+    petite collection, combien de créatures demandent les exercices et où aller les rencontrer."""
+    rows = lignes_collection(state.get("captures", []))
+    besoin = max(donnees()["minimum"].values())
+    msg = t("dn.csv.ok", n=len(rows))
+    if len(rows) < besoin:
+        msg += "\n" + t("dn.csv.peu", min=besoin) + "\n" + t("dn.minimum.ou", cmd="`tg collection --csv > collection.csv`")
     return csv_texte(rows), msg
 
 
@@ -884,6 +898,12 @@ def lignes_copiste():
 
 
 def lignes_calcul():
+    rows = lignes_du_fichier()
+    if rows is None:
+        return _sans_csv()
+    if not assez("dn4", rows):
+        noter("calcul", f"{len(rows)} (pas assez)")
+        return lignes_minimum("dn4", len(rows))
     noter("calcul", "lu (ok)")
     return [f" {fg(215)}{BOLD}🧮 " + t("dn.calcul.titre") + RESET, ""] + _bloc("dn.calcul.texte")
 
@@ -901,12 +921,27 @@ def _reponse_nombre(etiquette, arg, justes, cle_ok, **p):
     return [f" {fg(203)}✖ " + t(f"dn.indice.rep.{etiquette}") + RESET]
 
 
-def lignes_moyenne(arg):
+def sa_collection(state, rows):
+    """Le tableau est bien SA collection (celle de la partie, telle que `tg collection --csv` l'exporte), pas un
+    fichier écrit à la main : l'exploit « une statistique juste » ne se gagne que là."""
+    vraie = [dict(zip(donnees()["colonnes"], r)) for r in lignes_collection(state.get("captures", []))]
+    cle = lambda r: tuple(r.get(c, "") for c in donnees()["colonnes"])   # noqa: E731
+    return bool(rows) and sorted(map(cle, rows)) == sorted(map(cle, vraie))
+
+
+def lignes_moyenne(state, arg):
     rows = lignes_du_fichier() or []
     m = moyenne(rows)
     out = _reponse_nombre("moyenne", arg, [m], "dn.moyenne.ok", m=nombre_awk(m), s=somme(rows), n=len(rows))
     if dans_carnet("moyenne"):
         out.append("  " + t("dn.moyenne.morale"))
+    if arg and (dernier("moyenne") or "").endswith("(ok)") and sa_collection(state, rows):
+        from . import recompenses                         # l'exploit (§ 7.6) : une statistique juste sur SA collection
+        msg = recompenses.exploit(state, "donnees.statistique")
+        if msg:
+            core.log(state, msg)
+            core.say(state, msg, 16)
+            out.append(" " + msg)
     return out
 
 
@@ -947,6 +982,9 @@ def lignes_base():
     rows = lignes_du_fichier()
     if rows is None:
         return _sans_csv()
+    if not assez("dn6", rows):
+        noter("base", f"{len(rows)} (pas assez)")
+        return lignes_minimum("dn6", len(rows))
     if not creer_base(str(dossier() / "collection.db"), rows):
         return [f" {fg(203)}✖ " + t("dn.base.rate") + RESET]
     noter("base", f"{len(rows)} (ok)")
@@ -1011,7 +1049,7 @@ def commande(args, sortie=None):
         elif sous in ("calcul", "calculatrice"):
             lignes.extend(lignes_calcul())
         elif sous == "moyenne":
-            lignes.extend(lignes_moyenne(arg))
+            lignes.extend(lignes_moyenne(st, arg))
         elif sous == "mediane":
             lignes.extend(lignes_mediane(arg))
         elif sous == "etendue":

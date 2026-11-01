@@ -7,7 +7,9 @@ collection — docs/simulations/rapport_donnees.md.
 Comme sim_observatoire.py : le shell est pc/tg/coquille.py, l'enfant ne lit que la commande montrée et ce que le jeu
 écrit dans SON terminal. La Salle est ouverte d'avance (niveaux 0 à 4 faits). sudo, curl et wget sont des doublures
 qui refusent (et notent qu'on les a appelées).
-  - Léa, 7 ans : une collection MINUSCULE (2 bestioles : le jeu complète par son jeu d'exemple). Se trompe d'abord (une
+  - Léa, 7 ans : une collection MINUSCULE (2 bestioles). Depuis le 1er novembre le jeu ne la complète plus : il dit
+    « Il te faut au moins X créatures » et où les rencontrer ; Léa part en dresser (ses renforts, fixes), réexporte et
+    revient — l'étape l'a attendue. Se trompe d'abord (une
     majuscule, `tg collection` sans --csv puis sans >, compte la ligne des titres, cut sans -d, sed sans g, awk sans -F,
     donne la somme au lieu de la moyenne, la valeur du milieu de la liste NON triée, l'étendue = le maximum, le bilan
     trop tôt, une requête SQL sans guillemets, un type au hasard) ; puis lit et corrige.
@@ -78,6 +80,10 @@ NOMS = {"lea": ["Gloupi", "Krillou"], "ines": ["Gloupi", "Braisillon", "Gloupi",
 if QUI == "hugo":
     NOMS += random.sample(NOMS, 15)
 COLLECTION = [B.individu(B.espece(n), random.random() < 0.08, "x") for n in NOMS]
+# les créatures que Léa va rencontrer et dresser quand le jeu lui dit qu'il en faut plus (fixes : la simulation reste
+# déterministe)
+RENFORTS = [B.individu(B.espece(n), False, "x") for n in ("Plumange", "Cailloute", "Tritonnet", "Braisillon", "Gloupi")]
+EXPORT = "tg collection --csv > collection.csv"
 
 
 def ouvrir(s):
@@ -255,7 +261,7 @@ def variante(cmd):
     return None
 
 
-fausses, sans_explication, variantes_ok, variantes_refusees = [], [], [], []
+fausses, sans_explication, variantes_ok, variantes_refusees, rencontres = [], [], [], [], []
 tentes = set()
 st = tape("ls")
 assert histoire.ouvert(st, "donnees"), "la Salle des Données devrait être ouverte (niveaux 0 à 4 faits)"
@@ -311,6 +317,13 @@ for _ in range(400):
     apres = (les2["id"], st["step"]) if les2 else None
     if apres != avant and etat["code"] not in (0, None) and not any(step.get(k) for k in ("echoue", "absent_ok", "tout_code", "reseau")):
         fausses.append((avant, derniere, etat["code"]))
+    ecran = propre(etat["sortie"]) + " " + " ".join(etat["terminal"])
+    if apres == avant and re.search(r"au moins \d+ créatures", ecran):     # pas assez de créatures : elle va en dresser
+        besoin = DN.minimum(les["id"]) or max(DN.donnees()["minimum"].values())
+        n0 = len(st.get("captures", []))
+        rencontres.append((les["id"], n0, besoin, "forêt" in ecran))
+        core.modifier(lambda s: s["captures"].extend(dict(x) for x in RENFORTS[:max(0, besoin - len(s["captures"]))]))
+        st = tape(EXPORT)
 
 verifier(histoire.fini(st, "donnees"), f"la Salle des Données traversée, dn0 → dn6 ({len(journal)} lignes tapées)")
 ex = (st.get("recompenses") or {}).get("exploits") or {}
@@ -319,9 +332,9 @@ verifier(not fausses, f"aucune étape validée par une commande qui a échoué {
 nouveaux = sorted(x for x in fichiers_hors_terrain() - AVANT if not x.endswith(".bash_history") and "/.terminagotchi/" not in x)
 verifier(not nouveaux, f"rien d'écrit hors du terrain et de ~/.terminagotchi {nouveaux[:3]}")
 rows = DN.lignes_du_fichier() or []
-attendu = len(COLLECTION) if len(COLLECTION) >= 5 else 10
-verifier(len(rows) == attendu and sum(r["exemple"] == "1" for r in rows) == max(0, attendu - len(COLLECTION)),
-         f"le tableau : {len(COLLECTION)} bestioles à lui, {sum(r['exemple'] == '1' for r in rows)} d'exemple")
+attendu = len(st.get("captures", []))
+verifier(len(rows) == attendu and "exemple" not in (rows[0] if rows else {}) and attendu >= len(COLLECTION),
+         f"le tableau : ses {attendu} bestioles à lui (au départ {len(COLLECTION)}), aucune d'exemple")
 csv_ = (core.TERRAIN / "donnees/collection.csv").read_text(encoding="utf-8")
 verifier("Pixel" not in csv_ and "@" not in csv_ and not any(c["id"] in csv_ for c in COLLECTION), "le CSV : aucune donnée personnelle")
 appels = JOURNAL.read_text() if JOURNAL.exists() else ""
@@ -329,7 +342,9 @@ verifier(not appels, f"aucun sudo, aucun téléchargement ({appels[:60]!r})")
 if QUI == "lea":
     verifier(not sans_explication, f"chaque faute reçoit une explication {sans_explication[:4]}")
     tout = " ".join(j[4] for j in journal) + " " + " ".join(SORTIES)
-    verifier("EXEMPLE" in tout, "la collection minuscule est complétée, et le jeu le dit")
+    verifier(rencontres and all(r[3] for r in rencontres) and [r[0] for r in rencontres][-1] == "dn4"
+             and "EXEMPLE" not in tout and "exemple = 1" not in tout,
+             f"la collection minuscule n'est plus complétée : le jeu dit le minimum et où aller, l'étape attend {rencontres}")
 if QUI == "hugo":
     verifier(len(variantes_ok) >= 12, f"ses variantes justes sont acceptées ({len(variantes_ok)})")
     print(f"    variantes refusées : {variantes_refusees}")

@@ -229,6 +229,9 @@ def histoire():
         if core.level(st["xp"]) < les["niveau"]:
             st = tape(core.faim_d_apprendre(st, les["niveau"])[0][0])
             continue
+        if les["id"].startswith("dn") and not etat.get("collection_test"):   # la Salle des Données : la collection de TEST
+            etat["collection_test"] = True                # (fixe : le rejeu reste déterministe ; plus de bestioles d'exemple)
+            st = core.modifier(lambda s_: s_.__setitem__("captures", DN_.collection_test()))
         i = st["step"]
         step = les["steps"][i]
         c = step["cmd"]

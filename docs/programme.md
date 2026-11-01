@@ -736,8 +736,9 @@ Données : **sa propre collection** exportée en CSV (espèces, raretés, stats,
 | D5 Les machines en chaîne | `xargs`, `tee`, regex de base | `grep -E`, `xargs`, `tee` | « rapport de collection dans `rapport.txt` » | ✅ |
 
 **Codée (1er novembre, D1 → D5 et D-SQL de § 7.13)** — voir `docs/plan_de_bataille.md`. Écarts assumés :
-- `tg collection --csv` existe (téléphone : `collection --csv`) ; aucune donnée personnelle dans le tableau ; une
-  collection de moins de 5 bestioles est complétée par un jeu d'exemple fixe, marqué (colonne `exemple`).
+- `tg collection --csv` existe (téléphone : `collection --csv`) ; aucune donnée personnelle dans le tableau. Depuis le
+  1er novembre, plus aucune bestiole d'exemple : chaque exercice qui en a besoin dit le nombre minimum de créatures
+  (D1 3, D4 5, D-SQL 5) et où aller les rencontrer ; l'étape attend. L'exploit ne se gagne que sur sa vraie collection.
 - D4 : la moyenne se fait avec `NR>1 {s+=$4; n++} END {print s/n}` (sans la ligne des titres) ; médiane et étendue
   ajoutées. D3 : `sed -i` en plus. D-SQL : `AVG` en plus ; la base est interrogée en lecture seule.
 - Le téléphone a un petit `awk` et un petit `sqlite3` intégrés (sur le SQLite d'Android) ; `cut`, `sort`, `uniq`,

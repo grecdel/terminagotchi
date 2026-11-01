@@ -4670,7 +4670,7 @@
    "pourquoi": "hist.dn0.1.bravo : le laboratoire"
   },
   "dn1.1": {
-   "motif": "\\Anom,type,famille,attaque,defense,vitesse,pv,intelligence,rarete,shiny,variante,date,exemple\\n",
+   "motif": "\\Anom,type,famille,attaque,defense,vitesse,pv,intelligence,rarete,shiny,variante,date\\n",
    "pourquoi": "hist.dn1.1.bravo : la première ligne nomme les colonnes"
   },
   "dn1.2": {

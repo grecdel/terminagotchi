@@ -3,372 +3,32 @@
  "collections": {
   "vide": {
    "captures": [],
-   "ajout": 10,
-   "csv": "nom,type,famille,attaque,defense,vitesse,pv,intelligence,rarete,shiny,variante,date,exemple\nGloupi,poison,aberrations,26,36,18,48,30,commune,0,classique,2026-10-01,1\nBraisillon,feu,demons,33,33,29,32,32,commune,0,volcan,2026-10-02,1\nPlumange,ciel,celestes,35,30,48,30,39,commune,0,classique,2026-10-03,1\nGloupi,poison,aberrations,24,34,16,46,28,commune,0,marais,2026-10-04,1\nCailloute,roche,elementaires,37,40,37,36,34,commune,0,montagne,2026-10-05,1\nKrillou,glace,abyssaux,39,41,43,31,24,peu_commune,0,glace,2026-10-06,1\nTritonnet,eau,abyssaux,41,35,34,33,40,peu_commune,0,lagon,2026-10-07,1\nMousselin,plante,sylvestres,28,40,17,49,36,commune,0,classique,2026-10-08,1\nFlamouche,feu,demons,35,32,52,34,35,peu_commune,0,lave,2026-10-09,1\nPucerise,plante,arthropodes,27,38,24,42,38,peu_commune,1,prairie,2026-10-10,1\n",
-   "lignes": 10,
-   "effectifs_noms": [
-    [
-     "Gloupi",
-     2
-    ],
-    [
-     "Braisillon",
-     1
-    ],
-    [
-     "Cailloute",
-     1
-    ],
-    [
-     "Flamouche",
-     1
-    ],
-    [
-     "Krillou",
-     1
-    ],
-    [
-     "Mousselin",
-     1
-    ],
-    [
-     "Plumange",
-     1
-    ],
-    [
-     "Pucerise",
-     1
-    ],
-    [
-     "Tritonnet",
-     1
-    ]
-   ],
-   "effectifs_types": [
-    [
-     "feu",
-     2
-    ],
-    [
-     "plante",
-     2
-    ],
-    [
-     "poison",
-     2
-    ],
-    [
-     "ciel",
-     1
-    ],
-    [
-     "eau",
-     1
-    ],
-    [
-     "glace",
-     1
-    ],
-    [
-     "roche",
-     1
-    ]
-   ],
-   "forces": "26 Gloupi\n33 Braisillon\n35 Plumange\n24 Gloupi\n37 Cailloute\n39 Krillou\n41 Tritonnet\n28 Mousselin\n35 Flamouche\n27 Pucerise\n",
-   "especes": "Gloupi\nBraisillon\nPlumange\nGloupi\nCailloute\nKrillou\nTritonnet\nMousselin\nFlamouche\nPucerise\n",
-   "top3": [
-    41,
-    39,
-    37
-   ],
-   "shiny": 1,
-   "somme": 325,
-   "moyenne": 32.5,
-   "moyenne_awk": "32.5",
-   "medianes": [
-    33.0,
-    34.0,
-    35.0
-   ],
-   "etendue": 17,
-   "types_majoritaires": [
-    "feu",
-    "plante",
-    "poison"
-   ],
-   "cible": "Gloupi",
-   "faute": "Gluopi",
-   "carnet_faux": "# Carnet du soigneur\nGluopi a bien mangé ce matin.\nBraisillon a dormi au soleil.\nGluopi a gagné la course de l'après-midi.\nPlumange a besoin d'un bain.\nGluopi regarde son reflet dans l'eau : un deuxième Gluopi ?\nCailloute a trouvé un caillou brillant.\n",
-   "carnet_juste": "# Carnet du soigneur\nGloupi a bien mangé ce matin.\nBraisillon a dormi au soleil.\nGloupi a gagné la course de l'après-midi.\nPlumange a besoin d'un bain.\nGloupi regarde son reflet dans l'eau : un deuxième Gloupi ?\nCailloute a trouvé un caillou brillant.\n",
+   "csv": "nom,type,famille,attaque,defense,vitesse,pv,intelligence,rarete,shiny,variante,date\n",
+   "lignes": 0,
+   "effectifs_noms": [],
+   "effectifs_types": [],
+   "forces": "",
+   "especes": "",
+   "top3": [],
+   "shiny": 0,
+   "somme": 0,
+   "moyenne": 0.0,
+   "moyenne_awk": "0",
+   "medianes": [],
+   "etendue": 0,
+   "types_majoritaires": [],
+   "cible": null,
+   "faute": "",
+   "carnet_faux": "",
+   "carnet_juste": "",
    "base": [
     [
-     "CREATE TABLE creatures (nom TEXT, type TEXT, famille TEXT, attaque INTEGER, defense INTEGER, vitesse INTEGER, pv INTEGER, intelligence INTEGER, rarete TEXT, shiny INTEGER, variante TEXT, date TEXT, exemple INTEGER)",
+     "CREATE TABLE creatures (nom TEXT, type TEXT, famille TEXT, attaque INTEGER, defense INTEGER, vitesse INTEGER, pv INTEGER, intelligence INTEGER, rarete TEXT, shiny INTEGER, variante TEXT, date TEXT)",
      []
     ],
     [
      "CREATE TABLE especes (nom TEXT PRIMARY KEY, numero INTEGER, habitat TEXT, puissance INTEGER)",
      []
-    ],
-    [
-     "INSERT INTO creatures VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?)",
-     [
-      "Gloupi",
-      "poison",
-      "aberrations",
-      26,
-      36,
-      18,
-      48,
-      30,
-      "commune",
-      0,
-      "classique",
-      "2026-10-01",
-      1
-     ]
-    ],
-    [
-     "INSERT INTO creatures VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?)",
-     [
-      "Braisillon",
-      "feu",
-      "demons",
-      33,
-      33,
-      29,
-      32,
-      32,
-      "commune",
-      0,
-      "volcan",
-      "2026-10-02",
-      1
-     ]
-    ],
-    [
-     "INSERT INTO creatures VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?)",
-     [
-      "Plumange",
-      "ciel",
-      "celestes",
-      35,
-      30,
-      48,
-      30,
-      39,
-      "commune",
-      0,
-      "classique",
-      "2026-10-03",
-      1
-     ]
-    ],
-    [
-     "INSERT INTO creatures VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?)",
-     [
-      "Gloupi",
-      "poison",
-      "aberrations",
-      24,
-      34,
-      16,
-      46,
-      28,
-      "commune",
-      0,
-      "marais",
-      "2026-10-04",
-      1
-     ]
-    ],
-    [
-     "INSERT INTO creatures VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?)",
-     [
-      "Cailloute",
-      "roche",
-      "elementaires",
-      37,
-      40,
-      37,
-      36,
-      34,
-      "commune",
-      0,
-      "montagne",
-      "2026-10-05",
-      1
-     ]
-    ],
-    [
-     "INSERT INTO creatures VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?)",
-     [
-      "Krillou",
-      "glace",
-      "abyssaux",
-      39,
-      41,
-      43,
-      31,
-      24,
-      "peu_commune",
-      0,
-      "glace",
-      "2026-10-06",
-      1
-     ]
-    ],
-    [
-     "INSERT INTO creatures VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?)",
-     [
-      "Tritonnet",
-      "eau",
-      "abyssaux",
-      41,
-      35,
-      34,
-      33,
-      40,
-      "peu_commune",
-      0,
-      "lagon",
-      "2026-10-07",
-      1
-     ]
-    ],
-    [
-     "INSERT INTO creatures VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?)",
-     [
-      "Mousselin",
-      "plante",
-      "sylvestres",
-      28,
-      40,
-      17,
-      49,
-      36,
-      "commune",
-      0,
-      "classique",
-      "2026-10-08",
-      1
-     ]
-    ],
-    [
-     "INSERT INTO creatures VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?)",
-     [
-      "Flamouche",
-      "feu",
-      "demons",
-      35,
-      32,
-      52,
-      34,
-      35,
-      "peu_commune",
-      0,
-      "lave",
-      "2026-10-09",
-      1
-     ]
-    ],
-    [
-     "INSERT INTO creatures VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?)",
-     [
-      "Pucerise",
-      "plante",
-      "arthropodes",
-      27,
-      38,
-      24,
-      42,
-      38,
-      "peu_commune",
-      1,
-      "prairie",
-      "2026-10-10",
-      1
-     ]
-    ],
-    [
-     "INSERT INTO especes VALUES (?,?,?,?)",
-     [
-      "Gloupi",
-      137,
-      "marais",
-      2
-     ]
-    ],
-    [
-     "INSERT INTO especes VALUES (?,?,?,?)",
-     [
-      "Braisillon",
-      1,
-      "volcan",
-      1
-     ]
-    ],
-    [
-     "INSERT INTO especes VALUES (?,?,?,?)",
-     [
-      "Plumange",
-      108,
-      "nuage",
-      3
-     ]
-    ],
-    [
-     "INSERT INTO especes VALUES (?,?,?,?)",
-     [
-      "Cailloute",
-      20,
-      "montagne",
-      5
-     ]
-    ],
-    [
-     "INSERT INTO especes VALUES (?,?,?,?)",
-     [
-      "Krillou",
-      93,
-      "abyssal",
-      3
-     ]
-    ],
-    [
-     "INSERT INTO especes VALUES (?,?,?,?)",
-     [
-      "Tritonnet",
-      92,
-      "lagon",
-      2
-     ]
-    ],
-    [
-     "INSERT INTO especes VALUES (?,?,?,?)",
-     [
-      "Mousselin",
-      64,
-      "foret",
-      4
-     ]
-    ],
-    [
-     "INSERT INTO especes VALUES (?,?,?,?)",
-     [
-      "Flamouche",
-      3,
-      "lave",
-      3
-     ]
-    ],
-    [
-     "INSERT INTO especes VALUES (?,?,?,?)",
-     [
-      "Pucerise",
-      77,
-      "prairie",
-      2
-     ]
     ]
    ]
   },
@@ -391,100 +51,43 @@
      }
     }
    ],
-   "ajout": 9,
-   "csv": "nom,type,famille,attaque,defense,vitesse,pv,intelligence,rarete,shiny,variante,date,exemple\nGloupi,poison,aberrations,25,35,17,47,29,commune,0,classique,2026-11-01,0\nGloupi,poison,aberrations,26,36,18,48,30,commune,0,classique,2026-10-01,1\nBraisillon,feu,demons,33,33,29,32,32,commune,0,volcan,2026-10-02,1\nPlumange,ciel,celestes,35,30,48,30,39,commune,0,classique,2026-10-03,1\nGloupi,poison,aberrations,24,34,16,46,28,commune,0,marais,2026-10-04,1\nCailloute,roche,elementaires,37,40,37,36,34,commune,0,montagne,2026-10-05,1\nKrillou,glace,abyssaux,39,41,43,31,24,peu_commune,0,glace,2026-10-06,1\nTritonnet,eau,abyssaux,41,35,34,33,40,peu_commune,0,lagon,2026-10-07,1\nMousselin,plante,sylvestres,28,40,17,49,36,commune,0,classique,2026-10-08,1\nFlamouche,feu,demons,35,32,52,34,35,peu_commune,0,lave,2026-10-09,1\n",
-   "lignes": 10,
+   "csv": "nom,type,famille,attaque,defense,vitesse,pv,intelligence,rarete,shiny,variante,date\nGloupi,poison,aberrations,25,35,17,47,29,commune,0,classique,2026-11-01\n",
+   "lignes": 1,
    "effectifs_noms": [
     [
      "Gloupi",
-     3
-    ],
-    [
-     "Braisillon",
-     1
-    ],
-    [
-     "Cailloute",
-     1
-    ],
-    [
-     "Flamouche",
-     1
-    ],
-    [
-     "Krillou",
-     1
-    ],
-    [
-     "Mousselin",
-     1
-    ],
-    [
-     "Plumange",
-     1
-    ],
-    [
-     "Tritonnet",
      1
     ]
    ],
    "effectifs_types": [
     [
      "poison",
-     3
-    ],
-    [
-     "feu",
-     2
-    ],
-    [
-     "ciel",
-     1
-    ],
-    [
-     "eau",
-     1
-    ],
-    [
-     "glace",
-     1
-    ],
-    [
-     "plante",
-     1
-    ],
-    [
-     "roche",
      1
     ]
    ],
-   "forces": "25 Gloupi\n26 Gloupi\n33 Braisillon\n35 Plumange\n24 Gloupi\n37 Cailloute\n39 Krillou\n41 Tritonnet\n28 Mousselin\n35 Flamouche\n",
-   "especes": "Gloupi\nGloupi\nBraisillon\nPlumange\nGloupi\nCailloute\nKrillou\nTritonnet\nMousselin\nFlamouche\n",
+   "forces": "25 Gloupi\n",
+   "especes": "Gloupi\n",
    "top3": [
-    41,
-    39,
-    37
+    25
    ],
    "shiny": 0,
-   "somme": 323,
-   "moyenne": 32.3,
-   "moyenne_awk": "32.3",
+   "somme": 25,
+   "moyenne": 25.0,
+   "moyenne_awk": "25",
    "medianes": [
-    33.0,
-    34.0,
-    35.0
+    25.0
    ],
-   "etendue": 17,
+   "etendue": 0,
    "types_majoritaires": [
     "poison"
    ],
    "cible": "Gloupi",
    "faute": "Gluopi",
-   "carnet_faux": "# Carnet du soigneur\nGluopi a bien mangé ce matin.\nBraisillon a dormi au soleil.\nGluopi a gagné la course de l'après-midi.\nPlumange a besoin d'un bain.\nGluopi regarde son reflet dans l'eau : un deuxième Gluopi ?\nCailloute a trouvé un caillou brillant.\n",
-   "carnet_juste": "# Carnet du soigneur\nGloupi a bien mangé ce matin.\nBraisillon a dormi au soleil.\nGloupi a gagné la course de l'après-midi.\nPlumange a besoin d'un bain.\nGloupi regarde son reflet dans l'eau : un deuxième Gloupi ?\nCailloute a trouvé un caillou brillant.\n",
+   "carnet_faux": "# Carnet du soigneur\nGluopi a bien mangé ce matin.\nGloupi a dormi au soleil.\nGluopi a gagné la course de l'après-midi.\nGloupi a besoin d'un bain.\nGluopi regarde son reflet dans l'eau : un deuxième Gluopi ?\nGloupi a trouvé un caillou brillant.\n",
+   "carnet_juste": "# Carnet du soigneur\nGloupi a bien mangé ce matin.\nGloupi a dormi au soleil.\nGloupi a gagné la course de l'après-midi.\nGloupi a besoin d'un bain.\nGloupi regarde son reflet dans l'eau : un deuxième Gloupi ?\nGloupi a trouvé un caillou brillant.\n",
    "base": [
     [
-     "CREATE TABLE creatures (nom TEXT, type TEXT, famille TEXT, attaque INTEGER, defense INTEGER, vitesse INTEGER, pv INTEGER, intelligence INTEGER, rarete TEXT, shiny INTEGER, variante TEXT, date TEXT, exemple INTEGER)",
+     "CREATE TABLE creatures (nom TEXT, type TEXT, famille TEXT, attaque INTEGER, defense INTEGER, vitesse INTEGER, pv INTEGER, intelligence INTEGER, rarete TEXT, shiny INTEGER, variante TEXT, date TEXT)",
      []
     ],
     [
@@ -492,7 +95,7 @@
      []
     ],
     [
-     "INSERT INTO creatures VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?)",
+     "INSERT INTO creatures VALUES (?,?,?,?,?,?,?,?,?,?,?,?)",
      [
       "Gloupi",
       "poison",
@@ -505,170 +108,7 @@
       "commune",
       0,
       "classique",
-      "2026-11-01",
-      0
-     ]
-    ],
-    [
-     "INSERT INTO creatures VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?)",
-     [
-      "Gloupi",
-      "poison",
-      "aberrations",
-      26,
-      36,
-      18,
-      48,
-      30,
-      "commune",
-      0,
-      "classique",
-      "2026-10-01",
-      1
-     ]
-    ],
-    [
-     "INSERT INTO creatures VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?)",
-     [
-      "Braisillon",
-      "feu",
-      "demons",
-      33,
-      33,
-      29,
-      32,
-      32,
-      "commune",
-      0,
-      "volcan",
-      "2026-10-02",
-      1
-     ]
-    ],
-    [
-     "INSERT INTO creatures VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?)",
-     [
-      "Plumange",
-      "ciel",
-      "celestes",
-      35,
-      30,
-      48,
-      30,
-      39,
-      "commune",
-      0,
-      "classique",
-      "2026-10-03",
-      1
-     ]
-    ],
-    [
-     "INSERT INTO creatures VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?)",
-     [
-      "Gloupi",
-      "poison",
-      "aberrations",
-      24,
-      34,
-      16,
-      46,
-      28,
-      "commune",
-      0,
-      "marais",
-      "2026-10-04",
-      1
-     ]
-    ],
-    [
-     "INSERT INTO creatures VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?)",
-     [
-      "Cailloute",
-      "roche",
-      "elementaires",
-      37,
-      40,
-      37,
-      36,
-      34,
-      "commune",
-      0,
-      "montagne",
-      "2026-10-05",
-      1
-     ]
-    ],
-    [
-     "INSERT INTO creatures VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?)",
-     [
-      "Krillou",
-      "glace",
-      "abyssaux",
-      39,
-      41,
-      43,
-      31,
-      24,
-      "peu_commune",
-      0,
-      "glace",
-      "2026-10-06",
-      1
-     ]
-    ],
-    [
-     "INSERT INTO creatures VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?)",
-     [
-      "Tritonnet",
-      "eau",
-      "abyssaux",
-      41,
-      35,
-      34,
-      33,
-      40,
-      "peu_commune",
-      0,
-      "lagon",
-      "2026-10-07",
-      1
-     ]
-    ],
-    [
-     "INSERT INTO creatures VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?)",
-     [
-      "Mousselin",
-      "plante",
-      "sylvestres",
-      28,
-      40,
-      17,
-      49,
-      36,
-      "commune",
-      0,
-      "classique",
-      "2026-10-08",
-      1
-     ]
-    ],
-    [
-     "INSERT INTO creatures VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?)",
-     [
-      "Flamouche",
-      "feu",
-      "demons",
-      35,
-      32,
-      52,
-      34,
-      35,
-      "peu_commune",
-      0,
-      "lave",
-      "2026-10-09",
-      1
+      "2026-11-01"
      ]
     ],
     [
@@ -678,69 +118,6 @@
       137,
       "marais",
       2
-     ]
-    ],
-    [
-     "INSERT INTO especes VALUES (?,?,?,?)",
-     [
-      "Braisillon",
-      1,
-      "volcan",
-      1
-     ]
-    ],
-    [
-     "INSERT INTO especes VALUES (?,?,?,?)",
-     [
-      "Plumange",
-      108,
-      "nuage",
-      3
-     ]
-    ],
-    [
-     "INSERT INTO especes VALUES (?,?,?,?)",
-     [
-      "Cailloute",
-      20,
-      "montagne",
-      5
-     ]
-    ],
-    [
-     "INSERT INTO especes VALUES (?,?,?,?)",
-     [
-      "Krillou",
-      93,
-      "abyssal",
-      3
-     ]
-    ],
-    [
-     "INSERT INTO especes VALUES (?,?,?,?)",
-     [
-      "Tritonnet",
-      92,
-      "lagon",
-      2
-     ]
-    ],
-    [
-     "INSERT INTO especes VALUES (?,?,?,?)",
-     [
-      "Mousselin",
-      64,
-      "foret",
-      4
-     ]
-    ],
-    [
-     "INSERT INTO especes VALUES (?,?,?,?)",
-     [
-      "Flamouche",
-      3,
-      "lave",
-      3
      ]
     ]
    ]
@@ -780,96 +157,55 @@
      }
     }
    ],
-   "ajout": 8,
-   "csv": "nom,type,famille,attaque,defense,vitesse,pv,intelligence,rarete,shiny,variante,date,exemple\nGloupi,poison,aberrations,25,35,17,47,29,commune,0,marais,2026-11-01,0\nKrillou,glace,abyssaux,36,38,40,28,21,peu_commune,1,glace,2026-10-29,0\nGloupi,poison,aberrations,26,36,18,48,30,commune,0,classique,2026-10-01,1\nBraisillon,feu,demons,33,33,29,32,32,commune,0,volcan,2026-10-02,1\nPlumange,ciel,celestes,35,30,48,30,39,commune,0,classique,2026-10-03,1\nGloupi,poison,aberrations,24,34,16,46,28,commune,0,marais,2026-10-04,1\nCailloute,roche,elementaires,37,40,37,36,34,commune,0,montagne,2026-10-05,1\nKrillou,glace,abyssaux,39,41,43,31,24,peu_commune,0,glace,2026-10-06,1\nTritonnet,eau,abyssaux,41,35,34,33,40,peu_commune,0,lagon,2026-10-07,1\nMousselin,plante,sylvestres,28,40,17,49,36,commune,0,classique,2026-10-08,1\n",
-   "lignes": 10,
+   "csv": "nom,type,famille,attaque,defense,vitesse,pv,intelligence,rarete,shiny,variante,date\nGloupi,poison,aberrations,25,35,17,47,29,commune,0,marais,2026-11-01\nKrillou,glace,abyssaux,36,38,40,28,21,peu_commune,1,glace,2026-10-29\n",
+   "lignes": 2,
    "effectifs_noms": [
     [
      "Gloupi",
-     3
+     1
     ],
     [
      "Krillou",
-     2
-    ],
-    [
-     "Braisillon",
-     1
-    ],
-    [
-     "Cailloute",
-     1
-    ],
-    [
-     "Mousselin",
-     1
-    ],
-    [
-     "Plumange",
-     1
-    ],
-    [
-     "Tritonnet",
      1
     ]
    ],
    "effectifs_types": [
     [
-     "poison",
-     3
-    ],
-    [
      "glace",
-     2
-    ],
-    [
-     "ciel",
      1
     ],
     [
-     "eau",
-     1
-    ],
-    [
-     "feu",
-     1
-    ],
-    [
-     "plante",
-     1
-    ],
-    [
-     "roche",
+     "poison",
      1
     ]
    ],
-   "forces": "25 Gloupi\n36 Krillou\n26 Gloupi\n33 Braisillon\n35 Plumange\n24 Gloupi\n37 Cailloute\n39 Krillou\n41 Tritonnet\n28 Mousselin\n",
-   "especes": "Gloupi\nKrillou\nGloupi\nBraisillon\nPlumange\nGloupi\nCailloute\nKrillou\nTritonnet\nMousselin\n",
+   "forces": "25 Gloupi\n36 Krillou\n",
+   "especes": "Gloupi\nKrillou\n",
    "top3": [
-    41,
-    39,
-    37
+    36,
+    25
    ],
    "shiny": 1,
-   "somme": 324,
-   "moyenne": 32.4,
-   "moyenne_awk": "32.4",
+   "somme": 61,
+   "moyenne": 30.5,
+   "moyenne_awk": "30.5",
    "medianes": [
-    33.0,
-    34.0,
-    35.0
+    25.0,
+    30.5,
+    36.0
    ],
-   "etendue": 17,
+   "etendue": 11,
    "types_majoritaires": [
+    "glace",
     "poison"
    ],
    "cible": "Gloupi",
    "faute": "Gluopi",
-   "carnet_faux": "# Carnet du soigneur\nGluopi a bien mangé ce matin.\nKrillou a dormi au soleil.\nGluopi a gagné la course de l'après-midi.\nBraisillon a besoin d'un bain.\nGluopi regarde son reflet dans l'eau : un deuxième Gluopi ?\nPlumange a trouvé un caillou brillant.\n",
-   "carnet_juste": "# Carnet du soigneur\nGloupi a bien mangé ce matin.\nKrillou a dormi au soleil.\nGloupi a gagné la course de l'après-midi.\nBraisillon a besoin d'un bain.\nGloupi regarde son reflet dans l'eau : un deuxième Gloupi ?\nPlumange a trouvé un caillou brillant.\n",
+   "carnet_faux": "# Carnet du soigneur\nGluopi a bien mangé ce matin.\nKrillou a dormi au soleil.\nGluopi a gagné la course de l'après-midi.\nKrillou a besoin d'un bain.\nGluopi regarde son reflet dans l'eau : un deuxième Gluopi ?\nKrillou a trouvé un caillou brillant.\n",
+   "carnet_juste": "# Carnet du soigneur\nGloupi a bien mangé ce matin.\nKrillou a dormi au soleil.\nGloupi a gagné la course de l'après-midi.\nKrillou a besoin d'un bain.\nGloupi regarde son reflet dans l'eau : un deuxième Gloupi ?\nKrillou a trouvé un caillou brillant.\n",
    "base": [
     [
-     "CREATE TABLE creatures (nom TEXT, type TEXT, famille TEXT, attaque INTEGER, defense INTEGER, vitesse INTEGER, pv INTEGER, intelligence INTEGER, rarete TEXT, shiny INTEGER, variante TEXT, date TEXT, exemple INTEGER)",
+     "CREATE TABLE creatures (nom TEXT, type TEXT, famille TEXT, attaque INTEGER, defense INTEGER, vitesse INTEGER, pv INTEGER, intelligence INTEGER, rarete TEXT, shiny INTEGER, variante TEXT, date TEXT)",
      []
     ],
     [
@@ -877,7 +213,7 @@
      []
     ],
     [
-     "INSERT INTO creatures VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?)",
+     "INSERT INTO creatures VALUES (?,?,?,?,?,?,?,?,?,?,?,?)",
      [
       "Gloupi",
       "poison",
@@ -890,12 +226,11 @@
       "commune",
       0,
       "marais",
-      "2026-11-01",
-      0
+      "2026-11-01"
      ]
     ],
     [
-     "INSERT INTO creatures VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?)",
+     "INSERT INTO creatures VALUES (?,?,?,?,?,?,?,?,?,?,?,?)",
      [
       "Krillou",
       "glace",
@@ -908,152 +243,7 @@
       "peu_commune",
       1,
       "glace",
-      "2026-10-29",
-      0
-     ]
-    ],
-    [
-     "INSERT INTO creatures VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?)",
-     [
-      "Gloupi",
-      "poison",
-      "aberrations",
-      26,
-      36,
-      18,
-      48,
-      30,
-      "commune",
-      0,
-      "classique",
-      "2026-10-01",
-      1
-     ]
-    ],
-    [
-     "INSERT INTO creatures VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?)",
-     [
-      "Braisillon",
-      "feu",
-      "demons",
-      33,
-      33,
-      29,
-      32,
-      32,
-      "commune",
-      0,
-      "volcan",
-      "2026-10-02",
-      1
-     ]
-    ],
-    [
-     "INSERT INTO creatures VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?)",
-     [
-      "Plumange",
-      "ciel",
-      "celestes",
-      35,
-      30,
-      48,
-      30,
-      39,
-      "commune",
-      0,
-      "classique",
-      "2026-10-03",
-      1
-     ]
-    ],
-    [
-     "INSERT INTO creatures VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?)",
-     [
-      "Gloupi",
-      "poison",
-      "aberrations",
-      24,
-      34,
-      16,
-      46,
-      28,
-      "commune",
-      0,
-      "marais",
-      "2026-10-04",
-      1
-     ]
-    ],
-    [
-     "INSERT INTO creatures VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?)",
-     [
-      "Cailloute",
-      "roche",
-      "elementaires",
-      37,
-      40,
-      37,
-      36,
-      34,
-      "commune",
-      0,
-      "montagne",
-      "2026-10-05",
-      1
-     ]
-    ],
-    [
-     "INSERT INTO creatures VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?)",
-     [
-      "Krillou",
-      "glace",
-      "abyssaux",
-      39,
-      41,
-      43,
-      31,
-      24,
-      "peu_commune",
-      0,
-      "glace",
-      "2026-10-06",
-      1
-     ]
-    ],
-    [
-     "INSERT INTO creatures VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?)",
-     [
-      "Tritonnet",
-      "eau",
-      "abyssaux",
-      41,
-      35,
-      34,
-      33,
-      40,
-      "peu_commune",
-      0,
-      "lagon",
-      "2026-10-07",
-      1
-     ]
-    ],
-    [
-     "INSERT INTO creatures VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?)",
-     [
-      "Mousselin",
-      "plante",
-      "sylvestres",
-      28,
-      40,
-      17,
-      49,
-      36,
-      "commune",
-      0,
-      "classique",
-      "2026-10-08",
-      1
+      "2026-10-29"
      ]
     ],
     [
@@ -1072,51 +262,6 @@
       93,
       "abyssal",
       3
-     ]
-    ],
-    [
-     "INSERT INTO especes VALUES (?,?,?,?)",
-     [
-      "Braisillon",
-      1,
-      "volcan",
-      1
-     ]
-    ],
-    [
-     "INSERT INTO especes VALUES (?,?,?,?)",
-     [
-      "Plumange",
-      108,
-      "nuage",
-      3
-     ]
-    ],
-    [
-     "INSERT INTO especes VALUES (?,?,?,?)",
-     [
-      "Cailloute",
-      20,
-      "montagne",
-      5
-     ]
-    ],
-    [
-     "INSERT INTO especes VALUES (?,?,?,?)",
-     [
-      "Tritonnet",
-      92,
-      "lagon",
-      2
-     ]
-    ],
-    [
-     "INSERT INTO especes VALUES (?,?,?,?)",
-     [
-      "Mousselin",
-      64,
-      "foret",
-      4
      ]
     ]
    ]
@@ -1205,8 +350,7 @@
      "rarete": "épique"
     }
    ],
-   "ajout": 0,
-   "csv": "nom,type,famille,attaque,defense,vitesse,pv,intelligence,rarete,shiny,variante,date,exemple\nÉcumane,eau,elementaires,48,44,43,43,29,commune,0,classique,2026-11-01,0\nSéraphibou,ciel,celestes,42,32,63,39,40,commune,0,classique,2026-09-22,0\nNénuphage,plante,sylvestres,58,45,57,44,30,commune,0,foret,2026-11-01,0\nGloupi,poison,aberrations,25,35,17,47,29,commune,0,classique,2026-11-01,0\nChêneroc,plante,sylvestres,57,51,51,48,53,epique,0,classique,2026-11-01,0\n",
+   "csv": "nom,type,famille,attaque,defense,vitesse,pv,intelligence,rarete,shiny,variante,date\nÉcumane,eau,elementaires,48,44,43,43,29,commune,0,classique,2026-11-01\nSéraphibou,ciel,celestes,42,32,63,39,40,commune,0,classique,2026-09-22\nNénuphage,plante,sylvestres,58,45,57,44,30,commune,0,foret,2026-11-01\nGloupi,poison,aberrations,25,35,17,47,29,commune,0,classique,2026-11-01\nChêneroc,plante,sylvestres,57,51,51,48,53,epique,0,classique,2026-11-01\n",
    "lignes": 5,
    "effectifs_noms": [
     [
@@ -1272,7 +416,7 @@
    "carnet_juste": "# Carnet du soigneur\nChêneroc a bien mangé ce matin.\nÉcumane a dormi au soleil.\nChêneroc a gagné la course de l'après-midi.\nSéraphibou a besoin d'un bain.\nChêneroc regarde son reflet dans l'eau : un deuxième Chêneroc ?\nNénuphage a trouvé un caillou brillant.\n",
    "base": [
     [
-     "CREATE TABLE creatures (nom TEXT, type TEXT, famille TEXT, attaque INTEGER, defense INTEGER, vitesse INTEGER, pv INTEGER, intelligence INTEGER, rarete TEXT, shiny INTEGER, variante TEXT, date TEXT, exemple INTEGER)",
+     "CREATE TABLE creatures (nom TEXT, type TEXT, famille TEXT, attaque INTEGER, defense INTEGER, vitesse INTEGER, pv INTEGER, intelligence INTEGER, rarete TEXT, shiny INTEGER, variante TEXT, date TEXT)",
      []
     ],
     [
@@ -1280,7 +424,7 @@
      []
     ],
     [
-     "INSERT INTO creatures VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?)",
+     "INSERT INTO creatures VALUES (?,?,?,?,?,?,?,?,?,?,?,?)",
      [
       "Écumane",
       "eau",
@@ -1293,12 +437,11 @@
       "commune",
       0,
       "classique",
-      "2026-11-01",
-      0
+      "2026-11-01"
      ]
     ],
     [
-     "INSERT INTO creatures VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?)",
+     "INSERT INTO creatures VALUES (?,?,?,?,?,?,?,?,?,?,?,?)",
      [
       "Séraphibou",
       "ciel",
@@ -1311,12 +454,11 @@
       "commune",
       0,
       "classique",
-      "2026-09-22",
-      0
+      "2026-09-22"
      ]
     ],
     [
-     "INSERT INTO creatures VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?)",
+     "INSERT INTO creatures VALUES (?,?,?,?,?,?,?,?,?,?,?,?)",
      [
       "Nénuphage",
       "plante",
@@ -1329,12 +471,11 @@
       "commune",
       0,
       "foret",
-      "2026-11-01",
-      0
+      "2026-11-01"
      ]
     ],
     [
-     "INSERT INTO creatures VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?)",
+     "INSERT INTO creatures VALUES (?,?,?,?,?,?,?,?,?,?,?,?)",
      [
       "Gloupi",
       "poison",
@@ -1347,12 +488,11 @@
       "commune",
       0,
       "classique",
-      "2026-11-01",
-      0
+      "2026-11-01"
      ]
     ],
     [
-     "INSERT INTO creatures VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?)",
+     "INSERT INTO creatures VALUES (?,?,?,?,?,?,?,?,?,?,?,?)",
      [
       "Chêneroc",
       "plante",
@@ -1365,8 +505,7 @@
       "epique",
       0,
       "classique",
-      "2026-11-01",
-      0
+      "2026-11-01"
      ]
     ],
     [
@@ -1531,8 +670,7 @@
      }
     }
    ],
-   "ajout": 0,
-   "csv": "nom,type,famille,attaque,defense,vitesse,pv,intelligence,rarete,shiny,variante,date,exemple\nGloupi,poison,aberrations,26,30,12,20,24,commune,0,classique,2026-11-01,0\nBraisillon,feu,demons,29,30,13,21,24,commune,0,classique,2026-10-31,0\nGloupi,poison,aberrations,32,30,14,22,24,commune,0,classique,2026-10-30,0\nKrillou,eau,abyssaux,35,30,15,23,24,commune,0,classique,2026-10-29,0\nCailloute,roche,elementaires,38,30,16,24,24,commune,1,classique,2026-10-28,0\nPlumange,ciel,celestes,28,30,17,25,24,commune,0,classique,2026-10-27,0\nTritonnet,eau,abyssaux,31,30,18,26,24,commune,0,classique,2026-10-26,0\n",
+   "csv": "nom,type,famille,attaque,defense,vitesse,pv,intelligence,rarete,shiny,variante,date\nGloupi,poison,aberrations,26,30,12,20,24,commune,0,classique,2026-11-01\nBraisillon,feu,demons,29,30,13,21,24,commune,0,classique,2026-10-31\nGloupi,poison,aberrations,32,30,14,22,24,commune,0,classique,2026-10-30\nKrillou,eau,abyssaux,35,30,15,23,24,commune,0,classique,2026-10-29\nCailloute,roche,elementaires,38,30,16,24,24,commune,1,classique,2026-10-28\nPlumange,ciel,celestes,28,30,17,25,24,commune,0,classique,2026-10-27\nTritonnet,eau,abyssaux,31,30,18,26,24,commune,0,classique,2026-10-26\n",
    "lignes": 7,
    "effectifs_noms": [
     [
@@ -1607,7 +745,7 @@
    "carnet_juste": "# Carnet du soigneur\nGloupi a bien mangé ce matin.\nBraisillon a dormi au soleil.\nGloupi a gagné la course de l'après-midi.\nKrillou a besoin d'un bain.\nGloupi regarde son reflet dans l'eau : un deuxième Gloupi ?\nCailloute a trouvé un caillou brillant.\n",
    "base": [
     [
-     "CREATE TABLE creatures (nom TEXT, type TEXT, famille TEXT, attaque INTEGER, defense INTEGER, vitesse INTEGER, pv INTEGER, intelligence INTEGER, rarete TEXT, shiny INTEGER, variante TEXT, date TEXT, exemple INTEGER)",
+     "CREATE TABLE creatures (nom TEXT, type TEXT, famille TEXT, attaque INTEGER, defense INTEGER, vitesse INTEGER, pv INTEGER, intelligence INTEGER, rarete TEXT, shiny INTEGER, variante TEXT, date TEXT)",
      []
     ],
     [
@@ -1615,7 +753,7 @@
      []
     ],
     [
-     "INSERT INTO creatures VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?)",
+     "INSERT INTO creatures VALUES (?,?,?,?,?,?,?,?,?,?,?,?)",
      [
       "Gloupi",
       "poison",
@@ -1628,12 +766,11 @@
       "commune",
       0,
       "classique",
-      "2026-11-01",
-      0
+      "2026-11-01"
      ]
     ],
     [
-     "INSERT INTO creatures VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?)",
+     "INSERT INTO creatures VALUES (?,?,?,?,?,?,?,?,?,?,?,?)",
      [
       "Braisillon",
       "feu",
@@ -1646,12 +783,11 @@
       "commune",
       0,
       "classique",
-      "2026-10-31",
-      0
+      "2026-10-31"
      ]
     ],
     [
-     "INSERT INTO creatures VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?)",
+     "INSERT INTO creatures VALUES (?,?,?,?,?,?,?,?,?,?,?,?)",
      [
       "Gloupi",
       "poison",
@@ -1664,12 +800,11 @@
       "commune",
       0,
       "classique",
-      "2026-10-30",
-      0
+      "2026-10-30"
      ]
     ],
     [
-     "INSERT INTO creatures VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?)",
+     "INSERT INTO creatures VALUES (?,?,?,?,?,?,?,?,?,?,?,?)",
      [
       "Krillou",
       "eau",
@@ -1682,12 +817,11 @@
       "commune",
       0,
       "classique",
-      "2026-10-29",
-      0
+      "2026-10-29"
      ]
     ],
     [
-     "INSERT INTO creatures VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?)",
+     "INSERT INTO creatures VALUES (?,?,?,?,?,?,?,?,?,?,?,?)",
      [
       "Cailloute",
       "roche",
@@ -1700,12 +834,11 @@
       "commune",
       1,
       "classique",
-      "2026-10-28",
-      0
+      "2026-10-28"
      ]
     ],
     [
-     "INSERT INTO creatures VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?)",
+     "INSERT INTO creatures VALUES (?,?,?,?,?,?,?,?,?,?,?,?)",
      [
       "Plumange",
       "ciel",
@@ -1718,12 +851,11 @@
       "commune",
       0,
       "classique",
-      "2026-10-27",
-      0
+      "2026-10-27"
      ]
     ],
     [
-     "INSERT INTO creatures VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?)",
+     "INSERT INTO creatures VALUES (?,?,?,?,?,?,?,?,?,?,?,?)",
      [
       "Tritonnet",
       "eau",
@@ -1736,8 +868,7 @@
       "commune",
       0,
       "classique",
-      "2026-10-26",
-      0
+      "2026-10-26"
      ]
     ],
     [
@@ -1895,8 +1026,7 @@
      }
     }
    ],
-   "ajout": 0,
-   "csv": "nom,type,famille,attaque,defense,vitesse,pv,intelligence,rarete,shiny,variante,date,exemple\nGloupi,poison,aberrations,20,1,1,1,1,commune,0,classique,2026-11-01,0\nKrillou,eau,abyssaux,31,1,1,1,1,commune,0,classique,2026-11-01,0\nPlumange,ciel,celestes,25,1,1,1,1,commune,0,classique,2026-11-01,0\nTritonnet,eau,abyssaux,31,1,1,1,1,commune,0,classique,2026-11-01,0\nGloupi,poison,aberrations,40,1,1,1,1,commune,0,classique,2026-11-01,0\nCailloute,roche,elementaires,22,1,1,1,1,commune,0,classique,2026-11-01,0\n",
+   "csv": "nom,type,famille,attaque,defense,vitesse,pv,intelligence,rarete,shiny,variante,date\nGloupi,poison,aberrations,20,1,1,1,1,commune,0,classique,2026-11-01\nKrillou,eau,abyssaux,31,1,1,1,1,commune,0,classique,2026-11-01\nPlumange,ciel,celestes,25,1,1,1,1,commune,0,classique,2026-11-01\nTritonnet,eau,abyssaux,31,1,1,1,1,commune,0,classique,2026-11-01\nGloupi,poison,aberrations,40,1,1,1,1,commune,0,classique,2026-11-01\nCailloute,roche,elementaires,22,1,1,1,1,commune,0,classique,2026-11-01\n",
    "lignes": 6,
    "effectifs_noms": [
     [
@@ -1965,7 +1095,7 @@
    "carnet_juste": "# Carnet du soigneur\nGloupi a bien mangé ce matin.\nKrillou a dormi au soleil.\nGloupi a gagné la course de l'après-midi.\nPlumange a besoin d'un bain.\nGloupi regarde son reflet dans l'eau : un deuxième Gloupi ?\nTritonnet a trouvé un caillou brillant.\n",
    "base": [
     [
-     "CREATE TABLE creatures (nom TEXT, type TEXT, famille TEXT, attaque INTEGER, defense INTEGER, vitesse INTEGER, pv INTEGER, intelligence INTEGER, rarete TEXT, shiny INTEGER, variante TEXT, date TEXT, exemple INTEGER)",
+     "CREATE TABLE creatures (nom TEXT, type TEXT, famille TEXT, attaque INTEGER, defense INTEGER, vitesse INTEGER, pv INTEGER, intelligence INTEGER, rarete TEXT, shiny INTEGER, variante TEXT, date TEXT)",
      []
     ],
     [
@@ -1973,7 +1103,7 @@
      []
     ],
     [
-     "INSERT INTO creatures VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?)",
+     "INSERT INTO creatures VALUES (?,?,?,?,?,?,?,?,?,?,?,?)",
      [
       "Gloupi",
       "poison",
@@ -1986,12 +1116,11 @@
       "commune",
       0,
       "classique",
-      "2026-11-01",
-      0
+      "2026-11-01"
      ]
     ],
     [
-     "INSERT INTO creatures VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?)",
+     "INSERT INTO creatures VALUES (?,?,?,?,?,?,?,?,?,?,?,?)",
      [
       "Krillou",
       "eau",
@@ -2004,12 +1133,11 @@
       "commune",
       0,
       "classique",
-      "2026-11-01",
-      0
+      "2026-11-01"
      ]
     ],
     [
-     "INSERT INTO creatures VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?)",
+     "INSERT INTO creatures VALUES (?,?,?,?,?,?,?,?,?,?,?,?)",
      [
       "Plumange",
       "ciel",
@@ -2022,12 +1150,11 @@
       "commune",
       0,
       "classique",
-      "2026-11-01",
-      0
+      "2026-11-01"
      ]
     ],
     [
-     "INSERT INTO creatures VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?)",
+     "INSERT INTO creatures VALUES (?,?,?,?,?,?,?,?,?,?,?,?)",
      [
       "Tritonnet",
       "eau",
@@ -2040,12 +1167,11 @@
       "commune",
       0,
       "classique",
-      "2026-11-01",
-      0
+      "2026-11-01"
      ]
     ],
     [
-     "INSERT INTO creatures VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?)",
+     "INSERT INTO creatures VALUES (?,?,?,?,?,?,?,?,?,?,?,?)",
      [
       "Gloupi",
       "poison",
@@ -2058,12 +1184,11 @@
       "commune",
       0,
       "classique",
-      "2026-11-01",
-      0
+      "2026-11-01"
      ]
     ],
     [
-     "INSERT INTO creatures VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?)",
+     "INSERT INTO creatures VALUES (?,?,?,?,?,?,?,?,?,?,?,?)",
      [
       "Cailloute",
       "roche",
@@ -2076,8 +1201,7 @@
       "commune",
       0,
       "classique",
-      "2026-11-01",
-      0
+      "2026-11-01"
      ]
     ],
     [
@@ -2123,6 +1247,587 @@
       20,
       "montagne",
       5
+     ]
+    ]
+   ]
+  },
+  "test": {
+   "captures": [
+    {
+     "id": "test00",
+     "espece": "Gloupi",
+     "variante": "classique",
+     "shiny": false,
+     "date": 1790856000000,
+     "marque": "un reflet arc-en-ciel sur le pelage",
+     "humeur": "timide",
+     "taille": 109.3,
+     "qualite": 0.42,
+     "potentiel": 46,
+     "stats": {
+      "PV": 48,
+      "ATK": 26,
+      "DEF": 36,
+      "VIT": 18,
+      "INT": 30
+     },
+     "note": 26.3,
+     "rarete": "commune",
+     "zone": "collection_test"
+    },
+    {
+     "id": "test01",
+     "espece": "Braisillon",
+     "variante": "volcan",
+     "shiny": false,
+     "date": 1790942400000,
+     "marque": "des yeux de deux couleurs",
+     "humeur": "gourmande",
+     "taille": 29.1,
+     "qualite": 0.55,
+     "potentiel": 48,
+     "stats": {
+      "PV": 32,
+      "ATK": 33,
+      "DEF": 33,
+      "VIT": 29,
+      "INT": 32
+     },
+     "note": 45.5,
+     "rarete": "commune",
+     "zone": "collection_test"
+    },
+    {
+     "id": "test02",
+     "espece": "Plumange",
+     "variante": "classique",
+     "shiny": false,
+     "date": 1791028800000,
+     "marque": "des empreintes en forme de 0 et de 1",
+     "humeur": "bavarde",
+     "taille": 32.4,
+     "qualite": 0.61,
+     "potentiel": 55,
+     "stats": {
+      "PV": 30,
+      "ATK": 35,
+      "DEF": 30,
+      "VIT": 48,
+      "INT": 39
+     },
+     "note": 38.7,
+     "rarete": "commune",
+     "zone": "collection_test"
+    },
+    {
+     "id": "test03",
+     "espece": "Gloupi",
+     "variante": "marais",
+     "shiny": false,
+     "date": 1791115200000,
+     "marque": "des oreilles légèrement pixelisées",
+     "humeur": "paresseuse",
+     "taille": 85.1,
+     "qualite": 0.3,
+     "potentiel": 26,
+     "stats": {
+      "PV": 46,
+      "ATK": 24,
+      "DEF": 34,
+      "VIT": 16,
+      "INT": 28
+     },
+     "note": 31.6,
+     "rarete": "commune",
+     "zone": "collection_test"
+    },
+    {
+     "id": "test04",
+     "espece": "Cailloute",
+     "variante": "montagne",
+     "shiny": false,
+     "date": 1791201600000,
+     "marque": "des rayures comme un code-barres",
+     "humeur": "rêveuse",
+     "taille": 92.2,
+     "qualite": 0.38,
+     "potentiel": 40,
+     "stats": {
+      "PV": 36,
+      "ATK": 37,
+      "DEF": 40,
+      "VIT": 37,
+      "INT": 34
+     },
+     "note": 39.6,
+     "rarete": "commune",
+     "zone": "collection_test"
+    },
+    {
+     "id": "test05",
+     "espece": "Krillou",
+     "variante": "glace",
+     "shiny": false,
+     "date": 1791288000000,
+     "marque": "des pattes de longueur différente",
+     "humeur": "calme",
+     "taille": 26.4,
+     "qualite": 0.5,
+     "potentiel": 46,
+     "stats": {
+      "PV": 31,
+      "ATK": 39,
+      "DEF": 41,
+      "VIT": 43,
+      "INT": 24
+     },
+     "note": 51.5,
+     "rarete": "peu commune",
+     "zone": "collection_test"
+    },
+    {
+     "id": "test06",
+     "espece": "Tritonnet",
+     "variante": "lagon",
+     "shiny": false,
+     "date": 1791374400000,
+     "marque": "une crête en forme d'accolade {",
+     "humeur": "joyeuse",
+     "taille": 37.4,
+     "qualite": 0.7,
+     "potentiel": 80,
+     "stats": {
+      "PV": 33,
+      "ATK": 41,
+      "DEF": 35,
+      "VIT": 34,
+      "INT": 40
+     },
+     "note": 55.6,
+     "rarete": "peu commune",
+     "zone": "collection_test"
+    },
+    {
+     "id": "test07",
+     "espece": "Mousselin",
+     "variante": "classique",
+     "shiny": false,
+     "date": 1791460800000,
+     "marque": "un ventre qui affiche l'heure",
+     "humeur": "joyeuse",
+     "taille": 110.9,
+     "qualite": 0.33,
+     "potentiel": 30,
+     "stats": {
+      "PV": 49,
+      "ATK": 28,
+      "DEF": 40,
+      "VIT": 17,
+      "INT": 36
+     },
+     "note": 23.0,
+     "rarete": "commune",
+     "zone": "collection_test"
+    },
+    {
+     "id": "test08",
+     "espece": "Flamouche",
+     "variante": "lave",
+     "shiny": false,
+     "date": 1791547200000,
+     "marque": "une antenne qui capte la radio",
+     "humeur": "gourmande",
+     "taille": 36.2,
+     "qualite": 0.64,
+     "potentiel": 61,
+     "stats": {
+      "PV": 34,
+      "ATK": 35,
+      "DEF": 32,
+      "VIT": 52,
+      "INT": 35
+     },
+     "note": 53.0,
+     "rarete": "peu commune",
+     "zone": "collection_test"
+    },
+    {
+     "id": "test09",
+     "espece": "Pucerise",
+     "variante": "prairie",
+     "shiny": true,
+     "date": 1791633600000,
+     "marque": "un reflet arc-en-ciel sur le pelage",
+     "humeur": "gourmande",
+     "taille": 31.0,
+     "qualite": 0.52,
+     "potentiel": 52,
+     "stats": {
+      "PV": 42,
+      "ATK": 27,
+      "DEF": 38,
+      "VIT": 24,
+      "INT": 38
+     },
+     "note": 54.8,
+     "rarete": "peu commune",
+     "zone": "collection_test"
+    }
+   ],
+   "csv": "nom,type,famille,attaque,defense,vitesse,pv,intelligence,rarete,shiny,variante,date\nGloupi,poison,aberrations,26,36,18,48,30,commune,0,classique,2026-10-01\nBraisillon,feu,demons,33,33,29,32,32,commune,0,volcan,2026-10-02\nPlumange,ciel,celestes,35,30,48,30,39,commune,0,classique,2026-10-03\nGloupi,poison,aberrations,24,34,16,46,28,commune,0,marais,2026-10-04\nCailloute,roche,elementaires,37,40,37,36,34,commune,0,montagne,2026-10-05\nKrillou,glace,abyssaux,39,41,43,31,24,peu_commune,0,glace,2026-10-06\nTritonnet,eau,abyssaux,41,35,34,33,40,peu_commune,0,lagon,2026-10-07\nMousselin,plante,sylvestres,28,40,17,49,36,commune,0,classique,2026-10-08\nFlamouche,feu,demons,35,32,52,34,35,peu_commune,0,lave,2026-10-09\nPucerise,plante,arthropodes,27,38,24,42,38,peu_commune,1,prairie,2026-10-10\n",
+   "lignes": 10,
+   "effectifs_noms": [
+    [
+     "Gloupi",
+     2
+    ],
+    [
+     "Braisillon",
+     1
+    ],
+    [
+     "Cailloute",
+     1
+    ],
+    [
+     "Flamouche",
+     1
+    ],
+    [
+     "Krillou",
+     1
+    ],
+    [
+     "Mousselin",
+     1
+    ],
+    [
+     "Plumange",
+     1
+    ],
+    [
+     "Pucerise",
+     1
+    ],
+    [
+     "Tritonnet",
+     1
+    ]
+   ],
+   "effectifs_types": [
+    [
+     "feu",
+     2
+    ],
+    [
+     "plante",
+     2
+    ],
+    [
+     "poison",
+     2
+    ],
+    [
+     "ciel",
+     1
+    ],
+    [
+     "eau",
+     1
+    ],
+    [
+     "glace",
+     1
+    ],
+    [
+     "roche",
+     1
+    ]
+   ],
+   "forces": "26 Gloupi\n33 Braisillon\n35 Plumange\n24 Gloupi\n37 Cailloute\n39 Krillou\n41 Tritonnet\n28 Mousselin\n35 Flamouche\n27 Pucerise\n",
+   "especes": "Gloupi\nBraisillon\nPlumange\nGloupi\nCailloute\nKrillou\nTritonnet\nMousselin\nFlamouche\nPucerise\n",
+   "top3": [
+    41,
+    39,
+    37
+   ],
+   "shiny": 1,
+   "somme": 325,
+   "moyenne": 32.5,
+   "moyenne_awk": "32.5",
+   "medianes": [
+    33.0,
+    34.0,
+    35.0
+   ],
+   "etendue": 17,
+   "types_majoritaires": [
+    "feu",
+    "plante",
+    "poison"
+   ],
+   "cible": "Gloupi",
+   "faute": "Gluopi",
+   "carnet_faux": "# Carnet du soigneur\nGluopi a bien mangé ce matin.\nBraisillon a dormi au soleil.\nGluopi a gagné la course de l'après-midi.\nPlumange a besoin d'un bain.\nGluopi regarde son reflet dans l'eau : un deuxième Gluopi ?\nCailloute a trouvé un caillou brillant.\n",
+   "carnet_juste": "# Carnet du soigneur\nGloupi a bien mangé ce matin.\nBraisillon a dormi au soleil.\nGloupi a gagné la course de l'après-midi.\nPlumange a besoin d'un bain.\nGloupi regarde son reflet dans l'eau : un deuxième Gloupi ?\nCailloute a trouvé un caillou brillant.\n",
+   "base": [
+    [
+     "CREATE TABLE creatures (nom TEXT, type TEXT, famille TEXT, attaque INTEGER, defense INTEGER, vitesse INTEGER, pv INTEGER, intelligence INTEGER, rarete TEXT, shiny INTEGER, variante TEXT, date TEXT)",
+     []
+    ],
+    [
+     "CREATE TABLE especes (nom TEXT PRIMARY KEY, numero INTEGER, habitat TEXT, puissance INTEGER)",
+     []
+    ],
+    [
+     "INSERT INTO creatures VALUES (?,?,?,?,?,?,?,?,?,?,?,?)",
+     [
+      "Gloupi",
+      "poison",
+      "aberrations",
+      26,
+      36,
+      18,
+      48,
+      30,
+      "commune",
+      0,
+      "classique",
+      "2026-10-01"
+     ]
+    ],
+    [
+     "INSERT INTO creatures VALUES (?,?,?,?,?,?,?,?,?,?,?,?)",
+     [
+      "Braisillon",
+      "feu",
+      "demons",
+      33,
+      33,
+      29,
+      32,
+      32,
+      "commune",
+      0,
+      "volcan",
+      "2026-10-02"
+     ]
+    ],
+    [
+     "INSERT INTO creatures VALUES (?,?,?,?,?,?,?,?,?,?,?,?)",
+     [
+      "Plumange",
+      "ciel",
+      "celestes",
+      35,
+      30,
+      48,
+      30,
+      39,
+      "commune",
+      0,
+      "classique",
+      "2026-10-03"
+     ]
+    ],
+    [
+     "INSERT INTO creatures VALUES (?,?,?,?,?,?,?,?,?,?,?,?)",
+     [
+      "Gloupi",
+      "poison",
+      "aberrations",
+      24,
+      34,
+      16,
+      46,
+      28,
+      "commune",
+      0,
+      "marais",
+      "2026-10-04"
+     ]
+    ],
+    [
+     "INSERT INTO creatures VALUES (?,?,?,?,?,?,?,?,?,?,?,?)",
+     [
+      "Cailloute",
+      "roche",
+      "elementaires",
+      37,
+      40,
+      37,
+      36,
+      34,
+      "commune",
+      0,
+      "montagne",
+      "2026-10-05"
+     ]
+    ],
+    [
+     "INSERT INTO creatures VALUES (?,?,?,?,?,?,?,?,?,?,?,?)",
+     [
+      "Krillou",
+      "glace",
+      "abyssaux",
+      39,
+      41,
+      43,
+      31,
+      24,
+      "peu_commune",
+      0,
+      "glace",
+      "2026-10-06"
+     ]
+    ],
+    [
+     "INSERT INTO creatures VALUES (?,?,?,?,?,?,?,?,?,?,?,?)",
+     [
+      "Tritonnet",
+      "eau",
+      "abyssaux",
+      41,
+      35,
+      34,
+      33,
+      40,
+      "peu_commune",
+      0,
+      "lagon",
+      "2026-10-07"
+     ]
+    ],
+    [
+     "INSERT INTO creatures VALUES (?,?,?,?,?,?,?,?,?,?,?,?)",
+     [
+      "Mousselin",
+      "plante",
+      "sylvestres",
+      28,
+      40,
+      17,
+      49,
+      36,
+      "commune",
+      0,
+      "classique",
+      "2026-10-08"
+     ]
+    ],
+    [
+     "INSERT INTO creatures VALUES (?,?,?,?,?,?,?,?,?,?,?,?)",
+     [
+      "Flamouche",
+      "feu",
+      "demons",
+      35,
+      32,
+      52,
+      34,
+      35,
+      "peu_commune",
+      0,
+      "lave",
+      "2026-10-09"
+     ]
+    ],
+    [
+     "INSERT INTO creatures VALUES (?,?,?,?,?,?,?,?,?,?,?,?)",
+     [
+      "Pucerise",
+      "plante",
+      "arthropodes",
+      27,
+      38,
+      24,
+      42,
+      38,
+      "peu_commune",
+      1,
+      "prairie",
+      "2026-10-10"
+     ]
+    ],
+    [
+     "INSERT INTO especes VALUES (?,?,?,?)",
+     [
+      "Gloupi",
+      137,
+      "marais",
+      2
+     ]
+    ],
+    [
+     "INSERT INTO especes VALUES (?,?,?,?)",
+     [
+      "Braisillon",
+      1,
+      "volcan",
+      1
+     ]
+    ],
+    [
+     "INSERT INTO especes VALUES (?,?,?,?)",
+     [
+      "Plumange",
+      108,
+      "nuage",
+      3
+     ]
+    ],
+    [
+     "INSERT INTO especes VALUES (?,?,?,?)",
+     [
+      "Cailloute",
+      20,
+      "montagne",
+      5
+     ]
+    ],
+    [
+     "INSERT INTO especes VALUES (?,?,?,?)",
+     [
+      "Krillou",
+      93,
+      "abyssal",
+      3
+     ]
+    ],
+    [
+     "INSERT INTO especes VALUES (?,?,?,?)",
+     [
+      "Tritonnet",
+      92,
+      "lagon",
+      2
+     ]
+    ],
+    [
+     "INSERT INTO especes VALUES (?,?,?,?)",
+     [
+      "Mousselin",
+      64,
+      "foret",
+      4
+     ]
+    ],
+    [
+     "INSERT INTO especes VALUES (?,?,?,?)",
+     [
+      "Flamouche",
+      3,
+      "lave",
+      3
+     ]
+    ],
+    [
+     "INSERT INTO especes VALUES (?,?,?,?)",
+     [
+      "Pucerise",
+      77,
+      "prairie",
+      2
      ]
     ]
    ]
@@ -2349,7 +2054,7 @@
    "lignes": []
   },
   {
-   "texte": "nom,type,famille,attaque,defense,vitesse,pv,intelligence,rarete,shiny,variante,date,exemple\nGloupi,poison,aberrations,25,35,17,47,29,commune,0,classique,2026-11-01,0\nGloupi,poison,aberrations,26,36,18,48,30,commune,0,classique,2026-10-01,1\nBraisillon,feu,demons,33,33,29,32,32,commune,0,volcan,2026-10-02,1\nPlumange,ciel,celestes,35,30,48,30,39,commune,0,classique,2026-10-03,1\nGloupi,poison,aberrations,24,34,16,46,28,commune,0,marais,2026-10-04,1\nCailloute,roche,elementaires,37,40,37,36,34,commune,0,montagne,2026-10-05,1\nKrillou,glace,abyssaux,39,41,43,31,24,peu_commune,0,glace,2026-10-06,1\nTritonnet,eau,abyssaux,41,35,34,33,40,peu_commune,0,lagon,2026-10-07,1\nMousselin,plante,sylvestres,28,40,17,49,36,commune,0,classique,2026-10-08,1\nFlamouche,feu,demons,35,32,52,34,35,peu_commune,0,lave,2026-10-09,1\n",
+   "texte": "nom,type,famille,attaque,defense,vitesse,pv,intelligence,rarete,shiny,variante,date\nGloupi,poison,aberrations,25,35,17,47,29,commune,0,classique,2026-11-01\n",
    "lignes": [
     {
      "nom": "Gloupi",
@@ -2363,148 +2068,12 @@
      "rarete": "commune",
      "shiny": "0",
      "variante": "classique",
-     "date": "2026-11-01",
-     "exemple": "0"
-    },
-    {
-     "nom": "Gloupi",
-     "type": "poison",
-     "famille": "aberrations",
-     "attaque": "26",
-     "defense": "36",
-     "vitesse": "18",
-     "pv": "48",
-     "intelligence": "30",
-     "rarete": "commune",
-     "shiny": "0",
-     "variante": "classique",
-     "date": "2026-10-01",
-     "exemple": "1"
-    },
-    {
-     "nom": "Braisillon",
-     "type": "feu",
-     "famille": "demons",
-     "attaque": "33",
-     "defense": "33",
-     "vitesse": "29",
-     "pv": "32",
-     "intelligence": "32",
-     "rarete": "commune",
-     "shiny": "0",
-     "variante": "volcan",
-     "date": "2026-10-02",
-     "exemple": "1"
-    },
-    {
-     "nom": "Plumange",
-     "type": "ciel",
-     "famille": "celestes",
-     "attaque": "35",
-     "defense": "30",
-     "vitesse": "48",
-     "pv": "30",
-     "intelligence": "39",
-     "rarete": "commune",
-     "shiny": "0",
-     "variante": "classique",
-     "date": "2026-10-03",
-     "exemple": "1"
-    },
-    {
-     "nom": "Gloupi",
-     "type": "poison",
-     "famille": "aberrations",
-     "attaque": "24",
-     "defense": "34",
-     "vitesse": "16",
-     "pv": "46",
-     "intelligence": "28",
-     "rarete": "commune",
-     "shiny": "0",
-     "variante": "marais",
-     "date": "2026-10-04",
-     "exemple": "1"
-    },
-    {
-     "nom": "Cailloute",
-     "type": "roche",
-     "famille": "elementaires",
-     "attaque": "37",
-     "defense": "40",
-     "vitesse": "37",
-     "pv": "36",
-     "intelligence": "34",
-     "rarete": "commune",
-     "shiny": "0",
-     "variante": "montagne",
-     "date": "2026-10-05",
-     "exemple": "1"
-    },
-    {
-     "nom": "Krillou",
-     "type": "glace",
-     "famille": "abyssaux",
-     "attaque": "39",
-     "defense": "41",
-     "vitesse": "43",
-     "pv": "31",
-     "intelligence": "24",
-     "rarete": "peu_commune",
-     "shiny": "0",
-     "variante": "glace",
-     "date": "2026-10-06",
-     "exemple": "1"
-    },
-    {
-     "nom": "Tritonnet",
-     "type": "eau",
-     "famille": "abyssaux",
-     "attaque": "41",
-     "defense": "35",
-     "vitesse": "34",
-     "pv": "33",
-     "intelligence": "40",
-     "rarete": "peu_commune",
-     "shiny": "0",
-     "variante": "lagon",
-     "date": "2026-10-07",
-     "exemple": "1"
-    },
-    {
-     "nom": "Mousselin",
-     "type": "plante",
-     "famille": "sylvestres",
-     "attaque": "28",
-     "defense": "40",
-     "vitesse": "17",
-     "pv": "49",
-     "intelligence": "36",
-     "rarete": "commune",
-     "shiny": "0",
-     "variante": "classique",
-     "date": "2026-10-08",
-     "exemple": "1"
-    },
-    {
-     "nom": "Flamouche",
-     "type": "feu",
-     "famille": "demons",
-     "attaque": "35",
-     "defense": "32",
-     "vitesse": "52",
-     "pv": "34",
-     "intelligence": "35",
-     "rarete": "peu_commune",
-     "shiny": "0",
-     "variante": "lave",
-     "date": "2026-10-09",
-     "exemple": "1"
+     "date": "2026-11-01"
     }
    ]
   },
   {
-   "texte": "nom,type,famille,attaque,defense,vitesse,pv,intelligence,rarete,shiny,variante,date,exemple\nGloupi,poison,aberrations,25,35,17,47,29,commune,0,classique,2026-11-01,0\nGloupi,poison,aberrations,26,36,18,48,30,commune,0,classique,2026-10-01,1\nBraisillon,feu,demons,33,33,29,32,32,commune,0,volcan,2026-10-02,1\nPlumange,ciel,celestes,35,30,48,30,39,commune,0,classique,2026-10-03,1\nGloupi,poison,aberrations,x,34,16,46,28,commune,0,marais,2026-10-04,1\nCailloute,roche,elementaires,37,40,37,36,34,commune,0,montagne,2026-10-05,1\nKrillou,glace,abyssaux,39,41,43,31,x,peu_commune,0,glace,2026-10-06,1\nTritonnet,eau,abyssaux,41,35,34,33,40,peu_commune,0,lagon,2026-10-07,1\nMousselin,plante,sylvestres,28,40,17,49,36,commune,0,classique,2026-10-08,1\nFlamouche,feu,demons,35,32,52,34,35,peu_commune,0,lave,2026-10-09,1\n",
+   "texte": "nom,type,famille,attaque,defense,vitesse,pv,intelligence,rarete,shiny,variante,date\nGloupi,poison,aberrations,25,35,17,47,29,commune,0,classique,2026-11-01\n",
    "lignes": [
     {
      "nom": "Gloupi",
@@ -2518,133 +2087,12 @@
      "rarete": "commune",
      "shiny": "0",
      "variante": "classique",
-     "date": "2026-11-01",
-     "exemple": "0"
-    },
-    {
-     "nom": "Gloupi",
-     "type": "poison",
-     "famille": "aberrations",
-     "attaque": "26",
-     "defense": "36",
-     "vitesse": "18",
-     "pv": "48",
-     "intelligence": "30",
-     "rarete": "commune",
-     "shiny": "0",
-     "variante": "classique",
-     "date": "2026-10-01",
-     "exemple": "1"
-    },
-    {
-     "nom": "Braisillon",
-     "type": "feu",
-     "famille": "demons",
-     "attaque": "33",
-     "defense": "33",
-     "vitesse": "29",
-     "pv": "32",
-     "intelligence": "32",
-     "rarete": "commune",
-     "shiny": "0",
-     "variante": "volcan",
-     "date": "2026-10-02",
-     "exemple": "1"
-    },
-    {
-     "nom": "Plumange",
-     "type": "ciel",
-     "famille": "celestes",
-     "attaque": "35",
-     "defense": "30",
-     "vitesse": "48",
-     "pv": "30",
-     "intelligence": "39",
-     "rarete": "commune",
-     "shiny": "0",
-     "variante": "classique",
-     "date": "2026-10-03",
-     "exemple": "1"
-    },
-    {
-     "nom": "Cailloute",
-     "type": "roche",
-     "famille": "elementaires",
-     "attaque": "37",
-     "defense": "40",
-     "vitesse": "37",
-     "pv": "36",
-     "intelligence": "34",
-     "rarete": "commune",
-     "shiny": "0",
-     "variante": "montagne",
-     "date": "2026-10-05",
-     "exemple": "1"
-    },
-    {
-     "nom": "Krillou",
-     "type": "glace",
-     "famille": "abyssaux",
-     "attaque": "39",
-     "defense": "41",
-     "vitesse": "43",
-     "pv": "31",
-     "intelligence": "x",
-     "rarete": "peu_commune",
-     "shiny": "0",
-     "variante": "glace",
-     "date": "2026-10-06",
-     "exemple": "1"
-    },
-    {
-     "nom": "Tritonnet",
-     "type": "eau",
-     "famille": "abyssaux",
-     "attaque": "41",
-     "defense": "35",
-     "vitesse": "34",
-     "pv": "33",
-     "intelligence": "40",
-     "rarete": "peu_commune",
-     "shiny": "0",
-     "variante": "lagon",
-     "date": "2026-10-07",
-     "exemple": "1"
-    },
-    {
-     "nom": "Mousselin",
-     "type": "plante",
-     "famille": "sylvestres",
-     "attaque": "28",
-     "defense": "40",
-     "vitesse": "17",
-     "pv": "49",
-     "intelligence": "36",
-     "rarete": "commune",
-     "shiny": "0",
-     "variante": "classique",
-     "date": "2026-10-08",
-     "exemple": "1"
-    },
-    {
-     "nom": "Flamouche",
-     "type": "feu",
-     "famille": "demons",
-     "attaque": "35",
-     "defense": "32",
-     "vitesse": "52",
-     "pv": "34",
-     "intelligence": "35",
-     "rarete": "peu_commune",
-     "shiny": "0",
-     "variante": "lave",
-     "date": "2026-10-09",
-     "exemple": "1"
+     "date": "2026-11-01"
     }
    ]
   },
   {
-   "texte": "nom,type,famille,attaque,defense,vitesse,pv,intelligence,rarete,shiny,variante,date,exemple\nGloupi,poison,aberrations,25,35,17,47,29,commune,0,marais,2026-11-01,0\nKrillou,glace,abyssaux,36,38,40,28,21,peu_commune,1,glace,2026-10-29,0\nGloupi,poison,aberrations,26,36,18,48,30,commune,0,classique,2026-10-01,1\nBraisillon,feu,demons,33,33,29,32,32,commune,0,volcan,2026-10-02,1\nPlumange,ciel,celestes,35,30,48,30,39,commune,0,classique,2026-10-03,1\nGloupi,poison,aberrations,24,34,16,46,28,commune,0,marais,2026-10-04,1\nCailloute,roche,elementaires,37,40,37,36,34,commune,0,montagne,2026-10-05,1\nKrillou,glace,abyssaux,39,41,43,31,24,peu_commune,0,glace,2026-10-06,1\nTritonnet,eau,abyssaux,41,35,34,33,40,peu_commune,0,lagon,2026-10-07,1\nMousselin,plante,sylvestres,28,40,17,49,36,commune,0,classique,2026-10-08,1\nGloupi,eau\n\n",
+   "texte": "nom,type,famille,attaque,defense,vitesse,pv,intelligence,rarete,shiny,variante,date\nGloupi,poison,aberrations,25,35,17,47,29,commune,0,marais,2026-11-01\nKrillou,glace,abyssaux,36,38,40,28,21,peu_commune,1,glace,2026-10-29\nGloupi,eau\n\n",
    "lignes": [
     {
      "nom": "Gloupi",
@@ -2658,8 +2106,7 @@
      "rarete": "commune",
      "shiny": "0",
      "variante": "marais",
-     "date": "2026-11-01",
-     "exemple": "0"
+     "date": "2026-11-01"
     },
     {
      "nom": "Krillou",
@@ -2673,133 +2120,12 @@
      "rarete": "peu_commune",
      "shiny": "1",
      "variante": "glace",
-     "date": "2026-10-29",
-     "exemple": "0"
-    },
-    {
-     "nom": "Gloupi",
-     "type": "poison",
-     "famille": "aberrations",
-     "attaque": "26",
-     "defense": "36",
-     "vitesse": "18",
-     "pv": "48",
-     "intelligence": "30",
-     "rarete": "commune",
-     "shiny": "0",
-     "variante": "classique",
-     "date": "2026-10-01",
-     "exemple": "1"
-    },
-    {
-     "nom": "Braisillon",
-     "type": "feu",
-     "famille": "demons",
-     "attaque": "33",
-     "defense": "33",
-     "vitesse": "29",
-     "pv": "32",
-     "intelligence": "32",
-     "rarete": "commune",
-     "shiny": "0",
-     "variante": "volcan",
-     "date": "2026-10-02",
-     "exemple": "1"
-    },
-    {
-     "nom": "Plumange",
-     "type": "ciel",
-     "famille": "celestes",
-     "attaque": "35",
-     "defense": "30",
-     "vitesse": "48",
-     "pv": "30",
-     "intelligence": "39",
-     "rarete": "commune",
-     "shiny": "0",
-     "variante": "classique",
-     "date": "2026-10-03",
-     "exemple": "1"
-    },
-    {
-     "nom": "Gloupi",
-     "type": "poison",
-     "famille": "aberrations",
-     "attaque": "24",
-     "defense": "34",
-     "vitesse": "16",
-     "pv": "46",
-     "intelligence": "28",
-     "rarete": "commune",
-     "shiny": "0",
-     "variante": "marais",
-     "date": "2026-10-04",
-     "exemple": "1"
-    },
-    {
-     "nom": "Cailloute",
-     "type": "roche",
-     "famille": "elementaires",
-     "attaque": "37",
-     "defense": "40",
-     "vitesse": "37",
-     "pv": "36",
-     "intelligence": "34",
-     "rarete": "commune",
-     "shiny": "0",
-     "variante": "montagne",
-     "date": "2026-10-05",
-     "exemple": "1"
-    },
-    {
-     "nom": "Krillou",
-     "type": "glace",
-     "famille": "abyssaux",
-     "attaque": "39",
-     "defense": "41",
-     "vitesse": "43",
-     "pv": "31",
-     "intelligence": "24",
-     "rarete": "peu_commune",
-     "shiny": "0",
-     "variante": "glace",
-     "date": "2026-10-06",
-     "exemple": "1"
-    },
-    {
-     "nom": "Tritonnet",
-     "type": "eau",
-     "famille": "abyssaux",
-     "attaque": "41",
-     "defense": "35",
-     "vitesse": "34",
-     "pv": "33",
-     "intelligence": "40",
-     "rarete": "peu_commune",
-     "shiny": "0",
-     "variante": "lagon",
-     "date": "2026-10-07",
-     "exemple": "1"
-    },
-    {
-     "nom": "Mousselin",
-     "type": "plante",
-     "famille": "sylvestres",
-     "attaque": "28",
-     "defense": "40",
-     "vitesse": "17",
-     "pv": "49",
-     "intelligence": "36",
-     "rarete": "commune",
-     "shiny": "0",
-     "variante": "classique",
-     "date": "2026-10-08",
-     "exemple": "1"
+     "date": "2026-10-29"
     }
    ]
   },
   {
-   "texte": "Krillou,eau,abyssaux,36,37,36,27,20,commune,0,classique,2026-11-01,0\n",
+   "texte": "Krillou,eau,abyssaux,36,37,36,27,20,commune,0,classique,2026-11-01\n",
    "lignes": [
     {
      "nom": "Krillou",
@@ -2813,10 +2139,13 @@
      "rarete": "commune",
      "shiny": "0",
      "variante": "classique",
-     "date": "2026-11-01",
-     "exemple": "0"
+     "date": "2026-11-01"
     }
    ]
+  },
+  {
+   "texte": "Krillou,eau,abyssaux,36,37,36,27,20,commune,0,classique,2026-11-01,0\n",
+   "lignes": []
   }
  ],
  "nombres": [
@@ -3327,7 +2656,7 @@
   }
  ],
  "schema": {
-  "creatures": "CREATE TABLE creatures (nom TEXT, type TEXT, famille TEXT, attaque INTEGER, defense INTEGER, vitesse INTEGER, pv INTEGER, intelligence INTEGER, rarete TEXT, shiny INTEGER, variante TEXT, date TEXT, exemple INTEGER);",
+  "creatures": "CREATE TABLE creatures (nom TEXT, type TEXT, famille TEXT, attaque INTEGER, defense INTEGER, vitesse INTEGER, pv INTEGER, intelligence INTEGER, rarete TEXT, shiny INTEGER, variante TEXT, date TEXT);",
   "especes": "CREATE TABLE especes (nom TEXT PRIMARY KEY, numero INTEGER, habitat TEXT, puissance INTEGER);"
  },
  "labo": [
@@ -3642,8 +2971,8 @@
   }
  ],
  "awk_entrees": {
-  "sept": "nom,type,famille,attaque,defense,vitesse,pv,intelligence,rarete,shiny,variante,date,exemple\nGloupi,poison,aberrations,26,30,12,20,24,commune,0,classique,2026-11-01,0\nBraisillon,feu,demons,29,30,13,21,24,commune,0,classique,2026-10-31,0\nGloupi,poison,aberrations,32,30,14,22,24,commune,0,classique,2026-10-30,0\nKrillou,eau,abyssaux,35,30,15,23,24,commune,0,classique,2026-10-29,0\nCailloute,roche,elementaires,38,30,16,24,24,commune,1,classique,2026-10-28,0\nPlumange,ciel,celestes,28,30,17,25,24,commune,0,classique,2026-10-27,0\nTritonnet,eau,abyssaux,31,30,18,26,24,commune,0,classique,2026-10-26,0\n",
-  "paire": "nom,type,famille,attaque,defense,vitesse,pv,intelligence,rarete,shiny,variante,date,exemple\nGloupi,poison,aberrations,20,1,1,1,1,commune,0,classique,2026-11-01,0\nKrillou,eau,abyssaux,31,1,1,1,1,commune,0,classique,2026-11-01,0\nPlumange,ciel,celestes,25,1,1,1,1,commune,0,classique,2026-11-01,0\nTritonnet,eau,abyssaux,31,1,1,1,1,commune,0,classique,2026-11-01,0\nGloupi,poison,aberrations,40,1,1,1,1,commune,0,classique,2026-11-01,0\nCailloute,roche,elementaires,22,1,1,1,1,commune,0,classique,2026-11-01,0\n",
+  "sept": "nom,type,famille,attaque,defense,vitesse,pv,intelligence,rarete,shiny,variante,date\nGloupi,poison,aberrations,26,30,12,20,24,commune,0,classique,2026-11-01\nBraisillon,feu,demons,29,30,13,21,24,commune,0,classique,2026-10-31\nGloupi,poison,aberrations,32,30,14,22,24,commune,0,classique,2026-10-30\nKrillou,eau,abyssaux,35,30,15,23,24,commune,0,classique,2026-10-29\nCailloute,roche,elementaires,38,30,16,24,24,commune,1,classique,2026-10-28\nPlumange,ciel,celestes,28,30,17,25,24,commune,0,classique,2026-10-27\nTritonnet,eau,abyssaux,31,30,18,26,24,commune,0,classique,2026-10-26\n",
+  "paire": "nom,type,famille,attaque,defense,vitesse,pv,intelligence,rarete,shiny,variante,date\nGloupi,poison,aberrations,20,1,1,1,1,commune,0,classique,2026-11-01\nKrillou,eau,abyssaux,31,1,1,1,1,commune,0,classique,2026-11-01\nPlumange,ciel,celestes,25,1,1,1,1,commune,0,classique,2026-11-01\nTritonnet,eau,abyssaux,31,1,1,1,1,commune,0,classique,2026-11-01\nGloupi,poison,aberrations,40,1,1,1,1,commune,0,classique,2026-11-01\nCailloute,roche,elementaires,22,1,1,1,1,commune,0,classique,2026-11-01\n",
   "forces": "26 Gloupi\n29 Braisillon\n32 Gloupi\n35 Krillou\n38 Cailloute\n28 Plumange\n31 Tritonnet\n"
  },
  "awk": [
@@ -3741,7 +3070,7 @@
    ],
    "programme": "NR==2",
    "entree": "sept",
-   "sortie": "Gloupi,poison,aberrations,26,30,12,20,24,commune,0,classique,2026-11-01,0\n"
+   "sortie": "Gloupi,poison,aberrations,26,30,12,20,24,commune,0,classique,2026-11-01\n"
   },
   {
    "options": [
@@ -3766,7 +3095,7 @@
    ],
    "programme": "{print NF}",
    "entree": "sept",
-   "sortie": "13\n13\n13\n13\n13\n13\n13\n13\n"
+   "sortie": "12\n12\n12\n12\n12\n12\n12\n12\n"
   },
   {
    "options": [
@@ -3790,7 +3119,7 @@
    ],
    "programme": "NR>1 && ($2==\"eau\" || $2==\"glace\") {print}",
    "entree": "sept",
-   "sortie": "Krillou,eau,abyssaux,35,30,15,23,24,commune,0,classique,2026-10-29,0\nTritonnet,eau,abyssaux,31,30,18,26,24,commune,0,classique,2026-10-26,0\n"
+   "sortie": "Krillou,eau,abyssaux,35,30,15,23,24,commune,0,classique,2026-10-29\nTritonnet,eau,abyssaux,31,30,18,26,24,commune,0,classique,2026-10-26\n"
   },
   {
    "options": [
@@ -3866,7 +3195,7 @@
    ],
    "programme": "NR>1 {print $NF, $(NF-1)}",
    "entree": "sept",
-   "sortie": "0 2026-11-01\n0 2026-10-31\n0 2026-10-30\n0 2026-10-29\n0 2026-10-28\n0 2026-10-27\n0 2026-10-26\n"
+   "sortie": "2026-11-01 classique\n2026-10-31 classique\n2026-10-30 classique\n2026-10-29 classique\n2026-10-28 classique\n2026-10-27 classique\n2026-10-26 classique\n"
   }
  ]
 }

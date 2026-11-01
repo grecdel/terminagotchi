@@ -493,8 +493,15 @@ les vraies radios (vues seulement par des doublures en test), `type rtl_test` (O
   Rien n'est envoyé au site.
 - **Le jeu recalcule chaque réponse sur le même fichier**, au moment de vérifier. Le rejeu bash (CI) compare la sortie
   de bash à ce que le jeu calcule (`egal_jeu`) : il reste déterministe même si la collection change.
-- **Une collection minuscule ne bloque jamais** : moins de 5 bestioles → le jeu ajoute un jeu d'exemple fixe
-  (10 lignes en tout, colonne `exemple` = 1) et le dit à l'écran.
+- **Plus de bestioles d'exemple (décision du 1er novembre)** : le tableau est seulement SA collection (12 colonnes, la
+  colonne `exemple` a disparu). Chaque exercice qui en a besoin annonce « Il te faut au moins X créatures dans ta
+  collection » et où aller les rencontrer (forêt, volcan, glacier, ruines, corail, marais… puis réexporter) : D1 en
+  demande 3 (`tg collection --csv`), D4 5 (`donnees calcul`), D-SQL 5 (`donnees base`) — `donnees.json` → `minimum`.
+  L'étape attend sans bloquer le reste du jeu, comme les autres étapes qui dépendent du joueur. Le rejeu en CI, les
+  simulations et les tests jouent avec une collection de TEST fixe (`collection_test`, 10 captures, jamais en partie).
+- **L'exploit « une statistique juste » ne se gagne que sur SA vraie collection** : le tableau doit être exactement
+  celui que `tg collection --csv` exporte de la partie (`sa_collection` / `saCollection`) ; il est donné par
+  `donnees moyenne` (et non plus par l'étape), un tableau retouché à la main ne compte pas.
 - **La base est lue en lecture seule** (`DELETE`, `DROP`… refusés). Si `sqlite3` n'est pas installé sur le PC,
   `tg donnees sqlite3 …` fait la même chose avec le moteur SQLite de Python (le jeu le propose).
 
@@ -545,7 +552,7 @@ les vraies radios (vues seulement par des doublures en test), `type rtl_test` (O
 
 *Reste.*
 - Les illustrations.
-- Avec une collection minuscule, l'exploit se gagne sur un tableau en partie d'exemple (question au propriétaire).
+- ~~Avec une collection minuscule, l'exploit se gagne sur un tableau en partie d'exemple~~ : réglé le 1er novembre (plus de bestioles d'exemple ; l'exploit seulement sur sa vraie collection).
 - Le petit sqlite3 sur un vrai téléphone (le moteur d'Android n'est pas lancé dans les tests JVM).
 - Les traductions des 13 autres langues sont faites par Claude : une relecture par des locuteurs serait bienvenue.
 

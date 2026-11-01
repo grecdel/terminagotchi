@@ -11,9 +11,10 @@ déjà), les maths des étapes et les étapes rejouées dans bash.
 LES DONNÉES DE L'ENFANT : sa propre collection, exportée par le jeu en CSV (`tg collection --csv`, sur Android
 `collection --csv`) dans le terrain (terrain_terminagotchi/donnees). Aucune donnée personnelle : ni pseudo, ni
 e-mail, ni adresse, ni identifiant ; seulement l'espèce, le type, la famille, les stats, la rareté, shiny, la
-variante, le jour de la capture. Rien n'est envoyé. Une collection minuscule (moins de 5 bestioles) est complétée
-par le JEU D'EXEMPLE ci-dessous (colonne « exemple » = 1, annoncé à l'écran) : rien ne bloque, et le rejeu en CI
-(collection vide) est déterministe.
+variante, le jour de la capture. Rien n'est envoyé. Depuis le 1er novembre, une petite collection n'est PLUS complétée
+par des bestioles d'exemple : chaque exercice qui en a besoin dit le nombre minimum de créatures (MINIMUM) et où aller
+les rencontrer, et son étape attend sans bloquer le reste du jeu. Le rejeu en CI, les simulations et les tests jouent
+avec la COLLECTION DE TEST ci-dessous (fixe, 10 captures) : ils restent déterministes.
 """
 import json
 import shutil
@@ -22,18 +23,22 @@ from pathlib import Path
 
 D = Path(__file__).resolve().parents[3]
 
-# ---------------------------------------------------------------- le jeu d'exemple (espèces du VRAI bestiaire)
+# ---------------------------------------------------------------- la collection de TEST (espèces du VRAI bestiaire)
+# Décision du 1er novembre : le jeu ne complète PLUS une petite collection avec des bestioles d'exemple. Chaque
+# exercice qui en a besoin annonce le nombre minimum de créatures et où aller les rencontrer ; l'étape attend.
+# Cette collection fixe sert seulement au rejeu en CI, aux simulations et aux tests (déterministes) : jamais en partie.
 # (espèce, variante, qualité des stats, shiny, jour) : stats = stats de l'espèce + round(31 × qualité) // 2
 EXEMPLES = [("gloupi", "classique", 0.42, False, "2026-10-01"), ("braisillon", "volcan", 0.55, False, "2026-10-02"),
             ("plumange", "classique", 0.61, False, "2026-10-03"), ("gloupi", "marais", 0.30, False, "2026-10-04"),
             ("cailloute", "montagne", 0.38, False, "2026-10-05"), ("krillou", "glace", 0.50, False, "2026-10-06"),
             ("tritonnet", "lagon", 0.70, False, "2026-10-07"), ("mousselin", "classique", 0.33, False, "2026-10-08"),
             ("flamouche", "lave", 0.64, False, "2026-10-09"), ("pucerise", "prairie", 0.52, True, "2026-10-10")]
-MIN_COLLECTION = 5           # en dessous, le jeu complète avec le jeu d'exemple
-TAILLE_COMPLETEE = 10        # … jusqu'à 10 lignes
+# le nombre minimum de créatures de la collection, par leçon qui en a besoin (les autres suivent la précédente) :
+# D1 (les 3 plus fortes : 3), D4 (moyenne, médiane, étendue : 5), D-SQL (LIMIT 5, GROUP BY, JOIN : 5)
+MINIMUM = {"dn1": 3, "dn4": 5, "dn6": 5}
 
 COLONNES = ["nom", "type", "famille", "attaque", "defense", "vitesse", "pv", "intelligence", "rarete", "shiny",
-            "variante", "date", "exemple"]
+            "variante", "date"]
 STATS = {"attaque": "ATK", "defense": "DEF", "vitesse": "VIT", "pv": "PV", "intelligence": "INT"}
 FAMILLES = {"Démons": "demons", "Élémentaires": "elementaires", "Constructs": "constructs", "Arthropodes": "arthropodes",
             "Abyssaux": "abyssaux", "Sylvestres": "sylvestres", "Célestes": "celestes", "Morts-vivants": "morts_vivants",
@@ -41,7 +46,7 @@ FAMILLES = {"Démons": "demons", "Élémentaires": "elementaires", "Constructs":
 SCHEMA = {
     "creatures": "CREATE TABLE creatures (nom TEXT, type TEXT, famille TEXT, attaque INTEGER, defense INTEGER, "
                  "vitesse INTEGER, pv INTEGER, intelligence INTEGER, rarete TEXT, shiny INTEGER, variante TEXT, "
-                 "date TEXT, exemple INTEGER)",
+                 "date TEXT)",
     "especes": "CREATE TABLE especes (nom TEXT PRIMARY KEY, numero INTEGER, habitat TEXT, puissance INTEGER)",
 }
 # le laboratoire de tri (vue déployée) : chaque outil a son instrument (§ 2.14)
@@ -62,7 +67,12 @@ COULEURS = {"bibliotheque": 179, "export": 117, "copiste": 141, "calculatrice": 
             "colle": 186, "moulin": 229, "aiguillage": 39, "distributeur": 75, "tamis": 110}
 
 
-def exemples():
+def collection_test():
+    """La collection de test : des CAPTURES comme celles d'une partie (espèce, variante, shiny, stats, rareté, date en
+    millisecondes à midi UTC), pour le rejeu, les simulations et les tests."""
+    import calendar
+    import random
+    import time
     sys.path.insert(0, str(D / "pc"))
     from tg import bestiaire as B
     out = []
@@ -70,9 +80,11 @@ def exemples():
         e = B.espece(eid)
         assert e and any(v["id"] == vid for v in e["variantes"]), (eid, vid)
         iv = round(31 * q) // 2
-        out.append({"espece": e["nom"], "variante": vid, "shiny": shiny, "qualite": q, "jour": jour,
-                    "stats": {k: v + iv for k, v in e["stats"].items()},
-                    "rarete": B.rarete(e, vid, q, shiny)})
+        random.seed(f"collection_test:{len(out)}")      # une vraie capture complète (marque, humeur…), toujours la même
+        ind = B.individu(e, shiny, "collection_test", vid, qualite=q)
+        ind.update({"id": f"test{len(out):02d}", "date": calendar.timegm(time.strptime(jour + " 12", "%Y-%m-%d %H")) * 1000,
+                    "stats": {k: v + iv for k, v in e["stats"].items()}, "rarete": B.rarete(e, vid, q, shiny)})
+        out.append(ind)
     return out
 
 
@@ -80,8 +92,8 @@ def donnees_salle():
     return {
         "note": "Généré par donnees/donnees/outils/fiches_donnees.py ; lu par pc/tg/donnees.py et Donnees.kt. La "
                 "collection de l'enfant, exportée en CSV dans le terrain : aucune donnée personnelle, rien d'envoyé.",
-        "colonnes": COLONNES, "stats": STATS, "familles": FAMILLES, "exemples": exemples(),
-        "min_collection": MIN_COLLECTION, "taille_completee": TAILLE_COMPLETEE, "schema": SCHEMA,
+        "colonnes": COLONNES, "stats": STATS, "familles": FAMILLES, "minimum": MINIMUM,
+        "collection_test": collection_test(), "schema": SCHEMA,
         "labo": {"regles": LABO}, "couleurs": COULEURS,
         "chaine": {"rapport_lignes": 3},
     }
@@ -206,7 +218,7 @@ def rejeu():
     sortie de bash à ce que LE JEU calcule sur le même fichier (egal_jeu)."""
     return {
         "dn0.1": {"contient": ["laboratoire.txt", "carnet_des_donnees.txt"], "pourquoi": "hist.dn0.1.bravo : le laboratoire"},
-        "dn1.1": {"motif": r"\Anom,type,famille,attaque,defense,vitesse,pv,intelligence,rarete,shiny,variante,date,exemple\n",
+        "dn1.1": {"motif": r"\Anom,type,famille,attaque,defense,vitesse,pv,intelligence,rarete,shiny,variante,date\n",
                   "pourquoi": "hist.dn1.1.bravo : la première ligne nomme les colonnes"},
         "dn1.2": {"egal_jeu": "lignes", "pourquoi": "hist.dn1.2.bravo : une ligne par bestiole, plus la ligne des titres"},
         "dn1.5": {"egal_jeu": "espece_frequente", "pourquoi": "hist.dn1.5.bravo : l'espèce que tu as le plus"},

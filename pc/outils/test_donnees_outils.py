@@ -5,7 +5,7 @@ GNU du PC — docs/programme.md § 2.14 (Android : sed, sort, uniq, cut, tr, pas
 
 Sur le téléphone, l'appli lance ces commandes dans le shell du téléphone (/system/bin/sh et les outils toybox) ; seuls
 `awk` et `sqlite3` sont intégrés à l'appli (DonneesAwk.kt, DonneesSql.kt, testés ailleurs : vecteurs communs). Ici,
-chaque ligne de la Salle (sans awk ni sqlite3) est lancée sur le MÊME tableau d'exemple (fiches_donnees.EXEMPLES) :
+chaque ligne de la Salle (sans awk ni sqlite3) est lancée sur le MÊME tableau de test (donnees.json, collection_test) :
   - avec les outils GNU (la référence, ceux du rejeu) ;
   - avec toybox, puis busybox, quand ils sont installés : un dossier de liens (sed → toybox…) passe devant le PATH ;
 et les sorties ET les fichiers produits doivent être identiques (seul l'alignement peut différer : `uniq -c` et `wc`
@@ -60,7 +60,7 @@ def lignes(mal, bien):
 
 
 def preparer(d):
-    rows = DN.lignes_collection([])[0]                     # le jeu d'exemple seul (10 lignes, comme pour Léa)
+    rows = DN.lignes_collection(DN.collection_test())       # la collection de test (10 captures fixes)
     (d / "collection.csv").write_text(DN.csv_texte(rows), encoding="utf-8")
     lus = DN.lire_csv(DN.csv_texte(rows))
     (d / "especes.txt").write_text(DN.especes_txt(lus), encoding="utf-8")

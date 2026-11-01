@@ -97,12 +97,12 @@ def vecteurs(awk_garde=None):
     awk ; c'est test_donnees.py qui compare chaque sortie enregistrée à l'awk installé)."""
     langue.definir("fr")
     cols = {}
-    for nom, caps in COLLECTIONS.items():
-        rows, ajout = DN.lignes_collection(caps)
+    for nom, caps in dict(COLLECTIONS, test=DN.collection_test()).items():
+        rows = DN.lignes_collection(caps)
         texte = DN.csv_texte(rows)
         r = DN.lire_csv(texte)
         fautif, juste, f, bon = DN.carnet_soigneur(r)
-        cols[nom] = {"captures": caps, "ajout": ajout, "csv": texte, "lignes": len(r),
+        cols[nom] = {"captures": caps, "csv": texte, "lignes": len(r),
                      "effectifs_noms": [list(x) for x in DN.effectifs([x["nom"] for x in r])],
                      "effectifs_types": [list(x) for x in DN.effectifs([x["type"] for x in r])],
                      "forces": DN.forces_txt(r), "especes": DN.especes_txt(r), "top3": DN.top3(r), "shiny": DN.nb_shiny(r),
@@ -121,7 +121,8 @@ def vecteurs(awk_garde=None):
     fautes = {e["nom"]: DN.faute(e["nom"], tous) for e in B.donnees()["especes"]}
     lire = [{"texte": x, "lignes": DN.lire_csv(x)} for x in (
         "", "nom,type\n", cols["une"]["csv"], cols["une"]["csv"].replace(",24,", ",x,"),
-        cols["deux_glace"]["csv"] + "Gloupi,eau\n\n", "Krillou,eau,abyssaux,36,37,36,27,20,commune,0,classique,2026-11-01,0\n")]
+        cols["deux_glace"]["csv"] + "Gloupi,eau\n\n", "Krillou,eau,abyssaux,36,37,36,27,20,commune,0,classique,2026-11-01\n",
+        "Krillou,eau,abyssaux,36,37,36,27,20,commune,0,classique,2026-11-01,0\n")]
     nombres = [{"x": x, "awk": DN.nombre_awk(x), "sql": DN.valeur_sql(x)} for x in
                (0.0, 1.0, 33.0, 29.5, 1 / 3, 2 / 3, 100 / 7, 1234567.0, 12345678.9, 0.000123456, -2.5, 1e20, 123456789012345.6)]
     sqlv = [{"v": valeur_typee(v), "sql": DN.valeur_sql(v)} for v in (None, 0, -3, 24, 33.0, 23.454545454545453, 0.1 + 0.2, "eau", "")]

@@ -13,9 +13,9 @@ import java.util.Locale
  *
  * Les données sont la collection de l'enfant, exportée par l'appli (`collection --csv > collection.csv`) dans le terrain
  * (terrain_terminagotchi/donnees) : l'espèce, le type, la famille, les stats, la rareté, shiny, la variante, le jour de
- * la capture ; ni pseudo, ni e-mail, ni identifiant. Rien n'est envoyé. Une collection de moins de 5 bestioles est
- * complétée par le jeu d'exemple (colonne exemple = 1). Chaque bonne réponse est calculée sur le MÊME fichier, au
- * moment de vérifier.
+ * la capture ; ni pseudo, ni e-mail, ni identifiant. Rien n'est envoyé. Plus de bestioles d'exemple (1er novembre) :
+ * chaque exercice qui en a besoin dit le nombre minimum de créatures (« minimum ») et où aller les rencontrer, et son
+ * étape attend. Chaque bonne réponse est calculée sur le MÊME fichier, au moment de vérifier.
  *
  * Mêmes leçons que sur PC (dn0 → dn6). Sur le téléphone : `collection --csv` (sans tg), un petit awk intégré
  * (DonneesAwk : une commande seule, sans tuyau, comparée au vrai awk) et un petit sqlite3 intégré sur le SQLite du
@@ -52,25 +52,30 @@ object Donnees {
         return listOf(ind.optString("espece", "?"), Guide.typeInd(ind), fam) +
             STATS.map { "${st.optDouble(o("stats").optString(it), 0.0).toInt()}" } +
             listOf(asciiId(Bestiaire.rareteDe(ind)), if (ind.optBoolean("shiny")) "1" else "0",
-                asciiId(ind.optString("variante").ifEmpty { "classique" }), jour(ind.optLong("date")), "0")
+                asciiId(ind.optString("variante").ifEmpty { "classique" }), jour(ind.optLong("date")))
     }
 
-    fun ligneExemple(x: JSONObject): List<String> {
-        val e = Bestiaire.espece(x.optString("espece"))
-        val st = x.getJSONObject("stats")
-        return listOf(x.optString("espece"), Guide.typeDe(e, x.optString("variante")), o("familles").optString(e?.famille ?: "", "?")) +
-            STATS.map { "${st.optInt(o("stats").optString(it))}" } +
-            listOf(asciiId(x.optString("rarete")), if (x.optBoolean("shiny")) "1" else "0", asciiId(x.optString("variante")), x.optString("jour"), "1")
-    }
-
-    /** (lignes du tableau, nombre de lignes d'exemple ajoutées). */
-    fun lignesCollection(captures: JSONArray?): Pair<List<List<String>>, Int> {
+    /** Les lignes du tableau : la collection, telle qu'elle est (plus aucune bestiole d'exemple ajoutée). */
+    fun lignesCollection(captures: JSONArray?): List<List<String>> {
         val rows = mutableListOf<List<String>>()
         if (captures != null) for (i in 0 until captures.length()) { val c = captures.getJSONObject(i); if (c.optString("espece").isNotEmpty()) rows.add(ligneIndividu(c)) }
-        var ajout = 0
-        if (rows.size < donnees().optInt("min_collection", 5))
-            for (x in objets(donnees(), "exemples").take(maxOf(0, donnees().optInt("taille_completee", 10) - rows.size))) { rows.add(ligneExemple(x)); ajout++ }
-        return rows to ajout
+        return rows
+    }
+
+    /** La collection de TEST (rejeu, simulations, tests) : des captures fixes, jamais données en partie. */
+    fun collectionTest(): JSONArray = JSONArray((donnees().optJSONArray("collection_test") ?: JSONArray()).toString())
+
+    fun minimum(lid: String): Int = donnees().optJSONObject("minimum")?.optInt(lid, 0) ?: 0
+    fun assez(lid: String, rows: List<Map<String, String>>?): Boolean = rows != null && rows.size >= minimum(lid)
+    private fun lignesMinimum(lid: String, n: Int): List<String> =
+        listOf("✋ " + t("dn.minimum", "min" to minimum(lid), "n" to n)) + bloc("dn.minimum.ou", "cmd" to "`collection --csv > collection.csv`")
+
+    /** Le tableau est SA collection (celle de la partie, telle que `collection --csv` l'exporte) : l'exploit « une
+     *  statistique juste » ne se gagne que là. */
+    fun saCollection(jeu: Jeu, rows: List<Map<String, String>>): Boolean {
+        val vraie = lignesCollection(Explo.captures(jeu)).map { r -> colonnes.zip(r).toMap() }
+        val cle = { r: Map<String, String> -> colonnes.joinToString("\u0000") { r[it] ?: "" } }
+        return rows.isNotEmpty() && rows.map(cle).sorted() == vraie.map(cle).sorted()
     }
 
     fun csvTexte(rows: List<List<String>>) = colonnes.joinToString(",") + "\n" + rows.joinToString("") { it.joinToString(",") + "\n" }
@@ -154,8 +159,8 @@ object Donnees {
     fun requetesBase(r: List<Map<String, String>>): List<Pair<String, List<Any?>>> {
         val S = o("schema")
         val out = mutableListOf<Pair<String, List<Any?>>>(S.optString("creatures") to emptyList(), S.optString("especes") to emptyList())
-        val entiers = setOf("attaque", "defense", "vitesse", "pv", "intelligence", "shiny", "exemple")
-        for (x in r) out.add("INSERT INTO creatures VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?)" to colonnes.map { c -> if (c in entiers) x[c]!!.trim().toLong() else x[c] })
+        val entiers = setOf("attaque", "defense", "vitesse", "pv", "intelligence", "shiny")
+        for (x in r) out.add("INSERT INTO creatures VALUES (" + colonnes.joinToString(",") { "?" } + ")" to colonnes.map { c -> if (c in entiers) x[c]!!.trim().toLong() else x[c] })
         for (nom in r.map { it["nom"]!! }.distinct()) {
             val e = Bestiaire.espece(nom) ?: continue
             out.add("INSERT INTO especes VALUES (?,?,?,?)" to listOf(e.nom, e.numero.toLong(), asciiId(e.habitat), e.puissance.toLong()))
@@ -214,7 +219,8 @@ object Donnees {
     }
 
     // ---------------------------------------------------------------- les vérifications des étapes
-    fun csvOk(jeu: Jeu) = (lire(jeu, CSV) ?: "").startsWith(colonnes.joinToString(",")) && !lignesDuFichier(jeu).isNullOrEmpty()
+    fun csvOk(jeu: Jeu) = (lire(jeu, CSV) ?: "").startsWith(colonnes.joinToString(",")) && !lignesDuFichier(jeu).isNullOrEmpty() &&
+        assez("dn1", lignesDuFichier(jeu))
     fun top3Ok(jeu: Jeu): Boolean {
         val r = lignesDuFichier(jeu) ?: return false
         val l = (lire(jeu, "top3.txt") ?: return false).lines().filter { it.isNotBlank() }
@@ -312,11 +318,11 @@ object Donnees {
                 n("dn3", 6, "sed -i 's/?/?/g' carnet_du_soigneur.txt", fs = { j -> texteJuste(j, "carnet_du_soigneur.txt") }, ou = O_),
             )),
             "dn4" to Lecon("hist.dn4.titre", null, 1, listOf(
-                n("dn4", 0, "donnees calcul", re = "${DN}calcul", ou = O_),
+                n("dn4", 0, "donnees calcul", fs = { j -> dansCarnet(j, "calcul") && assez("dn4", lignesDuFichier(j)) }, ou = O_),
                 n("dn4", 1, "awk -F, 'NR<=5 {print \$1, \$4}' collection.csv", re = "$AWK_F.*\\$1.*\\$4.*collection\\.csv", ou = O_),
                 n("dn4", 2, "awk -F, 'NR>1 {s+=\$4} END {print s}' collection.csv", re = "$AWK_F.*\\+=\\s*\\$4.*END.*collection\\.csv", ou = O_),
                 n("dn4", 3, "awk -F, 'NR>1 {s+=\$4; n++} END {print s/n}' collection.csv", re = "$AWK_F.*\\+=\\s*\\$4.*END.*/.*collection\\.csv", ou = O_),
-                n("dn4", 4, "donnees moyenne ?", fs = carnetOk("moyenne"), exploit = "donnees.statistique"),
+                n("dn4", 4, "donnees moyenne ?", fs = carnetOk("moyenne")),   // (l'exploit : seulement sur SA vraie collection)
                 n("dn4", 5, "cut -d, -f4 collection.csv | tail -n +2 | sort -n > attaques.txt", fs = { j -> attaquesOk(j) }, ou = O_),
                 n("dn4", 6, "donnees mediane ?", fs = carnetOk("mediane")),
                 n("dn4", 7, "sed -n '1p;\$p' attaques.txt", re = "^(sed\\b.*attaques\\.txt|head\\b.*attaques\\.txt|tail\\b.*attaques\\.txt)", ou = O_),
@@ -332,7 +338,7 @@ object Donnees {
                 n("dn5", 6, "donnees bilan", fs = carnetOk("bilan")),
             )),
             "dn6" to Lecon("hist.dn6.titre", null, 1, listOf(
-                n("dn6", 0, "donnees base", fs = { j -> File(dossier(j), "collection.db").isFile && dansCarnet(j, "base") }, ou = O_),
+                n("dn6", 0, "donnees base", fs = { j -> File(dossier(j), "collection.db").isFile && dansCarnet(j, "base") && assez("dn6", lignesDuFichier(j)) }, ou = O_),
                 n("dn6", 1, "sqlite3 collection.db .tables", re = "$SQ['\"]?\\.tables", ou = O_),
                 n("dn6", 2, "sqlite3 collection.db \".schema creatures\"", re = "$SQ['\"]?\\.schema", ou = O_),
                 n("dn6", 3, "sqlite3 collection.db \"SELECT nom, attaque FROM creatures ORDER BY attaque DESC LIMIT 3;\"", re = "$SQ['\"]\\s*select\\b.*\\border\\s+by\\b", ou = O_),
@@ -390,6 +396,9 @@ object Donnees {
         val lignes = tapees.map { it.first.trim() }
         val cmd = e.cmd
         if (!File(dossier(jeu), CSV).isFile && !cmd.startsWith("collection") && lignes.any { "collection.csv" in it }) return t("dn.indice.pas_de_csv")
+        val rowsI = lignesDuFichier(jeu)                // pas assez de créatures : combien, et où aller les rencontrer
+        for ((debut, lid) in listOf("collection" to "dn1", "donnees calcul" to "dn4", "donnees base" to "dn6"))
+            if (cmd.startsWith(debut) && rowsI != null && !assez(lid, rowsI)) return t("dn.minimum", "min" to minimum(lid), "n" to rowsI.size)
         if (cmd.startsWith("collection")) {
             if (lignes.any { Regex("^(tg\\s+)?collection\\b").containsMatchIn(it) && "--csv" !in it }) return t("dn.indice.csv_option")
             if (lignes.any { Regex("^(tg\\s+)?collection\\b.*--csv").containsMatchIn(it) && ">" !in it }) return t("dn.indice.redirection")
@@ -464,8 +473,10 @@ object Donnees {
     fun collectionCsv(jeu: Jeu, ligne: String, ici: File): String {
         val m = motsShell(ligne) ?: return t("dn.tel.awk_tuyau")
         val (_, f, ajout) = redirection(m)
-        val (rows, aj) = lignesCollection(Explo.captures(jeu))
-        val msg = "📊 " + if (aj > 0) t("dn.csv.exemples", "n" to rows.size - aj, "k" to aj) else t("dn.csv.ok", "n" to rows.size)
+        val rows = lignesCollection(Explo.captures(jeu))
+        val besoin = (donnees().optJSONObject("minimum")?.let { m -> m.keys().asSequence().map { m.optInt(it) }.maxOrNull() } ?: 0)
+        val msg = "📊 " + t("dn.csv.ok", "n" to rows.size) + (if (rows.size < besoin) "\n" + t("dn.csv.peu", "min" to besoin) + "\n" +
+            t("dn.minimum.ou", "cmd" to "`collection --csv > collection.csv`") else "")
         val texte = csvTexte(rows)
         if (f == null) return texte + msg
         val r = versFichier(jeu, ici, texte, f, ajout)
@@ -553,10 +564,18 @@ object Donnees {
                 noter(jeu, "copiste", "${c[2]} ${c[3]} (ok)")
                 listOf("✎ " + t("dn.copiste.titre"), "") + bloc("dn.copiste.texte", "faute" to c[2], "bon" to c[3])
             }
-            "calcul", "calculatrice" -> { noter(jeu, "calcul", "lu (ok)"); listOf("🧮 " + t("dn.calcul.titre"), "") + bloc("dn.calcul.texte") + listOf("", "  " + t("dn.tel.awk")) }
+            "calcul", "calculatrice" -> when {
+                rows == null -> sansCsv()
+                !assez("dn4", rows) -> { noter(jeu, "calcul", "${rows.size} (pas assez)"); lignesMinimum("dn4", rows.size) }
+                else -> { noter(jeu, "calcul", "lu (ok)"); listOf("🧮 " + t("dn.calcul.titre"), "") + bloc("dn.calcul.texte") + listOf("", "  " + t("dn.tel.awk")) }
+            }
             "moyenne" -> { val r = rows ?: emptyList(); val mo = moyenne(r)
-                reponseNombre(jeu, "moyenne", arg, listOf(mo), "dn.moyenne.ok", "m" to nombreAwk(mo), "s" to somme(r), "n" to r.size) +
-                    (if (dansCarnet(jeu, "moyenne")) listOf("  " + t("dn.moyenne.morale")) else emptyList()) }
+                val l = reponseNombre(jeu, "moyenne", arg, listOf(mo), "dn.moyenne.ok", "m" to nombreAwk(mo), "s" to somme(r), "n" to r.size) +
+                    (if (dansCarnet(jeu, "moyenne")) listOf("  " + t("dn.moyenne.morale")) else emptyList())
+                // l'exploit (§ 7.6) : une statistique juste sur SA collection (pas sur un fichier écrit à la main)
+                val ex = if (arg != null && (dernier(jeu, "moyenne") ?: "").endsWith("(ok)") && saCollection(jeu, r))
+                    Recompenses.exploit(jeu, "donnees.statistique")?.also { jeu.log(it); jeu.dire(it, 16) } else null
+                if (ex != null) l + listOf(ex) else l }
             "mediane" -> { val r = rows ?: emptyList(); val ms = medianes(r)
                 reponseNombre(jeu, "mediane", arg, ms, "dn.mediane.ok", "m" to ms.joinToString(" / ") { nombreAwk(it) }, "n" to r.size, "moy" to nombreAwk(moyenne(r))) }
             "etendue" -> { val r = rows ?: emptyList(); val at = attaques(r).ifEmpty { listOf(0) }
@@ -572,7 +591,7 @@ object Donnees {
                     listOf("🏅 " + t("dn.bilan.titre"), "") + certif.split("\n").map { "  $it" }
                 }
             }
-            "base" -> if (rows == null) sansCsv() else {
+            "base" -> if (rows == null) sansCsv() else if (!assez("dn6", rows)) { noter(jeu, "base", "${rows.size} (pas assez)"); lignesMinimum("dn6", rows.size) } else {
                 if (!DonneesSql.moteur.creer(File(dossier(jeu), "collection.db"), requetesBase(rows))) listOf("✖ " + t("dn.base.rate"))
                 else { noter(jeu, "base", "${rows.size} (ok)"); listOf("🗄 " + t("dn.base.titre"), "") + bloc("dn.base.texte", "n" to rows.size) + listOf("", "  " + t("dn.tel.sqlite")) }
             }

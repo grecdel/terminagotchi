@@ -1,5 +1,13 @@
 # Simulation : trois enfants visitent la Salle des Données (huitième monde du Carrefour)
 
+> **Note du 1er novembre (décision du propriétaire).** Le jeu ne complète plus une petite collection avec des
+> bestioles d'exemple, et la colonne `exemple` a disparu. Chaque exercice qui en a besoin dit « Il te faut au moins X
+> créatures dans ta collection » et où aller les rencontrer (D1 : 3, D4 : 5, D-SQL : 5) ; l'étape attend. Dans
+> `sim_donnees.py`, Léa (2 bestioles) est arrêtée à D1 puis à D4, part dresser ses « renforts » (fixes), réexporte et
+> reprend : la simulation reste déterministe. Le rejeu en CI et les tests utilisent la collection de TEST fixe
+> (`collection_test`). L'exploit « une statistique juste » ne se gagne plus que sur sa vraie collection (DN6 réglé).
+> Les constats ci-dessous sur le « jeu d'exemple » décrivent l'ancienne version.
+
 Date : 1er novembre 2026. Branche `nouveau-bestiaire`. Outil : `pc/outils/sim_donnees.py` (PC, rejouable à chaque
 test et en CI) ; pour Android, la traversée du téléphone est rejouée par `tests/jvm/Donnees.kt`.
 

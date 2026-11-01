@@ -12,8 +12,7 @@
   "rarete",
   "shiny",
   "variante",
-  "date",
-  "exemple"
+  "date"
  ],
  "stats": {
   "attaque": "ATK",
@@ -33,13 +32,23 @@
   "Morts-vivants": "morts_vivants",
   "Aberrations": "aberrations"
  },
- "exemples": [
+ "minimum": {
+  "dn1": 3,
+  "dn4": 5,
+  "dn6": 5
+ },
+ "collection_test": [
   {
+   "id": "test00",
    "espece": "Gloupi",
    "variante": "classique",
    "shiny": false,
+   "date": 1790856000000,
+   "marque": "un reflet arc-en-ciel sur le pelage",
+   "humeur": "timide",
+   "taille": 109.3,
    "qualite": 0.42,
-   "jour": "2026-10-01",
+   "potentiel": 46,
    "stats": {
     "PV": 48,
     "ATK": 26,
@@ -47,14 +56,21 @@
     "VIT": 18,
     "INT": 30
    },
-   "rarete": "commune"
+   "note": 26.3,
+   "rarete": "commune",
+   "zone": "collection_test"
   },
   {
+   "id": "test01",
    "espece": "Braisillon",
    "variante": "volcan",
    "shiny": false,
+   "date": 1790942400000,
+   "marque": "des yeux de deux couleurs",
+   "humeur": "gourmande",
+   "taille": 29.1,
    "qualite": 0.55,
-   "jour": "2026-10-02",
+   "potentiel": 48,
    "stats": {
     "PV": 32,
     "ATK": 33,
@@ -62,14 +78,21 @@
     "VIT": 29,
     "INT": 32
    },
-   "rarete": "commune"
+   "note": 45.5,
+   "rarete": "commune",
+   "zone": "collection_test"
   },
   {
+   "id": "test02",
    "espece": "Plumange",
    "variante": "classique",
    "shiny": false,
+   "date": 1791028800000,
+   "marque": "des empreintes en forme de 0 et de 1",
+   "humeur": "bavarde",
+   "taille": 32.4,
    "qualite": 0.61,
-   "jour": "2026-10-03",
+   "potentiel": 55,
    "stats": {
     "PV": 30,
     "ATK": 35,
@@ -77,14 +100,21 @@
     "VIT": 48,
     "INT": 39
    },
-   "rarete": "commune"
+   "note": 38.7,
+   "rarete": "commune",
+   "zone": "collection_test"
   },
   {
+   "id": "test03",
    "espece": "Gloupi",
    "variante": "marais",
    "shiny": false,
+   "date": 1791115200000,
+   "marque": "des oreilles légèrement pixelisées",
+   "humeur": "paresseuse",
+   "taille": 85.1,
    "qualite": 0.3,
-   "jour": "2026-10-04",
+   "potentiel": 26,
    "stats": {
     "PV": 46,
     "ATK": 24,
@@ -92,14 +122,21 @@
     "VIT": 16,
     "INT": 28
    },
-   "rarete": "commune"
+   "note": 31.6,
+   "rarete": "commune",
+   "zone": "collection_test"
   },
   {
+   "id": "test04",
    "espece": "Cailloute",
    "variante": "montagne",
    "shiny": false,
+   "date": 1791201600000,
+   "marque": "des rayures comme un code-barres",
+   "humeur": "rêveuse",
+   "taille": 92.2,
    "qualite": 0.38,
-   "jour": "2026-10-05",
+   "potentiel": 40,
    "stats": {
     "PV": 36,
     "ATK": 37,
@@ -107,14 +144,21 @@
     "VIT": 37,
     "INT": 34
    },
-   "rarete": "commune"
+   "note": 39.6,
+   "rarete": "commune",
+   "zone": "collection_test"
   },
   {
+   "id": "test05",
    "espece": "Krillou",
    "variante": "glace",
    "shiny": false,
+   "date": 1791288000000,
+   "marque": "des pattes de longueur différente",
+   "humeur": "calme",
+   "taille": 26.4,
    "qualite": 0.5,
-   "jour": "2026-10-06",
+   "potentiel": 46,
    "stats": {
     "PV": 31,
     "ATK": 39,
@@ -122,14 +166,21 @@
     "VIT": 43,
     "INT": 24
    },
-   "rarete": "peu commune"
+   "note": 51.5,
+   "rarete": "peu commune",
+   "zone": "collection_test"
   },
   {
+   "id": "test06",
    "espece": "Tritonnet",
    "variante": "lagon",
    "shiny": false,
+   "date": 1791374400000,
+   "marque": "une crête en forme d'accolade {",
+   "humeur": "joyeuse",
+   "taille": 37.4,
    "qualite": 0.7,
-   "jour": "2026-10-07",
+   "potentiel": 80,
    "stats": {
     "PV": 33,
     "ATK": 41,
@@ -137,14 +188,21 @@
     "VIT": 34,
     "INT": 40
    },
-   "rarete": "peu commune"
+   "note": 55.6,
+   "rarete": "peu commune",
+   "zone": "collection_test"
   },
   {
+   "id": "test07",
    "espece": "Mousselin",
    "variante": "classique",
    "shiny": false,
+   "date": 1791460800000,
+   "marque": "un ventre qui affiche l'heure",
+   "humeur": "joyeuse",
+   "taille": 110.9,
    "qualite": 0.33,
-   "jour": "2026-10-08",
+   "potentiel": 30,
    "stats": {
     "PV": 49,
     "ATK": 28,
@@ -152,14 +210,21 @@
     "VIT": 17,
     "INT": 36
    },
-   "rarete": "commune"
+   "note": 23.0,
+   "rarete": "commune",
+   "zone": "collection_test"
   },
   {
+   "id": "test08",
    "espece": "Flamouche",
    "variante": "lave",
    "shiny": false,
+   "date": 1791547200000,
+   "marque": "une antenne qui capte la radio",
+   "humeur": "gourmande",
+   "taille": 36.2,
    "qualite": 0.64,
-   "jour": "2026-10-09",
+   "potentiel": 61,
    "stats": {
     "PV": 34,
     "ATK": 35,
@@ -167,14 +232,21 @@
     "VIT": 52,
     "INT": 35
    },
-   "rarete": "peu commune"
+   "note": 53.0,
+   "rarete": "peu commune",
+   "zone": "collection_test"
   },
   {
+   "id": "test09",
    "espece": "Pucerise",
    "variante": "prairie",
    "shiny": true,
+   "date": 1791633600000,
+   "marque": "un reflet arc-en-ciel sur le pelage",
+   "humeur": "gourmande",
+   "taille": 31.0,
    "qualite": 0.52,
-   "jour": "2026-10-10",
+   "potentiel": 52,
    "stats": {
     "PV": 42,
     "ATK": 27,
@@ -182,13 +254,13 @@
     "VIT": 24,
     "INT": 38
    },
-   "rarete": "peu commune"
+   "note": 54.8,
+   "rarete": "peu commune",
+   "zone": "collection_test"
   }
  ],
- "min_collection": 5,
- "taille_completee": 10,
  "schema": {
-  "creatures": "CREATE TABLE creatures (nom TEXT, type TEXT, famille TEXT, attaque INTEGER, defense INTEGER, vitesse INTEGER, pv INTEGER, intelligence INTEGER, rarete TEXT, shiny INTEGER, variante TEXT, date TEXT, exemple INTEGER)",
+  "creatures": "CREATE TABLE creatures (nom TEXT, type TEXT, famille TEXT, attaque INTEGER, defense INTEGER, vitesse INTEGER, pv INTEGER, intelligence INTEGER, rarete TEXT, shiny INTEGER, variante TEXT, date TEXT)",
   "especes": "CREATE TABLE especes (nom TEXT PRIMARY KEY, numero INTEGER, habitat TEXT, puissance INTEGER)"
  },
  "labo": {

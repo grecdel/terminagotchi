@@ -113,10 +113,13 @@ for awk_ in [a for a in ("awk", "mawk", "gawk", "busybox", "toybox") if shutil.w
         print(f"  · awk de {awk_} : {len(V['awk']) - len(ecarts)}/{len(V['awk'])} programmes à l'identique {ecarts[:3]}")
         continue
     verifier(not ecarts, f"les {len(V['awk'])} programmes du petit awk du téléphone : même sortie avec {awk_} {ecarts[:3]}")
-verifier(all(B.espece(x["espece"]) and any(v["id"] == x["variante"] for v in B.espece(x["espece"])["variantes"])
-             for x in D["exemples"]), f"les {len(D['exemples'])} bestioles d'exemple sont du VRAI bestiaire")
+CT = DN.collection_test()
+verifier(len(CT) >= max(D["minimum"].values()) and all(B.espece(x["espece"]) and any(v["id"] == x["variante"] for v in B.espece(x["espece"])["variantes"])
+             for x in CT), f"la collection de TEST ({len(CT)} captures, assez pour chaque exercice) : du VRAI bestiaire")
 gardiens = set(recompenses.gardiens().values())
-verifier(not gardiens & {B.espece(x["espece"])["id"] for x in D["exemples"]}, "aucun gardien glitch dans le jeu d'exemple")
+verifier(not gardiens & {B.espece(x["espece"])["id"] for x in CT}, "aucun gardien glitch dans la collection de test")
+verifier("exemples" not in D and "taille_completee" not in D and D["minimum"] == {"dn1": 3, "dn4": 5, "dn6": 5},
+         "plus aucune bestiole d'exemple dans le jeu ; le minimum de créatures par leçon (D1 3, D4 5, D-SQL 5)")
 m = next(x for x in recompenses.mondes() if x["id"] == "donnees")
 autres = {v for x in recompenses.mondes() if x["id"] != "donnees" for v in x.get("variantes_reservees", [])}
 ok_var = True
@@ -127,25 +130,24 @@ for v in m["variantes_reservees"]:
         and eid not in gardiens and v not in autres
 verifier(ok_var and len(m["variantes_reservees"]) == 3, f"variantes réservées EXISTANTES, Eau ou Glace, ni gardiens ni déjà réservées : {m['variantes_reservees']}")
 
-rows, ajout = DN.lignes_collection([])
-verifier(len(rows) == 10 and ajout == 10 and all(r[-1] == "1" for r in rows), "collection vide : 10 bestioles d'exemple (colonne exemple = 1)")
+verifier(DN.lignes_collection([]) == [], "collection vide : un tableau vide (plus de bestioles d'exemple)")
 random.seed(7)
 deux = [B.individu(B.espece("Gloupi"), False, "marais"), B.individu(B.espece("Krillou"), True, "lagon", "glace")]
-rows, ajout = DN.lignes_collection(deux)
-verifier(len(rows) == 10 and ajout == 8 and [r[-1] for r in rows[:2]] == ["0", "0"], "2 bestioles : complétées par 8 d'exemple, jamais bloquant")
+rows = DN.lignes_collection(deux)
+verifier(len(rows) == 2, "2 bestioles : 2 lignes, rien d'ajouté")
 verifier(rows[1][1] == "glace" and rows[1][9] == "1" and rows[1][10] == "glace", f"le type suit la variante (Krillou glace, shiny) {rows[1]}")
 texte = DN.csv_texte(rows)
-verifier(texte.splitlines()[0] == ",".join(D["colonnes"]) and all(len(l.split(",")) == 13 for l in texte.splitlines()),
-         "13 colonnes, une ligne d'en-tête")
+verifier(texte.splitlines()[0] == ",".join(D["colonnes"]) and all(len(l.split(",")) == 12 for l in texte.splitlines())
+         and "exemple" not in texte.splitlines()[0], "12 colonnes (plus de colonne « exemple »), une ligne d'en-tête")
 verifier(not any(x in texte for x in ("Pixel", "@", deux[0]["id"], deux[0]["marque"])),
          "aucune donnée personnelle : ni nom de la créature, ni e-mail, ni identifiant, ni marque")
 
 random.seed(11)
 SEPT = [B.individu(B.espece(n), n == "Cailloute", "x") for n in
         ("Gloupi", "Braisillon", "Gloupi", "Krillou", "Cailloute", "Plumange", "Tritonnet")]
-rows7 = DN.lire_csv(DN.csv_texte(DN.lignes_collection(SEPT)[0]))
+rows7 = DN.lire_csv(DN.csv_texte(DN.lignes_collection(SEPT)))
 tmp = Path(tempfile.mkdtemp())
-(tmp / "collection.csv").write_text(DN.csv_texte(DN.lignes_collection(SEPT)[0]), encoding="utf-8")
+(tmp / "collection.csv").write_text(DN.csv_texte(DN.lignes_collection(SEPT)), encoding="utf-8")
 verifier(bash("wc -l < collection.csv", tmp).strip() == str(len(rows7) + 1), "wc -l : une ligne par bestiole + l'en-tête")
 s_ = bash("awk -F, 'NR>1 {s+=$4; n++} END {print s/n}' collection.csv", tmp).strip()
 verifier(s_ == DN.nombre_awk(DN.moyenne(rows7)), f"la moyenne : awk {s_}, le jeu {DN.nombre_awk(DN.moyenne(rows7))}")
@@ -202,7 +204,13 @@ def ouvrir(s, chaps=("reveil", "nid", "bibliotheque")):
     h.setdefault("mondes_annonces", []).extend(["port", "citadelle", "crypte", "machinerie", "ondes", "guilde", "observatoire"])
     s["xp"] = 10 * 30 ** 2
     s["step"] = 0
-    s["captures"] = [dict(x) for x in SEPT]
+    s["captures"] = [dict(x) for x in SEPT[:2]]      # une petite collection : 2 bestioles (le minimum de D1 : 3)
+
+
+def capturer(n):
+    """L'enfant est allé rencontrer et dresser des créatures : sa collection a maintenant n bestioles."""
+    core.modifier(lambda s: s.__setitem__("captures", [dict(x) for x in SEPT[:n]]))
+    return "tg collection --csv > collection.csv"
 
 
 core.modifier(lambda s: ouvrir(s, chaps=("reveil", "nid")))
@@ -234,7 +242,7 @@ def sq(req):
 PARCOURS = [
     "ls", "cat laboratoire.txt",
     "head -3 collection.csv", "tg collection > collection.csv", "tg collection --csv", "tg collection --csv > collection.csv",
-    "head -3 collection.csv", "wc -l collection.csv", "donnees combien 8", lambda: f"donnees combien {len(rows_())}",
+    "ls", lambda: capturer(4), "head -3 collection.csv", "wc -l collection.csv", "donnees combien 8", lambda: f"donnees combien {len(rows_())}",
     "donnees trier", "sort especes.txt | uniq -c | sort -rn | head -3", "sort -nr forces.txt | head -3",
     "sort -nr forces.txt | head -3 > top3.txt",
     "donnees colonnes", "head -1 collection.csv | tr ',' '\\n'", "cut -f2 collection.csv | head -2",
@@ -247,7 +255,7 @@ PARCOURS = [
     lambda: "sed 's/{}/{}/g' carnet_du_soigneur.txt > carnet_corrige.txt".format(*DN.carnet_soigneur(rows_())[2:]),
     "diff carnet_du_soigneur.txt carnet_corrige.txt", "sed -n '2,4p' carnet_corrige.txt",
     lambda: "sed -i 's/{}/{}/g' carnet_du_soigneur.txt".format(*DN.carnet_soigneur(rows_())[2:]),
-    "donnees calcul", "awk '{print $1, $4}' collection.csv", "awk -F, 'NR<=5 {print $1, $4}' collection.csv",
+    "donnees calcul", lambda: capturer(7), "donnees calcul", "awk '{print $1, $4}' collection.csv", "awk -F, 'NR<=5 {print $1, $4}' collection.csv",
     "awk -F, 'NR>1 {s+=$4} END {print s}' collection.csv", "awk -F, 'NR>1 {s+=$4; n++} END {print s/n}' collection.csv",
     "donnees moyenne 1000", lambda: f"donnees moyenne {round(DN.moyenne(rows_()))}",
     "cut -d, -f4 collection.csv | tail -n +2 | sort -n > attaques.txt",
@@ -281,13 +289,25 @@ if not histoire.fini(st, "donnees"):
         print("     ", a_, c, "→", b, ind)
 verifier(histoire.fini(st, "donnees"), f"la Salle des Données est traversée jusqu'au bout (dn0 → dn6) {lecon(st)}")
 R = rows_()
-verifier(len(R) == 7 and all(r["exemple"] == "0" for r in R), "le tableau est SA collection (7 bestioles, aucune d'exemple)")
+verifier(len(R) == 7 and "exemple" not in R[0], "le tableau est SA collection (7 bestioles, aucune d'exemple)")
 o = ANSI.sub("", sorties.get("tg collection --csv", ""))
-verifier(o.startswith("nom,type,famille,attaque") and "7 bestioles" in o, "tg collection --csv écrit le tableau (et le message sur la sortie d'erreur)")
-verifier([int(l.split()[0]) for l in (DD / "top3.txt").read_text().splitlines()] == DN.top3(R),
+verifier(o.startswith("nom,type,famille,attaque") and "2 bestioles" in o and "au moins 5" in o and "forêt" in o,
+         "tg collection --csv écrit le tableau ; avec 2 bestioles, il dit le minimum des exercices et où les rencontrer")
+bloque = [(a_, c, b, ind) for a_, c, b, ind in vus if c in ("tg collection --csv > collection.csv", "donnees calcul")]
+verifier(bloque[0][0] == bloque[0][2] == ("dn1", 0) and "au moins 3" in (bloque[0][3] or "")
+         and bloque[1][2][0] == "dn1" and bloque[1][2][1] > 0,
+         f"D1 : 2 bestioles, l'étape attend (« au moins 3 créatures ») ; 4 bestioles réexportées, elle passe {bloque[:2]}")
+cal = [(a_, b, ANSI.sub("", sorties.get(c, ""))) for a_, c, b, ind in vus if c == "donnees calcul"]
+verifier(cal[0][0] == cal[0][1] == ("dn4", 0) and "au moins 5" in cal[0][2] and "tu en as 4" in cal[0][2]
+         and cal[1][1] != ("dn4", 0), f"D4 : 4 bestioles, « Il te faut au moins 5 créatures… » et où aller ; à 7, elle passe {[c_[:2] for c_ in cal]}")
+R4 = DN.lire_csv(DN.csv_texte(DN.lignes_collection(SEPT[:4])))   # (D1 à D3 faits avec 4 bestioles)
+verifier([int(l.split()[0]) for l in (DD / "top3.txt").read_text().splitlines()] == DN.top3(R4),
          "top3.txt : les 3 plus fortes attaques")
-verifier((DD / "carnet_du_soigneur.txt").read_text() == DN.carnet_soigneur(R)[1], "le carnet du soigneur corrigé sur place (sed -i)")
+verifier((DD / "carnet_du_soigneur.txt").read_text() == DN.carnet_soigneur(R4)[1], "le carnet du soigneur corrigé sur place (sed -i)")
 verifier("donnees.statistique" in recompenses.r_(st)["exploits"], "l'exploit « une statistique juste sur ta collection »")
+faux_ = [dict(r, attaque="99") if i == 0 else r for i, r in enumerate(R)]
+verifier(DN.sa_collection(st, R) and not DN.sa_collection(st, faux_) and not DN.sa_collection(st, R[:-1]),
+         "l'exploit ne se gagne que sur SA vraie collection (un tableau retouché à la main ne compte pas)")
 verifier(not recompenses.reservee(st, {"id": "krillou"}, "aurore") and recompenses.reservee({}, {"id": "krillou"}, "aurore")
          and recompenses.reservee({}, {"id": "nautiloque"}, "corail") and recompenses.reservee({}, {"id": "ondulame"}, "glace")
          and not recompenses.reservee({}, {"id": "krillou"}, "glace"),

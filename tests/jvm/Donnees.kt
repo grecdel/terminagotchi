@@ -165,9 +165,9 @@ fun main(args: Array<String>) {
     val cols = v.getJSONObject("collections")
     for (nom in cols.keys()) {
         val x = cols.getJSONObject(nom)
-        val (rows, ajout) = Donnees.lignesCollection(x.getJSONArray("captures"))
+        val rows = Donnees.lignesCollection(x.getJSONArray("captures"))
         val csv = Donnees.csvTexte(rows)
-        if (csv != x.getString("csv") || ajout != x.getInt("ajout")) { ko++; println("    csv $nom :\n$csv≠\n${x.getString("csv")}") }
+        if (csv != x.getString("csv")) { ko++; println("    csv $nom :\n$csv≠\n${x.getString("csv")}") }
         val r = Donnees.lireCsv(x.getString("csv"))
         fun eff(l: List<Pair<String, Int>>) = l.map { listOf(it.first, "${it.second}") }
         fun effV(k: String) = objetsDn(JSONArray()).let { (0 until x.getJSONArray(k).length()).map { lstDn(x.getJSONArray(k).getJSONArray(it)) } }
@@ -188,7 +188,7 @@ fun main(args: Array<String>) {
         val att = (0 until x.getJSONArray("base").length()).map { x.getJSONArray("base").getJSONArray(it).toString() }
         if (base != att) { ko++; println("    $nom : base ${base.firstOrNull { it !in att }}") }
     }
-    verifierDn(ko == 0, "${cols.length()} collections : le CSV (jeu d'exemple compris), chaque statistique, le carnet du soigneur et collection.db identiques")
+    verifierDn(ko == 0, "${cols.length()} collections (dont la collection de test) : le CSV, chaque statistique, le carnet du soigneur et collection.db identiques")
     ko = 0
     val r7 = Donnees.lireCsv(cols.getJSONObject("sept").getString("csv"))
     val carnets = v.getJSONObject("carnets")
@@ -254,7 +254,10 @@ fun main(args: Array<String>) {
     for (m in listOf("port", "citadelle", "crypte", "machinerie", "ondes", "guilde", "observatoire")) ann.put(m)
     jeuDn.xp = 10 * 30 * 30
     val caps = Explo.captures(jeuDn)
-    for ((k, n) in listOf("Gloupi", "Braisillon", "Gloupi", "Krillou", "Cailloute", "Plumange", "Tritonnet").withIndex()) caps.put(individuDn(n, k, n == "Cailloute"))
+    val sept = listOf("Gloupi", "Braisillon", "Gloupi", "Krillou", "Cailloute", "Plumange", "Tritonnet").withIndex().map { (k, n) -> individuDn(n, k, n == "Cailloute") }
+    for (x in sept.take(2)) caps.put(x)          // une petite collection : 2 bestioles (le minimum de D1 : 3)
+    // l'enfant est allé rencontrer et dresser des créatures : sa collection a maintenant n bestioles, il réexporte
+    fun capturer(n: Int): String { while (caps.length() < n) caps.put(sept[caps.length()]); return "collection --csv > collection.csv" }
     tapeDn("ls")
     tapeDn("ls")
     verifierDn(Histoire.ouvert(jeuDn, "donnees"), "le niveau 4 fait : la Salle des Données s'ouvre")
@@ -270,7 +273,8 @@ fun main(args: Array<String>) {
     fun rows() = Donnees.lignesDuFichier(jeuDn) ?: emptyList()
     fun carnetDe() = Donnees.carnetSoigneur(rows())
     val parcours: List<() -> String> = listOf(
-        { "ls" }, { "cat laboratoire.txt" }, { "collection --csv" }, { "collection --csv > collection.csv" }, { "head -3 collection.csv" },
+        { "ls" }, { "cat laboratoire.txt" }, { "collection --csv" }, { "collection --csv > collection.csv" }, { "ls" }, { capturer(4) },
+        { "head -3 collection.csv" },
         { "wc -l collection.csv" }, { "donnees combien 3" }, { "donnees combien ${rows().size}" }, { "donnees trier" },
         { "sort especes.txt | uniq -c | sort -rn | head -3" }, { "sort -nr forces.txt | head -3 > top3.txt" },
         { "donnees colonnes" }, { "head -1 collection.csv | tr ',' '\\n'" }, { "cut -d, -f2 collection.csv | tail -n +2 | sort | uniq -c" },
@@ -280,7 +284,7 @@ fun main(args: Array<String>) {
         { "sed 's/${carnetDe()[2]}/${carnetDe()[3]}/g' carnet_du_soigneur.txt > carnet_corrige.txt" },
         { "diff carnet_du_soigneur.txt carnet_corrige.txt" }, { "sed -n '2,4p' carnet_corrige.txt" },
         { "sed -i 's/${carnetDe()[2]}/${carnetDe()[3]}/g' carnet_du_soigneur.txt" },
-        { "donnees calcul" }, { "awk -F, 'NR<=5 {print \$1, \$4}' collection.csv" }, { "awk -F, 'NR>1 {s+=\$4} END {print s}' collection.csv" },
+        { "donnees calcul" }, { capturer(7) }, { "donnees calcul" }, { "awk -F, 'NR<=5 {print \$1, \$4}' collection.csv" }, { "awk -F, 'NR>1 {s+=\$4} END {print s}' collection.csv" },
         { "awk -F, 'NR>1 {s+=\$4; n++} END {print s/n}' collection.csv" }, { "donnees moyenne 999" },
         { "donnees moyenne ${Math.round(Donnees.moyenne(rows()))}" }, { "cut -d, -f4 collection.csv | tail -n +2 | sort -n > attaques.txt" },
         { "donnees mediane ${Donnees.nombreAwk(Donnees.medianes(rows())[0])}" }, { "sed -n '1p;\$p' attaques.txt" },
@@ -299,11 +303,13 @@ fun main(args: Array<String>) {
         { "sqlite3 collection.db \"SELECT AVG(attaque) FROM creatures;\"" },
     )
     val vus = mutableListOf<String>()
+    val passages = mutableListOf<Triple<String, Any, Any>>()
     for (f in parcours) {
         val c = f()
         val a = lecDn()
         val s = tapeDn(c)
         sorties.putIfAbsent(c, s)
+        passages.add(Triple(c, a, lecDn()))
         vus.add("$a $c → ${lecDn()} ${s.take(70).replace("\n", "⏎")}")
         if (System.getenv("TG_DEBUG") != null) println("    · " + vus.last())
         if (Histoire.fini(jeuDn, "donnees")) break
@@ -311,8 +317,18 @@ fun main(args: Array<String>) {
     if (!Histoire.fini(jeuDn, "donnees")) vus.takeLast(8).forEach { println("      $it") }
     verifierDn(Histoire.fini(jeuDn, "donnees"), "la Salle des Données est traversée jusqu'au bout (dn0 → dn6) ${lecDn()}")
     val R = rows()
-    verifierDn(R.size == 7 && R.all { it["exemple"] == "0" }, "le tableau est SA collection (7 bestioles, aucune d'exemple)")
-    verifierDn((sorties["collection --csv"] ?: "").startsWith("nom,type,famille,attaque"), "collection --csv écrit le tableau")
+    verifierDn(R.size == 7 && R.all { "exemple" !in it }, "le tableau est SA collection (7 bestioles, aucune d'exemple)")
+    val c0 = sorties["collection --csv"] ?: ""
+    verifierDn(c0.startsWith("nom,type,famille,attaque") && "au moins 5" in c0 && "forêt" in c0,
+        "collection --csv écrit le tableau ; avec 2 bestioles, il dit le minimum des exercices et où les rencontrer")
+    val ex1 = passages.filter { it.first == "collection --csv > collection.csv" }
+    val cal = passages.filter { it.first == "donnees calcul" }
+    verifierDn(ex1[0].second == ex1[0].third && "${ex1[1].third}" != "${ex1[0].third}" && cal[0].second == cal[0].third && "${cal[1].third}" != "${cal[0].third}" &&
+        "au moins 5" in (sorties["donnees calcul"] ?: "") && "tu en as 4" in (sorties["donnees calcul"] ?: ""),
+        "D1 attend 3 créatures, D4 en attend 5 (« Il te faut au moins 5 créatures… », où aller) ; réexporté, ça passe ($ex1 $cal)")
+    val faux = R.mapIndexed { i, r -> if (i == 0) r + ("attaque" to "99") else r }
+    verifierDn(Donnees.saCollection(jeuDn, R) && !Donnees.saCollection(jeuDn, faux) && !Donnees.saCollection(jeuDn, R.dropLast(1)),
+        "l'exploit ne se gagne que sur SA vraie collection (un tableau retouché à la main ne compte pas)")
     verifierDn(sorties["awk -F, 'NR>1 {s+=\$4; n++} END {print s/n}' collection.csv"]?.trim() == Donnees.nombreAwk(Donnees.moyenne(R)),
         "le petit awk calcule la moyenne (${Donnees.nombreAwk(Donnees.moyenne(R))})")
     verifierDn(sorties["sqlite3 collection.db .tables"]?.trim() == "creatures  especes", "sqlite3 .tables : creatures  especes")
@@ -320,7 +336,8 @@ fun main(args: Array<String>) {
         "la base est en lecture seule : DELETE est refusé")
     verifierDn(sorties["sqlite3 collection.db \"SELECT AVG(attaque) FROM creatures;\""]?.trim() == DonneesSql.valeur(Donnees.moyenne(R)),
         "AVG(attaque) : la même moyenne qu'awk")
-    verifierDn(File(DD, "carnet_du_soigneur.txt").readText() == Donnees.carnetSoigneur(R)[1], "le carnet corrigé sur place (sed -i)")
+    val R4 = Donnees.lireCsv(Donnees.csvTexte(Donnees.lignesCollection(org.json.JSONArray(sept.take(4)))))   // (D1 à D3 : 4 bestioles)
+    verifierDn(File(DD, "carnet_du_soigneur.txt").readText() == Donnees.carnetSoigneur(R4)[1], "le carnet corrigé sur place (sed -i)")
     val ex = Recompenses.etat(jeuDn).getJSONObject("exploits").keys().asSequence().toList()
     verifierDn("donnees.statistique" in ex, "l'exploit « une statistique juste sur ta collection » ($ex)")
     verifierDn("boulier" in lstDn(Quetes.q(jeuDn).optJSONArray("objets")), "récompense du monde : un boulier de savant (posé, jamais porté)")
