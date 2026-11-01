@@ -56,6 +56,9 @@ K = {
  "hist.gu1.7.dit": "Pour chacun : l (libre) ou p (pas libre, même s'il est gratuit). Remplace les ?.",
  "hist.gu1.7.bravo": "Libre ≠ gratuit : un jeu gratuit peut être fermé, et un logiciel libre peut se vendre !",
  "hist.gu1.7.adulte": "Un logiciel « gratuit » mais fermé s'appelle un graticiel (freeware). Le contraire d'un logiciel libre est un logiciel privateur (propriétaire).",
+ "hist.gu1.8.dit": "Et Terminagotchi, sous quelle licence est-il ? Demande à la Guilde.",
+ "hist.gu1.8.bravo": "Le code du jeu est sous GPL : il est libre, et il le restera. Les images, les dessins, l'histoire et les sons sont sous Creative Commons BY-NC-SA.",
+ "hist.gu1.8.adulte": "GPL-3.0-or-later : qui redistribue le jeu, même modifié, doit laisser son code libre (copyleft). CC BY-NC-SA 4.0 : partager et modifier en citant les auteurs, sans usage commercial, sous la même licence. Les textes complets : LICENSE et LICENSE-images.md.",
  # ------------------------------------------------------------------ gu2 G2 lire du vrai code
  "hist.gu2.0.dit": "Le code de Terminagotchi est public : tout le monde peut le lire. On va le regarder !",
  "hist.gu2.0.bravo": "Un dépôt, c'est le dossier d'un projet avec toute son histoire.",
@@ -81,6 +84,9 @@ K = {
  "hist.gu2.7.dit": "Ouvre ce fichier et lis le début (q pour sortir).",
  "hist.gu2.7.bravo": "Des nombres, des conditions, des commentaires : la recette de la faim !",
  "hist.gu2.7.adulte": "Dans less : / cherche un mot, espace avance d'une page, q quitte.",
+ "hist.gu2.8.dit": "Le code du jeu a sa licence, lui aussi. Lis le début du fichier LICENSE.",
+ "hist.gu2.8.bravo": "GNU GENERAL PUBLIC LICENSE, version 3 : la licence du code de Terminagotchi. Les images ont la leur, dans LICENSE-images.md.",
+ "hist.gu2.8.adulte": "head affiche les 10 premières lignes. Le texte officiel de la GPL est en anglais : c'est lui qui compte devant un juge.",
  # ------------------------------------------------------------------ gu3 G3 compiler
  "hist.gu3.0.dit": "Va dans l'atelier : on va transformer du texte en programme.",
  "hist.gu3.0.bravo": "Le compilateur traduit ton texte en langage de machine.",
@@ -235,6 +241,8 @@ K = {
  "gu.licence.fichier": "lu dans {fichier}",
  "gu.licence.encore": "{n} sur {total} : continue !",
  "gu.licence.fini": "{n} licences trouvées : bravo, chercheur de licences !",
+ "gu.licence.jeu": "Le code du jeu : GNU GPL version 3 ou plus (GPL-3.0-or-later).\nLes images, les dessins, l'histoire et les sons : Creative Commons BY-NC-SA 4.0 (citer les auteurs, pas d'usage commercial, partager sous la même licence).\nLes textes complets : les fichiers LICENSE et LICENSE-images.md, dans le code du jeu.",
+ "app.licences": "Licences : le code est sous GNU GPL version 3 ou plus (fichier LICENSE) ; les images, les dessins, l'histoire et les sons sous Creative Commons BY-NC-SA 4.0 (fichier LICENSE-images.md).",
  "gu.genre.copyleft": "Licence libre « copyleft » : si tu partages une version modifiée, elle doit rester libre.",
  "gu.genre.permissive": "Licence libre « permissive » : on peut presque tout faire, même un logiciel fermé, en gardant le nom des auteurs.",
  "gu.genre.cc": "Creative Commons : surtout pour les images, les textes et la musique.",

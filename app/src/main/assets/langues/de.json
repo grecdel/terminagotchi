@@ -6963,5 +6963,14 @@
  "dn.tel.awk": "Das kleine awk der App (ein einzelner Befehl, ohne Pipe): -F, Muster NR>1, {print}, Summen, END.",
  "dn.tel.sqlite": "Das kleine sqlite3 der App, auf dem SQLite des Handys: nur lesen, eine Abfrage nach der anderen (SELECT, .tables, .schema).",
  "dn.tel.sqlite_lecture": "Hier ist die Datenbank nur lesbar: nur SELECT, .tables und .schema.",
- "dn.tel.awk_tuyau": "Das kleine awk der App lässt sich nicht in eine Pipe stecken: gib ihm die Datei direkt (awk -F, '…' collection.csv)."
+ "dn.tel.awk_tuyau": "Das kleine awk der App lässt sich nicht in eine Pipe stecken: gib ihm die Datei direkt (awk -F, '…' collection.csv).",
+ "hist.gu1.8.dit": "Und Terminagotchi: Unter welcher Lizenz steht es? Frag die Gilde.",
+ "hist.gu1.8.bravo": "Der Code des Spiels steht unter der GPL: Er ist frei und bleibt es auch. Die Bilder, Zeichnungen, die Geschichte und die Töne stehen unter Creative Commons BY-NC-SA.",
+ "hist.gu1.8.adulte": "GPL-3.0-or-later: Wer das Spiel weitergibt, auch verändert, muss seinen Code frei lassen (Copyleft). CC BY-NC-SA 4.0: teilen und bearbeiten mit Namensnennung, nicht kommerziell, unter derselben Lizenz. Volltexte: LICENSE und LICENSE-images.md.",
+ "hist.gu2.8.dit": "Auch der Code des Spiels hat seine Lizenz. Lies den Anfang der Datei LICENSE.",
+ "hist.gu2.8.bravo": "GNU GENERAL PUBLIC LICENSE, Version 3: die Lizenz des Codes von Terminagotchi. Die Bilder haben ihre eigene, in LICENSE-images.md.",
+ "hist.gu2.8.adulte": "head zeigt die ersten 10 Zeilen. Der offizielle Text der GPL ist auf Englisch: Er zählt vor Gericht.",
+ "gu.licence.jeu": "Der Code des Spiels: GNU GPL Version 3 oder später (GPL-3.0-or-later).\nBilder, Zeichnungen, Geschichte und Töne: Creative Commons BY-NC-SA 4.0 (Urheber nennen, nicht kommerziell, unter derselben Lizenz teilen).\nVolltexte: die Dateien LICENSE und LICENSE-images.md, im Code des Spiels.",
+ "app.licences": "Lizenzen: Der Code steht unter der GNU GPL Version 3 oder später (Datei LICENSE); Bilder, Zeichnungen, Geschichte und Töne unter Creative Commons BY-NC-SA 4.0 (Datei LICENSE-images.md).",
+ "ob.mots.caracteres": "In deiner Sprache gibt es keine Leerzeichen zwischen den Wörtern: Der Rater zählt deshalb die Zeichen, eins nach dem anderen (in histoire.txt hat das Spiel zwischen jedes ein Leerzeichen gesetzt). Das Prinzip ist dasselbe."
 }

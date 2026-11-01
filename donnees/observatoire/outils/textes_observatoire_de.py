@@ -671,4 +671,5 @@ V = [
  "Wie viele Beispiele „Feuer“ und „kein Feuer“? Zähle die 4. Spalte.",
  "10 und 10: gut ausgewogene Beispiele.",
  "cut -d ' ' -f 4 behält die 4. Spalte; sort | uniq -c zählt jeden Wert (die absoluten Häufigkeiten).",
+ "In deiner Sprache gibt es keine Leerzeichen zwischen den Wörtern: Der Rater zählt deshalb die Zeichen, eins nach dem anderen (in histoire.txt hat das Spiel zwischen jedes ein Leerzeichen gesetzt). Das Prinzip ist dasselbe.",
 ]

@@ -6971,5 +6971,14 @@
  "dn.tel.awk": "アプリの小さな awk（コマンド1つだけ、パイプなし）：-F,、パターン NR>1、{print}、合計、END。",
  "dn.tel.sqlite": "アプリの小さな sqlite3、スマホの SQLite で動く：読むだけ、問い合わせは1回に1つ（SELECT、.tables、.schema）。",
  "dn.tel.sqlite_lecture": "ここではデータベースは読むだけ：SELECT、.tables、.schema のみ。",
- "dn.tel.awk_tuyau": "アプリの小さな awk はパイプにつなげない：ファイルを直接わたそう（awk -F, '…' collection.csv）。"
+ "dn.tel.awk_tuyau": "アプリの小さな awk はパイプにつなげない：ファイルを直接わたそう（awk -F, '…' collection.csv）。",
+ "hist.gu1.8.dit": "じゃあ、Terminagotchi はどんなライセンスなのかな？ギルドに聞いてみよう。",
+ "hist.gu1.8.bravo": "ゲームのコードは GPL：自由で、これからもずっと自由。絵、イラスト、物語、音はクリエイティブ・コモンズ BY-NC-SA。",
+ "hist.gu1.8.adulte": "GPL-3.0-or-later：ゲームを再配布する人は、変更したものでも、コードを自由なままにしなければならない（コピーレフト）。CC BY-NC-SA 4.0：作者の名前を示し、営利目的でなく、同じライセンスでなら、分け合ったり変えたりできる。全文：LICENSE と LICENSE-images.md。",
+ "hist.gu2.8.dit": "ゲームのコードにもライセンスがある。LICENSE ファイルの始めを読もう。",
+ "hist.gu2.8.bravo": "GNU GENERAL PUBLIC LICENSE バージョン3：Terminagotchi のコードのライセンスだ。絵には絵のライセンスがあって、LICENSE-images.md に書いてある。",
+ "hist.gu2.8.adulte": "head は最初の10行を表示する。GPL の公式の文章は英語：裁判で大事なのはこの原文。",
+ "gu.licence.jeu": "ゲームのコード：GNU GPL バージョン3以降（GPL-3.0-or-later）。\n絵、イラスト、物語、音：クリエイティブ・コモンズ BY-NC-SA 4.0（作者の名前を示す、営利目的にしない、同じライセンスで分け合う）。\n全文：ゲームのコードの中の LICENSE と LICENSE-images.md ファイル。",
+ "app.licences": "ライセンス：コードは GNU GPL バージョン3以降（LICENSE ファイル）、絵、イラスト、物語、音はクリエイティブ・コモンズ BY-NC-SA 4.0（LICENSE-images.md ファイル）。",
+ "ob.mots.caracteres": "きみの言葉では、言葉と言葉のあいだにスペースがない。だから予想マシンは文字を1つずつ数えるんだ（histoire.txt では、ゲームが1文字ごとにスペースを入れた）。しくみは同じだよ。"
 }

@@ -21,8 +21,9 @@ RÈGLES (affichées à l'entrée, mur_des_plans.txt) :
   - Quand un outil manque (git, gcc, make, openscad, tree, rpm…), son étape est cachée ou racontée.
 
 LES PALIERS (gu0 à gu6) : la porte ; G1 le libre (les 4 libertés, la licence d'un petit projet, les licences des
-logiciels de la machine, libre ≠ gratuit) ; G2 lire le vrai code (clone ou copie, tree, grep, « où ta créature
-décide-t-elle qu'elle a faim ? », less) ; G3 compiler (bonjour.c, gcc, file, od, ldd, make) ; G4 contribuer (une
+logiciels de la machine, libre ≠ gratuit, et la licence de Terminagotchi lui-même : GPL-3.0-or-later pour le code,
+CC BY-NC-SA 4.0 pour les images et le lore) ; G2 lire le vrai code (clone ou copie, tree, grep, « où ta créature
+décide-t-elle qu'elle a faim ? », less, et le début du fichier LICENSE du jeu) ; G3 compiler (bonjour.c, gcc, file, od, ldd, make) ; G4 contribuer (une
 branche, corriger la faute, git diff, git commit ; la demande de fusion expliquée ; exploit « artisan ») ; G5 fabriquer
 (OpenSCAD : le porte-clé, ses coordonnées, son volume, le fichier STL) ; G6 redonner vie à un vieux PC (lsblk,
 l'empreinte de l'image, le bon disque, dd vers un FICHIER, le certificat « un PC sauvé »).
@@ -456,6 +457,8 @@ def meubler(state, lid, step):
             _ecrire("guilde/" + rel, tous["guilde/" + rel])
     if lid == "gu6" and step >= 2 and not (d / "vieux_pc" / IMAGE).exists():
         poser_cle(state)
+    if lid == "gu2" and (code_du_jeu() / "pc").is_dir() and not (code_du_jeu() / "LICENSE").exists():
+        poser_licences()                      # une copie (ou un clone) d'avant le 1er novembre : sans LICENSE
     pont_maths(state, lid, step)
 
 
@@ -519,7 +522,20 @@ def poser_copie():
         (code_du_jeu() / "LISEZMOI_COPIE.txt").write_text(t("gu.copie.lisezmoi") + "\n", encoding="utf-8")
     except OSError:
         pass
+    poser_licences()
     return n
+
+
+def poser_licences():
+    """Les licences du jeu (LICENSE : la GPL du code ; LICENSE-images.md : CC BY-NC-SA pour les images et le lore) à la
+    racine de la copie, comme dans le dépôt : seulement celles qui manquent (un clone récent les a déjà)."""
+    for nom, texte in donnees().get("licences_du_jeu", {}).get("fichiers", {}).items():
+        p = code_du_jeu() / nom
+        if not p.exists():
+            try:
+                p.write_text(texte, encoding="utf-8")
+            except OSError:
+                pass
 
 
 def fichiers_du_code():
@@ -665,6 +681,7 @@ LECONS = {
         _n("gu1", 5, cmd="guilde licence ?", fs="gu_licences"),
         _n("gu1", 6, cmd="guilde gratuit", re=GU + r"gratuits?\s*$"),
         _n("gu1", 7, cmd="guilde gratuit ? ? ? ?", fs="gu_gratuit"),
+        _n("gu1", 8, cmd="guilde licence terminagotchi", re=GU + r"licen[cs]es?\s+terminagotchi\b"),
     ]},
     # G2 lire du vrai code : le jeu lui-même
     "gu2": {"titre": "hist.gu2.titre", "skill": None, "steps": [
@@ -679,6 +696,8 @@ LECONS = {
            win=False),
         _n("gu2", 6, cmd="guilde faim ?", fs="gu_faim"),
         _n("gu2", 7, cmd="less code_du_jeu/pc/tg/satiete.py", re=LIRE + r".*code_du_jeu.*satiete", ou="guilde", win=False),
+        _n("gu2", 8, cmd="head code_du_jeu/LICENSE", re=LIRE + r"(?!.*petit_projet).*\bLICENSE(\s|$)", ou="guilde",
+           win=False),   # (aussi `cd code_du_jeu` puis `head LICENSE`)
     ]},
     # G3 compiler : du texte au programme
     "gu3": {"titre": "hist.gu3.titre", "skill": None, "steps": [
@@ -936,9 +955,10 @@ def lignes_licence(arg):
     total = donnees()["licences"]["a_trouver"]
     ou_ = t("gu.licence.catalogue") if source == "catalogue" else t("gu.licence.fichier", fichier=source)
     out = [f" {_c(78)}✔ {BOLD}{nom}{RESET} : {nom_licence(fam)}  {DIM}({ou_}){RESET}",
-           "  " + t("gu.genre." + genre_licence(fam)),
-           "  " + (t("gu.licence.encore", n=n, total=total) if n < total else t("gu.licence.fini", n=n))]
-    return out
+           "  " + t("gu.genre." + genre_licence(fam))]
+    if nom == "terminagotchi":                # le jeu lui-même : le code ET les images
+        out += ["  " + l for l in t("gu.licence.jeu").split("\n")]
+    return out + ["  " + (t("gu.licence.encore", n=n, total=total) if n < total else t("gu.licence.fini", n=n))]
 
 
 def lignes_depot():

@@ -1035,7 +1035,7 @@ def veille():
 
 def aide():
     return "\n".join(langue.remplir(l, {}) for l in langue.liste("app.aide") + langue.liste("app.aide.histoire")
-                     + [t("env.aide"), t("sat.aide"), t("aura.aide"), t("ent.aide"), t("esp.aide")])
+                     + [t("env.aide"), t("sat.aide"), t("aura.aide"), t("ent.aide"), t("esp.aide"), "", t("app.licences")])
 
 
 def commande_histoire(mode, args):

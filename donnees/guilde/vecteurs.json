@@ -1542,8 +1542,8 @@
   },
   {
    "nom": "terminagotchi",
-   "famille": null,
-   "genre": null
+   "famille": "gpl",
+   "genre": "copyleft"
   },
   {
    "nom": "gimp",

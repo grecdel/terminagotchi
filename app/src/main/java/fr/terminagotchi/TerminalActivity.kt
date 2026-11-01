@@ -557,7 +557,7 @@ class TerminalActivity : Activity() {
                     ecrire(Histoire.aideLecon(jeu), Commandes.ROSE)
                     return
                 }
-                ecrire(t("term.aide", "ctf" to Mots.terme("ctf", Mots.palier(jeu), true)) + "\n" + t("term.aide.maison") + "\n" + t("env.aide.tel") + "\n" + t("ent.aide.tel"))
+                ecrire(t("term.aide", "ctf" to Mots.terme("ctf", Mots.palier(jeu), true)) + "\n" + t("term.aide.maison") + "\n" + t("env.aide.tel") + "\n" + t("ent.aide.tel") + "\n\n" + t("app.licences"))
                 return
             }
         }

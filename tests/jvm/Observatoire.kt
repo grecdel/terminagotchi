@@ -170,6 +170,9 @@ fun main(args: Array<String>) {
     }
     Langue.definir("fr")
     verifierOb(ko == 0, "les jeux de données, le cerveau du devineur, ses votes et ses erreurs : identiques dans les ${L.length()} langues")
+    val sansEsp = L.keys().asSequence().toList().filter { Observatoire.sansEspaces(it) }.toSet()
+    verifierOb(sansEsp == setOf("zh", "ja") && "caract" in Langue.t("ob.mots.caracteres"),
+        "O7 : seules les langues sans espaces (zh, ja) comptent les caractères, et le devineur l'explique ($sansEsp)")
     verifierOb(koMots == 0, "le devineur de mots : texte nettoyé, effectifs, paires, suites et phrases tirées identiques dans les ${L.length()} langues")
     verifierOb(koMissions == 0, "ce que l'assistant comprend d'une consigne (verbe, fichier, filtre, ce qui manque), dans les ${L.length()} langues")
     ko = 0

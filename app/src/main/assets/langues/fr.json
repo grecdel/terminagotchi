@@ -6968,5 +6968,14 @@
  "dn.tel.awk": "Le petit awk de l'appli (une commande seule, sans tuyau) : -F, motifs NR>1, {print}, sommes, END.",
  "dn.tel.sqlite": "Le petit sqlite3 de l'appli, sur le SQLite du téléphone : lecture seule, une requête à la fois (SELECT, .tables, .schema).",
  "dn.tel.sqlite_lecture": "Ici, la base est en lecture seule : seulement SELECT, .tables et .schema.",
- "dn.tel.awk_tuyau": "Le petit awk de l'appli ne se branche pas dans un tuyau : donne-lui directement le fichier (awk -F, '…' collection.csv)."
+ "dn.tel.awk_tuyau": "Le petit awk de l'appli ne se branche pas dans un tuyau : donne-lui directement le fichier (awk -F, '…' collection.csv).",
+ "hist.gu1.8.dit": "Et Terminagotchi, sous quelle licence est-il ? Demande à la Guilde.",
+ "hist.gu1.8.bravo": "Le code du jeu est sous GPL : il est libre, et il le restera. Les images, les dessins, l'histoire et les sons sont sous Creative Commons BY-NC-SA.",
+ "hist.gu1.8.adulte": "GPL-3.0-or-later : qui redistribue le jeu, même modifié, doit laisser son code libre (copyleft). CC BY-NC-SA 4.0 : partager et modifier en citant les auteurs, sans usage commercial, sous la même licence. Les textes complets : LICENSE et LICENSE-images.md.",
+ "hist.gu2.8.dit": "Le code du jeu a sa licence, lui aussi. Lis le début du fichier LICENSE.",
+ "hist.gu2.8.bravo": "GNU GENERAL PUBLIC LICENSE, version 3 : la licence du code de Terminagotchi. Les images ont la leur, dans LICENSE-images.md.",
+ "hist.gu2.8.adulte": "head affiche les 10 premières lignes. Le texte officiel de la GPL est en anglais : c'est lui qui compte devant un juge.",
+ "gu.licence.jeu": "Le code du jeu : GNU GPL version 3 ou plus (GPL-3.0-or-later).\nLes images, les dessins, l'histoire et les sons : Creative Commons BY-NC-SA 4.0 (citer les auteurs, pas d'usage commercial, partager sous la même licence).\nLes textes complets : les fichiers LICENSE et LICENSE-images.md, dans le code du jeu.",
+ "app.licences": "Licences : le code est sous GNU GPL version 3 ou plus (fichier LICENSE) ; les images, les dessins, l'histoire et les sons sous Creative Commons BY-NC-SA 4.0 (fichier LICENSE-images.md).",
+ "ob.mots.caracteres": "Dans ta langue, il n'y a pas d'espaces entre les mots : le devineur compte donc les caractères, un par un (dans histoire.txt, le jeu a mis un espace entre chacun). Le principe est le même."
 }

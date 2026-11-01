@@ -6939,5 +6939,14 @@
  "dn.labo.lignes_rangees": "ترتیب دی گئی سطریں",
  "dn.labo.ecran_et_fichier": "اسکرین اور ایک فائل",
  "dn.labo.arguments": "کمانڈ کے الفاظ",
- "dn.labo.lignes_gardees": "رکھی گئی سطریں"
+ "dn.labo.lignes_gardees": "رکھی گئی سطریں",
+ "hist.gu1.8.dit": "اور Terminagotchi کس لائسنس کے تحت ہے؟ انجمن سے پوچھو۔",
+ "hist.gu1.8.bravo": "کھیل کا کوڈ GPL کے تحت ہے: وہ آزاد ہے، اور آزاد ہی رہے گا۔ تصویریں، ڈرائنگ، کہانی اور آوازیں Creative Commons BY-NC-SA کے تحت ہیں۔",
+ "hist.gu1.8.adulte": "GPL-3.0-or-later: جو بھی کھیل کو آگے بانٹے، بدلا ہوا بھی، اسے اس کا کوڈ آزاد رکھنا ہوگا (کاپی لیفٹ)۔ CC BY-NC-SA 4.0: مصنفین کا نام دے کر، تجارتی استعمال کے بغیر، اسی لائسنس میں بانٹنا اور بدلنا۔ مکمل متن: LICENSE اور LICENSE-images.md۔",
+ "hist.gu2.8.dit": "کھیل کے کوڈ کا بھی اپنا لائسنس ہے۔ LICENSE فائل کا شروع پڑھو۔",
+ "hist.gu2.8.bravo": "GNU GENERAL PUBLIC LICENSE، ورژن 3: Terminagotchi کے کوڈ کا لائسنس۔ تصویروں کا اپنا لائسنس ہے، LICENSE-images.md میں۔",
+ "hist.gu2.8.adulte": "head پہلی 10 سطریں دکھاتا ہے۔ GPL کا سرکاری متن انگریزی میں ہے: عدالت میں وہی مانا جاتا ہے۔",
+ "gu.licence.jeu": "کھیل کا کوڈ: GNU GPL ورژن 3 یا بعد کا (GPL-3.0-or-later)۔\nتصویریں، ڈرائنگ، کہانی اور آوازیں: Creative Commons BY-NC-SA 4.0 (مصنفین کا نام دو، تجارتی استعمال نہیں، اسی لائسنس میں بانٹو)۔\nمکمل متن: کھیل کے کوڈ میں LICENSE اور LICENSE-images.md فائلیں۔",
+ "app.licences": "لائسنس: کوڈ GNU GPL ورژن 3 یا بعد کے تحت ہے (فائل LICENSE)؛ تصویریں، ڈرائنگ، کہانی اور آوازیں Creative Commons BY-NC-SA 4.0 کے تحت (فائل LICENSE-images.md)۔",
+ "ob.mots.caracteres": "تمہاری زبان میں لفظوں کے درمیان خالی جگہ نہیں ہوتی، اس لیے اندازہ لگانے والی مشین حروف ایک ایک کر کے گنتی ہے (histoire.txt میں کھیل نے ہر ایک کے درمیان خالی جگہ ڈالی ہے)۔ اصول وہی ہے۔"
 }

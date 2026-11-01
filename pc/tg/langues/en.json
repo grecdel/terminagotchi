@@ -6937,5 +6937,14 @@
  "dn.labo.lignes_rangees": "sorted lines",
  "dn.labo.ecran_et_fichier": "the screen AND a file",
  "dn.labo.arguments": "words for a command",
- "dn.labo.lignes_gardees": "the kept lines"
+ "dn.labo.lignes_gardees": "the kept lines",
+ "hist.gu1.8.dit": "And Terminagotchi: what licence is it under? Ask the Guild.",
+ "hist.gu1.8.bravo": "The game's code is under the GPL: it is free, and it will stay free. The pictures, drawings, story and sounds are under Creative Commons BY-NC-SA.",
+ "hist.gu1.8.adulte": "GPL-3.0-or-later: anyone who redistributes the game, even modified, must keep its code free (copyleft). CC BY-NC-SA 4.0: share and adapt with credit to the authors, non-commercially, under the same licence. Full texts: LICENSE and LICENSE-images.md.",
+ "hist.gu2.8.dit": "The game's code has its own licence too. Read the beginning of the LICENSE file.",
+ "hist.gu2.8.bravo": "GNU GENERAL PUBLIC LICENSE, version 3: the licence of Terminagotchi's code. The pictures have their own, in LICENSE-images.md.",
+ "hist.gu2.8.adulte": "head shows the first 10 lines. The official text of the GPL is in English: it is the one that counts in court.",
+ "gu.licence.jeu": "The game's code: GNU GPL version 3 or later (GPL-3.0-or-later).\nThe pictures, drawings, story and sounds: Creative Commons BY-NC-SA 4.0 (credit the authors, no commercial use, share under the same licence).\nFull texts: the files LICENSE and LICENSE-images.md, in the game's code.",
+ "app.licences": "Licences: the code is under the GNU GPL version 3 or later (file LICENSE); the pictures, drawings, story and sounds under Creative Commons BY-NC-SA 4.0 (file LICENSE-images.md).",
+ "ob.mots.caracteres": "In your language there are no spaces between words, so the guesser counts characters, one by one (in histoire.txt, the game put a space between each one). The idea is the same."
 }

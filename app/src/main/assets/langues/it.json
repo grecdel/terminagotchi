@@ -6963,5 +6963,14 @@
  "dn.tel.awk": "Il piccolo awk dell'app (un solo comando, senza pipe): -F, modelli NR>1, {print}, somme, END.",
  "dn.tel.sqlite": "Il piccolo sqlite3 dell'app, sul SQLite del telefono: sola lettura, una query alla volta (SELECT, .tables, .schema).",
  "dn.tel.sqlite_lecture": "Qui il database è in sola lettura: solo SELECT, .tables e .schema.",
- "dn.tel.awk_tuyau": "Il piccolo awk dell'app non si collega a una pipe: dagli direttamente il file (awk -F, '…' collection.csv)."
+ "dn.tel.awk_tuyau": "Il piccolo awk dell'app non si collega a una pipe: dagli direttamente il file (awk -F, '…' collection.csv).",
+ "hist.gu1.8.dit": "E Terminagotchi, con quale licenza è distribuito? Chiedilo alla Gilda.",
+ "hist.gu1.8.bravo": "Il codice del gioco è sotto GPL: è libero, e lo resterà. Le immagini, i disegni, la storia e i suoni sono sotto Creative Commons BY-NC-SA.",
+ "hist.gu1.8.adulte": "GPL-3.0-or-later: chi ridistribuisce il gioco, anche modificato, deve lasciare libero il suo codice (copyleft). CC BY-NC-SA 4.0: condividere e modificare citando gli autori, senza uso commerciale, con la stessa licenza. Testi completi: LICENSE e LICENSE-images.md.",
+ "hist.gu2.8.dit": "Anche il codice del gioco ha la sua licenza. Leggi l'inizio del file LICENSE.",
+ "hist.gu2.8.bravo": "GNU GENERAL PUBLIC LICENSE, versione 3: la licenza del codice di Terminagotchi. Le immagini hanno la loro, in LICENSE-images.md.",
+ "hist.gu2.8.adulte": "head mostra le prime 10 righe. Il testo ufficiale della GPL è in inglese: è quello che conta davanti a un giudice.",
+ "gu.licence.jeu": "Il codice del gioco: GNU GPL versione 3 o successiva (GPL-3.0-or-later).\nLe immagini, i disegni, la storia e i suoni: Creative Commons BY-NC-SA 4.0 (citare gli autori, niente uso commerciale, condividere con la stessa licenza).\nTesti completi: i file LICENSE e LICENSE-images.md, nel codice del gioco.",
+ "app.licences": "Licenze: il codice è sotto GNU GPL versione 3 o successiva (file LICENSE); le immagini, i disegni, la storia e i suoni sotto Creative Commons BY-NC-SA 4.0 (file LICENSE-images.md).",
+ "ob.mots.caracteres": "Nella tua lingua non ci sono spazi tra le parole: per questo l'indovino conta i caratteri, uno per uno (in histoire.txt il gioco ha messo uno spazio tra ciascuno). Il principio è lo stesso."
 }

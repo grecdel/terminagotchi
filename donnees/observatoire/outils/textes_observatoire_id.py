@@ -671,4 +671,5 @@ V = [
  "Berapa contoh «Api» dan «bukan Api»? Hitung kolom ke-4.",
  "10 dan 10: contohnya seimbang.",
  "cut -d ' ' -f 4 menyisakan kolom ke-4; sort | uniq -c menghitung setiap nilai (frekuensi).",
+ "Dalam bahasamu tidak ada spasi di antara kata, jadi penebak kata menghitung karakter, satu per satu (di histoire.txt, permainan menaruh spasi di antara setiap karakter). Prinsipnya sama.",
 ]

@@ -314,6 +314,7 @@ object Guilde {
         val tous = meubles(jeu)
         for (r in BESOINS[lid] ?: emptyList()) if (!File(d, r).exists()) tous["guilde/$r"]?.let { ecrire(jeu, r, it) }
         if (lid == "gu6" && jeu.etape >= 2 && !File(d, "vieux_pc/$IMAGE").exists()) poserCle()(jeu)
+        if (lid == "gu2" && File(codeDuJeu(jeu), "pc").isDirectory && !File(codeDuJeu(jeu), "LICENSE").exists()) poserLicences(jeu)
         val e = Programme.donnees().optJSONObject("etapes")?.optJSONObject("$lid.${jeu.etape}")
         if (e != null) for (mid in liste(e, "maths")) {
             if (Maths.noeud(mid) != null && !Maths.sait(jeu, mid) && !fait(jeu, "pont:$mid")) {
@@ -332,7 +333,15 @@ object Guilde {
         var n = 0
         for (k in ex.keys()) if (ecrire(jeu, "code_du_jeu/$k", ex.getString(k))) n++
         ecrire(jeu, "code_du_jeu/LISEZMOI_COPIE.txt", t("gu.tel.copie") + "\n")
+        poserLicences(jeu)
         return n
+    }
+
+    /** Les licences du jeu (LICENSE : la GPL du code ; LICENSE-images.md : CC BY-NC-SA pour les images et le lore) à la
+     *  racine de la copie, comme dans le dépôt : seulement celles qui manquent. */
+    fun poserLicences(jeu: Jeu) {
+        val f = o("licences_du_jeu").optJSONObject("fichiers") ?: return
+        for (k in f.keys()) if (!File(codeDuJeu(jeu), k).exists()) ecrire(jeu, "code_du_jeu/$k", f.getString(k))
     }
 
     fun fichiersDuCode(jeu: Jeu): Map<String, String> {
@@ -397,6 +406,7 @@ object Guilde {
                 n("gu1", 5, "guilde licence ?", fs = { j -> licencesTrouvees(j).size >= aTrouver() }),
                 n("gu1", 6, "guilde gratuit", re = "${GU}gratuits?\\s*$"),
                 n("gu1", 7, "guilde gratuit ? ? ? ?", fs = carnetOk("gratuit")),
+                n("gu1", 8, "guilde licence terminagotchi", re = "${GU}licen[cs]es?\\s+terminagotchi\\b"),
             )),
             "gu2" to Lecon("hist.gu2.titre", null, 1, listOf(
                 n("gu2", 0, "guilde depot", re = "${GU}d[eé]p[oô]t\\b", ou = "guilde"),
@@ -406,6 +416,7 @@ object Guilde {
                 n("gu2", 5, "grep -rn \"def etat_de\" code_du_jeu/pc/tg", re = "^grep\\b.*etat_de.*code_du_jeu", ou = "guilde"),
                 n("gu2", 6, "guilde faim ?", fs = carnetOk("faim")),
                 n("gu2", "t7", "head -40 code_du_jeu/pc/tg/satiete.py", re = "$LIRE.*code_du_jeu.*satiete", ou = "guilde"),
+                n("gu2", 8, "head code_du_jeu/LICENSE", re = "$LIRE(?!.*petit_projet).*\\bLICENSE(\\s|$)", ou = "guilde"),
             )),
             "gu3" to Lecon("hist.gu3.titre", null, 1, listOf(
                 n("gu3", 0, "guilde compiler", re = "${GU}compil", ou = A),
@@ -543,8 +554,9 @@ object Guilde {
         if (fam == null) { noter(jeu, "licence", "${nom.ifEmpty { "?" }} (inconnu)"); return listOf("? " + t("gu.licence.inconnue", "nom" to nom.ifEmpty { arg })) }
         noter(jeu, "licence", "$nom $fam (ok)")
         val nb = licencesTrouvees(jeu).size
-        return listOf("✔ $nom : ${nomLicence(fam)} (" + t("gu.licence.catalogue") + ")", "  " + t("gu.genre." + genreLicence(fam)),
-            "  " + (if (nb < aTrouver()) t("gu.licence.encore", "n" to nb, "total" to aTrouver()) else t("gu.licence.fini", "n" to nb)))
+        val jeuLui = if (nom == "terminagotchi") t("gu.licence.jeu").split("\n").map { "  $it" } else emptyList()   // le jeu lui-même
+        return listOf("✔ $nom : ${nomLicence(fam)} (" + t("gu.licence.catalogue") + ")", "  " + t("gu.genre." + genreLicence(fam))) + jeuLui +
+            listOf("  " + (if (nb < aTrouver()) t("gu.licence.encore", "n" to nb, "total" to aTrouver()) else t("gu.licence.fini", "n" to nb)))
     }
 
     fun lignesFaim(jeu: Jeu, arg: String?): List<String> {

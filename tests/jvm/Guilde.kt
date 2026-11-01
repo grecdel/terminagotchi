@@ -223,9 +223,10 @@ fun main(args: Array<String>) {
         { "ls" }, { "cat mur_des_plans.txt" },
         { "guilde libertes" }, { "guilde libertes " + Guilde.libertesCartes(gr).joinToString(" ") { it.rep } }, { "cat petit_projet/LICENSE" },
         { "guilde licence licornesoft" }, { "guilde licence bash" }, { "guilde licence git" }, { "guilde licence python3" }, { "guilde licence gcc" }, { "guilde licence firefox" },
-        { "guilde gratuit" }, { "guilde gratuit " + Guilde.gratuitCartes(gr).joinToString(" ") { it.rep } },
+        { "guilde gratuit" }, { "guilde gratuit " + Guilde.gratuitCartes(gr).joinToString(" ") { it.rep } }, { "guilde licence terminagotchi" },
         { "guilde depot" }, { "guilde copie" }, { "ls -R code_du_jeu" }, { "grep -rl \"faim\" code_du_jeu/pc/tg" },
         { "grep -rn \"def etat_de\" code_du_jeu/pc/tg" }, { "guilde faim aura.py" }, { "guilde faim satiete" }, { "head -40 code_du_jeu/pc/tg/satiete.py" },
+        { "head code_du_jeu/LICENSE" },
         { "cd atelier" }, { "guilde compiler" }, { "cat bonjour.c" }, { "guilde gcc" },
         { "cd .." }, { "guilde contribution" }, { "cd contribution" }, { "cat langues/fr.txt" },
         { "sed -i 's/${fa.optString("faux")}/${fa.optString("juste")}/' langues/fr.txt" }, { "diff .origine/fr.txt langues/fr.txt" }, { "guilde fusion" },
@@ -236,16 +237,25 @@ fun main(args: Array<String>) {
         { "sha256sum ${Guilde.IMAGE} ${Guilde.CLE}" }, { "guilde certificat" },
     )
     val sorties = HashMap<String, String>()
+    val passages = HashMap<String, Pair<String, String>>()
     for (f in etapes) {
         val c = f()
         val avant = lecGu()
         val s = tapeGu(c)
         sorties.putIfAbsent(c, s)
+        passages.putIfAbsent(c, "$avant" to "${lecGu()}")
         if (System.getenv("TG_DEBUG") != null) println("    · $c : $avant → ${lecGu()} ${s.take(80).replace("\n", " ⏎ ")}")
         if (Histoire.fini(jeuGu, "guilde")) break
     }
     verifierGu(Histoire.fini(jeuGu, "guilde"), "la Guilde est traversée jusqu'au bout (gu0 → gu6) : ${lecGu()}")
     verifierGu(Guilde.licencesTrouvees(jeuGu).size >= 5 && "?" in (sorties["guilde licence licornesoft"] ?: ""), "5 licences (catalogue) ; un logiciel inconnu n'est pas compté")
+    val lt = sorties["guilde licence terminagotchi"] ?: ""
+    verifierGu("GNU GPL" in lt && "GPL-3.0-or-later" in lt && "BY-NC-SA 4.0" in lt && passages["guilde licence terminagotchi"]?.second?.contains("gu2") == true,
+        "G1 : la licence de Terminagotchi (code GPL, images CC BY-NC-SA), dernière étape du palier ${passages["guilde licence terminagotchi"]}")
+    val lic = File(D, "code_du_jeu/LICENSE")
+    verifierGu(lic.isFile && lic.readText().lines()[0].trim() == "GNU GENERAL PUBLIC LICENSE" && File(D, "code_du_jeu/LICENSE-images.md").isFile &&
+        passages["head code_du_jeu/LICENSE"]?.second?.contains("gu3") == true,
+        "G2 : la copie du téléphone contient LICENSE (la GPL v3) et LICENSE-images.md ; head LICENSE finit le palier ${passages["head code_du_jeu/LICENSE"]}")
     verifierGu("✖" in (sorties["guilde faim aura.py"] ?: "") && "def etat_de" in (sorties["guilde faim satiete"] ?: ""), "la faim : aura.py refusé, satiete accepté (extrait du vrai code)")
     verifierGu("> " in (sorties["diff .origine/fr.txt langues/fr.txt"] ?: "") && fa.optString("juste") in (sorties["diff .origine/fr.txt langues/fr.txt"] ?: ""),
         "diff montre la correction (< avant, > après)")

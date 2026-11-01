@@ -671,4 +671,5 @@ V = [
  "Quanti esempi «Fuoco» e «non Fuoco»? Conta la 4ª colonna.",
  "10 e 10: esempi ben bilanciati.",
  "cut -d ' ' -f 4 tiene la 4ª colonna; sort | uniq -c conta ogni valore (le frequenze assolute).",
+ "Nella tua lingua non ci sono spazi tra le parole: per questo l'indovino conta i caratteri, uno per uno (in histoire.txt il gioco ha messo uno spazio tra ciascuno). Il principio è lo stesso.",
 ]

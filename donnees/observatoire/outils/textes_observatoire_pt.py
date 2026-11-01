@@ -671,4 +671,5 @@ V = [
  "Quantos exemplos «Fogo» e «não Fogo»? Conta a 4.ª coluna.",
  "10 e 10: exemplos bem equilibrados.",
  "cut -d ' ' -f 4 guarda a 4.ª coluna; sort | uniq -c conta cada valor (as frequências absolutas).",
+ "Na tua língua não há espaços entre as palavras: por isso o adivinho conta os caracteres, um a um (em histoire.txt, o jogo pôs um espaço entre cada um). O princípio é o mesmo.",
 ]

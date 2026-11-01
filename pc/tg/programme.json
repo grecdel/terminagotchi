@@ -4538,6 +4538,10 @@
    "motif": "satiete\\.py:\\d+:def etat_de\\(",
    "pourquoi": "hist.gu2.5.bravo : le nom du fichier avant les deux-points"
   },
+  "gu2.8": {
+   "motif": "^\\s*GNU GENERAL PUBLIC LICENSE$",
+   "pourquoi": "hist.gu2.8.bravo : la GNU GPL, version 3"
+  },
   "gu3.3": {
    "sortie": "Bonjour ! Je suis ton premier programme compilé.",
    "outil": "gcc",

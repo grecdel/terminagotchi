@@ -1614,6 +1614,11 @@ libres : n'importe qui peut lire leur code, l'améliorer et le partager. Termina
 - G4 corrige une faute dans une COPIE de phrases du jeu (petit dépôt local, sans remote), jamais dans les vrais fichiers de langue.
 - Les crédits sont une structure prête, avec une liste vide.
 - G6 copie l'image vers un FICHIER `cle_usb.img`. La vraie clé est seulement expliquée, avec un adulte.
+- **Licences choisies le 1er novembre** : le code de Terminagotchi est sous **GPL-3.0-or-later** (`LICENSE`, texte
+  officiel complet), les images, dessins, textes de l'histoire et sons sous **CC BY-NC-SA 4.0** (`LICENSE-images.md`).
+  G1 se termine par `guilde licence terminagotchi` (les deux licences expliquées) ; G2 se termine par
+  `head code_du_jeu/LICENSE` : la copie de la Guilde (PC et téléphone) contient `LICENSE` et `LICENSE-images.md`
+  (relus dans `guilde.json`, eux-mêmes relus à la racine du dépôt). `tg aide` (PC) et `aide tout` (téléphone) les citent.
 - « artisan » est l'exploit `guilde.artisan` (contribution d'exercice prête). Il favorise des variantes EXISTANTES : `engrenaille:mecanique`, `rouillot:rouille`, `lampignon:champignonniere`.
 
 ### 7.13 Compléments de mondes existants (tous au terminal)

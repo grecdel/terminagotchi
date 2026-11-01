@@ -676,4 +676,6 @@ K = {
  "hist.ob5.t2.dit": "Combien d'exemples « Feu » et « pas Feu » ? Compte la 4e colonne.",
  "hist.ob5.t2.bravo": "10 et 10 : des exemples bien équilibrés.",
  "hist.ob5.t2.adulte": "cut -d ' ' -f 4 garde la 4e colonne ; sort | uniq -c compte chaque valeur (les effectifs).",
+ # ------------------------------------------------------------------ O7 : les langues sans espaces (chinois, japonais)
+ "ob.mots.caracteres": "Dans ta langue, il n'y a pas d'espaces entre les mots : le devineur compte donc les caractères, un par un (dans histoire.txt, le jeu a mis un espace entre chacun). Le principe est le même.",
 }

@@ -108,8 +108,17 @@ print("1. La spécification pure")
 r = subprocess.run([sys.executable, str(RACINE / "pc/outils/vecteurs_guilde.py"), "--verifier"], capture_output=True, text=True)
 verifier(r.returncode == 0, "vecteurs communs à jour (donnees/guilde/vecteurs.json)" + (" " + r.stdout[-200:] if r.returncode else ""))
 verifier(G.licence_de_texte("License: LGPL-2.1+ and GPL-2+") == "lgpl" and G.licence_de_texte("MIT License") == "mit"
-         and G.licence_de_texte("submit") is None and G.licence_catalogue("Firefox") == "mpl" and G.licence_catalogue("terminagotchi") is None,
-         "les licences : LGPL avant GPL, MIT, rien dans « submit » ; le catalogue ; Terminagotchi n'a pas (encore) de licence")
+         and G.licence_de_texte("submit") is None and G.licence_catalogue("Firefox") == "mpl" and G.licence_catalogue("terminagotchi") == "gpl",
+         "les licences : LGPL avant GPL, MIT, rien dans « submit » ; le catalogue ; Terminagotchi est sous GPL (1er novembre)")
+LJ = G.donnees()["licences_du_jeu"]
+verifier(LJ["code"] == "GPL-3.0-or-later" and LJ["images"] == "CC-BY-NC-SA-4.0"
+         and LJ["fichiers"] == {n: (RACINE / n).read_text(encoding="utf-8") for n in ("LICENSE", "LICENSE-images.md")}
+         and LJ["fichiers"]["LICENSE"].split("\n")[0].strip() == "GNU GENERAL PUBLIC LICENSE"
+         and "Version 3, 29 June 2007" in LJ["fichiers"]["LICENSE"] and len(LJ["fichiers"]["LICENSE"].split("\n")) == 675
+         and "https://creativecommons.org/licenses/by-nc-sa/4.0/" in LJ["fichiers"]["LICENSE-images.md"],
+         "les licences du jeu (guilde.json) : la GPL v3 complète et LICENSE-images.md, identiques aux fichiers du dépôt")
+verifier("LICENSE" in langue.t("app.licences") and "BY-NC-SA" in langue.t("app.licences") and "app.licences" in
+         (RACINE / "pc/tg/app.py").read_text(encoding="utf-8"), "tg aide cite les licences (code GPL, images CC BY-NC-SA)")
 gr = "7:42"
 f = G.faute(gr)
 verifier(f["faux"] in G.texte_contribution(gr) and f["faux"] not in G.texte_contribution(gr, juste=True)
@@ -186,10 +195,12 @@ PARCOURS = [
     *(["rpm -q --qf '%{LICENSE}\\n' bash"] if histoire._outil("rpm+/usr/lib/sysimage/rpm") else []),
     "guilde licence ?", "guilde licence licornesoft", *[f"guilde licence {x}" for x in LIBS[:5]],
     "guilde gratuit", "guilde gratuit l l l l", lambda: "guilde gratuit " + " ".join(r_ for _n, _i, r_ in G.gratuit_cartes(gr)),
+    "guilde licence terminagotchi",
     "guilde depot", "git clone --depth 1 https://github.com/grecdel/terminagotchi.git code_du_jeu", "guilde copie",
     "tree -L 2 code_du_jeu", "find code_du_jeu -maxdepth 2 -type d", 'grep -rl "faim" code_du_jeu/pc/tg',
     'grep -rn "def etat_de" code_du_jeu/pc/tg', "guilde faim aura.py", "guilde faim satiete.py",
-    "less code_du_jeu/pc/tg/satiete.py",
+    "less code_du_jeu/pc/tg/satiete.py", "head petit_projet/LICENSE", "head code_du_jeu/LICENSE-images.md",
+    "head code_du_jeu/LICENSE",
     "cd atelier", "guilde compiler", "cat bonjour.c", "guilde gcc", "gcc bonjour.c -o bonjour && ./bonjour", "file bonjour",
     "od -An -tx1 -N4 bonjour", "ldd bonjour", "make etoiles && ./etoiles 5",
     "cd ..", "guilde contribution", "cd contribution", "git status", "git switch -c corrige-une-faute", "cat langues/fr.txt",
@@ -225,6 +236,17 @@ verifier("✖" in o, "les 4 libertés : une mauvaise réponse refusée")
 verifier(len(G.licences_trouvees()) >= 5 and "licornesoft" not in G.licences_trouvees(), f"5 licences trouvées : {G.licences_trouvees()}")
 verifier((T / "guilde/code_du_jeu/pc/tg/satiete.py").is_file() and not (T / "guilde/code_du_jeu/.git").exists(),
          "hors ligne : le clone a échoué, la Guilde a posé sa copie du vrai code (sans rien télécharger)")
+o = ANSI.sub("", sorties.get("guilde licence terminagotchi", ""))
+verifier("GNU GPL" in o and "GPL-3.0-or-later" in o and "BY-NC-SA 4.0" in o and [b[0] for a, c, b in vus if c == "guilde licence terminagotchi"] == ["gu2"],
+         "G1 : la licence de Terminagotchi (le code sous GPL, les images sous CC BY-NC-SA), dernière étape du palier")
+etapes_lic = [(a, b) for a, c, b in vus if "LICENSE" in c and c.startswith("head")]
+verifier(len(etapes_lic) == 3 and etapes_lic[0][0] == etapes_lic[0][1] == etapes_lic[1][1] and etapes_lic[0][0][0] == "gu2"
+         and etapes_lic[2][0] == etapes_lic[0][0] and etapes_lic[2][1][0] == "gu3",
+         f"G2 : head petit_projet/LICENSE et LICENSE-images.md ne valident pas, head code_du_jeu/LICENSE oui {etapes_lic}")
+verifier((T / "guilde/code_du_jeu/LICENSE").read_text(encoding="utf-8") == (RACINE / "LICENSE").read_text(encoding="utf-8")
+         and (T / "guilde/code_du_jeu/LICENSE-images.md").is_file()
+         and sorties.get("head code_du_jeu/LICENSE", "").split("\n")[0].strip() == "GNU GENERAL PUBLIC LICENSE",
+         "la copie de la Guilde contient LICENSE (la GPL v3, identique au dépôt) et LICENSE-images.md : head LICENSE marche")
 verifier("✖" in ANSI.sub("", sorties.get("guilde faim aura.py", "")) and "def etat_de" in ANSI.sub("", sorties.get("guilde faim satiete.py", "")),
          "la faim : aura.py refusé, satiete.py accepté (le vrai code de etat_de affiché)")
 verifier(ANSI.sub("", sorties.get("gcc bonjour.c -o bonjour && ./bonjour", "")).strip() == langue.t("gu.bonjour.message")

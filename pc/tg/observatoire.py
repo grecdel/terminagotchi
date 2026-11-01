@@ -1393,10 +1393,16 @@ def _table_mots(ici=None):
     return mots_de(txt)
 
 
+def sans_espaces(code=None):
+    """Vrai pour une langue écrite sans espaces entre les mots (chinois, japonais) : le devineur y compte les caractères."""
+    return any(_cjk(c) for l in corpus_lignes(code) for c in l)
+
+
 def lignes_mots_intro():
     poser_mots()
     noter("mots", "lu (ok)")
-    return [f" {_c(141)}{BOLD}🦜 " + t("ob.mots.titre") + RESET, ""] + _bloc("ob.mots.texte")
+    return [f" {_c(141)}{BOLD}🦜 " + t("ob.mots.titre") + RESET, ""] + _bloc("ob.mots.texte") + \
+        (["", "  " + t("ob.mots.caracteres")] if sans_espaces() else [])
 
 
 def lignes_devine_mot(state, args, ici):

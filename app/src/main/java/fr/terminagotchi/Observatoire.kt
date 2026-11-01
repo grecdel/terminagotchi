@@ -379,6 +379,9 @@ object Observatoire {
         ecrire(jeu, "devineur/volcan.txt", texteCreatures(liste(donnees(), "volcan")))
         ecrire(jeu, "devineur/autres.txt", texteCreatures(liste(donnees(), "autres")))
     }
+    /** Une langue écrite sans espaces entre les mots (chinois, japonais) : le devineur y compte les caractères. */
+    fun sansEspaces(code: String = Langue.courante): Boolean = corpusLignes(code).any { l -> l.codePoints().anyMatch { cjk(it) } }
+
     fun poserMots(jeu: Jeu) { ecrire(jeu, "mots/histoire.txt", corpusLignes().joinToString("") { "$it\n" }); ecrire(jeu, "mots/LISEZMOI.txt", t("ob.meuble.mots") + "\n") }
     fun poserEquipe(jeu: Jeu) {
         ecrire(jeu, "equipe/grande_tache.txt", t("ob.meuble.tache") + "\n")
@@ -916,7 +919,8 @@ object Observatoire {
                     if (arg.trim() == "$bon") { noter(jeu, "biais", "$bon (ok)"); listOf("✔ " + t("ob.biais.ok")) + bloc("ob.biais.morale") }
                     else { noter(jeu, "biais", "${arg.trim().take(5)} (faux)"); listOf("✖ " + t("ob.indice.rep.biais"), "") + question } }
             }
-            "mots", "mot" -> { poserMots(jeu); noter(jeu, "mots", "lu (ok)"); listOf("🦜 " + t("ob.mots.titre"), "") + bloc("ob.mots.texte") }
+            "mots", "mot" -> { poserMots(jeu); noter(jeu, "mots", "lu (ok)"); listOf("🦜 " + t("ob.mots.titre"), "") + bloc("ob.mots.texte") +
+                (if (sansEspaces()) listOf("") + bloc("ob.mots.caracteres") else emptyList()) }
             "perroquet" -> quiz(jeu, a, perroquetCartes(g), "vf", "perroquet", "ob.perroquet.titre", "ob.perroquet", "ob.perroquet.aide", "ob.perroquet.ok", "ob.perroquet.morale")
             "esprit" -> { noter(jeu, "esprit", "lu (ok)"); listOf("🕵 " + t("ob.esprit.titre"), "") + bloc("ob.esprit.texte") }
             "confier" -> quiz(jeu, a, confierCartes(g), "cg", "confier", "ob.confier.titre", "ob.confier", "ob.confier.aide", "ob.confier.ok", "ob.confier.morale")

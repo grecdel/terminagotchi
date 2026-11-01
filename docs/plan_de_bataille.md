@@ -374,7 +374,8 @@ les vraies radios (vues seulement par des doublures en test), `type rtl_test` (O
 - **Aucune commande du jeu ne vise `/dev/…`**. La créature réagit à `git push`, `gh pr`, `apt/dnf install` et aux écritures vers `/dev`. Le jeu ne les lance jamais.
 
 *Les leçons.*
-- **G1 le libre** : les 4 libertés (quiz mélangé), la licence MIT du petit projet, les licences de la machine (`/usr/share/licenses`, `/usr/share/doc/*/copyright`, `rpm -q` sur Fedora, sinon le catalogue de la Guilde ; 5 à trouver), libre ≠ gratuit.
+- **G1 le libre** : les 4 libertés (quiz mélangé), la licence MIT du petit projet, les licences de la machine (`/usr/share/licenses`, `/usr/share/doc/*/copyright`, `rpm -q` sur Fedora, sinon le catalogue de la Guilde ; 5 à trouver), libre ≠ gratuit, puis la licence de Terminagotchi lui-même (`guilde licence terminagotchi`).
+- **Licences choisies le 1er novembre** : le code sous GPL-3.0-or-later (`LICENSE`, texte officiel de la FSF, copié depuis `/usr/share/common-licenses/GPL-3`, identique à la copie d'automake et à celle de pikepdf), les images, dessins, textes de l'histoire et sons sous CC BY-NC-SA 4.0 (`LICENSE-images.md`, résumé FR/EN et dossiers concernés ; les polices du site gardent l'OFL). Titulaire : « les contributeurs de Terminagotchi ». Les deux textes sont recopiés dans `guilde.json` (donc dans le `.pyz` et l'APK) ; G2 finit par `head code_du_jeu/LICENSE` sur la copie ; `tg aide` et `aide tout` (téléphone) citent les licences.
 - **G2 lire du vrai code** :
   - `git clone --depth 1` du dépôt public. Sans réseau, `guilde copie` pose une copie locale des vrais `pc/tg/*.py` du jeu installé, sans rien télécharger, et l'étape ne bloque pas. Dans le rejeu CI, il n'y a pas de clone réseau.
   - `tree` (repli `find`), `grep -rl faim`, `grep -rn "def etat_de"` : l'enfant trouve lui-même le fichier où sa créature décide qu'elle a faim. La réponse est calculée dans le clone ou la copie réellement présente.
@@ -404,7 +405,7 @@ les vraies radios (vues seulement par des doublures en test), `type rtl_test` (O
 - Les illustrations.
 - Un vrai `git clone` vu réussir (la machine de test n'a pas de réseau).
 - `satiete.py` absent de la branche main publique (GU10).
-- Pas de fichier LICENSE pour Terminagotchi lui-même : la Guilde n'affirme aucune licence pour le jeu (question au propriétaire).
+- ~~Pas de fichier LICENSE pour Terminagotchi lui-même~~ : réglé le 1er novembre (GPL-3.0-or-later + CC BY-NC-SA 4.0).
 
 **🔭 L'Observatoire de l'IA — codé (1er novembre).**
 
@@ -471,7 +472,7 @@ les vraies radios (vues seulement par des doublures en test), `type rtl_test` (O
 
 *Reste.*
 - Les illustrations.
-- Chinois et japonais : le devineur de mots compte des caractères, pas des mots (ces langues n'ont pas d'espaces).
+- Chinois et japonais : le devineur de mots compte des caractères, pas des mots (ces langues n'ont pas d'espaces). Depuis le 1er novembre, `observatoire mots` le dit à l'enfant dans ces deux langues seulement (`ob.mots.caracteres`, détecté sur le texte : `sans_espaces()` / `sansEspaces()`).
   Ce n'est pas dit à l'écran ; à valider (question au propriétaire).
 - Les traductions des 13 autres langues sont faites par Claude : une relecture par des locuteurs serait bienvenue.
 

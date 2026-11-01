@@ -6,7 +6,9 @@ Machine et Plante — des variantes qui EXISTENT déjà dans le bestiaire), les 
 
     python3 donnees/guilde/outils/fiches_guilde.py    écrit donnees/guilde.json, donnees/programme.json et leurs copies
 
-guilde.json garde aussi, pour le téléphone (qui n'a ni git ni le code du jeu), des EXTRAITS du vrai code du jeu
+guilde.json garde aussi les textes des licences du jeu (LICENSE : GPL-3.0-or-later pour le code ; LICENSE-images.md :
+CC BY-NC-SA 4.0 pour les images et le lore), relus à la racine du dépôt et posés dans la copie de G2 (`head LICENSE`).
+Il garde aussi, pour le téléphone (qui n'a ni git ni le code du jeu), des EXTRAITS du vrai code du jeu
 (pc/tg/satiete.py…) et les vraies phrases du jeu copiées pour l'exercice de contribution (pc/tg/langues/fr.json) :
 ils sont relus ici à chaque fois, jamais inventés. Chaque cas « vrai_terminal » est rejoué dans un bash neuf par
 pc/outils/rejeu_bash.py, dans un terrain jetable. Rien ne sort du terrain, jamais de sudo, jamais de /dev.
@@ -85,7 +87,10 @@ CATALOGUE = {"bash": "gpl", "coreutils": "gpl", "grep": "gpl", "sed": "gpl", "ga
              "blender": "gpl", "krita": "gpl", "audacity": "gpl", "tar": "gpl", "glibc": "lgpl", "ffmpeg": "lgpl",
              "libreoffice": "mpl", "firefox": "mpl", "thunderbird": "mpl", "python3": "psf", "python": "psf",
              "curl": "mit", "nodejs": "mit", "openssl": "apache", "zlib": "zlib", "sqlite": "domaine_public",
-             "sqlite3": "domaine_public"}
+             "sqlite3": "domaine_public", "terminagotchi": "gpl"}
+
+# les licences du jeu lui-même (choisies le 1er novembre) : relues à la racine du dépôt, posées dans la copie de G2
+LICENCES_DU_JEU = ["LICENSE", "LICENSE-images.md"]
 
 
 def donnees_guilde():
@@ -131,6 +136,8 @@ def donnees_guilde():
             {"motif": r"^git\s+diff\b", "outil": "git diff", "de": "version", "vers": "difference"},
             {"motif": r"^git\s+commit\b", "outil": "git commit", "de": "changement", "vers": "version"}]},
         "credits": {"contributeurs": []},
+        "licences_du_jeu": {"code": "GPL-3.0-or-later", "images": "CC-BY-NC-SA-4.0",
+                            "fichiers": {n: (D / n).read_text(encoding="utf-8") for n in LICENCES_DU_JEU}},
         "couleurs": {"gcc": 215, "make": 215, "openscad": 229, "dd": 117, "sha256sum": 78, "git clone": 141,
                      "git diff": 141, "git commit": 141},
     }
@@ -263,6 +270,7 @@ def rejeu():
         "gu2.3": {"motif": r"(──|--) tg$", "outil": "tree", "pourquoi": "hist.gu2.3.bravo : pc/tg"},
         "gu2.4": {"motif": r"satiete\.py$", "pourquoi": "hist.gu2.4.bravo : beaucoup de fichiers parlent de faim"},
         "gu2.5": {"motif": r"satiete\.py:\d+:def etat_de\(", "pourquoi": "hist.gu2.5.bravo : le nom du fichier avant les deux-points"},
+        "gu2.8": {"motif": r"^\s*GNU GENERAL PUBLIC LICENSE$", "pourquoi": "hist.gu2.8.bravo : la GNU GPL, version 3"},
         "gu3.3": {"sortie": K["gu.bonjour.message"], "outil": "gcc", "pourquoi": "hist.gu3.3.bravo : le premier programme parle"},
         "gu3.4": {"motif": "ELF", "outil": "file", "pourquoi": "hist.gu3.4.bravo : ELF"},
         "gu3.5": {"sortie": " 7f 45 4c 46", "outil": "gcc", "pourquoi": "hist.gu3.5.bravo : 7f 45 4c 46"},

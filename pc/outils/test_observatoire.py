@@ -389,6 +389,14 @@ langue.definir("fr")
 verifier(not mal_compris, f"dans chaque langue, l'assistant comprend la consigne d'exemple et refuse la floue {mal_compris}")
 verifier(not sans_suite, f"dans chaque langue, le mot donné en exemple au devineur de mots a une suite dans l'histoire {sans_suite}")
 verifier(not pas_un_mot, f"familles, lieux, types et réponses du devineur : un seul mot dans chaque langue {pas_un_mot}")
+sans_esp = {}
+for code in langue.LANGUES if hasattr(langue, "LANGUES") else ["fr", "en", "es", "de", "it", "pt", "ru", "zh", "ja", "hi", "ar", "bn", "id", "ur"]:
+    langue.definir(code)
+    txt = "\n".join(O.lignes_mots_intro())
+    sans_esp[code] = (O.sans_espaces(), O.t("ob.mots.caracteres") in txt)
+langue.definir("fr")
+verifier({c for c, (a_, b_) in sans_esp.items() if a_} == {"zh", "ja"} and all(a_ == b_ for a_, b_ in sans_esp.values()),
+         f"O7 : en chinois et en japonais (sans espaces), le devineur explique qu'il compte les caractères ; pas ailleurs {sans_esp}")
 
 shutil.rmtree(DOUBLURES, ignore_errors=True)
 print(f"\n{ok} vérifications réussies, {ko} échecs")

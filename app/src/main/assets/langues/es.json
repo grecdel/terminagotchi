@@ -6963,5 +6963,14 @@
  "dn.tel.awk": "El pequeño awk de la app (un solo comando, sin tubería): -F, patrones NR>1, {print}, sumas, END.",
  "dn.tel.sqlite": "El pequeño sqlite3 de la app, sobre el SQLite del teléfono: solo lectura, una consulta cada vez (SELECT, .tables, .schema).",
  "dn.tel.sqlite_lecture": "Aquí la base es de solo lectura: solo SELECT, .tables y .schema.",
- "dn.tel.awk_tuyau": "El pequeño awk de la app no se conecta a una tubería: dale el archivo directamente (awk -F, '…' collection.csv)."
+ "dn.tel.awk_tuyau": "El pequeño awk de la app no se conecta a una tubería: dale el archivo directamente (awk -F, '…' collection.csv).",
+ "hist.gu1.8.dit": "¿Y Terminagotchi? ¿Bajo qué licencia está? Pregúntale al Gremio.",
+ "hist.gu1.8.bravo": "El código del juego está bajo la GPL: es libre y lo seguirá siendo. Las imágenes, los dibujos, la historia y los sonidos están bajo Creative Commons BY-NC-SA.",
+ "hist.gu1.8.adulte": "GPL-3.0-or-later: quien redistribuya el juego, aunque esté modificado, debe dejar su código libre (copyleft). CC BY-NC-SA 4.0: compartir y modificar citando a los autores, sin uso comercial, con la misma licencia. Textos completos: LICENSE y LICENSE-images.md.",
+ "hist.gu2.8.dit": "El código del juego también tiene su licencia. Lee el principio del archivo LICENSE.",
+ "hist.gu2.8.bravo": "GNU GENERAL PUBLIC LICENSE, versión 3: la licencia del código de Terminagotchi. Las imágenes tienen la suya, en LICENSE-images.md.",
+ "hist.gu2.8.adulte": "head muestra las 10 primeras líneas. El texto oficial de la GPL está en inglés: es el que cuenta ante un juez.",
+ "gu.licence.jeu": "El código del juego: GNU GPL versión 3 o posterior (GPL-3.0-or-later).\nLas imágenes, los dibujos, la historia y los sonidos: Creative Commons BY-NC-SA 4.0 (citar a los autores, sin uso comercial, compartir con la misma licencia).\nTextos completos: los archivos LICENSE y LICENSE-images.md, en el código del juego.",
+ "app.licences": "Licencias: el código está bajo la GNU GPL versión 3 o posterior (archivo LICENSE); las imágenes, los dibujos, la historia y los sonidos bajo Creative Commons BY-NC-SA 4.0 (archivo LICENSE-images.md).",
+ "ob.mots.caracteres": "En tu idioma no hay espacios entre las palabras, así que el adivinador cuenta los caracteres, uno a uno (en histoire.txt, el juego puso un espacio entre cada uno). La idea es la misma."
 }

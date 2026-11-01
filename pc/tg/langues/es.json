@@ -6932,5 +6932,14 @@
  "dn.labo.lignes_rangees": "líneas ordenadas",
  "dn.labo.ecran_et_fichier": "la pantalla Y un archivo",
  "dn.labo.arguments": "palabras para un comando",
- "dn.labo.lignes_gardees": "las líneas guardadas"
+ "dn.labo.lignes_gardees": "las líneas guardadas",
+ "hist.gu1.8.dit": "¿Y Terminagotchi? ¿Bajo qué licencia está? Pregúntale al Gremio.",
+ "hist.gu1.8.bravo": "El código del juego está bajo la GPL: es libre y lo seguirá siendo. Las imágenes, los dibujos, la historia y los sonidos están bajo Creative Commons BY-NC-SA.",
+ "hist.gu1.8.adulte": "GPL-3.0-or-later: quien redistribuya el juego, aunque esté modificado, debe dejar su código libre (copyleft). CC BY-NC-SA 4.0: compartir y modificar citando a los autores, sin uso comercial, con la misma licencia. Textos completos: LICENSE y LICENSE-images.md.",
+ "hist.gu2.8.dit": "El código del juego también tiene su licencia. Lee el principio del archivo LICENSE.",
+ "hist.gu2.8.bravo": "GNU GENERAL PUBLIC LICENSE, versión 3: la licencia del código de Terminagotchi. Las imágenes tienen la suya, en LICENSE-images.md.",
+ "hist.gu2.8.adulte": "head muestra las 10 primeras líneas. El texto oficial de la GPL está en inglés: es el que cuenta ante un juez.",
+ "gu.licence.jeu": "El código del juego: GNU GPL versión 3 o posterior (GPL-3.0-or-later).\nLas imágenes, los dibujos, la historia y los sonidos: Creative Commons BY-NC-SA 4.0 (citar a los autores, sin uso comercial, compartir con la misma licencia).\nTextos completos: los archivos LICENSE y LICENSE-images.md, en el código del juego.",
+ "app.licences": "Licencias: el código está bajo la GNU GPL versión 3 o posterior (archivo LICENSE); las imágenes, los dibujos, la historia y los sonidos bajo Creative Commons BY-NC-SA 4.0 (archivo LICENSE-images.md).",
+ "ob.mots.caracteres": "En tu idioma no hay espacios entre las palabras, así que el adivinador cuenta los caracteres, uno a uno (en histoire.txt, el juego puso un espacio entre cada uno). La idea es la misma."
 }

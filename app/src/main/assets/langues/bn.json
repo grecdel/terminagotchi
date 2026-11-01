@@ -6969,5 +6969,14 @@
  "dn.tel.awk": "অ্যাপের ছোট awk (একটাই কমান্ড, পাইপ ছাড়া): -F, নকশা NR>1, {print}, যোগফল, END।",
  "dn.tel.sqlite": "অ্যাপের ছোট sqlite3, ফোনের SQLite-এ: শুধু পড়া, একবারে একটা প্রশ্ন (SELECT, .tables, .schema)।",
  "dn.tel.sqlite_lecture": "এখানে ডেটাবেস শুধু পড়ার জন্য: শুধু SELECT, .tables আর .schema।",
- "dn.tel.awk_tuyau": "অ্যাপের ছোট awk পাইপে জোড়া যায় না: ফাইলটা সরাসরি দাও (awk -F, '…' collection.csv)।"
+ "dn.tel.awk_tuyau": "অ্যাপের ছোট awk পাইপে জোড়া যায় না: ফাইলটা সরাসরি দাও (awk -F, '…' collection.csv)।",
+ "hist.gu1.8.dit": "আর Terminagotchi কোন লাইসেন্সের অধীনে? গিল্ডকে জিজ্ঞেস করো।",
+ "hist.gu1.8.bravo": "খেলার কোড GPL-এর অধীনে: এটা মুক্ত, আর মুক্তই থাকবে। ছবি, আঁকা, গল্প আর শব্দগুলো Creative Commons BY-NC-SA-এর অধীনে।",
+ "hist.gu1.8.adulte": "GPL-3.0-or-later: যে-ই খেলাটা আবার বিতরণ করুক, বদলানো হলেও, তার কোড মুক্ত রাখতে হবে (কপিলেফট)। CC BY-NC-SA 4.0: লেখকদের নাম দিয়ে, বাণিজ্যিক কাজে না লাগিয়ে, একই লাইসেন্সে ভাগ করা আর বদলানো যায়। পুরো লেখা: LICENSE আর LICENSE-images.md।",
+ "hist.gu2.8.dit": "খেলার কোডেরও নিজের লাইসেন্স আছে। LICENSE ফাইলের শুরুটা পড়ো।",
+ "hist.gu2.8.bravo": "GNU GENERAL PUBLIC LICENSE, সংস্করণ 3: Terminagotchi-র কোডের লাইসেন্স। ছবিগুলোর নিজেদের লাইসেন্স আছে, LICENSE-images.md-এ।",
+ "hist.gu2.8.adulte": "head প্রথম 10টি লাইন দেখায়। GPL-এর সরকারি লেখা ইংরেজিতে: আদালতে সেটাই গণ্য হয়।",
+ "gu.licence.jeu": "খেলার কোড: GNU GPL সংস্করণ 3 বা তার পরের (GPL-3.0-or-later)।\nছবি, আঁকা, গল্প আর শব্দ: Creative Commons BY-NC-SA 4.0 (লেখকদের নাম দাও, বাণিজ্যিক ব্যবহার নয়, একই লাইসেন্সে ভাগ করো)।\nপুরো লেখা: খেলার কোডে LICENSE আর LICENSE-images.md ফাইল।",
+ "app.licences": "লাইসেন্স: কোড GNU GPL সংস্করণ 3 বা তার পরের অধীনে (ফাইল LICENSE); ছবি, আঁকা, গল্প আর শব্দ Creative Commons BY-NC-SA 4.0-এর অধীনে (ফাইল LICENSE-images.md)।",
+ "ob.mots.caracteres": "তোমার ভাষায় শব্দের মাঝে ফাঁকা জায়গা নেই, তাই অনুমান-যন্ত্র অক্ষরগুলো একটা একটা করে গোনে (histoire.txt-এ খেলাটা প্রতিটার মাঝে একটা ফাঁকা জায়গা দিয়েছে)। নিয়মটা একই।"
 }

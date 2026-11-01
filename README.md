@@ -175,3 +175,20 @@ ne rapportent rien : il faut les taper.
 
 Le code est public. Idées, retours de joueurs de tous âges, corrections de traduction et relectures par des
 enseignants ou des spécialistes sont les bienvenus dans les *Issues*.
+
+---
+
+## Licences
+
+Terminagotchi est un logiciel libre, fait par **les contributeurs de Terminagotchi**.
+
+- 🧩 **Le code** (Python, Kotlin, JavaScript…) est sous licence **GNU GPL version 3 ou toute version ultérieure**
+  (GPL-3.0-or-later) : tu peux l'utiliser, l'étudier, le partager et l'améliorer, à condition que tes versions
+  restent libres elles aussi. Le texte complet est dans le fichier [`LICENSE`](LICENSE).
+- 🎨 **Les images, les dessins, les textes de l'histoire et les sons** sont sous licence
+  **Creative Commons BY-NC-SA 4.0** : tu peux les partager et les modifier en citant les contributeurs de
+  Terminagotchi, sans usage commercial, et sous la même licence. Les détails et la liste des dossiers concernés
+  sont dans [`LICENSE-images.md`](LICENSE-images.md).
+- 🔤 Les polices du site (`site/public/polices/`) gardent leur propre licence (SIL Open Font License).
+
+Dans le jeu, la Guilde des Bâtisseurs Libres explique ces licences, et `tg aide` les rappelle.

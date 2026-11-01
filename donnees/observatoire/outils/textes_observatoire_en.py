@@ -672,4 +672,5 @@ V = [
  "How many \"Fire\" and \"not Fire\" examples? Count the 4th column.",
  "10 and 10: well-balanced examples.",
  "cut -d ' ' -f 4 keeps the 4th column; sort | uniq -c counts each value (the frequencies).",
+ "In your language there are no spaces between words, so the guesser counts characters, one by one (in histoire.txt, the game put a space between each one). The idea is the same.",
 ]
