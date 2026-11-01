@@ -18,6 +18,8 @@ binding = "DB"
 database_name = "terminagotchi"
 # Rempli automatiquement par le déploiement GitHub (ne pas modifier à la main)
 database_id = "00000000-0000-0000-0000-000000000000"
+# migrations/*.sql : appliquées par le déploiement après schema.sql (wrangler d1 migrations apply), une fois chacune
+migrations_dir = "migrations"
 
 # Chaque jour à 3 h 17 (UTC) : efface ce qui a dépassé sa durée de conservation
 # (comptes inactifs, adresses IP des compteurs anti-abus, jetons et sessions expirés) — voir CONSERVATION dans src/worker.js.

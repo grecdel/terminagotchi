@@ -2,7 +2,8 @@ name: Mettre le site en ligne
 
 on:
   push:
-    branches: [main]
+    # nouveau-bestiaire : les tests seulement (la mise en ligne ne se fait que depuis main)
+    branches: [main, nouveau-bestiaire]
     paths: ["site/**", ".github/workflows/site.yml"]
   workflow_dispatch:
 
@@ -28,22 +29,35 @@ jobs:
           node-version: "22"
 
       - name: Tester la logique du site
-        run: (node --no-warnings test/test.mjs && node --no-warnings test/tirage.mjs) 2>&1 | tee ../test-site.log; test ${PIPESTATUS[0]} -eq 0
+        run: (node --no-warnings test/test.mjs && node --no-warnings test/tirage.mjs && node --no-warnings test/migrations.mjs) 2>&1 | tee ../test-site.log; test ${PIPESTATUS[0]} -eq 0
 
       - name: Tester avec l'outil officiel de Cloudflare (en local)
         run: |
+          set -o pipefail
           npx --yes wrangler@3 d1 execute terminagotchi --local --file=schema.sql
+          npx wrangler@3 d1 migrations apply terminagotchi --local
           (npx wrangler@3 dev --local --port 8787 > dev.log 2>&1 &)
           for i in $(seq 1 60); do curl -sf localhost:8787/api/classement > /dev/null && break; sleep 2; done
           curl -sf -X POST localhost:8787/api/inscription -H 'content-type: application/json' -d '{"pseudo":"TestCI"}' | grep -q '"cle"'
           curl -sf localhost:8787/ | grep -q Terminagotchi
           curl -sfI localhost:8787/ctf/TestCI/1 | grep -qi x-drapeau
           echo "✔ le site fonctionne avec wrangler"
+          # le déploiement rejoué sur une base pleine (comme la vraie) : rien ne se perd, aucune migration ne repasse
+          pkill -f "wrangler.*dev" || true; sleep 2
+          npx wrangler@3 d1 execute terminagotchi --local --file=schema.sql
+          npx wrangler@3 d1 migrations apply terminagotchi --local
+          npx wrangler@3 d1 execute terminagotchi --local --json --command \
+            "SELECT (SELECT COUNT(*) FROM joueurs WHERE pseudo = 'TestCI') AS j, (SELECT COUNT(*) FROM d1_migrations) AS m, (SELECT COUNT(*) FROM sqlite_master WHERE name = 'pseudos_guilde') AS t" > verif.json
+          N=$(ls migrations/*.sql | wc -l)
+          N=$N node -e 'const r=JSON.parse(require("fs").readFileSync("verif.json","utf8"))[0].results[0];console.log(r);process.exit(r.j===1&&r.m===Number(process.env.N)&&r.t===1?0:1)'
+          echo "✔ migrations appliquées une seule fois chacune, données gardées"
 
       - name: Vérifier les secrets Cloudflare
         id: secrets
         run: |
-          if [ -n "$CLOUDFLARE_API_TOKEN" ] && [ -n "$CLOUDFLARE_ACCOUNT_ID" ]; then
+          if [ "$GITHUB_REF" != "refs/heads/main" ]; then
+            echo "::notice::Branche $GITHUB_REF_NAME : le site est testé mais pas mis en ligne (seulement depuis main)."
+          elif [ -n "$CLOUDFLARE_API_TOKEN" ] && [ -n "$CLOUDFLARE_ACCOUNT_ID" ]; then
             echo "ok=1" >> "$GITHUB_OUTPUT"
           else
             echo "::notice::Secrets Cloudflare absents : le site est testé mais pas mis en ligne."
@@ -81,6 +95,9 @@ jobs:
           test -n "$ID"
           sed -i "s/00000000-0000-0000-0000-000000000000/$ID/" wrangler.toml
           npx wrangler@3 d1 execute terminagotchi --remote --file=schema.sql 2>&1 | tee -a db.log
+          # migrations/*.sql, chacune une seule fois (wrangler les note dans la table d1_migrations) ; toutes sont
+          # ré-exécutables et ne suppriment rien (test/migrations.mjs), donc sûres même sur une base qui les a déjà
+          npx wrangler@3 d1 migrations apply terminagotchi --remote 2>&1 | tee -a db.log
 
       - name: Mettre en ligne
         if: steps.secrets.outputs.ok == '1'
@@ -96,7 +113,7 @@ jobs:
           test -s url.txt
 
       - name: Publier l'adresse du site (branche site-info)
-        if: always()
+        if: always() && github.ref == 'refs/heads/main'
         run: |
           mkdir -p /tmp/info && cd /tmp/info
           cp "$GITHUB_WORKSPACE/site/url.txt" . 2>/dev/null || true
