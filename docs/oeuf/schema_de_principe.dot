@@ -1,0 +1,74 @@
+// Schéma de principe de l'œuf physique Terminagotchi (proposition, à valider).
+// Régénérer : dot -Tsvg schema_de_principe.dot -o schema_de_principe.svg
+//             dot -Tpng -Gdpi=150 schema_de_principe.dot -o schema_de_principe.png
+// Licence : CERN-OHL-S-2.0 (proposée) pour le matériel.
+digraph oeuf {
+  graph [rankdir=TB, fontname="DejaVu Sans", fontsize=20, labelloc=t, nodesep=0.45, ranksep=0.6,
+         bgcolor="white", pad=0.3,
+         label=<<b>Œuf physique Terminagotchi — schéma de principe</b><br/><font point-size="13">trait plein = variante simple · tirets = variante complète · pointillés violets = option LoRa (maillage)</font>>];
+  node  [fontname="DejaVu Sans", fontsize=12, shape=box, style="rounded,filled", fillcolor="#f2f2f2", color="#555555", penwidth=1.4, margin="0.18,0.10"];
+  edge  [fontname="DejaVu Sans", fontsize=10, color="#555555", penwidth=1.4];
+
+  // ---- énergie ----
+  subgraph cluster_energie {
+    label=<<b>Énergie</b>>; style="rounded,filled"; fillcolor="#fff6e0"; color="#d9a400"; fontsize=14;
+    usb      [label=<<b>Prise USB-C</b><br/><font point-size="10">charge + câble vers le PC</font>>, fillcolor="#ffffff"];
+    chargeur [label=<<b>Chargeur LiPo protégé</b><br/><font point-size="10">charge 1 cellule, 4,2 V max<br/>coupe si trop chaud / trop vide</font>>, fillcolor="#ffe9b3"];
+    batterie [label=<<b>Batterie LiPo 3,7 V</b><br/><font point-size="10">600 à 1500 mAh, avec protection<br/>trappe fermée par une vis</font>>, fillcolor="#ffd36b"];
+    inter    [label=<<b>Interrupteur</b><br/><font point-size="10">marche / arrêt</font>>, fillcolor="#ffffff"];
+    regul    [label=<<b>Régulateur 3,3 V</b><br/><font point-size="10">souvent déjà sur la carte</font>>, fillcolor="#ffffff"];
+  }
+
+  // ---- cerveau ----
+  mcu [label=<<b>Microcontrôleur ESP32-S3</b><br/><font point-size="10">le « cerveau » : fait vivre la créature<br/>Bluetooth et Wi-Fi intégrés (Wi-Fi éteint)<br/>mémoire pour les dessins de la créature</font>>,
+       fillcolor="#cfe8ff", color="#1f6fb2", penwidth=2.2, fontsize=13];
+
+  // ---- interface ----
+  subgraph cluster_interface {
+    label=<<b>Ce que l'enfant voit, touche, entend</b>>; style="rounded,filled"; fillcolor="#e9f7ea"; color="#3a9a45"; fontsize=14;
+    ecran   [label=<<b>Écran couleur 1,69 pouce</b><br/><font point-size="10">240 × 280 points, IPS<br/>la créature animée</font>>, fillcolor="#c8efcb"];
+    boutons [label=<<b>3 boutons</b><br/><font point-size="10">gauche · valider · droite</font>>, fillcolor="#c8efcb"];
+    buzzer  [label=<<b>Buzzer piézo</b><br/><font point-size="10">bips « 8 bits »</font>>, fillcolor="#c8efcb"];
+    ampli   [label=<<b>Petit ampli + haut-parleur</b><br/><font point-size="10">vrais sons et petites musiques</font>>, fillcolor="#ffffff", style="rounded,filled,dashed"];
+    capteur [label=<<b>Capteur de mouvement</b><br/><font point-size="10">secouer, retourner l'œuf</font>>, fillcolor="#ffffff", style="rounded,filled,dashed"];
+    vibreur [label=<<b>Vibreur</b><br/><font point-size="10">la créature appelle</font>>, fillcolor="#ffffff", style="rounded,filled,dashed"];
+  }
+
+  // ---- LoRa ----
+  subgraph cluster_lora {
+    label=<<b>Option LoRa : les œufs se parlent</b>>; style="rounded,filled,dotted"; fillcolor="#f3ecff"; color="#7a4fc4"; fontsize=14; penwidth=2;
+    lora    [label=<<b>Module radio LoRa 868 MHz</b><br/><font point-size="10">bande libre européenne<br/>1 % du temps d'émission max</font>>, fillcolor="#e2d4ff", style="rounded,filled,dotted", color="#7a4fc4"];
+    antenne [label=<<b>Antenne 868 MHz</b><br/><font point-size="10">toujours branchée<br/>avant d'émettre</font>>, fillcolor="#ffffff", style="rounded,filled,dotted", color="#7a4fc4"];
+  }
+
+  // ---- monde extérieur ----
+  pc  [label=<<b>PC (terminal)</b><br/><font point-size="10">tg oeuf envoie / reprend</font>>, shape=component, fillcolor="#ffffff"];
+  tel [label=<<b>Téléphone (appli)</b><br/><font point-size="10">transfert sans fil</font>>, shape=component, fillcolor="#ffffff", style="filled,dashed"];
+  autres [label=<<b>Autres œufs</b><br/><font point-size="10">jusqu'à 3 sauts</font>>, shape=egg, fillcolor="#e2d4ff", style="filled,dotted", color="#7a4fc4"];
+
+  // liaisons énergie
+  usb -> chargeur [label="5 V"];
+  chargeur -> batterie [label="charge"];
+  batterie -> inter;
+  inter -> regul;
+  regul -> mcu [label="3,3 V", color="#d9a400", penwidth=2];
+
+  // données
+  pc -> usb [label="câble USB-C", dir=both];
+  usb -> mcu [label="données (série)", dir=both, constraint=false];
+  tel -> mcu [label="Bluetooth basse conso.", dir=both, style=dashed];
+
+  mcu -> ecran   [label="SPI (image)"];
+  boutons -> mcu [label="3 fils"];
+  mcu -> buzzer  [label="1 fil"];
+  mcu -> ampli   [label="I2S (son)", style=dashed];
+  capteur -> mcu [label="I2C", style=dashed];
+  mcu -> vibreur [label="1 fil", style=dashed];
+  mcu -> lora    [label="SPI", dir=both, style=dotted, color="#7a4fc4", penwidth=2];
+  lora -> antenne [style=dotted, color="#7a4fc4", penwidth=2];
+  antenne -> autres [label="ondes radio (maillage)", dir=both, style=dotted, color="#7a4fc4", penwidth=2];
+
+  { rank=same; pc; tel; }
+  { rank=same; usb; }
+  { rank=same; batterie; inter; regul; }
+}

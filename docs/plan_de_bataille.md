@@ -591,6 +591,7 @@ une boîte codée (il ne peut pas savoir ce qui a été maîtrisé hors ligne). 
 Schéma de principe d'abord (à valider avec le propriétaire) : ESP32 + petit écran couleur, coque STL « clic pour
 ouvrir » d'après les 9 œufs, boutons, batterie ; usages et fonction des boutons à définir ensemble ; transfert d'un
 terminagotchi ; option LoRa pour que les œufs se parlent en maillage (§ 7.11).
+Proposition à valider (1er novembre) : `docs/oeuf/proposition.md` (variantes, pièces, sécurité, licences, questions).
 
 ## Ce qui attend une décision ou une action du propriétaire
 
