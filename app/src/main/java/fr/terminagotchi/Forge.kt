@@ -205,32 +205,36 @@ object Forge {
     fun forgesDe(ligne: String?): List<Atelier> = (ligne ?: "").split(SEPARATEURS).mapNotNull { forgeDe(it) }
 
     // ---------------------------------------------------------------- ce que le jeu pose dans la forge (mêmes textes que le PC)
+    /** Le texte d'une clé SANS les marques de sens d'écriture (RLM, LRI…) que Langue ajoute en arabe et en ourdou :
+     *  ces textes vont dans des FICHIERS de code (serpent.py, devinette.sh), identiques à ceux du PC. */
+    private fun tf(cle: String, vararg p: Pair<String, Any?>): String = t(cle, *p).replace(Regex("[\u200E\u200F\u2066-\u2069]"), "")
+
     fun serpentPy(): String {
-        val salut = sur(t("fo.serpent.salut", "nom" to "{nom}")).replace("'", "’")
-        return "# " + t("fo.serpent.com1") + "\n# " + t("fo.serpent.com2") + " python3 serpent.py NOM FOIS\n" +
+        val salut = sur(tf("fo.serpent.salut", "nom" to "{nom}")).replace("'", "’")
+        return "# " + tf("fo.serpent.com1") + "\n# " + tf("fo.serpent.com2") + " python3 serpent.py NOM FOIS\n" +
             "import sys\n\n" +
-            "nom = sys.argv[1]          # " + t("fo.serpent.com3") + "\n" +
-            "fois = int(sys.argv[2])    # " + t("fo.serpent.com4") + "\n\n" +
+            "nom = sys.argv[1]          # " + tf("fo.serpent.com3") + "\n" +
+            "fois = int(sys.argv[2])    # " + tf("fo.serpent.com4") + "\n\n" +
             "for i in range(fois):\n" +
             "    print(f\"{i + 1}. " + salut + "\")\n"
     }
 
     fun devinetteSh(): String = ("#!/bin/sh\n" +
-        "# " + sur(t("fo.devinette.com")) + "\n" +
+        "# " + sur(tf("fo.devinette.com")) + "\n" +
         "secret=\$(( \$(date +%s) % 10 + 1 ))\n" +
         "essais=0\n" +
         "reponse=0\n" +
-        "echo \"" + sur(t("fo.devinette.debut")) + "\"\n" +
+        "echo \"" + sur(tf("fo.devinette.debut")) + "\"\n" +
         "while [ \"\$reponse\" != \"\$secret\" ]; do\n" +
         "  read reponse || exit 1\n" +
         "  essais=\$((essais + 1))\n" +
         "  if [ \"\$reponse\" -lt \"\$secret\" ] 2>/dev/null; then\n" +
-        "    echo \"" + sur(t("fo.devinette.plus")) + "\"\n" +
+        "    echo \"" + sur(tf("fo.devinette.plus")) + "\"\n" +
         "  elif [ \"\$reponse\" -gt \"\$secret\" ] 2>/dev/null; then\n" +
-        "    echo \"" + sur(t("fo.devinette.moins")) + "\"\n" +
+        "    echo \"" + sur(tf("fo.devinette.moins")) + "\"\n" +
         "  fi\n" +
         "done\n" +
-        "echo \"" + sur(t("fo.devinette.bravo", "n" to "@@")) + "\"\n").replace("@@", "\$essais")
+        "echo \"" + sur(tf("fo.devinette.bravo", "n" to "@@")) + "\"\n").replace("@@", "\$essais")
 
     // ================================================================ l'état, le terrain, le carnet de la forge
     fun etat(jeu: Jeu): JSONObject {
