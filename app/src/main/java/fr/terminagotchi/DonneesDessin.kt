@@ -61,16 +61,6 @@ object DonneesDessin {
         tl.texte(t("dn.labo.${x0.de}"), x + 16 * z, y + h - 9 * z, 10.5f * z, EspaceDessin.DOUX, false, 'g')
         tl.texte("→ " + t("dn.labo.${x0.vers}"), x + w - 16 * z, y + h - 9 * z, 10.5f * z, c, true, 'd')
     }
-        // l'instrument, qui tourne doucement
-        tl.cercle(cx, ty + 2 * z, 17 * z, c, 2.4f * z)
-        tl.lueur(cx, ty + 2 * z, 12 * z, a(c, 70))
-        val an = q * 2 * PI
-        tl.ligne(cx, ty + 2 * z, cx + (13 * z * cos(an)).toFloat(), ty + 2 * z + (13 * z * sin(an)).toFloat(), a(EspaceDessin.TEXTE, 180), 1.6f * z)
-        tl.texte(SYMBOLES[x0.instrument] ?: "📊", cx, ty + 2 * z, 14 * z, EspaceDessin.TEXTE, false, 'c')
-        tl.texte(x0.outil + " · " + t("dn.instrument.${x0.instrument}"), cx, y + 13 * z, 11.5f * z, c, true, 'c', true)
-        tl.texte(t("dn.labo.${x0.de}"), x + 16 * z, y + h - 9 * z, 10.5f * z, EspaceDessin.DOUX, false, 'g')
-        tl.texte("→ " + t("dn.labo.${x0.vers}"), x + w - 16 * z, y + h - 9 * z, 10.5f * z, c, true, 'd')
-    }
 
     /** Le podium : les 3 plus fortes attaques (des barres qui montent, la première dorée). */
     fun podium(tl: Toile, valeurs: List<Pair<String, Int>>, phase: Double, x: Float, y: Float, w: Float, h: Float, z: Float) {
