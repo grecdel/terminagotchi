@@ -424,6 +424,10 @@ console.log("Salle d'entraînement : exercices vérifiés, records, badges, Star
   } finally {
     Date.now = sauveNow;
   }
+  // L'horloge avancée d'un jour a pu passer à la semaine suivante (le dimanche) : le site a alors attribué en avance
+  // les Stars de la semaine en cours. En vrai le temps ne recule jamais ; on efface ce que ce saut a laissé.
+  await env.DB.prepare("DELETE FROM titres_hebdo WHERE semaine = ?").bind(E.semaine()).run();
+  await env.DB.prepare("DELETE FROM config WHERE cle = 'hebdo'").run();
   verifier(r.j.entrainement?.verdicts?.e000000000a1 === false, `plus de ${E.MAX_VERIFIES_JOUR} exercices vérifiés le même jour : non vérifié`);
   await env.DB.prepare("DELETE FROM exercices WHERE partie = '9'").run();
   // la semaine dernière : une Star par famille (calculée une fois, la semaine suivante)
