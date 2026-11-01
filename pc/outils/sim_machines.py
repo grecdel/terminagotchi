@@ -360,6 +360,10 @@ if QUI == "hugo":
 if os.environ.get("TG_DEBUG"):
     for j in journal:
         print("    ·", j)
+elif not histoire.fini(st, "machinerie"):                # bloqué (vu une fois en CI, 1er novembre) : les dernières lignes,
+    print("    bloqué ; machine :", f"nproc={M.coeurs()} justes={sorted(M.coeurs_justes())}")   # pour comprendre
+    for j in journal[-8:]:
+        print("    ·", str(j)[:300])
 SH.fermer()
 shutil.rmtree(DOUBLURES, ignore_errors=True)
 print(f"[{QUI}] {ok} réussis, {ko} échoués, {len(journal)} lignes, {sum(1 for j in journal if j[4].strip())} lectures   (HOME={HOME})")
