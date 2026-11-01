@@ -811,6 +811,73 @@ des locuteurs.
 - mksh et toybox ne sont vérifiés qu'en CI (pas installés sur la machine de travail).
 - Sur Windows (sans bash), la plupart des étapes du Sommet sont cachées : le monde est fait pour Linux, macOS et le
   téléphone.
+
+**📟 Le Poste de Contrôle — codé (1er novembre).**
+
+*Fichiers.*
+- 10 fiches (`donnees/controle/outils/fiches_controle.py`, rejeu bash : 27 cas), données `donnees/controle.json`,
+  textes `donnees/controle/outils/textes_controle_*.py` (14 langues), vecteurs communs `donnees/controle/vecteurs.json`.
+- Leçons ct0 → ct7 sur PC (`pc/tg/controle.py`) et sur Android (`Controle.kt`, `ControleDessin.kt`).
+- Chapitre et dossier `controle`, commande `controle` (alias bash/zsh/fish/PowerShell, `tg controle`). Le Poste s'ouvre
+  après les niveaux 0 à 6 du tronc commun ; annonce du monde à son tour. Icône 📟 (🎛 ne passait pas le test de largeur
+  des cartes), chapitre n° 22, famille Constructs, objet pupitre, titre « Admin du Poste ».
+
+*Règles du monde.*
+- **Lecture seule sur la vraie machine.** Le jeu lit `/proc`, `free`, `df`, `/etc/os-release`, la liste des paquets
+  (`rpm -qa` si `/usr/lib/sysimage/rpm` existe, sinon `dpkg -l`) et les services (`systemctl list-units`, en lecture).
+  Il ne garde aucune liste : il compte.
+- **Rien n'est changé.** `dnf`/`apt install`, `systemctl start/stop/restart`, `useradd`, `crontab -e`, `shutdown`,
+  `sudo` reçoivent « avec un adulte » (`ct.indice.adulte`, `ct.indice.sudo`). L'installation de Linux est racontée (VM
+  d'abord, empreinte vérifiée, sauvegarde). L'équipage est un fichier du Poste (`equipage.txt`, `controle useradd`).
+  Les réveils sont un fichier lu par le jeu, qui calcule la prochaine sonnerie sans jamais les lancer.
+- **On n'arrête que les habitants du jeu.** La vague = 3 suspects et un veilleur, de vrais `sleep` renommés (`exec -a
+  NOM sleep 900`) qui s'éteignent seuls ; le jeu vérifie le numéro ET le nom (`/proc/PID/cmdline`) et ne touche qu'aux
+  numéros de `lances.json`. `kill` d'un numéro étranger, `kill 1`, `kill -1`, `killall`/`pkill` sans « fictif » :
+  avertissement à chaque fois. Windows et téléphone : vague simulée (`controle ps`, `controle arrete PID` ; sur le
+  téléphone, `kill` est intercepté par le jeu).
+
+*Les leçons.*
+- **ct0 la porte** : `ls`, `controle consignes`.
+- **ct1 les habitants** : `ps`, `echo $$`, `ls /proc/$$`, `head -3 /proc/$$/status`, `controle habitants`, `sleep 5`,
+  `sleep 60 &`, `jobs`, `kill %1`, `top` (téléphone : `top -n 1`).
+- **ct2 les jauges** : `free -h`, `df -h .`, `du -sh entrepot/*`, la caisse la plus lourde, `uptime`, `nproc`,
+  `controle jauges` (pourcentages).
+- **ct3 le sac à dos** : `echo $HOME`, PATH une ligne par dossier et compté, `which ls`, `export`, `bash -c`, `alias`,
+  `source sac_a_dos.sh`, `echo $POSTE` (téléphone : sur une ligne, `.tgrc` = `.bashrc`).
+- **ct4 le carnet de bord** : `controle journal`, `tail -n 5`, `grep -c ALERTE`, `tail -f`, `journalctl --user`,
+  `dmesg | tail -3` (refus acceptés ; téléphone : `logcat`).
+- **ct5 les réveils** : `controle reveils`, `crontab -l` (lecture), le réveil demandé (`controle cron "M H J M S"`,
+  modulo), `>> reveils.crontab`, la prochaine sonnerie.
+- **ct6 Linux de A à Z** (§ 7.13) : `cat /etc/os-release`, `controle distribution`, les familles d/a/p, `controle
+  installer`, compter les paquets, `controle magasin`, `systemctl list-units … --state=running`, `controle services`,
+  `head -3 /etc/passwd`, `controle useradd`, `tail -2 equipage.txt` (téléphone : `getprop`).
+- **ct7 l'alerte** : `controle alerte`, `ps aux | grep fictif`, `kill PID PID PID` (pas le veilleur), `controle tableau`.
+
+*Le reste.*
+- Vue déployée : le tableau de bord (une jauge qui respire « on regarde », un voyant qui s'éteint « on arrête un
+  habitant », un voyant orange « change la machine : avec un adulte ») ; `free`, `nproc`, `lsblk` restent à
+  l'ordinateur ouvert de la Salle des Rouages.
+- Ponts des Nombres, jamais bloquants : pourcentages, division (jauges, ct2), modulo (`*/15`, ct5).
+- Contenu existant réutilisé sans le changer : `machines0`, `systeme1`, `dortoir0`, `systeme2`, `dortoir1`, `scripts2`.
+  Ponts vers la Salle des Rouages (M4), la Citadelle (processus), la Forge, l'Observatoire, la Guilde.
+- Exploit « Arrêter tous les processus suspects d'une vague » (`controle.vague`, le veilleur épargné). Variantes
+  EXISTANTES favorisées (Machine / Roche) : `engrenaille:mecanique`, `parasouris:neon`, `pavegarde:montagne`.
+- **Ajout transversal (demande du propriétaire)** : sous Windows, `echo j'aime les chats` (apostrophe non fermée, que
+  PowerShell prend pour le début d'un texte et qui fait attendre `>>`) reçoit le conseil « Sous PowerShell, mets ta phrase
+  entre guillemets : echo "j'aime les chats" » (`core.win.apostrophe`, 14 langues ; `core.apostrophe_ouverte`, testé
+  dans `pc/outils/test_windows.py`).
+- Tests : `pc/outils/test_controle.py` (65), `tests/jvm/Controle.kt` (22). Simulation `pc/outils/sim_controle.py` →
+  `docs/simulations/rapport_controle.md`. Captures `pc/outils/capture_controle.py`. Rejeu d'un seul monde en local :
+  `TG_REJEU_MONDE=controle`. En CI, `cron` et `procps` sont installés pour le rejeu.
+- Prompts d'illustrations envoyés au propriétaire (B8, vignette, C1, C3 et E25 à E27 nouveaux ; numéros E à confirmer).
+  Un repli dessiné est affiché en attendant (pupitre en caractères sur PC et dans l'aide du téléphone,
+  `ControleDessin.poste`).
+
+*Reste.*
+- Les illustrations.
+- `rpm -qa` (Fedora) vérifié par le motif et le rejeu, mais pas lancé sur une vraie Fedora (machine de test Ubuntu).
+- Sur le téléphone, le dessin graphique du pupitre (`ControleDessin.poste`) n'est utilisé que par les maquettes et le
+  test ; l'entrée du monde montre le pupitre en caractères.
 - Les traductions des 13 autres langues sont faites par Claude : une relecture par des locuteurs serait bienvenue.
 
 **🗺 Le monde des biomes et les effets des commandes — codé (1er novembre, propositions validées par le propriétaire).**

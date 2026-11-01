@@ -274,8 +274,9 @@ from . import sommet as _som  # noqa: E402        le Sommet (sommet.py) : 3 mond
 from . import forge as _for  # noqa: E402         le neuvième : la Forge (forge.py), la programmation
 from . import atelier as _ate  # noqa: E402       le dixième : l'Atelier (atelier.py, chapitre et lieu « robots »)
 from . import temps as _tmp  # noqa: E402         le onzième : la Bibliothèque du Temps (temps.py), git dans le terrain
+from . import controle as _ctl  # noqa: E402      le douzième : le Poste de Contrôle (controle.py), l'administration système
 MONDES_MODS = {"port": _port, "citadelle": _cit, "crypte": _cry, "machinerie": _mac, "ondes": _ond, "guilde": _gui,
-               "observatoire": _obs, "donnees": _don, "forge": _for, "robots": _ate,
+               "observatoire": _obs, "donnees": _don, "forge": _for, "robots": _ate, "controle": _ctl,
                "sommet": _som, "temps": _tmp}
 # le lieu de chaque monde (la Salle des Rouages : chapitre « machinerie », lieu « machines »)
 PIECES_MODS = {_m.CHAPITRE["piece"]: _m for _m in MONDES_MODS.values()}
@@ -297,6 +298,7 @@ _CMDS_DON = {s_.get("cmd") for l_ in _don.LECONS.values() for s_ in l_["steps"]}
 _CMDS_FOR = {s_.get("cmd") for l_ in _for.LECONS.values() for s_ in l_["steps"]} | \
     {r_ for l_ in _for.LECONS.values() for s_ in l_["steps"] for r_ in s_.get("repli", [])}
 _CMDS_ATE = {s_.get("cmd") for l_ in _ate.LECONS.values() for s_ in l_["steps"]}
+_CMDS_CTL = {s_.get("cmd") for l_ in _ctl.LECONS.values() for s_ in l_["steps"]}
 
 
 def lecons_qui_ouvrent():
@@ -1166,6 +1168,8 @@ def indice(state, step, lignes, tapees, morcs=None):
         conseil = _for.indice(step, tapees)
     if not conseil and step.get("cmd") in _CMDS_ATE:      # l'Atelier : un vrai matériel, la LED, le moteur, la boucle…
         conseil = _ate.indice(step, tapees)
+    if not conseil and step.get("cmd") in _CMDS_CTL:      # le Poste de Contrôle : sudo, le veilleur, un cron sans guillemets…
+        conseil = _ctl.indice(step, tapees)
     if conseil:
         return conseil
     conseil = _indice_cd(state, step, morcs) or _indice_rm(step, tapees) or _indice_barre(step, morcs) \

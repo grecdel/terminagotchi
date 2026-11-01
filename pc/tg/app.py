@@ -1219,6 +1219,9 @@ def _main():
     if mode == "temps":                        # tg temps … : la Bibliothèque du Temps (git, dans le terrain)
         from . import temps
         temps.commande(args[1:])
+    if mode == "controle":                     # tg controle … : le Poste de Contrôle (lecture seule sur la vraie machine)
+        from . import controle
+        controle.commande(args[1:])
         return
     if mode == "donnees":                      # tg donnees … : la Salle des Données (sur sa propre collection)
         from . import donnees

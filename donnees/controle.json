@@ -1,0 +1,267 @@
+{
+ "note": "Généré par donnees/controle/outils/fiches_controle.py ; lu par pc/tg/controle.py et Controle.kt",
+ "entrepot": {
+  "caisses": [
+   "cartes_du_ciel",
+   "journaux_anciens",
+   "pieces_de_rechange",
+   "sons_du_moteur"
+  ],
+  "tailles_kio": [
+   8,
+   32,
+   128,
+   512
+  ]
+ },
+ "journal": {
+  "jour": "2026-11-01",
+  "total": 24,
+  "alertes": [
+   3,
+   4,
+   5,
+   6
+  ],
+  "infos": [
+   "moteur=ok temp=41",
+   "ventilation=ok",
+   "boucliers=100%",
+   "radar=ok cibles=0",
+   "eau=ok niveau=87%",
+   "porte_nord=fermee",
+   "ronde=ok",
+   "batterie=ok charge=93%"
+  ],
+  "textes_alerte": [
+   "moteur=chaud temp=88",
+   "porte_sud=ouverte",
+   "radar=perdu",
+   "eau=fuite niveau=12%",
+   "batterie=faible charge=8%",
+   "boucliers=12%"
+  ]
+ },
+ "sac": {
+  "lignes": [
+   "export POSTE=controle",
+   "export EQUIPAGE=4",
+   "alias rondes='ls entrepot'"
+  ]
+ },
+ "cron": {
+  "exemples": [
+   "0 7 * * 1-5 echo REVEIL >> reveil.log",
+   "*/30 * * * * echo RONDE >> ronde.log"
+  ],
+  "situations": [
+   {
+    "id": "matin_semaine",
+    "rep": "30 7 * * 1-5"
+   },
+   {
+    "id": "midi",
+    "rep": "0 12 * * *"
+   },
+   {
+    "id": "quart_heure",
+    "rep": "*/15 * * * *"
+   },
+   {
+    "id": "dimanche_soir",
+    "rep": "0 20 * * 0"
+   },
+   {
+    "id": "premier_du_mois",
+    "rep": "0 9 1 * *"
+   },
+   {
+    "id": "lundi_8h",
+    "rep": "0 8 * * 1"
+   }
+  ]
+ },
+ "familles": {
+  "lettres": "dap",
+  "distributions": [
+   {
+    "id": "fedora",
+    "nom": "Fedora",
+    "rep": "d"
+   },
+   {
+    "id": "almalinux",
+    "nom": "AlmaLinux",
+    "rep": "d"
+   },
+   {
+    "id": "debian",
+    "nom": "Debian",
+    "rep": "a"
+   },
+   {
+    "id": "ubuntu",
+    "nom": "Ubuntu",
+    "rep": "a"
+   },
+   {
+    "id": "arch",
+    "nom": "Arch Linux",
+    "rep": "p"
+   }
+  ]
+ },
+ "magasins": [
+  {
+   "id": "zypper",
+   "base": "/etc/zypp",
+   "compte": "rpm -qa | wc -l",
+   "installer": "sudo zypper install cowsay",
+   "maj": "sudo zypper update"
+  },
+  {
+   "id": "dnf",
+   "base": "/usr/lib/sysimage/rpm",
+   "compte": "rpm -qa | wc -l",
+   "installer": "sudo dnf install cowsay",
+   "maj": "sudo dnf upgrade"
+  },
+  {
+   "id": "apt",
+   "base": "/var/lib/dpkg/status",
+   "compte": "dpkg -l | grep -c '^ii'",
+   "installer": "sudo apt install cowsay",
+   "maj": "sudo apt update && sudo apt upgrade"
+  },
+  {
+   "id": "pacman",
+   "base": "/var/lib/pacman/local",
+   "compte": "pacman -Q | wc -l",
+   "installer": "sudo pacman -S cowsay",
+   "maj": "sudo pacman -Syu"
+  },
+  {
+   "id": "apk",
+   "base": "/lib/apk/db/installed",
+   "compte": "apk info | wc -l",
+   "installer": "sudo apk add cowsay",
+   "maj": "sudo apk upgrade"
+  }
+ ],
+ "equipage": {
+  "base": [
+   "root:x:0:0:root:/root:/bin/bash",
+   "daemon:x:1:1:daemon:/usr/sbin:/usr/sbin/nologin",
+   "capitaine:x:1000:1000:La capitaine:/home/capitaine:/bin/bash"
+  ],
+  "uid_depart": 1001
+ },
+ "vague": {
+  "suspects": [
+   "bavard_fictif",
+   "bruyant_fictif",
+   "copieur_fictif",
+   "fouineur_fictif",
+   "glouton_fictif"
+  ],
+  "par_vague": 3,
+  "veilleur": "veilleur_fictif",
+  "secondes": 900
+ },
+ "tableau": {
+  "regles": [
+   {
+    "motif": "^(sudo\\s+)?(dnf|yum|apt|apt-get|zypper|pacman|brew)\\s+(install|remove|upgrade|update|-S)",
+    "jauge": "magasin",
+    "sens": "change"
+   },
+   {
+    "motif": "^(rpm\\s+-q|dpkg(-query)?\\s+-l|apt\\s+(list|search|show)|dnf\\s+(list|search|info)|pacman\\s+-Q)",
+    "jauge": "magasin",
+    "sens": "lit"
+   },
+   {
+    "motif": "^(sudo\\s+)?systemctl\\s+(--user\\s+)?(start|stop|restart|reload|enable|disable)\\b",
+    "jauge": "services",
+    "sens": "change"
+   },
+   {
+    "motif": "^(systemctl|get-service|gsv)\\b",
+    "jauge": "services",
+    "sens": "lit"
+   },
+   {
+    "motif": "^(kill|pkill|killall|stop-process|spps)\\b",
+    "jauge": "habitants",
+    "sens": "arrete"
+   },
+   {
+    "motif": "^(ps|top|htop|pgrep|jobs|get-process|gps)\\b",
+    "jauge": "habitants",
+    "sens": "lit"
+   },
+   {
+    "motif": "^(free|vmstat)\\b",
+    "jauge": "memoire",
+    "sens": "lit"
+   },
+   {
+    "motif": "^(df|du|get-psdrive)\\b",
+    "jauge": "entrepot",
+    "sens": "lit"
+   },
+   {
+    "motif": "^(uptime|nproc)\\b",
+    "jauge": "charge",
+    "sens": "lit"
+   },
+   {
+    "motif": "^(export|alias|source|unset)\\s|^\\.\\s+\\S",
+    "jauge": "sac",
+    "sens": "change"
+   },
+   {
+    "motif": "^(env|printenv|which)\\b|^echo\\s+.*\\$(HOME|PATH|USER|SHELL|PWD|LANG|POSTE|COULEUR)\\b",
+    "jauge": "sac",
+    "sens": "lit"
+   },
+   {
+    "motif": "^(journalctl|dmesg)\\b|^tail\\s+(-\\w+\\s+)*-\\w*f",
+    "jauge": "carnet",
+    "sens": "lit"
+   },
+   {
+    "motif": "^crontab\\s+-l\\b",
+    "jauge": "reveil",
+    "sens": "lit"
+   },
+   {
+    "motif": "^crontab\\b",
+    "jauge": "reveil",
+    "sens": "change"
+   },
+   {
+    "motif": "^(sudo\\s+)?(useradd|userdel|usermod|adduser|passwd)\\b",
+    "jauge": "equipage",
+    "sens": "change"
+   },
+   {
+    "motif": "^(id|whoami|groups)\\b|/etc/passwd",
+    "jauge": "equipage",
+    "sens": "lit"
+   }
+  ]
+ },
+ "couleurs": {
+  "habitants": 141,
+  "memoire": 78,
+  "entrepot": 179,
+  "charge": 203,
+  "sac": 215,
+  "carnet": 229,
+  "reveil": 215,
+  "magasin": 117,
+  "services": 141,
+  "equipage": 117
+ }
+}

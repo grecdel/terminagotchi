@@ -62,6 +62,43 @@ verifier(verif.motif_ok({"re": r"^pwd\b"}, "Get-Location", "/tmp") and verif.mot
          "une leçon qui attend pwd accepte Get-Location")
 verifier(not core.commande_existe("blablabla"), "un mot inventé reste inconnu")
 
+# 2 bis. PowerShell : l'apostrophe ouvre un texte (echo j'aime les chats attend la suite avec >>, puis coupe la phrase)
+from tg import langue  # noqa: E402
+langue.definir("fr")
+verifier(core.apostrophe_ouverte("echo j'aime les chats") and core.apostrophe_ouverte("Write-Output l'eau")
+         and core.apostrophe_ouverte("echo j'aime les chats\n'") and core.apostrophe_ouverte("echo 'bonjour"),
+         "echo j'aime les chats, Write-Output l'eau, une apostrophe seule : repérés")
+verifier(not core.apostrophe_ouverte('echo "j\'aime les chats"') and not core.apostrophe_ouverte("echo 'bonjour'")
+         and not core.apostrophe_ouverte("echo bonjour") and not core.apostrophe_ouverte("ls l'eau"),
+         "entre guillemets, entre apostrophes, sans apostrophe, une autre commande : rien à dire")
+st = {"terminal": [], "bulle": None}
+dits = []
+vrai_say, vrai_feed_suite = core.say, None
+core.say = lambda s_, texte, secs=8: dits.append(texte)
+try:
+    core.feed(st, "echo j'aime les chats")
+except Exception:                           # noqa: BLE001  (le reste du repas n'est pas testé ici)
+    pass
+finally:
+    core.say = vrai_say
+conseil = langue.t("core.win.apostrophe")
+verifier(conseil in st["terminal"] and conseil in dits and 'echo "j\'aime les chats"' in conseil,
+         "le conseil du jeu dans le terminal : « mets ta phrase entre guillemets : echo \"j'aime les chats\" »")
+manque = [c for c in langue.LANGUES if "core.win.apostrophe" not in langue._charger(c)]
+verifier(not manque and all('echo "' in langue._charger(c)["core.win.apostrophe"] for c in langue.LANGUES),
+         f"le conseil existe dans les 14 langues, avec la commande entre guillemets {manque}")
+st2 = {"terminal": []}
+core.IS_WIN = False
+core.say = lambda s_, texte, secs=8: dits.append(texte)
+try:
+    core.feed(st2, "echo j'aime les chats")
+except Exception:                           # noqa: BLE001
+    pass
+finally:
+    core.say = vrai_say
+    core.IS_WIN = True
+verifier(conseil not in st2.get("terminal", []), "sous Linux (bash), pas de conseil : l'apostrophe y attend aussi, mais bash le montre autrement")
+
 # 3. le terminal intégré : un PowerShell, -NoProfile, -ExecutionPolicy Bypass (pour la session), le bloc du compagnon
 appels = []
 compagnon._powershell = lambda: "powershell"

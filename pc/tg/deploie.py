@@ -741,6 +741,37 @@ def _pellicule_anime(x, phase):
     return [f"📁 {''.join(film)} 🖼"]
 
 
+# ---------------------------------------------------------------- le tableau de bord (le Poste de Contrôle)
+def tableaux(ligne):
+    """Les commandes d'une ligne qui LISENT une jauge du vaisseau, ARRÊTENT un habitant ou CHANGERAIENT la machine
+    (spécification commune, Deploie.kt, vecteurs donnees/controle/vecteurs.json) : [{seg, cmd, jauge, sens}] — ps lit
+    les habitants, kill en arrête un, export change le sac à dos, systemctl restart changerait un service (avec un
+    adulte)… (free, nproc, lsblk restent à l'ordinateur ouvert de la Salle des Rouages.)"""
+    from . import controle, machines
+    out = []
+    bl = blocs(ligne)
+    for c in chaines(bl):
+        for e in c["etapes"]:
+            a = controle.tableau_de(e["texte"])
+            if not a or machines.pieces_de(e["texte"]):
+                continue
+            seg = next((b["seg"] for b in bl if b["g"] == "commande" and b["i"] - 1 == e["debut"]), 0)
+            out.append({"seg": seg, "cmd": e["cmd"], "jauge": a[0], "sens": a[1]})
+    return out
+
+
+def _tableau_anime(x, phase):
+    """Le tableau de bord : une jauge qui oscille (on lit), un voyant qui s'éteint (on arrête), un voyant orange qui
+    clignote (ça changerait la machine : avec un adulte)."""
+    if x["sens"] == "arrete":
+        return [f"👻 {'●' if phase < 0.5 else '○'} → 💤"]
+    if x["sens"] == "change":
+        return [f"⚠ {'🟠' if int(phase * 4) % 2 == 0 else '⚫'} 🧑"]
+    from . import controle
+    p = int(50 + 40 * __import__("math").sin(phase * 6.283))
+    return [f"🎛 {controle.jauge(p, 20)}"]
+
+
 # ---------------------------------------------------------------- les mots pour le dire
 def nom_genre(g):
     return t("dep.genre." + g)
@@ -1038,6 +1069,12 @@ def ecran(ligne, bl, actif, sorties, phase=0.0, largeur=80, dossier=None, pas=Fa
                 out.append(f"  {fg(ANSI['commande'])}⛰ " + t("dep.cordee", outil=x["outil"], geste=t("som.cordee.geste." + x["geste"]),
                                                             de=t("som.cordee." + x["de"]), vers=t("som.cordee." + x["vers"])) + RESET)
                 out += ["  " + l for l in _cordee_anime(x, phase % 1.0)]
+        for x in tableaux(ligne):                # ps, kill, export, journalctl, crontab… : le tableau de bord (le Poste)
+            if x["seg"] == b["seg"]:
+                out.append("")
+                out.append(f"  {fg(ANSI['commande'])}📟 " + t("dep.tableau", jauge=t("ct.tableau.jauge." + x["jauge"]),
+                                                             sens=t("ct.tableau.sens." + x["sens"])) + RESET)
+                out += ["  " + l for l in _tableau_anime(x, phase % 1.0)]
     if actif == n and sorties:
         for c, s in zip(chs, sorties):
             if s and len(c["etapes"]) > 1:
@@ -1063,7 +1100,8 @@ def _reseau(b, ligne):
                                      any(x["seg"] == b["seg"] for x in forges(ligne)) or
                                      any(x["seg"] == b["seg"] for x in robots(ligne)) or
                                      any(x["seg"] == b["seg"] for x in cordees(ligne)) or
-                                     any(x["seg"] == b["seg"] for x in pellicules(ligne)))
+                                     any(x["seg"] == b["seg"] for x in pellicules(ligne)) or
+                                     any(x["seg"] == b["seg"] for x in tableaux(ligne)))
 
 
 def jouer(ligne, dossier=None, pas=False, sortie=None, clavier=None, ips=12):

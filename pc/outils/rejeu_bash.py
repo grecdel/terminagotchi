@@ -28,6 +28,9 @@ doit être ce qu'affiche un vrai bash.
    ce qui dépend de la partie (journal, éboulis, boussole, fragments) est comparé à ce que le jeu calcule (sommet.egal_rejeu).
    La Bibliothèque du Temps : le vrai git (identité d'EXEMPLE réglée dans chaque album par l'enfant, jamais --global),
    le grimoire du jeu à dates fixes, la formule perdue retrouvée, le conflit, la copie de l'ami (aucun push).
+   Le Poste de Contrôle : lecture seule (ps, /proc, free, df, du, os-release, dpkg/rpm, systemctl, /etc/passwd) ; les
+   réponses (la caisse la plus lourde, le PATH, les alertes, les paquets, les suspects) comparées à ce que calcule le
+   jeu ; la vague : des sleep renommés lancés par le jeu, arrêtés par kill, éteints à la fin.
 Utilisé en CI (.github/workflows/rejeu.yml) sur une vraie machine Linux.
 """
 import os
@@ -168,6 +171,8 @@ def histoire():
     jeu_som = jeu_port.replace("port; port.commande(sys.argv[1:])", "sommet; sys.exit(sommet.commande(sys.argv[1:]) or 0)")
     jeu_tmp = jeu_port.replace("port; port.", "temps; temps.")
     from tg import temps as TP_
+    jeu_ctl = jeu_port.replace("port; port.", "controle; controle.")
+    from tg import controle as CT_
     jeu_tg = (f"{sys.executable} -c \"import sys; sys.path.insert(0, '{RACINE / 'pc'}'); from tg import app; "
               f"sys.argv = ['tg'] + sys.argv[1:]; app._main()\"")
 
@@ -196,6 +201,7 @@ def histoire():
         vrai = re.sub(r"(^|;\s*)guilde\b", lambda m: m.group(1) + jeu_gui, vrai)       # et guilde='tg guilde'
         vrai = re.sub(r"(^|;\s*|timeout -s INT 1\s+)(observatoire|assistant|agent|devine-type|devine-mot|explique)(?=\s|$)",
                       lambda m: m.group(1) + jeu_obs[m.group(2)], vrai)      # et les alias de l'Observatoire
+        vrai = re.sub(r"(^|;\s*)controle(?=\s|$)", lambda m: m.group(1) + jeu_ctl, vrai)  # et controle='tg controle'
         vrai = re.sub(r"(^|;\s*)donnees(?=\s|$)", lambda m: m.group(1) + jeu_don, vrai)   # et donnees='tg donnees'
         vrai = re.sub(r"(^|;\s*)forge(?=\s|$)", lambda m: m.group(1) + jeu_for, vrai)     # et forge='tg forge'
         vrai = re.sub(r"(^|;\s*)atelier(?=\s|$)", lambda m: m.group(1) + jeu_ate, vrai)  # et atelier='tg atelier'
@@ -240,7 +246,7 @@ def histoire():
                 break
             if H.fini(st, "coeur"):                 # le tronc et les ailes faits : les mondes du Carrefour, dans l'ordre
                 reste = [m_ for m_ in ("port", "citadelle", "crypte", "machinerie", "ondes", "guilde", "observatoire",
-                                       "donnees", "forge", "robots", "temps", "sommet") if not H.fini(st, m_)][:1]
+                                       "donnees", "forge", "robots", "temps", "controle", "sommet") if not H.fini(st, m_)][:1]
             cible = "coeur" if not reste and H.ouvert(st, "coeur") else (reste[0] if reste else None)
             if not cible:
                 break
@@ -270,7 +276,7 @@ def histoire():
             c = f"echo {C_.intrus()} > intrus.txt"
         if c == "echo ? > altere.txt":
             c = "echo " + C_.donnees()["tresor_altere"].split(".")[0] + " > altere.txt"
-        if c == "kill ?":
+        if c == "kill ?" and les["id"].startswith("cit"):
             c = "kill " + " ".join(str(p) for p, _n in C_.fictifs_vivants())
         if c == "citadelle facteur ? ? ?":
             c = "citadelle facteur " + " ".join(map(str, C_.bons_indices(gr)))
@@ -420,6 +426,18 @@ def histoire():
             c = SO_.reponse_rejeu(st, c)
         if les["id"].startswith("tp") and "?" in c:      # la Bibliothèque du Temps : l'empreinte lue dans git log -S secret
             c = c.replace("?", TP_.hash_perte()[:7], 1)
+        gc_ = CT_._graine(st)                        # le Poste de Contrôle : l'enfant lit du, le PATH, le carnet, l'écran…
+        if les["id"].startswith("ct"):
+            c = {"controle entrepot ?": f"controle entrepot {CT_.caisse_lourde(gc_)}",
+                 "controle path ?": f"controle path {len(os.environ.get('PATH', '').split(':'))}",
+                 "controle alertes ?": f"controle alertes {CT_.nb_alertes(gc_)}",
+                 'controle cron "? ? ? ? ?"': f'controle cron "{CT_.cron_situation(gc_)["rep"]}"',
+                 "controle distribution ?": f"controle distribution {CT_.os_release().get('ID', 'linux')}",
+                 "controle familles ? ? ? ? ?": "controle familles " + " ".join(r_ for _n, _i, r_ in CT_.familles_cartes(gc_)),
+                 "controle useradd ?": "controle useradd mousse",
+                 "kill ?": "kill " + " ".join(str(p) for p, _n in CT_.suspects_vivants()),
+                 "top": "top -bn1 | head -5",                  # (pas de terminal ici : top écrit une fois)
+                 "tail -f carnet_de_bord.log": "timeout 1 tail -f carnet_de_bord.log"}.get(c, c)
         if c.endswith(" &") and "http.server" in c:
             c = c[:-2] + " >/dev/null 2>&1 &"       # (les lignes du serveur n'encombrent pas la suite)
         lieu = step.get("ou") if step.get("ou") is not None else None
@@ -449,7 +467,7 @@ def histoire():
         if cle in attendus and cle not in vus:
             vus.add(cle)
             a = attendus[cle]
-            if a.get("outil") and not shutil.which(a["outil"]):
+            if a.get("outil") and not _present(a["outil"]):
                 print(f"  · {cle} `{c}` sauté ({a['outil']} absent)")
                 sautes.add(cle)
                 global saute
@@ -510,6 +528,20 @@ def histoire():
                          f"{nom} : {s[:150]!r}{pq}")
             if les["id"].startswith("som") and a.get("egal_jeu"):    # le Sommet : ce que le jeu calcule pour cette partie
                 verifier(SO_.egal_rejeu(a["egal_jeu"], s, SO_._graine(st)), f"{nom} : {s[:150]!r}{pq}")
+            if a.get("egal_jeu") == "entrepot":            # le Poste de Contrôle : le jeu calcule pareil
+                gros_ = os.path.basename(max((x.split("\t") for x in lignes if "\t" in x), key=lambda x: _taille_du(x[0]),
+                                             default=["", ""])[1])
+                verifier(gros_ == CT_.caisse_lourde(CT_._graine(st)) + ".bin", f"{nom} : du dit {gros_!r}{pq}")
+            if a.get("egal_jeu") == "path":
+                verifier(CT_.path_ok(str(len(lignes)), os.environ.get("PATH", "")), f"{nom} : {len(lignes)} dossiers{pq}")
+            if a.get("egal_jeu") == "alertes":
+                verifier(s.strip() == str(CT_.nb_alertes(CT_._graine(st))), f"{nom} : bash compte {s.strip()!r}, le jeu {CT_.nb_alertes(CT_._graine(st))}{pq}")
+            if a.get("egal_jeu") == "paquets":
+                m_, n_ = CT_.magasin()
+                verifier(m_ is not None and s.strip() == str(n_), f"{nom} : bash compte {s.strip()!r}, le jeu {n_}{pq}")
+            if a.get("egal_jeu") == "suspects":
+                vus_ = {n_ for _p, n_ in CT_.vivants()}
+                verifier(bool(vus_) and all(n_ in s for n_ in vus_), f"{nom} : {sorted(vus_)} dans ps{pq}")
             if a.get("egal_jeu") == "traces_abyssor":
                 n = (s.split() or ["?"])[-1]
                 verifier(n == str(H.traces_abyssor()), f"{nom} : bash compte {n}, le jeu attend {H.traces_abyssor()}{pq}")
@@ -526,18 +558,33 @@ def histoire():
     verifier(H.fini(st, "forge"), "la Forge, neuvième monde, est allée jusqu'au bout (fo0 → fo7)")
     verifier(H.fini(st, "robots"), "l'Atelier, dixième monde, est allé jusqu'au bout (at0 → at7)")
     verifier(H.fini(st, "temps") or not shutil.which("git"), "la Bibliothèque du Temps, onzième monde, est allée jusqu'au bout (tp0 → tp5)")
+    verifier(H.fini(st, "controle"), "le Poste de Contrôle, douzième monde, est allé jusqu'au bout (ct0 → ct7)")
     verifier(H.fini(st, "sommet"), "le Sommet (Expert++), ouvert par 3 mondes au palier 3, est gravi jusqu'au bout (som0 → som7)")
+    CT_.arreter_tout()
     P_.eteindre_phare()
     C_.arreter_fictifs()
     K_.tuer_agents()
     # (une étape cachée parce que son outil manque — sox, exiftool… — n'a pas pu être rejouée : sautée et comptée)
-    absents = {k for k in set(attendus) - vus if attendus[k].get("outil") and not shutil.which(attendus[k]["outil"])}
+    absents = {k for k in set(attendus) - vus if attendus[k].get("outil") and not _present(attendus[k]["outil"])}
     for k in sorted(absents):
         print(f"  · {k} sauté ({attendus[k]['outil']} absent, étape cachée)")
     saute += len(absents)
     manquent = sorted(set(attendus) - vus - absents)
     verifier(not manquent, f"toutes les étapes décrites ont été rejouées {manquent}")
     shell.fermer()
+
+
+def _present(outil):
+    """L'outil d'une affirmation est là : une commande (shutil.which) ou un fichier du système (/proc/self, /etc/passwd)."""
+    return os.path.exists(outil) if outil.startswith("/") else shutil.which(outil) is not None
+
+
+def _taille_du(x):
+    """« 512K », « 8.0K », « 1.2M » (du -h) → un nombre d'octets, pour trouver le plus lourd."""
+    m = re.match(r"([\d.,]+)([KMGT]?)", x.strip())
+    if not m:
+        return 0
+    return float(m.group(1).replace(",", ".")) * 1024 ** ("KMGT".find(m.group(2)) + 1 if m.group(2) else 0)
 
 
 def _egal_lignes(s, r, D):

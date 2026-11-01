@@ -293,7 +293,8 @@ DEPLOIE = ("alias deploie='history -a 2>/dev/null; tg deploie --historique #'\n"
            "alias forge='tg forge'\n"
            "alias atelier='tg atelier'\n"
            "alias sommet='tg sommet'\n"
-           "alias temps='tg temps'")
+           "alias temps='tg temps'\n"
+           "alias controle='tg controle'")
 
 
 def _blocs():
@@ -346,7 +347,8 @@ def _blocs():
             'function forge\n    tg forge $argv\nend\n'
             'function atelier\n    tg atelier $argv\nend\n'
             'function sommet\n    tg sommet $argv\nend\n'
-            'function temps\n    tg temps $argv\nend')
+            'function temps\n    tg temps $argv\nend\n'
+            'function controle\n    tg controle $argv\nend')
     for ps in ("powershell", "pwsh"):
         if shutil.which(ps):
             try:
@@ -385,7 +387,8 @@ def _blocs():
                                        'function forge { tg forge @args }\n'
                                        'function atelier { tg atelier @args }\n'
                                        'function sommet { tg sommet @args }\n'
-                                       'function temps { tg temps @args }')
+                                       'function temps { tg temps @args }\n'
+                                       'function controle { tg controle @args }')
     return blocs
 
 
@@ -457,7 +460,8 @@ def a_jour():
                                      or ("forge='tg forge'" in bloc and "forge='tg forge'" not in installe)
                                      or ("atelier='tg atelier'" in bloc and "atelier='tg atelier'" not in installe)
                                      or ("sommet='tg sommet'" in bloc and "sommet='tg sommet'" not in installe)
-                                     or ("temps='tg temps'" in bloc and "temps='tg temps'" not in installe)):
+                                     or ("temps='tg temps'" in bloc and "temps='tg temps'" not in installe)
+                                     or ("controle='tg controle'" in bloc and "controle='tg controle'" not in installe)):
             return False
     return True
 

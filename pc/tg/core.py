@@ -379,7 +379,7 @@ BUILTINS = {"cd", "echo", "export", "alias", "history", "type", "source", ".", "
             # les alias du jeu posés par tg installer (le compagnon) : ce sont des commandes, pas des fautes
             "deploie", "espace", "cerveau", "port", "citadelle", "crypte", "machines",
             "ondes", "mesh-envoie", "mesh-coupe", "mesh-route", "guilde",
-            "observatoire", "assistant", "agent", "devine-type", "devine-mot", "donnees", "forge", "atelier", "sommet", "temps",
+            "observatoire", "assistant", "agent", "devine-type", "devine-mot", "donnees", "forge", "atelier", "sommet", "temps", "controle",
             # les mots-clés du shell (time sh mineur.sh 3 : « time » n'est pas un programme, mais il existe)
             "time", "case", "until", "function", "select", "command", "builtin", "local", "declare", "times"}
 
@@ -443,7 +443,26 @@ def terminal(state, texte):
         del file[:-6]
 
 
+ECHO_PS = re.compile(r"^\s*(echo|write-output|write-host|write)\s", re.I)
+
+
+def apostrophe_ouverte(ligne):
+    """PowerShell : une phrase avec une apostrophe dans `echo` (echo j'aime les chats). L'apostrophe y OUVRE un texte :
+    PowerShell attend la suite (>>), puis colle et coupe la phrase. Vrai si, hors des "…", une apostrophe reste seule
+    (nombre impair) ou est collée entre deux lettres (j'aime)."""
+    if not ECHO_PS.match(ligne or ""):
+        return False
+    hors = re.sub(r'"[^"]*"', " ", ligne)
+    if "'" not in hors:
+        return False
+    return hors.count("'") % 2 == 1 or re.search(r"\w'\w", hors) is not None
+
+
 def feed(state, line, statut=None):
+    if IS_WIN and apostrophe_ouverte(line):          # PowerShell : l'apostrophe ouvre un texte (echo "j'aime les chats")
+        msg = t("core.win.apostrophe")
+        say(state, msg, 10)
+        terminal(state, msg)
     if est_colle(line):
         state["colles"] += 1
         log(state, t("core.colle.log"))

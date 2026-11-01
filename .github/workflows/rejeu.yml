@@ -28,6 +28,8 @@ on:
             "donnees/temps/**", "donnees/temps.json", "app/src/main/java/fr/terminagotchi/Temps.kt",
             "app/src/main/java/fr/terminagotchi/PetitGit.kt", "app/src/main/java/fr/terminagotchi/TempsDessin.kt",
             "donnees/monde/**", "donnees/effets/**", "app/src/main/java/fr/terminagotchi/Effets.kt",
+            "donnees/controle/**", "donnees/controle.json", "app/src/main/java/fr/terminagotchi/Controle.kt",
+            "app/src/main/java/fr/terminagotchi/ControleDessin.kt",
             "pc/**", "app/src/main/assets/langues/**", "app/src/main/java/fr/terminagotchi/Port.kt",
             "app/src/main/java/fr/terminagotchi/Histoire.kt", "app/src/main/java/fr/terminagotchi/Jeu.kt",
             ".github/workflows/rejeu.yml"]
@@ -50,7 +52,7 @@ jobs:
       - name: Les outils des fiches (les commandes rejouées)
         run: |
           sudo apt-get update -qq
-          sudo apt-get install -y -qq tree iproute2 iputils-ping iputils-tracepath openssh-client dnsutils bsdextrautils openssl xxd gnupg qemu-utils pciutils usbutils bc iw rfkill zsh gcc make file openscad sqlite3 gawk busybox imagemagick ffmpeg sox libimage-exiftool-perl mksh >/dev/null || true
+          sudo apt-get install -y -qq tree iproute2 iputils-ping iputils-tracepath openssh-client dnsutils bsdextrautils openssl xxd gnupg qemu-utils pciutils usbutils bc iw rfkill zsh gcc make file openscad sqlite3 gawk busybox imagemagick ffmpeg sox libimage-exiftool-perl mksh cron procps >/dev/null || true
           bash --version | head -n 1
 
       - name: Vérificateur de la charte (fiches, étapes, orphelines, 14 langues)
@@ -72,6 +74,7 @@ jobs:
           python3 pc/outils/vecteurs_atelier.py --verifier
           python3 pc/outils/vecteurs_sommet.py --verifier
           python3 pc/outils/vecteurs_temps.py --verifier
+          python3 pc/outils/vecteurs_controle.py --verifier
 
       - name: Rejeu des sorties dans un vrai bash (fiches et histoire du PC)
         run: LC_ALL=C.UTF-8 python3 pc/outils/rejeu_bash.py
@@ -276,3 +279,15 @@ jobs:
             grep -E "✗|Error|Traceback|line [0-9]" /tmp/efx.out | head -20 | sed 's/^/::error::/'; exit 1; }
           LC_ALL=C.UTF-8 python3 pc/outils/test_monde.py 2>&1 | tee /tmp/monde.out || {
             grep -E "✗|Error|Traceback|line [0-9]" /tmp/monde.out | head -20 | sed 's/^/::error::/'; exit 1; }
+
+      - name: Le Poste de Contrôle (lecture seule sur la vraie machine, seuls les processus du jeu sont arrêtés, rien hors du terrain)
+        run: |
+          set -o pipefail
+          LC_ALL=C.UTF-8 python3 pc/outils/test_controle.py 2>&1 | tee /tmp/ctl.out || {
+            grep -E "✖|Error|Traceback|line [0-9]" /tmp/ctl.out | head -20 | sed 's/^/::error::/'; exit 1; }
+
+      - name: Trois enfants visitent le Poste de Contrôle (docs/simulations/rapport_controle.md)
+        run: |
+          set -o pipefail
+          LC_ALL=C.UTF-8 python3 pc/outils/sim_controle.py 2>&1 | tee /tmp/simct.out || {
+            grep -E "✖|Error|Traceback|line [0-9]" /tmp/simct.out | head -20 | sed 's/^/::error::/'; exit 1; }

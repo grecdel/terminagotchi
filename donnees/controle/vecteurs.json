@@ -1,0 +1,4185 @@
+{
+ "note": "Généré par pc/outils/vecteurs_controle.py ; vérifié par tests/jvm/Controle.kt",
+ "parties": [
+  {
+   "graine": "1:0",
+   "caisses": [
+    [
+     "cartes_du_ciel",
+     128
+    ],
+    [
+     "journaux_anciens",
+     512
+    ],
+    [
+     "pieces_de_rechange",
+     8
+    ],
+    [
+     "sons_du_moteur",
+     32
+    ]
+   ],
+   "lourde": "journaux_anciens",
+   "sha_lourde": "0b65c03e84115b7e63188e56039836e2de14391674a047f8878e15df56240f11",
+   "journal": [
+    "2026-11-01 06:00:00 INFO ronde=ok",
+    "2026-11-01 06:07:13 INFO radar=ok cibles=0",
+    "2026-11-01 06:14:26 INFO moteur=ok temp=41",
+    "2026-11-01 06:21:39 INFO porte_nord=fermee",
+    "2026-11-01 06:28:52 ALERTE boucliers=12%",
+    "2026-11-01 06:35:05 ALERTE porte_sud=ouverte",
+    "2026-11-01 06:42:18 INFO eau=ok niveau=87%",
+    "2026-11-01 06:49:31 ALERTE radar=perdu",
+    "2026-11-01 06:56:44 INFO ronde=ok",
+    "2026-11-01 07:03:57 INFO radar=ok cibles=0",
+    "2026-11-01 07:10:10 ALERTE moteur=chaud temp=88",
+    "2026-11-01 07:17:23 INFO porte_nord=fermee",
+    "2026-11-01 07:24:36 INFO boucliers=100%",
+    "2026-11-01 07:31:49 INFO batterie=ok charge=93%",
+    "2026-11-01 07:38:02 INFO eau=ok niveau=87%",
+    "2026-11-01 07:45:15 ALERTE eau=fuite niveau=12%",
+    "2026-11-01 07:52:28 INFO ronde=ok",
+    "2026-11-01 07:59:41 INFO radar=ok cibles=0",
+    "2026-11-01 08:06:54 INFO moteur=ok temp=41",
+    "2026-11-01 08:13:07 INFO porte_nord=fermee",
+    "2026-11-01 08:20:20 INFO boucliers=100%",
+    "2026-11-01 08:27:33 INFO batterie=ok charge=93%",
+    "2026-11-01 08:34:46 INFO eau=ok niveau=87%",
+    "2026-11-01 08:41:59 INFO ventilation=ok"
+   ],
+   "alertes": 5,
+   "cron": "midi",
+   "familles": [
+    [
+     1,
+     "fedora",
+     "d"
+    ],
+    [
+     2,
+     "ubuntu",
+     "a"
+    ],
+    [
+     3,
+     "debian",
+     "a"
+    ],
+    [
+     4,
+     "almalinux",
+     "d"
+    ],
+    [
+     5,
+     "arch",
+     "p"
+    ]
+   ],
+   "vagues": [
+    {
+     "n": 1,
+     "suspects": [
+      "bruyant_fictif",
+      "copieur_fictif",
+      "glouton_fictif"
+     ],
+     "pids": {
+      "bruyant_fictif": 8321,
+      "copieur_fictif": 5924,
+      "glouton_fictif": 3858,
+      "veilleur_fictif": 3077
+     }
+    },
+    {
+     "n": 2,
+     "suspects": [
+      "bavard_fictif",
+      "bruyant_fictif",
+      "copieur_fictif"
+     ],
+     "pids": {
+      "bavard_fictif": 7049,
+      "bruyant_fictif": 7460,
+      "copieur_fictif": 4848,
+      "veilleur_fictif": 7288
+     }
+    },
+    {
+     "n": 3,
+     "suspects": [
+      "bavard_fictif",
+      "bruyant_fictif",
+      "glouton_fictif"
+     ],
+     "pids": {
+      "bavard_fictif": 4747,
+      "bruyant_fictif": 3727,
+      "glouton_fictif": 3808,
+      "veilleur_fictif": 5189
+     }
+    }
+   ]
+  },
+  {
+   "graine": "2:1730000000",
+   "caisses": [
+    [
+     "cartes_du_ciel",
+     32
+    ],
+    [
+     "journaux_anciens",
+     512
+    ],
+    [
+     "pieces_de_rechange",
+     128
+    ],
+    [
+     "sons_du_moteur",
+     8
+    ]
+   ],
+   "lourde": "journaux_anciens",
+   "sha_lourde": "0b65c03e84115b7e63188e56039836e2de14391674a047f8878e15df56240f11",
+   "journal": [
+    "2026-11-01 06:00:00 INFO boucliers=100%",
+    "2026-11-01 06:07:13 INFO batterie=ok charge=93%",
+    "2026-11-01 06:14:26 ALERTE eau=fuite niveau=12%",
+    "2026-11-01 06:21:39 INFO ventilation=ok",
+    "2026-11-01 06:28:52 ALERTE porte_sud=ouverte",
+    "2026-11-01 06:35:05 INFO radar=ok cibles=0",
+    "2026-11-01 06:42:18 INFO moteur=ok temp=41",
+    "2026-11-01 06:49:31 INFO porte_nord=fermee",
+    "2026-11-01 06:56:44 INFO boucliers=100%",
+    "2026-11-01 07:03:57 ALERTE radar=perdu",
+    "2026-11-01 07:10:10 INFO eau=ok niveau=87%",
+    "2026-11-01 07:17:23 INFO ventilation=ok",
+    "2026-11-01 07:24:36 INFO ronde=ok",
+    "2026-11-01 07:31:49 INFO radar=ok cibles=0",
+    "2026-11-01 07:38:02 ALERTE moteur=chaud temp=88",
+    "2026-11-01 07:45:15 INFO porte_nord=fermee",
+    "2026-11-01 07:52:28 INFO boucliers=100%",
+    "2026-11-01 07:59:41 INFO batterie=ok charge=93%",
+    "2026-11-01 08:06:54 INFO eau=ok niveau=87%",
+    "2026-11-01 08:13:07 ALERTE boucliers=12%",
+    "2026-11-01 08:20:20 INFO ronde=ok",
+    "2026-11-01 08:27:33 INFO radar=ok cibles=0",
+    "2026-11-01 08:34:46 INFO moteur=ok temp=41",
+    "2026-11-01 08:41:59 INFO porte_nord=fermee"
+   ],
+   "alertes": 5,
+   "cron": "matin_semaine",
+   "familles": [
+    [
+     1,
+     "fedora",
+     "d"
+    ],
+    [
+     2,
+     "ubuntu",
+     "a"
+    ],
+    [
+     3,
+     "debian",
+     "a"
+    ],
+    [
+     4,
+     "arch",
+     "p"
+    ],
+    [
+     5,
+     "almalinux",
+     "d"
+    ]
+   ],
+   "vagues": [
+    {
+     "n": 1,
+     "suspects": [
+      "bavard_fictif",
+      "bruyant_fictif",
+      "glouton_fictif"
+     ],
+     "pids": {
+      "bavard_fictif": 4738,
+      "bruyant_fictif": 7434,
+      "glouton_fictif": 4614,
+      "veilleur_fictif": 7534
+     }
+    },
+    {
+     "n": 2,
+     "suspects": [
+      "bruyant_fictif",
+      "copieur_fictif",
+      "fouineur_fictif"
+     ],
+     "pids": {
+      "bruyant_fictif": 8616,
+      "copieur_fictif": 8364,
+      "fouineur_fictif": 5573,
+      "veilleur_fictif": 4001
+     }
+    },
+    {
+     "n": 3,
+     "suspects": [
+      "bruyant_fictif",
+      "copieur_fictif",
+      "glouton_fictif"
+     ],
+     "pids": {
+      "bruyant_fictif": 5095,
+      "copieur_fictif": 5856,
+      "glouton_fictif": 2899,
+      "veilleur_fictif": 8569
+     }
+    }
+   ]
+  },
+  {
+   "graine": "7:42",
+   "caisses": [
+    [
+     "cartes_du_ciel",
+     512
+    ],
+    [
+     "journaux_anciens",
+     8
+    ],
+    [
+     "pieces_de_rechange",
+     128
+    ],
+    [
+     "sons_du_moteur",
+     32
+    ]
+   ],
+   "lourde": "cartes_du_ciel",
+   "sha_lourde": "faca2070681faa2dd5eda2bb9a33b4fe824cf55071dde2f1633a7953bc0636c1",
+   "journal": [
+    "2026-11-01 06:00:00 INFO radar=ok cibles=0",
+    "2026-11-01 06:07:13 INFO moteur=ok temp=41",
+    "2026-11-01 06:14:26 ALERTE batterie=faible charge=8%",
+    "2026-11-01 06:21:39 INFO boucliers=100%",
+    "2026-11-01 06:28:52 INFO batterie=ok charge=93%",
+    "2026-11-01 06:35:05 INFO eau=ok niveau=87%",
+    "2026-11-01 06:42:18 INFO ventilation=ok",
+    "2026-11-01 06:49:31 INFO ronde=ok",
+    "2026-11-01 06:56:44 INFO radar=ok cibles=0",
+    "2026-11-01 07:03:57 INFO moteur=ok temp=41",
+    "2026-11-01 07:10:10 INFO porte_nord=fermee",
+    "2026-11-01 07:17:23 ALERTE moteur=chaud temp=88",
+    "2026-11-01 07:24:36 INFO batterie=ok charge=93%",
+    "2026-11-01 07:31:49 INFO eau=ok niveau=87%",
+    "2026-11-01 07:38:02 INFO ventilation=ok",
+    "2026-11-01 07:45:15 INFO ronde=ok",
+    "2026-11-01 07:52:28 INFO radar=ok cibles=0",
+    "2026-11-01 07:59:41 ALERTE eau=fuite niveau=12%",
+    "2026-11-01 08:06:54 INFO porte_nord=fermee",
+    "2026-11-01 08:13:07 INFO boucliers=100%",
+    "2026-11-01 08:20:20 ALERTE porte_sud=ouverte",
+    "2026-11-01 08:27:33 INFO eau=ok niveau=87%",
+    "2026-11-01 08:34:46 INFO ventilation=ok",
+    "2026-11-01 08:41:59 ALERTE radar=perdu"
+   ],
+   "alertes": 5,
+   "cron": "dimanche_soir",
+   "familles": [
+    [
+     1,
+     "arch",
+     "p"
+    ],
+    [
+     2,
+     "debian",
+     "a"
+    ],
+    [
+     3,
+     "ubuntu",
+     "a"
+    ],
+    [
+     4,
+     "almalinux",
+     "d"
+    ],
+    [
+     5,
+     "fedora",
+     "d"
+    ]
+   ],
+   "vagues": [
+    {
+     "n": 1,
+     "suspects": [
+      "copieur_fictif",
+      "fouineur_fictif",
+      "glouton_fictif"
+     ],
+     "pids": {
+      "copieur_fictif": 2404,
+      "fouineur_fictif": 8322,
+      "glouton_fictif": 7254,
+      "veilleur_fictif": 3570
+     }
+    },
+    {
+     "n": 2,
+     "suspects": [
+      "bavard_fictif",
+      "bruyant_fictif",
+      "glouton_fictif"
+     ],
+     "pids": {
+      "bavard_fictif": 4299,
+      "bruyant_fictif": 8788,
+      "glouton_fictif": 8939,
+      "veilleur_fictif": 4005
+     }
+    },
+    {
+     "n": 3,
+     "suspects": [
+      "bavard_fictif",
+      "bruyant_fictif",
+      "copieur_fictif"
+     ],
+     "pids": {
+      "bavard_fictif": 4589,
+      "bruyant_fictif": 6971,
+      "copieur_fictif": 8328,
+      "veilleur_fictif": 5432
+     }
+    }
+   ]
+  },
+  {
+   "graine": "partie:3",
+   "caisses": [
+    [
+     "cartes_du_ciel",
+     512
+    ],
+    [
+     "journaux_anciens",
+     8
+    ],
+    [
+     "pieces_de_rechange",
+     128
+    ],
+    [
+     "sons_du_moteur",
+     32
+    ]
+   ],
+   "lourde": "cartes_du_ciel",
+   "sha_lourde": "faca2070681faa2dd5eda2bb9a33b4fe824cf55071dde2f1633a7953bc0636c1",
+   "journal": [
+    "2026-11-01 06:00:00 INFO porte_nord=fermee",
+    "2026-11-01 06:07:13 ALERTE batterie=faible charge=8%",
+    "2026-11-01 06:14:26 INFO batterie=ok charge=93%",
+    "2026-11-01 06:21:39 INFO eau=ok niveau=87%",
+    "2026-11-01 06:28:52 INFO ventilation=ok",
+    "2026-11-01 06:35:05 INFO ronde=ok",
+    "2026-11-01 06:42:18 ALERTE moteur=chaud temp=88",
+    "2026-11-01 06:49:31 INFO moteur=ok temp=41",
+    "2026-11-01 06:56:44 INFO porte_nord=fermee",
+    "2026-11-01 07:03:57 INFO boucliers=100%",
+    "2026-11-01 07:10:10 INFO batterie=ok charge=93%",
+    "2026-11-01 07:17:23 ALERTE porte_sud=ouverte",
+    "2026-11-01 07:24:36 INFO ventilation=ok",
+    "2026-11-01 07:31:49 INFO ronde=ok",
+    "2026-11-01 07:38:02 INFO radar=ok cibles=0",
+    "2026-11-01 07:45:15 INFO moteur=ok temp=41",
+    "2026-11-01 07:52:28 ALERTE eau=fuite niveau=12%",
+    "2026-11-01 07:59:41 INFO boucliers=100%",
+    "2026-11-01 08:06:54 INFO batterie=ok charge=93%",
+    "2026-11-01 08:13:07 INFO eau=ok niveau=87%",
+    "2026-11-01 08:20:20 INFO ventilation=ok",
+    "2026-11-01 08:27:33 INFO ronde=ok",
+    "2026-11-01 08:34:46 INFO radar=ok cibles=0",
+    "2026-11-01 08:41:59 ALERTE boucliers=12%"
+   ],
+   "alertes": 5,
+   "cron": "dimanche_soir",
+   "familles": [
+    [
+     1,
+     "almalinux",
+     "d"
+    ],
+    [
+     2,
+     "arch",
+     "p"
+    ],
+    [
+     3,
+     "ubuntu",
+     "a"
+    ],
+    [
+     4,
+     "debian",
+     "a"
+    ],
+    [
+     5,
+     "fedora",
+     "d"
+    ]
+   ],
+   "vagues": [
+    {
+     "n": 1,
+     "suspects": [
+      "bavard_fictif",
+      "copieur_fictif",
+      "glouton_fictif"
+     ],
+     "pids": {
+      "bavard_fictif": 6138,
+      "copieur_fictif": 5205,
+      "glouton_fictif": 2756,
+      "veilleur_fictif": 2048
+     }
+    },
+    {
+     "n": 2,
+     "suspects": [
+      "bavard_fictif",
+      "bruyant_fictif",
+      "glouton_fictif"
+     ],
+     "pids": {
+      "bavard_fictif": 5169,
+      "bruyant_fictif": 7053,
+      "glouton_fictif": 2562,
+      "veilleur_fictif": 7164
+     }
+    },
+    {
+     "n": 3,
+     "suspects": [
+      "bavard_fictif",
+      "bruyant_fictif",
+      "fouineur_fictif"
+     ],
+     "pids": {
+      "bavard_fictif": 8165,
+      "bruyant_fictif": 3626,
+      "fouineur_fictif": 6612,
+      "veilleur_fictif": 4363
+     }
+    }
+   ]
+  },
+  {
+   "graine": "9:1761900000",
+   "caisses": [
+    [
+     "cartes_du_ciel",
+     32
+    ],
+    [
+     "journaux_anciens",
+     8
+    ],
+    [
+     "pieces_de_rechange",
+     512
+    ],
+    [
+     "sons_du_moteur",
+     128
+    ]
+   ],
+   "lourde": "pieces_de_rechange",
+   "sha_lourde": "0136ffa5e0f2d343313ddee2e713b1fe5121629ec1bbcf9118d48b89caa5f94b",
+   "journal": [
+    "2026-11-01 06:00:00 INFO ronde=ok",
+    "2026-11-01 06:07:13 ALERTE eau=fuite niveau=12%",
+    "2026-11-01 06:14:26 INFO moteur=ok temp=41",
+    "2026-11-01 06:21:39 INFO porte_nord=fermee",
+    "2026-11-01 06:28:52 ALERTE porte_sud=ouverte",
+    "2026-11-01 06:35:05 INFO batterie=ok charge=93%",
+    "2026-11-01 06:42:18 INFO eau=ok niveau=87%",
+    "2026-11-01 06:49:31 ALERTE boucliers=12%",
+    "2026-11-01 06:56:44 ALERTE radar=perdu",
+    "2026-11-01 07:03:57 INFO radar=ok cibles=0",
+    "2026-11-01 07:10:10 INFO moteur=ok temp=41",
+    "2026-11-01 07:17:23 INFO porte_nord=fermee",
+    "2026-11-01 07:24:36 INFO boucliers=100%",
+    "2026-11-01 07:31:49 ALERTE moteur=chaud temp=88",
+    "2026-11-01 07:38:02 INFO eau=ok niveau=87%",
+    "2026-11-01 07:45:15 INFO ventilation=ok",
+    "2026-11-01 07:52:28 INFO ronde=ok",
+    "2026-11-01 07:59:41 INFO radar=ok cibles=0",
+    "2026-11-01 08:06:54 INFO moteur=ok temp=41",
+    "2026-11-01 08:13:07 INFO porte_nord=fermee",
+    "2026-11-01 08:20:20 ALERTE batterie=faible charge=8%",
+    "2026-11-01 08:27:33 INFO batterie=ok charge=93%",
+    "2026-11-01 08:34:46 INFO eau=ok niveau=87%",
+    "2026-11-01 08:41:59 INFO ventilation=ok"
+   ],
+   "alertes": 6,
+   "cron": "premier_du_mois",
+   "familles": [
+    [
+     1,
+     "debian",
+     "a"
+    ],
+    [
+     2,
+     "ubuntu",
+     "a"
+    ],
+    [
+     3,
+     "arch",
+     "p"
+    ],
+    [
+     4,
+     "almalinux",
+     "d"
+    ],
+    [
+     5,
+     "fedora",
+     "d"
+    ]
+   ],
+   "vagues": [
+    {
+     "n": 1,
+     "suspects": [
+      "bruyant_fictif",
+      "fouineur_fictif",
+      "glouton_fictif"
+     ],
+     "pids": {
+      "bruyant_fictif": 5804,
+      "fouineur_fictif": 4493,
+      "glouton_fictif": 6600,
+      "veilleur_fictif": 8935
+     }
+    },
+    {
+     "n": 2,
+     "suspects": [
+      "bruyant_fictif",
+      "fouineur_fictif",
+      "glouton_fictif"
+     ],
+     "pids": {
+      "bruyant_fictif": 3860,
+      "fouineur_fictif": 2226,
+      "glouton_fictif": 7542,
+      "veilleur_fictif": 4024
+     }
+    },
+    {
+     "n": 3,
+     "suspects": [
+      "bruyant_fictif",
+      "fouineur_fictif",
+      "glouton_fictif"
+     ],
+     "pids": {
+      "bruyant_fictif": 3665,
+      "fouineur_fictif": 6494,
+      "glouton_fictif": 8958,
+      "veilleur_fictif": 8269
+     }
+    }
+   ]
+  },
+  {
+   "graine": "4:1700000123",
+   "caisses": [
+    [
+     "cartes_du_ciel",
+     8
+    ],
+    [
+     "journaux_anciens",
+     512
+    ],
+    [
+     "pieces_de_rechange",
+     128
+    ],
+    [
+     "sons_du_moteur",
+     32
+    ]
+   ],
+   "lourde": "journaux_anciens",
+   "sha_lourde": "0b65c03e84115b7e63188e56039836e2de14391674a047f8878e15df56240f11",
+   "journal": [
+    "2026-11-01 06:00:00 INFO batterie=ok charge=93%",
+    "2026-11-01 06:07:13 ALERTE eau=fuite niveau=12%",
+    "2026-11-01 06:14:26 ALERTE boucliers=12%",
+    "2026-11-01 06:21:39 INFO ronde=ok",
+    "2026-11-01 06:28:52 INFO radar=ok cibles=0",
+    "2026-11-01 06:35:05 ALERTE moteur=chaud temp=88",
+    "2026-11-01 06:42:18 INFO porte_nord=fermee",
+    "2026-11-01 06:49:31 INFO boucliers=100%",
+    "2026-11-01 06:56:44 ALERTE radar=perdu",
+    "2026-11-01 07:03:57 INFO eau=ok niveau=87%",
+    "2026-11-01 07:10:10 INFO ventilation=ok",
+    "2026-11-01 07:17:23 ALERTE batterie=faible charge=8%",
+    "2026-11-01 07:24:36 INFO radar=ok cibles=0",
+    "2026-11-01 07:31:49 INFO moteur=ok temp=41",
+    "2026-11-01 07:38:02 INFO porte_nord=fermee",
+    "2026-11-01 07:45:15 INFO boucliers=100%",
+    "2026-11-01 07:52:28 INFO batterie=ok charge=93%",
+    "2026-11-01 07:59:41 INFO eau=ok niveau=87%",
+    "2026-11-01 08:06:54 INFO ventilation=ok",
+    "2026-11-01 08:13:07 INFO ronde=ok",
+    "2026-11-01 08:20:20 INFO radar=ok cibles=0",
+    "2026-11-01 08:27:33 INFO moteur=ok temp=41",
+    "2026-11-01 08:34:46 INFO porte_nord=fermee",
+    "2026-11-01 08:41:59 INFO boucliers=100%"
+   ],
+   "alertes": 5,
+   "cron": "premier_du_mois",
+   "familles": [
+    [
+     1,
+     "fedora",
+     "d"
+    ],
+    [
+     2,
+     "almalinux",
+     "d"
+    ],
+    [
+     3,
+     "ubuntu",
+     "a"
+    ],
+    [
+     4,
+     "debian",
+     "a"
+    ],
+    [
+     5,
+     "arch",
+     "p"
+    ]
+   ],
+   "vagues": [
+    {
+     "n": 1,
+     "suspects": [
+      "copieur_fictif",
+      "fouineur_fictif",
+      "glouton_fictif"
+     ],
+     "pids": {
+      "copieur_fictif": 8254,
+      "fouineur_fictif": 8089,
+      "glouton_fictif": 5527,
+      "veilleur_fictif": 5831
+     }
+    },
+    {
+     "n": 2,
+     "suspects": [
+      "bavard_fictif",
+      "fouineur_fictif",
+      "glouton_fictif"
+     ],
+     "pids": {
+      "bavard_fictif": 5762,
+      "fouineur_fictif": 3429,
+      "glouton_fictif": 4652,
+      "veilleur_fictif": 6322
+     }
+    },
+    {
+     "n": 3,
+     "suspects": [
+      "bavard_fictif",
+      "copieur_fictif",
+      "glouton_fictif"
+     ],
+     "pids": {
+      "bavard_fictif": 3116,
+      "copieur_fictif": 3858,
+      "glouton_fictif": 4818,
+      "veilleur_fictif": 3748
+     }
+    }
+   ]
+  },
+  {
+   "graine": "5:5",
+   "caisses": [
+    [
+     "cartes_du_ciel",
+     8
+    ],
+    [
+     "journaux_anciens",
+     128
+    ],
+    [
+     "pieces_de_rechange",
+     512
+    ],
+    [
+     "sons_du_moteur",
+     32
+    ]
+   ],
+   "lourde": "pieces_de_rechange",
+   "sha_lourde": "0136ffa5e0f2d343313ddee2e713b1fe5121629ec1bbcf9118d48b89caa5f94b",
+   "journal": [
+    "2026-11-01 06:00:00 INFO ronde=ok",
+    "2026-11-01 06:07:13 INFO radar=ok cibles=0",
+    "2026-11-01 06:14:26 INFO moteur=ok temp=41",
+    "2026-11-01 06:21:39 INFO porte_nord=fermee",
+    "2026-11-01 06:28:52 ALERTE radar=perdu",
+    "2026-11-01 06:35:05 INFO batterie=ok charge=93%",
+    "2026-11-01 06:42:18 INFO eau=ok niveau=87%",
+    "2026-11-01 06:49:31 INFO ventilation=ok",
+    "2026-11-01 06:56:44 ALERTE moteur=chaud temp=88",
+    "2026-11-01 07:03:57 INFO radar=ok cibles=0",
+    "2026-11-01 07:10:10 INFO moteur=ok temp=41",
+    "2026-11-01 07:17:23 ALERTE porte_sud=ouverte",
+    "2026-11-01 07:24:36 ALERTE batterie=faible charge=8%",
+    "2026-11-01 07:31:49 INFO batterie=ok charge=93%",
+    "2026-11-01 07:38:02 INFO eau=ok niveau=87%",
+    "2026-11-01 07:45:15 INFO ventilation=ok",
+    "2026-11-01 07:52:28 INFO ronde=ok",
+    "2026-11-01 07:59:41 INFO radar=ok cibles=0",
+    "2026-11-01 08:06:54 INFO moteur=ok temp=41",
+    "2026-11-01 08:13:07 ALERTE boucliers=12%",
+    "2026-11-01 08:20:20 ALERTE eau=fuite niveau=12%",
+    "2026-11-01 08:27:33 INFO batterie=ok charge=93%",
+    "2026-11-01 08:34:46 INFO eau=ok niveau=87%",
+    "2026-11-01 08:41:59 INFO ventilation=ok"
+   ],
+   "alertes": 6,
+   "cron": "premier_du_mois",
+   "familles": [
+    [
+     1,
+     "ubuntu",
+     "a"
+    ],
+    [
+     2,
+     "almalinux",
+     "d"
+    ],
+    [
+     3,
+     "arch",
+     "p"
+    ],
+    [
+     4,
+     "fedora",
+     "d"
+    ],
+    [
+     5,
+     "debian",
+     "a"
+    ]
+   ],
+   "vagues": [
+    {
+     "n": 1,
+     "suspects": [
+      "bruyant_fictif",
+      "copieur_fictif",
+      "glouton_fictif"
+     ],
+     "pids": {
+      "bruyant_fictif": 8201,
+      "copieur_fictif": 2581,
+      "glouton_fictif": 7445,
+      "veilleur_fictif": 5815
+     }
+    },
+    {
+     "n": 2,
+     "suspects": [
+      "bavard_fictif",
+      "copieur_fictif",
+      "fouineur_fictif"
+     ],
+     "pids": {
+      "bavard_fictif": 5105,
+      "copieur_fictif": 7544,
+      "fouineur_fictif": 5791,
+      "veilleur_fictif": 6844
+     }
+    },
+    {
+     "n": 3,
+     "suspects": [
+      "bruyant_fictif",
+      "copieur_fictif",
+      "fouineur_fictif"
+     ],
+     "pids": {
+      "bruyant_fictif": 8251,
+      "copieur_fictif": 6057,
+      "fouineur_fictif": 7158,
+      "veilleur_fictif": 7984
+     }
+    }
+   ]
+  },
+  {
+   "graine": "8:1762000000",
+   "caisses": [
+    [
+     "cartes_du_ciel",
+     128
+    ],
+    [
+     "journaux_anciens",
+     512
+    ],
+    [
+     "pieces_de_rechange",
+     32
+    ],
+    [
+     "sons_du_moteur",
+     8
+    ]
+   ],
+   "lourde": "journaux_anciens",
+   "sha_lourde": "0b65c03e84115b7e63188e56039836e2de14391674a047f8878e15df56240f11",
+   "journal": [
+    "2026-11-01 06:00:00 INFO boucliers=100%",
+    "2026-11-01 06:07:13 INFO batterie=ok charge=93%",
+    "2026-11-01 06:14:26 INFO eau=ok niveau=87%",
+    "2026-11-01 06:21:39 INFO ventilation=ok",
+    "2026-11-01 06:28:52 INFO ronde=ok",
+    "2026-11-01 06:35:05 ALERTE radar=perdu",
+    "2026-11-01 06:42:18 INFO moteur=ok temp=41",
+    "2026-11-01 06:49:31 INFO porte_nord=fermee",
+    "2026-11-01 06:56:44 INFO boucliers=100%",
+    "2026-11-01 07:03:57 ALERTE porte_sud=ouverte",
+    "2026-11-01 07:10:10 ALERTE boucliers=12%",
+    "2026-11-01 07:17:23 INFO ventilation=ok",
+    "2026-11-01 07:24:36 INFO ronde=ok",
+    "2026-11-01 07:31:49 INFO radar=ok cibles=0",
+    "2026-11-01 07:38:02 INFO moteur=ok temp=41",
+    "2026-11-01 07:45:15 INFO porte_nord=fermee",
+    "2026-11-01 07:52:28 INFO boucliers=100%",
+    "2026-11-01 07:59:41 ALERTE moteur=chaud temp=88",
+    "2026-11-01 08:06:54 ALERTE eau=fuite niveau=12%",
+    "2026-11-01 08:13:07 INFO ventilation=ok",
+    "2026-11-01 08:20:20 INFO ronde=ok",
+    "2026-11-01 08:27:33 INFO radar=ok cibles=0",
+    "2026-11-01 08:34:46 INFO moteur=ok temp=41",
+    "2026-11-01 08:41:59 INFO porte_nord=fermee"
+   ],
+   "alertes": 5,
+   "cron": "premier_du_mois",
+   "familles": [
+    [
+     1,
+     "ubuntu",
+     "a"
+    ],
+    [
+     2,
+     "arch",
+     "p"
+    ],
+    [
+     3,
+     "debian",
+     "a"
+    ],
+    [
+     4,
+     "almalinux",
+     "d"
+    ],
+    [
+     5,
+     "fedora",
+     "d"
+    ]
+   ],
+   "vagues": [
+    {
+     "n": 1,
+     "suspects": [
+      "bavard_fictif",
+      "bruyant_fictif",
+      "fouineur_fictif"
+     ],
+     "pids": {
+      "bavard_fictif": 5854,
+      "bruyant_fictif": 7700,
+      "fouineur_fictif": 5993,
+      "veilleur_fictif": 4896
+     }
+    },
+    {
+     "n": 2,
+     "suspects": [
+      "bavard_fictif",
+      "bruyant_fictif",
+      "copieur_fictif"
+     ],
+     "pids": {
+      "bavard_fictif": 7347,
+      "bruyant_fictif": 2919,
+      "copieur_fictif": 8434,
+      "veilleur_fictif": 2740
+     }
+    },
+    {
+     "n": 3,
+     "suspects": [
+      "bruyant_fictif",
+      "copieur_fictif",
+      "glouton_fictif"
+     ],
+     "pids": {
+      "bruyant_fictif": 8831,
+      "copieur_fictif": 6706,
+      "glouton_fictif": 5455,
+      "veilleur_fictif": 6165
+     }
+    }
+   ]
+  }
+ ],
+ "caisse_rep": [
+  {
+   "graine": "1:0",
+   "reponse": "journaux_anciens",
+   "ok": true
+  },
+  {
+   "graine": "1:0",
+   "reponse": "JOURNAUX_ANCIENS",
+   "ok": true
+  },
+  {
+   "graine": "1:0",
+   "reponse": "journaux_anciens.bin",
+   "ok": true
+  },
+  {
+   "graine": "1:0",
+   "reponse": "entrepot/journaux_anciens",
+   "ok": true
+  },
+  {
+   "graine": "1:0",
+   "reponse": "cartes_du_ciel",
+   "ok": false
+  },
+  {
+   "graine": "1:0",
+   "reponse": "",
+   "ok": false
+  },
+  {
+   "graine": "1:0",
+   "reponse": "  journaux_anciens  ",
+   "ok": true
+  },
+  {
+   "graine": "2:1730000000",
+   "reponse": "journaux_anciens",
+   "ok": true
+  },
+  {
+   "graine": "2:1730000000",
+   "reponse": "JOURNAUX_ANCIENS",
+   "ok": true
+  },
+  {
+   "graine": "2:1730000000",
+   "reponse": "journaux_anciens.bin",
+   "ok": true
+  },
+  {
+   "graine": "2:1730000000",
+   "reponse": "entrepot/journaux_anciens",
+   "ok": true
+  },
+  {
+   "graine": "2:1730000000",
+   "reponse": "cartes_du_ciel",
+   "ok": false
+  },
+  {
+   "graine": "2:1730000000",
+   "reponse": "",
+   "ok": false
+  },
+  {
+   "graine": "2:1730000000",
+   "reponse": "  journaux_anciens  ",
+   "ok": true
+  },
+  {
+   "graine": "7:42",
+   "reponse": "cartes_du_ciel",
+   "ok": true
+  },
+  {
+   "graine": "7:42",
+   "reponse": "CARTES_DU_CIEL",
+   "ok": true
+  },
+  {
+   "graine": "7:42",
+   "reponse": "cartes_du_ciel.bin",
+   "ok": true
+  },
+  {
+   "graine": "7:42",
+   "reponse": "entrepot/cartes_du_ciel",
+   "ok": true
+  },
+  {
+   "graine": "7:42",
+   "reponse": "cartes_du_ciel",
+   "ok": true
+  },
+  {
+   "graine": "7:42",
+   "reponse": "",
+   "ok": false
+  },
+  {
+   "graine": "7:42",
+   "reponse": "  cartes_du_ciel  ",
+   "ok": true
+  }
+ ],
+ "pourcents": [
+  {
+   "u": 0,
+   "t": 10,
+   "p": 0,
+   "jauge": "▯▯▯▯▯▯▯▯▯▯▯▯▯▯▯▯▯▯▯▯"
+  },
+  {
+   "u": 1,
+   "t": 3,
+   "p": 33,
+   "jauge": "▮▮▮▮▮▮▮▯▯▯▯▯▯▯▯▯▯▯▯▯"
+  },
+  {
+   "u": 2,
+   "t": 3,
+   "p": 67,
+   "jauge": "▮▮▮▮▮▮▮▮▮▮▮▮▮▯▯▯▯▯▯▯"
+  },
+  {
+   "u": 5,
+   "t": 10,
+   "p": 50,
+   "jauge": "▮▮▮▮▮▮▮▮▮▮▯▯▯▯▯▯▯▯▯▯"
+  },
+  {
+   "u": 999,
+   "t": 1000,
+   "p": 100,
+   "jauge": "▮▮▮▮▮▮▮▮▮▮▮▮▮▮▮▮▮▮▮▮"
+  },
+  {
+   "u": 1,
+   "t": 200,
+   "p": 1,
+   "jauge": "▯▯▯▯▯▯▯▯▯▯▯▯▯▯▯▯▯▯▯▯"
+  },
+  {
+   "u": 3,
+   "t": 0,
+   "p": 0,
+   "jauge": "▯▯▯▯▯▯▯▯▯▯▯▯▯▯▯▯▯▯▯▯"
+  },
+  {
+   "u": 7,
+   "t": 7,
+   "p": 100,
+   "jauge": "▮▮▮▮▮▮▮▮▮▮▮▮▮▮▮▮▮▮▮▮"
+  },
+  {
+   "u": 123456,
+   "t": 8000000,
+   "p": 2,
+   "jauge": "▯▯▯▯▯▯▯▯▯▯▯▯▯▯▯▯▯▯▯▯"
+  }
+ ],
+ "paths": [
+  {
+   "path": "/usr/bin:/bin",
+   "win": false,
+   "reponse": "1",
+   "ok": false
+  },
+  {
+   "path": "/usr/bin:/bin",
+   "win": false,
+   "reponse": "2",
+   "ok": true
+  },
+  {
+   "path": "/usr/bin:/bin",
+   "win": false,
+   "reponse": "3",
+   "ok": false
+  },
+  {
+   "path": "/usr/bin:/bin",
+   "win": false,
+   "reponse": "4",
+   "ok": false
+  },
+  {
+   "path": "/usr/bin:/bin",
+   "win": false,
+   "reponse": "5",
+   "ok": false
+  },
+  {
+   "path": "/usr/bin:/bin",
+   "win": false,
+   "reponse": "x",
+   "ok": false
+  },
+  {
+   "path": "/usr/bin:/bin",
+   "win": false,
+   "reponse": "",
+   "ok": false
+  },
+  {
+   "path": "/usr/local/bin:/usr/bin:/bin:/usr/bin",
+   "win": false,
+   "reponse": "1",
+   "ok": false
+  },
+  {
+   "path": "/usr/local/bin:/usr/bin:/bin:/usr/bin",
+   "win": false,
+   "reponse": "2",
+   "ok": false
+  },
+  {
+   "path": "/usr/local/bin:/usr/bin:/bin:/usr/bin",
+   "win": false,
+   "reponse": "3",
+   "ok": true
+  },
+  {
+   "path": "/usr/local/bin:/usr/bin:/bin:/usr/bin",
+   "win": false,
+   "reponse": "4",
+   "ok": true
+  },
+  {
+   "path": "/usr/local/bin:/usr/bin:/bin:/usr/bin",
+   "win": false,
+   "reponse": "5",
+   "ok": false
+  },
+  {
+   "path": "/usr/local/bin:/usr/bin:/bin:/usr/bin",
+   "win": false,
+   "reponse": "x",
+   "ok": false
+  },
+  {
+   "path": "/usr/local/bin:/usr/bin:/bin:/usr/bin",
+   "win": false,
+   "reponse": "",
+   "ok": false
+  },
+  {
+   "path": "/a::/b",
+   "win": false,
+   "reponse": "1",
+   "ok": false
+  },
+  {
+   "path": "/a::/b",
+   "win": false,
+   "reponse": "2",
+   "ok": true
+  },
+  {
+   "path": "/a::/b",
+   "win": false,
+   "reponse": "3",
+   "ok": true
+  },
+  {
+   "path": "/a::/b",
+   "win": false,
+   "reponse": "4",
+   "ok": false
+  },
+  {
+   "path": "/a::/b",
+   "win": false,
+   "reponse": "5",
+   "ok": false
+  },
+  {
+   "path": "/a::/b",
+   "win": false,
+   "reponse": "x",
+   "ok": false
+  },
+  {
+   "path": "/a::/b",
+   "win": false,
+   "reponse": "",
+   "ok": false
+  },
+  {
+   "path": "",
+   "win": false,
+   "reponse": "1",
+   "ok": true
+  },
+  {
+   "path": "",
+   "win": false,
+   "reponse": "2",
+   "ok": false
+  },
+  {
+   "path": "",
+   "win": false,
+   "reponse": "3",
+   "ok": false
+  },
+  {
+   "path": "",
+   "win": false,
+   "reponse": "4",
+   "ok": false
+  },
+  {
+   "path": "",
+   "win": false,
+   "reponse": "5",
+   "ok": false
+  },
+  {
+   "path": "",
+   "win": false,
+   "reponse": "x",
+   "ok": false
+  },
+  {
+   "path": "",
+   "win": false,
+   "reponse": "",
+   "ok": false
+  },
+  {
+   "path": "C:\\x;C:\\y",
+   "win": true,
+   "reponse": "1",
+   "ok": false
+  },
+  {
+   "path": "C:\\x;C:\\y",
+   "win": true,
+   "reponse": "2",
+   "ok": true
+  },
+  {
+   "path": "C:\\x;C:\\y",
+   "win": true,
+   "reponse": "3",
+   "ok": false
+  },
+  {
+   "path": "C:\\x;C:\\y",
+   "win": true,
+   "reponse": "4",
+   "ok": false
+  },
+  {
+   "path": "C:\\x;C:\\y",
+   "win": true,
+   "reponse": "5",
+   "ok": false
+  },
+  {
+   "path": "C:\\x;C:\\y",
+   "win": true,
+   "reponse": "x",
+   "ok": false
+  },
+  {
+   "path": "C:\\x;C:\\y",
+   "win": true,
+   "reponse": "",
+   "ok": false
+  }
+ ],
+ "crons": [
+  {
+   "ligne": "30 7 * * 1-5 echo REVEIL",
+   "champs": [
+    [
+     30
+    ],
+    [
+     7
+    ],
+    [
+     1,
+     2,
+     3,
+     4,
+     5,
+     6,
+     7,
+     8,
+     9,
+     10,
+     11,
+     12,
+     13,
+     14,
+     15,
+     16,
+     17,
+     18,
+     19,
+     20,
+     21,
+     22,
+     23,
+     24,
+     25,
+     26,
+     27,
+     28,
+     29,
+     30,
+     31
+    ],
+    [
+     1,
+     2,
+     3,
+     4,
+     5,
+     6,
+     7,
+     8,
+     9,
+     10,
+     11,
+     12
+    ],
+    [
+     1,
+     2,
+     3,
+     4,
+     5
+    ]
+   ]
+  },
+  {
+   "ligne": "*/15 * * * * echo R",
+   "champs": [
+    [
+     0,
+     15,
+     30,
+     45
+    ],
+    [
+     0,
+     1,
+     2,
+     3,
+     4,
+     5,
+     6,
+     7,
+     8,
+     9,
+     10,
+     11,
+     12,
+     13,
+     14,
+     15,
+     16,
+     17,
+     18,
+     19,
+     20,
+     21,
+     22,
+     23
+    ],
+    [
+     1,
+     2,
+     3,
+     4,
+     5,
+     6,
+     7,
+     8,
+     9,
+     10,
+     11,
+     12,
+     13,
+     14,
+     15,
+     16,
+     17,
+     18,
+     19,
+     20,
+     21,
+     22,
+     23,
+     24,
+     25,
+     26,
+     27,
+     28,
+     29,
+     30,
+     31
+    ],
+    [
+     1,
+     2,
+     3,
+     4,
+     5,
+     6,
+     7,
+     8,
+     9,
+     10,
+     11,
+     12
+    ],
+    [
+     0,
+     1,
+     2,
+     3,
+     4,
+     5,
+     6
+    ]
+   ]
+  },
+  {
+   "ligne": "0 20 * * 7 x",
+   "champs": [
+    [
+     0
+    ],
+    [
+     20
+    ],
+    [
+     1,
+     2,
+     3,
+     4,
+     5,
+     6,
+     7,
+     8,
+     9,
+     10,
+     11,
+     12,
+     13,
+     14,
+     15,
+     16,
+     17,
+     18,
+     19,
+     20,
+     21,
+     22,
+     23,
+     24,
+     25,
+     26,
+     27,
+     28,
+     29,
+     30,
+     31
+    ],
+    [
+     1,
+     2,
+     3,
+     4,
+     5,
+     6,
+     7,
+     8,
+     9,
+     10,
+     11,
+     12
+    ],
+    [
+     0
+    ]
+   ]
+  },
+  {
+   "ligne": "0 20 * * 0 x",
+   "champs": [
+    [
+     0
+    ],
+    [
+     20
+    ],
+    [
+     1,
+     2,
+     3,
+     4,
+     5,
+     6,
+     7,
+     8,
+     9,
+     10,
+     11,
+     12,
+     13,
+     14,
+     15,
+     16,
+     17,
+     18,
+     19,
+     20,
+     21,
+     22,
+     23,
+     24,
+     25,
+     26,
+     27,
+     28,
+     29,
+     30,
+     31
+    ],
+    [
+     1,
+     2,
+     3,
+     4,
+     5,
+     6,
+     7,
+     8,
+     9,
+     10,
+     11,
+     12
+    ],
+    [
+     0
+    ]
+   ]
+  },
+  {
+   "ligne": "0,15,30,45 * * * * a",
+   "champs": [
+    [
+     0,
+     15,
+     30,
+     45
+    ],
+    [
+     0,
+     1,
+     2,
+     3,
+     4,
+     5,
+     6,
+     7,
+     8,
+     9,
+     10,
+     11,
+     12,
+     13,
+     14,
+     15,
+     16,
+     17,
+     18,
+     19,
+     20,
+     21,
+     22,
+     23
+    ],
+    [
+     1,
+     2,
+     3,
+     4,
+     5,
+     6,
+     7,
+     8,
+     9,
+     10,
+     11,
+     12,
+     13,
+     14,
+     15,
+     16,
+     17,
+     18,
+     19,
+     20,
+     21,
+     22,
+     23,
+     24,
+     25,
+     26,
+     27,
+     28,
+     29,
+     30,
+     31
+    ],
+    [
+     1,
+     2,
+     3,
+     4,
+     5,
+     6,
+     7,
+     8,
+     9,
+     10,
+     11,
+     12
+    ],
+    [
+     0,
+     1,
+     2,
+     3,
+     4,
+     5,
+     6
+    ]
+   ]
+  },
+  {
+   "ligne": "0 9 1 * * a",
+   "champs": [
+    [
+     0
+    ],
+    [
+     9
+    ],
+    [
+     1
+    ],
+    [
+     1,
+     2,
+     3,
+     4,
+     5,
+     6,
+     7,
+     8,
+     9,
+     10,
+     11,
+     12
+    ],
+    [
+     0,
+     1,
+     2,
+     3,
+     4,
+     5,
+     6
+    ]
+   ]
+  },
+  {
+   "ligne": "0 12 * * *",
+   "champs": [
+    [
+     0
+    ],
+    [
+     12
+    ],
+    [
+     1,
+     2,
+     3,
+     4,
+     5,
+     6,
+     7,
+     8,
+     9,
+     10,
+     11,
+     12,
+     13,
+     14,
+     15,
+     16,
+     17,
+     18,
+     19,
+     20,
+     21,
+     22,
+     23,
+     24,
+     25,
+     26,
+     27,
+     28,
+     29,
+     30,
+     31
+    ],
+    [
+     1,
+     2,
+     3,
+     4,
+     5,
+     6,
+     7,
+     8,
+     9,
+     10,
+     11,
+     12
+    ],
+    [
+     0,
+     1,
+     2,
+     3,
+     4,
+     5,
+     6
+    ]
+   ]
+  },
+  {
+   "ligne": "60 * * * * a",
+   "champs": null
+  },
+  {
+   "ligne": "* 24 * * * a",
+   "champs": null
+  },
+  {
+   "ligne": "# 0 7 * * *",
+   "champs": null
+  },
+  {
+   "ligne": "",
+   "champs": null
+  },
+  {
+   "ligne": "1-5/2 8-18/5 * * * a",
+   "champs": [
+    [
+     1,
+     3,
+     5
+    ],
+    [
+     8,
+     13,
+     18
+    ],
+    [
+     1,
+     2,
+     3,
+     4,
+     5,
+     6,
+     7,
+     8,
+     9,
+     10,
+     11,
+     12,
+     13,
+     14,
+     15,
+     16,
+     17,
+     18,
+     19,
+     20,
+     21,
+     22,
+     23,
+     24,
+     25,
+     26,
+     27,
+     28,
+     29,
+     30,
+     31
+    ],
+    [
+     1,
+     2,
+     3,
+     4,
+     5,
+     6,
+     7,
+     8,
+     9,
+     10,
+     11,
+     12
+    ],
+    [
+     0,
+     1,
+     2,
+     3,
+     4,
+     5,
+     6
+    ]
+   ]
+  },
+  {
+   "ligne": "5 4 1,15 * 3 a",
+   "champs": [
+    [
+     5
+    ],
+    [
+     4
+    ],
+    [
+     1,
+     15
+    ],
+    [
+     1,
+     2,
+     3,
+     4,
+     5,
+     6,
+     7,
+     8,
+     9,
+     10,
+     11,
+     12
+    ],
+    [
+     3
+    ]
+   ]
+  },
+  {
+   "ligne": "0 0 29 2 * a",
+   "champs": [
+    [
+     0
+    ],
+    [
+     0
+    ],
+    [
+     29
+    ],
+    [
+     2
+    ],
+    [
+     0,
+     1,
+     2,
+     3,
+     4,
+     5,
+     6
+    ]
+   ]
+  },
+  {
+   "ligne": "* * * * a",
+   "champs": null
+  },
+  {
+   "ligne": "*/0 * * * * a",
+   "champs": null
+  },
+  {
+   "ligne": "3-1 * * * * a",
+   "champs": null
+  },
+  {
+   "ligne": "0 7 * 13 * a",
+   "champs": null
+  },
+  {
+   "ligne": "@daily x",
+   "champs": null
+  },
+  {
+   "ligne": "7 7 7 7 7 x",
+   "champs": [
+    [
+     7
+    ],
+    [
+     7
+    ],
+    [
+     7
+    ],
+    [
+     7
+    ],
+    [
+     0
+    ]
+   ]
+  }
+ ],
+ "prochaines": [
+  {
+   "ligne": "30 7 * * 1-5 echo REVEIL",
+   "depuis": "2026-11-01 06:00",
+   "prochaine": "2026-11-02 07:30"
+  },
+  {
+   "ligne": "30 7 * * 1-5 echo REVEIL",
+   "depuis": "2026-12-31 23:59",
+   "prochaine": "2027-01-01 07:30"
+  },
+  {
+   "ligne": "30 7 * * 1-5 echo REVEIL",
+   "depuis": "2027-02-27 12:30",
+   "prochaine": "2027-03-01 07:30"
+  },
+  {
+   "ligne": "30 7 * * 1-5 echo REVEIL",
+   "depuis": "2026-11-06 07:30",
+   "prochaine": "2026-11-09 07:30"
+  },
+  {
+   "ligne": "*/15 * * * * echo R",
+   "depuis": "2026-11-01 06:00",
+   "prochaine": "2026-11-01 06:15"
+  },
+  {
+   "ligne": "*/15 * * * * echo R",
+   "depuis": "2026-12-31 23:59",
+   "prochaine": "2027-01-01 00:00"
+  },
+  {
+   "ligne": "*/15 * * * * echo R",
+   "depuis": "2027-02-27 12:30",
+   "prochaine": "2027-02-27 12:45"
+  },
+  {
+   "ligne": "*/15 * * * * echo R",
+   "depuis": "2026-11-06 07:30",
+   "prochaine": "2026-11-06 07:45"
+  },
+  {
+   "ligne": "0 20 * * 7 x",
+   "depuis": "2026-11-01 06:00",
+   "prochaine": "2026-11-01 20:00"
+  },
+  {
+   "ligne": "0 20 * * 7 x",
+   "depuis": "2026-12-31 23:59",
+   "prochaine": "2027-01-03 20:00"
+  },
+  {
+   "ligne": "0 20 * * 7 x",
+   "depuis": "2027-02-27 12:30",
+   "prochaine": "2027-02-28 20:00"
+  },
+  {
+   "ligne": "0 20 * * 7 x",
+   "depuis": "2026-11-06 07:30",
+   "prochaine": "2026-11-08 20:00"
+  },
+  {
+   "ligne": "0 20 * * 0 x",
+   "depuis": "2026-11-01 06:00",
+   "prochaine": "2026-11-01 20:00"
+  },
+  {
+   "ligne": "0 20 * * 0 x",
+   "depuis": "2026-12-31 23:59",
+   "prochaine": "2027-01-03 20:00"
+  },
+  {
+   "ligne": "0 20 * * 0 x",
+   "depuis": "2027-02-27 12:30",
+   "prochaine": "2027-02-28 20:00"
+  },
+  {
+   "ligne": "0 20 * * 0 x",
+   "depuis": "2026-11-06 07:30",
+   "prochaine": "2026-11-08 20:00"
+  },
+  {
+   "ligne": "0,15,30,45 * * * * a",
+   "depuis": "2026-11-01 06:00",
+   "prochaine": "2026-11-01 06:15"
+  },
+  {
+   "ligne": "0,15,30,45 * * * * a",
+   "depuis": "2026-12-31 23:59",
+   "prochaine": "2027-01-01 00:00"
+  },
+  {
+   "ligne": "0,15,30,45 * * * * a",
+   "depuis": "2027-02-27 12:30",
+   "prochaine": "2027-02-27 12:45"
+  },
+  {
+   "ligne": "0,15,30,45 * * * * a",
+   "depuis": "2026-11-06 07:30",
+   "prochaine": "2026-11-06 07:45"
+  },
+  {
+   "ligne": "0 9 1 * * a",
+   "depuis": "2026-11-01 06:00",
+   "prochaine": "2026-11-01 09:00"
+  },
+  {
+   "ligne": "0 9 1 * * a",
+   "depuis": "2026-12-31 23:59",
+   "prochaine": "2027-01-01 09:00"
+  },
+  {
+   "ligne": "0 9 1 * * a",
+   "depuis": "2027-02-27 12:30",
+   "prochaine": "2027-03-01 09:00"
+  },
+  {
+   "ligne": "0 9 1 * * a",
+   "depuis": "2026-11-06 07:30",
+   "prochaine": "2026-12-01 09:00"
+  },
+  {
+   "ligne": "0 12 * * *",
+   "depuis": "2026-11-01 06:00",
+   "prochaine": "2026-11-01 12:00"
+  },
+  {
+   "ligne": "0 12 * * *",
+   "depuis": "2026-12-31 23:59",
+   "prochaine": "2027-01-01 12:00"
+  },
+  {
+   "ligne": "0 12 * * *",
+   "depuis": "2027-02-27 12:30",
+   "prochaine": "2027-02-28 12:00"
+  },
+  {
+   "ligne": "0 12 * * *",
+   "depuis": "2026-11-06 07:30",
+   "prochaine": "2026-11-06 12:00"
+  },
+  {
+   "ligne": "60 * * * * a",
+   "depuis": "2026-11-01 06:00",
+   "prochaine": null
+  },
+  {
+   "ligne": "60 * * * * a",
+   "depuis": "2026-12-31 23:59",
+   "prochaine": null
+  },
+  {
+   "ligne": "60 * * * * a",
+   "depuis": "2027-02-27 12:30",
+   "prochaine": null
+  },
+  {
+   "ligne": "60 * * * * a",
+   "depuis": "2026-11-06 07:30",
+   "prochaine": null
+  },
+  {
+   "ligne": "* 24 * * * a",
+   "depuis": "2026-11-01 06:00",
+   "prochaine": null
+  },
+  {
+   "ligne": "* 24 * * * a",
+   "depuis": "2026-12-31 23:59",
+   "prochaine": null
+  },
+  {
+   "ligne": "* 24 * * * a",
+   "depuis": "2027-02-27 12:30",
+   "prochaine": null
+  },
+  {
+   "ligne": "* 24 * * * a",
+   "depuis": "2026-11-06 07:30",
+   "prochaine": null
+  },
+  {
+   "ligne": "# 0 7 * * *",
+   "depuis": "2026-11-01 06:00",
+   "prochaine": null
+  },
+  {
+   "ligne": "# 0 7 * * *",
+   "depuis": "2026-12-31 23:59",
+   "prochaine": null
+  },
+  {
+   "ligne": "# 0 7 * * *",
+   "depuis": "2027-02-27 12:30",
+   "prochaine": null
+  },
+  {
+   "ligne": "# 0 7 * * *",
+   "depuis": "2026-11-06 07:30",
+   "prochaine": null
+  },
+  {
+   "ligne": "",
+   "depuis": "2026-11-01 06:00",
+   "prochaine": null
+  },
+  {
+   "ligne": "",
+   "depuis": "2026-12-31 23:59",
+   "prochaine": null
+  },
+  {
+   "ligne": "",
+   "depuis": "2027-02-27 12:30",
+   "prochaine": null
+  },
+  {
+   "ligne": "",
+   "depuis": "2026-11-06 07:30",
+   "prochaine": null
+  },
+  {
+   "ligne": "1-5/2 8-18/5 * * * a",
+   "depuis": "2026-11-01 06:00",
+   "prochaine": "2026-11-01 08:01"
+  },
+  {
+   "ligne": "1-5/2 8-18/5 * * * a",
+   "depuis": "2026-12-31 23:59",
+   "prochaine": "2027-01-01 08:01"
+  },
+  {
+   "ligne": "1-5/2 8-18/5 * * * a",
+   "depuis": "2027-02-27 12:30",
+   "prochaine": "2027-02-27 13:01"
+  },
+  {
+   "ligne": "1-5/2 8-18/5 * * * a",
+   "depuis": "2026-11-06 07:30",
+   "prochaine": "2026-11-06 08:01"
+  },
+  {
+   "ligne": "5 4 1,15 * 3 a",
+   "depuis": "2026-11-01 06:00",
+   "prochaine": "2026-11-04 04:05"
+  },
+  {
+   "ligne": "5 4 1,15 * 3 a",
+   "depuis": "2026-12-31 23:59",
+   "prochaine": "2027-01-01 04:05"
+  },
+  {
+   "ligne": "5 4 1,15 * 3 a",
+   "depuis": "2027-02-27 12:30",
+   "prochaine": "2027-03-01 04:05"
+  },
+  {
+   "ligne": "5 4 1,15 * 3 a",
+   "depuis": "2026-11-06 07:30",
+   "prochaine": "2026-11-11 04:05"
+  },
+  {
+   "ligne": "0 0 29 2 * a",
+   "depuis": "2026-11-01 06:00",
+   "prochaine": null
+  },
+  {
+   "ligne": "0 0 29 2 * a",
+   "depuis": "2026-12-31 23:59",
+   "prochaine": null
+  },
+  {
+   "ligne": "0 0 29 2 * a",
+   "depuis": "2027-02-27 12:30",
+   "prochaine": "2028-02-29 00:00"
+  },
+  {
+   "ligne": "0 0 29 2 * a",
+   "depuis": "2026-11-06 07:30",
+   "prochaine": null
+  },
+  {
+   "ligne": "* * * * a",
+   "depuis": "2026-11-01 06:00",
+   "prochaine": null
+  },
+  {
+   "ligne": "* * * * a",
+   "depuis": "2026-12-31 23:59",
+   "prochaine": null
+  },
+  {
+   "ligne": "* * * * a",
+   "depuis": "2027-02-27 12:30",
+   "prochaine": null
+  },
+  {
+   "ligne": "* * * * a",
+   "depuis": "2026-11-06 07:30",
+   "prochaine": null
+  },
+  {
+   "ligne": "*/0 * * * * a",
+   "depuis": "2026-11-01 06:00",
+   "prochaine": null
+  },
+  {
+   "ligne": "*/0 * * * * a",
+   "depuis": "2026-12-31 23:59",
+   "prochaine": null
+  },
+  {
+   "ligne": "*/0 * * * * a",
+   "depuis": "2027-02-27 12:30",
+   "prochaine": null
+  },
+  {
+   "ligne": "*/0 * * * * a",
+   "depuis": "2026-11-06 07:30",
+   "prochaine": null
+  },
+  {
+   "ligne": "3-1 * * * * a",
+   "depuis": "2026-11-01 06:00",
+   "prochaine": null
+  },
+  {
+   "ligne": "3-1 * * * * a",
+   "depuis": "2026-12-31 23:59",
+   "prochaine": null
+  },
+  {
+   "ligne": "3-1 * * * * a",
+   "depuis": "2027-02-27 12:30",
+   "prochaine": null
+  },
+  {
+   "ligne": "3-1 * * * * a",
+   "depuis": "2026-11-06 07:30",
+   "prochaine": null
+  },
+  {
+   "ligne": "0 7 * 13 * a",
+   "depuis": "2026-11-01 06:00",
+   "prochaine": null
+  },
+  {
+   "ligne": "0 7 * 13 * a",
+   "depuis": "2026-12-31 23:59",
+   "prochaine": null
+  },
+  {
+   "ligne": "0 7 * 13 * a",
+   "depuis": "2027-02-27 12:30",
+   "prochaine": null
+  },
+  {
+   "ligne": "0 7 * 13 * a",
+   "depuis": "2026-11-06 07:30",
+   "prochaine": null
+  },
+  {
+   "ligne": "@daily x",
+   "depuis": "2026-11-01 06:00",
+   "prochaine": null
+  },
+  {
+   "ligne": "@daily x",
+   "depuis": "2026-12-31 23:59",
+   "prochaine": null
+  },
+  {
+   "ligne": "@daily x",
+   "depuis": "2027-02-27 12:30",
+   "prochaine": null
+  },
+  {
+   "ligne": "@daily x",
+   "depuis": "2026-11-06 07:30",
+   "prochaine": null
+  },
+  {
+   "ligne": "7 7 7 7 7 x",
+   "depuis": "2026-11-01 06:00",
+   "prochaine": "2027-07-04 07:07"
+  },
+  {
+   "ligne": "7 7 7 7 7 x",
+   "depuis": "2026-12-31 23:59",
+   "prochaine": "2027-07-04 07:07"
+  },
+  {
+   "ligne": "7 7 7 7 7 x",
+   "depuis": "2027-02-27 12:30",
+   "prochaine": "2027-07-04 07:07"
+  },
+  {
+   "ligne": "7 7 7 7 7 x",
+   "depuis": "2026-11-06 07:30",
+   "prochaine": "2027-07-04 07:07"
+  }
+ ],
+ "pareils": [
+  {
+   "a": "*/15 * * * *",
+   "b": "0,15,30,45 * * * *",
+   "pareil": true
+  },
+  {
+   "a": "0 20 * * 0",
+   "b": "0 20 * * 7",
+   "pareil": true
+  },
+  {
+   "a": "30 7 * * 1-5",
+   "b": "30 7 * * 1,2,3,4,5",
+   "pareil": true
+  },
+  {
+   "a": "0 12 * * *",
+   "b": "0 0 * * *",
+   "pareil": false
+  },
+  {
+   "a": "0 9 1 * *",
+   "b": "00 09 01 * *",
+   "pareil": true
+  },
+  {
+   "a": "x",
+   "b": "x",
+   "pareil": false
+  },
+  {
+   "a": "0 8 * * 1",
+   "b": "0 8 * * MON",
+   "pareil": false
+  }
+ ],
+ "cron_rep": [
+  {
+   "graine": "1:0",
+   "reponse": "0 12 * * *",
+   "ok": true
+  },
+  {
+   "graine": "1:0",
+   "reponse": "\"0 12 * * *\"",
+   "ok": true
+  },
+  {
+   "graine": "1:0",
+   "reponse": "0 12 * * *  ",
+   "ok": true
+  },
+  {
+   "graine": "1:0",
+   "reponse": "0 0 * * *",
+   "ok": false
+  },
+  {
+   "graine": "1:0",
+   "reponse": "? ? ? ? ?",
+   "ok": false
+  },
+  {
+   "graine": "1:0",
+   "reponse": "*/15 * * * *",
+   "ok": false
+  },
+  {
+   "graine": "2:1730000000",
+   "reponse": "30 7 * * 1-5",
+   "ok": true
+  },
+  {
+   "graine": "2:1730000000",
+   "reponse": "\"30 7 * * 1-5\"",
+   "ok": true
+  },
+  {
+   "graine": "2:1730000000",
+   "reponse": "30 7 * * 1-5  ",
+   "ok": true
+  },
+  {
+   "graine": "2:1730000000",
+   "reponse": "0 0 * * *",
+   "ok": false
+  },
+  {
+   "graine": "2:1730000000",
+   "reponse": "? ? ? ? ?",
+   "ok": false
+  },
+  {
+   "graine": "2:1730000000",
+   "reponse": "*/15 * * * *",
+   "ok": false
+  },
+  {
+   "graine": "7:42",
+   "reponse": "0 20 * * 0",
+   "ok": true
+  },
+  {
+   "graine": "7:42",
+   "reponse": "\"0 20 * * 0\"",
+   "ok": true
+  },
+  {
+   "graine": "7:42",
+   "reponse": "0 20 * * 0  ",
+   "ok": true
+  },
+  {
+   "graine": "7:42",
+   "reponse": "0 0 * * *",
+   "ok": false
+  },
+  {
+   "graine": "7:42",
+   "reponse": "? ? ? ? ?",
+   "ok": false
+  },
+  {
+   "graine": "7:42",
+   "reponse": "*/15 * * * *",
+   "ok": false
+  },
+  {
+   "graine": "partie:3",
+   "reponse": "0 20 * * 0",
+   "ok": true
+  },
+  {
+   "graine": "partie:3",
+   "reponse": "\"0 20 * * 0\"",
+   "ok": true
+  },
+  {
+   "graine": "partie:3",
+   "reponse": "0 20 * * 0  ",
+   "ok": true
+  },
+  {
+   "graine": "partie:3",
+   "reponse": "0 0 * * *",
+   "ok": false
+  },
+  {
+   "graine": "partie:3",
+   "reponse": "? ? ? ? ?",
+   "ok": false
+  },
+  {
+   "graine": "partie:3",
+   "reponse": "*/15 * * * *",
+   "ok": false
+  }
+ ],
+ "quiz": [
+  {
+   "graine": "1:0",
+   "rep": [
+    "d",
+    "a",
+    "a",
+    "d",
+    "p"
+   ],
+   "ok": true,
+   "justes": [
+    [
+     1,
+     "fedora"
+    ],
+    [
+     2,
+     "ubuntu"
+    ],
+    [
+     3,
+     "debian"
+    ],
+    [
+     4,
+     "almalinux"
+    ],
+    [
+     5,
+     "arch"
+    ]
+   ]
+  },
+  {
+   "graine": "1:0",
+   "rep": [
+    "p",
+    "d",
+    "a",
+    "a",
+    "d"
+   ],
+   "ok": true,
+   "justes": [
+    [
+     3,
+     "debian"
+    ]
+   ]
+  },
+  {
+   "graine": "1:0",
+   "rep": [
+    "d",
+    "d",
+    "d",
+    "d",
+    "d"
+   ],
+   "ok": true,
+   "justes": [
+    [
+     1,
+     "fedora"
+    ],
+    [
+     4,
+     "almalinux"
+    ]
+   ]
+  },
+  {
+   "graine": "1:0",
+   "rep": [
+    "DNF",
+    "apt",
+    "Pacman",
+    "a",
+    "a"
+   ],
+   "ok": true,
+   "justes": [
+    [
+     1,
+     "fedora"
+    ],
+    [
+     2,
+     "ubuntu"
+    ]
+   ]
+  },
+  {
+   "graine": "1:0",
+   "rep": [
+    "x",
+    "x",
+    "x",
+    "x",
+    "x"
+   ],
+   "ok": false,
+   "justes": []
+  },
+  {
+   "graine": "1:0",
+   "rep": [
+    "d",
+    "a",
+    "a",
+    "d"
+   ],
+   "ok": false,
+   "justes": []
+  },
+  {
+   "graine": "1:0",
+   "rep": [],
+   "ok": false,
+   "justes": []
+  },
+  {
+   "graine": "2:1730000000",
+   "rep": [
+    "d",
+    "a",
+    "a",
+    "p",
+    "d"
+   ],
+   "ok": true,
+   "justes": [
+    [
+     1,
+     "fedora"
+    ],
+    [
+     2,
+     "ubuntu"
+    ],
+    [
+     3,
+     "debian"
+    ],
+    [
+     4,
+     "arch"
+    ],
+    [
+     5,
+     "almalinux"
+    ]
+   ]
+  },
+  {
+   "graine": "2:1730000000",
+   "rep": [
+    "d",
+    "p",
+    "a",
+    "a",
+    "d"
+   ],
+   "ok": true,
+   "justes": [
+    [
+     1,
+     "fedora"
+    ],
+    [
+     3,
+     "debian"
+    ],
+    [
+     5,
+     "almalinux"
+    ]
+   ]
+  },
+  {
+   "graine": "2:1730000000",
+   "rep": [
+    "d",
+    "d",
+    "d",
+    "d",
+    "d"
+   ],
+   "ok": true,
+   "justes": [
+    [
+     1,
+     "fedora"
+    ],
+    [
+     5,
+     "almalinux"
+    ]
+   ]
+  },
+  {
+   "graine": "2:1730000000",
+   "rep": [
+    "DNF",
+    "apt",
+    "Pacman",
+    "a",
+    "a"
+   ],
+   "ok": true,
+   "justes": [
+    [
+     1,
+     "fedora"
+    ],
+    [
+     2,
+     "ubuntu"
+    ]
+   ]
+  },
+  {
+   "graine": "2:1730000000",
+   "rep": [
+    "x",
+    "x",
+    "x",
+    "x",
+    "x"
+   ],
+   "ok": false,
+   "justes": []
+  },
+  {
+   "graine": "2:1730000000",
+   "rep": [
+    "d",
+    "a",
+    "a",
+    "p"
+   ],
+   "ok": false,
+   "justes": []
+  },
+  {
+   "graine": "2:1730000000",
+   "rep": [],
+   "ok": false,
+   "justes": []
+  },
+  {
+   "graine": "7:42",
+   "rep": [
+    "p",
+    "a",
+    "a",
+    "d",
+    "d"
+   ],
+   "ok": true,
+   "justes": [
+    [
+     1,
+     "arch"
+    ],
+    [
+     2,
+     "debian"
+    ],
+    [
+     3,
+     "ubuntu"
+    ],
+    [
+     4,
+     "almalinux"
+    ],
+    [
+     5,
+     "fedora"
+    ]
+   ]
+  },
+  {
+   "graine": "7:42",
+   "rep": [
+    "d",
+    "d",
+    "a",
+    "a",
+    "p"
+   ],
+   "ok": true,
+   "justes": [
+    [
+     3,
+     "ubuntu"
+    ]
+   ]
+  },
+  {
+   "graine": "7:42",
+   "rep": [
+    "d",
+    "d",
+    "d",
+    "d",
+    "d"
+   ],
+   "ok": true,
+   "justes": [
+    [
+     4,
+     "almalinux"
+    ],
+    [
+     5,
+     "fedora"
+    ]
+   ]
+  },
+  {
+   "graine": "7:42",
+   "rep": [
+    "DNF",
+    "apt",
+    "Pacman",
+    "a",
+    "a"
+   ],
+   "ok": true,
+   "justes": [
+    [
+     2,
+     "debian"
+    ]
+   ]
+  },
+  {
+   "graine": "7:42",
+   "rep": [
+    "x",
+    "x",
+    "x",
+    "x",
+    "x"
+   ],
+   "ok": false,
+   "justes": []
+  },
+  {
+   "graine": "7:42",
+   "rep": [
+    "p",
+    "a",
+    "a",
+    "d"
+   ],
+   "ok": false,
+   "justes": []
+  },
+  {
+   "graine": "7:42",
+   "rep": [],
+   "ok": false,
+   "justes": []
+  }
+ ],
+ "distrib": [
+  {
+   "texte": "NAME=\"Fedora Linux\"\nVERSION=\"43 (Workstation Edition)\"\nID=fedora\nVERSION_ID=43\n",
+   "osr": {
+    "NAME": "Fedora Linux",
+    "VERSION": "43 (Workstation Edition)",
+    "ID": "fedora",
+    "VERSION_ID": "43"
+   },
+   "reponse": "fedora",
+   "ok": true
+  },
+  {
+   "texte": "NAME=\"Fedora Linux\"\nVERSION=\"43 (Workstation Edition)\"\nID=fedora\nVERSION_ID=43\n",
+   "osr": {
+    "NAME": "Fedora Linux",
+    "VERSION": "43 (Workstation Edition)",
+    "ID": "fedora",
+    "VERSION_ID": "43"
+   },
+   "reponse": "Fedora",
+   "ok": true
+  },
+  {
+   "texte": "NAME=\"Fedora Linux\"\nVERSION=\"43 (Workstation Edition)\"\nID=fedora\nVERSION_ID=43\n",
+   "osr": {
+    "NAME": "Fedora Linux",
+    "VERSION": "43 (Workstation Edition)",
+    "ID": "fedora",
+    "VERSION_ID": "43"
+   },
+   "reponse": "ubuntu",
+   "ok": false
+  },
+  {
+   "texte": "NAME=\"Fedora Linux\"\nVERSION=\"43 (Workstation Edition)\"\nID=fedora\nVERSION_ID=43\n",
+   "osr": {
+    "NAME": "Fedora Linux",
+    "VERSION": "43 (Workstation Edition)",
+    "ID": "fedora",
+    "VERSION_ID": "43"
+   },
+   "reponse": "debian",
+   "ok": false
+  },
+  {
+   "texte": "NAME=\"Fedora Linux\"\nVERSION=\"43 (Workstation Edition)\"\nID=fedora\nVERSION_ID=43\n",
+   "osr": {
+    "NAME": "Fedora Linux",
+    "VERSION": "43 (Workstation Edition)",
+    "ID": "fedora",
+    "VERSION_ID": "43"
+   },
+   "reponse": "linuxmint",
+   "ok": false
+  },
+  {
+   "texte": "NAME=\"Fedora Linux\"\nVERSION=\"43 (Workstation Edition)\"\nID=fedora\nVERSION_ID=43\n",
+   "osr": {
+    "NAME": "Fedora Linux",
+    "VERSION": "43 (Workstation Edition)",
+    "ID": "fedora",
+    "VERSION_ID": "43"
+   },
+   "reponse": "linux",
+   "ok": false
+  },
+  {
+   "texte": "NAME=\"Fedora Linux\"\nVERSION=\"43 (Workstation Edition)\"\nID=fedora\nVERSION_ID=43\n",
+   "osr": {
+    "NAME": "Fedora Linux",
+    "VERSION": "43 (Workstation Edition)",
+    "ID": "fedora",
+    "VERSION_ID": "43"
+   },
+   "reponse": "arch",
+   "ok": false
+  },
+  {
+   "texte": "NAME=\"Fedora Linux\"\nVERSION=\"43 (Workstation Edition)\"\nID=fedora\nVERSION_ID=43\n",
+   "osr": {
+    "NAME": "Fedora Linux",
+    "VERSION": "43 (Workstation Edition)",
+    "ID": "fedora",
+    "VERSION_ID": "43"
+   },
+   "reponse": "opensuse-tumbleweed",
+   "ok": false
+  },
+  {
+   "texte": "NAME=\"Fedora Linux\"\nVERSION=\"43 (Workstation Edition)\"\nID=fedora\nVERSION_ID=43\n",
+   "osr": {
+    "NAME": "Fedora Linux",
+    "VERSION": "43 (Workstation Edition)",
+    "ID": "fedora",
+    "VERSION_ID": "43"
+   },
+   "reponse": "suse",
+   "ok": false
+  },
+  {
+   "texte": "NAME=\"Fedora Linux\"\nVERSION=\"43 (Workstation Edition)\"\nID=fedora\nVERSION_ID=43\n",
+   "osr": {
+    "NAME": "Fedora Linux",
+    "VERSION": "43 (Workstation Edition)",
+    "ID": "fedora",
+    "VERSION_ID": "43"
+   },
+   "reponse": "",
+   "ok": false
+  },
+  {
+   "texte": "NAME=\"Fedora Linux\"\nVERSION=\"43 (Workstation Edition)\"\nID=fedora\nVERSION_ID=43\n",
+   "osr": {
+    "NAME": "Fedora Linux",
+    "VERSION": "43 (Workstation Edition)",
+    "ID": "fedora",
+    "VERSION_ID": "43"
+   },
+   "reponse": "Ubuntu ",
+   "ok": false
+  },
+  {
+   "texte": "PRETTY_NAME=\"Ubuntu 24.04.1 LTS\"\nNAME=\"Ubuntu\"\nID=ubuntu\nID_LIKE=debian\n",
+   "osr": {
+    "PRETTY_NAME": "Ubuntu 24.04.1 LTS",
+    "NAME": "Ubuntu",
+    "ID": "ubuntu",
+    "ID_LIKE": "debian"
+   },
+   "reponse": "fedora",
+   "ok": false
+  },
+  {
+   "texte": "PRETTY_NAME=\"Ubuntu 24.04.1 LTS\"\nNAME=\"Ubuntu\"\nID=ubuntu\nID_LIKE=debian\n",
+   "osr": {
+    "PRETTY_NAME": "Ubuntu 24.04.1 LTS",
+    "NAME": "Ubuntu",
+    "ID": "ubuntu",
+    "ID_LIKE": "debian"
+   },
+   "reponse": "Fedora",
+   "ok": false
+  },
+  {
+   "texte": "PRETTY_NAME=\"Ubuntu 24.04.1 LTS\"\nNAME=\"Ubuntu\"\nID=ubuntu\nID_LIKE=debian\n",
+   "osr": {
+    "PRETTY_NAME": "Ubuntu 24.04.1 LTS",
+    "NAME": "Ubuntu",
+    "ID": "ubuntu",
+    "ID_LIKE": "debian"
+   },
+   "reponse": "ubuntu",
+   "ok": true
+  },
+  {
+   "texte": "PRETTY_NAME=\"Ubuntu 24.04.1 LTS\"\nNAME=\"Ubuntu\"\nID=ubuntu\nID_LIKE=debian\n",
+   "osr": {
+    "PRETTY_NAME": "Ubuntu 24.04.1 LTS",
+    "NAME": "Ubuntu",
+    "ID": "ubuntu",
+    "ID_LIKE": "debian"
+   },
+   "reponse": "debian",
+   "ok": true
+  },
+  {
+   "texte": "PRETTY_NAME=\"Ubuntu 24.04.1 LTS\"\nNAME=\"Ubuntu\"\nID=ubuntu\nID_LIKE=debian\n",
+   "osr": {
+    "PRETTY_NAME": "Ubuntu 24.04.1 LTS",
+    "NAME": "Ubuntu",
+    "ID": "ubuntu",
+    "ID_LIKE": "debian"
+   },
+   "reponse": "linuxmint",
+   "ok": false
+  },
+  {
+   "texte": "PRETTY_NAME=\"Ubuntu 24.04.1 LTS\"\nNAME=\"Ubuntu\"\nID=ubuntu\nID_LIKE=debian\n",
+   "osr": {
+    "PRETTY_NAME": "Ubuntu 24.04.1 LTS",
+    "NAME": "Ubuntu",
+    "ID": "ubuntu",
+    "ID_LIKE": "debian"
+   },
+   "reponse": "linux",
+   "ok": false
+  },
+  {
+   "texte": "PRETTY_NAME=\"Ubuntu 24.04.1 LTS\"\nNAME=\"Ubuntu\"\nID=ubuntu\nID_LIKE=debian\n",
+   "osr": {
+    "PRETTY_NAME": "Ubuntu 24.04.1 LTS",
+    "NAME": "Ubuntu",
+    "ID": "ubuntu",
+    "ID_LIKE": "debian"
+   },
+   "reponse": "arch",
+   "ok": false
+  },
+  {
+   "texte": "PRETTY_NAME=\"Ubuntu 24.04.1 LTS\"\nNAME=\"Ubuntu\"\nID=ubuntu\nID_LIKE=debian\n",
+   "osr": {
+    "PRETTY_NAME": "Ubuntu 24.04.1 LTS",
+    "NAME": "Ubuntu",
+    "ID": "ubuntu",
+    "ID_LIKE": "debian"
+   },
+   "reponse": "opensuse-tumbleweed",
+   "ok": false
+  },
+  {
+   "texte": "PRETTY_NAME=\"Ubuntu 24.04.1 LTS\"\nNAME=\"Ubuntu\"\nID=ubuntu\nID_LIKE=debian\n",
+   "osr": {
+    "PRETTY_NAME": "Ubuntu 24.04.1 LTS",
+    "NAME": "Ubuntu",
+    "ID": "ubuntu",
+    "ID_LIKE": "debian"
+   },
+   "reponse": "suse",
+   "ok": false
+  },
+  {
+   "texte": "PRETTY_NAME=\"Ubuntu 24.04.1 LTS\"\nNAME=\"Ubuntu\"\nID=ubuntu\nID_LIKE=debian\n",
+   "osr": {
+    "PRETTY_NAME": "Ubuntu 24.04.1 LTS",
+    "NAME": "Ubuntu",
+    "ID": "ubuntu",
+    "ID_LIKE": "debian"
+   },
+   "reponse": "",
+   "ok": false
+  },
+  {
+   "texte": "PRETTY_NAME=\"Ubuntu 24.04.1 LTS\"\nNAME=\"Ubuntu\"\nID=ubuntu\nID_LIKE=debian\n",
+   "osr": {
+    "PRETTY_NAME": "Ubuntu 24.04.1 LTS",
+    "NAME": "Ubuntu",
+    "ID": "ubuntu",
+    "ID_LIKE": "debian"
+   },
+   "reponse": "Ubuntu ",
+   "ok": true
+  },
+  {
+   "texte": "NAME=\"Linux Mint\"\nID=linuxmint\nID_LIKE=\"ubuntu debian\"\n",
+   "osr": {
+    "NAME": "Linux Mint",
+    "ID": "linuxmint",
+    "ID_LIKE": "ubuntu debian"
+   },
+   "reponse": "fedora",
+   "ok": false
+  },
+  {
+   "texte": "NAME=\"Linux Mint\"\nID=linuxmint\nID_LIKE=\"ubuntu debian\"\n",
+   "osr": {
+    "NAME": "Linux Mint",
+    "ID": "linuxmint",
+    "ID_LIKE": "ubuntu debian"
+   },
+   "reponse": "Fedora",
+   "ok": false
+  },
+  {
+   "texte": "NAME=\"Linux Mint\"\nID=linuxmint\nID_LIKE=\"ubuntu debian\"\n",
+   "osr": {
+    "NAME": "Linux Mint",
+    "ID": "linuxmint",
+    "ID_LIKE": "ubuntu debian"
+   },
+   "reponse": "ubuntu",
+   "ok": true
+  },
+  {
+   "texte": "NAME=\"Linux Mint\"\nID=linuxmint\nID_LIKE=\"ubuntu debian\"\n",
+   "osr": {
+    "NAME": "Linux Mint",
+    "ID": "linuxmint",
+    "ID_LIKE": "ubuntu debian"
+   },
+   "reponse": "debian",
+   "ok": true
+  },
+  {
+   "texte": "NAME=\"Linux Mint\"\nID=linuxmint\nID_LIKE=\"ubuntu debian\"\n",
+   "osr": {
+    "NAME": "Linux Mint",
+    "ID": "linuxmint",
+    "ID_LIKE": "ubuntu debian"
+   },
+   "reponse": "linuxmint",
+   "ok": true
+  },
+  {
+   "texte": "NAME=\"Linux Mint\"\nID=linuxmint\nID_LIKE=\"ubuntu debian\"\n",
+   "osr": {
+    "NAME": "Linux Mint",
+    "ID": "linuxmint",
+    "ID_LIKE": "ubuntu debian"
+   },
+   "reponse": "linux",
+   "ok": true
+  },
+  {
+   "texte": "NAME=\"Linux Mint\"\nID=linuxmint\nID_LIKE=\"ubuntu debian\"\n",
+   "osr": {
+    "NAME": "Linux Mint",
+    "ID": "linuxmint",
+    "ID_LIKE": "ubuntu debian"
+   },
+   "reponse": "arch",
+   "ok": false
+  },
+  {
+   "texte": "NAME=\"Linux Mint\"\nID=linuxmint\nID_LIKE=\"ubuntu debian\"\n",
+   "osr": {
+    "NAME": "Linux Mint",
+    "ID": "linuxmint",
+    "ID_LIKE": "ubuntu debian"
+   },
+   "reponse": "opensuse-tumbleweed",
+   "ok": false
+  },
+  {
+   "texte": "NAME=\"Linux Mint\"\nID=linuxmint\nID_LIKE=\"ubuntu debian\"\n",
+   "osr": {
+    "NAME": "Linux Mint",
+    "ID": "linuxmint",
+    "ID_LIKE": "ubuntu debian"
+   },
+   "reponse": "suse",
+   "ok": false
+  },
+  {
+   "texte": "NAME=\"Linux Mint\"\nID=linuxmint\nID_LIKE=\"ubuntu debian\"\n",
+   "osr": {
+    "NAME": "Linux Mint",
+    "ID": "linuxmint",
+    "ID_LIKE": "ubuntu debian"
+   },
+   "reponse": "",
+   "ok": false
+  },
+  {
+   "texte": "NAME=\"Linux Mint\"\nID=linuxmint\nID_LIKE=\"ubuntu debian\"\n",
+   "osr": {
+    "NAME": "Linux Mint",
+    "ID": "linuxmint",
+    "ID_LIKE": "ubuntu debian"
+   },
+   "reponse": "Ubuntu ",
+   "ok": true
+  },
+  {
+   "texte": "# rien\n",
+   "osr": {},
+   "reponse": "fedora",
+   "ok": false
+  },
+  {
+   "texte": "# rien\n",
+   "osr": {},
+   "reponse": "Fedora",
+   "ok": false
+  },
+  {
+   "texte": "# rien\n",
+   "osr": {},
+   "reponse": "ubuntu",
+   "ok": false
+  },
+  {
+   "texte": "# rien\n",
+   "osr": {},
+   "reponse": "debian",
+   "ok": false
+  },
+  {
+   "texte": "# rien\n",
+   "osr": {},
+   "reponse": "linuxmint",
+   "ok": false
+  },
+  {
+   "texte": "# rien\n",
+   "osr": {},
+   "reponse": "linux",
+   "ok": false
+  },
+  {
+   "texte": "# rien\n",
+   "osr": {},
+   "reponse": "arch",
+   "ok": false
+  },
+  {
+   "texte": "# rien\n",
+   "osr": {},
+   "reponse": "opensuse-tumbleweed",
+   "ok": false
+  },
+  {
+   "texte": "# rien\n",
+   "osr": {},
+   "reponse": "suse",
+   "ok": false
+  },
+  {
+   "texte": "# rien\n",
+   "osr": {},
+   "reponse": "",
+   "ok": false
+  },
+  {
+   "texte": "# rien\n",
+   "osr": {},
+   "reponse": "Ubuntu ",
+   "ok": false
+  },
+  {
+   "texte": "",
+   "osr": {},
+   "reponse": "fedora",
+   "ok": false
+  },
+  {
+   "texte": "",
+   "osr": {},
+   "reponse": "Fedora",
+   "ok": false
+  },
+  {
+   "texte": "",
+   "osr": {},
+   "reponse": "ubuntu",
+   "ok": false
+  },
+  {
+   "texte": "",
+   "osr": {},
+   "reponse": "debian",
+   "ok": false
+  },
+  {
+   "texte": "",
+   "osr": {},
+   "reponse": "linuxmint",
+   "ok": false
+  },
+  {
+   "texte": "",
+   "osr": {},
+   "reponse": "linux",
+   "ok": false
+  },
+  {
+   "texte": "",
+   "osr": {},
+   "reponse": "arch",
+   "ok": false
+  },
+  {
+   "texte": "",
+   "osr": {},
+   "reponse": "opensuse-tumbleweed",
+   "ok": false
+  },
+  {
+   "texte": "",
+   "osr": {},
+   "reponse": "suse",
+   "ok": false
+  },
+  {
+   "texte": "",
+   "osr": {},
+   "reponse": "",
+   "ok": false
+  },
+  {
+   "texte": "",
+   "osr": {},
+   "reponse": "Ubuntu ",
+   "ok": false
+  },
+  {
+   "texte": "NAME=\"Arch Linux\"\nID=arch\n",
+   "osr": {
+    "NAME": "Arch Linux",
+    "ID": "arch"
+   },
+   "reponse": "fedora",
+   "ok": false
+  },
+  {
+   "texte": "NAME=\"Arch Linux\"\nID=arch\n",
+   "osr": {
+    "NAME": "Arch Linux",
+    "ID": "arch"
+   },
+   "reponse": "Fedora",
+   "ok": false
+  },
+  {
+   "texte": "NAME=\"Arch Linux\"\nID=arch\n",
+   "osr": {
+    "NAME": "Arch Linux",
+    "ID": "arch"
+   },
+   "reponse": "ubuntu",
+   "ok": false
+  },
+  {
+   "texte": "NAME=\"Arch Linux\"\nID=arch\n",
+   "osr": {
+    "NAME": "Arch Linux",
+    "ID": "arch"
+   },
+   "reponse": "debian",
+   "ok": false
+  },
+  {
+   "texte": "NAME=\"Arch Linux\"\nID=arch\n",
+   "osr": {
+    "NAME": "Arch Linux",
+    "ID": "arch"
+   },
+   "reponse": "linuxmint",
+   "ok": false
+  },
+  {
+   "texte": "NAME=\"Arch Linux\"\nID=arch\n",
+   "osr": {
+    "NAME": "Arch Linux",
+    "ID": "arch"
+   },
+   "reponse": "linux",
+   "ok": false
+  },
+  {
+   "texte": "NAME=\"Arch Linux\"\nID=arch\n",
+   "osr": {
+    "NAME": "Arch Linux",
+    "ID": "arch"
+   },
+   "reponse": "arch",
+   "ok": true
+  },
+  {
+   "texte": "NAME=\"Arch Linux\"\nID=arch\n",
+   "osr": {
+    "NAME": "Arch Linux",
+    "ID": "arch"
+   },
+   "reponse": "opensuse-tumbleweed",
+   "ok": false
+  },
+  {
+   "texte": "NAME=\"Arch Linux\"\nID=arch\n",
+   "osr": {
+    "NAME": "Arch Linux",
+    "ID": "arch"
+   },
+   "reponse": "suse",
+   "ok": false
+  },
+  {
+   "texte": "NAME=\"Arch Linux\"\nID=arch\n",
+   "osr": {
+    "NAME": "Arch Linux",
+    "ID": "arch"
+   },
+   "reponse": "",
+   "ok": false
+  },
+  {
+   "texte": "NAME=\"Arch Linux\"\nID=arch\n",
+   "osr": {
+    "NAME": "Arch Linux",
+    "ID": "arch"
+   },
+   "reponse": "Ubuntu ",
+   "ok": false
+  },
+  {
+   "texte": "NAME='openSUSE Tumbleweed'\nID=\"opensuse-tumbleweed\"\nID_LIKE=\"opensuse suse\"\n",
+   "osr": {
+    "NAME": "openSUSE Tumbleweed",
+    "ID": "opensuse-tumbleweed",
+    "ID_LIKE": "opensuse suse"
+   },
+   "reponse": "fedora",
+   "ok": false
+  },
+  {
+   "texte": "NAME='openSUSE Tumbleweed'\nID=\"opensuse-tumbleweed\"\nID_LIKE=\"opensuse suse\"\n",
+   "osr": {
+    "NAME": "openSUSE Tumbleweed",
+    "ID": "opensuse-tumbleweed",
+    "ID_LIKE": "opensuse suse"
+   },
+   "reponse": "Fedora",
+   "ok": false
+  },
+  {
+   "texte": "NAME='openSUSE Tumbleweed'\nID=\"opensuse-tumbleweed\"\nID_LIKE=\"opensuse suse\"\n",
+   "osr": {
+    "NAME": "openSUSE Tumbleweed",
+    "ID": "opensuse-tumbleweed",
+    "ID_LIKE": "opensuse suse"
+   },
+   "reponse": "ubuntu",
+   "ok": false
+  },
+  {
+   "texte": "NAME='openSUSE Tumbleweed'\nID=\"opensuse-tumbleweed\"\nID_LIKE=\"opensuse suse\"\n",
+   "osr": {
+    "NAME": "openSUSE Tumbleweed",
+    "ID": "opensuse-tumbleweed",
+    "ID_LIKE": "opensuse suse"
+   },
+   "reponse": "debian",
+   "ok": false
+  },
+  {
+   "texte": "NAME='openSUSE Tumbleweed'\nID=\"opensuse-tumbleweed\"\nID_LIKE=\"opensuse suse\"\n",
+   "osr": {
+    "NAME": "openSUSE Tumbleweed",
+    "ID": "opensuse-tumbleweed",
+    "ID_LIKE": "opensuse suse"
+   },
+   "reponse": "linuxmint",
+   "ok": false
+  },
+  {
+   "texte": "NAME='openSUSE Tumbleweed'\nID=\"opensuse-tumbleweed\"\nID_LIKE=\"opensuse suse\"\n",
+   "osr": {
+    "NAME": "openSUSE Tumbleweed",
+    "ID": "opensuse-tumbleweed",
+    "ID_LIKE": "opensuse suse"
+   },
+   "reponse": "linux",
+   "ok": false
+  },
+  {
+   "texte": "NAME='openSUSE Tumbleweed'\nID=\"opensuse-tumbleweed\"\nID_LIKE=\"opensuse suse\"\n",
+   "osr": {
+    "NAME": "openSUSE Tumbleweed",
+    "ID": "opensuse-tumbleweed",
+    "ID_LIKE": "opensuse suse"
+   },
+   "reponse": "arch",
+   "ok": false
+  },
+  {
+   "texte": "NAME='openSUSE Tumbleweed'\nID=\"opensuse-tumbleweed\"\nID_LIKE=\"opensuse suse\"\n",
+   "osr": {
+    "NAME": "openSUSE Tumbleweed",
+    "ID": "opensuse-tumbleweed",
+    "ID_LIKE": "opensuse suse"
+   },
+   "reponse": "opensuse-tumbleweed",
+   "ok": true
+  },
+  {
+   "texte": "NAME='openSUSE Tumbleweed'\nID=\"opensuse-tumbleweed\"\nID_LIKE=\"opensuse suse\"\n",
+   "osr": {
+    "NAME": "openSUSE Tumbleweed",
+    "ID": "opensuse-tumbleweed",
+    "ID_LIKE": "opensuse suse"
+   },
+   "reponse": "suse",
+   "ok": true
+  },
+  {
+   "texte": "NAME='openSUSE Tumbleweed'\nID=\"opensuse-tumbleweed\"\nID_LIKE=\"opensuse suse\"\n",
+   "osr": {
+    "NAME": "openSUSE Tumbleweed",
+    "ID": "opensuse-tumbleweed",
+    "ID_LIKE": "opensuse suse"
+   },
+   "reponse": "",
+   "ok": false
+  },
+  {
+   "texte": "NAME='openSUSE Tumbleweed'\nID=\"opensuse-tumbleweed\"\nID_LIKE=\"opensuse suse\"\n",
+   "osr": {
+    "NAME": "openSUSE Tumbleweed",
+    "ID": "opensuse-tumbleweed",
+    "ID_LIKE": "opensuse suse"
+   },
+   "reponse": "Ubuntu ",
+   "ok": false
+  }
+ ],
+ "equipage": [
+  {
+   "nom": "mousse",
+   "valide": true,
+   "texte": "root:x:0:0:root:/root:/bin/bash\ndaemon:x:1:1:daemon:/usr/sbin:/usr/sbin/nologin\ncapitaine:x:1000:1000:La capitaine:/home/capitaine:/bin/bash\nmousse:x:1001:1001::/home/mousse:/bin/bash\n",
+   "uid": 1001,
+   "nouveaux": [
+    "mousse"
+   ]
+  },
+  {
+   "nom": "Mousse",
+   "valide": false,
+   "texte": "root:x:0:0:root:/root:/bin/bash\ndaemon:x:1:1:daemon:/usr/sbin:/usr/sbin/nologin\ncapitaine:x:1000:1000:La capitaine:/home/capitaine:/bin/bash\n",
+   "uid": null,
+   "nouveaux": []
+  },
+  {
+   "nom": "capitaine",
+   "valide": true,
+   "texte": "root:x:0:0:root:/root:/bin/bash\ndaemon:x:1:1:daemon:/usr/sbin:/usr/sbin/nologin\ncapitaine:x:1000:1000:La capitaine:/home/capitaine:/bin/bash\n",
+   "uid": null,
+   "nouveaux": []
+  },
+  {
+   "nom": "1abc",
+   "valide": false,
+   "texte": "root:x:0:0:root:/root:/bin/bash\ndaemon:x:1:1:daemon:/usr/sbin:/usr/sbin/nologin\ncapitaine:x:1000:1000:La capitaine:/home/capitaine:/bin/bash\n",
+   "uid": null,
+   "nouveaux": []
+  },
+  {
+   "nom": "_robot",
+   "valide": true,
+   "texte": "root:x:0:0:root:/root:/bin/bash\ndaemon:x:1:1:daemon:/usr/sbin:/usr/sbin/nologin\ncapitaine:x:1000:1000:La capitaine:/home/capitaine:/bin/bash\n_robot:x:1001:1001::/home/_robot:/bin/bash\n",
+   "uid": 1001,
+   "nouveaux": [
+    "_robot"
+   ]
+  },
+  {
+   "nom": "aaaaaaaaaaaaaaaaa",
+   "valide": false,
+   "texte": "root:x:0:0:root:/root:/bin/bash\ndaemon:x:1:1:daemon:/usr/sbin:/usr/sbin/nologin\ncapitaine:x:1000:1000:La capitaine:/home/capitaine:/bin/bash\n",
+   "uid": null,
+   "nouveaux": []
+  },
+  {
+   "nom": "cuistot-2",
+   "valide": true,
+   "texte": "root:x:0:0:root:/root:/bin/bash\ndaemon:x:1:1:daemon:/usr/sbin:/usr/sbin/nologin\ncapitaine:x:1000:1000:La capitaine:/home/capitaine:/bin/bash\ncuistot-2:x:1001:1001::/home/cuistot-2:/bin/bash\n",
+   "uid": 1001,
+   "nouveaux": [
+    "cuistot-2"
+   ]
+  },
+  {
+   "nom": "",
+   "valide": false,
+   "texte": "root:x:0:0:root:/root:/bin/bash\ndaemon:x:1:1:daemon:/usr/sbin:/usr/sbin/nologin\ncapitaine:x:1000:1000:La capitaine:/home/capitaine:/bin/bash\n",
+   "uid": null,
+   "nouveaux": []
+  },
+  {
+   "nom": "élève",
+   "valide": false,
+   "texte": "root:x:0:0:root:/root:/bin/bash\ndaemon:x:1:1:daemon:/usr/sbin:/usr/sbin/nologin\ncapitaine:x:1000:1000:La capitaine:/home/capitaine:/bin/bash\n",
+   "uid": null,
+   "nouveaux": []
+  },
+  {
+   "nom": "vigie",
+   "valide": true,
+   "texte": "root:x:0:0:root:/root:/bin/bash\ndaemon:x:1:1:daemon:/usr/sbin:/usr/sbin/nologin\ncapitaine:x:1000:1000:La capitaine:/home/capitaine:/bin/bash\nmousse:x:1001:1001::/home/mousse:/bin/bash\nvigie:x:1002:1002::/home/vigie:/bin/bash\n",
+   "uid": 1002,
+   "nouveaux": [
+    "mousse",
+    "vigie"
+   ]
+  }
+ ],
+ "bilans": [
+  {
+   "suspects": [],
+   "veilleur": true,
+   "bilan": "gagne"
+  },
+  {
+   "suspects": [],
+   "veilleur": false,
+   "bilan": "veilleur"
+  },
+  {
+   "suspects": [
+    [
+     1,
+     "a"
+    ]
+   ],
+   "veilleur": true,
+   "bilan": "encore"
+  },
+  {
+   "suspects": [
+    [
+     1,
+     "a"
+    ]
+   ],
+   "veilleur": false,
+   "bilan": "veilleur"
+  }
+ ],
+ "crontabs": [
+  {
+   "texte": "# x\n0 7 * * 1-5 echo A\n\n*/15 * * * * echo B >> r.log\n60 * * * * x\n0 7 * * *\n",
+   "lignes": [
+    [
+     "0 7 * * 1-5 echo A",
+     true
+    ],
+    [
+     "*/15 * * * * echo B >> r.log",
+     true
+    ],
+    [
+     "60 * * * * x",
+     false
+    ],
+    [
+     "0 7 * * *",
+     false
+    ]
+   ]
+  },
+  {
+   "texte": "",
+   "lignes": []
+  },
+  {
+   "texte": "# seul\n",
+   "lignes": []
+  }
+ ],
+ "tableau": [
+  {
+   "ligne": "ps aux | grep fictif",
+   "tableaux": [
+    [
+     "habitants",
+     "lit"
+    ]
+   ],
+   "deploie": [
+    [
+     0,
+     "ps",
+     "habitants",
+     "lit"
+    ]
+   ]
+  },
+  {
+   "ligne": "kill 1234 5678",
+   "tableaux": [
+    [
+     "habitants",
+     "arrete"
+    ]
+   ],
+   "deploie": [
+    [
+     0,
+     "kill",
+     "habitants",
+     "arrete"
+    ]
+   ]
+  },
+  {
+   "ligne": "free -h && df -h .",
+   "tableaux": [
+    [
+     "memoire",
+     "lit"
+    ],
+    [
+     "entrepot",
+     "lit"
+    ]
+   ],
+   "deploie": []
+  },
+  {
+   "ligne": "export COULEUR=bleu; bash -c 'echo $COULEUR'",
+   "tableaux": [
+    [
+     "sac",
+     "change"
+    ]
+   ],
+   "deploie": [
+    [
+     0,
+     "export",
+     "sac",
+     "change"
+    ]
+   ]
+  },
+  {
+   "ligne": "sudo dnf install cowsay",
+   "tableaux": [
+    [
+     "magasin",
+     "change"
+    ]
+   ],
+   "deploie": [
+    [
+     0,
+     "sudo",
+     "magasin",
+     "change"
+    ]
+   ]
+  },
+  {
+   "ligne": "rpm -qa | wc -l",
+   "tableaux": [
+    [
+     "magasin",
+     "lit"
+    ]
+   ],
+   "deploie": [
+    [
+     0,
+     "rpm",
+     "magasin",
+     "lit"
+    ]
+   ]
+  },
+  {
+   "ligne": "systemctl list-units --type=service",
+   "tableaux": [
+    [
+     "services",
+     "lit"
+    ]
+   ],
+   "deploie": [
+    [
+     0,
+     "systemctl",
+     "services",
+     "lit"
+    ]
+   ]
+  },
+  {
+   "ligne": "sudo systemctl restart cups",
+   "tableaux": [
+    [
+     "services",
+     "change"
+    ]
+   ],
+   "deploie": [
+    [
+     0,
+     "sudo",
+     "services",
+     "change"
+    ]
+   ]
+  },
+  {
+   "ligne": "journalctl --user -n 20",
+   "tableaux": [
+    [
+     "carnet",
+     "lit"
+    ]
+   ],
+   "deploie": [
+    [
+     0,
+     "journalctl",
+     "carnet",
+     "lit"
+    ]
+   ]
+  },
+  {
+   "ligne": "tail -f carnet_de_bord.log",
+   "tableaux": [
+    [
+     "carnet",
+     "lit"
+    ]
+   ],
+   "deploie": [
+    [
+     0,
+     "tail",
+     "carnet",
+     "lit"
+    ]
+   ]
+  },
+  {
+   "ligne": "crontab -l",
+   "tableaux": [
+    [
+     "reveil",
+     "lit"
+    ]
+   ],
+   "deploie": [
+    [
+     0,
+     "crontab",
+     "reveil",
+     "lit"
+    ]
+   ]
+  },
+  {
+   "ligne": "crontab -e",
+   "tableaux": [
+    [
+     "reveil",
+     "change"
+    ]
+   ],
+   "deploie": [
+    [
+     0,
+     "crontab",
+     "reveil",
+     "change"
+    ]
+   ]
+  },
+  {
+   "ligne": "useradd mousse",
+   "tableaux": [
+    [
+     "equipage",
+     "change"
+    ]
+   ],
+   "deploie": [
+    [
+     0,
+     "useradd",
+     "equipage",
+     "change"
+    ]
+   ]
+  },
+  {
+   "ligne": "cut -d: -f1 /etc/passwd | head -3",
+   "tableaux": [
+    [
+     "equipage",
+     "lit"
+    ]
+   ],
+   "deploie": [
+    [
+     0,
+     "cut",
+     "equipage",
+     "lit"
+    ]
+   ]
+  },
+  {
+   "ligne": "echo $HOME",
+   "tableaux": [
+    [
+     "sac",
+     "lit"
+    ]
+   ],
+   "deploie": [
+    [
+     0,
+     "echo",
+     "sac",
+     "lit"
+    ]
+   ]
+  },
+  {
+   "ligne": "echo bonjour",
+   "tableaux": [],
+   "deploie": []
+  },
+  {
+   "ligne": "nproc",
+   "tableaux": [
+    [
+     "charge",
+     "lit"
+    ]
+   ],
+   "deploie": []
+  },
+  {
+   "ligne": "uptime",
+   "tableaux": [
+    [
+     "charge",
+     "lit"
+    ]
+   ],
+   "deploie": []
+  },
+  {
+   "ligne": "du -sh *",
+   "tableaux": [
+    [
+     "entrepot",
+     "lit"
+    ]
+   ],
+   "deploie": []
+  },
+  {
+   "ligne": "jobs; fg",
+   "tableaux": [
+    [
+     "habitants",
+     "lit"
+    ]
+   ],
+   "deploie": [
+    [
+     0,
+     "jobs",
+     "habitants",
+     "lit"
+    ]
+   ]
+  },
+  {
+   "ligne": "source sac_a_dos.sh",
+   "tableaux": [
+    [
+     "sac",
+     "change"
+    ]
+   ],
+   "deploie": [
+    [
+     0,
+     "source",
+     "sac",
+     "change"
+    ]
+   ]
+  },
+  {
+   "ligne": ". ./sac.sh",
+   "tableaux": [
+    [
+     "sac",
+     "change"
+    ]
+   ],
+   "deploie": [
+    [
+     0,
+     ".",
+     "sac",
+     "change"
+    ]
+   ]
+  },
+  {
+   "ligne": "whoami",
+   "tableaux": [
+    [
+     "equipage",
+     "lit"
+    ]
+   ],
+   "deploie": [
+    [
+     0,
+     "whoami",
+     "equipage",
+     "lit"
+    ]
+   ]
+  },
+  {
+   "ligne": "ls -l",
+   "tableaux": [],
+   "deploie": []
+  },
+  {
+   "ligne": "Get-Service | Select-Object -First 5",
+   "tableaux": [
+    [
+     "services",
+     "lit"
+    ]
+   ],
+   "deploie": [
+    [
+     0,
+     "get-service",
+     "services",
+     "lit"
+    ]
+   ]
+  },
+  {
+   "ligne": "top",
+   "tableaux": [
+    [
+     "habitants",
+     "lit"
+    ]
+   ],
+   "deploie": [
+    [
+     0,
+     "top",
+     "habitants",
+     "lit"
+    ]
+   ]
+  }
+ ]
+}

@@ -786,6 +786,19 @@ emporte, `PATH` = le carnet d'adresses des outils.
 | K4 Le carnet de bord | journaux | `journalctl --user -n 20`, `tail -f`, `dmesg` (lecture), journaux du jeu | pages qui défilent | 🟡 `logcat` de l'appli |
 | K5 Réveils et magasin | cron, paquets | `crontab -l`, `crontab -e` (une tâche dans le terrain), `apt list --installed`, `apt search` (installer = avec un adulte) | réveil qui sonne ; rayons d'un magasin | ⛔ variante simulée |
 
+**Codé (1er novembre, K1 → K5, « Linux de A à Z » de § 7.13 et l'alerte de § 7.6)** — voir `docs/plan_de_bataille.md`.
+Écarts assumés :
+- Huit leçons ct0 → ct7 : la porte, les habitants (K1), les jauges (K2), le sac à dos (K3), le carnet de bord (K4),
+  les réveils (K5 cron), « Linux de A à Z » (distributions, installation racontée, paquets en lecture, services en
+  lecture, l'équipage du Poste), l'alerte (la vague de § 7.6).
+- `crontab -e` n'est pas lancé : le réveil s'écrit dans `reveils.crontab` (un fichier du terrain) ; le jeu le lit et
+  dit la prochaine sonnerie, il ne le lance jamais. `crontab -l` reste en lecture.
+- Les paquets se comptent en lecture (`rpm -qa` sur Fedora, `dpkg -l` sur Debian/Ubuntu) ; `apt search` et
+  l'installation sont racontés « avec un adulte ». `useradd` est raconté ; l'équipage est `equipage.txt`.
+- `fg`, `bg`, Ctrl+Z et `lsblk` sont expliqués mais ne sont pas des étapes (lsblk est à la Salle des Rouages).
+- Icône 📟 au lieu de 🎛 (largeur non fiable dans les terminaux). Téléphone : `top -n 1`, `export …; sh -c …` et
+  `. ./sac_a_dos.sh; …` sur une ligne, `logcat`, `getprop`, vague simulée.
+
 ### 2.16 🤖 L'Atelier — Raspberry Pi, robots, électronique (notions)
 
 **Prérequis** : Forge F1 ; ponts : `ssh` (Port P4), `nano`. **Image** : un établi avec des petits robots ; GPIO =
