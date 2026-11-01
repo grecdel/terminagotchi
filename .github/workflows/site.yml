@@ -33,7 +33,6 @@ jobs:
 
       - name: Tester avec l'outil officiel de Cloudflare (en local)
         run: |
-          set -o pipefail
           npx --yes wrangler@3 d1 execute terminagotchi --local --file=schema.sql
           npx wrangler@3 d1 migrations apply terminagotchi --local
           (npx wrangler@3 dev --local --port 8787 > dev.log 2>&1 &)
