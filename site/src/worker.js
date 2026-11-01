@@ -1293,10 +1293,15 @@ function selecteurLangue(L) {
     + `<noscript><button type="submit">OK</button></noscript></form>`;
 }
 
+// le lien « Monde » du menu (la petite démo du monde des biomes, /monde), dans les 14 langues
+const NAV_MONDE = { fr: "Monde", en: "World", es: "Mundo", de: "Welt", it: "Mondo", pt: "Mundo", ru: "Мир", ja: "せかい",
+  zh: "世界", ar: "العالم", hi: "दुनिया", bn: "জগৎ", ur: "دنیا", id: "Dunia" };
+
 function menu(L) {
   const n = L.t.nav;
   const ici = L.url.pathname.replace(/\/+$/, "") || "/";
-  const liens = [["/classement", n.classement], ["/records", L.t.navRecords], ["/bestiaire", n.bestiaire], ["/captures", n.captures], ["/ctf", n.ctf],
+  const liens = [["/classement", n.classement], ["/records", L.t.navRecords], ["/bestiaire", n.bestiaire], ["/captures", n.captures],
+    ["/monde", NAV_MONDE[L.lang] || NAV_MONDE.fr], ["/ctf", n.ctf],
     ["/#telecharger", n.telecharger], ["/compte", n.compte]];
   return liens.map(([href, t]) => {
     const actif = href !== "/#telecharger" && (ici === href || ici.startsWith(href + "/"));
