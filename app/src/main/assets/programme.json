@@ -4722,7 +4722,7 @@
    "pourquoi": "hist.dn5.4.bravo : tee montre ET écrit"
   },
   "dn6.1": {
-   "sortie": "creatures  especes",
+   "sortie": "creatures  especes  ",
    "outil": "sqlite3",
    "pourquoi": "hist.dn6.1.bravo : deux tables"
   },

@@ -221,7 +221,7 @@ def rejeu():
         "dn4.7": {"egal_jeu": "min_max", "pourquoi": "hist.dn4.7.bravo : la plus petite et la plus grande attaque"},
         "dn5.2": {"egal_jeu": "especes_xargs", "pourquoi": "hist.dn5.2.bravo : xargs met les lignes à la suite"},
         "dn5.4": {"egal_jeu": "rapport_top", "pourquoi": "hist.dn5.4.bravo : tee montre ET écrit"},
-        "dn6.1": {"sortie": "creatures  especes", "outil": "sqlite3", "pourquoi": "hist.dn6.1.bravo : deux tables"},
+        "dn6.1": {"sortie": "creatures  especes  ", "outil": "sqlite3", "pourquoi": "hist.dn6.1.bravo : deux tables"},
         "dn6.2": {"egal_jeu": "schema", "outil": "sqlite3", "pourquoi": "hist.dn6.2.bravo : les colonnes de la table"},
         "dn6.3": {"egal_jeu": "sql_top3", "outil": "sqlite3", "pourquoi": "hist.dn6.3.bravo : ORDER BY … DESC LIMIT 3"},
         "dn6.5": {"egal_jeu": "sql_group", "outil": "sqlite3", "pourquoi": "hist.dn6.5.bravo : GROUP BY compte par type"},
