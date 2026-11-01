@@ -139,6 +139,9 @@ object Maths {
                 Exo(mapOf("a" to "$a", "z" to "$z"), "${z - a + 1}", "seq $a $z | wc -l") }
             "priorites" -> { val a = 2 + h.entier(8); val b = 2 + h.entier(5); val c = 2 + h.entier(5)
                 Exo(mapOf("a" to "$a", "b" to "$b", "c" to "$c"), "${a + b * c}", "echo \$(($a + $b * $c))") }
+            // le Pont des Nombres de l'Atelier (§ 2.16, § 7.10) : la logique (ET), 1 = vrai, 0 = faux
+            "logique" -> { val a = h.entier(2); val b = h.entier(2)
+                Exo(mapOf("a" to "$a", "b" to "$b"), "${a and b}", "echo \$(( $a && $b ))") }
             else -> throw IllegalArgumentException(typ)
         }
     }

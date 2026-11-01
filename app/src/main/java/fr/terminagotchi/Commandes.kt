@@ -58,6 +58,8 @@ class Commandes(
         if (Maths.estInconnu(ligne)) return Reponse(Maths.commande(jeu, ligne.trim()), couleur = BLEU)
         // `echo -n A | xxd -b` : le xxd du téléphone n'a pas -b, l'appli le fait (la Salle des Rouages, M2)
         Machines.xxdB(ligne)?.let { return Reponse(it, couleur = BLEU) }
+        // `for i in $(seq 20); do sh cerveau.sh; atelier pas; done` : le shell du téléphone ne connaît pas `atelier`, l'appli déroule la boucle
+        if (cmd == "for") Atelier.boucle(jeu, ligne, dossier())?.let { return Reponse(it, couleur = BLEU) }
         return when (cmd) {
             // ---------------------------------------------------- téléphone
             "applis" -> applis(reste)
@@ -165,6 +167,8 @@ class Commandes(
             "forge" -> Reponse(Forge.commande(jeu, ligne.trim().substringAfter(' ', ""), dossier()), couleur = BLEU)
             "awk" -> Donnees.awk(jeu, ligne.trim(), dossier())?.let { Reponse(it, couleur = BLEU) }   // avec un tuyau : le vrai shell
             "sqlite3" -> Reponse(Donnees.sqlite3(jeu, ligne.trim(), dossier()), couleur = BLEU)
+            // ---------------------------------------------------- l'Atelier (Atelier.kt) : le robot simulé, aucun vrai matériel
+            "atelier" -> Reponse(Atelier.commande(jeu, reste, dossier()), couleur = BLEU)
             "sync" -> sync()
             "indice" -> Reponse(Ctf.indice(jeu, reste), couleur = VERT)
             "edite" -> edite(reste)

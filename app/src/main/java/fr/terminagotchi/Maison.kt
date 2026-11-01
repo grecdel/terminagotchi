@@ -43,7 +43,7 @@ object Maison {
         "salle_des_machines" to "🔥", "dortoir" to "👻", "atelier" to "🔧", "tour" to "📡", "coeur" to "💜",
         "recoins" to "🚪", "sauvage" to "🌲", "jardin" to "📱", "port" to "⚓",
         "citadelle" to "🏰", "crypte" to "🔐", "machines" to "🔩", "ondes" to "📶", "guilde" to "🧰",
-        "observatoire" to "🔭", "donnees" to "📊", "forge" to "🔨")
+        "observatoire" to "🔭", "donnees" to "📊", "forge" to "🔨", "robots" to "🤖")
     val PRUDENCE = setOf("rm", "rmdir", "mv", "chmod", "chown", "del", "remove-item", "move-item", "ren")
 
     /** Une région du monde (donnees/biomes.json, vérifié par tests/jvm/Carte.kt) : emoji, principale, sombre, claire. */

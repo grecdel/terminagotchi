@@ -391,6 +391,7 @@ object EspaceDessin {
         val lu = v.lunetteDe(b)
         val lb = v.laboDe(b)
         val fo = v.forgeDe(b)
+        val rb = v.robotDe(b)
         if (msg != null) PortDessin.messager(tl, msg, v.phase, x + 14 * z, fy, w - 28 * z, 34 * z, z)   // le Port
         else if (dr != null) CitadelleDessin.cadenas(tl, dr, v.phase, x + 14 * z, fy, w - 28 * z, minOf(78 * z, y + h - fy), z)   // la Citadelle
         else if (ro != null) CrypteDessin.roue(tl, ro.decalage, v.phase, x + 14 * z, fy, w - 28 * z, minOf(170 * z, y + h - fy), z)   // la Crypte
@@ -401,6 +402,7 @@ object EspaceDessin {
         else if (lu != null) ObservatoireDessin.lunette(tl, lu, v.phase, x + 14 * z, fy, w - 28 * z, minOf(96 * z, y + h - fy), z)   // l'Observatoire
         else if (lb != null) DonneesDessin.labo(tl, lb, v.phase, x + 14 * z, fy, w - 28 * z, minOf(96 * z, y + h - fy), z)   // la Salle des Données
         else if (fo != null) ForgeDessin.forge(tl, fo, v.phase, x + 14 * z, fy, w - 28 * z, minOf(96 * z, y + h - fy), z)    // la Forge
+        else if (rb != null) AtelierDessin.robot(tl, rb, v.phase, x + 14 * z, fy, w - 28 * z, minOf(96 * z, y + h - fy), z)   // l'Atelier
         else flux(tl, v, x + 14 * z, fy, w - 28 * z, 34 * z, z)
     }
 
