@@ -81,7 +81,7 @@ def ouvrir(s):
     h["ailes"] = ["reveil", "nid", "bibliotheque", "cave"]
     h["chap"] = None
     h.setdefault("mondes_annonces", []).extend(["port", "citadelle", "crypte", "machinerie", "ondes", "guilde",
-                                                "observatoire", "donnees"])
+                                                "observatoire", "donnees", "forge", "robots", "temps"])
     s["xp"] = 10 * 30 ** 2
     s["step"] = 0
 

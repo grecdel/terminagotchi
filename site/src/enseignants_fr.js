@@ -47,6 +47,7 @@ export const CHAPITRES = [
   [19, "La Forge", "scripts, boucles, Python, son jeu, son site"],
   [20, "L'Atelier des robots", "robot simulé, capteurs, ET / OU / NON, boucles"],
   [21, "La Bibliothèque du Temps", "git : versions, branches, fusion, empreintes"],
+  [22, "Le Poste de Contrôle", "administration système, en lecture seule"],
   [23, "Le Sommet", "Expert++ : scripts robustes, regex, débogage"],
 ];
 

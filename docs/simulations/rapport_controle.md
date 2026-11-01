@@ -111,6 +111,8 @@ Les variantes de Hugo, toutes acceptées : `ps -ef`, `echo $BASHPID`, `ls /proc/
 | Moyen | `tail -f` ne rend pas la main sans Ctrl+C ; dans le rejeu et la simulation, `timeout 1 tail -f` n'était pas reconnu. | Le motif accepte un préfixe `timeout`, et l'étape accepte un code de sortie non nul (Ctrl+C). |
 | Moyen | Sur le téléphone, chaque ligne va dans un nouveau shell : `export` puis `sh -c` sur deux lignes ne marchait pas. | Le téléphone a ses propres étapes sur UNE ligne (`export …; sh -c …`, `. ./sac_a_dos.sh; echo $POSTE`), avec une explication (`ct.tel.sac`). |
 | Faible | (vu sur les captures) Le pupitre de repli en caractères était de travers (lignes de largeurs différentes à cause de ⏰ et 📟). | Les lignes sont recalculées avec la largeur réelle des caractères, sur PC et sur le téléphone. |
+| Faible | (vu en relançant les tests) `test_controle.py` échouait environ une fois sur dix : quand le carnet tiré au sort compte justement 3 alertes, la vérification « `controle alertes 3` avant le journal ne valide rien » regardait le registre, où la bonne réponse « 3 » arrivait plus tard. | La vérification regarde maintenant ce que le Poste répond sur le moment (« Il n'y a pas encore de carnet de bord… ») ; 10 relances de suite, toutes vertes. |
+| Faible | (vu au rebase) Le rejeu en CI s'arrêtait dès que le Sommet était fini ; le Sommet s'ouvre (3 mondes au palier 3) avant que le Poste soit joué. | Le rejeu s'arrête quand le Sommet ET le Poste sont finis. |
 
 Aucun problème critique ou important n'est resté ouvert.
 

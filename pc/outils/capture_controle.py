@@ -57,7 +57,7 @@ def preparer():
         h["faits"] += [l for l in lecs if l not in h["faits"]]
         h["chap"] = "controle"
         h["ouverts"].append("controle")
-        h.setdefault("mondes_annonces", []).append("controle")
+        h.setdefault("mondes_annonces", []).extend(["forge", "robots", "temps", "controle"])
         h["faits"] += ["ct0"]
         s["step"] = 0
         s["xp"] = 10 * 30 ** 2

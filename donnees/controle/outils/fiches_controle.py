@@ -178,7 +178,7 @@ CONTROLE = {"id": "controle", "types": ["machine", "roche"], "requis": ["n0", "n
             "reutilise": {"lecons": ["machines0", "systeme1", "dortoir0", "systeme2", "dortoir1", "scripts2"]},
             "exploits": [{"id": "controle.vague", "nom": "recomp.controle.vague", "recompense": "variante"}],
             "maths": ["pourcentages", "division", "modulo"],
-            "variantes_reservees": ["engrenaille:mecanique", "parasouris:neon", "pavegarde:montagne"]}
+            "variantes_reservees": ["ressortine:mecanique", "parasouris:neon", "pavegarde:montagne"]}
 
 ETAPES = {"ct2.6": {"maths": ["pourcentages", "division"]}, "ct5.3": {"maths": ["modulo"]}}
 

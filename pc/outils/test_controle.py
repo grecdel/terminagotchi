@@ -160,7 +160,7 @@ def ouvrir(s, chaps=("reveil", "nid", "bibliotheque", "cave")):
     h["ailes"] = list(chaps[:-1])
     h["chap"] = chaps[-1]
     h.setdefault("mondes_annonces", []).extend(["port", "citadelle", "crypte", "machinerie", "ondes", "guilde",
-                                                "observatoire", "donnees"])
+                                                "observatoire", "donnees", "forge", "robots", "temps"])
     s["xp"] = 10 * 30 ** 2
     s["step"] = 0
 
@@ -248,8 +248,8 @@ verifier(etape["bash sac_a_dos.sh"][0] == etape["bash sac_a_dos.sh"][1] and sort
 verifier(sorties.get("bash -c 'echo $COULEUR'", "").strip() == "bleu", "export : le nouveau bash a emporté COULEUR")
 verifier("tg_ctl" not in (HOME / ".bashrc").read_text(encoding="utf-8", errors="replace") if (HOME / ".bashrc").exists() else True,
          "le vrai ~/.bashrc n'est pas touché par le sac à dos")
-verifier(not (D / "carnet_de_bord.log").exists() or etape["controle alertes 3"][0] == etape["controle alertes 3"][1],
-         "controle alertes avant le journal : rien ne valide")
+verifier(langue.t("ct.alertes.sans_journal") in ANSI.sub("", sorties.get("controle alertes 3", "")),
+         "controle alertes avant le journal : rien ne valide (pas encore de carnet)")
 verifier(sorties.get("grep -c ALERTE carnet_de_bord.log", "").strip() == str(K.nb_alertes(gr)), "grep -c ALERTE : le bon compte")
 o = ANSI.sub("", sorties.get("controle cron 0 0 * * *", ""))
 verifier("guillemets" in o or not any((D / x).exists() for x in os.listdir(D)), f"cron sans guillemets : bash a remplacé les * (expliqué) {o[:80]!r}")

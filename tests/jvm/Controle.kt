@@ -198,7 +198,7 @@ fun main(args: Array<String>) {
     val faits = h.getJSONArray("faits")
     for (c in listOf("reveil", "nid", "bibliotheque", "cave")) for (l in Histoire.PAR_CHAP[c]!!.lecons) faits.put(l)
     for (c in listOf("reveil", "nid", "bibliotheque", "cave")) h.getJSONArray("ailes").put(c)
-    h.put("mondes_annonces", JSONArray(listOf("port", "citadelle", "crypte", "machinerie", "ondes", "guilde", "observatoire", "donnees")))
+    h.put("mondes_annonces", JSONArray(listOf("port", "citadelle", "crypte", "machinerie", "ondes", "guilde", "observatoire", "donnees", "forge", "robots", "temps")))
     h.put("annonce_attente", true)
     Histoire.tick(jeuCt, "ls", false, jeuCt.home, 0)
     verifierCt(Histoire.ouvert(jeuCt, "controle") && "controle" in lstCt(h.optJSONArray("mondes_annonces")) && !Controle.annonce(jeuCt),
@@ -261,9 +261,9 @@ fun main(args: Array<String>) {
 
     println("4. Les variantes réservées, le dessin, la vue déployée")
     val j2 = Jeu(AppareilCt(File(dossier, "j2").apply { mkdirs() }, assets))
-    verifierCt(Recompenses.reservee(j2, "mecanique", "horlogrif") && Recompenses.reservee(j2, "neon", "parasouris") &&
-        Recompenses.reservee(j2, "montagne", "pavegarde") && !Recompenses.reservee(jeuCt, "mecanique", "horlogrif") && Recompenses.faveur(jeuCt) != null,
-        "les variantes réservées au Poste (horlogrif mécanique, parasouris néon, pavegarde montagne) : avant l'exploit non, après oui")
+    verifierCt(Recompenses.reservee(j2, "mecanique", "ressortine") && Recompenses.reservee(j2, "neon", "parasouris") &&
+        Recompenses.reservee(j2, "montagne", "pavegarde") && !Recompenses.reservee(jeuCt, "mecanique", "ressortine") && Recompenses.faveur(jeuCt) != null,
+        "les variantes réservées au Poste (ressortine mécanique, parasouris néon, pavegarde montagne) : avant l'exploit non, après oui")
     val tl = ToileCt()
     ControleDessin.tableau(tl, Deploie.Tableau(0, "ps", "habitants", "lit"), 0.4, 0f, 0f, 400f, 96f, 1f)
     ControleDessin.tableau(tl, Deploie.Tableau(0, "kill", "habitants", "arrete"), 0.2, 0f, 0f, 400f, 96f, 1f)

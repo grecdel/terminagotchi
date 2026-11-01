@@ -861,11 +861,13 @@ des locuteurs.
 - Contenu existant réutilisé sans le changer : `machines0`, `systeme1`, `dortoir0`, `systeme2`, `dortoir1`, `scripts2`.
   Ponts vers la Salle des Rouages (M4), la Citadelle (processus), la Forge, l'Observatoire, la Guilde.
 - Exploit « Arrêter tous les processus suspects d'une vague » (`controle.vague`, le veilleur épargné). Variantes
-  EXISTANTES favorisées (Machine / Roche) : `engrenaille:mecanique`, `parasouris:neon`, `pavegarde:montagne`.
+  EXISTANTES favorisées (Machine / Roche) : `ressortine:mecanique`, `parasouris:neon`, `pavegarde:montagne`.
 - **Ajout transversal (demande du propriétaire)** : sous Windows, `echo j'aime les chats` (apostrophe non fermée, que
   PowerShell prend pour le début d'un texte et qui fait attendre `>>`) reçoit le conseil « Sous PowerShell, mets ta phrase
   entre guillemets : echo "j'aime les chats" » (`core.win.apostrophe`, 14 langues ; `core.apostrophe_ouverte`, testé
   dans `pc/outils/test_windows.py`).
+- Mode classe : chapitre 22 « Le Poste de Contrôle » sur la page /enseignants (`site/src/enseignants_fr.js`, **site non
+  redéployé**) et dans les fiches enseignant (codes `22-GS-F`, `22-AGS-K`, PDF refait).
 - Tests : `pc/outils/test_controle.py` (65), `tests/jvm/Controle.kt` (22). Simulation `pc/outils/sim_controle.py` →
   `docs/simulations/rapport_controle.md`. Captures `pc/outils/capture_controle.py`. Rejeu d'un seul monde en local :
   `TG_REJEU_MONDE=controle`. En CI, `cron` et `procps` sont installés pour le rejeu.

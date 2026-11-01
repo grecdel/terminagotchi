@@ -593,10 +593,10 @@ console.log("Pied de page, pages pour les adultes, polices locales");
       "codes de séance : les 192 vecteurs du jeu (chapitres 0 à 23, donnees/classe/vecteurs.json) refaits à l'identique");
     r = await appel("GET", "/enseignants");
     const codes = [...r.t.matchAll(/<code>(\d\d-[AGS]+-[A-Z])<\/code>/g)].map((m) => m[1]);
-    verifier(r.t.includes("Pour les enseignants et les parents") && new Set(codes).size === 66 && codes.every((c) => V.codes.some((v) => v.code === c))
+    verifier(r.t.includes("Pour les enseignants et les parents") && new Set(codes).size === 69 && codes.every((c) => V.codes.some((v) => v.code === c))
       && r.t.includes("05-GS-K") && r.t.includes("Rien n'est envoyé") && r.t.includes("Reporté") && r.t.includes("avis CNIL")
       && r.t.includes("fiches_enseignant.pdf") && r.t.includes('href="/parents"'),
-      "enseignants : 22 chapitres et mondes × 3 codes justes, rien n'est envoyé, tableau de bord en ligne reporté, fiches PDF, lien parents");
+      "enseignants : 23 chapitres et mondes × 3 codes justes, rien n'est envoyé, tableau de bord en ligne reporté, fiches PDF, lien parents");
     const contenu = r.t.slice(r.t.indexOf('<div class="texte-long">'), r.t.indexOf("</section>"));
     verifier(contenu.length > 5000 && !/<form|<script|<input|fetch\(|\/api\//.test(contenu),
       "enseignants : le contenu n'a ni formulaire, ni champ, ni script, ni appel à l'API (rien à envoyer)");
