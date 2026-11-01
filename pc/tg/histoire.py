@@ -266,7 +266,8 @@ from . import port as _port  # noqa: E402
 from . import citadelle as _cit  # noqa: E402
 from . import crypte as _cry  # noqa: E402         le troisième : la Crypte des Codes (crypte.py)
 from . import machines as _mac  # noqa: E402       le quatrième : la Salle des Machines (machines.py, chapitre « machinerie »)
-MONDES_MODS = {"port": _port, "citadelle": _cit, "crypte": _cry, "machinerie": _mac}
+from . import ondes as _ond  # noqa: E402         le cinquième : la Tour des Ondes (ondes.py), quartier du Port
+MONDES_MODS = {"port": _port, "citadelle": _cit, "crypte": _cry, "machinerie": _mac, "ondes": _ond}
 # le lieu de chaque monde (la Salle des Machines : chapitre « machinerie », lieu « machines »)
 PIECES_MODS = {_m.CHAPITRE["piece"]: _m for _m in MONDES_MODS.values()}
 for _m in MONDES_MODS.values():
@@ -278,6 +279,14 @@ MONDES = tuple(c["piece"] for c in CHAPITRES if c.get("monde"))
 _CMDS_CIT = {s_.get("cmd") for l_ in _cit.LECONS.values() for s_ in l_["steps"]}
 _CMDS_CRY = {s_.get("cmd") for l_ in _cry.LECONS.values() for s_ in l_["steps"]}
 _CMDS_MAC = {s_.get("cmd") for l_ in _mac.LECONS.values() for s_ in l_["steps"]}
+_CMDS_OND = {s_.get("cmd") for l_ in _ond.LECONS.values() for s_ in l_["steps"]}
+
+
+def lecons_qui_ouvrent():
+    """Les leçons qui ouvrent un monde (programme.json, « requis_lecons » ; la Tour des Ondes : Port P7, Machines M2) :
+    sa nouvelle est annoncée dès la leçon finie, sans attendre la fin du chapitre."""
+    from . import programme
+    return {lid for m in programme.donnees().get("mondes", []) for lid in m.get("requis_lecons", [])}
 PAR_CHAP = {c["id"]: c for c in CHAPITRES}
 AILES = [c["id"] for c in CHAPITRES if 3 <= c["n"] <= 9]
 
@@ -842,6 +851,8 @@ def finir_lecon(state, les):
     else:
         nouv = lecon_id(state)
         state["step"] = h["pas"].pop(nouv, 0) if nouv else 0
+        if les["id"] in lecons_qui_ouvrent():    # la Tour des Ondes s'ouvre après une LEÇON (Port P7, Machines M2)
+            annoncer_monde(state)
 
 
 def _abs_ok(cwd, lieu):
@@ -1108,6 +1119,8 @@ def indice(state, step, lignes, tapees, morcs=None):
         conseil = _cry.indice(step, tapees)
     if not conseil and step.get("cmd") in _CMDS_MAC:      # la Salle des Machines : un sudo, une mauvaise réponse…
         conseil = _mac.indice(step, tapees)
+    if not conseil and step.get("cmd") in _CMDS_OND:      # la Tour des Ondes : un sudo, une radio qu'on changerait…
+        conseil = _ond.indice(step, tapees)
     if conseil:
         return conseil
     conseil = _indice_cd(state, step, morcs) or _indice_rm(step, tapees) or _indice_barre(step, morcs) \

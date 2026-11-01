@@ -16,6 +16,8 @@ doit être ce qu'affiche un vrai bash.
    commandes (curl, ss, ip, tracepath, ssh-keygen, http.server --bind 127.0.0.1…) et celles du jeu (`port …`, l'alias
    de tg installer) ; une affirmation dont l'outil manque (« outil ») est sautée et comptée. La Salle des Machines :
    ce qui dépend de la machine (cœurs, noyau) est comparé à ce que le jeu calcule sur la même machine (« egal_jeu »).
+   La Tour des Ondes : les calculs (bc), les capteurs d'exemple anonymisés (grep -o) ; les outils radio absents sont
+   sautés (leurs étapes sont cachées), rien n'émet jamais.
 Utilisé en CI (.github/workflows/rejeu.yml) sur une vraie machine Linux.
 """
 import os
@@ -134,14 +136,33 @@ def histoire():
     jeu_cit = jeu_port.replace("port; port.", "citadelle; citadelle.")
     jeu_cry = jeu_port.replace("port; port.", "crypte; crypte.")
     jeu_mac = jeu_port.replace("port; port.", "machines; machines.")
+    jeu_ond = jeu_port.replace("port; port.", "ondes; ondes.")
     from tg import crypte as K_
     from tg import machines as M_
+    from tg import ondes as O_
+
+    def coupe_suivante(st_):
+        """La tempête : un nœud du chemin actuel qui laisse encore assez de chemins (l'enfant lit mesh-route)."""
+        o = O_.o_(st_)
+        cible, coupes = o.get("cible"), list(o.get("coupes", []))
+        reste = O_.donnees()["maillage"]["coupes_defi"] - O_._defi_coupes()
+
+        def jouable(cs, n):
+            if n <= 0:
+                return True
+            r = O_.route("camp", cible, cs)
+            return any(O_.route("camp", cible, cs + [x]) and jouable(cs + [x], n - 1) for x in (r or [])[1:-1])
+        r = O_.route("camp", cible, coupes) or []
+        return next((x for x in r[1:-1] if O_.route("camp", cible, coupes + [x]) and jouable(coupes + [x], reste - 1)),
+                    (r[1:-1] or ["racine"])[0])
 
     def tape(cmd):
         vrai = re.sub(r"^port\b", jeu_port, cmd)          # l'alias port='tg port' (posé par tg installer)
         vrai = re.sub(r"(^|;\s*)citadelle\b", lambda m: m.group(1) + jeu_cit, vrai)   # et citadelle='tg citadelle'
         vrai = re.sub(r"(^|;\s*)crypte\b", lambda m: m.group(1) + jeu_cry, vrai)       # et crypte='tg crypte'
         vrai = re.sub(r"(^|;\s*)machines\b", lambda m: m.group(1) + jeu_mac, vrai)     # et machines='tg machines'
+        vrai = re.sub(r"(^|;\s*)ondes\b", lambda m: m.group(1) + jeu_ond, vrai)         # et ondes='tg ondes'
+        vrai = re.sub(r"(^|;\s*)(mesh-(envoie|coupe|route))\b", lambda m: m.group(1) + jeu_ond + " " + m.group(2), vrai)
         etat["sortie"], etat["code"], d = shell.lancer(vrai)
         etat["cwd"] = Path(d)
         with open(home / ".bash_history", "a") as f:
@@ -158,10 +179,10 @@ def histoire():
         h = H.h_(st)
         if not les:
             reste = [a for a in H.AILES if not H.fini(st, a)]
-            if H.fini(st, "machinerie") or h["chap"] in ("reveil", "nid"):
+            if H.fini(st, "ondes") or h["chap"] in ("reveil", "nid"):
                 break
             if H.fini(st, "coeur"):                 # le tronc et les ailes faits : les mondes du Carrefour, dans l'ordre
-                reste = [m_ for m_ in ("port", "citadelle", "crypte", "machinerie") if not H.fini(st, m_)][:1]
+                reste = [m_ for m_ in ("port", "citadelle", "crypte", "machinerie", "ondes") if not H.fini(st, m_)][:1]
             cible = "coeur" if not reste and H.ouvert(st, "coeur") else (reste[0] if reste else None)
             if not cible:
                 break
@@ -229,6 +250,27 @@ def histoire():
                                      "serveur": "P3 C2 M3 S3 G0 A2", "robot": "P4 C3 M3 S1 G0 A1"}[M_.besoin_epreuve(gm)]
         if c == "machines drapeau ?":
             c = "machines drapeau " + M_.drapeau(gm)
+        go = O_._graine(st)                          # la Tour des Ondes : l'enfant calcule, lit la règle, la vallée…
+        if c == "ondes longueur ?":
+            c = "ondes longueur 34.6"
+        if c == "ondes traverse ?":
+            c = "ondes traverse lora"
+        if c == "ondes reseaux ?":
+            c = f"ondes reseaux {len(O_.wifi_freqs() or [])}"
+        if c == "ondes regle ? ? ? ? ? ?":
+            c = "ondes regle " + " ".join(O_.regle_reponse(go))
+        if c == "ondes libre ? ? ? ? ? ?":
+            c = "ondes libre " + " ".join(r_ for _n, _i, r_ in O_.libre_cartes(go))
+        if c == "ondes vallee ?":
+            c = f"ondes vallee {O_.sf_min(O_.vallee_m(go))}"
+        if c == "ondes messages ?":
+            c = f"ondes messages {O_.messages_heure(O_.sf_min(O_.vallee_m(go)))}"
+        if c == "ondes choix ? ? ? ?":
+            c = "ondes choix " + " ".join(r_ for _n, _i, r_ in O_.choix_cartes(go))
+        if c == "mesh-coupe ?":
+            c = f"mesh-coupe {coupe_suivante(st)}"
+        if c == 'mesh-envoie ? "SOS"':
+            c = f'mesh-envoie {O_.o_(st).get("cible") or O_.defi_cible(go)} "SOS"'
         if c.endswith(" &") and "http.server" in c:
             c = c[:-2] + " >/dev/null 2>&1 &"       # (les lignes du serveur n'encombrent pas la suite)
         lieu = step.get("ou") if step.get("ou") is not None else None
@@ -308,6 +350,7 @@ def histoire():
     verifier(H.fini(st, "citadelle"), "la Citadelle, deuxième monde, est allée jusqu'au bout (cit0 → cit16)")
     verifier(H.fini(st, "crypte"), "la Crypte des Codes, troisième monde, est allée jusqu'au bout (cr0 → cr14)")
     verifier(H.fini(st, "machinerie"), "la Salle des Machines, quatrième monde, est allée jusqu'au bout (sm0 → sm10)")
+    verifier(H.fini(st, "ondes"), "la Tour des Ondes, cinquième monde, est allée jusqu'au bout (on0 → on10)")
     P_.eteindre_phare()
     C_.arreter_fictifs()
     K_.tuer_agents()

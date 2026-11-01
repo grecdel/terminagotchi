@@ -477,6 +477,34 @@ def _ordinateur_anime(x, phase):
     return machines.dessin_ordinateur(x["pieces"] if phase >= 0.3 else [])
 
 
+# ---------------------------------------------------------------- l'antenne (la Tour des Ondes)
+def antennes(ligne):
+    """Les commandes d'une ligne qui touchent une radio (spécification commune, Deploie.kt, vecteurs
+    donnees/ondes/vecteurs.json) : [{seg, cmd, radio, sens}] — nmcli lit le Wi-Fi, rtl_fm écoute, mesh-envoie simule…"""
+    from . import ondes
+    out = []
+    bl = blocs(ligne)
+    for c in chaines(bl):
+        for e in c["etapes"]:
+            a = ondes.antenne_de(e["texte"])
+            if not a:
+                continue
+            seg = next((b["seg"] for b in bl if b["g"] == "commande" and b["i"] - 1 == e["debut"]), 0)
+            out.append({"seg": seg, "cmd": e["cmd"], "radio": a[0], "sens": a[1]})
+    return out
+
+
+def _antenne_anime(x, phase):
+    """L'antenne et son onde : elle part (lit, écoute : elle arrive), l'onde avance avec la phase."""
+    from . import ondes
+    tid = {"wifi": "wifi24", "toutes": "wifi24", "sdr": "fm"}.get(x["radio"], x["radio"])
+    hz = ondes._hz_tech(tid) or ondes._hz_tech("wifi24")
+    vague = ondes.grille_onde(ondes.periodes(hz), 40, 5, phase * 6.283)
+    fleche = "←" if x["sens"] in ("lit", "ecoute") else "→"
+    tour = ["  ╱╲  ", " ╱╲╱╲ ", "  ││  ", " ╱██╲ ", "╱████╲"]
+    return [f"{tour[i]} {fleche if i == 2 else ' '} {v}" for i, v in enumerate(vague)]
+
+
 # ---------------------------------------------------------------- les mots pour le dire
 def nom_genre(g):
     return t("dep.genre." + g)
@@ -722,6 +750,13 @@ def ecran(ligne, bl, actif, sorties, phase=0.0, largeur=80, dossier=None, pas=Fa
                 noms = ", ".join(t("ma.piece." + p) for p in x["pieces"])
                 out.append(f"  {fg(ANSI['commande'])}🔩 " + t("dep.piece", piece=noms) + RESET)
                 out += _ordinateur_anime(x, phase % 1.0)
+    if b["g"] == "commande":                     # nmcli, rfkill, mesh-envoie… : l'antenne et son onde (la Tour des Ondes)
+        for x in antennes(ligne):
+            if x["seg"] == b["seg"]:
+                out.append("")
+                out.append(f"  {fg(ANSI['commande'])}📡 " + t("dep.antenne", radio=t("on.radio." + x["radio"]),
+                                                              sens=t("on.sens." + x["sens"])) + RESET)
+                out += ["  " + l for l in _antenne_anime(x, phase % 1.0)]
     if actif == n and sorties:
         for c, s in zip(chs, sorties):
             if s and len(c["etapes"]) > 1:
@@ -739,7 +774,8 @@ def _reseau(b, ligne):
     return b["g"] == "commande" and (any(x["seg"] == b["seg"] for x in messager(ligne)) or
                                      any(x["seg"] == b["seg"] for x in droits(ligne)) or
                                      any(x["seg"] == b["seg"] for x in roue(ligne)) or
-                                     any(x["seg"] == b["seg"] for x in pieces(ligne)))
+                                     any(x["seg"] == b["seg"] for x in pieces(ligne)) or
+                                     any(x["seg"] == b["seg"] for x in antennes(ligne)))
 
 
 def jouer(ligne, dossier=None, pas=False, sortie=None, clavier=None, ips=12):

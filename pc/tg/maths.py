@@ -137,7 +137,25 @@ def generer(typ, graine, k):
         n = 1 + h.entier(31)
         bits = format(n, "b")
         return {"bits": bits}, str(n), f"echo $((2#{bits}))"
+    # les Ponts des Nombres de la Tour des Ondes (§ 7.11)
+    if typ == "frequence":
+        s = 2 + h.entier(5)
+        f = 2 + h.entier(9)
+        return {"n": f * s, "s": s}, str(f), f"echo $(({f * s} / {s}))"
+    if typ == "puissances_10":
+        a = 2 + h.entier(8)
+        return {"a": a}, str(10 ** a), f"echo $((10**{a}))"
+    if typ == "longueur_onde":
+        f = MHZ_ONDE[h.entier(len(MHZ_ONDE))]
+        return {"f": f}, str(300 // f), f"echo $((300000000 / {f}000000))"
+    if typ == "temps_emission":
+        n = 10 + h.entier(31)
+        d = 2 ** h.entier(6)
+        return {"n": n, "t": d}, str(n * d), f"echo $(({n} * {d}))"
     raise ValueError(typ)
+
+
+MHZ_ONDE = [1, 2, 3, 4, 5, 6, 10, 12, 15, 20, 25, 30, 50, 60, 75, 100, 150, 300]   # 300 / f est entier (mètres)
 
 
 def _graine(state):

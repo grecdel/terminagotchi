@@ -11,6 +11,8 @@ on:
             "app/src/main/java/fr/terminagotchi/CryptePgp.kt",
             "donnees/machines/**", "donnees/machines.json", "app/src/main/java/fr/terminagotchi/Machines.kt",
             "app/src/main/java/fr/terminagotchi/MachinesDessin.kt",
+            "donnees/ondes/**", "donnees/ondes.json", "app/src/main/java/fr/terminagotchi/Ondes.kt",
+            "app/src/main/java/fr/terminagotchi/OndesDessin.kt",
             "pc/**", "app/src/main/assets/langues/**", "app/src/main/java/fr/terminagotchi/Port.kt",
             "app/src/main/java/fr/terminagotchi/Histoire.kt", "app/src/main/java/fr/terminagotchi/Jeu.kt",
             ".github/workflows/rejeu.yml"]
@@ -33,7 +35,7 @@ jobs:
       - name: Les outils des fiches (les commandes rejouées)
         run: |
           sudo apt-get update -qq
-          sudo apt-get install -y -qq tree iproute2 iputils-ping iputils-tracepath openssh-client dnsutils bsdextrautils openssl xxd gnupg qemu-utils pciutils usbutils >/dev/null || true
+          sudo apt-get install -y -qq tree iproute2 iputils-ping iputils-tracepath openssh-client dnsutils bsdextrautils openssl xxd gnupg qemu-utils pciutils usbutils bc iw rfkill >/dev/null || true
           bash --version | head -n 1
 
       - name: Vérificateur de la charte (fiches, étapes, orphelines, 14 langues)
@@ -46,6 +48,7 @@ jobs:
           python3 pc/outils/vecteurs_citadelle.py --verifier
           python3 pc/outils/vecteurs_crypte.py --verifier
           python3 pc/outils/vecteurs_machines.py --verifier
+          python3 pc/outils/vecteurs_ondes.py --verifier
 
       - name: Rejeu des sorties dans un vrai bash (fiches et histoire du PC)
         run: LC_ALL=C.UTF-8 python3 pc/outils/rejeu_bash.py
@@ -100,3 +103,15 @@ jobs:
           set -o pipefail
           LC_ALL=C.UTF-8 python3 pc/outils/sim_machines.py 2>&1 | tee /tmp/simm.out || {
             grep -E "✖|Error|Traceback|line [0-9]" /tmp/simm.out | head -20 | sed 's/^/::error::/'; exit 1; }
+
+      - name: La Tour des Ondes (lecture seule, le jeu n'émet jamais, aucun nom de réseau des voisins gardé)
+        run: |
+          set -o pipefail
+          LC_ALL=C.UTF-8 python3 pc/outils/test_ondes.py 2>&1 | tee /tmp/ond.out || {
+            grep -E "✖|Error|Traceback|line [0-9]" /tmp/ond.out | head -20 | sed 's/^/::error::/'; exit 1; }
+
+      - name: Trois enfants visitent la Tour des Ondes (docs/simulations/rapport_ondes.md)
+        run: |
+          set -o pipefail
+          LC_ALL=C.UTF-8 python3 pc/outils/sim_ondes.py 2>&1 | tee /tmp/simo.out || {
+            grep -E "✖|Error|Traceback|line [0-9]" /tmp/simo.out | head -20 | sed 's/^/::error::/'; exit 1; }

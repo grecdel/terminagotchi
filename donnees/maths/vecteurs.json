@@ -2088,6 +2088,1014 @@
    },
    "reponse": "10",
    "verif": "echo $((2#1010))"
+  },
+  {
+   "type": "frequence",
+   "graine": 0,
+   "k": 0,
+   "params": {
+    "n": "50",
+    "s": "5"
+   },
+   "reponse": "10",
+   "verif": "echo $((50 / 5))"
+  },
+  {
+   "type": "frequence",
+   "graine": 0,
+   "k": 1,
+   "params": {
+    "n": "27",
+    "s": "3"
+   },
+   "reponse": "9",
+   "verif": "echo $((27 / 3))"
+  },
+  {
+   "type": "frequence",
+   "graine": 0,
+   "k": 2,
+   "params": {
+    "n": "48",
+    "s": "6"
+   },
+   "reponse": "8",
+   "verif": "echo $((48 / 6))"
+  },
+  {
+   "type": "frequence",
+   "graine": 0,
+   "k": 3,
+   "params": {
+    "n": "25",
+    "s": "5"
+   },
+   "reponse": "5",
+   "verif": "echo $((25 / 5))"
+  },
+  {
+   "type": "frequence",
+   "graine": 0,
+   "k": 4,
+   "params": {
+    "n": "18",
+    "s": "2"
+   },
+   "reponse": "9",
+   "verif": "echo $((18 / 2))"
+  },
+  {
+   "type": "frequence",
+   "graine": 0,
+   "k": 5,
+   "params": {
+    "n": "8",
+    "s": "2"
+   },
+   "reponse": "4",
+   "verif": "echo $((8 / 2))"
+  },
+  {
+   "type": "frequence",
+   "graine": 0,
+   "k": 6,
+   "params": {
+    "n": "48",
+    "s": "6"
+   },
+   "reponse": "8",
+   "verif": "echo $((48 / 6))"
+  },
+  {
+   "type": "frequence",
+   "graine": 0,
+   "k": 7,
+   "params": {
+    "n": "32",
+    "s": "4"
+   },
+   "reponse": "8",
+   "verif": "echo $((32 / 4))"
+  },
+  {
+   "type": "frequence",
+   "graine": 1761955200,
+   "k": 0,
+   "params": {
+    "n": "6",
+    "s": "3"
+   },
+   "reponse": "2",
+   "verif": "echo $((6 / 3))"
+  },
+  {
+   "type": "frequence",
+   "graine": 1761955200,
+   "k": 1,
+   "params": {
+    "n": "10",
+    "s": "2"
+   },
+   "reponse": "5",
+   "verif": "echo $((10 / 2))"
+  },
+  {
+   "type": "frequence",
+   "graine": 1761955200,
+   "k": 2,
+   "params": {
+    "n": "36",
+    "s": "6"
+   },
+   "reponse": "6",
+   "verif": "echo $((36 / 6))"
+  },
+  {
+   "type": "frequence",
+   "graine": 1761955200,
+   "k": 3,
+   "params": {
+    "n": "24",
+    "s": "4"
+   },
+   "reponse": "6",
+   "verif": "echo $((24 / 4))"
+  },
+  {
+   "type": "frequence",
+   "graine": 1761955200,
+   "k": 4,
+   "params": {
+    "n": "18",
+    "s": "3"
+   },
+   "reponse": "6",
+   "verif": "echo $((18 / 3))"
+  },
+  {
+   "type": "frequence",
+   "graine": 1761955200,
+   "k": 5,
+   "params": {
+    "n": "18",
+    "s": "3"
+   },
+   "reponse": "6",
+   "verif": "echo $((18 / 3))"
+  },
+  {
+   "type": "frequence",
+   "graine": 1761955200,
+   "k": 6,
+   "params": {
+    "n": "16",
+    "s": "2"
+   },
+   "reponse": "8",
+   "verif": "echo $((16 / 2))"
+  },
+  {
+   "type": "frequence",
+   "graine": 1761955200,
+   "k": 7,
+   "params": {
+    "n": "40",
+    "s": "4"
+   },
+   "reponse": "10",
+   "verif": "echo $((40 / 4))"
+  },
+  {
+   "type": "frequence",
+   "graine": 1099511627783,
+   "k": 0,
+   "params": {
+    "n": "30",
+    "s": "5"
+   },
+   "reponse": "6",
+   "verif": "echo $((30 / 5))"
+  },
+  {
+   "type": "frequence",
+   "graine": 1099511627783,
+   "k": 1,
+   "params": {
+    "n": "21",
+    "s": "3"
+   },
+   "reponse": "7",
+   "verif": "echo $((21 / 3))"
+  },
+  {
+   "type": "frequence",
+   "graine": 1099511627783,
+   "k": 2,
+   "params": {
+    "n": "4",
+    "s": "2"
+   },
+   "reponse": "2",
+   "verif": "echo $((4 / 2))"
+  },
+  {
+   "type": "frequence",
+   "graine": 1099511627783,
+   "k": 3,
+   "params": {
+    "n": "10",
+    "s": "2"
+   },
+   "reponse": "5",
+   "verif": "echo $((10 / 2))"
+  },
+  {
+   "type": "frequence",
+   "graine": 1099511627783,
+   "k": 4,
+   "params": {
+    "n": "16",
+    "s": "2"
+   },
+   "reponse": "8",
+   "verif": "echo $((16 / 2))"
+  },
+  {
+   "type": "frequence",
+   "graine": 1099511627783,
+   "k": 5,
+   "params": {
+    "n": "6",
+    "s": "3"
+   },
+   "reponse": "2",
+   "verif": "echo $((6 / 3))"
+  },
+  {
+   "type": "frequence",
+   "graine": 1099511627783,
+   "k": 6,
+   "params": {
+    "n": "40",
+    "s": "5"
+   },
+   "reponse": "8",
+   "verif": "echo $((40 / 5))"
+  },
+  {
+   "type": "frequence",
+   "graine": 1099511627783,
+   "k": 7,
+   "params": {
+    "n": "21",
+    "s": "3"
+   },
+   "reponse": "7",
+   "verif": "echo $((21 / 3))"
+  },
+  {
+   "type": "puissances_10",
+   "graine": 0,
+   "k": 0,
+   "params": {
+    "a": "4"
+   },
+   "reponse": "10000",
+   "verif": "echo $((10**4))"
+  },
+  {
+   "type": "puissances_10",
+   "graine": 0,
+   "k": 1,
+   "params": {
+    "a": "6"
+   },
+   "reponse": "1000000",
+   "verif": "echo $((10**6))"
+  },
+  {
+   "type": "puissances_10",
+   "graine": 0,
+   "k": 2,
+   "params": {
+    "a": "6"
+   },
+   "reponse": "1000000",
+   "verif": "echo $((10**6))"
+  },
+  {
+   "type": "puissances_10",
+   "graine": 0,
+   "k": 3,
+   "params": {
+    "a": "3"
+   },
+   "reponse": "1000",
+   "verif": "echo $((10**3))"
+  },
+  {
+   "type": "puissances_10",
+   "graine": 0,
+   "k": 4,
+   "params": {
+    "a": "7"
+   },
+   "reponse": "10000000",
+   "verif": "echo $((10**7))"
+  },
+  {
+   "type": "puissances_10",
+   "graine": 0,
+   "k": 5,
+   "params": {
+    "a": "2"
+   },
+   "reponse": "100",
+   "verif": "echo $((10**2))"
+  },
+  {
+   "type": "puissances_10",
+   "graine": 0,
+   "k": 6,
+   "params": {
+    "a": "4"
+   },
+   "reponse": "10000",
+   "verif": "echo $((10**4))"
+  },
+  {
+   "type": "puissances_10",
+   "graine": 0,
+   "k": 7,
+   "params": {
+    "a": "8"
+   },
+   "reponse": "100000000",
+   "verif": "echo $((10**8))"
+  },
+  {
+   "type": "puissances_10",
+   "graine": 1761955200,
+   "k": 0,
+   "params": {
+    "a": "5"
+   },
+   "reponse": "100000",
+   "verif": "echo $((10**5))"
+  },
+  {
+   "type": "puissances_10",
+   "graine": 1761955200,
+   "k": 1,
+   "params": {
+    "a": "5"
+   },
+   "reponse": "100000",
+   "verif": "echo $((10**5))"
+  },
+  {
+   "type": "puissances_10",
+   "graine": 1761955200,
+   "k": 2,
+   "params": {
+    "a": "6"
+   },
+   "reponse": "1000000",
+   "verif": "echo $((10**6))"
+  },
+  {
+   "type": "puissances_10",
+   "graine": 1761955200,
+   "k": 3,
+   "params": {
+    "a": "6"
+   },
+   "reponse": "1000000",
+   "verif": "echo $((10**6))"
+  },
+  {
+   "type": "puissances_10",
+   "graine": 1761955200,
+   "k": 4,
+   "params": {
+    "a": "9"
+   },
+   "reponse": "1000000000",
+   "verif": "echo $((10**9))"
+  },
+  {
+   "type": "puissances_10",
+   "graine": 1761955200,
+   "k": 5,
+   "params": {
+    "a": "5"
+   },
+   "reponse": "100000",
+   "verif": "echo $((10**5))"
+  },
+  {
+   "type": "puissances_10",
+   "graine": 1761955200,
+   "k": 6,
+   "params": {
+    "a": "6"
+   },
+   "reponse": "1000000",
+   "verif": "echo $((10**6))"
+  },
+  {
+   "type": "puissances_10",
+   "graine": 1761955200,
+   "k": 7,
+   "params": {
+    "a": "4"
+   },
+   "reponse": "10000",
+   "verif": "echo $((10**4))"
+  },
+  {
+   "type": "puissances_10",
+   "graine": 1099511627783,
+   "k": 0,
+   "params": {
+    "a": "7"
+   },
+   "reponse": "10000000",
+   "verif": "echo $((10**7))"
+  },
+  {
+   "type": "puissances_10",
+   "graine": 1099511627783,
+   "k": 1,
+   "params": {
+    "a": "6"
+   },
+   "reponse": "1000000",
+   "verif": "echo $((10**6))"
+  },
+  {
+   "type": "puissances_10",
+   "graine": 1099511627783,
+   "k": 2,
+   "params": {
+    "a": "5"
+   },
+   "reponse": "100000",
+   "verif": "echo $((10**5))"
+  },
+  {
+   "type": "puissances_10",
+   "graine": 1099511627783,
+   "k": 3,
+   "params": {
+    "a": "6"
+   },
+   "reponse": "1000000",
+   "verif": "echo $((10**6))"
+  },
+  {
+   "type": "puissances_10",
+   "graine": 1099511627783,
+   "k": 4,
+   "params": {
+    "a": "4"
+   },
+   "reponse": "10000",
+   "verif": "echo $((10**4))"
+  },
+  {
+   "type": "puissances_10",
+   "graine": 1099511627783,
+   "k": 5,
+   "params": {
+    "a": "9"
+   },
+   "reponse": "1000000000",
+   "verif": "echo $((10**9))"
+  },
+  {
+   "type": "puissances_10",
+   "graine": 1099511627783,
+   "k": 6,
+   "params": {
+    "a": "3"
+   },
+   "reponse": "1000",
+   "verif": "echo $((10**3))"
+  },
+  {
+   "type": "puissances_10",
+   "graine": 1099511627783,
+   "k": 7,
+   "params": {
+    "a": "9"
+   },
+   "reponse": "1000000000",
+   "verif": "echo $((10**9))"
+  },
+  {
+   "type": "longueur_onde",
+   "graine": 0,
+   "k": 0,
+   "params": {
+    "f": "15"
+   },
+   "reponse": "20",
+   "verif": "echo $((300000000 / 15000000))"
+  },
+  {
+   "type": "longueur_onde",
+   "graine": 0,
+   "k": 1,
+   "params": {
+    "f": "50"
+   },
+   "reponse": "6",
+   "verif": "echo $((300000000 / 50000000))"
+  },
+  {
+   "type": "longueur_onde",
+   "graine": 0,
+   "k": 2,
+   "params": {
+    "f": "1"
+   },
+   "reponse": "300",
+   "verif": "echo $((300000000 / 1000000))"
+  },
+  {
+   "type": "longueur_onde",
+   "graine": 0,
+   "k": 3,
+   "params": {
+    "f": "300"
+   },
+   "reponse": "1",
+   "verif": "echo $((300000000 / 300000000))"
+  },
+  {
+   "type": "longueur_onde",
+   "graine": 0,
+   "k": 4,
+   "params": {
+    "f": "2"
+   },
+   "reponse": "150",
+   "verif": "echo $((300000000 / 2000000))"
+  },
+  {
+   "type": "longueur_onde",
+   "graine": 0,
+   "k": 5,
+   "params": {
+    "f": "10"
+   },
+   "reponse": "30",
+   "verif": "echo $((300000000 / 10000000))"
+  },
+  {
+   "type": "longueur_onde",
+   "graine": 0,
+   "k": 6,
+   "params": {
+    "f": "5"
+   },
+   "reponse": "60",
+   "verif": "echo $((300000000 / 5000000))"
+  },
+  {
+   "type": "longueur_onde",
+   "graine": 0,
+   "k": 7,
+   "params": {
+    "f": "150"
+   },
+   "reponse": "2",
+   "verif": "echo $((300000000 / 150000000))"
+  },
+  {
+   "type": "longueur_onde",
+   "graine": 1761955200,
+   "k": 0,
+   "params": {
+    "f": "100"
+   },
+   "reponse": "3",
+   "verif": "echo $((300000000 / 100000000))"
+  },
+  {
+   "type": "longueur_onde",
+   "graine": 1761955200,
+   "k": 1,
+   "params": {
+    "f": "30"
+   },
+   "reponse": "10",
+   "verif": "echo $((300000000 / 30000000))"
+  },
+  {
+   "type": "longueur_onde",
+   "graine": 1761955200,
+   "k": 2,
+   "params": {
+    "f": "5"
+   },
+   "reponse": "60",
+   "verif": "echo $((300000000 / 5000000))"
+  },
+  {
+   "type": "longueur_onde",
+   "graine": 1761955200,
+   "k": 3,
+   "params": {
+    "f": "25"
+   },
+   "reponse": "12",
+   "verif": "echo $((300000000 / 25000000))"
+  },
+  {
+   "type": "longueur_onde",
+   "graine": 1761955200,
+   "k": 4,
+   "params": {
+    "f": "4"
+   },
+   "reponse": "75",
+   "verif": "echo $((300000000 / 4000000))"
+  },
+  {
+   "type": "longueur_onde",
+   "graine": 1761955200,
+   "k": 5,
+   "params": {
+    "f": "2"
+   },
+   "reponse": "150",
+   "verif": "echo $((300000000 / 2000000))"
+  },
+  {
+   "type": "longueur_onde",
+   "graine": 1761955200,
+   "k": 6,
+   "params": {
+    "f": "150"
+   },
+   "reponse": "2",
+   "verif": "echo $((300000000 / 150000000))"
+  },
+  {
+   "type": "longueur_onde",
+   "graine": 1761955200,
+   "k": 7,
+   "params": {
+    "f": "10"
+   },
+   "reponse": "30",
+   "verif": "echo $((300000000 / 10000000))"
+  },
+  {
+   "type": "longueur_onde",
+   "graine": 1099511627783,
+   "k": 0,
+   "params": {
+    "f": "30"
+   },
+   "reponse": "10",
+   "verif": "echo $((300000000 / 30000000))"
+  },
+  {
+   "type": "longueur_onde",
+   "graine": 1099511627783,
+   "k": 1,
+   "params": {
+    "f": "25"
+   },
+   "reponse": "12",
+   "verif": "echo $((300000000 / 25000000))"
+  },
+  {
+   "type": "longueur_onde",
+   "graine": 1099511627783,
+   "k": 2,
+   "params": {
+    "f": "30"
+   },
+   "reponse": "10",
+   "verif": "echo $((300000000 / 30000000))"
+  },
+  {
+   "type": "longueur_onde",
+   "graine": 1099511627783,
+   "k": 3,
+   "params": {
+    "f": "5"
+   },
+   "reponse": "60",
+   "verif": "echo $((300000000 / 5000000))"
+  },
+  {
+   "type": "longueur_onde",
+   "graine": 1099511627783,
+   "k": 4,
+   "params": {
+    "f": "150"
+   },
+   "reponse": "2",
+   "verif": "echo $((300000000 / 150000000))"
+  },
+  {
+   "type": "longueur_onde",
+   "graine": 1099511627783,
+   "k": 5,
+   "params": {
+    "f": "300"
+   },
+   "reponse": "1",
+   "verif": "echo $((300000000 / 300000000))"
+  },
+  {
+   "type": "longueur_onde",
+   "graine": 1099511627783,
+   "k": 6,
+   "params": {
+    "f": "100"
+   },
+   "reponse": "3",
+   "verif": "echo $((300000000 / 100000000))"
+  },
+  {
+   "type": "longueur_onde",
+   "graine": 1099511627783,
+   "k": 7,
+   "params": {
+    "f": "20"
+   },
+   "reponse": "15",
+   "verif": "echo $((300000000 / 20000000))"
+  },
+  {
+   "type": "temps_emission",
+   "graine": 0,
+   "k": 0,
+   "params": {
+    "n": "16",
+    "t": "4"
+   },
+   "reponse": "64",
+   "verif": "echo $((16 * 4))"
+  },
+  {
+   "type": "temps_emission",
+   "graine": 0,
+   "k": 1,
+   "params": {
+    "n": "36",
+    "t": "16"
+   },
+   "reponse": "576",
+   "verif": "echo $((36 * 16))"
+  },
+  {
+   "type": "temps_emission",
+   "graine": 0,
+   "k": 2,
+   "params": {
+    "n": "33",
+    "t": "8"
+   },
+   "reponse": "264",
+   "verif": "echo $((33 * 8))"
+  },
+  {
+   "type": "temps_emission",
+   "graine": 0,
+   "k": 3,
+   "params": {
+    "n": "25",
+    "t": "1"
+   },
+   "reponse": "25",
+   "verif": "echo $((25 * 1))"
+  },
+  {
+   "type": "temps_emission",
+   "graine": 0,
+   "k": 4,
+   "params": {
+    "n": "28",
+    "t": "2"
+   },
+   "reponse": "56",
+   "verif": "echo $((28 * 2))"
+  },
+  {
+   "type": "temps_emission",
+   "graine": 0,
+   "k": 5,
+   "params": {
+    "n": "19",
+    "t": "4"
+   },
+   "reponse": "76",
+   "verif": "echo $((19 * 4))"
+  },
+  {
+   "type": "temps_emission",
+   "graine": 0,
+   "k": 6,
+   "params": {
+    "n": "27",
+    "t": "8"
+   },
+   "reponse": "216",
+   "verif": "echo $((27 * 8))"
+  },
+  {
+   "type": "temps_emission",
+   "graine": 0,
+   "k": 7,
+   "params": {
+    "n": "11",
+    "t": "1"
+   },
+   "reponse": "11",
+   "verif": "echo $((11 * 1))"
+  },
+  {
+   "type": "temps_emission",
+   "graine": 1761955200,
+   "k": 0,
+   "params": {
+    "n": "16",
+    "t": "8"
+   },
+   "reponse": "128",
+   "verif": "echo $((16 * 8))"
+  },
+  {
+   "type": "temps_emission",
+   "graine": 1761955200,
+   "k": 1,
+   "params": {
+    "n": "28",
+    "t": "1"
+   },
+   "reponse": "28",
+   "verif": "echo $((28 * 1))"
+  },
+  {
+   "type": "temps_emission",
+   "graine": 1761955200,
+   "k": 2,
+   "params": {
+    "n": "34",
+    "t": "16"
+   },
+   "reponse": "544",
+   "verif": "echo $((34 * 16))"
+  },
+  {
+   "type": "temps_emission",
+   "graine": 1761955200,
+   "k": 3,
+   "params": {
+    "n": "29",
+    "t": "2"
+   },
+   "reponse": "58",
+   "verif": "echo $((29 * 2))"
+  },
+  {
+   "type": "temps_emission",
+   "graine": 1761955200,
+   "k": 4,
+   "params": {
+    "n": "24",
+    "t": "2"
+   },
+   "reponse": "48",
+   "verif": "echo $((24 * 2))"
+  },
+  {
+   "type": "temps_emission",
+   "graine": 1761955200,
+   "k": 5,
+   "params": {
+    "n": "39",
+    "t": "16"
+   },
+   "reponse": "624",
+   "verif": "echo $((39 * 16))"
+  },
+  {
+   "type": "temps_emission",
+   "graine": 1761955200,
+   "k": 6,
+   "params": {
+    "n": "17",
+    "t": "8"
+   },
+   "reponse": "136",
+   "verif": "echo $((17 * 8))"
+  },
+  {
+   "type": "temps_emission",
+   "graine": 1761955200,
+   "k": 7,
+   "params": {
+    "n": "15",
+    "t": "32"
+   },
+   "reponse": "480",
+   "verif": "echo $((15 * 32))"
+  },
+  {
+   "type": "temps_emission",
+   "graine": 1099511627783,
+   "k": 0,
+   "params": {
+    "n": "36",
+    "t": "2"
+   },
+   "reponse": "72",
+   "verif": "echo $((36 * 2))"
+  },
+  {
+   "type": "temps_emission",
+   "graine": 1099511627783,
+   "k": 1,
+   "params": {
+    "n": "33",
+    "t": "4"
+   },
+   "reponse": "132",
+   "verif": "echo $((33 * 4))"
+  },
+  {
+   "type": "temps_emission",
+   "graine": 1099511627783,
+   "k": 2,
+   "params": {
+    "n": "28",
+    "t": "8"
+   },
+   "reponse": "224",
+   "verif": "echo $((28 * 8))"
+  },
+  {
+   "type": "temps_emission",
+   "graine": 1099511627783,
+   "k": 3,
+   "params": {
+    "n": "19",
+    "t": "8"
+   },
+   "reponse": "152",
+   "verif": "echo $((19 * 8))"
+  },
+  {
+   "type": "temps_emission",
+   "graine": 1099511627783,
+   "k": 4,
+   "params": {
+    "n": "17",
+    "t": "1"
+   },
+   "reponse": "17",
+   "verif": "echo $((17 * 1))"
+  },
+  {
+   "type": "temps_emission",
+   "graine": 1099511627783,
+   "k": 5,
+   "params": {
+    "n": "12",
+    "t": "8"
+   },
+   "reponse": "96",
+   "verif": "echo $((12 * 8))"
+  },
+  {
+   "type": "temps_emission",
+   "graine": 1099511627783,
+   "k": 6,
+   "params": {
+    "n": "28",
+    "t": "8"
+   },
+   "reponse": "224",
+   "verif": "echo $((28 * 8))"
+  },
+  {
+   "type": "temps_emission",
+   "graine": 1099511627783,
+   "k": 7,
+   "params": {
+    "n": "19",
+    "t": "32"
+   },
+   "reponse": "608",
+   "verif": "echo $((19 * 32))"
   }
  ],
  "recherches": [
@@ -2159,7 +3167,7 @@
   {
    "langue": "fr",
    "question": "pourcentage",
-   "attendu": "pourcentages"
+   "attendu": "temps_emission"
   },
   {
    "langue": "fr",
@@ -2184,7 +3192,7 @@
   {
    "langue": "en",
    "question": "power",
-   "attendu": "puissances"
+   "attendu": "puissances_10"
   },
   {
    "langue": "en",
@@ -2299,6 +3307,36 @@
    "multiplication",
    "puissances"
   ],
-  "logique": []
+  "logique": [],
+  "frequence": [
+   "comptage",
+   "addition",
+   "multiplication",
+   "soustraction",
+   "division"
+  ],
+  "puissances_10": [
+   "comptage",
+   "addition",
+   "multiplication",
+   "puissances"
+  ],
+  "longueur_onde": [
+   "comptage",
+   "addition",
+   "multiplication",
+   "soustraction",
+   "division",
+   "frequence",
+   "puissances",
+   "puissances_10"
+  ],
+  "temps_emission": [
+   "comptage",
+   "addition",
+   "multiplication",
+   "soustraction",
+   "division"
+  ]
  }
 }

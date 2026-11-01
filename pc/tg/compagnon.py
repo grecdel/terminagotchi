@@ -245,7 +245,8 @@ def _ps2(zsh=False):
 # `deploie cat x | grep y` : le « # » de l'alias coupe le reste de la ligne (le tuyau n'est pas lancé), et la
 # ligne entière est relue dans l'historique (history -a). Avec des guillemets ça marche aussi partout.
 DEPLOIE = ("alias deploie='history -a 2>/dev/null; tg deploie --historique #'\n"
-           "alias espace='tg espace'; alias cerveau='tg cerveau'; alias port='tg port'; alias citadelle='tg citadelle'; alias crypte='tg crypte'; alias machines='tg machines'")
+           "alias espace='tg espace'; alias cerveau='tg cerveau'; alias port='tg port'; alias citadelle='tg citadelle'; alias crypte='tg crypte'; alias machines='tg machines'\n"
+           "alias ondes='tg ondes'; alias mesh-envoie='tg ondes mesh-envoie'; alias mesh-coupe='tg ondes mesh-coupe'; alias mesh-route='tg ondes mesh-route'")
 
 
 def _blocs():
@@ -286,7 +287,10 @@ def _blocs():
             'function cerveau\n    tg cerveau $argv\nend\nfunction port\n    tg port $argv\nend\n'
             'function citadelle\n    tg citadelle $argv\nend\n'
             'function crypte\n    tg crypte $argv\nend\n'
-            'function machines\n    tg machines $argv\nend')
+            'function machines\n    tg machines $argv\nend\n'
+            'function ondes\n    tg ondes $argv\nend\n'
+            'function mesh-envoie\n    tg ondes mesh-envoie $argv\nend\nfunction mesh-coupe\n    tg ondes mesh-coupe $argv\nend\n'
+            'function mesh-route\n    tg ondes mesh-route $argv\nend')
     for ps in ("powershell", "pwsh"):
         if shutil.which(ps):
             try:
@@ -310,7 +314,11 @@ def _blocs():
                                        'function port { tg port @args }\n'
                                        'function citadelle { tg citadelle @args }\n'
                                        'function crypte { tg crypte @args }\n'
-                                       'function machines { tg machines @args }')
+                                       'function machines { tg machines @args }\n'
+                                       'function ondes { tg ondes @args }\n'
+                                       'function mesh-envoie { tg ondes mesh-envoie @args }\n'
+                                       'function mesh-coupe { tg ondes mesh-coupe @args }\n'
+                                       'function mesh-route { tg ondes mesh-route @args }')
     return blocs
 
 
@@ -373,7 +381,8 @@ def a_jour():
                                      or ("port='tg port'" in bloc and "port='tg port'" not in installe)
                                      or ("citadelle='tg citadelle'" in bloc and "citadelle='tg citadelle'" not in installe)
                                      or ("crypte='tg crypte'" in bloc and "crypte='tg crypte'" not in installe)
-                                     or ("machines='tg machines'" in bloc and "machines='tg machines'" not in installe)):
+                                     or ("machines='tg machines'" in bloc and "machines='tg machines'" not in installe)
+                                     or ("mesh-envoie='tg ondes" in bloc and "mesh-envoie='tg ondes" not in installe)):
             return False
     return True
 

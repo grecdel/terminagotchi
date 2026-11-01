@@ -2766,6 +2766,277 @@
     "Décision du propriétaire (§ 7.3) : pièces génériques, sans marque ni prix réel ; budget en points fictifs"
    ],
    "relu_par": null
+  },
+  "ondes": {
+   "motif": "(ondes\\s+(onde|longueur|murs?|traverse)\\b|^echo\\s+\\\"?300000000\\b.*\\|\\s*bc\\b|^echo\\s+\\$\\(\\(300000000\\b)",
+   "enfant": "on.f.ondes.enfant",
+   "grands": "on.f.ondes.grands",
+   "vrai_terminal": [
+    {
+     "cmd": "echo \"300000000 / 2400000000\" | bc -l",
+     "sortie": ".12500000000000000000",
+     "outil": "bc"
+    },
+    {
+     "cmd": "echo $((300000000 * 100 / 868000000))",
+     "sortie": "34"
+    },
+    {
+     "cmd": "awk 'BEGIN { printf \"%.1f\\n\", 300000000 / 868000000 * 100 }'",
+     "sortie": "34.6"
+    },
+    {
+     "cmd": "awk 'BEGIN { printf \"%.0f %.0f\\n\", 100 * 10^(-6/20), 100 * 10^(-6/10) }'",
+     "sortie": "50 25"
+    }
+   ],
+   "limite_image": "on.f.ondes.limite",
+   "idees_fausses": [
+    "on.f.ondes.idee"
+   ],
+   "sources": [
+    "BIPM, Le Système international d'unités, 9e édition (2019) : hertz, mètre, vitesse de la lumière (299 792 458 m/s)",
+    "UIT-R P.2040 : effets des matériaux de construction sur la propagation (affaiblissement selon la fréquence)",
+    "UIT-R P.525 : calcul de l'affaiblissement en espace libre",
+    "man 1 bc (GNU bc) : https://www.gnu.org/software/bc/manual/html_mono/bc.html"
+   ],
+   "relu_par": null
+  },
+  "wifi_machine": {
+   "motif": "(^iw\\s+dev\\b|^iwconfig\\b|^nmcli\\b.*\\bwifi\\b|ondes\\s+(reseaux|canaux|voisins)\\b)",
+   "enfant": "on.f.wifi_machine.enfant",
+   "grands": "on.f.wifi_machine.grands",
+   "vrai_terminal": [
+    {
+     "cmd": "echo $(( (2437 - 2407) / 5 ))",
+     "sortie": "6"
+    },
+    {
+     "cmd": "echo $(( (5180 - 5000) / 5 ))",
+     "sortie": "36"
+    },
+    {
+     "cmd": "nmcli -t -f FREQ dev wifi list --rescan no | grep -cvE '^[0-9]+ MHz$'",
+     "sortie": "0",
+     "code": "non0",
+     "outil": "nmcli",
+     "si": "nmcli -t -f FREQ dev wifi list --rescan no | grep -q MHz"
+    },
+    {
+     "cmd": "iw dev",
+     "rejeu": "materiel",
+     "motif": "^phy#\\d+"
+    }
+   ],
+   "limite_image": "on.f.wifi_machine.limite",
+   "idees_fausses": [
+    "on.f.wifi_machine.idee"
+   ],
+   "sources": [
+    "man 1 nmcli (NetworkManager) : -f, --rescan no : https://networkmanager.dev/docs/api/latest/nmcli.html",
+    "man 8 iw : https://wireless.docs.kernel.org/en/latest/en/users/documentation/iw.html",
+    "IEEE 802.11-2020, annexe E : canaux et fréquences (2,4 GHz, 5 GHz, 6 GHz)",
+    "CNIL, Wi-Fi et données personnelles (adresses MAC, noms de réseaux) : https://www.cnil.fr/"
+   ],
+   "relu_par": null
+  },
+  "radios": {
+   "motif": "(^nmcli\\s+(-\\w+\\s+)*r(adio)?\\b|^rfkill\\b|bluetoothctl\\b|ondes\\s+radios?\\b)",
+   "enfant": "on.f.radios.enfant",
+   "grands": "on.f.radios.grands",
+   "vrai_terminal": [
+    {
+     "cmd": "test -d /sys/class/rfkill && echo oui || echo non",
+     "motif": "^(oui|non)$"
+    },
+    {
+     "cmd": "rfkill --version",
+     "motif": "^rfkill from util-linux",
+     "outil": "rfkill"
+    },
+    {
+     "cmd": "nmcli radio",
+     "rejeu": "materiel",
+     "motif": "^WIFI-HW"
+    }
+   ],
+   "limite_image": "on.f.radios.limite",
+   "idees_fausses": [
+    "on.f.radios.idee"
+   ],
+   "sources": [
+    "Documentation du noyau Linux, rfkill : https://docs.kernel.org/driver-api/rfkill.html",
+    "man 8 rfkill (util-linux) ; man 1 nmcli (nmcli radio) ; bluetoothctl (BlueZ) : https://www.bluez.org/",
+    "Bluetooth Core Specification 5.4 (Bluetooth SIG)"
+   ],
+   "relu_par": null
+  },
+  "spectre": {
+   "motif": "ondes\\s+(spectre|r[eè]gle|libres?)\\b",
+   "enfant": "on.f.spectre.enfant",
+   "grands": "on.f.spectre.grands",
+   "vrai_terminal": [
+    {
+     "cmd": "echo $((2400 * 1000000))",
+     "sortie": "2400000000"
+    },
+    {
+     "cmd": "awk 'BEGIN { printf \"%.2f\\n\", log(5500000000 / 100000000) / log(10) }'",
+     "sortie": "1.74"
+    }
+   ],
+   "limite_image": "on.f.spectre.limite",
+   "idees_fausses": [
+    "on.f.spectre.idee"
+   ],
+   "sources": [
+    "ANFR, Tableau national de répartition des bandes de fréquences (TNRBF) : https://www.anfr.fr/",
+    "Arcep, décision 2014-1263 (appareils de faible portée, bandes libres) ; ERC/REC 70-03 (CEPT)",
+    "UIT, Règlement des radiocommunications (2020), article 5",
+    "GPS.gov, signal L1 (1575,42 MHz) : https://www.gps.gov/systems/gps/modernization/civilsignals/"
+   ],
+   "relu_par": null
+  },
+  "lora": {
+   "motif": "(ondes\\s+(lora|temps|vall[eé]e|messages)\\b|^echo\\s+\\\"?(2\\^12|3600)\\b.*\\|\\s*bc\\b|^echo\\s+\\$\\(\\((4096|3600)\\b)",
+   "enfant": "on.f.lora.enfant",
+   "grands": "on.f.lora.grands",
+   "vrai_terminal": [
+    {
+     "cmd": "echo \"2^12 / 125000\" | bc -l",
+     "sortie": ".03276800000000000000",
+     "outil": "bc"
+    },
+    {
+     "cmd": "echo $((4096 * 1000000 / 125000))",
+     "sortie": "32768"
+    },
+    {
+     "cmd": "echo \"3600 * 1 / 100\" | bc",
+     "sortie": "36",
+     "outil": "bc"
+    },
+    {
+     "cmd": "echo $((36000000 / 577536))",
+     "sortie": "62"
+    }
+   ],
+   "limite_image": "on.f.lora.limite",
+   "idees_fausses": [
+    "on.f.lora.idee"
+   ],
+   "sources": [
+    "Semtech, AN1200.13 LoRa Modem Designer's Guide (temps d'émission) et SX1276 datasheet § 4.1.1.7",
+    "ETSI EN 300 220-2 V3.2.1 : appareils à courte portée, 863-870 MHz (25 mW, cycle de 1 %)",
+    "LoRa Alliance, RP002-1.0.4 Regional Parameters (EU863-870)"
+   ],
+   "relu_par": null
+  },
+  "lorawan": {
+   "motif": "ondes\\s+(passerelles?|maillage|choix)\\b",
+   "enfant": "on.f.lorawan.enfant",
+   "grands": "on.f.lorawan.grands",
+   "vrai_terminal": [
+    {
+     "cmd": "echo $(( (3 + 1) * 577 ))",
+     "sortie": "2308"
+    }
+   ],
+   "limite_image": "on.f.lorawan.limite",
+   "idees_fausses": [
+    "on.f.lorawan.idee"
+   ],
+   "sources": [
+    "LoRa Alliance, LoRaWAN 1.0.4 Specification (architecture en étoile d'étoiles, passerelles)",
+    "Meshtastic, documentation (routage par inondation gérée) : https://meshtastic.org/docs/overview/mesh-algo/",
+    "MeshCore, dépôt du projet : https://github.com/meshcore-dev/MeshCore"
+   ],
+   "relu_par": null
+  },
+  "maillage": {
+   "motif": "(mesh-(route|envoie|coupe)\\b|ondes\\s+d[eé]fi\\b)",
+   "enfant": "on.f.maillage.enfant",
+   "grands": "on.f.maillage.grands",
+   "vrai_terminal": [
+    {
+     "cmd": "printf 'camp racine\\nracine roche\\nroche feu\\n' | wc -l",
+     "sortie": "3"
+    },
+    {
+     "cmd": "printf 'camp racine roche feu\\n' | awk '{ print NF - 1 }'",
+     "sortie": "3"
+    }
+   ],
+   "limite_image": "on.f.maillage.limite",
+   "idees_fausses": [
+    "on.f.maillage.idee"
+   ],
+   "sources": [
+    "Meshtastic, Mesh Broadcast Algorithm (hop limit 3 par défaut, 7 au plus) : https://meshtastic.org/docs/overview/mesh-algo/",
+    "RFC 3626, Optimized Link State Routing (OLSR) : réseaux ad hoc maillés",
+    "R. Diestel, Graph Theory, 5e éd. (2017), chap. 3 : connexité (Menger)"
+   ],
+   "relu_par": null
+  },
+  "meshtastic": {
+   "motif": "(meshtastic\\b|ondes\\s+(adulte|n(oe|œ)uds?)\\b)",
+   "enfant": "on.f.meshtastic.enfant",
+   "grands": "on.f.meshtastic.grands",
+   "vrai_terminal": [
+    {
+     "cmd": "meshtastic --info",
+     "rejeu": "materiel",
+     "motif": "Owner"
+    },
+    {
+     "cmd": "meshtastic --nodes",
+     "rejeu": "materiel",
+     "motif": "│"
+    }
+   ],
+   "limite_image": "on.f.meshtastic.limite",
+   "idees_fausses": [
+    "on.f.meshtastic.idee"
+   ],
+   "sources": [
+    "Meshtastic Python CLI : https://meshtastic.org/docs/software/python/cli/",
+    "ETSI EN 300 220-2 (bande 868 MHz) ; ANFR, appareils de faible portée",
+    "Meshtastic, licence GPL-3.0 : https://github.com/meshtastic/firmware"
+   ],
+   "relu_par": null
+  },
+  "sdr": {
+   "motif": "(rtl_\\w+|dump1090|ondes\\s+([eé]coute|avions?|anonymes?)\\b|capteurs_exemple|^command\\s+-v\\s+rtl)",
+   "enfant": "on.f.sdr.enfant",
+   "grands": "on.f.sdr.grands",
+   "vrai_terminal": [
+    {
+     "prepare": "echo '{\"model\": \"Exemple-Thermo\", \"id\": 4021, \"temperature_C\": 7.4}' > c.json",
+     "cmd": "grep -o '\"temperature_C\": [-0-9.]*' c.json",
+     "sortie": "\"temperature_C\": 7.4"
+    },
+    {
+     "prepare": "echo '{\"model\": \"Exemple-Thermo\", \"id\": 4021, \"temperature_C\": 7.4}' > c.json",
+     "cmd": "grep -c '\"id\"' c.json",
+     "sortie": "1"
+    },
+    {
+     "cmd": "timeout 10 rtl_test -t",
+     "rejeu": "materiel",
+     "motif": "Found \\d+ device"
+    }
+   ],
+   "limite_image": "on.f.sdr.limite",
+   "idees_fausses": [
+    "on.f.sdr.idee"
+   ],
+   "sources": [
+    "rtl-sdr (Osmocom) : https://osmocom.org/projects/rtl-sdr/wiki ; rtl_433 : https://github.com/merbanan/rtl_433",
+    "dump1090 (ADS-B, 1090 MHz) : https://github.com/flightaware/dump1090",
+    "Code des postes et des communications électroniques, art. L. 33-3 (réception) et CNIL (données personnelles)",
+    "ANFR, « Qu'est-ce qu'un récepteur radio ? » : écouter les signaux publics, sans les divulguer"
+   ],
+   "relu_par": null
   }
  },
  "etapes": {
@@ -2902,6 +3173,41 @@
   "sm10.1": {
    "maths": [
     "addition"
+   ]
+  },
+  "on1.0": {
+   "maths": [
+    "frequence"
+   ]
+  },
+  "on1.2": {
+   "maths": [
+    "puissances_10"
+   ]
+  },
+  "on1.3": {
+   "maths": [
+    "longueur_onde"
+   ]
+  },
+  "on4.0": {
+   "maths": [
+    "puissances_10"
+   ]
+  },
+  "on5.2": {
+   "maths": [
+    "temps_emission"
+   ]
+  },
+  "on5.5": {
+   "maths": [
+    "pourcentages"
+   ]
+  },
+  "on5.6": {
+   "maths": [
+    "division"
    ]
   }
  },
@@ -3356,6 +3662,36 @@
   "sm9.7": {
    "sortie": "sauvegarde.tar.gz: OK",
    "pourquoi": "hist.sm9.7.bravo : OK"
+  },
+  "on0.1": {
+   "contient": [
+    "plan_de_la_tour.txt",
+    "carnet_de_la_tour.txt"
+   ],
+   "pourquoi": "hist.on0.1.bravo : le plan et le carnet"
+  },
+  "on1.2": {
+   "sortie": ".12500000000000000000",
+   "outil": "bc",
+   "pourquoi": "hist.on1.2.bravo : 0,125 m = 12,5 cm"
+  },
+  "on5.1": {
+   "sortie": ".03276800000000000000",
+   "outil": "bc",
+   "pourquoi": "hist.on5.1.bravo : 0,032768 s, environ 33 ms"
+  },
+  "on5.5": {
+   "sortie": "36",
+   "outil": "bc",
+   "pourquoi": "hist.on5.5.bravo : 36 secondes par heure"
+  },
+  "on10.4": {
+   "motif": "\\\"temperature_C\\\": 7\\.4",
+   "pourquoi": "hist.on10.4.bravo : des lignes JSON de capteurs (fictifs)"
+  },
+  "on10.5": {
+   "sortie": "\"temperature_C\": 7.4\n\"temperature_C\": 19.8\n\"temperature_C\": 7.6",
+   "pourquoi": "hist.on10.5.bravo : seulement les températures, sans les identifiants"
   }
  },
  "maths": {
@@ -3732,6 +4068,176 @@
    "fiche": false,
    "titre": "maths.logique.titre",
    "prerequis": []
+  },
+  "frequence": {
+   "fiche": true,
+   "titre": "maths.frequence.titre",
+   "question": "maths.frequence.question",
+   "prerequis": [
+    "division"
+   ],
+   "niveau": "college",
+   "enfant": "maths.frequence.enfant",
+   "grands": "maths.frequence.grands",
+   "vrai_terminal": [
+    {
+     "cmd": "echo $((120 / 4))",
+     "sortie": "30"
+    },
+    {
+     "cmd": "echo $((2400 * 1000000))",
+     "sortie": "2400000000"
+    }
+   ],
+   "limite_image": "maths.frequence.limite",
+   "idees_fausses": [
+    "maths.frequence.idee"
+   ],
+   "exemples": [
+    "maths.frequence.ex1",
+    "maths.frequence.ex2",
+    "maths.frequence.ex3"
+   ],
+   "exercice": {
+    "type": "frequence",
+    "consigne": "maths.frequence.exo",
+    "erreur": "maths.frequence.erreur"
+   },
+   "mots_cles": "maths.frequence.kw",
+   "sources": [
+    "BIPM, Le Système international d'unités, 9e édition (2019) : le hertz (Hz = s⁻¹)",
+    "Programme de physique-chimie, cycle 4 (signaux sonores et lumineux) : https://eduscol.education.fr/"
+   ],
+   "relu_par": null
+  },
+  "puissances_10": {
+   "fiche": true,
+   "titre": "maths.puissances_10.titre",
+   "question": "maths.puissances_10.question",
+   "prerequis": [
+    "puissances"
+   ],
+   "niveau": "college",
+   "enfant": "maths.puissances_10.enfant",
+   "grands": "maths.puissances_10.grands",
+   "vrai_terminal": [
+    {
+     "cmd": "echo $((10**9))",
+     "sortie": "1000000000"
+    },
+    {
+     "cmd": "echo \"10^-3\" | bc -l",
+     "sortie": ".00100000000000000000",
+     "outil": "bc"
+    }
+   ],
+   "limite_image": "maths.puissances_10.limite",
+   "idees_fausses": [
+    "maths.puissances_10.idee"
+   ],
+   "exemples": [
+    "maths.puissances_10.ex1",
+    "maths.puissances_10.ex2",
+    "maths.puissances_10.ex3"
+   ],
+   "exercice": {
+    "type": "puissances_10",
+    "consigne": "maths.puissances_10.exo",
+    "erreur": "maths.puissances_10.erreur"
+   },
+   "mots_cles": "maths.puissances_10.kw",
+   "sources": [
+    "BIPM, SI 9e édition (2019), tableau 7 : préfixes k, M, G, m, µ, n",
+    "Bash, Shell Arithmetic (**) : https://www.gnu.org/software/bash/manual/html_node/Shell-Arithmetic.html"
+   ],
+   "relu_par": null
+  },
+  "longueur_onde": {
+   "fiche": true,
+   "titre": "maths.longueur_onde.titre",
+   "question": "maths.longueur_onde.question",
+   "prerequis": [
+    "frequence",
+    "division",
+    "puissances_10"
+   ],
+   "niveau": "lycee",
+   "enfant": "maths.longueur_onde.enfant",
+   "grands": "maths.longueur_onde.grands",
+   "vrai_terminal": [
+    {
+     "cmd": "echo $((300000000 / 100000000))",
+     "sortie": "3"
+    },
+    {
+     "cmd": "echo \"300000000 / 2400000000\" | bc -l",
+     "sortie": ".12500000000000000000",
+     "outil": "bc"
+    }
+   ],
+   "limite_image": "maths.longueur_onde.limite",
+   "idees_fausses": [
+    "maths.longueur_onde.idee"
+   ],
+   "exemples": [
+    "maths.longueur_onde.ex1",
+    "maths.longueur_onde.ex2",
+    "maths.longueur_onde.ex3"
+   ],
+   "exercice": {
+    "type": "longueur_onde",
+    "consigne": "maths.longueur_onde.exo",
+    "erreur": "maths.longueur_onde.erreur"
+   },
+   "mots_cles": "maths.longueur_onde.kw",
+   "sources": [
+    "BIPM, SI 9e édition (2019) : c = 299 792 458 m/s (valeur exacte)",
+    "Programme de physique-chimie de seconde : ondes et signaux (λ = v / f) : https://eduscol.education.fr/"
+   ],
+   "relu_par": null
+  },
+  "temps_emission": {
+   "fiche": true,
+   "titre": "maths.temps_emission.titre",
+   "question": "maths.temps_emission.question",
+   "prerequis": [
+    "multiplication",
+    "division"
+   ],
+   "niveau": "college",
+   "enfant": "maths.temps_emission.enfant",
+   "grands": "maths.temps_emission.grands",
+   "vrai_terminal": [
+    {
+     "cmd": "echo $((23 * 16))",
+     "sortie": "368"
+    },
+    {
+     "cmd": "echo \"36 / 0.577536\" | bc",
+     "sortie": "62",
+     "outil": "bc"
+    }
+   ],
+   "limite_image": "maths.temps_emission.limite",
+   "idees_fausses": [
+    "maths.temps_emission.idee"
+   ],
+   "exemples": [
+    "maths.temps_emission.ex1",
+    "maths.temps_emission.ex2",
+    "maths.temps_emission.ex3"
+   ],
+   "exercice": {
+    "type": "temps_emission",
+    "consigne": "maths.temps_emission.exo",
+    "erreur": "maths.temps_emission.erreur"
+   },
+   "mots_cles": "maths.temps_emission.kw",
+   "sources": [
+    "Semtech, AN1200.13 LoRa Modem Designer's Guide (temps d'émission)",
+    "ETSI EN 300 220-2 : cycle d'utilisation de 1 % dans la bande 868 MHz"
+   ],
+   "relu_par": null
   }
  },
  "recompenses": {
@@ -4068,6 +4574,80 @@
      "crypte"
     ]
    }
+  },
+  {
+   "id": "ondes",
+   "types": [
+    "ciel"
+   ],
+   "requis": [
+    "n4"
+   ],
+   "requis_lecons": [
+    "port7",
+    "sm3"
+   ],
+   "paliers": [
+    "on0",
+    "on1",
+    "on2",
+    "on3",
+    "on4",
+    "on5",
+    "on6",
+    "on7",
+    "on8",
+    "on9",
+    "on10"
+   ],
+   "chapitre": "ondes",
+   "attirance": {
+    "cmds": [
+     "nmcli",
+     "iw",
+     "rfkill",
+     "bluetoothctl",
+     "meshtastic",
+     "rtl_test"
+    ],
+    "familles": [
+     "Célestes"
+    ]
+   },
+   "ponts": {
+    "ports": [
+     "port"
+    ],
+    "unites": [
+     "machines"
+    ],
+    "bc": [
+     "forge"
+    ],
+    "graphes": [
+     "port"
+    ]
+   },
+   "exploits": [
+    {
+     "id": "ondes.onde",
+     "nom": "recomp.ondes.onde",
+     "recompense": "variante"
+    }
+   ],
+   "maths": [
+    "frequence",
+    "puissances_10",
+    "longueur_onde",
+    "temps_emission",
+    "pourcentages",
+    "division"
+   ],
+   "variantes_reservees": [
+    "zapiot:orage",
+    "ventouzar:orage",
+    "cyclonaute:orage"
+   ]
   },
   {
    "id": "atelier",

@@ -1191,6 +1191,14 @@ def _main():
         from . import machines
         machines.commande(args[1:])
         return
+    if mode == "ondes":                        # tg ondes … : la Tour des Ondes (l'onde, le spectre, LoRa, le maillage)
+        from . import ondes
+        ondes.commande(args[1:])
+        return
+    if mode in ("mesh-envoie", "mesh-coupe", "mesh-route"):     # le maillage du Terminaworld (alias de tg installer)
+        from . import ondes
+        ondes.commande([mode] + args[1:])
+        return
     if mode in ("deploie", "déploie"):         # tg deploie <commande> : la vue déployée (sans la lancer)
         from . import deploie
         brut_args = [a for a in sys.argv[2:]]      # garder --pas et --historique (args a retiré les « -- »)

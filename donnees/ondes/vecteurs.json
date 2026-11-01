@@ -1,0 +1,4375 @@
+{
+ "note": "généré par pc/outils/vecteurs_ondes.py ; vérifié par tests/jvm/Ondes.kt",
+ "frequences": [
+  {
+   "texte": "lora",
+   "resultat": [
+    868000000,
+    "lora"
+   ]
+  },
+  {
+   "texte": "wifi",
+   "resultat": [
+    2400000000,
+    "wifi24"
+   ]
+  },
+  {
+   "texte": "Wi-Fi",
+   "resultat": [
+    2400000000,
+    "wifi24"
+   ]
+  },
+  {
+   "texte": "wifi5",
+   "resultat": [
+    5000000000,
+    "wifi5"
+   ]
+  },
+  {
+   "texte": "5G",
+   "resultat": [
+    3500000000,
+    "cinqg"
+   ]
+  },
+  {
+   "texte": "4g",
+   "resultat": [
+    1800000000,
+    "quatreg"
+   ]
+  },
+  {
+   "texte": "fm",
+   "resultat": [
+    100000000,
+    "fm"
+   ]
+  },
+  {
+   "texte": "gps",
+   "resultat": [
+    1575420000,
+    "gps"
+   ]
+  },
+  {
+   "texte": "bluetooth",
+   "resultat": [
+    2440000000,
+    "bluetooth"
+   ]
+  },
+  {
+   "texte": "868M",
+   "resultat": [
+    868000000,
+    null
+   ]
+  },
+  {
+   "texte": "868MHz",
+   "resultat": [
+    868000000,
+    null
+   ]
+  },
+  {
+   "texte": "2.4G",
+   "resultat": [
+    2400000000,
+    null
+   ]
+  },
+  {
+   "texte": "2,4 GHz",
+   "resultat": [
+    2400000000,
+    null
+   ]
+  },
+  {
+   "texte": "100000000",
+   "resultat": [
+    100000000,
+    null
+   ]
+  },
+  {
+   "texte": "433.92M",
+   "resultat": [
+    433920000,
+    null
+   ]
+  },
+  {
+   "texte": "1k",
+   "resultat": [
+    1000,
+    null
+   ]
+  },
+  {
+   "texte": "abc",
+   "resultat": null
+  },
+  {
+   "texte": "",
+   "resultat": null
+  },
+  {
+   "texte": "0.1",
+   "resultat": null
+  },
+  {
+   "texte": "12x",
+   "resultat": null
+  },
+  {
+   "texte": "wifi6",
+   "resultat": [
+    6400000000,
+    "wifi6"
+   ]
+  },
+  {
+   "texte": "BT",
+   "resultat": [
+    2440000000,
+    "bluetooth"
+   ]
+  }
+ ],
+ "longueurs": [
+  {
+   "hz": 100000000,
+   "m": 3.0,
+   "texte": "3 m",
+   "periodes": 1.0
+  },
+  {
+   "hz": 868000000,
+   "m": 0.3456221198156682,
+   "texte": "34.6 cm",
+   "periodes": 3.8155591755294758
+  },
+  {
+   "hz": 1575420000,
+   "m": 0.19042541036675933,
+   "texte": "19 cm",
+   "periodes": 4.59218906364587
+  },
+  {
+   "hz": 2400000000,
+   "m": 0.125,
+   "texte": "12.5 cm",
+   "periodes": 5.140633725134817
+  },
+  {
+   "hz": 5000000000,
+   "m": 0.06,
+   "texte": "6 cm",
+   "periodes": 6.096910013008056
+  },
+  {
+   "hz": 1000,
+   "m": 300000.0,
+   "texte": "300 km",
+   "periodes": 1.0
+  },
+  {
+   "hz": 300,
+   "m": 1000000.0,
+   "texte": "1000 km",
+   "periodes": 1.0
+  },
+  {
+   "hz": 433920000,
+   "m": 0.6913716814159292,
+   "texte": "69.1 cm",
+   "periodes": 2.9122290035528517
+  }
+ ],
+ "longueur_ok": [
+  {
+   "reponse": "34.6",
+   "ok": true
+  },
+  {
+   "reponse": "34,6",
+   "ok": true
+  },
+  {
+   "reponse": "35",
+   "ok": true
+  },
+  {
+   "reponse": "34",
+   "ok": true
+  },
+  {
+   "reponse": "0.35",
+   "ok": true
+  },
+  {
+   "reponse": "0,3456",
+   "ok": true
+  },
+  {
+   "reponse": "346 mm",
+   "ok": true
+  },
+  {
+   "reponse": "34.6 cm",
+   "ok": true
+  },
+  {
+   "reponse": "0.35 m",
+   "ok": true
+  },
+  {
+   "reponse": "12.5",
+   "ok": false
+  },
+  {
+   "reponse": "33",
+   "ok": true
+  },
+  {
+   "reponse": "36.5",
+   "ok": false
+  },
+  {
+   "reponse": "abc",
+   "ok": false
+  },
+  {
+   "reponse": "",
+   "ok": false
+  },
+  {
+   "reponse": "1",
+   "ok": false
+  },
+  {
+   "reponse": "3456",
+   "ok": false
+  },
+  {
+   "reponse": "35 km",
+   "ok": false
+  },
+  {
+   "reponse": "0.33",
+   "ok": true
+  }
+ ],
+ "murs": [
+  {
+   "matiere": "bois",
+   "tech": "lora",
+   "n": 1,
+   "db": 2,
+   "restant": [
+    79,
+    63
+   ]
+  },
+  {
+   "matiere": "bois",
+   "tech": "lora",
+   "n": 2,
+   "db": 4,
+   "restant": [
+    63,
+    40
+   ]
+  },
+  {
+   "matiere": "bois",
+   "tech": "lora",
+   "n": 3,
+   "db": 6,
+   "restant": [
+    50,
+    25
+   ]
+  },
+  {
+   "matiere": "bois",
+   "tech": "wifi24",
+   "n": 1,
+   "db": 3,
+   "restant": [
+    71,
+    50
+   ]
+  },
+  {
+   "matiere": "bois",
+   "tech": "wifi24",
+   "n": 2,
+   "db": 6,
+   "restant": [
+    50,
+    25
+   ]
+  },
+  {
+   "matiere": "bois",
+   "tech": "wifi24",
+   "n": 3,
+   "db": 9,
+   "restant": [
+    35,
+    13
+   ]
+  },
+  {
+   "matiere": "bois",
+   "tech": "wifi5",
+   "n": 1,
+   "db": 5,
+   "restant": [
+    56,
+    32
+   ]
+  },
+  {
+   "matiere": "bois",
+   "tech": "wifi5",
+   "n": 2,
+   "db": 10,
+   "restant": [
+    32,
+    10
+   ]
+  },
+  {
+   "matiere": "bois",
+   "tech": "wifi5",
+   "n": 3,
+   "db": 15,
+   "restant": [
+    18,
+    3
+   ]
+  },
+  {
+   "matiere": "brique",
+   "tech": "lora",
+   "n": 1,
+   "db": 4,
+   "restant": [
+    63,
+    40
+   ]
+  },
+  {
+   "matiere": "brique",
+   "tech": "lora",
+   "n": 2,
+   "db": 8,
+   "restant": [
+    40,
+    16
+   ]
+  },
+  {
+   "matiere": "brique",
+   "tech": "lora",
+   "n": 3,
+   "db": 12,
+   "restant": [
+    25,
+    6
+   ]
+  },
+  {
+   "matiere": "brique",
+   "tech": "wifi24",
+   "n": 1,
+   "db": 6,
+   "restant": [
+    50,
+    25
+   ]
+  },
+  {
+   "matiere": "brique",
+   "tech": "wifi24",
+   "n": 2,
+   "db": 12,
+   "restant": [
+    25,
+    6
+   ]
+  },
+  {
+   "matiere": "brique",
+   "tech": "wifi24",
+   "n": 3,
+   "db": 18,
+   "restant": [
+    13,
+    2
+   ]
+  },
+  {
+   "matiere": "brique",
+   "tech": "wifi5",
+   "n": 1,
+   "db": 10,
+   "restant": [
+    32,
+    10
+   ]
+  },
+  {
+   "matiere": "brique",
+   "tech": "wifi5",
+   "n": 2,
+   "db": 20,
+   "restant": [
+    10,
+    1
+   ]
+  },
+  {
+   "matiere": "brique",
+   "tech": "wifi5",
+   "n": 3,
+   "db": 30,
+   "restant": [
+    3,
+    0
+   ]
+  },
+  {
+   "matiere": "beton",
+   "tech": "lora",
+   "n": 1,
+   "db": 8,
+   "restant": [
+    40,
+    16
+   ]
+  },
+  {
+   "matiere": "beton",
+   "tech": "lora",
+   "n": 2,
+   "db": 16,
+   "restant": [
+    16,
+    3
+   ]
+  },
+  {
+   "matiere": "beton",
+   "tech": "lora",
+   "n": 3,
+   "db": 24,
+   "restant": [
+    6,
+    0
+   ]
+  },
+  {
+   "matiere": "beton",
+   "tech": "wifi24",
+   "n": 1,
+   "db": 12,
+   "restant": [
+    25,
+    6
+   ]
+  },
+  {
+   "matiere": "beton",
+   "tech": "wifi24",
+   "n": 2,
+   "db": 24,
+   "restant": [
+    6,
+    0
+   ]
+  },
+  {
+   "matiere": "beton",
+   "tech": "wifi24",
+   "n": 3,
+   "db": 36,
+   "restant": [
+    2,
+    0
+   ]
+  },
+  {
+   "matiere": "beton",
+   "tech": "wifi5",
+   "n": 1,
+   "db": 20,
+   "restant": [
+    10,
+    1
+   ]
+  },
+  {
+   "matiere": "beton",
+   "tech": "wifi5",
+   "n": 2,
+   "db": 40,
+   "restant": [
+    1,
+    0
+   ]
+  },
+  {
+   "matiere": "beton",
+   "tech": "wifi5",
+   "n": 3,
+   "db": 60,
+   "restant": [
+    0,
+    0
+   ]
+  },
+  {
+   "matiere": "verre",
+   "tech": "lora",
+   "n": 1,
+   "db": 0,
+   "restant": [
+    100,
+    100
+   ]
+  },
+  {
+   "matiere": "verre",
+   "tech": "lora",
+   "n": 2,
+   "db": 0,
+   "restant": [
+    100,
+    100
+   ]
+  },
+  {
+   "matiere": "verre",
+   "tech": "lora",
+   "n": 3,
+   "db": 0,
+   "restant": [
+    100,
+    100
+   ]
+  },
+  {
+   "matiere": "verre",
+   "tech": "wifi24",
+   "n": 1,
+   "db": 0,
+   "restant": [
+    100,
+    100
+   ]
+  },
+  {
+   "matiere": "verre",
+   "tech": "wifi24",
+   "n": 2,
+   "db": 0,
+   "restant": [
+    100,
+    100
+   ]
+  },
+  {
+   "matiere": "verre",
+   "tech": "wifi24",
+   "n": 3,
+   "db": 0,
+   "restant": [
+    100,
+    100
+   ]
+  },
+  {
+   "matiere": "verre",
+   "tech": "wifi5",
+   "n": 1,
+   "db": 0,
+   "restant": [
+    100,
+    100
+   ]
+  },
+  {
+   "matiere": "verre",
+   "tech": "wifi5",
+   "n": 2,
+   "db": 0,
+   "restant": [
+    100,
+    100
+   ]
+  },
+  {
+   "matiere": "verre",
+   "tech": "wifi5",
+   "n": 3,
+   "db": 0,
+   "restant": [
+    100,
+    100
+   ]
+  }
+ ],
+ "canaux": [
+  {
+   "mhz": 2412,
+   "canal": 1,
+   "bande": "2,4"
+  },
+  {
+   "mhz": 2417,
+   "canal": 2,
+   "bande": "2,4"
+  },
+  {
+   "mhz": 2437,
+   "canal": 6,
+   "bande": "2,4"
+  },
+  {
+   "mhz": 2462,
+   "canal": 11,
+   "bande": "2,4"
+  },
+  {
+   "mhz": 2472,
+   "canal": 13,
+   "bande": "2,4"
+  },
+  {
+   "mhz": 2484,
+   "canal": 14,
+   "bande": "2,4"
+  },
+  {
+   "mhz": 2400,
+   "canal": null,
+   "bande": "2,4"
+  },
+  {
+   "mhz": 2413,
+   "canal": null,
+   "bande": "2,4"
+  },
+  {
+   "mhz": 5180,
+   "canal": 36,
+   "bande": "5"
+  },
+  {
+   "mhz": 5200,
+   "canal": 40,
+   "bande": "5"
+  },
+  {
+   "mhz": 5500,
+   "canal": 100,
+   "bande": "5"
+  },
+  {
+   "mhz": 5745,
+   "canal": 149,
+   "bande": "5"
+  },
+  {
+   "mhz": 5825,
+   "canal": 165,
+   "bande": "5"
+  },
+  {
+   "mhz": 5955,
+   "canal": 1,
+   "bande": "6"
+  },
+  {
+   "mhz": 6115,
+   "canal": 33,
+   "bande": "6"
+  },
+  {
+   "mhz": 7115,
+   "canal": 233,
+   "bande": "6"
+  },
+  {
+   "mhz": 868,
+   "canal": null,
+   "bande": null
+  },
+  {
+   "mhz": 5000,
+   "canal": null,
+   "bande": null
+  },
+  {
+   "mhz": 5150,
+   "canal": 30,
+   "bande": "5"
+  }
+ ],
+ "resumes": [
+  {
+   "freqs": [],
+   "n": 0,
+   "bandes": {},
+   "canaux": {}
+  },
+  {
+   "freqs": [
+    2412,
+    2437,
+    2437,
+    5180
+   ],
+   "n": 4,
+   "bandes": {
+    "2,4": 3,
+    "5": 1
+   },
+   "canaux": {
+    "1": 1,
+    "6": 2
+   }
+  },
+  {
+   "freqs": [
+    2412,
+    2412,
+    2412,
+    2462,
+    5500,
+    5955,
+    6115,
+    868
+   ],
+   "n": 8,
+   "bandes": {
+    "2,4": 4,
+    "5": 1,
+    "6": 2
+   },
+   "canaux": {
+    "1": 3,
+    "11": 1
+   }
+  },
+  {
+   "freqs": [
+    2484,
+    2472,
+    2417
+   ],
+   "n": 3,
+   "bandes": {
+    "2,4": 3
+   },
+   "canaux": {
+    "2": 1,
+    "13": 1,
+    "14": 1
+   }
+  }
+ ],
+ "reseaux": [
+  {
+   "reponse": "6",
+   "vrai": 6,
+   "ok": true
+  },
+  {
+   "reponse": "8",
+   "vrai": 6,
+   "ok": true
+  },
+  {
+   "reponse": "9",
+   "vrai": 6,
+   "ok": false
+  },
+  {
+   "reponse": "4",
+   "vrai": 6,
+   "ok": true
+  },
+  {
+   "reponse": "3",
+   "vrai": 6,
+   "ok": false
+  },
+  {
+   "reponse": "0",
+   "vrai": 0,
+   "ok": true
+  },
+  {
+   "reponse": "2",
+   "vrai": 0,
+   "ok": true
+  },
+  {
+   "reponse": "3",
+   "vrai": 0,
+   "ok": false
+  },
+  {
+   "reponse": "24",
+   "vrai": 20,
+   "ok": true
+  },
+  {
+   "reponse": "25",
+   "vrai": 20,
+   "ok": false
+  },
+  {
+   "reponse": "15",
+   "vrai": 20,
+   "ok": false
+  },
+  {
+   "reponse": "abc",
+   "vrai": 6,
+   "ok": false
+  },
+  {
+   "reponse": "",
+   "vrai": 6,
+   "ok": false
+  },
+  {
+   "reponse": "6.5",
+   "vrai": 6,
+   "ok": false
+  }
+ ],
+ "parties": [
+  {
+   "graine": "1:0",
+   "regle": [
+    [
+     "A",
+     "bluetooth"
+    ],
+    [
+     "B",
+     "fm"
+    ],
+    [
+     "C",
+     "cinqg"
+    ],
+    [
+     "D",
+     "lora"
+    ],
+    [
+     "E",
+     "gps"
+    ],
+    [
+     "F",
+     "wifi5"
+    ]
+   ],
+   "regle_reponse": [
+    "B",
+    "D",
+    "E",
+    "A",
+    "C",
+    "F"
+   ],
+   "libre": [
+    [
+     1,
+     "fm",
+     "r"
+    ],
+    [
+     2,
+     "lora",
+     "l"
+    ],
+    [
+     3,
+     "gps",
+     "r"
+    ],
+    [
+     4,
+     "quatreg",
+     "r"
+    ],
+    [
+     5,
+     "bluetooth",
+     "l"
+    ],
+    [
+     6,
+     "wifi24",
+     "l"
+    ]
+   ],
+   "choix": [
+    [
+     1,
+     "randonnee",
+     "m"
+    ],
+    [
+     2,
+     "tempete",
+     "m"
+    ],
+    [
+     3,
+     "compteur",
+     "p"
+    ],
+    [
+     4,
+     "ville",
+     "p"
+    ]
+   ],
+   "vallee": 9500,
+   "sf": 12,
+   "cible": "machine"
+  },
+  {
+   "graine": "2:1730000000",
+   "regle": [
+    [
+     "A",
+     "bluetooth"
+    ],
+    [
+     "B",
+     "cinqg"
+    ],
+    [
+     "C",
+     "gps"
+    ],
+    [
+     "D",
+     "lora"
+    ],
+    [
+     "E",
+     "wifi5"
+    ],
+    [
+     "F",
+     "fm"
+    ]
+   ],
+   "regle_reponse": [
+    "F",
+    "D",
+    "C",
+    "A",
+    "B",
+    "E"
+   ],
+   "libre": [
+    [
+     1,
+     "gps",
+     "r"
+    ],
+    [
+     2,
+     "fm",
+     "r"
+    ],
+    [
+     3,
+     "bluetooth",
+     "l"
+    ],
+    [
+     4,
+     "quatreg",
+     "r"
+    ],
+    [
+     5,
+     "lora",
+     "l"
+    ],
+    [
+     6,
+     "wifi24",
+     "l"
+    ]
+   ],
+   "choix": [
+    [
+     1,
+     "ville",
+     "p"
+    ],
+    [
+     2,
+     "randonnee",
+     "m"
+    ],
+    [
+     3,
+     "compteur",
+     "p"
+    ],
+    [
+     4,
+     "tempete",
+     "m"
+    ]
+   ],
+   "vallee": 9500,
+   "sf": 12,
+   "cible": "ombre"
+  },
+  {
+   "graine": "7:42",
+   "regle": [
+    [
+     "A",
+     "gps"
+    ],
+    [
+     "B",
+     "wifi5"
+    ],
+    [
+     "C",
+     "lora"
+    ],
+    [
+     "D",
+     "fm"
+    ],
+    [
+     "E",
+     "cinqg"
+    ],
+    [
+     "F",
+     "bluetooth"
+    ]
+   ],
+   "regle_reponse": [
+    "D",
+    "C",
+    "A",
+    "F",
+    "E",
+    "B"
+   ],
+   "libre": [
+    [
+     1,
+     "fm",
+     "r"
+    ],
+    [
+     2,
+     "bluetooth",
+     "l"
+    ],
+    [
+     3,
+     "quatreg",
+     "r"
+    ],
+    [
+     4,
+     "lora",
+     "l"
+    ],
+    [
+     5,
+     "wifi24",
+     "l"
+    ],
+    [
+     6,
+     "gps",
+     "r"
+    ]
+   ],
+   "choix": [
+    [
+     1,
+     "compteur",
+     "p"
+    ],
+    [
+     2,
+     "ville",
+     "p"
+    ],
+    [
+     3,
+     "tempete",
+     "m"
+    ],
+    [
+     4,
+     "randonnee",
+     "m"
+    ]
+   ],
+   "vallee": 3500,
+   "sf": 9,
+   "cible": "feu"
+  },
+  {
+   "graine": "partie:3",
+   "regle": [
+    [
+     "A",
+     "fm"
+    ],
+    [
+     "B",
+     "bluetooth"
+    ],
+    [
+     "C",
+     "cinqg"
+    ],
+    [
+     "D",
+     "gps"
+    ],
+    [
+     "E",
+     "lora"
+    ],
+    [
+     "F",
+     "wifi5"
+    ]
+   ],
+   "regle_reponse": [
+    "A",
+    "E",
+    "D",
+    "B",
+    "C",
+    "F"
+   ],
+   "libre": [
+    [
+     1,
+     "quatreg",
+     "r"
+    ],
+    [
+     2,
+     "wifi24",
+     "l"
+    ],
+    [
+     3,
+     "fm",
+     "r"
+    ],
+    [
+     4,
+     "gps",
+     "r"
+    ],
+    [
+     5,
+     "lora",
+     "l"
+    ],
+    [
+     6,
+     "bluetooth",
+     "l"
+    ]
+   ],
+   "choix": [
+    [
+     1,
+     "compteur",
+     "p"
+    ],
+    [
+     2,
+     "randonnee",
+     "m"
+    ],
+    [
+     3,
+     "tempete",
+     "m"
+    ],
+    [
+     4,
+     "ville",
+     "p"
+    ]
+   ],
+   "vallee": 7000,
+   "sf": 11,
+   "cible": "poison"
+  },
+  {
+   "graine": "9:1761900000",
+   "regle": [
+    [
+     "A",
+     "cinqg"
+    ],
+    [
+     "B",
+     "bluetooth"
+    ],
+    [
+     "C",
+     "fm"
+    ],
+    [
+     "D",
+     "wifi5"
+    ],
+    [
+     "E",
+     "gps"
+    ],
+    [
+     "F",
+     "lora"
+    ]
+   ],
+   "regle_reponse": [
+    "C",
+    "F",
+    "E",
+    "B",
+    "A",
+    "D"
+   ],
+   "libre": [
+    [
+     1,
+     "fm",
+     "r"
+    ],
+    [
+     2,
+     "lora",
+     "l"
+    ],
+    [
+     3,
+     "wifi24",
+     "l"
+    ],
+    [
+     4,
+     "gps",
+     "r"
+    ],
+    [
+     5,
+     "bluetooth",
+     "l"
+    ],
+    [
+     6,
+     "quatreg",
+     "r"
+    ]
+   ],
+   "choix": [
+    [
+     1,
+     "compteur",
+     "p"
+    ],
+    [
+     2,
+     "randonnee",
+     "m"
+    ],
+    [
+     3,
+     "ville",
+     "p"
+    ],
+    [
+     4,
+     "tempete",
+     "m"
+    ]
+   ],
+   "vallee": 7000,
+   "sf": 11,
+   "cible": "machine"
+  },
+  {
+   "graine": "4:1700000123",
+   "regle": [
+    [
+     "A",
+     "bluetooth"
+    ],
+    [
+     "B",
+     "wifi5"
+    ],
+    [
+     "C",
+     "gps"
+    ],
+    [
+     "D",
+     "cinqg"
+    ],
+    [
+     "E",
+     "lora"
+    ],
+    [
+     "F",
+     "fm"
+    ]
+   ],
+   "regle_reponse": [
+    "F",
+    "E",
+    "C",
+    "A",
+    "D",
+    "B"
+   ],
+   "libre": [
+    [
+     1,
+     "bluetooth",
+     "l"
+    ],
+    [
+     2,
+     "gps",
+     "r"
+    ],
+    [
+     3,
+     "lora",
+     "l"
+    ],
+    [
+     4,
+     "quatreg",
+     "r"
+    ],
+    [
+     5,
+     "fm",
+     "r"
+    ],
+    [
+     6,
+     "wifi24",
+     "l"
+    ]
+   ],
+   "choix": [
+    [
+     1,
+     "ville",
+     "p"
+    ],
+    [
+     2,
+     "randonnee",
+     "m"
+    ],
+    [
+     3,
+     "compteur",
+     "p"
+    ],
+    [
+     4,
+     "tempete",
+     "m"
+    ]
+   ],
+   "vallee": 5000,
+   "sf": 10,
+   "cible": "ombre"
+  },
+  {
+   "graine": "5:5",
+   "regle": [
+    [
+     "A",
+     "lora"
+    ],
+    [
+     "B",
+     "cinqg"
+    ],
+    [
+     "C",
+     "fm"
+    ],
+    [
+     "D",
+     "bluetooth"
+    ],
+    [
+     "E",
+     "wifi5"
+    ],
+    [
+     "F",
+     "gps"
+    ]
+   ],
+   "regle_reponse": [
+    "C",
+    "A",
+    "F",
+    "D",
+    "B",
+    "E"
+   ],
+   "libre": [
+    [
+     1,
+     "fm",
+     "r"
+    ],
+    [
+     2,
+     "quatreg",
+     "r"
+    ],
+    [
+     3,
+     "wifi24",
+     "l"
+    ],
+    [
+     4,
+     "gps",
+     "r"
+    ],
+    [
+     5,
+     "lora",
+     "l"
+    ],
+    [
+     6,
+     "bluetooth",
+     "l"
+    ]
+   ],
+   "choix": [
+    [
+     1,
+     "tempete",
+     "m"
+    ],
+    [
+     2,
+     "ville",
+     "p"
+    ],
+    [
+     3,
+     "randonnee",
+     "m"
+    ],
+    [
+     4,
+     "compteur",
+     "p"
+    ]
+   ],
+   "vallee": 5000,
+   "sf": 10,
+   "cible": "ombre"
+  },
+  {
+   "graine": "8:1762000000",
+   "regle": [
+    [
+     "A",
+     "wifi5"
+    ],
+    [
+     "B",
+     "fm"
+    ],
+    [
+     "C",
+     "bluetooth"
+    ],
+    [
+     "D",
+     "cinqg"
+    ],
+    [
+     "E",
+     "lora"
+    ],
+    [
+     "F",
+     "gps"
+    ]
+   ],
+   "regle_reponse": [
+    "B",
+    "E",
+    "F",
+    "C",
+    "D",
+    "A"
+   ],
+   "libre": [
+    [
+     1,
+     "bluetooth",
+     "l"
+    ],
+    [
+     2,
+     "wifi24",
+     "l"
+    ],
+    [
+     3,
+     "lora",
+     "l"
+    ],
+    [
+     4,
+     "gps",
+     "r"
+    ],
+    [
+     5,
+     "quatreg",
+     "r"
+    ],
+    [
+     6,
+     "fm",
+     "r"
+    ]
+   ],
+   "choix": [
+    [
+     1,
+     "randonnee",
+     "m"
+    ],
+    [
+     2,
+     "compteur",
+     "p"
+    ],
+    [
+     3,
+     "tempete",
+     "m"
+    ],
+    [
+     4,
+     "ville",
+     "p"
+    ]
+   ],
+   "vallee": 5000,
+   "sf": 10,
+   "cible": "machine"
+  }
+ ],
+ "lora": [
+  {
+   "sf": 7,
+   "octets": 1,
+   "symbole_us": 1024,
+   "symboles": 13,
+   "us": 25856,
+   "par_heure": 1392
+  },
+  {
+   "sf": 7,
+   "octets": 10,
+   "symbole_us": 1024,
+   "symboles": 28,
+   "us": 41216,
+   "par_heure": 873
+  },
+  {
+   "sf": 7,
+   "octets": 51,
+   "symbole_us": 1024,
+   "symboles": 88,
+   "us": 102656,
+   "par_heure": 350
+  },
+  {
+   "sf": 8,
+   "octets": 1,
+   "symbole_us": 2048,
+   "symboles": 13,
+   "us": 51712,
+   "par_heure": 696
+  },
+  {
+   "sf": 8,
+   "octets": 10,
+   "symbole_us": 2048,
+   "symboles": 23,
+   "us": 72192,
+   "par_heure": 498
+  },
+  {
+   "sf": 8,
+   "octets": 51,
+   "symbole_us": 2048,
+   "symboles": 78,
+   "us": 184832,
+   "par_heure": 194
+  },
+  {
+   "sf": 9,
+   "octets": 1,
+   "symbole_us": 4096,
+   "symboles": 13,
+   "us": 103424,
+   "par_heure": 348
+  },
+  {
+   "sf": 9,
+   "octets": 10,
+   "symbole_us": 4096,
+   "symboles": 23,
+   "us": 144384,
+   "par_heure": 249
+  },
+  {
+   "sf": 9,
+   "octets": 51,
+   "symbole_us": 4096,
+   "symboles": 68,
+   "us": 328704,
+   "par_heure": 109
+  },
+  {
+   "sf": 10,
+   "octets": 1,
+   "symbole_us": 8192,
+   "symboles": 13,
+   "us": 206848,
+   "par_heure": 174
+  },
+  {
+   "sf": 10,
+   "octets": 10,
+   "symbole_us": 8192,
+   "symboles": 23,
+   "us": 288768,
+   "par_heure": 124
+  },
+  {
+   "sf": 10,
+   "octets": 51,
+   "symbole_us": 8192,
+   "symboles": 63,
+   "us": 616448,
+   "par_heure": 58
+  },
+  {
+   "sf": 11,
+   "octets": 1,
+   "symbole_us": 16384,
+   "symboles": 13,
+   "us": 413696,
+   "par_heure": 87
+  },
+  {
+   "sf": 11,
+   "octets": 10,
+   "symbole_us": 16384,
+   "symboles": 23,
+   "us": 577536,
+   "par_heure": 62
+  },
+  {
+   "sf": 11,
+   "octets": 51,
+   "symbole_us": 16384,
+   "symboles": 68,
+   "us": 1314816,
+   "par_heure": 27
+  },
+  {
+   "sf": 12,
+   "octets": 1,
+   "symbole_us": 32768,
+   "symboles": 13,
+   "us": 827392,
+   "par_heure": 43
+  },
+  {
+   "sf": 12,
+   "octets": 10,
+   "symbole_us": 32768,
+   "symboles": 18,
+   "us": 991232,
+   "par_heure": 36
+  },
+  {
+   "sf": 12,
+   "octets": 51,
+   "symbole_us": 32768,
+   "symboles": 63,
+   "us": 2465792,
+   "par_heure": 14
+  }
+ ],
+ "portees": [
+  {
+   "distance": 0,
+   "sf": 7
+  },
+  {
+   "distance": 1999,
+   "sf": 7
+  },
+  {
+   "distance": 2000,
+   "sf": 7
+  },
+  {
+   "distance": 2001,
+   "sf": 8
+  },
+  {
+   "distance": 3500,
+   "sf": 9
+  },
+  {
+   "distance": 5000,
+   "sf": 10
+  },
+  {
+   "distance": 7000,
+   "sf": 11
+  },
+  {
+   "distance": 9500,
+   "sf": 12
+  },
+  {
+   "distance": 11000,
+   "sf": 12
+  },
+  {
+   "distance": 11001,
+   "sf": null
+  }
+ ],
+ "messages": [
+  {
+   "reponse": "62",
+   "sf": 11,
+   "ok": true
+  },
+  {
+   "reponse": "61",
+   "sf": 11,
+   "ok": true
+  },
+  {
+   "reponse": "63",
+   "sf": 11,
+   "ok": true
+  },
+  {
+   "reponse": "64",
+   "sf": 11,
+   "ok": false
+  },
+  {
+   "reponse": "36",
+   "sf": 12,
+   "ok": true
+  },
+  {
+   "reponse": "873",
+   "sf": 7,
+   "ok": true
+  },
+  {
+   "reponse": "abc",
+   "sf": 9,
+   "ok": false
+  },
+  {
+   "reponse": "124",
+   "sf": 10,
+   "ok": true
+  },
+  {
+   "reponse": "249",
+   "sf": 9,
+   "ok": true
+  }
+ ],
+ "budget_us": 36000000,
+ "traverse": "lora",
+ "maillage": [
+  {
+   "coupes": [],
+   "routes": {
+    "camp": [
+     "camp"
+    ],
+    "racine": [
+     "camp",
+     "racine"
+    ],
+    "feu": [
+     "camp",
+     "racine",
+     "roche",
+     "feu"
+    ],
+    "eau": [
+     "camp",
+     "racine",
+     "eau"
+    ],
+    "glace": [
+     "camp",
+     "racine",
+     "plante",
+     "glace"
+    ],
+    "plante": [
+     "camp",
+     "racine",
+     "plante"
+    ],
+    "roche": [
+     "camp",
+     "racine",
+     "roche"
+    ],
+    "ciel": [
+     "camp",
+     "racine",
+     "ciel"
+    ],
+    "ombre": [
+     "camp",
+     "racine",
+     "plante",
+     "poison",
+     "ombre"
+    ],
+    "machine": [
+     "camp",
+     "racine",
+     "roche",
+     "feu",
+     "machine"
+    ],
+    "poison": [
+     "camp",
+     "racine",
+     "plante",
+     "poison"
+    ]
+   },
+   "inondation": [
+    [
+     "camp"
+    ],
+    [
+     "racine"
+    ],
+    [
+     "plante",
+     "eau",
+     "roche",
+     "ciel"
+    ],
+    [
+     "poison",
+     "glace",
+     "feu"
+    ],
+    [
+     "ombre",
+     "machine"
+    ]
+   ],
+   "envois": {
+    "camp": {
+     "ok": false,
+     "chemin": [
+      "camp"
+     ],
+     "raison": "camp",
+     "sauts": 0
+    },
+    "racine": {
+     "ok": true,
+     "chemin": [
+      "camp",
+      "racine"
+     ],
+     "raison": "arrive",
+     "sauts": 1
+    },
+    "feu": {
+     "ok": true,
+     "chemin": [
+      "camp",
+      "racine",
+      "roche",
+      "feu"
+     ],
+     "raison": "arrive",
+     "sauts": 3
+    },
+    "eau": {
+     "ok": true,
+     "chemin": [
+      "camp",
+      "racine",
+      "eau"
+     ],
+     "raison": "arrive",
+     "sauts": 2
+    },
+    "glace": {
+     "ok": true,
+     "chemin": [
+      "camp",
+      "racine",
+      "plante",
+      "glace"
+     ],
+     "raison": "arrive",
+     "sauts": 3
+    },
+    "plante": {
+     "ok": true,
+     "chemin": [
+      "camp",
+      "racine",
+      "plante"
+     ],
+     "raison": "arrive",
+     "sauts": 2
+    },
+    "roche": {
+     "ok": true,
+     "chemin": [
+      "camp",
+      "racine",
+      "roche"
+     ],
+     "raison": "arrive",
+     "sauts": 2
+    },
+    "ciel": {
+     "ok": true,
+     "chemin": [
+      "camp",
+      "racine",
+      "ciel"
+     ],
+     "raison": "arrive",
+     "sauts": 2
+    },
+    "ombre": {
+     "ok": true,
+     "chemin": [
+      "camp",
+      "racine",
+      "plante",
+      "poison",
+      "ombre"
+     ],
+     "raison": "arrive",
+     "sauts": 4
+    },
+    "machine": {
+     "ok": true,
+     "chemin": [
+      "camp",
+      "racine",
+      "roche",
+      "feu",
+      "machine"
+     ],
+     "raison": "arrive",
+     "sauts": 4
+    },
+    "poison": {
+     "ok": true,
+     "chemin": [
+      "camp",
+      "racine",
+      "plante",
+      "poison"
+     ],
+     "raison": "arrive",
+     "sauts": 3
+    },
+    "lune": {
+     "ok": false,
+     "chemin": [],
+     "raison": "inconnu",
+     "sauts": 0
+    }
+   },
+   "voisins": {
+    "camp": [
+     "racine"
+    ],
+    "racine": [
+     "camp",
+     "plante",
+     "eau",
+     "roche",
+     "ciel"
+    ],
+    "feu": [
+     "roche",
+     "machine"
+    ],
+    "eau": [
+     "racine",
+     "plante",
+     "glace",
+     "roche"
+    ],
+    "glace": [
+     "eau",
+     "ciel",
+     "plante",
+     "ombre",
+     "poison"
+    ],
+    "plante": [
+     "racine",
+     "poison",
+     "eau",
+     "glace"
+    ],
+    "roche": [
+     "racine",
+     "ciel",
+     "feu",
+     "eau"
+    ],
+    "ciel": [
+     "racine",
+     "glace",
+     "roche"
+    ],
+    "ombre": [
+     "machine",
+     "poison",
+     "glace"
+    ],
+    "machine": [
+     "feu",
+     "ombre"
+    ],
+    "poison": [
+     "plante",
+     "ombre",
+     "glace"
+    ]
+   }
+  },
+  {
+   "coupes": [
+    "roche"
+   ],
+   "routes": {
+    "camp": [
+     "camp"
+    ],
+    "racine": [
+     "camp",
+     "racine"
+    ],
+    "feu": [
+     "camp",
+     "racine",
+     "plante",
+     "poison",
+     "ombre",
+     "machine",
+     "feu"
+    ],
+    "eau": [
+     "camp",
+     "racine",
+     "eau"
+    ],
+    "glace": [
+     "camp",
+     "racine",
+     "plante",
+     "glace"
+    ],
+    "plante": [
+     "camp",
+     "racine",
+     "plante"
+    ],
+    "roche": null,
+    "ciel": [
+     "camp",
+     "racine",
+     "ciel"
+    ],
+    "ombre": [
+     "camp",
+     "racine",
+     "plante",
+     "poison",
+     "ombre"
+    ],
+    "machine": [
+     "camp",
+     "racine",
+     "plante",
+     "poison",
+     "ombre",
+     "machine"
+    ],
+    "poison": [
+     "camp",
+     "racine",
+     "plante",
+     "poison"
+    ]
+   },
+   "inondation": [
+    [
+     "camp"
+    ],
+    [
+     "racine"
+    ],
+    [
+     "plante",
+     "eau",
+     "ciel"
+    ],
+    [
+     "poison",
+     "glace"
+    ],
+    [
+     "ombre"
+    ],
+    [
+     "machine"
+    ],
+    [
+     "feu"
+    ]
+   ],
+   "envois": {
+    "camp": {
+     "ok": false,
+     "chemin": [
+      "camp"
+     ],
+     "raison": "camp",
+     "sauts": 0
+    },
+    "racine": {
+     "ok": true,
+     "chemin": [
+      "camp",
+      "racine"
+     ],
+     "raison": "arrive",
+     "sauts": 1
+    },
+    "feu": {
+     "ok": true,
+     "chemin": [
+      "camp",
+      "racine",
+      "plante",
+      "poison",
+      "ombre",
+      "machine",
+      "feu"
+     ],
+     "raison": "arrive",
+     "sauts": 6
+    },
+    "eau": {
+     "ok": true,
+     "chemin": [
+      "camp",
+      "racine",
+      "eau"
+     ],
+     "raison": "arrive",
+     "sauts": 2
+    },
+    "glace": {
+     "ok": true,
+     "chemin": [
+      "camp",
+      "racine",
+      "plante",
+      "glace"
+     ],
+     "raison": "arrive",
+     "sauts": 3
+    },
+    "plante": {
+     "ok": true,
+     "chemin": [
+      "camp",
+      "racine",
+      "plante"
+     ],
+     "raison": "arrive",
+     "sauts": 2
+    },
+    "roche": {
+     "ok": false,
+     "chemin": [],
+     "raison": "coupe",
+     "sauts": 0
+    },
+    "ciel": {
+     "ok": true,
+     "chemin": [
+      "camp",
+      "racine",
+      "ciel"
+     ],
+     "raison": "arrive",
+     "sauts": 2
+    },
+    "ombre": {
+     "ok": true,
+     "chemin": [
+      "camp",
+      "racine",
+      "plante",
+      "poison",
+      "ombre"
+     ],
+     "raison": "arrive",
+     "sauts": 4
+    },
+    "machine": {
+     "ok": true,
+     "chemin": [
+      "camp",
+      "racine",
+      "plante",
+      "poison",
+      "ombre",
+      "machine"
+     ],
+     "raison": "arrive",
+     "sauts": 5
+    },
+    "poison": {
+     "ok": true,
+     "chemin": [
+      "camp",
+      "racine",
+      "plante",
+      "poison"
+     ],
+     "raison": "arrive",
+     "sauts": 3
+    },
+    "lune": {
+     "ok": false,
+     "chemin": [],
+     "raison": "inconnu",
+     "sauts": 0
+    }
+   },
+   "voisins": {
+    "camp": [
+     "racine"
+    ],
+    "racine": [
+     "camp",
+     "plante",
+     "eau",
+     "ciel"
+    ],
+    "feu": [
+     "machine"
+    ],
+    "eau": [
+     "racine",
+     "plante",
+     "glace"
+    ],
+    "glace": [
+     "eau",
+     "ciel",
+     "plante",
+     "ombre",
+     "poison"
+    ],
+    "plante": [
+     "racine",
+     "poison",
+     "eau",
+     "glace"
+    ],
+    "roche": [
+     "racine",
+     "ciel",
+     "feu",
+     "eau"
+    ],
+    "ciel": [
+     "racine",
+     "glace"
+    ],
+    "ombre": [
+     "machine",
+     "poison",
+     "glace"
+    ],
+    "machine": [
+     "feu",
+     "ombre"
+    ],
+    "poison": [
+     "plante",
+     "ombre",
+     "glace"
+    ]
+   }
+  },
+  {
+   "coupes": [
+    "racine"
+   ],
+   "routes": {
+    "camp": [
+     "camp"
+    ],
+    "racine": null,
+    "feu": null,
+    "eau": null,
+    "glace": null,
+    "plante": null,
+    "roche": null,
+    "ciel": null,
+    "ombre": null,
+    "machine": null,
+    "poison": null
+   },
+   "inondation": [
+    [
+     "camp"
+    ]
+   ],
+   "envois": {
+    "camp": {
+     "ok": false,
+     "chemin": [
+      "camp"
+     ],
+     "raison": "camp",
+     "sauts": 0
+    },
+    "racine": {
+     "ok": false,
+     "chemin": [],
+     "raison": "coupe",
+     "sauts": 0
+    },
+    "feu": {
+     "ok": false,
+     "chemin": [],
+     "raison": "isole",
+     "sauts": 0
+    },
+    "eau": {
+     "ok": false,
+     "chemin": [],
+     "raison": "isole",
+     "sauts": 0
+    },
+    "glace": {
+     "ok": false,
+     "chemin": [],
+     "raison": "isole",
+     "sauts": 0
+    },
+    "plante": {
+     "ok": false,
+     "chemin": [],
+     "raison": "isole",
+     "sauts": 0
+    },
+    "roche": {
+     "ok": false,
+     "chemin": [],
+     "raison": "isole",
+     "sauts": 0
+    },
+    "ciel": {
+     "ok": false,
+     "chemin": [],
+     "raison": "isole",
+     "sauts": 0
+    },
+    "ombre": {
+     "ok": false,
+     "chemin": [],
+     "raison": "isole",
+     "sauts": 0
+    },
+    "machine": {
+     "ok": false,
+     "chemin": [],
+     "raison": "isole",
+     "sauts": 0
+    },
+    "poison": {
+     "ok": false,
+     "chemin": [],
+     "raison": "isole",
+     "sauts": 0
+    },
+    "lune": {
+     "ok": false,
+     "chemin": [],
+     "raison": "inconnu",
+     "sauts": 0
+    }
+   },
+   "voisins": {
+    "camp": [],
+    "racine": [
+     "camp",
+     "plante",
+     "eau",
+     "roche",
+     "ciel"
+    ],
+    "feu": [
+     "roche",
+     "machine"
+    ],
+    "eau": [
+     "plante",
+     "glace",
+     "roche"
+    ],
+    "glace": [
+     "eau",
+     "ciel",
+     "plante",
+     "ombre",
+     "poison"
+    ],
+    "plante": [
+     "poison",
+     "eau",
+     "glace"
+    ],
+    "roche": [
+     "ciel",
+     "feu",
+     "eau"
+    ],
+    "ciel": [
+     "glace",
+     "roche"
+    ],
+    "ombre": [
+     "machine",
+     "poison",
+     "glace"
+    ],
+    "machine": [
+     "feu",
+     "ombre"
+    ],
+    "poison": [
+     "plante",
+     "ombre",
+     "glace"
+    ]
+   }
+  },
+  {
+   "coupes": [
+    "roche",
+    "eau"
+   ],
+   "routes": {
+    "camp": [
+     "camp"
+    ],
+    "racine": [
+     "camp",
+     "racine"
+    ],
+    "feu": [
+     "camp",
+     "racine",
+     "plante",
+     "poison",
+     "ombre",
+     "machine",
+     "feu"
+    ],
+    "eau": null,
+    "glace": [
+     "camp",
+     "racine",
+     "plante",
+     "glace"
+    ],
+    "plante": [
+     "camp",
+     "racine",
+     "plante"
+    ],
+    "roche": null,
+    "ciel": [
+     "camp",
+     "racine",
+     "ciel"
+    ],
+    "ombre": [
+     "camp",
+     "racine",
+     "plante",
+     "poison",
+     "ombre"
+    ],
+    "machine": [
+     "camp",
+     "racine",
+     "plante",
+     "poison",
+     "ombre",
+     "machine"
+    ],
+    "poison": [
+     "camp",
+     "racine",
+     "plante",
+     "poison"
+    ]
+   },
+   "inondation": [
+    [
+     "camp"
+    ],
+    [
+     "racine"
+    ],
+    [
+     "plante",
+     "ciel"
+    ],
+    [
+     "poison",
+     "glace"
+    ],
+    [
+     "ombre"
+    ],
+    [
+     "machine"
+    ],
+    [
+     "feu"
+    ]
+   ],
+   "envois": {
+    "camp": {
+     "ok": false,
+     "chemin": [
+      "camp"
+     ],
+     "raison": "camp",
+     "sauts": 0
+    },
+    "racine": {
+     "ok": true,
+     "chemin": [
+      "camp",
+      "racine"
+     ],
+     "raison": "arrive",
+     "sauts": 1
+    },
+    "feu": {
+     "ok": true,
+     "chemin": [
+      "camp",
+      "racine",
+      "plante",
+      "poison",
+      "ombre",
+      "machine",
+      "feu"
+     ],
+     "raison": "arrive",
+     "sauts": 6
+    },
+    "eau": {
+     "ok": false,
+     "chemin": [],
+     "raison": "coupe",
+     "sauts": 0
+    },
+    "glace": {
+     "ok": true,
+     "chemin": [
+      "camp",
+      "racine",
+      "plante",
+      "glace"
+     ],
+     "raison": "arrive",
+     "sauts": 3
+    },
+    "plante": {
+     "ok": true,
+     "chemin": [
+      "camp",
+      "racine",
+      "plante"
+     ],
+     "raison": "arrive",
+     "sauts": 2
+    },
+    "roche": {
+     "ok": false,
+     "chemin": [],
+     "raison": "coupe",
+     "sauts": 0
+    },
+    "ciel": {
+     "ok": true,
+     "chemin": [
+      "camp",
+      "racine",
+      "ciel"
+     ],
+     "raison": "arrive",
+     "sauts": 2
+    },
+    "ombre": {
+     "ok": true,
+     "chemin": [
+      "camp",
+      "racine",
+      "plante",
+      "poison",
+      "ombre"
+     ],
+     "raison": "arrive",
+     "sauts": 4
+    },
+    "machine": {
+     "ok": true,
+     "chemin": [
+      "camp",
+      "racine",
+      "plante",
+      "poison",
+      "ombre",
+      "machine"
+     ],
+     "raison": "arrive",
+     "sauts": 5
+    },
+    "poison": {
+     "ok": true,
+     "chemin": [
+      "camp",
+      "racine",
+      "plante",
+      "poison"
+     ],
+     "raison": "arrive",
+     "sauts": 3
+    },
+    "lune": {
+     "ok": false,
+     "chemin": [],
+     "raison": "inconnu",
+     "sauts": 0
+    }
+   },
+   "voisins": {
+    "camp": [
+     "racine"
+    ],
+    "racine": [
+     "camp",
+     "plante",
+     "ciel"
+    ],
+    "feu": [
+     "machine"
+    ],
+    "eau": [
+     "racine",
+     "plante",
+     "glace"
+    ],
+    "glace": [
+     "ciel",
+     "plante",
+     "ombre",
+     "poison"
+    ],
+    "plante": [
+     "racine",
+     "poison",
+     "glace"
+    ],
+    "roche": [
+     "racine",
+     "ciel",
+     "feu"
+    ],
+    "ciel": [
+     "racine",
+     "glace"
+    ],
+    "ombre": [
+     "machine",
+     "poison",
+     "glace"
+    ],
+    "machine": [
+     "feu",
+     "ombre"
+    ],
+    "poison": [
+     "plante",
+     "ombre",
+     "glace"
+    ]
+   }
+  },
+  {
+   "coupes": [
+    "plante",
+    "eau",
+    "glace"
+   ],
+   "routes": {
+    "camp": [
+     "camp"
+    ],
+    "racine": [
+     "camp",
+     "racine"
+    ],
+    "feu": [
+     "camp",
+     "racine",
+     "roche",
+     "feu"
+    ],
+    "eau": null,
+    "glace": null,
+    "plante": null,
+    "roche": [
+     "camp",
+     "racine",
+     "roche"
+    ],
+    "ciel": [
+     "camp",
+     "racine",
+     "ciel"
+    ],
+    "ombre": [
+     "camp",
+     "racine",
+     "roche",
+     "feu",
+     "machine",
+     "ombre"
+    ],
+    "machine": [
+     "camp",
+     "racine",
+     "roche",
+     "feu",
+     "machine"
+    ],
+    "poison": [
+     "camp",
+     "racine",
+     "roche",
+     "feu",
+     "machine",
+     "ombre",
+     "poison"
+    ]
+   },
+   "inondation": [
+    [
+     "camp"
+    ],
+    [
+     "racine"
+    ],
+    [
+     "roche",
+     "ciel"
+    ],
+    [
+     "feu"
+    ],
+    [
+     "machine"
+    ],
+    [
+     "ombre"
+    ],
+    [
+     "poison"
+    ]
+   ],
+   "envois": {
+    "camp": {
+     "ok": false,
+     "chemin": [
+      "camp"
+     ],
+     "raison": "camp",
+     "sauts": 0
+    },
+    "racine": {
+     "ok": true,
+     "chemin": [
+      "camp",
+      "racine"
+     ],
+     "raison": "arrive",
+     "sauts": 1
+    },
+    "feu": {
+     "ok": true,
+     "chemin": [
+      "camp",
+      "racine",
+      "roche",
+      "feu"
+     ],
+     "raison": "arrive",
+     "sauts": 3
+    },
+    "eau": {
+     "ok": false,
+     "chemin": [],
+     "raison": "coupe",
+     "sauts": 0
+    },
+    "glace": {
+     "ok": false,
+     "chemin": [],
+     "raison": "coupe",
+     "sauts": 0
+    },
+    "plante": {
+     "ok": false,
+     "chemin": [],
+     "raison": "coupe",
+     "sauts": 0
+    },
+    "roche": {
+     "ok": true,
+     "chemin": [
+      "camp",
+      "racine",
+      "roche"
+     ],
+     "raison": "arrive",
+     "sauts": 2
+    },
+    "ciel": {
+     "ok": true,
+     "chemin": [
+      "camp",
+      "racine",
+      "ciel"
+     ],
+     "raison": "arrive",
+     "sauts": 2
+    },
+    "ombre": {
+     "ok": true,
+     "chemin": [
+      "camp",
+      "racine",
+      "roche",
+      "feu",
+      "machine",
+      "ombre"
+     ],
+     "raison": "arrive",
+     "sauts": 5
+    },
+    "machine": {
+     "ok": true,
+     "chemin": [
+      "camp",
+      "racine",
+      "roche",
+      "feu",
+      "machine"
+     ],
+     "raison": "arrive",
+     "sauts": 4
+    },
+    "poison": {
+     "ok": true,
+     "chemin": [
+      "camp",
+      "racine",
+      "roche",
+      "feu",
+      "machine",
+      "ombre",
+      "poison"
+     ],
+     "raison": "arrive",
+     "sauts": 6
+    },
+    "lune": {
+     "ok": false,
+     "chemin": [],
+     "raison": "inconnu",
+     "sauts": 0
+    }
+   },
+   "voisins": {
+    "camp": [
+     "racine"
+    ],
+    "racine": [
+     "camp",
+     "roche",
+     "ciel"
+    ],
+    "feu": [
+     "roche",
+     "machine"
+    ],
+    "eau": [
+     "racine",
+     "roche"
+    ],
+    "glace": [
+     "ciel",
+     "ombre",
+     "poison"
+    ],
+    "plante": [
+     "racine",
+     "poison"
+    ],
+    "roche": [
+     "racine",
+     "ciel",
+     "feu"
+    ],
+    "ciel": [
+     "racine",
+     "roche"
+    ],
+    "ombre": [
+     "machine",
+     "poison"
+    ],
+    "machine": [
+     "feu",
+     "ombre"
+    ],
+    "poison": [
+     "ombre"
+    ]
+   }
+  },
+  {
+   "coupes": [
+    "roche",
+    "ciel",
+    "glace"
+   ],
+   "routes": {
+    "camp": [
+     "camp"
+    ],
+    "racine": [
+     "camp",
+     "racine"
+    ],
+    "feu": [
+     "camp",
+     "racine",
+     "plante",
+     "poison",
+     "ombre",
+     "machine",
+     "feu"
+    ],
+    "eau": [
+     "camp",
+     "racine",
+     "eau"
+    ],
+    "glace": null,
+    "plante": [
+     "camp",
+     "racine",
+     "plante"
+    ],
+    "roche": null,
+    "ciel": null,
+    "ombre": [
+     "camp",
+     "racine",
+     "plante",
+     "poison",
+     "ombre"
+    ],
+    "machine": [
+     "camp",
+     "racine",
+     "plante",
+     "poison",
+     "ombre",
+     "machine"
+    ],
+    "poison": [
+     "camp",
+     "racine",
+     "plante",
+     "poison"
+    ]
+   },
+   "inondation": [
+    [
+     "camp"
+    ],
+    [
+     "racine"
+    ],
+    [
+     "plante",
+     "eau"
+    ],
+    [
+     "poison"
+    ],
+    [
+     "ombre"
+    ],
+    [
+     "machine"
+    ],
+    [
+     "feu"
+    ]
+   ],
+   "envois": {
+    "camp": {
+     "ok": false,
+     "chemin": [
+      "camp"
+     ],
+     "raison": "camp",
+     "sauts": 0
+    },
+    "racine": {
+     "ok": true,
+     "chemin": [
+      "camp",
+      "racine"
+     ],
+     "raison": "arrive",
+     "sauts": 1
+    },
+    "feu": {
+     "ok": true,
+     "chemin": [
+      "camp",
+      "racine",
+      "plante",
+      "poison",
+      "ombre",
+      "machine",
+      "feu"
+     ],
+     "raison": "arrive",
+     "sauts": 6
+    },
+    "eau": {
+     "ok": true,
+     "chemin": [
+      "camp",
+      "racine",
+      "eau"
+     ],
+     "raison": "arrive",
+     "sauts": 2
+    },
+    "glace": {
+     "ok": false,
+     "chemin": [],
+     "raison": "coupe",
+     "sauts": 0
+    },
+    "plante": {
+     "ok": true,
+     "chemin": [
+      "camp",
+      "racine",
+      "plante"
+     ],
+     "raison": "arrive",
+     "sauts": 2
+    },
+    "roche": {
+     "ok": false,
+     "chemin": [],
+     "raison": "coupe",
+     "sauts": 0
+    },
+    "ciel": {
+     "ok": false,
+     "chemin": [],
+     "raison": "coupe",
+     "sauts": 0
+    },
+    "ombre": {
+     "ok": true,
+     "chemin": [
+      "camp",
+      "racine",
+      "plante",
+      "poison",
+      "ombre"
+     ],
+     "raison": "arrive",
+     "sauts": 4
+    },
+    "machine": {
+     "ok": true,
+     "chemin": [
+      "camp",
+      "racine",
+      "plante",
+      "poison",
+      "ombre",
+      "machine"
+     ],
+     "raison": "arrive",
+     "sauts": 5
+    },
+    "poison": {
+     "ok": true,
+     "chemin": [
+      "camp",
+      "racine",
+      "plante",
+      "poison"
+     ],
+     "raison": "arrive",
+     "sauts": 3
+    },
+    "lune": {
+     "ok": false,
+     "chemin": [],
+     "raison": "inconnu",
+     "sauts": 0
+    }
+   },
+   "voisins": {
+    "camp": [
+     "racine"
+    ],
+    "racine": [
+     "camp",
+     "plante",
+     "eau"
+    ],
+    "feu": [
+     "machine"
+    ],
+    "eau": [
+     "racine",
+     "plante"
+    ],
+    "glace": [
+     "eau",
+     "plante",
+     "ombre",
+     "poison"
+    ],
+    "plante": [
+     "racine",
+     "poison",
+     "eau"
+    ],
+    "roche": [
+     "racine",
+     "feu",
+     "eau"
+    ],
+    "ciel": [
+     "racine"
+    ],
+    "ombre": [
+     "machine",
+     "poison"
+    ],
+    "machine": [
+     "feu",
+     "ombre"
+    ],
+    "poison": [
+     "plante",
+     "ombre"
+    ]
+   }
+  },
+  {
+   "coupes": [
+    "machine",
+    "poison",
+    "glace"
+   ],
+   "routes": {
+    "camp": [
+     "camp"
+    ],
+    "racine": [
+     "camp",
+     "racine"
+    ],
+    "feu": [
+     "camp",
+     "racine",
+     "roche",
+     "feu"
+    ],
+    "eau": [
+     "camp",
+     "racine",
+     "eau"
+    ],
+    "glace": null,
+    "plante": [
+     "camp",
+     "racine",
+     "plante"
+    ],
+    "roche": [
+     "camp",
+     "racine",
+     "roche"
+    ],
+    "ciel": [
+     "camp",
+     "racine",
+     "ciel"
+    ],
+    "ombre": null,
+    "machine": null,
+    "poison": null
+   },
+   "inondation": [
+    [
+     "camp"
+    ],
+    [
+     "racine"
+    ],
+    [
+     "plante",
+     "eau",
+     "roche",
+     "ciel"
+    ],
+    [
+     "feu"
+    ]
+   ],
+   "envois": {
+    "camp": {
+     "ok": false,
+     "chemin": [
+      "camp"
+     ],
+     "raison": "camp",
+     "sauts": 0
+    },
+    "racine": {
+     "ok": true,
+     "chemin": [
+      "camp",
+      "racine"
+     ],
+     "raison": "arrive",
+     "sauts": 1
+    },
+    "feu": {
+     "ok": true,
+     "chemin": [
+      "camp",
+      "racine",
+      "roche",
+      "feu"
+     ],
+     "raison": "arrive",
+     "sauts": 3
+    },
+    "eau": {
+     "ok": true,
+     "chemin": [
+      "camp",
+      "racine",
+      "eau"
+     ],
+     "raison": "arrive",
+     "sauts": 2
+    },
+    "glace": {
+     "ok": false,
+     "chemin": [],
+     "raison": "coupe",
+     "sauts": 0
+    },
+    "plante": {
+     "ok": true,
+     "chemin": [
+      "camp",
+      "racine",
+      "plante"
+     ],
+     "raison": "arrive",
+     "sauts": 2
+    },
+    "roche": {
+     "ok": true,
+     "chemin": [
+      "camp",
+      "racine",
+      "roche"
+     ],
+     "raison": "arrive",
+     "sauts": 2
+    },
+    "ciel": {
+     "ok": true,
+     "chemin": [
+      "camp",
+      "racine",
+      "ciel"
+     ],
+     "raison": "arrive",
+     "sauts": 2
+    },
+    "ombre": {
+     "ok": false,
+     "chemin": [],
+     "raison": "isole",
+     "sauts": 0
+    },
+    "machine": {
+     "ok": false,
+     "chemin": [],
+     "raison": "coupe",
+     "sauts": 0
+    },
+    "poison": {
+     "ok": false,
+     "chemin": [],
+     "raison": "coupe",
+     "sauts": 0
+    },
+    "lune": {
+     "ok": false,
+     "chemin": [],
+     "raison": "inconnu",
+     "sauts": 0
+    }
+   },
+   "voisins": {
+    "camp": [
+     "racine"
+    ],
+    "racine": [
+     "camp",
+     "plante",
+     "eau",
+     "roche",
+     "ciel"
+    ],
+    "feu": [
+     "roche"
+    ],
+    "eau": [
+     "racine",
+     "plante",
+     "roche"
+    ],
+    "glace": [
+     "eau",
+     "ciel",
+     "plante",
+     "ombre"
+    ],
+    "plante": [
+     "racine",
+     "eau"
+    ],
+    "roche": [
+     "racine",
+     "ciel",
+     "feu",
+     "eau"
+    ],
+    "ciel": [
+     "racine",
+     "roche"
+    ],
+    "ombre": [],
+    "machine": [
+     "feu",
+     "ombre"
+    ],
+    "poison": [
+     "plante",
+     "ombre"
+    ]
+   }
+  },
+  {
+   "coupes": [
+    "feu",
+    "glace",
+    "plante"
+   ],
+   "routes": {
+    "camp": [
+     "camp"
+    ],
+    "racine": [
+     "camp",
+     "racine"
+    ],
+    "feu": null,
+    "eau": [
+     "camp",
+     "racine",
+     "eau"
+    ],
+    "glace": null,
+    "plante": null,
+    "roche": [
+     "camp",
+     "racine",
+     "roche"
+    ],
+    "ciel": [
+     "camp",
+     "racine",
+     "ciel"
+    ],
+    "ombre": null,
+    "machine": null,
+    "poison": null
+   },
+   "inondation": [
+    [
+     "camp"
+    ],
+    [
+     "racine"
+    ],
+    [
+     "eau",
+     "roche",
+     "ciel"
+    ]
+   ],
+   "envois": {
+    "camp": {
+     "ok": false,
+     "chemin": [
+      "camp"
+     ],
+     "raison": "camp",
+     "sauts": 0
+    },
+    "racine": {
+     "ok": true,
+     "chemin": [
+      "camp",
+      "racine"
+     ],
+     "raison": "arrive",
+     "sauts": 1
+    },
+    "feu": {
+     "ok": false,
+     "chemin": [],
+     "raison": "coupe",
+     "sauts": 0
+    },
+    "eau": {
+     "ok": true,
+     "chemin": [
+      "camp",
+      "racine",
+      "eau"
+     ],
+     "raison": "arrive",
+     "sauts": 2
+    },
+    "glace": {
+     "ok": false,
+     "chemin": [],
+     "raison": "coupe",
+     "sauts": 0
+    },
+    "plante": {
+     "ok": false,
+     "chemin": [],
+     "raison": "coupe",
+     "sauts": 0
+    },
+    "roche": {
+     "ok": true,
+     "chemin": [
+      "camp",
+      "racine",
+      "roche"
+     ],
+     "raison": "arrive",
+     "sauts": 2
+    },
+    "ciel": {
+     "ok": true,
+     "chemin": [
+      "camp",
+      "racine",
+      "ciel"
+     ],
+     "raison": "arrive",
+     "sauts": 2
+    },
+    "ombre": {
+     "ok": false,
+     "chemin": [],
+     "raison": "isole",
+     "sauts": 0
+    },
+    "machine": {
+     "ok": false,
+     "chemin": [],
+     "raison": "isole",
+     "sauts": 0
+    },
+    "poison": {
+     "ok": false,
+     "chemin": [],
+     "raison": "isole",
+     "sauts": 0
+    },
+    "lune": {
+     "ok": false,
+     "chemin": [],
+     "raison": "inconnu",
+     "sauts": 0
+    }
+   },
+   "voisins": {
+    "camp": [
+     "racine"
+    ],
+    "racine": [
+     "camp",
+     "eau",
+     "roche",
+     "ciel"
+    ],
+    "feu": [
+     "roche",
+     "machine"
+    ],
+    "eau": [
+     "racine",
+     "roche"
+    ],
+    "glace": [
+     "eau",
+     "ciel",
+     "ombre",
+     "poison"
+    ],
+    "plante": [
+     "racine",
+     "poison",
+     "eau"
+    ],
+    "roche": [
+     "racine",
+     "ciel",
+     "eau"
+    ],
+    "ciel": [
+     "racine",
+     "roche"
+    ],
+    "ombre": [
+     "machine",
+     "poison"
+    ],
+    "machine": [
+     "ombre"
+    ],
+    "poison": [
+     "ombre"
+    ]
+   }
+  }
+ ],
+ "antennes": [
+  {
+   "ligne": "nmcli radio",
+   "antennes": [
+    [
+     "wifi",
+     "lit"
+    ]
+   ]
+  },
+  {
+   "ligne": "nmcli r",
+   "antennes": [
+    [
+     "wifi",
+     "lit"
+    ]
+   ]
+  },
+  {
+   "ligne": "nmcli dev wifi list",
+   "antennes": [
+    [
+     "wifi",
+     "cherche"
+    ]
+   ]
+  },
+  {
+   "ligne": "nmcli -f CHAN,FREQ,SIGNAL,BARS dev wifi list --rescan no",
+   "antennes": [
+    [
+     "wifi",
+     "lit"
+    ]
+   ]
+  },
+  {
+   "ligne": "nmcli device wifi rescan",
+   "antennes": [
+    [
+     "wifi",
+     "cherche"
+    ]
+   ]
+  },
+  {
+   "ligne": "nmcli radio wifi off",
+   "antennes": [
+    [
+     "wifi",
+     "change"
+    ]
+   ]
+  },
+  {
+   "ligne": "nmcli dev wifi connect Box",
+   "antennes": [
+    [
+     "wifi",
+     "change"
+    ]
+   ]
+  },
+  {
+   "ligne": "iw dev",
+   "antennes": [
+    [
+     "wifi",
+     "lit"
+    ]
+   ]
+  },
+  {
+   "ligne": "iw dev wlan0 scan",
+   "antennes": [
+    [
+     "wifi",
+     "cherche"
+    ]
+   ]
+  },
+  {
+   "ligne": "iwconfig",
+   "antennes": [
+    [
+     "wifi",
+     "lit"
+    ]
+   ]
+  },
+  {
+   "ligne": "rfkill list",
+   "antennes": [
+    [
+     "toutes",
+     "lit"
+    ]
+   ]
+  },
+  {
+   "ligne": "rfkill",
+   "antennes": [
+    [
+     "toutes",
+     "lit"
+    ]
+   ]
+  },
+  {
+   "ligne": "rfkill block wifi",
+   "antennes": [
+    [
+     "toutes",
+     "change"
+    ]
+   ]
+  },
+  {
+   "ligne": "rfkill unblock all",
+   "antennes": [
+    [
+     "toutes",
+     "change"
+    ]
+   ]
+  },
+  {
+   "ligne": "bluetoothctl show",
+   "antennes": [
+    [
+     "bluetooth",
+     "lit"
+    ]
+   ]
+  },
+  {
+   "ligne": "timeout 5 bluetoothctl show | grep -E 'Powered|Discoverable'",
+   "antennes": [
+    [
+     "bluetooth",
+     "lit"
+    ]
+   ]
+  },
+  {
+   "ligne": "bluetoothctl scan on",
+   "antennes": [
+    [
+     "bluetooth",
+     "cherche"
+    ]
+   ]
+  },
+  {
+   "ligne": "bluetoothctl pair AA",
+   "antennes": [
+    [
+     "bluetooth",
+     "change"
+    ]
+   ]
+  },
+  {
+   "ligne": "mesh-envoie feu bonjour",
+   "antennes": [
+    [
+     "lora",
+     "simule"
+    ]
+   ]
+  },
+  {
+   "ligne": "tg ondes mesh-route",
+   "antennes": [
+    [
+     "lora",
+     "simule"
+    ]
+   ]
+  },
+  {
+   "ligne": "ondes mesh-coupe roche",
+   "antennes": [
+    [
+     "lora",
+     "simule"
+    ]
+   ]
+  },
+  {
+   "ligne": "meshtastic --info",
+   "antennes": [
+    [
+     "lora",
+     "lit"
+    ]
+   ]
+  },
+  {
+   "ligne": "meshtastic --nodes",
+   "antennes": [
+    [
+     "lora",
+     "lit"
+    ]
+   ]
+  },
+  {
+   "ligne": "meshtastic --sendtext bonjour",
+   "antennes": [
+    [
+     "lora",
+     "emet"
+    ]
+   ]
+  },
+  {
+   "ligne": "meshtastic --set lora.region EU_868",
+   "antennes": [
+    [
+     "lora",
+     "emet"
+    ]
+   ]
+  },
+  {
+   "ligne": "rtl_test -t",
+   "antennes": [
+    [
+     "sdr",
+     "ecoute"
+    ]
+   ]
+  },
+  {
+   "ligne": "timeout 10 rtl_test -t",
+   "antennes": [
+    [
+     "sdr",
+     "ecoute"
+    ]
+   ]
+  },
+  {
+   "ligne": "rtl_fm -f 100M | aplay",
+   "antennes": [
+    [
+     "sdr",
+     "ecoute"
+    ]
+   ]
+  },
+  {
+   "ligne": "rtl_433 -F json",
+   "antennes": [
+    [
+     "sdr",
+     "ecoute"
+    ]
+   ]
+  },
+  {
+   "ligne": "dump1090 --interactive",
+   "antennes": [
+    [
+     "sdr",
+     "ecoute"
+    ]
+   ]
+  },
+  {
+   "ligne": "ls",
+   "antennes": []
+  },
+  {
+   "ligne": "echo nmcli",
+   "antennes": []
+  },
+  {
+   "ligne": "sudo nmcli radio",
+   "antennes": []
+  },
+  {
+   "ligne": "nmcli radio && rfkill list; iw dev",
+   "antennes": [
+    [
+     "wifi",
+     "lit"
+    ],
+    [
+     "toutes",
+     "lit"
+    ],
+    [
+     "wifi",
+     "lit"
+    ]
+   ]
+  },
+  {
+   "ligne": "ondes onde",
+   "antennes": []
+  }
+ ],
+ "deploie": [
+  {
+   "ligne": "nmcli radio",
+   "antennes": [
+    {
+     "seg": 0,
+     "cmd": "nmcli",
+     "radio": "wifi",
+     "sens": "lit"
+    }
+   ]
+  },
+  {
+   "ligne": "nmcli r",
+   "antennes": [
+    {
+     "seg": 0,
+     "cmd": "nmcli",
+     "radio": "wifi",
+     "sens": "lit"
+    }
+   ]
+  },
+  {
+   "ligne": "nmcli dev wifi list",
+   "antennes": [
+    {
+     "seg": 0,
+     "cmd": "nmcli",
+     "radio": "wifi",
+     "sens": "cherche"
+    }
+   ]
+  },
+  {
+   "ligne": "nmcli -f CHAN,FREQ,SIGNAL,BARS dev wifi list --rescan no",
+   "antennes": [
+    {
+     "seg": 0,
+     "cmd": "nmcli",
+     "radio": "wifi",
+     "sens": "lit"
+    }
+   ]
+  },
+  {
+   "ligne": "nmcli device wifi rescan",
+   "antennes": [
+    {
+     "seg": 0,
+     "cmd": "nmcli",
+     "radio": "wifi",
+     "sens": "cherche"
+    }
+   ]
+  },
+  {
+   "ligne": "nmcli radio wifi off",
+   "antennes": [
+    {
+     "seg": 0,
+     "cmd": "nmcli",
+     "radio": "wifi",
+     "sens": "change"
+    }
+   ]
+  },
+  {
+   "ligne": "nmcli dev wifi connect Box",
+   "antennes": [
+    {
+     "seg": 0,
+     "cmd": "nmcli",
+     "radio": "wifi",
+     "sens": "change"
+    }
+   ]
+  },
+  {
+   "ligne": "iw dev",
+   "antennes": [
+    {
+     "seg": 0,
+     "cmd": "iw",
+     "radio": "wifi",
+     "sens": "lit"
+    }
+   ]
+  },
+  {
+   "ligne": "iw dev wlan0 scan",
+   "antennes": [
+    {
+     "seg": 0,
+     "cmd": "iw",
+     "radio": "wifi",
+     "sens": "cherche"
+    }
+   ]
+  },
+  {
+   "ligne": "iwconfig",
+   "antennes": [
+    {
+     "seg": 0,
+     "cmd": "iwconfig",
+     "radio": "wifi",
+     "sens": "lit"
+    }
+   ]
+  },
+  {
+   "ligne": "rfkill list",
+   "antennes": [
+    {
+     "seg": 0,
+     "cmd": "rfkill",
+     "radio": "toutes",
+     "sens": "lit"
+    }
+   ]
+  },
+  {
+   "ligne": "rfkill",
+   "antennes": [
+    {
+     "seg": 0,
+     "cmd": "rfkill",
+     "radio": "toutes",
+     "sens": "lit"
+    }
+   ]
+  },
+  {
+   "ligne": "rfkill block wifi",
+   "antennes": [
+    {
+     "seg": 0,
+     "cmd": "rfkill",
+     "radio": "toutes",
+     "sens": "change"
+    }
+   ]
+  },
+  {
+   "ligne": "rfkill unblock all",
+   "antennes": [
+    {
+     "seg": 0,
+     "cmd": "rfkill",
+     "radio": "toutes",
+     "sens": "change"
+    }
+   ]
+  },
+  {
+   "ligne": "bluetoothctl show",
+   "antennes": [
+    {
+     "seg": 0,
+     "cmd": "bluetoothctl",
+     "radio": "bluetooth",
+     "sens": "lit"
+    }
+   ]
+  },
+  {
+   "ligne": "timeout 5 bluetoothctl show | grep -E 'Powered|Discoverable'",
+   "antennes": [
+    {
+     "seg": 0,
+     "cmd": "timeout",
+     "radio": "bluetooth",
+     "sens": "lit"
+    }
+   ]
+  },
+  {
+   "ligne": "bluetoothctl scan on",
+   "antennes": [
+    {
+     "seg": 0,
+     "cmd": "bluetoothctl",
+     "radio": "bluetooth",
+     "sens": "cherche"
+    }
+   ]
+  },
+  {
+   "ligne": "bluetoothctl pair AA",
+   "antennes": [
+    {
+     "seg": 0,
+     "cmd": "bluetoothctl",
+     "radio": "bluetooth",
+     "sens": "change"
+    }
+   ]
+  },
+  {
+   "ligne": "mesh-envoie feu bonjour",
+   "antennes": [
+    {
+     "seg": 0,
+     "cmd": "mesh-envoie",
+     "radio": "lora",
+     "sens": "simule"
+    }
+   ]
+  },
+  {
+   "ligne": "tg ondes mesh-route",
+   "antennes": [
+    {
+     "seg": 0,
+     "cmd": "tg",
+     "radio": "lora",
+     "sens": "simule"
+    }
+   ]
+  },
+  {
+   "ligne": "ondes mesh-coupe roche",
+   "antennes": [
+    {
+     "seg": 0,
+     "cmd": "ondes",
+     "radio": "lora",
+     "sens": "simule"
+    }
+   ]
+  },
+  {
+   "ligne": "meshtastic --info",
+   "antennes": [
+    {
+     "seg": 0,
+     "cmd": "meshtastic",
+     "radio": "lora",
+     "sens": "lit"
+    }
+   ]
+  },
+  {
+   "ligne": "meshtastic --nodes",
+   "antennes": [
+    {
+     "seg": 0,
+     "cmd": "meshtastic",
+     "radio": "lora",
+     "sens": "lit"
+    }
+   ]
+  },
+  {
+   "ligne": "meshtastic --sendtext bonjour",
+   "antennes": [
+    {
+     "seg": 0,
+     "cmd": "meshtastic",
+     "radio": "lora",
+     "sens": "emet"
+    }
+   ]
+  },
+  {
+   "ligne": "meshtastic --set lora.region EU_868",
+   "antennes": [
+    {
+     "seg": 0,
+     "cmd": "meshtastic",
+     "radio": "lora",
+     "sens": "emet"
+    }
+   ]
+  },
+  {
+   "ligne": "rtl_test -t",
+   "antennes": [
+    {
+     "seg": 0,
+     "cmd": "rtl_test",
+     "radio": "sdr",
+     "sens": "ecoute"
+    }
+   ]
+  },
+  {
+   "ligne": "timeout 10 rtl_test -t",
+   "antennes": [
+    {
+     "seg": 0,
+     "cmd": "timeout",
+     "radio": "sdr",
+     "sens": "ecoute"
+    }
+   ]
+  },
+  {
+   "ligne": "rtl_fm -f 100M | aplay",
+   "antennes": [
+    {
+     "seg": 0,
+     "cmd": "rtl_fm",
+     "radio": "sdr",
+     "sens": "ecoute"
+    }
+   ]
+  },
+  {
+   "ligne": "rtl_433 -F json",
+   "antennes": [
+    {
+     "seg": 0,
+     "cmd": "rtl_433",
+     "radio": "sdr",
+     "sens": "ecoute"
+    }
+   ]
+  },
+  {
+   "ligne": "dump1090 --interactive",
+   "antennes": [
+    {
+     "seg": 0,
+     "cmd": "dump1090",
+     "radio": "sdr",
+     "sens": "ecoute"
+    }
+   ]
+  },
+  {
+   "ligne": "ls",
+   "antennes": []
+  },
+  {
+   "ligne": "echo nmcli",
+   "antennes": []
+  },
+  {
+   "ligne": "sudo nmcli radio",
+   "antennes": []
+  },
+  {
+   "ligne": "nmcli radio && rfkill list; iw dev",
+   "antennes": [
+    {
+     "seg": 0,
+     "cmd": "nmcli",
+     "radio": "wifi",
+     "sens": "lit"
+    },
+    {
+     "seg": 1,
+     "cmd": "rfkill",
+     "radio": "toutes",
+     "sens": "lit"
+    },
+    {
+     "seg": 2,
+     "cmd": "iw",
+     "radio": "wifi",
+     "sens": "lit"
+    }
+   ]
+  },
+  {
+   "ligne": "ondes onde",
+   "antennes": []
+  }
+ ]
+}
