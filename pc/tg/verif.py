@@ -243,6 +243,8 @@ def commande_installee(mot):
         return True
     if mot in core.BUILTINS or mot in BUILTINS_EN_PLUS:
         return True
+    if IS_WIN and core.commande_existe(mot.lower()):      # alias et cmdlets de PowerShell (pwd, dir, Get-Location…)
+        return True
     return shutil.which(mot) is not None
 
 
@@ -278,6 +280,10 @@ def motif_ok(step, texte, cwd):
     dev = developper(texte, cwd)
     tuyau = [p for p, _ in _couper(dev, ("|",))]
     parties = [texte, dev] + tuyau + [p for p, _ in _couper(texte, ("|",))]
+    if IS_WIN:                               # PowerShell : Get-Location vaut pwd, Get-ChildItem vaut ls…
+        tete = premier(texte).lower()
+        if tete in core.PS_CMDLETS:
+            parties.append(core.PS_CMDLETS[tete] + texte.strip()[len(tete):])
     if len(tuyau) > 1:                       # `cat f | grep mot` = `grep mot f` ; `cat f | wc -l` = `wc -l f`
         fichiers = [m for m, _c in mots(tuyau[0])[1:] if not m.startswith("-")]
         parties += [p + " " + " ".join(fichiers) for p in tuyau[1:]]

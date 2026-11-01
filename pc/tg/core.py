@@ -146,7 +146,8 @@ def first_word(line):
     w = (re.split(r"[;&|<>]", words[0])[0] or words[0]).lower()
     if w.startswith(("./", ".\\")):
         return w
-    return os.path.basename(w).removesuffix(".exe") if w != "curl.exe" else "curl.exe"
+    w = os.path.basename(w).removesuffix(".exe") if w != "curl.exe" else "curl.exe"
+    return ps_equivalent(w)        # Windows : Get-Location nourrit comme pwd
 
 
 def read_new_lines(state):
@@ -383,8 +384,38 @@ BUILTINS = {"cd", "echo", "export", "alias", "history", "type", "source", ".", "
             "time", "case", "until", "function", "select", "command", "builtin", "local", "declare", "times"}
 
 
+# PowerShell (Windows) : ses commandes internes (cmdlets) et leurs alias ne sont pas des programmes, shutil.which ne les
+# trouve pas. Les cmdlets courants, avec leur équivalent Linux (pour la nourriture et les leçons).
+PS_CMDLETS = {
+    "get-location": "pwd", "set-location": "cd", "push-location": "pushd", "pop-location": "popd",
+    "get-childitem": "ls", "get-content": "cat", "set-content": "echo", "add-content": "echo", "out-file": "tee",
+    "copy-item": "cp", "move-item": "mv", "remove-item": "rm", "rename-item": "mv", "new-item": "touch",
+    "write-output": "echo", "write-host": "echo", "select-string": "grep", "clear-host": "clear",
+    "get-process": "ps", "stop-process": "kill", "get-command": "which", "get-help": "man", "get-date": "date",
+    "sort-object": "sort", "measure-object": "wc", "select-object": "head", "get-unique": "uniq",
+    "invoke-webrequest": "curl", "invoke-restmethod": "curl", "test-connection": "ping", "resolve-dnsname": "nslookup",
+    "get-filehash": "sha256sum", "compare-object": "diff", "start-sleep": "sleep", "get-history": "history",
+    "get-alias": "alias", "set-alias": "alias", "start-process": "start", "invoke-item": "ii", "tee-object": "tee",
+    "get-member": "gm", "where-object": "where", "foreach-object": "foreach", "get-computerinfo": "uname",
+    "get-netipaddress": "ip", "get-psdrive": "df", "get-volume": "df", "get-acl": "ls", "set-acl": "chmod",
+}
+PS_ALIAS = {"pwd", "ls", "dir", "cd", "chdir", "cat", "type", "gc", "cp", "copy", "cpi", "mv", "move", "mi", "rm",
+            "del", "erase", "rd", "rmdir", "ri", "md", "mkdir", "ni", "echo", "write", "cls", "clear", "ps", "gps",
+            "kill", "spps", "sort", "sleep", "man", "help", "history", "h", "ghy", "gl", "sl", "gci", "where", "?",
+            "foreach", "%", "select", "measure", "diff", "compare", "tee", "ii", "start", "saps", "iwr", "irm",
+            "curl", "wget", "pushd", "popd", "gcm", "gal", "sal", "gm", "ren", "rni", "set", "gv", "sv", "lp", "r",
+            "ft", "fl", "gu", "ac", "sc", "ise", "mount", "ndr", "gdr", "irm", "dir", "notepad", "explorer"}
+
+
+def ps_equivalent(cmd):
+    """Windows : le nom Linux d'un cmdlet PowerShell (Get-Location → pwd), sinon la commande telle quelle."""
+    return PS_CMDLETS.get(cmd, cmd) if IS_WIN else cmd
+
+
 def commande_existe(cmd):
     import shutil
+    if IS_WIN and (cmd in PS_ALIAS or cmd in PS_CMDLETS or re.fullmatch(r"[a-z]+-[a-z]+", cmd or "")):
+        return True        # cmdlets (Verbe-Nom) et alias de PowerShell : de vraies commandes, sans programme
     return cmd in BUILTINS or shutil.which(cmd) is not None
 
 

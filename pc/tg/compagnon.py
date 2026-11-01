@@ -459,18 +459,44 @@ def proposer(demander=input, lancer=True):
             print("   " + t("intro.pc.plus_tard"))
             return False
         faits = bool(installer())
-    if not faits or IS_WIN:
+    if not faits or (IS_WIN and not _powershell()):
         print("   " + t("intro.ou.pc"))
         return False
     print(f"\n   {fg(78)}" + t("intro.pc.lance") + RESET + "\n")
     if not lancer:
         return True
-    shell = os.environ.get("SHELL") or shutil.which("bash") or "sh"
-    try:
-        subprocess.call([shell, "-i"], env=dict(os.environ, TG_DANS_LE_JEU="1"))
-    except OSError:
+    if not ouvrir_terminal_du_jeu():
         print("   " + t("intro.ou.pc"))
     return True
+
+
+def _powershell():
+    return shutil.which("pwsh") or shutil.which("powershell")
+
+
+def ouvrir_terminal_du_jeu():
+    """Le terminal dans la fenêtre du jeu, le même partout : bash, zsh… (avec le compagnon de ~/.bashrc), ou PowerShell
+    sous Windows (le bloc du compagnon chargé pour cette session seulement : rien n'est changé dans les réglages de
+    Windows, -ExecutionPolicy Bypass ne vaut que pour cette fenêtre). En sortant (exit), on revient au jeu."""
+    env = dict(os.environ, TG_DANS_LE_JEU="1")
+    try:
+        if IS_WIN:
+            ps = _powershell()
+            bloc = next((b for c, b in _blocs().items() if c.suffix.lower() == ".ps1"), None)
+            if not ps or not bloc:
+                return False
+            from . import core
+            f = core.SAVE_DIR / "terminal_du_jeu.ps1"
+            f.parent.mkdir(parents=True, exist_ok=True)
+            f.write_text(bloc, encoding="utf-8-sig")           # BOM : Windows PowerShell 5.1 lit alors l'UTF-8
+            subprocess.call([ps, "-NoLogo", "-NoProfile", "-NoExit", "-ExecutionPolicy", "Bypass", "-File", str(f)],
+                            env=env)
+            return True
+        shell = os.environ.get("SHELL") or shutil.which("bash") or "sh"
+        subprocess.call([shell, "-i"], env=env)
+        return True
+    except OSError:
+        return False
 
 
 def est_installe():

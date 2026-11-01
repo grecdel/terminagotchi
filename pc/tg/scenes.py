@@ -917,11 +917,13 @@ def interroger(delai=0.35):
     (une requête a=q), la taille d'une case en pixels (CSI 16 t), la largeur d'un sextant (CSI 6 n), puis DA1 (CSI c),
     auquel presque tous répondent (« 4 » : sixel). On lit jusqu'à la réponse DA1 ou le délai ; sans réponse, on vide
     ce qui arriverait en retard, pour ne laisser aucune séquence parasite dans l'invite."""
+    rep = {"kitty": False, "sixel": False, "cellule": None, "sextant": None, "da1": False}
+    if os.name == "nt":            # Windows : ni /dev/tty ni termios (on garde le rendu texte)
+        return rep
     import re
     import select
     import termios
     import time as _t
-    rep = {"kitty": False, "sixel": False, "cellule": None, "sextant": None, "da1": False}
     try:
         fd = os.open("/dev/tty", os.O_RDWR | os.O_NOCTTY)
     except OSError:

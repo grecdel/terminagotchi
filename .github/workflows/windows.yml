@@ -1,0 +1,31 @@
+name: Windows (le jeu démarre)
+
+on:
+  push:
+    branches: [nouveau-bestiaire]
+    paths: ["pc/**", ".github/workflows/windows.yml"]
+  workflow_dispatch:
+
+jobs:
+  windows:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Tous les modules du jeu s'importent sous Windows
+        shell: pwsh
+        run: |
+          $env:PYTHONUTF8 = "1"
+          python -c "import pkgutil, importlib, sys; sys.path.insert(0, 'pc'); import tg; [importlib.import_module('tg.' + m.name) for m in pkgutil.iter_modules(tg.__path__) if m.name != '__main__']; print('ok')"
+      - name: L'écran d'introduction se dessine (sans termios)
+        shell: pwsh
+        run: |
+          $env:PYTHONUTF8 = "1"
+          python -c "import sys; sys.path.insert(0, 'pc'); from tg import scenes; print(scenes.interroger()); print(scenes.capacites())"
+      - name: PowerShell reconnu, terminal du jeu
+        shell: pwsh
+        run: |
+          $env:PYTHONUTF8 = "1"
+          python pc/outils/test_windows.py

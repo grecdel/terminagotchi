@@ -861,7 +861,9 @@ def _ecran(texte):
 def _terminal_possible():
     """Entrée peut ramener l'enfant dans son terminal (le compagnon y est installé, hors Windows)."""
     try:
-        return not IS_WIN and sys.stdin.isatty() and compagnon.est_installe()
+        if IS_WIN:                                   # Windows : le terminal du jeu est un PowerShell (voir compagnon)
+            return sys.stdin.isatty() and bool(compagnon._powershell())
+        return sys.stdin.isatty() and compagnon.est_installe()
     except Exception:                                # noqa: BLE001
         return False
 
@@ -873,14 +875,12 @@ def _retour_terminal(clav):
         return False
     if os.environ.get("TG_DANS_LE_JEU"):
         return "sortir"
-    import shutil
-    import subprocess
     clav.normal()
     try:
         clear()
         print(f"\n   {fg(78)}" + t("intro.pc.lance") + RESET + "\n")
-        shell = os.environ.get("SHELL") or shutil.which("bash") or "sh"
-        subprocess.call([shell, "-i"], env=dict(os.environ, TG_DANS_LE_JEU="1"))
+        if not compagnon.ouvrir_terminal_du_jeu():
+            return False
     except OSError:
         return False
     finally:
