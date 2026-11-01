@@ -85,6 +85,9 @@ object Maths {
     /** Les fréquences (MHz) des exercices de longueur d'onde : 300 / f est entier (mètres). */
     val MHZ_ONDE = listOf(1, 2, 3, 4, 5, 6, 10, 12, 15, 20, 25, 30, 50, 60, 75, 100, 150, 300)
 
+    /** 100 / total est entier : des pourcentages justes (Ponts des Nombres de l'Observatoire) */
+    val TOTAUX_CENT = listOf(2, 4, 5, 10, 20, 25, 50)
+
     fun generer(typ: String, graine: Long, k: Long): Exo {
         val h = Tirage.Hasard(String.format("%016x", graine), k)
         return when (typ) {
@@ -114,6 +117,14 @@ object Maths {
                 Exo(mapOf("a" to "$a", "b" to "$b", "y" to "$y"), "${b - a}", "echo \$(($b - $a))") }
             "volume" -> { val a = 2 + h.entier(5); val b = 2 + h.entier(5); val c = 1 + h.entier(4)
                 Exo(mapOf("a" to "$a", "b" to "$b", "c" to "$c"), "${a * b * c}", "echo \$(($a * $b * $c))") }
+            // les Ponts des Nombres de l'Observatoire de l'IA (§ 7.4) : statistiques et probabilités
+            "effectifs" -> { val n = 6 + h.entier(7); val tirs = (0 until n).map { h.entier(2) }
+                Exo(mapOf("liste" to tirs.joinToString(" ") { if (it == 0) "🔥" else "💧" }), "${tirs.count { it == 0 }}",
+                    "printf '%s\\n' " + tirs.joinToString(" ") { if (it == 0) "Feu" else "Eau" } + " | grep -c Feu") }
+            "frequences" -> { val total = TOTAUX_CENT[h.entier(TOTAUX_CENT.size)]; val n = h.entier(total + 1)
+                Exo(mapOf("n" to "$n", "total" to "$total"), "${n * 100 / total}", "echo \$((${n} * 100 / $total))") }
+            "probabilites" -> { val total = TOTAUX_CENT[h.entier(TOTAUX_CENT.size)]; val a = 1 + h.entier(total - 1)
+                Exo(mapOf("a" to "$a", "b" to "${total - a}"), "${a * 100 / total}", "echo \$((${a} * 100 / $total))") }
             else -> throw IllegalArgumentException(typ)
         }
     }

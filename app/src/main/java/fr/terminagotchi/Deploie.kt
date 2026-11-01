@@ -319,6 +319,22 @@ object Deploie {
         return out
     }
 
+    // ------------------------------------------------------------ la lunette (l'Observatoire de l'IA)
+    class Lunette(val seg: Int, val cmd: String, val outil: String, val de: String, val vers: String)
+
+    /** Les commandes d'une ligne qui VÉRIFIENT (diff, wc, uniq -c, sh tests.sh) ou qui font travailler un petit programme du
+     *  jeu (assistant, devine-type, devine-mot, agent) : même spécification que deploie.lunettes sur PC. */
+    fun lunettes(ligne: String): List<Lunette> {
+        val out = mutableListOf<Lunette>()
+        val bl = blocs(ligne)
+        for (c in chaines(bl)) for (e in c.etapes) {
+            val a = Observatoire.lunetteDe(e.texte) ?: continue
+            val seg = bl.firstOrNull { it.g == "commande" && it.i - 1 == e.debut }?.seg ?: 0
+            out.add(Lunette(seg, e.cmd, a.first, a.second, a.third))
+        }
+        return out
+    }
+
     // ------------------------------------------------------------ les cadenas qui s'allument (la Citadelle)
     private val OPTIONS_CHMOD = setOf("-R", "-v", "-c", "-f", "--recursive", "--verbose", "--changes", "--silent", "--quiet")
     private val MODE_CHMOD = Regex("[0-7]{1,4}|[ugoa]*(?:[-+=][rwx]*)+(?:,[ugoa]*(?:[-+=][rwx]*)+)*")
@@ -421,11 +437,15 @@ object Deploie {
         /** l'établi d'un gcc, dd, sha256sum, git commit… (la Guilde) */
         val etablis: List<Etabli> = try { etablis(ligne) } catch (e: Exception) { emptyList() }
         fun etabliDe(b: Bloc): Etabli? = if (b.g == "commande") etablis.firstOrNull { it.seg == b.seg } else null
+        /** la lunette d'un diff, wc, uniq -c, sh tests.sh, assistant… (l'Observatoire) */
+        val lunettes: List<Lunette> = try { lunettes(ligne) } catch (e: Exception) { emptyList() }
+        fun lunetteDe(b: Bloc): Lunette? = if (b.g == "commande") lunettes.firstOrNull { it.seg == b.seg } else null
 
         fun avancer(dt: Double) {
             t += dt
             val b = blocs[actif - 1]
-            val reseau = messagerDe(b) != null || droitsDe(b) != null || roueDe(b) != null || piecesDe(b) != null || antenneDe(b) != null || etabliDe(b) != null
+            val reseau = messagerDe(b) != null || droitsDe(b) != null || roueDe(b) != null || piecesDe(b) != null || antenneDe(b) != null || etabliDe(b) != null ||
+                lunetteDe(b) != null
             val duree = if (b.g == "tuyau" || b.g == "redirection" || reseau) 2.4 else 1.2
             phase = if (b.g in setOf("tuyau", "redirection", "chemin") || reseau) t / duree else minOf(1.0, t / duree)
             if (auto && t >= duree && actif < blocs.size) { actif += 1; t = 0.0 }

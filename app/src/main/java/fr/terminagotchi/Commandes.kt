@@ -152,6 +152,12 @@ class Commandes(
             "mesh-envoie", "mesh-coupe", "mesh-route" -> Reponse(Ondes.commande(jeu, "$cmd $reste", dossier()), couleur = BLEU)
             // ---------------------------------------------------- la Guilde des Bâtisseurs Libres (Guilde.kt) : tout reste dans le terrain
             "guilde" -> Reponse(Guilde.commande(jeu, reste, dossier()), couleur = BLEU)
+            // ---------------------------------------------------- l'Observatoire de l'IA (Observatoire.kt) : aucune vraie IA
+            "observatoire" -> Reponse(Observatoire.commande(jeu, reste, dossier()), couleur = BLEU)
+            "assistant" -> Reponse(Observatoire.assistant(jeu, reste, dossier()), couleur = BLEU)
+            "agent" -> Reponse(Observatoire.agent(jeu, reste, dossier()), couleur = BLEU)
+            "devine-type" -> Reponse(Observatoire.devineType(jeu, reste, dossier()), couleur = BLEU)
+            "devine-mot" -> Reponse(Observatoire.devineMot(jeu, reste, dossier()), couleur = BLEU)
             "sync" -> sync()
             "indice" -> Reponse(Ctf.indice(jeu, reste), couleur = VERT)
             "edite" -> edite(reste)

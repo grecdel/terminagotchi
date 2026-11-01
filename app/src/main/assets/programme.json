@@ -3253,6 +3253,289 @@
     "ADEME et Arcep, Évaluation de l'impact environnemental du numérique en France (2022) : la fabrication des terminaux domine l'empreinte"
    ],
    "relu_par": null
+  },
+  "mission": {
+   "motif": "(observatoire\\s+(mission|plan|regles)\\b|^(tg\\s+)?assistant\\s+\\S*mission|mission\\w*\\.txt|rapport\\.txt|coupole\\.txt)",
+   "enfant": "ob.f.mission.enfant",
+   "grands": "ob.f.mission.grands",
+   "vrai_terminal": [
+    {
+     "prepare": "printf 'Braisillon Feu\\nTritonnet Eau\\nCornichaud Feu\\n' > c.txt",
+     "cmd": "grep -c Feu c.txt",
+     "sortie": "2"
+    },
+    {
+     "prepare": "echo 'Compte les Feu dans c.txt' > mission.txt",
+     "cmd": "cat mission.txt",
+     "sortie": "Compte les Feu dans c.txt"
+    },
+    {
+     "cmd": "assistant mission.txt > rapport.txt",
+     "rejeu": "commande du jeu",
+     "motif": "."
+    }
+   ],
+   "limite_image": "ob.f.mission.limite",
+   "idees_fausses": [
+    "ob.f.mission.idee"
+   ],
+   "sources": [
+    "ANSSI, Recommandations de sécurité pour un système d'IA générative (2024) : https://cyber.gouv.fr/publications/recommandations-de-securite-pour-un-systeme-dia-generative",
+    "Bash Reference Manual, Redirections (> écrit la sortie dans un fichier) : https://www.gnu.org/software/bash/manual/html_node/Redirections.html",
+    "CNIL, intelligence artificielle (dossiers et recommandations) : https://www.cnil.fr/fr/intelligence-artificielle"
+   ],
+   "relu_par": null
+  },
+  "verifier": {
+   "motif": "(observatoire\\s+(verifier|oubli)\\b|^(sh\\s+)?test\\.sh\\b|^sh\\s+test\\.sh|tri\\.txt|^diff\\b.*(tri|creatures)|^wc\\b.*creatures)",
+   "enfant": "ob.f.verifier.enfant",
+   "grands": "ob.f.verifier.grands",
+   "vrai_terminal": [
+    {
+     "prepare": "printf 'b\\na\\nc\\n' > c.txt && printf 'a\\nc\\n' > t.txt",
+     "cmd": "sort c.txt | diff - t.txt",
+     "sortie": "2d1\n< b",
+     "code": 1
+    },
+    {
+     "prepare": "printf 'a\\nb\\nc\\n' > c.txt && printf 'a\\nc\\n' > t.txt",
+     "cmd": "wc -l c.txt t.txt",
+     "sortie": " 3 c.txt\n 2 t.txt\n 5 total"
+    },
+    {
+     "prepare": "printf 'a\\nb\\n' > c.txt && printf 'a\\n' > t.txt",
+     "cmd": "[ \"$(sort c.txt)\" = \"$(cat t.txt)\" ] && echo REUSSI || echo ECHEC",
+     "sortie": "ECHEC"
+    }
+   ],
+   "limite_image": "ob.f.verifier.limite",
+   "idees_fausses": [
+    "ob.f.verifier.idee"
+   ],
+   "sources": [
+    "GNU diffutils, manuel (diff : lignes en moins « < », en plus « > ») : https://www.gnu.org/software/diffutils/manual/",
+    "GNU coreutils, manuel (wc, sort, uniq, tr, paste, tail, cut) : https://www.gnu.org/software/coreutils/manual/",
+    "ANSSI, Recommandations de sécurité pour un système d'IA générative (2024) : https://cyber.gouv.fr/publications/recommandations-de-securite-pour-un-systeme-dia-generative"
+   ],
+   "relu_par": null
+  },
+  "secrets": {
+   "motif": "(observatoire\\s+(secrets?|cle)\\b|config_partagee|\\.env\\b|\\.gitignore|^export\\s+CLE_API)",
+   "enfant": "ob.f.secrets.enfant",
+   "grands": "ob.f.secrets.grands",
+   "vrai_terminal": [
+    {
+     "prepare": "printf 'ville=Terminaville\\nCLE_API=exemple\\n' > c.txt",
+     "cmd": "grep -n CLE c.txt",
+     "sortie": "2:CLE_API=exemple"
+    },
+    {
+     "prepare": "printf 'ville=Terminaville\\nCLE_API=exemple\\n' > c.txt",
+     "cmd": "sed -i '/CLE_API/d' c.txt && cat c.txt",
+     "sortie": "ville=Terminaville"
+    },
+    {
+     "prepare": "echo CLE_API=exemple > .env",
+     "cmd": "chmod 600 .env && stat -c %a .env",
+     "sortie": "600"
+    },
+    {
+     "cmd": "export CLE_API=exemple-pas-une-vraie-cle && echo ${#CLE_API}",
+     "sortie": "25"
+    }
+   ],
+   "limite_image": "ob.f.secrets.limite",
+   "idees_fausses": [
+    "ob.f.secrets.idee"
+   ],
+   "sources": [
+    "OWASP, Secrets Management Cheat Sheet : https://cheatsheetseries.owasp.org/cheatsheets/Secrets_Management_Cheat_Sheet.html",
+    "gitignore(5) : https://git-scm.com/docs/gitignore",
+    "chmod(1), GNU coreutils ; Bash Reference Manual, export",
+    "ANSSI, Recommandations de sécurité pour un système d'IA générative (2024) : https://cyber.gouv.fr/publications/recommandations-de-securite-pour-un-systeme-dia-generative"
+   ],
+   "relu_par": null
+  },
+  "superviser": {
+   "motif": "(observatoire\\s+agent\\b|^(tg\\s+)?agent\\s+(lance|refuse|accepte|valide|boucle|stop)\\b|journal_agent|a_nourrir|^git\\s+diff\\b(?!.*fr\\.txt)|chantier)",
+   "enfant": "ob.f.superviser.enfant",
+   "grands": "ob.f.superviser.grands",
+   "vrai_terminal": [
+    {
+     "prepare": "printf 'b\\na\\nb\\n' > l.txt && cp l.txt avant.txt",
+     "cmd": "sort -u l.txt -o l.txt && diff avant.txt l.txt",
+     "sortie": "1d0\n< b",
+     "code": 1
+    },
+    {
+     "cmd": "timeout 1 sleep 5; echo $?",
+     "sortie": "124"
+    },
+    {
+     "prepare": "git init -q -b main d && cd d && git config user.name A && git config user.email a@a.invalid && printf 'b\\na\\n' > l.txt && git add l.txt && git commit -qm 1 && printf 'a\\nb\\n' > l.txt",
+     "cmd": "cd d && git diff --stat | tail -1",
+     "sortie": " 1 file changed, 1 insertion(+), 1 deletion(-)",
+     "outil": "git"
+    }
+   ],
+   "limite_image": "ob.f.superviser.limite",
+   "idees_fausses": [
+    "ob.f.superviser.idee"
+   ],
+   "sources": [
+    "OWASP Top 10 for LLM Applications (2025), LLM06 « Excessive Agency » : https://genai.owasp.org/llm-top-10/",
+    "NIST, AI Risk Management Framework 1.0 (2023) : https://www.nist.gov/itl/ai-risk-management-framework",
+    "Bash Reference Manual, Signals (Ctrl+C envoie SIGINT) ; timeout(1), GNU coreutils",
+    "ANSSI, Recommandations de sécurité pour un système d'IA générative (2024) : https://cyber.gouv.fr/publications/recommandations-de-securite-pour-un-systeme-dia-generative"
+   ],
+   "relu_par": null
+  },
+  "apprendre": {
+   "motif": "(observatoire\\s+(apprendre|piege)\\b|^(tg\\s+)?devine-type\\b|exemples\\.txt|nouvelle\\.txt|cerveau\\.txt)",
+   "enfant": "ob.f.apprendre.enfant",
+   "grands": "ob.f.apprendre.grands",
+   "vrai_terminal": [
+    {
+     "prepare": "printf 'A x Feu\\nB y pas_Feu\\nC x Feu\\n' > e.txt",
+     "cmd": "awk '{print $3}' e.txt | sort | uniq -c",
+     "sortie": "      2 Feu\n      1 pas_Feu"
+    },
+    {
+     "prepare": "printf 'A x Feu\\nB y pas_Feu\\nC x Feu\\n' > e.txt",
+     "cmd": "cut -d ' ' -f 3 e.txt | sort | uniq -c",
+     "sortie": "      2 Feu\n      1 pas_Feu"
+    },
+    {
+     "cmd": "devine-type apprends exemples.txt",
+     "rejeu": "commande du jeu",
+     "motif": "."
+    }
+   ],
+   "limite_image": "ob.f.apprendre.limite",
+   "idees_fausses": [
+    "ob.f.apprendre.idee"
+   ],
+   "sources": [
+    "Inria et Class'Code, MOOC « L'Intelligence Artificielle… avec intelligence ! » : https://pixees.fr/classcode-v2/iai/",
+    "Éduscol, programme de NSI de première : algorithmes d'apprentissage (k plus proches voisins) : https://eduscol.education.fr/",
+    "scikit-learn, Naive Bayes (classer en comptant des exemples) : https://scikit-learn.org/stable/modules/naive_bayes.html",
+    "GNU awk, manuel : https://www.gnu.org/software/gawk/manual/ ; GNU coreutils, manuel (wc, sort, uniq, tr, paste, tail, cut) : https://www.gnu.org/software/coreutils/manual/"
+   ],
+   "relu_par": null
+  },
+  "biais": {
+   "motif": "(observatoire\\s+biais\\b|volcan\\.txt|autres\\.txt)",
+   "enfant": "ob.f.biais.enfant",
+   "grands": "ob.f.biais.grands",
+   "vrai_terminal": [
+    {
+     "prepare": "printf 'volcan\\nvolcan\\nvolcan\\nlagon\\n' > l.txt",
+     "cmd": "sort l.txt | uniq -c | sort -rn | head -1",
+     "sortie": "      3 volcan"
+    },
+    {
+     "cmd": "echo $((1 * 100 / 5))",
+     "sortie": "20"
+    }
+   ],
+   "limite_image": "ob.f.biais.limite",
+   "idees_fausses": [
+    "ob.f.biais.idee"
+   ],
+   "sources": [
+    "Défenseur des droits et CNIL, « Algorithmes : prévenir l'automatisation des discriminations » (2020) : https://www.defenseurdesdroits.fr/",
+    "Règlement européen sur l'IA (AI Act, 2024), art. 10 : qualité et représentativité des données d'entraînement",
+    "CNIL, intelligence artificielle (dossiers et recommandations) : https://www.cnil.fr/fr/intelligence-artificielle"
+   ],
+   "relu_par": null
+  },
+  "modele_langage": {
+   "motif": "(observatoire\\s+(mots|perroquet)\\b|^(tg\\s+)?devine-mot\\b|histoire\\.txt|mots\\.txt|^tr\\b|paste\\b)",
+   "enfant": "ob.f.modele_langage.enfant",
+   "grands": "ob.f.modele_langage.grands",
+   "vrai_terminal": [
+    {
+     "cmd": "echo 'le chat dort et le chat mange' | tr ' ' '\\n' | sort | uniq -c | sort -rn | head -1",
+     "sortie": "      2 le"
+    },
+    {
+     "prepare": "echo 'le chat dort et le chat mange' | tr ' ' '\\n' > m.txt",
+     "cmd": "tail -n +2 m.txt | paste -d ' ' m.txt - | sort | uniq -c | sort -rn | head -1",
+     "sortie": "      2 le chat"
+    }
+   ],
+   "limite_image": "ob.f.modele_langage.limite",
+   "idees_fausses": [
+    "ob.f.modele_langage.idee"
+   ],
+   "sources": [
+    "D. Jurafsky et J. H. Martin, Speech and Language Processing, chap. 3 « N-gram Language Models » : https://web.stanford.edu/~jurafsky/slp3/",
+    "C. E. Shannon, « A Mathematical Theory of Communication » (1948) : textes fabriqués mot après mot avec des paires",
+    "GNU coreutils, manuel (wc, sort, uniq, tr, paste, tail, cut) : https://www.gnu.org/software/coreutils/manual/",
+    "ANSSI, Recommandations de sécurité pour un système d'IA générative (2024) : https://cyber.gouv.fr/publications/recommandations-de-securite-pour-un-systeme-dia-generative"
+   ],
+   "relu_par": null
+  },
+  "esprit_critique": {
+   "motif": "(observatoire\\s+(esprit|confier|nuances)\\b|^(tg\\s+)?assistant\\s+(questions|fausses)\\b|^explique\\s+(ls|rm)\\b|^echo\\s+\\$\\(\\(17\\s*%\\s*5\\)\\)|^wc\\b.*exemples)",
+   "enfant": "ob.f.esprit_critique.enfant",
+   "grands": "ob.f.esprit_critique.grands",
+   "vrai_terminal": [
+    {
+     "cmd": "echo $((17 % 5))",
+     "sortie": "2"
+    },
+    {
+     "prepare": "printf 'a\\nb\\n' > f.txt",
+     "cmd": "wc -l < f.txt",
+     "sortie": "2"
+    }
+   ],
+   "limite_image": "ob.f.esprit_critique.limite",
+   "idees_fausses": [
+    "ob.f.esprit_critique.idee"
+   ],
+   "sources": [
+    "CLEMI, éducation aux médias et à l'information : https://www.clemi.fr/",
+    "CNIL, intelligence artificielle (dossiers et recommandations) : https://www.cnil.fr/fr/intelligence-artificielle",
+    "Règlement européen sur l'IA (AI Act, 2024), art. 50 : signaler les contenus hypertruqués (deepfakes)",
+    "Code de la propriété intellectuelle (droit d'auteur) : https://www.legifrance.gouv.fr/",
+    "AIE (Agence internationale de l'énergie), Energy and AI (2025) : https://www.iea.org/reports/energy-and-ai"
+   ],
+   "relu_par": null
+  },
+  "equipe_agents": {
+   "motif": "(observatoire\\s+(equipe|decoupe|consigne)\\b|^(tg\\s+)?agent\\s+(equipe|bilan)\\b|journal_equipe|tests\\.sh|compte\\.txt|invites\\.txt|copies\\b|\\bSTOP\\b)",
+   "enfant": "ob.f.equipe_agents.enfant",
+   "grands": "ob.f.equipe_agents.grands",
+   "vrai_terminal": [
+    {
+     "prepare": "mkdir -p eq",
+     "cmd": "touch eq/STOP && [ -e eq/STOP ] && echo arret",
+     "sortie": "arret"
+    },
+    {
+     "prepare": "printf 'a\\nb\\n' > l.txt",
+     "cmd": "wc -l < l.txt > c.txt && cat c.txt",
+     "sortie": "2"
+    },
+    {
+     "prepare": "printf 'a\\nb\\na\\n' > i.txt && sort -u i.txt > l.txt",
+     "cmd": "diff i.txt l.txt",
+     "sortie": "3d2\n< a",
+     "code": 1
+    }
+   ],
+   "limite_image": "ob.f.equipe_agents.limite",
+   "idees_fausses": [
+    "ob.f.equipe_agents.idee"
+   ],
+   "sources": [
+    "OWASP Top 10 for LLM Applications (2025), LLM06 « Excessive Agency » : https://genai.owasp.org/llm-top-10/",
+    "NIST, AI Risk Management Framework 1.0 (2023) : garder un humain qui supervise et peut arrêter",
+    "ANSSI, Recommandations de sécurité pour un système d'IA générative (2024) : https://cyber.gouv.fr/publications/recommandations-de-securite-pour-un-systeme-dia-generative"
+   ],
+   "relu_par": null
   }
  },
  "etapes": {
@@ -3444,6 +3727,31 @@
   "gu6.3": {
    "maths": [
     "hexadecimal"
+   ]
+  },
+  "ob5.2": {
+   "maths": [
+    "effectifs"
+   ]
+  },
+  "ob6.2": {
+   "maths": [
+    "frequences"
+   ]
+  },
+  "ob6.4": {
+   "maths": [
+    "frequences"
+   ]
+  },
+  "ob7.4": {
+   "maths": [
+    "probabilites"
+   ]
+  },
+  "ob2.2": {
+   "maths": [
+    "effectifs"
    ]
   }
  },
@@ -4010,6 +4318,70 @@
   "gu6.8": {
    "sortie": "8b6aeee3edf7547cd49461a29770f0d18ef28607e7d6063a880d1aac2483bc8e  image_linux_exemple.iso\n8b6aeee3edf7547cd49461a29770f0d18ef28607e7d6063a880d1aac2483bc8e  cle_usb.img",
    "pourquoi": "hist.gu6.8.bravo : deux empreintes identiques"
+  },
+  "ob0.1": {
+   "contient": [
+    "coupole.txt",
+    "carnet_de_l_observatoire.txt",
+    "missions"
+   ],
+   "pourquoi": "hist.ob0.1.bravo : la coupole, le carnet, les missions"
+  },
+  "ob1.1": {
+   "sortie": "Fais un truc avec les créatures.",
+   "pourquoi": "hist.ob1.1.bravo : une consigne floue"
+  },
+  "ob2.2": {
+   "motif": "^\\s*20 creatures\\.txt\\n\\s*19 tri\\.txt",
+   "pourquoi": "hist.ob2.2.bravo : 20 lignes, 19 lignes"
+  },
+  "ob2.3": {
+   "motif": "^\\d+d\\d+\\n< \\w+ \\w+$",
+   "pourquoi": "hist.ob2.3.bravo : une ligne en moins (<)"
+  },
+  "ob2.4": {
+   "motif": "✖",
+   "pourquoi": "hist.ob2.4.bravo : le test échoue"
+  },
+  "ob2.6": {
+   "motif": "✔",
+   "pourquoi": "hist.ob2.6.bravo : le test réussit"
+  },
+  "ob3.1": {
+   "motif": "^\\d+:CLE_API=",
+   "pourquoi": "hist.ob3.1.bravo : la clé est en clair"
+  },
+  "ob5.2": {
+   "sortie": "     10 Feu\n     10 pas_Feu",
+   "pourquoi": "hist.ob5.2.bravo : 10 et 10, équilibré"
+  },
+  "ob6.1": {
+   "motif": "^\\s+\\d+ (volcan|lave|cendres)$",
+   "pourquoi": "hist.ob6.1.bravo : seulement des volcans"
+  },
+  "ob6.2": {
+   "sortie": "     12 Feu",
+   "pourquoi": "hist.ob6.2.bravo : 12 Feu, 0 autre"
+  },
+  "ob7.1": {
+   "egal_jeu": "mot_frequent",
+   "pourquoi": "hist.ob7.1.bravo : le mot le plus fréquent"
+  },
+  "ob7.3": {
+   "egal_jeu": "paire_frequente",
+   "pourquoi": "hist.ob7.3.bravo : la paire la plus fréquente"
+  },
+  "ob9.5": {
+   "motif": "^\\d+$",
+   "pourquoi": "hist.ob9.5.bravo : le nombre de copies"
+  },
+  "ob9.9": {
+   "motif": "✖",
+   "pourquoi": "hist.ob9.9.bravo : un test échoue (le compte)"
+  },
+  "ob9.11": {
+   "motif": "\\A(?![\\s\\S]*✖)[\\s\\S]*✔",
+   "pourquoi": "hist.ob9.11.bravo : tous les tests passent"
   }
  },
  "maths": {
@@ -4369,11 +4741,45 @@
    ]
   },
   "probabilites": {
-   "fiche": false,
+   "fiche": true,
    "titre": "maths.probabilites.titre",
+   "question": "maths.probabilites.question",
    "prerequis": [
-    "division"
-   ]
+    "frequences"
+   ],
+   "niveau": "college",
+   "enfant": "maths.probabilites.enfant",
+   "grands": "maths.probabilites.grands",
+   "vrai_terminal": [
+    {
+     "cmd": "echo $((3 * 100 / 4))",
+     "sortie": "75"
+    },
+    {
+     "cmd": "echo $((1 * 100 / 4))",
+     "sortie": "25"
+    }
+   ],
+   "limite_image": "maths.probabilites.limite",
+   "idees_fausses": [
+    "maths.probabilites.idee"
+   ],
+   "exemples": [
+    "maths.probabilites.ex1",
+    "maths.probabilites.ex2",
+    "maths.probabilites.ex3"
+   ],
+   "exercice": {
+    "type": "probabilites",
+    "consigne": "maths.probabilites.exo",
+    "erreur": "maths.probabilites.erreur"
+   },
+   "mots_cles": "maths.probabilites.kw",
+   "sources": [
+    "Programmes de mathématiques des cycles 3 et 4 (organisation et gestion de données, effectifs, fréquences, probabilités) : https://eduscol.education.fr/",
+    "D. Jurafsky et J. H. Martin, Speech and Language Processing, chap. 3 (probabilité du mot suivant)"
+   ],
+   "relu_par": null
   },
   "logarithme": {
    "fiche": false,
@@ -4636,6 +5042,89 @@
    "sources": [
     "Programme de mathématiques du cycle 3 (volume d'un pavé droit) : https://eduscol.education.fr/",
     "BIPM, Le Système international d'unités, 9e édition (2019) : le mètre cube et ses sous-multiples"
+   ],
+   "relu_par": null
+  },
+  "effectifs": {
+   "fiche": true,
+   "titre": "maths.effectifs.titre",
+   "question": "maths.effectifs.question",
+   "prerequis": [
+    "comptage"
+   ],
+   "niveau": "primaire",
+   "enfant": "maths.effectifs.enfant",
+   "grands": "maths.effectifs.grands",
+   "vrai_terminal": [
+    {
+     "cmd": "printf 'Feu\\nEau\\nFeu\\n' | sort | uniq -c",
+     "sortie": "      1 Eau\n      2 Feu"
+    },
+    {
+     "cmd": "printf 'Feu\\nEau\\nFeu\\n' | grep -c Feu",
+     "sortie": "2"
+    }
+   ],
+   "limite_image": "maths.effectifs.limite",
+   "idees_fausses": [
+    "maths.effectifs.idee"
+   ],
+   "exemples": [
+    "maths.effectifs.ex1",
+    "maths.effectifs.ex2",
+    "maths.effectifs.ex3"
+   ],
+   "exercice": {
+    "type": "effectifs",
+    "consigne": "maths.effectifs.exo",
+    "erreur": "maths.effectifs.erreur"
+   },
+   "mots_cles": "maths.effectifs.kw",
+   "sources": [
+    "Programmes de mathématiques des cycles 3 et 4 (organisation et gestion de données, effectifs, fréquences, probabilités) : https://eduscol.education.fr/",
+    "GNU coreutils, manuel (wc, sort, uniq, tr, paste, tail, cut) : https://www.gnu.org/software/coreutils/manual/"
+   ],
+   "relu_par": null
+  },
+  "frequences": {
+   "fiche": true,
+   "titre": "maths.frequences.titre",
+   "question": "maths.frequences.question",
+   "prerequis": [
+    "effectifs",
+    "division"
+   ],
+   "niveau": "college",
+   "enfant": "maths.frequences.enfant",
+   "grands": "maths.frequences.grands",
+   "vrai_terminal": [
+    {
+     "cmd": "echo $((10 * 100 / 20))",
+     "sortie": "50"
+    },
+    {
+     "cmd": "echo $((1 * 100 / 5))",
+     "sortie": "20"
+    }
+   ],
+   "limite_image": "maths.frequences.limite",
+   "idees_fausses": [
+    "maths.frequences.idee"
+   ],
+   "exemples": [
+    "maths.frequences.ex1",
+    "maths.frequences.ex2",
+    "maths.frequences.ex3"
+   ],
+   "exercice": {
+    "type": "frequences",
+    "consigne": "maths.frequences.exo",
+    "erreur": "maths.frequences.erreur"
+   },
+   "mots_cles": "maths.frequences.kw",
+   "sources": [
+    "Programmes de mathématiques des cycles 3 et 4 (organisation et gestion de données, effectifs, fréquences, probabilités) : https://eduscol.education.fr/",
+    "Bash, Shell Arithmetic : https://www.gnu.org/software/bash/manual/html_node/Shell-Arithmetic.html"
    ],
    "relu_par": null
   }
@@ -5225,7 +5714,55 @@
     "ciel",
     "glace"
    ],
-   "maths": [],
+   "requis": [
+    "n4",
+    "n6"
+   ],
+   "paliers": [
+    "ob0",
+    "ob1",
+    "ob2",
+    "ob3",
+    "ob4",
+    "ob5",
+    "ob6",
+    "ob7",
+    "ob8",
+    "ob9"
+   ],
+   "chapitre": "observatoire",
+   "attirance": {
+    "cmds": [
+     "diff",
+     "uniq",
+     "wc",
+     "assistant",
+     "devine-type"
+    ],
+    "familles": [
+     "Célestes"
+    ]
+   },
+   "ponts": {
+    "sort": [
+     "donnees"
+    ],
+    "uniq": [
+     "donnees"
+    ],
+    "grep": [
+     "donnees"
+    ],
+    "export": [
+     "controle"
+    ],
+    "git": [
+     "temps"
+    ],
+    "chmod": [
+     "citadelle"
+    ]
+   },
    "exploits": [
     {
      "id": "observatoire.fausses",
@@ -5233,7 +5770,16 @@
      "recompense": "variante"
     }
    ],
-   "variantes_reservees": []
+   "maths": [
+    "effectifs",
+    "frequences",
+    "probabilites"
+   ],
+   "variantes_reservees": [
+    "seraphibou:cosmique",
+    "zyeuton:brume",
+    "mutaloupe:cristal"
+   ]
   },
   {
    "id": "entrainement",

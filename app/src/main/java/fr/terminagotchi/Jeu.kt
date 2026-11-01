@@ -311,6 +311,7 @@ class Jeu(ctx: Context) {
         Machines.init(ctx)
         Ondes.init(ctx)
         Guilde.init(ctx)
+        Observatoire.init(ctx)
         Intro.init(ctx)
     }
 

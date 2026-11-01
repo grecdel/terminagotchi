@@ -388,6 +388,7 @@ object EspaceDessin {
         val pi = v.piecesDe(b)
         val an = v.antenneDe(b)
         val et = v.etabliDe(b)
+        val lu = v.lunetteDe(b)
         if (msg != null) PortDessin.messager(tl, msg, v.phase, x + 14 * z, fy, w - 28 * z, 34 * z, z)   // le Port
         else if (dr != null) CitadelleDessin.cadenas(tl, dr, v.phase, x + 14 * z, fy, w - 28 * z, minOf(78 * z, y + h - fy), z)   // la Citadelle
         else if (ro != null) CrypteDessin.roue(tl, ro.decalage, v.phase, x + 14 * z, fy, w - 28 * z, minOf(170 * z, y + h - fy), z)   // la Crypte
@@ -395,6 +396,7 @@ object EspaceDessin {
             x + 14 * z, fy, w - 28 * z, minOf(150 * z, y + h - fy), z)   // la Salle des Rouages
         else if (an != null) OndesDessin.antenne(tl, an, v.phase, x + 14 * z, fy, w - 28 * z, minOf(110 * z, y + h - fy), z)   // la Tour des Ondes
         else if (et != null) GuildeDessin.etabli(tl, et, v.phase, x + 14 * z, fy, w - 28 * z, minOf(96 * z, y + h - fy), z)   // la Guilde
+        else if (lu != null) ObservatoireDessin.lunette(tl, lu, v.phase, x + 14 * z, fy, w - 28 * z, minOf(96 * z, y + h - fy), z)   // l'Observatoire
         else flux(tl, v, x + 14 * z, fy, w - 28 * z, 34 * z, z)
     }
 
