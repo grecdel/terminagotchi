@@ -55,8 +55,7 @@ def preparer():
             h["faits"] += [x for x in histoire.PAR_CHAP[c]["lecons"][:4] if x not in h["faits"]]
         h["chap"] = "sommet"
         h["ouverts"].append("sommet")
-        h.setdefault("mondes_annonces", []).extend(["port", "citadelle", "crypte", "machinerie", "ondes", "guilde",
-                                                    "observatoire", "donnees", "sommet"])
+        h.setdefault("mondes_annonces", []).extend([c["id"] for c in histoire.CHAPITRES if c.get("monde")])
         h["faits"] += ["som0"]
         s["step"] = 0
         s["xp"] = 10 * 30 ** 2

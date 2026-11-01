@@ -81,8 +81,8 @@ def ouvrir(s):
     for c in ("port", "citadelle", "machinerie"):               # trois mondes au palier 3 (leurs leçons 0 à 3)
         h["faits"] += [x for x in histoire.PAR_CHAP[c]["lecons"][:4] if x not in h["faits"]]
     h["chap"] = None
-    h.setdefault("mondes_annonces", []).extend(["port", "citadelle", "crypte", "machinerie", "ondes", "guilde",
-                                                "observatoire", "donnees"])
+    h.setdefault("mondes_annonces", []).extend([c["id"] for c in histoire.CHAPITRES   # les autres mondes : déjà annoncés
+                                                if c.get("monde") and c["id"] != "sommet"])
     s["xp"] = 10 * 30 ** 2
     s["step"] = 0
 

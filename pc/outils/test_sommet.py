@@ -239,8 +239,8 @@ def base(s):
         if c not in h["ailes"]:
             h["ailes"].append(c)
     h["chap"] = None
-    h.setdefault("mondes_annonces", []).extend(["port", "citadelle", "crypte", "machinerie", "ondes", "guilde",
-                                                "observatoire", "donnees"])
+    h.setdefault("mondes_annonces", []).extend([c["id"] for c in histoire.CHAPITRES   # les autres mondes : déjà annoncés
+                                                if c.get("monde") and c["id"] != "sommet"])
     s["xp"] = 10 * 30 ** 2
     s["step"] = 0
 
