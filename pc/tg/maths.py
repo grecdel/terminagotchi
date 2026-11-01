@@ -202,6 +202,10 @@ def generer(typ, graine, k):
     if typ == "priorites":
         a, b, c = 2 + h.entier(8), 2 + h.entier(5), 2 + h.entier(5)
         return {"a": a, "b": b, "c": c}, str(a + b * c), f"echo $(({a} + {b} * {c}))"
+    # le Pont des Nombres de l'Atelier (§ 2.16, § 7.10) : la logique (ET), 1 = vrai, 0 = faux
+    if typ == "logique":
+        a, b = h.entier(2), h.entier(2)
+        return {"a": a, "b": b}, str(a & b), f"echo $(( {a} && {b} ))"
     raise ValueError(typ)
 
 

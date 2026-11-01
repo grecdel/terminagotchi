@@ -290,7 +290,8 @@ DEPLOIE = ("alias deploie='history -a 2>/dev/null; tg deploie --historique #'\n"
            "alias observatoire='tg observatoire'; alias assistant='tg assistant'; alias agent='tg agent'; "
            "alias devine-type='tg devine-type'; alias devine-mot='tg devine-mot'\n"
            "alias donnees='tg donnees'\n"
-           "alias forge='tg forge'")
+           "alias forge='tg forge'\n"
+           "alias atelier='tg atelier'")
 
 
 def _blocs():
@@ -340,7 +341,8 @@ def _blocs():
             'function agent\n    tg agent $argv\nend\nfunction devine-type\n    tg devine-type $argv\nend\n'
             'function devine-mot\n    tg devine-mot $argv\nend\n'
             'function donnees\n    tg donnees $argv\nend\n'
-            'function forge\n    tg forge $argv\nend')
+            'function forge\n    tg forge $argv\nend\n'
+            'function atelier\n    tg atelier $argv\nend')
     for ps in ("powershell", "pwsh"):
         if shutil.which(ps):
             try:
@@ -376,7 +378,8 @@ def _blocs():
                                        'function devine-type { tg devine-type @args }\n'
                                        'function devine-mot { tg devine-mot @args }\n'
                                        'function donnees { tg donnees @args }\n'
-                                       'function forge { tg forge @args }')
+                                       'function forge { tg forge @args }\n'
+                                       'function atelier { tg atelier @args }')
     return blocs
 
 
@@ -445,7 +448,8 @@ def a_jour():
                                      or ("guilde='tg guilde'" in bloc and "guilde='tg guilde'" not in installe)
                                      or ("devine-mot='tg devine-mot'" in bloc and "devine-mot='tg devine-mot'" not in installe)
                                      or ("donnees='tg donnees'" in bloc and "donnees='tg donnees'" not in installe)
-                                     or ("forge='tg forge'" in bloc and "forge='tg forge'" not in installe)):
+                                     or ("forge='tg forge'" in bloc and "forge='tg forge'" not in installe)
+                                     or ("atelier='tg atelier'" in bloc and "atelier='tg atelier'" not in installe)):
             return False
     return True
 

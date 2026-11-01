@@ -646,6 +646,41 @@ def _forge_anime(x, phase):
     return [f"{OBJETS.get(x['objet'], '🔨')} {''.join(bande)} 🔥"]
 
 
+# ---------------------------------------------------------------- le robot (l'Atelier)
+def robots(ligne):
+    """Les commandes d'une ligne qui touchent le ROBOT simulé de l'Atelier (spécification commune, Deploie.kt, vecteurs
+    donnees/atelier/vecteurs.json) : [{seg, cmd, piece, sens}] — echo 1 > robot/led écrit à la LED, cat
+    robot/capteur_distance lit le capteur, sh cerveau.sh fait décider le robot, atelier pas le fait bouger."""
+    from . import atelier
+    out = []
+    bl = blocs(ligne)
+    for b in bl:
+        if b["g"] != "commande":
+            continue
+        texte = " ".join(x["t"] for x in bl if x["seg"] == b["seg"])
+        a = atelier.robot_de(texte)
+        if a and not any(x["seg"] == b["seg"] for x in out):
+            out.append({"seg": b["seg"], "cmd": b["t"], "piece": a[0], "sens": a[1]})
+    return out
+
+
+PIECES_ROBOT = {"led": "💡", "moteur": "⚙", "capteur": "◉", "roues": "🛞", "cerveau": "🧠"}
+
+
+def _robot_anime(x, phase):
+    """Le petit robot : l'ordre part vers la pièce (écrit, décide), la valeur en revient (lit), le robot roule (bouge)."""
+    L = 24
+    pos = int(phase * (L - 1))
+    if x["sens"] == "bouge":
+        return ["◐◓◑◒"[int(phase * 16) % 4] + " " + "·" * pos + "🤖" + "·" * (L - 1 - pos)]
+    fil = ["·"] * L
+    if x["sens"] in ("ecrit", "pense"):
+        fil[pos] = "▸"
+    else:
+        fil[L - 1 - pos] = "◂"
+    return [f"⌨ {''.join(fil)} {PIECES_ROBOT.get(x['piece'], '🤖')}"]
+
+
 # ---------------------------------------------------------------- les mots pour le dire
 def nom_genre(g):
     return t("dep.genre." + g)
@@ -925,6 +960,12 @@ def ecran(ligne, bl, actif, sorties, phase=0.0, largeur=80, dossier=None, pas=Fa
                     "dep.forge", outil=x["outil"], objet=t("fo.objet." + x["objet"]),
                     de=t("fo.mot." + x["de"]), vers=t("fo.mot." + x["vers"])) + RESET)
                 out += ["  " + l for l in _forge_anime(x, phase % 1.0)]
+        for x in robots(ligne):                  # echo > robot/led, cat robot/capteur_distance, atelier pas… : le robot
+            if x["seg"] == b["seg"]:
+                out.append("")
+                out.append(f"  {fg(ANSI['commande'])}🤖 " + t("dep.robot", piece=t("at.piece." + x["piece"]),
+                                                             sens=t("at.sens." + x["sens"])) + RESET)
+                out += ["  " + l for l in _robot_anime(x, phase % 1.0)]
     if actif == n and sorties:
         for c, s in zip(chs, sorties):
             if s and len(c["etapes"]) > 1:
@@ -947,7 +988,8 @@ def _reseau(b, ligne):
                                      any(x["seg"] == b["seg"] for x in etablis(ligne)) or
                                      any(x["seg"] == b["seg"] for x in lunettes(ligne)) or
                                      any(x["seg"] == b["seg"] for x in labos(ligne)) or
-                                     any(x["seg"] == b["seg"] for x in forges(ligne)))
+                                     any(x["seg"] == b["seg"] for x in forges(ligne)) or
+                                     any(x["seg"] == b["seg"] for x in robots(ligne)))
 
 
 def jouer(ligne, dossier=None, pas=False, sortie=None, clavier=None, ips=12):

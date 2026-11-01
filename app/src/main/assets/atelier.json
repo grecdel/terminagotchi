@@ -1,0 +1,224 @@
+{
+ "note": "Généré par donnees/atelier/outils/fiches_atelier.py ; lu par pc/tg/atelier.py et Atelier.kt. Le robot est SIMULÉ dans le terrain : aucun matériel, aucun port série, aucun flashage.",
+ "robot": {
+  "case_cm": 10,
+  "moteurs": [
+   "avance",
+   "gauche",
+   "droite",
+   "stop"
+  ],
+  "fichiers": [
+   "led",
+   "moteur",
+   "capteur_distance"
+  ]
+ },
+ "directions": {
+  "ordre": "NESO",
+  "pas": {
+   "N": [
+    0,
+    -1
+   ],
+   "E": [
+    1,
+    0
+   ],
+   "S": [
+    0,
+    1
+   ],
+   "O": [
+    -1,
+    0
+   ]
+  },
+  "fleches": {
+   "N": "▲",
+   "E": "▶",
+   "S": "▼",
+   "O": "◀"
+  }
+ },
+ "entrainement": {
+  "grille": [
+   "........",
+   "........",
+   "...#....",
+   "........",
+   "........"
+  ],
+  "depart": [
+   1,
+   1,
+   "E"
+  ]
+ },
+ "arenes": [
+  {
+   "grille": [
+    "..........",
+    "..#....#..",
+    "..#.......",
+    ".....##...",
+    "#.........",
+    "....#....."
+   ],
+   "depart": [
+    3,
+    2,
+    "E"
+   ]
+  },
+  {
+   "grille": [
+    "..........",
+    ".##.......",
+    "......#...",
+    "...#......",
+    "........#.",
+    ".........."
+   ],
+   "depart": [
+    0,
+    3,
+    "E"
+   ]
+  },
+  {
+   "grille": [
+    ".........",
+    "....#....",
+    ".#.......",
+    ".....#...",
+    "..#......",
+    "........."
+   ],
+   "depart": [
+    8,
+    2,
+    "S"
+   ]
+  },
+  {
+   "grille": [
+    "..........",
+    "...#......",
+    ".......#..",
+    "..........",
+    ".#....#...",
+    ".........."
+   ],
+   "depart": [
+    4,
+    3,
+    "N"
+   ]
+  }
+ ],
+ "defi": {
+  "pas": 20,
+  "cases_min": 12,
+  "pas_max": 60
+ },
+ "essai": {
+  "pas_min": 5
+ },
+ "verite": {
+  "portes": [
+   "et",
+   "ou"
+  ]
+ },
+ "choix": {
+  "situations": [
+   {
+    "id": "arret",
+    "rep": "ou"
+   },
+   {
+    "id": "porte",
+    "rep": "et"
+   },
+   {
+    "id": "veilleuse",
+    "rep": "non"
+   },
+   {
+    "id": "avance",
+    "rep": "et"
+   },
+   {
+    "id": "alarme",
+    "rep": "ou"
+   },
+   {
+    "id": "arrosage",
+    "rep": "non"
+   }
+  ],
+  "montrees": 3
+ },
+ "reflexe": {
+  "vitesses": [
+   20,
+   30,
+   40,
+   50,
+   60
+  ],
+  "temps_ms": [
+   100,
+   200,
+   500,
+   1000
+  ]
+ },
+ "vue": {
+  "regles": [
+   {
+    "motif": "^(do\\s+|then\\s+|else\\s+)?(tg\\s+)?atelier\\s+pas\\b",
+    "piece": "roues",
+    "sens": "bouge"
+   },
+   {
+    "motif": "^(do\\s+|then\\s+|else\\s+)?(sh|bash)\\s+\\S*cerveau\\w*\\.sh\\b",
+    "piece": "cerveau",
+    "sens": "pense"
+   },
+   {
+    "motif": ">\\s*\\S*robot/led\\b",
+    "piece": "led",
+    "sens": "ecrit"
+   },
+   {
+    "motif": ">\\s*\\S*robot/moteur\\b",
+    "piece": "moteur",
+    "sens": "ecrit"
+   },
+   {
+    "motif": "\\brobot/capteur_distance\\b",
+    "piece": "capteur",
+    "sens": "lit"
+   },
+   {
+    "motif": "\\brobot/led\\b|/sys/class/leds\\b",
+    "piece": "led",
+    "sens": "lit"
+   },
+   {
+    "motif": "\\brobot/moteur\\b",
+    "piece": "moteur",
+    "sens": "lit"
+   }
+  ]
+ },
+ "couleurs": {
+  "led": 220,
+  "moteur": 215,
+  "capteur": 117,
+  "roues": 78,
+  "cerveau": 213
+ }
+}

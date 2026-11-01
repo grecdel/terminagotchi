@@ -1215,6 +1215,9 @@ def _main():
     if mode == "donnees":                      # tg donnees … : la Salle des Données (sur sa propre collection)
         from . import donnees
         sys.exit(donnees.commande(args[1:]) or 0)
+    if mode == "atelier":                      # tg atelier … : l'Atelier (le robot simulé, aucun vrai matériel)
+        from . import atelier
+        sys.exit(atelier.commande(args[1:]) or 0)
     if mode == "collection" and "--csv" in sys.argv[2:]:    # tg collection --csv : la collection en tableau (Salle des Données)
         creer_si_besoin()
         from . import donnees

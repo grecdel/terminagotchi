@@ -21,6 +21,8 @@ on:
             "app/src/main/java/fr/terminagotchi/DonneesAwk.kt", "app/src/main/java/fr/terminagotchi/DonneesSql.kt",
             "donnees/forge/**", "donnees/forge.json", "app/src/main/java/fr/terminagotchi/Forge.kt",
             "app/src/main/java/fr/terminagotchi/ForgeDessin.kt",
+            "donnees/atelier/**", "donnees/atelier.json", "app/src/main/java/fr/terminagotchi/Atelier.kt",
+            "app/src/main/java/fr/terminagotchi/AtelierDessin.kt",
             "pc/**", "app/src/main/assets/langues/**", "app/src/main/java/fr/terminagotchi/Port.kt",
             "app/src/main/java/fr/terminagotchi/Histoire.kt", "app/src/main/java/fr/terminagotchi/Jeu.kt",
             ".github/workflows/rejeu.yml"]
@@ -62,6 +64,7 @@ jobs:
           python3 pc/outils/vecteurs_donnees.py --verifier
           python3 pc/outils/vecteurs_classe.py --verifier
           python3 pc/outils/vecteurs_forge.py --verifier
+          python3 pc/outils/vecteurs_atelier.py --verifier
 
       - name: Rejeu des sorties dans un vrai bash (fiches et histoire du PC)
         run: LC_ALL=C.UTF-8 python3 pc/outils/rejeu_bash.py
@@ -204,3 +207,15 @@ jobs:
           set -o pipefail
           LC_ALL=C.UTF-8 python3 pc/outils/sim_donnees.py 2>&1 | tee /tmp/simdn.out || {
             grep -E "✖|Error|Traceback|line [0-9]" /tmp/simdn.out | head -20 | sed 's/^/::error::/'; exit 1; }
+
+      - name: L'Atelier (le robot simulé, la vraie boucle et le vrai cerveau.sh, aucun matériel, toybox / busybox / dash)
+        run: |
+          set -o pipefail
+          LC_ALL=C.UTF-8 python3 pc/outils/test_atelier.py 2>&1 | tee /tmp/ate.out || {
+            grep -E "✖|Error|Traceback|line [0-9]" /tmp/ate.out | head -20 | sed 's/^/::error::/'; exit 1; }
+
+      - name: Trois enfants visitent l'Atelier (docs/simulations/rapport_atelier.md)
+        run: |
+          set -o pipefail
+          LC_ALL=C.UTF-8 python3 pc/outils/sim_atelier.py 2>&1 | tee /tmp/simat.out || {
+            grep -E "✖|Error|Traceback|line [0-9]" /tmp/simat.out | head -20 | sed 's/^/::error::/'; exit 1; }

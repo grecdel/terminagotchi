@@ -2906,6 +2906,270 @@
    "verif": "echo $((12 * 100 / 25))"
   },
   {
+   "type": "logique",
+   "graine": 0,
+   "k": 0,
+   "params": {
+    "a": "0",
+    "b": "0"
+   },
+   "reponse": "0",
+   "verif": "echo $(( 0 && 0 ))"
+  },
+  {
+   "type": "logique",
+   "graine": 0,
+   "k": 1,
+   "params": {
+    "a": "0",
+    "b": "0"
+   },
+   "reponse": "0",
+   "verif": "echo $(( 0 && 0 ))"
+  },
+  {
+   "type": "logique",
+   "graine": 0,
+   "k": 2,
+   "params": {
+    "a": "0",
+    "b": "1"
+   },
+   "reponse": "0",
+   "verif": "echo $(( 0 && 1 ))"
+  },
+  {
+   "type": "logique",
+   "graine": 0,
+   "k": 3,
+   "params": {
+    "a": "1",
+    "b": "0"
+   },
+   "reponse": "0",
+   "verif": "echo $(( 1 && 0 ))"
+  },
+  {
+   "type": "logique",
+   "graine": 0,
+   "k": 4,
+   "params": {
+    "a": "1",
+    "b": "1"
+   },
+   "reponse": "1",
+   "verif": "echo $(( 1 && 1 ))"
+  },
+  {
+   "type": "logique",
+   "graine": 0,
+   "k": 5,
+   "params": {
+    "a": "0",
+    "b": "0"
+   },
+   "reponse": "0",
+   "verif": "echo $(( 0 && 0 ))"
+  },
+  {
+   "type": "logique",
+   "graine": 0,
+   "k": 6,
+   "params": {
+    "a": "0",
+    "b": "1"
+   },
+   "reponse": "0",
+   "verif": "echo $(( 0 && 1 ))"
+  },
+  {
+   "type": "logique",
+   "graine": 0,
+   "k": 7,
+   "params": {
+    "a": "0",
+    "b": "0"
+   },
+   "reponse": "0",
+   "verif": "echo $(( 0 && 0 ))"
+  },
+  {
+   "type": "logique",
+   "graine": 1761955200,
+   "k": 0,
+   "params": {
+    "a": "1",
+    "b": "1"
+   },
+   "reponse": "1",
+   "verif": "echo $(( 1 && 1 ))"
+  },
+  {
+   "type": "logique",
+   "graine": 1761955200,
+   "k": 1,
+   "params": {
+    "a": "1",
+    "b": "0"
+   },
+   "reponse": "0",
+   "verif": "echo $(( 1 && 0 ))"
+  },
+  {
+   "type": "logique",
+   "graine": 1761955200,
+   "k": 2,
+   "params": {
+    "a": "0",
+    "b": "0"
+   },
+   "reponse": "0",
+   "verif": "echo $(( 0 && 0 ))"
+  },
+  {
+   "type": "logique",
+   "graine": 1761955200,
+   "k": 3,
+   "params": {
+    "a": "0",
+    "b": "1"
+   },
+   "reponse": "0",
+   "verif": "echo $(( 0 && 1 ))"
+  },
+  {
+   "type": "logique",
+   "graine": 1761955200,
+   "k": 4,
+   "params": {
+    "a": "1",
+    "b": "1"
+   },
+   "reponse": "1",
+   "verif": "echo $(( 1 && 1 ))"
+  },
+  {
+   "type": "logique",
+   "graine": 1761955200,
+   "k": 5,
+   "params": {
+    "a": "1",
+    "b": "0"
+   },
+   "reponse": "0",
+   "verif": "echo $(( 1 && 0 ))"
+  },
+  {
+   "type": "logique",
+   "graine": 1761955200,
+   "k": 6,
+   "params": {
+    "a": "0",
+    "b": "1"
+   },
+   "reponse": "0",
+   "verif": "echo $(( 0 && 1 ))"
+  },
+  {
+   "type": "logique",
+   "graine": 1761955200,
+   "k": 7,
+   "params": {
+    "a": "0",
+    "b": "1"
+   },
+   "reponse": "0",
+   "verif": "echo $(( 0 && 1 ))"
+  },
+  {
+   "type": "logique",
+   "graine": 1099511627783,
+   "k": 0,
+   "params": {
+    "a": "1",
+    "b": "1"
+   },
+   "reponse": "1",
+   "verif": "echo $(( 1 && 1 ))"
+  },
+  {
+   "type": "logique",
+   "graine": 1099511627783,
+   "k": 1,
+   "params": {
+    "a": "0",
+    "b": "0"
+   },
+   "reponse": "0",
+   "verif": "echo $(( 0 && 0 ))"
+  },
+  {
+   "type": "logique",
+   "graine": 1099511627783,
+   "k": 2,
+   "params": {
+    "a": "1",
+    "b": "1"
+   },
+   "reponse": "1",
+   "verif": "echo $(( 1 && 1 ))"
+  },
+  {
+   "type": "logique",
+   "graine": 1099511627783,
+   "k": 3,
+   "params": {
+    "a": "0",
+    "b": "1"
+   },
+   "reponse": "0",
+   "verif": "echo $(( 0 && 1 ))"
+  },
+  {
+   "type": "logique",
+   "graine": 1099511627783,
+   "k": 4,
+   "params": {
+    "a": "0",
+    "b": "0"
+   },
+   "reponse": "0",
+   "verif": "echo $(( 0 && 0 ))"
+  },
+  {
+   "type": "logique",
+   "graine": 1099511627783,
+   "k": 5,
+   "params": {
+    "a": "1",
+    "b": "1"
+   },
+   "reponse": "1",
+   "verif": "echo $(( 1 && 1 ))"
+  },
+  {
+   "type": "logique",
+   "graine": 1099511627783,
+   "k": 6,
+   "params": {
+    "a": "1",
+    "b": "1"
+   },
+   "reponse": "1",
+   "verif": "echo $(( 1 && 1 ))"
+  },
+  {
+   "type": "logique",
+   "graine": 1099511627783,
+   "k": 7,
+   "params": {
+    "a": "1",
+    "b": "1"
+   },
+   "reponse": "1",
+   "verif": "echo $(( 1 && 1 ))"
+  },
+  {
    "type": "frequence",
    "graine": 0,
    "k": 0,

@@ -4042,6 +4042,184 @@
     "ExifTool (Phil Harvey), documentation : https://exiftool.org/ ; CNIL, « Photos : attention aux métadonnées » : https://www.cnil.fr/"
    ],
    "relu_par": null
+  },
+  "robot_fichiers": {
+   "motif": "(\\brobot/|^(tg\\s+)?atelier\\s+(plan|robot|grille|pas|ou|cases|led)\\b|plan_de_l_atelier|/sys/class/(leds|gpio)|\\bgpioset\\b|\\bpinctrl\\b)",
+   "enfant": "at.f.robot_fichiers.enfant",
+   "grands": "at.f.robot_fichiers.grands",
+   "vrai_terminal": [
+    {
+     "prepare": "mkdir -p robot && echo 0 > robot/led",
+     "cmd": "echo 1 > robot/led && cat robot/led",
+     "sortie": "1"
+    },
+    {
+     "prepare": "mkdir -p robot && echo 30 > robot/capteur_distance",
+     "cmd": "cat robot/capteur_distance",
+     "sortie": "30"
+    },
+    {
+     "prepare": "mkdir -p robot",
+     "cmd": "echo avance > robot/moteur && ls robot",
+     "sortie": "moteur"
+    },
+    {
+     "cmd": "ls /sys/class/leds",
+     "rejeu": "dépend de la machine (les LED de l'ordinateur)",
+     "motif": "."
+    },
+    {
+     "cmd": "atelier pas",
+     "rejeu": "commande du jeu",
+     "motif": "."
+    }
+   ],
+   "limite_image": "at.f.robot_fichiers.limite",
+   "idees_fausses": [
+    "at.f.robot_fichiers.idee"
+   ],
+   "sources": [
+    "Documentation du noyau Linux, sysfs : LED (/sys/class/leds) et GPIO (Documentation/admin-guide/gpio/sysfs.rst, remplacée par l'interface caractère libgpiod) : https://docs.kernel.org/",
+    "Raspberry Pi Documentation (Raspberry Pi OS, configuration, GPIO, pinctrl) : https://www.raspberrypi.com/documentation/",
+    "Bash Reference Manual (Conditional Constructs, Looping Constructs, Bash Conditional Expressions) : https://www.gnu.org/software/bash/manual/"
+   ],
+   "relu_par": null
+  },
+  "conditions_robot": {
+   "motif": "(^\\[\\s|^if\\b|\\bthen\\b|^(tg\\s+)?atelier\\s+(logique|verite|choix)\\b|-lt\\s)",
+   "enfant": "at.f.conditions_robot.enfant",
+   "grands": "at.f.conditions_robot.grands",
+   "vrai_terminal": [
+    {
+     "cmd": "[ 5 -lt 10 ] && echo vrai || echo faux",
+     "sortie": "vrai"
+    },
+    {
+     "cmd": "[ 50 -lt 10 ] && echo vrai || echo faux",
+     "sortie": "faux"
+    },
+    {
+     "cmd": "d=30; if [ \"$d\" -lt 10 ]; then echo obstacle; else echo libre; fi",
+     "sortie": "libre"
+    },
+    {
+     "cmd": "echo $(( 1 && 0 )) $(( 1 || 0 )) $(( !1 ))",
+     "sortie": "0 1 0"
+    }
+   ],
+   "limite_image": "at.f.conditions_robot.limite",
+   "idees_fausses": [
+    "at.f.conditions_robot.idee"
+   ],
+   "sources": [
+    "Bash Reference Manual (Conditional Constructs, Looping Constructs, Bash Conditional Expressions) : https://www.gnu.org/software/bash/manual/",
+    "POSIX.1-2024, Shell Command Language (if, for, while, test) : https://pubs.opengroup.org/onlinepubs/9799919799/",
+    "Algèbre de Boole : programme de NSI (première), « types et valeurs de base » : https://eduscol.education.fr/"
+   ],
+   "relu_par": null
+  },
+  "boucle_robot": {
+   "motif": "(^for\\b|^while\\b|\\bsleep\\b|cerveau|^(tg\\s+)?atelier\\s+(essai|defi|aide-cerveau)\\b|^(nano|edite|vi|vim)\\b.*\\.sh)",
+   "enfant": "at.f.boucle_robot.enfant",
+   "grands": "at.f.boucle_robot.grands",
+   "vrai_terminal": [
+    {
+     "cmd": "for i in 1 2 3; do echo tour $i; done",
+     "sortie": "tour 1\ntour 2\ntour 3"
+    },
+    {
+     "prepare": "printf 'd=$(cat c)\\nif [ \"$d\" -lt 10 ]; then echo droite; else echo avance; fi\\n' > cerveau.sh && echo 0 > c",
+     "cmd": "sh cerveau.sh",
+     "sortie": "droite"
+    },
+    {
+     "prepare": "printf 'd=$(cat c)\\nif [ \"$d\" -lt 10 ]; then echo droite; else echo avance; fi\\n' > cerveau.sh && echo 40 > c",
+     "cmd": "sh cerveau.sh",
+     "sortie": "avance"
+    },
+    {
+     "cmd": "n=0; while [ $n -lt 3 ]; do n=$((n + 1)); done; echo $n",
+     "sortie": "3"
+    },
+    {
+     "cmd": "for i in $(seq 20); do sh cerveau.sh; atelier pas; done",
+     "rejeu": "commande du jeu",
+     "motif": "."
+    }
+   ],
+   "limite_image": "at.f.boucle_robot.limite",
+   "idees_fausses": [
+    "at.f.boucle_robot.idee"
+   ],
+   "sources": [
+    "Bash Reference Manual (Conditional Constructs, Looping Constructs, Bash Conditional Expressions) : https://www.gnu.org/software/bash/manual/",
+    "POSIX.1-2024, Shell Command Language (if, for, while, test) : https://pubs.opengroup.org/onlinepubs/9799919799/",
+    "Arduino CLI, documentation (compile, upload, monitor) : https://arduino.github.io/arduino-cli/"
+   ],
+   "relu_par": null
+  },
+  "vrai_pi": {
+   "motif": "(^(tg\\s+)?atelier\\s+(pi|gpio|autonome)\\b|\\bcrontab\\b|\\bsystemctl\\b|journal\\.txt|command\\s+-v\\s+(gpioset|pinctrl))",
+   "enfant": "at.f.vrai_pi.enfant",
+   "grands": "at.f.vrai_pi.grands",
+   "vrai_terminal": [
+    {
+     "prepare": "mkdir -p robot && printf 'pas 1\\npas 2\\npas 3\\n' > robot/journal.txt",
+     "cmd": "tail -2 robot/journal.txt",
+     "sortie": "pas 2\npas 3"
+    },
+    {
+     "cmd": "command -v gpioset pinctrl || echo absent",
+     "rejeu": "dépend de la machine (un Raspberry Pi les a)",
+     "motif": "."
+    },
+    {
+     "cmd": "crontab -l",
+     "rejeu": "dépend de la machine (souvent « no crontab for … »)",
+     "motif": "."
+    }
+   ],
+   "limite_image": "at.f.vrai_pi.limite",
+   "idees_fausses": [
+    "at.f.vrai_pi.idee"
+   ],
+   "sources": [
+    "Raspberry Pi Documentation (Raspberry Pi OS, configuration, GPIO, pinctrl) : https://www.raspberrypi.com/documentation/",
+    "crontab(5) et systemd.timer(5), pages de manuel : https://man7.org/linux/man-pages/",
+    "Documentation du noyau Linux, sysfs : LED (/sys/class/leds) et GPIO (Documentation/admin-guide/gpio/sysfs.rst, remplacée par l'interface caractère libgpiod) : https://docs.kernel.org/"
+   ],
+   "relu_par": null
+  },
+  "embarque": {
+   "motif": "(^(tg\\s+)?atelier\\s+(embarque|reflexe|arduino|telephone)\\b|^time\\b|arduino-cli|esptool|/dev/tty|^(lampe|vibre|batterie)\\b)",
+   "enfant": "at.f.embarque.enfant",
+   "grands": "at.f.embarque.grands",
+   "vrai_terminal": [
+    {
+     "cmd": "echo $(( 50 * 200 / 1000 ))",
+     "sortie": "10"
+    },
+    {
+     "cmd": "time sleep 0",
+     "rejeu": "le temps change à chaque fois",
+     "motif": "."
+    },
+    {
+     "cmd": "command -v arduino-cli esptool.py || echo absent",
+     "rejeu": "dépend de la machine",
+     "motif": "."
+    }
+   ],
+   "limite_image": "at.f.embarque.limite",
+   "idees_fausses": [
+    "at.f.embarque.idee"
+   ],
+   "sources": [
+    "Notions de systèmes temps réel et de microcontrôleurs : programme de technologie du cycle 4 et de NSI (architectures matérielles) : https://eduscol.education.fr/",
+    "Arduino CLI, documentation (compile, upload, monitor) : https://arduino.github.io/arduino-cli/",
+    "Espressif, esptool (documentation) : https://docs.espressif.com/projects/esptool/"
+   ],
+   "relu_par": null
   }
  },
  "etapes": {
@@ -4323,6 +4501,31 @@
   "fo4.2": {
    "maths": [
     "priorites"
+   ]
+  },
+  "at2.3": {
+   "maths": [
+    "coordonnees"
+   ]
+  },
+  "at2.6": {
+   "maths": [
+    "multiplication"
+   ]
+  },
+  "at3.4": {
+   "maths": [
+    "logique"
+   ]
+  },
+  "at3.6": {
+   "maths": [
+    "logique"
+   ]
+  },
+  "at7.3": {
+   "maths": [
+    "multiplication"
    ]
   }
  },
@@ -5178,6 +5381,50 @@
    "apres": "grep -c Exif multimedia/photo_exemple.jpg",
    "sortie": "0",
    "pourquoi": "hist.fo7.7.bravo : plus aucune métadonnée Exif"
+  },
+  "at0.1": {
+   "contient": [
+    "plan_de_l_atelier.txt",
+    "carnet_de_l_atelier.txt",
+    "robot"
+   ],
+   "pourquoi": "hist.at0.1.bravo : le plan, le carnet, le robot"
+  },
+  "at1.0": {
+   "contient": [
+    "capteur_distance",
+    "led",
+    "moteur"
+   ],
+   "pourquoi": "hist.at1.0.bravo : trois fichiers, trois pièces du robot"
+  },
+  "at1.1": {
+   "sortie": "0",
+   "pourquoi": "hist.at1.1.bravo : 0, la LED est éteinte"
+  },
+  "at1.5": {
+   "egal_jeu": "capteur",
+   "pourquoi": "hist.at1.5.bravo : le capteur donne une distance en centimètres"
+  },
+  "at3.1": {
+   "sortie": "vrai",
+   "pourquoi": "hist.at3.1.bravo : 5 est plus petit que 10, c'est vrai"
+  },
+  "at3.2": {
+   "egal_jeu": "obstacle_libre",
+   "pourquoi": "hist.at3.2.bravo : le robot lit son capteur et décide"
+  },
+  "at4.0": {
+   "egal_jeu": "capteur3",
+   "pourquoi": "hist.at4.0.bravo : trois lectures, une par tour"
+  },
+  "at4.2": {
+   "motif": "robot/capteur_distance",
+   "pourquoi": "hist.at4.2.bravo : le cerveau lit le capteur"
+  },
+  "at6.5": {
+   "egal_jeu": "journal",
+   "pourquoi": "hist.at6.5.bravo : les dernières lignes du journal du robot"
   }
  },
  "maths": {
@@ -5653,9 +5900,48 @@
    ]
   },
   "logique": {
-   "fiche": false,
+   "fiche": true,
    "titre": "maths.logique.titre",
-   "prerequis": []
+   "question": "maths.logique.question",
+   "prerequis": [],
+   "niveau": "primaire",
+   "enfant": "maths.logique.enfant",
+   "grands": "maths.logique.grands",
+   "vrai_terminal": [
+    {
+     "cmd": "echo $(( 1 && 1 )) $(( 1 && 0 ))",
+     "sortie": "1 0"
+    },
+    {
+     "cmd": "echo $(( 0 || 1 )) $(( 0 || 0 ))",
+     "sortie": "1 0"
+    },
+    {
+     "cmd": "echo $(( !0 )) $(( !1 ))",
+     "sortie": "1 0"
+    }
+   ],
+   "limite_image": "maths.logique.limite",
+   "idees_fausses": [
+    "maths.logique.idee"
+   ],
+   "exemples": [
+    "maths.logique.ex1",
+    "maths.logique.ex2",
+    "maths.logique.ex3"
+   ],
+   "exercice": {
+    "type": "logique",
+    "consigne": "maths.logique.exo",
+    "erreur": "maths.logique.erreur"
+   },
+   "mots_cles": "maths.logique.kw",
+   "sources": [
+    "Bash, Shell Arithmetic (&&, ||, ! : 1 = vrai, 0 = faux) : https://www.gnu.org/software/bash/manual/html_node/Shell-Arithmetic.html",
+    "Programme de NSI (première), booléens et tables de vérité : https://eduscol.education.fr/",
+    "G. Boole, An Investigation of the Laws of Thought (1854)"
+   ],
+   "relu_par": null
   },
   "frequence": {
    "fiche": true,
@@ -6784,7 +7070,67 @@
     "machine",
     "plante"
    ],
-   "maths": [],
+   "requis": [
+    "n4"
+   ],
+   "chapitre": "robots",
+   "paliers": [
+    "at0",
+    "at1",
+    "at2",
+    "at3",
+    "at4",
+    "at5",
+    "at6",
+    "at7"
+   ],
+   "attirance": {
+    "cmds": [
+     "atelier",
+     "sleep",
+     "crontab",
+     "gpioset",
+     "pinctrl",
+     "arduino-cli"
+    ],
+    "familles": [
+     "Constructs",
+     "Sylvestres"
+    ]
+   },
+   "ponts": {
+    "ssh": [
+     "port"
+    ],
+    "nano": [
+     "forge"
+    ],
+    "for": [
+     "forge"
+    ],
+    "if": [
+     "forge"
+    ],
+    "systemctl": [
+     "controle"
+    ],
+    "lscpu": [
+     "machines"
+    ],
+    "lora": [
+     "ondes"
+    ]
+   },
+   "reutilise": {
+    "chapitres": [
+     "telephone"
+    ],
+    "lecons": [
+     "android0",
+     "android3",
+     "telephone0"
+    ]
+   },
    "exploits": [
     {
      "id": "atelier.robot",
@@ -6792,7 +7138,16 @@
      "recompense": "variante"
     }
    ],
-   "variantes_reservees": []
+   "maths": [
+    "coordonnees",
+    "logique",
+    "multiplication"
+   ],
+   "variantes_reservees": [
+    "tisonnier:mecanique",
+    "groinfer:rouille",
+    "lampignon:forêt"
+   ]
   },
   {
    "id": "crypte",
