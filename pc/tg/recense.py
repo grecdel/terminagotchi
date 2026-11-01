@@ -30,6 +30,9 @@ def compte(state):
 
 
 def requete(url, methode="GET", corps=None, cle=None, delai=10):
+    from . import classe
+    if classe.actif_sur_disque():              # mode classe : rien ne part de cet ordinateur
+        return {"erreur": t("classe.hors_ligne")}
     data = json.dumps(corps).encode("utf-8") if corps is not None else None
     req = urllib.request.Request(url, data=data, method=methode,
                                  headers={"content-type": "application/json", "user-agent": "terminagotchi-pc"})
@@ -50,6 +53,9 @@ def requete(url, methode="GET", corps=None, cle=None, delai=10):
 def serveur(state):
     """Adresse du site : réglée à la main, sinon publiée par le déploiement automatique."""
     c = compte(state)
+    from . import classe
+    if classe.actif(state):                    # mode classe : pas même l'adresse du site
+        return ""
     if c.get("serveur"):
         return c["serveur"].rstrip("/")
     try:
@@ -149,6 +155,9 @@ def synchroniser(forcer=False):
         if st is None:
             return t("rec.pas_de_creature")
         core.migrate(st)
+        from . import classe
+        if classe.actif(st):                   # mode classe : pas de synchronisation
+            return t("classe.hors_ligne") if forcer else None
         c = compte(st)
         if not c.get("cle"):
             return None if not forcer else t("rec.pas_de_compte")

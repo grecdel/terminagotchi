@@ -825,6 +825,8 @@ def avancer(state, les):
         if msg:
             core.log(state, msg)
             core.say(state, msg, 16)
+    from . import classe
+    classe.etape(state, les, state["step"], step)        # mode classe : le cran de l'étape (A montrée, C cachée)
     state["step"] += 1
     core.animer(state, "content")
     from . import satiete
@@ -946,6 +948,8 @@ def tick_lecon(state, lines, cwds, avants=None):
         step = les["steps"][state["step"]]
         conseil = placement.masquer(state, step, indice(state, step, [l for l, _ in tapees], tapees, morcs))
         placement.rate_une_fois(state, step)          # mode sans aide : 3 essais ratés montrent la commande
+        from . import classe
+        classe.rate(state, les, state["step"])         # mode classe : là où ça bloque (bilan)
         if conseil and conseil != state.get("indice_lecon"):
             state["indice_lecon"] = conseil
             core.say(state, "💡 " + conseil, 12)

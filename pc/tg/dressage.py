@@ -600,10 +600,12 @@ def commencer(state, sauvage):
     if repue:
         debutant += satiete.DRESSAGE_TEMPS
     fam_de = {id(x): f for f, v in EPREUVES.items() for x in v}
+    from . import classe
+    sans_chrono = classe.sans_chrono(state)    # mode classe, option S : les chronos sont coupés
     state["dressage"] = {
         "sauvage": sauvage["f"], "espece": e["nom"], "shiny": sauvage.get("shiny", False), "zone": sauvage["zone"],
         "taches": [f"{fam_de[id(x)]}:{x['id']}" for x in taches], "faites": [], "lignes": [],
-        "debut": time.time(), "duree": None if premiere else DUREE[rar] + bo["temps"] + debutant, "x": {}, "lecon": premiere,
+        "debut": time.time(), "duree": None if premiere or sans_chrono else DUREE[rar] + bo["temps"] + debutant, "x": {}, "lecon": premiere,
         "ind": ind, "rarete": rar, "variante": ind.get("variante", "classique"),
         "mefiance": 100 - bo["mefiance"], "seconde": bo["seconde_chance"], "examine": False,
         "exemple_tout_de_suite": n_caps < 5 or repue,  # I10 : un débutant voit l'exemple tout de suite

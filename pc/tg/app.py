@@ -1037,7 +1037,7 @@ def veille():
 
 def aide():
     return "\n".join(langue.remplir(l, {}) for l in langue.liste("app.aide") + langue.liste("app.aide.histoire")
-                     + [t("env.aide"), t("sat.aide"), t("aura.aide"), t("ent.aide"), t("esp.aide"), "", t("app.licences")])
+                     + [t("env.aide"), t("sat.aide"), t("aura.aide"), t("ent.aide"), t("esp.aide"), t("classe.aide.courte"), "", t("app.licences")])
 
 
 def commande_histoire(mode, args):
@@ -1156,6 +1156,12 @@ def _main():
         sortie = []
         core.modifier(lambda s: sortie.append(placement.commande(s, args[1:] if mode == "sansaide" else [])))
         print(sortie[0] if sortie else "")
+        return
+    if mode in ("classe", "class"):            # tg classe … : le mode classe, 100 % local (classe.py)
+        if args[1:2] and args[1].lower() in ("code", "rejoindre", "join"):
+            creer_si_besoin()
+        from . import classe
+        print(classe.commande(args[1:]))
         return
     if mode == "debloquer":                    # tg debloquer tout : pour les parents et les tests (confirmation)
         creer_si_besoin()

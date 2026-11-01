@@ -463,7 +463,7 @@ console.log("Salle d'entraînement : exercices vérifiés, records, badges, Star
 
 // chaque page dans chaque langue
 const pages = ["/", "/classement", "/records", "/bestiaire", "/bestiaire/braisillon", "/captures", "/captures?shiny=1", "/joueur/Grec", "/joueur/Personne", lienBadge, "/badge/0123456789abcdef", "/ctf", "/nimporte", "/compte", "/connexion?t=0",
-  "/parents", "/soutenir", "/confidentialite", "/mentions-legales"];
+  "/parents", "/enseignants", "/soutenir", "/confidentialite", "/mentions-legales"];
 let rendues = 0;
 const rates = [];
 for (const l of LANGUES) {
@@ -585,6 +585,27 @@ console.log("Pied de page, pages pour les adultes, polices locales");
   verifier(r.t.includes("parents") && r.t.includes("bientôt") && !/liberapay\.com|ko-fi\.com/.test(r.t), "soutenir : pour les adultes, « bientôt » tant qu'aucun lien n'est rempli");
   r = await appel("GET", "/parents?lang=en");
   verifier(r.t.includes("For parents") && r.t.includes("~/terrain_terminagotchi") && r.t.includes("~/.terminagotchi"), "parents (anglais) : ce que fait le jeu sur l'ordinateur");
+  {
+    // la page des enseignants : le mode classe 100 % local (pc/tg/classe.py), mêmes codes de séance que le jeu
+    const { codeSeance, LETTRES } = await import("../src/enseignants_fr.js");
+    const V = JSON.parse(readFileSync(new URL("../../donnees/classe/vecteurs.json", import.meta.url), "utf8"));
+    verifier(LETTRES === V.lettres && V.codes.every((v) => codeSeance(v.n, v.options) === v.code) && V.codes.length === 152,
+      "codes de séance : les 152 vecteurs du jeu (donnees/classe/vecteurs.json) refaits à l'identique");
+    r = await appel("GET", "/enseignants");
+    const codes = [...r.t.matchAll(/<code>(\d\d-[AGS]+-[A-Z])<\/code>/g)].map((m) => m[1]);
+    verifier(r.t.includes("Pour les enseignants et les parents") && new Set(codes).size === 54 && codes.every((c) => V.codes.some((v) => v.code === c))
+      && r.t.includes("05-GS-K") && r.t.includes("Rien n'est envoyé") && r.t.includes("Reporté") && r.t.includes("avis CNIL")
+      && r.t.includes("fiches_enseignant.pdf") && r.t.includes('href="/parents"'),
+      "enseignants : 18 chapitres × 3 codes justes, rien n'est envoyé, tableau de bord en ligne reporté, fiches PDF, lien parents");
+    const contenu = r.t.slice(r.t.indexOf('<div class="texte-long">'), r.t.indexOf("</section>"));
+    verifier(contenu.length > 5000 && !/<form|<script|<input|fetch\(|\/api\//.test(contenu),
+      "enseignants : le contenu n'a ni formulaire, ni champ, ni script, ni appel à l'API (rien à envoyer)");
+    r = await appel("GET", "/enseignants?lang=ar");
+    verifier(r.t.includes("للمعلّمين والأولياء") && r.t.includes('<section lang="fr" dir="ltr">') && r.t.includes("05-GS-K"),
+      "enseignants (arabe) : résumé traduit, texte complet en français isolé (ltr)");
+    r = await appel("GET", "/");
+    verifier(r.t.includes('href="/enseignants"'), "pied de page : lien vers la page des enseignants");
+  }
   r = await appel("GET", "/confidentialite");
   verifier(r.t.includes("pour les enfants") && r.t.includes("Data Privacy Framework") && r.t.includes("CNIL") && r.t.includes("tg_session")
     && r.t.includes("Adresse IP") && r.t.includes("au plus 24 heures") && r.t.includes("après 3 ans"), "confidentialité : enfants, IP, cookies, durées, CNIL");

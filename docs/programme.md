@@ -1406,6 +1406,29 @@ données personnelles, et en sachant exactement ce que ses élèves apprennent.
 | **Validation** | comité de relecture (§ 7.1), **classes pilotes** volontaires, mesure avant / après (petit test de positionnement, déjà présent : `placement`) |
 | **Confiance** | code public, pas de publicité, pas d'achat, pas de collecte inutile ; page « Pour les enseignants et les parents » sur le site |
 
+**Ce qui est fait (1er novembre 2026) : un mode classe 100 % LOCAL** (décision : aucune donnée d'élève envoyée, aucun
+compte enseignant). Il remplace pour l'instant la création de classe sur le site et le tableau de bord en ligne :
+
+- `pc/tg/classe.py`, `tg classe` : un **code de séance** (`05-GS-K` : chapitre visé, options A sans aide, G grand écran,
+  S sans chrono, lettre de contrôle) qui ne règle QUE le jeu ; l'élève saisit un **pseudonyme** (2 à 16 lettres ou
+  chiffres, sans espace). Pendant la séance : aucune synchronisation, aucune requête du recensement (`recense.requete`,
+  `serveur`, `synchroniser`, `accueil._rafraichir_compte` refusent), faim en pause, notifications coupées ;
+  `tg classe fin` rend les réglages d'avant, `tg classe effacer` oublie tout.
+- **Bilan** (`tg classe bilan [fichier]`) : à l'écran, en .txt à imprimer et en .csv dans le dossier personnel, remis
+  par l'élève lui-même ; crans A (montré), C (sans aide, commande cachée), D (exercice d'entraînement vérifié) ; le
+  cran B n'existe pas encore dans le jeu et n'est pas inventé ; blocages = 3 essais ou plus sans avancer.
+  Côté enseignant : `tg classe rassembler <dossier>` → `bilan_de_classe.csv` et « où la classe bloque », trié par
+  date et pseudonyme, jamais de classement.
+- **Site** : page statique `/enseignants` (`site/src/enseignants_fr.js`, résumé traduit en 14 langues), tous les codes
+  calculés comme le jeu (vecteurs `donnees/classe/vecteurs.json`). Pas encore déployée.
+- **Fiches enseignant** : `docs/classe/fiches_enseignant.md` et `.pdf` (`pc/outils/fiches_classe.py`) : une fiche par
+  chapitre 1 à 10, un tableau des mondes 11 à 18, correspondance indicative avec les programmes (à faire valider).
+- Tests : `pc/outils/test_classe.py` (aucune connexion réseau ouverte, socket espionné), `site/test/test.mjs`.
+
+**Reporté** : le tableau de bord enseignant EN LIGNE (classes créées sur le site, suivi à distance) : il demande un
+serveur, une décision du propriétaire et un avis CNIL. **Pas encore fait** : le mode classe sur Android, la police
+pour la dyslexie, les palettes pour daltoniens, les défis de classe, le certificat de monde imprimable.
+
 ### 7.8 Ordre de mise en œuvre proposé (après les priorités en cours) — remplacé par le § 7.14
 
 1. **Charte de rigueur** : format `programme.json` avec les champs du § 7.1, vérificateur statique, rejeu des

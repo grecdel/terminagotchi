@@ -709,6 +709,8 @@ def reussir(state, cwd=None):
            "e": c["e"], "m": m}
     e["envoyer"] = (e["envoyer"] + [run])[-MAX_ENVOI:]
     e["cours"] = None
+    from . import classe
+    classe.exercice(state, typ)                          # mode classe : un exercice vérifié (cran D)
     xp = XP_BASE + XP_MEDAILLE[m] + (XP_RECORD if nouveau and rec is not None else 0)
     core.add_xp(state, xp)
     from . import envies

@@ -1,0 +1,796 @@
+{
+ "note": "pc/outils/vecteurs_classe.py",
+ "lettres": "ABCDEFGHJKMNPQRSTUVWXYZ",
+ "codes": [
+  {
+   "n": 0,
+   "options": "",
+   "code": "00-G"
+  },
+  {
+   "n": 0,
+   "options": "A",
+   "code": "00-A-U"
+  },
+  {
+   "n": 0,
+   "options": "G",
+   "code": "00-G-P"
+  },
+  {
+   "n": 0,
+   "options": "S",
+   "code": "00-S-C"
+  },
+  {
+   "n": 0,
+   "options": "AG",
+   "code": "00-AG-C"
+  },
+  {
+   "n": 0,
+   "options": "AS",
+   "code": "00-AS-E"
+  },
+  {
+   "n": 0,
+   "options": "GS",
+   "code": "00-GS-Z"
+  },
+  {
+   "n": 0,
+   "options": "AGS",
+   "code": "00-AGS-D"
+  },
+  {
+   "n": 1,
+   "options": "",
+   "code": "01-J"
+  },
+  {
+   "n": 1,
+   "options": "A",
+   "code": "01-A-W"
+  },
+  {
+   "n": 1,
+   "options": "G",
+   "code": "01-G-R"
+  },
+  {
+   "n": 1,
+   "options": "S",
+   "code": "01-S-E"
+  },
+  {
+   "n": 1,
+   "options": "AG",
+   "code": "01-AG-E"
+  },
+  {
+   "n": 1,
+   "options": "AS",
+   "code": "01-AS-G"
+  },
+  {
+   "n": 1,
+   "options": "GS",
+   "code": "01-GS-B"
+  },
+  {
+   "n": 1,
+   "options": "AGS",
+   "code": "01-AGS-F"
+  },
+  {
+   "n": 2,
+   "options": "",
+   "code": "02-M"
+  },
+  {
+   "n": 2,
+   "options": "A",
+   "code": "02-A-Y"
+  },
+  {
+   "n": 2,
+   "options": "G",
+   "code": "02-G-T"
+  },
+  {
+   "n": 2,
+   "options": "S",
+   "code": "02-S-G"
+  },
+  {
+   "n": 2,
+   "options": "AG",
+   "code": "02-AG-G"
+  },
+  {
+   "n": 2,
+   "options": "AS",
+   "code": "02-AS-J"
+  },
+  {
+   "n": 2,
+   "options": "GS",
+   "code": "02-GS-D"
+  },
+  {
+   "n": 2,
+   "options": "AGS",
+   "code": "02-AGS-H"
+  },
+  {
+   "n": 3,
+   "options": "",
+   "code": "03-P"
+  },
+  {
+   "n": 3,
+   "options": "A",
+   "code": "03-A-A"
+  },
+  {
+   "n": 3,
+   "options": "G",
+   "code": "03-G-V"
+  },
+  {
+   "n": 3,
+   "options": "S",
+   "code": "03-S-J"
+  },
+  {
+   "n": 3,
+   "options": "AG",
+   "code": "03-AG-J"
+  },
+  {
+   "n": 3,
+   "options": "AS",
+   "code": "03-AS-M"
+  },
+  {
+   "n": 3,
+   "options": "GS",
+   "code": "03-GS-F"
+  },
+  {
+   "n": 3,
+   "options": "AGS",
+   "code": "03-AGS-K"
+  },
+  {
+   "n": 4,
+   "options": "",
+   "code": "04-R"
+  },
+  {
+   "n": 4,
+   "options": "A",
+   "code": "04-A-C"
+  },
+  {
+   "n": 4,
+   "options": "G",
+   "code": "04-G-X"
+  },
+  {
+   "n": 4,
+   "options": "S",
+   "code": "04-S-M"
+  },
+  {
+   "n": 4,
+   "options": "AG",
+   "code": "04-AG-M"
+  },
+  {
+   "n": 4,
+   "options": "AS",
+   "code": "04-AS-P"
+  },
+  {
+   "n": 4,
+   "options": "GS",
+   "code": "04-GS-H"
+  },
+  {
+   "n": 4,
+   "options": "AGS",
+   "code": "04-AGS-N"
+  },
+  {
+   "n": 5,
+   "options": "",
+   "code": "05-T"
+  },
+  {
+   "n": 5,
+   "options": "A",
+   "code": "05-A-E"
+  },
+  {
+   "n": 5,
+   "options": "G",
+   "code": "05-G-Z"
+  },
+  {
+   "n": 5,
+   "options": "S",
+   "code": "05-S-P"
+  },
+  {
+   "n": 5,
+   "options": "AG",
+   "code": "05-AG-P"
+  },
+  {
+   "n": 5,
+   "options": "AS",
+   "code": "05-AS-R"
+  },
+  {
+   "n": 5,
+   "options": "GS",
+   "code": "05-GS-K"
+  },
+  {
+   "n": 5,
+   "options": "AGS",
+   "code": "05-AGS-Q"
+  },
+  {
+   "n": 6,
+   "options": "",
+   "code": "06-V"
+  },
+  {
+   "n": 6,
+   "options": "A",
+   "code": "06-A-G"
+  },
+  {
+   "n": 6,
+   "options": "G",
+   "code": "06-G-B"
+  },
+  {
+   "n": 6,
+   "options": "S",
+   "code": "06-S-R"
+  },
+  {
+   "n": 6,
+   "options": "AG",
+   "code": "06-AG-R"
+  },
+  {
+   "n": 6,
+   "options": "AS",
+   "code": "06-AS-T"
+  },
+  {
+   "n": 6,
+   "options": "GS",
+   "code": "06-GS-N"
+  },
+  {
+   "n": 6,
+   "options": "AGS",
+   "code": "06-AGS-S"
+  },
+  {
+   "n": 7,
+   "options": "",
+   "code": "07-X"
+  },
+  {
+   "n": 7,
+   "options": "A",
+   "code": "07-A-J"
+  },
+  {
+   "n": 7,
+   "options": "G",
+   "code": "07-G-D"
+  },
+  {
+   "n": 7,
+   "options": "S",
+   "code": "07-S-T"
+  },
+  {
+   "n": 7,
+   "options": "AG",
+   "code": "07-AG-T"
+  },
+  {
+   "n": 7,
+   "options": "AS",
+   "code": "07-AS-V"
+  },
+  {
+   "n": 7,
+   "options": "GS",
+   "code": "07-GS-Q"
+  },
+  {
+   "n": 7,
+   "options": "AGS",
+   "code": "07-AGS-U"
+  },
+  {
+   "n": 8,
+   "options": "",
+   "code": "08-Z"
+  },
+  {
+   "n": 8,
+   "options": "A",
+   "code": "08-A-M"
+  },
+  {
+   "n": 8,
+   "options": "G",
+   "code": "08-G-F"
+  },
+  {
+   "n": 8,
+   "options": "S",
+   "code": "08-S-V"
+  },
+  {
+   "n": 8,
+   "options": "AG",
+   "code": "08-AG-V"
+  },
+  {
+   "n": 8,
+   "options": "AS",
+   "code": "08-AS-X"
+  },
+  {
+   "n": 8,
+   "options": "GS",
+   "code": "08-GS-S"
+  },
+  {
+   "n": 8,
+   "options": "AGS",
+   "code": "08-AGS-W"
+  },
+  {
+   "n": 9,
+   "options": "",
+   "code": "09-B"
+  },
+  {
+   "n": 9,
+   "options": "A",
+   "code": "09-A-P"
+  },
+  {
+   "n": 9,
+   "options": "G",
+   "code": "09-G-H"
+  },
+  {
+   "n": 9,
+   "options": "S",
+   "code": "09-S-X"
+  },
+  {
+   "n": 9,
+   "options": "AG",
+   "code": "09-AG-X"
+  },
+  {
+   "n": 9,
+   "options": "AS",
+   "code": "09-AS-Z"
+  },
+  {
+   "n": 9,
+   "options": "GS",
+   "code": "09-GS-U"
+  },
+  {
+   "n": 9,
+   "options": "AGS",
+   "code": "09-AGS-Y"
+  },
+  {
+   "n": 10,
+   "options": "",
+   "code": "10-H"
+  },
+  {
+   "n": 10,
+   "options": "A",
+   "code": "10-A-V"
+  },
+  {
+   "n": 10,
+   "options": "G",
+   "code": "10-G-Q"
+  },
+  {
+   "n": 10,
+   "options": "S",
+   "code": "10-S-D"
+  },
+  {
+   "n": 10,
+   "options": "AG",
+   "code": "10-AG-D"
+  },
+  {
+   "n": 10,
+   "options": "AS",
+   "code": "10-AS-F"
+  },
+  {
+   "n": 10,
+   "options": "GS",
+   "code": "10-GS-A"
+  },
+  {
+   "n": 10,
+   "options": "AGS",
+   "code": "10-AGS-E"
+  },
+  {
+   "n": 11,
+   "options": "",
+   "code": "11-K"
+  },
+  {
+   "n": 11,
+   "options": "A",
+   "code": "11-A-X"
+  },
+  {
+   "n": 11,
+   "options": "G",
+   "code": "11-G-S"
+  },
+  {
+   "n": 11,
+   "options": "S",
+   "code": "11-S-F"
+  },
+  {
+   "n": 11,
+   "options": "AG",
+   "code": "11-AG-F"
+  },
+  {
+   "n": 11,
+   "options": "AS",
+   "code": "11-AS-H"
+  },
+  {
+   "n": 11,
+   "options": "GS",
+   "code": "11-GS-C"
+  },
+  {
+   "n": 11,
+   "options": "AGS",
+   "code": "11-AGS-G"
+  },
+  {
+   "n": 12,
+   "options": "",
+   "code": "12-N"
+  },
+  {
+   "n": 12,
+   "options": "A",
+   "code": "12-A-Z"
+  },
+  {
+   "n": 12,
+   "options": "G",
+   "code": "12-G-U"
+  },
+  {
+   "n": 12,
+   "options": "S",
+   "code": "12-S-H"
+  },
+  {
+   "n": 12,
+   "options": "AG",
+   "code": "12-AG-H"
+  },
+  {
+   "n": 12,
+   "options": "AS",
+   "code": "12-AS-K"
+  },
+  {
+   "n": 12,
+   "options": "GS",
+   "code": "12-GS-E"
+  },
+  {
+   "n": 12,
+   "options": "AGS",
+   "code": "12-AGS-J"
+  },
+  {
+   "n": 13,
+   "options": "",
+   "code": "13-Q"
+  },
+  {
+   "n": 13,
+   "options": "A",
+   "code": "13-A-B"
+  },
+  {
+   "n": 13,
+   "options": "G",
+   "code": "13-G-W"
+  },
+  {
+   "n": 13,
+   "options": "S",
+   "code": "13-S-K"
+  },
+  {
+   "n": 13,
+   "options": "AG",
+   "code": "13-AG-K"
+  },
+  {
+   "n": 13,
+   "options": "AS",
+   "code": "13-AS-N"
+  },
+  {
+   "n": 13,
+   "options": "GS",
+   "code": "13-GS-G"
+  },
+  {
+   "n": 13,
+   "options": "AGS",
+   "code": "13-AGS-M"
+  },
+  {
+   "n": 14,
+   "options": "",
+   "code": "14-S"
+  },
+  {
+   "n": 14,
+   "options": "A",
+   "code": "14-A-D"
+  },
+  {
+   "n": 14,
+   "options": "G",
+   "code": "14-G-Y"
+  },
+  {
+   "n": 14,
+   "options": "S",
+   "code": "14-S-N"
+  },
+  {
+   "n": 14,
+   "options": "AG",
+   "code": "14-AG-N"
+  },
+  {
+   "n": 14,
+   "options": "AS",
+   "code": "14-AS-Q"
+  },
+  {
+   "n": 14,
+   "options": "GS",
+   "code": "14-GS-J"
+  },
+  {
+   "n": 14,
+   "options": "AGS",
+   "code": "14-AGS-P"
+  },
+  {
+   "n": 15,
+   "options": "",
+   "code": "15-U"
+  },
+  {
+   "n": 15,
+   "options": "A",
+   "code": "15-A-F"
+  },
+  {
+   "n": 15,
+   "options": "G",
+   "code": "15-G-A"
+  },
+  {
+   "n": 15,
+   "options": "S",
+   "code": "15-S-Q"
+  },
+  {
+   "n": 15,
+   "options": "AG",
+   "code": "15-AG-Q"
+  },
+  {
+   "n": 15,
+   "options": "AS",
+   "code": "15-AS-S"
+  },
+  {
+   "n": 15,
+   "options": "GS",
+   "code": "15-GS-M"
+  },
+  {
+   "n": 15,
+   "options": "AGS",
+   "code": "15-AGS-R"
+  },
+  {
+   "n": 16,
+   "options": "",
+   "code": "16-W"
+  },
+  {
+   "n": 16,
+   "options": "A",
+   "code": "16-A-H"
+  },
+  {
+   "n": 16,
+   "options": "G",
+   "code": "16-G-C"
+  },
+  {
+   "n": 16,
+   "options": "S",
+   "code": "16-S-S"
+  },
+  {
+   "n": 16,
+   "options": "AG",
+   "code": "16-AG-S"
+  },
+  {
+   "n": 16,
+   "options": "AS",
+   "code": "16-AS-U"
+  },
+  {
+   "n": 16,
+   "options": "GS",
+   "code": "16-GS-P"
+  },
+  {
+   "n": 16,
+   "options": "AGS",
+   "code": "16-AGS-T"
+  },
+  {
+   "n": 17,
+   "options": "",
+   "code": "17-Y"
+  },
+  {
+   "n": 17,
+   "options": "A",
+   "code": "17-A-K"
+  },
+  {
+   "n": 17,
+   "options": "G",
+   "code": "17-G-E"
+  },
+  {
+   "n": 17,
+   "options": "S",
+   "code": "17-S-U"
+  },
+  {
+   "n": 17,
+   "options": "AG",
+   "code": "17-AG-U"
+  },
+  {
+   "n": 17,
+   "options": "AS",
+   "code": "17-AS-W"
+  },
+  {
+   "n": 17,
+   "options": "GS",
+   "code": "17-GS-R"
+  },
+  {
+   "n": 17,
+   "options": "AGS",
+   "code": "17-AGS-V"
+  },
+  {
+   "n": 18,
+   "options": "",
+   "code": "18-A"
+  },
+  {
+   "n": 18,
+   "options": "A",
+   "code": "18-A-N"
+  },
+  {
+   "n": 18,
+   "options": "G",
+   "code": "18-G-G"
+  },
+  {
+   "n": 18,
+   "options": "S",
+   "code": "18-S-W"
+  },
+  {
+   "n": 18,
+   "options": "AG",
+   "code": "18-AG-W"
+  },
+  {
+   "n": 18,
+   "options": "AS",
+   "code": "18-AS-Y"
+  },
+  {
+   "n": 18,
+   "options": "GS",
+   "code": "18-GS-T"
+  },
+  {
+   "n": 18,
+   "options": "AGS",
+   "code": "18-AGS-X"
+  }
+ ],
+ "faux": [
+  {
+   "code": "05-GS-X",
+   "lu": null
+  },
+  {
+   "code": "05-SG-K",
+   "lu": null
+  },
+  {
+   "code": "5-GS-K",
+   "lu": null
+  },
+  {
+   "code": "05-GZ-K",
+   "lu": null
+  },
+  {
+   "code": "",
+   "lu": null
+  },
+  {
+   "code": "AB-C",
+   "lu": null
+  },
+  {
+   "code": "05-GGS-K",
+   "lu": null
+  }
+ ]
+}

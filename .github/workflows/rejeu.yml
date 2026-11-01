@@ -58,9 +58,16 @@ jobs:
           python3 pc/outils/vecteurs_guilde.py --verifier
           python3 pc/outils/vecteurs_observatoire.py --verifier
           python3 pc/outils/vecteurs_donnees.py --verifier
+          python3 pc/outils/vecteurs_classe.py --verifier
 
       - name: Rejeu des sorties dans un vrai bash (fiches et histoire du PC)
         run: LC_ALL=C.UTF-8 python3 pc/outils/rejeu_bash.py
+
+      - name: Le mode classe (100 % local, aucun envoi, bilan, fiches)
+        run: |
+          set -o pipefail
+          LC_ALL=C.UTF-8 python3 pc/outils/test_classe.py 2>&1 | tee /tmp/classe.out || {
+            grep -E "✖|Error|Traceback|line [0-9]" /tmp/classe.out | head -20 | sed 's/^/::error::/'; exit 1; }
 
       - name: Ponts des Nombres et récompenses
         run: python3 pc/outils/test_programme.py

@@ -1184,3 +1184,25 @@ const ur = {
 };
 
 export const PAGES = { fr, en, es, de, it, pt, zh, ru, ja, hi, ar, bn, id, ur };
+
+// la page /enseignants (enseignants_fr.js) : titre, résumé traduit, et le lien du pied de page
+const ENSEIGNANTS = {
+  fr: ["Enseignants", "Pour les enseignants et les parents", "Le mode classe de Terminagotchi : un code de séance, un pseudonyme, un bilan qui reste sur l'ordinateur de l'élève. Sans compte, hors ligne, rien n'est envoyé.", "Le texte complet ci-dessous est en français."],
+  en: ["Teachers", "For teachers and parents", "Terminagotchi's class mode: a session code, a pseudonym, a report that stays on the student's computer. No account, offline, nothing is sent.", "The full text below is in French."],
+  es: ["Docentes", "Para docentes y familias", "El modo clase de Terminagotchi: un código de sesión, un seudónimo y un informe que se queda en el ordenador del alumno. Sin cuenta, sin conexión, no se envía nada.", "El texto completo de abajo está en francés."],
+  de: ["Lehrkräfte", "Für Lehrkräfte und Eltern", "Der Klassenmodus von Terminagotchi: ein Sitzungscode, ein Pseudonym, ein Bericht, der auf dem Computer des Schülers bleibt. Ohne Konto, offline, nichts wird gesendet.", "Der vollständige Text unten ist auf Französisch."],
+  it: ["Insegnanti", "Per insegnanti e genitori", "La modalità classe di Terminagotchi: un codice di sessione, uno pseudonimo, un resoconto che resta sul computer dell'alunno. Senza account, offline, non si invia nulla.", "Il testo completo qui sotto è in francese."],
+  pt: ["Professores", "Para professores e pais", "O modo turma do Terminagotchi: um código de sessão, um pseudónimo, um relatório que fica no computador do aluno. Sem conta, offline, nada é enviado.", "O texto completo abaixo está em francês."],
+  zh: ["教师", "给老师和家长", "Terminagotchi 的课堂模式：一个课堂代码，一个化名，一份留在学生电脑上的总结。不需要账号，离线使用，不发送任何东西。", "下面的完整内容是法语。"],
+  ru: ["Учителям", "Учителям и родителям", "Режим класса в Terminagotchi: код урока, псевдоним и отчёт, который остаётся на компьютере ученика. Без аккаунта, без интернета, ничего не отправляется.", "Полный текст ниже — на французском."],
+  ja: ["先生へ", "先生と保護者のみなさまへ", "Terminagotchi のクラスモード：じゅぎょうコード、ニックネーム、生徒のパソコンにのこるまとめ。アカウントなし、オフラインで、なにも送信しません。", "以下の全文はフランス語です。"],
+  hi: ["शिक्षक", "शिक्षकों और माता-पिता के लिए", "Terminagotchi का कक्षा मोड: एक सत्र कोड, एक उपनाम, और एक रिपोर्ट जो छात्र के कंप्यूटर पर ही रहती है। बिना खाते के, ऑफ़लाइन, कुछ भी भेजा नहीं जाता।", "नीचे का पूरा पाठ फ़्रेंच में है।"],
+  ar: ["المعلّمون", "للمعلّمين والأولياء", "وضع الصف في Terminagotchi: رمز للحصة، واسم مستعار، وتقرير يبقى على حاسوب التلميذ. بلا حساب، دون اتصال، لا يُرسل أي شيء.", "النص الكامل أدناه باللغة الفرنسية."],
+  bn: ["শিক্ষক", "শিক্ষক ও অভিভাবকদের জন্য", "Terminagotchi-র ক্লাস মোড: একটা সেশন কোড, একটা ছদ্মনাম, আর একটা রিপোর্ট যা ছাত্রছাত্রীর কম্পিউটারেই থাকে। অ্যাকাউন্ট ছাড়া, অফলাইনে, কিছুই পাঠানো হয় না।", "নিচের সম্পূর্ণ লেখাটা ফরাসি ভাষায়।"],
+  id: ["Guru", "Untuk guru dan orang tua", "Mode kelas Terminagotchi: sebuah kode sesi, sebuah nama samaran, dan laporan yang tetap di komputer murid. Tanpa akun, luring, tidak ada yang dikirim.", "Teks lengkap di bawah ini berbahasa Prancis."],
+  ur: ["اساتذہ", "اساتذہ اور والدین کے لیے", "Terminagotchi کا کلاس موڈ: ایک سیشن کوڈ، ایک فرضی نام، اور ایک رپورٹ جو طالب علم کے کمپیوٹر پر ہی رہتی ہے۔ بغیر اکاؤنٹ کے، آف لائن، کچھ بھی نہیں بھیجا جاتا۔", "نیچے مکمل متن فرانسیسی میں ہے۔"],
+};
+for (const [l, [pied, h1, resume, versionFr]] of Object.entries(ENSEIGNANTS)) {
+  PAGES[l].pied.enseignants = pied;
+  PAGES[l].enseignants = { titre: h1, h1, resume, versionFr };
+}

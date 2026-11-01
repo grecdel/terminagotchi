@@ -9,6 +9,7 @@ import { tirer, differences, stadePlausible, attirancePlausible, MAX_APPARITIONS
 import { SCRIPT_GLITCH, REPERE as REPERE_GLITCH } from "./glitch.js";
 import { LANGUES, NOMS_LANGUES, LOCALES, RTL, choisirLangue, cookieLangue, textes, libelle } from "./i18n.js";
 import { confidentialiteFr, mentionsFr } from "./legal_fr.js";
+import { enseignantsFr } from "./enseignants_fr.js";
 import * as ENT from "./entrainement.js";
 import { barreTerminal, planSite, CSS_TERMINAL } from "./terminal.js";
 
@@ -1260,7 +1261,7 @@ function menu(L) {
 /** Le pied de page : liens discrets vers le code, le contact et les pages pour les adultes. */
 function piedDePage(L) {
   const P = L.t.pied;
-  const liens = [[DEPOT, P.source], [`mailto:${CONTACT}`, P.contact], ["/soutenir", P.soutenir], ["/parents", P.parents],
+  const liens = [[DEPOT, P.source], [`mailto:${CONTACT}`, P.contact], ["/soutenir", P.soutenir], ["/parents", P.parents], ["/enseignants", P.enseignants],
     ["/mentions-legales", P.mentions], ["/confidentialite", P.confidentialite]];
   return `<footer class="pied"><div class="liens">`
     + liens.map(([href, t]) => `<a href="${echapper(href)}">${echapper(t)}</a>`).join("")
@@ -1788,6 +1789,16 @@ ${texteFr(L, complet)}
 </div>`, C.enfants[0]);
 }
 
+/** Pour les enseignants et les parents : le mode classe 100 % local (pc/tg/classe.py), texte complet en français. */
+function pageEnseignants(L) {
+  const E = L.t.enseignants;
+  return page(L, E.titre, `<div class="texte-long">
+<h1>${E.h1}</h1>
+${L.lang === "fr" ? "" : `<p>${E.resume}</p><p class="doux">${E.versionFr}</p>`}
+<section lang="fr" dir="ltr">${enseignantsFr({ depot: DEPOT })}</section>
+</div>`, E.resume);
+}
+
 function pageMentions(L) {
   const M = L.t.mentions;
   const complet = mentionsFr({ contact: CONTACT, depot: DEPOT, editeur: EDITEUR, licence: LICENCE });
@@ -1853,6 +1864,7 @@ async function aiguiller(requete, env, url, chemin, L) {
   if (chemin === "/captures") return pageCaptures(env, L, url);
   if (chemin === "/soutenir") return pageSoutenir(L);
   if (chemin === "/parents") return pageParents(L);
+  if (chemin === "/enseignants") return pageEnseignants(L);
   if (chemin === "/confidentialite") return pageConfidentialite(L);
   if (chemin === "/mentions-legales") return pageMentions(L);
   const mb = chemin.match(/^\/bestiaire\/([a-z0-9]+)$/);

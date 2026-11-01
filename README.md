@@ -20,7 +20,7 @@ du tout premier `ls` jusqu'aux réseaux, à la cybersécurité, à la cryptograp
 | 🧒 **Les enfants, dès 7 ans** | Une créature à nourrir, un monde magique à explorer, des créatures à rencontrer. On joue… et sans s'en rendre compte, on tape de vraies commandes. |
 | 🧑‍💻 **Les ados et les adultes qui débutent** | Le terminal fait peur ? Ici, chaque commande est expliquée en trois niveaux : l'image simple, l'explication exacte et ce que fait un vrai terminal. Un test de placement saute ce que tu sais déjà. |
 | 🛠 **Les curieux et les passionnés** | Réseaux et protocoles, ondes radio et LoRa, matériel et machines virtuelles, cybersécurité en « boîtes » simulées, cryptographie, blockchain expliquée de l'intérieur, IA, open source : on va loin, et toujours en pratique. |
-| 🏫 **Les écoles et les clubs** | Un parcours structuré, rigoureux et vérifié, qui marche hors ligne, sans compte et sans données personnelles. Un mode classe et des fiches de séance sont prévus. |
+| 🏫 **Les écoles et les clubs** | Un parcours structuré, rigoureux et vérifié, qui marche hors ligne, sans compte et sans données personnelles. Un mode classe 100 % local (`tg classe`) : un code de séance, un pseudonyme, un bilan qui reste sur l'ordinateur ; rien n'est envoyé. [Fiches enseignant](docs/classe/fiches_enseignant.pdf). |
 
 ---
 

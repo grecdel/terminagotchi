@@ -100,7 +100,8 @@ def ecran_menu(st):
 def _rafraichir_compte(st):
     """En fond, 4 s au plus : la liste des parties du compte, gardée en cache (pour le hors-ligne)."""
     c = (st or {}).get("compte", {})
-    if not c.get("cle") or not c.get("serveur"):
+    from . import classe
+    if not c.get("cle") or not c.get("serveur") or classe.actif(st):
         return
 
     def f():
