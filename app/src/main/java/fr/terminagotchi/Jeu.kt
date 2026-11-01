@@ -319,6 +319,7 @@ class Jeu(ctx: Context) {
         Atelier.init(ctx)
         Sommet.init(ctx)
         Temps.init(ctx)
+        Controle.init(ctx)
         Intro.init(ctx)
     }
 

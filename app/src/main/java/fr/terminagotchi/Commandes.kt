@@ -144,7 +144,7 @@ class Commandes(
             "openssl" -> Reponse(Crypte.openssl(ligne.trim()) ?: Citadelle.openssl(jeu, ligne.trim(), dossier()), couleur = BLEU)
             "diff" -> Reponse(Citadelle.diff(jeu, ligne.trim(), dossier()).first, couleur = BLEU)
             "shuf" -> Reponse(Citadelle.shuf(jeu, ligne.trim(), dossier()), couleur = BLEU)
-            "kill" -> Citadelle.kill(jeu, reste)?.let { Reponse(it, couleur = BLEU) }   // un processus fantôme, sinon le vrai shell
+            "kill" -> (Controle.kill(jeu, reste) ?: Citadelle.kill(jeu, reste))?.let { Reponse(it, couleur = BLEU) }   // un habitant de la vague ou un fantôme, sinon le vrai shell
             // ---------------------------------------------------- la Crypte des Codes (Crypte.kt, CryptePgp.kt) : dans le terrain
             "crypte" -> Reponse(Crypte.commande(jeu, reste, dossier()), couleur = BLEU)
             "gpg", "gpg2" -> Reponse(Crypte.gpg(jeu, ligne.trim(), dossier()), couleur = BLEU)
@@ -174,6 +174,8 @@ class Commandes(
             // ---------------------------------------------------- la Bibliothèque du Temps (Temps.kt) : le petit git de l'appli, dans le terrain
             "temps" -> Reponse(Temps.commande(jeu, ligne.trim().substringAfter(' ', ""), dossier()), couleur = BLEU)
             "git" -> Reponse(Temps.git(jeu, ligne.trim(), dossier()), couleur = BLEU)
+            // ---------------------------------------------------- le Poste de Contrôle (Controle.kt) : lecture seule, la vague simulée
+            "controle" -> Reponse(Controle.commande(jeu, reste, dossier()), couleur = BLEU)
             "sync" -> sync()
             "indice" -> Reponse(Ctf.indice(jeu, reste), couleur = VERT)
             "edite" -> edite(reste)

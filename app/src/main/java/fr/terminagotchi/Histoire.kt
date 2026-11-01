@@ -104,6 +104,8 @@ object Histoire {
         Chapitre("robots", 20, "robots", "Constructs", Atelier.IDS, null, "robot_miniature", "roboticien", monde = true),
         // le onzième : la Bibliothèque du Temps (Temps.kt), git avec le petit git de l'appli (PetitGit.kt) ; lieu temps/
         Chapitre("temps", 21, "temps", "Constructs", Temps.IDS, null, "pendule", "archiviste_du_temps", monde = true),
+        // le douzième : le Poste de Contrôle (Controle.kt), l'administration système en lecture seule ; lieu controle/
+        Chapitre("controle", 22, "controle", "Constructs", Controle.IDS, null, "pupitre", "admin_du_poste", monde = true),
         // le Sommet (Sommet.kt) : Expert++, ouvert par 3 mondes au palier 3 ; lieu sommet/
         Chapitre("sommet", 23, "sommet", null, Sommet.IDS, null, "piolet", "maitre_du_sommet", monde = true),
     )
@@ -291,6 +293,7 @@ object Histoire {
         tout.putAll(Atelier.lecons(jeu))
         tout.putAll(Sommet.lecons(jeu))
         tout.putAll(Temps.lecons(jeu))
+        tout.putAll(Controle.lecons(jeu))
         return tout
     }
 
@@ -374,12 +377,12 @@ object Histoire {
     fun mondeOuvert(jeu: Jeu, cid: String) = when (cid) { "citadelle" -> Citadelle.ouvert(jeu); "crypte" -> Crypte.ouvert(jeu)
         "machinerie" -> Machines.ouvert(jeu); "ondes" -> Ondes.ouvert(jeu); "guilde" -> Guilde.ouvert(jeu); "observatoire" -> Observatoire.ouvert(jeu)
         "donnees" -> Donnees.ouvert(jeu); "forge" -> Forge.ouvert(jeu)
-        "robots" -> Atelier.ouvert(jeu); "sommet" -> Sommet.ouvert(jeu); "temps" -> Temps.ouvert(jeu)
+        "robots" -> Atelier.ouvert(jeu); "sommet" -> Sommet.ouvert(jeu); "temps" -> Temps.ouvert(jeu); "controle" -> Controle.ouvert(jeu)
         else -> Port.ouvert(jeu) }
     fun mondeManque(jeu: Jeu, cid: String) = when (cid) { "citadelle" -> Citadelle.manque(jeu); "crypte" -> Crypte.manque(jeu)
         "machinerie" -> Machines.manque(jeu); "ondes" -> Ondes.manque(jeu); "guilde" -> Guilde.manque(jeu); "observatoire" -> Observatoire.manque(jeu)
         "donnees" -> Donnees.manque(jeu); "forge" -> Forge.manque(jeu)
-        "robots" -> Atelier.manque(jeu); "sommet" -> Sommet.manque(jeu); "temps" -> Temps.manque(jeu)
+        "robots" -> Atelier.manque(jeu); "sommet" -> Sommet.manque(jeu); "temps" -> Temps.manque(jeu); "controle" -> Controle.manque(jeu)
         else -> Port.manque(jeu) }
 
     /** La pièce existe dans la maison de cette partie (sa porte a été posée). */
@@ -530,6 +533,7 @@ object Histoire {
         "robots" -> Atelier.meubles(jeu)
         "sommet" -> Sommet.meubles(jeu)
         "temps" -> Temps.meubles(jeu)
+        "controle" -> Controle.meubles(jeu)
         // la vieille cabane pleine de planches de la leçon « Une pièce en trop » (seulement par BESOINS)
         "nid" -> linkedMapOf("vieille_cabane/planche_1.txt" to dire(jeu, "hist.meuble.planche"),
             "vieille_cabane/planche_2.txt" to dire(jeu, "hist.meuble.planche"),
@@ -624,6 +628,7 @@ object Histoire {
         if (lid in Forge.IDS) Forge.meubler(jeu, lid)             // la Forge : l'enclume, serpent.py, la devinette, la photo d'exemple
         if (lid in Atelier.IDS) Atelier.meubler(jeu, lid)         // l'Atelier : les fichiers du robot, le cerveau d'exemple, les ponts
         if (lid in Sommet.IDS) Sommet.meubler(jeu, lid)           // le Sommet : le refuge, les ponts des nombres
+        if (lid in Controle.IDS) Controle.meubler(jeu, lid)       // le Poste de Contrôle : l'entrepôt, le sac, les réveils, les ponts
         return poses
     }
 
@@ -965,6 +970,7 @@ object Histoire {
         Forge.indice(jeu, e, tapees)?.let { return it }           // la Forge : guillemets autour de #!, > au lieu de >>, un prénom…
         Atelier.indice(jeu, e, tapees)?.let { return it }         // l'Atelier : un vrai matériel, la LED, le moteur, la boucle…
         Sommet.indice(jeu, e, tapees)?.let { return it }          // le Sommet : sudo, un « ? », ./script.sh, xargs sans -0…
+        Controle.indice(jeu, e, tapees)?.let { return it }        // le Poste de Contrôle : sudo, le veilleur, un cron sans guillemets…
         indiceCd(jeu, e, morcs)?.let { return it }
         indiceRm(jeu, e, tapees)?.let { return it }
         indiceResultat(jeu, e, morcs)?.let { return it }
@@ -1129,7 +1135,7 @@ object Histoire {
         val h = h(jeu)
         if (Port.annonce(jeu) || Citadelle.annonce(jeu) || Crypte.annonce(jeu) || Machines.annonce(jeu) || Ondes.annonce(jeu) || Guilde.annonce(jeu) ||
             Observatoire.annonce(jeu) || Donnees.annonce(jeu) || Forge.annonce(jeu) ||
-            Atelier.annonce(jeu) || Sommet.annonce(jeu) || Temps.annonce(jeu)) { h.put("annonce_attente", true); return true }
+            Atelier.annonce(jeu) || Controle.annonce(jeu) || Sommet.annonce(jeu) || Temps.annonce(jeu)) { h.put("annonce_attente", true); return true }
         h.remove("annonce_attente")
         return false
     }

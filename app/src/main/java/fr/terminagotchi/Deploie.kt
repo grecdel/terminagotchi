@@ -335,6 +335,24 @@ object Deploie {
         return out
     }
 
+    // ------------------------------------------------------------ le tableau de bord (le Poste de Contrôle)
+    class Tableau(val seg: Int, val cmd: String, val jauge: String, val sens: String)
+
+    /** Les commandes d'une ligne qui LISENT une jauge du vaisseau (ps, df, journalctl…), ARRÊTENT un habitant (kill) ou
+     *  CHANGERAIENT la machine (systemctl restart, apt install : avec un adulte) ; free, nproc, lsblk restent à l'ordinateur
+     *  ouvert de la Salle des Rouages. Même spécification que deploie.tableaux sur PC (vecteurs donnees/controle). */
+    fun tableaux(ligne: String): List<Tableau> {
+        val out = mutableListOf<Tableau>()
+        val bl = blocs(ligne)
+        for (c in chaines(bl)) for (e in c.etapes) {
+            val a = Controle.tableauDe(e.texte) ?: continue
+            if (Machines.piecesDe(e.texte).isNotEmpty()) continue
+            val seg = bl.firstOrNull { it.g == "commande" && it.i - 1 == e.debut }?.seg ?: 0
+            out.add(Tableau(seg, e.cmd, a.first, a.second))
+        }
+        return out
+    }
+
     // ------------------------------------------------------------ le laboratoire de tri (la Salle des Données)
     class LaboD(val seg: Int, val cmd: String, val outil: String, val instrument: String, val de: String, val vers: String)
 
@@ -540,13 +558,16 @@ object Deploie {
         /** la pellicule d'un git add, commit, log, merge… (la Bibliothèque du Temps) */
         val pellicules: List<PelliculeD> = try { pellicules(ligne) } catch (e: Exception) { emptyList() }
         fun pelliculeDe(b: Bloc): PelliculeD? = if (b.g == "commande") pellicules.firstOrNull { it.seg == b.seg } else null
+        /** le tableau de bord d'un ps, kill, export, journalctl, crontab… (le Poste de Contrôle) */
+        val tableaux: List<Tableau> = try { tableaux(ligne) } catch (e: Exception) { emptyList() }
+        fun tableauDe(b: Bloc): Tableau? = if (b.g == "commande") tableaux.firstOrNull { it.seg == b.seg } else null
 
         fun avancer(dt: Double) {
             t += dt
             val b = blocs[actif - 1]
             val reseau = messagerDe(b) != null || droitsDe(b) != null || roueDe(b) != null || piecesDe(b) != null || antenneDe(b) != null || etabliDe(b) != null ||
                 lunetteDe(b) != null || laboDe(b) != null || forgeDe(b) != null ||
-                robotDe(b) != null || cordeeDe(b) != null || pelliculeDe(b) != null
+                robotDe(b) != null || cordeeDe(b) != null || pelliculeDe(b) != null || tableauDe(b) != null
             val duree = if (b.g == "tuyau" || b.g == "redirection" || reseau) 2.4 else 1.2
             phase = if (b.g in setOf("tuyau", "redirection", "chemin") || reseau) t / duree else minOf(1.0, t / duree)
             if (auto && t >= duree && actif < blocs.size) { actif += 1; t = 0.0 }
