@@ -490,7 +490,7 @@
  "lec.git1.1.bravo": "`git add` legt die Datei in den Index: Sie ist auf dem nächsten Foto.",
  "lec.git1.1.adulte": "`git add` legt die Datei in den Index (Staging Area): die Liste dessen, was in den nächsten Commit kommt.",
  "lec.git1.2.dit": "Mach deinen ersten Commit (klick, das Foto)!",
- "lec.git1.2.astuce": "Wenn `git` nach deinem Namen fragt: `git config --global user.name \"Dein Name\"` (genauso für user.email)",
+ "lec.git1.2.astuce": "Wenn `git` nach deinem Namen fragt: `git config user.name \"Dein Name\"` (genauso für user.email)",
  "lec.git1.2.bravo": "Ein Commit = ein Foto deiner Dateien in diesem Moment, mit einer Nachricht. Für immer.",
  "lec.git1.2.adulte": "`git commit -m` speichert einen Schnappschuss des Index mit einer Nachricht; Git braucht einen Namen und eine E-Mail (git config).",
  "lec.git2.titre": "Zeitreise",

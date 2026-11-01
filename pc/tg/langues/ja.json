@@ -490,7 +490,7 @@
  "lec.git1.1.bravo": "`git add` で ファイルが インデックスに はいる：つぎの しゃしんに うつるよ。",
  "lec.git1.1.adulte": "`git add` はファイルをインデックス（ステージングエリア）に置きます。次のコミットに入るものの一覧です。",
  "lec.git1.2.dit": "はじめての コミットを しよう（カシャッ、しゃしん）！",
- "lec.git1.2.astuce": "`git` に なまえを きかれたら：`git config --global user.name \"きみの なまえ\"`（user.email も おなじ）",
+ "lec.git1.2.astuce": "`git` に なまえを きかれたら：`git config user.name \"きみの なまえ\"`（user.email も おなじ）",
  "lec.git1.2.bravo": "コミット = いまの ファイルの しゃしんに メッセージを つけたもの。ずっと のこるよ。",
  "lec.git1.2.adulte": "`git commit -m` はインデックスのスナップショットをメッセージ付きで記録します。Git には名前とメールアドレスが必要です（git config）。",
  "lec.git2.titre": "タイムトラベル",

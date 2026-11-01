@@ -490,7 +490,7 @@
  "lec.git1.1.bravo": "`git add` يضع الملف في الفهرس: سيكون في الصورة القادمة.",
  "lec.git1.1.adulte": "`git add` يضع الملف في الفهرس (staging area): قائمة ما سيدخل في الإيداع التالي.",
  "lec.git1.2.dit": "قم بأول commit (تك، صورة)!",
- "lec.git1.2.astuce": "إذا سألك `git` عن اسمك: `git config --global user.name \"اسمك\"` (وكذلك user.email)",
+ "lec.git1.2.astuce": "إذا سألك `git` عن اسمك: `git config user.name \"اسمك\"` (وكذلك user.email)",
  "lec.git1.2.bravo": "commit = صورة لملفاتك في هذه اللحظة، مع رسالة. إلى الأبد.",
  "lec.git1.2.adulte": "`git commit -m` يحفظ لقطة من الفهرس مع رسالة؛ ويحتاج Git اسمًا وبريدًا إلكترونيًا (git config).",
  "lec.git2.titre": "السفر عبر الزمن",

@@ -490,7 +490,7 @@
  "lec.git1.1.bravo": "`git add` ফাইলটা ইনডেক্সে রাখে: পরের ছবিতে সেটা থাকবে।",
  "lec.git1.1.adulte": "`git add` ফাইলটা ইনডেক্সে (staging area) রাখে: পরের commit-এ যা যাবে তার তালিকা।",
  "lec.git1.2.dit": "তোমার প্রথম কমিট করো (ক্লিক, ছবি)!",
- "lec.git1.2.astuce": "`git` তোমার নাম চাইলে: `git config --global user.name \"তোমার নাম\"` (user.email-এর জন্যও)",
+ "lec.git1.2.astuce": "`git` তোমার নাম চাইলে: `git config user.name \"তোমার নাম\"` (user.email-এর জন্যও)",
  "lec.git1.2.bravo": "কমিট = এই মুহূর্তে তোমার ফাইলের একটা ছবি, একটা বার্তা সহ। চিরকালের জন্য।",
  "lec.git1.2.adulte": "`git commit -m` একটা বার্তা-সহ ইনডেক্সের স্ন্যাপশট রাখে; Git-এর একটা নাম আর একটা ই-মেইল লাগে (git config)।",
  "lec.git2.titre": "সময়-ভ্রমণ",

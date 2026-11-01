@@ -490,7 +490,7 @@
  "lec.git1.1.bravo": "`git add` кладёт файл в индекс: он попадёт на следующую фотографию.",
  "lec.git1.1.adulte": "`git add` кладёт файл в индекс (staging area): список того, что войдёт в следующий коммит.",
  "lec.git1.2.dit": "Сделай свой первый коммит (щёлк, фото)!",
- "lec.git1.2.astuce": "Если `git` спросит твоё имя: `git config --global user.name \"Твоё имя\"` (то же для user.email)",
+ "lec.git1.2.astuce": "Если `git` спросит твоё имя: `git config user.name \"Твоё имя\"` (то же для user.email)",
  "lec.git1.2.bravo": "Коммит = фотография твоих файлов в этот момент, с подписью. Навсегда.",
  "lec.git1.2.adulte": "`git commit -m` сохраняет снимок индекса с сообщением; Git нужны имя и e-mail (git config).",
  "lec.git2.titre": "Путешествие во времени",

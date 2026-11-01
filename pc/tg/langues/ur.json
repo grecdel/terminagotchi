@@ -490,7 +490,7 @@
  "lec.git1.1.bravo": "`git add` فائل کو انڈیکس میں رکھتا ہے: وہ اگلی تصویر میں ہوگی۔",
  "lec.git1.1.adulte": "`git add` فائل کو انڈیکس (staging area) میں رکھتا ہے: اگلے commit میں جانے والی چیزوں کی فہرست۔",
  "lec.git1.2.dit": "اپنا پہلا کمٹ کرو (کلک، تصویر)!",
- "lec.git1.2.astuce": "اگر `git` تمہارا نام پوچھے: `git config --global user.name \"تمہارا نام\"` (user.email کے لیے بھی)",
+ "lec.git1.2.astuce": "اگر `git` تمہارا نام پوچھے: `git config user.name \"تمہارا نام\"` (user.email کے لیے بھی)",
  "lec.git1.2.bravo": "کمٹ = اس لمحے تمہاری فائلوں کی ایک تصویر، ایک پیغام کے ساتھ۔ ہمیشہ کے لیے۔",
  "lec.git1.2.adulte": "`git commit -m` انڈیکس کا اسنیپ شاٹ ایک پیغام کے ساتھ محفوظ کرتا ہے؛ Git کو نام اور ای میل چاہیے (git config)۔",
  "lec.git2.titre": "وقت کا سفر",

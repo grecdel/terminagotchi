@@ -490,7 +490,7 @@
  "lec.git1.1.bravo": "`git add` memasukkan file ke indeks: dia akan ada di foto berikutnya.",
  "lec.git1.1.adulte": "`git add` menaruh berkas di indeks (staging area): daftar yang akan masuk ke commit berikutnya.",
  "lec.git1.2.dit": "Buat commit pertamamu (klik, fotonya)!",
- "lec.git1.2.astuce": "Kalau `git` menanyakan namamu: `git config --global user.name \"Namamu\"` (sama untuk user.email)",
+ "lec.git1.2.astuce": "Kalau `git` menanyakan namamu: `git config user.name \"Namamu\"` (sama untuk user.email)",
  "lec.git1.2.bravo": "Commit = foto file-filemu saat ini, dengan sebuah pesan. Selamanya.",
  "lec.git1.2.adulte": "`git commit -m` menyimpan potret indeks dengan sebuah pesan; Git butuh nama dan e-mail (git config).",
  "lec.git2.titre": "Perjalanan waktu",

@@ -490,7 +490,7 @@
  "lec.git1.1.bravo": "`git add` 把文件放进暂存区：下一张照片里就有它。",
  "lec.git1.1.adulte": "`git add` 把文件放进索引（暂存区）：也就是下一次提交要包含的内容清单。",
  "lec.git1.2.dit": "做你的第一个提交（咔嚓，拍照）！",
- "lec.git1.2.astuce": "如果 `git` 问你的名字：`git config --global user.name \"你的名字\"`（user.email 也一样）",
+ "lec.git1.2.astuce": "如果 `git` 问你的名字：`git config user.name \"你的名字\"`（user.email 也一样）",
  "lec.git1.2.bravo": "一个提交 = 这一刻你所有文件的照片，再加一句话。永远保存。",
  "lec.git1.2.adulte": "`git commit -m` 带着一条消息保存索引的快照；Git 需要名字和电子邮箱（git config）。",
  "lec.git2.titre": "时光旅行",
