@@ -131,7 +131,7 @@ Ce qui vaut pour les trois enfants :
 | # | Constat |
 |---|---|
 | GU10 | Le dépôt GitHub public (branche main) n'a pas encore `satiete.py` : un vrai clone de main trouverait la faim ailleurs. Le jeu calcule la bonne réponse dans le clone **ou** la copie réellement présente, avec une marque de repli (« point de faim ») pour l'ancienne version. Ça marche dans les deux cas, mais le texte de l'étape gu2.7 cite `satiete.py`. |
-| GU11 | `rpm -q` (licence de bash) n'existe que sur les systèmes à paquets RPM : l'étape est cachée ailleurs et racontée. Elle n'est pas rejouée en CI (Ubuntu). |
+| GU11 | `rpm -q` (licence de bash) n'est montré que là où rpm est LE gestionnaire de paquets (`/usr/lib/sysimage/rpm` : Fedora, openSUSE). Ailleurs, l'étape est cachée. La CI (Ubuntu, où le paquet rpm est installé) a montré que `rpm -q` y crée `~/.rpmdb` dans le dossier personnel : c'est une écriture hors du terrain, attrapée par `test_guilde.py`, et c'est ce qui a imposé cette condition. |
 | GU12 | Les émojis (🗽, 🎁…) ne s'affichent pas dans la police des captures PC ; ils s'affichent dans un vrai terminal. |
 | GU15 | Les variantes réservées à la Guilde (`engrenaille:mecanique`, `rouillot:rouille`, `lampignon:champignonniere`) n'apparaissent plus avant l'exploit : dans le test d'attirance, les Célestes sans attirance passent de 7,3 % à 8,0 % (identique PC / Android ; valeur attendue de `tests/jvm/RetoursEnfants.kt` mise à jour). |
 | GU13 | L'icône du lieu est 🧰 et non 🛠 : 🛠 ne passait pas le test de largeur des cartes du camp. |

@@ -660,7 +660,8 @@ LECONS = {
         _n("gu1", 1, cmd="guilde libertes ? ? ? ?", fs="gu_libertes"),
         _n("gu1", 2, cmd="cat petit_projet/LICENSE", re=LIRE + r".*petit_projet/LICENSE", ou="guilde"),
         _n("gu1", 3, cmd="ls /usr/share/licenses", re=r"^ls\b.*/usr/share/licenses", outil="/usr/share/licenses", win=False),
-        _n("gu1", 4, cmd="rpm -q --qf '%{LICENSE}\\n' bash", re=r"^rpm\s+-q\b", outil="rpm", win=False, tout_code=True),
+        _n("gu1", 4, cmd="rpm -q --qf '%{LICENSE}\\n' bash", re=r"^rpm\s+-q\b", outil="rpm+/usr/lib/sysimage/rpm", win=False,
+           tout_code=True),   # seulement là où rpm est LE gestionnaire (Fedora, openSUSE) : ailleurs, rpm -q crée ~/.rpmdb
         _n("gu1", 5, cmd="guilde licence ?", fs="gu_licences"),
         _n("gu1", 6, cmd="guilde gratuit", re=GU + r"gratuits?\s*$"),
         _n("gu1", 7, cmd="guilde gratuit ? ? ? ?", fs="gu_gratuit"),
