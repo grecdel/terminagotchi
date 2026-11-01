@@ -132,6 +132,11 @@ GitHub, dans Windows PowerShell 5.1 et PowerShell 7 (`pc/outils/defi_powershell.
   deux sont reconnus ; le défi réussi donne l'exploit. Un ancien joueur Windows (leçon finie sans le défi) le reçoit en
   réussissant le défi.
 
+Résultat sur la vraie machine Windows de GitHub (run 41348631277, 1er novembre) : Windows PowerShell 5.1.26100
+(Desktop) et PowerShell 7 jouent at3 → at7 ; dans les deux, 20 pas, aucun choc, 18 cases explorées, l'exploit donné ; la
+fenêtre « Restricted » répond bien « running scripts is disabled on this system », les deux façons proposées à l'enfant
+y marchent, et la politique d'exécution de la machine est la même avant et après.
+
 Problème trouvé et corrigé : les textes avec des accolades PowerShell (`{ … }`) cassaient `str.format` ; elles sont
 doublées dans les fichiers de textes (`{{ … }}`), comme `TG{{…}}` ailleurs.
 - Sur un vrai téléphone : la boucle déroulée par l'appli (40 tours au plus) et l'éditeur `edite cerveau.sh`.
