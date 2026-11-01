@@ -2,7 +2,8 @@ name: Mettre le site en ligne
 
 on:
   push:
-    # nouveau-bestiaire : les tests seulement (la mise en ligne ne se fait que depuis main)
+    # un push sur nouveau-bestiaire : les tests seulement ; la mise en ligne se fait depuis main, ou en lançant
+    # le workflow à la main (workflow_dispatch) sur nouveau-bestiaire, comme validé par le propriétaire
     branches: [main, nouveau-bestiaire]
     paths: ["site/**", ".github/workflows/site.yml"]
   workflow_dispatch:
@@ -54,8 +55,8 @@ jobs:
       - name: Vérifier les secrets Cloudflare
         id: secrets
         run: |
-          if [ "$GITHUB_REF" != "refs/heads/main" ]; then
-            echo "::notice::Branche $GITHUB_REF_NAME : le site est testé mais pas mis en ligne (seulement depuis main)."
+          if [ "$GITHUB_REF" != "refs/heads/main" ] && [ "$GITHUB_EVENT_NAME" != "workflow_dispatch" ]; then
+            echo "::notice::Branche $GITHUB_REF_NAME : le site est testé mais pas mis en ligne (mise en ligne : main, ou lancement à la main)."
           elif [ -n "$CLOUDFLARE_API_TOKEN" ] && [ -n "$CLOUDFLARE_ACCOUNT_ID" ]; then
             echo "ok=1" >> "$GITHUB_OUTPUT"
           else
@@ -112,7 +113,7 @@ jobs:
           test -s url.txt
 
       - name: Publier l'adresse du site (branche site-info)
-        if: always() && github.ref == 'refs/heads/main'
+        if: always() && (github.ref == 'refs/heads/main' || github.event_name == 'workflow_dispatch')
         run: |
           mkdir -p /tmp/info && cd /tmp/info
           cp "$GITHUB_WORKSPACE/site/url.txt" . 2>/dev/null || true
