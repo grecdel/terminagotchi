@@ -1203,6 +1203,14 @@ def _main():
         from . import observatoire
         observatoire.commande(args[1:])
         return
+    if mode == "donnees":                      # tg donnees … : la Salle des Données (sur sa propre collection)
+        from . import donnees
+        sys.exit(donnees.commande(args[1:]) or 0)
+    if mode == "collection" and "--csv" in sys.argv[2:]:    # tg collection --csv : la collection en tableau (Salle des Données)
+        creer_si_besoin()
+        from . import donnees
+        donnees.commande_collection_csv()
+        return
     if mode in ("assistant", "agent", "devine-type", "devine-mot"):    # les petits programmes FICTIFS de l'Observatoire
         from . import observatoire as ob
         {"assistant": ob.commande_assistant, "agent": ob.commande_agent, "devine-type": ob.commande_devine_type,

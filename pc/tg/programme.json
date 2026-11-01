@@ -3536,6 +3536,241 @@
     "ANSSI, Recommandations de sécurité pour un système d'IA générative (2024) : https://cyber.gouv.fr/publications/recommandations-de-securite-pour-un-systeme-dia-generative"
    ],
    "relu_par": null
+  },
+  "collection_csv": {
+   "motif": "(^(tg\\s+)?collection\\b.*--csv|^(tg\\s+)?donnees\\s+(plan|labo|regles|combien|trier)\\b|collection\\.csv|forces\\.txt|especes\\.txt|top3\\.txt|laboratoire\\.txt)",
+   "enfant": "dn.f.collection_csv.enfant",
+   "grands": "dn.f.collection_csv.grands",
+   "vrai_terminal": [
+    {
+     "prepare": "printf 'nom,type,attaque\\nGloupi,poison,24\\nBraisillon,feu,33\\nKrillou,glace,39\\nGloupi,poison,22\\n' > c.csv",
+     "cmd": "head -2 c.csv",
+     "sortie": "nom,type,attaque\nGloupi,poison,24"
+    },
+    {
+     "prepare": "printf 'nom,type,attaque\\nGloupi,poison,24\\nBraisillon,feu,33\\nKrillou,glace,39\\nGloupi,poison,22\\n' > c.csv",
+     "cmd": "wc -l c.csv",
+     "sortie": "5 c.csv"
+    },
+    {
+     "prepare": "printf '24 Gloupi\\n33 Braisillon\\n39 Krillou\\n22 Gloupi\\n' > f.txt",
+     "cmd": "sort -nr f.txt | head -3",
+     "sortie": "39 Krillou\n33 Braisillon\n24 Gloupi"
+    },
+    {
+     "prepare": "printf 'Gloupi\\nKrillou\\nGloupi\\n' > e.txt",
+     "cmd": "sort e.txt | uniq -c | sort -rn | head -1",
+     "sortie": "      2 Gloupi"
+    },
+    {
+     "cmd": "tg collection --csv > collection.csv",
+     "rejeu": "commande du jeu",
+     "motif": "."
+    }
+   ],
+   "limite_image": "dn.f.collection_csv.limite",
+   "idees_fausses": [
+    "dn.f.collection_csv.idee"
+   ],
+   "sources": [
+    "RFC 4180, Common Format and MIME Type for CSV Files : https://www.rfc-editor.org/rfc/rfc4180",
+    "GNU coreutils, manuel (wc, sort, uniq, cut, tr, paste, tee, head, tail) : https://www.gnu.org/software/coreutils/manual/",
+    "POSIX.1-2024, Shell & Utilities (sort, uniq, cut, paste, sed, awk, xargs, tee, grep) : https://pubs.opengroup.org/onlinepubs/9799919799/",
+    "Programmes de mathématiques des cycles 3 et 4 (organisation et gestion de données : effectifs, moyenne, médiane, étendue) : https://eduscol.education.fr/"
+   ],
+   "relu_par": null
+  },
+  "colonnes": {
+   "motif": "(^cut\\b|^paste\\b|^tr\\b.*,|^(tg\\s+)?donnees\\s+(colonnes|shiny)\\b|colonnes\\.txt|noms\\.txt|types\\.txt)",
+   "enfant": "dn.f.colonnes.enfant",
+   "grands": "dn.f.colonnes.grands",
+   "vrai_terminal": [
+    {
+     "prepare": "printf 'nom,type,attaque\\nGloupi,poison,24\\nBraisillon,feu,33\\nKrillou,glace,39\\nGloupi,poison,22\\n' > c.csv",
+     "cmd": "cut -d, -f2 c.csv",
+     "sortie": "type\npoison\nfeu\nglace\npoison"
+    },
+    {
+     "prepare": "printf 'nom,type,attaque\\nGloupi,poison,24\\nBraisillon,feu,33\\nKrillou,glace,39\\nGloupi,poison,22\\n' > c.csv",
+     "cmd": "head -1 c.csv | tr ',' '\\n'",
+     "sortie": "nom\ntype\nattaque"
+    },
+    {
+     "prepare": "printf 'nom,type,attaque\\nGloupi,poison,24\\nBraisillon,feu,33\\nKrillou,glace,39\\nGloupi,poison,22\\n' > c.csv",
+     "cmd": "cut -d, -f2 c.csv | tail -n +2 | sort | uniq -c",
+     "sortie": "      1 feu\n      1 glace\n      2 poison"
+    },
+    {
+     "prepare": "printf 'a\\nb\\n' > n.txt && printf '1\\n2\\n' > t.txt",
+     "cmd": "paste -d: n.txt t.txt",
+     "sortie": "a:1\nb:2"
+    }
+   ],
+   "limite_image": "dn.f.colonnes.limite",
+   "idees_fausses": [
+    "dn.f.colonnes.idee"
+   ],
+   "sources": [
+    "RFC 4180, Common Format and MIME Type for CSV Files : https://www.rfc-editor.org/rfc/rfc4180",
+    "GNU coreutils, manuel (wc, sort, uniq, cut, tr, paste, tee, head, tail) : https://www.gnu.org/software/coreutils/manual/",
+    "POSIX.1-2024, Shell & Utilities (sort, uniq, cut, paste, sed, awk, xargs, tee, grep) : https://pubs.opengroup.org/onlinepubs/9799919799/"
+   ],
+   "relu_par": null
+  },
+  "copiste": {
+   "motif": "(^sed\\b|^(tg\\s+)?donnees\\s+copiste\\b|carnet_du_soigneur|carnet_corrige)",
+   "enfant": "dn.f.copiste.enfant",
+   "grands": "dn.f.copiste.grands",
+   "vrai_terminal": [
+    {
+     "cmd": "echo 'Glupoi et Glupoi' | sed 's/Glupoi/Gloupi/'",
+     "sortie": "Gloupi et Glupoi"
+    },
+    {
+     "cmd": "echo 'Glupoi et Glupoi' | sed 's/Glupoi/Gloupi/g'",
+     "sortie": "Gloupi et Gloupi"
+    },
+    {
+     "cmd": "printf 'a\\nb\\nc\\nd\\n' | sed -n '2,3p'",
+     "sortie": "b\nc"
+    },
+    {
+     "prepare": "echo 'Glupoi dort' > c.txt",
+     "cmd": "sed -i 's/Glupoi/Gloupi/g' c.txt && cat c.txt",
+     "sortie": "Gloupi dort"
+    }
+   ],
+   "limite_image": "dn.f.copiste.limite",
+   "idees_fausses": [
+    "dn.f.copiste.idee"
+   ],
+   "sources": [
+    "GNU sed, manuel : https://www.gnu.org/software/sed/manual/",
+    "POSIX.1-2024, Shell & Utilities (sort, uniq, cut, paste, sed, awk, xargs, tee, grep) : https://pubs.opengroup.org/onlinepubs/9799919799/"
+   ],
+   "relu_par": null
+  },
+  "calculatrice": {
+   "motif": "(^awk\\b|^(tg\\s+)?donnees\\s+(calcul|moyenne|mediane|etendue)\\b|attaques\\.txt)",
+   "enfant": "dn.f.calculatrice.enfant",
+   "grands": "dn.f.calculatrice.grands",
+   "vrai_terminal": [
+    {
+     "prepare": "printf 'nom,type,attaque\\nGloupi,poison,24\\nBraisillon,feu,33\\nKrillou,glace,39\\nGloupi,poison,22\\n' > c.csv",
+     "cmd": "awk -F, 'NR>1 {s+=$3} END {print s}' c.csv",
+     "sortie": "118"
+    },
+    {
+     "prepare": "printf 'nom,type,attaque\\nGloupi,poison,24\\nBraisillon,feu,33\\nKrillou,glace,39\\nGloupi,poison,22\\n' > c.csv",
+     "cmd": "awk -F, 'NR>1 {s+=$3; n++} END {print s/n}' c.csv",
+     "sortie": "29.5"
+    },
+    {
+     "prepare": "printf 'nom,type,attaque\\nGloupi,poison,24\\nBraisillon,feu,33\\nKrillou,glace,39\\nGloupi,poison,22\\n' > c.csv",
+     "cmd": "awk -F, '{print $1, $3}' c.csv | head -2",
+     "sortie": "nom attaque\nGloupi 24"
+    },
+    {
+     "prepare": "printf 'nom,type,attaque\\nGloupi,poison,24\\nBraisillon,feu,33\\nKrillou,glace,39\\nGloupi,poison,22\\n' > c.csv",
+     "cmd": "cut -d, -f3 c.csv | tail -n +2 | sort -n | sed -n '1p;$p'",
+     "sortie": "22\n39"
+    }
+   ],
+   "limite_image": "dn.f.calculatrice.limite",
+   "idees_fausses": [
+    "dn.f.calculatrice.idee"
+   ],
+   "sources": [
+    "The AWK Programming Language (Aho, Kernighan, Weinberger) ; GNU awk, manuel : https://www.gnu.org/software/gawk/manual/",
+    "POSIX.1-2024, Shell & Utilities (sort, uniq, cut, paste, sed, awk, xargs, tee, grep) : https://pubs.opengroup.org/onlinepubs/9799919799/",
+    "Programmes de mathématiques des cycles 3 et 4 (organisation et gestion de données : effectifs, moyenne, médiane, étendue) : https://eduscol.education.fr/"
+   ],
+   "relu_par": null
+  },
+  "chaine": {
+   "motif": "(^grep\\b.*-\\w*E|^xargs\\b|\\|\\s*xargs\\b|\\btee\\b|^(tg\\s+)?donnees\\s+(chaine|bilan)\\b|rapport\\.txt|enclos)",
+   "enfant": "dn.f.chaine.enfant",
+   "grands": "dn.f.chaine.grands",
+   "vrai_terminal": [
+    {
+     "prepare": "printf 'nom,type,attaque\\nGloupi,poison,24\\nBraisillon,feu,33\\nKrillou,glace,39\\nGloupi,poison,22\\n' > c.csv",
+     "cmd": "grep -E 'feu|glace' c.csv",
+     "sortie": "Braisillon,feu,33\nKrillou,glace,39"
+    },
+    {
+     "prepare": "printf 'nom,type,attaque\\nGloupi,poison,24\\nBraisillon,feu,33\\nKrillou,glace,39\\nGloupi,poison,22\\n' > c.csv",
+     "cmd": "cut -d, -f1 c.csv | tail -n +2 | sort -u | xargs echo",
+     "sortie": "Braisillon Gloupi Krillou"
+    },
+    {
+     "prepare": "printf 'nom,type,attaque\\nGloupi,poison,24\\nBraisillon,feu,33\\nKrillou,glace,39\\nGloupi,poison,22\\n' > c.csv",
+     "cmd": "mkdir -p enclos && cut -d, -f1 c.csv | tail -n +2 | sort -u | xargs -I{} touch enclos/{}.txt && ls enclos",
+     "sortie": "Braisillon.txt\nGloupi.txt\nKrillou.txt"
+    },
+    {
+     "prepare": "printf 'nom,type,attaque\\nGloupi,poison,24\\nBraisillon,feu,33\\nKrillou,glace,39\\nGloupi,poison,22\\n' > c.csv",
+     "cmd": "sort -t, -k3 -nr c.csv | head -1 | tee r.txt && cat r.txt",
+     "sortie": "Krillou,glace,39\nKrillou,glace,39"
+    }
+   ],
+   "limite_image": "dn.f.chaine.limite",
+   "idees_fausses": [
+    "dn.f.chaine.idee"
+   ],
+   "sources": [
+    "POSIX.1-2024, Shell & Utilities (sort, uniq, cut, paste, sed, awk, xargs, tee, grep) : https://pubs.opengroup.org/onlinepubs/9799919799/",
+    "GNU coreutils, manuel (wc, sort, uniq, cut, tr, paste, tee, head, tail) : https://www.gnu.org/software/coreutils/manual/",
+    "GNU findutils, xargs : https://www.gnu.org/software/findutils/manual/html_node/find_html/Invoking-xargs.html",
+    "GNU grep, expressions régulières étendues : https://www.gnu.org/software/grep/manual/"
+   ],
+   "relu_par": null
+  },
+  "sql": {
+   "motif": "(sqlite3\\b|^(tg\\s+)?donnees\\s+(base|sql)\\b|collection\\.db)",
+   "enfant": "dn.f.sql.enfant",
+   "grands": "dn.f.sql.grands",
+   "vrai_terminal": [
+    {
+     "prepare": "sqlite3 b.db \"CREATE TABLE c (nom TEXT, type TEXT, attaque INTEGER); INSERT INTO c VALUES ('Gloupi','poison',24),('Braisillon','feu',33),('Krillou','glace',39),('Gloupi','poison',22);\"",
+     "cmd": "sqlite3 b.db \"SELECT type, COUNT(*) FROM c GROUP BY type ORDER BY COUNT(*) DESC, type;\"",
+     "sortie": "poison|2\nfeu|1\nglace|1",
+     "outil": "sqlite3"
+    },
+    {
+     "prepare": "sqlite3 b.db \"CREATE TABLE c (nom TEXT, attaque INTEGER); INSERT INTO c VALUES ('A',24),('B',33),('C',39),('D',22);\"",
+     "cmd": "sqlite3 b.db \"SELECT nom FROM c WHERE attaque > 30 ORDER BY attaque DESC;\"",
+     "sortie": "C\nB",
+     "outil": "sqlite3"
+    },
+    {
+     "prepare": "sqlite3 b.db \"CREATE TABLE c (nom TEXT, attaque INTEGER); INSERT INTO c VALUES ('A',24),('B',33),('C',39),('D',22);\"",
+     "cmd": "sqlite3 b.db \"SELECT AVG(attaque) FROM c;\"",
+     "sortie": "29.5",
+     "outil": "sqlite3"
+    },
+    {
+     "prepare": "sqlite3 b.db \"CREATE TABLE c (nom TEXT); CREATE TABLE e (nom TEXT, habitat TEXT); INSERT INTO c VALUES ('A'),('B'); INSERT INTO e VALUES ('A','lagon'),('B','volcan');\"",
+     "cmd": "sqlite3 b.db \"SELECT c.nom, e.habitat FROM c JOIN e ON c.nom = e.nom ORDER BY c.nom;\"",
+     "sortie": "A|lagon\nB|volcan",
+     "outil": "sqlite3"
+    },
+    {
+     "prepare": "sqlite3 b.db \"CREATE TABLE c (nom TEXT); CREATE TABLE e (nom TEXT);\"",
+     "cmd": "sqlite3 b.db .tables",
+     "sortie": "c  e",
+     "outil": "sqlite3"
+    }
+   ],
+   "limite_image": "dn.f.sql.limite",
+   "idees_fausses": [
+    "dn.f.sql.idee"
+   ],
+   "sources": [
+    "SQLite, documentation (SELECT, GROUP BY, JOIN, l'outil sqlite3) : https://www.sqlite.org/lang_select.html ; https://www.sqlite.org/cli.html",
+    "ISO/IEC 9075 (le langage SQL)",
+    "Programmes de mathématiques des cycles 3 et 4 (organisation et gestion de données : effectifs, moyenne, médiane, étendue) : https://eduscol.education.fr/"
+   ],
+   "relu_par": null
   }
  },
  "etapes": {
@@ -3752,6 +3987,46 @@
   "ob2.2": {
    "maths": [
     "effectifs"
+   ]
+  },
+  "dn1.2": {
+   "maths": [
+    "comptage"
+   ]
+  },
+  "dn1.5": {
+   "maths": [
+    "effectifs"
+   ]
+  },
+  "dn2.2": {
+   "maths": [
+    "effectifs"
+   ]
+  },
+  "dn2.4": {
+   "maths": [
+    "pourcentages"
+   ]
+  },
+  "dn4.3": {
+   "maths": [
+    "moyenne"
+   ]
+  },
+  "dn4.6": {
+   "maths": [
+    "mediane"
+   ]
+  },
+  "dn4.8": {
+   "maths": [
+    "etendue"
+   ]
+  },
+  "dn6.5": {
+   "maths": [
+    "frequences"
    ]
   }
  },
@@ -4382,6 +4657,99 @@
   "ob9.11": {
    "motif": "\\A(?![\\s\\S]*✖)[\\s\\S]*✔",
    "pourquoi": "hist.ob9.11.bravo : tous les tests passent"
+  },
+  "dn0.1": {
+   "contient": [
+    "laboratoire.txt",
+    "carnet_des_donnees.txt"
+   ],
+   "pourquoi": "hist.dn0.1.bravo : le laboratoire"
+  },
+  "dn1.1": {
+   "motif": "\\Anom,type,famille,attaque,defense,vitesse,pv,intelligence,rarete,shiny,variante,date,exemple\\n",
+   "pourquoi": "hist.dn1.1.bravo : la première ligne nomme les colonnes"
+  },
+  "dn1.2": {
+   "egal_jeu": "lignes",
+   "pourquoi": "hist.dn1.2.bravo : une ligne par bestiole, plus la ligne des titres"
+  },
+  "dn1.5": {
+   "egal_jeu": "espece_frequente",
+   "pourquoi": "hist.dn1.5.bravo : l'espèce que tu as le plus"
+  },
+  "dn1.6": {
+   "egal_jeu": "top3",
+   "pourquoi": "hist.dn1.6.bravo : tes 3 bestioles les plus fortes"
+  },
+  "dn2.1": {
+   "motif": "\\Anom\\ntype\\nfamille\\nattaque\\n",
+   "pourquoi": "hist.dn2.1.bravo : une colonne par ligne"
+  },
+  "dn2.2": {
+   "egal_jeu": "types",
+   "pourquoi": "hist.dn2.2.bravo : combien de chaque type"
+  },
+  "dn2.3": {
+   "egal_jeu": "shiny",
+   "pourquoi": "hist.dn2.3.bravo : le nombre de shiny"
+  },
+  "dn3.2": {
+   "egal_jeu": "une_faute_reste",
+   "pourquoi": "hist.dn3.2.bravo : sans g, une faute reste sur la ligne double"
+  },
+  "dn3.4": {
+   "motif": "^[<>] ",
+   "pourquoi": "hist.dn3.4.bravo : diff montre les lignes corrigées"
+  },
+  "dn4.2": {
+   "egal_jeu": "somme",
+   "pourquoi": "hist.dn4.2.bravo : la somme des attaques"
+  },
+  "dn4.3": {
+   "egal_jeu": "moyenne_awk",
+   "pourquoi": "hist.dn4.3.bravo : la moyenne d'attaque"
+  },
+  "dn4.7": {
+   "egal_jeu": "min_max",
+   "pourquoi": "hist.dn4.7.bravo : la plus petite et la plus grande attaque"
+  },
+  "dn5.2": {
+   "egal_jeu": "especes_xargs",
+   "pourquoi": "hist.dn5.2.bravo : xargs met les lignes à la suite"
+  },
+  "dn5.4": {
+   "egal_jeu": "rapport_top",
+   "pourquoi": "hist.dn5.4.bravo : tee montre ET écrit"
+  },
+  "dn6.1": {
+   "sortie": "creatures  especes",
+   "outil": "sqlite3",
+   "pourquoi": "hist.dn6.1.bravo : deux tables"
+  },
+  "dn6.2": {
+   "egal_jeu": "schema",
+   "outil": "sqlite3",
+   "pourquoi": "hist.dn6.2.bravo : les colonnes de la table"
+  },
+  "dn6.3": {
+   "egal_jeu": "sql_top3",
+   "outil": "sqlite3",
+   "pourquoi": "hist.dn6.3.bravo : ORDER BY … DESC LIMIT 3"
+  },
+  "dn6.5": {
+   "egal_jeu": "sql_group",
+   "outil": "sqlite3",
+   "pourquoi": "hist.dn6.5.bravo : GROUP BY compte par type"
+  },
+  "dn6.7": {
+   "egal_jeu": "sql_join",
+   "outil": "sqlite3",
+   "pourquoi": "hist.dn6.7.bravo : JOIN relie deux tables"
+  },
+  "dn6.8": {
+   "egal_jeu": "sql_moyenne",
+   "outil": "sqlite3",
+   "pourquoi": "hist.dn6.8.bravo : la même moyenne qu'awk"
   }
  },
  "maths": {
@@ -4703,20 +5071,88 @@
    ]
   },
   "pourcentages": {
-   "fiche": false,
+   "fiche": true,
    "titre": "maths.pourcentages.titre",
+   "question": "maths.pourcentages.question",
    "prerequis": [
     "multiplication",
     "division"
-   ]
+   ],
+   "niveau": "college",
+   "enfant": "maths.pourcentages.enfant",
+   "grands": "maths.pourcentages.grands",
+   "vrai_terminal": [
+    {
+     "cmd": "echo $((3 * 100 / 12))",
+     "sortie": "25"
+    },
+    {
+     "cmd": "echo $((1 * 100 / 4))",
+     "sortie": "25"
+    }
+   ],
+   "limite_image": "maths.pourcentages.limite",
+   "idees_fausses": [
+    "maths.pourcentages.idee"
+   ],
+   "exemples": [
+    "maths.pourcentages.ex1",
+    "maths.pourcentages.ex2",
+    "maths.pourcentages.ex3"
+   ],
+   "exercice": {
+    "type": "pourcentages",
+    "consigne": "maths.pourcentages.exo",
+    "erreur": "maths.pourcentages.erreur"
+   },
+   "mots_cles": "maths.pourcentages.kw",
+   "sources": [
+    "Programmes de mathématiques des cycles 3 et 4 (organisation et gestion de données : effectifs, moyenne, médiane, étendue) : https://eduscol.education.fr/",
+    "Bash, Shell Arithmetic : https://www.gnu.org/software/bash/manual/html_node/Shell-Arithmetic.html"
+   ],
+   "relu_par": null
   },
   "moyenne": {
-   "fiche": false,
+   "fiche": true,
    "titre": "maths.moyenne.titre",
+   "question": "maths.moyenne.question",
    "prerequis": [
     "addition",
     "division"
-   ]
+   ],
+   "niveau": "primaire",
+   "enfant": "maths.moyenne.enfant",
+   "grands": "maths.moyenne.grands",
+   "vrai_terminal": [
+    {
+     "cmd": "echo $(( (12 + 15 + 18) / 3 ))",
+     "sortie": "15"
+    },
+    {
+     "cmd": "printf '12\\n15\\n18\\n' | awk '{s+=$1} END {print s/NR}'",
+     "sortie": "15"
+    }
+   ],
+   "limite_image": "maths.moyenne.limite",
+   "idees_fausses": [
+    "maths.moyenne.idee"
+   ],
+   "exemples": [
+    "maths.moyenne.ex1",
+    "maths.moyenne.ex2",
+    "maths.moyenne.ex3"
+   ],
+   "exercice": {
+    "type": "moyenne",
+    "consigne": "maths.moyenne.exo",
+    "erreur": "maths.moyenne.erreur"
+   },
+   "mots_cles": "maths.moyenne.kw",
+   "sources": [
+    "Programmes de mathématiques des cycles 3 et 4 (organisation et gestion de données : effectifs, moyenne, médiane, étendue) : https://eduscol.education.fr/",
+    "Bash, Shell Arithmetic : https://www.gnu.org/software/bash/manual/html_node/Shell-Arithmetic.html"
+   ],
+   "relu_par": null
   },
   "nombres_premiers": {
    "fiche": false,
@@ -5127,6 +5563,88 @@
     "Bash, Shell Arithmetic : https://www.gnu.org/software/bash/manual/html_node/Shell-Arithmetic.html"
    ],
    "relu_par": null
+  },
+  "mediane": {
+   "fiche": true,
+   "titre": "maths.mediane.titre",
+   "question": "maths.mediane.question",
+   "prerequis": [
+    "comptage"
+   ],
+   "niveau": "college",
+   "enfant": "maths.mediane.enfant",
+   "grands": "maths.mediane.grands",
+   "vrai_terminal": [
+    {
+     "cmd": "printf '18\\n12\\n30\\n15\\n21\\n' | sort -n | sed -n '3p'",
+     "sortie": "18"
+    },
+    {
+     "cmd": "printf '18\\n12\\n30\\n15\\n21\\n' | sort -n | tr '\\n' ' '",
+     "sortie": "12 15 18 21 30 "
+    }
+   ],
+   "limite_image": "maths.mediane.limite",
+   "idees_fausses": [
+    "maths.mediane.idee"
+   ],
+   "exemples": [
+    "maths.mediane.ex1",
+    "maths.mediane.ex2",
+    "maths.mediane.ex3"
+   ],
+   "exercice": {
+    "type": "mediane",
+    "consigne": "maths.mediane.exo",
+    "erreur": "maths.mediane.erreur"
+   },
+   "mots_cles": "maths.mediane.kw",
+   "sources": [
+    "Programmes de mathématiques des cycles 3 et 4 (organisation et gestion de données : effectifs, moyenne, médiane, étendue) : https://eduscol.education.fr/",
+    "GNU coreutils, manuel (wc, sort, uniq, cut, tr, paste, tee, head, tail) : https://www.gnu.org/software/coreutils/manual/"
+   ],
+   "relu_par": null
+  },
+  "etendue": {
+   "fiche": true,
+   "titre": "maths.etendue.titre",
+   "question": "maths.etendue.question",
+   "prerequis": [
+    "soustraction"
+   ],
+   "niveau": "college",
+   "enfant": "maths.etendue.enfant",
+   "grands": "maths.etendue.grands",
+   "vrai_terminal": [
+    {
+     "cmd": "printf '18\\n12\\n30\\n' | sort -n | sed -n '1p;$p'",
+     "sortie": "12\n30"
+    },
+    {
+     "cmd": "echo $((30 - 12))",
+     "sortie": "18"
+    }
+   ],
+   "limite_image": "maths.etendue.limite",
+   "idees_fausses": [
+    "maths.etendue.idee"
+   ],
+   "exemples": [
+    "maths.etendue.ex1",
+    "maths.etendue.ex2",
+    "maths.etendue.ex3"
+   ],
+   "exercice": {
+    "type": "etendue",
+    "consigne": "maths.etendue.exo",
+    "erreur": "maths.etendue.erreur"
+   },
+   "mots_cles": "maths.etendue.kw",
+   "sources": [
+    "Programmes de mathématiques des cycles 3 et 4 (organisation et gestion de données : effectifs, moyenne, médiane, étendue) : https://eduscol.education.fr/",
+    "Bash, Shell Arithmetic : https://www.gnu.org/software/bash/manual/html_node/Shell-Arithmetic.html"
+   ],
+   "relu_par": null
   }
  },
  "recompenses": {
@@ -5357,9 +5875,68 @@
     "eau",
     "glace"
    ],
-   "maths": [
-    "moyenne"
+   "requis": [
+    "n4"
    ],
+   "chapitre": "donnees",
+   "paliers": [
+    "dn0",
+    "dn1",
+    "dn2",
+    "dn3",
+    "dn4",
+    "dn5",
+    "dn6"
+   ],
+   "attirance": {
+    "cmds": [
+     "sort",
+     "uniq",
+     "wc",
+     "awk",
+     "sed",
+     "cut",
+     "sqlite3"
+    ],
+    "activites": [
+     "collection"
+    ],
+    "familles": [
+     "Abyssaux"
+    ],
+    "epreuves": [
+     "Données",
+     "IA",
+     "Rétro"
+    ]
+   },
+   "ponts": {
+    "sort_uniq": [
+     "citadelle",
+     "observatoire"
+    ],
+    "frequences": [
+     "crypte",
+     "observatoire"
+    ],
+    "grep": [
+     "observatoire"
+    ],
+    "sha256sum": [
+     "crypte"
+    ]
+   },
+   "reutilise": {
+    "epreuves": [
+     "Rétro:top3",
+     "Rétro:record",
+     "Données:differentes",
+     "IA:frequent"
+    ],
+    "quetes": [
+     "q21"
+    ]
+   },
    "exploits": [
     {
      "id": "donnees.statistique",
@@ -5367,7 +5944,19 @@
      "recompense": "variante"
     }
    ],
-   "variantes_reservees": []
+   "maths": [
+    "effectifs",
+    "frequences",
+    "pourcentages",
+    "moyenne",
+    "mediane",
+    "etendue"
+   ],
+   "variantes_reservees": [
+    "nautiloque:corail",
+    "krillou:aurore",
+    "ondulame:glace"
+   ]
   },
   {
    "id": "controle",

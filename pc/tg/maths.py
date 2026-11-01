@@ -176,6 +176,24 @@ def generer(typ, graine, k):
         total = TOTAUX_CENT[h.entier(len(TOTAUX_CENT))]
         a = 1 + h.entier(total - 1)
         return {"a": a, "b": total - a}, str(a * 100 // total), f"echo $(({a} * 100 / {total}))"
+    # les Ponts des Nombres de la Salle des Données (§ 2.14) : moyenne, médiane, étendue, pourcentages
+    if typ == "moyenne":
+        m = 10 + h.entier(20)
+        d1, d2 = h.entier(6), h.entier(6)
+        a, b = m - d1, m + d2
+        c = 3 * m - a - b
+        return {"a": a, "b": b, "c": c}, str(m), f"echo $(( ({a} + {b} + {c}) / 3 ))"
+    if typ in ("mediane", "etendue"):
+        n = 5 if typ == "mediane" else 4
+        v = [10 + h.entier(40) for _ in range(n)]
+        liste = ", ".join(map(str, v))
+        if typ == "mediane":
+            return {"liste": liste}, str(sorted(v)[2]), "printf '%s\\n' " + " ".join(map(str, v)) + " | sort -n | sed -n '3p'"
+        return {"liste": liste}, str(max(v) - min(v)), f"echo $(({max(v)} - {min(v)}))"
+    if typ == "pourcentages":
+        total = TOTAUX_CENT[h.entier(len(TOTAUX_CENT))]
+        n = h.entier(total + 1)
+        return {"n": n, "total": total}, str(n * 100 // total), f"echo $(({n} * 100 / {total}))"
     raise ValueError(typ)
 
 

@@ -1,0 +1,291 @@
+{
+ "note": "Généré par donnees/donnees/outils/fiches_donnees.py ; lu par pc/tg/donnees.py et Donnees.kt. La collection de l'enfant, exportée en CSV dans le terrain : aucune donnée personnelle, rien d'envoyé.",
+ "colonnes": [
+  "nom",
+  "type",
+  "famille",
+  "attaque",
+  "defense",
+  "vitesse",
+  "pv",
+  "intelligence",
+  "rarete",
+  "shiny",
+  "variante",
+  "date",
+  "exemple"
+ ],
+ "stats": {
+  "attaque": "ATK",
+  "defense": "DEF",
+  "vitesse": "VIT",
+  "pv": "PV",
+  "intelligence": "INT"
+ },
+ "familles": {
+  "Démons": "demons",
+  "Élémentaires": "elementaires",
+  "Constructs": "constructs",
+  "Arthropodes": "arthropodes",
+  "Abyssaux": "abyssaux",
+  "Sylvestres": "sylvestres",
+  "Célestes": "celestes",
+  "Morts-vivants": "morts_vivants",
+  "Aberrations": "aberrations"
+ },
+ "exemples": [
+  {
+   "espece": "Gloupi",
+   "variante": "classique",
+   "shiny": false,
+   "qualite": 0.42,
+   "jour": "2026-10-01",
+   "stats": {
+    "PV": 48,
+    "ATK": 26,
+    "DEF": 36,
+    "VIT": 18,
+    "INT": 30
+   },
+   "rarete": "commune"
+  },
+  {
+   "espece": "Braisillon",
+   "variante": "volcan",
+   "shiny": false,
+   "qualite": 0.55,
+   "jour": "2026-10-02",
+   "stats": {
+    "PV": 32,
+    "ATK": 33,
+    "DEF": 33,
+    "VIT": 29,
+    "INT": 32
+   },
+   "rarete": "commune"
+  },
+  {
+   "espece": "Plumange",
+   "variante": "classique",
+   "shiny": false,
+   "qualite": 0.61,
+   "jour": "2026-10-03",
+   "stats": {
+    "PV": 30,
+    "ATK": 35,
+    "DEF": 30,
+    "VIT": 48,
+    "INT": 39
+   },
+   "rarete": "commune"
+  },
+  {
+   "espece": "Gloupi",
+   "variante": "marais",
+   "shiny": false,
+   "qualite": 0.3,
+   "jour": "2026-10-04",
+   "stats": {
+    "PV": 46,
+    "ATK": 24,
+    "DEF": 34,
+    "VIT": 16,
+    "INT": 28
+   },
+   "rarete": "commune"
+  },
+  {
+   "espece": "Cailloute",
+   "variante": "montagne",
+   "shiny": false,
+   "qualite": 0.38,
+   "jour": "2026-10-05",
+   "stats": {
+    "PV": 36,
+    "ATK": 37,
+    "DEF": 40,
+    "VIT": 37,
+    "INT": 34
+   },
+   "rarete": "commune"
+  },
+  {
+   "espece": "Krillou",
+   "variante": "glace",
+   "shiny": false,
+   "qualite": 0.5,
+   "jour": "2026-10-06",
+   "stats": {
+    "PV": 31,
+    "ATK": 39,
+    "DEF": 41,
+    "VIT": 43,
+    "INT": 24
+   },
+   "rarete": "peu commune"
+  },
+  {
+   "espece": "Tritonnet",
+   "variante": "lagon",
+   "shiny": false,
+   "qualite": 0.7,
+   "jour": "2026-10-07",
+   "stats": {
+    "PV": 33,
+    "ATK": 41,
+    "DEF": 35,
+    "VIT": 34,
+    "INT": 40
+   },
+   "rarete": "peu commune"
+  },
+  {
+   "espece": "Mousselin",
+   "variante": "classique",
+   "shiny": false,
+   "qualite": 0.33,
+   "jour": "2026-10-08",
+   "stats": {
+    "PV": 49,
+    "ATK": 28,
+    "DEF": 40,
+    "VIT": 17,
+    "INT": 36
+   },
+   "rarete": "commune"
+  },
+  {
+   "espece": "Flamouche",
+   "variante": "lave",
+   "shiny": false,
+   "qualite": 0.64,
+   "jour": "2026-10-09",
+   "stats": {
+    "PV": 34,
+    "ATK": 35,
+    "DEF": 32,
+    "VIT": 52,
+    "INT": 35
+   },
+   "rarete": "peu commune"
+  },
+  {
+   "espece": "Pucerise",
+   "variante": "prairie",
+   "shiny": true,
+   "qualite": 0.52,
+   "jour": "2026-10-10",
+   "stats": {
+    "PV": 42,
+    "ATK": 27,
+    "DEF": 38,
+    "VIT": 24,
+    "INT": 38
+   },
+   "rarete": "peu commune"
+  }
+ ],
+ "min_collection": 5,
+ "taille_completee": 10,
+ "schema": {
+  "creatures": "CREATE TABLE creatures (nom TEXT, type TEXT, famille TEXT, attaque INTEGER, defense INTEGER, vitesse INTEGER, pv INTEGER, intelligence INTEGER, rarete TEXT, shiny INTEGER, variante TEXT, date TEXT, exemple INTEGER)",
+  "especes": "CREATE TABLE especes (nom TEXT PRIMARY KEY, numero INTEGER, habitat TEXT, puissance INTEGER)"
+ },
+ "labo": {
+  "regles": [
+   {
+    "motif": "^(tg\\s+)?(donnees\\s+)?sqlite3\\b",
+    "outil": "sqlite3",
+    "instrument": "bibliotheque",
+    "de": "base",
+    "vers": "reponse"
+   },
+   {
+    "motif": "^(tg\\s+)?collection\\b.*--csv",
+    "outil": "collection --csv",
+    "instrument": "export",
+    "de": "collection",
+    "vers": "tableau"
+   },
+   {
+    "motif": "^sed\\b",
+    "outil": "sed",
+    "instrument": "copiste",
+    "de": "texte",
+    "vers": "texte_corrige"
+   },
+   {
+    "motif": "^awk\\b",
+    "outil": "awk",
+    "instrument": "calculatrice",
+    "de": "colonnes",
+    "vers": "calcul"
+   },
+   {
+    "motif": "^cut\\b",
+    "outil": "cut",
+    "instrument": "ciseaux",
+    "de": "tableau",
+    "vers": "colonne"
+   },
+   {
+    "motif": "^tr\\b",
+    "outil": "tr",
+    "instrument": "traducteur",
+    "de": "lettres",
+    "vers": "lettres_changees"
+   },
+   {
+    "motif": "^paste\\b",
+    "outil": "paste",
+    "instrument": "colle",
+    "de": "colonnes",
+    "vers": "tableau"
+   },
+   {
+    "motif": "^sort\\b",
+    "outil": "sort",
+    "instrument": "moulin",
+    "de": "lignes",
+    "vers": "lignes_rangees"
+   },
+   {
+    "motif": "^tee\\b",
+    "outil": "tee",
+    "instrument": "aiguillage",
+    "de": "lignes",
+    "vers": "ecran_et_fichier"
+   },
+   {
+    "motif": "^xargs\\b",
+    "outil": "xargs",
+    "instrument": "distributeur",
+    "de": "lignes",
+    "vers": "arguments"
+   },
+   {
+    "motif": "^grep\\b(?!.*\\s-\\w*c)",
+    "outil": "grep",
+    "instrument": "tamis",
+    "de": "lignes",
+    "vers": "lignes_gardees"
+   }
+  ]
+ },
+ "couleurs": {
+  "bibliotheque": 179,
+  "export": 117,
+  "copiste": 141,
+  "calculatrice": 215,
+  "ciseaux": 203,
+  "traducteur": 78,
+  "colle": 186,
+  "moulin": 229,
+  "aiguillage": 39,
+  "distributeur": 75,
+  "tamis": 110
+ },
+ "chaine": {
+  "rapport_lignes": 3
+ }
+}

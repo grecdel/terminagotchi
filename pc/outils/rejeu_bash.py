@@ -150,6 +150,10 @@ def histoire():
     from tg import ondes as O_
     from tg import guilde as G_
     from tg import observatoire as OB_
+    from tg import donnees as DN_
+    jeu_don = jeu_port.replace("port; port.commande(sys.argv[1:])", "donnees; sys.exit(donnees.commande(sys.argv[1:]) or 0)")
+    jeu_tg = (f"{sys.executable} -c \"import sys; sys.path.insert(0, '{RACINE / 'pc'}'); from tg import app; "
+              f"sys.argv = ['tg'] + sys.argv[1:]; app._main()\"")
 
     def coupe_suivante(st_):
         """La tempête : un nœud du chemin actuel qui laisse encore assez de chemins (l'enfant lit mesh-route)."""
@@ -176,6 +180,8 @@ def histoire():
         vrai = re.sub(r"(^|;\s*)guilde\b", lambda m: m.group(1) + jeu_gui, vrai)       # et guilde='tg guilde'
         vrai = re.sub(r"(^|;\s*|timeout -s INT 1\s+)(observatoire|assistant|agent|devine-type|devine-mot|explique)(?=\s|$)",
                       lambda m: m.group(1) + jeu_obs[m.group(2)], vrai)      # et les alias de l'Observatoire
+        vrai = re.sub(r"(^|;\s*)donnees(?=\s|$)", lambda m: m.group(1) + jeu_don, vrai)   # et donnees='tg donnees'
+        vrai = re.sub(r"(^|;\s*|&&\s*)tg(?=\s)", lambda m: m.group(1) + jeu_tg, vrai)   # tg collection --csv, tg donnees …
         etat["sortie"], etat["code"], d = shell.lancer(vrai)
         etat["cwd"] = Path(d)
         with open(home / ".bash_history", "a") as f:
@@ -183,6 +189,22 @@ def histoire():
         return app.etape(spontane=False, defis=False, cwd=str(etat["cwd"]), statut=etat["code"])
 
     attendus = P.get("rejeu", {})
+    seul = os.environ.get("TG_REJEU_MONDE")           # (en local : rejouer un seul monde, les autres marqués finis)
+    if seul:
+        def tout_fini(s_):
+            h_ = H.h_(s_)
+            for c_ in H.CHAPITRES:
+                if c_["id"] != seul and H.chapitre_dispo(c_):
+                    h_["faits"] += [x for x in c_["lecons"] if x not in h_["faits"]]
+                    if c_["id"] not in h_["ailes"]:
+                        h_["ailes"].append(c_["id"])
+            h_["chap"] = None
+            h_.setdefault("mondes_annonces", []).extend(m_ for m_ in H.MONDES_MODS if m_ != seul)
+            s_["xp"] = max(s_.get("xp", 0), 10 * 30 ** 2)
+        core.modifier(tout_fini)
+        core.TERRAIN.mkdir(parents=True, exist_ok=True)
+        attendus = {k: v for k, v in attendus.items() if any(k.startswith(l_ + ".") for l_ in H.PAR_CHAP[seul]["lecons"])}
+        st = app.etape(spontane=False, defis=False)
     vus = set()
     sautes = set()
     st = app.etape(spontane=False, defis=False)
@@ -192,11 +214,11 @@ def histoire():
         h = H.h_(st)
         if not les:
             reste = [a for a in H.AILES if not H.fini(st, a)]
-            if H.fini(st, "observatoire") or h["chap"] in ("reveil", "nid"):
+            if H.fini(st, "donnees") or h["chap"] in ("reveil", "nid"):
                 break
             if H.fini(st, "coeur"):                 # le tronc et les ailes faits : les mondes du Carrefour, dans l'ordre
-                reste = [m_ for m_ in ("port", "citadelle", "crypte", "machinerie", "ondes", "guilde", "observatoire")
-                         if not H.fini(st, m_)][:1]
+                reste = [m_ for m_ in ("port", "citadelle", "crypte", "machinerie", "ondes", "guilde", "observatoire",
+                                       "donnees") if not H.fini(st, m_)][:1]
             cible = "coeur" if not reste and H.ouvert(st, "coeur") else (reste[0] if reste else None)
             if not cible:
                 break
@@ -332,6 +354,16 @@ def histoire():
             c = "observatoire decoupe " + " ".join(OB_.decoupe_reponse(go_))
         if c == "observatoire consigne ?":
             c = "observatoire consigne " + next(n for n, _i, r_ in OB_.consigne_cartes(go_) if r_ == "true")
+        if c.startswith("donnees ") and c.endswith(" ?") or "s/?/?/" in c:   # la Salle des Données : calculé sur le fichier
+            r_ = DN_.lignes_du_fichier() or []
+            rep_ = {"combien": len(r_), "shiny": DN_.nb_shiny(r_), "moyenne": DN_.nombre_awk(DN_.moyenne(r_)),
+                    "mediane": DN_.nombre_awk((DN_.medianes(r_) or [0])[0]), "etendue": DN_.etendue(r_),
+                    "sql": (DN_.types_majoritaires(r_) or ["?"])[0]}
+            if c.startswith("donnees "):
+                c = c[:-1] + str(rep_.get(c.split()[1], "?"))
+            else:
+                _f, _j, mal_, bon_ = DN_.carnet_soigneur(r_)
+                c = c.replace("s/?/?/", f"s/{mal_}/{bon_}/")
         if c.endswith(" &") and "http.server" in c:
             c = c[:-2] + " >/dev/null 2>&1 &"       # (les lignes du serveur n'encombrent pas la suite)
         lieu = step.get("ou") if step.get("ou") is not None else None
@@ -412,6 +444,8 @@ def histoire():
                 l0 = (lignes or [""])[0].split()
                 verifier(len(l0) == 3 and int(l0[0]) == p_[0][1] and tuple(l0[1:]) in [x for x, n in p_ if n == p_[0][1]],
                          f"{nom} : bash dit {l0}, le jeu {p_[0]}{pq}")
+            if (a.get("egal_jeu") or "").split(":")[0] in EGAL_DONNEES:   # la Salle des Données : le jeu calcule pareil
+                verifier(EGAL_DONNEES[a["egal_jeu"]](s, DN_.lignes_du_fichier() or [], DN_), f"{nom} : {s[:150]!r}{pq}")
             if a.get("egal_jeu") == "traces_abyssor":
                 n = (s.split() or ["?"])[-1]
                 verifier(n == str(H.traces_abyssor()), f"{nom} : bash compte {n}, le jeu attend {H.traces_abyssor()}{pq}")
@@ -424,12 +458,57 @@ def histoire():
     verifier(H.fini(st, "ondes"), "la Tour des Ondes, cinquième monde, est allée jusqu'au bout (on0 → on10)")
     verifier(H.fini(st, "guilde"), "la Guilde des Bâtisseurs Libres, sixième monde, est allée jusqu'au bout (gu0 → gu6)")
     verifier(H.fini(st, "observatoire"), "l'Observatoire de l'IA, septième monde, est allé jusqu'au bout (ob0 → ob9)")
+    verifier(H.fini(st, "donnees"), "la Salle des Données, huitième monde, est allée jusqu'au bout (dn0 → dn6)")
     P_.eteindre_phare()
     C_.arreter_fictifs()
     K_.tuer_agents()
     manquent = sorted(set(attendus) - vus)
     verifier(not manquent, f"toutes les étapes décrites ont été rejouées {manquent}")
     shell.fermer()
+
+
+def _egal_lignes(s, r, D):
+    return re.fullmatch(r"\s*(\d+)\s+collection\.csv", s.strip()) is not None and int(s.split()[0]) == len(r) + 1
+
+
+def _egal_uniq(s, attendu):
+    """uniq -c : chaque ligne « n valeur » est l'effectif que le jeu calcule (l'ordre des ex aequo peut changer)."""
+    vu = {}
+    for l in s.strip().splitlines():
+        m = l.split(None, 1)
+        if len(m) != 2 or not m[0].isdigit():
+            return False
+        vu[m[1].strip()] = int(m[0])
+    return bool(vu) and all(attendu.get(k) == n for k, n in vu.items())
+
+
+def _egal_tops(s, r, D):
+    l = [x.split(",") for x in s.strip().splitlines()]
+    return [int(x[3]) for x in l if len(x) > 3] == D.top3(r)
+
+
+EGAL_DONNEES = {
+    "lignes": _egal_lignes,
+    "espece_frequente": lambda s, r, D: _egal_uniq(s, dict(D.effectifs([x["nom"] for x in r])))
+    and int(s.split()[0]) == D.effectifs([x["nom"] for x in r])[0][1],
+    "top3": lambda s, r, D: True,               # sort -nr | head -3 > top3.txt n'affiche rien : le fichier est vérifié par le jeu
+    "types": lambda s, r, D: _egal_uniq(s, dict(D.effectifs([x["type"] for x in r]))),
+    "shiny": lambda s, r, D: s.strip() == str(D.nb_shiny(r)),
+    "une_faute_reste": lambda s, r, D: s.count(D.carnet_soigneur(r)[2]) == 1,
+    "somme": lambda s, r, D: s.strip() == str(D.somme(r)),
+    "moyenne_awk": lambda s, r, D: s.strip() == D.nombre_awk(D.moyenne(r)),
+    "min_max": lambda s, r, D: s.split() == [str(min(D.attaques(r))), str(max(D.attaques(r)))],
+    "especes_xargs": lambda s, r, D: sorted(s.split()) == sorted({x["nom"] for x in r}),
+    "rapport_top": _egal_tops,
+    "schema": lambda s, r, D: s.strip() == D.donnees()["schema"]["creatures"] + ";",
+    "sql_top3": lambda s, r, D: [int(x.split("|")[1]) for x in s.strip().splitlines()] == D.top3(r),
+    "sql_group": lambda s, r, D: [tuple(x.split("|")) for x in s.strip().splitlines()]
+    == [(ty, str(n)) for ty, n in D.effectifs([x["type"] for x in r])],
+    "sql_join": lambda s, r, D: len(s.strip().splitlines()) == min(5, len(r)) and all(
+        D.ascii_id(__import__("tg.bestiaire", fromlist=["x"]).espece(x.split("|")[0])["habitat"]) == x.split("|")[1]
+        for x in s.strip().splitlines()),
+    "sql_moyenne": lambda s, r, D: s.strip() == D.valeur_sql(D.moyenne(r)),
+}
 
 
 def main():

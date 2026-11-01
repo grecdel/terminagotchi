@@ -269,8 +269,9 @@ from . import machines as _mac  # noqa: E402       le quatrième : la Salle des 
 from . import ondes as _ond  # noqa: E402         le cinquième : la Tour des Ondes (ondes.py), quartier du Port
 from . import guilde as _gui  # noqa: E402        le sixième : la Guilde des Bâtisseurs Libres (guilde.py), au bord de la Forge
 from . import observatoire as _obs  # noqa: E402  le septième : l'Observatoire de l'IA (observatoire.py)
+from . import donnees as _don  # noqa: E402       le huitième : la Salle des Données (donnees.py), sur sa collection
 MONDES_MODS = {"port": _port, "citadelle": _cit, "crypte": _cry, "machinerie": _mac, "ondes": _ond, "guilde": _gui,
-               "observatoire": _obs}
+               "observatoire": _obs, "donnees": _don}
 # le lieu de chaque monde (la Salle des Rouages : chapitre « machinerie », lieu « machines »)
 PIECES_MODS = {_m.CHAPITRE["piece"]: _m for _m in MONDES_MODS.values()}
 for _m in MONDES_MODS.values():
@@ -285,6 +286,8 @@ _CMDS_MAC = {s_.get("cmd") for l_ in _mac.LECONS.values() for s_ in l_["steps"]}
 _CMDS_OND = {s_.get("cmd") for l_ in _ond.LECONS.values() for s_ in l_["steps"]}
 _CMDS_GUI = {s_.get("cmd") for l_ in _gui.LECONS.values() for s_ in l_["steps"]}
 _CMDS_OBS = {s_.get("cmd") for l_ in _obs.LECONS.values() for s_ in l_["steps"]}
+_CMDS_DON = {s_.get("cmd") for l_ in _don.LECONS.values() for s_ in l_["steps"]} | \
+    {r_ for l_ in _don.LECONS.values() for s_ in l_["steps"] for r_ in s_.get("repli", [])}
 
 
 def lecons_qui_ouvrent():
@@ -1134,6 +1137,8 @@ def indice(state, step, lignes, tapees, morcs=None):
         conseil = _gui.indice(step, tapees)
     if not conseil and step.get("cmd") in _CMDS_OBS:      # l'Observatoire : sudo, rm -rf, une consigne floue…
         conseil = _obs.indice(step, tapees)
+    if not conseil and step.get("cmd") in _CMDS_DON:      # la Salle des Données : pas encore de tableau, -F, oublié…
+        conseil = _don.indice(step, tapees)
     if conseil:
         return conseil
     conseil = _indice_cd(state, step, morcs) or _indice_rm(step, tapees) or _indice_barre(step, morcs) \

@@ -288,7 +288,8 @@ DEPLOIE = ("alias deploie='history -a 2>/dev/null; tg deploie --historique #'\n"
            "alias ondes='tg ondes'; alias mesh-envoie='tg ondes mesh-envoie'; alias mesh-coupe='tg ondes mesh-coupe'; alias mesh-route='tg ondes mesh-route'\n"
            "alias guilde='tg guilde'\n"
            "alias observatoire='tg observatoire'; alias assistant='tg assistant'; alias agent='tg agent'; "
-           "alias devine-type='tg devine-type'; alias devine-mot='tg devine-mot'")
+           "alias devine-type='tg devine-type'; alias devine-mot='tg devine-mot'\n"
+           "alias donnees='tg donnees'")
 
 
 def _blocs():
@@ -336,7 +337,8 @@ def _blocs():
             'function guilde\n    tg guilde $argv\nend\n'
             'function observatoire\n    tg observatoire $argv\nend\nfunction assistant\n    tg assistant $argv\nend\n'
             'function agent\n    tg agent $argv\nend\nfunction devine-type\n    tg devine-type $argv\nend\n'
-            'function devine-mot\n    tg devine-mot $argv\nend')
+            'function devine-mot\n    tg devine-mot $argv\nend\n'
+            'function donnees\n    tg donnees $argv\nend')
     for ps in ("powershell", "pwsh"):
         if shutil.which(ps):
             try:
@@ -370,7 +372,8 @@ def _blocs():
                                        'function assistant { tg assistant @args }\n'
                                        'function agent { tg agent @args }\n'
                                        'function devine-type { tg devine-type @args }\n'
-                                       'function devine-mot { tg devine-mot @args }')
+                                       'function devine-mot { tg devine-mot @args }\n'
+                                       'function donnees { tg donnees @args }')
     return blocs
 
 
@@ -437,7 +440,8 @@ def a_jour():
                                      or ("mesh-envoie='tg ondes" in bloc and "mesh-envoie='tg ondes" not in installe)
                                      or ("function __tg_gpg" in bloc and "function __tg_gpg" not in installe)
                                      or ("guilde='tg guilde'" in bloc and "guilde='tg guilde'" not in installe)
-                                     or ("devine-mot='tg devine-mot'" in bloc and "devine-mot='tg devine-mot'" not in installe)):
+                                     or ("devine-mot='tg devine-mot'" in bloc and "devine-mot='tg devine-mot'" not in installe)
+                                     or ("donnees='tg donnees'" in bloc and "donnees='tg donnees'" not in installe)):
             return False
     return True
 

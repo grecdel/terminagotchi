@@ -561,6 +561,47 @@ def _lunette_anime(x, phase):
     return [f"📄 {''.join(ciel)} 🔭"]
 
 
+# ---------------------------------------------------------------- le laboratoire de tri (la Salle des Données)
+def labos(ligne):
+    """Les commandes d'une ligne qui TRIENT, COUPENT, CALCULENT ou INTERROGENT des données (spécification commune,
+    Deploie.kt, vecteurs donnees/donnees/vecteurs.json) : [{seg, cmd, outil, instrument, de, vers}] — cut est une paire
+    de ciseaux, sort un moulin, awk la calculatrice des savants, sed le copiste magique, sqlite3 la bibliothécaire…
+    (wc, uniq -c et grep -c restent à la lunette de l'Observatoire : ils comptent.)"""
+    from . import donnees
+    out = []
+    bl = blocs(ligne)
+    for c in chaines(bl):
+        for e in c["etapes"]:
+            a = donnees.labo_de(e["texte"])
+            if not a or observatoire_lunette(e["texte"]):
+                continue
+            seg = next((b["seg"] for b in bl if b["g"] == "commande" and b["i"] - 1 == e["debut"]), 0)
+            out.append({"seg": seg, "cmd": e["cmd"], "outil": a[0], "instrument": a[1], "de": a[2], "vers": a[3]})
+    return out
+
+
+def observatoire_lunette(texte):
+    from . import observatoire
+    return observatoire.lunette_de(texte) is not None
+
+
+INSTRUMENTS = {"bibliotheque": "🗄", "export": "📤", "copiste": "✎", "calculatrice": "🧮", "ciseaux": "✂", "traducteur": "🔤",
+               "colle": "🧴", "moulin": "⚙", "aiguillage": "🔀", "distributeur": "📦", "tamis": "🔍"}
+
+
+def _labo_anime(x, phase):
+    """Le laboratoire : les lignes (▤) passent dans l'instrument et ressortent rangées, coupées ou calculées (▥)."""
+    L = 30
+    pos = int(phase * (L - 1))
+    tapis = ["·"] * L
+    milieu = L // 2
+    for k in range(0, L, 6):
+        q = (k + pos) % L
+        tapis[q] = "▤" if q < milieu else "▥"
+    tapis[milieu] = "◐◓◑◒"[int(phase * 16) % 4]
+    return [f"📄 {''.join(tapis)} 📊"]
+
+
 # ---------------------------------------------------------------- les mots pour le dire
 def nom_genre(g):
     return t("dep.genre." + g)
@@ -826,6 +867,13 @@ def ecran(ligne, bl, actif, sorties, phase=0.0, largeur=80, dossier=None, pas=Fa
                 out.append(f"  {fg(ANSI['commande'])}🔭 " + t("dep.lunette", outil=x["outil"], de=t("ob.lunette." + x["de"]),
                                                              vers=t("ob.lunette." + x["vers"])) + RESET)
                 out += ["  " + l for l in _lunette_anime(x, phase % 1.0)]
+        for x in labos(ligne):                   # cut, sort, awk, sed, sqlite3… : le laboratoire de tri (les Données)
+            if x["seg"] == b["seg"]:
+                out.append("")
+                out.append(f"  {fg(ANSI['commande'])}{INSTRUMENTS.get(x['instrument'], '📊')} " + t(
+                    "dep.labo", outil=x["outil"], instrument=t("dn.instrument." + x["instrument"]),
+                    de=t("dn.labo." + x["de"]), vers=t("dn.labo." + x["vers"])) + RESET)
+                out += ["  " + l for l in _labo_anime(x, phase % 1.0)]
     if actif == n and sorties:
         for c, s in zip(chs, sorties):
             if s and len(c["etapes"]) > 1:
@@ -846,7 +894,8 @@ def _reseau(b, ligne):
                                      any(x["seg"] == b["seg"] for x in pieces(ligne)) or
                                      any(x["seg"] == b["seg"] for x in antennes(ligne)) or
                                      any(x["seg"] == b["seg"] for x in etablis(ligne)) or
-                                     any(x["seg"] == b["seg"] for x in lunettes(ligne)))
+                                     any(x["seg"] == b["seg"] for x in lunettes(ligne)) or
+                                     any(x["seg"] == b["seg"] for x in labos(ligne)))
 
 
 def jouer(ligne, dossier=None, pas=False, sortie=None, clavier=None, ips=12):

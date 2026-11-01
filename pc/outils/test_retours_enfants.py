@@ -204,8 +204,15 @@ for n in range(0, 14):
     tailles = [len(dressage.choisir_epreuves(x, False, "rare", n)) for x in B.publiques()]
     moy.append(sum(tailles) / len(tailles))
 verifier(all(a <= b + 1e-9 for a, b in zip(moy, moy[1:])), "épreuves par dressage : " + " → ".join(f"{x:.1f}" for x in moy))
-niv = [max(dressage._par_id(dressage._fid(y))["niveau"] for y in dressage.choisir_epreuves(B.espece("Braisillon"), False, "épique", n)[2:])
-       for n in (1, 4, 6, 9, 13)]
+# (les épreuves sont tirées au hasard dans le plafond : on garde le plus haut niveau sur 40 tirages, graine fixe, pour
+#  mesurer le plafond lui-même — un seul tirage pouvait tomber plus bas que le précédent, et le test échouait au hasard)
+_etat_hasard = random.getstate()
+niv = []
+for n in (1, 4, 6, 9, 13):
+    random.seed(f"niveau:{n}")
+    niv.append(max(dressage._par_id(dressage._fid(y))["niveau"] for _ in range(40)
+                   for y in dressage.choisir_epreuves(B.espece("Braisillon"), False, "épique", n)[2:]))
+random.setstate(_etat_hasard)
 verifier(niv == sorted(niv) and niv[0] == 1 and niv[-1] == 3, f"niveau max des épreuves (1, 4, 6, 9, 13 captures) : {niv}")
 for_ = [n for n in range(14) if any(f == "Code:compte" for f in (dressage._fid(y) for y in dressage.choisir_epreuves(
     B.espece("Gribouilleur") or B.publiques()[0], False, "rare", n)))]
