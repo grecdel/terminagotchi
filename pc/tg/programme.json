@@ -3091,7 +3091,7 @@
     {
      "prepare": "mkdir -p jeu/pc/tg",
      "cmd": "tree -L 2 jeu",
-     "motif": "── tg$",
+     "motif": "(──|--) tg$",
      "outil": "tree"
     },
     {
@@ -3943,7 +3943,7 @@
    "pourquoi": "hist.gu1.2.bravo : la licence MIT"
   },
   "gu2.3": {
-   "motif": "── tg$",
+   "motif": "(──|--) tg$",
    "outil": "tree",
    "pourquoi": "hist.gu2.3.bravo : pc/tg"
   },
