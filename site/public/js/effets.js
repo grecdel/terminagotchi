@@ -236,12 +236,13 @@ function cibleReseau(args) {
 function refus(seg, cwd, fa, sortie) {
   const s = sortie.toLowerCase(); const any = (xs) => xs.some((x) => s.includes(x));
   let raison;
-  if (any(["permission", "non accordée", "denied", "refusé", "accès", "unauthorizedaccess", "operation not permitted", "opération non permise"])) raison = "droits";
+  if (any(["command not found", "commande introuvable", "not recognized", "n'est pas reconnu"])) raison = "commande";
+  else if (any(["permission", "non accordée", "denied", "refusé", "accès", "unauthorizedaccess", "operation not permitted", "opération non permise"])) raison = "droits";
   else if (any(["not empty", "pas vide", "non vide", "directory not empty"])) raison = "pas_vide";
   else if (any(["file exists", "existe déjà", "already exists", "le fichier existe"])) raison = "existe";
   else if (any(["no such", "aucun fichier", "introuvable", "cannot find", "not found", "n'existe pas", "does not exist", "itemnotfound"])) raison = "introuvable";
   else if (any(["is a directory", "est un dossier", "est un répertoire"])) raison = "dossier";
-  else if (any(["command not found", "commande introuvable", "not recognized", "n'est pas reconnu"])) raison = "commande";
+  else if (seg.cmd === "cd") raison = "introuvable";
   else raison = "autre";
   const ch = chemins(seg.args);
   let cible = ch.length ? joindre(cwd, ch[ch.length - 1]) : null;

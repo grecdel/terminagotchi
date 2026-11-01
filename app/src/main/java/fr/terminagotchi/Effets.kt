@@ -366,12 +366,13 @@ object Effets {
         val s = sortie.lowercase()
         fun any(vararg xs: String) = xs.any { it in s }
         val raison = when {
+            any("command not found", "commande introuvable", "not recognized", "n'est pas reconnu") -> "commande"
             any("permission", "non accordée", "denied", "refusé", "accès", "unauthorizedaccess", "operation not permitted", "opération non permise") -> "droits"
             any("not empty", "pas vide", "non vide", "directory not empty") -> "pas_vide"
             any("file exists", "existe déjà", "already exists", "le fichier existe") -> "existe"
             any("no such", "aucun fichier", "introuvable", "cannot find", "not found", "n'existe pas", "does not exist", "itemnotfound") -> "introuvable"
             any("is a directory", "est un dossier", "est un répertoire") -> "dossier"
-            any("command not found", "commande introuvable", "not recognized", "n'est pas reconnu") -> "commande"
+            seg.cmd == "cd" -> "introuvable"
             else -> "autre"
         }
         val ch = chemins(seg.args)

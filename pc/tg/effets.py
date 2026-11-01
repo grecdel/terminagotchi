@@ -526,7 +526,9 @@ def _cible_reseau(args):
 def _refus(seg, cwd, fa, sortie):
     """Le signe doux d'une commande qui a raté : cadenas (droits), « ? » (n'existe pas), tremblement (pas vide)…"""
     s = sortie.lower()
-    if any(x in s for x in ("permission", "non accordée", "denied", "refusé", "accès", "unauthorizedaccess",
+    if any(x in s for x in ("command not found", "commande introuvable", "not recognized", "n'est pas reconnu")):
+        raison = "commande"                          # d'abord : « command not found » contient aussi « not found »
+    elif any(x in s for x in ("permission", "non accordée", "denied", "refusé", "accès", "unauthorizedaccess",
                             "operation not permitted", "opération non permise")):
         raison = "droits"
     elif any(x in s for x in ("not empty", "pas vide", "non vide", "directory not empty")):
@@ -538,8 +540,8 @@ def _refus(seg, cwd, fa, sortie):
         raison = "introuvable"
     elif any(x in s for x in ("is a directory", "est un dossier", "est un répertoire")):
         raison = "dossier"
-    elif any(x in s for x in ("command not found", "commande introuvable", "not recognized", "n'est pas reconnu")):
-        raison = "commande"
+    elif seg["cmd"] == "cd":
+        raison = "introuvable"                       # cd raté (message traduit du mini-terminal) : le lieu n'existe pas
     else:
         raison = "autre"
     ch = _chemins(seg["args"])
@@ -667,6 +669,8 @@ def cas_vecteurs():
     cas("cd feu", base, cwd1="biome/feu")
     cas("cd ..", base, cwd0="biome/feu", cwd1="biome")
     cas("cd lune", base, 1, "bash: cd: lune: Aucun fichier ou dossier de ce type")
+    cas("cd lune", base, 1, "`cd` : dossier introuvable : lune")
+    cas("toutch rose.fleur", base, 127, "bash: toutch: command not found", cwd0=P1)
     cas("pwd", base, cwd0=P1)
     cas("ls", base, cwd0=P1)
     cas("ls -a", base, cwd0=P1)

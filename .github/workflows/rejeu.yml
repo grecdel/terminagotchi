@@ -27,6 +27,7 @@ on:
             "app/src/main/java/fr/terminagotchi/SommetDessin.kt",
             "donnees/temps/**", "donnees/temps.json", "app/src/main/java/fr/terminagotchi/Temps.kt",
             "app/src/main/java/fr/terminagotchi/PetitGit.kt", "app/src/main/java/fr/terminagotchi/TempsDessin.kt",
+            "donnees/monde/**", "donnees/effets/**", "app/src/main/java/fr/terminagotchi/Effets.kt",
             "pc/**", "app/src/main/assets/langues/**", "app/src/main/java/fr/terminagotchi/Port.kt",
             "app/src/main/java/fr/terminagotchi/Histoire.kt", "app/src/main/java/fr/terminagotchi/Jeu.kt",
             ".github/workflows/rejeu.yml"]
@@ -268,3 +269,10 @@ jobs:
           [ "$(cat /tmp/chronique.txt)" = "$(printf 'Jour 1\nJour 2 : balade\nJour 2 : reve')" ] || {
             echo "::error::toybox sed -i '/^[<=>]\\{7\\}/d' n'enlève pas exactement les 3 bornes"; exit 1; }
 
+      - name: Le monde des biomes et les effets des commandes (vecteurs Python = Kotlin = JS, vrai terrain, bash)
+        run: |
+          set -o pipefail
+          LC_ALL=C.UTF-8 python3 pc/outils/test_effets.py 2>&1 | tee /tmp/efx.out || {
+            grep -E "✗|Error|Traceback|line [0-9]" /tmp/efx.out | head -20 | sed 's/^/::error::/'; exit 1; }
+          LC_ALL=C.UTF-8 python3 pc/outils/test_monde.py 2>&1 | tee /tmp/monde.out || {
+            grep -E "✗|Error|Traceback|line [0-9]" /tmp/monde.out | head -20 | sed 's/^/::error::/'; exit 1; }

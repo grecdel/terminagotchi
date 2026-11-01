@@ -813,6 +813,40 @@ des locuteurs.
   téléphone.
 - Les traductions des 13 autres langues sont faites par Claude : une relecture par des locuteurs serait bienvenue.
 
+**🗺 Le monde des biomes et les effets des commandes — codé (1er novembre, propositions validées par le propriétaire).**
+Ce n'est pas un monde de leçons mais une nouvelle vue : le prototype « Monde Terminagotchi » v4 entre dans le jeu.
+
+*Fichiers.*
+- Génération commune (relief, régions, ponts, objets) : `pc/tg/monde_gen.py` = `Monde.kt` = `site/public/js/monde_gen.js`,
+  vecteurs `donnees/monde/vecteurs.json`. Dessins en pixels : `pc/tg/monde_dessin.py`, `MondeDessin.kt`. Vue (caméra,
+  créatures, liste et fiche, effets) : `pc/tg/monde.py`, `MondeVue.kt`, `site/public/js/monde_page.js`.
+- Effets : `pc/tg/effets.py` = `Effets.kt` = `site/public/js/effets.js`, vecteurs `donnees/effets/vecteurs.json`
+  (`evenements(ligne, avant, après, code)` fondé sur la PHOTO du terrain avant/après, jamais sur le seul texte).
+- Tests : `pc/outils/test_monde.py`, `pc/outils/test_effets.py`, `tests/jvm/Monde.kt`, `site/test/test.mjs`.
+  Simulation : `docs/simulations/rapport_monde.md`.
+
+*Ce que voit l'enfant.*
+- PC : onglet « Monde » dans le panneau du moment de `tg espace` (apparaît avec la Carte, fin du chapitre 1) ; la
+  commande `monde` (ou `tg monde`) l'ouvre en grand (✕ ou Échap). Le repli tkinter garde la Carte. Le terminal texte
+  garde seulement « 🗺 la carte a poussé ».
+- Téléphone : onglet « Monde » ; la liste « Mes créatures » est un panneau qui monte du bas. Site : page `/monde`
+  (terrain d'essai en mémoire, rien n'est envoyé) — **non déployée**.
+- Le VRAI terrain `biome/<type>/parcelle_<n>/` (lecture seule, 8 parcelles et 18 objets dessinés au plus), une
+  créature par parcelle (le guide d'abord), les autres au refuge avec la commande `mkdir` pour agrandir.
+- Fiche À LA PLACE de la liste (« ← Mes créatures ») ; clic à côté ou Échap : la liste revient.
+- Effets ★★★ (1 à 2 s, jamais bloquants) : mkdir (parcelle qui tombe), rmdir, rm (confettis), touch (rayon ou
+  frétillement), mv, cp, jokers, cd, pwd, ls / ls -a, find, cat, echo > / >>, chmod et les refus doux (cadenas, « ? »,
+  tremblement « pas vide »). ★★ : lucioles des processus, pigeon messager, photo git, empreinte, petit tuyau.
+  Rafales groupées (« + 30 »), PowerShell reconnu. Réglage « effets : tous / essentiels / aucun » (options, ou
+  `monde effets <niveau>`). L'explication est dite par la créature, 3 fois au plus par sorte d'effet.
+- Point d'extension pour les autres mondes : `effets.EXTENSIONS` / `Effets.extensions` / `EXTENSIONS` (JS).
+
+*Reste.*
+- Les effets ★★ des mondes finis en parallèle (Poste de Contrôle, Bibliothèque du Temps, Atelier, Sommet) : à brancher
+  sur le point d'extension. Caisse `tar` animée, `ln -s`, `du`/`df`, `tree` (★★) pas encore dessinés à part.
+- Le site : à redéployer à la main quand le propriétaire le décide.
+- Les traductions des 13 autres langues sont faites par Claude.
+
 **▚ Le glitch — codé (31 octobre, décisions du propriétaire).** Un effet de l'INDIVIDU, comme le shiny (drapeau
 `glitch`, indépendant de la variante et du shiny) : l'image se dérègle comme un vieil écran, fabriquée à partir de
 l'image de la créature (aucune illustration). Au repos le style A (liseré rose/cyan des couches décalées, 2 tranches
