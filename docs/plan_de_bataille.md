@@ -673,6 +673,61 @@ des locuteurs.
 - Le défi sous Windows (une boucle PowerShell équivalente, sans `sh`) : à décider.
 - La boucle déroulée par l'appli et `edite cerveau.sh` sur un vrai téléphone (APK d'essai).
 
+**⛰ Le Sommet (Expert++) — codé (1er novembre).**
+
+*Fichiers.*
+- 7 fiches (`donnees/sommet/outils/fiches_sommet.py`, rejeu bash), données `donnees/sommet.json`, textes
+  `donnees/sommet/outils/textes_sommet_*.py` (14 langues), vecteurs communs `donnees/sommet/vecteurs.json`.
+- Leçons som0 → som7 sur PC (`pc/tg/sommet.py`) et sur Android (`Sommet.kt`, `SommetDessin.kt`). Chapitre et dossier
+  `sommet`, commande `sommet` (alias bash/zsh/fish/PowerShell). Icône 🗻, chapitre n° 23, objet piolet, titre
+  « Maître du Sommet ».
+
+*Règles du monde.*
+- **L'ouverture** : quand **trois mondes** du Carrefour ont leur **palier 3** (§ 2.18). Rien n'est écrit en dur : le
+  jeu parcourt les mondes de `programme.json` (ceux qui ont des paliers et un chapitre) ; la Forge, le Contrôle, le
+  Temps, l'Atelier compteront dès qu'ils existeront. Annonce du monde au moment où le 3e palier 3 est atteint.
+- **Les scripts fragiles et cassés sont écrits par le jeu dans le terrain** (`fragile.sh`, `sale.sh`, `bivouac.sh`,
+  `casse.sh`, `boucle.sh`, `boussole.sh`, `ctf/porte.sh`) : ils ne touchent qu'au dossier où on les lance, jamais de
+  réseau ni de `sudo` (vérifié par les tests). Chaque partie a sa graine (journal, éboulis, boussole, CTF différents).
+- **Sur PC on lance `bash script.sh`** (le `sh` d'Ubuntu, dash, n'a pas `pipefail`) ; sur le téléphone `sh script.sh`
+  (mksh). Les étapes `shellcheck`, `man`, `apropos`, `awk` multi-fichiers et `<( )` sont cachées si l'outil manque,
+  jamais bloquantes, et absentes du téléphone.
+
+*Les leçons.*
+- **S0 le refuge** (`sommet plan`, carnet). **S1 la corde de rappel** : le script qui ment (code 0 malgré l'échec),
+  `set -euo pipefail`, les guillemets. **S2 le bivouac** : `trap … EXIT`, `mktemp`, `getopts`. **S3 les regex
+  avancées** : ancres, classes, `{n}`, `grep -oE`, `sed -E` et ses captures, sur un journal de la montagne.
+  **S4 les one-liners** : `find -print0 | xargs -0`, `$( )`, `<( )`, awk sur plusieurs fichiers. **S5 le débogage** :
+  `bash -n` (la ligne), `bash -x` (la variable mal écrite), `shellcheck` s'il est là, `strace` en notion. **S6 la
+  documentation** : `man`, `apropos`, `--help`, la boussole qui se lit avec son aide. **S7 le sommet : les défis** :
+  le CTF combiné (trois fragments : regex, find, la porte), le chrono et les records, le défi du jour.
+- **Le défi du jour** : trois exercices de la salle d'entraînement tirés du jour, à faire en grade Péta ou Exa (or,
+  diamant). Ce sont des exercices que le site vérifie DÉJÀ (graine, compteur, empreinte, heure) : le site n'a pas été
+  modifié. Le chrono du CTF est un record local.
+- Indices : `sudo` refusé, `./script` sans droit d'exécution, `sed` sans `-i`, `-print0` sans `-0`, `<( )` dans `sh`,
+  la boussole sans options, mauvaises réponses expliquées.
+
+*Le reste.*
+- Exploit « Trois mondes maîtrisés » (`sommet.trois_mondes`, genre légendaire, bonus 3, essais 16) : un légendaire
+  EXISTANT parmi ceux qu'aucun autre monde ne réserve — Infernarque, Tellurion, Rugissire, Sylvarque, Essaimpereur,
+  Noctilune, Forgerain, Chaosmere (`legendaires` dans `programme.json`, lu par `recompenses.py` / `Recompenses.kt`).
+- Vue déployée : la cordée (relit `bash -n`, lampe frontale `bash -x`, cherche `find -print0`, monte au drapeau) ;
+  `bash script.sh` reste au parchemin de la Forge (une seule animation par commande).
+- Ponts des Nombres jamais bloquants : logique (S1), comptage (S3), puissances de 10 (S7, les grades Péta/Exa).
+- Tests : `pc/outils/test_sommet.py` (63), `tests/jvm/Sommet.kt` (23), `pc/outils/test_sommet_outils.py` (outils du
+  téléphone : toybox compilé en CI, busybox, mksh). Simulation `pc/outils/sim_sommet.py` →
+  `docs/simulations/rapport_sommet.md`. Captures `pc/outils/capture_sommet.py`. Rejeu d'un seul monde :
+  `TG_REJEU_MONDE=sommet`.
+- Prompts d'illustrations envoyés au propriétaire (B16, vignette, C1, E25, E26, E27 nouveaux ; à valider). Repli
+  dessiné : la montagne en caractères sur PC, `SommetDessin` sur le téléphone.
+
+*Reste.*
+- Les illustrations.
+- mksh et toybox ne sont vérifiés qu'en CI (pas installés sur la machine de travail).
+- Sur Windows (sans bash), la plupart des étapes du Sommet sont cachées : le monde est fait pour Linux, macOS et le
+  téléphone.
+- Les traductions des 13 autres langues sont faites par Claude : une relecture par des locuteurs serait bienvenue.
+
 **▚ Le glitch — codé (31 octobre, décisions du propriétaire).** Un effet de l'INDIVIDU, comme le shiny (drapeau
 `glitch`, indépendant de la variante et du shiny) : l'image se dérègle comme un vieil écran, fabriquée à partir de
 l'image de la créature (aucune illustration). Au repos le style A (liseré rose/cyan des couches décalées, 2 tranches

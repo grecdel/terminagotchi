@@ -823,6 +823,10 @@ superviser des agents qui codent.)
 
 **Ouverture** : 3 mondes au palier 3. Pas d'image enfantine obligatoire (palier de vocabulaire 2).
 
+> **Codé (1er novembre)** : leçons som0 → som7 (PC `pc/tg/sommet.py`, Android `Sommet.kt`), voir
+> `docs/plan_de_bataille.md` « Le Sommet — codé ». L'ouverture compte les mondes de `programme.json` (rien en dur) ;
+> le défi du jour est fait d'exercices de la salle d'entraînement que le site vérifie déjà.
+
 | Thème | Contenu | Exemples |
 |---|---|---|
 | Scripts robustes | `set -euo pipefail`, guillemets partout, `trap`, `mktemp`, codes de retour, `getopts` | réécrire un script fragile proposé par le jeu |
@@ -1370,7 +1374,7 @@ pas toutes faites). Chaque monde a ses créatures attirées (selon le type de bi
 | 🗝 La Crypte des Codes | Ombre, Glace | réparer la chaîne de blocs (B2) sans indice ; légendaire au bout de B6 |
 | 🔭 L'Observatoire de l'IA | Ciel, Glace | trouver toutes les réponses fausses de l'assistant fictif (O8) — codé : exploit `observatoire.fausses`, variantes EXISTANTES favorisées `seraphibou:cosmique`, `zyeuton:brume`, `mutaloupe:cristal` |
 | 🏋 La salle d'entraînement | tous | une série parfaite → une créature légendaire à dresser |
-| ⛰ Le Sommet | légendaires | 3 mondes maîtrisés |
+| ⛰ Le Sommet | légendaires | 3 mondes maîtrisés — codé : exploit `sommet.trois_mondes` (genre légendaire), un légendaire EXISTANT non réservé par un autre monde est favorisé : Infernarque, Tellurion, Rugissire, Sylvarque, Essaimpereur, Noctilune, Forgerain, Chaosmere |
 
 Règles : les rencontres débloquées s'ajoutent au tirage normal (elles ne le remplacent pas) ; les variantes rares
 gardent un **tirage au hasard** (on les rencontre plus souvent, on ne les reçoit pas) ; tout reste **hors ligne** et
@@ -1799,6 +1803,9 @@ Pour chaque monde : fiches notions (et fiches maths liées) → étapes PC et An
 | E15 | Le partage de bonbons (division et reste) | Ponts des Nombres | ⬜ |
 | E16 | La pièce 3D qui sort de l'imprimante ; le vieux PC qui reprend vie | Guilde G5-G6 | ⬜ |
 | E17 | Le capitaine d'un équipage de robots (l'agent Copieur qui s'emballe, le gros bouton d'arrêt) | Observatoire O9 | ⬜ |
+| E25 | La cordée : relire (`bash -n`), éclairer à la lampe frontale (`bash -x`), chercher (`find -print0`), monter au drapeau | Sommet, vue déployée | ⬜ |
+| E26 | Le script qui ment, puis la ceinture de sécurité (`set -euo pipefail`) | Sommet S1 | ⬜ |
+| E27 | Le CTF combiné : trois fragments qui forment le drapeau | Sommet S7 | ⬜ |
 
 #### E bis. La créature sur le bureau (PC et Android)
 
