@@ -185,7 +185,8 @@ def resoudre(cmd, st):
         if not re.search(r"\d", s):
             st = tape("nproc")
             s = propre(etat["sortie"])
-        n = (re.findall(r"(\d+)", s) or ["1"])[-1]
+        m = re.search(r"^CPU\(s\):\s*(\d+)", s, re.M)     # lscpu : la ligne « CPU(s): » (pas le dernier nombre de
+        n = m.group(1) if m else (re.findall(r"(\d+)", s) or ["1"])[-1]   # l'écran : sur la CI, « … 112 » plus bas)
         return st, f"machines coeurs {n}"
     if cmd == "machines memoire ?":
         s = lu("free")
