@@ -10,6 +10,10 @@ Texte officiel de la licence : https://creativecommons.org/licenses/by-nc-sa/4.0
 (en français : https://creativecommons.org/licenses/by-nc-sa/4.0/deed.fr ; texte juridique complet :
 https://creativecommons.org/licenses/by-nc-sa/4.0/legalcode.fr)
 
+**Exception : la mascotte du site** (le petit personnage vert qui sort de son œuf-circuit, sur le site web) n'est
+**pas** sous cette licence : **tous droits réservés, les contributeurs de Terminagotchi**. Voir la section
+« La mascotte du site » plus bas.
+
 Le **code** du jeu, lui, est sous licence **GNU GPL version 3 ou toute version ultérieure** (GPL-3.0-or-later) :
 voir le fichier [`LICENSE`](LICENSE).
 
@@ -49,7 +53,8 @@ This summary is not the license: only the official text (link above) is legally 
 - dans l'appli Android : `app/src/main/assets/portraits/`, `app/src/main/assets/anim/`, `app/src/main/assets/intro/`,
   `app/src/main/assets/sprites.bin`, `app/src/main/assets/poses.bin` ;
 - `docs/img/` : les images de la présentation ;
-- `site/public/` : les images du site (portraits, animations, icônes), **sauf** le dossier `site/public/polices/` ;
+- `site/public/` : les images du site (portraits, animations), **sauf** le dossier `site/public/polices/` et les
+  images de la mascotte du site (voir plus bas) ;
 - les textes de l'histoire (récits, dialogues, descriptions des créatures, des lieux et des mondes), qui se trouvent
   dans les fichiers de langue (`pc/tg/langues/`, `app/src/main/assets/langues/`) et leurs sources
   (`donnees/**/outils/textes_*.py`) ;
@@ -57,8 +62,31 @@ This summary is not the license: only the official text (link above) is legally 
 
 ## Ce qui n'est PAS concerné / What this does NOT cover
 
+- la **mascotte du site** : voir la section suivante (tous droits réservés) ;
 - le **code** (Python, Kotlin, JavaScript, scripts, fichiers de construction) : GPL-3.0-or-later, voir `LICENSE` ;
 - les polices de caractères de `site/public/polices/` (Press Start 2P, VT323) : elles gardent leur propre licence,
   la SIL Open Font License 1.1 (fichiers `OFL-*.txt` dans ce dossier) ;
 - les noms et les textes de licences d'autres logiciels cités dans le jeu (la Guilde des Bâtisseurs Libres) : ils
   appartiennent à leurs auteurs.
+
+## La mascotte du site : tous droits réservés / The website mascot: all rights reserved
+
+**Français.** La mascotte du site de Terminagotchi (le petit personnage vert qui sort d'un œuf aux circuits
+lumineux) n'est **pas** sous licence CC BY-NC-SA 4.0, ni sous la GPL : **tous droits réservés, les contributeurs de
+Terminagotchi**. Tu peux la voir sur le site et dans ce dépôt, mais pas la copier, la modifier ni la réutiliser
+ailleurs sans leur accord écrit. Fichiers concernés :
+
+- `site/public/mascotte.png` (la mascotte) et `site/public/mascotte_mange.png` (la mascotte qui mange, planche
+  d'animation) ;
+- `site/public/favicon.png` et `site/public/icone.png` (les icônes du site, dessinées d'après la mascotte) ;
+- `app/src/main/res/drawable-*/ic_launcher.png` (l'icône de l'appli Android, dessinée d'après la mascotte) ;
+- toute autre image, dessin ou animation de cette mascotte.
+
+La mascotte du site n'apparaît pas dans le jeu.
+
+**English.** The Terminagotchi website mascot (the little green character coming out of a glowing circuit egg) is
+**not** licensed under CC BY-NC-SA 4.0, nor under the GPL: **all rights reserved, the Terminagotchi contributors**.
+You may view it on the website and in this repository, but you may not copy, modify or reuse it elsewhere without
+their written permission. Files concerned: `site/public/mascotte.png`, `site/public/mascotte_mange.png`,
+`site/public/favicon.png`, `site/public/icone.png`, `app/src/main/res/drawable-*/ic_launcher.png`, and any other
+picture, drawing or animation of this mascot. The website mascot does not appear in the game.

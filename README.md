@@ -189,6 +189,10 @@ Terminagotchi est un logiciel libre, fait par **les contributeurs de Terminagotc
   **Creative Commons BY-NC-SA 4.0** : tu peux les partager et les modifier en citant les contributeurs de
   Terminagotchi, sans usage commercial, et sous la même licence. Les détails et la liste des dossiers concernés
   sont dans [`LICENSE-images.md`](LICENSE-images.md).
+- 🥚 **Sauf la mascotte du site** (le petit personnage vert dans son œuf-circuit : `site/public/mascotte.png`,
+  `mascotte_mange.png`, les icônes `favicon.png` et `icone.png`, et l'icône de l'appli `ic_launcher.png`) :
+  **tous droits réservés, les contributeurs de Terminagotchi** (elle n'est pas libre ; détails dans
+  [`LICENSE-images.md`](LICENSE-images.md)).
 - 🔤 Les polices du site (`site/public/polices/`) gardent leur propre licence (SIL Open Font License).
 
 Dans le jeu, la Guilde des Bâtisseurs Libres explique ces licences, et `tg aide` les rappelle.
