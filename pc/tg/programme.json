@@ -3704,7 +3704,7 @@
     },
     {
      "prepare": "printf 'nom,type,attaque\\nGloupi,poison,24\\nBraisillon,feu,33\\nKrillou,glace,39\\nGloupi,poison,22\\n' > c.csv",
-     "cmd": "mkdir -p enclos && cut -d, -f1 c.csv | tail -n +2 | sort -u | xargs -I{} touch enclos/{}.txt && ls enclos",
+     "cmd": "mkdir -p enclos && cut -d, -f1 c.csv | tail -n +2 | sort -u | sed 's|.*|enclos/&.txt|' | xargs touch && ls enclos",
      "sortie": "Braisillon.txt\nGloupi.txt\nKrillou.txt"
     },
     {

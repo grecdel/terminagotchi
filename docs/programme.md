@@ -741,7 +741,8 @@ Données : **sa propre collection** exportée en CSV (espèces, raretés, stats,
 - D4 : la moyenne se fait avec `NR>1 {s+=$4; n++} END {print s/n}` (sans la ligne des titres) ; médiane et étendue
   ajoutées. D3 : `sed -i` en plus. D-SQL : `AVG` en plus ; la base est interrogée en lecture seule.
 - Le téléphone a un petit `awk` et un petit `sqlite3` intégrés (sur le SQLite d'Android) ; `cut`, `sort`, `uniq`,
-  `sed`, `xargs`, `tee` sont ceux du téléphone (toybox) : chaque ligne de la Salle est comparée entre GNU, toybox et
+  `sed`, `xargs`, `tee` sont ceux du téléphone (toybox ; sans `cat -n` ni `xargs -I` : le jeu utilise `nl` et
+  `sed … | xargs touch`) : chaque ligne de la Salle est comparée entre GNU, toybox et
   busybox (`pc/outils/test_donnees_outils.py`, en CI).
 
 ### 2.15 🎛 Le Poste de Contrôle — administration système

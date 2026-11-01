@@ -645,7 +645,7 @@ LECONS = {
         _n("dn5", 1, cmd="grep -E 'eau|glace' collection.csv", re=r"^grep\b.*-\w*E.*\|.*collection\.csv|^egrep\b.*collection\.csv", ou=O,
            tout_code=True),
         _n("dn5", 2, cmd="cut -d, -f1 collection.csv | tail -n +2 | sort -u | xargs echo", re=CUT_D + r".*\|\s*xargs\b", ou=O, win=False),
-        _n("dn5", 3, cmd="mkdir -p enclos && cut -d, -f1 collection.csv | tail -n +2 | sort -u | xargs -I{} touch enclos/{}.txt",
+        _n("dn5", 3, cmd="mkdir -p enclos && cut -d, -f1 collection.csv | tail -n +2 | sort -u | sed 's|.*|enclos/&.txt|' | xargs touch",
            fs="dn_enclos", ou=O, win=False),
         _n("dn5", 4, cmd="sort -t, -k4 -nr collection.csv | head -3 | tee rapport.txt", fs="dn_rapport_top", ou=O),
         _n("dn5", 5, cmd="awk -F, 'NR>1 {s+=$4; n++} END {print \"moyenne\", s/n}' collection.csv >> rapport.txt",
@@ -746,7 +746,7 @@ def indice(step, tapees):
             return t("dn.indice.trou")
     et = REPONSES.get(cmd)
     if et:
-        der = dernier(et)                                # seulement juste après une réponse (pas après cat -n…)
+        der = dernier(et)                                # seulement juste après une réponse (pas après nl…)
         if der and not der.endswith("(ok)") and any(re.match(DN + et, l) for l in lignes):
             return t("dn.indice.rep." + et)
     if fs == "dn_top3" and any(l.startswith("sort") and ">" not in l for l in lignes):

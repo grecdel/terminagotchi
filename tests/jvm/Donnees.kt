@@ -286,7 +286,7 @@ fun main(args: Array<String>) {
         { "donnees mediane ${Donnees.nombreAwk(Donnees.medianes(rows())[0])}" }, { "sed -n '1p;\$p' attaques.txt" },
         { "donnees etendue ${Donnees.etendue(rows())}" },
         { "donnees chaine" }, { "grep -E 'eau|glace' collection.csv" }, { "cut -d, -f1 collection.csv | tail -n +2 | sort -u | xargs echo" },
-        { "mkdir -p enclos && cut -d, -f1 collection.csv | tail -n +2 | sort -u | xargs -I{} touch enclos/{}.txt" },
+        { "mkdir -p enclos && cut -d, -f1 collection.csv | tail -n +2 | sort -u | sed 's|.*|enclos/&.txt|' | xargs touch" },
         { "sort -t, -k4 -nr collection.csv | head -3 | tee rapport.txt" },
         { "awk -F, 'NR>1 {s+=\$4; n++} END {print \"moyenne\", s/n}' collection.csv >> rapport.txt" }, { "donnees bilan" },
         { "donnees base" }, { "sqlite3 collection.db .tables" }, { "sqlite3 collection.db \".schema creatures\"" },

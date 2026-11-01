@@ -506,7 +506,7 @@ les vraies radios (vues seulement par des doublures en test), `type rtl_test` (O
 - **D3 le copiste** : un nom mal écrit partout dans le carnet du soigneur (deux fois sur une ligne) ; `sed 's///'`,
   `s///g`, `diff`, `sed -n '2,4p'`, `sed -i`.
 - **D4 la calculatrice** : `awk -F,` (colonnes, somme, moyenne : l'exploit), `sort -n > attaques.txt`, médiane, étendue.
-- **D5 les machines en chaîne** : `grep -E 'eau|glace'`, `sort -u | xargs echo`, `xargs -I{} touch enclos/{}.txt`,
+- **D5 les machines en chaîne** : `grep -E 'eau|glace'`, `sort -u | xargs echo`, `sed 's|.*|enclos/&.txt|' | xargs touch` (un fichier par espèce),
   `sort -t, -k4 -nr | head -3 | tee rapport.txt`, la moyenne ajoutée avec `>>`, `donnees bilan` (certificat).
 - **D-SQL la base de données** : `donnees base` (collection.db : tables creatures et especes), `.tables`, `.schema`,
   `SELECT … ORDER BY … LIMIT 3`, `WHERE`, `COUNT(*) … GROUP BY`, `JOIN`, `AVG`. Chaque requête montre l'autre chemin
@@ -525,7 +525,9 @@ les vraies radios (vues seulement par des doublures en test), `type rtl_test` (O
 - Android : le petit awk est comparé aux sorties du VRAI awk (vecteurs) ; le petit sqlite3 à la mise en forme du vrai
   outil (`%!.15g`, `.tables`), vérifiée en CI où `sqlite3` et `gawk` sont installés. Les autres outils (`cut`, `sort`,
   `uniq`, `sed`, `xargs`, `tee`…) sont ceux du téléphone : `pc/outils/test_donnees_outils.py` compare chaque ligne de
-  la Salle entre GNU, toybox (compilé en CI) et busybox.
+  la Salle entre GNU, toybox (compilé en CI) et busybox. Il a trouvé que toybox n'a ni `cat -n` ni `xargs -I` : le jeu
+  dit `nl` pour numéroter les lignes et fabrique les noms des fichiers avec `sed` avant `xargs touch` (PC et téléphone).
+  `.tables` est écrit comme le vrai `sqlite3` (chaque nom complété, le dernier aussi), vu par le rejeu en CI.
 - Tests : `pc/outils/test_donnees.py` (67), `tests/jvm/Donnees.kt` (29). Simulation `pc/outils/sim_donnees.py` →
   `docs/simulations/rapport_donnees.md`. Captures `pc/outils/capture_donnees.py`. Rejeu d'un seul monde en local :
   `TG_REJEU_MONDE=donnees`.

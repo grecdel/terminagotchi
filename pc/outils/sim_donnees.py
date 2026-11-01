@@ -15,7 +15,7 @@ qui refusent (et notent qu'on les a appelées).
   - Hugo, 15 ans : 40 bestioles ; ses variantes (`wc -l < …`, `head -n 3`, `cut -f2 -d,`, `awk -F','`, `sort -t, -k4 -rn`,
     `sed -e`, `grep -cE`, `sqlite3 -header`, SQL en minuscules…).
 Pour les trous : le nombre se lit dans wc -l (moins la ligne des titres), les shiny dans grep -c, le mauvais nom dans
-`donnees copiste`, la moyenne dans l'awk, la médiane dans `cat -n attaques.txt`, l'étendue dans `sed -n '1p;$p'`, le type
+`donnees copiste`, la moyenne dans l'awk, la médiane dans `nl attaques.txt`, l'étendue dans `sed -n '1p;$p'`, le type
 dans le GROUP BY. Vérifie : la Salle finie ; l'exploit « une statistique juste » ; aucune étape validée par une commande
 qui a échoué ; chaque faute de Léa reçoit une explication ; les variantes justes de Hugo acceptées ; rien hors du terrain ;
 le CSV sans donnée personnelle. Code de sortie 1 en cas d'échec.
@@ -177,9 +177,9 @@ def resoudre(cmd, st):
         s = lu("awk -F, 'NR>1 {s+=$4; n++}") or lu("awk -F',' 'NR>1 {s+=$4; n++}")
         return st, f"donnees moyenne {nombre(s)}"
     if cmd == "donnees mediane ?":
-        if not lu("cat -n attaques.txt"):
-            st = tape("cat -n attaques.txt")
-        lignes = [x.split() for x in lu("cat -n attaques.txt").splitlines() if x.split()]
+        if not lu("nl attaques.txt"):
+            st = tape("nl attaques.txt")
+        lignes = [x.split() for x in lu("nl attaques.txt").splitlines() if x.split()]
         milieu = lignes[(len(lignes) - 1) // 2][1] if lignes else "?"
         return st, f"donnees mediane {milieu}"
     if cmd == "donnees etendue ?":

@@ -326,7 +326,7 @@ object Donnees {
                 n("dn5", 0, "donnees chaine", re = "${DN}cha[iî]ne", ou = O_),
                 n("dn5", 1, "grep -E 'eau|glace' collection.csv", re = "^grep\\b.*-\\w*E.*\\|.*collection\\.csv|^egrep\\b.*collection\\.csv", ou = O_, toutCode = true),
                 n("dn5", 2, "cut -d, -f1 collection.csv | tail -n +2 | sort -u | xargs echo", re = "$CUT_D.*\\|\\s*xargs\\b", ou = O_),
-                n("dn5", 3, "mkdir -p enclos && cut -d, -f1 collection.csv | tail -n +2 | sort -u | xargs -I{} touch enclos/{}.txt", fs = { j -> enclosOk(j) }, ou = O_),
+                n("dn5", 3, "mkdir -p enclos && cut -d, -f1 collection.csv | tail -n +2 | sort -u | sed 's|.*|enclos/&.txt|' | xargs touch", fs = { j -> enclosOk(j) }, ou = O_),
                 n("dn5", 4, "sort -t, -k4 -nr collection.csv | head -3 | tee rapport.txt", fs = { j -> rapportTopOk(j) }, ou = O_),
                 n("dn5", 5, "awk -F, 'NR>1 {s+=\$4; n++} END {print \"moyenne\", s/n}' collection.csv >> rapport.txt", fs = { j -> rapportMoyenneOk(j) }, ou = O_),
                 n("dn5", 6, "donnees bilan", fs = carnetOk("bilan")),
@@ -397,7 +397,7 @@ object Donnees {
         if ("?" in cmd.split(" ") || "/?/" in cmd) {
             if (lignes.any { (r(DN).containsMatchIn(it) || it.startsWith("sed")) && (TROU.containsMatchIn(it) || "/?/" in it) }) return t("dn.indice.trou")
         }
-        REPONSES[cmd]?.let { et ->                       // seulement juste après une réponse (pas après cat -n…)
+        REPONSES[cmd]?.let { et ->                       // seulement juste après une réponse (pas après nl…)
             val der = dernier(jeu, et)
             if (der != null && !der.trimEnd().endsWith("(ok)") && lignes.any { r(DN + et).containsMatchIn(it) }) return t("dn.indice.rep.$et")
         }

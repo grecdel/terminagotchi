@@ -24,7 +24,7 @@ de date précise (seulement le jour de capture).
 **Sans tricher.** Les trous « ? » sont remplis en **lisant l'écran** :
 - le nombre de bestioles, dans `wc -l` (moins la ligne des titres) ; les shiny, dans `grep -c` ;
 - le nom mal écrit (et le bon), dans `donnees copiste` ;
-- la moyenne, dans la sortie de l'awk ; la médiane, dans `cat -n attaques.txt` ; l'étendue, dans `sed -n '1p;$p'` ;
+- la moyenne, dans la sortie de l'awk ; la médiane, dans `nl attaques.txt` ; l'étendue, dans `sed -n '1p;$p'` ;
 - le type préféré, dans la première ligne du `GROUP BY`.
 
 **Android.** `tests/jvm/Donnees.kt` refait la traversée dn0 → dn6 avec les commandes du téléphone, sur une vraie
@@ -120,8 +120,11 @@ Ce qui vaut pour les trois enfants :
 
 | # | Problème | Correction |
 |---|---|---|
-| DN2 | Après une mauvaise médiane, Léa tape `cat -n attaques.txt` (ce que l'indice lui conseille), et le jeu lui redit « Pas tout à fait » comme si c'était une nouvelle mauvaise réponse. | L'indice « mauvaise réponse » ne vient que juste après une réponse (`donnees mediane …`), pas après une commande de lecture (PC et Android). |
+| DN2 | Après une mauvaise médiane, Léa tape `nl attaques.txt` (ce que l'indice lui conseille), et le jeu lui redit « Pas tout à fait » comme si c'était une nouvelle mauvaise réponse. | L'indice « mauvaise réponse » ne vient que juste après une réponse (`donnees mediane …`), pas après une commande de lecture (PC et Android). |
 | DN3 | Un texte contenait `{action}` en clair (vu par `verifier_langues`) : il aurait été pris pour un champ à remplir. | Remplacé par `{…}` dans les 14 langues. |
+
+| DN9 | Sur le téléphone (toybox), `cat -n` n'existe pas et `xargs -I{}` ne marche pas : deux commandes de la Salle auraient échoué (vu par `test_donnees_outils.py` en CI, toybox 0.8.11). | Le jeu dit `nl attaques.txt` pour numéroter les lignes, et l'enclos se fait avec `sed 's|.*|enclos/&.txt|' \| xargs touch` (le copiste fabrique les noms, xargs les donne à touch) ; PC et téléphone, 14 langues. |
+| DN10 | `.tables` : le vrai `sqlite3` complète CHAQUE nom à la largeur de la colonne, le dernier aussi (espaces en fin de ligne) ; le jeu ne complétait pas le dernier (vu par le rejeu en CI). | Le jeu (PC et téléphone) écrit exactement comme le vrai outil. |
 
 ### Mineurs (notés)
 
@@ -131,6 +134,7 @@ Ce qui vaut pour les trois enfants :
 | DN5 | Le bilan trop tôt ne reçoit que la réponse de la commande (✋ … pas encore complet), pas de phrase en plus dans le journal du jeu. La phrase suffit. |
 | DN6 | Avec une collection minuscule, la statistique de l'exploit est calculée sur le tableau complété (les bestioles d'exemple comptent). C'est dit à l'écran, mais l'exploit se gagne donc en partie sur des bestioles qui ne sont pas les siennes. |
 | DN7 | Les émojis (📊, 🏅, ⚗…) ne s'affichent pas dans la police des captures (PC et maquettes du téléphone) ; ils s'affichent dans un vrai terminal et sur le téléphone. |
+| DN11 | busybox (PC Alpine, pas le téléphone) : `diff` écrit le format « unifié » (- et +) au lieu de < et >. Affiché pour information par le test ; le téléphone a son propre `diff` intégré, au format habituel. |
 | DN8 | Dans les maquettes du téléphone, le dessin de l'instrument (vue déployée) est coupé en bas, comme la lunette de l'Observatoire : la bande est plus basse que la place demandée. Le dessin s'adapte maintenant quand il a peu de place (titre et « de → vers » sur une seule ligne) ; à vérifier sur un vrai téléphone. |
 
 ## 3. Ce qui marche bien

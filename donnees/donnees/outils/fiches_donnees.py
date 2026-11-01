@@ -134,7 +134,7 @@ FICHES = dict([
     fiche("chaine", r"(^grep\b.*-\w*E|^xargs\b|\|\s*xargs\b|\btee\b|^(tg\s+)?donnees\s+(chaine|bilan)\b|rapport\.txt|enclos)", [
         {"prepare": CSV, "cmd": "grep -E 'feu|glace' c.csv", "sortie": "Braisillon,feu,33\nKrillou,glace,39"},
         {"prepare": CSV, "cmd": "cut -d, -f1 c.csv | tail -n +2 | sort -u | xargs echo", "sortie": "Braisillon Gloupi Krillou"},
-        {"prepare": CSV, "cmd": "mkdir -p enclos && cut -d, -f1 c.csv | tail -n +2 | sort -u | xargs -I{} touch enclos/{}.txt && ls enclos",
+        {"prepare": CSV, "cmd": "mkdir -p enclos && cut -d, -f1 c.csv | tail -n +2 | sort -u | sed 's|.*|enclos/&.txt|' | xargs touch && ls enclos",
          "sortie": "Braisillon.txt\nGloupi.txt\nKrillou.txt"},
         {"prepare": CSV, "cmd": "sort -t, -k3 -nr c.csv | head -1 | tee r.txt && cat r.txt",
          "sortie": "Krillou,glace,39\nKrillou,glace,39"}],

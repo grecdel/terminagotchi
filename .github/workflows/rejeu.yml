@@ -159,6 +159,8 @@ jobs:
         run: |
           git clone -q --depth 1 --branch 0.8.11 https://github.com/landley/toybox /tmp/toybox
           make -C /tmp/toybox defconfig >/dev/null
+          # comme sur Android : tr (encore « pending » dans la configuration par défaut) ; diff est intégré à l'appli
+          sed -i 's/^# CONFIG_TR is not set/CONFIG_TR=y/' /tmp/toybox/.config
           make -C /tmp/toybox -j4 toybox >/dev/null
           mkdir -p "$HOME/.local/bin" && cp /tmp/toybox/toybox "$HOME/.local/bin/"
           echo "$HOME/.local/bin" >> "$GITHUB_PATH"

@@ -253,7 +253,7 @@ PARCOURS = [
     "cut -d, -f4 collection.csv | tail -n +2 | sort -n > attaques.txt",
     lambda: f"donnees mediane {DN.medianes(rows_())[0]:g}", "sed -n '1p;$p' attaques.txt", lambda: f"donnees etendue {DN.etendue(rows_())}",
     "donnees chaine", "grep -E 'eau|glace' collection.csv", "cut -d, -f1 collection.csv | tail -n +2 | sort -u | xargs echo",
-    "mkdir -p enclos && cut -d, -f1 collection.csv | tail -n +2 | sort -u | xargs -I{} touch enclos/{}.txt",
+    "mkdir -p enclos && cut -d, -f1 collection.csv | tail -n +2 | sort -u | sed 's|.*|enclos/&.txt|' | xargs touch",
     "donnees bilan", "sort -t, -k4 -nr collection.csv | head -3 | tee rapport.txt",
     "awk -F, 'NR>1 {s+=$4; n++} END {print \"moyenne\", s/n}' collection.csv >> rapport.txt", "donnees bilan",
     "donnees base", lambda: sq(".tables"), lambda: sq("\".schema creatures\""),

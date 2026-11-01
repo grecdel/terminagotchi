@@ -10,7 +10,10 @@ chaque ligne de la Salle (sans awk ni sqlite3) est lancée sur le MÊME tableau 
   - avec toybox, puis busybox, quand ils sont installés : un dossier de liens (sed → toybox…) passe devant le PATH ;
 et les sorties ET les fichiers produits doivent être identiques (seul l'alignement peut différer : `uniq -c` et `wc`
 mettent plus ou moins d'espaces devant les nombres, le jeu ne lit que les valeurs). Sans toybox ni busybox, le test le dit et passe
-(--exiger les rend obligatoires : c'est ce que fait la CI, qui compile toybox depuis ses sources).
+(--exiger les rend obligatoires : c'est ce que fait la CI, qui compile toybox depuis ses sources, avec tr comme sur
+Android ; diff n'est pas comparé pour toybox : l'appli a le sien). Seul toybox fait échouer le test ; les écarts de busybox sont affichés pour information.
+Ce que ce test a trouvé (1er novembre) : toybox n'a ni `cat -n` (le jeu dit `nl`) ni `xargs -I` (le jeu fabrique les
+noms avec sed : `sed 's|.*|enclos/&.txt|' | xargs touch`) ; busybox `diff` écrit le format unifié.
 """
 import os
 import shutil
@@ -26,7 +29,7 @@ sys.path.insert(0, str(RACINE / "donnees" / "donnees" / "outils"))
 from tg import donnees as DN, langue  # noqa: E402
 import fiches_donnees as F  # noqa: E402
 
-OUTILS = ["sed", "sort", "uniq", "cut", "tr", "paste", "grep", "xargs", "tee", "head", "tail", "wc", "cat", "diff",
+OUTILS = ["sed", "sort", "uniq", "cut", "tr", "paste", "grep", "xargs", "tee", "head", "tail", "wc", "cat", "diff", "nl",
           "mkdir", "touch", "ls", "echo"]
 
 # Les lignes de la Salle (dn1 → dn5) qui passent par le shell du téléphone, « ? » remplacés comme le ferait l'enfant.
@@ -44,10 +47,10 @@ def lignes(mal, bien):
         "sed -n '2,4p' carnet_corrige.txt",
         f"sed -i 's/{mal}/{bien}/g' carnet_du_soigneur.txt; cat carnet_du_soigneur.txt",
         "cut -d, -f4 collection.csv | tail -n +2 | sort -n > attaques.txt; cat attaques.txt",
-        "sed -n '1p;$p' attaques.txt", "head -1 attaques.txt; tail -1 attaques.txt", "cat -n attaques.txt",
+        "sed -n '1p;$p' attaques.txt", "head -1 attaques.txt; tail -1 attaques.txt", "nl attaques.txt",
         "grep -E 'eau|glace' collection.csv", "grep -cE ',(eau|glace),' collection.csv",
         "cut -d, -f1 collection.csv | tail -n +2 | sort -u | xargs echo",
-        "mkdir -p enclos && cut -d, -f1 collection.csv | tail -n +2 | sort -u | xargs -I{} touch enclos/{}.txt; ls enclos",
+        "mkdir -p enclos && cut -d, -f1 collection.csv | tail -n +2 | sort -u | sed 's|.*|enclos/&.txt|' | xargs touch; ls enclos",
         "sort -t, -k4 -nr collection.csv | head -3 | tee rapport.txt",
         "echo 'moyenne 33.1' >> rapport.txt; cat rapport.txt",
         # les variantes de Hugo (sim_donnees.py)
@@ -75,11 +78,15 @@ def jouer(boite, liens_dir):
     if boite:
         env["PATH"] = f"{liens_dir}:{env.get('PATH', '/usr/bin:/bin')}"
     res = []
+    avant = {}
     for l in lignes(mal, bien):
         r = subprocess.run(["sh", "-c", l], cwd=str(d), capture_output=True, text=True, env=env, timeout=60)
         fichiers = {str(p.relative_to(d)): (p.read_text(encoding="utf-8") if p.is_file() else "/")
                     for p in sorted(d.rglob("*"))}
-        res.append((l, r.stdout, r.returncode, fichiers, r.stderr))
+        delta = {k: v for k, v in fichiers.items() if avant.get(k) != v}   # seulement ce que CETTE ligne a changé
+        delta.update({k: None for k in avant if k not in fichiers})
+        avant = fichiers
+        res.append((l, r.stdout, r.returncode, delta, r.stderr))
     shutil.rmtree(d, ignore_errors=True)
     return res
 
@@ -89,11 +96,17 @@ def espaces(texte):
     return "\n".join(" ".join(l.split()) for l in texte.split("\n"))
 
 
+# Sur le téléphone, diff est INTÉGRÉ à l'appli (Citadelle.diff, format « normal » comme GNU) : pas celui de toybox.
+INTEGRES = {"toybox": {"diff"}}
+
+
 def liens(boite):
     exe = shutil.which(boite)
     d = Path(tempfile.mkdtemp(prefix=f"tg_{boite}_"))
     ok = []
     for o in OUTILS:
+        if o in INTEGRES.get(boite, ()):
+            continue
         r = subprocess.run([exe, o, "--help"], capture_output=True, text=True)
         texte = (r.stdout + r.stderr).lower()
         if "applet not found" in texte or "unknown command" in texte or "not found" in texte.split("\n")[0]:
@@ -112,13 +125,14 @@ def main():
     ko = 0
     vus = 0
     for boite in ("toybox", "busybox"):
+        strict = boite == "toybox"                     # toybox : le téléphone ; busybox : pour information (PC Alpine…)
         if not shutil.which(boite):
             print(f"  · {boite} n'est pas installé : pas comparé" + (" ✖ (exigé)" if boite in exiger else ""))
             ko += boite in exiger
             continue
         vus += 1
         d, ok = liens(boite)
-        manque = [o for o in OUTILS if o not in ok]
+        manque = [o for o in OUTILS if o not in ok and o not in INTEGRES.get(boite, ())]
         version = subprocess.run([shutil.which(boite), "--version"], capture_output=True, text=True).stdout.strip()[:40]
         print(f"{boite} ({version or '?'}) : {len(ok)} outils" + (f", absents : {' '.join(manque)}" if manque else ""))
         res = jouer(boite, d)
@@ -129,8 +143,8 @@ def main():
             if (espaces(s0), c0, f0) == (espaces(s1), c1, f1):  # seulement l'alignement (uniq -c, wc…) : le jeu lit les valeurs
                 print(f"  ≈ {l}   (mêmes valeurs, espaces différents)")
                 continue
-            ko += 1
-            print(f"  ✖ {l}")
+            ko += strict
+            print(f"  {'✖' if strict else '·'} {l}" + ("" if strict else "   (pour information : busybox n'est pas le téléphone)"))
             if s0 != s1:
                 print(f"      GNU    : {s0!r}\n      {boite:7}: {s1!r}")
             if c0 != c1:
