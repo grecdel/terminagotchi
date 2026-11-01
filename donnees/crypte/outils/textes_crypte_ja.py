@@ -11,7 +11,7 @@ K = {
  "qu.objet.sceau_miniature": "小さな印章",
  "qu.titre.sphinx_de_la_crypte": "地下室のスフィンクス",
  "cr.ouvert.log": "🌍 十字路に新しい世界が開いた：暗号の地下室",
- "cr.ouvert.dit": "コマンドをつなげられるようになったね：大樹の根の下に、暗号の地下室への階段が開いたよ！いつでもどうぞ：`cd ~/terrain_terminagotchi/crypte`。",
+ "cr.ouvert.dit": "城塞の門をくぐったね：大樹の根の下に、暗号の地下室への階段が開いたよ！いつでもどうぞ：`cd ~/terrain_terminagotchi/crypte`。",
  "recomp.crypte.chaine": "ヒントなしでブロックチェーンを直す",
  "recomp.crypte.b6": "改ざんできない航海日誌をたしかめる",
  "hist.cr0.titre": "スフィンクスの扉",

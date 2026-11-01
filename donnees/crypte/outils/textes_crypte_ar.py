@@ -11,7 +11,7 @@ K = {
  "qu.objet.sceau_miniature": "ختم صغير",
  "qu.titre.sphinx_de_la_crypte": "أبو هول السرداب",
  "cr.ouvert.log": "🌍 عالم انفتح عند مفترق الطرق: سرداب الرموز",
- "cr.ouvert.dit": "أنت تعرف كيف تربط الأوامر: انفتح درج سرداب الرموز تحت الجذر! متى شئت: `cd ~/terrain_terminagotchi/crypte`.",
+ "cr.ouvert.dit": "لقد عبرت باب القلعة: انفتح درج سرداب الرموز تحت الجذر! متى شئت: `cd ~/terrain_terminagotchi/crypte`.",
  "recomp.crypte.chaine": "إصلاح سلسلة الكتل دون تلميح",
  "recomp.crypte.b6": "التحقق من سجل رحلتك الذي لا يُزوَّر",
  "hist.cr0.titre": "باب أبي الهول",

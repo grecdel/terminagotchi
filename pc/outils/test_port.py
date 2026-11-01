@@ -182,8 +182,8 @@ verifier(st["histoire"].get("mondes_annonces") == ["port"] and "port" in " ".joi
 verifier((T / "port" / "panneau.txt").is_file() and (T / "port" / "annuaire.txt").read_text().startswith("127.0.0.1\tlocalhost"),
          "le port est meublé (panneau, annuaire au format de /etc/hosts…)")
 st, _ = tape("pwd")
-verifier(st["histoire"].get("mondes_annonces") == ["port", "crypte"],
-         "la Crypte, ouverte en même temps, est annoncée au tour suivant (une nouvelle à la fois)")
+verifier("crypte" not in st["histoire"].get("mondes_annonces", []) and not histoire.ouvert(st, "crypte"),
+         f"la Crypte ne s'ouvre plus avec le Port : elle attend la Citadelle (1er novembre) : {st['histoire'].get('mondes_annonces')}")
 
 print("4. La traversée du Port, comme un enfant")
 st, _ = tape("cd ~/terrain_terminagotchi/port")

@@ -10,7 +10,7 @@ K = {
  "qu.objet.sceau_miniature": "a tiny seal",
  "qu.titre.sphinx_de_la_crypte": "Sphinx of the Crypt",
  "cr.ouvert.log": "🌍 A world opens at the Crossroads: the Crypt of Codes",
- "cr.ouvert.dit": "You can connect commands: a staircase opens under the Root, down to the Crypt of Codes! Whenever you like: `cd ~/terrain_terminagotchi/crypte`.",
+ "cr.ouvert.dit": "You've passed the Citadel's gate: a staircase opens under the Root, down to the Crypt of Codes! Whenever you like: `cd ~/terrain_terminagotchi/crypte`.",
  "recomp.crypte.chaine": "Repair the blockchain without a hint",
  "recomp.crypte.b6": "Check your tamper-proof logbook",
  "hist.cr0.titre": "The sphinx's door",

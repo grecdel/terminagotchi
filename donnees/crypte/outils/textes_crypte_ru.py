@@ -11,7 +11,7 @@ K = {
  "qu.objet.sceau_miniature": "маленькая печать",
  "qu.titre.sphinx_de_la_crypte": "Сфинкс Склепа",
  "cr.ouvert.log": "🌍 На Перекрёстке открылся мир: Склеп Кодов",
- "cr.ouvert.dit": "Ты умеешь соединять команды: под Корнем открылась лестница в Склеп Кодов! Когда захочешь: `cd ~/terrain_terminagotchi/crypte`.",
+ "cr.ouvert.dit": "Ты прошёл ворота Цитадели: под Корнем открылась лестница в Склеп Кодов! Когда захочешь: `cd ~/terrain_terminagotchi/crypte`.",
  "recomp.crypte.chaine": "Починить цепочку блоков без подсказки",
  "recomp.crypte.b6": "Проверить свой неподделываемый бортовой журнал",
  "hist.cr0.titre": "Дверь сфинкса",

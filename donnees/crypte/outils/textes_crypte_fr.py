@@ -12,7 +12,7 @@ K = {
  "qu.objet.sceau_miniature": "un sceau miniature",
  "qu.titre.sphinx_de_la_crypte": "Sphinx de la Crypte",
  "cr.ouvert.log": "🌍 Un monde s'ouvre au Carrefour : la Crypte des Codes",
- "cr.ouvert.dit": "Tu sais brancher les commandes : un escalier s'ouvre sous la Racine, vers la Crypte des Codes ! Quand tu veux : `cd ~/terrain_terminagotchi/crypte`.",
+ "cr.ouvert.dit": "Tu as franchi la porte de la Citadelle: un escalier s'ouvre sous la Racine, vers la Crypte des Codes ! Quand tu veux : `cd ~/terrain_terminagotchi/crypte`.",
  "recomp.crypte.chaine": "Réparer la chaîne de blocs sans indice",
  "recomp.crypte.b6": "Vérifier son carnet de bord infalsifiable",
  # ------------------------------------------------------------------ les titres des leçons

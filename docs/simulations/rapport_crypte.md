@@ -8,8 +8,9 @@ et en CI) ; pour Android, la traversée du téléphone est rejouée par `tests/j
 **PC.** Comme `sim_citadelle.py` : chaque enfant a son propre `HOME` temporaire et un vrai `bash` qui reste ouvert
 (`pc/tg/coquille.py`) ; après chaque ligne, le jeu fait son tour avec le code de sortie. L'enfant ne lit **que** la
 commande montrée (`compagnon.commande_montree`), la sortie de sa commande et ce que le jeu écrit dans son terminal
-(`compagnon.annonces`). La Crypte est ouverte d'avance comme dans l'arbre du Carrefour (niveaux 0 à 4 du tronc
-commun finis). `GNUPGHOME` est retiré de l'environnement : on vérifie que le **vrai** trousseau (`~/.gnupg`) n'est
+(`compagnon.annonces`). La Crypte est ouverte d'avance comme dans l'arbre du Carrefour (depuis le 1er novembre : niveaux 0 à 6 du tronc
+commun finis et la porte de la Citadelle passée, `cit0`). Le garde-fou `gpg` de `tg installer` est chargé dans le
+shell de l'enfant. `GNUPGHOME` est retiré de l'environnement : on vérifie que le **vrai** trousseau (`~/.gnupg`) n'est
 jamais créé par le jeu.
 
 **Sans tricher.** Les trous « ? » sont remplis en **lisant l'écran** : pour la roue, l'enfant compte les lettres du
@@ -111,9 +112,11 @@ Commun aux trois : aucune étape validée par une commande qui a échoué ; aucu
 - Les illustrations (prompts écrits dans `outils/crypte/prompts_illustrations.md`, aucune image générée) ; en
   attendant, la crypte, la roue, la chaîne, les peintures et la table du mineur sont dessinées (PC en caractères,
   téléphone `CrypteDessin`).
-- CR1 : la décision sur un garde-fou `gpg` dans le shell.
-- La légendaire « gardienne du registre » : l'exploit `crypte.b6` favorise aujourd'hui les rencontres légendaires et
-  réserve `lichonarque:crypte` (espèce et variante existantes) ; à confirmer par le propriétaire.
+- ~~CR1 : la décision sur un garde-fou `gpg` dans le shell.~~ Validé et codé le 1er novembre : dans le terrain, la
+  fonction `gpg` posée par `tg installer` refuse sans trousseau du terrain et montre la bonne commande (le `gpg
+  --quick-gen-key` de Léa est arrêté, `~/.gnupg` n'est jamais créé).
+- La légendaire « gardienne du registre » `lichonarque:crypte` : validée le 1er novembre. La variante réservée
+  `heaumbre:crypte` est remplacée par `corbouh:crypte` (Heaumbre est le gardien glitch de la boîte « droits »).
 
 ## 5. Rejouer
 

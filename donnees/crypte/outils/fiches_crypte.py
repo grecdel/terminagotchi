@@ -121,14 +121,14 @@ FICHES = dict([
          "Décision du propriétaire (28 octobre 2026) : explication technique uniquement, aucun avis"]),
 ])
 
-CRYPTE = {"requis": ["n4"], "paliers": [f"cr{i}" for i in range(15)],
+CRYPTE = {"requis": ["n4", "n6"], "requis_lecons": ["cit0"], "paliers": [f"cr{i}" for i in range(15)],
           "attirance": {"cmds": ["base64", "tr", "sha256sum", "openssl", "gpg"], "familles": ["Morts-vivants"]},
           "ponts": {"sha256sum": ["citadelle"], "openssl": ["citadelle"], "https": ["port"], "git": ["temps"],
                     "boucles": ["forge"], "diff": ["citadelle"]},
           "exploits": [{"id": "crypte.chaine", "nom": "recomp.crypte.chaine", "recompense": "variante"},
                        {"id": "crypte.b6", "nom": "recomp.crypte.b6", "recompense": "legendaire"}],
           "maths": ["division", "modulo", "puissances", "puissance_modulo", "hexadecimal", "probabilites"],
-          "variantes_reservees": ["heaumbre:crypte", "fractalis:cristal", "givrarde:aurore", "lichonarque:crypte"],
+          "variantes_reservees": ["corbouh:crypte", "fractalis:cristal", "givrarde:aurore", "lichonarque:crypte"],
           "gardienne": "lichonarque:crypte"}
 
 ETAPES = {"cr1.2": {"maths": ["hexadecimal"]}, "cr2.4": {"maths": ["modulo"]}, "cr4.2": {"maths": ["puissances"]},

@@ -11,7 +11,7 @@ K = {
  "qu.objet.sceau_miniature": "एक छोटी मुहर",
  "qu.titre.sphinx_de_la_crypte": "तहख़ाने का स्फ़िंक्स",
  "cr.ouvert.log": "🌍 चौराहे पर एक दुनिया खुली: कोडों का तहख़ाना",
- "cr.ouvert.dit": "तुम कमांड जोड़ना जानते हो: जड़ के नीचे कोडों के तहख़ाने की सीढ़ी खुल गई! जब चाहो: `cd ~/terrain_terminagotchi/crypte`।",
+ "cr.ouvert.dit": "तुम किले का दरवाज़ा पार कर चुके हो: जड़ के नीचे कोडों के तहख़ाने की सीढ़ी खुल गई! जब चाहो: `cd ~/terrain_terminagotchi/crypte`।",
  "recomp.crypte.chaine": "बिना संकेत के ब्लॉकचेन ठीक करना",
  "recomp.crypte.b6": "अपनी जाली न बन सकने वाली यात्रा-डायरी जाँचना",
  "hist.cr0.titre": "स्फ़िंक्स का दरवाज़ा",

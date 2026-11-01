@@ -257,7 +257,18 @@ fun main(args: Array<String>) {
     h.put("chap", "bibliotheque")
     h.put("mondes_annonces", JSONArray().put("port"))
     Histoire.tick(jeuCr, "ls", false, jeuCr.home, 0)
-    verifierCr(Histoire.ouvert(jeuCr, "crypte"), "niveaux 0 à 4 finis : la Crypte s'ouvre")
+    verifierCr(!Histoire.ouvert(jeuCr, "crypte") && "crypte" !in lstCr(h.optJSONArray("mondes_annonces")),
+        "niveaux 0 à 4 seuls : la Crypte reste fermée (il manque ${Crypte.manque(jeuCr)})")
+    for (l in Histoire.PAR_CHAP["cave"]!!.lecons) faits.put(l)
+    h.getJSONArray("ailes").put("bibliotheque")
+    h.put("chap", "cave")
+    Histoire.tick(jeuCr, "ls", false, jeuCr.home, 0)
+    val ann = lstCr(h.optJSONArray("mondes_annonces"))
+    verifierCr(Histoire.ouvert(jeuCr, "citadelle") && !Histoire.ouvert(jeuCr, "crypte") && "citadelle" in ann && "crypte" !in ann &&
+        Crypte.manque(jeuCr).size == 1, "cave finie : la Citadelle s'ouvre (annoncée seule), il ne manque que sa porte : ${Crypte.manque(jeuCr)}")
+    faits.put("cit0")
+    Histoire.tick(jeuCr, "ls", false, jeuCr.home, 0)
+    verifierCr(Histoire.ouvert(jeuCr, "crypte"), "la porte de la Citadelle passée (cit0) : la Crypte s'ouvre")
     verifierCr("crypte" in lstCr(h.optJSONArray("mondes_annonces")) && !Crypte.annonce(jeuCr), "annoncée une seule fois")
     verifierCr(File(jeuCr.terrain, "crypte/regle_du_sphinx.txt").readText().contains("Pixel") &&
         File(jeuCr.terrain, "crypte/copies").listFiles()!!.size == 9, "la Crypte est meublée (règle, 9 copies)")

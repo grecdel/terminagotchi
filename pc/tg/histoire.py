@@ -265,10 +265,10 @@ CHAPITRES = [
 from . import port as _port  # noqa: E402
 from . import citadelle as _cit  # noqa: E402
 from . import crypte as _cry  # noqa: E402         le troisième : la Crypte des Codes (crypte.py)
-from . import machines as _mac  # noqa: E402       le quatrième : la Salle des Machines (machines.py, chapitre « machinerie »)
+from . import machines as _mac  # noqa: E402       le quatrième : la Salle des Rouages (machines.py, chapitre « machinerie »)
 from . import ondes as _ond  # noqa: E402         le cinquième : la Tour des Ondes (ondes.py), quartier du Port
 MONDES_MODS = {"port": _port, "citadelle": _cit, "crypte": _cry, "machinerie": _mac, "ondes": _ond}
-# le lieu de chaque monde (la Salle des Machines : chapitre « machinerie », lieu « machines »)
+# le lieu de chaque monde (la Salle des Rouages : chapitre « machinerie », lieu « machines »)
 PIECES_MODS = {_m.CHAPITRE["piece"]: _m for _m in MONDES_MODS.values()}
 for _m in MONDES_MODS.values():
     NOUVELLES.update(_m.LECONS)
@@ -1117,7 +1117,7 @@ def indice(state, step, lignes, tapees, morcs=None):
         conseil = _cit.indice(step, tapees)
     if not conseil and step.get("cmd") in _CMDS_CRY:      # la Crypte : un trou « ? », gpg sans --homedir…
         conseil = _cry.indice(step, tapees)
-    if not conseil and step.get("cmd") in _CMDS_MAC:      # la Salle des Machines : un sudo, une mauvaise réponse…
+    if not conseil and step.get("cmd") in _CMDS_MAC:      # la Salle des Rouages : un sudo, une mauvaise réponse…
         conseil = _mac.indice(step, tapees)
     if not conseil and step.get("cmd") in _CMDS_OND:      # la Tour des Ondes : un sudo, une radio qu'on changerait…
         conseil = _ond.indice(step, tapees)

@@ -10,7 +10,7 @@ K = {
  "qu.objet.sceau_miniature": "segel mini",
  "qu.titre.sphinx_de_la_crypte": "Sphinx Ruang Kode",
  "cr.ouvert.log": "🌍 Sebuah dunia terbuka di Persimpangan: Ruang Bawah Tanah Kode",
- "cr.ouvert.dit": "Kamu bisa menyambung perintah: sebuah tangga terbuka di bawah Akar, menuju Ruang Bawah Tanah Kode! Kapan saja: `cd ~/terrain_terminagotchi/crypte`.",
+ "cr.ouvert.dit": "Kamu sudah melewati gerbang Benteng: sebuah tangga terbuka di bawah Akar, menuju Ruang Bawah Tanah Kode! Kapan saja: `cd ~/terrain_terminagotchi/crypte`.",
  "recomp.crypte.chaine": "Memperbaiki rantai blok tanpa petunjuk",
  "recomp.crypte.b6": "Memeriksa buku catatan perjalanan yang tak bisa dipalsukan",
  "hist.cr0.titre": "Pintu sang sphinx",

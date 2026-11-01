@@ -10,7 +10,7 @@ K = {
  "qu.objet.sceau_miniature": "un sigillo in miniatura",
  "qu.titre.sphinx_de_la_crypte": "Sfinge della Cripta",
  "cr.ouvert.log": "🌍 Un mondo si apre al Crocevia: la Cripta dei Codici",
- "cr.ouvert.dit": "Sai collegare i comandi: sotto la Radice si apre una scala verso la Cripta dei Codici! Quando vuoi: `cd ~/terrain_terminagotchi/crypte`.",
+ "cr.ouvert.dit": "Hai varcato la porta della Cittadella: sotto la Radice si apre una scala verso la Cripta dei Codici! Quando vuoi: `cd ~/terrain_terminagotchi/crypte`.",
  "recomp.crypte.chaine": "Riparare la catena di blocchi senza indizi",
  "recomp.crypte.b6": "Verificare il tuo diario di bordo infalsificabile",
  "hist.cr0.titre": "La porta della sfinge",

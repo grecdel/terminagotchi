@@ -525,16 +525,31 @@ object Crypte {
     }
 
     // ---------------------------------------------------------------- l'arbre du Carrefour
-    private fun besoin(): List<String> {
+    // Comme la Citadelle (niveaux 0 à 6) plus sa première leçon (requis_lecons : cit0) : la Crypte s'ouvre APRÈS elle.
+    private fun besoin(): Pair<List<String>, List<String>> {
         val P = Programme.donnees()
         val ms = P.optJSONArray("mondes") ?: JSONArray()
-        val m = (0 until ms.length()).map { ms.getJSONObject(it) }.firstOrNull { it.optString("id") == "crypte" } ?: return emptyList()
+        val m = (0 until ms.length()).map { ms.getJSONObject(it) }.firstOrNull { it.optString("id") == "crypte" }
+            ?: return emptyList<String>() to emptyList()
         val tronc = P.optJSONObject("tronc") ?: JSONObject()
-        return liste(m, "requis").flatMap { liste(tronc, it) }.distinct()
+        return liste(m, "requis").flatMap { liste(tronc, it) }.distinct() to liste(m, "requis_lecons")
     }
 
-    fun ouvert(jeu: Jeu) = besoin().all { Histoire.fini(jeu, it) }
-    fun manque(jeu: Jeu) = besoin().filter { !Histoire.fini(jeu, it) }.map { Histoire.nomChapitre(it) }
+    private fun leconsFaites(jeu: Jeu) = Histoire.h(jeu).optJSONArray("faits")?.let { a -> (0 until a.length()).map { a.getString(it) } } ?: emptyList()
+
+    fun ouvert(jeu: Jeu): Boolean {
+        val (chaps, lecs) = besoin()
+        val f = leconsFaites(jeu)
+        return chaps.all { Histoire.fini(jeu, it) } && lecs.all { it in f }
+    }
+
+    fun manque(jeu: Jeu): List<String> {
+        val (chaps, lecs) = besoin()
+        val f = leconsFaites(jeu)
+        return chaps.filter { !Histoire.fini(jeu, it) }.map { Histoire.nomChapitre(it) } +
+            lecs.filter { it !in f }.map { l -> val ch = Histoire.chapitreDeLecon(l)
+                Histoire.tx("hist.$l.titre") + " (" + (ch?.let { Histoire.nomChapitre(it.id) } ?: "?") + ")" }
+    }
 
     fun annonce(jeu: Jeu): Boolean {
         val h = Histoire.h(jeu)

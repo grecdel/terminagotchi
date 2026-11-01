@@ -87,7 +87,7 @@ object Histoire {
         Chapitre("citadelle", 12, "citadelle", "Démons", Citadelle.IDS, null, "bouclier_miniature", "gardien_de_la_citadelle", monde = true),
         // le troisième : la Crypte des Codes (Crypte.kt), la cryptographie et la blockchain (explication technique)
         Chapitre("crypte", 13, "crypte", "Morts-vivants", Crypte.IDS, null, "sceau_miniature", "sphinx_de_la_crypte", monde = true),
-        // le quatrième : la Salle des Machines (Machines.kt), le matériel ; chapitre « machinerie » (« machines » est l'aile
+        // le quatrième : la Salle des Rouages (Machines.kt), le matériel ; chapitre « machinerie » (« machines » est l'aile
         // du volcan), lieu machines/
         Chapitre("machinerie", 14, "machines", "Constructs", Machines.IDS, null, "carte_mere_miniature", "architecte_des_machines", monde = true),
         // le cinquième : la Tour des Ondes (Ondes.kt), la radio, LoRa et les réseaux maillés ; lieu ondes/ (« tour » est l'aile)
@@ -581,7 +581,7 @@ object Histoire {
         if (lid in Port.IDS) Port.meubler(jeu, lid)          // le Port : le phare s'allume pour les leçons qui le visitent
         if (lid in Citadelle.IDS) Citadelle.meubler(jeu, lid)   // la Citadelle : les attaques fictives au bon moment
         if (lid in Crypte.IDS) Crypte.meubler(jeu, lid)         // la Crypte : le grimoire touché, la chaîne, les clés d'exemple
-        if (lid in Machines.IDS) Machines.meubler(jeu, lid)     // la Salle des Machines : la photo, la ferme, les ponts des nombres
+        if (lid in Machines.IDS) Machines.meubler(jeu, lid)     // la Salle des Rouages : la photo, la ferme, les ponts des nombres
         if (lid in Ondes.IDS) Ondes.meubler(jeu, lid)           // la Tour des Ondes : le plan, les capteurs d'exemple, les ponts
         return poses
     }
@@ -913,7 +913,7 @@ object Histoire {
         Port.indice(jeu, e, tapees)?.let { return it }            // le Port : un trou « … » recopié, un messager perdu
         Citadelle.indice(jeu, e, tapees)?.let { return it }       // la Citadelle : un trou « ? », un sudo, un drapeau faux
         Crypte.indice(jeu, e, tapees)?.let { return it }          // la Crypte : gpg sans --homedir, une mauvaise roue…
-        Machines.indice(jeu, e, tapees)?.let { return it }        // la Salle des Machines : un sudo, une mauvaise réponse…
+        Machines.indice(jeu, e, tapees)?.let { return it }        // la Salle des Rouages : un sudo, une mauvaise réponse…
         Ondes.indice(jeu, e, tapees)?.let { return it }           // la Tour des Ondes : un « ? » recopié, la cible isolée…
         indiceCd(jeu, e, morcs)?.let { return it }
         indiceRm(jeu, e, tapees)?.let { return it }

@@ -11,7 +11,7 @@ K = {
  "qu.objet.sceau_miniature": "一枚迷你印章",
  "qu.titre.sphinx_de_la_crypte": "地宫的斯芬克斯",
  "cr.ouvert.log": "🌍 十字路口开启了一个世界：密码地宫",
- "cr.ouvert.dit": "你会把命令连起来了：大树根下打开了一道通往密码地宫的楼梯！随时可以去：`cd ~/terrain_terminagotchi/crypte`。",
+ "cr.ouvert.dit": "你已经穿过了守卫城堡的大门：大树根下打开了一道通往密码地宫的楼梯！随时可以去：`cd ~/terrain_terminagotchi/crypte`。",
  "recomp.crypte.chaine": "不靠提示修好区块链",
  "recomp.crypte.b6": "核对你那本无法伪造的航行日志",
  "hist.cr0.titre": "斯芬克斯之门",

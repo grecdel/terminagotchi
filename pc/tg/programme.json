@@ -4245,7 +4245,7 @@
   "essais_variante": 4,
   "bonus_legendaire": 1,
   "essais_legendaire": 8,
-  "bonus_gardien": 5,
+  "bonus_gardien": 15,
   "essais_gardien": 16,
   "serie_parfaite": 5
  },
@@ -4692,13 +4692,17 @@
     }
    ],
    "variantes_reservees": [
-    "heaumbre:crypte",
+    "corbouh:crypte",
     "fractalis:cristal",
     "givrarde:aurore",
     "lichonarque:crypte"
    ],
    "requis": [
-    "n4"
+    "n4",
+    "n6"
+   ],
+   "requis_lecons": [
+    "cit0"
    ],
    "paliers": [
     "cr0",

@@ -1,7 +1,8 @@
 """🗝 La Crypte des Codes — cryptographie et blockchain (docs/programme.md § 7.9, paliers K1 à K8 et B1 à B6).
 
-Le troisième monde de la phase 5 (§ 7.14, étape 4 bis). Il s'ouvre selon l'arbre du Carrefour : ses prérequis sont les
-niveaux 0 à 4 du tronc commun (programme.json, « mondes » → crypte → requis : brancher les commandes, `|` et `>`).
+Le troisième monde de la phase 5 (§ 7.14, étape 4 bis). Il s'ouvre APRÈS la Citadelle, selon l'arbre du Carrefour : mêmes
+prérequis qu'elle (niveaux 0 à 6 du tronc commun) plus sa première leçon, la porte (programme.json, « mondes » → crypte →
+requis et requis_lecons : cit0 ; décision du propriétaire, 1er novembre).
 On en sort et on y revient, l'étape est gardée.
 
 RÈGLES (affichées à l'entrée, regle_du_sphinx.txt) : tout est HORS LIGNE et reste dans ~/terrain_terminagotchi/crypte/.
@@ -832,23 +833,34 @@ CHAPITRE = {"id": "crypte", "n": 13, "piece": "crypte", "famille": "Morts-vivant
 
 # ================================================================ l'arbre du Carrefour : quand la Crypte s'ouvre
 def _besoin():
+    """(chapitres du tronc commun, leçons d'autres mondes) qu'il faut avoir finis : comme la Citadelle (niveaux 0 à 6),
+    plus sa première leçon (requis_lecons : cit0) — la Crypte s'ouvre APRÈS la Citadelle (§ 7.14, étape 4 bis)."""
     from . import programme
     P = programme.donnees()
     m = next((x for x in P.get("mondes", []) if x["id"] == "crypte"), {})
     besoin = []
     for n in m.get("requis", []):
         besoin += [c for c in P.get("tronc", {}).get(n, []) if c not in besoin]
-    return besoin
+    return besoin, list(m.get("requis_lecons", []))
 
 
 def ouvert(state):
     from . import histoire
-    return all(histoire.fini(state, c) for c in _besoin())
+    chaps, lecs = _besoin()
+    faits = histoire.h_(state)["faits"]
+    return all(histoire.fini(state, c) for c in chaps) and all(l in faits for l in lecs)
 
 
 def manque(state):
-    from . import histoire
-    return [histoire.nom_chapitre(c) for c in _besoin() if not histoire.fini(state, c)]
+    from . import histoire, lecons
+    chaps, lecs = _besoin()
+    faits = histoire.h_(state)["faits"]
+    out = [histoire.nom_chapitre(c) for c in chaps if not histoire.fini(state, c)]
+    for l in lecs:
+        if l not in faits:
+            ch = histoire.chapitre_de_lecon(l)
+            out.append(f"{lecons.tx(histoire.lecon_def(l)['titre'])} ({histoire.nom_chapitre(ch['id']) if ch else '?'})")
+    return out
 
 
 def annonce(state):

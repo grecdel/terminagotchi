@@ -5,7 +5,8 @@ docs/simulations/rapport_crypte.md.
     python3 pc/outils/sim_crypte.py lea        (un seul : lea, ines ou hugo)
 
 Comme sim_citadelle.py : le shell est pc/tg/coquille.py, l'enfant ne lit que la commande montrée et ce que le jeu
-écrit dans SON terminal. La Crypte est ouverte d'avance (niveaux 0 à 4 du tronc commun finis).
+écrit dans SON terminal. La Crypte est ouverte d'avance (niveaux 0 à 6 du tronc commun finis et la porte de la Citadelle passée : elle
+s'ouvre après la Citadelle).
   - Léa, 7 ans : se trompe d'abord (une majuscule, gpg SANS --homedir vu dans un tuto, un « sudo », `>` au lieu de
     `>>` dans le bloc, une autre clé que l'exemple, une mauvaise roue, un biome au hasard), recopie « ? » une fois ;
     puis lit et corrige.
@@ -16,7 +17,7 @@ Pour le quiz, l'enfant répond, lit les ✔, corrige les autres ; pour la roue, 
 décalage depuis « e » ; pour le dé, il calcule avec echo $(( … )) ; pour le tricheur, il lit les empreintes.
 Vérifie : la Crypte finie (le carnet de bord : crypte.b6), la chaîne réparée SANS indice donne crypte.chaine (et pas
 avec un indice), aucune étape validée par une commande qui a échoué, chaque faute de Léa reçoit une explication, les
-variantes justes de Hugo acceptées, aucun gpg-agent ne reste, le vrai trousseau (~/.gnupg) jamais créé, rien hors du
+variantes justes de Hugo acceptées, aucun gpg-agent ne reste, le vrai trousseau (~/.gnupg) jamais créé (le garde-fou\ngpg de `tg installer` est chargé dans le shell : le gpg sans --homedir de Léa est refusé), rien hors du
 terrain, seulement des clés d'exemple. Code de sortie 1 en cas d'échec.
 """
 import builtins
@@ -76,13 +77,14 @@ langue.definir("fr")
 
 def ouvrir(s):
     h = histoire.h_(s)
-    for c in ("reveil", "nid", "bibliotheque"):
+    for c in ("reveil", "nid", "bibliotheque", "cave"):
         for lid in histoire.PAR_CHAP[c]["lecons"]:
             if lid not in h["faits"]:
                 h["faits"].append(lid)
+    h["faits"].append("cit0")                       # la porte de la Citadelle passée : la Crypte s'ouvre après elle
     h["ailes"] = ["reveil", "nid", "bibliotheque"]
-    h["chap"] = "bibliotheque"
-    h.setdefault("mondes_annonces", []).append("port")
+    h["chap"] = "cave"
+    h.setdefault("mondes_annonces", []).extend(["port", "citadelle"])
     s["xp"] = 10 * 30 ** 2
     s["step"] = 0
 
@@ -90,6 +92,9 @@ def ouvrir(s):
 core.modifier(ouvrir)
 core.TERRAIN.mkdir(exist_ok=True)
 SH = Coquille(HOME, env=dict(os.environ, LC_ALL="C.UTF-8"))
+# le garde-fou gpg que `tg installer` pose dans ~/.bashrc (compagnon._garde_gpg) : chargé dans le shell de l'enfant
+(DOUBLURES / "garde_gpg.sh").write_text(compagnon._garde_gpg(), encoding="utf-8")
+SH.lancer(f". {DOUBLURES / 'garde_gpg.sh'}")
 ANSI = re.compile(r"\x1b\[[0-9;?]*[A-Za-z]")
 INV = {v: k for k, v in HOMO.items()}
 ok = ko = 0
@@ -229,7 +234,7 @@ def variante(cmd):
 fausses, sans_explication, variantes_ok, variantes_refusees = [], [], [], []
 tentes = set()
 st = tape("ls")
-assert histoire.ouvert(st, "crypte"), "la Crypte devrait être ouverte (niveaux 0 à 4 finis)"
+assert histoire.ouvert(st, "crypte"), "la Crypte devrait être ouverte (niveaux 0 à 6 finis, porte de la Citadelle passée)"
 st = tape("cd ~/terrain_terminagotchi/crypte")
 for _ in range(400):
     if histoire.fini(st, "crypte"):
@@ -297,11 +302,12 @@ verifier(not fausses, f"aucune étape validée par une commande qui a échoué {
 K.tuer_agents()
 r = subprocess.run(["bash", "-c", f"ps -eo args | grep -c '^gpg-agent.*{core.TERRAIN}'"], capture_output=True, text=True)
 verifier(r.stdout.strip() == "0", "aucun gpg-agent du terrain ne reste en vie")
-if QUI == "lea":                 # Léa a tapé gpg SANS --homedir : c'est SA commande (le jeu ne peut pas l'empêcher), il prévient
-    lu = [lu_ for _l, _s, c, _code, lu_ in journal if c.startswith("gpg --quick-gen-key")]
-    verifier(lu and "--homedir" in lu[0], f"gpg tapé sans --homedir : la créature prévient tout de suite ({lu[:1]})")
-else:
-    verifier(not (HOME / ".gnupg").exists(), "le vrai trousseau (~/.gnupg) n'a jamais été créé")
+if QUI == "lea":                 # Léa a tapé gpg SANS --homedir : le garde-fou du shell refuse, et dit la bonne commande
+    lu = [(code_, memoire.get(c, ""), lu_) for _l, _s, c, code_, lu_ in journal if c.startswith("gpg --quick-gen-key")]
+    verifier(lu and lu[0][0] == 2 and "--homedir .trousseau --quick-gen-key" in lu[0][1],
+             f"gpg tapé sans --homedir : le garde-fou du shell refuse et montre la bonne commande ({lu[:1]})")
+    verifier(lu and "--homedir" in lu[0][2], f"… et la créature le redit dans son terminal ({lu[:1]})")
+verifier(not (HOME / ".gnupg").exists(), "le vrai trousseau (~/.gnupg) n'a jamais été créé")
 cles = set()
 for _l, _s, c, _code, _lu in journal:
     cles |= set(re.findall(r"pass:(\S+)", c))

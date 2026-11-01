@@ -242,6 +242,45 @@ def _ps2(zsh=False):
     return f'PS2="{txt}"\n'
 
 
+def _garde_gpg():
+    """Le garde-fou gpg (bash et zsh ; décision du propriétaire, 1er novembre) : l'enfant tape de vraies commandes dans
+    son vrai shell. DANS le terrain du jeu, gpg (et gpg2) refuse de partir si son trousseau (--homedir, sinon GNUPGHOME)
+    n'est pas lui aussi dans le terrain : le vrai trousseau de la famille (~/.gnupg) n'est jamais touché par une commande
+    recopiée d'un tuto. Le message dit gentiment la bonne commande (--homedir .trousseau, dans la Crypte). Hors du
+    terrain, rien ne change (`command gpg`) : les parents utilisent gpg comme avant. `gpg --version` / `--help` passent
+    toujours. Retiré avec le reste du bloc (tg desinstaller)."""
+    def q(x):
+        return "'" + x.replace("'", "'\\''") + "'"
+    terrain = str(core.TERRAIN)
+    return ("function __tg_gpg {\n"
+            '  local __p="$1"; shift\n'
+            '  local __t __ici __d="${GNUPGHOME-}" __h="" __a __reste="" __r=""\n'
+            f'  __t=$(cd {q(terrain)} 2>/dev/null && pwd -P) || {{ command "$__p" "$@"; return; }}\n'
+            '  __ici=$(pwd -P 2>/dev/null)\n'
+            '  case "$__ici/" in "$__t"/*) ;; *) command "$__p" "$@"; return;; esac\n'
+            '  case "$*" in --version|--help|-h) command "$__p" "$@"; return;; esac\n'
+            '  for __a in "$@"; do\n'
+            '    if [ "$__h" = 1 ]; then __d="$__a"; __h=2; continue; fi\n'
+            '    case "$__a" in --homedir) __h=1;; --homedir=*) __d="${__a#--homedir=}"; __h=2;; *) __reste="$__reste $__a";; esac\n'
+            '  done\n'
+            '  [ "$__h" = 1 ] && __d=""\n'
+            '  if [ -n "$__d" ]; then\n'
+            '    case "$__d" in "~") __d="$HOME";; "~/"*) __d="$HOME/${__d#"~/"}";; esac\n'
+            '    case "$__d" in /*) ;; *) __d="$__ici/$__d";; esac\n'
+            '    if [ -d "$__d" ]; then __r=$(cd "$__d" 2>/dev/null && pwd -P)\n'
+            '    else __r=$(cd "$(dirname -- "$__d")" 2>/dev/null && pwd -P) && __r="$__r/$(basename -- "$__d")"; fi\n'
+            '    case "$__r" in */..|*/.) __r="";; esac\n'
+            '    case "$__r/" in "$__t"/*) command "$__p" "$@"; return;; esac\n'
+            '  fi\n'
+            f"  printf '%s\\n' {q(t('comp.gpg.garde'))} >&2\n"
+            f'  [ "$__ici" = "$__t/crypte" ] || printf \'   ➜ %s\\n\' {q("cd ~/" + core.TERRAIN.name + "/crypte")} >&2\n'
+            "  printf '   ➜ %s --homedir .trousseau%s\\n' \"$__p\" \"$__reste\" >&2\n"
+            "  return 2\n"
+            "}\n"
+            'function gpg { __tg_gpg gpg "$@"; }\n'
+            'function gpg2 { __tg_gpg gpg2 "$@"; }\n')
+
+
 # `deploie cat x | grep y` : le « # » de l'alias coupe le reste de la ligne (le tuyau n'est pas lancé), et la
 # ligne entière est relue dans l'historique (history -a). Avec des guillemets ça marche aussi partout.
 DEPLOIE = ("alias deploie='history -a 2>/dev/null; tg deploie --historique #'\n"
@@ -262,7 +301,7 @@ def _blocs():
                          "alias carte='tg carte'; alias quetes='tg quetes'; alias explique='tg explique'\n"
                          "alias entrainement='tg entrainement'; alias exercice='tg entrainement'; alias badges='tg badges'\n"
                          "alias guide='tg guide'; alias types='tg types'; alias equipe='tg equipe'; alias aide='tg aide'\n"
-                         + DEPLOIE)
+                         + _garde_gpg() + DEPLOIE)
     if not IS_WIN and (shell.endswith("zsh") or zshrc.exists() or OSK == "mac"):
         blocs[zshrc] = ("setopt INC_APPEND_HISTORY\n"
                         f'__tg_prompt() {{ local s=$?; "{exe}" "{app}" prompt --statut=$s }}\n'
@@ -271,7 +310,7 @@ def _blocs():
                         "alias carte='tg carte'; alias quetes='tg quetes'; alias explique='tg explique'\n"
                         "alias entrainement='tg entrainement'; alias exercice='tg entrainement'; alias badges='tg badges'\n"
                         "alias guide='tg guide'; alias types='tg types'; alias equipe='tg equipe'; alias aide='tg aide'\n"
-                        "setopt INTERACTIVE_COMMENTS\n" + DEPLOIE)
+                        "setopt INTERACTIVE_COMMENTS\n" + _garde_gpg() + DEPLOIE)
     fish = home / ".config" / "fish"
     if not IS_WIN and fish.is_dir():
         blocs[fish / "conf.d" / "terminagotchi.fish"] = (
@@ -382,7 +421,8 @@ def a_jour():
                                      or ("citadelle='tg citadelle'" in bloc and "citadelle='tg citadelle'" not in installe)
                                      or ("crypte='tg crypte'" in bloc and "crypte='tg crypte'" not in installe)
                                      or ("machines='tg machines'" in bloc and "machines='tg machines'" not in installe)
-                                     or ("mesh-envoie='tg ondes" in bloc and "mesh-envoie='tg ondes" not in installe)):
+                                     or ("mesh-envoie='tg ondes" in bloc and "mesh-envoie='tg ondes" not in installe)
+                                     or ("function __tg_gpg" in bloc and "function __tg_gpg" not in installe)):
             return False
     return True
 

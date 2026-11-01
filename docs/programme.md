@@ -15,7 +15,7 @@
 4. [Le parcours d'accueil proposé (de l'œuf aux fonctions)](#4-le-parcours-daccueil-proposé)
 5. [Plan de simulation (personas, mesures, outillage)](#5-plan-de-simulation)
 6. [Annexes : format de données commun, vérificateur statique, chantier Shell.kt](#6-annexes)
-7. [Vers la référence : rigueur, protocoles réseau, Salle des Machines, comprendre l'IA, boîtes de la Citadelle, récompenses, en classe, cryptographie et blockchain, mathématiques par la pratique, illustrations des mondes, radio et LoRa, open source et DIY, VM, SQL, web, multimédia, Linux, embarqué](#7-vers-la-référence--rigueur-modules-complémentaires-et-salles-de-classe)
+7. [Vers la référence : rigueur, protocoles réseau, Salle des Rouages, comprendre l'IA, boîtes de la Citadelle, récompenses, en classe, cryptographie et blockchain, mathématiques par la pratique, illustrations des mondes, radio et LoRa, open source et DIY, VM, SQL, web, multimédia, Linux, embarqué](#7-vers-la-référence--rigueur-modules-complémentaires-et-salles-de-classe)
 
 ---
 
@@ -534,7 +534,7 @@ flowchart TD
     X --> CTRL[🎛 Le Poste de Contrôle<br/>administration système]
     X --> ATEL[🤖 L'Atelier<br/>Raspberry Pi, robots]
     X --> IA[🔭 L'Observatoire de l'IA<br/>outils et agents]
-    X --> MACH[⚙ La Salle des Machines<br/>matériel et infrastructure]
+    X --> MACH[⚙ La Salle des Rouages<br/>matériel et infrastructure]
     MACH -. pont .-> CTRL
     MACH -. pont .-> PORT
     X --> CRYPTE[🗝 La Crypte des Codes<br/>cryptographie et blockchain]
@@ -1228,10 +1228,14 @@ Bonus du Port (palier libre) : **le courrier électronique** (SMTP / IMAP, notio
 Prérequis ajoutés : P6 après P3 ; P7-P8 après P6 ; P9 après P7 ; P10 et P11 après P9. Pont vers la Citadelle :
 P7 (ports ouverts) est requis pour la boîte « Le hangar ouvert » (§ 7.5).
 
-### 7.3 ⚙ La Salle des Machines — nouveau monde : matériel et infrastructure
+### 7.3 ⚙ La Salle des Rouages — nouveau monde : matériel et infrastructure
+
+*Nom affiché depuis le 1er novembre 2026 (décision du propriétaire) : « La Salle des Rouages » (ex-« Salle des
+Machines »), traduit par le sens « rouages » dans les 14 langues ; l'aile du volcan garde « la salle des machines ».
+Les identifiants internes (dossier `machines`, chapitre `machinerie`) ne changent pas.*
 
 **Prérequis** : niveaux 0-3 (lire et chercher). Ponts : Poste de Contrôle K2 (ressources) pour M4, Port P7 pour M6.
-**Image** : la salle des machines d'un grand bateau-ordinateur, sous le camp de base. Chaque pièce de l'ordinateur
+**Image** : la salle des rouages d'un grand bateau-ordinateur, sous le camp de base. Chaque pièce de l'ordinateur
 y est un personnage ou un atelier. **Vrai monde** : « Tout ce que tu tapes finit en électricité qui passe dans ces
 pièces. Les techniciens et les architectes d'infrastructure connaissent cette salle par cœur. »
 Visuel commun : un **ordinateur ouvert en pixel art** dont les pièces s'allument quand une commande les interroge,
@@ -1316,7 +1320,7 @@ pas toutes faites). Chaque monde a ses créatures attirées (selon le type de bi
 | ⏳ La Bibliothèque du Temps | Roche, Ombre | retrouver une version perdue (`git log`, `git checkout`) |
 | 📊 La Salle des Données | Eau, Glace | une statistique juste sur sa propre collection |
 | 🎛 Le Poste de Contrôle | Machine, Roche | arrêter tous les processus suspects d'une vague |
-| ⚙ La Salle des Machines | Machine, Roche | « Monte ta machine » réussi au premier démarrage |
+| ⚙ La Salle des Rouages | Machine, Roche | « Monte ta machine » réussi au premier démarrage |
 | 🤖 L'Atelier | Machine, Plante | le robot simulé qui évite tous les obstacles |
 | 🗝 La Crypte des Codes | Ombre, Glace | réparer la chaîne de blocs (B2) sans indice ; légendaire au bout de B6 |
 | 🔭 L'Observatoire de l'IA | Ciel, Glace | trouver toutes les réponses fausses de l'assistant fictif (O8) |
@@ -1329,8 +1333,10 @@ vérifiable par le site comme les autres dressages.
 
 **Le glitch (décisions du propriétaire, 31 octobre 2026).** Le glitch est un effet de l'**individu**, comme le shiny
 (indépendant de la variante ; une créature peut être shiny + glitch). Son image est fabriquée à partir de celle de la
-créature : au repos un dérèglement léger (liseré rose et cyan, deux tranches décalées), et toutes les 3 à 5 secondes
-un éclair bref plus fort (couleurs ternies, lignes de balayage, pixels morts, tranches, pixels triés). Le même rendu,
+créature : au repos un dérèglement léger (liseré rose et cyan, deux tranches décalées), et toutes les 3 à 5,5 secondes
+une rafale saccadée (1er novembre : « saccade peut-être plus ») : 2 ou 3 secousses très courtes (0,12 s) plus fortes
+(couleurs ternies, lignes de balayage, pixels morts, tranches, pixels triés), chacune avec ses propres tranches,
+séparées par de brefs retours au repos (0,08 s). Le même rendu,
 déterministe, sur PC, Android et le site ; il se pose par-dessus les animations, après la teinte shiny ; repère ▚.
 
 | Boîte | Gardien | Pourquoi |
@@ -1345,9 +1351,13 @@ déterministe, sur PC, Android et le site ; il se pose par-dessus les animations
 | Ingénierie sociale | Drapouille (Morts-vivants) | le fantôme déguisé sous un drap : le faux facteur |
 
 Taux : **partout, 1 chance sur 4096** (shiny + glitch : 1 sur 409 600) ; **le gardien d'une boîte maîtrisée, chaque
-fois qu'il apparaît : 1 chance sur 8** (shiny + glitch : 1 sur 800). Maîtriser une boîte donne aussi 5 rencontres
-favorisées (le jeu essaie 16 compteurs de la graine et garde le premier gardien) : on le rencontre plus souvent, on
-ne le reçoit jamais, il faut le dresser. Le glitch se tire à part (compteur + 2^20) : les tirages déjà enregistrés ne
+fois qu'il apparaît : 1 chance sur 8** (shiny + glitch : 1 sur 800). Maîtriser une boîte donne aussi **15 rencontres
+favorisées** (1er novembre ; 5 avant) : à chacune, le jeu essaie 16 compteurs de la graine et garde le premier gardien.
+On le rencontre plus souvent, on ne le reçoit jamais, il faut le dresser. Sur ces 15 rencontres (mesuré sur le vrai
+tirage) : un gardien courant (Ricanombre, Crânard, Osselet, Drapouille : ≈ 17 % par rencontre) est croisé au moins une
+fois 94 fois sur 100 (≈ 2,5 fois en moyenne), et glitch au moins une fois ≈ 27 fois sur 100 ; un gardien peu commun
+(Heaumbre, ≈ 8 %) : 72 % et ≈ 14 % ; un gardien rare (Ombrachne, Marionnoire, Torsillon, ≈ 3 %) : 36 à 38 % et ≈ 5,5 %
+(avec 5 rencontres : 60 % / 10 % pour un courant, 14 à 15 % / 2 % pour un rare). Le glitch se tire à part (compteur + 2^20) : les tirages déjà enregistrés ne
 changent pas, et le serveur refait le tirage. Les variantes Démons qui étaient réservées à la Citadelle
 (`ricanombre:arcane`, `ombrachne:crypte`, `flamouche:marais`, `sulfurette:toxique`) sont revenues au tirage normal.
 
@@ -1377,7 +1387,7 @@ données personnelles, et en sachant exactement ce que ses élèves apprennent.
 3. **Le Port P1 → P11** avec le réseau simulé du Terminaworld (biomes = machines).
 4. **La Citadelle C1 → C7** puis les **boîtes** (3 boîtes Faciles d'abord : Énumération, Droits, Secrets).
    4 bis. **La Crypte des Codes** : cryptographie K1 → K8, puis blockchain B1 → B6.
-5. **La Salle des Machines M1 → M7** avec « Monte ta machine ».
+5. **La Salle des Rouages M1 → M7** avec « Monte ta machine ».
 6. **L'Observatoire O1 → O9**.
 7. **Mode classe** et fiches enseignant, en parallèle de la recherche de relecteurs et de classes pilotes.
 8. Les autres mondes (Forge, Temps, Données, Contrôle, Atelier) au même niveau d'exigence, puis le Sommet.
@@ -1390,7 +1400,7 @@ personas (§ 5) → relecture humaine → sortie.
 > Ajouté le 28 octobre 2026 à la demande du propriétaire. Monde à part entière (la cryptographie est trop vaste
 > pour tenir dans un palier de la Citadelle) ; la Citadelle et le Port s'y appuient par des ponts.
 
-**Prérequis** : niveaux 0-4 (brancher les commandes : `|`, `>`). Ponts : Citadelle C5 (empreintes) ↔ K3 ;
+**Prérequis** (1er novembre) : elle s'ouvre **après la Citadelle** — mêmes niveaux 0-6, plus la porte de la Citadelle (C0, `cit0`). Ponts : Citadelle C5 (empreintes) ↔ K3 ;
 Port P11 (HTTPS) ← K6 ; Bibliothèque du Temps (git utilise des empreintes) ← K3 ; Forge F2 (boucles) → B4.
 **Image** : une crypte souterraine sous la Racine, gardée par des créatures-sphinx, pleine de coffres, de sceaux et
 de grimoires codés. **Vrai monde** : « Chaque fois que tu vois un cadenas dans ton navigateur, que tu déverrouilles
@@ -1501,11 +1511,11 @@ Les notions, regroupées par îlots (tout est relié par des ponts sur la carte)
 |---|---|---|
 | Les nombres | comptage, numération et position des chiffres, nombres négatifs, comparaison, ordre de grandeur | tout le jeu |
 | Les opérations | addition, soustraction, multiplication, **division euclidienne** (quotient et **reste**), priorités, parenthèses | Forge, Données, Crypte |
-| Puissances et bases | puissances, puissances de 2 et de 10, **binaire**, **hexadécimal**, conversions, unités (Ko / Kio) | Salle des Machines M2, Crypte K1 |
+| Puissances et bases | puissances, puissances de 2 et de 10, **binaire**, **hexadécimal**, conversions, unités (Ko / Kio) | Salle des Rouages M2, Crypte K1 |
 | Proportions | proportionnalité, **pourcentages**, échelles, vitesses et débits | Port (débit, latence), Machines (énergie) |
 | Statistiques | effectifs, **moyenne**, **médiane**, étendue, fréquences, histogrammes | Données, Observatoire O5-O6, Crypte K2 (fréquences des lettres) |
 | Probabilités | hasard, probabilité simple, **dénombrement** (combien de mots de passe possibles), loi des grands nombres (notions) | Crypte K4, K7, B4 ; tirages du jeu |
-| Logique | vrai / faux, **ET / OU / NON**, tables de vérité, conditions | Forge (`if`, `&&`, `||`), Salle des Machines (portes logiques) |
+| Logique | vrai / faux, **ET / OU / NON**, tables de vérité, conditions | Forge (`if`, `&&`, `||`), Salle des Rouages (portes logiques) |
 | Arithmétique | multiples, diviseurs, **nombres premiers**, décomposition (`factor`), **PGCD**, **modulo** (« l'horloge »), **puissance modulo** | Crypte K2, K6 (Diffie-Hellman, RSA en notions) |
 | Fonctions et croissance | fonction, tableau de valeurs, **croissance linéaire / exponentielle**, **logarithme** (« combien de fois doubler ») | Crypte B4 (difficulté), K4 (force d'un mot de passe), Port P9 (TTL) |
 | Algorithmes | suite d'instructions, boucle, **complexité** (pourquoi certains problèmes sont trop longs), recherche, tri | Forge, Données, Crypte |
@@ -1540,7 +1550,7 @@ fois, en même temps que la charte de rigueur (étape 1).
 
 ### 7.11 📡 La Tour des Ondes — la radio, LoRa et les réseaux maillés (quartier du Port)
 
-**Prérequis** : Port P7 (adresses et ports), Salle des Machines M2 (unités). **Image** : une tour sur la falaise
+**Prérequis** : Port P7 (adresses et ports), Salle des Rouages M2 (unités). **Image** : une tour sur la falaise
 au-dessus du port, avec des antennes qui vibrent en couleurs selon la fréquence. **Vrai monde** : « Ton téléphone
 parle en même temps en Wi-Fi, Bluetooth, 4G et GPS : ce sont des ondes, chacune sur sa bande. »
 
@@ -1579,7 +1589,7 @@ libres : n'importe qui peut lire leur code, l'améliorer et le partager. Termina
 
 | Où | Ajout | Commandes réelles |
 |---|---|---|
-| Salle des Machines M5 → **M5 bis « Ta propre machine virtuelle »** | créer, démarrer, se connecter, casser sans risque, détruire et recréer une VM ; conteneur jetable ; instantanés | `podman run --rm -it alpine sh`, `podman ps`, `qemu-img create`, `virt-install` (avec un adulte), `virsh list`, `virsh snapshot-create` |
+| Salle des Rouages M5 → **M5 bis « Ta propre machine virtuelle »** | créer, démarrer, se connecter, casser sans risque, détruire et recréer une VM ; conteneur jetable ; instantanés | `podman run --rm -it alpine sh`, `podman ps`, `qemu-img create`, `virt-install` (avec un adulte), `virsh list`, `virsh snapshot-create` |
 | Salle des Données → **D-SQL « La base de données »** | tables, lignes, colonnes, requêtes `SELECT / WHERE / ORDER BY / COUNT / GROUP BY / JOIN` sur **sa propre collection** de créatures | `sqlite3 collection.db`, `.tables`, `.schema`, `SELECT nom FROM creatures WHERE type='Feu';` |
 | Port + Forge → **« Ton site web »** | HTML, CSS, servir une page, la voir dans le navigateur, la publier (notions d'hébergement) | `nano index.html`, `python3 -m http.server 8000`, `curl localhost:8000` |
 | Forge → **« L'atelier multimédia »** | images, sons, vidéos en ligne de commande | `convert`/`magick` (GIF animé de sa créature), `ffmpeg -i … -ss … -t …`, `sox -n bip.wav synth 0.3 sine 440`, `exiftool` (métadonnées, pont vie privée) |
@@ -1593,7 +1603,7 @@ libres : n'importe qui peut lire leur code, l'améliorer et le partager. Termina
 2. Récompenses par monde (§ 7.6, 7.11, 7.12).
 3. Le Port P1 → P11 avec le réseau simulé du Terminaworld (biomes = machines).
 4. La Citadelle C1 → C7, puis les boîtes (Faciles d'abord). 4 bis. La Crypte des Codes K1 → K8, B1 → B6.
-5. La Salle des Machines M1 → M7 avec la VM réelle (M5 bis).
+5. La Salle des Rouages M1 → M7 avec la VM réelle (M5 bis).
 6. La Tour des Ondes W1 → W4 (sans matériel), puis W5-W6.
 7. La Guilde des Bâtisseurs Libres G1 → G6.
 8. L'Observatoire de l'IA O1 → O9.
@@ -1633,7 +1643,7 @@ Pour chaque monde : fiches notions (et fiches maths liées) → étapes PC et An
 | B6 | ⏳ La Bibliothèque du Temps | bibliothèque aux étagères infinies, livres-versions reliés par des fils | ⬜ |
 | B7 | 📊 La Salle des Données | grande salle de tri, cristaux-tableaux, colonnes de chiffres lumineux | ⬜ |
 | B8 | 🎛 Le Poste de Contrôle | salle de contrôle d'un vaisseau, jauges, habitants-processus au travail | ⬜ |
-| B9 | ⚙ La Salle des Machines | salle des machines sous le camp : processeur-cuisinier, mémoire-plan de travail, disques | ⬜ |
+| B9 | ⚙ La Salle des Rouages | salle pleine de rouages sous le camp : processeur-cuisinier, mémoire-plan de travail, disques | ⬜ |
 | B10 | 🤖 L'Atelier | établi avec petits robots, cartes électroniques, LED | ⬜ |
 | B11 | 🔭 L'Observatoire de l'IA | observatoire où des robots-assistants reçoivent des missions | ⬜ |
 | B12 | 🗝 La Crypte des Codes | crypte sous la Racine, sphinx gardiens, coffres, sceaux, grimoires codés ; l'escalier qui s'ouvre entre les racines du camp | ⬜ |
@@ -1668,9 +1678,9 @@ Pour chaque monde : fiches notions (et fiches maths liées) → étapes PC et An
 | E4 | L'enveloppe scellée et le sceau vérifié (HTTPS) | Port P11 | ⬜ |
 | E5 | Ondes de fréquences différentes, mur qui les affaiblit ; règle du spectre | Tour des Ondes W1-W2 | ⬜ |
 | E6 | Message LoRa qui saute de nœud en nœud, nœuds qu'on éteint | Tour des Ondes W4 | ⬜ |
-| E7 | Ordinateur ouvert dont les pièces s'allument ; « Monte ta machine » | Salle des Machines M1, M7 | ⬜ |
-| E8 | Interrupteurs binaires ; la machine qui se réveille étage par étage | Salle des Machines M2-M3 | ⬜ |
-| E9 | La maison dans la maison (machine virtuelle, conteneur) ; la ferme de serveurs | Salle des Machines M5-M6 | ⬜ |
+| E7 | Ordinateur ouvert dont les pièces s'allument ; « Monte ta machine » | Salle des Rouages M1, M7 | ⬜ |
+| E8 | Interrupteurs binaires ; la machine qui se réveille étage par étage | Salle des Rouages M2-M3 | ⬜ |
+| E9 | La maison dans la maison (machine virtuelle, conteneur) ; la ferme de serveurs | Salle des Rouages M5-M6 | ⬜ |
 | E10 | Roue de César ; horloge du modulo ; mélange de peintures (échange de clés) | Crypte K2, K6 ; Ponts des Nombres | ⬜ |
 | E11 | Chaîne de blocs qui se brise maillon par maillon ; copies des 9 biomes | Crypte B2-B3 | ⬜ |
 | E12 | Le devineur de type et le perroquet géant (modèle de langage) | Observatoire O5-O7 | ⬜ |
@@ -1695,5 +1705,5 @@ Pour chaque monde : fiches notions (et fiches maths liées) → étapes PC et An
 | F3 | Visuels de la page « Pour les enseignants et les parents » | ⬜ |
 
 **Ordre de production** : A4 et B1 (la carte et le Carrefour), puis, pour chaque monde, ses visuels B, C, D, E
-**juste avant** son développement (ordre du § 7.14 : Port et Tour des Ondes, Citadelle, Crypte, Salle des Machines,
+**juste avant** son développement (ordre du § 7.14 : Port et Tour des Ondes, Citadelle, Crypte, Salle des Rouages,
 Guilde, Observatoire…). Les illustrations avancent chaque jour en parallèle des variantes.

@@ -10,7 +10,7 @@ K = {
  "qu.objet.sceau_miniature": "ein Mini-Siegel",
  "qu.titre.sphinx_de_la_crypte": "Sphinx der Krypta",
  "cr.ouvert.log": "🌍 Eine Welt öffnet sich an der Kreuzung: die Krypta der Codes",
- "cr.ouvert.dit": "Du kannst Befehle verbinden: Unter der Wurzel öffnet sich eine Treppe zur Krypta der Codes! Wann du willst: `cd ~/terrain_terminagotchi/crypte`.",
+ "cr.ouvert.dit": "Du bist durch das Tor der Zitadelle gegangen: Unter der Wurzel öffnet sich eine Treppe zur Krypta der Codes! Wann du willst: `cd ~/terrain_terminagotchi/crypte`.",
  "recomp.crypte.chaine": "Die Blockchain ohne Hinweis reparieren",
  "recomp.crypte.b6": "Dein fälschungssicheres Logbuch prüfen",
  "hist.cr0.titre": "Die Tür der Sphinx",

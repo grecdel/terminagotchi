@@ -11,7 +11,7 @@ K = {
  "qu.objet.sceau_miniature": "ایک ننھی مہر",
  "qu.titre.sphinx_de_la_crypte": "تہہ خانے کا ابوالہول",
  "cr.ouvert.log": "🌍 چوراہے پر ایک دنیا کھلی: رمزوں کا تہہ خانہ",
- "cr.ouvert.dit": "تم کمانڈیں جوڑنا جانتے ہو: جڑ کے نیچے رمزوں کے تہہ خانے کی سیڑھی کھل گئی! جب چاہو: `cd ~/terrain_terminagotchi/crypte`۔",
+ "cr.ouvert.dit": "تم قلعے کا دروازہ پار کر چکے ہو: جڑ کے نیچے رمزوں کے تہہ خانے کی سیڑھی کھل گئی! جب چاہو: `cd ~/terrain_terminagotchi/crypte`۔",
  "recomp.crypte.chaine": "بغیر اشارے کے بلاک چین ٹھیک کرنا",
  "recomp.crypte.b6": "اپنی ناقابلِ جعل سفری ڈائری جانچنا",
  "hist.cr0.titre": "ابوالہول کا دروازہ",

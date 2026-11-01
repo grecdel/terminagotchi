@@ -239,7 +239,7 @@ mondes), l'animation pixel art des ponts, la relecture humaine des fiches (`relu
 ## Phase 5 — Les mondes, un par un (ordre du § 7.14)
 
 Port (avec le réseau simulé où les biomes sont des machines) → Citadelle et ses boîtes → Crypte des Codes →
-Salle des Machines (avec VM réelles) → Tour des Ondes → Guilde des Bâtisseurs Libres → Observatoire de l'IA →
+Salle des Rouages (avec VM réelles) → Tour des Ondes → Guilde des Bâtisseurs Libres → Observatoire de l'IA →
 Données (SQL) / Forge (site web, multimédia) / Contrôle (Linux de A à Z) / Temps / Atelier (embarqué) → Sommet ;
 mode classe en parallèle. Pour chaque monde : fiches → étapes PC et Android → tests → simulations → illustrations
 (planche à valider par le propriétaire) → APK d'essai.
@@ -271,7 +271,8 @@ autres catégories de boîtes.
 
 **🗝 La Crypte des Codes — codée (31 octobre).** 14 fiches (`donnees/crypte/outils/fiches_crypte.py`, rejeu bash
 vert), leçons cr0 → cr14 (63 étapes) sur PC (`pc/tg/crypte.py`) et Android (`Crypte.kt`, `CryptePgp.kt`,
-`CrypteDessin.kt`), ouverte après les niveaux 0 à 4 du tronc commun (l'escalier sous la Racine). Cryptographie K1 → K8 :
+`CrypteDessin.kt`), ouverte **après la Citadelle** (1er novembre : mêmes prérequis qu'elle, niveaux 0 à 6, plus sa
+porte `cit0` — `requis_lecons` ; l'escalier sous la Racine). Cryptographie K1 → K8 :
 encoder n'est pas chiffrer (base64, hexadécimal, 5 messages « secrets » démasqués), César / ROT13 / analyse de
 fréquences (grimoire mystère au décalage propre à chaque partie, `crypte roue`), empreintes SHA-256 (effet avalanche,
 sceaux vérifiés par `sha256sum -c`), mots de passe (base FICTIVE, attaque par dictionnaire lue avant d'être lancée,
@@ -289,17 +290,25 @@ les deux sens contre les vrais outils. Ponts des Nombres : hexadécimal, modulo,
 probabilités (jamais bloquants). Vue déployée : la roue de César qui tourne pour `tr 'a-z' 'd-za-c'` (`tg deploie`,
 écran Espace). Exploits : « chaîne réparée sans indice » (`crypte.chaine`, rencontres favorisées d'une variante rare Ombre ou
 Glace) et « carnet de bord vérifié » au bout de B6 (`crypte.b6`, une rencontre légendaire favorisée) ; variantes
-existantes réservées à la Crypte (visibles après un de ses exploits) : `heaumbre:crypte`, `fractalis:cristal`,
-`givrarde:aurore`, `lichonarque:crypte` (proposée comme « gardienne du registre » — à confirmer) ; 14 langues ; données `donnees/crypte.json`, vecteurs
+existantes réservées à la Crypte (visibles après un de ses exploits) : `corbouh:crypte` (1er novembre, à la place de
+`heaumbre:crypte` : Heaumbre est le gardien glitch de la boîte « droits »), `fractalis:cristal`,
+`givrarde:aurore`, `lichonarque:crypte` (« gardienne du registre », validée le 1er novembre) ; 14 langues ; données `donnees/crypte.json`, vecteurs
 communs `donnees/crypte/vecteurs.json` ; tests `pc/outils/test_crypte.py`, `tests/jvm/Crypte.kt`, simulation
 `pc/outils/sim_crypte.py` → `docs/simulations/rapport_crypte.md`, captures `pc/outils/capture_crypte.py`. Prompts
 d'illustrations envoyés au propriétaire (à valider), repli dessiné en attendant. Au passage : le tableau de garde de
 la Citadelle replie ses étiquettes rouges sur téléphone, un processus fictif de la grande vague n'est plus oublié
 juste après son lancement, `time` ou les commandes du jeu ne sont plus pris pour des fautes de frappe, et quand
-plusieurs mondes s'ouvrent ensemble (Port et Crypte), ils sont annoncés un par tour. Reste : les illustrations B12/C2/E10/E11, la décision sur un garde-fou `gpg` dans le shell
-(rapport, CR1).
+plusieurs mondes s'ouvrent ensemble (Port et Crypte), ils sont annoncés un par tour. Reste : les illustrations B12/C2/E10/E11.
+Garde-fou `gpg` (CR1, validé le 1er novembre) : `tg installer` pose dans `~/.bashrc` et `~/.zshrc` une petite
+fonction `gpg` (et `gpg2`) qui, DANS le terrain, refuse de partir si son trousseau (`--homedir`, sinon `GNUPGHOME`)
+n'est pas lui aussi dans le terrain, et montre gentiment la bonne commande (`gpg --homedir .trousseau …`, 14 langues) ;
+hors du terrain, gpg reste celui des parents ; `tg desinstaller` l'enlève avec le reste (`compagnon._garde_gpg`,
+tests en vrai bash — et zsh en CI — dans `pc/outils/test_crypte.py`, Léa de `sim_crypte.py` est arrêtée). Pas de
+fish ni PowerShell pour l'instant.
 
-**⚙ La Salle des Machines — codée (31 octobre).** 11 fiches (`donnees/machines/outils/fiches_machines.py`, rejeu bash
+**⚙ La Salle des Rouages — codée (31 octobre), renommée le 1er novembre** (ex-« Salle des Machines » : 14 langues,
+carte, annonces ; l'aile du volcan reste « la salle des machines » ; identifiants internes `machines` / `machinerie`
+inchangés). 11 fiches (`donnees/machines/outils/fiches_machines.py`, rejeu bash
 vert), leçons sm0 → sm10 (65 étapes) sur PC (`pc/tg/machines.py`) et Android (`Machines.kt`, `MachinesDessin.kt`),
 ouverte après les niveaux 0 à 3 du tronc (lire et chercher) ; chapitre `machinerie`, dossier `machines`, commande
 `machines …` (alias `machines='tg machines'`). Paliers M1 → M7 en **lecture seule** sur la vraie machine (jamais de
@@ -354,8 +363,9 @@ les vraies radios (vues seulement par des doublures en test), `type rtl_test` (O
 **▚ Le glitch — codé (31 octobre, décisions du propriétaire).** Un effet de l'INDIVIDU, comme le shiny (drapeau
 `glitch`, indépendant de la variante et du shiny) : l'image se dérègle comme un vieil écran, fabriquée à partir de
 l'image de la créature (aucune illustration). Au repos le style A (liseré rose/cyan des couches décalées, 2 tranches
-décalées), toutes les 3 à 5,5 secondes un éclair de 0,26 s du style C (couleurs ternies cyan/magenta, balayage,
-pixels morts, 7 tranches, bande de pixels triés). Déterministe (graine = l'identifiant de l'individu), spécification
+décalées), toutes les 3 à 5,5 secondes une rafale saccadée (1er novembre) : 2 ou 3 secousses de 0,12 s du style C
+(couleurs ternies cyan/magenta, balayage, pixels morts, 7 tranches, bande de pixels triés ; chaque secousse a ses
+tranches) séparées par de brefs retours au style A (0,08 s) ; gif `glitch_saccade.gif` (`pc/outils/capture_glitch.py`). Déterministe (graine = l'identifiant de l'individu), spécification
 en entiers dans `pc/tg/glitch.py`, portages `Glitch.kt` et `site/src/glitch.js`, vecteurs `donnees/glitch/vecteurs.json`
 (`pc/outils/vecteurs_glitch.py`). Il se pose par-dessus tout ce qui existait, après la teinte shiny : vie (respiration
 au pixel fin), animations, poses du bureau / de l'île / de la bulle, toutes les sorties du terminal (Kitty, iTerm2,
@@ -365,8 +375,8 @@ Repère du nom : `▚` (1 colonne), lettres rose et cyan. Taux : partout 1 chanc
 refait par le serveur. Gardiens des 8 boîtes de la Citadelle (`programme.json`, monde citadelle, « gardiens ») :
 Énumération → Ricanombre, Droits → Heaumbre, Secrets → Crânard, Hangar → Ombrachne, Scripts → Marionnoire,
 Codes → Torsillon, Forensique → Osselet, Social → Drapouille. Maîtriser une boîte (exploits `citadelle.boite`,
-`citadelle.boite.droits`, `citadelle.boite.secrets`) donne 5 rencontres favorisées (16 compteurs essayés, le premier
-gardien gardé) ; le gardien d'une boîte maîtrisée, chaque fois qu'il apparaît, est glitch 1 fois sur 8 (shiny +
+`citadelle.boite.droits`, `citadelle.boite.secrets`) donne 15 rencontres favorisées (1er novembre, 5 avant ; 16 compteurs
+essayés, le premier gardien gardé : un gardien courant croisé 94 fois sur 100, un rare 36 à 38 fois sur 100) ; le gardien d'une boîte maîtrisée, chaque fois qu'il apparaît, est glitch 1 fois sur 8 (shiny +
 glitch : 1 sur 800) ; on ne le reçoit pas, il faut le dresser. Le serveur accepte « gardien » si l'espèce garde bien
 une boîte codée (il ne peut pas savoir ce qui a été maîtrisé hors ligne). Tests `pc/outils/test_glitch.py`,
 `tests/jvm/Glitch.kt`, `site/test/tirage.mjs`, `site/test/test.mjs`. Le site est à redéployer pour la galerie.
@@ -530,3 +540,8 @@ vrai terminal : surveiller le trafic (`tail -f`), poser des règles de pare-feu 
 l'empreinte (`sha256sum`) à l'arrivée pour prouver qu'il n'a pas été modifié. Coopératif d'abord ; version Arène
 ensuite (une équipe escorte, l'autre intercepte, puis on inverse). Notions : routage (Port P9), pare-feu
 (Citadelle), intégrité (Crypte K3).
+
+## Tâche finale — L'artbook
+
+- **Artbook PDF (demande du propriétaire, 1er novembre)** : à la fin de toute la conception, un artbook en PDF qui
+  reprend l'histoire, le lore, les habitats et des posters de tous les Terminagotchi.

@@ -11,7 +11,7 @@ K = {
  "qu.objet.sceau_miniature": "একটা ছোট্ট সিলমোহর",
  "qu.titre.sphinx_de_la_crypte": "সমাধিগৃহের স্ফিংক্স",
  "cr.ouvert.log": "🌍 চৌরাস্তায় একটা জগৎ খুলেছে: সংকেতের সমাধিগৃহ",
- "cr.ouvert.dit": "তুমি কমান্ড জোড়া লাগাতে জানো: মূলের নিচে সংকেতের সমাধিগৃহের সিঁড়ি খুলে গেছে! যখন খুশি: `cd ~/terrain_terminagotchi/crypte`।",
+ "cr.ouvert.dit": "তুমি দুর্গের দরজা পেরিয়ে এসেছ: মূলের নিচে সংকেতের সমাধিগৃহের সিঁড়ি খুলে গেছে! যখন খুশি: `cd ~/terrain_terminagotchi/crypte`।",
  "recomp.crypte.chaine": "কোনো ইঙ্গিত ছাড়া ব্লকচেইন মেরামত করা",
  "recomp.crypte.b6": "তোমার জাল-অযোগ্য ভ্রমণ-ডায়েরি যাচাই করা",
  "hist.cr0.titre": "স্ফিংক্সের দরজা",

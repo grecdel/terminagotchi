@@ -5,7 +5,9 @@
   1. la spécification pure : vecteurs communs à jour (donnees/crypte/vecteurs.json, mêmes résultats en Kotlin) ;
      César = le vrai tr, sha512crypt = le vrai openssl passwd -6, la preuve de travail = la vraie boucle shell,
      la chaîne et sa vérification, les peintures, le dé pipé, le quiz, le grimoire mystère (le « e » en tête) ;
-  2. l'arbre du Carrefour : fermée tant que les niveaux 0 à 4 ne sont pas finis, puis ouverte et annoncée une fois ;
+  2. l'arbre du Carrefour : elle s'ouvre APRÈS la Citadelle (mêmes niveaux 0 à 6, plus sa porte cit0) : fermée avec
+     les niveaux 0 à 4 seuls, fermée quand la Citadelle vient de s'ouvrir (annoncée seule), puis ouverte dès la porte
+     de la Citadelle passée et annoncée une fois (une annonce par tour) ;
      elle est meublée (règle du sphinx, messages, grimoires, chaîne, copies…) ;
   3. la traversée cr0 → cr14 comme un enfant (vraies commandes dans bash, gpg avec --homedir .trousseau, commandes du
      jeu `crypte …`) : la roue, l'avalanche, l'attaque par dictionnaire sur la base fictive, le coffre openssl, la
@@ -157,7 +159,29 @@ def ouvrir(s):
 core.modifier(ouvrir)
 T.mkdir(exist_ok=True)
 st, _ = tape("ls")
-verifier(histoire.ouvert(st, "crypte"), f"niveaux 0 à 4 finis : la Crypte s'ouvre (il manquait {K.manque(core.load())})")
+verifier(not histoire.ouvert(st, "crypte") and "crypte" not in st["histoire"].get("mondes_annonces", []),
+         f"niveaux 0 à 4 seuls : la Crypte reste fermée (il manque {K.manque(st)})")
+
+
+def cave_finie(s):
+    h = histoire.h_(s)
+    for lid in histoire.PAR_CHAP["cave"]["lecons"]:
+        if lid not in h["faits"]:
+            h["faits"].append(lid)
+    h["ailes"] = ["reveil", "nid", "bibliotheque"]
+    h["chap"] = "cave"
+    s["step"] = 0
+
+
+core.modifier(cave_finie)
+st, _ = tape("ls")
+ann = st["histoire"].get("mondes_annonces", [])
+verifier(histoire.ouvert(st, "citadelle") and not histoire.ouvert(st, "crypte") and "citadelle" in ann and "crypte" not in ann,
+         f"cave finie : la Citadelle s'ouvre (annoncée seule), la Crypte attend sa porte (il manque {K.manque(st)})")
+verifier(len(K.manque(st)) == 1 and "(" in K.manque(st)[0], f"il ne manque que la porte de la Citadelle : {K.manque(st)}")
+core.modifier(lambda s: histoire.h_(s)["faits"].append("cit0"))
+st, _ = tape("ls")
+verifier(histoire.ouvert(st, "crypte"), f"la porte de la Citadelle passée (cit0) : la Crypte s'ouvre (il manquait {K.manque(core.load())})")
 verifier("crypte" in st["histoire"].get("mondes_annonces", []), "annoncée une fois")
 verifier((T / "crypte" / "regle_du_sphinx.txt").is_file() and (T / "crypte" / "chaine" / "bloc_4.txt").is_file() and
          len(list((T / "crypte" / "copies").iterdir())) == 9, "la Crypte est meublée (règle, chaîne, 9 copies…)")
@@ -263,8 +287,68 @@ out = io.StringIO()
 K.commande(["chaine"], out)
 verifier("[0]" in ANSI.sub("", out.getvalue()) and "[4]" in ANSI.sub("", out.getvalue()), "crypte chaine dessine la chaîne")
 from tg import compagnon  # noqa: E402
+from tg.langue import t  # noqa: E402
 verifier(any("crypte='tg crypte'" in b or "function crypte" in b for b in compagnon._blocs().values()),
          "tg installer pose l'alias crypte='tg crypte'")
+
+print("5 bis. Le garde-fou gpg dans le vrai shell (bash, et zsh s'il est là)")
+# Le bloc que `tg installer` écrit dans ~/.bashrc (et ~/.zshrc) : dans le terrain, gpg sans trousseau du terrain refuse ;
+# hors du terrain, gpg reste le vrai gpg des parents. Testé dans un VRAI shell qui charge le bloc.
+GARDE = Path(tempfile.mkdtemp(prefix="tg_garde_"))
+(GARDE / "bloc.sh").write_text(compagnon._garde_gpg(), encoding="utf-8")
+DEHORS = Path(tempfile.mkdtemp(prefix="tg_gpg_dehors_"))
+
+
+def sh_garde(cmd, ou, shell="bash"):
+    env = {k: v for k, v in ENV.items() if k != "GNUPGHOME"}
+    args = [shell, "--norc", "--noprofile", "-c"] if shell == "bash" else [shell, "-f", "-c"]
+    r = subprocess.run(args + [f". {GARDE / 'bloc.sh'}; {cmd}"], cwd=str(ou), capture_output=True, text=True,
+                       errors="replace", timeout=120, env=env)
+    return r.returncode, r.stdout + r.stderr
+
+
+CRY = T / "crypte"
+gpg_ici = bool(shutil.which("gpg"))
+for coq in ["bash"] + (["zsh"] if shutil.which("zsh") else []):
+    code, out = sh_garde("gpg --list-keys", CRY, coq)
+    verifier(code == 2 and t("comp.gpg.garde") in out and "gpg --homedir .trousseau --list-keys" in out and "➜ cd" not in out,
+             f"[{coq}] dans la Crypte, `gpg --list-keys` sans --homedir : refusé, la bonne commande montrée ({out.strip()[-60:]})")
+    code, out = sh_garde("gpg --quick-gen-key moi@exemple.example", T, coq)
+    verifier(code == 2 and f"cd ~/{T.name}/crypte" in out and "gpg --homedir .trousseau --quick-gen-key moi@exemple.example" in out,
+             f"[{coq}] ailleurs dans le terrain : refusé aussi, avec le cd vers la Crypte")
+    for mauvais in ("gpg --homedir ~/.gnupg --list-keys", "gpg --homedir=../../.. -k", "gpg2 --homedir /tmp -k",
+                    f"GNUPGHOME={HOME}/.gnupg gpg -k", "gpg --homedir"):
+        code, out = sh_garde(mauvais, CRY, coq)
+        verifier(code == 2 and "--homedir .trousseau" in out, f"[{coq}] refusé : {mauvais}")
+    if gpg_ici:
+        for bon in ("gpg --homedir .trousseau --list-keys", "gpg --homedir=.trousseau -k", f"gpg --homedir {CRY}/.trousseau -k",
+                    "GNUPGHOME=.trousseau gpg -k", "gpg --version"):
+            code, out = sh_garde(bon, CRY, coq)
+            verifier(code == 0 and t("comp.gpg.garde") not in out, f"[{coq}] accepté dans la Crypte : {bon} ({code})")
+        code, out = sh_garde(f"GNUPGHOME={DEHORS} gpg --list-keys; echo fini $?", HOME, coq)
+        verifier("fini 0" in out and t("comp.gpg.garde") not in out,
+                 f"[{coq}] hors du terrain : gpg reste le vrai gpg des parents (rien n'est bloqué)")
+verifier(not (HOME / ".gnupg").exists(), "le garde-fou : le vrai trousseau (~/.gnupg) n'a pas été créé")
+if shutil.which("gpgconf"):
+    subprocess.run(["gpgconf", "--homedir", str(DEHORS), "--kill", "gpg-agent"], capture_output=True, timeout=20)
+shutil.rmtree(DEHORS, ignore_errors=True)
+VRAI_HOME = os.environ["HOME"]
+os.environ["HOME"] = str(GARDE)                     # tg installer / desinstaller dans un HOME à part
+(GARDE / ".bashrc").write_text("# le bashrc de la famille\n", encoding="utf-8")
+try:
+    compagnon.installer()
+    rc = (GARDE / ".bashrc").read_text(encoding="utf-8")
+    verifier("function __tg_gpg" in rc and "function gpg {" in rc and compagnon.a_jour(),
+             "tg installer pose le garde-fou gpg dans ~/.bashrc")
+    ancien = rc.replace("function __tg_gpg", "function __tg_vieux")
+    (GARDE / ".bashrc").write_text(ancien, encoding="utf-8")
+    verifier(not compagnon.a_jour(), "un ancien bloc sans garde-fou est remis à jour")
+    compagnon.desinstaller()
+    rc = (GARDE / ".bashrc").read_text(encoding="utf-8")
+    verifier("gpg" not in rc and rc.startswith("# le bashrc de la famille"), "tg desinstaller l'enlève avec le reste du jeu")
+finally:
+    os.environ["HOME"] = VRAI_HOME
+shutil.rmtree(GARDE, ignore_errors=True)
 
 print("6. Sécurité et langues")
 K.tuer_agents()
