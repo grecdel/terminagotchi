@@ -13,8 +13,10 @@
  *   kotlinc -cp <imitations>:<appli.jar> tests/jvm/Guilde.kt -d gui.jar
  *   java -cp <imitations>:<appli.jar>:gui.jar:kotlin-stdlib.jar GuildeKt app/src/main/assets
  */
+import fr.terminagotchi.Badges
 import fr.terminagotchi.Commandes
 import fr.terminagotchi.Deploie
+import fr.terminagotchi.Entrainement
 import fr.terminagotchi.Guilde
 import fr.terminagotchi.GuildeDessin
 import fr.terminagotchi.Histoire
@@ -28,6 +30,7 @@ import fr.terminagotchi.Tour
 import org.json.JSONArray
 import org.json.JSONObject
 import java.io.File
+import java.security.MessageDigest
 
 class ActifsGu(private val dir: File) : android.content.res.AssetManager() {
     override fun open(f: String): java.io.InputStream = File(dir, f).inputStream()
@@ -149,6 +152,15 @@ fun main(args: Array<String>) {
     ko = 0
     for (x in objetsGu(v.getJSONArray("licences"))) { val k = Guilde.licenceDeTexte(x.getString("texte"))
         if (k != (if (x.isNull("famille")) null else x.getString("famille"))) { ko++; println("    licence ${x.getString("texte")} → $k") } }
+    val vb = v.getJSONObject("badges")
+    verifierGu(objetsGu(vb.getJSONArray("artisan")).all { Guilde.palierArtisan(it.getInt("lecons"), it.getBoolean("contribution")) == it.getInt("palier") } &&
+        objetsGu(vb.getJSONArray("contributeur")).all { Guilde.palierContributeur(it.getInt("n")) == it.getInt("palier") } &&
+        objetsGu(vb.getJSONArray("contributions")).all { Guilde.contributionsDe(if (it.isNull("pseudo")) null else it.getString("pseudo"), vb.getJSONArray("credits")) == it.getInt("n") },
+        "badges de la Guilde : paliers Artisan et Contributeur, contributions retrouvées dans les crédits (identiques au PC)")
+    fun empreinteGu(g: List<List<String?>>): String = MessageDigest.getInstance("SHA-256")
+        .digest(g.joinToString("/") { l -> l.joinToString(",") { it ?: "" } }.toByteArray()).joinToString("") { "%02x".format(it) }
+    verifierGu(objetsGu(vb.getJSONArray("ecussons")).all { empreinteGu(Badges.ecusson(it.getString("famille"), it.getString("echelon"), 0)) == it.getString("empreinte") },
+        "les écussons Artisan (marteau) et Contributeur (cœur) identiques au pixel près")
     for (x in objetsGu(v.getJSONArray("catalogue"))) { val k = Guilde.licenceCatalogue(x.getString("nom"))
         if (k != (if (x.isNull("famille")) null else x.getString("famille")) || Guilde.genreLicence(k) != (if (x.isNull("genre")) null else x.getString("genre"))) { ko++; println("    catalogue $x → $k") } }
     verifierGu(ko == 0, "les licences reconnues dans un texte (LGPL avant GPL…) et le catalogue")
@@ -273,10 +285,16 @@ fun main(args: Array<String>) {
 
     println("4. Les variantes réservées, le dessin, la vue déployée")
     val j2 = Jeu(AppareilGu(File(dossier, "j2").apply { mkdirs() }, assets))
-    verifierGu(Recompenses.reservee(j2, "mecanique", "engrenaille") && Recompenses.reservee(j2, "rouille", "rouillot") &&
-        Recompenses.reservee(j2, "champignonniere", "lampignon") && !Recompenses.reservee(j2, "mecanique", "boulonnet") &&
-        !Recompenses.reservee(jeuGu, "mecanique", "engrenaille"),
-        "engrenaille:mecanique, rouillot:rouille, lampignon:champignonniere réservées avant l'exploit, libérées après ; boulonnet:mecanique non")
+    verifierGu(!Recompenses.reservee(j2, "mecanique", "engrenaille") && !Recompenses.reservee(j2, "rouille", "rouillot") &&
+        !Recompenses.reservee(j2, "champignonniere", "lampignon") && Recompenses.faveur(jeuGu) == null,
+        "1er novembre : plus aucune variante réservée ni favorisée par la Guilde")
+    val art = Guilde.artisan(jeuGu)
+    verifierGu(art.echelon == "mega" && art.n == 7 && Guilde.titres(jeuGu).any { it.id == "artisan:mega" && it.couleur == "#ffaf5f" } &&
+        Guilde.contributeur(jeuGu).echelon == null, "le badge « Artisan » Méga à la fin de la Guilde ; pas de Contributeur sans crédits")
+    Entrainement.e(jeuGu).put("titre", "artisan:mega")
+    verifierGu(Entrainement.couleurNom(jeuGu) == "#ffaf5f" && Guilde.lignesBadges(jeuGu).any { "¤badge:artisan:mega" in it } &&
+        "¤badge:artisan" in Entrainement.ecranBadges(jeuGu), "le titre « Artisan Méga » colore le nom ; les badges dessinés (guilde badges, badges)")
+    Entrainement.e(jeuGu).remove("titre")
     val tl = ToileGu()
     GuildeDessin.etabli(tl, Deploie.Etabli(0, "gcc", "gcc", "texte", "programme"), 0.4, 0f, 0f, 400f, 96f, 1f)
     GuildeDessin.libertes(tl, 0.3, 0f, 0f, 400f, 140f, 1f)

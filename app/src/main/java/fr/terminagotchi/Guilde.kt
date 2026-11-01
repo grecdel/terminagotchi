@@ -287,8 +287,97 @@ object Guilde {
     }
 
     fun creditsTexte(): String {
-        val c = liste(o("credits"), "contributeurs")
-        return t("gu.meuble.credits") + "\n\n" + (if (c.isNotEmpty()) c.joinToString("\n") + "\n" else t("gu.credits.vide") + "\n")
+        val a = o("credits").optJSONArray("contributeurs") ?: JSONArray()
+        val c = (0 until a.length()).mapNotNull { a.optJSONObject(it) }.filter { it.optString("pseudo").isNotEmpty() }
+        return t("gu.meuble.credits") + "\n\n" + (if (c.isNotEmpty()) c.joinToString("") {
+            t("gu.credits.ligne", "pseudo" to it.optString("pseudo"), "n" to it.optInt("contributions")) + "\n" } else t("gu.credits.vide") + "\n")
+    }
+
+    // ---------------------------------------------------------------- les badges de la Guilde (1er novembre)
+    // Pas de créature « contributeur » ni de variante réservée : deux BADGES qui grandissent (écusson et grade de Badges.kt)
+    // et un NOM COLORÉ quand l'un d'eux est le titre affiché. Même spécification que guilde.py (vecteurs communs).
+    private fun badge(b: String): JSONObject = o("badges").optJSONObject(b) ?: JSONObject()
+    private fun paliers(b: String): List<JSONObject> = badge(b).optJSONArray("paliers")?.let { a -> (0 until a.length()).map { a.getJSONObject(it) } } ?: emptyList()
+
+    fun palierArtisan(lecons: Int, contribution: Boolean): Int {
+        var k = -1
+        for ((i, p) in paliers("artisan").withIndex()) {
+            if (lecons >= p.optInt("lecons") && (contribution || !p.optBoolean("contribution"))) k = i else break
+        }
+        return k
+    }
+
+    fun palierContributeur(n: Int): Int {
+        var k = -1
+        for ((i, p) in paliers("contributeur").withIndex()) if (n >= p.optInt("n")) k = i else break
+        return k
+    }
+
+    fun contributionsDe(pseudo: String?, contributeurs: JSONArray?): Int {
+        val p = (pseudo ?: "").trim().lowercase()
+        if (p.isEmpty() || contributeurs == null) return 0
+        for (i in 0 until contributeurs.length()) {
+            val x = contributeurs.optJSONObject(i) ?: continue
+            if (x.optString("pseudo").trim().lowercase() == p) return x.optInt("contributions").coerceAtLeast(0)
+        }
+        return 0
+    }
+
+    fun leconsFaites(jeu: Jeu): Int {
+        val f = Histoire.h(jeu).optJSONArray("faits")?.let { a -> (0 until a.length()).map { a.getString(it) } } ?: emptyList()
+        return liste(badge("artisan"), "lecons").count { it in f }
+    }
+
+    fun contributionPrete(jeu: Jeu) = Recompenses.etat(jeu).getJSONObject("exploits").has("guilde.artisan")
+
+    class Badge(val id: String, val k: Int, val echelon: String?, val n: Int)
+
+    fun artisan(jeu: Jeu): Badge {
+        val n = leconsFaites(jeu)
+        val k = palierArtisan(n, contributionPrete(jeu))
+        return Badge("artisan", k, if (k >= 0) paliers("artisan")[k].optString("echelon") else null, n)
+    }
+
+    fun contributeur(jeu: Jeu): Badge {
+        val n = contributionsDe(Recensement.compte(jeu).optString("pseudo"), o("credits").optJSONArray("contributeurs"))
+        val k = palierContributeur(n)
+        return Badge("contributeur", k, if (k >= 0) paliers("contributeur")[k].optString("echelon") else null, n)
+    }
+
+    fun couleurBadge(b: String): String = badge(b).optString("couleur", "#ffaf5f")
+
+    /** Les titres des badges de la Guilde (Contributeur d'abord), pour Entrainement.titres. */
+    fun titres(jeu: Jeu): List<Entrainement.Titre> = listOf(contributeur(jeu), artisan(jeu)).filter { it.echelon != null }.map {
+        Entrainement.Titre("${it.id}:${it.echelon}", t("ent.titre.famille", "badge" to t(badge(it.id).optString("nom")),
+            "echelon" to Entrainement.nomEchelon(it.echelon!!)), couleurBadge(it.id))
+    }
+
+    fun progresArtisan(jeu: Jeu): String {
+        val a = artisan(jeu)
+        val P = paliers("artisan")
+        if (a.k + 1 >= P.size) return t("gu.badge.artisan.max")
+        val p = P[a.k + 1]
+        if (a.n >= p.optInt("lecons") && p.optBoolean("contribution") && !contributionPrete(jeu))
+            return t("gu.badge.artisan.contribution", "echelon" to Entrainement.nomEchelon(p.optString("echelon")))
+        return t("gu.badge.artisan.progres", "n" to a.n, "s" to p.optInt("lecons"), "echelon" to Entrainement.nomEchelon(p.optString("echelon")))
+    }
+
+    fun progresContributeur(jeu: Jeu): String {
+        val c = contributeur(jeu)
+        val P = paliers("contributeur")
+        if (c.k < 0) return t("gu.badge.contributeur.aucune")
+        if (c.k + 1 >= P.size) return t("gu.badge.contributeur.max")
+        return t("gu.badge.contributeur.progres", "n" to c.n, "s" to P[c.k + 1].optInt("n"), "echelon" to Entrainement.nomEchelon(P[c.k + 1].optString("echelon")))
+    }
+
+    /** Les deux badges de la Guilde (balises dessinées par le terminal), leur progression, et ce que colore le nom. */
+    fun lignesBadges(jeu: Jeu): List<String> {
+        val out = mutableListOf("🛠 " + t("gu.badges.titre"))
+        for ((b, prog) in listOf(artisan(jeu) to progresArtisan(jeu), contributeur(jeu) to progresContributeur(jeu)))
+            out.add(Badges.balise(if (b.echelon != null) b.id else null, b.echelon) + "  " + t(badge(b.id).optString("nom")) + " · " +
+                (b.echelon?.let { Entrainement.nomEchelon(it) } ?: "—") + "   " + prog)
+        out.add(t("gu.badges.nom", "artisan" to t("gu.badge.artisan"), "contributeur" to t("gu.badge.contributeur"), "cmd" to "`badges titre`"))
+        return out
     }
 
     fun meubles(jeu: Jeu): Map<String, Any> {
@@ -677,7 +766,8 @@ object Guilde {
                     "  " + t("gu.tel.raconte", "outil" to "git")) }
             "fusion", "credits" -> { val ok = corrigee(jeu); noter(jeu, "fusion", (if (ok) "prete" else "pas_prete") + " (ok)")
                 listOf("🔀 " + t("gu.fusion.titre"), "") + bloc("gu.fusion.texte") + listOf("", "  " + t(if (ok) "gu.fusion.prete" else "gu.fusion.pas_prete"), "",
-                    "📜 " + t("gu.credits.titre")) + creditsTexte().trimEnd().split("\n").map { "  $it" } }
+                    "📜 " + t("gu.credits.titre")) + creditsTexte().trimEnd().split("\n").map { "  $it" } + listOf("", "  " + progresContributeur(jeu) + "  (`guilde badges`)") }
+            "badges", "badge" -> lignesBadges(jeu)
             "piece", "porte_cle" -> { val p = piece(Histoire.graine(jeu)); noter(jeu, "piece", "vue (ok)")
                 listOf("🖨 " + t("gu.piece.titre"), "") + dessinPiece(p).map { "  $it" } + listOf("  " + t("gu.piece.mesures", "L" to p.longueur, "l" to p.largeur, "h" to p.epaisseur), "") + bloc("gu.piece.texte") }
             "trou" -> lignesTrou(jeu, a)

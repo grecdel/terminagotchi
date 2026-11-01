@@ -337,6 +337,69 @@
  "credits": {
   "contributeurs": []
  },
+ "badges": {
+  "artisan": {
+   "nom": "gu.badge.artisan",
+   "couleur": "#ffaf5f",
+   "lecons": [
+    "gu0",
+    "gu1",
+    "gu2",
+    "gu3",
+    "gu4",
+    "gu5",
+    "gu6"
+   ],
+   "paliers": [
+    {
+     "echelon": "bit",
+     "lecons": 1,
+     "contribution": false
+    },
+    {
+     "echelon": "octet",
+     "lecons": 3,
+     "contribution": false
+    },
+    {
+     "echelon": "kilo",
+     "lecons": 5,
+     "contribution": true
+    },
+    {
+     "echelon": "mega",
+     "lecons": 7,
+     "contribution": true
+    }
+   ]
+  },
+  "contributeur": {
+   "nom": "gu.badge.contributeur",
+   "couleur": "#5fd787",
+   "paliers": [
+    {
+     "echelon": "bit",
+     "n": 1
+    },
+    {
+     "echelon": "octet",
+     "n": 3
+    },
+    {
+     "echelon": "kilo",
+     "n": 10
+    },
+    {
+     "echelon": "mega",
+     "n": 25
+    },
+    {
+     "echelon": "giga",
+     "n": 50
+    }
+   ]
+  }
+ },
  "licences_du_jeu": {
   "code": "GPL-3.0-or-later",
   "images": "CC-BY-NC-SA-4.0",

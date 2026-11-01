@@ -87,6 +87,8 @@ object Recompenses {
         val faits = r.getJSONObject("exploits")
         if (faits.has(id) && id !in REPETABLES) return null
         faits.put(id, maintenant)
+        if (x.optString("recompense") == "badge")             // pas de faveur : un badge qui grandit (la Guilde)
+            return t("recomp.badge", "exploit" to t(x.getString("nom")), "badge" to t(x.optString("badge")))
         val n = conf().optInt("bonus_" + x.getString("recompense"), 1)
         r.getJSONArray("faveurs").put(JSONObject().put("exploit", id).put("reste", n))
         if (x.optString("recompense") == "gardien") {
@@ -101,7 +103,8 @@ object Recompenses {
         val fs = etat(jeu).getJSONArray("faveurs")
         for (i in 0 until fs.length()) {
             val f = fs.getJSONObject(i)
-            if (f.optInt("reste") > 0 && exploitDef(f.optString("exploit")) != null) return f
+            val x = exploitDef(f.optString("exploit"))?.second
+            if (f.optInt("reste") > 0 && x != null && x.optString("recompense") != "badge") return f   // (vieille faveur de la Guilde : plus rien)
         }
         return null
     }

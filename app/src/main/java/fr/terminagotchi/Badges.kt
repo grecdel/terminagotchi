@@ -80,6 +80,8 @@ object Badges {
         "detective" to listOf("..iiii..", ".i....i.", "i......i", "i......i", ".i....i.", "..iiiik.", "......kk", ".......k"),
         "plombier" to listOf("iiiiii..", "kkkkkii.", "iiiiiii.", ".....ii.", ".....ii.", "....iiii", "........", ".....k.."),
         "cuisinier" to listOf(".i.ii.i.", "iiiiiiii", "iiiiiiii", ".iiiiii.", "..iiii..", "..kkkk..", "..iiii..", "..iiii.."),
+        "artisan" to listOf("iiiiii..", "iiiiiik.", "iiiiii..", "...kk...", "...kk...", "...kk...", "...kk...", "...kk..."),   // la Guilde : marteau
+        "contributeur" to listOf(".ii..ii.", "iiiiiiii", "iiikkiii", "iikkkkii", ".iikkii.", "..iiii..", "...ii...", "........"),   // la Guilde : cœur
         "cache" to listOf("..iiii..", ".ii..ii.", ".....ii.", "....ii..", "...ii...", "...ii...", "........", "...ii..."),
     )
     private val ETINCELLES = listOf(1 to 12, 0 to 12, 2 to 12, 1 to 11, 1 to 13)

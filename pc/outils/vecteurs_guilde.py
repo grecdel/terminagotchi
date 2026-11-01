@@ -106,7 +106,24 @@ def vecteurs():
             "stl_binaire": stl_bin, "stl_mauvais": stl_mauvais,
             "image": {"octets": len(G.image_octets()), "sha256": G.image_sha()}, "disques": disques,
             "majmin": {n: G.majmin(n) for n in ("sda", "sda1", "sdb", "sdb1", "nvme0n1", "nvme0n1p1", "nvme0n1p2")},
-            "etabli": etabli, "deploie": dep}
+            "etabli": etabli, "deploie": dep, "badges": badges()}
+
+
+def badges():
+    """Les badges de la Guilde (1er novembre) : les paliers d'« Artisan » et de « Contributeur », les contributions d'un
+    pseudo dans les crédits, et les deux écussons dessinés (empreinte de la grille de pixels, comme la salle d'entraînement)."""
+    from tg import badges as B
+    credits = [{"pseudo": "Lina", "contributions": 4}, {"pseudo": "zed", "contributions": "x"}, {"contributions": 9}, "Bob"]
+
+    def empreinte(g):
+        return hashlib.sha256("/".join(",".join(c or "" for c in l) for l in g).encode()).hexdigest()
+    return {"artisan": [{"lecons": n, "contribution": c, "palier": G.palier_artisan(n, c)} for n in range(9) for c in (False, True)],
+            "contributeur": [{"n": n, "palier": G.palier_contributeur(n)} for n in (0, 1, 2, 3, 9, 10, 24, 25, 49, 50, 999)],
+            "credits": credits,
+            "contributions": [{"pseudo": p, "n": G.contributions_de(p, credits)}
+                              for p in ("Lina", "lina", " LINA ", "zed", "Bob", "", None, "inconnu")],
+            "ecussons": [{"famille": f, "echelon": e, "empreinte": empreinte(B.ecusson(f, e))}
+                         for f in ("artisan", "contributeur") for e in B.ECHELONS[:5]]}
 
 
 def main():

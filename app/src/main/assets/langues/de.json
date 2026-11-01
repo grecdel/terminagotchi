@@ -6972,5 +6972,17 @@
  "hist.gu2.8.adulte": "head zeigt die ersten 10 Zeilen. Der offizielle Text der GPL ist auf Englisch: Er zählt vor Gericht.",
  "gu.licence.jeu": "Der Code des Spiels: GNU GPL Version 3 oder später (GPL-3.0-or-later).\nBilder, Zeichnungen, Geschichte und Töne: Creative Commons BY-NC-SA 4.0 (Urheber nennen, nicht kommerziell, unter derselben Lizenz teilen).\nVolltexte: die Dateien LICENSE und LICENSE-images.md, im Code des Spiels.",
  "app.licences": "Lizenzen: Der Code steht unter der GNU GPL Version 3 oder später (Datei LICENSE); Bilder, Zeichnungen, Geschichte und Töne unter Creative Commons BY-NC-SA 4.0 (Datei LICENSE-images.md).",
- "ob.mots.caracteres": "In deiner Sprache gibt es keine Leerzeichen zwischen den Wörtern: Der Rater zählt deshalb die Zeichen, eins nach dem anderen (in histoire.txt hat das Spiel zwischen jedes ein Leerzeichen gesetzt). Das Prinzip ist dasselbe."
+ "ob.mots.caracteres": "In deiner Sprache gibt es keine Leerzeichen zwischen den Wörtern: Der Rater zählt deshalb die Zeichen, eins nach dem anderen (in histoire.txt hat das Spiel zwischen jedes ein Leerzeichen gesetzt). Das Prinzip ist dasselbe.",
+ "recomp.badge": "🏅 Heldentat: {exploit}! Dein Abzeichen {badge} wächst.",
+ "gu.badge.artisan": "Handwerker",
+ "gu.badge.contributeur": "Mitwirkender",
+ "gu.badges.titre": "Die Abzeichen der Gilde",
+ "gu.badge.artisan.progres": "{n}/{s} Gildenlektionen → {echelon}",
+ "gu.badge.artisan.contribution": "Mach deinen Übungsbeitrag fertig (G4), um {echelon} zu erreichen.",
+ "gu.badge.artisan.max": "Alle Lektionen der Gilde und dein Beitrag: Bravo, Handwerksmeister!",
+ "gu.badge.contributeur.progres": "{n}/{s} angenommene Beiträge → {echelon}",
+ "gu.badge.contributeur.aucune": "Ein echter Beitrag, den das Projekt annimmt (mit einem Erwachsenen): dein Spitzname in den Credits und dieses Abzeichen.",
+ "gu.badge.contributeur.max": "Der höchste Rang als Mitwirkender: danke für alles, was du gegeben hast!",
+ "gu.badges.nom": "Wähle {artisan} oder {contributeur} als Titel: Dein Name bekommt seine Farbe. {cmd}",
+ "gu.credits.ligne": "{pseudo}: {n} angenommene(r) Beitrag/Beiträge"
 }

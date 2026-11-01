@@ -8,6 +8,7 @@ Chaque monde (programme.json, « mondes ») a ses types attirés et ses exploits
                    sinon la toute première.
   - « gardien »    (bonus_gardien rencontres) : jusqu'à essais_gardien compteurs, le premier GARDIEN de la boîte
                    maîtrisée (« gardiens » du monde : boîte → espèce), sinon le tout premier.
+  - « badge »      : AUCUNE faveur de rencontre ; l'exploit fait grandir un badge (la Guilde : « Artisan », guilde.py).
 Les variantes « réservées » d'un monde (variantes_reservees) n'apparaissent qu'une fois un de ses exploits réussi.
 
 Le glitch (glitch.py, tirage.glitch) : chaque créature a 1 chance sur 4096 d'être glitch ; le gardien d'une boîte
@@ -93,6 +94,8 @@ def exploit(state, eid, maintenant=None):
     if eid in r["exploits"] and eid not in REPETABLES:
         return None
     r["exploits"][eid] = int(maintenant if maintenant is not None else time.time())
+    if x["recompense"] == "badge":                # pas de faveur : un badge qui grandit
+        return t("recomp.badge", exploit=t(x["nom"]), badge=t(x.get("badge", "")))
     n = conf().get("bonus_" + x["recompense"], 1)
     r["faveurs"].append({"exploit": eid, "reste": n})
     if x["recompense"] == "gardien":
@@ -103,7 +106,8 @@ def exploit(state, eid, maintenant=None):
 def faveur(state):
     """La faveur active (la plus ancienne qui reste), ou None."""
     for f in r_(state)["faveurs"]:
-        if f.get("reste", 0) > 0 and exploit_def(f.get("exploit"))[1]:
+        x = exploit_def(f.get("exploit"))[1]
+        if f.get("reste", 0) > 0 and x and x["recompense"] != "badge":   # (une vieille faveur de la Guilde : plus rien)
             return f
     return None
 

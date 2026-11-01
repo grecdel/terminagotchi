@@ -6974,5 +6974,17 @@
  "hist.gu2.8.adulte": "head menampilkan 10 baris pertama. Teks resmi GPL berbahasa Inggris: teks itulah yang berlaku di depan hakim.",
  "gu.licence.jeu": "Kode permainan: GNU GPL versi 3 atau lebih baru (GPL-3.0-or-later).\nGambar, lukisan, cerita, dan suara: Creative Commons BY-NC-SA 4.0 (sebut pembuatnya, bukan untuk komersial, bagikan dengan lisensi yang sama).\nTeks lengkap: berkas LICENSE dan LICENSE-images.md, di dalam kode permainan.",
  "app.licences": "Lisensi: kodenya memakai GNU GPL versi 3 atau lebih baru (berkas LICENSE); gambar, lukisan, cerita, dan suara memakai Creative Commons BY-NC-SA 4.0 (berkas LICENSE-images.md).",
- "ob.mots.caracteres": "Dalam bahasamu tidak ada spasi di antara kata, jadi penebak kata menghitung karakter, satu per satu (di histoire.txt, permainan menaruh spasi di antara setiap karakter). Prinsipnya sama."
+ "ob.mots.caracteres": "Dalam bahasamu tidak ada spasi di antara kata, jadi penebak kata menghitung karakter, satu per satu (di histoire.txt, permainan menaruh spasi di antara setiap karakter). Prinsipnya sama.",
+ "recomp.badge": "🏅 Prestasi: {exploit}! Lencana {badge}-mu tumbuh.",
+ "gu.badge.artisan": "Perajin",
+ "gu.badge.contributeur": "Kontributor",
+ "gu.badges.titre": "Lencana Serikat",
+ "gu.badge.artisan.progres": "{n}/{s} pelajaran Serikat → {echelon}",
+ "gu.badge.artisan.contribution": "Siapkan kontribusi latihanmu (G4) untuk naik ke {echelon}.",
+ "gu.badge.artisan.max": "Semua pelajaran Serikat dan kontribusimu: hebat, perajin ulung!",
+ "gu.badge.contributeur.progres": "{n}/{s} kontribusi diterima → {echelon}",
+ "gu.badge.contributeur.aucune": "Satu kontribusi sungguhan yang diterima proyek (bersama orang dewasa): nama panggilanmu di daftar kredit, dan lencana ini.",
+ "gu.badge.contributeur.max": "Pangkat Kontributor tertinggi: terima kasih atas semua yang kamu berikan!",
+ "gu.badges.nom": "Pilih {artisan} atau {contributeur} sebagai gelarmu: namamu memakai warnanya. {cmd}",
+ "gu.credits.ligne": "{pseudo}: {n} kontribusi diterima"
 }

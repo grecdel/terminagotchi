@@ -434,6 +434,7 @@ object Entrainement {
             }
         }
         if (ech.values.count { it >= 1 } >= 6) out.add(Titre("touche", t("ent.titre.touche"), COULEUR_TOUCHE))
+        out.addAll(Guilde.titres(jeu))                 // les badges de la Guilde : Contributeur, Artisan (nom coloré)
         for (f in Badges.FAMILLES.sortedWith(compareBy({ -ech.getValue(it) }, { -fam(e, it).optInt("n") }, { Badges.FAMILLES.indexOf(it) }))) {
             val k = ech.getValue(f)
             if (k >= 1) {
@@ -449,6 +450,12 @@ object Entrainement {
         val tous = titres(jeu)
         val choix = e(jeu).optString("titre")
         return tous.firstOrNull { it.id == choix } ?: tous.firstOrNull()
+    }
+
+    /** La couleur du NOM du joueur quand le titre affiché est un badge de la Guilde (Artisan, Contributeur), ou null. */
+    fun couleurNom(jeu: Jeu): String? {
+        val x = titreAffiche(jeu) ?: return null
+        return if (x.id.substringBefore(":") in setOf("artisan", "contributeur")) x.couleur else null
     }
 
     /** « « Explorateur Kilo » » pour l'en-tête (ou "" sans titre) ; arc-en-ciel avec §…§ dans le terminal. */
@@ -659,6 +666,7 @@ object Entrainement {
         for (f in Badges.FAMILLES) if (hc.optInt(f) > 0) out.add(t("ent.hebdo.compte", "badge" to nomFamille(f), "n" to hc.optInt(f)))
         out.add(t("ent.badges.grades", "cmd" to "`badges grades`"))
         out.add(t("ent.badges.pied", "cmd" to "`$COMMANDE`", "rec" to "`badges records`"))
+        if (Guilde.ouvert(jeu) || Guilde.titres(jeu).isNotEmpty()) { out.add(""); out.addAll(Guilde.lignesBadges(jeu)) }   // la Guilde
         return out.joinToString("\n")
     }
 

@@ -41,7 +41,7 @@ RACINE = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(RACINE / "pc"))
 Path(os.environ["HOME"], ".gitconfig").write_text("[user]\n\tuseConfigOnly = true\n[init]\n\tdefaultBranch = main\n")
 
-from tg import app, core, deploie, histoire, langue, guilde as G, recompenses  # noqa: E402
+from tg import app, core, deploie, histoire, langue, guilde as G, programme, recompenses  # noqa: E402
 
 HOME = Path.home()
 T = core.TERRAIN
@@ -259,9 +259,29 @@ C = T / "guilde/contribution"
 verifier(not shutil.which("git") or (subprocess.run(["git", "-C", str(C), "remote"], capture_output=True, text=True).stdout.strip() == ""
                                      and G.contribution_commitee(st)), "la contribution : un commit sur sa branche, et AUCUN remote")
 verifier("guilde.artisan" in recompenses.r_(st)["exploits"], "l'exploit « artisan » (ta première contribution prête)")
-verifier(not recompenses.reservee(st, {"id": "engrenaille"}, "mecanique") and recompenses.reservee({}, {"id": "engrenaille"}, "mecanique")
-         and recompenses.reservee({}, {"id": "rouillot"}, "rouille") and not recompenses.reservee({}, {"id": "boulonnet"}, "mecanique"),
-         "engrenaille:mecanique et rouillot:rouille n'apparaissent qu'après l'exploit ; boulonnet:mecanique reste libre")
+verifier(not any(recompenses.reservee({}, {"id": e}, v) for e, v in (("engrenaille", "mecanique"), ("rouillot", "rouille"),
+                                                                    ("lampignon", "champignonniere")))
+         and recompenses.faveur(st) is None and not G.donnees().get("variantes_reservees")
+         and "variantes_reservees" not in next(m for m in programme.donnees()["mondes"] if m["id"] == "guilde"),
+         "1er novembre : plus aucune variante réservée ni favorisée par la Guilde (l'exploit ne donne aucune faveur de rencontre)")
+k, en, n_l, c_ = G.artisan(st)
+verifier(en == "mega" and n_l == 7 and c_ and ("artisan:mega", "Artisan Méga", "#ffaf5f") in G.titres(st)
+         and G.contributeur(st)[1] is None,
+         f"le badge « Artisan » grandit avec les leçons et la contribution (Méga à la fin) ; pas de Contributeur sans crédits ({k}, {en}, {n_l}, {c_})")
+from tg import entrainement as E_  # noqa: E402
+st2 = core.modifier(lambda s: E_.e_(s).__setitem__("titre", "artisan:mega"))
+verifier(E_.couleur_nom(st2) == "#ffaf5f" and "\x1b[38;2;255;175;95m" + st2["name"] in str(app.render(st2, 0, False)),
+         "le titre « Artisan Méga » choisi : le nom prend la couleur de l'Artisan (orange de forge)")
+o = ANSI.sub("", "\n".join(G.lignes_badges(st2)))
+verifier("Artisan" in o and "Méga" in o and "▀" in o and "Contributeur" in o and langue.t("gu.badge.contributeur.aucune")[:30] in o,
+         "guilde badges : les deux écussons dessinés, Artisan Méga, Contributeur pas encore")
+G.donnees()["credits"]["contributeurs"].append({"pseudo": "Lina", "contributions": 3})
+st2 = core.modifier(lambda s: s.setdefault("compte", {}).__setitem__("pseudo", "lina"))
+verifier(G.contributeur(st2)[:2] == (1, "octet") and G.titres(st2)[0][0] == "contributeur:octet"
+         and "Lina" in G.credits_texte() and "@" not in G.credits_texte(),
+         "Contributeur : 3 contributions acceptées dans les crédits → Octet, titre en premier (structure prête, liste vide livrée)")
+G.donnees()["credits"]["contributeurs"].clear()
+core.modifier(lambda s: (s.get("compte", {}).pop("pseudo", None), E_.e_(s).__setitem__("titre", None)))
 verifier("✖" in ANSI.sub("", sorties.get("guilde trou 1 2", "")) and "✖" in ANSI.sub("", sorties.get("guilde volume 12", "")),
          "le trou et le volume : les mauvaises réponses refusées")
 stl = T / "guilde/fabrique/porte_cle.stl"

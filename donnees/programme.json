@@ -6181,18 +6181,14 @@
     {
      "id": "guilde.artisan",
      "nom": "recomp.guilde.artisan",
-     "recompense": "variante"
+     "recompense": "badge",
+     "badge": "gu.badge.artisan"
     }
    ],
    "maths": [
     "coordonnees",
     "volume",
     "hexadecimal"
-   ],
-   "variantes_reservees": [
-    "engrenaille:mecanique",
-    "rouillot:rouille",
-    "lampignon:champignonniere"
    ]
   },
   {

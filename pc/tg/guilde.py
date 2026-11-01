@@ -423,9 +423,130 @@ def bonjour_c():
 
 
 def credits_texte():
-    c = donnees()["credits"]
-    return t("gu.meuble.credits") + "\n\n" + (("\n".join(c["contributeurs"]) + "\n") if c["contributeurs"] else
-                                              t("gu.credits.vide") + "\n")
+    c = [x for x in donnees()["credits"]["contributeurs"] if isinstance(x, dict) and x.get("pseudo")]
+    return t("gu.meuble.credits") + "\n\n" + ("".join(t("gu.credits.ligne", pseudo=x["pseudo"], n=int(x.get("contributions") or 0))
+                                                     + "\n" for x in c) if c else t("gu.credits.vide") + "\n")
+
+
+# ---------------------------------------------------------------- les badges de la Guilde (1er novembre)
+# Pas de créature « contributeur » ni de variante réservée : deux BADGES qui grandissent, dessinés comme ceux de la salle
+# d'entraînement (badges.py : écusson, galons du grade), et un NOM COLORÉ quand l'un d'eux est le titre affiché.
+def palier_artisan(lecons, contribution):
+    """Le palier du badge « Artisan » (indice dans guilde.json → badges → artisan → paliers, ou -1) avec `lecons`
+    leçons de la Guilde réussies et la contribution d'entraînement (G4) prête ou non. On monte dans l'ordre."""
+    k = -1
+    for i, p in enumerate(donnees()["badges"]["artisan"]["paliers"]):
+        if lecons >= p["lecons"] and (contribution or not p["contribution"]):
+            k = i
+        else:
+            break
+    return k
+
+
+def palier_contributeur(n):
+    """Le palier du badge « Contributeur » avec n contributions RÉELLES acceptées (-1 : aucune)."""
+    k = -1
+    for i, p in enumerate(donnees()["badges"]["contributeur"]["paliers"]):
+        if n >= p["n"]:
+            k = i
+        else:
+            break
+    return k
+
+
+def contributions_de(pseudo, contributeurs):
+    """Le nombre de contributions acceptées d'un pseudo dans les crédits (sans tenir compte des majuscules), ou 0."""
+    p = (pseudo or "").strip().lower()
+    if not p:
+        return 0
+    for x in contributeurs or []:
+        if isinstance(x, dict) and str(x.get("pseudo", "")).strip().lower() == p:
+            try:
+                return max(0, int(x.get("contributions") or 0))
+            except (TypeError, ValueError):
+                return 0
+    return 0
+
+
+def lecons_faites(state):
+    from . import histoire
+    faits = histoire.h_(state).get("faits", [])
+    return sum(1 for l in donnees()["badges"]["artisan"]["lecons"] if l in faits)
+
+
+def contribution_prete(state):
+    from . import recompenses
+    return "guilde.artisan" in recompenses.r_(state)["exploits"]
+
+
+def artisan(state):
+    """(palier, échelon ou None, leçons réussies, contribution prête)."""
+    n, c = lecons_faites(state), contribution_prete(state)
+    k = palier_artisan(n, c)
+    return k, (donnees()["badges"]["artisan"]["paliers"][k]["echelon"] if k >= 0 else None), n, c
+
+
+def contributeur(state):
+    """(palier, échelon ou None, contributions acceptées) : le pseudo du recensement retrouvé dans les crédits."""
+    from . import recense
+    n = contributions_de(recense.compte(state).get("pseudo"), donnees()["credits"]["contributeurs"])
+    k = palier_contributeur(n)
+    return k, (donnees()["badges"]["contributeur"]["paliers"][k]["echelon"] if k >= 0 else None), n
+
+
+def couleur_badge(b):
+    return donnees()["badges"][b]["couleur"]
+
+
+def titres(state):
+    """Les titres des badges de la Guilde : [(identifiant, texte, couleur)] (Contributeur d'abord)."""
+    from .entrainement import nom_echelon
+    out = []
+    for b, (k, en, *_r) in (("contributeur", contributeur(state)), ("artisan", artisan(state))):
+        if en:
+            out.append((f"{b}:{en}", t("ent.titre.famille", badge=t(donnees()["badges"][b]["nom"]), echelon=nom_echelon(en)),
+                        couleur_badge(b)))
+    return out
+
+
+def progres_artisan(state):
+    from .entrainement import nom_echelon
+    k, en, n, c = artisan(state)
+    P = donnees()["badges"]["artisan"]["paliers"]
+    if k + 1 >= len(P):
+        return t("gu.badge.artisan.max")
+    p = P[k + 1]
+    if n >= p["lecons"] and p["contribution"] and not c:
+        return t("gu.badge.artisan.contribution", echelon=nom_echelon(p["echelon"]))
+    return t("gu.badge.artisan.progres", n=n, s=p["lecons"], echelon=nom_echelon(p["echelon"]))
+
+
+def progres_contributeur(state):
+    from .entrainement import nom_echelon
+    k, en, n = contributeur(state)
+    P = donnees()["badges"]["contributeur"]["paliers"]
+    if k < 0:
+        return t("gu.badge.contributeur.aucune")
+    if k + 1 >= len(P):
+        return t("gu.badge.contributeur.max")
+    return t("gu.badge.contributeur.progres", n=n, s=P[k + 1]["n"], echelon=nom_echelon(P[k + 1]["echelon"]))
+
+
+def lignes_badges(state):
+    """Les deux badges de la Guilde dessinés (écusson et grade), leur progression, et ce que colore le nom."""
+    from . import badges as B
+    from .entrainement import colorer, nom_echelon
+    cases = []
+    for b, (k, en, *_r), prog in (("artisan", artisan(state), progres_artisan(state)),
+                                  ("contributeur", contributeur(state), progres_contributeur(state))):
+        nom = t(donnees()["badges"][b]["nom"])
+        coul = "\x1b[38;2;" + B._rvb(couleur_badge(b)) + "m"
+        cases.append((b if en else None, en, 0, [(nom, coul + BOLD), (nom_echelon(en) if en else "—", coul), (prog, DIM)]))
+    out = [f" {_c(215)}{BOLD}🛠 " + t("gu.badges.titre") + RESET, ""] + B.planche(cases, par_ligne=2, largeur_case=38)
+    out.append(" " + t("gu.badges.nom", artisan=colorer(t("gu.badge.artisan"), couleur_badge("artisan")),
+                         contributeur=colorer(t("gu.badge.contributeur"), couleur_badge("contributeur")),
+                         cmd="`tg badges titre`"))
+    return out
 
 
 def meubles(state):
@@ -1046,7 +1167,7 @@ def lignes_fusion(state):
     out += ["", f"  {_c(78) if fait else _c(215)}" + (t("gu.fusion.prete") if fait else t("gu.fusion.pas_prete")) + RESET]
     out += ["", f" {_c(229)}{BOLD}📜 " + t("gu.credits.titre") + RESET] + ["  " + l for l in credits_texte().rstrip().split("\n")]
     noter("fusion", ("prete" if fait else "pas_prete") + " (ok)")
-    return out
+    return out + ["", "  " + progres_contributeur(state) + f"  {DIM}(`guilde badges`){RESET}"]
 
 
 def dessin_piece(p, trou=True):
@@ -1223,6 +1344,8 @@ def commande(args, sortie=None):
             lignes.extend(lignes_contribution(st))
         elif sous in ("fusion", "credits"):
             lignes.extend(lignes_fusion(st))
+        elif sous in ("badges", "badge"):
+            lignes.extend(lignes_badges(st))
         elif sous in ("piece", "porte_cle"):
             lignes.extend(lignes_piece(st))
         elif sous == "trou":

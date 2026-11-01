@@ -2820,5 +2820,245 @@
    "ligne": "guilde stl",
    "etablis": []
   }
- ]
+ ],
+ "badges": {
+  "artisan": [
+   {
+    "lecons": 0,
+    "contribution": false,
+    "palier": -1
+   },
+   {
+    "lecons": 0,
+    "contribution": true,
+    "palier": -1
+   },
+   {
+    "lecons": 1,
+    "contribution": false,
+    "palier": 0
+   },
+   {
+    "lecons": 1,
+    "contribution": true,
+    "palier": 0
+   },
+   {
+    "lecons": 2,
+    "contribution": false,
+    "palier": 0
+   },
+   {
+    "lecons": 2,
+    "contribution": true,
+    "palier": 0
+   },
+   {
+    "lecons": 3,
+    "contribution": false,
+    "palier": 1
+   },
+   {
+    "lecons": 3,
+    "contribution": true,
+    "palier": 1
+   },
+   {
+    "lecons": 4,
+    "contribution": false,
+    "palier": 1
+   },
+   {
+    "lecons": 4,
+    "contribution": true,
+    "palier": 1
+   },
+   {
+    "lecons": 5,
+    "contribution": false,
+    "palier": 1
+   },
+   {
+    "lecons": 5,
+    "contribution": true,
+    "palier": 2
+   },
+   {
+    "lecons": 6,
+    "contribution": false,
+    "palier": 1
+   },
+   {
+    "lecons": 6,
+    "contribution": true,
+    "palier": 2
+   },
+   {
+    "lecons": 7,
+    "contribution": false,
+    "palier": 1
+   },
+   {
+    "lecons": 7,
+    "contribution": true,
+    "palier": 3
+   },
+   {
+    "lecons": 8,
+    "contribution": false,
+    "palier": 1
+   },
+   {
+    "lecons": 8,
+    "contribution": true,
+    "palier": 3
+   }
+  ],
+  "contributeur": [
+   {
+    "n": 0,
+    "palier": -1
+   },
+   {
+    "n": 1,
+    "palier": 0
+   },
+   {
+    "n": 2,
+    "palier": 0
+   },
+   {
+    "n": 3,
+    "palier": 1
+   },
+   {
+    "n": 9,
+    "palier": 1
+   },
+   {
+    "n": 10,
+    "palier": 2
+   },
+   {
+    "n": 24,
+    "palier": 2
+   },
+   {
+    "n": 25,
+    "palier": 3
+   },
+   {
+    "n": 49,
+    "palier": 3
+   },
+   {
+    "n": 50,
+    "palier": 4
+   },
+   {
+    "n": 999,
+    "palier": 4
+   }
+  ],
+  "credits": [
+   {
+    "pseudo": "Lina",
+    "contributions": 4
+   },
+   {
+    "pseudo": "zed",
+    "contributions": "x"
+   },
+   {
+    "contributions": 9
+   },
+   "Bob"
+  ],
+  "contributions": [
+   {
+    "pseudo": "Lina",
+    "n": 4
+   },
+   {
+    "pseudo": "lina",
+    "n": 4
+   },
+   {
+    "pseudo": " LINA ",
+    "n": 4
+   },
+   {
+    "pseudo": "zed",
+    "n": 0
+   },
+   {
+    "pseudo": "Bob",
+    "n": 0
+   },
+   {
+    "pseudo": "",
+    "n": 0
+   },
+   {
+    "pseudo": null,
+    "n": 0
+   },
+   {
+    "pseudo": "inconnu",
+    "n": 0
+   }
+  ],
+  "ecussons": [
+   {
+    "famille": "artisan",
+    "echelon": "bit",
+    "empreinte": "7cae633c90c29dc5a5501eb147a58b069faa68f66dd04884799a9b8f604cd4f7"
+   },
+   {
+    "famille": "artisan",
+    "echelon": "octet",
+    "empreinte": "39a201b51e51be2f8657195296554736a29b123e2caed7c0d5ac8e1cfb1440d0"
+   },
+   {
+    "famille": "artisan",
+    "echelon": "kilo",
+    "empreinte": "4b830d3e9dfa851eb0fac7bb61388e13a32790bcb9704a02a50f292a3d7cc377"
+   },
+   {
+    "famille": "artisan",
+    "echelon": "mega",
+    "empreinte": "43b699b7751ead0b37dbe2373798dfd71c5faf99faf203273f100417f10f7d63"
+   },
+   {
+    "famille": "artisan",
+    "echelon": "giga",
+    "empreinte": "964a89e137562531dd7a295be54b5efe07d370a75cca173353490d60f27420c2"
+   },
+   {
+    "famille": "contributeur",
+    "echelon": "bit",
+    "empreinte": "e11de5fa13d3016adb9efe51854c45282b033e1d00a1696fabba3b65db2a4a73"
+   },
+   {
+    "famille": "contributeur",
+    "echelon": "octet",
+    "empreinte": "13d101da5ea2b329946674c60bed39bd7956336adf9132a9c6fbadce050c149c"
+   },
+   {
+    "famille": "contributeur",
+    "echelon": "kilo",
+    "empreinte": "e135a9cfedc30b3f4c839ddf96d703f4204f6d83c92fbd6bcfab9fb6516d41aa"
+   },
+   {
+    "famille": "contributeur",
+    "echelon": "mega",
+    "empreinte": "0c5940605a2ebbfbd58bcc8bd7ad3212449b201a83343357da55b441951a7359"
+   },
+   {
+    "famille": "contributeur",
+    "echelon": "giga",
+    "empreinte": "00ad16838c02ba68cff6a35e03d70a07609e5d55ea0138022e15fb59269d8432"
+   }
+  ]
+ }
 }

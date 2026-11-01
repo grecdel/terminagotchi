@@ -1194,7 +1194,11 @@ class TerminalActivity : Activity() {
 
     // ------------------------------------------------------------ affichage
     private fun rafraichir() {
-        titre.text = if (!jeu.existe) t("term.oeuf_mysterieux") else if (jeu.shiny) miseEnForme("§${jeu.titre()}§", null) else jeu.titre()
+        val couleurNom = if (jeu.existe && !jeu.shiny) Entrainement.couleurNom(jeu) else null   // Artisan, Contributeur : le nom coloré
+        titre.text = if (!jeu.existe) t("term.oeuf_mysterieux") else if (jeu.shiny) miseEnForme("§${jeu.titre()}§", null)
+            else if (couleurNom != null) SpannableString(jeu.titre()).apply {
+                setSpan(ForegroundColorSpan(android.graphics.Color.parseColor(couleurNom)), 0, jeu.nom.length.coerceAtMost(length), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE) }
+            else jeu.titre()
         // les 6 envies, puis l'état de la satiété et la petite assiette du jour (Satiete.kt)
         faim.text = if (jeu.existe) Envies.compact(jeu) + "  " + Envies.emoji(jeu) + "\n" + Satiete.ligneEtat(jeu) + "  🍽 " + Satiete.assiette(jeu)
             else jeu.texteFaim()

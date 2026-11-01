@@ -6941,5 +6941,17 @@
  "hist.gu2.8.adulte": "head muestra las 10 primeras líneas. El texto oficial de la GPL está en inglés: es el que cuenta ante un juez.",
  "gu.licence.jeu": "El código del juego: GNU GPL versión 3 o posterior (GPL-3.0-or-later).\nLas imágenes, los dibujos, la historia y los sonidos: Creative Commons BY-NC-SA 4.0 (citar a los autores, sin uso comercial, compartir con la misma licencia).\nTextos completos: los archivos LICENSE y LICENSE-images.md, en el código del juego.",
  "app.licences": "Licencias: el código está bajo la GNU GPL versión 3 o posterior (archivo LICENSE); las imágenes, los dibujos, la historia y los sonidos bajo Creative Commons BY-NC-SA 4.0 (archivo LICENSE-images.md).",
- "ob.mots.caracteres": "En tu idioma no hay espacios entre las palabras, así que el adivinador cuenta los caracteres, uno a uno (en histoire.txt, el juego puso un espacio entre cada uno). La idea es la misma."
+ "ob.mots.caracteres": "En tu idioma no hay espacios entre las palabras, así que el adivinador cuenta los caracteres, uno a uno (en histoire.txt, el juego puso un espacio entre cada uno). La idea es la misma.",
+ "recomp.badge": "🏅 Hazaña: ¡{exploit}! Tu insignia {badge} crece.",
+ "gu.badge.artisan": "Artesano",
+ "gu.badge.contributeur": "Colaborador",
+ "gu.badges.titre": "Las insignias del Gremio",
+ "gu.badge.artisan.progres": "{n}/{s} lecciones del Gremio → {echelon}",
+ "gu.badge.artisan.contribution": "Prepara tu contribución de práctica (G4) para pasar a {echelon}.",
+ "gu.badge.artisan.max": "Todas las lecciones del Gremio y tu contribución: ¡bravo, maestro artesano!",
+ "gu.badge.contributeur.progres": "{n}/{s} contribuciones aceptadas → {echelon}",
+ "gu.badge.contributeur.aucune": "Una contribución real aceptada por el proyecto (con un adulto): tu apodo en los créditos, y esta insignia.",
+ "gu.badge.contributeur.max": "El grado más alto de Colaborador: ¡gracias por todo lo que has dado!",
+ "gu.badges.nom": "Elige {artisan} o {contributeur} como título: tu nombre toma su color. {cmd}",
+ "gu.credits.ligne": "{pseudo}: {n} contribución(es) aceptada(s)"
 }

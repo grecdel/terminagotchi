@@ -1,7 +1,7 @@
 """Les données de la Guilde des Bâtisseurs Libres (donnees/guilde.json), ses fiches notions (charte de rigueur,
 docs/programme.md § 7.1) et sa place dans donnees/programme.json : le monde (prérequis = niveaux 0 à 4 du tronc,
-paliers, ponts dont la Bibliothèque du Temps pour git, attirance, exploit « artisan », variantes réservées des types
-Machine et Plante — des variantes qui EXISTENT déjà dans le bestiaire), les deux Ponts des Nombres de la fabrique
+paliers, ponts dont la Bibliothèque du Temps pour git, attirance, exploit « artisan » qui fait grandir le BADGE « Artisan »
+— aucune variante ni créature réservée, décision du 1er novembre), les deux Ponts des Nombres de la fabrique
 (coordonnées, volume), les maths des étapes et les étapes rejouées dans bash.
 
     python3 donnees/guilde/outils/fiches_guilde.py    écrit donnees/guilde.json, donnees/programme.json et leurs copies
@@ -135,7 +135,23 @@ def donnees_guilde():
             {"motif": r"^git\s+clone\b", "outil": "git clone", "de": "depot", "vers": "copie"},
             {"motif": r"^git\s+diff\b", "outil": "git diff", "de": "version", "vers": "difference"},
             {"motif": r"^git\s+commit\b", "outil": "git commit", "de": "changement", "vers": "version"}]},
+        # les crédits : [{"pseudo": …, "contributions": n}] des contributions RÉELLES acceptées par le projet, ajoutées à
+        # la main par les mainteneurs (avec l'accord de la personne) ; vide : le jeu n'invente ni ne collecte rien
         "credits": {"contributeurs": []},
+        # les deux badges de la Guilde (décision du 1er novembre : pas de créature « contributeur », pas de variante) :
+        # « Artisan » grandit avec les leçons de la Guilde réussies et la contribution d'entraînement (G4) ;
+        # « Contributeur » grandit avec les contributions réelles acceptées (les crédits ci-dessus). Chacun colore le
+        # nom du joueur dans sa couleur (orange de forge, vert des plans validés) quand il est le titre affiché.
+        "badges": {
+            "artisan": {"nom": "gu.badge.artisan", "couleur": "#ffaf5f", "lecons": [f"gu{i}" for i in range(7)],
+                        "paliers": [{"echelon": "bit", "lecons": 1, "contribution": False},
+                                    {"echelon": "octet", "lecons": 3, "contribution": False},
+                                    {"echelon": "kilo", "lecons": 5, "contribution": True},
+                                    {"echelon": "mega", "lecons": 7, "contribution": True}]},
+            "contributeur": {"nom": "gu.badge.contributeur", "couleur": "#5fd787",
+                             "paliers": [{"echelon": "bit", "n": 1}, {"echelon": "octet", "n": 3},
+                                         {"echelon": "kilo", "n": 10}, {"echelon": "mega", "n": 25},
+                                         {"echelon": "giga", "n": 50}]}},
         "licences_du_jeu": {"code": "GPL-3.0-or-later", "images": "CC-BY-NC-SA-4.0",
                             "fichiers": {n: (D / n).read_text(encoding="utf-8") for n in LICENCES_DU_JEU}},
         "couleurs": {"gcc": 215, "make": 215, "openscad": 229, "dd": 117, "sha256sum": 78, "git clone": 141,
@@ -220,9 +236,9 @@ GUILDE = {"id": "guilde", "types": ["machine", "plante"], "requis": ["n4"], "pal
           "chapitre": "guilde",
           "attirance": {"cmds": ["gcc", "make", "git", "openscad", "dd"], "familles": ["Constructs", "Sylvestres"]},
           "ponts": {"git": ["temps"], "gcc": ["forge"], "sha256sum": ["crypte"], "lsblk": ["machines"]},
-          "exploits": [{"id": "guilde.artisan", "nom": "recomp.guilde.artisan", "recompense": "variante"}],
-          "maths": ["coordonnees", "volume", "hexadecimal"],
-          "variantes_reservees": ["engrenaille:mecanique", "rouillot:rouille", "lampignon:champignonniere"]}
+          "exploits": [{"id": "guilde.artisan", "nom": "recomp.guilde.artisan", "recompense": "badge",
+                        "badge": "gu.badge.artisan"}],
+          "maths": ["coordonnees", "volume", "hexadecimal"]}
 
 
 def maths_fiche(mid, prerequis, niveau, vrai, sources):

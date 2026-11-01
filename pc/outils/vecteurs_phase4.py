@@ -58,6 +58,8 @@ def recompenses_vecteurs():
     for m in programme.donnees()["mondes"]:
         for x in m["exploits"]:
             genre = x["recompense"]
+            if genre == "badge":                    # (aucune faveur de rencontre : rien à tirer)
+                continue
             cible = m.get("gardiens", {}).get(x.get("boite")) if genre == "gardien" else None
             for g in GRAINES:
                 for n0 in (0, 17, 60, 123):

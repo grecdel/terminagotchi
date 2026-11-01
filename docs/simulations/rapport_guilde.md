@@ -94,7 +94,7 @@ Ce qui vaut pour les trois enfants :
 |---|---|
 | Recopier suffit-il ? | Partout, sauf aux trous `?` (libertés, licences, gratuit, faim, faute, trou, volume, disque). C'est voulu : le jeu dit que c'est un trou et ce qu'il faut lire. |
 | Le `git clone` sans réseau | Échec (code 128). L'étape est marquée « réseau » et ne bloque pas : « Sinon, pas grave : la Guilde a une copie », puis `guilde copie`. |
-| L'exploit | `guilde fusion` après le commit sur sa branche : `guilde.artisan` est gagné, et les variantes réservées deviennent des rencontres favorisées. Ce sont des variantes **existantes** des types Machine et Plante : `engrenaille:mecanique`, `rouillot:rouille`, `lampignon:champignonniere`. |
+| L'exploit | `guilde fusion` après le commit sur sa branche : `guilde.artisan` est gagné. *(1er novembre : il ne favorise plus de variantes ; il fait grandir le badge « Artisan ».)* |
 
 ### Hugo (15 ans)
 
@@ -133,7 +133,7 @@ Ce qui vaut pour les trois enfants :
 | GU10 | Le dépôt GitHub public (branche main) n'a pas encore `satiete.py` : un vrai clone de main trouverait la faim ailleurs. Le jeu calcule la bonne réponse dans le clone **ou** la copie réellement présente, avec une marque de repli (« point de faim ») pour l'ancienne version. Ça marche dans les deux cas, mais le texte de l'étape gu2.7 cite `satiete.py`. |
 | GU11 | `rpm -q` (licence de bash) n'est montré que là où rpm est LE gestionnaire de paquets (`/usr/lib/sysimage/rpm` : Fedora, openSUSE). Ailleurs, l'étape est cachée. La CI (Ubuntu, où le paquet rpm est installé) a montré que `rpm -q` y crée `~/.rpmdb` dans le dossier personnel : c'est une écriture hors du terrain, attrapée par `test_guilde.py`, et c'est ce qui a imposé cette condition. |
 | GU12 | Les émojis (🗽, 🎁…) ne s'affichent pas dans la police des captures PC ; ils s'affichent dans un vrai terminal. |
-| GU15 | Les variantes réservées à la Guilde (`engrenaille:mecanique`, `rouillot:rouille`, `lampignon:champignonniere`) n'apparaissent plus avant l'exploit : dans le test d'attirance, les Célestes sans attirance passent de 7,3 % à 8,0 % (identique PC / Android ; valeur attendue de `tests/jvm/RetoursEnfants.kt` mise à jour). |
+| GU15 | Les variantes réservées à la Guilde (`engrenaille:mecanique`, `rouillot:rouille`, `lampignon:champignonniere`) n'apparaissent plus avant l'exploit : dans le test d'attirance, les Célestes sans attirance passent de 7,3 % à 8,0 % (identique PC / Android ; valeur attendue de `tests/jvm/RetoursEnfants.kt` mise à jour). *1er novembre : ces réservations sont supprimées (badge « Artisan » à la place) ; le test d'attirance reste vert.* |
 | GU13 | L'icône du lieu est 🧰 et non 🛠 : 🛠 ne passait pas le test de largeur des cartes du camp. |
 
 ## 3. Ce qui marche bien

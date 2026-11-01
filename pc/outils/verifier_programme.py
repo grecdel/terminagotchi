@@ -178,8 +178,10 @@ def main():
                 err(f"monde {m['id']} : notion de maths inconnue {mt}")
         for x in m.get("exploits", []):
             cle(x["nom"], f"exploit {x['id']}")
-            if x.get("recompense") not in ("variante", "legendaire", "gardien"):
+            if x.get("recompense") not in ("variante", "legendaire", "gardien", "badge"):
                 err(f"exploit {x['id']} : récompense inconnue {x.get('recompense')}")
+            if x.get("recompense") == "badge":       # (la Guilde, 1er novembre : un badge qui grandit, aucune faveur)
+                cle(x.get("badge", ""), f"exploit {x['id']} (badge)")
             if x.get("recompense") == "gardien":
                 gid = m.get("gardiens", {}).get(x.get("boite"))
                 if not any(e["id"] == gid and not e.get("secrete") for e in best["especes"]):

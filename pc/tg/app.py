@@ -58,7 +58,9 @@ def render(state, frame, interactif, anim=None, tic=None):
     jauges = envies.compact(state)                # les 6 envies, en petit (tg envies : le détail)
     m = envies.moment(state)
     right = [
-        (arc_en_ciel(state["name"] + " ✨") if state.get("shiny") else f"{BOLD}{state['name']}{RESET}")
+        (arc_en_ciel(state["name"] + " ✨") if state.get("shiny") else
+         f"{BOLD}" + entrainement.colorer(state["name"], entrainement.couleur_nom(state)) if entrainement.couleur_nom(state)
+         else f"{BOLD}{state['name']}{RESET}")
         + " · " + t("app.forme_niveau", forme=forme, n=lvl)
         + (" " + entrainement.titre_colore(state) if entrainement.titres(state) else ""),
         f"{DIM}" + t("app.caractere", trait=core.nom_trait(state["trait"])) + RESET,

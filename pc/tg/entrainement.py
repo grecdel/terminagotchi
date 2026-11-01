@@ -588,6 +588,8 @@ def titres(state):
                 out.append(("star:" + f, t("ent.titre.star", badge=nom_famille(f)), COULEUR_TITRE["star"]))
     if sum(1 for k in ech.values() if k >= 1) >= 6:
         out.append(("touche", t("ent.titre.touche"), COULEUR_TITRE["touche"]))
+    from . import guilde                       # les badges de la Guilde : Contributeur, Artisan (nom coloré)
+    out += guilde.titres(state)
     for f in sorted(B.FAMILLES, key=lambda f: (-ech[f], -fam_(e, f)["n"], B.FAMILLES.index(f))):
         if ech[f] >= 1:
             en = B.ECHELONS[ech[f]]
@@ -608,6 +610,16 @@ def titre_affiche(state):
         if i == choix:
             return x, c
     return tous[0][1], tous[0][2]
+
+
+def couleur_nom(state):
+    """La couleur du NOM du joueur quand le titre affiché est un badge de la Guilde (Artisan, Contributeur), ou None."""
+    tous = titres(state)
+    if not tous:
+        return None
+    choix = e_(state).get("titre")
+    i, _x, c = next((x for x in tous if x[0] == choix), tous[0])
+    return c if i.split(":")[0] in ("artisan", "contributeur") else None
 
 
 def titre_colore(state):
@@ -844,6 +856,9 @@ def ecran_badges(state):
             out.append(" " + colorer(t("ent.hebdo.compte", badge=nom_famille(f), n=hc[f]), COULEUR_TITRE["star"]))
     out.append(" " + t("ent.badges.grades", cmd="`tg badges grades`"))
     out.append(f" {DIM}" + t("ent.badges.pied", cmd="`tg entrainement`", rec="`tg badges records`") + RESET)
+    from . import guilde                       # les badges de la Guilde, une fois la Guilde ouverte
+    if guilde.ouvert(state) or guilde.titres(state):
+        out += [""] + guilde.lignes_badges(state)
     return out
 
 

@@ -6977,5 +6977,17 @@
  "hist.gu2.8.adulte": "يعرض head أوّل 10 أسطر. النصّ الرسمي لرخصة GPL بالإنجليزية: وهو المعتمد أمام القاضي.",
  "gu.licence.jeu": "شيفرة اللعبة: GNU GPL الإصدار 3 أو أحدث (GPL-3.0-or-later).\nالصور والرسوم والقصّة والأصوات: المشاع الإبداعي CC BY-NC-SA 4.0 (اذكر المؤلّفين، لا استخدام تجاري، شارك بالرخصة نفسها).\nالنصوص الكاملة: الملفّان LICENSE وLICENSE-images.md في شيفرة اللعبة.",
  "app.licences": "الرخص: الشيفرة تحت GNU GPL الإصدار 3 أو أحدث (الملفّ LICENSE)؛ والصور والرسوم والقصّة والأصوات تحت المشاع الإبداعي CC BY-NC-SA 4.0 (الملفّ LICENSE-images.md).",
- "ob.mots.caracteres": "في لغتك لا توجد مسافات بين الكلمات، لذلك يعدّ مخمّن الكلمات الحروف واحدًا واحدًا (في histoire.txt وضعت اللعبة مسافة بين كلّ حرف وآخر). المبدأ نفسه."
+ "ob.mots.caracteres": "في لغتك لا توجد مسافات بين الكلمات، لذلك يعدّ مخمّن الكلمات الحروف واحدًا واحدًا (في histoire.txt وضعت اللعبة مسافة بين كلّ حرف وآخر). المبدأ نفسه.",
+ "recomp.badge": "🏅 إنجاز: {exploit}! شارتك «{badge}» تكبر.",
+ "gu.badge.artisan": "حِرَفيّ",
+ "gu.badge.contributeur": "مساهم",
+ "gu.badges.titre": "شارات النقابة",
+ "gu.badge.artisan.progres": "{n}/{s} دروس من النقابة ← {echelon}",
+ "gu.badge.artisan.contribution": "جهّز مساهمتك التدريبية (G4) لتصل إلى {echelon}.",
+ "gu.badge.artisan.max": "كلّ دروس النقابة ومساهمتك: أحسنت يا معلّم الحِرفة!",
+ "gu.badge.contributeur.progres": "{n}/{s} مساهمات مقبولة ← {echelon}",
+ "gu.badge.contributeur.aucune": "مساهمة حقيقية يقبلها المشروع (مع شخص بالغ): اسمك المستعار في قائمة الشكر، وهذه الشارة.",
+ "gu.badge.contributeur.max": "أعلى رتبة للمساهم: شكرًا على كلّ ما قدّمته!",
+ "gu.badges.nom": "اختر {artisan} أو {contributeur} لقبًا لك: يأخذ اسمك لونه. {cmd}",
+ "gu.credits.ligne": "{pseudo}: {n} مساهمة مقبولة"
 }

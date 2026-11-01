@@ -1347,6 +1347,7 @@ pas toutes faites). Chaque monde a ses créatures attirées (selon le type de bi
 | 🎛 Le Poste de Contrôle | Machine, Roche | arrêter tous les processus suspects d'une vague |
 | ⚙ La Salle des Rouages | Machine, Roche | « Monte ta machine » réussi au premier démarrage |
 | 🤖 L'Atelier | Machine, Plante | le robot simulé qui évite tous les obstacles |
+| 🛠 La Guilde des Bâtisseurs Libres | Machine, Plante | **pas de variante ni de créature** (décision du 1er novembre) : l'exploit `guilde.artisan` (ta première contribution d'entraînement prête) ne donne aucune faveur de rencontre ; il fait grandir le **badge « Artisan »** (voir § 7.12) |
 | 🗝 La Crypte des Codes | Ombre, Glace | réparer la chaîne de blocs (B2) sans indice ; légendaire au bout de B6 |
 | 🔭 L'Observatoire de l'IA | Ciel, Glace | trouver toutes les réponses fausses de l'assistant fictif (O8) — codé : exploit `observatoire.fausses`, variantes EXISTANTES favorisées `seraphibou:cosmique`, `zyeuton:brume`, `mutaloupe:cristal` |
 | 🏋 La salle d'entraînement | tous | une série parfaite → une créature légendaire à dresser |
@@ -1604,11 +1605,12 @@ libres : n'importe qui peut lire leur code, l'améliorer et le partager. Termina
 | G1 Le libre | logiciel libre / open source, les 4 libertés, licences (GPL, MIT, Creative Commons pour les images) ; libre ≠ gratuit | `cat LICENSE`, `dnf info` / `apt show` (lire la licence), `ls /usr/share/licenses` | retrouver la licence de 5 logiciels installés |
 | G2 Lire du vrai code | explorer un projet réel | `git clone` de **Terminagotchi lui-même**, `tree -L 2`, `grep -rn "faim"`, `less` | « Trouve où ta créature décide qu'elle a faim » |
 | G3 Compiler | du texte au programme : compilateur, binaire, bibliothèques | `gcc bonjour.c -o bonjour && ./bonjour`, `make`, `file bonjour`, `ldd` | compiler et lancer son premier programme C |
-| G4 Contribuer | signaler un bug, proposer une traduction, corriger un texte ; branche, commit, demande de fusion | `git switch -c`, `git diff`, `git commit` (pont Temps) | corriger une vraie faute dans un fichier de langue du jeu ; contributions retenues **créditées** dans le jeu (créature « contributeur ») |
+| G4 Contribuer | signaler un bug, proposer une traduction, corriger un texte ; branche, commit, demande de fusion | `git switch -c`, `git diff`, `git commit` (pont Temps) | corriger une vraie faute dans un fichier de langue du jeu ; contributions retenues **créditées** dans le jeu (pseudo dans les crédits, nom coloré et badge « Contributeur ») |
 | G5 Fabriquer des objets | **DIY matériel** : impression 3D par le code, fichiers STL | `openscad -o piece.stl piece.scad`, `head piece.stl` | générer une petite pièce (porte-clé de sa créature) |
 | G6 Redonner vie | **reconditionner un vieux PC** : préparer une clé USB Linux, installer, mettre à jour ; sobriété numérique | `lsblk`, `dd` / `cp` vers la clé (avec un adulte, vérification du bon disque), `sha256sum` de l'image | « un PC sauvé » (certificat) |
 
-**Créatures** : Machine / Plante ; variante rare « artisan » à la première contribution acceptée.
+**Créatures** : Machine / Plante attirées, sans variante réservée ni créature propre. **Badges** (1er novembre) : « Artisan »
+et « Contributeur », dessinés comme ceux de la salle d'entraînement (écusson marteau / cœur, galons du grade).
 
 **Codée (1er novembre)** — voir `docs/plan_de_bataille.md`. Écarts assumés :
 - G4 corrige une faute dans une COPIE de phrases du jeu (petit dépôt local, sans remote), jamais dans les vrais fichiers de langue.
@@ -1619,7 +1621,18 @@ libres : n'importe qui peut lire leur code, l'améliorer et le partager. Termina
   G1 se termine par `guilde licence terminagotchi` (les deux licences expliquées) ; G2 se termine par
   `head code_du_jeu/LICENSE` : la copie de la Guilde (PC et téléphone) contient `LICENSE` et `LICENSE-images.md`
   (relus dans `guilde.json`, eux-mêmes relus à la racine du dépôt). `tg aide` (PC) et `aide tout` (téléphone) les citent.
-- « artisan » est l'exploit `guilde.artisan` (contribution d'exercice prête). Il favorise des variantes EXISTANTES : `engrenaille:mecanique`, `rouillot:rouille`, `lampignon:champignonniere`.
+- « artisan » est l'exploit `guilde.artisan` (contribution d'exercice prête). Depuis le 1er novembre, il ne favorise plus
+  aucune variante (`engrenaille:mecanique`, `rouillot:rouille`, `lampignon:champignonniere` sont rendues au tirage normal) et
+  aucune créature « contributeur » n'existe. À la place :
+  - le **badge « Artisan »** grandit avec les leçons de la Guilde réussies et la contribution d'entraînement : Bit (1 leçon),
+    Octet (3), Kilo (5 + la contribution de G4), Méga (les 7 leçons + la contribution) ;
+  - le **badge « Contributeur »** grandit avec les contributions RÉELLES acceptées par le projet : Bit (1), Octet (3),
+    Kilo (10), Méga (25), Giga (50). Les crédits (`guilde.json` → `credits` → `contributeurs`, entrées
+    `{"pseudo", "contributions"}`) sont ajoutés à la main par les mainteneurs, avec l'accord de la personne ; la liste
+    livrée est VIDE. Le pseudo du recensement est cherché dans cette liste ;
+  - chacun donne un **titre** (`tg badges titre`) ; quand il est le titre affiché, le **nom** prend sa couleur (Artisan :
+    orange de forge #FFAF5F ; Contributeur : vert des plans validés #5FD787), sur PC et sur le téléphone ;
+  - `guilde badges` (et `tg badges`) dessine les deux badges et leur progression. Le site ne les montre pas encore.
 
 ### 7.13 Compléments de mondes existants (tous au terminal)
 
