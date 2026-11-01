@@ -603,6 +603,75 @@ rejeu d'un seul monde : `TG_REJEU_MONDE=forge`.
 
 *Reste.* Les illustrations (prompts B8, vignettes, C1, C3, E20 à E24 envoyés) ; une relecture des 13 traductions par
 des locuteurs.
+**⏳ La Bibliothèque du Temps — codée (1er novembre).**
+
+*Fichiers.*
+- 5 fiches (`donnees/temps/outils/fiches_temps.py`, rejeu bash : git_album, git_histoire, git_branches, git_partage,
+  git_empreintes), données `donnees/temps.json`, textes `donnees/temps/outils/textes_temps_*.py` (14 langues),
+  vecteurs communs `donnees/temps/vecteurs.json` (`pc/outils/vecteurs_temps.py` : la spécification, plus des scénarios
+  joués avec le VRAI git 2.43.0, version notée dans le fichier).
+- Leçons tp0 → tp5 sur PC (`pc/tg/temps.py`) et sur Android (`Temps.kt`, `PetitGit.kt` le petit git de l'appli,
+  `TempsDessin.kt`).
+- Chapitre et dossier `temps`, commande `temps` (alias bash/zsh/fish/PowerShell). La Bibliothèque s'ouvre après les
+  niveaux 0 à 4 du tronc commun ; annonce du monde à son tour. Icône ⏳, chapitre n° 21, famille Constructs (git les
+  attire), objet pendule, titre « Archiviste du Temps ».
+
+*Règles du monde.*
+- **Tous les dépôts git sont créés DANS le terrain** (`terrain_terminagotchi/temps` : album, grimoire, copie_de_mon_ami).
+  Aucun dépôt distant réel, aucun `push`, aucun compte. `git push` est seulement raconté (`temps bateau`).
+- **Jamais `git config --global`** : le nom et l'adresse sont des EXEMPLES (`…@temps.invalid`), réglés dans le dépôt.
+  Le jeu ne touche jamais `~/.gitconfig` (vérifié par les simulations : le fichier est identique à la fin). Si
+  l'enfant tape `--global` lui-même, la garde le prévient et dit à l'adulte comment vérifier (`git config --global --list`).
+- Le grimoire de la Bibliothécaire et la page de l'ami sont posés par le jeu avec le vrai git, des dates fixes et
+  `core.hooksPath=/dev/null` : mêmes empreintes sur toutes les machines. `temps grimoire neuf` range l'ancien
+  (`grimoire.ancienN`) au lieu de l'effacer ; un dossier de l'enfant qui n'est pas vide n'est jamais écrasé.
+- **Si git manque** (PC sans git, Windows sans Git for Windows) : la Bibliothèque raconte ce que git ferait et dit
+  comment l'installer avec un adulte (Fedora, Ubuntu, Git for Windows). Les étapes qui demandent git sont cachées ;
+  rien n'est bloqué.
+- **Android** : l'appli n'avait pas de git. `PetitGit.kt` est un petit git honnête, seulement dans le terrain :
+  init, config (sans `--global`), status, add, commit, log (`--oneline`, `--graph`, `-S`, `-p`, `-n`, `--all`), show,
+  diff, restore, checkout, switch, branch, merge (avance rapide, fusion à 3, conflits avec bornes), clone, pull
+  (local), remote -v, hash-object, cat-file, rev-parse, rev-list. Ses objets ont les MÊMES empreintes que le vrai git
+  et ses sorties sont comparées octet par octet au vrai git (vecteurs). Ce qu'il ne sait pas faire est dit (« git help »).
+
+*Les leçons.*
+- **T0** l'entrée : le registre (les règles ci-dessus).
+- **T1 l'album** : `git init -b main album`, `git config user.name/user.email` (dans l'album), `git status`, `git add`,
+  `git commit -m`. Réutilise sans les changer git0-2 et la quête Q37.
+- **T2 remonter le temps** : le grimoire (6 photos) ; `git log --oneline`, gribouillis + `git diff`, `git restore`,
+  `git log --oneline -S secret`, `git show`, `temps perdu EMPREINTE`, `git checkout EMPREINTE~1 -- grimoire.txt`,
+  `git commit -am` : **l'exploit « retrouver une version perdue »** (`temps.version`).
+- **T3 les mondes parallèles** : `git switch -c reve`, deux « Jour 2 », `git merge reve` → CONFLICT, `temps conflit`
+  explique les bornes, `sed -i '/^[<=>]\{7\}/d'` (ou nano), le commit de fusion, `git log --oneline --graph`.
+- **T4 partager** : `git clone . ../copie_de_mon_ami`, la page de l'ami (`temps ami`), `git pull ../copie_de_mon_ami`,
+  `.gitignore`, `git remote -v`, `temps bateau` (le push raconté).
+- **T5 les empreintes** : `git hash-object` = `printf 'blob 6\0temps\n' | sha1sum` (pont Crypte K3, pont des Nombres
+  « hexadécimal »), une majuscule change tout, `git cat-file -p HEAD` (la chaîne des photos), `find -newer` (pont
+  Citadelle), `temps bilan` (certificat).
+
+*Le reste.*
+- Écart assumé avec § 2.13 : `git config` sans `--global` (consigne de sécurité du monde) ; `git push` raconté au lieu
+  d'un dépôt local `--bare` (aucun envoi, même local) ; un palier T5 « empreintes » ajouté (ponts K3 et Citadelle).
+- Les indices reconnaissent les fautes typiques : `git init` sans nom, `--global`, la photo où la formule est APPARUE,
+  `git checkout EMPREINTE` (HEAD détachée), `master` au lieu de `main`, `sed` sans `-i`, bornes restantes, `git pull`
+  sans dire d'où, `git commit` sans rien à photographier, dossier `copie_de_mon_ami` déjà pris.
+- Vue déployée : la pellicule (un dossier → un album, un fichier → devant l'objectif, deux chemins → un chemin…). Quand
+  l'établi de la Guilde reconnaît déjà la commande (`git commit`, `git diff`…), c'est lui qui est montré.
+- Exploit `temps.version` : variantes EXISTANTES favorisées (Roche / Ombre) `momiaou:soleil`, `galetard:ruines`,
+  `follanterne:brume`.
+- Tests : `pc/outils/test_temps.py` (47), `tests/jvm/Temps.kt` (36), vecteurs `--verifier`. Simulation
+  `pc/outils/sim_temps.py` → `docs/simulations/rapport_temps.md` (3/3 au bout). Captures `pc/outils/capture_temps.py`.
+  Rejeu d'un seul monde en local : `TG_REJEU_MONDE=temps`. En CI, git est le vrai ; `printf … \0` et `sed \{7\}`
+  sont aussi rejoués avec toybox (les outils du téléphone).
+- Prompts d'illustrations envoyés au propriétaire (B6, vignette, grimoire, pendule ; à valider). Un repli dessiné est
+  affiché en attendant (façade en caractères sur PC, `TempsDessin.bibliotheque` sur le téléphone).
+
+*Reste.*
+- Les illustrations.
+- Le petit git sur un vrai téléphone (seulement en JVM ici) ; toybox `printf`/`sed` vus en CI, pas sur un appareil.
+- L'ancienne leçon git1.2 conseille encore `git config --global` dans une astuce (contenu existant, non modifié) : à
+  décider par le propriétaire.
+- Les traductions des 13 autres langues sont faites par Claude : une relecture par des locuteurs serait bienvenue.
 
 **🤖 L'Atelier — codé (1er novembre).**
 

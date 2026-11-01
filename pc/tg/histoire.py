@@ -273,9 +273,10 @@ from . import donnees as _don  # noqa: E402       le huitième : la Salle des Do
 from . import sommet as _som  # noqa: E402        le Sommet (sommet.py) : 3 mondes au palier 3, Expert++
 from . import forge as _for  # noqa: E402         le neuvième : la Forge (forge.py), la programmation
 from . import atelier as _ate  # noqa: E402       le dixième : l'Atelier (atelier.py, chapitre et lieu « robots »)
+from . import temps as _tmp  # noqa: E402         le onzième : la Bibliothèque du Temps (temps.py), git dans le terrain
 MONDES_MODS = {"port": _port, "citadelle": _cit, "crypte": _cry, "machinerie": _mac, "ondes": _ond, "guilde": _gui,
                "observatoire": _obs, "donnees": _don, "forge": _for, "robots": _ate,
-               "sommet": _som}
+               "sommet": _som, "temps": _tmp}
 # le lieu de chaque monde (la Salle des Rouages : chapitre « machinerie », lieu « machines »)
 PIECES_MODS = {_m.CHAPITRE["piece"]: _m for _m in MONDES_MODS.values()}
 for _m in MONDES_MODS.values():
@@ -1143,6 +1144,8 @@ def indice(state, step, lignes, tapees, morcs=None):
     if "ici" in step or "ici_abs" in step:
         return _indice_cd(state, step, morcs)
     conseil = _port.indice(step, tapees)                  # le Port : un trou « … » recopié, un messager perdu
+    if not conseil and lecon_id(state) in _tmp.LECONS:   # la Bibliothèque du Temps (par leçon : git status est aussi à la Guilde)
+        conseil = _tmp.indice(step, tapees)
     if not conseil and step.get("cmd") in _CMDS_CIT:      # la Citadelle : un trou « ? », une clé d'exemple oubliée…
         conseil = _cit.indice(step, tapees)
     if not conseil and step.get("cmd") in _CMDS_CRY:      # la Crypte : un trou « ? », gpg sans --homedir…

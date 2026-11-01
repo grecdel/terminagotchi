@@ -102,6 +102,8 @@ object Histoire {
         Chapitre("forge", 19, "forge", "Constructs", Forge.IDS, null, "marteau_de_forge", "maitre_de_la_forge", monde = true),
         // le dixième : l'Atelier (Atelier.kt), le robot simulé ; chapitre et lieu robots/ (l'aile « atelier » existe déjà)
         Chapitre("robots", 20, "robots", "Constructs", Atelier.IDS, null, "robot_miniature", "roboticien", monde = true),
+        // le onzième : la Bibliothèque du Temps (Temps.kt), git avec le petit git de l'appli (PetitGit.kt) ; lieu temps/
+        Chapitre("temps", 21, "temps", "Constructs", Temps.IDS, null, "pendule", "archiviste_du_temps", monde = true),
         // le Sommet (Sommet.kt) : Expert++, ouvert par 3 mondes au palier 3 ; lieu sommet/
         Chapitre("sommet", 23, "sommet", null, Sommet.IDS, null, "piolet", "maitre_du_sommet", monde = true),
     )
@@ -288,6 +290,7 @@ object Histoire {
         tout.putAll(Forge.lecons(jeu))
         tout.putAll(Atelier.lecons(jeu))
         tout.putAll(Sommet.lecons(jeu))
+        tout.putAll(Temps.lecons(jeu))
         return tout
     }
 
@@ -371,12 +374,12 @@ object Histoire {
     fun mondeOuvert(jeu: Jeu, cid: String) = when (cid) { "citadelle" -> Citadelle.ouvert(jeu); "crypte" -> Crypte.ouvert(jeu)
         "machinerie" -> Machines.ouvert(jeu); "ondes" -> Ondes.ouvert(jeu); "guilde" -> Guilde.ouvert(jeu); "observatoire" -> Observatoire.ouvert(jeu)
         "donnees" -> Donnees.ouvert(jeu); "forge" -> Forge.ouvert(jeu)
-        "robots" -> Atelier.ouvert(jeu); "sommet" -> Sommet.ouvert(jeu)
+        "robots" -> Atelier.ouvert(jeu); "sommet" -> Sommet.ouvert(jeu); "temps" -> Temps.ouvert(jeu)
         else -> Port.ouvert(jeu) }
     fun mondeManque(jeu: Jeu, cid: String) = when (cid) { "citadelle" -> Citadelle.manque(jeu); "crypte" -> Crypte.manque(jeu)
         "machinerie" -> Machines.manque(jeu); "ondes" -> Ondes.manque(jeu); "guilde" -> Guilde.manque(jeu); "observatoire" -> Observatoire.manque(jeu)
         "donnees" -> Donnees.manque(jeu); "forge" -> Forge.manque(jeu)
-        "robots" -> Atelier.manque(jeu); "sommet" -> Sommet.manque(jeu)
+        "robots" -> Atelier.manque(jeu); "sommet" -> Sommet.manque(jeu); "temps" -> Temps.manque(jeu)
         else -> Port.manque(jeu) }
 
     /** La pièce existe dans la maison de cette partie (sa porte a été posée). */
@@ -526,6 +529,7 @@ object Histoire {
         "forge" -> Forge.meubles(jeu)
         "robots" -> Atelier.meubles(jeu)
         "sommet" -> Sommet.meubles(jeu)
+        "temps" -> Temps.meubles(jeu)
         // la vieille cabane pleine de planches de la leçon « Une pièce en trop » (seulement par BESOINS)
         "nid" -> linkedMapOf("vieille_cabane/planche_1.txt" to dire(jeu, "hist.meuble.planche"),
             "vieille_cabane/planche_2.txt" to dire(jeu, "hist.meuble.planche"),
@@ -615,6 +619,7 @@ object Histoire {
         if (lid in Ondes.IDS) Ondes.meubler(jeu, lid)           // la Tour des Ondes : le plan, les capteurs d'exemple, les ponts
         if (lid in Guilde.IDS) Guilde.meubler(jeu, lid)         // la Guilde : le petit projet, l'atelier, la fabrique, la fausse clé
         if (lid in Observatoire.IDS) Observatoire.meubler(jeu, lid)   // l'Observatoire : la coupole, l'agent Copieur qui s'emballe
+        if (lid in Temps.IDS) Temps.meubler(jeu, lid)             // la Bibliothèque du Temps : le registre, les ponts des nombres
         if (lid in Donnees.IDS) Donnees.meubler(jeu, lid)         // la Salle des Données : le laboratoire, les ponts des nombres
         if (lid in Forge.IDS) Forge.meubler(jeu, lid)             // la Forge : l'enclume, serpent.py, la devinette, la photo d'exemple
         if (lid in Atelier.IDS) Atelier.meubler(jeu, lid)         // l'Atelier : les fichiers du robot, le cerveau d'exemple, les ponts
@@ -955,6 +960,7 @@ object Histoire {
         Ondes.indice(jeu, e, tapees)?.let { return it }           // la Tour des Ondes : un « ? » recopié, la cible isolée…
         Guilde.indice(jeu, e, tapees)?.let { return it }          // la Guilde : /dev, un sudo, une mauvaise réponse…
         Observatoire.indice(jeu, e, tapees)?.let { return it }    // l'Observatoire : sudo, rm -rf, une consigne floue…
+        Temps.indice(jeu, e, tapees)?.let { return it }           // la Bibliothèque du Temps : --global, la photo apparue, HEAD détachée…
         Donnees.indice(jeu, e, tapees)?.let { return it }         // la Salle des Données : pas de tableau, -F, oublié, sed sans g…
         Forge.indice(jeu, e, tapees)?.let { return it }           // la Forge : guillemets autour de #!, > au lieu de >>, un prénom…
         Atelier.indice(jeu, e, tapees)?.let { return it }         // l'Atelier : un vrai matériel, la LED, le moteur, la boucle…
@@ -1123,7 +1129,7 @@ object Histoire {
         val h = h(jeu)
         if (Port.annonce(jeu) || Citadelle.annonce(jeu) || Crypte.annonce(jeu) || Machines.annonce(jeu) || Ondes.annonce(jeu) || Guilde.annonce(jeu) ||
             Observatoire.annonce(jeu) || Donnees.annonce(jeu) || Forge.annonce(jeu) ||
-            Atelier.annonce(jeu) || Sommet.annonce(jeu)) { h.put("annonce_attente", true); return true }
+            Atelier.annonce(jeu) || Sommet.annonce(jeu) || Temps.annonce(jeu)) { h.put("annonce_attente", true); return true }
         h.remove("annonce_attente")
         return false
     }

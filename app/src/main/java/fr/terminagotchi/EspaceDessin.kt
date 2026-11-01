@@ -400,6 +400,7 @@ object EspaceDessin {
         val fo = v.forgeDe(b)
         val rb = v.robotDe(b)
         val co = v.cordeeDe(b)
+        val pe = v.pelliculeDe(b)
         if (msg != null) PortDessin.messager(tl, msg, v.phase, x + 14 * z, fy, w - 28 * z, 34 * z, z)   // le Port
         else if (dr != null) CitadelleDessin.cadenas(tl, dr, v.phase, x + 14 * z, fy, w - 28 * z, minOf(78 * z, y + h - fy), z)   // la Citadelle
         else if (ro != null) CrypteDessin.roue(tl, ro.decalage, v.phase, x + 14 * z, fy, w - 28 * z, minOf(170 * z, y + h - fy), z)   // la Crypte
@@ -412,6 +413,7 @@ object EspaceDessin {
         else if (fo != null) ForgeDessin.forge(tl, fo, v.phase, x + 14 * z, fy, w - 28 * z, minOf(96 * z, y + h - fy), z)    // la Forge
         else if (rb != null) AtelierDessin.robot(tl, rb, v.phase, x + 14 * z, fy, w - 28 * z, minOf(96 * z, y + h - fy), z)   // l'Atelier
         else if (co != null) SommetDessin.cordee(tl, co, v.phase, x + 14 * z, fy, w - 28 * z, minOf(96 * z, y + h - fy), z)   // le Sommet
+        else if (pe != null) TempsDessin.pellicule(tl, pe, v.phase, x + 14 * z, fy, w - 28 * z, minOf(96 * z, y + h - fy), z)   // la Bibliothèque du Temps
         else flux(tl, v, x + 14 * z, fy, w - 28 * z, 34 * z, z)
     }
 

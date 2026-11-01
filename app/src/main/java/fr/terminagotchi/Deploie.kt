@@ -403,6 +403,23 @@ object Deploie {
         return out
     }
 
+    // ------------------------------------------------------------ la pellicule (la Bibliothèque du Temps)
+    class PelliculeD(val seg: Int, val cmd: String, val outil: String, val de: String, val vers: String)
+
+    /** Les commandes git d'une ligne (git add, commit, log, merge…) ; git clone, diff et commit restent à l'établi de la
+     *  Guilde. Même spécification que deploie.pellicules sur PC. */
+    fun pellicules(ligne: String): List<PelliculeD> {
+        val out = mutableListOf<PelliculeD>()
+        val bl = blocs(ligne)
+        for (c in chaines(bl)) for (e in c.etapes) {
+            val a = Temps.pelliculeDe(e.texte) ?: continue
+            if (Guilde.etabliDe(e.texte) != null) continue
+            val seg = bl.firstOrNull { it.g == "commande" && it.i - 1 == e.debut }?.seg ?: 0
+            out.add(PelliculeD(seg, e.cmd, a.outil, a.de, a.vers))
+        }
+        return out
+    }
+
     // ------------------------------------------------------------ les cadenas qui s'allument (la Citadelle)
     private val OPTIONS_CHMOD = setOf("-R", "-v", "-c", "-f", "--recursive", "--verbose", "--changes", "--silent", "--quiet")
     private val MODE_CHMOD = Regex("[0-7]{1,4}|[ugoa]*(?:[-+=][rwx]*)+(?:,[ugoa]*(?:[-+=][rwx]*)+)*")
@@ -520,13 +537,16 @@ object Deploie {
         /** la cordée d'un bash -n, bash -x, shellcheck, find -print0 (le Sommet) */
         val cordees: List<CordeeD> = try { cordees(ligne) } catch (e: Exception) { emptyList() }
         fun cordeeDe(b: Bloc): CordeeD? = if (b.g == "commande") cordees.firstOrNull { it.seg == b.seg } else null
+        /** la pellicule d'un git add, commit, log, merge… (la Bibliothèque du Temps) */
+        val pellicules: List<PelliculeD> = try { pellicules(ligne) } catch (e: Exception) { emptyList() }
+        fun pelliculeDe(b: Bloc): PelliculeD? = if (b.g == "commande") pellicules.firstOrNull { it.seg == b.seg } else null
 
         fun avancer(dt: Double) {
             t += dt
             val b = blocs[actif - 1]
             val reseau = messagerDe(b) != null || droitsDe(b) != null || roueDe(b) != null || piecesDe(b) != null || antenneDe(b) != null || etabliDe(b) != null ||
                 lunetteDe(b) != null || laboDe(b) != null || forgeDe(b) != null ||
-                robotDe(b) != null || cordeeDe(b) != null
+                robotDe(b) != null || cordeeDe(b) != null || pelliculeDe(b) != null
             val duree = if (b.g == "tuyau" || b.g == "redirection" || reseau) 2.4 else 1.2
             phase = if (b.g in setOf("tuyau", "redirection", "chemin") || reseau) t / duree else minOf(1.0, t / duree)
             if (auto && t >= duree && actif < blocs.size) { actif += 1; t = 0.0 }

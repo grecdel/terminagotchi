@@ -46,6 +46,7 @@ export const CHAPITRES = [
   [18, "La Salle des Données", "texte, CSV, SQL sur sa collection"],
   [19, "La Forge", "scripts, boucles, Python, son jeu, son site"],
   [20, "L'Atelier des robots", "robot simulé, capteurs, ET / OU / NON, boucles"],
+  [21, "La Bibliothèque du Temps", "git : versions, branches, fusion, empreintes"],
   [23, "Le Sommet", "Expert++ : scripts robustes, regex, débogage"],
 ];
 
@@ -89,7 +90,7 @@ qui attrape les fautes de frappe. Options : <b>A</b> sans aide (l'élève voit l
 ${CHAPITRES.map(ligne).join("\n")}
 </table></div>
 <p class="doux">Les chapitres 1 et 2 s'enchaînent ; ensuite les chapitres 3 à 9 se font dans l'ordre voulu, le 10 s'ouvre
-après 5 d'entre eux. Les mondes 11 à 20 s'ouvrent quand le tronc commun nécessaire est fait, le Sommet (23) quand trois
+après 5 d'entre eux. Les mondes 11 à 21 s'ouvrent quand le tronc commun nécessaire est fait, le Sommet (23) quand trois
 mondes ont leur palier 3 : si un élève n'y a pas encore accès, le jeu le lui dit et il continue là où il en est.</p>
 
 <h2>3. Pendant la séance</h2>

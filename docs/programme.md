@@ -731,6 +731,18 @@ commit = une photo avec sa légende ; branche = un monde parallèle ; fusion = r
 | T3 Mondes parallèles | branches, fusion, conflit | `git switch -c`, `git merge` | deux chemins qui se rejoignent | « résous le conflit » | ⛔ |
 | T4 Partager | dépôt distant, `.gitignore` | `git clone`, `git push` (vers un dépôt local `--bare`) | bateau du Port qui emporte l'album | — | ⛔ |
 
+**Codée (1er novembre, T0 → T5)** — voir `docs/plan_de_bataille.md`. Écarts assumés :
+- Tous les dépôts sont créés DANS le terrain (`terrain_terminagotchi/temps`), sans dépôt distant réel, sans push, sans
+  compte. Le nom et l'adresse sont des exemples (`…@temps.invalid`) réglés dans le dépôt : **jamais `git config
+  --global`** (le jeu ne touche jamais `~/.gitconfig` ; si l'enfant tape `--global`, il est prévenu).
+- T4 : `git clone . ../copie_de_mon_ami` et `git pull` entre deux dossiers du terrain ; `git push` est seulement
+  raconté (`temps bateau`), même pas vers un dépôt `--bare` local.
+- T5 « les empreintes » ajouté : `git hash-object` = `sha1sum` (pont Crypte K3), `git cat-file -p`, `find -newer`
+  (pont Citadelle).
+- Android : un petit git intégré (`PetitGit.kt`), seulement dans le terrain, aux sorties comparées au vrai git.
+  Si git manque sur le PC (ou sous Windows sans Git for Windows) : raconté, rien n'est bloqué.
+- git0-2 et Q37 réutilisés sans changement.
+
 ### 2.14 📊 La Salle des Données — texte et données (stats sur sa collection)
 
 **Prérequis** : niveaux 0-4. **Image** : un laboratoire de tri : tamis (`grep`), ciseaux (`cut`), traducteur de
@@ -1365,7 +1377,7 @@ pas toutes faites). Chaque monde a ses créatures attirées (selon le type de bi
 | 🔨 La Forge | Machine, Feu | finir un palier sans indice ; le premier programme qui marche du premier coup |
 | 🛡 La Citadelle | Ombre, Poison | maîtriser une boîte (deux manches) → son **gardien glitch** devient rencontrable |
 | ⚓ Le Port | Ciel (et Foudre), Eau | un messager guidé sans perte (P9) ; le sceau vérifié (P11) |
-| ⏳ La Bibliothèque du Temps | Roche, Ombre | retrouver une version perdue (`git log`, `git checkout`) |
+| ⏳ La Bibliothèque du Temps | Roche, Ombre | retrouver une version perdue (`git log`, `git checkout`) — codé : exploit `temps.version` (la formule secrète du grimoire retrouvée et photographiée), variantes EXISTANTES favorisées `momiaou:soleil`, `galetard:ruines`, `follanterne:brume` |
 | 📊 La Salle des Données | Eau, Glace | une statistique juste sur sa propre collection — codé : exploit `donnees.statistique` (la moyenne d'attaque), variantes EXISTANTES favorisées `nautiloque:corail`, `krillou:aurore`, `ondulame:glace` |
 | 🎛 Le Poste de Contrôle | Machine, Roche | arrêter tous les processus suspects d'une vague |
 | ⚙ La Salle des Rouages | Machine, Roche | « Monte ta machine » réussi au premier démarrage |

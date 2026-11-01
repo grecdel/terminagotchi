@@ -171,6 +171,9 @@ class Commandes(
             "sqlite3" -> Reponse(Donnees.sqlite3(jeu, ligne.trim(), dossier()), couleur = BLEU)
             // ---------------------------------------------------- l'Atelier (Atelier.kt) : le robot simulé, aucun vrai matériel
             "atelier" -> Reponse(Atelier.commande(jeu, reste, dossier()), couleur = BLEU)
+            // ---------------------------------------------------- la Bibliothèque du Temps (Temps.kt) : le petit git de l'appli, dans le terrain
+            "temps" -> Reponse(Temps.commande(jeu, ligne.trim().substringAfter(' ', ""), dossier()), couleur = BLEU)
+            "git" -> Reponse(Temps.git(jeu, ligne.trim(), dossier()), couleur = BLEU)
             "sync" -> sync()
             "indice" -> Reponse(Ctf.indice(jeu, reste), couleur = VERT)
             "edite" -> edite(reste)

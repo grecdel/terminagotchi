@@ -318,6 +318,7 @@ class Jeu(ctx: Context) {
         Forge.init(ctx)
         Atelier.init(ctx)
         Sommet.init(ctx)
+        Temps.init(ctx)
         Intro.init(ctx)
     }
 

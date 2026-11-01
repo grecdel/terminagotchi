@@ -25,6 +25,8 @@ on:
             "app/src/main/java/fr/terminagotchi/AtelierDessin.kt",
             "donnees/sommet/**", "donnees/sommet.json", "app/src/main/java/fr/terminagotchi/Sommet.kt",
             "app/src/main/java/fr/terminagotchi/SommetDessin.kt",
+            "donnees/temps/**", "donnees/temps.json", "app/src/main/java/fr/terminagotchi/Temps.kt",
+            "app/src/main/java/fr/terminagotchi/PetitGit.kt", "app/src/main/java/fr/terminagotchi/TempsDessin.kt",
             "pc/**", "app/src/main/assets/langues/**", "app/src/main/java/fr/terminagotchi/Port.kt",
             "app/src/main/java/fr/terminagotchi/Histoire.kt", "app/src/main/java/fr/terminagotchi/Jeu.kt",
             ".github/workflows/rejeu.yml"]
@@ -68,6 +70,7 @@ jobs:
           python3 pc/outils/vecteurs_forge.py --verifier
           python3 pc/outils/vecteurs_atelier.py --verifier
           python3 pc/outils/vecteurs_sommet.py --verifier
+          python3 pc/outils/vecteurs_temps.py --verifier
 
       - name: Rejeu des sorties dans un vrai bash (fiches et histoire du PC)
         run: LC_ALL=C.UTF-8 python3 pc/outils/rejeu_bash.py
@@ -240,3 +243,28 @@ jobs:
           set -o pipefail
           LC_ALL=C.UTF-8 python3 pc/outils/sim_sommet.py 2>&1 | tee /tmp/simsom.out || {
             grep -E "✖|Error|Traceback|line [0-9]" /tmp/simsom.out | head -20 | sed 's/^/::error::/'; exit 1; }
+      - name: La Bibliothèque du Temps (vrai git, dépôts dans le terrain, identité d'exemple locale, jamais de --global ni de push)
+        run: |
+          set -o pipefail
+          git --version
+          LC_ALL=C.UTF-8 python3 pc/outils/test_temps.py 2>&1 | tee /tmp/tmp.out || {
+            grep -E "✖|Error|Traceback|line [0-9]" /tmp/tmp.out | head -20 | sed 's/^/::error::/'; exit 1; }
+
+      - name: Trois enfants visitent la Bibliothèque du Temps (docs/simulations/rapport_temps.md)
+        run: |
+          set -o pipefail
+          LC_ALL=C.UTF-8 python3 pc/outils/sim_temps.py 2>&1 | tee /tmp/simtp.out || {
+            grep -E "✖|Error|Traceback|line [0-9]" /tmp/simtp.out | head -20 | sed 's/^/::error::/'; exit 1; }
+
+      - name: Les deux commandes délicates de la Bibliothèque avec toybox (téléphone) - printf \0 et sed \{7\}
+        run: |
+          a=$(toybox printf 'blob 6\0temps\n' | toybox sha1sum | cut -d' ' -f1)
+          b=$(printf 'temps\n' | git hash-object --stdin)
+          echo "toybox : $a   git : $b"
+          [ "$a" = "$b" ] || { echo "::error::toybox printf 'blob 6\\0temps\\n' | sha1sum ne donne pas l'empreinte de git"; exit 1; }
+          printf 'Jour 1\n<<<<<<< HEAD\nJour 2 : balade\n=======\nJour 2 : reve\n>>>>>>> reve\n' > /tmp/chronique.txt
+          toybox sed -i '/^[<=>]\{7\}/d' /tmp/chronique.txt
+          cat /tmp/chronique.txt
+          [ "$(cat /tmp/chronique.txt)" = "$(printf 'Jour 1\nJour 2 : balade\nJour 2 : reve')" ] || {
+            echo "::error::toybox sed -i '/^[<=>]\\{7\\}/d' n'enlève pas exactement les 3 bornes"; exit 1; }
+

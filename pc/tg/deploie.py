@@ -711,6 +711,36 @@ def _cordee_anime(x, phase):
     return [f"📄 {''.join(corde)} 🚩"]
 
 
+# ---------------------------------------------------------------- la pellicule (la Bibliothèque du Temps)
+def pellicules(ligne):
+    """Les commandes git d'une ligne (spécification commune, Deploie.kt, vecteurs donnees/temps/vecteurs.json) :
+    [{seg, cmd, outil, de, vers}] — git add pose un fichier devant l'objectif, git commit prend la photo, git log déroule
+    la pellicule, git merge réunit deux chemins… (git clone, git diff et git commit restent à l'établi de la Guilde.)"""
+    from . import guilde, temps
+    out = []
+    bl = blocs(ligne)
+    for c in chaines(bl):
+        for e in c["etapes"]:
+            a = temps.pellicule_de(e["texte"])
+            if not a or guilde.etabli_de(e["texte"]):
+                continue
+            seg = next((b["seg"] for b in bl if b["g"] == "commande" and b["i"] - 1 == e["debut"]), 0)
+            out.append({"seg": seg, "cmd": e["cmd"], "outil": a[0], "de": a[1], "vers": a[2]})
+    return out
+
+
+def _pellicule_anime(x, phase):
+    """La pellicule : des photos (▣) défilent devant l'objectif ; le flash (✦) part au milieu."""
+    L = 30
+    pos = int(phase * (L - 1))
+    film = ["─"] * L
+    milieu = L // 2
+    for k in range(0, L, 5):
+        film[(k + pos) % L] = "▣"
+    film[milieu] = "✦" if int(phase * 8) % 2 else "◉"
+    return [f"📁 {''.join(film)} 🖼"]
+
+
 # ---------------------------------------------------------------- les mots pour le dire
 def nom_genre(g):
     return t("dep.genre." + g)
@@ -976,6 +1006,12 @@ def ecran(ligne, bl, actif, sorties, phase=0.0, largeur=80, dossier=None, pas=Fa
                 out.append(f"  {fg(ANSI['commande'])}🔭 " + t("dep.lunette", outil=x["outil"], de=t("ob.lunette." + x["de"]),
                                                              vers=t("ob.lunette." + x["vers"])) + RESET)
                 out += ["  " + l for l in _lunette_anime(x, phase % 1.0)]
+        for x in pellicules(ligne):              # git add, commit, log, merge… : la pellicule (la Bibliothèque du Temps)
+            if x["seg"] == b["seg"]:
+                out.append("")
+                out.append(f"  {fg(ANSI['commande'])}🎞 " + t("dep.pellicule", outil=x["outil"], de=t("tp.pellicule." + x["de"]),
+                                                             vers=t("tp.pellicule." + x["vers"])) + RESET)
+                out += ["  " + l for l in _pellicule_anime(x, phase % 1.0)]
         for x in labos(ligne):                   # cut, sort, awk, sed, sqlite3… : le laboratoire de tri (les Données)
             if x["seg"] == b["seg"]:
                 out.append("")
@@ -1026,7 +1062,8 @@ def _reseau(b, ligne):
                                      any(x["seg"] == b["seg"] for x in labos(ligne)) or
                                      any(x["seg"] == b["seg"] for x in forges(ligne)) or
                                      any(x["seg"] == b["seg"] for x in robots(ligne)) or
-                                     any(x["seg"] == b["seg"] for x in cordees(ligne)))
+                                     any(x["seg"] == b["seg"] for x in cordees(ligne)) or
+                                     any(x["seg"] == b["seg"] for x in pellicules(ligne)))
 
 
 def jouer(ligne, dossier=None, pas=False, sortie=None, clavier=None, ips=12):

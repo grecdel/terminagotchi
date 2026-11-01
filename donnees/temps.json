@@ -1,0 +1,196 @@
+{
+ "note": "Généré par donnees/temps/outils/fiches_temps.py ; lu par pc/tg/temps.py, Temps.kt et PetitGit.kt. Tous les dépôts sont dans le terrain (terrain_terminagotchi/temps), sans remote réel ni push ni compte ; les identités sont des EXEMPLES réglés dans le dépôt seulement (jamais git config --global).",
+ "identites": {
+  "apprenti": {
+   "nom": "Apprenti du Temps",
+   "email": "apprenti@temps.invalid"
+  },
+  "bibliothecaire": {
+   "nom": "Bibliothecaire du Temps",
+   "email": "bibliothecaire@temps.invalid"
+  },
+  "ami": {
+   "nom": "Ami du Temps",
+   "email": "ami@temps.invalid"
+  }
+ },
+ "grimoire": {
+  "date0": 1767261600,
+  "pas": 86400,
+  "fuseau": "+0000",
+  "secrets": 5,
+  "mot": "secret",
+  "photos": [
+   {
+    "message": "tp.grim.m1",
+    "fichiers": {
+     "grimoire.txt": [
+      "tp.grim.titre",
+      "tp.grim.f1"
+     ],
+     "etiquettes.txt": [
+      "tp.grim.e1"
+     ]
+    }
+   },
+   {
+    "message": "tp.grim.m2",
+    "fichiers": {
+     "grimoire.txt": [
+      "tp.grim.titre",
+      "tp.grim.f1",
+      "S"
+     ]
+    }
+   },
+   {
+    "message": "tp.grim.m3",
+    "fichiers": {
+     "grimoire.txt": [
+      "tp.grim.titre",
+      "tp.grim.f1",
+      "S",
+      "tp.grim.f2"
+     ]
+    }
+   },
+   {
+    "message": "tp.grim.m4",
+    "fichiers": {
+     "grimoire.txt": [
+      "tp.grim.titre",
+      "tp.grim.f1",
+      "S",
+      "tp.grim.f2",
+      "tp.grim.f3"
+     ]
+    }
+   },
+   {
+    "message": "tp.grim.m5",
+    "fichiers": {
+     "grimoire.txt": [
+      "tp.grim.titre",
+      "tp.grim.f1",
+      "tp.grim.f2",
+      "tp.grim.f3"
+     ]
+    }
+   },
+   {
+    "message": "tp.grim.m6",
+    "fichiers": {
+     "etiquettes.txt": [
+      "tp.grim.e1",
+      "tp.grim.e2"
+     ]
+    }
+   }
+  ],
+  "perte": 4,
+  "apparition": 1
+ },
+ "empreintes": {
+  "mot": "temps\n",
+  "mot_change": "Temps\n",
+  "dates": {
+   "ancien.txt": 3,
+   "repere.txt": 2,
+   "nouveau.txt": 1
+  }
+ },
+ "pellicule": {
+  "regles": [
+   {
+    "motif": "^git\\s+init\\b",
+    "outil": "git init",
+    "de": "dossier",
+    "vers": "album"
+   },
+   {
+    "motif": "^git\\s+config\\b",
+    "outil": "git config",
+    "de": "nom",
+    "vers": "signature"
+   },
+   {
+    "motif": "^git\\s+status\\b",
+    "outil": "git status",
+    "de": "album",
+    "vers": "etat"
+   },
+   {
+    "motif": "^git\\s+add\\b",
+    "outil": "git add",
+    "de": "fichier",
+    "vers": "objectif"
+   },
+   {
+    "motif": "^git\\s+commit\\b",
+    "outil": "git commit",
+    "de": "objectif",
+    "vers": "photo"
+   },
+   {
+    "motif": "^git\\s+log\\b",
+    "outil": "git log",
+    "de": "album",
+    "vers": "pellicule"
+   },
+   {
+    "motif": "^git\\s+(diff|show)\\b",
+    "outil": "git diff",
+    "de": "deux_photos",
+    "vers": "differences"
+   },
+   {
+    "motif": "^git\\s+(restore|checkout\\s+\\S+\\s+--)\\b",
+    "outil": "git restore",
+    "de": "ancienne_photo",
+    "vers": "fichier"
+   },
+   {
+    "motif": "^git\\s+(switch|branch|checkout\\s+-b)\\b",
+    "outil": "git switch",
+    "de": "chemin",
+    "vers": "deux_chemins"
+   },
+   {
+    "motif": "^git\\s+merge\\b",
+    "outil": "git merge",
+    "de": "deux_chemins",
+    "vers": "un_chemin"
+   },
+   {
+    "motif": "^git\\s+clone\\b",
+    "outil": "git clone",
+    "de": "album",
+    "vers": "copie"
+   },
+   {
+    "motif": "^git\\s+pull\\b",
+    "outil": "git pull",
+    "de": "copie",
+    "vers": "album"
+   },
+   {
+    "motif": "^git\\s+(hash-object|cat-file)\\b",
+    "outil": "git hash-object",
+    "de": "fichier",
+    "vers": "empreinte"
+   }
+  ]
+ },
+ "couleurs": {
+  "album": 179,
+  "photo": 229,
+  "pellicule": 215,
+  "differences": 203,
+  "deux_chemins": 141,
+  "un_chemin": 78,
+  "copie": 117,
+  "empreinte": 110
+ },
+ "branche": "reve",
+ "copie": "copie_de_mon_ami"
+}

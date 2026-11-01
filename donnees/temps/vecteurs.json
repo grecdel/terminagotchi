@@ -1,0 +1,2308 @@
+{
+ "spec": {
+  "parties": [
+   {
+    "graine": "1:0",
+    "secret": 0,
+    "ligne": "secret : trois tours de sablier font pousser une étoile",
+    "photos": [
+     {
+      "message": "Ouvre le grimoire",
+      "date": 1767261600,
+      "fichiers": {
+       "grimoire.txt": "📖 Le grimoire de la Bibliothèque du Temps\nformule du réveil : tic, tac, debout !\n",
+       "etiquettes.txt": "Rayon A : les grimoires\n"
+      }
+     },
+     {
+      "message": "Ajoute la formule secrète",
+      "date": 1767348000,
+      "fichiers": {
+       "grimoire.txt": "📖 Le grimoire de la Bibliothèque du Temps\nformule du réveil : tic, tac, debout !\nsecret : trois tours de sablier font pousser une étoile\n"
+      }
+     },
+     {
+      "message": "Ajoute la formule du sommeil",
+      "date": 1767434400,
+      "fichiers": {
+       "grimoire.txt": "📖 Le grimoire de la Bibliothèque du Temps\nformule du réveil : tic, tac, debout !\nsecret : trois tours de sablier font pousser une étoile\nformule du sommeil : chut, la lune compte jusqu'à trois\n"
+      }
+     },
+     {
+      "message": "Ajoute la formule du goûter",
+      "date": 1767520800,
+      "fichiers": {
+       "grimoire.txt": "📖 Le grimoire de la Bibliothèque du Temps\nformule du réveil : tic, tac, debout !\nsecret : trois tours de sablier font pousser une étoile\nformule du sommeil : chut, la lune compte jusqu'à trois\nformule du goûter : une miette pour chaque créature\n"
+      }
+     },
+     {
+      "message": "Range le grimoire",
+      "date": 1767607200,
+      "fichiers": {
+       "grimoire.txt": "📖 Le grimoire de la Bibliothèque du Temps\nformule du réveil : tic, tac, debout !\nformule du sommeil : chut, la lune compte jusqu'à trois\nformule du goûter : une miette pour chaque créature\n"
+      }
+     },
+     {
+      "message": "Nouvelles étiquettes",
+      "date": 1767693600,
+      "fichiers": {
+       "etiquettes.txt": "Rayon A : les grimoires\nRayon B : les cartes du temps\n"
+      }
+     }
+    ],
+    "final": {
+     "grimoire.txt": "📖 Le grimoire de la Bibliothèque du Temps\nformule du réveil : tic, tac, debout !\nformule du sommeil : chut, la lune compte jusqu'à trois\nformule du goûter : une miette pour chaque créature\n",
+     "etiquettes.txt": "Rayon A : les grimoires\nRayon B : les cartes du temps\n"
+    }
+   },
+   {
+    "graine": "2:1730000000",
+    "secret": 1,
+    "ligne": "secret : un caillou chaud parle aux fossiles",
+    "photos": [
+     {
+      "message": "Ouvre le grimoire",
+      "date": 1767261600,
+      "fichiers": {
+       "grimoire.txt": "📖 Le grimoire de la Bibliothèque du Temps\nformule du réveil : tic, tac, debout !\n",
+       "etiquettes.txt": "Rayon A : les grimoires\n"
+      }
+     },
+     {
+      "message": "Ajoute la formule secrète",
+      "date": 1767348000,
+      "fichiers": {
+       "grimoire.txt": "📖 Le grimoire de la Bibliothèque du Temps\nformule du réveil : tic, tac, debout !\nsecret : un caillou chaud parle aux fossiles\n"
+      }
+     },
+     {
+      "message": "Ajoute la formule du sommeil",
+      "date": 1767434400,
+      "fichiers": {
+       "grimoire.txt": "📖 Le grimoire de la Bibliothèque du Temps\nformule du réveil : tic, tac, debout !\nsecret : un caillou chaud parle aux fossiles\nformule du sommeil : chut, la lune compte jusqu'à trois\n"
+      }
+     },
+     {
+      "message": "Ajoute la formule du goûter",
+      "date": 1767520800,
+      "fichiers": {
+       "grimoire.txt": "📖 Le grimoire de la Bibliothèque du Temps\nformule du réveil : tic, tac, debout !\nsecret : un caillou chaud parle aux fossiles\nformule du sommeil : chut, la lune compte jusqu'à trois\nformule du goûter : une miette pour chaque créature\n"
+      }
+     },
+     {
+      "message": "Range le grimoire",
+      "date": 1767607200,
+      "fichiers": {
+       "grimoire.txt": "📖 Le grimoire de la Bibliothèque du Temps\nformule du réveil : tic, tac, debout !\nformule du sommeil : chut, la lune compte jusqu'à trois\nformule du goûter : une miette pour chaque créature\n"
+      }
+     },
+     {
+      "message": "Nouvelles étiquettes",
+      "date": 1767693600,
+      "fichiers": {
+       "etiquettes.txt": "Rayon A : les grimoires\nRayon B : les cartes du temps\n"
+      }
+     }
+    ],
+    "final": {
+     "grimoire.txt": "📖 Le grimoire de la Bibliothèque du Temps\nformule du réveil : tic, tac, debout !\nformule du sommeil : chut, la lune compte jusqu'à trois\nformule du goûter : une miette pour chaque créature\n",
+     "etiquettes.txt": "Rayon A : les grimoires\nRayon B : les cartes du temps\n"
+    }
+   },
+   {
+    "graine": "7:42",
+    "secret": 4,
+    "ligne": "secret : la pendule recule quand on rit",
+    "photos": [
+     {
+      "message": "Ouvre le grimoire",
+      "date": 1767261600,
+      "fichiers": {
+       "grimoire.txt": "📖 Le grimoire de la Bibliothèque du Temps\nformule du réveil : tic, tac, debout !\n",
+       "etiquettes.txt": "Rayon A : les grimoires\n"
+      }
+     },
+     {
+      "message": "Ajoute la formule secrète",
+      "date": 1767348000,
+      "fichiers": {
+       "grimoire.txt": "📖 Le grimoire de la Bibliothèque du Temps\nformule du réveil : tic, tac, debout !\nsecret : la pendule recule quand on rit\n"
+      }
+     },
+     {
+      "message": "Ajoute la formule du sommeil",
+      "date": 1767434400,
+      "fichiers": {
+       "grimoire.txt": "📖 Le grimoire de la Bibliothèque du Temps\nformule du réveil : tic, tac, debout !\nsecret : la pendule recule quand on rit\nformule du sommeil : chut, la lune compte jusqu'à trois\n"
+      }
+     },
+     {
+      "message": "Ajoute la formule du goûter",
+      "date": 1767520800,
+      "fichiers": {
+       "grimoire.txt": "📖 Le grimoire de la Bibliothèque du Temps\nformule du réveil : tic, tac, debout !\nsecret : la pendule recule quand on rit\nformule du sommeil : chut, la lune compte jusqu'à trois\nformule du goûter : une miette pour chaque créature\n"
+      }
+     },
+     {
+      "message": "Range le grimoire",
+      "date": 1767607200,
+      "fichiers": {
+       "grimoire.txt": "📖 Le grimoire de la Bibliothèque du Temps\nformule du réveil : tic, tac, debout !\nformule du sommeil : chut, la lune compte jusqu'à trois\nformule du goûter : une miette pour chaque créature\n"
+      }
+     },
+     {
+      "message": "Nouvelles étiquettes",
+      "date": 1767693600,
+      "fichiers": {
+       "etiquettes.txt": "Rayon A : les grimoires\nRayon B : les cartes du temps\n"
+      }
+     }
+    ],
+    "final": {
+     "grimoire.txt": "📖 Le grimoire de la Bibliothèque du Temps\nformule du réveil : tic, tac, debout !\nformule du sommeil : chut, la lune compte jusqu'à trois\nformule du goûter : une miette pour chaque créature\n",
+     "etiquettes.txt": "Rayon A : les grimoires\nRayon B : les cartes du temps\n"
+    }
+   },
+   {
+    "graine": "partie:3",
+    "secret": 4,
+    "ligne": "secret : la pendule recule quand on rit",
+    "photos": [
+     {
+      "message": "Ouvre le grimoire",
+      "date": 1767261600,
+      "fichiers": {
+       "grimoire.txt": "📖 Le grimoire de la Bibliothèque du Temps\nformule du réveil : tic, tac, debout !\n",
+       "etiquettes.txt": "Rayon A : les grimoires\n"
+      }
+     },
+     {
+      "message": "Ajoute la formule secrète",
+      "date": 1767348000,
+      "fichiers": {
+       "grimoire.txt": "📖 Le grimoire de la Bibliothèque du Temps\nformule du réveil : tic, tac, debout !\nsecret : la pendule recule quand on rit\n"
+      }
+     },
+     {
+      "message": "Ajoute la formule du sommeil",
+      "date": 1767434400,
+      "fichiers": {
+       "grimoire.txt": "📖 Le grimoire de la Bibliothèque du Temps\nformule du réveil : tic, tac, debout !\nsecret : la pendule recule quand on rit\nformule du sommeil : chut, la lune compte jusqu'à trois\n"
+      }
+     },
+     {
+      "message": "Ajoute la formule du goûter",
+      "date": 1767520800,
+      "fichiers": {
+       "grimoire.txt": "📖 Le grimoire de la Bibliothèque du Temps\nformule du réveil : tic, tac, debout !\nsecret : la pendule recule quand on rit\nformule du sommeil : chut, la lune compte jusqu'à trois\nformule du goûter : une miette pour chaque créature\n"
+      }
+     },
+     {
+      "message": "Range le grimoire",
+      "date": 1767607200,
+      "fichiers": {
+       "grimoire.txt": "📖 Le grimoire de la Bibliothèque du Temps\nformule du réveil : tic, tac, debout !\nformule du sommeil : chut, la lune compte jusqu'à trois\nformule du goûter : une miette pour chaque créature\n"
+      }
+     },
+     {
+      "message": "Nouvelles étiquettes",
+      "date": 1767693600,
+      "fichiers": {
+       "etiquettes.txt": "Rayon A : les grimoires\nRayon B : les cartes du temps\n"
+      }
+     }
+    ],
+    "final": {
+     "grimoire.txt": "📖 Le grimoire de la Bibliothèque du Temps\nformule du réveil : tic, tac, debout !\nformule du sommeil : chut, la lune compte jusqu'à trois\nformule du goûter : une miette pour chaque créature\n",
+     "etiquettes.txt": "Rayon A : les grimoires\nRayon B : les cartes du temps\n"
+    }
+   },
+   {
+    "graine": "9:1761900000",
+    "secret": 3,
+    "ligne": "secret : une plume d'hier écrit demain",
+    "photos": [
+     {
+      "message": "Ouvre le grimoire",
+      "date": 1767261600,
+      "fichiers": {
+       "grimoire.txt": "📖 Le grimoire de la Bibliothèque du Temps\nformule du réveil : tic, tac, debout !\n",
+       "etiquettes.txt": "Rayon A : les grimoires\n"
+      }
+     },
+     {
+      "message": "Ajoute la formule secrète",
+      "date": 1767348000,
+      "fichiers": {
+       "grimoire.txt": "📖 Le grimoire de la Bibliothèque du Temps\nformule du réveil : tic, tac, debout !\nsecret : une plume d'hier écrit demain\n"
+      }
+     },
+     {
+      "message": "Ajoute la formule du sommeil",
+      "date": 1767434400,
+      "fichiers": {
+       "grimoire.txt": "📖 Le grimoire de la Bibliothèque du Temps\nformule du réveil : tic, tac, debout !\nsecret : une plume d'hier écrit demain\nformule du sommeil : chut, la lune compte jusqu'à trois\n"
+      }
+     },
+     {
+      "message": "Ajoute la formule du goûter",
+      "date": 1767520800,
+      "fichiers": {
+       "grimoire.txt": "📖 Le grimoire de la Bibliothèque du Temps\nformule du réveil : tic, tac, debout !\nsecret : une plume d'hier écrit demain\nformule du sommeil : chut, la lune compte jusqu'à trois\nformule du goûter : une miette pour chaque créature\n"
+      }
+     },
+     {
+      "message": "Range le grimoire",
+      "date": 1767607200,
+      "fichiers": {
+       "grimoire.txt": "📖 Le grimoire de la Bibliothèque du Temps\nformule du réveil : tic, tac, debout !\nformule du sommeil : chut, la lune compte jusqu'à trois\nformule du goûter : une miette pour chaque créature\n"
+      }
+     },
+     {
+      "message": "Nouvelles étiquettes",
+      "date": 1767693600,
+      "fichiers": {
+       "etiquettes.txt": "Rayon A : les grimoires\nRayon B : les cartes du temps\n"
+      }
+     }
+    ],
+    "final": {
+     "grimoire.txt": "📖 Le grimoire de la Bibliothèque du Temps\nformule du réveil : tic, tac, debout !\nformule du sommeil : chut, la lune compte jusqu'à trois\nformule du goûter : une miette pour chaque créature\n",
+     "etiquettes.txt": "Rayon A : les grimoires\nRayon B : les cartes du temps\n"
+    }
+   },
+   {
+    "graine": "4:1700000123",
+    "secret": 3,
+    "ligne": "secret : une plume d'hier écrit demain",
+    "photos": [
+     {
+      "message": "Ouvre le grimoire",
+      "date": 1767261600,
+      "fichiers": {
+       "grimoire.txt": "📖 Le grimoire de la Bibliothèque du Temps\nformule du réveil : tic, tac, debout !\n",
+       "etiquettes.txt": "Rayon A : les grimoires\n"
+      }
+     },
+     {
+      "message": "Ajoute la formule secrète",
+      "date": 1767348000,
+      "fichiers": {
+       "grimoire.txt": "📖 Le grimoire de la Bibliothèque du Temps\nformule du réveil : tic, tac, debout !\nsecret : une plume d'hier écrit demain\n"
+      }
+     },
+     {
+      "message": "Ajoute la formule du sommeil",
+      "date": 1767434400,
+      "fichiers": {
+       "grimoire.txt": "📖 Le grimoire de la Bibliothèque du Temps\nformule du réveil : tic, tac, debout !\nsecret : une plume d'hier écrit demain\nformule du sommeil : chut, la lune compte jusqu'à trois\n"
+      }
+     },
+     {
+      "message": "Ajoute la formule du goûter",
+      "date": 1767520800,
+      "fichiers": {
+       "grimoire.txt": "📖 Le grimoire de la Bibliothèque du Temps\nformule du réveil : tic, tac, debout !\nsecret : une plume d'hier écrit demain\nformule du sommeil : chut, la lune compte jusqu'à trois\nformule du goûter : une miette pour chaque créature\n"
+      }
+     },
+     {
+      "message": "Range le grimoire",
+      "date": 1767607200,
+      "fichiers": {
+       "grimoire.txt": "📖 Le grimoire de la Bibliothèque du Temps\nformule du réveil : tic, tac, debout !\nformule du sommeil : chut, la lune compte jusqu'à trois\nformule du goûter : une miette pour chaque créature\n"
+      }
+     },
+     {
+      "message": "Nouvelles étiquettes",
+      "date": 1767693600,
+      "fichiers": {
+       "etiquettes.txt": "Rayon A : les grimoires\nRayon B : les cartes du temps\n"
+      }
+     }
+    ],
+    "final": {
+     "grimoire.txt": "📖 Le grimoire de la Bibliothèque du Temps\nformule du réveil : tic, tac, debout !\nformule du sommeil : chut, la lune compte jusqu'à trois\nformule du goûter : une miette pour chaque créature\n",
+     "etiquettes.txt": "Rayon A : les grimoires\nRayon B : les cartes du temps\n"
+    }
+   }
+  ],
+  "bornes": [
+   {
+    "texte": "a\n<<<<<<< HEAD\nb\n=======\nc\n>>>>>>> reve\n",
+    "sans": false
+   },
+   {
+    "texte": "a\nb\nc\n",
+    "sans": true
+   },
+   {
+    "texte": "======= pas une borne\n",
+    "sans": false
+   },
+   {
+    "texte": "x\n=======\n",
+    "sans": false
+   },
+   {
+    "texte": "<<<<<<<HEAD\n",
+    "sans": true
+   },
+   {
+    "texte": ">>>>>>> \n",
+    "sans": false
+   },
+   {
+    "texte": "a\r\n<<<<<<< HEAD\r\n",
+    "sans": false
+   }
+  ],
+  "garde": [
+   {
+    "texte": "Jour 1\nJour 2 : une balade\nJour 2 : un reve\n",
+    "versions": [
+     "Jour 1\nJour 2 : une balade\n",
+     "Jour 1\nJour 2 : un reve\n"
+    ],
+    "ok": true
+   },
+   {
+    "texte": "Jour 1\nJour 2 : une balade\n",
+    "versions": [
+     "Jour 1\nJour 2 : une balade\n",
+     "Jour 1\nJour 2 : un reve\n"
+    ],
+    "ok": false
+   },
+   {
+    "texte": "Jour 1\r\nJour 2 : un reve\r\nJour 2 : une balade\r\n",
+    "versions": [
+     "Jour 1\nJour 2 : une balade\n",
+     "Jour 1\nJour 2 : un reve\n"
+    ],
+    "ok": true
+   },
+   {
+    "texte": "",
+    "versions": [
+     "",
+     "\n"
+    ],
+    "ok": true
+   }
+  ],
+  "hashes": [
+   {
+    "rep": "6b4cd1e",
+    "juste": "6b4cd1e0a9f1",
+    "ok": true
+   },
+   {
+    "rep": "6B4C",
+    "juste": "6b4cd1e0a9f1",
+    "ok": true
+   },
+   {
+    "rep": "6b4",
+    "juste": "6b4cd1e0a9f1",
+    "ok": false
+   },
+   {
+    "rep": "6b4cd1e~1",
+    "juste": "6b4cd1e0a9f1",
+    "ok": true
+   },
+   {
+    "rep": "6b4cd1f",
+    "juste": "6b4cd1e0a9f1",
+    "ok": false
+   },
+   {
+    "rep": "",
+    "juste": "6b4cd1e0a9f1",
+    "ok": false
+   },
+   {
+    "rep": "zzzz",
+    "juste": "6b4cd1e0a9f1",
+    "ok": false
+   },
+   {
+    "rep": "6b4cd1e",
+    "juste": "",
+    "ok": false
+   },
+   {
+    "rep": " 6b4cd1e ",
+    "juste": "6b4cd1e0a9f1",
+    "ok": true
+   },
+   {
+    "rep": "6b4cd1e^",
+    "juste": "6b4cd1e0a9f1",
+    "ok": true
+   }
+  ],
+  "blobs": [
+   {
+    "texte": "temps\n",
+    "sha": "eb51c8df438dd920beceb5c9ef1e691531fa8a2d"
+   },
+   {
+    "texte": "Temps\n",
+    "sha": "59b96ff1782835a2bc483e5f3332f1396b0abd1e"
+   },
+   {
+    "texte": "",
+    "sha": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391"
+   },
+   {
+    "texte": "Jour 1\n",
+    "sha": "12f9021be6273438a1c06535eda07cf49472a6d8"
+   },
+   {
+    "texte": "é\n",
+    "sha": "c6003325155f475bd7c87731607525dce73be9cf"
+   }
+  ],
+  "pellicule": [
+   {
+    "ligne": "git init -b main album",
+    "pellicules": [
+     [
+      "git init",
+      "dossier",
+      "album"
+     ]
+    ]
+   },
+   {
+    "ligne": "git status",
+    "pellicules": [
+     [
+      "git status",
+      "album",
+      "etat"
+     ]
+    ]
+   },
+   {
+    "ligne": "git add chronique.txt && git commit -m 'Jour 1'",
+    "pellicules": [
+     [
+      "git add",
+      "fichier",
+      "objectif"
+     ],
+     [
+      "git commit",
+      "objectif",
+      "photo"
+     ]
+    ]
+   },
+   {
+    "ligne": "git log --oneline -S secret",
+    "pellicules": [
+     [
+      "git log",
+      "album",
+      "pellicule"
+     ]
+    ]
+   },
+   {
+    "ligne": "git diff | head",
+    "pellicules": [
+     [
+      "git diff",
+      "deux_photos",
+      "differences"
+     ]
+    ]
+   },
+   {
+    "ligne": "git checkout 6b4cd1e~1 -- grimoire.txt",
+    "pellicules": []
+   },
+   {
+    "ligne": "git checkout -b reve",
+    "pellicules": [
+     [
+      "git switch",
+      "chemin",
+      "deux_chemins"
+     ]
+    ]
+   },
+   {
+    "ligne": "git switch main",
+    "pellicules": [
+     [
+      "git switch",
+      "chemin",
+      "deux_chemins"
+     ]
+    ]
+   },
+   {
+    "ligne": "git merge reve",
+    "pellicules": [
+     [
+      "git merge",
+      "deux_chemins",
+      "un_chemin"
+     ]
+    ]
+   },
+   {
+    "ligne": "git clone . ../copie",
+    "pellicules": [
+     [
+      "git clone",
+      "album",
+      "copie"
+     ]
+    ]
+   },
+   {
+    "ligne": "git pull ../copie",
+    "pellicules": [
+     [
+      "git pull",
+      "copie",
+      "album"
+     ]
+    ]
+   },
+   {
+    "ligne": "git hash-object mot.txt; git cat-file -p HEAD",
+    "pellicules": [
+     [
+      "git hash-object",
+      "fichier",
+      "empreinte"
+     ],
+     [
+      "git hash-object",
+      "fichier",
+      "empreinte"
+     ]
+    ]
+   },
+   {
+    "ligne": "git restore x",
+    "pellicules": [
+     [
+      "git restore",
+      "ancienne_photo",
+      "fichier"
+     ]
+    ]
+   },
+   {
+    "ligne": "git show HEAD",
+    "pellicules": [
+     [
+      "git diff",
+      "deux_photos",
+      "differences"
+     ]
+    ]
+   },
+   {
+    "ligne": "git branch",
+    "pellicules": [
+     [
+      "git switch",
+      "chemin",
+      "deux_chemins"
+     ]
+    ]
+   },
+   {
+    "ligne": "git config user.name x",
+    "pellicules": [
+     [
+      "git config",
+      "nom",
+      "signature"
+     ]
+    ]
+   },
+   {
+    "ligne": "ls | wc -l",
+    "pellicules": []
+   },
+   {
+    "ligne": "git push",
+    "pellicules": []
+   },
+   {
+    "ligne": "gitk",
+    "pellicules": []
+   }
+  ],
+  "deploie": [
+   {
+    "ligne": "git init -b main album",
+    "pellicules": [
+     {
+      "seg": 0,
+      "cmd": "git",
+      "outil": "git init",
+      "de": "dossier",
+      "vers": "album"
+     }
+    ]
+   },
+   {
+    "ligne": "git status",
+    "pellicules": [
+     {
+      "seg": 0,
+      "cmd": "git",
+      "outil": "git status",
+      "de": "album",
+      "vers": "etat"
+     }
+    ]
+   },
+   {
+    "ligne": "git add chronique.txt && git commit -m 'Jour 1'",
+    "pellicules": [
+     {
+      "seg": 0,
+      "cmd": "git",
+      "outil": "git add",
+      "de": "fichier",
+      "vers": "objectif"
+     }
+    ]
+   },
+   {
+    "ligne": "git log --oneline -S secret",
+    "pellicules": [
+     {
+      "seg": 0,
+      "cmd": "git",
+      "outil": "git log",
+      "de": "album",
+      "vers": "pellicule"
+     }
+    ]
+   },
+   {
+    "ligne": "git diff | head",
+    "pellicules": []
+   },
+   {
+    "ligne": "git checkout 6b4cd1e~1 -- grimoire.txt",
+    "pellicules": []
+   },
+   {
+    "ligne": "git checkout -b reve",
+    "pellicules": [
+     {
+      "seg": 0,
+      "cmd": "git",
+      "outil": "git switch",
+      "de": "chemin",
+      "vers": "deux_chemins"
+     }
+    ]
+   },
+   {
+    "ligne": "git switch main",
+    "pellicules": [
+     {
+      "seg": 0,
+      "cmd": "git",
+      "outil": "git switch",
+      "de": "chemin",
+      "vers": "deux_chemins"
+     }
+    ]
+   },
+   {
+    "ligne": "git merge reve",
+    "pellicules": [
+     {
+      "seg": 0,
+      "cmd": "git",
+      "outil": "git merge",
+      "de": "deux_chemins",
+      "vers": "un_chemin"
+     }
+    ]
+   },
+   {
+    "ligne": "git clone . ../copie",
+    "pellicules": []
+   },
+   {
+    "ligne": "git pull ../copie",
+    "pellicules": [
+     {
+      "seg": 0,
+      "cmd": "git",
+      "outil": "git pull",
+      "de": "copie",
+      "vers": "album"
+     }
+    ]
+   },
+   {
+    "ligne": "git hash-object mot.txt; git cat-file -p HEAD",
+    "pellicules": [
+     {
+      "seg": 0,
+      "cmd": "git",
+      "outil": "git hash-object",
+      "de": "fichier",
+      "vers": "empreinte"
+     },
+     {
+      "seg": 1,
+      "cmd": "git",
+      "outil": "git hash-object",
+      "de": "fichier",
+      "vers": "empreinte"
+     }
+    ]
+   },
+   {
+    "ligne": "git restore x",
+    "pellicules": [
+     {
+      "seg": 0,
+      "cmd": "git",
+      "outil": "git restore",
+      "de": "ancienne_photo",
+      "vers": "fichier"
+     }
+    ]
+   },
+   {
+    "ligne": "git show HEAD",
+    "pellicules": [
+     {
+      "seg": 0,
+      "cmd": "git",
+      "outil": "git diff",
+      "de": "deux_photos",
+      "vers": "differences"
+     }
+    ]
+   },
+   {
+    "ligne": "git branch",
+    "pellicules": [
+     {
+      "seg": 0,
+      "cmd": "git",
+      "outil": "git switch",
+      "de": "chemin",
+      "vers": "deux_chemins"
+     }
+    ]
+   },
+   {
+    "ligne": "git config user.name x",
+    "pellicules": [
+     {
+      "seg": 0,
+      "cmd": "git",
+      "outil": "git config",
+      "de": "nom",
+      "vers": "signature"
+     }
+    ]
+   },
+   {
+    "ligne": "ls | wc -l",
+    "pellicules": []
+   },
+   {
+    "ligne": "git push",
+    "pellicules": []
+   },
+   {
+    "ligne": "gitk",
+    "pellicules": []
+   }
+  ]
+ },
+ "git": {
+  "version": "git version 2.43.0",
+  "album": [
+   {
+    "ou": "temps",
+    "action": "git",
+    "args": [
+     "init",
+     "-b",
+     "main",
+     "album"
+    ],
+    "date": 1767600000,
+    "sortie": "Initialized empty Git repository in {R}/temps/album/.git/\n",
+    "code": 0
+   },
+   {
+    "ou": "temps/album",
+    "action": "git",
+    "args": [
+     "status"
+    ],
+    "date": 1767600060,
+    "sortie": "On branch main\n\nNo commits yet\n\nnothing to commit (create/copy files and use \"git add\" to track)\n",
+    "code": 0
+   },
+   {
+    "ou": "temps/album",
+    "action": "ecrire",
+    "fichier": "chronique.txt",
+    "texte": "Jour 1\n",
+    "ajout": false
+   },
+   {
+    "ou": "temps/album",
+    "action": "git",
+    "args": [
+     "status"
+    ],
+    "date": 1767600120,
+    "sortie": "On branch main\n\nNo commits yet\n\nUntracked files:\n  (use \"git add <file>...\" to include in what will be committed)\n\tchronique.txt\n\nnothing added to commit but untracked files present (use \"git add\" to track)\n",
+    "code": 0
+   },
+   {
+    "ou": "temps/album",
+    "action": "git",
+    "args": [
+     "add",
+     "chronique.txt"
+    ],
+    "date": 1767600180,
+    "sortie": "",
+    "code": 0
+   },
+   {
+    "ou": "temps/album",
+    "action": "git",
+    "args": [
+     "status"
+    ],
+    "date": 1767600240,
+    "sortie": "On branch main\n\nNo commits yet\n\nChanges to be committed:\n  (use \"git rm --cached <file>...\" to unstage)\n\tnew file:   chronique.txt\n\n",
+    "code": 0
+   },
+   {
+    "ou": "temps/album",
+    "action": "git",
+    "args": [
+     "commit",
+     "-m",
+     "Jour 1"
+    ],
+    "date": 1767600300,
+    "sortie": "Author identity unknown\n\n*** Please tell me who you are.\n\nRun\n\n  git config --global user.email \"you@example.com\"\n  git config --global user.name \"Your Name\"\n\nto set your account's default identity.\nOmit --global to set the identity only in this repository.\n\nfatal: no email was given and auto-detection is disabled\n",
+    "code": 128
+   },
+   {
+    "ou": "temps/album",
+    "action": "git",
+    "args": [
+     "config",
+     "user.name",
+     "Apprenti du Temps"
+    ],
+    "date": 1767600360,
+    "sortie": "",
+    "code": 0
+   },
+   {
+    "ou": "temps/album",
+    "action": "git",
+    "args": [
+     "config",
+     "user.email",
+     "apprenti@temps.invalid"
+    ],
+    "date": 1767600420,
+    "sortie": "",
+    "code": 0
+   },
+   {
+    "ou": "temps/album",
+    "action": "git",
+    "args": [
+     "config",
+     "user.name"
+    ],
+    "date": 1767600480,
+    "sortie": "Apprenti du Temps\n",
+    "code": 0
+   },
+   {
+    "ou": "temps/album",
+    "action": "git",
+    "args": [
+     "config",
+     "user.signingkey"
+    ],
+    "date": 1767600540,
+    "sortie": "",
+    "code": 1
+   },
+   {
+    "ou": "temps/album",
+    "action": "git",
+    "args": [
+     "status",
+     "--short"
+    ],
+    "date": 1767600600,
+    "sortie": "A  chronique.txt\n",
+    "code": 0
+   },
+   {
+    "ou": "temps/album",
+    "action": "git",
+    "args": [
+     "commit",
+     "-m",
+     "Jour 1"
+    ],
+    "date": 1767600660,
+    "sortie": "[main (root-commit) d196b53] Jour 1\n 1 file changed, 1 insertion(+)\n create mode 100644 chronique.txt\n",
+    "code": 0
+   },
+   {
+    "ou": "temps/album",
+    "action": "git",
+    "args": [
+     "status"
+    ],
+    "date": 1767600720,
+    "sortie": "On branch main\nnothing to commit, working tree clean\n",
+    "code": 0
+   },
+   {
+    "ou": "temps/album",
+    "action": "git",
+    "args": [
+     "commit",
+     "-m",
+     "rien"
+    ],
+    "date": 1767600780,
+    "sortie": "On branch main\nnothing to commit, working tree clean\n",
+    "code": 1
+   },
+   {
+    "ou": "temps/album",
+    "action": "git",
+    "args": [
+     "log",
+     "--oneline"
+    ],
+    "date": 1767600840,
+    "sortie": "d196b53 (HEAD -> main) Jour 1\n",
+    "code": 0
+   },
+   {
+    "ou": "temps/album",
+    "action": "git",
+    "args": [
+     "log"
+    ],
+    "date": 1767600900,
+    "sortie": "commit d196b53df150c64399272a5d74ad6c6eaec6580d (HEAD -> main)\nAuthor: Apprenti du Temps <apprenti@temps.invalid>\nDate:   Mon Jan 5 08:11:00 2026 +0000\n\n    Jour 1\n",
+    "code": 0
+   },
+   {
+    "ou": "temps/album",
+    "action": "ecrire",
+    "fichier": "chronique.txt",
+    "texte": "tache\n",
+    "ajout": true
+   },
+   {
+    "ou": "temps/album",
+    "action": "git",
+    "args": [
+     "status"
+    ],
+    "date": 1767600960,
+    "sortie": "On branch main\nChanges not staged for commit:\n  (use \"git add <file>...\" to update what will be committed)\n  (use \"git restore <file>...\" to discard changes in working directory)\n\tmodified:   chronique.txt\n\nno changes added to commit (use \"git add\" and/or \"git commit -a\")\n",
+    "code": 0
+   },
+   {
+    "ou": "temps/album",
+    "action": "git",
+    "args": [
+     "status",
+     "-s"
+    ],
+    "date": 1767601020,
+    "sortie": " M chronique.txt\n",
+    "code": 0
+   },
+   {
+    "ou": "temps/album",
+    "action": "git",
+    "args": [
+     "diff"
+    ],
+    "date": 1767601080,
+    "sortie": "diff --git a/chronique.txt b/chronique.txt\nindex 12f9021..95da5cb 100644\n--- a/chronique.txt\n+++ b/chronique.txt\n@@ -1 +1,2 @@\n Jour 1\n+tache\n",
+    "code": 0
+   },
+   {
+    "ou": "temps/album",
+    "action": "git",
+    "args": [
+     "commit",
+     "-m",
+     "rien"
+    ],
+    "date": 1767601140,
+    "sortie": "On branch main\nChanges not staged for commit:\n  (use \"git add <file>...\" to update what will be committed)\n  (use \"git restore <file>...\" to discard changes in working directory)\n\tmodified:   chronique.txt\n\nno changes added to commit (use \"git add\" and/or \"git commit -a\")\n",
+    "code": 1
+   },
+   {
+    "ou": "temps/album",
+    "action": "git",
+    "args": [
+     "restore",
+     "chronique.txt"
+    ],
+    "date": 1767601200,
+    "sortie": "",
+    "code": 0
+   },
+   {
+    "ou": "temps/album",
+    "action": "git",
+    "args": [
+     "status"
+    ],
+    "date": 1767601260,
+    "sortie": "On branch main\nnothing to commit, working tree clean\n",
+    "code": 0
+   },
+   {
+    "ou": "temps/album",
+    "action": "git",
+    "args": [
+     "switch",
+     "-c",
+     "reve"
+    ],
+    "date": 1767601320,
+    "sortie": "Switched to a new branch 'reve'\n",
+    "code": 0
+   },
+   {
+    "ou": "temps/album",
+    "action": "git",
+    "args": [
+     "branch"
+    ],
+    "date": 1767601380,
+    "sortie": "  main\n* reve\n",
+    "code": 0
+   },
+   {
+    "ou": "temps/album",
+    "action": "ecrire",
+    "fichier": "chronique.txt",
+    "texte": "Jour 2 : un reve\n",
+    "ajout": true
+   },
+   {
+    "ou": "temps/album",
+    "action": "git",
+    "args": [
+     "commit",
+     "-am",
+     "Le reve"
+    ],
+    "date": 1767601440,
+    "sortie": "[reve a0eee25] Le reve\n 1 file changed, 1 insertion(+)\n",
+    "code": 0
+   },
+   {
+    "ou": "temps/album",
+    "action": "git",
+    "args": [
+     "switch",
+     "main"
+    ],
+    "date": 1767601500,
+    "sortie": "Switched to branch 'main'\n",
+    "code": 0
+   },
+   {
+    "ou": "temps/album",
+    "action": "lire",
+    "fichier": "chronique.txt",
+    "texte": "Jour 1\n"
+   },
+   {
+    "ou": "temps/album",
+    "action": "ecrire",
+    "fichier": "chronique.txt",
+    "texte": "Jour 2 : une balade\n",
+    "ajout": true
+   },
+   {
+    "ou": "temps/album",
+    "action": "git",
+    "args": [
+     "commit",
+     "-am",
+     "La balade"
+    ],
+    "date": 1767601560,
+    "sortie": "[main 2d9405a] La balade\n 1 file changed, 1 insertion(+)\n",
+    "code": 0
+   },
+   {
+    "ou": "temps/album",
+    "action": "git",
+    "args": [
+     "merge",
+     "reve"
+    ],
+    "date": 1767601620,
+    "sortie": "Auto-merging chronique.txt\nCONFLICT (content): Merge conflict in chronique.txt\nAutomatic merge failed; fix conflicts and then commit the result.\n",
+    "code": 1
+   },
+   {
+    "ou": "temps/album",
+    "action": "git",
+    "args": [
+     "status"
+    ],
+    "date": 1767601680,
+    "sortie": "On branch main\nYou have unmerged paths.\n  (fix conflicts and run \"git commit\")\n  (use \"git merge --abort\" to abort the merge)\n\nUnmerged paths:\n  (use \"git add <file>...\" to mark resolution)\n\tboth modified:   chronique.txt\n\nno changes added to commit (use \"git add\" and/or \"git commit -a\")\n",
+    "code": 0
+   },
+   {
+    "ou": "temps/album",
+    "action": "lire",
+    "fichier": "chronique.txt",
+    "texte": "Jour 1\n<<<<<<< HEAD\nJour 2 : une balade\n=======\nJour 2 : un reve\n>>>>>>> reve\n"
+   },
+   {
+    "ou": "temps/album",
+    "action": "ecrire",
+    "fichier": "chronique.txt",
+    "texte": "Jour 1\nJour 2 : une balade\nJour 2 : un reve\n",
+    "ajout": false
+   },
+   {
+    "ou": "temps/album",
+    "action": "git",
+    "args": [
+     "status"
+    ],
+    "date": 1767601740,
+    "sortie": "On branch main\nYou have unmerged paths.\n  (fix conflicts and run \"git commit\")\n  (use \"git merge --abort\" to abort the merge)\n\nUnmerged paths:\n  (use \"git add <file>...\" to mark resolution)\n\tboth modified:   chronique.txt\n\nno changes added to commit (use \"git add\" and/or \"git commit -a\")\n",
+    "code": 0
+   },
+   {
+    "ou": "temps/album",
+    "action": "git",
+    "args": [
+     "commit",
+     "-am",
+     "Reunit les deux histoires"
+    ],
+    "date": 1767601800,
+    "sortie": "[main 1f2e349] Reunit les deux histoires\n",
+    "code": 0
+   },
+   {
+    "ou": "temps/album",
+    "action": "git",
+    "args": [
+     "log",
+     "--oneline",
+     "--graph"
+    ],
+    "date": 1767601860,
+    "sortie": "*   1f2e349 (HEAD -> main) Reunit les deux histoires\n|\\  \n| * a0eee25 (reve) Le reve\n* | 2d9405a La balade\n|/  \n* d196b53 Jour 1\n",
+    "code": 0
+   },
+   {
+    "ou": "temps/album",
+    "action": "git",
+    "args": [
+     "log",
+     "--oneline"
+    ],
+    "date": 1767601920,
+    "sortie": "1f2e349 (HEAD -> main) Reunit les deux histoires\n2d9405a La balade\na0eee25 (reve) Le reve\nd196b53 Jour 1\n",
+    "code": 0
+   },
+   {
+    "ou": "temps/album",
+    "action": "git",
+    "args": [
+     "status"
+    ],
+    "date": 1767601980,
+    "sortie": "On branch main\nnothing to commit, working tree clean\n",
+    "code": 0
+   },
+   {
+    "ou": "temps/album",
+    "action": "git",
+    "args": [
+     "clone",
+     ".",
+     "../copie_de_mon_ami"
+    ],
+    "date": 1767602040,
+    "sortie": "Cloning into '../copie_de_mon_ami'...\ndone.\n",
+    "code": 0
+   },
+   {
+    "ou": "temps/copie_de_mon_ami",
+    "action": "git",
+    "args": [
+     "config",
+     "user.name",
+     "Ami du Temps"
+    ],
+    "date": 1767602100,
+    "sortie": "",
+    "code": 0
+   },
+   {
+    "ou": "temps/copie_de_mon_ami",
+    "action": "git",
+    "args": [
+     "config",
+     "user.email",
+     "ami@temps.invalid"
+    ],
+    "date": 1767602160,
+    "sortie": "",
+    "code": 0
+   },
+   {
+    "ou": "temps/copie_de_mon_ami",
+    "action": "ecrire",
+    "fichier": "chronique.txt",
+    "texte": "Jour 3 : ton ami dessine ta créature\n",
+    "ajout": true
+   },
+   {
+    "ou": "temps/copie_de_mon_ami",
+    "action": "git",
+    "args": [
+     "add",
+     "chronique.txt"
+    ],
+    "date": 1767602220,
+    "sortie": "",
+    "code": 0
+   },
+   {
+    "ou": "temps/copie_de_mon_ami",
+    "action": "git",
+    "args": [
+     "commit",
+     "-q",
+     "-m",
+     "Ajoute un dessin"
+    ],
+    "date": 1767602280,
+    "sortie": "",
+    "code": 0
+   },
+   {
+    "ou": "temps/copie_de_mon_ami",
+    "action": "git",
+    "args": [
+     "status"
+    ],
+    "date": 1767602340,
+    "sortie": "On branch main\nYour branch is ahead of 'origin/main' by 1 commit.\n  (use \"git push\" to publish your local commits)\n\nnothing to commit, working tree clean\n",
+    "code": 0
+   },
+   {
+    "ou": "temps/copie_de_mon_ami",
+    "action": "git",
+    "args": [
+     "log",
+     "--oneline"
+    ],
+    "date": 1767602400,
+    "sortie": "7eee385 (HEAD -> main) Ajoute un dessin\n1f2e349 (origin/main, origin/HEAD) Reunit les deux histoires\n2d9405a La balade\na0eee25 (origin/reve) Le reve\nd196b53 Jour 1\n",
+    "code": 0
+   },
+   {
+    "ou": "temps/album",
+    "action": "git",
+    "args": [
+     "log",
+     "--oneline"
+    ],
+    "date": 1767602460,
+    "sortie": "1f2e349 (HEAD -> main) Reunit les deux histoires\n2d9405a La balade\na0eee25 (reve) Le reve\nd196b53 Jour 1\n",
+    "code": 0
+   },
+   {
+    "ou": "temps/album",
+    "action": "git",
+    "args": [
+     "pull",
+     "../copie_de_mon_ami"
+    ],
+    "date": 1767602520,
+    "sortie": "From ../copie_de_mon_ami\n * branch            HEAD       -> FETCH_HEAD\nUpdating 1f2e349..7eee385\nFast-forward\n chronique.txt | 1 +\n 1 file changed, 1 insertion(+)\n",
+    "code": 0
+   },
+   {
+    "ou": "temps/album",
+    "action": "git",
+    "args": [
+     "log",
+     "--oneline",
+     "--graph"
+    ],
+    "date": 1767602580,
+    "sortie": "* 7eee385 (HEAD -> main) Ajoute un dessin\n*   1f2e349 Reunit les deux histoires\n|\\  \n| * a0eee25 (reve) Le reve\n* | 2d9405a La balade\n|/  \n* d196b53 Jour 1\n",
+    "code": 0
+   },
+   {
+    "ou": "temps/album",
+    "action": "ecrire",
+    "fichier": ".gitignore",
+    "texte": "*.tmp\n",
+    "ajout": false
+   },
+   {
+    "ou": "temps/album",
+    "action": "ecrire",
+    "fichier": "brouillon.tmp",
+    "texte": "",
+    "ajout": false
+   },
+   {
+    "ou": "temps/album",
+    "action": "git",
+    "args": [
+     "status"
+    ],
+    "date": 1767602640,
+    "sortie": "On branch main\nUntracked files:\n  (use \"git add <file>...\" to include in what will be committed)\n\t.gitignore\n\nnothing added to commit but untracked files present (use \"git add\" to track)\n",
+    "code": 0
+   },
+   {
+    "ou": "temps/album",
+    "action": "git",
+    "args": [
+     "status",
+     "-s"
+    ],
+    "date": 1767602700,
+    "sortie": "?? .gitignore\n",
+    "code": 0
+   },
+   {
+    "ou": "temps/copie_de_mon_ami",
+    "action": "git",
+    "args": [
+     "remote",
+     "-v"
+    ],
+    "date": 1767602760,
+    "sortie": "origin\t{R}/temps/album/. (fetch)\norigin\t{R}/temps/album/. (push)\n",
+    "code": 0
+   },
+   {
+    "ou": "temps/album",
+    "action": "git",
+    "args": [
+     "remote",
+     "-v"
+    ],
+    "date": 1767602820,
+    "sortie": "",
+    "code": 0
+   },
+   {
+    "ou": "temps/album",
+    "action": "git",
+    "args": [
+     "cat-file",
+     "-p",
+     "HEAD"
+    ],
+    "date": 1767602880,
+    "sortie": "tree b270e6c9e35f047a14b55ed89381a4cfdbbe436d\nparent 1f2e34996fb8e8e53e432ce03d6a8617201ee029\nauthor Ami du Temps <ami@temps.invalid> 1767602280 +0000\ncommitter Ami du Temps <ami@temps.invalid> 1767602280 +0000\n\nAjoute un dessin\n",
+    "code": 0
+   },
+   {
+    "ou": "temps/album",
+    "action": "git",
+    "args": [
+     "cat-file",
+     "-p",
+     "HEAD~1"
+    ],
+    "date": 1767602940,
+    "sortie": "tree fb9ba30965560d87ee6358b186cbf92a100e3099\nparent 2d9405a188098d8f8a437f18644407afdebe7ebc\nparent a0eee2560af7403f83f3d764aef45efcc4658b8b\nauthor Apprenti du Temps <apprenti@temps.invalid> 1767601800 +0000\ncommitter Apprenti du Temps <apprenti@temps.invalid> 1767601800 +0000\n\nReunit les deux histoires\n",
+    "code": 0
+   },
+   {
+    "ou": "temps/album",
+    "action": "git",
+    "args": [
+     "cat-file",
+     "-t",
+     "HEAD"
+    ],
+    "date": 1767603000,
+    "sortie": "commit\n",
+    "code": 0
+   },
+   {
+    "ou": "temps/album",
+    "action": "git",
+    "args": [
+     "cat-file",
+     "-p",
+     "HEAD^{tree}"
+    ],
+    "date": 1767603060,
+    "sortie": "100644 blob 4dee89e44a717a0adf310e426c5c64f6fd1854bd\tchronique.txt\n",
+    "code": 0
+   },
+   {
+    "ou": "temps/album",
+    "action": "git",
+    "args": [
+     "show",
+     "HEAD"
+    ],
+    "date": 1767603120,
+    "sortie": "commit 7eee385f5b9d33609f09f548429647b48c50adbd (HEAD -> main)\nAuthor: Ami du Temps <ami@temps.invalid>\nDate:   Mon Jan 5 08:38:00 2026 +0000\n\n    Ajoute un dessin\n\ndiff --git a/chronique.txt b/chronique.txt\nindex da49369..4dee89e 100644\n--- a/chronique.txt\n+++ b/chronique.txt\n@@ -1,3 +1,4 @@\n Jour 1\n Jour 2 : une balade\n Jour 2 : un reve\n+Jour 3 : ton ami dessine ta créature\n",
+    "code": 0
+   },
+   {
+    "ou": "temps/album",
+    "action": "git",
+    "args": [
+     "hash-object",
+     "chronique.txt"
+    ],
+    "date": 1767603180,
+    "sortie": "4dee89e44a717a0adf310e426c5c64f6fd1854bd\n",
+    "code": 0
+   },
+   {
+    "ou": "temps/album",
+    "action": "git",
+    "args": [
+     "rev-parse",
+     "HEAD"
+    ],
+    "date": 1767603240,
+    "sortie": "7eee385f5b9d33609f09f548429647b48c50adbd\n",
+    "code": 0
+   },
+   {
+    "ou": "temps/album",
+    "action": "git",
+    "args": [
+     "checkout",
+     "-b",
+     "essai"
+    ],
+    "date": 1767603300,
+    "sortie": "Switched to a new branch 'essai'\n",
+    "code": 0
+   },
+   {
+    "ou": "temps/album",
+    "action": "git",
+    "args": [
+     "switch",
+     "-"
+    ],
+    "date": 1767603360,
+    "sortie": "Switched to branch 'main'\n",
+    "code": 0
+   },
+   {
+    "ou": "temps/album",
+    "action": "git",
+    "args": [
+     "branch"
+    ],
+    "date": 1767603420,
+    "sortie": "  essai\n* main\n  reve\n",
+    "code": 0
+   },
+   {
+    "ou": "temps/album",
+    "action": "git",
+    "args": [
+     "switch",
+     "nulle_part"
+    ],
+    "date": 1767603480,
+    "sortie": "fatal: invalid reference: nulle_part\n",
+    "code": 128
+   },
+   {
+    "ou": "temps/album",
+    "action": "git",
+    "args": [
+     "add",
+     "fantome.txt"
+    ],
+    "date": 1767603540,
+    "sortie": "fatal: pathspec 'fantome.txt' did not match any files\n",
+    "code": 128
+   },
+   {
+    "ou": "temps/album",
+    "action": "git",
+    "args": [
+     "show",
+     "HEAD~2",
+     "--stat"
+    ],
+    "date": 1767603600,
+    "sortie": "commit 2d9405a188098d8f8a437f18644407afdebe7ebc\nAuthor: Apprenti du Temps <apprenti@temps.invalid>\nDate:   Mon Jan 5 08:26:00 2026 +0000\n\n    La balade\n\n chronique.txt | 1 +\n 1 file changed, 1 insertion(+)\n",
+    "code": 0
+   }
+  ],
+  "grimoires": [
+   {
+    "graine": "1:0",
+    "pas": [
+     {
+      "ou": "temps",
+      "action": "grimoire",
+      "graine": "1:0"
+     },
+     {
+      "ou": "temps/grimoire",
+      "action": "git",
+      "args": [
+       "rev-list",
+       "HEAD"
+      ],
+      "date": 1767600000,
+      "sortie": "26b951808e20828a247ef1510c3b2b5b6fb95504\n6cd23251d5fea9770f47bcd16614a69263419495\naa7443209f0594396a180d6d0be746b8a86c416f\n777d2be293344e6dfbec6d04d3c11f6ee84a7250\n1905e0bbf4994ac5b4724abec9e21b623368e03c\n71ea2237be476310951cc033ddb82a607b0e5b6c\n",
+      "code": 0
+     },
+     {
+      "ou": "temps/grimoire",
+      "action": "git",
+      "args": [
+       "log",
+       "--oneline"
+      ],
+      "date": 1767600060,
+      "sortie": "26b9518 (HEAD -> main) Nouvelles étiquettes\n6cd2325 Range le grimoire\naa74432 Ajoute la formule du goûter\n777d2be Ajoute la formule du sommeil\n1905e0b Ajoute la formule secrète\n71ea223 Ouvre le grimoire\n",
+      "code": 0
+     },
+     {
+      "ou": "temps/grimoire",
+      "action": "git",
+      "args": [
+       "log",
+       "-n",
+       "2"
+      ],
+      "date": 1767600120,
+      "sortie": "commit 26b951808e20828a247ef1510c3b2b5b6fb95504 (HEAD -> main)\nAuthor: Bibliothecaire du Temps <bibliothecaire@temps.invalid>\nDate:   Tue Jan 6 10:00:00 2026 +0000\n\n    Nouvelles étiquettes\n\ncommit 6cd23251d5fea9770f47bcd16614a69263419495\nAuthor: Bibliothecaire du Temps <bibliothecaire@temps.invalid>\nDate:   Mon Jan 5 10:00:00 2026 +0000\n\n    Range le grimoire\n",
+      "code": 0
+     },
+     {
+      "ou": "temps/grimoire",
+      "action": "git",
+      "args": [
+       "log",
+       "--oneline",
+       "-S",
+       "secret"
+      ],
+      "date": 1767600180,
+      "sortie": "6cd2325 Range le grimoire\n1905e0b Ajoute la formule secrète\n",
+      "code": 0
+     },
+     {
+      "ou": "temps/grimoire",
+      "action": "git",
+      "args": [
+       "rev-list",
+       "--reverse",
+       "HEAD"
+      ],
+      "date": 1767600240,
+      "sortie": "71ea2237be476310951cc033ddb82a607b0e5b6c\n1905e0bbf4994ac5b4724abec9e21b623368e03c\n777d2be293344e6dfbec6d04d3c11f6ee84a7250\naa7443209f0594396a180d6d0be746b8a86c416f\n6cd23251d5fea9770f47bcd16614a69263419495\n26b951808e20828a247ef1510c3b2b5b6fb95504\n",
+      "code": 0
+     },
+     {
+      "ou": "temps/grimoire",
+      "action": "git",
+      "args": [
+       "show",
+       "6cd2325"
+      ],
+      "date": 1767600300,
+      "sortie": "commit 6cd23251d5fea9770f47bcd16614a69263419495\nAuthor: Bibliothecaire du Temps <bibliothecaire@temps.invalid>\nDate:   Mon Jan 5 10:00:00 2026 +0000\n\n    Range le grimoire\n\ndiff --git a/grimoire.txt b/grimoire.txt\nindex 4bcb7f6..0544964 100644\n--- a/grimoire.txt\n+++ b/grimoire.txt\n@@ -1,5 +1,4 @@\n 📖 Le grimoire de la Bibliothèque du Temps\n formule du réveil : tic, tac, debout !\n-secret : trois tours de sablier font pousser une étoile\n formule du sommeil : chut, la lune compte jusqu'à trois\n formule du goûter : une miette pour chaque créature\n",
+      "code": 0
+     },
+     {
+      "ou": "temps/grimoire",
+      "action": "ecrire",
+      "fichier": "grimoire.txt",
+      "texte": "gribouillis\n",
+      "ajout": true
+     },
+     {
+      "ou": "temps/grimoire",
+      "action": "git",
+      "args": [
+       "diff"
+      ],
+      "date": 1767600360,
+      "sortie": "diff --git a/grimoire.txt b/grimoire.txt\nindex 0544964..49a446f 100644\n--- a/grimoire.txt\n+++ b/grimoire.txt\n@@ -2,3 +2,4 @@\n formule du réveil : tic, tac, debout !\n formule du sommeil : chut, la lune compte jusqu'à trois\n formule du goûter : une miette pour chaque créature\n+gribouillis\n",
+      "code": 0
+     },
+     {
+      "ou": "temps/grimoire",
+      "action": "git",
+      "args": [
+       "restore",
+       "grimoire.txt"
+      ],
+      "date": 1767600420,
+      "sortie": "",
+      "code": 0
+     },
+     {
+      "ou": "temps/grimoire",
+      "action": "git",
+      "args": [
+       "checkout",
+       "6cd2325"
+      ],
+      "date": 1767600480,
+      "sortie": "Note: switching to '6cd2325'.\n\nYou are in 'detached HEAD' state. You can look around, make experimental\nchanges and commit them, and you can discard any commits you make in this\nstate without impacting any branches by switching back to a branch.\n\nIf you want to create a new branch to retain commits you create, you may\ndo so (now or later) by using -c with the switch command. Example:\n\n  git switch -c <new-branch-name>\n\nOr undo this operation with:\n\n  git switch -\n\nTurn off this advice by setting config variable advice.detachedHead to false\n\nHEAD is now at 6cd2325 Range le grimoire\n",
+      "code": 0
+     },
+     {
+      "ou": "temps/grimoire",
+      "action": "git",
+      "args": [
+       "status"
+      ],
+      "date": 1767600540,
+      "sortie": "HEAD detached at 6cd2325\nnothing to commit, working tree clean\n",
+      "code": 0
+     },
+     {
+      "ou": "temps/grimoire",
+      "action": "git",
+      "args": [
+       "switch",
+       "main"
+      ],
+      "date": 1767600600,
+      "sortie": "Previous HEAD position was 6cd2325 Range le grimoire\nSwitched to branch 'main'\n",
+      "code": 0
+     },
+     {
+      "ou": "temps/grimoire",
+      "action": "git",
+      "args": [
+       "checkout",
+       "6cd2325~1",
+       "--",
+       "grimoire.txt"
+      ],
+      "date": 1767600660,
+      "sortie": "",
+      "code": 0
+     },
+     {
+      "ou": "temps/grimoire",
+      "action": "git",
+      "args": [
+       "status"
+      ],
+      "date": 1767600720,
+      "sortie": "On branch main\nChanges to be committed:\n  (use \"git restore --staged <file>...\" to unstage)\n\tmodified:   grimoire.txt\n\n",
+      "code": 0
+     },
+     {
+      "ou": "temps/grimoire",
+      "action": "lire",
+      "fichier": "grimoire.txt",
+      "texte": "📖 Le grimoire de la Bibliothèque du Temps\nformule du réveil : tic, tac, debout !\nsecret : trois tours de sablier font pousser une étoile\nformule du sommeil : chut, la lune compte jusqu'à trois\nformule du goûter : une miette pour chaque créature\n"
+     },
+     {
+      "ou": "temps/grimoire",
+      "action": "git",
+      "args": [
+       "commit",
+       "-am",
+       "Retrouve la formule secrete"
+      ],
+      "date": 1767600780,
+      "sortie": "[main 226403b] Retrouve la formule secrete\n 1 file changed, 1 insertion(+)\n",
+      "code": 0
+     },
+     {
+      "ou": "temps/grimoire",
+      "action": "git",
+      "args": [
+       "log",
+       "--oneline",
+       "-S",
+       "secret"
+      ],
+      "date": 1767600840,
+      "sortie": "226403b (HEAD -> main) Retrouve la formule secrete\n6cd2325 Range le grimoire\n1905e0b Ajoute la formule secrète\n",
+      "code": 0
+     },
+     {
+      "ou": "temps/grimoire",
+      "action": "git",
+      "args": [
+       "restore",
+       "--source=HEAD~3",
+       "grimoire.txt"
+      ],
+      "date": 1767600900,
+      "sortie": "",
+      "code": 0
+     },
+     {
+      "ou": "temps/grimoire",
+      "action": "git",
+      "args": [
+       "status",
+       "--short"
+      ],
+      "date": 1767600960,
+      "sortie": "",
+      "code": 0
+     },
+     {
+      "ou": "temps/grimoire",
+      "action": "git",
+      "args": [
+       "diff",
+       "--staged"
+      ],
+      "date": 1767601020,
+      "sortie": "",
+      "code": 0
+     },
+     {
+      "ou": "temps/grimoire",
+      "action": "git",
+      "args": [
+       "show",
+       "HEAD~6"
+      ],
+      "date": 1767601080,
+      "sortie": "commit 71ea2237be476310951cc033ddb82a607b0e5b6c\nAuthor: Bibliothecaire du Temps <bibliothecaire@temps.invalid>\nDate:   Thu Jan 1 10:00:00 2026 +0000\n\n    Ouvre le grimoire\n\ndiff --git a/etiquettes.txt b/etiquettes.txt\nnew file mode 100644\nindex 0000000..7fd7e01\n--- /dev/null\n+++ b/etiquettes.txt\n@@ -0,0 +1 @@\n+Rayon A : les grimoires\ndiff --git a/grimoire.txt b/grimoire.txt\nnew file mode 100644\nindex 0000000..7e95792\n--- /dev/null\n+++ b/grimoire.txt\n@@ -0,0 +1,2 @@\n+📖 Le grimoire de la Bibliothèque du Temps\n+formule du réveil : tic, tac, debout !\n",
+      "code": 0
+     }
+    ]
+   },
+   {
+    "graine": "2:1730000000",
+    "pas": [
+     {
+      "ou": "temps",
+      "action": "grimoire",
+      "graine": "2:1730000000"
+     },
+     {
+      "ou": "temps/grimoire",
+      "action": "git",
+      "args": [
+       "rev-list",
+       "HEAD"
+      ],
+      "date": 1767600000,
+      "sortie": "a4ccf3493c081cf93f01149e0eb77980762c5c26\n6b4cd1eeccca897cc0562cfeef85886219aeb751\n77db81a5ca7862ba64cd7cd9971aa4b58a2bfee2\nadcad53a323f024a566d4a5077b2d3b179904742\n71c946e058e58d607e3428f5f4eb2e513ee5e152\n71ea2237be476310951cc033ddb82a607b0e5b6c\n",
+      "code": 0
+     },
+     {
+      "ou": "temps/grimoire",
+      "action": "git",
+      "args": [
+       "log",
+       "--oneline"
+      ],
+      "date": 1767600060,
+      "sortie": "a4ccf34 (HEAD -> main) Nouvelles étiquettes\n6b4cd1e Range le grimoire\n77db81a Ajoute la formule du goûter\nadcad53 Ajoute la formule du sommeil\n71c946e Ajoute la formule secrète\n71ea223 Ouvre le grimoire\n",
+      "code": 0
+     },
+     {
+      "ou": "temps/grimoire",
+      "action": "git",
+      "args": [
+       "log",
+       "-n",
+       "2"
+      ],
+      "date": 1767600120,
+      "sortie": "commit a4ccf3493c081cf93f01149e0eb77980762c5c26 (HEAD -> main)\nAuthor: Bibliothecaire du Temps <bibliothecaire@temps.invalid>\nDate:   Tue Jan 6 10:00:00 2026 +0000\n\n    Nouvelles étiquettes\n\ncommit 6b4cd1eeccca897cc0562cfeef85886219aeb751\nAuthor: Bibliothecaire du Temps <bibliothecaire@temps.invalid>\nDate:   Mon Jan 5 10:00:00 2026 +0000\n\n    Range le grimoire\n",
+      "code": 0
+     },
+     {
+      "ou": "temps/grimoire",
+      "action": "git",
+      "args": [
+       "log",
+       "--oneline",
+       "-S",
+       "secret"
+      ],
+      "date": 1767600180,
+      "sortie": "6b4cd1e Range le grimoire\n71c946e Ajoute la formule secrète\n",
+      "code": 0
+     },
+     {
+      "ou": "temps/grimoire",
+      "action": "git",
+      "args": [
+       "rev-list",
+       "--reverse",
+       "HEAD"
+      ],
+      "date": 1767600240,
+      "sortie": "71ea2237be476310951cc033ddb82a607b0e5b6c\n71c946e058e58d607e3428f5f4eb2e513ee5e152\nadcad53a323f024a566d4a5077b2d3b179904742\n77db81a5ca7862ba64cd7cd9971aa4b58a2bfee2\n6b4cd1eeccca897cc0562cfeef85886219aeb751\na4ccf3493c081cf93f01149e0eb77980762c5c26\n",
+      "code": 0
+     },
+     {
+      "ou": "temps/grimoire",
+      "action": "git",
+      "args": [
+       "show",
+       "6b4cd1e"
+      ],
+      "date": 1767600300,
+      "sortie": "commit 6b4cd1eeccca897cc0562cfeef85886219aeb751\nAuthor: Bibliothecaire du Temps <bibliothecaire@temps.invalid>\nDate:   Mon Jan 5 10:00:00 2026 +0000\n\n    Range le grimoire\n\ndiff --git a/grimoire.txt b/grimoire.txt\nindex cbfeb0e..0544964 100644\n--- a/grimoire.txt\n+++ b/grimoire.txt\n@@ -1,5 +1,4 @@\n 📖 Le grimoire de la Bibliothèque du Temps\n formule du réveil : tic, tac, debout !\n-secret : un caillou chaud parle aux fossiles\n formule du sommeil : chut, la lune compte jusqu'à trois\n formule du goûter : une miette pour chaque créature\n",
+      "code": 0
+     },
+     {
+      "ou": "temps/grimoire",
+      "action": "ecrire",
+      "fichier": "grimoire.txt",
+      "texte": "gribouillis\n",
+      "ajout": true
+     },
+     {
+      "ou": "temps/grimoire",
+      "action": "git",
+      "args": [
+       "diff"
+      ],
+      "date": 1767600360,
+      "sortie": "diff --git a/grimoire.txt b/grimoire.txt\nindex 0544964..49a446f 100644\n--- a/grimoire.txt\n+++ b/grimoire.txt\n@@ -2,3 +2,4 @@\n formule du réveil : tic, tac, debout !\n formule du sommeil : chut, la lune compte jusqu'à trois\n formule du goûter : une miette pour chaque créature\n+gribouillis\n",
+      "code": 0
+     },
+     {
+      "ou": "temps/grimoire",
+      "action": "git",
+      "args": [
+       "restore",
+       "grimoire.txt"
+      ],
+      "date": 1767600420,
+      "sortie": "",
+      "code": 0
+     },
+     {
+      "ou": "temps/grimoire",
+      "action": "git",
+      "args": [
+       "checkout",
+       "6b4cd1e"
+      ],
+      "date": 1767600480,
+      "sortie": "Note: switching to '6b4cd1e'.\n\nYou are in 'detached HEAD' state. You can look around, make experimental\nchanges and commit them, and you can discard any commits you make in this\nstate without impacting any branches by switching back to a branch.\n\nIf you want to create a new branch to retain commits you create, you may\ndo so (now or later) by using -c with the switch command. Example:\n\n  git switch -c <new-branch-name>\n\nOr undo this operation with:\n\n  git switch -\n\nTurn off this advice by setting config variable advice.detachedHead to false\n\nHEAD is now at 6b4cd1e Range le grimoire\n",
+      "code": 0
+     },
+     {
+      "ou": "temps/grimoire",
+      "action": "git",
+      "args": [
+       "status"
+      ],
+      "date": 1767600540,
+      "sortie": "HEAD detached at 6b4cd1e\nnothing to commit, working tree clean\n",
+      "code": 0
+     },
+     {
+      "ou": "temps/grimoire",
+      "action": "git",
+      "args": [
+       "switch",
+       "main"
+      ],
+      "date": 1767600600,
+      "sortie": "Previous HEAD position was 6b4cd1e Range le grimoire\nSwitched to branch 'main'\n",
+      "code": 0
+     },
+     {
+      "ou": "temps/grimoire",
+      "action": "git",
+      "args": [
+       "checkout",
+       "6b4cd1e~1",
+       "--",
+       "grimoire.txt"
+      ],
+      "date": 1767600660,
+      "sortie": "",
+      "code": 0
+     },
+     {
+      "ou": "temps/grimoire",
+      "action": "git",
+      "args": [
+       "status"
+      ],
+      "date": 1767600720,
+      "sortie": "On branch main\nChanges to be committed:\n  (use \"git restore --staged <file>...\" to unstage)\n\tmodified:   grimoire.txt\n\n",
+      "code": 0
+     },
+     {
+      "ou": "temps/grimoire",
+      "action": "lire",
+      "fichier": "grimoire.txt",
+      "texte": "📖 Le grimoire de la Bibliothèque du Temps\nformule du réveil : tic, tac, debout !\nsecret : un caillou chaud parle aux fossiles\nformule du sommeil : chut, la lune compte jusqu'à trois\nformule du goûter : une miette pour chaque créature\n"
+     },
+     {
+      "ou": "temps/grimoire",
+      "action": "git",
+      "args": [
+       "commit",
+       "-am",
+       "Retrouve la formule secrete"
+      ],
+      "date": 1767600780,
+      "sortie": "[main 3cb6756] Retrouve la formule secrete\n 1 file changed, 1 insertion(+)\n",
+      "code": 0
+     },
+     {
+      "ou": "temps/grimoire",
+      "action": "git",
+      "args": [
+       "log",
+       "--oneline",
+       "-S",
+       "secret"
+      ],
+      "date": 1767600840,
+      "sortie": "3cb6756 (HEAD -> main) Retrouve la formule secrete\n6b4cd1e Range le grimoire\n71c946e Ajoute la formule secrète\n",
+      "code": 0
+     },
+     {
+      "ou": "temps/grimoire",
+      "action": "git",
+      "args": [
+       "restore",
+       "--source=HEAD~3",
+       "grimoire.txt"
+      ],
+      "date": 1767600900,
+      "sortie": "",
+      "code": 0
+     },
+     {
+      "ou": "temps/grimoire",
+      "action": "git",
+      "args": [
+       "status",
+       "--short"
+      ],
+      "date": 1767600960,
+      "sortie": "",
+      "code": 0
+     },
+     {
+      "ou": "temps/grimoire",
+      "action": "git",
+      "args": [
+       "diff",
+       "--staged"
+      ],
+      "date": 1767601020,
+      "sortie": "",
+      "code": 0
+     },
+     {
+      "ou": "temps/grimoire",
+      "action": "git",
+      "args": [
+       "show",
+       "HEAD~6"
+      ],
+      "date": 1767601080,
+      "sortie": "commit 71ea2237be476310951cc033ddb82a607b0e5b6c\nAuthor: Bibliothecaire du Temps <bibliothecaire@temps.invalid>\nDate:   Thu Jan 1 10:00:00 2026 +0000\n\n    Ouvre le grimoire\n\ndiff --git a/etiquettes.txt b/etiquettes.txt\nnew file mode 100644\nindex 0000000..7fd7e01\n--- /dev/null\n+++ b/etiquettes.txt\n@@ -0,0 +1 @@\n+Rayon A : les grimoires\ndiff --git a/grimoire.txt b/grimoire.txt\nnew file mode 100644\nindex 0000000..7e95792\n--- /dev/null\n+++ b/grimoire.txt\n@@ -0,0 +1,2 @@\n+📖 Le grimoire de la Bibliothèque du Temps\n+formule du réveil : tic, tac, debout !\n",
+      "code": 0
+     }
+    ]
+   },
+   {
+    "graine": "7:42",
+    "pas": [
+     {
+      "ou": "temps",
+      "action": "grimoire",
+      "graine": "7:42"
+     },
+     {
+      "ou": "temps/grimoire",
+      "action": "git",
+      "args": [
+       "rev-list",
+       "HEAD"
+      ],
+      "date": 1767600000,
+      "sortie": "a93dab25d5c26dbb59d0637adc78291ee885282e\n94007e21fbd04cd526aa65a41fc594a747e9cb5e\n18c20d6ccc1fd7cf840d3360faae63af793d07e3\n3a174743ab026856f856d531d9f7b437149c3c7d\n663368ae3e9b5e07e591fb8f19695540c8d0dedb\n71ea2237be476310951cc033ddb82a607b0e5b6c\n",
+      "code": 0
+     },
+     {
+      "ou": "temps/grimoire",
+      "action": "git",
+      "args": [
+       "log",
+       "--oneline"
+      ],
+      "date": 1767600060,
+      "sortie": "a93dab2 (HEAD -> main) Nouvelles étiquettes\n94007e2 Range le grimoire\n18c20d6 Ajoute la formule du goûter\n3a17474 Ajoute la formule du sommeil\n663368a Ajoute la formule secrète\n71ea223 Ouvre le grimoire\n",
+      "code": 0
+     },
+     {
+      "ou": "temps/grimoire",
+      "action": "git",
+      "args": [
+       "log",
+       "-n",
+       "2"
+      ],
+      "date": 1767600120,
+      "sortie": "commit a93dab25d5c26dbb59d0637adc78291ee885282e (HEAD -> main)\nAuthor: Bibliothecaire du Temps <bibliothecaire@temps.invalid>\nDate:   Tue Jan 6 10:00:00 2026 +0000\n\n    Nouvelles étiquettes\n\ncommit 94007e21fbd04cd526aa65a41fc594a747e9cb5e\nAuthor: Bibliothecaire du Temps <bibliothecaire@temps.invalid>\nDate:   Mon Jan 5 10:00:00 2026 +0000\n\n    Range le grimoire\n",
+      "code": 0
+     },
+     {
+      "ou": "temps/grimoire",
+      "action": "git",
+      "args": [
+       "log",
+       "--oneline",
+       "-S",
+       "secret"
+      ],
+      "date": 1767600180,
+      "sortie": "94007e2 Range le grimoire\n663368a Ajoute la formule secrète\n",
+      "code": 0
+     },
+     {
+      "ou": "temps/grimoire",
+      "action": "git",
+      "args": [
+       "rev-list",
+       "--reverse",
+       "HEAD"
+      ],
+      "date": 1767600240,
+      "sortie": "71ea2237be476310951cc033ddb82a607b0e5b6c\n663368ae3e9b5e07e591fb8f19695540c8d0dedb\n3a174743ab026856f856d531d9f7b437149c3c7d\n18c20d6ccc1fd7cf840d3360faae63af793d07e3\n94007e21fbd04cd526aa65a41fc594a747e9cb5e\na93dab25d5c26dbb59d0637adc78291ee885282e\n",
+      "code": 0
+     },
+     {
+      "ou": "temps/grimoire",
+      "action": "git",
+      "args": [
+       "show",
+       "94007e2"
+      ],
+      "date": 1767600300,
+      "sortie": "commit 94007e21fbd04cd526aa65a41fc594a747e9cb5e\nAuthor: Bibliothecaire du Temps <bibliothecaire@temps.invalid>\nDate:   Mon Jan 5 10:00:00 2026 +0000\n\n    Range le grimoire\n\ndiff --git a/grimoire.txt b/grimoire.txt\nindex 4cab319..0544964 100644\n--- a/grimoire.txt\n+++ b/grimoire.txt\n@@ -1,5 +1,4 @@\n 📖 Le grimoire de la Bibliothèque du Temps\n formule du réveil : tic, tac, debout !\n-secret : la pendule recule quand on rit\n formule du sommeil : chut, la lune compte jusqu'à trois\n formule du goûter : une miette pour chaque créature\n",
+      "code": 0
+     },
+     {
+      "ou": "temps/grimoire",
+      "action": "ecrire",
+      "fichier": "grimoire.txt",
+      "texte": "gribouillis\n",
+      "ajout": true
+     },
+     {
+      "ou": "temps/grimoire",
+      "action": "git",
+      "args": [
+       "diff"
+      ],
+      "date": 1767600360,
+      "sortie": "diff --git a/grimoire.txt b/grimoire.txt\nindex 0544964..49a446f 100644\n--- a/grimoire.txt\n+++ b/grimoire.txt\n@@ -2,3 +2,4 @@\n formule du réveil : tic, tac, debout !\n formule du sommeil : chut, la lune compte jusqu'à trois\n formule du goûter : une miette pour chaque créature\n+gribouillis\n",
+      "code": 0
+     },
+     {
+      "ou": "temps/grimoire",
+      "action": "git",
+      "args": [
+       "restore",
+       "grimoire.txt"
+      ],
+      "date": 1767600420,
+      "sortie": "",
+      "code": 0
+     },
+     {
+      "ou": "temps/grimoire",
+      "action": "git",
+      "args": [
+       "checkout",
+       "94007e2"
+      ],
+      "date": 1767600480,
+      "sortie": "Note: switching to '94007e2'.\n\nYou are in 'detached HEAD' state. You can look around, make experimental\nchanges and commit them, and you can discard any commits you make in this\nstate without impacting any branches by switching back to a branch.\n\nIf you want to create a new branch to retain commits you create, you may\ndo so (now or later) by using -c with the switch command. Example:\n\n  git switch -c <new-branch-name>\n\nOr undo this operation with:\n\n  git switch -\n\nTurn off this advice by setting config variable advice.detachedHead to false\n\nHEAD is now at 94007e2 Range le grimoire\n",
+      "code": 0
+     },
+     {
+      "ou": "temps/grimoire",
+      "action": "git",
+      "args": [
+       "status"
+      ],
+      "date": 1767600540,
+      "sortie": "HEAD detached at 94007e2\nnothing to commit, working tree clean\n",
+      "code": 0
+     },
+     {
+      "ou": "temps/grimoire",
+      "action": "git",
+      "args": [
+       "switch",
+       "main"
+      ],
+      "date": 1767600600,
+      "sortie": "Previous HEAD position was 94007e2 Range le grimoire\nSwitched to branch 'main'\n",
+      "code": 0
+     },
+     {
+      "ou": "temps/grimoire",
+      "action": "git",
+      "args": [
+       "checkout",
+       "94007e2~1",
+       "--",
+       "grimoire.txt"
+      ],
+      "date": 1767600660,
+      "sortie": "",
+      "code": 0
+     },
+     {
+      "ou": "temps/grimoire",
+      "action": "git",
+      "args": [
+       "status"
+      ],
+      "date": 1767600720,
+      "sortie": "On branch main\nChanges to be committed:\n  (use \"git restore --staged <file>...\" to unstage)\n\tmodified:   grimoire.txt\n\n",
+      "code": 0
+     },
+     {
+      "ou": "temps/grimoire",
+      "action": "lire",
+      "fichier": "grimoire.txt",
+      "texte": "📖 Le grimoire de la Bibliothèque du Temps\nformule du réveil : tic, tac, debout !\nsecret : la pendule recule quand on rit\nformule du sommeil : chut, la lune compte jusqu'à trois\nformule du goûter : une miette pour chaque créature\n"
+     },
+     {
+      "ou": "temps/grimoire",
+      "action": "git",
+      "args": [
+       "commit",
+       "-am",
+       "Retrouve la formule secrete"
+      ],
+      "date": 1767600780,
+      "sortie": "[main bb00340] Retrouve la formule secrete\n 1 file changed, 1 insertion(+)\n",
+      "code": 0
+     },
+     {
+      "ou": "temps/grimoire",
+      "action": "git",
+      "args": [
+       "log",
+       "--oneline",
+       "-S",
+       "secret"
+      ],
+      "date": 1767600840,
+      "sortie": "bb00340 (HEAD -> main) Retrouve la formule secrete\n94007e2 Range le grimoire\n663368a Ajoute la formule secrète\n",
+      "code": 0
+     },
+     {
+      "ou": "temps/grimoire",
+      "action": "git",
+      "args": [
+       "restore",
+       "--source=HEAD~3",
+       "grimoire.txt"
+      ],
+      "date": 1767600900,
+      "sortie": "",
+      "code": 0
+     },
+     {
+      "ou": "temps/grimoire",
+      "action": "git",
+      "args": [
+       "status",
+       "--short"
+      ],
+      "date": 1767600960,
+      "sortie": "",
+      "code": 0
+     },
+     {
+      "ou": "temps/grimoire",
+      "action": "git",
+      "args": [
+       "diff",
+       "--staged"
+      ],
+      "date": 1767601020,
+      "sortie": "",
+      "code": 0
+     },
+     {
+      "ou": "temps/grimoire",
+      "action": "git",
+      "args": [
+       "show",
+       "HEAD~6"
+      ],
+      "date": 1767601080,
+      "sortie": "commit 71ea2237be476310951cc033ddb82a607b0e5b6c\nAuthor: Bibliothecaire du Temps <bibliothecaire@temps.invalid>\nDate:   Thu Jan 1 10:00:00 2026 +0000\n\n    Ouvre le grimoire\n\ndiff --git a/etiquettes.txt b/etiquettes.txt\nnew file mode 100644\nindex 0000000..7fd7e01\n--- /dev/null\n+++ b/etiquettes.txt\n@@ -0,0 +1 @@\n+Rayon A : les grimoires\ndiff --git a/grimoire.txt b/grimoire.txt\nnew file mode 100644\nindex 0000000..7e95792\n--- /dev/null\n+++ b/grimoire.txt\n@@ -0,0 +1,2 @@\n+📖 Le grimoire de la Bibliothèque du Temps\n+formule du réveil : tic, tac, debout !\n",
+      "code": 0
+     }
+    ]
+   }
+  ]
+ }
+}

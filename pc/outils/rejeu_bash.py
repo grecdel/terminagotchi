@@ -26,6 +26,8 @@ doit être ce qu'affiche un vrai bash.
    cerveau.sh et `atelier pas`) ; ce que lit bash est ce que le jeu a écrit ; Ctrl+C sur la boucle infinie (timeout).
    Le Sommet : les scripts fournis par le jeu (fragile, bivouac, casse, boucle, boussole, porte du CTF) lancés dans bash ;
    ce qui dépend de la partie (journal, éboulis, boussole, fragments) est comparé à ce que le jeu calcule (sommet.egal_rejeu).
+   La Bibliothèque du Temps : le vrai git (identité d'EXEMPLE réglée dans chaque album par l'enfant, jamais --global),
+   le grimoire du jeu à dates fixes, la formule perdue retrouvée, le conflit, la copie de l'ami (aucun push).
 Utilisé en CI (.github/workflows/rejeu.yml) sur une vraie machine Linux.
 """
 import os
@@ -164,6 +166,8 @@ def histoire():
     jeu_ate = jeu_port.replace("port; port.commande(sys.argv[1:])", "atelier; sys.exit(atelier.commande(sys.argv[1:]) or 0)")
     from tg import sommet as SO_
     jeu_som = jeu_port.replace("port; port.commande(sys.argv[1:])", "sommet; sys.exit(sommet.commande(sys.argv[1:]) or 0)")
+    jeu_tmp = jeu_port.replace("port; port.", "temps; temps.")
+    from tg import temps as TP_
     jeu_tg = (f"{sys.executable} -c \"import sys; sys.path.insert(0, '{RACINE / 'pc'}'); from tg import app; "
               f"sys.argv = ['tg'] + sys.argv[1:]; app._main()\"")
 
@@ -196,6 +200,7 @@ def histoire():
         vrai = re.sub(r"(^|;\s*)forge(?=\s|$)", lambda m: m.group(1) + jeu_for, vrai)     # et forge='tg forge'
         vrai = re.sub(r"(^|;\s*)atelier(?=\s|$)", lambda m: m.group(1) + jeu_ate, vrai)  # et atelier='tg atelier'
         vrai = re.sub(r"(^|;\s*)sommet(?=\s|$)", lambda m: m.group(1) + jeu_som, vrai)    # et sommet='tg sommet'
+        vrai = re.sub(r"(^|;\s*)temps(?=\s|$)", lambda m: m.group(1) + jeu_tmp, vrai)     # et temps='tg temps'
         vrai = re.sub(r"(^|;\s*|&&\s*)tg(?=\s)", lambda m: m.group(1) + jeu_tg, vrai)   # tg collection --csv, tg donnees …
         if cmd.startswith("while true"):                 # l'Atelier : la boucle infinie, arrêtée par Ctrl+C (un vrai SIGINT)
             vrai = "timeout -s INT 2 bash -c " + __import__("shlex").quote(cmd)
@@ -235,7 +240,7 @@ def histoire():
                 break
             if H.fini(st, "coeur"):                 # le tronc et les ailes faits : les mondes du Carrefour, dans l'ordre
                 reste = [m_ for m_ in ("port", "citadelle", "crypte", "machinerie", "ondes", "guilde", "observatoire",
-                                       "donnees", "forge", "robots", "sommet") if not H.fini(st, m_)][:1]
+                                       "donnees", "forge", "robots", "temps", "sommet") if not H.fini(st, m_)][:1]
             cible = "coeur" if not reste and H.ouvert(st, "coeur") else (reste[0] if reste else None)
             if not cible:
                 break
@@ -413,6 +418,8 @@ def histoire():
             c = "printf '%s' " + __import__("shlex").quote(AT_.cerveau_malin()) + " > cerveau.sh"
         if les["id"].startswith("som") and les["id"][3:].isdigit():   # le Sommet : l'enfant lit l'écran (mission, fragments…)
             c = SO_.reponse_rejeu(st, c)
+        if les["id"].startswith("tp") and "?" in c:      # la Bibliothèque du Temps : l'empreinte lue dans git log -S secret
+            c = c.replace("?", TP_.hash_perte()[:7], 1)
         if c.endswith(" &") and "http.server" in c:
             c = c[:-2] + " >/dev/null 2>&1 &"       # (les lignes du serveur n'encombrent pas la suite)
         lieu = step.get("ou") if step.get("ou") is not None else None
@@ -518,6 +525,7 @@ def histoire():
     verifier(H.fini(st, "donnees"), "la Salle des Données, huitième monde, est allée jusqu'au bout (dn0 → dn6)")
     verifier(H.fini(st, "forge"), "la Forge, neuvième monde, est allée jusqu'au bout (fo0 → fo7)")
     verifier(H.fini(st, "robots"), "l'Atelier, dixième monde, est allé jusqu'au bout (at0 → at7)")
+    verifier(H.fini(st, "temps") or not shutil.which("git"), "la Bibliothèque du Temps, onzième monde, est allée jusqu'au bout (tp0 → tp5)")
     verifier(H.fini(st, "sommet"), "le Sommet (Expert++), ouvert par 3 mondes au palier 3, est gravi jusqu'au bout (som0 → som7)")
     P_.eteindre_phare()
     C_.arreter_fictifs()

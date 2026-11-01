@@ -1126,28 +1126,6 @@
    ],
    "relu_par": null
   },
-  "git_histoire": {
-   "motif": "^git\\s+(diff|log)\\b",
-   "enfant": "lec.git2.1.bravo",
-   "grands": "lec.git2.2.adulte",
-   "vrai_terminal": [
-    {
-     "prepare": "git init -q c && cd c && echo 'jour 1' > j.txt && git add j.txt && git -c user.name=P -c user.email=p@exemple.org commit -q -m premier",
-     "cmd": "cd c && echo 'jour 2' >> j.txt && git diff | grep '^+jour'",
-     "sortie": "+jour 2",
-     "outil": "git"
-    }
-   ],
-   "limite_image": "prog.git_histoire.limite",
-   "idees_fausses": [
-    "prog.git_histoire.idee"
-   ],
-   "sources": [
-    "git-diff : https://git-scm.com/docs/git-diff",
-    "git-log : https://git-scm.com/docs/git-log"
-   ],
-   "relu_par": null
-  },
   "ping": {
    "motif": "^ping\\b",
    "enfant": "lex.ping.i",
@@ -4492,6 +4470,198 @@
     "Les épreuves « capture the flag » (CTF) : un drapeau à trouver en combinant plusieurs savoir-faire"
    ],
    "relu_par": null
+  },
+  "git_album": {
+   "motif": "(^git\\s+(init|config|status|add|commit)\\b|^(tg\\s+)?temps\\s+(plan|registre|album)\\b|registre_du_temps|chronique\\.txt)",
+   "enfant": "tp.f.git_album.enfant",
+   "grands": "tp.f.git_album.grands",
+   "vrai_terminal": [
+    {
+     "cmd": "git init -b main album",
+     "motif": "^Initialized empty Git repository in .*/album/\\.git/$"
+    },
+    {
+     "prepare": "git init -q -b main a && cd a && git config user.name 'Apprenti du Temps' && git config user.email apprenti@temps.invalid && echo 'Jour 1' > c.txt",
+     "cmd": "cd a && git status --short",
+     "sortie": "?? c.txt"
+    },
+    {
+     "prepare": "git init -q -b main a && cd a && git config user.name 'Apprenti du Temps' && git config user.email apprenti@temps.invalid && echo 'Jour 1' > c.txt && git add c.txt",
+     "cmd": "cd a && git status --short",
+     "sortie": "A  c.txt"
+    },
+    {
+     "prepare": "git init -q -b main a && cd a && git config user.name 'Apprenti du Temps' && git config user.email apprenti@temps.invalid && echo 'Jour 1' > c.txt && git add c.txt",
+     "cmd": "cd a && export GIT_AUTHOR_DATE='1767261600 +0000' GIT_COMMITTER_DATE='1767261600 +0000' && git commit -m 'Jour 1'",
+     "sortie": "[main (root-commit) 298a1bb] Jour 1\n 1 file changed, 1 insertion(+)\n create mode 100644 c.txt"
+    },
+    {
+     "prepare": "git init -q -b main a && cd a && git config user.name 'Apprenti du Temps' && git config user.email apprenti@temps.invalid && echo 'Jour 1' > c.txt",
+     "cmd": "cd a && git config user.name",
+     "sortie": "Apprenti du Temps"
+    },
+    {
+     "prepare": "git init -q -b main a",
+     "cmd": "cd a && git config --local --list | grep -c '^user\\.' || true",
+     "sortie": "0"
+    }
+   ],
+   "limite_image": "tp.f.git_album.limite",
+   "idees_fausses": [
+    "tp.f.git_album.idee"
+   ],
+   "sources": [
+    "Git, documentation officielle (git-init, git-status, git-add, git-commit, git-config) : https://git-scm.com/docs",
+    "Pro Git (S. Chacon, B. Straub), 2e édition, chapitres 2 et 3 : https://git-scm.com/book/fr/v2"
+   ],
+   "relu_par": null
+  },
+  "git_histoire": {
+   "motif": "(^git\\s+(log|diff|show|restore|checkout\\s+\\S+\\s+--|checkout\\s+--)\\b|^(tg\\s+)?temps\\s+(grimoire|perdu)\\b|grimoire\\.txt)",
+   "enfant": "tp.f.git_histoire.enfant",
+   "grands": "tp.f.git_histoire.grands",
+   "vrai_terminal": [
+    {
+     "prepare": "git init -q -b main a && cd a && git config user.name 'Apprenti du Temps' && git config user.email apprenti@temps.invalid && echo 'Jour 1' > c.txt && git add c.txt && export GIT_AUTHOR_DATE='1767261600 +0000' GIT_COMMITTER_DATE='1767261600 +0000' && git commit -qm 'Jour 1'",
+     "cmd": "cd a && git log --oneline",
+     "sortie": "298a1bb Jour 1"
+    },
+    {
+     "prepare": "git init -q -b main a && cd a && git config user.name 'Apprenti du Temps' && git config user.email apprenti@temps.invalid && echo 'Jour 1' > c.txt && git add c.txt && export GIT_AUTHOR_DATE='1767261600 +0000' GIT_COMMITTER_DATE='1767261600 +0000' && git commit -qm 'Jour 1' && echo 'Jour 2' >> c.txt",
+     "cmd": "cd a && git diff",
+     "sortie": "diff --git a/c.txt b/c.txt\nindex 12f9021..5225e44 100644\n--- a/c.txt\n+++ b/c.txt\n@@ -1 +1,2 @@\n Jour 1\n+Jour 2"
+    },
+    {
+     "prepare": "git init -q -b main a && cd a && git config user.name 'Apprenti du Temps' && git config user.email apprenti@temps.invalid && echo 'Jour 1' > c.txt && git add c.txt && export GIT_AUTHOR_DATE='1767261600 +0000' GIT_COMMITTER_DATE='1767261600 +0000' && git commit -qm 'Jour 1' && echo 'tache' >> c.txt",
+     "cmd": "cd a && git restore c.txt && cat c.txt",
+     "sortie": "Jour 1"
+    },
+    {
+     "prepare": "git init -q -b main a && cd a && git config user.name 'Apprenti du Temps' && git config user.email apprenti@temps.invalid && echo 'Jour 1' > c.txt && git add c.txt && export GIT_AUTHOR_DATE='1767261600 +0000' GIT_COMMITTER_DATE='1767261600 +0000' && git commit -qm 'Jour 1' && echo 'secret : x' >> c.txt && git commit -qam 'Ajoute' && sed -i '/secret/d' c.txt && git commit -qam 'Range'",
+     "cmd": "cd a && git log --format=%s -S secret",
+     "sortie": "Range\nAjoute"
+    },
+    {
+     "prepare": "git init -q -b main a && cd a && git config user.name 'Apprenti du Temps' && git config user.email apprenti@temps.invalid && echo 'Jour 1' > c.txt && git add c.txt && export GIT_AUTHOR_DATE='1767261600 +0000' GIT_COMMITTER_DATE='1767261600 +0000' && git commit -qm 'Jour 1' && echo 'secret : x' >> c.txt && git commit -qam 'Ajoute' && sed -i '/secret/d' c.txt && git commit -qam 'Range'",
+     "cmd": "cd a && git checkout HEAD~1 -- c.txt && cat c.txt",
+     "sortie": "Jour 1\nsecret : x"
+    }
+   ],
+   "limite_image": "tp.f.git_histoire.limite",
+   "idees_fausses": [
+    "tp.f.git_histoire.idee"
+   ],
+   "sources": [
+    "Git, documentation officielle (git-init, git-status, git-add, git-commit, git-config) : https://git-scm.com/docs",
+    "Pro Git (S. Chacon, B. Straub), 2e édition, chapitres 2 et 3 : https://git-scm.com/book/fr/v2",
+    "Git, git-restore et git-checkout : https://git-scm.com/docs/git-restore"
+   ],
+   "relu_par": null
+  },
+  "git_branches": {
+   "motif": "(^git\\s+(switch|branch|merge|checkout\\s+-b)\\b|^(tg\\s+)?temps\\s+(branches|conflit)\\b|^sed\\b.*\\[<=>\\]|^notepad\\b.*chronique)",
+   "enfant": "tp.f.git_branches.enfant",
+   "grands": "tp.f.git_branches.grands",
+   "vrai_terminal": [
+    {
+     "prepare": "git init -q -b main a && cd a && git config user.name 'Apprenti du Temps' && git config user.email apprenti@temps.invalid && echo 'Jour 1' > c.txt && git add c.txt && export GIT_AUTHOR_DATE='1767261600 +0000' GIT_COMMITTER_DATE='1767261600 +0000' && git commit -qm 'Jour 1'",
+     "cmd": "cd a && git switch -c reve && git branch",
+     "sortie": "Switched to a new branch 'reve'\n  main\n* reve"
+    },
+    {
+     "prepare": "git init -q -b main a && cd a && git config user.name 'Apprenti du Temps' && git config user.email apprenti@temps.invalid && echo 'Jour 1' > c.txt && git add c.txt && export GIT_AUTHOR_DATE='1767261600 +0000' GIT_COMMITTER_DATE='1767261600 +0000' && git commit -qm 'Jour 1' && git switch -qc reve && echo 'Jour 2 : un reve' >> c.txt && git commit -qam reve && git switch -q main && echo 'Jour 2 : une balade' >> c.txt && git commit -qam balade",
+     "cmd": "cd a && git merge reve",
+     "code": "non0",
+     "sortie": "Auto-merging c.txt\nCONFLICT (content): Merge conflict in c.txt\nAutomatic merge failed; fix conflicts and then commit the result."
+    },
+    {
+     "prepare": "git init -q -b main a && cd a && git config user.name 'Apprenti du Temps' && git config user.email apprenti@temps.invalid && echo 'Jour 1' > c.txt && git add c.txt && export GIT_AUTHOR_DATE='1767261600 +0000' GIT_COMMITTER_DATE='1767261600 +0000' && git commit -qm 'Jour 1' && git switch -qc reve && echo 'Jour 2 : un reve' >> c.txt && git commit -qam reve && git switch -q main && echo 'Jour 2 : une balade' >> c.txt && git commit -qam balade && (git merge reve >/dev/null || true)",
+     "cmd": "cd a && cat c.txt",
+     "sortie": "Jour 1\n<<<<<<< HEAD\nJour 2 : une balade\n=======\nJour 2 : un reve\n>>>>>>> reve"
+    },
+    {
+     "prepare": "git init -q -b main a && cd a && git config user.name 'Apprenti du Temps' && git config user.email apprenti@temps.invalid && echo 'Jour 1' > c.txt && git add c.txt && export GIT_AUTHOR_DATE='1767261600 +0000' GIT_COMMITTER_DATE='1767261600 +0000' && git commit -qm 'Jour 1' && git switch -qc reve && echo 'Jour 2 : un reve' >> c.txt && git commit -qam reve && git switch -q main && echo 'Jour 2 : une balade' >> c.txt && git commit -qam balade && (git merge reve >/dev/null || true)",
+     "cmd": "cd a && sed -i '/^[<=>]\\{7\\}/d' c.txt && cat c.txt",
+     "sortie": "Jour 1\nJour 2 : une balade\nJour 2 : un reve"
+    }
+   ],
+   "limite_image": "tp.f.git_branches.limite",
+   "idees_fausses": [
+    "tp.f.git_branches.idee"
+   ],
+   "sources": [
+    "Git, documentation officielle (git-init, git-status, git-add, git-commit, git-config) : https://git-scm.com/docs",
+    "Pro Git, 3.2 « Branches et fusions » : https://git-scm.com/book/fr/v2/Les-branches-avec-Git-Branches-et-fusions%C2%A0%3A-les-bases"
+   ],
+   "relu_par": null
+  },
+  "git_partage": {
+   "motif": "(^git\\s+(clone|pull|remote)\\b|^(tg\\s+)?temps\\s+(partage|ami|bateau)\\b|\\.gitignore|copie_de_mon_ami|brouillon\\.tmp)",
+   "enfant": "tp.f.git_partage.enfant",
+   "grands": "tp.f.git_partage.grands",
+   "vrai_terminal": [
+    {
+     "prepare": "git init -q -b main a && cd a && git config user.name 'Apprenti du Temps' && git config user.email apprenti@temps.invalid && echo 'Jour 1' > c.txt && git add c.txt && export GIT_AUTHOR_DATE='1767261600 +0000' GIT_COMMITTER_DATE='1767261600 +0000' && git commit -qm 'Jour 1'",
+     "cmd": "git clone -q a b && cd b && git log --oneline",
+     "sortie": "298a1bb Jour 1"
+    },
+    {
+     "prepare": "git init -q -b main a && cd a && git config user.name 'Apprenti du Temps' && git config user.email apprenti@temps.invalid && echo 'Jour 1' > c.txt && git add c.txt && export GIT_AUTHOR_DATE='1767261600 +0000' GIT_COMMITTER_DATE='1767261600 +0000' && git commit -qm 'Jour 1' && cd .. && git clone -q a b",
+     "cmd": "cd b && git remote -v | head -1 | sed 's|\\t.*/|\\t|'",
+     "sortie": "origin\ta (fetch)"
+    },
+    {
+     "prepare": "git init -q -b main a && cd a && git config user.name 'Apprenti du Temps' && git config user.email apprenti@temps.invalid && echo 'Jour 1' > c.txt && git add c.txt && export GIT_AUTHOR_DATE='1767261600 +0000' GIT_COMMITTER_DATE='1767261600 +0000' && git commit -qm 'Jour 1'",
+     "cmd": "cd a && echo '*.tmp' > .gitignore && touch brouillon.tmp && git status --short",
+     "sortie": "?? .gitignore"
+    }
+   ],
+   "limite_image": "tp.f.git_partage.limite",
+   "idees_fausses": [
+    "tp.f.git_partage.idee"
+   ],
+   "sources": [
+    "Git, documentation officielle (git-init, git-status, git-add, git-commit, git-config) : https://git-scm.com/docs",
+    "Pro Git, 2.5 « Travailler avec des dépôts distants » : https://git-scm.com/book/fr/v2/Les-bases-de-Git-Travailler-avec-des-d%C3%A9p%C3%B4ts-distants",
+    "Git, gitignore : https://git-scm.com/docs/gitignore"
+   ],
+   "relu_par": null
+  },
+  "git_empreintes": {
+   "motif": "(^git\\s+(hash-object|cat-file)\\b|sha1sum|^(tg\\s+)?temps\\s+(empreintes?|bilan)\\b|^find\\b.*-newer|mot\\.txt)",
+   "enfant": "tp.f.git_empreintes.enfant",
+   "grands": "tp.f.git_empreintes.grands",
+   "vrai_terminal": [
+    {
+     "prepare": "printf 'temps\\n' > mot.txt",
+     "cmd": "git hash-object mot.txt",
+     "sortie": "eb51c8df438dd920beceb5c9ef1e691531fa8a2d"
+    },
+    {
+     "cmd": "printf 'blob 6\\0temps\\n' | sha1sum",
+     "sortie": "eb51c8df438dd920beceb5c9ef1e691531fa8a2d  -"
+    },
+    {
+     "prepare": "git init -q -b main a && cd a && git config user.name 'Apprenti du Temps' && git config user.email apprenti@temps.invalid && echo 'Jour 1' > c.txt && git add c.txt && export GIT_AUTHOR_DATE='1767261600 +0000' GIT_COMMITTER_DATE='1767261600 +0000' && git commit -qm 'Jour 1'",
+     "cmd": "cd a && git cat-file -p HEAD | head -1 | cut -c1-5",
+     "sortie": "tree "
+    },
+    {
+     "prepare": "touch -d '3 days ago' ancien.txt && touch -d '2 days ago' repere.txt && touch -d '1 day ago' nouveau.txt",
+     "cmd": "find . -type f -newer repere.txt",
+     "sortie": "./nouveau.txt"
+    }
+   ],
+   "limite_image": "tp.f.git_empreintes.limite",
+   "idees_fausses": [
+    "tp.f.git_empreintes.idee"
+   ],
+   "sources": [
+    "Pro Git, 10.2 « Les objets de Git » (blob, tree, commit, empreintes SHA-1) : https://git-scm.com/book/fr/v2/Les-tripes-de-Git-Les-objets-de-Git",
+    "FIPS 180-4, Secure Hash Standard (SHA-1) : https://csrc.nist.gov/pubs/fips/180-4/upd1/final",
+    "GNU findutils, -newer : https://www.gnu.org/software/findutils/manual/html_node/find_html/Comparing-Timestamps.html"
+   ],
+   "relu_par": null
   }
  },
  "etapes": {
@@ -4813,6 +4983,11 @@
   "som7.7": {
    "maths": [
     "puissances_10"
+   ]
+  },
+  "tp5.2": {
+   "maths": [
+    "hexadecimal"
    ]
   }
  },
@@ -5827,6 +6002,105 @@
   "som7.4": {
    "egal_jeu": "fragment3",
    "pourquoi": "hist.som7.4.bravo : la porte s'ouvre avec le fragment 1"
+  },
+  "tp0.1": {
+   "contient": [
+    "registre_du_temps.txt"
+   ],
+   "pourquoi": "hist.tp0.1.bravo : le registre"
+  },
+  "tp1.1": {
+   "motif": "^Initialized empty Git repository in .*/temps/album/\\.git/$",
+   "outil": "git",
+   "pourquoi": "hist.tp1.1.bravo : l'album est prêt, avec son passage secret .git"
+  },
+  "tp1.6": {
+   "motif": "Untracked files:[\\s\\S]*chronique\\.txt",
+   "outil": "git",
+   "pourquoi": "hist.tp1.6.bravo : chronique.txt est « non suivi » (Untracked)"
+  },
+  "tp1.8": {
+   "motif": "^\\[(main|master) \\(root-commit\\) [0-9a-f]{7}\\] Jour 1$",
+   "outil": "git",
+   "pourquoi": "hist.tp1.8.bravo : la toute première photo (root-commit) et son numéro"
+  },
+  "tp2.2": {
+   "lignes": 6,
+   "outil": "git",
+   "pourquoi": "hist.tp2.2.bravo : six photos dans le grimoire"
+  },
+  "tp2.4": {
+   "motif": "^\\+gribouillis$",
+   "outil": "git",
+   "pourquoi": "hist.tp2.4.bravo : + la ligne ajoutée"
+  },
+  "tp2.6": {
+   "lignes": 2,
+   "outil": "git",
+   "pourquoi": "hist.tp2.6.bravo : deux photos parlent du secret"
+  },
+  "tp2.7": {
+   "motif": "^-secret : ",
+   "outil": "git",
+   "pourquoi": "hist.tp2.7.bravo : - la ligne effacée"
+  },
+  "tp3.7": {
+   "motif": "^CONFLICT \\(content\\): Merge conflict in chronique\\.txt$",
+   "code": "non0",
+   "outil": "git",
+   "pourquoi": "hist.tp3.7.bravo : un conflit"
+  },
+  "tp3.8": {
+   "motif": "^<<<<<<< HEAD$[\\s\\S]*^=======$[\\s\\S]*^>>>>>>> reve$",
+   "outil": "git",
+   "pourquoi": "hist.tp3.8.bravo : les trois bornes du conflit"
+  },
+  "tp3.11": {
+   "motif": "^\\*\\s+[0-9a-f]{7} ",
+   "outil": "git",
+   "pourquoi": "hist.tp3.11.bravo : les deux chemins qui se rejoignent"
+  },
+  "tp4.4": {
+   "motif": "^Fast-forward$",
+   "outil": "git",
+   "pourquoi": "hist.tp4.4.bravo : la page de ton ami arrive"
+  },
+  "tp4.7": {
+   "motif": "\\.gitignore",
+   "outil": "git",
+   "pourquoi": "hist.tp4.7.bravo : brouillon.tmp est ignoré"
+  },
+  "tp4.9": {
+   "motif": "^origin\\t.*/temps/album(/\\.)? \\(fetch\\)$",
+   "outil": "git",
+   "pourquoi": "hist.tp4.9.bravo : origin, l'album d'où vient la copie"
+  },
+  "tp5.2": {
+   "sortie": "eb51c8df438dd920beceb5c9ef1e691531fa8a2d",
+   "outil": "git",
+   "pourquoi": "hist.tp5.2.bravo : l'empreinte de mot.txt"
+  },
+  "tp5.3": {
+   "sortie": "eb51c8df438dd920beceb5c9ef1e691531fa8a2d  -",
+   "pourquoi": "hist.tp5.3.bravo : la même empreinte, calculée par sha1sum"
+  },
+  "tp5.5": {
+   "sortie": "59b96ff1782835a2bc483e5f3332f1396b0abd1e",
+   "outil": "git",
+   "pourquoi": "hist.tp5.5.bravo : une seule lettre change tout"
+  },
+  "tp5.7": {
+   "motif": "^tree [0-9a-f]{40}$[\\s\\S]*^parent [0-9a-f]{40}$",
+   "outil": "git",
+   "pourquoi": "hist.tp5.7.bravo : chaque photo garde l'empreinte de la précédente"
+  },
+  "tp5.9": {
+   "contient": [
+    "./mot.txt",
+    "./nouveau.txt"
+   ],
+   "lignes": 2,
+   "pourquoi": "hist.tp5.9.bravo : changés après le repère"
   }
  },
  "maths": {
@@ -7138,7 +7412,50 @@
     "roche",
     "ombre"
    ],
-   "maths": [],
+   "requis": [
+    "n4"
+   ],
+   "chapitre": "temps",
+   "paliers": [
+    "tp0",
+    "tp1",
+    "tp2",
+    "tp3",
+    "tp4",
+    "tp5"
+   ],
+   "attirance": {
+    "cmds": [
+     "git"
+    ],
+    "familles": [
+     "Constructs"
+    ]
+   },
+   "ponts": {
+    "git_switch": [
+     "guilde"
+    ],
+    "empreintes": [
+     "crypte"
+    ],
+    "find_newer": [
+     "citadelle"
+    ],
+    "nano": [
+     "forge"
+    ]
+   },
+   "reutilise": {
+    "lecons": [
+     "git0",
+     "git1",
+     "git2"
+    ],
+    "quetes": [
+     "q37"
+    ]
+   },
    "exploits": [
     {
      "id": "temps.version",
@@ -7146,7 +7463,14 @@
      "recompense": "variante"
     }
    ],
-   "variantes_reservees": []
+   "maths": [
+    "hexadecimal"
+   ],
+   "variantes_reservees": [
+    "momiaou:soleil",
+    "galetard:ruines",
+    "follanterne:brume"
+   ]
   },
   {
    "id": "donnees",

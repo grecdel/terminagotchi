@@ -1216,6 +1216,10 @@ def _main():
     if mode == "forge":                        # tg forge … : la Forge (recettes, Python, jeu, site, multimédia)
         from . import forge
         sys.exit(forge.commande(args[1:]) or 0)
+    if mode == "temps":                        # tg temps … : la Bibliothèque du Temps (git, dans le terrain)
+        from . import temps
+        temps.commande(args[1:])
+        return
     if mode == "donnees":                      # tg donnees … : la Salle des Données (sur sa propre collection)
         from . import donnees
         sys.exit(donnees.commande(args[1:]) or 0)
