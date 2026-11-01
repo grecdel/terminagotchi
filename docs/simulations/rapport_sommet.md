@@ -98,6 +98,15 @@ Toutes acceptées : `sed -i '2a set -euo pipefail'` (la ceinture après le comme
 | S4 | mineur | formule générique « Ta commande marche aussi… » pendant une étape de réponse (Inès) | laissé (comportement commun à tous les mondes) |
 | S5 | — (outil) | la simulation lisait mal la sortie de `du -b` et le message de `dash -n` | `sim_sommet.py` corrigé |
 
+## 5 bis. Après la fusion avec la Forge (même jour)
+
+- `bash script.sh` est montré par le parchemin de la Forge dans la vue déployée ; la cordée garde `bash -n`, `bash -x`,
+  `shellcheck`, `find -print0` (une seule animation par commande, PC et téléphone).
+- Chaque étape a maintenant sa version « Pour les grands » (règle G-32 vérifiée par `test_histoire.py`).
+- L'exploit « Trois mondes maîtrisés » garde la fenêtre d'essais du genre légendaire (8 compteurs) : le site vérifie
+  cette fenêtre ; 16 essais auraient été refusés par son test.
+- Les illustrations nouvelles sont numérotées E25 à E27 (E20 à E24 sont à la Forge).
+
 ## 6. Questions pour le propriétaire
 
 1. Le Sommet est « pour les grands » : faut-il le **cacher** aux plus jeunes (option parent) ou seulement le montrer

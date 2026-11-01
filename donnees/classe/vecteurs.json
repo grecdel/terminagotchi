@@ -841,6 +841,126 @@
    "n": 20,
    "options": "AGS",
    "code": "20-AGS-F"
+  },
+  {
+   "n": 21,
+   "options": "",
+   "code": "21-M"
+  },
+  {
+   "n": 21,
+   "options": "A",
+   "code": "21-A-Y"
+  },
+  {
+   "n": 21,
+   "options": "G",
+   "code": "21-G-T"
+  },
+  {
+   "n": 21,
+   "options": "S",
+   "code": "21-S-G"
+  },
+  {
+   "n": 21,
+   "options": "AG",
+   "code": "21-AG-G"
+  },
+  {
+   "n": 21,
+   "options": "AS",
+   "code": "21-AS-J"
+  },
+  {
+   "n": 21,
+   "options": "GS",
+   "code": "21-GS-D"
+  },
+  {
+   "n": 21,
+   "options": "AGS",
+   "code": "21-AGS-H"
+  },
+  {
+   "n": 22,
+   "options": "",
+   "code": "22-P"
+  },
+  {
+   "n": 22,
+   "options": "A",
+   "code": "22-A-A"
+  },
+  {
+   "n": 22,
+   "options": "G",
+   "code": "22-G-V"
+  },
+  {
+   "n": 22,
+   "options": "S",
+   "code": "22-S-J"
+  },
+  {
+   "n": 22,
+   "options": "AG",
+   "code": "22-AG-J"
+  },
+  {
+   "n": 22,
+   "options": "AS",
+   "code": "22-AS-M"
+  },
+  {
+   "n": 22,
+   "options": "GS",
+   "code": "22-GS-F"
+  },
+  {
+   "n": 22,
+   "options": "AGS",
+   "code": "22-AGS-K"
+  },
+  {
+   "n": 23,
+   "options": "",
+   "code": "23-R"
+  },
+  {
+   "n": 23,
+   "options": "A",
+   "code": "23-A-C"
+  },
+  {
+   "n": 23,
+   "options": "G",
+   "code": "23-G-X"
+  },
+  {
+   "n": 23,
+   "options": "S",
+   "code": "23-S-M"
+  },
+  {
+   "n": 23,
+   "options": "AG",
+   "code": "23-AG-M"
+  },
+  {
+   "n": 23,
+   "options": "AS",
+   "code": "23-AS-P"
+  },
+  {
+   "n": 23,
+   "options": "GS",
+   "code": "23-GS-H"
+  },
+  {
+   "n": 23,
+   "options": "AGS",
+   "code": "23-AGS-N"
   }
  ],
  "faux": [

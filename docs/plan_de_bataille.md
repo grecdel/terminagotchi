@@ -708,12 +708,16 @@ des locuteurs.
   la boussole sans options, mauvaises réponses expliquées.
 
 *Le reste.*
-- Exploit « Trois mondes maîtrisés » (`sommet.trois_mondes`, genre légendaire, bonus 3, essais 16) : un légendaire
+- Exploit « Trois mondes maîtrisés » (`sommet.trois_mondes`, genre légendaire, 3 rencontres favorisées ; fenêtre d'essais du genre, comme le site l'attend) : un légendaire
   EXISTANT parmi ceux qu'aucun autre monde ne réserve — Infernarque, Tellurion, Rugissire, Sylvarque, Essaimpereur,
   Noctilune, Forgerain, Chaosmere (`legendaires` dans `programme.json`, lu par `recompenses.py` / `Recompenses.kt`).
 - Vue déployée : la cordée (relit `bash -n`, lampe frontale `bash -x`, cherche `find -print0`, monte au drapeau) ;
   `bash script.sh` reste au parchemin de la Forge (une seule animation par commande).
 - Ponts des Nombres jamais bloquants : logique (S1), comptage (S3), puissances de 10 (S7, les grades Péta/Exa).
+- « Pour les grands » à chaque étape (G-32) : 63 textes `.adulte` en 14 langues (`textes_sommet_adulte.py`).
+- Mode classe : le Sommet est le chapitre 23 (codes `23-GS-H`, `23-AGS-N`) sur la page /enseignants du site et dans les
+  fiches enseignant (PDF refait) ; les tests comptent les codes jusqu'au dernier chapitre. **Le site a changé (page
+  /enseignants et ses tests) : il n'est pas redéployé.**
 - Tests : `pc/outils/test_sommet.py` (63), `tests/jvm/Sommet.kt` (23), `pc/outils/test_sommet_outils.py` (outils du
   téléphone : toybox compilé en CI, busybox, mksh). Simulation `pc/outils/sim_sommet.py` →
   `docs/simulations/rapport_sommet.md`. Captures `pc/outils/capture_sommet.py`. Rejeu d'un seul monde :

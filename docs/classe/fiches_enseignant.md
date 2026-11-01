@@ -388,7 +388,7 @@ qui est acquis.
 
 \newpage
 
-# Les mondes du Carrefour (11 à 20)
+# Les mondes du Carrefour (11 à 20) et le Sommet (23)
 
 Après le tronc commun, chaque monde s'ouvre quand les chapitres nécessaires sont faits. Les fiches détaillées
 viendront après les classes pilotes ; en attendant, voici les codes et ce que chaque monde enseigne.
@@ -405,6 +405,7 @@ viendront après les classes pilotes ; en attendant, voici les codes et ce que c
 | 18 · La Salle des Données | texte, CSV, statistiques et SQL sur sa propre collection | `18-GS-T` | `18-AGS-X` |
 | 19 · La Forge | programmation : scripts, boucles, Python, son mini-jeu, son site servi sur sa machine, images et sons | `19-GS-V` | `19-AGS-Z` |
 | 20 · L'Atelier des robots | robotique simulée : capteurs et moteurs comme des fichiers, coordonnées, ET / OU / NON, la boucle lire-décider-agir, Raspberry Pi et embarqué racontés (aucun matériel) | `20-GS-B` | `20-AGS-F` |
+| 23 · Le Sommet | Expert++ (pour les plus grands) : scripts robustes, expressions régulières, débogage, documentation, défis ; s'ouvre quand trois mondes ont leur palier 3 | `23-GS-H` | `23-AGS-N` |
 
 # Correspondance avec les programmes (indicative)
 
