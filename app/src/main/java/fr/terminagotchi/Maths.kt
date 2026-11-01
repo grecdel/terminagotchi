@@ -109,6 +109,11 @@ object Maths {
             "puissances_10" -> { val a = 2 + h.entier(8); var p = 1L; repeat(a) { p *= 10 }; Exo(mapOf("a" to "$a"), "$p", "echo \$((10**$a))") }
             "longueur_onde" -> { val f = MHZ_ONDE[h.entier(MHZ_ONDE.size)]; Exo(mapOf("f" to "$f"), "${300 / f}", "echo \$((300000000 / ${f}000000))") }
             "temps_emission" -> { val n = 10 + h.entier(31); var d = 1; repeat(h.entier(6)) { d *= 2 }; Exo(mapOf("n" to "$n", "t" to "$d"), "${n * d}", "echo \$(($n * $d))") }
+            // les Ponts des Nombres de la Guilde des Bâtisseurs Libres (§ 7.12), mêmes tirages que pc/tg/maths.py
+            "coordonnees" -> { val a = 1 + h.entier(9); val b = a + 1 + h.entier(12); val y = h.entier(10)
+                Exo(mapOf("a" to "$a", "b" to "$b", "y" to "$y"), "${b - a}", "echo \$(($b - $a))") }
+            "volume" -> { val a = 2 + h.entier(5); val b = 2 + h.entier(5); val c = 1 + h.entier(4)
+                Exo(mapOf("a" to "$a", "b" to "$b", "c" to "$c"), "${a * b * c}", "echo \$(($a * $b * $c))") }
             else -> throw IllegalArgumentException(typ)
         }
     }

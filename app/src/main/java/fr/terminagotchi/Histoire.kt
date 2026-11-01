@@ -92,6 +92,8 @@ object Histoire {
         Chapitre("machinerie", 14, "machines", "Constructs", Machines.IDS, null, "carte_mere_miniature", "architecte_des_machines", monde = true),
         // le cinquième : la Tour des Ondes (Ondes.kt), la radio, LoRa et les réseaux maillés ; lieu ondes/ (« tour » est l'aile)
         Chapitre("ondes", 15, "ondes", "Célestes", Ondes.IDS, null, "antenne_miniature", "maitre_des_ondes", monde = true),
+        // le sixième : la Guilde des Bâtisseurs Libres (Guilde.kt), l'open source et le DIY ; lieu guilde/
+        Chapitre("guilde", 16, "guilde", "Constructs", Guilde.IDS, null, "boite_a_outils", "batisseur_libre", monde = true),
     )
     val MONDES = CHAPITRES.filter { it.monde }.map { it.piece }
     val PAR_CHAP = CHAPITRES.associateBy { it.id }
@@ -270,6 +272,7 @@ object Histoire {
         tout.putAll(Crypte.lecons(jeu))
         tout.putAll(Machines.lecons(jeu))
         tout.putAll(Ondes.lecons(jeu))
+        tout.putAll(Guilde.lecons(jeu))
         return tout
     }
 
@@ -351,9 +354,9 @@ object Histoire {
 
     /** Un monde du Carrefour : ses prérequis du tronc commun (programme.json), monde par monde. */
     fun mondeOuvert(jeu: Jeu, cid: String) = when (cid) { "citadelle" -> Citadelle.ouvert(jeu); "crypte" -> Crypte.ouvert(jeu)
-        "machinerie" -> Machines.ouvert(jeu); "ondes" -> Ondes.ouvert(jeu); else -> Port.ouvert(jeu) }
+        "machinerie" -> Machines.ouvert(jeu); "ondes" -> Ondes.ouvert(jeu); "guilde" -> Guilde.ouvert(jeu); else -> Port.ouvert(jeu) }
     fun mondeManque(jeu: Jeu, cid: String) = when (cid) { "citadelle" -> Citadelle.manque(jeu); "crypte" -> Crypte.manque(jeu)
-        "machinerie" -> Machines.manque(jeu); "ondes" -> Ondes.manque(jeu); else -> Port.manque(jeu) }
+        "machinerie" -> Machines.manque(jeu); "ondes" -> Ondes.manque(jeu); "guilde" -> Guilde.manque(jeu); else -> Port.manque(jeu) }
 
     /** La pièce existe dans la maison de cette partie (sa porte a été posée). */
     fun pieceOuverte(jeu: Jeu, p: String): Boolean {
@@ -496,6 +499,7 @@ object Histoire {
         "crypte" -> Crypte.meubles(jeu)
         "machines" -> Machines.meubles(jeu)
         "ondes" -> Ondes.meubles(jeu)
+        "guilde" -> Guilde.meubles(jeu)
         // la vieille cabane pleine de planches de la leçon « Une pièce en trop » (seulement par BESOINS)
         "nid" -> linkedMapOf("vieille_cabane/planche_1.txt" to dire(jeu, "hist.meuble.planche"),
             "vieille_cabane/planche_2.txt" to dire(jeu, "hist.meuble.planche"),
@@ -583,6 +587,7 @@ object Histoire {
         if (lid in Crypte.IDS) Crypte.meubler(jeu, lid)         // la Crypte : le grimoire touché, la chaîne, les clés d'exemple
         if (lid in Machines.IDS) Machines.meubler(jeu, lid)     // la Salle des Rouages : la photo, la ferme, les ponts des nombres
         if (lid in Ondes.IDS) Ondes.meubler(jeu, lid)           // la Tour des Ondes : le plan, les capteurs d'exemple, les ponts
+        if (lid in Guilde.IDS) Guilde.meubler(jeu, lid)         // la Guilde : le petit projet, l'atelier, la fabrique, la fausse clé
         return poses
     }
 
@@ -915,6 +920,7 @@ object Histoire {
         Crypte.indice(jeu, e, tapees)?.let { return it }          // la Crypte : gpg sans --homedir, une mauvaise roue…
         Machines.indice(jeu, e, tapees)?.let { return it }        // la Salle des Rouages : un sudo, une mauvaise réponse…
         Ondes.indice(jeu, e, tapees)?.let { return it }           // la Tour des Ondes : un « ? » recopié, la cible isolée…
+        Guilde.indice(jeu, e, tapees)?.let { return it }          // la Guilde : /dev, un sudo, une mauvaise réponse…
         indiceCd(jeu, e, morcs)?.let { return it }
         indiceRm(jeu, e, tapees)?.let { return it }
         indiceResultat(jeu, e, morcs)?.let { return it }
@@ -1077,7 +1083,7 @@ object Histoire {
      *  ensemble), le suivant attend le tour d'après : une nouvelle à la fois (comme histoire.annoncer_monde sur PC). */
     fun annoncerMonde(jeu: Jeu): Boolean {
         val h = h(jeu)
-        if (Port.annonce(jeu) || Citadelle.annonce(jeu) || Crypte.annonce(jeu) || Machines.annonce(jeu) || Ondes.annonce(jeu)) { h.put("annonce_attente", true); return true }
+        if (Port.annonce(jeu) || Citadelle.annonce(jeu) || Crypte.annonce(jeu) || Machines.annonce(jeu) || Ondes.annonce(jeu) || Guilde.annonce(jeu)) { h.put("annonce_attente", true); return true }
         h.remove("annonce_attente")
         return false
     }

@@ -303,6 +303,22 @@ object Deploie {
         return out
     }
 
+    // ------------------------------------------------------------ l'établi (la Guilde des Bâtisseurs Libres)
+    class Etabli(val seg: Int, val cmd: String, val outil: String, val de: String, val vers: String)
+
+    /** Les commandes d'une ligne qui TRANSFORMENT quelque chose (même spécification que deploie.etablis sur PC, vecteurs
+     *  donnees/guilde/vecteurs.json) : gcc fait d'un texte un programme, dd d'une image une clé (ici un fichier)… */
+    fun etablis(ligne: String): List<Etabli> {
+        val out = mutableListOf<Etabli>()
+        val bl = blocs(ligne)
+        for (c in chaines(bl)) for (e in c.etapes) {
+            val a = Guilde.etabliDe(e.texte) ?: continue
+            val seg = bl.firstOrNull { it.g == "commande" && it.i - 1 == e.debut }?.seg ?: 0
+            out.add(Etabli(seg, e.cmd, a.first, a.second, a.third))
+        }
+        return out
+    }
+
     // ------------------------------------------------------------ les cadenas qui s'allument (la Citadelle)
     private val OPTIONS_CHMOD = setOf("-R", "-v", "-c", "-f", "--recursive", "--verbose", "--changes", "--silent", "--quiet")
     private val MODE_CHMOD = Regex("[0-7]{1,4}|[ugoa]*(?:[-+=][rwx]*)+(?:,[ugoa]*(?:[-+=][rwx]*)+)*")
@@ -402,11 +418,14 @@ object Deploie {
         /** l'antenne d'un nmcli, rfkill, mesh-envoie… (la Tour des Ondes) */
         val antennes: List<Antenne> = try { antennes(ligne) } catch (e: Exception) { emptyList() }
         fun antenneDe(b: Bloc): Antenne? = if (b.g == "commande") antennes.firstOrNull { it.seg == b.seg } else null
+        /** l'établi d'un gcc, dd, sha256sum, git commit… (la Guilde) */
+        val etablis: List<Etabli> = try { etablis(ligne) } catch (e: Exception) { emptyList() }
+        fun etabliDe(b: Bloc): Etabli? = if (b.g == "commande") etablis.firstOrNull { it.seg == b.seg } else null
 
         fun avancer(dt: Double) {
             t += dt
             val b = blocs[actif - 1]
-            val reseau = messagerDe(b) != null || droitsDe(b) != null || roueDe(b) != null || piecesDe(b) != null || antenneDe(b) != null
+            val reseau = messagerDe(b) != null || droitsDe(b) != null || roueDe(b) != null || piecesDe(b) != null || antenneDe(b) != null || etabliDe(b) != null
             val duree = if (b.g == "tuyau" || b.g == "redirection" || reseau) 2.4 else 1.2
             phase = if (b.g in setOf("tuyau", "redirection", "chemin") || reseau) t / duree else minOf(1.0, t / duree)
             if (auto && t >= duree && actif < blocs.size) { actif += 1; t = 0.0 }

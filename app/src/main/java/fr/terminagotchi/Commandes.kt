@@ -150,6 +150,8 @@ class Commandes(
             // ---------------------------------------------------- la Tour des Ondes (Ondes.kt) : l'appli n'émet jamais
             "ondes" -> Reponse(Ondes.commande(jeu, reste, dossier()), couleur = BLEU)
             "mesh-envoie", "mesh-coupe", "mesh-route" -> Reponse(Ondes.commande(jeu, "$cmd $reste", dossier()), couleur = BLEU)
+            // ---------------------------------------------------- la Guilde des Bâtisseurs Libres (Guilde.kt) : tout reste dans le terrain
+            "guilde" -> Reponse(Guilde.commande(jeu, reste, dossier()), couleur = BLEU)
             "sync" -> sync()
             "indice" -> Reponse(Ctf.indice(jeu, reste), couleur = VERT)
             "edite" -> edite(reste)
