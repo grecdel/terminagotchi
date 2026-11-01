@@ -475,6 +475,72 @@ les vraies radios (vues seulement par des doublures en test), `type rtl_test` (O
   Ce n'est pas dit à l'écran ; à valider (question au propriétaire).
 - Les traductions des 13 autres langues sont faites par Claude : une relecture par des locuteurs serait bienvenue.
 
+**📊 La Salle des Données — codée (1er novembre).**
+
+*Fichiers.*
+- 6 fiches et 4 fiches de maths (`donnees/donnees/outils/fiches_donnees.py`, rejeu bash), données `donnees/donnees.json`,
+  textes `donnees/donnees/outils/textes_donnees_*.py` (14 langues), vecteurs communs `donnees/donnees/vecteurs.json`.
+- Leçons dn0 → dn6 sur PC (`pc/tg/donnees.py`) et sur Android (`Donnees.kt`, `DonneesAwk.kt` le petit awk,
+  `DonneesSql.kt` le petit sqlite3 sur le SQLite du téléphone, `DonneesDessin.kt`).
+- Chapitre et dossier `donnees`, commandes `tg collection --csv` (téléphone : `collection --csv`) et `donnees` (alias
+  bash/zsh/fish/PowerShell). La Salle s'ouvre après les niveaux 0 à 4 du tronc commun ; annonce du monde à son tour.
+  Icône 📊, chapitre n° 18, famille Abyssaux, objet boulier, titre « Savant des Données ».
+
+*Règles du monde.*
+- **Les données de l'enfant** : sa collection, exportée en CSV dans le terrain. Aucune donnée personnelle (ni pseudo,
+  ni identifiant ; seulement l'espèce, le type, la famille, les stats, la rareté, shiny, la variante, le jour de capture).
+  Rien n'est envoyé au site.
+- **Le jeu recalcule chaque réponse sur le même fichier**, au moment de vérifier. Le rejeu bash (CI) compare la sortie
+  de bash à ce que le jeu calcule (`egal_jeu`) : il reste déterministe même si la collection change.
+- **Une collection minuscule ne bloque jamais** : moins de 5 bestioles → le jeu ajoute un jeu d'exemple fixe
+  (10 lignes en tout, colonne `exemple` = 1) et le dit à l'écran.
+- **La base est lue en lecture seule** (`DELETE`, `DROP`… refusés). Si `sqlite3` n'est pas installé sur le PC,
+  `tg donnees sqlite3 …` fait la même chose avec le moteur SQLite de Python (le jeu le propose).
+
+*Les leçons.*
+- **D1 compter et trier** : `tg collection --csv > collection.csv`, `head`, `wc -l` (moins la ligne des titres),
+  `donnees trier` (especes.txt, forces.txt), `sort | uniq -c | sort -rn | head -3`, le podium `sort -nr | head -3 > top3.txt`
+  (comme l'épreuve « Rétro » du dressage).
+- **D2 les colonnes** : `head -1 | tr ',' '\n'`, `cut -d, -f2 | tail -n +2 | sort | uniq -c`, les shiny avec
+  `cut -d, -f10 | grep -c 1`, `paste -d:`.
+- **D3 le copiste** : un nom mal écrit partout dans le carnet du soigneur (deux fois sur une ligne) ; `sed 's///'`,
+  `s///g`, `diff`, `sed -n '2,4p'`, `sed -i`.
+- **D4 la calculatrice** : `awk -F,` (colonnes, somme, moyenne : l'exploit), `sort -n > attaques.txt`, médiane, étendue.
+- **D5 les machines en chaîne** : `grep -E 'eau|glace'`, `sort -u | xargs echo`, `xargs -I{} touch enclos/{}.txt`,
+  `sort -t, -k4 -nr | head -3 | tee rapport.txt`, la moyenne ajoutée avec `>>`, `donnees bilan` (certificat).
+- **D-SQL la base de données** : `donnees base` (collection.db : tables creatures et especes), `.tables`, `.schema`,
+  `SELECT … ORDER BY … LIMIT 3`, `WHERE`, `COUNT(*) … GROUP BY`, `JOIN`, `AVG`. Chaque requête montre l'autre chemin
+  (le même podium que `sort | head`, la même moyenne qu'awk).
+- `cut` sans `-d,` et `awk` sans `-F,` sont refusés avec une explication (ils donneraient un résultat faux).
+
+*Le reste.*
+- Vue déployée : le laboratoire (tamis grep, ciseaux cut, moulin sort, calculatrice awk, copiste sed, aiguillage tee,
+  distributeur xargs, bibliothécaire sqlite3…), « des lignes → des lignes rangées », etc.
+- Ponts des Nombres, jamais bloquants : moyenne, médiane, étendue, pourcentages (nouveaux), comptage, effectifs,
+  fréquences ; dans `maths.py` et `Maths.kt` (mêmes tirages, vecteurs communs).
+- Contenu existant réutilisé sans le changer : épreuves « Rétro » (top3, record), « Données » (différentes),
+  « IA » (fréquent), quête q21.
+- Exploit « une statistique juste sur ta collection » (`donnees.statistique`, la moyenne). Variantes EXISTANTES
+  favorisées (Eau / Glace) : `nautiloque:corail`, `krillou:aurore`, `ondulame:glace`.
+- Android : le petit awk est comparé aux sorties du VRAI awk (vecteurs) ; le petit sqlite3 à la mise en forme du vrai
+  outil (`%!.15g`, `.tables`), vérifiée en CI où `sqlite3` et `gawk` sont installés. Les autres outils (`cut`, `sort`,
+  `uniq`, `sed`, `xargs`, `tee`…) sont ceux du téléphone : `pc/outils/test_donnees_outils.py` compare chaque ligne de
+  la Salle entre GNU, toybox (compilé en CI) et busybox.
+- Tests : `pc/outils/test_donnees.py` (67), `tests/jvm/Donnees.kt` (29). Simulation `pc/outils/sim_donnees.py` →
+  `docs/simulations/rapport_donnees.md`. Captures `pc/outils/capture_donnees.py`. Rejeu d'un seul monde en local :
+  `TG_REJEU_MONDE=donnees`.
+- Le test qui échouait parfois (`test_retours_enfants.py`, « niveau max des épreuves ») tirait les épreuves au sort
+  sans graine : il est maintenant déterministe (graine fixe, 40 tirages), et `tests/jvm/RetoursEnfants.kt` aussi
+  (`Dressage.hasard`). Ce qu'il vérifie n'a pas changé.
+- Prompts d'illustrations envoyés au propriétaire (B7, vignette, C1, C3, E18 et E19 nouveaux ; à valider). Un repli
+  dessiné est affiché en attendant (laboratoire en caractères sur PC, `DonneesDessin` sur le téléphone).
+
+*Reste.*
+- Les illustrations.
+- Avec une collection minuscule, l'exploit se gagne sur un tableau en partie d'exemple (question au propriétaire).
+- Le petit sqlite3 sur un vrai téléphone (le moteur d'Android n'est pas lancé dans les tests JVM).
+- Les traductions des 13 autres langues sont faites par Claude : une relecture par des locuteurs serait bienvenue.
+
 **▚ Le glitch — codé (31 octobre, décisions du propriétaire).** Un effet de l'INDIVIDU, comme le shiny (drapeau
 `glitch`, indépendant de la variante et du shiny) : l'image se dérègle comme un vieil écran, fabriquée à partir de
 l'image de la créature (aucune illustration). Au repos le style A (liseré rose/cyan des couches décalées, 2 tranches

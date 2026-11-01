@@ -732,8 +732,17 @@ Données : **sa propre collection** exportée en CSV (espèces, raretés, stats,
 | D1 Compter et trier | lignes, tri numérique, doublons | `wc`, `sort -n`, `uniq -c`, `head` | « mes 3 bestioles les plus fortes » (D « rétro ») | ✅ |
 | D2 Colonnes | CSV, séparateur | `cut -d, -f2`, `tr`, `paste` | « combien de shiny ? » | ✅ |
 | D3 Le copiste magique | remplacer | `sed 's/a/b/'`, `sed -n '1,5p'` | « corrige le nom mal écrit partout » | ✅ |
-| D4 La calculatrice | champs, sommes, moyennes | `awk -F, '{s+=$4} END {print s/NR}'` | « moyenne d'attaque de ma troupe » | 🟡 `awk` à vérifier |
+| D4 La calculatrice | champs, sommes, moyennes | `awk -F, '{s+=$4} END {print s/NR}'` | « moyenne d'attaque de ma troupe » | ✅ petit `awk` intégré, comparé au vrai |
 | D5 Les machines en chaîne | `xargs`, `tee`, regex de base | `grep -E`, `xargs`, `tee` | « rapport de collection dans `rapport.txt` » | ✅ |
+
+**Codée (1er novembre, D1 → D5 et D-SQL de § 7.13)** — voir `docs/plan_de_bataille.md`. Écarts assumés :
+- `tg collection --csv` existe (téléphone : `collection --csv`) ; aucune donnée personnelle dans le tableau ; une
+  collection de moins de 5 bestioles est complétée par un jeu d'exemple fixe, marqué (colonne `exemple`).
+- D4 : la moyenne se fait avec `NR>1 {s+=$4; n++} END {print s/n}` (sans la ligne des titres) ; médiane et étendue
+  ajoutées. D3 : `sed -i` en plus. D-SQL : `AVG` en plus ; la base est interrogée en lecture seule.
+- Le téléphone a un petit `awk` et un petit `sqlite3` intégrés (sur le SQLite d'Android) ; `cut`, `sort`, `uniq`,
+  `sed`, `xargs`, `tee` sont ceux du téléphone (toybox) : chaque ligne de la Salle est comparée entre GNU, toybox et
+  busybox (`pc/outils/test_donnees_outils.py`, en CI).
 
 ### 2.15 🎛 Le Poste de Contrôle — administration système
 
@@ -1333,7 +1342,7 @@ pas toutes faites). Chaque monde a ses créatures attirées (selon le type de bi
 | 🛡 La Citadelle | Ombre, Poison | maîtriser une boîte (deux manches) → son **gardien glitch** devient rencontrable |
 | ⚓ Le Port | Ciel (et Foudre), Eau | un messager guidé sans perte (P9) ; le sceau vérifié (P11) |
 | ⏳ La Bibliothèque du Temps | Roche, Ombre | retrouver une version perdue (`git log`, `git checkout`) |
-| 📊 La Salle des Données | Eau, Glace | une statistique juste sur sa propre collection |
+| 📊 La Salle des Données | Eau, Glace | une statistique juste sur sa propre collection — codé : exploit `donnees.statistique` (la moyenne d'attaque), variantes EXISTANTES favorisées `nautiloque:corail`, `krillou:aurore`, `ondulame:glace` |
 | 🎛 Le Poste de Contrôle | Machine, Roche | arrêter tous les processus suspects d'une vague |
 | ⚙ La Salle des Rouages | Machine, Roche | « Monte ta machine » réussi au premier démarrage |
 | 🤖 L'Atelier | Machine, Plante | le robot simulé qui évite tous les obstacles |

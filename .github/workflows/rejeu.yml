@@ -17,6 +17,8 @@ on:
             "app/src/main/java/fr/terminagotchi/GuildeDessin.kt",
             "donnees/observatoire/**", "donnees/observatoire.json", "app/src/main/java/fr/terminagotchi/Observatoire.kt",
             "app/src/main/java/fr/terminagotchi/ObservatoireDessin.kt",
+            "donnees/donnees/**", "donnees/donnees.json", "app/src/main/java/fr/terminagotchi/Donnees.kt",
+            "app/src/main/java/fr/terminagotchi/DonneesAwk.kt", "app/src/main/java/fr/terminagotchi/DonneesSql.kt",
             "pc/**", "app/src/main/assets/langues/**", "app/src/main/java/fr/terminagotchi/Port.kt",
             "app/src/main/java/fr/terminagotchi/Histoire.kt", "app/src/main/java/fr/terminagotchi/Jeu.kt",
             ".github/workflows/rejeu.yml"]
@@ -39,7 +41,7 @@ jobs:
       - name: Les outils des fiches (les commandes rejouées)
         run: |
           sudo apt-get update -qq
-          sudo apt-get install -y -qq tree iproute2 iputils-ping iputils-tracepath openssh-client dnsutils bsdextrautils openssl xxd gnupg qemu-utils pciutils usbutils bc iw rfkill zsh gcc make file openscad >/dev/null || true
+          sudo apt-get install -y -qq tree iproute2 iputils-ping iputils-tracepath openssh-client dnsutils bsdextrautils openssl xxd gnupg qemu-utils pciutils usbutils bc iw rfkill zsh gcc make file openscad sqlite3 gawk busybox >/dev/null || true
           bash --version | head -n 1
 
       - name: Vérificateur de la charte (fiches, étapes, orphelines, 14 langues)
@@ -55,6 +57,7 @@ jobs:
           python3 pc/outils/vecteurs_ondes.py --verifier
           python3 pc/outils/vecteurs_guilde.py --verifier
           python3 pc/outils/vecteurs_observatoire.py --verifier
+          python3 pc/outils/vecteurs_donnees.py --verifier
 
       - name: Rejeu des sorties dans un vrai bash (fiches et histoire du PC)
         run: LC_ALL=C.UTF-8 python3 pc/outils/rejeu_bash.py
@@ -145,3 +148,29 @@ jobs:
           set -o pipefail
           LC_ALL=C.UTF-8 python3 pc/outils/sim_observatoire.py 2>&1 | tee /tmp/simob.out || {
             grep -E "✖|Error|Traceback|line [0-9]" /tmp/simob.out | head -20 | sed 's/^/::error::/'; exit 1; }
+
+      - name: La Salle des Données (sa propre collection, awk et sqlite3 comparés aux vrais, rien hors du terrain)
+        run: |
+          set -o pipefail
+          LC_ALL=C.UTF-8 python3 pc/outils/test_donnees.py 2>&1 | tee /tmp/don.out || {
+            grep -E "✖|Error|Traceback|line [0-9]" /tmp/don.out | head -20 | sed 's/^/::error::/'; exit 1; }
+
+      - name: toybox (les outils du téléphone), compilé depuis ses sources
+        run: |
+          git clone -q --depth 1 --branch 0.8.11 https://github.com/landley/toybox /tmp/toybox
+          make -C /tmp/toybox defconfig >/dev/null
+          make -C /tmp/toybox -j4 toybox >/dev/null
+          mkdir -p "$HOME/.local/bin" && cp /tmp/toybox/toybox "$HOME/.local/bin/"
+          echo "$HOME/.local/bin" >> "$GITHUB_PATH"
+
+      - name: Les commandes de la Salle des Données avec toybox (téléphone) et busybox, comparées aux outils GNU
+        run: |
+          set -o pipefail
+          LC_ALL=C.UTF-8 python3 pc/outils/test_donnees_outils.py --exiger toybox,busybox 2>&1 | tee /tmp/dnout.out || {
+            grep -E "✖|Error|Traceback|line [0-9]" /tmp/dnout.out | head -20 | sed 's/^/::error::/'; exit 1; }
+
+      - name: Trois enfants visitent la Salle des Données (docs/simulations/rapport_donnees.md)
+        run: |
+          set -o pipefail
+          LC_ALL=C.UTF-8 python3 pc/outils/sim_donnees.py 2>&1 | tee /tmp/simdn.out || {
+            grep -E "✖|Error|Traceback|line [0-9]" /tmp/simdn.out | head -20 | sed 's/^/::error::/'; exit 1; }
