@@ -140,10 +140,16 @@ def histoire():
     jeu_mac = jeu_port.replace("port; port.", "machines; machines.")
     jeu_ond = jeu_port.replace("port; port.", "ondes; ondes.")
     jeu_gui = jeu_port.replace("port; port.", "guilde; guilde.")
+    jeu_obs = {n: jeu_port.replace("port; port.commande", "observatoire; observatoire." + f) for n, f in
+               (("observatoire", "commande"), ("assistant", "commande_assistant"), ("agent", "commande_agent"),
+                ("devine-type", "commande_devine_type"), ("devine-mot", "commande_devine_mot"))}
+    jeu_obs["explique"] = (f"{sys.executable} -c \"import sys; sys.path.insert(0, '{RACINE / 'pc'}'); from tg import app; "
+                           f"sys.argv = ['tg', 'explique'] + sys.argv[1:]; app._main()\"")
     from tg import crypte as K_
     from tg import machines as M_
     from tg import ondes as O_
     from tg import guilde as G_
+    from tg import observatoire as OB_
 
     def coupe_suivante(st_):
         """La tempête : un nœud du chemin actuel qui laisse encore assez de chemins (l'enfant lit mesh-route)."""
@@ -168,6 +174,8 @@ def histoire():
         vrai = re.sub(r"(^|;\s*)ondes\b", lambda m: m.group(1) + jeu_ond, vrai)         # et ondes='tg ondes'
         vrai = re.sub(r"(^|;\s*)(mesh-(envoie|coupe|route))\b", lambda m: m.group(1) + jeu_ond + " " + m.group(2), vrai)
         vrai = re.sub(r"(^|;\s*)guilde\b", lambda m: m.group(1) + jeu_gui, vrai)       # et guilde='tg guilde'
+        vrai = re.sub(r"(^|;\s*|timeout -s INT 1\s+)(observatoire|assistant|agent|devine-type|devine-mot|explique)(?=\s|$)",
+                      lambda m: m.group(1) + jeu_obs[m.group(2)], vrai)      # et les alias de l'Observatoire
         etat["sortie"], etat["code"], d = shell.lancer(vrai)
         etat["cwd"] = Path(d)
         with open(home / ".bash_history", "a") as f:
@@ -184,10 +192,11 @@ def histoire():
         h = H.h_(st)
         if not les:
             reste = [a for a in H.AILES if not H.fini(st, a)]
-            if H.fini(st, "guilde") or h["chap"] in ("reveil", "nid"):
+            if H.fini(st, "observatoire") or h["chap"] in ("reveil", "nid"):
                 break
             if H.fini(st, "coeur"):                 # le tronc et les ailes faits : les mondes du Carrefour, dans l'ordre
-                reste = [m_ for m_ in ("port", "citadelle", "crypte", "machinerie", "ondes", "guilde") if not H.fini(st, m_)][:1]
+                reste = [m_ for m_ in ("port", "citadelle", "crypte", "machinerie", "ondes", "guilde", "observatoire")
+                         if not H.fini(st, m_)][:1]
             cible = "coeur" if not reste and H.ouvert(st, "coeur") else (reste[0] if reste else None)
             if not cible:
                 break
@@ -296,6 +305,33 @@ def histoire():
             c = f"guilde disque {G_.cle_disque(gg)[0]}"
         if c == "less code_du_jeu/pc/tg/satiete.py":
             c = "less -FX code_du_jeu/pc/tg/satiete.py | head -3"     # (pas de terminal ici : less écrit tout)
+        go_ = OB_._graine(st)                        # l'Observatoire : l'enfant lit le journal, les réponses, le diff…
+        if c == 'echo "?" > mission.txt':
+            c = f'echo "{OB_.t("ob.mission.exemple")}" > mission.txt'
+        if c == "observatoire oubli ?":
+            c = "observatoire oubli " + OB_.trier_assistant(OB_.texte_types().splitlines(), go_)[1].split()[0]
+        if c == "agent refuse ?":
+            c = f"agent refuse {OB_.dangereuse(go_, 'equipe' if les['id'] == 'ob9' else 'agent')}"
+        if c == "agent boucle":
+            c = "timeout -s INT 1 agent boucle"          # Ctrl+C au bout d'une seconde (un vrai SIGINT)
+        if c == "observatoire piege ?":
+            c = "observatoire piege famille"
+        if c == "observatoire biais ?":
+            c = "observatoire biais " + next(str(n) for n, _i, r_ in OB_.biais_cartes(go_) if r_ == "o")
+        if c in ("devine-mot suite ?", "devine-mot phrase ?"):
+            c = c.replace("?", OB_.effectifs(OB_._table_mots())[0][0])
+        if c == "observatoire perroquet ? ? ?":
+            c = "observatoire perroquet " + " ".join(r_ for _n, _i, r_ in OB_.perroquet_cartes(go_))
+        if c == "assistant fausses ? ?":
+            c = "assistant fausses " + " ".join(str(n) for n, _i, f_ in OB_.questions(go_) if f_)
+        if c == "observatoire confier ? ? ? ? ? ?":
+            c = "observatoire confier " + " ".join(r_ for _n, _i, r_ in OB_.confier_cartes(go_))
+        if c == "observatoire nuances ? ? ? ? ?":
+            c = "observatoire nuances " + " ".join(r_ for _n, _i, r_ in OB_.nuances_cartes(go_))
+        if c == "observatoire decoupe ? ? ?":
+            c = "observatoire decoupe " + " ".join(OB_.decoupe_reponse(go_))
+        if c == "observatoire consigne ?":
+            c = "observatoire consigne " + next(n for n, _i, r_ in OB_.consigne_cartes(go_) if r_ == "true")
         if c.endswith(" &") and "http.server" in c:
             c = c[:-2] + " >/dev/null 2>&1 &"       # (les lignes du serveur n'encombrent pas la suite)
         lieu = step.get("ou") if step.get("ou") is not None else None
@@ -366,6 +402,16 @@ def histoire():
                 verifier(s.strip() == str(M_.processeurs_cpuinfo()), f"{nom} : bash compte {s.strip()!r}, le jeu {M_.processeurs_cpuinfo()}{pq}")
             if a.get("egal_jeu") == "noyau":
                 verifier(s.strip() == M_.noyau(), f"{nom} : bash dit {s.strip()!r}, le jeu lit {M_.noyau()!r}{pq}")
+            if a.get("egal_jeu") == "mot_frequent":       # l'Observatoire : bash et le devineur de mots comptent pareil
+                e_ = OB_.effectifs(OB_._table_mots())
+                l0 = (lignes or [""])[0].split()
+                verifier(len(l0) == 2 and int(l0[0]) == e_[0][1] and l0[1] in [w for w, n in e_ if n == e_[0][1]],
+                         f"{nom} : bash dit {l0}, le jeu {e_[0]}{pq}")
+            if a.get("egal_jeu") == "paire_frequente":
+                p_ = OB_.top_paires(OB_._table_mots())
+                l0 = (lignes or [""])[0].split()
+                verifier(len(l0) == 3 and int(l0[0]) == p_[0][1] and tuple(l0[1:]) in [x for x, n in p_ if n == p_[0][1]],
+                         f"{nom} : bash dit {l0}, le jeu {p_[0]}{pq}")
             if a.get("egal_jeu") == "traces_abyssor":
                 n = (s.split() or ["?"])[-1]
                 verifier(n == str(H.traces_abyssor()), f"{nom} : bash compte {n}, le jeu attend {H.traces_abyssor()}{pq}")
@@ -377,6 +423,7 @@ def histoire():
     verifier(H.fini(st, "machinerie"), "la Salle des Rouages, quatrième monde, est allée jusqu'au bout (sm0 → sm10)")
     verifier(H.fini(st, "ondes"), "la Tour des Ondes, cinquième monde, est allée jusqu'au bout (on0 → on10)")
     verifier(H.fini(st, "guilde"), "la Guilde des Bâtisseurs Libres, sixième monde, est allée jusqu'au bout (gu0 → gu6)")
+    verifier(H.fini(st, "observatoire"), "l'Observatoire de l'IA, septième monde, est allé jusqu'au bout (ob0 → ob9)")
     P_.eteindre_phare()
     C_.arreter_fictifs()
     K_.tuer_agents()

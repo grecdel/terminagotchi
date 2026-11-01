@@ -533,6 +533,34 @@ def _etabli_anime(x, phase):
     return [f"📄 {''.join(tapis)} 🧩"]
 
 
+# ---------------------------------------------------------------- la lunette (l'Observatoire de l'IA)
+def lunettes(ligne):
+    """Les commandes d'une ligne qui VÉRIFIENT ou qui font travailler un petit programme du jeu (spécification commune,
+    Deploie.kt, vecteurs donnees/observatoire/vecteurs.json) : [{seg, cmd, outil, de, vers}] — diff compare deux
+    textes, wc et uniq -c comptent, sh tests.sh rend un verdict, l'assistant fait d'une consigne un rapport…"""
+    from . import observatoire
+    out = []
+    bl = blocs(ligne)
+    for c in chaines(bl):
+        for e in c["etapes"]:
+            a = observatoire.lunette_de(e["texte"])
+            if not a:
+                continue
+            seg = next((b["seg"] for b in bl if b["g"] == "commande" and b["i"] - 1 == e["debut"]), 0)
+            out.append({"seg": seg, "cmd": e["cmd"], "outil": a[0], "de": a[1], "vers": a[2]})
+    return out
+
+
+def _lunette_anime(x, phase):
+    """La lunette : ce qui entre (à gauche) passe sous la lentille (🔭) et ressort vérifié ou transformé (à droite)."""
+    L = 30
+    pos = int(phase * (L - 1))
+    ciel = ["·" if (k + int(phase * 7)) % 5 else "✦" for k in range(L)]
+    ciel[min(pos, L - 1)] = "▣" if pos < L // 2 else "◆"
+    ciel[L // 2] = "◐◓◑◒"[int(phase * 16) % 4]
+    return [f"📄 {''.join(ciel)} 🔭"]
+
+
 # ---------------------------------------------------------------- les mots pour le dire
 def nom_genre(g):
     return t("dep.genre." + g)
@@ -792,6 +820,12 @@ def ecran(ligne, bl, actif, sorties, phase=0.0, largeur=80, dossier=None, pas=Fa
                 out.append(f"  {fg(ANSI['commande'])}🛠 " + t("dep.etabli", outil=x["outil"], de=t("gu.etabli." + x["de"]),
                                                              vers=t("gu.etabli." + x["vers"])) + RESET)
                 out += ["  " + l for l in _etabli_anime(x, phase % 1.0)]
+        for x in lunettes(ligne):                # diff, wc, uniq -c, tests, assistant… : la lunette (l'Observatoire)
+            if x["seg"] == b["seg"]:
+                out.append("")
+                out.append(f"  {fg(ANSI['commande'])}🔭 " + t("dep.lunette", outil=x["outil"], de=t("ob.lunette." + x["de"]),
+                                                             vers=t("ob.lunette." + x["vers"])) + RESET)
+                out += ["  " + l for l in _lunette_anime(x, phase % 1.0)]
     if actif == n and sorties:
         for c, s in zip(chs, sorties):
             if s and len(c["etapes"]) > 1:
@@ -811,7 +845,8 @@ def _reseau(b, ligne):
                                      any(x["seg"] == b["seg"] for x in roue(ligne)) or
                                      any(x["seg"] == b["seg"] for x in pieces(ligne)) or
                                      any(x["seg"] == b["seg"] for x in antennes(ligne)) or
-                                     any(x["seg"] == b["seg"] for x in etablis(ligne)))
+                                     any(x["seg"] == b["seg"] for x in etablis(ligne)) or
+                                     any(x["seg"] == b["seg"] for x in lunettes(ligne)))
 
 
 def jouer(ligne, dossier=None, pas=False, sortie=None, clavier=None, ips=12):

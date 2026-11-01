@@ -286,7 +286,9 @@ def _garde_gpg():
 DEPLOIE = ("alias deploie='history -a 2>/dev/null; tg deploie --historique #'\n"
            "alias espace='tg espace'; alias cerveau='tg cerveau'; alias port='tg port'; alias citadelle='tg citadelle'; alias crypte='tg crypte'; alias machines='tg machines'\n"
            "alias ondes='tg ondes'; alias mesh-envoie='tg ondes mesh-envoie'; alias mesh-coupe='tg ondes mesh-coupe'; alias mesh-route='tg ondes mesh-route'\n"
-           "alias guilde='tg guilde'")
+           "alias guilde='tg guilde'\n"
+           "alias observatoire='tg observatoire'; alias assistant='tg assistant'; alias agent='tg agent'; "
+           "alias devine-type='tg devine-type'; alias devine-mot='tg devine-mot'")
 
 
 def _blocs():
@@ -331,7 +333,10 @@ def _blocs():
             'function ondes\n    tg ondes $argv\nend\n'
             'function mesh-envoie\n    tg ondes mesh-envoie $argv\nend\nfunction mesh-coupe\n    tg ondes mesh-coupe $argv\nend\n'
             'function mesh-route\n    tg ondes mesh-route $argv\nend\n'
-            'function guilde\n    tg guilde $argv\nend')
+            'function guilde\n    tg guilde $argv\nend\n'
+            'function observatoire\n    tg observatoire $argv\nend\nfunction assistant\n    tg assistant $argv\nend\n'
+            'function agent\n    tg agent $argv\nend\nfunction devine-type\n    tg devine-type $argv\nend\n'
+            'function devine-mot\n    tg devine-mot $argv\nend')
     for ps in ("powershell", "pwsh"):
         if shutil.which(ps):
             try:
@@ -360,7 +365,12 @@ def _blocs():
                                        'function mesh-envoie { tg ondes mesh-envoie @args }\n'
                                        'function mesh-coupe { tg ondes mesh-coupe @args }\n'
                                        'function mesh-route { tg ondes mesh-route @args }\n'
-                                       'function guilde { tg guilde @args }')
+                                       'function guilde { tg guilde @args }\n'
+                                       'function observatoire { tg observatoire @args }\n'
+                                       'function assistant { tg assistant @args }\n'
+                                       'function agent { tg agent @args }\n'
+                                       'function devine-type { tg devine-type @args }\n'
+                                       'function devine-mot { tg devine-mot @args }')
     return blocs
 
 
@@ -426,7 +436,8 @@ def a_jour():
                                      or ("machines='tg machines'" in bloc and "machines='tg machines'" not in installe)
                                      or ("mesh-envoie='tg ondes" in bloc and "mesh-envoie='tg ondes" not in installe)
                                      or ("function __tg_gpg" in bloc and "function __tg_gpg" not in installe)
-                                     or ("guilde='tg guilde'" in bloc and "guilde='tg guilde'" not in installe)):
+                                     or ("guilde='tg guilde'" in bloc and "guilde='tg guilde'" not in installe)
+                                     or ("devine-mot='tg devine-mot'" in bloc and "devine-mot='tg devine-mot'" not in installe)):
             return False
     return True
 

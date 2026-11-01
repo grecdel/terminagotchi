@@ -1,0 +1,512 @@
+{
+ "note": "Généré par donnees/observatoire/outils/fiches_observatoire.py ; lu par pc/tg/observatoire.py et Observatoire.kt. Aucune vraie IA : de petits programmes du jeu, déterministes, hors ligne.",
+ "creatures": {
+  "braisillon": {
+   "nom": "Braisillon",
+   "famille": "demons",
+   "lieu": "volcan",
+   "type": "feu"
+  },
+  "tritonnet": {
+   "nom": "Tritonnet",
+   "famille": "abyssaux",
+   "lieu": "lagon",
+   "type": "eau"
+  },
+  "cornichaud": {
+   "nom": "Cornichaud",
+   "famille": "demons",
+   "lieu": "volcan",
+   "type": "feu"
+  },
+  "mousselin": {
+   "nom": "Mousselin",
+   "famille": "sylvestres",
+   "lieu": "foret",
+   "type": "plante"
+  },
+  "flamouche": {
+   "nom": "Flamouche",
+   "famille": "demons",
+   "lieu": "lave",
+   "type": "feu"
+  },
+  "plumange": {
+   "nom": "Plumange",
+   "famille": "celestes",
+   "lieu": "nuage",
+   "type": "ciel"
+  },
+  "cendrouille": {
+   "nom": "Cendrouille",
+   "famille": "demons",
+   "lieu": "cendres",
+   "type": "feu"
+  },
+  "corbouh": {
+   "nom": "Corbouh",
+   "famille": "morts_vivants",
+   "lieu": "crypte",
+   "type": "ombre"
+  },
+  "tisonnier": {
+   "nom": "Tisonnier",
+   "famille": "demons",
+   "lieu": "volcan",
+   "type": "feu"
+  },
+  "cailloute": {
+   "nom": "Cailloute",
+   "famille": "elementaires",
+   "lieu": "montagne",
+   "type": "roche"
+  },
+  "chaudronne": {
+   "nom": "Chaudronne",
+   "famille": "demons",
+   "lieu": "marais",
+   "type": "feu"
+  },
+  "boulonnet": {
+   "nom": "Boulonnet",
+   "famille": "constructs",
+   "lieu": "mecanique",
+   "type": "machine"
+  },
+  "infernaille": {
+   "nom": "Infernaille",
+   "famille": "demons",
+   "lieu": "ruines",
+   "type": "feu"
+  },
+  "gloupi": {
+   "nom": "Gloupi",
+   "famille": "aberrations",
+   "lieu": "marais",
+   "type": "poison"
+  },
+  "fumerole": {
+   "nom": "Fumerole",
+   "famille": "elementaires",
+   "lieu": "volcan",
+   "type": "feu"
+  },
+  "pucerise": {
+   "nom": "Pucerise",
+   "famille": "arthropodes",
+   "lieu": "prairie",
+   "type": "plante"
+  },
+  "fondelin": {
+   "nom": "Fondelin",
+   "famille": "constructs",
+   "lieu": "lave",
+   "type": "feu"
+  },
+  "plouftin": {
+   "nom": "Plouftin",
+   "famille": "abyssaux",
+   "lieu": "lagon",
+   "type": "eau"
+  },
+  "cigalarme": {
+   "nom": "Cigalarme",
+   "famille": "arthropodes",
+   "lieu": "volcan",
+   "type": "feu"
+  },
+  "racinelle": {
+   "nom": "Racinelle",
+   "famille": "sylvestres",
+   "lieu": "foret",
+   "type": "plante"
+  },
+  "cauchemarre": {
+   "nom": "Cauchemarre",
+   "famille": "demons",
+   "lieu": "brume",
+   "type": "ombre"
+  },
+  "sulfurette": {
+   "nom": "Sulfurette",
+   "famille": "demons",
+   "lieu": "volcan",
+   "type": "feu"
+  },
+  "volcarnage": {
+   "nom": "Volcarnage",
+   "famille": "demons",
+   "lieu": "lave",
+   "type": "feu"
+  },
+  "magmastodonte": {
+   "nom": "Magmastodonte",
+   "famille": "elementaires",
+   "lieu": "volcan",
+   "type": "feu"
+  },
+  "chaudrogre": {
+   "nom": "Chaudrogre",
+   "famille": "constructs",
+   "lieu": "volcan",
+   "type": "feu"
+  },
+  "raiyon": {
+   "nom": "Raiyon",
+   "famille": "abyssaux",
+   "lieu": "lagon",
+   "type": "eau"
+  },
+  "ronceau": {
+   "nom": "Ronceau",
+   "famille": "sylvestres",
+   "lieu": "foret",
+   "type": "plante"
+  },
+  "lumignon": {
+   "nom": "Lumignon",
+   "famille": "celestes",
+   "lieu": "soleil",
+   "type": "ciel"
+  },
+  "engrenaille": {
+   "nom": "Engrenaille",
+   "famille": "constructs",
+   "lieu": "mecanique",
+   "type": "machine"
+  },
+  "pyrodrac": {
+   "nom": "Pyrodrac",
+   "famille": "demons",
+   "lieu": "volcan",
+   "type": "feu"
+  }
+ },
+ "exemples": [
+  "braisillon",
+  "tritonnet",
+  "cornichaud",
+  "mousselin",
+  "flamouche",
+  "plumange",
+  "cendrouille",
+  "corbouh",
+  "tisonnier",
+  "cailloute",
+  "chaudronne",
+  "boulonnet",
+  "infernaille",
+  "gloupi",
+  "fumerole",
+  "pucerise",
+  "fondelin",
+  "plouftin",
+  "cigalarme",
+  "racinelle"
+ ],
+ "piege": "cauchemarre",
+ "volcan": [
+  "braisillon",
+  "cornichaud",
+  "flamouche",
+  "cendrouille",
+  "sulfurette",
+  "tisonnier",
+  "volcarnage",
+  "fumerole",
+  "magmastodonte",
+  "cigalarme",
+  "fondelin",
+  "chaudrogre"
+ ],
+ "autres": [
+  "raiyon",
+  "ronceau",
+  "lumignon",
+  "engrenaille",
+  "pyrodrac"
+ ],
+ "piege_cause": "famille",
+ "mission": {
+  "verbes": [
+   "compter",
+   "trier",
+   "lister"
+  ],
+  "floue": "ob.mission.floue",
+  "tri": "ob.mission.tri",
+  "exemple": "ob.mission.exemple",
+  "filtre": "feu"
+ },
+ "secret": {
+  "cle": "exemple-PAS-UNE-VRAIE-CLE-1234",
+  "variable": "CLE_API"
+ },
+ "agent": {
+  "liste": [
+   "Gloupi",
+   "Plumange",
+   "Corbouh",
+   "Gloupi",
+   "Braisillon",
+   "Mousselin",
+   "Plumange",
+   "Cailloute"
+  ],
+  "propositions": [
+   {
+    "id": "copie",
+    "sur": true,
+    "texte": "cp a_nourrir.txt sauvegarde.txt"
+   },
+   {
+    "id": "efface",
+    "sur": false,
+    "texte": "rm -rf ~/…"
+   },
+   {
+    "id": "note",
+    "sur": true,
+    "texte": "echo ok > note.txt"
+   }
+  ],
+  "boucle_tours": 50,
+  "boucle_pause": 0.4
+ },
+ "corpus": [
+  "hist.reveil.debut",
+  "hist.reveil.fin",
+  "hist.nid.debut",
+  "hist.nid.fin",
+  "hist.grenier.debut",
+  "hist.grenier.fin",
+  "hist.cave.debut",
+  "hist.cave.fin",
+  "hist.bibliotheque.debut",
+  "hist.bibliotheque.fin",
+  "hist.machines.debut",
+  "hist.machines.fin",
+  "hist.dortoir.debut",
+  "hist.dortoir.fin",
+  "hist.atelier.debut",
+  "hist.atelier.fin",
+  "hist.tour.debut",
+  "hist.tour.fin",
+  "hist.coeur.debut",
+  "hist.coeur.fin"
+ ],
+ "cjk": [
+  [
+   12352,
+   12543
+  ],
+  [
+   13312,
+   19903
+  ],
+  [
+   19968,
+   40959
+  ],
+  [
+   63744,
+   64255
+  ],
+  [
+   65382,
+   65439
+  ]
+ ],
+ "phrase_mots": 8,
+ "questions": [
+  {
+   "id": "lignes",
+   "verif": "wc -l devineur/exemples.txt"
+  },
+  {
+   "id": "modulo",
+   "verif": "echo $((17 % 5))"
+  },
+  {
+   "id": "mot",
+   "verif": "tr ' ' '\\n' < mots/histoire.txt | sort | uniq -c | sort -rn | head -3"
+  },
+  {
+   "id": "ls",
+   "verif": "explique ls"
+  },
+  {
+   "id": "rm",
+   "verif": "explique rm"
+  }
+ ],
+ "fausses": 2,
+ "confier": [
+  {
+   "id": "expliquer",
+   "rep": "c"
+  },
+  {
+   "id": "adresse",
+   "rep": "g"
+  },
+  {
+   "id": "mot_de_passe",
+   "rep": "g"
+  },
+  {
+   "id": "photo",
+   "rep": "g"
+  },
+  {
+   "id": "idees",
+   "rep": "c"
+  },
+  {
+   "id": "naissance",
+   "rep": "g"
+  }
+ ],
+ "nuances": [
+  {
+   "id": "assuree",
+   "rep": "v"
+  },
+  {
+   "id": "deepfake",
+   "rep": "v"
+  },
+  {
+   "id": "droits",
+   "rep": "f"
+  },
+  {
+   "id": "energie",
+   "rep": "f"
+  },
+  {
+   "id": "forcement",
+   "rep": "f"
+  }
+ ],
+ "equipe": {
+  "invites": [
+   "Pucerise",
+   "Tritonnet",
+   "Fondelin",
+   "Pucerise",
+   "Racinelle",
+   "Boulonnet",
+   "Tritonnet",
+   "Cigalarme",
+   "Pucerise"
+  ],
+  "decoupe": [
+   "liste",
+   "compte",
+   "invitations"
+  ],
+  "consignes": [
+   {
+    "id": "claire",
+    "rep": true
+   },
+   {
+    "id": "floue",
+    "rep": false
+   },
+   {
+    "id": "dangereuse",
+    "rep": false
+   }
+  ],
+  "propositions": [
+   {
+    "id": "resume",
+    "sur": true,
+    "texte": "echo fete > resume.txt"
+   },
+   {
+    "id": "sudo",
+    "sur": false,
+    "texte": "sudo chmod -R 777 /…"
+   },
+   {
+    "id": "sauvegarde",
+    "sur": true,
+    "texte": "cp liste.txt sauvegarde_liste.txt"
+   }
+  ],
+  "copies_par_tour": 7,
+  "copies_max": 63
+ },
+ "lunette": {
+  "regles": [
+   {
+    "motif": "^(tg\\s+)?assistant\\b",
+    "outil": "assistant",
+    "de": "consigne",
+    "vers": "rapport"
+   },
+   {
+    "motif": "^(tg\\s+)?devine-type\\b",
+    "outil": "devine-type",
+    "de": "exemples",
+    "vers": "devinette"
+   },
+   {
+    "motif": "^(tg\\s+)?devine-mot\\b",
+    "outil": "devine-mot",
+    "de": "texte",
+    "vers": "suite"
+   },
+   {
+    "motif": "^(tg\\s+)?agent\\b",
+    "outil": "agent",
+    "de": "consigne",
+    "vers": "journal"
+   },
+   {
+    "motif": "^diff\\b",
+    "outil": "diff",
+    "de": "deux_textes",
+    "vers": "differences"
+   },
+   {
+    "motif": "^wc\\b",
+    "outil": "wc",
+    "de": "fichier",
+    "vers": "compte"
+   },
+   {
+    "motif": "^uniq\\b.*\\s-\\w*c",
+    "outil": "uniq -c",
+    "de": "lignes",
+    "vers": "effectifs"
+   },
+   {
+    "motif": "^grep\\b.*\\s-\\w*c",
+    "outil": "grep -c",
+    "de": "lignes",
+    "vers": "compte"
+   },
+   {
+    "motif": "^(sh|bash)\\s+\\S*tests?\\.sh\\b",
+    "outil": "tests",
+    "de": "travail",
+    "vers": "verdict"
+   }
+  ]
+ },
+ "couleurs": {
+  "assistant": 117,
+  "devine-type": 215,
+  "devine-mot": 141,
+  "agent": 78,
+  "diff": 229,
+  "wc": 229,
+  "uniq -c": 229,
+  "grep -c": 229,
+  "tests": 78
+ }
+}

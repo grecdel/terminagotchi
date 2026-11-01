@@ -1199,6 +1199,15 @@ def _main():
         from . import guilde
         guilde.commande(args[1:])
         return
+    if mode == "observatoire":                 # tg observatoire … : l'Observatoire de l'IA (aucune vraie IA)
+        from . import observatoire
+        observatoire.commande(args[1:])
+        return
+    if mode in ("assistant", "agent", "devine-type", "devine-mot"):    # les petits programmes FICTIFS de l'Observatoire
+        from . import observatoire as ob
+        {"assistant": ob.commande_assistant, "agent": ob.commande_agent, "devine-type": ob.commande_devine_type,
+         "devine-mot": ob.commande_devine_mot}[mode](args[1:])
+        return
     if mode in ("mesh-envoie", "mesh-coupe", "mesh-route"):     # le maillage du Terminaworld (alias de tg installer)
         from . import ondes
         ondes.commande([mode] + args[1:])

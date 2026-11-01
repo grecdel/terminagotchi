@@ -378,6 +378,7 @@ BUILTINS = {"cd", "echo", "export", "alias", "history", "type", "source", ".", "
             # les alias du jeu posés par tg installer (le compagnon) : ce sont des commandes, pas des fautes
             "deploie", "espace", "cerveau", "port", "citadelle", "crypte", "machines",
             "ondes", "mesh-envoie", "mesh-coupe", "mesh-route", "guilde",
+            "observatoire", "assistant", "agent", "devine-type", "devine-mot",
             # les mots-clés du shell (time sh mineur.sh 3 : « time » n'est pas un programme, mais il existe)
             "time", "case", "until", "function", "select", "command", "builtin", "local", "declare", "times"}
 

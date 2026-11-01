@@ -2090,6 +2090,270 @@
    "verif": "echo $((2#1010))"
   },
   {
+   "type": "probabilites",
+   "graine": 0,
+   "k": 0,
+   "params": {
+    "a": "1",
+    "b": "1"
+   },
+   "reponse": "50",
+   "verif": "echo $((1 * 100 / 2))"
+  },
+  {
+   "type": "probabilites",
+   "graine": 0,
+   "k": 1,
+   "params": {
+    "a": "2",
+    "b": "2"
+   },
+   "reponse": "50",
+   "verif": "echo $((2 * 100 / 4))"
+  },
+  {
+   "type": "probabilites",
+   "graine": 0,
+   "k": 2,
+   "params": {
+    "a": "7",
+    "b": "43"
+   },
+   "reponse": "14",
+   "verif": "echo $((7 * 100 / 50))"
+  },
+  {
+   "type": "probabilites",
+   "graine": 0,
+   "k": 3,
+   "params": {
+    "a": "1",
+    "b": "3"
+   },
+   "reponse": "25",
+   "verif": "echo $((1 * 100 / 4))"
+  },
+  {
+   "type": "probabilites",
+   "graine": 0,
+   "k": 4,
+   "params": {
+    "a": "8",
+    "b": "2"
+   },
+   "reponse": "80",
+   "verif": "echo $((8 * 100 / 10))"
+  },
+  {
+   "type": "probabilites",
+   "graine": 0,
+   "k": 5,
+   "params": {
+    "a": "6",
+    "b": "14"
+   },
+   "reponse": "30",
+   "verif": "echo $((6 * 100 / 20))"
+  },
+  {
+   "type": "probabilites",
+   "graine": 0,
+   "k": 6,
+   "params": {
+    "a": "1",
+    "b": "3"
+   },
+   "reponse": "25",
+   "verif": "echo $((1 * 100 / 4))"
+  },
+  {
+   "type": "probabilites",
+   "graine": 0,
+   "k": 7,
+   "params": {
+    "a": "24",
+    "b": "26"
+   },
+   "reponse": "48",
+   "verif": "echo $((24 * 100 / 50))"
+  },
+  {
+   "type": "probabilites",
+   "graine": 1761955200,
+   "k": 0,
+   "params": {
+    "a": "19",
+    "b": "1"
+   },
+   "reponse": "95",
+   "verif": "echo $((19 * 100 / 20))"
+  },
+  {
+   "type": "probabilites",
+   "graine": 1761955200,
+   "k": 1,
+   "params": {
+    "a": "7",
+    "b": "18"
+   },
+   "reponse": "28",
+   "verif": "echo $((7 * 100 / 25))"
+  },
+  {
+   "type": "probabilites",
+   "graine": 1761955200,
+   "k": 2,
+   "params": {
+    "a": "11",
+    "b": "14"
+   },
+   "reponse": "44",
+   "verif": "echo $((11 * 100 / 25))"
+  },
+  {
+   "type": "probabilites",
+   "graine": 1761955200,
+   "k": 3,
+   "params": {
+    "a": "2",
+    "b": "3"
+   },
+   "reponse": "40",
+   "verif": "echo $((2 * 100 / 5))"
+  },
+  {
+   "type": "probabilites",
+   "graine": 1761955200,
+   "k": 4,
+   "params": {
+    "a": "1",
+    "b": "1"
+   },
+   "reponse": "50",
+   "verif": "echo $((1 * 100 / 2))"
+  },
+  {
+   "type": "probabilites",
+   "graine": 1761955200,
+   "k": 5,
+   "params": {
+    "a": "5",
+    "b": "5"
+   },
+   "reponse": "50",
+   "verif": "echo $((5 * 100 / 10))"
+  },
+  {
+   "type": "probabilites",
+   "graine": 1761955200,
+   "k": 6,
+   "params": {
+    "a": "1",
+    "b": "3"
+   },
+   "reponse": "25",
+   "verif": "echo $((1 * 100 / 4))"
+  },
+  {
+   "type": "probabilites",
+   "graine": 1761955200,
+   "k": 7,
+   "params": {
+    "a": "3",
+    "b": "1"
+   },
+   "reponse": "75",
+   "verif": "echo $((3 * 100 / 4))"
+  },
+  {
+   "type": "probabilites",
+   "graine": 1099511627783,
+   "k": 0,
+   "params": {
+    "a": "2",
+    "b": "23"
+   },
+   "reponse": "8",
+   "verif": "echo $((2 * 100 / 25))"
+  },
+  {
+   "type": "probabilites",
+   "graine": 1099511627783,
+   "k": 1,
+   "params": {
+    "a": "6",
+    "b": "4"
+   },
+   "reponse": "60",
+   "verif": "echo $((6 * 100 / 10))"
+  },
+  {
+   "type": "probabilites",
+   "graine": 1099511627783,
+   "k": 2,
+   "params": {
+    "a": "1",
+    "b": "9"
+   },
+   "reponse": "10",
+   "verif": "echo $((1 * 100 / 10))"
+  },
+  {
+   "type": "probabilites",
+   "graine": 1099511627783,
+   "k": 3,
+   "params": {
+    "a": "1",
+    "b": "3"
+   },
+   "reponse": "25",
+   "verif": "echo $((1 * 100 / 4))"
+  },
+  {
+   "type": "probabilites",
+   "graine": 1099511627783,
+   "k": 4,
+   "params": {
+    "a": "1",
+    "b": "4"
+   },
+   "reponse": "20",
+   "verif": "echo $((1 * 100 / 5))"
+  },
+  {
+   "type": "probabilites",
+   "graine": 1099511627783,
+   "k": 5,
+   "params": {
+    "a": "2",
+    "b": "18"
+   },
+   "reponse": "10",
+   "verif": "echo $((2 * 100 / 20))"
+  },
+  {
+   "type": "probabilites",
+   "graine": 1099511627783,
+   "k": 6,
+   "params": {
+    "a": "1",
+    "b": "1"
+   },
+   "reponse": "50",
+   "verif": "echo $((1 * 100 / 2))"
+  },
+  {
+   "type": "probabilites",
+   "graine": 1099511627783,
+   "k": 7,
+   "params": {
+    "a": "12",
+    "b": "13"
+   },
+   "reponse": "48",
+   "verif": "echo $((12 * 100 / 25))"
+  },
+  {
    "type": "frequence",
    "graine": 0,
    "k": 0,
@@ -3672,6 +3936,510 @@
    },
    "reponse": "36",
    "verif": "echo $((3 * 4 * 3))"
+  },
+  {
+   "type": "effectifs",
+   "graine": 0,
+   "k": 0,
+   "params": {
+    "liste": "🔥 💧 🔥 🔥 💧 💧"
+   },
+   "reponse": "3",
+   "verif": "printf '%s\\n' Feu Eau Feu Feu Eau Eau | grep -c Feu"
+  },
+  {
+   "type": "effectifs",
+   "graine": 0,
+   "k": 1,
+   "params": {
+    "liste": "🔥 💧 🔥 💧 🔥 💧 🔥"
+   },
+   "reponse": "4",
+   "verif": "printf '%s\\n' Feu Eau Feu Eau Feu Eau Feu | grep -c Feu"
+  },
+  {
+   "type": "effectifs",
+   "graine": 0,
+   "k": 2,
+   "params": {
+    "liste": "💧 💧 💧 💧 🔥 🔥 💧 💧 🔥 💧 💧 🔥"
+   },
+   "reponse": "4",
+   "verif": "printf '%s\\n' Eau Eau Eau Eau Feu Feu Eau Eau Feu Eau Eau Feu | grep -c Feu"
+  },
+  {
+   "type": "effectifs",
+   "graine": 0,
+   "k": 3,
+   "params": {
+    "liste": "🔥 🔥 💧 🔥 🔥 🔥 🔥"
+   },
+   "reponse": "6",
+   "verif": "printf '%s\\n' Feu Feu Eau Feu Feu Feu Feu | grep -c Feu"
+  },
+  {
+   "type": "effectifs",
+   "graine": 0,
+   "k": 4,
+   "params": {
+    "liste": "💧 💧 🔥 🔥 💧 💧 💧 🔥 💧"
+   },
+   "reponse": "3",
+   "verif": "printf '%s\\n' Eau Eau Feu Feu Eau Eau Eau Feu Eau | grep -c Feu"
+  },
+  {
+   "type": "effectifs",
+   "graine": 0,
+   "k": 5,
+   "params": {
+    "liste": "🔥 💧 💧 💧 🔥 🔥 💧 💧 💧 💧"
+   },
+   "reponse": "3",
+   "verif": "printf '%s\\n' Feu Eau Eau Eau Feu Feu Eau Eau Eau Eau | grep -c Feu"
+  },
+  {
+   "type": "effectifs",
+   "graine": 0,
+   "k": 6,
+   "params": {
+    "liste": "💧 🔥 💧 🔥 💧 🔥 🔥"
+   },
+   "reponse": "4",
+   "verif": "printf '%s\\n' Eau Feu Eau Feu Eau Feu Feu | grep -c Feu"
+  },
+  {
+   "type": "effectifs",
+   "graine": 0,
+   "k": 7,
+   "params": {
+    "liste": "🔥 🔥 💧 🔥 💧 💧 🔥 💧 🔥 💧 🔥 💧"
+   },
+   "reponse": "6",
+   "verif": "printf '%s\\n' Feu Feu Eau Feu Eau Eau Feu Eau Feu Eau Feu Eau | grep -c Feu"
+  },
+  {
+   "type": "effectifs",
+   "graine": 1761955200,
+   "k": 0,
+   "params": {
+    "liste": "💧 💧 💧 🔥 🔥 💧 💧 💧 🔥 🔥"
+   },
+   "reponse": "4",
+   "verif": "printf '%s\\n' Eau Eau Eau Feu Feu Eau Eau Eau Feu Feu | grep -c Feu"
+  },
+  {
+   "type": "effectifs",
+   "graine": 1761955200,
+   "k": 1,
+   "params": {
+    "liste": "🔥 🔥 💧 💧 🔥 💧 💧 🔥 💧 🔥 🔥"
+   },
+   "reponse": "6",
+   "verif": "printf '%s\\n' Feu Feu Eau Eau Feu Eau Eau Feu Eau Feu Feu | grep -c Feu"
+  },
+  {
+   "type": "effectifs",
+   "graine": 1761955200,
+   "k": 2,
+   "params": {
+    "liste": "🔥 💧 🔥 💧 💧 💧 💧 🔥 🔥 💧 💧"
+   },
+   "reponse": "4",
+   "verif": "printf '%s\\n' Feu Eau Feu Eau Eau Eau Eau Feu Feu Eau Eau | grep -c Feu"
+  },
+  {
+   "type": "effectifs",
+   "graine": 1761955200,
+   "k": 3,
+   "params": {
+    "liste": "💧 🔥 🔥 🔥 🔥 🔥 💧 🔥"
+   },
+   "reponse": "6",
+   "verif": "printf '%s\\n' Eau Feu Feu Feu Feu Feu Eau Feu | grep -c Feu"
+  },
+  {
+   "type": "effectifs",
+   "graine": 1761955200,
+   "k": 4,
+   "params": {
+    "liste": "💧 🔥 🔥 💧 💧 🔥"
+   },
+   "reponse": "3",
+   "verif": "printf '%s\\n' Eau Feu Feu Eau Eau Feu | grep -c Feu"
+  },
+  {
+   "type": "effectifs",
+   "graine": 1761955200,
+   "k": 5,
+   "params": {
+    "liste": "🔥 🔥 💧 🔥 💧 🔥 💧 🔥 🔥"
+   },
+   "reponse": "6",
+   "verif": "printf '%s\\n' Feu Feu Eau Feu Eau Feu Eau Feu Feu | grep -c Feu"
+  },
+  {
+   "type": "effectifs",
+   "graine": 1761955200,
+   "k": 6,
+   "params": {
+    "liste": "💧 🔥 💧 🔥 💧 🔥 💧"
+   },
+   "reponse": "3",
+   "verif": "printf '%s\\n' Eau Feu Eau Feu Eau Feu Eau | grep -c Feu"
+  },
+  {
+   "type": "effectifs",
+   "graine": 1761955200,
+   "k": 7,
+   "params": {
+    "liste": "💧 💧 🔥 🔥 💧 💧 🔥"
+   },
+   "reponse": "3",
+   "verif": "printf '%s\\n' Eau Eau Feu Feu Eau Eau Feu | grep -c Feu"
+  },
+  {
+   "type": "effectifs",
+   "graine": 1099511627783,
+   "k": 0,
+   "params": {
+    "liste": "💧 💧 🔥 💧 💧 💧 🔥 🔥 💧 🔥 💧"
+   },
+   "reponse": "4",
+   "verif": "printf '%s\\n' Eau Eau Feu Eau Eau Eau Feu Feu Eau Feu Eau | grep -c Feu"
+  },
+  {
+   "type": "effectifs",
+   "graine": 1099511627783,
+   "k": 1,
+   "params": {
+    "liste": "🔥 💧 💧 💧 🔥 💧 💧 🔥 🔥"
+   },
+   "reponse": "4",
+   "verif": "printf '%s\\n' Feu Eau Eau Eau Feu Eau Eau Feu Feu | grep -c Feu"
+  },
+  {
+   "type": "effectifs",
+   "graine": 1099511627783,
+   "k": 2,
+   "params": {
+    "liste": "💧 🔥 🔥 💧 🔥 💧 💧 🔥 💧"
+   },
+   "reponse": "4",
+   "verif": "printf '%s\\n' Eau Feu Feu Eau Feu Eau Eau Feu Eau | grep -c Feu"
+  },
+  {
+   "type": "effectifs",
+   "graine": 1099511627783,
+   "k": 3,
+   "params": {
+    "liste": "💧 🔥 💧 💧 🔥 🔥 💧"
+   },
+   "reponse": "3",
+   "verif": "printf '%s\\n' Eau Feu Eau Eau Feu Feu Eau | grep -c Feu"
+  },
+  {
+   "type": "effectifs",
+   "graine": 1099511627783,
+   "k": 4,
+   "params": {
+    "liste": "🔥 💧 🔥 💧 🔥 🔥 🔥 💧"
+   },
+   "reponse": "5",
+   "verif": "printf '%s\\n' Feu Eau Feu Eau Feu Feu Feu Eau | grep -c Feu"
+  },
+  {
+   "type": "effectifs",
+   "graine": 1099511627783,
+   "k": 5,
+   "params": {
+    "liste": "💧 🔥 🔥 💧 🔥 🔥 🔥 💧 💧 🔥"
+   },
+   "reponse": "6",
+   "verif": "printf '%s\\n' Eau Feu Feu Eau Feu Feu Feu Eau Eau Feu | grep -c Feu"
+  },
+  {
+   "type": "effectifs",
+   "graine": 1099511627783,
+   "k": 6,
+   "params": {
+    "liste": "💧 💧 💧 🔥 🔥 🔥"
+   },
+   "reponse": "3",
+   "verif": "printf '%s\\n' Eau Eau Eau Feu Feu Feu | grep -c Feu"
+  },
+  {
+   "type": "effectifs",
+   "graine": 1099511627783,
+   "k": 7,
+   "params": {
+    "liste": "💧 🔥 💧 🔥 🔥 🔥 💧 💧 💧 💧 🔥"
+   },
+   "reponse": "5",
+   "verif": "printf '%s\\n' Eau Feu Eau Feu Feu Feu Eau Eau Eau Eau Feu | grep -c Feu"
+  },
+  {
+   "type": "frequences",
+   "graine": 0,
+   "k": 0,
+   "params": {
+    "n": "2",
+    "total": "2"
+   },
+   "reponse": "100",
+   "verif": "echo $((2 * 100 / 2))"
+  },
+  {
+   "type": "frequences",
+   "graine": 0,
+   "k": 1,
+   "params": {
+    "n": "1",
+    "total": "4"
+   },
+   "reponse": "25",
+   "verif": "echo $((1 * 100 / 4))"
+  },
+  {
+   "type": "frequences",
+   "graine": 0,
+   "k": 2,
+   "params": {
+    "n": "45",
+    "total": "50"
+   },
+   "reponse": "90",
+   "verif": "echo $((45 * 100 / 50))"
+  },
+  {
+   "type": "frequences",
+   "graine": 0,
+   "k": 3,
+   "params": {
+    "n": "0",
+    "total": "4"
+   },
+   "reponse": "0",
+   "verif": "echo $((0 * 100 / 4))"
+  },
+  {
+   "type": "frequences",
+   "graine": 0,
+   "k": 4,
+   "params": {
+    "n": "8",
+    "total": "10"
+   },
+   "reponse": "80",
+   "verif": "echo $((8 * 100 / 10))"
+  },
+  {
+   "type": "frequences",
+   "graine": 0,
+   "k": 5,
+   "params": {
+    "n": "20",
+    "total": "20"
+   },
+   "reponse": "100",
+   "verif": "echo $((20 * 100 / 20))"
+  },
+  {
+   "type": "frequences",
+   "graine": 0,
+   "k": 6,
+   "params": {
+    "n": "4",
+    "total": "4"
+   },
+   "reponse": "100",
+   "verif": "echo $((4 * 100 / 4))"
+  },
+  {
+   "type": "frequences",
+   "graine": 0,
+   "k": 7,
+   "params": {
+    "n": "45",
+    "total": "50"
+   },
+   "reponse": "90",
+   "verif": "echo $((45 * 100 / 50))"
+  },
+  {
+   "type": "frequences",
+   "graine": 1761955200,
+   "k": 0,
+   "params": {
+    "n": "6",
+    "total": "20"
+   },
+   "reponse": "30",
+   "verif": "echo $((6 * 100 / 20))"
+  },
+  {
+   "type": "frequences",
+   "graine": 1761955200,
+   "k": 1,
+   "params": {
+    "n": "10",
+    "total": "25"
+   },
+   "reponse": "40",
+   "verif": "echo $((10 * 100 / 25))"
+  },
+  {
+   "type": "frequences",
+   "graine": 1761955200,
+   "k": 2,
+   "params": {
+    "n": "4",
+    "total": "25"
+   },
+   "reponse": "16",
+   "verif": "echo $((4 * 100 / 25))"
+  },
+  {
+   "type": "frequences",
+   "graine": 1761955200,
+   "k": 3,
+   "params": {
+    "n": "1",
+    "total": "5"
+   },
+   "reponse": "20",
+   "verif": "echo $((1 * 100 / 5))"
+  },
+  {
+   "type": "frequences",
+   "graine": 1761955200,
+   "k": 4,
+   "params": {
+    "n": "1",
+    "total": "2"
+   },
+   "reponse": "50",
+   "verif": "echo $((1 * 100 / 2))"
+  },
+  {
+   "type": "frequences",
+   "graine": 1761955200,
+   "k": 5,
+   "params": {
+    "n": "7",
+    "total": "10"
+   },
+   "reponse": "70",
+   "verif": "echo $((7 * 100 / 10))"
+  },
+  {
+   "type": "frequences",
+   "graine": 1761955200,
+   "k": 6,
+   "params": {
+    "n": "2",
+    "total": "4"
+   },
+   "reponse": "50",
+   "verif": "echo $((2 * 100 / 4))"
+  },
+  {
+   "type": "frequences",
+   "graine": 1761955200,
+   "k": 7,
+   "params": {
+    "n": "2",
+    "total": "4"
+   },
+   "reponse": "50",
+   "verif": "echo $((2 * 100 / 4))"
+  },
+  {
+   "type": "frequences",
+   "graine": 1099511627783,
+   "k": 0,
+   "params": {
+    "n": "3",
+    "total": "25"
+   },
+   "reponse": "12",
+   "verif": "echo $((3 * 100 / 25))"
+  },
+  {
+   "type": "frequences",
+   "graine": 1099511627783,
+   "k": 1,
+   "params": {
+    "n": "4",
+    "total": "10"
+   },
+   "reponse": "40",
+   "verif": "echo $((4 * 100 / 10))"
+  },
+  {
+   "type": "frequences",
+   "graine": 1099511627783,
+   "k": 2,
+   "params": {
+    "n": "3",
+    "total": "10"
+   },
+   "reponse": "30",
+   "verif": "echo $((3 * 100 / 10))"
+  },
+  {
+   "type": "frequences",
+   "graine": 1099511627783,
+   "k": 3,
+   "params": {
+    "n": "1",
+    "total": "4"
+   },
+   "reponse": "25",
+   "verif": "echo $((1 * 100 / 4))"
+  },
+  {
+   "type": "frequences",
+   "graine": 1099511627783,
+   "k": 4,
+   "params": {
+    "n": "0",
+    "total": "5"
+   },
+   "reponse": "0",
+   "verif": "echo $((0 * 100 / 5))"
+  },
+  {
+   "type": "frequences",
+   "graine": 1099511627783,
+   "k": 5,
+   "params": {
+    "n": "0",
+    "total": "20"
+   },
+   "reponse": "0",
+   "verif": "echo $((0 * 100 / 20))"
+  },
+  {
+   "type": "frequences",
+   "graine": 1099511627783,
+   "k": 6,
+   "params": {
+    "n": "0",
+    "total": "2"
+   },
+   "reponse": "0",
+   "verif": "echo $((0 * 100 / 2))"
+  },
+  {
+   "type": "frequences",
+   "graine": 1099511627783,
+   "k": 7,
+   "params": {
+    "n": "21",
+    "total": "25"
+   },
+   "reponse": "84",
+   "verif": "echo $((21 * 100 / 25))"
   }
  ],
  "recherches": [
@@ -3698,12 +4466,12 @@
   {
    "langue": "fr",
    "question": "compter les étoiles",
-   "attendu": "comptage"
+   "attendu": "effectifs"
   },
   {
    "langue": "fr",
    "question": "combien font 3 fois 4",
-   "attendu": "multiplication"
+   "attendu": "effectifs"
   },
   {
    "langue": "fr",
@@ -3743,7 +4511,7 @@
   {
    "langue": "fr",
    "question": "pourcentage",
-   "attendu": "temps_emission"
+   "attendu": "frequences"
   },
   {
    "langue": "fr",
@@ -3783,7 +4551,7 @@
   {
    "langue": "en",
    "question": "count",
-   "attendu": "comptage"
+   "attendu": "effectifs"
   }
  ],
  "tous_prerequis": {
@@ -3872,10 +4640,12 @@
   ],
   "probabilites": [
    "comptage",
+   "effectifs",
    "addition",
    "multiplication",
    "soustraction",
-   "division"
+   "division",
+   "frequences"
   ],
   "logarithme": [
    "comptage",
@@ -3923,6 +4693,17 @@
    "comptage",
    "addition",
    "multiplication"
+  ],
+  "effectifs": [
+   "comptage"
+  ],
+  "frequences": [
+   "comptage",
+   "effectifs",
+   "addition",
+   "multiplication",
+   "soustraction",
+   "division"
   ]
  }
 }

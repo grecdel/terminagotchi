@@ -268,7 +268,9 @@ from . import crypte as _cry  # noqa: E402         le troisième : la Crypte des
 from . import machines as _mac  # noqa: E402       le quatrième : la Salle des Rouages (machines.py, chapitre « machinerie »)
 from . import ondes as _ond  # noqa: E402         le cinquième : la Tour des Ondes (ondes.py), quartier du Port
 from . import guilde as _gui  # noqa: E402        le sixième : la Guilde des Bâtisseurs Libres (guilde.py), au bord de la Forge
-MONDES_MODS = {"port": _port, "citadelle": _cit, "crypte": _cry, "machinerie": _mac, "ondes": _ond, "guilde": _gui}
+from . import observatoire as _obs  # noqa: E402  le septième : l'Observatoire de l'IA (observatoire.py)
+MONDES_MODS = {"port": _port, "citadelle": _cit, "crypte": _cry, "machinerie": _mac, "ondes": _ond, "guilde": _gui,
+               "observatoire": _obs}
 # le lieu de chaque monde (la Salle des Rouages : chapitre « machinerie », lieu « machines »)
 PIECES_MODS = {_m.CHAPITRE["piece"]: _m for _m in MONDES_MODS.values()}
 for _m in MONDES_MODS.values():
@@ -282,6 +284,7 @@ _CMDS_CRY = {s_.get("cmd") for l_ in _cry.LECONS.values() for s_ in l_["steps"]}
 _CMDS_MAC = {s_.get("cmd") for l_ in _mac.LECONS.values() for s_ in l_["steps"]}
 _CMDS_OND = {s_.get("cmd") for l_ in _ond.LECONS.values() for s_ in l_["steps"]}
 _CMDS_GUI = {s_.get("cmd") for l_ in _gui.LECONS.values() for s_ in l_["steps"]}
+_CMDS_OBS = {s_.get("cmd") for l_ in _obs.LECONS.values() for s_ in l_["steps"]}
 
 
 def lecons_qui_ouvrent():
@@ -1094,6 +1097,8 @@ def _indice_variante(state, step, morcs):
     for m in morcs:
         if m.statut != 0 or verif.motif_ok(step, m.texte, m.avant):
             continue
+        if verif.premier(m.texte) == "cd" and verif.premier(step["cmd"]) != "cd":
+            continue                                   # un cd vers le bon dossier n'est pas une « variante »
         tape = m.texte.lower()
         if verif.premier(m.texte).lower() == verif.premier(step["cmd"]).lower() or any(c in tape for c in cles):
             return t("lec.indice.variante", cmd=step["cmd"])
@@ -1127,6 +1132,8 @@ def indice(state, step, lignes, tapees, morcs=None):
         conseil = _ond.indice(step, tapees)
     if not conseil and step.get("cmd") in _CMDS_GUI:      # la Guilde : /dev, un sudo, un push, une mauvaise réponse…
         conseil = _gui.indice(step, tapees)
+    if not conseil and step.get("cmd") in _CMDS_OBS:      # l'Observatoire : sudo, rm -rf, une consigne floue…
+        conseil = _obs.indice(step, tapees)
     if conseil:
         return conseil
     conseil = _indice_cd(state, step, morcs) or _indice_rm(step, tapees) or _indice_barre(step, morcs) \

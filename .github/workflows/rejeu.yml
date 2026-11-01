@@ -15,6 +15,8 @@ on:
             "app/src/main/java/fr/terminagotchi/OndesDessin.kt",
             "donnees/guilde/**", "donnees/guilde.json", "app/src/main/java/fr/terminagotchi/Guilde.kt",
             "app/src/main/java/fr/terminagotchi/GuildeDessin.kt",
+            "donnees/observatoire/**", "donnees/observatoire.json", "app/src/main/java/fr/terminagotchi/Observatoire.kt",
+            "app/src/main/java/fr/terminagotchi/ObservatoireDessin.kt",
             "pc/**", "app/src/main/assets/langues/**", "app/src/main/java/fr/terminagotchi/Port.kt",
             "app/src/main/java/fr/terminagotchi/Histoire.kt", "app/src/main/java/fr/terminagotchi/Jeu.kt",
             ".github/workflows/rejeu.yml"]
@@ -52,6 +54,7 @@ jobs:
           python3 pc/outils/vecteurs_machines.py --verifier
           python3 pc/outils/vecteurs_ondes.py --verifier
           python3 pc/outils/vecteurs_guilde.py --verifier
+          python3 pc/outils/vecteurs_observatoire.py --verifier
 
       - name: Rejeu des sorties dans un vrai bash (fiches et histoire du PC)
         run: LC_ALL=C.UTF-8 python3 pc/outils/rejeu_bash.py
@@ -130,3 +133,15 @@ jobs:
           set -o pipefail
           LC_ALL=C.UTF-8 python3 pc/outils/sim_guilde.py 2>&1 | tee /tmp/simg.out || {
             grep -E "✖|Error|Traceback|line [0-9]" /tmp/simg.out | head -20 | sed 's/^/::error::/'; exit 1; }
+
+      - name: L'Observatoire de l'IA (aucune vraie IA, aucun réseau, rien hors du terrain, le danger n'est jamais lancé)
+        run: |
+          set -o pipefail
+          LC_ALL=C.UTF-8 python3 pc/outils/test_observatoire.py 2>&1 | tee /tmp/obs.out || {
+            grep -E "✖|Error|Traceback|line [0-9]" /tmp/obs.out | head -20 | sed 's/^/::error::/'; exit 1; }
+
+      - name: Trois enfants visitent l'Observatoire de l'IA (docs/simulations/rapport_observatoire.md)
+        run: |
+          set -o pipefail
+          LC_ALL=C.UTF-8 python3 pc/outils/sim_observatoire.py 2>&1 | tee /tmp/simob.out || {
+            grep -E "✖|Error|Traceback|line [0-9]" /tmp/simob.out | head -20 | sed 's/^/::error::/'; exit 1; }

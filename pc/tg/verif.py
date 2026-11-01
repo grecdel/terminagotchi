@@ -199,6 +199,7 @@ def chemins_manquants(texte, cwd):
     est créé). Les jokers et les variables ne sont pas vérifiés (le shell les développe)."""
     manque = []
     for partie, _ in _couper(texte, ("|",)):
+        partie = re.sub(r"[<>]\([^()]*\)", " ", partie)            # diff <(sort a) b : une substitution, pas un fichier
         sans = re.sub(r"(?<![<\d&])\d?>>?\s*[^\s|;&<>]+", " ", partie)
         sans = re.sub(r"<\s*([^\s|;&<>]+)", r" \1", sans)          # rev < fichier : le fichier doit exister
         ms = mots(sans)

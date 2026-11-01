@@ -161,7 +161,25 @@ def generer(typ, graine, k):
     if typ == "volume":
         a, b, c = 2 + h.entier(5), 2 + h.entier(5), 1 + h.entier(4)
         return {"a": a, "b": b, "c": c}, str(a * b * c), f"echo $(({a} * {b} * {c}))"
+    # les Ponts des Nombres de l'Observatoire de l'IA (§ 7.4) : statistiques et probabilités
+    if typ == "effectifs":
+        n = 6 + h.entier(7)
+        tirs = [h.entier(2) for _ in range(n)]
+        liste = " ".join("🔥" if x == 0 else "💧" for x in tirs)
+        mots = " ".join("Feu" if x == 0 else "Eau" for x in tirs)
+        return {"liste": liste}, str(tirs.count(0)), f"printf '%s\\n' {mots} | grep -c Feu"
+    if typ == "frequences":
+        total = TOTAUX_CENT[h.entier(len(TOTAUX_CENT))]
+        n = h.entier(total + 1)
+        return {"n": n, "total": total}, str(n * 100 // total), f"echo $(({n} * 100 / {total}))"
+    if typ == "probabilites":
+        total = TOTAUX_CENT[h.entier(len(TOTAUX_CENT))]
+        a = 1 + h.entier(total - 1)
+        return {"a": a, "b": total - a}, str(a * 100 // total), f"echo $(({a} * 100 / {total}))"
     raise ValueError(typ)
+
+
+TOTAUX_CENT = [2, 4, 5, 10, 20, 25, 50]                 # 100 / total est entier : des pourcentages justes
 
 
 MHZ_ONDE = [1, 2, 3, 4, 5, 6, 10, 12, 15, 20, 25, 30, 50, 60, 75, 100, 150, 300]   # 300 / f est entier (mètres)
