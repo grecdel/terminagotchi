@@ -1,4 +1,4 @@
-"""Les vecteurs communs de la Salle des Machines (Python ↔ Kotlin) : donnees/machines/vecteurs.json.
+"""Les vecteurs communs de la Salle des Rouages (Python ↔ Kotlin) : donnees/machines/vecteurs.json.
 
     python3 pc/outils/vecteurs_machines.py              écrit les vecteurs (depuis pc/tg/machines.py et pc/tg/deploie.py)
     python3 pc/outils/vecteurs_machines.py --verifier   code de sortie 1 si le fichier n'est plus à jour (CI)
@@ -69,7 +69,7 @@ def main():
         if not FICHIER.is_file() or FICHIER.read_text(encoding="utf-8") != texte:
             print("donnees/machines/vecteurs.json n'est plus à jour : python3 pc/outils/vecteurs_machines.py")
             sys.exit(1)
-        print("vecteurs de la Salle des Machines à jour")
+        print("vecteurs de la Salle des Rouages à jour")
         return
     FICHIER.parent.mkdir(parents=True, exist_ok=True)
     FICHIER.write_text(texte, encoding="utf-8")

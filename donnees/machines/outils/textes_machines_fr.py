@@ -1,18 +1,18 @@
-"""Textes de la Salle des Machines : le FRANÇAIS (la langue de référence). Les 13 autres langues sont dans
+"""Textes de la Salle des Rouages : le FRANÇAIS (la langue de référence). Les 13 autres langues sont dans
 textes_machines_<code>.py, avec exactement les mêmes clés et les mêmes {champs} (vérifié par textes_machines.py)."""
 K = {
  # ------------------------------------------------------------------ le monde, son ouverture, ses récompenses
- "hist.machinerie.titre": "La Salle des Machines",
- "hist.machinerie.court": "Les Machines",
- "hist.machinerie.debut": "⚙ Une trappe s'ouvre sous le camp… Bienvenue dans la Salle des Machines ! Tout ce que tu tapes finit en électricité qui passe dans ces pièces. Ici, on regarde la vraie machine sans rien casser : en lecture seule.",
+ "hist.machinerie.titre": "La Salle des Rouages",
+ "hist.machinerie.court": "Les Rouages",
+ "hist.machinerie.debut": "⚙ Une trappe s'ouvre sous le camp… Bienvenue dans la Salle des Rouages ! Tout ce que tu tapes finit en électricité qui passe dans ces pièces. Ici, on regarde la vraie machine sans rien casser : en lecture seule.",
  "hist.machinerie.fin": "Les machines ronronnent : tu connais le cuisinier, le plan de travail et le garde-manger, tu parles en 0 et en 1, tu sais comment la machine se réveille, et ta machine a démarré. Tu es Architecte des Machines !",
- "carte.piece.machines": "Machines",
+ "carte.piece.machines": "Rouages",
  "esp.biome.machines": "les rouages",
- "esp.biome_long.machines": "la Salle des Machines",
+ "esp.biome_long.machines": "la Salle des Rouages",
  "qu.objet.carte_mere_miniature": "une carte mère miniature",
  "qu.titre.architecte_des_machines": "Architecte des Machines",
- "ma.ouvert.log": "🌍 Un monde s'ouvre au Carrefour : la Salle des Machines",
- "ma.ouvert.dit": "Tu sais lire et chercher : une trappe s'ouvre sous le camp, vers la Salle des Machines ! Quand tu veux : `cd ~/terrain_terminagotchi/machines`.",
+ "ma.ouvert.log": "🌍 Un monde s'ouvre au Carrefour : la Salle des Rouages",
+ "ma.ouvert.dit": "Tu sais lire et chercher : une trappe s'ouvre sous le camp, vers la Salle des Rouages ! Quand tu veux : `cd ~/terrain_terminagotchi/machines`.",
  # ------------------------------------------------------------------ les titres des leçons
  "hist.sm0.titre": "La trappe sous le camp",
  "hist.sm1.titre": "Les organes de la machine",
@@ -184,7 +184,7 @@ K = {
  "hist.sm8.0.dit": "Combien de place reste-t-il dans le garde-manger ?",
  "hist.sm8.0.bravo": "Taille, utilisé, disponible, pourcentage : la place du disque où se trouve ton terrain.",
  "hist.sm8.0.adulte": "df -h : espace des systèmes de fichiers montés (le point . = celui du dossier courant).",
- "hist.sm8.1.dit": "Et combien pèse toute la Salle des Machines ?",
+ "hist.sm8.1.dit": "Et combien pèse toute la Salle des Rouages ?",
  "hist.sm8.1.bravo": "Environ 1 Mo, surtout la photo. Une ferme de serveurs, elle, garde des milliards de fois plus.",
  "hist.sm8.1.adulte": "du -sh : place occupée sur le disque par un dossier, résumée (-s) et lisible (-h).",
  "hist.sm8.2.dit": "Visite une ferme de serveurs.",
@@ -235,7 +235,7 @@ K = {
  "hist.sm10.3.bravo": "Drapeau accepté : l'épreuve est réussie !",
  "hist.sm10.3.adulte": "Le code TG{…} du drapeau dépend de ta partie : il prouve que ta machine a démarré.",
  # ------------------------------------------------------------------ les meubles (fichiers posés dans machines/)
- "ma.meuble.plan": "⚙ LE PLAN DE LA SALLE DES MACHINES\n\nBienvenue, {nom} ! Sous le camp ronronne la vraie machine : ton ordinateur.\n\n1. On REGARDE, on ne touche pas : les commandes de cette salle lisent le matériel.\n2. Jamais de sudo : on n'en a jamais besoin ici.\n3. Rien ne s'écrit hors du terrain ; le jeu ne garde ni n'envoie aucune donnée personnelle.\n4. La leçon des machines virtuelles se fait AVEC UN ADULTE : rien ne s'installe tout seul.\n5. « Monte ta machine » : des pièces pour de faux, un budget pour de faux. Rien ne s'achète.\n\nCommandes du jeu : machines (l'aide).",
+ "ma.meuble.plan": "⚙ LE PLAN DE LA SALLE DES ROUAGES\n\nBienvenue, {nom} ! Sous le camp ronronne la vraie machine : ton ordinateur.\n\n1. On REGARDE, on ne touche pas : les commandes de cette salle lisent le matériel.\n2. Jamais de sudo : on n'en a jamais besoin ici.\n3. Rien ne s'écrit hors du terrain ; le jeu ne garde ni n'envoie aucune donnée personnelle.\n4. La leçon des machines virtuelles se fait AVEC UN ADULTE : rien ne s'installe tout seul.\n5. « Monte ta machine » : des pièces pour de faux, un budget pour de faux. Rien ne s'achète.\n\nCommandes du jeu : machines (l'aide).",
  "ma.meuble.carnet": "# Le carnet de la salle : le jeu y note ce que tu as fait (jamais une valeur de ta machine).",
  "ma.meuble.disque_2": "Disque 2 : un autre disque, DANS LE MÊME BÂTIMENT que la ferme.",
  "ma.meuble.loin": "Loin : un autre bâtiment, très loin de la ferme. Ce qui est ici survit à un incendie là-bas.",
@@ -255,7 +255,7 @@ K = {
  "ma.sh.explique3": "Avec un adulte à côté de toi, pour le lancer vraiment :",
  # ------------------------------------------------------------------ les ponts des nombres, les indices, la garde
  "ma.pont": "Pour cette étape on utilise « {notion} ». Tu connais ? Si ce n'est pas le cas, tape `{cmd}` (ou « je ne connais pas ») : ça ne bloque rien, on revient ici après.",
- "ma.indice.sudo": "Pas de sudo ici : la Salle des Machines se visite en lecture seule, sans jamais être administrateur.",
+ "ma.indice.sudo": "Pas de sudo ici : la Salle des Rouages se visite en lecture seule, sans jamais être administrateur.",
  "ma.indice.trou": "Le « ? » est un trou à remplir : lis l'écran, puis remplace-le par ta réponse.",
  "ma.indice.interrupteurs": "Écris un mot après machines interrupteurs : par exemple ton prénom.",
  "ma.indice.coeurs": "Relis le nombre affiché par nproc, et donne exactement celui-là.",
@@ -489,7 +489,7 @@ K = {
  "ma.drapeau.ok": "Drapeau accepté : ta machine a bien démarré !",
  "ma.drapeau.faux": "Ce n'est pas le drapeau de ta machine. Redémarre-la pour le revoir.",
  # ------------------------------------------------------------------ l'aide
- "ma.aide.titre": "La Salle des Machines",
+ "ma.aide.titre": "La Salle des Rouages",
  "ma.aide.liste": "machines plan · machines ouvre · machines coeurs N · machines memoire N\nmachines interrupteurs MOT · machines allume BITS · machines unites · machines reveil [L…]\nmachines orchestre [L…] · machines licences · machines boite · machines range [c v…]\nmachines adulte · machines conteneur · machines vm · machines ferme · machines energie\nmachines panne · machines monte [1] [P C M S G A] · machines demarre · machines drapeau TG{…}",
  # ------------------------------------------------------------------ les fiches notions (charte de rigueur)
  "ma.f.organes.enfant": "Le processeur est le cuisinier, la mémoire vive son plan de travail, le stockage le garde-manger.",

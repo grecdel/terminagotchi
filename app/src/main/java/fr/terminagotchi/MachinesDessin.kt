@@ -4,7 +4,7 @@ import kotlin.math.min
 import kotlin.math.sin
 
 /**
- * Le dessin de la Salle des Machines (interface Toile d'EspaceDessin : mêmes thèmes, mêmes captures JVM), en attendant
+ * Le dessin de la Salle des Rouages (interface Toile d'EspaceDessin : mêmes thèmes, mêmes captures JVM), en attendant
  * les illustrations (§ 7.15 : B9, E7, E8, E9) :
  *  - ordinateur : l'ordinateur ouvert ; chaque pièce interrogée (nproc, free, lsblk…) s'allume (vue déployée, capture) ;
  *  - interrupteurs : les octets d'un mot en interrupteurs (128 … 1), « é » sur deux rangées (UTF-8) ;

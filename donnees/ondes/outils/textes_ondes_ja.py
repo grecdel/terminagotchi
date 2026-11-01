@@ -12,7 +12,7 @@ K = {
  "recomp.ondes.onde": "嵐を越えて届いたメッセージ",
  "dep.antenne": "アンテナ：{radio}、{sens}",
  "on.ouvert.log": "🌍 交差点に世界がひらく：電波の塔",
- "on.ouvert.dit": "港の岸壁と扉、それに機械室の単位を知っているね。崖の上で電波の塔が光りだした！行きたいときは：`cd ~/terrain_terminagotchi/ondes`。",
+ "on.ouvert.dit": "港の岸壁と扉、それに歯車の部屋の単位を知っているね。崖の上で電波の塔が光りだした！行きたいときは：`cd ~/terrain_terminagotchi/ondes`。",
  "on.pont": "このステップは{notion}の話だよ。知ってる？知らなければ `{cmd}` と打とう。橋をわたってから、ここにもどってくるよ。",
  "hist.on0.titre": "塔のとびら",
  "hist.on1.titre": "電波",

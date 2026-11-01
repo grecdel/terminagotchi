@@ -1,4 +1,4 @@
-"""Trois enfants traversent la Salle des Machines (phase 5, sm0 → sm10), dans un VRAI shell resté ouvert —
+"""Trois enfants traversent la Salle des Rouages (phase 5, sm0 → sm10), dans un VRAI shell resté ouvert —
 docs/simulations/rapport_machines.md.
 
     python3 pc/outils/sim_machines.py            (les trois, chacun dans son propre HOME temporaire)
@@ -39,7 +39,7 @@ if len(sys.argv) < 2 or sys.argv[1] not in PERSONAS:
     for p in PERSONAS:
         r = subprocess.run([sys.executable, str(ICI), p] + sys.argv[1:], text=True)
         ko += r.returncode != 0
-    print(f"\nSalle des Machines : {len(PERSONAS) - ko}/{len(PERSONAS)} enfants au bout")
+    print(f"\nSalle des Rouages : {len(PERSONAS) - ko}/{len(PERSONAS)} enfants au bout")
     sys.exit(1 if ko else 0)
 
 QUI = sys.argv[1]

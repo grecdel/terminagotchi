@@ -9,7 +9,7 @@ import kotlin.math.abs
 import kotlin.math.max
 
 /**
- * ⚙ La Salle des Machines — le matériel et l'infrastructure (docs/programme.md § 7.3, § 7.13 M5 bis), portage de
+ * ⚙ La Salle des Rouages — le matériel et l'infrastructure (docs/programme.md § 7.3, § 7.13 M5 bis), portage de
  * pc/tg/machines.py.
  *
  * Mêmes règles que sur PC (les pièces qu'une commande interroge, les interrupteurs, les unités, la mémoire lue dans free,

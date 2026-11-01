@@ -14,7 +14,7 @@ K = {
  "recomp.ondes.onde": "le message qui passe malgré la tempête",
  "dep.antenne": "l'antenne : {radio}, {sens}",
  "on.ouvert.log": "🌍 Un monde s'ouvre au Carrefour : la Tour des Ondes",
- "on.ouvert.dit": "Tu connais les quais et les portes du port, et les unités de la Salle des Machines : la Tour des Ondes s'allume sur la falaise ! Quand tu veux : `cd ~/terrain_terminagotchi/ondes`.",
+ "on.ouvert.dit": "Tu connais les quais et les portes du port, et les unités de la Salle des Rouages : la Tour des Ondes s'allume sur la falaise ! Quand tu veux : `cd ~/terrain_terminagotchi/ondes`.",
  "on.pont": "Cette étape parle de {notion}. Tu connais ? Sinon, tape `{cmd}` : on fait le pont, puis on revient ici.",
  # ------------------------------------------------------------------ les titres des leçons
  "hist.on0.titre": "La porte de la Tour",

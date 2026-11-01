@@ -12,7 +12,7 @@ K = {
  "recomp.ondes.onde": "Pesan yang menembus badai",
  "dep.antenne": "antena: {radio}, {sens}",
  "on.ouvert.log": "🌍 Sebuah dunia terbuka di persimpangan: Menara Gelombang",
- "on.ouvert.dit": "Kamu sudah kenal dermaga dan pintu pelabuhan, juga satuan di Ruang Mesin. Di atas tebing, Menara Gelombang menyala! Kalau mau ke sana: `cd ~/terrain_terminagotchi/ondes`.",
+ "on.ouvert.dit": "Kamu sudah kenal dermaga dan pintu pelabuhan, juga satuan di Ruang Roda Gigi. Di atas tebing, Menara Gelombang menyala! Kalau mau ke sana: `cd ~/terrain_terminagotchi/ondes`.",
  "on.pont": "Langkah ini memakai {notion}. Sudah tahu? Kalau belum, ketik `{cmd}`: kita lewat jembatan lalu kembali ke sini.",
  "hist.on0.titre": "Pintu menara",
  "hist.on1.titre": "Sebuah gelombang",

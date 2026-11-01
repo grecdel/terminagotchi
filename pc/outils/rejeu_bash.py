@@ -14,7 +14,7 @@ doit être ce qu'affiche un vrai bash.
    « rejeu » (« leçon.étape »), la vraie sortie est comparée à ce que le jeu en dit (texte cité dans « pourquoi »).
    Puis les mondes (phase 5), le Port : le phare du jeu s'allume sur 127.0.0.1, l'enfant tape les vraies
    commandes (curl, ss, ip, tracepath, ssh-keygen, http.server --bind 127.0.0.1…) et celles du jeu (`port …`, l'alias
-   de tg installer) ; une affirmation dont l'outil manque (« outil ») est sautée et comptée. La Salle des Machines :
+   de tg installer) ; une affirmation dont l'outil manque (« outil ») est sautée et comptée. La Salle des Rouages :
    ce qui dépend de la machine (cœurs, noyau) est comparé à ce que le jeu calcule sur la même machine (« egal_jeu »).
    La Tour des Ondes : les calculs (bc), les capteurs d'exemple anonymisés (grep -o) ; les outils radio absents sont
    sautés (leurs étapes sont cachées), rien n'émet jamais.
@@ -228,7 +228,7 @@ def histoire():
             c = "crypte quiz " + " ".join(K_.bonnes_reponses(K_._graine(st)))
         if "copies/?/" in c or c == "crypte consensus ?":
             c = c.replace("?", K_.tricheur(K_._graine(st)))
-        gm = M_._graine(st)                          # la Salle des Machines : l'enfant lit l'écran (nproc, free -h…)
+        gm = M_._graine(st)                          # la Salle des Rouages : l'enfant lit l'écran (nproc, free -h…)
         if c == "machines coeurs ?":
             c = f"machines coeurs {M_.coeurs()}"
         if c == "machines memoire ?":
@@ -334,7 +334,7 @@ def histoire():
                         else float(m.group(1).replace(",", "."))
                 gros = max(lignes, key=taille).split()[-1] if lignes else None
                 verifier(gros == a["plus_gros"], f"{nom} : le plus lourd est {gros!r}{pq}")
-            if a.get("egal_jeu") == "coeurs":            # la Salle des Machines : le jeu calcule sur la même machine
+            if a.get("egal_jeu") == "coeurs":            # la Salle des Rouages : le jeu calcule sur la même machine
                 verifier(s.strip().isdigit() and int(s.strip()) in M_.coeurs_justes(),
                          f"{nom} : bash dit {s.strip()!r}, le jeu accepte {sorted(M_.coeurs_justes())}{pq}")
             if a.get("egal_jeu") == "cpuinfo":
@@ -349,7 +349,7 @@ def histoire():
     verifier(H.fini(st, "port"), "le Port, premier monde du Carrefour, est allé jusqu'au bout (P0 → P11)")
     verifier(H.fini(st, "citadelle"), "la Citadelle, deuxième monde, est allée jusqu'au bout (cit0 → cit16)")
     verifier(H.fini(st, "crypte"), "la Crypte des Codes, troisième monde, est allée jusqu'au bout (cr0 → cr14)")
-    verifier(H.fini(st, "machinerie"), "la Salle des Machines, quatrième monde, est allée jusqu'au bout (sm0 → sm10)")
+    verifier(H.fini(st, "machinerie"), "la Salle des Rouages, quatrième monde, est allée jusqu'au bout (sm0 → sm10)")
     verifier(H.fini(st, "ondes"), "la Tour des Ondes, cinquième monde, est allée jusqu'au bout (on0 → on10)")
     P_.eteindre_phare()
     C_.arreter_fictifs()

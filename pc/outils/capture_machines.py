@@ -1,4 +1,4 @@
-"""Captures de la Salle des Machines (PC), pour les maquettes envoyées au propriétaire.
+"""Captures de la Salle des Rouages (PC), pour les maquettes envoyées au propriétaire.
 
     python3 pc/outils/capture_machines.py <dossier de sortie>
 
@@ -144,7 +144,7 @@ def main():
     lignes = session(["machines"])
     ansi_image(lignes, 104, None, 16).convert("RGB").save(sortie / "ma_pc_repli.png")
     shutil.rmtree(os.environ["HOME"], ignore_errors=True)
-    print("captures de la Salle des Machines écrites dans", sortie)
+    print("captures de la Salle des Rouages écrites dans", sortie)
 
 
 if __name__ == "__main__":

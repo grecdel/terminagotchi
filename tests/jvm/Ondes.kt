@@ -4,7 +4,7 @@
  *      mur, canaux et bandes Wi-Fi, résumé anonyme, règle, bandes libres et choix mélangés comme random.shuffle de
  *      Python, vallée et plus petit SF, temps d'émission LoRa, règle du 1 %, maillage avec nœuds coupés, cible de la
  *      tempête, antennes, vue déployée) : EXACTEMENT les mêmes résultats qu'en Python ;
- *   2. l'arbre du Carrefour : la Tour s'ouvre après le Port P7 et la Salle des Machines M2 (annoncée une fois, dès la
+ *   2. l'arbre du Carrefour : la Tour s'ouvre après le Port P7 et la Salle des Rouages M2 (annoncée une fois, dès la
  *      leçon finie) ;
  *   3. la traversée on0 → on10 comme dans l'appli (les radios racontées : canaux d'exemple, radios du téléphone,
  *      W5 et W6 racontés ; bc remplacé par le calcul en entiers), la tempête réussie (exploit « onde », une fois),

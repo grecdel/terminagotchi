@@ -5,7 +5,7 @@ docs/simulations/rapport_ondes.md.
     python3 pc/outils/sim_ondes.py lea        (un seul : lea, ines ou hugo)
 
 Comme sim_machines.py : le shell est pc/tg/coquille.py, l'enfant ne lit que la commande montrée et ce que le jeu écrit
-dans SON terminal. La Tour est ouverte d'avance (le Port P7 et la Salle des Machines M2 faits). Les outils radio
+dans SON terminal. La Tour est ouverte d'avance (le Port P7 et la Salle des Rouages M2 faits). Les outils radio
 (nmcli, iw, rfkill, bluetoothctl, meshtastic, rtl_test) sont des DOUBLURES qui affichent un quartier FICTIF, avec le
 nom et l'adresse d'un réseau de voisin inventé (pour vérifier que le jeu ne les garde jamais) ; rien n'émet.
   - Léa, 7 ans : se trompe d'abord (une majuscule, la longueur du Wi-Fi au lieu de LoRa, sudo, rfkill block, scan on,

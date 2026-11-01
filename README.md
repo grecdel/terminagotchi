@@ -93,7 +93,7 @@ terminal », et le jeu vérifie que la commande **a vraiment marché**.
 | 📡 La Tour des Ondes | les ondes radio, le Wi-Fi et le Bluetooth, LoRa et les réseaux maillés (Meshtastic) |
 | 🛡 La Citadelle | la cybersécurité défensive : attaques simulées, et des « boîtes » à percer puis à réparer |
 | 🗝 La Crypte des Codes | la cryptographie (des codes anciens au chiffrement moderne) et la blockchain construite à la main |
-| ⚙ La Salle des Machines | le matériel, le démarrage, le système, les machines virtuelles, les serveurs et le cloud |
+| ⚙ La Salle des Rouages | le matériel, le démarrage, le système, les machines virtuelles, les serveurs et le cloud |
 | 🔨 La Forge | la programmation, les scripts, son premier jeu, son site web, le multimédia |
 | 🛠 La Guilde des Bâtisseurs Libres | l'open source, compiler, contribuer (à Terminagotchi lui-même !), l'impression 3D |
 | 🔭 L'Observatoire de l'IA | comment une IA apprend et se trompe, et comment piloter des assistants |

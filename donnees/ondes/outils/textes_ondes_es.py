@@ -12,7 +12,7 @@ K = {
  "recomp.ondes.onde": "el mensaje que pasa a pesar de la tormenta",
  "dep.antenne": "la antena: {radio}, {sens}",
  "on.ouvert.log": "🌍 Se abre un mundo en el Cruce: la Torre de las Ondas",
- "on.ouvert.dit": "Conoces los muelles y las puertas del puerto, y las unidades de la Sala de Máquinas: ¡la Torre de las Ondas se enciende en el acantilado! Cuando quieras: `cd ~/terrain_terminagotchi/ondes`.",
+ "on.ouvert.dit": "Conoces los muelles y las puertas del puerto, y las unidades de la Sala de los Engranajes: ¡la Torre de las Ondas se enciende en el acantilado! Cuando quieras: `cd ~/terrain_terminagotchi/ondes`.",
  "on.pont": "Este paso habla de {notion}. ¿Lo conoces? Si no, escribe `{cmd}`: cruzamos el puente y volvemos aquí.",
  "hist.on0.titre": "La puerta de la Torre",
  "hist.on1.titre": "Las ondas",

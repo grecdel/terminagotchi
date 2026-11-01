@@ -6,7 +6,7 @@
      λ = v / f (bc d'accord), le temps d'émission LoRa (valeurs connues de la note Semtech), les canaux Wi-Fi, la
      vallée et le plus petit SF, la règle du 1 %, le maillage (chemin le plus court, inondation, coupures) ; la tempête
      est toujours jouable (pour chaque cible, il existe trois coupures du chemin qui laissent passer le message) ;
-  2. l'arbre du Carrefour : fermée tant que le Port P7 et la Salle des Machines M2 ne sont pas faits, puis ouverte et
+  2. l'arbre du Carrefour : fermée tant que le Port P7 et la Salle des Rouages M2 ne sont pas faits, puis ouverte et
      annoncée une fois ; meublée (plan, carnet, capteurs d'exemple) ;
   3. la traversée on0 → on10 comme un enfant (vraies commandes dans bash, doublures des outils radio ABSENTS ici :
      nmcli, iw, rfkill, bluetoothctl, meshtastic, rtl_test — qui n'émettent rien), commandes du jeu `ondes …` et
@@ -192,7 +192,7 @@ def ouvrir(s, avec=("port7", "sm3")):
 core.modifier(lambda s: ouvrir(s, avec=("port7",)))
 st = core.load()
 verifier(not histoire.ouvert(st, "ondes") and any("Des 0 et des 1" in m for m in O.manque(st)),
-         f"le Port P7 sans la Salle des Machines M2 : toujours fermée (il manque {O.manque(st)})")
+         f"le Port P7 sans la Salle des Rouages M2 : toujours fermée (il manque {O.manque(st)})")
 core.modifier(ouvrir)
 T.mkdir(exist_ok=True)
 st, _ = tape("ls")

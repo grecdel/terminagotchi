@@ -1,4 +1,4 @@
-"""Les fiches notions de la Salle des Machines (charte de rigueur, docs/programme.md § 7.1) et sa place dans
+"""Les fiches notions de la Salle des Rouages (charte de rigueur, docs/programme.md § 7.1) et sa place dans
 donnees/programme.json : le monde (prérequis = niveaux 0 à 3 du tronc commun, paliers, ponts, attirance, exploit,
 variantes réservées des types Machine et Roche), les maths des étapes (Ponts des Nombres) et les étapes rejouées dans bash.
 
@@ -165,7 +165,7 @@ def main():
         shutil.copyfile(f, D / c)
     for c in ("pc/tg/machines.json", "app/src/main/assets/machines.json"):
         shutil.copyfile(D / "donnees/machines.json", D / c)
-    print(f"{len(FICHES)} fiches de la Salle des Machines, {len(REJEU)} étapes rejouées")
+    print(f"{len(FICHES)} fiches de la Salle des Rouages, {len(REJEU)} étapes rejouées")
 
 
 if __name__ == "__main__":

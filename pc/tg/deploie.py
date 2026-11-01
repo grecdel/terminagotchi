@@ -454,7 +454,7 @@ def _roue_anime(x, phase):
     return crypte.roue_lignes(tour)
 
 
-# ---------------------------------------------------------------- l'ordinateur ouvert (la Salle des Machines)
+# ---------------------------------------------------------------- l'ordinateur ouvert (la Salle des Rouages)
 def pieces(ligne):
     """Les pièces qu'interroge chaque commande d'une ligne (spécification commune, Deploie.kt, vecteurs
     donnees/machines/vecteurs.json) : [{seg, cmd, pieces}] — nproc allume le processeur, free la mémoire…"""
@@ -743,7 +743,7 @@ def ecran(ligne, bl, actif, sorties, phase=0.0, largeur=80, dossier=None, pas=Fa
                 out.append("")
                 out.append(f"  {fg(ANSI['commande'])}🎡 " + t("dep.roue", de=x["de"], vers=x["vers"], k=x["decalage"]) + RESET)
                 out += ["  " + l for l in _roue_anime(x, phase % 1.0)]
-    if b["g"] == "commande":                     # nproc, free, lsblk… : l'ordinateur ouvert s'allume (la Salle des Machines)
+    if b["g"] == "commande":                     # nproc, free, lsblk… : l'ordinateur ouvert s'allume (la Salle des Rouages)
         for x in pieces(ligne):
             if x["seg"] == b["seg"]:
                 out.append("")

@@ -1,4 +1,4 @@
-"""Les textes de la Salle des Machines (matériel et infrastructure, phase 5) dans les 14 langues.
+"""Les textes de la Salle des Rouages (matériel et infrastructure, phase 5) dans les 14 langues.
 
 Une langue par fichier : textes_machines_fr.py (la référence), textes_machines_en.py, … ; chacun a EXACTEMENT les mêmes
 clés (vérifié ici), et les mêmes {champs} que le français.

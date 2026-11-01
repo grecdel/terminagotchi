@@ -270,7 +270,7 @@ object Deploie {
         return out
     }
 
-    // ------------------------------------------------------------ l'ordinateur ouvert (la Salle des Machines)
+    // ------------------------------------------------------------ l'ordinateur ouvert (la Salle des Rouages)
     class Pieces(val seg: Int, val cmd: String, val pieces: List<String>)
 
     /** Les pièces qu'interroge chaque commande d'une ligne (même spécification que deploie.pieces sur PC, vecteurs
@@ -396,7 +396,7 @@ object Deploie {
         /** la roue de César d'un tr (la Crypte) : elle tourne jusqu'au décalage */
         val roues: List<Roue> = try { roue(ligne) } catch (e: Exception) { emptyList() }
         fun roueDe(b: Bloc): Roue? = if (b.g == "commande") roues.firstOrNull { it.seg == b.seg } else null
-        /** les pièces d'un nproc, free, lsblk… (la Salle des Machines) : l'ordinateur ouvert s'allume */
+        /** les pièces d'un nproc, free, lsblk… (la Salle des Rouages) : l'ordinateur ouvert s'allume */
         val ordinateur: List<Pieces> = try { pieces(ligne) } catch (e: Exception) { emptyList() }
         fun piecesDe(b: Bloc): Pieces? = if (b.g == "commande") ordinateur.firstOrNull { it.seg == b.seg } else null
         /** l'antenne d'un nmcli, rfkill, mesh-envoie… (la Tour des Ondes) */

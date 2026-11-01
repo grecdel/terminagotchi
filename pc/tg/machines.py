@@ -1,4 +1,4 @@
-"""⚙ La Salle des Machines — le matériel et l'infrastructure (docs/programme.md § 7.3 et § 7.13 M5 bis).
+"""⚙ La Salle des Rouages — le matériel et l'infrastructure (docs/programme.md § 7.3 et § 7.13 M5 bis).
 
 Le quatrième monde de la phase 5 (§ 7.14, étape 5). Il s'ouvre selon l'arbre du Carrefour : ses prérequis sont les
 niveaux 0 à 3 du tronc commun (programme.json, « mondes » → machines → requis : lire et chercher). Le chapitre
@@ -517,7 +517,7 @@ def conteneur_sh():
 
 
 def meubles(state):
-    """Ce que le jeu pose dans la Salle des Machines quand elle s'ouvre : {chemin relatif au terrain: contenu}."""
+    """Ce que le jeu pose dans la Salle des Rouages quand elle s'ouvre : {chemin relatif au terrain: contenu}."""
     f = donnees()["ferme"]
     return {"machines/plan_de_la_salle.txt": t("ma.meuble.plan", nom=state.get("name", "")) + "\n",
             f"machines/{CARNET}": t("ma.meuble.carnet") + "\n",

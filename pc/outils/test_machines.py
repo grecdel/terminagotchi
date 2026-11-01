@@ -1,4 +1,4 @@
-"""La Salle des Machines (phase 5, docs/programme.md § 7.3 et § 7.13 M5 bis), sur PC.
+"""La Salle des Rouages (phase 5, docs/programme.md § 7.3 et § 7.13 M5 bis), sur PC.
 
     python3 pc/outils/test_machines.py          (crée son propre HOME temporaire)
 

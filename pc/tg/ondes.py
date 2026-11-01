@@ -1,7 +1,7 @@
 """📡 La Tour des Ondes — la radio, LoRa et les réseaux maillés (docs/programme.md § 7.11), quartier du Port.
 
 Le cinquième monde de la phase 5 (§ 7.14, étape 6). Il s'ouvre selon l'arbre du Carrefour : ses prérequis sont le
-palier P7 du Port (adresses et ports) et le palier M2 de la Salle des Machines (les unités), plus le tronc commun du
+palier P7 du Port (adresses et ports) et le palier M2 de la Salle des Rouages (les unités), plus le tronc commun du
 Port (programme.json, « mondes » → ondes → requis et requis_lecons). Le chapitre et le lieu s'appellent « ondes »
 (« tour » est déjà l'aile de la maison) : ~/terrain_terminagotchi/ondes/. On en sort et on y revient, l'étape est gardée.
 

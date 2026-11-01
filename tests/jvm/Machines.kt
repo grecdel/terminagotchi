@@ -1,5 +1,5 @@
 /*
- * Test JVM de la Salle des Machines (phase 5) sur Android, portage de pc/outils/test_machines.py :
+ * Test JVM de la Salle des Rouages (phase 5) sur Android, portage de pc/outils/test_machines.py :
  *   1. les vecteurs communs donnees/machines/vecteurs.json (pièces interrogées, vue déployée, interrupteurs UTF-8,
  *      lettre du défi, unités, mémoire lue dans free, réveil, orchestre et boîtes mélangés comme random.shuffle de
  *      Python, besoin et drapeau de l'épreuve, machine montée, maison dans la maison, énergie) : EXACTEMENT les mêmes

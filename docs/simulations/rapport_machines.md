@@ -118,7 +118,9 @@ aucun nom de machine, nom d'utilisateur, numéro de série ni adresse MAC dans c
 - Les étapes `podman`, `qemu-img`, `virsh`, `lspci`, `lsusb`, `xxd` : jouées seulement en CI, pas sur la machine de
   test.
 - Le nom : l'aile du volcan s'appelle déjà « la salle des machines » (pièce `salle_des_machines`) ; le monde utilise
-  le chapitre `machinerie` et le dossier `machines` (question au propriétaire).
+  le chapitre `machinerie` et le dossier `machines` (question au propriétaire). Réponse (1er novembre) : le monde
+  s'appelle désormais **« La Salle des Rouages »** à l'écran (14 langues) ; l'aile du volcan garde « la salle des
+  machines » ; les identifiants internes (`machines`, `machinerie`) ne changent pas.
 
 ## 5. Rejouer
 

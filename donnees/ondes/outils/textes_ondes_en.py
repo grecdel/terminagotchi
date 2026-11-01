@@ -12,7 +12,7 @@ K = {
  "recomp.ondes.onde": "the message that gets through the storm",
  "dep.antenne": "the antenna: {radio}, {sens}",
  "on.ouvert.log": "🌍 A world opens at the Crossroads: the Tower of Waves",
- "on.ouvert.dit": "You know the harbour's docks and doors, and the units of the Machine Room: the Tower of Waves lights up on the cliff! Whenever you like: `cd ~/terrain_terminagotchi/ondes`.",
+ "on.ouvert.dit": "You know the harbour's docks and doors, and the units of the Gear Room: the Tower of Waves lights up on the cliff! Whenever you like: `cd ~/terrain_terminagotchi/ondes`.",
  "on.pont": "This step is about {notion}. Do you know it? If not, type `{cmd}`: we cross the bridge, then come back here.",
  "hist.on0.titre": "The door of the Tower",
  "hist.on1.titre": "Waves",

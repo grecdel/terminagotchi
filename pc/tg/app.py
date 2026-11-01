@@ -1187,7 +1187,7 @@ def _main():
         from . import crypte
         crypte.commande(args[1:])
         return
-    if mode == "machines":                     # tg machines … : la Salle des Machines (ordinateur ouvert, atelier)
+    if mode == "machines":                     # tg machines … : la Salle des Rouages (ordinateur ouvert, atelier)
         from . import machines
         machines.commande(args[1:])
         return
