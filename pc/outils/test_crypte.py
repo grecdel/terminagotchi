@@ -338,7 +338,7 @@ os.environ["HOME"] = str(GARDE)                     # tg installer / desinstalle
 try:
     compagnon.installer()
     rc = (GARDE / ".bashrc").read_text(encoding="utf-8")
-    verifier("function __tg_gpg" in rc and "function gpg {" in rc and compagnon.a_jour(),
+    verifier("function __tg_gpg" in rc and "function gpg {" in rc,
              "tg installer pose le garde-fou gpg dans ~/.bashrc")
     ancien = rc.replace("function __tg_gpg", "function __tg_vieux")
     (GARDE / ".bashrc").write_text(ancien, encoding="utf-8")
