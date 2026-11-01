@@ -177,7 +177,7 @@ SOMMET = {"id": "sommet", "types": [], "requis": [], "ouverture": {"mondes": 3, 
                     "bash_x": ["forge"], "man": ["controle"]},
           "reutilise": {"entrainement": ["records", "grades:peta", "grades:exa", "graine_du_jour"]},
           "exploits": [{"id": "sommet.trois_mondes", "nom": "recomp.sommet.trois_mondes", "recompense": "legendaire",
-                        "bonus": 3, "essais": 16}],
+                        "bonus": 3}],
           "legendaires": LEGENDAIRES,
           "maths": ["comptage", "logique", "puissances_10"], "variantes_reservees": []}
 

@@ -9791,7 +9791,6 @@
    "exploit": "sommet.trois_mondes",
    "genre": "legendaire",
    "types": [],
-   "essais": 16,
    "legendaires": [
     "infernarque",
     "tellurion",
@@ -9833,7 +9832,6 @@
    "exploit": "sommet.trois_mondes",
    "genre": "legendaire",
    "types": [],
-   "essais": 16,
    "legendaires": [
     "infernarque",
     "tellurion",
@@ -9875,7 +9873,6 @@
    "exploit": "sommet.trois_mondes",
    "genre": "legendaire",
    "types": [],
-   "essais": 16,
    "legendaires": [
     "infernarque",
     "tellurion",
@@ -9917,7 +9914,6 @@
    "exploit": "sommet.trois_mondes",
    "genre": "legendaire",
    "types": [],
-   "essais": 16,
    "legendaires": [
     "infernarque",
     "tellurion",
@@ -9959,7 +9955,6 @@
    "exploit": "sommet.trois_mondes",
    "genre": "legendaire",
    "types": [],
-   "essais": 16,
    "legendaires": [
     "infernarque",
     "tellurion",
@@ -10001,7 +9996,6 @@
    "exploit": "sommet.trois_mondes",
    "genre": "legendaire",
    "types": [],
-   "essais": 16,
    "legendaires": [
     "infernarque",
     "tellurion",
@@ -10043,7 +10037,6 @@
    "exploit": "sommet.trois_mondes",
    "genre": "legendaire",
    "types": [],
-   "essais": 16,
    "legendaires": [
     "infernarque",
     "tellurion",
@@ -10085,7 +10078,6 @@
    "exploit": "sommet.trois_mondes",
    "genre": "legendaire",
    "types": [],
-   "essais": 16,
    "legendaires": [
     "infernarque",
     "tellurion",
@@ -10127,7 +10119,6 @@
    "exploit": "sommet.trois_mondes",
    "genre": "legendaire",
    "types": [],
-   "essais": 16,
    "legendaires": [
     "infernarque",
     "tellurion",
@@ -10169,7 +10160,6 @@
    "exploit": "sommet.trois_mondes",
    "genre": "legendaire",
    "types": [],
-   "essais": 16,
    "legendaires": [
     "infernarque",
     "tellurion",
@@ -10211,7 +10201,6 @@
    "exploit": "sommet.trois_mondes",
    "genre": "legendaire",
    "types": [],
-   "essais": 16,
    "legendaires": [
     "infernarque",
     "tellurion",
@@ -10253,7 +10242,6 @@
    "exploit": "sommet.trois_mondes",
    "genre": "legendaire",
    "types": [],
-   "essais": 16,
    "legendaires": [
     "infernarque",
     "tellurion",
@@ -10267,26 +10255,26 @@
    "valeur": "9e3779b97f4a7c15f39cc0605cedc8341082276bf3a27251f86c6a11d0c18e95",
    "n0": 123,
    "attendu": {
-    "n": 136,
+    "n": 123,
     "champs": {
-     "espece": "Tellurion",
-     "variante": "classique",
+     "espece": "Krillou",
+     "variante": "corail",
      "shiny": false,
-     "marque": "une marque en forme de flèche →",
-     "humeur": "têtue",
-     "taille": 694.8,
-     "qualite": 0.044,
-     "potentiel": 8,
+     "marque": "un ronronnement à 440 Hz",
+     "humeur": "courageuse",
+     "taille": 33.1,
+     "qualite": 0.606,
+     "potentiel": 54,
      "stats": {
-      "PV": 47,
-      "ATK": 59,
-      "DEF": 52,
-      "VIT": 44,
-      "INT": 49
+      "PV": 33,
+      "ATK": 39,
+      "DEF": 41,
+      "VIT": 43,
+      "INT": 22
      },
-     "note": 17.6,
-     "rarete": "commune",
-     "stade": "enfant"
+     "note": 55.9,
+     "rarete": "peu commune",
+     "stade": "bebe"
     }
    }
   },
@@ -10295,7 +10283,6 @@
    "exploit": "sommet.trois_mondes",
    "genre": "legendaire",
    "types": [],
-   "essais": 16,
    "legendaires": [
     "infernarque",
     "tellurion",
@@ -10309,26 +10296,26 @@
    "valeur": "8000000000000001fac71cefac71cefac71cefac71cefac71cefac71ce00",
    "n0": 0,
    "attendu": {
-    "n": 15,
+    "n": 0,
     "champs": {
-     "espece": "Forgerain",
-     "variante": "ruines",
+     "espece": "Félicorne",
+     "variante": "soleil",
      "shiny": false,
-     "marque": "un ventre qui affiche l'heure",
-     "humeur": "têtue",
-     "taille": 710.4,
-     "qualite": 0.56,
-     "potentiel": 55,
+     "marque": "des empreintes en forme de 0 et de 1",
+     "humeur": "taquine",
+     "taille": 191.4,
+     "qualite": 0.796,
+     "potentiel": 79,
      "stats": {
-      "PV": 61,
-      "ATK": 62,
-      "DEF": 50,
-      "VIT": 53,
-      "INT": 60
+      "PV": 51,
+      "ATK": 52,
+      "DEF": 47,
+      "VIT": 51,
+      "INT": 33
      },
-     "note": 68.0,
+     "note": 73.6,
      "rarete": "rare",
-     "stade": "bebe"
+     "stade": "adulte"
     }
    }
   },
@@ -10337,7 +10324,6 @@
    "exploit": "sommet.trois_mondes",
    "genre": "legendaire",
    "types": [],
-   "essais": 16,
    "legendaires": [
     "infernarque",
     "tellurion",
@@ -10379,7 +10365,6 @@
    "exploit": "sommet.trois_mondes",
    "genre": "legendaire",
    "types": [],
-   "essais": 16,
    "legendaires": [
     "infernarque",
     "tellurion",
@@ -10421,7 +10406,6 @@
    "exploit": "sommet.trois_mondes",
    "genre": "legendaire",
    "types": [],
-   "essais": 16,
    "legendaires": [
     "infernarque",
     "tellurion",

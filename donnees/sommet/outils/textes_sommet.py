@@ -17,7 +17,21 @@ ICI = Path(__file__).resolve().parent
 PROVISOIRE = "--provisoire" in sys.argv
 
 
+def adultes(code):
+    """{hist.<étape>.adulte: texte} : la version « Pour les grands » de chaque étape (textes_sommet_adulte.py)."""
+    f = ICI / "textes_sommet_adulte.py"
+    spec = importlib.util.spec_from_file_location(f.stem, f)
+    m = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(m)
+    assert len(m.A[code]) == len(m.ETAPES), (code, "adulte", len(m.A[code]), len(m.ETAPES))
+    return {f"hist.{e}.adulte": v for e, v in zip(m.ETAPES, m.A[code])}
+
+
 def langue(code):
+    return {**langue_seule(code), **adultes(code)}
+
+
+def langue_seule(code):
     """{clé: texte} d'une langue. Le français donne K ; les autres langues donnent V : les textes DANS L'ORDRE des clés
     du français, avec des repères ("@", "clé") qui vérifient l'alignement (une traduction décalée est refusée)."""
     f = ICI / f"textes_sommet_{code}.py"
@@ -26,7 +40,7 @@ def langue(code):
     spec.loader.exec_module(m)
     if hasattr(m, "K"):
         return m.K
-    cles = list(langue("fr"))
+    cles = list(langue_seule("fr"))
     out, i = {}, 0
     for v in m.V:
         if isinstance(v, tuple):

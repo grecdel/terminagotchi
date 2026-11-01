@@ -174,7 +174,7 @@ fun main(args: Array<String>) {
     val ailes = h.optJSONArray("ailes") ?: JSONArray().also { h.put("ailes", it) }
     for (c in listOf("reveil", "nid", "bibliotheque", "cave")) { for (l in Histoire.PAR_CHAP[c]!!.lecons) faits.put(l); ailes.put(c) }
     val ann = h.optJSONArray("mondes_annonces") ?: JSONArray().also { h.put("mondes_annonces", it) }
-    for (m in listOf("port", "citadelle", "crypte", "machinerie", "ondes", "guilde", "observatoire", "donnees")) ann.put(m)
+    for (c in Histoire.CHAPITRES) if (c.monde && c.id != "sommet") ann.put(c.id)   // les autres mondes : déjà annoncés
     h.remove("chap")
     jeuSo.xp = 10 * 30 * 30
     fun palier(c: String) { for (l in Histoire.PAR_CHAP[c]!!.lecons.take(4)) if (l !in lstSo(faits)) faits.put(l) }

@@ -200,8 +200,8 @@ reserves |= {g for m in P["mondes"] for g in m.get("gardiens", {}).values()}
 verifier(all(esp.get(x, {}).get("rarete") == "légendaire" for x in leg) and not set(leg) & reserves and "abyssor" not in leg,
          f"les {len(leg)} légendaires du Sommet existent, aucune réservée ailleurs ni gardienne")
 x = som["exploits"][0]
-verifier(x["id"] == "sommet.trois_mondes" and x["recompense"] == "legendaire" and x["bonus"] == 3 and x["essais"] == 16,
-         "l'exploit « trois mondes maîtrisés » : 3 rencontres de légendaires, 16 compteurs essayés")
+verifier(x["id"] == "sommet.trois_mondes" and x["recompense"] == "legendaire" and x["bonus"] == 3 and "essais" not in x,
+         "l'exploit « trois mondes maîtrisés » : 3 rencontres de légendaires, la fenêtre d'essais du genre (vérifiée par le site)")
 mauvais = []
 for code in ("fr", "en", "es", "de", "it", "pt", "ru", "zh", "ja", "hi", "ar", "bn", "id", "ur"):
     data = json.loads((RACINE / f"pc/tg/langues/{code}.json").read_text(encoding="utf-8"))
@@ -393,7 +393,8 @@ verifier(S.indice({"cmd": "sommet drapeau ?"}, [("sommet drapeau ?", 0)]) == lan
 
 print("6. La vue déployée : la cordée")
 cs = deploie.cordees("bash -n casse.sh && bash casse.sh")
-verifier([x["outil"] for x in cs] == ["bash -n", "bash"], f"bash -n puis bash : deux gestes de cordée ({[x['outil'] for x in cs]})")
+verifier([x["outil"] for x in cs] == ["bash -n"] and len(deploie.forges("bash -n casse.sh && bash casse.sh")) == 1,
+         f"bash -n à la cordée, bash casse.sh au parchemin de la Forge (une seule animation chacun) ({[x['outil'] for x in cs]})")
 cs = deploie.cordees("find eboulis -type f -print0 | xargs -0 wc -c")
 verifier([x["outil"] for x in cs] == ["find -print0"] and deploie.labos("find eboulis -type f -print0 | xargs -0 wc -c"),
          "find -print0 à la cordée, xargs au laboratoire des Données")

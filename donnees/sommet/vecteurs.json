@@ -1757,14 +1757,6 @@
      "geste": "relire",
      "de": "script",
      "vers": "syntaxe"
-    },
-    {
-     "seg": 1,
-     "cmd": "bash",
-     "outil": "bash",
-     "geste": "grimper",
-     "de": "script",
-     "vers": "resultat"
     }
    ]
   },
@@ -1822,16 +1814,7 @@
   },
   {
    "ligne": "bash fragile.sh \"carnet de bord.txt\"; echo $?",
-   "cordees": [
-    {
-     "seg": 0,
-     "cmd": "bash",
-     "outil": "bash",
-     "geste": "grimper",
-     "de": "script",
-     "vers": "resultat"
-    }
-   ]
+   "cordees": []
   },
   {
    "ligne": "grep -oE 'fragment1=[a-z]+' ctf/registre.log",
@@ -1843,29 +1826,11 @@
   },
   {
    "ligne": "bash ctf/porte.sh -k cairn",
-   "cordees": [
-    {
-     "seg": 0,
-     "cmd": "bash",
-     "outil": "bash",
-     "geste": "grimper",
-     "de": "script",
-     "vers": "resultat"
-    }
-   ]
+   "cordees": []
   },
   {
    "ligne": "sh bivouac.sh -n 3",
-   "cordees": [
-    {
-     "seg": 0,
-     "cmd": "sh",
-     "outil": "bash",
-     "geste": "grimper",
-     "de": "script",
-     "vers": "resultat"
-    }
-   ]
+   "cordees": []
   }
  ]
 }

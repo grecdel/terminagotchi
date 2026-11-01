@@ -7795,8 +7795,7 @@
      "id": "sommet.trois_mondes",
      "nom": "recomp.sommet.trois_mondes",
      "recompense": "legendaire",
-     "bonus": 3,
-     "essais": 16
+     "bonus": 3
     }
    ],
    "legendaires": [
