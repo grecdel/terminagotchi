@@ -291,7 +291,7 @@ trace écrite (5 min).
 
 \newpage
 
-# Fiche 8 — L'atelier des Constructs : scripts et git
+# Fiche 8 — La petite forge des Constructs : scripts et git
 
 | | |
 |---|---|
@@ -388,7 +388,7 @@ qui est acquis.
 
 \newpage
 
-# Les mondes du Carrefour (11 à 18)
+# Les mondes du Carrefour (11 à 19)
 
 Après le tronc commun, chaque monde s'ouvre quand les chapitres nécessaires sont faits. Les fiches détaillées
 viendront après les classes pilotes ; en attendant, voici les codes et ce que chaque monde enseigne.
@@ -403,6 +403,7 @@ viendront après les classes pilotes ; en attendant, voici les codes et ce que c
 | 16 · La Guilde des Bâtisseurs Libres | logiciel libre, licences, contribuer avec git, fabrication | `16-GS-P` | `16-AGS-T` |
 | 17 · L'Observatoire de l'IA | comprendre l'IA et superviser des outils (aucune vraie IA dans le jeu) | `17-GS-R` | `17-AGS-V` |
 | 18 · La Salle des Données | texte, CSV, statistiques et SQL sur sa propre collection | `18-GS-T` | `18-AGS-X` |
+| 19 · La Forge | programmation : scripts, boucles, Python, son mini-jeu, son site servi sur sa machine, images et sons | `19-GS-V` | `19-AGS-Z` |
 
 # Correspondance avec les programmes (indicative)
 

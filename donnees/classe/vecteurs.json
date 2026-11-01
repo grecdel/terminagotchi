@@ -761,6 +761,46 @@
    "n": 18,
    "options": "AGS",
    "code": "18-AGS-X"
+  },
+  {
+   "n": 19,
+   "options": "",
+   "code": "19-C"
+  },
+  {
+   "n": 19,
+   "options": "A",
+   "code": "19-A-Q"
+  },
+  {
+   "n": 19,
+   "options": "G",
+   "code": "19-G-J"
+  },
+  {
+   "n": 19,
+   "options": "S",
+   "code": "19-S-Y"
+  },
+  {
+   "n": 19,
+   "options": "AG",
+   "code": "19-AG-Y"
+  },
+  {
+   "n": 19,
+   "options": "AS",
+   "code": "19-AS-A"
+  },
+  {
+   "n": 19,
+   "options": "GS",
+   "code": "19-GS-V"
+  },
+  {
+   "n": 19,
+   "options": "AGS",
+   "code": "19-AGS-Z"
   }
  ],
  "faux": [

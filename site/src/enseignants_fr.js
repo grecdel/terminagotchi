@@ -33,7 +33,7 @@ export const CHAPITRES = [
   [5, "La bibliothèque engloutie", "find, less, grep, head, wc"],
   [6, "La salle des machines du volcan", "free, du, df"],
   [7, "Le dortoir des brumes", "ps, &, jobs, kill"],
-  [8, "L'atelier des Constructs", "scripts, chmod +x, alias, git"],
+  [8, "La petite forge des Constructs", "scripts, chmod +x, alias, git"],
   [9, "La tour des nuages", "ping, ip, curl, nslookup"],
   [10, "Le cœur du monde", "révision : find, grep | wc, cat >"],
   [11, "Le Port des messagers", "réseaux, protocoles (simulés)"],
@@ -44,6 +44,7 @@ export const CHAPITRES = [
   [16, "La Guilde des Bâtisseurs Libres", "open source, licences, git"],
   [17, "L'Observatoire de l'IA", "comprendre l'IA (aucune vraie IA)"],
   [18, "La Salle des Données", "texte, CSV, SQL sur sa collection"],
+  [19, "La Forge", "scripts, boucles, Python, son jeu, son site"],
 ];
 
 const ligne = ([n, nom, notions]) => `<tr><td>${n}. ${e(nom)}<br><span class="doux">${e(notions)}</span></td>`
@@ -86,7 +87,7 @@ qui attrape les fautes de frappe. Options : <b>A</b> sans aide (l'élève voit l
 ${CHAPITRES.map(ligne).join("\n")}
 </table></div>
 <p class="doux">Les chapitres 1 et 2 s'enchaînent ; ensuite les chapitres 3 à 9 se font dans l'ordre voulu, le 10 s'ouvre
-après 5 d'entre eux. Les mondes 11 à 18 s'ouvrent quand le tronc commun nécessaire est fait : si un élève n'y a pas
+après 5 d'entre eux. Les mondes 11 à 19 s'ouvrent quand le tronc commun nécessaire est fait : si un élève n'y a pas
 encore accès, le jeu le lui dit et il continue là où il en est.</p>
 
 <h2>3. Pendant la séance</h2>

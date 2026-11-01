@@ -15,13 +15,14 @@ RACINE = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(RACINE / "pc"))
 
 from tg import classe as C  # noqa: E402
+from tg import histoire  # noqa: E402
 
 FICHIER = RACINE / "donnees" / "classe" / "vecteurs.json"
 
 
 def vecteurs():
     combis = ["".join(x) for k in range(4) for x in itertools.combinations(C.OPTIONS, k)]
-    codes = [{"n": n, "options": o, "code": C.fabriquer(n, o)} for n in range(19) for o in combis]
+    codes = [{"n": n, "options": o, "code": C.fabriquer(n, o)} for n in range(max(c["n"] for c in histoire.CHAPITRES) + 1) for o in combis]
     faux = ["05-GS-X", "05-SG-K", "5-GS-K", "05-GZ-K", "", "AB-C", "05-GGS-K"]
     return {"note": "pc/outils/vecteurs_classe.py", "lettres": C.LETTRES, "codes": codes,
             "faux": [{"code": f, "lu": C.lire(f)} for f in faux]}
