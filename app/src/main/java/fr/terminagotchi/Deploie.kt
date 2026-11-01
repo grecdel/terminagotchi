@@ -385,6 +385,24 @@ object Deploie {
         return out
     }
 
+    // ------------------------------------------------------------ la cordée (le Sommet)
+    class CordeeD(val seg: Int, val cmd: String, val outil: String, val geste: String, val de: String, val vers: String)
+
+    /** Les commandes d'une ligne qui relisent (bash -n, shellcheck), éclairent (bash -x) ou cherchent avec -print0 : même
+     *  spécification que deploie.cordees sur PC. grep, sed et xargs restent au laboratoire des Données ; bash script.sh
+     *  au parchemin de la Forge. */
+    fun cordees(ligne: String): List<CordeeD> {
+        val out = mutableListOf<CordeeD>()
+        val bl = blocs(ligne)
+        for (c in chaines(bl)) for (e in c.etapes) {
+            val a = Sommet.cordeeDe(e.texte) ?: continue
+            if (Forge.forgeDe(e.texte) != null) continue
+            val seg = bl.firstOrNull { it.g == "commande" && it.i - 1 == e.debut }?.seg ?: 0
+            out.add(CordeeD(seg, e.cmd, a.outil, a.geste, a.de, a.vers))
+        }
+        return out
+    }
+
     // ------------------------------------------------------------ les cadenas qui s'allument (la Citadelle)
     private val OPTIONS_CHMOD = setOf("-R", "-v", "-c", "-f", "--recursive", "--verbose", "--changes", "--silent", "--quiet")
     private val MODE_CHMOD = Regex("[0-7]{1,4}|[ugoa]*(?:[-+=][rwx]*)+(?:,[ugoa]*(?:[-+=][rwx]*)+)*")
@@ -499,13 +517,16 @@ object Deploie {
         /** ce que la commande fait au robot simulé (l'Atelier) */
         val robots: List<RobotD> = try { robots(ligne) } catch (e: Exception) { emptyList() }
         fun robotDe(b: Bloc): RobotD? = if (b.g == "commande") robots.firstOrNull { it.seg == b.seg } else null
+        /** la cordée d'un bash -n, bash -x, shellcheck, find -print0 (le Sommet) */
+        val cordees: List<CordeeD> = try { cordees(ligne) } catch (e: Exception) { emptyList() }
+        fun cordeeDe(b: Bloc): CordeeD? = if (b.g == "commande") cordees.firstOrNull { it.seg == b.seg } else null
 
         fun avancer(dt: Double) {
             t += dt
             val b = blocs[actif - 1]
             val reseau = messagerDe(b) != null || droitsDe(b) != null || roueDe(b) != null || piecesDe(b) != null || antenneDe(b) != null || etabliDe(b) != null ||
                 lunetteDe(b) != null || laboDe(b) != null || forgeDe(b) != null ||
-                robotDe(b) != null
+                robotDe(b) != null || cordeeDe(b) != null
             val duree = if (b.g == "tuyau" || b.g == "redirection" || reseau) 2.4 else 1.2
             phase = if (b.g in setOf("tuyau", "redirection", "chemin") || reseau) t / duree else minOf(1.0, t / duree)
             if (auto && t >= duree && actif < blocs.size) { actif += 1; t = 0.0 }

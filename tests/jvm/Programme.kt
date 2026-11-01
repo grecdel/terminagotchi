@@ -115,7 +115,8 @@ fun main(args: Array<String>) {
     for (i in 0 until cas.length()) {
         val x = cas.getJSONObject(i)
         val (nGarde, champs) = Recompenses.favoriser(x.getString("valeur"), x.getLong("n0"), x.getString("genre"), liste(x.getJSONArray("types")),
-            cible = x.optString("cible").ifEmpty { null })
+            cible = x.optString("cible").ifEmpty { null }, essaisExploit = if (x.has("essais")) x.getInt("essais") else null,
+            legendaires = x.optJSONArray("legendaires")?.let { liste(it) })
         val att = x.getJSONObject("attendu")
         if (nGarde != att.getLong("n") || champs.toString() != att.getJSONObject("champs").toString())
             rdiff.add("${x.getString("exploit")} n0=${x.getLong("n0")} → $nGarde (Python ${att.getLong("n")})")

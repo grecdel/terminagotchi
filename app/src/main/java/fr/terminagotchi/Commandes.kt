@@ -165,6 +165,8 @@ class Commandes(
             "donnees" -> Reponse(Donnees.commande(jeu, ligne.trim().substringAfter(' ', ""), dossier()), couleur = BLEU)
             // ---------------------------------------------------- la Forge (Forge.kt) : les ateliers, la lanterne du site, la photo d'exemple
             "forge" -> Reponse(Forge.commande(jeu, ligne.trim().substringAfter(' ', ""), dossier()), couleur = BLEU)
+            // ---------------------------------------------------- le Sommet (Sommet.kt) : Expert++, scripts fournis par le jeu
+            "sommet" -> Reponse(Sommet.commande(jeu, ligne.trim().substringAfter(' ', ""), dossier()), couleur = BLEU)
             "awk" -> Donnees.awk(jeu, ligne.trim(), dossier())?.let { Reponse(it, couleur = BLEU) }   // avec un tuyau : le vrai shell
             "sqlite3" -> Reponse(Donnees.sqlite3(jeu, ligne.trim(), dossier()), couleur = BLEU)
             // ---------------------------------------------------- l'Atelier (Atelier.kt) : le robot simulé, aucun vrai matériel

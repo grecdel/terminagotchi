@@ -89,7 +89,7 @@ object Recompenses {
         faits.put(id, maintenant)
         if (x.optString("recompense") == "badge")             // pas de faveur : un badge qui grandit (la Guilde)
             return t("recomp.badge", "exploit" to t(x.getString("nom")), "badge" to t(x.optString("badge")))
-        val n = conf().optInt("bonus_" + x.getString("recompense"), 1)
+        val n = if (x.has("bonus")) x.optInt("bonus") else conf().optInt("bonus_" + x.getString("recompense"), 1)
         r.getJSONArray("faveurs").put(JSONObject().put("exploit", id).put("reste", n))
         if (x.optString("recompense") == "gardien") {
             val b = x.optString("boite")
@@ -112,17 +112,22 @@ object Recompenses {
     private fun rarete(c: JSONObject): String = c.optString("rarete").ifEmpty { Bestiaire.rareteDe(c) }
 
     /** L'indice du candidat gardé parmi (espèce, champs), dans l'ordre des compteurs. */
-    fun choisir(cands: List<Pair<Bestiaire.Espece, JSONObject>>, genre: String, types: List<String>, cible: String? = null): Int {
+    fun choisir(cands: List<Pair<Bestiaire.Espece, JSONObject>>, genre: String, types: List<String>, cible: String? = null,
+                legendaires: List<String>? = null): Int {
         if (genre == "gardien") return cands.indexOfFirst { it.first.id == cible }.coerceAtLeast(0)
-        if (genre == "legendaire") return cands.indexOfFirst { rarete(it.second) == "légendaire" }.coerceAtLeast(0)
+        if (genre == "legendaire") {
+            // le Sommet nomme ses légendaires (des espèces EXISTANTES, réservées nulle part) : d'abord une d'elles
+            if (!legendaires.isNullOrEmpty()) cands.indexOfFirst { it.first.id in legendaires }.let { if (it >= 0) return it }
+            return cands.indexOfFirst { rarete(it.second) == "légendaire" }.coerceAtLeast(0)
+        }
         val rare = cands.indexOfFirst { (e, c) -> c.optString("variante", "classique") != "classique" &&
             Guide.typeDe(e, c.optString("variante", "classique")) in types }
         if (rare >= 0) return rare
         return cands.indexOfFirst { (e, c) -> Guide.typeDe(e, c.optString("variante", "classique")) in types }.coerceAtLeast(0)
     }
 
-    fun reussi(genre: String, types: List<String>, e: Bestiaire.Espece, c: JSONObject, cible: String? = null): Boolean =
-        if (genre == "gardien") e.id == cible else if (genre == "legendaire") rarete(c) == "légendaire" else Guide.typeDe(e, c.optString("variante", "classique")) in types
+    fun reussi(genre: String, types: List<String>, e: Bestiaire.Espece, c: JSONObject, cible: String? = null, legendaires: List<String>? = null): Boolean =
+        if (genre == "gardien") e.id == cible else if (genre == "legendaire") rarete(c) == "légendaire" || e.id in (legendaires ?: emptyList()) else Guide.typeDe(e, c.optString("variante", "classique")) in types
 
     /** La variante est réservée par un monde dont aucun exploit n'est encore réussi : pour toutes les espèces
      *  (« orage ») ou pour une seule (« plumange:orage »). */
@@ -141,10 +146,10 @@ object Recompenses {
 
     /** Spécification pure (vecteurs communs) : le compteur gardé et son tirage. */
     fun favoriser(valeur: String, n0: Long, genre: String, types: List<String>, abyssorPermis: Boolean = false,
-                  attire: String? = null, cible: String? = null): Pair<Long, JSONObject> {
-        val essais = conf().optInt("essais_$genre", 1)
+                  attire: String? = null, cible: String? = null, essaisExploit: Int? = null, legendaires: List<String>? = null): Pair<Long, JSONObject> {
+        val essais = essaisExploit ?: conf().optInt("essais_$genre", 1)
         val cands = (0 until essais).map { k -> Tirage.tirer(valeur, n0 + k, abyssorPermis, attire).let { it.espece to it.champs } }
-        val i = choisir(cands, genre, types, cible)
+        val i = choisir(cands, genre, types, cible, legendaires)
         return (n0 + i) to cands[i].second
     }
 
@@ -160,15 +165,16 @@ object Recompenses {
             val genre = x.getString("recompense")
             val ty = types(m)
             val cible = if (genre == "gardien") m.optJSONObject("gardiens")?.optString(x.optString("boite"))?.ifEmpty { null } else null
-            val essais = conf().optInt("essais_$genre", 1)
+            val essais = if (x.has("essais")) x.optInt("essais") else conf().optInt("essais_$genre", 1)
+            val leg = if (genre == "legendaire") m.optJSONArray("legendaires")?.let { a -> (0 until a.length()).map { a.getString(it) } } else null
             while (cands.size < essais) cands.add(tirerUn() ?: break)
-            val i = choisir(cands, genre, ty, cible)
+            val i = choisir(cands, genre, ty, cible, leg)
             f.put("reste", f.optInt("reste") - 1)
             val fs = etat(jeu).getJSONArray("faveurs")
             val garder = JSONArray()
             for (k in 0 until fs.length()) if (fs.getJSONObject(k).optInt("reste") > 0) garder.put(fs.getJSONObject(k))
             etat(jeu).put("faveurs", garder)
-            if (reussi(genre, ty, cands[i].first, cands[i].second, cible)) texte = t("recomp.rencontre", "exploit" to t(x.getString("nom")))
+            if (reussi(genre, ty, cands[i].first, cands[i].second, cible, leg)) texte = t("recomp.rencontre", "exploit" to t(x.getString("nom")))
             r = cands[i]
         }
         repeat(4) {

@@ -317,6 +317,7 @@ class Jeu(ctx: Context) {
         Donnees.init(ctx)
         Forge.init(ctx)
         Atelier.init(ctx)
+        Sommet.init(ctx)
         Intro.init(ctx)
     }
 
