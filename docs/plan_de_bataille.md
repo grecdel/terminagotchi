@@ -604,6 +604,75 @@ rejeu d'un seul monde : `TG_REJEU_MONDE=forge`.
 *Reste.* Les illustrations (prompts B8, vignettes, C1, C3, E20 à E24 envoyés) ; une relecture des 13 traductions par
 des locuteurs.
 
+**🤖 L'Atelier — codé (1er novembre).**
+
+*Fichiers.*
+- 5 fiches et le Pont des Nombres « logique » (ET, OU, NON : la fiche manquait ; exercice dans `maths.py` et `Maths.kt`)
+  (`donnees/atelier/outils/fiches_atelier.py`, rejeu bash), données `donnees/atelier.json` (arènes vérifiées par le
+  générateur), textes `donnees/atelier/outils/textes_atelier_*.py` (14 langues), vecteurs `donnees/atelier/vecteurs.json`.
+- Leçons at0 → at7 sur PC (`pc/tg/atelier.py`) et sur Android (`Atelier.kt`, `AtelierDessin.kt`).
+- L'ancienne aile « atelier » des Constructs est devenue « la petite forge » (§ 2.19) ; le chapitre et le dossier de ce
+  monde s'appellent **`robots`** (`~/terrain_terminagotchi/robots`), le monde garde son nom (« L'Atelier des robots »). Commande
+  `atelier` (alias bash/zsh/fish/PowerShell, `tg atelier`). S'ouvre après les niveaux 0 à 4 du tronc commun ; annonce à
+  son tour. Icône 🤖, chapitre n° 20, famille Constructs, objet robot miniature, titre « Roboticien ».
+
+*Règles du monde.*
+- **Le robot est simulé** : `robots/robot/led`, `moteur`, `capteur_distance` (et `journal.txt`) sont des fichiers que
+  l'enfant lit et écrit avec `cat` et `echo … >` (« tout est fichier », comme `/sys/class/leds`). Le robot vit sur une
+  grille avec des obstacles ; `atelier pas` est la physique du monde (lire le moteur, avancer ou tourner d'un cran,
+  écrire le capteur en cm — 10 cm par case — et une ligne du journal).
+- **Le cerveau est un vrai script de l'enfant** (`cerveau.sh`), lancé par SA vraie boucle dans SON shell :
+  `for i in $(seq 20); do sh cerveau.sh; atelier pas; done` (comme `loop()` sur Arduino). Sur PC, le jeu ne lance
+  jamais ce script. Sur le téléphone (dont le shell ne connaît pas `atelier`), l'appli déroule cette même ligne (au plus
+  40 tours) et lance `cerveau.sh` avec le vrai `sh` du téléphone, dans le terrain, 5 s au plus par tour.
+- **Aucun matériel** : ni `/dev/tty*`, ni port série, ni GPIO, ni flashage. Le vrai Raspberry Pi, `ssh pi@…`,
+  `sudo apt` (avec un adulte), `gpioset`/`pinctrl`, `crontab @reboot`, `systemctl --user`, `arduino-cli
+  compile/upload`, `screen /dev/ttyUSB0 115200`, `esptool.py` : seulement racontés, facultatifs, « avec un adulte »,
+  sans marque mise en avant ni lien d'achat. Le jeu propose seulement des commandes qui LISENT (`ls /sys/class/leds`,
+  `command -v gpioset pinctrl`, `crontab -l`, `command -v arduino-cli esptool.py`), cachées si l'outil manque. Une commande
+  qui toucherait du vrai matériel (ou `sudo`) : la créature rappelle la règle (une fois), l'indice le dit.
+
+*Les leçons.*
+- **at0** la porte ; **at1 (R1) la LED** : `ls robot`, `cat robot/led`, `echo 1 > robot/led`, `atelier robot`, `echo 0`,
+  `cat robot/capteur_distance` ; **at2** le moteur, la grille et les coordonnées (`atelier grille`, `echo avance >
+  robot/moteur`, `atelier pas`, `atelier ou X Y`, `echo droite`, `atelier cases N` : cm → cases) ;
+- **at3 ET / OU / NON** : `[ 5 -lt 10 ] && echo vrai || echo faux`, `d=$(cat robot/capteur_distance); if [ "$d" -lt 10 ];
+  then …; else …; fi`, la table de vérité de la porte de la partie (`atelier verite`), trois situations (`atelier choix`) ;
+- **at4 (R2) la boucle** : `for i in 1 2 3; do …; sleep 1; done`, `while true …` puis Ctrl+C (PC), le cerveau d'exemple
+  (il avance toujours), `cp`, `atelier essai`, la boucle de 10 tours (💥 il se cogne), `nano cerveau.sh` (n'importe quel
+  éditeur ; `atelier aide-cerveau` montre les lignes ; téléphone : `edite cerveau.sh`) ;
+- **at5 le défi** (exploit) : `atelier defi` (une arène par partie), 20 tours, 0 choc, au moins 12 cases explorées.
+  Un cerveau qui fonce se cogne, un cerveau qui s'arrête devant l'obstacle n'explore pas assez : il faut tourner ;
+- **at6 (R3 + R4) le vrai Raspberry Pi** (raconté) : `atelier pi`, `ls /sys/class/leds`, `command -v gpioset pinctrl`,
+  `atelier gpio` (la rangée de broches), `atelier autonome` (cron, systemd, le journal), `tail -5 robot/journal.txt`,
+  `crontab -l` ;
+- **at7 l'embarqué et le temps réel** (§ 7.13) : microcontrôleur ou ordinateur (`atelier embarque`), `time sh
+  cerveau.sh`, le réflexe (`atelier reflexe` : cm/s × ms ÷ 1000), Arduino / ESP32 depuis le terminal (raconté),
+  `command -v arduino-cli esptool.py`, le téléphone robot de poche. **Android** : `lampe on` (une vraie LED), `vibre 300`
+  (un vrai moteur), `batterie` (un vrai capteur) — les commandes du jardin du téléphone, réutilisées. Les autres
+  capteurs (accéléromètre, lumière, proximité) sont racontés : l'appli ne les utilise pas.
+- L'œuf physique (ESP32) est seulement évoqué comme projet futur (`atelier arduino`), rien n'est construit.
+
+*Le reste.*
+- Vue déployée : ce que la commande fait au robot (la LED reçoit un ordre, le capteur est lu, le cerveau décide, les
+  roues bougent), PC (`deploie.robots`) et téléphone (`Deploie.robots`, `AtelierDessin.robot`).
+- Ponts des Nombres, jamais bloquants : coordonnées, logique (nouveau), multiplication.
+- Exploit « un robot qui évite tous les obstacles » (`atelier.robot`). Variantes EXISTANTES favorisées (Machine /
+  Plante, libres) : `tisonnier:mecanique`, `groinfer:rouille`, `lampignon:forêt`.
+- PowerShell : `echo 1 > robot/led` écrit en UTF-16 sous PowerShell 5 : le jeu lit aussi l'UTF-16. Les boucles et
+  `if` du shell sont des étapes bash (cachées sous Windows), donc le défi n'est pas jouable sous Windows pour l'instant.
+- Tests : `pc/outils/test_atelier.py` (traversée réelle, 3 défis, dash / mksh / busybox / toybox comparés à bash),
+  `tests/jvm/Atelier.kt` (la boucle déroulée par l'appli avec le vrai `sh`). Simulation `pc/outils/sim_atelier.py` →
+  `docs/simulations/rapport_atelier.md`. Captures `pc/outils/capture_atelier.py`. Rejeu d'un seul monde :
+  `TG_REJEU_MONDE=robots`.
+- Prompts d'illustrations envoyés au propriétaire (B10, vignette, E-at1 à E-at4). Repli dessiné en attendant (l'établi
+  en caractères).
+
+*Reste.*
+- Les illustrations ; une relecture des 13 traductions par des locuteurs.
+- Le défi sous Windows (une boucle PowerShell équivalente, sans `sh`) : à décider.
+- La boucle déroulée par l'appli et `edite cerveau.sh` sur un vrai téléphone (APK d'essai).
+
 **▚ Le glitch — codé (31 octobre, décisions du propriétaire).** Un effet de l'INDIVIDU, comme le shiny (drapeau
 `glitch`, indépendant de la variante et du shiny) : l'image se dérègle comme un vieil écran, fabriquée à partir de
 l'image de la créature (aucune illustration). Au repos le style A (liseré rose/cyan des couches décalées, 2 tranches

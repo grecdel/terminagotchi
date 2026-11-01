@@ -789,6 +789,12 @@ petit ordinateur Linux : tout ce que tu as appris marche dessus. »
 | R3 Le vrai Pi | se connecter, mettre à jour | `ssh pi@…`, `sudo apt update` (avec un adulte), `gpioset`/`pinctrl` | ⛔ |
 | R4 Le robot autonome | cron au démarrage, journaux | `crontab`, `systemctl --user` (notions) | ⛔ |
 
+**Codé le 1er novembre** (`pc/tg/atelier.py`, `Atelier.kt` ; détail dans `docs/plan_de_bataille.md`) : leçons at0 → at7
+(R1 la LED, le moteur et la grille, ET / OU / NON, R2 la boucle et le cerveau `cerveau.sh`, le défi des obstacles,
+R3 + R4 racontés, « L'embarqué et le temps réel » du § 7.13). Le lieu s'appelle `robots/` (l'aile « atelier » des
+Constructs existe déjà). Le robot est simulé sur une grille ; `atelier pas` est la physique ; le cerveau est un vrai
+script de l'enfant lancé par SA boucle (`for i in $(seq 20); do sh cerveau.sh; atelier pas; done`) ; aucun matériel.
+
 ### 2.17 🔭 L'Observatoire de l'IA — lancer et superviser des outils et agents
 
 **Prérequis** : niveaux 0-6 ; ponts : `curl` (Port), variables (Contrôle), `sort`/`grep` (Données).
@@ -1359,7 +1365,7 @@ pas toutes faites). Chaque monde a ses créatures attirées (selon le type de bi
 | 📊 La Salle des Données | Eau, Glace | une statistique juste sur sa propre collection — codé : exploit `donnees.statistique` (la moyenne d'attaque), variantes EXISTANTES favorisées `nautiloque:corail`, `krillou:aurore`, `ondulame:glace` |
 | 🎛 Le Poste de Contrôle | Machine, Roche | arrêter tous les processus suspects d'une vague |
 | ⚙ La Salle des Rouages | Machine, Roche | « Monte ta machine » réussi au premier démarrage |
-| 🤖 L'Atelier | Machine, Plante | le robot simulé qui évite tous les obstacles |
+| 🤖 L'Atelier | Machine, Plante | le robot simulé qui évite tous les obstacles — codé : exploit `atelier.robot` (le défi : 20 pas, aucun choc, au moins 12 cases), variantes EXISTANTES favorisées `tisonnier:mecanique`, `groinfer:rouille`, `lampignon:forêt` |
 | 🛠 La Guilde des Bâtisseurs Libres | Machine, Plante | **pas de variante ni de créature** (décision du 1er novembre) : l'exploit `guilde.artisan` (ta première contribution d'entraînement prête) ne donne aucune faveur de rencontre ; il fait grandir le **badge « Artisan »** (voir § 7.12) |
 | 🗝 La Crypte des Codes | Ombre, Glace | réparer la chaîne de blocs (B2) sans indice ; légendaire au bout de B6 |
 | 🔭 L'Observatoire de l'IA | Ciel, Glace | trouver toutes les réponses fausses de l'assistant fictif (O8) — codé : exploit `observatoire.fausses`, variantes EXISTANTES favorisées `seraphibou:cosmique`, `zyeuton:brume`, `mutaloupe:cristal` |
