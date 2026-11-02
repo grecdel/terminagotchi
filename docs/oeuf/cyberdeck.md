@@ -311,3 +311,6 @@ nourrir simplement, il faut une vraie complémentarité entre le cyberdeck et l'
 - **Complémentarité** : œuf = promener et soigner ; PC / téléphone / cyberdeck = apprendre le terminal (§ 2.6).
 - Restent **proposés, en attente** : clavier AZERTY ≈ 10 mm, compte enfant sans `sudo`, Wi-Fi éteint par défaut
   (compatible avec la synchro seulement quand on l'allume, § 2.3), PETG, dossier `materiel/cyberdeck/`.
+- **2 nov. 2026, 8 h 11** : Wi-Fi validé (éteint par défaut, Wi-Fi de la maison enregistré une fois par un adulte,
+  l'enfant l'allume lui-même). Propositions matérielles validées dans l'ensemble ; **fabrication reportée à plus
+  tard** (rien n'est acheté ni fabriqué pour l'instant).
