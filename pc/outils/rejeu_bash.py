@@ -139,6 +139,8 @@ def histoire():
         os.environ[k] = "http://127.0.0.1:9"
     os.environ["NO_PROXY"] = os.environ["no_proxy"] = "localhost,127.0.0.1"     # le Port : la boucle locale, directe
     sys.path.insert(0, str(RACINE / "pc"))
+    if VIRTUEL and os.environ.get("TG_VSH_MODE") == "windows" and os.name != "nt":
+        os.environ["LOGNAME"] = "eleve"               # (Windows simulé : un élève, pas root, comme sur un vrai poste)
     import builtins
     from tg import app, core, explo, histoire as H
     from tg.coquille import Coquille

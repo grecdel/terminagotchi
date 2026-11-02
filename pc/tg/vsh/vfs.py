@@ -233,7 +233,7 @@ class Vfs:
     def trouver(self, vp):
         """("reel", Path) | ("virt", nœud) | None pour un chemin absolu du terminal."""
         if vp in self.fd:
-            return ("virt", VFichier(self.fd[vp], 0o600))
+            return ("virt", VFichier(self.fd[vp], 0o600, proprio=self.utilisateur))
         if self.mode == "transparent":
             return ("reel", Path(vp))
         parts = [x for x in vp.split("/") if x]
