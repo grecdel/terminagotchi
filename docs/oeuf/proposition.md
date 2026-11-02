@@ -220,6 +220,7 @@ compatibles avec la GPL ; la liste exacte sera écrite dans le dépôt au moment
     ci-dessus) ;
   - **forme « cyberdeck »**, plus proche d'un petit ordinateur de poche : plus grand écran et vrai petit clavier,
     pour taper de vraies commandes. Sa proposition détaillée (taille, écran, clavier, batterie, prix, sécurité)
-    reste à faire et à valider avant toute fabrication.
+    reste à faire et à valider avant toute fabrication. → **Proposition rédigée : [`cyberdeck.md`](cyberdeck.md)**
+    (croquis `croquis_cyberdeck.png`), à valider.
   - Les deux partagent le même lien avec le jeu (créature déplacée, Wi-Fi éteint, câble puis Bluetooth) et les
     mêmes licences.
