@@ -59,7 +59,7 @@ est vert aussi. Les passages d'avant avaient trouvé les trois problèmes critiq
 ## 4. Ce qui reste raconté sous Windows (jamais bloquant)
 
 Le réseau réel (ping, curl vers Internet, ssh, ssh-keygen, ip, ss, nslookup…), sudo, systemctl, journalctl, dmesg,
-lsblk, top / htop, les gestionnaires de paquets, gcc / make, pip et `python3 -m …`, openssl, gpg, ImageMagick / ffmpeg / sox / exiftool,
+lsblk, top / htop, les gestionnaires de paquets, gcc / make, pip et les `python3 -m …` autres que `http.server`, openssl, gpg, ImageMagick / ffmpeg / sox / exiftool,
 openscad, podman / qemu, les éditeurs (nano, vim, notepad), ln, chown, crontab, useradd. Le terminal dit « cette
 commande n'existe pas dans le terminal du jeu sous Windows » et l'étape est racontée, comme sur le téléphone.
 
@@ -101,5 +101,30 @@ Résultats : `test_terminal.py` 498 identiques au vrai bash / python3 / curl, 0 
 modes ; rejeu de l'histoire dans le terminal du jeu 266 / 0 (Linux) et 268 / 0 (Windows simulé) ; sur la vraie machine
 Windows : voir le passage de la CI cité dans le rapport final.
 
-Reste raconté (jamais bloquant) : la lanterne de l'enfant (`python3 -m http.server`, Port P5 et Forge F6) et son
-`curl` vers 8000 / 8642, et le sceau https (8443, qui demande openssl).
+Reste raconté (jamais bloquant) : le sceau https (8443, qui demande openssl).
+
+## 7. La lanterne de l'enfant (2 novembre, 7 h 25)
+
+Le propriétaire a dit oui : `python3 -m http.server … --bind 127.0.0.1` est réel dans le terminal du jeu, et `curl`
+visite ces lanternes en plus du phare.
+
+- **Léa, 7 ans** recopie `python3 -m http.server 8000` (sans `--bind`) : refusé, « une lanterne brille seulement pour
+  ton ordinateur, jamais pour tout le réseau. Ajoute --bind 127.0.0.1 » avec la commande complète. `curl
+  http://localhost:8000` avant d'allumer : « Couldn't connect » comme le vrai curl, et le conseil du jeu.
+- **Malo, 12 ans**, Port P5 : `python3 -m http.server 8000 --bind 127.0.0.1 --directory quai &`, puis `curl
+  http://localhost:8000` → « Bienvenue sur mon quai », puis `kill %1`. Forge F6 au clavier (vrai pseudo-terminal) :
+  la lanterne en tâche de fond écrit « Serving HTTP on 127.0.0.1 port 8642 » et une ligne par visite ; un Ctrl+C
+  sur une autre commande ne l'éteint pas ; `fg` puis Ctrl+C l'éteint. Au premier plan, Ctrl+C écrit « Keyboard
+  interrupt received, exiting. » comme le vrai Python.
+- **Inès, 15 ans** essaie `--bind 0.0.0.0`, le port 80, `--directory ~/.terminagotchi` : refusés, chacun avec son
+  message ; son programme Python peut lire sa lanterne (urllib vers 127.0.0.1:8766) mais pas Internet.
+
+| Gravité | Problème trouvé | Correction |
+|---|---|---|
+| Important | `kill %1` visait une ancienne tâche finie portant le même numéro (le rejeu restait bloqué au Port P5) | `%N` vise la tâche la plus récente portant ce numéro |
+| Important | Un Ctrl+C sur une autre commande éteignait aussi la lanterne en tâche de fond | Une tâche de fond est à part du Ctrl+C du clavier, comme dans bash |
+| Moyen | `kill $(cat pid)` ne trouvait pas une lanterne lancée dans un sous-shell `( … & )` | `kill PID` cherche dans toutes les tâches du terminal |
+| Moyen | Un avertissement de Python (`RuntimeWarning … http.server`) au démarrage de la lanterne | Retiré |
+
+Résultats : `test_terminal.py` 521 identiques au vrai bash / python3 / curl, 0 différence ; rejeu de l'histoire
+268 / 0 (Linux) et 270 / 0 (Windows simulé), Port P5 et Forge F6 joués pour de vrai.

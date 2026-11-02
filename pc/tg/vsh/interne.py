@@ -729,6 +729,11 @@ def kill(ctx):
         if t is None and x.startswith("%"):
             code = _err(ctx, f"kill: {x}: no such job")
             continue
+        if t is None and re.fullmatch(r"\d+", x):
+            from .shell import TACHES_PAR_PID
+            autre = TACHES_PAR_PID.get(int(x))
+            if autre is not None and autre.code is None and autre.sh.vfs is ctx.sh.vfs:
+                t = autre                         # (une tâche lancée dans un sous-shell : `( … & echo $! > pid )`)
         if t is None:
             if not re.fullmatch(r"-?\d+", x):
                 code = _err(ctx, f"kill: {x}: arguments must be process or job IDs")

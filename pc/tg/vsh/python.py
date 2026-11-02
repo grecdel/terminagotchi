@@ -58,6 +58,7 @@ _ECRIRE = [_norm(z) for z in _cfg["ecrire"]]
 _LIRE = _ECRIRE + [_norm(z) for z in _cfg["lire"] if z]
 _LIRE += [_norm(z) for z in sys.path if z and os.path.isabs(z)]        # les fichiers de Python lui-même
 _PHARE = tuple(_cfg["phare"])
+_LANTERNE = _cfg.get("lanterne")             # python3 -m http.server : le seul port qu'on peut ouvrir (127.0.0.1)
 _MSG = _cfg["msg"]
 
 
@@ -90,7 +91,7 @@ _FICHIERS = {"os.mkdir": 0, "os.rmdir": 0, "os.remove": 0, "os.truncate": 0, "os
              "os.removexattr": 0, "os.setxattr": 0}
 _INTERDITS = ("subprocess.Popen", "os.system", "os.exec", "os.posix_spawn", "os.spawn", "os.startfile", "os.fork",
               "os.forkpty", "pty.spawn", "ctypes.dlopen", "ctypes.dlsym", "ctypes.cdata", "webbrowser.open",
-              "socket.bind", "socket.sendto", "socket.sendmsg", "os.kill", "os.killpg", "signal.pthread_kill",
+              "socket.sendto", "socket.sendmsg", "os.kill", "os.killpg", "signal.pthread_kill",
               "_winapi.CreateProcess", "_winapi.CreateNamedPipe", "os.add_dll_directory")
 
 
@@ -116,6 +117,11 @@ def _garde(ev, a):
     elif ev == "sqlite3.connect":
         if a and a[0] not in (":memory:", "", b":memory:") and not _dans(a[0], _ECRIRE):
             _non(_MSG["ecrire"], a[0])
+    elif ev == "socket.bind":
+        adr = a[1]
+        if not (_LANTERNE and isinstance(adr, tuple) and len(adr) >= 2 and adr[0] == "127.0.0.1"
+                and adr[1] == _LANTERNE):
+            _non(_MSG["reseau"])
     elif ev == "socket.connect":
         adr = a[1]
         if not (isinstance(adr, tuple) and len(adr) >= 2 and adr[0] in ("127.0.0.1", "localhost") and adr[1] in _PHARE):
@@ -226,6 +232,18 @@ elif _genre == "code":
         import linecache
         linecache.cache["<string>"] = (len(_cfg["code"]), None, _cfg["code"].splitlines(True), "<string>")
     _lancer(_cfg["code"], _cfg["nom"], _module())
+elif _genre == "lanterne":                    # python3 -m http.server … --bind 127.0.0.1 (le dossier : dans le terrain)
+    import mimetypes, runpy
+    mimetypes.init()                          # (les types de fichiers lus AVANT la garde : ils sont hors du terrain)
+    sys.path[0] = ""
+    sys.addaudithook(_garde)
+    try:
+        runpy.run_module("http.server", run_name="__main__", alter_sys=True)
+    except SystemExit:
+        raise
+    except BaseException as _e:              # noqa: BLE001
+        _dire(_e, _sans_garde(_e))
+        sys.exit(1)
 elif _genre == "entree":
     sys.path[0] = ""
     _lancer(sys.stdin.buffer.read(), "<stdin>", _module())
@@ -373,7 +391,7 @@ def python3(ctx):
         return 0
     if r["genre"] == "aide":
         return _executer(ctx, [interprete(), "-h"], None, capture_seule=True)
-    if r["genre"] == "module":
+    if r["genre"] == "module" and r["module"] != "http.server":
         ctx.err(_t("vsh.python.module", module=r["module"]) + "\n")
         return 1
     terrain = ctx.vfs.terrain_reel
@@ -382,8 +400,29 @@ def python3(ctx):
         ctx.err(_t("vsh.python.dossier") + "\n")
         return 1
     cfg = {"argv": r["reste"], "genre": r["genre"], "ecrire": [str(terrain)], "lire": [str(terrain)],
-           "phare": ports_phare(), "msg": messages()}
-    if r["genre"] == "code":
+           "phare": ports_phare() + lanternes(ctx.vfs), "msg": messages()}
+    lanterne = None
+    if r["genre"] == "module":                # la lanterne de l'enfant : python3 -m http.server
+        l = lanterne_args(r["reste"])
+        if l.get("erreur"):
+            ctx.err(l["erreur"])
+            return 2
+        if l["bind"] not in ("127.0.0.1", "localhost"):
+            ctx.err(_t("vsh.python.lanterne.bind", port=l["port"]) + "\n")
+            return 1
+        if not 1024 <= l["port"] <= 65535 or l["port"] in ports_phare():
+            ctx.err(_t("vsh.python.lanterne.port", phare=ports_phare()[0]) + "\n")
+            return 1
+        dossier = ici
+        if l["dossier"] is not None:
+            dossier = _reel(ctx, ctx.chemin(l["dossier"]))
+            if dossier is None or not _dans(dossier, terrain):
+                ctx.err(_t("vsh.python.hors_terrain", script=l["dossier"]) + "\n")
+                return 2
+        lanterne = l["port"]
+        argv = [str(l["port"]), "--bind", "127.0.0.1", "--directory", str(dossier)] + l["autres"]
+        cfg.update(genre="lanterne", lanterne=l["port"], argv=["http.server"] + argv)
+    elif r["genre"] == "code":
         cfg.update(code=r["code"], nom="<string>")
     elif r["genre"] == "console" and not (ctx.entree.tty and ctx.sortie.tty):
         cfg["genre"] = "entree"
@@ -415,7 +454,130 @@ def python3(ctx):
     cmd = [interprete(), "-X", "utf8", "-E", "-s"] + [o for o in r["options"] if o in OPTIONS_PASSEES or
                                                        o.startswith("-W")] + ["-c", AMORCE, GARDE,
                                                                               json.dumps(cfg, ensure_ascii=False)]
-    return _executer(ctx, cmd, str(ici))
+    return _executer(ctx, cmd, str(ici), lanterne=lanterne)
+
+
+# ---------------------------------------------------------------- la lanterne (python3 -m http.server)
+def lanterne_args(reste):
+    """Les arguments de http.server : port (8000), --bind/-b, --directory/-d, --protocol/-p."""
+    l = {"port": 8000, "bind": None, "dossier": None, "autres": []}
+    i = 0
+    usage = ("usage: server.py [-h] [--cgi] [-b ADDRESS] [-d DIRECTORY] [-p VERSION] [port]\n"
+             "server.py: error: ")
+    while i < len(reste):
+        a = reste[i]
+        nom, egal, val = a.partition("=")
+        if nom in ("-b", "--bind", "-d", "--directory", "-p", "--protocol") or (
+                len(a) > 2 and a[:2] in ("-b", "-d", "-p") and not a.startswith("--")):
+            if not egal and len(a) > 2 and a[:2] in ("-b", "-d", "-p") and not a.startswith("--"):
+                nom, val = a[:2], a[2:]
+            elif not egal:
+                if i + 1 >= len(reste):
+                    l["erreur"] = usage + f"argument {nom}: expected one argument\n"
+                    return l
+                i += 1
+                val = reste[i]
+            if nom in ("-b", "--bind"):
+                l["bind"] = val
+            elif nom in ("-d", "--directory"):
+                l["dossier"] = val
+            else:
+                l["autres"] += ["--protocol", val]
+        elif a == "--cgi" or (a.startswith("-") and a != "-"):
+            l["erreur"] = usage + f"unrecognized arguments: {a}\n"
+            return l
+        else:
+            try:
+                l["port"] = int(a)
+            except ValueError:
+                l["erreur"] = usage + f"argument port: invalid int value: '{a}'\n"
+                return l
+        i += 1
+    return l
+
+
+_LANTERNES = {}                               # port → Popen (celles de ce terminal : éteintes en le quittant)
+
+
+def _registre(vfs):
+    return os.path.join(str(vfs.jeu_reel), "lanternes.json")
+
+
+def _lire_registre(vfs):
+    try:
+        with open(_registre(vfs), encoding="utf-8") as f:
+            return {int(k): int(v) for k, v in json.load(f).items()}
+    except (OSError, ValueError, AttributeError):
+        return {}
+
+
+def _ecrire_registre(vfs, d):
+    try:
+        os.makedirs(str(vfs.jeu_reel), exist_ok=True)
+        tmp = _registre(vfs) + f".{os.getpid()}"
+        with open(tmp, "w", encoding="utf-8") as f:
+            json.dump({str(k): v for k, v in d.items()}, f)
+        os.replace(tmp, _registre(vfs))
+    except OSError:
+        pass
+
+
+def _vivant(pid):
+    if os.name == "nt":
+        try:
+            import ctypes
+            k = ctypes.windll.kernel32
+            h = k.OpenProcess(0x1000, False, pid)        # PROCESS_QUERY_LIMITED_INFORMATION
+            if not h:
+                return False
+            code = ctypes.c_ulong()
+            ok = k.GetExitCodeProcess(h, ctypes.byref(code))
+            k.CloseHandle(h)
+            return bool(ok) and code.value == 259         # STILL_ACTIVE
+        except Exception:                     # noqa: BLE001
+            return False
+    try:
+        os.kill(pid, 0)
+        return True
+    except OSError:
+        return False
+
+
+def lanternes(vfs):
+    """Les ports des lanternes allumées par le terminal du jeu (toutes ses fenêtres) : curl peut les visiter."""
+    d = _lire_registre(vfs)
+    vivantes = {p: pid for p, pid in d.items() if _vivant(pid)}
+    if len(vivantes) != len(d):
+        _ecrire_registre(vfs, vivantes)
+    return sorted(vivantes)
+
+
+def _noter_lanterne(vfs, port, pid):
+    d = _lire_registre(vfs)
+    if pid is None:
+        d.pop(port, None)
+    else:
+        d[port] = pid
+    _ecrire_registre(vfs, d)
+
+
+def arreter_lanternes():
+    """En quittant le terminal du jeu (ou à la fin d'un test) : les lanternes encore allumées s'éteignent, comme les
+    tâches de fond de bash quand on ferme la fenêtre."""
+    for port, (p, vfs) in list(_LANTERNES.items()):
+        try:
+            if p.poll() is None:
+                p.terminate()
+                p.wait(timeout=5)
+        except (OSError, subprocess.SubprocessError):
+            pass
+        _noter_lanterne(vfs, port, None)
+        _LANTERNES.pop(port, None)
+
+
+import atexit  # noqa: E402
+
+atexit.register(arreter_lanternes)
 
 
 def _argument(ctx, x):
@@ -435,7 +597,7 @@ def _environnement(ctx):
     return env
 
 
-def _executer(ctx, cmd, cwd, capture_seule=False):
+def _executer(ctx, cmd, cwd, capture_seule=False, lanterne=None):
     """Lance le vrai Python : à l'écran directement (au clavier : input(), la console, Ctrl+C), ou par des tuyaux
     (un tuyau, une redirection, les tests). Ctrl+C, `timeout` ou `kill` l'arrêtent."""
     direct = not capture_seule and ctx.sortie.tty and ctx.erreur.tty and getattr(ctx.sortie, "genre", "") == "terminal"
@@ -456,11 +618,28 @@ def _executer(ctx, cmd, cwd, capture_seule=False):
             sys.stdout.flush()
         except (OSError, ValueError):
             pass
+    if getattr(ctx.sh, "fond", False):       # tâche de fond (&) : comme bash, à part du Ctrl+C du clavier
+        if os.name == "nt":
+            kw["creationflags"] = 0x00000200     # CREATE_NEW_PROCESS_GROUP
+        else:
+            kw["start_new_session"] = True
     try:
         p = subprocess.Popen(cmd, **kw)
     except OSError as e:
         ctx.err(f"{ctx.args[0]}: {e}\n")
         return 127
+    if lanterne:                             # curl (et les autres fenêtres) savent qu'elle brille
+        _LANTERNES[lanterne] = (p, ctx.vfs)
+        _noter_lanterne(ctx.vfs, lanterne, p.pid)
+    try:
+        return _attendre(ctx, p, donnees, direct, meme)
+    finally:
+        if lanterne:
+            _LANTERNES.pop(lanterne, None)
+            _noter_lanterne(ctx.vfs, lanterne, None)
+
+
+def _attendre(ctx, p, donnees, direct, meme):
     fils = []
     if donnees is not None:
         def nourrir():
@@ -528,8 +707,9 @@ def _executer(ctx, cmd, cwd, capture_seule=False):
 
 # ---------------------------------------------------------------- les usages racontés (le jeu raconte l'étape)
 def usage_raconte(args):
-    """python3 -m … (http.server, pip…) : pas dans le terminal du jeu ; l'étape est racontée."""
-    return analyser(list(args[1:])).get("genre") == "module"
+    """python3 -m … (pip…, sauf la lanterne http.server) : pas dans le terminal du jeu ; l'étape est racontée."""
+    r = analyser(list(args[1:]))
+    return r.get("genre") == "module" and r.get("module") != "http.server"
 
 
 def mots(texte):

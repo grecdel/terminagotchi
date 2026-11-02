@@ -2407,6 +2407,15 @@ def usage_raconte(texte):
             while k < len(mots) and mots[k].startswith("-"):
                 k += 2 if mots[k] in ("-s", "-k", "--signal", "--kill-after") else 1
             mots = mots[k + 1:]
+        propres, k = [], 0
+        while k < len(mots):                     # sans les redirections (2>&1, > f, <f…)
+            m = re.match(r"^\d*(>>|>&|<&|>|<)(.*)$", mots[k])
+            if m:
+                k += 1 if m.group(2) else 2
+                continue
+            propres.append(mots[k])
+            k += 1
+        mots = propres
         if not mots:
             continue
         if mots[0] in ("python3", "python") and _python.usage_raconte(mots):

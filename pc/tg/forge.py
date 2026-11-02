@@ -970,10 +970,8 @@ def lignes_site(state):
     if p != p0:
         out += ["", f"  {fg(215)}⚠ " + t("fo.site.port_pris", port=p0, autre=p) + RESET]
     import shutil
-    from .plateforme import terminal_virtuel
-    if terminal_virtuel():                     # le terminal du jeu : la lanterne (python3 -m http.server) est racontée
-        out += ["", "  " + t("fo.site.terminal_du_jeu", port=p0)]
-    elif not shutil.which("python3"):
+    from .plateforme import outil_present     # (le terminal du jeu sous Windows : son python3 allume la lanterne)
+    if not outil_present("python3"):
         out += ["", "  " + t("fo.site.sans_python", port=p0)]
     return out
 

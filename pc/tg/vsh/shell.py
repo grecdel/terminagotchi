@@ -145,6 +145,13 @@ class Tache:
         self.annoncee = False
 
 
+# toutes les tâches de fond vivantes, par numéro (pid) : `kill PID` trouve aussi celle lancée dans un sous-shell,
+# comme `(python3 -m http.server … & echo $! > pid)` puis `kill $(cat pid)` dans bash
+import weakref  # noqa: E402
+
+TACHES_PAR_PID = weakref.WeakValueDictionary()
+
+
 # ---------------------------------------------------------------- le shell
 class Shell:
     def __init__(self, vfs=None, cwd=None, interactif=False, ecrire_terminal=None, clavier=None, parent=None,
@@ -653,8 +660,10 @@ class Shell:
         texte = _texte_de(eo)
         sous = self.enfant()
         sous.arret = threading.Event()
+        sous.fond = True                          # (un programme lancé ici ne reçoit pas le Ctrl+C du clavier)
         tache = Tache(n, pid, texte, None, sous)
         tache.arret = sous.arret
+        TACHES_PAR_PID[pid] = tache
 
         def tourner():
             try:
@@ -706,7 +715,8 @@ class Shell:
         if spec.startswith("%"):
             s = spec[1:]
             if s.isdigit():
-                return next((t for t in self.taches if t.n == int(s)), None)
+                # (la plus récente : une ancienne tâche finie, pas encore annoncée, peut porter le même numéro)
+                return next((t for t in reversed(self.taches) if t.n == int(s)), None)
             return next((t for t in vivantes if t.texte.startswith(s)), None)
         if spec.isdigit():
             return next((t for t in self.taches if t.pid == int(spec)), None)

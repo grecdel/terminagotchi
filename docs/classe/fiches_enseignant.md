@@ -28,9 +28,10 @@ aucune donnée d'élève ne quitte l'ordinateur.
   n'écrit que dans `~/terrain_terminagotchi` et `~/.terminagotchi`, n'a pas accès à Internet et ne lance aucun
   programme de Windows, sauf le Python qui fait déjà tourner le jeu : `python3` (la Forge) lance pour de vrai les
   programmes de l'élève rangés dans le terrain, avec une garde qui refuse d'écrire ou de lire ailleurs, de lancer un
-  autre programme ou d'aller sur le réseau ; `curl` (le Port) parle seulement au phare du jeu, sur l'ordinateur
-  lui-même (`http://localhost:8042/`). Les quelques commandes qu'il n'a pas (réseau réel, `sudo`, compilateurs,
-  `gpg`, `pip`, `python3 -m http.server`…) sont annoncées clairement et l'étape est racontée, comme sur le téléphone :
+  autre programme ou d'aller sur le réseau ; la « lanterne » `python3 -m http.server … --bind 127.0.0.1` sert un
+  dossier du terrain, seulement pour l'ordinateur lui-même (jamais pour le réseau de la classe) ; `curl` (le Port)
+  parle seulement au phare du jeu et à ces lanternes, sur l'ordinateur lui-même (`http://localhost:…`). Les quelques commandes qu'il n'a pas (réseau réel, `sudo`, compilateurs,
+  `gpg`, `pip`…) sont annoncées clairement et l'étape est racontée, comme sur le téléphone :
   l'élève continue sans être bloqué. Le jeu ouvre toujours ce terminal, même si WSL est installé sur le poste.
 - Le jeu n'écrit que dans le dossier de l'élève : `~/terrain_terminagotchi` (le terrain de jeu, le seul endroit où
   l'on crée et supprime des fichiers) et `~/.terminagotchi` (la sauvegarde).

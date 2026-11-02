@@ -119,7 +119,7 @@ PROPRES = {"ps", "uptime", "df", "free", "date", "hostname", "uname", "nproc", "
 def racontee(ligne):
     u = outils.usage_raconte(ligne)
     if u:                       # python3 -m http.server, curl vers une autre adresse que le phare : racontés ici
-        return u + " (usage raconté : -m, ou une autre adresse que le phare)"
+        return u + " (usage raconté : un autre -m que http.server, ou curl hors de l'ordinateur)"
     for c in commandes_de(ligne):
         if c in outils.RACONTEES and outils.TOUS.get(c) is None:
             return c
@@ -144,14 +144,21 @@ def comparer(nom, cmd, prepare=None, entree=None, trie=False, norm=None):
         if prepare:
             subprocess.run(["bash", "--norc", "-c", prepare], cwd=ta, env=dict(ENV, HOME=str(ha)),
                            capture_output=True, timeout=20)
-            if racontee(prepare) is None and re.search(r"\bgit\b", prepare):
+            if "http.server" in prepare:
+                pass                                  # (préparé plus bas, dans le terminal du jeu lui-même)
+            elif racontee(prepare) is None and re.search(r"\bgit\b", prepare):
                 coq = None                            # (les dépôts du terminal du jeu : préparés par son petit git)
                 sb0, _cb0 = virtuel(prepare, tb, hb)
             else:
                 subprocess.run(["bash", "--norc", "-c", prepare], cwd=tb, env=dict(ENV, HOME=str(hb)),
                                capture_output=True, timeout=20)
         sa, ca = bash(cmd, ta, ha)
-        sb, cb = virtuel(cmd, tb, hb)
+        if prepare and "http.server" in prepare:
+            # la lanterne de l'enfant (python3 -m http.server) allumée DANS le terminal du jeu, dans le même shell que
+            # la commande (comme le vrai bash à côté, où elle tourne en tâche de fond)
+            sb, cb = virtuel("{ " + prepare + "\n} >/dev/null 2>&1\n" + cmd, tb, hb)
+        else:
+            sb, cb = virtuel(cmd, tb, hb)
         na, nb = normaliser(sa, ta, ha), normaliser(sb, tb, hb)
         if norm:
             na, nb = norm(na), norm(nb)
@@ -544,12 +551,16 @@ def garde():
             ("python3 -c 'import os; os.system(\"ls\")'", "PermissionError", 1),
             ("python3 -c 'import urllib.request as u; u.urlopen(\"http://example.com\", timeout=2)'", "PermissionError", 1),
             ("python3 -c 'import socket; s = socket.socket(); s.bind((\"0.0.0.0\", 8000))'", "PermissionError", 1),
-            ("python3 -m http.server 8000", "terminal du jeu", 1),
+            ("python3 -m http.server 8000", "--bind 127.0.0.1", 1),
+            ("python3 -m http.server 8000 --bind 0.0.0.0", "--bind 127.0.0.1", 1),
+            ("python3 -m http.server 80 --bind 127.0.0.1", "8042", 1),
+            ("python3 -m http.server 8000 --bind 127.0.0.1 --directory ~/.terminagotchi", "terrain", 2),
+            ("curl http://localhost:8765/", "python3 -m http.server 8765 --bind 127.0.0.1", 7),
             ("python3 -m pip install x", "terminal du jeu", 1),
             (f"python3 {str(pr) if mode == 'transparent' else '~/Documents/prive.txt'}", "python3", 2),
             ("cd ~; python3 -c 'print(1)'", "terrain", 1),
             ("curl -I https://example.com", "Internet", 6),
-            ("curl http://localhost:8000", "phare", 7),
+            ("curl https://localhost:8000", "phare", 7),
             ("curl --cacert sceau_du_phare.pem https://localhost:8443", "phare", 7),
             ("curl file:///etc/passwd", "Internet", 6),
             ("curl http://127.42.0.2:8042/", "phare", 7),
@@ -560,6 +571,22 @@ def garde():
                      f"{mode} : `{cmd[:70]}` refusé ({code}, {s.strip().splitlines()[-1][:110] if s.strip() else ''!r})")
             if cmd.startswith("cd ~"):
                 c.lancer("cd ~/terrain_terminagotchi/forge" if mode == "windows" else f"cd {terrain / 'forge'}")
+        s, code, _d = c.lancer("mkdir -p quai; echo 'Bienvenue sur mon quai' > quai/index.html; "
+                               "python3 -m http.server 8766 --bind 127.0.0.1 --directory quai > lanterne.log 2>&1 & "
+                               "for i in 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20; do "
+                               "curl -s -o /dev/null http://localhost:8766/ && break; sleep 0.3; done; "
+                               "curl -s http://localhost:8766/; python3 -c 'import urllib.request as u; "
+                               "print(u.urlopen(\"http://127.0.0.1:8766/\").status)'; kill %1; wait; "
+                               "grep -c 'GET / HTTP' lanterne.log")
+        verifier(s == "Bienvenue sur mon quai\n200\n" + s.splitlines()[-1] + "\n" and int(s.splitlines()[-1]) >= 2,
+                 f"{mode} : la lanterne sur 127.0.0.1, visitée par curl et par Python, éteinte par kill %1 ({s!r})")
+        import socket as _so
+        try:
+            _so.create_connection(("127.0.0.1", 8766), 0.5).close()
+            eteinte = False
+        except OSError:
+            eteinte = True
+        verifier(eteinte, f"{mode} : la lanterne est bien éteinte après kill %1")
         s, code, _d = c.lancer("python3 -c 'open(\"dans.txt\", \"w\").write(\"ok\\n\")'; cat dans.txt")
         verifier(s == "ok\n" and (terrain / "forge" / "dans.txt").read_bytes() == b"ok\n",
                  f"{mode} : python3 écrit dans le terrain, fins de ligne Linux ({s!r})")

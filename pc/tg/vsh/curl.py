@@ -140,10 +140,17 @@ def local(hote):
     return h in ("localhost", "::1", "0.0.0.0", "") or h.startswith("127.") or h.endswith(".localhost")
 
 
-def permise(url):
-    """Vrai si l'adresse est le phare du Port (http://localhost:8042 ou 127.0.0.1:8042)."""
+def quai_local(url):
+    """http://localhost:PORT ou 127.0.0.1:PORT (un port à soi, ≥ 1024) : le phare, ou une lanterne de l'enfant."""
     d = decouper_url(url)
-    return bool(d) and d[0] == "http" and d[1].lower() in ("localhost", "127.0.0.1") and d[2] in ports_phare()
+    return bool(d) and d[0] == "http" and d[1].lower() in ("localhost", "127.0.0.1") and 1024 <= d[2] <= 65535
+
+
+def permise(url, lanternes=()):
+    """Vrai si l'adresse est le phare du Port (http://localhost:8042) ou une lanterne allumée dans le terminal du jeu
+    (python3 -m http.server … --bind 127.0.0.1)."""
+    d = decouper_url(url)
+    return quai_local(url) and (d[2] in ports_phare() or d[2] in lanternes)
 
 
 def refus(url):
@@ -163,7 +170,7 @@ def usage_raconte(args):
         return False
     if o.get("help") or o.get("version"):
         return False
-    return any(not permise(u) for u in urls)
+    return any(not quai_local(u) for u in urls)
 
 
 # ---------------------------------------------------------------- la barre de progression du vrai curl
@@ -334,10 +341,19 @@ def _montrer_erreurs(o):
 def _une(ctx, o, url, premiere=True, sauts=0):
     silencieux = bool(o.get("silent"))
     bavard = bool(o.get("verbose"))
-    if not permise(url):
+    if not quai_local(url):
         code, msg = refus(url)
         ctx.err(msg + "\n")
         return code
+    from .python import lanternes
+    if not permise(url, lanternes(ctx.vfs)):
+        # un quai local où aucune lanterne du terminal du jeu ne brille : comme le vrai curl quand personne n'écoute
+        # (aucune connexion n'est tentée vers un autre programme de l'ordinateur), et le conseil du jeu
+        _s, h, pt, _c = decouper_url(url)
+        if _montrer_erreurs(o):
+            ctx.err(f"curl: (7) Failed to connect to {h} port {pt} after 0 ms: Couldn't connect to server\n")
+            ctx.err(_t("vsh.curl.lanterne", port=pt) + "\n")
+        return 7
     schema, hote, port, chemin = decouper_url(url)
     sortie_fichier = None
     if premiere and o.get("output") and o["output"] != "-":
@@ -418,7 +434,7 @@ def _une(ctx, o, url, premiere=True, sauts=0):
         except ConnectionRefusedError:
             # le phare du Port dort (il s'éteint seul après 30 minutes sans visite) : comme sur le téléphone, le jeu
             # le rallume, puis curl frappe encore une fois
-            if not _rallumer_phare():
+            if port not in ports_phare() or not _rallumer_phare():
                 raise
             reponse = requete(hote, port, brut, delai=delai)
     except OSError:
