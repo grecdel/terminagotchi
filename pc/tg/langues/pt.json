@@ -8888,5 +8888,6 @@
  "vsh.git.reseau": "O pequeno git do terminal do jogo nunca fala com um servidor (sem push, sem endereço web): trabalha entre as pastas do teu recreio.",
  "vsh.git.hors_terrain": "O pequeno git do terminal do jogo só trabalha dentro do teu recreio (terrain_terminagotchi).",
  "vsh.git.global": "O pequeno git do terminal do jogo não tem --global: cada álbum guarda o seu próprio nome (sem --global).",
- "vsh.git.version": "o pequeno git do terminal do jogo Terminagotchi"
+ "vsh.git.version": "o pequeno git do terminal do jogo Terminagotchi",
+ "vsh.cmd": "Isto é um comando da linha de comandos do Windows. Aqui é um terminal Linux: experimenta `{linux}`."
 }

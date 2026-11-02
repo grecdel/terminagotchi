@@ -8890,5 +8890,6 @@
  "vsh.git.reseau": "Git kecil terminal game tidak pernah berbicara dengan server (tanpa push, tanpa alamat web): ia bekerja di antara folder lapanganmu.",
  "vsh.git.hors_terrain": "Git kecil terminal game hanya bekerja di dalam lapanganmu (terrain_terminagotchi).",
  "vsh.git.global": "Git kecil terminal game tidak punya --global: setiap album menyimpan namanya sendiri (tanpa --global).",
- "vsh.git.version": "git kecil terminal game Terminagotchi"
+ "vsh.git.version": "git kecil terminal game Terminagotchi",
+ "vsh.cmd": "Itu perintah Command Prompt Windows. Di sini terminal Linux: coba `{linux}`."
 }

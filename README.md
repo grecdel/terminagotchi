@@ -163,6 +163,13 @@ Il faut seulement **Python 3** (déjà installé sur Linux et macOS).
 3. La créature propose de s'installer dans ton terminal. Ensuite, `tg` suffit : `tg aide` montre tout ce qu'on peut
    faire.
 
+**Sous Windows** : installe Python 3 (python.org ou le Microsoft Store), puis dans une fenêtre de commande lance
+`python terminagotchi-essai.pyz` (ou double-clique le fichier). Tu ne tapes pas dans PowerShell : le jeu ouvre
+**son propre terminal**, un petit Linux écrit en Python (rien d'autre à installer). Entrée dans la fenêtre du jeu
+l'ouvre, `tg terminal` ou la touche `[t]` en ouvre une fenêtre de plus, et `exit` ramène au jeu. Les leçons y sont
+les mêmes que sous Linux, sur les vrais fichiers de `terrain_terminagotchi` (et nulle part ailleurs). Si WSL est
+déjà installé, le jeu propose aussi de jouer dans son vrai bash (il ne l'installe jamais).
+
 Depuis le code source : `git clone` ce dépôt, puis `python3 pc` dans le dossier.
 
 **Bon à savoir** : au début, seuls l'œuf et quelques commandes sont visibles, le reste se débloque petit à petit.

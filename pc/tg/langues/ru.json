@@ -8889,5 +8889,6 @@
  "vsh.git.reseau": "Маленький git терминала игры никогда не говорит с сервером (ни push, ни веб-адреса): он работает между папками твоей площадки.",
  "vsh.git.hors_terrain": "Маленький git терминала игры работает только на твоей площадке (terrain_terminagotchi).",
  "vsh.git.global": "У маленького git терминала игры нет --global: каждый альбом хранит своё имя (без --global).",
- "vsh.git.version": "маленький git терминала игры Terminagotchi"
+ "vsh.git.version": "маленький git терминала игры Terminagotchi",
+ "vsh.cmd": "Это команда командной строки Windows. А здесь терминал Linux: попробуй `{linux}`."
 }

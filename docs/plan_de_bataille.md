@@ -729,7 +729,8 @@ des locuteurs.
 - Exploit « un robot qui évite tous les obstacles » (`atelier.robot`). Variantes EXISTANTES favorisées (Machine /
   Plante, libres) : `horlogrif:mecanique`, `groinfer:rouille`, `lampignon:forêt`.
 - PowerShell : `echo 1 > robot/led` écrit en UTF-16 sous PowerShell 5 : le jeu lit aussi l'UTF-16.
-- **Windows — codé (1er novembre, demande du propriétaire).** Les mêmes étapes en PowerShell 5.1 et 7
+- **Windows — codé (1er novembre, demande du propriétaire) ; remplacé le 2 novembre par le terminal du jeu (voir plus
+  bas) : ces étapes PowerShell ne sont plus proposées.** Les mêmes étapes en PowerShell 5.1 et 7
   (`atelier.lecons_pour(True)`) : `Get-Content robot\led`, `if (5 -lt 10) { "vrai" } else { "faux" }`,
   `1..3 | ForEach-Object { … }`, `while ($true) { … }`, `cerveau.ps1` (`Get-Content robot\capteur_distance`,
   `if (…) { … } else { … }`, `Set-Content robot\moteur …`, écrit en UTF-8 avec BOM), la boucle
@@ -936,6 +937,39 @@ essayés, le premier gardien gardé : un gardien courant croisé 94 fois sur 100
 glitch : 1 sur 800) ; on ne le reçoit pas, il faut le dresser. Le serveur accepte « gardien » si l'espèce garde bien
 une boîte codée (il ne peut pas savoir ce qui a été maîtrisé hors ligne). Tests `pc/outils/test_glitch.py`,
 `tests/jvm/Glitch.kt`, `site/test/tirage.mjs`, `site/test/test.mjs`. Le site est à redéployer pour la galerie.
+
+**🐧 Le terminal du jeu sous Windows — codé (2 novembre, décision du propriétaire).**
+Décision (2 novembre, 0 h 30 – 0 h 41) : **un seul terminal Linux pour tous les supports, et tout en virtuel** : le
+jeu n'embarque, ne télécharge et n'emballe AUCUN binaire ni code tiers (BusyBox refusé).
+- Linux et macOS : le vrai bash / zsh, inchangé. Android : inchangé (sh / toybox et les outils Kotlin).
+- Windows : plus de PowerShell. Le jeu ouvre **son propre terminal Linux**, écrit en Python sans aucune dépendance
+  (`pc/tg/vsh/`) : un shell POSIX (variables, `$( )`, tuyaux, redirections, `if` / `for` / `while` / `case`,
+  fonctions, scripts `./x.sh` avec le droit x, `sh -c`, tâches de fond, `jobs` / `kill`, `trap`, `set -euo
+  pipefail`…) et les commandes des leçons (ls, cat, cp, mv, rm, mkdir, chmod, find, grep, sed, awk, sort, uniq, cut,
+  tr, wc, head, tail, diff, sha256sum, base64, xxd, tar, gzip, bc, expr, sqlite3 (le sqlite3 de Python), ps, kill,
+  timeout, less, man, git — le petit git porté de `PetitGit.kt`…). Il agit sur les VRAIS fichiers de
+  `~/terrain_terminagotchi` et seulement là ; `/`, `/etc`, `/bin`, `/proc`, `/var/log` sont de petits fichiers du jeu
+  en lecture seule (`~/.terminagotchi/systeme`), les droits Linux (chmod 444, +x) sont gardés dans
+  `~/.terminagotchi/droits_terminal.json`. Pas de réseau, aucun programme de Windows lancé (seulement le Python qui
+  fait tourner le jeu, pour ses propres commandes `tg`, `carte`, `atelier`…), rien dans le registre ni le PATH, rien
+  d'installé. Option : si WSL est déjà installé, le jeu propose son vrai bash (`tg terminal wsl`), sans jamais
+  l'installer.
+- Honnêteté : une commande absente dit « cette commande n'existe pas dans le terminal du jeu sous Windows » et
+  l'étape est racontée comme sur le téléphone, sans bloquer. Restent racontés : le réseau réel (ping, curl, ssh,
+  ssh-keygen, ip, ss, nslookup…), sudo, systemctl, journalctl, dmesg, lsblk, top / htop, les gestionnaires de paquets,
+  gcc / make, python3 / pip, openssl, gpg, ImageMagick / ffmpeg / sox / exiftool, openscad, podman / qemu, les
+  éditeurs (nano, vim), ln, chown, crontab, useradd.
+- Plusieurs fenêtres : `tg terminal`, la touche `[t]` de la fenêtre du jeu, `terminal` dans l'espace ; toutes
+  écrivent dans `~/.terminagotchi/historique_terminal`, que le jeu lit (la créature mange chaque commande). Android :
+  un seul écran de terminal dans l'appli ; le jeu explique les sessions de Termux.
+- Les petits terminaux (`tg mini`, l'île du bureau, l'espace) passent aussi par le terminal du jeu sous Windows ; les
+  fichiers du terrain sont écrits avec des fins de ligne Linux.
+- Tests : `pc/outils/test_terminal.py` (chaque cas `vrai_terminal` des fiches et une liste de syntaxes, comparés au
+  VRAI bash + coreutils : sortie et code identiques ; le Linux virtuel ; le petit git contre le vrai git),
+  `rejeu_bash.py --terminal-du-jeu` (l'histoire entière, les 13 mondes et le Sommet, jouée dans ce terminal, le jeu
+  jugeant chaque étape), `test_windows.py`. CI : `rejeu.yml` (comparaison au vrai bash sous Linux, et l'histoire en
+  mode Windows simulé) et `windows.yml` (une VRAIE machine Windows de GitHub joue toute l'histoire dans le terminal
+  du jeu).
 
 ## En continu (chaque jour, peu coûteux)
 

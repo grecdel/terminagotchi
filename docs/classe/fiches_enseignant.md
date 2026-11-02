@@ -21,6 +21,15 @@ aucune donnée d'élève ne quitte l'ordinateur.
 
 - `python3 terminagotchi.pyz` : aucune installation (Python 3 suffit), sous Linux, macOS ou Windows. Le jeu
   fonctionne hors ligne.
+- **Sous Windows**, l'élève ne tape pas dans PowerShell : le jeu ouvre **son propre terminal**, un petit Linux
+  écrit en Python (aucun programme ajouté, rien d'installé). Dans la fenêtre du jeu, Entrée l'ouvre ; `tg terminal`
+  ou la touche `[t]` en ouvre une fenêtre de plus. Les leçons et les commandes sont alors **les mêmes que sous Linux**
+  (`ls`, `cd`, `chmod`, `./script.sh`, `for i in $(seq 20)`…), sur les vrais fichiers du terrain de jeu. Ce terminal
+  n'écrit que dans `~/terrain_terminagotchi` et `~/.terminagotchi`, n'a pas accès au réseau et ne lance aucun
+  programme de Windows. Les quelques commandes qu'il n'a pas (réseau réel, `sudo`, compilateurs, `gpg`…) sont
+  annoncées clairement (« cette commande n'existe pas dans le terminal du jeu sous Windows ») et l'étape est racontée,
+  comme sur le téléphone : l'élève continue sans être bloqué. Si WSL est déjà installé sur le poste, le jeu propose
+  aussi de jouer dans son vrai bash (il ne l'installe jamais).
 - Le jeu n'écrit que dans le dossier de l'élève : `~/terrain_terminagotchi` (le terrain de jeu, le seul endroit où
   l'on crée et supprime des fichiers) et `~/.terminagotchi` (la sauvegarde).
 - Première séance : comptez 5 à 10 minutes pour l'éclosion de l'œuf (les premières commandes la déclenchent).
@@ -409,13 +418,9 @@ viendront après les classes pilotes ; en attendant, voici les codes et ce que c
 | 22 · Le Poste de Contrôle | administration système **en lecture** : processus, mémoire et disque, variables d'environnement, journaux, cron, distributions, paquets, services, utilisateurs (rien n'est installé ni modifié) | `22-GS-F` | `22-AGS-K` |
 | 23 · Le Sommet | Expert++ (pour les plus grands) : scripts robustes, expressions régulières, débogage, documentation, défis ; s'ouvre quand trois mondes ont leur palier 3 | `23-GS-H` | `23-AGS-N` |
 
-**L'Atelier (chapitre 20) sous Windows.** Le défi du robot existe aussi en PowerShell (Windows PowerShell 5.1 et
-PowerShell 7), avec le même exploit : l'élève écrit `cerveau.ps1` (`Get-Content robot\capteur_distance`,
-`if (…) { … } else { … }`, `Set-Content robot\moteur droite`) et lance sa boucle
-`1..20 | ForEach-Object { .\cerveau.ps1; atelier pas }`. Le terminal du jeu autorise les scripts pour sa seule fenêtre.
-Dans un autre PowerShell, si Windows répond « l'exécution de scripts est désactivée sur ce système », le jeu explique
-le message et propose `powershell -ExecutionPolicy Bypass -File .\cerveau.ps1`, qui ne vaut que pour cette fois. Rien
-à installer : ne modifiez pas la politique d'exécution des postes (pas de `Set-ExecutionPolicy`).
+**L'Atelier (chapitre 20) sous Windows.** Le défi du robot est le même partout : dans le terminal du jeu, l'élève
+écrit `cerveau.sh` et lance sa boucle `for i in $(seq 20); do sh cerveau.sh; atelier pas; done`, exactement comme
+sous Linux. Rien à régler sur les postes (pas de politique d'exécution des scripts à modifier).
 
 # Correspondance avec les programmes (indicative)
 

@@ -2231,8 +2231,21 @@ def inconnue(ctx):
         ctx.err(ctx.sh.prefixe() + f"{nom}: command not found\n" + t("vsh.cmdlet", cmd=nom,
                                                                  linux=core.PS_CMDLETS[nom.lower()]) + "\n")
         return 127
+    if nom.lower() in CMD_WINDOWS:              # une habitude de l'invite de commandes de Windows (cmd.exe)
+        from ..langue import t
+        ctx.err(ctx.sh.prefixe() + f"{nom}: command not found\n" + t("vsh.cmd", cmd=nom,
+                                                                 linux=CMD_WINDOWS[nom.lower()]) + "\n")
+        return 127
     ctx.err(ctx.sh.prefixe() + f"{nom}: command not found\n")
     return 127
+
+
+# les habitudes de l'invite de commandes de Windows : la commande Linux qui fait pareil (seulement un conseil)
+CMD_WINDOWS = {"cls": "clear", "cd..": "cd ..", "cd\\": "cd /", "del": "rm", "erase": "rm", "copy": "cp",
+               "xcopy": "cp -r", "move": "mv", "md": "mkdir", "rd": "rmdir", "ren": "mv", "rename": "mv",
+               "findstr": "grep", "where": "which", "tasklist": "ps", "taskkill": "kill", "explorer": "ls",
+               "start": "ls", "ver": "uname -a", "systeminfo": "uname -a", "attrib": "ls -l", "fc": "diff",
+               "sort.exe": "sort", "more.com": "less"}
 
 
 # les commandes du jeu (le compagnon : tg, carte, quetes… ; les mondes : port, crypte, atelier…)
@@ -2296,6 +2309,14 @@ def lancer_programme(cmd, cwd, env, ctx, capture=True):
     import subprocess
     import signal
     import threading
+    arret = None
+    if os.name == "nt":                          # pas de SIGINT sous Windows : un petit fichier fait le Ctrl+C
+        import tempfile
+        fd, arret = tempfile.mkstemp(prefix="tg_arret_", dir=str(ctx.sh.vfs.jeu_reel / "tmp")
+                                     if (ctx.sh.vfs.jeu_reel / "tmp").is_dir() else None)
+        os.close(fd)
+        os.remove(arret)
+        env = dict(env, TG_ARRET=arret)
     kw = {"cwd": cwd, "env": env}
     if capture:
         kw.update(stdin=subprocess.DEVNULL, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
@@ -2322,8 +2343,12 @@ def lancer_programme(cmd, cwd, env, ctx, capture=True):
             if ctx.sh.arret.is_set() and not interrompu:
                 interrompu = True
                 try:
-                    if os.name == "nt":
-                        p.terminate()
+                    if arret:
+                        open(arret, "w").close()
+                        try:
+                            p.wait(timeout=5)
+                        except subprocess.TimeoutExpired:
+                            p.terminate()
                     else:
                         p.send_signal(signal.SIGINT)
                 except OSError:
@@ -2336,9 +2361,17 @@ def lancer_programme(cmd, cwd, env, ctx, capture=True):
         raise
     for f in fils:
         f.join(5)
+    if arret:
+        try:
+            os.remove(arret)
+        except OSError:
+            pass
     if capture:
-        ctx.out(b"".join(morceaux["out"]))
-        ctx.err(b"".join(morceaux["err"]))
+        sortie, erreurs = b"".join(morceaux["out"]), b"".join(morceaux["err"])
+        if os.name == "nt":                      # print() de Windows écrit \r\n : le terminal du jeu garde \n
+            sortie, erreurs = sortie.replace(b"\r\n", b"\n"), erreurs.replace(b"\r\n", b"\n")
+        ctx.out(sortie)
+        ctx.err(erreurs)
     if interrompu:
         from .shell import Interrompu
         raise Interrompu()

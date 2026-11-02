@@ -8894,5 +8894,6 @@
  "vsh.git.reseau": "游戏终端的小 git 从不连接服务器（没有 push，没有网址）：它只在你游戏场的文件夹之间工作。",
  "vsh.git.hors_terrain": "游戏终端的小 git 只在你的游戏场里工作（terrain_terminagotchi）。",
  "vsh.git.global": "游戏终端的小 git 没有 --global：每本相册保留自己的名字（不用 --global）。",
- "vsh.git.version": "Terminagotchi 游戏终端的小 git"
+ "vsh.git.version": "Terminagotchi 游戏终端的小 git",
+ "vsh.cmd": "这是 Windows 命令提示符的命令。这里是 Linux 终端：试试 `{linux}`。"
 }

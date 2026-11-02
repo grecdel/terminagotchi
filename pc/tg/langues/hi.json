@@ -8897,5 +8897,6 @@
  "vsh.git.reseau": "खेल के टर्मिनल का छोटा git कभी किसी सर्वर से बात नहीं करता (न push, न वेब पता): वह तुम्हारे मैदान के फ़ोल्डरों के बीच काम करता है।",
  "vsh.git.hors_terrain": "खेल के टर्मिनल का छोटा git सिर्फ़ तुम्हारे मैदान (terrain_terminagotchi) में काम करता है।",
  "vsh.git.global": "खेल के टर्मिनल के छोटे git में --global नहीं है: हर एल्बम अपना नाम खुद रखता है (बिना --global)।",
- "vsh.git.version": "Terminagotchi खेल के टर्मिनल का छोटा git"
+ "vsh.git.version": "Terminagotchi खेल के टर्मिनल का छोटा git",
+ "vsh.cmd": "यह Windows कमांड प्रॉम्प्ट की कमांड है। यहाँ Linux टर्मिनल है: `{linux}` आज़माओ।"
 }

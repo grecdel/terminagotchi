@@ -8893,5 +8893,6 @@
  "vsh.git.reseau": "git الصغير في طرفية اللعبة لا يتحدث أبدًا مع خادم (لا push ولا عنوان ويب): يعمل بين مجلدات ساحتك.",
  "vsh.git.hors_terrain": "git الصغير في طرفية اللعبة يعمل فقط داخل ساحتك (terrain_terminagotchi).",
  "vsh.git.global": "git الصغير في طرفية اللعبة ليس فيه --global: كل ألبوم يحتفظ باسمه الخاص (بدون --global).",
- "vsh.git.version": "git الصغير في طرفية لعبة Terminagotchi"
+ "vsh.git.version": "git الصغير في طرفية لعبة Terminagotchi",
+ "vsh.cmd": "هذا أمر من موجّه الأوامر في ويندوز. هنا طرفية لينكس: جرّب `{linux}`."
 }

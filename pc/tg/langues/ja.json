@@ -8896,5 +8896,6 @@
  "vsh.git.reseau": "ゲームのターミナルの小さな git はサーバーと話しません（push もウェブのアドレスもなし）：きみのあそび場のフォルダーの間で働きます。",
  "vsh.git.hors_terrain": "ゲームのターミナルの小さな git は、きみのあそび場（terrain_terminagotchi）の中でだけ働きます。",
  "vsh.git.global": "ゲームのターミナルの小さな git には --global がありません：アルバムごとに自分の名前をもちます（--global なしで）。",
- "vsh.git.version": "Terminagotchi ゲームのターミナルの小さな git"
+ "vsh.git.version": "Terminagotchi ゲームのターミナルの小さな git",
+ "vsh.cmd": "それは Windows のコマンドプロンプトのコマンドです。ここは Linux のターミナル：`{linux}` を試してね。"
 }

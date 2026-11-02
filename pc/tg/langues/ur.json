@@ -8895,5 +8895,6 @@
  "vsh.git.reseau": "کھیل کے ٹرمینل کا چھوٹا git کبھی کسی سرور سے بات نہیں کرتا (نہ push، نہ ویب پتا): وہ تمہارے میدان کے فولڈروں کے درمیان کام کرتا ہے۔",
  "vsh.git.hors_terrain": "کھیل کے ٹرمینل کا چھوٹا git صرف تمہارے میدان (terrain_terminagotchi) میں کام کرتا ہے۔",
  "vsh.git.global": "کھیل کے ٹرمینل کے چھوٹے git میں --global نہیں: ہر البم اپنا نام خود رکھتا ہے (بغیر --global)۔",
- "vsh.git.version": "Terminagotchi کھیل کے ٹرمینل کا چھوٹا git"
+ "vsh.git.version": "Terminagotchi کھیل کے ٹرمینل کا چھوٹا git",
+ "vsh.cmd": "یہ Windows کمانڈ پرامپٹ کی کمانڈ ہے۔ یہاں Linux ٹرمینل ہے: `{linux}` آزماؤ۔"
 }
