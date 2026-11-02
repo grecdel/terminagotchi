@@ -27,10 +27,10 @@ digraph oeuf {
   subgraph cluster_interface {
     label=<<b>Ce que l'enfant voit, touche, entend</b>>; style="rounded,filled"; fillcolor="#e9f7ea"; color="#3a9a45"; fontsize=14;
     ecran   [label=<<b>Écran couleur 1,69 pouce</b><br/><font point-size="10">240 × 280 points, IPS<br/>la créature animée</font>>, fillcolor="#c8efcb"];
-    boutons [label=<<b>3 boutons</b><br/><font point-size="10">gauche · valider · droite</font>>, fillcolor="#c8efcb"];
+    boutons [label=<<b>3 boutons</b><br/><font point-size="10">nourrir · caresser · coucher</font>>, fillcolor="#c8efcb"];
     buzzer  [label=<<b>Buzzer piézo</b><br/><font point-size="10">bips « 8 bits »</font>>, fillcolor="#c8efcb"];
     ampli   [label=<<b>Petit ampli + haut-parleur</b><br/><font point-size="10">vrais sons et petites musiques</font>>, fillcolor="#ffffff", style="rounded,filled,dashed"];
-    capteur [label=<<b>Capteur de mouvement</b><br/><font point-size="10">secouer, retourner l'œuf</font>>, fillcolor="#ffffff", style="rounded,filled,dashed"];
+    capteur [label=<<b>Capteur de mouvement</b><br/><font point-size="10">compteur de pas (dès la variante A)<br/>secouer, retourner l'œuf</font>>, fillcolor="#c8efcb"];
     vibreur [label=<<b>Vibreur</b><br/><font point-size="10">la créature appelle</font>>, fillcolor="#ffffff", style="rounded,filled,dashed"];
   }
 
@@ -62,7 +62,7 @@ digraph oeuf {
   boutons -> mcu [label="3 fils"];
   mcu -> buzzer  [label="1 fil"];
   mcu -> ampli   [label="I2S (son)", style=dashed];
-  capteur -> mcu [label="I2C", style=dashed];
+  capteur -> mcu [label="I2C"];
   mcu -> vibreur [label="1 fil", style=dashed];
   mcu -> lora    [label="SPI", dir=both, style=dotted, color="#7a4fc4", penwidth=2];
   lora -> antenne [style=dotted, color="#7a4fc4", penwidth=2];

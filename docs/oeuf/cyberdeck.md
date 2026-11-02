@@ -1,258 +1,313 @@
 # Le cyberdeck Terminagotchi — proposition à valider
 
-> **Statut : proposition (2 novembre 2026), rien n'est fabriqué ni acheté.** C'est la **deuxième forme physique**
-> décidée par le propriétaire (voir `proposition.md`, « Décisions du propriétaire ») : à côté de l'**œuf** (petit,
-> 3 boutons), un **petit ordinateur de poche** avec un plus grand écran et un **vrai petit clavier**. Le propriétaire
-> choisit, corrige ou refuse chaque point (voir « Questions à trancher » à la fin). Aucune marque imposée, aucun lien
-> d'achat. Prix et autonomies = **ordres de grandeur**, à revérifier au moment de l'achat.
+> **Statut : proposition (2 novembre 2026, réécrite après les décisions du propriétaire du même jour), rien n'est
+> fabriqué ni acheté.** C'est la **deuxième forme physique** à côté de l'**œuf** (voir `proposition.md`). Le
+> cyberdeck est **seulement du matériel** : un petit ordinateur Linux portable, fait maison, sur lequel on installe
+> **le jeu PC tel quel**. Il n'a **aucune fonction spéciale**. Le propriétaire choisit, corrige ou refuse chaque point
+> encore ouvert (voir « Questions restantes » à la fin). Aucune marque imposée, aucun lien d'achat. Prix et
+> autonomies = **ordres de grandeur**, à revérifier au moment de l'achat.
 
-![Croquis du cyberdeck : vue de face et coupe](croquis_cyberdeck.png)
+![Croquis du cyberdeck à clapet : ouvert à plat, de côté (ouvert et fermé), coupe](croquis_cyberdeck.png)
 
 ## 1. En une phrase
 
-Un **petit ordinateur de poche** (environ 14,5 × 12,5 cm, la taille d'une console portable), avec un **écran couleur
-de 4 pouces** et un **clavier de 44 touches à la taille des doigts d'enfant**, sur lequel l'enfant tape **de vraies
-commandes Linux** pour faire vivre **sa vraie créature** Terminagotchi, sans Internet et sans compte.
+Un **petit ordinateur portable à clapet**, fait maison (fermé : environ **16 × 12 × 3,4 cm**, un peu plus grand
+qu'une console portable), avec un **écran de 5 pouces** qui se replie sur un **clavier de 55 touches à la taille des
+doigts d'enfant**. Dedans : **un vrai Linux** et **le jeu Terminagotchi pour PC, installé normalement**. L'enfant y
+retrouve **sa créature et sa partie**, comme sur l'ordinateur de la maison.
 
-## 2. Ce que fait le cyberdeck
+## 2. Ce que fait le cyberdeck (et ce qu'il ne fait pas)
 
-### 2.1 Vrai terminal Linux ou terminal du jeu ?
+### 2.1 Le même jeu, rien de nouveau
 
-Il y a deux façons de construire un cyberdeck :
+- C'est un **ordinateur Linux comme un autre**, juste petit et portable. On y installe **le jeu PC tel quel** :
+  mêmes mondes, mêmes leçons, mêmes vraies commandes (`ls`, `cd`, `cat`, `grep`, les tubes `|`…), même XP, mêmes
+  niveaux. Le jeu utilise déjà Python et sait s'afficher dans un petit terminal (créature en haut, ligne de commande
+  en bas) : **aucune version spéciale à écrire**.
+- **Pas de « partie propre » au cyberdeck, pas de commande `tg deck envoie / reprend`, pas de créature déplacée**
+  (ces idées de la première proposition sont abandonnées). Seul **l'œuf** isole la créature hors du jeu
+  (voir `proposition.md`).
+- Pour le jeu, le cyberdeck **est un PC** : il apprend donc le **programme PC** des commandes (§ 1.3 de
+  `docs/programme.md`), pas celui du téléphone.
 
-| | **Carte Linux** (proposée) | **Microcontrôleur** (comme l'œuf) |
+### 2.2 Comment la créature passe du PC au cyberdeck : la synchro qui existe déjà
+
+C'est **exactement** la synchronisation qui relie déjà aujourd'hui le PC et le téléphone Android (le
+« recensement », fichier `pc/tg/recense.py` côté PC, son équivalent côté téléphone). Rien de nouveau à coder.
+
+En simple :
+
+1. **Un compte sur le site du jeu**, créé une seule fois (avec un adulte) : `tg compte creer Pseudo`. Pas de mot de
+   passe : l'appareil garde une **clé secrète**. Seul un **pseudo** part sur le site (pas de nom réel, pas d'adresse,
+   pas de position).
+2. **Relier un autre appareil** : sur le PC, `tg compte code` donne un **code valable 10 minutes** ; sur le
+   cyberdeck (ou le téléphone), `tg compte lier CODE`. Les deux appareils ont maintenant **la même créature**.
+3. **Ensuite tout se fait tout seul** : quand l'appareil a Internet, le jeu envoie au site **ce qu'il a gagné depuis
+   la dernière fois** (XP, commandes goûtées, collection, records…), au plus une fois par minute ; le site
+   **additionne** ce que chaque appareil a gagné et renvoie la créature commune. On peut donc jouer **sur les deux**,
+   même le même jour : rien n'est perdu ni compté deux fois.
+4. **Sans Internet**, le jeu marche quand même (il garde d'avance les tirages des prochains jours) ; il rattrape la
+   synchro à la prochaine connexion.
+5. **Sans compte**, le cyberdeck est simplement **un ordinateur de plus avec sa propre partie**, comme un deuxième
+   PC : rien ne passe d'un appareil à l'autre.
+6. En **mode classe**, aucune synchro (règle déjà en place dans le jeu).
+
+### 2.3 Wi-Fi éteint par défaut : est-ce compatible avec la synchro ?
+
+**Pas complètement, il faut le dire franchement** : la synchro passe **par Internet** (le site du jeu). Wi-Fi
+éteint = pas de synchro tant qu'on ne l'allume pas (le jeu continue de marcher, et rattrape au retour du Wi-Fi).
+Rien n'est perdu, mais la créature du PC et celle du cyberdeck ne se rejoignent qu'une fois le Wi-Fi allumé.
+
+**Proposition (en attente)** : Wi-Fi **éteint par défaut** ; un adulte enregistre **une fois** le Wi-Fi de la maison ;
+l'enfant peut **allumer ou éteindre le Wi-Fi lui-même**, comme le mode avion d'un téléphone (c'est le réglage
+normal de Linux, pas une fonction du jeu ; il est en général permis sans droits d'administrateur, **à vérifier au
+prototype**). Allumé, le jeu synchronise tout seul comme sur le PC. Autre choix possible : Wi-Fi **allumé à la
+maison** comme sur l'ordinateur familial (synchro toujours à jour). Voir question 3.
+
+Les mises à jour du système et du jeu se font comme sur un PC (Wi-Fi allumé par l'adulte), ou par la carte microSD.
+
+### 2.4 Un vrai Linux, mais l'enfant ne peut pas le casser (proposé, en attente)
+
+- L'enfant a **son propre compte sur l'appareil, sans droits d'administrateur** (pas de `sudo`). L'adulte garde un
+  **compte administrateur** (mot de passe choisi par lui) pour les mises à jour.
+- Au démarrage, le cyberdeck peut ouvrir directement **le jeu** (comme on lance le jeu sur le PC).
+- **Remise à zéro facile** : un adulte recopie l'**image prête** sur la carte microSD (comme on installe un
+  système) ; la partie de l'enfant est **dans son compte du jeu** (si synchro) ou sauvegardée à part.
+- Pas de navigateur installé, pas de messagerie.
+
+### 2.5 Avec l'œuf
+
+L'œuf se branche au cyberdeck **comme au PC**, par câble USB-C, puisque c'est **le même jeu** :
+- **mode compagnon** : la créature de l'œuf réagit aux commandes tapées au clavier du cyberdeck ;
+- **envoyer / reprendre** la créature dans l'œuf, avec les mêmes commandes que sur le PC (noms choisis quand
+  l'œuf sera codé).
+
+### 2.6 Qui fait quoi : œuf ou ordinateur ?
+
+| | **L'œuf** | **PC, téléphone, cyberdeck** |
 |---|---|---|
-| Ce qui tourne dedans | un **vrai petit Linux** et la **version PC du jeu, telle quelle**, dans un **vrai shell** (bash) | un programme unique écrit pour l'appareil, qui **imite** un terminal |
-| Les commandes | **les vraies** : `ls`, `cd`, `cat`, `grep`, les tubes `|`, les vrais fichiers, tous les mondes du jeu | une **trentaine de commandes imitées** (comme la Salle d'entraînement) ; pas de vrais fichiers, pas de vrais tubes |
-| Le jeu | **le même code que sur PC** (le jeu n'utilise que Python, déjà prévu pour les petits terminaux : le mini-terminal « créature en haut, ligne de commande en bas ») | **tout à réécrire** dans un autre langage, et à garder identique aux règles du jeu (vecteurs de test communs) |
-| Allumage | 20 à 40 secondes (comme un petit PC) ; il faut l'**éteindre proprement** | instantané, comme une calculatrice |
-| Autonomie | **quelques heures** d'utilisation (on l'éteint quand on le range) | **plusieurs jours**, avec une vraie veille |
-| Prix | plus cher (les cartes Linux ont beaucoup augmenté en 2026 à cause du prix de la mémoire) | moins cher |
-| Chaleur | tiède : petit dissipateur et aérations | quasi rien |
+| Son rôle | **promener et soigner** la créature | **apprendre le terminal** |
+| Ce qu'on y fait | marcher (compteur de pas), nourrir, caresser, coucher, avec 3 boutons | taper de vraies commandes : leçons, mondes, quêtes, défis |
+| Terminal | **aucun** | **le vrai** (PC, cyberdeck) ou celui de l'appli (téléphone) |
+| Ce que ça rapporte | **forme** (satiété), **bonne humeur** (envies de jeu, de sommeil, d'explorer), **jours soignés** (qui aident à grandir), journal de balade et petites découvertes | **XP, niveaux**, évolution, nouveaux mondes, badges |
+| XP | **aucune** (proposition) | toute l'XP du jeu |
+| Où est la créature | **déplacée** dans l'œuf, **à part du jeu**, le temps de la balade | dans le jeu ; **la même** sur les trois grâce au compte |
+| Internet | jamais | seulement pour la synchro du compte (si on en a un) |
 
-**Proposition : la carte Linux.** Le cœur de Terminagotchi, c'est d'apprendre **les vraies commandes** ; un
-terminal imité serait une deuxième version du jeu à maintenir, et l'enfant sentirait la différence. L'option
-microcontrôleur reste décrite (variante A) pour qui veut un appareil pas cher, robuste, qui tient des jours.
+Le cyberdeck et le PC sont **le même jeu** ; le cyberdeck, c'est juste un PC qu'on peut emporter.
 
-### 2.2 Un vrai Linux… mais seulement un terrain de jeu
+## 3. La forme à clapet
 
-- L'enfant a **son propre compte sur l'appareil, sans droits d'administrateur** (pas de `sudo`) : il peut tout
-  essayer dans son dossier et dans `terrain_terminagotchi`, mais **ne peut pas casser le système**.
-- Au démarrage, le cyberdeck ouvre directement le **mini-terminal du jeu** : la créature en haut, la ligne de
-  commande en bas. Chaque commande tapée est exécutée pour de vrai, et la créature la mange.
-- Les règles du jeu restent celles du PC : rien hors du terrain, rien de dangereux sans prévenir, sauvegardes
-  régulières de la partie.
-- **Remise à zéro facile** : si quelque chose ne va plus, un adulte recopie l'**image prête** sur la carte microSD
-  (fichier fourni dans le dépôt, comme on installe un jeu) ; la partie de l'enfant est sauvegardée à part.
-- L'adulte garde un **compte administrateur** (mot de passe choisi par lui) pour les mises à jour.
+- **Le bas** porte le **clavier**, les **cartes** (Linux, charge), et à l'arrière les **accus** (trappe vissée en
+  dessous). **Le couvercle** porte l'**écran** et le **haut-parleur**.
+- **Deux charnières à friction** (comme un petit ordinateur portable) : l'écran tient à l'angle choisi, jusqu'à
+  **≈ 110°**. Fermé, l'écran est **protégé** dans le sac : plus besoin de housse.
+- **Touches en creux** sous le bord du dessus : fermé, l'écran ne les touche pas.
+- Prise **USB-C sur le côté droit** (recharge et branchement de l'œuf), bouton **marche / arrêt propre** et deux
+  **voyants** sur le dessus, à l'arrière du clavier ; **aérations** dessous (sous le ventilateur) et sur le dessus.
+- Le cyberdeck s'utilise **posé sur une table** (ou sur les genoux), écran levé.
 
-### 2.3 Le lien avec le jeu et avec l'œuf
+## 4. Les variantes
 
-Mêmes règles que l'œuf (décisions du 2 novembre 2026) :
+L'ancienne variante A « Micro » (terminal imité, microcontrôleur) est **supprimée** : son rôle « simple et pas
+cher » revient à l'**œuf**. Il reste :
 
-- **La créature est déplacée, pas copiée.** Le cyberdeck a sa propre partie ; on y fait **voyager** une créature
-  depuis le PC ou le téléphone, et pendant ce temps le jeu affiche « Mochi est en balade dans le cyberdeck ».
-  Retour avec son XP, ses envies, son journal.
-- **Câble USB-C d'abord** (`tg deck envoie` / `tg deck reprend` depuis le PC), **Bluetooth ensuite** pour le
-  téléphone. Les noms exacts des commandes seront choisis au moment du code.
-- **Avec l'œuf** : on peut brancher l'œuf au cyberdeck par USB-C : il passe en **mode compagnon** (la créature de
-  l'œuf réagit aux commandes tapées au clavier du cyberdeck), exactement comme avec le PC.
-- **Wi-Fi éteint par défaut**, coupé dans le système. **Aucun compte** en ligne, **aucune donnée personnelle**
-  (pas de nom réel, pas de position, rien n'est envoyé). Les mises à jour se font par câble ou par la carte microSD ;
-  un adulte peut allumer le Wi-Fi exprès pour une mise à jour, puis l'éteindre.
-- **Éteint, la créature dort** : le temps éteint ne compte pas (aucune faim), comme la veille du jeu et de l'œuf.
-- XP : **les mêmes règles que sur PC** (c'est le même jeu, avec de vraies commandes), donc pas de plafond spécial.
+| | **C. « Grand confort »** (variante principale) | **Option « Clapet compact »** (ancienne B, plus petite, moins chère) |
+|---|---|---|
+| Pour qui | le cyberdeck « normal » : grand écran, chiffres en accès direct, fluide | petit budget, plus léger ; toujours un **vrai Linux** et le jeu PC |
+| Contenu | carte Linux 1 à 2 Go + petit ventilateur, écran **5 pouces 1280 × 720**, clavier **55 touches** (rangée de chiffres), haut-parleur, **4 accus 18650** | petite carte Linux 512 Mo à 1 Go (sans ventilateur), écran **4 pouces 800 × 480**, clavier **44 touches** (chiffres avec Fn), haut-parleur, **2 accus 18650** |
+| Fermé (L × P × épaisseur) | **≈ 160 × 120 × 34 mm** (bas 24 + couvercle 10) | **≈ 145 × 100 × 31 mm** (bas 22 + couvercle 9) |
+| Ouvert, écran levé | ≈ 135 mm de haut | ≈ 115 mm de haut |
+| Poids estimé | **≈ 520 g** | **≈ 340 g** |
+| Texte à l'écran | ≈ 60 colonnes × 20 lignes (police assez grosse pour 7 ans) | ≈ 50 colonnes × 18 lignes |
+| Difficulté | ★★★ : alimentation plus forte, ventilation, charnières | ★★☆ : préparation du système, énergie, charnières |
+| Consommation en marche | **≈ 4 W** (carte ≈ 2,2 W, écran ≈ 1,5 W, clavier + son ≈ 0,2 W, ventilateur ≈ 0,1 W en moyenne) | **≈ 1,7 W** (carte ≈ 0,8 W, écran ≈ 0,8 W, clavier ≈ 0,1 W) |
+| Allumé, écran éteint | ≈ 2,4 W : pas de vraie veille, donc **on l'éteint** en le refermant | ≈ 0,9 W : idem |
+| **Autonomie estimée** | **≈ 7 h** de jeu (≈ 5,5 h luminosité à fond) | **≈ 9 h** de jeu |
+| Recharge complète | ≈ 3,5 h (chargeur 5 V 3 A) à 5 h (5 V 2 A) | ≈ 3 h (5 V 2 A) |
+| À 1 h par jour | une charge **par semaine** environ | une charge **par semaine** environ |
+| **Prix estimé des pièces (fin 2026)** | **≈ 145 à 290 €** | **≈ 80 à 165 €** |
 
-### 2.4 L'écran, le clavier, le son, l'énergie
+**Comment l'autonomie est calculée** (80 % de la batterie utilisable, 85 % de rendement pour fabriquer le 5 V à
+partir des accus) :
+- **C** : 4 accus 18650 de 3000 mAh = 4 × 3000 mAh × 3,7 V ≈ **44 Wh**. Utiles : 44 × 0,80 × 0,85 ≈ **30 Wh**.
+  En jeu : 30 Wh / 4 W ≈ **7,5 h**. Luminosité et carte à fond (≈ 5,5 W) : 30 / 5,5 ≈ **5,5 h**. Laissé allumé écran
+  éteint : 30 / 2,4 ≈ 12 h, d'où l'**arrêt propre** quand on le range. Recharge : 44 Wh / (15 W × 0,85) ≈ **3,5 h**
+  avec un chargeur 5 V 3 A ; ≈ 5 h avec 5 V 2 A. Avec seulement 2 accus (plus léger), ≈ **3,5 h** de jeu : pas
+  conseillé.
+- **Compact** : 2 accus = 2 × 3000 mAh × 3,7 V ≈ 22 Wh ; utiles ≈ **15 Wh** ; 15 / 1,7 ≈ **9 h**. Recharge :
+  22 Wh / (10 W × 0,85) ≈ 2,6 h, soit **≈ 3 h**.
+- Éteint, il ne consomme presque rien (la carte de charge coupe tout) : à 1 h par jour, **une charge par semaine**.
+- **Attention** : calculs sur le papier. La vraie consommation dépend de la carte, de l'écran et de la luminosité :
+  on la **mesure** au premier prototype (testeur USB) et on corrige ce tableau.
 
-- **Écran** (variante B) : couleur IPS **4 pouces, 800 × 480 points** (zone visible ≈ 88 × 53 mm), branché par une
-  liaison vidéo directe (pas un petit écran lent). Avec une police assez grosse : environ **50 colonnes × 18
-  lignes**, lisible pour un enfant de 7 ans. Luminosité réglable, écran éteint après 2 minutes sans touche.
-- **Clavier** : voir § 4.1 (doigts d'enfant).
-- **Son** : petit haut-parleur (cris de la créature, bips) ; volume limité, mode silencieux, **jamais de son la nuit**.
-- **Bouton marche / arrêt** sur le dessus : appui court = allumer ou **arrêt propre** (le système s'éteint
-  correctement, sans abîmer la carte microSD) ; si la batterie devient trop faible, le cyberdeck **sauvegarde et
-  s'éteint tout seul**. Deux voyants : allumé (vert) et charge (orange).
-- **Énergie** : accus rechargeables **protégés**, recharge par **USB-C** (n'importe quel chargeur de téléphone de
-  bonne qualité, 5 V 2 A ou plus).
+**Comment les prix sont calculés** (pièces neuves, petites quantités, en ligne, fin 2026 ; somme des lignes du § 5) :
+- C : de 50 + 5 + 30 + 12 + 3 + 20 + 10 + 1 + 3 + 4 + 4 + 3 + 1 ≈ **146 €** à 90 + 10 + 50 + 28 + 6 + 45 + 25 + 2 + 6 + 10 + 7 + 5 + 3 ≈ **287 €**.
+- Compact : de ≈ **77 €** à ≈ **166 €**.
+- Les cartes Linux ont augmenté plusieurs fois en 2026 (la mémoire coûte plus cher) : une petite carte « format
+  zéro » reste vers 15 à 25 €, une carte de 1 à 2 Go dépasse souvent 50 à 80 €. Les modèles changent vite : on
+  choisira au moment d'acheter. Le clapet coûte quelques euros de plus que l'ancienne forme d'un seul bloc
+  (charnières, un peu plus de plastique).
 
-## 3. Trois variantes
-
-| | **A. « Micro »** | **B. « Poche Linux »** (proposée) | **C. « Grand confort »** |
-|---|---|---|---|
-| Pour qui | petit budget, atelier, appareil qui tient des jours | le cyberdeck « normal » : vrai Linux dans la poche d'un manteau | grand écran, plus rapide, à poser sur la table (classe, club) |
-| Ce qui tourne | **terminal imité** par le jeu (≈ 30 commandes) | **vrai Linux + jeu PC** dans un vrai shell | **vrai Linux + jeu PC**, plus fluide (et le jeu en fenêtre possible) |
-| Contenu | carte microcontrôleur ESP32-S3, écran 2,8 pouces 320 × 240, clavier 44 touches, buzzer, LiPo 2000 mAh | petite carte Linux (4 cœurs, 512 Mo à 1 Go de mémoire), écran 4 pouces 800 × 480, clavier 44 touches, haut-parleur, 2 accus 18650 | carte Linux plus puissante (1 à 2 Go), écran 5 pouces 1280 × 720, clavier 55 touches avec rangée de chiffres, haut-parleur, petit ventilateur, 2 accus 18650 (ou 4) |
-| Taille (L × H × épaisseur) | ≈ 145 × 100 × 20 mm | ≈ 145 × 124 × 28 mm | ≈ 175 × 140 × 32 mm |
-| Poids estimé | ≈ 150 g | ≈ 280 g | ≈ 450 g |
-| Difficulté | ★☆☆ à ★★☆ : le clavier demande 44 petites soudures (ou une plaque toute faite) | ★★☆ moyenne : préparation du système, gestion de l'énergie, aérations | ★★★ plus délicate : alimentation plus forte, ventilation, plus de place à gérer |
-| Consommation en marche | ≈ 0,45 W (≈ 120 mA sous 3,7 V) | ≈ 1,7 W (carte ≈ 0,8 W, écran ≈ 0,8 W, clavier ≈ 0,1 W) | ≈ 5 W (carte ≈ 3 W, écran ≈ 1,5 W, ventilateur ≈ 0,3 W) |
-| Veille | vraie veille ≈ 1,5 mA | pas de vraie veille : écran éteint ≈ 0,9 W, donc **on l'éteint** | idem B, ≈ 2,5 W écran éteint |
-| **Autonomie estimée** | **≈ 13 h** d'utilisation, **≈ 10 jours** à 1 h par jour | **≈ 9 h** d'utilisation continue | **≈ 3 h** (2 accus) / **≈ 6 h** (4 accus) |
-| Prix estimé des pièces (fin 2026) | **≈ 35 à 60 €** | **≈ 80 à 130 €** | **≈ 160 à 250 €** |
-
-**Comment l'autonomie est estimée** (80 % de la batterie utilisable ; pour B et C, 85 % de rendement pour
-fabriquer le 5 V à partir des accus) :
-- A : batterie 2000 mAh × 80 % = 1600 mAh. En continu : 1600 / 120 ≈ **13 h**. À 1 h par jour :
-  120 mAh + 23 h × 1,5 mA ≈ 35 mAh → ≈ 155 mAh par jour → 1600 / 155 ≈ **10 jours**.
-- B : 2 accus 18650 de 3000 mAh côte à côte = 6000 mAh × 3,7 V ≈ **22 Wh** ; × 80 % × 85 % ≈ **15 Wh** utiles ;
-  15 / 1,7 ≈ **9 h**. Si on le laisse allumé écran éteint : 15 / 0,9 ≈ 16 h, d'où l'arrêt propre quand on range.
-  Éteint, il ne consomme presque rien : à 1 h par jour, **une charge par semaine** environ.
-- C : 15 Wh / 5 W ≈ **3 h** ; avec 4 accus (≈ 30 Wh utiles) ≈ **6 h**, mais plus lourd et plus épais.
-- **Attention** : ce sont des calculs sur le papier. La vraie consommation dépend de la carte, de l'écran et de la
-  luminosité ; on la **mesure** au premier prototype (multimètre USB) et on corrige ce tableau.
-
-**Pourquoi ces prix** (pièces neuves, petites quantités, en ligne, fin 2026) : les cartes Linux ont augmenté
-plusieurs fois en 2026 (la mémoire coûte plus cher) ; une petite carte « format zéro » reste vers 15 à 25 €, mais une
-carte puissante avec 1 à 2 Go dépasse souvent 50 à 80 €. Les modèles disponibles changent vite : on choisira au
-moment d'acheter.
-
-## 4. Liste des composants (génériques)
+## 5. Liste des composants (génériques)
 
 Pas de marque imposée, pas de lien d'achat. **Prix = estimations**, à revérifier.
 
-| Composant | Description simple | A | B | C | Prix estimé |
-|---|---|:-:|:-:|:-:|---|
-| Carte **microcontrôleur ESP32-S3** (8 Mo de mémoire « flash » ou plus, chargeur LiPo intégré si possible) | le cerveau de la variante A | ✓ | | | 6 à 12 € |
-| **Petite carte Linux** « format zéro » (≈ 65 × 30 mm, 4 cœurs 64 bits, 512 Mo à 1 Go, Bluetooth intégré, faible consommation) | le cerveau de B | | ✓ | | 15 à 25 € |
-| **Carte Linux plus puissante** (1 à 2 Go) + **dissipateur avec petit ventilateur** | le cerveau de C | | | ✓ | 50 à 90 € |
-| **Carte microSD** 16 à 32 Go, de bonne qualité | le disque : système + jeu + partie | | ✓ | ✓ | 5 à 10 € |
-| **Écran IPS** 2,8 pouces 320 × 240 (A) / 4 pouces 800 × 480 (B) / 5 pouces 1280 × 720 (C), liaison adaptée à la carte | la fenêtre du terminal | ✓ | ✓ | ✓ | 6 à 12 € / 15 à 30 € / 30 à 50 € |
-| **Clavier** : 44 (ou 55) **boutons tactiles** à course franche + **capuchons imprimés** ≈ 10 mm + **plaque de circuit** (commandée d'après nos plans, ou plaque à trous) | les touches | ✓ | ✓ | ✓ | 10 à 25 € |
-| **Petite puce de clavier** (microcontrôleur avec USB, type RP2040 ou équivalent), avec un **programme de clavier libre** existant | transforme la grille de touches en « clavier USB » que Linux reconnaît | | ✓ | ✓ | 3 à 6 € |
-| **Batterie LiPo 3,7 V 2000 mAh avec circuit de protection** | énergie de A | ✓ | | | 6 à 10 € |
-| **2 (ou 4) accus 18650 avec circuit de protection intégré**, identiques, neufs, du même lot + **support solide** | énergie de B et C | | ✓ | ✓ | 10 à 25 € (×2 pour 4 accus) |
-| **Carte d'alimentation** : charge USB-C + sortie 5 V (2,5 A pour B, 5 A pour C) + protections (surcharge, décharge profonde, court-circuit, température si possible) + signal « batterie faible » pour l'arrêt propre | la recharge et l'arrêt sans danger | (sur la carte) | ✓ | ✓ | 5 à 15 € / 10 à 25 € |
-| **Bouton marche / arrêt** + 2 voyants | allumer, éteindre proprement | ✓ | ✓ | ✓ | 1 à 2 € |
-| **Buzzer piézo** (A) / **petit ampli audio + haut-parleur 8 Ω ≈ 20 mm** (B, C) | le son | ✓ | ✓ | ✓ | 1 € / 3 à 6 € |
-| **Filament PETG** (tient mieux la chaleur que le PLA), ≈ 80 à 150 g | la coque | ✓ | ✓ | ✓ | 2 à 5 € |
-| Visserie : **4 vis + inserts laiton**, 1 vis de trappe, fils fins, gaine thermo, ruban isolant (Kapton) | assemblage, isolation | ✓ | ✓ | ✓ | 2 à 4 € |
-| Façade avant transparente (fine plaque acrylique ou impression transparente) | protège l'écran | ✓ | ✓ | ✓ | 1 à 3 € |
+| Composant | Description simple | C | Compact | Prix estimé |
+|---|---|:-:|:-:|---|
+| **Carte Linux** 1 à 2 Go + **dissipateur avec petit ventilateur** | le cerveau de C | ✓ | | 50 à 90 € |
+| **Petite carte Linux** « format zéro » (≈ 65 × 30 mm, 4 cœurs 64 bits, 512 Mo à 1 Go, faible consommation) + petit dissipateur | le cerveau du compact | | ✓ | 15 à 25 € |
+| **Carte microSD** 16 à 32 Go, de bonne qualité | le disque : système + jeu | ✓ | ✓ | 5 à 10 € |
+| **Écran IPS** 5 pouces 1280 × 720 (C) / 4 pouces 800 × 480 (compact), liaison vidéo adaptée à la carte | la fenêtre du jeu | ✓ | ✓ | 30 à 50 € / 15 à 30 € |
+| **Clavier** : 55 (C) ou 44 (compact) **boutons tactiles** à course franche + **capuchons imprimés** ≈ 10 mm + **plaque de circuit** (commandée d'après nos plans, ou plaque à trous) | les touches | ✓ | ✓ | 12 à 28 € / 10 à 25 € |
+| **Petite puce de clavier** (microcontrôleur avec USB, type RP2040 ou équivalent) + **programme de clavier libre** existant | fait de la grille de touches un « clavier USB » que Linux reconnaît | ✓ | ✓ | 3 à 6 € |
+| **Accus 18650 avec circuit de protection intégré**, identiques, neufs, du même lot + **support solide** : 4 (C) ou 2 (compact) | l'énergie | ✓ | ✓ | 20 à 45 € / 10 à 25 € |
+| **Carte d'alimentation** : charge USB-C + sortie 5 V (5 A pour C, 2,5 A pour le compact) + protections (surcharge, décharge profonde, court-circuit, température si possible) + signal « batterie faible » pour l'arrêt propre | recharge et arrêt sans danger | ✓ | ✓ | 10 à 25 € / 5 à 15 € |
+| **2 charnières à friction** (métal, petites) | l'écran tient à l'angle choisi | ✓ | ✓ | 4 à 10 € |
+| **Bouton marche / arrêt** + 2 voyants | allumer, éteindre proprement | ✓ | ✓ | 1 à 2 € |
+| **Petit ampli audio + haut-parleur 8 Ω ≈ 20 mm** | le son | ✓ | ✓ | 3 à 6 € |
+| **Filament PETG** (tient mieux la chaleur que le PLA) : ≈ 200 à 250 g (C), ≈ 150 g (compact) | la coque | ✓ | ✓ | 4 à 7 € / 3 à 5 € |
+| Visserie : vis + **inserts laiton**, vis de trappe, fils fins, gaine thermo, ruban isolant (Kapton), nappe souple entre bas et couvercle | assemblage, isolation | ✓ | ✓ | 3 à 5 € / 2 à 4 € |
+| Vitre avant (fine plaque acrylique) | protège l'écran | ✓ | ✓ | 1 à 3 € |
 
-Outils (déjà présents ou à emprunter) : imprimante 3D, fer à souder, multimètre (idéalement un **testeur USB**
-pour mesurer la consommation), lecteur de carte microSD, câble USB-C.
+Outils (déjà présents ou à emprunter) : imprimante 3D, fer à souder, multimètre (idéalement un **testeur USB**),
+lecteur de carte microSD, câble USB-C.
 
-### 4.1 Un clavier pour des doigts d'enfant
+### 5.1 Un clavier pour des doigts d'enfant (proposé, en attente)
 
-- **Touches ≈ 10 mm, espacées de 12 mm** (un clavier de téléphone en a 5 ou 6 mm) ; **grille droite**, sans
-  décalage, plus facile à viser. Course franche avec un petit **clic** : on sent qu'on a appuyé.
+- **Touches ≈ 10 mm, espacées de 12 mm** (un clavier de téléphone en a 5 ou 6) ; **grille droite**, sans décalage,
+  plus facile à viser. Course franche avec un petit **clic**.
 - **AZERTY** (le propriétaire est français) ; **QWERTY** disponible dans les plans, même plaque, autres capuchons.
-- **Les symboles du terminal ont leur propre touche, en bleu** : `-` `.` `/` `~` `|`. Pas besoin de touche
-  spéciale pour taper `cd ..`, `ls -a`, `cat a.txt | grep chat`.
-- **Touches de commande en gris** : Effacer, Entrée, Maj, Ctrl (pour **Ctrl + C** qui arrête une commande), Tab
-  (complétion automatique, très utile aux petits), flèches (↑ = rappeler la commande précédente).
-- **Fn (orange)** + rangée du haut = **chiffres** (petits chiffres orange imprimés sur les touches), et Fn donne les
-  symboles plus rares (`_`, `*`, `>`, `"`…). La variante C a une **vraie rangée de chiffres** (55 touches).
-- Lettres **en relief ou gravées** sur les capuchons imprimés (pas d'autocollants qui se décollent) ; capuchons
-  **bien emboîtés**.
-- Le **même dessin de clavier** sert aux trois variantes (fichiers communs) ; il se branche dans la coque, il n'est
-  pas interchangeable entre l'œuf et le cyberdeck (pas de modularité, décision du 2 novembre).
+- **Les symboles du terminal ont leur propre touche, en bleu** : `-` `.` `/` `~` `|`.
+- **Touches de commande en gris** : Effacer, Entrée, Maj, Ctrl (pour **Ctrl + C**), Tab (complétion), flèches.
+- **C** : vraie **rangée de chiffres** (55 touches, 5 rangées × 11). **Compact** : chiffres avec **Fn** (44 touches,
+  4 rangées × 11), petits chiffres orange imprimés sur la rangée du haut.
+- Lettres **en relief ou gravées** sur les capuchons (pas d'autocollants), capuchons **bien emboîtés**.
 
-Disposition proposée (variante B, 4 rangées × 11) :
+Disposition proposée (C, 5 rangées × 11 ; Entrée sur deux rangées) :
 
 | | | | | | | | | | | |
 |---|---|---|---|---|---|---|---|---|---|---|
-| A | Z | E | R | T | Y | U | I | O | P | ⌫ |
+| 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 0 | ⌫ |
+| A | Z | E | R | T | Y | U | I | O | P | ↵ |
 | Q | S | D | F | G | H | J | K | L | M | ↵ |
 | ⇧ | W | X | C | V | B | N | **-** | **.** | **/** | ↑ |
 | Ctrl | Fn | Tab | **~** | espace | (espace) | (espace) | **\|** | ← | ↓ | → |
 
-## 5. Sécurité
+## 6. Sécurité
 
-### 5.1 Les accus (18650 ou LiPo)
+### 6.1 Les accus 18650
 
-- **Toujours des accus avec circuit de protection** (coupe si trop chargé, trop vide ou court-circuit) **et** une
-  carte de charge dédiée (4,2 V maximum par accu). Pour les 18650 : **jamais d'accus nus récupérés** dans de vieux
-  appareils, **jamais** de mélange vieux / neufs ou de modèles différents.
-- Accus **tenus dans un support solide**, séparés de l'électronique par une **paroi isolante**, loin des vis et des
-  arêtes ; fils gainés. Rien ne peut les percer si le cyberdeck tombe.
-- **Trappe batterie fermée par une vis** : l'enfant n'atteint pas les accus sans tournevis.
+- **Toujours des accus avec circuit de protection** **et** une carte de charge dédiée (4,2 V maximum par accu).
+  **Jamais d'accus nus récupérés**, **jamais** de mélange vieux / neufs ou de modèles différents.
+- Accus **dans un support solide** à l'arrière du bas, séparés de l'électronique par une **paroi isolante**, loin
+  des vis, des charnières et des arêtes ; fils gainés. Rien ne peut les percer si le cyberdeck tombe.
+- **Trappe batterie fermée par une vis** (dessous) : l'enfant n'atteint pas les accus sans tournevis.
 - **Charger sur une surface dure**, pas sous un oreiller ni au soleil, de préférence en présence d'un adulte.
-- Jamais d'accu gonflé, cabossé, chaud ou à la gaine abîmée : on le remplace. Fin de vie : bac de recyclage des
-  piles et batteries.
-- Souder **accus débranchés**.
+- **Batterie presque vide : sauvegarde puis arrêt propre** (validé), avec un message de la créature (« je vais
+  dormir, recharge-moi »). Ce n'est pas une fonction du jeu : c'est le système qui s'éteint proprement, et le jeu
+  sauvegarde comme quand on éteint un PC.
+- Jamais d'accu gonflé, cabossé, chaud ou à la gaine abîmée : on le remplace. Fin de vie : bac de recyclage.
+  Souder **accus débranchés**.
 
-### 5.2 La chaleur
+### 6.2 La chaleur
 
-- La carte Linux chauffe un peu : **petit dissipateur** et **fentes d'aération** à l'arrière (B), **ventilateur**
-  (C). Objectif : **coque tiède**, jamais chaude au toucher (moins de ≈ 40 °C dehors), à vérifier au prototype avec
-  un thermomètre après une heure de jeu.
-- Le système **ralentit tout seul** s'il chauffe ; le jeu affiche « le cyberdeck a chaud, pause » au-delà d'un seuil.
-- Coque en **PETG** (le PLA se déforme vers 55 à 60 °C, par exemple dans une voiture au soleil).
-- Ne pas utiliser sous une couverture ni sur un lit (aérations bouchées).
+- C : **dissipateur + petit ventilateur**, aération dessous et sur le dessus. Compact : dissipateur seul.
+  Objectif : **coque tiède**, jamais chaude au toucher (moins de ≈ 40 °C dehors), mesuré au prototype après une heure.
+- **Ne pas laisser allumé fermé** (l'air circule mal) : refermer = éteindre proprement (proposé : arrêt propre quand
+  on referme le clapet, si la carte le permet ; sinon un appui sur le bouton).
+- Coque en **PETG** (le PLA se déforme vers 55 à 60 °C, par exemple dans une voiture au soleil). Ne pas utiliser
+  sous une couverture ni sur un lit.
 
-### 5.3 Les enfants
+### 6.3 Les enfants
 
 - **Montage et soudure par un adulte.** L'enfant peut choisir les couleurs, poser les capuchons du clavier,
-  installer le jeu ou taper ses premières commandes sur l'appareil qu'il a vu naître.
-- Coque **sans arêtes vives**, pas de petites pièces détachables pour les moins de 3 ans, pas d'aimant accessible.
-- **Volume limité** par le logiciel ; pas de son la nuit ; luminosité automatique le soir.
-- **Pas d'Internet** par défaut, pas de navigateur installé, pas de messagerie.
-- Honnêteté : un cyberdeck fait maison **n'est pas un jouet certifié**. On le donne en connaissance de cause et
-  sous surveillance. **Vendre** des cyberdecks montés demanderait les règles européennes des jouets, des appareils
-  électriques et radio (marquage CE, tests) : **ce n'est pas l'objectif** ; on partage **les plans**, chacun
-  fabrique le sien.
+  installer le jeu.
+- Coque **sans arêtes vives** ; charnières sans endroit où **se pincer les doigts** (écart ≥ 8 mm ou cache) ; pas de
+  petites pièces détachables, pas d'aimant accessible.
+- **Volume limité** ; pas de son la nuit.
+- Honnêteté : un cyberdeck fait maison **n'est pas un jouet certifié**. On le donne en connaissance de cause et sous
+  surveillance. On partage **les plans**, chacun fabrique le sien (vendre des appareils montés demanderait le
+  marquage CE et des tests : ce n'est pas l'objectif).
 
-## 6. Ce qui est open source
+## 7. Ce qui est open source
 
 Mêmes licences que l'œuf (validées le 2 novembre 2026) :
 
 | Partie | Licence | En simple |
 |---|---|---|
-| **Code** : le jeu, le programme du clavier, les scripts qui préparent l'image du système, le programme de la variante A | **GPL-3.0-or-later** | tout le monde peut lire, modifier et partager, à condition de partager ses modifications pareil |
+| **Code** : le jeu, le programme du clavier, les scripts qui préparent l'image du système | **GPL-3.0-or-later** | tout le monde peut lire, modifier et partager, à condition de partager ses modifications pareil |
 | **Dessins, sons, textes**, motifs décoratifs de la coque | **CC BY-NC-SA 4.0** | réutilisation en citant Terminagotchi, sans usage commercial, partage à l'identique |
 | **Matériel** : coque (STL + fichiers sources), plaque du clavier, schéma électrique, liste des pièces, notice | **CERN-OHL-S-2.0** | chacun peut fabriquer et modifier, mais doit publier ses plans modifiés sous la même licence |
 
-Le système Linux et les logiciels déjà présents dans l'image (shell, outils) gardent **leurs propres licences
-libres** ; la liste sera écrite avec l'image. Le programme de clavier libre réutilisé garde aussi la sienne (en
-général GPL, compatible).
+Le système Linux et les logiciels de l'image gardent **leurs propres licences libres** ; le programme de clavier
+libre réutilisé aussi.
 
-## 7. Comment on avancerait (après validation)
+## 8. Comment on avancerait (après validation)
 
-1. **Maquettes d'abord** (règle du propriétaire) : images du cyberdeck de face et de côté, écrans du mini-terminal
-   à 50 colonnes avec la créature, écran « Mochi est en balade dans le cyberdeck » dans le jeu PC et téléphone ;
-   **maquette en carton ou imprimée vide** pour tester la prise en main et la taille des touches avec un enfant.
-2. **Essai sans matériel** : faire tourner le jeu dans une fenêtre de terminal réglée à 50 × 18 (taille de l'écran
-   B) pour vérifier que tout reste lisible ; corriger le jeu si besoin.
-3. **Prototype sur table** : carte Linux + écran + un clavier USB ordinaire, image du système préparée (compte
-   enfant sans droits, Wi-Fi coupé, démarrage direct sur le mini-terminal, arrêt propre).
-4. **Clavier v1** : plaque de 44 touches + capuchons, essais de frappe par des enfants de 7, 12 et 15 ans.
-5. **Énergie** : carte de charge, accus protégés, arrêt propre sur batterie faible ; **mesures** de consommation et
-   de température, tableau du § 3 corrigé.
-6. **Coque v1** (OpenSCAD ou FreeCAD, fichiers ouverts) : aérations, trappe vissée, façade transparente.
-7. **Lien avec le jeu** : déplacer une créature par câble (`tg deck envoie / reprend`), puis Bluetooth ; œuf
-   branché en mode compagnon.
-8. Dossier de fabrication complet (notice pas à pas pour un parent et son enfant). Variante A ou C ensuite, si
-   le propriétaire le souhaite.
+1. **Maquettes d'abord** (règle du propriétaire) : images du cyberdeck ouvert et fermé ; **maquette en carton ou
+   imprimée vide** du clapet pour tester avec un enfant la taille des touches, l'angle de l'écran et le poids.
+2. **Essai sans matériel** : le jeu PC dans une fenêtre de terminal réglée à 60 × 20 (écran C) et 50 × 18
+   (compact) pour vérifier que tout reste lisible.
+3. **Prototype sur table** : carte Linux + écran + clavier USB ordinaire ; image du système (compte enfant sans
+   droits, jeu installé, Wi-Fi éteint par défaut, arrêt propre) ; **test de la synchro** avec le compte, Wi-Fi
+   allumé par l'enfant.
+4. **Clavier v1** (55 touches), essais de frappe par des enfants de 7, 12 et 15 ans.
+5. **Énergie** : 4 accus protégés, carte de charge, arrêt propre sur batterie faible ; **mesures** de consommation et
+   de température, tableaux du § 4 corrigés.
+6. **Coque v1 à clapet** (OpenSCAD ou FreeCAD, fichiers ouverts) : charnières, nappe entre bas et couvercle,
+   aérations, trappe vissée.
+7. **Œuf branché** au cyberdeck (mode compagnon), quand l'œuf existera.
+8. Dossier de fabrication complet dans `materiel/cyberdeck/` (notice pas à pas pour un parent et son enfant).
 
-## 8. Questions à trancher par le propriétaire
+## 9. Questions restantes
 
 | # | Question | Ma proposition |
 |---|---|---|
-| 1 | Vrai Linux ou terminal imité ? | **Vrai Linux** (vraies commandes, même jeu que sur PC) ; terminal imité seulement pour la variante A économique. |
-| 2 | Quelle variante viser ? | **B « Poche Linux »** ; A et C plus tard, si l'envie est là. |
-| 3 | La taille ? | **≈ 145 × 124 × 28 mm**, ≈ 280 g (taille d'une console portable ; se tient à deux mains ou se pose sur la table). |
-| 4 | Forme « tablette » ou « à clapet » (écran qui se replie sur le clavier) ? | **Tablette** (d'un seul bloc) : plus solide, plus simple ; une **housse ou un couvercle clipsé** protège l'écran dans le sac. |
-| 5 | Le clavier : AZERTY ou QWERTY, et combien de touches ? | **AZERTY, 44 touches de ≈ 10 mm**, symboles du terminal en accès direct, chiffres avec Fn ; QWERTY disponible dans les plans. |
-| 6 | Le cyberdeck a-t-il sa propre partie, ou seulement des créatures en visite ? | **Sa propre partie** (c'est un vrai petit PC), et les créatures y voyagent **déplacées** (jamais copiées), comme dans l'œuf. |
-| 7 | L'enfant a-t-il les droits d'administrateur ? | **Non** : compte enfant sans `sudo` ; l'adulte garde un compte administrateur pour les mises à jour. |
-| 8 | Wi-Fi ? | **Éteint par défaut** ; un adulte peut l'allumer pour une mise à jour, puis l'éteindre. Sinon mise à jour par câble ou microSD. |
-| 9 | 18650 ou batterie LiPo plate ? | **2 accus 18650 protégés** pour B (robustes, faciles à remplacer, ≈ 22 Wh) ; LiPo plate protégée pour A. |
-| 10 | Que se passe-t-il quand la batterie est presque vide ? | **Sauvegarde automatique puis arrêt propre**, avec un message de la créature (« je vais dormir, recharge-moi »). |
-| 11 | Le cyberdeck fait-il aussi « compagnon » de l'œuf ? | **Oui** : l'œuf branché en USB-C au cyberdeck réagit aux commandes tapées, comme avec le PC. |
-| 12 | Matière de la coque ? | **PETG** (supporte mieux la chaleur que le PLA) ; couleurs au choix de l'enfant, motifs des biomes en relief possibles (sans accessoires sur la créature). |
-| 13 | Où ranger le projet ? | Un dossier `materiel/cyberdeck/` dans ce dépôt (coque, clavier, schéma, scripts de l'image), cette proposition restant dans `docs/oeuf/`. |
+| 1 | Garder l'option « Clapet compact » (4 pouces, 2 accus, ≈ 80 à 165 €) à côté de C ? | **Oui, en option** dans les plans (même dessin de coque, réduit) ; on fabrique **C d'abord**. |
+| 2 | C avec 4 accus (≈ 7 h, ≈ 520 g) ou 2 accus (≈ 3,5 h, ≈ 430 g) ? | **4 accus** : 3,5 h, c'est trop court pour une journée. |
+| 3 | Wi-Fi : éteint par défaut (synchro seulement quand l'enfant l'allume) ou allumé à la maison ? | **Éteint par défaut, l'enfant peut l'allumer** comme un mode avion (à vérifier sans droits d'administrateur) ; le jeu rattrape la synchro dès que le Wi-Fi revient. |
+| 4 | Refermer le clapet éteint-il le cyberdeck ? | **Oui, arrêt propre** (sauvegarde comme un PC), si la carte sait détecter le clapet ; sinon bouton. |
+| 5 | Démarrer directement sur le jeu, ou sur un bureau Linux ? | **Directement sur le jeu** dans un terminal plein écran ; l'enfant peut le quitter et rester dans son vrai shell. |
+| 6 | Compte enfant sans `sudo` + compte adulte ? | **Oui** (proposé, en attente). |
+| 7 | Clavier AZERTY, touches ≈ 10 mm, 55 touches pour C ? | **Oui** (proposé, en attente) ; QWERTY dans les plans. |
+| 8 | Coque en PETG ? | **Oui** (proposé, en attente). |
+| 9 | Dossier `materiel/cyberdeck/` dans ce dépôt ? | **Oui** (proposé, en attente) ; cette proposition reste dans `docs/oeuf/`. |
 
 ## Fichiers de ce dossier (cyberdeck)
 
 - `cyberdeck.md` — ce document.
-- `croquis_cyberdeck.py` → `croquis_cyberdeck.svg` / `.png` (matplotlib : `python3 croquis_cyberdeck.py`).
+- `croquis_cyberdeck.py` → `croquis_cyberdeck.svg` / `.png` (matplotlib : `python3 croquis_cyberdeck.py`) :
+  ouvert à plat vu de face, de côté ouvert et fermé, coupe de côté.
 
-## Décisions du propriétaire (2 novembre 2026)
+## Décisions du propriétaire
+
+### 2 novembre 2026 (première série)
 
 - **1. Vrai Linux** : oui.
-- **2. Variantes visées : A « Micro » et C « Grand confort »** (B n'est plus la cible). À préciser : A garde-t-elle le
-  terminal imité (microcontrôleur, pas cher, plusieurs jours d'autonomie), ou devient-elle un petit Linux économique ?
+- **2. Variantes visées : A « Micro » et C « Grand confort »** (B n'est plus la cible). → *remplacé par la deuxième
+  série : A est supprimée.*
 - **3. Forme à clapet** (l'écran se replie sur le clavier), et non plus d'un seul bloc : croquis et tailles à refaire.
-- **4. Sa propre partie, créatures déplacées** : explication détaillée demandée avant validation.
+  → *fait (§ 3, § 4, croquis).*
+- **4. Sa propre partie, créatures déplacées** : explication demandée. → *remplacé par la deuxième série : plus de
+  partie propre ni de créature déplacée.*
 - **5. Batterie presque vide** : sauvegarde automatique puis arrêt propre, oui.
+
+### 2 novembre 2026 (deuxième série)
+
+Mots du propriétaire : « le cyberdeck c'est pour le côté hardware, donc les fonctionnalités restent les mêmes, on
+crée juste un Linux portable et on installe le jeu dessus. Seul l'œuf a une fonction d'isolation » ; « pour la
+version A je pensais plutôt à un espace simple, sans terminal, éventuellement un compteur de pas et des boutons pour
+nourrir simplement, il faut une vraie complémentarité entre le cyberdeck et l'œuf ».
+
+- **Le cyberdeck est seulement du matériel** : un ordinateur Linux portable fait maison avec **le jeu PC installé
+  tel quel**. Aucune fonction spéciale : **pas de partie propre, pas de `tg deck envoie / reprend`**.
+- **Synchro PC ↔ cyberdeck = celle qui existe déjà entre PC et téléphone** (compte du jeu, § 2.2).
+- **Vrai Linux** et **forme à clapet** : validés.
+- **Variante A « Micro » supprimée** (son rôle simple revient à l'œuf). **C « Grand confort » (5 pouces) = variante
+  principale** ; l'ancienne B reste en **option** plus petite et moins chère (« Clapet compact »).
+- **Batterie presque vide : sauvegarde puis arrêt propre** : validé.
+- **L'œuf se branche au cyberdeck comme au PC** (mode compagnon), puisque c'est le même jeu.
+- **Complémentarité** : œuf = promener et soigner ; PC / téléphone / cyberdeck = apprendre le terminal (§ 2.6).
+- Restent **proposés, en attente** : clavier AZERTY ≈ 10 mm, compte enfant sans `sudo`, Wi-Fi éteint par défaut
+  (compatible avec la synchro seulement quand on l'allume, § 2.3), PETG, dossier `materiel/cyberdeck/`.

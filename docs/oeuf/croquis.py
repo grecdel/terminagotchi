@@ -80,7 +80,7 @@ af.text(0, ey - 11.5, "~ Mochi ~", ha="center", fontsize=7, color="#cfe8ff", zor
 af.text(0, ey - 14.2, "faim ■■■□  joie ■■■■", ha="center", fontsize=5.5, color="#cfe8ff", zorder=5)
 
 # 3 boutons
-for bx, nom in [(-13, "gauche"), (0, "valider"), (13, "droite")]:
+for bx, nom in [(-13, "nourrir"), (0, "caresser"), (13, "coucher")]:
     af.add_patch(Circle((bx, -20), 4, fc="#c8efcb" if bx else "#9fdca5", ec=TRAIT, lw=1.3, zorder=3))
     af.text(bx, -26.5, nom, ha="center", fontsize=7.5, color=TRAIT)
 # grille haut-parleur
@@ -102,7 +102,7 @@ cote(af, -14, ey + 20.5, 14, ey + 20.5, "écran ≈ 28 × 33", decal=(0, 2.4))
 
 # étiquettes
 etiquette(af, (-15.5, ey + 6), (-62, ey + 20), "écran couleur 1,69 pouce\n(la créature vit ici)")
-etiquette(af, (-17, -20), (-62, -6), "3 gros boutons\n(doigts d'enfant)", VERT)
+etiquette(af, (-17, -20), (-62, -6), "3 gros boutons\n(nourrir, caresser, coucher)", VERT)
 etiquette(af, (-6, -31), (-62, -26), "grille du haut-parleur", TRAIT)
 etiquette(af, (-4.5, -H / 2 + BASE + 1.5), (-62, -44), "prise USB-C\n(charge + câble PC)", ORANGE)
 etiquette(af, (-W / 2 + 6, H / 2 - 22), (-62, 45), "façade décorée amovible\n(motif d'un des 9 œufs)", "#a07a30")
