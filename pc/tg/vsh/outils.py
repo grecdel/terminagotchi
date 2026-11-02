@@ -2068,6 +2068,10 @@ def tree(ctx):
     noms = [x for x in a if not x.startswith("-")] or ["."]
     nd = nf = 0
     tty = ctx.sortie.tty
+    # les traits : ceux de l'UTF-8 (└──), en ASCII (`--) quand la langue du terminal n'est pas en UTF-8 (LC_ALL=C)
+    loc = next((ctx.sh.vars.get(v) for v in ("LC_ALL", "LC_CTYPE", "LANG") if ctx.sh.vars.get(v)), "C.UTF-8")
+    utf8 = "utf-8" in loc.lower() or "utf8" in loc.lower()
+    T_DER, T_MIL, T_VID, T_BAR = ("└── ", "├── ", "    ", "│   ") if utf8 else ("`-- ", "|-- ", "    ", "|   ")
 
     def parcourir(vp, prefixe, prof):
         nonlocal nd, nf
@@ -2090,11 +2094,11 @@ def tree(ctx):
             elems.append((x, sv, inf))
         for k, (x, sv, inf) in enumerate(elems):
             dernier = k == len(elems) - 1
-            ctx.out(prefixe + ("└── " if dernier else "├── ") + _colorer(x, inf, tty) + "\n")
+            ctx.out(prefixe + (T_DER if dernier else T_MIL) + _colorer(x, inf, tty) + "\n")
             if inf.dossier:
                 nd += 1
                 if niveau is None or prof + 1 < niveau:
-                    parcourir(sv, prefixe + ("    " if dernier else "│   "), prof + 1)
+                    parcourir(sv, prefixe + (T_VID if dernier else T_BAR), prof + 1)
             else:
                 nf += 1
 
@@ -2106,6 +2110,7 @@ def tree(ctx):
             code = 2
             continue
         ctx.out(_colorer(nm, ctx.vfs.infos(vp), tty) + "\n")
+        nd += 1                                  # (tree 2 compte aussi le dossier de départ)
         parcourir(vp, "", 0)
     ctx.out(f"\n{nd} director{'y' if nd == 1 else 'ies'}" + ("" if seuls_dossiers else f", {nf} file{'' if nf == 1 else 's'}") + "\n")
     return code
