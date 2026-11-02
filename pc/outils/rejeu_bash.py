@@ -39,7 +39,7 @@ import shutil
 import subprocess
 import sys
 import tempfile
-from pathlib import Path
+from pathlib import Path, PurePosixPath
 
 RACINE = Path(__file__).resolve().parents[2]
 # --terminal-du-jeu (décision du 2 novembre) : l'histoire est jouée dans le terminal du jeu (vsh/, le petit Linux écrit
@@ -150,7 +150,7 @@ def histoire():
     if VIRTUEL:
         from tg.vsh import CoquilleVirtuelle
         shell = CoquilleVirtuelle(home, jeu="auto")
-        home_aff = Path(shell.vfs.home) if shell.vfs.mode == "windows" else home
+        home_aff = PurePosixPath(shell.vfs.home) if shell.vfs.mode == "windows" else home
         if shell.vfs.mode == "windows":           # (Windows : whoami dit le nom du Linux virtuel)
             os.environ["USER"] = shell.vfs.utilisateur
         avant_home = set(os.listdir(home))
@@ -528,7 +528,8 @@ def histoire():
             if "lignes" in a:
                 verifier(len(lignes) == a["lignes"], f"{nom} : {len(lignes)} lignes (le jeu dit {a['lignes']}){pq}")
             if "dossiers" in a:
-                trouves = sorted(str(Path(x).parent.relative_to(Path(home_aff) / "terrain_terminagotchi")) for x in lignes)
+                P_ = PurePosixPath if isinstance(home_aff, PurePosixPath) else Path
+                trouves = sorted(str(P_(x).parent.relative_to(P_(home_aff) / "terrain_terminagotchi")) for x in lignes)
                 verifier(trouves == sorted(a["dossiers"]), f"{nom} : dans {trouves}{pq}")
             if "code" in a:
                 verifier(code != 0 if a["code"] == "non0" else code == a["code"], f"{nom} : code {code}{pq}")

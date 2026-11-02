@@ -7,6 +7,7 @@ Ainsi `chmod 444 nid/repas.txt`, `ls -l`, `./miam.sh` et les vérifications des 
 même chose partout. VIRTUELS vaut True sous Windows (les tests le règlent pour simuler Windows sous Linux).
 """
 import json
+import sys
 import os
 import stat
 from pathlib import Path
@@ -176,3 +177,13 @@ def installer():
             pass
         return _vrai_chmod(chemin, m, *a, **k)
     os.chmod = chmod
+    if os.name == "nt" and sys.version_info >= (3, 10):
+        # les fichiers du jeu s'écrivent avec des fins de ligne Linux (\n), jamais \r\n : dans le terminal du jeu,
+        # grep, sha256sum -c, wc… donnent alors exactement ce que donnerait Linux
+        from pathlib import Path as _P
+        vrai_write_text = _P.write_text
+
+        def write_text(self, data, encoding=None, errors=None, newline=None):
+            return vrai_write_text(self, data, encoding=encoding, errors=errors,
+                                   newline="\n" if newline is None else newline)
+        _P.write_text = write_text

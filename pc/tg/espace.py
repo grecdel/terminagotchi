@@ -496,6 +496,15 @@ class Espace(B.Controleur):
             self.mini.saisie = ""
             self.classe = not self.classe
             return
+        if premier == "terminal" or ligne.strip() == "tg terminal":
+            # une fenêtre de plus avec le terminal du jeu (Windows : le Linux virtuel ; ailleurs : bash/zsh et le
+            # compagnon) ; le jeu lit son historique : la créature mange aussi ce qui s'y tape
+            from . import compagnon
+            self.mini.saisie = ""
+            self.mini.historique.append(ligne)
+            ok, msg = compagnon.nouvelle_fenetre()
+            self.ecrire(("▸ " if ok else "") + msg, S.VERT if ok else S.ORANGE)
+            return
         if premier in DU_JEU:
             self.mini.saisie = ""
             self.mini.historique.append(ligne)
@@ -538,8 +547,7 @@ class Espace(B.Controleur):
         """Une commande du jeu (alias du compagnon : aide, quetes, carte…) : lancée par tg, sa sortie ici."""
         from . import compagnon
         exe, app = compagnon.commande()
-        cmd = " ".join(shlex.quote(x) for x in [exe, app] + list(mots))
-        code, sortie = V.executer(cmd, self.mini.dossier, 10.0, "/bin/sh" if os.name != "nt" else None)
+        code, sortie = V.executer([exe, app] + list(mots), self.mini.dossier, 10.0)
         for l in sortie[-60:]:
             if not l.startswith("@"):
                 self.lignes.append(spans(l))

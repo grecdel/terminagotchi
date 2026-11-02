@@ -42,7 +42,7 @@ JOURNAL = core.SAVE_DIR / "bureau.log"
 def noter(msg):
     """Une erreur de fenêtre est notée (jamais affichée à l'enfant) : ~/.terminagotchi/bureau.log."""
     try:
-        with open(JOURNAL, "a", encoding="utf-8") as f:
+        with open(JOURNAL, "a", encoding="utf-8", newline="\n") as f:
             f.write(time.strftime("%Y-%m-%d %H:%M:%S ") + str(msg)[:2000] + "\n")
     except OSError:
         pass
@@ -491,8 +491,8 @@ def ouvrir_terminal(args):
     from . import compagnon, fenetre
     dossier = str(core.TERRAIN if core.TERRAIN.is_dir() else Path.home())
     if args is None:
-        if SYS_WIN:
-            cmd = ["cmd", "/c", "start", "Terminagotchi", "cmd", "/k"]
+        if SYS_WIN:                                     # le terminal du jeu (vsh/), jamais cmd ni PowerShell
+            return compagnon.nouvelle_fenetre()[0]
         else:
             shell = os.environ.get("SHELL") or "/bin/sh"
             cmd = fenetre.commande_terminal([shell])

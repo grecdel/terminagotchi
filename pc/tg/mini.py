@@ -16,7 +16,7 @@ from pathlib import Path
 from . import core, envies, lecons, sprites
 from . import langue
 from .langue import envelopper, largeur, t
-from .plateforme import BOLD, DIM, IS_WIN, RESET, Clavier, clear, fg, piege
+from .plateforme import BOLD, DIM, IS_WIN, RESET, Clavier, clear, fg, piege, terminal_virtuel
 
 ANSI = re.compile(r"\x1b\[[0-9;?]*[A-Za-z]")
 # commandes qui prennent tout l'écran : on leur laisse le terminal le temps qu'elles finissent
@@ -82,7 +82,10 @@ class Mini:
         self.tampon = ""
         self.histo, self.pos = [], None           # ↑ ↓ : les commandes d'avant
         self.sh = None                             # un shell qui reste ouvert (alias, tâches, cd -, &&) : coquille.py
-        if not IS_WIN and shutil.which("bash"):
+        if terminal_virtuel():                     # Windows : le terminal du jeu (vsh/, un Linux virtuel)
+            from .vsh import CoquilleVirtuelle
+            self.sh = CoquilleVirtuelle(os.getcwd(), jeu="auto")
+        elif not IS_WIN and shutil.which("bash"):
             from .coquille import Coquille
             self.sh = Coquille(os.getcwd(), env=dict(os.environ, PAGER="cat", GIT_PAGER="cat"), rc=True)
         self.sortie = [f"{DIM}" + t("mini.accueil1"), t("mini.accueil2") + RESET]
@@ -102,7 +105,7 @@ class Mini:
             self.sortie = []
         elif premier in ("aide", "help"):
             self.sortie += [f"{DIM}" + l for l in langue.liste("mini.aide")] + [RESET]
-        elif self.sh and premier not in PLEIN_ECRAN:
+        elif self.sh and (premier not in PLEIN_ECRAN or terminal_virtuel()):
             # le même shell d'une ligne à l'autre : `cd x && ls`, `cd -`, `alias miam=…` puis `miam`, `sleep 9 &` puis
             # `jobs` et `kill %1` ; Ctrl+C arrête la commande en cours (pas tg mini) ; le code de sortie va au jeu
             texte, code, d = self.sh.lancer(ligne, DELAI, interrompre=lambda: "\x03" in self.clav.lire(0))

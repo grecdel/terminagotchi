@@ -233,7 +233,7 @@ def noter_trace():
     from . import core
     try:
         core.SAVE_DIR.mkdir(parents=True, exist_ok=True)
-        with open(core.SAVE_DIR / "erreurs.log", "a", encoding="utf-8") as f:
+        with open(core.SAVE_DIR / "erreurs.log", "a", encoding="utf-8", newline="\n") as f:
             f.write(time.strftime("%Y-%m-%d %H:%M:%S ") + traceback.format_exc() + "\n")
         return str(core.SAVE_DIR / "erreurs.log")
     except OSError:

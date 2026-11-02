@@ -400,7 +400,7 @@ def noter(etiquette, texte):
     try:
         d = dossier()
         d.mkdir(parents=True, exist_ok=True)
-        with open(d / REGISTRE, "a", encoding="utf-8") as f:
+        with open(d / REGISTRE, "a", encoding="utf-8", newline="\n") as f:
             f.write(f"[{etiquette}] {texte}\n")
         return True
     except OSError:

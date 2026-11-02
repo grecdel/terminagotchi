@@ -728,6 +728,8 @@ class MiniTerminal:
     def invite(self):
         home = os.path.expanduser("~")
         d = self.dossier
+        if getattr(self, "_vsh", None) is not None:   # le terminal du jeu : ses chemins Linux (~/…, /etc…)
+            home, d = self._vsh.vfs.home, self._vsh.sh.cwd
         return ("~" + d[len(home):] if d.startswith(home) else d) + " $"
 
     def taper(self, texte):
@@ -751,6 +753,20 @@ class MiniTerminal:
         if premier in INTERACTIVES or ligne.startswith("tail -f"):
             self.sortie = ["@vrai_terminal"]
             return None, self.sortie
+        from .plateforme import terminal_virtuel
+        if terminal_virtuel():                 # Windows : le terminal du jeu (vsh/), le même d'une ligne à l'autre
+            if getattr(self, "_vsh", None) is None:
+                from .vsh import CoquilleVirtuelle
+                self._vsh = CoquilleVirtuelle(self.dossier, jeu="auto")
+            texte, code, d = self._vsh.lancer(ligne, self.DELAI)
+            self.dossier = d
+            sortie = [l.expandtabs(4)[:160] for l in texte.replace("\r", "").split("\n")]
+            while sortie and not sortie[-1].strip():
+                sortie.pop()
+            self.sortie = sortie[-self.LIGNES:]
+            if self.compter:
+                self.compter(ligne, code)
+            return code, self.sortie
         if premier == "cd":
             return self._cd(mots[1:] if len(mots) > 1 else ["~"], ligne)
         code, sortie = executer(ligne, self.dossier, self.DELAI, self.shell)
@@ -774,9 +790,18 @@ class MiniTerminal:
 
 def executer(ligne, dossier, delai=8.0, shell=None):
     """Lance une ligne de commande dans dossier (le shell de l'ordinateur, sans clavier) : (code, lignes).
+    ligne peut être une liste (un programme et ses arguments, sans shell : les commandes du jeu).
+    Sous Windows, une ligne va au terminal du jeu (vsh/, le Linux virtuel), jamais à PowerShell.
     Au-delà de delai secondes, la commande est arrêtée (code 124)."""
-    if os.name == "nt":
-        cmd = ["powershell", "-NoProfile", "-Command", ligne]
+    if isinstance(ligne, (list, tuple)):
+        cmd = list(ligne)
+    elif os.name == "nt":
+        from .vsh import CoquilleVirtuelle
+        texte, code, _d = CoquilleVirtuelle(dossier, jeu="auto").lancer(ligne, delai)
+        lignes = [l.expandtabs(4)[:160] for l in texte.replace("\r", "").split("\n")]
+        while lignes and not lignes[-1].strip():
+            lignes.pop()
+        return code, lignes
     else:
         cmd = [shell or os.environ.get("SHELL") or "/bin/sh", "-c", ligne]
     kw = {"cwd": dossier, "stdin": subprocess.DEVNULL, "stdout": subprocess.PIPE, "stderr": subprocess.STDOUT}
