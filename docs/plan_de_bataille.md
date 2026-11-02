@@ -950,14 +950,14 @@ jeu n'embarque, ne télécharge et n'emballe AUCUN binaire ni code tiers (BusyBo
   timeout, less, man, git — le petit git porté de `PetitGit.kt`…). Il agit sur les VRAIS fichiers de
   `~/terrain_terminagotchi` et seulement là ; `/`, `/etc`, `/bin`, `/proc`, `/var/log` sont de petits fichiers du jeu
   en lecture seule (`~/.terminagotchi/systeme`), les droits Linux (chmod 444, +x) sont gardés dans
-  `~/.terminagotchi/droits_terminal.json`. Pas de réseau, aucun programme de Windows lancé (seulement le Python qui
-  fait tourner le jeu, pour ses propres commandes `tg`, `carte`, `atelier`…), rien dans le registre ni le PATH, rien
-  d'installé. Option : si WSL est déjà installé, le jeu propose son vrai bash (`tg terminal wsl`), sans jamais
-  l'installer.
+  `~/.terminagotchi/droits_terminal.json`. Pas d'Internet, aucun programme de Windows lancé (seulement le Python qui
+  fait tourner le jeu : ses propres commandes `tg`, `carte`, `atelier`…, et `python3`, voir plus bas), rien dans le
+  registre ni le PATH, rien d'installé. Toujours ce terminal, même si WSL est installé (décision du 2 novembre,
+  6 h 26 : la proposition WSL est retirée, le jeu ne le cherche plus).
 - Honnêteté : une commande absente dit « cette commande n'existe pas dans le terminal du jeu sous Windows » et
-  l'étape est racontée comme sur le téléphone, sans bloquer. Restent racontés : le réseau réel (ping, curl, ssh,
-  ssh-keygen, ip, ss, nslookup…), sudo, systemctl, journalctl, dmesg, lsblk, top / htop, les gestionnaires de paquets,
-  gcc / make, python3 / pip, openssl, gpg, ImageMagick / ffmpeg / sox / exiftool, openscad, podman / qemu, les
+  l'étape est racontée comme sur le téléphone, sans bloquer. Restent racontés : le réseau réel (ping, curl vers
+  Internet, ssh, ssh-keygen, ip, ss, nslookup…), sudo, systemctl, journalctl, dmesg, lsblk, top / htop, les
+  gestionnaires de paquets, gcc / make, pip et `python3 -m …` (dont la lanterne `python3 -m http.server`), openssl, gpg, ImageMagick / ffmpeg / sox / exiftool, openscad, podman / qemu, les
   éditeurs (nano, vim), ln, chown, crontab, useradd.
 - Plusieurs fenêtres : `tg terminal`, la touche `[t]` de la fenêtre du jeu, `terminal` dans l'espace ; toutes
   écrivent dans `~/.terminagotchi/historique_terminal`, que le jeu lit (la créature mange chaque commande). Android :
@@ -971,12 +971,30 @@ jeu n'embarque, ne télécharge et n'emballe AUCUN binaire ni code tiers (BusyBo
   jugeant chaque étape), `test_windows.py`. CI : `rejeu.yml` (comparaison au vrai bash sous Linux, et l'histoire en
   mode Windows simulé) et `windows.yml` (une VRAIE machine Windows de GitHub joue toute l'histoire dans le terminal
   du jeu).
-- Résultats (2 novembre) : comparé au vrai bash, 417 cas identiques et 0 différence (CI Linux) ; l'histoire dans le
+- Résultats (2 novembre) : comparé au vrai bash, 417 cas identiques et 0 différence (CI Linux ; 498 / 0 avec python3 et curl) ; l'histoire dans le
   terminal du jeu : 263 identiques, 0 écart (Linux), 265 / 0 (Windows simulé), **250 / 0 sur la vraie machine
   Windows** (toute l'histoire, les 12 mondes et le Sommet). Simulation des trois enfants :
   `docs/simulations/rapport_terminal.md`.
-- Reste à décider (rapport final) : des onglets dans l'écran terminal de l'APK (faits le 2 novembre, voir plus bas) ; un `python3` du jeu (le Python qui
-  fait tourner le jeu) pour les étapes Python de la Forge sous Windows ; un `curl` local vers le phare du Port.
+- **python3 et curl dans le terminal du jeu — codé (2 novembre, accord du propriétaire ; Windows seulement, Linux,
+  macOS et Android inchangés).** `python3` / `python` (`pc/tg/vsh/python.py`) lance le Python qui fait DÉJÀ tourner
+  le jeu (sys.executable), pour de vrai : `python3 -c`, `python3 script.py args`, `python3 -` / `< script.py`,
+  `./script.py` (#!/usr/bin/env python3 et droit x), tuyaux, redirections, `input()` au clavier, la console au clavier,
+  Ctrl+C / `timeout` / `kill`. Le dossier courant et le script doivent être dans le terrain ; `-m` est refusé (pip,
+  http.server : racontés). Une garde (sys.addaudithook, posée avant la première ligne de l'enfant) refuse d'écrire,
+  créer ou effacer hors du terrain, de lire hors du terrain (sauf Python lui-même), de lancer un programme, d'ouvrir
+  un serveur et toute connexion sauf le phare (127.0.0.1:8042) ; les fichiers écrits ont des fins de ligne Linux ; le
+  Traceback est celui du vrai Python avec les chemins du terminal du jeu. `curl` (`pc/tg/vsh/curl.py`) parle
+  seulement au phare du Port : vraie connexion TCP sur 127.0.0.1, vraie requête HTTP/1.1, sortie du vrai curl 8
+  (-I, -i, -s, -S, -v, -o, -O, -X, -d, -H, -A, -f, -L, -w, la barre de progression) ; s'il dort, le jeu le rallume
+  (comme sur le téléphone). Toute autre adresse (Internet, le quai 8000, la lanterne 8642, https 8443, file://) :
+  message clair (« pas d'Internet dans le terminal du jeu »), aucune connexion, l'étape est racontée. Les étapes
+  Python de la Forge (F4) et le facteur du Port (P3, P6) et de la Citadelle (C6) sont réelles sous Windows ; la
+  lanterne (P5, F6) reste racontée. Tests : `test_terminal.py` § 5 (26 cas python3 et 22 cas curl comparés au vrai
+  python3 et au vrai curl 8.5 sur le même phare : identiques) et § 6 (17 garde-fous × 2 modes ; rien écrit hors du
+  terrain), aussi sur la vraie machine Windows (`--garde`) ; rejeu de l'histoire dans le terminal du jeu : 266 / 0
+  (Linux), 268 / 0 (Windows simulé). Simulation : `docs/simulations/rapport_terminal.md` § 6.
+- Onglets de l'écran terminal de l'APK : faits le 2 novembre (voir plus bas). Reste à décider : étendre curl à la
+  lanterne de l'enfant (`python3 -m http.server`, quai 8000 et 8642) si le propriétaire le veut.
 
 **🪟 Onglets du terminal (Android) — codé (2 novembre, demande du propriétaire).**
 - L'écran terminal de l'APK a de vrais onglets : « Terminal 1 », « Terminal 2 »… au-dessus de l'écran du terminal,

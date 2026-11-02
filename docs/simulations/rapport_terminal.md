@@ -58,8 +58,8 @@ est vert aussi. Les passages d'avant avaient trouvé les trois problèmes critiq
 
 ## 4. Ce qui reste raconté sous Windows (jamais bloquant)
 
-Le réseau réel (ping, curl, ssh, ssh-keygen, ip, ss, nslookup…), sudo, systemctl, journalctl, dmesg, lsblk, top /
-htop, les gestionnaires de paquets, gcc / make, python3 / pip, openssl, gpg, ImageMagick / ffmpeg / sox / exiftool,
+Le réseau réel (ping, curl vers Internet, ssh, ssh-keygen, ip, ss, nslookup…), sudo, systemctl, journalctl, dmesg,
+lsblk, top / htop, les gestionnaires de paquets, gcc / make, pip et `python3 -m …`, openssl, gpg, ImageMagick / ffmpeg / sox / exiftool,
 openscad, podman / qemu, les éditeurs (nano, vim, notepad), ln, chown, crontab, useradd. Le terminal dit « cette
 commande n'existe pas dans le terminal du jeu sous Windows » et l'étape est racontée, comme sur le téléphone.
 
@@ -67,3 +67,39 @@ commande n'existe pas dans le terminal du jeu sous Windows » et l'étape est ra
 
 - `nano` / `notepad` hors d'une leçon : le message parle d'une étape racontée alors qu'il n'y en a pas.
 - Après `kill %1` puis `wait`, bash interactif écrit « [1]+ Terminated » ; le terminal du jeu ne l'écrit pas.
+
+## 6. Ajout du 2 novembre : python3 et curl, et plus de proposition WSL
+
+Décisions du propriétaire : `python3` (le Python qui fait déjà tourner le jeu) pour de vrai dans le terrain, `curl`
+limité au phare du Port, et toujours le terminal du jeu sous Windows (la proposition WSL est retirée).
+
+Les trois enfants, rejoués en mode Windows simulé (`/home/lea`) :
+
+- **Léa, 7 ans** : tape `python` depuis `~` → « dans le terminal du jeu, Python travaille seulement dans ton terrain.
+  Va d'abord dedans : cd ~/terrain_terminagotchi » ; `curl google.com` → « pas d'Internet dans le terminal du jeu
+  (rien ne sort de l'ordinateur). Ici, curl parle seulement au phare du Port : http://localhost:8042/ ». Au Port,
+  `curl http://localhost:8042/feu | head -n 1` montre la barre de progression puis « 🔥 feu.terminaworld ».
+- **Malo, 12 ans** : la Forge, F4 pour de vrai : `python3 --version`, `python3 -c "print(2 + 3 * 4)"` → 14,
+  `python3 serpent.py` → le vrai Traceback (`File "/home/lea/terrain_terminagotchi/forge/serpent.py", line 2` …
+  `IndexError: list index out of range`), puis `python3 serpent.py Malo`. `python3 -m pip install pygame` → « les
+  modules de Python (-m) ne se lancent pas dans le terminal du jeu ; cette étape est racontée ». Au clavier (vrai
+  pseudo-terminal) : `input()` attend sa réponse, la console `python3` marche (`1 + 1` → 2, `exit()`), Ctrl+C arrête
+  `time.sleep(30)` avec le vrai `KeyboardInterrupt` (code 130).
+- **Inès, 15 ans** : un programme qui compte les mots d'un fichier du terrain (juste) ; un programme qui écrit dans
+  `../../Documents/x.txt` → `PermissionError: … le terminal du jeu garde Python dans ton terrain : écrire hors du
+  terrain, c'est refusé` ; `shutil.rmtree("/home")`, `os.system`, `subprocess`, `urllib` vers Internet, un serveur
+  sur 0.0.0.0 : refusés de la même façon ; `ls -a ~` ne montre toujours que le terrain et `.terminagotchi`.
+
+| Gravité | Problème trouvé | Correction |
+|---|---|---|
+| Important | Le Traceback montrait les lignes de la garde (`<tg-python>`), même dans les exceptions enchaînées et la console | Retirées partout : le Traceback est celui du vrai Python |
+| Important | `python3 -c 'print(1); 1/0' 2>&1` : l'ordre de la sortie différait du vrai Python | Même tampon que le vrai Python (et `export PYTHONUNBUFFERED=1` respecté) |
+| Moyen | Le phare endormi (30 minutes sans visite) : `curl` répondait « Couldn't connect » | Le jeu rallume le phare puis curl frappe encore une fois (comme sur le téléphone) |
+| Moyen | `curl -o` vers un dossier absent, `curl -f` sur un 404, `curl -O` sans nom : messages différents du vrai curl | Identiques au vrai curl 8.5 |
+
+Résultats : `test_terminal.py` 498 identiques au vrai bash / python3 / curl, 0 différence ; garde-fous 17 cas × 2
+modes ; rejeu de l'histoire dans le terminal du jeu 266 / 0 (Linux) et 268 / 0 (Windows simulé) ; sur la vraie machine
+Windows : voir le passage de la CI cité dans le rapport final.
+
+Reste raconté (jamais bloquant) : la lanterne de l'enfant (`python3 -m http.server`, Port P5 et Forge F6) et son
+`curl` vers 8000 / 8642, et le sceau https (8443, qui demande openssl).

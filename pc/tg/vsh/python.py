@@ -231,6 +231,11 @@ else:                                         # la console de Python (au clavier
     import code as _code
     sys.path[0] = ""
     _g = _module()
+    _crochet = sys.excepthook
+
+    def _sans_lignes_de_garde(t, e, tb):
+        _crochet(t, e, _nettoyer(tb, False))
+    sys.excepthook = _sans_lignes_de_garde
     sys.addaudithook(_garde)
     _code.interact(banner=f"Python {sys.version} on {sys.platform}\n" + _MSG["console"], local=_g, exitmsg="")
 '''

@@ -260,6 +260,14 @@ def _dechunker(b):
     return b"".join(out)
 
 
+def _rallumer_phare():
+    try:
+        from .. import port
+        return port.assurer_phare()
+    except Exception:                         # noqa: BLE001
+        return False
+
+
 def _code_http(etat):
     m = re.match(r"HTTP/\S+\s+(\d{3})", etat)
     return int(m.group(1)) if m else 0
@@ -405,7 +413,14 @@ def _une(ctx, o, url, premiere=True, sauts=0):
     except ValueError:
         delai = 10
     try:
-        reponse = requete(hote, port, brut, delai=delai)
+        try:
+            reponse = requete(hote, port, brut, delai=delai)
+        except ConnectionRefusedError:
+            # le phare du Port dort (il s'éteint seul après 30 minutes sans visite) : comme sur le téléphone, le jeu
+            # le rallume, puis curl frappe encore une fois
+            if not _rallumer_phare():
+                raise
+            reponse = requete(hote, port, brut, delai=delai)
     except OSError:
         ms = int((time.monotonic() - debut) * 1000)
         if progres:
