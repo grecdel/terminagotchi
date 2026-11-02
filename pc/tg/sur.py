@@ -167,6 +167,10 @@ def depot_git_sur(depot):
         for f in ("config", "HEAD"):
             if os.path.islink(os.path.join(g, f)):
                 return False
+        from .plateforme import terminal_virtuel
+        if terminal_virtuel():                       # le petit git du terminal du jeu (vsh/git.py)
+            from .vsh import git as petit
+            return petit.est_depot(depot)
         r = subprocess.run(["git", "-C", depot, "rev-parse", "--show-toplevel", "--absolute-git-dir"],
                            capture_output=True, text=True, timeout=10)
         lignes = r.stdout.strip().splitlines()

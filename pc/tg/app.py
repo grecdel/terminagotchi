@@ -16,7 +16,7 @@ from .langue import ajuster, envelopper, largeur, raccourcir, t
 from .mots import palier, terme
 
 SYNC_AUTO = False   # synchro en fond, seulement pour les modes qui restent ouverts
-from .plateforme import (BOLD, DIM, DISTRO, IS_WIN, OS_NAMES, OSK, RESET, Clavier, clear, fg, piege)
+from .plateforme import (BOLD, DIM, DISTRO, IS_WIN, SYS_WIN, OS_NAMES, OSK, RESET, Clavier, clear, fg, piege)
 
 
 def title_line(text, color=244):
@@ -165,8 +165,8 @@ def render(state, frame, interactif, anim=None, tic=None):
     lines.append(title_line(t("app.journal")))
     if state["total"] == 0:
         lines.append(" " + t("app.journal.vide"))
-        if IS_WIN:
-            lines.append(" " + t("app.journal.powershell"))
+        if SYS_WIN:
+            lines.append(" " + t("app.journal.terminal"))
         elif not compagnon.est_installe():
             lines.append(f" {fg(226)}" + t("app.journal.compagnon") + RESET)
     lines += [" " + l for l in state["log"][-4:]]
@@ -527,7 +527,7 @@ def menu_lexique(state, clav):
 def lancer_detache(mode):
     exe, app = compagnon.commande()
     kw = {"stdout": subprocess.DEVNULL, "stderr": subprocess.DEVNULL, "stdin": subprocess.DEVNULL}
-    if IS_WIN:
+    if SYS_WIN:
         kw["creationflags"] = 0x00000008 | 0x08000000      # DETACHED_PROCESS | CREATE_NO_WINDOW
     else:
         kw["start_new_session"] = True
@@ -859,8 +859,8 @@ def _ecran(texte):
 def _terminal_possible():
     """Entrée peut ramener l'enfant dans son terminal (le compagnon y est installé, hors Windows)."""
     try:
-        if IS_WIN:                                   # Windows : le terminal du jeu est un PowerShell (voir compagnon)
-            return sys.stdin.isatty() and bool(compagnon._powershell())
+        if SYS_WIN:                                  # Windows : le terminal du jeu (vsh/, un Linux virtuel)
+            return sys.stdin.isatty()
         return sys.stdin.isatty() and compagnon.est_installe()
     except Exception:                                # noqa: BLE001
         return False
@@ -996,6 +996,9 @@ def fenetre(once):
                     menu_carte(state, clav)
                 elif k == "j":
                     menu_quetes(state, clav)
+                elif k == "t":                    # une fenêtre de plus avec le terminal du jeu (tg terminal)
+                    _ok, msg = compagnon.nouvelle_fenetre()
+                    state = core.modifier(lambda s: core.say(s, msg, 8)) or state
                 elif k == "u":                    # l'aura de rareté autour de la créature
                     state = core.modifier(lambda s: s["config"].update(aura=not s["config"].get("aura", True)))
                 elif k == "q":
@@ -1130,6 +1133,19 @@ def _main():
             _dire_une_fois(sur.message_os(e))
         except Exception:
             sur.noter_trace()
+        return
+    if mode in ("sh", "terminal-ici"):          # le terminal du jeu dans cette fenêtre (vsh/ ; sous Windows, celui des leçons)
+        from .vsh import terminal
+        sys.exit(terminal.lancer(compagnon="--sans-compagnon" not in sys.argv) or 0)
+    if mode == "terminal":                     # tg terminal : une fenêtre de plus avec le terminal du jeu
+        if len(args) > 1 and args[1].lower() in ("wsl", "jeu"):
+            if args[1].lower() == "wsl" and not compagnon.wsl_disponible():
+                print(t("vsh.wsl.absent"))
+                return
+            compagnon.choisir_terminal("wsl" if args[1].lower() == "wsl" else "vsh")
+            return
+        ok, msg = compagnon.nouvelle_fenetre()
+        print(msg)
         return
     if mode in ("aide", "help", "-h"):
         st = core.load()

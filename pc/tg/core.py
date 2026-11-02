@@ -9,10 +9,12 @@ from pathlib import Path
 
 from .langue import au_hasard, t
 from .langue import t as tr
-from .plateforme import GEST, IS_WIN, est_colle, piege
+from .plateforme import GEST, IS_WIN, SYS_WIN, est_colle, piege
+from . import droits as _droits
 from . import sur as _sur
 
 _sur.installer()        # le jeu n'écrit jamais à travers un lien symbolique (sur.py)
+_droits.installer()     # Windows : les droits Linux (chmod) du terrain gardés à côté (droits.py)
 
 VERSION = "0.4"
 SAVE_DIR = Path.home() / ".terminagotchi"
@@ -101,7 +103,8 @@ def history_files():
     files = [h / ".bash_history", h / ".zsh_history", h / ".local/share/fish/fish_history"]
     if os.environ.get("HISTFILE"):
         files.append(Path(os.environ["HISTFILE"]))
-    if IS_WIN:
+    files.append(SAVE_DIR / "historique_terminal")     # le terminal du jeu (vsh/ : Windows, `tg sh`)
+    if SYS_WIN:
         files.append(Path(os.environ.get("APPDATA", "")) /
                      "Microsoft/Windows/PowerShell/PSReadLine/ConsoleHost_history.txt")
     else:
@@ -150,9 +153,15 @@ def first_word(line):
     return ps_equivalent(w)        # Windows : Get-Location nourrit comme pwd
 
 
+# Windows : les lignes lues dans l'historique d'un PowerShell à part (pas dans le terminal du jeu) : le filet de sécurité
+# les reconnaît (Get-Location nourrit comme pwd) et la créature invite gentiment à utiliser le terminal du jeu.
+LIGNES_PS = set()
+
+
 def read_new_lines(state):
     offsets = state["offsets"]
     lines = []
+    LIGNES_PS.clear()
     for f in history_files():
         key = str(f)
         try:
@@ -172,10 +181,13 @@ def read_new_lines(state):
         if last_nl == -1:
             continue
         offsets[key] += last_nl + 1
+        ps = f.name == "ConsoleHost_history.txt"
         for raw in data[:last_nl].decode("utf-8", "replace").splitlines():
             c = parse_line(raw)
             if c:
                 lines.append(c)
+                if ps:
+                    LIGNES_PS.add(c)
     return lines
 
 # ================================================================ caractère
@@ -408,14 +420,21 @@ PS_ALIAS = {"pwd", "ls", "dir", "cd", "chdir", "cat", "type", "gc", "cp", "copy"
 
 
 def ps_equivalent(cmd):
-    """Windows : le nom Linux d'un cmdlet PowerShell (Get-Location → pwd), sinon la commande telle quelle."""
-    return PS_CMDLETS.get(cmd, cmd) if IS_WIN else cmd
+    """Windows : le nom Linux d'un cmdlet PowerShell (Get-Location → pwd), sinon la commande telle quelle (le filet de
+    sécurité : un enfant qui tape dans un PowerShell à part)."""
+    return PS_CMDLETS.get(cmd, cmd) if (IS_WIN or SYS_WIN) else cmd
 
 
 def commande_existe(cmd):
     import shutil
-    if IS_WIN and (cmd in PS_ALIAS or cmd in PS_CMDLETS or re.fullmatch(r"[a-z]+-[a-z]+", cmd or "")):
-        return True        # cmdlets (Verbe-Nom) et alias de PowerShell : de vraies commandes, sans programme
+    if (IS_WIN or SYS_WIN) and (cmd in PS_CMDLETS or re.fullmatch(r"[a-z]+-[a-z]+", cmd or "")):
+        return True        # cmdlets (Verbe-Nom) de PowerShell : de vraies commandes, sans programme
+    if IS_WIN and cmd in PS_ALIAS:
+        return True
+    from .plateforme import terminal_virtuel
+    if terminal_virtuel():  # Windows : les commandes du terminal du jeu (vsh/)
+        from . import vsh
+        return cmd in BUILTINS or vsh.existe(cmd)
     return cmd in BUILTINS or shutil.which(cmd) is not None
 
 
@@ -459,9 +478,15 @@ def apostrophe_ouverte(ligne):
 
 
 def feed(state, line, statut=None):
-    if IS_WIN and apostrophe_ouverte(line):          # PowerShell : l'apostrophe ouvre un texte (echo "j'aime les chats")
+    ps = IS_WIN or (SYS_WIN and line in LIGNES_PS)
+    if ps and apostrophe_ouverte(line):          # PowerShell : l'apostrophe ouvre un texte (echo "j'aime les chats")
         msg = t("core.win.apostrophe")
         say(state, msg, 10)
+        terminal(state, msg)
+    if SYS_WIN and line in LIGNES_PS and not state.get("ps_invite"):
+        state["ps_invite"] = True                # une fois : le jeu a son propre terminal (Linux), plus simple
+        msg = t("core.win.terminal_du_jeu")
+        say(state, msg, 14)
         terminal(state, msg)
     if est_colle(line):
         state["colles"] += 1

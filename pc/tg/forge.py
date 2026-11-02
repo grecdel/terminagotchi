@@ -50,7 +50,7 @@ import sys
 import unicodedata
 import wave
 
-from . import core
+from . import core, droits
 from .langue import brut, t
 from .plateforme import BOLD, DIM, RESET, fg
 
@@ -558,7 +558,7 @@ def _cabane_ok():
 
 def _exec_ok():
     p = dossier() / "cabane.sh"
-    return p.is_file() and os.access(p, os.X_OK)
+    return p.is_file() and droits.acces(p, os.X_OK)
 
 
 def _contient(rel, motif):

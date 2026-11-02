@@ -20,8 +20,8 @@ import re
 import shutil
 from pathlib import Path
 
-from . import core
-from .plateforme import IS_WIN
+from . import core, droits
+from .plateforme import IS_WIN, outil_present, terminal_virtuel
 
 T = lambda: core.TERRAIN  # noqa: E731
 
@@ -119,6 +119,13 @@ JOKER = re.compile(r"[*?\[]")
 
 
 def _abs(mot, cwd):
+    from .plateforme import SYS_WIN
+    if SYS_WIN:                                   # le terminal du jeu : des chemins Linux (/etc/hostname, ~/…)
+        from .vsh.vfs import reel_depuis_terminal
+        try:
+            return reel_depuis_terminal(cwd, mot)
+        except Exception:                         # noqa: BLE001
+            pass
     if mot == "~" or mot.startswith("~/") or mot.startswith("~\\"):
         return os.path.expanduser(mot)
     if os.path.isabs(mot):
@@ -249,7 +256,7 @@ def commande_installee(mot):
         return True
     if IS_WIN and core.commande_existe(mot.lower()):      # alias et cmdlets de PowerShell (pwd, dir, Get-Location…)
         return True
-    return shutil.which(mot) is not None
+    return outil_present(mot)
 
 
 BUILTINS_EN_PLUS = {"alias", "unalias", "function", "local", "declare", "let", "shopt", "command", "builtin", "times",
@@ -264,6 +271,8 @@ def casse_ok(mot):
         return True
     if re.match(r"^[A-Za-z_]\w*=", mot):    # nom=Pixel : une boîte qu'on remplit (la Forge), pas une commande
         return True
+    if terminal_virtuel():
+        return outil_present(mot)
     return shutil.which(mot) is not None and os.path.basename(shutil.which(mot)) == mot
 
 
@@ -300,11 +309,38 @@ def motif_ok(step, texte, cwd):
     return False
 
 
+def raconte_ok(step, m, precedente=None):
+    """Le terminal du jeu (Windows) n'a pas l'outil de l'étape (curl, ssh-keygen, gcc…) : l'enfant a tapé la commande,
+    le terminal a dit clairement qu'elle n'existe pas ici ; l'étape est racontée et passe (jamais bloquante). De même
+    pour `kill %1`, `fg`, `jobs` juste après une tâche de fond racontée (le serveur python3 -m http.server … &)."""
+    if not terminal_virtuel() or not step.get("cmd"):
+        return False
+    voulu = premier(step["cmd"])
+    if not voulu or premier(m.texte) != voulu:
+        return False
+    if voulu in _racontees() and not outil_present(voulu):
+        return True
+    if voulu in ("kill", "fg", "jobs", "wait"):
+        fond = next((p for p in reversed(precedente or []) if p.get("cmd", "").rstrip().endswith("&")), None)
+        avant = premier(fond["cmd"]) if fond else None
+        return bool(avant) and avant in _racontees() and not outil_present(avant)
+    return False
+
+
+def _racontees():
+    from .vsh.outils import RACONTEES
+    return RACONTEES
+
+
 def resultat_ok(step, m):
     """Le morceau a vraiment marché : son code de sortie s'il est connu ; sinon, les commandes existent et les chemins
     tapés existent depuis le dossier où il a été tapé. Une étape « echoue » (le cadenas refuse >>) veut un refus."""
     racine = hasattr(os, "geteuid") and os.geteuid() == 0
     absent = [premier(x) for x, _ in _couper(m.texte, ("|",)) if premier(x) and not commande_installee(premier(x))]
+    if absent and terminal_virtuel() and all(a in _racontees() for a in absent):
+        # le terminal du jeu (Windows) n'a pas cet outil (réseau, matériel, compilateur…) : il l'a dit clairement, et
+        # l'étape est racontée comme sur un téléphone, sans bloquer (décision du 2 novembre)
+        return not chemins_manquants(m.texte, m.avant)
     if (step.get("reseau") or step.get("absent_ok")) and (absent or step.get("reseau")):
         # le réseau peut manquer (école, avion) et l'outil peut ne pas être installé : avoir essayé suffit, le jeu
         # explique alors pourquoi ça n'a pas répondu (voir histoire.tick_lecon) ; une faute de chemin compte encore
@@ -519,28 +555,28 @@ def expliquer(ligne, statut, cwd):
                 p = _abs(args[0], m.avant)
                 if os.path.isfile(p):
                     return t("core.err.pas_dossier", nom=args[0])
-                if os.path.isdir(p) and not os.access(p, os.X_OK):
+                if os.path.isdir(p) and not droits.acces(p, os.X_OK):
                     return t("core.err.refuse", nom=args[0])
             if mot in LECTEURS | {"grep"}:
                 for w in (args[1:] if mot == "grep" else args):
                     p = _abs(w, m.avant)
                     if os.path.isdir(p) and not (mot == "grep" and re.search(r"\s-\w*[rR]", x)):
                         return t("core.err.est_dossier", nom=w)
-                    if os.path.isfile(p) and not os.access(p, os.R_OK):
+                    if os.path.isfile(p) and not droits.acces(p, os.R_OK):
                         return t("core.err.refuse", nom=w)
             for r in redirections(x):
                 p = _abs(r, m.avant)
                 if os.path.isdir(p):
                     return t("core.err.est_dossier", nom=r)
-                if (os.path.exists(p) and not os.access(p, os.W_OK)) or (
+                if (os.path.exists(p) and not droits.acces(p, os.W_OK)) or (
                         not os.path.exists(p) and os.path.isdir(os.path.dirname(p))
-                        and not os.access(os.path.dirname(p), os.W_OK)):
+                        and not droits.acces(os.path.dirname(p), os.W_OK)):
                     return t("core.err.refuse", nom=r)
             if mot in ("touch", "mkdir", "rm", "rmdir", "mv", "cp", "chmod"):
                 for w in args:
                     p = _abs(w, m.avant)
                     d = os.path.dirname(p.rstrip("/"))
-                    if os.path.isdir(d) and not os.access(d, os.W_OK):
+                    if os.path.isdir(d) and not droits.acces(d, os.W_OK):
                         # le cadenas est sur le dossier (/etc), pas sur l'objet qu'on voulait créer (coucou.txt)
                         return t("core.err.refuse", nom=os.path.dirname(w.rstrip("/")) or m.avant or w)
         manque = chemins_manquants(m.texte, m.avant)

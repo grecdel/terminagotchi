@@ -391,7 +391,8 @@ def droits(ligne, dossier=None):
                 actuel = None
                 if dossier and not any(ch in f for ch in "*?["):
                     try:
-                        actuel = os.stat(os.path.join(dossier, f)).st_mode & 0o777
+                        from . import droits as _droits
+                        actuel = _droits.mode(os.path.join(dossier, f)) & 0o777
                     except OSError:
                         actuel = None
                 base = actuel if actuel is not None else 0o644

@@ -5,7 +5,7 @@ import subprocess
 
 from . import core, lecons, sprites
 from .langue import sans_marques, t
-from .plateforme import IS_WIN, OSK
+from .plateforme import SYS_WIN, OSK
 
 IMAGE = core.SAVE_DIR / "creature.png"
 CACHE_PERM = core.SAVE_DIR / "permanente.txt"
@@ -17,7 +17,7 @@ def systeme():
     """Nom du moteur de notification disponible, ou None."""
     if shutil.which("termux-notification"):
         return "android"
-    if IS_WIN:
+    if SYS_WIN:
         return "windows"
     if OSK == "mac" and shutil.which("osascript"):
         return "mac"
@@ -31,7 +31,7 @@ def _lancer(args):
     args = [sans_marques(a) for a in args]     # pas de backticks dans les notifications (voir langue.rendre)
     try:
         kw = {"stdout": subprocess.DEVNULL, "stderr": subprocess.DEVNULL, "stdin": subprocess.DEVNULL}
-        if IS_WIN:
+        if SYS_WIN:
             kw["creationflags"] = 0x08000000   # CREATE_NO_WINDOW
         subprocess.Popen(args, **kw)
         return True

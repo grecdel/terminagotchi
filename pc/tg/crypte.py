@@ -41,7 +41,7 @@ from pathlib import Path
 
 from . import core
 from .langue import courante, t
-from .plateforme import BOLD, DIM, IS_WIN, RESET, fg
+from .plateforme import BOLD, DIM, IS_WIN, RESET, SYS_WIN, fg
 
 _D = None
 
@@ -478,7 +478,7 @@ BESOINS = {"cr0": ["regle_du_sphinx.txt"], "cr1": ["messages/message_1.txt", "me
 
 # ---------------------------------------------------------------- gpg (PC) : TOUJOURS --homedir, dans le terrain
 def gpg_la():
-    return shutil.which("gpg") is not None and not IS_WIN
+    return shutil.which("gpg") is not None and not SYS_WIN
 
 
 def trousseau(creature=False):

@@ -6,7 +6,7 @@ langue (langues/xx.json) ; tx() les traduit. Une cl√© peut venir avec ses param√
 import os
 import re
 
-from . import core
+from . import core, droits
 from .langue import t
 from .plateforme import OSK, C, IS_WIN, est_colle, installer, shell_rc
 
@@ -16,7 +16,7 @@ S = "\\" if IS_WIN else "/"
 
 def _protected(p):
     try:
-        return (p.stat().st_mode & 0o222) == 0
+        return (droits.mode(p) & 0o222) == 0
     except OSError:
         return False
 
@@ -59,7 +59,7 @@ FS = {
     "journal":  lambda: (T / "carnet" / "journal.txt").is_file(),
     "commit":   _commit_fait,
     "miam":     lambda: MIAM.is_file(),
-    "miam_x":   lambda: MIAM.is_file() and os.access(MIAM, os.X_OK),
+    "miam_x":   lambda: MIAM.is_file() and droits.acces(MIAM, os.X_OK),
 }
 
 CD = r"^(cd|set-location|sl)\s+"

@@ -43,7 +43,8 @@ import unicodedata
 
 from . import core
 from .langue import brut, courante, t
-from .plateforme import BOLD, DIM, IS_WIN, RESET, fg
+from . import droits
+from .plateforme import BOLD, DIM, RESET, SYS_WIN, fg
 
 _D = None
 
@@ -557,7 +558,16 @@ def poser_secrets():
     _ecrire("observatoire/secrets/LISEZMOI.txt", t("ob.meuble.secrets") + "\n")
 
 
+def _git_la():
+    from .vsh.git import git_present
+    return git_present()
+
+
 def _git(args, cwd, timeout=20):
+    from .plateforme import terminal_virtuel
+    if terminal_virtuel():                     # le petit git du terminal du jeu (Windows)
+        from .vsh.git import git_du_jeu
+        return git_du_jeu(args, cwd, timeout=timeout)
     env = dict(os.environ, GIT_TERMINAL_PROMPT="0", LC_ALL="C", LANGUAGE="C")
     try:
         r = subprocess.run(["git", *args], cwd=str(cwd), capture_output=True, text=True, timeout=timeout, env=env)
@@ -576,7 +586,7 @@ def poser_chantier():
     _ecrire("observatoire/chantier/a_nourrir.txt", liste)
     _ecrire("observatoire/chantier/.avant/a_nourrir.txt", liste)
     _ecrire("observatoire/chantier/LISEZMOI.txt", t("ob.meuble.chantier") + "\n")
-    if shutil.which("git") and not IS_WIN:
+    if _git_la():
         base = ["-c", "init.defaultBranch=main", "-c", "commit.gpgsign=false", "-c", "core.hooksPath=/dev/null"]
         if _git([*base, "init", "-q"], d)[0] == 0:
             _git(["config", "user.name", "L'Observatoire"], d)
@@ -703,7 +713,7 @@ def _env_ok():
 def _env_600():
     p = dossier() / "secrets" / ".env"
     try:
-        return p.is_file() and (IS_WIN or (p.stat().st_mode & 0o077) == 0)
+        return p.is_file() and (droits.mode(p) & 0o077) == 0
     except OSError:
         return False
 

@@ -52,7 +52,7 @@ import re
 from . import core, lecons, maison
 from .langue import t
 from .mots import palier, termes
-from .plateforme import C, IS_WIN, OSK, est_colle, installer
+from .plateforme import C, IS_WIN, OSK, SYS_WIN, est_colle, installer, outil_present, terminal_virtuel
 
 S = lecons.S
 CD = lecons.CD
@@ -83,6 +83,11 @@ LIRE = r"^(cat|type|gc|get-content|less|more|head|tail)\b"
 from pathlib import Path as _Path  # noqa: E402
 RACINE = str(_Path(_Path.home().anchor or "/"))
 CAMP = str(_Path.home())
+RACINE_AFF, CAMP_AFF = "/", CAMP          # comment le terminal les écrit
+if SYS_WIN:                               # Windows : le terminal du jeu est un Linux virtuel (vsh/vfs.py)
+    from .vsh.vfs import nom_utilisateur as _nom_u
+    RACINE = str(core.SAVE_DIR / "systeme")
+    CAMP_AFF = f"/home/{_nom_u()}"
 
 
 def _q(chemin):
@@ -90,7 +95,8 @@ def _q(chemin):
     return f'"{chemin}"' if " " in chemin else chemin
 
 
-VESTIBULE_ABS = _q(str(_Path.home() / "terrain_terminagotchi" / "vestibule"))
+VESTIBULE_ABS = _q(str(_Path.home() / "terrain_terminagotchi" / "vestibule")) if not SYS_WIN else \
+    f"{CAMP_AFF}/terrain_terminagotchi/vestibule"
 
 # ---------------------------------------------------------------- les leçons de l'histoire
 NOUVELLES = {
@@ -106,8 +112,8 @@ NOUVELLES = {
         _n("racine", 0, cmd="cd /", ici_abs=RACINE),
         _n("racine", 1, cmd=C("ls", "dir"), re=LS, ou_abs=RACINE),
         _n("racine", 2, cmd="pwd", re=r"^(pwd|get-location|gl)\b", ou_abs=RACINE),
-        _n("racine", 3, cmd="cd ~", ici_abs=CAMP, dit=("hist.racine.3.dit", {"chemin": CAMP}),
-           bravo=("hist.racine.3.bravo", {"chemin": CAMP})),
+        _n("racine", 3, cmd="cd ~", ici_abs=CAMP, dit=("hist.racine.3.dit", {"chemin": CAMP_AFF}),
+           bravo=("hist.racine.3.bravo", {"chemin": CAMP_AFF})),
         _n("racine", 4, cmd=f"cd {VESTIBULE_ABS}", ici="vestibule"),
     ]},
     "nid0": {"titre": "lec.t1.titre", "skill": "Bâtisseur", "steps": [
@@ -483,8 +489,11 @@ def _outil(nom):
     if "|" in nom:                          # la Forge : « magick|convert » (l'un ou l'autre)
         return any(_outil(x) for x in nom.split("|"))
     if nom.startswith("/"):
+        if terminal_virtuel():                 # le terminal du jeu : ses lieux du système (/etc/os-release, /proc…)
+            from .vsh.vfs import vfs_du_jeu
+            return vfs_du_jeu().existe(nom) if SYS_WIN else os.path.exists(nom)
         return os.path.exists(nom)
-    return shutil.which(nom) is not None
+    return outil_present(nom)
 
 
 def chapitre_courant(state):
@@ -513,6 +522,12 @@ def lecon_courante(state):
     d = lecon_def(lid)
     st = etapes(state, lid)
     if not st:
+        if d.get("steps"):
+            # toutes les étapes sont cachées (leurs outils manquent à cet ordinateur, gpg dans le terminal du jeu…) :
+            # la leçon est racontée et passe, jamais bloquante (sinon le chapitre resterait coincé)
+            finir_lecon(state, {"id": lid, "chap": c["id"], "titre": d["titre"], "skill": d["skill"], "steps": []})
+            if lid in h_(state)["faits"]:
+                return lecon_courante(state)
         return None, None
     if state.get("step", 0) >= len(st):
         # filet de sécurité : toutes les étapes sont faites (sauvegarde d'une autre version…) → la leçon se termine
@@ -942,6 +957,8 @@ def tick_lecon(state, lines, cwds, avants=None):
     for m in morcs:
         step = les["steps"][state["step"]]
         ok = verif.motif_ok(step, m.texte, m.avant) and verif.resultat_ok(step, m) and _ou_ok(step, m.avant)
+        ok = ok or verif.raconte_ok(step, m, les["steps"][:state["step"]])
+        # (Windows : l'outil manque au terminal du jeu, l'étape est racontée)
         if ok or (_ici_ok(step, m.apres) and m.statut in (None, 0)):
             absent = [w for w in (verif.premier(x) for x, _ in verif._couper(m.texte, ("|",)))
                       if w and not verif.commande_installee(w)]
@@ -1371,9 +1388,9 @@ def signer_carnet(state):
     depot = T() / "carnet"
     if h.get("git_signe") or not (depot / ".git").is_dir():
         return False
-    import shutil
     import subprocess
-    if not shutil.which("git"):
+    from .vsh.git import git_du_jeu, git_present
+    if not git_present():
         return False
     from . import sur
     if not sur.depot_git_sur(depot):
@@ -1384,8 +1401,7 @@ def signer_carnet(state):
 
     def cfg(*a):
         local = ["--local"] if len(a) > 1 else []        # écrire : seulement dans carnet/.git/config
-        return subprocess.run(["git", "-C", str(depot), "config", *local, *a], capture_output=True, text=True,
-                              timeout=10).stdout.strip()
+        return git_du_jeu(["config", *local, *a], depot, timeout=10)[1].strip()
     try:
         if cfg("user.name") and cfg("user.email"):
             h["git_signe"] = "deja"                     # une identité existe déjà (globale) : on n'y touche pas

@@ -12,7 +12,7 @@ from pathlib import Path
 
 from . import core, lecons, sprites
 from .langue import t
-from .plateforme import BOLD, DIM, IS_WIN, OSK, RESET, fg, piege
+from .plateforme import BOLD, DIM, OSK, RESET, SYS_WIN, fg, piege
 
 DEBUT = "# >>> terminagotchi >>>"
 FIN = "# <<< terminagotchi <<<"
@@ -200,7 +200,7 @@ def prompt(etape):
         state["prompt_vu"] = state.get("nlog", 0)
 
     try:
-        ici = os.getcwd()                      # le dossier du terminal : la carte de la maison le suit
+        ici = os.environ.get("TG_ICI") or os.getcwd()   # le dossier du terminal (TG_ICI : le terminal du jeu, vsh/)
     except OSError:
         ici = None
     statut = None
@@ -303,7 +303,7 @@ def _blocs():
     blocs = {}
     shell = os.environ.get("SHELL", "")
     bashrc, zshrc = home / ".bashrc", home / ".zshrc"
-    if not IS_WIN and (shell.endswith("bash") or bashrc.exists() or OSK == "android"):
+    if not SYS_WIN and (shell.endswith("bash") or bashrc.exists() or OSK == "android"):
         blocs[bashrc] = (f'__tg_prompt() {{ local s=$?; history -a; "{exe}" "{app}" prompt --statut=$s; }}\n'
                          'PROMPT_COMMAND="__tg_prompt${PROMPT_COMMAND:+; $PROMPT_COMMAND}"\n' + _ps2() +
                          f"alias tg='\"{exe}\" \"{app}\"'\n"
@@ -311,7 +311,7 @@ def _blocs():
                          "alias entrainement='tg entrainement'; alias exercice='tg entrainement'; alias badges='tg badges'\n"
                          "alias guide='tg guide'; alias types='tg types'; alias equipe='tg equipe'; alias aide='tg aide'\n"
                          + _garde_gpg() + DEPLOIE)
-    if not IS_WIN and (shell.endswith("zsh") or zshrc.exists() or OSK == "mac"):
+    if not SYS_WIN and (shell.endswith("zsh") or zshrc.exists() or OSK == "mac"):
         blocs[zshrc] = ("setopt INC_APPEND_HISTORY\n"
                         f'__tg_prompt() {{ local s=$?; "{exe}" "{app}" prompt --statut=$s }}\n'
                         "autoload -Uz add-zsh-hook && add-zsh-hook precmd __tg_prompt\n" + _ps2(zsh=True) +
@@ -321,7 +321,7 @@ def _blocs():
                         "alias guide='tg guide'; alias types='tg types'; alias equipe='tg equipe'; alias aide='tg aide'\n"
                         "setopt INTERACTIVE_COMMENTS\n" + _garde_gpg() + DEPLOIE)
     fish = home / ".config" / "fish"
-    if not IS_WIN and fish.is_dir():
+    if not SYS_WIN and fish.is_dir():
         blocs[fish / "conf.d" / "terminagotchi.fish"] = (
             f'function __tg_prompt --on-event fish_prompt\n    "{exe}" "{app}" prompt --statut=$status\nend\n'
             f'function tg\n    "{exe}" "{app}" $argv\nend\n'
@@ -349,46 +349,6 @@ def _blocs():
             'function sommet\n    tg sommet $argv\nend\n'
             'function temps\n    tg temps $argv\nend\n'
             'function controle\n    tg controle $argv\nend')
-    for ps in ("powershell", "pwsh"):
-        if shutil.which(ps):
-            try:
-                r = subprocess.run([ps, "-NoProfile", "-Command", "$PROFILE"], capture_output=True,
-                                   text=True, timeout=15)
-                chemin = r.stdout.strip()
-            except (OSError, subprocess.SubprocessError):
-                chemin = ""
-            if chemin:
-                blocs[Path(chemin)] = ("$__tgPrompt = $function:prompt\n"
-                                       f'function prompt {{ & "{exe}" "{app}" prompt; & $__tgPrompt }}\n'
-                                       f'function tg {{ & "{exe}" "{app}" @args }}\n'
-                                       'function carte { tg carte }\nfunction quetes { tg quetes @args }\n'
-                                       'function explique { tg explique @args }\n'
-                                       'function entrainement { tg entrainement @args }\n'
-                                       'function exercice { tg entrainement @args }\nfunction badges { tg badges @args }\n'
-                                       'function guide { tg guide @args }\nfunction types { tg types }\n'
-                                       'function equipe { tg equipe @args }\n'
-                                       'function deploie { tg deploie @args }\nfunction espace { tg espace @args }\n'
-                                       'function cerveau { tg cerveau @args }\n'
-                                       'function port { tg port @args }\n'
-                                       'function citadelle { tg citadelle @args }\n'
-                                       'function crypte { tg crypte @args }\n'
-                                       'function machines { tg machines @args }\n'
-                                       'function ondes { tg ondes @args }\n'
-                                       'function mesh-envoie { tg ondes mesh-envoie @args }\n'
-                                       'function mesh-coupe { tg ondes mesh-coupe @args }\n'
-                                       'function mesh-route { tg ondes mesh-route @args }\n'
-                                       'function guilde { tg guilde @args }\n'
-                                       'function observatoire { tg observatoire @args }\n'
-                                       'function assistant { tg assistant @args }\n'
-                                       'function agent { tg agent @args }\n'
-                                       'function devine-type { tg devine-type @args }\n'
-                                       'function devine-mot { tg devine-mot @args }\n'
-                                       'function donnees { tg donnees @args }\n'
-                                       'function forge { tg forge @args }\n'
-                                       'function atelier { tg atelier @args }\n'
-                                       'function sommet { tg sommet @args }\n'
-                                       'function temps { tg temps @args }\n'
-                                       'function controle { tg controle @args }')
     return blocs
 
 
@@ -470,7 +430,7 @@ def proposer(demander=input, lancer=True):
     """G-03 : au premier lancement sur PC, tout se passe dans UNE fenêtre. La créature propose de s'installer dans
     l'invite du terminal (Entrée = oui), puis ouvre ce terminal ici même : l'enfant y tape ses commandes et lit, sous
     chaque invite, ce que dit la créature et la commande à taper. En sortant (exit), on revient au jeu."""
-    if IS_WIN or est_installe() and a_jour():
+    if SYS_WIN or est_installe() and a_jour():
         faits = True
     else:
         r = demander(f"\n   {fg(226)}🏠 " + t("intro.pc.installer") + f"{RESET} ").strip()
@@ -479,7 +439,7 @@ def proposer(demander=input, lancer=True):
             print("   " + t("intro.pc.plus_tard"))
             return False
         faits = bool(installer())
-    if not faits or (IS_WIN and not _powershell()):
+    if not faits:
         print("   " + t("intro.ou.pc"))
         return False
     print(f"\n   {fg(78)}" + t("intro.pc.lance") + RESET + "\n")
@@ -490,27 +450,134 @@ def proposer(demander=input, lancer=True):
     return True
 
 
-def _powershell():
-    return shutil.which("pwsh") or shutil.which("powershell")
+def wsl_disponible():
+    """Windows : WSL est-il DÉJÀ installé avec une distribution ? (le jeu ne l'installe jamais)."""
+    if not SYS_WIN or not shutil.which("wsl"):
+        return False
+    try:
+        r = subprocess.run(["wsl", "--list", "--quiet"], capture_output=True, timeout=15)
+    except (OSError, subprocess.SubprocessError):
+        return False
+    brut = r.stdout
+    texte = brut.decode("utf-16-le", "ignore") if b"\0" in brut else brut.decode("utf-8", "ignore")
+    return r.returncode == 0 and any(l.strip() for l in texte.replace("\0", "").splitlines())
+
+
+def _choix_terminal():
+    """Windows : "vsh" (le terminal du jeu, par défaut) ou "wsl" (le vrai bash de WSL, si l'enfant l'a choisi)."""
+    try:
+        st = core.load() or {}
+    except Exception:                                # noqa: BLE001
+        st = {}
+    return st.get("config", {}).get("terminal", "vsh")
+
+
+def proposer_wsl(demander=input):
+    """Windows, une seule fois : si WSL est déjà là, le jeu propose de l'utiliser (Entrée = non : le terminal du jeu).
+    `tg terminal wsl` / `tg terminal jeu` changent ce choix plus tard."""
+    try:
+        st = core.load() or {}
+    except Exception:                                # noqa: BLE001
+        return
+    if "terminal" in st.get("config", {}) or not sys.stdin.isatty() or not wsl_disponible():
+        return
+    r = demander(f"\n   {fg(117)}🐧 " + t("vsh.wsl.propose") + f"{RESET} ").strip()
+    from .accueil import oui
+    choisir_terminal("wsl" if r and oui(r) else "vsh")
+
+
+def choisir_terminal(choix):
+    core.modifier(lambda s_: s_.setdefault("config", {}).__setitem__("terminal", choix))
+    print("   " + t("vsh.wsl." + choix))
+
+
+def _rc_wsl():
+    """Le petit fichier de réglages de bash dans WSL, pour cette session seulement (rien n'est changé dans WSL) :
+    HOME = le dossier de Windows (~/terrain_terminagotchi est le même terrain), l'historique dans ~/.bash_history
+    (le jeu le lit), le compagnon après chaque commande (le Python de Windows, par l'interopérabilité de WSL)."""
+    exe, app = commande()
+
+    def q(x):
+        return "'" + str(x).replace("'", "'\\''") + "'"
+    jeu = (("carte", "carte"), ("quetes", "quetes"), ("explique", "explique"), ("entrainement", "entrainement"),
+           ("exercice", "entrainement"), ("badges", "badges"), ("guide", "guide"), ("types", "types"),
+           ("equipe", "equipe"), ("aide", "aide"), ("espace", "espace"), ("cerveau", "cerveau"), ("port", "port"),
+           ("citadelle", "citadelle"), ("crypte", "crypte"), ("machines", "machines"), ("ondes", "ondes"),
+           ("mesh-envoie", "ondes mesh-envoie"), ("mesh-coupe", "ondes mesh-coupe"), ("mesh-route", "ondes mesh-route"),
+           ("guilde", "guilde"), ("observatoire", "observatoire"), ("assistant", "assistant"), ("agent", "agent"),
+           ("devine-type", "devine-type"), ("devine-mot", "devine-mot"), ("donnees", "donnees"), ("forge", "forge"),
+           ("atelier", "atelier"), ("sommet", "sommet"), ("temps", "temps"), ("controle", "controle"))
+    return ("[ -f ~/.bashrc ] && . ~/.bashrc\n"
+            f"export HOME=\"$(wslpath -u {q(Path.home())})\"\nexport HISTFILE=\"$HOME/.bash_history\"\ncd \"$HOME\"\n"
+            f"__tg_py=\"$(wslpath -u {q(exe)})\"\n"
+            "export TG_DANS_LE_JEU=1\nexport WSLENV=\"TG_ICI:TG_DANS_LE_JEU${WSLENV:+:$WSLENV}\"\n"
+            f'__tg_prompt() {{ local s=$?; history -a; TG_ICI="$(wslpath -w "$PWD")" "$__tg_py" {q(app)} prompt --statut=$s; }}\n'
+            'PROMPT_COMMAND="__tg_prompt"\n'
+            f"tg() {{ \"$__tg_py\" {q(app)} \"$@\"; }}\n"
+            + "".join(f"{n}() {{ tg {c} \"$@\"; }}\n" for n, c in jeu)
+            + "alias deploie='history -a 2>/dev/null; tg deploie --historique #'\n" + _ps2())
+
+
+def _vers_wsl(p):
+    p = str(p)
+    if len(p) > 2 and p[1] == ":":
+        return "/mnt/" + p[0].lower() + p[2:].replace("\\", "/")
+    return p.replace("\\", "/")
+
+
+def commande_wsl():
+    f = core.SAVE_DIR / "terminal_wsl.rc"
+    f.parent.mkdir(parents=True, exist_ok=True)
+    f.write_text(_rc_wsl(), encoding="utf-8", newline="\n")
+    return ["wsl", "--cd", str(Path.home()), "-e", "bash", "--rcfile", _vers_wsl(f), "-i"]
+
+
+def commande_terminal_du_jeu():
+    """La commande qui ouvre le terminal du jeu : Windows → le terminal du jeu (tg sh) ou WSL ; ailleurs, le shell."""
+    if SYS_WIN:
+        if _choix_terminal() == "wsl" and wsl_disponible():
+            return commande_wsl()
+        exe, app = commande()
+        return [exe, app, "sh"]
+    return [os.environ.get("SHELL") or shutil.which("bash") or "sh", "-i"]
+
+
+def nouvelle_fenetre():
+    """`tg terminal` (la touche [t] de la fenêtre du jeu, `terminal` dans l'espace) : une fenêtre de plus avec le MÊME
+    terminal du jeu (Windows : le terminal du jeu ou WSL ; Linux, macOS : le shell avec le compagnon). Toutes écrivent
+    dans un historique que le jeu lit : la créature mange les commandes de chacune. Renvoie (ok, message)."""
+    from . import fenetre
+    if OSK == "android":
+        return False, t("vsh.fenetre.android")
+    cmd = fenetre.commande_terminal(commande_terminal_du_jeu())
+    if not cmd:
+        return False, t("vsh.fenetre.impossible")
+    kw = {"cwd": str(Path.home()), "stdin": subprocess.DEVNULL, "stdout": subprocess.DEVNULL,
+          "stderr": subprocess.DEVNULL}
+    if SYS_WIN:
+        kw["creationflags"] = 0x00000008 | 0x00000200
+    else:
+        kw["start_new_session"] = True
+    try:
+        subprocess.Popen(cmd, env=dict(os.environ, TG_DANS_LE_JEU="1"), **kw)
+    except OSError as e:
+        return False, t("vsh.fenetre.impossible") + f" ({e})"
+    return True, t("vsh.fenetre.ok")
 
 
 def ouvrir_terminal_du_jeu():
-    """Le terminal dans la fenêtre du jeu, le même partout : bash, zsh… (avec le compagnon de ~/.bashrc), ou PowerShell
-    sous Windows (le bloc du compagnon chargé pour cette session seulement : rien n'est changé dans les réglages de
-    Windows, -ExecutionPolicy Bypass ne vaut que pour cette fenêtre). En sortant (exit), on revient au jeu."""
+    """Le terminal dans la fenêtre du jeu, le même partout : bash, zsh… (avec le compagnon de ~/.bashrc) ; sous
+    Windows, le terminal du jeu (vsh/ : un Linux virtuel écrit en Python, décision du 2 novembre), ou le vrai bash de
+    WSL si l'enfant l'a choisi (jamais installé par le jeu). En sortant (exit), on revient au jeu."""
     env = dict(os.environ, TG_DANS_LE_JEU="1")
     try:
-        if IS_WIN:
-            ps = _powershell()
-            bloc = next((b for c, b in _blocs().items() if c.suffix.lower() == ".ps1"), None)
-            if not ps or not bloc:
-                return False
-            from . import core
-            f = core.SAVE_DIR / "terminal_du_jeu.ps1"
-            f.parent.mkdir(parents=True, exist_ok=True)
-            f.write_text(bloc, encoding="utf-8-sig")           # BOM : Windows PowerShell 5.1 lit alors l'UTF-8
-            subprocess.call([ps, "-NoLogo", "-NoProfile", "-NoExit", "-ExecutionPolicy", "Bypass", "-File", str(f)],
-                            env=env)
+        if SYS_WIN:
+            proposer_wsl()
+            if _choix_terminal() == "wsl" and wsl_disponible():
+                subprocess.call(commande_wsl(), env=env)
+                return True
+            from .vsh import terminal
+            terminal.lancer()
             return True
         shell = os.environ.get("SHELL") or shutil.which("bash") or "sh"
         subprocess.call([shell, "-i"], env=env)

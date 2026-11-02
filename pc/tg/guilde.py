@@ -48,7 +48,7 @@ from pathlib import Path
 
 from . import core
 from .langue import t
-from .plateforme import BOLD, DIM, IS_WIN, RESET, fg
+from .plateforme import BOLD, DIM, RESET, SYS_WIN, fg
 
 _D = None
 
@@ -617,7 +617,7 @@ def licence_reelle(nom):
     n = re.sub(r"[^a-z0-9.+_-]", "", ascii_bas(nom))
     if not n:
         return None, None
-    if not IS_WIN:
+    if not SYS_WIN:
         for base in (Path("/usr/share/licenses") / n, Path("/usr/share/doc") / n):
             fichiers = []
             if base.is_dir():
@@ -696,7 +696,16 @@ CONTRIB = "contribution"
 BRANCHE_MOT = "faute"
 
 
+def _git_la():
+    from .vsh.git import git_present
+    return git_present()
+
+
 def _git(args, cwd, timeout=20):
+    from .plateforme import terminal_virtuel
+    if terminal_virtuel():                     # le petit git du terminal du jeu (Windows)
+        from .vsh.git import git_du_jeu
+        return git_du_jeu(args, cwd, timeout=timeout)
     env = dict(os.environ, GIT_TERMINAL_PROMPT="0", LC_ALL="C", LANGUAGE="C")
     try:
         r = subprocess.run(["git", *args], cwd=str(cwd), capture_output=True, text=True, timeout=timeout, env=env)
@@ -719,7 +728,7 @@ def poser_contribution(state):
         (d / "LISEZMOI.txt").write_text(t("gu.contrib.lisezmoi") + "\n", encoding="utf-8")
     except OSError:
         return False
-    if shutil.which("git") and not IS_WIN:
+    if _git_la():
         c = donnees()["contribution"]
         base = ["-c", "init.defaultBranch=main", "-c", "commit.gpgsign=false", "-c", "core.hooksPath=/dev/null"]
         if _git([*base, "init", "-q"], d)[0] == 0:
@@ -1149,7 +1158,7 @@ def lignes_compiler():
 
 
 def lignes_gcc():
-    la = shutil.which("gcc") is not None and not IS_WIN
+    la = shutil.which("gcc") is not None and not SYS_WIN
     out = [f" {_c(215)}{BOLD}🔧 " + t("gu.gcc.titre") + RESET, ""]
     if la:
         try:

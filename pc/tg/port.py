@@ -43,7 +43,7 @@ from pathlib import Path
 
 from . import core
 from .langue import t
-from .plateforme import BOLD, C, DIM, IS_WIN, RESET, fg
+from .plateforme import BOLD, C, DIM, IS_WIN, RESET, SYS_WIN, fg
 
 _D = None
 
@@ -409,7 +409,7 @@ def assurer_phare():
     paquet = str(Path(__file__).resolve().parent.parent)          # le dossier (ou le .pyz) qui contient « tg »
     code = f"import sys; sys.path.insert(0, {paquet!r}); from tg import port; port.lancer_phare()"
     kw = {"stdin": subprocess.DEVNULL, "stdout": subprocess.DEVNULL, "stderr": subprocess.DEVNULL}
-    if IS_WIN:
+    if SYS_WIN:
         kw["creationflags"] = 0x00000008 | 0x00000200        # DETACHED_PROCESS | CREATE_NEW_PROCESS_GROUP
     else:
         kw["start_new_session"] = True

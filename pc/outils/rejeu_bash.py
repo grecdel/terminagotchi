@@ -42,6 +42,12 @@ import tempfile
 from pathlib import Path
 
 RACINE = Path(__file__).resolve().parents[2]
+# --terminal-du-jeu (décision du 2 novembre) : l'histoire est jouée dans le terminal du jeu (vsh/, le petit Linux écrit
+# en Python, celui de Windows) au lieu du vrai bash ; le jeu juge alors les outils comme sous Windows (ceux du terminal
+# du jeu). Sous Windows, c'est ce que fait la CI (.github/workflows/windows.yml).
+VIRTUEL = "--terminal-du-jeu" in sys.argv
+if VIRTUEL:
+    os.environ["TG_TERMINAL_VIRTUEL"] = "1"
 P = __import__("json").loads((RACINE / "donnees" / "programme.json").read_text(encoding="utf-8"))
 ok = ko = saute = 0
 ecarts = []
@@ -120,6 +126,7 @@ def fiches():
 
 def histoire():
     """Le parcours de l'histoire PC en vrai bash ; les affirmations de « rejeu » vérifiées sur les vraies sorties."""
+    global saute
     print("2. L'histoire du PC jouée dans un vrai bash (HOME temporaire, hors ligne)")
     os.environ["HOME"] = tempfile.mkdtemp(prefix="tg_rejeu_histoire_")
     os.environ["LANG"] = "fr_FR.UTF-8"
@@ -140,7 +147,13 @@ def histoire():
     builtins.input = lambda p="": "Pixel"
     app.creer_si_besoin()
     explo.tick = lambda *a, **k: None
-    shell = Coquille(home, env=dict(os.environ, LC_ALL="C.UTF-8", LANGUAGE="C", LC_MESSAGES="C"))
+    if VIRTUEL:
+        from tg.vsh import CoquilleVirtuelle
+        shell = CoquilleVirtuelle(home, jeu="auto")
+        home_aff = Path(shell.vfs.home) if shell.vfs.mode == "windows" else home
+    else:
+        shell = Coquille(home, env=dict(os.environ, LC_ALL="C.UTF-8", LANGUAGE="C", LC_MESSAGES="C"))
+        home_aff = home
     etat = {"cwd": home, "sortie": "", "code": 0}
 
     from tg import port as P_
@@ -192,6 +205,15 @@ def histoire():
                     (r[1:-1] or ["racine"])[0])
 
     def tape(cmd):
+        if VIRTUEL:                                     # le terminal du jeu lance lui-même les commandes du jeu
+            vrai = cmd
+            if cmd.startswith("while true"):
+                vrai = "timeout -s INT 2 bash -c " + __import__("shlex").quote(cmd)
+            etat["sortie"], etat["code"], d = shell.lancer(vrai)
+            etat["cwd"] = Path(d)
+            with open(home / ".bash_history", "a", encoding="utf-8") as f:
+                f.write(cmd + "\n")
+            return app.etape(spontane=False, defis=False, cwd=str(etat["cwd"]), statut=etat["code"])
         vrai = re.sub(r"^port\b", jeu_port, cmd)          # l'alias port='tg port' (posé par tg installer)
         vrai = re.sub(r"(^|;\s*)citadelle\b", lambda m: m.group(1) + jeu_cit, vrai)   # et citadelle='tg citadelle'
         vrai = re.sub(r"(^|;\s*)crypte\b", lambda m: m.group(1) + jeu_cry, vrai)       # et crypte='tg crypte'
@@ -455,6 +477,8 @@ def histoire():
             print(f"  · bloqué sur {cle} ({c}) : on s'arrête là")
             break
         derniere = (cle, c)
+        if os.environ.get("TG_REJEU_BAVARD"):
+            print(f"    {cle} $ {c}")
         st = tape(c)
         if "http.server" in c:                         # la lanterne met un instant à s'allumer
             port_ = int((re.search(r"http\.server\s+(\d+)", c) or re.search(r"(8000)", "8000")).group(1))
@@ -467,10 +491,20 @@ def histoire():
         if cle in attendus and cle not in vus:
             vus.add(cle)
             a = attendus[cle]
+            if VIRTUEL:                                  # une commande que le terminal du jeu n'a pas : racontée
+                from tg.vsh.outils import RACONTEES
+                from tg.verif import premier as _premier
+                absente = next((w for w in (_premier(x) for x in re.split(r"\||&&|;", c)) if w in RACONTEES), None)
+                if not absente and "/proc/$$" in c and shell.vfs.mode == "transparent":
+                    absente = "/proc/$$ (le shell est ici un programme Python)"
+                if absente:
+                    print(f"  · {cle} `{c}` raconté ({absente} n'existe pas dans le terminal du jeu)")
+                    sautes.add(cle)
+                    saute += 1
+                    continue
             if a.get("outil") and not _present(a["outil"]):
                 print(f"  · {cle} `{c}` sauté ({a['outil']} absent)")
                 sautes.add(cle)
-                global saute
                 saute += 1
                 continue
             sortie, code = etat["sortie"], etat["code"]
@@ -481,7 +515,7 @@ def histoire():
             lignes = [x for x in s.split("\n") if x]
             pq = f"  [{a.get('pourquoi', '')}]" if a.get("pourquoi") else ""
             if "sortie" in a:
-                att = _remplir(a["sortie"], home)
+                att = _remplir(a["sortie"], home_aff)
                 verifier(s == att, f"{nom} : {s!r} (le jeu dit {att!r}){pq}")
             if "motif" in a:
                 verifier(re.search(a["motif"], s, re.M) is not None, f"{nom} : {s[:150]!r} ~ {a['motif']!r}{pq}")
@@ -569,6 +603,22 @@ def histoire():
     for k in sorted(absents):
         print(f"  · {k} sauté ({attendus[k]['outil']} absent, étape cachée)")
     saute += len(absents)
+    if VIRTUEL:                        # le terminal du jeu : les étapes cachées parce que l'outil lui manque (racontées)
+        from tg.vsh.outils import RACONTEES
+        from tg.verif import premier as _premier
+
+        def cachee(k):
+            lid, _p, i = k.rpartition(".")
+            try:
+                stp = H.lecon_def(lid)["steps"][int(i)]
+            except (KeyError, IndexError, ValueError):
+                return False
+            return bool(stp.get("outil") and not H._outil(stp["outil"])) or _premier(stp.get("cmd", "")) in RACONTEES
+        caches = {k for k in set(attendus) - vus - absents if cachee(k)}
+        for k in sorted(caches):
+            print(f"  · {k} raconté (outil absent du terminal du jeu, étape cachée)")
+        saute += len(caches)
+        absents |= caches
     manquent = sorted(set(attendus) - vus - absents)
     verifier(not manquent, f"toutes les étapes décrites ont été rejouées {manquent}")
     shell.fermer()
@@ -641,6 +691,9 @@ EGAL_ATELIER = {
 
 def main():
     tout = not ({"--fiches", "--histoire"} & set(sys.argv))
+    if VIRTUEL:                       # (les fiches : pc/outils/test_terminal.py les compare au vrai bash)
+        tout = False
+        sys.argv.append("--histoire")
     if tout or "--fiches" in sys.argv:
         fiches()
     if tout or "--histoire" in sys.argv:

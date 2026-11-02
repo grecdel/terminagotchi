@@ -1,5 +1,6 @@
-"""Windows (simulé) : le jeu démarre sans termios, reconnaît les alias et cmdlets de PowerShell, et ouvre le même
-terminal intégré que sous Linux (un PowerShell avec le compagnon chargé pour la session).
+"""Windows (simulé sous Linux ; pour de vrai en CI) : le jeu démarre sans termios ; le terminal du jeu est un Linux
+virtuel écrit en Python (vsh/, décision du 2 novembre) et plus jamais PowerShell ; les cmdlets tapés dans un PowerShell
+à part restent reconnus (le filet) et la créature invite au terminal du jeu.
 
 4. L'Atelier en PowerShell : chaque étape montrée est reconnue (if (…) { … }, ForEach-Object, Get-Content robot\\…),
    puis at4 → at5 joués comme sous Windows (cerveau.ps1, fichiers écrits en UTF-16 comme Windows PowerShell 5.1 avec >),
@@ -99,18 +100,68 @@ finally:
     core.IS_WIN = True
 verifier(conseil not in st2.get("terminal", []), "sous Linux (bash), pas de conseil : l'apostrophe y attend aussi, mais bash le montre autrement")
 
-# 3. le terminal intégré : un PowerShell, -NoProfile, -ExecutionPolicy Bypass (pour la session), le bloc du compagnon
+# 3. le terminal du jeu (décision du 2 novembre) : plus de PowerShell, un Linux virtuel écrit en Python (vsh/), dans
+#    la fenêtre du jeu ; il est lancé par `tg sh` (ici avec des commandes envoyées par un tuyau, comme un enfant).
+import subprocess  # noqa: E402
+from tg import plateforme  # noqa: E402
+verifier(plateforme.IS_WIN is False and plateforme.C("ls", "dir") == "ls",
+         "les leçons sont celles de Linux partout (plus de version PowerShell proposée)")
+from tg import vrai  # noqa: E402
+verifier(vrai.cle("pwd") is None or vrai.cle("pwd")[0] != "vrai.win", "plus d'indice « Dans PowerShell »")
 appels = []
-compagnon._powershell = lambda: "powershell"
-compagnon._blocs = lambda: {Path("Microsoft.PowerShell_profile.ps1"): "function prompt { 'PS> ' }\n"}
-compagnon.subprocess.call = lambda argv, env=None: appels.append((argv, env)) or 0
-verifier(compagnon.ouvrir_terminal_du_jeu(), "le terminal du jeu s'ouvre")
-argv, env = appels[-1]
-verifier(argv[0] == "powershell" and "-NoExit" in argv and "-NoProfile" in argv
-         and argv[argv.index("-ExecutionPolicy") + 1] == "Bypass" and argv[-1].endswith("terminal_du_jeu.ps1"),
-         f"PowerShell lancé avec le compagnon de la session : {argv[1:-1]}")
-verifier(env.get("TG_DANS_LE_JEU") == "1", "TG_DANS_LE_JEU (exit ramène au jeu)")
-verifier(Path(argv[-1]).read_text(encoding="utf-8-sig").startswith("function prompt"), "le bloc écrit (UTF-8 avec BOM)")
+compagnon.wsl_disponible = lambda: False
+vrai_lancer = None
+from tg.vsh import terminal as TV  # noqa: E402
+vrai_lancer = TV.lancer
+TV.lancer = lambda compagnon=True: appels.append("vsh") or 0
+vrai_sys = compagnon.SYS_WIN
+compagnon.SYS_WIN = True
+try:
+    verifier(compagnon.ouvrir_terminal_du_jeu() and appels == ["vsh"], "Windows : le terminal du jeu s'ouvre (pas PowerShell)")
+    exe_, app_ = compagnon.commande()
+    verifier(compagnon.commande_terminal_du_jeu()[-1] == "sh", "une fenêtre de plus (tg terminal) lance `tg sh`")
+finally:
+    compagnon.SYS_WIN = vrai_sys
+    TV.lancer = vrai_lancer
+RACINE_PC = Path(__file__).resolve().parents[1]
+env = dict(os.environ, TG_VSH_MODE="windows", PYTHONIOENCODING="utf-8", PYTHONUTF8="1", TG_TERMINAL_VIRTUEL="1")
+lignes = ["pwd", "ls", "cd ~/terrain_terminagotchi && mkdir -p essai && cd essai", "echo 'Léa aime les dragons 🐉' > accents.txt",
+          "cat accents.txt", "cd / && ls", "touch ~/dehors.txt", "echo x > /etc/hostname", "ping -c 1 example.com",
+          "Get-ChildItem", "for i in $(seq 3); do echo tour $i; done", "exit"]
+(Path(os.environ["HOME"]) / "terrain_terminagotchi").mkdir(exist_ok=True)
+r = subprocess.run([sys.executable, str(RACINE_PC), "sh", "--sans-compagnon"], input="\n".join(lignes) + "\n",
+                   capture_output=True, text=True, encoding="utf-8", env=env, timeout=120)
+sortie = r.stdout + r.stderr
+verifier("/home/" in sortie and "bin\ndev\netc\nhome" in sortie.replace("\r", ""),
+         "tg sh : ~ = /home/<nom>, et / montre bin, dev, etc, home… (un Linux virtuel)")
+verifier("Léa aime les dragons 🐉" in sortie, "les accents et les emojis passent (UTF-8)")
+verifier((Path(os.environ["HOME"]) / "terrain_terminagotchi" / "essai" / "accents.txt").read_text(encoding="utf-8")
+         == "Léa aime les dragons 🐉\n", "le VRAI fichier du terrain est écrit")
+verifier(not (Path(os.environ["HOME"]) / "dehors.txt").exists() and sortie.count("Permission denied") >= 2,
+         "rien hors du terrain : ~/dehors.txt et /etc/hostname refusés (Permission denied)")
+verifier("terminal du jeu" in sortie, "ping : « cette commande n'existe pas dans le terminal du jeu sous Windows »")
+verifier("tour 3" in sortie, "for i in $(seq 3) marche")
+hist = Path(os.environ["HOME"]) / ".terminagotchi" / "historique_terminal"
+verifier(hist.is_file() and "cat accents.txt" in hist.read_text(encoding="utf-8"),
+         "chaque commande va dans l'historique du jeu (la créature la mange)")
+verifier(hist in core.history_files(), "le jeu lit cet historique")
+# le filet : un enfant tape dans un PowerShell à part ; la créature l'invite au terminal du jeu (une fois)
+core.LIGNES_PS.add("Get-Location")
+dits.clear()
+st3 = {"terminal": []}
+vrai_sys_core = core.SYS_WIN
+core.SYS_WIN = True
+core.say = lambda s_, texte, secs=8: dits.append(texte)
+try:
+    core.feed(st3, "Get-Location")
+except Exception:                           # noqa: BLE001
+    pass
+finally:
+    core.say = vrai_say
+    core.SYS_WIN = vrai_sys_core
+verifier(any("PowerShell" in d_ and "tg terminal" in d_ for d_ in dits) and st3.get("ps_invite"),
+         "un cmdlet tapé dans un PowerShell à part : la créature invite au terminal du jeu")
+core.LIGNES_PS.clear()
 
 # 4. L'Atelier en PowerShell
 import io  # noqa: E402

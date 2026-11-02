@@ -41,7 +41,7 @@ import time
 from pathlib import Path
 
 from . import badges as B
-from . import core
+from . import core, droits
 from .langue import t
 from .plateforme import BOLD, DIM, IS_WIN, RESET, C, est_colle, fg, piege
 from .tirage import Hasard
@@ -308,7 +308,7 @@ def _ecrire(p, texte, executable=False):
     p.parent.mkdir(parents=True, exist_ok=True)
     p.write_text(texte, encoding="utf-8")
     if executable:
-        p.chmod(p.stat().st_mode | stat.S_IXUSR)
+        p.chmod(droits.mode(p) | stat.S_IXUSR)
 
 
 def preparer(typ, p):
@@ -444,7 +444,7 @@ def verifier(typ, p, cwd=None):
         if not f.is_file():
             return None
         x = _txt(f).lower()
-        return "ok" if "echo" in x and p["mots"][0] in x and os.access(f, os.X_OK) else None
+        return "ok" if "echo" in x and p["mots"][0] in x and droits.acces(f, os.X_OK) else None
     return None
 
 

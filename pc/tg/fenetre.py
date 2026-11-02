@@ -8,7 +8,7 @@ import shutil
 import subprocess
 import sys
 
-from .plateforme import IS_WIN, OSK
+from .plateforme import SYS_WIN, OSK
 
 
 def _soi_meme():
@@ -23,7 +23,7 @@ def _soi_meme():
 
 def commande_terminal(cmd):
     """La bonne commande pour ouvrir une nouvelle fenêtre selon le système (None si impossible)."""
-    if IS_WIN:
+    if SYS_WIN:
         if shutil.which("wt"):
             return ["wt", "new-tab", "--title", "Terminagotchi"] + cmd
         return ["cmd", "/c", "start", "Terminagotchi"] + cmd
@@ -69,7 +69,7 @@ def ouvrir_dressage(state):
         return False
     try:
         options = {"stdin": subprocess.DEVNULL, "stdout": subprocess.DEVNULL, "stderr": subprocess.DEVNULL}
-        if IS_WIN:
+        if SYS_WIN:
             options["creationflags"] = 0x00000008 | 0x00000200      # détaché, nouveau groupe
         else:
             options["start_new_session"] = True

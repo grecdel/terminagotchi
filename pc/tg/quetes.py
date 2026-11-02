@@ -25,7 +25,7 @@ import os
 import random
 import re
 
-from . import core, maison
+from . import core, droits, maison
 from .langue import t
 from .mots import palier, termes
 from .plateforme import BOLD, DIM, IS_WIN, RESET, fg
@@ -481,7 +481,7 @@ def _vrai(state, qid, spec):
         return (T() / spec[1]).is_file() and _protected(T() / spec[1])
     if k == "exec":
         p = T() / spec[1]
-        return p.is_file() and os.access(p, os.X_OK)
+        return p.is_file() and droits.acces(p, os.X_OK)
     if k == "commits":
         try:
             return len((T() / "carnet" / ".git" / "logs" / "HEAD").read_text(encoding="utf-8").splitlines()) >= spec[1]

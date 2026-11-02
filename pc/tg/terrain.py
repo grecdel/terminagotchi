@@ -17,7 +17,7 @@ import shutil
 import subprocess
 import time
 
-from . import core
+from . import core, droits
 from .langue import t
 from .plateforme import C, IS_WIN
 
@@ -81,12 +81,9 @@ def reconstruire(state, m):
         (T() / "nid").mkdir(parents=True, exist_ok=True)
     except OSError:
         return
-    if "carnet" in m and shutil.which("git") and sur.sur(T() / "carnet") and not (T() / "carnet").exists():
-        try:
-            subprocess.run(["git", "init", "-q", str(T() / "carnet")], timeout=20,
-                           stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
-        except (OSError, subprocess.SubprocessError):
-            pass
+    from .vsh.git import git_du_jeu, git_present
+    if "carnet" in m and git_present() and sur.sur(T() / "carnet") and not (T() / "carnet").exists():
+        git_du_jeu(["init", "-q", str(T() / "carnet")], T())
 
 
 def _ecrire(p, texte, executable=False):
@@ -94,8 +91,8 @@ def _ecrire(p, texte, executable=False):
     try:
         p.parent.mkdir(parents=True, exist_ok=True)
         p.write_text(texte, encoding="utf-8")
-        if executable and not IS_WIN:
-            os.chmod(p, 0o755)
+        if executable:
+            droits.poser(p, 0o755)
         return True
     except OSError:
         return False

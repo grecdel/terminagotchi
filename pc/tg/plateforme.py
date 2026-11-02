@@ -49,7 +49,7 @@ INSTALL = {"apt": "sudo apt install", "dnf": "sudo dnf install", "pacman": "sudo
 
 def installer(paquet, noms=None):
     """Commande d'installation adaptée au système (noms : paquet différent selon le gestionnaire)."""
-    if IS_WIN:
+    if SYS_WIN:
         return f"winget install {paquet}"
     if OSK == "mac":
         return f"brew install {paquet}"
@@ -57,10 +57,31 @@ def installer(paquet, noms=None):
         return f"pkg install {paquet}"
     p = (noms or {}).get(GEST, paquet)
     return f"{INSTALL.get(GEST, 'sudo apt install')} {p}"
-IS_WIN = OSK == "windows"
+# SYS_WIN : le vrai système est Windows (la console, msvcrt, les fenêtres, les chemins C:\…).
+# IS_WIN : le terminal des leçons est PowerShell. Depuis le 2 novembre, plus jamais : sous Windows, le jeu ouvre son
+# propre terminal Linux (vsh/, un petit shell POSIX écrit en Python) ; toutes les leçons sont les mêmes partout.
+# (Les tests peuvent le remettre à True pour vérifier le filet de sécurité : les cmdlets tapés dans un PowerShell à
+# part sont reconnus, et la créature invite gentiment à utiliser le terminal du jeu.)
+SYS_WIN = OSK == "windows"
+IS_WIN = False
 OS_NAMES = {"linux": "Linux", "mac": "macOS", "windows": "Windows", "android": "Android"}
 
-if IS_WIN:
+
+def terminal_virtuel():
+    """Le terminal des leçons est celui du jeu (vsh/, Linux virtuel) : sous Windows ; ailleurs seulement pour les tests
+    (TG_TERMINAL_VIRTUEL=1 : le rejeu joue alors l'histoire comme sous Windows, avec les outils du terminal du jeu)."""
+    return SYS_WIN or os.environ.get("TG_TERMINAL_VIRTUEL") == "1"
+
+
+def outil_present(nom):
+    """Une commande existe-t-elle dans le terminal des leçons ? (le terminal du jeu sous Windows ; sinon le système)."""
+    if terminal_virtuel():
+        from .vsh import existe
+        return existe(nom)
+    import shutil
+    return shutil.which(nom) is not None
+
+if SYS_WIN:
     os.system("")  # active les couleurs ANSI sous Windows 10+
     for stream in (sys.stdout, sys.stdin):
         try:
@@ -151,7 +172,7 @@ class Clavier:
         self.normal()
 
     def brut(self):
-        if self.ok and not IS_WIN and self.old is None:
+        if self.ok and not SYS_WIN and self.old is None:
             import termios
             import tty
             fd = sys.stdin.fileno()
@@ -168,7 +189,7 @@ class Clavier:
         if not self.ok:
             time.sleep(delai)
             return None
-        if IS_WIN:
+        if SYS_WIN:
             import msvcrt
             fin = time.time() + delai
             while time.time() < fin:
@@ -188,7 +209,7 @@ class Clavier:
         if not self.ok:
             time.sleep(delai)
             return ""
-        if IS_WIN:
+        if SYS_WIN:
             import msvcrt
             fin, out = time.time() + delai, ""
             while time.time() < fin and not out:

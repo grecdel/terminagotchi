@@ -31,7 +31,7 @@ from . import bureau_scene as S
 from . import bureau_vie as V
 from . import core, glitch, langue, poses, signaux
 from .langue import sans_marques, t
-from .plateforme import IS_WIN, OSK
+from .plateforme import SYS_WIN, OSK
 
 ZONE_H = 440            # hauteur de la bande du bas où vit la créature (place pour le menu rond)
 MARGE_SOL = 10          # les pieds, au-dessus du bord de l'écran
@@ -491,7 +491,7 @@ def ouvrir_terminal(args):
     from . import compagnon, fenetre
     dossier = str(core.TERRAIN if core.TERRAIN.is_dir() else Path.home())
     if args is None:
-        if IS_WIN:
+        if SYS_WIN:
             cmd = ["cmd", "/c", "start", "Terminagotchi", "cmd", "/k"]
         else:
             shell = os.environ.get("SHELL") or "/bin/sh"
@@ -499,14 +499,14 @@ def ouvrir_terminal(args):
     else:
         exe, app = compagnon.commande()
         jeu = [exe, app] + list(args)
-        if args and not IS_WIN and OSK != "mac":       # la carte s'affiche puis la fenêtre reste ouverte
+        if args and not SYS_WIN and OSK != "mac":       # la carte s'affiche puis la fenêtre reste ouverte
             shell = os.environ.get("SHELL") or "/bin/sh"
             jeu = [shell, "-c", " ".join(_guillemets(x) for x in jeu) + "; exec " + _guillemets(shell)]
         cmd = fenetre.commande_terminal(jeu)
     if not cmd:
         return False
     kw = {"cwd": dossier, "stdin": subprocess.DEVNULL, "stdout": subprocess.DEVNULL, "stderr": subprocess.DEVNULL}
-    if IS_WIN:
+    if SYS_WIN:
         kw["creationflags"] = 0x00000008 | 0x00000200
     else:
         kw["start_new_session"] = True
@@ -524,7 +524,7 @@ def _guillemets(x):
 
 # ================================================================ lancement automatique à l'ouverture de session
 def _fichier_demarrage():
-    if IS_WIN:
+    if SYS_WIN:
         base = Path(os.environ.get("APPDATA", Path.home() / "AppData/Roaming"))
         return base / "Microsoft/Windows/Start Menu/Programs/Startup/terminagotchi-bureau.cmd"
     if OSK == "mac":
@@ -535,7 +535,7 @@ def _fichier_demarrage():
 def contenu_demarrage():
     from . import compagnon
     exe, app = compagnon.commande()
-    if IS_WIN:
+    if SYS_WIN:
         w = Path(exe).with_name("pythonw.exe")
         return f'@echo off\r\nstart "" "{w if w.exists() else exe}" "{app}" bureau\r\n'
     if OSK == "mac":
@@ -1031,7 +1031,7 @@ class FenetresTk:
         w.overrideredirect(True)
         w.attributes("-topmost", True)
         self.transparent = False
-        if IS_WIN:
+        if SYS_WIN:
             w.configure(bg=TRANSP)
             w.attributes("-transparentcolor", TRANSP)
             fond, self.transparent = TRANSP, True
@@ -1272,7 +1272,7 @@ def lancer(etape, args=()):
     if args and args[0] in ("desinstaller", "désinstaller", "uninstall"):
         print(desinstaller()[1])
         return
-    if os.environ.get("TG_BUREAU", "") != "tk" and not IS_WIN and OSK not in ("mac", "android"):
+    if os.environ.get("TG_BUREAU", "") != "tk" and not SYS_WIN and OSK not in ("mac", "android"):
         m = mode_gtk()
         if m == "layer" and _layer_shell_lib() not in os.environ.get("LD_PRELOAD", ""):
             # gtk4-layer-shell doit être chargé avant libwayland : on se relance une fois avec LD_PRELOAD

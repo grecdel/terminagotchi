@@ -51,7 +51,7 @@ from pathlib import Path
 
 from . import core
 from .langue import t
-from .plateforme import BOLD, DIM, IS_WIN, RESET, fg
+from .plateforme import BOLD, DIM, IS_WIN, RESET, SYS_WIN, fg
 
 _D = None
 
@@ -575,10 +575,15 @@ def charge():
 
 
 def path_actuel():
+    if SYS_WIN:                                   # le terminal du jeu (Linux virtuel) : son PATH à lui
+        return "/usr/local/bin:/usr/bin:/bin"
     return os.environ.get("PATH", "")
 
 
 def os_release():
+    if SYS_WIN:                                   # le terminal du jeu : son /etc/os-release (vsh/vfs.py)
+        from .vsh.vfs import OS_RELEASE
+        return os_release_de(OS_RELEASE)
     for f in ("/etc/os-release", "/usr/lib/os-release"):
         txt = _lire_sys(f)
         if txt:
@@ -590,7 +595,7 @@ def magasin():
     """Le magasin de paquets de cette machine : (entrée de controle.json, nombre de paquets installés ou None).
     Lecture seule : la base des paquets est LUE (rpm -qa seulement là où rpm est le gestionnaire du système, sinon il
     créerait ~/.rpmdb ; dpkg : le fichier status ; pacman : les dossiers de sa base)."""
-    if IS_WIN:
+    if SYS_WIN:
         return None, None
     for m in donnees()["magasins"]:
         if not os.path.exists(m["base"]):
@@ -672,8 +677,10 @@ def _vivant(pid, nom=None):
 
 
 def simulee():
-    """Windows : pas de `exec -a` ; la vague est simulée (controle ps, controle arrete)."""
-    return IS_WIN
+    """Windows (le terminal du jeu) : pas de `exec -a` ; la vague est simulée (ps, kill du terminal du jeu ; controle ps,
+    controle arrete)."""
+    from .plateforme import terminal_virtuel
+    return SYS_WIN or terminal_virtuel()
 
 
 def vivants(state=None):

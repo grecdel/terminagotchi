@@ -191,7 +191,8 @@ def _lire(rel):
 
 
 def git_present():
-    return shutil.which("git") is not None
+    from .plateforme import terminal_virtuel
+    return terminal_virtuel() or shutil.which("git") is not None
 
 
 # ---------------------------------------------------------------- git, toujours DANS un dépôt du terrain
@@ -204,7 +205,13 @@ def _env(extra=None):
 
 
 def _git(args, cwd, extra=None, timeout=20):
-    """(code, sortie) d'un git lancé dans `cwd` (jamais ailleurs) ; (1, "") si git manque."""
+    """(code, sortie) d'un git lancé dans `cwd` (jamais ailleurs) ; (1, "") si git manque. Le terminal du jeu
+    (Windows) : le petit git du terminal (vsh/git.py), le même que celui que tape l'enfant."""
+    from .plateforme import terminal_virtuel
+    if terminal_virtuel():
+        from .vsh import git as petit
+        r = petit.executer(list(args), cwd, core.TERRAIN, extra or {})
+        return r.code, (r.texte + "\n" if r.texte and r.code == 0 else "")
     if not git_present():
         return 1, ""
     try:

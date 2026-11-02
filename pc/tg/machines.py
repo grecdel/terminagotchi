@@ -46,7 +46,7 @@ import unicodedata
 
 from . import core
 from .langue import t
-from .plateforme import BOLD, DIM, IS_WIN, RESET, fg
+from .plateforme import BOLD, DIM, RESET, SYS_WIN, fg
 
 _D = None
 
@@ -285,7 +285,7 @@ def _lire_sys(chemin):
 
 def coeurs():
     """Ce que `nproc` affiche ici (le jeu le lance s'il existe, sinon il le calcule comme lui)."""
-    if shutil.which("nproc") and not IS_WIN:
+    if shutil.which("nproc") and not SYS_WIN:
         try:
             r = subprocess.run(["nproc"], capture_output=True, text=True, timeout=10)
             if r.returncode == 0 and r.stdout.strip().isdigit():

@@ -42,7 +42,8 @@ from pathlib import Path
 
 from . import core
 from .langue import t
-from .plateforme import BOLD, C, DIM, IS_WIN, RESET, fg
+from . import droits
+from .plateforme import BOLD, C, DIM, IS_WIN, RESET, SYS_WIN, fg
 
 _D = None
 
@@ -277,7 +278,7 @@ def _lire(rel):
 
 def _mode(p):
     try:
-        return os.stat(p).st_mode & 0o777
+        return droits.mode(p) & 0o777
     except OSError:
         return None
 
@@ -511,15 +512,58 @@ def _vivant(pid, nom=None):
     return True
 
 
+def _simules():
+    """Le terminal du jeu (Windows) : les processus fictifs sont SIMULÉS (pas d'exec -a) ; `ps` et `kill` du terminal
+    du jeu les voient et les arrêtent (vsh/processus.py)."""
+    from .plateforme import terminal_virtuel
+    return terminal_virtuel()
+
+
 def fictifs_vivants():
     """[(pid, nom)] des processus fictifs encore en vie."""
+    if _simules():
+        return [(p["pid"], p["nom"]) for p in _pids() if p.get("simule") and p.get("fin", 0) > time.time()]
     return [(p["pid"], p["nom"]) for p in _pids() if _vivant(p["pid"], p["nom"])]
+
+
+def tuer_simule(pid):
+    """`kill PID` dans le terminal du jeu : arrête un processus fictif simulé. Renvoie son nom, ou None."""
+    liste = _pids()
+    for p in liste:
+        if p.get("simule") and p["pid"] == pid and p.get("fin", 0) > time.time():
+            p["fin"] = 0
+            try:
+                _fichier_pids().write_text(json.dumps(liste), encoding="utf-8")
+            except OSError:
+                pass
+            return p["nom"]
+    return None
 
 
 def lancer_fictifs(noms):
     """Lance des `sleep` renommés (exec -a NOM sleep 900) : ils ne font RIEN que dormir, puis s'éteignent seuls.
-    Jamais sous Windows (pas d'exec -a). Renvoie les pid lancés."""
-    if IS_WIN:
+    Le terminal du jeu (Windows) : simulés. Renvoie les pid lancés."""
+    if _simules():
+        import random as _r
+        liste = [p for p in _pids() if p.get("simule") and p.get("fin", 0) > time.time()]
+        pris = {p["pid"] for p in liste}
+        out = []
+        for nom in noms:
+            pid = _r.randint(31000, 39000)
+            while pid in pris:
+                pid += 1
+            pris.add(pid)
+            secondes = donnees()["processus_secondes"]
+            liste.append({"pid": pid, "nom": nom, "simule": True, "fin": time.time() + secondes,
+                          "args": f"{nom} {secondes}"})
+            out.append(pid)
+        try:
+            _fichier_pids().parent.mkdir(parents=True, exist_ok=True)
+            _fichier_pids().write_text(json.dumps(liste), encoding="utf-8")
+        except OSError:
+            pass
+        return out
+    if SYS_WIN:
         return []
     out = []
     vivants = _pids()
@@ -545,6 +589,12 @@ def lancer_fictifs(noms):
 
 def arreter_fictifs():
     """Éteint les processus fictifs encore en vie (seulement les nôtres : le nom est vérifié)."""
+    if _simules():
+        try:
+            _fichier_pids().write_text("[]", encoding="utf-8")
+        except OSError:
+            pass
+        return
     for pid, _nom in fictifs_vivants():
         try:
             os.kill(pid, 15)

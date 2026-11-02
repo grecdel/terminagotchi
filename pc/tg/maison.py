@@ -179,6 +179,17 @@ _LS = ("ls", "dir", "gci", "get-childitem", "ll", "la")
 
 
 def _resoudre(cur, arg, precedent):
+    from .plateforme import SYS_WIN
+    if SYS_WIN:                                   # le terminal du jeu : des chemins Linux (/etc, ~/…, ..)
+        a = (arg or "").strip().strip("'\"")
+        if a == "-":
+            return precedent or cur
+        from .vsh.vfs import reel_depuis_terminal
+        try:
+            r = reel_depuis_terminal(cur, a or "~")
+        except Exception:                         # noqa: BLE001
+            return cur
+        return r if os.path.isdir(r) else cur
     home = Path.home()
     arg = (arg or "").strip()
     if arg.lower().startswith("-path "):

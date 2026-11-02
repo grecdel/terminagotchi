@@ -27,6 +27,7 @@ import textwrap
 import time
 from datetime import date
 
+from . import droits
 from . import bestiaire as B
 from . import combat
 from . import core
@@ -199,9 +200,7 @@ def _cage_privee(c, l):
     p = c["d"] / "enclos" / "cage"
     if not p.exists():
         return False
-    if IS_WIN:
-        return not os.access(p, os.W_OK)            # attrib +r : lecture seule
-    return p.stat().st_mode & (stat.S_IRWXG | stat.S_IRWXO) == 0
+    return droits.mode(p) & (stat.S_IRWXG | stat.S_IRWXO) == 0
 
 
 def _chant(c, l):
@@ -219,7 +218,7 @@ def _script(c, l):
     t = lire(p)
     if t is None or "echo" not in t.lower() and "write-" not in t.lower():
         return False
-    return IS_WIN or os.access(p, os.X_OK)
+    return IS_WIN or droits.acces(p, os.X_OK)
 
 
 def _photos(c, l):
@@ -1132,7 +1131,7 @@ def _i_script(c, l):
         return None
     if "echo" not in texte.lower() and "write-" not in texte.lower():
         return t("dress.indice.script_echo", fichier=p.name)
-    if not IS_WIN and not os.access(p, os.X_OK):
+    if not IS_WIN and not droits.acces(p, os.X_OK):
         return t("dress.indice.script_chmod", fichier=p.name)
     return None
 
