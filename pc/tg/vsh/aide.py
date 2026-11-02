@@ -38,6 +38,7 @@ RESUMES = {
     "df": ("report file system space usage", "df [-h]", ""),
     "free": ("display amount of free and used memory", "free [-h]", ""),
     "diff": ("compare files line by line", "diff [-u] FILE1 FILE2", ""),
+    "ln": ("make links between files", "ln [-s] [-f] [-v] TARGET [LINK_NAME | DIRECTORY]", ""),
     "tar": ("an archiving utility", "tar czf ARCHIVE.tar.gz FILES...  |  tar xzf ARCHIVE.tar.gz", ""),
     "sha256sum": ("compute and check SHA256 message digest", "sha256sum [-c] [FILE]...", ""),
     "base64": ("base64 encode/decode data", "base64 [-d] [FILE]", ""),

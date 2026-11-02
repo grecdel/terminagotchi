@@ -912,10 +912,35 @@ Ce n'est pas un monde de leçons mais une nouvelle vue : le prototype « Monde T
 - Point d'extension pour les autres mondes : `effets.EXTENSIONS` / `Effets.extensions` / `EXTENSIONS` (JS).
 
 *Reste.*
-- Les effets ★★ des mondes finis en parallèle (Poste de Contrôle, Bibliothèque du Temps, Atelier, Sommet) : à brancher
-  sur le point d'extension. Caisse `tar` animée, `ln -s`, `du`/`df`, `tree` (★★) pas encore dessinés à part.
+- ~~Les effets ★★ des mondes finis en parallèle, caisse `tar`, `ln -s`, `du`/`df`, `tree`~~ : codés le 2 novembre
+  (paragraphe suivant).
 - Le site : à redéployer à la main quand le propriétaire le décide.
 - Les traductions des 13 autres langues sont faites par Claude.
+
+**🧩 Les derniers effets dans le monde — codés (2 novembre).** Maquettes montrées au propriétaire :
+`/home/claude/outils/effets/derniers/planche_derniers.png` (21 images, outils dans `derniers/travail/`).
+- Même règle que les autres effets (`effets.py` = `Effets.kt` = `effets.js`, 123 vecteurs communs) : l'effet vient de
+  la photo avant/après du terrain ou de la vraie sortie de la commande, jamais du seul texte ; ★★ (réglage « tous »).
+- Effets secondaires : `tar`/`zip`/`gzip` (la caisse : des copies entrent et elle se ferme ; elle s'ouvre et les objets
+  ressortent ; `gzip` la serre ; `tar -t` regarde dedans), `ln` (le fil lumineux du raccourci, gris et cassé pour un lien
+  mort), `du` (une colonne par élément, tailles des objets), `df` (le réservoir, le % lu dans la sortie), `tree` (la
+  brume se lève, dossiers et fichiers comptés).
+- Poste de Contrôle : `free` (l'étagère de la mémoire), `systemctl` en lecture (les lanternes), `crontab -l` (le
+  réveil), `journalctl` (le registre). Bibliothèque du Temps : `git add` (l'étoile), `git log` (l'album), `git init`
+  (un album neuf), `git branch/switch -c/checkout -b` (une branche pousse), `git switch` (on change de monde), `git merge`
+  (les branches se rejoignent ; conflit = étiquette « à toi de choisir », pas de refus en plus), `git restore` /
+  `checkout --` (l'horloge à l'envers sur ce qui revient). Atelier : le robot simulé (`echo 1 > led` : la lumière,
+  `moteur`, `cat capteur_distance` : le sonar, `atelier pas` : un pas). Sommet : `man`/`apropos`/`--help` (le grimoire),
+  `shellcheck` (la loupe ; ses remarques ne sont pas un « raté »), `trap … EXIT` (le filet), `mktemp` (le sablier),
+  `strace` (l'espion).
+- Dessins : `monde.py` (`_effet2`), `MondeVue.kt` (`effet2`), `monde_page.js` (plus simple). Pas d'objet sur les
+  créatures, pas de mascotte. Textes `efx.*` en 14 langues. Tests : `test_effets.py` (vrai terrain, vrai git),
+  `test_monde.py` et `tests/jvm/Monde.kt` (chaque sorte se dessine), `test_terminal.py` (`ln` comparé au vrai bash).
+- Terminal du jeu sous Windows (`vsh`) : `ln` existe maintenant (`-s`, `-f`, `-v`, vers un dossier) ; un lien mort se
+  voit dans `ls`. Sous Windows, un lien symbolique demande le « mode développeur » : sinon le refus est expliqué
+  (`vsh.ln_windows`), rien n'est bloqué ; jamais de lien vers les dossiers de Windows. `shellcheck`, `strace`,
+  `systemctl`, `journalctl`, `crontab` restent racontés sous Windows (pas d'effet, comme avant).
+- Site : `effets.js`, `monde_page.js`, `monde_textes.js` modifiés — **non redéployé**.
 
 **▚ Le glitch — codé (31 octobre, décisions du propriétaire).** Un effet de l'INDIVIDU, comme le shiny (drapeau
 `glitch`, indépendant de la variante et du shiny) : l'image se dérègle comme un vieil écran, fabriquée à partir de

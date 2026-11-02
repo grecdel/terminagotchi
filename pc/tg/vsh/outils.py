@@ -761,6 +761,92 @@ def _rel(ctx, cur, nm, vp):
     return cur[len(base):] if cur.startswith(base) else cur
 
 
+@outil("ln")
+def ln(ctx):
+    """ln [-s] [-f] [-v] CIBLE [NOM | DOSSIER] : un lien (dur, ou symbolique avec -s), seulement dans les zones du jeu.
+    Sous Windows, un lien symbolique demande le « mode développeur » : sinon, le refus est dit (rien n'est bloqué)."""
+    o = Options(ctx.args[1:], longues=("symbolic", "force", "verbose", "no-dereference", "help"))
+    if o.erreur:
+        return erreur_option(ctx, "ln", o)
+    r = verifier_lettres(ctx, "ln", o, "sfvn")
+    if r is not None:
+        return r
+    if not o.reste:
+        ctx.err("ln: missing file operand\nTry 'ln --help' for more information.\n")
+        return 1
+    sym, force = o.a("s", "--symbolic"), o.a("f", "--force")
+    sorte = "symbolic link" if sym else "hard link"
+    cibles = o.reste[:-1] if len(o.reste) > 1 else o.reste
+    dest = o.reste[-1] if len(o.reste) > 1 else "."
+    vd = ctx.chemin(dest)
+    dans = ctx.vfs.est_dossier(vd) and not (o.a("n", "--no-dereference") and os.path.islink(str(ctx.vfs.reel(vd) or "")))
+    if len(cibles) > 1 and not dans:
+        ctx.err(f"ln: target {guillemets(dest)}: No such file or directory\n" if not ctx.vfs.existe(vd) else
+                f"ln: target {guillemets(dest)} is not a directory\n")
+        return 1
+    code = 0
+    for c in cibles:
+        nom = posixpath.join(dest, posixpath.basename(c.rstrip("/"))) if dans else dest
+        vp = ctx.chemin(nom)
+        try:
+            if not sym:
+                vs = ctx.chemin(c)
+                if not ctx.vfs.existe(vs):
+                    ctx.err(f"ln: failed to access {guillemets(c)}: No such file or directory\n")
+                    code = 1
+                    continue
+                if ctx.vfs.est_dossier(vs):
+                    ctx.err(f"ln: {c}: hard link not allowed for directory\n")
+                    code = 1
+                    continue
+            reel = ctx.vfs._reel_ecrivable(vp)
+            if reel is None:
+                raise ErreurFs(13)
+            if os.path.lexists(reel):
+                if not force:
+                    raise ErreurFs(17)
+                if os.path.isdir(reel) and not os.path.islink(reel):
+                    raise ErreurFs(21)
+                os.remove(reel)
+            if sym:
+                cible = c
+                if ctx.vfs.mode == "windows":
+                    if c.startswith(("/", "~")):
+                        rc = ctx.vfs.reel(ctx.chemin(c))
+                        if rc is None:
+                            raise ErreurFs(1)
+                        cible = str(rc)
+                    else:
+                        cible = c.replace("/", os.sep)
+                try:
+                    os.symlink(cible, reel, target_is_directory=ctx.vfs.est_dossier(ctx.chemin(posixpath.join(
+                        posixpath.dirname(vp), c)) if not c.startswith(("/", "~")) else ctx.chemin(c)))
+                except OSError as e:
+                    if ctx.vfs.mode == "windows":          # Windows : il faut le « mode développeur » (avec un adulte)
+                        from ..langue import t
+                        ctx.err(f"ln: failed to create {sorte} {guillemets(nom)}: Operation not permitted\n"
+                                + t("vsh.ln_windows") + "\n")
+                        code = 1
+                        continue
+                    raise
+            else:
+                os.link(str(ctx.vfs.reel(ctx.chemin(c))), reel)
+            if o.a("v", "--verbose"):
+                ctx.out(f"{guillemets(nom)} {'->' if sym else '=>'} {guillemets(c)}\n")
+        except ErreurFs as e:
+            ctx.err(f"ln: failed to create {sorte} {guillemets(nom)}: {e.texte}\n")
+            code = 1
+        except OSError as e:
+            ctx.err(f"ln: failed to create {sorte} {guillemets(nom)}: {depuis_os(e)}\n")
+            code = 1
+    return code
+
+
+def depuis_os(e):
+    from .vfs import depuis_oserror
+    return depuis_oserror(e).texte
+
+
 @outil("rmdir")
 def rmdir(ctx):
     o = Options(ctx.args[1:], longues=("parents", "verbose", "ignore-fail-on-non-empty", "help"))
@@ -2214,7 +2300,7 @@ RACONTEES = {
     "termux-toast", "termux-vibrate", "termux-torch", "termux-battery-status", "termux-clipboard-set",
     "termux-clipboard-get", "termux-tts-speak", "termux-open-url", "termux-open", "am", "pm",
     "xdg-open", "open", "firefox", "zsh", "fish", "ksh", "mksh", "screen", "tmux", "watch", "lsof", "fuser",
-    "shutdown", "reboot", "poweroff", "halt", "chroot", "ln", "nohup", "setsid", "nice", "renice", "ionice",
+    "shutdown", "reboot", "poweroff", "halt", "chroot", "nohup", "setsid", "nice", "renice", "ionice",
     "openssl", "gpg", "gpg2", "gpgconf", "gpg-agent",
 }
 

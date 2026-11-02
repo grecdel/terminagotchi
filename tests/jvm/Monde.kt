@@ -17,6 +17,21 @@ import org.json.JSONArray
 import org.json.JSONObject
 import java.io.File
 
+class ToileMonde : fr.terminagotchi.Toile {
+    var n = 0
+    override fun rect(x: Float, y: Float, w: Float, h: Float, c: Int) { n++ }
+    override fun rrect(x: Float, y: Float, w: Float, h: Float, r: Float, fond: Int?, bord: Int?, ep: Float) { n++ }
+    override fun ellipse(cx: Float, cy: Float, rx: Float, ry: Float, c: Int) { n++ }
+    override fun cercle(cx: Float, cy: Float, r: Float, c: Int, ep: Float) { n++ }
+    override fun ligne(x1: Float, y1: Float, x2: Float, y2: Float, c: Int, ep: Float, plein: Float, vide: Float, dec: Float) { n++ }
+    override fun poly(xs: FloatArray, ys: FloatArray, c: Int) { n++ }
+    override fun texte(s: String, x: Float, y: Float, taille: Float, c: Int, gras: Boolean, ancre: Char, mono: Boolean) { n++ }
+    override fun mesure(s: String, taille: Float, gras: Boolean, mono: Boolean) = s.length * taille * 0.6f
+    override fun lueur(cx: Float, cy: Float, r: Float, c: Int) { n++ }
+    override fun cadre(c: fr.terminagotchi.Poses.Cadre, ax: Float, ay: Float, e: Float, miroir: Boolean, lisse: Boolean, sx: Float, sy: Float, rot: Float, alpha: Float) { n++ }
+    override fun photo(nom: String, x: Float, y: Float, w: Float, h: Float, r: Float) { n++ }
+}
+
 var echecs = 0
 var oks = 0
 fun ok(c: Boolean, m: String) { if (c) oks++ else { echecs++; println("  ✗ $m") } }
@@ -118,6 +133,34 @@ fun main(args: Array<String>) {
     println("4. Le dessin")
     for (k in MondeDessin.SOLS) for (vv in 0 until 4) ok(MondeDessin.sprite(k, vv, 12, 0).argb.any { it != 0 }, "sol $k")
     for (k in MondeDessin.DECORS) ok(MondeDessin.decor(k).argb.any { it != 0 }, "décor $k")
+
+    // les effets secondaires et ceux des mondes (2 novembre) : chaque sorte se dessine sans erreur, à chaque instant
+    val tmp2 = File(System.getProperty("java.io.tmpdir"), "tg_monde2_" + System.nanoTime())
+    val ter2 = File(tmp2, "terrain_terminagotchi")
+    for (d in listOf("biome/plante/parcelle_1", "biome/plante/parcelle_2", "biome/feu/parcelle_1")) File(ter2, d).mkdirs()
+    File(ter2, "biome/plante/parcelle_1/rose.fleur").writeText("rose")
+    val vue = fr.terminagotchi.MondeVue()
+    vue.relire(ter2, listOf(fr.terminagotchi.MondeVue.Info("g", "Glandouille", "plante", null, "bebe", true, "", "", null, false)), "biome")
+    val nouveaux = setOf("caisse", "lien", "taille", "disque", "arbre", "memoire", "lanternes", "reveil", "journal", "etoile", "album",
+        "branche", "fusion", "rembobine", "robot", "grimoire", "loupe", "filet", "sablier", "espion")
+    val vus = HashSet<String>()
+    for (i in 0 until ev.length()) {
+        val att = ev.getJSONObject(i).getJSONArray("attendu")
+        val lot = (0 until att.length()).map { att.getJSONObject(it) }.filter { it.getString("type") in nouveaux }
+        if (lot.isEmpty()) continue
+        lot.forEach { vus.add(it.getString("type")) }
+        var dessine = 0
+        try {
+            vue.preparer(lot); vue.lancer(lot)
+            for (pas in 0 until 12) {
+                vue.tick(.18)
+                val tl = ToileMonde(); vue.dessiner(tl, mutableListOf(), 0f, 0f, 900f, 600f, 1f); dessine += tl.n
+            }
+            ok(dessine > 0, "dessin : ${ev.getJSONObject(i).getString("ligne")}")
+        } catch (x: Exception) { ok(false, "dessin : ${ev.getJSONObject(i).getString("ligne")} : $x") }
+    }
+    ok(vus == nouveaux, "toutes les sortes nouvelles sont dessinées (${nouveaux - vus})")
+    tmp2.deleteRecursively()
 
     println("5. Réglage et explications")
     val evs = Effets.evenements("ps", av, av, 0)

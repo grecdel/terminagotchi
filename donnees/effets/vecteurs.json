@@ -8788,11 +8788,15 @@
 "attendu": [
 {
 "chemin": "biome/plante/parcelle_1/sac.tar.gz",
+"chemins": [
+"biome/plante/parcelle_1/rose.fleur"
+],
 "cmd": "tar",
-"prio": 3,
+"n": 1,
+"prio": 2,
+"quoi": "ferme",
 "region": "plante",
-"type": "objet+",
-"via": "caisse"
+"type": "caisse"
 }
 ],
 "avant": {
@@ -8880,7 +8884,7 @@
 },
 "code": 0,
 "dit": [
-"efx.dit.objet.caisse"
+"efx.dit.caisse.ferme"
 ],
 "ligne": "tar -czf sac.tar.gz rose.fleur",
 "sortie": ""
@@ -9240,5 +9244,14037 @@
 "dit": [],
 "ligne": "ls /etc",
 "sortie": ""
+},
+{
+"apres": {
+"cwd": "biome/plante/parcelle_1",
+"f": {
+"biome": [
+"d",
+0,
+1000,
+493
+],
+"biome/feu": [
+"d",
+0,
+1000,
+493
+],
+"biome/feu/parcelle_1": [
+"d",
+0,
+1000,
+493
+],
+"biome/feu/parcelle_2": [
+"d",
+0,
+1000,
+493
+],
+"biome/plante": [
+"d",
+0,
+1000,
+493
+],
+"biome/plante/parcelle_1": [
+"d",
+0,
+1000,
+493
+],
+"biome/plante/parcelle_1/.secret": [
+"f",
+3,
+1000,
+420
+],
+"biome/plante/parcelle_1/chene.arbre": [
+"f",
+7,
+1000,
+420
+],
+"biome/plante/parcelle_1/mot.txt": [
+"f",
+12,
+1000,
+420
+],
+"biome/plante/parcelle_1/rose.fleur": [
+"f",
+4,
+1000,
+420
+],
+"biome/plante/parcelle_1/sac.tar.gz": [
+"f",
+50,
+1000,
+420
+],
+"biome/plante/parcelle_1/sapin.arbre": [
+"f",
+0,
+1000,
+420
+],
+"biome/plante/parcelle_2": [
+"d",
+0,
+1000,
+493
+],
+"nid": [
+"d",
+0,
+1000,
+493
+]
+}
+},
+"attendu": [
+{
+"chemin": "biome/plante/parcelle_1/sac.tar.gz",
+"chemins": [
+"biome/plante/parcelle_1/rose.fleur",
+"biome/plante/parcelle_1/chene.arbre"
+],
+"cmd": "tar",
+"n": 2,
+"prio": 2,
+"quoi": "ferme",
+"region": "plante",
+"type": "caisse"
+}
+],
+"avant": {
+"cwd": "biome/plante/parcelle_1",
+"f": {
+"biome": [
+"d",
+0,
+1000,
+493
+],
+"biome/feu": [
+"d",
+0,
+1000,
+493
+],
+"biome/feu/parcelle_1": [
+"d",
+0,
+1000,
+493
+],
+"biome/feu/parcelle_2": [
+"d",
+0,
+1000,
+493
+],
+"biome/plante": [
+"d",
+0,
+1000,
+493
+],
+"biome/plante/parcelle_1": [
+"d",
+0,
+1000,
+493
+],
+"biome/plante/parcelle_1/.secret": [
+"f",
+3,
+1000,
+420
+],
+"biome/plante/parcelle_1/chene.arbre": [
+"f",
+7,
+1000,
+420
+],
+"biome/plante/parcelle_1/mot.txt": [
+"f",
+12,
+1000,
+420
+],
+"biome/plante/parcelle_1/rose.fleur": [
+"f",
+4,
+1000,
+420
+],
+"biome/plante/parcelle_1/sapin.arbre": [
+"f",
+0,
+1000,
+420
+],
+"biome/plante/parcelle_2": [
+"d",
+0,
+1000,
+493
+],
+"nid": [
+"d",
+0,
+1000,
+493
+]
+}
+},
+"code": 0,
+"dit": [
+"efx.dit.caisse.ferme"
+],
+"ligne": "tar -czf sac.tar.gz rose.fleur chene.arbre",
+"sortie": ""
+},
+{
+"apres": {
+"cwd": "biome/plante/parcelle_1",
+"f": {
+"biome": [
+"d",
+0,
+1000,
+493
+],
+"biome/feu": [
+"d",
+0,
+1000,
+493
+],
+"biome/feu/parcelle_1": [
+"d",
+0,
+1000,
+493
+],
+"biome/feu/parcelle_2": [
+"d",
+0,
+1000,
+493
+],
+"biome/plante": [
+"d",
+0,
+1000,
+493
+],
+"biome/plante/parcelle_1": [
+"d",
+0,
+1000,
+493
+],
+"biome/plante/parcelle_1/.secret": [
+"f",
+3,
+1000,
+420
+],
+"biome/plante/parcelle_1/chene.arbre": [
+"f",
+7,
+1000,
+420
+],
+"biome/plante/parcelle_1/mot.txt": [
+"f",
+12,
+1000,
+420
+],
+"biome/plante/parcelle_1/rose.fleur": [
+"f",
+4,
+1000,
+420
+],
+"biome/plante/parcelle_1/sac.tar.gz": [
+"f",
+50,
+1000,
+420
+],
+"biome/plante/parcelle_1/sapin.arbre": [
+"f",
+0,
+1000,
+420
+],
+"biome/plante/parcelle_2": [
+"d",
+0,
+1000,
+493
+],
+"biome/plante/parcelle_2/chene.arbre": [
+"f",
+7,
+1000,
+420
+],
+"biome/plante/parcelle_2/rose.fleur": [
+"f",
+4,
+1000,
+420
+],
+"nid": [
+"d",
+0,
+1000,
+493
+]
+}
+},
+"attendu": [
+{
+"chemin": "biome/plante/parcelle_1/sac.tar.gz",
+"chemins": [
+"biome/plante/parcelle_2/chene.arbre",
+"biome/plante/parcelle_2/rose.fleur"
+],
+"cmd": "tar",
+"n": 2,
+"prio": 2,
+"quoi": "ouvre",
+"region": "plante",
+"type": "caisse"
+}
+],
+"avant": {
+"cwd": "biome/plante/parcelle_1",
+"f": {
+"biome": [
+"d",
+0,
+1000,
+493
+],
+"biome/feu": [
+"d",
+0,
+1000,
+493
+],
+"biome/feu/parcelle_1": [
+"d",
+0,
+1000,
+493
+],
+"biome/feu/parcelle_2": [
+"d",
+0,
+1000,
+493
+],
+"biome/plante": [
+"d",
+0,
+1000,
+493
+],
+"biome/plante/parcelle_1": [
+"d",
+0,
+1000,
+493
+],
+"biome/plante/parcelle_1/.secret": [
+"f",
+3,
+1000,
+420
+],
+"biome/plante/parcelle_1/chene.arbre": [
+"f",
+7,
+1000,
+420
+],
+"biome/plante/parcelle_1/mot.txt": [
+"f",
+12,
+1000,
+420
+],
+"biome/plante/parcelle_1/rose.fleur": [
+"f",
+4,
+1000,
+420
+],
+"biome/plante/parcelle_1/sac.tar.gz": [
+"f",
+50,
+1000,
+420
+],
+"biome/plante/parcelle_1/sapin.arbre": [
+"f",
+0,
+1000,
+420
+],
+"biome/plante/parcelle_2": [
+"d",
+0,
+1000,
+493
+],
+"nid": [
+"d",
+0,
+1000,
+493
+]
+}
+},
+"code": 0,
+"dit": [
+"efx.dit.caisse.ouvre"
+],
+"ligne": "tar -xzf sac.tar.gz -C ../parcelle_2",
+"sortie": ""
+},
+{
+"apres": {
+"cwd": "biome/plante/parcelle_1",
+"f": {
+"biome": [
+"d",
+0,
+1000,
+493
+],
+"biome/feu": [
+"d",
+0,
+1000,
+493
+],
+"biome/feu/parcelle_1": [
+"d",
+0,
+1000,
+493
+],
+"biome/feu/parcelle_2": [
+"d",
+0,
+1000,
+493
+],
+"biome/plante": [
+"d",
+0,
+1000,
+493
+],
+"biome/plante/parcelle_1": [
+"d",
+0,
+1000,
+493
+],
+"biome/plante/parcelle_1/.secret": [
+"f",
+3,
+1000,
+420
+],
+"biome/plante/parcelle_1/chene.arbre": [
+"f",
+7,
+1000,
+420
+],
+"biome/plante/parcelle_1/mot.txt": [
+"f",
+12,
+1000,
+420
+],
+"biome/plante/parcelle_1/rose.fleur": [
+"f",
+4,
+1000,
+420
+],
+"biome/plante/parcelle_1/sac.tar.gz": [
+"f",
+50,
+1000,
+420
+],
+"biome/plante/parcelle_1/sapin.arbre": [
+"f",
+0,
+1000,
+420
+],
+"biome/plante/parcelle_2": [
+"d",
+0,
+1000,
+493
+],
+"nid": [
+"d",
+0,
+1000,
+493
+]
+}
+},
+"attendu": [
+{
+"chemin": "biome/plante/parcelle_1/sac.tar.gz",
+"chemins": [],
+"cmd": "tar",
+"n": 2,
+"prio": 2,
+"quoi": "voir",
+"region": "plante",
+"type": "caisse"
+}
+],
+"avant": {
+"cwd": "biome/plante/parcelle_1",
+"f": {
+"biome": [
+"d",
+0,
+1000,
+493
+],
+"biome/feu": [
+"d",
+0,
+1000,
+493
+],
+"biome/feu/parcelle_1": [
+"d",
+0,
+1000,
+493
+],
+"biome/feu/parcelle_2": [
+"d",
+0,
+1000,
+493
+],
+"biome/plante": [
+"d",
+0,
+1000,
+493
+],
+"biome/plante/parcelle_1": [
+"d",
+0,
+1000,
+493
+],
+"biome/plante/parcelle_1/.secret": [
+"f",
+3,
+1000,
+420
+],
+"biome/plante/parcelle_1/chene.arbre": [
+"f",
+7,
+1000,
+420
+],
+"biome/plante/parcelle_1/mot.txt": [
+"f",
+12,
+1000,
+420
+],
+"biome/plante/parcelle_1/rose.fleur": [
+"f",
+4,
+1000,
+420
+],
+"biome/plante/parcelle_1/sac.tar.gz": [
+"f",
+50,
+1000,
+420
+],
+"biome/plante/parcelle_1/sapin.arbre": [
+"f",
+0,
+1000,
+420
+],
+"biome/plante/parcelle_2": [
+"d",
+0,
+1000,
+493
+],
+"nid": [
+"d",
+0,
+1000,
+493
+]
+}
+},
+"code": 0,
+"dit": [
+"efx.dit.caisse.voir"
+],
+"ligne": "tar tzf sac.tar.gz",
+"sortie": "rose.fleur\nchene.arbre\n"
+},
+{
+"apres": {
+"cwd": "biome/plante/parcelle_1",
+"f": {
+"biome": [
+"d",
+0,
+1000,
+493
+],
+"biome/feu": [
+"d",
+0,
+1000,
+493
+],
+"biome/feu/parcelle_1": [
+"d",
+0,
+1000,
+493
+],
+"biome/feu/parcelle_2": [
+"d",
+0,
+1000,
+493
+],
+"biome/plante": [
+"d",
+0,
+1000,
+493
+],
+"biome/plante/parcelle_1": [
+"d",
+0,
+1000,
+493
+],
+"biome/plante/parcelle_1/.secret": [
+"f",
+3,
+1000,
+420
+],
+"biome/plante/parcelle_1/chene.arbre": [
+"f",
+7,
+1000,
+420
+],
+"biome/plante/parcelle_1/mot.txt": [
+"f",
+12,
+1000,
+420
+],
+"biome/plante/parcelle_1/rose.fleur": [
+"f",
+4,
+1000,
+420
+],
+"biome/plante/parcelle_1/sapin.arbre": [
+"f",
+0,
+1000,
+420
+],
+"biome/plante/parcelle_2": [
+"d",
+0,
+1000,
+493
+],
+"nid": [
+"d",
+0,
+1000,
+493
+]
+}
+},
+"attendu": [],
+"avant": {
+"cwd": "biome/plante/parcelle_1",
+"f": {
+"biome": [
+"d",
+0,
+1000,
+493
+],
+"biome/feu": [
+"d",
+0,
+1000,
+493
+],
+"biome/feu/parcelle_1": [
+"d",
+0,
+1000,
+493
+],
+"biome/feu/parcelle_2": [
+"d",
+0,
+1000,
+493
+],
+"biome/plante": [
+"d",
+0,
+1000,
+493
+],
+"biome/plante/parcelle_1": [
+"d",
+0,
+1000,
+493
+],
+"biome/plante/parcelle_1/.secret": [
+"f",
+3,
+1000,
+420
+],
+"biome/plante/parcelle_1/chene.arbre": [
+"f",
+7,
+1000,
+420
+],
+"biome/plante/parcelle_1/mot.txt": [
+"f",
+12,
+1000,
+420
+],
+"biome/plante/parcelle_1/rose.fleur": [
+"f",
+4,
+1000,
+420
+],
+"biome/plante/parcelle_1/sapin.arbre": [
+"f",
+0,
+1000,
+420
+],
+"biome/plante/parcelle_2": [
+"d",
+0,
+1000,
+493
+],
+"nid": [
+"d",
+0,
+1000,
+493
+]
+}
+},
+"code": 0,
+"dit": [],
+"ligne": "tar -czf ~/hors.tar.gz rose.fleur",
+"sortie": ""
+},
+{
+"apres": {
+"cwd": "biome",
+"f": {
+"biome": [
+"d",
+0,
+1000,
+493
+],
+"biome/feu": [
+"d",
+0,
+1000,
+493
+],
+"biome/feu/parcelle_1": [
+"d",
+0,
+1000,
+493
+],
+"biome/feu/parcelle_2": [
+"d",
+0,
+1000,
+493
+],
+"biome/plante": [
+"d",
+0,
+1000,
+493
+],
+"biome/plante/parcelle_1": [
+"d",
+0,
+1000,
+493
+],
+"biome/plante/parcelle_1/.secret": [
+"f",
+3,
+1000,
+420
+],
+"biome/plante/parcelle_1/chene.arbre": [
+"f",
+7,
+1000,
+420
+],
+"biome/plante/parcelle_1/mot.txt": [
+"f",
+12,
+1000,
+420
+],
+"biome/plante/parcelle_1/rose.fleur": [
+"f",
+4,
+1000,
+420
+],
+"biome/plante/parcelle_1/sapin.arbre": [
+"f",
+0,
+1000,
+420
+],
+"biome/plante/parcelle_2": [
+"d",
+0,
+1000,
+493
+],
+"biome/sac.tar": [
+"f",
+90,
+1000,
+420
+],
+"nid": [
+"d",
+0,
+1000,
+493
+]
+}
+},
+"attendu": [
+{
+"chemin": "biome/sac.tar",
+"chemins": [
+"biome/plante"
+],
+"cmd": "tar",
+"n": 5,
+"prio": 2,
+"quoi": "ferme",
+"region": null,
+"type": "caisse"
+}
+],
+"avant": {
+"cwd": "biome",
+"f": {
+"biome": [
+"d",
+0,
+1000,
+493
+],
+"biome/feu": [
+"d",
+0,
+1000,
+493
+],
+"biome/feu/parcelle_1": [
+"d",
+0,
+1000,
+493
+],
+"biome/feu/parcelle_2": [
+"d",
+0,
+1000,
+493
+],
+"biome/plante": [
+"d",
+0,
+1000,
+493
+],
+"biome/plante/parcelle_1": [
+"d",
+0,
+1000,
+493
+],
+"biome/plante/parcelle_1/.secret": [
+"f",
+3,
+1000,
+420
+],
+"biome/plante/parcelle_1/chene.arbre": [
+"f",
+7,
+1000,
+420
+],
+"biome/plante/parcelle_1/mot.txt": [
+"f",
+12,
+1000,
+420
+],
+"biome/plante/parcelle_1/rose.fleur": [
+"f",
+4,
+1000,
+420
+],
+"biome/plante/parcelle_1/sapin.arbre": [
+"f",
+0,
+1000,
+420
+],
+"biome/plante/parcelle_2": [
+"d",
+0,
+1000,
+493
+],
+"nid": [
+"d",
+0,
+1000,
+493
+]
+}
+},
+"code": 0,
+"dit": [
+"efx.dit.caisse.ferme"
+],
+"ligne": "tar cf sac.tar plante",
+"sortie": ""
+},
+{
+"apres": {
+"cwd": "biome/plante/parcelle_1",
+"f": {
+"biome": [
+"d",
+0,
+1000,
+493
+],
+"biome/feu": [
+"d",
+0,
+1000,
+493
+],
+"biome/feu/parcelle_1": [
+"d",
+0,
+1000,
+493
+],
+"biome/feu/parcelle_2": [
+"d",
+0,
+1000,
+493
+],
+"biome/plante": [
+"d",
+0,
+1000,
+493
+],
+"biome/plante/parcelle_1": [
+"d",
+0,
+1000,
+493
+],
+"biome/plante/parcelle_1/.secret": [
+"f",
+3,
+1000,
+420
+],
+"biome/plante/parcelle_1/chene.arbre.gz": [
+"f",
+30,
+1000,
+420
+],
+"biome/plante/parcelle_1/mot.txt": [
+"f",
+12,
+1000,
+420
+],
+"biome/plante/parcelle_1/rose.fleur": [
+"f",
+4,
+1000,
+420
+],
+"biome/plante/parcelle_1/sapin.arbre": [
+"f",
+0,
+1000,
+420
+],
+"biome/plante/parcelle_2": [
+"d",
+0,
+1000,
+493
+],
+"nid": [
+"d",
+0,
+1000,
+493
+]
+}
+},
+"attendu": [
+{
+"chemin": "biome/plante/parcelle_1/chene.arbre.gz",
+"chemins": [
+"biome/plante/parcelle_1/chene.arbre.gz"
+],
+"cmd": "gzip",
+"de": "biome/plante/parcelle_1/chene.arbre",
+"n": 1,
+"prio": 2,
+"quoi": "serre",
+"region": "plante",
+"type": "caisse"
+}
+],
+"avant": {
+"cwd": "biome/plante/parcelle_1",
+"f": {
+"biome": [
+"d",
+0,
+1000,
+493
+],
+"biome/feu": [
+"d",
+0,
+1000,
+493
+],
+"biome/feu/parcelle_1": [
+"d",
+0,
+1000,
+493
+],
+"biome/feu/parcelle_2": [
+"d",
+0,
+1000,
+493
+],
+"biome/plante": [
+"d",
+0,
+1000,
+493
+],
+"biome/plante/parcelle_1": [
+"d",
+0,
+1000,
+493
+],
+"biome/plante/parcelle_1/.secret": [
+"f",
+3,
+1000,
+420
+],
+"biome/plante/parcelle_1/chene.arbre": [
+"f",
+7,
+1000,
+420
+],
+"biome/plante/parcelle_1/mot.txt": [
+"f",
+12,
+1000,
+420
+],
+"biome/plante/parcelle_1/rose.fleur": [
+"f",
+4,
+1000,
+420
+],
+"biome/plante/parcelle_1/sapin.arbre": [
+"f",
+0,
+1000,
+420
+],
+"biome/plante/parcelle_2": [
+"d",
+0,
+1000,
+493
+],
+"nid": [
+"d",
+0,
+1000,
+493
+]
+}
+},
+"code": 0,
+"dit": [
+"efx.dit.caisse.serre"
+],
+"ligne": "gzip chene.arbre",
+"sortie": ""
+},
+{
+"apres": {
+"cwd": "biome/plante/parcelle_1",
+"f": {
+"biome": [
+"d",
+0,
+1000,
+493
+],
+"biome/feu": [
+"d",
+0,
+1000,
+493
+],
+"biome/feu/parcelle_1": [
+"d",
+0,
+1000,
+493
+],
+"biome/feu/parcelle_2": [
+"d",
+0,
+1000,
+493
+],
+"biome/plante": [
+"d",
+0,
+1000,
+493
+],
+"biome/plante/parcelle_1": [
+"d",
+0,
+1000,
+493
+],
+"biome/plante/parcelle_1/.secret": [
+"f",
+3,
+1000,
+420
+],
+"biome/plante/parcelle_1/chene.arbre": [
+"f",
+7,
+1000,
+420
+],
+"biome/plante/parcelle_1/mot.txt": [
+"f",
+12,
+1000,
+420
+],
+"biome/plante/parcelle_1/rose.fleur": [
+"f",
+4,
+1000,
+420
+],
+"biome/plante/parcelle_1/sapin.arbre": [
+"f",
+0,
+1000,
+420
+],
+"biome/plante/parcelle_2": [
+"d",
+0,
+1000,
+493
+],
+"nid": [
+"d",
+0,
+1000,
+493
+]
+}
+},
+"attendu": [
+{
+"chemin": "biome/plante/parcelle_1/chene.arbre",
+"chemins": [
+"biome/plante/parcelle_1/chene.arbre"
+],
+"cmd": "gunzip",
+"de": "biome/plante/parcelle_1/chene.arbre.gz",
+"n": 1,
+"prio": 2,
+"quoi": "ouvre",
+"region": "plante",
+"type": "caisse"
+}
+],
+"avant": {
+"cwd": "biome/plante/parcelle_1",
+"f": {
+"biome": [
+"d",
+0,
+1000,
+493
+],
+"biome/feu": [
+"d",
+0,
+1000,
+493
+],
+"biome/feu/parcelle_1": [
+"d",
+0,
+1000,
+493
+],
+"biome/feu/parcelle_2": [
+"d",
+0,
+1000,
+493
+],
+"biome/plante": [
+"d",
+0,
+1000,
+493
+],
+"biome/plante/parcelle_1": [
+"d",
+0,
+1000,
+493
+],
+"biome/plante/parcelle_1/.secret": [
+"f",
+3,
+1000,
+420
+],
+"biome/plante/parcelle_1/chene.arbre.gz": [
+"f",
+30,
+1000,
+420
+],
+"biome/plante/parcelle_1/mot.txt": [
+"f",
+12,
+1000,
+420
+],
+"biome/plante/parcelle_1/rose.fleur": [
+"f",
+4,
+1000,
+420
+],
+"biome/plante/parcelle_1/sapin.arbre": [
+"f",
+0,
+1000,
+420
+],
+"biome/plante/parcelle_2": [
+"d",
+0,
+1000,
+493
+],
+"nid": [
+"d",
+0,
+1000,
+493
+]
+}
+},
+"code": 0,
+"dit": [
+"efx.dit.caisse.ouvre"
+],
+"ligne": "gunzip chene.arbre.gz",
+"sortie": ""
+},
+{
+"apres": {
+"cwd": "biome/plante/parcelle_1",
+"f": {
+"biome": [
+"d",
+0,
+1000,
+493
+],
+"biome/feu": [
+"d",
+0,
+1000,
+493
+],
+"biome/feu/parcelle_1": [
+"d",
+0,
+1000,
+493
+],
+"biome/feu/parcelle_2": [
+"d",
+0,
+1000,
+493
+],
+"biome/plante": [
+"d",
+0,
+1000,
+493
+],
+"biome/plante/parcelle_1": [
+"d",
+0,
+1000,
+493
+],
+"biome/plante/parcelle_1/.secret": [
+"f",
+3,
+1000,
+420
+],
+"biome/plante/parcelle_1/chene.arbre": [
+"f",
+7,
+1000,
+420
+],
+"biome/plante/parcelle_1/mot.txt": [
+"f",
+12,
+1000,
+420
+],
+"biome/plante/parcelle_1/rose.fleur": [
+"f",
+4,
+1000,
+420
+],
+"biome/plante/parcelle_1/sac.zip": [
+"f",
+60,
+1000,
+420
+],
+"biome/plante/parcelle_1/sapin.arbre": [
+"f",
+0,
+1000,
+420
+],
+"biome/plante/parcelle_2": [
+"d",
+0,
+1000,
+493
+],
+"nid": [
+"d",
+0,
+1000,
+493
+]
+}
+},
+"attendu": [
+{
+"chemin": "biome/plante/parcelle_1/sac.zip",
+"chemins": [
+"biome/plante/parcelle_1/rose.fleur",
+"biome/plante/parcelle_1/mot.txt"
+],
+"cmd": "zip",
+"n": 2,
+"prio": 2,
+"quoi": "ferme",
+"region": "plante",
+"type": "caisse"
+}
+],
+"avant": {
+"cwd": "biome/plante/parcelle_1",
+"f": {
+"biome": [
+"d",
+0,
+1000,
+493
+],
+"biome/feu": [
+"d",
+0,
+1000,
+493
+],
+"biome/feu/parcelle_1": [
+"d",
+0,
+1000,
+493
+],
+"biome/feu/parcelle_2": [
+"d",
+0,
+1000,
+493
+],
+"biome/plante": [
+"d",
+0,
+1000,
+493
+],
+"biome/plante/parcelle_1": [
+"d",
+0,
+1000,
+493
+],
+"biome/plante/parcelle_1/.secret": [
+"f",
+3,
+1000,
+420
+],
+"biome/plante/parcelle_1/chene.arbre": [
+"f",
+7,
+1000,
+420
+],
+"biome/plante/parcelle_1/mot.txt": [
+"f",
+12,
+1000,
+420
+],
+"biome/plante/parcelle_1/rose.fleur": [
+"f",
+4,
+1000,
+420
+],
+"biome/plante/parcelle_1/sapin.arbre": [
+"f",
+0,
+1000,
+420
+],
+"biome/plante/parcelle_2": [
+"d",
+0,
+1000,
+493
+],
+"nid": [
+"d",
+0,
+1000,
+493
+]
+}
+},
+"code": 0,
+"dit": [
+"efx.dit.caisse.ferme"
+],
+"ligne": "zip -r sac.zip rose.fleur mot.txt",
+"sortie": ""
+},
+{
+"apres": {
+"cwd": "biome/plante/parcelle_1",
+"f": {
+"biome": [
+"d",
+0,
+1000,
+493
+],
+"biome/feu": [
+"d",
+0,
+1000,
+493
+],
+"biome/feu/parcelle_1": [
+"d",
+0,
+1000,
+493
+],
+"biome/feu/parcelle_2": [
+"d",
+0,
+1000,
+493
+],
+"biome/plante": [
+"d",
+0,
+1000,
+493
+],
+"biome/plante/parcelle_1": [
+"d",
+0,
+1000,
+493
+],
+"biome/plante/parcelle_1/.secret": [
+"f",
+3,
+1000,
+420
+],
+"biome/plante/parcelle_1/chene.arbre": [
+"f",
+7,
+1000,
+420
+],
+"biome/plante/parcelle_1/mot.txt": [
+"f",
+12,
+1000,
+420
+],
+"biome/plante/parcelle_1/rose.fleur": [
+"f",
+4,
+1000,
+420
+],
+"biome/plante/parcelle_1/sac.zip": [
+"f",
+60,
+1000,
+420
+],
+"biome/plante/parcelle_1/sapin.arbre": [
+"f",
+0,
+1000,
+420
+],
+"biome/plante/parcelle_2": [
+"d",
+0,
+1000,
+493
+],
+"biome/plante/parcelle_2/mot.txt": [
+"f",
+12,
+1000,
+420
+],
+"nid": [
+"d",
+0,
+1000,
+493
+]
+}
+},
+"attendu": [
+{
+"chemin": "biome/plante/parcelle_1/sac.zip",
+"chemins": [
+"biome/plante/parcelle_2/mot.txt"
+],
+"cmd": "unzip",
+"n": 1,
+"prio": 2,
+"quoi": "ouvre",
+"region": "plante",
+"type": "caisse"
+}
+],
+"avant": {
+"cwd": "biome/plante/parcelle_1",
+"f": {
+"biome": [
+"d",
+0,
+1000,
+493
+],
+"biome/feu": [
+"d",
+0,
+1000,
+493
+],
+"biome/feu/parcelle_1": [
+"d",
+0,
+1000,
+493
+],
+"biome/feu/parcelle_2": [
+"d",
+0,
+1000,
+493
+],
+"biome/plante": [
+"d",
+0,
+1000,
+493
+],
+"biome/plante/parcelle_1": [
+"d",
+0,
+1000,
+493
+],
+"biome/plante/parcelle_1/.secret": [
+"f",
+3,
+1000,
+420
+],
+"biome/plante/parcelle_1/chene.arbre": [
+"f",
+7,
+1000,
+420
+],
+"biome/plante/parcelle_1/mot.txt": [
+"f",
+12,
+1000,
+420
+],
+"biome/plante/parcelle_1/rose.fleur": [
+"f",
+4,
+1000,
+420
+],
+"biome/plante/parcelle_1/sac.zip": [
+"f",
+60,
+1000,
+420
+],
+"biome/plante/parcelle_1/sapin.arbre": [
+"f",
+0,
+1000,
+420
+],
+"biome/plante/parcelle_2": [
+"d",
+0,
+1000,
+493
+],
+"nid": [
+"d",
+0,
+1000,
+493
+]
+}
+},
+"code": 0,
+"dit": [
+"efx.dit.caisse.ouvre"
+],
+"ligne": "unzip sac.zip -d ../parcelle_2",
+"sortie": ""
+},
+{
+"apres": {
+"cwd": "biome/plante/parcelle_1",
+"f": {
+"biome": [
+"d",
+0,
+1000,
+493
+],
+"biome/feu": [
+"d",
+0,
+1000,
+493
+],
+"biome/feu/parcelle_1": [
+"d",
+0,
+1000,
+493
+],
+"biome/feu/parcelle_2": [
+"d",
+0,
+1000,
+493
+],
+"biome/plante": [
+"d",
+0,
+1000,
+493
+],
+"biome/plante/parcelle_1": [
+"d",
+0,
+1000,
+493
+],
+"biome/plante/parcelle_1/.secret": [
+"f",
+3,
+1000,
+420
+],
+"biome/plante/parcelle_1/chene.arbre": [
+"f",
+7,
+1000,
+420
+],
+"biome/plante/parcelle_1/mot.txt": [
+"f",
+12,
+1000,
+420
+],
+"biome/plante/parcelle_1/rose.fleur": [
+"f",
+4,
+1000,
+420
+],
+"biome/plante/parcelle_1/sapin.arbre": [
+"f",
+0,
+1000,
+420
+],
+"biome/plante/parcelle_2": [
+"d",
+0,
+1000,
+493
+],
+"biome/plante/parcelle_2/raccourci": [
+"l",
+25,
+1000,
+420
+],
+"nid": [
+"d",
+0,
+1000,
+493
+]
+}
+},
+"attendu": [
+{
+"chemin": "biome/plante/parcelle_2/raccourci",
+"cible": "biome/plante/parcelle_1/rose.fleur",
+"cmd": "ln",
+"dehors": false,
+"dur": false,
+"mort": false,
+"prio": 2,
+"region": "plante",
+"type": "lien"
+}
+],
+"avant": {
+"cwd": "biome/plante/parcelle_1",
+"f": {
+"biome": [
+"d",
+0,
+1000,
+493
+],
+"biome/feu": [
+"d",
+0,
+1000,
+493
+],
+"biome/feu/parcelle_1": [
+"d",
+0,
+1000,
+493
+],
+"biome/feu/parcelle_2": [
+"d",
+0,
+1000,
+493
+],
+"biome/plante": [
+"d",
+0,
+1000,
+493
+],
+"biome/plante/parcelle_1": [
+"d",
+0,
+1000,
+493
+],
+"biome/plante/parcelle_1/.secret": [
+"f",
+3,
+1000,
+420
+],
+"biome/plante/parcelle_1/chene.arbre": [
+"f",
+7,
+1000,
+420
+],
+"biome/plante/parcelle_1/mot.txt": [
+"f",
+12,
+1000,
+420
+],
+"biome/plante/parcelle_1/rose.fleur": [
+"f",
+4,
+1000,
+420
+],
+"biome/plante/parcelle_1/sapin.arbre": [
+"f",
+0,
+1000,
+420
+],
+"biome/plante/parcelle_2": [
+"d",
+0,
+1000,
+493
+],
+"nid": [
+"d",
+0,
+1000,
+493
+]
+}
+},
+"code": 0,
+"dit": [
+"efx.dit.lien"
+],
+"ligne": "ln -s ../parcelle_1/rose.fleur ../parcelle_2/raccourci",
+"sortie": ""
+},
+{
+"apres": {
+"cwd": "biome/plante/parcelle_1",
+"f": {
+"biome": [
+"d",
+0,
+1000,
+493
+],
+"biome/feu": [
+"d",
+0,
+1000,
+493
+],
+"biome/feu/parcelle_1": [
+"d",
+0,
+1000,
+493
+],
+"biome/feu/parcelle_2": [
+"d",
+0,
+1000,
+493
+],
+"biome/plante": [
+"d",
+0,
+1000,
+493
+],
+"biome/plante/parcelle_1": [
+"d",
+0,
+1000,
+493
+],
+"biome/plante/parcelle_1/.secret": [
+"f",
+3,
+1000,
+420
+],
+"biome/plante/parcelle_1/chene.arbre": [
+"f",
+7,
+1000,
+420
+],
+"biome/plante/parcelle_1/mort": [
+"l",
+10,
+1000,
+420
+],
+"biome/plante/parcelle_1/mot.txt": [
+"f",
+12,
+1000,
+420
+],
+"biome/plante/parcelle_1/rose.fleur": [
+"f",
+4,
+1000,
+420
+],
+"biome/plante/parcelle_1/sapin.arbre": [
+"f",
+0,
+1000,
+420
+],
+"biome/plante/parcelle_2": [
+"d",
+0,
+1000,
+493
+],
+"nid": [
+"d",
+0,
+1000,
+493
+]
+}
+},
+"attendu": [
+{
+"chemin": "biome/plante/parcelle_1/mort",
+"cible": "biome/plante/parcelle_1/absent.txt",
+"cmd": "ln",
+"dehors": false,
+"dur": false,
+"mort": true,
+"prio": 2,
+"region": "plante",
+"type": "lien"
+}
+],
+"avant": {
+"cwd": "biome/plante/parcelle_1",
+"f": {
+"biome": [
+"d",
+0,
+1000,
+493
+],
+"biome/feu": [
+"d",
+0,
+1000,
+493
+],
+"biome/feu/parcelle_1": [
+"d",
+0,
+1000,
+493
+],
+"biome/feu/parcelle_2": [
+"d",
+0,
+1000,
+493
+],
+"biome/plante": [
+"d",
+0,
+1000,
+493
+],
+"biome/plante/parcelle_1": [
+"d",
+0,
+1000,
+493
+],
+"biome/plante/parcelle_1/.secret": [
+"f",
+3,
+1000,
+420
+],
+"biome/plante/parcelle_1/chene.arbre": [
+"f",
+7,
+1000,
+420
+],
+"biome/plante/parcelle_1/mot.txt": [
+"f",
+12,
+1000,
+420
+],
+"biome/plante/parcelle_1/rose.fleur": [
+"f",
+4,
+1000,
+420
+],
+"biome/plante/parcelle_1/sapin.arbre": [
+"f",
+0,
+1000,
+420
+],
+"biome/plante/parcelle_2": [
+"d",
+0,
+1000,
+493
+],
+"nid": [
+"d",
+0,
+1000,
+493
+]
+}
+},
+"code": 0,
+"dit": [
+"efx.dit.lien.mort"
+],
+"ligne": "ln -s absent.txt mort",
+"sortie": ""
+},
+{
+"apres": {
+"cwd": "biome/plante/parcelle_1",
+"f": {
+"biome": [
+"d",
+0,
+1000,
+493
+],
+"biome/feu": [
+"d",
+0,
+1000,
+493
+],
+"biome/feu/parcelle_1": [
+"d",
+0,
+1000,
+493
+],
+"biome/feu/parcelle_2": [
+"d",
+0,
+1000,
+493
+],
+"biome/plante": [
+"d",
+0,
+1000,
+493
+],
+"biome/plante/parcelle_1": [
+"d",
+0,
+1000,
+493
+],
+"biome/plante/parcelle_1/.secret": [
+"f",
+3,
+1000,
+420
+],
+"biome/plante/parcelle_1/chene.arbre": [
+"f",
+7,
+1000,
+420
+],
+"biome/plante/parcelle_1/dur.fleur": [
+"f",
+4,
+1000,
+420
+],
+"biome/plante/parcelle_1/mot.txt": [
+"f",
+12,
+1000,
+420
+],
+"biome/plante/parcelle_1/rose.fleur": [
+"f",
+4,
+1000,
+420
+],
+"biome/plante/parcelle_1/sapin.arbre": [
+"f",
+0,
+1000,
+420
+],
+"biome/plante/parcelle_2": [
+"d",
+0,
+1000,
+493
+],
+"nid": [
+"d",
+0,
+1000,
+493
+]
+}
+},
+"attendu": [
+{
+"chemin": "biome/plante/parcelle_1/dur.fleur",
+"cible": "biome/plante/parcelle_1/rose.fleur",
+"cmd": "ln",
+"dehors": false,
+"dur": true,
+"mort": false,
+"prio": 2,
+"region": "plante",
+"type": "lien"
+}
+],
+"avant": {
+"cwd": "biome/plante/parcelle_1",
+"f": {
+"biome": [
+"d",
+0,
+1000,
+493
+],
+"biome/feu": [
+"d",
+0,
+1000,
+493
+],
+"biome/feu/parcelle_1": [
+"d",
+0,
+1000,
+493
+],
+"biome/feu/parcelle_2": [
+"d",
+0,
+1000,
+493
+],
+"biome/plante": [
+"d",
+0,
+1000,
+493
+],
+"biome/plante/parcelle_1": [
+"d",
+0,
+1000,
+493
+],
+"biome/plante/parcelle_1/.secret": [
+"f",
+3,
+1000,
+420
+],
+"biome/plante/parcelle_1/chene.arbre": [
+"f",
+7,
+1000,
+420
+],
+"biome/plante/parcelle_1/mot.txt": [
+"f",
+12,
+1000,
+420
+],
+"biome/plante/parcelle_1/rose.fleur": [
+"f",
+4,
+1000,
+420
+],
+"biome/plante/parcelle_1/sapin.arbre": [
+"f",
+0,
+1000,
+420
+],
+"biome/plante/parcelle_2": [
+"d",
+0,
+1000,
+493
+],
+"nid": [
+"d",
+0,
+1000,
+493
+]
+}
+},
+"code": 0,
+"dit": [
+"efx.dit.lien"
+],
+"ligne": "ln rose.fleur dur.fleur",
+"sortie": ""
+},
+{
+"apres": {
+"cwd": "biome/plante/parcelle_1",
+"f": {
+"biome": [
+"d",
+0,
+1000,
+493
+],
+"biome/feu": [
+"d",
+0,
+1000,
+493
+],
+"biome/feu/parcelle_1": [
+"d",
+0,
+1000,
+493
+],
+"biome/feu/parcelle_2": [
+"d",
+0,
+1000,
+493
+],
+"biome/plante": [
+"d",
+0,
+1000,
+493
+],
+"biome/plante/parcelle_1": [
+"d",
+0,
+1000,
+493
+],
+"biome/plante/parcelle_1/.secret": [
+"f",
+3,
+1000,
+420
+],
+"biome/plante/parcelle_1/chene.arbre": [
+"f",
+7,
+1000,
+420
+],
+"biome/plante/parcelle_1/docs": [
+"l",
+20,
+1000,
+420
+],
+"biome/plante/parcelle_1/mot.txt": [
+"f",
+12,
+1000,
+420
+],
+"biome/plante/parcelle_1/rose.fleur": [
+"f",
+4,
+1000,
+420
+],
+"biome/plante/parcelle_1/sapin.arbre": [
+"f",
+0,
+1000,
+420
+],
+"biome/plante/parcelle_2": [
+"d",
+0,
+1000,
+493
+],
+"nid": [
+"d",
+0,
+1000,
+493
+]
+}
+},
+"attendu": [
+{
+"chemin": "biome/plante/parcelle_1/docs",
+"cible": null,
+"cmd": "ln",
+"dehors": true,
+"dur": false,
+"mort": false,
+"prio": 2,
+"region": "plante",
+"type": "lien"
+}
+],
+"avant": {
+"cwd": "biome/plante/parcelle_1",
+"f": {
+"biome": [
+"d",
+0,
+1000,
+493
+],
+"biome/feu": [
+"d",
+0,
+1000,
+493
+],
+"biome/feu/parcelle_1": [
+"d",
+0,
+1000,
+493
+],
+"biome/feu/parcelle_2": [
+"d",
+0,
+1000,
+493
+],
+"biome/plante": [
+"d",
+0,
+1000,
+493
+],
+"biome/plante/parcelle_1": [
+"d",
+0,
+1000,
+493
+],
+"biome/plante/parcelle_1/.secret": [
+"f",
+3,
+1000,
+420
+],
+"biome/plante/parcelle_1/chene.arbre": [
+"f",
+7,
+1000,
+420
+],
+"biome/plante/parcelle_1/mot.txt": [
+"f",
+12,
+1000,
+420
+],
+"biome/plante/parcelle_1/rose.fleur": [
+"f",
+4,
+1000,
+420
+],
+"biome/plante/parcelle_1/sapin.arbre": [
+"f",
+0,
+1000,
+420
+],
+"biome/plante/parcelle_2": [
+"d",
+0,
+1000,
+493
+],
+"nid": [
+"d",
+0,
+1000,
+493
+]
+}
+},
+"code": 0,
+"dit": [
+"efx.dit.lien"
+],
+"ligne": "ln -s ~/Documents docs",
+"sortie": ""
+},
+{
+"apres": {
+"cwd": "biome/plante/parcelle_1",
+"f": {
+"biome": [
+"d",
+0,
+1000,
+493
+],
+"biome/feu": [
+"d",
+0,
+1000,
+493
+],
+"biome/feu/parcelle_1": [
+"d",
+0,
+1000,
+493
+],
+"biome/feu/parcelle_2": [
+"d",
+0,
+1000,
+493
+],
+"biome/plante": [
+"d",
+0,
+1000,
+493
+],
+"biome/plante/parcelle_1": [
+"d",
+0,
+1000,
+493
+],
+"biome/plante/parcelle_1/.secret": [
+"f",
+3,
+1000,
+420
+],
+"biome/plante/parcelle_1/chene.arbre": [
+"f",
+7,
+1000,
+420
+],
+"biome/plante/parcelle_1/mot.txt": [
+"f",
+12,
+1000,
+420
+],
+"biome/plante/parcelle_1/rose.fleur": [
+"f",
+4,
+1000,
+420
+],
+"biome/plante/parcelle_1/sapin.arbre": [
+"f",
+0,
+1000,
+420
+],
+"biome/plante/parcelle_2": [
+"d",
+0,
+1000,
+493
+],
+"biome/plante/parcelle_2/rose.fleur": [
+"l",
+13,
+1000,
+420
+],
+"nid": [
+"d",
+0,
+1000,
+493
+]
+}
+},
+"attendu": [
+{
+"chemin": "biome/plante/parcelle_2/rose.fleur",
+"cible": "biome/plante/rose.fleur",
+"cmd": "ln",
+"dehors": false,
+"dur": false,
+"mort": true,
+"prio": 2,
+"region": "plante",
+"type": "lien"
+}
+],
+"avant": {
+"cwd": "biome/plante/parcelle_1",
+"f": {
+"biome": [
+"d",
+0,
+1000,
+493
+],
+"biome/feu": [
+"d",
+0,
+1000,
+493
+],
+"biome/feu/parcelle_1": [
+"d",
+0,
+1000,
+493
+],
+"biome/feu/parcelle_2": [
+"d",
+0,
+1000,
+493
+],
+"biome/plante": [
+"d",
+0,
+1000,
+493
+],
+"biome/plante/parcelle_1": [
+"d",
+0,
+1000,
+493
+],
+"biome/plante/parcelle_1/.secret": [
+"f",
+3,
+1000,
+420
+],
+"biome/plante/parcelle_1/chene.arbre": [
+"f",
+7,
+1000,
+420
+],
+"biome/plante/parcelle_1/mot.txt": [
+"f",
+12,
+1000,
+420
+],
+"biome/plante/parcelle_1/rose.fleur": [
+"f",
+4,
+1000,
+420
+],
+"biome/plante/parcelle_1/sapin.arbre": [
+"f",
+0,
+1000,
+420
+],
+"biome/plante/parcelle_2": [
+"d",
+0,
+1000,
+493
+],
+"nid": [
+"d",
+0,
+1000,
+493
+]
+}
+},
+"code": 0,
+"dit": [
+"efx.dit.lien.mort"
+],
+"ligne": "ln -s ../rose.fleur ../parcelle_2",
+"sortie": ""
+},
+{
+"apres": {
+"cwd": "biome",
+"f": {
+"biome": [
+"d",
+0,
+1000,
+493
+],
+"biome/feu": [
+"d",
+0,
+1000,
+493
+],
+"biome/feu/parcelle_1": [
+"d",
+0,
+1000,
+493
+],
+"biome/feu/parcelle_2": [
+"d",
+0,
+1000,
+493
+],
+"biome/plante": [
+"d",
+0,
+1000,
+493
+],
+"biome/plante/parcelle_1": [
+"d",
+0,
+1000,
+493
+],
+"biome/plante/parcelle_1/.secret": [
+"f",
+3,
+1000,
+420
+],
+"biome/plante/parcelle_1/chene.arbre": [
+"f",
+7,
+1000,
+420
+],
+"biome/plante/parcelle_1/mot.txt": [
+"f",
+12,
+1000,
+420
+],
+"biome/plante/parcelle_1/rose.fleur": [
+"f",
+4,
+1000,
+420
+],
+"biome/plante/parcelle_1/sapin.arbre": [
+"f",
+0,
+1000,
+420
+],
+"biome/plante/parcelle_2": [
+"d",
+0,
+1000,
+493
+],
+"nid": [
+"d",
+0,
+1000,
+493
+]
+}
+},
+"attendu": [
+{
+"chemins": [
+"biome/plante/parcelle_1",
+"biome/plante/parcelle_2"
+],
+"cmd": "du",
+"n": 2,
+"prio": 3,
+"type": "jokers"
+},
+{
+"chemin": "biome/plante",
+"cmd": "du",
+"elements": [
+[
+"biome/plante/parcelle_1",
+26
+],
+[
+"biome/plante/parcelle_2",
+0
+]
+],
+"prio": 2,
+"total": 26,
+"type": "taille"
+}
+],
+"avant": {
+"cwd": "biome",
+"f": {
+"biome": [
+"d",
+0,
+1000,
+493
+],
+"biome/feu": [
+"d",
+0,
+1000,
+493
+],
+"biome/feu/parcelle_1": [
+"d",
+0,
+1000,
+493
+],
+"biome/feu/parcelle_2": [
+"d",
+0,
+1000,
+493
+],
+"biome/plante": [
+"d",
+0,
+1000,
+493
+],
+"biome/plante/parcelle_1": [
+"d",
+0,
+1000,
+493
+],
+"biome/plante/parcelle_1/.secret": [
+"f",
+3,
+1000,
+420
+],
+"biome/plante/parcelle_1/chene.arbre": [
+"f",
+7,
+1000,
+420
+],
+"biome/plante/parcelle_1/mot.txt": [
+"f",
+12,
+1000,
+420
+],
+"biome/plante/parcelle_1/rose.fleur": [
+"f",
+4,
+1000,
+420
+],
+"biome/plante/parcelle_1/sapin.arbre": [
+"f",
+0,
+1000,
+420
+],
+"biome/plante/parcelle_2": [
+"d",
+0,
+1000,
+493
+],
+"nid": [
+"d",
+0,
+1000,
+493
+]
+}
+},
+"code": 0,
+"dit": [
+"efx.dit.jokers",
+"efx.dit.taille"
+],
+"ligne": "du -sh plante/*",
+"sortie": ""
+},
+{
+"apres": {
+"cwd": "biome/plante/parcelle_1",
+"f": {
+"biome": [
+"d",
+0,
+1000,
+493
+],
+"biome/feu": [
+"d",
+0,
+1000,
+493
+],
+"biome/feu/parcelle_1": [
+"d",
+0,
+1000,
+493
+],
+"biome/feu/parcelle_2": [
+"d",
+0,
+1000,
+493
+],
+"biome/plante": [
+"d",
+0,
+1000,
+493
+],
+"biome/plante/parcelle_1": [
+"d",
+0,
+1000,
+493
+],
+"biome/plante/parcelle_1/.secret": [
+"f",
+3,
+1000,
+420
+],
+"biome/plante/parcelle_1/chene.arbre": [
+"f",
+7,
+1000,
+420
+],
+"biome/plante/parcelle_1/mot.txt": [
+"f",
+12,
+1000,
+420
+],
+"biome/plante/parcelle_1/rose.fleur": [
+"f",
+4,
+1000,
+420
+],
+"biome/plante/parcelle_1/sapin.arbre": [
+"f",
+0,
+1000,
+420
+],
+"biome/plante/parcelle_2": [
+"d",
+0,
+1000,
+493
+],
+"nid": [
+"d",
+0,
+1000,
+493
+]
+}
+},
+"attendu": [
+{
+"chemin": "biome/plante/parcelle_1",
+"cmd": "du",
+"elements": [
+[
+"biome/plante/parcelle_1",
+26
+]
+],
+"prio": 2,
+"total": 26,
+"type": "taille"
+}
+],
+"avant": {
+"cwd": "biome/plante/parcelle_1",
+"f": {
+"biome": [
+"d",
+0,
+1000,
+493
+],
+"biome/feu": [
+"d",
+0,
+1000,
+493
+],
+"biome/feu/parcelle_1": [
+"d",
+0,
+1000,
+493
+],
+"biome/feu/parcelle_2": [
+"d",
+0,
+1000,
+493
+],
+"biome/plante": [
+"d",
+0,
+1000,
+493
+],
+"biome/plante/parcelle_1": [
+"d",
+0,
+1000,
+493
+],
+"biome/plante/parcelle_1/.secret": [
+"f",
+3,
+1000,
+420
+],
+"biome/plante/parcelle_1/chene.arbre": [
+"f",
+7,
+1000,
+420
+],
+"biome/plante/parcelle_1/mot.txt": [
+"f",
+12,
+1000,
+420
+],
+"biome/plante/parcelle_1/rose.fleur": [
+"f",
+4,
+1000,
+420
+],
+"biome/plante/parcelle_1/sapin.arbre": [
+"f",
+0,
+1000,
+420
+],
+"biome/plante/parcelle_2": [
+"d",
+0,
+1000,
+493
+],
+"nid": [
+"d",
+0,
+1000,
+493
+]
+}
+},
+"code": 0,
+"dit": [
+"efx.dit.taille"
+],
+"ligne": "du -s",
+"sortie": ""
+},
+{
+"apres": {
+"cwd": "biome/plante",
+"f": {
+"biome": [
+"d",
+0,
+1000,
+493
+],
+"biome/feu": [
+"d",
+0,
+1000,
+493
+],
+"biome/feu/parcelle_1": [
+"d",
+0,
+1000,
+493
+],
+"biome/feu/parcelle_2": [
+"d",
+0,
+1000,
+493
+],
+"biome/plante": [
+"d",
+0,
+1000,
+493
+],
+"biome/plante/parcelle_1": [
+"d",
+0,
+1000,
+493
+],
+"biome/plante/parcelle_1/.secret": [
+"f",
+3,
+1000,
+420
+],
+"biome/plante/parcelle_1/chene.arbre": [
+"f",
+7,
+1000,
+420
+],
+"biome/plante/parcelle_1/mot.txt": [
+"f",
+12,
+1000,
+420
+],
+"biome/plante/parcelle_1/rose.fleur": [
+"f",
+4,
+1000,
+420
+],
+"biome/plante/parcelle_1/sapin.arbre": [
+"f",
+0,
+1000,
+420
+],
+"biome/plante/parcelle_2": [
+"d",
+0,
+1000,
+493
+],
+"nid": [
+"d",
+0,
+1000,
+493
+]
+}
+},
+"attendu": [
+{
+"chemin": "biome/plante",
+"cmd": "du",
+"elements": [
+[
+"biome/plante/parcelle_1",
+26
+],
+[
+"biome/plante/parcelle_2",
+0
+]
+],
+"prio": 2,
+"total": 26,
+"type": "taille"
+}
+],
+"avant": {
+"cwd": "biome/plante",
+"f": {
+"biome": [
+"d",
+0,
+1000,
+493
+],
+"biome/feu": [
+"d",
+0,
+1000,
+493
+],
+"biome/feu/parcelle_1": [
+"d",
+0,
+1000,
+493
+],
+"biome/feu/parcelle_2": [
+"d",
+0,
+1000,
+493
+],
+"biome/plante": [
+"d",
+0,
+1000,
+493
+],
+"biome/plante/parcelle_1": [
+"d",
+0,
+1000,
+493
+],
+"biome/plante/parcelle_1/.secret": [
+"f",
+3,
+1000,
+420
+],
+"biome/plante/parcelle_1/chene.arbre": [
+"f",
+7,
+1000,
+420
+],
+"biome/plante/parcelle_1/mot.txt": [
+"f",
+12,
+1000,
+420
+],
+"biome/plante/parcelle_1/rose.fleur": [
+"f",
+4,
+1000,
+420
+],
+"biome/plante/parcelle_1/sapin.arbre": [
+"f",
+0,
+1000,
+420
+],
+"biome/plante/parcelle_2": [
+"d",
+0,
+1000,
+493
+],
+"nid": [
+"d",
+0,
+1000,
+493
+]
+}
+},
+"code": 0,
+"dit": [
+"efx.dit.taille"
+],
+"ligne": "du",
+"sortie": ""
+},
+{
+"apres": {
+"cwd": "biome",
+"f": {
+"biome": [
+"d",
+0,
+1000,
+493
+],
+"biome/feu": [
+"d",
+0,
+1000,
+493
+],
+"biome/feu/parcelle_1": [
+"d",
+0,
+1000,
+493
+],
+"biome/feu/parcelle_2": [
+"d",
+0,
+1000,
+493
+],
+"biome/plante": [
+"d",
+0,
+1000,
+493
+],
+"biome/plante/parcelle_1": [
+"d",
+0,
+1000,
+493
+],
+"biome/plante/parcelle_1/.secret": [
+"f",
+3,
+1000,
+420
+],
+"biome/plante/parcelle_1/chene.arbre": [
+"f",
+7,
+1000,
+420
+],
+"biome/plante/parcelle_1/mot.txt": [
+"f",
+12,
+1000,
+420
+],
+"biome/plante/parcelle_1/rose.fleur": [
+"f",
+4,
+1000,
+420
+],
+"biome/plante/parcelle_1/sapin.arbre": [
+"f",
+0,
+1000,
+420
+],
+"biome/plante/parcelle_2": [
+"d",
+0,
+1000,
+493
+],
+"nid": [
+"d",
+0,
+1000,
+493
+]
+}
+},
+"attendu": [
+{
+"chemin": "biome/absent",
+"cmd": "du",
+"existe": false,
+"prio": 3,
+"raison": "introuvable",
+"type": "refus"
+}
+],
+"avant": {
+"cwd": "biome",
+"f": {
+"biome": [
+"d",
+0,
+1000,
+493
+],
+"biome/feu": [
+"d",
+0,
+1000,
+493
+],
+"biome/feu/parcelle_1": [
+"d",
+0,
+1000,
+493
+],
+"biome/feu/parcelle_2": [
+"d",
+0,
+1000,
+493
+],
+"biome/plante": [
+"d",
+0,
+1000,
+493
+],
+"biome/plante/parcelle_1": [
+"d",
+0,
+1000,
+493
+],
+"biome/plante/parcelle_1/.secret": [
+"f",
+3,
+1000,
+420
+],
+"biome/plante/parcelle_1/chene.arbre": [
+"f",
+7,
+1000,
+420
+],
+"biome/plante/parcelle_1/mot.txt": [
+"f",
+12,
+1000,
+420
+],
+"biome/plante/parcelle_1/rose.fleur": [
+"f",
+4,
+1000,
+420
+],
+"biome/plante/parcelle_1/sapin.arbre": [
+"f",
+0,
+1000,
+420
+],
+"biome/plante/parcelle_2": [
+"d",
+0,
+1000,
+493
+],
+"nid": [
+"d",
+0,
+1000,
+493
+]
+}
+},
+"code": 1,
+"dit": [
+"efx.dit.refus.introuvable"
+],
+"ligne": "du -sh absent",
+"sortie": "du: cannot access 'absent': No such file or directory"
+},
+{
+"apres": {
+"cwd": "biome",
+"f": {
+"biome": [
+"d",
+0,
+1000,
+493
+],
+"biome/feu": [
+"d",
+0,
+1000,
+493
+],
+"biome/feu/parcelle_1": [
+"d",
+0,
+1000,
+493
+],
+"biome/feu/parcelle_2": [
+"d",
+0,
+1000,
+493
+],
+"biome/plante": [
+"d",
+0,
+1000,
+493
+],
+"biome/plante/parcelle_1": [
+"d",
+0,
+1000,
+493
+],
+"biome/plante/parcelle_1/.secret": [
+"f",
+3,
+1000,
+420
+],
+"biome/plante/parcelle_1/chene.arbre": [
+"f",
+7,
+1000,
+420
+],
+"biome/plante/parcelle_1/mot.txt": [
+"f",
+12,
+1000,
+420
+],
+"biome/plante/parcelle_1/rose.fleur": [
+"f",
+4,
+1000,
+420
+],
+"biome/plante/parcelle_1/sapin.arbre": [
+"f",
+0,
+1000,
+420
+],
+"biome/plante/parcelle_2": [
+"d",
+0,
+1000,
+493
+],
+"nid": [
+"d",
+0,
+1000,
+493
+]
+}
+},
+"attendu": [
+{
+"cmd": "df",
+"pourcent": 62,
+"prio": 2,
+"type": "disque"
+}
+],
+"avant": {
+"cwd": "biome",
+"f": {
+"biome": [
+"d",
+0,
+1000,
+493
+],
+"biome/feu": [
+"d",
+0,
+1000,
+493
+],
+"biome/feu/parcelle_1": [
+"d",
+0,
+1000,
+493
+],
+"biome/feu/parcelle_2": [
+"d",
+0,
+1000,
+493
+],
+"biome/plante": [
+"d",
+0,
+1000,
+493
+],
+"biome/plante/parcelle_1": [
+"d",
+0,
+1000,
+493
+],
+"biome/plante/parcelle_1/.secret": [
+"f",
+3,
+1000,
+420
+],
+"biome/plante/parcelle_1/chene.arbre": [
+"f",
+7,
+1000,
+420
+],
+"biome/plante/parcelle_1/mot.txt": [
+"f",
+12,
+1000,
+420
+],
+"biome/plante/parcelle_1/rose.fleur": [
+"f",
+4,
+1000,
+420
+],
+"biome/plante/parcelle_1/sapin.arbre": [
+"f",
+0,
+1000,
+420
+],
+"biome/plante/parcelle_2": [
+"d",
+0,
+1000,
+493
+],
+"nid": [
+"d",
+0,
+1000,
+493
+]
+}
+},
+"code": 0,
+"dit": [
+"efx.dit.disque"
+],
+"ligne": "df -h ~",
+"sortie": "Sys. de fichiers Taille Utilisé Dispo Uti% Monté sur\n/dev/sda2 64G 40G 24G 62% /\n"
+},
+{
+"apres": {
+"cwd": "biome",
+"f": {
+"biome": [
+"d",
+0,
+1000,
+493
+],
+"biome/feu": [
+"d",
+0,
+1000,
+493
+],
+"biome/feu/parcelle_1": [
+"d",
+0,
+1000,
+493
+],
+"biome/feu/parcelle_2": [
+"d",
+0,
+1000,
+493
+],
+"biome/plante": [
+"d",
+0,
+1000,
+493
+],
+"biome/plante/parcelle_1": [
+"d",
+0,
+1000,
+493
+],
+"biome/plante/parcelle_1/.secret": [
+"f",
+3,
+1000,
+420
+],
+"biome/plante/parcelle_1/chene.arbre": [
+"f",
+7,
+1000,
+420
+],
+"biome/plante/parcelle_1/mot.txt": [
+"f",
+12,
+1000,
+420
+],
+"biome/plante/parcelle_1/rose.fleur": [
+"f",
+4,
+1000,
+420
+],
+"biome/plante/parcelle_1/sapin.arbre": [
+"f",
+0,
+1000,
+420
+],
+"biome/plante/parcelle_2": [
+"d",
+0,
+1000,
+493
+],
+"nid": [
+"d",
+0,
+1000,
+493
+]
+}
+},
+"attendu": [
+{
+"cmd": "df",
+"pourcent": null,
+"prio": 2,
+"type": "disque"
+}
+],
+"avant": {
+"cwd": "biome",
+"f": {
+"biome": [
+"d",
+0,
+1000,
+493
+],
+"biome/feu": [
+"d",
+0,
+1000,
+493
+],
+"biome/feu/parcelle_1": [
+"d",
+0,
+1000,
+493
+],
+"biome/feu/parcelle_2": [
+"d",
+0,
+1000,
+493
+],
+"biome/plante": [
+"d",
+0,
+1000,
+493
+],
+"biome/plante/parcelle_1": [
+"d",
+0,
+1000,
+493
+],
+"biome/plante/parcelle_1/.secret": [
+"f",
+3,
+1000,
+420
+],
+"biome/plante/parcelle_1/chene.arbre": [
+"f",
+7,
+1000,
+420
+],
+"biome/plante/parcelle_1/mot.txt": [
+"f",
+12,
+1000,
+420
+],
+"biome/plante/parcelle_1/rose.fleur": [
+"f",
+4,
+1000,
+420
+],
+"biome/plante/parcelle_1/sapin.arbre": [
+"f",
+0,
+1000,
+420
+],
+"biome/plante/parcelle_2": [
+"d",
+0,
+1000,
+493
+],
+"nid": [
+"d",
+0,
+1000,
+493
+]
+}
+},
+"code": 0,
+"dit": [
+"efx.dit.disque"
+],
+"ligne": "df",
+"sortie": ""
+},
+{
+"apres": {
+"cwd": "biome",
+"f": {
+"biome": [
+"d",
+0,
+1000,
+493
+],
+"biome/feu": [
+"d",
+0,
+1000,
+493
+],
+"biome/feu/parcelle_1": [
+"d",
+0,
+1000,
+493
+],
+"biome/feu/parcelle_2": [
+"d",
+0,
+1000,
+493
+],
+"biome/plante": [
+"d",
+0,
+1000,
+493
+],
+"biome/plante/parcelle_1": [
+"d",
+0,
+1000,
+493
+],
+"biome/plante/parcelle_1/.secret": [
+"f",
+3,
+1000,
+420
+],
+"biome/plante/parcelle_1/chene.arbre": [
+"f",
+7,
+1000,
+420
+],
+"biome/plante/parcelle_1/mot.txt": [
+"f",
+12,
+1000,
+420
+],
+"biome/plante/parcelle_1/rose.fleur": [
+"f",
+4,
+1000,
+420
+],
+"biome/plante/parcelle_1/sapin.arbre": [
+"f",
+0,
+1000,
+420
+],
+"biome/plante/parcelle_2": [
+"d",
+0,
+1000,
+493
+],
+"nid": [
+"d",
+0,
+1000,
+493
+]
+}
+},
+"attendu": [
+{
+"chemin": "biome",
+"cmd": "tree",
+"dossiers": 6,
+"fichiers": 4,
+"niveaux": 3,
+"prio": 2,
+"type": "arbre"
+}
+],
+"avant": {
+"cwd": "biome",
+"f": {
+"biome": [
+"d",
+0,
+1000,
+493
+],
+"biome/feu": [
+"d",
+0,
+1000,
+493
+],
+"biome/feu/parcelle_1": [
+"d",
+0,
+1000,
+493
+],
+"biome/feu/parcelle_2": [
+"d",
+0,
+1000,
+493
+],
+"biome/plante": [
+"d",
+0,
+1000,
+493
+],
+"biome/plante/parcelle_1": [
+"d",
+0,
+1000,
+493
+],
+"biome/plante/parcelle_1/.secret": [
+"f",
+3,
+1000,
+420
+],
+"biome/plante/parcelle_1/chene.arbre": [
+"f",
+7,
+1000,
+420
+],
+"biome/plante/parcelle_1/mot.txt": [
+"f",
+12,
+1000,
+420
+],
+"biome/plante/parcelle_1/rose.fleur": [
+"f",
+4,
+1000,
+420
+],
+"biome/plante/parcelle_1/sapin.arbre": [
+"f",
+0,
+1000,
+420
+],
+"biome/plante/parcelle_2": [
+"d",
+0,
+1000,
+493
+],
+"nid": [
+"d",
+0,
+1000,
+493
+]
+}
+},
+"code": 0,
+"dit": [
+"efx.dit.arbre"
+],
+"ligne": "tree",
+"sortie": ""
+},
+{
+"apres": {
+"cwd": "biome",
+"f": {
+"biome": [
+"d",
+0,
+1000,
+493
+],
+"biome/feu": [
+"d",
+0,
+1000,
+493
+],
+"biome/feu/parcelle_1": [
+"d",
+0,
+1000,
+493
+],
+"biome/feu/parcelle_2": [
+"d",
+0,
+1000,
+493
+],
+"biome/plante": [
+"d",
+0,
+1000,
+493
+],
+"biome/plante/parcelle_1": [
+"d",
+0,
+1000,
+493
+],
+"biome/plante/parcelle_1/.secret": [
+"f",
+3,
+1000,
+420
+],
+"biome/plante/parcelle_1/chene.arbre": [
+"f",
+7,
+1000,
+420
+],
+"biome/plante/parcelle_1/mot.txt": [
+"f",
+12,
+1000,
+420
+],
+"biome/plante/parcelle_1/rose.fleur": [
+"f",
+4,
+1000,
+420
+],
+"biome/plante/parcelle_1/sapin.arbre": [
+"f",
+0,
+1000,
+420
+],
+"biome/plante/parcelle_2": [
+"d",
+0,
+1000,
+493
+],
+"nid": [
+"d",
+0,
+1000,
+493
+]
+}
+},
+"attendu": [
+{
+"chemin": "biome",
+"cmd": "tree",
+"dossiers": 2,
+"fichiers": 0,
+"niveaux": 1,
+"prio": 2,
+"type": "arbre"
+}
+],
+"avant": {
+"cwd": "biome",
+"f": {
+"biome": [
+"d",
+0,
+1000,
+493
+],
+"biome/feu": [
+"d",
+0,
+1000,
+493
+],
+"biome/feu/parcelle_1": [
+"d",
+0,
+1000,
+493
+],
+"biome/feu/parcelle_2": [
+"d",
+0,
+1000,
+493
+],
+"biome/plante": [
+"d",
+0,
+1000,
+493
+],
+"biome/plante/parcelle_1": [
+"d",
+0,
+1000,
+493
+],
+"biome/plante/parcelle_1/.secret": [
+"f",
+3,
+1000,
+420
+],
+"biome/plante/parcelle_1/chene.arbre": [
+"f",
+7,
+1000,
+420
+],
+"biome/plante/parcelle_1/mot.txt": [
+"f",
+12,
+1000,
+420
+],
+"biome/plante/parcelle_1/rose.fleur": [
+"f",
+4,
+1000,
+420
+],
+"biome/plante/parcelle_1/sapin.arbre": [
+"f",
+0,
+1000,
+420
+],
+"biome/plante/parcelle_2": [
+"d",
+0,
+1000,
+493
+],
+"nid": [
+"d",
+0,
+1000,
+493
+]
+}
+},
+"code": 0,
+"dit": [
+"efx.dit.arbre"
+],
+"ligne": "tree -L 1",
+"sortie": ""
+},
+{
+"apres": {
+"cwd": "biome",
+"f": {
+"biome": [
+"d",
+0,
+1000,
+493
+],
+"biome/feu": [
+"d",
+0,
+1000,
+493
+],
+"biome/feu/parcelle_1": [
+"d",
+0,
+1000,
+493
+],
+"biome/feu/parcelle_2": [
+"d",
+0,
+1000,
+493
+],
+"biome/plante": [
+"d",
+0,
+1000,
+493
+],
+"biome/plante/parcelle_1": [
+"d",
+0,
+1000,
+493
+],
+"biome/plante/parcelle_1/.secret": [
+"f",
+3,
+1000,
+420
+],
+"biome/plante/parcelle_1/chene.arbre": [
+"f",
+7,
+1000,
+420
+],
+"biome/plante/parcelle_1/mot.txt": [
+"f",
+12,
+1000,
+420
+],
+"biome/plante/parcelle_1/rose.fleur": [
+"f",
+4,
+1000,
+420
+],
+"biome/plante/parcelle_1/sapin.arbre": [
+"f",
+0,
+1000,
+420
+],
+"biome/plante/parcelle_2": [
+"d",
+0,
+1000,
+493
+],
+"nid": [
+"d",
+0,
+1000,
+493
+]
+}
+},
+"attendu": [
+{
+"chemin": "biome/plante",
+"cmd": "tree",
+"dossiers": 2,
+"fichiers": 5,
+"niveaux": 2,
+"prio": 2,
+"type": "arbre"
+}
+],
+"avant": {
+"cwd": "biome",
+"f": {
+"biome": [
+"d",
+0,
+1000,
+493
+],
+"biome/feu": [
+"d",
+0,
+1000,
+493
+],
+"biome/feu/parcelle_1": [
+"d",
+0,
+1000,
+493
+],
+"biome/feu/parcelle_2": [
+"d",
+0,
+1000,
+493
+],
+"biome/plante": [
+"d",
+0,
+1000,
+493
+],
+"biome/plante/parcelle_1": [
+"d",
+0,
+1000,
+493
+],
+"biome/plante/parcelle_1/.secret": [
+"f",
+3,
+1000,
+420
+],
+"biome/plante/parcelle_1/chene.arbre": [
+"f",
+7,
+1000,
+420
+],
+"biome/plante/parcelle_1/mot.txt": [
+"f",
+12,
+1000,
+420
+],
+"biome/plante/parcelle_1/rose.fleur": [
+"f",
+4,
+1000,
+420
+],
+"biome/plante/parcelle_1/sapin.arbre": [
+"f",
+0,
+1000,
+420
+],
+"biome/plante/parcelle_2": [
+"d",
+0,
+1000,
+493
+],
+"nid": [
+"d",
+0,
+1000,
+493
+]
+}
+},
+"code": 0,
+"dit": [
+"efx.dit.arbre"
+],
+"ligne": "tree -a plante",
+"sortie": ""
+},
+{
+"apres": {
+"cwd": "biome",
+"f": {
+"biome": [
+"d",
+0,
+1000,
+493
+],
+"biome/feu": [
+"d",
+0,
+1000,
+493
+],
+"biome/feu/parcelle_1": [
+"d",
+0,
+1000,
+493
+],
+"biome/feu/parcelle_2": [
+"d",
+0,
+1000,
+493
+],
+"biome/plante": [
+"d",
+0,
+1000,
+493
+],
+"biome/plante/parcelle_1": [
+"d",
+0,
+1000,
+493
+],
+"biome/plante/parcelle_1/.secret": [
+"f",
+3,
+1000,
+420
+],
+"biome/plante/parcelle_1/chene.arbre": [
+"f",
+7,
+1000,
+420
+],
+"biome/plante/parcelle_1/mot.txt": [
+"f",
+12,
+1000,
+420
+],
+"biome/plante/parcelle_1/rose.fleur": [
+"f",
+4,
+1000,
+420
+],
+"biome/plante/parcelle_1/sapin.arbre": [
+"f",
+0,
+1000,
+420
+],
+"biome/plante/parcelle_2": [
+"d",
+0,
+1000,
+493
+],
+"nid": [
+"d",
+0,
+1000,
+493
+]
+}
+},
+"attendu": [
+{
+"chemin": "biome",
+"cmd": "tree",
+"dossiers": 6,
+"fichiers": 0,
+"niveaux": 2,
+"prio": 2,
+"type": "arbre"
+}
+],
+"avant": {
+"cwd": "biome",
+"f": {
+"biome": [
+"d",
+0,
+1000,
+493
+],
+"biome/feu": [
+"d",
+0,
+1000,
+493
+],
+"biome/feu/parcelle_1": [
+"d",
+0,
+1000,
+493
+],
+"biome/feu/parcelle_2": [
+"d",
+0,
+1000,
+493
+],
+"biome/plante": [
+"d",
+0,
+1000,
+493
+],
+"biome/plante/parcelle_1": [
+"d",
+0,
+1000,
+493
+],
+"biome/plante/parcelle_1/.secret": [
+"f",
+3,
+1000,
+420
+],
+"biome/plante/parcelle_1/chene.arbre": [
+"f",
+7,
+1000,
+420
+],
+"biome/plante/parcelle_1/mot.txt": [
+"f",
+12,
+1000,
+420
+],
+"biome/plante/parcelle_1/rose.fleur": [
+"f",
+4,
+1000,
+420
+],
+"biome/plante/parcelle_1/sapin.arbre": [
+"f",
+0,
+1000,
+420
+],
+"biome/plante/parcelle_2": [
+"d",
+0,
+1000,
+493
+],
+"nid": [
+"d",
+0,
+1000,
+493
+]
+}
+},
+"code": 0,
+"dit": [
+"efx.dit.arbre"
+],
+"ligne": "tree -d -L 2 .",
+"sortie": ""
+},
+{
+"apres": {
+"cwd": "biome",
+"f": {
+"biome": [
+"d",
+0,
+1000,
+493
+],
+"biome/feu": [
+"d",
+0,
+1000,
+493
+],
+"biome/feu/parcelle_1": [
+"d",
+0,
+1000,
+493
+],
+"biome/feu/parcelle_2": [
+"d",
+0,
+1000,
+493
+],
+"biome/plante": [
+"d",
+0,
+1000,
+493
+],
+"biome/plante/parcelle_1": [
+"d",
+0,
+1000,
+493
+],
+"biome/plante/parcelle_1/.secret": [
+"f",
+3,
+1000,
+420
+],
+"biome/plante/parcelle_1/chene.arbre": [
+"f",
+7,
+1000,
+420
+],
+"biome/plante/parcelle_1/mot.txt": [
+"f",
+12,
+1000,
+420
+],
+"biome/plante/parcelle_1/rose.fleur": [
+"f",
+4,
+1000,
+420
+],
+"biome/plante/parcelle_1/sapin.arbre": [
+"f",
+0,
+1000,
+420
+],
+"biome/plante/parcelle_2": [
+"d",
+0,
+1000,
+493
+],
+"nid": [
+"d",
+0,
+1000,
+493
+]
+}
+},
+"attendu": [
+{
+"chemin": "biome/absent",
+"cmd": "tree",
+"existe": false,
+"prio": 3,
+"raison": "autre",
+"type": "refus"
+}
+],
+"avant": {
+"cwd": "biome",
+"f": {
+"biome": [
+"d",
+0,
+1000,
+493
+],
+"biome/feu": [
+"d",
+0,
+1000,
+493
+],
+"biome/feu/parcelle_1": [
+"d",
+0,
+1000,
+493
+],
+"biome/feu/parcelle_2": [
+"d",
+0,
+1000,
+493
+],
+"biome/plante": [
+"d",
+0,
+1000,
+493
+],
+"biome/plante/parcelle_1": [
+"d",
+0,
+1000,
+493
+],
+"biome/plante/parcelle_1/.secret": [
+"f",
+3,
+1000,
+420
+],
+"biome/plante/parcelle_1/chene.arbre": [
+"f",
+7,
+1000,
+420
+],
+"biome/plante/parcelle_1/mot.txt": [
+"f",
+12,
+1000,
+420
+],
+"biome/plante/parcelle_1/rose.fleur": [
+"f",
+4,
+1000,
+420
+],
+"biome/plante/parcelle_1/sapin.arbre": [
+"f",
+0,
+1000,
+420
+],
+"biome/plante/parcelle_2": [
+"d",
+0,
+1000,
+493
+],
+"nid": [
+"d",
+0,
+1000,
+493
+]
+}
+},
+"code": 2,
+"dit": [
+"efx.dit.refus.autre"
+],
+"ligne": "tree absent",
+"sortie": "absent [error opening dir]"
+},
+{
+"apres": {
+"cwd": "biome",
+"f": {
+"biome": [
+"d",
+0,
+1000,
+493
+],
+"biome/feu": [
+"d",
+0,
+1000,
+493
+],
+"biome/feu/parcelle_1": [
+"d",
+0,
+1000,
+493
+],
+"biome/feu/parcelle_2": [
+"d",
+0,
+1000,
+493
+],
+"biome/plante": [
+"d",
+0,
+1000,
+493
+],
+"biome/plante/parcelle_1": [
+"d",
+0,
+1000,
+493
+],
+"biome/plante/parcelle_1/.secret": [
+"f",
+3,
+1000,
+420
+],
+"biome/plante/parcelle_1/chene.arbre": [
+"f",
+7,
+1000,
+420
+],
+"biome/plante/parcelle_1/mot.txt": [
+"f",
+12,
+1000,
+420
+],
+"biome/plante/parcelle_1/rose.fleur": [
+"f",
+4,
+1000,
+420
+],
+"biome/plante/parcelle_1/sapin.arbre": [
+"f",
+0,
+1000,
+420
+],
+"biome/plante/parcelle_2": [
+"d",
+0,
+1000,
+493
+],
+"nid": [
+"d",
+0,
+1000,
+493
+]
+}
+},
+"attendu": [
+{
+"cmd": "free",
+"pourcent": 41,
+"prio": 2,
+"type": "memoire"
+}
+],
+"avant": {
+"cwd": "biome",
+"f": {
+"biome": [
+"d",
+0,
+1000,
+493
+],
+"biome/feu": [
+"d",
+0,
+1000,
+493
+],
+"biome/feu/parcelle_1": [
+"d",
+0,
+1000,
+493
+],
+"biome/feu/parcelle_2": [
+"d",
+0,
+1000,
+493
+],
+"biome/plante": [
+"d",
+0,
+1000,
+493
+],
+"biome/plante/parcelle_1": [
+"d",
+0,
+1000,
+493
+],
+"biome/plante/parcelle_1/.secret": [
+"f",
+3,
+1000,
+420
+],
+"biome/plante/parcelle_1/chene.arbre": [
+"f",
+7,
+1000,
+420
+],
+"biome/plante/parcelle_1/mot.txt": [
+"f",
+12,
+1000,
+420
+],
+"biome/plante/parcelle_1/rose.fleur": [
+"f",
+4,
+1000,
+420
+],
+"biome/plante/parcelle_1/sapin.arbre": [
+"f",
+0,
+1000,
+420
+],
+"biome/plante/parcelle_2": [
+"d",
+0,
+1000,
+493
+],
+"nid": [
+"d",
+0,
+1000,
+493
+]
+}
+},
+"code": 0,
+"dit": [
+"efx.dit.memoire"
+],
+"ligne": "free -h",
+"sortie": "               total        used        free\nMem:           7,6Gi       3,1Gi       4,5Gi\nSwap:          2,0Gi          0B       2,0Gi\n"
+},
+{
+"apres": {
+"cwd": "biome",
+"f": {
+"biome": [
+"d",
+0,
+1000,
+493
+],
+"biome/feu": [
+"d",
+0,
+1000,
+493
+],
+"biome/feu/parcelle_1": [
+"d",
+0,
+1000,
+493
+],
+"biome/feu/parcelle_2": [
+"d",
+0,
+1000,
+493
+],
+"biome/plante": [
+"d",
+0,
+1000,
+493
+],
+"biome/plante/parcelle_1": [
+"d",
+0,
+1000,
+493
+],
+"biome/plante/parcelle_1/.secret": [
+"f",
+3,
+1000,
+420
+],
+"biome/plante/parcelle_1/chene.arbre": [
+"f",
+7,
+1000,
+420
+],
+"biome/plante/parcelle_1/mot.txt": [
+"f",
+12,
+1000,
+420
+],
+"biome/plante/parcelle_1/rose.fleur": [
+"f",
+4,
+1000,
+420
+],
+"biome/plante/parcelle_1/sapin.arbre": [
+"f",
+0,
+1000,
+420
+],
+"biome/plante/parcelle_2": [
+"d",
+0,
+1000,
+493
+],
+"nid": [
+"d",
+0,
+1000,
+493
+]
+}
+},
+"attendu": [
+{
+"cmd": "free",
+"pourcent": 25,
+"prio": 2,
+"type": "memoire"
+}
+],
+"avant": {
+"cwd": "biome",
+"f": {
+"biome": [
+"d",
+0,
+1000,
+493
+],
+"biome/feu": [
+"d",
+0,
+1000,
+493
+],
+"biome/feu/parcelle_1": [
+"d",
+0,
+1000,
+493
+],
+"biome/feu/parcelle_2": [
+"d",
+0,
+1000,
+493
+],
+"biome/plante": [
+"d",
+0,
+1000,
+493
+],
+"biome/plante/parcelle_1": [
+"d",
+0,
+1000,
+493
+],
+"biome/plante/parcelle_1/.secret": [
+"f",
+3,
+1000,
+420
+],
+"biome/plante/parcelle_1/chene.arbre": [
+"f",
+7,
+1000,
+420
+],
+"biome/plante/parcelle_1/mot.txt": [
+"f",
+12,
+1000,
+420
+],
+"biome/plante/parcelle_1/rose.fleur": [
+"f",
+4,
+1000,
+420
+],
+"biome/plante/parcelle_1/sapin.arbre": [
+"f",
+0,
+1000,
+420
+],
+"biome/plante/parcelle_2": [
+"d",
+0,
+1000,
+493
+],
+"nid": [
+"d",
+0,
+1000,
+493
+]
+}
+},
+"code": 0,
+"dit": [
+"efx.dit.memoire"
+],
+"ligne": "free",
+"sortie": "              total        utilisé      libre\nMem:       16314772     4112340    9912345\n"
+},
+{
+"apres": {
+"cwd": "biome",
+"f": {
+"biome": [
+"d",
+0,
+1000,
+493
+],
+"biome/feu": [
+"d",
+0,
+1000,
+493
+],
+"biome/feu/parcelle_1": [
+"d",
+0,
+1000,
+493
+],
+"biome/feu/parcelle_2": [
+"d",
+0,
+1000,
+493
+],
+"biome/plante": [
+"d",
+0,
+1000,
+493
+],
+"biome/plante/parcelle_1": [
+"d",
+0,
+1000,
+493
+],
+"biome/plante/parcelle_1/.secret": [
+"f",
+3,
+1000,
+420
+],
+"biome/plante/parcelle_1/chene.arbre": [
+"f",
+7,
+1000,
+420
+],
+"biome/plante/parcelle_1/mot.txt": [
+"f",
+12,
+1000,
+420
+],
+"biome/plante/parcelle_1/rose.fleur": [
+"f",
+4,
+1000,
+420
+],
+"biome/plante/parcelle_1/sapin.arbre": [
+"f",
+0,
+1000,
+420
+],
+"biome/plante/parcelle_2": [
+"d",
+0,
+1000,
+493
+],
+"nid": [
+"d",
+0,
+1000,
+493
+]
+}
+},
+"attendu": [
+{
+"cmd": "free",
+"etapes": [
+"free",
+"grep"
+],
+"prio": 2,
+"region": null,
+"source": null,
+"type": "tuyau"
+}
+],
+"avant": {
+"cwd": "biome",
+"f": {
+"biome": [
+"d",
+0,
+1000,
+493
+],
+"biome/feu": [
+"d",
+0,
+1000,
+493
+],
+"biome/feu/parcelle_1": [
+"d",
+0,
+1000,
+493
+],
+"biome/feu/parcelle_2": [
+"d",
+0,
+1000,
+493
+],
+"biome/plante": [
+"d",
+0,
+1000,
+493
+],
+"biome/plante/parcelle_1": [
+"d",
+0,
+1000,
+493
+],
+"biome/plante/parcelle_1/.secret": [
+"f",
+3,
+1000,
+420
+],
+"biome/plante/parcelle_1/chene.arbre": [
+"f",
+7,
+1000,
+420
+],
+"biome/plante/parcelle_1/mot.txt": [
+"f",
+12,
+1000,
+420
+],
+"biome/plante/parcelle_1/rose.fleur": [
+"f",
+4,
+1000,
+420
+],
+"biome/plante/parcelle_1/sapin.arbre": [
+"f",
+0,
+1000,
+420
+],
+"biome/plante/parcelle_2": [
+"d",
+0,
+1000,
+493
+],
+"nid": [
+"d",
+0,
+1000,
+493
+]
+}
+},
+"code": 0,
+"dit": [
+"efx.dit.tuyau"
+],
+"ligne": "free -h | grep Mem",
+"sortie": "Mem: 7,6Gi 3,1Gi 4,5Gi\n"
+},
+{
+"apres": {
+"cwd": "biome",
+"f": {
+"biome": [
+"d",
+0,
+1000,
+493
+],
+"biome/feu": [
+"d",
+0,
+1000,
+493
+],
+"biome/feu/parcelle_1": [
+"d",
+0,
+1000,
+493
+],
+"biome/feu/parcelle_2": [
+"d",
+0,
+1000,
+493
+],
+"biome/plante": [
+"d",
+0,
+1000,
+493
+],
+"biome/plante/parcelle_1": [
+"d",
+0,
+1000,
+493
+],
+"biome/plante/parcelle_1/.secret": [
+"f",
+3,
+1000,
+420
+],
+"biome/plante/parcelle_1/chene.arbre": [
+"f",
+7,
+1000,
+420
+],
+"biome/plante/parcelle_1/mot.txt": [
+"f",
+12,
+1000,
+420
+],
+"biome/plante/parcelle_1/rose.fleur": [
+"f",
+4,
+1000,
+420
+],
+"biome/plante/parcelle_1/sapin.arbre": [
+"f",
+0,
+1000,
+420
+],
+"biome/plante/parcelle_2": [
+"d",
+0,
+1000,
+493
+],
+"nid": [
+"d",
+0,
+1000,
+493
+]
+}
+},
+"attendu": [
+{
+"cmd": "systemctl",
+"n": 3,
+"prio": 2,
+"type": "lanternes"
+}
+],
+"avant": {
+"cwd": "biome",
+"f": {
+"biome": [
+"d",
+0,
+1000,
+493
+],
+"biome/feu": [
+"d",
+0,
+1000,
+493
+],
+"biome/feu/parcelle_1": [
+"d",
+0,
+1000,
+493
+],
+"biome/feu/parcelle_2": [
+"d",
+0,
+1000,
+493
+],
+"biome/plante": [
+"d",
+0,
+1000,
+493
+],
+"biome/plante/parcelle_1": [
+"d",
+0,
+1000,
+493
+],
+"biome/plante/parcelle_1/.secret": [
+"f",
+3,
+1000,
+420
+],
+"biome/plante/parcelle_1/chene.arbre": [
+"f",
+7,
+1000,
+420
+],
+"biome/plante/parcelle_1/mot.txt": [
+"f",
+12,
+1000,
+420
+],
+"biome/plante/parcelle_1/rose.fleur": [
+"f",
+4,
+1000,
+420
+],
+"biome/plante/parcelle_1/sapin.arbre": [
+"f",
+0,
+1000,
+420
+],
+"biome/plante/parcelle_2": [
+"d",
+0,
+1000,
+493
+],
+"nid": [
+"d",
+0,
+1000,
+493
+]
+}
+},
+"code": 0,
+"dit": [
+"efx.dit.lanternes"
+],
+"ligne": "systemctl list-units --type=service --state=running",
+"sortie": "  UNIT              LOAD   ACTIVE SUB     DESCRIPTION\n  cron.service      loaded active running Cron\n  dbus.service      loaded active running D-Bus\n  ssh.service       loaded active running SSH\n\n3 loaded units listed.\n"
+},
+{
+"apres": {
+"cwd": "biome",
+"f": {
+"biome": [
+"d",
+0,
+1000,
+493
+],
+"biome/feu": [
+"d",
+0,
+1000,
+493
+],
+"biome/feu/parcelle_1": [
+"d",
+0,
+1000,
+493
+],
+"biome/feu/parcelle_2": [
+"d",
+0,
+1000,
+493
+],
+"biome/plante": [
+"d",
+0,
+1000,
+493
+],
+"biome/plante/parcelle_1": [
+"d",
+0,
+1000,
+493
+],
+"biome/plante/parcelle_1/.secret": [
+"f",
+3,
+1000,
+420
+],
+"biome/plante/parcelle_1/chene.arbre": [
+"f",
+7,
+1000,
+420
+],
+"biome/plante/parcelle_1/mot.txt": [
+"f",
+12,
+1000,
+420
+],
+"biome/plante/parcelle_1/rose.fleur": [
+"f",
+4,
+1000,
+420
+],
+"biome/plante/parcelle_1/sapin.arbre": [
+"f",
+0,
+1000,
+420
+],
+"biome/plante/parcelle_2": [
+"d",
+0,
+1000,
+493
+],
+"nid": [
+"d",
+0,
+1000,
+493
+]
+}
+},
+"attendu": [
+{
+"cmd": "systemctl",
+"n": 1,
+"prio": 2,
+"type": "lanternes"
+}
+],
+"avant": {
+"cwd": "biome",
+"f": {
+"biome": [
+"d",
+0,
+1000,
+493
+],
+"biome/feu": [
+"d",
+0,
+1000,
+493
+],
+"biome/feu/parcelle_1": [
+"d",
+0,
+1000,
+493
+],
+"biome/feu/parcelle_2": [
+"d",
+0,
+1000,
+493
+],
+"biome/plante": [
+"d",
+0,
+1000,
+493
+],
+"biome/plante/parcelle_1": [
+"d",
+0,
+1000,
+493
+],
+"biome/plante/parcelle_1/.secret": [
+"f",
+3,
+1000,
+420
+],
+"biome/plante/parcelle_1/chene.arbre": [
+"f",
+7,
+1000,
+420
+],
+"biome/plante/parcelle_1/mot.txt": [
+"f",
+12,
+1000,
+420
+],
+"biome/plante/parcelle_1/rose.fleur": [
+"f",
+4,
+1000,
+420
+],
+"biome/plante/parcelle_1/sapin.arbre": [
+"f",
+0,
+1000,
+420
+],
+"biome/plante/parcelle_2": [
+"d",
+0,
+1000,
+493
+],
+"nid": [
+"d",
+0,
+1000,
+493
+]
+}
+},
+"code": 0,
+"dit": [
+"efx.dit.lanternes"
+],
+"ligne": "systemctl status cron",
+"sortie": "● cron.service - Cron\n     Active: active (running) since lun.\n"
+},
+{
+"apres": {
+"cwd": "biome",
+"f": {
+"biome": [
+"d",
+0,
+1000,
+493
+],
+"biome/feu": [
+"d",
+0,
+1000,
+493
+],
+"biome/feu/parcelle_1": [
+"d",
+0,
+1000,
+493
+],
+"biome/feu/parcelle_2": [
+"d",
+0,
+1000,
+493
+],
+"biome/plante": [
+"d",
+0,
+1000,
+493
+],
+"biome/plante/parcelle_1": [
+"d",
+0,
+1000,
+493
+],
+"biome/plante/parcelle_1/.secret": [
+"f",
+3,
+1000,
+420
+],
+"biome/plante/parcelle_1/chene.arbre": [
+"f",
+7,
+1000,
+420
+],
+"biome/plante/parcelle_1/mot.txt": [
+"f",
+12,
+1000,
+420
+],
+"biome/plante/parcelle_1/rose.fleur": [
+"f",
+4,
+1000,
+420
+],
+"biome/plante/parcelle_1/sapin.arbre": [
+"f",
+0,
+1000,
+420
+],
+"biome/plante/parcelle_2": [
+"d",
+0,
+1000,
+493
+],
+"nid": [
+"d",
+0,
+1000,
+493
+]
+}
+},
+"attendu": [
+{
+"chemin": "biome/cron",
+"cmd": "systemctl",
+"existe": false,
+"prio": 3,
+"raison": "droits",
+"type": "refus"
+}
+],
+"avant": {
+"cwd": "biome",
+"f": {
+"biome": [
+"d",
+0,
+1000,
+493
+],
+"biome/feu": [
+"d",
+0,
+1000,
+493
+],
+"biome/feu/parcelle_1": [
+"d",
+0,
+1000,
+493
+],
+"biome/feu/parcelle_2": [
+"d",
+0,
+1000,
+493
+],
+"biome/plante": [
+"d",
+0,
+1000,
+493
+],
+"biome/plante/parcelle_1": [
+"d",
+0,
+1000,
+493
+],
+"biome/plante/parcelle_1/.secret": [
+"f",
+3,
+1000,
+420
+],
+"biome/plante/parcelle_1/chene.arbre": [
+"f",
+7,
+1000,
+420
+],
+"biome/plante/parcelle_1/mot.txt": [
+"f",
+12,
+1000,
+420
+],
+"biome/plante/parcelle_1/rose.fleur": [
+"f",
+4,
+1000,
+420
+],
+"biome/plante/parcelle_1/sapin.arbre": [
+"f",
+0,
+1000,
+420
+],
+"biome/plante/parcelle_2": [
+"d",
+0,
+1000,
+493
+],
+"nid": [
+"d",
+0,
+1000,
+493
+]
+}
+},
+"code": 1,
+"dit": [
+"efx.dit.refus.droits"
+],
+"ligne": "systemctl start cron",
+"sortie": "Failed to start cron.service: Access denied"
+},
+{
+"apres": {
+"cwd": "biome",
+"f": {
+"biome": [
+"d",
+0,
+1000,
+493
+],
+"biome/feu": [
+"d",
+0,
+1000,
+493
+],
+"biome/feu/parcelle_1": [
+"d",
+0,
+1000,
+493
+],
+"biome/feu/parcelle_2": [
+"d",
+0,
+1000,
+493
+],
+"biome/plante": [
+"d",
+0,
+1000,
+493
+],
+"biome/plante/parcelle_1": [
+"d",
+0,
+1000,
+493
+],
+"biome/plante/parcelle_1/.secret": [
+"f",
+3,
+1000,
+420
+],
+"biome/plante/parcelle_1/chene.arbre": [
+"f",
+7,
+1000,
+420
+],
+"biome/plante/parcelle_1/mot.txt": [
+"f",
+12,
+1000,
+420
+],
+"biome/plante/parcelle_1/rose.fleur": [
+"f",
+4,
+1000,
+420
+],
+"biome/plante/parcelle_1/sapin.arbre": [
+"f",
+0,
+1000,
+420
+],
+"biome/plante/parcelle_2": [
+"d",
+0,
+1000,
+493
+],
+"nid": [
+"d",
+0,
+1000,
+493
+]
+}
+},
+"attendu": [
+{
+"cmd": "crontab",
+"n": 2,
+"prio": 2,
+"type": "reveil"
+}
+],
+"avant": {
+"cwd": "biome",
+"f": {
+"biome": [
+"d",
+0,
+1000,
+493
+],
+"biome/feu": [
+"d",
+0,
+1000,
+493
+],
+"biome/feu/parcelle_1": [
+"d",
+0,
+1000,
+493
+],
+"biome/feu/parcelle_2": [
+"d",
+0,
+1000,
+493
+],
+"biome/plante": [
+"d",
+0,
+1000,
+493
+],
+"biome/plante/parcelle_1": [
+"d",
+0,
+1000,
+493
+],
+"biome/plante/parcelle_1/.secret": [
+"f",
+3,
+1000,
+420
+],
+"biome/plante/parcelle_1/chene.arbre": [
+"f",
+7,
+1000,
+420
+],
+"biome/plante/parcelle_1/mot.txt": [
+"f",
+12,
+1000,
+420
+],
+"biome/plante/parcelle_1/rose.fleur": [
+"f",
+4,
+1000,
+420
+],
+"biome/plante/parcelle_1/sapin.arbre": [
+"f",
+0,
+1000,
+420
+],
+"biome/plante/parcelle_2": [
+"d",
+0,
+1000,
+493
+],
+"nid": [
+"d",
+0,
+1000,
+493
+]
+}
+},
+"code": 0,
+"dit": [
+"efx.dit.reveil"
+],
+"ligne": "crontab -l",
+"sortie": "# m h dom mon dow command\n0 7 * * 1-5 echo debout\n*/10 * * * * date\n"
+},
+{
+"apres": {
+"cwd": "biome",
+"f": {
+"biome": [
+"d",
+0,
+1000,
+493
+],
+"biome/feu": [
+"d",
+0,
+1000,
+493
+],
+"biome/feu/parcelle_1": [
+"d",
+0,
+1000,
+493
+],
+"biome/feu/parcelle_2": [
+"d",
+0,
+1000,
+493
+],
+"biome/plante": [
+"d",
+0,
+1000,
+493
+],
+"biome/plante/parcelle_1": [
+"d",
+0,
+1000,
+493
+],
+"biome/plante/parcelle_1/.secret": [
+"f",
+3,
+1000,
+420
+],
+"biome/plante/parcelle_1/chene.arbre": [
+"f",
+7,
+1000,
+420
+],
+"biome/plante/parcelle_1/mot.txt": [
+"f",
+12,
+1000,
+420
+],
+"biome/plante/parcelle_1/rose.fleur": [
+"f",
+4,
+1000,
+420
+],
+"biome/plante/parcelle_1/sapin.arbre": [
+"f",
+0,
+1000,
+420
+],
+"biome/plante/parcelle_2": [
+"d",
+0,
+1000,
+493
+],
+"nid": [
+"d",
+0,
+1000,
+493
+]
+}
+},
+"attendu": [
+{
+"chemin": null,
+"cmd": "crontab",
+"existe": false,
+"prio": 3,
+"raison": "autre",
+"type": "refus"
+}
+],
+"avant": {
+"cwd": "biome",
+"f": {
+"biome": [
+"d",
+0,
+1000,
+493
+],
+"biome/feu": [
+"d",
+0,
+1000,
+493
+],
+"biome/feu/parcelle_1": [
+"d",
+0,
+1000,
+493
+],
+"biome/feu/parcelle_2": [
+"d",
+0,
+1000,
+493
+],
+"biome/plante": [
+"d",
+0,
+1000,
+493
+],
+"biome/plante/parcelle_1": [
+"d",
+0,
+1000,
+493
+],
+"biome/plante/parcelle_1/.secret": [
+"f",
+3,
+1000,
+420
+],
+"biome/plante/parcelle_1/chene.arbre": [
+"f",
+7,
+1000,
+420
+],
+"biome/plante/parcelle_1/mot.txt": [
+"f",
+12,
+1000,
+420
+],
+"biome/plante/parcelle_1/rose.fleur": [
+"f",
+4,
+1000,
+420
+],
+"biome/plante/parcelle_1/sapin.arbre": [
+"f",
+0,
+1000,
+420
+],
+"biome/plante/parcelle_2": [
+"d",
+0,
+1000,
+493
+],
+"nid": [
+"d",
+0,
+1000,
+493
+]
+}
+},
+"code": 1,
+"dit": [
+"efx.dit.refus.autre"
+],
+"ligne": "crontab -l",
+"sortie": "no crontab for lou"
+},
+{
+"apres": {
+"cwd": "biome",
+"f": {
+"biome": [
+"d",
+0,
+1000,
+493
+],
+"biome/feu": [
+"d",
+0,
+1000,
+493
+],
+"biome/feu/parcelle_1": [
+"d",
+0,
+1000,
+493
+],
+"biome/feu/parcelle_2": [
+"d",
+0,
+1000,
+493
+],
+"biome/plante": [
+"d",
+0,
+1000,
+493
+],
+"biome/plante/parcelle_1": [
+"d",
+0,
+1000,
+493
+],
+"biome/plante/parcelle_1/.secret": [
+"f",
+3,
+1000,
+420
+],
+"biome/plante/parcelle_1/chene.arbre": [
+"f",
+7,
+1000,
+420
+],
+"biome/plante/parcelle_1/mot.txt": [
+"f",
+12,
+1000,
+420
+],
+"biome/plante/parcelle_1/rose.fleur": [
+"f",
+4,
+1000,
+420
+],
+"biome/plante/parcelle_1/sapin.arbre": [
+"f",
+0,
+1000,
+420
+],
+"biome/plante/parcelle_2": [
+"d",
+0,
+1000,
+493
+],
+"nid": [
+"d",
+0,
+1000,
+493
+]
+}
+},
+"attendu": [
+{
+"cmd": "journalctl",
+"n": 3,
+"prio": 2,
+"type": "journal"
+}
+],
+"avant": {
+"cwd": "biome",
+"f": {
+"biome": [
+"d",
+0,
+1000,
+493
+],
+"biome/feu": [
+"d",
+0,
+1000,
+493
+],
+"biome/feu/parcelle_1": [
+"d",
+0,
+1000,
+493
+],
+"biome/feu/parcelle_2": [
+"d",
+0,
+1000,
+493
+],
+"biome/plante": [
+"d",
+0,
+1000,
+493
+],
+"biome/plante/parcelle_1": [
+"d",
+0,
+1000,
+493
+],
+"biome/plante/parcelle_1/.secret": [
+"f",
+3,
+1000,
+420
+],
+"biome/plante/parcelle_1/chene.arbre": [
+"f",
+7,
+1000,
+420
+],
+"biome/plante/parcelle_1/mot.txt": [
+"f",
+12,
+1000,
+420
+],
+"biome/plante/parcelle_1/rose.fleur": [
+"f",
+4,
+1000,
+420
+],
+"biome/plante/parcelle_1/sapin.arbre": [
+"f",
+0,
+1000,
+420
+],
+"biome/plante/parcelle_2": [
+"d",
+0,
+1000,
+493
+],
+"nid": [
+"d",
+0,
+1000,
+493
+]
+}
+},
+"code": 0,
+"dit": [
+"efx.dit.journal"
+],
+"ligne": "journalctl -n 3",
+"sortie": "-- Logs begin --\nnov. 02 14:01 poste a\nnov. 02 14:02 poste b\nnov. 02 14:03 poste c\n"
+},
+{
+"apres": {
+"cwd": "biome/plante/parcelle_1",
+"f": {
+"biome": [
+"d",
+0,
+1000,
+493
+],
+"biome/feu": [
+"d",
+0,
+1000,
+493
+],
+"biome/feu/parcelle_1": [
+"d",
+0,
+1000,
+493
+],
+"biome/feu/parcelle_2": [
+"d",
+0,
+1000,
+493
+],
+"biome/plante": [
+"d",
+0,
+1000,
+493
+],
+"biome/plante/parcelle_1": [
+"d",
+0,
+1000,
+493
+],
+"biome/plante/parcelle_1/.secret": [
+"f",
+3,
+1000,
+420
+],
+"biome/plante/parcelle_1/chene.arbre": [
+"f",
+7,
+1000,
+420
+],
+"biome/plante/parcelle_1/mot.txt": [
+"f",
+12,
+1000,
+420
+],
+"biome/plante/parcelle_1/rose.fleur": [
+"f",
+4,
+1000,
+420
+],
+"biome/plante/parcelle_1/sapin.arbre": [
+"f",
+0,
+1000,
+420
+],
+"biome/plante/parcelle_2": [
+"d",
+0,
+1000,
+493
+],
+"nid": [
+"d",
+0,
+1000,
+493
+]
+}
+},
+"attendu": [
+{
+"chemin": "biome/plante/parcelle_1/chene.arbre",
+"chemins": [
+"biome/plante/parcelle_1/chene.arbre",
+"biome/plante/parcelle_1/mot.txt"
+],
+"cmd": "git",
+"n": 2,
+"prio": 2,
+"type": "etoile"
+}
+],
+"avant": {
+"cwd": "biome/plante/parcelle_1",
+"f": {
+"biome": [
+"d",
+0,
+1000,
+493
+],
+"biome/feu": [
+"d",
+0,
+1000,
+493
+],
+"biome/feu/parcelle_1": [
+"d",
+0,
+1000,
+493
+],
+"biome/feu/parcelle_2": [
+"d",
+0,
+1000,
+493
+],
+"biome/plante": [
+"d",
+0,
+1000,
+493
+],
+"biome/plante/parcelle_1": [
+"d",
+0,
+1000,
+493
+],
+"biome/plante/parcelle_1/.secret": [
+"f",
+3,
+1000,
+420
+],
+"biome/plante/parcelle_1/chene.arbre": [
+"f",
+7,
+1000,
+420
+],
+"biome/plante/parcelle_1/mot.txt": [
+"f",
+12,
+1000,
+420
+],
+"biome/plante/parcelle_1/rose.fleur": [
+"f",
+4,
+1000,
+420
+],
+"biome/plante/parcelle_1/sapin.arbre": [
+"f",
+0,
+1000,
+420
+],
+"biome/plante/parcelle_2": [
+"d",
+0,
+1000,
+493
+],
+"nid": [
+"d",
+0,
+1000,
+493
+]
+}
+},
+"code": 0,
+"dit": [
+"efx.dit.etoile"
+],
+"ligne": "git add chene.arbre mot.txt",
+"sortie": ""
+},
+{
+"apres": {
+"cwd": "biome/plante/parcelle_1",
+"f": {
+"biome": [
+"d",
+0,
+1000,
+493
+],
+"biome/feu": [
+"d",
+0,
+1000,
+493
+],
+"biome/feu/parcelle_1": [
+"d",
+0,
+1000,
+493
+],
+"biome/feu/parcelle_2": [
+"d",
+0,
+1000,
+493
+],
+"biome/plante": [
+"d",
+0,
+1000,
+493
+],
+"biome/plante/parcelle_1": [
+"d",
+0,
+1000,
+493
+],
+"biome/plante/parcelle_1/.secret": [
+"f",
+3,
+1000,
+420
+],
+"biome/plante/parcelle_1/chene.arbre": [
+"f",
+7,
+1000,
+420
+],
+"biome/plante/parcelle_1/mot.txt": [
+"f",
+12,
+1000,
+420
+],
+"biome/plante/parcelle_1/rose.fleur": [
+"f",
+4,
+1000,
+420
+],
+"biome/plante/parcelle_1/sapin.arbre": [
+"f",
+0,
+1000,
+420
+],
+"biome/plante/parcelle_2": [
+"d",
+0,
+1000,
+493
+],
+"nid": [
+"d",
+0,
+1000,
+493
+]
+}
+},
+"attendu": [
+{
+"chemin": "biome/plante/parcelle_1",
+"chemins": [
+"biome/plante/parcelle_1"
+],
+"cmd": "git",
+"n": 1,
+"prio": 2,
+"type": "etoile"
+}
+],
+"avant": {
+"cwd": "biome/plante/parcelle_1",
+"f": {
+"biome": [
+"d",
+0,
+1000,
+493
+],
+"biome/feu": [
+"d",
+0,
+1000,
+493
+],
+"biome/feu/parcelle_1": [
+"d",
+0,
+1000,
+493
+],
+"biome/feu/parcelle_2": [
+"d",
+0,
+1000,
+493
+],
+"biome/plante": [
+"d",
+0,
+1000,
+493
+],
+"biome/plante/parcelle_1": [
+"d",
+0,
+1000,
+493
+],
+"biome/plante/parcelle_1/.secret": [
+"f",
+3,
+1000,
+420
+],
+"biome/plante/parcelle_1/chene.arbre": [
+"f",
+7,
+1000,
+420
+],
+"biome/plante/parcelle_1/mot.txt": [
+"f",
+12,
+1000,
+420
+],
+"biome/plante/parcelle_1/rose.fleur": [
+"f",
+4,
+1000,
+420
+],
+"biome/plante/parcelle_1/sapin.arbre": [
+"f",
+0,
+1000,
+420
+],
+"biome/plante/parcelle_2": [
+"d",
+0,
+1000,
+493
+],
+"nid": [
+"d",
+0,
+1000,
+493
+]
+}
+},
+"code": 0,
+"dit": [
+"efx.dit.etoile"
+],
+"ligne": "git add .",
+"sortie": ""
+},
+{
+"apres": {
+"cwd": "biome/plante/parcelle_1",
+"f": {
+"biome": [
+"d",
+0,
+1000,
+493
+],
+"biome/feu": [
+"d",
+0,
+1000,
+493
+],
+"biome/feu/parcelle_1": [
+"d",
+0,
+1000,
+493
+],
+"biome/feu/parcelle_2": [
+"d",
+0,
+1000,
+493
+],
+"biome/plante": [
+"d",
+0,
+1000,
+493
+],
+"biome/plante/parcelle_1": [
+"d",
+0,
+1000,
+493
+],
+"biome/plante/parcelle_1/.secret": [
+"f",
+3,
+1000,
+420
+],
+"biome/plante/parcelle_1/chene.arbre": [
+"f",
+7,
+1000,
+420
+],
+"biome/plante/parcelle_1/mot.txt": [
+"f",
+12,
+1000,
+420
+],
+"biome/plante/parcelle_1/rose.fleur": [
+"f",
+4,
+1000,
+420
+],
+"biome/plante/parcelle_1/sapin.arbre": [
+"f",
+0,
+1000,
+420
+],
+"biome/plante/parcelle_2": [
+"d",
+0,
+1000,
+493
+],
+"nid": [
+"d",
+0,
+1000,
+493
+]
+}
+},
+"attendu": [
+{
+"chemin": "biome/plante/parcelle_1",
+"chemins": [
+"biome/plante/parcelle_1"
+],
+"cmd": "git",
+"n": 1,
+"prio": 2,
+"type": "etoile"
+}
+],
+"avant": {
+"cwd": "biome/plante/parcelle_1",
+"f": {
+"biome": [
+"d",
+0,
+1000,
+493
+],
+"biome/feu": [
+"d",
+0,
+1000,
+493
+],
+"biome/feu/parcelle_1": [
+"d",
+0,
+1000,
+493
+],
+"biome/feu/parcelle_2": [
+"d",
+0,
+1000,
+493
+],
+"biome/plante": [
+"d",
+0,
+1000,
+493
+],
+"biome/plante/parcelle_1": [
+"d",
+0,
+1000,
+493
+],
+"biome/plante/parcelle_1/.secret": [
+"f",
+3,
+1000,
+420
+],
+"biome/plante/parcelle_1/chene.arbre": [
+"f",
+7,
+1000,
+420
+],
+"biome/plante/parcelle_1/mot.txt": [
+"f",
+12,
+1000,
+420
+],
+"biome/plante/parcelle_1/rose.fleur": [
+"f",
+4,
+1000,
+420
+],
+"biome/plante/parcelle_1/sapin.arbre": [
+"f",
+0,
+1000,
+420
+],
+"biome/plante/parcelle_2": [
+"d",
+0,
+1000,
+493
+],
+"nid": [
+"d",
+0,
+1000,
+493
+]
+}
+},
+"code": 0,
+"dit": [
+"efx.dit.etoile"
+],
+"ligne": "git add -A",
+"sortie": ""
+},
+{
+"apres": {
+"cwd": "biome/plante/parcelle_1",
+"f": {
+"biome": [
+"d",
+0,
+1000,
+493
+],
+"biome/feu": [
+"d",
+0,
+1000,
+493
+],
+"biome/feu/parcelle_1": [
+"d",
+0,
+1000,
+493
+],
+"biome/feu/parcelle_2": [
+"d",
+0,
+1000,
+493
+],
+"biome/plante": [
+"d",
+0,
+1000,
+493
+],
+"biome/plante/parcelle_1": [
+"d",
+0,
+1000,
+493
+],
+"biome/plante/parcelle_1/.secret": [
+"f",
+3,
+1000,
+420
+],
+"biome/plante/parcelle_1/chene.arbre": [
+"f",
+7,
+1000,
+420
+],
+"biome/plante/parcelle_1/mot.txt": [
+"f",
+12,
+1000,
+420
+],
+"biome/plante/parcelle_1/rose.fleur": [
+"f",
+4,
+1000,
+420
+],
+"biome/plante/parcelle_1/sapin.arbre": [
+"f",
+0,
+1000,
+420
+],
+"biome/plante/parcelle_2": [
+"d",
+0,
+1000,
+493
+],
+"nid": [
+"d",
+0,
+1000,
+493
+]
+}
+},
+"attendu": [
+{
+"chemin": "biome/plante/parcelle_1",
+"cmd": "git",
+"n": 3,
+"prio": 2,
+"quoi": "voir",
+"type": "album"
+}
+],
+"avant": {
+"cwd": "biome/plante/parcelle_1",
+"f": {
+"biome": [
+"d",
+0,
+1000,
+493
+],
+"biome/feu": [
+"d",
+0,
+1000,
+493
+],
+"biome/feu/parcelle_1": [
+"d",
+0,
+1000,
+493
+],
+"biome/feu/parcelle_2": [
+"d",
+0,
+1000,
+493
+],
+"biome/plante": [
+"d",
+0,
+1000,
+493
+],
+"biome/plante/parcelle_1": [
+"d",
+0,
+1000,
+493
+],
+"biome/plante/parcelle_1/.secret": [
+"f",
+3,
+1000,
+420
+],
+"biome/plante/parcelle_1/chene.arbre": [
+"f",
+7,
+1000,
+420
+],
+"biome/plante/parcelle_1/mot.txt": [
+"f",
+12,
+1000,
+420
+],
+"biome/plante/parcelle_1/rose.fleur": [
+"f",
+4,
+1000,
+420
+],
+"biome/plante/parcelle_1/sapin.arbre": [
+"f",
+0,
+1000,
+420
+],
+"biome/plante/parcelle_2": [
+"d",
+0,
+1000,
+493
+],
+"nid": [
+"d",
+0,
+1000,
+493
+]
+}
+},
+"code": 0,
+"dit": [
+"efx.dit.album.voir"
+],
+"ligne": "git log --oneline",
+"sortie": "3f9a2c1 mon jardin\n8b07e4d premières fleurs\nc21aa90 début\n"
+},
+{
+"apres": {
+"cwd": "biome/plante/parcelle_1",
+"f": {
+"biome": [
+"d",
+0,
+1000,
+493
+],
+"biome/feu": [
+"d",
+0,
+1000,
+493
+],
+"biome/feu/parcelle_1": [
+"d",
+0,
+1000,
+493
+],
+"biome/feu/parcelle_2": [
+"d",
+0,
+1000,
+493
+],
+"biome/plante": [
+"d",
+0,
+1000,
+493
+],
+"biome/plante/parcelle_1": [
+"d",
+0,
+1000,
+493
+],
+"biome/plante/parcelle_1/.secret": [
+"f",
+3,
+1000,
+420
+],
+"biome/plante/parcelle_1/chene.arbre": [
+"f",
+7,
+1000,
+420
+],
+"biome/plante/parcelle_1/mot.txt": [
+"f",
+12,
+1000,
+420
+],
+"biome/plante/parcelle_1/rose.fleur": [
+"f",
+4,
+1000,
+420
+],
+"biome/plante/parcelle_1/sapin.arbre": [
+"f",
+0,
+1000,
+420
+],
+"biome/plante/parcelle_2": [
+"d",
+0,
+1000,
+493
+],
+"nid": [
+"d",
+0,
+1000,
+493
+]
+}
+},
+"attendu": [
+{
+"chemin": "biome/plante/parcelle_1",
+"cmd": "git",
+"n": 2,
+"prio": 2,
+"quoi": "voir",
+"type": "album"
+}
+],
+"avant": {
+"cwd": "biome/plante/parcelle_1",
+"f": {
+"biome": [
+"d",
+0,
+1000,
+493
+],
+"biome/feu": [
+"d",
+0,
+1000,
+493
+],
+"biome/feu/parcelle_1": [
+"d",
+0,
+1000,
+493
+],
+"biome/feu/parcelle_2": [
+"d",
+0,
+1000,
+493
+],
+"biome/plante": [
+"d",
+0,
+1000,
+493
+],
+"biome/plante/parcelle_1": [
+"d",
+0,
+1000,
+493
+],
+"biome/plante/parcelle_1/.secret": [
+"f",
+3,
+1000,
+420
+],
+"biome/plante/parcelle_1/chene.arbre": [
+"f",
+7,
+1000,
+420
+],
+"biome/plante/parcelle_1/mot.txt": [
+"f",
+12,
+1000,
+420
+],
+"biome/plante/parcelle_1/rose.fleur": [
+"f",
+4,
+1000,
+420
+],
+"biome/plante/parcelle_1/sapin.arbre": [
+"f",
+0,
+1000,
+420
+],
+"biome/plante/parcelle_2": [
+"d",
+0,
+1000,
+493
+],
+"nid": [
+"d",
+0,
+1000,
+493
+]
+}
+},
+"code": 0,
+"dit": [
+"efx.dit.album.voir"
+],
+"ligne": "git log",
+"sortie": "commit 3f9a2c1\nAuthor: x\n\n    un\n\ncommit 8b07e4d\nAuthor: x\n\n    deux\n"
+},
+{
+"apres": {
+"cwd": "biome/plante/parcelle_1",
+"f": {
+"biome": [
+"d",
+0,
+1000,
+493
+],
+"biome/feu": [
+"d",
+0,
+1000,
+493
+],
+"biome/feu/parcelle_1": [
+"d",
+0,
+1000,
+493
+],
+"biome/feu/parcelle_2": [
+"d",
+0,
+1000,
+493
+],
+"biome/plante": [
+"d",
+0,
+1000,
+493
+],
+"biome/plante/parcelle_1": [
+"d",
+0,
+1000,
+493
+],
+"biome/plante/parcelle_1/.secret": [
+"f",
+3,
+1000,
+420
+],
+"biome/plante/parcelle_1/chene.arbre": [
+"f",
+7,
+1000,
+420
+],
+"biome/plante/parcelle_1/mot.txt": [
+"f",
+12,
+1000,
+420
+],
+"biome/plante/parcelle_1/rose.fleur": [
+"f",
+4,
+1000,
+420
+],
+"biome/plante/parcelle_1/sapin.arbre": [
+"f",
+0,
+1000,
+420
+],
+"biome/plante/parcelle_2": [
+"d",
+0,
+1000,
+493
+],
+"nid": [
+"d",
+0,
+1000,
+493
+]
+}
+},
+"attendu": [
+{
+"cmd": "git",
+"etapes": [
+"git",
+"head"
+],
+"prio": 2,
+"region": "plante",
+"source": null,
+"type": "tuyau"
+}
+],
+"avant": {
+"cwd": "biome/plante/parcelle_1",
+"f": {
+"biome": [
+"d",
+0,
+1000,
+493
+],
+"biome/feu": [
+"d",
+0,
+1000,
+493
+],
+"biome/feu/parcelle_1": [
+"d",
+0,
+1000,
+493
+],
+"biome/feu/parcelle_2": [
+"d",
+0,
+1000,
+493
+],
+"biome/plante": [
+"d",
+0,
+1000,
+493
+],
+"biome/plante/parcelle_1": [
+"d",
+0,
+1000,
+493
+],
+"biome/plante/parcelle_1/.secret": [
+"f",
+3,
+1000,
+420
+],
+"biome/plante/parcelle_1/chene.arbre": [
+"f",
+7,
+1000,
+420
+],
+"biome/plante/parcelle_1/mot.txt": [
+"f",
+12,
+1000,
+420
+],
+"biome/plante/parcelle_1/rose.fleur": [
+"f",
+4,
+1000,
+420
+],
+"biome/plante/parcelle_1/sapin.arbre": [
+"f",
+0,
+1000,
+420
+],
+"biome/plante/parcelle_2": [
+"d",
+0,
+1000,
+493
+],
+"nid": [
+"d",
+0,
+1000,
+493
+]
+}
+},
+"code": 0,
+"dit": [
+"efx.dit.tuyau"
+],
+"ligne": "git log | head -3",
+"sortie": "commit 3f9a2c1\n"
+},
+{
+"apres": {
+"cwd": "biome/plante/parcelle_1",
+"f": {
+"biome": [
+"d",
+0,
+1000,
+493
+],
+"biome/feu": [
+"d",
+0,
+1000,
+493
+],
+"biome/feu/parcelle_1": [
+"d",
+0,
+1000,
+493
+],
+"biome/feu/parcelle_2": [
+"d",
+0,
+1000,
+493
+],
+"biome/plante": [
+"d",
+0,
+1000,
+493
+],
+"biome/plante/parcelle_1": [
+"d",
+0,
+1000,
+493
+],
+"biome/plante/parcelle_1/.secret": [
+"f",
+3,
+1000,
+420
+],
+"biome/plante/parcelle_1/chene.arbre": [
+"f",
+7,
+1000,
+420
+],
+"biome/plante/parcelle_1/mot.txt": [
+"f",
+12,
+1000,
+420
+],
+"biome/plante/parcelle_1/rose.fleur": [
+"f",
+4,
+1000,
+420
+],
+"biome/plante/parcelle_1/sapin.arbre": [
+"f",
+0,
+1000,
+420
+],
+"biome/plante/parcelle_2": [
+"d",
+0,
+1000,
+493
+],
+"nid": [
+"d",
+0,
+1000,
+493
+]
+}
+},
+"attendu": [
+{
+"chemin": "biome/plante/parcelle_1",
+"cmd": "git",
+"nom": "essai",
+"prio": 2,
+"quoi": "nouvelle",
+"type": "branche"
+}
+],
+"avant": {
+"cwd": "biome/plante/parcelle_1",
+"f": {
+"biome": [
+"d",
+0,
+1000,
+493
+],
+"biome/feu": [
+"d",
+0,
+1000,
+493
+],
+"biome/feu/parcelle_1": [
+"d",
+0,
+1000,
+493
+],
+"biome/feu/parcelle_2": [
+"d",
+0,
+1000,
+493
+],
+"biome/plante": [
+"d",
+0,
+1000,
+493
+],
+"biome/plante/parcelle_1": [
+"d",
+0,
+1000,
+493
+],
+"biome/plante/parcelle_1/.secret": [
+"f",
+3,
+1000,
+420
+],
+"biome/plante/parcelle_1/chene.arbre": [
+"f",
+7,
+1000,
+420
+],
+"biome/plante/parcelle_1/mot.txt": [
+"f",
+12,
+1000,
+420
+],
+"biome/plante/parcelle_1/rose.fleur": [
+"f",
+4,
+1000,
+420
+],
+"biome/plante/parcelle_1/sapin.arbre": [
+"f",
+0,
+1000,
+420
+],
+"biome/plante/parcelle_2": [
+"d",
+0,
+1000,
+493
+],
+"nid": [
+"d",
+0,
+1000,
+493
+]
+}
+},
+"code": 0,
+"dit": [
+"efx.dit.branche.nouvelle"
+],
+"ligne": "git branch essai",
+"sortie": ""
+},
+{
+"apres": {
+"cwd": "biome/plante/parcelle_1",
+"f": {
+"biome": [
+"d",
+0,
+1000,
+493
+],
+"biome/feu": [
+"d",
+0,
+1000,
+493
+],
+"biome/feu/parcelle_1": [
+"d",
+0,
+1000,
+493
+],
+"biome/feu/parcelle_2": [
+"d",
+0,
+1000,
+493
+],
+"biome/plante": [
+"d",
+0,
+1000,
+493
+],
+"biome/plante/parcelle_1": [
+"d",
+0,
+1000,
+493
+],
+"biome/plante/parcelle_1/.secret": [
+"f",
+3,
+1000,
+420
+],
+"biome/plante/parcelle_1/chene.arbre": [
+"f",
+7,
+1000,
+420
+],
+"biome/plante/parcelle_1/mot.txt": [
+"f",
+12,
+1000,
+420
+],
+"biome/plante/parcelle_1/rose.fleur": [
+"f",
+4,
+1000,
+420
+],
+"biome/plante/parcelle_1/sapin.arbre": [
+"f",
+0,
+1000,
+420
+],
+"biome/plante/parcelle_2": [
+"d",
+0,
+1000,
+493
+],
+"nid": [
+"d",
+0,
+1000,
+493
+]
+}
+},
+"attendu": [],
+"avant": {
+"cwd": "biome/plante/parcelle_1",
+"f": {
+"biome": [
+"d",
+0,
+1000,
+493
+],
+"biome/feu": [
+"d",
+0,
+1000,
+493
+],
+"biome/feu/parcelle_1": [
+"d",
+0,
+1000,
+493
+],
+"biome/feu/parcelle_2": [
+"d",
+0,
+1000,
+493
+],
+"biome/plante": [
+"d",
+0,
+1000,
+493
+],
+"biome/plante/parcelle_1": [
+"d",
+0,
+1000,
+493
+],
+"biome/plante/parcelle_1/.secret": [
+"f",
+3,
+1000,
+420
+],
+"biome/plante/parcelle_1/chene.arbre": [
+"f",
+7,
+1000,
+420
+],
+"biome/plante/parcelle_1/mot.txt": [
+"f",
+12,
+1000,
+420
+],
+"biome/plante/parcelle_1/rose.fleur": [
+"f",
+4,
+1000,
+420
+],
+"biome/plante/parcelle_1/sapin.arbre": [
+"f",
+0,
+1000,
+420
+],
+"biome/plante/parcelle_2": [
+"d",
+0,
+1000,
+493
+],
+"nid": [
+"d",
+0,
+1000,
+493
+]
+}
+},
+"code": 0,
+"dit": [],
+"ligne": "git branch -d essai",
+"sortie": ""
+},
+{
+"apres": {
+"cwd": "biome/plante/parcelle_1",
+"f": {
+"biome": [
+"d",
+0,
+1000,
+493
+],
+"biome/feu": [
+"d",
+0,
+1000,
+493
+],
+"biome/feu/parcelle_1": [
+"d",
+0,
+1000,
+493
+],
+"biome/feu/parcelle_2": [
+"d",
+0,
+1000,
+493
+],
+"biome/plante": [
+"d",
+0,
+1000,
+493
+],
+"biome/plante/parcelle_1": [
+"d",
+0,
+1000,
+493
+],
+"biome/plante/parcelle_1/.secret": [
+"f",
+3,
+1000,
+420
+],
+"biome/plante/parcelle_1/chene.arbre": [
+"f",
+7,
+1000,
+420
+],
+"biome/plante/parcelle_1/mot.txt": [
+"f",
+12,
+1000,
+420
+],
+"biome/plante/parcelle_1/rose.fleur": [
+"f",
+4,
+1000,
+420
+],
+"biome/plante/parcelle_1/sapin.arbre": [
+"f",
+0,
+1000,
+420
+],
+"biome/plante/parcelle_2": [
+"d",
+0,
+1000,
+493
+],
+"nid": [
+"d",
+0,
+1000,
+493
+]
+}
+},
+"attendu": [],
+"avant": {
+"cwd": "biome/plante/parcelle_1",
+"f": {
+"biome": [
+"d",
+0,
+1000,
+493
+],
+"biome/feu": [
+"d",
+0,
+1000,
+493
+],
+"biome/feu/parcelle_1": [
+"d",
+0,
+1000,
+493
+],
+"biome/feu/parcelle_2": [
+"d",
+0,
+1000,
+493
+],
+"biome/plante": [
+"d",
+0,
+1000,
+493
+],
+"biome/plante/parcelle_1": [
+"d",
+0,
+1000,
+493
+],
+"biome/plante/parcelle_1/.secret": [
+"f",
+3,
+1000,
+420
+],
+"biome/plante/parcelle_1/chene.arbre": [
+"f",
+7,
+1000,
+420
+],
+"biome/plante/parcelle_1/mot.txt": [
+"f",
+12,
+1000,
+420
+],
+"biome/plante/parcelle_1/rose.fleur": [
+"f",
+4,
+1000,
+420
+],
+"biome/plante/parcelle_1/sapin.arbre": [
+"f",
+0,
+1000,
+420
+],
+"biome/plante/parcelle_2": [
+"d",
+0,
+1000,
+493
+],
+"nid": [
+"d",
+0,
+1000,
+493
+]
+}
+},
+"code": 0,
+"dit": [],
+"ligne": "git branch",
+"sortie": "* main\n"
+},
+{
+"apres": {
+"cwd": "biome/plante/parcelle_1",
+"f": {
+"biome": [
+"d",
+0,
+1000,
+493
+],
+"biome/feu": [
+"d",
+0,
+1000,
+493
+],
+"biome/feu/parcelle_1": [
+"d",
+0,
+1000,
+493
+],
+"biome/feu/parcelle_2": [
+"d",
+0,
+1000,
+493
+],
+"biome/plante": [
+"d",
+0,
+1000,
+493
+],
+"biome/plante/parcelle_1": [
+"d",
+0,
+1000,
+493
+],
+"biome/plante/parcelle_1/.secret": [
+"f",
+3,
+1000,
+420
+],
+"biome/plante/parcelle_1/chene.arbre": [
+"f",
+7,
+1000,
+420
+],
+"biome/plante/parcelle_1/mot.txt": [
+"f",
+12,
+1000,
+420
+],
+"biome/plante/parcelle_1/rose.fleur": [
+"f",
+4,
+1000,
+420
+],
+"biome/plante/parcelle_1/sapin.arbre": [
+"f",
+0,
+1000,
+420
+],
+"biome/plante/parcelle_2": [
+"d",
+0,
+1000,
+493
+],
+"nid": [
+"d",
+0,
+1000,
+493
+]
+}
+},
+"attendu": [
+{
+"chemin": "biome/plante/parcelle_1",
+"cmd": "git",
+"nom": "essai",
+"prio": 2,
+"quoi": "nouvelle",
+"type": "branche"
+}
+],
+"avant": {
+"cwd": "biome/plante/parcelle_1",
+"f": {
+"biome": [
+"d",
+0,
+1000,
+493
+],
+"biome/feu": [
+"d",
+0,
+1000,
+493
+],
+"biome/feu/parcelle_1": [
+"d",
+0,
+1000,
+493
+],
+"biome/feu/parcelle_2": [
+"d",
+0,
+1000,
+493
+],
+"biome/plante": [
+"d",
+0,
+1000,
+493
+],
+"biome/plante/parcelle_1": [
+"d",
+0,
+1000,
+493
+],
+"biome/plante/parcelle_1/.secret": [
+"f",
+3,
+1000,
+420
+],
+"biome/plante/parcelle_1/chene.arbre": [
+"f",
+7,
+1000,
+420
+],
+"biome/plante/parcelle_1/mot.txt": [
+"f",
+12,
+1000,
+420
+],
+"biome/plante/parcelle_1/rose.fleur": [
+"f",
+4,
+1000,
+420
+],
+"biome/plante/parcelle_1/sapin.arbre": [
+"f",
+0,
+1000,
+420
+],
+"biome/plante/parcelle_2": [
+"d",
+0,
+1000,
+493
+],
+"nid": [
+"d",
+0,
+1000,
+493
+]
+}
+},
+"code": 0,
+"dit": [
+"efx.dit.branche.nouvelle"
+],
+"ligne": "git switch -c essai",
+"sortie": ""
+},
+{
+"apres": {
+"cwd": "biome/plante/parcelle_1",
+"f": {
+"biome": [
+"d",
+0,
+1000,
+493
+],
+"biome/feu": [
+"d",
+0,
+1000,
+493
+],
+"biome/feu/parcelle_1": [
+"d",
+0,
+1000,
+493
+],
+"biome/feu/parcelle_2": [
+"d",
+0,
+1000,
+493
+],
+"biome/plante": [
+"d",
+0,
+1000,
+493
+],
+"biome/plante/parcelle_1": [
+"d",
+0,
+1000,
+493
+],
+"biome/plante/parcelle_1/.secret": [
+"f",
+3,
+1000,
+420
+],
+"biome/plante/parcelle_1/chene.arbre": [
+"f",
+7,
+1000,
+420
+],
+"biome/plante/parcelle_1/mot.txt": [
+"f",
+12,
+1000,
+420
+],
+"biome/plante/parcelle_1/rose.fleur": [
+"f",
+4,
+1000,
+420
+],
+"biome/plante/parcelle_1/sapin.arbre": [
+"f",
+0,
+1000,
+420
+],
+"biome/plante/parcelle_2": [
+"d",
+0,
+1000,
+493
+],
+"nid": [
+"d",
+0,
+1000,
+493
+]
+}
+},
+"attendu": [
+{
+"chemin": "biome/plante/parcelle_1",
+"cmd": "git",
+"nom": "essai",
+"prio": 2,
+"quoi": "nouvelle",
+"type": "branche"
+}
+],
+"avant": {
+"cwd": "biome/plante/parcelle_1",
+"f": {
+"biome": [
+"d",
+0,
+1000,
+493
+],
+"biome/feu": [
+"d",
+0,
+1000,
+493
+],
+"biome/feu/parcelle_1": [
+"d",
+0,
+1000,
+493
+],
+"biome/feu/parcelle_2": [
+"d",
+0,
+1000,
+493
+],
+"biome/plante": [
+"d",
+0,
+1000,
+493
+],
+"biome/plante/parcelle_1": [
+"d",
+0,
+1000,
+493
+],
+"biome/plante/parcelle_1/.secret": [
+"f",
+3,
+1000,
+420
+],
+"biome/plante/parcelle_1/chene.arbre": [
+"f",
+7,
+1000,
+420
+],
+"biome/plante/parcelle_1/mot.txt": [
+"f",
+12,
+1000,
+420
+],
+"biome/plante/parcelle_1/rose.fleur": [
+"f",
+4,
+1000,
+420
+],
+"biome/plante/parcelle_1/sapin.arbre": [
+"f",
+0,
+1000,
+420
+],
+"biome/plante/parcelle_2": [
+"d",
+0,
+1000,
+493
+],
+"nid": [
+"d",
+0,
+1000,
+493
+]
+}
+},
+"code": 0,
+"dit": [
+"efx.dit.branche.nouvelle"
+],
+"ligne": "git checkout -b essai",
+"sortie": ""
+},
+{
+"apres": {
+"cwd": "biome/plante/parcelle_1",
+"f": {
+"biome": [
+"d",
+0,
+1000,
+493
+],
+"biome/feu": [
+"d",
+0,
+1000,
+493
+],
+"biome/feu/parcelle_1": [
+"d",
+0,
+1000,
+493
+],
+"biome/feu/parcelle_2": [
+"d",
+0,
+1000,
+493
+],
+"biome/plante": [
+"d",
+0,
+1000,
+493
+],
+"biome/plante/parcelle_1": [
+"d",
+0,
+1000,
+493
+],
+"biome/plante/parcelle_1/.secret": [
+"f",
+3,
+1000,
+420
+],
+"biome/plante/parcelle_1/chene.arbre": [
+"f",
+7,
+1000,
+420
+],
+"biome/plante/parcelle_1/mot.txt": [
+"f",
+20,
+3000,
+420
+],
+"biome/plante/parcelle_1/rose.fleur": [
+"f",
+4,
+1000,
+420
+],
+"biome/plante/parcelle_1/sapin.arbre": [
+"f",
+0,
+1000,
+420
+],
+"biome/plante/parcelle_2": [
+"d",
+0,
+1000,
+493
+],
+"nid": [
+"d",
+0,
+1000,
+493
+]
+}
+},
+"attendu": [
+{
+"chemin": "biome/plante/parcelle_1/mot.txt",
+"cmd": "git",
+"prio": 2,
+"type": "modifie"
+},
+{
+"chemin": "biome/plante/parcelle_1",
+"cmd": "git",
+"nom": "main",
+"prio": 2,
+"quoi": "change",
+"type": "branche"
+}
+],
+"avant": {
+"cwd": "biome/plante/parcelle_1",
+"f": {
+"biome": [
+"d",
+0,
+1000,
+493
+],
+"biome/feu": [
+"d",
+0,
+1000,
+493
+],
+"biome/feu/parcelle_1": [
+"d",
+0,
+1000,
+493
+],
+"biome/feu/parcelle_2": [
+"d",
+0,
+1000,
+493
+],
+"biome/plante": [
+"d",
+0,
+1000,
+493
+],
+"biome/plante/parcelle_1": [
+"d",
+0,
+1000,
+493
+],
+"biome/plante/parcelle_1/.secret": [
+"f",
+3,
+1000,
+420
+],
+"biome/plante/parcelle_1/chene.arbre": [
+"f",
+7,
+1000,
+420
+],
+"biome/plante/parcelle_1/mot.txt": [
+"f",
+12,
+1000,
+420
+],
+"biome/plante/parcelle_1/rose.fleur": [
+"f",
+4,
+1000,
+420
+],
+"biome/plante/parcelle_1/sapin.arbre": [
+"f",
+0,
+1000,
+420
+],
+"biome/plante/parcelle_2": [
+"d",
+0,
+1000,
+493
+],
+"nid": [
+"d",
+0,
+1000,
+493
+]
+}
+},
+"code": 0,
+"dit": [
+"efx.dit.modifie",
+"efx.dit.branche.change"
+],
+"ligne": "git switch main",
+"sortie": ""
+},
+{
+"apres": {
+"cwd": "biome/plante/parcelle_1",
+"f": {
+"biome": [
+"d",
+0,
+1000,
+493
+],
+"biome/feu": [
+"d",
+0,
+1000,
+493
+],
+"biome/feu/parcelle_1": [
+"d",
+0,
+1000,
+493
+],
+"biome/feu/parcelle_2": [
+"d",
+0,
+1000,
+493
+],
+"biome/plante": [
+"d",
+0,
+1000,
+493
+],
+"biome/plante/parcelle_1": [
+"d",
+0,
+1000,
+493
+],
+"biome/plante/parcelle_1/.secret": [
+"f",
+3,
+1000,
+420
+],
+"biome/plante/parcelle_1/chene.arbre": [
+"f",
+7,
+1000,
+420
+],
+"biome/plante/parcelle_1/mot.txt": [
+"f",
+12,
+1000,
+420
+],
+"biome/plante/parcelle_1/rose.fleur": [
+"f",
+4,
+1000,
+420
+],
+"biome/plante/parcelle_1/sapin.arbre": [
+"f",
+0,
+1000,
+420
+],
+"biome/plante/parcelle_2": [
+"d",
+0,
+1000,
+493
+],
+"nid": [
+"d",
+0,
+1000,
+493
+]
+}
+},
+"attendu": [
+{
+"chemin": "biome/plante/parcelle_1",
+"cmd": "git",
+"nom": "main",
+"prio": 2,
+"quoi": "change",
+"type": "branche"
+}
+],
+"avant": {
+"cwd": "biome/plante/parcelle_1",
+"f": {
+"biome": [
+"d",
+0,
+1000,
+493
+],
+"biome/feu": [
+"d",
+0,
+1000,
+493
+],
+"biome/feu/parcelle_1": [
+"d",
+0,
+1000,
+493
+],
+"biome/feu/parcelle_2": [
+"d",
+0,
+1000,
+493
+],
+"biome/plante": [
+"d",
+0,
+1000,
+493
+],
+"biome/plante/parcelle_1": [
+"d",
+0,
+1000,
+493
+],
+"biome/plante/parcelle_1/.secret": [
+"f",
+3,
+1000,
+420
+],
+"biome/plante/parcelle_1/chene.arbre": [
+"f",
+7,
+1000,
+420
+],
+"biome/plante/parcelle_1/mot.txt": [
+"f",
+12,
+1000,
+420
+],
+"biome/plante/parcelle_1/rose.fleur": [
+"f",
+4,
+1000,
+420
+],
+"biome/plante/parcelle_1/sapin.arbre": [
+"f",
+0,
+1000,
+420
+],
+"biome/plante/parcelle_2": [
+"d",
+0,
+1000,
+493
+],
+"nid": [
+"d",
+0,
+1000,
+493
+]
+}
+},
+"code": 0,
+"dit": [
+"efx.dit.branche.change"
+],
+"ligne": "git switch main || git switch master",
+"sortie": ""
+},
+{
+"apres": {
+"cwd": "biome/plante/parcelle_1",
+"f": {
+"biome": [
+"d",
+0,
+1000,
+493
+],
+"biome/feu": [
+"d",
+0,
+1000,
+493
+],
+"biome/feu/parcelle_1": [
+"d",
+0,
+1000,
+493
+],
+"biome/feu/parcelle_2": [
+"d",
+0,
+1000,
+493
+],
+"biome/plante": [
+"d",
+0,
+1000,
+493
+],
+"biome/plante/parcelle_1": [
+"d",
+0,
+1000,
+493
+],
+"biome/plante/parcelle_1/.secret": [
+"f",
+3,
+1000,
+420
+],
+"biome/plante/parcelle_1/chene.arbre": [
+"f",
+7,
+1000,
+420
+],
+"biome/plante/parcelle_1/mot.txt": [
+"f",
+12,
+1000,
+420
+],
+"biome/plante/parcelle_1/rose.fleur": [
+"f",
+4,
+1000,
+420
+],
+"biome/plante/parcelle_1/sapin.arbre": [
+"f",
+0,
+1000,
+420
+],
+"biome/plante/parcelle_2": [
+"d",
+0,
+1000,
+493
+],
+"nid": [
+"d",
+0,
+1000,
+493
+]
+}
+},
+"attendu": [
+{
+"chemin": "biome/plante/parcelle_1/chene.arbre",
+"chemins": [
+"biome/plante/parcelle_1/chene.arbre"
+],
+"cmd": "git",
+"n": 1,
+"prio": 2,
+"region": "plante",
+"type": "rembobine"
+}
+],
+"avant": {
+"cwd": "biome/plante/parcelle_1",
+"f": {
+"biome": [
+"d",
+0,
+1000,
+493
+],
+"biome/feu": [
+"d",
+0,
+1000,
+493
+],
+"biome/feu/parcelle_1": [
+"d",
+0,
+1000,
+493
+],
+"biome/feu/parcelle_2": [
+"d",
+0,
+1000,
+493
+],
+"biome/plante": [
+"d",
+0,
+1000,
+493
+],
+"biome/plante/parcelle_1": [
+"d",
+0,
+1000,
+493
+],
+"biome/plante/parcelle_1/.secret": [
+"f",
+3,
+1000,
+420
+],
+"biome/plante/parcelle_1/mot.txt": [
+"f",
+12,
+1000,
+420
+],
+"biome/plante/parcelle_1/rose.fleur": [
+"f",
+4,
+1000,
+420
+],
+"biome/plante/parcelle_1/sapin.arbre": [
+"f",
+0,
+1000,
+420
+],
+"biome/plante/parcelle_2": [
+"d",
+0,
+1000,
+493
+],
+"nid": [
+"d",
+0,
+1000,
+493
+]
+}
+},
+"code": 0,
+"dit": [
+"efx.dit.rembobine"
+],
+"ligne": "git checkout -- chene.arbre",
+"sortie": ""
+},
+{
+"apres": {
+"cwd": "biome/plante/parcelle_1",
+"f": {
+"biome": [
+"d",
+0,
+1000,
+493
+],
+"biome/feu": [
+"d",
+0,
+1000,
+493
+],
+"biome/feu/parcelle_1": [
+"d",
+0,
+1000,
+493
+],
+"biome/feu/parcelle_2": [
+"d",
+0,
+1000,
+493
+],
+"biome/plante": [
+"d",
+0,
+1000,
+493
+],
+"biome/plante/parcelle_1": [
+"d",
+0,
+1000,
+493
+],
+"biome/plante/parcelle_1/.secret": [
+"f",
+3,
+1000,
+420
+],
+"biome/plante/parcelle_1/chene.arbre": [
+"f",
+7,
+1000,
+420
+],
+"biome/plante/parcelle_1/mot.txt": [
+"f",
+20,
+3000,
+420
+],
+"biome/plante/parcelle_1/rose.fleur": [
+"f",
+4,
+1000,
+420
+],
+"biome/plante/parcelle_1/sapin.arbre": [
+"f",
+0,
+1000,
+420
+],
+"biome/plante/parcelle_2": [
+"d",
+0,
+1000,
+493
+],
+"nid": [
+"d",
+0,
+1000,
+493
+]
+}
+},
+"attendu": [
+{
+"chemin": "biome/plante/parcelle_1/mot.txt",
+"cmd": "git",
+"prio": 2,
+"type": "modifie"
+},
+{
+"chemin": "biome/plante/parcelle_1",
+"cmd": "git",
+"nom": "essai",
+"ok": true,
+"prio": 2,
+"type": "fusion"
+}
+],
+"avant": {
+"cwd": "biome/plante/parcelle_1",
+"f": {
+"biome": [
+"d",
+0,
+1000,
+493
+],
+"biome/feu": [
+"d",
+0,
+1000,
+493
+],
+"biome/feu/parcelle_1": [
+"d",
+0,
+1000,
+493
+],
+"biome/feu/parcelle_2": [
+"d",
+0,
+1000,
+493
+],
+"biome/plante": [
+"d",
+0,
+1000,
+493
+],
+"biome/plante/parcelle_1": [
+"d",
+0,
+1000,
+493
+],
+"biome/plante/parcelle_1/.secret": [
+"f",
+3,
+1000,
+420
+],
+"biome/plante/parcelle_1/chene.arbre": [
+"f",
+7,
+1000,
+420
+],
+"biome/plante/parcelle_1/mot.txt": [
+"f",
+12,
+1000,
+420
+],
+"biome/plante/parcelle_1/rose.fleur": [
+"f",
+4,
+1000,
+420
+],
+"biome/plante/parcelle_1/sapin.arbre": [
+"f",
+0,
+1000,
+420
+],
+"biome/plante/parcelle_2": [
+"d",
+0,
+1000,
+493
+],
+"nid": [
+"d",
+0,
+1000,
+493
+]
+}
+},
+"code": 0,
+"dit": [
+"efx.dit.modifie",
+"efx.dit.fusion"
+],
+"ligne": "git merge essai",
+"sortie": "Updating 3f9a2c1..8b07e4d\nFast-forward\n"
+},
+{
+"apres": {
+"cwd": "biome/plante/parcelle_1",
+"f": {
+"biome": [
+"d",
+0,
+1000,
+493
+],
+"biome/feu": [
+"d",
+0,
+1000,
+493
+],
+"biome/feu/parcelle_1": [
+"d",
+0,
+1000,
+493
+],
+"biome/feu/parcelle_2": [
+"d",
+0,
+1000,
+493
+],
+"biome/plante": [
+"d",
+0,
+1000,
+493
+],
+"biome/plante/parcelle_1": [
+"d",
+0,
+1000,
+493
+],
+"biome/plante/parcelle_1/.secret": [
+"f",
+3,
+1000,
+420
+],
+"biome/plante/parcelle_1/chene.arbre": [
+"f",
+7,
+1000,
+420
+],
+"biome/plante/parcelle_1/mot.txt": [
+"f",
+60,
+3000,
+420
+],
+"biome/plante/parcelle_1/rose.fleur": [
+"f",
+4,
+1000,
+420
+],
+"biome/plante/parcelle_1/sapin.arbre": [
+"f",
+0,
+1000,
+420
+],
+"biome/plante/parcelle_2": [
+"d",
+0,
+1000,
+493
+],
+"nid": [
+"d",
+0,
+1000,
+493
+]
+}
+},
+"attendu": [
+{
+"chemin": "biome/plante/parcelle_1/mot.txt",
+"cmd": "git",
+"prio": 2,
+"type": "modifie"
+},
+{
+"chemin": "biome/plante/parcelle_1",
+"cmd": "git",
+"nom": "essai",
+"ok": false,
+"prio": 2,
+"type": "fusion"
+}
+],
+"avant": {
+"cwd": "biome/plante/parcelle_1",
+"f": {
+"biome": [
+"d",
+0,
+1000,
+493
+],
+"biome/feu": [
+"d",
+0,
+1000,
+493
+],
+"biome/feu/parcelle_1": [
+"d",
+0,
+1000,
+493
+],
+"biome/feu/parcelle_2": [
+"d",
+0,
+1000,
+493
+],
+"biome/plante": [
+"d",
+0,
+1000,
+493
+],
+"biome/plante/parcelle_1": [
+"d",
+0,
+1000,
+493
+],
+"biome/plante/parcelle_1/.secret": [
+"f",
+3,
+1000,
+420
+],
+"biome/plante/parcelle_1/chene.arbre": [
+"f",
+7,
+1000,
+420
+],
+"biome/plante/parcelle_1/mot.txt": [
+"f",
+12,
+1000,
+420
+],
+"biome/plante/parcelle_1/rose.fleur": [
+"f",
+4,
+1000,
+420
+],
+"biome/plante/parcelle_1/sapin.arbre": [
+"f",
+0,
+1000,
+420
+],
+"biome/plante/parcelle_2": [
+"d",
+0,
+1000,
+493
+],
+"nid": [
+"d",
+0,
+1000,
+493
+]
+}
+},
+"code": 1,
+"dit": [
+"efx.dit.modifie",
+"efx.dit.fusion.conflit"
+],
+"ligne": "git merge essai",
+"sortie": "CONFLICT (content): Merge conflict in mot.txt\nAutomatic merge failed; fix conflicts and then commit the result.\n"
+},
+{
+"apres": {
+"cwd": "biome/plante/parcelle_1",
+"f": {
+"biome": [
+"d",
+0,
+1000,
+493
+],
+"biome/feu": [
+"d",
+0,
+1000,
+493
+],
+"biome/feu/parcelle_1": [
+"d",
+0,
+1000,
+493
+],
+"biome/feu/parcelle_2": [
+"d",
+0,
+1000,
+493
+],
+"biome/plante": [
+"d",
+0,
+1000,
+493
+],
+"biome/plante/parcelle_1": [
+"d",
+0,
+1000,
+493
+],
+"biome/plante/parcelle_1/.secret": [
+"f",
+3,
+1000,
+420
+],
+"biome/plante/parcelle_1/chene.arbre": [
+"f",
+7,
+1000,
+420
+],
+"biome/plante/parcelle_1/mot.txt": [
+"f",
+12,
+1000,
+420
+],
+"biome/plante/parcelle_1/rose.fleur": [
+"f",
+4,
+1000,
+420
+],
+"biome/plante/parcelle_1/sapin.arbre": [
+"f",
+0,
+1000,
+420
+],
+"biome/plante/parcelle_2": [
+"d",
+0,
+1000,
+493
+],
+"nid": [
+"d",
+0,
+1000,
+493
+]
+}
+},
+"attendu": [
+{
+"chemin": "biome/plante/parcelle_1/chene.arbre",
+"chemins": [
+"biome/plante/parcelle_1/chene.arbre"
+],
+"cmd": "git",
+"n": 1,
+"prio": 2,
+"region": "plante",
+"type": "rembobine"
+}
+],
+"avant": {
+"cwd": "biome/plante/parcelle_1",
+"f": {
+"biome": [
+"d",
+0,
+1000,
+493
+],
+"biome/feu": [
+"d",
+0,
+1000,
+493
+],
+"biome/feu/parcelle_1": [
+"d",
+0,
+1000,
+493
+],
+"biome/feu/parcelle_2": [
+"d",
+0,
+1000,
+493
+],
+"biome/plante": [
+"d",
+0,
+1000,
+493
+],
+"biome/plante/parcelle_1": [
+"d",
+0,
+1000,
+493
+],
+"biome/plante/parcelle_1/.secret": [
+"f",
+3,
+1000,
+420
+],
+"biome/plante/parcelle_1/mot.txt": [
+"f",
+12,
+1000,
+420
+],
+"biome/plante/parcelle_1/rose.fleur": [
+"f",
+4,
+1000,
+420
+],
+"biome/plante/parcelle_1/sapin.arbre": [
+"f",
+0,
+1000,
+420
+],
+"biome/plante/parcelle_2": [
+"d",
+0,
+1000,
+493
+],
+"nid": [
+"d",
+0,
+1000,
+493
+]
+}
+},
+"code": 0,
+"dit": [
+"efx.dit.rembobine"
+],
+"ligne": "git restore chene.arbre",
+"sortie": ""
+},
+{
+"apres": {
+"cwd": "biome/plante/parcelle_1",
+"f": {
+"biome": [
+"d",
+0,
+1000,
+493
+],
+"biome/feu": [
+"d",
+0,
+1000,
+493
+],
+"biome/feu/parcelle_1": [
+"d",
+0,
+1000,
+493
+],
+"biome/feu/parcelle_2": [
+"d",
+0,
+1000,
+493
+],
+"biome/plante": [
+"d",
+0,
+1000,
+493
+],
+"biome/plante/parcelle_1": [
+"d",
+0,
+1000,
+493
+],
+"biome/plante/parcelle_1/.secret": [
+"f",
+3,
+1000,
+420
+],
+"biome/plante/parcelle_1/chene.arbre": [
+"f",
+7,
+1000,
+420
+],
+"biome/plante/parcelle_1/mot.txt": [
+"f",
+12,
+4000,
+420
+],
+"biome/plante/parcelle_1/rose.fleur": [
+"f",
+4,
+1000,
+420
+],
+"biome/plante/parcelle_1/sapin.arbre": [
+"f",
+0,
+1000,
+420
+],
+"biome/plante/parcelle_2": [
+"d",
+0,
+1000,
+493
+],
+"nid": [
+"d",
+0,
+1000,
+493
+]
+}
+},
+"attendu": [
+{
+"chemin": "biome/plante/parcelle_1/mot.txt",
+"chemins": [
+"biome/plante/parcelle_1/mot.txt"
+],
+"cmd": "git",
+"n": 1,
+"prio": 2,
+"region": "plante",
+"type": "rembobine"
+}
+],
+"avant": {
+"cwd": "biome/plante/parcelle_1",
+"f": {
+"biome": [
+"d",
+0,
+1000,
+493
+],
+"biome/feu": [
+"d",
+0,
+1000,
+493
+],
+"biome/feu/parcelle_1": [
+"d",
+0,
+1000,
+493
+],
+"biome/feu/parcelle_2": [
+"d",
+0,
+1000,
+493
+],
+"biome/plante": [
+"d",
+0,
+1000,
+493
+],
+"biome/plante/parcelle_1": [
+"d",
+0,
+1000,
+493
+],
+"biome/plante/parcelle_1/.secret": [
+"f",
+3,
+1000,
+420
+],
+"biome/plante/parcelle_1/chene.arbre": [
+"f",
+7,
+1000,
+420
+],
+"biome/plante/parcelle_1/mot.txt": [
+"f",
+40,
+3000,
+420
+],
+"biome/plante/parcelle_1/rose.fleur": [
+"f",
+4,
+1000,
+420
+],
+"biome/plante/parcelle_1/sapin.arbre": [
+"f",
+0,
+1000,
+420
+],
+"biome/plante/parcelle_2": [
+"d",
+0,
+1000,
+493
+],
+"nid": [
+"d",
+0,
+1000,
+493
+]
+}
+},
+"code": 0,
+"dit": [
+"efx.dit.rembobine"
+],
+"ligne": "git restore mot.txt",
+"sortie": ""
+},
+{
+"apres": {
+"cwd": "biome/plante/parcelle_1",
+"f": {
+"biome": [
+"d",
+0,
+1000,
+493
+],
+"biome/feu": [
+"d",
+0,
+1000,
+493
+],
+"biome/feu/parcelle_1": [
+"d",
+0,
+1000,
+493
+],
+"biome/feu/parcelle_2": [
+"d",
+0,
+1000,
+493
+],
+"biome/plante": [
+"d",
+0,
+1000,
+493
+],
+"biome/plante/parcelle_1": [
+"d",
+0,
+1000,
+493
+],
+"biome/plante/parcelle_1/.secret": [
+"f",
+3,
+1000,
+420
+],
+"biome/plante/parcelle_1/album": [
+"d",
+0,
+1000,
+493
+],
+"biome/plante/parcelle_1/album/.git": [
+"d",
+0,
+1000,
+493
+],
+"biome/plante/parcelle_1/chene.arbre": [
+"f",
+7,
+1000,
+420
+],
+"biome/plante/parcelle_1/mot.txt": [
+"f",
+12,
+1000,
+420
+],
+"biome/plante/parcelle_1/rose.fleur": [
+"f",
+4,
+1000,
+420
+],
+"biome/plante/parcelle_1/sapin.arbre": [
+"f",
+0,
+1000,
+420
+],
+"biome/plante/parcelle_2": [
+"d",
+0,
+1000,
+493
+],
+"nid": [
+"d",
+0,
+1000,
+493
+]
+}
+},
+"attendu": [
+{
+"chemin": "biome/plante/parcelle_1/album",
+"cmd": "git",
+"n": 0,
+"prio": 2,
+"quoi": "neuf",
+"type": "album"
+}
+],
+"avant": {
+"cwd": "biome/plante/parcelle_1",
+"f": {
+"biome": [
+"d",
+0,
+1000,
+493
+],
+"biome/feu": [
+"d",
+0,
+1000,
+493
+],
+"biome/feu/parcelle_1": [
+"d",
+0,
+1000,
+493
+],
+"biome/feu/parcelle_2": [
+"d",
+0,
+1000,
+493
+],
+"biome/plante": [
+"d",
+0,
+1000,
+493
+],
+"biome/plante/parcelle_1": [
+"d",
+0,
+1000,
+493
+],
+"biome/plante/parcelle_1/.secret": [
+"f",
+3,
+1000,
+420
+],
+"biome/plante/parcelle_1/chene.arbre": [
+"f",
+7,
+1000,
+420
+],
+"biome/plante/parcelle_1/mot.txt": [
+"f",
+12,
+1000,
+420
+],
+"biome/plante/parcelle_1/rose.fleur": [
+"f",
+4,
+1000,
+420
+],
+"biome/plante/parcelle_1/sapin.arbre": [
+"f",
+0,
+1000,
+420
+],
+"biome/plante/parcelle_2": [
+"d",
+0,
+1000,
+493
+],
+"nid": [
+"d",
+0,
+1000,
+493
+]
+}
+},
+"code": 0,
+"dit": [
+"efx.dit.album.neuf"
+],
+"ligne": "git init album",
+"sortie": ""
+},
+{
+"apres": {
+"cwd": "biome/plante/parcelle_1",
+"f": {
+"biome": [
+"d",
+0,
+1000,
+493
+],
+"biome/feu": [
+"d",
+0,
+1000,
+493
+],
+"biome/feu/parcelle_1": [
+"d",
+0,
+1000,
+493
+],
+"biome/feu/parcelle_2": [
+"d",
+0,
+1000,
+493
+],
+"biome/plante": [
+"d",
+0,
+1000,
+493
+],
+"biome/plante/parcelle_1": [
+"d",
+0,
+1000,
+493
+],
+"biome/plante/parcelle_1/.secret": [
+"f",
+3,
+1000,
+420
+],
+"biome/plante/parcelle_1/chene.arbre": [
+"f",
+7,
+1000,
+420
+],
+"biome/plante/parcelle_1/mot.txt": [
+"f",
+12,
+1000,
+420
+],
+"biome/plante/parcelle_1/rose.fleur": [
+"f",
+4,
+1000,
+420
+],
+"biome/plante/parcelle_1/sapin.arbre": [
+"f",
+0,
+1000,
+420
+],
+"biome/plante/parcelle_2": [
+"d",
+0,
+1000,
+493
+],
+"nid": [
+"d",
+0,
+1000,
+493
+]
+}
+},
+"attendu": [
+{
+"cmd": "git",
+"prio": 2,
+"quoi": "commit",
+"type": "photo"
+}
+],
+"avant": {
+"cwd": "biome/plante/parcelle_1",
+"f": {
+"biome": [
+"d",
+0,
+1000,
+493
+],
+"biome/feu": [
+"d",
+0,
+1000,
+493
+],
+"biome/feu/parcelle_1": [
+"d",
+0,
+1000,
+493
+],
+"biome/feu/parcelle_2": [
+"d",
+0,
+1000,
+493
+],
+"biome/plante": [
+"d",
+0,
+1000,
+493
+],
+"biome/plante/parcelle_1": [
+"d",
+0,
+1000,
+493
+],
+"biome/plante/parcelle_1/.secret": [
+"f",
+3,
+1000,
+420
+],
+"biome/plante/parcelle_1/chene.arbre": [
+"f",
+7,
+1000,
+420
+],
+"biome/plante/parcelle_1/mot.txt": [
+"f",
+12,
+1000,
+420
+],
+"biome/plante/parcelle_1/rose.fleur": [
+"f",
+4,
+1000,
+420
+],
+"biome/plante/parcelle_1/sapin.arbre": [
+"f",
+0,
+1000,
+420
+],
+"biome/plante/parcelle_2": [
+"d",
+0,
+1000,
+493
+],
+"nid": [
+"d",
+0,
+1000,
+493
+]
+}
+},
+"code": 0,
+"dit": [
+"efx.dit.photo"
+],
+"ligne": "git -c user.name=lou commit -m un",
+"sortie": ""
+},
+{
+"apres": {
+"cwd": "biome/plante/parcelle_1",
+"f": {
+"biome": [
+"d",
+0,
+1000,
+493
+],
+"biome/feu": [
+"d",
+0,
+1000,
+493
+],
+"biome/feu/parcelle_1": [
+"d",
+0,
+1000,
+493
+],
+"biome/feu/parcelle_2": [
+"d",
+0,
+1000,
+493
+],
+"biome/plante": [
+"d",
+0,
+1000,
+493
+],
+"biome/plante/parcelle_1": [
+"d",
+0,
+1000,
+493
+],
+"biome/plante/parcelle_1/.secret": [
+"f",
+3,
+1000,
+420
+],
+"biome/plante/parcelle_1/album": [
+"d",
+0,
+1000,
+493
+],
+"biome/plante/parcelle_1/album/.git": [
+"d",
+0,
+1000,
+493
+],
+"biome/plante/parcelle_1/chene.arbre": [
+"f",
+7,
+1000,
+420
+],
+"biome/plante/parcelle_1/mot.txt": [
+"f",
+12,
+1000,
+420
+],
+"biome/plante/parcelle_1/rose.fleur": [
+"f",
+4,
+1000,
+420
+],
+"biome/plante/parcelle_1/sapin.arbre": [
+"f",
+0,
+1000,
+420
+],
+"biome/plante/parcelle_2": [
+"d",
+0,
+1000,
+493
+],
+"nid": [
+"d",
+0,
+1000,
+493
+]
+}
+},
+"attendu": [
+{
+"chemin": "biome/plante/parcelle_1/album",
+"cmd": "git",
+"n": 0,
+"prio": 2,
+"quoi": "neuf",
+"type": "album"
+}
+],
+"avant": {
+"cwd": "biome/plante/parcelle_1",
+"f": {
+"biome": [
+"d",
+0,
+1000,
+493
+],
+"biome/feu": [
+"d",
+0,
+1000,
+493
+],
+"biome/feu/parcelle_1": [
+"d",
+0,
+1000,
+493
+],
+"biome/feu/parcelle_2": [
+"d",
+0,
+1000,
+493
+],
+"biome/plante": [
+"d",
+0,
+1000,
+493
+],
+"biome/plante/parcelle_1": [
+"d",
+0,
+1000,
+493
+],
+"biome/plante/parcelle_1/.secret": [
+"f",
+3,
+1000,
+420
+],
+"biome/plante/parcelle_1/chene.arbre": [
+"f",
+7,
+1000,
+420
+],
+"biome/plante/parcelle_1/mot.txt": [
+"f",
+12,
+1000,
+420
+],
+"biome/plante/parcelle_1/rose.fleur": [
+"f",
+4,
+1000,
+420
+],
+"biome/plante/parcelle_1/sapin.arbre": [
+"f",
+0,
+1000,
+420
+],
+"biome/plante/parcelle_2": [
+"d",
+0,
+1000,
+493
+],
+"nid": [
+"d",
+0,
+1000,
+493
+]
+}
+},
+"code": 0,
+"dit": [
+"efx.dit.album.neuf"
+],
+"ligne": "git -c init.defaultBranch=main init album",
+"sortie": ""
+},
+{
+"apres": {
+"cwd": "robots/robot",
+"f": {
+"biome": [
+"d",
+0,
+1000,
+493
+],
+"biome/feu": [
+"d",
+0,
+1000,
+493
+],
+"biome/feu/parcelle_1": [
+"d",
+0,
+1000,
+493
+],
+"biome/feu/parcelle_2": [
+"d",
+0,
+1000,
+493
+],
+"biome/plante": [
+"d",
+0,
+1000,
+493
+],
+"biome/plante/parcelle_1": [
+"d",
+0,
+1000,
+493
+],
+"biome/plante/parcelle_1/.secret": [
+"f",
+3,
+1000,
+420
+],
+"biome/plante/parcelle_1/chene.arbre": [
+"f",
+7,
+1000,
+420
+],
+"biome/plante/parcelle_1/mot.txt": [
+"f",
+12,
+1000,
+420
+],
+"biome/plante/parcelle_1/rose.fleur": [
+"f",
+4,
+1000,
+420
+],
+"biome/plante/parcelle_1/sapin.arbre": [
+"f",
+0,
+1000,
+420
+],
+"biome/plante/parcelle_2": [
+"d",
+0,
+1000,
+493
+],
+"nid": [
+"d",
+0,
+1000,
+493
+],
+"robots": [
+"d",
+0,
+1000,
+493
+],
+"robots/robot": [
+"d",
+0,
+1000,
+493
+],
+"robots/robot/capteur_distance": [
+"f",
+3,
+1000,
+420
+],
+"robots/robot/journal.txt": [
+"f",
+40,
+1000,
+420
+],
+"robots/robot/led": [
+"f",
+2,
+2000,
+420
+],
+"robots/robot/moteur": [
+"f",
+5,
+1000,
+420
+]
+}
+},
+"attendu": [
+{
+"apres": 2,
+"avant": 2,
+"chemin": "robots/robot/led",
+"cmd": "echo",
+"mode": ">",
+"prio": 3,
+"type": "ecrit"
+},
+{
+"chemin": "robots/robot/led",
+"cmd": "echo",
+"prio": 2,
+"quoi": "led",
+"type": "robot",
+"valeur": "1"
+}
+],
+"avant": {
+"cwd": "robots/robot",
+"f": {
+"biome": [
+"d",
+0,
+1000,
+493
+],
+"biome/feu": [
+"d",
+0,
+1000,
+493
+],
+"biome/feu/parcelle_1": [
+"d",
+0,
+1000,
+493
+],
+"biome/feu/parcelle_2": [
+"d",
+0,
+1000,
+493
+],
+"biome/plante": [
+"d",
+0,
+1000,
+493
+],
+"biome/plante/parcelle_1": [
+"d",
+0,
+1000,
+493
+],
+"biome/plante/parcelle_1/.secret": [
+"f",
+3,
+1000,
+420
+],
+"biome/plante/parcelle_1/chene.arbre": [
+"f",
+7,
+1000,
+420
+],
+"biome/plante/parcelle_1/mot.txt": [
+"f",
+12,
+1000,
+420
+],
+"biome/plante/parcelle_1/rose.fleur": [
+"f",
+4,
+1000,
+420
+],
+"biome/plante/parcelle_1/sapin.arbre": [
+"f",
+0,
+1000,
+420
+],
+"biome/plante/parcelle_2": [
+"d",
+0,
+1000,
+493
+],
+"nid": [
+"d",
+0,
+1000,
+493
+],
+"robots": [
+"d",
+0,
+1000,
+493
+],
+"robots/robot": [
+"d",
+0,
+1000,
+493
+],
+"robots/robot/capteur_distance": [
+"f",
+3,
+1000,
+420
+],
+"robots/robot/journal.txt": [
+"f",
+40,
+1000,
+420
+],
+"robots/robot/led": [
+"f",
+2,
+1000,
+420
+],
+"robots/robot/moteur": [
+"f",
+5,
+1000,
+420
+]
+}
+},
+"code": 0,
+"dit": [
+"efx.dit.ecrit.efface",
+"efx.dit.robot.led"
+],
+"ligne": "echo 1 > led",
+"sortie": ""
+},
+{
+"apres": {
+"cwd": "robots/robot",
+"f": {
+"biome": [
+"d",
+0,
+1000,
+493
+],
+"biome/feu": [
+"d",
+0,
+1000,
+493
+],
+"biome/feu/parcelle_1": [
+"d",
+0,
+1000,
+493
+],
+"biome/feu/parcelle_2": [
+"d",
+0,
+1000,
+493
+],
+"biome/plante": [
+"d",
+0,
+1000,
+493
+],
+"biome/plante/parcelle_1": [
+"d",
+0,
+1000,
+493
+],
+"biome/plante/parcelle_1/.secret": [
+"f",
+3,
+1000,
+420
+],
+"biome/plante/parcelle_1/chene.arbre": [
+"f",
+7,
+1000,
+420
+],
+"biome/plante/parcelle_1/mot.txt": [
+"f",
+12,
+1000,
+420
+],
+"biome/plante/parcelle_1/rose.fleur": [
+"f",
+4,
+1000,
+420
+],
+"biome/plante/parcelle_1/sapin.arbre": [
+"f",
+0,
+1000,
+420
+],
+"biome/plante/parcelle_2": [
+"d",
+0,
+1000,
+493
+],
+"nid": [
+"d",
+0,
+1000,
+493
+],
+"robots": [
+"d",
+0,
+1000,
+493
+],
+"robots/robot": [
+"d",
+0,
+1000,
+493
+],
+"robots/robot/capteur_distance": [
+"f",
+3,
+1000,
+420
+],
+"robots/robot/journal.txt": [
+"f",
+40,
+1000,
+420
+],
+"robots/robot/led": [
+"f",
+2,
+1000,
+420
+],
+"robots/robot/moteur": [
+"f",
+7,
+2000,
+420
+]
+}
+},
+"attendu": [
+{
+"apres": 7,
+"avant": 5,
+"chemin": "robots/robot/moteur",
+"cmd": "echo",
+"mode": ">",
+"prio": 3,
+"type": "ecrit"
+},
+{
+"chemin": "robots/robot/moteur",
+"cmd": "echo",
+"prio": 2,
+"quoi": "moteur",
+"type": "robot",
+"valeur": "avance"
+}
+],
+"avant": {
+"cwd": "robots/robot",
+"f": {
+"biome": [
+"d",
+0,
+1000,
+493
+],
+"biome/feu": [
+"d",
+0,
+1000,
+493
+],
+"biome/feu/parcelle_1": [
+"d",
+0,
+1000,
+493
+],
+"biome/feu/parcelle_2": [
+"d",
+0,
+1000,
+493
+],
+"biome/plante": [
+"d",
+0,
+1000,
+493
+],
+"biome/plante/parcelle_1": [
+"d",
+0,
+1000,
+493
+],
+"biome/plante/parcelle_1/.secret": [
+"f",
+3,
+1000,
+420
+],
+"biome/plante/parcelle_1/chene.arbre": [
+"f",
+7,
+1000,
+420
+],
+"biome/plante/parcelle_1/mot.txt": [
+"f",
+12,
+1000,
+420
+],
+"biome/plante/parcelle_1/rose.fleur": [
+"f",
+4,
+1000,
+420
+],
+"biome/plante/parcelle_1/sapin.arbre": [
+"f",
+0,
+1000,
+420
+],
+"biome/plante/parcelle_2": [
+"d",
+0,
+1000,
+493
+],
+"nid": [
+"d",
+0,
+1000,
+493
+],
+"robots": [
+"d",
+0,
+1000,
+493
+],
+"robots/robot": [
+"d",
+0,
+1000,
+493
+],
+"robots/robot/capteur_distance": [
+"f",
+3,
+1000,
+420
+],
+"robots/robot/journal.txt": [
+"f",
+40,
+1000,
+420
+],
+"robots/robot/led": [
+"f",
+2,
+1000,
+420
+],
+"robots/robot/moteur": [
+"f",
+5,
+1000,
+420
+]
+}
+},
+"code": 0,
+"dit": [
+"efx.dit.ecrit.efface",
+"efx.dit.robot.moteur"
+],
+"ligne": "echo avance > moteur",
+"sortie": ""
+},
+{
+"apres": {
+"cwd": "robots/robot",
+"f": {
+"biome": [
+"d",
+0,
+1000,
+493
+],
+"biome/feu": [
+"d",
+0,
+1000,
+493
+],
+"biome/feu/parcelle_1": [
+"d",
+0,
+1000,
+493
+],
+"biome/feu/parcelle_2": [
+"d",
+0,
+1000,
+493
+],
+"biome/plante": [
+"d",
+0,
+1000,
+493
+],
+"biome/plante/parcelle_1": [
+"d",
+0,
+1000,
+493
+],
+"biome/plante/parcelle_1/.secret": [
+"f",
+3,
+1000,
+420
+],
+"biome/plante/parcelle_1/chene.arbre": [
+"f",
+7,
+1000,
+420
+],
+"biome/plante/parcelle_1/mot.txt": [
+"f",
+12,
+1000,
+420
+],
+"biome/plante/parcelle_1/rose.fleur": [
+"f",
+4,
+1000,
+420
+],
+"biome/plante/parcelle_1/sapin.arbre": [
+"f",
+0,
+1000,
+420
+],
+"biome/plante/parcelle_2": [
+"d",
+0,
+1000,
+493
+],
+"nid": [
+"d",
+0,
+1000,
+493
+],
+"robots": [
+"d",
+0,
+1000,
+493
+],
+"robots/robot": [
+"d",
+0,
+1000,
+493
+],
+"robots/robot/capteur_distance": [
+"f",
+3,
+1000,
+420
+],
+"robots/robot/journal.txt": [
+"f",
+40,
+1000,
+420
+],
+"robots/robot/led": [
+"f",
+2,
+1000,
+420
+],
+"robots/robot/moteur": [
+"f",
+5,
+1000,
+420
+]
+}
+},
+"attendu": [
+{
+"chemin": "robots/robot/capteur_distance",
+"cmd": "cat",
+"prio": 3,
+"taille": 3,
+"type": "lire"
+},
+{
+"chemin": "robots/robot/capteur_distance",
+"cmd": "cat",
+"prio": 2,
+"quoi": "capteur",
+"type": "robot",
+"valeur": "30"
+}
+],
+"avant": {
+"cwd": "robots/robot",
+"f": {
+"biome": [
+"d",
+0,
+1000,
+493
+],
+"biome/feu": [
+"d",
+0,
+1000,
+493
+],
+"biome/feu/parcelle_1": [
+"d",
+0,
+1000,
+493
+],
+"biome/feu/parcelle_2": [
+"d",
+0,
+1000,
+493
+],
+"biome/plante": [
+"d",
+0,
+1000,
+493
+],
+"biome/plante/parcelle_1": [
+"d",
+0,
+1000,
+493
+],
+"biome/plante/parcelle_1/.secret": [
+"f",
+3,
+1000,
+420
+],
+"biome/plante/parcelle_1/chene.arbre": [
+"f",
+7,
+1000,
+420
+],
+"biome/plante/parcelle_1/mot.txt": [
+"f",
+12,
+1000,
+420
+],
+"biome/plante/parcelle_1/rose.fleur": [
+"f",
+4,
+1000,
+420
+],
+"biome/plante/parcelle_1/sapin.arbre": [
+"f",
+0,
+1000,
+420
+],
+"biome/plante/parcelle_2": [
+"d",
+0,
+1000,
+493
+],
+"nid": [
+"d",
+0,
+1000,
+493
+],
+"robots": [
+"d",
+0,
+1000,
+493
+],
+"robots/robot": [
+"d",
+0,
+1000,
+493
+],
+"robots/robot/capteur_distance": [
+"f",
+3,
+1000,
+420
+],
+"robots/robot/journal.txt": [
+"f",
+40,
+1000,
+420
+],
+"robots/robot/led": [
+"f",
+2,
+1000,
+420
+],
+"robots/robot/moteur": [
+"f",
+5,
+1000,
+420
+]
+}
+},
+"code": 0,
+"dit": [
+"efx.dit.lire",
+"efx.dit.robot.capteur"
+],
+"ligne": "cat capteur_distance",
+"sortie": "30\n"
+},
+{
+"apres": {
+"cwd": "robots/robot",
+"f": {
+"biome": [
+"d",
+0,
+1000,
+493
+],
+"biome/feu": [
+"d",
+0,
+1000,
+493
+],
+"biome/feu/parcelle_1": [
+"d",
+0,
+1000,
+493
+],
+"biome/feu/parcelle_2": [
+"d",
+0,
+1000,
+493
+],
+"biome/plante": [
+"d",
+0,
+1000,
+493
+],
+"biome/plante/parcelle_1": [
+"d",
+0,
+1000,
+493
+],
+"biome/plante/parcelle_1/.secret": [
+"f",
+3,
+1000,
+420
+],
+"biome/plante/parcelle_1/chene.arbre": [
+"f",
+7,
+1000,
+420
+],
+"biome/plante/parcelle_1/mot.txt": [
+"f",
+12,
+1000,
+420
+],
+"biome/plante/parcelle_1/rose.fleur": [
+"f",
+4,
+1000,
+420
+],
+"biome/plante/parcelle_1/sapin.arbre": [
+"f",
+0,
+1000,
+420
+],
+"biome/plante/parcelle_2": [
+"d",
+0,
+1000,
+493
+],
+"nid": [
+"d",
+0,
+1000,
+493
+],
+"robots": [
+"d",
+0,
+1000,
+493
+],
+"robots/robot": [
+"d",
+0,
+1000,
+493
+],
+"robots/robot/capteur_distance": [
+"f",
+3,
+2000,
+420
+],
+"robots/robot/journal.txt": [
+"f",
+60,
+2000,
+420
+],
+"robots/robot/led": [
+"f",
+2,
+1000,
+420
+],
+"robots/robot/moteur": [
+"f",
+5,
+1000,
+420
+]
+}
+},
+"attendu": [
+{
+"chemin": "robots/robot/capteur_distance",
+"cmd": "atelier",
+"prio": 2,
+"type": "modifie"
+},
+{
+"chemin": "robots/robot/journal.txt",
+"cmd": "atelier",
+"prio": 2,
+"type": "modifie"
+},
+{
+"cmd": "atelier",
+"prio": 2,
+"quoi": "pas",
+"type": "robot",
+"valeur": null
+}
+],
+"avant": {
+"cwd": "robots/robot",
+"f": {
+"biome": [
+"d",
+0,
+1000,
+493
+],
+"biome/feu": [
+"d",
+0,
+1000,
+493
+],
+"biome/feu/parcelle_1": [
+"d",
+0,
+1000,
+493
+],
+"biome/feu/parcelle_2": [
+"d",
+0,
+1000,
+493
+],
+"biome/plante": [
+"d",
+0,
+1000,
+493
+],
+"biome/plante/parcelle_1": [
+"d",
+0,
+1000,
+493
+],
+"biome/plante/parcelle_1/.secret": [
+"f",
+3,
+1000,
+420
+],
+"biome/plante/parcelle_1/chene.arbre": [
+"f",
+7,
+1000,
+420
+],
+"biome/plante/parcelle_1/mot.txt": [
+"f",
+12,
+1000,
+420
+],
+"biome/plante/parcelle_1/rose.fleur": [
+"f",
+4,
+1000,
+420
+],
+"biome/plante/parcelle_1/sapin.arbre": [
+"f",
+0,
+1000,
+420
+],
+"biome/plante/parcelle_2": [
+"d",
+0,
+1000,
+493
+],
+"nid": [
+"d",
+0,
+1000,
+493
+],
+"robots": [
+"d",
+0,
+1000,
+493
+],
+"robots/robot": [
+"d",
+0,
+1000,
+493
+],
+"robots/robot/capteur_distance": [
+"f",
+3,
+1000,
+420
+],
+"robots/robot/journal.txt": [
+"f",
+40,
+1000,
+420
+],
+"robots/robot/led": [
+"f",
+2,
+1000,
+420
+],
+"robots/robot/moteur": [
+"f",
+5,
+1000,
+420
+]
+}
+},
+"code": 0,
+"dit": [
+"efx.dit.modifie",
+"efx.dit.modifie",
+"efx.dit.robot.pas"
+],
+"ligne": "atelier pas",
+"sortie": ""
+},
+{
+"apres": {
+"cwd": "robots/robot",
+"f": {
+"biome": [
+"d",
+0,
+1000,
+493
+],
+"biome/feu": [
+"d",
+0,
+1000,
+493
+],
+"biome/feu/parcelle_1": [
+"d",
+0,
+1000,
+493
+],
+"biome/feu/parcelle_2": [
+"d",
+0,
+1000,
+493
+],
+"biome/plante": [
+"d",
+0,
+1000,
+493
+],
+"biome/plante/parcelle_1": [
+"d",
+0,
+1000,
+493
+],
+"biome/plante/parcelle_1/.secret": [
+"f",
+3,
+1000,
+420
+],
+"biome/plante/parcelle_1/chene.arbre": [
+"f",
+7,
+1000,
+420
+],
+"biome/plante/parcelle_1/mot.txt": [
+"f",
+12,
+1000,
+420
+],
+"biome/plante/parcelle_1/rose.fleur": [
+"f",
+4,
+1000,
+420
+],
+"biome/plante/parcelle_1/sapin.arbre": [
+"f",
+0,
+1000,
+420
+],
+"biome/plante/parcelle_2": [
+"d",
+0,
+1000,
+493
+],
+"nid": [
+"d",
+0,
+1000,
+493
+],
+"robots": [
+"d",
+0,
+1000,
+493
+],
+"robots/robot": [
+"d",
+0,
+1000,
+493
+],
+"robots/robot/capteur_distance": [
+"f",
+3,
+2000,
+420
+],
+"robots/robot/journal.txt": [
+"f",
+60,
+2000,
+420
+],
+"robots/robot/led": [
+"f",
+2,
+1000,
+420
+],
+"robots/robot/moteur": [
+"f",
+5,
+1000,
+420
+]
+}
+},
+"attendu": [
+{
+"chemin": "robots/robot/capteur_distance",
+"cmd": "tg",
+"prio": 2,
+"type": "modifie"
+},
+{
+"chemin": "robots/robot/journal.txt",
+"cmd": "tg",
+"prio": 2,
+"type": "modifie"
+},
+{
+"cmd": "atelier",
+"prio": 2,
+"quoi": "pas",
+"type": "robot",
+"valeur": null
+}
+],
+"avant": {
+"cwd": "robots/robot",
+"f": {
+"biome": [
+"d",
+0,
+1000,
+493
+],
+"biome/feu": [
+"d",
+0,
+1000,
+493
+],
+"biome/feu/parcelle_1": [
+"d",
+0,
+1000,
+493
+],
+"biome/feu/parcelle_2": [
+"d",
+0,
+1000,
+493
+],
+"biome/plante": [
+"d",
+0,
+1000,
+493
+],
+"biome/plante/parcelle_1": [
+"d",
+0,
+1000,
+493
+],
+"biome/plante/parcelle_1/.secret": [
+"f",
+3,
+1000,
+420
+],
+"biome/plante/parcelle_1/chene.arbre": [
+"f",
+7,
+1000,
+420
+],
+"biome/plante/parcelle_1/mot.txt": [
+"f",
+12,
+1000,
+420
+],
+"biome/plante/parcelle_1/rose.fleur": [
+"f",
+4,
+1000,
+420
+],
+"biome/plante/parcelle_1/sapin.arbre": [
+"f",
+0,
+1000,
+420
+],
+"biome/plante/parcelle_2": [
+"d",
+0,
+1000,
+493
+],
+"nid": [
+"d",
+0,
+1000,
+493
+],
+"robots": [
+"d",
+0,
+1000,
+493
+],
+"robots/robot": [
+"d",
+0,
+1000,
+493
+],
+"robots/robot/capteur_distance": [
+"f",
+3,
+1000,
+420
+],
+"robots/robot/journal.txt": [
+"f",
+40,
+1000,
+420
+],
+"robots/robot/led": [
+"f",
+2,
+1000,
+420
+],
+"robots/robot/moteur": [
+"f",
+5,
+1000,
+420
+]
+}
+},
+"code": 0,
+"dit": [
+"efx.dit.modifie",
+"efx.dit.modifie",
+"efx.dit.robot.pas"
+],
+"ligne": "tg atelier pas",
+"sortie": ""
+},
+{
+"apres": {
+"cwd": "biome",
+"f": {
+"biome": [
+"d",
+0,
+1000,
+493
+],
+"biome/feu": [
+"d",
+0,
+1000,
+493
+],
+"biome/feu/parcelle_1": [
+"d",
+0,
+1000,
+493
+],
+"biome/feu/parcelle_2": [
+"d",
+0,
+1000,
+493
+],
+"biome/plante": [
+"d",
+0,
+1000,
+493
+],
+"biome/plante/parcelle_1": [
+"d",
+0,
+1000,
+493
+],
+"biome/plante/parcelle_1/.secret": [
+"f",
+3,
+1000,
+420
+],
+"biome/plante/parcelle_1/chene.arbre": [
+"f",
+7,
+1000,
+420
+],
+"biome/plante/parcelle_1/mot.txt": [
+"f",
+12,
+1000,
+420
+],
+"biome/plante/parcelle_1/rose.fleur": [
+"f",
+4,
+1000,
+420
+],
+"biome/plante/parcelle_1/sapin.arbre": [
+"f",
+0,
+1000,
+420
+],
+"biome/plante/parcelle_2": [
+"d",
+0,
+1000,
+493
+],
+"nid": [
+"d",
+0,
+1000,
+493
+]
+}
+},
+"attendu": [
+{
+"cmd": "man",
+"mot": "trap",
+"prio": 2,
+"type": "grimoire"
+}
+],
+"avant": {
+"cwd": "biome",
+"f": {
+"biome": [
+"d",
+0,
+1000,
+493
+],
+"biome/feu": [
+"d",
+0,
+1000,
+493
+],
+"biome/feu/parcelle_1": [
+"d",
+0,
+1000,
+493
+],
+"biome/feu/parcelle_2": [
+"d",
+0,
+1000,
+493
+],
+"biome/plante": [
+"d",
+0,
+1000,
+493
+],
+"biome/plante/parcelle_1": [
+"d",
+0,
+1000,
+493
+],
+"biome/plante/parcelle_1/.secret": [
+"f",
+3,
+1000,
+420
+],
+"biome/plante/parcelle_1/chene.arbre": [
+"f",
+7,
+1000,
+420
+],
+"biome/plante/parcelle_1/mot.txt": [
+"f",
+12,
+1000,
+420
+],
+"biome/plante/parcelle_1/rose.fleur": [
+"f",
+4,
+1000,
+420
+],
+"biome/plante/parcelle_1/sapin.arbre": [
+"f",
+0,
+1000,
+420
+],
+"biome/plante/parcelle_2": [
+"d",
+0,
+1000,
+493
+],
+"nid": [
+"d",
+0,
+1000,
+493
+]
+}
+},
+"code": 0,
+"dit": [
+"efx.dit.grimoire"
+],
+"ligne": "man trap",
+"sortie": ""
+},
+{
+"apres": {
+"cwd": "biome",
+"f": {
+"biome": [
+"d",
+0,
+1000,
+493
+],
+"biome/feu": [
+"d",
+0,
+1000,
+493
+],
+"biome/feu/parcelle_1": [
+"d",
+0,
+1000,
+493
+],
+"biome/feu/parcelle_2": [
+"d",
+0,
+1000,
+493
+],
+"biome/plante": [
+"d",
+0,
+1000,
+493
+],
+"biome/plante/parcelle_1": [
+"d",
+0,
+1000,
+493
+],
+"biome/plante/parcelle_1/.secret": [
+"f",
+3,
+1000,
+420
+],
+"biome/plante/parcelle_1/chene.arbre": [
+"f",
+7,
+1000,
+420
+],
+"biome/plante/parcelle_1/mot.txt": [
+"f",
+12,
+1000,
+420
+],
+"biome/plante/parcelle_1/rose.fleur": [
+"f",
+4,
+1000,
+420
+],
+"biome/plante/parcelle_1/sapin.arbre": [
+"f",
+0,
+1000,
+420
+],
+"biome/plante/parcelle_2": [
+"d",
+0,
+1000,
+493
+],
+"nid": [
+"d",
+0,
+1000,
+493
+]
+}
+},
+"attendu": [
+{
+"cmd": "apropos",
+"mot": "fichier",
+"prio": 2,
+"type": "grimoire"
+}
+],
+"avant": {
+"cwd": "biome",
+"f": {
+"biome": [
+"d",
+0,
+1000,
+493
+],
+"biome/feu": [
+"d",
+0,
+1000,
+493
+],
+"biome/feu/parcelle_1": [
+"d",
+0,
+1000,
+493
+],
+"biome/feu/parcelle_2": [
+"d",
+0,
+1000,
+493
+],
+"biome/plante": [
+"d",
+0,
+1000,
+493
+],
+"biome/plante/parcelle_1": [
+"d",
+0,
+1000,
+493
+],
+"biome/plante/parcelle_1/.secret": [
+"f",
+3,
+1000,
+420
+],
+"biome/plante/parcelle_1/chene.arbre": [
+"f",
+7,
+1000,
+420
+],
+"biome/plante/parcelle_1/mot.txt": [
+"f",
+12,
+1000,
+420
+],
+"biome/plante/parcelle_1/rose.fleur": [
+"f",
+4,
+1000,
+420
+],
+"biome/plante/parcelle_1/sapin.arbre": [
+"f",
+0,
+1000,
+420
+],
+"biome/plante/parcelle_2": [
+"d",
+0,
+1000,
+493
+],
+"nid": [
+"d",
+0,
+1000,
+493
+]
+}
+},
+"code": 0,
+"dit": [
+"efx.dit.grimoire"
+],
+"ligne": "apropos fichier",
+"sortie": "ls (1) - list directory contents\n"
+},
+{
+"apres": {
+"cwd": "biome/plante/parcelle_1",
+"f": {
+"biome": [
+"d",
+0,
+1000,
+493
+],
+"biome/feu": [
+"d",
+0,
+1000,
+493
+],
+"biome/feu/parcelle_1": [
+"d",
+0,
+1000,
+493
+],
+"biome/feu/parcelle_2": [
+"d",
+0,
+1000,
+493
+],
+"biome/plante": [
+"d",
+0,
+1000,
+493
+],
+"biome/plante/parcelle_1": [
+"d",
+0,
+1000,
+493
+],
+"biome/plante/parcelle_1/.secret": [
+"f",
+3,
+1000,
+420
+],
+"biome/plante/parcelle_1/chene.arbre": [
+"f",
+7,
+1000,
+420
+],
+"biome/plante/parcelle_1/mot.txt": [
+"f",
+12,
+1000,
+420
+],
+"biome/plante/parcelle_1/rose.fleur": [
+"f",
+4,
+1000,
+420
+],
+"biome/plante/parcelle_1/sapin.arbre": [
+"f",
+0,
+1000,
+420
+],
+"biome/plante/parcelle_2": [
+"d",
+0,
+1000,
+493
+],
+"nid": [
+"d",
+0,
+1000,
+493
+]
+}
+},
+"attendu": [
+{
+"cmd": "ls",
+"mot": "ls",
+"prio": 2,
+"type": "grimoire"
+}
+],
+"avant": {
+"cwd": "biome/plante/parcelle_1",
+"f": {
+"biome": [
+"d",
+0,
+1000,
+493
+],
+"biome/feu": [
+"d",
+0,
+1000,
+493
+],
+"biome/feu/parcelle_1": [
+"d",
+0,
+1000,
+493
+],
+"biome/feu/parcelle_2": [
+"d",
+0,
+1000,
+493
+],
+"biome/plante": [
+"d",
+0,
+1000,
+493
+],
+"biome/plante/parcelle_1": [
+"d",
+0,
+1000,
+493
+],
+"biome/plante/parcelle_1/.secret": [
+"f",
+3,
+1000,
+420
+],
+"biome/plante/parcelle_1/chene.arbre": [
+"f",
+7,
+1000,
+420
+],
+"biome/plante/parcelle_1/mot.txt": [
+"f",
+12,
+1000,
+420
+],
+"biome/plante/parcelle_1/rose.fleur": [
+"f",
+4,
+1000,
+420
+],
+"biome/plante/parcelle_1/sapin.arbre": [
+"f",
+0,
+1000,
+420
+],
+"biome/plante/parcelle_2": [
+"d",
+0,
+1000,
+493
+],
+"nid": [
+"d",
+0,
+1000,
+493
+]
+}
+},
+"code": 0,
+"dit": [
+"efx.dit.grimoire"
+],
+"ligne": "ls --help",
+"sortie": "Usage: ls [OPTION]... [FILE]...\n"
+},
+{
+"apres": {
+"cwd": "biome",
+"f": {
+"biome": [
+"d",
+0,
+1000,
+493
+],
+"biome/feu": [
+"d",
+0,
+1000,
+493
+],
+"biome/feu/parcelle_1": [
+"d",
+0,
+1000,
+493
+],
+"biome/feu/parcelle_2": [
+"d",
+0,
+1000,
+493
+],
+"biome/plante": [
+"d",
+0,
+1000,
+493
+],
+"biome/plante/parcelle_1": [
+"d",
+0,
+1000,
+493
+],
+"biome/plante/parcelle_1/.secret": [
+"f",
+3,
+1000,
+420
+],
+"biome/plante/parcelle_1/chene.arbre": [
+"f",
+7,
+1000,
+420
+],
+"biome/plante/parcelle_1/mot.txt": [
+"f",
+12,
+1000,
+420
+],
+"biome/plante/parcelle_1/rose.fleur": [
+"f",
+4,
+1000,
+420
+],
+"biome/plante/parcelle_1/sapin.arbre": [
+"f",
+0,
+1000,
+420
+],
+"biome/plante/parcelle_2": [
+"d",
+0,
+1000,
+493
+],
+"nid": [
+"d",
+0,
+1000,
+493
+]
+}
+},
+"attendu": [
+{
+"chemin": "biome/absent",
+"cmd": "man",
+"existe": false,
+"prio": 3,
+"raison": "autre",
+"type": "refus"
+}
+],
+"avant": {
+"cwd": "biome",
+"f": {
+"biome": [
+"d",
+0,
+1000,
+493
+],
+"biome/feu": [
+"d",
+0,
+1000,
+493
+],
+"biome/feu/parcelle_1": [
+"d",
+0,
+1000,
+493
+],
+"biome/feu/parcelle_2": [
+"d",
+0,
+1000,
+493
+],
+"biome/plante": [
+"d",
+0,
+1000,
+493
+],
+"biome/plante/parcelle_1": [
+"d",
+0,
+1000,
+493
+],
+"biome/plante/parcelle_1/.secret": [
+"f",
+3,
+1000,
+420
+],
+"biome/plante/parcelle_1/chene.arbre": [
+"f",
+7,
+1000,
+420
+],
+"biome/plante/parcelle_1/mot.txt": [
+"f",
+12,
+1000,
+420
+],
+"biome/plante/parcelle_1/rose.fleur": [
+"f",
+4,
+1000,
+420
+],
+"biome/plante/parcelle_1/sapin.arbre": [
+"f",
+0,
+1000,
+420
+],
+"biome/plante/parcelle_2": [
+"d",
+0,
+1000,
+493
+],
+"nid": [
+"d",
+0,
+1000,
+493
+]
+}
+},
+"code": 16,
+"dit": [
+"efx.dit.refus.autre"
+],
+"ligne": "man absent",
+"sortie": "No manual entry for absent"
+},
+{
+"apres": {
+"cwd": "biome/plante/parcelle_1",
+"f": {
+"biome": [
+"d",
+0,
+1000,
+493
+],
+"biome/feu": [
+"d",
+0,
+1000,
+493
+],
+"biome/feu/parcelle_1": [
+"d",
+0,
+1000,
+493
+],
+"biome/feu/parcelle_2": [
+"d",
+0,
+1000,
+493
+],
+"biome/plante": [
+"d",
+0,
+1000,
+493
+],
+"biome/plante/parcelle_1": [
+"d",
+0,
+1000,
+493
+],
+"biome/plante/parcelle_1/.secret": [
+"f",
+3,
+1000,
+420
+],
+"biome/plante/parcelle_1/chene.arbre": [
+"f",
+7,
+1000,
+420
+],
+"biome/plante/parcelle_1/mot.txt": [
+"f",
+12,
+1000,
+420
+],
+"biome/plante/parcelle_1/rose.fleur": [
+"f",
+4,
+1000,
+420
+],
+"biome/plante/parcelle_1/sapin.arbre": [
+"f",
+0,
+1000,
+420
+],
+"biome/plante/parcelle_2": [
+"d",
+0,
+1000,
+493
+],
+"nid": [
+"d",
+0,
+1000,
+493
+]
+}
+},
+"attendu": [
+{
+"chemin": "biome/plante/parcelle_1/mot.txt",
+"cmd": "shellcheck",
+"n": 2,
+"ok": false,
+"prio": 2,
+"type": "loupe"
+}
+],
+"avant": {
+"cwd": "biome/plante/parcelle_1",
+"f": {
+"biome": [
+"d",
+0,
+1000,
+493
+],
+"biome/feu": [
+"d",
+0,
+1000,
+493
+],
+"biome/feu/parcelle_1": [
+"d",
+0,
+1000,
+493
+],
+"biome/feu/parcelle_2": [
+"d",
+0,
+1000,
+493
+],
+"biome/plante": [
+"d",
+0,
+1000,
+493
+],
+"biome/plante/parcelle_1": [
+"d",
+0,
+1000,
+493
+],
+"biome/plante/parcelle_1/.secret": [
+"f",
+3,
+1000,
+420
+],
+"biome/plante/parcelle_1/chene.arbre": [
+"f",
+7,
+1000,
+420
+],
+"biome/plante/parcelle_1/mot.txt": [
+"f",
+12,
+1000,
+420
+],
+"biome/plante/parcelle_1/rose.fleur": [
+"f",
+4,
+1000,
+420
+],
+"biome/plante/parcelle_1/sapin.arbre": [
+"f",
+0,
+1000,
+420
+],
+"biome/plante/parcelle_2": [
+"d",
+0,
+1000,
+493
+],
+"nid": [
+"d",
+0,
+1000,
+493
+]
+}
+},
+"code": 1,
+"dit": [
+"efx.dit.loupe"
+],
+"ligne": "shellcheck mot.txt",
+"sortie": "\nIn mot.txt line 3:\nrm $d/*\n   ^-- SC2086 (info): Double quote\n\nIn mot.txt line 4:\ncd camp\n^-- SC2164 (warning): Use cd ... || exit\n\nFor more information:\n  https://www.shellcheck.net/wiki/SC2086 -- Double quote\n"
+},
+{
+"apres": {
+"cwd": "biome/plante/parcelle_1",
+"f": {
+"biome": [
+"d",
+0,
+1000,
+493
+],
+"biome/feu": [
+"d",
+0,
+1000,
+493
+],
+"biome/feu/parcelle_1": [
+"d",
+0,
+1000,
+493
+],
+"biome/feu/parcelle_2": [
+"d",
+0,
+1000,
+493
+],
+"biome/plante": [
+"d",
+0,
+1000,
+493
+],
+"biome/plante/parcelle_1": [
+"d",
+0,
+1000,
+493
+],
+"biome/plante/parcelle_1/.secret": [
+"f",
+3,
+1000,
+420
+],
+"biome/plante/parcelle_1/chene.arbre": [
+"f",
+7,
+1000,
+420
+],
+"biome/plante/parcelle_1/mot.txt": [
+"f",
+12,
+1000,
+420
+],
+"biome/plante/parcelle_1/rose.fleur": [
+"f",
+4,
+1000,
+420
+],
+"biome/plante/parcelle_1/sapin.arbre": [
+"f",
+0,
+1000,
+420
+],
+"biome/plante/parcelle_2": [
+"d",
+0,
+1000,
+493
+],
+"nid": [
+"d",
+0,
+1000,
+493
+]
+}
+},
+"attendu": [
+{
+"chemin": "biome/plante/parcelle_1/mot.txt",
+"cmd": "shellcheck",
+"n": 0,
+"ok": true,
+"prio": 2,
+"type": "loupe"
+}
+],
+"avant": {
+"cwd": "biome/plante/parcelle_1",
+"f": {
+"biome": [
+"d",
+0,
+1000,
+493
+],
+"biome/feu": [
+"d",
+0,
+1000,
+493
+],
+"biome/feu/parcelle_1": [
+"d",
+0,
+1000,
+493
+],
+"biome/feu/parcelle_2": [
+"d",
+0,
+1000,
+493
+],
+"biome/plante": [
+"d",
+0,
+1000,
+493
+],
+"biome/plante/parcelle_1": [
+"d",
+0,
+1000,
+493
+],
+"biome/plante/parcelle_1/.secret": [
+"f",
+3,
+1000,
+420
+],
+"biome/plante/parcelle_1/chene.arbre": [
+"f",
+7,
+1000,
+420
+],
+"biome/plante/parcelle_1/mot.txt": [
+"f",
+12,
+1000,
+420
+],
+"biome/plante/parcelle_1/rose.fleur": [
+"f",
+4,
+1000,
+420
+],
+"biome/plante/parcelle_1/sapin.arbre": [
+"f",
+0,
+1000,
+420
+],
+"biome/plante/parcelle_2": [
+"d",
+0,
+1000,
+493
+],
+"nid": [
+"d",
+0,
+1000,
+493
+]
+}
+},
+"code": 0,
+"dit": [
+"efx.dit.loupe.ok"
+],
+"ligne": "shellcheck mot.txt",
+"sortie": ""
+},
+{
+"apres": {
+"cwd": "biome/plante/parcelle_1",
+"f": {
+"biome": [
+"d",
+0,
+1000,
+493
+],
+"biome/feu": [
+"d",
+0,
+1000,
+493
+],
+"biome/feu/parcelle_1": [
+"d",
+0,
+1000,
+493
+],
+"biome/feu/parcelle_2": [
+"d",
+0,
+1000,
+493
+],
+"biome/plante": [
+"d",
+0,
+1000,
+493
+],
+"biome/plante/parcelle_1": [
+"d",
+0,
+1000,
+493
+],
+"biome/plante/parcelle_1/.secret": [
+"f",
+3,
+1000,
+420
+],
+"biome/plante/parcelle_1/chene.arbre": [
+"f",
+7,
+1000,
+420
+],
+"biome/plante/parcelle_1/mot.txt": [
+"f",
+12,
+1000,
+420
+],
+"biome/plante/parcelle_1/rose.fleur": [
+"f",
+4,
+1000,
+420
+],
+"biome/plante/parcelle_1/sapin.arbre": [
+"f",
+0,
+1000,
+420
+],
+"biome/plante/parcelle_2": [
+"d",
+0,
+1000,
+493
+],
+"nid": [
+"d",
+0,
+1000,
+493
+]
+}
+},
+"attendu": [
+{
+"chemin": null,
+"cmd": "shellcheck",
+"existe": false,
+"prio": 3,
+"raison": "commande",
+"type": "refus"
+}
+],
+"avant": {
+"cwd": "biome/plante/parcelle_1",
+"f": {
+"biome": [
+"d",
+0,
+1000,
+493
+],
+"biome/feu": [
+"d",
+0,
+1000,
+493
+],
+"biome/feu/parcelle_1": [
+"d",
+0,
+1000,
+493
+],
+"biome/feu/parcelle_2": [
+"d",
+0,
+1000,
+493
+],
+"biome/plante": [
+"d",
+0,
+1000,
+493
+],
+"biome/plante/parcelle_1": [
+"d",
+0,
+1000,
+493
+],
+"biome/plante/parcelle_1/.secret": [
+"f",
+3,
+1000,
+420
+],
+"biome/plante/parcelle_1/chene.arbre": [
+"f",
+7,
+1000,
+420
+],
+"biome/plante/parcelle_1/mot.txt": [
+"f",
+12,
+1000,
+420
+],
+"biome/plante/parcelle_1/rose.fleur": [
+"f",
+4,
+1000,
+420
+],
+"biome/plante/parcelle_1/sapin.arbre": [
+"f",
+0,
+1000,
+420
+],
+"biome/plante/parcelle_2": [
+"d",
+0,
+1000,
+493
+],
+"nid": [
+"d",
+0,
+1000,
+493
+]
+}
+},
+"code": 127,
+"dit": [
+"efx.dit.refus.commande"
+],
+"ligne": "shellcheck mot.txt",
+"sortie": "bash: shellcheck: command not found"
+},
+{
+"apres": {
+"cwd": "biome",
+"f": {
+"biome": [
+"d",
+0,
+1000,
+493
+],
+"biome/feu": [
+"d",
+0,
+1000,
+493
+],
+"biome/feu/parcelle_1": [
+"d",
+0,
+1000,
+493
+],
+"biome/feu/parcelle_2": [
+"d",
+0,
+1000,
+493
+],
+"biome/plante": [
+"d",
+0,
+1000,
+493
+],
+"biome/plante/parcelle_1": [
+"d",
+0,
+1000,
+493
+],
+"biome/plante/parcelle_1/.secret": [
+"f",
+3,
+1000,
+420
+],
+"biome/plante/parcelle_1/chene.arbre": [
+"f",
+7,
+1000,
+420
+],
+"biome/plante/parcelle_1/mot.txt": [
+"f",
+12,
+1000,
+420
+],
+"biome/plante/parcelle_1/rose.fleur": [
+"f",
+4,
+1000,
+420
+],
+"biome/plante/parcelle_1/sapin.arbre": [
+"f",
+0,
+1000,
+420
+],
+"biome/plante/parcelle_2": [
+"d",
+0,
+1000,
+493
+],
+"nid": [
+"d",
+0,
+1000,
+493
+]
+}
+},
+"attendu": [
+{
+"cmd": "trap",
+"prio": 2,
+"signaux": [
+"EXIT",
+"INT"
+],
+"type": "filet"
+}
+],
+"avant": {
+"cwd": "biome",
+"f": {
+"biome": [
+"d",
+0,
+1000,
+493
+],
+"biome/feu": [
+"d",
+0,
+1000,
+493
+],
+"biome/feu/parcelle_1": [
+"d",
+0,
+1000,
+493
+],
+"biome/feu/parcelle_2": [
+"d",
+0,
+1000,
+493
+],
+"biome/plante": [
+"d",
+0,
+1000,
+493
+],
+"biome/plante/parcelle_1": [
+"d",
+0,
+1000,
+493
+],
+"biome/plante/parcelle_1/.secret": [
+"f",
+3,
+1000,
+420
+],
+"biome/plante/parcelle_1/chene.arbre": [
+"f",
+7,
+1000,
+420
+],
+"biome/plante/parcelle_1/mot.txt": [
+"f",
+12,
+1000,
+420
+],
+"biome/plante/parcelle_1/rose.fleur": [
+"f",
+4,
+1000,
+420
+],
+"biome/plante/parcelle_1/sapin.arbre": [
+"f",
+0,
+1000,
+420
+],
+"biome/plante/parcelle_2": [
+"d",
+0,
+1000,
+493
+],
+"nid": [
+"d",
+0,
+1000,
+493
+]
+}
+},
+"code": 0,
+"dit": [
+"efx.dit.filet"
+],
+"ligne": "trap 'rm -f \"$tmp\"' EXIT INT",
+"sortie": ""
+},
+{
+"apres": {
+"cwd": "biome",
+"f": {
+"biome": [
+"d",
+0,
+1000,
+493
+],
+"biome/feu": [
+"d",
+0,
+1000,
+493
+],
+"biome/feu/parcelle_1": [
+"d",
+0,
+1000,
+493
+],
+"biome/feu/parcelle_2": [
+"d",
+0,
+1000,
+493
+],
+"biome/plante": [
+"d",
+0,
+1000,
+493
+],
+"biome/plante/parcelle_1": [
+"d",
+0,
+1000,
+493
+],
+"biome/plante/parcelle_1/.secret": [
+"f",
+3,
+1000,
+420
+],
+"biome/plante/parcelle_1/chene.arbre": [
+"f",
+7,
+1000,
+420
+],
+"biome/plante/parcelle_1/mot.txt": [
+"f",
+12,
+1000,
+420
+],
+"biome/plante/parcelle_1/rose.fleur": [
+"f",
+4,
+1000,
+420
+],
+"biome/plante/parcelle_1/sapin.arbre": [
+"f",
+0,
+1000,
+420
+],
+"biome/plante/parcelle_2": [
+"d",
+0,
+1000,
+493
+],
+"nid": [
+"d",
+0,
+1000,
+493
+]
+}
+},
+"attendu": [],
+"avant": {
+"cwd": "biome",
+"f": {
+"biome": [
+"d",
+0,
+1000,
+493
+],
+"biome/feu": [
+"d",
+0,
+1000,
+493
+],
+"biome/feu/parcelle_1": [
+"d",
+0,
+1000,
+493
+],
+"biome/feu/parcelle_2": [
+"d",
+0,
+1000,
+493
+],
+"biome/plante": [
+"d",
+0,
+1000,
+493
+],
+"biome/plante/parcelle_1": [
+"d",
+0,
+1000,
+493
+],
+"biome/plante/parcelle_1/.secret": [
+"f",
+3,
+1000,
+420
+],
+"biome/plante/parcelle_1/chene.arbre": [
+"f",
+7,
+1000,
+420
+],
+"biome/plante/parcelle_1/mot.txt": [
+"f",
+12,
+1000,
+420
+],
+"biome/plante/parcelle_1/rose.fleur": [
+"f",
+4,
+1000,
+420
+],
+"biome/plante/parcelle_1/sapin.arbre": [
+"f",
+0,
+1000,
+420
+],
+"biome/plante/parcelle_2": [
+"d",
+0,
+1000,
+493
+],
+"nid": [
+"d",
+0,
+1000,
+493
+]
+}
+},
+"code": 0,
+"dit": [],
+"ligne": "trap - EXIT",
+"sortie": ""
+},
+{
+"apres": {
+"cwd": "biome/plante/parcelle_1",
+"f": {
+"biome": [
+"d",
+0,
+1000,
+493
+],
+"biome/feu": [
+"d",
+0,
+1000,
+493
+],
+"biome/feu/parcelle_1": [
+"d",
+0,
+1000,
+493
+],
+"biome/feu/parcelle_2": [
+"d",
+0,
+1000,
+493
+],
+"biome/plante": [
+"d",
+0,
+1000,
+493
+],
+"biome/plante/parcelle_1": [
+"d",
+0,
+1000,
+493
+],
+"biome/plante/parcelle_1/.secret": [
+"f",
+3,
+1000,
+420
+],
+"biome/plante/parcelle_1/chene.arbre": [
+"f",
+7,
+1000,
+420
+],
+"biome/plante/parcelle_1/mot.txt": [
+"f",
+12,
+1000,
+420
+],
+"biome/plante/parcelle_1/rose.fleur": [
+"f",
+4,
+1000,
+420
+],
+"biome/plante/parcelle_1/sapin.arbre": [
+"f",
+0,
+1000,
+420
+],
+"biome/plante/parcelle_1/tmp.k3Xa9QfL2c": [
+"f",
+0,
+1000,
+420
+],
+"biome/plante/parcelle_2": [
+"d",
+0,
+1000,
+493
+],
+"nid": [
+"d",
+0,
+1000,
+493
+]
+}
+},
+"attendu": [
+{
+"chemin": "biome/plante/parcelle_1/tmp.k3Xa9QfL2c",
+"cmd": "mktemp",
+"genre": "f",
+"nom": "tmp.k3Xa9QfL2c",
+"prio": 2,
+"region": "plante",
+"type": "sablier"
+}
+],
+"avant": {
+"cwd": "biome/plante/parcelle_1",
+"f": {
+"biome": [
+"d",
+0,
+1000,
+493
+],
+"biome/feu": [
+"d",
+0,
+1000,
+493
+],
+"biome/feu/parcelle_1": [
+"d",
+0,
+1000,
+493
+],
+"biome/feu/parcelle_2": [
+"d",
+0,
+1000,
+493
+],
+"biome/plante": [
+"d",
+0,
+1000,
+493
+],
+"biome/plante/parcelle_1": [
+"d",
+0,
+1000,
+493
+],
+"biome/plante/parcelle_1/.secret": [
+"f",
+3,
+1000,
+420
+],
+"biome/plante/parcelle_1/chene.arbre": [
+"f",
+7,
+1000,
+420
+],
+"biome/plante/parcelle_1/mot.txt": [
+"f",
+12,
+1000,
+420
+],
+"biome/plante/parcelle_1/rose.fleur": [
+"f",
+4,
+1000,
+420
+],
+"biome/plante/parcelle_1/sapin.arbre": [
+"f",
+0,
+1000,
+420
+],
+"biome/plante/parcelle_2": [
+"d",
+0,
+1000,
+493
+],
+"nid": [
+"d",
+0,
+1000,
+493
+]
+}
+},
+"code": 0,
+"dit": [
+"efx.dit.sablier"
+],
+"ligne": "mktemp -p .",
+"sortie": "./tmp.k3Xa9QfL2c\n"
+},
+{
+"apres": {
+"cwd": "biome",
+"f": {
+"biome": [
+"d",
+0,
+1000,
+493
+],
+"biome/feu": [
+"d",
+0,
+1000,
+493
+],
+"biome/feu/parcelle_1": [
+"d",
+0,
+1000,
+493
+],
+"biome/feu/parcelle_2": [
+"d",
+0,
+1000,
+493
+],
+"biome/plante": [
+"d",
+0,
+1000,
+493
+],
+"biome/plante/parcelle_1": [
+"d",
+0,
+1000,
+493
+],
+"biome/plante/parcelle_1/.secret": [
+"f",
+3,
+1000,
+420
+],
+"biome/plante/parcelle_1/chene.arbre": [
+"f",
+7,
+1000,
+420
+],
+"biome/plante/parcelle_1/mot.txt": [
+"f",
+12,
+1000,
+420
+],
+"biome/plante/parcelle_1/rose.fleur": [
+"f",
+4,
+1000,
+420
+],
+"biome/plante/parcelle_1/sapin.arbre": [
+"f",
+0,
+1000,
+420
+],
+"biome/plante/parcelle_2": [
+"d",
+0,
+1000,
+493
+],
+"nid": [
+"d",
+0,
+1000,
+493
+]
+}
+},
+"attendu": [
+{
+"chemin": null,
+"cmd": "mktemp",
+"genre": "f",
+"nom": "tmp.Zr8bQ0aK1x",
+"prio": 2,
+"region": null,
+"type": "sablier"
+}
+],
+"avant": {
+"cwd": "biome",
+"f": {
+"biome": [
+"d",
+0,
+1000,
+493
+],
+"biome/feu": [
+"d",
+0,
+1000,
+493
+],
+"biome/feu/parcelle_1": [
+"d",
+0,
+1000,
+493
+],
+"biome/feu/parcelle_2": [
+"d",
+0,
+1000,
+493
+],
+"biome/plante": [
+"d",
+0,
+1000,
+493
+],
+"biome/plante/parcelle_1": [
+"d",
+0,
+1000,
+493
+],
+"biome/plante/parcelle_1/.secret": [
+"f",
+3,
+1000,
+420
+],
+"biome/plante/parcelle_1/chene.arbre": [
+"f",
+7,
+1000,
+420
+],
+"biome/plante/parcelle_1/mot.txt": [
+"f",
+12,
+1000,
+420
+],
+"biome/plante/parcelle_1/rose.fleur": [
+"f",
+4,
+1000,
+420
+],
+"biome/plante/parcelle_1/sapin.arbre": [
+"f",
+0,
+1000,
+420
+],
+"biome/plante/parcelle_2": [
+"d",
+0,
+1000,
+493
+],
+"nid": [
+"d",
+0,
+1000,
+493
+]
+}
+},
+"code": 0,
+"dit": [
+"efx.dit.sablier"
+],
+"ligne": "mktemp",
+"sortie": "/tmp/tmp.Zr8bQ0aK1x\n"
+},
+{
+"apres": {
+"cwd": "biome",
+"f": {
+"biome": [
+"d",
+0,
+1000,
+493
+],
+"biome/feu": [
+"d",
+0,
+1000,
+493
+],
+"biome/feu/parcelle_1": [
+"d",
+0,
+1000,
+493
+],
+"biome/feu/parcelle_2": [
+"d",
+0,
+1000,
+493
+],
+"biome/plante": [
+"d",
+0,
+1000,
+493
+],
+"biome/plante/parcelle_1": [
+"d",
+0,
+1000,
+493
+],
+"biome/plante/parcelle_1/.secret": [
+"f",
+3,
+1000,
+420
+],
+"biome/plante/parcelle_1/chene.arbre": [
+"f",
+7,
+1000,
+420
+],
+"biome/plante/parcelle_1/mot.txt": [
+"f",
+12,
+1000,
+420
+],
+"biome/plante/parcelle_1/rose.fleur": [
+"f",
+4,
+1000,
+420
+],
+"biome/plante/parcelle_1/sapin.arbre": [
+"f",
+0,
+1000,
+420
+],
+"biome/plante/parcelle_2": [
+"d",
+0,
+1000,
+493
+],
+"nid": [
+"d",
+0,
+1000,
+493
+]
+}
+},
+"attendu": [
+{
+"chemin": null,
+"cmd": "mktemp",
+"genre": "d",
+"nom": "tmp.Zr8bQ0aK1y",
+"prio": 2,
+"region": null,
+"type": "sablier"
+}
+],
+"avant": {
+"cwd": "biome",
+"f": {
+"biome": [
+"d",
+0,
+1000,
+493
+],
+"biome/feu": [
+"d",
+0,
+1000,
+493
+],
+"biome/feu/parcelle_1": [
+"d",
+0,
+1000,
+493
+],
+"biome/feu/parcelle_2": [
+"d",
+0,
+1000,
+493
+],
+"biome/plante": [
+"d",
+0,
+1000,
+493
+],
+"biome/plante/parcelle_1": [
+"d",
+0,
+1000,
+493
+],
+"biome/plante/parcelle_1/.secret": [
+"f",
+3,
+1000,
+420
+],
+"biome/plante/parcelle_1/chene.arbre": [
+"f",
+7,
+1000,
+420
+],
+"biome/plante/parcelle_1/mot.txt": [
+"f",
+12,
+1000,
+420
+],
+"biome/plante/parcelle_1/rose.fleur": [
+"f",
+4,
+1000,
+420
+],
+"biome/plante/parcelle_1/sapin.arbre": [
+"f",
+0,
+1000,
+420
+],
+"biome/plante/parcelle_2": [
+"d",
+0,
+1000,
+493
+],
+"nid": [
+"d",
+0,
+1000,
+493
+]
+}
+},
+"code": 0,
+"dit": [
+"efx.dit.sablier"
+],
+"ligne": "mktemp -d",
+"sortie": "/tmp/tmp.Zr8bQ0aK1y\n"
+},
+{
+"apres": {
+"cwd": "biome/plante/parcelle_1",
+"f": {
+"biome": [
+"d",
+0,
+1000,
+493
+],
+"biome/feu": [
+"d",
+0,
+1000,
+493
+],
+"biome/feu/parcelle_1": [
+"d",
+0,
+1000,
+493
+],
+"biome/feu/parcelle_2": [
+"d",
+0,
+1000,
+493
+],
+"biome/plante": [
+"d",
+0,
+1000,
+493
+],
+"biome/plante/parcelle_1": [
+"d",
+0,
+1000,
+493
+],
+"biome/plante/parcelle_1/.secret": [
+"f",
+3,
+1000,
+420
+],
+"biome/plante/parcelle_1/chene.arbre": [
+"f",
+7,
+1000,
+420
+],
+"biome/plante/parcelle_1/mot.txt": [
+"f",
+12,
+1000,
+420
+],
+"biome/plante/parcelle_1/rose.fleur": [
+"f",
+4,
+1000,
+420
+],
+"biome/plante/parcelle_1/sapin.arbre": [
+"f",
+0,
+1000,
+420
+],
+"biome/plante/parcelle_2": [
+"d",
+0,
+1000,
+493
+],
+"nid": [
+"d",
+0,
+1000,
+493
+]
+}
+},
+"attendu": [
+{
+"cible": "cat",
+"cmd": "strace",
+"n": 2,
+"prio": 2,
+"type": "espion"
+}
+],
+"avant": {
+"cwd": "biome/plante/parcelle_1",
+"f": {
+"biome": [
+"d",
+0,
+1000,
+493
+],
+"biome/feu": [
+"d",
+0,
+1000,
+493
+],
+"biome/feu/parcelle_1": [
+"d",
+0,
+1000,
+493
+],
+"biome/feu/parcelle_2": [
+"d",
+0,
+1000,
+493
+],
+"biome/plante": [
+"d",
+0,
+1000,
+493
+],
+"biome/plante/parcelle_1": [
+"d",
+0,
+1000,
+493
+],
+"biome/plante/parcelle_1/.secret": [
+"f",
+3,
+1000,
+420
+],
+"biome/plante/parcelle_1/chene.arbre": [
+"f",
+7,
+1000,
+420
+],
+"biome/plante/parcelle_1/mot.txt": [
+"f",
+12,
+1000,
+420
+],
+"biome/plante/parcelle_1/rose.fleur": [
+"f",
+4,
+1000,
+420
+],
+"biome/plante/parcelle_1/sapin.arbre": [
+"f",
+0,
+1000,
+420
+],
+"biome/plante/parcelle_2": [
+"d",
+0,
+1000,
+493
+],
+"nid": [
+"d",
+0,
+1000,
+493
+]
+}
+},
+"code": 0,
+"dit": [
+"efx.dit.espion"
+],
+"ligne": "strace -e trace=openat cat mot.txt",
+"sortie": "openat(AT_FDCWD, \"/etc/ld.so.cache\", O_RDONLY|O_CLOEXEC) = 3\nopenat(AT_FDCWD, \"mot.txt\", O_RDONLY) = 3\nbonjour\n+++ exited with 0 +++\n"
 }
 ]

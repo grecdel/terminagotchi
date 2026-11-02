@@ -352,7 +352,9 @@ class Vfs:
             try:
                 st = os.stat(t[1])
             except OSError as e:
-                raise depuis_oserror(e)
+                if not os.path.islink(t[1]):
+                    raise depuis_oserror(e)
+                st = os.lstat(t[1])                   # un lien mort (ln -s vers rien) : on le voit quand même
             d = stat.S_ISDIR(st.st_mode)
             if self.mode == "transparent":
                 return Infos(d, stat.S_IMODE(st.st_mode), st.st_size, st.st_mtime, _nom_uid(st.st_uid),

@@ -33,7 +33,21 @@ JAUNE, VERT, ROUGE, VIOLET, CYAN = (255, 213, 79, 255), (61, 220, 132, 255), (25
     (178, 132, 255, 255), (77, 208, 225, 255)
 TEXTE, DOUX, PANNEAU = (233, 236, 242, 255), (138, 147, 166, 255), (15, 17, 24, 255)
 DUREE = 1.8               # un effet dure de 1 à 2 secondes
+ORANGE, BOIS, LAMPE = (255, 159, 67, 255), (201, 162, 106, 255), (255, 214, 90, 255)
+# les effets secondaires et ceux des mondes dessinés près du guide (ou de leur objet quand il est dans le monde)
+SECONDAIRES_GUIDE = {"disque", "arbre", "memoire", "lanternes", "reveil", "journal", "album", "branche", "fusion",
+                     "robot", "grimoire", "loupe", "filet", "sablier", "espion"}
 BUDGET_SPRITES = 12       # dessins de prismes calculés au plus par image (la fenêtre ne gèle jamais)
+
+
+def _octets(n):
+    """Une taille lisible : 12 o, 3 Ko, 2 Mo (les mêmes unités que la colonne de du)."""
+    n = int(n or 0)
+    if n < 1024:
+        return t("efx.taille_o", n=n)
+    if n < 1024 * 1024:
+        return t("efx.taille_ko", n=max(1, int(n / 1024 + .5)))
+    return t("efx.taille_mo", n=max(1, int(n / 1048576 + .5)))
 
 
 def rgb(c, a=255):
@@ -518,7 +532,24 @@ class Vue:
             return [p]
         if ty == "tuyau":
             return [self.point_de(e.get("source") or ("biome/" + e["region"] if e.get("region") else ""))]
+        if ty in ("caisse", "taille", "etoile", "rembobine"):          # l'endroit, puis chaque objet concerné
+            ch = [c for c in [e.get("chemin")] + [x[0] if isinstance(x, list) else x for x in
+                                                  (e.get("chemins") or e.get("elements") or [])] if c]
+            return [self.point_de(c) if self.hex_de(c) else self._guide() for c in ch[:9]] or [self._guide()]
+        if ty == "lien":
+            a = self.point_de(e["chemin"]) if self.hex_de(e.get("chemin")) else self._guide()
+            b = self.point_de(e["cible"]) if self.hex_de(e.get("cible")) else (a[0] + 90, a[1] - 70)
+            return [a, b]
+        if ty in SECONDAIRES_GUIDE:
+            ch = e.get("chemin")
+            return [self.point_de(ch) if ch and self.hex_de(ch) else self._guide()]
         return [self.point_de(e.get("chemin"))]
+
+    def _guide(self):
+        """Le point du guide (ou d'une créature dans le monde, sinon le milieu)."""
+        cr = next((c for c in self.creas.values() if c.at and c.info.get("guide")), None) or \
+            next((c for c in self.creas.values() if c.at), None)
+        return self.pos_crea(cr)[:2] if cr else self.milieu()
 
     # ================================================ le dessin
     def dessiner(self, L, Z, rect, t_, grand=False):
@@ -1435,6 +1466,311 @@ class Vue:
                 if i < len(et) - 1:
                     L.append(("texte", xx + 8, yy, "|", 12, (178, 132, 255, int(255 * fin)), True, "c", True))
                     xx += 16
+        else:
+            self._effet2(L, e, age, k, fin, pts, p0, z, etiquette)
+
+    # ------------------------------------------------ les effets secondaires et ceux des mondes (2 novembre)
+    def _effet2(self, L, e, age, k, fin, pts, p0, z, etiquette):
+        ty = e["type"]
+        a_ = int(255 * fin)
+        if not p0:
+            return
+        x, y = p0
+        if ty == "caisse":                        # la caisse de bois : les copies entrent, elle se ferme (ou s'ouvre)
+            quoi = e.get("quoi")
+            ouvert = max(0.0, 1 - (age - 1.0) * 3) if quoi == "ferme" else min(1.0, age * 3) if quoi in ("ouvre", "voir") \
+                else 0.0
+            s_ = 1 - .45 * clamp((age - .2) / .6, 0, 1) if quoi == "serre" else 1.0
+            for i, (sx, sy) in enumerate(self.ecran(*p) for p in pts[1:9]):
+                q = clamp((age - i * .12) / .8, 0, 1)
+                if quoi == "ouvre":                   # les objets ressortent de la caisse jusqu'à leur place
+                    sx, sy, x0, y0 = x, y - 20 * z, sx, sy
+                else:
+                    x0, y0 = x, y - 20 * z
+                bx = sx + (x0 - sx) * ease(q)
+                by = sy + (y0 - sy) * ease(q) - math.sin(q * math.pi) * 40 * z
+                if 0 < q < 1:
+                    L.append(("lueur", bx, by - 6 * z, 10 * z, (255, 246, 200, 200)))
+                    L.append(("rect", bx - 3 * z, by - 9 * z, 6 * z, 6 * z, (243, 226, 184, 230)))
+            self._caisse(L, x, y - 6 * z, 26 * z * s_, ouvert, a_)
+            if quoi == "ferme":
+                txt = "📦 " + t("efx.caisse.ferme", n=e.get("n", 0))
+            elif quoi == "ouvre":
+                txt = "📦 " + t("efx.caisse.ouvre", n=e.get("n", 0))
+            elif quoi == "serre":
+                txt = "📦 " + t("efx.caisse.serre")
+            else:
+                txt = "📦 " + t("efx.caisse.voir", n=e.get("n", 0))
+            etiquette(txt, x, y - 44 * z, BOIS, False)
+        elif ty == "lien":                        # le fil lumineux du raccourci (gris et cassé si la cible manque)
+            (bx, by) = self.ecran(*pts[1]) if len(pts) > 1 else (x + 90, y - 70)
+            q = clamp(age / .8, 0, 1)
+            mx, my = (x + bx) / 2, min(y, by) - 60 * z
+            mort = e.get("mort")
+            coul = (150, 156, 170, a_) if mort else (255, 213, 79, a_)
+            n_ = 14
+            for i in range(int(n_ * q)):
+                u0, u1 = i / n_, (i + 1) / n_
+                if mort and i in (n_ // 2, n_ // 2 + 1):
+                    continue                          # le fil est coupé au milieu
+                p_ = [((1 - u) ** 2 * x + 2 * (1 - u) * u * mx + u * u * bx,
+                       (1 - u) ** 2 * (y - 26 * z) + 2 * (1 - u) * u * my + u * u * (by - 10 * z)) for u in (u0, u1)]
+                if not mort:
+                    L.append(("ligne", p_[0][0], p_[0][1], p_[1][0], p_[1][1], (255, 213, 79, int(70 * fin)), 6, None))
+                L.append(("ligne", p_[0][0], p_[0][1], p_[1][0], p_[1][1], coul, 2.2, None))
+            L.append(("rect", x - 1.5 * z, y - 26 * z, 3 * z, 22 * z, (138, 90, 48, a_)))
+            L.append(("rrect", x - 16 * z, y - 34 * z, 32 * z, 11 * z, 2 * z, (241, 227, 192, a_), (90, 56, 30, a_), 1))
+            if q >= 1 and not mort:
+                L.append(("cercle", bx, by - 10 * z, 14 * z, (255, 213, 79, a_), 2))
+            nom = (e.get("chemin") or "").split("/")[-1]
+            fin_txt = t("efx.lien_mort") if mort else t("efx.lien_dehors") if e.get("dehors") else \
+                (e.get("cible") or "").split("/")[-1]
+            etiquette("🔗 " + nom + " → " + fin_txt, mx, my - 6 * z, (150, 156, 170, 255) if mort else JAUNE, False)
+        elif ty == "taille":                      # une colonne orange au-dessus de chaque élément mesuré
+            els = e.get("elements") or []
+            haut_max = max([v for _c, v in els] + [1])
+            for i, ((_c, v), p) in enumerate(zip(els, pts[1:] or pts)):
+                sx, sy = self.ecran(*p)
+                h_ = (14 + 70 * v / haut_max) * z * clamp((age - i * .15) / .5, 0, 1)
+                L.append(("rect", sx - 7 * z, sy - 14 * z - h_, 14 * z, h_, (255, 159, 67, int(225 * fin))))
+                L.append(("rrect", sx - 7 * z, sy - 14 * z - h_, 14 * z, h_, 1, None, (30, 30, 46, a_), 1))
+                if h_ > 2:
+                    etiquette(_octets(v), sx, sy - 26 * z - h_, ORANGE, False)
+        elif ty in ("disque", "memoire"):         # le réservoir du disque, l'étagère de la mémoire
+            pc = e.get("pourcent")
+            f_ = (pc or 0) / 100 * clamp(age / .8, 0, 1)
+            bx, by, bw, bh = x + 26 * z, y - 96 * z, 34 * z, 70 * z
+            if ty == "disque":
+                L.append(("rrect", bx, by, bw, bh, 6 * z, (20, 23, 32, int(235 * fin)), (77, 208, 225, a_), 2))
+                L.append(("rect", bx + 3 * z, by + bh - 3 * z - (bh - 6 * z) * f_, bw - 6 * z, (bh - 6 * z) * f_,
+                          (77, 208, 225, int(200 * fin))))
+                txt = "💾 " + (t("efx.disque", p=pc) if pc is not None else t("efx.disque_inconnu"))
+                etiquette(txt, bx + bw / 2, by - 14 * z, CYAN, False)
+            else:
+                bw2 = 76 * z
+                L.append(("rect", bx - 4 * z, by + 20 * z, bw2 + 8 * z, 46 * z, (107, 68, 36, a_)))
+                L.append(("rect", bx, by + 24 * z, bw2, 38 * z, (58, 42, 26, a_)))
+                cols = [(255, 159, 67), (77, 208, 225), (178, 132, 255), (61, 220, 132)]
+                for i in range(8):
+                    plein = i < round(f_ * 8)
+                    L.append(("rect", bx + 3 * z + i * 9.2 * z, by + 28 * z + (i % 3) * 1.5 * z, 7 * z, 30 * z - (i % 3) * 1.5 * z,
+                              cols[i % 4] + (a_,) if plein else (255, 255, 255, int(30 * fin))))
+                txt = "🧠 " + (t("efx.memoire", p=pc) if pc is not None else t("efx.memoire_inconnu"))
+                etiquette(txt, bx + bw2 / 2, by + 6 * z, ORANGE, False)
+        elif ty == "arbre":                       # tree : la brume se lève, niveau par niveau
+            c = self.carte
+            if c:
+                for i, p in enumerate(c["parcelles"]):
+                    q = clamp((age - .15 - (i % 2) * .35) / .5, 0, 1)
+                    if 0 < q < 1:
+                        sx, sy = self.ecran(*self.sommet(c["hex"][tuple(p["centre"])]))
+                        L.append(("lueur", sx, sy - 8 * z, 46 * z, (232, 240, 252, int(170 * math.sin(q * math.pi)))))
+            ax, ay, aw, ah = self.aire
+            if age < 1.2:
+                L.append(("rect", ax, ay, aw, ah, (232, 238, 248, int(110 * (1 - age / 1.2)))))
+            etiquette("🌳 " + t("efx.arbre", d=e.get("dossiers", 0), f=e.get("fichiers", 0)), x, y - 70 * z,
+                      (159, 216, 160, 255), False)
+        elif ty == "lanternes":                   # chaque service en marche est une lanterne allumée
+            n_ = max(1, min(8, e.get("n", 0) or 1))
+            for i in range(n_):
+                lx = x + (i - (n_ - 1) / 2) * 20 * z
+                ly = y - 70 * z + math.sin(i * 1.7) * 3 * z
+                allume = e.get("n", 0) > 0 and age > .15 + i * .12
+                if allume:
+                    L.append(("lueur", lx, ly, 16 * z, (255, 214, 90, int(170 * fin))))
+                L.append(("rect", lx - .5 * z, ly - 12 * z, 1 * z, 5 * z, (43, 47, 58, a_)))
+                L.append(("rect", lx - 5 * z, ly - 7 * z, 10 * z, 2 * z, (58, 63, 76, a_)))
+                L.append(("rect", lx - 4 * z, ly - 5 * z, 8 * z, 10 * z, LAMPE[:3] + (a_,) if allume else (90, 96, 112, a_)))
+            etiquette("🏮 " + t("efx.lanternes", n=e.get("n", 0)), x, y - 98 * z, LAMPE, False)
+        elif ty == "reveil":                      # le réveil posé : il sonne (il tremble), avec le nombre de réveils
+            r_ = math.sin(age * 40) * 3 * z * max(0.0, 1 - age)
+            cx, cy = x + 30 * z + r_, y - 50 * z
+            L.append(("ellipse", cx - 9 * z, cy - 10 * z, 5 * z, 5 * z, (224, 72, 72, a_)))
+            L.append(("ellipse", cx + 9 * z, cy - 10 * z, 5 * z, 5 * z, (224, 72, 72, a_)))
+            L.append(("ellipse", cx, cy, 13 * z, 13 * z, (224, 72, 72, a_)))
+            L.append(("ellipse", cx, cy, 10 * z, 10 * z, (255, 248, 225, a_)))
+            L.append(("ligne", cx, cy, cx, cy - 7 * z, (30, 30, 46, a_), 2, None))
+            L.append(("ligne", cx, cy, cx + 5 * z, cy + 3 * z, (30, 30, 46, a_), 2, None))
+            if age < 1.2:
+                L.append(("texte", cx + 18 * z, cy - 14 * z - age * 10 * z, "♪", 13, JAUNE[:3] + (a_,), True, "c", False))
+            etiquette("⏰ " + t("efx.reveil", n=e.get("n", 0)), cx, cy - 30 * z, JAUNE, False)
+        elif ty == "journal":                     # le registre se déroule, une ligne après l'autre
+            q = clamp(age / .6, 0, 1)
+            w_, h_ = 92 * z, (10 + 46 * ease(q)) * z
+            bx, by = x - w_ / 2, y - 60 * z - h_
+            L.append(("rrect", bx, by, w_, h_, 3, (243, 226, 184, a_), (59, 42, 90, a_), 1.5))
+            for i in range(min(5, int(age * 6))):
+                if (8 + i * 9) * z < h_:
+                    L.append(("rect", bx + 6 * z, by + (6 + i * 9) * z, w_ - 12 * z - (i % 2) * 14 * z, 2.5 * z, (90, 70, 50, a_)))
+            etiquette("📜 " + t("efx.journal", n=e.get("n", 0)), x, by - 14 * z, VIOLET, False)
+        elif ty == "etoile":                      # git add : une étoile sur ce qui ira dans la prochaine photo
+            for i, p in enumerate(pts[1:9] or pts):
+                sx, sy = self.ecran(*p)
+                q = clamp((age - i * .1) / .4, 0, 1)
+                self._etoile(L, sx, sy - 40 * z - (1 - ease(q)) * 30 * z, 9 * z, age * 2 + i, (255, 213, 79, a_))
+            etiquette("★ " + t("efx.etoile"), x, y - 66 * z, JAUNE, False)
+        elif ty == "album":                       # git log : l'album se feuillette ; git init : un album tout neuf
+            n_ = max(1, min(4, e.get("n", 0))) if e.get("quoi") == "voir" else 1
+            for i in range(n_):
+                q = clamp((age - i * .2) / .4, 0, 1)
+                if q <= 0:
+                    continue
+                cx, cy = x + (i - (n_ - 1) / 2) * 22 * z, y - 66 * z - i * 2 * z
+                L.append(("rect", cx - 10 * z, cy - 10 * z, 20 * z, 22 * z, (251, 247, 238, int(255 * q * fin))))
+                vide = e.get("quoi") == "neuf"
+                L.append(("rect", cx - 8 * z, cy - 8 * z, 16 * z, 13 * z,
+                          (230, 226, 216, int(255 * q * fin)) if vide else
+                          [(124, 198, 240), (159, 216, 160), (90, 166, 58), (201, 162, 106)][i % 4] + (int(255 * q * fin),)))
+            txt = "📚 " + (t("efx.album_neuf") if e.get("quoi") == "neuf" else t("efx.album", n=e.get("n", 0)))
+            etiquette(txt, x, y - 94 * z, (251, 247, 238, 255), False)
+        elif ty in ("branche", "fusion"):         # git : le tronc (la branche principale) et une branche qui pousse
+            q = clamp(age / .9, 0, 1)
+            yy = y - 70 * z
+            L.append(("ligne", x - 50 * z, yy, x + 50 * z, yy, (61, 220, 132, a_), 3, None))
+            coul = (255, 159, 67, a_)
+            if ty == "branche":
+                pts_b = [(x - 30 * z + 80 * z * u * q, yy - 26 * z * math.sin(min(1, u * q * 2) * math.pi / 2)) for u in
+                         (i / 10 for i in range(11))]
+            else:
+                pts_b = [(x - 30 * z + 70 * z * u, yy - 26 * z * math.sin(u * math.pi) * (1 - .15 * q)) for u in
+                         (i / 10 for i in range(int(11 * max(.1, q))))]
+            for a, b in zip(pts_b, pts_b[1:]):
+                L.append(("ligne", a[0], a[1], b[0], b[1], coul, 3, None))
+            for dx in (-40, -30, 40):
+                L.append(("ellipse", x + dx * z, yy, 4 * z, 4 * z, (251, 247, 238, a_)))
+            ok = ty == "branche" or e.get("ok")
+            if ty == "fusion" and q >= 1:
+                L.append(("cercle", x + 40 * z, yy, 6 * z, (255, 213, 79, a_) if ok else (255, 95, 109, a_), 2))
+            if ty == "branche":
+                txt = "⑂ " + (t("efx.branche", nom=e.get("nom", "")) if e.get("quoi") == "nouvelle" else
+                              t("efx.branche_change", nom=e.get("nom", "")))
+            else:
+                txt = "⑂ " + (t("efx.fusion", nom=e.get("nom", "")) if ok else t("efx.conflit"))
+            etiquette(txt, x, yy - 40 * z, ORANGE if ok else ROUGE, False)
+        elif ty == "rembobine":                   # git restore : l'horloge tourne à l'envers sur ce qui revient
+            for i, p in enumerate(pts[1:9] or pts):
+                sx, sy = self.ecran(*p)
+                s_ = math.sin(clamp(age / 1.6, 0, 1) * math.pi)
+                a0 = -age * 5
+                arc = [(sx + math.cos(a0 + u * 5.3) * 22 * z, sy - 16 * z + math.sin(a0 + u * 5.3) * 22 * z * .8)
+                       for u in (j / 12 for j in range(13))]
+                for a, b in zip(arc, arc[1:]):
+                    L.append(("ligne", a[0], a[1], b[0], b[1], (255, 240, 200, int(255 * s_)), 3, None))
+            etiquette("↺ " + (e.get("chemin") or "").split("/")[-1] + " · " + t("efx.rembobine"), x, y - 56 * z, JAUNE, False)
+        elif ty == "robot":                       # le robot de l'Atelier, à côté du guide
+            q = clamp(age / .8, 0, 1)
+            quoi, val = e.get("quoi"), str(e.get("valeur") or "")
+            rx = x + 34 * z + (30 * z * ease(q) if quoi == "pas" else 0)
+            ry = y - (math.sin(q * math.pi) * 5 * z if quoi == "pas" else 0)
+            led = None
+            if quoi == "led":
+                led = (61, 255, 124) if val.strip() not in ("", "0") and age > .4 else None
+            elif quoi in ("pas", "capteur", "moteur"):
+                led = (61, 255, 124)
+            self._robot(L, rx, ry, 14 * z, led, a_, q * 8 if quoi in ("pas", "moteur") else 0)
+            if quoi in ("capteur", "pas"):
+                for i in range(3):
+                    r_ = (age * 1.4 + i / 3) % 1
+                    arc = [(rx + 10 * z + math.cos(u) * (6 + r_ * 26) * z, ry - 16 * z + math.sin(u) * (6 + r_ * 26) * z)
+                           for u in (-.5 + j / 6 for j in range(7))]
+                    for a, b in zip(arc, arc[1:]):
+                        L.append(("ligne", a[0], a[1], b[0], b[1], (77, 208, 225, int(255 * (1 - r_) * fin)), 2, None))
+            if quoi == "led":
+                txt = "💡 " + (t("efx.robot.allume") if led else t("efx.robot.eteint"))
+            elif quoi == "moteur":
+                txt = "⚙ " + t("efx.robot.moteur", v=val)
+            elif quoi == "capteur":
+                txt = "📡 " + t("efx.robot.capteur", v=val or "?")
+            else:
+                txt = "➜ " + t("efx.robot.pas")
+            etiquette(txt, rx, ry - 42 * z, VERT if quoi == "led" else CYAN, False)
+        elif ty == "grimoire":                    # man : le grimoire s'ouvre à côté de la créature
+            o_ = clamp(age * 3, 0, 1)
+            bx, by, s_ = x + 30 * z, y - 70 * z, 20 * z
+            L.append(("rect", bx - s_ * o_ - 2 * z, by - s_ * .7 - 2 * z, 2 * s_ * o_ + 4 * z, s_ * 1.4 + 4 * z, (90, 47, 107, a_)))
+            L.append(("rect", bx - s_ * o_, by - s_ * .7, s_ * o_, s_ * 1.4, (246, 237, 213, a_)))
+            L.append(("rect", bx, by - s_ * .7, s_ * o_, s_ * 1.4, (239, 226, 192, a_)))
+            for i in range(4):
+                for dx in (-s_ * o_ + 3 * z, 3 * z):
+                    L.append(("rect", bx + dx, by - s_ * .45 + i * s_ * .3, s_ * o_ * .7, 1.5 * z, (168, 152, 120, a_)))
+            etiquette("📖 " + t("efx.grimoire", mot=e.get("mot", "")), bx, by - s_ - 14 * z, VIOLET, False)
+        elif ty == "loupe":                       # shellcheck : la loupe passe sur le script
+            q = clamp(age / .9, 0, 1)
+            lx = x - 20 * z + 40 * z * ease(q)
+            ly = y - 60 * z
+            n_ = e.get("n", 0)
+            for i in range(min(3, n_)):
+                if age > .3 + i * .25:
+                    L.append(("rect", x - 26 * z, ly - 14 * z + i * 9 * z, 52 * z, 5 * z, (255, 95, 109, int(110 * fin))))
+            L.append(("cercle", lx, ly, 11 * z, (201, 210, 220, a_), 2.5))
+            L.append(("ligne", lx + 8 * z, ly + 8 * z, lx + 16 * z, ly + 16 * z, (201, 210, 220, a_), 4, None))
+            ok = e.get("ok")
+            etiquette("🔎 " + (t("efx.loupe_ok") if ok else t("efx.loupe", n=n_)), x, ly - 30 * z, VERT if ok else ROUGE, False)
+        elif ty == "filet":                       # trap : un filet tendu sous la créature
+            q = ease(clamp(age / .6, 0, 1))
+            w_, yy = 44 * z * q, y + 6 * z
+            for i in range(-4, 4):
+                x0_, x1_ = x + i * w_ / 4, x + (i + 1) * w_ / 4
+                L.append(("ligne", x0_, yy - 3 * z, x1_, yy + 5 * z, (255, 213, 79, a_), 1.3, None))
+                L.append(("ligne", x0_, yy + 5 * z, x1_, yy - 3 * z, (255, 213, 79, a_), 1.3, None))
+            L.append(("rect", x - w_ - 2 * z, yy - 10 * z, 2 * z, 18 * z, (138, 90, 48, a_)))
+            L.append(("rect", x + w_, yy - 10 * z, 2 * z, 18 * z, (138, 90, 48, a_)))
+            etiquette("🪢 " + t("efx.filet") + " · " + " ".join(e.get("signaux") or []), x, yy + 22 * z, JAUNE, False)
+        elif ty == "sablier":                     # mktemp : un objet au nom unique, avec un sablier
+            if age < .6:
+                L.append(("rect", x - 4 * z, y - 120 * z, 8 * z, 120 * z,
+                          (255, 246, 176, int(110 * math.sin(age / .6 * math.pi)))))
+            self._sablier(L, x + (0 if e.get("chemin") else 34 * z), y - 34 * z, 11 * z, clamp(age / 1.8, 0, 1), a_)
+            etiquette("⏳ " + (e.get("nom") or "") + " · " + t("efx.sablier"), x, y - 60 * z, BOIS, False)
+        elif ty == "espion":                      # strace : les appels au système passent sous la loupe
+            for i in range(6):
+                u = (age * .9 + i / 6) % 1
+                sx = x - 50 * z + u * 100 * z
+                sy = y - 56 * z + math.sin(u * 6) * 4 * z
+                L.append(("rect", sx - 2 * z, sy - 2 * z, 4 * z, 4 * z, (77, 208, 225, int(255 * math.sin(u * math.pi) * fin))))
+            L.append(("cercle", x, y - 56 * z, 12 * z, (77, 208, 225, a_), 2.5))
+            L.append(("ligne", x + 9 * z, y - 47 * z, x + 16 * z, y - 40 * z, (77, 208, 225, a_), 4, None))
+            etiquette("🕵 " + t("efx.espion", n=e.get("n", 0)), x, y - 84 * z, CYAN, False)
+
+    def _caisse(self, L, x, y, s, ouvert, a):
+        """La caisse de tar (bois cerclé) ; ouvert : 0 → 1 (le couvercle se lève)."""
+        L.append(("rect", x - s / 2, y - s * .7, s, s * .7, (138, 90, 48, a)))
+        for k_ in (1, 2):
+            L.append(("rect", x - s / 2, y - s * .7 + k_ * s * .23, s, max(1, s * .04), (107, 68, 36, a)))
+        L.append(("rect", x - s / 2, y - s * .7, max(1, s * .06), s * .7, (201, 162, 106, a)))
+        L.append(("rect", x + s / 2 - max(1, s * .06), y - s * .7, max(1, s * .06), s * .7, (201, 162, 106, a)))
+        lev = ouvert * s * .45
+        L.append(("poly", [(x - s / 2, y - s * .7), (x + s / 2, y - s * .7 - lev), (x + s / 2, y - s * .86 - lev),
+                           (x - s / 2, y - s * .86)], (168, 116, 63, a)))
+
+    def _etoile(self, L, x, y, r, rot, c):
+        L.append(("poly", [(x + math.cos(rot + i * math.pi / 5) * (r if i % 2 == 0 else r * .45),
+                            y + math.sin(rot + i * math.pi / 5) * (r if i % 2 == 0 else r * .45)) for i in range(10)], c))
+
+    def _robot(self, L, x, y, s, led, a, roues):
+        """Le petit robot de l'Atelier (simulé : des fichiers led, moteur, capteur_distance)."""
+        L.append(("rect", x - s * .6, y - s * 1.1, s * 1.2, s * .8, (138, 150, 163, a)))
+        L.append(("rect", x - s * .7, y - s * .35, s * 1.4, s * .25, (92, 102, 114, a)))
+        L.append(("rect", x - s * .35, y - s * .95, s * .22, s * .22, (30, 36, 48, a)))
+        L.append(("rect", x + s * .13, y - s * .95, s * .22, s * .22, (30, 36, 48, a)))
+        L.append(("rect", x - s * .04, y - s * 1.35, s * .08, s * .25, (43, 47, 58, a)))
+        if led:
+            L.append(("lueur", x, y - s * 1.42, s * .7, led + (int(a * .8),)))
+        L.append(("ellipse", x, y - s * 1.42, s * .13, s * .13, (led or (58, 63, 76)) + (a,)))
+        for dx in (-.45, .45):
+            L.append(("ellipse", x + dx * s, y - s * .05, s * .22, s * .22, (30, 30, 46, a)))
+            L.append(("ligne", x + dx * s - math.sin(roues) * s * .18, y - s * .05 - math.cos(roues) * s * .18,
+                      x + dx * s + math.sin(roues) * s * .18, y - s * .05 + math.cos(roues) * s * .18, (201, 210, 220, a), 1.5, None))
+
+    def _sablier(self, L, x, y, s, k, a):
+        L.append(("rect", x - s * .6, y - s, s * 1.2, s * .15, (201, 162, 106, a)))
+        L.append(("rect", x - s * .6, y + s * .85, s * 1.2, s * .15, (201, 162, 106, a)))
+        L.append(("poly", [(x - s * .45, y - s * .85), (x + s * .45, y - s * .85), (x + s * .05, y), (x + s * .45, y + s * .85),
+                           (x - s * .45, y + s * .85), (x - s * .05, y)], (220, 240, 255, int(a * .6))))
+        h_ = (1 - k) * s * .7
+        L.append(("poly", [(x - h_ * .55, y - h_), (x + h_ * .55, y - h_), (x, y)], (255, 211, 107, a)))
+        b_ = k * s * .7
+        L.append(("poly", [(x - b_ * .6, y + s * .85), (x + b_ * .6, y + s * .85), (x, y + s * .85 - b_)], (255, 211, 107, a)))
 
     def _cadenas(self, L, cx, cy, r, c, ouvert):
         a = c[3] if len(c) > 3 else 255

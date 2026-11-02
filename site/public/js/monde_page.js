@@ -256,7 +256,11 @@ function points(e) {
   if (e.type === "messager") { const g = guidePt(); return [g, G.TYPES.includes(e.cible) ? pointDe("biome/" + e.cible) : [g[0] + 120, g[1] - 90]]; }
   if (["lucioles", "photo"].includes(e.type)) return [guidePt()];
   if (e.type === "tuyau") return [pointDe(e.source || "biome/" + e.region)];
-  return [pointDe(e.chemin)];
+  if (["disque", "arbre", "memoire", "lanternes", "reveil", "journal", "album", "branche", "fusion", "robot", "grimoire", "loupe", "filet", "sablier", "espion"].includes(e.type))
+    return [e.chemin && hexDe(e.chemin) ? pointDe(e.chemin) : guidePt()];
+  if (e.type === "lien") { const a = hexDe(e.chemin) ? pointDe(e.chemin) : guidePt(); return [a, e.cible && hexDe(e.cible) ? pointDe(e.cible) : [a[0] + 90, a[1] - 70]]; }
+  if (e.type === "taille") return (e.elements || []).map(([c]) => (hexDe(c) ? pointDe(c) : guidePt()));
+  return [e.chemin && hexDe(e.chemin) ? pointDe(e.chemin) : (e.chemin ? pointDe(e.chemin) : guidePt())];
 }
 const dits = JSON.parse(sessionStorage.getItem("tg_monde_dits") || "{}");
 function jouer(ligne) {
@@ -373,6 +377,44 @@ function effet(ef, age) {
       (e.lignes || []).forEach((l, i) => { if ((18 + i * 16) * dpr < h) ctx.fillText(l.slice(0, 22), p0[0] - w / 2 + 8 * dpr, p0[1] - 50 * z - h + (14 + i * 16) * dpr); }); ctx.globalAlpha = 1; break; }
     case "groupe": etiquette((String(e.sorte).endsWith("-") ? "− " : "+ ") + e.n, p0[0], p0[1] - 40 * z, String(e.sorte).endsWith("-") ? "#ff5f6d" : "#3ddc84", fin); break;
     case "tuyau": etiquette((e.etapes || []).join(" | "), p0[0], p0[1] - 80 * z, "#b284ff", fin); break;
+    // les effets secondaires et ceux des mondes (2 novembre) : le même sens qu'en jeu, dessiné plus simplement
+    case "caisse": { const ouv = e.quoi === "ferme" ? Math.max(0, 1 - (age - 1) * 3) : e.quoi === "serre" ? 0 : Math.min(1, age * 3), s = 26 * z * (e.quoi === "serre" ? 1 - 0.45 * clamp((age - 0.2) / 0.6, 0, 1) : 1);
+      ctx.globalAlpha = fin; ctx.fillStyle = "#8a5a30"; ctx.fillRect(p0[0] - s / 2, p0[1] - 6 * z - s * 0.7, s, s * 0.7); ctx.fillStyle = "#a8743f"; ctx.fillRect(p0[0] - s / 2, p0[1] - 6 * z - s * 0.86 - ouv * s * 0.3, s, s * 0.16); ctx.globalAlpha = 1;
+      etiquette("📦 " + (e.quoi === "serre" ? tr("efx.caisse.serre") : tr("efx.caisse." + e.quoi, { n: e.n })), p0[0], p0[1] - 44 * z, "#c9a26a", fin); break; }
+    case "lien": { const [x1, y1] = pts[1]; ctx.strokeStyle = e.mort ? `rgba(150,156,170,${fin})` : `rgba(255,213,79,${fin})`; ctx.lineWidth = 2.2 * dpr; if (e.mort) ctx.setLineDash([10 * dpr, 8 * dpr]);
+      ctx.beginPath(); ctx.moveTo(p0[0], p0[1] - 26 * z); ctx.quadraticCurveTo((p0[0] + x1) / 2, Math.min(p0[1], y1) - 60 * z, x1, y1 - 10 * z); ctx.stroke(); ctx.setLineDash([]);
+      etiquette("🔗 " + nomDe(e.chemin) + " → " + (e.mort ? tr("efx.lien_mort") : e.dehors ? tr("efx.lien_dehors") : nomDe(e.cible || "")), (p0[0] + x1) / 2, Math.min(p0[1], y1) - 66 * z, e.mort ? "#969caa" : "#ffd54f", fin); break; }
+    case "taille": { const vs = (e.elements || []).map(([, v]) => v), hm = Math.max(1, ...vs);
+      vs.forEach((v, i) => { const [x, y] = pts[i] || p0, h = (14 + 70 * v / hm) * z * clamp((age - i * 0.15) / 0.5, 0, 1); ctx.fillStyle = `rgba(255,159,67,${0.9 * fin})`; ctx.fillRect(x - 7 * z, y - 14 * z - h, 14 * z, h);
+        const o = v < 1024 ? tr("efx.taille_o", { n: v }) : v < 1048576 ? tr("efx.taille_ko", { n: Math.max(1, Math.floor(v / 1024 + 0.5)) }) : tr("efx.taille_mo", { n: Math.max(1, Math.floor(v / 1048576 + 0.5)) });
+        etiquette(o, x, y - 26 * z - h, "#ff9f43", fin); }); break; }
+    case "disque": case "memoire": { const f = (e.pourcent || 0) / 100 * clamp(age / 0.8, 0, 1), bx = p0[0] + 26 * z, by = p0[1] - 96 * z;
+      ctx.globalAlpha = fin; ctx.fillStyle = "#141720"; ctx.fillRect(bx, by, 34 * z, 70 * z); ctx.fillStyle = e.type === "disque" ? "#4dd0e1" : "#ff9f43"; ctx.fillRect(bx + 3 * z, by + 67 * z - 64 * z * f, 28 * z, 64 * z * f); ctx.globalAlpha = 1;
+      const k_ = e.pourcent === null || e.pourcent === undefined ? tr(`efx.${e.type}_inconnu`) : tr("efx." + e.type, { p: e.pourcent });
+      etiquette((e.type === "disque" ? "💾 " : "🧠 ") + k_, bx + 17 * z, by - 14 * z, e.type === "disque" ? "#4dd0e1" : "#ff9f43", fin); break; }
+    case "arbre": if (age < 1.2) { ctx.fillStyle = `rgba(232,238,248,${0.43 * (1 - age / 1.2)})`; ctx.fillRect(0, 0, W, H); } etiquette("🌳 " + tr("efx.arbre", { d: e.dossiers, f: e.fichiers }), p0[0], p0[1] - 70 * z, "#9fd8a0", fin); break;
+    case "lanternes": for (let i = 0; i < Math.max(1, Math.min(8, e.n || 1)); i++) { ctx.fillStyle = e.n && age > 0.15 + i * 0.12 ? `rgba(255,214,90,${fin})` : `rgba(90,96,112,${fin})`; ctx.fillRect(p0[0] + (i - 3.5) * 20 * z - 4 * z, p0[1] - 75 * z, 8 * z, 10 * z); }
+      etiquette("🏮 " + tr("efx.lanternes", { n: e.n }), p0[0], p0[1] - 98 * z, "#ffd65a", fin); break;
+    case "reveil": etiquette("⏰ " + tr("efx.reveil", { n: e.n }), p0[0] + Math.sin(age * 40) * 3 * z * Math.max(0, 1 - age), p0[1] - 80 * z, "#ffd54f", fin); break;
+    case "journal": etiquette("📜 " + tr("efx.journal", { n: e.n }), p0[0], p0[1] - 80 * z, "#b284ff", fin); break;
+    case "etoile": etiquette("★ " + tr("efx.etoile"), p0[0], p0[1] - 66 * z - (1 - ease(clamp(age / 0.4, 0, 1))) * 30 * z, "#ffd54f", fin); break;
+    case "album": etiquette("📚 " + (e.quoi === "neuf" ? tr("efx.album_neuf") : tr("efx.album", { n: e.n })), p0[0], p0[1] - 94 * z, "#fbf7ee", fin); break;
+    case "branche": case "fusion": { const ok = e.type === "branche" || e.ok, y = p0[1] - 70 * z, q = clamp(age / 0.9, 0, 1);
+      ctx.lineWidth = 3 * dpr; ctx.strokeStyle = `rgba(61,220,132,${fin})`; ctx.beginPath(); ctx.moveTo(p0[0] - 50 * z, y); ctx.lineTo(p0[0] + 50 * z, y); ctx.stroke();
+      ctx.strokeStyle = `rgba(255,159,67,${fin})`; ctx.beginPath(); ctx.moveTo(p0[0] - 30 * z, y); ctx.quadraticCurveTo(p0[0], y - 30 * z, p0[0] + (e.type === "fusion" ? 40 : 50 * q) * z, e.type === "fusion" ? y : y - 26 * z * q); ctx.stroke();
+      const t_ = e.type === "branche" ? tr(e.quoi === "nouvelle" ? "efx.branche" : "efx.branche_change", { nom: e.nom }) : ok ? tr("efx.fusion", { nom: e.nom }) : tr("efx.conflit");
+      etiquette("⑂ " + t_, p0[0], y - 40 * z, ok ? "#ff9f43" : "#ff5f6d", fin); break; }
+    case "rembobine": ctx.strokeStyle = `rgba(255,240,200,${Math.sin(clamp(age / 1.6, 0, 1) * Math.PI)})`; ctx.lineWidth = 3 * dpr; ctx.beginPath(); ctx.arc(p0[0], p0[1] - 16 * z, 22 * z, -age * 5, -age * 5 + 5.3); ctx.stroke();
+      etiquette("↺ " + nomDe(e.chemin || "") + " · " + tr("efx.rembobine"), p0[0], p0[1] - 56 * z, "#ffd54f", fin); break;
+    case "robot": { const v = String(e.valeur ?? ""), led = e.quoi !== "led" || (v.trim() && v.trim() !== "0" && age > 0.4);
+      ctx.globalAlpha = fin; ctx.fillStyle = "#8a96a3"; ctx.fillRect(p0[0] + 26 * z, p0[1] - 16 * z, 17 * z, 11 * z); ctx.fillStyle = led ? "#3dff7c" : "#3a3f4c"; ctx.beginPath(); ctx.arc(p0[0] + 34 * z, p0[1] - 20 * z, 2 * z, 0, 7); ctx.fill(); ctx.globalAlpha = 1;
+      const t_ = e.quoi === "led" ? "💡 " + tr(led ? "efx.robot.allume" : "efx.robot.eteint") : e.quoi === "moteur" ? "⚙ " + tr("efx.robot.moteur", { v }) : e.quoi === "capteur" ? "📡 " + tr("efx.robot.capteur", { v: v || "?" }) : "➜ " + tr("efx.robot.pas");
+      etiquette(t_, p0[0] + 34 * z, p0[1] - 42 * z, e.quoi === "led" ? "#3ddc84" : "#4dd0e1", fin); break; }
+    case "grimoire": etiquette("📖 " + tr("efx.grimoire", { mot: e.mot }), p0[0] + 30 * z, p0[1] - 84 * z, "#b284ff", fin); break;
+    case "loupe": etiquette("🔎 " + (e.ok ? tr("efx.loupe_ok") : tr("efx.loupe", { n: e.n })), p0[0], p0[1] - 90 * z, e.ok ? "#3ddc84" : "#ff5f6d", fin); break;
+    case "filet": etiquette("🪢 " + tr("efx.filet") + " · " + (e.signaux || []).join(" "), p0[0], p0[1] + 28 * z, "#ffd54f", fin); break;
+    case "sablier": etiquette("⏳ " + (e.nom || "") + " · " + tr("efx.sablier"), p0[0], p0[1] - 60 * z, "#c9a26a", fin); break;
+    case "espion": etiquette("🕵 " + tr("efx.espion", { n: e.n }), p0[0], p0[1] - 84 * z, "#4dd0e1", fin); break;
   }
 }
 // ------------------------------------------------------------------ la liste et la fiche (la fiche À LA PLACE de la liste)

@@ -25,6 +25,7 @@ Point d'extension (les autres mondes : Poste de Contrôle, Bibliothèque du Temp
     code, sortie, plus, moins, changes, deja) ; appelée seulement quand aucune règle de base n'a déjà répondu
     à la commande (deja = les événements déjà trouvés). Même chose dans Effets.kt (Effets.extensions).
 """
+import math
 import os
 import re
 import stat
@@ -56,7 +57,13 @@ RIEN = {"clear", "exit", "alias", "export", "env", "source", ".", "unalias", "se
 PRIO = {"jokers": 3, "dossier+": 3, "dossier-": 3, "objet+": 3, "objet-": 3, "touche": 3, "deplace": 3,
         "renomme": 3, "copie": 3, "ecrit": 3, "droits": 3, "refus": 3, "cd": 3, "pwd": 3, "ls": 3, "find": 3,
         "lire": 3, "groupe": 3, "modifie": 2, "lucioles": 2, "messager": 2, "photo": 2, "empreinte": 2,
-        "tuyau": 2, "caisse": 2}
+        "tuyau": 2, "caisse": 2, "lien": 2, "taille": 2, "disque": 2, "arbre": 2, "memoire": 2, "lanternes": 2,
+        "reveil": 2, "journal": 2, "etoile": 2, "album": 2, "branche": 2, "fusion": 2, "rembobine": 2, "robot": 2,
+        "grimoire": 2, "loupe": 2, "filet": 2, "sablier": 2, "espion": 2}
+# les commandes d'aide (le grimoire du Sommet)
+AIDE = {"man", "apropos", "whatis", "info"}
+_RX_SC = re.compile(r"^In .+ line [0-9]+:", re.M)          # shellcheck : une remarque par endroit du script
+_RX_APPEL = re.compile(r"^(?:\[pid +[0-9]+\] )?[a-z_0-9]+\(.*\)[ \t]+= ", re.M)   # strace : un appel au système par ligne
 _PARCELLE = re.compile(r"parcelle[_-]?\d*")
 TYPES = ("feu", "eau", "glace", "plante", "roche", "ciel", "ombre", "machine", "poison")
 EXTENSIONS = []
@@ -388,7 +395,9 @@ def _evenements(ligne, avant, apres, code, sortie):
             if cands:
                 utilises_p.add(p)
                 ev.append(_ev("copie", "cp", de=cands[0], vers=p, genre=g, n=_sous(plus_tout, p) + 1))
-    # écrasés par mv/cp : un fichier qui existait et dont le contenu a été remplacé
+    # ---- les caisses (tar, zip, gzip), les liens (ln), git restore, mktemp, git init : ce qui est apparu prend leur nom
+    utilises_c = set()
+    ev += _consommer(segs, cmds, cwd0, fa, fb, plus, moins, plus_tout, changes, utilises_p, utilises_m, utilises_c)
     # ---- ce qui est apparu
     redirs = [(op, _joindre(cwd0, c)) for s in segs for op, c in s["redir"]]
     via = "touch" if "touch" in cmds else "ecrire" if redirs or "tee" in cmds else "messager" if \
@@ -417,7 +426,7 @@ def _evenements(ligne, avant, apres, code, sortie):
             ev.append(_ev("objet-", cmd0, chemin=m, region=region(m)[0]))
     # ---- ce qui a changé
     for c in changes:
-        if fa[c][1] == fb[c][1] and fa[c][2] == fb[c][2]:
+        if (fa[c][1] == fb[c][1] and fa[c][2] == fb[c][2]) or c in utilises_c:
             continue
         cible = next((op for op, r in redirs if r == c), None)
         if cible:
@@ -449,9 +458,11 @@ def _evenements(ligne, avant, apres, code, sortie):
         for s in segs:
             c, args = s["cmd"], s["args"]
             ch = _chemins(args)
+            if any(a == "--help" for a, _c in args):
+                continue                              # l'aide : le grimoire (plus bas), pas l'effet de la commande
             if c == "pwd":
                 ev.append(_ev("pwd", c, chemin=cwd1))
-            elif c in ("ls", "tree") and not s["tuyau"]:
+            elif c == "ls" and not s["tuyau"]:
                 cible = _joindre(cwd1, ch[0]) if ch and not _joker(*args[-1]) else cwd1
                 if cible is not None and (cible == "" or (cible in fb and fb[cible][0] == "d")):
                     o = _options(args)
@@ -481,15 +492,18 @@ def _evenements(ligne, avant, apres, code, sortie):
                     r = _joindre(cwd1, a)
                     if r is not None and r in fb and fb[r][0] == "f":
                         ev.append(_ev("empreinte", c, chemin=r))
-            elif c == "git" and ch[:1] == ["commit"]:
+            elif c == "git" and _sans_valeurs(args, ("-C", "-c"))[:1] == ["commit"]:
                 ev.append(_ev("photo", "git", quoi="commit"))
             if c in RESEAU:
                 ev.append(_ev("messager", c, cible=_cible_reseau(args), ok=True))
             if c in PROCESSUS or s["fond"]:
                 ev.append(_ev("lucioles", c, quoi="part" if s["fond"] else "eteint" if c in (
                     "kill", "killall", "pkill") else "voir", ok=True))
+    # ---- les effets secondaires (du, df, tree…) et ceux des mondes (Contrôle, Temps, Atelier, Sommet)
+    autres, absorbe = _secondaires(segs, cwd0, cwd1, fa, fb, code, sortie, ev)
+    ev += autres
     # les messagers et les processus qui ont raté : le pigeon revient avec « ? ? ? », la luciole ne bouge pas
-    if not fichiers and code not in (0, None):
+    if not fichiers and code not in (0, None) and not absorbe:
         if cmd0 in RESEAU:
             ev.append(_ev("messager", cmd0, cible=_cible_reseau(principal["args"]), ok=False))
         elif cmd0 in ("kill", "killall", "pkill"):
@@ -506,6 +520,329 @@ def _evenements(ligne, avant, apres, code, sortie):
             except Exception:                                # noqa: BLE001
                 pass
     return grouper(ev)
+
+
+# ================================================================ caisses, liens, retours dans le temps
+def _archive(seg):
+    """(mode, archive, fichiers) d'une commande de caisse : mode c (fermer), x (ouvrir), t (regarder), g (serrer,
+    gzip), u (desserrer, gunzip) ; archive et fichiers tels qu'écrits."""
+    c, args = seg["cmd"], seg["args"]
+    if c == "tar":
+        mode, archive, fichiers, attend = None, None, [], None
+        for i, (a, cite) in enumerate(args):
+            if attend:
+                if attend == "f":
+                    archive = a
+                attend = None
+                continue
+            if a.startswith("--") and not cite:
+                if a.startswith("--file="):
+                    archive = a[7:]
+                elif a in ("--create", "--append", "--update"):
+                    mode = "c"
+                elif a in ("--extract", "--get"):
+                    mode = "x"
+                elif a == "--list":
+                    mode = "t"
+                elif a in ("--file", "--directory"):
+                    attend = "f" if a == "--file" else "C"
+                continue
+            lettres = None
+            if a.startswith("-") and len(a) > 1 and not cite:
+                lettres = a[1:]
+            elif i == 0 and not cite and re.fullmatch(r"[A-Za-z]+", a) and any(x in a for x in "cxt"):
+                lettres = a
+            if lettres is not None:
+                for x in lettres:
+                    if x in "cru":
+                        mode = "c"
+                    elif x == "x":
+                        mode = "x"
+                    elif x == "t":
+                        mode = "t"
+                if "f" in lettres:
+                    attend = "f"
+                elif "C" in lettres:
+                    attend = "C"
+                continue
+            fichiers.append(a)
+        return mode, archive, fichiers
+    ch = _chemins(args)
+    if c in ("zip", "unzip"):
+        if c == "unzip":
+            return "x", (ch[0] if ch else None), []
+        return "c", (ch[0] if ch else None), ch[1:]
+    if c in ("gzip", "gunzip"):
+        return ("u" if c == "gunzip" or "d" in _options(args) else "g"), None, ch
+    return None, None, []
+
+
+def _fichiers_sous(f, r):
+    """Le nombre d'objets (fichiers) en r ou sous r dans une photo."""
+    if r not in f:
+        return 0
+    if f[r][0] != "d":
+        return 1
+    return sum(1 for x in f if x.startswith(r + "/") and f[x][0] != "d")
+
+
+def _consommer(segs, cmds, cwd0, fa, fb, plus, moins, plus_tout, changes, up, um, uc):
+    """Ce qui est apparu (ou a changé) à cause d'une caisse, d'un lien, d'un retour dans le temps, d'un mktemp ou
+    d'un git init : un seul effet qui dit la vérité, à la place de « un nouvel objet »."""
+    ev = []
+    libres = [p for p in plus if p not in up]
+    for s in segs:
+        c = s["cmd"]
+        ch = _sans_valeurs(s["args"], ("-C", "-c")) if c == "git" else _chemins(s["args"])
+        if c in CAISSE:
+            mode, archive, fichiers = _archive(s)
+            arch = _joindre(cwd0, archive) if archive else None
+            if mode == "c" and arch is not None and (arch in libres or arch in changes) and arch not in up:
+                up.add(arch)
+                uc.add(arch)
+                srcs = [r for r in (_joindre(cwd0, a) for a in fichiers) if r is not None and r in fa]
+                ev.append(_ev("caisse", c, quoi="ferme", chemin=arch, chemins=srcs[:8],
+                              n=sum(_fichiers_sous(fa, r) for r in srcs), region=region(arch)[0]))
+            elif mode == "x" and arch is not None and arch in fb:
+                sortis = [p for p in libres if p not in up] + [x for x in changes if x not in uc and x != arch]
+                if sortis:
+                    for p in sortis:
+                        up.add(p)
+                        uc.add(p)
+                    n = sum(_fichiers_sous(fb, p) for p in sortis)
+                    ev.append(_ev("caisse", c, quoi="ouvre", chemin=arch, chemins=sortis[:8], n=n,
+                                  region=region(sortis[0])[0]))
+            elif mode in ("g", "u"):
+                for p in libres:
+                    if p in up:
+                        continue
+                    avant = p[:-3] if mode == "g" and p.endswith(".gz") else p + ".gz" if mode == "u" else None
+                    if avant and avant in moins and avant not in um:
+                        up.add(p)
+                        um.add(avant)
+                        ev.append(_ev("caisse", c, quoi="serre" if mode == "g" else "ouvre", chemin=p, de=avant,
+                                      chemins=[p], n=1, region=region(p)[0]))
+        elif c == "ln" and 1 <= len(ch) <= 2:
+            sym = "s" in _options(s["args"]) or any(a == "--symbolic" for a, _c in s["args"])
+            cible_arg = ch[0]
+            lien = _joindre(cwd0, ch[1] if len(ch) == 2 else _nom(cible_arg.rstrip("/")))
+            if lien is not None and lien in fa and fa[lien][0] == "d":
+                lien = (lien + "/" if lien else "") + _nom(cible_arg.rstrip("/"))
+            if lien is not None and lien in libres and lien not in up:
+                up.add(lien)
+                cible = _joindre(_parent(lien) if sym else cwd0, cible_arg)
+                ev.append(_ev("lien", "ln", chemin=lien, cible=cible, dehors=cible is None,
+                              mort=cible is not None and cible not in fb, dur=not sym, region=region(lien)[0]))
+        elif c == "git" and ch[:1] in (["restore"], ["checkout"]) and (
+                ch[0] == "restore" or any(a == "--" for a, _c in s["args"])):
+            revenus = [p for p in libres if p not in up] + [x for x in changes if x not in uc]
+            for p in revenus:
+                up.add(p)
+                uc.add(p)
+            if revenus:
+                ev.append(_ev("rembobine", "git", chemin=revenus[0], chemins=revenus[:8], n=len(revenus),
+                              region=region(revenus[0])[0]))
+        elif c == "git" and ch[:1] == ["init"]:
+            for p in libres:
+                if p in up:
+                    continue
+                if _nom(p) == ".git" or p + "/.git" in fb:
+                    up.add(p)
+                    ev.append(_ev("album", "git", quoi="neuf", chemin=_parent(p) if _nom(p) == ".git" else p, n=0))
+        elif c == "mktemp":
+            for p in libres:
+                if p not in up:
+                    up.add(p)
+                    ev.append(_ev("sablier", "mktemp", chemin=p, nom=_nom(p), genre=fb[p][0], region=region(p)[0]))
+                    break
+    return ev
+
+
+# ================================================================ les effets secondaires et ceux des mondes
+def _nombre(txt):
+    """« 7,6Gi », « 3.1G », « 812Mi », « 16384 » → un nombre (les unités ramenées à la même échelle), ou None."""
+    m = re.fullmatch(r"([0-9]+(?:[.,][0-9]+)?)([KMGTPkmgtp]?)[iI]?[BboO]?", txt.strip())
+    if not m:
+        return None
+    return float(m.group(1).replace(",", ".")) * 1024.0 ** ("_KMGTP".find(m.group(2).upper() or "_"))
+
+
+def _lignes(sortie):
+    return [x for x in sortie.split("\n") if x.strip()]
+
+
+def _sans_valeurs(args, avec_valeur):
+    """Les mots d'une commande qui ne sont ni des options ni la valeur d'une option (git -C d -c a=b commit → commit)."""
+    out, saute = [], False
+    for a, cite in args:
+        if saute:
+            saute = False
+            continue
+        if a.startswith("-") and not cite:
+            saute = a in avec_valeur
+            continue
+        out.append(a)
+    return out
+
+
+def _secondaires(segs, cwd0, cwd1, fa, fb, code, sortie, deja):
+    """du, df, tree, free, systemctl, crontab, journalctl, git (add, log, branch, switch, merge), le robot de l'Atelier,
+    man, shellcheck, trap, mktemp, strace. Renvoie (événements, absorbe) ; absorbe : la commande a « raté » mais
+    l'effet le montre déjà (une remarque de shellcheck, un conflit de git merge) : pas de refus en plus."""
+    ev, absorbe = [], False
+    ok = code == 0
+    for i, s in enumerate(segs):
+        c, args = s["cmd"], s["args"]
+        ch = _chemins(args)
+        o = _options(args)
+        tuyau = s["tuyau"] or (i + 1 < len(segs) and segs[i + 1]["tuyau"]) or bool(s["redir"])
+        if c == "tg" and ch[:1] == ["atelier"]:
+            c, ch = "atelier", ch[1:]
+        if c == "tree" and ok and not tuyau:
+            prof, cible, saute = PROFONDEUR, None, False
+            for a, cite in args:
+                if saute:
+                    saute = False
+                    if re.fullmatch(r"[0-9]+", a):
+                        prof = max(1, int(a))
+                    continue
+                if a == "-L" and not cite:
+                    saute = True
+                elif not (a.startswith("-") and not cite) and cible is None:
+                    cible = a
+            base = _joindre(cwd1, cible) if cible else cwd1
+            if base is not None and (base == "" or (base in fb and fb[base][0] == "d")):
+                tout = "a" in o
+                pref = base + "/" if base else ""
+                vus = [x for x in fb if x.startswith(pref) and x != base
+                       and (tout or not any(m.startswith(".") for m in x[len(pref):].split("/")))
+                       and x[len(pref):].count("/") < prof]
+                if "d" in o:
+                    vus = [x for x in vus if fb[x][0] == "d"]
+                niv = max([x[len(pref):].count("/") + 1 for x in vus] or [0])
+                ev.append(_ev("arbre", c, chemin=base, niveaux=niv, dossiers=sum(1 for x in vus if fb[x][0] == "d"),
+                              fichiers=sum(1 for x in vus if fb[x][0] != "d")))
+        elif c == "du" and ok and not tuyau:
+            elems = []
+            for a, cite in args:
+                if a.startswith("-") and not cite:
+                    continue
+                if _joker(a, cite):
+                    base = _joindre(cwd1, _parent(a) if "/" in a else ".")
+                    if base is not None:
+                        elems += sorted(x for x in fb if _parent(x) == base and correspond(_nom(x), _nom(a))
+                                        and not _nom(x).startswith("."))
+                else:
+                    r = _joindre(cwd1, a)
+                    if r is not None and (r == "" or r in fb):
+                        elems.append(r)
+            if not ch:
+                elems = [] if "s" in o else sorted(x for x in fb if _parent(x) == cwd1 and fb[x][0] == "d")
+                elems = elems or [cwd1]
+            elems = [x for x in elems if x is not None]
+            if elems:
+                def poids(r):
+                    return (fb[r][1] if r in fb and fb[r][0] == "f" else 0) + sum(
+                        fb[x][1] for x in fb if x.startswith((r + "/") if r else "") and fb[x][0] == "f")
+                tailles = [[r, poids(r)] for r in elems[:8]]
+                ev.append(_ev("taille", c, chemin=_parent(elems[0]) if len(elems) > 1 else elems[0], elements=tailles,
+                              total=sum(t_ for _r, t_ in tailles)))
+        elif c in CAISSE and ok and not tuyau and _archive(s)[0] == "t":
+            arch = _joindre(cwd1, _archive(s)[1] or "")
+            if arch is not None and arch in fb and fb[arch][0] == "f":
+                ev.append(_ev("caisse", c, quoi="voir", chemin=arch, chemins=[], n=len(_lignes(sortie)),
+                              region=region(arch)[0]))
+        elif c == "df" and ok and not tuyau:
+            m = re.search(r"([0-9]{1,3})%", sortie)
+            ev.append(_ev("disque", c, pourcent=int(m.group(1)) if m else None))
+        elif c == "free" and ok and not tuyau:
+            p = None
+            for l_ in sortie.split("\n"):
+                m = re.match(r"\s*[mM][eéEÉ][mM][a-zA-Z]*\.?\s*:\s*(\S+)\s+(\S+)", l_)
+                if m:
+                    tot, uti = _nombre(m.group(1)), _nombre(m.group(2))
+                    if tot and uti is not None:
+                        p = max(0, min(100, int(math.floor(uti * 100 / tot + .5))))
+                    break
+            ev.append(_ev("memoire", c, pourcent=p))
+        elif c == "systemctl" and ok and not tuyau and (not ch or ch[0] in ("list-units", "status", "is-active")):
+            ev.append(_ev("lanternes", c, n=sum(1 for l_ in sortie.split("\n") if re.search(r"\brunning\b", l_))))
+        elif c == "crontab" and ok and not tuyau and "l" in o:
+            ev.append(_ev("reveil", c, n=sum(1 for l_ in _lignes(sortie) if not l_.strip().startswith("#"))))
+        elif c == "journalctl" and ok and not tuyau:
+            ev.append(_ev("journal", c, n=sum(1 for l_ in _lignes(sortie) if not l_.startswith("--"))))
+        elif c == "git" and _sans_valeurs(args, ("-C", "-c")):
+            sous = _sans_valeurs(args, ("-C", "-c"))[0]
+            k = 0
+            while k < len(args) and not (args[k][0] == sous and (k == 0 or args[k - 1][0] not in ("-C", "-c"))):
+                k += 1
+            reste = args[k + 1:]
+            ch = [sous] + _sans_valeurs(reste, ("-m", "--message", "-F"))
+            o = _options(reste)
+            if sous in ("branch", "switch", "checkout", "merge") and any(
+                    e["type"] in ("branche", "fusion") for e in ev):
+                continue                              # une seule branche par ligne (git switch a || git switch b)
+            if sous == "add" and ok:
+                cibles = []
+                for a in ch[1:]:
+                    r = _joindre(cwd1, a)
+                    if r is not None and (r == "" or r in fb):
+                        cibles.append(r)
+                if "A" in o or "all" in o:
+                    cibles = [cwd1] if cwd1 is not None else []
+                if cibles:
+                    ev.append(_ev("etoile", c, chemin=cibles[0], chemins=cibles[:8], n=len(cibles)))
+            elif sous == "log" and ok and not tuyau:
+                n = len(_lignes(sortie)) if "oneline" in o else sum(1 for l_ in sortie.split("\n") if l_.startswith("commit "))
+                ev.append(_ev("album", c, quoi="voir", chemin=cwd1, n=n))
+            elif sous == "branch" and ok and len(ch) >= 2 and not any(x in o for x in "dDmMc"):
+                ev.append(_ev("branche", c, quoi="nouvelle", nom=ch[1], chemin=cwd1))
+            elif sous in ("switch", "checkout") and ok and len(ch) >= 2 and not any(a == "--" for a, _c in args):
+                neuve = ("c" in o and sous == "switch") or ("b" in o and sous == "checkout")
+                ev.append(_ev("branche", c, quoi="nouvelle" if neuve else "change", nom=ch[1], chemin=cwd1))
+            elif sous == "merge" and len(ch) >= 2:
+                if ok:
+                    ev.append(_ev("fusion", c, ok=True, nom=ch[1], chemin=cwd1))
+                elif "conflict" in sortie.lower() or "conflit" in sortie.lower():
+                    absorbe = True
+                    ev.append(_ev("fusion", c, ok=False, nom=ch[1], chemin=cwd1))
+        elif c == "atelier" and ch[:1] == ["pas"] and ok:
+            ev.append(_ev("robot", c, quoi="pas", valeur=None))
+        elif (c in AIDE or any(a == "--help" for a, _c in args)) and ok and i == 0:
+            ev.append(_ev("grimoire", c, mot=(ch[0] if ch and c in AIDE else c)))
+        elif c == "shellcheck" and ch:
+            r = _joindre(cwd1, ch[-1])
+            n = len(_RX_SC.findall(sortie))
+            if ok or n:
+                absorbe = absorbe or not ok
+                ev.append(_ev("loupe", c, chemin=r if r in fb else None, ok=ok, n=n))
+        elif c == "trap" and ok and len(ch) >= 2 and ch[0] != "-":
+            ev.append(_ev("filet", c, signaux=[x.upper() for x in ch[1:4]]))
+        elif c == "mktemp" and ok and not any(e["type"] == "sablier" for e in deja + ev):
+            l_ = (_lignes(sortie) or [""])[0].strip()
+            ev.append(_ev("sablier", c, chemin=None, nom=l_.replace("\\", "/").split("/")[-1][:24], genre="d" if "d" in o else "f",
+                          region=None))
+        elif c == "strace":
+            n = len(_RX_APPEL.findall(sortie))
+            if n:
+                absorbe = absorbe or not ok
+                cible = _sans_valeurs(args, ("-e", "-o", "-p", "-s", "-u", "-E", "-P", "-a", "-X", "-b", "-O", "-S", "-I"))
+                ev.append(_ev("espion", c, n=n, cible=(cible[0] if cible else "")))
+    # le robot de l'Atelier (simulé : des fichiers que l'enfant lit et écrit, « tout est fichier »)
+    for e in deja:
+        ch_ = e.get("chemin") or ""
+        if _nom(_parent(ch_)) != "robot":
+            continue
+        if e["type"] in ("ecrit", "objet+") and _nom(ch_) in ("led", "moteur"):
+            val = None
+            for s in segs:
+                if any(r == ch_ for r in (_joindre(cwd0, x) for _op, x in s["redir"])) and s["cmd"] in ("echo", "printf"):
+                    val = " ".join(_chemins(s["args"]))[:12]
+            ev.append(_ev("robot", "echo", quoi=_nom(ch_), valeur=val, chemin=ch_))
+        elif e["type"] == "lire" and _nom(ch_) == "capteur_distance":
+            m = re.search(r"-?[0-9]+", sortie)
+            ev.append(_ev("robot", e["cmd"], quoi="capteur", valeur=m.group(0) if m else None, chemin=ch_))
+    return ev, absorbe
 
 
 def _cible_reseau(args):
@@ -604,6 +941,14 @@ def cle_dit(e):
         return "efx.dit.lucioles." + e.get("quoi", "voir")
     if t_ == "messager":
         return "efx.dit.messager" + ("" if e.get("ok") else ".rate")
+    if t_ in ("caisse", "album", "branche", "robot"):
+        return f"efx.dit.{t_}." + str(e.get("quoi") or "")
+    if t_ == "lien":
+        return "efx.dit.lien" + (".mort" if e.get("mort") else "")
+    if t_ == "fusion":
+        return "efx.dit.fusion" + ("" if e.get("ok") else ".conflit")
+    if t_ == "loupe":
+        return "efx.dit.loupe" + (".ok" if e.get("ok") else "")
     return "efx.dit." + t_.replace("+", "_plus").replace("-", "_moins")
 
 
@@ -703,6 +1048,106 @@ def cas_vecteurs():
     cas("tar -czf sac.tar.gz rose.fleur", avec((P1 + "/sac.tar.gz", "f", 50)), cwd0=P1)
     cas("cd ~/terrain_terminagotchi/nid", base, cwd1="nid")
     cas("ls /etc", base, cwd0=None, cwd1=None)
+    # ---- les effets secondaires (2 novembre) : caisses, liens, du, df, tree
+    P2 = "biome/plante/parcelle_2"
+    sac = avec((P1 + "/sac.tar.gz", "f", 50))
+    cas("tar -czf sac.tar.gz rose.fleur chene.arbre", sac, cwd0=P1)
+    cas("tar -xzf sac.tar.gz -C ../parcelle_2", avec((P1 + "/sac.tar.gz", "f", 50), (P2 + "/rose.fleur", "f", 4),
+                                                    (P2 + "/chene.arbre", "f", 7)), cwd0=P1, fa=sac)
+    cas("tar tzf sac.tar.gz", sac, sortie="rose.fleur\nchene.arbre\n", cwd0=P1, fa=sac)
+    cas("tar -czf ~/hors.tar.gz rose.fleur", base, cwd0=P1)
+    cas("tar cf sac.tar plante", avec(("biome/sac.tar", "f", 90)))
+    cas("gzip chene.arbre", avec((P1 + "/chene.arbre.gz", "f", 30), sans=(P1 + "/chene.arbre",)), cwd0=P1)
+    cas("gunzip chene.arbre.gz", base, cwd0=P1, fa=avec((P1 + "/chene.arbre.gz", "f", 30), sans=(P1 + "/chene.arbre",)))
+    cas("zip -r sac.zip rose.fleur mot.txt", avec((P1 + "/sac.zip", "f", 60)), cwd0=P1)
+    cas("unzip sac.zip -d ../parcelle_2", avec((P1 + "/sac.zip", "f", 60), (P2 + "/mot.txt", "f", 12)), cwd0=P1,
+        fa=avec((P1 + "/sac.zip", "f", 60)))
+    cas("ln -s ../parcelle_1/rose.fleur ../parcelle_2/raccourci", avec((P2 + "/raccourci", "l", 25)), cwd0=P1)
+    cas("ln -s absent.txt mort", avec((P1 + "/mort", "l", 10)), cwd0=P1)
+    cas("ln rose.fleur dur.fleur", avec((P1 + "/dur.fleur", "f", 4)), cwd0=P1)
+    cas("ln -s ~/Documents docs", avec((P1 + "/docs", "l", 20)), cwd0=P1)
+    cas("ln -s ../rose.fleur ../parcelle_2", avec((P2 + "/rose.fleur", "l", 13)), cwd0=P1)
+    cas("du -sh plante/*", base)
+    cas("du -s", base, cwd0=P1)
+    cas("du", base, cwd0="biome/plante")
+    cas("du -sh absent", base, 1, "du: cannot access 'absent': No such file or directory")
+    cas("df -h ~", base, sortie="Sys. de fichiers Taille Utilisé Dispo Uti% Monté sur\n/dev/sda2 64G 40G 24G 62% /\n")
+    cas("df", base, sortie="")
+    cas("tree", base)
+    cas("tree -L 1", base)
+    cas("tree -a plante", base)
+    cas("tree -d -L 2 .", base)
+    cas("tree absent", base, 2, "absent [error opening dir]")
+    # ---- Poste de Contrôle
+    cas("free -h", base, sortie="               total        used        free\nMem:           7,6Gi       3,1Gi       4,5Gi\n"
+        "Swap:          2,0Gi          0B       2,0Gi\n")
+    cas("free", base, sortie="              total        utilisé      libre\nMem:       16314772     4112340    9912345\n")
+    cas("free -h | grep Mem", base, sortie="Mem: 7,6Gi 3,1Gi 4,5Gi\n")
+    cas("systemctl list-units --type=service --state=running", base, sortie=(
+        "  UNIT              LOAD   ACTIVE SUB     DESCRIPTION\n  cron.service      loaded active running Cron\n"
+        "  dbus.service      loaded active running D-Bus\n  ssh.service       loaded active running SSH\n\n"
+        "3 loaded units listed.\n"))
+    cas("systemctl status cron", base, sortie="● cron.service - Cron\n     Active: active (running) since lun.\n")
+    cas("systemctl start cron", base, 1, "Failed to start cron.service: Access denied")
+    cas("crontab -l", base, sortie="# m h dom mon dow command\n0 7 * * 1-5 echo debout\n*/10 * * * * date\n")
+    cas("crontab -l", base, 1, "no crontab for lou")
+    cas("journalctl -n 3", base, sortie="-- Logs begin --\nnov. 02 14:01 poste a\nnov. 02 14:02 poste b\nnov. 02 14:03 poste c\n")
+    # ---- Bibliothèque du Temps
+    cas("git add chene.arbre mot.txt", base, cwd0=P1)
+    cas("git add .", base, cwd0=P1)
+    cas("git add -A", base, cwd0=P1)
+    cas("git log --oneline", base, sortie="3f9a2c1 mon jardin\n8b07e4d premières fleurs\nc21aa90 début\n", cwd0=P1)
+    cas("git log", base, sortie="commit 3f9a2c1\nAuthor: x\n\n    un\n\ncommit 8b07e4d\nAuthor: x\n\n    deux\n", cwd0=P1)
+    cas("git log | head -3", base, sortie="commit 3f9a2c1\n", cwd0=P1)
+    cas("git branch essai", base, cwd0=P1)
+    cas("git branch -d essai", base, cwd0=P1)
+    cas("git branch", base, sortie="* main\n", cwd0=P1)
+    cas("git switch -c essai", base, cwd0=P1)
+    cas("git checkout -b essai", base, cwd0=P1)
+    cas("git switch main", avec((P1 + "/mot.txt", "f", 20, 3000)), cwd0=P1)
+    cas("git switch main || git switch master", base, cwd0=P1)
+    cas("git checkout -- chene.arbre", base, cwd0=P1, fa=avec(sans=(P1 + "/chene.arbre",)))
+    cas("git merge essai", avec((P1 + "/mot.txt", "f", 20, 3000)), sortie="Updating 3f9a2c1..8b07e4d\nFast-forward\n", cwd0=P1)
+    cas("git merge essai", avec((P1 + "/mot.txt", "f", 60, 3000)), 1,
+        "CONFLICT (content): Merge conflict in mot.txt\nAutomatic merge failed; fix conflicts and then commit the result.\n",
+        cwd0=P1)
+    cas("git restore chene.arbre", base, cwd0=P1, fa=avec(sans=(P1 + "/chene.arbre",)))
+    cas("git restore mot.txt", avec((P1 + "/mot.txt", "f", 12, 4000)), cwd0=P1, fa=avec((P1 + "/mot.txt", "f", 40, 3000)))
+    cas("git init album", avec((P1 + "/album", "d"), (P1 + "/album/.git", "d")), cwd0=P1)
+    cas("git -c user.name=lou commit -m un", base, cwd0=P1)
+    cas("git -c init.defaultBranch=main init album", avec((P1 + "/album", "d"), (P1 + "/album/.git", "d")), cwd0=P1)
+    # ---- l'Atelier (le robot simulé)
+    R = "robots/robot"
+    rob = avec(("robots", "d"), (R, "d"), (R + "/led", "f", 2), (R + "/moteur", "f", 5), (R + "/capteur_distance", "f", 3),
+               (R + "/journal.txt", "f", 40))
+
+    def rob2(*xs):
+        f = dict(rob)
+        f.update(_f(*xs))
+        return f
+    cas("echo 1 > led", rob2((R + "/led", "f", 2, 2000)), cwd0=R, fa=rob)
+    cas("echo avance > moteur", rob2((R + "/moteur", "f", 7, 2000)), cwd0=R, fa=rob)
+    cas("cat capteur_distance", rob, sortie="30\n", cwd0=R, fa=rob)
+    cas("atelier pas", rob2((R + "/capteur_distance", "f", 3, 2000), (R + "/journal.txt", "f", 60, 2000)), cwd0=R, fa=rob)
+    cas("tg atelier pas", rob2((R + "/capteur_distance", "f", 3, 2000), (R + "/journal.txt", "f", 60, 2000)), cwd0=R, fa=rob)
+    # ---- le Sommet
+    cas("man trap", base)
+    cas("apropos fichier", base, sortie="ls (1) - list directory contents\n")
+    cas("ls --help", base, sortie="Usage: ls [OPTION]... [FILE]...\n", cwd0=P1)
+    cas("man absent", base, 16, "No manual entry for absent")
+    cas("shellcheck mot.txt", base, 1, "\nIn mot.txt line 3:\nrm $d/*\n   ^-- SC2086 (info): Double quote\n\n"
+        "In mot.txt line 4:\ncd camp\n^-- SC2164 (warning): Use cd ... || exit\n\nFor more information:\n"
+        "  https://www.shellcheck.net/wiki/SC2086 -- Double quote\n", cwd0=P1)
+    cas("shellcheck mot.txt", base, cwd0=P1)
+    cas("shellcheck mot.txt", base, 127, "bash: shellcheck: command not found", cwd0=P1)
+    cas("trap 'rm -f \"$tmp\"' EXIT INT", base)
+    cas("trap - EXIT", base)
+    cas("mktemp -p .", avec((P1 + "/tmp.k3Xa9QfL2c", "f", 0)), sortie="./tmp.k3Xa9QfL2c\n", cwd0=P1)
+    cas("mktemp", base, sortie="/tmp/tmp.Zr8bQ0aK1x\n")
+    cas("mktemp -d", base, sortie="/tmp/tmp.Zr8bQ0aK1y\n")
+    cas("strace -e trace=openat cat mot.txt", base, sortie=(
+        'openat(AT_FDCWD, "/etc/ld.so.cache", O_RDONLY|O_CLOEXEC) = 3\nopenat(AT_FDCWD, "mot.txt", O_RDONLY) = 3\n'
+        "bonjour\n+++ exited with 0 +++\n"), cwd0=P1)
     return C
 
 

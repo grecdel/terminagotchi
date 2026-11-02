@@ -66,7 +66,7 @@ def lancer(ligne):
     if lignes and lignes[-1].startswith("@@"):
         cwd[0] = Path(lignes[-1][2:])
     apres = E.photo(T, cwd[0])
-    return E.evenements(ligne, avant, apres, p.returncode, p.stderr)
+    return E.evenements(ligne, avant, apres, p.returncode, "\n".join(lignes[:-1]) + "\n" + p.stderr)
 
 
 def types(evs):
@@ -109,6 +109,57 @@ e = lancer("cat mot.txt | grep a | wc -l")
 verif(types(e) == ["tuyau"] and e[0]["etapes"] == ["cat", "grep", "wc"], f"tuyau : le petit laboratoire ({e})")
 e = lancer("for i in 1 2 3 4 5 6 7 8 9 10; do touch f$i.fleur; done")
 verif(types(e) == ["groupe"] and e[0]["n"] == 10, f"une rafale : un seul effet groupé ({e})")
+# les effets secondaires (2 novembre) : la caisse, le lien, du, df, gzip, mktemp, git, trap — toujours sur le vrai changement
+(T / "biome/feu/parcelle_1/geyser.pierre").write_text("pfff\n")
+cwd[0] = T / "biome/feu/parcelle_1"
+e = lancer("tar -czf sac.tar.gz geyser.pierre")
+verif(types(e) == ["caisse"] and e[0]["quoi"] == "ferme" and e[0]["n"] == 1, f"tar -c : la caisse se ferme sur une copie ({e})")
+e = lancer("tar -xzf sac.tar.gz -C ../parcelle_2")
+verif(types(e) == ["caisse"] and e[0]["quoi"] == "ouvre" and e[0]["chemins"] == ["biome/feu/parcelle_2/geyser.pierre"],
+      f"tar -x : les objets sortent de la caisse ({e})")
+e = lancer("tar -tzf sac.tar.gz")
+verif(types(e) == ["caisse"] and e[0]["quoi"] == "voir" and e[0]["n"] == 1, f"tar -t : on regarde dans la caisse ({e})")
+e = lancer("ln -s ../parcelle_2/geyser.pierre raccourci")
+verif(types(e) == ["lien"] and e[0]["cible"] == "biome/feu/parcelle_2/geyser.pierre" and not e[0]["mort"],
+      f"ln -s : le fil du raccourci ({e})")
+e = lancer("ln -s absent mort")
+verif(types(e) == ["lien"] and e[0]["mort"], f"ln -s vers rien : le fil est cassé ({e})")
+e = lancer("du -s")
+verif(types(e) == ["taille"] and e[0]["elements"][0][1] > 0, f"du : la colonne ({e})")
+e = lancer("df .")
+verif(types(e) == ["disque"] and isinstance(e[0]["pourcent"], int), f"df : le réservoir ({e})")
+e = lancer("gzip -f sac.tar.gz")
+verif(types(e) == ["caisse"] and e[0]["quoi"] == "serre", f"gzip : la caisse se serre ({e})")
+e = lancer("mktemp -p .")
+verif(types(e) == ["sablier"] and e[0]["chemin"], f"mktemp : le sablier sur le nouvel objet ({e})")
+e = lancer("trap 'echo' EXIT")
+verif(types(e) == ["filet"], f"trap : le filet ({e})")
+e = lancer("ls --help > /dev/null")
+verif(types(e) == ["grimoire"], f"--help : le grimoire, pas l'effet de ls ({e})")
+if subprocess.run(["sh", "-c", "command -v git"], capture_output=True).returncode == 0:
+    g = "git -c user.name=t -c user.email=t@temps.invalid -c init.defaultBranch=main"
+    e = lancer(f"{g} init -q album")
+    verif(types(e) == ["album"] and e[0]["quoi"] == "neuf", f"git init : un album tout neuf ({e})")
+    cwd[0] = cwd[0] / "album"
+    lancer("echo un > page.txt")
+    e = lancer("git add page.txt")
+    verif(types(e) == ["etoile"], f"git add : l'étoile ({e})")
+    e = lancer(f"{g} commit -qm un")
+    verif(types(e) == ["photo"], f"git commit (avec -c) : la photo ({e})")
+    e = lancer("git switch -q -c essai")
+    verif(types(e) == ["branche"] and e[0]["quoi"] == "nouvelle", f"git switch -c : une branche ({e})")
+    lancer(f"echo deux >> page.txt && {g} commit -qam deux")
+    e = lancer("git switch -q main")
+    verif("branche" in types(e) and e[-1]["quoi"] == "change", f"git switch : on change de monde ({e})")
+    e = lancer(f"{g} merge -q essai")
+    verif("fusion" in types(e), f"git merge : les branches se rejoignent ({e})")
+    e = lancer("git log --oneline")
+    verif(types(e) == ["album"] and e[0]["n"] == 2, f"git log : l'album, 2 photos ({e})")
+    lancer("rm page.txt")
+    e = lancer("git restore page.txt")
+    verif(types(e) == ["rembobine"], f"git restore : l'horloge à l'envers ({e})")
+    cwd[0] = cwd[0].parent
+cwd[0] = T / "biome/plante/parcelle_1"
 e = lancer("cd ../.. && rm -r plante")
 verif("dossier-" in types(e), f"rm -r : la région part ({e})")
 

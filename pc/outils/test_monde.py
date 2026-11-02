@@ -236,6 +236,28 @@ verif(v.cam[0] != c0[0] and v.manuel, "glisser déplace le monde")
 z0 = v.cam[2]
 esp.molette(vue[0] + 60, vue[1] + 60, 1, Z)
 verif(v.cam[2] > z0, "la molette zoome")
+# les effets secondaires et ceux des mondes (2 novembre) : chaque sorte se dessine sans erreur, à chaque instant
+from tg import effets as EF  # noqa: E402
+NOUVEAUX = {"caisse", "lien", "taille", "disque", "arbre", "memoire", "lanternes", "reveil", "journal", "etoile", "album",
+            "branche", "fusion", "rembobine", "robot", "grimoire", "loupe", "filet", "sablier", "espion"}
+vus, ko_dessin = set(), []
+for c_ in EF.vecteurs():
+    lot = [dict(x) for x in c_["attendu"] if x["type"] in NOUVEAUX]
+    if not lot:
+        continue
+    vus |= {x["type"] for x in lot}
+    try:
+        v.preparer(lot)
+        v.lancer(lot)
+        n_ = 0
+        for _ in range(10):
+            avancer(esp, .2)
+            L, Z, _x = S.scene(esp.modele(), esp.t)
+            n_ += len(L)
+    except Exception as x:                       # noqa: BLE001
+        ko_dessin.append(f"{c_['ligne']} : {x!r}")
+verif(not ko_dessin, f"les nouveaux effets se dessinent sans erreur {ko_dessin[:3]}")
+verif(vus == NOUVEAUX, f"toutes les sortes nouvelles sont dessinées ({NOUVEAUX - vus})")
 # le repli tkinter garde la carte
 esp.tk = True
 verif("monde" not in (esp.modele().get("onglets") or []), "tkinter : pas d'onglet Monde (la carte reste)")

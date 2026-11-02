@@ -280,6 +280,9 @@ SYNTAXE = [
     ("printf '%s\\n' ligne1 ligne2 > l.txt; wc l.txt; wc -c l.txt; wc -l < l.txt", None),
     ("printf 'x\\n' > a; printf 'yy\\n' > b; wc -l a b", None),
     ("du -sh . >/dev/null; echo ok", None),
+    ("echo rose > r.fleur; ln -s r.fleur lien; cat lien; ln -s r.fleur lien; echo $?; ln -sf r.fleur lien; echo $?", None),
+    ("mkdir d; echo x > f; ln f d; ln -s ../f d/l; cat d/f d/l; ln absent b; echo $?; ln d e; echo $?", None),
+    ("touch a; ln -sv a b; ln -s nulle part mort; echo $?; ln -s absent mort; ls; ln; echo $?", None),
     ("echo \"il dit \\\"bonjour\\\"\" 'l'\\''eau'", None),
     ("a=1; b=2; echo \"$a$b\" '$a' \\$a", None),
     ("echo début; for i in 1 2; do echo $i; done > boucle.txt; cat boucle.txt", None),
@@ -357,6 +360,10 @@ def windows():
     verifier(s == "vestibule/\nlea\n", f"ls -d */ ; whoami ({s!r})")
     s, code, _d = c.lancer("ping -c 1 example.com")
     verifier(code == 127 and "terminal du jeu" in s, f"ping : la commande n'existe pas ici, c'est dit clairement ({s.strip()})")
+    s, code, _d = c.lancer("cd ~/terrain_terminagotchi/vestibule && echo rose > r.fleur && ln -s r.fleur lien && cat lien; "
+                           "ln -s ~/Documents/prive.txt fuite; cat fuite; cd")
+    verifier((s.startswith("rose\n") or "mode" in s) and "ne pas lire" not in s,
+             f"ln -s dans le terrain (ou le refus expliqué) ; jamais vers les dossiers de Windows ({s!r})")
     s, code, _d = c.lancer("Get-ChildItem")
     verifier(code == 127 and "ls" in s, f"un cmdlet de PowerShell : la commande Linux est proposée ({s.strip()})")
     shutil.rmtree(home, ignore_errors=True)

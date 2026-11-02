@@ -318,6 +318,17 @@ class MondeVue {
             "lucioles", "photo" -> listOf(guidePt())
             "messager" -> { val g = guidePt(); val c = e.optString("cible"); listOf(g, if (c in Monde.TYPES) pointDe("biome/$c") else doubleArrayOf(g[0] + 120, g[1] - 90)) }
             "tuyau" -> listOf(pointDe(if (!e.isNull("source") && e.has("source")) e.getString("source") else "biome/" + e.optString("region")))
+            "caisse", "taille", "etoile", "rembobine" -> {
+                val cs = mutableListOf<String>(); if (e.has("chemin") && !e.isNull("chemin")) cs.add(e.getString("chemin"))
+                val l = e.optJSONArray("chemins") ?: e.optJSONArray("elements")
+                if (l != null) for (i in 0 until l.length()) { val x = l.get(i); cs.add(if (x is org.json.JSONArray) x.optString(0) else x.toString()) }
+                cs.take(9).map { if (hexDe(it) != null) pointDe(it) else guidePt() }.ifEmpty { listOf(guidePt()) }
+            }
+            "lien" -> { val a1 = if (hexDe(e.optString("chemin")) != null) pointDe(e.optString("chemin")) else guidePt()
+                val c = if (e.isNull("cible")) null else e.optString("cible")
+                listOf(a1, if (c != null && hexDe(c) != null) pointDe(c) else doubleArrayOf(a1[0] + 90, a1[1] - 70)) }
+            in GUIDE2 -> { val c = if (e.has("chemin") && !e.isNull("chemin")) e.getString("chemin") else null
+                listOf(if (c != null && hexDe(c) != null) pointDe(c) else guidePt()) }
             else -> listOf(pointDe(e.optString("chemin")))
         }
     }
@@ -852,7 +863,190 @@ class MondeVue {
                     tl.rrect(xx, yy - 10 * z, tw, 20 * z, 6 * z, a(VI, ((if (on) 140 else 60) * fin).toInt()), null, 0f)
                     tl.texte(c, xx + tw / 2, yy, 11 * z, a(0xFFFFFF, (255 * fin).toInt()), true, 'c', true); xx += tw
                     if (i < et.size - 1) { tl.texte("|", xx + 8 * z, yy, 12 * z, a(VI, (255 * fin).toInt()), true, 'c', true); xx += 16 * z } } }
+            else -> effet2(tl, ef, age, z, fin) { s, x, y, c -> eti(s, x, y, c, false) }
         }
+    }
+
+    // ------------------------------------------------------------ les effets secondaires et ceux des mondes (monde.py _effet2)
+    private fun octets(n: Long): String = when {
+        n < 1024 -> t("efx.taille_o", "n" to n)
+        n < 1024 * 1024 -> t("efx.taille_ko", "n" to max(1L, (n / 1024.0 + .5).toLong()))
+        else -> t("efx.taille_mo", "n" to max(1L, (n / 1048576.0 + .5).toLong()))
+    }
+
+    private fun effet2(tl: Toile, ef: Effet, age: Double, z: Float, fin: Double, eti: (String, Float, Float, Int) -> Unit) {
+        val e = ef.e; val ty = e.getString("type"); val zz = cam[2].toFloat()
+        val pts = ef.pts.map { floatArrayOf(ecranX(it[0]), ecranY(it[1])) }
+        val p0 = pts.firstOrNull() ?: return
+        val x = p0[0]; val y = p0[1]; val al = (255 * fin).toInt()
+        val J = 0xFFD54F; val V = 0x3DDC84; val R = 0xFF5F6D; val C = 0x4DD0E1; val VI = 0xB284FF; val OR = 0xFF9F43; val BOIS = 0xC9A26A
+        fun n(k: String) = e.optInt(k)
+        when (ty) {
+            "caisse" -> { val quoi = e.optString("quoi")
+                val ouvert = when (quoi) { "ferme" -> max(0.0, 1 - (age - 1.0) * 3); "ouvre", "voir" -> min(1.0, age * 3); else -> 0.0 }.toFloat()
+                val s2 = if (quoi == "serre") (1 - .45 * ((age - .2) / .6).coerceIn(0.0, 1.0)).toFloat() else 1f
+                for ((i, p) in pts.drop(1).take(8).withIndex()) {
+                    val q = ((age - i * .12) / .8).coerceIn(0.0, 1.0)
+                    val (sx, sy, tx, ty2) = if (quoi == "ouvre") listOf(x, y - 20 * zz, p[0], p[1]) else listOf(p[0], p[1], x, y - 20 * zz)
+                    val bx = sx + (tx - sx) * ease(q).toFloat(); val by = sy + (ty2 - sy) * ease(q).toFloat() - (sin(q * PI) * 40 * zz).toFloat()
+                    if (q > 0 && q < 1) { tl.lueur(bx, by - 6 * zz, 10 * zz, a(0xFFF6C8, 200)); tl.rect(bx - 3 * zz, by - 9 * zz, 6 * zz, 6 * zz, a(0xF3E2B8, 230)) }
+                }
+                caisse(tl, x, y - 6 * zz, 26 * zz * s2, ouvert, al)
+                eti("📦 " + when (quoi) { "ferme" -> t("efx.caisse.ferme", "n" to n("n")); "ouvre" -> t("efx.caisse.ouvre", "n" to n("n"))
+                    "serre" -> t("efx.caisse.serre"); else -> t("efx.caisse.voir", "n" to n("n")) }, x, y - 44 * zz, BOIS) }
+            "lien" -> { val b = pts.getOrNull(1) ?: floatArrayOf(x + 90, y - 70)
+                val q = (age / .8).coerceIn(0.0, 1.0); val mx = (x + b[0]) / 2; val my = min(y, b[1]) - 60 * zz
+                val mort = e.optBoolean("mort"); val coul = if (mort) a(0x969CAA, al) else a(J, al)
+                val nn = 14
+                fun bez(u: Double, a0: Float, m: Float, b0: Float) = ((1 - u) * (1 - u) * a0 + 2 * (1 - u) * u * m + u * u * b0).toFloat()
+                for (i in 0 until (nn * q).toInt()) {
+                    if (mort && (i == nn / 2 || i == nn / 2 + 1)) continue
+                    val u0 = i.toDouble() / nn; val u1 = (i + 1.0) / nn
+                    val x0 = bez(u0, x, mx, b[0]); val y0 = bez(u0, y - 26 * zz, my, b[1] - 10 * zz); val x1 = bez(u1, x, mx, b[0]); val y1 = bez(u1, y - 26 * zz, my, b[1] - 10 * zz)
+                    if (!mort) tl.ligne(x0, y0, x1, y1, a(J, (70 * fin).toInt()), 6 * z)
+                    tl.ligne(x0, y0, x1, y1, coul, 2.2f * z)
+                }
+                tl.rect(x - 1.5f * zz, y - 26 * zz, 3 * zz, 22 * zz, a(0x8A5A30, al)); tl.rrect(x - 16 * zz, y - 34 * zz, 32 * zz, 11 * zz, 2 * zz, a(0xF1E3C0, al), a(0x5A381E, al), 1 * z)
+                if (q >= 1 && !mort) tl.cercle(b[0], b[1] - 10 * zz, 14 * zz, a(J, al), 2 * z)
+                val fin2 = if (mort) t("efx.lien_mort") else if (e.optBoolean("dehors")) t("efx.lien_dehors") else (if (e.isNull("cible")) "" else e.optString("cible")).substringAfterLast('/')
+                eti("🔗 " + e.optString("chemin").substringAfterLast('/') + " → " + fin2, mx, my - 6 * zz, if (mort) 0x969CAA else J) }
+            "taille" -> { val els = e.optJSONArray("elements") ?: return
+                val vs = (0 until els.length()).map { els.getJSONArray(it).getLong(1) }
+                val hm = max(1L, vs.maxOrNull() ?: 1L)
+                for ((i, v) in vs.withIndex()) { val p = pts.getOrNull(i + 1) ?: p0
+                    val h2 = ((14 + 70.0 * v / hm) * zz * ((age - i * .15) / .5).coerceIn(0.0, 1.0)).toFloat()
+                    tl.rect(p[0] - 7 * zz, p[1] - 14 * zz - h2, 14 * zz, h2, a(OR, (225 * fin).toInt())); tl.rrect(p[0] - 7 * zz, p[1] - 14 * zz - h2, 14 * zz, h2, 1f, null, a(0x1E1E2E, al), 1 * z)
+                    if (h2 > 2) eti(octets(v), p[0], p[1] - 26 * zz - h2, OR) } }
+            "disque", "memoire" -> { val pc = if (e.isNull("pourcent")) null else e.optInt("pourcent")
+                val f2 = ((pc ?: 0) / 100.0 * (age / .8).coerceIn(0.0, 1.0)).toFloat()
+                val bx = x + 26 * zz; val by = y - 96 * zz; val bw = 34 * zz; val bh = 70 * zz
+                if (ty == "disque") {
+                    tl.rrect(bx, by, bw, bh, 6 * zz, a(0x141720, (235 * fin).toInt()), a(C, al), 2 * z)
+                    tl.rect(bx + 3 * zz, by + bh - 3 * zz - (bh - 6 * zz) * f2, bw - 6 * zz, (bh - 6 * zz) * f2, a(C, (200 * fin).toInt()))
+                    eti("💾 " + (if (pc != null) t("efx.disque", "p" to pc) else t("efx.disque_inconnu")), bx + bw / 2, by - 14 * zz, C)
+                } else {
+                    val bw2 = 76 * zz
+                    tl.rect(bx - 4 * zz, by + 20 * zz, bw2 + 8 * zz, 46 * zz, a(0x6B4424, al)); tl.rect(bx, by + 24 * zz, bw2, 38 * zz, a(0x3A2A1A, al))
+                    val cols = listOf(OR, C, VI, V)
+                    for (i in 0 until 8) tl.rect(bx + 3 * zz + i * 9.2f * zz, by + 28 * zz + (i % 3) * 1.5f * zz, 7 * zz, 30 * zz - (i % 3) * 1.5f * zz,
+                        if (i < Math.round(f2 * 8)) a(cols[i % 4], al) else a(0xFFFFFF, (30 * fin).toInt()))
+                    eti("🧠 " + (if (pc != null) t("efx.memoire", "p" to pc) else t("efx.memoire_inconnu")), bx + bw2 / 2, by + 6 * zz, OR)
+                } }
+            "arbre" -> { val c = carte
+                if (c != null) for ((i, p) in c.parcelles.withIndex()) { val q = ((age - .15 - (i % 2) * .35) / .5).coerceIn(0.0, 1.0)
+                    if (q > 0 && q < 1) c.at(p.centre[0], p.centre[1])?.let { h -> val s0 = sommet(h); tl.lueur(ecranX(s0[0]), ecranY(s0[1]) - 8 * zz, 46 * zz, a(0xE8F0FC, (170 * sin(q * PI)).toInt())) } }
+                if (age < 1.2) tl.rect(aire[0], aire[1], aire[2], aire[3], a(0xE8EEF8, (110 * (1 - age / 1.2)).toInt()))
+                eti("🌳 " + t("efx.arbre", "d" to n("dossiers"), "f" to n("fichiers")), x, y - 70 * zz, 0x9FD8A0) }
+            "lanternes" -> { val nb = n("n"); val k = max(1, min(8, if (nb > 0) nb else 1))
+                for (i in 0 until k) { val lx = x + (i - (k - 1) / 2f) * 20 * zz; val ly = y - 70 * zz + (sin(i * 1.7) * 3 * zz).toFloat()
+                    val on = nb > 0 && age > .15 + i * .12
+                    if (on) tl.lueur(lx, ly, 16 * zz, a(0xFFD65A, (170 * fin).toInt()))
+                    tl.rect(lx - .5f * zz, ly - 12 * zz, 1 * zz, 5 * zz, a(0x2B2F3A, al)); tl.rect(lx - 5 * zz, ly - 7 * zz, 10 * zz, 2 * zz, a(0x3A3F4C, al))
+                    tl.rect(lx - 4 * zz, ly - 5 * zz, 8 * zz, 10 * zz, a(if (on) 0xFFD65A else 0x5A6070, al)) }
+                eti("🏮 " + t("efx.lanternes", "n" to nb), x, y - 98 * zz, 0xFFD65A) }
+            "reveil" -> { val r2 = (sin(age * 40) * 3 * zz * max(0.0, 1 - age)).toFloat(); val cx = x + 30 * zz + r2; val cy = y - 50 * zz
+                tl.ellipse(cx - 9 * zz, cy - 10 * zz, 5 * zz, 5 * zz, a(0xE04848, al)); tl.ellipse(cx + 9 * zz, cy - 10 * zz, 5 * zz, 5 * zz, a(0xE04848, al))
+                tl.ellipse(cx, cy, 13 * zz, 13 * zz, a(0xE04848, al)); tl.ellipse(cx, cy, 10 * zz, 10 * zz, a(0xFFF8E1, al))
+                tl.ligne(cx, cy, cx, cy - 7 * zz, a(0x1E1E2E, al), 2 * z); tl.ligne(cx, cy, cx + 5 * zz, cy + 3 * zz, a(0x1E1E2E, al), 2 * z)
+                if (age < 1.2) tl.texte("♪", cx + 18 * zz, cy - 14 * zz - (age * 10 * zz).toFloat(), 13 * z, a(J, al), true, 'c')
+                eti("⏰ " + t("efx.reveil", "n" to n("n")), cx, cy - 30 * zz, J) }
+            "journal" -> { val q = (age / .6).coerceIn(0.0, 1.0); val w2 = 92 * zz; val h2 = ((10 + 46 * ease(q)) * zz).toFloat()
+                val bx = x - w2 / 2; val by = y - 60 * zz - h2
+                tl.rrect(bx, by, w2, h2, 3f, a(0xF3E2B8, al), a(0x3B2A5A, al), 1.5f * z)
+                for (i in 0 until min(5, (age * 6).toInt())) if ((8 + i * 9) * zz < h2) tl.rect(bx + 6 * zz, by + (6 + i * 9) * zz, w2 - 12 * zz - (i % 2) * 14 * zz, 2.5f * zz, a(0x5A4632, al))
+                eti("📜 " + t("efx.journal", "n" to n("n")), x, by - 14 * zz, VI) }
+            "etoile" -> { for ((i, p) in (pts.drop(1).take(8).ifEmpty { pts }).withIndex()) { val q = ((age - i * .1) / .4).coerceIn(0.0, 1.0)
+                    etoile(tl, p[0], p[1] - 40 * zz - ((1 - ease(q)) * 30 * zz).toFloat(), 9 * zz, age * 2 + i, a(J, al)) }
+                eti("★ " + t("efx.etoile"), x, y - 66 * zz, J) }
+            "album" -> { val neuf = e.optString("quoi") == "neuf"; val k = if (neuf) 1 else max(1, min(4, n("n")))
+                val cols = listOf(0x7CC6F0, 0x9FD8A0, 0x5AA63A, 0xC9A26A)
+                for (i in 0 until k) { val q = ((age - i * .2) / .4).coerceIn(0.0, 1.0); if (q <= 0) continue
+                    val cx = x + (i - (k - 1) / 2f) * 22 * zz; val cy = y - 66 * zz - i * 2 * zz; val aq = (255 * q * fin).toInt()
+                    tl.rect(cx - 10 * zz, cy - 10 * zz, 20 * zz, 22 * zz, a(0xFBF7EE, aq)); tl.rect(cx - 8 * zz, cy - 8 * zz, 16 * zz, 13 * zz, a(if (neuf) 0xE6E2D8 else cols[i % 4], aq)) }
+                eti("📚 " + (if (neuf) t("efx.album_neuf") else t("efx.album", "n" to n("n"))), x, y - 94 * zz, 0xFBF7EE) }
+            "branche", "fusion" -> { val q = (age / .9).coerceIn(0.0, 1.0); val yy = y - 70 * zz
+                tl.ligne(x - 50 * zz, yy, x + 50 * zz, yy, a(V, al), 3 * z)
+                val bp = if (ty == "branche") (0..10).map { val u = it / 10.0; floatArrayOf((x - 30 * zz + 80 * zz * u * q).toFloat(), (yy - 26 * zz * sin(min(1.0, u * q * 2) * PI / 2)).toFloat()) }
+                    else (0 until (11 * max(.1, q)).toInt()).map { val u = it / 10.0; floatArrayOf((x - 30 * zz + 70 * zz * u).toFloat(), (yy - 26 * zz * sin(u * PI) * (1 - .15 * q)).toFloat()) }
+                for (i in 0 until bp.size - 1) tl.ligne(bp[i][0], bp[i][1], bp[i + 1][0], bp[i + 1][1], a(OR, al), 3 * z)
+                for (dx in listOf(-40, -30, 40)) tl.ellipse(x + dx * zz, yy, 4 * zz, 4 * zz, a(0xFBF7EE, al))
+                val ok = ty == "branche" || e.optBoolean("ok")
+                if (ty == "fusion" && q >= 1) tl.cercle(x + 40 * zz, yy, 6 * zz, a(if (ok) J else R, al), 2 * z)
+                val nm = e.optString("nom")
+                val txt = if (ty == "branche") (if (e.optString("quoi") == "nouvelle") t("efx.branche", "nom" to nm) else t("efx.branche_change", "nom" to nm))
+                    else if (ok) t("efx.fusion", "nom" to nm) else t("efx.conflit")
+                eti("⑂ $txt", x, yy - 40 * zz, if (ok) OR else R) }
+            "rembobine" -> { val s2 = sin((age / 1.6).coerceIn(0.0, 1.0) * PI)
+                for (p in pts.drop(1).take(8).ifEmpty { pts }) { val a0 = -age * 5
+                    for (j in 0 until 12) { val u0 = a0 + j / 12.0 * 5.3; val u1 = a0 + (j + 1) / 12.0 * 5.3
+                        tl.ligne(p[0] + (cos(u0) * 22 * zz).toFloat(), p[1] - 16 * zz + (sin(u0) * 22 * zz * .8).toFloat(), p[0] + (cos(u1) * 22 * zz).toFloat(), p[1] - 16 * zz + (sin(u1) * 22 * zz * .8).toFloat(), a(0xFFF0C8, (255 * s2).toInt()), 3 * z) } }
+                eti("↺ " + e.optString("chemin").substringAfterLast('/') + " · " + t("efx.rembobine"), x, y - 56 * zz, J) }
+            "robot" -> { val q = (age / .8).coerceIn(0.0, 1.0); val quoi = e.optString("quoi"); val v = if (e.isNull("valeur")) "" else e.optString("valeur")
+                val rx = x + 34 * zz + (if (quoi == "pas") (30 * zz * ease(q)).toFloat() else 0f); val ry = y - (if (quoi == "pas") (sin(q * PI) * 5 * zz).toFloat() else 0f)
+                val led: Int? = when (quoi) { "led" -> if (v.trim() !in setOf("", "0") && age > .4) 0x3DFF7C else null; else -> 0x3DFF7C }
+                robot(tl, rx, ry, 14 * zz, led, al, if (quoi == "pas" || quoi == "moteur") q * 8 else 0.0)
+                if (quoi == "capteur" || quoi == "pas") for (i in 0 until 3) { val r2 = (age * 1.4 + i / 3.0) % 1
+                    for (j in 0 until 6) { val u0 = -.5 + j / 6.0; val u1 = -.5 + (j + 1) / 6.0; val rr = (6 + r2 * 26) * zz
+                        tl.ligne(rx + 10 * zz + (cos(u0) * rr).toFloat(), ry - 16 * zz + (sin(u0) * rr).toFloat(), rx + 10 * zz + (cos(u1) * rr).toFloat(), ry - 16 * zz + (sin(u1) * rr).toFloat(), a(C, (255 * (1 - r2) * fin).toInt()), 2 * z) } }
+                val txt = when (quoi) { "led" -> "💡 " + (if (led != null) t("efx.robot.allume") else t("efx.robot.eteint")); "moteur" -> "⚙ " + t("efx.robot.moteur", "v" to v)
+                    "capteur" -> "📡 " + t("efx.robot.capteur", "v" to v.ifEmpty { "?" }); else -> "➜ " + t("efx.robot.pas") }
+                eti(txt, rx, ry - 42 * zz, if (quoi == "led") V else C) }
+            "grimoire" -> { val o = min(1.0, age * 3).toFloat(); val bx = x + 30 * zz; val by = y - 70 * zz; val s2 = 20 * zz
+                tl.rect(bx - s2 * o - 2 * zz, by - s2 * .7f - 2 * zz, 2 * s2 * o + 4 * zz, s2 * 1.4f + 4 * zz, a(0x5A2F6B, al))
+                tl.rect(bx - s2 * o, by - s2 * .7f, s2 * o, s2 * 1.4f, a(0xF6EDD5, al)); tl.rect(bx, by - s2 * .7f, s2 * o, s2 * 1.4f, a(0xEFE2C0, al))
+                for (i in 0 until 4) for (dx in listOf(-s2 * o + 3 * zz, 3 * zz)) tl.rect(bx + dx, by - s2 * .45f + i * s2 * .3f, s2 * o * .7f, 1.5f * zz, a(0xA89878, al))
+                eti("📖 " + t("efx.grimoire", "mot" to e.optString("mot")), bx, by - s2 - 14 * zz, VI) }
+            "loupe" -> { val q = (age / .9).coerceIn(0.0, 1.0); val lx = x - 20 * zz + (40 * zz * ease(q)).toFloat(); val ly = y - 60 * zz
+                for (i in 0 until min(3, n("n"))) if (age > .3 + i * .25) tl.rect(x - 26 * zz, ly - 14 * zz + i * 9 * zz, 52 * zz, 5 * zz, a(R, (110 * fin).toInt()))
+                tl.cercle(lx, ly, 11 * zz, a(0xC9D2DC, al), 2.5f * z); tl.ligne(lx + 8 * zz, ly + 8 * zz, lx + 16 * zz, ly + 16 * zz, a(0xC9D2DC, al), 4 * z)
+                val ok = e.optBoolean("ok")
+                eti("🔎 " + (if (ok) t("efx.loupe_ok") else t("efx.loupe", "n" to n("n"))), x, ly - 30 * zz, if (ok) V else R) }
+            "filet" -> { val q = ease((age / .6).coerceIn(0.0, 1.0)).toFloat(); val w2 = 44 * zz * q; val yy = y + 6 * zz
+                for (i in -4 until 4) { val x0 = x + i * w2 / 4; val x1 = x + (i + 1) * w2 / 4
+                    tl.ligne(x0, yy - 3 * zz, x1, yy + 5 * zz, a(J, al), 1.3f * z); tl.ligne(x0, yy + 5 * zz, x1, yy - 3 * zz, a(J, al), 1.3f * z) }
+                tl.rect(x - w2 - 2 * zz, yy - 10 * zz, 2 * zz, 18 * zz, a(0x8A5A30, al)); tl.rect(x + w2, yy - 10 * zz, 2 * zz, 18 * zz, a(0x8A5A30, al))
+                val sg = e.optJSONArray("signaux")?.let { j -> (0 until j.length()).joinToString(" ") { j.getString(it) } } ?: ""
+                eti("🪢 " + t("efx.filet") + " · " + sg, x, yy + 22 * zz, J) }
+            "sablier" -> { if (age < .6) tl.rect(x - 4 * zz, y - 120 * zz, 8 * zz, 120 * zz, a(0xFFF6B0, (110 * sin(age / .6 * PI)).toInt()))
+                sablier(tl, x + (if (e.isNull("chemin")) 34 * zz else 0f), y - 34 * zz, 11 * zz, (age / 1.8).coerceIn(0.0, 1.0).toFloat(), al)
+                eti("⏳ " + e.optString("nom") + " · " + t("efx.sablier"), x, y - 60 * zz, BOIS) }
+            "espion" -> { for (i in 0 until 6) { val u = (age * .9 + i / 6.0) % 1; val sx = x - 50 * zz + (u * 100 * zz).toFloat(); val sy = y - 56 * zz + (sin(u * 6) * 4 * zz).toFloat()
+                    tl.rect(sx - 2 * zz, sy - 2 * zz, 4 * zz, 4 * zz, a(C, (255 * sin(u * PI) * fin).toInt())) }
+                tl.cercle(x, y - 56 * zz, 12 * zz, a(C, al), 2.5f * z); tl.ligne(x + 9 * zz, y - 47 * zz, x + 16 * zz, y - 40 * zz, a(C, al), 4 * z)
+                eti("🕵 " + t("efx.espion", "n" to n("n")), x, y - 84 * zz, C) }
+        }
+    }
+
+    private fun caisse(tl: Toile, x: Float, y: Float, s: Float, ouvert: Float, al: Int) {
+        tl.rect(x - s / 2, y - s * .7f, s, s * .7f, a(0x8A5A30, al))
+        for (k in 1..2) tl.rect(x - s / 2, y - s * .7f + k * s * .23f, s, max(1f, s * .04f), a(0x6B4424, al))
+        val b = max(1f, s * .06f)
+        tl.rect(x - s / 2, y - s * .7f, b, s * .7f, a(0xC9A26A, al)); tl.rect(x + s / 2 - b, y - s * .7f, b, s * .7f, a(0xC9A26A, al))
+        val lev = ouvert * s * .45f
+        tl.poly(floatArrayOf(x - s / 2, x + s / 2, x + s / 2, x - s / 2), floatArrayOf(y - s * .7f, y - s * .7f - lev, y - s * .86f - lev, y - s * .86f), a(0xA8743F, al))
+    }
+
+    private fun etoile(tl: Toile, x: Float, y: Float, r: Float, rot: Double, c: Int) {
+        val xs = FloatArray(10); val ys = FloatArray(10)
+        for (i in 0 until 10) { val rr = if (i % 2 == 0) r else r * .45f; xs[i] = x + (cos(rot + i * PI / 5) * rr).toFloat(); ys[i] = y + (sin(rot + i * PI / 5) * rr).toFloat() }
+        tl.poly(xs, ys, c)
+    }
+
+    private fun robot(tl: Toile, x: Float, y: Float, s: Float, led: Int?, al: Int, roues: Double) {
+        tl.rect(x - s * .6f, y - s * 1.1f, s * 1.2f, s * .8f, a(0x8A96A3, al)); tl.rect(x - s * .7f, y - s * .35f, s * 1.4f, s * .25f, a(0x5C6672, al))
+        tl.rect(x - s * .35f, y - s * .95f, s * .22f, s * .22f, a(0x1E2430, al)); tl.rect(x + s * .13f, y - s * .95f, s * .22f, s * .22f, a(0x1E2430, al))
+        tl.rect(x - s * .04f, y - s * 1.35f, s * .08f, s * .25f, a(0x2B2F3A, al))
+        if (led != null) tl.lueur(x, y - s * 1.42f, s * .7f, a(led, (al * .8).toInt()))
+        tl.ellipse(x, y - s * 1.42f, s * .13f, s * .13f, a(led ?: 0x3A3F4C, al))
+        for (dx in listOf(-.45f, .45f)) { tl.ellipse(x + dx * s, y - s * .05f, s * .22f, s * .22f, a(0x1E1E2E, al))
+            tl.ligne(x + dx * s - (sin(roues) * s * .18).toFloat(), y - s * .05f - (cos(roues) * s * .18).toFloat(), x + dx * s + (sin(roues) * s * .18).toFloat(), y - s * .05f + (cos(roues) * s * .18).toFloat(), a(0xC9D2DC, al), 1.5f) }
+    }
+
+    private fun sablier(tl: Toile, x: Float, y: Float, s: Float, k: Float, al: Int) {
+        tl.rect(x - s * .6f, y - s, s * 1.2f, s * .15f, a(0xC9A26A, al)); tl.rect(x - s * .6f, y + s * .85f, s * 1.2f, s * .15f, a(0xC9A26A, al))
+        tl.poly(floatArrayOf(x - s * .45f, x + s * .45f, x + s * .05f, x + s * .45f, x - s * .45f, x - s * .05f), floatArrayOf(y - s * .85f, y - s * .85f, y, y + s * .85f, y + s * .85f, y), a(0xDCF0FF, (al * .6).toInt()))
+        val h = (1 - k) * s * .7f; tl.poly(floatArrayOf(x - h * .55f, x + h * .55f, x), floatArrayOf(y - h, y - h, y), a(0xFFD36B, al))
+        val b = k * s * .7f; tl.poly(floatArrayOf(x - b * .6f, x + b * .6f, x), floatArrayOf(y + s * .85f, y + s * .85f, y + s * .85f - b), a(0xFFD36B, al))
     }
 
     private fun cadenas(tl: Toile, cx: Float, cy: Float, r: Float, c: Int, ouvert: Boolean) {
@@ -868,6 +1062,8 @@ class MondeVue {
     }
 
     companion object {
+        val GUIDE2 = setOf("disque", "arbre", "memoire", "lanternes", "reveil", "journal", "album", "branche", "fusion",
+            "robot", "grimoire", "loupe", "filet", "sablier", "espion")
         val STADES = mapOf("bebe" to 30.0, "enfant" to 36.0, "ado" to 42.0, "adulte" to 50.0, "ancien" to 52.0, "finale" to 52.0)
         val COUL = mapOf("feu" to 0xe8562a, "eau" to 0x2f7fc4, "glace" to 0x9fd8f2, "plante" to 0x5aa63a, "roche" to 0xc9a26a,
             "ciel" to 0xdfe9ff, "ombre" to 0x4b3a6b, "machine" to 0x8a96a3, "poison" to 0x6a8f2a)
