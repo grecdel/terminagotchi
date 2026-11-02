@@ -1027,7 +1027,9 @@ jeu n'embarque, ne télécharge et n'emballe AUCUN binaire ni code tiers (BusyBo
 - Commande en attente (accord du propriétaire, 2 novembre) : une ligne tapée pendant qu'une commande tourne est
   montrée grisée « ⏳ en attente : `ls` » puis lancée juste après, dans son onglet, jamais collée à la suivante
   (5 au plus). Ctrl+C (touche ^C de la rangée, ou Ctrl+C d'un clavier branché) arrête la commande en cours (code 130,
-  « ^C ») ET vide l'attente ; sans commande en cours, il efface la ligne tapée.
+  « ^C ») ET vide l'attente ; sans commande en cours, il efface la ligne tapée. Vérifié sur le téléphone virtuel
+  (`sleep 6` puis `ls` : grisé puis lancé ; `sleep 15` puis `pwd` puis Ctrl+C : arrêt immédiat, `pwd` oublié).
+  Test JVM : `tests/jvm/Onglets.kt` (ordre, 5 au plus, Ctrl+C sur `sleep 15`, code 130).
 
 ## En continu (chaque jour, peu coûteux)
 
