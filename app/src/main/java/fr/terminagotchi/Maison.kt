@@ -119,6 +119,14 @@ object Maison {
         return piece == "" || r == piece || r.startsWith("$piece/")
     }
 
+    /**
+     * Les onglets du terminal (Onglets.kt) : une commande part du dossier de SON onglet. Appelé juste avant de la lancer,
+     * pour que « d'où elle part » (Histoire.tick : depart) ne soit pas le dossier de la dernière commande d'un AUTRE onglet.
+     */
+    fun placer(jeu: Jeu, dossier: File) {
+        m(jeu).put("cwd", dossier.path)
+    }
+
     /** Le dernier dossier courant connu (chemin absolu) ou null. */
     fun ici(jeu: Jeu): String? = m(jeu).let { if (it.isNull("cwd")) null else it.optString("cwd").ifEmpty { null } }
 

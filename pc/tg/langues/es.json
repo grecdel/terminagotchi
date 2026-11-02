@@ -8877,7 +8877,7 @@
  "vsh.wsl.wsl": "De acuerdo: el terminal será el bash de WSL. (`tg terminal jeu` para volver al terminal del juego.)",
  "vsh.wsl.vsh": "De acuerdo: el terminal será el del juego. (`tg terminal wsl` para probar WSL más tarde.)",
  "vsh.wsl.absent": "WSL no está instalado en este ordenador (el juego nunca lo instala): se queda el terminal del juego.",
- "vsh.fenetre.android": "En el teléfono hay una sola pantalla de terminal: en Termux, desliza desde el borde izquierdo y toca «New session» para abrir otra (el juego ve todo lo que escribes en cada una).",
+ "vsh.fenetre.android": "En Termux, desliza desde el borde izquierdo y toca «New session» para abrir otra terminal (el juego ve todo lo que escribes en cada una). En la app Terminagotchi es más fácil: el botón «+» encima de la terminal.",
  "vsh.fenetre.impossible": "No consigo abrir una nueva ventana de terminal aquí. Abre una tú y escribe `tg sh` en ella.",
  "vsh.fenetre.ok": "🪟 Se abre una nueva ventana del terminal del juego: ¡también me como los comandos que escribas allí!",
  "app.journal.terminal": "(Intro: el terminal del juego · [t]: una ventana de terminal más)",

@@ -8879,7 +8879,7 @@
  "vsh.wsl.wsl": "Oke: terminalnya adalah bash dari WSL. (`tg terminal jeu` untuk kembali ke terminal game.)",
  "vsh.wsl.vsh": "Oke: terminalnya adalah milik game. (`tg terminal wsl` untuk mencoba WSL nanti.)",
  "vsh.wsl.absent": "WSL tidak terpasang di komputer ini (game tidak pernah memasangnya): terminal game tetap dipakai.",
- "vsh.fenetre.android": "Di ponsel hanya ada satu layar terminal: di Termux, geser dari tepi kiri lalu ketuk “New session” untuk membuka yang lain (game melihat semua yang kamu ketik di masing-masing).",
+ "vsh.fenetre.android": "Di Termux, geser dari tepi kiri lalu ketuk “New session” untuk membuka terminal lain (game melihat semua yang kamu ketik di masing-masing). Di aplikasi Terminagotchi lebih mudah: tombol “+” di atas terminal.",
  "vsh.fenetre.impossible": "Aku tidak bisa membuka jendela terminal baru di sini. Buka sendiri satu jendela dan ketik `tg sh` di sana.",
  "vsh.fenetre.ok": "🪟 Jendela baru terminal game sedang terbuka: perintah yang kamu ketik di sana juga kumakan!",
  "app.journal.terminal": "(Enter: terminal game · [t]: satu jendela terminal lagi)",

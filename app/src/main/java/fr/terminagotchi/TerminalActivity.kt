@@ -36,7 +36,12 @@ import kotlin.random.Random
  */
 class TerminalActivity : Activity() {
     private lateinit var jeu: Jeu
-    private lateinit var shell: Shell
+    /** les onglets du terminal (Onglets.kt) : chacun son shell, son dossier, son historique, son écran */
+    private lateinit var onglets: Onglets
+    /** le shell de l'onglet affiché */
+    private val shell: Shell get() = onglets.actif.shell
+    /** la rangée des onglets, au-dessus de l'écran du terminal */
+    private lateinit var barreOnglets: LinearLayout
     private lateinit var commandes: Commandes
     private lateinit var menu: MenuParties
     private lateinit var creature: ImageView
@@ -90,14 +95,14 @@ class TerminalActivity : Activity() {
         )
 
         jeu = Jeu(this)
-        shell = Shell(jeu.home).also { s -> s.journal = { jeu.journal.toList() } }
+        onglets = Onglets({ Shell(jeu.home).also { s -> s.journal = { jeu.journal.toList() } } }, { jeu.historique.toList() })
         commandes = Commandes(this, jeu, { shell.dossier }) { texte, couleur ->
             if (texte.isNotEmpty()) ecrire(texte, couleur)
             rafraichir()
         }
         menu = MenuParties(this, jeu,
             apresChangement = {
-                shell.dossier = jeu.home            // l'ancien terrain a été rangé avec son ancienne partie
+                onglets.nouvellePartie(jeu.home)    // l'ancien terrain a été rangé avec son ancienne partie (tous les onglets)
                 animJouee = System.currentTimeMillis()
                 ecranIntro = if (!jeu.existe) 1 else 0       // une nouvelle partie : les écrans du début
                 WidgetCreature.majTous(this)
@@ -137,6 +142,7 @@ class TerminalActivity : Activity() {
         lexiqueBtn.setOnClickListener { basculerLexique() }
         textesFixes()
         creerTouches()
+        creerBarreOnglets()
         chemin = findViewById(R.id.chemin)
         contenu = findViewById(R.id.contenu)
         majObservatoire(null)
@@ -292,6 +298,152 @@ class TerminalActivity : Activity() {
         }
     }
 
+    // ------------------------------------------------------------ onglets (plusieurs terminaux, Onglets.kt)
+    /** La rangée des onglets (« Terminal 1 », « Terminal 2 »… et « + »), posée juste au-dessus de l'écran du terminal. */
+    private fun creerBarreOnglets() {
+        val dp = resources.displayMetrics.density
+        val cadreSortie = defile.parent as View
+        val panneau = cadreSortie.parent as LinearLayout
+        var i = 0
+        while (i < panneau.childCount && panneau.getChildAt(i) !== cadreSortie) i++
+        val defileur = android.widget.HorizontalScrollView(this)
+        defileur.setHorizontalScrollBarEnabled(false)
+        defileur.isFocusable = false
+        barreOnglets = LinearLayout(this)
+        barreOnglets.orientation = LinearLayout.HORIZONTAL
+        barreOnglets.gravity = Gravity.CENTER_VERTICAL
+        defileur.addView(barreOnglets, android.widget.FrameLayout.LayoutParams(
+            android.widget.FrameLayout.LayoutParams.WRAP_CONTENT, android.widget.FrameLayout.LayoutParams.WRAP_CONTENT))
+        val lp = LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT)
+        lp.topMargin = (8 * dp).toInt()
+        panneau.addView(defileur, i, lp)
+        // l'écran du terminal colle à la rangée des onglets (l'onglet choisi a la même couleur que lui)
+        (cadreSortie.layoutParams as LinearLayout.LayoutParams).topMargin = 0
+        majOnglets()
+    }
+
+    /** Redessine la rangée des onglets : l'onglet affiché a la couleur de l'écran du terminal, les autres sont estompés. */
+    private fun majOnglets() {
+        if (!::barreOnglets.isInitialized) return
+        val dp = resources.displayMetrics.density
+        barreOnglets.removeAllViews()
+        val plusieurs = onglets.liste.size > 1
+        for (o in onglets.liste) {
+            val choisi = o === onglets.actif
+            val boite = LinearLayout(this)
+            boite.orientation = LinearLayout.HORIZONTAL
+            boite.gravity = Gravity.CENTER_VERTICAL
+            boite.background = GradientDrawable().apply {
+                setColor(if (choisi) 0xFF11111B.toInt() else 0xFF2E2E48.toInt())
+                cornerRadius = 8 * dp
+            }
+            boite.setPadding((10 * dp).toInt(), (5 * dp).toInt(), ((if (plusieurs) 4 else 10) * dp).toInt(), (5 * dp).toInt())
+            val nom = TextView(this)
+            nom.text = ">_ " + o.nom()
+            nom.textSize = 12f
+            nom.typeface = Typeface.MONOSPACE
+            nom.setTextColor(if (choisi) 0xFF5FD787.toInt() else 0xFF9A9AB0.toInt())
+            if (choisi) nom.typeface = Typeface.create(Typeface.MONOSPACE, Typeface.BOLD)
+            boite.addView(nom)
+            boite.setOnClickListener { choisirOnglet(o) }
+            if (plusieurs) {                                  // la croix : seulement quand il en reste un autre
+                val croix = TextView(this)
+                croix.text = "✕"
+                croix.textSize = 12f
+                croix.setTextColor(0xFF9A9AB0.toInt())
+                croix.setPadding((8 * dp).toInt(), 0, (6 * dp).toInt(), 0)
+                croix.contentDescription = t("ong.fermer", "nom" to o.nom())
+                croix.setOnClickListener { fermerOnglet(o) }
+                croix.isFocusable = false
+                boite.addView(croix)
+            }
+            boite.isFocusable = false
+            val lp = LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT)
+            lp.marginEnd = (6 * dp).toInt()
+            barreOnglets.addView(boite, lp)
+        }
+        if (!onglets.plein()) {
+            val plus = TextView(this)
+            plus.text = "+"
+            plus.textSize = 15f
+            plus.typeface = Typeface.MONOSPACE
+            plus.setTextColor(0xFFE6E6E6.toInt())
+            plus.gravity = Gravity.CENTER
+            plus.minWidth = (36 * dp).toInt()
+            plus.setPadding((10 * dp).toInt(), (2 * dp).toInt(), (10 * dp).toInt(), (2 * dp).toInt())
+            plus.setBackgroundResource(R.drawable.touche)
+            plus.contentDescription = t("ong.nouveau")
+            plus.setOnClickListener { ouvrirOnglet() }
+            plus.isFocusable = false
+            barreOnglets.addView(plus)
+        }
+    }
+
+    /** Une commande tourne encore (une seule à la fois : le gardien des coulisses compare une seule photo, Garde.kt). */
+    private fun ongletOccupe(): Boolean {
+        if (!enCours) return false
+        ecrire(t("ong.occupe", "nom" to onglets.actif.nom()), 0xFF9A9AB0.toInt())
+        return true
+    }
+
+    /** Range l'écran et la ligne à moitié tapée de l'onglet qu'on quitte. */
+    private fun rangerOnglet() {
+        val o = onglets.actif
+        o.ecran = SpannableStringBuilder(sortie.text)
+        o.brouillon = saisie.text.toString()
+    }
+
+    /** Montre l'onglet actif : son écran, sa ligne à moitié tapée, sa pièce, son invite. */
+    private fun montrerOnglet() {
+        val o = onglets.actif
+        sortie.text = o.ecran
+        remplacerSaisie(o.brouillon)
+        posHisto = -1
+        rappel = null
+        colle = false
+        majObservatoire(null)
+        majOnglets()
+        rafraichir()
+        defile.post { defile.scrollTo(0, sortie.bottom) }
+        saisie.requestFocus()
+    }
+
+    /** « + », `terminal`, `tg terminal` : un terminal de plus (comme une fenêtre de plus sur PC). */
+    private fun ouvrirOnglet() {
+        if (ongletOccupe()) return
+        if (onglets.plein()) {
+            ecrire(t("ong.max", "max" to Onglets.MAX), 0xFFFFAF5F.toInt())
+            return
+        }
+        val avant = onglets.actif
+        rangerOnglet()
+        val o = onglets.ouvrir() ?: return
+        o.ecran = ""
+        montrerOnglet()
+        ecrire(t("ong.ouvert", "nom" to o.nom(), "avant" to avant.nom()), Commandes.ROSE)
+    }
+
+    private fun choisirOnglet(o: Onglet) {
+        if (o === onglets.actif) { saisie.requestFocus(); return }
+        if (ongletOccupe()) return
+        rangerOnglet()
+        onglets.choisir(o)
+        montrerOnglet()
+    }
+
+    /** ✕ ou `exit` : ferme cet onglet. Faux si c'est le dernier (il ne se ferme pas). */
+    private fun fermerOnglet(o: Onglet): Boolean {
+        if (onglets.liste.size <= 1) return false
+        if (ongletOccupe()) return true
+        val etaitActif = o === onglets.actif
+        if (!etaitActif) rangerOnglet()
+        else o.brouillon = ""
+        if (!onglets.fermer(o)) return false
+        if (etaitActif) montrerOnglet() else majOnglets()
+        ecrire(t("ong.ferme", "nom" to o.nom()), 0xFF9A9AB0.toInt())
+        return true
+    }
+
     // ------------------------------------------------------------ commandes
     // ------------------------------------------------------------ historique (↑ ↓) et complétion (Tab)
     private fun remplacerSaisie(texte: String) {
@@ -302,7 +454,7 @@ class TerminalActivity : Activity() {
     }
 
     private fun rappeler(sens: Int) {
-        val h = jeu.historique
+        val h = onglets.actif.historique
         if (h.isEmpty()) {
             ecrire(t("term.historique_vide"), 0xFF9A9AB0.toInt())
             return
@@ -456,6 +608,7 @@ class TerminalActivity : Activity() {
             jeu.historique.add(ligne)
             while (jeu.historique.size > 50) jeu.historique.removeAt(0)
         }
+        if (jeu.existe) onglets.actif.noter(ligne)          // ↑ ↓ : l'historique de CET onglet
         saisie.setText("")
         if (ligne.isEmpty() || enCours) return
 
@@ -484,7 +637,11 @@ class TerminalActivity : Activity() {
         ecrire("${shell.chemin()} $ $ligne", 0xFF5FD787.toInt())
         when (Regles.premierMot(ligne)) {
             "clear" -> { sortie.text = ""; return }
-            "quitter", "exit" -> { finish(); return }
+            "quitter" -> { finish(); return }
+            // exit ferme l'onglet ; dans le dernier, il referme le jeu (comme avant les onglets)
+            "exit", "logout" -> { if (!fermerOnglet(onglets.actif)) finish(); return }
+            "terminal" -> if (ligne.trim().split(Regex("\\s+")).size == 1) { ouvrirOnglet(); return }   // comme `tg terminal` sur PC
+            "tg" -> if (ligne.trim().split(Regex("\\s+")).drop(1) == listOf("terminal")) { ouvrirOnglet(); return }
             "parties" -> { ecrire(menu.ouvrir(), Commandes.ROSE); return }
             "langue" -> { ecrire(langue(ligne.trim().split(Regex("\\s+")).getOrNull(1)), Commandes.ROSE); return }
             "partie" -> { ecrire(menu.commande(ligne.substringAfter(' ', "")), Commandes.ROSE); rafraichir(); return }
@@ -572,10 +729,12 @@ class TerminalActivity : Activity() {
                     ecrire(Histoire.aideLecon(jeu), Commandes.ROSE)
                     return
                 }
-                ecrire(t("term.aide", "ctf" to Mots.terme("ctf", Mots.palier(jeu), true)) + "\n" + t("term.aide.maison") + "\n" + t("env.aide.tel") + "\n" + t("ent.aide.tel") + "\n\n" + t("app.licences"))
+                ecrire(t("term.aide", "ctf" to Mots.terme("ctf", Mots.palier(jeu), true)) + "\n" + t("ong.aide", "max" to Onglets.MAX) + "\n" + t("term.aide.maison") + "\n" + t("env.aide.tel") + "\n" + t("ent.aide.tel") + "\n\n" + t("app.licences"))
                 return
             }
         }
+        // plusieurs onglets : la commande part du dossier de CET onglet (pas de celui de la dernière commande d'un autre)
+        Maison.placer(jeu, shell.dossier)
         // la photo du terrain avant la commande : ce qui change VRAIMENT se verra dans le monde des biomes (Effets.kt)
         val photoAvant = if (espace != null && espace?.etat?.niveauEffets() != "aucun") try { Effets.photo(jeu.terrain, shell.dossier) } catch (e: Exception) { null } else null
         // Commandes intégrées (téléphone, créature) : réponse immédiate
@@ -1119,8 +1278,13 @@ class TerminalActivity : Activity() {
     }
 
     // ------------------------------------------------------------ fenêtre d'observation
-    private var dernierDossier: File? = null
-    private var derniersNoms: Set<String> = emptySet()
+    /** la pièce et son contenu à la dernière commande, gardés par onglet (chaque terminal a son dossier) */
+    private var dernierDossier: File?
+        get() = onglets.actif.dernierDossier
+        set(v) { onglets.actif.dernierDossier = v }
+    private var derniersNoms: Set<String>
+        get() = onglets.actif.derniersNoms
+        set(v) { onglets.actif.derniersNoms = v }
 
     private fun icone(): String = when (jeu.stade) {
         0 -> "🥚"
@@ -1249,7 +1413,8 @@ class TerminalActivity : Activity() {
             val fondH = findViewById<View>(R.id.fond).height.takeIf { it > 0 } ?: resources.displayMetrics.heightPixels
             val entete = (titre.parent.parent as View).height
             val hBulle = if (bulle.visibility == View.VISIBLE) bulle.height + (6 * dp).toInt() else 0
-            lecon.maxHeight = maxOf((70 * dp).toInt(), fondH - entete - hBulle - hSortie - ((44 + 52 + 40) * dp).toInt())
+            val hOnglets = if (::barreOnglets.isInitialized) (barreOnglets.parent as View).height + (8 * dp).toInt() else 0
+            lecon.maxHeight = maxOf((70 * dp).toInt(), fondH - entete - hBulle - hSortie - hOnglets - ((44 + 52 + 40) * dp).toInt())
         } else lecon.maxHeight = Int.MAX_VALUE
         if (lecon.movementMethod == null) lecon.movementMethod = android.text.method.ScrollingMovementMethod()
         // rien d'autre que la ligne de saisie ne doit pouvoir prendre le focus (sinon ce qu'on tape part dans le vide)
@@ -1265,6 +1430,8 @@ class TerminalActivity : Activity() {
         if (jeu.existe && !Intro.ouvert(jeu, "envies")) faim.visibility = View.GONE
         if (::auraBtn.isInitialized && (oeuf || !Intro.ouvert(jeu, "equipe"))) auraBtn.visibility = View.GONE
         (creature.parent as? View)?.visibility = if (oeuf) View.GONE else View.VISIBLE
+        // les onglets du terminal : pas pendant l'œuf (un seul écran, le temps d'apprendre à taper), sauf s'il y en a déjà plusieurs
+        if (::barreOnglets.isInitialized) (barreOnglets.parent as View).visibility = if (oeuf && onglets.liste.size == 1) View.GONE else View.VISIBLE
         lexiqueBtn.visibility = if (jeu.existe && !oeuf && Intro.ouvert(jeu, "lexique")) View.VISIBLE else View.GONE
         majIntro()
         majBoutonAura()

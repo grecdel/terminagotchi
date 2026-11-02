@@ -8883,7 +8883,7 @@
  "vsh.wsl.wsl": "好的：终端将是 WSL 的 bash。（`tg terminal jeu` 可回到游戏终端。）",
  "vsh.wsl.vsh": "好的：终端将是游戏自己的终端。（`tg terminal wsl` 以后可以试试 WSL。）",
  "vsh.wsl.absent": "这台电脑上没有安装 WSL（游戏从不安装它）：继续使用游戏终端。",
- "vsh.fenetre.android": "手机上只有一个终端屏幕：在 Termux 里从左边缘滑出，点“New session”再开一个（游戏能看到你在每个里面输入的一切）。",
+ "vsh.fenetre.android": "在 Termux 里从左边缘滑出，点“New session”再开一个终端（游戏能看到你在每个里面输入的一切）。在 Terminagotchi 应用里更简单：点终端上方的“+”按钮。",
  "vsh.fenetre.impossible": "我没法在这里打开新的终端窗口。请你自己打开一个，在里面输入 `tg sh`。",
  "vsh.fenetre.ok": "🪟 游戏终端的新窗口正在打开：你在那里输入的命令我也会吃掉！",
  "app.journal.terminal": "（回车：游戏终端 · [t]：再开一个终端窗口）",

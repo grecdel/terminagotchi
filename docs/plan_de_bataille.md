@@ -961,7 +961,8 @@ jeu n'embarque, ne télécharge et n'emballe AUCUN binaire ni code tiers (BusyBo
   éditeurs (nano, vim), ln, chown, crontab, useradd.
 - Plusieurs fenêtres : `tg terminal`, la touche `[t]` de la fenêtre du jeu, `terminal` dans l'espace ; toutes
   écrivent dans `~/.terminagotchi/historique_terminal`, que le jeu lit (la créature mange chaque commande). Android :
-  un seul écran de terminal dans l'appli ; le jeu explique les sessions de Termux.
+  des onglets de terminal dans l'appli (voir « Onglets du terminal (Android) — codé ») ; dans Termux, le jeu explique
+  ses sessions.
 - Les petits terminaux (`tg mini`, l'île du bureau, l'espace) passent aussi par le terminal du jeu sous Windows ; les
   fichiers du terrain sont écrits avec des fins de ligne Linux.
 - Tests : `pc/outils/test_terminal.py` (chaque cas `vrai_terminal` des fiches et une liste de syntaxes, comparés au
@@ -974,8 +975,23 @@ jeu n'embarque, ne télécharge et n'emballe AUCUN binaire ni code tiers (BusyBo
   terminal du jeu : 263 identiques, 0 écart (Linux), 265 / 0 (Windows simulé), **250 / 0 sur la vraie machine
   Windows** (toute l'histoire, les 12 mondes et le Sommet). Simulation des trois enfants :
   `docs/simulations/rapport_terminal.md`.
-- Reste à décider (rapport final) : des onglets dans l'écran terminal de l'APK ; un `python3` du jeu (le Python qui
+- Reste à décider (rapport final) : des onglets dans l'écran terminal de l'APK (faits le 2 novembre, voir plus bas) ; un `python3` du jeu (le Python qui
   fait tourner le jeu) pour les étapes Python de la Forge sous Windows ; un `curl` local vers le phare du Port.
+
+**🪟 Onglets du terminal (Android) — codé (2 novembre, demande du propriétaire).**
+- L'écran terminal de l'APK a de vrais onglets : « Terminal 1 », « Terminal 2 »… au-dessus de l'écran du terminal,
+  « + » (ou `terminal`, `tg terminal`, comme sur PC) en ouvre un, `exit` ou ✕ le ferme ; 4 au plus ; le dernier ne se
+  ferme pas (`exit` y referme le jeu, comme avant). Cachés pendant l'œuf.
+- Chaque onglet est un terminal indépendant (`Onglets.kt`) : son dossier courant, son `cd -`, son code de sortie, son
+  historique ↑ ↓ (un nouvel onglet part de l'historique de la partie, comme un nouveau bash), son écran et sa ligne à
+  moitié tapée. Même terrain, même créature : elle mange les commandes de tous ; les leçons voient chaque commande avec
+  le dossier de SON onglet (`Maison.placer` avant chaque commande : le point de départ n'est jamais celui d'un autre
+  onglet). Les variables et les tâches `&` restent limitées à la ligne (comme avant sur le téléphone) ; une seule
+  commande tourne à la fois (le gardien des coulisses compare une seule photo) : changer d'onglet attend la fin.
+- Textes `ong.*` dans les 14 langues ; l'astuce Termux (`vsh.fenetre.android`) renvoie aussi au bouton « + » de l'appli.
+- Tests : `tests/jvm/Onglets.kt` (ouvrir, fermer, maximum, numéros ; cd dans l'un ne change pas l'autre ; `cd -`,
+  code, historique par onglet ; commandes des deux onglets mangées ; « ls dans la grande salle » validé seulement dans
+  l'onglet qui y est).
 
 ## En continu (chaque jour, peu coûteux)
 
