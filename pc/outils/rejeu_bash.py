@@ -151,6 +151,9 @@ def histoire():
         from tg.vsh import CoquilleVirtuelle
         shell = CoquilleVirtuelle(home, jeu="auto")
         home_aff = Path(shell.vfs.home) if shell.vfs.mode == "windows" else home
+        if shell.vfs.mode == "windows":           # (Windows : whoami dit le nom du Linux virtuel)
+            os.environ["USER"] = shell.vfs.utilisateur
+        avant_home = set(os.listdir(home))
     else:
         shell = Coquille(home, env=dict(os.environ, LC_ALL="C.UTF-8", LANGUAGE="C", LC_MESSAGES="C"))
         home_aff = home
@@ -451,7 +454,7 @@ def histoire():
         gc_ = CT_._graine(st)                        # le Poste de Contrôle : l'enfant lit du, le PATH, le carnet, l'écran…
         if les["id"].startswith("ct"):
             c = {"controle entrepot ?": f"controle entrepot {CT_.caisse_lourde(gc_)}",
-                 "controle path ?": f"controle path {len(os.environ.get('PATH', '').split(':'))}",
+                 "controle path ?": f"controle path {len(CT_.path_actuel().split(':'))}",
                  "controle alertes ?": f"controle alertes {CT_.nb_alertes(gc_)}",
                  'controle cron "? ? ? ? ?"': f'controle cron "{CT_.cron_situation(gc_)["rep"]}"',
                  "controle distribution ?": f"controle distribution {CT_.os_release().get('ID', 'linux')}",
@@ -525,7 +528,7 @@ def histoire():
             if "lignes" in a:
                 verifier(len(lignes) == a["lignes"], f"{nom} : {len(lignes)} lignes (le jeu dit {a['lignes']}){pq}")
             if "dossiers" in a:
-                trouves = sorted(str(Path(x).parent.relative_to(core.TERRAIN)) for x in lignes)
+                trouves = sorted(str(Path(x).parent.relative_to(Path(home_aff) / "terrain_terminagotchi")) for x in lignes)
                 verifier(trouves == sorted(a["dossiers"]), f"{nom} : dans {trouves}{pq}")
             if "code" in a:
                 verifier(code != 0 if a["code"] == "non0" else code == a["code"], f"{nom} : code {code}{pq}")
@@ -567,7 +570,7 @@ def histoire():
                                              default=["", ""])[1])
                 verifier(gros_ == CT_.caisse_lourde(CT_._graine(st)) + ".bin", f"{nom} : du dit {gros_!r}{pq}")
             if a.get("egal_jeu") == "path":
-                verifier(CT_.path_ok(str(len(lignes)), os.environ.get("PATH", "")), f"{nom} : {len(lignes)} dossiers{pq}")
+                verifier(CT_.path_ok(str(len(lignes)), CT_.path_actuel()), f"{nom} : {len(lignes)} dossiers{pq}")
             if a.get("egal_jeu") == "alertes":
                 verifier(s.strip() == str(CT_.nb_alertes(CT_._graine(st))), f"{nom} : bash compte {s.strip()!r}, le jeu {CT_.nb_alertes(CT_._graine(st))}{pq}")
             if a.get("egal_jeu") == "paquets":
@@ -619,6 +622,10 @@ def histoire():
             print(f"  · {k} raconté (outil absent du terminal du jeu, étape cachée)")
         saute += len(caches)
         absents |= caches
+    if VIRTUEL:                        # rien d'écrit dans le dossier personnel hors du terrain et du dossier du jeu
+        apres_home = set(os.listdir(home)) - avant_home - {"terrain_terminagotchi", ".terminagotchi", ".bash_history",
+                                                            ".gitconfig"}
+        verifier(not apres_home, f"le terminal du jeu n'a rien écrit hors du terrain {sorted(apres_home)}")
     manquent = sorted(set(attendus) - vus - absents)
     verifier(not manquent, f"toutes les étapes décrites ont été rejouées {manquent}")
     shell.fermer()

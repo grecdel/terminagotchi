@@ -119,8 +119,8 @@ JOKER = re.compile(r"[*?\[]")
 
 
 def _abs(mot, cwd):
-    from .plateforme import SYS_WIN
-    if SYS_WIN:                                   # le terminal du jeu : des chemins Linux (/etc/hostname, ~/…)
+    from .plateforme import LINUX_VIRTUEL
+    if LINUX_VIRTUEL:                                   # le terminal du jeu : des chemins Linux (/etc/hostname, ~/…)
         from .vsh.vfs import reel_depuis_terminal
         try:
             return reel_depuis_terminal(cwd, mot)

@@ -48,7 +48,7 @@ from pathlib import Path
 
 from . import core
 from .langue import t
-from .plateforme import BOLD, DIM, RESET, SYS_WIN, fg
+from .plateforme import BOLD, DIM, RESET, LINUX_VIRTUEL, fg
 
 _D = None
 
@@ -617,7 +617,7 @@ def licence_reelle(nom):
     n = re.sub(r"[^a-z0-9.+_-]", "", ascii_bas(nom))
     if not n:
         return None, None
-    if not SYS_WIN:
+    if not LINUX_VIRTUEL:
         for base in (Path("/usr/share/licenses") / n, Path("/usr/share/doc") / n):
             fichiers = []
             if base.is_dir():
@@ -1158,7 +1158,7 @@ def lignes_compiler():
 
 
 def lignes_gcc():
-    la = shutil.which("gcc") is not None and not SYS_WIN
+    la = shutil.which("gcc") is not None and not LINUX_VIRTUEL
     out = [f" {_c(215)}{BOLD}🔧 " + t("gu.gcc.titre") + RESET, ""]
     if la:
         try:

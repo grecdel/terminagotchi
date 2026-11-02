@@ -79,6 +79,15 @@ jobs:
       - name: Rejeu des sorties dans un vrai bash (fiches et histoire du PC)
         run: LC_ALL=C.UTF-8 python3 pc/outils/rejeu_bash.py
 
+      - name: Le terminal du jeu (Windows) comparé au vrai bash (fiches, syntaxe, petit git, Linux virtuel)
+        run: LC_ALL=C.UTF-8 python3 pc/outils/test_terminal.py
+
+      - name: L'histoire entière jouée dans le terminal du jeu (comme sous Windows)
+        run: LC_ALL=C.UTF-8 python3 pc/outils/rejeu_bash.py --terminal-du-jeu
+
+      - name: La même histoire dans le Linux virtuel de Windows (simulé ici, joué pour de vrai dans windows.yml)
+        run: TG_VSH_MODE=windows LC_ALL=C.UTF-8 python3 pc/outils/rejeu_bash.py --terminal-du-jeu
+
       - name: Le mode classe (100 % local, aucun envoi, bilan, fiches)
         run: |
           set -o pipefail

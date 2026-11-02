@@ -64,6 +64,10 @@ def installer(paquet, noms=None):
 # part sont reconnus, et la créature invite gentiment à utiliser le terminal du jeu.)
 SYS_WIN = OSK == "windows"
 IS_WIN = False
+# LINUX_VIRTUEL : le monde des leçons est le Linux virtuel du terminal du jeu (ses chemins /etc, ~/…, ses lieux du
+# système en petits fichiers, son PATH, son os-release) : sous Windows ; ailleurs seulement pour les tests
+# (TG_VSH_MODE=windows : le rejeu joue alors sous Linux l'histoire exactement comme sous Windows).
+LINUX_VIRTUEL = SYS_WIN or os.environ.get("TG_VSH_MODE") == "windows"
 OS_NAMES = {"linux": "Linux", "mac": "macOS", "windows": "Windows", "android": "Android"}
 
 

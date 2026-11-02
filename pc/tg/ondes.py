@@ -52,7 +52,7 @@ import unicodedata
 
 from . import core
 from .langue import t
-from .plateforme import BOLD, DIM, RESET, SYS_WIN, fg
+from .plateforme import BOLD, DIM, RESET, LINUX_VIRTUEL, fg
 
 _D = None
 
@@ -421,7 +421,7 @@ def _lire_sys(chemin):
 def wifi_freqs():
     """Les fréquences (MHz) des réseaux déjà connus de la carte Wi-Fi, SANS balayage actif (--rescan no) et en ne
     demandant QUE la colonne FREQ : aucun nom, aucune adresse. None si nmcli manque ou échoue. Rien n'est écrit."""
-    if SYS_WIN or not shutil.which("nmcli"):
+    if LINUX_VIRTUEL or not shutil.which("nmcli"):
         return None
     try:
         r = subprocess.run(["nmcli", "-t", "-f", "FREQ", "device", "wifi", "list", "--rescan", "no"],

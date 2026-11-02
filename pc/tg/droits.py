@@ -11,7 +11,7 @@ import os
 import stat
 from pathlib import Path
 
-VIRTUELS = os.name == "nt"
+VIRTUELS = os.name == "nt" or os.environ.get("TG_VSH_MODE") == "windows"
 
 
 class Registre:

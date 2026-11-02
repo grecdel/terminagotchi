@@ -46,7 +46,11 @@ def verifier(c, m):
 
 
 def _moi():
-    return subprocess.run(["id", "-un"], capture_output=True, text=True).stdout.strip()
+    import getpass
+    try:
+        return getpass.getuser()
+    except Exception:  # noqa: BLE001
+        return "eleve"
 
 
 ENV = {"PATH": os.environ.get("PATH", "/usr/bin:/bin"), "LC_ALL": "C", "USER": os.environ.get("USER") or _moi(),

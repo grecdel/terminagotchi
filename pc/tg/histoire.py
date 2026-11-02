@@ -52,7 +52,7 @@ import re
 from . import core, lecons, maison
 from .langue import t
 from .mots import palier, termes
-from .plateforme import C, IS_WIN, OSK, SYS_WIN, est_colle, installer, outil_present, terminal_virtuel
+from .plateforme import C, IS_WIN, OSK, LINUX_VIRTUEL, est_colle, installer, outil_present, terminal_virtuel
 
 S = lecons.S
 CD = lecons.CD
@@ -84,7 +84,7 @@ from pathlib import Path as _Path  # noqa: E402
 RACINE = str(_Path(_Path.home().anchor or "/"))
 CAMP = str(_Path.home())
 RACINE_AFF, CAMP_AFF = "/", CAMP          # comment le terminal les écrit
-if SYS_WIN:                               # Windows : le terminal du jeu est un Linux virtuel (vsh/vfs.py)
+if LINUX_VIRTUEL:                               # Windows : le terminal du jeu est un Linux virtuel (vsh/vfs.py)
     from .vsh.vfs import nom_utilisateur as _nom_u
     RACINE = str(core.SAVE_DIR / "systeme")
     CAMP_AFF = f"/home/{_nom_u()}"
@@ -95,7 +95,7 @@ def _q(chemin):
     return f'"{chemin}"' if " " in chemin else chemin
 
 
-VESTIBULE_ABS = _q(str(_Path.home() / "terrain_terminagotchi" / "vestibule")) if not SYS_WIN else \
+VESTIBULE_ABS = _q(str(_Path.home() / "terrain_terminagotchi" / "vestibule")) if not LINUX_VIRTUEL else \
     f"{CAMP_AFF}/terrain_terminagotchi/vestibule"
 
 # ---------------------------------------------------------------- les leçons de l'histoire
@@ -491,7 +491,7 @@ def _outil(nom):
     if nom.startswith("/"):
         if terminal_virtuel():                 # le terminal du jeu : ses lieux du système (/etc/os-release, /proc…)
             from .vsh.vfs import vfs_du_jeu
-            return vfs_du_jeu().existe(nom) if SYS_WIN else os.path.exists(nom)
+            return vfs_du_jeu().existe(nom) if LINUX_VIRTUEL else os.path.exists(nom)
         return os.path.exists(nom)
     return outil_present(nom)
 

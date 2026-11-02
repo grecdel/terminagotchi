@@ -43,7 +43,7 @@ from pathlib import Path
 from . import core
 from .langue import t
 from . import droits
-from .plateforme import BOLD, C, DIM, IS_WIN, RESET, SYS_WIN, fg
+from .plateforme import BOLD, C, DIM, IS_WIN, RESET, LINUX_VIRTUEL, fg
 
 _D = None
 
@@ -563,7 +563,7 @@ def lancer_fictifs(noms):
         except OSError:
             pass
         return out
-    if SYS_WIN:
+    if LINUX_VIRTUEL:
         return []
     out = []
     vivants = _pids()

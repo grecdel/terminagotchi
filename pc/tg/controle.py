@@ -51,7 +51,7 @@ from pathlib import Path
 
 from . import core
 from .langue import t
-from .plateforme import BOLD, DIM, IS_WIN, RESET, SYS_WIN, fg
+from .plateforme import BOLD, DIM, IS_WIN, RESET, LINUX_VIRTUEL, SYS_WIN, fg
 
 _D = None
 
@@ -516,6 +516,12 @@ def pont_maths(state, lid, step):
 
 # ---------------------------------------------------------------- la vraie machine (lue, jamais modifiée)
 def _lire_sys(chemin):
+    if LINUX_VIRTUEL and chemin.startswith("/"):        # le terminal du jeu : ses lieux du système (vsh/vfs.py)
+        try:
+            from .vsh.vfs import vfs_du_jeu
+            return vfs_du_jeu().lire(chemin).decode("utf-8", "replace")
+        except Exception:                         # noqa: BLE001
+            return ""
     try:
         with open(chemin, encoding="utf-8", errors="replace") as f:
             return f.read()
@@ -575,13 +581,13 @@ def charge():
 
 
 def path_actuel():
-    if SYS_WIN:                                   # le terminal du jeu (Linux virtuel) : son PATH à lui
+    if LINUX_VIRTUEL:                                   # le terminal du jeu (Linux virtuel) : son PATH à lui
         return "/usr/local/bin:/usr/bin:/bin"
     return os.environ.get("PATH", "")
 
 
 def os_release():
-    if SYS_WIN:                                   # le terminal du jeu : son /etc/os-release (vsh/vfs.py)
+    if LINUX_VIRTUEL:                                   # le terminal du jeu : son /etc/os-release (vsh/vfs.py)
         from .vsh.vfs import OS_RELEASE
         return os_release_de(OS_RELEASE)
     for f in ("/etc/os-release", "/usr/lib/os-release"):
@@ -595,7 +601,7 @@ def magasin():
     """Le magasin de paquets de cette machine : (entrée de controle.json, nombre de paquets installés ou None).
     Lecture seule : la base des paquets est LUE (rpm -qa seulement là où rpm est le gestionnaire du système, sinon il
     créerait ~/.rpmdb ; dpkg : le fichier status ; pacman : les dossiers de sa base)."""
-    if SYS_WIN:
+    if LINUX_VIRTUEL:
         return None, None
     for m in donnees()["magasins"]:
         if not os.path.exists(m["base"]):

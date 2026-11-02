@@ -166,6 +166,7 @@ class Vfs:
             "etc/hostname": nom_machine() + "\n", "etc/os-release": OS_RELEASE,
             "etc/passwd": f"root:x:0:0:root:/root:/bin/sh\n{u}:x:1000:1000:{u}:/home/{u}:/bin/sh\n",
             "etc/group": f"root:x:0:\n{u}:x:1000:\n", "etc/shells": "/bin/sh\n/bin/bash\n",
+            "etc/hosts": f"127.0.0.1\tlocalhost\n127.0.1.1\t{nom_machine()}\n::1\t\tlocalhost ip6-localhost ip6-loopback\n",
             "proc/version": PROC_VERSION, "proc/cpuinfo": _cpuinfo(), "proc/meminfo": _meminfo(),
             "proc/uptime": _uptime(), "proc/self/status": "Name:\tsh\nState:\tR (running)\n",
             "dev/null": "", "dev/zero": "", "dev/tty": "", "dev/urandom": "", "dev/random": "",

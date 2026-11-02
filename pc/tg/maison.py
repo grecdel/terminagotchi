@@ -179,8 +179,8 @@ _LS = ("ls", "dir", "gci", "get-childitem", "ll", "la")
 
 
 def _resoudre(cur, arg, precedent):
-    from .plateforme import SYS_WIN
-    if SYS_WIN:                                   # le terminal du jeu : des chemins Linux (/etc, ~/…, ..)
+    from .plateforme import LINUX_VIRTUEL
+    if LINUX_VIRTUEL:                                   # le terminal du jeu : des chemins Linux (/etc, ~/…, ..)
         a = (arg or "").strip().strip("'\"")
         if a == "-":
             return precedent or cur

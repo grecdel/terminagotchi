@@ -46,7 +46,7 @@ import unicodedata
 
 from . import core
 from .langue import t
-from .plateforme import BOLD, DIM, RESET, SYS_WIN, fg
+from .plateforme import BOLD, DIM, RESET, LINUX_VIRTUEL, fg
 
 _D = None
 
@@ -276,6 +276,12 @@ def collection_texte(state):
 
 # ================================================================ la vraie machine (lue, jamais modifiée)
 def _lire_sys(chemin):
+    if LINUX_VIRTUEL and chemin.startswith("/"):        # le terminal du jeu : ses lieux du système (vsh/vfs.py)
+        try:
+            from .vsh.vfs import vfs_du_jeu
+            return vfs_du_jeu().lire(chemin).decode("utf-8", "replace")
+        except Exception:                         # noqa: BLE001
+            return ""
     try:
         with open(chemin, encoding="utf-8", errors="replace") as f:
             return f.read()
@@ -285,7 +291,7 @@ def _lire_sys(chemin):
 
 def coeurs():
     """Ce que `nproc` affiche ici (le jeu le lance s'il existe, sinon il le calcule comme lui)."""
-    if shutil.which("nproc") and not SYS_WIN:
+    if shutil.which("nproc") and not LINUX_VIRTUEL:
         try:
             r = subprocess.run(["nproc"], capture_output=True, text=True, timeout=10)
             if r.returncode == 0 and r.stdout.strip().isdigit():
@@ -327,6 +333,8 @@ def memoire_kio():
 
 
 def noyau():
+    if LINUX_VIRTUEL:                                   # ce que dit `uname -r` dans le terminal du jeu
+        return "6.0.0-terminagotchi"
     return platform.release()
 
 
