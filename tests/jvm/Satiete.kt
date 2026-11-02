@@ -119,6 +119,39 @@ fun main(args: Array<String>) {
     }
     verifierS(ecart == null, "le scénario de 9 jours donne la même chose qu'en Python ${ecart ?: ""}")
 
+    // 2 nov. : « 🌱 XP de côté · grandit dans N jours » à côté de la barre bloquée (mêmes nombres qu'en Python)
+    r = tous("attente") {
+        val n = Satiete.joursAttente(it.getInt(0), it.getBoolean(1))
+        (n ?: -99) == (if (it.isNull(2)) -99 else it.getInt(2)) && (Satiete.cleAttente(n) ?: "null") == (if (it.isNull(3)) "null" else it.getString(3))
+    }
+    verifierS(r.first, "XP de côté : dans combien de jours elle grandit (aujourd'hui, demain, N jours) ${r.second}")
+    val ap = v.getJSONObject("attente_partie")
+    val apPas = ap.getJSONArray("pas")
+    val apAtt = ap.getJSONArray("attendu")
+    val ja = nouvellePartie()
+    val sa = Satiete.s(ja)
+    ja.faim = 70.0; ja.dernierTick = (ts(0, 16) * 1000).toLong(); sa.put("repas_t", ts(0, 16))
+    var ecartA: String? = null
+    val textes = mutableSetOf<String>()
+    for (i in 0 until apPas.length()) {
+        val p = apPas.getJSONArray(i)
+        val now = ts(p.getInt(0), p.getInt(1), p.getInt(2))
+        horlogeS = now
+        when (p.getString(3)) {
+            "tick" -> Satiete.tick(ja, now)
+            "repas" -> Satiete.repas(ja, p.getString(4), nouvelle = true, now = now)
+            else -> ja.ajouterXp(p.getInt(4))
+        }
+        val e = apAtt.getJSONArray(i)
+        val a = listOf(ja.xp, sa.optInt("reserve"), sa.optInt("jours"), Satiete.attente(ja, now) ?: -99)
+        val b = listOf(e.getInt(0), e.getInt(1), e.getInt(2), if (e.isNull(3)) -99 else e.getInt(3))
+        if (a != b && ecartA == null) ecartA = "pas $i : Kotlin $a, Python $b"
+        Satiete.ligneAttente(ja, now).let { if (it.isNotEmpty()) textes.add(it) }
+    }
+    verifierS(ecartA == null, "XP de côté : la même partie qu'en Python (159/160, puis elle grandit) ${ecartA ?: ""}")
+    verifierS(textes == setOf("🌱 XP de côté · grandit dans 2 jours", "🌱 XP de côté · grandit demain", "🌱 XP de côté · grandit aujourd'hui"),
+        "les trois textes à côté de la barre $textes")
+
     println("2. Les 7 points validés")
     val k = nouvellePartie()
     val sk = Satiete.s(k)

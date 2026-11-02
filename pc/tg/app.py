@@ -64,6 +64,14 @@ def render(state, frame, interactif, anim=None, tic=None):
         f"{DIM}" + t("app.caractere", trait=core.nom_trait(state["trait"])) + RESET,
         f"{xp_l} {sprites.bar(state['xp'] - lo, hi - lo)} {state['xp']}/{hi}",
     ]
+    attente = satiete.ligne_attente(state)       # 2 nov. : la barre bloquée (159/160) dit pourquoi, et pour combien de jours
+    if attente:
+        import shutil
+        place = shutil.get_terminal_size((80, 24)).columns - (lg + 2) - largeur(_ANSI.sub("", right[-1])) - 2
+        if largeur(attente) <= place:
+            right[-1] += f"  {fg(114)}{attente}{RESET}"
+        else:
+            right.append(f"{fg(114)}{attente}{RESET}")
     if intro.ouvert(state, "envies"):             # les jauges des envies arrivent avec leur présentation
         right += [f"{jauges[0]}  {DIM}{envies.humeur(state)}{RESET}",
                   jauges[1] + (f"  {fg(214)}💭 {envies.ICONES[m['e']]} {envies.nom(m['e'])}{RESET}" if m else ""),

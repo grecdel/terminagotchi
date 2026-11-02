@@ -673,7 +673,7 @@ class Commandes(
 
     private fun etat(): Reponse {
         val texte = listOf(
-            jeu.titre(), jeu.texteFaim(), jeu.texteXp(), jeu.texteStats(),
+            jeu.titre(), jeu.texteFaim(), jeu.texteXp() + Satiete.ligneAttente(jeu).let { if (it.isEmpty()) "" else "  $it" }, jeu.texteStats(),
             t("cre.etat", "trait" to Regles.nomTrait(jeu.trait),
                 "total" to jeu.total, "vus" to jeu.vus.size),
             t("app.arbre.competences", "liste" to (if (jeu.skills.isEmpty()) t("app.arbre.aucune") else jeu.skills.joinToString(", ") { Regles.nomSkill(it) })),

@@ -13,7 +13,7 @@ import textwrap
 import time
 from pathlib import Path
 
-from . import core, envies, lecons, sprites
+from . import core, envies, lecons, satiete, sprites
 from . import langue
 from .langue import envelopper, largeur, t
 from .plateforme import BOLD, DIM, IS_WIN, RESET, Clavier, clear, fg, piege, terminal_virtuel
@@ -206,6 +206,10 @@ class Mini:
                       f"{fg(faim_c)}{langue.ajuster(lf, lj)} {sprites.bar(st['hunger'], 100, 6)}{RESET}",
                       f"{DIM}{langue.ajuster(lx, lj)} {sprites.bar(st['xp'] - lo, hi - lo, 6)}{RESET}",
                       f"{DIM}{envies.humeur(st)}{RESET}"]
+            attente = satiete.ligne_attente(st)      # 2 nov. : la barre d'XP bloquée dit pour combien de jours
+            a_cote = attente and cols >= w + 4 + largeur(attente)
+            if a_cote:                               # sous la barre, dans la colonne de droite ; sinon sous la créature
+                droite.insert(3, f"{fg(114)}{attente}{RESET}")
             if cols >= w + 18:
                 droite = [""] + droite
                 n = max(len(sp), len(droite))
@@ -214,6 +218,8 @@ class Mini:
                 haut = [" " + a + "  " + b for a, b in zip(sp, droite)]
             else:
                 haut = [" " + a for a in sp] + [" " + droite[0]]
+            if attente and not a_cote:
+                haut.append(f" {fg(114)}{attente}{RESET}")
             b = st.get("bubble")
             if st["defi"]:
                 haut.append(f" {fg(226)}" + t("comp.defi", cmd=piege(st["defi"]["cmd"])) + RESET)

@@ -178,6 +178,22 @@ def jours_pour(stade):
     return JOURS_STADE.get(stade, 0)
 
 
+def jours_attente(manquants, compte):
+    """Dans combien de jours elle grandira (0 : aujourd'hui), quand l'XP attend des jours soignés (décision du 2 novembre,
+    barre bloquée à 159/160) : un jour soigné de plus au mieux par jour, aujourd'hui compris s'il ne compte pas encore.
+    None : rien n'attend. (Les mêmes nombres en Kotlin : vecteurs « attente ».)"""
+    if manquants <= 0:
+        return None
+    return max(0, manquants - (0 if compte else 1))
+
+
+def cle_attente(n):
+    """La clé du petit texte affiché à côté de la barre d'XP (None : rien)."""
+    if n is None:
+        return None
+    return "sat.attente.aujourdhui" if n <= 0 else "sat.attente.demain" if n == 1 else "sat.attente.dans"
+
+
 # ---------------------------------------------------------------- l'état dans la sauvegarde
 def s_(state):
     """L'état de la satiété, créé à la demande (une ancienne partie : MIGRATION_JOURS jours offerts, au moins en forme)."""
@@ -396,6 +412,25 @@ def liberer(state):
         return
     r, s["reserve"] = s["reserve"], 0
     core.add_xp(state, r)
+
+
+def attente(state, now=None):
+    """Le nombre de jours avant de grandir quand l'XP est mise de côté (barre bloquée juste avant un stade), sinon None."""
+    s = s_(state)
+    if s["reserve"] <= 0:
+        return None
+    st = next((x for x, seuil in SEUIL_STADE.items() if state.get("xp", 0) == seuil - 1), None)
+    if st is None:
+        return None
+    now = time.time() if now is None else now
+    return jours_attente(jours_pour(st) - s["jours"], bool(s["compte"]) and s["jour"] == jour_de(now))
+
+
+def ligne_attente(state, now=None):
+    """« 🌱 XP de côté · grandit dans 2 jours » (ou demain, aujourd'hui), à côté de la barre d'XP ; "" sinon."""
+    n = attente(state, now)
+    k = cle_attente(n)
+    return t(k, n=n) if k else ""
 
 
 def niveau_appris(state):

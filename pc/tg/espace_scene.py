@@ -706,6 +706,8 @@ def direct(L, Z, m, r, t_):
     L.append(("rrect", bx, py - 3, bw, 6, 3, (255, 255, 255, 20), None, 0))
     L.append(("rrect", bx, py - 3, max(6, bw * xp / 100), 6, 3, JAUNE, None, 0))
     L.append(("texte", bx - 10, py, "XP", 12.5, DOUX, False, "d", False))
+    if m.get("attente"):                         # 2 nov. : l'XP mise de côté, au-dessus de la barre (bloquée à 159/160)
+        L.append(("texte", sx + sw - 16, py - 20, court(m["attente"], sw - 32, 12), 12, _a(VERT, 230), False, "d", False))
 
 
 # ---------------------------------------------------------------- le panneau du moment

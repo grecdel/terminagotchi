@@ -778,6 +778,8 @@ class Espace(B.Controleur):
         lvl = m["niveau"]
         lo, hi = 10 * (lvl - 1) ** 2, 10 * lvl ** 2
         m["xp"] = int(100 * (st.get("xp", 0) - lo) / max(1, hi - lo)) if st else 0
+        from . import satiete
+        m["attente"] = satiete.ligne_attente(st) if st else ""     # 2 nov. : la barre d'XP bloquée dit pourquoi
         m["type_nom"] = self._type(st)
         m["equipe"], m["equipe_lignes"] = self._equipe(st)
         m["monstre"] = self._monstre(st)
@@ -1515,6 +1517,10 @@ def ecran_texte(ctl, cols, rangs):
     out = [f"{fg(78)}{BOLD}>_ Terminagotchi{RESET}  {DIM}{m.get('chapitre', '')}{RESET}   "
            f"{BOLD}{m['nom']}{RESET} {DIM}{m['espece_stade']}{RESET}  {fg(78)}● {m['etat_nom']}{RESET} {DIM}"
            f"{m['gains']}{RESET}   {fg(221)}{t('esp.niveau', n=m['niveau'])}{RESET}", ""]
+    if m.get("attente"):                          # 2 nov. : l'XP mise de côté, à côté du niveau si la place le permet
+        from .langue import largeur
+        if largeur(re.sub(r"\033\[[0-9;]*m", "", out[0])) + 2 + largeur(m["attente"]) <= cols:
+            out[0] += f"  {fg(114)}{m['attente']}{RESET}"
     for i in range(rangs - 3):
         g = gauche[i] if i < len(gauche) else ""
         c = centre[i] if i < len(centre) else ""

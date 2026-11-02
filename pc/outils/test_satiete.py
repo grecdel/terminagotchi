@@ -80,6 +80,35 @@ def jouer_scenario():
     return out
 
 
+ATTENTE = [   # 2 nov. : (jour, heure, minute, op, commande ou XP) — la barre bloquée à 159/160 et « grandit dans N jours »
+    (0, 17, 0, "xp", 150), (0, 17, 1, "repas", "pwd"), (0, 17, 2, "repas", "ls"), (0, 17, 3, "xp", 30),
+    (0, 17, 4, "repas", "date"), (0, 17, 5, "xp", 4), (1, 9, 0, "tick", ""), (1, 9, 1, "repas", "pwd"),
+    (1, 9, 2, "repas", "ls"), (1, 9, 3, "repas", "cat"), (2, 9, 0, "tick", ""), (2, 9, 1, "repas", "pwd"),
+    (2, 9, 2, "repas", "ls"), (2, 9, 3, "repas", "whoami"),
+]
+
+
+def jouer_attente():
+    """Après chaque pas : [xp, réserve, jours soignés, jours avant de grandir (None : rien à afficher)]."""
+    from tg import core as C
+    st = C.new_state("Pixel")
+    C.migrate(st)
+    st["intro"] = {"etat": "fini"}
+    s = S.s_(st)
+    st["hunger"], st["last_tick"], s["repas_t"] = 70.0, ts(0, 16), ts(0, 16)
+    out = []
+    for j, h, mn, op, x in ATTENTE:
+        now = ts(j, h, mn)
+        if op == "tick":
+            S.tick(st, now)
+        elif op == "repas":
+            S.repas(st, x, nouvelle=True, now=now)
+        else:
+            C.add_xp(st, x)
+        out.append([st["xp"], s["reserve"], s["jours"], S.attente(st, now)])
+    return out
+
+
 def calculer():
     v = {}
     v["etat"] = [[f, ve, S.etat_de(f, ve)] for f in (0, 10, 14.9, 15, 30, 39.9, 40, 60, 79.9, 80, 100) for ve in (False, True)]
@@ -97,6 +126,8 @@ def calculer():
     v["aura"] = [[f, m, ve, A.niveau_satiete(f, m, ve)] for f in (0, 14, 15, 39, 40, 79, 80, 100) for m in (0, 49, 50, 100)
                  for ve in (False, True)]
     v["scenario"] = {"pas": [list(x) for x in SCENARIO], "attendu": jouer_scenario()}
+    v["attente"] = [[m, c, S.jours_attente(m, c), S.cle_attente(S.jours_attente(m, c))] for m in range(-1, 8) for c in (False, True)]
+    v["attente_partie"] = {"pas": [list(x) for x in ATTENTE], "attendu": jouer_attente()}
     return v
 
 
@@ -111,6 +142,11 @@ for k in v:
     verifier(json.loads(json.dumps(v[k])) == lu[k], f"vecteurs « {k} » : le calcul Python n'a pas changé")
 sc = v["scenario"]["attendu"]
 verifier(sc[8][2] == 1 and sc[13][2] == 2 and sc[16][2] == 3, f"scénario : jours soignés 1, 2, 3 ({[x[2] for x in sc]})")
+at = [x[3] for x in v["attente_partie"]["attendu"]]
+verifier(at == [None, None, None, 2, 2, 2, 1, 1, 1, 1, 0, 0, 0, None],
+         f"XP de côté : grandit dans 2 jours, puis demain, puis aujourd'hui, puis elle grandit ({at})")
+verifier(v["attente_partie"]["attendu"][-1][0] >= 184 and v["attente_partie"]["attendu"][-1][1] == 0,
+         f"elle grandit et rien n'est perdu (184 XP gagnées + la médaille de série : {v['attente_partie']['attendu'][-1]})")
 verifier(sc[17][2] == 4, f"scénario : un jour sans jouer, mais fini en forme, compte aussi ({sc[17][2]})")
 verifier(sc[21][1] in ("affamee", "veille") and sc[21][3] < max(x[3] for x in sc[:21]),
          f"scénario : des jours finis affamée font perdre des crans, pas toute la série ({[x[3] for x in sc]})")
@@ -317,5 +353,44 @@ r = subprocess.run([sys.executable, str(ICI / "sim_satiete.py")], capture_output
 verifier(r.returncode == 0, "simulation de 14 jours : " + (r.stdout.strip().splitlines() or ["?"])[-1])
 if r.returncode:
     print(r.stdout[-3000:], r.stderr[-2000:])
+print("10. XP de côté à l'écran (décision du 2 novembre) : tg, mini-terminal, espace de travail")
+import io  # noqa: E402
+import re  # noqa: E402
+from tg import app, mini  # noqa: E402
+from tg import espace_scene as ES  # noqa: E402
+st = core.new_state("Pixel")
+core.migrate(st)
+intro.tout_debloquer(st)
+st["hunger"] = 85.0
+for c in ("pwd", "ls", "date"):
+    S.repas(st, c, nouvelle=True, now=time.time())
+core.add_xp(st, 180)
+sans = lambda x: re.sub(r"\033\[[0-9;]*m", "", x)  # noqa: E731
+verifier(st["xp"] == 159 and S.attente(st) == 2, f"1er jour : barre à 159/160, grandit dans 2 jours ({st['xp']}, {S.attente(st)})")
+ecran = sans(app.render(st, 0, False))
+ligne = next((x for x in ecran.splitlines() if "159/160" in x), "")
+verifier("🌱 XP de côté · grandit dans 2 jours" in ecran, "tg : le texte est affiché")
+verifier("grandit dans 2 jours" in ligne or "grandit dans 2 jours" in ecran.split("159/160", 1)[1].splitlines()[1],
+         f"tg : à côté de la barre (ou juste dessous si l'écran est étroit) : {ligne.strip()!r}")
+for cols in (50, 100):
+    mi = object.__new__(mini.Mini)
+    mi.state, mi.saut, mi.frame, mi.sortie, mi.tampon = st, 0, 0, [], ""
+    vrai, sortie = sys.stdout, io.StringIO()
+    os.environ["COLUMNS"] = str(cols)
+    try:
+        sys.stdout = sortie
+        mi.dessiner()
+    finally:
+        sys.stdout = vrai
+        os.environ.pop("COLUMNS", None)
+    verifier("XP de côté" in sans(sortie.getvalue()), f"mini-terminal ({cols} colonnes) : le texte est affiché")
+L, Z = [], []
+ES.direct(L, Z, {"nom": "Pixel", "xp": 99, "attente": S.ligne_attente(st)}, (0, 0, 640, 420), 0.0)
+verifier(any(x[0] == "texte" and "XP de côté" in str(x[3]) for x in L), "espace de travail : au-dessus de la barre d'XP")
+S.s_(st)["jours"] = 3
+S.liberer(st)
+verifier(S.ligne_attente(st) == "" and "XP de côté" not in sans(app.render(st, 0, False)),
+         "elle a grandi : le texte disparaît")
+
 print(f"\n{ok} réussis, {ko} échoués   (HOME={os.environ['HOME']})")
 sys.exit(1 if ko else 0)

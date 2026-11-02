@@ -159,6 +159,22 @@ object Satiete {
 
     fun joursPour(stade: Int) = JOURS_STADE[stade] ?: 0
 
+    /** Dans combien de jours elle grandira (0 : aujourd'hui) quand l'XP attend des jours soignés (décision du 2 novembre,
+     *  barre bloquée à 159/160) : un jour soigné de plus au mieux par jour, aujourd'hui compris s'il ne compte pas encore.
+     *  null : rien n'attend. (Les mêmes nombres en Python : vecteurs « attente ».) */
+    fun joursAttente(manquants: Int, compte: Boolean): Int? {
+        if (manquants <= 0) return null
+        return maxOf(0, manquants - (if (compte) 0 else 1))
+    }
+
+    /** La clé du petit texte affiché à côté de la barre d'XP (null : rien). */
+    fun cleAttente(n: Int?): String? = when {
+        n == null -> null
+        n <= 0 -> "sat.attente.aujourdhui"
+        n == 1 -> "sat.attente.demain"
+        else -> "sat.attente.dans"
+    }
+
     // ------------------------------------------------------------ l'état dans la sauvegarde
     private fun lst(s: JSONObject, k: String): MutableList<String> {
         val a = s.optJSONArray(k) ?: return mutableListOf()
@@ -371,6 +387,21 @@ object Satiete {
         val r = s.optInt("reserve")
         s.put("reserve", 0)
         jeu.ajouterXp(r)
+    }
+
+    /** Le nombre de jours avant de grandir quand l'XP est mise de côté (barre bloquée juste avant un stade), sinon null. */
+    fun attente(jeu: Jeu, now: Double = maintenant()): Int? {
+        val s = s(jeu)
+        if (s.optInt("reserve") <= 0) return null
+        val st = SEUIL_STADE.entries.firstOrNull { jeu.xp == it.value - 1 }?.key ?: return null
+        return joursAttente(joursPour(st) - s.optInt("jours"), s.optBoolean("compte") && s.optString("jour") == jourDe(now))
+    }
+
+    /** « 🌱 XP de côté · grandit dans 2 jours » (ou demain, aujourd'hui), à côté de la barre d'XP ; "" sinon. */
+    fun ligneAttente(jeu: Jeu, now: Double = maintenant()): String {
+        val n = attente(jeu, now)
+        val k = cleAttente(n) ?: return ""
+        return t(k, "n" to n)
     }
 
     /** Le niveau en comptant l'XP mise de côté (les fonctions qui s'ouvrent : jamais bloquées). */

@@ -1450,7 +1450,13 @@ class TerminalActivity : Activity() {
         // les 6 envies, puis l'état de la satiété et la petite assiette du jour (Satiete.kt)
         faim.text = if (jeu.existe) Envies.compact(jeu) + "  " + Envies.emoji(jeu) + "\n" + Satiete.ligneEtat(jeu) + "  🍽 " + Satiete.assiette(jeu)
             else jeu.texteFaim()
-        xp.text = jeu.texteXp()
+        // 2 nov. : la barre bloquée (159/160) dit pourquoi, et pour combien de jours (en vert, juste dessous)
+        val attente = if (jeu.existe) Satiete.ligneAttente(jeu) else ""
+        xp.text = if (attente.isEmpty()) jeu.texteXp() else android.text.SpannableStringBuilder(jeu.texteXp() + "\n").apply {
+            val d = length
+            append(attente)
+            setSpan(android.text.style.ForegroundColorSpan(0xFF72D88F.toInt()), d, length, android.text.Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
+        }
         // P2-5 : « INT AGI FOR END » n'apparaît qu'avec l'équipe (avant, c'est du jargon pour un enfant de 7 ans)
         stats.text = (if (Intro.ouvert(jeu, "equipe")) jeu.texteStats() else "") + if (Explo.captures(jeu).length() > 0 && Intro.ouvert(jeu, "equipe")) Guide.actuel(jeu).let { "  🧭 ${Guide.ICONES[it.type]} ${it.nom}" } else ""
         invite.text = if (::menu.isInitialized && menu.ouvert) ">" else if (jeu.existe) "${shell.chemin()} $" else t("term.invite_nom")
