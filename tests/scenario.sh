@@ -11,10 +11,33 @@ adb shell pm grant fr.terminagotchi android.permission.POST_NOTIFICATIONS || tru
 adb logcat -c
 n=0
 capture() { n=$((n+1)); sleep "${2:-2}"; adb exec-out screencap -p > "captures/$(printf %02d $n)_$1.png"; }
+# L'état de la ligne de saisie, lu à l'écran (uiautomator) : « pret » quand elle a le focus et qu'elle est vide
+# (ou montre son indice gris « tape une commande… »), sinon « occupe » ou « absent ».
+saisie() {
+  adb shell uiautomator dump /sdcard/tg_ui.xml >/dev/null 2>&1
+  adb exec-out cat /sdcard/tg_ui.xml 2>/dev/null | python3 -c '
+import re, sys
+x = sys.stdin.read()
+m = re.search(r"<node [^>]*resource-id=\"fr.terminagotchi:id/saisie\"[^>]*>", x)
+if not m:
+    print("absent"); sys.exit()
+n = m.group(0)
+def g(k):
+    r = re.search(k + r"=\"([^\"]*)\"", n)
+    return r.group(1) if r else ""
+t, h = g("text"), g("hint")
+vide = t == "" or t == h or t.endswith("\u2026")
+print("pret" if g("focused") == "true" and vide else "occupe")'
+}
+# attend que la ligne de saisie soit prête (au plus N secondes) : le téléphone virtuel est lent, et taper trop tôt
+# perdait des lettres ou collait deux lignes (« cdmkdir », le nom « pwddebloquer tout », `langue fr` perdu)
+attendre_pret() {
+  for i in $(seq 1 "${1:-25}"); do [ "$(saisie)" = pret ] && return 0; sleep 1; done
+  echo "(la ligne de saisie n'est pas prête après ${1:-25} s)"
+}
 tape() {   # tape une commande lettre par lettre puis Entrée
   local t="${1// /%s}"
-  # (le téléphone virtuel est lent : trop vite, les lettres se mélangent ou une ligne arrive pendant que la
-  #  précédente tourne encore et reste collée à la suivante, « cdmkdir », « pwddebloquer tout »)
+  attendre_pret
   [ -n "$t" ] && adb shell "input text '$t'"
   sleep 1
   adb shell input keyevent 66
@@ -29,6 +52,7 @@ tape "" 6; tape "" 8
 tape "Pixel" 6
 capture bapteme
 tape "oui" 8
+attendre_pret 40
 # le jeu en français (le téléphone virtuel est en anglais)
 tape "langue fr" 2
 # l'œuf et sa liste (Intro.kt) : 4 commandes, il éclot ; puis tout est ouvert pour la suite du scénario
