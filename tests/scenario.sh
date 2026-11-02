@@ -13,20 +13,22 @@ n=0
 capture() { n=$((n+1)); sleep "${2:-2}"; adb exec-out screencap -p > "captures/$(printf %02d $n)_$1.png"; }
 tape() {   # tape une commande lettre par lettre puis Entrée
   local t="${1// /%s}"
-  adb shell "input text '$t'"
-  sleep 0.5
+  # (le téléphone virtuel est lent : trop vite, les lettres se mélangent ou une ligne arrive pendant que la
+  #  précédente tourne encore et reste collée à la suivante, « cdmkdir », « pwddebloquer tout »)
+  [ -n "$t" ] && adb shell "input text '$t'"
+  sleep 1
   adb shell input keyevent 66
-  sleep "${2:-1.5}"
+  sleep "${2:-3}"
 }
 adb shell am start -n fr.terminagotchi/.TerminalActivity
-capture debut 5
+capture debut 12
 # les écrans du début (intro.json) : Entrée jusqu'au dernier (Entrée de trop : rien), puis le nom et « oui »
-tape "" 2
+tape "" 4
 capture intro_1
-tape "" 2; tape "" 2
-tape "Pixel" 2
+tape "" 4; tape "" 4
+tape "Pixel" 4
 capture bapteme
-tape "oui" 3
+tape "oui" 5
 # le jeu en français (le téléphone virtuel est en anglais)
 tape "langue fr" 2
 # l'œuf et sa liste (Intro.kt) : 4 commandes, il éclot ; puis tout est ouvert pour la suite du scénario
