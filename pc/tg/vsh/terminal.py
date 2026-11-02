@@ -426,7 +426,8 @@ class Terminal:
             return None
         except (KeyboardInterrupt, Interrompu):
             self.sh.arret.set()
-            self.ecrire("^C\n" if self.clavier.tty else "\n")
+            # (Linux, macOS : le terminal a déjà écrit ^C, comme pour bash ; la console de Windows, elle, ne l'écrit pas)
+            self.ecrire("^C\n" if self.clavier.tty and SYS_WIN else "\n")
             self.sh.statut = 130
             return 130
 

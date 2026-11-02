@@ -67,4 +67,3 @@ commande n'existe pas dans le terminal du jeu sous Windows » et l'étape est ra
 
 - `nano` / `notepad` hors d'une leçon : le message parle d'une étape racontée alors qu'il n'y en a pas.
 - Après `kill %1` puis `wait`, bash interactif écrit « [1]+ Terminated » ; le terminal du jeu ne l'écrit pas.
-- Ctrl+C affiche `^C` deux fois.

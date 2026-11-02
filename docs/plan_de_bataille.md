@@ -970,6 +970,12 @@ jeu n'embarque, ne télécharge et n'emballe AUCUN binaire ni code tiers (BusyBo
   jugeant chaque étape), `test_windows.py`. CI : `rejeu.yml` (comparaison au vrai bash sous Linux, et l'histoire en
   mode Windows simulé) et `windows.yml` (une VRAIE machine Windows de GitHub joue toute l'histoire dans le terminal
   du jeu).
+- Résultats (2 novembre) : comparé au vrai bash, 417 cas identiques et 0 différence (CI Linux) ; l'histoire dans le
+  terminal du jeu : 263 identiques, 0 écart (Linux), 265 / 0 (Windows simulé), **250 / 0 sur la vraie machine
+  Windows** (toute l'histoire, les 12 mondes et le Sommet). Simulation des trois enfants :
+  `docs/simulations/rapport_terminal.md`.
+- Reste à décider (rapport final) : des onglets dans l'écran terminal de l'APK ; un `python3` du jeu (le Python qui
+  fait tourner le jeu) pour les étapes Python de la Forge sous Windows ; un `curl` local vers le phare du Port.
 
 ## En continu (chaque jour, peu coûteux)
 
