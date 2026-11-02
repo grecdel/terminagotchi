@@ -9,8 +9,11 @@ Produit :
     monde endormi ou vivant en 960 de large (montrés en entier) ; environ 700 Ko pour les trois ;
   - pc/tg/illustrations.bin : PC, les trois images en 384×216 (assez pour une vraie image dans un terminal qui sait
     les afficher, et réduites à la volée pour les sextants ou les demi-blocs), RVB sur 5 bits par couleur, compressé
-    (zlib), lu par pc/tg/scenes.py sans aucune bibliothèque.
-Le camp endormi n'est PAS une image à part : le jeu le calcule (désaturé, assombri, bleui), comme sur les maquettes.
+    (zlib), lu par pc/tg/scenes.py sans aucune bibliothèque ;
+  - pc/tg/carte_monde.png : PC, la carte du Terminaworld (monde.png) en 960 de large, 256 couleurs, pour l'onglet
+    « monde » de l'espace de travail (pc/tg/espace_scene.py).
+Le monde endormi (dort.png) est une illustration dessinée à part, PAS calculée : si monde.png change, il faut une
+nouvelle dort.png de la même vue. Le camp endormi n'est PAS une image à part : le jeu le calcule (désaturé, assombri, bleui), comme sur les maquettes.
 Format de illustrations.bin : b"TGI1", puis pour chaque image : nom (1 octet de longueur + ASCII), largeur, hauteur
 (2 octets chacun, gros-boutiste), longueur des données (4 octets), données zlib (RVB, ligne par ligne).
 """
@@ -27,6 +30,8 @@ PC = os.path.join(DEPOT, "pc", "tg", "illustrations.bin")
 
 IMAGES = {"monde": ("monde.png", 960), "dort": ("dort.png", 960), "camp": ("camp2.png", 1152)}
 PC_TAILLE = (384, 216)
+CARTE = os.path.join(DEPOT, "pc", "tg", "carte_monde.png")
+CARTE_LARGEUR = 960
 
 
 def main():
@@ -45,6 +50,10 @@ def main():
     with open(PC, "wb") as f:
         f.write(b"".join(blocs))
     print(f"{PC}: {os.path.getsize(PC) // 1024} Ko")
+    im = Image.open(os.path.join(ICI, "monde.png")).convert("RGB")
+    c = im.resize((CARTE_LARGEUR, round(im.height * CARTE_LARGEUR / im.width)), Image.LANCZOS)
+    c.quantize(256, method=Image.MEDIANCUT, dither=Image.NONE).save(CARTE, optimize=True)
+    print(f"{CARTE}: {c.width}×{c.height} {os.path.getsize(CARTE) // 1024} Ko")
 
 
 if __name__ == "__main__":

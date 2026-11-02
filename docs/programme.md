@@ -1758,6 +1758,12 @@ Pour chaque monde : fiches notions (et fiches maths liées) → étapes PC et An
 
 > Même style que l'intro et les créatures : pixel art 16-bit façon SNES, contours sombres, couleurs vives. Scènes
 > en 16:9 ; personnages et objets sur fond uni (magenta, vert ou bleu selon les couleurs du sujet), détourés.
+> **Direction artistique validée le 2 novembre 2026 (« règle C »)** : pixel art net et détaillé, univers numérique
+> (racines à circuits verts, matière qui se défait en pixels, quelques pierres à facettes à contour cyan, un
+> hologramme vert pâle, lointains en gros pixels avec lignes de données, légère pluie de pixels verts, grandes zones
+> calmes) ; scènes riches à petits pixels ; personnages et objets seuls sur fond magenta, pixel art bien marqué ;
+> gardiens = humanoïdes originaux en uniforme (Port : humanoïde à tête de pieuvre bordeaux, gants noirs, casquette
+> d'officier ; Citadelle : humanoïde tortue cuirassée en uniforme de garde). Détail dans `docs/plan_de_bataille.md`.
 > Chaque lot est envoyé au propriétaire en **planche de validation** avant intégration. Statut : ✅ fait · 🟡 à
 > refaire · ⬜ à faire. Les fichiers validés vont dans `donnees/illustrations/`.
 
@@ -1765,11 +1771,18 @@ Pour chaque monde : fiches notions (et fiches maths liées) → étapes PC et An
 
 | # | Illustration | Statut |
 |---|---|---|
-| A1 | Le Terminaworld vivant (la Racine au centre, les 9 biomes autour) — `monde.png` | ✅ |
-| A2 | Le Terminaworld endormi (même vue, gris, petite lumière verte au pied de l'arbre) — `dort.png` | ✅ |
+| A1 | Le Terminaworld vivant (la Racine au centre, les 9 biomes autour, **tous les lieux placés**) — `monde.png` (nouvelle version validée le 2 novembre 2026, 1672×941 ; intro, carte de l'espace PC `carte_monde.png`, appli, artbook) | ✅ |
+| A2 | Le Terminaworld endormi (même vue, gris, petite lumière verte au pied de l'arbre) — `dort.png` : c'est encore l'ANCIENNE vue (dessinée à part, pas calculée), qui ne montre pas les lieux de la nouvelle carte ; à redessiner d'après la nouvelle `monde.png` | 🟡 |
 | A3 | Le camp de base : nid au centre, ordinateur branché aux racines, feu, sac, panneau — `camp2.png` (version endormie calculée par le jeu) | ✅ |
 | A3 bis | L'œuf qui apparaît dans le nid « en téléchargement » (ligne de pixels par ligne de pixels, barre de progression, scintillement vert) — animation calculée par le jeu à partir des 9 œufs | ⬜ |
-| A4 | Le Terminaworld vu en carte du jeu (vue de dessus, chaque monde à sa place, brume sur les lieux non découverts) | ⬜ |
+| A4 | Le Terminaworld vu en carte du jeu (chaque monde à sa place) — c'est la nouvelle `monde.png` (2 novembre) ; la brume sur les lieux non découverts reste à calculer par le jeu | ✅ |
+
+**Placement des lieux sur la carte (validé le 2 novembre 2026, `monde.png`)** : le Carrefour au pied de l'arbre ;
+le camp de base et le nid dans les racines ; la Bibliothèque du Temps dans le tronc ; l'Observatoire en haut de
+l'arbre ; le Port sur la côte de l'eau ; la Forge au flanc du volcan ; la Tour des Ondes dans le ciel ; le Poste de
+Contrôle et l'Atelier dans la cité dorée de la machine ; la Citadelle face au château violet de l'ombre ; la Salle
+des Données dans la glace ; la Guilde dans les arbres du biome plante ; le Sommet sur le plus haut pic de la roche ;
+la Salle des Rouages et la Crypte sous terre (hors de la vue). Chaque scène B reprend ce placement.
 
 #### B. L'entrée de chaque monde (une scène 16:9 par lieu, et sa vignette pour la carte)
 

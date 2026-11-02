@@ -1058,6 +1058,34 @@ jeu n'embarque, ne télécharge et n'emballe AUCUN binaire ni code tiers (BusyBo
   (`sleep 6` puis `ls` : grisé puis lancé ; `sleep 15` puis `pwd` puis Ctrl+C : arrêt immédiat, `pwd` oublié).
   Test JVM : `tests/jvm/Onglets.kt` (ordre, 5 au plus, Ctrl+C sur `sleep 15`, code 130).
 
+## ✅ Validé (2 novembre) — Direction artistique « règle C » et nouvelle carte du monde
+
+**Règle C** (décision du propriétaire, 2 novembre 2026), pour toutes les illustrations à venir (§ 7.15) :
+- **pixel art net et détaillé**, univers **numérique** : racines à circuits verts, matière qui se défait en pixels,
+  quelques pierres à facettes à contour cyan, un hologramme vert pâle, lointains en gros pixels avec lignes de
+  données, légère pluie de pixels verts, **grandes zones calmes** (l'œil se repose) ;
+- **scènes** riches à petits pixels ; **personnages et objets** seuls sur fond **magenta**, pixel art bien marqué ;
+- **gardiens = humanoïdes originaux en uniforme** : le Port, un humanoïde à tête de pieuvre bordeaux, gants noirs,
+  casquette d'officier ; la Citadelle, un humanoïde tortue cuirassée en uniforme de garde (ils remplacent le
+  lion de mer et le blaireau des anciens prompts, à reprendre dans `outils/port` et `outils/citadelle`).
+
+**Nouvelle carte du monde** (`donnees/illustrations/monde.png`, 1672×941, validée le 2 novembre) : même style que
+l'ancienne, avec tous les lieux placés — le Carrefour au pied de l'arbre, le camp et le nid dans les racines, la
+Bibliothèque du Temps dans le tronc, l'Observatoire en haut de l'arbre, le Port sur la côte de l'eau, la Forge au
+flanc du volcan, la Tour des Ondes dans le ciel, le Poste de Contrôle et l'Atelier dans la cité dorée de la
+machine, la Citadelle face au château violet de l'ombre, la Salle des Données dans la glace, la Guilde dans les
+arbres du biome plante, le Sommet sur le plus haut pic de la roche ; la Salle des Rouages et la Crypte sous terre.
+Ce placement fait foi pour les scènes B du § 7.15. Propagée par `donnees/illustrations/generer_intro.py` (intro
+Android `assets/intro/monde.jpg`, PC `illustrations.bin` et désormais aussi `pc/tg/carte_monde.png`, l'onglet
+« monde » de l'espace de travail) ; `docs/img/terminaworld.jpg` refaite ; le site n'utilise pas cette image.
+**Reste** : `dort.png` (le monde endormi de l'intro, écran 2) est dessinée à part et montre encore l'ancienne vue
+(sans les lieux) — à redessiner d'après la nouvelle carte (prompt : `outils/artbook/prompt_dort.md`) ; puis relancer
+`generer_intro.py` et refaire `docs/img/reveil_monde.gif` (README), qui fond l'ancien endormi dans l'ancien vivant.
+
+**Artbook (préparation, 2 novembre)** : générateur `docs/artbook/generer_artbook.py` → `docs/artbook/terminagotchi_artbook.pdf`
+(brouillon) ; les illustrations des mondes se déposent dans `docs/artbook/illustrations/` et entrent toutes seules
+à la prochaine génération (voir la tâche finale plus bas).
+
 ## En continu (chaque jour, peu coûteux)
 
 - Variantes : Abyssaux (en cours, 436 / 682 au 28 octobre), puis Célestes, Constructs, Aberrations ; planche par
