@@ -3047,6 +3047,8 @@
  "ong.ferme": "{nom} ditutup.",
  "ong.max": "Sudah {max} terminal terbuka, itu batasnya. Tutup satu dengan `exit` atau ✕.",
  "ong.occupe": "⏳ Tunggu sebentar: {nom} belum selesai menjalankan perintahnya.",
+ "ong.attente": "menunggu: `{cmd}` (kujalankan begitu perintah sebelumnya selesai; ^C untuk menghentikan semuanya)",
+ "ong.ctrlc": "^C: perintah dihentikan; {n} perintah yang menunggu dibatalkan.",
  "ong.nouveau": "Buka satu terminal lagi",
  "ong.fermer": "Tutup {nom}",
  "ong.aide": "🪟 Terminal: + (atau `terminal`) membuka satu lagi (paling banyak {max}), masing-masing dengan foldernya · `exit` atau ✕ menutup yang ini",

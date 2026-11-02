@@ -1024,6 +1024,10 @@ jeu n'embarque, ne télécharge et n'emballe AUCUN binaire ni code tiers (BusyBo
 - Vérifié sur un téléphone virtuel (test-ecran.yml, Pixel 6, clavier ouvert, 2 novembre) : la ligne de saisie et les
   touches restent visibles avec les onglets (c'est l'écran du terminal qui rétrécit) ; dans le Terminal 2,
   `cd terrain_terminagotchi/nid`, `pwd`, `ls` répondent, `exit` ramène au Terminal 1 resté dans son dossier.
+- Commande en attente (accord du propriétaire, 2 novembre) : une ligne tapée pendant qu'une commande tourne est
+  montrée grisée « ⏳ en attente : `ls` » puis lancée juste après, dans son onglet, jamais collée à la suivante
+  (5 au plus). Ctrl+C (touche ^C de la rangée, ou Ctrl+C d'un clavier branché) arrête la commande en cours (code 130,
+  « ^C ») ET vide l'attente ; sans commande en cours, il efface la ligne tapée.
 
 ## En continu (chaque jour, peu coûteux)
 

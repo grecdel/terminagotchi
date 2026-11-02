@@ -16,6 +16,18 @@ class Shell(private val home: File) {
     var code: Int = 0
     /** le dossier d'avant le dernier `cd` (pour `cd -`, « d'où tu viens ») */
     var precedent: File? = null
+    /** la commande qui tourne (pour Ctrl+C), et si elle a été arrêtée par Ctrl+C */
+    @Volatile private var enCours: Process? = null
+    @Volatile var interrompu = false
+        private set
+
+    /** Ctrl+C : arrête la commande qui tourne (ce qu'elle a lancé est ensuite arrêté par le gardien, Garde.nettoyer). */
+    fun interrompre(): Boolean {
+        val p = enCours ?: return false
+        interrompu = true
+        try { p.destroy() } catch (e: Exception) {}
+        return true
+    }
 
     companion object {
         /** le shell du téléphone (sous la JVM des tests : celui de l'ordinateur) */
@@ -94,7 +106,9 @@ class Shell(private val home: File) {
                 .directory(dossier)
                 .redirectErrorStream(true)
             pb.environment()["HOME"] = home.absolutePath
+            interrompu = false
             val p = pb.start()
+            enCours = p
             p.outputStream.close()
             val sb = StringBuilder()
             val lecteur = Thread {
@@ -114,7 +128,8 @@ class Shell(private val home: File) {
             lecteur.start()
             val fini = p.waitFor(20, TimeUnit.SECONDS)
             if (!fini) p.destroy()
-            code = if (fini) (try { p.exitValue() } catch (e: Exception) { 1 }) else 124
+            enCours = null
+            code = if (interrompu) 130 else if (fini) (try { p.exitValue() } catch (e: Exception) { 1 }) else 124
             // le numéro du sh est la toute première chose écrite
             for (i in 0 until 20) { if (synchronized(sb) { sb.indexOf("\u0001", 1) } > 0) break; Thread.sleep(5) }
             var brut = synchronized(sb) { sb.toString() }
@@ -127,13 +142,15 @@ class Shell(private val home: File) {
             brut = synchronized(sb) { sb.toString() }.let { b -> val f = b.indexOf('\u0001', 1); if (b.startsWith("\u0001") && f > 0) b.substring(f + 1) else b }
             val out = Racine.sortie(home, brut.trimEnd())
             val notes = ArrayList<String>()
-            if (!fini) notes.add(t("shell.arrete"))
+            if (interrompu) notes.add("^C")
+            else if (!fini) notes.add(t("shell.arrete"))
             else if (tues > 0) {
                 notes.add(t("garde.processus", "n" to tues))
                 notes.add(t("grand.ligne", "texte" to t("garde.processus.adulte", "s" to Garde.CPU_S)))
             }
             (if (out.isEmpty()) "" else out + "\n") + notes.joinToString("\n")
         } catch (e: Exception) {
+            enCours = null
             Garde.nettoyer(sh, avant)
             if (e.message?.contains("E2BIG") == true || e.message?.contains("too long") == true) t("shell.trop_long", "n" to ligne.length)
             else run { code = 126; t("shell.erreur", "msg" to e.message) }

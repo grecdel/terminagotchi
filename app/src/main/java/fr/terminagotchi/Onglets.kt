@@ -17,6 +17,22 @@ class Onglet(val numero: Int, val shell: Shell, historique: List<String>) {
     var dernierDossier: File? = null
     var derniersNoms: Set<String> = emptySet()
 
+    /** Une ligne tapée (Entrée comprise) pendant qu'une commande tournait encore : lancée juste après, telle quelle. */
+    class Attente(val ligne: String, val colle: Boolean, val rappel: Boolean)
+
+    /** les lignes mises de côté dans CET onglet, dans l'ordre où elles ont été tapées */
+    val attente: ArrayDeque<Attente> = ArrayDeque()
+
+    /** Met une ligne de côté ; faux s'il y en a déjà [Onglets.MAX_ATTENTE] (on n'en empile pas sans fin). */
+    fun mettreDeCote(ligne: String, colle: Boolean = false, rappel: Boolean = false): Boolean {
+        if (ligne.isBlank() || attente.size >= Onglets.MAX_ATTENTE) return false
+        attente.addLast(Attente(ligne.trim(), colle, rappel))
+        return true
+    }
+
+    /** La prochaine ligne à lancer (la plus ancienne), ou null. */
+    fun prochaineAttente(): Attente? = attente.removeFirstOrNull()
+
     /** « Terminal 1 », « Terminal 2 »… (dans la langue de la partie) */
     fun nom(): String = t("ong.nom", "n" to numero)
 
@@ -43,6 +59,8 @@ class Onglets(private val creerShell: () -> Shell, private val historiquePartie:
         /** assez pour « un terminal qui travaille, un qui regarde » sans perdre un enfant dans les onglets */
         const val MAX = 4
         const val MAX_HISTO = 50
+        /** lignes tapées d'avance pendant qu'une commande tourne (au-delà : « attends un peu ») */
+        const val MAX_ATTENTE = 5
     }
 
     /** dans l'ordre des numéros (Terminal 1, 2, 3…) */
@@ -94,6 +112,7 @@ class Onglets(private val creerShell: () -> Shell, private val historiquePartie:
             o.historique.addAll(historiquePartie().takeLast(MAX_HISTO))
             o.dernierDossier = null
             o.derniersNoms = emptySet()
+            o.attente.clear()
         }
     }
 }

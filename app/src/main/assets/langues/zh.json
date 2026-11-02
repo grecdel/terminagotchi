@@ -3051,6 +3051,8 @@
  "ong.ferme": "{nom} 已关闭。",
  "ong.max": "已经打开了 {max} 个终端，这是最多的了。用 `exit` 或 ✕ 关掉一个吧。",
  "ong.occupe": "⏳ 等一下：{nom} 的命令还没运行完。",
+ "ong.attente": "等待中：`{cmd}`（上一个命令一结束我就运行它；按 ^C 全部停止）",
+ "ong.ctrlc": "^C：命令已停止；{n} 个等待中的命令已取消。",
  "ong.nouveau": "再打开一个终端",
  "ong.fermer": "关闭 {nom}",
  "ong.aide": "🪟 终端：+（或 `terminal`）再打开一个（最多 {max} 个），每个都有自己的文件夹 · `exit` 或 ✕ 关闭当前这个",

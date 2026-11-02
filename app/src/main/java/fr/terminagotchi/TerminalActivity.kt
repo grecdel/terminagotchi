@@ -174,7 +174,10 @@ class TerminalActivity : Activity() {
             }
         }
         saisie.setOnKeyListener { _, code, ev ->
-            if (code == KeyEvent.KEYCODE_ENTER || code == KeyEvent.KEYCODE_NUMPAD_ENTER) {
+            if (code == 31 && ev.isCtrlPressed) {      // Ctrl+C d'un clavier branché (31 : KEYCODE_C)
+                if (ev.action == KeyEvent.ACTION_DOWN) ctrlC()
+                true
+            } else if (code == KeyEvent.KEYCODE_ENTER || code == KeyEvent.KEYCODE_NUMPAD_ENTER) {
                 if (ev.action == KeyEvent.ACTION_UP) valider()
                 true
             } else false
@@ -268,7 +271,7 @@ class TerminalActivity : Activity() {
     private fun creerTouches() {
         val rangee = findViewById<LinearLayout>(R.id.touches)
         val dp = resources.displayMetrics.density
-        for (t in listOf("↑", "↓", "⇥ Tab", "~", "/", "-", ".", "|", ">", ">>", "*", "\"", "'", "$", "&", "_", "=")) {
+        for (t in listOf("↑", "↓", "⇥ Tab", "^C", "~", "/", "-", ".", "|", ">", ">>", "*", "\"", "'", "$", "&", "_", "=")) {
             val b = TextView(this)
             b.text = t
             b.textSize = 15f
@@ -286,6 +289,7 @@ class TerminalActivity : Activity() {
                     "↑" -> { rappeler(-1); return@setOnClickListener }
                     "↓" -> { rappeler(1); return@setOnClickListener }
                     "⇥ Tab" -> { completer(); return@setOnClickListener }
+                    "^C" -> { ctrlC(); return@setOnClickListener }
                 }
                 val debut = saisie.selectionStart.coerceAtLeast(0)
                 for (c in t) {               // un caractère à la fois : ce n'est pas un collage
@@ -560,17 +564,36 @@ class TerminalActivity : Activity() {
         }
     }
 
-    private fun valider() {
-        if (enCours) { android.util.Log.i("TG", "commande ignorée : une autre tourne encore"); return }
-        val ligne = saisie.text.toString().trim()
-        val etaitColle = colle
-        colle = false
-        val etaitRappel = rappel != null && ligne == rappel
-        rappel = null
-        posHisto = -1
+    /**
+     * Entrée. Une commande tourne encore : la ligne tapée est mise de côté (dans CET onglet) et lancée juste après,
+     * jamais collée à la suivante. attente : une ligne mise de côté qu'on lance maintenant (la saisie n'y est pour rien).
+     */
+    private fun valider(attente: Onglet.Attente? = null) {
+        if (enCours) {
+            val l = saisie.text.toString().trim()
+            if (l.isEmpty()) return
+            val o = onglets.actif
+            if (o.mettreDeCote(l, colle, rappel != null && l == rappel)) {
+                remplacerSaisie("")
+                colle = false; rappel = null; posHisto = -1
+                ecrire("⏳ " + t("ong.attente", "cmd" to l), 0xFF9A9AB0.toInt())
+            } else ecrire(t("ong.occupe", "nom" to o.nom()), 0xFF9A9AB0.toInt())
+            android.util.Log.i("TG", "mise de côté : $l")
+            return
+        }
+        val ligne = attente?.ligne ?: saisie.text.toString().trim()
+        val etaitColle = attente?.colle ?: colle
+        val etaitRappel = attente?.rappel ?: (rappel != null && ligne == rappel)
+        // une ligne mise de côté ne touche pas à ce que l'enfant est en train de taper
+        fun vider() { if (attente == null) saisie.setText("") }
+        if (attente == null) {
+            colle = false
+            rappel = null
+            posHisto = -1
+        }
         questionAdulte?.let { q ->                    // « Tout afficher » : la réponse des grands
             questionAdulte = null
-            saisie.setText("")
+            vider()
             ecrire("> $ligne", 0xFF5FD787.toInt())
             if (ligne.trim() == q.second) {
                 Apparence.toutAfficher(jeu, true)
@@ -582,7 +605,7 @@ class TerminalActivity : Activity() {
         }
         if (confirmerDeblocage) {                    // « debloquer tout » : oui / non (dans les 14 langues)
             confirmerDeblocage = false
-            saisie.setText("")
+            vider()
             ecrire("> $ligne", 0xFF5FD787.toInt())
             if (MenuParties.oui(ligne)) {
                 Intro.toutDebloquer(jeu)
@@ -606,7 +629,7 @@ class TerminalActivity : Activity() {
         }
         if (jeu.existe && ligne.isNotEmpty() && Intro.aMontrer(jeu) != null) Intro.lu(jeu)   // taper une commande le referme
         if (menu.ouvert && !enCours) {              // une réponse au menu des parties (rien n'est mangé)
-            saisie.setText("")
+            vider()
             ecrire("> $ligne", 0xFF5FD787.toInt())
             val r = menu.repondre(ligne)
             if (r != null) {
@@ -621,7 +644,7 @@ class TerminalActivity : Activity() {
             while (jeu.historique.size > 50) jeu.historique.removeAt(0)
         }
         if (jeu.existe) onglets.actif.noter(ligne)          // ↑ ↓ : l'historique de CET onglet
-        saisie.setText("")
+        vider()
         if (ligne.isEmpty() || enCours) return
 
         if (!jeu.existe) {
@@ -810,9 +833,36 @@ class TerminalActivity : Activity() {
                 } finally {
                     enCours = false
                     invite.alpha = 1f
+                    handler.post { lancerAttente() }
                 }
             }
         }
+    }
+
+    /**
+     * Ctrl+C (la touche ^C, ou Ctrl+C sur un clavier branché) : arrête la commande qui tourne ET oublie les commandes
+     * en attente de cet onglet ; sans commande en cours, efface la ligne tapée (comme dans un vrai terminal).
+     */
+    private fun ctrlC() {
+        val o = onglets.actif
+        val oubliees = o.attente.size
+        o.attente.clear()
+        val arretee = enCours && shell.interrompre()
+        if (!arretee) {
+            ecrire("${shell.chemin()} $ ${saisie.text}^C", 0xFF5FD787.toInt())
+            remplacerSaisie("")
+        }
+        if (arretee || oubliees > 0) ecrire(t("ong.ctrlc", "n" to oubliees), 0xFF9A9AB0.toInt())
+        colle = false; rappel = null; posHisto = -1
+        saisie.requestFocus()
+    }
+
+    /** La commande d'avant a fini : la prochaine ligne mise de côté (dans l'onglet affiché) est lancée. */
+    private fun lancerAttente() {
+        if (enCours) return
+        val a = onglets.actif.prochaineAttente() ?: return
+        valider(a)
+        if (!enCours) handler.post { lancerAttente() }        // une commande du jeu (immédiate) : la suivante tout de suite
     }
 
     /** L'œuf a son nom (confirmé) : la partie commence. */

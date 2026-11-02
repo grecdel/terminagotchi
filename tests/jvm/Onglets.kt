@@ -129,14 +129,40 @@ fun main(args: Array<String>) {
     tape("ls"); tape("ls")
     verifO(lecon() == ("reveil1" to 2), "ls dans Terminal 2, dans la grande salle : l'étape est validée (${lecon()})")
 
-    println("5. Une autre partie ; les textes")
+    println("5. Les commandes en attente ; Ctrl+C")
+    onglets.choisir(t1)
+    verifO(t1.mettreDeCote("ls") && t1.mettreDeCote("pwd", colle = true) && t2.attente.isEmpty(),
+        "pendant une commande, « ls » puis « pwd » sont mis de côté dans Terminal 1 (pas dans Terminal 2)")
+    val a1 = t1.prochaineAttente()
+    val a2 = t1.prochaineAttente()
+    verifO(a1?.ligne == "ls" && a2?.ligne == "pwd" && a2.colle && t1.prochaineAttente() == null,
+        "elles repartent dans l'ordre où elles ont été tapées, chacune entière (jamais « lspwd »)")
+    repeat(Onglets.MAX_ATTENTE) { t1.mettreDeCote("echo $it") }
+    verifO(!t1.mettreDeCote("echo de trop") && t1.attente.size == Onglets.MAX_ATTENTE, "${Onglets.MAX_ATTENTE} lignes en attente au plus")
+    t1.attente.clear()
+    val sh = t1.shell
+    var sortieSieste = ""
+    val debut = System.currentTimeMillis()
+    val fil = Thread { sortieSieste = sh.executer("sleep 15") }
+    fil.start()
+    Thread.sleep(800)
+    verifO(sh.interrompre(), "Ctrl+C pendant `sleep 15` : la commande est arrêtée")
+    fil.join(10000)
+    val duree = System.currentTimeMillis() - debut
+    verifO(!fil.isAlive && duree < 8000 && sh.code == 130 && "^C" in sortieSieste,
+        "elle s'arrête tout de suite (${duree} ms), code 130, « ^C » affiché")
+    verifO(!sh.interrompre(), "Ctrl+C sans commande en cours : rien à arrêter")
+    verifO(sh.executer("echo encore").trim() == "echo encore".removePrefix("echo ") && sh.code == 0 && !sh.interrompu,
+        "la commande suivante marche normalement")
+
+    println("6. Une autre partie ; les textes")
     onglets.nouvellePartie(jeu.home)
     verifO(onglets.liste.all { it.shell.dossier == jeu.home && it.shell.precedent == null && it.dernierDossier == null },
         "une autre partie : chaque onglet revient au camp de base")
     for (code in listOf("fr", "en", "es", "de", "it", "pt", "zh", "ru", "ja", "hi", "ar", "bn", "id", "ur")) {
         Langue.definir(code)
         val textes = listOf(t("ong.nom", "n" to 2), t("ong.ouvert", "nom" to "T2", "avant" to "T1"), t("ong.ferme", "nom" to "T2"),
-            t("ong.max", "max" to 4), t("ong.occupe", "nom" to "T1"), t("ong.nouveau"), t("ong.fermer", "nom" to "T2"), t("ong.aide", "max" to 4))
+            t("ong.max", "max" to 4), t("ong.occupe", "nom" to "T1"), t("ong.nouveau"), t("ong.fermer", "nom" to "T2"), t("ong.aide", "max" to 4), t("ong.attente", "cmd" to "ls"), t("ong.ctrlc", "n" to 2))
         verifO(textes.none { it.startsWith("ong.") || "{" in it } && "2" in textes[0], "$code : les textes des onglets (${textes[0]})")
     }
     Langue.definir("fr")

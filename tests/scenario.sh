@@ -49,6 +49,15 @@ tape "cd terrain_terminagotchi/nid"; tape "pwd"; tape "ls" 2   # le Terminal 2 p
 capture onglet_2_dossier
 tape "exit" 3              # on ferme l'onglet 2, retour au Terminal 1
 capture onglet_1_retour
+# une commande tapée pendant qu'une autre tourne : mise en attente (grisée), puis lancée juste après
+tape "sleep 6" 0.5; tape "ls" 0.5
+capture attente 0.5
+sleep 8
+capture attente_lancee 1
+# Ctrl+C (clavier branché : Ctrl gauche + C) arrête la commande ET vide l'attente
+tape "sleep 15" 0.5; tape "pwd" 0.5
+adb shell input keycombination 113 31 || true
+capture ctrl_c 2
 tape "arbre"
 capture arbre
 tape "cherche supprimer un dossier"

@@ -3045,6 +3045,8 @@
  "ong.ferme": "{nom} está cerrada.",
  "ong.max": "{max} terminales abiertas, es el máximo. Cierra una con `exit` o ✕.",
  "ong.occupe": "⏳ Espera un poco: {nom} no ha terminado su comando.",
+ "ong.attente": "en espera: `{cmd}` (la lanzo en cuanto termine el comando anterior; ^C para pararlo todo)",
+ "ong.ctrlc": "^C: comando detenido; {n} comando(s) en espera descartado(s).",
  "ong.nouveau": "Abrir una terminal más",
  "ong.fermer": "Cerrar {nom}",
  "ong.aide": "🪟 Terminales: + (o `terminal`) abre una más ({max} como máximo), cada una con su carpeta · `exit` o ✕ cierra esta",

@@ -3050,6 +3050,8 @@
  "ong.ferme": "{nom} is closed.",
  "ong.max": "{max} terminals open, that's the maximum. Close one with `exit` or ✕.",
  "ong.occupe": "⏳ Wait a moment: {nom} hasn't finished its command.",
+ "ong.attente": "waiting: `{cmd}` (I'll run it as soon as the previous command is done; ^C to stop everything)",
+ "ong.ctrlc": "^C: command stopped; {n} waiting command(s) dropped.",
  "ong.nouveau": "Open one more terminal",
  "ong.fermer": "Close {nom}",
  "ong.aide": "🪟 Terminals: + (or `terminal`) opens one more ({max} at most), each with its own folder · `exit` or ✕ closes this one",

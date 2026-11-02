@@ -3050,6 +3050,8 @@
  "ong.ferme": "{nom} est fermé.",
  "ong.max": "{max} terminaux ouverts, c'est le maximum. Ferme-en un avec `exit` ou ✕.",
  "ong.occupe": "⏳ Attends un peu : {nom} n'a pas fini sa commande.",
+ "ong.attente": "en attente : `{cmd}` (je la lance dès que la commande d'avant a fini ; ^C pour tout arrêter)",
+ "ong.ctrlc": "^C : commande arrêtée ; {n} commande(s) en attente oubliée(s).",
  "ong.nouveau": "Ouvrir un terminal de plus",
  "ong.fermer": "Fermer {nom}",
  "ong.aide": "🪟 Terminaux : + (ou `terminal`) en ouvre un de plus ({max} au plus), chacun avec son dossier · `exit` ou ✕ ferme celui-ci",
