@@ -318,7 +318,9 @@ class TerminalActivity : Activity() {
         lp.topMargin = (8 * dp).toInt()
         panneau.addView(defileur, i, lp)
         // l'écran du terminal colle à la rangée des onglets (l'onglet choisi a la même couleur que lui)
-        (cadreSortie.layoutParams as LinearLayout.LayoutParams).topMargin = 0
+        // l'écran du terminal est le seul élément qui RÉTRÉCIT quand la place manque (clavier ouvert, onglets, leçon) :
+        // la rangée de touches et la ligne de saisie restent toujours visibles (le poids ne joue que si ça déborde)
+        (cadreSortie.layoutParams as LinearLayout.LayoutParams).let { it.topMargin = 0; it.weight = 1f }
         majOnglets()
     }
 
@@ -405,7 +407,17 @@ class TerminalActivity : Activity() {
         majOnglets()
         rafraichir()
         defile.post { defile.scrollTo(0, sortie.bottom) }
+        garderSaisie()
+    }
+
+    /** Après un changement d'onglet : la ligne de saisie garde le focus et le clavier reste ouvert. */
+    private fun garderSaisie() {
         saisie.requestFocus()
+        saisie.post {
+            saisie.requestFocus()
+            saisie.setSelection(saisie.text.length)
+            (getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager).showSoftInput(saisie, InputMethodManager.SHOW_IMPLICIT)
+        }
     }
 
     /** « + », `terminal`, `tg terminal` : un terminal de plus (comme une fenêtre de plus sur PC). */
@@ -439,7 +451,7 @@ class TerminalActivity : Activity() {
         if (!etaitActif) rangerOnglet()
         else o.brouillon = ""
         if (!onglets.fermer(o)) return false
-        if (etaitActif) montrerOnglet() else majOnglets()
+        if (etaitActif) montrerOnglet() else { majOnglets(); garderSaisie() }
         ecrire(t("ong.ferme", "nom" to o.nom()), 0xFF9A9AB0.toInt())
         return true
     }
@@ -1040,7 +1052,8 @@ class TerminalActivity : Activity() {
         v.chemin = Racine.HOME              // ce que montre pwd au camp de base (le Terminaworld simulé, Racine.kt)
         // la place de l'intro au-dessus de l'invite (l'illustration rétrécit s'il le faut ; la sortie : 140 dp)
         val fondH = findViewById<View>(R.id.fond).height.takeIf { it > 0 } ?: resources.displayMetrics.heightPixels
-        Intro.hauteurMax = fondH / resources.displayMetrics.density - (if (mode == "ecran") 150f else 300f)
+        val dOnglets = if (::barreOnglets.isInitialized && (barreOnglets.parent as View).visibility == View.VISIBLE) 36f else 0f
+        Intro.hauteurMax = fondH / resources.displayMetrics.density - (if (mode == "ecran") 150f else 300f) - dOnglets
         when (mode) {
             "ecran" -> v.montrerEcran(ecranIntro.coerceIn(1, v.nbEcrans()))
             "oeuf" -> v.montrerOeuf()
@@ -1109,7 +1122,7 @@ class TerminalActivity : Activity() {
         (chemin.parent as View).visibility = View.VISIBLE
         val d = resources.displayMetrics.density
         val cadre = defile.parent as View
-        cadre.layoutParams = (cadre.layoutParams as LinearLayout.LayoutParams).also { it.height = (140 * d).toInt(); it.weight = 0f }
+        cadre.layoutParams = (cadre.layoutParams as LinearLayout.LayoutParams).also { it.height = (140 * d).toInt(); it.weight = 1f }
         panneau.layoutParams = (panneau.layoutParams as android.widget.FrameLayout.LayoutParams).also {
             it.height = android.widget.FrameLayout.LayoutParams.WRAP_CONTENT; val m = (8 * d).toInt(); it.setMargins(m, m, m, m)
         }

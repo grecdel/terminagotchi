@@ -20,10 +20,15 @@ tape() {   # tape une commande lettre par lettre puis Entrée
 }
 adb shell am start -n fr.terminagotchi/.TerminalActivity
 capture debut 5
+# les écrans du début (intro.json) : Entrée jusqu'au dernier (Entrée de trop : rien), puis le nom et « oui »
 tape "" 2
 capture intro_1
+tape "" 2; tape "" 2
 tape "Pixel" 2
 capture bapteme
+tape "oui" 3
+# le jeu en français (le téléphone virtuel est en anglais)
+tape "langue fr" 2
 # l'œuf et sa liste (Intro.kt) : 4 commandes, il éclot ; puis tout est ouvert pour la suite du scénario
 tape "ls" 2
 capture oeuf_fele
@@ -38,7 +43,7 @@ tape "cp nid/repas.txt nid/secours.txt"; tape "mv nid/secours.txt reserve.txt"; 
 capture tronc_fini
 tape "terminal" 3          # un deuxième onglet de terminal
 capture onglet_2_ouvert
-tape "cd nid"; tape "pwd" 2
+tape "cd terrain_terminagotchi/nid"; tape "pwd"; tape "ls" 2   # le Terminal 2 part du camp (~)
 capture onglet_2_dossier
 tape "exit" 3              # on ferme l'onglet 2, retour au Terminal 1
 capture onglet_1_retour
