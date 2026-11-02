@@ -941,6 +941,8 @@ Ce n'est pas un monde de leçons mais une nouvelle vue : le prototype « Monde T
   (`vsh.ln_windows`), rien n'est bloqué ; jamais de lien vers les dossiers de Windows. `shellcheck`, `strace`,
   `systemctl`, `journalctl`, `crontab` restent racontés sous Windows (pas d'effet, comme avant).
 - Site : `effets.js`, `monde_page.js`, `monde_textes.js` modifiés — **non redéployé**.
+- Captures PC (le vrai jeu, `tg espace`, monde en grand) : `/home/claude/outils/effets/derniers/integre/pc_*.png`
+  (outil `/home/claude/outils/effets2/capture_pc.py`). `tout.sh all` vert le 2 novembre.
 
 **▚ Le glitch — codé (31 octobre, décisions du propriétaire).** Un effet de l'INDIVIDU, comme le shiny (drapeau
 `glitch`, indépendant de la variante et du shiny) : l'image se dérègle comme un vieil écran, fabriquée à partir de
