@@ -60,7 +60,7 @@ commande différent. Elle te guide, t'explique, te félicite, et apprend avec to
 
 - **10 familles** : Démons, Élémentaires, Morts-vivants, Bêtes, Sylvestres, Arthropodes, Abyssaux, Célestes,
   Constructs, Aberrations, de 15 espèces chacune.
-- **Plus de 680 variantes** selon l'habitat (volcan, forêt, glacier, ruines, corail…), chacune dessinée dans ses
+- **Plus de 800 variantes** selon l'habitat (volcan, forêt, glacier, ruines, corail…), chacune dessinée dans ses
   5 stades. Les créatures sauvages apparaissent au hasard pendant que tu joues.
 - La **rareté** dépend de chaque individu, et se voit à l'aura autour de sa silhouette.
 
@@ -85,7 +85,7 @@ construire. Les animations montrent ce que font les commandes, elles ne les remp
 elles, les jokers, les droits. Chaque étape est expliquée pour les enfants, pour les grands et « dans un vrai
 terminal », et le jeu vérifie que la commande **a vraiment marché**.
 
-**Puis les mondes avancés**, ouverts selon ce qui t'intéresse (🚧 en construction) :
+**Puis les mondes avancés**, ouverts selon ce qui t'intéresse (✅ jouables sur PC et Android, encore en relecture) :
 
 | Monde | Ce qu'on y apprend |
 |---|---|
@@ -101,6 +101,7 @@ terminal », et le jeu vérifie que la commande **a vraiment marché**.
 | 🎛 Le Poste de Contrôle | administrer un système Linux de A à Z |
 | ⏳ La Bibliothèque du Temps | git : remonter le temps de ses fichiers |
 | 🤖 L'Atelier | Raspberry Pi, robots, électronique embarquée |
+| ⛰ Le Sommet (Expert++) | les scripts solides, les regex avancées, le débogage, la documentation et un CTF (ouvert après trois mondes) |
 | 🔢 Les Ponts des Nombres | les maths dont tu as besoin, au moment où tu en as besoin |
 
 Les exploits dans chaque monde font rencontrer de nouvelles créatures et des variantes rares.
@@ -128,12 +129,15 @@ trésor façon CTF, et une navigation au clavier comme dans le jeu. Les résulta
 
 ---
 
+## Aussi dans le jeu
+
+- 🖥 **L'espace de travail** (`tg espace`) : terminal, carte, créature en direct et « cerveau » de la créature
+  (`tg cerveau` : son code qui s'allume pendant qu'elle vit) dans une seule fenêtre.
+- 🔍 **La vue déployée** (`tg deploie <commande>`) : chaque commande se décompose, chaque morceau s'allume à son tour.
+- 🐾 **Ta créature sur ton bureau** (`tg bureau` sur PC, bulle flottante sur Android).
+
 ## Bientôt
 
-- 🖥 **L'espace de travail** : terminal, carte, créature en direct et « cerveau » de la créature (son code qui
-  s'allume pendant qu'elle vit) dans une seule fenêtre.
-- 🔍 **La vue déployée** : chaque commande se décompose, chaque morceau s'allume à son tour, les tuyaux s'animent.
-- 🐾 **Ta créature sur ton bureau** et dans une petite île en haut de l'écran, avec son menu (PC et Android).
 - 🥚 **L'œuf physique** : un projet open source pour transférer ta créature dans un vrai œuf imprimé en 3D, avec
   un petit écran.
 

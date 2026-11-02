@@ -543,7 +543,9 @@ def feed(state, line, statut=None):
         from . import verif
         proche = verif.collee(brut) or verif.ponctuation(brut) or verif.mot_de_l_oeuf(cmd) or commande_proche(cmd)
         # cdvestibule → cd vestibule, ls-a → ls -a, pwd, → pwd (I9), bonjour → echo bonjour (la liste de l'œuf, I9)
-        msg = (t("core.inconnue.proche", cmd=cmd, proche=proche) if proche else t("core.inconnue", cmd=cmd))
+        # (2 nov., vérification finale) on montre ce que l'enfant a tapé (« ls-R », pas « ls-r »), comme sur Android
+        tape_ = brut if brut.lower() == cmd else cmd
+        msg = (t("core.inconnue.proche", cmd=tape_, proche=proche) if proche else t("core.inconnue", cmd=tape_))
         say(state, msg, 8)
         terminal(state, msg)
         log(state, t("core.inconnue.log", cmd=cmd))
