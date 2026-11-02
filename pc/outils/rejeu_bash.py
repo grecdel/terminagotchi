@@ -528,8 +528,8 @@ def histoire():
             if "lignes" in a:
                 verifier(len(lignes) == a["lignes"], f"{nom} : {len(lignes)} lignes (le jeu dit {a['lignes']}){pq}")
             if "dossiers" in a:
-                P_ = PurePosixPath if isinstance(home_aff, PurePosixPath) else Path
-                trouves = sorted(str(P_(x).parent.relative_to(P_(home_aff) / "terrain_terminagotchi")) for x in lignes)
+                Pc_ = PurePosixPath if isinstance(home_aff, PurePosixPath) else Path
+                trouves = sorted(str(Pc_(x).parent.relative_to(Pc_(home_aff) / "terrain_terminagotchi")) for x in lignes)
                 verifier(trouves == sorted(a["dossiers"]), f"{nom} : dans {trouves}{pq}")
             if "code" in a:
                 verifier(code != 0 if a["code"] == "non0" else code == a["code"], f"{nom} : code {code}{pq}")

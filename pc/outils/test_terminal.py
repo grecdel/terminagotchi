@@ -358,7 +358,7 @@ def git_vecteurs():
         racine = Path(tempfile.mkdtemp(prefix="tg_vsh_git_"))
         tr = racine / "t"
         (tr / "temps").mkdir(parents=True)
-        G.ETAT["afficher"] = lambda p: str(p).replace(str(tr), "{R}")
+        G.ETAT["afficher"] = lambda p: str(p).replace(str(tr), "{R}").replace("\\", "/")
         n_ok = 0
         for x in pas:
             ou = tr / x["ou"]
