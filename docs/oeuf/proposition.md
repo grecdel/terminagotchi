@@ -214,14 +214,12 @@ compatibles avec la GPL ; la liste exacte sera écrite dans le dépôt au moment
 - **Les 7 points proposés sont validés** : prototype A puis œuf B (C plus tard) ; créature déplacée, pas copiée ;
   Wi-Fi éteint ; façades « clic » + trappe batterie vissée ; phrases toutes faites seulement entre œufs ; plans
   partagés (CERN-OHL-S pour le matériel, CC BY-NC-SA pour les décors) ; batterie protégée, montage par un adulte.
-- **Modularité à anticiper dès le départ** : il faudra pouvoir changer plus tard d'**écran** (autre taille ou
-  technologie), de **clavier / boutons** (nombre, disposition) et de **taille de coque** sans tout refaire.
-  Conséquences pour la conception :
-  - coque **paramétrique** (OpenSCAD/FreeCAD) : taille, fenêtre d'écran, emplacements des boutons et de la batterie
-    sont des réglages, pas des formes figées ;
-  - **châssis intérieur** séparé de la coque, avec des emplacements normalisés (support d'écran, plaquette de
-    boutons, logement batterie) qui se vissent ou se clipsent ;
-  - **connecteurs** (pas de soudure directe) entre la carte et l'écran, les boutons, la batterie : on change un
-    module sans dessouder ;
-  - programme de l'œuf organisé en **pilotes interchangeables** (écran, boutons, son, radio) choisis dans un seul
-    fichier de configuration ; l'affichage de la créature s'adapte à la taille de l'écran.
+- **Pas de modularité (écran / clavier / coque interchangeables)** : à la place, **deux formes** distinctes, chacune
+  conçue pour elle-même :
+  - **forme « œuf »**, proche du tamagotchi : petit, dans la paume, petit écran et 3 boutons (la proposition
+    ci-dessus) ;
+  - **forme « cyberdeck »**, plus proche d'un petit ordinateur de poche : plus grand écran et vrai petit clavier,
+    pour taper de vraies commandes. Sa proposition détaillée (taille, écran, clavier, batterie, prix, sécurité)
+    reste à faire et à valider avant toute fabrication.
+  - Les deux partagent le même lien avec le jeu (créature déplacée, Wi-Fi éteint, câble puis Bluetooth) et les
+    mêmes licences.
