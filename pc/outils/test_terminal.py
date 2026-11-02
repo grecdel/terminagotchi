@@ -87,7 +87,7 @@ def bash(cmd, terrain, home, entree=None):
 def virtuel(cmd, terrain, home):
     vfs = Vfs(mode="transparent", home=home, terrain=terrain, jeu=home / ".terminagotchi", zones=[home],
               utilisateur=ENV["USER"])
-    c = CoquilleVirtuelle(cwd=terrain, vfs=vfs)
+    c = CoquilleVirtuelle(cwd=terrain, vfs=vfs, env=ENV)     # (LC_ALL=C, comme le vrai bash à côté)
     c.sh.vars["HOME"] = str(home)
     c.sh.vars["USER"] = ENV["USER"]
     s, code, _d = c.lancer(cmd, delai=40)

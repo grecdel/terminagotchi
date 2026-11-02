@@ -50,7 +50,11 @@ PowerShell ; le jeu ouvre son propre terminal Linux, écrit en Python (`pc/tg/vs
 
 ## 3. Résultat sur la vraie machine Windows
 
-Voir le dernier passage de `windows.yml` (job `histoire-terminal-du-jeu`) cité dans le rapport final.
+Passage du 2 novembre (GitHub Actions, `windows-latest`, run 41372118541) : **toute l'histoire jouée jusqu'au bout**
+(tronc commun, 12 mondes et Sommet) dans le terminal du jeu : 250 sorties conformes à ce que le jeu attend, **0 écart**,
+51 cas sautés (réseau, téléphone, commandes du jeu elles-mêmes, outils racontés), et rien d'écrit hors du terrain.
+Le job `windows` du même passage (`test_windows.py` : 24 réussis ; `test_terminal.py --windows --git` : 25 identiques)
+est vert aussi. Les passages d'avant avaient trouvé les trois problèmes critiques du § 2.
 
 ## 4. Ce qui reste raconté sous Windows (jamais bloquant)
 
