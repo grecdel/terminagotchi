@@ -18,6 +18,9 @@ class Shell(private val home: File) {
     var precedent: File? = null
     /** la commande qui tourne (pour Ctrl+C), et si elle a été arrêtée par Ctrl+C */
     @Volatile private var enCours: Process? = null
+    /** le numéro du sh de la commande qui tourne (lu dès qu'il arrive) et les processus d'avant elle (Garde.nettoyer) */
+    @Volatile private var enCoursSh = -1
+    @Volatile private var enCoursAvant: Set<Int> = emptySet()
     @Volatile var interrompu = false
         private set
 
@@ -26,6 +29,10 @@ class Shell(private val home: File) {
         val p = enCours ?: return false
         interrompu = true
         try { p.destroy() } catch (e: Exception) {}
+        // sur le téléphone, le sh peut survivre au simple destroy : le gardien arrête tout ce que la ligne a lancé (kill -9)
+        val sh = enCoursSh
+        val avant = enCoursAvant
+        if (sh > 0) Thread { try { Garde.nettoyer(sh, avant) } catch (e: Exception) {} }.start()
         return true
     }
 
@@ -107,6 +114,8 @@ class Shell(private val home: File) {
                 .redirectErrorStream(true)
             pb.environment()["HOME"] = home.absolutePath
             interrompu = false
+            enCoursSh = -1
+            enCoursAvant = avant
             val p = pb.start()
             enCours = p
             p.outputStream.close()
@@ -118,7 +127,13 @@ class Shell(private val home: File) {
                         while (true) {
                             val n = r.read(buf)
                             if (n < 0) break
-                            synchronized(sb) { if (sb.length < 20000) sb.append(buf, 0, n) }
+                            synchronized(sb) {
+                                if (sb.length < 20000) sb.append(buf, 0, n)
+                                if (enCoursSh < 0 && sb.startsWith("\u0001")) {
+                                    val f = sb.indexOf("\u0001", 1)
+                                    if (f > 0) enCoursSh = sb.substring(1, f).toIntOrNull() ?: -1
+                                }
+                            }
                         }
                     }
                 } catch (e: Exception) {

@@ -25,10 +25,10 @@ capture debut 12
 # les écrans du début (intro.json) : Entrée jusqu'au dernier (Entrée de trop : rien), puis le nom et « oui »
 tape "" 4
 capture intro_1
-tape "" 4; tape "" 4
-tape "Pixel" 4
+tape "" 6; tape "" 8
+tape "Pixel" 6
 capture bapteme
-tape "oui" 5
+tape "oui" 8
 # le jeu en français (le téléphone virtuel est en anglais)
 tape "langue fr" 2
 # l'œuf et sa liste (Intro.kt) : 4 commandes, il éclot ; puis tout est ouvert pour la suite du scénario
