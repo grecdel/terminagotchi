@@ -2198,7 +2198,7 @@ def apropos(ctx):
 # ---------------------------------------------------------------- les commandes absentes : racontées
 # les vraies commandes de Linux qui n'existent pas dans le terminal du jeu (réseau, matériel, système, compilateurs…)
 RACONTEES = {
-    "ping", "curl", "wget", "ssh", "scp", "sftp", "ssh-keygen", "ssh-copy-id", "nslookup", "host", "dig", "traceroute",
+    "ping", "wget", "ssh", "scp", "sftp", "ssh-keygen", "ssh-copy-id", "nslookup", "host", "dig", "traceroute",
     "tracepath", "mtr", "ip", "ifconfig", "ss", "netstat", "nc", "nmap", "iw", "nmcli", "rfkill", "iwconfig",
     "bluetoothctl", "hcitool", "meshtastic", "getent", "arp", "route",
     "sudo", "su", "doas", "systemctl", "journalctl", "service", "dmesg", "lsblk", "lspci", "lsusb", "lsmod", "lscpu",
@@ -2207,7 +2207,7 @@ RACONTEES = {
     "apt", "apt-get", "dnf", "yum", "pacman", "zypper", "apk", "snap", "flatpak", "dpkg", "rpm", "pkg", "brew",
     "gcc", "g++", "cc", "clang", "make", "cmake", "ldd", "gdb", "strace", "ltrace", "objdump", "nm", "javac", "java",
     "node", "npm", "npx", "cargo", "rustc", "go", "ruby", "perl", "php", "lua",
-    "python", "python3", "pip", "pip3", "shellcheck",
+    "pip", "pip3", "shellcheck",
     "podman", "docker", "virsh", "qemu-img", "qemu-system-x86_64", "vagrant",
     "magick", "convert", "ffmpeg", "sox", "exiftool", "openscad", "gimp", "inkscape",
     "nano", "vim", "vi", "nvim", "emacs", "code", "gedit", "notepad",
@@ -2387,8 +2387,33 @@ def lancer_programme(cmd, cwd, env, ctx, capture=True):
 from . import texte  # noqa: E402,F401
 from . import fichiers  # noqa: E402,F401
 from . import git as _git  # noqa: E402
+from . import python as _python  # noqa: E402,F401  (python3 : le Python du jeu, dans le terrain seulement)
+from . import curl as _curl  # noqa: E402,F401      (curl : seulement le phare du Port, 127.0.0.1:8042)
 
 TOUS["git"] = _git._outil
+
+
+def usage_raconte(texte):
+    """La ligne utilise une commande qui EXISTE dans le terminal du jeu, mais d'une façon qu'il raconte : `python3 -m
+    http.server` (pas de module), `curl` vers une autre adresse que le phare du Port. Renvoie le nom de la commande
+    (le jeu raconte alors l'étape, comme pour une commande absente), sinon None."""
+    from ..verif import _couper
+    for morceau, _sep in _couper(texte or "", ("||", "&&", "|", ";", "&")):
+        mots = _python.mots(morceau.strip())
+        while mots and re.match(r"^[A-Za-z_]\w*=", mots[0]):
+            mots = mots[1:]
+        if mots and mots[0] == "timeout":           # timeout -s INT 2 python3 … : la commande après la durée
+            k = 1
+            while k < len(mots) and mots[k].startswith("-"):
+                k += 2 if mots[k] in ("-s", "-k", "--signal", "--kill-after") else 1
+            mots = mots[k + 1:]
+        if not mots:
+            continue
+        if mots[0] in ("python3", "python") and _python.usage_raconte(mots):
+            return mots[0]
+        if mots[0] == "curl" and _curl.usage_raconte(mots):
+            return "curl"
+    return None
 
 
 # ---------------------------------------------------------------- mktemp, numfmt

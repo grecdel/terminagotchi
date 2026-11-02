@@ -1138,12 +1138,6 @@ def _main():
         from .vsh import terminal
         sys.exit(terminal.lancer(compagnon="--sans-compagnon" not in sys.argv) or 0)
     if mode == "terminal":                     # tg terminal : une fenêtre de plus avec le terminal du jeu
-        if len(args) > 1 and args[1].lower() in ("wsl", "jeu"):
-            if args[1].lower() == "wsl" and not compagnon.wsl_disponible():
-                print(t("vsh.wsl.absent"))
-                return
-            compagnon.choisir_terminal("wsl" if args[1].lower() == "wsl" else "vsh")
-            return
         ok, msg = compagnon.nouvelle_fenetre()
         print(msg)
         return

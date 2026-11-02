@@ -1232,6 +1232,8 @@ def lancer_fichier(ctx):
     if donnees[:4] == b"\x7fELF" or (premiere.startswith("#!") and not SHEBANGS_SHELL.match(premiere)):
         from . import outils
         prog = "programme" if donnees[:4] == b"\x7fELF" else premiere[2:].strip().split("/")[-1].split()[-1]
+        if prog in ("python3", "python"):        # #!/usr/bin/env python3 : le Python du jeu (python.py)
+            return ctx.sh.lancer([prog, nom] + ctx.args[1:], ctx.entree, ctx.sortie, ctx.erreur)
         return outils.raconter(ctx, prog, code=126)
     return executer_script(ctx, donnees.decode("utf-8", "replace"), nom, ctx.args[1:])
 

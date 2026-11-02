@@ -167,8 +167,9 @@ Il faut seulement **Python 3** (déjà installé sur Linux et macOS).
 `python terminagotchi-essai.pyz` (ou double-clique le fichier). Tu ne tapes pas dans PowerShell : le jeu ouvre
 **son propre terminal**, un petit Linux écrit en Python (rien d'autre à installer). Entrée dans la fenêtre du jeu
 l'ouvre, `tg terminal` ou la touche `[t]` en ouvre une fenêtre de plus, et `exit` ramène au jeu. Les leçons y sont
-les mêmes que sous Linux, sur les vrais fichiers de `terrain_terminagotchi` (et nulle part ailleurs). Si WSL est
-déjà installé, le jeu propose aussi de jouer dans son vrai bash (il ne l'installe jamais).
+les mêmes que sous Linux, sur les vrais fichiers de `terrain_terminagotchi` (et nulle part ailleurs). `python3` y
+lance le Python qui fait déjà tourner le jeu (seulement dans le terrain), et `curl` parle au phare du Port (le petit
+serveur du jeu, `http://localhost:8042/`) : pas d'Internet dans ce terminal.
 
 Depuis le code source : `git clone` ce dépôt, puis `python3 pc` dans le dossier.
 

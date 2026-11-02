@@ -25,11 +25,13 @@ aucune donnée d'élève ne quitte l'ordinateur.
   écrit en Python (aucun programme ajouté, rien d'installé). Dans la fenêtre du jeu, Entrée l'ouvre ; `tg terminal`
   ou la touche `[t]` en ouvre une fenêtre de plus. Les leçons et les commandes sont alors **les mêmes que sous Linux**
   (`ls`, `cd`, `chmod`, `./script.sh`, `for i in $(seq 20)`…), sur les vrais fichiers du terrain de jeu. Ce terminal
-  n'écrit que dans `~/terrain_terminagotchi` et `~/.terminagotchi`, n'a pas accès au réseau et ne lance aucun
-  programme de Windows. Les quelques commandes qu'il n'a pas (réseau réel, `sudo`, compilateurs, `gpg`…) sont
-  annoncées clairement (« cette commande n'existe pas dans le terminal du jeu sous Windows ») et l'étape est racontée,
-  comme sur le téléphone : l'élève continue sans être bloqué. Si WSL est déjà installé sur le poste, le jeu propose
-  aussi de jouer dans son vrai bash (il ne l'installe jamais).
+  n'écrit que dans `~/terrain_terminagotchi` et `~/.terminagotchi`, n'a pas accès à Internet et ne lance aucun
+  programme de Windows, sauf le Python qui fait déjà tourner le jeu : `python3` (la Forge) lance pour de vrai les
+  programmes de l'élève rangés dans le terrain, avec une garde qui refuse d'écrire ou de lire ailleurs, de lancer un
+  autre programme ou d'aller sur le réseau ; `curl` (le Port) parle seulement au phare du jeu, sur l'ordinateur
+  lui-même (`http://localhost:8042/`). Les quelques commandes qu'il n'a pas (réseau réel, `sudo`, compilateurs,
+  `gpg`, `pip`, `python3 -m http.server`…) sont annoncées clairement et l'étape est racontée, comme sur le téléphone :
+  l'élève continue sans être bloqué. Le jeu ouvre toujours ce terminal, même si WSL est installé sur le poste.
 - Le jeu n'écrit que dans le dossier de l'élève : `~/terrain_terminagotchi` (le terrain de jeu, le seul endroit où
   l'on crée et supprime des fichiers) et `~/.terminagotchi` (la sauvegarde).
 - Première séance : comptez 5 à 10 minutes pour l'éclosion de l'œuf (les premières commandes la déclenchent).

@@ -320,11 +320,19 @@ def raconte_ok(step, m, precedente=None):
         return False
     if voulu in _racontees() and not outil_present(voulu):
         return True
+    if _usage_raconte(m.texte) == voulu:          # python3 -m http.server, curl ailleurs que vers le phare du Port
+        return True
     if voulu in ("kill", "fg", "jobs", "wait"):
         fond = next((p for p in reversed(precedente or []) if p.get("cmd", "").rstrip().endswith("&")), None)
         avant = premier(fond["cmd"]) if fond else None
-        return bool(avant) and avant in _racontees() and not outil_present(avant)
+        return bool(avant) and (avant in _racontees() and not outil_present(avant) or
+                                _usage_raconte(fond["cmd"]) == avant)
     return False
+
+
+def _usage_raconte(texte):
+    from .vsh.outils import usage_raconte
+    return usage_raconte(texte)
 
 
 def _racontees():

@@ -109,7 +109,6 @@ verifier(plateforme.IS_WIN is False and plateforme.C("ls", "dir") == "ls",
 from tg import vrai  # noqa: E402
 verifier(vrai.cle("pwd") is None or vrai.cle("pwd")[0] != "vrai.win", "plus d'indice « Dans PowerShell »")
 appels = []
-compagnon.wsl_disponible = lambda: False
 vrai_lancer = None
 from tg.vsh import terminal as TV  # noqa: E402
 vrai_lancer = TV.lancer

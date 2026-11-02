@@ -67,7 +67,7 @@ Le document propose :
 
 | | PC (`pc/tg/`) | Android (`app/…/fr/terminagotchi/`) | Site (`site/src/terminal.js`) |
 |---|---|---|---|
-| Où l'enfant tape | Dans **son vrai terminal** (bash, zsh, fish) ; sous Windows, dans **le terminal du jeu** (`pc/tg/vsh/`, un petit Linux virtuel écrit en Python, décision du 2 novembre ; WSL proposé s'il est déjà là). La créature vit dans une **autre fenêtre** (`tg`), ou dans l'invite après `tg installer`, ou dans `tg mini` (créature + vraie ligne de commande dans la même fenêtre). | Dans le **terminal intégré** de l'appli (`TerminalActivity`), sous la créature. | Barre « visiteur@terminagotchi:~$ » en bas de chaque page (fermée par défaut). |
+| Où l'enfant tape | Dans **son vrai terminal** (bash, zsh, fish) ; sous Windows, dans **le terminal du jeu** (`pc/tg/vsh/`, un petit Linux virtuel écrit en Python, décision du 2 novembre ; toujours lui, même si WSL est installé ; `python3` = le Python du jeu, dans le terrain ; `curl` = le phare du Port seulement). La créature vit dans une **autre fenêtre** (`tg`), ou dans l'invite après `tg installer`, ou dans `tg mini` (créature + vraie ligne de commande dans la même fenêtre). | Dans le **terminal intégré** de l'appli (`TerminalActivity`), sous la créature. | Barre « visiteur@terminagotchi:~$ » en bas de chaque page (fermée par défaut). |
 | Exécution | Le vrai shell de l'utilisateur. | `Shell.kt` : **un `/system/bin/sh -c` neuf par commande**, `cd` géré par l'appli, entrée standard fermée, coupure à **20 s**, `~/.tgrc` relu avant chaque commande. Avant le shell : commandes intégrées (`Commandes.kt` : `carte`, `ouvre`, `lampe`, `entrainement`, `donjon`, `ctf`, `edite`, `doom`…) et `clear`, `exit`, `aide`, `langue`, `parties`. | Rien n'est exécuté : arbre virtuel du site (pages = fichiers). |
 | Ce que le jeu sait | Seulement **la ligne tapée** (lecture de `~/.bash_history`, `~/.zsh_history`, fish ; sous Windows `~/.terminagotchi/historique_terminal` du terminal du jeu, qui donne aussi le code de retour et le dossier courant) et l'état des fichiers ; **ni la sortie ni le code de retour**. Le dossier courant n'est connu qu'avec le crochet d'invite (`compagnon.py`, `PROMPT_COMMAND`/`precmd`). | La ligne, **la sortie** (donc les erreurs, traduites par `expliquer()`), le dossier courant. | La ligne et l'arbre virtuel. |
 | Historique ↑ / Tab | Ceux du vrai shell (sous Windows : ceux du terminal du jeu). | Faits par l'appli : ↑ ↓ (50 entrées, **une commande rappelée par ↑ ne donne pas d'XP**), Tab (commandes du lexique + fichiers). | ↑ ↓, Tab, « tu voulais dire… », `history`. |
@@ -348,7 +348,7 @@ Conséquences sur le programme :
   entrées de l'appli) où `~` correspond au dossier de l'appli. Les commandes de lecture (`ls`, `cd`, `cat`, `pwd`,
   `find`, `tree`) passent par cette vue ; le reste part au vrai `sh` dans `~`. Le site fait déjà la même chose
   (le site vu comme un dossier `~`) : réutiliser l'idée. Effort : **L**.
-- **Windows** : `C:\` = la Racine, `C:\Users` = le village ; le parcours complet est conseillé sous WSL.
+- **Windows** : `C:\` = la Racine, `C:\Users` = le village ; le parcours complet se joue dans le terminal du jeu (un Linux virtuel, décision du 2 novembre).
 
 **État (octobre 2026, branche `nouveau-bestiaire`)** — fait sur PC et Android :
 

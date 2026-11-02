@@ -1,6 +1,6 @@
 """Le terminal du jeu (Windows) comparé au VRAI bash + coreutils (décision du 2 novembre).
 
-    python3 pc/outils/test_terminal.py [--fiches] [--syntaxe] [--windows] [-v]     (tout par défaut)
+    python3 pc/outils/test_terminal.py [--fiches] [--syntaxe] [--windows] [--git] [--python-curl] [--garde] [-v]   (tout par défaut)
 
 1. Les fiches : chaque cas « vrai_terminal » de donnees/programme.json est préparé par le vrai bash dans deux dossiers
    jetables identiques, puis la commande est lancée dans le vrai bash (bash -c) et dans le terminal du jeu ; la sortie
@@ -11,6 +11,9 @@
    fonctions, alias, read, export, ${x%…}, here-doc…) comparées au vrai bash de la même façon.
 3. Le Linux virtuel de Windows (simulé ici) : / montre bin, etc, home, tmp… ; ~ ne montre que le terrain ; on ne peut
    pas écrire hors du terrain ; chmod est gardé et respecté ; les vrais fichiers sont bien modifiés.
+4. Le petit git contre le vrai git. 5. python3 (le Python du jeu) contre le vrai python3, et curl contre le vrai curl
+   sur le même phare du Port (127.0.0.1:8042 ; la date et les vitesses mises de côté). 6. Les garde-fous : python3
+   n'écrit, ne lit, ne lance rien hors du terrain et ne va pas sur le réseau ; curl ne parle qu'au phare.
 Utilisé par tout.sh (pc) et en CI (.github/workflows/rejeu.yml, sur une vraie machine Linux).
 """
 import json
@@ -114,6 +117,9 @@ PROPRES = {"ps", "uptime", "df", "free", "date", "hostname", "uname", "nproc", "
 
 
 def racontee(ligne):
+    u = outils.usage_raconte(ligne)
+    if u:                       # python3 -m http.server, curl vers une autre adresse que le phare : racontés ici
+        return u + " (usage raconté : -m, ou une autre adresse que le phare)"
     for c in commandes_de(ligne):
         if c in outils.RACONTEES and outils.TOUS.get(c) is None:
             return c
@@ -124,7 +130,7 @@ def racontee(ligne):
     return None
 
 
-def comparer(nom, cmd, prepare=None, entree=None, trie=False):
+def comparer(nom, cmd, prepare=None, entree=None, trie=False, norm=None):
     absente = racontee(cmd) or (racontee(prepare) if prepare and racontee(prepare) and
                                 not racontee(prepare).endswith("machine)") else None)
     if absente is None and re.search(r"/proc/|\$PATH\b", cmd):
@@ -147,6 +153,8 @@ def comparer(nom, cmd, prepare=None, entree=None, trie=False):
         sa, ca = bash(cmd, ta, ha)
         sb, cb = virtuel(cmd, tb, hb)
         na, nb = normaliser(sa, ta, ha), normaliser(sb, tb, hb)
+        if norm:
+            na, nb = norm(na), norm(nb)
         if trie:
             na, nb = "\n".join(sorted(na.split("\n"))), "\n".join(sorted(nb.split("\n")))
         egal = na == nb and ca == cb
@@ -407,8 +415,168 @@ def git_vecteurs():
             rejouer(g["pas"], f"grimoire {g.get('graine')}")
 
 
+PYTHON = [
+    ('python3 -c "print(2 + 3 * 4)"', None),
+    ("python3 s.py", "printf 'import sys\\nnom = sys.argv[1]\\nprint(nom)\\n' > s.py"),
+    ("python3 s.py Pixel 3; echo $?", "printf 'import sys\\nnom = sys.argv[1]\\nprint(nom)\\n' > s.py"),
+    ("python3 f.py; echo $?", "printf 'print(\\n' > f.py"),
+    ("echo Léa | python3 -c \"print('Salut', input('Nom ? '))\"", None),
+    ("python3 nope.py; echo $?", None),
+    ("python3 -c 'import sys; print(sys.argv)' a 'b c'", None),
+    ("printf 'print(1)\\n' | python3; python3 - x < s.py", "printf 'import sys\\nprint(sys.argv)\\n' > s.py"),
+    ("python3 -c 'import sys; sys.exit(3)'; echo $?", None),
+    ("python3 -c 'print(\"é\" * 3)' > o; cat o; wc -c o", None),
+    ("python3 -c '1/0' 2>/dev/null; echo $?", None),
+    ("python3 -c 'print(1); 1/0'", None),
+    ("python3 -c 'print(1); 1/0' 2>&1 | tail -n 1", None),
+    ("chmod +x p.py; ./p.py un", "printf '#!/usr/bin/env python3\\nimport sys\\nprint(\"shebang\", sys.argv[1:])\\n' > p.py"),
+    ("./p.py", "printf '#!/usr/bin/env python3\\nprint(1)\\n' > p.py"),
+    ("python3 -c \"import os; print(sorted(os.listdir('.')))\"", "touch b a; mkdir d"),
+    ("python3 -c 'open(\"x.txt\", \"w\").write(\"a\\\\nb\\\\n\")'; cat x.txt; wc -l x.txt", None),
+    ("python3 --version | cut -c1-9; python3 -V | wc -l", None),
+    ("python3 -c \"raise SystemExit('fin')\"; echo $?", None),
+    ("python3 -c \"import sys; print('err', file=sys.stderr); print('out')\" 2>/dev/null", None),
+    ("python3 u.py", "printf 'def f():\\n    return 7\\n' > m.py; printf 'import m\\nprint(m.f())\\n' > u.py"),
+    ("python3 -c 'for i in range(3):\n    print(\"Tour\", i)'", None),
+    ("python3 -c 'try:\n    1/0\nexcept Exception:\n    raise ValueError(\"x\")'", None),
+    ("python3 serpent.py Pixel 3 | head -n 2; python3 serpent.py 2>&1 | tail -n 1",
+     "printf 'import sys\\nnom = sys.argv[1]\\nfois = int(sys.argv[2])\\nfor i in range(fois):\\n    print(f\"{i+1}. Bonjour {nom}\")\\n' > serpent.py"),
+    ("seq 3 | python3 -c 'import sys; print(sum(int(l) for l in sys.stdin))'", None),
+    ("python3 -c 'import json; print(json.dumps({\"a\": [1, 2]}))' | python3 -c 'import json,sys; print(json.load(sys.stdin)[\"a\"][1])'", None),
+]
+
+CURL = [
+    "curl -I http://localhost:{P}/",
+    "curl -s http://localhost:{P}/eau | head -n 3",
+    "curl -o colis.html http://localhost:{P}/feu; cat colis.html",
+    "curl -I http://localhost:{P}/volcan_perdu",
+    "curl -s http://localhost:{P}/courrier",
+    "curl -sv -o /dev/null http://127.0.0.1:{P}/feu",
+    "curl -v localhost:{P}/",
+    "curl -i localhost:{P}/feu",
+    "curl -s -X POST -d a=1 localhost:{P}/ | head -n 3",
+    "curl -i -X POST -d a=1 localhost:{P}/ | head -n 1",
+    "curl -sf localhost:{P}/nope; echo $?",
+    "curl -f localhost:{P}/nope",
+    "curl -s -o /dev/null -w '%{{http_code}}\\n' localhost:{P}/nope",
+    "curl -s -w '%{{content_type}} %{{size_download}}\\n' -o /dev/null localhost:{P}/feu",
+    "curl -sO localhost:{P}/feu; cat feu",
+    "curl -o sub/x localhost:{P}/feu; echo $?",
+    "curl -O localhost:{P}/; echo $?",
+    "curl; echo $?; curl --bogus; echo $?; curl -s; echo $?",
+    "curl -H 'Accept: text/plain' -A moi -sv localhost:{P}/feu 2>&1 | grep '^>'",
+    "curl -sI localhost:{P}/ | head -n 1; curl -s localhost:{P}/feu | wc -l",
+    "curl localhost:{P}/feu localhost:{P}/eau | wc -l",
+    "curl -sS -L localhost:{P}/eau | head -n 1",
+]
+
+
+def _norm_curl(s):
+    s = re.sub(r"^\* Uses proxy env variable.*\n", "", s, flags=re.M)
+    s = re.sub(r"^(< )?Date: [^\r\n]*", r"\1Date: @", s, flags=re.M)
+    s = re.sub(r"^> User-Agent: [^\r\n]*", "> User-Agent: @", s, flags=re.M)
+    # la barre de progression : les vitesses dépendent de l'instant (le reste doit être pareil)
+    s = re.sub(r"(\r[ \d]{3} .{5}  [ \d]{3} .{5}  [ \d]{3} .{5})  .{5}  .{5} (\S+ \S+ \S+) .{5}", r"\1 @ \2 @", s)
+    return s
+
+
+def _phare():
+    """Le phare du Port sur 127.0.0.1 (celui du jeu s'il est déjà allumé, sinon un phare pour ce test)."""
+    from tg import port
+    p = port._ports()[0]
+    if port.phare_allume(p):
+        return p, None
+    from http.server import ThreadingHTTPServer
+    import threading
+    etat = {"vu": 0}
+    srv = ThreadingHTTPServer(("127.0.0.1", p), port._gestionnaire(etat))
+    etat["arreter"] = srv.shutdown
+    srv.daemon_threads = True
+    threading.Thread(target=srv.serve_forever, kwargs={"poll_interval": 0.2}, daemon=True).start()
+    return p, srv
+
+
+def python_curl():
+    print("5. python3 (le Python du jeu) et curl (le phare du Port) : comparés au vrai python3 et au vrai curl")
+    if shutil.which("python3"):
+        for k, (cmd, prep) in enumerate(PYTHON):
+            comparer(f"python#{k}", cmd, prep)
+    else:
+        racontes.setdefault("python3 (absent de cet ordinateur)", []).append("python")
+    if shutil.which("curl"):
+        p, srv = _phare()
+        try:
+            for k, cmd in enumerate(CURL):
+                comparer(f"curl#{k}", cmd.format(P=p), norm=_norm_curl)
+        finally:
+            if srv:
+                srv.shutdown()
+                srv.server_close()
+    else:
+        racontes.setdefault("curl (absent de cet ordinateur)", []).append("curl")
+    garde()
+
+
+def garde():
+    """Ce que le terminal du jeu refuse (le vrai python3 et le vrai curl, eux, le feraient) : rien ne sort du terrain."""
+    print("6. Les garde-fous de python3 et curl dans le terminal du jeu (rien hors du terrain, pas d'Internet)")
+    home = Path(tempfile.mkdtemp(prefix="tg_vsh_garde_"))
+    terrain = home / "terrain_terminagotchi"
+    (terrain / "forge").mkdir(parents=True)
+    (home / ".terminagotchi").mkdir()
+    (home / "Documents").mkdir()
+    (home / "Documents" / "prive.txt").write_text("secret")
+    for mode in (("windows",) if os.name == "nt" else ("transparent", "windows")):
+        vfs = Vfs(mode=mode, home=home, terrain=terrain, jeu=home / ".terminagotchi", utilisateur="lea")
+        c = CoquilleVirtuelle(cwd=terrain / "forge" if mode == "transparent" else None, vfs=vfs, env=ENV)
+        if mode == "windows":
+            c.lancer("cd ~/terrain_terminagotchi/forge")
+        pr = home / "Documents" / "prive.txt"
+        hors = home / "hors.txt"
+        cas = [
+            (f"python3 -c 'open({json.dumps(str(hors))}, \"w\").write(\"x\")'", "PermissionError", 1),
+            (f"python3 -c 'print(open({json.dumps(str(pr))}).read())'", "PermissionError", 1),
+            (f"python3 -c 'import os; print(os.listdir({json.dumps(str(home))}))'", "PermissionError", 1),
+            ("python3 -c 'import os; os.chdir(\"../..\")'", "PermissionError", 1),
+            ("python3 -c 'import subprocess; subprocess.run([\"ls\"])'", "PermissionError", 1),
+            ("python3 -c 'import os; os.system(\"ls\")'", "PermissionError", 1),
+            ("python3 -c 'import urllib.request as u; u.urlopen(\"http://example.com\", timeout=2)'", "PermissionError", 1),
+            ("python3 -c 'import socket; s = socket.socket(); s.bind((\"0.0.0.0\", 8000))'", "PermissionError", 1),
+            ("python3 -m http.server 8000", "terminal du jeu", 1),
+            ("python3 -m pip install x", "terminal du jeu", 1),
+            (f"python3 {str(pr) if mode == 'transparent' else '~/Documents/prive.txt'}", "python3", 2),
+            ("cd ~; python3 -c 'print(1)'", "terrain", 1),
+            ("curl -I https://example.com", "Internet", 6),
+            ("curl http://localhost:8000", "phare", 7),
+            ("curl --cacert sceau_du_phare.pem https://localhost:8443", "phare", 7),
+            ("curl file:///etc/passwd", "Internet", 6),
+            ("curl http://127.42.0.2:8042/", "phare", 7),
+        ]
+        for cmd, attendu, code_att in cas:
+            s, code, _d = c.lancer(cmd)
+            verifier(attendu in s and code == code_att and not hors.exists(),
+                     f"{mode} : `{cmd[:70]}` refusé ({code}, {s.strip().splitlines()[-1][:110] if s.strip() else ''!r})")
+            if cmd.startswith("cd ~"):
+                c.lancer("cd ~/terrain_terminagotchi/forge" if mode == "windows" else f"cd {terrain / 'forge'}")
+        s, code, _d = c.lancer("python3 -c 'open(\"dans.txt\", \"w\").write(\"ok\\n\")'; cat dans.txt")
+        verifier(s == "ok\n" and (terrain / "forge" / "dans.txt").read_bytes() == b"ok\n",
+                 f"{mode} : python3 écrit dans le terrain, fins de ligne Linux ({s!r})")
+        if mode == "windows":
+            s, code, _d = c.lancer("printf 'print(1/0)\\n' > z.py; python3 z.py")
+            verifier('File "/home/lea/terrain_terminagotchi/forge/z.py", line 1' in s and "print(1/0)" in s,
+                     f"windows : le Traceback montre le chemin du terminal du jeu ({s.splitlines()[1:2]})")
+            s, code, _d = c.lancer("printf 'import sys\\nprint(open(sys.argv[1]).read())\\n' > lis.py; "
+                                   "python3 lis.py ~/terrain_terminagotchi/forge/dans.txt")
+            verifier(s == "ok\n\n", f"windows : un chemin du terminal donné au programme est le vrai fichier ({s!r})")
+        c.fermer()
+    apres = sorted(os.listdir(home))
+    verifier(apres == [".terminagotchi", "Documents", "terrain_terminagotchi"] and not hors.exists(),
+             f"rien d'écrit hors du terrain et de ~/.terminagotchi ({apres})")
+    shutil.rmtree(home, ignore_errors=True)
+
+
 def main():
-    tout = not any(a in sys.argv for a in ("--fiches", "--syntaxe", "--windows", "--git"))
+    tout = not any(a in sys.argv for a in ("--fiches", "--syntaxe", "--windows", "--git", "--python-curl", "--garde"))
     if tout or "--git" in sys.argv:
         git_vecteurs()
     if tout or "--fiches" in sys.argv:
@@ -417,6 +585,10 @@ def main():
         syntaxe()
     if tout or "--windows" in sys.argv:
         windows()
+    if tout or "--python-curl" in sys.argv:
+        python_curl()
+    elif "--garde" in sys.argv:                 # (la vraie machine Windows : pas de vrai bash pour comparer)
+        garde()
     print(f"\nterminal du jeu : {ok} identiques au vrai bash, {ko} différences, "
           f"{sum(len(v) for v in racontes.values())} cas racontés ({', '.join(sorted(racontes))})")
     if ecarts:

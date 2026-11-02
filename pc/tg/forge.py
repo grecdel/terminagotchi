@@ -920,10 +920,10 @@ def lignes_tours(state, arg):
 
 
 def lignes_serpent():
-    import shutil
     if not (dossier() / "serpent.py").exists():
         _ecrire("serpent.py", serpent_py())
-    la = shutil.which("python3") or shutil.which("python")
+    from .plateforme import outil_present        # (Windows : le python3 du terminal du jeu, celui qui fait tourner le jeu)
+    la = outil_present("python3") or outil_present("python")
     noter("serpent", ("present" if la else "raconte") + " (ok)")
     out = [f" {fg(78)}{BOLD}🐍 " + t("fo.serpent.titre") + RESET, ""] + _bloc("fo.serpent.texte")
     out += ["", "  " + t("fo.serpent.present" if la else "fo.serpent.absent")]
@@ -970,7 +970,10 @@ def lignes_site(state):
     if p != p0:
         out += ["", f"  {fg(215)}⚠ " + t("fo.site.port_pris", port=p0, autre=p) + RESET]
     import shutil
-    if not shutil.which("python3"):
+    from .plateforme import terminal_virtuel
+    if terminal_virtuel():                     # le terminal du jeu : la lanterne (python3 -m http.server) est racontée
+        out += ["", "  " + t("fo.site.terminal_du_jeu", port=p0)]
+    elif not shutil.which("python3"):
         out += ["", "  " + t("fo.site.sans_python", port=p0)]
     return out
 

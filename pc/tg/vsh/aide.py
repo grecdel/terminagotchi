@@ -48,6 +48,12 @@ RESUMES = {
     "git": ("the stupid content tracker", "git COMMAND [ARGS]", "init, status, add, commit, log, diff"),
     "bc": ("An arbitrary precision calculator language", "bc [-l]", ""),
     "sh": ("command interpreter (shell)", "sh [FILE [ARGS]]", ""),
+    "python3": ("an interpreted, interactive, object-oriented programming language",
+                "python3 [-c command | file | -] [arg] ...",
+                "(dans le terminal du jeu : le Python du jeu, seulement dans ton terrain ; pas de -m ni de pip)"),
+    "curl": ("transfer a URL", "curl [options] <url>",
+             "-I  head   -i  include   -s  silent   -v  verbose   -o FILE   -X METHOD   -d DATA   "
+             "(dans le terminal du jeu : seulement le phare du Port, http://localhost:8042/)"),
     "alias": ("define or display aliases", "alias [NAME[='VALUE']]", ""),
     "man": ("an interface to the system reference manuals", "man PAGE", ""),
     "xxd": ("make a hex dump or do the reverse", "xxd [-b] [-p] [-r] [FILE]", ""),

@@ -29,11 +29,11 @@ jobs:
         run: |
           $env:PYTHONUTF8 = "1"
           python pc/outils/test_windows.py
-      - name: Le Linux virtuel du terminal du jeu sur les vrais fichiers de Windows, et son petit git contre le vrai git
+      - name: Le Linux virtuel du terminal du jeu sur les vrais fichiers de Windows, son petit git contre le vrai git, les garde-fous de python3 et curl
         shell: pwsh
         run: |
           $env:PYTHONUTF8 = "1"
-          python pc/outils/test_terminal.py --windows --git
+          python pc/outils/test_terminal.py --windows --git --garde
 
   # Décision du 2 novembre : sous Windows, le jeu ouvre son propre terminal Linux (pc/tg/vsh/, un petit shell POSIX
   # écrit en Python, sans aucun programme extérieur). Ici, sur une VRAIE machine Windows, l'histoire entière est jouée

@@ -450,93 +450,9 @@ def proposer(demander=input, lancer=True):
     return True
 
 
-def wsl_disponible():
-    """Windows : WSL est-il DÉJÀ installé avec une distribution ? (le jeu ne l'installe jamais)."""
-    if not SYS_WIN or not shutil.which("wsl"):
-        return False
-    try:
-        r = subprocess.run(["wsl", "--list", "--quiet"], capture_output=True, timeout=15)
-    except (OSError, subprocess.SubprocessError):
-        return False
-    brut = r.stdout
-    texte = brut.decode("utf-16-le", "ignore") if b"\0" in brut else brut.decode("utf-8", "ignore")
-    return r.returncode == 0 and any(l.strip() for l in texte.replace("\0", "").splitlines())
-
-
-def _choix_terminal():
-    """Windows : "vsh" (le terminal du jeu, par défaut) ou "wsl" (le vrai bash de WSL, si l'enfant l'a choisi)."""
-    try:
-        st = core.load() or {}
-    except Exception:                                # noqa: BLE001
-        st = {}
-    return st.get("config", {}).get("terminal", "vsh")
-
-
-def proposer_wsl(demander=input):
-    """Windows, une seule fois : si WSL est déjà là, le jeu propose de l'utiliser (Entrée = non : le terminal du jeu).
-    `tg terminal wsl` / `tg terminal jeu` changent ce choix plus tard."""
-    try:
-        st = core.load() or {}
-    except Exception:                                # noqa: BLE001
-        return
-    if "terminal" in st.get("config", {}) or not sys.stdin.isatty() or not wsl_disponible():
-        return
-    r = demander(f"\n   {fg(117)}🐧 " + t("vsh.wsl.propose") + f"{RESET} ").strip()
-    from .accueil import oui
-    choisir_terminal("wsl" if r and oui(r) else "vsh")
-
-
-def choisir_terminal(choix):
-    core.modifier(lambda s_: s_.setdefault("config", {}).__setitem__("terminal", choix))
-    print("   " + t("vsh.wsl." + choix))
-
-
-def _rc_wsl():
-    """Le petit fichier de réglages de bash dans WSL, pour cette session seulement (rien n'est changé dans WSL) :
-    HOME = le dossier de Windows (~/terrain_terminagotchi est le même terrain), l'historique dans ~/.bash_history
-    (le jeu le lit), le compagnon après chaque commande (le Python de Windows, par l'interopérabilité de WSL)."""
-    exe, app = commande()
-
-    def q(x):
-        return "'" + str(x).replace("'", "'\\''") + "'"
-    jeu = (("carte", "carte"), ("quetes", "quetes"), ("explique", "explique"), ("entrainement", "entrainement"),
-           ("exercice", "entrainement"), ("badges", "badges"), ("guide", "guide"), ("types", "types"),
-           ("equipe", "equipe"), ("aide", "aide"), ("espace", "espace"), ("cerveau", "cerveau"), ("port", "port"),
-           ("citadelle", "citadelle"), ("crypte", "crypte"), ("machines", "machines"), ("ondes", "ondes"),
-           ("mesh-envoie", "ondes mesh-envoie"), ("mesh-coupe", "ondes mesh-coupe"), ("mesh-route", "ondes mesh-route"),
-           ("guilde", "guilde"), ("observatoire", "observatoire"), ("assistant", "assistant"), ("agent", "agent"),
-           ("devine-type", "devine-type"), ("devine-mot", "devine-mot"), ("donnees", "donnees"), ("forge", "forge"),
-           ("atelier", "atelier"), ("sommet", "sommet"), ("temps", "temps"), ("controle", "controle"))
-    return ("[ -f ~/.bashrc ] && . ~/.bashrc\n"
-            f"export HOME=\"$(wslpath -u {q(Path.home())})\"\nexport HISTFILE=\"$HOME/.bash_history\"\ncd \"$HOME\"\n"
-            f"__tg_py=\"$(wslpath -u {q(exe)})\"\n"
-            "export TG_DANS_LE_JEU=1\nexport WSLENV=\"TG_ICI:TG_DANS_LE_JEU${WSLENV:+:$WSLENV}\"\n"
-            f'__tg_prompt() {{ local s=$?; history -a; TG_ICI="$(wslpath -w "$PWD")" "$__tg_py" {q(app)} prompt --statut=$s; }}\n'
-            'PROMPT_COMMAND="__tg_prompt"\n'
-            f"tg() {{ \"$__tg_py\" {q(app)} \"$@\"; }}\n"
-            + "".join(f"{n}() {{ tg {c} \"$@\"; }}\n" for n, c in jeu)
-            + "alias deploie='history -a 2>/dev/null; tg deploie --historique #'\n" + _ps2())
-
-
-def _vers_wsl(p):
-    p = str(p)
-    if len(p) > 2 and p[1] == ":":
-        return "/mnt/" + p[0].lower() + p[2:].replace("\\", "/")
-    return p.replace("\\", "/")
-
-
-def commande_wsl():
-    f = core.SAVE_DIR / "terminal_wsl.rc"
-    f.parent.mkdir(parents=True, exist_ok=True)
-    f.write_text(_rc_wsl(), encoding="utf-8", newline="\n")
-    return ["wsl", "--cd", str(Path.home()), "-e", "bash", "--rcfile", _vers_wsl(f), "-i"]
-
-
 def commande_terminal_du_jeu():
-    """La commande qui ouvre le terminal du jeu : Windows → le terminal du jeu (tg sh) ou WSL ; ailleurs, le shell."""
+    """La commande qui ouvre le terminal du jeu : Windows → toujours le terminal du jeu (tg sh) ; ailleurs, le shell."""
     if SYS_WIN:
-        if _choix_terminal() == "wsl" and wsl_disponible():
-            return commande_wsl()
         exe, app = commande()
         return [exe, app, "sh"]
     return [os.environ.get("SHELL") or shutil.which("bash") or "sh", "-i"]
@@ -544,7 +460,7 @@ def commande_terminal_du_jeu():
 
 def nouvelle_fenetre():
     """`tg terminal` (la touche [t] de la fenêtre du jeu, `terminal` dans l'espace) : une fenêtre de plus avec le MÊME
-    terminal du jeu (Windows : le terminal du jeu ou WSL ; Linux, macOS : le shell avec le compagnon). Toutes écrivent
+    terminal du jeu (Windows : le terminal du jeu ; Linux, macOS : le shell avec le compagnon). Toutes écrivent
     dans un historique que le jeu lit : la créature mange les commandes de chacune. Renvoie (ok, message)."""
     from . import fenetre
     if OSK == "android":
@@ -567,15 +483,11 @@ def nouvelle_fenetre():
 
 def ouvrir_terminal_du_jeu():
     """Le terminal dans la fenêtre du jeu, le même partout : bash, zsh… (avec le compagnon de ~/.bashrc) ; sous
-    Windows, le terminal du jeu (vsh/ : un Linux virtuel écrit en Python, décision du 2 novembre), ou le vrai bash de
-    WSL si l'enfant l'a choisi (jamais installé par le jeu). En sortant (exit), on revient au jeu."""
+    Windows, toujours le terminal du jeu (vsh/ : un Linux virtuel écrit en Python, décisions du 2 novembre ; aucun
+    autre terminal n'est cherché ni proposé). En sortant (exit), on revient au jeu."""
     env = dict(os.environ, TG_DANS_LE_JEU="1")
     try:
         if SYS_WIN:
-            proposer_wsl()
-            if _choix_terminal() == "wsl" and wsl_disponible():
-                subprocess.call(commande_wsl(), env=env)
-                return True
             from .vsh import terminal
             terminal.lancer()
             return True

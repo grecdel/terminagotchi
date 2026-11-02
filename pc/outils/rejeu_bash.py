@@ -434,8 +434,9 @@ def histoire():
             c = "echo Léa | sh question.sh"
         if c == "sh mon_jeu/devinette.sh":          # (le robot joue à la place de l'enfant)
             c = "seq 1 10 | sh mon_jeu/devinette.sh"
-        if c == "fg" and les["id"] == "fo6":         # fg puis Ctrl+C : ici, sans terminal, kill %1
-            c = "kill %1"
+        if c == "fg" and les["id"] == "fo6" and not (VIRTUEL and _usage_raconte(FO_.SERVEUR)):
+            c = "kill %1"                            # fg puis Ctrl+C : ici, sans terminal, kill %1
+            # (le terminal du jeu raconte la lanterne, python3 -m http.server : l'enfant tape fg, raconté aussi)
         ga = AT_._graine(st)                         # l'Atelier : l'enfant lit la grille, le capteur, la table, le réflexe
         if c == "atelier ou ?":
             c = "atelier ou {x} {y}".format(**AT_.a_(st)["robot"])
@@ -500,10 +501,13 @@ def histoire():
                 from tg.vsh.outils import RACONTEES
                 from tg.verif import premier as _premier
                 absente = next((w for w in (_premier(x) for x in re.split(r"\||&&|;", c)) if w in RACONTEES), None)
+                if not absente:          # python3 -m http.server, curl vers une autre adresse que le phare du Port
+                    from tg.vsh.outils import usage_raconte
+                    absente = usage_raconte(c)
                 if not absente and "/proc/$$" in c and shell.vfs.mode == "transparent":
                     absente = "/proc/$$ (le shell est ici un programme Python)"
                 if absente:
-                    print(f"  · {cle} `{c}` raconté ({absente} n'existe pas dans le terminal du jeu)")
+                    print(f"  · {cle} `{c}` raconté ({absente} : pas dans le terminal du jeu)")
                     sautes.add(cle)
                     saute += 1
                     continue
@@ -619,7 +623,9 @@ def histoire():
                 stp = H.lecon_def(lid)["steps"][int(i)]
             except (KeyError, IndexError, ValueError):
                 return False
-            return bool(stp.get("outil") and not H._outil(stp["outil"])) or _premier(stp.get("cmd", "")) in RACONTEES
+            from tg.vsh.outils import usage_raconte
+            return bool(stp.get("outil") and not H._outil(stp["outil"])) or _premier(stp.get("cmd", "")) in RACONTEES \
+                or bool(usage_raconte(stp.get("cmd", "")))
         caches = {k for k in set(attendus) - vus - absents if cachee(k)}
         for k in sorted(caches):
             print(f"  · {k} raconté (outil absent du terminal du jeu, étape cachée)")
@@ -632,6 +638,11 @@ def histoire():
     manquent = sorted(set(attendus) - vus - absents)
     verifier(not manquent, f"toutes les étapes décrites ont été rejouées {manquent}")
     shell.fermer()
+
+
+def _usage_raconte(c):
+    from tg.vsh.outils import usage_raconte
+    return usage_raconte(c)
 
 
 def _present(outil):
