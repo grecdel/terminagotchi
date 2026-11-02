@@ -1108,8 +1108,20 @@ Rapport : `docs/verification_finale.md`. `tout.sh all`, `verifier_programme`, re
 jeu Linux 268 / 0, Windows simulé 270 / 0), JVM, site, 14 langues : vert ; trois enfants au bout sur PC Linux,
 terminal du jeu (Windows simulé) et appli Android simulée ; 1 684 liens du site sans erreur ; CI verte et téléphone
 virtuel (test 72) vérifié ; APK `essai-95`. Corrigé : message « n'est pas une commande » (casse de ce qui est tapé),
-README, `.pyc` retiré. À décider : barre d'XP figée à 159/160 le premier jour, domaine annoncé mais pas branché,
+README, `.pyc` retiré. À décider : barre d'XP figée à 159/160 le premier jour (✅ décidé et codé le 2 novembre :
+« 🌱 XP de côté », ci-dessous), domaine annoncé mais pas branché,
 portugais mélangé (Portugal / Brésil). Pas de fusion dans `main`, site non redéployé.
+
+**🌱 XP de côté — codé (2 novembre, décision du propriétaire : « oui à l'affichage »).** Quand l'XP est mise de côté
+parce que la créature doit encore attendre des jours bien nourrie pour grandir (barre bloquée, ex. 159/160), une
+indication courte s'affiche à côté de la barre : « 🌱 XP de côté · grandit dans N jours » (« demain » pour 1 jour,
+« aujourd'hui » quand le jour en cours peut encore compter). N vient des règles existantes de la satiété (jours
+soignés manquants ; le jour en cours compte s'il n'est pas encore validé) : rien d'autre ne change. PC : écran de `tg`
+(à côté de la barre, ou juste dessous si le terminal est étroit), mini-terminal, espace de travail (au-dessus de la
+barre, et à côté du niveau en mode texte) ; Android : sous la barre d'XP, en vert, et dans `etat`. Le site n'affiche
+pas de barre d'XP : rien à y changer. 14 langues (`sat.attente.*`). Même calcul en Python et en Kotlin (vecteurs
+« attente » et « attente_partie » de `donnees/satiete/vecteurs.json`, `test_satiete.py` § 10, `tests/jvm/Satiete.kt`).
+Maquette et captures : `/home/claude/outils/xp/`.
 
 ## Ce qui attend une décision ou une action du propriétaire
 

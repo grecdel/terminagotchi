@@ -90,7 +90,8 @@ comme prévu.
   côté, jamais perdue). Mais l'écran principal ne le dit pas : seule une bulle « presque prête à grandir » (une fois
   par heure) et l'écran des envies l'expliquent. Un enfant qui joue toute l'histoire le premier jour voit sa barre
   figée. **Proposition :** afficher à côté de la barre « 🌱 +N XP de côté · grandit dans N jours » (PC et Android,
-  14 langues).
+  14 langues). **✅ Décidé le 2 novembre (oui à l'affichage) et codé :** « 🌱 XP de côté · grandit dans N jours »
+  (« demain », « aujourd'hui ») sur PC (`tg`, mini-terminal, espace de travail) et Android ; voir le plan de bataille.
 - **Le site et le README annoncent `https://terminagotchi.com`**, mais le nom de domaine n'est pas encore branché
   (plan de bataille, « ce qui attend le propriétaire »). **Proposition :** brancher le domaine avant d'annoncer la
   mise en ligne, ou mettre l'adresse actuelle du site dans le README en attendant.
@@ -148,7 +149,7 @@ normal. L'intro montre encore l'ancienne vue du monde endormi (`dort.png`, à re
 dans `main` quand le propriétaire le décide. Avant d'annoncer publiquement, il est conseillé :
 
 1. de tester soi-même l'APK `essai-95` sur un vrai téléphone (surtout l'arabe et l'ourdou) ;
-2. de décider pour la barre d'XP figée le premier jour (§ 5) ;
+2. ~~de décider pour la barre d'XP figée le premier jour (§ 5)~~ : décidé et codé le 2 novembre ;
 3. de brancher le nom de domaine, ou de corriger l'adresse du README (§ 5) ;
 4. de régler le secret `SECRET_GRAINES` du site s'il ne l'est pas encore (anti-triche) ;
 5. de lancer la mise en ligne du site (workflow « Mettre le site en ligne ») seulement après la fusion — il n'a pas
