@@ -1102,6 +1102,15 @@ ouvrir » d'après les 9 œufs, boutons, batterie ; usages et fonction des bouto
 terminagotchi ; option LoRa pour que les œufs se parlent en maillage (§ 7.11).
 Proposition à valider (1er novembre) : `docs/oeuf/proposition.md` (variantes, pièces, sécurité, licences, questions).
 
+## ✅ Vérification finale avant la mise en ligne (2 novembre, soir)
+
+Rapport : `docs/verification_finale.md`. `tout.sh all`, `verifier_programme`, rejeu (vrai bash sur la CI, terminal du
+jeu Linux 268 / 0, Windows simulé 270 / 0), JVM, site, 14 langues : vert ; trois enfants au bout sur PC Linux,
+terminal du jeu (Windows simulé) et appli Android simulée ; 1 684 liens du site sans erreur ; CI verte et téléphone
+virtuel (test 72) vérifié ; APK `essai-95`. Corrigé : message « n'est pas une commande » (casse de ce qui est tapé),
+README, `.pyc` retiré. À décider : barre d'XP figée à 159/160 le premier jour, domaine annoncé mais pas branché,
+portugais mélangé (Portugal / Brésil). Pas de fusion dans `main`, site non redéployé.
+
 ## Ce qui attend une décision ou une action du propriétaire
 
 - Tester l'APK d'essai de la phase 1 et donner ses retours.
