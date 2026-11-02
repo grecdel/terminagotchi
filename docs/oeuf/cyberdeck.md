@@ -247,3 +247,12 @@ général GPL, compatible).
 
 - `cyberdeck.md` — ce document.
 - `croquis_cyberdeck.py` → `croquis_cyberdeck.svg` / `.png` (matplotlib : `python3 croquis_cyberdeck.py`).
+
+## Décisions du propriétaire (2 novembre 2026)
+
+- **1. Vrai Linux** : oui.
+- **2. Variantes visées : A « Micro » et C « Grand confort »** (B n'est plus la cible). À préciser : A garde-t-elle le
+  terminal imité (microcontrôleur, pas cher, plusieurs jours d'autonomie), ou devient-elle un petit Linux économique ?
+- **3. Forme à clapet** (l'écran se replie sur le clavier), et non plus d'un seul bloc : croquis et tailles à refaire.
+- **4. Sa propre partie, créatures déplacées** : explication détaillée demandée avant validation.
+- **5. Batterie presque vide** : sauvegarde automatique puis arrêt propre, oui.
