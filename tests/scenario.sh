@@ -36,6 +36,12 @@ tape "echo pomme > nid/repas.txt"; tape "cat nid/repas.txt"; tape "grep pomme ni
 tape "ls -l nid"; tape "chmod 444 nid/repas.txt"; tape "echo poire >> nid/repas.txt"
 tape "cp nid/repas.txt nid/secours.txt"; tape "mv nid/secours.txt reserve.txt"; tape "rm reserve.txt" 3
 capture tronc_fini
+tape "terminal" 3          # un deuxième onglet de terminal
+capture onglet_2_ouvert
+tape "cd nid"; tape "pwd" 2
+capture onglet_2_dossier
+tape "exit" 3              # on ferme l'onglet 2, retour au Terminal 1
+capture onglet_1_retour
 tape "arbre"
 capture arbre
 tape "cherche supprimer un dossier"
