@@ -48,11 +48,21 @@ capture debut 12
 # les écrans du début (intro.json) : Entrée jusqu'au dernier (Entrée de trop : rien), puis le nom et « oui »
 tape "" 4
 capture intro_1
-tape "" 6; tape "" 8
-tape "Pixel" 6
-capture bapteme
-tape "oui" 8
-attendre_pret 40
+# Entrée de trop sur le dernier écran : rien. On en tape assez pour être sûr d'y être, puis le nom, et l'on vérifie
+# à l'écran (le titre) que la créature s'appelle bien Pixel ; sinon on recommence (le téléphone virtuel perd parfois
+# une Entrée pendant le changement d'écran).
+for i in 1 2 3 4 5; do tape "" 3; done
+for essai in 1 2 3; do
+  tape "Pixel" 6
+  [ "$essai" = 1 ] && capture bapteme
+  tape "oui" 8
+  attendre_pret 40
+  adb shell uiautomator dump /sdcard/tg_ui.xml >/dev/null 2>&1
+  adb exec-out cat /sdcard/tg_ui.xml 2>/dev/null | grep -q 'resource-id="fr.terminagotchi:id/titre"[^>]*' && \
+    adb exec-out cat /sdcard/tg_ui.xml | grep -o 'text="Pixel[^"]*" resource-id="fr.terminagotchi:id/titre"' | grep -q Pixel && break
+  echo "nom pas encore pris (essai $essai) : on recommence"
+  for i in 1 2 3; do tape "" 3; done
+done
 # le jeu en français (le téléphone virtuel est en anglais)
 tape "langue fr" 2
 # l'œuf et sa liste (Intro.kt) : 4 commandes, il éclot ; puis tout est ouvert pour la suite du scénario
