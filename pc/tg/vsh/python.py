@@ -216,6 +216,8 @@ if _genre == "fichier":
     if _cfg["montre"] != _cfg["reel"]:        # le Traceback montre le chemin du terminal du jeu, avec ses lignes
         _t = _src.decode("utf-8", "replace")
         linecache.cache[_cfg["montre"]] = (len(_t), None, _t.splitlines(True), _cfg["montre"])
+        import traceback as _tb                # (l'affichage par linecache : le vrai fichier a un autre chemin)
+        sys.excepthook = lambda t, e, tb: _tb.print_exception(t, e, tb)
     del _f
     _lancer(_src, _cfg["montre"], _g)
 elif _genre == "code":

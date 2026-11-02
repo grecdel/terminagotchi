@@ -473,6 +473,8 @@ CURL = [
 
 def _norm_curl(s):
     s = re.sub(r"^\* Uses proxy env variable.*\n", "", s, flags=re.M)
+    # (IPv6 : selon la machine, le vrai curl essaie d'abord [::1] ; le phare n'écoute que sur 127.0.0.1)
+    s = re.sub(r"\*   Trying \[::1\]:\d+\.\.\.\n(\* connect to ::1 port \d+ from ::1 port \d+ failed: [^\n]*\n)?", "", s)
     s = re.sub(r"^(< )?Date: [^\r\n]*", r"\1Date: @", s, flags=re.M)
     s = re.sub(r"^> User-Agent: [^\r\n]*", "> User-Agent: @", s, flags=re.M)
     # la barre de progression : les vitesses dépendent de l'instant (le reste doit être pareil)
@@ -564,7 +566,7 @@ def garde():
         if mode == "windows":
             s, code, _d = c.lancer("printf 'print(1/0)\\n' > z.py; python3 z.py")
             verifier('File "/home/lea/terrain_terminagotchi/forge/z.py", line 1' in s and "print(1/0)" in s,
-                     f"windows : le Traceback montre le chemin du terminal du jeu ({s.splitlines()[1:2]})")
+                     f"windows : le Traceback montre le chemin du terminal du jeu et la ligne ({s.splitlines()[1:3]})")
             s, code, _d = c.lancer("printf 'import sys\\nprint(open(sys.argv[1]).read())\\n' > lis.py; "
                                    "python3 lis.py ~/terrain_terminagotchi/forge/dans.txt")
             verifier(s == "ok\n\n", f"windows : un chemin du terminal donné au programme est le vrai fichier ({s!r})")
