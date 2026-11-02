@@ -1010,6 +1010,9 @@ jeu n'embarque, ne télécharge et n'emballe AUCUN binaire ni code tiers (BusyBo
 - Tests : `tests/jvm/Onglets.kt` (ouvrir, fermer, maximum, numéros ; cd dans l'un ne change pas l'autre ; `cd -`,
   code, historique par onglet ; commandes des deux onglets mangées ; « ls dans la grande salle » validé seulement dans
   l'onglet qui y est).
+- Vérifié sur un téléphone virtuel (test-ecran.yml, Pixel 6, clavier ouvert, 2 novembre) : la ligne de saisie et les
+  touches restent visibles avec les onglets (c'est l'écran du terminal qui rétrécit) ; dans le Terminal 2,
+  `cd terrain_terminagotchi/nid`, `pwd`, `ls` répondent, `exit` ramène au Terminal 1 resté dans son dossier.
 
 ## En continu (chaque jour, peu coûteux)
 
