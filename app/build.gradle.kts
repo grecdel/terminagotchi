@@ -1,3 +1,5 @@
+import java.util.Properties
+
 plugins {
     id("com.android.application")
     id("org.jetbrains.kotlin.android")
@@ -12,7 +14,7 @@ val codeVersion = (System.currentTimeMillis() / 60_000L - 29_000_000L).toInt()
 // Version FIXE lue dans app/version.properties (la même à chaque construction : build reproductible), aucune
 // signature (F-Droid signe avec sa propre clé), rien qui dépende de l'heure ou de la machine.
 val fdroid = (findProperty("publication") as String?) == "fdroid"
-val versionFixe = java.util.Properties().apply {
+val versionFixe = Properties().apply {
     val f = file("version.properties")
     if (f.isFile) f.inputStream().use { load(it) }
 }

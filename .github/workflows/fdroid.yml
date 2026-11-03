@@ -28,6 +28,11 @@ jobs:
           cd "$RUNNER_TEMP/fdroiddata"
           printf 'repo_url: https://example.invalid/repo\n' > config.yml
           chmod 600 config.yml
+          # les catégories permises : la vraie liste de fdroiddata (sinon, celles de notre fiche)
+          mkdir -p config
+          curl -fsSL https://gitlab.com/fdroid/fdroiddata/-/raw/master/config/categories.yml -o config/categories.yml \
+            || printf 'Games:\n  name: Games\nScience & Education:\n  name: Science & Education\n' > config/categories.yml
+          echo "catégories permises :"; grep -E '^[^ #]' config/categories.yml | tr '\n' ' '; echo
           fdroid lint fr.terminagotchi
           fdroid rewritemeta fr.terminagotchi
           git diff --no-index "$GITHUB_WORKSPACE/fdroid/fr.terminagotchi.yml" metadata/fr.terminagotchi.yml || echo "(rewritemeta range la fiche autrement : voir ci-dessus)"

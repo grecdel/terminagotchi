@@ -2,7 +2,7 @@
 # fichier metadata/fr.terminagotchi.yml. Mode d'emploi pour le propriétaire : docs/fdroid.md.
 # Textes, icône et captures de la fiche : fastlane/metadata/android/ (lus directement par F-Droid dans ce dépôt).
 Categories:
-  - Education
+  - Science & Education
   - Games
 License: GPL-3.0-or-later
 AuthorName: Terminagotchi
