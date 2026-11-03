@@ -89,16 +89,19 @@ onglets_vus() {
 import re, sys
 x = sys.stdin.read()
 t = re.findall(r"text=\"([^\"]*)\"", x)
-print("onglets:", sorted(set(v for v in t if "Terminal " in v and len(v) < 20)))'
+print("onglets:", sorted(set(v for v in t if re.search(r"Terminal\W*\d", v) and len(v) < 24)))'
+  adb shell dumpsys input 2>/dev/null | grep -m1 -i "SurfaceOrientation" | tr -s ' ' || true
 }
 onglets_vus > captures/rotation_resultat.txt
 adb shell settings put system accelerometer_rotation 0
 adb shell settings put system user_rotation 1
+adb shell cmd window user-rotation lock 1 2>/dev/null || adb shell wm user-rotation lock 1 2>/dev/null || true
 capture rotation_paysage 5
 onglets_vus >> captures/rotation_resultat.txt
 tape "pwd" 2
 capture rotation_paysage_pwd
 adb shell settings put system user_rotation 0
+adb shell cmd window user-rotation lock 0 2>/dev/null || adb shell wm user-rotation lock 0 2>/dev/null || true
 capture rotation_portrait 5
 onglets_vus >> captures/rotation_resultat.txt
 tape "pwd" 2
