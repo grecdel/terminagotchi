@@ -1,0 +1,21 @@
+--------- beginning of main
+11-03 04:36:20.005  3707  3707 I TG      : commande : mkdir nid
+11-03 04:41:50.691  3707  3707 I TG      : commande : echo pomme > nid/repas.txt
+11-03 04:47:15.454  3707  3707 I TG      : commande : cat nid/repas.txt
+11-03 04:52:42.826  3707  3707 I TG      : commande : grep pomme nid/repas.txt
+11-03 04:58:06.933  3707  3707 I TG      : commande : ls -l nid
+11-03 05:03:37.259  3707  3707 I TG      : commande : chmod 444 nid/repas.txt
+11-03 05:09:04.056  3707  3707 I TG      : commande : echo poire >> nid/repas.txt
+11-03 05:14:31.575  3707  3707 I TG      : commande : cp nid/repas.txt nid/secours.txt
+11-03 05:20:00.526  3707  3707 I TG      : commande : mv nid/secours.txt reserve.txt
+11-03 05:25:29.107  3707  3707 I TG      : commande : rm reserve.txt
+11-03 05:36:31.449  3707  3707 I TG      : commande : cd terrain_terminagotchi/nid
+11-03 05:41:53.678  3707  3707 I TG      : commande : pwd
+11-03 05:47:20.626  3707  3707 I TG      : commande : ls
+11-03 05:53:23.790  3707  3707 I TG      : commande : pwd
+11-03 05:59:11.895  3707  3707 I TG      : commande : pwd
+11-03 06:10:24.223  3707  3707 I TG      : commande : sleep 6
+11-03 06:15:48.178  3707  3707 I TG      : commande : ls
+11-03 06:21:25.602  3707  3707 I TG      : commande : sleep 15
+11-03 06:26:47.577  3707  3707 I TG      : commande : pwd
+11-03 06:37:50.799  3707  3707 I TG      : commande : cd nid/
