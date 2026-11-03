@@ -1205,6 +1205,20 @@ par ctypes, sinon winsound ; macOS afplay ; Android AudioTrack (focus audio, sil
 arrière-plan). Les commandes tapées dans le shell (invite) jouent par un petit processus à part (`tg son _jouer`).
 CI : `test_sons.py` dans rejeu (Linux) et windows.yml. `tout.sh all` vert (PC, langues, site, 40 suites JVM dont Sons).
 
+**🎒 Apprendre en jouant — codé (3 novembre, PC et Android, maquettes validées) : idées 21, 23, 24, 27, 29, 30, 41,
+42, 43, 44, 45, 46, 49, 50.** `pc/tg/apprendre.py` et `Apprendre.kt` / `ApprendreDessin.kt`, données
+`apprendre.json` (copie PC = copie Android), vecteurs communs `donnees/apprendre/vecteurs.json`, textes
+`apr.*` dans les 14 langues (`donnees/apprendre/outils/langues/`). Bac à sable (`tg bac-a-sable`, rien ne compte),
+tableau des rares (`tg collection rares`), maîtrise ●●◉ (titre « Main sûre »), révisions espacées (`tg souvenirs`,
+jamais « oublié »), commande du jour et calendrier de tampons (`tg jour`, aucun « de suite »), énigme de la semaine
+(`tg enigme`), erreurs en mini-énigmes (`tg passe`), carnet illustré (`tg carnet`, 20 images 16 × 16 dessinées en
+code), 4 mini-jeux (`tg jeux`) et course optionnelle (`tg course`, `tg course eclairs non`), limite de temps douce
+(`tg parent temps 45` + « oui je suis un adulte » : elle dort jusqu'à 7 h, la faim ne baisse pas), sentier des
+marmottes (`tg sommet sentier`, exploit `sommet.sentier` → variante `mousselin:montagne`, monde « sentier » dans
+programme.json), examen-aventure et diplôme PNG (+ SVG sur PC ; sur le téléphone « Enregistrer l'image » et
+« Imprimer », ligne vide pour le prénom, rien d'enregistré). Tests : `pc/outils/test_apprendre.py`,
+`tests/jvm/Apprendre.kt`.
+
 ## Ce qui attend une décision ou une action du propriétaire
 
 - Tester l'APK d'essai de la phase 1 et donner ses retours.
