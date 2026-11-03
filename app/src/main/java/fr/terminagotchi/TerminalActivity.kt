@@ -88,6 +88,30 @@ class TerminalActivity : Activity() {
     private var questionAdulte: Pair<String, String>? = null
     private var ambiance = System.currentTimeMillis() + AMBIANCE
 
+    // ------------------------------------------------------------ accueil et aide (AideDouce.kt, idées du 3 novembre)
+    /** idée 1 : 1 = « Qui est avec toi ? », 2 = les conseils pour l'adulte, 0 = rien (avant les écrans de l'histoire) */
+    private var ecranParent = 0
+    private var choixParent: String? = null
+    /** idée 6 : la carte « Pas de panique » (à la place de l'écran du terminal) */
+    private var perduVue: IntroVue? = null
+    private lateinit var perduBtn: TextView
+    /** idée 4 : la bulle « Tape pwd ici, puis Entrée » et la flèche qui clignote dans la ligne de saisie */
+    private lateinit var flecheBulle: TextView
+    private lateinit var flecheVue: TextView
+    /** idée 66 : la fin grisée, dessinée juste derrière la ligne de saisie */
+    private lateinit var fantomeVue: TextView
+    private var fantome = ""
+    /** idée 5 : les touches de la rangée (rangée 1, ou la 2e après ⋯) ; idée 25 : le bouton 💡 Indice */
+    private val touchesVues = mutableListOf<TextView>()
+    private var deuxiemeRangee = false
+    private lateinit var indiceBtn: TextView
+    /** idée 79 : le menu du jeu en plein écran */
+    private var menuVue: IntroVue? = null
+    /** idée 69 : un clavier est branché (la rangée s'efface, les boutons se choisissent au clavier) */
+    private var clavierBranche = false
+    /** idée 2 : la cinématique du premier ls est en cours */
+    private var lsAnim = false
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_terminal)
@@ -149,9 +173,11 @@ class TerminalActivity : Activity() {
         lexiqueVue = findViewById(R.id.lexique_vue)
         lexiqueTexte = findViewById(R.id.lexique_texte)
         lexiqueBtn.setOnClickListener { basculerLexique() }
+        clavierBranche = clavierPhysique()
         textesFixes()
         creerTouches()
         creerBarreOnglets()
+        creerAideDouce()
         chemin = findViewById(R.id.chemin)
         contenu = findViewById(R.id.contenu)
         majObservatoire(null)
@@ -183,8 +209,36 @@ class TerminalActivity : Activity() {
             }
         }
         saisie.setOnKeyListener { _, code, ev ->
+            if (!clavierBranche && code in 29..54 && ev.action == KeyEvent.ACTION_DOWN && vraiClavier(ev)) {   // une lettre d'un vrai clavier
+                clavierBranche = true
+                ecrire("⌨ " + t("ad.k.efface"), 0xFF9A9AB0.toInt())
+                rafraichir()
+            }
             if (code == 31 && ev.isCtrlPressed) {      // Ctrl+C d'un clavier branché (31 : KEYCODE_C)
                 if (ev.action == KeyEvent.ACTION_DOWN) ctrlC()
+                true
+            } else if (code == KeyEvent.KEYCODE_TAB) {  // idée 69 : Tab change de bouton (écrans dessinés), sinon complète
+                if (ev.action == KeyEvent.ACTION_DOWN) {
+                    val v = menuVue ?: perduVue ?: introVue?.takeIf { it.nbBoutons() > 0 && saisie.text.isEmpty() }
+                    if (v != null && toutAuClavier()) v.focusSuivant(if (ev.isShiftPressed) -1 else 1)
+                    else if (!accepterFantome()) completer()
+                }
+                true
+            } else if (code == KeyEvent.KEYCODE_ESCAPE) {   // idée 69 : Échap passe ou ferme
+                if (ev.action == KeyEvent.ACTION_DOWN) when {
+                    perduVue != null -> fermerPerdu()
+                    menuVue != null -> actionMenu("1")
+                    lexiqueVue.visibility == View.VISIBLE -> basculerLexique()
+                    !jeu.existe && ecranParent > 0 -> actionIntro(if (ecranParent == 1) "seul" else "parti")
+                    !jeu.existe && ecranIntro > 0 -> actionIntro("passer")
+                    jeu.existe && Intro.aMontrer(jeu) != null -> actionIntro("ok")
+                }
+                true
+            } else if ((code == KeyEvent.KEYCODE_DPAD_UP || code == KeyEvent.KEYCODE_DPAD_DOWN) && menuVue != null) {
+                if (ev.action == KeyEvent.ACTION_DOWN) menuVue?.focusSuivant(if (code == KeyEvent.KEYCODE_DPAD_UP) -1 else 1)
+                true
+            } else if (code == KeyEvent.KEYCODE_DPAD_RIGHT && fantome.isNotEmpty()) {   // idée 66 : → accepte la fin grisée
+                if (ev.action == KeyEvent.ACTION_DOWN) accepterFantome()
                 true
             } else if (code == KeyEvent.KEYCODE_ENTER || code == KeyEvent.KEYCODE_NUMPAD_ENTER) {
                 if (ev.action == KeyEvent.ACTION_UP) valider()
@@ -204,15 +258,18 @@ class TerminalActivity : Activity() {
         if (repris) {
             montrerOnglet()                          // l'écran recréé reprend où il en était, onglet par onglet
         } else if (lanceur(intent) && !Parties.aucune(this)) {
-            ecrire(menu.ouvrir(), Commandes.ROSE)       // lancé depuis l'icône : le menu des parties
+            ouvrirMenu()                             // lancé depuis l'icône : le menu du jeu (idée 79)
         } else if (!jeu.existe) {
             ecrire(t("term.oeuf"))
             ecranIntro = 1                           // les écrans du début (Intro.kt), avant le nom de l'œuf
+            if (Parties.aucune(this)) ecranParent = 1   // idée 1 : « Qui est avec toi ? », la toute première fois
         } else {
             jeu.parlerSiSilencieux()
             ecrire(t("mini.accueil1") + "\n" + t("term.aide_pour_aide"))
         }
         for (r in repares) ecrire(r, Commandes.BLEU)
+        if (jeu.existe) AideDouce.retour(jeu)?.let { jeu.dire(it, 12); ecrire(it, Commandes.ROSE) }   // idée 9
+        if (clavierBranche) ecrire("⌨ " + t("ad.k.efface"), 0xFF9A9AB0.toInt())
         jeu.sauver()
         rafraichir()
         if (jeu.existe && jeu.module("espace").optBoolean("ouvert")) {      // l'espace de travail était ouvert
@@ -362,39 +419,326 @@ class TerminalActivity : Activity() {
         }
     }
 
-    /** Rangée de touches spéciales, difficiles à trouver sur un clavier de téléphone. */
+    /** Rangée de touches spéciales, difficiles à trouver sur un clavier de téléphone. Idée 5 (3 novembre) : tout tient
+     *  sur une ligne (↑ ⇥ ^C - / ~ | . > ⋯), ⋯ montre les autres (↓ >> * " ' $ & _ =), la touche du symbole que la
+     *  leçon demande s'allume en vert ; idée 25 : le bouton 💡 Indice devant, quand la commande n'est pas donnée. */
     private fun creerTouches() {
         val rangee = findViewById<LinearLayout>(R.id.touches)
         val dp = resources.displayMetrics.density
-        for (t in listOf("↑", "↓", "⇥ Tab", "^C", "~", "/", "-", ".", "|", ">", ">>", "*", "\"", "'", "$", "&", "_", "=")) {
+        (rangee.parent as? android.widget.HorizontalScrollView)?.isFillViewport = true
+        rangee.layoutParams = rangee.layoutParams.also { it.width = LinearLayout.LayoutParams.MATCH_PARENT }
+        indiceBtn = TextView(this).apply {
+            text = "💡 " + t("ad.ind.bouton")
+            textSize = 13f
+            setTextColor(0xFFFFD75F.toInt())
+            gravity = Gravity.CENTER
+            setPadding((6 * dp).toInt(), (6 * dp).toInt(), (6 * dp).toInt(), (6 * dp).toInt())
+            setBackgroundResource(R.drawable.touche)
+            layoutParams = LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT).also { it.marginEnd = (4 * dp).toInt() }
+            visibility = View.GONE
+            isFocusable = false
+            setOnClickListener { ecrire(AideDouce.texteDemandeIndice(jeu), 0xFFFFD75F.toInt()); jeu.sauver(); saisie.requestFocus() }
+        }
+        rangee.addView(indiceBtn)
+        for (k in AideDouce.RANGEE1.indices) {
             val b = TextView(this)
-            b.text = t
             b.textSize = 15f
             b.typeface = android.graphics.Typeface.MONOSPACE
             b.setTextColor(0xFFE6E6E6.toInt())
             b.gravity = Gravity.CENTER
-            b.minWidth = (40 * dp).toInt()
-            b.setPadding((10 * dp).toInt(), (6 * dp).toInt(), (10 * dp).toInt(), (6 * dp).toInt())
+            b.minWidth = 0
+            b.setPadding(0, (6 * dp).toInt(), 0, (6 * dp).toInt())
             b.setBackgroundResource(R.drawable.touche)
-            val lp = LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT)
-            lp.marginEnd = (6 * dp).toInt()
+            val lp = LinearLayout.LayoutParams(0, LinearLayout.LayoutParams.WRAP_CONTENT, 1f)
+            lp.marginEnd = (4 * dp).toInt()
             b.layoutParams = lp
-            b.setOnClickListener {
-                when (t) {
-                    "↑" -> { rappeler(-1); return@setOnClickListener }
-                    "↓" -> { rappeler(1); return@setOnClickListener }
-                    "⇥ Tab" -> { completer(); return@setOnClickListener }
-                    "^C" -> { ctrlC(); return@setOnClickListener }
-                }
-                val debut = saisie.selectionStart.coerceAtLeast(0)
-                for (c in t) {               // un caractère à la fois : ce n'est pas un collage
-                    saisie.text.insert(saisie.selectionStart.coerceAtLeast(debut), c.toString())
-                }
-                saisie.requestFocus()
-            }
+            b.setOnClickListener { touche(b.text.toString()) }
             b.isFocusable = false
+            touchesVues.add(b)
             rangee.addView(b)
         }
+        majTouches()
+    }
+
+    /** Une touche de la rangée : ↑ ↓ ⇥ ^C, ⋯ (l'autre rangée), sinon le symbole, un caractère à la fois. */
+    private fun touche(t: String) {
+        when (t) {
+            "↑" -> { rappeler(-1); return }
+            "↓" -> { rappeler(1); return }
+            "⇥", "⇥ Tab" -> { if (!accepterFantome()) completer(); return }
+            "^C" -> { ctrlC(); return }
+            "⋯" -> { deuxiemeRangee = !deuxiemeRangee; majTouches(); return }
+        }
+        val debut = saisie.selectionStart.coerceAtLeast(0)
+        for (c in t) {               // un caractère à la fois : ce n'est pas un collage
+            saisie.text.insert(saisie.selectionStart.coerceAtLeast(debut), c.toString())
+        }
+        saisie.requestFocus()
+    }
+
+    /** Les libellés de la rangée affichée, la touche à allumer (idée 5) et le bouton 💡 (idée 25). */
+    private fun majTouches() {
+        if (touchesVues.isEmpty()) return
+        val noms = if (deuxiemeRangee) AideDouce.RANGEE2 else AideDouce.RANGEE1
+        val allumer = if (jeu.existe) AideDouce.toucheAAllumer(commandeAttendue(), saisie.text?.toString()) else null
+        for ((k, b) in touchesVues.withIndex()) {
+            val nom = noms[k]
+            b.text = nom
+            val vif = allumer != null && (nom == allumer || (nom == "⋯" && allumer == "⋯" && !deuxiemeRangee) ||
+                (deuxiemeRangee && allumer == "⋯" && nom in AideDouce.SYMBOLES2 && commandeAttendue()?.contains(nom) == true))
+            if (vif) {
+                b.background = GradientDrawable().apply { setColor(0xFF1D3B2A.toInt()); setStroke((2 * resources.displayMetrics.density).toInt(), 0xFF5FD787.toInt()); cornerRadius = 8 * resources.displayMetrics.density }
+                b.setTextColor(0xFF5FD787.toInt())
+            } else {
+                b.setBackgroundResource(R.drawable.touche)
+                b.setTextColor(0xFFE6E6E6.toInt())
+            }
+        }
+        if (::indiceBtn.isInitialized) indiceBtn.visibility = if (jeu.existe && AideDouce.cible(jeu) != null) View.VISIBLE else View.GONE
+        // idée 69 : avec un clavier branché, la rangée s'efface (le vrai clavier a toutes les touches)
+        val rangee = findViewById<LinearLayout>(R.id.touches)
+        (rangee.parent as View).visibility = if (clavierBranche && toutAuClavier()) View.GONE else View.VISIBLE
+    }
+
+    /** La commande que l'enfant doit taper maintenant (la liste de l'œuf, ou l'étape de la leçon), ou null. */
+    private fun commandeAttendue(): String? = try {
+        if (!jeu.existe) null
+        else if (Intro.enCours(jeu)) Intro.prochaine(jeu)?.let { Intro.commandeDe(it) }
+        else Histoire.leconCourante(jeu)?.let { c -> if (jeu.niveau >= c.niveau) c.etapes[jeu.etape].let { e -> if (Placement.cache(jeu, e)) null else e.cmd } else null }
+    } catch (e: Exception) { null }
+
+    /** Un vrai clavier est branché (Configuration.keyboard = KEYBOARD_QWERTY, et pas caché). */
+    private fun clavierPhysique(): Boolean = try {
+        val c = resources.configuration
+        c.javaClass.getField("keyboard").getInt(c) == 2 && c.javaClass.getField("hardKeyboardHidden").getInt(c) == 1
+    } catch (e: Exception) { false }
+
+    /** La touche vient d'un clavier branché (pas du clavier de l'écran, ni d'un robot de test : leur numéro est -1). */
+    private fun vraiClavier(ev: KeyEvent): Boolean = try {
+        (ev.javaClass.getMethod("getDeviceId").invoke(ev) as Int) > 0 &&
+            ((ev.javaClass.getMethod("getFlags").invoke(ev) as Int) and 2) == 0
+    } catch (e: Exception) { false }
+
+    private fun indice(g: android.view.ViewGroup, v: View): Int {
+        for (k in 0 until g.childCount) if (g.getChildAt(k) === v) return k
+        return -1
+    }
+
+    /** Idée 69 : le mode « tout au clavier » (d'office avec un clavier branché ; `clavier off` l'enlève). */
+    private fun toutAuClavier(): Boolean =
+        if (jeu.existe && jeu.module("aide_douce").has("clavier")) jeu.module("aide_douce").optBoolean("clavier") else clavierBranche
+
+    // ------------------------------------------------------------ accueil et aide (AideDouce.kt, idées du 3 novembre)
+    /** Les petites vues de l'aide : le bouton 🧭 Perdu ? (6), la bulle et la flèche « tape ici » (4), la fin grisée (66). */
+    private fun creerAideDouce() {
+        val dp = resources.displayMetrics.density
+        // 6. 🧭 Perdu ?, juste à côté de 📖 Lexique
+        val tete = lexiqueBtn.parent as LinearLayout
+        perduBtn = TextView(this).apply {
+            text = t("ad.perdu.bouton")
+            textSize = 12f
+            setPadding((8 * dp).toInt(), (4 * dp).toInt(), (8 * dp).toInt(), (4 * dp).toInt())
+            setBackgroundResource(R.drawable.touche)
+            setTextColor(0xFF9A9AB0.toInt())
+            isFocusable = false
+            setOnClickListener { ouvrirPerdu() }
+        }
+        val lpP = LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT)
+        lpP.gravity = Gravity.TOP
+        lpP.marginEnd = (4 * dp).toInt()
+        tete.addView(perduBtn, indice(tete, lexiqueBtn) + 1, lpP)
+        // 4. la bulle au-dessus de la ligne de saisie, et la flèche dans la ligne
+        val ligne = saisie.parent as LinearLayout
+        val panneau = ligne.parent as LinearLayout
+        flecheBulle = TextView(this).apply {
+            textSize = 14f
+            setTypeface(typeface, Typeface.BOLD)
+            setTextColor(0xFF1E1E2E.toInt())
+            setBackgroundResource(R.drawable.bulle)
+            setPadding((10 * dp).toInt(), (6 * dp).toInt(), (10 * dp).toInt(), (6 * dp).toInt())
+            visibility = View.GONE
+            isFocusable = false
+        }
+        val lpB = LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT)
+        lpB.gravity = Gravity.END
+        lpB.topMargin = (6 * dp).toInt()
+        panneau.addView(flecheBulle, indice(panneau, ligne), lpB)
+        flecheVue = TextView(this).apply {
+            text = "◀◀"
+            textSize = 16f
+            typeface = Typeface.MONOSPACE
+            setTextColor(0xFF5FD787.toInt())
+            visibility = View.GONE
+            isFocusable = false
+        }
+        ligne.addView(flecheVue, indice(ligne, saisie) + 1)
+        // 66. la fin grisée : un texte transparent (ce qui est tapé) puis la fin en gris, sous la ligne de saisie
+        val i = indice(ligne, saisie)
+        val lpS = saisie.layoutParams as LinearLayout.LayoutParams
+        ligne.removeView(saisie)
+        val cadre = android.widget.FrameLayout(this)
+        fantomeVue = TextView(this).apply {
+            typeface = Typeface.MONOSPACE
+            textSize = 13f
+            setPadding(0, 0, 0, 0)
+            isFocusable = false
+            gravity = saisie.gravity
+        }
+        cadre.addView(fantomeVue, android.widget.FrameLayout.LayoutParams(android.widget.FrameLayout.LayoutParams.MATCH_PARENT,
+            android.widget.FrameLayout.LayoutParams.MATCH_PARENT))
+        cadre.addView(saisie, android.widget.FrameLayout.LayoutParams(android.widget.FrameLayout.LayoutParams.MATCH_PARENT,
+            android.widget.FrameLayout.LayoutParams.WRAP_CONTENT))
+        ligne.addView(cadre, i, lpS)
+        saisie.addTextChangedListener(object : TextWatcher {
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
+            override fun afterTextChanged(e: Editable?) {
+                if (lsAnim) finirPremierLs()                 // une touche passe la cinématique du premier ls
+                majFantome()
+                majTouches()
+            }
+        })
+    }
+
+    /** Idée 66 : la fin grisée du mot en cours (seulement des noms qui existent ; jamais pendant un exercice). */
+    private fun majFantome() {
+        if (!::fantomeVue.isInitialized) return
+        val texte = saisie.text?.toString() ?: ""
+        fantome = if (!jeu.existe || menu.ouvert || texte.isEmpty() || texte.endsWith(" ") || saisie.selectionEnd != texte.length ||
+            !AideDouce.fantomePermis(jeu)) "" else try { candidats(texte).let { (mot, c) -> AideDouce.fantome(mot, c) } } catch (e: Exception) { "" }
+        if (fantome.isEmpty()) { fantomeVue.text = ""; return }
+        val sb = SpannableStringBuilder(texte + fantome)
+        sb.setSpan(ForegroundColorSpan(0x00000000), 0, texte.length, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
+        sb.setSpan(ForegroundColorSpan(0xFF5A5A78.toInt()), texte.length, sb.length, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
+        fantomeVue.text = sb
+    }
+
+    /** Accepte la fin grisée (→ ou Tab) ; vrai si elle était là. */
+    private fun accepterFantome(): Boolean {
+        if (fantome.isEmpty()) return false
+        remplacerSaisie((saisie.text?.toString() ?: "") + fantome)
+        return true
+    }
+
+    /** Idée 4 : la flèche « tape ici », la bulle, la ligne de saisie qui s'allume ; idée 6 : le bouton Perdu. */
+    private fun majAideDouce() {
+        if (!::perduBtn.isInitialized) return
+        val dp = resources.displayMetrics.density
+        perduBtn.visibility = if (jeu.existe && menuVue == null) View.VISIBLE else View.GONE
+        val a = AideDouce.a(jeu)
+        val vif = jeu.existe && AideDouce.perduVif(a.optInt("erreurs"), AideDouce.depuis(jeu))
+        if (vif) {
+            perduBtn.background = GradientDrawable().apply { setColor(0xFF3A2F12.toInt()); setStroke((2 * dp).toInt(), 0xFFFFD75F.toInt()); cornerRadius = 8 * dp }
+            perduBtn.setTextColor(0xFFFFD75F.toInt())
+        } else {
+            perduBtn.setBackgroundResource(R.drawable.touche)
+            perduBtn.setTextColor(0xFF9A9AB0.toInt())
+        }
+        val cmd = AideDouce.flecheMaintenant(jeu)
+        val ligne = (saisie.parent as View).parent as LinearLayout
+        if (cmd != null && perduVue == null) {
+            flecheBulle.text = Vert.rendre(if (cmd.isEmpty()) t("ad.fleche.tel0") else t("ad.fleche.tel", "cmd" to "`$cmd`"))
+            flecheBulle.visibility = View.VISIBLE
+            flecheVue.visibility = View.VISIBLE
+            ligne.background = GradientDrawable().apply { setColor(0x00000000); setStroke((2 * dp).toInt(), 0xFF5FD787.toInt()); cornerRadius = 8 * dp }
+        } else {
+            flecheBulle.visibility = View.GONE
+            flecheVue.visibility = View.GONE
+            ligne.background = null
+        }
+    }
+
+    // ------------------------------------------------------------ 79. le menu du jeu
+    private fun ouvrirMenu() {
+        menu.ouvrir()                                  // l'état du menu (les chiffres et les mots marchent aussi)
+        val fond = findViewById<android.widget.FrameLayout>(R.id.fond)
+        val v = menuVue ?: IntroVue(this, jeu, { imagePresentation() }) { actionMenu(it) }.also { nv ->
+            nv.setBackgroundColor(0xFF07090D.toInt())
+            fond.addView(nv, android.widget.FrameLayout.LayoutParams(android.widget.FrameLayout.LayoutParams.MATCH_PARENT,
+                android.widget.FrameLayout.LayoutParams.MATCH_PARENT))
+            menuVue = nv
+        }
+        v.clavier = toutAuClavier()
+        val h = (fond.height.takeIf { it > 0 } ?: resources.displayMetrics.heightPixels) / resources.displayMetrics.density
+        v.montrerMenu(menu.texteQui(), menu.texteCompteCourt(), h)
+        fond.post { v.montrerMenu(menu.texteQui(), menu.texteCompteCourt(), fond.height / resources.displayMetrics.density) }
+        rafraichir()
+    }
+
+    private fun fermerMenuVue() {
+        menuVue?.let { (it.parent as? android.view.ViewGroup)?.removeView(it) }
+        menuVue = null
+        rafraichir()
+        saisie.requestFocus()
+    }
+
+    /** Un bouton du menu (ou Entrée) : Jouer, Nouvelle partie, Charger, Options, Aide, Quitter. */
+    private fun actionMenu(a: String) {
+        fermerMenuVue()
+        if (a == "q") { menu.repondre("q"); finish(); return }
+        menu.repondre(a)?.let { if (it.isNotEmpty()) ecrire(it, Commandes.ROSE) }
+        rafraichir()
+    }
+
+    // ------------------------------------------------------------ 6. pas de panique
+    private fun ouvrirPerdu() {
+        if (!jeu.existe) return
+        val boite = defile.parent as View
+        val panneau = boite.parent as LinearLayout
+        val v = perduVue ?: IntroVue(this, jeu, { imagePresentation() }) { a ->
+            fermerPerdu()
+            if (a == "camp") remplacerSaisie("cd ~")        // l'enfant voit la vraie commande, et c'est lui qui valide
+        }.also { nv ->
+            val lp = LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT)
+            lp.topMargin = (8 * resources.displayMetrics.density).toInt()
+            panneau.addView(nv, indice(panneau, boite), lp)
+            perduVue = nv
+        }
+        v.clavier = toutAuClavier()
+        v.montrerPerdu(AideDouce.infosPerdu(jeu, shell.dossier))
+        jeu.sauver()
+        boite.visibility = View.GONE
+        majAideDouce()
+    }
+
+    private fun fermerPerdu() {
+        perduVue?.let { (it.parent as? android.view.ViewGroup)?.removeView(it) }
+        perduVue = null
+        (defile.parent as View).visibility = View.VISIBLE
+        rafraichir()
+        saisie.requestFocus()
+    }
+
+    // ------------------------------------------------------------ 2. le premier ls
+    /** Un balayage vert, puis les lieux et les objets se dessinent en pixels l'un après l'autre (2 à 3 s), puis
+     *  « Waouh, j'y vois ! ». Une seule fois ; une touche la passe. */
+    private fun premierLs(court: Boolean) {
+        lsAnim = true
+        val obs = chemin.parent as View
+        obs.visibility = View.VISIBLE
+        majObservatoire(null)
+        chemin.text = t("ad.ls.scan")
+        chemin.setTextColor(0xFF5FD787.toInt())
+        val n = contenu.childCount
+        for (k in 0 until n) contenu.getChildAt(k).alpha = 0f
+        val total = (AideDouce.dureeLs(court) * 1000).toLong()
+        val pas = total / maxOf(1, n * 4 + 2)
+        val debut = if (court) 900L else 0L
+        for (k in 0 until n) for (e in 1..4) handler.postDelayed({
+            if (lsAnim && k < contenu.childCount) contenu.getChildAt(k).alpha = e / 4f
+        }, debut + pas * (k * 4 + e))
+        handler.postDelayed({ finirPremierLs() }, debut + total)
+    }
+
+    private fun finirPremierLs() {
+        if (!lsAnim) return
+        lsAnim = false
+        for (k in 0 until contenu.childCount) contenu.getChildAt(k).alpha = 1f
+        chemin.setTextColor(0xFFD7D7FF.toInt())
+        majObservatoire(null)
+        jeu.dire(t("ad.ls.waouh.tel"), 10)
+        ecrire(t("ad.ls.waouh.tel"), Commandes.ROSE)
+        rafraichir()
     }
 
     // ------------------------------------------------------------ onglets (plusieurs terminaux, Onglets.kt)
@@ -582,9 +926,8 @@ class TerminalActivity : Activity() {
         remplacerSaisie(h[posHisto])
     }
 
-    /** Complète le dernier mot : un nom de commande (1er mot) ou un fichier/dossier. */
-    private fun completer() {
-        val texte = saisie.text.toString()
+    /** (le mot en cours, les noms possibles) : un nom de commande (1er mot) ou un fichier/dossier (« nid/ »). */
+    private fun candidats(texte: String): Pair<String, List<String>> {
         val debutMot = texte.lastIndexOf(' ') + 1
         val mot = texte.substring(debutMot)
         val candidats: List<String>
@@ -606,6 +949,14 @@ class TerminalActivity : Activity() {
                 .sortedBy { it.name }
                 .map { avant + it.name + if (it.isDirectory) "/" else "" }
         }
+        return mot to candidats
+    }
+
+    /** Complète le dernier mot : un nom de commande (1er mot) ou un fichier/dossier. */
+    private fun completer() {
+        val texte = saisie.text.toString()
+        val debutMot = texte.lastIndexOf(' ') + 1
+        val (mot, candidats) = candidats(texte)
         when {
             candidats.isEmpty() -> ecrire(t("term.tab_rien", "mot" to mot), 0xFF9A9AB0.toInt())
             candidats.size == 1 -> {
@@ -719,23 +1070,45 @@ class TerminalActivity : Activity() {
             rafraichir()
             return
         }
+        if (!jeu.existe && ecranParent > 0 && !menu.ouvert) {    // idée 1 : « Qui est avec toi ? » (1 ou 2, Entrée)
+            vider()
+            val r = ligne.trim().lowercase()
+            actionIntro(when {
+                ligne.isEmpty() -> introVue?.actionFocus() ?: if (ecranParent == 1) "seul" else "parti"
+                ecranParent == 1 && (r == "2" || r in MenuParties.mots("ad.parent.mots_adulte")) -> "adulte"
+                ecranParent == 1 -> "seul"
+                else -> "parti"
+            })
+            return
+        }
+        if (menuVue != null && ligne.isEmpty() && attente == null) { actionMenu(menuVue?.actionFocus() ?: "1"); return }   // idée 79
+        if (menuVue != null) fermerMenuVue()
+        if (perduVue != null && attente == null) {             // idée 6 : Entrée ferme la carte (ou ramène au camp)
+            val a = perduVue?.actionFocus()
+            fermerPerdu()
+            if (ligne.isEmpty()) { if (a == "camp") remplacerSaisie("cd ~"); return }
+        }
         if (!jeu.existe && nomPropose != null && ligne.isEmpty() && !menu.ouvert) {   // Entrée : le nom est confirmé
             naitre(nomPropose!!)
             return
         }
         if (!jeu.existe && ecranIntro > 0 && ligne.isEmpty() && !menu.ouvert) {   // Entrée : l'écran suivant
-            actionIntro("suivant")
+            actionIntro(introVue?.actionFocus() ?: "suivant")
             return
         }
         if (jeu.existe && ligne.isEmpty() && Intro.aMontrer(jeu) != null) {     // Entrée : l'écran de présentation est lu
             actionIntro("ok")
             return
         }
-        if (jeu.existe && ligne.isNotEmpty() && Intro.aMontrer(jeu) != null) Intro.lu(jeu)   // taper une commande le referme
+        if (jeu.existe && ligne.isNotEmpty() && Intro.aMontrer(jeu) != null) {   // taper une commande le referme
+            if (Intro.aMontrer(jeu) == "fermer") AideDouce.marquerFermer(jeu)
+            Intro.lu(jeu)
+        }
         if (menu.ouvert && !enCours) {              // une réponse au menu des parties (rien n'est mangé)
             vider()
             ecrire("> $ligne", 0xFF5FD787.toInt())
             val r = menu.repondre(ligne)
+            if (menu.quitter) { menu.quitter = false; finish(); return }      // idée 79 : « q » / Quitter
             if (r != null) {
                 ecrire(r, Commandes.ROSE)
                 rafraichir()
@@ -774,7 +1147,29 @@ class TerminalActivity : Activity() {
         }
 
         ecrire("${shell.chemin()} $ $ligne", 0xFF5FD787.toInt())
+        AideDouce.demandeExplique(ligne)?.let {                 // idée 22 : `ls ?` ou `? ls` (jamais un repas)
+            ecrire(AideDouce.ficheCourte(it), Commandes.ROSE)
+            return
+        }
         when (Regles.premierMot(ligne)) {
+            "perdu" -> { ouvrirPerdu(); return }               // idée 6
+            "indice" -> {                                      // idée 25 : 3 niveaux, rien n'est retiré
+                ecrire(AideDouce.texteDemandeIndice(jeu), 0xFFFFD75F.toInt())
+                jeu.sauver()
+                rafraichir()
+                return
+            }
+            "clavier" -> {                                     // idée 69 : tout au clavier (on / off)
+                when (ligne.trim().split(Regex("\\s+")).getOrNull(1)?.lowercase()) {
+                    "on", "oui" -> jeu.module("aide_douce").put("clavier", true)
+                    "off", "non" -> jeu.module("aide_douce").put("clavier", false)
+                }
+                jeu.sauver()
+                ecrire(t("ad.k.etat", "etat" to t(if (toutAuClavier()) "app.on" else "app.off")), Commandes.ROSE)
+                introVue?.clavier = toutAuClavier()
+                rafraichir()
+                return
+            }
             "clear" -> { sortie.text = ""; return }
             "quitter" -> { finish(); return }
             // exit ferme l'onglet ; dans le dernier, il referme le jeu (comme avant les onglets)
@@ -873,7 +1268,9 @@ class TerminalActivity : Activity() {
             }
             "aide" -> {
                 // P2-7 : coincé ? d'abord la leçon en cours, où la taper, la commande exacte et pourquoi (« aide tout » : la liste)
-                if (ligne.trim().split(Regex("\\s+")).getOrNull(1)?.lowercase() !in setOf("tout", "all")) {
+                val mot2 = ligne.trim().split(Regex("\\s+")).getOrNull(1)?.lowercase()
+                if (mot2 in setOf("parents", "parent", "adulte")) { ecrire(AideDouce.conseilsParents(), Commandes.ROSE); return }   // idée 1
+                if (mot2 !in setOf("tout", "all")) {
                     ecrire(Histoire.aideLecon(jeu), Commandes.ROSE)
                     return
                 }
@@ -985,6 +1382,7 @@ class TerminalActivity : Activity() {
         jeu.nom = nom
         jeu.shiny = false   // le compagnon ne naît jamais shiny (pas de rareté)
         Intro.nouvellePartie(jeu)              // l'œuf seul, sa liste de commandes ; le jeu s'ouvre petit à petit
+        choixParent?.let { AideDouce.a(jeu).put("parent", it) }     // idée 1 : le choix reste sur l'appareil
         ecranIntro = 0
         jeu.log(t("app.oeuf_apparu", "trait" to Regles.nomTrait(jeu.trait)))
         jeu.dire(t("term.toc_toc"), 10)
@@ -1008,7 +1406,7 @@ class TerminalActivity : Activity() {
 
     override fun onNewIntent(intent: android.content.Intent) {
         super.onNewIntent(intent)
-        if (lanceur(intent) && !menu.ouvert && !Parties.aucune(this)) ecrire(menu.ouvrir(), Commandes.ROSE)
+        if (lanceur(intent) && !menu.ouvert && !Parties.aucune(this)) ouvrirMenu()
         essais(intent)
         rafraichir()
         saisie.requestFocus()
@@ -1053,6 +1451,8 @@ class TerminalActivity : Activity() {
     /** code : le code de sortie (0 pour une commande du jeu, Shell.code pour le shell, null si inconnu). */
     private fun apresCommande(ligne: String, etaitColle: Boolean, etaitRappel: Boolean = false, code: Int? = 0) {
         val etapeAvant = jeu.lecon to jeu.etape
+        val campAvant = Intro.enCours(jeu) && Intro.faits(jeu).isEmpty()
+        val premierLs = !etaitColle && AideDouce.apresCommande(jeu, ligne, code == null || code == 0) == "premier_ls"
         // le tour de jeu (créature, terrain, leçons, défi, dressage et combat, troupe, attirance, monstres) : voir Tour.kt
         val tour = Tour.apresCommande(jeu, ligne, etaitColle, etaitRappel, cwd = shell.dossier, code = code)
         try {
@@ -1078,6 +1478,7 @@ class TerminalActivity : Activity() {
         if (mange) saut = maxOf(saut, 4)
         rafraichir()
         lancerAnimation()
+        if (premierLs) premierLs(court = campAvant && Intro.faits(jeu).isNotEmpty())   // idée 2 (après le camp, plus courte)
         if (Recensement.aUnCompte(jeu) && Regles.premierMot(ligne) !in setOf("sync", "compte")) {
             commandes.sync(forcer = false, silencieux = true)
         }
@@ -1215,17 +1616,24 @@ class TerminalActivity : Activity() {
         val boiteSortie = defile.parent as View
         val ecran = !jeu.existe && ecranIntro > 0 && !menu.ouvert
         val carteIntro = if (jeu.existe) Intro.aMontrer(jeu) else null
+        // idée 9 : la croix ✕ s'entoure de jaune pendant l'écran « Tu peux fermer quand tu veux »
+        findViewById<TextView>(R.id.fermer).let { x ->
+            if (carteIntro == "fermer") { x.background = GradientDrawable().apply { setColor(0); setStroke((3 * resources.displayMetrics.density).toInt(), 0xFFFFD75F.toInt()); cornerRadius = 8 * resources.displayMetrics.density }; x.setTextColor(0xFFFFD75F.toInt()) }
+            else { x.background = null; x.setTextColor(0xFF9A9AB0.toInt()) }
+        }
         val mode = when {
+            !jeu.existe && ecranParent > 0 && !menu.ouvert -> "parent"
             ecran -> "ecran"
             jeu.existe && Intro.enCours(jeu) -> "oeuf"
             carteIntro != null -> "carte"
             else -> null
         }
         if (mode == null) {
+            if (introVue != null) saisie.setHint(t("term.saisie"))
             introVue?.let { (it.parent as? LinearLayout)?.removeView(it) }
             introVue = null
             if (carteVue == null) obs.visibility = View.VISIBLE
-            boiteSortie.visibility = View.VISIBLE
+            boiteSortie.visibility = if (perduVue != null) View.GONE else View.VISIBLE
             return
         }
         val v = introVue ?: run {
@@ -1243,14 +1651,17 @@ class TerminalActivity : Activity() {
         // la place de l'intro au-dessus de l'invite (l'illustration rétrécit s'il le faut ; la sortie : 140 dp)
         val fondH = findViewById<View>(R.id.fond).height.takeIf { it > 0 } ?: resources.displayMetrics.heightPixels
         val dOnglets = if (::barreOnglets.isInitialized && (barreOnglets.parent as View).visibility == View.VISIBLE) 36f else 0f
-        Intro.hauteurMax = fondH / resources.displayMetrics.density - (if (mode == "ecran") 150f else 300f) - dOnglets
+        Intro.hauteurMax = fondH / resources.displayMetrics.density - (if (mode == "ecran" || mode == "parent") 150f else 300f) - dOnglets
+        v.clavier = toutAuClavier()
+        saisie.setHint(if (v.clavier) "⌨ " + t("ad.k.aide") else t("term.saisie"))     // idée 69 : les touches du clavier
         when (mode) {
+            "parent" -> v.montrerParent(ecranParent)
             "ecran" -> v.montrerEcran(ecranIntro.coerceIn(1, v.nbEcrans()))
             "oeuf" -> v.montrerOeuf()
             else -> v.montrerCarte(carteIntro!!)
         }
-        obs.visibility = View.GONE
-        boiteSortie.visibility = if (mode == "ecran") View.GONE else View.VISIBLE
+        obs.visibility = if (lsAnim) View.VISIBLE else View.GONE      // idée 2 : la cinématique du premier ls se voit
+        boiteSortie.visibility = if (mode == "ecran" || mode == "parent") View.GONE else View.VISIBLE
     }
 
     /** Un bouton de l'intro (ou Entrée sur une ligne vide) : suivant, passer, ok. */
@@ -1258,7 +1669,13 @@ class TerminalActivity : Activity() {
         when (a) {
             "suivant" -> if (!jeu.existe && ecranIntro > 0) ecranIntro = minOf(ecranIntro + 1, introVue?.nbEcrans() ?: 4)
             "passer" -> if (!jeu.existe && ecranIntro > 0) ecranIntro = introVue?.nbEcrans() ?: 4
-            "ok" -> if (jeu.existe && Intro.aMontrer(jeu) != null) { Intro.lu(jeu); jeu.sauver() }
+            "ok" -> if (jeu.existe && Intro.aMontrer(jeu) != null) {
+                if (Intro.aMontrer(jeu) == "fermer") AideDouce.marquerFermer(jeu)    // idée 9 : « Te revoilà ! » au retour
+                Intro.lu(jeu); jeu.sauver()
+            }
+            "seul" -> { choixParent = "seul"; ecranParent = 0 }       // idée 1
+            "adulte" -> { choixParent = "adulte"; ecranParent = 2 }
+            "parti" -> ecranParent = 0
         }
         rafraichir()
         saisie.requestFocus()
@@ -1667,6 +2084,8 @@ class TerminalActivity : Activity() {
         if (::barreOnglets.isInitialized) (barreOnglets.parent as View).visibility = if (oeuf && onglets.liste.size == 1) View.GONE else View.VISIBLE
         lexiqueBtn.visibility = if (jeu.existe && !oeuf && Intro.ouvert(jeu, "lexique")) View.VISIBLE else View.GONE
         majIntro()
+        majAideDouce()
+        majTouches()
         majBoutonAura()
         if (lecture == null) creature.setImageBitmap(imageCreature(cligne > 0))
     }

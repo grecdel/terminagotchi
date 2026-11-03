@@ -361,6 +361,20 @@ def boucle_jeu(state, lines, spontane=True, rythme=1.5, defis=True, cwd=None):
         _sans_planter(state, apprendre.tour_pause, state, lines)
         state.pop("_dit_os", None)
         return
+    from . import aide_douce
+    if any(aide_douce.demande_explique(l) for l in lines):   # `ls ?` / `? ls` : la fiche courte, jamais un repas
+        dernier = bool(lines) and core.DERNIER["ligne"] == lines[-1]
+        statut = core.DERNIER["statut"]
+        for l in lines:
+            nom = aide_douce.demande_explique(l)
+            if nom:
+                q = state.setdefault("_fiche_q", [])
+                if dernier and l == lines[-1] and statut not in (None, 0):
+                    q.append(f"{fg(78)}" + t("ad.q.ordi") + RESET)      # l'erreur de l'ordinateur (le joker ?)
+                q += aide_douce.fiche_courte(state, nom)
+        lines = [l for l in lines if not aide_douce.demande_explique(l)]
+        if dernier:
+            core.DERNIER.update(ligne=None, statut=None)
     for k, line in enumerate(lines):
         core.feed(state, line, core.statut_de(lines, k))   # une commande ratée ne donne pas de points (G-34)
     if state.get("_restaure"):                # save.json était abîmé : on a repris une copie de secours
@@ -369,7 +383,11 @@ def boucle_jeu(state, lines, spontane=True, rythme=1.5, defis=True, cwd=None):
     if core.TERRAIN.is_symlink():             # la zone d'aventure est un lien : rien n'y est construit
         sur.ALERTES.append(str(core.TERRAIN))
     _ok = lambda fn, *a, **k: _sans_planter(state, fn, *a, **k)
+    camp = not intro.i_(state).get("eveil")
+    _ok(aide_douce.tick, state, lines, [core.statut_de(lines, k) for k in range(len(lines))])
     r = _ok(intro.tick, state, lines)         # l'œuf : sa liste, ses fêlures, l'éclosion
+    if state.get("_premier_ls") and camp and intro.i_(state).get("eveil"):
+        state["_premier_ls"] = "court"        # le camp se rallume en même temps : la cinématique ls est plus courte
     lines = lines if r is None else r
     _ok(exemples.tick, state, lines)          # mkdir tout seul… : une bulle avec la commande à taper
     _ok(terrain.tick, state, lines)           # terrain effacé : le reconstruire, reprendre la leçon
@@ -810,6 +828,8 @@ def creer_si_besoin(avec_intro=None):
     try:
         code = langue.detecter()                  # premier lancement : la langue du système
         langue.definir(code)
+        from . import aide_douce, parties
+        qui = aide_douce.demander_parent(input) if avec_intro and parties.aucune() else None   # idée 1, une fois
         name = intro.jouer_ecrans(input, clear) if avec_intro else None
         if not name:
             name = input(t("app.nom_creature") + " ")
@@ -823,6 +843,8 @@ def creer_si_besoin(avec_intro=None):
             state = core.migrate(core.new_state(name, code))
             if avec_intro:
                 intro.nouvelle_partie(state)
+            if qui:
+                aide_douce.a_(state)["parent"] = qui
             core.read_new_lines(state)   # mémorise où on en est, sans manger l'ancien historique
             core.log(state, t("app.oeuf_apparu", trait=core.nom_trait(state["trait"])))
             core.animer(state, "salut")
@@ -1170,6 +1192,36 @@ def _main():
     if mode == "terminal":                     # tg terminal : une fenêtre de plus avec le terminal du jeu
         ok, msg = compagnon.nouvelle_fenetre()
         print(msg)
+        return
+    if mode in ("aide", "help", "-h") and len(args) > 1 and args[1].lower() in ("parents", "parent", "adulte"):
+        from . import aide_douce                # idée 1 : les conseils pour l'adulte à côté (à relire)
+        print("\n".join(aide_douce.conseils_parents()))
+        return
+    if mode in ("perdu", "indice", "clavier"):  # idées 6, 25, 5 (aide_douce.py)
+        from . import aide_douce
+        if mode == "clavier":
+            creer_si_besoin()
+            print(aide_douce.commande_clavier(args[1:]))
+            return
+        if core.load() is None:
+            print(aide())
+            return
+        try:
+            ici = os.environ.get("TG_ICI") or os.getcwd()
+        except OSError:
+            ici = None
+        sortie = []
+        if mode == "indice":
+            etape(spontane=False, defis=False, cwd=ici)      # les dernières commandes tapées d'abord
+        core.modifier(lambda s: sortie.extend(aide_douce.lignes_perdu(s, ici) if mode == "perdu"
+                                               else aide_douce.lignes_indice(s)))
+        print("\n".join(sortie))
+        return
+    if mode == "menu":                         # idée 69 : le menu rond du compagnon de bureau, sans souris
+        from . import aide_douce
+        creer_si_besoin()
+        core.modifier(lambda s: s.__setitem__("bureau_menu", time.time()))
+        print(t("ad.menu_bureau"))
         return
     if mode in ("aide", "help", "-h"):
         st = core.load()

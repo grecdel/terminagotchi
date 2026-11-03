@@ -261,6 +261,7 @@ object Intro {
             (listOf(t("intro.merci", "nom" to jeu.nom), t("intro.recap")) + liste().map { t("intro.r.${it.id}") })
         "merci2" -> t("intro.ici.titre") to listOf(t("intro.ici", "chemin" to chemin),
             t("intro.suite", "chapitre" to t("hist.reveil.titre")))
+        "fermer" -> "💤 " + t("ad.fermer.titre") to listOf(t("ad.fermer.texte"), t("ad.fermer.tel"))   // idée 9 (AideDouce.kt)
         else -> {
             val c = fonction(cid)?.cmdTel ?: emptyList()
             t("deb.nouveau", "nom" to t("deb.$cid.titre")) to
@@ -483,7 +484,8 @@ object Intro {
             y += 8f
         }
         y += 2f
-        val s = t("intro.ok.tel")
+        val s = if (cid == "fermer") t("ad.fermer.plus_tard") else t("intro.ok.tel")
+        if (cid == "fermer") p.texte("💤", MARGE + hC - 6f, MARGE + 18f, 18f, Carte.TEXTE)
         val b = bouton(p, s, l - MARGE - (p.mesure(s, 13f, gras = true) + 26f), y, true, "ok")
         return Rendu(l, h, listOf(b))
     }

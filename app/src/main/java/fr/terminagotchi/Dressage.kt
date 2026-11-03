@@ -719,6 +719,15 @@ object Dressage {
         return null
     }
 
+    /** Idée 25 (AideDouce.kt) : (clé, exemple rempli) de l'épreuve en cours, ou null. */
+    fun exempleCourant(jeu: Jeu): Pair<String, String>? {
+        val d = etat(jeu) ?: return null
+        val ep = courante(d) ?: return null
+        val nom = d.optString("espece")
+        val ex = exemple(jeu, ep, nom).trim().replace(Regex("\\s{2,}"), "  ")
+        return if (ex.isEmpty()) null else "dress:$nom:${ep.cle}" to ex
+    }
+
     /** L'exemple de l'épreuve, rempli (nom du monstre, vocabulaire du palier). */
     fun exemple(jeu: Jeu, ep: Epreuve, nom: String): String {
         val e = Bestiaire.espece(nom)

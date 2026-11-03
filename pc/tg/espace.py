@@ -38,7 +38,7 @@ PANNEAUX = {"carte": "carte", "map": "carte", "cerveau": "cerveau", "brain": "ce
             "lecon": "lecon", "leçon": "lecon"}
 MONDE = {"monde", "world"}             # le monde des biomes en grand (et « monde effets tous|essentiels|aucun »)
 # les commandes du jeu (alias du compagnon) : lancées par tg
-DU_JEU = {"aide", "quetes", "explique", "entrainement", "exercice", "badges", "guide", "types", "equipe", "envies",
+DU_JEU = {"aide", "perdu", "indice", "quetes", "explique", "entrainement", "exercice", "badges", "guide", "types", "equipe", "envies",
           "satiete", "vacances", "lexique", "collection", "bestiaire", "histoire", "journal"}
 
 # ---------------------------------------------------------------- couleurs ANSI → (r, g, b, a)

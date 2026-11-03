@@ -65,8 +65,11 @@ for essai in 1 2 3; do
 done
 # le jeu en français (le téléphone virtuel est en anglais)
 tape "langue fr" 2
+capture fleche_tape_ici 1      # idée 4 : la flèche « Tape pwd ici, puis Entrée »
 # l'œuf et sa liste (Intro.kt) : 4 commandes, il éclot ; puis tout est ouvert pour la suite du scénario
-tape "ls" 2
+tape "ls" 0.5
+capture premier_ls 0.8         # idée 2 : la cinématique du premier ls
+sleep 3
 capture oeuf_fele
 for c in "pwd" "echo bonjour" "whoami"; do tape "$c" 2; done
 capture eclosion_merci
@@ -114,6 +117,20 @@ capture attente_lancee 1
 tape "sleep 15" 0.5; tape "pwd" 0.5
 adb shell input keycombination 113 31 || true
 capture ctrl_c 2
+tape "ls ?" 2
+capture explique_moi           # idée 22 : ls ?
+attendre_pret; adb shell "input text 'cd%sn'"; sleep 2
+capture fin_grisee 0.5         # idée 66 : la fin grisée
+adb shell input keyevent 61; sleep 1; adb shell input keyevent 66; sleep 2
+attendre_pret; adb shell "input text 'ls%ssac%s'"; sleep 2
+capture touche_allumee 0.5     # idée 5 : la touche du symbole (si la leçon en demande un)
+adb shell input keycombination 113 31 || true
+tape "perdu" 2
+capture pas_de_panique         # idée 6
+tape "" 2
+tape "entrainement" 3; tape "indice" 2; tape "indice" 2
+capture indices                # idée 25
+tape "entrainement fin" 2
 tape "arbre"
 capture arbre
 tape "cherche supprimer un dossier"
@@ -189,6 +206,10 @@ print("inscription depuis le téléphone :", "OK" if ok1 else "ÉCHEC", t.get("x
 print("liaison + synchro PC <-> téléphone :", "OK" if ok2 else "ÉCHEC", p.get("xp"), p.get("appareils"), p.get("nom"))
 PY
 cat captures/sync_resultat.txt
+# idée 79 : le menu du jeu (lancé depuis l'icône)
+adb shell am start -a android.intent.action.MAIN -c android.intent.category.LAUNCHER -n fr.terminagotchi/.TerminalActivity
+capture menu_du_jeu 5
+tape "" 3
 tape "doom" 6
 capture doom 3
 adb shell input keyevent 4

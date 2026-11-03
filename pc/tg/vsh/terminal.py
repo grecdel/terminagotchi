@@ -178,6 +178,7 @@ class Terminal:
         h = len(self.historique)
         brouillon = ""
         tab_avant = False
+        self.gris = self._gris_permis() and invite != self.invite_suite()
         self.clavier.brut()
         try:
             self.ecrire(invite)
@@ -220,6 +221,10 @@ class Terminal:
                 elif k == "gauche":
                     pos = max(0, pos - 1)
                 elif k == "droite":
+                    g = self._fantome(tampon, pos)
+                    if g:                                # idée 66 : → accepte la fin grisée
+                        tampon += list(g)
+                        pos = len(tampon)
                     pos = min(len(tampon), pos + 1)
                 elif k in ("debut", "\x01"):
                     pos = 0
@@ -276,8 +281,36 @@ class Terminal:
 
     def _redessiner(self, invite, tampon, pos):
         texte = "".join(tampon)
-        recul = _largeur(texte[pos:])
-        self.ecrire("\r" + invite + texte + "\033[K" + (f"\033[{recul}D" if recul else ""))
+        g = self._fantome(tampon, pos)                 # idée 66 : la fin du nom, en gris (Tab ou → l'accepte)
+        recul = _largeur(texte[pos:]) + _largeur(g)
+        self.ecrire("\r" + invite + texte + (f"\033[38;5;240m{g}\033[0m" if g else "") + "\033[K"
+                    + (f"\033[{recul}D" if recul else ""))
+
+    def _gris_permis(self):
+        """Pas de fin grisée pendant un exercice, une épreuve ou un défi sans aide (aide_douce.fantome_permis)."""
+        if not self.compagnon:
+            return True
+        try:
+            from .. import aide_douce, core
+            st = core.load()
+            return st is None or aide_douce.fantome_permis(st)
+        except Exception:                                # noqa: BLE001
+            return True
+
+    def _fantome(self, tampon, pos):
+        if not getattr(self, "gris", False) or pos != len(tampon) or not tampon or tampon[-1] == " ":
+            return ""
+        texte = "".join(tampon)
+        try:
+            nouveau, choix = self.completer(texte)
+        except Exception:                                # noqa: BLE001
+            return ""
+        mot = re.search(r"(\S*)$", texte).group(1)
+        from .. import aide_douce
+        g = aide_douce.fantome(mot, choix)
+        if g and nouveau.startswith(texte) and nouveau.rstrip(" ").endswith("/") and len(choix) == 1:
+            g += "/"                                      # un dossier : la barre que Tab écrirait aussi
+        return g
 
     def completer(self, avant):
         """Tab : le nom d'une commande (premier mot) ou d'un chemin du terminal. (nouveau début, possibilités)"""

@@ -99,6 +99,7 @@ class VueCreature:
 
     def __init__(self):
         self.menu = False
+        self.choix = None                # idée 69 : le bouton choisi au clavier (← → puis Entrée), sinon None
         self.panneau = None              # (titre, [(texte, action)])
         self.bulle = None                # (texte, jusqu'à quand)
         self.flottants = []              # [texte, âge en secondes, couleur]
@@ -192,6 +193,15 @@ def scene_creature(c, album, vue, regl, zone_l, zone_h, sol, ox=0, t_=0.0, nom="
             L.append(("texte", bx + bh / 2 + 2, by + bh / 2, sym, 10 if len(sym) > 1 else 11, accent, True, "c", True))
             L.append(("texte", bx + bh + 4, by + bh / 2, lib, 14, TEXTE, True, "g", False))
             zones.append((bx, by, bw, bh, "menu:" + cle))
+            if vue.choix is not None and V.MENU[vue.choix % len(V.MENU)][0] == cle:      # idée 69 : choisi au clavier
+                L.append(("rrect", bx - 5, by - 5, bw + 10, bh + 10, (bh + 10) / 2, None, JAUNE, 3))
+        if vue.choix is not None:
+            aide = "⌨ " + t("ad.bureau.touches")
+            lt = V.largeur_texte(aide, 13) + 28
+            hx = min(max(8, cx - lt / 2), zone_l - lt - 8)
+            hy = max(4, min(b[4] for b in boutons) - 44)
+            L.append(("rrect", hx, hy, lt, 30, 10, FOND, BORD, 1))
+            L.append(("texte", hx + 14, hy + 15, aide, 13, JAUNE, False, "g", False))
         vue.boutons = boutons
         haut_menu = min(b[4] for b in boutons)
     else:

@@ -283,6 +283,11 @@ object Forge {
         }
     }
 
+    /** Idée 25 (AideDouce.kt) : la réponse d'un indice a été montrée : ce palier ne compte plus « sans indice ». */
+    fun indiceVu(jeu: Jeu, lid: String) {
+        if (lid in SANS_INDICE && "indice:$lid" !in faits(jeu)) etat(jeu).getJSONArray("faits").put("indice:$lid")
+    }
+
     /** Un palier fini sans aucun indice : l'exploit « forge.sans_indice » (une fois). */
     fun leconFinie(jeu: Jeu, lid: String) {
         if (lid !in SANS_INDICE) return

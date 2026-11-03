@@ -76,6 +76,7 @@ class Controleur:
         self.saisie_active = False
         self.prise = None                  # décalage entre le pointeur et les pieds pendant un glisser
         self.notifs = []
+        self.au_premier_plan = None        # la fenêtre de la créature prend le clavier (tg menu)
         self.jeu()
         self.releve()
 
@@ -95,6 +96,14 @@ class Controleur:
         if not st:
             return
         langue.appliquer(st)
+        m = st.get("bureau_menu") or 0                 # idée 69 : `tg menu` ouvre le menu rond, sans souris
+        if getattr(self, "menu_vu", None) is None:
+            self.menu_vu = m
+        elif m > self.menu_vu:
+            self.menu_vu = m
+            self.ouvrir_menu_clavier()
+            if self.au_premier_plan:
+                self.au_premier_plan()
         r = V.resume(st)
         if self.resume is not None:
             if r["total"] > self.resume["total"]:
@@ -263,7 +272,39 @@ class Controleur:
 
     def fermer_menu(self):
         self.vue.menu = False
+        self.vue.choix = None
         self.vue.panneau = None
+
+    def ouvrir_menu_clavier(self):
+        """`tg menu` (idée 69) : le menu rond s'ouvre, le premier bouton choisi au clavier."""
+        self.derniere_action = self.t
+        self.vue.menu = True
+        self.vue.panneau = None
+        self.vue.bulle = None
+        self.vue.choix = 0
+
+    def touche_menu(self, special):
+        """Le clavier dans la fenêtre de la créature (seulement elle) : ← → (ou ↑ ↓, Tab) choisissent un bouton du menu
+        rond, Entrée l'ouvre, Échap ferme. Renvoie True si la touche était pour le menu."""
+        if special == "echap" and (self.vue.menu or self.vue.panneau):
+            self.fermer_menu()
+            return True
+        if not self.vue.menu:
+            if special == "entree" and not self.saisie_active:
+                self.ouvrir_menu_clavier()
+                return True
+            return False
+        self.derniere_action = self.t
+        n = len(V.MENU)
+        if special in ("droite", "bas", "tab"):
+            self.vue.choix = ((self.vue.choix if self.vue.choix is not None else -1) + 1) % n
+        elif special in ("gauche", "haut"):
+            self.vue.choix = ((self.vue.choix if self.vue.choix is not None else 1) - 1) % n
+        elif special == "entree" and self.vue.choix is not None:
+            self.action("menu:" + V.MENU[self.vue.choix][0])
+        else:
+            return False
+        return True
 
     # ------------------------------------------------ les actions
     def action(self, a):
@@ -706,6 +747,10 @@ class FenetresGtk:
         clavier = Gtk.EventControllerKey()
         clavier.connect("key-pressed", self._touche)
         self.win_ile.add_controller(clavier)
+        clavier2 = Gtk.EventControllerKey()          # idée 69 : le menu rond au clavier (seulement dans SA fenêtre)
+        clavier2.connect("key-pressed", self._touche)
+        self.win.add_controller(clavier2)
+        self.ctl.au_premier_plan = self.win.present
         self.win.present()
         if self.ctl.regl.get("ile", True):
             self.win_ile.present()
@@ -821,6 +866,9 @@ class FenetresGtk:
         Gdk = self.Gdk
         nom = Gdk.keyval_name(keyval) or ""
         special = {"Return": "entree", "KP_Enter": "entree", "BackSpace": "effacer", "Escape": "echap"}.get(nom)
+        fleche = {"Left": "gauche", "Right": "droite", "Up": "haut", "Down": "bas", "Tab": "tab"}.get(nom)
+        if not self.ctl.saisie_active and self.ctl.touche_menu(fleche or special):   # idée 69 : le menu rond
+            return True
         u = Gdk.keyval_to_unicode(keyval)
         return self.ctl.touche_ile(chr(u) if u and not special else None, special)
 
@@ -1018,6 +1066,7 @@ class FenetresTk:
         self.images = {}
         self.win = self._fenetre("creature")
         self.win_ile = self._fenetre("ile")
+        self.ctl.au_premier_plan = lambda: (self.win.lift(), self.win.focus_force())
         self.zones = {"creature": [], "ile": []}
         self.geo = {}
         root.after(80, self._image)
@@ -1055,7 +1104,7 @@ class FenetresTk:
         if nom == "ile":
             cv.bind("<Motion>", lambda e: self._survol(e.x + self.geo.get("ile", (0, 0))[0], e.y))
             cv.bind("<Leave>", lambda e: self._survol(None, None))
-            w.bind("<Key>", self._touche)
+        w.bind("<Key>", self._touche)                 # (la créature : le menu rond au clavier, idée 69)
         return w
 
     # ------------------------------------------------ gestes (coordonnées de la zone)
@@ -1088,6 +1137,9 @@ class FenetresTk:
 
     def _touche(self, e):
         special = {"Return": "entree", "KP_Enter": "entree", "BackSpace": "effacer", "Escape": "echap"}.get(e.keysym)
+        fleche = {"Left": "gauche", "Right": "droite", "Up": "haut", "Down": "bas", "Tab": "tab"}.get(e.keysym)
+        if not self.ctl.saisie_active and self.ctl.touche_menu(fleche or special):   # idée 69 : le menu rond
+            return "break"
         self.ctl.touche_ile(None if special else e.char, special)
 
     # ------------------------------------------------ boucle

@@ -42,6 +42,8 @@ class MenuParties(
     private val format = SimpleDateFormat("dd/MM HH:mm", Locale.FRANCE)
 
     val ouvert: Boolean get() = etat != null
+    /** idée 79 : « Quitter » a été choisi (l'activité se ferme ; la créature continue de vivre) */
+    var quitter = false
 
     private fun espece(stade: Int, forme: String?) = Regles.espece(stade, forme)
 
@@ -64,33 +66,46 @@ class MenuParties(
             return r.isNotEmpty() && Langue.LANGUES.keys.any { code -> Langue.valeurs("part.non", code).any { norm(it) == r } }
         }
 
-        /** L'action du menu que désigne une réponse (chiffre ou mot) : continuer, nouvelle, charger, compte, ou null. */
+        /** L'action du menu que désigne une réponse (chiffre ou mot) : continuer (Jouer), nouvelle, charger, options,
+         *  aide, quitter, compte, ou null (idée 79, comme pc/tg/accueil.action). */
         fun action(reponse: String): String? {
             val r = norm(reponse)
-            return when {
-                r == "" || r == "1" || r in mots("part.mots.continuer") -> "continuer"
-                r == "2" || r in mots("part.mots.nouvelle") -> "nouvelle"
-                r == "3" || r in mots("part.mots.charger") -> "charger"
-                r == "4" || r in mots("part.mots.compte") -> "compte"
-                else -> null
-            }
+            AideDouce.actionMenu(r)?.let { return it }
+            return listOf("continuer", "quitter", "nouvelle", "charger", "options", "aide", "compte").firstOrNull { r in mots("part.mots.$it") }
         }
     }
 
+    /** « Pixel · Bébé Braisillon · niv. 2 » (ou l'œuf sans nom). */
+    fun texteQui(): String = if (jeu.existe) t("part.qui", "nom" to jeu.nom + (if (jeu.shiny) " ✨" else ""),
+            "espece" to Regles.espece(jeu.stade, jeu.forme, jeu.especeCompagnon), "n" to jeu.niveau)
+        else t("part.oeuf_sans_nom")
+
+    fun texteCompteCourt(): String = if (Recensement.aUnCompte(jeu)) Recensement.compte(jeu).optString("pseudo") else t("part.non_connecte")
+
     fun ouvrir(): String {
         etat = "menu"
-        val c = Recensement.compte(jeu)
-        val qui = if (jeu.existe) t("part.qui", "nom" to jeu.nom + (if (jeu.shiny) " ✨" else ""),
-                "espece" to Regles.espece(jeu.stade, jeu.forme, jeu.especeCompagnon), "n" to jeu.niveau)
-            else t("part.oeuf_sans_nom")
         val compte = if (Recensement.aUnCompte(jeu)) Entrainement.pseudoColore(jeu) else t("part.non_connecte")
         return "┌ Terminagotchi ┐\n" +
-            "1  " + t("part.m.continuer") + "    " + qui + "\n" +
+            "1  " + t("part.m.jouer") + "    " + texteQui() + "\n" +
             "2  " + t("part.m.nouvelle") + "\n" +
             "3  " + t("part.m.charger") + "\n" +
-            "4  " + t("part.m.compte") + "       " + compte + "\n" +
+            "4  " + t("part.m.options") + "\n" +
+            "5  " + t("part.m.aide_menu") + "\n" +
+            "q  " + t("part.m.quitter") + "\n" +
+            t("part.m.compte_ligne", "compte" to compte) + "\n" +
             t("part.m.aide.tel")
     }
+
+    /** Options (idée 79) : le compte (il y est maintenant), la langue, tout au clavier, les autres réglages. */
+    fun texteOptions(): String = listOf("⚙ " + t("part.o.titre"), texteCompte(),
+        t("part.o.langue", "langue" to (Langue.LANGUES[Langue.courante] ?: ""), "cmd" to "`langue en`"),
+        t("part.o.clavier.tel", "cmd" to "`clavier on`", "cmd2" to "`clavier off`"),
+        t("part.o.autres", "notifs" to "`notif off`", "theme" to "`theme`")).joinToString("\n")
+
+    /** Aide (idée 79) : les conseils pour les parents, fermer et revenir, la liste des commandes. */
+    fun texteAide(): String = listOf("❓ " + t("part.a.titre"), AideDouce.conseilsParents(), "",
+        "💤 " + t("ad.fermer.titre"), t("ad.fermer.texte"), t("ad.fermer.tel"), "",
+        t("part.a.liste", "cmd" to "`aide tout`"), t("part.a.perdu", "cmd" to "`perdu`", "cmd2" to "`indice`")).joinToString("\n")
 
     /** Une ligne tapée pendant que le menu est ouvert. null : ce n'est pas pour le menu (il se ferme). */
     fun repondre(ligne: String): String? {
@@ -100,6 +115,9 @@ class MenuParties(
                 "continuer" -> { etat = null; continuer() }
                 "nouvelle" -> nouvelle()
                 "charger" -> charger()
+                "options" -> { etat = null; texteOptions() }
+                "aide" -> { etat = null; texteAide() }
+                "quitter" -> { etat = null; quitter = true; "" }
                 "compte" -> { etat = null; texteCompte() }
                 else -> { etat = null; null }
             }

@@ -137,6 +137,35 @@ class IntroVue(ctx: Context, private val jeu: Jeu, private val creature: () -> B
 
     init { isClickable = true }
 
+    // ---------------------------------------------------------------- accueil et aide (AccueilDessin.kt, 3 novembre)
+    /** idée 69 : le bouton choisi au clavier (anneau jaune), -1 : aucun ; clavier : le mode « tout au clavier » */
+    var focus = -1
+    var clavier = false
+        set(v) { if (field != v) { field = v; if (!v) focus = -1; majTaille() } }
+    private var infos = Triple("", "", "")
+    private var qui = ""
+    private var compte = ""
+    /** la hauteur imposée (dp) du menu du jeu (il prend tout l'écran) */
+    var hauteurMenu = 600f
+    fun montrerParent(n: Int) { if (mode != "parent" || page != n) { mode = "parent"; page = n; focus = if (clavier) 0 else -1; majTaille() } }
+    fun montrerPerdu(i: Triple<String, String, String>) { mode = "perdu"; infos = i; focus = if (clavier) 1 else -1; majTaille() }
+    fun montrerMenu(q: String, c: String, h: Float) {
+        val nouveau = mode != "menu"
+        mode = "menu"; qui = q; compte = c; hauteurMenu = h
+        if (nouveau) focus = if (clavier) 0 else -1
+        majTaille()
+    }
+    /** Tab (idée 69) : le bouton suivant. */
+    fun focusSuivant(sens: Int = 1) {
+        val n = rendu.boutons.size
+        if (n == 0) return
+        focus = if (focus < 0) 0 else (focus + sens + n) % n
+        invalidate()
+    }
+    /** Entrée au clavier : l'action du bouton choisi, ou null. */
+    fun actionFocus(): String? = if (clavier) rendu.boutons.getOrNull(focus)?.action else null
+    fun nbBoutons() = rendu.boutons.size
+
     fun montrerEcran(n: Int) { mode = "ecran"; page = n; majTaille() }
     fun montrerOeuf() { if (mode != "oeuf") { mode = "oeuf"; majTaille() } else invalidate() }
     fun montrerCarte(c: String) { if (mode != "carte" || cid != c) { mode = "carte"; cid = c; majTaille() } else invalidate() }
@@ -201,6 +230,9 @@ class IntroVue(ctx: Context, private val jeu: Jeu, private val creature: () -> B
     } catch (e: Exception) { null }
 
     private fun dessiner(l: Float): Intro.Rendu = when (mode) {
+        "parent" -> AccueilDessin.parent(peintre, page, l, clavier)
+        "perdu" -> AccueilDessin.perdu(peintre, infos, l)
+        "menu" -> AccueilDessin.menu(peintre, l, hauteurMenu, qui, compte, clavier = clavier)
         "oeuf" -> Intro.dessinerOeuf(peintre, jeu, l, imageCourante())
         "carte" -> Intro.dessinerCarte(peintre, jeu, cid, l, chemin)
         else -> Intro.dessinerEcran(peintre, page, nbEcrans(), l)
@@ -227,10 +259,15 @@ class IntroVue(ctx: Context, private val jeu: Jeu, private val creature: () -> B
         canvas.scale(d, d)
         toile = canvas
         rendu = dessiner(width / d)
+        if (clavier && focus >= 0) {
+            if (mode == "ecran" && focus >= rendu.boutons.size) focus = rendu.boutons.size - 1
+            AccueilDessin.anneau(peintre, rendu, focus)
+        }
         toile = null
         canvas.restore()
         if ((rendu.h * d).toInt() != height) requestLayout()
         suite()
+        if (mode == "menu") { removeCallbacks(image); postDelayed(image, 120L) }        // la pluie de pixels descend doucement
     }
 
     override fun onTouchEvent(e: MotionEvent): Boolean {
@@ -240,6 +277,7 @@ class IntroVue(ctx: Context, private val jeu: Jeu, private val creature: () -> B
             val b = rendu.boutons.firstOrNull { x >= it.x - 6 && x <= it.x + it.w + 6 && y >= it.y - 6 && y <= it.y + it.h + 6 }
             if (b != null) action(b.action)
             else if (mode == "carte" || mode == "ecran") action(if (mode == "carte") "ok" else "suivant")
+            else if (mode == "parent" && page == 2) action("parti")
             performClick()
         }
         return true

@@ -51,19 +51,16 @@ def oui(reponse):
 
 
 def action(reponse):
-    """L'action du menu désignée par une réponse (chiffre ou mot) : continuer, nouvelle, charger, compte,
-    quitter, ou None."""
+    """L'action du menu désignée par une réponse (chiffre ou mot) : continuer (Jouer), nouvelle, charger, options,
+    aide, compte, quitter, ou None. Idée 79 (3 novembre) : 4 = Options (le compte y est), 5 = Aide, q = Quitter."""
+    from . import aide_douce
     r = _norm(reponse)
-    if r in ("", "1") or r in mots("part.mots.continuer"):
-        return "continuer"
-    if r in ("q", "0") or r in mots("part.mots.quitter"):
-        return "quitter"
-    if r == "2" or r in mots("part.mots.nouvelle"):
-        return "nouvelle"
-    if r == "3" or r in mots("part.mots.charger"):
-        return "charger"
-    if r == "4" or r in mots("part.mots.compte"):
-        return "compte"
+    a = aide_douce.action_menu(r)
+    if a:
+        return a
+    for quoi in ("continuer", "quitter", "nouvelle", "charger", "options", "aide", "compte"):
+        if r in mots("part.mots." + quoi):
+            return quoi
     return None
 
 _rafraichi = {"ok": None}         # None : pas encore de réponse · True / False : en ligne / hors ligne
@@ -89,17 +86,47 @@ def _pseudo(st):
     return entrainement.pseudo_colore(st) if (st or {}).get("compte", {}).get("pseudo") else ""
 
 
-def ecran_menu(st):
+TITRE = ["▀█▀ █▀▀ █▀█ █▀▄▀█ █ █▄ █ ▄▀█", " █  ██▄ █▀▄ █ ▀ █ █ █ ▀█ █▀█",
+         "     █▀▀ █▀█ ▀█▀ █▀▀ █ █ █", "     █▄█ █▄█  █  █▄▄ █▀█ █"]
+CHOIX = [("1", "continuer", "part.m.jouer"), ("2", "nouvelle", "part.m.nouvelle"), ("3", "charger", "part.m.charger"),
+         ("4", "options", "part.m.options"), ("5", "aide", "part.m.aide_menu"), ("q", "quitter", "part.m.quitter")]
+
+
+def ecran_menu(st, choisi=0):
+    """Le menu du jeu (idée 79) : le titre en gros pixels, la créature, Jouer, Nouvelle partie, Charger, Options,
+    Aide, Quitter ; choisi : la ligne surlignée (↑ ↓)."""
     c = (st or {}).get("compte", {})
     compte = _pseudo(st) if c.get("cle") else t("part.non_connecte")
-    return "\n".join([
-        f"{fg(213)}┌ Terminagotchi ┐{RESET}",
-        f"{BOLD}1{RESET}  " + t("part.m.continuer") + "    " + _qui(st),
-        f"{BOLD}2{RESET}  " + t("part.m.nouvelle"),
-        f"{BOLD}3{RESET}  " + t("part.m.charger"),
-        f"{BOLD}4{RESET}  " + t("part.m.compte") + "       " + compte,
-        f"{DIM}" + t("part.m.aide") + RESET,
-    ])
+    out = [""] + [f"   {fg(84 if k < 2 else 113)}{BOLD}{l}{RESET}" for k, l in enumerate(TITRE)] + [""]
+    for k, (num, quoi, cle) in enumerate(CHOIX):
+        lib = t(cle)
+        lib = lib[:1].upper() + lib[1:]
+        apres = "     " + f"{DIM}{_qui(st)}{RESET}" if quoi == "continuer" else ""
+        if k == choisi:
+            out.append(f"   \x1b[48;5;78m\x1b[38;5;16m{BOLD} ▶ {num}  {lib} {RESET}{apres}")
+        else:
+            out.append(f"     {BOLD}{num}{RESET}  {lib}{apres}")
+    out += ["", f"   {DIM}" + t("part.m.touches") + RESET, f"   {DIM}" + t("part.m.compte_ligne", compte=compte) + RESET]
+    return "\n".join(out)
+
+
+def texte_options(st):
+    """Options du menu : le compte (il y est maintenant), la langue, le clavier, les notifications, le thème."""
+    from . import aide_douce
+    return "\n".join([f" {fg(213)}{BOLD}⚙ " + t("part.o.titre") + RESET,
+                      "  " + texte_compte(st).replace("\n", "\n  "),
+                      "  " + t("part.o.langue", langue=langue.LANGUES[langue.courante()], cmd="`tg langue en`"),
+                      "  " + t("part.o.clavier", disp=aide_douce.disposition(st or {}).upper(), cmd="`tg clavier azerty`"),
+                      "  " + t("part.o.autres", notifs="`tg notifs off`", theme="`tg theme`")])
+
+
+def texte_aide(st):
+    """Aide du menu : les conseils pour les parents, fermer et revenir, la liste des commandes."""
+    from . import aide_douce
+    return "\n".join([f" {fg(213)}{BOLD}❓ " + t("part.a.titre") + RESET] + aide_douce.conseils_parents()
+                     + ["", f"  {fg(78)}💤 " + t("ad.fermer.titre") + RESET, "  " + t("ad.fermer.texte"),
+                        "  " + t("ad.fermer.pc", cmd="`exit`"), "", "  " + t("part.a.liste", cmd="`tg aide tout`"),
+                        "  " + t("part.a.perdu", cmd="`perdu`", cmd2="`indice`")])
 
 
 # ---------------------------------------------------------------- compte en ligne (en fond, jamais bloquant)
@@ -226,17 +253,87 @@ def commande(args, demander=input):
     return t("part.aide")
 
 
+def _lire_touches(choisi):
+    """↑ ↓ puis Entrée, ou un chiffre, ou un mot puis Entrée (terminal brut). Renvoie (texte, choisi) : texte None si
+    une flèche a seulement bougé le choix."""
+    from .plateforme import SYS_WIN
+    if SYS_WIN:
+        import msvcrt
+        tampon = ""
+        while True:
+            c = msvcrt.getwch()
+            if c in ("\x00", "\xe0"):
+                k = msvcrt.getwch()
+                if k in ("H", "P"):
+                    return None, (choisi + (-1 if k == "H" else 1)) % len(CHOIX)
+                continue
+            if c == "\x03":
+                raise KeyboardInterrupt
+            if c == "\r":
+                return (tampon or CHOIX[choisi][0]), choisi
+            if c == "\x08":
+                tampon = tampon[:-1]
+            elif c.isprintable():
+                tampon += c
+                if c.isdigit() and len(tampon) == 1:
+                    return c, choisi
+    import os
+    import termios
+    import tty
+    fd = sys.stdin.fileno()
+    vieux = termios.tcgetattr(fd)
+    tampon = ""
+    try:
+        tty.setcbreak(fd)
+        while True:
+            c = os.read(fd, 8).decode("utf-8", "ignore")
+            if c in ("\x1b[A", "\x1bOA"):
+                return None, (choisi - 1) % len(CHOIX)
+            if c in ("\x1b[B", "\x1bOB"):
+                return None, (choisi + 1) % len(CHOIX)
+            if c in ("\x03", "\x04"):
+                raise KeyboardInterrupt
+            if c in ("\r", "\n"):
+                sys.stdout.write("\n")
+                return (tampon.strip() or CHOIX[choisi][0]), choisi
+            if c in ("\x7f", "\x08"):
+                if tampon:
+                    tampon = tampon[:-1]
+                    sys.stdout.write("\b \b")
+            elif c.isprintable() and not c.startswith("\x1b"):
+                if not tampon and len(c) == 1 and (c.isdigit() or c.lower() == "q"):
+                    sys.stdout.write(c + "\n")
+                    return c, choisi
+                tampon += c
+                sys.stdout.write(c)
+            sys.stdout.flush()
+    finally:
+        termios.tcsetattr(fd, termios.TCSADRAIN, vieux)
+
+
 def menu(demander=input):
-    """Le menu du lancement. Renvoie False si le joueur veut quitter."""
+    """Le menu du lancement. Renvoie False si le joueur veut quitter. Dans un vrai terminal : ↑ ↓ puis Entrée (ou un
+    chiffre, ou le mot) ; sinon (tests, scripts) une ligne lue par demander."""
     _rafraichir_compte(_etat())
     msg = ""
+    choisi = 0
+    fleches = demander is input and sys.stdin.isatty() and sys.stdout.isatty()
     while True:
         st = _etat()
+        if fleches:
+            print("\x1b[H\x1b[2J", end="")
         if msg:
             print(msg + "\n")
-        print(ecran_menu(st))
+        print(ecran_menu(st, choisi))
         try:
-            r = demander(f"{BOLD}> {RESET}").strip()
+            if fleches:
+                print(f"{BOLD}> {RESET}", end="", flush=True)
+                r, choisi = _lire_touches(choisi)
+                if r is None:
+                    continue
+            else:
+                r = demander(f"{BOLD}> {RESET}")
+            r = r.strip()
         except (KeyboardInterrupt, EOFError):
             print()
             return False
@@ -257,11 +354,15 @@ def menu(demander=input):
                 print(texte)
                 n = demander(t("part.l.numero") + " ").strip()
                 msg = charger(int(n), choix) if n.isdigit() else ""
+            elif quoi == "options":
+                msg = texte_options(st)
+            elif quoi == "aide":
+                msg = texte_aide(st)
             elif quoi == "compte":
                 msg = texte_compte(st)
-            elif rl.split()[0] in ("compte", "partie"):
-                mots = r.split()[1:]
-                msg = recense.commande(mots) if rl.startswith("compte") else commande(mots, demander)
+            elif rl and rl.split()[0] in ("compte", "partie"):
+                mots_ = r.split()[1:]
+                msg = recense.commande(mots_) if rl.startswith("compte") else commande(mots_, demander)
             else:
                 msg = t("part.m.inconnu")
         except (KeyboardInterrupt, EOFError):

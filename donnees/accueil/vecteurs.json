@@ -1,0 +1,3423 @@
+{
+ "note": "pc/outils/vecteurs_accueil.py (règles d'aide_douce.py = AideDouce.kt)",
+ "fleche": [
+  {
+   "intro": true,
+   "reussies": 0,
+   "depuis": 0,
+   "ok": true
+  },
+  {
+   "intro": true,
+   "reussies": 0,
+   "depuis": 30,
+   "ok": true
+  },
+  {
+   "intro": true,
+   "reussies": 0,
+   "depuis": 59.9,
+   "ok": true
+  },
+  {
+   "intro": true,
+   "reussies": 0,
+   "depuis": 60,
+   "ok": true
+  },
+  {
+   "intro": true,
+   "reussies": 0,
+   "depuis": 300,
+   "ok": true
+  },
+  {
+   "intro": true,
+   "reussies": 2,
+   "depuis": 0,
+   "ok": true
+  },
+  {
+   "intro": true,
+   "reussies": 2,
+   "depuis": 30,
+   "ok": true
+  },
+  {
+   "intro": true,
+   "reussies": 2,
+   "depuis": 59.9,
+   "ok": true
+  },
+  {
+   "intro": true,
+   "reussies": 2,
+   "depuis": 60,
+   "ok": true
+  },
+  {
+   "intro": true,
+   "reussies": 2,
+   "depuis": 300,
+   "ok": true
+  },
+  {
+   "intro": true,
+   "reussies": 3,
+   "depuis": 0,
+   "ok": false
+  },
+  {
+   "intro": true,
+   "reussies": 3,
+   "depuis": 30,
+   "ok": false
+  },
+  {
+   "intro": true,
+   "reussies": 3,
+   "depuis": 59.9,
+   "ok": false
+  },
+  {
+   "intro": true,
+   "reussies": 3,
+   "depuis": 60,
+   "ok": true
+  },
+  {
+   "intro": true,
+   "reussies": 3,
+   "depuis": 300,
+   "ok": true
+  },
+  {
+   "intro": true,
+   "reussies": 7,
+   "depuis": 0,
+   "ok": false
+  },
+  {
+   "intro": true,
+   "reussies": 7,
+   "depuis": 30,
+   "ok": false
+  },
+  {
+   "intro": true,
+   "reussies": 7,
+   "depuis": 59.9,
+   "ok": false
+  },
+  {
+   "intro": true,
+   "reussies": 7,
+   "depuis": 60,
+   "ok": true
+  },
+  {
+   "intro": true,
+   "reussies": 7,
+   "depuis": 300,
+   "ok": true
+  },
+  {
+   "intro": false,
+   "reussies": 0,
+   "depuis": 0,
+   "ok": false
+  },
+  {
+   "intro": false,
+   "reussies": 0,
+   "depuis": 30,
+   "ok": false
+  },
+  {
+   "intro": false,
+   "reussies": 0,
+   "depuis": 59.9,
+   "ok": false
+  },
+  {
+   "intro": false,
+   "reussies": 0,
+   "depuis": 60,
+   "ok": false
+  },
+  {
+   "intro": false,
+   "reussies": 0,
+   "depuis": 300,
+   "ok": false
+  },
+  {
+   "intro": false,
+   "reussies": 2,
+   "depuis": 0,
+   "ok": false
+  },
+  {
+   "intro": false,
+   "reussies": 2,
+   "depuis": 30,
+   "ok": false
+  },
+  {
+   "intro": false,
+   "reussies": 2,
+   "depuis": 59.9,
+   "ok": false
+  },
+  {
+   "intro": false,
+   "reussies": 2,
+   "depuis": 60,
+   "ok": false
+  },
+  {
+   "intro": false,
+   "reussies": 2,
+   "depuis": 300,
+   "ok": false
+  },
+  {
+   "intro": false,
+   "reussies": 3,
+   "depuis": 0,
+   "ok": false
+  },
+  {
+   "intro": false,
+   "reussies": 3,
+   "depuis": 30,
+   "ok": false
+  },
+  {
+   "intro": false,
+   "reussies": 3,
+   "depuis": 59.9,
+   "ok": false
+  },
+  {
+   "intro": false,
+   "reussies": 3,
+   "depuis": 60,
+   "ok": false
+  },
+  {
+   "intro": false,
+   "reussies": 3,
+   "depuis": 300,
+   "ok": false
+  },
+  {
+   "intro": false,
+   "reussies": 7,
+   "depuis": 0,
+   "ok": false
+  },
+  {
+   "intro": false,
+   "reussies": 7,
+   "depuis": 30,
+   "ok": false
+  },
+  {
+   "intro": false,
+   "reussies": 7,
+   "depuis": 59.9,
+   "ok": false
+  },
+  {
+   "intro": false,
+   "reussies": 7,
+   "depuis": 60,
+   "ok": false
+  },
+  {
+   "intro": false,
+   "reussies": 7,
+   "depuis": 300,
+   "ok": false
+  }
+ ],
+ "vif": [
+  {
+   "erreurs": 0,
+   "depuis": 0,
+   "ok": false
+  },
+  {
+   "erreurs": 0,
+   "depuis": 119,
+   "ok": false
+  },
+  {
+   "erreurs": 0,
+   "depuis": 120,
+   "ok": true
+  },
+  {
+   "erreurs": 0,
+   "depuis": 600,
+   "ok": true
+  },
+  {
+   "erreurs": 1,
+   "depuis": 0,
+   "ok": false
+  },
+  {
+   "erreurs": 1,
+   "depuis": 119,
+   "ok": false
+  },
+  {
+   "erreurs": 1,
+   "depuis": 120,
+   "ok": true
+  },
+  {
+   "erreurs": 1,
+   "depuis": 600,
+   "ok": true
+  },
+  {
+   "erreurs": 2,
+   "depuis": 0,
+   "ok": true
+  },
+  {
+   "erreurs": 2,
+   "depuis": 119,
+   "ok": true
+  },
+  {
+   "erreurs": 2,
+   "depuis": 120,
+   "ok": true
+  },
+  {
+   "erreurs": 2,
+   "depuis": 600,
+   "ok": true
+  },
+  {
+   "erreurs": 5,
+   "depuis": 0,
+   "ok": true
+  },
+  {
+   "erreurs": 5,
+   "depuis": 119,
+   "ok": true
+  },
+  {
+   "erreurs": 5,
+   "depuis": 120,
+   "ok": true
+  },
+  {
+   "erreurs": 5,
+   "depuis": 600,
+   "ok": true
+  }
+ ],
+ "touche": [
+  {
+   "attendu": "pwd",
+   "tape": "",
+   "touche": null
+  },
+  {
+   "attendu": "pwd",
+   "tape": "l",
+   "touche": null
+  },
+  {
+   "attendu": "pwd",
+   "tape": "ls",
+   "touche": null
+  },
+  {
+   "attendu": "pwd",
+   "tape": "ls ",
+   "touche": null
+  },
+  {
+   "attendu": "pwd",
+   "tape": "ls sac ",
+   "touche": null
+  },
+  {
+   "attendu": "pwd",
+   "tape": "ls sac |",
+   "touche": null
+  },
+  {
+   "attendu": "pwd",
+   "tape": "ls sac | wc",
+   "touche": null
+  },
+  {
+   "attendu": "pwd",
+   "tape": "echo pomme ",
+   "touche": null
+  },
+  {
+   "attendu": "pwd",
+   "tape": "echo pomme >",
+   "touche": null
+  },
+  {
+   "attendu": "pwd",
+   "tape": "echo poire >",
+   "touche": null
+  },
+  {
+   "attendu": "pwd",
+   "tape": "cd",
+   "touche": null
+  },
+  {
+   "attendu": "pwd",
+   "tape": "cd ",
+   "touche": null
+  },
+  {
+   "attendu": "pwd",
+   "tape": "xyz",
+   "touche": null
+  },
+  {
+   "attendu": "pwd",
+   "tape": "echo \"",
+   "touche": null
+  },
+  {
+   "attendu": "pwd",
+   "tape": "cat ",
+   "touche": null
+  },
+  {
+   "attendu": "pwd",
+   "tape": "sleep 5 ",
+   "touche": null
+  },
+  {
+   "attendu": "ls",
+   "tape": "",
+   "touche": null
+  },
+  {
+   "attendu": "ls",
+   "tape": "l",
+   "touche": null
+  },
+  {
+   "attendu": "ls",
+   "tape": "ls",
+   "touche": null
+  },
+  {
+   "attendu": "ls",
+   "tape": "ls ",
+   "touche": null
+  },
+  {
+   "attendu": "ls",
+   "tape": "ls sac ",
+   "touche": null
+  },
+  {
+   "attendu": "ls",
+   "tape": "ls sac |",
+   "touche": null
+  },
+  {
+   "attendu": "ls",
+   "tape": "ls sac | wc",
+   "touche": null
+  },
+  {
+   "attendu": "ls",
+   "tape": "echo pomme ",
+   "touche": null
+  },
+  {
+   "attendu": "ls",
+   "tape": "echo pomme >",
+   "touche": null
+  },
+  {
+   "attendu": "ls",
+   "tape": "echo poire >",
+   "touche": null
+  },
+  {
+   "attendu": "ls",
+   "tape": "cd",
+   "touche": null
+  },
+  {
+   "attendu": "ls",
+   "tape": "cd ",
+   "touche": null
+  },
+  {
+   "attendu": "ls",
+   "tape": "xyz",
+   "touche": null
+  },
+  {
+   "attendu": "ls",
+   "tape": "echo \"",
+   "touche": null
+  },
+  {
+   "attendu": "ls",
+   "tape": "cat ",
+   "touche": null
+  },
+  {
+   "attendu": "ls",
+   "tape": "sleep 5 ",
+   "touche": null
+  },
+  {
+   "attendu": "ls sac | wc -l",
+   "tape": "",
+   "touche": "|"
+  },
+  {
+   "attendu": "ls sac | wc -l",
+   "tape": "l",
+   "touche": "|"
+  },
+  {
+   "attendu": "ls sac | wc -l",
+   "tape": "ls",
+   "touche": "|"
+  },
+  {
+   "attendu": "ls sac | wc -l",
+   "tape": "ls ",
+   "touche": "|"
+  },
+  {
+   "attendu": "ls sac | wc -l",
+   "tape": "ls sac ",
+   "touche": "|"
+  },
+  {
+   "attendu": "ls sac | wc -l",
+   "tape": "ls sac |",
+   "touche": "-"
+  },
+  {
+   "attendu": "ls sac | wc -l",
+   "tape": "ls sac | wc",
+   "touche": "-"
+  },
+  {
+   "attendu": "ls sac | wc -l",
+   "tape": "echo pomme ",
+   "touche": "|"
+  },
+  {
+   "attendu": "ls sac | wc -l",
+   "tape": "echo pomme >",
+   "touche": "|"
+  },
+  {
+   "attendu": "ls sac | wc -l",
+   "tape": "echo poire >",
+   "touche": "|"
+  },
+  {
+   "attendu": "ls sac | wc -l",
+   "tape": "cd",
+   "touche": "|"
+  },
+  {
+   "attendu": "ls sac | wc -l",
+   "tape": "cd ",
+   "touche": "|"
+  },
+  {
+   "attendu": "ls sac | wc -l",
+   "tape": "xyz",
+   "touche": "|"
+  },
+  {
+   "attendu": "ls sac | wc -l",
+   "tape": "echo \"",
+   "touche": "|"
+  },
+  {
+   "attendu": "ls sac | wc -l",
+   "tape": "cat ",
+   "touche": "|"
+  },
+  {
+   "attendu": "ls sac | wc -l",
+   "tape": "sleep 5 ",
+   "touche": "|"
+  },
+  {
+   "attendu": "echo pomme > nid/repas.txt",
+   "tape": "",
+   "touche": ">"
+  },
+  {
+   "attendu": "echo pomme > nid/repas.txt",
+   "tape": "l",
+   "touche": ">"
+  },
+  {
+   "attendu": "echo pomme > nid/repas.txt",
+   "tape": "ls",
+   "touche": ">"
+  },
+  {
+   "attendu": "echo pomme > nid/repas.txt",
+   "tape": "ls ",
+   "touche": ">"
+  },
+  {
+   "attendu": "echo pomme > nid/repas.txt",
+   "tape": "ls sac ",
+   "touche": ">"
+  },
+  {
+   "attendu": "echo pomme > nid/repas.txt",
+   "tape": "ls sac |",
+   "touche": ">"
+  },
+  {
+   "attendu": "echo pomme > nid/repas.txt",
+   "tape": "ls sac | wc",
+   "touche": ">"
+  },
+  {
+   "attendu": "echo pomme > nid/repas.txt",
+   "tape": "echo pomme ",
+   "touche": ">"
+  },
+  {
+   "attendu": "echo pomme > nid/repas.txt",
+   "tape": "echo pomme >",
+   "touche": "/"
+  },
+  {
+   "attendu": "echo pomme > nid/repas.txt",
+   "tape": "echo poire >",
+   "touche": ">"
+  },
+  {
+   "attendu": "echo pomme > nid/repas.txt",
+   "tape": "cd",
+   "touche": ">"
+  },
+  {
+   "attendu": "echo pomme > nid/repas.txt",
+   "tape": "cd ",
+   "touche": ">"
+  },
+  {
+   "attendu": "echo pomme > nid/repas.txt",
+   "tape": "xyz",
+   "touche": ">"
+  },
+  {
+   "attendu": "echo pomme > nid/repas.txt",
+   "tape": "echo \"",
+   "touche": ">"
+  },
+  {
+   "attendu": "echo pomme > nid/repas.txt",
+   "tape": "cat ",
+   "touche": ">"
+  },
+  {
+   "attendu": "echo pomme > nid/repas.txt",
+   "tape": "sleep 5 ",
+   "touche": ">"
+  },
+  {
+   "attendu": "echo poire >> nid/repas.txt",
+   "tape": "",
+   "touche": "⋯"
+  },
+  {
+   "attendu": "echo poire >> nid/repas.txt",
+   "tape": "l",
+   "touche": "⋯"
+  },
+  {
+   "attendu": "echo poire >> nid/repas.txt",
+   "tape": "ls",
+   "touche": "⋯"
+  },
+  {
+   "attendu": "echo poire >> nid/repas.txt",
+   "tape": "ls ",
+   "touche": "⋯"
+  },
+  {
+   "attendu": "echo poire >> nid/repas.txt",
+   "tape": "ls sac ",
+   "touche": "⋯"
+  },
+  {
+   "attendu": "echo poire >> nid/repas.txt",
+   "tape": "ls sac |",
+   "touche": "⋯"
+  },
+  {
+   "attendu": "echo poire >> nid/repas.txt",
+   "tape": "ls sac | wc",
+   "touche": "⋯"
+  },
+  {
+   "attendu": "echo poire >> nid/repas.txt",
+   "tape": "echo pomme ",
+   "touche": "⋯"
+  },
+  {
+   "attendu": "echo poire >> nid/repas.txt",
+   "tape": "echo pomme >",
+   "touche": "⋯"
+  },
+  {
+   "attendu": "echo poire >> nid/repas.txt",
+   "tape": "echo poire >",
+   "touche": ">"
+  },
+  {
+   "attendu": "echo poire >> nid/repas.txt",
+   "tape": "cd",
+   "touche": "⋯"
+  },
+  {
+   "attendu": "echo poire >> nid/repas.txt",
+   "tape": "cd ",
+   "touche": "⋯"
+  },
+  {
+   "attendu": "echo poire >> nid/repas.txt",
+   "tape": "xyz",
+   "touche": "⋯"
+  },
+  {
+   "attendu": "echo poire >> nid/repas.txt",
+   "tape": "echo \"",
+   "touche": "⋯"
+  },
+  {
+   "attendu": "echo poire >> nid/repas.txt",
+   "tape": "cat ",
+   "touche": "⋯"
+  },
+  {
+   "attendu": "echo poire >> nid/repas.txt",
+   "tape": "sleep 5 ",
+   "touche": "⋯"
+  },
+  {
+   "attendu": "cd ~",
+   "tape": "",
+   "touche": "~"
+  },
+  {
+   "attendu": "cd ~",
+   "tape": "l",
+   "touche": "~"
+  },
+  {
+   "attendu": "cd ~",
+   "tape": "ls",
+   "touche": "~"
+  },
+  {
+   "attendu": "cd ~",
+   "tape": "ls ",
+   "touche": "~"
+  },
+  {
+   "attendu": "cd ~",
+   "tape": "ls sac ",
+   "touche": "~"
+  },
+  {
+   "attendu": "cd ~",
+   "tape": "ls sac |",
+   "touche": "~"
+  },
+  {
+   "attendu": "cd ~",
+   "tape": "ls sac | wc",
+   "touche": "~"
+  },
+  {
+   "attendu": "cd ~",
+   "tape": "echo pomme ",
+   "touche": "~"
+  },
+  {
+   "attendu": "cd ~",
+   "tape": "echo pomme >",
+   "touche": "~"
+  },
+  {
+   "attendu": "cd ~",
+   "tape": "echo poire >",
+   "touche": "~"
+  },
+  {
+   "attendu": "cd ~",
+   "tape": "cd",
+   "touche": "~"
+  },
+  {
+   "attendu": "cd ~",
+   "tape": "cd ",
+   "touche": "~"
+  },
+  {
+   "attendu": "cd ~",
+   "tape": "xyz",
+   "touche": "~"
+  },
+  {
+   "attendu": "cd ~",
+   "tape": "echo \"",
+   "touche": "~"
+  },
+  {
+   "attendu": "cd ~",
+   "tape": "cat ",
+   "touche": "~"
+  },
+  {
+   "attendu": "cd ~",
+   "tape": "sleep 5 ",
+   "touche": "~"
+  },
+  {
+   "attendu": "cd ~/terrain_terminagotchi/nid",
+   "tape": "",
+   "touche": "~"
+  },
+  {
+   "attendu": "cd ~/terrain_terminagotchi/nid",
+   "tape": "l",
+   "touche": "~"
+  },
+  {
+   "attendu": "cd ~/terrain_terminagotchi/nid",
+   "tape": "ls",
+   "touche": "~"
+  },
+  {
+   "attendu": "cd ~/terrain_terminagotchi/nid",
+   "tape": "ls ",
+   "touche": "~"
+  },
+  {
+   "attendu": "cd ~/terrain_terminagotchi/nid",
+   "tape": "ls sac ",
+   "touche": "~"
+  },
+  {
+   "attendu": "cd ~/terrain_terminagotchi/nid",
+   "tape": "ls sac |",
+   "touche": "~"
+  },
+  {
+   "attendu": "cd ~/terrain_terminagotchi/nid",
+   "tape": "ls sac | wc",
+   "touche": "~"
+  },
+  {
+   "attendu": "cd ~/terrain_terminagotchi/nid",
+   "tape": "echo pomme ",
+   "touche": "~"
+  },
+  {
+   "attendu": "cd ~/terrain_terminagotchi/nid",
+   "tape": "echo pomme >",
+   "touche": "~"
+  },
+  {
+   "attendu": "cd ~/terrain_terminagotchi/nid",
+   "tape": "echo poire >",
+   "touche": "~"
+  },
+  {
+   "attendu": "cd ~/terrain_terminagotchi/nid",
+   "tape": "cd",
+   "touche": "~"
+  },
+  {
+   "attendu": "cd ~/terrain_terminagotchi/nid",
+   "tape": "cd ",
+   "touche": "~"
+  },
+  {
+   "attendu": "cd ~/terrain_terminagotchi/nid",
+   "tape": "xyz",
+   "touche": "~"
+  },
+  {
+   "attendu": "cd ~/terrain_terminagotchi/nid",
+   "tape": "echo \"",
+   "touche": "~"
+  },
+  {
+   "attendu": "cd ~/terrain_terminagotchi/nid",
+   "tape": "cat ",
+   "touche": "~"
+  },
+  {
+   "attendu": "cd ~/terrain_terminagotchi/nid",
+   "tape": "sleep 5 ",
+   "touche": "~"
+  },
+  {
+   "attendu": "ls -a",
+   "tape": "",
+   "touche": "-"
+  },
+  {
+   "attendu": "ls -a",
+   "tape": "l",
+   "touche": "-"
+  },
+  {
+   "attendu": "ls -a",
+   "tape": "ls",
+   "touche": "-"
+  },
+  {
+   "attendu": "ls -a",
+   "tape": "ls ",
+   "touche": "-"
+  },
+  {
+   "attendu": "ls -a",
+   "tape": "ls sac ",
+   "touche": "-"
+  },
+  {
+   "attendu": "ls -a",
+   "tape": "ls sac |",
+   "touche": "-"
+  },
+  {
+   "attendu": "ls -a",
+   "tape": "ls sac | wc",
+   "touche": "-"
+  },
+  {
+   "attendu": "ls -a",
+   "tape": "echo pomme ",
+   "touche": "-"
+  },
+  {
+   "attendu": "ls -a",
+   "tape": "echo pomme >",
+   "touche": "-"
+  },
+  {
+   "attendu": "ls -a",
+   "tape": "echo poire >",
+   "touche": "-"
+  },
+  {
+   "attendu": "ls -a",
+   "tape": "cd",
+   "touche": "-"
+  },
+  {
+   "attendu": "ls -a",
+   "tape": "cd ",
+   "touche": "-"
+  },
+  {
+   "attendu": "ls -a",
+   "tape": "xyz",
+   "touche": "-"
+  },
+  {
+   "attendu": "ls -a",
+   "tape": "echo \"",
+   "touche": "-"
+  },
+  {
+   "attendu": "ls -a",
+   "tape": "cat ",
+   "touche": "-"
+  },
+  {
+   "attendu": "ls -a",
+   "tape": "sleep 5 ",
+   "touche": "-"
+  },
+  {
+   "attendu": "cat *.txt",
+   "tape": "",
+   "touche": "⋯"
+  },
+  {
+   "attendu": "cat *.txt",
+   "tape": "l",
+   "touche": "⋯"
+  },
+  {
+   "attendu": "cat *.txt",
+   "tape": "ls",
+   "touche": "⋯"
+  },
+  {
+   "attendu": "cat *.txt",
+   "tape": "ls ",
+   "touche": "⋯"
+  },
+  {
+   "attendu": "cat *.txt",
+   "tape": "ls sac ",
+   "touche": "⋯"
+  },
+  {
+   "attendu": "cat *.txt",
+   "tape": "ls sac |",
+   "touche": "⋯"
+  },
+  {
+   "attendu": "cat *.txt",
+   "tape": "ls sac | wc",
+   "touche": "⋯"
+  },
+  {
+   "attendu": "cat *.txt",
+   "tape": "echo pomme ",
+   "touche": "⋯"
+  },
+  {
+   "attendu": "cat *.txt",
+   "tape": "echo pomme >",
+   "touche": "⋯"
+  },
+  {
+   "attendu": "cat *.txt",
+   "tape": "echo poire >",
+   "touche": "⋯"
+  },
+  {
+   "attendu": "cat *.txt",
+   "tape": "cd",
+   "touche": "⋯"
+  },
+  {
+   "attendu": "cat *.txt",
+   "tape": "cd ",
+   "touche": "⋯"
+  },
+  {
+   "attendu": "cat *.txt",
+   "tape": "xyz",
+   "touche": "⋯"
+  },
+  {
+   "attendu": "cat *.txt",
+   "tape": "echo \"",
+   "touche": "⋯"
+  },
+  {
+   "attendu": "cat *.txt",
+   "tape": "cat ",
+   "touche": "⋯"
+  },
+  {
+   "attendu": "cat *.txt",
+   "tape": "sleep 5 ",
+   "touche": "⋯"
+  },
+  {
+   "attendu": "echo \"bonjour\"",
+   "tape": "",
+   "touche": "⋯"
+  },
+  {
+   "attendu": "echo \"bonjour\"",
+   "tape": "l",
+   "touche": "⋯"
+  },
+  {
+   "attendu": "echo \"bonjour\"",
+   "tape": "ls",
+   "touche": "⋯"
+  },
+  {
+   "attendu": "echo \"bonjour\"",
+   "tape": "ls ",
+   "touche": "⋯"
+  },
+  {
+   "attendu": "echo \"bonjour\"",
+   "tape": "ls sac ",
+   "touche": "⋯"
+  },
+  {
+   "attendu": "echo \"bonjour\"",
+   "tape": "ls sac |",
+   "touche": "⋯"
+  },
+  {
+   "attendu": "echo \"bonjour\"",
+   "tape": "ls sac | wc",
+   "touche": "⋯"
+  },
+  {
+   "attendu": "echo \"bonjour\"",
+   "tape": "echo pomme ",
+   "touche": "⋯"
+  },
+  {
+   "attendu": "echo \"bonjour\"",
+   "tape": "echo pomme >",
+   "touche": "⋯"
+  },
+  {
+   "attendu": "echo \"bonjour\"",
+   "tape": "echo poire >",
+   "touche": "⋯"
+  },
+  {
+   "attendu": "echo \"bonjour\"",
+   "tape": "cd",
+   "touche": "⋯"
+  },
+  {
+   "attendu": "echo \"bonjour\"",
+   "tape": "cd ",
+   "touche": "⋯"
+  },
+  {
+   "attendu": "echo \"bonjour\"",
+   "tape": "xyz",
+   "touche": "⋯"
+  },
+  {
+   "attendu": "echo \"bonjour\"",
+   "tape": "echo \"",
+   "touche": "⋯"
+  },
+  {
+   "attendu": "echo \"bonjour\"",
+   "tape": "cat ",
+   "touche": "⋯"
+  },
+  {
+   "attendu": "echo \"bonjour\"",
+   "tape": "sleep 5 ",
+   "touche": "⋯"
+  },
+  {
+   "attendu": "echo 'a'",
+   "tape": "",
+   "touche": "⋯"
+  },
+  {
+   "attendu": "echo 'a'",
+   "tape": "l",
+   "touche": "⋯"
+  },
+  {
+   "attendu": "echo 'a'",
+   "tape": "ls",
+   "touche": "⋯"
+  },
+  {
+   "attendu": "echo 'a'",
+   "tape": "ls ",
+   "touche": "⋯"
+  },
+  {
+   "attendu": "echo 'a'",
+   "tape": "ls sac ",
+   "touche": "⋯"
+  },
+  {
+   "attendu": "echo 'a'",
+   "tape": "ls sac |",
+   "touche": "⋯"
+  },
+  {
+   "attendu": "echo 'a'",
+   "tape": "ls sac | wc",
+   "touche": "⋯"
+  },
+  {
+   "attendu": "echo 'a'",
+   "tape": "echo pomme ",
+   "touche": "⋯"
+  },
+  {
+   "attendu": "echo 'a'",
+   "tape": "echo pomme >",
+   "touche": "⋯"
+  },
+  {
+   "attendu": "echo 'a'",
+   "tape": "echo poire >",
+   "touche": "⋯"
+  },
+  {
+   "attendu": "echo 'a'",
+   "tape": "cd",
+   "touche": "⋯"
+  },
+  {
+   "attendu": "echo 'a'",
+   "tape": "cd ",
+   "touche": "⋯"
+  },
+  {
+   "attendu": "echo 'a'",
+   "tape": "xyz",
+   "touche": "⋯"
+  },
+  {
+   "attendu": "echo 'a'",
+   "tape": "echo \"",
+   "touche": "⋯"
+  },
+  {
+   "attendu": "echo 'a'",
+   "tape": "cat ",
+   "touche": "⋯"
+  },
+  {
+   "attendu": "echo 'a'",
+   "tape": "sleep 5 ",
+   "touche": "⋯"
+  },
+  {
+   "attendu": "echo $HOME",
+   "tape": "",
+   "touche": "⋯"
+  },
+  {
+   "attendu": "echo $HOME",
+   "tape": "l",
+   "touche": "⋯"
+  },
+  {
+   "attendu": "echo $HOME",
+   "tape": "ls",
+   "touche": "⋯"
+  },
+  {
+   "attendu": "echo $HOME",
+   "tape": "ls ",
+   "touche": "⋯"
+  },
+  {
+   "attendu": "echo $HOME",
+   "tape": "ls sac ",
+   "touche": "⋯"
+  },
+  {
+   "attendu": "echo $HOME",
+   "tape": "ls sac |",
+   "touche": "⋯"
+  },
+  {
+   "attendu": "echo $HOME",
+   "tape": "ls sac | wc",
+   "touche": "⋯"
+  },
+  {
+   "attendu": "echo $HOME",
+   "tape": "echo pomme ",
+   "touche": "⋯"
+  },
+  {
+   "attendu": "echo $HOME",
+   "tape": "echo pomme >",
+   "touche": "⋯"
+  },
+  {
+   "attendu": "echo $HOME",
+   "tape": "echo poire >",
+   "touche": "⋯"
+  },
+  {
+   "attendu": "echo $HOME",
+   "tape": "cd",
+   "touche": "⋯"
+  },
+  {
+   "attendu": "echo $HOME",
+   "tape": "cd ",
+   "touche": "⋯"
+  },
+  {
+   "attendu": "echo $HOME",
+   "tape": "xyz",
+   "touche": "⋯"
+  },
+  {
+   "attendu": "echo $HOME",
+   "tape": "echo \"",
+   "touche": "⋯"
+  },
+  {
+   "attendu": "echo $HOME",
+   "tape": "cat ",
+   "touche": "⋯"
+  },
+  {
+   "attendu": "echo $HOME",
+   "tape": "sleep 5 ",
+   "touche": "⋯"
+  },
+  {
+   "attendu": "sleep 5 &",
+   "tape": "",
+   "touche": "⋯"
+  },
+  {
+   "attendu": "sleep 5 &",
+   "tape": "l",
+   "touche": "⋯"
+  },
+  {
+   "attendu": "sleep 5 &",
+   "tape": "ls",
+   "touche": "⋯"
+  },
+  {
+   "attendu": "sleep 5 &",
+   "tape": "ls ",
+   "touche": "⋯"
+  },
+  {
+   "attendu": "sleep 5 &",
+   "tape": "ls sac ",
+   "touche": "⋯"
+  },
+  {
+   "attendu": "sleep 5 &",
+   "tape": "ls sac |",
+   "touche": "⋯"
+  },
+  {
+   "attendu": "sleep 5 &",
+   "tape": "ls sac | wc",
+   "touche": "⋯"
+  },
+  {
+   "attendu": "sleep 5 &",
+   "tape": "echo pomme ",
+   "touche": "⋯"
+  },
+  {
+   "attendu": "sleep 5 &",
+   "tape": "echo pomme >",
+   "touche": "⋯"
+  },
+  {
+   "attendu": "sleep 5 &",
+   "tape": "echo poire >",
+   "touche": "⋯"
+  },
+  {
+   "attendu": "sleep 5 &",
+   "tape": "cd",
+   "touche": "⋯"
+  },
+  {
+   "attendu": "sleep 5 &",
+   "tape": "cd ",
+   "touche": "⋯"
+  },
+  {
+   "attendu": "sleep 5 &",
+   "tape": "xyz",
+   "touche": "⋯"
+  },
+  {
+   "attendu": "sleep 5 &",
+   "tape": "echo \"",
+   "touche": "⋯"
+  },
+  {
+   "attendu": "sleep 5 &",
+   "tape": "cat ",
+   "touche": "⋯"
+  },
+  {
+   "attendu": "sleep 5 &",
+   "tape": "sleep 5 ",
+   "touche": "⋯"
+  },
+  {
+   "attendu": "mv vieux_nom.txt nouveau_nom.txt",
+   "tape": "",
+   "touche": "⋯"
+  },
+  {
+   "attendu": "mv vieux_nom.txt nouveau_nom.txt",
+   "tape": "l",
+   "touche": "⋯"
+  },
+  {
+   "attendu": "mv vieux_nom.txt nouveau_nom.txt",
+   "tape": "ls",
+   "touche": "⋯"
+  },
+  {
+   "attendu": "mv vieux_nom.txt nouveau_nom.txt",
+   "tape": "ls ",
+   "touche": "⋯"
+  },
+  {
+   "attendu": "mv vieux_nom.txt nouveau_nom.txt",
+   "tape": "ls sac ",
+   "touche": "⋯"
+  },
+  {
+   "attendu": "mv vieux_nom.txt nouveau_nom.txt",
+   "tape": "ls sac |",
+   "touche": "⋯"
+  },
+  {
+   "attendu": "mv vieux_nom.txt nouveau_nom.txt",
+   "tape": "ls sac | wc",
+   "touche": "⋯"
+  },
+  {
+   "attendu": "mv vieux_nom.txt nouveau_nom.txt",
+   "tape": "echo pomme ",
+   "touche": "⋯"
+  },
+  {
+   "attendu": "mv vieux_nom.txt nouveau_nom.txt",
+   "tape": "echo pomme >",
+   "touche": "⋯"
+  },
+  {
+   "attendu": "mv vieux_nom.txt nouveau_nom.txt",
+   "tape": "echo poire >",
+   "touche": "⋯"
+  },
+  {
+   "attendu": "mv vieux_nom.txt nouveau_nom.txt",
+   "tape": "cd",
+   "touche": "⋯"
+  },
+  {
+   "attendu": "mv vieux_nom.txt nouveau_nom.txt",
+   "tape": "cd ",
+   "touche": "⋯"
+  },
+  {
+   "attendu": "mv vieux_nom.txt nouveau_nom.txt",
+   "tape": "xyz",
+   "touche": "⋯"
+  },
+  {
+   "attendu": "mv vieux_nom.txt nouveau_nom.txt",
+   "tape": "echo \"",
+   "touche": "⋯"
+  },
+  {
+   "attendu": "mv vieux_nom.txt nouveau_nom.txt",
+   "tape": "cat ",
+   "touche": "⋯"
+  },
+  {
+   "attendu": "mv vieux_nom.txt nouveau_nom.txt",
+   "tape": "sleep 5 ",
+   "touche": "⋯"
+  },
+  {
+   "attendu": "x=3",
+   "tape": "",
+   "touche": "⋯"
+  },
+  {
+   "attendu": "x=3",
+   "tape": "l",
+   "touche": "⋯"
+  },
+  {
+   "attendu": "x=3",
+   "tape": "ls",
+   "touche": "⋯"
+  },
+  {
+   "attendu": "x=3",
+   "tape": "ls ",
+   "touche": "⋯"
+  },
+  {
+   "attendu": "x=3",
+   "tape": "ls sac ",
+   "touche": "⋯"
+  },
+  {
+   "attendu": "x=3",
+   "tape": "ls sac |",
+   "touche": "⋯"
+  },
+  {
+   "attendu": "x=3",
+   "tape": "ls sac | wc",
+   "touche": "⋯"
+  },
+  {
+   "attendu": "x=3",
+   "tape": "echo pomme ",
+   "touche": "⋯"
+  },
+  {
+   "attendu": "x=3",
+   "tape": "echo pomme >",
+   "touche": "⋯"
+  },
+  {
+   "attendu": "x=3",
+   "tape": "echo poire >",
+   "touche": "⋯"
+  },
+  {
+   "attendu": "x=3",
+   "tape": "cd",
+   "touche": "⋯"
+  },
+  {
+   "attendu": "x=3",
+   "tape": "cd ",
+   "touche": "⋯"
+  },
+  {
+   "attendu": "x=3",
+   "tape": "xyz",
+   "touche": "⋯"
+  },
+  {
+   "attendu": "x=3",
+   "tape": "echo \"",
+   "touche": "⋯"
+  },
+  {
+   "attendu": "x=3",
+   "tape": "cat ",
+   "touche": "⋯"
+  },
+  {
+   "attendu": "x=3",
+   "tape": "sleep 5 ",
+   "touche": "⋯"
+  },
+  {
+   "attendu": "grep -c pomme liste.txt",
+   "tape": "",
+   "touche": "-"
+  },
+  {
+   "attendu": "grep -c pomme liste.txt",
+   "tape": "l",
+   "touche": "-"
+  },
+  {
+   "attendu": "grep -c pomme liste.txt",
+   "tape": "ls",
+   "touche": "-"
+  },
+  {
+   "attendu": "grep -c pomme liste.txt",
+   "tape": "ls ",
+   "touche": "-"
+  },
+  {
+   "attendu": "grep -c pomme liste.txt",
+   "tape": "ls sac ",
+   "touche": "-"
+  },
+  {
+   "attendu": "grep -c pomme liste.txt",
+   "tape": "ls sac |",
+   "touche": "-"
+  },
+  {
+   "attendu": "grep -c pomme liste.txt",
+   "tape": "ls sac | wc",
+   "touche": "-"
+  },
+  {
+   "attendu": "grep -c pomme liste.txt",
+   "tape": "echo pomme ",
+   "touche": "-"
+  },
+  {
+   "attendu": "grep -c pomme liste.txt",
+   "tape": "echo pomme >",
+   "touche": "-"
+  },
+  {
+   "attendu": "grep -c pomme liste.txt",
+   "tape": "echo poire >",
+   "touche": "-"
+  },
+  {
+   "attendu": "grep -c pomme liste.txt",
+   "tape": "cd",
+   "touche": "-"
+  },
+  {
+   "attendu": "grep -c pomme liste.txt",
+   "tape": "cd ",
+   "touche": "-"
+  },
+  {
+   "attendu": "grep -c pomme liste.txt",
+   "tape": "xyz",
+   "touche": "-"
+  },
+  {
+   "attendu": "grep -c pomme liste.txt",
+   "tape": "echo \"",
+   "touche": "-"
+  },
+  {
+   "attendu": "grep -c pomme liste.txt",
+   "tape": "cat ",
+   "touche": "-"
+  },
+  {
+   "attendu": "grep -c pomme liste.txt",
+   "tape": "sleep 5 ",
+   "touche": "-"
+  },
+  {
+   "attendu": "cd ..",
+   "tape": "",
+   "touche": "."
+  },
+  {
+   "attendu": "cd ..",
+   "tape": "l",
+   "touche": "."
+  },
+  {
+   "attendu": "cd ..",
+   "tape": "ls",
+   "touche": "."
+  },
+  {
+   "attendu": "cd ..",
+   "tape": "ls ",
+   "touche": "."
+  },
+  {
+   "attendu": "cd ..",
+   "tape": "ls sac ",
+   "touche": "."
+  },
+  {
+   "attendu": "cd ..",
+   "tape": "ls sac |",
+   "touche": "."
+  },
+  {
+   "attendu": "cd ..",
+   "tape": "ls sac | wc",
+   "touche": "."
+  },
+  {
+   "attendu": "cd ..",
+   "tape": "echo pomme ",
+   "touche": "."
+  },
+  {
+   "attendu": "cd ..",
+   "tape": "echo pomme >",
+   "touche": "."
+  },
+  {
+   "attendu": "cd ..",
+   "tape": "echo poire >",
+   "touche": "."
+  },
+  {
+   "attendu": "cd ..",
+   "tape": "cd",
+   "touche": "."
+  },
+  {
+   "attendu": "cd ..",
+   "tape": "cd ",
+   "touche": "."
+  },
+  {
+   "attendu": "cd ..",
+   "tape": "xyz",
+   "touche": "."
+  },
+  {
+   "attendu": "cd ..",
+   "tape": "echo \"",
+   "touche": "."
+  },
+  {
+   "attendu": "cd ..",
+   "tape": "cat ",
+   "touche": "."
+  },
+  {
+   "attendu": "cd ..",
+   "tape": "sleep 5 ",
+   "touche": "."
+  },
+  {
+   "attendu": "",
+   "tape": "",
+   "touche": null
+  },
+  {
+   "attendu": "",
+   "tape": "l",
+   "touche": null
+  },
+  {
+   "attendu": "",
+   "tape": "ls",
+   "touche": null
+  },
+  {
+   "attendu": "",
+   "tape": "ls ",
+   "touche": null
+  },
+  {
+   "attendu": "",
+   "tape": "ls sac ",
+   "touche": null
+  },
+  {
+   "attendu": "",
+   "tape": "ls sac |",
+   "touche": null
+  },
+  {
+   "attendu": "",
+   "tape": "ls sac | wc",
+   "touche": null
+  },
+  {
+   "attendu": "",
+   "tape": "echo pomme ",
+   "touche": null
+  },
+  {
+   "attendu": "",
+   "tape": "echo pomme >",
+   "touche": null
+  },
+  {
+   "attendu": "",
+   "tape": "echo poire >",
+   "touche": null
+  },
+  {
+   "attendu": "",
+   "tape": "cd",
+   "touche": null
+  },
+  {
+   "attendu": "",
+   "tape": "cd ",
+   "touche": null
+  },
+  {
+   "attendu": "",
+   "tape": "xyz",
+   "touche": null
+  },
+  {
+   "attendu": "",
+   "tape": "echo \"",
+   "touche": null
+  },
+  {
+   "attendu": "",
+   "tape": "cat ",
+   "touche": null
+  },
+  {
+   "attendu": "",
+   "tape": "sleep 5 ",
+   "touche": null
+  }
+ ],
+ "symbole": [
+  {
+   "attendu": "pwd",
+   "vus": [],
+   "symbole": null
+  },
+  {
+   "attendu": "pwd",
+   "vus": [
+    "|"
+   ],
+   "symbole": null
+  },
+  {
+   "attendu": "pwd",
+   "vus": [
+    ">",
+    "~"
+   ],
+   "symbole": null
+  },
+  {
+   "attendu": "pwd",
+   "vus": [
+    ">>",
+    "|",
+    "~",
+    ">",
+    "*",
+    "/",
+    "$",
+    "&",
+    "\"",
+    "'",
+    "_"
+   ],
+   "symbole": null
+  },
+  {
+   "attendu": "ls",
+   "vus": [],
+   "symbole": null
+  },
+  {
+   "attendu": "ls",
+   "vus": [
+    "|"
+   ],
+   "symbole": null
+  },
+  {
+   "attendu": "ls",
+   "vus": [
+    ">",
+    "~"
+   ],
+   "symbole": null
+  },
+  {
+   "attendu": "ls",
+   "vus": [
+    ">>",
+    "|",
+    "~",
+    ">",
+    "*",
+    "/",
+    "$",
+    "&",
+    "\"",
+    "'",
+    "_"
+   ],
+   "symbole": null
+  },
+  {
+   "attendu": "ls sac | wc -l",
+   "vus": [],
+   "symbole": "|"
+  },
+  {
+   "attendu": "ls sac | wc -l",
+   "vus": [
+    "|"
+   ],
+   "symbole": null
+  },
+  {
+   "attendu": "ls sac | wc -l",
+   "vus": [
+    ">",
+    "~"
+   ],
+   "symbole": "|"
+  },
+  {
+   "attendu": "ls sac | wc -l",
+   "vus": [
+    ">>",
+    "|",
+    "~",
+    ">",
+    "*",
+    "/",
+    "$",
+    "&",
+    "\"",
+    "'",
+    "_"
+   ],
+   "symbole": null
+  },
+  {
+   "attendu": "echo pomme > nid/repas.txt",
+   "vus": [],
+   "symbole": ">"
+  },
+  {
+   "attendu": "echo pomme > nid/repas.txt",
+   "vus": [
+    "|"
+   ],
+   "symbole": ">"
+  },
+  {
+   "attendu": "echo pomme > nid/repas.txt",
+   "vus": [
+    ">",
+    "~"
+   ],
+   "symbole": "/"
+  },
+  {
+   "attendu": "echo pomme > nid/repas.txt",
+   "vus": [
+    ">>",
+    "|",
+    "~",
+    ">",
+    "*",
+    "/",
+    "$",
+    "&",
+    "\"",
+    "'",
+    "_"
+   ],
+   "symbole": null
+  },
+  {
+   "attendu": "echo poire >> nid/repas.txt",
+   "vus": [],
+   "symbole": ">>"
+  },
+  {
+   "attendu": "echo poire >> nid/repas.txt",
+   "vus": [
+    "|"
+   ],
+   "symbole": ">>"
+  },
+  {
+   "attendu": "echo poire >> nid/repas.txt",
+   "vus": [
+    ">",
+    "~"
+   ],
+   "symbole": ">>"
+  },
+  {
+   "attendu": "echo poire >> nid/repas.txt",
+   "vus": [
+    ">>",
+    "|",
+    "~",
+    ">",
+    "*",
+    "/",
+    "$",
+    "&",
+    "\"",
+    "'",
+    "_"
+   ],
+   "symbole": null
+  },
+  {
+   "attendu": "cd ~",
+   "vus": [],
+   "symbole": "~"
+  },
+  {
+   "attendu": "cd ~",
+   "vus": [
+    "|"
+   ],
+   "symbole": "~"
+  },
+  {
+   "attendu": "cd ~",
+   "vus": [
+    ">",
+    "~"
+   ],
+   "symbole": null
+  },
+  {
+   "attendu": "cd ~",
+   "vus": [
+    ">>",
+    "|",
+    "~",
+    ">",
+    "*",
+    "/",
+    "$",
+    "&",
+    "\"",
+    "'",
+    "_"
+   ],
+   "symbole": null
+  },
+  {
+   "attendu": "cd ~/terrain_terminagotchi/nid",
+   "vus": [],
+   "symbole": "~"
+  },
+  {
+   "attendu": "cd ~/terrain_terminagotchi/nid",
+   "vus": [
+    "|"
+   ],
+   "symbole": "~"
+  },
+  {
+   "attendu": "cd ~/terrain_terminagotchi/nid",
+   "vus": [
+    ">",
+    "~"
+   ],
+   "symbole": "/"
+  },
+  {
+   "attendu": "cd ~/terrain_terminagotchi/nid",
+   "vus": [
+    ">>",
+    "|",
+    "~",
+    ">",
+    "*",
+    "/",
+    "$",
+    "&",
+    "\"",
+    "'",
+    "_"
+   ],
+   "symbole": null
+  },
+  {
+   "attendu": "ls -a",
+   "vus": [],
+   "symbole": null
+  },
+  {
+   "attendu": "ls -a",
+   "vus": [
+    "|"
+   ],
+   "symbole": null
+  },
+  {
+   "attendu": "ls -a",
+   "vus": [
+    ">",
+    "~"
+   ],
+   "symbole": null
+  },
+  {
+   "attendu": "ls -a",
+   "vus": [
+    ">>",
+    "|",
+    "~",
+    ">",
+    "*",
+    "/",
+    "$",
+    "&",
+    "\"",
+    "'",
+    "_"
+   ],
+   "symbole": null
+  },
+  {
+   "attendu": "cat *.txt",
+   "vus": [],
+   "symbole": "*"
+  },
+  {
+   "attendu": "cat *.txt",
+   "vus": [
+    "|"
+   ],
+   "symbole": "*"
+  },
+  {
+   "attendu": "cat *.txt",
+   "vus": [
+    ">",
+    "~"
+   ],
+   "symbole": "*"
+  },
+  {
+   "attendu": "cat *.txt",
+   "vus": [
+    ">>",
+    "|",
+    "~",
+    ">",
+    "*",
+    "/",
+    "$",
+    "&",
+    "\"",
+    "'",
+    "_"
+   ],
+   "symbole": null
+  },
+  {
+   "attendu": "echo \"bonjour\"",
+   "vus": [],
+   "symbole": "\""
+  },
+  {
+   "attendu": "echo \"bonjour\"",
+   "vus": [
+    "|"
+   ],
+   "symbole": "\""
+  },
+  {
+   "attendu": "echo \"bonjour\"",
+   "vus": [
+    ">",
+    "~"
+   ],
+   "symbole": "\""
+  },
+  {
+   "attendu": "echo \"bonjour\"",
+   "vus": [
+    ">>",
+    "|",
+    "~",
+    ">",
+    "*",
+    "/",
+    "$",
+    "&",
+    "\"",
+    "'",
+    "_"
+   ],
+   "symbole": null
+  },
+  {
+   "attendu": "echo 'a'",
+   "vus": [],
+   "symbole": "'"
+  },
+  {
+   "attendu": "echo 'a'",
+   "vus": [
+    "|"
+   ],
+   "symbole": "'"
+  },
+  {
+   "attendu": "echo 'a'",
+   "vus": [
+    ">",
+    "~"
+   ],
+   "symbole": "'"
+  },
+  {
+   "attendu": "echo 'a'",
+   "vus": [
+    ">>",
+    "|",
+    "~",
+    ">",
+    "*",
+    "/",
+    "$",
+    "&",
+    "\"",
+    "'",
+    "_"
+   ],
+   "symbole": null
+  },
+  {
+   "attendu": "echo $HOME",
+   "vus": [],
+   "symbole": "$"
+  },
+  {
+   "attendu": "echo $HOME",
+   "vus": [
+    "|"
+   ],
+   "symbole": "$"
+  },
+  {
+   "attendu": "echo $HOME",
+   "vus": [
+    ">",
+    "~"
+   ],
+   "symbole": "$"
+  },
+  {
+   "attendu": "echo $HOME",
+   "vus": [
+    ">>",
+    "|",
+    "~",
+    ">",
+    "*",
+    "/",
+    "$",
+    "&",
+    "\"",
+    "'",
+    "_"
+   ],
+   "symbole": null
+  },
+  {
+   "attendu": "sleep 5 &",
+   "vus": [],
+   "symbole": "&"
+  },
+  {
+   "attendu": "sleep 5 &",
+   "vus": [
+    "|"
+   ],
+   "symbole": "&"
+  },
+  {
+   "attendu": "sleep 5 &",
+   "vus": [
+    ">",
+    "~"
+   ],
+   "symbole": "&"
+  },
+  {
+   "attendu": "sleep 5 &",
+   "vus": [
+    ">>",
+    "|",
+    "~",
+    ">",
+    "*",
+    "/",
+    "$",
+    "&",
+    "\"",
+    "'",
+    "_"
+   ],
+   "symbole": null
+  },
+  {
+   "attendu": "mv vieux_nom.txt nouveau_nom.txt",
+   "vus": [],
+   "symbole": "_"
+  },
+  {
+   "attendu": "mv vieux_nom.txt nouveau_nom.txt",
+   "vus": [
+    "|"
+   ],
+   "symbole": "_"
+  },
+  {
+   "attendu": "mv vieux_nom.txt nouveau_nom.txt",
+   "vus": [
+    ">",
+    "~"
+   ],
+   "symbole": "_"
+  },
+  {
+   "attendu": "mv vieux_nom.txt nouveau_nom.txt",
+   "vus": [
+    ">>",
+    "|",
+    "~",
+    ">",
+    "*",
+    "/",
+    "$",
+    "&",
+    "\"",
+    "'",
+    "_"
+   ],
+   "symbole": null
+  },
+  {
+   "attendu": "x=3",
+   "vus": [],
+   "symbole": null
+  },
+  {
+   "attendu": "x=3",
+   "vus": [
+    "|"
+   ],
+   "symbole": null
+  },
+  {
+   "attendu": "x=3",
+   "vus": [
+    ">",
+    "~"
+   ],
+   "symbole": null
+  },
+  {
+   "attendu": "x=3",
+   "vus": [
+    ">>",
+    "|",
+    "~",
+    ">",
+    "*",
+    "/",
+    "$",
+    "&",
+    "\"",
+    "'",
+    "_"
+   ],
+   "symbole": null
+  },
+  {
+   "attendu": "grep -c pomme liste.txt",
+   "vus": [],
+   "symbole": null
+  },
+  {
+   "attendu": "grep -c pomme liste.txt",
+   "vus": [
+    "|"
+   ],
+   "symbole": null
+  },
+  {
+   "attendu": "grep -c pomme liste.txt",
+   "vus": [
+    ">",
+    "~"
+   ],
+   "symbole": null
+  },
+  {
+   "attendu": "grep -c pomme liste.txt",
+   "vus": [
+    ">>",
+    "|",
+    "~",
+    ">",
+    "*",
+    "/",
+    "$",
+    "&",
+    "\"",
+    "'",
+    "_"
+   ],
+   "symbole": null
+  },
+  {
+   "attendu": "cd ..",
+   "vus": [],
+   "symbole": null
+  },
+  {
+   "attendu": "cd ..",
+   "vus": [
+    "|"
+   ],
+   "symbole": null
+  },
+  {
+   "attendu": "cd ..",
+   "vus": [
+    ">",
+    "~"
+   ],
+   "symbole": null
+  },
+  {
+   "attendu": "cd ..",
+   "vus": [
+    ">>",
+    "|",
+    "~",
+    ">",
+    "*",
+    "/",
+    "$",
+    "&",
+    "\"",
+    "'",
+    "_"
+   ],
+   "symbole": null
+  },
+  {
+   "attendu": "",
+   "vus": [],
+   "symbole": null
+  },
+  {
+   "attendu": "",
+   "vus": [
+    "|"
+   ],
+   "symbole": null
+  },
+  {
+   "attendu": "",
+   "vus": [
+    ">",
+    "~"
+   ],
+   "symbole": null
+  },
+  {
+   "attendu": "",
+   "vus": [
+    ">>",
+    "|",
+    "~",
+    ">",
+    "*",
+    "/",
+    "$",
+    "&",
+    "\"",
+    "'",
+    "_"
+   ],
+   "symbole": null
+  }
+ ],
+ "explique": [
+  {
+   "ligne": "ls ?",
+   "nom": "ls"
+  },
+  {
+   "ligne": "? ls",
+   "nom": "ls"
+  },
+  {
+   "ligne": "  ls   ?  ",
+   "nom": "ls"
+  },
+  {
+   "ligne": "?ls",
+   "nom": null
+  },
+  {
+   "ligne": "ls?",
+   "nom": null
+  },
+  {
+   "ligne": "ls -a ?",
+   "nom": null
+  },
+  {
+   "ligne": "? ",
+   "nom": null
+  },
+  {
+   "ligne": "?",
+   "nom": null
+  },
+  {
+   "ligne": "cd ?",
+   "nom": "cd"
+  },
+  {
+   "ligne": "? cd",
+   "nom": "cd"
+  },
+  {
+   "ligne": "explique ls",
+   "nom": null
+  },
+  {
+   "ligne": "wc ?",
+   "nom": "wc"
+  },
+  {
+   "ligne": "python3 ?",
+   "nom": "python3"
+  },
+  {
+   "ligne": "? python3",
+   "nom": "python3"
+  },
+  {
+   "ligne": "LS ?",
+   "nom": "ls"
+  },
+  {
+   "ligne": "ls ? ?",
+   "nom": null
+  },
+  {
+   "ligne": "",
+   "nom": null
+  },
+  {
+   "ligne": "echo ?",
+   "nom": "echo"
+  }
+ ],
+ "indice": [
+  {
+   "attendu": "pwd",
+   "cmd": "pwd",
+   "debut": "pwd",
+   "reponse": "pwd"
+  },
+  {
+   "attendu": "ls",
+   "cmd": "ls",
+   "debut": "ls",
+   "reponse": "ls"
+  },
+  {
+   "attendu": "ls sac | wc -l",
+   "cmd": "ls",
+   "debut": "ls",
+   "reponse": "ls sac | wc -l"
+  },
+  {
+   "attendu": "echo pomme > nid/repas.txt",
+   "cmd": "echo",
+   "debut": "echo",
+   "reponse": "echo pomme > nid/repas.txt"
+  },
+  {
+   "attendu": "echo poire >> nid/repas.txt",
+   "cmd": "echo",
+   "debut": "echo",
+   "reponse": "echo poire >> nid/repas.txt"
+  },
+  {
+   "attendu": "cd ~",
+   "cmd": "cd",
+   "debut": "cd",
+   "reponse": "cd ~"
+  },
+  {
+   "attendu": "cd ~/terrain_terminagotchi/nid",
+   "cmd": "cd",
+   "debut": "cd",
+   "reponse": "cd ~/terrain_terminagotchi/nid"
+  },
+  {
+   "attendu": "ls -a",
+   "cmd": "ls",
+   "debut": "ls -a",
+   "reponse": "ls -a"
+  },
+  {
+   "attendu": "cat *.txt",
+   "cmd": "cat",
+   "debut": "cat",
+   "reponse": "cat *.txt"
+  },
+  {
+   "attendu": "echo \"bonjour\"",
+   "cmd": "echo",
+   "debut": "echo",
+   "reponse": "echo \"bonjour\""
+  },
+  {
+   "attendu": "echo 'a'",
+   "cmd": "echo",
+   "debut": "echo",
+   "reponse": "echo 'a'"
+  },
+  {
+   "attendu": "echo $HOME",
+   "cmd": "echo",
+   "debut": "echo",
+   "reponse": "echo $HOME"
+  },
+  {
+   "attendu": "sleep 5 &",
+   "cmd": "sleep",
+   "debut": "sleep",
+   "reponse": "sleep 5 &"
+  },
+  {
+   "attendu": "mv vieux_nom.txt nouveau_nom.txt",
+   "cmd": "mv",
+   "debut": "mv",
+   "reponse": "mv vieux_nom.txt nouveau_nom.txt"
+  },
+  {
+   "attendu": "x=3",
+   "cmd": "x=3",
+   "debut": "x=3",
+   "reponse": "x=3"
+  },
+  {
+   "attendu": "grep -c pomme liste.txt",
+   "cmd": "grep",
+   "debut": "grep -c",
+   "reponse": "grep -c pomme liste.txt"
+  },
+  {
+   "attendu": "cd ..",
+   "cmd": "cd",
+   "debut": "cd",
+   "reponse": "cd .."
+  },
+  {
+   "attendu": "",
+   "cmd": "",
+   "debut": "",
+   "reponse": ""
+  },
+  {
+   "attendu": "  ls   -l  -a  nid ",
+   "cmd": "ls",
+   "debut": "ls -l -a",
+   "reponse": "ls -l -a nid"
+  },
+  {
+   "attendu": "rm -r -f x",
+   "cmd": "rm",
+   "debut": "rm -r -f",
+   "reponse": "rm -r -f x"
+  },
+  {
+   "attendu": "-a",
+   "cmd": "-a",
+   "debut": "-a",
+   "reponse": "-a"
+  }
+ ],
+ "fantome": [
+  {
+   "mot": "",
+   "candidats": [
+    "nid/",
+    "vestibule/",
+    "reserve.txt",
+    "vieux_nom.txt",
+    "vieux_nid/",
+    "grenier/",
+    "LISEZMOI.txt",
+    "ls",
+    "lsblk",
+    "less",
+    "nid"
+   ],
+   "fin": ""
+  },
+  {
+   "mot": "",
+   "candidats": [
+    "vestibule/",
+    "vieux_nom.txt",
+    "vieux_nid/"
+   ],
+   "fin": ""
+  },
+  {
+   "mot": "",
+   "candidats": [],
+   "fin": ""
+  },
+  {
+   "mot": "n",
+   "candidats": [
+    "nid/",
+    "vestibule/",
+    "reserve.txt",
+    "vieux_nom.txt",
+    "vieux_nid/",
+    "grenier/",
+    "LISEZMOI.txt",
+    "ls",
+    "lsblk",
+    "less",
+    "nid"
+   ],
+   "fin": "id"
+  },
+  {
+   "mot": "n",
+   "candidats": [
+    "vestibule/",
+    "vieux_nom.txt",
+    "vieux_nid/"
+   ],
+   "fin": ""
+  },
+  {
+   "mot": "n",
+   "candidats": [],
+   "fin": ""
+  },
+  {
+   "mot": "ni",
+   "candidats": [
+    "nid/",
+    "vestibule/",
+    "reserve.txt",
+    "vieux_nom.txt",
+    "vieux_nid/",
+    "grenier/",
+    "LISEZMOI.txt",
+    "ls",
+    "lsblk",
+    "less",
+    "nid"
+   ],
+   "fin": "d"
+  },
+  {
+   "mot": "ni",
+   "candidats": [
+    "vestibule/",
+    "vieux_nom.txt",
+    "vieux_nid/"
+   ],
+   "fin": ""
+  },
+  {
+   "mot": "ni",
+   "candidats": [],
+   "fin": ""
+  },
+  {
+   "mot": "nid",
+   "candidats": [
+    "nid/",
+    "vestibule/",
+    "reserve.txt",
+    "vieux_nom.txt",
+    "vieux_nid/",
+    "grenier/",
+    "LISEZMOI.txt",
+    "ls",
+    "lsblk",
+    "less",
+    "nid"
+   ],
+   "fin": "/"
+  },
+  {
+   "mot": "nid",
+   "candidats": [
+    "vestibule/",
+    "vieux_nom.txt",
+    "vieux_nid/"
+   ],
+   "fin": ""
+  },
+  {
+   "mot": "nid",
+   "candidats": [],
+   "fin": ""
+  },
+  {
+   "mot": "nid/",
+   "candidats": [
+    "nid/",
+    "vestibule/",
+    "reserve.txt",
+    "vieux_nom.txt",
+    "vieux_nid/",
+    "grenier/",
+    "LISEZMOI.txt",
+    "ls",
+    "lsblk",
+    "less",
+    "nid"
+   ],
+   "fin": ""
+  },
+  {
+   "mot": "nid/",
+   "candidats": [
+    "vestibule/",
+    "vieux_nom.txt",
+    "vieux_nid/"
+   ],
+   "fin": ""
+  },
+  {
+   "mot": "nid/",
+   "candidats": [],
+   "fin": ""
+  },
+  {
+   "mot": "v",
+   "candidats": [
+    "nid/",
+    "vestibule/",
+    "reserve.txt",
+    "vieux_nom.txt",
+    "vieux_nid/",
+    "grenier/",
+    "LISEZMOI.txt",
+    "ls",
+    "lsblk",
+    "less",
+    "nid"
+   ],
+   "fin": ""
+  },
+  {
+   "mot": "v",
+   "candidats": [
+    "vestibule/",
+    "vieux_nom.txt",
+    "vieux_nid/"
+   ],
+   "fin": ""
+  },
+  {
+   "mot": "v",
+   "candidats": [],
+   "fin": ""
+  },
+  {
+   "mot": "ve",
+   "candidats": [
+    "nid/",
+    "vestibule/",
+    "reserve.txt",
+    "vieux_nom.txt",
+    "vieux_nid/",
+    "grenier/",
+    "LISEZMOI.txt",
+    "ls",
+    "lsblk",
+    "less",
+    "nid"
+   ],
+   "fin": "stibule/"
+  },
+  {
+   "mot": "ve",
+   "candidats": [
+    "vestibule/",
+    "vieux_nom.txt",
+    "vieux_nid/"
+   ],
+   "fin": "stibule/"
+  },
+  {
+   "mot": "ve",
+   "candidats": [],
+   "fin": ""
+  },
+  {
+   "mot": "vest",
+   "candidats": [
+    "nid/",
+    "vestibule/",
+    "reserve.txt",
+    "vieux_nom.txt",
+    "vieux_nid/",
+    "grenier/",
+    "LISEZMOI.txt",
+    "ls",
+    "lsblk",
+    "less",
+    "nid"
+   ],
+   "fin": "ibule/"
+  },
+  {
+   "mot": "vest",
+   "candidats": [
+    "vestibule/",
+    "vieux_nom.txt",
+    "vieux_nid/"
+   ],
+   "fin": "ibule/"
+  },
+  {
+   "mot": "vest",
+   "candidats": [],
+   "fin": ""
+  },
+  {
+   "mot": "vi",
+   "candidats": [
+    "nid/",
+    "vestibule/",
+    "reserve.txt",
+    "vieux_nom.txt",
+    "vieux_nid/",
+    "grenier/",
+    "LISEZMOI.txt",
+    "ls",
+    "lsblk",
+    "less",
+    "nid"
+   ],
+   "fin": "eux_n"
+  },
+  {
+   "mot": "vi",
+   "candidats": [
+    "vestibule/",
+    "vieux_nom.txt",
+    "vieux_nid/"
+   ],
+   "fin": "eux_n"
+  },
+  {
+   "mot": "vi",
+   "candidats": [],
+   "fin": ""
+  },
+  {
+   "mot": "r",
+   "candidats": [
+    "nid/",
+    "vestibule/",
+    "reserve.txt",
+    "vieux_nom.txt",
+    "vieux_nid/",
+    "grenier/",
+    "LISEZMOI.txt",
+    "ls",
+    "lsblk",
+    "less",
+    "nid"
+   ],
+   "fin": "eserve.txt"
+  },
+  {
+   "mot": "r",
+   "candidats": [
+    "vestibule/",
+    "vieux_nom.txt",
+    "vieux_nid/"
+   ],
+   "fin": ""
+  },
+  {
+   "mot": "r",
+   "candidats": [],
+   "fin": ""
+  },
+  {
+   "mot": "x",
+   "candidats": [
+    "nid/",
+    "vestibule/",
+    "reserve.txt",
+    "vieux_nom.txt",
+    "vieux_nid/",
+    "grenier/",
+    "LISEZMOI.txt",
+    "ls",
+    "lsblk",
+    "less",
+    "nid"
+   ],
+   "fin": ""
+  },
+  {
+   "mot": "x",
+   "candidats": [
+    "vestibule/",
+    "vieux_nom.txt",
+    "vieux_nid/"
+   ],
+   "fin": ""
+  },
+  {
+   "mot": "x",
+   "candidats": [],
+   "fin": ""
+  },
+  {
+   "mot": "l",
+   "candidats": [
+    "nid/",
+    "vestibule/",
+    "reserve.txt",
+    "vieux_nom.txt",
+    "vieux_nid/",
+    "grenier/",
+    "LISEZMOI.txt",
+    "ls",
+    "lsblk",
+    "less",
+    "nid"
+   ],
+   "fin": ""
+  },
+  {
+   "mot": "l",
+   "candidats": [
+    "vestibule/",
+    "vieux_nom.txt",
+    "vieux_nid/"
+   ],
+   "fin": ""
+  },
+  {
+   "mot": "l",
+   "candidats": [],
+   "fin": ""
+  },
+  {
+   "mot": "ls",
+   "candidats": [
+    "nid/",
+    "vestibule/",
+    "reserve.txt",
+    "vieux_nom.txt",
+    "vieux_nid/",
+    "grenier/",
+    "LISEZMOI.txt",
+    "ls",
+    "lsblk",
+    "less",
+    "nid"
+   ],
+   "fin": "blk"
+  },
+  {
+   "mot": "ls",
+   "candidats": [
+    "vestibule/",
+    "vieux_nom.txt",
+    "vieux_nid/"
+   ],
+   "fin": ""
+  },
+  {
+   "mot": "ls",
+   "candidats": [],
+   "fin": ""
+  },
+  {
+   "mot": "le",
+   "candidats": [
+    "nid/",
+    "vestibule/",
+    "reserve.txt",
+    "vieux_nom.txt",
+    "vieux_nid/",
+    "grenier/",
+    "LISEZMOI.txt",
+    "ls",
+    "lsblk",
+    "less",
+    "nid"
+   ],
+   "fin": "ss"
+  },
+  {
+   "mot": "le",
+   "candidats": [
+    "vestibule/",
+    "vieux_nom.txt",
+    "vieux_nid/"
+   ],
+   "fin": ""
+  },
+  {
+   "mot": "le",
+   "candidats": [],
+   "fin": ""
+  },
+  {
+   "mot": "L",
+   "candidats": [
+    "nid/",
+    "vestibule/",
+    "reserve.txt",
+    "vieux_nom.txt",
+    "vieux_nid/",
+    "grenier/",
+    "LISEZMOI.txt",
+    "ls",
+    "lsblk",
+    "less",
+    "nid"
+   ],
+   "fin": "ISEZMOI.txt"
+  },
+  {
+   "mot": "L",
+   "candidats": [
+    "vestibule/",
+    "vieux_nom.txt",
+    "vieux_nid/"
+   ],
+   "fin": ""
+  },
+  {
+   "mot": "L",
+   "candidats": [],
+   "fin": ""
+  }
+ ],
+ "tronc": [
+  {
+   "ailes": [],
+   "tronc": {
+    "note": "…",
+    "n0": [
+     "reveil"
+    ],
+    "n1": [
+     "reveil"
+    ],
+    "n2": [
+     "nid"
+    ],
+    "n3": [
+     "bibliotheque"
+    ],
+    "n4": [
+     "nid",
+     "bibliotheque"
+    ],
+    "n5": [],
+    "n6": [
+     "cave"
+    ]
+   },
+   "fini": false
+  },
+  {
+   "ailes": [],
+   "tronc": {},
+   "fini": false
+  },
+  {
+   "ailes": [],
+   "tronc": {
+    "n0": []
+   },
+   "fini": false
+  },
+  {
+   "ailes": [
+    "reveil",
+    "nid"
+   ],
+   "tronc": {
+    "note": "…",
+    "n0": [
+     "reveil"
+    ],
+    "n1": [
+     "reveil"
+    ],
+    "n2": [
+     "nid"
+    ],
+    "n3": [
+     "bibliotheque"
+    ],
+    "n4": [
+     "nid",
+     "bibliotheque"
+    ],
+    "n5": [],
+    "n6": [
+     "cave"
+    ]
+   },
+   "fini": false
+  },
+  {
+   "ailes": [
+    "reveil",
+    "nid"
+   ],
+   "tronc": {},
+   "fini": false
+  },
+  {
+   "ailes": [
+    "reveil",
+    "nid"
+   ],
+   "tronc": {
+    "n0": []
+   },
+   "fini": false
+  },
+  {
+   "ailes": [
+    "reveil",
+    "nid",
+    "bibliotheque",
+    "cave"
+   ],
+   "tronc": {
+    "note": "…",
+    "n0": [
+     "reveil"
+    ],
+    "n1": [
+     "reveil"
+    ],
+    "n2": [
+     "nid"
+    ],
+    "n3": [
+     "bibliotheque"
+    ],
+    "n4": [
+     "nid",
+     "bibliotheque"
+    ],
+    "n5": [],
+    "n6": [
+     "cave"
+    ]
+   },
+   "fini": true
+  },
+  {
+   "ailes": [
+    "reveil",
+    "nid",
+    "bibliotheque",
+    "cave"
+   ],
+   "tronc": {},
+   "fini": false
+  },
+  {
+   "ailes": [
+    "reveil",
+    "nid",
+    "bibliotheque",
+    "cave"
+   ],
+   "tronc": {
+    "n0": []
+   },
+   "fini": false
+  },
+  {
+   "ailes": [
+    "cave",
+    "bibliotheque",
+    "nid",
+    "reveil",
+    "grenier"
+   ],
+   "tronc": {
+    "note": "…",
+    "n0": [
+     "reveil"
+    ],
+    "n1": [
+     "reveil"
+    ],
+    "n2": [
+     "nid"
+    ],
+    "n3": [
+     "bibliotheque"
+    ],
+    "n4": [
+     "nid",
+     "bibliotheque"
+    ],
+    "n5": [],
+    "n6": [
+     "cave"
+    ]
+   },
+   "fini": true
+  },
+  {
+   "ailes": [
+    "cave",
+    "bibliotheque",
+    "nid",
+    "reveil",
+    "grenier"
+   ],
+   "tronc": {},
+   "fini": false
+  },
+  {
+   "ailes": [
+    "cave",
+    "bibliotheque",
+    "nid",
+    "reveil",
+    "grenier"
+   ],
+   "tronc": {
+    "n0": []
+   },
+   "fini": false
+  }
+ ],
+ "duree_ls": [
+  {
+   "camp": true,
+   "s": 2.0
+  },
+  {
+   "camp": false,
+   "s": 3.0
+  }
+ ],
+ "menu": [
+  {
+   "r": "",
+   "action": "continuer"
+  },
+  {
+   "r": "1",
+   "action": "continuer"
+  },
+  {
+   "r": "2",
+   "action": "nouvelle"
+  },
+  {
+   "r": "3",
+   "action": "charger"
+  },
+  {
+   "r": "4",
+   "action": "options"
+  },
+  {
+   "r": "5",
+   "action": "aide"
+  },
+  {
+   "r": "q",
+   "action": "quitter"
+  },
+  {
+   "r": "Q",
+   "action": "quitter"
+  },
+  {
+   "r": "0",
+   "action": "quitter"
+  },
+  {
+   "r": "6",
+   "action": null
+  },
+  {
+   "r": " 2 ",
+   "action": "nouvelle"
+  },
+  {
+   "r": "x",
+   "action": null
+  }
+ ],
+ "rangees": {
+  "r1": [
+   "↑",
+   "⇥",
+   "^C",
+   "-",
+   "/",
+   "~",
+   "|",
+   ".",
+   ">",
+   "⋯"
+  ],
+  "r2": [
+   "↓",
+   ">>",
+   "*",
+   "\"",
+   "'",
+   "$",
+   "&",
+   "_",
+   "=",
+   "⋯"
+  ],
+  "s1": [
+   "-",
+   "/",
+   "~",
+   "|",
+   ".",
+   ">"
+  ],
+  "s2": [
+   ">>",
+   "*",
+   "\"",
+   "'",
+   "$",
+   "&",
+   "_",
+   "="
+  ],
+  "ordre": [
+   ">>",
+   "|",
+   "~",
+   ">",
+   "*",
+   "/",
+   "$",
+   "&",
+   "\"",
+   "'",
+   "_"
+  ]
+ }
+}

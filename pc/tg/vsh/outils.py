@@ -2343,7 +2343,7 @@ CMD_WINDOWS = {"cls": "clear", "cd..": "cd ..", "cd\\": "cd /", "del": "rm", "er
 DU_JEU = {"tg", "carte", "quetes", "explique", "entrainement", "exercice", "badges", "guide", "types", "equipe", "aide",
           "deploie", "espace", "cerveau", "port", "citadelle", "crypte", "machines", "ondes", "mesh-envoie",
           "mesh-coupe", "mesh-route", "guilde", "observatoire", "assistant", "agent", "devine-type", "devine-mot",
-          "donnees", "forge", "atelier", "sommet", "temps", "controle"}
+          "donnees", "forge", "atelier", "sommet", "temps", "controle", "perdu", "indice"}
 
 
 def est_du_jeu(nom):

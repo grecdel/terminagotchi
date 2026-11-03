@@ -122,7 +122,7 @@ def annonces(state):
     la version des grands, le vrai terminal) quand elle change, et les messages importants (indices, mises en garde,
     erreurs expliquées). Une seule fois chacun."""
     from .langue import sans_marques  # noqa: F401
-    out = []
+    out = list(state.pop("_fiche_q", None) or [])  # idée 22 : `ls ?` → la fiche courte
     try:
         from . import verif
         e = verif.expliquer(core.DERNIER["ligne"], core.DERNIER["statut"], maison_ici(state))
@@ -157,6 +157,9 @@ def annonces(state):
                 out.append(f"{DIM}🧩 " + t("plac.propose") + RESET)       # G-13 : « je connais déjà un peu »
             out.append(f"{fg(213)}📖 {lecons.tx(step['dit'])}{RESET}")
             out.append(f"   {fg(226)}➜ {commande_montree(state, step)}{RESET}")
+            if not placement.cache(state, step):        # idée 5 : un symbole nouveau ? où il est sur le clavier
+                from . import aide_douce
+                out.extend(aide_douce.astuce_clavier(state, step["cmd"]))
             if not placement.cache(state, step):        # I2 : le mode sans aide ne donne pas la commande ici non plus
                 g = lecons.adulte(step)
                 if g:
@@ -187,10 +190,21 @@ def coin(state):
 def prompt(etape):
     """Appelé par le shell avant chaque invite."""
     sortie = []
+    sortie_ls = []
 
     def rendre(state):
+        from . import aide_douce
         s = ligne(state)
         dire = annonces(state)
+        r = aide_douce.retour(state, os.getppid())    # idée 9 : un nouveau terminal après « fermer et revenir »
+        if r:
+            dire = [f"{fg(78)}{r}{RESET}"] + dire
+        f = aide_douce.ligne_fleche(state)            # idée 4 : « ▼ tape ta commande ici » (les premières commandes)
+        if f:
+            s += "\n" + f
+        v = state.pop("_premier_ls", None)            # idée 2 : la cinématique du premier ls (jouée juste après)
+        if v:
+            sortie_ls.append((v == "court", {"name": state.get("name", "")}))
         if dire:
             s = "\n".join(dire) + RESET + "\n" + s
         if state["config"]["compagnon"] == "coin":
@@ -222,6 +236,12 @@ def prompt(etape):
     if sortie:
         from . import intro
         intro.jouer_prompt(sys.stdout)          # le camp qui se réveille, l'œuf qui arrive (puis l'image finale)
+        if sortie_ls:
+            try:
+                from . import aide_douce
+                aide_douce.jouer_premier_ls(sys.stdout, sortie_ls[0][1], ici, court=sortie_ls[0][0])
+            except Exception:                    # noqa: BLE001 (le compagnon ne doit jamais planter)
+                pass
         sys.stdout.write(sortie[0] + RESET + "\n")
         sys.stdout.flush()
 
@@ -313,6 +333,7 @@ def _blocs():
                          "alias carte='tg carte'; alias quetes='tg quetes'; alias explique='tg explique'\n"
                          "alias entrainement='tg entrainement'; alias exercice='tg entrainement'; alias badges='tg badges'\n"
                          "alias guide='tg guide'; alias types='tg types'; alias equipe='tg equipe'; alias aide='tg aide'\n"
+                         "alias perdu='tg perdu'; alias indice='tg indice'\n"
                          + _garde_gpg() + DEPLOIE)
     if not SYS_WIN and (shell.endswith("zsh") or zshrc.exists() or OSK == "mac"):
         blocs[zshrc] = ("setopt INC_APPEND_HISTORY\n"
@@ -322,6 +343,7 @@ def _blocs():
                         "alias carte='tg carte'; alias quetes='tg quetes'; alias explique='tg explique'\n"
                         "alias entrainement='tg entrainement'; alias exercice='tg entrainement'; alias badges='tg badges'\n"
                         "alias guide='tg guide'; alias types='tg types'; alias equipe='tg equipe'; alias aide='tg aide'\n"
+                         "alias perdu='tg perdu'; alias indice='tg indice'\n"
                         "setopt INTERACTIVE_COMMENTS\n" + _garde_gpg() + DEPLOIE)
     fish = home / ".config" / "fish"
     if not SYS_WIN and fish.is_dir():
@@ -334,6 +356,7 @@ def _blocs():
             'function badges\n    tg badges $argv\nend\n'
             'function guide\n    tg guide $argv\nend\nfunction types\n    tg types\nend\n'
             'function equipe\n    tg equipe $argv\nend\nfunction aide\n    tg aide $argv\nend\n'
+            'function perdu\n    tg perdu\nend\nfunction indice\n    tg indice\nend\n'
             'function deploie\n    tg deploie $argv\nend\nfunction espace\n    tg espace $argv\nend\n'
             'function cerveau\n    tg cerveau $argv\nend\nfunction port\n    tg port $argv\nend\n'
             'function citadelle\n    tg citadelle $argv\nend\n'

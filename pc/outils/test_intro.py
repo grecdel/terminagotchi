@@ -135,7 +135,7 @@ with redirect_stdout(io.StringIO()):
 
 print("3. Nouvelle partie : l'œuf seul, l'invite et la liste")
 (HOME / ".bash_history").touch()
-reponses = iter(["", "", "", "Pixou", ""])
+reponses = iter(["1", "", "", "", "Pixou", ""])   # 1 : « je joue seul » (idée 1, « Qui est avec toi ? »)
 builtins.input = lambda _invite="": next(reponses)
 with redirect_stdout(io.StringIO()):
     app.creer_si_besoin(avec_intro=True)

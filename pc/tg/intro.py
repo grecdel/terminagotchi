@@ -317,6 +317,8 @@ def contenu(state, cid, chemin=None, tel=False):
         from pathlib import Path
         return t("intro.ici.titre"), [t("intro.ici", chemin=chemin or str(Path.home())),
                                       t("intro.suite", chapitre=t("hist.reveil.titre"))]
+    if cid == "fermer":                          # idée 9 : fermer et revenir (aide_douce.py), à la fin du tronc commun
+        return "💤 " + t("ad.fermer.titre"), [t("ad.fermer.texte"), t("ad.fermer.tel" if tel else "ad.fermer.pc", cmd="`exit`")]
     f = par_id()[cid]
     return f["emoji"] + " " + t("deb.nouveau", nom=t(f"deb.{cid}.titre")), [t(f"deb.{cid}.texte", **cmds(cid, tel))]
 
@@ -732,14 +734,21 @@ def pour_prompt(state):
         cid = a_montrer(state)
         if cid:
             out += lignes_ecran(state, cid)[:-1]
-            lu(state)
+            _lu_prompt(state, cid)
         return out
     cid = a_montrer(state)
     if cid and not retient(state):
         lignes = lignes_ecran(state, cid)[:-1]
-        lu(state)
+        _lu_prompt(state, cid)
         return lignes
     return []
+
+
+def _lu_prompt(state, cid):
+    lu(state)
+    if cid == "fermer":                          # idée 9 : on attend un nouveau terminal pour dire « Te revoilà ! »
+        from . import aide_douce
+        aide_douce.marquer_fermer(state)
 
 
 # ---------------------------------------------------------------- les écrans du début (PC)

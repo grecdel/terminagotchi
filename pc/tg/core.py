@@ -388,6 +388,7 @@ BUILTINS = {"cd", "echo", "export", "alias", "history", "type", "source", ".", "
             "entrainement", "exercice", "badges",   # la salle d'entraînement (tg entrainement, tg badges)
             "guide", "types", "equipe",             # le guide (tg guide, tg types, tg equipe)
             "aide",                                 # I1 : alias aide='tg aide' (installé avec le compagnon)
+            "perdu", "indice",                      # idées 6 et 25 : alias perdu='tg perdu', indice='tg indice'
             # les alias du jeu posés par tg installer (le compagnon) : ce sont des commandes, pas des fautes
             "deploie", "espace", "cerveau", "port", "citadelle", "crypte", "machines",
             "ondes", "mesh-envoie", "mesh-coupe", "mesh-route", "guilde",
