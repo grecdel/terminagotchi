@@ -1155,6 +1155,8 @@ par famille au moins, chacun regardé à l'œil), planche de 20 stickers, poster
 minute montée en code (ffmpeg, images du jeu, musique synthétisée, sans voix ni enfant filmé) :
 `/home/claude/outils/ameliorations/autour/video/` (pas dans le dépôt). Tests : `pc/outils/test_autour.py`,
 `site/test/test.mjs` (« Essayer, À imprimer »). **Le site n'est pas redéployé.**
+À faire plus tard : citer `site/public/imprimer/` dans `LICENSE-images.md`, puis relancer
+`donnees/guilde/outils/fiches_guilde.py` (guilde.json embarque ce fichier, `test_guilde.py` vérifie qu'ils sont identiques).
 
 ## Ce qui attend une décision ou une action du propriétaire
 
