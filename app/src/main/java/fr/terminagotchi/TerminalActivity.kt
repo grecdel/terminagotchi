@@ -1846,17 +1846,17 @@ class TerminalActivity : Activity() {
         } catch (e: Exception) { ecrire(question, Commandes.ROSE) }
     }
 
-    /** Réglages > Son : le son, la musique, les cris, les réussites (chaque toucher fait un pas), « ce soir seulement ». */
+    /** Réglages > Son (3 nov.) : l'interrupteur son oui / non, de vrais curseurs de volume (musique, cris, réussites)
+     *  et « ce soir seulement » (SonsReglages.kt). */
     private fun reglagesSon() {
         try {
-            val l = Sons.menu(jeu)
-            android.app.AlertDialog.Builder(this).setTitle(t("son.reglages"))
-                .setItems(l.map { Vert.rendre(it.first) }.toTypedArray()) { _, i ->
-                    ecrire(Sons.toucher(jeu, l[i].second), Commandes.ROSE)
-                    jeu.sauver()
-                    Sons.suivre(jeu, espace != null && espace?.classe != true)
-                    handler.post { reglagesSon() }
-                }.setNegativeButton("OK", null).show()
+            val r = SonsReglages(this, jeu, resources.displayMetrics.density, { ecrire(it, Commandes.ROSE) }) {
+                jeu.sauver()
+                Sons.suivre(jeu, espace != null && espace?.classe != true)
+            }
+            val cadreSon = android.widget.ScrollView(this).apply { addView(r.boite) }
+            android.app.AlertDialog.Builder(this).setTitle(t("son.reglages")).setView(cadreSon)
+                .setPositiveButton("OK", null).show()
         } catch (e: Exception) { }
     }
 

@@ -1345,8 +1345,9 @@ def lignes_etat(state):
         return t_(cle, cmd="tg son", **kw)
     r = reglages(state)
     oui, non = t("son.allume"), t("son.eteint")
+    # « la musique » est féminin en français (allumée / éteinte) : ses propres mots (son.allumee / son.eteinte)
     out = [t("son.etat.titre", etat=oui if r["on"] else non),
-           t("son.etat.musique", v=r["v_musique"], etat=oui if r["musique"] else non),
+           t("son.etat.musique", v=r["v_musique"], etat=t("son.allumee") if r["musique"] else t("son.eteinte")),
            t("son.etat.cris", v=r["v_cris"]),
            t("son.etat.retours", v=r["v_retours"])]
     y, mo, j, mi = _maintenant()

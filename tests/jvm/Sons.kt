@@ -147,6 +147,37 @@ fun main(args: Array<String>) {
     verifierS(q1 == Langue.t("son.question.terminal", "cmd" to "son", "nom" to jeu.nom) && q2 == null, "à la première éclosion : « Tu veux m'entendre ? », une seule fois")
     verifierS(Langue.t("son.question").isNotBlank() && Langue.t("son.question") != "son.question", "la question existe en français")
 
+    println("4. Réglages du son du téléphone : de vrais curseurs (3 nov.)")
+    jeu.module("son").put("on", false).put("musique", false).put("v_musique", 30).put("v_cris", 60).put("v_retours", 50)
+    val ecrits = mutableListOf<String>()
+    var sauves = 0
+    val rg = fr.terminagotchi.SonsReglages(null, jeu, 1f, { ecrits.add(it) }) { sauves++ }
+    verifierS(rg.curseurs.keys.toList() == listOf("musique", "cris", "retours") && rg.curseurs.values.all { it.max == 100 },
+        "trois curseurs de 0 à 100 : musique, cris, réussites")
+    verifierS(!rg.interrupteur.isChecked && rg.curseurs.values.none { it.isEnabled }, "son éteint : l'interrupteur est sur non, les curseurs grisés")
+    verifierS(rg.curseurs.getValue("musique").progress == 0 && rg.curseurs.getValue("cris").progress == 60,
+        "la musique éteinte est à 0, les cris à 60")
+    verifierS(Sons.libelle(jeu, "musique") == Langue.t("son.etat.musique", "v" to 30, "etat" to "éteinte").trim()
+        && Sons.libelle(jeu, "musique").endsWith("(éteinte)"), "« Musique des biomes : 30 % (éteinte) », au féminin")
+    rg.interrupteur.isChecked = true
+    verifierS(Sons.reglages(jeu).getBoolean("on") && rg.curseurs.values.all { it.isEnabled } && sauves == 1 && ecrits.last() == Langue.t("son.ok.on", "cmd" to "son"),
+        "l'interrupteur sur oui : le son s'allume, les curseurs aussi (et c'est enregistré)")
+    rg.curseurs.getValue("cris").glisser(35)
+    verifierS(Sons.reglages(jeu).getInt("v_cris") == 35 && sauves == 2, "le curseur des cris lâché à 35 : volume 35 %")
+    rg.curseurs.getValue("retours").glisser(80)
+    verifierS(Sons.reglages(jeu).getInt("v_retours") == 80, "le curseur des réussites lâché à 80")
+    rg.curseurs.getValue("musique").glisser(45)
+    verifierS(Sons.reglages(jeu).getBoolean("musique") && Sons.reglages(jeu).getInt("v_musique") == 45
+        && Sons.libelle(jeu, "musique").endsWith("(allumée)"), "la musique poussée à 45 : elle s'allume (« allumée »)")
+    rg.curseurs.getValue("musique").glisser(0)
+    verifierS(!Sons.reglages(jeu).getBoolean("musique") && Sons.reglages(jeu).getInt("v_musique") == 45
+        && rg.curseurs.getValue("musique").progress == 0, "la musique ramenée à 0 : éteinte (son volume d'avant gardé)")
+    verifierS(Sons.libelle(jeu, "cris", 72) == Langue.t("son.etat.cris", "v" to 72).trim(), "pendant qu'on glisse, le pourcentage suit le doigt")
+    rg.soir.performClick()
+    rg.interrupteur.isChecked = false
+    verifierS(!Sons.reglages(jeu).getBoolean("on") && rg.curseurs.values.none { it.isEnabled }, "l'interrupteur sur non : tout se tait")
+    verifierS(Langue.t("son.bouton.soir") != "son.bouton.soir" && rg.soir.text.toString() == Langue.t("son.bouton.soir"), "le bouton « Ce soir seulement »")
+
     println("\n$okS ✔   $koS ✖")
     dossier.deleteRecursively()
     if (koS > 0) kotlin.system.exitProcess(1)

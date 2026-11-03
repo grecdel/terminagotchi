@@ -1233,13 +1233,19 @@ pendant la rencontre d'un gardien ; cri bébé +5 demi-tons, ado +2 ; shiny éti
 de retour par tour (étape, exploit, évolution, nouvelle créature ; erreur douce, « presque », refus doux ; petite
 réussite une fois sur trois au plus) ; silence de 20 h 30 à 7 h 30 sauf « ce soir seulement » ; la créature qui dort
 ne crie pas ; le mode classe (séance et `espace classe`) coupe tout. Volumes séparés (musique 30, cris 60, réussites 50)
-: `tg son [oui|non|musique N|cris N|retours N|soir|essai]` (téléphone : `son`, et « Réglages du son » par touchers
-successifs ; bulle : réglage Son et cri au toucher). Point d'entrée des autres modules : `sons.son("evolution")` /
+: `tg son [oui|non|musique N|cris N|retours N|soir|essai]` (téléphone : `son`, et « Réglages du son » : de vrais
+curseurs de volume — décision du 3 novembre, 04 h 14, voir plus bas ; bulle : réglage Son et cri au toucher). Point d'entrée des autres modules : `sons.son("evolution")` /
 `Sons.son(nom, ctx)` (déjà appelé par le chantier « créature » ; le même son demandé deux fois en 3 s ne joue qu'une
 fois). Lecture : Linux `pw-play`, sinon `paplay`, sinon `aplay` par l'entrée standard (sinon silence) ; Windows winmm
 par ctypes, sinon winsound ; macOS afplay ; Android AudioTrack (focus audio, silencieux/vibreur respecté, pause en
 arrière-plan). Les commandes tapées dans le shell (invite) jouent par un petit processus à part (`tg son _jouer`).
 CI : `test_sons.py` dans rejeu (Linux) et windows.yml. `tout.sh all` vert (PC, langues, site, 40 suites JVM dont Sons).
+*Curseurs du son (3 novembre, 04 h 14)* : sur le téléphone, « Réglages du son » (`son`, ou Réglages) est une vraie
+fenêtre (`SonsReglages.kt`) : l'interrupteur son oui / non, trois curseurs de 0 à 100 % (musique, cris, réussites ;
+la musique ramenée à 0 s'éteint en gardant son volume, poussée au-dessus de 0 elle s'allume ; un petit son d'essai
+quand on lâche le curseur des cris ou des réussites) et le bouton « 🌙 Ce soir seulement ». Accord corrigé sur PC et
+téléphone : « Musique des biomes : 30 % (éteinte) » (clés `son.allumee` / `son.eteinte`, féminin en fr, es, it, pt,
+ar). Tests : `test_sons.py` et `tests/jvm/Sons.kt` (§ 4, curseurs glissés par les imitations SeekBar / Switch).
 
 **🎒 Apprendre en jouant — codé (3 novembre, PC et Android, maquettes validées) : idées 21, 23, 24, 27, 29, 30, 41,
 42, 43, 44, 45, 46, 49, 50.** `pc/tg/apprendre.py` et `Apprendre.kt` / `ApprendreDessin.kt`, données

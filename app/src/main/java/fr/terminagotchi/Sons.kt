@@ -793,31 +793,36 @@ object Sons {
         } catch (x: Exception) { }
     }
 
-    /** Les lignes du petit menu « Réglages > Son » du téléphone (texte, action) : chaque toucher fait un pas. */
-    fun menu(jeu: Jeu): List<Pair<String, String>> {
+    /** « Réglages du son » du téléphone (3 nov. : de vrais curseurs) — le texte d'une ligne : "on" (l'interrupteur),
+     *  "musique", "cris", "retours" (au-dessus de chaque curseur), "soir" (la nuit). La musique est féminine en
+     *  français : « allumée / éteinte » (son.allumee / son.eteinte). */
+    fun libelle(jeu: Jeu, quoi: String, pendant: Int? = null): String {   // pendant : le curseur bouge encore
         val r = reglages(jeu)
-        val oui = t("son.allume"); val non = t("son.eteint")
-        return listOf(t("son.etat.titre", "etat" to if (r.optBoolean("on")) oui else non) to "on",
-            t("son.etat.musique", "v" to r.optInt("v_musique"), "etat" to if (r.optBoolean("musique")) oui else non).trim() to "musique",
-            t("son.etat.cris", "v" to r.optInt("v_cris")).trim() to "cris",
-            t("son.etat.retours", "v" to r.optInt("v_retours")).trim() to "retours",
-            t("son.etat.nuit").trim() to "soir")
+        return when (quoi) {
+            "on" -> t("son.etat.titre", "etat" to t(if (r.optBoolean("on")) "son.allume" else "son.eteint"))
+            "musique" -> t("son.etat.musique", "v" to (pendant ?: r.optInt("v_musique")),
+                "etat" to t(if (pendant?.let { it > 0 } ?: r.optBoolean("musique")) "son.allumee" else "son.eteinte"))
+            "cris", "retours" -> t("son.etat.$quoi", "v" to (pendant ?: r.optInt("v_$quoi")))
+            "soir" -> { val m = maintenant(); val s = soiree(m[0], m[1], m[2], m[3])
+                t(if (s.isNotEmpty() && r.optString("soir") == s) "son.etat.nuit.soir" else "son.etat.nuit") }
+            else -> ""
+        }.trim()
     }
 
-    val PAS = intArrayOf(0, 15, 30, 50, 70, 100)
-
-    /** Un toucher dans « Réglages > Son » : allumer / éteindre, ou le volume suivant (0, 15, 30, 50, 70, 100 %). */
-    fun toucher(jeu: Jeu, quoi: String): String {
+    /** La position d'un curseur (0 à 100) : la musique éteinte est à 0. */
+    fun valeurCurseur(jeu: Jeu, cat: String): Int {
         val r = reglages(jeu)
-        fun suivant(v: Int) = PAS.firstOrNull { it > v } ?: 0
-        return when (quoi) {
-            "on" -> commande(jeu, if (r.optBoolean("on")) "non" else "oui")
-            "musique" -> if (!r.optBoolean("musique")) commande(jeu, "musique oui")
-                else suivant(r.optInt("v_musique")).let { if (it == 0) commande(jeu, "musique non").also { r.put("v_musique", 15) } else commande(jeu, "musique $it") }
-            "cris", "retours" -> commande(jeu, "$quoi ${suivant(r.optInt("v_$quoi"))}")
-            "soir" -> commande(jeu, "soir")
-            else -> ""
-        }
+        if (cat == "musique" && !r.optBoolean("musique")) return 0
+        return r.optInt("v_$cat", 0).coerceIn(0, 100)
+    }
+
+    /** Le doigt lâche un curseur à v % : le volume (la musique à 0 s'éteint, et garde son volume d'avant pour la
+     *  prochaine fois ; au-dessus de 0 elle s'allume). Renvoie la petite phrase à écrire. */
+    fun curseur(jeu: Jeu, cat: String, v: Int): String {
+        val r = reglages(jeu)
+        val x = v.coerceIn(0, 100)
+        return if (cat == "musique" && x == 0) { r.put("musique", false); t("son.ok.musique.off") }
+        else commande(jeu, "$cat $x")
     }
 
     /** La vue Monde / Espace demande sa musique (null : silence). */
@@ -836,7 +841,7 @@ object Sons {
         val r = reglages(jeu)
         val oui = t("son.allume"); val non = t("son.eteint")
         val out = mutableListOf(t("son.etat.titre", "etat" to if (r.optBoolean("on")) oui else non),
-            t("son.etat.musique", "v" to r.optInt("v_musique"), "etat" to if (r.optBoolean("musique")) oui else non),
+            t("son.etat.musique", "v" to r.optInt("v_musique"), "etat" to t(if (r.optBoolean("musique")) "son.allumee" else "son.eteinte")),
             t("son.etat.cris", "v" to r.optInt("v_cris")), t("son.etat.retours", "v" to r.optInt("v_retours")))
         val m = maintenant()
         val s = soiree(m[0], m[1], m[2], m[3])
