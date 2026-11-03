@@ -32,6 +32,8 @@ jobs:
           mkdir -p config
           curl -fsSL https://gitlab.com/fdroid/fdroiddata/-/raw/master/config/categories.yml -o config/categories.yml \
             || printf 'Games:\n  name: Games\nScience & Education:\n  name: Science & Education\n' > config/categories.yml
+          # (sans les icônes des catégories, que lint voudrait recopier)
+          python3 -c "import yaml; d = yaml.safe_load(open('config/categories.yml')); yaml.safe_dump({k: {'name': k} for k in d}, open('config/categories.yml', 'w'), allow_unicode=True)"
           echo "catégories permises :"; grep -E '^[^ #]' config/categories.yml | tr '\n' ' '; echo
           fdroid lint fr.terminagotchi
           fdroid rewritemeta fr.terminagotchi
