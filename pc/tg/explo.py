@@ -146,6 +146,8 @@ def spawn(state):
     state["explo_n"] += 1
     s = {"f": dressage.fiche(e["nom"]).name, "e": e["nom"], "zone": zone, "shiny": shiny, "v": vid, "ind": ind}
     state["sauvages"].append(s)
+    from . import sons
+    sons.apparition(state, e, ind)                  # son cri (espèce nouvelle) ou le motif de son gardien
     core.log(state, t("dress.apparait", nom=e["nom"], eclat=""))
     core.animer(state, "attaque")
     dressage.commencer(state, s)

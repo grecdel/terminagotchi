@@ -310,11 +310,14 @@ class TerminalActivity : Activity() {
     override fun onPause() {
         super.onPause()
         ecranVisible = false                      // écran éteint ou appli cachée : la vie se met en pause
+        SonsLecteur.pause()                       // et le son se tait (Sons.kt)
     }
 
     override fun onResume() {
         super.onResume()
         ecranVisible = true
+        SonsLecteur.reprendre(this)
+        if (::jeu.isInitialized) { Sons.courant = jeu; Sons.suivre(jeu, espace != null && espace?.classe != true) }
         Bulle.reprendre(this)                     // la permission « par-dessus les autres applis » vient d'être donnée
         if (!vieEnMarche) { vieEnMarche = true; handler.postDelayed({ pasVie() }, VIE_PAS) }
         if (::jeu.isInitialized && !enCours) {
@@ -996,14 +999,14 @@ class TerminalActivity : Activity() {
                 val colle = Verif.collee(brut)
                 val egal = Regex("^([A-Za-z_]\\w*)\\s+=").find(ligne.trim())?.groupValues?.get(1)
                 when {
-                    egal != null -> t("core.inconnue.egal", "cmd" to egal)      // nom = Pixel : des espaces autour du =
+                    egal != null -> t("core.inconnue.egal", "cmd" to egal).also { Sons.marquer("erreur_presque") }   // nom = Pixel : des espaces autour du =
                     brut != brut.lowercase() && Verif.collee(brut.lowercase()) == null && brut.lowercase() in Verif.MOTS_CONNUS ->
-                        t("core.inconnue.casse", "cmd" to brut, "proche" to brut.lowercase())
-                    colle != null -> t("core.inconnue.proche", "cmd" to brut, "proche" to colle)
+                        t("core.inconnue.casse", "cmd" to brut, "proche" to brut.lowercase()).also { Sons.marquer("erreur_presque") }
+                    colle != null -> t("core.inconnue.proche", "cmd" to brut, "proche" to colle).also { Sons.marquer("erreur_presque") }
                     // I9 : `pwd,` (une virgule collée) → pwd
                     brut.trimEnd(',', '.', ';', ':', '!', '?').let { it != brut && it.lowercase() in Verif.MOTS_CONNUS } ->
-                        t("core.inconnue.proche", "cmd" to brut, "proche" to brut.trimEnd(',', '.', ';', ':', '!', '?'))
-                    else -> t("term.err.inconnue", "cmd" to Regles.premierMot(ligne))
+                        t("core.inconnue.proche", "cmd" to brut, "proche" to brut.trimEnd(',', '.', ';', ':', '!', '?')).also { Sons.marquer("erreur_presque") }
+                    else -> t("term.err.inconnue", "cmd" to Regles.premierMot(ligne)).also { Sons.marquer("erreur_douce") }
                 }
             }
             "file exists" in s -> t("term.err.existe")
@@ -1303,6 +1306,7 @@ class TerminalActivity : Activity() {
                 shell.dossier = it
                 majObservatoire(ligne)
             }
+            if (interne.sonMenu) handler.post { reglagesSon() }
             try { apresCommande(ligne, etaitColle, etaitRappel) } catch (e: Exception) { android.util.Log.e("TG", "après « $ligne »", e) }
             try { espace?.effets(ligne, photoAvant, 0, interne.texte, shell.dossier) } catch (e: Exception) { android.util.Log.e("TG", "effets", e) }
             if (interne.saut > saut) saut = interne.saut
@@ -1462,6 +1466,7 @@ class TerminalActivity : Activity() {
         val etapeAvant = jeu.lecon to jeu.etape
         val campAvant = Intro.enCours(jeu) && Intro.faits(jeu).isEmpty()
         val premierLs = !etaitColle && AideDouce.apresCommande(jeu, ligne, code == null || code == 0) == "premier_ls"
+        val sonAvant = Sons.resume(jeu)
         // le tour de jeu (créature, terrain, leçons, défi, dressage et combat, troupe, attirance, monstres) : voir Tour.kt
         val tour = Tour.apresCommande(jeu, ligne, etaitColle, etaitRappel, cwd = shell.dossier, code = code)
         try {
@@ -1481,6 +1486,8 @@ class TerminalActivity : Activity() {
             ecrire(r.texte, 0xFFFFD787.toInt())
             r.aller?.let { shell.dossier = it; majObservatoire(null) }
         }
+        // au plus un son de retour (Sons.kt, si les réglages le veulent) ; à la première éclosion : « Tu veux m'entendre ? »
+        Sons.apresTour(jeu, sonAvant, Sons.resume(jeu), code)?.let { q -> handler.postDelayed({ demanderSon(q) }, 1500) }
         jeu.sauver()
         Apprendre.diplomeAMontrer(jeu)?.let { montrerDiplome(it) }   // l'examen réussi : le diplôme et ses deux boutons
         WidgetCreature.majTous(this)
@@ -1723,6 +1730,7 @@ class TerminalActivity : Activity() {
             jeu.module("espace").put("ouvert", true).put("classe", classe)
             jeu.sauver()
             jeu.historique.lastOrNull()?.takeIf { Regles.premierMot(it) !in setOf("espace", "deploie", "cerveau") }?.let { v.deployer(it) }
+            Sons.suivre(jeu, !classe)
             if (dire) ecrire(t("esp.tel.ouvert"), Commandes.ROSE)
         } catch (e: Exception) {
             android.util.Log.e("TG", "espace", e)
@@ -1747,7 +1755,32 @@ class TerminalActivity : Activity() {
         sortie.textSize = 12f
         jeu.module("espace").put("ouvert", false)
         jeu.sauver()
+        Sons.suivre(jeu, false)
         ecrire(t("esp.tel.ferme"), Commandes.ROSE)
+    }
+
+    /** La première éclosion : la créature demande une fois « Tu veux m'entendre ? » (le jeu reste silencieux sinon). */
+    private fun demanderSon(question: String) {
+        try {
+            android.app.AlertDialog.Builder(this).setTitle(t("son.question")).setMessage(Vert.rendre(question))
+                .setPositiveButton(t("son.bouton.oui")) { _, _ -> ecrire(Sons.commande(jeu, "oui"), Commandes.ROSE); jeu.sauver() }
+                .setNegativeButton(t("son.bouton.non")) { _, _ -> ecrire(Sons.commande(jeu, "non"), Commandes.ROSE); jeu.sauver() }
+                .setCancelable(true).show()
+        } catch (e: Exception) { ecrire(question, Commandes.ROSE) }
+    }
+
+    /** Réglages > Son : le son, la musique, les cris, les réussites (chaque toucher fait un pas), « ce soir seulement ». */
+    private fun reglagesSon() {
+        try {
+            val l = Sons.menu(jeu)
+            android.app.AlertDialog.Builder(this).setTitle(t("son.reglages"))
+                .setItems(l.map { Vert.rendre(it.first) }.toTypedArray()) { _, i ->
+                    ecrire(Sons.toucher(jeu, l[i].second), Commandes.ROSE)
+                    jeu.sauver()
+                    Sons.suivre(jeu, espace != null && espace?.classe != true)
+                    handler.post { reglagesSon() }
+                }.setNegativeButton("OK", null).show()
+        } catch (e: Exception) { }
     }
 
     /** Ouvre (ou rafraîchit) la carte dessinée à la place de l'observatoire. Faux si elle n'a pas pu s'ouvrir. */
@@ -2391,6 +2424,7 @@ class TerminalActivity : Activity() {
         }
         if (frame % 12 == 0 && !enCours) {        // toutes les ~5 s : la faim, le terrain, les bulles, les leçons « fichiers »
             for ((m, c) in Tour.periodique(jeu, shell.dossier)) ecrire(m, c)
+            Sons.suivre(jeu, espace != null && espace?.classe != true)     // la musique : seulement l'espace (Monde, Espace)
             if (Random.nextInt(4) == 0) jeu.parlerSiSilencieux()
             ambiance()
             jeu.sauver()

@@ -29,6 +29,11 @@ jobs:
         run: |
           $env:PYTHONUTF8 = "1"
           python pc/outils/test_windows.py
+      - name: Les sons sous Windows (mêmes échantillons qu'ailleurs, winmm par ctypes ou le silence, jamais d'erreur)
+        shell: pwsh
+        run: |
+          $env:PYTHONUTF8 = "1"
+          python pc/outils/test_sons.py
       - name: Le Linux virtuel du terminal du jeu sur les vrais fichiers de Windows, son petit git contre le vrai git, les garde-fous de python3 et curl
         shell: pwsh
         run: |

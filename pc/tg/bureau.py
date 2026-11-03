@@ -29,7 +29,7 @@ from pathlib import Path
 
 from . import bureau_scene as S
 from . import bureau_vie as V
-from . import core, glitch, langue, poses, signaux
+from . import core, glitch, langue, poses, signaux, sons
 from .langue import sans_marques, t
 from .plateforme import SYS_WIN, OSK
 
@@ -109,8 +109,7 @@ class Controleur:
             if r["total"] > self.resume["total"]:
                 self.c.reagir("mange")
                 self.vue.flotter(random.choice(langue.liste("bur.miam")))
-                if self.regl.get("son"):
-                    self.bip()
+                # (3 nov.) plus de « bip » à chaque repas : le son de retour vient du tour de jeu (sons.apres_tour)
             for cle, texte in V.evenements(self.resume, r, self.notifs):
                 if self.ile.annoncer(sans_marques(texte or t(cle)), self.t) and self.c.etat != "dort":
                     self.c.parler(sans_marques(texte or t(cle)))     # elle l'annonce : la bouche bouge dans l'île
@@ -247,11 +246,18 @@ class Controleur:
             self.fermer_menu()
             self.c.reagir("coeur")
             self.vue.flotter("♥", S.ROUGE)
-            if self.regl.get("son"):
-                self.bip()
+            self.cri()                                 # toucher sa créature : son cri (si le son est allumé)
         elif g == "triple":
             self.fermer_menu()
             self.dire(random.choice(langue.liste("bur.phrases")))
+
+    def cri(self):
+        """Le cri de la créature (sons.py), plus aigu au stade bébé ; jamais quand elle dort ni sans réglage."""
+        st = self.state or {}
+        e = st.get("espece_compagnon")
+        if e and self.c.etat != "dort":
+            stade = {1: "bebe", 2: "ado"}.get(core.stage(core.level(st.get("xp", 0))), "")
+            sons.son(sons.nom_cri(e, stade, bool(st.get("shiny"))), st)
 
     def dire(self, texte, duree=None):
         """Elle dit texte : une bulle, et sa bouche bouge au rythme des syllabes (assise)."""
@@ -373,7 +379,7 @@ class Controleur:
             (t("bur.reg.taille", v=t("bur.reg.taille." + r["taille"])), "reg:taille"),
             (t("bur.reg.vitesse", v=t("bur.reg.vitesse." + r["vitesse"])), "reg:vitesse"),
             (t("bur.reg.sur_place", v=oui(r["sur_place"])), "reg:sur_place"),
-            (t("bur.reg.son", v=oui(r["son"])), "reg:son"),
+            (t("bur.reg.son", v=oui(sons.reglages(dict(self.state or {}))["on"])), "reg:son"),
             (t("bur.reg.dormir"), "reg:dormir"),
             (t("bur.reg.demarrage", v=oui(est_installe())), "reg:demarrage"),
             (t("bur.reg.notifs", v=oui((self.state or {}).get("config", {}).get("notifs", True))), "reg:notifs"),
@@ -410,7 +416,12 @@ class Controleur:
             self._sauver({"vitesse": V.suivant(list(V.VITESSES), r["vitesse"])})
         elif cle == "ile_pos":
             self._sauver({"ile_pos": V.suivant(V.POSITIONS_ILE, r["ile_pos"])})
-        elif cle in ("sur_place", "son", "ile", "ile_auto", "discrete"):
+        elif cle == "son":                         # le son de tout le jeu (sons.py), pas seulement du bureau
+            def basculer(s):
+                rs = sons.reglages(s)
+                rs["on"], rs["demande"] = not rs["on"], True
+            self._sauver({}, basculer)
+        elif cle in ("sur_place", "ile", "ile_auto", "discrete"):
             self._sauver({cle: not r[cle]})
         elif cle == "dormir":
             self.fermer_menu()
@@ -1318,6 +1329,7 @@ def _png_base64(cad, e, miroir, ey=None):
 # ================================================================ lancement
 def lancer(etape, args=()):
     args = [a.lower() for a in args]
+    sons.LONG = True                               # une fenêtre qui dure : les sons passent par son mélangeur
     if args and args[0] in ("installer", "install"):
         print(installer()[1])
         return

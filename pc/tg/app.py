@@ -11,7 +11,7 @@ import subprocess
 from . import (compagnon, core, dressage, entrainement, envies, equipe, guide, exemples, explique, explo, histoire, intro, lecons, lexique, maths,
                maison, notif, quetes, recense, registre, sprites, terrain)
 from .bestiaire import arc_en_ciel
-from . import apprendre, langue, rendu_fin, satiete, sur
+from . import apprendre, langue, rendu_fin, satiete, sons, sur
 from .langue import ajuster, envelopper, largeur, raccourcir, t
 from .mots import palier, terme
 
@@ -445,9 +445,11 @@ def etape(spontane=True, rythme=1.5, defis=True, avant_save=None, extra=None, cw
         except OSError:
             lines = list(extra or [])
         avant = state["total"]
+        son_avant = sons.resume(state)
         core.DERNIER.update(ligne=lines[-1] if lines and statut is not None else None, statut=statut)
         boucle_jeu(state, lines, spontane, rythme, defis, cwd)
         state["_vient_de_manger"] = state["total"] > avant
+        sons.apres_tour(state, son_avant, sons.resume(state))     # au plus un son de retour (si les réglages le veulent)
         if avant_save:
             avant_save(state)
         a_envoyer, state["notifs"] = state["notifs"], []
@@ -1077,7 +1079,8 @@ def veille():
 
 def aide():
     return "\n".join(langue.remplir(l, {}) for l in langue.liste("app.aide") + langue.liste("app.aide.histoire")
-                     + [t("env.aide"), t("sat.aide"), t("aura.aide"), t("ent.aide"), t("esp.aide"), t("classe.aide.courte"), "", t("app.licences")])
+                     + [t("env.aide"), t("sat.aide"), t("aura.aide"), t("ent.aide"), t("esp.aide"), t("classe.aide.courte"), t("son.aide.courte"), "",
+                        t("app.licences")])
 
 
 def commande_histoire(mode, args):
@@ -1185,6 +1188,13 @@ def _main():
             _dire_une_fois(sur.message_os(e))
         except Exception:
             sur.noter_trace()
+        return
+    if mode == "son" and args[1:2] == ["_jouer"]:     # le petit processus qui joue un son puis s'en va (sons.py)
+        sons.commande(args[1:])
+        return
+    if mode in ("son", "sons", "sound"):       # tg son … : les réglages du son (silencieux par défaut)
+        creer_si_besoin()
+        print(sons.commande(args[1:]))
         return
     if mode in ("sh", "terminal-ici"):          # le terminal du jeu dans cette fenêtre (vsh/ ; sous Windows, celui des leçons)
         from .vsh import terminal

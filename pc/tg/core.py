@@ -239,6 +239,12 @@ def animer(state, nom):
     state["anim"] = [nom, now]
 
 
+def _marquer(state, nom):
+    """Le son de retour d'une commande qui a buté (sons.py ; joué seulement si les réglages le permettent)."""
+    from . import sons
+    sons.marquer(state, nom)
+
+
 def log(state, msg):
     state["log"] = (state["log"] + [time.strftime("%H:%M ") + msg])[-6:]
     state["nlog"] = state.get("nlog", 0) + 1
@@ -511,6 +517,7 @@ def feed(state, line, statut=None):
             terminal(state, msg)
             log(state, t("core.inconnue.log", cmd=tete))
             animer(state, "confus")
+            _marquer(state, "erreur_presque")
             return
     cmd = first_word(line)
     if not cmd or cmd in ("exit", "logout"):       # I5 : quitter le terminal n'est pas un repas
@@ -522,6 +529,7 @@ def feed(state, line, statut=None):
         terminal(state, msg)
         log(state, t("core.inconnue.log", cmd=brut))
         animer(state, "confus")
+        _marquer(state, "erreur_presque")
         return
     # I6 : un alias ou une fonction créés par l'enfant (alias miam=…, miam() {…}) sont de vraies commandes
     persos = state.setdefault("alias_shell", [])
@@ -538,6 +546,7 @@ def feed(state, line, statut=None):
         say(state, msg, 8)
         terminal(state, msg)
         animer(state, "confus")
+        _marquer(state, "erreur_presque")
         return
     cat = next((k for k, v in CATEGORIES.items() if cmd in v["cmds"]), None)
     if not cat and not cmd.startswith(("termux-", "./", "/")) and not commande_existe(cmd) and cmd not in persos:
@@ -551,6 +560,7 @@ def feed(state, line, statut=None):
         terminal(state, msg)
         log(state, t("core.inconnue.log", cmd=cmd))
         animer(state, "confus")
+        _marquer(state, "erreur_presque" if proche else "erreur_douce")
         return
     from . import satiete
     if cmd == "tg" or cmd in BUILTINS:          # v3 : une fonction du jeu « pas encore » ouverte ne nourrit pas
@@ -563,6 +573,7 @@ def feed(state, line, statut=None):
         satiete.repas(state, cmd, ratee=True)
         log(state, t("core.rate.log", cmd=cmd))
         animer(state, "confus")
+        _marquer(state, "refus_doux")              # la commande existe mais a buté (dossier pas vide, cadenas…)
         return
     state["total"] += 1
     # anti-remplissage (G-04) : une commande déjà goûtée parmi les FENETRE_REPAS dernières nourrit, mais ne donne

@@ -23,7 +23,7 @@ from . import apparence as A
 from . import bureau as B
 from . import bureau_vie as V
 from . import cerveau as CV
-from . import core
+from . import core, sons
 from . import deploie as D
 from . import effets as E
 from . import espace_scene as S
@@ -141,6 +141,7 @@ class Espace(B.Controleur):
         super().jeu()
         self.c.regl = dict(self.regl, sur_place=True)
         self._annonces()
+        sons.suivre(self.state, vue=not self.classe)    # la musique du biome (ou des gardiens) si elle est allumée
 
     def _theme(self, L):
         return L                                     # l'île ouverte dans l'espace : recolorée avec toute la scène
@@ -603,8 +604,19 @@ class Espace(B.Controleur):
                 self.deployer(lec["cmd"])
         elif a == "creature":
             self.c.reagir("coeur")
-        elif a == "son":
-            self.son = not self.son
+            self.cri()
+        elif a == "son":                           # ♪ : la musique des biomes (et le son du jeu avec elle)
+            def basculer(s):
+                rs = sons.reglages(s)
+                on = not (rs["on"] and rs["musique"])
+                rs["musique"] = on
+                rs["on"] = rs["on"] or on
+                rs["demande"] = True
+            st = core.modifier(basculer)
+            if st:
+                self.state = st
+            self.son = bool(st and sons.reglages(st)["on"] and sons.reglages(st)["musique"])
+            sons.suivre(self.state, vue=not self.classe)
         elif a.startswith("lieu:"):
             self.onglet = "carte"
 
@@ -759,7 +771,8 @@ class Espace(B.Controleur):
 
     def modele(self):
         st = self.state or {}
-        m = {"classe": self.classe, "t": self.t, "son": self.son, "onglet": self.onglet}
+        son_ = sons.reglages(dict(st))
+        m = {"classe": self.classe, "t": self.t, "son": bool(son_["on"] and son_["musique"]), "onglet": self.onglet}
         m["nom"] = st.get("name", "")
         m["album"] = self.album
         m["mini"] = V.mini_vie(self.c, self.t)
@@ -1603,6 +1616,8 @@ def lancer(etape, args=()):
     args = [a.lower() for a in args]
     classe = "classe" in args or "class" in args
     grand = "monde" in args or "world" in args          # tg espace monde : le monde des biomes en grand
+    sons.LONG = True                                    # une fenêtre qui dure : les sons passent par son mélangeur
+    sons.CLASSE = classe                                # le grand écran de la classe : aucun son
     force = os.environ.get("TG_ESPACE", "")
     texte = "texte" in args or "text" in args or force == "texte"
     ecran_dispo = bool(os.environ.get("DISPLAY") or os.environ.get("WAYLAND_DISPLAY")) or os.name == "nt" or \

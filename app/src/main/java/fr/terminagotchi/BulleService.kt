@@ -384,9 +384,20 @@ class BulleService : Service() {
                 if (vueMenu != null) fermerMenu() else { creature.reagir("sursaut"); ouvrirMenu() }
             }
             "double" -> { fermerMenu(); creature.reagir("coeur")
-                flottants.add(Triple("♥", SystemClock.elapsedRealtime(), 0xFFFF5F6D.toInt())) }
+                flottants.add(Triple("♥", SystemClock.elapsedRealtime(), 0xFFFF5F6D.toInt()))
+                cri() }
             "triple" -> { fermerMenu(); dire(Langue.liste("bur.phrases").randomOrNull() ?: "") }
         }
+    }
+
+    /** La bulle ne joue que les cris, quand on la touche (Sons.kt ; jamais quand elle dort, jamais sans réglage). */
+    private fun cri() {
+        try {
+            val e = jeu.especeCompagnon ?: return
+            if (creature.etat == "dort") return
+            val nom = Sons.nomCri(e, when (jeu.stade) { 1 -> "bebe"; 2 -> "ado"; else -> "" }, jeu.shiny)
+            if (Sons.peut(jeu, nom)) SonsLecteur.jouerDepuis(this, nom, Sons.volume(jeu, nom))
+        } catch (x: Exception) { }
     }
 
     /** Elle dit texte : une bulle, et sa bouche bouge au rythme des syllabes (assise). */
@@ -434,6 +445,7 @@ class BulleService : Service() {
                     t("bur.reg.taille", "v" to t("bur.reg.taille." + p.getString("taille", "moyenne"))) to "reg:taille",
                     t("bur.reg.vitesse", "v" to t("bur.reg.vitesse." + p.getString("vitesse", "normale"))) to "reg:vitesse",
                     t("bur.reg.sur_place", "v" to oui(p.getBoolean("sur_place", false))) to "reg:sur_place",
+                    t("bur.reg.son", "v" to oui(Sons.reglages(jeu).optBoolean("on"))) to "reg:son",
                     t("bur.reg.dormir") to "reg:dormir",
                     t("bur.reg.notifs", "v" to oui(NotifVie.voulue(this))) to "reg:notifs",
                     t("bur.reg.langue", "v" to Langue.courante) to "reg:langue",
@@ -460,6 +472,12 @@ class BulleService : Service() {
             "ile" -> e.putBoolean("ile", !p.getBoolean("ile", true))
             "ile_auto" -> e.putBoolean("ile_auto", !p.getBoolean("ile_auto", true))
             "notifs" -> NotifVie.regler(this, !NotifVie.voulue(this))
+            "son" -> try {                       // le son de tout le jeu (Sons.kt)
+                jeu.recharger()
+                val r = Sons.reglages(jeu)
+                r.put("on", !r.optBoolean("on")).put("demande", true)
+                jeu.sauver()
+            } catch (x: Exception) { }
             "dormir" -> { fermerMenu(); creature.dormir() }
             "langue" -> ouvrirJeu("langue")
         }

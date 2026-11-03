@@ -76,6 +76,7 @@ jobs:
           python3 pc/outils/vecteurs_temps.py --verifier
           python3 pc/outils/vecteurs_controle.py --verifier
           python3 pc/outils/vecteurs_accueil.py --verifier
+          python3 pc/outils/vecteurs_sons.py --verifier
 
       - name: Rejeu des sorties dans un vrai bash (fiches et histoire du PC)
         run: LC_ALL=C.UTF-8 python3 pc/outils/rejeu_bash.py
@@ -100,6 +101,11 @@ jobs:
           set -o pipefail
           LC_ALL=C.UTF-8 python3 pc/outils/test_accueil.py 2>&1 | tee /tmp/accueil.out || {
             grep -E "✖|Error|Traceback|line [0-9]" /tmp/accueil.out | head -20 | sed 's/^/::error::/'; exit 1; }
+      - name: Les sons (fabriqués en Python pur, mêmes échantillons que Kotlin, lecteur du système par l'entrée standard)
+        run: |
+          set -o pipefail
+          LC_ALL=C.UTF-8 python3 pc/outils/test_sons.py 2>&1 | tee /tmp/sons.out || {
+            grep -E "✖|Error|Traceback|line [0-9]" /tmp/sons.out | head -20 | sed 's/^/::error::/'; exit 1; }
 
       - name: Ponts des Nombres et récompenses
         run: python3 pc/outils/test_programme.py

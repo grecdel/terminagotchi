@@ -113,6 +113,7 @@ object Explo {
         etat(jeu).put("explo_n", etat(jeu).optInt("explo_n") + 1)
         jeu.log(t("dress.apparait", "nom" to e.nom, "eclat" to ""))
         jeu.animer("attaque")
+        Sons.apparition(jeu, e, ind)                                // son cri (espèce nouvelle) ou le motif de son gardien
         Dressage.commencer(jeu, e, ind)
         return r
     }

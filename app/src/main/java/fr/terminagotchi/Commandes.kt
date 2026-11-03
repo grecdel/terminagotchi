@@ -34,7 +34,7 @@ class Commandes(
     /** petit : en plus petit (la carte de la maison tient alors dans la largeur de l'écran). */
     /** carte : ouvrir la carte qui pousse (CarteVue) ; texte est alors la même carte en `tree` annoté. */
     class Reponse(val texte: String, val saut: Int = 0, val couleur: Int? = null, val aller: File? = null, val petit: Boolean = false,
-                  val carte: Boolean = false)
+                  val carte: Boolean = false, val sonMenu: Boolean = false)
 
     private var tts: TextToSpeech? = null
     private var ttsPret = false
@@ -90,6 +90,8 @@ class Commandes(
             "envies", "envie" -> Reponse(Envies.ecran(jeu), couleur = ROSE)
             // la satiété : l'état, l'assiette du jour, la série ; « vacances [oui|non] » met la faim en pause
             "satiete", "satiété" -> Reponse((listOf(t("sat.ecran.titre")) + Satiete.lignes(jeu.also { it.tick() }).map { "  $it" }).joinToString("\n"), couleur = ROSE)
+            // le son (Sons.kt) : silencieux par défaut ; son oui|non, son musique 30, son cris 60, son soir, son essai
+            "son", "sons", "sound" -> Reponse(Sons.commande(jeu, reste), couleur = ROSE, sonMenu = reste.isBlank())
             "vacances" -> Reponse(Satiete.vacances(jeu, when (mots.getOrNull(1)?.lowercase()) {
                 "oui", "on", "yes" -> true; "non", "off", "no" -> false; else -> null }), couleur = ROSE)
             // ---------------------------------------------------- salle d'entraînement (Entrainement.kt)

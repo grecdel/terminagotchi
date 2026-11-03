@@ -1184,6 +1184,26 @@ Règles communes : `pc/tg/aide_douce.py` = `AideDouce.kt` (vecteurs `donnees/acc
   Jouer, Nouvelle partie, Charger, Options (le compte y est), Aide, Quitter.
 Tests : `pc/outils/test_accueil.py`, `tests/jvm/Accueil.kt`, scénario du téléphone virtuel. Captures :
 `/home/claude/outils/ameliorations/accueil_aide/captures/` (`pc/outils/capture_accueil.py`).
+**🔊 Les sons — codé (3 novembre, maquette sonore et 8 décisions validées : idées 81, 82, 83, 86).** Tout est
+fabriqué par du code au moment de jouer (aucun fichier son, aucune banque, rien de tiers) : `pc/tg/sons.py` (Python
+pur, ni numpy ni bibliothèque mathématique : sinus, e^x et 2^x calculés avec + − × ÷) et `Sons.kt` donnent les mêmes
+échantillons au bit près (vecteurs `donnees/sons/vecteurs.json` : 224 sons dont les 9 musiques de biome, le thème et
+les motifs des 8 gardiens + gardien glitch, le cri des 151 espèces et des variantes bébé / ado / shiny / glitch ;
+`pc/outils/vecteurs_sons.py`, `test_sons.py`, `tests/jvm/Sons.kt`). Recette = celle de la maquette (corrélation 1,00
+pour les réussites et les musiques, 0,97 pour les cris : seul le bruit change). Décisions : silencieux par défaut,
+question « Tu veux m'entendre ? » une fois à la première éclosion (bulle + terminal ; boîte Oui / Non sur Android) ;
+musique seulement dans l'espace (vues Monde / Espace), 20 s de silence après 3 tours, fondu de 1 s ; thème des gardiens
+pendant la rencontre d'un gardien ; cri bébé +5 demi-tons, ado +2 ; shiny étincelle, glitch qui bégaie ; au plus un son
+de retour par tour (étape, exploit, évolution, nouvelle créature ; erreur douce, « presque », refus doux ; petite
+réussite une fois sur trois au plus) ; silence de 20 h 30 à 7 h 30 sauf « ce soir seulement » ; la créature qui dort
+ne crie pas ; le mode classe (séance et `espace classe`) coupe tout. Volumes séparés (musique 30, cris 60, réussites 50)
+: `tg son [oui|non|musique N|cris N|retours N|soir|essai]` (téléphone : `son`, et « Réglages du son » par touchers
+successifs ; bulle : réglage Son et cri au toucher). Point d'entrée des autres modules : `sons.son("evolution")` /
+`Sons.son(nom, ctx)` (déjà appelé par le chantier « créature » ; le même son demandé deux fois en 3 s ne joue qu'une
+fois). Lecture : Linux `pw-play`, sinon `paplay`, sinon `aplay` par l'entrée standard (sinon silence) ; Windows winmm
+par ctypes, sinon winsound ; macOS afplay ; Android AudioTrack (focus audio, silencieux/vibreur respecté, pause en
+arrière-plan). Les commandes tapées dans le shell (invite) jouent par un petit processus à part (`tg son _jouer`).
+CI : `test_sons.py` dans rejeu (Linux) et windows.yml.
 
 ## Ce qui attend une décision ou une action du propriétaire
 
