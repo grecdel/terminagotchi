@@ -463,7 +463,7 @@ console.log("Salle d'entraînement : exercices vérifiés, records, badges, Star
 
 // chaque page dans chaque langue
 const pages = ["/", "/classement", "/records", "/bestiaire", "/bestiaire/braisillon", "/captures", "/captures?shiny=1", "/joueur/Grec", "/joueur/Personne", lienBadge, "/badge/0123456789abcdef", "/ctf", "/nimporte", "/compte", "/connexion?t=0",
-  "/parents", "/enseignants", "/soutenir", "/confidentialite", "/mentions-legales"];
+  "/parents", "/enseignants", "/soutenir", "/confidentialite", "/mentions-legales", "/essayer", "/imprimer", "/bestiaire/gouttelin"];
 let rendues = 0;
 const rates = [];
 for (const l of LANGUES) {
@@ -582,7 +582,16 @@ console.log("Pied de page, pages pour les adultes, polices locales");
   verifier(!/googleapis|gstatic/.test(r.t) && r.t.includes("/polices/vt323-latin-400-normal.woff2") && r.t.includes("@font-face"),
     "polices hébergées sur le site : aucun appel à Google Fonts");
   r = await appel("GET", "/soutenir");
-  verifier(r.t.includes("parents") && r.t.includes("bientôt") && !/liberapay\.com|ko-fi\.com/.test(r.t), "soutenir : pour les adultes, « bientôt » tant qu'aucun lien n'est rempli");
+  verifier(r.t.includes("parents") && r.t.includes("D'autres manières d'aider") && !/Faire un don|liberapay|ko-fi|sponsors/i.test(r.t),
+    "soutenir : pour les adultes, plus de partie « Faire un don », « d'autres manières d'aider » gardé");
+  {
+    let sansDon = 0;
+    for (const l of LANGUES) {
+      const t = (await appel("GET", "/soutenir?lang=" + l)).t;
+      if (!/class="dons"|liberapay|ko-fi/i.test(t) && (t.match(/<h2>/g) || []).length === 2) sansDon++;
+    }
+    verifier(sansDon === LANGUES.length, `soutenir : aucune partie dons dans les ${LANGUES.length} langues (${sansDon})`);
+  }
   r = await appel("GET", "/parents?lang=en");
   verifier(r.t.includes("For parents") && r.t.includes("~/terrain_terminagotchi") && r.t.includes("~/.terminagotchi"), "parents (anglais) : ce que fait le jeu sur l'ordinateur");
   {
@@ -740,6 +749,40 @@ console.log("Pseudo coloré par les badges de la Guilde (Artisan : progression s
   const pageEn = await worker.fetch(new Request("http://localhost/monde?lang=en"), env);
   verifier((await pageEn.text()).includes("The biome world"), "/monde en anglais");
   verifier(!readFileSync(new URL("../public/js/monde_page.js", import.meta.url), "utf8").match(/mascotte\w*\.png|icone\.png|favicon/), "/monde : la mascotte du site n'apparaît pas dans le monde");
+}
+
+// ---- autour du jeu : la page « Essayer » et les fichiers « À imprimer »
+console.log("Essayer, À imprimer");
+{
+  const { existsSync } = await import("node:fs");
+  const A = (await import("../src/autour_textes.js")).default;
+  verifier(Object.keys(A).length === 14 && Object.values(A).every((x) => Object.keys(x).length === Object.keys(A.fr).length), "autour : textes dans les 14 langues");
+  let p = await appel("GET", "/essayer");
+  verifier(p.statut === 200 && p.t.includes("/js/essayer.js") && p.t.includes("TG_ESSAYER") && p.t.includes("Essayer en 2 minutes"), "/essayer : la page s'affiche");
+  const data = JSON.parse(p.t.match(/window\.TG_ESSAYER=(.*?)<\/script>/)[1]);
+  verifier(Object.keys(data.depart).length === 9 && Object.values(data.depart).flat().every((id) => existsSync(new URL(`../public/portraits/${id}/classique_bebe.webp`, import.meta.url))),
+    "/essayer : 9 types d'œufs, chaque bébé possible a son portrait");
+  verifier(Object.keys(data.depart).every((t) => ["intact", "fissure", "eclosion"].every((e) => existsSync(new URL(`../public/essayer/oeuf_${t}_${e}.png`, import.meta.url)))), "/essayer : les images des œufs");
+  verifier(data.t["site.nom_defaut"] === "Noisette" && data.t["intro.camp.dort"], "/essayer : nom proposé Noisette, textes de l'intro du jeu");
+  const js = readFileSync(new URL("../public/js/essayer.js", import.meta.url), "utf8").replace(/\/\/.*$/gm, "");
+  verifier(!/fetch\(|XMLHttpRequest|sendBeacon|document\.cookie|localStorage|sessionStorage|indexedDB|WebSocket|mascotte|icone\.png/.test(js), "/essayer : rien n'est envoyé ni enregistré, pas de mascotte");
+  verifier(!p.h.get("set-cookie"), "/essayer : aucun cookie");
+  p = await appel("GET", "/essayer?lang=ja");
+  verifier(p.t.includes("2ふんで"), "/essayer en japonais");
+  p = await appel("GET", "/");
+  verifier(p.t.includes('href="/essayer"') && p.t.includes("Essayer sans installer"), "accueil : bouton « Essayer sans installer » et lien dans le menu");
+  p = await appel("GET", "/bestiaire/gouttelin");
+  verifier(p.t.includes("À imprimer") && p.t.includes('href="/imprimer/coloriages/coloriage_018_gouttelin.pdf"') && p.t.includes('href="/imprimer/stickers_A4.pdf"')
+    && p.t.includes('href="/imprimer/poster_A3.pdf"') && p.t.includes('href="/imprimer/poster_A3_fond_blanc.pdf"'), "fiche validée : partie « À imprimer » (coloriage, stickers, poster et fond blanc)");
+  p = await appel("GET", "/bestiaire/braisillon?lang=en");
+  verifier(p.t.includes("To print") && p.t.includes("in French"), "fiche validée en anglais : « To print » et les PDF annoncés en français");
+  p = await appel("GET", "/bestiaire/zapiot");
+  verifier(!p.t.includes("À imprimer"), "fiche sans coloriage validé : pas de partie « À imprimer »");
+  p = await appel("GET", "/imprimer");
+  const liens = [...p.t.matchAll(/href="(\/imprimer\/[^"]+\.pdf)"/g)].map((m) => m[1]);
+  verifier(liens.length === 15 && liens.every((l) => existsSync(new URL("../public" + l, import.meta.url))), `/imprimer : 12 coloriages + stickers + 2 posters, tous présents (${liens.length})`);
+  p = await appel("GET", "/enseignants");
+  verifier(p.t.includes('href="/imprimer"'), "enseignants : lien « Coloriages et posters pour la classe »");
 }
 
 console.log(`\n${ok} réussis, ${ko} échoués`);

@@ -205,6 +205,9 @@ ne rapportent rien : il faut les taper.
 Le code est public. Idées, retours de joueurs de tous âges, corrections de traduction et relectures par des
 enseignants ou des spécialistes sont les bienvenus dans les *Issues*.
 
+Comment aider, les règles du jeu à respecter (rien à acheter, jamais punitif, aucune donnée personnelle…) et les
+licences : tout est expliqué simplement dans [`CONTRIBUTING.md`](CONTRIBUTING.md).
+
 ---
 
 ## Licences

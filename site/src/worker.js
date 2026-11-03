@@ -14,13 +14,12 @@ import * as ENT from "./entrainement.js";
 import * as GUILDE from "./guilde.js";
 import { barreTerminal, planSite, CSS_TERMINAL } from "./terminal.js";
 import MONDE_TEXTES from "./monde_textes.js";
+import AUTOUR from "./autour_textes.js";
 
 // ====================================================================== réglages à remplir
 
 const DEPOT = "https://github.com/grecdel/terminagotchi";
 const CONTACT = "contact@terminagotchi.com";
-/** Liens de dons (page /soutenir). Une plateforme n'est affichée que si son lien est rempli. */
-const DONS = { liberapay: "", kofi: "", github: "" };
 /**
  * Éditeur du site (page /mentions-legales). Particulier non professionnel :
  *  - anonyme: true  → nom et adresse NON publiés (il faut les avoir donnés à l'hébergeur, Cloudflare) ;
@@ -35,6 +34,10 @@ const LICENCE = "";
  * compte effacé après `inactifMois` sans synchronisation ; adresses IP et compteurs anti-abus après `ipHeures`.
  */
 const CONSERVATION = { inactifMois: 36, ipHeures: 24, sessionJours: 30 };
+/** Les bestioles qui ont un coloriage validé (docs/imprimer/fabriquer/choix.py ; PDF dans public/imprimer/coloriages/). */
+const COLORIAGES = ["braisillon", "gouttelin", "drapouille", "felicorne", "glandouille", "sporichon", "pucerise", "clopinou", "poulpiot", "rugisoleil", "lanternix", "gloupi"];
+/** Ce qui peut sortir de l'œuf, selon son type (copie de donnees/oeufs/depart.json, vérifiée par pc/outils/test_autour.py). */
+const DEPART = {"feu":["braisillon","flamouche","fondelin"],"eau":["gouttelin","plouftin","poulpiot"],"glace":["givrichon","givrarde","lunacorne"],"plante":["glandouille","sporichon","petalouette"],"roche":["cailloute","momiaou","simiosse"],"ciel":["zapiot","lumignon","plumange"],"ombre":["drapouille","follanterne","zyeuton"],"machine":["boulonnet","lanternix","engrenaille"],"poison":["gloupi","tentaclou","bavouille"]};
 const STATS = ["Intelligence", "Agilité", "Force", "Endurance"];
 const COULEUR = { Intelligence: 39, "Agilité": 78, Force: 203, Endurance: 221 };
 const STADES = ["Œuf", "Bébé", "Ado", "Adulte"];
@@ -1232,7 +1235,6 @@ h2.avec-badge::before{display:none}
 .enfants li{margin-bottom:10px}
 .avertissement{box-shadow:${cran("var(--ambre-fonce)")}}
 .avertissement p:last-child,.carte>p:last-child{margin-bottom:0}
-.dons{display:flex;flex-wrap:wrap;gap:6px}
 html:not([lang="fr"]) section[lang="fr"]{border-top:2px dashed var(--bord);margin-top:36px;padding-top:6px}
 .defile{overflow-x:auto;margin:0 0 14px}
 .tableau-legal{font-size:var(--petit);min-width:640px}
@@ -1266,6 +1268,35 @@ html:not([lang="fr"]) section[lang="fr"]{border-top:2px dashed var(--bord);margi
  td,th{padding:6px 3px}
  .btn.grand{padding:16px 18px}
 }
+/* ---- à imprimer (fiches, /imprimer) et page Essayer */
+.imprimer{display:grid;grid-template-columns:repeat(auto-fill,minmax(170px,1fr));gap:16px;margin:8px 0 14px}
+.imp{display:flex;flex-direction:column;gap:6px;align-items:center;text-align:center;background:var(--panneau);padding:12px;margin:4px;box-shadow:${cran("var(--bord)")}}
+.imp>a:first-child{display:flex;flex-direction:column;align-items:center;gap:8px;text-decoration:none}
+.imp img{width:100%;max-width:150px;height:150px;object-fit:contain}
+.imp b{font:12px/1.5 var(--pixel);color:var(--vert)}
+.btn.essayer{background:var(--panneau);color:var(--vert);box-shadow:inset 0 -5px 0 var(--bord),${cran("var(--vert)")}}
+.es-etape{font:12px/1.4 var(--pixel);color:var(--ambre);margin:14px 0 8px;min-height:1.4em}
+.es-demo{display:grid;grid-template-columns:minmax(0,1.25fr) minmax(0,1fr);gap:18px;align-items:stretch}
+.es-cadre{position:relative;align-self:start;min-width:0}
+.es-scene{position:relative;aspect-ratio:16/9;background:#050a06 center/cover no-repeat;overflow:hidden;margin:4px;box-shadow:${cran("var(--bord)")};transition:background-image .6s}
+.es-scene img{position:absolute;left:50%;image-rendering:pixelated;transform:translate(-50%,-100%)}
+.es-oeuf{top:70%;width:15%}.es-bebe{top:74%;width:17%}
+.es-bulle{position:absolute;left:4%;right:4%;top:5%;background:rgba(4,12,8,.86);border:2px solid var(--bord);padding:8px 12px;font:20px/1.25 "VT323",monospace;color:var(--texte)}
+.es-bulle:empty{display:none}
+.es-prog{height:10px;background:#0a2014;margin-top:6px}.es-prog i{display:block;height:100%;background:var(--vert);transition:width .4s}
+.es-term{background:#050a06;border:3px solid #1f3a28;border-radius:10px;display:flex;flex-direction:column;min-height:320px}
+.es-out{flex:1;overflow-y:auto;max-height:340px;padding:10px 12px;font:20px/1.3 "VT323",monospace;color:#cfeedd;white-space:pre-wrap;word-break:break-word}
+.es-out .p{color:var(--vert)}.es-out .g{color:#7fae90}.es-out .j{color:var(--ambre)}.es-out .ok{color:var(--vert)}.es-out .d{color:#6cb4ff}
+.es-out code{color:var(--vert);background:none;padding:0}
+.es-form{display:flex;gap:6px;align-items:center;padding:6px 10px;border-top:1px solid #1f3a28}
+.es-invite{color:#2b9c52;font:18px/1 "VT323",monospace;white-space:nowrap}
+#es-cmd{flex:1;min-width:0;background:transparent;border:0;outline:0;color:#3dff7c;font:20px/1.3 "VT323",monospace}
+.es-form button{min-height:34px;padding:0 12px}
+.es-essais{display:flex;flex-wrap:wrap;gap:8px;padding:0 10px 10px}
+.es-essais button{font:19px/1.3 "VT323",monospace;background:#0c1d12;color:var(--vert);border:2px solid #23603a;box-shadow:none;padding:2px 10px;min-height:0}
+.es-fin[hidden],.es-scene img[hidden]{display:none}
+.es-fin{display:flex;flex-wrap:wrap;gap:12px;align-items:center;margin:22px 0 6px}
+@media (max-width:760px){.es-demo{grid-template-columns:minmax(0,1fr)}.es-bulle{position:static;margin:8px 4px 0;font-size:18px}.es-out{max-height:260px}.es-term{min-height:260px}}
 ${CSS_TERMINAL}`;
 
 /** Le contexte de langue d'une requête : langue, textes, sens d'écriture, format des dates. */
@@ -1297,11 +1328,17 @@ function selecteurLangue(L) {
 const NAV_MONDE = { fr: "Monde", en: "World", es: "Mundo", de: "Welt", it: "Mondo", pt: "Mundo", ru: "Мир", ja: "せかい",
   zh: "世界", ar: "العالم", hi: "दुनिया", bn: "জগৎ", ur: "دنیا", id: "Dunia" };
 
+/** Un texte de la page Essayer / « À imprimer » (site/src/autour_textes.js), échappé, avec ses trous {x} remplis. */
+function at(L, cle, p = {}) {
+  const T = AUTOUR[L.lang] || AUTOUR.fr;
+  return echapper(String(T[cle] ?? AUTOUR.fr[cle] ?? cle)).replace(/\{(\w+)\}/g, (_, x) => (x in p ? p[x] : `{${x}}`));
+}
+
 function menu(L) {
   const n = L.t.nav;
   const ici = L.url.pathname.replace(/\/+$/, "") || "/";
   const liens = [["/classement", n.classement], ["/records", L.t.navRecords], ["/bestiaire", n.bestiaire], ["/captures", n.captures],
-    ["/monde", NAV_MONDE[L.lang] || NAV_MONDE.fr], ["/ctf", n.ctf],
+    ["/monde", NAV_MONDE[L.lang] || NAV_MONDE.fr], ["/essayer", at(L, "site.nav")], ["/ctf", n.ctf],
     ["/#telecharger", n.telecharger], ["/compte", n.compte]];
   return liens.map(([href, t]) => {
     const actif = href !== "/#telecharger" && (ici === href || ici.startsWith(href + "/"));
@@ -1380,6 +1417,7 @@ async function pageAccueil(env, L) {
     <h1>${A.heroTitre}</h1>
     <p>${A.heroTexte}</p>
     <p><a class="btn grand" href="#telecharger">${FLECHE}${A.telecharger}</a><a class="btn ambre" href="/bestiaire">${A.voirBestiaire}</a></p>
+    <p><a class="btn essayer" href="/essayer"><span aria-hidden="true">&gt;_</span> ${at(L, "site.bouton")}</a></p>
     <p class="doux petit">${A.recensees(n)}</p>
   </div>
   <div class="scene ecran"><div class="mascotte mange" role="img" aria-label="Terminagotchi"></div><div class="sol" aria-hidden="true"></div></div><script>(function(){var m=document.querySelector(".mascotte.mange");if(!m||matchMedia("(prefers-reduced-motion:reduce)").matches)return;function c(){m.classList.remove("croque");void m.offsetWidth;m.classList.add("croque")}m.addEventListener("animationend",function(e){if(e.animationName==="croque")m.classList.remove("croque")});m.addEventListener("click",c);function t(){setTimeout(function(){c();t()},12000+Math.random()*18000)}setTimeout(c,2500);t()})()</script>
@@ -1710,9 +1748,63 @@ ${fenetre(`~/bestiaire/${e.id}`, `<table>
 <h2>${E.variantes}</h2>
 <p class="doux">${E.variantesTexte}</p>
 <div class="grille-b">${variantes}</div>
+${COLORIAGES.includes(e.id) ? partieImprimer(L, e) : ""}
 <nav class="voisins"><a class="puce" href="/bestiaire/${prec.id}">${fp} ${numero(prec)} ${bdi(prec.nom)}</a>
 <a class="puce" href="/bestiaire/${suiv.id}">${numero(suiv)} ${bdi(suiv.nom)} ${fs}</a></nav>`,
   E.description(e.nom, rar, fam));
+}
+
+const fichierColoriage = (e) => `/imprimer/coloriages/coloriage_${String(e.numero).padStart(3, "0")}_${e.id}`;
+/** Une carte « à imprimer » : petit aperçu, titre, détail, lien vers le PDF. */
+const carteImprimer = (lien, apercu, titre, doux, extra = "") => `<div class="imp"><a href="${lien}.pdf" download><img src="${apercu}" alt="" loading="lazy" decoding="async">
+<b>${titre}</b></a><span class="doux petit">${doux}</span>${extra}</div>`;
+const carteStickers = (L) => carteImprimer("/imprimer/stickers_A4", "/imprimer/stickers_A4.jpg", at(L, "site.imp.stickers"), at(L, "site.imp.stickers_doux"));
+const cartePoster = (L) => carteImprimer("/imprimer/poster_A3", "/imprimer/poster_A3.jpg", at(L, "site.imp.poster"), at(L, "site.imp.poster_doux"),
+  `<a class="petit" href="/imprimer/poster_A3_fond_blanc.pdf" download>${at(L, "site.imp.blanc")}</a>`);
+const noteFr = (L) => (L.lang === "fr" ? "" : `<p class="doux petit">${at(L, "site.imp.fr")}</p>`);
+
+/** En bas de la fiche d'une bestiole qui a un coloriage validé : son coloriage, les stickers et le poster (gratuits). */
+function partieImprimer(L, e) {
+  return `<h2>${at(L, "site.imp.titre")}</h2>
+<p class="doux">${at(L, "site.imp.intro")}</p>${noteFr(L)}
+<div class="imprimer">${carteImprimer(fichierColoriage(e), fichierColoriage(e) + ".png", at(L, "site.imp.coloriage"), at(L, "site.imp.coloriage_doux"))}
+${carteStickers(L)}${cartePoster(L)}</div>
+<p><a href="/imprimer">${at(L, "site.imp.tous")} ▸</a></p>`;
+}
+
+/** Tous les fichiers à imprimer : les 12 coloriages, la planche de stickers, le poster (sombre et fond blanc). */
+function pageImprimer(L) {
+  const cartes = COLORIAGES.map((id) => PAR_ID[id]).filter(Boolean)
+    .map((e) => carteImprimer(fichierColoriage(e), fichierColoriage(e) + ".png", `${numero(e)} ${bdi(e.nom)}`, at(L, "site.imp.coloriage_doux"))).join("");
+  return page(L, at(L, "site.imp.page"), `<h1>${at(L, "site.imp.page")}</h1>
+<p>${at(L, "site.imp.page_intro")}</p>${noteFr(L)}
+<h2>${at(L, "site.imp.coloriage")}</h2>
+<div class="imprimer">${cartes}</div>
+<h2>${at(L, "site.imp.stickers")} · ${at(L, "site.imp.poster")}</h2>
+<div class="imprimer">${carteStickers(L)}${cartePoster(L)}</div>`, at(L, "site.imp.page_intro"));
+}
+
+/** « Essayer en 2 minutes » : le début du jeu rejoué dans la page (public/js/essayer.js), sur un faux dossier en
+ *  mémoire. Rien n'est envoyé ni enregistré ; l'œuf est tiré au hasard (comme dans le jeu), le nom proposé est Noisette. */
+function pageEssayer(L) {
+  const T = AUTOUR[L.lang] || AUTOUR.fr;
+  const noms = Object.fromEntries(Object.values(DEPART).flat().map((id) => [id, PAR_ID[id]?.nom || id]));
+  return page(L, at(L, "site.titre"), `<h1>${at(L, "site.titre")}</h1>
+<p>${at(L, "site.intro")}</p>
+<p class="es-etape" id="es-etape" aria-live="polite"></p>
+<div class="es-demo">
+  <div class="es-cadre"><div class="es-scene" id="es-scene"><img class="es-oeuf" id="es-oeuf" alt="" hidden><img class="es-bebe" id="es-bebe" alt="" hidden></div>
+    <div class="es-bulle" id="es-bulle" aria-live="polite"></div></div>
+  <section class="es-term" aria-label="${at(L, "site.placeholder")}"><div id="es-out" class="es-out" aria-live="polite"></div>
+    <form id="es-form" class="es-form" autocomplete="off"><label class="es-invite" id="es-invite" for="es-cmd"></label>
+    <input id="es-cmd" spellcheck="false" autocapitalize="off" autocorrect="off" enterkeyhint="send" placeholder="${at(L, "site.placeholder")}"><button type="submit" aria-label="OK">⏎</button></form>
+    <div class="es-essais" id="es-essais"></div></section>
+</div>
+<div id="es-fin" class="es-fin" hidden><a class="btn grand" href="/#telecharger">${FLECHE}${at(L, "site.telecharger")}</a>
+<a class="btn ambre" href="/bestiaire">${at(L, "site.bestiaire")}</a><button type="button" class="puce" id="es-encore">↺ ${at(L, "site.recommencer")}</button></div>
+<p class="doux petit">${at(L, "site.prive")}</p>
+<script>window.TG_ESSAYER=${JSON.stringify({ t: T, depart: DEPART, noms }).replace(/</g, "\\u003c")}</script><script type="module" src="/js/essayer.js"></script>`,
+  at(L, "site.intro"));
 }
 
 /** La galerie des captures : seulement les joueurs qui ont dit oui (compte partage on). */
@@ -1796,22 +1888,14 @@ ${fenetre("~/ctf", `<ol style="padding-inline-start:24px;margin:0">${liste}</ol>
 
 const lienMail = `<a href="mailto:${CONTACT}">${CONTACT}</a>`;
 const liste = (items) => `<ul>${items.map((x) => `<li>${x}</li>`).join("")}</ul>`;
-const NOMS_DONS = { liberapay: "Liberapay", kofi: "Ko-fi", github: "GitHub Sponsors" };
-
+/** Soutenir : pas de dons (décision du 3 novembre) ; seulement « d'autres manières d'aider ». */
 function pageSoutenir(L) {
   const S = L.t.soutenir;
-  const dons = Object.entries(DONS).filter(([, lien]) => /^https:\/\//.test(lien || ""));
-  const boutons = dons.length
-    ? `<div class="dons">${dons.map(([k, lien], i) => `<a class="btn${i % 2 ? " ambre" : ""}" href="${echapper(lien)}" rel="noopener">${echapper(NOMS_DONS[k] || k)}</a>`).join("")}</div>`
-    : `<p class="doux"><span class="curseur" aria-hidden="true">█</span> ${S.bientot}</p>`;
   return page(L, S.titre, `<div class="texte-long">
 <h1>${S.h1}</h1>
 <div class="bandeau"><span class="icone" aria-hidden="true">!</span><p>${S.pourQui}</p></div>
 <h2>${S.gratuitTitre}</h2>
 <p>${S.gratuit}</p>
-<p class="doux">${S.cout}</p>
-<h2>${S.donsTitre}</h2>
-<div class="carte"><p>${S.donsTexte}</p>${boutons}</div>
 <h2>${S.autresTitre}</h2>
 ${liste(S.autres.map((x, i) => (i === 1 ? `${x} <a href="${DEPOT}/issues">GitHub</a>` : x)))}
 <p>${S.ecrire(lienMail)}</p>
@@ -1864,6 +1948,7 @@ function pageEnseignants(L) {
   return page(L, E.titre, `<div class="texte-long">
 <h1>${E.h1}</h1>
 ${L.lang === "fr" ? "" : `<p>${E.resume}</p><p class="doux">${E.versionFr}</p>`}
+<p><a class="btn ambre" href="/imprimer">${at(L, "site.imp.classe")}</a></p>
 <section lang="fr" dir="ltr">${enseignantsFr({ depot: DEPOT })}</section>
 </div>`, E.resume);
 }
@@ -1972,6 +2057,8 @@ async function aiguiller(requete, env, url, chemin, L) {
   if (chemin === "/ctf") return pageCtf(L, url.origin);
   if (chemin === "/bestiaire") return pageBestiaire(L, url);
   if (chemin === "/monde") return pageMonde(L);
+  if (chemin === "/essayer") return pageEssayer(L);
+  if (chemin === "/imprimer") return pageImprimer(L);
   if (chemin === "/captures") return pageCaptures(env, L, url);
   if (chemin === "/soutenir") return pageSoutenir(L);
   if (chemin === "/parents") return pageParents(L);
