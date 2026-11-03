@@ -8965,5 +8965,21 @@
  "hist.ct7.t1.adulte": "On a computer: ps aux | grep fictif. On the phone, the wave is simulated by the app.",
  "ct.tel.simule": "On the phone, the wave is simulated: controle ps, then controle arrete PID.",
  "ct.tel.raconte": "On the phone, it's told as a story: the app doesn't have {outil}.",
- "ct.tel.sac": "On the phone, each command goes to a new inhabitant: the backpack gets lost. The app's ~/.tgrc plays the role of ~/.bashrc."
+ "ct.tel.sac": "On the phone, each command goes to a new inhabitant: the backpack gets lost. The app's ~/.tgrc plays the role of ~/.bashrc.",
+ "sante.index": "🔧 The list of your games was damaged: I rebuilt it from your files (games found: {n}). Nothing is lost.",
+ "sante.tmp": "🔧 Your last save had not finished writing (device turned off too fast?): I put it back. Nothing is lost.",
+ "sante.manquante": "🔧 Your save had disappeared: I restored it from the backup copy. Nothing is lost.",
+ "svg.rien": "There is no creature to save yet: hatch your egg first!",
+ "svg.laisses": "({n} files from the playground, too big or special, are not in the save.)",
+ "svg.refus.illisible": "This file is not a Terminagotchi save (or it can't be read).",
+ "svg.refus.version": "This save comes from a newer version of the game: update the game first.",
+ "svg.refus.abime": "This save is damaged (cut or changed while copying): I won't import it. Try another copy of the file.",
+ "svg.refus.plateforme": "This save comes from another kind of device (PC ↔ phone): the two games don't store it the same way. To have the same creature on both, link them with the game account.",
+ "svg.plein": "You already have {max} games: there is no room to import another one.",
+ "svg.refus.place": "I couldn't install this game (a folder is in the way): nothing has changed.",
+ "svg.importe.tel": "💾 {nom} is back (level {niveau}, saved on {date})! Your previous game is stored: `partie charger` to go back to it.",
+ "svg.aide.tel": "💾 Saving to a file:\n  `sauvegarde exporter`: choose where to put the .tgsauve file (Downloads, SD card…)\n  `sauvegarde importer`: choose a .tgsauve file; your creature comes back, as one more game (nothing is replaced).",
+ "svg.tel.exporte": "💾 {nom} is saved in the file {fichier} ({taille}). You can copy it wherever you like. To bring it back: `sauvegarde importer`.",
+ "svg.tel.annule": "Nothing was done (no file chosen).",
+ "svg.tel.erreur": "I couldn't write or read this file: nothing has changed."
 }

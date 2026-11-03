@@ -218,6 +218,10 @@ core.modifier(lambda s: s.__setitem__("dressage", None))
 
 print("Épreuve du jour")
 ty = G.type_du_jour()
+if not G.forts_contre(ty):
+    # (3 novembre) le jour de l'Ombre, aucun type n'est fort contre elle (sauf la nuit) : le test prend le Feu
+    G.type_du_jour = lambda d=None: "feu"
+    ty = "feu"
 fort = G.forts_contre(ty)[0]
 nom_fort = donner(fort)
 core.modifier(lambda s: G.choisir(s, nom_fort))

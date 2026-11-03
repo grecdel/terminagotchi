@@ -8960,5 +8960,21 @@
  "hist.ct7.t1.adulte": "Num computador: ps aux | grep fictif. No celular, a onda é simulada pelo app.",
  "ct.tel.simule": "No celular, a onda é simulada: controle ps, depois controle arrete PID.",
  "ct.tel.raconte": "No celular, é contado como uma história: o app não tem {outil}.",
- "ct.tel.sac": "No celular, cada comando vai para um novo habitante: a mochila se perde. O ~/.tgrc do app faz o papel do ~/.bashrc."
+ "ct.tel.sac": "No celular, cada comando vai para um novo habitante: a mochila se perde. O ~/.tgrc do app faz o papel do ~/.bashrc.",
+ "sante.index": "🔧 A lista dos teus jogos estava danificada: refi-la a partir dos teus ficheiros (jogos encontrados: {n}). Nada se perdeu.",
+ "sante.tmp": "🔧 O teu último gravado não tinha acabado de ser escrito (aparelho desligado depressa demais?): pus-o de volta. Nada se perdeu.",
+ "sante.manquante": "🔧 O teu gravado tinha desaparecido: recuperei-o da cópia de segurança. Nada se perdeu.",
+ "svg.rien": "Ainda não há nenhuma criatura para gravar: primeiro faz eclodir o teu ovo!",
+ "svg.laisses": "({n} ficheiros do terreno, grandes demais ou especiais, não estão no gravado.)",
+ "svg.refus.illisible": "Este ficheiro não é um gravado do Terminagotchi (ou não se consegue ler).",
+ "svg.refus.version": "Este gravado vem de uma versão mais recente do jogo: primeiro atualiza o jogo.",
+ "svg.refus.abime": "Este gravado está danificado (cortado ou alterado durante a cópia): não o importo. Experimenta outra cópia do ficheiro.",
+ "svg.refus.plateforme": "Este gravado vem de outro tipo de aparelho (PC ↔ telemóvel): os dois jogos não o guardam da mesma maneira. Para teres a mesma criatura nos dois, liga-os com a conta do jogo.",
+ "svg.plein": "Já tens {max} jogos: não há lugar para importar outro.",
+ "svg.refus.place": "Não consegui instalar este jogo (há uma pasta no caminho): nada mudou.",
+ "svg.importe.tel": "💾 {nom} está de volta (nível {niveau}, gravado de {date})! O teu jogo anterior está guardado: `partie charger` para voltar a ele.",
+ "svg.aide.tel": "💾 Gravar num ficheiro:\n  `sauvegarde exporter`: escolhe onde pôr o ficheiro .tgsauve (Transferências, cartão SD…)\n  `sauvegarde importer`: escolhe um ficheiro .tgsauve; a tua criatura volta, como mais um jogo (nada é substituído).",
+ "svg.tel.exporte": "💾 {nom} está gravado no ficheiro {fichier} ({taille}). Podes copiá-lo para onde quiseres. Para o trazer de volta: `sauvegarde importer`.",
+ "svg.tel.annule": "Não se fez nada (nenhum ficheiro escolhido).",
+ "svg.tel.erreur": "Não consegui escrever ou ler este ficheiro: nada mudou."
 }

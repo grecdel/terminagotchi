@@ -8962,5 +8962,21 @@
  "hist.ct7.t1.adulte": "Di komputer: ps aux | grep fictif. Di ponsel, gelombangnya disimulasikan oleh aplikasi.",
  "ct.tel.simule": "Di ponsel, gelombangnya disimulasikan: controle ps, lalu controle arrete PID.",
  "ct.tel.raconte": "Di ponsel, ini diceritakan: aplikasi tidak punya {outil}.",
- "ct.tel.sac": "Di ponsel, setiap perintah masuk ke penghuni baru: ranselnya hilang. ~/.tgrc milik aplikasi berperan sebagai ~/.bashrc."
+ "ct.tel.sac": "Di ponsel, setiap perintah masuk ke penghuni baru: ranselnya hilang. ~/.tgrc milik aplikasi berperan sebagai ~/.bashrc.",
+ "sante.index": "🔧 Daftar permainanmu rusak: aku membuatnya ulang dari file-filemu (permainan yang ditemukan: {n}). Tidak ada yang hilang.",
+ "sante.tmp": "🔧 Simpanan terakhirmu belum selesai ditulis (perangkat dimatikan terlalu cepat?): aku mengembalikannya. Tidak ada yang hilang.",
+ "sante.manquante": "🔧 Simpananmu hilang: aku memulihkannya dari salinan cadangan. Tidak ada yang hilang.",
+ "svg.rien": "Belum ada makhluk untuk disimpan: tetaskan dulu telurmu!",
+ "svg.laisses": "({n} file dari lapangan, terlalu besar atau khusus, tidak ada di simpanan.)",
+ "svg.refus.illisible": "File ini bukan simpanan Terminagotchi (atau tidak bisa dibaca).",
+ "svg.refus.version": "Simpanan ini dari versi permainan yang lebih baru: perbarui dulu permainannya.",
+ "svg.refus.abime": "Simpanan ini rusak (terpotong atau berubah saat disalin): aku tidak mengimpornya. Coba salinan file yang lain.",
+ "svg.refus.plateforme": "Simpanan ini dari jenis perangkat lain (PC ↔ ponsel): kedua permainan tidak menyimpannya dengan cara yang sama. Agar makhluknya sama di keduanya, hubungkan dengan akun permainan.",
+ "svg.plein": "Kamu sudah punya {max} permainan: tidak ada tempat lagi untuk mengimpor satu lagi.",
+ "svg.refus.place": "Aku tidak bisa memasang permainan ini (ada folder yang menghalangi): tidak ada yang berubah.",
+ "svg.importe.tel": "💾 {nom} kembali (level {niveau}, simpanan tanggal {date})! Permainanmu sebelumnya disimpan: `partie charger` untuk kembali ke sana.",
+ "svg.aide.tel": "💾 Menyimpan ke file:\n  `sauvegarde exporter`: pilih tempat menaruh file .tgsauve (Unduhan, kartu SD…)\n  `sauvegarde importer`: pilih file .tgsauve; makhlukmu kembali, sebagai satu permainan tambahan (tidak ada yang diganti).",
+ "svg.tel.exporte": "💾 {nom} sudah disimpan dalam file {fichier} ({taille}). Kamu bisa menyalinnya ke mana saja. Untuk memanggilnya kembali: `sauvegarde importer`.",
+ "svg.tel.annule": "Tidak ada yang dilakukan (tidak ada file yang dipilih).",
+ "svg.tel.erreur": "Aku tidak bisa menulis atau membaca file ini: tidak ada yang berubah."
 }

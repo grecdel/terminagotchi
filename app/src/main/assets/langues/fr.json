@@ -8965,5 +8965,21 @@
  "hist.ct7.t1.adulte": "Sur un ordinateur : ps aux | grep fictif. Sur le téléphone, la vague est simulée par l'appli.",
  "ct.tel.simule": "Sur le téléphone, la vague est simulée : controle ps, puis controle arrete PID.",
  "ct.tel.raconte": "Sur le téléphone, c'est raconté : l'appli n'a pas {outil}.",
- "ct.tel.sac": "Sur le téléphone, chaque commande part dans un nouvel habitant : le sac à dos se perd. Le ~/.tgrc de l'appli joue le rôle du ~/.bashrc."
+ "ct.tel.sac": "Sur le téléphone, chaque commande part dans un nouvel habitant : le sac à dos se perd. Le ~/.tgrc de l'appli joue le rôle du ~/.bashrc.",
+ "sante.index": "🔧 La liste de tes parties était abîmée : je l'ai refaite à partir de tes fichiers (parties retrouvées : {n}). Rien n'est perdu.",
+ "sante.tmp": "🔧 Ta dernière sauvegarde n'avait pas fini de s'écrire (appareil éteint trop vite ?) : je l'ai remise en place. Rien n'est perdu.",
+ "sante.manquante": "🔧 Ta sauvegarde avait disparu : je l'ai remise à partir de la copie de secours. Rien n'est perdu.",
+ "svg.rien": "Il n'y a pas encore de créature à sauvegarder : fais d'abord éclore ton œuf !",
+ "svg.laisses": "({n} fichiers du terrain, trop gros ou spéciaux, ne sont pas dans la sauvegarde.)",
+ "svg.refus.illisible": "Ce fichier n'est pas une sauvegarde de Terminagotchi (ou il ne se lit pas).",
+ "svg.refus.version": "Cette sauvegarde vient d'une version plus récente du jeu : mets d'abord le jeu à jour.",
+ "svg.refus.abime": "Cette sauvegarde est abîmée (coupée ou modifiée pendant la copie) : je ne l'importe pas. Essaie une autre copie du fichier.",
+ "svg.refus.plateforme": "Cette sauvegarde vient d'un autre genre d'appareil (PC ↔ téléphone) : les deux jeux ne la rangent pas pareil. Pour avoir la même créature sur les deux, relie-les avec le compte du jeu.",
+ "svg.plein": "Tu as déjà {max} parties : il n'y a plus de place pour en importer une autre.",
+ "svg.refus.place": "Je n'ai pas pu installer cette partie (un dossier est en travers) : rien n'a changé.",
+ "svg.importe.tel": "💾 {nom} est de retour (niveau {niveau}, sauvegarde du {date}) ! Ta partie d'avant est rangée : `partie charger` pour y revenir.",
+ "svg.aide.tel": "💾 La sauvegarde dans un fichier :\n  `sauvegarde exporter` : choisis où ranger le fichier .tgsauve (Téléchargements, carte SD…)\n  `sauvegarde importer` : choisis un fichier .tgsauve ; ta créature revient, comme une partie de plus (rien n'est remplacé).",
+ "svg.tel.exporte": "💾 {nom} est sauvegardé dans le fichier {fichier} ({taille}). Tu peux le copier où tu veux. Pour le faire revenir : `sauvegarde importer`.",
+ "svg.tel.annule": "Rien n'a été fait (aucun fichier choisi).",
+ "svg.tel.erreur": "Je n'ai pas pu écrire ou lire ce fichier : rien n'a changé."
 }

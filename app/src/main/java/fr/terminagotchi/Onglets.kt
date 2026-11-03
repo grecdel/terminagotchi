@@ -1,5 +1,7 @@
 package fr.terminagotchi
 
+import org.json.JSONArray
+import org.json.JSONObject
 import java.io.File
 
 /**
@@ -99,6 +101,63 @@ class Onglets(private val creerShell: () -> Shell, private val historiquePartie:
         val i = liste.indexOf(o)
         liste.remove(o)
         if (actif === o) actif = liste[maxOf(0, i - 1)]
+        return true
+    }
+
+    /**
+     * Ce qu'il faut garder quand Android recrée l'écran (téléphone tourné, mode sombre changé, appli mise de côté puis
+     * rouverte après avoir été arrêtée par le téléphone) : pour chaque onglet, son numéro, son dossier, d'où il vient
+     * (`cd -`), son code de sortie, son historique et sa ligne à moitié tapée ; et l'onglet affiché. Les écrans (texte en
+     * couleurs) sont gardés à part par TerminalActivity ; les lignes en attente ne sont pas gardées (la commande qui
+     * tournait s'est arrêtée avec l'ancien écran).
+     */
+    fun etat(): String {
+        val a = JSONArray()
+        for (o in liste) {
+            a.put(JSONObject()
+                .put("n", o.numero)
+                .put("dossier", o.shell.dossier.path)
+                .put("precedent", o.shell.precedent?.path ?: "")
+                .put("code", o.shell.code)
+                .put("historique", JSONArray(o.historique.takeLast(MAX_HISTO)))
+                .put("brouillon", o.brouillon))
+        }
+        return JSONObject().put("onglets", a).put("actif", actif.numero).toString()
+    }
+
+    /**
+     * Remet les onglets gardés par [etat] (après une recréation de l'écran). Un dossier qui n'existe plus, ou qui n'est
+     * pas dans le camp de base [home], redevient le camp ; un texte abîmé ne change rien (faux : on garde un onglet).
+     */
+    fun reprendre(texte: String?, home: File): Boolean {
+        if (texte.isNullOrEmpty()) return false
+        val o = try { JSONObject(texte) } catch (e: Exception) { return false }
+        val a = o.optJSONArray("onglets") ?: return false
+        val camp = try { home.canonicalFile } catch (e: Exception) { home }
+        fun dansLeCamp(chemin: String): File? {
+            if (chemin.isEmpty()) return null
+            val f = try { File(chemin).canonicalFile } catch (e: Exception) { return null }
+            return if (f.isDirectory && (f == camp || f.path.startsWith(camp.path + File.separator))) f else null
+        }
+        val repris = mutableListOf<Onglet>()
+        for (i in 0 until a.length()) {
+            val x = a.optJSONObject(i) ?: continue
+            val n = x.optInt("n")
+            if (n !in 1..MAX || repris.any { it.numero == n } || repris.size >= MAX) continue
+            val h = x.optJSONArray("historique")
+            val histo = if (h == null) historiquePartie() else (0 until h.length()).map { h.optString(it) }.filter { it.isNotEmpty() }
+            val og = Onglet(n, creerShell(), histo)
+            og.shell.dossier = dansLeCamp(x.optString("dossier")) ?: og.shell.dossier
+            og.shell.precedent = dansLeCamp(x.optString("precedent"))
+            og.shell.code = x.optInt("code")
+            og.brouillon = x.optString("brouillon").take(500)
+            repris.add(og)
+        }
+        if (repris.isEmpty()) return false
+        repris.sortBy { it.numero }
+        liste.clear()
+        liste.addAll(repris)
+        actif = liste.firstOrNull { it.numero == o.optInt("actif") } ?: liste[0]
         return true
     }
 

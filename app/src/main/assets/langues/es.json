@@ -8960,5 +8960,21 @@
  "hist.ct7.t1.adulte": "En un ordenador: ps aux | grep fictif. En el teléfono, la oleada la simula la app.",
  "ct.tel.simule": "En el teléfono, la oleada es simulada: controle ps, y luego controle arrete PID.",
  "ct.tel.raconte": "En el teléfono, se cuenta como una historia: la app no tiene {outil}.",
- "ct.tel.sac": "En el teléfono, cada orden va a un nuevo habitante: la mochila se pierde. El ~/.tgrc de la app hace de ~/.bashrc."
+ "ct.tel.sac": "En el teléfono, cada orden va a un nuevo habitante: la mochila se pierde. El ~/.tgrc de la app hace de ~/.bashrc.",
+ "sante.index": "🔧 La lista de tus partidas estaba dañada: la he rehecho a partir de tus archivos (partidas encontradas: {n}). No se ha perdido nada.",
+ "sante.tmp": "🔧 Tu último guardado no había terminado de escribirse (¿aparato apagado demasiado rápido?): lo he vuelto a poner. No se ha perdido nada.",
+ "sante.manquante": "🔧 Tu guardado había desaparecido: lo he recuperado de la copia de seguridad. No se ha perdido nada.",
+ "svg.rien": "Todavía no hay ninguna criatura que guardar: ¡primero haz eclosionar tu huevo!",
+ "svg.laisses": "({n} archivos del terreno, demasiado grandes o especiales, no están en el guardado.)",
+ "svg.refus.illisible": "Este archivo no es un guardado de Terminagotchi (o no se puede leer).",
+ "svg.refus.version": "Este guardado viene de una versión más reciente del juego: primero actualiza el juego.",
+ "svg.refus.abime": "Este guardado está dañado (cortado o modificado durante la copia): no lo importo. Prueba con otra copia del archivo.",
+ "svg.refus.plateforme": "Este guardado viene de otro tipo de aparato (PC ↔ teléfono): los dos juegos no lo guardan igual. Para tener la misma criatura en los dos, vincúlalos con la cuenta del juego.",
+ "svg.plein": "Ya tienes {max} partidas: no queda sitio para importar otra.",
+ "svg.refus.place": "No he podido instalar esta partida (una carpeta estorba): no ha cambiado nada.",
+ "svg.importe.tel": "💾 ¡{nom} ha vuelto (nivel {niveau}, guardado del {date})! Tu partida anterior está guardada: `partie charger` para volver a ella.",
+ "svg.aide.tel": "💾 El guardado en un archivo:\n  `sauvegarde exporter`: elige dónde guardar el archivo .tgsauve (Descargas, tarjeta SD…)\n  `sauvegarde importer`: elige un archivo .tgsauve; tu criatura vuelve, como una partida más (no se reemplaza nada).",
+ "svg.tel.exporte": "💾 {nom} está guardado en el archivo {fichier} ({taille}). Puedes copiarlo donde quieras. Para que vuelva: `sauvegarde importer`.",
+ "svg.tel.annule": "No se ha hecho nada (ningún archivo elegido).",
+ "svg.tel.erreur": "No he podido escribir o leer este archivo: no ha cambiado nada."
 }

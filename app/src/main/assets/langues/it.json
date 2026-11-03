@@ -8960,5 +8960,21 @@
  "hist.ct7.t1.adulte": "Su un computer: ps aux | grep fictif. Sul telefono, l'ondata è simulata dall'app.",
  "ct.tel.simule": "Sul telefono l'ondata è simulata: controle ps, poi controle arrete PID.",
  "ct.tel.raconte": "Sul telefono viene raccontato: l'app non ha {outil}.",
- "ct.tel.sac": "Sul telefono ogni comando va a un nuovo abitante: lo zaino si perde. Il ~/.tgrc dell'app fa da ~/.bashrc."
+ "ct.tel.sac": "Sul telefono ogni comando va a un nuovo abitante: lo zaino si perde. Il ~/.tgrc dell'app fa da ~/.bashrc.",
+ "sante.index": "🔧 L'elenco delle tue partite era danneggiato: l'ho rifatto a partire dai tuoi file (partite ritrovate: {n}). Non si è perso niente.",
+ "sante.tmp": "🔧 Il tuo ultimo salvataggio non aveva finito di scriversi (dispositivo spento troppo in fretta?): l'ho rimesso a posto. Non si è perso niente.",
+ "sante.manquante": "🔧 Il tuo salvataggio era sparito: l'ho ripreso dalla copia di sicurezza. Non si è perso niente.",
+ "svg.rien": "Non c'è ancora nessuna creatura da salvare: prima fai schiudere il tuo uovo!",
+ "svg.laisses": "({n} file del terreno, troppo grandi o speciali, non sono nel salvataggio.)",
+ "svg.refus.illisible": "Questo file non è un salvataggio di Terminagotchi (o non si riesce a leggere).",
+ "svg.refus.version": "Questo salvataggio viene da una versione più recente del gioco: prima aggiorna il gioco.",
+ "svg.refus.abime": "Questo salvataggio è danneggiato (tagliato o modificato durante la copia): non lo importo. Prova un'altra copia del file.",
+ "svg.refus.plateforme": "Questo salvataggio viene da un altro tipo di dispositivo (PC ↔ telefono): i due giochi non lo conservano allo stesso modo. Per avere la stessa creatura su entrambi, collegali con l'account del gioco.",
+ "svg.plein": "Hai già {max} partite: non c'è più posto per importarne un'altra.",
+ "svg.refus.place": "Non sono riuscito a installare questa partita (una cartella è d'intralcio): non è cambiato niente.",
+ "svg.importe.tel": "💾 {nom} è tornato (livello {niveau}, salvataggio del {date})! La tua partita di prima è messa da parte: `partie charger` per tornarci.",
+ "svg.aide.tel": "💾 Il salvataggio in un file:\n  `sauvegarde exporter`: scegli dove mettere il file .tgsauve (Download, scheda SD…)\n  `sauvegarde importer`: scegli un file .tgsauve; la tua creatura torna, come una partita in più (non viene sostituito niente).",
+ "svg.tel.exporte": "💾 {nom} è salvato nel file {fichier} ({taille}). Puoi copiarlo dove vuoi. Per farlo tornare: `sauvegarde importer`.",
+ "svg.tel.annule": "Non è stato fatto niente (nessun file scelto).",
+ "svg.tel.erreur": "Non sono riuscito a scrivere o leggere questo file: non è cambiato niente."
 }

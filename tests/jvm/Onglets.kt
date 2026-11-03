@@ -5,7 +5,9 @@
  *   3. l'historique (↑ ↓) de chaque onglet est à lui ; un nouvel onglet part de l'historique de la partie ;
  *   4. la créature mange les commandes des deux onglets, et la leçon voit chaque commande avec le dossier de SON
  *      onglet (« ls dans la grande salle » ne compte pas dans un onglet resté au camp) ;
- *   5. une autre partie : chaque onglet revient au camp ; les textes des onglets existent dans les 14 langues.
+ *   5. une autre partie : chaque onglet revient au camp ; les textes des onglets existent dans les 14 langues ;
+ *   6. le téléphone tourne / l'écran est recréé : Onglets.etat puis reprendre rend les mêmes onglets (dossier, cd -,
+ *      code, historique, ligne à moitié tapée, onglet affiché), jamais un dossier hors du camp.
  *   kotlinc -cp <imitations>:<appli.jar> tests/jvm/Onglets.kt -d onglets.jar
  *   java -cp <imitations>:<appli.jar>:onglets.jar:kotlin-stdlib.jar OngletsKt app/src/main/assets
  */
@@ -155,7 +157,55 @@ fun main(args: Array<String>) {
     verifO(sh.executer("echo encore").trim() == "echo encore".removePrefix("echo ") && sh.code == 0 && !sh.interrompu,
         "la commande suivante marche normalement")
 
-    println("6. Une autre partie ; les textes")
+    println("6. Le téléphone tourne (ou l'écran est recréé) : les onglets restent")
+    run {
+        val home = jeu.home
+        val nid = File(home, "terrain_terminagotchi/nid").apply { mkdirs() }
+        val creer = { Shell(home) }
+        val a = Onglets(creer, { listOf("ls") })
+        a.actif.shell.dossier = nid
+        a.actif.noter("cd terrain_terminagotchi/nid")
+        val b = a.ouvrir()!!
+        b.shell.dossier = File(home, "terrain_terminagotchi").canonicalFile
+        b.shell.precedent = nid
+        b.shell.code = 2
+        b.brouillon = "cat rep"
+        b.noter("pwd")
+        val c = a.ouvrir()!!
+        a.fermer(c)                                     // il reste Terminal 1 et Terminal 2, Terminal 2 affiché
+        a.choisir(b)
+        val texte = a.etat()
+        val r = Onglets(creer, { listOf("ls") })
+        verifO(r.reprendre(texte, home), "l'état gardé se relit")
+        verifO(r.liste.map { it.numero } == listOf(1, 2) && r.actif.numero == 2, "les mêmes onglets reviennent (Terminal 1, Terminal 2), Terminal 2 affiché")
+        val r1 = r.liste[0]; val r2 = r.liste[1]
+        verifO(r1.shell.dossier == nid.canonicalFile && r2.shell.dossier == File(home, "terrain_terminagotchi").canonicalFile,
+            "chaque onglet retrouve SON dossier")
+        verifO(r2.shell.precedent == nid.canonicalFile && r2.shell.code == 2 && r2.brouillon == "cat rep",
+            "et son `cd -`, son code de sortie, sa ligne à moitié tapée")
+        verifO(r1.historique.last() == "cd terrain_terminagotchi/nid" && r2.historique.last() == "pwd" && r1.shell !== r2.shell,
+            "et son historique ↑ ↓ ; chacun son shell")
+        verifO(r2.shell.executer("pwd").trim().endsWith("terrain_terminagotchi"), "pwd après la rotation : le bon dossier")
+        // un dossier effacé entre-temps, ou hors du camp : retour au camp
+        val tmp = File(home, "terrain_terminagotchi/tmp_efface").apply { mkdirs() }
+        a.actif.shell.dossier = tmp
+        val t2 = a.etat()
+        tmp.delete()
+        val r3 = Onglets(creer); r3.reprendre(t2, home)
+        verifO(r3.actif.shell.dossier == home, "un dossier qui n'existe plus : l'onglet revient au camp")
+        val dehors = org.json.JSONObject(texte)
+        dehors.getJSONArray("onglets").getJSONObject(0).put("dossier", "/").put("precedent", home.parentFile!!.path)
+        val r4 = Onglets(creer); r4.reprendre(dehors.toString(), home)
+        verifO(r4.liste[0].shell.dossier == home && r4.liste[0].shell.precedent == null, "un dossier hors du camp (/, les coulisses) : jamais repris")
+        val r5 = Onglets(creer)
+        verifO(!r5.reprendre("{abîmé", home) && !r5.reprendre(null, home) && r5.liste.size == 1, "un état abîmé ou absent : un seul onglet, comme au lancement")
+        val trop = org.json.JSONObject().put("actif", 9).put("onglets", org.json.JSONArray((1..7).map { org.json.JSONObject().put("n", it) }))
+        val r6 = Onglets(creer); r6.reprendre(trop.toString(), home)
+        verifO(r6.liste.size == Onglets.MAX && r6.actif.numero == 1, "jamais plus de ${Onglets.MAX} onglets ; un onglet affiché inconnu : le premier")
+        File(home, "terrain_terminagotchi").deleteRecursively()
+    }
+
+    println("7. Une autre partie ; les textes")
     onglets.nouvellePartie(jeu.home)
     verifO(onglets.liste.all { it.shell.dossier == jeu.home && it.shell.precedent == null && it.dernierDossier == null },
         "une autre partie : chaque onglet revient au camp de base")

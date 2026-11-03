@@ -1126,12 +1126,25 @@ def _main():
     langue.installer_rendu()                   # les commandes à taper en vert (`…` dans les textes)
     args = [a for a in sys.argv[1:] if not a.startswith("--")]
     mode = args[0].lower() if args else ""
+    if mode in ("verifier", "vérifier"):       # tg verifier : le jeu regarde ses fichiers maintenant (sante.py)
+        from . import sante
+        print(sante.commande(args[1:]))
+        return
+    if mode in ("", "parties") and sys.stdin.isatty() and "--une-fois" not in sys.argv:
+        from . import sante                    # au lancement du jeu : vérifier ses fichiers, réparer doucement
+        repares = sante.au_demarrage()[0]
+    else:
+        repares = []
     try:
         rien = core.load() is None
     except OSError:
         rien = False
     if rien:                                   # pas encore de sauvegarde : la langue du système
         langue.definir(langue.detecter())
+    if repares:                                # dit dans la langue de la partie (chargée juste au-dessus)
+        from . import sante
+        for ligne in sante.textes(repares):
+            print(ligne)
     if mode == "prompt":                       # appelé par le shell : ne doit jamais gêner
         try:
             compagnon.prompt(etape)
@@ -1297,6 +1310,10 @@ def _main():
     if mode == "desinstaller":
         faits = compagnon.desinstaller()
         print(t("app.retire", liste="\n  " + "\n  ".join(faits)) if faits else t("app.rien_a_retirer"))
+        return
+    if mode in ("sauvegarde", "backup"):       # tg sauvegarde exporter [où] | importer <fichier> (sauvegarde.py)
+        from . import sauvegarde
+        print(sauvegarde.commande(args[1:]))   # (importer range la partie en cours sous le verrou du jeu)
         return
     if mode == "partie":                       # tg partie nouvelle | charger [n]
         from . import accueil

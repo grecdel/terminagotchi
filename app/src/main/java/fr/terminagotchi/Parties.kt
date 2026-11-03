@@ -42,23 +42,23 @@ object Parties {
         val icone: String get() = when (stade) { 0 -> "🥚"; 1 -> "🐣"; 2 -> "🐥"; else -> "🐲" }
     }
 
-    private fun dossier(ctx: Context) = File(ctx.filesDir, "parties").apply { mkdirs() }
-    private fun fIndex(ctx: Context) = File(dossier(ctx), "index.json")
+    internal fun dossier(ctx: Context) = File(ctx.filesDir, "parties").apply { mkdirs() }
+    internal fun fIndex(ctx: Context) = File(dossier(ctx), "index.json")
     fun fichierActif(ctx: Context) = File(ctx.filesDir, "sauvegarde.json")
-    private fun fichierRange(ctx: Context, id: String) = File(dossier(ctx), "partie_$id.json")
+    internal fun fichierRange(ctx: Context, id: String) = File(dossier(ctx), "partie_$id.json")
     private fun terrainActif(ctx: Context) = File(File(ctx.filesDir, "maison"), "terrain_terminagotchi")
-    private fun terrainRange(ctx: Context, id: String) = File(dossier(ctx), "terrain_$id")
+    internal fun terrainRange(ctx: Context, id: String) = File(dossier(ctx), "terrain_$id")
 
-    private val verrou = Any()
+    internal val verrou = Any()
 
     // ---------------------------------------------------------------- index
-    private fun lireJson(f: File): JSONObject? = try {
+    internal fun lireJson(f: File): JSONObject? = try {
         if (f.isFile) JSONObject(f.readText()) else null
     } catch (e: Exception) {
         null
     }
 
-    private fun ecrire(f: File, o: JSONObject) = ecrireTexte(f, Garde.sceller(o))
+    internal fun ecrire(f: File, o: JSONObject) = ecrireTexte(f, Garde.sceller(o))
 
     /** Écriture atomique (.tmp puis renommage), signalée au gardien des coulisses (Garde) : ce n'est pas une attaque. */
     fun ecrireTexte(f: File, texte: String) = Garde.pendant {
@@ -207,6 +207,21 @@ object Parties {
         // la langue choisie suit le joueur dans sa nouvelle partie
         val o = JSONObject().put("nom", "").put("partie", id).put("maj", System.currentTimeMillis()).put("langue", Langue.courante)
         return if (basculer(ctx, id, o)) id else null
+    }
+
+    /**
+     * Une partie qui vient d'un fichier de sauvegarde (Sauvegarde.kt) : elle arrive comme une partie de plus, la partie
+     * active est rangée (jamais remplacée). [poserTerrain] écrit son terrain dans le dossier donné (neuf), avant qu'il
+     * prenne sa place. Renvoie son id, ou null (plus de place, ou quelque chose en travers).
+     */
+    fun importer(ctx: Context, partie: JSONObject, poserTerrain: (File) -> Unit): String? {
+        if (pleine(ctx)) return null
+        val id = nouvelId(ctx)
+        val t = terrainRange(ctx, id)
+        try { poserTerrain(t) } catch (e: Exception) { t.deleteRecursively(); return null }
+        partie.put("partie", id).put("maj", System.currentTimeMillis())
+        if (!basculer(ctx, id, partie)) { t.deleteRecursively(); return null }
+        return id
     }
 
     /** Une partie du compte en ligne, pas encore sur cet appareil : elle arrive vide, la synchro la remplit. */

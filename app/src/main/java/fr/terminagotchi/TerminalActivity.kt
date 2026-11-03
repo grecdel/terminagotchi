@@ -94,8 +94,13 @@ class TerminalActivity : Activity() {
                 WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE
         )
 
+        val repares = try { Sante.auDemarrage(this) } catch (e: Exception) { emptyList() }   // répare doucement (Sante.kt)
         jeu = Jeu(this)
         onglets = Onglets({ Shell(jeu.home).also { s -> s.journal = { jeu.journal.toList() } } }, { jeu.historique.toList() })
+        // l'écran est recréé (mode sombre changé, appli arrêtée par le téléphone puis rouverte…) : les onglets reviennent
+        // (tourner le téléphone ne recrée plus l'écran : android:configChanges dans le manifeste)
+        val repris = jeu.existe && onglets.reprendre(savedInstanceState?.getString(ETAT_ONGLETS), jeu.home)
+        if (repris) for (o in onglets.liste) savedInstanceState?.getCharSequence(ETAT_ECRAN + o.numero)?.let { o.ecran = it }
         commandes = Commandes(this, jeu, { shell.dossier }) { texte, couleur ->
             if (texte.isNotEmpty()) ecrire(texte, couleur)
             rafraichir()
@@ -113,8 +118,10 @@ class TerminalActivity : Activity() {
             texteCompte = { commandes.executer("compte")?.texte ?: "" },
             plusTard = { ecrire(it, Commandes.BLEU) })
         Rappels.programmer(this)
-        essais(intent)
-        handler.postDelayed({ commandeExterne(intent) }, 400)      // une commande tapée dans l'île de la bulle
+        if (!repris) {                 // un écran recréé ne rejoue pas ce que demandait son lancement
+            essais(intent)
+            handler.postDelayed({ commandeExterne(intent) }, 400)      // une commande tapée dans l'île de la bulle
+        }
         if (android.os.Build.VERSION.SDK_INT >= 33 &&
             checkSelfPermission("android.permission.POST_NOTIFICATIONS") != android.content.pm.PackageManager.PERMISSION_GRANTED) {
             requestPermissions(arrayOf("android.permission.POST_NOTIFICATIONS"), 1)
@@ -192,7 +199,9 @@ class TerminalActivity : Activity() {
         }
 
         jeu.tick()
-        if (lanceur(intent) && !Parties.aucune(this)) {
+        if (repris) {
+            montrerOnglet()                          // l'écran recréé reprend où il en était, onglet par onglet
+        } else if (lanceur(intent) && !Parties.aucune(this)) {
             ecrire(menu.ouvrir(), Commandes.ROSE)       // lancé depuis l'icône : le menu des parties
         } else if (!jeu.existe) {
             ecrire(t("term.oeuf"))
@@ -201,6 +210,7 @@ class TerminalActivity : Activity() {
             jeu.parlerSiSilencieux()
             ecrire(t("mini.accueil1") + "\n" + t("term.aide_pour_aide"))
         }
+        for (r in repares) ecrire(r, Commandes.BLEU)
         jeu.sauver()
         rafraichir()
         if (jeu.existe && jeu.module("espace").optBoolean("ouvert")) {      // l'espace de travail était ouvert
@@ -212,6 +222,21 @@ class TerminalActivity : Activity() {
                 .showSoftInput(saisie, InputMethodManager.SHOW_IMPLICIT)
         }, 200)
         animer()
+    }
+
+    /**
+     * Android va peut-être recréer l'écran : on garde les onglets (Onglets.etat) et le texte de chaque écran (avec ses
+     * couleurs, la fin seulement : un écran trop long ne passerait pas).
+     */
+    override fun onSaveInstanceState(outState: Bundle) {
+        super.onSaveInstanceState(outState)
+        if (!::onglets.isInitialized || !::sortie.isInitialized) return
+        rangerOnglet()
+        outState.putString(ETAT_ONGLETS, onglets.etat())
+        for (o in onglets.liste) {
+            val e = o.ecran
+            outState.putCharSequence(ETAT_ECRAN + o.numero, if (e.length > ECRAN_GARDE) e.subSequence(e.length - ECRAN_GARDE, e.length) else e)
+        }
     }
 
     override fun onPause() {
@@ -265,6 +290,74 @@ class TerminalActivity : Activity() {
         exec.shutdown()
         commandes.fermer()
         super.onDestroy()
+    }
+
+    // ------------------------------------------------------------ la sauvegarde dans un fichier (Sauvegarde.kt)
+    /** `sauvegarde exporter` / `sauvegarde importer` : le sélecteur de fichiers d'Android (aucune permission). */
+    private fun sauvegarde(action: String?) {
+        val i = when (action) {
+            "exporter", "exporte", "export" -> android.content.Intent(android.content.Intent.ACTION_CREATE_DOCUMENT)
+                .addCategory(android.content.Intent.CATEGORY_OPENABLE).setType("application/octet-stream")
+                .putExtra(android.content.Intent.EXTRA_TITLE, Sauvegarde.nomDeFichier(jeu.nom))
+            "importer", "importe", "import" -> android.content.Intent(android.content.Intent.ACTION_OPEN_DOCUMENT)
+                .addCategory(android.content.Intent.CATEGORY_OPENABLE).setType("*/*")
+            else -> { ecrire(t("svg.aide.tel"), Commandes.ROSE); return }
+        }
+        try {
+            startActivityForResult(i, if (i.action == android.content.Intent.ACTION_CREATE_DOCUMENT) REQ_EXPORTER else REQ_IMPORTER)
+        } catch (e: Exception) {
+            ecrire(t("svg.tel.erreur"), Commandes.ROSE)
+        }
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: android.content.Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        if (requestCode != REQ_EXPORTER && requestCode != REQ_IMPORTER) return
+        val uri = data?.data
+        if (resultCode != RESULT_OK || uri == null || !jeu.existe) { ecrire(t("svg.tel.annule"), Commandes.ROSE); return }
+        enCours = true
+        // la partie est lue ou changée ici (fil de l'écran, comme chaque commande) ; seul le fichier passe par exec
+        val export = if (requestCode == REQ_EXPORTER) try { Sauvegarde.fabriquer(this, jeu) } catch (e: Exception) { null } else null
+        exec.execute {
+            var octets: ByteArray? = null
+            val ok = try {
+                if (export != null) contentResolver.openOutputStream(uri, "wt")!!.use { it.write(export.first.toByteArray(Charsets.UTF_8)) }
+                else if (requestCode == REQ_IMPORTER) octets = contentResolver.openInputStream(uri)!!.use { it.readBytes() }
+                requestCode == REQ_IMPORTER || export != null
+            } catch (e: Exception) {
+                android.util.Log.w("TG", "sauvegarde : $e")
+                false
+            }
+            handler.post {
+                enCours = false
+                val texte = when {
+                    !ok -> t("svg.tel.erreur")
+                    export != null -> {
+                        val taille = export.first.toByteArray(Charsets.UTF_8).size
+                        val nom = (try { java.net.URLDecoder.decode(uri.toString(), "UTF-8") } catch (e: Exception) { "" })
+                            .substringAfterLast('/').substringAfterLast(':').takeIf { it.endsWith(Sauvegarde.EXTENSION) }
+                            ?: Sauvegarde.nomDeFichier(jeu.nom)
+                        t("svg.tel.exporte", "nom" to jeu.nom, "fichier" to nom,
+                            "taille" to if (taille < 1 shl 20) "${maxOf(1, taille / 1024)} Ko" else "%.1f Mo".format(taille / 1048576.0)) +
+                            (if (export.second > 0) "\n" + t("svg.laisses", "n" to export.second) else "")
+                    }
+                    (octets?.size ?: 0) > Sauvegarde.MAX_TOTAL * 2 -> t("svg.refus.illisible")
+                    else -> {
+                        val avant = jeu.partie
+                        val r = Sauvegarde.importer(this, jeu, String(octets ?: ByteArray(0), Charsets.UTF_8))
+                        if (jeu.partie != avant) {          // une partie de plus est arrivée : comme après le menu des parties
+                            onglets.nouvellePartie(jeu.home)
+                            animJouee = System.currentTimeMillis()
+                            WidgetCreature.majTous(this)
+                            majObservatoire(null)
+                        }
+                        r
+                    }
+                }
+                ecrire(texte, Commandes.ROSE)
+                rafraichir()
+            }
+        }
     }
 
     /** Rangée de touches spéciales, difficiles à trouver sur un clavier de téléphone. */
@@ -680,6 +773,7 @@ class TerminalActivity : Activity() {
             "parties" -> { ecrire(menu.ouvrir(), Commandes.ROSE); return }
             "langue" -> { ecrire(langue(ligne.trim().split(Regex("\\s+")).getOrNull(1)), Commandes.ROSE); return }
             "partie" -> { ecrire(menu.commande(ligne.substringAfter(' ', "")), Commandes.ROSE); rafraichir(); return }
+            "sauvegarde", "backup" -> { sauvegarde(ligne.trim().split(Regex("\\s+")).getOrNull(1)?.lowercase()); return }
             "debloquer" -> {                          // pour les parents et les tests : tout ouvrir (après confirmation)
                 if (ligne.trim().split(Regex("\\s+")).getOrNull(1)?.lowercase() in setOf("tout", "all")) {
                     confirmerDeblocage = true
@@ -1766,6 +1860,14 @@ class TerminalActivity : Activity() {
         private const val AMBIANCE = 25_000L
         /** millisecondes entre deux images de vie au repos (8 images par seconde) */
         private const val VIE_PAS = 125L
+        /** clés de ce qui est gardé quand l'écran est recréé (onSaveInstanceState) */
+        private const val ETAT_ONGLETS = "tg_onglets"
+        private const val ETAT_ECRAN = "tg_ecran_"
+        /** caractères gardés de chaque écran de terminal (la fin) */
+        private const val ECRAN_GARDE = 6000
+        /** les deux sélecteurs de fichiers de `sauvegarde` */
+        private const val REQ_EXPORTER = 41
+        private const val REQ_IMPORTER = 42
     }
 
     private fun animer() {

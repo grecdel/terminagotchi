@@ -28,12 +28,16 @@
         android:networkSecurityConfig="@xml/network_security_config"
         android:theme="@style/Theme.Terminal">
 
+        <!-- configChanges : tourner le téléphone (ou brancher un clavier) ne recrée pas l'écran, les onglets du terminal,
+             la commande qui tourne et le texte affiché restent tels quels ; les autres recréations sont rattrapées par
+             onSaveInstanceState (Onglets.etat) -->
         <activity
             android:name=".TerminalActivity"
             android:exported="true"
             android:excludeFromRecents="true"
             android:launchMode="singleTask"
             android:taskAffinity=""
+            android:configChanges="orientation|screenSize|screenLayout|smallestScreenSize|keyboardHidden|keyboard|navigation"
             android:theme="@style/Theme.Terminal"
             android:windowSoftInputMode="adjustResize|stateAlwaysVisible">
             <intent-filter>

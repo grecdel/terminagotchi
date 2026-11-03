@@ -8966,5 +8966,21 @@
  "hist.ct7.t1.adulte": "在电脑上：ps aux | grep fictif。在手机上，这一波由应用模拟。",
  "ct.tel.simule": "在手机上，这一波是模拟的：controle ps，然后 controle arrete PID。",
  "ct.tel.raconte": "在手机上，这一步用讲的：应用里没有 {outil}。",
- "ct.tel.sac": "在手机上，每条命令都交给一个新居民：背包就丢了。应用的 ~/.tgrc 起到 ~/.bashrc 的作用。"
+ "ct.tel.sac": "在手机上，每条命令都交给一个新居民：背包就丢了。应用的 ~/.tgrc 起到 ~/.bashrc 的作用。",
+ "sante.index": "🔧 你的游戏列表损坏了：我根据你的文件重新做了一份（找回的游戏：{n}）。什么都没丢。",
+ "sante.tmp": "🔧 你上次的存档还没写完（设备关得太快了？）：我把它放回去了。什么都没丢。",
+ "sante.manquante": "🔧 你的存档不见了：我用备份副本把它恢复了。什么都没丢。",
+ "svg.rien": "还没有可以存档的小生物：先让你的蛋孵化吧！",
+ "svg.laisses": "（场地里有 {n} 个文件太大或比较特殊，没有放进存档。）",
+ "svg.refus.illisible": "这个文件不是 Terminagotchi 的存档（或者读不出来）。",
+ "svg.refus.version": "这个存档来自更新版本的游戏：请先更新游戏。",
+ "svg.refus.abime": "这个存档损坏了（复制时被截断或改动）：我不导入它。试试这个文件的另一份副本。",
+ "svg.refus.plateforme": "这个存档来自另一种设备（电脑 ↔ 手机）：两个游戏保存的方式不一样。想在两边拥有同一只小生物，请用游戏账号把它们连接起来。",
+ "svg.plein": "你已经有 {max} 局游戏了：没有位置再导入一局。",
+ "svg.refus.place": "我没能安装这局游戏（有一个文件夹挡住了）：什么都没变。",
+ "svg.importe.tel": "💾 {nom} 回来了（等级 {niveau}，{date} 的存档）！你之前的游戏已收好：用 `partie charger` 回到它。",
+ "svg.aide.tel": "💾 存档到文件：\n  `sauvegarde exporter`：选择 .tgsauve 文件放在哪里（下载、SD 卡……）\n  `sauvegarde importer`：选择一个 .tgsauve 文件；你的小生物回来了，作为多出来的一局游戏（不会替换任何东西）。",
+ "svg.tel.exporte": "💾 {nom} 已存进文件 {fichier}（{taille}）。你可以把它复制到任何地方。想让它回来：`sauvegarde importer`。",
+ "svg.tel.annule": "什么都没做（没有选择文件）。",
+ "svg.tel.erreur": "我没能写入或读取这个文件：什么都没变。"
 }

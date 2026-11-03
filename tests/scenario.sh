@@ -81,6 +81,32 @@ tape "terminal" 3          # un deuxième onglet de terminal
 capture onglet_2_ouvert
 tape "cd terrain_terminagotchi/nid"; tape "pwd"; tape "ls" 2   # le Terminal 2 part du camp (~)
 capture onglet_2_dossier
+# le téléphone tourne (paysage) puis revient (portrait) : les deux onglets restent, Terminal 2 toujours dans nid
+# (manifeste : configChanges ; Onglets.etat / reprendre si Android recrée quand même l'écran)
+onglets_vus() {
+  adb shell uiautomator dump /sdcard/tg_ui.xml >/dev/null 2>&1
+  adb exec-out cat /sdcard/tg_ui.xml 2>/dev/null | python3 -c '
+import re, sys
+x = sys.stdin.read()
+t = re.findall(r"text=\"([^\"]*)\"", x)
+print("onglets:", sorted(set(v for v in t if "Terminal " in v and len(v) < 20)))'
+}
+onglets_vus > captures/rotation_resultat.txt
+adb shell settings put system accelerometer_rotation 0
+adb shell settings put system user_rotation 1
+capture rotation_paysage 5
+onglets_vus >> captures/rotation_resultat.txt
+tape "pwd" 2
+capture rotation_paysage_pwd
+adb shell settings put system user_rotation 0
+capture rotation_portrait 5
+onglets_vus >> captures/rotation_resultat.txt
+tape "pwd" 2
+capture rotation_portrait_pwd
+adb exec-out cat /sdcard/tg_ui.xml 2>/dev/null | grep -o 'terrain_terminagotchi/nid' | head -1 >> captures/rotation_resultat.txt
+adb shell uiautomator dump /sdcard/tg_ui.xml >/dev/null 2>&1
+adb exec-out cat /sdcard/tg_ui.xml 2>/dev/null | grep -c 'terrain_terminagotchi/nid' >> captures/rotation_resultat.txt
+cat captures/rotation_resultat.txt
 tape "exit" 3              # on ferme l'onglet 2, retour au Terminal 1
 capture onglet_1_retour
 # une commande tapée pendant qu'une autre tourne : mise en attente (grisée), puis lancée juste après

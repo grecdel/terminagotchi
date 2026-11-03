@@ -216,10 +216,15 @@ fun main(args: Array<String>) {
 
     println("Épreuve du jour")
     val ty = Guide.typeDuJour()
-    val fort = Guide.fortsContre(ty)[0]
-    Guide.choisir(jeu, donner(fort))
-    xp0 = jeu.xp
-    verifier(Guide.apresDefi(jeu) != null && jeu.xp - xp0 == Guide.BONUS_DEFI, "guide $fort contre le type du jour ($ty) : +5 XP")
+    if (Guide.fortsContre(ty).isEmpty()) {
+        // (3 novembre) le jour de l'Ombre, aucun type n'est fort contre elle : pas de bonus possible ce jour-là
+        verifier(Guide.TYPES.none { Guide.efficacite(it, ty) > 1 }, "jour de l'$ty : personne n'est fort contre elle (le bonus se vérifie les autres jours)")
+    } else {
+        val fort = Guide.fortsContre(ty)[0]
+        Guide.choisir(jeu, donner(fort))
+        xp0 = jeu.xp
+        verifier(Guide.apresDefi(jeu) != null && jeu.xp - xp0 == Guide.BONUS_DEFI, "guide $fort contre le type du jour ($ty) : +5 XP")
+    }
     val faible = Guide.TYPES.first { it != "ombre" && Guide.efficacite(it, ty) <= 1 }
     Guide.choisir(jeu, donner(faible))
     verifier(Guide.apresDefi(jeu) == null, "un autre guide : pas de bonus (et pas de punition)")
