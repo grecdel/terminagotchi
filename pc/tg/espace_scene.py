@@ -215,7 +215,6 @@ def haut(L, Z, m, mise):
     L.append(("rrect", 20, 28, 36, 36, 10, _a(VERT, 30), _a(VERT, 140), 1))
     L.append(("texte", 38, 46, ">_", 14, VERT, True, "c", True))
     L.append(("texte", 68, 37, "Terminagotchi", 17, TEXTE, True, "g", False))
-    L.append(("texte", 68, 59, m.get("chapitre", ""), 13, DOUX, False, "g", False))
     # la pilule de l'île
     eq = m.get("equipe", [])[:4]
     nom = m.get("nom", "")
@@ -226,6 +225,8 @@ def haut(L, Z, m, mise):
     w_m = lt(m.get("monstre", ""), 12) + 20 if m.get("monstre") else 0
     pw = 88 + w_txt + 28 + w_eq + (24 + w_m if w_m else 0)
     px = W / 2 - pw / 2
+    # (idée 62) en grand, le nom du chapitre s'arrête avant la pilule de l'île
+    L.append(("texte", 68, 59, court(m.get("chapitre", ""), max(60, px - 80), 13), 13, DOUX, False, "g", False))
     evt = m.get("evenement")
     L.append(("rrect", px, 16, pw, 62, 31, PANNEAU, _a(ROUGE, 160) if evt else BORD_FORT, 1.5 if evt else 1))
     Z.append((px, 16, pw, 62, "ile"))
@@ -1553,7 +1554,7 @@ def _police(sz, gras, mono, texte):
     from PIL import ImageFont
     ecriture = "cjk" if any(0x2E80 <= ord(ch) <= 0xFFEF for ch in texte) else \
         ("sym" if any(0x2190 <= ord(ch) < 0x2E80 for ch in texte) else "")
-    facile = CONF["facile"] and not mono and ecriture != "cjk"
+    facile = CONF["facile"] and not mono and ecriture == ""      # Andika n'a ni les symboles ni les écritures d'Asie
     if facile:
         from . import confort
         sz = sz * confort.FACILE_TAILLE
