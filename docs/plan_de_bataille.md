@@ -1183,7 +1183,8 @@ Règles communes : `pc/tg/aide_douce.py` = `AideDouce.kt` (vecteurs `donnees/acc
 - **79 Menu** : téléphone, écran du camp + pluie de pixels + titre en pixels + créature ; PC, titre en blocs, ↑ ↓ Entrée ;
   Jouer, Nouvelle partie, Charger, Options (le compte y est), Aide, Quitter.
 Tests : `pc/outils/test_accueil.py`, `tests/jvm/Accueil.kt`, scénario du téléphone virtuel. Captures :
-`/home/claude/outils/ameliorations/accueil_aide/captures/` (`pc/outils/capture_accueil.py`).
+`/home/claude/outils/ameliorations/accueil_aide/captures/` (`pc/outils/capture_accueil.py`). `tout.sh all` vert (3 nov.,
+après rebase ; citadelle/crypte/intro/port/parcours relancés seuls quand la machine était trop chargée).
 **🔊 Les sons — codé (3 novembre, maquette sonore et 8 décisions validées : idées 81, 82, 83, 86).** Tout est
 fabriqué par du code au moment de jouer (aucun fichier son, aucune banque, rien de tiers) : `pc/tg/sons.py` (Python
 pur, ni numpy ni bibliothèque mathématique : sinus, e^x et 2^x calculés avec + − × ÷) et `Sons.kt` donnent les mêmes
