@@ -372,14 +372,14 @@ def nom_stade(s):
 class Client:
     """La place vue d'un poste : trouvée, rejointe, relue toutes les 2 s (dans un fil à part : rien ne bloque)."""
 
-    def __init__(self, code, profil_, hote=None, port=PORT, jeton=None):
+    def __init__(self, code, profil_, hote=None, port=PORT, jeton=None, vu=0):
         self.cle = cle(code)
         self.profil = profil_
         self.hote, self.port, self.jeton = hote, port, jeton
         self.poste = None
         self.postes = []
         self.recus = []              # [(g, de, quand)] : les bulles des gestes reçus
-        self.dernier_id = 0
+        self.dernier_id = vu if isinstance(vu, int) and not isinstance(vu, bool) and vu > 0 else 0   # gestes déjà vus
         self.etat = "cherche"        # cherche, ici, absente, fermee
         self.attends = 0.0
 
@@ -398,6 +398,8 @@ class Client:
         if not rep or not rep.get("ok"):
             self.etat = "fermee" if rep and rep.get("erreur") == "fermee" else "absente"
             return False
+        if rep["jeton"] != self.jeton:           # une nouvelle place (ou un nouveau poste) : rien n'a encore été vu
+            self.dernier_id = 0
         self.poste, self.jeton, self.etat = rep["poste"], rep["jeton"], "ici"
         return self.relire()
 
@@ -429,6 +431,11 @@ class Client:
         return bool(rep and rep.get("ok"))
 
 
+def memo_de(cl):
+    """Ce que la partie retient de la place (pour revenir au même poste sans réafficher les gestes déjà vus)."""
+    return {"hote": cl.hote, "port": cl.port, "jeton": cl.jeton, "poste": cl.poste, "vu": cl.dernier_id}
+
+
 # ---------------------------------------------------------------- tg classe place (côté élève, dans un terminal)
 def _seance_eleve(state):
     from . import classe
@@ -453,11 +460,10 @@ def commande(args):
         return t("classe.place.pas_ouverte")
     memo = c.get("place") or {}
     hote = reste[0] if sous == "place" and reste and privee(reste[0]) else memo.get("hote")
-    cl = Client(c["code"], profil(st), hote, memo.get("port", PORT), memo.get("jeton"))
+    cl = Client(c["code"], profil(st), hote, memo.get("port", PORT), memo.get("jeton"), memo.get("vu", 0))
     if not cl.rejoindre():
         return t("classe.place.absente")
-    core.modifier(lambda s: (_seance_eleve(s) or {}).__setitem__(
-        "place", {"hote": cl.hote, "port": cl.port, "jeton": cl.jeton, "poste": cl.poste}))
+    core.modifier(lambda s: (_seance_eleve(s) or {}).__setitem__("place", memo_de(cl)))
     out = []
     if sous in ("geste", "gestes"):
         if len(reste) < 2 or not reste[0].isdigit():
@@ -487,7 +493,7 @@ class Vue:
         c = _seance_eleve(state) or {}
         memo = c.get("place") or {}
         self.client = Client(c.get("code", ""), profil(state), memo.get("hote"), memo.get("port", PORT),
-                             memo.get("jeton"))
+                             memo.get("jeton"), memo.get("vu", 0))
         self.actif = True
         self.message = ""
         threading.Thread(target=self._boucle, daemon=True).start()

@@ -198,6 +198,49 @@ def depuis_recensement(state, texte, date):
 
 # ---------------------------------------------------------------- la police « Lecture facile »
 _POLICE = {}
+_FONTCONFIG = []
+
+
+def _hors_du_zip(nom):
+    """Dans terminagotchi.pyz, la police est dans l'archive : copiée une fois dans le cache de l'utilisateur."""
+    import pkgutil
+    try:
+        data = pkgutil.get_data(__package__, "polices/" + nom)
+    except (OSError, ValueError):
+        return None
+    if not data:
+        return None
+    d = os.path.join(os.path.expanduser("~"), ".cache", "terminagotchi", "polices")
+    p = os.path.join(d, nom)
+    try:
+        if not (os.path.isfile(p) and os.path.getsize(p) == len(data)):
+            os.makedirs(d, exist_ok=True)
+            with open(p + ".tmp", "wb") as f:
+                f.write(data)
+            os.replace(p + ".tmp", p)
+        return p
+    except OSError:
+        return None
+
+
+def enregistrer_police():
+    """Pour la fenêtre GTK (Pango) : Andika est ajoutée aux polices de l'application (fontconfig), sans rien
+    installer sur l'ordinateur. Sans fontconfig (Windows, macOS), la fenêtre garde sa police habituelle."""
+    if _FONTCONFIG:
+        return _FONTCONFIG[0]
+    ok = False
+    try:
+        import ctypes
+        fc = ctypes.CDLL("libfontconfig.so.1")
+        fc.FcConfigAppFontAddFile.argtypes = [ctypes.c_void_p, ctypes.c_char_p]
+        for g in (False, True):
+            p = fichier_police(g)
+            if p:
+                ok = bool(fc.FcConfigAppFontAddFile(None, p.encode())) or ok
+    except (OSError, AttributeError):
+        ok = False
+    _FONTCONFIG.append(ok)
+    return ok
 
 
 def fichier_police(gras=False):
@@ -208,7 +251,7 @@ def fichier_police(gras=False):
         return _POLICE[cle]
     nom = POLICE_FICHIERS[1 if gras else 0]
     ici = os.path.join(os.path.dirname(os.path.abspath(__file__)), "polices", nom)
-    trouve = ici if os.path.isfile(ici) else None
+    trouve = ici if os.path.isfile(ici) else _hors_du_zip(nom)
     if trouve is None:
         for d in ("/usr/share/fonts", "/usr/local/share/fonts", os.path.expanduser("~/.local/share/fonts"),
                   os.path.expanduser("~/.fonts"), "C:\\Windows\\Fonts", "/Library/Fonts"):

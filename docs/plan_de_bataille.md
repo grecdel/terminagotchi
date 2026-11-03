@@ -1086,6 +1086,40 @@ Android `assets/intro/monde.jpg`, PC `illustrations.bin` et désormais aussi `pc
 (brouillon) ; les illustrations des mondes se déposent dans `docs/artbook/illustrations/` et entrent toutes seules
 à la prochaine génération (voir la tâche finale plus bas).
 
+## ✅ Codé (3 novembre) — Classe et accessibilité (maquettes validées le 3 novembre)
+
+PC et Android, 14 langues, vecteurs communs `donnees/classe/vecteurs_acces.json` (tests `pc/outils/test_classe_acces.py`
+et `tests/jvm/Classe.kt`).
+
+- **54/55 · Séance guidée et écran projecteur** : `tg classe seance N` (le déroulé de l'heure dans le terminal de
+  l'enseignant, Entrée = phase suivante, `o` question, `t` trace, `c` commande), `tg classe tableau` (la fenêtre du
+  vidéoprojecteur suit les phases ; aucun minuteur pour les élèves). Android : `classe seance …`, `classe tableau`
+  (écran plein sur une tablette branchée, boutons tactiles). Contenu des 10 séances : `donnees/classe/seances.json`
+  + `donnees/classe/outils/textes_seances*.py`.
+- **56 · Place de la classe** (code de séance avec la lettre V) : le poste de l'enseignant l'ouvre
+  (`tg classe place ouvrir CODE`), seulement sur le réseau local (adresses privées), 2 h au plus, rien n'est
+  enregistré ; les élèves la voient dans `tg espace` (`place`) ou au téléphone (`classe place CODE [ip]`) : « Poste
+  N », espèce, stade, et trois gestes tout faits (Coucou, Bravo, Danse), un toutes les 3 s. Ni nom, ni pseudo, ni
+  texte libre. Un geste déjà vu n'est plus réaffiché au lancement suivant.
+- **58 · Carte de visite** : `tg carte visite [sansnom]` (PNG 750 × 1050 dans le terrain de jeu) ; Android
+  `carte visite` (Enregistrer dans Images/Terminagotchi, Partager). Les goûts préférés viennent du nouveau compteur
+  `gouts` ; jamais le prénom ni le pseudo ; le jeu n'envoie rien.
+- **61 · Lecture facile** : police **Andika** (SIL, OFL 1.1, fichiers d'origine du dépôt google/fonts) livrée dans
+  `pc/tg/polices/` et `app/src/main/assets/polices/` avec `OFL-Andika.txt` ; dans le `.pyz`, copiée au premier
+  usage dans `~/.cache/terminagotchi/polices/` ; fenêtre GTK : ajoutée aux polices de l'application (fontconfig),
+  rien n'est installé sur l'ordinateur. Le terminal garde sa police à chasse fixe.
+- **62 · Taille du texte** 100 / 125 / 150 % (Ctrl + / Ctrl −, taille du système par défaut). Corrigé : onglets du
+  téléphone qui défilent au lieu d'être coupés, légende de la carte PC, cadre « Tu es ici » qui cachait des noms,
+  barre d'XP qui chevauchait le type, titre de la carte créature et nombres des envies au téléphone, vue déployée
+  qui sortait de son cadre.
+- **64 · Couleurs + formes** (■ ▲ ● ◆ ━ ▼ ✚), allumé d'office avec les thèmes Contraste et Daltonien.
+- **65 · Mode calme** : rien ne clignote ni ne secoue ; les éclairs des créatures glitch deviennent leur effet
+  léger fixe (exception accordée, seulement dans ce mode) ; défi sans chrono. Automatique si le système demande
+  moins d'animations.
+
+Reste au propriétaire : relire `docs/classe/seances_guidees.md` et `docs/classe/kit_mediatheque.md` (brouillons),
+essai en classe pilote, essai de la place sur le Wi-Fi d'une école (testée ici sur 127.0.0.1 seulement).
+
 ## En continu (chaque jour, peu coûteux)
 
 - Variantes : Abyssaux (en cours, 436 / 682 au 28 octobre), puis Célestes, Constructs, Aberrations ; planche par

@@ -346,12 +346,13 @@ object EspaceDessin {
     // ------------------------------------------------------------ la créature et ses envies
     private fun creature(tl: Toile, Z: MutableList<Zone>, m: Modele, x: Float, y: Float, w: Float, h: Float, z: Float) {
         tl.rrect(x, y, w, h, 16 * z, PANNEAU, BORD, 1f * z)
-        tl.texte(court(tl, (m.nom + " · " + m.especeStade).uppercase(), w * 0.55f, 11.5f * z, gras = true), x + 16 * z,
+        // (idée 62) en grand, le titre s'arrête avant le lieu au lieu de passer dessous
+        val cw = if (m.lieuChip.isNotEmpty()) min(tl.mesure(m.lieuChip, 12.5f * z) + 22 * z, w * 0.5f) else 0f
+        tl.texte(court(tl, (m.nom + " · " + m.especeStade).uppercase(), w - 28 * z - cw - 10 * z, 11.5f * z, gras = true), x + 16 * z,
             y + 22 * z, 11.5f * z, DOUX, true)
         if (m.lieuChip.isNotEmpty()) {
-            val cw = tl.mesure(m.lieuChip, 12.5f * z) + 22 * z
             tl.rrect(x + w - 12 * z - cw, y + 10 * z, cw, 24 * z, 12 * z, a(VERT, 22), a(VERT, 130), 1f * z)
-            tl.texte(m.lieuChip, x + w - 12 * z - cw / 2, y + 22 * z, 12.5f * z, VERT, false, 'c')
+            tl.texte(court(tl, m.lieuChip, cw - 18 * z, 12.5f * z), x + w - 12 * z - cw / 2, y + 22 * z, 12.5f * z, VERT, false, 'c')
         }
         val bx = x + 12 * z; val by = y + 40 * z; val bw = min(w * 0.36f, 150 * z); val bh = h - 52 * z
         tl.rrect(bx, by, bw, bh, 12 * z, 0xFF0D1016.toInt(), BORD, 1f * z)
@@ -387,7 +388,8 @@ object EspaceDessin {
         for ((i, e) in m.envies.withIndex()) {
             val yy = by + 10 * z + pas * i
             tl.texte(court(tl, e.first, gw * 0.42f, 14 * z), gx, yy, 14 * z, TEXTE)
-            val barX = gx + gw * 0.45f; val barW = gw * 0.38f
+            val nombre = tl.mesure("100↑", 13 * z, false, true) + 6 * z      // (idée 62) le nombre ne touche plus la barre
+            val barX = gx + gw * 0.45f; val barW = max(12 * z, gx + gw - nombre - barX)
             tl.rrect(barX, yy - 3 * z, barW, 6 * z, 3 * z, 0x14FFFFFF, null, 0f)
             tl.rrect(barX, yy - 3 * z, max(6 * z, barW * (e.third.first.coerceIn(0.0, 100.0) / 100).toFloat()), 6 * z, 3 * z,
                 COUL_ENVIES[e.second] ?: VERT, null, 0f)
@@ -413,7 +415,8 @@ object EspaceDessin {
         var taille = 22 * z
         var gap = 10 * z
         fun total(tt: Float) = bl.sumOf { (tl.mesure(it.t, tt, true, true) + 18 * z).toDouble() }.toFloat() + gap * (bl.size - 1)
-        while (taille > 10 * z && total(taille) > w - 28 * z) { taille -= 1 * z; gap = max(5 * z, gap - 0.5f * z) }
+        val zb = z / max(1f, m.confort.zoom)          // (idée 62) en grand, les blocs peuvent rapetisser jusqu'à 10 dp
+        while (taille > 10 * zb && total(taille) > w - 28 * z) { taille -= 0.5f * z; gap = max(5 * zb, gap - 0.5f * z) }
         var bx = x + 14 * z + max(0f, (w - 28 * z - total(taille)) / 2)
         val cy = y + 58 * z
         for (b in bl) {
@@ -431,10 +434,10 @@ object EspaceDessin {
             tl.cercle(nx, ny, 9 * z, a(col, if (b.i <= v.actif) 230 else 90), 1.3f * z)
             tl.texte("${b.i}", nx, ny, 10 * z, if (b.i <= v.actif) TEXTE else DOUX, true, 'c')
             if (m.confort.formes) {                  // (idée 64) jamais une couleur seule : la forme de la catégorie
-                val fx = bx + bw - 3 * z
-                tl.ellipse(fx, ny, 9 * z, 9 * z, PANNEAU)
-                tl.cercle(fx, ny, 9 * z, a(col, if (b.i <= v.actif) 230 else 90), 1.3f * z)
-                tl.texte(Confort.FORMES[b.g] ?: "●", fx, ny, 9 * z, if (b.i <= v.actif) col else a(col, 110), true, 'c')
+                val fx = bx + bw - 3 * z; val fy = cy + 19 * z      // en bas à droite : jamais sur le numéro du voisin
+                tl.ellipse(fx, fy, 9 * z, 9 * z, PANNEAU)
+                tl.cercle(fx, fy, 9 * z, a(col, if (b.i <= v.actif) 230 else 90), 1.3f * z)
+                tl.texte(Confort.FORMES[b.g] ?: "●", fx, fy, 9 * z, if (b.i <= v.actif) col else a(col, 110), true, 'c')
             }
             bx += bw + gap
         }
@@ -442,7 +445,9 @@ object EspaceDessin {
         val b = bl[v.actif - 1]
         val col = Deploie.COULEURS.getValue(b.g)
         val ey = cy + 32 * z
-        val lignes = couper(tl, Deploie.longue(b, bl), w - 60 * z, 15 * z).take(2)
+        val place = ((y + h - 8 * z - ey - 22 * z) / (21 * z)).toInt().coerceIn(1, 2)   // (idée 62) jamais hors du cadre
+        val tout = couper(tl, Deploie.longue(b, bl), w - 60 * z, 15 * z)
+        val lignes = if (tout.size <= place) tout else tout.take(place - 1) + court(tl, tout[place - 1] + " " + tout[place], w - 60 * z, 15 * z)
         val eh = 22 * z + 21 * z * lignes.size
         tl.rrect(x + 14 * z, ey, w - 28 * z, eh, 14 * z, a(col, 16), a(col, 120), 1.2f * z)
         for ((i, l) in lignes.withIndex()) {

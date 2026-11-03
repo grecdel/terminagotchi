@@ -6,10 +6,11 @@ lang: fr
 
 # À lire d'abord
 
-> **Brouillon.** Ce document n'est pas encore validé : ni par le propriétaire du projet, ni par des enseignants,
-> ni en classe pilote. Les commandes `tg classe seance` et `tg classe tableau` citées ici sont **proposées**
-> (maquettes du 3 novembre) et **n'existent pas encore** dans le jeu. Tout le reste (codes de séance, bilan,
-> `tg espace classe`) existe déjà : voir `fiches_enseignant.md`.
+> **Brouillon.** Ce document n'est pas encore validé par des enseignants ni essayé en classe pilote. Les commandes
+> citées existent dans le jeu depuis le 3 novembre : `tg classe seance` (le déroulé de l'heure), `tg classe tableau`
+> (l'écran projecteur), `tg classe place` (la place de la classe, code avec la lettre V) ; sur une tablette Android :
+> `classe seance`, `classe tableau`. Le reste (codes de séance, bilan, `tg espace classe`) : voir
+> `fiches_enseignant.md`.
 
 Les **fiches enseignant** disent *quoi* enseigner (objectif, commandes, questions, trace écrite). Ces **séances
 guidées** disent *comment mener l'heure*, minute par minute : quoi dire, quoi projeter, où les élèves bloquent,
@@ -37,9 +38,24 @@ que faire avec ceux qui ont fini. Une séance = une heure de cours (55 min de tr
 | 47-52 | Trace écrite | dicte ou projette la trace ; les élèves la recopient | la trace écrite |
 | 52-55 | Bilan | `tg classe bilan fichier`, puis `tg classe fin` | rien |
 
-Proposé : `tg classe seance <n>` affiche ce squelette rempli pour la séance n dans le terminal de l'enseignant ;
-la touche Entrée passe à la phase suivante, et `tg classe tableau` (le poste branché au vidéoprojecteur) suit les
-phases tout seul. En attendant, `tg espace classe` sert de grand écran.
+`tg classe seance <n>` affiche ce squelette rempli pour la séance n dans le terminal de l'enseignant (avec la
+phrase à dire si un élève bloque, le piège de la séance et le défi pour ceux qui ont fini). Touches : Entrée phase
+suivante, `p` précédente, `o` question pour l'oral, `t` trace écrite, `c` montrer ou cacher la commande, `q`
+quitter (la séance reste où elle en est). `tg classe tableau`, sur le poste branché au vidéoprojecteur, suit les
+phases tout seul : le but, la commande expliquée bloc par bloc, la bulle de la créature, la question, la trace à
+recopier. Le minuteur est pour l'enseignant seulement : rien ne presse les élèves. `tg classe seance liste` donne
+les dix séances.
+
+## La place de la classe (facultatif, code avec la lettre V)
+
+Pour un moment convivial en fin d'heure : `tg classe creer 5 grand sanschrono place` donne un code avec V
+(par exemple `05-GSV-C`), puis `tg classe place ouvrir 05-GSV-C` sur le poste de l'enseignant. Chaque poste voit
+« Poste 1 », « Poste 2 »… avec sa créature (espèce, stade), et peut envoyer à un autre poste un geste tout fait
+(Coucou, Bravo, Danse), un toutes les 3 secondes : dans `tg espace`, taper `place` ; dans un terminal,
+`tg classe geste 3 bravo`. **On ne peut rien écrire**, aucun nom ni pseudo n'apparaît. La place n'existe que sur le
+réseau local de l'école (jamais Internet), se ferme avec `q` sur le poste de l'enseignant, toute seule après
+2 heures et à `tg classe fin` ; rien n'est enregistré. Si un poste ne la trouve pas, écrire au tableau l'adresse
+affichée par le poste de l'enseignant (`tg classe place 192.168.1.20`).
 
 ## Préparer la salle (une fois)
 
@@ -142,4 +158,5 @@ fiche donnent déjà le découpage). Points d'attention propres à chacune :
 
 - Relecture par au moins deux enseignants (cycle 3 et lycée) ; essai en classe pilote.
 - Les temps : à ajuster après les premières classes.
-- Les commandes `tg classe seance` et `tg classe tableau` : à retirer de ce texte si elles ne sont pas codées.
+- La place de la classe : à essayer sur le Wi-Fi d'une école (certains réseaux isolent les postes les uns des
+  autres ; il faut alors un réseau de salle).

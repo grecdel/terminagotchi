@@ -218,7 +218,8 @@ object EcransDessin {
                         tl.texte(b.t, bx + bw / 2, yy, taille, col, true, 'c', true)
                         if (Confort.reglages(null).formes) tl.texte(Confort.FORMES[b.g] ?: "●", bx + bw - 10, yy - taille * 0.85f, 14f, col, true, 'c')
                         tl.texte(Deploie.nomGenre(b.g).uppercase(), bx + bw / 2, yy + taille * 0.85f + 22, 13f, col, true, 'c')
-                        tl.texte(court(tl, Deploie.courte(b, bls), maxOf(110f, bw + 20), 15f), bx + bw / 2, yy + taille * 0.85f + 44, 15f, DOUX, false, 'c')
+                        // une explication sur deux un cran plus bas : deux voisines ne se chevauchent jamais
+                        tl.texte(court(tl, Deploie.courte(b, bls), maxOf(110f, bw + 20), 15f), bx + bw / 2, yy + taille * 0.85f + 44 + 22 * (b.i % 2 xor 1), 15f, DOUX, false, 'c')
                         bx += bw + 22
                     }
                 } else tl.texte(t(if (m["commande_cachee"] == true) "classe.tableau.cachee" else "classe.tableau.sans_commande"), 54f, yy, 28f, DOUX)
@@ -342,7 +343,9 @@ object EcransDessin {
                 for (g in 0 until 3) {
                     val bx = cx + 12 * z + g * (gw + 6 * z)
                     tl.rrect(bx, cy + ch - 40 * z, gw, 30 * z, 9 * z, 0x10FFFFFF, BORD_FORT, 1f * z)
-                    tl.texte(Place.SYMBOLES[g], bx + gw / 2, cy + ch - 25 * z, 16 * z, TEXTE, false, 'c')
+                    val lib = Place.SYMBOLES[g] + " " + t("classe.geste." + Place.GESTES[g])     // le nom du geste s'il tient
+                    if (tl.mesure(lib, 11 * z) <= gw - 8 * z) tl.texte(lib, bx + gw / 2, cy + ch - 25 * z, 11 * z, TEXTE, false, 'c')
+                    else tl.texte(Place.SYMBOLES[g], bx + gw / 2, cy + ch - 25 * z, 16 * z, TEXTE, false, 'c')
                     Z.add(Zone(bx, cy + ch - 42 * z, gw, 34 * z, "place:geste:${p.poste}:$g"))
                 }
             }

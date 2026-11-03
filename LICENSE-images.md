@@ -66,6 +66,9 @@ This summary is not the license: only the official text (link above) is legally 
 - le **code** (Python, Kotlin, JavaScript, scripts, fichiers de construction) : GPL-3.0-or-later, voir `LICENSE` ;
 - les polices de caractères de `site/public/polices/` (Press Start 2P, VT323) : elles gardent leur propre licence,
   la SIL Open Font License 1.1 (fichiers `OFL-*.txt` dans ce dossier) ;
+- la police **Andika** (SIL International, réglage « Lecture facile ») dans `pc/tg/polices/` et
+  `app/src/main/assets/polices/` : fichiers d'origine non modifiés (dépôt google/fonts, `ofl/andika`), SIL Open Font
+  License 1.1 (`OFL-Andika.txt` à côté) ;
 - les noms et les textes de licences d'autres logiciels cités dans le jeu (la Guilde des Bâtisseurs Libres) : ils
   appartiennent à leurs auteurs.
 

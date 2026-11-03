@@ -744,8 +744,7 @@ class Espace(B.Controleur):
             cl = self.place.client
             if cl.jeton:                             # le numéro de poste, pour revenir sans changer de numéro
                 from . import place
-                self._modifier(lambda s_: (place._seance_eleve(s_) or {}).__setitem__(
-                    "place", {"hote": cl.hote, "port": cl.port, "jeton": cl.jeton, "poste": cl.poste}))
+                self._modifier(lambda s_: (place._seance_eleve(s_) or {}).__setitem__("place", place.memo_de(cl)))
             self.place.fermer()
         self.place = None
 
@@ -1406,7 +1405,9 @@ def peindre_cairo(f, cr, liste):
         elif k == "texte":
             _, x, y, s, sz, c, gras, ancre, mono = op
             lay = f.PangoCairo.create_layout(cr)
-            facile = S.CONF["facile"] and not mono          # « Lecture facile » : Andika si elle est installée
+            facile = S.CONF["facile"] and not mono          # « Lecture facile » : Andika (livrée, voir confort)
+            if facile:
+                confort.enregistrer_police()
             fd = f.Pango.FontDescription.from_string(("DejaVu Sans Mono, monospace" if mono else
                                                       "Andika, Inter, Cantarell, sans-serif" if facile else
                                                       "Inter, Cantarell, sans-serif") + (" Bold" if gras else ""))

@@ -743,14 +743,18 @@ def direct(L, Z, m, r, t_):
     xx += chip(L, xx, py, m.get("espece_stade", ""), TEXTE, 12.5, fond=(255, 255, 255, 8), point=False,
                bord=BORD_FORT) + 8
     if m.get("type_nom"):
-        chip(L, xx, py, m["type_nom"], VERT, 12.5)
+        xx += chip(L, xx, py, m["type_nom"], VERT, 12.5) + 8
     xp = m.get("xp", 0)
     L.append(("texte", sx + sw - 16, py, f"{xp} %", 12.5, DOUX, False, "d", False))
     bw = 110
     bx = sx + sw - 60 - bw
-    L.append(("rrect", bx, py - 3, bw, 6, 3, (255, 255, 255, 20), None, 0))
-    L.append(("rrect", bx, py - 3, max(6, bw * xp / 100), 6, 3, JAUNE, None, 0))
-    L.append(("texte", bx - 10, py, "XP", 12.5, DOUX, False, "d", False))
+    debut = xx + lt("XP", 12.5) + 18                 # (idée 62) en grand, la barre raccourcit au lieu de chevaucher
+    if bx < debut:
+        bw, bx = bw - (debut - bx), debut
+    if bw >= 30:
+        L.append(("rrect", bx, py - 3, bw, 6, 3, (255, 255, 255, 20), None, 0))
+        L.append(("rrect", bx, py - 3, max(6, bw * xp / 100), 6, 3, JAUNE, None, 0))
+        L.append(("texte", bx - 10, py, "XP", 12.5, DOUX, False, "d", False))
     if m.get("attente"):                         # 2 nov. : l'XP mise de côté, au-dessus de la barre (bloquée à 159/160)
         L.append(("texte", sx + sw - 16, py - 20, court(m["attente"], sw - 32, 12), 12, _a(VERT, 230), False, "d", False))
 
@@ -811,6 +815,13 @@ def carte(L, Z, m, zone, t_, pied):
     ici = m.get("ici_piece")
     lieux = m.get("lieux", {})
     chemin = (m.get("deploie") or {}).get("lieu_piece")
+    boite = None                                     # le cadre « Tu es ici » : les noms qu'il cacherait sont omis
+    if ici in LIEUX_CARTE:
+        fx, fy = LIEUX_CARTE[ici]
+        px, py = x + fx * w, y + fy * h
+        info = t("esp.tu_es_ici", lieu=m.get("ici_nom", ""))
+        bw = max(lt(info, 13) + 40, lt(m.get("cwd", ""), 11, True) + 30)
+        boite = (min(max(x + 8, px - 30), x + w - bw - 8), min(py + 34, y + h - 58), bw, 48)
     for p, (fx, fy) in LIEUX_CARTE.items():
         if p not in lieux:
             continue
@@ -818,6 +829,11 @@ def carte(L, Z, m, zone, t_, pied):
         px, py = x + fx * w, y + fy * h
         if p == ici:
             continue
+        if boite and p != chemin:
+            tw0 = lt(({"reveille": "✓ ", "en_cours": "▶ "}.get(etat, "")) + nom, 11.5) + 16
+            if px + tw0 / 2 > boite[0] and px - tw0 / 2 < boite[0] + boite[2] and py + 11 > boite[1] \
+                    and py - 11 < boite[1] + boite[3]:
+                continue
         sym = {"reveille": "✓ ", "en_cours": "▶ ", "brume": ""}.get(etat, "")
         txt = sym + nom
         tw = lt(txt, 11.5) + 16
@@ -834,9 +850,7 @@ def carte(L, Z, m, zone, t_, pied):
         L.append(("cercle", px, py, 22 + 3 * pul, JAUNE, 1.6))
         L.append(("ellipse", px, py, 6, 6, JAUNE))
         info = t("esp.tu_es_ici", lieu=m.get("ici_nom", ""))
-        bw = max(lt(info, 13) + 40, lt(m.get("cwd", ""), 11, True) + 30)
-        bx = min(max(x + 8, px - 30), x + w - bw - 8)
-        by = min(py + 34, y + h - 58)
+        bx, by, bw, _bh = boite
         L.append(("rrect", bx, by, bw, 48, 9, (10, 12, 18, 230), _a(JAUNE, 120), 1))
         L.append(("ellipse", bx + 14, by + 16, 4.5, 4.5, JAUNE))
         L.append(("texte", bx + 24, by + 16, info, 13, TEXTE, True, "g", False))

@@ -49,6 +49,7 @@ L'enseignant donne un code ; l'élève tape `tg classe code <code> <pseudonyme>`
 | `A` | sans aide : l'élève voit le but, pas la commande (cran C) ; `aide` ou 3 essais ratés la montrent |
 | `G` | grand écran (le jeu rappelle `tg espace classe`) |
 | `S` | sans chrono : les dressages de créatures n'ont plus de limite de temps |
+| `V` | la place de la classe : les postes se voient (« Poste 3 », sa créature) et s'envoient des gestes tout faits, sur le réseau local seulement (voir `seances_guidees.md`) |
 | `K` | lettre de contrôle : une faute de frappe est détectée tout de suite |
 
 Pendant la séance : la faim de la créature est en pause, les notifications sont coupées, aucune synchronisation
@@ -91,6 +92,13 @@ serveur, une décision du propriétaire du projet et un avis CNIL (données de m
 | 5 min | `tg classe bilan fichier`, `tg classe fin` |
 
 Pour 45 minutes : réduisez le jeu à 25 minutes et la mise en commun à 7.
+
+`tg classe seance 5` affiche ce déroulé pour la séance 5 dans votre terminal (Entrée : phase suivante) et
+`tg classe tableau`, sur le poste du vidéoprojecteur, projette le but, la commande expliquée, la question pour
+l'oral et la trace écrite au bon moment (voir `seances_guidees.md`).
+
+**Lecture et confort** (pour tous les élèves, dans Options ou `tg confort`) : taille du texte 100 / 125 / 150 %,
+police « Lecture facile » (Andika), couleurs doublées de formes, mode calme (rien ne clignote).
 
 \newpage
 
@@ -439,7 +447,11 @@ sous Linux. Rien à régler sur les postes (pas de politique d'exécution des sc
 # Données personnelles, en résumé
 
 - Aucun compte, aucun nom, aucune adresse électronique : un pseudonyme.
-- Rien n'est envoyé pendant les séances (synchronisation et requêtes du jeu coupées).
+- Rien n'est envoyé pendant les séances (synchronisation et requêtes du jeu coupées). La place de la classe (code
+  avec V) reste sur le réseau local de l'école : seuls l'espèce, le stade et le niveau de la créature y passent,
+  sous un numéro de poste ; rien n'est enregistré.
+- La carte de visite (`tg carte visite`) est une image sur l'ordinateur, sans prénom ni pseudo ; le jeu ne l'envoie
+  pas.
 - Le bilan est un fichier sur l'ordinateur de l'élève ; c'est l'élève qui le remet.
 - `tg classe effacer` oublie la séance ; supprimer `~/.terminagotchi` et `~/terrain_terminagotchi` efface tout le
   jeu du poste.

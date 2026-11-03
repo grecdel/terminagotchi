@@ -359,7 +359,7 @@ def scene(m, t_=0.0):
             while taille > 22 and sum(S.lt(b["t"], taille, True) + 34 for b in bl) + 22 * len(bl) > w - 60:
                 taille -= 2
             bx = x + 30
-            for b in bl:
+            for i_b, b in enumerate(bl):
                 col = D.COULEURS[b["g"]]
                 bw = S.lt(b["t"], taille, True) + 34
                 L.append(("rrect", bx, yy - taille * 0.85, bw, taille * 1.7, 12, S._a(col, 30), S.rgb(col), 2))
@@ -369,8 +369,9 @@ def scene(m, t_=0.0):
                               False))
                 L.append(("texte", bx + bw / 2, yy + taille * 0.85 + 22, D.nom_genre(b["g"]).upper(), 13,
                           S.rgb(col), True, "c", False))
-                L.append(("texte", bx + bw / 2, yy + taille * 0.85 + 44, S.court(D.courte(b, bl), max(110, bw + 20), 15),
-                          15, S.DOUX, False, "c", False))
+                # une explication sur deux un cran plus bas : deux voisines ne se chevauchent jamais
+                L.append(("texte", bx + bw / 2, yy + taille * 0.85 + 44 + 22 * (i_b % 2),
+                          S.court(D.courte(b, bl), max(110, bw + 20), 15), 15, S.DOUX, False, "c", False))
                 bx += bw + 22
         else:
             msg = t("classe.tableau.cachee") if m["commande_cachee"] else t("classe.tableau.sans_commande")
