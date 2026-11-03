@@ -53,8 +53,6 @@ This summary is not the license: only the official text (link above) is legally 
 - dans l'appli Android : `app/src/main/assets/portraits/`, `app/src/main/assets/anim/`, `app/src/main/assets/intro/`,
   `app/src/main/assets/sprites.bin`, `app/src/main/assets/poses.bin` ;
 - `docs/img/` : les images de la présentation ;
-- `site/public/imprimer/` : les coloriages, la planche de stickers et le poster à imprimer (fabriqués par
-  `docs/imprimer/fabriquer/`, dont le code est sous GPL comme le reste du code) ;
 - `site/public/` : les images du site (portraits, animations), **sauf** le dossier `site/public/polices/` et les
   images de la mascotte du site (voir plus bas) ;
 - les textes de l'histoire (récits, dialogues, descriptions des créatures, des lieux et des mondes), qui se trouvent

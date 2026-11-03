@@ -1141,6 +1141,21 @@ Maquette et captures : `/home/claude/outils/xp/`.
 - Maquettes 74 (nuage de synchro), 75 (tablette en paysage), 76 (signaler un bug) et questions :
   `/home/claude/outils/ameliorations/technique/` (planche.png, proposition.md).
 
+**📄 Autour du jeu — codé (3 novembre, maquettes validées : « Va y lance tout »).** Rien ne change dans le jeu.
+Site : page **Essayer** (`/essayer`, bouton « Essayer sans installer » sur l'accueil et « Essayer » dans le menu) :
+le début du jeu rejoué dans la page (`site/public/js/essayer.js`) sur un faux dossier en mémoire, œuf tiré au hasard
+parmi les 9 types (`donnees/oeufs/depart.json`), nom proposé « Noisette », mêmes textes que l'intro du jeu (clés
+`intro.*` recopiées dans `site/src/autour_textes.js` par `pc/outils/test_autour.py --site`), rien d'envoyé ni
+d'enregistré, pas de minuteur. Partie **À imprimer** en bas des fiches des 12 bestioles qui ont un coloriage validé,
+page `/imprimer` (lien « Coloriages et posters pour la classe » sur la page Enseignants). Page **Soutenir** : la
+partie « Faire un don » et les liens de dons sont retirés dans les 14 langues ; « D'autres manières d'aider » reste.
+Papier (`site/public/imprimer/`, fabriqué par `docs/imprimer/fabriquer/`) : 12 coloriages A4 en contours pixels (un
+par famille au moins, chacun regardé à l'œil), planche de 20 stickers, poster A3 sans noms + version fond blanc.
+`CONTRIBUTING.md` à la racine (code GPL 3+, art/textes/sons CC BY-NC-SA 4.0), lien depuis le README. Vidéo d'une
+minute montée en code (ffmpeg, images du jeu, musique synthétisée, sans voix ni enfant filmé) :
+`/home/claude/outils/ameliorations/autour/video/` (pas dans le dépôt). Tests : `pc/outils/test_autour.py`,
+`site/test/test.mjs` (« Essayer, À imprimer »). **Le site n'est pas redéployé.**
+
 ## Ce qui attend une décision ou une action du propriétaire
 
 - Tester l'APK d'essai de la phase 1 et donner ses retours.
