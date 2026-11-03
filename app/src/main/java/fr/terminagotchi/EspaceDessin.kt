@@ -24,6 +24,8 @@ interface Toile {
               rot: Float = 0f, alpha: Float = 1f)
     /** une illustration (« monde » : la carte du Terminaworld), recadrée pour remplir, coins arrondis */
     fun photo(nom: String, x: Float, y: Float, w: Float, h: Float, r: Float)
+    /** la même illustration, seulement dans le disque (cx, cy, r) : la vague du réveil d'un biome (CarteDessin.kt) */
+    fun photoCercle(nom: String, x: Float, y: Float, w: Float, h: Float, cx: Float, cy: Float, r: Float) = photo(nom, x, y, w, h, 0f)
     /** ce qui suit est découpé à ce rectangle (le monde des biomes), jusqu'à declip() */
     fun clip(x: Float, y: Float, w: Float, h: Float) {}
     fun declip() {}
@@ -120,6 +122,8 @@ object EspaceDessin {
         var optionsHauteur = 0f
         var ongletsDecalage = 0f
         var ongletVu = ""
+        /** 3 nov. : la carte du réveil (CarteDessin.kt, CarteEtat.kt) ; null : l'ancienne carte */
+        var carte: CarteDessin.Modele? = null
     }
 
     /** (idée 62) le haut de l'écran grandit moins que le reste quand le texte est agrandi : plus de place en dessous. */
@@ -192,7 +196,7 @@ object EspaceDessin {
                     deploie(tl, Z, m, mx, y, w - 2 * mx, min(212 * z, h - y - 4 * z), z)
                 } else deploie(tl, Z, m, mx, y, w - 2 * mx, min(212 * z, reste - 4 * z), z)
             }
-            "carte" -> carte(tl, Z, m, mx, y, w - 2 * mx, reste - 6 * z, z)
+            "carte" -> m.carte?.let { CarteDessin.dessiner(tl, Z, it, mx, y, w - 2 * mx, reste - 6 * z, z) } ?: carte(tl, Z, m, mx, y, w - 2 * mx, reste - 6 * z, z)
             "monde" -> m.monde?.dessiner(tl0, Z, mx, y, w - 2 * mx, reste - 6 * z, z)   // le monde garde ses couleurs
             "cerveau" -> cerveau(tl, Z, m, mx, y, w - 2 * mx, reste - 6 * z, z)
             else -> equipe(tl, Z, m, mx, y, w - 2 * mx, reste - 6 * z, z)
@@ -914,8 +918,10 @@ class ToileTheme(private val t: Toile, private val th: Apparence.Theme) : Toile 
     override fun lueur(cx: Float, cy: Float, r: Float, c: Int) = t.lueur(cx, cy, r, c(c))
     override fun cadre(c: Poses.Cadre, ax: Float, ay: Float, e: Float, miroir: Boolean, lisse: Boolean, sx: Float, sy: Float, rot: Float, alpha: Float) =
         t.cadre(c, ax, ay, e, miroir, lisse, sx, sy, rot, alpha)
-    override fun photo(nom: String, x: Float, y: Float, w: Float, h: Float, r: Float) =
-        t.photo(if (th.carte != null && ':' !in nom) "$nom:${th.cle}" else nom, x, y, w, h, r)
+    private fun teinte(nom: String) = if (th.carte != null && (':' !in nom || (nom.startsWith("reveil:") && nom.count { it == ':' } == 3))) "$nom:${th.cle}" else nom
+    override fun photo(nom: String, x: Float, y: Float, w: Float, h: Float, r: Float) = t.photo(teinte(nom), x, y, w, h, r)
+    override fun photoCercle(nom: String, x: Float, y: Float, w: Float, h: Float, cx: Float, cy: Float, r: Float) =
+        t.photoCercle(teinte(nom), x, y, w, h, cx, cy, r)
     override fun clip(x: Float, y: Float, w: Float, h: Float) = t.clip(x, y, w, h)
     override fun declip() = t.declip()
 }

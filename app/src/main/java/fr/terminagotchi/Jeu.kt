@@ -322,6 +322,7 @@ class Jeu(ctx: Context) {
         Controle.init(ctx)
         Apprendre.init(ctx)
         Intro.init(ctx)
+        Reveil.init(ctx)
     }
 
     private val app: Context = ctx.applicationContext ?: ctx

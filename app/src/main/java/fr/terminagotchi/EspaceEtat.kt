@@ -86,6 +86,11 @@ class EspaceEtat(private val jeu: Jeu, private val dossier: () -> java.io.File, 
             }
         }
         m.lieux = lieux
+        // 3 nov. : la carte du réveil (CarteEtat.kt) ; un biome qui se réveille : l'onglet Carte s'ouvre
+        carte.effets = niveauEffets()
+        try { carte.rafraichir() } catch (e: Exception) { }
+        m.carte = carte.m
+        if (carte.veutEtreVue() && "carte" in m.onglets && carte.effets != "aucun") m.onglet = "carte"
         m.cerveau = cerveau
         val r = BureauVie.Resume(jeu.total, jeu.lecon, jeu.etape, jeu.faim, jeu.module("dressage").has("en_cours"))
         for (k in BureauVie.evenements(resume, r)) { ile.annoncer(t(k)); break }
@@ -152,6 +157,7 @@ class EspaceEtat(private val jeu: Jeu, private val dossier: () -> java.io.File, 
 
     /** Le temps passe (dt secondes) : la créature, l'île, la vue déployée, un tour du cerveau toutes les PAS s. */
     fun tick(dt: Double, maintenant: Double) {
+        carte.tick(maintenant, modele.onglet == "carte")
         monde.tick(dt)
         if (modele.onglet == "monde") relireMonde(false)
         creature.tick(dt)
@@ -195,6 +201,7 @@ class EspaceEtat(private val jeu: Jeu, private val dossier: () -> java.io.File, 
     /** Un toucher sur une zone du dessin. Renvoie vrai si la hauteur peut changer (onglet). */
     fun toucher(a: String): Boolean {
         if (a.startsWith("rg:") || a.startsWith("opt:")) { reglerApparence(a); return true }
+        if (a.startsWith("rv:")) return carte.toucher(a)
         when {
             a.startsWith("onglet:") -> { modele.onglet = a.substringAfter(":"); return true }
             a.startsWith("forcer:") -> {
@@ -213,6 +220,8 @@ class EspaceEtat(private val jeu: Jeu, private val dossier: () -> java.io.File, 
 
     // ------------------------------------------------------------ le monde des biomes et les effets des commandes
     val monde = MondeVue()
+    /** la carte du réveil (idées 31 à 39, 88) */
+    val carte = CarteEtat(jeu)
     private val albums = HashMap<String, Poses.Album?>()
 
     fun toucherMonde(a: String, x: Float, y: Float) { if (a.startsWith("monde:")) monde.toucher(a, x, y) else toucher(a) }

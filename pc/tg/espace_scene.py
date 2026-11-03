@@ -8,6 +8,8 @@ Même principe que la créature du bureau (bureau_scene.py) : la fenêtre GTK 4,
     ("lueur", cx, cy, r, couleur)                              un halo rond (couleur au centre, transparent au bord)
     ("photo", nom, x, y, w, h)                                 une illustration (« monde » : la carte du Terminaworld)
     ("calque", x, y, w, h, [ordres…])                          des ordres découpés à ce rectangle (le monde des biomes)
+    ("photoc", nom, x, y, w, h, cx, cy, r)                     l'illustration, seulement dans le disque (cx, cy, r) :
+                                                               la vague du réveil d'un biome (carte_scene.py)
 Disposition (maquettes validées docs/maquettes/espace_travail_pc.png et espace_travail_cerveau_pc.png) :
     en haut         l'île : la créature, son état, l'équipe en pastilles, niveau, son, réglages
     à gauche        Explorateur (le Terminaworld, le lieu courant), Envies (jauges, assiette du jour), Équipe
@@ -810,6 +812,10 @@ def contexte(L, Z, m, r, t_):
 
 
 def carte(L, Z, m, zone, t_, pied):
+    if m.get("reveil"):                          # 3 nov. : la carte du réveil (carte_scene.py)
+        from . import carte_scene
+        carte_scene.dessiner(L, Z, m, zone, t_, pied)
+        return
     x, y, w, h = zone
     L.append(("rrect", x - 1, y - 1, w + 2, h + 2, 10, None, BORD_FORT, 1))
     L.append(("photo", m.get("photo", "monde"), x, y, w, h))
@@ -1486,6 +1492,8 @@ def decaler(liste, dx, dy):
             out.append((k, [(a + dx, b + dy) for a, b in op[1]], op[2]))
         elif k == "photo":
             out.append((k, op[1], op[2] + dx, op[3] + dy) + tuple(op[4:]))
+        elif k == "photoc":
+            out.append((k, op[1], op[2] + dx, op[3] + dy, op[4], op[5], op[6] + dx, op[7] + dy, op[8]))
         elif k == "calque":
             out.append((k, op[1] + dx, op[2] + dy, op[3], op[4], decaler(op[5], dx, dy)))
         else:
@@ -1533,6 +1541,9 @@ def a_l_echelle(liste, e, ox=0.0, oy=0.0):
         elif k == "photo":
             _, nom, x, y, w, h = op
             out.append((k, nom, x * e + ox, y * e + oy, w * e, h * e))
+        elif k == "photoc":
+            _, nom, x, y, w, h, cx, cy, r = op
+            out.append((k, nom, x * e + ox, y * e + oy, w * e, h * e, cx * e + ox, cy * e + oy, r * e))
         elif k == "arc":
             _, cx, cy, rx, ry, c, ep = op
             out.append((k, cx * e + ox, cy * e + oy, rx * e, ry * e, c, ep))
@@ -1598,6 +1609,14 @@ def photo_pil(nom):
     import pkgutil
     from PIL import Image
     base, _, th = nom.partition(":")             # « monde:matrix » : la carte teintée du thème
+    if base == "reveil":                         # « reveil:<signature>:<moment>:<saison>[:thème] » (reveil.py)
+        from . import reveil
+        sig, quand, sais, th = (th.split(":") + ["", "", "", ""])[:4]
+        im = reveil.image_carte(sig, quand or None, sais or None).convert("RGBA")
+        if th:
+            from . import apparence
+            im = apparence.teinter_image(im, apparence.Theme(th))
+        return im
     data = pkgutil.get_data(__package__, "carte_monde.png") if base == "monde" else None
     if not data:
         return None
@@ -1615,12 +1634,14 @@ def photo_png(nom):
     if ":" in nom:
         try:
             im = photo_pil(nom)
+            if im is None:
+                raise ValueError(nom)
             b = io.BytesIO()
             im.save(b, "PNG")
             return b.getvalue()
         except Exception:                        # noqa: BLE001 — sans PIL : la carte d'origine
             pass
-    return pkgutil.get_data(__package__, "carte_monde.png") if nom.partition(":")[0] == "monde" else None
+    return pkgutil.get_data(__package__, "carte_monde.png") if nom.partition(":")[0] in ("monde", "reveil") else None
 
 
 def vers_pil(liste, taille, image=None):
@@ -1758,8 +1779,8 @@ def vers_pil(liste, taille, image=None):
                 lay = Image.new("RGBA", (b0[2] - b0[0] + 4, b0[3] - b0[1] + 4), (0, 0, 0, 0))
                 ImageDraw.Draw(lay).text((2 - b0[0], 2 - b0[1]), s, font=f, fill=c, anchor=an)
                 poser(lay, int(round(x)) + b0[0] - 2, int(round(y)) + b0[1] - 2)
-        elif k == "photo":
-            _, nom, x, y, w, h = op
+        elif k in ("photo", "photoc"):
+            _, nom, x, y, w, h = op[:6]
             if nom not in photos:
                 photos[nom] = photo_pil(nom)
             p = photos[nom]
@@ -1771,7 +1792,11 @@ def vers_pil(liste, taille, image=None):
             q = p.resize((pw, ph), Image.LANCZOS).crop((int((pw - w) / 2), int((ph - h) / 2),
                                                          int((pw - w) / 2) + int(w), int((ph - h) / 2) + int(h)))
             masque = Image.new("L", q.size, 0)
-            ImageDraw.Draw(masque).rounded_rectangle((0, 0, q.width - 1, q.height - 1), radius=9, fill=255)
+            if k == "photoc":
+                cx, cy, rr = op[6] - int(x), op[7] - int(y), op[8]
+                ImageDraw.Draw(masque).ellipse((cx - rr, cy - rr, cx + rr, cy + rr), fill=255)
+            else:
+                ImageDraw.Draw(masque).rounded_rectangle((0, 0, q.width - 1, q.height - 1), radius=9, fill=255)
             q.putalpha(masque)
             poser(q, int(x), int(y))
     return img

@@ -143,6 +143,8 @@ object Quetes {
         val id: String, val piece: String, val sorte: String, val fichier: String, val but: List<List<Any>>,
         val xp: Int = 15, val objet: String? = null, val titre: String? = null,
         val pose: ((Jeu) -> Map<String, Any>)? = null, val android: Boolean = true,
+        /** le 2e habitant d'un monde : la leçon du palier 2 de son monde (Reveil.kt) */
+        val apres: String? = null,
     )
 
     const val LIRE = "^(cat|type|gc|get-content|less|more|head|tail|bat|nl)\\b"
@@ -153,14 +155,14 @@ object Quetes {
 
     fun rnd(jeu: Jeu, sel: String) = PyHasard(Histoire.graine(jeu) + ":" + sel)
 
-    private fun compte(jeu: Jeu, rel: String, motif: String): Int {
+    fun compte(jeu: Jeu, rel: String, motif: String): Int {
         val r = Regex(motif)
         return File(T(jeu), rel).listFiles()?.count { it.isFile && r.matches(it.name) } ?: 0
     }
 
     private fun lire(jeu: Jeu, rel: String): String? = Histoire.lire(jeu, rel)
 
-    private fun lignes(jeu: Jeu, rel: String, mots: Boolean = false): Int {
+    fun lignes(jeu: Jeu, rel: String, mots: Boolean = false): Int {
         val x = lire(jeu, rel) ?: return -1
         return if (mots) x.split(Regex("\\s+")).count { it.isNotEmpty() } else x.split("\n").count { it.isNotBlank() }
     }
@@ -237,7 +239,7 @@ object Quetes {
     private const val SAUVAGE = "^(cat|less|more|head|tail|type)\\s+"
 
     // ---------------------------------------------------------------- les 44 quêtes écrites à la main
-    val QUETES: List<Quete> = listOf(
+    private val BASE: List<Quete> = listOf(
         // le vestibule
         q("q01", "vestibule", "lettre", "lettre_de_bienvenue.txt", listOf(listOf("visite", "vestibule/.placard_secret")), 15, "paillasson"),
         q("q02", "vestibule", "cachette", ".placard_secret", listOf(), 10, titre = "fouineur"),
@@ -314,7 +316,10 @@ object Quetes {
         q("q44", "coeur", "lettre", "dernier_message.txt", listOf(listOf("reponse", "coeur/reponse_mots.txt", compterMots)), 25,
             titre = "detective"),
     )
-    val PAR_ID = QUETES.associateBy { it.id }
+    // 3 novembre (idées 33 et 35) : les lieux secrets, les trésors (*.secret) et les habitants des mondes du Carrefour
+    // (assets/reveil.json « quetes », les mêmes que pc/tg/reveil.py)
+    val QUETES: List<Quete> by lazy { BASE + Reveil.quetes() }
+    val PAR_ID by lazy { QUETES.associateBy { it.id } }
 
     // ---------------------------------------------------------------- les quêtes générées
     val OBJETS_PERDUS = listOf("bille", "toupie", "crayon", "gomme", "sifflet", "ballon", "bouton", "petite_cle")
@@ -423,6 +428,7 @@ object Quetes {
         if (!quete.android) return false
         val p = quete.piece
         if (p == "nid") return "nid0" in Histoire.faits(jeu) && File(T(jeu), "nid").isDirectory
+        if (quete.apres != null && quete.apres !in Histoire.faits(jeu)) return false   // le 2e habitant : après le palier 2
         return Histoire.pieceOuverte(jeu, p) && File(T(jeu), p).isDirectory
     }
 
@@ -639,6 +645,11 @@ object Quetes {
                     jeu.dire(t("qu.cachette.dit"), 10)
                     terminer(jeu, qid)
                 }
+            } else if (quete.sorte == "tresor") {           // un trésor *.secret : le lire, après l'avoir trouvé avec find
+                if (quete.fichier.substringAfterLast('/') in lus && File(T(jeu), "${quete.piece}/${quete.fichier}").isFile) {
+                    jeu.dire(t("qu.tresor.dit"), 10)
+                    terminer(jeu, qid)
+                }
             } else if (qid !in liste(q, "actives") && quete.fichier in lus) accepter(jeu, qid)
         }
         if ("tableau_des_annonces.txt" in lus) {
@@ -658,7 +669,7 @@ object Quetes {
         val q = q(jeu)
         val poses = liste(q, "poses")
         val finies = liste(q, "finies")
-        val caches = QUETES.filter { it.sorte == "cachette" && it.id in poses }
+        val caches = QUETES.filter { (it.sorte == "cachette" || it.sorte == "tresor") && it.id in poses }
         return caches.count { it.id in finies } to caches.size
     }
 
@@ -673,7 +684,7 @@ object Quetes {
         val poses = liste(q, "poses")
         val finies = liste(q, "finies")
         val actives = liste(q, "actives")
-        if (QUETES.any { it.piece == p && it.sorte != "cachette" && it.id in poses && it.id !in finies }) return true
+        if (QUETES.any { it.piece == p && it.sorte != "cachette" && it.sorte != "tresor" && it.id in poses && it.id !in finies }) return true
         if (p == "vestibule" && liste(q, "offertes").any { it !in actives }) return true
         return actives.any { pieceDeQuete(jeu, it) == p }
     }
@@ -729,7 +740,7 @@ object Quetes {
         val finies = liste(q, "finies")
         val poses = liste(q, "poses")
         val actives = liste(q, "actives")
-        val aTrouver = QUETES.count { it.id in poses && it.id !in finies && it.id !in actives && it.sorte != "cachette" }
+        val aTrouver = QUETES.count { it.id in poses && it.id !in finies && it.id !in actives && it.sorte != "cachette" && it.sorte != "tresor" }
         out.add(t("qu.journal.terminees", "n" to finies.size))
         for (qid in finies.takeLast(5).reversed()) out.add("  ✔ ${titre(jeu, qid)}")
         val (s, tot) = secrets(jeu)

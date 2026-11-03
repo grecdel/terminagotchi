@@ -132,6 +132,9 @@ class Espace(B.Controleur):
         self.tk = False                   # la fenêtre de repli (tkinter) garde la carte : le monde y serait trop lent
         self.place = None                 # la place de la classe (place.Vue), ouverte par `place` pendant une séance V
         self.place_vus = 0                # les gestes reçus déjà dits par la créature
+        # 3 nov. : la carte du réveil (reveil.py, carte_scene.py) : survol, fiche, livre, carnet, animations, météo
+        self.rv = {"survol": None, "fiche": None, "livre": False, "livre_page": None, "carnet": False, "file": [],
+                   "anim": None, "cmds": [], "meteo": None, "albums": {}, "cache": None, "evt_dit": None}
         super().__init__(etape, 600, 400)
         self.c.regl = dict(self.regl, sur_place=True)
         self.c.changer("assis", 4)
@@ -219,6 +222,7 @@ class Espace(B.Controleur):
         self.monde.tick(dt)
         if self.monde_grand or self.onglet == "monde":
             self._monde_relire()
+        self._reveil_tick(now)
 
     # ------------------------------------------------ le monde des biomes
     def niveau_effets(self):
@@ -457,6 +461,7 @@ class Espace(B.Controleur):
             return
         self.lignes.append(self.invite() + [(ligne, S.TEXTE, True)])
         self.historique_pos = None
+        self.rv["cmds"] = (self.rv["cmds"] + [(ligne, time.time())])[-10:]      # la météo de la carte (idée 88)
         if self.question:
             self.mini.saisie = ""
             self.repondre_question(ligne)
@@ -670,6 +675,211 @@ class Espace(B.Controleur):
             sons.suivre(self.state, vue=not self.classe)
         elif a.startswith("lieu:"):
             self.onglet = "carte"
+        elif a.startswith("rv:"):
+            self.clic_reveil(a)
+
+
+    # ------------------------------------------------ la carte du réveil (idées 31 à 39, 88)
+    def _reveil(self, st, m):
+        """Le modèle de la carte (carte_scene.py), recalculé quand la partie change (toutes les 1,5 s au plus)."""
+        if not st:
+            return None
+        from . import reveil as RV
+        try:
+            cle = (id(st), self.mini.dossier, langue.courante() if hasattr(langue, "courante") else "", m.get("photo"))
+            c = self.rv["cache"]
+            if not c or c[0] != cle:
+                c = (cle, self._reveil_calcul(st, m))
+                self.rv["cache"] = c
+            base = c[1]
+        except Exception as e:                       # noqa: BLE001 — la carte ne casse jamais l'espace
+            B.noter(f"carte du réveil : {e!r}")
+            return None
+        rv = dict(base)
+        rv.update(survol=self.rv["survol"], fiche=self.rv["fiche"], livre=self.rv["livre"],
+                  livre_page=self.rv["livre_page"], carnet=self.rv["carnet"],
+                  meteo=(self.rv["meteo"] or ("calme", 0))[0])
+        an = self.rv["anim"]
+        if an:
+            rv["anim"] = dict(an, p=min(1.0, (self.t - an["t0"]) / an["duree"]))
+            rv["photo"] = an["apres"]
+        return rv
+
+    def _reveil_photo(self, sig, quand, sais, m):
+        th = (m.get("photo") or "monde").partition(":")[2]
+        return f"reveil:{sig}:{quand}:{sais}" + (":" + th if th else "")
+
+    def _reveil_calcul(self, st, m):
+        import datetime
+        from . import bestiaire as Bs
+        from . import histoire, maison, poses
+        from . import quetes as Q
+        from . import reveil as RV
+        e = RV.etat(st)
+        sig = RV.signature(e)
+        now = datetime.datetime.now()
+        quand, sais = RV.moment(now.hour), RV.saison(now.month)
+        W, H = RV.zones()["taille"]
+        ici = RV.ici_rel(st)
+        lx = RV.lieux_carte(st, e, ici)
+        habs = RV.habitants_carte(st)
+        for hb in habs:
+            esp = Bs.espece(hb["espece"]) or {}
+            hb["nom"] = esp.get("nom", hb["espece"])
+            hb["texte"] = Q.texte(st, hb["id"])
+            if hb["espece"] not in self.rv["albums"]:
+                try:
+                    self.rv["albums"][hb["espece"]] = poses.album_espece(hb["espece"], "enfant", False, None)
+                except Exception:                    # noqa: BLE001
+                    self.rv["albums"][hb["espece"]] = None
+            hb["album"] = self.rv["albums"][hb["espece"]]
+        gard = RV.zones()["gardiens"]
+        for _b, esp in gard:
+            if esp not in self.rv["albums"]:
+                try:
+                    self.rv["albums"][esp] = poses.album_espece(esp, "enfant", False, None)
+                except Exception:                    # noqa: BLE001
+                    self.rv["albums"][esp] = None
+        p = maison.piece_de(st)
+        ici_lieu = RV.lieu_de_piece(p) if p else None
+        pieces = RV.zones()["pieces"]
+        ici_piece = (pieces[p][0] / W, pieces[p][1] / H) if p in pieces else None
+        en_cours = None
+        cc = histoire.chapitre_courant(st)
+        if cc and cc.get("piece") in pieces and cc.get("piece") != p:
+            q = pieces[cc["piece"]]
+            en_cours = (histoire.nom_chapitre(cc["id"]), (q[0] / W, q[1] / H))
+        r = RV.r_(st)
+        ev = RV.evenement(st)
+        out = {"sig": sig, "etat": e, "photo": self._reveil_photo(sig, quand, sais, m), "moment": quand, "saison": sais,
+               "taille": (W, H), "lieux": lx, "lieux_pos": {x["id"]: (x["x"], x["y"]) for x in lx},
+               "chemins": RV.chemins_carte(e), "secrets": RV.secrets_carte(st), "habitants": habs, "evt": ev,
+               "ici_lieu": ici_lieu, "ici_piece": ici_piece if not ici_lieu else None, "en_cours": en_cours,
+               "livre_donnees": {"ouverts": RV.livre_ouverts(st), "gardiens": gard,
+                                 "albums": {esp: self.rv["albums"].get(esp) for _b, esp in gard},
+                                 "fichier": (lambda n: "~/terrain_terminagotchi/" + RV.fichier_gardien(n))
+                                 if histoire.ouvert(st, "temps") or histoire.fini(st, "temps") else None},
+               "carnet_donnees": (RV.zones()["evenements"], list(r["evts"])), "vu": r.get("carte"), "quand": quand, "sais": sais}
+        self._reveil_nouveautes(st, out, m)
+        return out
+
+    def _reveil_nouveautes(self, st, base, m):
+        """Ce qui a changé depuis la dernière carte vue : la file des animations (une à la fois) ; l'événement rare."""
+        from . import reveil as RV
+        sig, vu = base["sig"], base["vu"]
+        if base["evt"] and self.rv["evt_dit"] != base["evt"][0]:
+            eid = base["evt"][0]
+            self.rv["evt_dit"] = eid
+            self._modifier(lambda s_: RV.noter_evenement(s_, eid))
+            self.vue.dire(t("reveil.evt.annonce", nom=t("reveil.evt." + eid)) + " " + t(f"reveil.evt.{eid}.dit"), self.t, 8.0)
+        if self.rv["anim"] or self.rv["file"] or vu == sig:
+            return
+        if self.niveau_effets() == "aucun":
+            self._modifier(lambda s_: RV.noter_carte(s_, sig))
+            return
+        e = base["etat"]
+        avant = RV.depuis_signature(vu) if vu else {"biomes": [], "lieux": {l: (RV.ALLUME if l == "camp" else RV.FERME)
+                                                                             for l in RV.lieux()}, "etoiles": []}
+        W, H = base["taille"]
+        file = []
+        nouveaux = [b for b in e["biomes"] if b not in avant["biomes"]]
+        if vu is None and not nouveaux:              # une nouvelle partie : rien à montrer
+            self._modifier(lambda s_: RV.noter_carte(s_, sig))
+            return
+        cur = {"biomes": list(avant["biomes"]), "lieux": dict(avant["lieux"]), "etoiles": []}
+        photo = lambda et: self._reveil_photo(RV.signature(et), base["quand"], base["sais"], m)  # noqa: E731
+        if vu is None or len(nouveaux) > 2:          # une partie déjà avancée : UNE animation résumée
+            c = RV.zones()["biomes"]["racine"]["coeur"]
+            file.append({"type": "resume", "avant": photo(cur), "apres": base["photo"], "c": (c[0] / W, c[1] / H),
+                         "texte": t("reveil.anim.resume"), "duree": 3.0})
+        else:
+            for b in nouveaux:
+                av = photo(cur)
+                cur["biomes"].append(b)
+                c = RV.zones()["biomes"][b]["coeur"]
+                file.append({"type": "biome", "avant": av, "apres": photo(cur), "c": (c[0] / W, c[1] / H),
+                             "texte": t("reveil.racine.anim") if b == "racine" else
+                             t("reveil.biome.anim", biome=RV.nom_biome(b), n=sum(1 for x in cur["biomes"] if x != "racine"),
+                               total=RV.NB_BIOMES), "duree": 2.6})
+            for l, v in e["lieux"].items():
+                if v <= cur["lieux"].get(l, RV.FERME):
+                    continue
+                av = photo(cur)
+                cur["lieux"][l] = v
+                d = RV.zones()["lieux"][l]
+                c = d["ellipse"]
+                file.append({"type": "lieu", "avant": av, "apres": photo(cur), "c": (c[0] / W, c[1] / H),
+                             "texte": t("reveil.lieu.dit", lieu=RV.nom_lieu(l)), "duree": 1.2})
+                if v == RV.LANTERNE and l in RV.zones()["chemins"]:
+                    pts = [(a / W, b_ / H) for a, b_ in RV.zones()["chemins"][l]]
+                    file.append({"type": "chemin", "avant": photo(cur), "apres": photo(cur), "lieu": l, "pts": pts,
+                                 "c": pts[0], "texte": t("reveil.chemin.dit", lieu=RV.nom_lieu(l)), "duree": 2.0})
+        if file:
+            self.rv["file"] = file
+            self.rv["fin_sig"] = sig
+            if any(a["type"] in ("biome", "resume") for a in file):
+                self.onglet = "carte"
+        else:
+            self._modifier(lambda s_: RV.noter_carte(s_, sig))
+
+    def _reveil_tick(self, now):
+        from . import reveil as RV
+        rv = self.rv
+        rv["meteo"] = RV.meteo(rv["cmds"], time.time(), rv["meteo"])
+        an = rv["anim"]
+        if an and self.t - an["t0"] >= an["duree"]:
+            rv["anim"] = an = None
+        if not an and rv["file"] and self.onglet == "carte":
+            rv["anim"] = dict(rv["file"].pop(0), t0=self.t)
+        elif not an and not rv["file"] and rv.get("fin_sig"):
+            sig = rv.pop("fin_sig")
+            self._modifier(lambda s_: RV.noter_carte(s_, sig))
+            rv["cache"] = None
+
+    def clic_reveil(self, a):
+        rv = self.rv
+        if a == "rv:passer":
+            rv["anim"], rv["file"] = None, []
+            return
+        if a == "rv:rien":
+            return
+        if a == "rv:fermer":
+            rv["fiche"], rv["livre"], rv["carnet"], rv["livre_page"] = None, False, False, None
+        elif a == "rv:livre":
+            rv["fiche"], rv["carnet"], rv["livre"], rv["livre_page"] = None, False, True, None
+        elif a.startswith("rv:livre:"):
+            n = int(a.rsplit(":", 1)[1])
+            rv["livre"], rv["livre_page"] = True, (n or None)
+        elif a == "rv:carnet":
+            rv["fiche"], rv["livre"], rv["carnet"] = None, False, True
+        elif a.startswith("rv:hab:"):
+            rv["fiche"], rv["livre"], rv["carnet"] = "hab:" + a[7:], False, False
+        elif a.startswith(("rv:lieu:", "rv:aller:")):
+            lid = a.rsplit(":", 1)[1]
+            x = next((l for l in ((rv["cache"] or (None, {}))[1].get("lieux") or []) if l["id"] == lid), None)
+            if x and x["cmd"]:
+                self.aller(x["cmd"])
+                rv["fiche"] = None
+            elif x:
+                rv["fiche"] = lid
+            elif a.startswith("rv:lieu:"):
+                rv["fiche"] = lid
+
+    def aller(self, cmd):
+        """« Y aller » : la vraie commande est ÉCRITE dans le terminal, l'enfant appuie lui-même sur Entrée."""
+        self.mini.saisie = cmd
+        self.lignes.append(spans("\033[38;5;221m" + t("reveil.ecrite") + "\033[0m"))
+
+    def clic_droit(self, x, y, zones):
+        """Clic droit sur un lieu : la fiche « En savoir plus »."""
+        a = self._zone(zones, x, y)
+        if a and a.startswith("rv:lieu:"):
+            self.rv["fiche"] = a.rsplit(":", 1)[1]
+            self.rv["livre"] = self.rv["carnet"] = False
+
+    def survol(self, x, y, zones):
+        a = self._zone(zones, x, y)
+        self.rv["survol"] = a.rsplit(":", 1)[1] if a and a.startswith("rv:lieu:") else None
 
     # ------------------------------------------------ ranger son espace
     def clic_rangement(self, a):
@@ -914,6 +1124,7 @@ class Espace(B.Controleur):
         if self.ile.etat == "evenement" and self.ile.evenement:
             m["evenement"] = self.ile.evenement
         m["arbre"], m["lieux"], m["ici_piece"], m["ici_nom"] = self._monde(st)
+        m["reveil"] = self._reveil(st, m)
         m["envies"], m["assiette"], m["satiete"] = self._envies(st)
         m["deploie"] = self.dep
         m["lignes"] = self.lignes
@@ -1205,7 +1416,11 @@ class FenetreGtk:
         mol = Gtk.EventControllerScroll.new(Gtk.EventControllerScrollFlags.VERTICAL)   # zoomer dans le monde
         mol.connect("scroll", self._molette)
         mouv = Gtk.EventControllerMotion()
-        mouv.connect("motion", lambda c, x, y: setattr(self, "souris", (x, y)))
+        mouv.connect("motion", self._mouvement)
+        droit = Gtk.GestureClick()               # clic droit sur un lieu de la carte : « En savoir plus »
+        droit.set_button(3)
+        droit.connect("pressed", lambda g, n, x, y: self.ctl.clic_droit(*self._logique(x, y), self.zones))
+        da.add_controller(droit)
         da.add_controller(mol)
         da.add_controller(mouv)
         self.souris = (0, 0)
@@ -1235,6 +1450,13 @@ class FenetreGtk:
     def _appui(self, x, y):
         self.depart = (x, y)
         self.ctl.appui(*self._logique(x, y), self.zones)
+
+    def _mouvement(self, c, x, y):
+        self.souris = (x, y)
+        try:
+            self.ctl.survol(*self._logique(x, y), self.zones)
+        except Exception:                            # noqa: BLE001
+            pass
 
     def _molette(self, ctrl, dx, dy):
         self.ctl.molette(*self._logique(*self.souris), -1 if dy > 0 else 1, self.zones)
@@ -1384,10 +1606,13 @@ def peindre_cairo(f, cr, liste):
             cr.close_path()
             coul(c)
             cr.fill()
-        elif k == "photo":
-            _, nom, x, y, w, h = op
+        elif k in ("photo", "photoc"):
+            _, nom, x, y, w, h = op[:6]
             s = f.photos.get(nom)
             if s is None and nom not in f.photos:
+                if nom.startswith("reveil:"):         # la carte du réveil change avec la partie : on n'en garde que 4
+                    for vieux in [n for n in f.photos if n.startswith("reveil:")][:-3]:
+                        del f.photos[vieux]
                 data = S.photo_png(nom)
                 s = f.photos[nom] = cairo.ImageSurface.create_from_png(io.BytesIO(data)) if data else None
             if s is None:
@@ -1397,6 +1622,10 @@ def peindre_cairo(f, cr, liste):
             cr.save()
             rrect(x, y, w, h, 9)
             cr.clip()
+            if k == "photoc":
+                cr.new_path()
+                cr.arc(op[6], op[7], max(0.1, op[8]), 0, 2 * m_.pi)
+                cr.clip()
             cr.translate(x + (w - sw * r_) / 2, y + (h - sh * r_) / 2)
             cr.scale(r_, r_)
             cr.set_source_surface(s, 0, 0)
@@ -1445,6 +1674,8 @@ class FenetreTk:
         self.can.bind("<Button-1>", lambda e: self.ctl.appui(*self._logique(e.x, e.y), self.zones))
         self.can.bind("<B1-Motion>", lambda e: self.ctl.bouger(*self._logique(e.x, e.y)))
         self.can.bind("<ButtonRelease-1>", lambda e: self.ctl.lacher(*self._logique(e.x, e.y), self.zones))
+        self.can.bind("<Button-3>", lambda e: self.ctl.clic_droit(*self._logique(e.x, e.y), self.zones))
+        self.can.bind("<Motion>", lambda e: self.ctl.survol(*self._logique(e.x, e.y), self.zones))
         self.racine.bind("<Key>", self._touche)
         self.photos = {}
         self.images = {}
@@ -1517,7 +1748,16 @@ class FenetreTk:
         can.configure(bg="#%02x%02x%02x" % th.r["fond"])
         can.delete("all")
         self.images = {}
-        for op in S.a_l_echelle(L, e, ox, oy):
+
+        def plat(liste):                         # tkinter ne découpe pas : les calques sont dessinés tels quels
+            for o in liste:
+                if o[0] == "calque":
+                    yield from plat(o[5])
+                elif o[0] == "photoc":
+                    continue
+                else:
+                    yield o
+        for op in plat(S.a_l_echelle(L, e, ox, oy)):
             k = op[0]
             if k == "rect":
                 _, x, y, ww, hh, c = op

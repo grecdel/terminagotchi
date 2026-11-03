@@ -1787,6 +1787,12 @@ class TerminalActivity : Activity() {
             panneau.layoutParams = (panneau.layoutParams as android.widget.FrameLayout.LayoutParams).also {
                 it.height = android.widget.FrameLayout.LayoutParams.MATCH_PARENT; it.setMargins(0, 0, 0, 0)
             }
+            v.ecrireCommande = { c ->                                       // « Y aller » : écrite, pas lancée
+                saisie.setText(c)
+                saisie.setSelection(c.length)
+                saisie.requestFocus()
+                ecrire(t("reveil.ecrite"), Commandes.JAUNE)
+            }
             v.demanderQuestion = { q ->
                 questionAdulte = v.etat.question
                 v.etat.question = null

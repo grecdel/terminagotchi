@@ -222,6 +222,10 @@ QUETES = [
        [("reponse", "coeur/reponse_mots.txt", lambda s: _lignes("coeur/message_brouille.txt", mots=True))], 25,
        titre="detective"),
 ]
+# 3 novembre (idées 33 et 35) : les lieux secrets, les trésors (*.secret, trouvés avec find) et les habitants posés
+# dans les dossiers des mondes du Carrefour (donnees/reveil/zones.json « quetes », mêmes données que Quetes.kt)
+from . import reveil as _reveil  # noqa: E402
+QUETES += _reveil.quetes()
 PAR_ID = {q["id"]: q for q in QUETES}
 
 # ---------------------------------------------------------------- les quêtes générées
@@ -335,6 +339,8 @@ def _dispo(state, quete):
     p = quete["piece"]
     if p == "nid":
         return "nid0" in histoire.h_(state)["faits"] and (T() / "nid").is_dir()
+    if quete.get("apres") and quete["apres"] not in histoire.h_(state)["faits"]:
+        return False                                  # le 2e habitant d'un monde : après son palier 2
     return histoire.piece_ouverte(state, p) and (T() / p).is_dir()
 
 
@@ -592,6 +598,10 @@ def tick(state, lignes, cwds):
             if maison.visitee(state, f"{quete['piece']}/{quete['fichier']}"):
                 core.say(state, t("qu.cachette.dit"), 10)
                 terminer(state, qid)
+        elif quete["sorte"] == "tresor":               # un trésor *.secret : le lire (après l'avoir trouvé avec find)
+            if os.path.basename(quete["fichier"]) in lus and (T() / quete["piece"] / quete["fichier"]).is_file():
+                core.say(state, t("qu.tresor.dit"), 10)
+                terminer(state, qid)
         elif qid not in q["actives"] and quete["fichier"] in lus:
             accepter(state, qid)
     if "tableau_des_annonces.txt" in lus:
@@ -610,7 +620,7 @@ def tick(state, lignes, cwds):
 # ---------------------------------------------------------------- pour la carte et l'écran
 def secrets(state):
     q = q_(state)
-    caches = [x for x in QUETES if x["sorte"] == "cachette" and x["id"] in q["poses"]]
+    caches = [x for x in QUETES if x["sorte"] in ("cachette", "tresor") and x["id"] in q["poses"]]
     return sum(1 for x in caches if x["id"] in q["finies"]), len(caches)
 
 
@@ -625,7 +635,7 @@ def etoile(state, p):
     """★ : une quête à trouver (lettre pas encore lue) ou en cours dans cette pièce."""
     q = q_(state)
     for quete in QUETES:
-        if quete["piece"] == p and quete["sorte"] != "cachette" and quete["id"] in q["poses"] \
+        if quete["piece"] == p and quete["sorte"] not in ("cachette", "tresor") and quete["id"] in q["poses"] \
                 and quete["id"] not in q["finies"]:
             return True
     if p == "vestibule" and any(g not in q["actives"] for g in q["offertes"]):
@@ -691,7 +701,7 @@ def journal(state):
     out.append("")
     finies = [x for x in q["finies"]]
     a_trouver = sum(1 for x in QUETES if x["id"] in q["poses"] and x["id"] not in q["finies"]
-                    and x["id"] not in q["actives"] and x["sorte"] != "cachette")
+                    and x["id"] not in q["actives"] and x["sorte"] not in ("cachette", "tresor"))
     out.append(f" {BOLD}" + t("qu.journal.terminees", n=len(finies)) + RESET)
     for qid in finies[-5:][::-1]:
         out.append(f"   ✔ {titre(state, qid)}")

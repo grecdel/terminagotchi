@@ -1155,6 +1155,7 @@ object Histoire {
         tickLecon(jeu, morcs.map { it.texte to it.avant.path }, morcs)
         meubler(jeu)
         Quetes.tick(jeu, tapees)
+        Reveil.tick(jeu)                               // 3 nov. : le Terminaworld se réveille, biome par biome
         noter(jeu)
     }
 

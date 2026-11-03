@@ -39,8 +39,13 @@ class EspaceVue(ctx: Context, jeu: Jeu, private val dossier: () -> java.io.File,
 
     init {
         Poses.charger(ctx)
+        etat.carte.ecrire = { c -> ecrireCommande?.invoke(c) }
+        etat.carte.dire = { s -> etat.ile.annoncer(s) }
         etat.rafraichir(null, maintenant())
     }
+
+    /** « Y aller » sur la carte : TerminalActivity écrit la commande dans la saisie (l'enfant appuie sur Entrée). */
+    var ecrireCommande: ((String) -> Unit)? = null
 
     var classe: Boolean
         get() = etat.classe
@@ -56,6 +61,7 @@ class EspaceVue(ctx: Context, jeu: Jeu, private val dossier: () -> java.io.File,
 
     /** La vue déployée d'une ligne : les blocs tout de suite, les lignes des tuyaux calculées à part (commandes sûres). */
     fun deployer(ligne: String, auto: Boolean = true) {
+        etat.carte.commande(ligne)
         val v = etat.deployer(ligne, auto) ?: return
         exec.execute {
             val copie = Deploie.Vue(v.ligne, v.blocs, v.chaines, null)
@@ -127,6 +133,7 @@ class EspaceVue(ctx: Context, jeu: Jeu, private val dossier: () -> java.io.File,
     private var appuiY = 0f
     private var longFait = false
     private var glisseMonde: FloatArray? = null     // x, y d'avant, bougé (1) : on fait glisser le monde des biomes
+    private var glisseCarte: FloatArray? = null     // x, y d'avant, bougé (1), largeur : on fait glisser la carte du réveil
     private var glisse: FloatArray? = null          // x, y d'avant, bougé (1), sens (0 options : vertical ; 1 onglets)
     /** Appui long sur une bande (créature, vue déployée) : le mode « ranger mon espace ». */
     private val appuiLong = Runnable {
@@ -148,6 +155,11 @@ class EspaceVue(ctx: Context, jeu: Jeu, private val dossier: () -> java.io.File,
                     glisseMonde = floatArrayOf(e.x, e.y, 0f)
                     return true
                 }
+                if (modele.onglet == "carte" && !etat.rangement && !etat.options && a == "rv:carte") {
+                    val zc = zones.lastOrNull { it.action == "rv:carte" }
+                    glisseCarte = floatArrayOf(e.x, e.y, 0f, zc?.w ?: width.toFloat())
+                    return true
+                }
                 val sous = zones.filter { it.dedans(e.x, e.y) }.map { it.action }
                 if (etat.options || (!etat.rangement && "onglets:rangee" in sous)) {
                     glisse = floatArrayOf(e.x, e.y, 0f, if (etat.options) 0f else 1f)
@@ -161,6 +173,12 @@ class EspaceVue(ctx: Context, jeu: Jeu, private val dossier: () -> java.io.File,
                 return true
             }
             MotionEvent.ACTION_MOVE -> {
+                glisseCarte?.let { g ->
+                    if (g[2] > 0 || Math.abs(e.x - appuiX) + Math.abs(e.y - appuiY) > 12 * d) {
+                        etat.carte.glisser(e.x - g[0], e.y - g[1], g[3]); g[0] = e.x; g[1] = e.y; g[2] = 1f; invalidate()
+                    }
+                    return true
+                }
                 glisseMonde?.let { g ->
                     if (g[2] > 0 || Math.abs(e.x - appuiX) + Math.abs(e.y - appuiY) > 12 * d) {
                         modele.monde?.glisser(e.x - g[0], e.y - g[1]); g[0] = e.x; g[1] = e.y; g[2] = 1f; invalidate()
@@ -182,6 +200,13 @@ class EspaceVue(ctx: Context, jeu: Jeu, private val dossier: () -> java.io.File,
             MotionEvent.ACTION_CANCEL -> { removeCallbacks(appuiLong); modele.glisse = null; invalidate(); return true }
             MotionEvent.ACTION_UP -> {
                 removeCallbacks(appuiLong)
+                val gc = glisseCarte
+                if (gc != null) {
+                    glisseCarte = null
+                    if (gc[2] == 0f) zones.lastOrNull { it.dedans(e.x, e.y) && it.action != "rv:carte" }?.action?.let { a -> etat.toucher(a) }
+                    performClick(); invalidate()
+                    return true
+                }
                 val gl = glisse
                 glisse = null
                 if (gl != null && gl[2] > 0f) { performClick(); invalidate(); return true }
@@ -332,7 +357,18 @@ class EspaceVue(ctx: Context, jeu: Jeu, private val dossier: () -> java.io.File,
         override fun clip(x: Float, y: Float, w: Float, h: Float) { cv?.save(); cv?.clipRect(x, y, x + w, y + h) }
         override fun declip() { cv?.restore() }
 
+        override fun photoCercle(nom: String, x: Float, y: Float, w: Float, h: Float, cx: Float, cy: Float, r: Float) {
+            val k = cv ?: return
+            k.save()
+            val rr = maxOf(0.1f, r)
+            val c = Path(); c.addRoundRect(RectF(cx - rr, cy - rr, cx + rr, cy + rr), rr, rr, Path.Direction.CW)
+            k.clipPath(c)
+            photo(nom, x, y, w, h, 0f)
+            k.restore()
+        }
+
         override fun photo(nom: String, x: Float, y: Float, w: Float, h: Float, r0: Float) {
+            if (nom.startsWith("reveil:")) { photoReveil(nom, x, y, w, h); return }
             val base = monde ?: try {
                 context.assets.open("intro/monde.jpg").use { BitmapFactory.decodeStream(it) }.also { monde = it }
             } catch (e: Exception) { null } ?: return
@@ -350,6 +386,40 @@ class EspaceVue(ctx: Context, jeu: Jeu, private val dossier: () -> java.io.File,
             k.drawBitmap(b, Rect(sx, sy, sx + sw.toInt(), sy + sh.toInt()), RectF(x, y, x + w, y + h), pImg)
             k.restore()
         }
+    }
+
+    // ------------------------------------------------------------ la carte du réveil (Reveil.Images)
+    private var images: Reveil.Images? = null
+    private val reveils = LinkedHashMap<String, Bitmap>()
+
+    private fun pixels(nom: String): Triple<IntArray, Int, Int>? = try {
+        context.assets.open(nom).use { BitmapFactory.decodeStream(it) }?.let { b ->
+            val px = IntArray(b.width * b.height); b.getPixels(px, 0, b.width, 0, 0, b.width, b.height); Triple(px, b.width, b.height)
+        }
+    } catch (e: Exception) { null }
+
+    /** La carte mélangée de la partie (calculée une fois par état ; on en garde 4). */
+    private fun bitmapReveil(nom: String): Bitmap? {
+        reveils[nom]?.let { return it }
+        val im = images ?: run {
+            val v = pixels("intro/monde.jpg") ?: return null
+            val dd = pixels("intro/dort.jpg") ?: return null
+            val mq = pixels("intro/reveil_masques.png") ?: return null
+            Reveil.Images(v.first, dd.first, v.second, v.third, mq.first, mq.second, mq.third).also { images = it }
+        }
+        val p = nom.split(":")
+        var b = Bitmap.createBitmap(im.image(p.take(4).joinToString(":")), im.w, im.h, Bitmap.Config.ARGB_8888)
+        if (p.size > 4 && p[4].isNotEmpty()) b = teinter(b, Apparence.Theme(p[4]))
+        while (reveils.size >= 4) reveils.remove(reveils.keys.first())
+        reveils[nom] = b
+        return b
+    }
+
+    private fun photoReveil(nom: String, x: Float, y: Float, w: Float, h: Float) {
+        val b = bitmapReveil(nom) ?: return
+        val k = toile.cv ?: return
+        val pi = Paint().apply { isFilterBitmap = true }
+        k.drawBitmap(b, null, RectF(x, y, x + w, y + h), pi)
     }
 
     /** La carte du monde dans la teinte du thème (Matrix, ambre : niveaux de gris teintés ; Game Boy : 4 verts). */

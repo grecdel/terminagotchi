@@ -1492,6 +1492,8 @@ def tick(state, lines, cwd=None):
     meubler(state)
     from . import quetes
     quetes.tick(state, lines, cwds)
+    from . import reveil                         # 3 nov. : le Terminaworld se réveille, biome par biome (une nouvelle à la fois)
+    reveil.tick(state)
     noter(state)
 
 
