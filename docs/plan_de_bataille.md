@@ -1203,7 +1203,7 @@ successifs ; bulle : réglage Son et cri au toucher). Point d'entrée des autres
 fois). Lecture : Linux `pw-play`, sinon `paplay`, sinon `aplay` par l'entrée standard (sinon silence) ; Windows winmm
 par ctypes, sinon winsound ; macOS afplay ; Android AudioTrack (focus audio, silencieux/vibreur respecté, pause en
 arrière-plan). Les commandes tapées dans le shell (invite) jouent par un petit processus à part (`tg son _jouer`).
-CI : `test_sons.py` dans rejeu (Linux) et windows.yml.
+CI : `test_sons.py` dans rejeu (Linux) et windows.yml. `tout.sh all` vert (PC, langues, site, 40 suites JVM dont Sons).
 
 ## Ce qui attend une décision ou une action du propriétaire
 
