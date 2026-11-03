@@ -129,9 +129,13 @@ object Glitch {
         return out
     }
 
+    /** Mode calme (Confort.kt ; exception accordée par le propriétaire le 3 novembre, seulement dans ce mode). */
+    @Volatile var calme = false
+
     /** (style, phase) à l'instant t (ms, horloge murale) : ("A", 0) au repos, ("C", phase) pendant une secousse de la
      *  rafale (2 ou 3 secousses de 120 ms, 80 ms de repos entre elles, toutes les 3 à 5,5 secondes). */
     fun etat(graine: String, t: Long = System.currentTimeMillis()): Pair<String, Int> {
+        if (calme) return "A" to 0       // mode calme (Confort.kt) : l'effet léger reste fixe, plus de rafale
         val hh = fnv("$graine:eclair")
         val periode = 3000L + java.lang.Long.remainderUnsigned(hh, 2500L)
         val t2 = t + java.lang.Long.remainderUnsigned(hh ushr 20, periode)

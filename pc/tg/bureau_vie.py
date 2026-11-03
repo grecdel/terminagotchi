@@ -102,6 +102,8 @@ class Creature:
         « mange » (le jeu a compté une commande), « baille » (batterie faible), « etire »."""
         if quoi not in DUREES:
             return
+        if getattr(self, "calme", False) and quoi == "sursaut":
+            quoi = "coeur"                   # mode calme (confort.py) : pas de sursaut, un petit cœur à la place
         if self.etat == "dort" and quoi in ("mange", "baille"):
             return                       # elle dort : les miettes attendront
         self.force_dodo = False

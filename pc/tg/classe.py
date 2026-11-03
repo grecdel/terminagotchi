@@ -4,7 +4,8 @@
     Le code ne contient que des réglages du jeu : le chapitre visé et 3 options. Il ne sert à rien d'autre.
         05-GS-K   = chapitre 5 · G grand écran · S sans chrono · K lettre de contrôle (attrape les fautes de frappe)
         00-K      = pas de chapitre imposé, aucune option
-    Options : A « sans aide » (cran C : le but seulement), G grand écran (`tg espace classe`), S sans chrono.
+    Options : A « sans aide » (cran C : le but seulement), G grand écran (`tg espace classe`), S sans chrono,
+    V la place de la classe (idée 56 : les visites entre machines, réseau local seulement, voir place.py).
   - L'élève tape `tg classe code 05-GS-K Lynx42` : un PSEUDONYME (2 à 16 lettres ou chiffres, sans espace : pas de
     « Prénom Nom »). Pendant la séance : aucune synchronisation, aucune requête réseau du recensement, faim en
     pause, pas de notifications, les options du code.
@@ -30,9 +31,10 @@ from . import core
 from .langue import t
 
 LETTRES = "ABCDEFGHJKMNPQRSTUVWXYZ"          # 23 lettres, sans I, L, O (confondues avec 1 et 0)
-OPTIONS = "AGS"                              # ordre canonique
+OPTIONS = "AGSV"                             # ordre canonique (V : 3 novembre ; les anciens codes restent bons)
 MOTS_OPTIONS = {"A": ("a", "sansaide", "sans-aide", "noaid"), "G": ("g", "grand", "grandecran", "big", "projection"),
-                "S": ("s", "sanschrono", "sans-chrono", "nochrono", "chrono")}
+                "S": ("s", "sanschrono", "sans-chrono", "nochrono", "chrono"),
+                "V": ("v", "place", "visites", "visite", "square")}
 PSEUDO = re.compile(r"^[A-Za-z0-9_-]{2,16}$")
 MAX_ETAPES = 400
 COLONNES = ["pseudo", "code", "date", "debut", "fin", "minutes", "commandes", "chapitre_vise", "chapitre_en_cours",
@@ -58,7 +60,7 @@ def fabriquer(n, options=""):
 def lire(code):
     """{"n": 5, "options": "GS"} si le code est bon, sinon None (faute de frappe, lettre de contrôle fausse…)."""
     brut = re.sub(r"[^0-9A-Za-z]", "", str(code or "")).upper()
-    m = re.fullmatch(r"(\d{2})([AGS]*)([A-Z])", brut)
+    m = re.fullmatch(r"(\d{2})([AGSV]*)([A-Z])", brut)
     if not m or controle(m.group(1) + m.group(2)) != m.group(3):
         return None
     opts = m.group(2)
@@ -180,6 +182,7 @@ def finir(state):
         return t("classe.pas_de_seance")
     from . import satiete
     c["fin"] = int(time.time())
+    c.pop("place", None)                             # le numéro de poste de la place de la classe est oublié
     av = c.get("avant", {})
     cfg = state.setdefault("config", {})
     cfg["sans_aide"] = av.get("sans_aide", False)
@@ -338,6 +341,16 @@ def _creer(args):
 def commande(args):
     """tg classe [code CODE PSEUDO | bilan [fichier] | fin | effacer | creer … | rassembler DOSSIER]."""
     sous = args[0].lower() if args else ""
+    if sous in ("seance", "séance", "session"):              # idée 54 : la séance guidée (poste de l'enseignant)
+        from . import seance
+        import sys
+        return seance.commande(args[1:], interactif=sys.stdin.isatty() and sys.stdout.isatty())
+    if sous in ("tableau", "projecteur", "board"):           # idée 55 : l'écran projecteur
+        from . import app, seance
+        return seance.lancer_tableau(app.etape)
+    if sous in ("place", "geste", "gestes", "square"):       # idée 56 : la place de la classe (réseau local)
+        from . import place
+        return place.commande(args)
     if sous in ("creer", "créer", "nouveau", "new", "create"):
         return _creer(args[1:])
     if sous in ("rassembler", "collect"):
@@ -362,7 +375,7 @@ def commande(args):
         return "\n".join(lignes)
     if sous in ("fin", "quitter", "stop", "end"):
         out = []
-        core.modifier(lambda s: out.append(finir(s)))
+        core.modifier(lambda s: (s.pop("classe_place", None), out.append(finir(s))))     # la place se ferme aussi
         return out[0] if out else ""
     if sous in ("effacer", "erase"):
         out = []

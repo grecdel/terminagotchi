@@ -122,6 +122,12 @@ class TerminalActivity : Activity() {
 
         val repares = try { Sante.auDemarrage(this) } catch (e: Exception) { emptyList() }   // répare doucement (Sante.kt)
         jeu = Jeu(this)
+        // lecture et confort (Confort.kt) : ce que le téléphone demande déjà (taille de police, animations coupées)
+        Confort.echelleSysteme = resources.configuration.fontScale.toDouble()
+        Confort.moinsAnimations = try {
+            android.provider.Settings.Global.getFloat(contentResolver, android.provider.Settings.Global.ANIMATOR_DURATION_SCALE, 1f) == 0f
+        } catch (e: Exception) { false }
+        Confort.activer(if (jeu.existe) jeu else null)
         onglets = Onglets({ Shell(jeu.home).also { s -> s.journal = { jeu.journal.toList() } } }, { jeu.historique.toList() })
         // l'écran est recréé (mode sombre changé, appli arrêtée par le téléphone puis rouverte…) : les onglets reviennent
         // (tourner le téléphone ne recrée plus l'écran : android:configChanges dans le manifeste)
@@ -1226,6 +1232,12 @@ class TerminalActivity : Activity() {
                 } else ecrire(t("app.theme.liste", "liste" to Apparence.ordre().joinToString(" ")), Commandes.ROSE)
                 return
             }
+            "confort", "calme" -> {                   // lecture et confort : taille du texte, police, formes, mode calme
+                val mots = ligne.trim().split(Regex("\\s+")).drop(1)
+                ecrire(Confort.commande(jeu, if (Regles.premierMot(ligne) == "calme") listOf("calme") + mots.take(1) else mots), Commandes.ROSE)
+                appliquerConfort()
+                return
+            }
             "options", "ranger" -> {                  // les options (thème, disposition, tout afficher), ranger l'espace
                 if (espace == null) ouvrirEspace(false, dire = false)
                 espace?.let {
@@ -1724,8 +1736,9 @@ class TerminalActivity : Activity() {
                 v.etat.question = null
                 ecrire("🔒 " + t("app.tout.question", "q" to q), Commandes.ROSE)
             }
+            v.apresConfort = { appliquerConfort() }
             themeEcran()
-            sortie.textSize = if (classe) 17f else 13f
+            sortie.textSize = tailleTerminal(if (classe) 17f else 13f)
             panneau.requestLayout()
             jeu.module("espace").put("ouvert", true).put("classe", classe)
             jeu.sauver()
@@ -2089,7 +2102,7 @@ class TerminalActivity : Activity() {
         val defi = Defis.actif(jeu)
         val panneau = Dressage.panneau(jeu, resources, imageCombat)
         // terrain effacé : le bandeau avec la commande à taper reste au-dessus de la leçon
-        val l: CharSequence? = panneau ?: if (defi != null) t("app.defi", "cmd" to Regles.piege(defi), "s" to Defis.resteSecondes(jeu))
+        val l: CharSequence? = panneau ?: if (defi != null) (if (Confort.calme(jeu)) t("conf.defi", "cmd" to Regles.piege(defi)) else t("app.defi", "cmd" to Regles.piege(defi), "s" to Defis.resteSecondes(jeu)))
             else if (jeu.existe && !Intro.enCours(jeu)) listOfNotNull(Terrain.bandeau(jeu), jeu.texteLecon()).joinToString("\n\n").ifEmpty { null } else null
         lecon.visibility = if (l == null) View.GONE else View.VISIBLE
         lecon.text = Vert.rendre(l ?: "")
@@ -2437,6 +2450,19 @@ class TerminalActivity : Activity() {
         }
         lancerAnimation()
         handler.postDelayed({ animer() }, 420)
+    }
+
+    /** La taille du texte du terminal avec le réglage « Taille du texte » (en sp : le téléphone l'agrandit déjà de sa
+     *  « Taille de police » ; on ne garde que ce que le réglage du jeu ajoute). */
+    private fun tailleTerminal(base: Float): Float {
+        val r = Confort.reglages(if (jeu.existe) jeu else null)
+        return base * r.zoom / Confort.echelleSysteme.toFloat().coerceAtLeast(0.5f)
+    }
+
+    /** Après un changement de confort : l'espace, le terminal et le mode calme suivent. */
+    private fun appliquerConfort() {
+        Confort.activer(jeu)
+        espace?.let { sortie.textSize = tailleTerminal(if (it.classe) 17f else 13f); it.etat.confort(); it.requestLayout(); it.invalidate() }
     }
 
     /** Le fond de l'espace dans la couleur du thème (le terminal en dessous garde son fond sombre). */

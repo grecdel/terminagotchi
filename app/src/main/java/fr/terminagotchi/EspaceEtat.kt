@@ -20,7 +20,15 @@ class EspaceEtat(private val jeu: Jeu, private val dossier: () -> java.io.File, 
 
     var classe: Boolean
         get() = modele.classe
-        set(v) { modele.classe = v; modele.zoom = if (v) 1.3f else 1f }
+        set(v) { modele.classe = v; confort() }
+
+    /** Lecture et confort (Confort.kt) : la taille du texte agrandit tout l'espace ; le mode calme calme la créature. */
+    fun confort() {
+        val r = Confort.reglages(if (jeu.existe) jeu else null)
+        modele.confort = r
+        modele.zoom = (if (modele.classe) 1.3f else 1f) * r.zoom
+        creature.calme = r.calme
+    }
 
     /** Après chaque commande (et à l'ouverture) : relire le jeu. code : le code de sortie de la dernière commande. */
     fun rafraichir(code: Int?, maintenant: Double) {
@@ -95,6 +103,7 @@ class EspaceEtat(private val jeu: Jeu, private val dossier: () -> java.io.File, 
 
     fun apparence(maintenant: Double) {
         val m = modele
+        confort()
         m.theme = Apparence.theme(jeu)
         val vis = Apparence.visibles(jeu)
         m.onglets = Apparence.onglets(jeu)
@@ -122,7 +131,7 @@ class EspaceEtat(private val jeu: Jeu, private val dossier: () -> java.io.File, 
     /** La vue déployée d'une ligne (les lignes des tuyaux : calculer(), à part, car elles lancent des commandes sûres). */
     fun deployer(ligne: String, auto: Boolean = true): Deploie.Vue? {
         val dos = dossier()
-        val v = Deploie.vue(ligne, existe(dos), auto) ?: return null
+        val v = Deploie.vue(ligne, existe(dos), auto && !Confort.calme(jeu)) ?: return null   // mode calme : pas à pas
         if (modele.vue?.auto == false) v.auto = false
         v.lieu = v.blocs.firstOrNull { it.g == "chemin" }?.let { Deploie.lieu(jeu, it, dos) }
         modele.vue = v
@@ -170,6 +179,8 @@ class EspaceEtat(private val jeu: Jeu, private val dossier: () -> java.io.File, 
         m.t = maintenant
         m.monde = monde
         m.effets = niveauEffets()
+        m.effetsReglage = jeu.module("effets").optString("niveau", "tous").ifEmpty { "tous" }
+        confort()
         m.arrivees = arrivees.mapValues { maintenant - it.value }.filterValues { it < EspaceDessin.ARRIVEE }
         m.rangement = rangement
         m.options = options
@@ -206,7 +217,10 @@ class EspaceEtat(private val jeu: Jeu, private val dossier: () -> java.io.File, 
 
     fun toucherMonde(a: String, x: Float, y: Float) { if (a.startsWith("monde:")) monde.toucher(a, x, y) else toucher(a) }
 
-    fun niveauEffets(): String = jeu.module("effets").optString("niveau", "tous").ifEmpty { "tous" }
+    fun niveauEffets(): String {
+        val n = jeu.module("effets").optString("niveau", "tous").ifEmpty { "tous" }
+        return if (n == "tous" && Confort.calme(jeu)) "essentiels" else n     // mode calme : les effets essentiels
+    }
 
     /** L'équipe dans le monde : le guide d'abord (Guide.membres : le compagnon puis les bestioles, les plus récentes). */
     fun equipeMonde(): List<MondeVue.Info> {
@@ -276,6 +290,16 @@ class EspaceEtat(private val jeu: Jeu, private val dossier: () -> java.io.File, 
             a.startsWith("opt:effets:") -> jeu.module("effets").put("niveau", p[2])
             a == "opt:course" -> Apprendre.a(jeu).put("course", !Apprendre.course(jeu))
             a == "opt:eclairs" -> Apprendre.a(jeu).put("eclairs", !Apprendre.eclairs(jeu))
+            a.startsWith("opt:conf:") -> {
+                val r = Confort.reglages(jeu)
+                when (p[2]) {
+                    "taille" -> Confort.regler(jeu, "taille", p[3].toInt())
+                    "police" -> Confort.regler(jeu, "police", p[3])
+                    "formes" -> Confort.regler(jeu, "formes", !r.formes)
+                    "calme" -> Confort.regler(jeu, "calme", !r.calme)
+                }
+                confort()
+            }
             a == "opt:tout" -> if (Apparence.a(jeu).optBoolean("tout")) Apparence.toutAfficher(jeu, false)
                 else { question = Apparence.questionAdulte(); options = false }
             else -> return

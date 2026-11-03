@@ -109,9 +109,16 @@ class EspaceVue(ctx: Context, jeu: Jeu, private val dossier: () -> java.io.File,
     }
 
     private val toile = ToileCanvas()
+    private val andikas = HashMap<Boolean, Typeface?>()
+
+    /** La police Andika (SIL, OFL) si elle est livrée dans assets/polices/ ; sinon null (police habituelle). */
+    private fun andika(gras: Boolean): Typeface? = andikas.getOrPut(gras) {
+        try { Typeface.createFromAsset(context.assets, "polices/" + if (gras) "Andika-Bold.ttf" else "Andika-Regular.ttf") } catch (e: Exception) { null }
+    }
 
     override fun onDraw(cv: Canvas) {
         etat.preparer(maintenant())
+        toile.facile = modele.confort.facile
         toile.cv = cv
         zones = EspaceDessin.dessiner(toile, modele, width.toFloat(), height.toFloat(), d)
     }
@@ -120,6 +127,7 @@ class EspaceVue(ctx: Context, jeu: Jeu, private val dossier: () -> java.io.File,
     private var appuiY = 0f
     private var longFait = false
     private var glisseMonde: FloatArray? = null     // x, y d'avant, bougé (1) : on fait glisser le monde des biomes
+    private var glisse: FloatArray? = null          // x, y d'avant, bougé (1), sens (0 options : vertical ; 1 onglets)
     /** Appui long sur une bande (créature, vue déployée) : le mode « ranger mon espace ». */
     private val appuiLong = Runnable {
         val sur = zones.filter { it.dedans(appuiX, appuiY) }.map { it.action }
@@ -140,6 +148,11 @@ class EspaceVue(ctx: Context, jeu: Jeu, private val dossier: () -> java.io.File,
                     glisseMonde = floatArrayOf(e.x, e.y, 0f)
                     return true
                 }
+                val sous = zones.filter { it.dedans(e.x, e.y) }.map { it.action }
+                if (etat.options || (!etat.rangement && "onglets:rangee" in sous)) {
+                    glisse = floatArrayOf(e.x, e.y, 0f, if (etat.options) 0f else 1f)
+                    if (etat.options) return true
+                }
                 if (etat.rangement && a != null && a.startsWith("rg:tenir:")) {
                     modele.glisse = a.removePrefix("rg:tenir:") to e.y
                     performHapticFeedback(0)   // HapticFeedbackConstants.LONG_PRESS
@@ -154,6 +167,14 @@ class EspaceVue(ctx: Context, jeu: Jeu, private val dossier: () -> java.io.File,
                     }
                     return true
                 }
+                glisse?.let { g ->
+                    if (g[2] > 0 || Math.abs(e.x - appuiX) + Math.abs(e.y - appuiY) > 12 * d) {
+                        removeCallbacks(appuiLong)
+                        if (g[3] == 0f) modele.defile -= e.y - g[1] else modele.ongletsDecalage -= e.x - g[0]
+                        g[0] = e.x; g[1] = e.y; g[2] = 1f; invalidate()
+                        return true
+                    }
+                }
                 if (Math.abs(e.x - appuiX) + Math.abs(e.y - appuiY) > 12 * d) removeCallbacks(appuiLong)
                 modele.glisse?.let { modele.glisse = it.first to e.y; invalidate() }
                 return true
@@ -161,6 +182,9 @@ class EspaceVue(ctx: Context, jeu: Jeu, private val dossier: () -> java.io.File,
             MotionEvent.ACTION_CANCEL -> { removeCallbacks(appuiLong); modele.glisse = null; invalidate(); return true }
             MotionEvent.ACTION_UP -> {
                 removeCallbacks(appuiLong)
+                val gl = glisse
+                glisse = null
+                if (gl != null && gl[2] > 0f) { performClick(); invalidate(); return true }
                 val gm = glisseMonde
                 if (gm != null) {
                     glisseMonde = null
@@ -182,6 +206,7 @@ class EspaceVue(ctx: Context, jeu: Jeu, private val dossier: () -> java.io.File,
                 val avant = etat.rangement || etat.options
                 if (etat.toucher(a) || avant != (etat.rangement || etat.options)) requestLayout()
                 etat.question?.let { q -> demanderQuestion?.invoke(q.first) }
+                if (a.startsWith("opt:conf:")) apresConfort?.invoke()
                 performClick()
                 invalidate()
                 return true
@@ -192,6 +217,9 @@ class EspaceVue(ctx: Context, jeu: Jeu, private val dossier: () -> java.io.File,
 
     /** TerminalActivity écrit la question des grands dans le terminal (la réponse s'y tape). */
     var demanderQuestion: ((String) -> Unit)? = null
+
+    /** Après un réglage de « Lecture et confort » : TerminalActivity remet le terminal à la bonne taille. */
+    var apresConfort: (() -> Unit)? = null
 
     override fun performClick(): Boolean { super.performClick(); return true }
 
@@ -244,11 +272,17 @@ class EspaceVue(ctx: Context, jeu: Jeu, private val dossier: () -> java.io.File,
             cv?.drawPath(chemin, p)
         }
 
+        /** « Lecture facile » (Confort.kt) : Andika si assets/polices/ l'a, 8 % plus grand, lettres plus espacées. */
+        var facile = false
+
         private fun police(taille: Float, gras: Boolean, mono: Boolean) {
-            p.textSize = taille
+            val f = facile && !mono
+            p.textSize = if (f) taille * Confort.FACILE_TAILLE else taille
+            p.letterSpacing = if (f) Confort.FACILE_ESPACE else 0f
             p.typeface = when {
                 mono && gras -> Typeface.create(Typeface.MONOSPACE, Typeface.BOLD)
                 mono -> Typeface.MONOSPACE
+                f -> andika(gras) ?: if (gras) Typeface.DEFAULT_BOLD else Typeface.DEFAULT
                 gras -> Typeface.DEFAULT_BOLD
                 else -> Typeface.DEFAULT
             }

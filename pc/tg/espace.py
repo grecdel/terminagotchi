@@ -23,6 +23,7 @@ from . import apparence as A
 from . import bureau as B
 from . import bureau_vie as V
 from . import cerveau as CV
+from . import confort
 from . import core, sons
 from . import deploie as D
 from . import effets as E
@@ -136,6 +137,10 @@ class Espace(B.Controleur):
             self.cv.lire_jeu(self.state)
         self.lignes.append(spans("\033[38;5;245m" + t("esp.bienvenue") + "\033[0m"))
 
+    def dessin(self, m, t_):
+        """La liste de dessin de la fenêtre (l'écran projecteur du mode classe a la sienne : tableau.py)."""
+        return S.scene(m, t_)
+
     # ------------------------------------------------ le jeu
     def jeu(self):
         super().jeu()
@@ -214,7 +219,26 @@ class Espace(B.Controleur):
 
     # ------------------------------------------------ le monde des biomes
     def niveau_effets(self):
-        return ((self.state or {}).get("effets") or {}).get("niveau", "tous")
+        n = ((self.state or {}).get("effets") or {}).get("niveau", "tous")
+        if n == "tous" and self.state and confort.calme(self.state):   # mode calme : les effets essentiels, sans pluie
+            return "essentiels"
+        return n
+
+    def confort(self):
+        try:
+            return confort.reglages(self.state)
+        except Exception as e:                       # noqa: BLE001 — le confort ne casse jamais l'espace
+            B.noter(f"confort : {e!r}")
+            return confort.resoudre({})
+
+    def regler_confort(self, cle, valeur):
+        self._modifier(lambda s_: confort.regler(s_, cle, valeur))
+        self.c.calme = self.confort()["calme"]
+
+    def zoomer(self, sens):
+        """Ctrl + / Ctrl − : la taille du texte d'à côté (100, 125, 150 %)."""
+        if self.state:
+            self.regler_confort("taille", confort.taille_suivante(self.confort()["taille"], sens))
 
     def _monde_relire(self, forcer=False):
         st = self.state
@@ -339,8 +363,10 @@ class Espace(B.Controleur):
                     lieu = (os.path.basename(rel) or rel, (os.path.dirname(rel) or rel.split("/")[0]) + "/",
                             rel.split("/")[0])
                     break
+        if self.state and confort.calme(self.state):
+            auto = False                             # mode calme : la vue déployée avance avec Entrée ou un clic
         self.dep = {"ligne": ligne, "blocs": bl, "chaines": D.chaines(bl), "sorties": sorties, "actif": 1,
-                    "phase": 0.0, "auto": auto if self.dep is None else self.dep["auto"], "t": 0.0,
+                    "phase": 0.0, "auto": auto if self.dep is None else self.dep["auto"] and auto, "t": 0.0,
                     "lieu": lieu[:2] if lieu else None, "lieu_piece": lieu[2] if lieu else None}
         vus = set()
         mots = []
@@ -493,7 +519,17 @@ class Espace(B.Controleur):
             else:
                 self.ecrire(t("app.theme.liste", liste=" ".join(A.ordre())), S.DOUX)
             return
-        if premier == "classe":
+        if premier in ("confort", "taille", "police", "formes", "calme"):
+            self.mini.saisie = ""
+            self.mini.historique.append(ligne)
+            args = mots[1:] if premier == "confort" else mots
+            out = []
+            self._modifier(lambda s_: out.extend(confort.commande(s_, args)))
+            self.c.calme = self.confort()["calme"]
+            for l in out:
+                self.ecrire(l, S.VERT if l.startswith("✓") else S.DOUX)
+            return
+        if premier == "classe" and len(mots) == 1:
             self.mini.saisie = ""
             self.classe = not self.classe
             return
@@ -740,6 +776,15 @@ class Espace(B.Controleur):
         elif a == "opt:bureau":
             from .app import lancer_detache
             lancer_detache("bureau")
+        elif a.startswith("opt:conf:"):
+            p = a.split(":")
+            r = self.confort()
+            if p[2] == "taille":
+                self.regler_confort("taille", int(p[3]))
+            elif p[2] == "police":
+                self.regler_confort("police", p[3])
+            elif p[2] in ("formes", "calme"):
+                self.regler_confort(p[2], not r[p[2]])
 
     def repondre_question(self, ligne):
         """La réponse des grands à la question de « Tout afficher » (tapée dans le terminal de l'espace)."""
@@ -823,6 +868,8 @@ class Espace(B.Controleur):
             self.ile.etat = "ouverte"
             m["ile_ouverte"] = self.scene_ile()
         self._modele_apparence(m, st)
+        m["confort"] = self.confort()
+        self.c.calme = m["confort"]["calme"]
         if not self.tk:
             m["monde_vue"] = self.monde
             m["monde_grand"] = self.monde_grand
@@ -877,8 +924,9 @@ class Espace(B.Controleur):
     def _options_modele(self, st, th, nom):
         cfg = (st or {}).get("config", {})
         return {"theme": th.cle, "dispo": nom, "tout": bool(A.a_(st).get("tout")) if st else False,
-                "effets": self.niveau_effets(),
+                "effets": ((st or {}).get("effets") or {}).get("niveau", "tous"),
                 "notifs": bool(cfg.get("notifs", True)), "question": self.question[0] if self.question else None,
+                "confort": self.confort(),
                 "langue": langue.LANGUES.get(langue.courante(), "")}
 
     def _bulle(self, st):
@@ -1135,6 +1183,10 @@ class FenetreGtk:
             c.arreter()
         elif ctrl_on and nom.lower() == "l":
             c.lignes = []
+        elif ctrl_on and nom in ("plus", "equal", "KP_Add"):
+            c.zoomer(1)
+        elif ctrl_on and nom in ("minus", "KP_Subtract", "underscore"):
+            c.zoomer(-1)
         elif nom in ("Return", "KP_Enter"):
             c.entree()
         elif nom == "BackSpace":
@@ -1156,7 +1208,7 @@ class FenetreGtk:
         return True
 
     def _dessiner(self, da, cr, w, h):
-        L, Z, (W, H) = S.scene(self.ctl.modele(), self.ctl.t)
+        L, Z, (W, H) = self.ctl.dessin(self.ctl.modele(), self.ctl.t)
         e = min(w / W, h / H)
         ox, oy = (w - W * e) / 2, (h - H * e) / 2
         self.echelle = (e, ox, oy)
@@ -1281,8 +1333,15 @@ def peindre_cairo(f, cr, liste):
         elif k == "texte":
             _, x, y, s, sz, c, gras, ancre, mono = op
             lay = f.PangoCairo.create_layout(cr)
+            facile = S.CONF["facile"] and not mono          # « Lecture facile » : Andika si elle est installée
             fd = f.Pango.FontDescription.from_string(("DejaVu Sans Mono, monospace" if mono else
+                                                      "Andika, Inter, Cantarell, sans-serif" if facile else
                                                       "Inter, Cantarell, sans-serif") + (" Bold" if gras else ""))
+            if facile:
+                sz *= confort.FACILE_TAILLE
+                at = f.Pango.AttrList()
+                at.insert(f.Pango.attr_letter_spacing_new(int(sz * confort.FACILE_ESPACE * f.Pango.SCALE)))
+                lay.set_attributes(at)
             fd.set_absolute_size(sz * f.Pango.SCALE)
             lay.set_font_description(fd)
             lay.set_text(s, -1)
@@ -1338,6 +1397,10 @@ class FenetreTk:
         ks = ev.keysym
         if ev.state & 0x4 and ks.lower() == "c":
             c.arreter()
+        elif ev.state & 0x4 and ks in ("plus", "equal", "KP_Add"):
+            c.zoomer(1)
+        elif ev.state & 0x4 and ks in ("minus", "KP_Subtract"):
+            c.zoomer(-1)
         elif ks == "Return":
             c.entree()
         elif ks == "BackSpace":
@@ -1371,7 +1434,7 @@ class FenetreTk:
     def _dessiner(self):
         can = self.can
         w, h = max(200, can.winfo_width()), max(200, can.winfo_height())
-        L, Z, (W, H) = S.scene(self.ctl.modele(), self.ctl.t)
+        L, Z, (W, H) = self.ctl.dessin(self.ctl.modele(), self.ctl.t)
         e = min(w / W, h / H)
         ox, oy = (w - W * e) / 2, (h - H * e) / 2
         self.echelle, self.zones = (e, ox, oy), Z

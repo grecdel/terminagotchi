@@ -629,11 +629,19 @@ def defi_duree(state):
     return 30 if "Chronomancien" in state["skills"] else 20
 
 
+def _calme(state):
+    try:
+        from . import confort
+        return confort.calme(state)
+    except Exception:                               # noqa: BLE001
+        return False
+
+
 def defi_start(state):
     cmd = random.choice(DEFI_POOL)
     state["defi"] = {"cmd": cmd, "start": time.time()}
     say(state, t("core.defi.dit", cmd=piege(cmd)), defi_duree(state))
-    notif(state, t("core.defi.notif", cmd=piege(cmd), s=defi_duree(state)))
+    notif(state, t("conf.defi.dit", cmd=piege(cmd)) if _calme(state) else t("core.defi.notif", cmd=piege(cmd), s=defi_duree(state)))
     from . import guide
     guide.annonce_defi(state)                       # l'épreuve du jour annonce un type (guide.py)
 
@@ -663,7 +671,7 @@ def defi_tick(state, lines, spontaneous, proba=1.5 / 300):
             envies.plaisir(state, "jeu", "defi")
             guide.apres_defi(state)                 # guide fort contre le type du jour : +5 XP
             return
-    if time.time() - d["start"] > defi_duree(state):
+    if time.time() - d["start"] > defi_duree(state) and not _calme(state):   # mode calme : le défi reste, sans chrono
         log(state, t("core.defi.rate.log", cmd=d["cmd"]))
         say(state, t("core.defi.rate.dit"), 6)     # (3 nov.) une phrase douce et l'animation normale : rien de raté
         state["defi"] = None

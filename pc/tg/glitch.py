@@ -50,6 +50,9 @@ MORTS = (ROSE, CYAN, JAUNE, BLANC)
 SECOUSSE_MS = 120               # une secousse (style C) de la rafale…
 PAS_MS = 200                    # … puis un retour au repos (style A) jusqu'à la suivante (80 ms)
 REPERE = "▚"                    # le repère du nom (1 colonne dans un terminal), comme le ✨ du shiny
+# Mode calme (confort.py, exception accordée par le propriétaire le 3 novembre, seulement dans ce mode) : plus de
+# rafale, l'effet léger A reste fixe. Rien ne change hors du mode calme.
+CALME = [False]
 
 
 def fnv(texte):
@@ -158,6 +161,8 @@ def appliquer(w, h, px, graine, style="A", phase=0, s=1):
 def etat(graine, t_ms=None):
     """(style, phase) à l'instant t (millisecondes ; maintenant si None) : A au repos, C pendant une secousse de la
     rafale (2 ou 3 secousses de 120 ms, 80 ms de repos entre elles, toutes les 3 à 5,5 secondes)."""
+    if CALME[0]:
+        return "A", 0
     if t_ms is None:
         t_ms = int(time.time() * 1000)
     hh = fnv(f"{graine}:eclair")

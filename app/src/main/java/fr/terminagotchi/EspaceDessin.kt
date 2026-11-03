@@ -113,7 +113,19 @@ object EspaceDessin {
         /** le monde des biomes (onglet « Monde ») et le réglage des effets (tous, essentiels, aucun) */
         var monde: MondeVue? = null
         var effets = "tous"
+        var effetsReglage = "tous"
+        /** lecture et confort (Confort.kt) ; le défilement des options et de la rangée d'onglets */
+        var confort = Confort.Reglages(100, "normale", false, false)
+        var defile = 0f
+        var optionsHauteur = 0f
+        var ongletsDecalage = 0f
+        var ongletVu = ""
     }
+
+    /** (idée 62) le haut de l'écran grandit moins que le reste quand le texte est agrandi : plus de place en dessous. */
+    fun zIle(m: Modele, z: Float): Float = if (m.confort.zoom > 1f) z * minOf(1f, 1.1f / m.confort.zoom) else z
+
+    fun entete(m: Modele, z: Float): Float = 76 * zIle(m, z) + 54 * z
 
     /** Une zone qu'on peut toucher : (x, y, w, h, action). */
     class Zone(val x: Float, val y: Float, val w: Float, val h: Float, val action: String) {
@@ -125,18 +137,19 @@ object EspaceDessin {
         val z = d * m.zoom
         if (m.rangement || m.options) return max(300 * z, dispo)
         val large = largeur / z >= 700
+        val e = entete(m, z)
         if (m.onglet == "terminal" && !large) {                     // les bandes choisies, à leur taille
-            val tot = (76 + 54) * z + m.bandes.sumOf { ((if (it.id == "creature") 198 else 212) * Apparence.tailleFacteur(it.taille) + 12).toDouble() }.toFloat() * z
-            return max((76 + 54 + 40) * z, min(tot, dispo))
+            val tot = e + m.bandes.sumOf { ((if (it.id == "creature") 198 else 212) * Apparence.tailleFacteur(it.taille) + 12).toDouble() }.toFloat() * z
+            return max(e + 40 * z, min(tot, dispo))
         }
-        val complet = when (m.onglet) {
-            "terminal" -> if (large) 76 + 54 + 250 + 12 else 76 + 54 + 198 + 12 + 212 + 10
-            else -> 76 + 54 + 430
+        val complet = e + when (m.onglet) {
+            "terminal" -> if (large) 250 + 12 else 198 + 12 + 212 + 10
+            else -> 430
         } * z
         if (complet <= dispo) return complet
-        val compact = (76 + 54 + 212 + 10) * z
+        val compact = e + (212 + 10) * z
         if (m.onglet == "terminal" && compact <= dispo) return compact
-        return max((76 + 54 + 150) * z, min(complet, dispo))
+        return max(e + 150 * z, min(complet, dispo))
     }
 
     /** Dessine tout dans (0, 0, w, h) : renvoie les zones à toucher. */
@@ -149,9 +162,10 @@ object EspaceDessin {
         if (m.rangement) { rangement(tl, Z, m, w, h, z); return Z }
         if (m.options) { options(tl, tl0, Z, m, w, h, z); return Z }
         val mx = 12 * z
-        var y = 8 * z
-        ile(tl, Z, m, mx, y, w - 2 * mx, 64 * z, z)
-        y += 76 * z
+        val zi = zIle(m, z)
+        var y = 8 * zi
+        ile(tl, Z, m, 12 * zi, y, w - 24 * zi, 64 * zi, zi)
+        y += 76 * zi
         onglets(tl, Z, m, mx, y, w - 2 * mx, 44 * z, z)
         y += 54 * z
         val reste = h - y
@@ -255,13 +269,51 @@ object EspaceDessin {
 
     private fun onglets(tl: Toile, Z: MutableList<Zone>, m: Modele, x: Float, y: Float, w: Float, h: Float, z: Float) {
         tl.rrect(x, y, w, h, 14 * z, PANNEAU, BORD, 1f * z)
-        val ow = (w - 8 * z) / m.onglets.size
-        for ((i, o) in m.onglets.withIndex()) {
-            val ox = x + 4 * z + i * ow
-            if (o == m.onglet) tl.rrect(ox, y + 4 * z, ow, h - 8 * z, 11 * z, 0x1CFFFFFF, BORD_FORT, 1f * z)
-            tl.texte(court(tl, t("esp.onglet.$o"), ow - 8 * z, 15 * z), ox + ow / 2, y + h / 2, 15 * z,
-                if (o == m.onglet) TEXTE else DOUX, false, 'c')
-            Z.add(Zone(ox, y, ow, h, "onglet:$o"))
+        val libs = m.onglets.map { t("esp.onglet.$it") }
+        val largeurs = libs.map { tl.mesure(it, 15 * z) + 26 * z }
+        val dispo = w - 8 * z
+        val total = largeurs.sum()
+        if (total <= dispo) {
+            val ow = dispo / m.onglets.size
+            for ((i, o) in m.onglets.withIndex()) {
+                val ox = x + 4 * z + i * ow
+                if (o == m.onglet) tl.rrect(ox, y + 4 * z, ow, h - 8 * z, 11 * z, 0x1CFFFFFF, BORD_FORT, 1f * z)
+                tl.texte(court(tl, libs[i], ow - 8 * z, 15 * z), ox + ow / 2, y + h / 2, 15 * z,
+                    if (o == m.onglet) TEXTE else DOUX, false, 'c')
+                Z.add(Zone(ox, y, ow, h, "onglet:$o"))
+            }
+            m.ongletsDecalage = 0f
+        } else {
+            // (idée 62) les onglets ne sont plus coupés (« Ter… ») : ils gardent leur nom entier et la rangée glisse ;
+            // l'onglet choisi est toujours visible, une flèche montre qu'il y en a d'autres
+            val i0 = m.onglets.indexOf(m.onglet).coerceAtLeast(0)
+            val debut = largeurs.take(i0).sum()
+            if (m.ongletVu != m.onglet) {
+                if (debut < m.ongletsDecalage) m.ongletsDecalage = debut - 18 * z
+                if (debut + largeurs[i0] > m.ongletsDecalage + dispo) m.ongletsDecalage = debut + largeurs[i0] - dispo + 18 * z
+                m.ongletVu = m.onglet
+            }
+            m.ongletsDecalage = m.ongletsDecalage.coerceIn(0f, total - dispo)
+            tl.clip(x + 2 * z, y, w - 4 * z, h)
+            var ox = x + 4 * z - m.ongletsDecalage
+            for ((i, o) in m.onglets.withIndex()) {
+                val ow = largeurs[i]
+                if (o == m.onglet) tl.rrect(ox, y + 4 * z, ow, h - 8 * z, 11 * z, 0x1CFFFFFF, BORD_FORT, 1f * z)
+                tl.texte(libs[i], ox + ow / 2, y + h / 2, 15 * z, if (o == m.onglet) TEXTE else DOUX, false, 'c')
+                val zx = max(x, ox); val zw = min(x + w, ox + ow) - zx
+                if (zw > 0) Z.add(Zone(zx, y, zw, h, "onglet:$o"))
+                ox += ow
+            }
+            tl.declip()
+            if (m.ongletsDecalage > 1f) {
+                tl.rrect(x + 2 * z, y + 4 * z, 22 * z, h - 8 * z, 10 * z, PANNEAU, null, 0f)
+                tl.texte("‹", x + 13 * z, y + h / 2, 17 * z, JAUNE, true, 'c')
+            }
+            if (m.ongletsDecalage < total - dispo - 1f) {
+                tl.rrect(x + w - 24 * z, y + 4 * z, 22 * z, h - 8 * z, 10 * z, PANNEAU, null, 0f)
+                tl.texte("›", x + w - 13 * z, y + h / 2, 17 * z, JAUNE, true, 'c')
+            }
+            Z.add(0, Zone(x, y, w, h, "onglets:rangee"))      // sous les onglets : la rangée qu'on fait glisser
         }
         val neuf = m.onglets.firstOrNull { (Apparence.d().getJSONObject("telephone").optJSONObject("onglet_de")?.optString(it, "") ?: "") in m.arrivees }
         if (neuf != null) arrivee(tl, m, Apparence.d().getJSONObject("telephone").getJSONObject("onglet_de").getString(neuf), x, y, w, h, z,
@@ -276,9 +328,13 @@ object EspaceDessin {
         val age = m.arrivees[pan] ?: return
         val k = (1 - age / ARRIVEE).coerceIn(0.0, 1.0)
         if (k <= 0) return
-        val pul = 0.6 + 0.4 * sin(age * 6)
-        tl.rrect(x - 4 * z, y - 4 * z, w + 8 * z, h + 8 * z, 20 * z, null, a(JAUNE, (70 * k * pul).toInt()), 5 * z)
-        tl.rrect(x - 1 * z, y - 1 * z, w + 2 * z, h + 2 * z, 17 * z, null, a(JAUNE, (235 * k).toInt()), 2 * z)
+        if (m.confort.calme) {                       // mode calme : un simple bord fixe, sans lueur qui pulse ni fondu
+            tl.rrect(x - 1 * z, y - 1 * z, w + 2 * z, h + 2 * z, 17 * z, null, a(JAUNE, 200), 2 * z)
+        } else {
+            val pul = 0.6 + 0.4 * sin(age * 6)
+            tl.rrect(x - 4 * z, y - 4 * z, w + 8 * z, h + 8 * z, 20 * z, null, a(JAUNE, (70 * k * pul).toInt()), 5 * z)
+            tl.rrect(x - 1 * z, y - 1 * z, w + 2 * z, h + 2 * z, 17 * z, null, a(JAUNE, (235 * k).toInt()), 2 * z)
+        }
         if (age < ARRIVEE * 0.8) {
             val s = "✦ $texte"
             val tw = tl.mesure(s, 12 * z, true) + 20 * z
@@ -374,6 +430,12 @@ object EspaceDessin {
             tl.ellipse(nx, ny, 9 * z, 9 * z, PANNEAU)
             tl.cercle(nx, ny, 9 * z, a(col, if (b.i <= v.actif) 230 else 90), 1.3f * z)
             tl.texte("${b.i}", nx, ny, 10 * z, if (b.i <= v.actif) TEXTE else DOUX, true, 'c')
+            if (m.confort.formes) {                  // (idée 64) jamais une couleur seule : la forme de la catégorie
+                val fx = bx + bw - 3 * z
+                tl.ellipse(fx, ny, 9 * z, 9 * z, PANNEAU)
+                tl.cercle(fx, ny, 9 * z, a(col, if (b.i <= v.actif) 230 else 90), 1.3f * z)
+                tl.texte(Confort.FORMES[b.g] ?: "●", fx, ny, 9 * z, if (b.i <= v.actif) col else a(col, 110), true, 'c')
+            }
             bx += bw + gap
         }
         // l'explication du bloc allumé
@@ -484,7 +546,7 @@ object EspaceDessin {
         val pos = if (ici != null) LIEUX_CARTE[ici] else null
         if (pos != null) {
             val lx = px + pos.first * pw; val ly = py + pos.second * ph
-            val pul = (0.5 + 0.5 * sin(m.t * 3)).toFloat()
+            val pul = if (m.confort.calme) 0.5f else (0.5 + 0.5 * sin(m.t * 3)).toFloat()     // mode calme : fixe
             tl.lueur(lx, ly, (34 + 8 * pul) * z, 0x46FFD54F)
             tl.cercle(lx, ly, (20 + 3 * pul) * z, JAUNE, 1.6f * z)
             tl.ellipse(lx, ly, 6 * z, 6 * z, JAUNE)
@@ -724,10 +786,9 @@ object EspaceDessin {
 
     fun options(tl: Toile, tl0: Toile, Z: MutableList<Zone>, m: Modele, w: Float, h: Float, z: Float) {
         val x = 12 * z; val lw = w - 24 * z
-        tl.texte("⚙ " + t("app.options.titre"), 20 * z, 26 * z, 21 * z, TEXTE, true)
-        tl.texte("✕", w - 24 * z, 26 * z, 18 * z, DOUX, false, 'd')
-        Z.add(Zone(w - 64 * z, 0f, 64 * z, 52 * z, "opt:fermer"))
-        var y = 60 * z
+        Z.add(Zone(0f, 0f, w, h, "opt:defiler"))           // sous tout : on fait glisser les options
+        m.defile = m.defile.coerceIn(0f, max(0f, m.optionsHauteur - h + 20 * z))
+        var y = 60 * z - m.defile
         tl.texte(t("app.opt.apparence").uppercase(), 20 * z, y, 11.5f * z, DOUX, true)
         y += 12 * z
         tl.rrect(x, y, lw, 236 * z, 16 * z, PANNEAU, BORD, 1f * z)
@@ -762,7 +823,7 @@ object EspaceDessin {
         y += 12 * z
         val ew = (lw - 12 * z) / 3
         for ((i, n) in Effets.NIVEAUX.withIndex()) {
-            val sel = n == m.effets
+            val sel = n == m.effetsReglage
             bouton(tl, Z, x + i * (ew + 6 * z), y, ew, t("efx.niveau.$n"), "opt:effets:$n", z, if (sel) JAUNE else TEXTE,
                 if (sel) a(JAUNE, 30) else null, if (sel) a(JAUNE, 200) else null, sel)
         }
@@ -778,6 +839,7 @@ object EspaceDessin {
             y += 46 * z
         }
         y += 10 * z
+        y = confortOptions(tl, Z, m, x, y, lw, z)
         tl.texte(t("app.opt.grands").uppercase(), 20 * z, y, 11.5f * z, JAUNE, true)
         y += 12 * z
         tl.rrect(x, y, lw, 100 * z, 16 * z, a(JAUNE, 12), a(JAUNE, 120), 1f * z)
@@ -788,6 +850,44 @@ object EspaceDessin {
         Z.add(Zone(x, y, lw, 46 * z, "opt:tout"))
         var yy = y + 50 * z
         for (l in couper(tl, t("app.opt.tout.aide"), lw - 28 * z, 12 * z).take(3)) { tl.texte(l, x + 14 * z, yy, 12 * z, DOUX); yy += 16 * z }
+        m.optionsHauteur = y + 110 * z + m.defile
+        // le titre reste en haut quand on fait glisser
+        tl.rect(0f, 0f, w, 46 * z, FOND)
+        tl.texte("⚙ " + t("app.options.titre"), 20 * z, 26 * z, 21 * z, TEXTE, true)
+        tl.texte("✕", w - 24 * z, 26 * z, 18 * z, DOUX, false, 'd')
+        Z.add(Zone(w - 64 * z, 0f, 64 * z, 52 * z, "opt:fermer"))
+        if (m.optionsHauteur > h + 4 * z && m.defile < m.optionsHauteur - h) tl.texte("⌄", w / 2, h - 12 * z, 18 * z, JAUNE, true, 'c')
+    }
+
+    /** Options › Lecture et confort (maquette validée du 3 novembre) : taille du texte, police, formes, mode calme. */
+    private fun confortOptions(tl: Toile, Z: MutableList<Zone>, m: Modele, x: Float, y0: Float, lw: Float, z: Float): Float {
+        var y = y0
+        val r = m.confort
+        tl.texte(t("conf.titre").uppercase(), 20 * z, y, 11.5f * z, JAUNE, true)
+        y += 12 * z
+        val h0 = y
+        tl.rrect(x, y, lw, 270 * z, 16 * z, PANNEAU, BORD, 1f * z)
+        y += 22 * z
+        tl.texte(t("conf.taille"), x + 14 * z, y, 15 * z, TEXTE, true)
+        y += 14 * z
+        val tw = (lw - 28 * z - 12 * z) / 3
+        for ((i, n) in Confort.TAILLES.withIndex()) {
+            val sel = n == r.taille
+            bouton(tl, Z, x + 14 * z + i * (tw + 6 * z), y, tw, "A " + t("conf.taille.$n"), "opt:conf:taille:$n", z, if (sel) JAUNE else TEXTE,
+                if (sel) a(JAUNE, 30) else null, if (sel) a(JAUNE, 200) else null, sel)
+        }
+        y += 52 * z
+        for (cle in listOf("police", "formes", "calme")) {
+            val on = when (cle) { "police" -> r.facile; "formes" -> r.formes; else -> r.calme }
+            val titre = when (cle) { "police" -> t("conf.police.facile.titre"); "formes" -> t("conf.formes") + "  ■ ▲ ●"; else -> t("conf.calme") }
+            tl.texte(court(tl, titre, lw - 90 * z, 14 * z, gras = true), x + 14 * z, y, 14 * z, TEXTE, true)
+            tl.texte(court(tl, t("conf.$cle.aide"), lw - 90 * z, 11.5f * z), x + 14 * z, y + 17 * z, 11.5f * z, DOUX)
+            tl.rrect(x + lw - 58 * z, y - 3 * z, 44 * z, 22 * z, 11 * z, if (on) a(JAUNE, 70) else 0x14FFFFFF, if (on) a(JAUNE, 200) else BORD_FORT, 1f * z)
+            tl.ellipse(x + lw - (if (on) 25 else 47) * z, y + 8 * z, 8 * z, 8 * z, if (on) JAUNE else DOUX)
+            Z.add(Zone(x, y - 14 * z, lw, 44 * z, if (cle == "police") "opt:conf:police:" + (if (on) "normale" else "facile") else "opt:conf:$cle"))
+            y += 48 * z
+        }
+        return max(y, h0 + 270 * z) + 16 * z
     }
 }
 

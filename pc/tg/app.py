@@ -616,6 +616,15 @@ def menu_options(state, clav):
         c = st.get("compte", {})
         print(" 10. " + t("app.options.recensement", pseudo=f"{BOLD}" + (entrainement.pseudo_colore(st) if c.get('pseudo') else t('app.options.pas_de_compte')) + RESET)
               + f" {DIM}" + t("app.options.recensement.meme") + RESET)
+        sec("conf.titre")
+        from . import confort
+        rc = confort.reglages(st)
+        print(" 12. " + t("conf.taille") + " : " + f"{BOLD}{t('conf.taille.' + str(rc['taille']))}{RESET}"
+              + f" {DIM}({t('conf.taille.terminal')}){RESET}")
+        print(" 13. " + t("conf.police") + " : " + f"{BOLD}{t('conf.police.' + rc['police'])}{RESET}"
+              + f" {DIM}({t('conf.police.terminal')}){RESET}")
+        print(" 14. " + t("conf.formes") + " : " + onoff(rc["formes"]))
+        print(" 15. " + t("conf.calme") + " : " + onoff(rc["calme"]) + f" {DIM}({t('conf.calme.aide')}){RESET}")
         sec("app.opt.grands")
         print(" 11. " + t("app.options.tout", etat=onoff(apparence.a_(st).get("tout"))))
         print(f"     {DIM}" + t("app.opt.tout.aide") + RESET)
@@ -661,6 +670,14 @@ def menu_options(state, clav):
             menu_recensement(clav)
         elif r == "11":
             msg = basculer_tout_afficher(clav)
+        elif r in ("12", "13", "14", "15"):
+            from . import confort
+            rc = confort.reglages(st)
+            cle = {"12": "taille", "13": "police", "14": "formes", "15": "calme"}[r]
+            val = confort.TAILLES[(confort.TAILLES.index(rc["taille"]) + 1) % 3] if cle == "taille" else \
+                ("normale" if rc["police"] == "facile" else "facile") if cle == "police" else not rc[cle]
+            core.modifier(lambda s: confort.regler(s, cle, val))
+            msg = "✓ " + t("conf.ok")
 
 
 def apercu_theme(th):
@@ -1377,6 +1394,13 @@ def _main():
     if mode == "explique":                     # tg explique rm : la fiche d'une commande et de ses options
         st = core.load() or {}
         print("\n".join(explique.fiche(st, " ".join(args[1:]))))
+        return
+    if mode in ("confort", "calme"):            # tg confort … : lecture et confort (taille, police, formes, calme)
+        creer_si_besoin()
+        from . import confort
+        sortie = []
+        core.modifier(lambda s: sortie.extend(confort.commande(s, args[1:] if mode == "confort" else ["calme"] + args[1:2])))
+        print("\n".join(sortie))
         return
     if mode in ("theme", "thème"):             # tg theme [nom] : le thème (couleurs du terminal, espace, bureau)
         creer_si_besoin()

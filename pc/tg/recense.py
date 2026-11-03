@@ -91,12 +91,19 @@ def _charge(state):
                     "forme": state.get("branch"), "faim": state["hunger"],
                     "faimDate": int(state.get("repas_t", 0) * 1000),
                     "theme": state.get("config", {}).get("theme") or "sombre",
-                    "themeDate": int(state.get("config", {}).get("theme_date") or 0)},
+                    "themeDate": int(state.get("config", {}).get("theme_date") or 0),
+                    # lecture et confort (police, formes, calme ; la taille reste propre à l'appareil)
+                    "confort": _confort(state)[0], "confortDate": _confort(state)[1]},
     }
     from . import entrainement, guilde
     charge["guilde"] = guilde.charge_site(state)    # leçons de la Guilde et contribution : le site en tire le badge Artisan
     charge["entrainement"], snap["ent"] = entrainement.charge(state, base.get("ent"))
     return charge, snap
+
+
+def _confort(state):
+    from . import confort
+    return confort.pour_recensement(state)
 
 
 def _titre(state):
@@ -158,6 +165,9 @@ def _appliquer(state, srv, snap):
         if srv.get("theme") in apparence.donnees()["themes"]:
             state.setdefault("config", {})["theme"] = srv["theme"]
             state["config"]["theme_date"] = int(srv["themeDate"])
+    if srv.get("confortDate"):                       # lecture et confort : le plus récent gagne (mots connus seulement)
+        from . import confort
+        confort.depuis_recensement(state, srv.get("confort"), srv.get("confortDate"))
     if srv.get("faimDate", 0) > state.get("repas_t", 0) * 1000:
         state["hunger"] = float(srv.get("faim", state["hunger"]))
         state["repas_t"] = srv["faimDate"] / 1000

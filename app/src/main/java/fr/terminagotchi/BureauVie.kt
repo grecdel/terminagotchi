@@ -80,7 +80,11 @@ object BureauVie {
             if (e == "marche" && (surPlace || rangee)) { etat = "assis"; duree = 6 + h.nextDouble() * 6 }
         }
 
-        fun reagir(quoi: String) {
+        /** mode calme (Confort.kt) : pas de sursaut, un petit cœur à la place */
+        var calme = false
+
+        fun reagir(quoi0: String) {
+            val quoi = if (calme && quoi0 == "sursaut") "coeur" else quoi0
             if (quoi !in DUREES) return
             if (etat == "dort" && (quoi == "mange" || quoi == "baille")) return
             forceDodo = false

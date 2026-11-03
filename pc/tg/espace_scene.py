@@ -49,6 +49,8 @@ LIEUX_CARTE = {"salle_des_machines": (0.16, 0.10), "tour": (0.84, 0.10), "biblio
                "coeur": (0.50, 0.29), "atelier": (0.84, 0.36), "cave": (0.86, 0.55), "nid": (0.50, 0.47),
                "vestibule": (0.55, 0.71), "dortoir": (0.85, 0.80), "grenier": (0.27, 0.74)}
 ONGLETS = ("carte", "monde", "cerveau", "tuyaux", "lecon")
+# Lecture et confort (confort.py) : posé par scene() avant de dessiner, lu par lt() et les pinceaux (PIL, cairo).
+CONF = {"facile": False, "calme": False, "formes": False, "taille": 100}
 
 
 def _a(c, a):
@@ -63,6 +65,10 @@ def lt(texte, taille, mono=False):
     """La largeur d'un texte (approchée, comme la créature du bureau ; en chasse fixe : 0,6 cadratin)."""
     if mono:          # 0,602 cadratin : l'avance exacte de DejaVu Sans Mono (1233/2048), la police des terminaux
         return sum(1.204 if ord(c) >= 0x2E80 else 0.602 for c in texte) * taille
+    if CONF["facile"]:  # « Lecture facile » : 8 % plus grand, 6 % d'un cadratin entre les lettres
+        from .confort import FACILE_ESPACE, FACILE_TAILLE
+        tt = taille * FACILE_TAILLE
+        return V.largeur_texte(texte, tt) * 0.98 + len(texte) * FACILE_ESPACE * tt
     return V.largeur_texte(texte, taille) * 0.98
 
 
@@ -142,9 +148,35 @@ class Mise:
     """Les rectangles des panneaux (coordonnées logiques). cases : la disposition de la partie ({dalle: [c, r, w, h]},
     apparence.disposition) ; sans cases : la disposition classique. intro : l'œuf et l'invite seuls, au centre."""
 
-    def __init__(self, classe=False, cases=None, intro=False):
+    def __init__(self, classe=False, cases=None, intro=False, taille=100):
         self.classe = classe
         self.haut = None
+        self.replies = ()                 # les dalles de gauche passées dans les onglets (taille du texte agrandie)
+        if taille in (125, 150) and not classe and not intro:
+            # « Taille du texte » (idée 62, maquette validée) : la mise en page est refaite sur un écran logique plus
+            # petit, que la fenêtre agrandit ; les colonnes de gauche passent dans les onglets ; à 150 %, la vue
+            # déployée aussi (elle reste dans l'onglet Tuyaux et la commande `deploie`).
+            e = taille / 100
+            W, H = round(1920 / e), round(1080 / e)
+            self.W, self.H = W, H
+            self.haut = (0, 0, W, 92)
+            self.explorateur = self.envies = self.equipe = None
+            self.replies = ("envies", "explorateur")
+            avec_dep = taille == 125
+            dw = 540 if avec_dep else 470
+            d0, c0, bas = W - 16 - dw, 16, H - 16
+            cw = d0 - 16 - c0
+            if avec_dep:
+                hd = 332
+                self.deploie = (c0, 96, cw, hd)
+                self.terminal = (c0, 96 + hd + 16, cw, bas - (96 + hd + 16))
+            else:
+                self.deploie = None
+                self.terminal = (c0, 96, cw, bas - 96)
+            hc = 340 if avec_dep else 300
+            self.direct = (d0, 96, dw, hc)
+            self.contexte = (d0, 96 + hc + 16, dw, bas - (96 + hc + 16))
+            return
         if classe:
             self.W, self.H = 1600, 900
             d0, dw, c0 = 1600 - 16 - 540, 540, 16
@@ -398,6 +430,11 @@ def vue_deployee(L, Z, m, r):
         L.append(("ellipse", nx, ny, 9.5, 9.5, PANNEAU))
         L.append(("cercle", nx, ny, 9.5, _a(col, 230 if b["i"] <= actif else 90), 1.3))
         L.append(("texte", nx, ny, str(b["i"]), 10, _a(TEXTE, a_lab), True, "c", False))
+        if CONF["formes"]:              # (idée 64) jamais une couleur seule : la forme de la catégorie, en haut à droite
+            fx_, fy_ = cx + bw / 2 - 2, cy - 25
+            L.append(("ellipse", fx_, fy_, 9.5, 9.5, PANNEAU))
+            L.append(("cercle", fx_, fy_, 9.5, _a(col, 230 if b["i"] <= actif else 90), 1.3))
+            L.append(("texte", fx_, fy_, forme(b["g"]), 9.5, _a(col, a_lab), True, "c", False))
         L.append(("texte", cx, cy + 37, D.nom_genre(b["g"]).upper(), 10, _a(col, a_lab), True, "c", False))
         for j, ligne in enumerate(couper(D.courte(b, bl), max(110, min(160, cw + 10)), 11.5)[:2]):
             L.append(("texte", cx, cy + 53 + 15 * j, ligne, 11.5, _a(DOUX, 255 if b["i"] <= actif else 120), False, "c",
@@ -422,8 +459,16 @@ def vue_deployee(L, Z, m, r):
         n = D.nom_genre(g)
         L.append(("texte", lx, py, n, 11.5, DOUX, False, "d", False))
         lx -= lt(n, 11.5) * 1.06 + 9
-        L.append(("ellipse", lx, py, 4, 4, rgb(D.COULEURS[g])))
+        if CONF["formes"]:
+            L.append(("texte", lx, py, forme(g), 11, rgb(D.COULEURS[g]), True, "c", False))
+        else:
+            L.append(("ellipse", lx, py, 4, 4, rgb(D.COULEURS[g])))
         lx -= 16
+
+
+def forme(genre):
+    from .confort import FORMES
+    return FORMES.get(genre, "●")
 
 
 def _etape_de(dp, k):
@@ -604,7 +649,7 @@ def terminal(L, Z, m, r, t_):
     vis = saisie if lt(saisie, taille, True) < largeur_max - (xx - x) else "…" + saisie[-int((largeur_max - (xx - x)) /
                                                                                            (taille * 0.6)) + 2:]
     L.append(("texte", xx, yy, vis, taille, TEXTE, True, "g", True))
-    if int(t_ * 2) % 2 == 0 or m.get("tape_recent"):
+    if int(t_ * 2) % 2 == 0 or m.get("tape_recent") or CONF["calme"]:      # mode calme : le curseur ne clignote plus
         cx = xx + lt(vis, taille, True) + 1
         L.append(("rect", cx, yy - taille * 0.62, taille * 0.55, taille * 1.24, VERT))
     Z.append((x, y + 48, w, h - 48, "terminal"))
@@ -649,8 +694,8 @@ def direct(L, Z, m, r, t_):
     L.append(("lueur", cx, pieds - sh * 0.3, sh * 0.48, _a(ce, 36)))
     # les mots des dernières commandes qui flottent autour d'elle
     for i, (mot, coul) in enumerate(m.get("mots", [])[:4]):
-        ph = (t_ * 0.07 + i * 0.27) % 1.0
-        mx = sx + 70 + (i % 2) * 40 + 30 * math.sin(t_ * 0.6 + i * 2)
+        ph = (0.3 + i * 0.17) if CONF["calme"] else (t_ * 0.07 + i * 0.27) % 1.0     # mode calme : ils restent posés
+        mx = sx + 70 + (i % 2) * 40 + (0 if CONF["calme"] else 30 * math.sin(t_ * 0.6 + i * 2))
         my = sy + sh * (0.75 - 0.5 * ph)
         L.append(("texte", mx, my, mot, 12, _a(coul, int(220 * math.sin(math.pi * ph))), True, "c", True))
     an = m.get("anime")
@@ -714,23 +759,37 @@ def direct(L, Z, m, r, t_):
 def contexte(L, Z, m, r, t_):
     x, y, w, h = r
     L.append(("rrect", x, y, w, h, 14, PANNEAU, BORD, 1))
-    ongs = m.get("onglets") or ONGLETS
+    ongs = list(m.get("onglets") or ONGLETS) + [k for k in m.get("replies", ()) if dalle_visible(m, k)]
     ong = m.get("onglet", "carte")
     if ong not in ongs:
         ong = ongs[0]
+    libs = [t("esp.onglet." + o) if o in ONGLETS else t("esp.dalle." + o) for o in ongs]
+    indice = {"carte": "tree", "cerveau": "cerveau.sh", "tuyaux": "|", "monde": "ls biome", "lecon": "aide",
+              "envies": "", "explorateur": "ls"}[ong]
+    # (idée 62) les onglets tiennent toujours dans le panneau : la police rapetisse un peu, puis l'indice s'efface
+    taille_o, pad = 13.5, 30
+    place = w - 28 - (lt(indice, 12, True) + 24 if indice else 0)
+    while taille_o > 10.5 and sum(lt(l, taille_o) + pad + 4 for l in libs) > place:
+        taille_o -= 0.5
+        pad = max(16, pad - 2)
+    if sum(lt(l, taille_o) + pad + 4 for l in libs) > place:
+        indice = ""
     xx = x + 14
-    for o in ongs:
-        lib = t("esp.onglet." + o)
-        ow = lt(lib, 13.5) + 30
+    for o, lib in zip(ongs, libs):
+        lib = court(lib, max(40, (w - 28) / len(ongs) - pad), taille_o) if \
+            sum(lt(lb, taille_o) + pad + 4 for lb in libs) > w - 28 else lib
+        ow = lt(lib, taille_o) + pad
         if o == ong:
             L.append(("rrect", xx, y + 12, ow, 32, 9, (255, 255, 255, 16), BORD_FORT, 1))
-        L.append(("texte", xx + ow / 2, y + 28, lib, 13.5, TEXTE if o == ong else DOUX, False, "c", False))
+        L.append(("texte", xx + ow / 2, y + 28, lib, taille_o, TEXTE if o == ong else DOUX, False, "c", False))
         Z.append((xx, y + 12, ow, 32, "onglet:" + o))
         xx += ow + 4
-    L.append(("texte", x + w - 16, y + 28, {"carte": "tree", "cerveau": "cerveau.sh", "tuyaux": "|", "monde": "ls biome",
-                                              "lecon": "aide"}[ong], 12, PALE, False, "d", True))
+    if indice:
+        L.append(("texte", x + w - 16, y + 28, indice, 12, PALE, False, "d", True))
     zone = (x + 14, y + 54, w - 28, h - 54 - 40)
-    if ong == "monde" and m.get("monde_vue") is not None:
+    if ong in ("envies", "explorateur"):
+        DESSINS[ong](L, Z, m, (x + 8, y + 50, w - 16, h - 58), t_)
+    elif ong == "monde" and m.get("monde_vue") is not None:
         if not m.get("monde_grand"):
             m["monde_vue"].dessiner(L, Z, (x + 10, y + 52, w - 20, h - 62), t_)
         else:
@@ -770,7 +829,7 @@ def carte(L, Z, m, zone, t_, pied):
     if ici in LIEUX_CARTE:
         fx, fy = LIEUX_CARTE[ici]
         px, py = x + fx * w, y + fy * h
-        pul = 0.5 + 0.5 * math.sin(t_ * 3)
+        pul = 0.5 if CONF["calme"] else 0.5 + 0.5 * math.sin(t_ * 3)     # mode calme : le rond ne pulse plus
         L.append(("lueur", px, py, 40 + 8 * pul, (255, 213, 79, 70)))
         L.append(("cercle", px, py, 22 + 3 * pul, JAUNE, 1.6))
         L.append(("ellipse", px, py, 6, 6, JAUNE))
@@ -784,11 +843,23 @@ def carte(L, Z, m, zone, t_, pied):
         L.append(("texte", bx + 14, by + 34, court(m.get("cwd", ""), bw - 24, 11, True), 11, DOUX, False, "g", True))
     px_, py_, pw_ = pied
     xx = px_ + 16
-    for sym, txt, c in (("◉", t("esp.l.ici"), DOUX), ("▶", t("esp.l.en_cours"), DOUX), ("✓", t("esp.l.reveille"), VERT),
-                        ("□", t("esp.l.pas_visite"), PALE)):
-        L.append(("texte", xx, py_, sym + " " + txt, 11.5, c, False, "g", False))
-        xx += lt(sym + " " + txt, 11.5) + 16
-    L.append(("texte", px_ + pw_ - 16, py_, t("esp.l.lieux"), 11.5, DOUX, False, "d", False))
+    morceaux = [("◉", t("esp.l.ici"), DOUX), ("▶", t("esp.l.en_cours"), DOUX), ("✓", t("esp.l.reveille"), VERT),
+                ("□", t("esp.l.pas_visite"), PALE)]
+    droite = t("esp.l.lieux")
+    # (idée 62) la légende ne se chevauche plus : plus petite, puis sans le texte de droite, puis les symboles seuls
+    tl_, ecart = 11.5, 16
+    besoin = lambda tt, e, avec: sum(lt(a + " " + b, tt) + e for a, b, _c in morceaux) + (lt(droite, tt) + 16 if avec else 0)  # noqa: E731
+    while tl_ > 9.5 and besoin(tl_, ecart, True) > pw_ - 32:
+        tl_ -= 0.5
+        ecart = max(8, ecart - 2)
+    avec_droite = besoin(tl_, ecart, True) <= pw_ - 32
+    seuls = not avec_droite and besoin(tl_, ecart, False) > pw_ - 32
+    for sym, txt, c in morceaux:
+        s_ = sym if seuls else sym + " " + txt
+        L.append(("texte", xx, py_, s_, tl_, c, False, "g", False))
+        xx += lt(s_, tl_) + ecart
+    if avec_droite:
+        L.append(("texte", px_ + pw_ - 16, py_, droite, tl_, DOUX, False, "d", False))
 
 
 def cerveau(L, Z, m, zone, t_, pied):
@@ -1011,6 +1082,10 @@ def arrivee(L, r, age, texte):
     k = max(0.0, 1.0 - age / ARRIVEE)
     if k <= 0:
         return
+    if CONF["calme"]:                  # mode calme : un simple bord fixe, sans lueur qui pulse ni fondu
+        L.append(("rrect", x - 1, y - 1, w + 2, h + 2, 15, None, _a(JAUNE, 200), 2.2))
+        chip(L, x + w - 14, y, "✦ " + texte, JAUNE, 11.5, fond=(30, 26, 12, 255), ancre="d")
+        return
     pul = 0.6 + 0.4 * math.sin(age * 6)
     L.append(("rrect", x - 6, y - 6, w + 12, h + 12, 19, None, _a(JAUNE, int(70 * k * pul)), 7))
     L.append(("rrect", x - 1, y - 1, w + 2, h + 2, 15, None, _a(JAUNE, int(235 * k)), 2.2))
@@ -1031,7 +1106,11 @@ def scene(m, t_=0.0):
     """(liste de dessin, zones, (W, H) logiques) de tout l'espace de travail, dans les couleurs du thème."""
     v = m.get("visibles")
     intro = v is not None and "ile" not in v and not m.get("classe")
-    mise = Mise(m.get("classe", False), m.get("cases"), intro)
+    conf = m.get("confort") or {}
+    CONF.update(facile=conf.get("police") == "facile", calme=bool(conf.get("calme")), formes=bool(conf.get("formes")),
+                taille=conf.get("taille", 100))
+    mise = Mise(m.get("classe", False), m.get("cases"), intro, CONF["taille"])
+    m["replies"] = mise.replies
     L = [("rect", 0, 0, mise.W, mise.H, FOND)]
     Z = []
     if intro:
@@ -1078,9 +1157,83 @@ def scene(m, t_=0.0):
     L = apparence.recolorer(L, th)
     if m.get("options"):                      # les vignettes des thèmes sont déjà dans leurs propres couleurs
         O, vignettes = [], []
-        options(O, Z, m, mise, vignettes)
+        grande = Mise.__new__(Mise)           # les options gardent la mise en page 1920 × 1080, mise à la taille
+        grande.W, grande.H, grande.classe = 1920, 1080, False
+        options(O, Z, m, grande, vignettes)
+        e = mise.W / 1920
+        if e != 1:
+            O, vignettes = a_l_echelle(O, e), a_l_echelle(vignettes, e)
+            Z[:] = [(zx * e, zy * e, zw * e, zh * e, a) for zx, zy, zw, zh, a in Z]
         L += apparence.recolorer(O, th) + vignettes
+    if m.get("place") and not m.get("options"):    # la place de la classe (idée 56), par-dessus l'espace
+        P = []
+        place_ecran(P, Z, m, mise, t_)
+        L += apparence.recolorer(P, th)
     return L, Z, (mise.W, mise.H)
+
+
+def place_ecran(L, Z, m, mise, t_):
+    """La place de la classe : les cartes des postes (« Poste 3 · Zapiot · bébé ») et trois gestes tout faits.
+    Ni nom, ni pseudo, ni écriture (maquette validée le 3 novembre)."""
+    pl = m["place"]
+    Z.clear()
+    L.append(("rect", 0, 0, mise.W, mise.H, (3, 4, 7, 170)))
+    x, y, w, h = 16, 96, mise.W - 32, mise.H - 112
+    L.append(("rrect", x, y, w, h, 16, PANNEAU, BORD_FORT, 1))
+    Z.append((x, y, w, h, "place:panneau"))
+    L.append(("texte", x + 24, y + 30, "⌂  " + t("classe.place.titre"), 19, TEXTE, True, "g", False))
+    L.append(("texte", x + 24, y + 54, t("classe.place.sous", n=len(pl["postes"])), 12.5, DOUX, False, "g", False))
+    L.append(("texte", x + w - 24, y + 30, "✕", 18, DOUX, False, "d", False))
+    Z.append((x + w - 60, y + 6, 50, 50, "place:fermer"))
+    etat = pl["etat"]
+    if etat != "ici":
+        L.append(("texte", x + w / 2, y + h / 2 - 14, t("classe.place." + ("cherche" if etat == "cherche" else
+                                                                            "fermee_ecran" if etat == "fermee" else
+                                                                            "absente_ecran")), 20, TEXTE, True, "c", False))
+        L.append(("texte", x + w / 2, y + h / 2 + 18, t("classe.place.absente.aide"), 14, DOUX, False, "c", False))
+        return
+    chip(L, x + w - 70, y + 30, t("classe.place.n_postes", n=len(pl["postes"])), VERT, 12, ancre="d")
+    cols = 4 if w > 1300 else 3
+    gx, gy = x + 20, y + 76
+    cw = (w - 40 - (cols - 1) * 14) / cols
+    pied_h = 64
+    lignes = max(1, math.ceil(len(pl["postes"]) / cols))
+    ch = min(230, (h - 76 - pied_h - 10 - (lignes - 1) * 14) / lignes)
+    for i, p in enumerate(pl["postes"]):
+        cx, cy = gx + (i % cols) * (cw + 14), gy + (i // cols) * (ch + 14)
+        if cy + ch > y + h - pied_h:
+            break
+        moi = p["poste"] == pl["poste"]
+        L.append(("rrect", cx, cy, cw, ch, 12, PANNEAU2, _a(JAUNE, 200) if moi else BORD, 1.6 if moi else 1))
+        L.append(("texte", cx + 14, cy + 20, t("classe.place.poste", n=p["poste"]), 13, JAUNE if moi else TEXTE, True,
+                  "g", False))
+        if moi:
+            L.append(("texte", cx + cw - 14, cy + 20, t("classe.place.cest_toi"), 12, JAUNE, True, "d", False))
+        alb = p.get("album")
+        haut_c = min(ch * 0.46, 110)
+        if alb:
+            creature_img(L, alb, "assis", int(t_ * V.IPS), cx + cw / 2, cy + 36 + haut_c, haut_c)
+        else:
+            L.append(("texte", cx + cw / 2, cy + 36 + haut_c / 2, "◌", 40, PALE, False, "c", False))
+        L.append(("texte", cx + 14, cy + ch - 52, court(p["nom"], cw - 28, 12), 12, DOUX, False, "g", False))
+        bulle = p.get("bulle")
+        if bulle:
+            bw = lt(bulle, 12) + 22
+            L.append(("rrect", cx + cw - bw - 10, cy + 34, bw, 24, 12, (30, 26, 12, 255), _a(ROSE, 200), 1))
+            L.append(("texte", cx + cw - bw / 2 - 10, cy + 46, bulle, 12, ROSE, True, "c", False))
+        if not moi:
+            bx = cx + 12
+            gw = (cw - 24 - 12) / 3
+            for g, sym in enumerate(("☺", "★", "♪")):
+                L.append(("rrect", bx, cy + ch - 34, gw, 26, 8, (255, 255, 255, 12), BORD_FORT, 1))
+                L.append(("texte", bx + gw / 2, cy + ch - 21, sym + " " + court(t("classe.geste." + ("coucou", "bravo",
+                          "danse")[g]), gw - 26, 11), 11, TEXTE, False, "c", False))
+                Z.append((bx, cy + ch - 34, gw, 26, f"place:geste:{p['poste']}:{g}"))
+                bx += gw + 6
+    py = y + h - pied_h
+    L.append(("rrect", x + 20, py, w - 40, pied_h - 14, 10, (255, 255, 255, 8), BORD, 1))
+    L.append(("texte", x + 36, py + 18, t("classe.place.regle"), 12.5, TEXTE, True, "g", False))
+    L.append(("texte", x + 36, py + 36, pl.get("message") or t("classe.place.regle2"), 11.5, DOUX, False, "g", False))
 
 
 def monde_grand(L, Z, m, mise, t_):
@@ -1125,19 +1278,19 @@ def options(L, Z, m, mise, vignettes=None):
     o = m["options"]
     Z.clear()
     L.append(("rect", 0, 0, mise.W, mise.H, (3, 4, 7, 170)))
-    x, y, w, h = mise.W / 2 - 640, 70, 1280, mise.H - 110
+    x, y, w, h = mise.W / 2 - 640, 34, 1280, mise.H - 52
     L.append(("rrect", x, y, w, h, 20, PANNEAU, BORD_FORT, 1))
     Z.append((x, y, w, h, "opt:panneau"))
     L.append(("texte", x + 30, y + 38, "⚙  " + t("app.options.titre"), 22, TEXTE, True, "g", False))
     L.append(("texte", x + w - 30, y + 38, "✕", 18, DOUX, False, "d", False))
     Z.append((x + w - 60, y + 14, 50, 50, "opt:fermer"))
     cx = x + 30
-    yy = y + 86
+    yy = y + 78
     L.append(("texte", cx, yy, t("app.opt.apparence").upper(), 12, JAUNE, True, "g", False))
     yy += 28
     L.append(("texte", cx, yy, t("app.opt.theme"), 14.5, TEXTE, True, "g", False))
     L.append(("texte", cx + 90, yy, t("app.opt.theme.aide"), 12.5, PALE, False, "g", False))
-    tw, th_ = 214, 120
+    tw, th_ = 214, 92
     for i, cle in enumerate(apparence.ordre()):
         col, lig = i % 5, i // 5
         vx, vy = cx + col * (tw + 24), yy + 22 + lig * (th_ + 44)
@@ -1147,7 +1300,7 @@ def options(L, Z, m, mise, vignettes=None):
         L.append(("texte", vx + 2, vy + th_ + 17, ("● " if sel else "") + t("app.theme." + cle), 13,
                   JAUNE if sel else TEXTE, sel, "g", False))
         Z.append((vx - 4, vy - 4, tw + 8, th_ + 30, "opt:theme:" + cle))
-    yy += 22 + 2 * (th_ + 44) + 14
+    yy += 22 + 2 * (th_ + 44) + 6
     L.append(("texte", cx, yy, t("app.opt.dispo"), 14.5, TEXTE, True, "g", False))
     xx = cx
     for nom in apparence.donnees()["ordre_dispositions"]:
@@ -1155,7 +1308,7 @@ def options(L, Z, m, mise, vignettes=None):
         xx += bouton(L, Z, xx, yy + 16, t("app.dispo." + nom), "opt:dispo:" + nom, JAUNE if sel else TEXTE,
                      _a(JAUNE, 30) if sel else None, _a(JAUNE, 200) if sel else None) + 10
     bouton(L, Z, xx + 10, yy + 16, "✎ " + t("esp.rg.titre") + "…", "opt:ranger", VERT, _a(VERT, 26), _a(VERT, 140))
-    yy += 76
+    yy += 70
     L.append(("texte", cx, yy, t("app.opt.creature").upper(), 12, JAUNE, True, "g", False))
     yy += 18
     bw = bouton(L, Z, cx, yy, t("app.options.bureau"), "opt:bureau")
@@ -1171,7 +1324,9 @@ def options(L, Z, m, mise, vignettes=None):
         xx += bouton(L, Z, xx, yy, t("efx.niveau." + niv), "opt:effets:" + niv, JAUNE if sel else TEXTE,
                      _a(JAUNE, 30) if sel else None, _a(JAUNE, 200) if sel else None) + 10
     L.append(("texte", xx + 10, yy + 17, t("efx.reglage.aide"), 12.5, PALE, False, "g", False))
-    yy += 62
+    yy += 54
+    yy = confort_options(L, Z, cx, yy, w - 60, o.get("confort") or {})
+    yy += 22
     L.append(("rrect", cx - 10, yy - 14, w - 40, 104, 14, _a(JAUNE, 12), _a(JAUNE, 110), 1))
     L.append(("texte", cx + 6, yy + 6, t("app.opt.grands").upper(), 12, JAUNE, True, "g", False))
     L.append(("texte", cx + 6, yy + 36, t("app.opt.tout"), 15, TEXTE, True, "g", False))
@@ -1182,6 +1337,42 @@ def options(L, Z, m, mise, vignettes=None):
               _a(JAUNE, 200) if on else BORD_FORT, 1))
     L.append(("ellipse", tx + (39 if on else 13), yy + 36, 9, 9, JAUNE if on else DOUX))
     Z.append((tx - 10, yy + 14, 72, 44, "opt:tout"))
+
+
+def interrupteur(L, Z, x, y, on, action):
+    L.append(("rrect", x, y, 52, 26, 13, _a(JAUNE, 70) if on else (255, 255, 255, 20), _a(JAUNE, 200) if on else BORD_FORT, 1))
+    L.append(("ellipse", x + (39 if on else 13), y + 13, 9, 9, JAUNE if on else DOUX))
+    Z.append((x - 10, y - 9, 72, 44, action))
+
+
+def confort_options(L, Z, x, y, w, r):
+    """Options › Lecture et confort (maquette validée du 3 novembre) : taille du texte, police, formes, mode calme."""
+    L.append(("texte", x, y, t("conf.titre").upper(), 12, JAUNE, True, "g", False))
+    y += 16
+    col = x + 230
+
+    def choix(y, titre, options_, sel, aide):
+        L.append(("texte", x, y + 17, titre, 14.5, TEXTE, True, "g", False))
+        xx = col
+        for cle, lib in options_:
+            s_ = cle == sel
+            xx += bouton(L, Z, xx, y, lib, "opt:conf:" + cle, JAUNE if s_ else TEXTE, _a(JAUNE, 30) if s_ else None,
+                         _a(JAUNE, 200) if s_ else None) + 10
+        L.append(("texte", xx + 10, y + 17, court(aide, x + w - xx - 20, 12.5), 12.5, PALE, False, "g", False))
+    choix(y, t("conf.taille"), [(f"taille:{n}", "A  " + t(f"conf.taille.{n}")) for n in (100, 125, 150)],
+          f"taille:{r.get('taille', 100)}", t("conf.taille.aide"))
+    y += 42
+    choix(y, t("conf.police"), [("police:normale", t("conf.police.normale")), ("police:facile", t("conf.police.facile"))],
+          "police:" + r.get("police", "normale"), t("conf.police.aide"))
+    y += 42
+    for cle in ("formes", "calme"):
+        L.append(("texte", x, y + 17, t("conf." + cle) + ("  ■ ▲ ● ◆" if cle == "formes" else ""), 14.5, TEXTE, True,
+                  "g", False))
+        L.append(("texte", col, y + 17, court(t(f"conf.{cle}.aide"), w - 230 - 90, 12.5), 12.5, DOUX, False, "g",
+                  False))
+        interrupteur(L, Z, x + w - 60, y + 4, bool(r.get(cle)), "opt:conf:" + cle)
+        y += 38
+    return y
 
 
 # ---------------------------------------------------------------- ranger son espace (mode rangement)
@@ -1348,8 +1539,21 @@ def _police(sz, gras, mono, texte):
     from PIL import ImageFont
     ecriture = "cjk" if any(0x2E80 <= ord(ch) <= 0xFFEF for ch in texte) else \
         ("sym" if any(0x2190 <= ord(ch) < 0x2E80 for ch in texte) else "")
-    cle = (round(sz, 2), gras, mono, ecriture)        # la taille exacte (la mise en page compte au centième)
+    facile = CONF["facile"] and not mono and ecriture != "cjk"
+    if facile:
+        from . import confort
+        sz = sz * confort.FACILE_TAILLE
+    cle = (round(sz, 2), gras, mono, ecriture, facile)  # la taille exacte (la mise en page compte au centième)
     if cle not in _POLICES:
+        if facile:
+            from . import confort
+            andika = confort.fichier_police(gras)
+            try:
+                if andika:
+                    _POLICES[cle] = ImageFont.truetype(andika, max(4.0, float(sz)))
+                    return _POLICES[cle]
+            except OSError:
+                pass
         if mono:
             noms = ["DejaVuSansMono-Bold.ttf" if gras else "DejaVuSansMono.ttf"]
         else:

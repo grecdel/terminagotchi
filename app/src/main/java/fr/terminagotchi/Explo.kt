@@ -219,7 +219,7 @@ object Defis {
     fun lancer(jeu: Jeu) {
         val cmd = POOL.random()
         jeu.module("defi").put("cmd", cmd).put("debut", System.currentTimeMillis())
-        jeu.dire(t("defi.dit", "cmd" to Regles.piege(cmd)), 20)
+        jeu.dire(if (Confort.calme(jeu)) t("conf.defi.dit", "cmd" to Regles.piege(cmd)) else t("defi.dit", "cmd" to Regles.piege(cmd)), 20)
         Guide.annonceDefi(jeu)                              // l'épreuve du jour annonce un type (Guide.kt)
     }
 
@@ -250,7 +250,7 @@ object Defis {
             jeu.dire(m, 8)
             return m
         }
-        if (ecoule > DUREE) {
+        if (ecoule > DUREE && !Confort.calme(jeu)) {          // mode calme : le défi reste, sans chrono
             d.put("cmd", "")
             jeu.log(t("core.defi.rate.log", "cmd" to cmd))
             jeu.dire(t("core.defi.rate.dit"), 6)        // (3 nov.) une phrase douce et l'animation normale

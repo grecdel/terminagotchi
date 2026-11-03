@@ -199,6 +199,11 @@ def activer(state):
     th = theme(state)
     from . import plateforme
     plateforme.THEME_ANSI = None if (th.sombre or th.clair) else th
+    try:
+        from . import confort                       # le mode calme (éclairs glitch fixes) suit la partie
+        confort.activer(state)
+    except Exception:                               # noqa: BLE001 — le confort ne casse jamais le jeu
+        pass
     return th
 
 

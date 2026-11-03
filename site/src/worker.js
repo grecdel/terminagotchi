@@ -504,6 +504,12 @@ function fusionner(etat, envoi, appareil, verdicts = new Map()) {
     e.theme = v.theme;
     e.themeDate = Number(v.themeDate) || 0;
   }
+  // lecture et confort (police, formes, calme) : le plus récent gagne, seulement des mots connus
+  if (typeof v.confort === "string" && /^((facile|formes[01]|calme[01])(,|$)){0,3}$/.test(v.confort)
+      && (Number(v.confortDate) || 0) > (e.confortDate || 0)) {
+    e.confort = v.confort;
+    e.confortDate = Number(v.confortDate) || 0;
+  }
   if ((Number(v.faimDate) || 0) > e.faimDate) {
     e.faim = Math.max(0, Math.min(100, Number(v.faim) || 0));
     e.faimDate = Number(v.faimDate);

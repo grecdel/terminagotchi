@@ -100,6 +100,7 @@ object Recensement {
                 .put("trait", jeu.trait).put("forme", jeu.forme ?: JSONObject.NULL).put("shiny", jeu.shiny)
                 .put("faim", jeu.faim).put("faimDate", c.optLong("repas"))
                 .put("theme", Apparence.cleTheme(jeu)).put("themeDate", Apparence.a(jeu).optLong("theme_date"))
+                .put("confort", Confort.pourRecensement(jeu).first).put("confortDate", Confort.pourRecensement(jeu).second)
                 // le titre montré : le site colore le pseudo si c'est un badge de la Guilde QU'IL a vérifié lui-même
                 .put("titre", try { Entrainement.titreAffiche(jeu)?.id ?: "" } catch (e: Exception) { "" }))
             // leçons de la Guilde et contribution : le site en recalcule le badge « Artisan » (jamais le grade envoyé)
@@ -179,6 +180,7 @@ object Recensement {
             val th = srv.optString("theme")
             if (Apparence.choisirTheme(jeu, th)) Apparence.a(jeu).put("theme_date", srv.optLong("themeDate"))
         }
+        if (srv.optLong("confortDate") > 0) Confort.depuisRecensement(jeu, srv.optString("confort"), srv.optLong("confortDate"))
         val nom = srv.optString("nom")
         if (nom.isNotEmpty()) {
             jeu.nom = nom
