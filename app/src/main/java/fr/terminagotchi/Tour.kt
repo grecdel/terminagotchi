@@ -22,6 +22,11 @@ object Tour {
         val msgs = mutableListOf<Pair<String, Int>>()
         var saut = 0
         jeu.tick()
+        // apprendre en jouant : le bac à sable, ou elle dort (limite de temps douce) — rien ne compte (Apprendre.kt)
+        if (Apprendre.enPause(jeu, cwd, msgs)) {
+            Apprendre.tourPause(jeu, ligne, colle || rappel, msgs)
+            return Resultat(false, msgs, 0)
+        }
         val mange = jeu.manger(ligne, colle, rappel, code)
         // l'œuf et sa liste (Intro.kt) : la commande qui le fait éclore ne valide pas déjà la leçon 1
         val avant = if (Intro.retient(jeu)) Intro.faits(jeu) else null
@@ -55,6 +60,7 @@ object Tour {
         // salle d'entraînement : l'exercice en cours est-il réussi ? (entrainement répond lui-même aux réponses)
         if (Regles.premierMot(ligne) !in setOf("entrainement", "exercice"))
             Entrainement.apresCommande(jeu, ligne, colle || rappel, cwd)?.let { msgs.add(it to 0xFFFFD75F.toInt()) }
+        msgs.addAll(Apprendre.tour(jeu, ligne, colle || rappel, cwd, code))   // maîtrise, révisions, jour, énigmes, jeux…
         Intro.verifier(jeu)                                        // les fonctions qui s'ouvrent maintenant (Intro.kt)
         return Resultat(mange, msgs, saut)
     }
@@ -67,7 +73,7 @@ object Tour {
         Histoire.tick(jeu, null, false, cwd)
         Defis.verifier(jeu, null)
         val combats = Intro.ouvert(jeu, "combats")
-        if (combats && jeu.existe && jeu.stade >= 1 && Defis.actif(jeu) == null && !Dressage.actif(jeu) && !Histoire.enPleineEtape(jeu) && Random.nextInt(60) == 0) Defis.lancer(jeu)
+        if (combats && jeu.existe && jeu.stade >= 1 && Defis.actif(jeu) == null && !Dressage.actif(jeu) && !Histoire.enPleineEtape(jeu) && Apprendre.eclairs(jeu) && !Apprendre.endormie(jeu) && Random.nextInt(60) == 0) Defis.lancer(jeu)
         if (combats) Explo.verifier(jeu)?.let { msgs.add(it to ROSE) }
         Dressage.verifier(jeu, null, false)?.let { msgs.add(it to ROSE) }
         Intro.verifier(jeu)

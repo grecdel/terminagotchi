@@ -1409,7 +1409,7 @@ def tour(state, lines, cwd, statut_de=None, now=None):
     """Après le tour normal : maîtrise, révisions, commande du jour, mini-énigmes, jeux, sentier, examen, temps."""
     now = now or time.time()
     a = a_(state)
-    aide_avant = False
+    aide_avant = bool(a.get("aide_avant"))         # la commande d'avant était une aide (gardé d'un tour à l'autre)
     for k, line in enumerate(lines):
         if core.est_colle(line) or not line.strip():
             continue
@@ -1428,6 +1428,7 @@ def tour(state, lines, cwd, statut_de=None, now=None):
                 info(state, msg)
                 core.say(state, msg.split("\n")[0], 10)
         aide_avant = est_aide
+    a["aide_avant"] = aide_avant
     if lines:
         verifier_temps(state, now)
         inviter_revision(state, now)

@@ -435,6 +435,8 @@ object Entrainement {
         }
         if (ech.values.count { it >= 1 } >= 6) out.add(Titre("touche", t("ent.titre.touche"), COULEUR_TOUCHE))
         out.addAll(Guilde.titres(jeu))                 // les badges de la Guilde : Contributeur, Artisan (pseudo coloré)
+        if (Apprendre.nbMaitrisees(jeu) >= Apprendre.donnees().optJSONObject("maitrise")?.optInt("titre", 10) ?: 10)
+            out.add(Titre("main_sure", t("apr.titre.main_sure"), "#ffd75f"))     // 10 commandes maîtrisées (idée 43)
         for (f in Badges.FAMILLES.sortedWith(compareBy({ -ech.getValue(it) }, { -fam(e, it).optInt("n") }, { Badges.FAMILLES.indexOf(it) }))) {
             val k = ech.getValue(f)
             if (k >= 1) {

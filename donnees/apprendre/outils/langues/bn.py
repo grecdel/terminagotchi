@@ -210,4 +210,5 @@ D = {
  "apr.tel.mettre": "লাইনে বসাও",
  "apr.tel.course": "ঘড়ির সঙ্গে দৌড়",
  "apr.tel.eclairs": "হঠাৎ বিদ্যুৎ চ্যালেঞ্জ",
+ "apr.tel.reglages": "খেলার সেটিং",
 }

@@ -210,4 +210,5 @@ D = {
  "apr.tel.mettre": "Masukkan ke baris",
  "apr.tel.course": "Balapan melawan waktu",
  "apr.tel.eclairs": "Tantangan kilat kejutan",
+ "apr.tel.reglages": "Pengaturan permainan",
 }

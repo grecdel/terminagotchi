@@ -210,4 +210,5 @@ D = {
  "apr.tel.mettre": "コマンド行に いれる",
  "apr.tel.course": "タイムレース",
  "apr.tel.eclairs": "とつぜんの いなずまチャレンジ",
+ "apr.tel.reglages": "ゲームの せってい",
 }

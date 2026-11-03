@@ -210,4 +210,5 @@ D = {
  "apr.tel.mettre": "Put it in the line",
  "apr.tel.course": "Race against the clock",
  "apr.tel.eclairs": "Surprise flash challenges",
+ "apr.tel.reglages": "Game settings",
 }

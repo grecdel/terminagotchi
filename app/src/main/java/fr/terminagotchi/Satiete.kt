@@ -243,7 +243,10 @@ object Satiete {
         val avant = jeu.faim
         if (!s.optBoolean("vacances") && t1 > t0) {
             val r = taux("Gardien" in jeu.skills, jeu.stats["Endurance"] ?: 0, s.optInt("jours"))
-            jeu.faim = (avant - secondesEveil(t0, t1) / r).coerceIn(0.0, 100.0)
+            var sec = secondesEveil(t0, t1)
+            val (d0, d1) = Apprendre.sommeil(jeu)                  // elle dort (limite de temps douce) : la faim ne baisse pas
+            if (d1 > t0 && d0 < t1) sec -= secondesEveil(maxOf(t0, d0), minOf(t1, d1))
+            jeu.faim = (avant - sec / r).coerceIn(0.0, 100.0)
         }
         val h = jeu.faim
         if (h < AFFAMEE && !s.optBoolean("veille")) {

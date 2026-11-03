@@ -60,6 +60,8 @@ class Commandes(
         Machines.xxdB(ligne)?.let { return Reponse(it, couleur = BLEU) }
         // `for i in $(seq 20); do sh cerveau.sh; atelier pas; done` : le shell du téléphone ne connaît pas `atelier`, l'appli déroule la boucle
         if (cmd == "for") Atelier.boucle(jeu, ligne, dossier())?.let { return Reponse(it, couleur = BLEU) }
+        // apprendre en jouant (Apprendre.kt) : bac-a-sable, carnet, jour, enigme, jeux, course, examen, collection rares…
+        Apprendre.commande(jeu, ligne)?.let { return Reponse(it, couleur = Apprendre.VERT) }
         return when (cmd) {
             // ---------------------------------------------------- téléphone
             "applis" -> applis(reste)
@@ -92,7 +94,7 @@ class Commandes(
                 "oui", "on", "yes" -> true; "non", "off", "no" -> false; else -> null }), couleur = ROSE)
             // ---------------------------------------------------- salle d'entraînement (Entrainement.kt)
             "entrainement", "exercice" -> Reponse(Entrainement.commande(jeu, reste, dossier()), couleur = JAUNE)
-            "badges" -> Reponse(Entrainement.commandeBadges(jeu, reste), couleur = ROSE)
+            "badges" -> Reponse(Entrainement.commandeBadges(jeu, reste) + if (reste.isBlank()) "\n\n" + Apprendre.lignesMaitrise(jeu) else "", couleur = ROSE)
             "renomme" -> renomme(reste)
             // ---------------------------------------------------- progression et jeux
             "arbre", "aile", "ailes", "histoire" -> aile(reste)

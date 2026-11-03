@@ -210,4 +210,5 @@ D = {
  "apr.tel.mettre": "ضعه في السطر",
  "apr.tel.course": "سباق ضد الساعة",
  "apr.tel.eclairs": "تحديات البرق المفاجئة",
+ "apr.tel.reglages": "إعدادات اللعبة",
 }

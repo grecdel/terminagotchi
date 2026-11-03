@@ -82,6 +82,8 @@ class TerminalActivity : Activity() {
     private var nomPropose: String? = null
     private var introVue: IntroVue? = null
     private var confirmerDeblocage = false
+    /** « parent temps 45 » : la phrase d'un adulte est attendue (Apprendre.kt, idée 49) */
+    private var confirmerParent: List<String>? = null
     /** la question des grands avant « Tout afficher » (options de l'espace) : la réponse se tape ici */
     private var questionAdulte: Pair<String, String>? = null
     private var ambiance = System.currentTimeMillis() + AMBIANCE
@@ -696,6 +698,15 @@ class TerminalActivity : Activity() {
             } else ecrire(t("app.tout.non"), Commandes.ROSE)
             return
         }
+        confirmerParent?.let { args ->               // « parent temps 45 » : la phrase d'un adulte (comme debloquer)
+            confirmerParent = null
+            vider()
+            ecrire("> $ligne", 0xFF5FD787.toInt())
+            if (Apprendre.phraseAdulte(ligne)) { ecrire(Apprendre.reglerTemps(jeu, args.drop(1)), Commandes.ROSE); jeu.sauver() }
+            else ecrire(t("apr.parent.non"), Commandes.ROSE)
+            rafraichir()
+            return
+        }
         if (confirmerDeblocage) {                    // « debloquer tout » : oui / non (dans les 14 langues)
             confirmerDeblocage = false
             vider()
@@ -774,6 +785,14 @@ class TerminalActivity : Activity() {
             "langue" -> { ecrire(langue(ligne.trim().split(Regex("\\s+")).getOrNull(1)), Commandes.ROSE); return }
             "partie" -> { ecrire(menu.commande(ligne.substringAfter(' ', "")), Commandes.ROSE); rafraichir(); return }
             "sauvegarde", "backup" -> { sauvegarde(ligne.trim().split(Regex("\\s+")).getOrNull(1)?.lowercase()); return }
+            "parent" -> {                             // pour les parents : une limite de temps douce (Apprendre.kt, idée 49)
+                val args = ligne.trim().split(Regex("\\s+")).drop(1)
+                val q = Apprendre.questionParent(args)
+                if (q != null) { confirmerParent = args; ecrire(q, Commandes.ROSE) }
+                else if (args.firstOrNull()?.lowercase() in setOf("temps", "time")) ecrire(Apprendre.reglerTemps(jeu, emptyList()), Commandes.ROSE)
+                else ecrire(t("apr.parent.aide", "cmd" to "parent temps 45"), Commandes.ROSE)
+                return
+            }
             "debloquer" -> {                          // pour les parents et les tests : tout ouvrir (après confirmation)
                 if (ligne.trim().split(Regex("\\s+")).getOrNull(1)?.lowercase() in setOf("tout", "all")) {
                     confirmerDeblocage = true
@@ -1054,6 +1073,7 @@ class TerminalActivity : Activity() {
             r.aller?.let { shell.dossier = it; majObservatoire(null) }
         }
         jeu.sauver()
+        Apprendre.diplomeAMontrer(jeu)?.let { montrerDiplome(it) }   // l'examen réussi : le diplôme et ses deux boutons
         WidgetCreature.majTous(this)
         if (mange) saut = maxOf(saut, 4)
         rafraichir()
@@ -1061,6 +1081,20 @@ class TerminalActivity : Activity() {
         if (Recensement.aUnCompte(jeu) && Regles.premierMot(ligne) !in setOf("sync", "compte")) {
             commandes.sync(forcer = false, silencieux = true)
         }
+    }
+
+    /** Le diplôme (idée 30) : l'image, « Enregistrer l'image » (dans les images du téléphone) et « Imprimer ». */
+    private fun montrerDiplome(chap: String) {
+        val b = try { ApprendreDessin.diplome(jeu, chap) } catch (e: Exception) { return }
+        val iv = ImageView(this).apply { setImageBitmap(b); setAdjustViewBounds(true) }
+        android.app.AlertDialog.Builder(this).setTitle("🎓 " + t("apr.diplome.titre")).setView(iv)
+            .setPositiveButton(t("apr.tel.enregistrer")) { _, _ ->
+                ecrire(if (ApprendreDessin.enregistrer(this, b, chap)) t("apr.tel.enregistre") else t("apr.exam.diplome_ecrit",
+                    "chemin" to "~/${jeu.terrain.name}/diplome_$chap.png"), Commandes.ROSE)
+            }
+            .setNeutralButton(t("apr.tel.imprimer")) { _, _ -> try { ApprendreDessin.imprimer(this, b, chap) } catch (e: Exception) { android.util.Log.e("TG", "impression", e) } }
+            .setNegativeButton("✕", null)
+            .show()
     }
 
     /**
@@ -1102,6 +1136,18 @@ class TerminalActivity : Activity() {
                 else d.setBounds(0, 0, (36 * dp).toInt(), (56 * dp).toInt())
                 sb.setSpan(android.text.style.ImageSpan(d, android.text.style.DynamicDrawableSpan.ALIGN_BOTTOM),
                     debut, debut + 1, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
+            } else if (m.groupValues[1] == "picto" || m.groupValues[1] == "ombre") {
+                // ¤picto:cmd¤ / ¤picto:cmd:gris¤ : l'image du carnet illustré ; ¤ombre:id¤ : une bestiole pas encore rencontrée
+                val bm = if (m.groupValues[1] == "picto") ApprendreDessin.picto(m.groupValues[2], m.groupValues[3] == "gris")
+                    else Bestiaire.espece(m.groupValues[2])?.let { ApprendreDessin.ombre(it) }
+                if (bm != null) {
+                    val debut = sb.length
+                    sb.append("\uFFFC")
+                    val d = android.graphics.drawable.BitmapDrawable(resources, bm)
+                    val px = ((if (m.groupValues[1] == "picto") 36 else 40) * resources.displayMetrics.density).toInt()
+                    d.setBounds(0, 0, px, px * bm.height / maxOf(1, bm.width))
+                    sb.setSpan(android.text.style.ImageSpan(d, android.text.style.DynamicDrawableSpan.ALIGN_BOTTOM), debut, debut + 1, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
+                }
             } else if (m.groupValues[1].isNotEmpty()) {
                 val e = Bestiaire.espece(m.groupValues[1])
                 if (e != null) {
@@ -1384,10 +1430,25 @@ class TerminalActivity : Activity() {
             val pc = m.pc
             val goutee = cmd in jeu.vus && !pc
             val debut = sb.length
-            sb.append(if (pc) "🔒 " else if (goutee) "● " else "○ ")
+            val illustree = !pc && cmd in Apprendre.cmds()          // le carnet illustré (idée 21) : l'image 16 × 16
+            val img = if (illustree) ApprendreDessin.picto(cmd, gris = !goutee) else null
+            if (img != null) {
+                val p0 = sb.length
+                sb.append("\uFFFC ")
+                val dr = android.graphics.drawable.BitmapDrawable(resources, img)
+                val px = (36 * resources.displayMetrics.density).toInt()
+                dr.setBounds(0, 0, px, px)
+                sb.setSpan(android.text.style.ImageSpan(dr, android.text.style.DynamicDrawableSpan.ALIGN_BOTTOM), p0, p0 + 1, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
+            } else sb.append(if (pc) "🔒 " else if (goutee) "● " else "○ ")
             val debutCmd = sb.length
             sb.append(cmd)
             sb.setSpan(StyleSpan(Typeface.BOLD), debutCmd, sb.length, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
+            if (illustree) {                                        // la maîtrise (idée 43) : ●●◉
+                val n = Apprendre.niveauMaitrise(Apprendre.a(jeu).getJSONObject("maitrise").optJSONArray(cmd), goutee)
+                val r0 = sb.length
+                sb.append(" " + if (n == 3) "●●◉" else "●".repeat(n) + "○".repeat(3 - n))
+                sb.setSpan(ForegroundColorSpan(if (n == 3) 0xFFFFD75F.toInt() else 0xFF5FD787.toInt()), r0, sb.length, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
+            }
             Vert.ajouter(sb, "  $desc")
             val couleur = if (pc) 0xFF45455A.toInt() else if (goutee) 0xFFFFFFFF.toInt() else 0xFF6A6A85.toInt()
             sb.setSpan(ForegroundColorSpan(couleur), debut, sb.length, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
@@ -1404,6 +1465,14 @@ class TerminalActivity : Activity() {
                 val e = sb.length
                 Vert.ajouter(sb, "    ↳ " + t("lex.exemple", "ex" to ex) + "\n")
                 sb.setSpan(ForegroundColorSpan(0xFF87AFD7.toInt()), e, sb.length, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
+                if (!pc) {                                          // le bouton qui met l'exemple dans la ligne (sans le lancer)
+                    val b0 = sb.length
+                    sb.append("    [ ✎ " + t("apr.tel.mettre") + " ]\n")
+                    sb.setSpan(object : android.text.style.ClickableSpan() {
+                        override fun onClick(w: View) { basculerLexique(); remplacerSaisie(ex) }
+                    }, b0 + 4, sb.length - 1, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
+                    sb.setSpan(ForegroundColorSpan(0xFF5FD787.toInt()), b0, sb.length, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
+                }
             }
             // pour les grands, puis les options (-r = « récursif »…), voir Explique.kt
             if (!pc) {
@@ -1432,6 +1501,7 @@ class TerminalActivity : Activity() {
             }
         }
         lexiqueTexte.text = sb
+        lexiqueTexte.movementMethod = android.text.method.LinkMovementMethod.getInstance()   // « Mettre dans la ligne »
     }
 
     // ------------------------------------------------------------ fenêtre d'observation

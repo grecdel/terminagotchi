@@ -173,6 +173,8 @@ class EspaceEtat(private val jeu: Jeu, private val dossier: () -> java.io.File, 
         m.arrivees = arrivees.mapValues { maintenant - it.value }.filterValues { it < EspaceDessin.ARRIVEE }
         m.rangement = rangement
         m.options = options
+        m.course = Apprendre.course(jeu)
+        m.eclairs = Apprendre.eclairs(jeu)
         m.etat = cerveau.etat
         m.anime = BureauVie.animer(creature)
         m.mini = BureauVie.miniVie(creature, maintenant)
@@ -272,6 +274,8 @@ class EspaceEtat(private val jeu: Jeu, private val dossier: () -> java.io.File, 
             a.startsWith("opt:dispo:") -> Apparence.choisirDisposition(jeu, p[2])
             a == "opt:ranger" -> { options = false; rangement = true }
             a.startsWith("opt:effets:") -> jeu.module("effets").put("niveau", p[2])
+            a == "opt:course" -> Apprendre.a(jeu).put("course", !Apprendre.course(jeu))
+            a == "opt:eclairs" -> Apprendre.a(jeu).put("eclairs", !Apprendre.eclairs(jeu))
             a == "opt:tout" -> if (Apparence.a(jeu).optBoolean("tout")) Apparence.toutAfficher(jeu, false)
                 else { question = Apparence.questionAdulte(); options = false }
             else -> return

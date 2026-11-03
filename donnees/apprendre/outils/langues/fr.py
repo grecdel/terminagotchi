@@ -224,4 +224,5 @@ D = {
  "apr.tel.mettre": "Mettre dans la ligne",
  "apr.tel.course": "Course contre la montre",
  "apr.tel.eclairs": "Défis éclair surprises",
+ "apr.tel.reglages": "Réglages du jeu",
 }

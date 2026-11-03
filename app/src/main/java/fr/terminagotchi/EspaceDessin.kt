@@ -105,6 +105,9 @@ object EspaceDessin {
         var ordreOnglets = ONGLETS
         var dispo = "classique"
         var options = false
+        /** apprendre en jouant (idée 42) : la course contre la montre, les défis éclair surprises */
+        var course = false
+        var eclairs = true
         var tout = false
         var mienne = false
         /** le monde des biomes (onglet « Monde ») et le réglage des effets (tous, essentiels, aucun) */
@@ -764,6 +767,17 @@ object EspaceDessin {
                 if (sel) a(JAUNE, 30) else null, if (sel) a(JAUNE, 200) else null, sel)
         }
         y += 56 * z
+        tl.texte(t("apr.tel.reglages").uppercase(), 20 * z, y, 11.5f * z, DOUX, true)      // réglages du jeu (idée 42)
+        y += 12 * z
+        for ((cle, on) in listOf("course" to m.course, "eclairs" to m.eclairs)) {
+            tl.rrect(x, y, lw, 40 * z, 12 * z, PANNEAU, BORD, 1f * z)
+            tl.texte(t("apr.tel.$cle"), x + 14 * z, y + 26 * z, 14 * z, TEXTE, true)
+            tl.rrect(x + lw - 58 * z, y + 9 * z, 44 * z, 22 * z, 11 * z, if (on) a(VERT, 70) else 0x14FFFFFF, if (on) a(VERT, 200) else BORD_FORT, 1f * z)
+            tl.ellipse(x + lw - (if (on) 25 else 47) * z, y + 20 * z, 8 * z, 8 * z, if (on) VERT else DOUX)
+            Z.add(Zone(x, y, lw, 40 * z, "opt:$cle"))
+            y += 46 * z
+        }
+        y += 10 * z
         tl.texte(t("app.opt.grands").uppercase(), 20 * z, y, 11.5f * z, JAUNE, true)
         y += 12 * z
         tl.rrect(x, y, lw, 100 * z, 16 * z, a(JAUNE, 12), a(JAUNE, 120), 1f * z)

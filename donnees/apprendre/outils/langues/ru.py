@@ -210,4 +210,5 @@ D = {
  "apr.tel.mettre": "Вставить в строку",
  "apr.tel.course": "Гонка на время",
  "apr.tel.eclairs": "Внезапные молниеносные задания",
+ "apr.tel.reglages": "Настройки игры",
 }

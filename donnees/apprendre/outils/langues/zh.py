@@ -210,4 +210,5 @@ D = {
  "apr.tel.mettre": "放进命令行",
  "apr.tel.course": "计时竞速",
  "apr.tel.eclairs": "突然出现的闪电挑战",
+ "apr.tel.reglages": "游戏设置",
 }

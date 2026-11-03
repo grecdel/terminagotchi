@@ -210,4 +210,5 @@ D = {
  "apr.tel.mettre": "سطر میں ڈالو",
  "apr.tel.course": "گھڑی کے ساتھ دوڑ",
  "apr.tel.eclairs": "اچانک بجلی چیلنج",
+ "apr.tel.reglages": "کھیل کی ترتیبات",
 }

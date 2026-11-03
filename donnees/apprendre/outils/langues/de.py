@@ -210,4 +210,5 @@ D = {
  "apr.tel.mettre": "In die Zeile setzen",
  "apr.tel.course": "Rennen gegen die Uhr",
  "apr.tel.eclairs": "Überraschende Blitzaufgaben",
+ "apr.tel.reglages": "Spiel-Einstellungen",
 }
