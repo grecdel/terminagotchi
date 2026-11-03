@@ -503,8 +503,13 @@ def _vivant(pid, nom=None):
     proc = Path(f"/proc/{pid}")
     if proc.is_dir():
         try:
-            if "State:\tZ" in (proc / "status").read_text():
+            st = (proc / "status").read_text()
+            if "State:\tZ" in st:
                 return False
+            # (3 nov.) tué mais pas encore mort (machine chargée) : SIGTERM ou SIGKILL en attente = déjà fini pour le jeu
+            for ln in st.splitlines():
+                if ln.startswith(("SigPnd:", "ShdPnd:")) and int(ln.split()[1], 16) & ((1 << 14) | (1 << 8)):
+                    return False
             if nom and nom.encode() not in (proc / "cmdline").read_bytes():
                 return False                                  # le numéro a été réutilisé par autre chose
         except OSError:
