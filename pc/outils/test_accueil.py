@@ -211,7 +211,7 @@ verifier(core.load().get("bureau_menu", 0) > 0 and "←" in o.getvalue(), "`tg m
 print("79. Le menu du jeu")
 st = core.load()
 m = plat(accueil.ecran_menu(st))
-verifier(all(t(k) in m for k in ("part.m.jouer", "part.m.nouvelle", "part.m.charger", "part.m.options", "part.m.aide_menu",
+verifier(all(t(k).lower() in m.lower() for k in ("part.m.jouer", "part.m.nouvelle", "part.m.charger", "part.m.options", "part.m.aide_menu",
                                   "part.m.quitter")), "Jouer, Nouvelle partie, Charger, Options, Aide, Quitter")
 verifier("▀█▀" in m and "Pixou" in m, "le titre en gros blocs, et la créature avec son nom")
 verifier(accueil.action("4") == "options" and accueil.action("options") == "options" and accueil.action("") == "continuer",

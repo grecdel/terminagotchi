@@ -35,7 +35,7 @@ def render(state, frame, interactif, anim=None, tic=None):
     if isinstance(anim, intro.Ecran) or intro.en_cours(state):   # le camp, l'œuf qui arrive, la liste (intro.py)
         lignes = intro.lignes_ecran_oeuf(state, frame, anim)
         return "\n".join(lignes + ["", title_line(t("app.journal"))] + [" " + l for l in state["log"][-3:]]) + "\n"
-    cid = intro.a_montrer(state) if interactif else None
+    cid = intro.a_montrer(state, fenetre=True) if interactif else None
     if cid and not anim:                    # une nouveauté à présenter (merci, puis chaque fonction qui s'ouvre)
         return "\n".join(intro.lignes_ecran(state, cid)) + "\n"
     lvl = core.level(state["xp"])
@@ -1005,9 +1005,9 @@ def fenetre(once):
                 anim = None
                 rendu_fin.effacer()
                 clear()
-                if intro.a_montrer(state) and not intro.en_cours(state) and k.lower() != "q":
+                if intro.a_montrer(state, fenetre=True) and not intro.en_cours(state) and k.lower() != "q":
                     if k in ("\r", "\n", " "):          # Entrée : l'écran de présentation est lu
-                        state = core.modifier(intro.lu) or state
+                        state = core.modifier(lambda s: intro.lu(s, fenetre=True)) or state
                     continue
                 if k in ("\r", "\n"):                    # I5 : Entrée = retourner dans le terminal (après `exit`)
                     r = _retour_terminal(clav)

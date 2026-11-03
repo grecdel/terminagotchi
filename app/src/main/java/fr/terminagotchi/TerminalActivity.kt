@@ -298,6 +298,15 @@ class TerminalActivity : Activity() {
         }
     }
 
+    /** Un clavier branché ou débranché (configChanges : l'écran n'est pas recréé) : idée 69, la rangée s'efface ou revient. */
+    override fun onConfigurationChanged(c: android.content.res.Configuration) {
+        super.onConfigurationChanged(c)
+        val avant = clavierBranche
+        clavierBranche = clavierPhysique()
+        if (clavierBranche && !avant) ecrire("⌨ " + t("ad.k.efface"), 0xFF9A9AB0.toInt())
+        if (::jeu.isInitialized) rafraichir()
+    }
+
     override fun onPause() {
         super.onPause()
         ecranVisible = false                      // écran éteint ou appli cachée : la vie se met en pause

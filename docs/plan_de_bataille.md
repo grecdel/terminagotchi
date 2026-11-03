@@ -1158,6 +1158,33 @@ minute montée en code (ffmpeg, images du jeu, musique synthétisée, sans voix 
 À faire plus tard : citer `site/public/imprimer/` dans `LICENSE-images.md`, puis relancer
 `donnees/guilde/outils/fiches_guilde.py` (guilde.json embarque ce fichier, `test_guilde.py` vérifie qu'ils sont identiques).
 
+## ✅ Accueil et aide — codé (3 novembre, maquettes validées) : idées 1, 2, 4, 5, 6, 9, 22, 25, 66, 69, 79
+
+Règles communes : `pc/tg/aide_douce.py` = `AideDouce.kt` (vecteurs `donnees/accueil/vecteurs.json`,
+`pc/outils/vecteurs_accueil.py`) ; écrans dessinés du téléphone : `AccueilDessin.kt` (Peintre, aperçus JVM).
+- **1 Qui est avec toi ?** : au tout premier lancement sur l'appareil (aucune autre partie), avant l'histoire ; avec un
+  adulte, 4 conseils (relire : `tg aide parents`, `aide parents`, Aide du menu). Choix gardé dans la sauvegarde, jamais envoyé.
+- **2 Premier ls** : PC, les cases se dessinent dans le terminal (2–3 s, une touche passe) ; téléphone, les puces de
+  l'observatoire apparaissent en pixels, puis « Waouh, j'y vois ! ». Plus court (2 s) après le camp qui se rallume.
+- **4 Flèche** : pendant l'œuf, jusqu'à 3 commandes réussies (revient après 1 min sans rien taper) ; PC « ▼ tape ta
+  commande ici », téléphone bulle + ligne de saisie verte + ◀◀.
+- **5 Rangée** : ↑ ⇥ ^C - / ~ | . > ⋯ sur une ligne, ⋯ = ↓ >> * " ' $ & _ = ; la touche du symbole attendu s'allume ;
+  PC : la 1re fois qu'un symbole arrive, où il est (AZERTY en français, QWERTY sinon, `tg clavier azerty|qwerty`).
+- **6 Perdu** : bouton 🧭 (jaune vif après 2 erreurs de suite ou 2 min), carte « Pas de panique » ; PC `perdu` / `tg perdu`.
+- **9 Fermer et revenir** : écran à la fin du tronc commun (une fois) ; « Te revoilà ! » dans un nouveau terminal / à la
+  réouverture de l'appli ; ✕ entouré de jaune ; aucune récompense.
+- **22 `ls ?` / `? ls`** : fiche courte (jamais un repas) ; PC : l'erreur de bash est rassurée, ligne « ? est un joker ».
+- **25 Indices** : `indice` / bouton 💡 dans un exercice, une épreuve de dressage ou une leçon « défi sans aide » ; 3
+  niveaux tirés de la commande attendue ; rien n'est retiré, seul « forge.sans_indice » n'est pas donné après la réponse.
+  (Sommet et chasse au trésor : leurs indices existants restent.)
+- **66 Fin grisée** : téléphone et terminal du jeu (vsh/), Tab ou → l'accepte ; jamais pendant un exercice ou un défi.
+- **69 Tout au clavier** : téléphone, d'office avec un clavier branché (`clavier on|off`) : rangée effacée, anneau jaune,
+  Tab / Entrée / Échap ; bureau : ← → Entrée Échap dans le menu rond, `tg menu` l'ouvre.
+- **79 Menu** : téléphone, écran du camp + pluie de pixels + titre en pixels + créature ; PC, titre en blocs, ↑ ↓ Entrée ;
+  Jouer, Nouvelle partie, Charger, Options (le compte y est), Aide, Quitter.
+Tests : `pc/outils/test_accueil.py`, `tests/jvm/Accueil.kt`, scénario du téléphone virtuel. Captures :
+`/home/claude/outils/ameliorations/accueil_aide/captures/` (`pc/outils/capture_accueil.py`).
+
 ## Ce qui attend une décision ou une action du propriétaire
 
 - Tester l'APK d'essai de la phase 1 et donner ses retours.

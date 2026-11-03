@@ -273,24 +273,32 @@ def lignes_liste(state, couleur=True):
 
 
 # ---------------------------------------------------------------- les écrans (merci, fonctions)
-def a_montrer(state):
+def _file(state, fenetre=False):
+    """La file des écrans ; fenetre : celle de la fenêtre du jeu (tg), sans « fermer et revenir » (idée 9 : il parle
+    du terminal, il est montré par l'invite du shell)."""
+    f = d_(state)["file"]
+    return [x for x in f if x != "fermer"] if fenetre else f
+
+
+def a_montrer(state, fenetre=False):
     """L'écran « Nouveau : … » à montrer, ou None. P2-6 : pas en pleine étape de leçon (il attend qu'elle soit réussie),
     sauf l'écran « merci » de l'éclosion."""
-    d = d_(state)
-    if not d["file"]:
+    f = _file(state, fenetre)
+    if not f:
         return None
-    if d["file"][0] not in ("merci", "merci2"):
+    if f[0] not in ("merci", "merci2"):
         from . import histoire
         if histoire.en_pleine_etape(state):
             return None
-    return d["file"][0]
+    return f[0]
 
 
-def lu(state):
+def lu(state, fenetre=False):
     """L'écran du dessus de la file a été lu."""
     d = d_(state)
-    if d["file"]:
-        d["file"].pop(0)
+    f = _file(state, fenetre)
+    if f:
+        d["file"].remove(f[0])
 
 
 def cmds(fid, tel=False):

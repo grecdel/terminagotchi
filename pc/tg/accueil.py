@@ -103,7 +103,7 @@ def ecran_menu(st, choisi=0):
         lib = lib[:1].upper() + lib[1:]
         apres = "     " + f"{DIM}{_qui(st)}{RESET}" if quoi == "continuer" else ""
         if k == choisi:
-            out.append(f"   \x1b[48;5;78m\x1b[38;5;16m{BOLD} ▶ {num}  {lib} {RESET}{apres}")
+            out.append(f"   {fg(84)}{BOLD}▶ {num}  {lib}{RESET}{apres}")
         else:
             out.append(f"     {BOLD}{num}{RESET}  {lib}{apres}")
     out += ["", f"   {DIM}" + t("part.m.touches") + RESET, f"   {DIM}" + t("part.m.compte_ligne", compte=compte) + RESET]
