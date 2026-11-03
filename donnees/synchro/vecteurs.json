@@ -1,0 +1,110 @@
+{
+ "nuage": [
+  {
+   "nom": "pas de compte",
+   "compte": {},
+   "total": 9,
+   "envoi": false,
+   "attendu": null
+  },
+  {
+   "nom": "pas de compte, même pendant un envoi",
+   "compte": {
+    "pseudo": "Lou"
+   },
+   "total": 9,
+   "envoi": true,
+   "attendu": null
+  },
+  {
+   "nom": "à jour : rien à l'écran",
+   "compte": {
+    "cle": "k",
+    "hors": false,
+    "base": {
+     "total": 9
+    }
+   },
+   "total": 9,
+   "envoi": false,
+   "attendu": null
+  },
+  {
+   "nom": "envoi en cours",
+   "compte": {
+    "cle": "k",
+    "hors": true,
+    "base": {
+     "total": 2
+    }
+   },
+   "total": 9,
+   "envoi": true,
+   "attendu": [
+    "envoi",
+    0
+   ]
+  },
+  {
+   "nom": "hors ligne, 3 en attente",
+   "compte": {
+    "cle": "k",
+    "hors": true,
+    "base": {
+     "total": 6
+    }
+   },
+   "total": 9,
+   "envoi": false,
+   "attendu": [
+    "hors",
+    3
+   ]
+  },
+  {
+   "nom": "hors ligne, rien en attente",
+   "compte": {
+    "cle": "k",
+    "hors": true,
+    "base": {
+     "total": 9
+    }
+   },
+   "total": 9,
+   "envoi": false,
+   "attendu": [
+    "hors",
+    0
+   ]
+  },
+  {
+   "nom": "hors ligne sans base (premier envoi raté)",
+   "compte": {
+    "cle": "k",
+    "hors": true
+   },
+   "total": 4,
+   "envoi": false,
+   "attendu": [
+    "hors",
+    4
+   ]
+  },
+  {
+   "nom": "hors ligne, base plus grande (autre appareil)",
+   "compte": {
+    "cle": "k",
+    "hors": true,
+    "base": {
+     "total": 50
+    }
+   },
+   "total": 9,
+   "envoi": false,
+   "attendu": [
+    "hors",
+    0
+   ]
+  }
+ ]
+}

@@ -66,6 +66,49 @@ def serveur(state):
     return url.rstrip("/") if url.startswith(("https://", "http://")) else ""
 
 
+# ================================================================ le petit nuage (idée 74)
+ENVOI_MAX = 30           # secondes : au-delà, une synchro « en cours » est considérée finie (fil coupé)
+
+
+def etat_nuage(c, total, envoi):
+    """Ce que montre le nuage : None (pas de compte, ou tout est à jour : rien à l'écran), ("envoi", 0) pendant
+    un envoi, ("hors", n) quand la dernière synchro n'a pas pu joindre le site (n : commandes gardées ici, pas
+    encore envoyées). Mêmes vecteurs que Recensement.etatNuage (donnees/synchro/vecteurs.json)."""
+    if not isinstance(c, dict) or not c.get("cle"):
+        return None
+    if envoi:
+        return ("envoi", 0)
+    if c.get("hors"):
+        base = c.get("base") if isinstance(c.get("base"), dict) else {}
+        return ("hors", max(0, int(total or 0) - int(base.get("total", 0) or 0)))
+    return None
+
+
+def nuage(state, maintenant=None):
+    c = state.get("compte") or {}
+    envoi = (c.get("en_cours") or 0) > (maintenant or time.time()) - ENVOI_MAX
+    return etat_nuage(c, state.get("total", 0), envoi)
+
+
+def nuage_pc(state):
+    """Le nuage à droite du nom, sur l'écran de tg (texte coloré), ou "" quand il n'y a rien à montrer."""
+    from .plateforme import RESET, fg
+    e = nuage(state)
+    if not e:
+        return ""
+    if e[0] == "envoi":
+        return f"{fg(111)}☁ {t('rec.nuage.mot.envoi')}{RESET}"
+    return f"{fg(215)}📴 {t('rec.nuage.mot.hors')}" + (f" · {t('rec.nuage.attente', n=e[1])}" if e[1] else "") + RESET
+
+
+def phrase_nuage(state):
+    """La phrase qui explique le nuage (`compte`, ou le toucher sur le téléphone), ou ""."""
+    e = nuage(state)
+    if not e:
+        return ""
+    return t("rec.nuage.dit.envoi") if e[0] == "envoi" else t("rec.nuage.dit.hors", n=e[1])
+
+
 # ================================================================ fusion
 
 def _instantane(state):
@@ -209,8 +252,10 @@ def synchroniser(forcer=False):
         if str(s.get("partie") or "1") != charge["partie"]:
             return                                 # on a changé de partie pendant la synchro
         if "etat" not in r:
+            cc["hors"] = True                      # le nuage orange : on joue normalement, l'envoi attendra
             resultat.append(t("rec.sync.impossible", erreur=r.get("erreur", t("rec.err.inconnue"))))
             return
+        cc["hors"] = False
         if url and not cc.get("serveur"):
             cc["serveur"] = url
         avant = s["xp"]
@@ -336,7 +381,9 @@ def commande(args):
         return t("rec.oublie")
     dernier = c.get("dernier", 0)
     quand = time.strftime("%H:%M", time.localtime(dernier)) if dernier else t("rec.jamais")
-    return t("rec.resume", pseudo=_colore(st, c["pseudo"]), quand=quand, profil=f"{url}/joueur/{c['pseudo']}", ctf=f"{url}/ctf")
+    dit = phrase_nuage(st)                     # idée 74 : hors ligne → combien de choses attendent l'envoi
+    return t("rec.resume", pseudo=_colore(st, c["pseudo"]), quand=quand, profil=f"{url}/joueur/{c['pseudo']}",
+             ctf=f"{url}/ctf") + ("\n" + dit if dit else "")
 
 
 def site(args):

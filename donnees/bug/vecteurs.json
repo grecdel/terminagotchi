@@ -1,0 +1,189 @@
+{
+ "nettoyer": [
+  {
+   "nom": "dossier personnel Linux",
+   "home": "/home/lou",
+   "utilisateur": "lou",
+   "caches": [
+    "Pixel",
+    "Loulou"
+   ],
+   "texte": "FileNotFoundError: '/home/lou/terrain/Pixel.txt'",
+   "attendu": "FileNotFoundError: '~/terrain/….txt'"
+  },
+  {
+   "nom": "Windows, barres dans les deux sens",
+   "home": "C:\\Users\\Marie",
+   "utilisateur": "Marie",
+   "caches": [],
+   "texte": "C:\\Users\\Marie\\jeu et C:/Users/Marie/jeu, Marie",
+   "attendu": "~\\jeu et ~/jeu, ~"
+  },
+  {
+   "nom": "mots trop courts gardés",
+   "home": "~",
+   "utilisateur": "al",
+   "caches": [
+    "Bo",
+    ""
+   ],
+   "texte": "Bo et al vont bien",
+   "attendu": "Bo et al vont bien"
+  },
+  {
+   "nom": "pseudo et nom dans un message",
+   "home": "/data/user/0/fr.terminagotchi/files",
+   "utilisateur": "",
+   "caches": [
+    "Noisette",
+    "Zorglub"
+   ],
+   "texte": "Noisette (Zorglub) : /data/user/0/fr.terminagotchi/files/terrain/x",
+   "attendu": "… (…) : ~/terrain/x"
+  },
+  {
+   "nom": "accents et emoji",
+   "home": "/home/élodie",
+   "utilisateur": "élodie",
+   "caches": [
+    "Étoile✨"
+   ],
+   "texte": "/home/élodie/a — Étoile✨ dit bonjour à élodie",
+   "attendu": "~/a — … dit bonjour à ~"
+  }
+ ],
+ "rapport": [
+  {
+   "nom": "PC, avec une panne",
+   "champs": {
+    "version": "0.4 · PC",
+    "appareil": "Linux · Python 3.12",
+    "langue": "fr",
+    "ecran": "tg (100 × 30)",
+    "commande": "tg monde",
+    "erreur": "KeyError: 'biome' (monde_dessin.py:212)",
+    "trace": [
+     "app.py:12 _main",
+     "monde_dessin.py:212 dessiner",
+     "KeyError: 'biome'"
+    ]
+   },
+   "etiquettes": {
+    "faisais": "Ce que je faisais :",
+    "version": "Version :",
+    "appareil": "Appareil :",
+    "langue": "Langue :",
+    "ecran": "Écran :",
+    "commande": "Dernière commande :",
+    "erreur": "Erreur :",
+    "sans": "un souci dans le jeu",
+    "pied": "(Rapport préparé par Terminagotchi.)"
+   },
+   "titre": "[bug] KeyError: 'biome' (monde_dessin.py:212)",
+   "corps": "Ce que je faisais : \n\nVersion : 0.4 · PC\nAppareil : Linux · Python 3.12\nLangue : fr\nÉcran : tg (100 × 30)\nDernière commande : tg monde\nErreur : KeyError: 'biome' (monde_dessin.py:212)\n\n```\napp.py:12 _main\nmonde_dessin.py:212 dessiner\nKeyError: 'biome'\n```\n\n(Rapport préparé par Terminagotchi.)",
+   "adresse": "https://github.com/grecdel/terminagotchi/issues/new?title=%5Bbug%5D%20KeyError%3A%20%27biome%27%20%28monde_dessin.py%3A212%29&body=Ce%20que%20je%20faisais%20%3A%20%0A%0AVersion%20%3A%200.4%20%C2%B7%20PC%0AAppareil%20%3A%20Linux%20%C2%B7%20Python%203.12%0ALangue%20%3A%20fr%0A%C3%89cran%20%3A%20tg%20%28100%20%C3%97%2030%29%0ADerni%C3%A8re%20commande%20%3A%20tg%20monde%0AErreur%20%3A%20KeyError%3A%20%27biome%27%20%28monde_dessin.py%3A212%29%0A%0A%60%60%60%0Aapp.py%3A12%20_main%0Amonde_dessin.py%3A212%20dessiner%0AKeyError%3A%20%27biome%27%0A%60%60%60%0A%0A%28Rapport%20pr%C3%A9par%C3%A9%20par%20Terminagotchi.%29"
+  },
+  {
+   "nom": "téléphone, sans panne notée",
+   "champs": {
+    "version": "0.1.97 · Android",
+    "appareil": "Android 14 · téléphone",
+    "langue": "fr",
+    "ecran": "terminal, onglet 2 sur 2",
+    "commande": "",
+    "erreur": "",
+    "trace": []
+   },
+   "etiquettes": {
+    "faisais": "Ce que je faisais :",
+    "version": "Version :",
+    "appareil": "Appareil :",
+    "langue": "Langue :",
+    "ecran": "Écran :",
+    "commande": "Dernière commande :",
+    "erreur": "Erreur :",
+    "sans": "un souci dans le jeu",
+    "pied": "(Rapport préparé par Terminagotchi.)"
+   },
+   "titre": "[bug] un souci dans le jeu",
+   "corps": "Ce que je faisais : \n\nVersion : 0.1.97 · Android\nAppareil : Android 14 · téléphone\nLangue : fr\nÉcran : terminal, onglet 2 sur 2\n\n(Rapport préparé par Terminagotchi.)",
+   "adresse": "https://github.com/grecdel/terminagotchi/issues/new?title=%5Bbug%5D%20un%20souci%20dans%20le%20jeu&body=Ce%20que%20je%20faisais%20%3A%20%0A%0AVersion%20%3A%200.1.97%20%C2%B7%20Android%0AAppareil%20%3A%20Android%2014%20%C2%B7%20t%C3%A9l%C3%A9phone%0ALangue%20%3A%20fr%0A%C3%89cran%20%3A%20terminal%2C%20onglet%202%20sur%202%0A%0A%28Rapport%20pr%C3%A9par%C3%A9%20par%20Terminagotchi.%29"
+  },
+  {
+   "nom": "trace longue et lignes trop longues (coupées)",
+   "champs": {
+    "version": "0.4 · PC",
+    "appareil": "Windows 11 · terminal du jeu",
+    "langue": "ja",
+    "ecran": "tg (80 × 24)",
+    "commande": "tg sauvegarde exporter ~/clé",
+    "erreur": "ValueError: xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx (sauvegarde.py:9)",
+    "trace": [
+     "f0.py:0 g0",
+     "f1.py:1 g1",
+     "f2.py:2 g2",
+     "f3.py:3 g3",
+     "f4.py:4 g4",
+     "f5.py:5 g5",
+     "f6.py:6 g6",
+     "f7.py:7 g7",
+     "f8.py:8 g8",
+     "f9.py:9 g9",
+     "f10.py:10 g10",
+     "f11.py:11 g11",
+     "f12.py:12 g12",
+     "f13.py:13 g13",
+     "f14.py:14 g14",
+     "f15.py:15 g15",
+     "f16.py:16 g16",
+     "f17.py:17 g17",
+     "f18.py:18 g18",
+     "f19.py:19 g19",
+     "ValueError: éééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééé"
+    ]
+   },
+   "etiquettes": {
+    "faisais": "Ce que je faisais :",
+    "version": "Version :",
+    "appareil": "Appareil :",
+    "langue": "Langue :",
+    "ecran": "Écran :",
+    "commande": "Dernière commande :",
+    "erreur": "Erreur :",
+    "sans": "un souci dans le jeu",
+    "pied": "(Rapport préparé par Terminagotchi.)"
+   },
+   "titre": "[bug] ValueError: xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx…",
+   "corps": "Ce que je faisais : \n\nVersion : 0.4 · PC\nAppareil : Windows 11 · terminal du jeu\nLangue : ja\nÉcran : tg (80 × 24)\nDernière commande : tg sauvegarde exporter ~/clé\nErreur : ValueError: xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx (sauvegarde.py:9)\n\n```\nf9.py:9 g9\nf10.py:10 g10\nf11.py:11 g11\nf12.py:12 g12\nf13.py:13 g13\nf14.py:14 g14\nf15.py:15 g15\nf16.py:16 g16\nf17.py:17 g17\nf18.py:18 g18\nf19.py:19 g19\nValueError: ééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééé…\n```\n\n(Rapport préparé par Terminagotchi.)",
+   "adresse": "https://github.com/grecdel/terminagotchi/issues/new?title=%5Bbug%5D%20ValueError%3A%20xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx%E2%80%A6&body=Ce%20que%20je%20faisais%20%3A%20%0A%0AVersion%20%3A%200.4%20%C2%B7%20PC%0AAppareil%20%3A%20Windows%2011%20%C2%B7%20terminal%20du%20jeu%0ALangue%20%3A%20ja%0A%C3%89cran%20%3A%20tg%20%2880%20%C3%97%2024%29%0ADerni%C3%A8re%20commande%20%3A%20tg%20sauvegarde%20exporter%20~%2Fcl%C3%A9%0AErreur%20%3A%20ValueError%3A%20xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx%20%28sauvegarde.py%3A9%29%0A%0A%60%60%60%0Af9.py%3A9%20g9%0Af10.py%3A10%20g10%0Af11.py%3A11%20g11%0Af12.py%3A12%20g12%0Af13.py%3A13%20g13%0Af14.py%3A14%20g14%0Af15.py%3A15%20g15%0Af16.py%3A16%20g16%0Af17.py%3A17%20g17%0Af18.py%3A18%20g18%0Af19.py%3A19%20g19%0AValueError%3A%20%C3%A9%C3%A9%C3%A9%C3%A9%C3%A9%C3%A9%C3%A9%C3%A9%C3%A9%C3%A9%C3%A9%C3%A9%C3%A9%C3%A9%C3%A9%C3%A9%C3%A9%C3%A9%C3%A9%C3%A9%C3%A9%C3%A9%C3%A9%C3%A9%C3%A9%C3%A9%C3%A9%C3%A9%C3%A9%C3%A9%C3%A9%C3%A9%C3%A9%C3%A9%C3%A9%C3%A9%C3%A9%C3%A9%C3%A9%C3%A9%C3%A9%C3%A9%C3%A9%C3%A9%C3%A9%C3%A9%C3%A9%C3%A9%C3%A9%C3%A9%C3%A9%C3%A9%C3%A9%C3%A9%C3%A9%C3%A9%C3%A9%C3%A9%C3%A9%C3%A9%C3%A9%C3%A9%C3%A9%C3%A9%C3%A9%C3%A9%C3%A9%C3%A9%C3%A9%C3%A9%C3%A9%C3%A9%C3%A9%C3%A9%C3%A9%C3%A9%C3%A9%C3%A9%C3%A9%C3%A9%C3%A9%C3%A9%C3%A9%C3%A9%C3%A9%C3%A9%C3%A9%C3%A9%C3%A9%C3%A9%C3%A9%C3%A9%C3%A9%C3%A9%C3%A9%C3%A9%C3%A9%C3%A9%C3%A9%C3%A9%C3%A9%C3%A9%C3%A9%C3%A9%C3%A9%C3%A9%C3%A9%C3%A9%C3%A9%C3%A9%C3%A9%C3%A9%C3%A9%C3%A9%C3%A9%C3%A9%C3%A9%C3%A9%C3%A9%C3%A9%C3%A9%C3%A9%C3%A9%C3%A9%C3%A9%C3%A9%C3%A9%C3%A9%C3%A9%C3%A9%C3%A9%C3%A9%C3%A9%C3%A9%C3%A9%C3%A9%C3%A9%C3%A9%C3%A9%C3%A9%C3%A9%C3%A9%C3%A9%C3%A9%C3%A9%C3%A9%C3%A9%E2%80%A6%0A%60%60%60%0A%0A%28Rapport%20pr%C3%A9par%C3%A9%20par%20Terminagotchi.%29"
+  },
+  {
+   "nom": "caractères spéciaux dans l'adresse",
+   "champs": {
+    "version": "1 & 2 = 3?",
+    "appareil": "a+b/c#d%e",
+    "langue": "ar",
+    "ecran": "中文 · 😵",
+    "commande": "echo \"*\" 'x'",
+    "erreur": "",
+    "trace": [
+     "~ ok"
+    ]
+   },
+   "etiquettes": {
+    "faisais": "Ce que je faisais :",
+    "version": "Version :",
+    "appareil": "Appareil :",
+    "langue": "Langue :",
+    "ecran": "Écran :",
+    "commande": "Dernière commande :",
+    "erreur": "Erreur :",
+    "sans": "un souci dans le jeu",
+    "pied": "(Rapport préparé par Terminagotchi.)"
+   },
+   "titre": "[bug] un souci dans le jeu",
+   "corps": "Ce que je faisais : \n\nVersion : 1 & 2 = 3?\nAppareil : a+b/c#d%e\nLangue : ar\nÉcran : 中文 · 😵\nDernière commande : echo \"*\" 'x'\n\n```\n~ ok\n```\n\n(Rapport préparé par Terminagotchi.)",
+   "adresse": "https://github.com/grecdel/terminagotchi/issues/new?title=%5Bbug%5D%20un%20souci%20dans%20le%20jeu&body=Ce%20que%20je%20faisais%20%3A%20%0A%0AVersion%20%3A%201%20%26%202%20%3D%203%3F%0AAppareil%20%3A%20a%2Bb%2Fc%23d%25e%0ALangue%20%3A%20ar%0A%C3%89cran%20%3A%20%E4%B8%AD%E6%96%87%20%C2%B7%20%F0%9F%98%B5%0ADerni%C3%A8re%20commande%20%3A%20echo%20%22%2A%22%20%27x%27%0A%0A%60%60%60%0A~%20ok%0A%60%60%60%0A%0A%28Rapport%20pr%C3%A9par%C3%A9%20par%20Terminagotchi.%29"
+  }
+ ]
+}

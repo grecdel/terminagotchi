@@ -24,6 +24,29 @@ object Recensement {
 
     fun compte(jeu: Jeu): JSONObject = jeu.module("compte")
 
+    // ---------------------------------------------------------------- le petit nuage (idée 74)
+    /** Une synchro est en route (le nuage bleu « envoi… »). */
+    val envoiEnCours: Boolean get() = enCours
+
+    /** Ce que montre le nuage : null (pas de compte, ou tout est à jour : rien à l'écran), « envoi » pendant un envoi,
+     *  « hors » quand la dernière synchro n'a pas pu joindre le site (+ les commandes gardées ici, pas encore envoyées).
+     *  Mêmes vecteurs que recense.etat_nuage (donnees/synchro/vecteurs.json). */
+    fun etatNuage(c: JSONObject, total: Int, envoi: Boolean): Pair<String, Int>? {
+        if (c.optString("cle").isEmpty()) return null
+        if (envoi) return "envoi" to 0
+        if (c.optBoolean("hors")) return "hors" to maxOf(0, total - (c.optJSONObject("base")?.optInt("total") ?: 0))
+        return null
+    }
+
+    fun nuage(jeu: Jeu): Pair<String, Int>? = etatNuage(compte(jeu), jeu.total, enCours)
+
+    /** La phrase qui explique le nuage (le toucher, ou `compte`), ou "". */
+    fun phraseNuage(jeu: Jeu): String = when (nuage(jeu)?.first) {
+        "envoi" -> t("rec.nuage.dit.envoi")
+        "hors" -> t("rec.nuage.dit.hors", "n" to nuage(jeu)!!.second)
+        else -> ""
+    }
+
     fun aUnCompte(jeu: Jeu) = compte(jeu).optString("cle").isNotEmpty()
 
     // ---------------------------------------------------------------- réseau (hors de l'écran)
@@ -128,8 +151,12 @@ object Recensement {
     fun appliquer(jeu: Jeu, p: Preparation, r: JSONObject, url: String): String {
         enCours = false
         nouveau = false
-        val srv = r.optJSONObject("etat") ?: return t("rec.sync.impossible", "erreur" to r.optString("erreur", t("rec.err.inconnue")))
         val c = compte(jeu)
+        val srv = r.optJSONObject("etat") ?: run {
+            c.put("hors", true)                     // le nuage orange : on joue normalement, l'envoi attendra
+            return t("rec.sync.impossible", "erreur" to r.optString("erreur", t("rec.err.inconnue")))
+        }
+        c.put("hors", false)
         if (c.optString("serveur").isEmpty() && url.isNotEmpty()) c.put("serveur", url)
         val snap = p.snap
         val avant = jeu.xp

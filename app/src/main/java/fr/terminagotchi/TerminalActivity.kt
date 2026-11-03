@@ -86,6 +86,13 @@ class TerminalActivity : Activity() {
     private var confirmerParent: List<String>? = null
     /** la question des grands avant « Tout afficher » (options de l'espace) : la réponse se tape ici */
     private var questionAdulte: Pair<String, String>? = null
+    /** idée 76 : « bug » → la question des grands (« Tu es un adulte ? »), puis la carte du rapport (Signaler.kt) */
+    private var questionBug: Pair<String, String>? = null
+    private var carteBug: View? = null
+    private var rapportBug: Pair<String, String>? = null
+    private var puceBug: TextView? = null
+    /** idée 74 : l'état du nuage de synchro montré (null : rien) */
+    private var nuageMontre: String? = null
     private var ambiance = System.currentTimeMillis() + AMBIANCE
 
     // ------------------------------------------------------------ accueil et aide (AideDouce.kt, idées du 3 novembre)
@@ -121,6 +128,7 @@ class TerminalActivity : Activity() {
         )
 
         val repares = try { Sante.auDemarrage(this) } catch (e: Exception) { emptyList() }   // répare doucement (Sante.kt)
+        garderLesPannes()                         // idée 76 : un plantage est noté (files/erreurs.log) pour `bug`
         jeu = Jeu(this)
         // lecture et confort (Confort.kt) : ce que le téléphone demande déjà (taille de police, animations coupées)
         Confort.echelleSysteme = resources.configuration.fontScale.toDouble()
@@ -187,6 +195,9 @@ class TerminalActivity : Activity() {
         creerAideDouce()
         chemin = findViewById(R.id.chemin)
         contenu = findViewById(R.id.contenu)
+        chemin.setOnClickListener {               // idée 74 : toucher le nuage l'explique en une ligne
+            Recensement.phraseNuage(jeu).takeIf { it.isNotEmpty() }?.let { ecrire(it, Commandes.BLEU) }
+        }
         majObservatoire(null)
 
         // Anti copier-coller : un bloc de plusieurs caractères arrivé d'un coup = collage.
@@ -277,8 +288,10 @@ class TerminalActivity : Activity() {
         for (r in repares) ecrire(r, Commandes.BLEU)
         if (jeu.existe) AideDouce.retour(jeu)?.let { jeu.dire(it, 12); ecrire(it, Commandes.ROSE) }   // idée 9
         if (clavierBranche) ecrire("⌨ " + t("ad.k.efface"), 0xFF9A9AB0.toInt())
+        if (!repris) panneDeLaDerniereFois()      // idée 76 : le jeu s'était fermé sur une panne
         jeu.sauver()
         rafraichir()
+        majDisposition()                          // idée 75 : deux colonnes sur une tablette en paysage
         if (jeu.existe && jeu.module("espace").optBoolean("ouvert")) {      // l'espace de travail était ouvert
             handler.post { ouvrirEspace(jeu.module("espace").optBoolean("classe"), dire = false) }
         }
@@ -312,6 +325,7 @@ class TerminalActivity : Activity() {
         clavierBranche = clavierPhysique()
         if (clavierBranche && !avant) ecrire("⌨ " + t("ad.k.efface"), 0xFF9A9AB0.toInt())
         if (::jeu.isInitialized) rafraichir()
+        majDisposition()
     }
 
     override fun onPause() {
@@ -390,6 +404,7 @@ class TerminalActivity : Activity() {
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: android.content.Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
+        if (requestCode == REQ_BUG) { enregistrerBug(if (resultCode == RESULT_OK) data?.data else null); return }
         if (requestCode != REQ_EXPORTER && requestCode != REQ_IMPORTER) return
         val uri = data?.data
         if (resultCode != RESULT_OK || uri == null || !jeu.existe) { ecrire(t("svg.tel.annule"), Commandes.ROSE); return }
@@ -1058,6 +1073,13 @@ class TerminalActivity : Activity() {
             rappel = null
             posHisto = -1
         }
+        questionBug?.let { q ->                       // idée 76 : « Tu es un adulte ? » avant le rapport
+            questionBug = null
+            vider()
+            ecrire("> $ligne", 0xFF5FD787.toInt())
+            if (ligne.trim() == q.second) ouvrirCarteBug() else ecrire(t("bug.non"), Commandes.ROSE)
+            return
+        }
         questionAdulte?.let { q ->                    // « Tout afficher » : la réponse des grands
             questionAdulte = null
             vider()
@@ -1196,7 +1218,11 @@ class TerminalActivity : Activity() {
             // exit ferme l'onglet ; dans le dernier, il referme le jeu (comme avant les onglets)
             "exit", "logout" -> { if (!fermerOnglet(onglets.actif)) finish(); return }
             "terminal" -> if (ligne.trim().split(Regex("\\s+")).size == 1) { ouvrirOnglet(); return }   // comme `tg terminal` sur PC
-            "tg" -> if (ligne.trim().split(Regex("\\s+")).drop(1) == listOf("terminal")) { ouvrirOnglet(); return }
+            "tg" -> when (ligne.trim().split(Regex("\\s+")).drop(1)) {
+                listOf("terminal") -> { ouvrirOnglet(); return }
+                listOf("bug") -> { demanderBug(); return }          // comme `tg bug` sur PC
+            }
+            "bug", "signaler" -> { demanderBug(); return }          // idée 76 : un adulte relit et envoie lui-même
             "parties" -> { ecrire(menu.ouvrir(), Commandes.ROSE); return }
             "langue" -> { ecrire(langue(ligne.trim().split(Regex("\\s+")).getOrNull(1)), Commandes.ROSE); return }
             "partie" -> { ecrire(menu.commande(ligne.substringAfter(' ', "")), Commandes.ROSE); rafraichir(); return }
@@ -1369,13 +1395,16 @@ class TerminalActivity : Activity() {
             jouerCreature("dort")
         }
 
+        cacherPuceBug()                           // idée 76 : la ligne « Signaler ce souci » s'en va à la commande suivante
         enCours = true
         invite.alpha = 0.4f
         android.util.Log.i("TG", "commande : $ligne")
         exec.execute {
-            val resultat = try { shell.executer(ligne) } catch (e: Exception) { android.util.Log.e("TG", "shell", e); t("term.erreur", "msg" to e.message) }
+            var panne: Throwable? = null
+            val resultat = try { shell.executer(ligne) } catch (e: Exception) { android.util.Log.e("TG", "shell", e); panne = e; t("term.erreur", "msg" to e.message) }
             handler.post {
                 if (resultat.isNotEmpty()) ecrire(resultat)
+                panne?.let { panneDuJeu(it, ligne, dire = false) }      // idée 76 : la ligne « 🐞 Signaler ce souci »
                 // pendant l'œuf : une commande inconnue, et le petit tutoriel dit que ce n'est pas grave
                 if (Intro.enCours(jeu) && "not found" in resultat.lowercase()) Intro.signalerErreur(jeu)
                 // il manque quelque chose (mkdir tout seul…) : la commande à taper, en bulle et ici ; sinon l'explication de l'erreur
@@ -1390,6 +1419,7 @@ class TerminalActivity : Activity() {
                     espace?.effets(ligne, photoAvant, shell.code, resultat, shell.dossier)
                 } catch (e: Exception) {
                     android.util.Log.e("TG", "après la commande « $ligne »", e)
+                    panneDuJeu(e, ligne)
                 } finally {
                     enCours = false
                     invite.alpha = 1f
@@ -1771,6 +1801,7 @@ class TerminalActivity : Activity() {
             jeu.historique.lastOrNull()?.takeIf { Regles.premierMot(it) !in setOf("espace", "deploie", "cerveau") }?.let { v.deployer(it) }
             Sons.suivre(jeu, !classe)
             if (dire) ecrire(t("esp.tel.ouvert"), Commandes.ROSE)
+            majDisposition()
         } catch (e: Exception) {
             android.util.Log.e("TG", "espace", e)
         }
@@ -1796,6 +1827,7 @@ class TerminalActivity : Activity() {
         jeu.sauver()
         Sons.suivre(jeu, false)
         ecrire(t("esp.tel.ferme"), Commandes.ROSE)
+        majDisposition()
     }
 
     /** La première éclosion : la créature demande une fois « Tu veux m'entendre ? » (le jeu reste silencieux sinon). */
@@ -2164,6 +2196,7 @@ class TerminalActivity : Activity() {
         // les onglets du terminal : pas pendant l'œuf (un seul écran, le temps d'apprendre à taper), sauf s'il y en a déjà plusieurs
         if (::barreOnglets.isInitialized) (barreOnglets.parent as View).visibility = if (oeuf && onglets.liste.size == 1) View.GONE else View.VISIBLE
         lexiqueBtn.visibility = if (jeu.existe && !oeuf && Intro.ouvert(jeu, "lexique")) View.VISIBLE else View.GONE
+        majNuage()
         majIntro()
         majAideDouce()
         majTouches()
@@ -2438,6 +2471,9 @@ class TerminalActivity : Activity() {
         /** les deux sélecteurs de fichiers de `sauvegarde` */
         private const val REQ_EXPORTER = 41
         private const val REQ_IMPORTER = 42
+        /** idée 76 : « Enregistrer » le rapport d'un souci */
+        private const val REQ_BUG = 43
+        @Volatile private var gardeInstallee = false
     }
 
     private fun animer() {
@@ -2534,6 +2570,243 @@ class TerminalActivity : Activity() {
     private fun appliquerConfort() {
         Confort.activer(jeu)
         espace?.let { sortie.textSize = tailleTerminal(if (it.classe) 17f else 13f); it.etat.confort(); it.requestLayout(); it.invalidate() }
+    }
+
+    // ------------------------------------------------------------ idée 74 : le nuage de synchro
+    /** Seulement avec un compte, et seulement hors ligne ou pendant un envoi (« à jour » se lit avec `compte`). */
+    private fun majNuage() {
+        if (!::chemin.isInitialized) return
+        val e = if (jeu.existe) Recensement.nuage(jeu) else null
+        if (e?.first == nuageMontre) return
+        nuageMontre = e?.first
+        if (e == null) { chemin.setCompoundDrawables(null, null, null, null); return }
+        val d = resources.displayMetrics.density
+        val b = NuageDessin.pilule(e.first, t(if (e.first == "envoi") "rec.nuage.mot.envoi" else "rec.nuage.mot.hors"), d)
+        val img = android.graphics.drawable.BitmapDrawable(resources, b)
+        img.setBounds(0, 0, b.width, b.height)
+        chemin.setCompoundDrawablePadding((6 * d).toInt())
+        chemin.setCompoundDrawables(null, null, img, null)
+    }
+
+    // ------------------------------------------------------------ idée 75 : tablette en paysage
+    /** Deux colonnes (PanneauDeux) seulement sur une tablette (≥ 600 dp de côté, 7 pouces) tournée en paysage, hors
+     *  de l'espace de travail ; un téléphone tourné garde la mise en page habituelle. */
+    private fun majDisposition() {
+        if (!::sortie.isInitialized) return
+        val p = findViewById<PanneauDeux>(R.id.panneau) ?: return
+        val c = resources.configuration
+        val deux = minOf(c.screenWidthDp, c.screenHeightDp) >= 600 &&
+            c.orientation == android.content.res.Configuration.ORIENTATION_LANDSCAPE && espace == null
+        val dp = resources.displayMetrics.density
+        p.ecart = (16 * dp).toInt()
+        p.debutDroite = if (::barreOnglets.isInitialized) barreOnglets.parent as View else defile.parent as View
+        if (p.deux == deux) return
+        p.deux = deux
+        if (espace == null) p.layoutParams = (p.layoutParams as android.widget.FrameLayout.LayoutParams).also {
+            it.height = if (deux) android.widget.FrameLayout.LayoutParams.MATCH_PARENT else android.widget.FrameLayout.LayoutParams.WRAP_CONTENT
+        }
+        p.requestLayout()
+    }
+
+    // ------------------------------------------------------------ idée 76 : signaler un souci
+    /** Un plantage de l'appli est noté (files/erreurs.log), puis Android fait comme d'habitude. */
+    private fun garderLesPannes() {
+        if (gardeInstallee) return
+        gardeInstallee = true
+        val dossier = filesDir
+        val avant = Thread.getDefaultUncaughtExceptionHandler()
+        Thread.setDefaultUncaughtExceptionHandler { fil, e ->
+            Signaler.noter(dossier, e, "")
+            avant?.uncaughtException(fil, e)
+        }
+    }
+
+    /** Une vraie panne du jeu (pas une commande de l'enfant qui échoue) : notée, puis la ligne à toucher. */
+    private fun panneDuJeu(e: Throwable, ligne: String, dire: Boolean = true) {
+        Signaler.noter(filesDir, e, ligne)
+        Signaler.dernierePanne(filesDir)?.let { jeu.module("bug").put("vu", it[0]) }
+        if (dire) ecrire(t("bug.tel.panne"), 0xFFFFAF5F.toInt())
+        montrerPuceBug()
+    }
+
+    /** Au lancement : une panne notée que l'enfant n'a pas encore vue (l'appli s'était fermée dessus). */
+    private fun panneDeLaDerniereFois() {
+        val p = Signaler.dernierePanne(filesDir) ?: return
+        val m = jeu.module("bug")
+        if (m.optString("vu") == p[0]) return
+        m.put("vu", p[0])
+        if (!jeu.existe) return
+        ecrire(t("bug.tel.avant"), 0xFFFFAF5F.toInt())
+        montrerPuceBug()
+    }
+
+    /** « 🐞 Signaler ce souci » : une petite ligne à toucher, en bas de l'écran du terminal (jusqu'à la commande suivante). */
+    private fun montrerPuceBug() {
+        val dp = resources.displayMetrics.density
+        val v = puceBug ?: TextView(this).also { tv ->
+            tv.textSize = 13f
+            tv.setTextColor(0xFFFF87FF.toInt())
+            val g = GradientDrawable()
+            g.cornerRadius = 8 * dp
+            g.setColor(0xFF2E2E48.toInt())
+            g.setStroke((1.5f * dp).toInt(), 0xFFFF87FF.toInt())
+            tv.background = g
+            tv.setPadding((10 * dp).toInt(), (5 * dp).toInt(), (10 * dp).toInt(), (5 * dp).toInt())
+            tv.setOnClickListener { demanderBug() }
+            val lp = android.widget.FrameLayout.LayoutParams(android.widget.FrameLayout.LayoutParams.WRAP_CONTENT,
+                android.widget.FrameLayout.LayoutParams.WRAP_CONTENT, Gravity.BOTTOM or Gravity.START)
+            lp.setMargins((8 * dp).toInt(), 0, 0, (6 * dp).toInt())
+            (defile.parent as android.widget.FrameLayout).addView(tv, lp)
+            puceBug = tv
+        }
+        v.text = t("bug.tel.signaler")
+        v.visibility = View.VISIBLE
+        sortie.setPadding(sortie.paddingLeft, sortie.paddingTop, sortie.paddingRight, (8 * dp + 40 * dp).toInt())
+        defile.post { defile.scrollTo(0, sortie.bottom) }
+    }
+
+    private fun cacherPuceBug() {
+        val v = puceBug ?: return
+        if (v.visibility == View.GONE) return
+        v.visibility = View.GONE
+        sortie.setPadding(sortie.paddingLeft, sortie.paddingTop, sortie.paddingRight, (8 * resources.displayMetrics.density).toInt())
+    }
+
+    /** `bug` : d'abord la question des grands. */
+    private fun demanderBug() {
+        cacherPuceBug()
+        if (carteBug != null) return
+        val q = Apparence.questionAdulte()
+        questionBug = q
+        ecrire(t("bug.titre") + "  " + t("bug.adulte"), Commandes.ROSE)
+        ecrire("🔒 " + t("bug.question", "q" to q.first), Commandes.ROSE)
+    }
+
+    private fun champsBug(): Signaler.Champs {
+        val c = resources.configuration
+        val version = try { packageManager.getPackageInfo(packageName, 0).versionName ?: "?" } catch (e: Exception) { "?" }
+        val appareil = "Android ${android.os.Build.VERSION.RELEASE} · " +
+            t(if (minOf(c.screenWidthDp, c.screenHeightDp) >= 600) "bug.tel.tablette" else "bug.tel.telephone")
+        val ecran = if (espace != null) t("bug.tel.espace")
+            else t("bug.tel.ecran", "i" to onglets.liste.indexOf(onglets.actif) + 1, "n" to onglets.liste.size)
+        val home = filesDir.parentFile?.absolutePath ?: filesDir.absolutePath
+        return Signaler.champs(filesDir, version, appareil, ecran, home,
+            listOf(jeu.nom, Recensement.compte(jeu).optString("pseudo")))
+    }
+
+    /** La carte : tout ce qui partirait, puis « Ouvrir la page », « Enregistrer », « Annuler ». */
+    private fun ouvrirCarteBug() {
+        if (carteBug != null) return
+        val r = Signaler.rapport(champsBug(), Signaler.etiquettes())
+        rapportBug = r
+        val dp = resources.displayMetrics.density
+        fun px(v: Int) = (v * dp).toInt()
+        fun texte(s: String, taille: Float, couleur: Int, gras: Boolean = false) = TextView(this).also {
+            it.text = s; it.textSize = taille; it.setTextColor(couleur)
+            if (gras) it.setTypeface(Typeface.DEFAULT_BOLD)
+        }
+        val boite = LinearLayout(this)
+        boite.orientation = LinearLayout.VERTICAL
+        boite.setPadding(px(16), px(14), px(16), px(14))
+        val fondCarte = GradientDrawable()
+        fondCarte.cornerRadius = 14 * dp
+        fondCarte.setColor(0xFF262640.toInt())
+        fondCarte.setStroke(px(2), 0xFFFF87FF.toInt())
+        boite.background = fondCarte
+        fun ajouter(v: View, haut: Int = 8) {
+            val lp = LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT)
+            lp.topMargin = px(haut)
+            boite.addView(v, lp)
+        }
+        ajouter(texte(t("bug.titre"), 19f, 0xFFFFFFFF.toInt(), gras = true), 0)
+        ajouter(texte(t("bug.adulte"), 13f, 0xFFFFAF5F.toInt()), 4)
+        ajouter(texte(t("bug.partira"), 13f, 0xFFE6E6E6.toInt(), gras = true), 10)
+        val apercu = texte(r.first + "\n\n" + r.second, 11f, 0xFFE6E6E6.toInt())
+        apercu.setTypeface(Typeface.MONOSPACE)
+        apercu.setPadding(px(10), px(8), px(10), px(8))
+        val fondApercu = GradientDrawable()
+        fondApercu.cornerRadius = 8 * dp
+        fondApercu.setColor(0xFF11111B.toInt())
+        apercu.background = fondApercu
+        ajouter(apercu, 6)
+        ajouter(texte(t("bug.jamais"), 12f, 0xFF9A9AB0.toInt()), 10)
+        val rangee = LinearLayout(this)
+        rangee.orientation = LinearLayout.HORIZONTAL
+        for ((cle, couleur, action) in listOf(
+                Triple("bug.tel.ouvrir", 0xFF5FD787.toInt(), { ouvrirPageBug() }),
+                Triple("bug.tel.fichier", 0xFF87AFFF.toInt(), { demanderFichierBug() }),
+                Triple("bug.tel.annuler", 0xFF9A9AB0.toInt(), { fermerCarteBug(); ecrire(t("bug.annule"), Commandes.ROSE) }))) {
+            val b = texte(t(cle), 13f, couleur, gras = true)
+            b.gravity = Gravity.CENTER
+            b.setPadding(px(6), px(10), px(6), px(10))
+            val g = GradientDrawable()
+            g.cornerRadius = 10 * dp
+            g.setColor(0xFF2E2E48.toInt())
+            g.setStroke(px(2), couleur)
+            b.background = g
+            b.setOnClickListener { action() }
+            val lp = LinearLayout.LayoutParams(0, LinearLayout.LayoutParams.WRAP_CONTENT, 1f)
+            lp.marginEnd = px(6)
+            rangee.addView(b, lp)
+        }
+        ajouter(rangee, 12)
+        ajouter(texte(t("bug.tel.note"), 11f, 0xFF9A9AB0.toInt()), 10)
+        val defileur = ScrollView(this)
+        defileur.isClickable = true                 // toucher la carte ne ferme pas le jeu (le fond, si)
+        defileur.addView(boite)
+        val lp = android.widget.FrameLayout.LayoutParams(android.widget.FrameLayout.LayoutParams.MATCH_PARENT,
+            android.widget.FrameLayout.LayoutParams.WRAP_CONTENT, Gravity.TOP)
+        lp.setMargins(px(14), px(30), px(14), px(14))
+        findViewById<android.widget.FrameLayout>(R.id.fond).addView(defileur, lp)
+        carteBug = defileur
+    }
+
+    private fun fermerCarteBug() {
+        carteBug?.let { (it.parent as? android.view.ViewGroup)?.removeView(it) }
+        carteBug = null
+        saisie.requestFocus()
+    }
+
+    /** Le navigateur ouvre la page déjà remplie ; c'est l'adulte qui l'envoie (ou pas), avec son compte GitHub. */
+    private fun ouvrirPageBug() {
+        val r = rapportBug ?: return
+        try {
+            startActivity(android.content.Intent(android.content.Intent.ACTION_VIEW,
+                android.net.Uri.parse(Signaler.adresse(r.first, r.second))))
+            fermerCarteBug()
+            ecrire(t("bug.ouverte"), Commandes.ROSE)
+        } catch (e: Exception) {
+            ecrire(t("bug.tel.pas_navigateur"), Commandes.ROSE)
+        }
+    }
+
+    private fun demanderFichierBug() {
+        val i = android.content.Intent(android.content.Intent.ACTION_CREATE_DOCUMENT)
+            .addCategory(android.content.Intent.CATEGORY_OPENABLE).setType("text/plain")
+            .putExtra(android.content.Intent.EXTRA_TITLE, Signaler.FICHIER)
+        try {
+            startActivityForResult(i, REQ_BUG)
+        } catch (e: Exception) {
+            ecrire(t("bug.tel.erreur"), Commandes.ROSE)
+        }
+    }
+
+    /** Le rapport écrit dans le fichier choisi par l'adulte (le jeu ne l'envoie nulle part). */
+    private fun enregistrerBug(uri: android.net.Uri?) {
+        val r = rapportBug
+        if (uri == null || r == null) { ecrire(t("bug.annule"), Commandes.ROSE); return }
+        fermerCarteBug()
+        exec.execute {
+            val ok = try {
+                contentResolver.openOutputStream(uri, "wt")!!.use { it.write((r.first + "\n\n" + r.second + "\n").toByteArray(Charsets.UTF_8)) }
+                true
+            } catch (e: Exception) { false }
+            handler.post {
+                val nom = (try { java.net.URLDecoder.decode(uri.toString(), "UTF-8") } catch (e: Exception) { "" })
+                    .substringAfterLast('/').substringAfterLast(':').ifEmpty { Signaler.FICHIER }
+                ecrire(if (ok) t("bug.tel.ecrit", "fichier" to nom) else t("bug.tel.erreur"), Commandes.ROSE)
+            }
+        }
     }
 
     /** Le fond de l'espace dans la couleur du thème (le terminal en dessous garde son fond sombre). */

@@ -234,7 +234,9 @@ def noter_trace():
     try:
         core.SAVE_DIR.mkdir(parents=True, exist_ok=True)
         with open(core.SAVE_DIR / "erreurs.log", "a", encoding="utf-8", newline="\n") as f:
-            f.write(time.strftime("%Y-%m-%d %H:%M:%S ") + traceback.format_exc() + "\n")
+            # la commande qui a planté, entre crochets : `tg bug` la met dans le rapport (signaler.py)
+            cmd = " ".join(["tg"] + [a for a in sys.argv[1:] if "\n" not in a])[:120].replace("]", ")")
+            f.write(time.strftime("%Y-%m-%d %H:%M:%S ") + f"[{cmd}] " + traceback.format_exc() + "\n")
         return str(core.SAVE_DIR / "erreurs.log")
     except OSError:
         return None

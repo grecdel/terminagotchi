@@ -5,7 +5,8 @@
     android:layout_height="match_parent"
     android:background="#55000000">
 
-    <LinearLayout
+    <!-- PanneauDeux : une colonne comme avant ; deux colonnes sur une tablette en paysage (idée 75) -->
+    <fr.terminagotchi.PanneauDeux
         android:id="@+id/panneau"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -261,5 +262,5 @@
                 android:textColor="@color/vert"
                 android:textSize="22sp" />
         </LinearLayout>
-    </LinearLayout>
+    </fr.terminagotchi.PanneauDeux>
 </FrameLayout>

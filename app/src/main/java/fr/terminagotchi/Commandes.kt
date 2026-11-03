@@ -478,7 +478,8 @@ class Commandes(
         val quand = if (dernier > 0) java.text.SimpleDateFormat("HH:mm", java.util.Locale.FRANCE).format(java.util.Date(dernier)) else t("rec.jamais")
         val url = c.optString("serveur")
         return Reponse(t("reca.resume", "pseudo" to Entrainement.pseudoColore(jeu), "quand" to quand,
-            "profil" to "$url/joueur/${c.optString("pseudo")}", "ctf" to "$url/ctf"), couleur = BLEU)
+            "profil" to "$url/joueur/${c.optString("pseudo")}", "ctf" to "$url/ctf") +
+            Recensement.phraseNuage(jeu).let { if (it.isEmpty()) "" else "\n$it" }, couleur = BLEU)   // idée 74
     }
 
     /** Le compte arrive dans la partie active (il suivra le joueur dans ses autres parties, voir Parties.kt). */

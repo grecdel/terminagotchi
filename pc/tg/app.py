@@ -64,6 +64,14 @@ def render(state, frame, interactif, anim=None, tic=None):
         f"{DIM}" + t("app.caractere", trait=core.nom_trait(state["trait"])) + RESET,
         f"{xp_l} {sprites.bar(state['xp'] - lo, hi - lo)} {state['xp']}/{hi}",
     ]
+    nuage = recense.nuage_pc(state)              # idée 74 : hors ligne / envoi en cours (rien quand tout est à jour)
+    if nuage:
+        import shutil
+        place = shutil.get_terminal_size((80, 24)).columns - (lg + 2) - largeur(_ANSI.sub("", right[0])) - 2
+        if largeur(_ANSI.sub("", nuage)) + 3 <= place:
+            right[0] += "   " + nuage
+        else:
+            right.insert(1, nuage)
     attente = satiete.ligne_attente(state)       # 2 nov. : la barre bloquée (159/160) dit pourquoi, et pour combien de jours
     if attente:
         import shutil
@@ -1173,6 +1181,7 @@ def main():
     except Exception:
         f = sur.noter_trace()
         print(RESET + t("core.sur.bug", fichier=sur.relatif(f) if f else "?"))
+        print(t("bug.apres"))                  # idée 76 : une vraie panne du jeu → `tg bug` (un adulte relit et envoie)
         raise SystemExit(1)
 
 
@@ -1425,6 +1434,10 @@ def _main():
     if mode == "desinstaller":
         faits = compagnon.desinstaller()
         print(t("app.retire", liste="\n  " + "\n  ".join(faits)) if faits else t("app.rien_a_retirer"))
+        return
+    if mode in ("bug", "signaler"):            # tg bug : un rapport qu'un adulte relit et envoie lui-même (signaler.py)
+        from . import signaler
+        print(signaler.commande())
         return
     if mode in ("sauvegarde", "backup"):       # tg sauvegarde exporter [où] | importer <fichier> (sauvegarde.py)
         from . import sauvegarde
