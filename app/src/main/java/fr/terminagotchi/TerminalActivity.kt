@@ -128,6 +128,7 @@ class TerminalActivity : Activity() {
             android.provider.Settings.Global.getFloat(contentResolver, android.provider.Settings.Global.ANIMATOR_DURATION_SCALE, 1f) == 0f
         } catch (e: Exception) { false }
         Confort.activer(if (jeu.existe) jeu else null)
+        Seances.chargeur = { try { assets.open("seances.json").bufferedReader().use { it.readText() } } catch (e: Exception) { null } }
         onglets = Onglets({ Shell(jeu.home).also { s -> s.journal = { jeu.journal.toList() } } }, { jeu.historique.toList() })
         // l'écran est recréé (mode sombre changé, appli arrêtée par le téléphone puis rouverte…) : les onglets reviennent
         // (tourner le téléphone ne recrée plus l'écran : android:configChanges dans le manifeste)
@@ -1232,6 +1233,28 @@ class TerminalActivity : Activity() {
                 } else ecrire(t("app.theme.liste", "liste" to Apparence.ordre().joinToString(" ")), Commandes.ROSE)
                 return
             }
+            "classe" -> {                             // le mode classe : séance guidée, écran projecteur, place de la classe
+                val mots = ligne.trim().split(Regex("\\s+")).drop(1)
+                when (mots.firstOrNull()?.lowercase()) {
+                    "seance", "séance" -> { ecrire(Seances.commande(jeu, mots.drop(1)), Commandes.ROSE); ecran?.invalidate(); return }
+                    "tableau" -> { ouvrirEcran("tableau"); return }
+                    "place" -> {
+                        val code = mots.getOrNull(1)
+                        if (code == null || Place.cle(code) == null) { ecrire(t("classe.place.code_tel"), Commandes.ROSE); return }
+                        ouvrirEcran("place")
+                        ecran?.client = Place.Client(Classe.lire(code)!!.let { Classe.fabriquer(it.first, it.second) }, Place.profil(jeu),
+                            mots.getOrNull(2)?.takeIf { Place.privee(it) })
+                        ecrire(t("classe.place.ouverte_tel"), Commandes.ROSE)
+                        return
+                    }
+                    else -> { ecrire(t("classe.tel.aide"), Commandes.ROSE); return }
+                }
+            }
+            "carte" -> if (ligne.trim().split(Regex("\\s+")).getOrNull(1)?.lowercase() in setOf("visite", "visit")) {
+                ouvrirEcran("carte")
+                if (ligne.contains("sansnom") || ligne.contains("sans-nom")) ecran?.avecNom = false
+                return
+            }
             "confort", "calme" -> {                   // lecture et confort : taille du texte, police, formes, mode calme
                 val mots = ligne.trim().split(Regex("\\s+")).drop(1)
                 ecrire(Confort.commande(jeu, if (Regles.premierMot(ligne) == "calme") listOf("calme") + mots.take(1) else mots), Commandes.ROSE)
@@ -1408,6 +1431,7 @@ class TerminalActivity : Activity() {
         jeu.shiny = false   // le compagnon ne naît jamais shiny (pas de rareté)
         Intro.nouvellePartie(jeu)              // l'œuf seul, sa liste de commandes ; le jeu s'ouvre petit à petit
         choixParent?.let { AideDouce.a(jeu).put("parent", it) }     // idée 1 : le choix reste sur l'appareil
+        jeu.extra.put("born", System.currentTimeMillis() / 1000)      // la date d'éclosion (carte de visite)
         ecranIntro = 0
         jeu.log(t("app.oeuf_apparu", "trait" to Regles.nomTrait(jeu.trait)))
         jeu.dire(t("term.toc_toc"), 10)
@@ -2451,6 +2475,51 @@ class TerminalActivity : Activity() {
         lancerAnimation()
         handler.postDelayed({ animer() }, 420)
     }
+
+    // ------------------------------------------------------------ les écrans du mode classe (EcransClasse.kt)
+    private var ecran: EcranVue? = null
+
+    private fun ouvrirEcran(genre: String) {
+        fermerEcran()
+        if (!jeu.existe) return
+        val racine = findViewById<android.widget.FrameLayout>(R.id.fond) ?: return
+        val v = EcranVue(this, jeu, genre) { a -> actionEcran(a) }
+        racine.addView(v, android.view.ViewGroup.LayoutParams(android.view.ViewGroup.LayoutParams.MATCH_PARENT, android.view.ViewGroup.LayoutParams.MATCH_PARENT))
+        ecran = v
+    }
+
+    private fun fermerEcran() {
+        val v = ecran ?: return
+        (v.parent as? android.view.ViewGroup)?.removeView(v)
+        ecran = null
+    }
+
+    private fun actionEcran(a: String) {
+        when {
+            a == "tab:fermer" || a == "place:fermer" || a == "carte:fermer" -> fermerEcran()
+            a.startsWith("tab:") -> { Seances.agir(jeu, a.removePrefix("tab:")); jeu.sauver() }
+            a == "carte:enregistrer" -> ecrire(enregistrerCarte()?.let { t("cv.enregistre") } ?: t("cv.echec"), Commandes.ROSE)
+            a == "carte:partager" -> enregistrerCarte()?.let { uri ->
+                try {
+                    startActivity(android.content.Intent.createChooser(android.content.Intent(android.content.Intent.ACTION_SEND)
+                        .setType("image/png").putExtra(android.content.Intent.EXTRA_STREAM, uri)
+                        .addFlags(android.content.Intent.FLAG_GRANT_READ_URI_PERMISSION), t("cv.partager")))
+                } catch (e: Exception) { ecrire(t("cv.echec"), Commandes.ROSE) }
+            } ?: ecrire(t("cv.echec"), Commandes.ROSE)
+        }
+    }
+
+    /** La carte de visite dans les images du téléphone (Images/Terminagotchi) ; rien n'est envoyé. */
+    private fun enregistrerCarte(): android.net.Uri? = try {
+        val b = ecran?.bitmapCarte() ?: throw IllegalStateException()
+        val v = android.content.ContentValues()
+        v.put(android.provider.MediaStore.MediaColumns.DISPLAY_NAME, "terminagotchi_carte_${System.currentTimeMillis() / 1000}.png")
+        v.put(android.provider.MediaStore.MediaColumns.MIME_TYPE, "image/png")
+        if (android.os.Build.VERSION.SDK_INT >= 29) v.put(android.provider.MediaStore.MediaColumns.RELATIVE_PATH, "Pictures/Terminagotchi")
+        val uri = contentResolver.insert(android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI, v)
+        uri?.let { u -> contentResolver.openOutputStream(u)?.use { b.compress(android.graphics.Bitmap.CompressFormat.PNG, 100, it) } }
+        uri
+    } catch (e: Exception) { null }
 
     /** La taille du texte du terminal avec le réglage « Taille du texte » (en sp : le téléphone l'agrandit déjà de sa
      *  « Taille de police » ; on ne garde que ce que le réglage du jeu ajoute). */

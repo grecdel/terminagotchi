@@ -130,6 +130,8 @@ class Espace(B.Controleur):
         self.monde_glisse = None          # (x, y du clic, x, y d'avant, bougé ?) : on fait glisser le monde
         self.albums = {}
         self.tk = False                   # la fenêtre de repli (tkinter) garde la carte : le monde y serait trop lent
+        self.place = None                 # la place de la classe (place.Vue), ouverte par `place` pendant une séance V
+        self.place_vus = 0                # les gestes reçus déjà dits par la créature
         super().__init__(etape, 600, 400)
         self.c.regl = dict(self.regl, sur_place=True)
         self.c.changer("assis", 4)
@@ -211,6 +213,7 @@ class Espace(B.Controleur):
             if self.cv.trace.dit and self.cv.trace.de == "confus":
                 self.vue.dire(self.cv.trace.dit, now, 4.0)
         self._poser()
+        self._place_tick()
         if self.dep:
             self._avancer_deploie(dt)
         self.monde.tick(dt)
@@ -519,6 +522,11 @@ class Espace(B.Controleur):
             else:
                 self.ecrire(t("app.theme.liste", liste=" ".join(A.ordre())), S.DOUX)
             return
+        if premier == "place" or (premier == "classe" and len(mots) > 1 and mots[1].lower() == "place"):
+            self.mini.saisie = ""
+            self.mini.historique.append(ligne)
+            self.ouvrir_place()
+            return
         if premier in ("confort", "taille", "police", "formes", "calme"):
             self.mini.saisie = ""
             self.mini.historique.append(ligne)
@@ -595,6 +603,13 @@ class Espace(B.Controleur):
         a = self._zone(zones, x, y)
         if self.options:
             self.clic_options(a)
+            return
+        if self.place is not None:
+            if a and a.startswith("place:geste:"):
+                _, _, poste, g = a.split(":")
+                self.place.geste(int(poste), int(g))
+            elif a != "place:panneau":
+                self.fermer_place()
             return
         if a == "monde:fermer":
             self.monde_grand = False
@@ -715,8 +730,64 @@ class Espace(B.Controleur):
         if str(self._zone(zones, x, y)).startswith("monde:"):
             self.monde.zoomer(sens, x, y)
 
+    def ouvrir_place(self):
+        """La place de la classe (idée 56) : seulement pendant une séance dont le code a la lettre V."""
+        from . import place
+        if not self.state or place._seance_eleve(self.state) is None:
+            self.ecrire(t("classe.place.pas_ouverte"), S.ORANGE)
+            return
+        self.place = place.Vue(self.state)
+        self.place_vus = 0
+
+    def fermer_place(self):
+        if self.place is not None:
+            cl = self.place.client
+            if cl.jeton:                             # le numéro de poste, pour revenir sans changer de numéro
+                from . import place
+                self._modifier(lambda s_: (place._seance_eleve(s_) or {}).__setitem__(
+                    "place", {"hote": cl.hote, "port": cl.port, "jeton": cl.jeton, "poste": cl.poste}))
+            self.place.fermer()
+        self.place = None
+
+    def _modele_place(self):
+        from . import place
+        cl = self.place.client
+        postes = []
+        bulles = {}
+        maintenant = time.time()
+        for g, de, quand in cl.recus:
+            if maintenant - quand < 8:
+                bulles[cl.poste] = place.SYMBOLES[g] + " " + t("classe.geste." + place.GESTES[g]) + " !"
+        for p in cl.postes:
+            cle = ("place", p["espece"], p["stade"])
+            if cle not in self.albums:
+                try:
+                    from . import poses
+                    self.albums[cle] = None if p["stade"] == "oeuf" else poses.album_espece(p["espece"], p["stade"])
+                except Exception:                    # noqa: BLE001
+                    self.albums[cle] = None
+            postes.append({"poste": p["poste"], "album": self.albums[cle], "bulle": bulles.get(p["poste"]),
+                           "nom": place.nom_espece(p["espece"]) + " · " + place.nom_stade(p["stade"])})
+        msg = {"attends": t("classe.place.attends"), "ok": ""}.get(self.place.message, "")
+        return {"etat": cl.etat, "poste": cl.poste, "postes": postes, "message": msg}
+
+    def _place_tick(self):
+        if self.place is None:
+            return
+        cl = self.place.client
+        if len(cl.recus) and cl.recus[-1][2] > self.place_vus:
+            from . import place
+            g, de, quand = cl.recus[-1]
+            self.place_vus = quand
+            self.vue.dire(place.SYMBOLES[g] + " " + t("classe.place.recu", geste=t("classe.geste." + place.GESTES[g]),
+                                                       n=de), self.t, 5.0)
+            self.c.reagir("coeur")
+
     def echap(self):
         """Échap : la fiche se referme (la liste revient), puis la région isolée, puis le monde en grand, puis l'île."""
+        if self.place is not None:
+            self.fermer_place()
+            return
         if (self.monde_grand or self.onglet == "monde") and self.monde.echap():
             return
         if self.monde_grand:
@@ -870,6 +941,8 @@ class Espace(B.Controleur):
         self._modele_apparence(m, st)
         m["confort"] = self.confort()
         self.c.calme = m["confort"]["calme"]
+        if self.place is not None:
+            m["place"] = self._modele_place()
         if not self.tk:
             m["monde_vue"] = self.monde
             m["monde_grand"] = self.monde_grand

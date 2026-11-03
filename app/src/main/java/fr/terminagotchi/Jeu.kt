@@ -725,6 +725,7 @@ class Jeu(ctx: Context) {
             dernierJeu[cmd] = maintenant
         }
         val nouvelle = vus.add(cmd)
+        module("gouts").let { g -> if (g.has(cmd) || g.length() < 300) g.put(cmd, g.optInt(cmd) + 1) }   // la carte de visite
         if (nouvelle) {
             gain += 5
             msg += t("core.mange.nouveau")

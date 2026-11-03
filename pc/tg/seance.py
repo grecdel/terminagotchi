@@ -239,7 +239,13 @@ def _texte_code(L, x, y, s, taille, coul, coul_code, largeur, S):
         lignes.append(cour)
     for i, lig in enumerate(lignes):
         xx = x
+        fus = []                                 # les mots voisins du même genre en un seul texte (espaces exacts)
         for m, code in lig:
+            if fus and fus[-1][1] == code and not code:
+                fus[-1] = (fus[-1][0] + m, code)
+            else:
+                fus.append((m, code))
+        for m, code in fus:
             L.append(("texte", xx, y + i * taille * 1.35, m, taille, coul_code if code else coul, code, "g", code))
             xx += S.lt(m, taille, code)
     return len(lignes) * taille * 1.35
@@ -262,7 +268,7 @@ def scene(m, t_=0.0):
         L.append(("texte", W / 2, H / 2 - 30, t("classe.tableau.attente"), 34, S.TEXTE, True, "c", False))
         L.append(("texte", W / 2, H / 2 + 30, t("classe.tableau.attente.aide"), 22, S.DOUX, False, "c", True))
         return apparence.recolorer(L, m.get("theme")), Z, (W, H)
-    ch = m.get("chapitre", "")
+    ch = m.get("chapitre") or chapitre(m["n"])
     cw = S.lt(ch, 18, False) + 60
     L.append(("rrect", W / 2 - cw / 2, 26, cw, 40, 20, S.PANNEAU, S.BORD_FORT, 1))
     L.append(("texte", W / 2, 46, ch, 18, S.TEXTE, True, "c", False))

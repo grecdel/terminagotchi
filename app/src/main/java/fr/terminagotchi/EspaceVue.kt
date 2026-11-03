@@ -278,7 +278,7 @@ class EspaceVue(ctx: Context, jeu: Jeu, private val dossier: () -> java.io.File,
         private fun police(taille: Float, gras: Boolean, mono: Boolean) {
             val f = facile && !mono
             p.textSize = if (f) taille * Confort.FACILE_TAILLE else taille
-            p.letterSpacing = if (f) Confort.FACILE_ESPACE else 0f
+            p.setLetterSpacing(if (f) Confort.FACILE_ESPACE else 0f)
             p.typeface = when {
                 mono && gras -> Typeface.create(Typeface.MONOSPACE, Typeface.BOLD)
                 mono -> Typeface.MONOSPACE

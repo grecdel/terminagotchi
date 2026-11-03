@@ -597,6 +597,9 @@ def feed(state, line, statut=None):
         if palier(state) >= 1:                   # « +END » : du jargon pour un enfant qui débute (P2-5)
             msg += " +" + nom_stat(CATEGORIES[cat]["stat"], court=True)
     nouvelle = cmd not in state["seen"]
+    g = state.setdefault("gouts", {})                # combien de fois chaque goût (la carte de visite : idée 58)
+    if cmd in g or len(g) < 300:
+        g[cmd] = g.get(cmd, 0) + 1
     if nouvelle:
         state["seen"].append(cmd)
         gain += 5

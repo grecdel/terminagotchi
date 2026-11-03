@@ -62,8 +62,9 @@ def resoudre(c, theme="sombre", systeme=None):
     c = c if isinstance(c, dict) else {}
     s = systeme if isinstance(systeme, dict) else {}
     taille = c.get("taille")
-    if taille not in TAILLES:
+    if isinstance(taille, bool) or not isinstance(taille, (int, float)) or taille not in TAILLES:
         taille = taille_de(s.get("echelle", 1.0))
+    taille = int(taille)
     police = c.get("police") if c.get("police") in POLICES else "normale"
     formes = c.get("formes") if isinstance(c.get("formes"), bool) else theme in THEMES_FORMES
     calme = c.get("calme") if isinstance(c.get("calme"), bool) else bool(s.get("moins_animations"))

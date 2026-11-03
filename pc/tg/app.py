@@ -1102,6 +1102,9 @@ def aide():
 
 def commande_histoire(mode, args):
     """tg carte · tg quetes [suivre N] · tg aile [nom] : sans ouvrir la fenêtre."""
+    if mode == "carte" and args and args[0].lower() in ("visite", "visit", "carte"):   # idée 58 : la carte de visite
+        from . import carte_visite
+        return carte_visite.commande(args[1:])
     if mode == "carte":                        # la carte qui pousse : ce qui est montré n'est plus « nouveau » ensuite
         res = []
         core.modifier(lambda s: (histoire.h_(s), res.append(maison.carte(s))))

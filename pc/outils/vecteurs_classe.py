@@ -21,11 +21,15 @@ FICHIER = RACINE / "donnees" / "classe" / "vecteurs.json"
 
 
 def vecteurs():
-    combis = ["".join(x) for k in range(4) for x in itertools.combinations(C.OPTIONS, k)]
+    combis = ["".join(x) for k in range(4) for x in itertools.combinations("AGS", k)]
     codes = [{"n": n, "options": o, "code": C.fabriquer(n, o)} for n in range(max(c["n"] for c in histoire.CHAPITRES) + 1) for o in combis]
     faux = ["05-GS-X", "05-SG-K", "5-GS-K", "05-GZ-K", "", "AB-C", "05-GGS-K"]
+    # la lettre V (place de la classe, 3 novembre) : seulement le jeu (PC, Android) ; la page /enseignants garde A, G, S
+    avec_v = [{"n": n, "options": o + "V", "code": C.fabriquer(n, o + "V")} for n in (0, 1, 5, 10, 23) for o in combis]
+    faux_v = ["05-VG-K", "05-GSVV-C", "05-GSV-D"]
     return {"note": "pc/outils/vecteurs_classe.py", "lettres": C.LETTRES, "codes": codes,
-            "faux": [{"code": f, "lu": C.lire(f)} for f in faux]}
+            "faux": [{"code": f, "lu": C.lire(f)} for f in faux],
+            "avec_v": avec_v, "faux_v": [{"code": f, "lu": C.lire(f)} for f in faux_v]}
 
 
 def texte():

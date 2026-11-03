@@ -992,5 +992,221 @@
    "code": "05-GGS-K",
    "lu": null
   }
+ ],
+ "avec_v": [
+  {
+   "n": 0,
+   "options": "V",
+   "code": "00-V-N"
+  },
+  {
+   "n": 0,
+   "options": "AV",
+   "code": "00-AV-T"
+  },
+  {
+   "n": 0,
+   "options": "GV",
+   "code": "00-GV-N"
+  },
+  {
+   "n": 0,
+   "options": "SV",
+   "code": "00-SV-B"
+  },
+  {
+   "n": 0,
+   "options": "AGV",
+   "code": "00-AGV-V"
+  },
+  {
+   "n": 0,
+   "options": "ASV",
+   "code": "00-ASV-X"
+  },
+  {
+   "n": 0,
+   "options": "GSV",
+   "code": "00-GSV-S"
+  },
+  {
+   "n": 0,
+   "options": "AGSV",
+   "code": "00-AGSV-Q"
+  },
+  {
+   "n": 1,
+   "options": "V",
+   "code": "01-V-Q"
+  },
+  {
+   "n": 1,
+   "options": "AV",
+   "code": "01-AV-V"
+  },
+  {
+   "n": 1,
+   "options": "GV",
+   "code": "01-GV-Q"
+  },
+  {
+   "n": 1,
+   "options": "SV",
+   "code": "01-SV-D"
+  },
+  {
+   "n": 1,
+   "options": "AGV",
+   "code": "01-AGV-X"
+  },
+  {
+   "n": 1,
+   "options": "ASV",
+   "code": "01-ASV-Z"
+  },
+  {
+   "n": 1,
+   "options": "GSV",
+   "code": "01-GSV-U"
+  },
+  {
+   "n": 1,
+   "options": "AGSV",
+   "code": "01-AGSV-S"
+  },
+  {
+   "n": 5,
+   "options": "V",
+   "code": "05-V-Y"
+  },
+  {
+   "n": 5,
+   "options": "AV",
+   "code": "05-AV-D"
+  },
+  {
+   "n": 5,
+   "options": "GV",
+   "code": "05-GV-Y"
+  },
+  {
+   "n": 5,
+   "options": "SV",
+   "code": "05-SV-N"
+  },
+  {
+   "n": 5,
+   "options": "AGV",
+   "code": "05-AGV-F"
+  },
+  {
+   "n": 5,
+   "options": "ASV",
+   "code": "05-ASV-H"
+  },
+  {
+   "n": 5,
+   "options": "GSV",
+   "code": "05-GSV-C"
+  },
+  {
+   "n": 5,
+   "options": "AGSV",
+   "code": "05-AGSV-A"
+  },
+  {
+   "n": 10,
+   "options": "V",
+   "code": "10-V-P"
+  },
+  {
+   "n": 10,
+   "options": "AV",
+   "code": "10-AV-U"
+  },
+  {
+   "n": 10,
+   "options": "GV",
+   "code": "10-GV-P"
+  },
+  {
+   "n": 10,
+   "options": "SV",
+   "code": "10-SV-C"
+  },
+  {
+   "n": 10,
+   "options": "AGV",
+   "code": "10-AGV-W"
+  },
+  {
+   "n": 10,
+   "options": "ASV",
+   "code": "10-ASV-Y"
+  },
+  {
+   "n": 10,
+   "options": "GSV",
+   "code": "10-GSV-T"
+  },
+  {
+   "n": 10,
+   "options": "AGSV",
+   "code": "10-AGSV-R"
+  },
+  {
+   "n": 23,
+   "options": "V",
+   "code": "23-V-W"
+  },
+  {
+   "n": 23,
+   "options": "AV",
+   "code": "23-AV-B"
+  },
+  {
+   "n": 23,
+   "options": "GV",
+   "code": "23-GV-W"
+  },
+  {
+   "n": 23,
+   "options": "SV",
+   "code": "23-SV-K"
+  },
+  {
+   "n": 23,
+   "options": "AGV",
+   "code": "23-AGV-D"
+  },
+  {
+   "n": 23,
+   "options": "ASV",
+   "code": "23-ASV-F"
+  },
+  {
+   "n": 23,
+   "options": "GSV",
+   "code": "23-GSV-A"
+  },
+  {
+   "n": 23,
+   "options": "AGSV",
+   "code": "23-AGSV-Y"
+  }
+ ],
+ "faux_v": [
+  {
+   "code": "05-VG-K",
+   "lu": null
+  },
+  {
+   "code": "05-GSVV-C",
+   "lu": null
+  },
+  {
+   "code": "05-GSV-D",
+   "lu": null
+  }
  ]
 }

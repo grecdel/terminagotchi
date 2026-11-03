@@ -383,4 +383,4 @@ def commande(args):
         return out[0] if out else ""
     c = c_(st)
     etat = t("classe.etat.on", pseudo=c["pseudo"], code=c["code"]) if c else t("classe.etat.off")
-    return etat + "\n" + t("classe.aide")
+    return etat + "\n" + t("classe.aide") + "\n" + t("classe.aide.plus")
