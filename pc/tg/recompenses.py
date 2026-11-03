@@ -235,9 +235,11 @@ def apparition(state, premiere, tirer_un):
 
 
 def serie(state, medaille):
-    """Salle d'entraînement : une médaille de plus. 5 en or ou diamant de suite = une série parfaite (exploit)."""
+    """Salle d'entraînement : une médaille de plus. 5 en or ou diamant AU TOTAL depuis la dernière faveur = une « série
+    parfaite » (exploit). Une médaille d'argent ou de bronze ne remet rien à zéro (pas de série à perdre, 3 novembre)."""
     r = r_(state)
-    r["serie"] = r["serie"] + 1 if medaille in ("or", "diamant") else 0
+    if medaille in ("or", "diamant"):
+        r["serie"] += 1
     if r["serie"] >= conf().get("serie_parfaite", 5):
         r["serie"] = 0
         return exploit(state, "entrainement.serie_parfaite")

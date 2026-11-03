@@ -137,8 +137,8 @@ for _ in range(300):
     fav += c2["variante"] != "classique" and recompenses._type(e2, c2["variante"]) in types_crypte
 verifier(fav > 2 * norm, f"variantes rares du monde : {norm}/300 sans faveur, {fav}/300 avec (jamais garanties)")
 s = {}
-msgs = [recompenses.serie(s, m) for m in ("or", "or", "argent", "or", "diamant", "or", "or", "or")]
-verifier(msgs[-1] and not any(msgs[:-1]), "5 médailles d'or de suite = une série parfaite (une médaille d'argent remet à zéro)")
+msgs = [recompenses.serie(s, m) for m in ("or", "or", "argent", "bronze", "or", "diamant", "or")]
+verifier(msgs[-1] and not any(msgs[:-1]), "5 médailles d'or au total = une série parfaite (l'argent ou le bronze ne remet rien à zéro)")
 verifier(recompenses.exploit(s, "inconnu.truc") is None, "un exploit inconnu ne fait rien")
 P["mondes"][0]["variantes_reservees"] = ["volcan"]
 verifier(recompenses.reservee({}, None, "volcan") and not recompenses.reservee(

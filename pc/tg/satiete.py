@@ -21,9 +21,9 @@ Les mêmes règles que Satiete.kt sur Android ; les calculs communs sont vérifi
    commande répétée de suite ou ratée nourrit à peine (REPETEE, RATEE). L'assiette du jour montre les familles
    déjà mangées ; l'assiette complète (les 6) : +ASSIETTE_FAIM de faim et +ASSIETTE_XP XP, une fois par jour.
 6. Jour soigné : un jour qui finit au moins « en forme » (même sans jouer : la faim baisse lentement) ; en jouant,
-   il compte dès JOUR_PLATS commandes différentes avec la faim au moins en forme. Il sert à la série de soins, au
-   lien et à l'évolution. Série : chaque jour qui finit affamée ou en veille retire UN cran, jamais tout ; les jours
-   de vacances ne comptent ni pour ni contre ; paliers SERIE_PALIERS : une médaille et un peu d'XP.
+   il compte dès JOUR_PLATS commandes différentes avec la faim au moins en forme. Il sert aux médailles, au
+   lien et à l'évolution. Pas de série à perdre (décision du 3 novembre) : les médailles SERIE_PALIERS se gagnent
+   aux jours bien nourrie AU TOTAL (s["jours"], qui ne baisse jamais) ; un jour fini affamée ne retire rien.
 7. Longue absence : sans repas depuis ABSENCE_JOURS jours, elle se repose dans son biome ; au retour, rien n'est
    perdu et elle revient en forme (RETOUR_FAIM).
 
@@ -158,14 +158,9 @@ def xp_ajuste(gain, etat, reste=0):
     return total // 100, total % 100
 
 
-def palier_serie(serie):
-    """Le nombre de paliers atteints par la série."""
-    return sum(1 for p in SERIE_PALIERS if serie >= p)
-
-
-def serie_manquee(serie):
-    """Un jour manqué (fini affamée ou en veille) : la série perd UN cran, jamais tout."""
-    return max(0, serie - 1)
+def palier_serie(jours):
+    """Le nombre de médailles atteintes avec ce total de jours bien nourrie (3, 7, 14, 30 : jamais perdues)."""
+    return sum(1 for p in SERIE_PALIERS if jours >= p)
 
 
 def minuit_apres(ts):
@@ -279,7 +274,7 @@ def _baisser(state, s, t0, t1):
 
 
 def _cloturer(state, s, j):
-    """Le jour j est fini : soigné s'il a fini au moins en forme (sinon la série perd un cran) ; neutre en vacances."""
+    """Le jour j est fini : soigné s'il a fini au moins en forme (sinon rien ne change : pas de série à perdre)."""
     if s["clos"] and s["clos"] >= j:
         return
     s["clos"] = j
@@ -287,8 +282,6 @@ def _cloturer(state, s, j):
         return                                # (déjà compté pendant le jeu, ou en vacances : ni gagné ni manqué)
     if state["hunger"] >= JOUR_FAIM and not s["veille"]:
         _compter(state, s, j)
-    else:
-        s["serie"] = serie_manquee(s["serie"])
 
 
 def _nouveau_jour(state, s, now):
@@ -353,19 +346,16 @@ def _jour_soigne(state, s, now):
 
 
 def _compter(state, s, j):
-    """Un jour soigné de plus : la série, le lien, les médailles, l'évolution qui attendait."""
+    """Un jour soigné de plus : le lien, les médailles (au total, jamais perdues), l'évolution qui attendait."""
     from . import core
     s["jours"] += 1
-    avant = palier_serie(s["serie"])
-    s["serie"] += 1
-    s["meilleure"] = max(s["meilleure"], s["serie"])
     s["dernier"] = j
-    p = palier_serie(s["serie"])
-    if p > avant and p > s["medailles"]:
-        s["medailles"] = p
-        xp = SERIE_XP[p - 1]
-        core.log(state, "🎯 " + t("sat.serie.medaille", n=SERIE_PALIERS[p - 1], xp=xp))
-        core.say(state, t("sat.serie.medaille", n=SERIE_PALIERS[p - 1], xp=xp), 12)
+    p = palier_serie(s["jours"])
+    while s["medailles"] < p:                 # (une ancienne partie peut en gagner plusieurs d'un coup)
+        s["medailles"] += 1
+        xp = SERIE_XP[s["medailles"] - 1]
+        core.log(state, "🎯 " + t("sat.serie.medaille", n=SERIE_PALIERS[s["medailles"] - 1], xp=xp))
+        core.say(state, t("sat.serie.medaille", n=SERIE_PALIERS[s["medailles"] - 1], xp=xp), 12)
         core.add_xp(state, xp)
     if s["jours"] == LIEN_TALENT:
         core.say(state, t("sat.lien.talent", nom=state.get("name", "")), 14)
@@ -500,6 +490,11 @@ def suggestion(state):
     return None, None
 
 
+def ligne_medailles(jours):
+    """« 🏅 3 · 🏅 7 · 14 · 30 » : les médailles des jours bien nourrie au total (gagnées : 🏅 ; jamais perdues)."""
+    return " · ".join(("🏅 " if jours >= p else "") + str(p) for p in SERIE_PALIERS)
+
+
 def lignes(state):
     """Le détail (dans `tg envies`, et `tg satiete`)."""
     s = s_(state)
@@ -512,7 +507,7 @@ def lignes(state):
         out.append(t("sat.ecran.gouter", icone=ICONES[f], famille=t("sat.famille." + f), cmd=cmd))
     if s["veille"]:
         out.append(t("sat.veille.encore", n=REVEIL_PLATS - len(s["reveil"])))
-    out.append(t("sat.ecran.serie", n=s["serie"], meilleure=s["meilleure"], jours=s["jours"]))
+    out.append(t("sat.ecran.serie", jours=s["jours"], medailles=ligne_medailles(s["jours"])))
     p = prochaine_evolution(state)
     if p and p[1] > 0:
         out.append(t("sat.ecran.grandir", n=p[1]))

@@ -653,8 +653,7 @@ def defi_tick(state, lines, spontaneous, proba=1.5 / 300):
             return
     if time.time() - d["start"] > defi_duree(state):
         log(state, t("core.defi.rate.log", cmd=d["cmd"]))
-        say(state, t("core.defi.rate.dit"), 6)
-        animer(state, "confus")
+        say(state, t("core.defi.rate.dit"), 6)     # (3 nov.) une phrase douce et l'animation normale : rien de raté
         state["defi"] = None
 
 

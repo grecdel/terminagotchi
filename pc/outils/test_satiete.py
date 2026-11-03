@@ -62,7 +62,7 @@ SCENARIO = [   # (jour, heure, minute, op, commande, nouvelle, ratee, repetee)
 
 
 def jouer_scenario():
-    """Le scénario sur un état neuf : après chaque pas, [faim arrondie, état, jours, série, assiette, xp]."""
+    """Le scénario sur un état neuf : après chaque pas, [faim arrondie, état, jours, médailles, assiette, xp]."""
     st = core.new_state("Pixel")
     core.migrate(st)
     st["intro"] = {"etat": "fini"}
@@ -75,7 +75,7 @@ def jouer_scenario():
             S.tick(st, now)
         else:
             S.repas(st, cmd, nouvelle=bool(nouv), ratee=bool(rat), repetee=bool(rep), now=now)
-        out.append([round(st["hunger"], 3), S.etat_de(st["hunger"], s["veille"]), s["jours"], s["serie"],
+        out.append([round(st["hunger"], 3), S.etat_de(st["hunger"], s["veille"]), s["jours"], s["medailles"],
                     len(set(s["assiette"])), st["xp"]])
     return out
 
@@ -121,7 +121,7 @@ def calculer():
     v["repas"] = [[n, r, p, k, a, S.valeur_repas(n, r, p, k, a)] for n in (False, True) for r in (False, True)
                   for p in (False, True) for k in (0, 1, 2, 4, 9) for a in (False, True)]
     v["xp"] = [[g, e, r, *S.xp_ajuste(g, e, r)] for g in (0, 1, 2, 3, 7, 12, 20) for e in S.XP_PCT for r in (0, 40, 80, 99)]
-    v["serie"] = [[s, S.serie_manquee(s), S.palier_serie(s)] for s in (0, 1, 2, 3, 6, 7, 13, 14, 29, 30, 45)]
+    v["serie"] = [[s, S.palier_serie(s), S.ligne_medailles(s)] for s in (0, 1, 2, 3, 6, 7, 13, 14, 29, 30, 45)]
     v["minuit"] = [[a, S.minuit_apres(a)] for a in (ts(0, 0), ts(0, 17, 20), ts(3, 23, 59), ts(58, 12))]
     v["aura"] = [[f, m, ve, A.niveau_satiete(f, m, ve)] for f in (0, 14, 15, 39, 40, 79, 80, 100) for m in (0, 49, 50, 100)
                  for ve in (False, True)]
@@ -148,8 +148,8 @@ verifier(at == [None, None, None, 2, 2, 2, 1, 1, 1, 1, 0, 0, 0, None],
 verifier(v["attente_partie"]["attendu"][-1][0] >= 184 and v["attente_partie"]["attendu"][-1][1] == 0,
          f"elle grandit et rien n'est perdu (184 XP gagnées + la médaille de série : {v['attente_partie']['attendu'][-1]})")
 verifier(sc[17][2] == 4, f"scénario : un jour sans jouer, mais fini en forme, compte aussi ({sc[17][2]})")
-verifier(sc[21][1] in ("affamee", "veille") and sc[21][3] < max(x[3] for x in sc[:21]),
-         f"scénario : des jours finis affamée font perdre des crans, pas toute la série ({[x[3] for x in sc]})")
+verifier(sc[21][1] in ("affamee", "veille") and all(sc[i][3] <= sc[i + 1][3] and sc[i][2] <= sc[i + 1][2] for i in range(len(sc) - 1)),
+         f"scénario : des jours finis affamée ne retirent rien (pas de série à perdre : {[x[3] for x in sc]})")
 
 # ---------------------------------------------------------------- 2. les 7 points validés
 print("2. Rythme : seulement de 7 h à 21 h, 3 fois plus lent, mode vacances")
@@ -261,8 +261,7 @@ for i, cmd in enumerate(["pwd", "touch", "head", "curl", "id", "uptime"]):
     S.repas(t, cmd, now=ts(10, 10, i))
 verifier(S.s_(t)["complete"] and "Assiette complète" in str(t.get("bubble")) + str(t.get("bulles")), "les 6 familles : assiette complète")
 
-print("6. Série de soins : un jour manqué retire un cran")
-verifier(S.serie_manquee(5) == 4 and S.serie_manquee(0) == 0, "un jour fini affamée : 5 → 4 (jamais tout à zéro d'un coup)")
+print("6. Pas de série à perdre (3 novembre) : les médailles se gagnent aux jours bien nourrie au total")
 t = core.new_state("Pixel")
 core.migrate(t)
 t["intro"] = {"etat": "fini"}
@@ -271,15 +270,30 @@ t["hunger"], t["last_tick"], st_["repas_t"] = 100.0, ts(0, 18), ts(0, 18)
 for i, cmd in enumerate(["pwd", "ls", "date"]):
     S.repas(t, cmd, now=ts(0, 18, i))
 S.tick(t, ts(2, 18))
-verifier(st_["serie"] == 2 and st_["jours"] == 2, f"joué lundi, rien mardi (fini en forme) : mardi compte aussi ({st_['serie']})")
+verifier(st_["jours"] == 2, f"joué lundi, rien mardi (fini en forme) : mardi compte aussi ({st_['jours']})")
 S.vacances(t, True)
 S.tick(t, ts(9, 18))
-verifier(st_["serie"] == 2, f"une semaine de vacances : ni gagné ni perdu ({st_['serie']})")
+verifier(st_["jours"] == 2, f"une semaine de vacances : ni gagné ni perdu ({st_['jours']})")
 S.vacances(t, False)
 t["hunger"] = 30.0
 S.tick(t, ts(10, 18))
-verifier(st_["serie"] == 1, f"un jour fini affamée : un cran de moins, pas tout ({st_['serie']})")
-verifier(S.palier_serie(3) == 1 and S.palier_serie(30) == 4, "médailles à 3, 7, 14 et 30 jours")
+verifier(st_["jours"] == 2, f"un jour fini affamée : rien n'est retiré ({st_['jours']})")
+t["hunger"] = 90.0
+for i, cmd in enumerate(["pwd", "ls", "date", "whoami"]):
+    S.repas(t, cmd, now=ts(11, 18, i))
+verifier(st_["jours"] == 3 and st_["medailles"] == 1, f"le 3e jour bien nourri au total (pas de suite) : la 1re médaille ({st_})")
+verifier(S.palier_serie(3) == 1 and S.palier_serie(30) == 4, "médailles à 3, 7, 14 et 30 jours au total")
+verifier(S.ligne_medailles(12) == "🏅 3 · 🏅 7 · 14 · 30", S.ligne_medailles(12))
+lg = "\n".join(S.lignes(t))
+verifier("suite" not in lg and "record" not in lg, "l'écran ne parle plus de « jours de suite » ni de record")
+vieux = core.new_state("Vieux")
+core.migrate(vieux)
+vieux["intro"] = {"etat": "fini"}
+sv = S.s_(vieux)
+sv.update(jours=15, serie=2, medailles=1)
+vieux["hunger"], vieux["last_tick"], sv["repas_t"] = 90.0, ts(0, 18), ts(0, 18)
+S.tick(vieux, ts(1, 18))
+verifier(sv["medailles"] == 3, f"une ancienne partie (15 jours au total, série 2) : les médailles 7 et 14 arrivent ({sv['medailles']})")
 
 print("7. Longue absence et migration")
 t = core.new_state("Pixel")

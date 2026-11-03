@@ -123,7 +123,7 @@ def un_rythme(nom):
         reste_lecons = histoire.lecon_courante(st)[0] is not None or faits_avant < len(histoire.h_(st)["faits"])
         lignes.append({"jour": j + 1, "debut": etat_debut, "faim_debut": round(faim_debut, 1), "fin": S.etat(st),
                        "faim_fin": round(st["hunger"], 1), "assiette": S.nb_assiette(st), "jours_soignes": s["jours"],
-                       "serie": s["serie"], "niveau": core.level(st["xp"]), "stade": core.stage(core.level(st["xp"])),
+                       "serie": s["jours"], "niveau": core.level(st["xp"]), "stade": core.stage(core.level(st["xp"])),
                        "reserve": s["reserve"], "lecons": len(histoire.h_(st)["faits"]),
                        "lecons_jour": len(histoire.h_(st)["faits"]) - faits_avant, "chapitres": len(histoire.h_(st)["ailes"]),
                        "avance": reste_lecons})

@@ -125,8 +125,8 @@ fun main(args: Array<String>) {
     val msg = Recompenses.exploit(jeu, "crypte.chaine")
     verifierP(msg != null && Recompenses.exploit(jeu, "crypte.chaine") == null && Recompenses.faveur(jeu)?.optInt("reste") == 3,
         "un exploit : 3 rencontres favorisées, une seule fois")
-    val serie = listOf("or", "or", "argent", "or", "diamant", "or", "or", "or").map { Recompenses.serie(jeu, it) }
-    verifierP(serie.last() != null && serie.dropLast(1).all { it == null }, "5 médailles d'or de suite : série parfaite")
+    val serie = listOf("or", "or", "argent", "bronze", "or", "diamant", "or").map { Recompenses.serie(jeu, it) }
+    verifierP(serie.last() != null && serie.dropLast(1).all { it == null }, "5 médailles d'or au total : série parfaite (l'argent ne remet rien à zéro)")
 
     println("4. explique : la limite de l'image")
     val ex = Explique.fiche(jeu, "rm")

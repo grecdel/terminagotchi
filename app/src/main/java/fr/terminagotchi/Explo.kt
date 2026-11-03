@@ -252,8 +252,7 @@ object Defis {
         if (ecoule > DUREE) {
             d.put("cmd", "")
             jeu.log(t("core.defi.rate.log", "cmd" to cmd))
-            jeu.dire(t("core.defi.rate.dit"), 6)
-            jeu.animer("confus")
+            jeu.dire(t("core.defi.rate.dit"), 6)        // (3 nov.) une phrase douce et l'animation normale
         }
         return null
     }

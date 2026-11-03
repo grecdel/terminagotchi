@@ -91,8 +91,8 @@ fun main(args: Array<String>) {
     verifierS(r.first, "ce que nourrit une commande ${r.second}")
     r = tous("xp") { Satiete.xpAjuste(it.getInt(0), it.getString(1), it.getInt(2)) == (it.getInt(3) to it.getInt(4)) }
     verifierS(r.first, "l'XP ajustée (+20 %, −20 %, −40 %, restes) ${r.second}")
-    r = tous("serie") { Satiete.serieManquee(it.getInt(0)) == it.getInt(1) && Satiete.palierSerie(it.getInt(0)) == it.getInt(2) }
-    verifierS(r.first, "la série (un cran de moins, médailles) ${r.second}")
+    r = tous("serie") { Satiete.palierSerie(it.getInt(0)) == it.getInt(1) && Satiete.ligneMedailles(it.getInt(0)) == it.getString(2) }
+    verifierS(r.first, "les médailles aux jours bien nourrie au total (pas de série à perdre) ${r.second}")
     r = tous("minuit") { Satiete.minuitApres(it.getDouble(0)) == it.getDouble(1) }
     verifierS(r.first, "le minuit suivant ${r.second}")
     r = tous("aura") { Aura.niveauSatiete(it.getInt(0), it.getInt(1), it.getBoolean(2)) == it.getInt(3) }
@@ -113,7 +113,7 @@ fun main(args: Array<String>) {
         else Satiete.repas(jeu, p.getString(4), p.getInt(5) == 1, p.getInt(6) == 1, p.getInt(7) == 1, now)
         val e = attendu.getJSONArray(i)
         val a = listOf(Math.round(jeu.faim * 1000) / 1000.0, Satiete.etatDe(jeu.faim, s.optBoolean("veille")), s.optInt("jours"),
-            s.optInt("serie"), (0 until s.getJSONArray("assiette").length()).map { s.getJSONArray("assiette").getString(it) }.toSet().size, jeu.xp)
+            s.optInt("medailles"), (0 until s.getJSONArray("assiette").length()).map { s.getJSONArray("assiette").getString(it) }.toSet().size, jeu.xp)
         val b = listOf(e.getDouble(0), e.getString(1), e.getInt(2), e.getInt(3), e.getInt(4), e.getInt(5))
         if (a != b && ecart == null) ecart = "pas $i : Kotlin $a, Python $b"
     }
@@ -220,7 +220,7 @@ fun main(args: Array<String>) {
                 if (t < total) perdu = true
                 total = t
             }
-            lignes.add(Triple(debut, sj.optInt("serie"), j.stade))
+            lignes.add(Triple(debut, sj.optInt("jours"), j.stade))
         }
         bilan[nom] = lignes
         verifierS(!perdu, "$nom : jamais d'XP perdue (réserve comprise)")
@@ -229,9 +229,9 @@ fun main(args: Array<String>) {
     }
     verifierS(bilan.getValue("tous les jours").all { it.first in setOf("forme", "rassasiee") }, "tous les jours : jamais affamée au début")
     verifierS(bilan.getValue("un jour sur deux").all { it.first in setOf("forme", "rassasiee") }, "un jour sur deux : en forme à chaque retour")
-    verifierS(bilan.getValue("un jour sur deux").last().second >= 12, "un jour sur deux : la série continue (jours sans jeu finis en forme)")
+    verifierS(bilan.getValue("un jour sur deux").last().second >= 12, "un jour sur deux : les jours bien nourrie continuent (jours sans jeu finis en forme)")
     val retour = bilan.getValue("une semaine d'absence")[3]
-    verifierS(retour.first in setOf("affamee", "veille") && retour.second >= 1, "une semaine d'absence : ${retour.first} au retour, série gardée en partie (${retour.second})")
+    verifierS(retour.first in setOf("affamee", "veille") && retour.second >= 1, "une semaine d'absence : ${retour.first} au retour, rien de perdu (${retour.second} jours)")
 
     println("4. Suites du rapport v3 (téléphone)")
     val p = nouvellePartie()

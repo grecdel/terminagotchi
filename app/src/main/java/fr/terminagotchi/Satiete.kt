@@ -144,10 +144,11 @@ object Satiete {
         return Math.floorDiv(total, 100) to Math.floorMod(total, 100)
     }
 
-    fun palierSerie(serie: Int) = SERIE_PALIERS.count { serie >= it }
+    /** Le nombre de médailles atteintes avec ce total de jours bien nourrie (3, 7, 14, 30 : jamais perdues, 3 novembre). */
+    fun palierSerie(jours: Int) = SERIE_PALIERS.count { jours >= it }
 
-    /** Un jour manqué (fini affamée ou en veille) : la série perd UN cran, jamais tout. */
-    fun serieManquee(serie: Int) = maxOf(0, serie - 1)
+    /** « 🏅 3 · 🏅 7 · 14 · 30 » : les médailles des jours bien nourrie au total. */
+    fun ligneMedailles(jours: Int) = SERIE_PALIERS.joinToString(" · ") { (if (jours >= it) "🏅 " else "") + it }
 
     /** Le début (00:00, heure locale) du jour qui suit l'instant ts. */
     fun minuitApres(ts: Double): Double {
@@ -252,14 +253,13 @@ object Satiete {
         return if (avant >= FORME && h < FORME) t("core.notif.faim") else null
     }
 
-    /** Le jour j est fini : soigné s'il a fini au moins en forme (sinon la série perd un cran) ; neutre en vacances. */
+    /** Le jour j est fini : soigné s'il a fini au moins en forme (sinon rien ne change : pas de série à perdre). */
     private fun cloturer(jeu: Jeu, s: JSONObject, j: String) {
         val clos = s.optString("clos")
         if (clos.isNotEmpty() && clos >= j) return
         s.put("clos", j)
         if (s.optBoolean("vacances") || (s.optString("jour") == j && s.optBoolean("compte"))) return
         if (jeu.faim >= JOUR_FAIM && !s.optBoolean("veille")) compter(jeu, s, j)
-        else s.put("serie", serieManquee(s.optInt("serie")))
     }
 
     private fun nouveauJour(s: JSONObject, now: Double) {
@@ -327,19 +327,17 @@ object Satiete {
         compter(jeu, s, s.optString("jour"))
     }
 
-    /** Un jour soigné de plus : la série, le lien, les médailles, l'évolution qui attendait. */
+    /** Un jour soigné de plus : le lien, les médailles (au total, jamais perdues), l'évolution qui attendait. */
     private fun compter(jeu: Jeu, s: JSONObject, j: String) {
         s.put("jours", s.optInt("jours") + 1)
-        val avant = palierSerie(s.optInt("serie"))
-        s.put("serie", s.optInt("serie") + 1)
-        s.put("meilleure", maxOf(s.optInt("meilleure"), s.optInt("serie")))
         s.put("dernier", j)
-        val p = palierSerie(s.optInt("serie"))
-        if (p > avant && p > s.optInt("medailles")) {
-            s.put("medailles", p)
-            val xp = SERIE_XP[p - 1]
-            jeu.log("🎯 " + t("sat.serie.medaille", "n" to SERIE_PALIERS[p - 1], "xp" to xp))
-            jeu.dire(t("sat.serie.medaille", "n" to SERIE_PALIERS[p - 1], "xp" to xp), 12)
+        val p = palierSerie(s.optInt("jours"))
+        while (s.optInt("medailles") < p) {           // (une ancienne partie peut en gagner plusieurs d'un coup)
+            val m = s.optInt("medailles") + 1
+            s.put("medailles", m)
+            val xp = SERIE_XP[m - 1]
+            jeu.log("🎯 " + t("sat.serie.medaille", "n" to SERIE_PALIERS[m - 1], "xp" to xp))
+            jeu.dire(t("sat.serie.medaille", "n" to SERIE_PALIERS[m - 1], "xp" to xp), 12)
             jeu.ajouterXp(xp)
         }
         if (s.optInt("jours") == LIEN_TALENT) jeu.dire(t("sat.lien.talent", "nom" to jeu.nom), 14)
@@ -462,7 +460,7 @@ object Satiete {
             out.add(t("sat.ecran.gouter", "icone" to ICONES[f], "famille" to t("sat.famille.$f"), "cmd" to cmd))
         }
         if (s.optBoolean("veille")) out.add(t("sat.veille.encore", "n" to REVEIL_PLATS - lst(s, "reveil").size))
-        out.add(t("sat.ecran.serie", "n" to s.optInt("serie"), "meilleure" to s.optInt("meilleure"), "jours" to s.optInt("jours")))
+        out.add(t("sat.ecran.serie", "jours" to s.optInt("jours"), "medailles" to ligneMedailles(s.optInt("jours"))))
         prochaineEvolution(jeu)?.let { if (it.second > 0) out.add(t("sat.ecran.grandir", "n" to it.second)) }
         out.add(t("sat.ecran.biome." + when (e) { "rassasiee" -> "fleuri"; "affamee", "veille" -> "fane"; else -> "normal" }))
         out.add(t("sat.ecran.vacances." + (if (s.optBoolean("vacances")) "on" else "off"), "cmd" to "vacances"))

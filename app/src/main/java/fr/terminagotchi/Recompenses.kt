@@ -184,10 +184,11 @@ object Recompenses {
         return r to texte
     }
 
-    /** Salle d'entraînement : 5 médailles d'or ou de diamant de suite = une série parfaite (exploit). */
+    /** Salle d'entraînement : 5 médailles d'or ou de diamant AU TOTAL depuis la dernière faveur = une « série parfaite »
+     *  (exploit) ; l'argent ou le bronze ne remet rien à zéro (pas de série à perdre, 3 novembre). */
     fun serie(jeu: Jeu, medaille: String): String? {
         val r = etat(jeu)
-        r.put("serie", if (medaille == "or" || medaille == "diamant") r.optInt("serie") + 1 else 0)
+        if (medaille == "or" || medaille == "diamant") r.put("serie", r.optInt("serie") + 1)
         if (r.optInt("serie") >= conf().optInt("serie_parfaite", 5)) {
             r.put("serie", 0)
             return exploit(jeu, "entrainement.serie_parfaite")
