@@ -129,7 +129,32 @@ class ToileJava(val g: java.awt.Graphics2D, val assets: File) : Toile {
         g.transform = old
         g.composite = oldC
     }
+    private var reveil: fr.terminagotchi.Reveil.Images? = null
+    private val reveils = HashMap<String, BufferedImage>()
+    private fun px(f: String): Triple<IntArray, Int, Int> {
+        val im = ImageIO.read(File(assets, f))
+        return Triple(im.getRGB(0, 0, im.width, im.height, null, 0, im.width), im.width, im.height)
+    }
+    /** la carte du réveil (« reveil:<signature>:<moment>:<saison> »), comme EspaceVue.photoReveil */
+    private fun imageReveil(nom: String): BufferedImage = reveils.getOrPut(nom) {
+        val ri = reveil ?: run {
+            val v = px("intro/monde.jpg"); val d = px("intro/dort.jpg"); val m = px("intro/reveil_masques.png")
+            fr.terminagotchi.Reveil.Images(v.first, d.first, v.second, v.third, m.first, m.second, m.third).also { reveil = it }
+        }
+        BufferedImage(ri.w, ri.h, BufferedImage.TYPE_INT_ARGB).also { it.setRGB(0, 0, ri.w, ri.h, ri.image(nom), 0, ri.w) }
+    }
+    override fun photoCercle(nom: String, x: Float, y: Float, w: Float, h: Float, cx: Float, cy: Float, r: Float) {
+        val old = g.clip
+        g.clip(Ellipse2D.Float(cx - r, cy - r, 2 * r, 2 * r))
+        photo(nom, x, y, w, h, 0f)
+        g.clip = old
+    }
     override fun photo(nom: String, x: Float, y: Float, w: Float, h: Float, r: Float) {
+        if (nom.startsWith("reveil:")) {
+            g.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_BICUBIC)
+            g.drawImage(imageReveil(nom), x.toInt(), y.toInt(), w.toInt(), h.toInt(), null)
+            return
+        }
         val b = monde ?: ImageIO.read(File(assets, "intro/monde.jpg")).also { monde = it }
         val ech = maxOf(w / b.width, h / b.height)
         val sw = w / ech; val sh = h / ech
@@ -367,8 +392,17 @@ fun main(args: Array<String>) {
         e.modele.onglet = "cerveau"
         e.tourCerveau = -1e9; e.tick(0.05, t); e.preparer(t + 1.0)
         capture(e, assets, File(sortie, "espace_telephone_cerveau.png"), 1080, 2340, d, term)
-        e.modele.onglet = "carte"; e.preparer(t)
+        e.modele.onglet = "carte"; e.carte.toucher("rv:passer"); e.preparer(t)
         capture(e, assets, File(sortie, "espace_telephone_carte.png"), 1080, 2340, d, term)
+        // 3 nov. : la carte du réveil (fiche d'un lieu, livre, carnet, zoom, nuit)
+        for ((a, f) in listOf("rv:lieu:carrefour" to "carte_fiche", "rv:livre" to "carte_livre", "rv:carnet" to "carte_carnet")) {
+            e.carte.toucher("rv:fermer"); e.carte.toucher(a); e.carte.tick(t, true); e.preparer(t)
+            capture(e, assets, File(sortie, "espace_telephone_$f.png"), 1080, 2340, d, term)
+        }
+        e.carte.toucher("rv:fermer"); e.carte.toucher("rv:zoom+"); e.carte.toucher("rv:zoom+")
+        e.carte.rafraichir(22, 12); e.carte.tick(t, true); e.preparer(t)
+        capture(e, assets, File(sortie, "espace_telephone_carte_nuit_zoom.png"), 1080, 2340, d, term)
+        e.carte.toucher("rv:zoom-"); e.carte.toucher("rv:zoom-"); e.carte.rafraichir()
         e.modele.onglet = "equipe"; e.preparer(t)
         capture(e, assets, File(sortie, "espace_telephone_equipe.png"), 1080, 2340, d, term)
         e.modele.onglet = "terminal"; e.classe = true; e.preparer(t)

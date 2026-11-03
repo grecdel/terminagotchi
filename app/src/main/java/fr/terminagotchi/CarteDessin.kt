@@ -72,8 +72,9 @@ object CarteDessin {
         val r = max(w / 960f, h / 540f) * zoom
         val iw = 960f * r
         val ih = 540f * r
-        val ix: Float = (x + w / 2 - cx * iw).coerceIn(x + w - iw, x)
-        val iy: Float = (y + h / 2 - cy * ih).coerceIn(y + h - ih, y)
+        // (min / max et pas coerceIn : quand l'image a juste la taille de la zone, l'arrondi rend l'intervalle vide)
+        val ix: Float = max(min(x + w / 2 - cx * iw, x), min(x + w - iw, x))
+        val iy: Float = max(min(y + h / 2 - cy * ih, y), min(y + h - ih, y))
         fun p(fx: Float, fy: Float) = (ix + fx * iw) to (iy + fy * ih)
         fun dedans(px: Float, py: Float, m: Float = 0f) = px >= x + m && px <= x + w - m && py >= y + m && py <= y + h - m
     }
@@ -422,7 +423,7 @@ object CarteDessin {
     private fun cadrePanneau(tl: Toile, Z: MutableList<EspaceDessin.Zone>, x: Float, y: Float, w: Float, h: Float, z: Float) {
         tl.rrect(x, y, w, h, 14 * z, 0xFF0F1219.toInt(), a(CYAN, 120), 1.2f * z)
         Z.add(EspaceDessin.Zone(x, y, w, h, "rv:rien"))
-        tl.texte("✕", x + w - 18 * z, y + 18 * z, 15 * z, DOUX, true, 'c')
+        tl.texte("×", x + w - 18 * z, y + 18 * z, 15 * z, DOUX, true, 'c')
         Z.add(EspaceDessin.Zone(x + w - 40 * z, y, 40 * z, 40 * z, "rv:fermer"))
     }
 
@@ -503,19 +504,31 @@ object CarteDessin {
             return
         }
         val cw = (w - 28 * z) / 4
+        // la hauteur des cases suit la place (téléphone : le panneau est bas) ; la phrase du bas seulement s'il reste de la place
+        val ch = ((h - 40 * z - 34 * z) / 2).coerceIn(44 * z, 82 * z)
+        val k0 = ch / (82 * z)
         for ((i, g) in m.gardiens.withIndex()) {
             val k = i + 1
-            val cx = x + 14 * z + (i % 4) * cw; val cy = y + 40 * z + (i / 4) * 82 * z
+            val cx = x + 14 * z + (i % 4) * cw; val cy = y + 40 * z + (i / 4) * ch
             val ouvert = k in m.livreOuverts
-            tl.rrect(cx, cy, cw - 8 * z, 74 * z, 10 * z, 0xFF12151E.toInt(), if (ouvert) a(JAUNE, 120) else EspaceDessin.BORD, 1f * z)
+            val ccx = cx + (cw - 8 * z) / 2
+            tl.rrect(cx, cy, cw - 8 * z, ch - 8 * z, 10 * z, 0xFF12151E.toInt(), if (ouvert) a(JAUNE, 120) else EspaceDessin.BORD, 1f * z)
             val al = m.gardAlbums[g.second]
-            if (ouvert && al != null) tl.cadre(al.image("assis", 0), cx + (cw - 8 * z) / 2, cy + 52 * z, 40 * z / max(1, al.ref), false, al.lisse)
-            else { tl.ellipse(cx + (cw - 8 * z) / 2, cy + 34 * z, 15 * z, 18 * z, 0xFF282C38.toInt()); tl.texte("?", cx + (cw - 8 * z) / 2, cy + 34 * z, 14 * z, PALE, true, 'c') }
-            tl.texte(t("reveil.livre.ch", "n" to k), cx + (cw - 8 * z) / 2, cy + 66 * z, 10.5f * z, if (ouvert) TEXTE else PALE, true, 'c')
-            if (ouvert) Z.add(EspaceDessin.Zone(cx, cy, cw - 8 * z, 74 * z, "rv:livre:$k"))
+            if (ch < 70 * z) {                                // compact : une seule ligne, centrée
+                val lab = (if (ouvert) "★ " else "? ") + t("reveil.livre.ch", "n" to k)
+                tl.texte(court(tl, lab, cw - 16 * z, 11 * z, true), ccx, cy + (ch - 8 * z) / 2, 11 * z, if (ouvert) JAUNE else PALE, true, 'c')
+            } else {
+                if (ouvert && al != null) tl.cadre(al.image("assis", 0), ccx, cy + 52 * z * k0, 40 * z * k0 / max(1, al.ref), false, al.lisse)
+                else { tl.ellipse(ccx, cy + 34 * z * k0, 15 * z * k0, 18 * z * k0, 0xFF282C38.toInt()); tl.texte("?", ccx, cy + 34 * z * k0, 14 * z * k0, PALE, true, 'c') }
+                tl.texte(t("reveil.livre.ch", "n" to k), ccx, cy + ch - 18 * z, 10.5f * z, if (ouvert) TEXTE else PALE, true, 'c')
+            }
+            if (ouvert) Z.add(EspaceDessin.Zone(cx, cy, cw - 8 * z, ch - 8 * z, "rv:livre:$k"))
         }
-        var yy = y + 40 * z + 2 * 82 * z + 6 * z
-        for (ln in couper(tl, t("reveil.livre.silhouette"), w - 28 * z, 11 * z).take(2)) { tl.texte(ln, x + 14 * z, yy, 11 * z, DOUX); yy += 15 * z }
+        var yy = y + 40 * z + 2 * ch + 6 * z
+        for (ln in couper(tl, t("reveil.livre.silhouette"), w - 28 * z, 11 * z).take(2)) {
+            if (yy > y + h - 8 * z) break
+            tl.texte(ln, x + 14 * z, yy, 11 * z, DOUX); yy += 15 * z
+        }
     }
 
     private fun carnet(tl: Toile, Z: MutableList<EspaceDessin.Zone>, m: Modele, x: Float, y: Float, w: Float, h: Float, z: Float) {
