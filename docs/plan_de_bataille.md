@@ -1117,6 +1117,7 @@ et `tests/jvm/Classe.kt`).
   léger fixe (exception accordée, seulement dans ce mode) ; défi sans chrono. Automatique si le système demande
   moins d'animations.
 
+Vérifié le 3 novembre : `tout.sh all` vert (52 suites PC avec parcours et personas, langues, site, 43 suites JVM).
 Reste au propriétaire : relire `docs/classe/seances_guidees.md` et `docs/classe/kit_mediatheque.md` (brouillons),
 essai en classe pilote, essai de la place sur le Wi-Fi d'une école (testée ici sur 127.0.0.1 seulement).
 
