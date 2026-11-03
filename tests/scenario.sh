@@ -83,32 +83,25 @@ tape "cd terrain_terminagotchi/nid"; tape "pwd"; tape "ls" 2   # le Terminal 2 p
 capture onglet_2_dossier
 # le téléphone tourne (paysage) puis revient (portrait) : les deux onglets restent, Terminal 2 toujours dans nid
 # (manifeste : configChanges ; Onglets.etat / reprendre si Android recrée quand même l'écran)
-onglets_vus() {
+onglets_vus() {      # les onglets lus à l'écran, et l'orientation de l'écran
   adb shell uiautomator dump /sdcard/tg_ui.xml >/dev/null 2>&1
-  adb exec-out cat /sdcard/tg_ui.xml 2>/dev/null | python3 -c '
-import re, sys
-x = sys.stdin.read()
-t = re.findall(r"text=\"([^\"]*)\"", x)
-print("onglets:", sorted(set(v for v in t if re.search(r"Terminal\W*\d", v) and len(v) < 24)))'
-  adb shell dumpsys input 2>/dev/null | grep -m1 -i "SurfaceOrientation" | tr -s ' ' || true
+  echo "onglets : $(adb exec-out cat /sdcard/tg_ui.xml 2>/dev/null | grep -o 'Terminal.\{1,3\}[0-9]' | sort -u | tr '\n' ' ')"
+  echo "dossier : $(adb exec-out cat /sdcard/tg_ui.xml 2>/dev/null | grep -c 'terrain_terminagotchi/nid')"
+  echo "orientation : $(adb shell dumpsys window displays 2>/dev/null | grep -o 'mCurrentRotation=[^ ]*' | head -1) $(adb shell wm size 2>/dev/null | tail -1)"
 }
 onglets_vus > captures/rotation_resultat.txt
-adb shell settings put system accelerometer_rotation 0
-adb shell settings put system user_rotation 1
-adb shell cmd window user-rotation lock 1 2>/dev/null || adb shell wm user-rotation lock 1 2>/dev/null || true
-capture rotation_paysage 5
+adb shell settings put system accelerometer_rotation 1   # rotation automatique : le téléphone suit son capteur
+adb emu rotate >/dev/null 2>&1 || adb shell settings put system user_rotation 1   # comme Ctrl+F11 : le téléphone tourne
+capture rotation_paysage 6
 onglets_vus >> captures/rotation_resultat.txt
 tape "pwd" 2
 capture rotation_paysage_pwd
-adb shell settings put system user_rotation 0
-adb shell cmd window user-rotation lock 0 2>/dev/null || adb shell wm user-rotation lock 0 2>/dev/null || true
-capture rotation_portrait 5
 onglets_vus >> captures/rotation_resultat.txt
+adb emu rotate >/dev/null 2>&1; adb emu rotate >/dev/null 2>&1; adb emu rotate >/dev/null 2>&1 || adb shell settings put system user_rotation 0
+capture rotation_portrait 6
 tape "pwd" 2
 capture rotation_portrait_pwd
-adb exec-out cat /sdcard/tg_ui.xml 2>/dev/null | grep -o 'terrain_terminagotchi/nid' | head -1 >> captures/rotation_resultat.txt
-adb shell uiautomator dump /sdcard/tg_ui.xml >/dev/null 2>&1
-adb exec-out cat /sdcard/tg_ui.xml 2>/dev/null | grep -c 'terrain_terminagotchi/nid' >> captures/rotation_resultat.txt
+onglets_vus >> captures/rotation_resultat.txt
 cat captures/rotation_resultat.txt
 tape "exit" 3              # on ferme l'onglet 2, retour au Terminal 1
 capture onglet_1_retour
