@@ -9787,6 +9787,534 @@
    }
   },
   {
+   "monde": "sentier",
+   "exploit": "sommet.sentier",
+   "genre": "variante",
+   "types": [
+    "roche"
+   ],
+   "valeur": "0000000000000000000000000000000000000000000000000000000000000000",
+   "n0": 0,
+   "attendu": {
+    "n": 0,
+    "champs": {
+     "espece": "Heaumbre",
+     "variante": "ombre",
+     "shiny": false,
+     "marque": "un museau qui sent le café",
+     "humeur": "paresseuse",
+     "taille": 196.9,
+     "qualite": 0.685,
+     "potentiel": 77,
+     "stats": {
+      "PV": 55,
+      "ATK": 49,
+      "DEF": 50,
+      "VIT": 46,
+      "INT": 50
+     },
+     "note": 69.1,
+     "rarete": "rare",
+     "stade": "ado"
+    }
+   }
+  },
+  {
+   "monde": "sentier",
+   "exploit": "sommet.sentier",
+   "genre": "variante",
+   "types": [
+    "roche"
+   ],
+   "valeur": "0000000000000000000000000000000000000000000000000000000000000000",
+   "n0": 17,
+   "attendu": {
+    "n": 17,
+    "champs": {
+     "espece": "Plouftin",
+     "variante": "classique",
+     "shiny": false,
+     "marque": "un grain de beauté en forme de #",
+     "humeur": "taquine",
+     "taille": 35.8,
+     "qualite": 0.855,
+     "potentiel": 85,
+     "stats": {
+      "PV": 35,
+      "ATK": 28,
+      "DEF": 29,
+      "VIT": 36,
+      "INT": 55
+     },
+     "note": 51.3,
+     "rarete": "peu commune",
+     "stade": "ado"
+    }
+   }
+  },
+  {
+   "monde": "sentier",
+   "exploit": "sommet.sentier",
+   "genre": "variante",
+   "types": [
+    "roche"
+   ],
+   "valeur": "0000000000000000000000000000000000000000000000000000000000000000",
+   "n0": 60,
+   "attendu": {
+    "n": 60,
+    "champs": {
+     "espece": "Libellance",
+     "variante": "classique",
+     "shiny": false,
+     "marque": "des yeux de deux couleurs",
+     "humeur": "fougueuse",
+     "taille": 268.6,
+     "qualite": 0.989,
+     "potentiel": 97,
+     "stats": {
+      "PV": 49,
+      "ATK": 53,
+      "DEF": 47,
+      "VIT": 84,
+      "INT": 60
+     },
+     "note": 71.1,
+     "rarete": "rare",
+     "stade": "ado"
+    }
+   }
+  },
+  {
+   "monde": "sentier",
+   "exploit": "sommet.sentier",
+   "genre": "variante",
+   "types": [
+    "roche"
+   ],
+   "valeur": "0000000000000000000000000000000000000000000000000000000000000000",
+   "n0": 123,
+   "attendu": {
+    "n": 124,
+    "champs": {
+     "espece": "Groinfer",
+     "variante": "ruines",
+     "shiny": false,
+     "marque": "une ombre qui a un pixel de retard",
+     "humeur": "timide",
+     "taille": 73.7,
+     "qualite": 0.341,
+     "potentiel": 34,
+     "stats": {
+      "PV": 33,
+      "ATK": 31,
+      "DEF": 28,
+      "VIT": 32,
+      "INT": 20
+     },
+     "note": 37.8,
+     "rarete": "commune",
+     "stade": "bebe"
+    }
+   }
+  },
+  {
+   "monde": "sentier",
+   "exploit": "sommet.sentier",
+   "genre": "variante",
+   "types": [
+    "roche"
+   ],
+   "valeur": "ffffffffffffffff000000000000000000000000000000000000000000000000",
+   "n0": 0,
+   "attendu": {
+    "n": 3,
+    "champs": {
+     "espece": "Crabouille",
+     "variante": "sable",
+     "shiny": false,
+     "marque": "une petite cicatrice en forme de point-virgule",
+     "humeur": "timide",
+     "taille": 93.9,
+     "qualite": 0.979,
+     "potentiel": 92,
+     "stats": {
+      "PV": 42,
+      "ATK": 47,
+      "DEF": 47,
+      "VIT": 54,
+      "INT": 35
+     },
+     "note": 75.5,
+     "rarete": "épique",
+     "stade": "enfant"
+    }
+   }
+  },
+  {
+   "monde": "sentier",
+   "exploit": "sommet.sentier",
+   "genre": "variante",
+   "types": [
+    "roche"
+   ],
+   "valeur": "ffffffffffffffff000000000000000000000000000000000000000000000000",
+   "n0": 17,
+   "attendu": {
+    "n": 17,
+    "champs": {
+     "espece": "Momiaou",
+     "variante": "desert",
+     "shiny": false,
+     "marque": "un ronronnement à 440 Hz",
+     "humeur": "têtue",
+     "taille": 101.2,
+     "qualite": 0.398,
+     "potentiel": 43,
+     "stats": {
+      "PV": 42,
+      "ATK": 47,
+      "DEF": 41,
+      "VIT": 47,
+      "INT": 27
+     },
+     "note": 42.8,
+     "rarete": "commune",
+     "stade": "enfant"
+    }
+   }
+  },
+  {
+   "monde": "sentier",
+   "exploit": "sommet.sentier",
+   "genre": "variante",
+   "types": [
+    "roche"
+   ],
+   "valeur": "ffffffffffffffff000000000000000000000000000000000000000000000000",
+   "n0": 60,
+   "attendu": {
+    "n": 60,
+    "champs": {
+     "espece": "Lampignon",
+     "variante": "champignonniere",
+     "shiny": false,
+     "marque": "un grain de beauté en forme de #",
+     "humeur": "curieuse",
+     "taille": 89.5,
+     "qualite": 0.705,
+     "potentiel": 75,
+     "stats": {
+      "PV": 40,
+      "ATK": 39,
+      "DEF": 42,
+      "VIT": 48,
+      "INT": 71
+     },
+     "note": 62.3,
+     "rarete": "peu commune",
+     "stade": "bebe"
+    }
+   }
+  },
+  {
+   "monde": "sentier",
+   "exploit": "sommet.sentier",
+   "genre": "variante",
+   "types": [
+    "roche"
+   ],
+   "valeur": "ffffffffffffffff000000000000000000000000000000000000000000000000",
+   "n0": 123,
+   "attendu": {
+    "n": 123,
+    "champs": {
+     "espece": "Scorpiquant",
+     "variante": "classique",
+     "shiny": false,
+     "marque": "des rayures comme un code-barres",
+     "humeur": "fougueuse",
+     "taille": 221.5,
+     "qualite": 0.234,
+     "potentiel": 24,
+     "stats": {
+      "PV": 37,
+      "ATK": 48,
+      "DEF": 48,
+      "VIT": 47,
+      "INT": 29
+     },
+     "note": 22.6,
+     "rarete": "commune",
+     "stade": "ado"
+    }
+   }
+  },
+  {
+   "monde": "sentier",
+   "exploit": "sommet.sentier",
+   "genre": "variante",
+   "types": [
+    "roche"
+   ],
+   "valeur": "9e3779b97f4a7c15f39cc0605cedc8341082276bf3a27251f86c6a11d0c18e95",
+   "n0": 0,
+   "attendu": {
+    "n": 3,
+    "champs": {
+     "espece": "Fourmidable",
+     "variante": "classique",
+     "shiny": false,
+     "marque": "une ombre qui a un pixel de retard",
+     "humeur": "paresseuse",
+     "taille": 72.1,
+     "qualite": 0.193,
+     "potentiel": 19,
+     "stats": {
+      "PV": 31,
+      "ATK": 30,
+      "DEF": 28,
+      "VIT": 29,
+      "INT": 33
+     },
+     "note": 13.7,
+     "rarete": "commune",
+     "stade": "adulte"
+    }
+   }
+  },
+  {
+   "monde": "sentier",
+   "exploit": "sommet.sentier",
+   "genre": "variante",
+   "types": [
+    "roche"
+   ],
+   "valeur": "9e3779b97f4a7c15f39cc0605cedc8341082276bf3a27251f86c6a11d0c18e95",
+   "n0": 17,
+   "attendu": {
+    "n": 17,
+    "champs": {
+     "espece": "Tentaclou",
+     "variante": "marais",
+     "shiny": false,
+     "marque": "un éternuement qui fait des étincelles",
+     "humeur": "têtue",
+     "taille": 37.4,
+     "qualite": 0.423,
+     "potentiel": 38,
+     "stats": {
+      "PV": 41,
+      "ATK": 25,
+      "DEF": 43,
+      "VIT": 18,
+      "INT": 38
+     },
+     "note": 40.0,
+     "rarete": "commune",
+     "stade": "enfant"
+    }
+   }
+  },
+  {
+   "monde": "sentier",
+   "exploit": "sommet.sentier",
+   "genre": "variante",
+   "types": [
+    "roche"
+   ],
+   "valeur": "9e3779b97f4a7c15f39cc0605cedc8341082276bf3a27251f86c6a11d0c18e95",
+   "n0": 60,
+   "attendu": {
+    "n": 60,
+    "champs": {
+     "espece": "Cendrouille",
+     "variante": "cendres",
+     "shiny": false,
+     "marque": "une tache en forme de @ sur le dos",
+     "humeur": "têtue",
+     "taille": 84.6,
+     "qualite": 0.415,
+     "potentiel": 42,
+     "stats": {
+      "PV": 45,
+      "ATK": 28,
+      "DEF": 41,
+      "VIT": 26,
+      "INT": 35
+     },
+     "note": 40.6,
+     "rarete": "commune",
+     "stade": "ado"
+    }
+   }
+  },
+  {
+   "monde": "sentier",
+   "exploit": "sommet.sentier",
+   "genre": "variante",
+   "types": [
+    "roche"
+   ],
+   "valeur": "9e3779b97f4a7c15f39cc0605cedc8341082276bf3a27251f86c6a11d0c18e95",
+   "n0": 123,
+   "attendu": {
+    "n": 124,
+    "champs": {
+     "espece": "Lichonarque",
+     "variante": "ruines",
+     "shiny": false,
+     "marque": "une petite cicatrice en forme de point-virgule",
+     "humeur": "taquine",
+     "taille": 183.0,
+     "qualite": 0.681,
+     "potentiel": 65,
+     "stats": {
+      "PV": 56,
+      "ATK": 60,
+      "DEF": 59,
+      "VIT": 58,
+      "INT": 62
+     },
+     "note": 73.2,
+     "rarete": "rare",
+     "stade": "ado"
+    }
+   }
+  },
+  {
+   "monde": "sentier",
+   "exploit": "sommet.sentier",
+   "genre": "variante",
+   "types": [
+    "roche"
+   ],
+   "valeur": "8000000000000001fac71cefac71cefac71cefac71cefac71cefac71ce00",
+   "n0": 0,
+   "attendu": {
+    "n": 3,
+    "champs": {
+     "espece": "Heaumbre",
+     "variante": "montagne",
+     "shiny": false,
+     "marque": "une antenne qui capte la radio",
+     "humeur": "timide",
+     "taille": 191.4,
+     "qualite": 0.519,
+     "potentiel": 51,
+     "stats": {
+      "PV": 54,
+      "ATK": 44,
+      "DEF": 43,
+      "VIT": 40,
+      "INT": 48
+     },
+     "note": 57.1,
+     "rarete": "peu commune",
+     "stade": "ado"
+    }
+   }
+  },
+  {
+   "monde": "sentier",
+   "exploit": "sommet.sentier",
+   "genre": "variante",
+   "types": [
+    "roche"
+   ],
+   "valeur": "8000000000000001fac71cefac71cefac71cefac71cefac71cefac71ce00",
+   "n0": 17,
+   "attendu": {
+    "n": 17,
+    "champs": {
+     "espece": "Givrarde",
+     "variante": "brume",
+     "shiny": false,
+     "marque": "des rayures comme un code-barres",
+     "humeur": "calme",
+     "taille": 186.8,
+     "qualite": 0.123,
+     "potentiel": 16,
+     "stats": {
+      "PV": 48,
+      "ATK": 51,
+      "DEF": 39,
+      "VIT": 35,
+      "INT": 38
+     },
+     "note": 37.7,
+     "rarete": "commune",
+     "stade": "bebe"
+    }
+   }
+  },
+  {
+   "monde": "sentier",
+   "exploit": "sommet.sentier",
+   "genre": "variante",
+   "types": [
+    "roche"
+   ],
+   "valeur": "8000000000000001fac71cefac71cefac71cefac71cefac71cefac71ce00",
+   "n0": 60,
+   "attendu": {
+    "n": 61,
+    "champs": {
+     "espece": "Rouillot",
+     "variante": "canyon",
+     "shiny": false,
+     "marque": "des taches disposées comme une constellation",
+     "humeur": "rêveuse",
+     "taille": 28.9,
+     "qualite": 0.908,
+     "potentiel": 91,
+     "stats": {
+      "PV": 41,
+      "ATK": 43,
+      "DEF": 39,
+      "VIT": 45,
+      "INT": 27
+     },
+     "note": 76.2,
+     "rarete": "épique",
+     "stade": "bebe"
+    }
+   }
+  },
+  {
+   "monde": "sentier",
+   "exploit": "sommet.sentier",
+   "genre": "variante",
+   "types": [
+    "roche"
+   ],
+   "valeur": "8000000000000001fac71cefac71cefac71cefac71cefac71cefac71ce00",
+   "n0": 123,
+   "attendu": {
+    "n": 126,
+    "champs": {
+     "espece": "Ricanos",
+     "variante": "classique",
+     "shiny": false,
+     "marque": "une crête en forme d'accolade {",
+     "humeur": "courageuse",
+     "taille": 102.4,
+     "qualite": 0.667,
+     "potentiel": 70,
+     "stats": {
+      "PV": 48,
+      "ATK": 48,
+      "DEF": 38,
+      "VIT": 44,
+      "INT": 31
+     },
+     "note": 44.3,
+     "rarete": "commune",
+     "stade": "enfant"
+    }
+   }
+  },
+  {
    "monde": "sommet",
    "exploit": "sommet.trois_mondes",
    "genre": "legendaire",

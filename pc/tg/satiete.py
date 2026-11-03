@@ -263,7 +263,11 @@ def _baisser(state, s, t0, t1):
     avant = float(state["hunger"])
     if not s["vacances"] and t1 > t0:
         r = taux("Gardien" in state.get("skills", []), state.get("stats", {}).get("Endurance", 0), s["jours"])
-        state["hunger"] = min(100.0, max(0.0, avant - secondes_eveil(t0, t1) / r))
+        sec = secondes_eveil(t0, t1)
+        d0, d1 = sommeil(state)
+        if d1 > t0 and d0 < t1:               # elle dort (limite de temps douce, apprendre.py) : la faim ne baisse pas
+            sec -= secondes_eveil(max(t0, d0), min(t1, d1))
+        state["hunger"] = min(100.0, max(0.0, avant - sec / r))
     h = state["hunger"]
     if h < AFFAMEE and not s["veille"]:
         s["veille"] = True
@@ -271,6 +275,12 @@ def _baisser(state, s, t0, t1):
         core.notif(state, t("sat.notif.veille", nom=state.get("name", "")))
     elif avant >= FORME > h:
         core.notif(state, t("core.notif.faim"))
+
+
+def sommeil(state):
+    """[début, fin] du sommeil de la limite de temps douce (apprendre.py), ou [0, 0]."""
+    tp = (state.get("apprendre") or {}).get("temps") or {}
+    return float(tp.get("dort_debut") or 0), float(tp.get("dort") or 0)
 
 
 def _cloturer(state, s, j):

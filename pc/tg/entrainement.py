@@ -96,7 +96,7 @@ TYPES = {
 FAMILLE_CMDS = {"explorateur": "cd ls pwd", "batisseur": "mkdir touch", "demenageur": "cp mv",
                 "nettoyeur": "rm rmdir", "lecteur": "cat head tail", "detective": "grep find",
                 "plombier": "| > >>", "cuisinier": "sh chmod"}
-COULEUR_TITRE = {"apprenti": "#c8b8a0", "touche": "#ff87ff", "star": "#ffaf00"}
+COULEUR_TITRE = {"apprenti": "#c8b8a0", "touche": "#ff87ff", "star": "#ffaf00", "main_sure": "#ffd75f"}
 
 
 def commande():
@@ -590,6 +590,9 @@ def titres(state):
         out.append(("touche", t("ent.titre.touche"), COULEUR_TITRE["touche"]))
     from . import guilde                       # les badges de la Guilde : Contributeur, Artisan (pseudo coloré)
     out += guilde.titres(state)
+    from . import apprendre                    # 10 commandes maîtrisées : « Main sûre » (idée 43)
+    if apprendre.nb_maitrisees(state) >= apprendre.donnees()["maitrise"]["titre"]:
+        out.append(("main_sure", t("apr.titre.main_sure"), COULEUR_TITRE["main_sure"]))
     for f in sorted(B.FAMILLES, key=lambda f: (-ech[f], -fam_(e, f)["n"], B.FAMILLES.index(f))):
         if ech[f] >= 1:
             en = B.ECHELONS[ech[f]]

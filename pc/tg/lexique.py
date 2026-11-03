@@ -196,7 +196,8 @@ def lignes(state):
               f" {DIM}" + t("lex.titre", ici=ici, n=goutees, total=total) + RESET,
               f" {DIM}" + t("lex.legende") + RESET,
               f" {fg(110)}↳ " + t("lex.exemples.ou", cmd=f"cd ~/{core.TERRAIN.name}") + RESET,
-              f" {fg(110)}📖 " + t("lex.explique", ex="tg explique rm") + RESET]
+              f" {fg(110)}📖 " + t("lex.explique", ex="tg explique rm") + RESET,
+              f" {fg(150)}🖼 " + t("apr.carnet.voir", cmd="tg carnet", souvenirs="tg souvenirs") + RESET]
     return entete + sortie + lignes_lieux(state) + souvenirs(state)
 
 

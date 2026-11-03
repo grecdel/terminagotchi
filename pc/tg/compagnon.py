@@ -46,7 +46,8 @@ def ligne(state):
     faim = "🍎" + sprites.bar(state["hunger"], 100, 5).replace("█", "▰").replace("░", "▱")
     e = satiete.etat(state)
     faim_c = {"rassasiee": 78, "forme": 78, "affamee": 221}.get(e, 203)
-    tete = (f"{fg(coul)}{visage(state)}{RESET} {BOLD}{state['name']}{RESET} {DIM}{t('dress.niv', n=lvl)} {pct}%{RESET} "
+    bac = f"{fg(221)}[" + t("apr.bac.court") + f"]{RESET} " if (state.get("apprendre") or {}).get("bac_ici") else ""
+    tete = bac + (f"{fg(coul)}{visage(state)}{RESET} {BOLD}{state['name']}{RESET} {DIM}{t('dress.niv', n=lvl)} {pct}%{RESET} "
             f"{fg(faim_c)}{faim}{RESET}" + (f" {fg(faim_c)}{satiete.ICONES_ETAT[e]}{RESET}" if e != "forme" else ""))
 
     try:                                           # I3 : le monstre en cours de dressage, sur sa propre ligne
@@ -132,6 +133,8 @@ def annonces(state):
     term = state.pop("terminal", []) or []
     for x in term:
         out.append(f"{fg(214)}{x}{RESET}")
+    for x in state.pop("terminal_info", []) or []:     # apprendre en jouant : pas des erreurs (énigme, tampon, bac…)
+        out.append(f"{fg(150)}{x}{RESET}")
     erreur = bool(e) or core.DERNIER["statut"] not in (None, 0) or any(not x.startswith("✔") for x in term)
     les, _ = lecons.lecon_courante(state)
     if les and core.level(state["xp"]) >= les["niveau"]:

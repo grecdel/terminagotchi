@@ -8572,6 +8572,24 @@
    "variantes_reservees": []
   },
   {
+   "id": "sentier",
+   "note": "Le sentier des marmottes (idée 45, 3 novembre) : la voie douce du Sommet, apprendre.py / Apprendre.kt. Sa propre variante existante, jamais les légendaires de la voie Expert++.",
+   "types": [
+    "roche"
+   ],
+   "maths": [],
+   "exploits": [
+    {
+     "id": "sommet.sentier",
+     "nom": "recomp.sommet.sentier",
+     "recompense": "variante"
+    }
+   ],
+   "variantes_reservees": [
+    "mousselin:montagne"
+   ]
+  },
+  {
    "id": "sommet",
    "types": [],
    "requis": [],

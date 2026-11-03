@@ -11,7 +11,7 @@ import subprocess
 from . import (compagnon, core, dressage, entrainement, envies, equipe, guide, exemples, explique, explo, histoire, intro, lecons, lexique, maths,
                maison, notif, quetes, recense, registre, sprites, terrain)
 from .bestiaire import arc_en_ciel
-from . import langue, rendu_fin, satiete, sur
+from . import apprendre, langue, rendu_fin, satiete, sur
 from .langue import ajuster, envelopper, largeur, raccourcir, t
 from .mots import palier, terme
 
@@ -351,8 +351,16 @@ def _sans_planter(state, fn, *a, **k):
         return None
 
 
+APPRENDRE = ("bac-a-sable", "bac_a_sable", "souvenirs", "revisions", "révisions", "jour", "enigme", "énigme", "passe",
+             "carnet", "jeux", "course", "examen", "parent", "maitrise", "maîtrise")
+
+
 def boucle_jeu(state, lines, spontane=True, rythme=1.5, defis=True, cwd=None):
     core.tick(state)
+    if _sans_planter(state, apprendre.en_pause, state, cwd):    # le bac à sable, ou elle dort : rien ne compte
+        _sans_planter(state, apprendre.tour_pause, state, lines)
+        state.pop("_dit_os", None)
+        return
     for k, line in enumerate(lines):
         core.feed(state, line, core.statut_de(lines, k))   # une commande ratée ne donne pas de points (G-34)
     if state.get("_restaure"):                # save.json était abîmé : on a repris une copie de secours
@@ -371,10 +379,11 @@ def boucle_jeu(state, lines, spontane=True, rythme=1.5, defis=True, cwd=None):
     if intro.ouvert(state, "combats"):        # les monstres arrivent avec leur présentation (intro.json)
         _ok(explo.tick, state, spontane, proba=rythme / 480, jeu=sum(1 for l in lines if not core.est_colle(l)),
             lignes=lines)
-    _ok(core.defi_tick, state, lines, spontaneous=spontane and defis, proba=rythme / 300)
+    _ok(core.defi_tick, state, lines, spontaneous=spontane and defis and apprendre.eclairs(state), proba=rythme / 300)
     _ok(envies.tick, state, lines)            # les 6 envies : usure, plaisirs, poussière, rappel espacé
     _ok(entrainement.tick, state, lines)      # salle d'entraînement : l'exercice en cours est-il réussi ?
     _ok(guide.tick, state, lines)             # le guide : talents, fatigue, envie de sortir, régions gardées
+    _ok(apprendre.tour, state, lines, cwd, core.statut_de)   # apprendre en jouant : maîtrise, révisions, jour, énigmes…
     core.idle_talk(state, proba=min(1.0, 0.08 * rythme / 1.5))
     _ok(intro.verifier, state)                # les fonctions qui s'ouvrent maintenant (présentées une par une)
     sur.alertes(state)                        # un lien symbolique a été refusé : la créature dit lequel
@@ -1204,6 +1213,23 @@ def _main():
         if msg:
             print(msg)
             return
+    if mode in APPRENDRE or (mode == "collection" and args[1:2] and args[1].lower() in ("rares", "rare")) \
+            or (mode == "sommet" and args[1:2] and args[1].lower() in ("sentier", "marmottes")):
+        creer_si_besoin()                      # apprendre en jouant (apprendre.py) : bac à sable, carnet, jeux, examen…
+        st = core.load()
+        if st is not None and not intro.eclos(st) and mode not in ("parent",):
+            print(t("deb.pas_encore", cmd="tg " + mode))
+            return
+        m = "rares" if mode == "collection" else "sentier" if mode == "sommet" else mode
+        reste = args[2:] if mode in ("collection", "sommet") else args[1:]
+        if m in ("jeux", "examen", "jour", "enigme", "énigme"):
+            try:
+                ici = os.getcwd()
+            except OSError:
+                ici = None
+            etape(spontane=False, defis=False, cwd=ici)        # les dernières commandes tapées d'abord
+        apprendre.commande(m, reste)
+        return
     if mode == "notifs":                       # tg notifs on|off : les notifications de la créature
         creer_si_besoin()
         choix = args[1].lower() if len(args) > 1 else ""
@@ -1330,7 +1356,8 @@ def _main():
         except OSError:
             ici = None
         if mode == "badges":
-            core.modifier(lambda s: sortie.extend(entrainement.commande_badges(s, args[1:])))
+            core.modifier(lambda s: sortie.extend(entrainement.commande_badges(s, args[1:])
+                                                  + ([""] + apprendre.lignes_maitrise(s) if not args[1:] else [])))
         else:
             etape(spontane=False, defis=False, cwd=ici)        # les dernières commandes tapées d'abord
             core.modifier(lambda s: sortie.extend(entrainement.commande_texte(s, args[1:], ici)))
