@@ -260,6 +260,43 @@ libre réutilisé aussi.
 7. **Œuf branché** au cyberdeck (mode compagnon), quand l'œuf existera.
 8. Dossier de fabrication complet dans `materiel/cyberdeck/` (notice pas à pas pour un parent et son enfant).
 
+## 8 bis. Démarrer sur le jeu (prêt, 3 novembre 2026 — sans matériel)
+
+Le script **`installeur/cyberdeck/installer.sh`** fait démarrer n'importe quel Linux sur le jeu. Il marche déjà sur un
+vieux portable ou une machine virtuelle : le cyberdeck n'aura rien de plus à faire. Testé par
+`pc/outils/test_cyberdeck.py` (dans un dossier d'essai, avec un faux jeu).
+
+**Ce que fait le script (dans le compte de l'enfant, sans `sudo`, seulement dans son dossier personnel)** :
+
+1. il range le jeu dans `~/.local/share/terminagotchi/terminagotchi.pyz` et ajoute la commande `terminagotchi` ;
+2. il ajoute à `~/.bash_profile` (ou `~/.profile`) un petit bloc entre deux repères : **à la connexion sur la console
+   du cyberdeck (tty1)**, le jeu se lance tout seul ; **quand l'enfant quitte le jeu, il reste dans son vrai shell**
+   (question 5 : « l'enfant peut le quitter et rester dans son vrai shell »), et `terminagotchi` y ramène ;
+3. avec `--bureau` (si un jour le cyberdeck a un bureau graphique) : un terminal plein écran avec le jeu à l'ouverture
+   du bureau ;
+4. `sh installer.sh --retirer` enlève tout ce qu'il a ajouté ; **la créature reste** (`~/.terminagotchi`).
+
+```
+sh installer.sh terminagotchi.pyz            # dans le compte de l'enfant
+sh installer.sh terminagotchi.pyz --bureau   # variante avec bureau graphique
+sh installer.sh --retirer                    # tout enlever (la créature reste)
+```
+
+**Ce qu'un adulte fait une fois, avec `sudo` (le script ne le fait jamais ; à vérifier au prototype)** :
+
+| Étape | Commande (Debian, Raspberry Pi OS, Armbian…) | Pourquoi |
+|---|---|---|
+| Compte de l'enfant, **sans droits d'administrateur** | `sudo adduser enfant` (ne pas l'ajouter au groupe `sudo`) | question 6 |
+| Python | `sudo apt install python3` (souvent déjà là) | le jeu PC |
+| **Connexion automatique** de l'enfant sur la console tty1 | `sudo systemctl edit getty@tty1` puis écrire : `[Service]` / `ExecStart=` / `ExecStart=-/sbin/agetty --autologin enfant --noclear %I $TERM` | le cyberdeck s'allume directement sur le jeu, sans mot de passe à taper |
+| Police plus grosse dans la console | `sudo dpkg-reconfigure console-setup` (police Terminus, taille 24 × 12 environ, à essayer sur l'écran 5 pouces) | lisible à 7 ans, ≈ 60 × 20 caractères (§ 4) |
+| Refermer le clapet = arrêt propre | dans `/etc/systemd/logind.conf` : `HandleLidSwitch=poweroff` (si la carte détecte le clapet) | question 4 ; le jeu sauvegarde à chaque commande |
+| Wi-Fi de la maison, enregistré une fois | `sudo nmcli device wifi connect "MaBox" password "…"`, puis `nmcli radio wifi off` | Wi-Fi éteint par défaut (validé) ; l'enfant fait `nmcli radio wifi on` (à vérifier sans droits) |
+| Puis, dans le compte de l'enfant | `sh installer.sh terminagotchi.pyz` | ci-dessus |
+
+Le matériel viendra plus tard : au premier prototype, on vérifiera la connexion automatique, la taille de police, le
+clapet et le Wi-Fi sans droits, et l'on corrigera ce tableau.
+
 ## 9. Questions restantes
 
 | # | Question | Ma proposition |
@@ -277,6 +314,8 @@ libre réutilisé aussi.
 ## Fichiers de ce dossier (cyberdeck)
 
 - `cyberdeck.md` — ce document.
+- `installeur/cyberdeck/installer.sh` (à la racine du dépôt) — démarrer sur le jeu (§ 8 bis) ; test :
+  `pc/outils/test_cyberdeck.py`.
 - `croquis_cyberdeck.py` → `croquis_cyberdeck.svg` / `.png` (matplotlib : `python3 croquis_cyberdeck.py`) :
   ouvert à plat vu de face, de côté ouvert et fermé, coupe de côté.
 

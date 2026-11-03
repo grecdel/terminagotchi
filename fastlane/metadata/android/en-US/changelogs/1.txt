@@ -1,0 +1,1 @@
+First version on F-Droid: the full game, saving to a file (sauvegarde exporter / importer), terminal tabs that stay when the phone is rotated.

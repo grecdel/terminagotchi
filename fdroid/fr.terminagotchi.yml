@@ -1,0 +1,34 @@
+# Fiche F-Droid de Terminagotchi, prête à être proposée dans le dépôt fdroiddata (https://gitlab.com/fdroid/fdroiddata),
+# fichier metadata/fr.terminagotchi.yml. Mode d'emploi pour le propriétaire : docs/fdroid.md.
+# Textes, icône et captures de la fiche : fastlane/metadata/android/ (lus directement par F-Droid dans ce dépôt).
+Categories:
+  - Education
+  - Games
+License: GPL-3.0-or-later
+AuthorName: Terminagotchi
+SourceCode: https://github.com/grecdel/terminagotchi
+IssueTracker: https://github.com/grecdel/terminagotchi/issues
+Changelog: https://github.com/grecdel/terminagotchi/releases
+
+AutoName: Terminagotchi
+
+RepoType: git
+Repo: https://github.com/grecdel/terminagotchi.git
+
+Builds:
+  - versionName: 0.1.0
+    versionCode: 1
+    commit: fdroid-0.1.0
+    subdir: app
+    gradle:
+      - yes
+    gradleprops:
+      - publication=fdroid
+    scandelete:
+      - app/terminagotchi.keystore
+
+AutoUpdateMode: Version
+UpdateCheckMode: Tags ^fdroid-.*$
+UpdateCheckData: app/version.properties|versionCode=(\d+)|.|versionName=(.+)
+CurrentVersion: 0.1.0
+CurrentVersionCode: 1

@@ -1,0 +1,1 @@
+Première version sur F-Droid : le jeu complet, la sauvegarde dans un fichier (sauvegarde exporter / importer), les onglets du terminal qui restent quand on tourne le téléphone.

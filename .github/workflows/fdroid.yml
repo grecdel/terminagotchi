@@ -1,0 +1,94 @@
+name: F-Droid (fiche et build reproductible)
+
+# Idée 72 (3 novembre) : tout est prêt pour F-Droid (docs/fdroid.md). Ici, on vérifie à chaque changement :
+#  1. la fiche (fdroid/fr.terminagotchi.yml) est acceptée par l'outil officiel de F-Droid (fdroid lint, rewritemeta) ;
+#  2. le build F-Droid (gradle assembleRelease -Ppublication=fdroid) est REPRODUCTIBLE : construit deux fois, dans deux
+#     dossiers différents, à deux heures différentes, il donne exactement le même APK (même empreinte sha256).
+on:
+  push:
+    branches: [nouveau-bestiaire]
+    paths: ["app/**", "fastlane/**", "fdroid/**", "build.gradle*", "settings.gradle*", "gradle/**", ".github/workflows/fdroid.yml"]
+  workflow_dispatch:
+
+jobs:
+  fiche:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Outil officiel de F-Droid
+        run: pip install --quiet fdroidserver
+      - name: La fiche est acceptée (fdroid lint, rewritemeta)
+        run: |
+          set -e
+          mkdir -p "$RUNNER_TEMP/fdroiddata/metadata"
+          cp fdroid/fr.terminagotchi.yml "$RUNNER_TEMP/fdroiddata/metadata/"
+          cd "$RUNNER_TEMP/fdroiddata"
+          printf 'repo_url: https://example.invalid/repo\n' > config.yml
+          chmod 600 config.yml
+          fdroid lint fr.terminagotchi
+          fdroid rewritemeta fr.terminagotchi
+          git diff --no-index "$GITHUB_WORKSPACE/fdroid/fr.terminagotchi.yml" metadata/fr.terminagotchi.yml || echo "(rewritemeta range la fiche autrement : voir ci-dessus)"
+      - name: Les textes de la fiche (fastlane) respectent les limites
+        run: |
+          python3 - <<'PY'
+          import pathlib, sys
+          ko = 0
+          for d in pathlib.Path("fastlane/metadata/android").iterdir():
+              for f, n in (("title.txt", 50), ("short_description.txt", 80), ("full_description.txt", 4000)):
+                  t = (d / f).read_text(encoding="utf-8").strip()
+                  ok = 0 < len(t) <= n
+                  ko += not ok
+                  print(("ok " if ok else "TROP LONG ") + f"{d.name}/{f} : {len(t)} / {n}")
+              ok = (d / "images" / "icon.png").is_file() and any((d / "images" / "phoneScreenshots").glob("*.png"))
+              ko += not ok
+              print(("ok " if ok else "MANQUE ") + f"{d.name} : icône et captures")
+          sys.exit(1 if ko else 0)
+          PY
+
+  reproductible:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          path: a
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: "17"
+      - uses: gradle/actions/setup-gradle@v4
+        with:
+          gradle-version: "8.9"
+      - name: Premier build F-Droid
+        run: |
+          cd a
+          gradle assembleRelease -Ppublication=fdroid --no-daemon --no-build-cache -q
+          sha256sum app/build/outputs/apk/release/app-release-unsigned.apk | tee ../a.sha
+      - name: Deuxième build, ailleurs et plus tard
+        run: |
+          sleep 61
+          cp -r a "$RUNNER_TEMP/b"
+          rm -rf "$RUNNER_TEMP/b/app/build" "$RUNNER_TEMP/b/build" "$RUNNER_TEMP/b/.gradle"
+          cd "$RUNNER_TEMP/b"
+          gradle assembleRelease -Ppublication=fdroid --no-daemon --no-build-cache -q
+          sha256sum app/build/outputs/apk/release/app-release-unsigned.apk | tee "$GITHUB_WORKSPACE/b.sha"
+      - name: Les deux APK sont identiques
+        run: |
+          a=$(cut -d' ' -f1 a.sha); b=$(cut -d' ' -f1 b.sha)
+          echo "1er : $a"; echo "2e  : $b"
+          if [ "$a" != "$b" ]; then
+            mkdir -p x y
+            (cd x && unzip -q ../a/app/build/outputs/apk/release/app-release-unsigned.apk)
+            (cd y && unzip -q "$RUNNER_TEMP/b/app/build/outputs/apk/release/app-release-unsigned.apk")
+            diff -rq x y || true
+            exit 1
+          fi
+          echo "build reproductible : OK"
+          unzip -p a/app/build/outputs/apk/release/app-release-unsigned.apk AndroidManifest.xml > /dev/null
+          ls -la a/app/build/outputs/apk/release/
+      - uses: actions/upload-artifact@v4
+        with:
+          name: apk-fdroid-non-signe
+          path: a/app/build/outputs/apk/release/app-release-unsigned.apk

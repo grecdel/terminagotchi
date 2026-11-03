@@ -3,7 +3,7 @@ name: APK d'essai (branche nouveau-bestiaire)
 on:
   push:
     branches: [nouveau-bestiaire]
-    paths: ["app/**", "pc/**", "build.gradle*", "settings.gradle*", ".github/workflows/apk-essai.yml"]
+    paths: ["app/**", "pc/**", "installeur/**", "build.gradle*", "settings.gradle*", ".github/workflows/apk-essai.yml"]
   workflow_dispatch:
 
 permissions:
@@ -46,8 +46,68 @@ jobs:
             🧪 Version d'ESSAI (branche nouveau-bestiaire) : nouveau bestiaire, animations, textes « maison ».
             📱 **terminagotchi-essai.apk** : à ouvrir sur ton téléphone.
             💻 **terminagotchi-essai.pyz** : la version PC, `python3 terminagotchi-essai.pyz`.
+            🪟 **terminagotchi-installeur.exe** : Windows en un clic (ajouté quelques minutes plus tard ; SmartScreen : « Informations complémentaires » puis « Exécuter quand même »).
           files: |
             terminagotchi-essai.apk
             terminagotchi-essai.pyz
+          prerelease: true
+          make_latest: false
+
+  # Idée 71 (3 novembre) : l'installeur Windows en un clic, fabriqué ici à partir du code du dépôt (installeur/windows/) :
+  # le jeu PC + le Python officiel copié dans le dossier du jeu, installé pour la personne connectée (sans droits
+  # d'administrateur). Pas de signature payante : SmartScreen préviendra au premier lancement (README, « Sous Windows »).
+  # Avant de le publier, on l'installe pour de vrai (sans fenêtre), on lance le jeu installé, puis on le désinstalle :
+  # le jeu part, la créature reste.
+  installeur-windows:
+    needs: apk
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Préparer (jeu .pyz, Python, icône)
+        shell: pwsh
+        run: python installeur/windows/preparer.py installeur/windows/build
+      - name: Fabriquer l'installeur (Inno Setup)
+        shell: pwsh
+        run: |
+          $iscc = (Get-Command iscc -ErrorAction SilentlyContinue).Source
+          if (-not $iscc) { $iscc = "${env:ProgramFiles(x86)}\Inno Setup 6\ISCC.exe" }
+          if (-not (Test-Path $iscc)) { choco install innosetup -y --no-progress | Out-Null; $iscc = "${env:ProgramFiles(x86)}\Inno Setup 6\ISCC.exe" }
+          & $iscc /Qp "/DVersion=0.1.${{ github.run_number }}" "/DSource=build" installeur/windows/terminagotchi.iss
+          if ($LASTEXITCODE -ne 0) { exit 1 }
+          Copy-Item installeur/windows/sortie/terminagotchi-installeur.exe terminagotchi-installeur.exe
+          "{0:N1} Mo" -f ((Get-Item terminagotchi-installeur.exe).Length / 1MB)
+      - name: L'installer, lancer le jeu installé, le désinstaller (la créature reste)
+        shell: pwsh
+        run: |
+          $env:PYTHONUTF8 = "1"
+          $dest = "$env:RUNNER_TEMP\tg_installe"
+          $p = Start-Process -Wait -PassThru terminagotchi-installeur.exe -ArgumentList "/VERYSILENT","/SUPPRESSMSGBOXES","/NORESTART","/CURRENTUSER","/DIR=$dest","/LOG=$env:RUNNER_TEMP\installe.log"
+          if ($p.ExitCode -ne 0) { Get-Content "$env:RUNNER_TEMP\installe.log"; exit 1 }
+          if (-not (Test-Path "$dest\python\python.exe") -or -not (Test-Path "$dest\terminagotchi.pyz")) { "fichiers manquants"; exit 1 }
+          $lnk = Get-ChildItem "$env:APPDATA\Microsoft\Windows\Start Menu\Programs" -Recurse -Filter "Terminagotchi.lnk"
+          if (-not $lnk) { "raccourci du menu Démarrer manquant"; exit 1 }
+          # le jeu installé démarre, avec SON Python (sans le Python de la CI dans le PATH)
+          $env:PATH = "C:\Windows\System32;C:\Windows"
+          & "$dest\python\python.exe" -c "import tkinter, sqlite3, ssl, zlib; print('modules ok')"
+          if ($LASTEXITCODE -ne 0) { exit 1 }
+          $sortie = & "$dest\python\python.exe" "$dest\terminagotchi.pyz" verifier
+          $sortie
+          if ($LASTEXITCODE -ne 0 -or -not ($sortie -match "✅")) { exit 1 }
+          & "$dest\python\python.exe" "$dest\terminagotchi.pyz" sauvegarde
+          if (-not (Test-Path "$env:USERPROFILE\.terminagotchi")) { "le jeu n'a rien rangé ?"; exit 1 }
+          $p = Start-Process -Wait -PassThru "$dest\unins000.exe" -ArgumentList "/VERYSILENT","/SUPPRESSMSGBOXES","/NORESTART"
+          Start-Sleep -Seconds 3
+          if (Test-Path "$dest\terminagotchi.pyz") { "le jeu n'a pas été désinstallé"; exit 1 }
+          if (-not (Test-Path "$env:USERPROFILE\.terminagotchi")) { "la désinstallation a effacé la créature !"; exit 1 }
+          "installé, lancé, désinstallé ; la créature est restée"
+      - name: Ajouter l'installeur à la publication
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: essai-${{ github.run_number }}
+          name: "Essai nouveau bestiaire #${{ github.run_number }}"
+          files: terminagotchi-installeur.exe
           prerelease: true
           make_latest: false

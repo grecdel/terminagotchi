@@ -1,0 +1,15 @@
+Terminagotchi — le jeu installé sur cet ordinateur
+
+Lancer le jeu : menu Démarrer > Terminagotchi (ou l'icône du bureau).
+Une fenêtre noire s'ouvre : c'est le terminal du jeu, un petit Linux où l'on tape de vraies commandes.
+
+Où est la créature ?
+  Dans le dossier personnel : .terminagotchi (la sauvegarde) et terrain_terminagotchi (le terrain de jeu).
+  Désinstaller le jeu NE les efface PAS. Pour une copie à garder : tg sauvegarde exporter
+
+Réparer le jeu : relancer l'installeur (il remplace les fichiers du jeu, jamais la créature).
+Désinstaller : Paramètres > Applications > Terminagotchi > Désinstaller.
+
+Rien n'est envoyé sur Internet, sauf si un adulte crée un compte du jeu (synchronisation, seulement un pseudo).
+Code libre (GPL-3.0-or-later) : https://github.com/grecdel/terminagotchi
+Python (python.org, licence PSF) est copié dans le sous-dossier python, pour que le jeu marche sans rien installer d'autre.
