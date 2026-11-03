@@ -167,7 +167,18 @@ Il faut seulement **Python 3** (déjà installé sur Linux et macOS).
 3. La créature propose de s'installer dans ton terminal. Ensuite, `tg` suffit : `tg aide` montre tout ce qu'on peut
    faire.
 
-**Sous Windows** : installe Python 3 (python.org ou le Microsoft Store), puis dans une fenêtre de commande lance
+**Sous Windows, en un clic** : télécharge **`terminagotchi-installeur.exe`** depuis la page **Releases** et ouvre-le.
+Il installe le jeu **pour toi seulement** (pas besoin d'être administrateur), avec son propre Python : rien d'autre à
+installer. Ensuite : menu Démarrer → **Terminagotchi**. L'installeur n'a pas de signature payante, alors Windows se
+méfie la première fois :
+- le navigateur peut dire « *n'est pas téléchargé fréquemment* » : **⋯** → **Conserver** → **Afficher plus** →
+  **Conserver quand même** ;
+- un écran bleu « **Windows a protégé votre ordinateur** » apparaît : clique sur **Informations complémentaires**, puis
+  sur **Exécuter quand même** (l'éditeur est marqué « inconnu » : c'est normal, le fichier est fabriqué par GitHub à
+  partir du code public de ce dépôt).
+Désinstaller (Paramètres → Applications) n'efface jamais la créature ; relancer l'installeur répare le jeu.
+
+**Sous Windows, sans installeur** : installe Python 3 (python.org ou le Microsoft Store), puis dans une fenêtre de commande lance
 `python terminagotchi-essai.pyz` (ou double-clique le fichier). Tu ne tapes pas dans PowerShell : le jeu ouvre
 **son propre terminal**, un petit Linux écrit en Python (rien d'autre à installer). Entrée dans la fenêtre du jeu
 l'ouvre, `tg terminal` ou la touche `[t]` en ouvre une fenêtre de plus, et `exit` ramène au jeu. Les leçons y sont
@@ -177,6 +188,11 @@ lance le Python qui fait déjà tourner le jeu (seulement dans le terrain), la �
 `http://localhost:8042/`) et à tes lanternes : pas d'Internet dans ce terminal.
 
 Depuis le code source : `git clone` ce dépôt, puis `python3 pc` dans le dossier.
+
+**Garder une copie de sa créature** : `tg sauvegarde exporter` (PC) ou `sauvegarde exporter` (téléphone) fabrique un
+fichier `.tgsauve` à copier où l'on veut (clé USB, autre ordinateur) ; `importer` la fait revenir comme une partie de
+plus, sans rien remplacer. Le jeu vérifie aussi ses fichiers à chaque lancement et répare doucement ce qui peut
+l'être (`tg verifier` pour le faire tout de suite).
 
 **Bon à savoir** : au début, seuls l'œuf et quelques commandes sont visibles, le reste se débloque petit à petit.
 Pour tout ouvrir d'un coup : `debloquer tout` (téléphone) ou `tg debloquer tout` (PC). Les commandes copiées-collées

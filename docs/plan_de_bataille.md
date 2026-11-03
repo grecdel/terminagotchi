@@ -1123,6 +1123,24 @@ pas de barre d'XP : rien à y changer. 14 langues (`sat.attente.*`). Même calcu
 « attente » et « attente_partie » de `donnees/satiete/vecteurs.json`, `test_satiete.py` § 10, `tests/jvm/Satiete.kt`).
 Maquette et captures : `/home/claude/outils/xp/`.
 
+## ✅ Idées techniques cochées (3 novembre) — codé : 71, 72 (préparé), 73, 77, 78, 80 ; maquettes : 74, 75, 76
+
+- **71 Installeur Windows** : `installeur/windows/` (Inno Setup + Python officiel copié, installation sans droits
+  d'administrateur) ; tâche CI `installeur-windows` (apk-essai.yml, apk.yml) qui l'installe, lance `tg verifier`, le
+  désinstalle (la créature reste) et l'ajoute à la publication. SmartScreen expliqué dans le README.
+- **72 F-Droid (préparé)** : `fdroid/fr.terminagotchi.yml`, `fastlane/metadata/android/`, `app/version.properties`,
+  `-Ppublication=fdroid` (version fixe, sans signature, sans bloc de dépendances), `.github/workflows/fdroid.yml`
+  (fdroid lint + deux builds identiques). Étapes du propriétaire : `docs/fdroid.md`.
+- **73 Sauvegarde exportable** : `tg sauvegarde exporter|importer` (pc/tg/sauvegarde.py), `sauvegarde exporter|importer`
+  sur Android (Sauvegarde.kt, sélecteurs de fichiers d'Android) ; fichier `.tgsauve` commun (contrôle sha256), sans la
+  clé du compte ; importer = une partie de plus (Parties.importer), jamais de remplacement.
+- **77 Vérification au démarrage** : pc/tg/sante.py (`tg verifier`), Sante.kt ; vecteurs `donnees/sante/vecteurs.json`.
+- **78 Onglets et rotation** : `configChanges` (TerminalActivity) + Onglets.etat / reprendre ; rotation dans tests/scenario.sh.
+- **80 Cyberdeck** : `installeur/cyberdeck/installer.sh`, docs/oeuf/cyberdeck.md § 8 bis, test_cyberdeck.py.
+- 14 langues (`sante.*`, `svg.*`). Tests : test_sante.py, test_cyberdeck.py, tests/jvm/SanteSauvegarde.kt, Onglets.kt § 6.
+- Maquettes 74 (nuage de synchro), 75 (tablette en paysage), 76 (signaler un bug) et questions :
+  `/home/claude/outils/ameliorations/technique/` (planche.png, proposition.md).
+
 ## Ce qui attend une décision ou une action du propriétaire
 
 - Tester l'APK d'essai de la phase 1 et donner ses retours.
