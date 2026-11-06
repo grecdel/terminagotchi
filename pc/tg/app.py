@@ -11,7 +11,7 @@ import subprocess
 from . import (compagnon, core, dressage, entrainement, envies, equipe, guide, exemples, explique, explo, histoire, intro, lecons, lexique, maths,
                maison, notif, quetes, recense, registre, sprites, terrain)
 from .bestiaire import arc_en_ciel
-from . import apprendre, langue, rendu_fin, satiete, sons, sur
+from . import apprendre, creature, langue, rendu_fin, satiete, sons, sur
 from .langue import ajuster, envelopper, largeur, raccourcir, t
 from .mots import palier, terme
 
@@ -383,6 +383,7 @@ def boucle_jeu(state, lines, spontane=True, rythme=1.5, defis=True, cwd=None):
         lines = [l for l in lines if not aide_douce.demande_explique(l)]
         if dernier:
             core.DERNIER.update(ligne=None, statut=None)
+    av_creature = creature.avant(state)        # 3 nov. : pour reconnaître les humeurs du moment après les repas
     for k, line in enumerate(lines):
         core.feed(state, line, core.statut_de(lines, k))   # une commande ratée ne donne pas de points (G-34)
     if state.get("_restaure"):                # save.json était abîmé : on a repris une copie de secours
@@ -407,6 +408,7 @@ def boucle_jeu(state, lines, spontane=True, rythme=1.5, defis=True, cwd=None):
             lignes=lines)
     _ok(core.defi_tick, state, lines, spontaneous=spontane and defis and apprendre.eclairs(state), proba=rythme / 300)
     _ok(envies.tick, state, lines)            # les 6 envies : usure, plaisirs, poussière, rappel espacé
+    _ok(creature.tick, state, lines, av_creature)   # humeur du moment, éclosiversaire, envie mystère
     _ok(entrainement.tick, state, lines)      # salle d'entraînement : l'exercice en cours est-il réussi ?
     _ok(guide.tick, state, lines)             # le guide : talents, fatigue, envie de sortir, régions gardées
     _ok(apprendre.tour, state, lines, cwd, core.statut_de)   # apprendre en jouant : maîtrise, révisions, jour, énigmes…
@@ -1104,7 +1106,7 @@ def veille():
 
 def aide():
     return "\n".join(langue.remplir(l, {}) for l in langue.liste("app.aide") + langue.liste("app.aide.histoire")
-                     + [t("env.aide"), t("sat.aide"), t("aura.aide"), t("ent.aide"), t("esp.aide"), t("classe.aide.courte"), t("son.aide.courte"), "",
+                     + [t("env.aide"), t("cr.aide"), t("sat.aide"), t("aura.aide"), t("ent.aide"), t("esp.aide"), t("classe.aide.courte"), t("son.aide.courte"), "",
                         t("app.licences")])
 
 
@@ -1236,7 +1238,8 @@ def _main():
         from . import aide_douce                # idée 1 : les conseils pour l'adulte à côté (à relire)
         print("\n".join(aide_douce.conseils_parents()))
         return
-    if mode in ("perdu", "indice", "clavier"):  # idées 6, 25, 5 (aide_douce.py)
+    envie_mystere = mode == "indice" and (args[1:2] == ["plus-tard"] or bool(creature.envie(core.load() or {})))
+    if mode in ("perdu", "indice", "clavier") and not envie_mystere:  # idées 6, 25, 5 (aide_douce.py) ; l'envie mystère en cours : plus bas
         from . import aide_douce
         if mode == "clavier":
             creer_si_besoin()
@@ -1481,6 +1484,17 @@ def _main():
     if mode == "envies":                       # tg envies : les 6 envies, et comment faire plaisir à chacune
         creer_si_besoin()
         print("\n".join(envies.ecran(core.modifier(lambda s: envies.tick(s, [])))))
+        return
+    if mode in ("album", "gouts", "goûts", "indice"):      # 3 nov. : l'album des stades, ses goûts, l'envie mystère
+        creer_si_besoin()
+        sortie = []
+        if mode == "album":
+            core.modifier(lambda s: sortie.extend(creature.album_lignes(s, " ".join(args[1:]) or None)))
+        elif mode == "indice":
+            core.modifier(lambda s: sortie.append(creature.indice(s, args[1:])))
+        else:
+            core.modifier(lambda s: sortie.extend(creature.gouts_lignes(s)))
+        print("\n".join(sortie))
         return
     if mode == "defi":                         # tg defi : un défi éclair tout de suite (l'envie de jouer)
         creer_si_besoin()

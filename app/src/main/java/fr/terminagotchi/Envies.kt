@@ -292,7 +292,7 @@ object Envies {
 
     private fun rappeler(jeu: Jeu, e: JSONObject, tapees: Int, now: Long) {
         e.put("rappel_n", e.optInt("rappel_n") + tapees)
-        val m = moment(jeu)
+        val m = if (Creature.envie(jeu) != null) null else moment(jeu)    // 3 nov. : l'envie mystère passe à la place
         if (m != null && e.optInt("rappel_n") >= RAPPEL_COMMANDES && now - e.optLong("rappel_t") >= RAPPEL_MINUTES * 60_000L) {
             e.put("rappel_n", 0).put("rappel_t", now)
             m.put("texte", Langue.auHasard("env.dit.${m.getString("e")}", "cmd" to m.getString("cmd")))
@@ -368,6 +368,7 @@ object Envies {
             "veille" -> return "sat.etat.veille"            // en veille (jamais de mort) : un repas complet la réveille
             "affamee" -> return "humeur.affame"
         }
+        Creature.humeur(jeu)?.let { return "humeur.$it" }   // 3 nov. : une humeur du moment (gentille) passe devant
         val zeros = vals.count { it.key != "faim" && it.value < 1 }
         return when {
             zeros >= 2 -> "humeur.grognon"
@@ -386,6 +387,15 @@ object Envies {
         "humeur.grognon" -> "😠"
         "humeur.affame" -> "😟"
         "sat.etat.veille" -> "💤"
+        "humeur.curieux" -> "🤔"
+        "humeur.fier" -> "😎"
+        "humeur.calin" -> "🥰"
+        "humeur.gourmand" -> "😋"
+        "humeur.enjoue" -> "😆"
+        "humeur.reveur" -> "😌"
+        "humeur.surpris" -> "😮"
+        "humeur.bavard" -> "😃"
+        "humeur.fete" -> "🥳"
         else -> "😵"
     }
 
@@ -430,6 +440,7 @@ object Envies {
         out.add(if (m != null) t("env.ecran.moment", "icone" to ICONES[m.getString("e")], "envie" to nom(m.getString("e")), "cmd" to m.getString("cmd"))
             else t("env.ecran.aucune", "nom" to jeu.nom))
         out.add(t("env.ecran.humeur", "humeur" to "${emoji(jeu)} ${t(humeurCle(jeu))}"))
+        Creature.ligneEnvie(jeu)?.let { out.add(it) }      // 3 nov. : l'envie mystère en cours (indice)
         out.add("")
         out.add(t("sat.ecran.titre"))                       // la satiété : état, assiette, série, vacances
         Satiete.lignes(jeu).forEach { out.add("  $it") }

@@ -368,6 +368,8 @@ def add_xp(state, n):
         return
     animer(state, "evolution" if stage(new) > stage(old) else "content")
     if stage(new) > stage(old):
+        from . import creature                  # 3 nov. : la page de l'album, le moment d'évolution
+        creature.stade_change(state, stage(old), stage(new))
         if stage(new) == 1:
             log(state, t("core.eclot.log"))
             say(state, t("core.eclot.dit"), 10)
@@ -617,7 +619,9 @@ def feed(state, line, statut=None):
           and not cmd.startswith(("./", ".\\"))):
         gain *= 3
         msg += t("core.mange.creation")
-    satiete.repas(state, cmd, nouvelle=nouvelle)  # l'aliment de sa famille (nouveau goût, assiette, veille)
+    gain_f = satiete.repas(state, cmd, nouvelle=nouvelle)  # l'aliment de sa famille (nouveau goût, assiette, veille)
+    from . import creature                      # 3 nov. : le plat préféré ou le goût secret compte double (sans XP)
+    msg += creature.apres_repas(state, cmd, gain_f)
     state["repas_t"] = time.time()
     log(state, msg)
     animer(state, "mange")

@@ -323,6 +323,7 @@ class Jeu(ctx: Context) {
         Apprendre.init(ctx)
         Intro.init(ctx)
         Reveil.init(ctx)
+        Creature.init(ctx)
     }
 
     private val app: Context = ctx.applicationContext ?: ctx
@@ -654,6 +655,7 @@ class Jeu(ctx: Context) {
         if (apres <= avant) return
         animer(if (Regles.stade(apres) > Regles.stade(avant)) "evolution" else "content")
         if (Regles.stade(apres) > Regles.stade(avant)) {
+            Creature.stadeChange(this, Regles.stade(avant), Regles.stade(apres))   // 3 nov. : l'album, le moment d'évolution
             if (Regles.stade(apres) == 1) {
                 log(t("core.eclot.log"))
                 dire(t("core.eclot.dit"), 10)
@@ -735,7 +737,8 @@ class Jeu(ctx: Context) {
             gain *= 2
             msg += " ×2"
         }
-        Satiete.repas(this, cmd, nouvelle = nouvelle)      // l'aliment de sa famille (nouveau goût, assiette, veille)
+        val gainF = Satiete.repas(this, cmd, nouvelle = nouvelle)      // l'aliment de sa famille (nouveau goût, assiette, veille)
+        msg += Creature.apresRepas(this, cmd, gainF)        // 3 nov. : le plat préféré ou le goût secret compte double
         module("compte").put("repas", System.currentTimeMillis())
         log(msg)
         animer("mange")

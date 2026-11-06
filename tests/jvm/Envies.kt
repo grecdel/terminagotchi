@@ -298,6 +298,8 @@ fun main(args: Array<String>) {
     Envies.heure = { 14 }
 
     println("Humeur : les envies combinées, sans punition")
+    // les humeurs du moment (thème « créature ») passent devant pendant 3 minutes : testées par Creature.kt
+    fr.terminagotchi.Creature.c(jeu).remove("humeur")
     regler("faim" to 90.0, "jeu" to 90.0, "curiosite" to 90.0, "explorer" to 90.0, "sommeil" to 90.0)
     verifier(Envies.humeurCle(jeu) == "humeur.joyeux", "tout est haut : joyeux")
     regler("jeu" to 0.0)

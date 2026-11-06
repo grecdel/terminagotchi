@@ -51,6 +51,7 @@ object Equipe {
         if (ind.optInt("xp") < seuil) return null
         val nouveau = STADES[STADES.indexOf(s) + 1]
         ind.put("stade", nouveau).put("xp", 0).put("evolue", System.currentTimeMillis())
+        Creature.equipeEvolue(ind)                     // 3 nov. : la date de ce stade dans son album
         val nom = ind.optString("espece")
         jeu.log(t("eq.evolue.log", "nom" to nom, "stade" to nomStade(nouveau)))
         jeu.dire(t("eq.evolue.dit.tel",

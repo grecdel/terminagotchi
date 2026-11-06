@@ -193,9 +193,40 @@ class EspaceEtat(private val jeu: Jeu, private val dossier: () -> java.io.File, 
         m.course = Apprendre.course(jeu)
         m.eclairs = Apprendre.eclairs(jeu)
         m.etat = cerveau.etat
+        creatureTheme(m)
         m.anime = BureauVie.animer(creature)
         m.mini = BureauVie.miniVie(creature, maintenant)
         m.evenement = if (ile.etat == "evenement") ile.evenement else null
+    }
+
+    /** 16 : le bouton « Album » de la carte de la créature (TerminalActivity ouvre l'album par-dessus). */
+    var ouvrirAlbum: (() -> Unit)? = null
+    private var humeurVue = 0.0
+
+    /** Le thème « créature » (3 nov.) : humeur du moment, fête, envie mystère, promenade. */
+    private fun creatureTheme(m: EspaceDessin.Modele) {
+        m.etatTexte = null; m.etatCouleur = null; m.glyphe = null; m.fete = false; m.promenade = null
+        if (!jeu.existe || Creature.stadeCompagnon(jeu) == null) { m.albumOuvert = false; return }
+        m.albumOuvert = true
+        try {
+            val c = Creature.c(jeu)
+            m.surPlace = c.optBoolean("sur_place")
+            creature.surPlace = m.surPlace
+            if (m.surPlace && creature.etat == "marche") creature.changer("assis", 3.0)
+            val h = Creature.humeur(jeu)
+            when {
+                h != null -> {
+                    m.etatTexte = t("humeur.$h"); m.etatCouleur = Creature.couleur(h)
+                    m.glyphe = Creature.infoHumeur(h).optString("glyphe").ifEmpty { null }
+                    val ht = c.optJSONObject("humeur")?.optDouble("t", 0.0) ?: 0.0
+                    if (ht != humeurVue) { humeurVue = ht; creature.reagir(Creature.infoHumeur(h).optString("reaction", "coeur")) }
+                }
+                Creature.envie(jeu) != null -> { m.etatTexte = t("cr.direct.envie"); m.etatCouleur = EspaceDessin.JAUNE }
+                creature.etat == "marche" -> { m.etatTexte = t("cr.direct.promene"); m.etatCouleur = EspaceDessin.VERT }
+            }
+            m.fete = Creature.feteActive(jeu)
+            if (!m.surPlace) { m.promenade = (creature.x / creature.largeur).coerceIn(0f, 1f); m.sol = Creature.typeEspece(jeu) ?: "plante" }
+        } catch (e: Exception) { }
     }
 
     /** Un toucher sur une zone du dessin. Renvoie vrai si la hauteur peut changer (onglet). */
@@ -211,6 +242,7 @@ class EspaceEtat(private val jeu: Jeu, private val dossier: () -> java.io.File, 
             }
             a == "dep:suivant" -> modele.vue?.let { v -> if (v.auto) v.auto = false; v.suivant() }
             a == "creature" -> creature.reagir("coeur")
+            a == "album" -> ouvrirAlbum?.invoke()
             a == "ile" -> ile.fermer()
             a.startsWith("equipe:") -> { modele.onglet = "equipe"; return true }
             a.startsWith("monde:") -> return monde.toucher(a)
@@ -296,6 +328,7 @@ class EspaceEtat(private val jeu: Jeu, private val dossier: () -> java.io.File, 
             a.startsWith("opt:theme:") -> Apparence.choisirTheme(jeu, p[2])
             a.startsWith("opt:dispo:") -> Apparence.choisirDisposition(jeu, p[2])
             a == "opt:ranger" -> { options = false; rangement = true }
+            a == "opt:sur_place" -> Creature.c(jeu).put("sur_place", !Creature.c(jeu).optBoolean("sur_place"))
             a.startsWith("opt:effets:") -> jeu.module("effets").put("niveau", p[2])
             a == "opt:course" -> Apprendre.a(jeu).put("course", !Apprendre.course(jeu))
             a == "opt:eclairs" -> Apprendre.a(jeu).put("eclairs", !Apprendre.eclairs(jeu))

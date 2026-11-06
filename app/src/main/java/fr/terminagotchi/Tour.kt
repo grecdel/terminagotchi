@@ -27,6 +27,7 @@ object Tour {
             Apprendre.tourPause(jeu, ligne, colle || rappel, msgs)
             return Resultat(false, msgs, 0)
         }
+        val avCreature = Creature.avant(jeu)                      // 3 nov. : pour reconnaître les humeurs du moment
         val mange = jeu.manger(ligne, colle, rappel, code)
         // l'œuf et sa liste (Intro.kt) : la commande qui le fait éclore ne valide pas déjà la leçon 1
         val avant = if (Intro.retient(jeu)) Intro.faits(jeu) else null
@@ -56,6 +57,9 @@ object Tour {
             }
         }
         Envies.apresCommande(jeu, ligne, colle || rappel)          // les 6 envies : usure, plaisirs, poussière, rappel espacé
+        Creature.apresCommande(jeu, ligne, colle || rappel || (code != null && code != 0), avCreature)   // humeur, fête, envie mystère
+        for (m in Creature.aEcrire) msgs.add(m to 0xFFFF87D7.toInt())
+        Creature.aEcrire.clear()
         Guide.apresCommande(jeu, ligne, colle || rappel, cwd)?.let { msgs.add(it to ROSE) }   // le guide : talents, fatigue, régions
         // salle d'entraînement : l'exercice en cours est-il réussi ? (entrainement répond lui-même aux réponses)
         if (Regles.premierMot(ligne) !in setOf("entrainement", "exercice"))

@@ -88,6 +88,12 @@ class Commandes(
             "devine" -> devine(mots.getOrNull(1))
             "etat" -> etat()
             "envies", "envie" -> Reponse(Envies.ecran(jeu), couleur = ROSE)
+            // 3 nov. : l'album des stades (dessiné par-dessus : TerminalActivity), ses goûts, l'envie mystère
+            "album" -> Reponse(Creature.albumTexte(jeu, reste.ifEmpty { null }), couleur = ROSE)
+            "gouts", "goûts" -> Reponse(Creature.gouts(jeu), couleur = ROSE)
+            // « indice 2 » : un indice du CTF ; « indice » tout seul : l'envie mystère de la créature
+            "indice" -> if (reste.toIntOrNull() != null) Reponse(Ctf.indice(jeu, reste), couleur = VERT)
+                else Reponse(Creature.indice(jeu, mots.getOrNull(1)), couleur = ROSE)
             // la satiété : l'état, l'assiette du jour, la série ; « vacances [oui|non] » met la faim en pause
             "satiete", "satiété" -> Reponse((listOf(t("sat.ecran.titre")) + Satiete.lignes(jeu.also { it.tick() }).map { "  $it" }).joinToString("\n"), couleur = ROSE)
             // le son (Sons.kt) : silencieux par défaut ; son oui|non, son musique 30, son cris 60, son soir, son essai
@@ -700,7 +706,8 @@ class Commandes(
         val JAUNE = 0xFFFFD787.toInt()
         val VERT = 0xFF87FFAF.toInt()
         val ORANGE = 0xFFFFAF5F.toInt()
-        val CREATURE = setOf("caresse", "danse", "parle", "joue", "devine", "etat", "renomme", "envies", "envie", "satiete", "vacances")
+        val CREATURE = setOf("caresse", "danse", "parle", "joue", "devine", "etat", "renomme", "envies", "envie", "satiete", "vacances",
+            "album", "gouts", "goûts")
         val TELEPHONE = setOf("applis", "ouvre", "web", "carte", "appelle", "sms", "partage", "lampe", "vibre",
             "batterie", "dis", "reglages")
     }

@@ -115,6 +115,8 @@ def gagner(state, ind, xp):
         ind["stade"] = STADES[STADES.index(s) + 1]
         ind["xp"] = 0
         ind["evolue"] = time.time()
+        from . import creature                  # 3 nov. : la date de ce stade dans son album
+        creature.equipe_evolue(ind)
         core.log(state, t("eq.evolue.log", nom=ind["espece"], stade=B.nom_stade(ind["stade"])))
         core.notif(state, t("eq.evolue.notif", nom=ind["espece"], stade=B.nom_stade(ind["stade"]), nom_min=ind["espece"].lower()))
         core.say(state, t("eq.evolue.dit", nom=ind["espece"], stade=B.nom_stade(ind["stade"]), nom_min=ind["espece"].lower()), 14)

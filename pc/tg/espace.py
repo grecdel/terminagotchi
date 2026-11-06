@@ -36,11 +36,11 @@ IPS = 20
 LIGNES_MAX = 400
 # les commandes de l'espace lui-même (pas lancées dans le shell)
 PANNEAUX = {"carte": "carte", "map": "carte", "cerveau": "cerveau", "brain": "cerveau", "tuyaux": "tuyaux",
-            "lecon": "lecon", "leçon": "lecon"}
+            "lecon": "lecon", "leçon": "lecon", "album": "album"}
 MONDE = {"monde", "world"}             # le monde des biomes en grand (et « monde effets tous|essentiels|aucun »)
 # les commandes du jeu (alias du compagnon) : lancées par tg
 DU_JEU = {"aide", "perdu", "indice", "quetes", "explique", "entrainement", "exercice", "badges", "guide", "types", "equipe", "envies",
-          "satiete", "vacances", "lexique", "collection", "bestiaire", "histoire", "journal"}
+          "satiete", "vacances", "lexique", "collection", "bestiaire", "histoire", "journal", "gouts"}
 
 # ---------------------------------------------------------------- couleurs ANSI → (r, g, b, a)
 _BASE16 = [(0, 0, 0), (205, 49, 49), (13, 188, 121), (229, 229, 16), (36, 114, 200), (188, 63, 188), (17, 168, 205),
@@ -135,8 +135,14 @@ class Espace(B.Controleur):
         # 3 nov. : la carte du réveil (reveil.py, carte_scene.py) : survol, fiche, livre, carnet, animations, météo
         self.rv = {"survol": None, "fiche": None, "livre": False, "livre_page": None, "carnet": False, "file": [],
                    "anim": None, "cmds": [], "meteo": None, "albums": {}, "cache": None, "evt_dit": None}
+        self.evo = None                   # 3 nov. : le moment d'évolution en cours {"t0", "de", "vers"}
+        self.evo_vu = time.time()         # (les évolutions d'avant l'ouverture ne sont pas rejouées)
+        self.evo_cache = {}
+        self.humeur_vue = None
+        self.album_salut = None           # (stade touché dans l'album, heure) : il salue
+        self.cadres_album = {}
         super().__init__(etape, 600, 400)
-        self.c.regl = dict(self.regl, sur_place=True)
+        self.c.regl = dict(self.regl, sur_place=self._sur_place())
         self.c.changer("assis", 4)
         if self.state:
             self.cv.lire_jeu(self.state)
@@ -149,9 +155,38 @@ class Espace(B.Controleur):
     # ------------------------------------------------ le jeu
     def jeu(self):
         super().jeu()
-        self.c.regl = dict(self.regl, sur_place=True)
+        self.c.regl = dict(self.regl, sur_place=self._sur_place())
         self._annonces()
         sons.suivre(self.state, vue=not self.classe)    # la musique du biome (ou des gardiens) si elle est allumée
+        self._creature()
+
+    def _sur_place(self):
+        """85 : elle se promène dans la fenêtre « en direct », sauf avec le réglage « rester sur place »."""
+        return bool(((self.state or {}).get("config") or {}).get("direct_sur_place"))
+
+    def _creature(self):
+        """84 : une évolution vient d'arriver (le moment se joue ici) ; 11 : une humeur du moment (elle réagit)."""
+        from . import creature as CR
+        st = self.state or {}
+        c = st.get("creature") if isinstance(st.get("creature"), dict) else {}
+        ev = c.get("evolution")
+        if isinstance(ev, dict) and ev.get("t", 0) > self.evo_vu and time.time() - ev["t"] < 120:
+            self.evo_vu = ev["t"]
+            self.evo = {"t0": self.t, "de": ev.get("de"), "vers": ev.get("vers")}
+            # le son « evolution » : déjà joué par le moteur de sons (sons.apres_tour) quand le stade change
+        h = CR.humeur(st)
+        ht = (c.get("humeur") or {}).get("t")
+        if h and ht != self.humeur_vue:
+            self.humeur_vue = ht
+            self.c.reagir(CR.donnees()["humeurs"][h]["reaction"])
+
+    def passer_evolution(self):
+        """Entrée ou un clic : on passe le moment d'évolution (au bout de 2 s)."""
+        from . import creature as CR
+        if self.evo and CR.peut_passer(self.t - self.evo["t0"]):
+            self.evo = None
+            return True
+        return bool(self.evo)
 
     def _theme(self, L):
         return L                                     # l'île ouverte dans l'espace : recolorée avec toute la scène
@@ -217,6 +252,11 @@ class Espace(B.Controleur):
                 self.vue.dire(self.cv.trace.dit, now, 4.0)
         self._poser()
         self._place_tick()
+        if self.evo and not self.evo.get("fete_vue"):
+            from . import creature as CR
+            if CR.phase_evolution(self.t - self.evo["t0"])[0] == "fete":
+                self.evo["fete_vue"] = True
+                self.c.reagir("sursaut")             # la nouvelle forme saute de joie
         if self.dep:
             self._avancer_deploie(dt)
         self.monde.tick(dt)
@@ -454,6 +494,9 @@ class Espace(B.Controleur):
     def entree(self):
         """Entrée dans le terminal de l'espace."""
         ligne = self.mini.saisie.strip()
+        if self.evo and not ligne:                  # 84 : Entrée pour continuer (au bout de 2 s)
+            self.passer_evolution()
+            return
         if not ligne:
             if self.dep and not self.dep["auto"]:
                 self.pas_suivant()                  # pas à pas : Entrée sur une ligne vide = le bloc suivant
@@ -628,6 +671,9 @@ class Espace(B.Controleur):
         if a == "reglages":
             self.options = True
             return
+        if self.evo and a in (None, "creature", "direct"):
+            self.passer_evolution()
+            return
         if not a:
             return
         if self.ile_ouverte and a.startswith(("ile:", "menu:")):
@@ -659,8 +705,13 @@ class Espace(B.Controleur):
             if lec and lec.get("cmd"):
                 self.deployer(lec["cmd"])
         elif a == "creature":
-            self.c.reagir("coeur")
-            self.cri()
+            if self.evo:
+                self.passer_evolution()
+            else:
+                self.c.reagir("coeur")
+                self.cri()
+        elif a.startswith("album:"):
+            self.album_salut = (a.split(":", 1)[1], self.t)
         elif a == "son":                           # ♪ : la musique des biomes (et le son du jeu avec elle)
             def basculer(s):
                 rs = sons.reglages(s)
@@ -1053,6 +1104,12 @@ class Espace(B.Controleur):
             self.regler_effets(a.rsplit(":", 1)[1])
         elif a == "opt:notifs":
             self._modifier(lambda s_: s_["config"].__setitem__("notifs", not s_["config"].get("notifs", True)))
+        elif a == "opt:sur_place":                    # 85 : « rester sur place » dans la fenêtre en direct
+            self._modifier(lambda s_: s_["config"].__setitem__("direct_sur_place",
+                                                              not s_["config"].get("direct_sur_place", False)))
+            self.c.regl = dict(self.regl, sur_place=self._sur_place())
+            if self._sur_place() and self.c.etat == "marche":
+                self.c.changer("assis", 3)
         elif a == "opt:bureau":
             from .app import lancer_detache
             lancer_detache("bureau")
@@ -1153,12 +1210,121 @@ class Espace(B.Controleur):
         self.c.calme = m["confort"]["calme"]
         if self.place is not None:
             m["place"] = self._modele_place()
+        self._modele_creature(m, st)
         if not self.tk:
             m["monde_vue"] = self.monde
             m["monde_grand"] = self.monde_grand
         elif m.get("onglets"):
             m["onglets"] = [o for o in m["onglets"] if o != "monde"]
         return m
+
+    def _modele_creature(self, m, st):
+        """Le thème « créature » (3 nov.) : humeur du moment, fête, envie mystère, promenade, évolution, album."""
+        from . import creature as CR
+        if not st or not CR.stade_compagnon(st):
+            return
+        try:
+            now = time.time()
+            h = CR.humeur(st, now)
+            e = CR.envie(st)
+            if h:
+                m["etat_nom"], m["etat_couleur"] = t("humeur." + h), S.rgb(CR.couleur(h))
+                m["glyphe"] = CR.donnees()["humeurs"][h]["glyphe"]
+            elif e:
+                m["etat_nom"], m["etat_couleur"] = t("cr.direct.envie"), S.JAUNE
+            elif self.c.etat == "marche":
+                m["etat_nom"], m["etat_couleur"] = t("cr.direct.promene"), S.VERT
+            if CR.fete_active(st, now):
+                m["fete"] = True
+            if e:
+                m["envie"] = {"texte": CR.texte_devinette(e["id"], 0), "k": int(e.get("k", 0))}
+                b = self.vue.bulle
+                if not (b and self.t < b[1]) and not (st.get("bubble") and now < st["bubble"][1]):
+                    m["bulle"] = t("cr.envie.annonce", texte=m["envie"]["texte"])
+            if not self._sur_place():
+                m["promenade"] = {"x": max(0.0, min(1.0, self.c.x / max(1.0, self.c.largeur))),
+                                  "sol": CR.type_espece(st) or "plante"}
+            if self.evo:
+                m["evolution"] = self._modele_evolution(st)
+                fete_evo = m["evolution"]["phase"] == "fete"
+                m["etat_nom"] = t("humeur.fier") if fete_evo else t("cr.direct.evolue")
+                m["etat_couleur"] = S.rgb(CR.couleur("fier")) if fete_evo else S.VERT
+                m.pop("glyphe", None)
+            if self.onglet == "album" or m.get("onglet") == "album":
+                m["album_pages"] = self._pages_album(st)
+            if m.get("onglets") is not None and "carte" in m["onglets"] and "album" not in m["onglets"]:
+                m["onglets"] = list(m["onglets"]) + ["album"]
+        except Exception as x:                       # noqa: BLE001 — la créature ne casse jamais l'espace
+            B.noter(f"creature : {x!r}")
+
+    def _cadres_evolution(self, st, de, vers):
+        """(album d'avant, images de l'animation d'évolution du jeu, hauteur de référence) — calculés une fois."""
+        cle = (st.get("espece_compagnon"), de, vers, bool(st.get("shiny")))
+        if cle not in self.evo_cache:
+            from . import anim_auto, poses, sprites
+            e = sprites.espece_compagnon(st)
+            r = None
+            if e and vers:
+                teinte = 0.5 if st.get("shiny") else None
+                try:
+                    t3 = anim_auto.toiles(e, vers, "classique", "evolution", teinte)
+                    av = poses.album_espece(e["id"], de or "bebe", st.get("shiny"))
+                    img = anim_auto.B.image(e, vers, "classique")
+                    if t3:
+                        W, H, fr, pal = t3
+                        r = (av, poses._cadres_toile(W, H, fr, pal, f"evo/{e['id']}/{vers}/{teinte}"),
+                             img[1] if img else H)
+                except Exception as x:               # noqa: BLE001
+                    B.noter(f"evolution : {x!r}")
+            self.evo_cache[cle] = r
+        return self.evo_cache[cle]
+
+    def _modele_evolution(self, st):
+        from . import creature as CR
+        tt = self.t - self.evo["t0"]
+        phase, p = CR.phase_evolution(tt)
+        r = self._cadres_evolution(st, self.evo["de"], self.evo["vers"])
+        return {"phase": phase, "p": p, "t": tt, "passer": CR.peut_passer(tt), "nom": st.get("name", ""),
+                "forme": sans_marques(core.forme(st)), "avant": r[0] if r else None, "cadres": r[1] if r else None,
+                "ref": r[2] if r else None}
+
+    def _pages_album(self, st):
+        """Les cartes de l'album : (nom du stade, date, souvenir, image ou silhouette, atteint, salut)."""
+        from . import bestiaire as Bs
+        from . import creature as CR
+        from . import poses, sprites
+        c = CR.c_(st)
+        e = sprites.espece_compagnon(st)
+        stades = CR.donnees()["album_stades_compagnon"]
+        actuel = CR.stade_compagnon(st)
+        out = []
+        for k, s_ in enumerate(stades):
+            atteint = k <= stades.index(actuel)
+            cle = (e["id"] if e else None, s_, atteint, bool(st.get("shiny")))
+            if cle not in self.cadres_album:
+                cad = None
+                if e:
+                    img = Bs.image(e, s_, "classique")
+                    if img:
+                        w, h, o, pal = img
+                        if st.get("shiny"):
+                            pal = [Bs.decaler(x, 0.5) for x in pal]
+                        rg = poses.rgba_depuis_index(w, h, o, pal)
+                        if not atteint:                      # la silhouette grise des stades à venir
+                            rg = bytes(b for i in range(0, len(rg), 4) for b in
+                                       ((58, 62, 74, 255) if rg[i + 3] else (0, 0, 0, 0)))
+                        cad = poses.Cadre(w, h, rg, w // 2, h, f"album/{cle}")
+                self.cadres_album[cle] = cad
+            p = c["album"].get(s_) or {"avant": True}
+            sal = self.album_salut and self.album_salut[0] == s_ and self.t - self.album_salut[1] < 1.6
+            out.append({"nom": Bs.nom_stade(s_).capitalize(), "atteint": atteint, "cadre": self.cadres_album[cle],
+                        "date": CR._date_ou(p) if atteint else t("cr.album.bientot"),
+                        "niv": t("cr.album.niveau", n=p["niv"]) if atteint and p.get("niv") else "",
+                        "souv": CR.souvenir(p) if atteint else "", "id": s_, "actuel": s_ == actuel,
+                        "salut": (self.t - self.album_salut[1]) if sal else None})
+        fetes = [f"★ {CR.duree(x['m'])}" for x in c["pages"][-4:]]
+        return {"titre": t("cr.album.titre", nom=st.get("name", "")), "pages": out, "fetes": fetes,
+                "eclos": t("cr.album.eclos", date=CR.date_texte(c["eclosion"])) if c.get("eclosion") else ""}
 
     def _modele_apparence(self, m, st):
         """Le thème, les panneaux déjà apparus, la disposition, le mode rangement et les options."""
@@ -1208,6 +1374,7 @@ class Espace(B.Controleur):
         cfg = (st or {}).get("config", {})
         return {"theme": th.cle, "dispo": nom, "tout": bool(A.a_(st).get("tout")) if st else False,
                 "effets": ((st or {}).get("effets") or {}).get("niveau", "tous"),
+                "sur_place": bool(((st or {}).get("config") or {}).get("direct_sur_place")),
                 "notifs": bool(cfg.get("notifs", True)), "question": self.question[0] if self.question else None,
                 "confort": self.confort(),
                 "langue": langue.LANGUES.get(langue.courante(), "")}

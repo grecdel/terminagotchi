@@ -21,6 +21,12 @@ RACINE = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(RACINE / "pc"))
 
 from tg import app, core, envies as E, langue, lexique, registre  # noqa: E402
+from tg import creature as CR  # noqa: E402
+
+# Les humeurs du moment (thème « créature », 3 nov.) passent devant l'humeur habituelle pendant 3 minutes ; elles sont
+# testées par test_creature.py. Ici on teste l'humeur habituelle (les envies combinées) : on les met de côté.
+_humeur_du_moment = CR.humeur
+CR.humeur = lambda state, now=None: None
 
 HOME = Path.home()
 T = core.TERRAIN
@@ -301,6 +307,11 @@ print("Humeur : les envies combinées, sans punition")
 regler(faim=90, jeu=90, curiosite=90, explorer=90, sommeil=90)
 st = etape()
 verifier(E.humeur_cle(st) == "humeur.joyeux", "tout est haut : joyeux")
+CR.humeur = _humeur_du_moment
+CR.c_(st)["humeur"] = {"h": "curieux", "t": time.time()}
+verifier(E.humeur_cle(st) == "humeur.curieux", "une humeur du moment passe devant (3 minutes)")
+CR.c_(st)["humeur"] = None
+CR.humeur = lambda state, now=None: None
 regler(faim=90, jeu=0)
 verifier(E.humeur_cle(core.load()) == "humeur.triste", "une envie à zéro : triste")
 regler(faim=90, jeu=0, curiosite=0)

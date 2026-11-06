@@ -124,6 +124,15 @@ object EspaceDessin {
         var ongletVu = ""
         /** 3 nov. : la carte du réveil (CarteDessin.kt, CarteEtat.kt) ; null : l'ancienne carte */
         var carte: CarteDessin.Modele? = null
+        // le thème « créature » (3 nov.) : humeur du moment, fête, envie mystère, promenade (CreatureDessin)
+        var etatTexte: String? = null
+        var etatCouleur: Int? = null
+        var glyphe: String? = null
+        var fete = false
+        var promenade: Float? = null
+        var sol: String? = null
+        var surPlace = false
+        var albumOuvert = true
     }
 
     /** (idée 62) le haut de l'écran grandit moins que le reste quand le texte est agrandi : plus de place en dessous. */
@@ -252,9 +261,9 @@ object EspaceDessin {
             return
         }
         tl.texte(court(tl, m.nom, ex - tx - 8 * z, 17 * z, gras = true), tx, y + h / 2 - 10 * z, 17 * z, TEXTE, true)
-        val ce = Cerveau.COULEURS[m.etat]?.takeIf { m.etat != "content" } ?: VERT
+        val ce = m.etatCouleur ?: Cerveau.COULEURS[m.etat]?.takeIf { m.etat != "content" } ?: VERT
         tl.ellipse(tx + 5 * z, y + h / 2 + 12 * z, 5 * z, 5 * z, ce)
-        val en = Cerveau.nomEtat(m.etat)
+        val en = m.etatTexte ?: Cerveau.nomEtat(m.etat)
         tl.texte(en, tx + 15 * z, y + h / 2 + 12 * z, 14 * z, ce)
         if (m.gains.isNotEmpty()) {
             val gx = tx + 19 * z + tl.mesure(en, 14 * z)
@@ -360,19 +369,31 @@ object EspaceDessin {
         }
         val bx = x + 12 * z; val by = y + 40 * z; val bw = min(w * 0.36f, 150 * z); val bh = h - 52 * z
         tl.rrect(bx, by, bw, bh, 12 * z, 0xFF0D1016.toInt(), BORD, 1f * z)
-        val ce = Cerveau.COULEURS[m.etat]?.takeIf { m.etat != "content" } ?: VERT
-        tl.lueur(bx + bw / 2, by + bh * 0.55f, bw * 0.55f, a(ce, 40))
+        val ce = m.etatCouleur ?: Cerveau.COULEURS[m.etat]?.takeIf { m.etat != "content" } ?: VERT
+        val pieds0 = by + bh - 12 * z
+        // 85 : elle se promène sur le sol de son biome (sinon : au milieu, comme avant)
+        val ccx = m.promenade?.let { bx + 22 * z + it * (bw - 44 * z) } ?: (bx + bw / 2)
+        if (m.promenade != null) CreatureDessin.sol(tl, bx, bw, pieds0, m.sol, z)
+        tl.lueur(ccx, by + bh * 0.55f, bw * 0.55f, a(ce, 40))
+        if (m.fete) CreatureDessin.confettis(tl, bx, by, bw, bh, m.t, z)
         val al = m.album; val an = m.anime
         if (al != null && an != null) {
             val haut = min(bh * 0.7f, bw * 0.62f)
             var e = haut / max(1, al.ref)
             if (!al.lisse) e = max(1f, e.toInt().toFloat())
-            val pieds = by + bh - 12 * z
-            an.ancien?.let { v -> tl.cadre(al.image(v.etat, v.k), bx + bw / 2, pieds + an.dy * z, e, v.miroir, al.lisse, an.sx, an.sy, an.rot, v.opacite) }
-            tl.cadre(al.image(an.etat, an.k), bx + bw / 2, pieds + an.dy * z, e, an.miroir, al.lisse, an.sx, an.sy, an.rot, an.opacite)
+            val pieds = pieds0
+            an.ancien?.let { v -> tl.cadre(al.image(v.etat, v.k), ccx, pieds + an.dy * z, e, v.miroir, al.lisse, an.sx, an.sy, an.rot, v.opacite) }
+            tl.cadre(al.image(an.etat, an.k), ccx, pieds + an.dy * z, e, an.miroir, al.lisse, an.sx, an.sy, an.rot, an.opacite)
             val ref = al.images("assis")[0]
+            CreatureDessin.glyphe(tl, m.glyphe, ccx, max(by + 34 * z, pieds - ref.h * e - 6 * z), 3 * z, m.t)   // 11 : « ? », « ! », la note…
+            if (m.fete) {                                  // 17 : le gâteau posé à côté d'elle (du côté où il y a la place)
+                val gw = 13 * 3 * z
+                val gx = if (ccx + ref.w * e * 0.5f + 4 * z + gw <= bx + bw - 4 * z) ccx + ref.w * e * 0.5f + 4 * z
+                    else ccx - ref.w * e * 0.5f - 4 * z - gw
+                CreatureDessin.gateau(tl, gx.coerceIn(bx + 4 * z, bx + bw - 4 * z - gw), pieds, 3 * z)
+            }
             for (f in an.effets) {
-                val ex = bx + bw / 2 + (if (an.miroir) -1 else 1) * f.x * ref.w * e
+                val ex = ccx + (if (an.miroir) -1 else 1) * f.x * ref.w * e
                 val ey = pieds + f.y * ref.h * e
                 val et = max(7 * z, f.taille * ref.h * e)
                 val alpha = (255 * f.opacite.coerceIn(0f, 1f)).toInt()
@@ -383,6 +404,13 @@ object EspaceDessin {
                 }
             }
             Z.add(Zone(bx, by, bw, bh, "creature"))
+        }
+        if (m.albumOuvert) {                               // 16 : le bouton de l'album, dans la carte de la créature
+            val lib = "📖 " + t("esp.onglet.album")
+            val lw = tl.mesure(lib, 11 * z) + 14 * z
+            tl.rrect(bx + 6 * z, by + 6 * z, lw, 20 * z, 10 * z, 0xCC141720.toInt(), BORD_FORT, 1f * z)
+            tl.texte(lib, bx + 6 * z + lw / 2, by + 16 * z, 11 * z, TEXTE, false, 'c')
+            Z.add(Zone(bx + 2 * z, by + 2 * z, lw + 8 * z, 28 * z, "album"))
         }
         // les envies (quand elles sont apparues)
         if (!m.envies_visibles) return
@@ -827,6 +855,10 @@ object EspaceDessin {
         }
         y += 46 * z
         bouton(tl, Z, x, y, lw, "✎ " + t("esp.rg.titre"), "opt:ranger", z, VERT, a(VERT, 26), a(VERT, 140))
+        y += 46 * z
+        // 85 : « rester sur place » (la créature ne se promène pas dans sa carte)
+        bouton(tl, Z, x, y, lw, t("cr.opt.sur_place", "etat" to t(if (m.surPlace) "app.on" else "app.off")), "opt:sur_place", z,
+            if (m.surPlace) JAUNE else TEXTE, if (m.surPlace) a(JAUNE, 30) else null, if (m.surPlace) a(JAUNE, 200) else null, m.surPlace)
         y += 56 * z
         tl.texte(t("efx.reglage").uppercase(), 20 * z, y, 11.5f * z, DOUX, true)        // effets : tous / essentiels / aucun
         y += 12 * z

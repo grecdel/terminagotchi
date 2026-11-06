@@ -337,6 +337,9 @@ def phrase(state, m=None):
 def _rappeler(state, e, tapees, now):
     e["rappel_n"] += tapees
     m = moment(state)
+    from . import creature
+    if creature.envie(state):                      # 3 nov. : une envie mystère passe à la place de l'envie habituelle
+        m = None
     if m and e["rappel_n"] >= RAPPEL_COMMANDES and now - e["rappel_t"] >= RAPPEL_MINUTES * 60:
         e["rappel_n"] = 0
         e["rappel_t"] = now
@@ -423,6 +426,10 @@ def humeur_cle(state):
         return "sat.etat.veille"                       # en veille (jamais de mort) : un repas complet la réveille
     if e == "affamee":
         return "humeur.affame"
+    from . import creature
+    h = creature.humeur(state)                     # 3 nov. : une humeur du moment (gentille) passe devant le reste
+    if h:
+        return "humeur." + h
     zeros = sum(1 for k, x in vals.items() if k != "faim" and x < 1)
     if zeros >= 2:
         return "humeur.grognon"
@@ -483,6 +490,10 @@ def ecran(state):
     out.append(" " + (t("env.ecran.moment", icone=ICONES[m["e"]], envie=nom(m["e"]), cmd=m["cmd"]) if m
                       else t("env.ecran.aucune", nom=state["name"])))
     out.append(" " + t("env.ecran.humeur", humeur=humeur(state)))
+    from . import creature
+    me = creature.ligne_envie(state)               # 3 nov. : l'envie mystère en cours (tg indice)
+    if me:
+        out.append(" " + me)
     out.append("")
     from . import satiete
     out.append(f" {fg(213)}{BOLD}" + t("sat.ecran.titre") + RESET)      # la satiété : état, assiette, série, vacances

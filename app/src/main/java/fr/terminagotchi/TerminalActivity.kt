@@ -168,6 +168,7 @@ class TerminalActivity : Activity() {
             requestPermissions(arrayOf("android.permission.POST_NOTIFICATIONS"), 1)
         }
         creature = findViewById(R.id.creature)
+        creature.setOnClickListener { montrerCreature("album") }      // 16 : toucher la créature ouvre son album
         creerBoutonAura()
         titre = findViewById(R.id.titre)
         faim = findViewById(R.id.faim)
@@ -1349,7 +1350,7 @@ class TerminalActivity : Activity() {
                     ecrire(Histoire.aideLecon(jeu), Commandes.ROSE)
                     return
                 }
-                ecrire(t("term.aide", "ctf" to Mots.terme("ctf", Mots.palier(jeu), true)) + "\n" + t("ong.aide", "max" to Onglets.MAX) + "\n" + t("term.aide.maison") + "\n" + t("env.aide.tel") + "\n" + t("ent.aide.tel") + "\n\n" + t("app.licences"))
+                ecrire(t("term.aide", "ctf" to Mots.terme("ctf", Mots.palier(jeu), true)) + "\n" + t("ong.aide", "max" to Onglets.MAX) + "\n" + t("term.aide.maison") + "\n" + t("env.aide.tel") + "\n" + t("cr.aide.tel") + "\n" + t("ent.aide.tel") + "\n\n" + t("app.licences"))
                 return
             }
         }
@@ -1364,6 +1365,7 @@ class TerminalActivity : Activity() {
             if (interne.carte && espace != null) { espace?.onglet("carte"); ecrire(interne.texte, interne.couleur, interne.petit) }
             else if (interne.carte && ouvrirCarte()) ecrire("🗺 " + Carte.titre(jeu), interne.couleur)
             else ecrire(interne.texte, interne.couleur, interne.petit)
+            if (Regles.premierMot(ligne) == "album" && ligne.trim().split(Regex("\\s+")).size == 1) montrerCreature("album")
             if (lexiqueVue.visibility == View.VISIBLE) basculerLexique()
             interne.aller?.let {
                 shell.dossier = it
@@ -1769,6 +1771,73 @@ class TerminalActivity : Activity() {
     private var carteVue: CarteVue? = null
     private var espace: EspaceVue? = null
 
+    // ------------------------------------------------------------ le thème « créature » (3 nov., maquettes validées)
+    /** l'album des stades ou le moment d'évolution, par-dessus l'écran (CreatureVue) */
+    private var creatureVue: CreatureVue? = null
+    /** la carte de l'envie mystère (18) : sa phrase, l'indice, « Un autre indice » et « Plus tard » ; pas de minuteur */
+    private var envieBoite: LinearLayout? = null
+    private var envieTexte: TextView? = null
+    private var evoVue = System.currentTimeMillis() / 1000.0
+
+    private fun montrerCreature(mode: String, de: String? = null) {
+        if (!jeu.existe || Creature.stadeCompagnon(jeu) == null) return
+        try {
+            creatureVue?.let { (it.parent as? android.view.ViewGroup)?.removeView(it) }
+            val fond = findViewById<android.widget.FrameLayout>(R.id.fond)
+            val v = CreatureVue(this, jeu, mode, de) { vue ->
+                (vue.parent as? android.view.ViewGroup)?.removeView(vue)
+                if (creatureVue === vue) creatureVue = null
+                saisie.requestFocus()
+            }
+            fond.addView(v, android.widget.FrameLayout.LayoutParams(android.widget.FrameLayout.LayoutParams.MATCH_PARENT,
+                android.widget.FrameLayout.LayoutParams.MATCH_PARENT))
+            creatureVue = v
+        } catch (e: Exception) { android.util.Log.e("TG", "créature $mode", e) }
+    }
+
+    /** 84 : une évolution vient d'arriver (Creature.stadeChange) : le moment en plein écran, une seule fois. */
+    private fun evolutionRecente() {
+        val ev = if (jeu.extra.has("creature")) jeu.module("creature").optJSONObject("evolution") else null
+        val t = ev?.optDouble("t", 0.0) ?: return
+        if (t <= evoVue || System.currentTimeMillis() / 1000.0 - t > 120) return
+        evoVue = t
+        montrerCreature("evolution", ev.optString("de").ifEmpty { null })
+    }
+
+    private fun majEnvie() {
+        val e = if (jeu.existe) Creature.envie(jeu) else null
+        if (e == null) { envieBoite?.visibility = View.GONE; return }
+        val dp = resources.displayMetrics.density
+        val boite = envieBoite ?: LinearLayout(this).also { b ->
+            b.orientation = LinearLayout.VERTICAL
+            b.setBackgroundResource(R.drawable.bulle)
+            b.setPadding((10 * dp).toInt(), (8 * dp).toInt(), (10 * dp).toInt(), (8 * dp).toInt())
+            val tx = TextView(this).apply { setTextColor(0xFF1E1E2E.toInt()); textSize = 13f }
+            b.addView(tx)
+            val rangee = LinearLayout(this).apply { orientation = LinearLayout.HORIZONTAL }
+            fun bouton(lib: String, action: () -> Unit) = TextView(this).apply {
+                text = lib; textSize = 13f; setTextColor(0xFFFFFFFF.toInt())
+                setBackgroundResource(R.drawable.touche)
+                setPadding((12 * dp).toInt(), (6 * dp).toInt(), (12 * dp).toInt(), (6 * dp).toInt())
+                isFocusable = false
+                setOnClickListener { action() }
+            }
+            rangee.addView(bouton(t("cr.envie.bouton.indice")) { ecrire(Creature.indice(jeu), Commandes.ROSE); jeu.sauver(); rafraichir() })
+            rangee.addView(View(this), LinearLayout.LayoutParams((8 * dp).toInt(), 1))
+            rangee.addView(bouton(t("cr.envie.bouton.plus_tard")) { ecrire(Creature.indice(jeu, "plus-tard"), Commandes.ROSE); jeu.sauver(); rafraichir() })
+            b.addView(rangee, LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT).also { it.topMargin = (6 * dp).toInt() })
+            val pan = bulle.parent as LinearLayout
+            var i = 0
+            while (i < pan.childCount && pan.getChildAt(i) !== bulle) i++
+            pan.addView(b, i + 1, LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT).also { it.topMargin = (6 * dp).toInt() })
+            envieBoite = b; envieTexte = tx
+        }
+        val k = e.optInt("k")
+        envieTexte?.text = "❓ " + t("cr.envie.titre") + " · " + t("cr.envie.presse") + "\n« " + Creature.texteDevinette(e.getString("id"), 0) + " »" +
+            (if (k > 0) "\n" + t("cr.direct.indice", "k" to k) + " : " + Creature.texteDevinette(e.getString("id"), k) else "")
+        boite.visibility = View.VISIBLE
+    }
+
     /** L'espace de travail : la vue graphique (île, onglets, créature en direct, vue déployée, carte, cerveau, équipe)
      *  au-dessus du terminal, qui prend tout l'écran. Le terminal, les touches et la saisie restent les mêmes. */
     private fun ouvrirEspace(classe: Boolean, dire: Boolean = true) {
@@ -1793,6 +1862,7 @@ class TerminalActivity : Activity() {
                 saisie.requestFocus()
                 ecrire(t("reveil.ecrite"), Commandes.JAUNE)
             }
+            v.etat.ouvrirAlbum = { montrerCreature("album") }
             v.demanderQuestion = { q ->
                 questionAdulte = v.etat.question
                 v.etat.question = null
@@ -2207,6 +2277,7 @@ class TerminalActivity : Activity() {
         majAideDouce()
         majTouches()
         majBoutonAura()
+        majEnvie()
         if (lecture == null) creature.setImageBitmap(imageCreature(cligne > 0))
     }
 
@@ -2226,6 +2297,7 @@ class TerminalActivity : Activity() {
             val r = try { Animations.pour(ind, nom, Equipe.stade(ind), 3) } catch (e: Exception) { null }
             if (r != null && r.first.isNotEmpty()) { demarrer(r.first, r.second, 2 * r.first.size); return }
         }
+        evolutionRecente()                                    // 84 : le moment d'évolution en plein écran
         val a = jeu.anim ?: return
         if (a.second <= animJouee || System.currentTimeMillis() - a.second > 4000) return
         animJouee = a.second

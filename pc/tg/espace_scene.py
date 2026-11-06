@@ -50,7 +50,7 @@ COUL_STATUT = {"mange": VERT, "dort": VIOLET, "pret": BLEU, "faim": ORANGE, "vei
 LIEUX_CARTE = {"salle_des_machines": (0.16, 0.10), "tour": (0.84, 0.10), "bibliotheque": (0.10, 0.36),
                "coeur": (0.50, 0.29), "atelier": (0.84, 0.36), "cave": (0.86, 0.55), "nid": (0.50, 0.47),
                "vestibule": (0.55, 0.71), "dortoir": (0.85, 0.80), "grenier": (0.27, 0.74)}
-ONGLETS = ("carte", "monde", "cerveau", "tuyaux", "lecon")
+ONGLETS = ("carte", "monde", "cerveau", "tuyaux", "lecon", "album")
 # Lecture et confort (confort.py) : posé par scene() avant de dessiner, lu par lt() et les pinceaux (PIL, cairo).
 CONF = {"facile": False, "calme": False, "formes": False, "taille": 100}
 
@@ -686,6 +686,126 @@ def terminal(L, Z, m, r, t_):
 
 
 # ---------------------------------------------------------------- la créature en direct
+# ---------------------------------------------------------------- le thème « créature » (3 nov., maquettes validées)
+_CR = None
+
+
+def _cr():
+    global _CR
+    if _CR is None:
+        from . import creature
+        _CR = creature.donnees()
+    return _CR
+
+
+def _hexa(x, a=255):
+    return (int(x[1:3], 16), int(x[3:5], 16), int(x[5:7], 16), a)
+
+
+def pixels(L, rangs, x, y, ech, alpha=255, couleurs=None):
+    """Un petit dessin en pixels (creature.json : glyphes, gâteau, décors), coin haut gauche en (x, y)."""
+    pal = couleurs or _cr()["couleurs_glyphes"]
+    for j, rg in enumerate(rangs):
+        for i, ch in enumerate(rg):
+            if ch != "." and ch in pal:
+                L.append(("rect", x + i * ech, y + j * ech, ech, ech, _hexa(pal[ch], alpha)))
+
+
+def glyphe(L, nom, cx, haut, ech, t_):
+    """Le petit signe de l'humeur au-dessus de sa tête (« ? », « ! », la note, des étoiles, des cœurs…)."""
+    g = _cr()["glyphes"]
+    flotte = 5 * math.sin(t_ * 2.4)
+    if nom in ("etoiles", "coeurs"):
+        un = g["etoile" if nom == "etoiles" else "coeur"]
+        for k, (dx, dy) in enumerate(((-1.1, 0.25), (1.0, 0.05), (0.55, -0.35))):
+            a = int(255 * (0.55 + 0.45 * math.sin(t_ * 3 + k * 2)))
+            pixels(L, un, cx + dx * 9 * ech - 2.5 * ech, haut + dy * 12 * ech + flotte, ech, a)
+        return
+    if nom == "confettis" or nom not in g:
+        return
+    rg = g[nom]
+    pixels(L, rg, cx + 3 * ech, haut - len(rg) * ech + flotte, ech)
+
+
+def confettis(L, sx, sy, sw, sh, t_):
+    """17 : la pluie de confettis en pixels (calculée : la même à chaque image, sans hasard)."""
+    cs = _cr()["confettis"]
+    for k in range(34):
+        vx = ((k * 7919) % 997) / 997.0
+        v = 0.25 + ((k * 104729) % 89) / 89.0 * 0.5
+        yy = ((t_ * v * 0.35 + ((k * 31) % 53) / 53.0) % 1.0) * (sh - 20)
+        xx = sx + 10 + vx * (sw - 20) + 6 * math.sin(t_ * 2 + k)
+        L.append(("rect", xx, sy + 8 + yy, 5, 5, _hexa(cs[k % len(cs)], 230)))
+
+
+def sol(L, sx, sw, pieds, type_, t_):
+    """85 : le sol de son biome, en pixels, et quelques décors (champignon, herbes, braises…)."""
+    d = _cr()["sols"].get(type_) or _cr()["sols"]["plante"]
+    L.append(("rect", sx + 8, pieds + 1, sw - 16, 13, _hexa(d["sol"], 150)))
+    L.append(("rect", sx + 8, pieds + 1, sw - 16, 3, _hexa(d["bord"], 200)))
+    for k, (nom, fx) in enumerate(zip(d["deco"], (0.12, 0.58, 0.88))):
+        rg = _cr()["decors"].get(nom) or []
+        pixels(L, rg, sx + fx * sw, pieds + 2 - len(rg) * 4, 4, 235)
+
+
+def evolution(L, Z, m, ev, sx, sy, sw, sh, cx, pieds, haut_c):
+    """84 : le moment d'évolution (les pixels arrivent, la silhouette change, l'éclat, la nouvelle forme et sa carte)."""
+    import random as _r
+    ph, p, tt = ev["phase"], ev["p"], ev["t"]
+    noir = 150 if ph != "fete" else int(150 * (1 - min(1.0, p * 1.5)))
+    L.append(("rrect", sx, sy, sw, sh, 12, (0, 0, 0, noir), None, 0))
+    Z.append((sx, sy, sw, sh, "direct"))
+    av, cad, ref = ev.get("avant"), ev.get("cadres"), ev.get("ref") or 40
+    e = max(1.0, float(int(haut_c / max(1, ref))))
+    if ph == "appel":
+        g = _r.Random(5)
+        for _k in range(70):
+            x0, y0, v = sx + g.uniform(0, sw), sy + g.uniform(0, sh), g.uniform(0.5, 1.0)
+            q = min(1.0, p * v * 1.4)
+            xx, yy = x0 + (cx - x0) * q, y0 + (pieds - haut_c * 0.45 - y0) * q
+            tl = 4 if v > 0.8 else 3
+            L.append(("rect", xx, yy, tl, tl, _a(VERT, 200)))
+        for k in range(7):
+            lx = cx - 120 + k * 40
+            hh = 60 + 40 * math.sin(tt * 5 + k)
+            y0 = pieds - ((tt * 70 + k * 23) % 160)
+            L.append(("ligne", lx, y0, lx, y0 + hh, _a(VERT, 90), 2, None))
+        if av:
+            ea = haut_c / max(1, av.ref)
+            ea = ea if av.lisse else max(1.0, float(int(ea)))
+            L.append(("imgt", av.image("assis", int(tt * 8)), cx, pieds, ea, False, av.lisse, 1.0, 1.0, 0.0, 1.0))
+        L.append(("texte", sx + sw * 0.74, sy + 60, t("cr.evo.brille", nom=ev.get("nom", "")), 16, TEXTE, True, "c",
+                  False))
+        return
+    if ph in ("transformation", "eclat") and cad:
+        k = min(len(cad) - 1, int(p * len(cad))) if ph == "transformation" else len(cad) - 1
+        L.append(("imgt", cad[k], cx, pieds, e, False, False, 1.0, 1.0, 0.0, 1.0))
+        if ph == "eclat":
+            L.append(("lueur", cx, pieds - haut_c * 0.45, haut_c * (0.6 + 0.8 * p), (255, 255, 255, int(220 * (1 - p)))))
+            for k in range(8):
+                a = k * math.pi / 4
+                L.append(("ligne", cx, pieds - haut_c * 0.45, cx + math.cos(a) * haut_c * (0.5 + p),
+                          pieds - haut_c * 0.45 + math.sin(a) * haut_c * (0.5 + p), (255, 240, 180, int(200 * (1 - p))),
+                          3, None))
+        return
+    # la fête : la nouvelle forme et sa carte
+    bw, bh = min(260, sw * 0.46), 176
+    bx, by = sx + sw - bw - 18, sy + 30
+    if p > 0.05:
+        L.append(("rrect", bx, by, bw, bh, 14, (18, 21, 30, 250), _a(VERT, 150), 2))
+        L.append(("texte", bx + bw / 2, by + 30, t("cr.evo.titre", nom=ev.get("nom", "")), 15, DOUX, False, "c", False))
+        L.append(("texte", bx + bw / 2, by + 64, court(ev.get("forme", "") + " !", bw - 20, 19), 19, VERT, True, "c",
+                  False))
+        L.append(("texte", bx + bw / 2, by + 102, "★ " + t("cr.evo.page"), 13, JAUNE, False, "c", False))
+        L.append(("texte", bx + bw / 2, by + 126, t("cr.evo.gouter"), 13, DOUX, False, "c", False))
+        if ev.get("passer"):
+            L.append(("texte", bx + bw / 2, by + 154, t("cr.evo.continuer"), 12, PALE, False, "c", False))
+    for k in range(6):                                   # des étoiles autour d'elle
+        a = k * math.pi / 3 + ev["t"]
+        pixels(L, _cr()["glyphes"]["etoile"], cx + math.cos(a) * haut_c * 0.7 - 7,
+               pieds - haut_c * 0.5 + math.sin(a) * haut_c * 0.45, 3, 230)
+
+
 def direct(L, Z, m, r, t_):
     x, y, w, h = r
     panneau(L, x, y, w, h, t("esp.en_direct", nom=m.get("nom", "")))
@@ -694,7 +814,21 @@ def direct(L, Z, m, r, t_):
     sx, sy, sw, sh = x + 16, y + 52, w - 32, h - 68
     L.append(("rrect", sx, sy, sw, sh, 12, (13, 16, 22, 255), BORD, 1))
     cx, pieds = sx + sw * 0.46, sy + sh - 62
+    pro = m.get("promenade")
+    if m.get("evolution") and m["evolution"]["phase"] == "fete":
+        cx = sx + sw * 0.3                               # la carte « a grandi » prend la droite
+    elif pro:                                            # 85 : elle se promène sur le sol de son biome
+        cx = sx + 70 + pro["x"] * (sw - 140)
+        sol(L, sx, sw, pieds, pro.get("sol"), t_)
     L.append(("lueur", cx, pieds - sh * 0.3, sh * 0.48, _a(ce, 36)))
+    if m.get("fete"):
+        confettis(L, sx, sy, sw, sh, t_)
+    ev = m.get("evolution")
+    if ev:
+        haut_c = min(sh * 0.5, 230) if not m.get("classe") else min(sh * 0.5, 190)
+        evolution(L, Z, m, ev, sx, sy, sw, sh, cx, pieds, haut_c)
+        if ev["phase"] != "fete":
+            return
     # les mots des dernières commandes qui flottent autour d'elle
     for i, (mot, coul) in enumerate(m.get("mots", [])[:4]):
         ph = (0.3 + i * 0.17) if CONF["calme"] else (t_ * 0.07 + i * 0.27) % 1.0     # mode calme : ils restent posés
@@ -727,6 +861,17 @@ def direct(L, Z, m, r, t_):
             elif genre == "miette":
                 L.append(("ellipse", ex, ey, et / 2, et / 2.4, (232, 176, 74, int(255 * fa))))
         Z.append((cx - largeur_corps / 2, pieds - haut_corps, largeur_corps, haut_corps, "creature"))
+        if m.get("glyphe") and not ev:
+            glyphe(L, m["glyphe"], cx, max(sy + 44, pieds - haut_corps - 8), 4, t_)
+        if m.get("fete"):                                # le gâteau posé au sol à côté d'elle (un décor, jamais porté)
+            gt = _cr()["glyphes"]["gateau"]
+            gw = len(gt[0]) * 4
+            gx = cx + largeur_corps * 0.55 + 10
+            if gx + gw > sx + sw - 10:
+                gx = cx - largeur_corps * 0.55 - 10 - gw
+            pixels(L, gt, max(sx + 10, gx), pieds + 2 - len(gt) * 4, 4)
+    if ev:
+        return
     # la bulle
     bulle = m.get("bulle")
     if bulle:
@@ -740,6 +885,15 @@ def direct(L, Z, m, r, t_):
         L.append(("poly", [(bx + 8, by + bh - 26), (bx - 8, by + bh - 14), (bx + 10, by + bh - 12)], (22, 26, 36, 250)))
         for i, l in enumerate(lignes):
             L.append(("texte", bx + 14, by + 21 + 20 * i, l, 13.5, TEXTE, False, "g", False))
+        en = m.get("envie")
+        if en:                                           # 18 : l'envie mystère, ses indices (aucun minuteur)
+            k = en.get("k", 0)
+            if k:
+                chip(L, bx, by + bh + 22, t("cr.direct.indice", k=k), JAUNE, 12, point=False, bord=_a(JAUNE, 120),
+                     fond=_a(JAUNE, 26))
+            dx = lt(t("cr.direct.indice", k=k), 12) + 30 if k else 0
+            L.append(("texte", bx + dx, by + bh + 22, court(sans_marques(t("cr.direct.autre")), bw - dx, 12, True), 12,
+                      PALE, False, "g", True))
     # le pied : espèce · stade, type, XP
     py = sy + sh - 24
     xx = sx + 16
@@ -772,7 +926,7 @@ def contexte(L, Z, m, r, t_):
         ong = ongs[0]
     libs = [t("esp.onglet." + o) if o in ONGLETS else t("esp.dalle." + o) for o in ongs]
     indice = {"carte": "tree", "cerveau": "cerveau.sh", "tuyaux": "|", "monde": "ls biome", "lecon": "aide",
-              "envies": "", "explorateur": "ls"}[ong]
+              "envies": "", "explorateur": "ls", "album": "tg album"}[ong]
     # (idée 62) les onglets tiennent toujours dans le panneau : la police rapetisse un peu, puis l'indice s'efface
     taille_o, pad = 13.5, 30
     place = w - 28 - (lt(indice, 12, True) + 24 if indice else 0)
@@ -807,8 +961,53 @@ def contexte(L, Z, m, r, t_):
         cerveau(L, Z, m, zone, t_, (x, y + h - 22, w))
     elif ong == "tuyaux":
         tuyaux(L, Z, m, zone, t_)
+    elif ong == "album":
+        album(L, Z, m, zone, t_)
     else:
         lecon(L, Z, m, zone)
+
+
+def album(L, Z, m, zone, t_):
+    """16 : l'album des stades (même échelle : on la voit grandir), la date, le niveau, un souvenir ; « bientôt » en
+    silhouette grise ; un clic fait saluer le stade."""
+    x, y, w, h = zone
+    a = m.get("album_pages")
+    if not a:
+        L.append(("texte", x + w / 2, y + h / 2, t("cr.album.oeuf"), 13, DOUX, False, "c", False))
+        return
+    L.append(("texte", x + 4, y + 12, espace_lettres(a["titre"].upper()), 12, DOUX, True, "g", False))
+    if a.get("eclos"):
+        L.append(("texte", x + w - 4, y + 12, a["eclos"], 12, PALE, False, "d", False))
+    pages = a["pages"]
+    n = max(1, len(pages))
+    gap = 10
+    cw = (w - gap * (n - 1)) / n
+    ch = h - 40 - (26 if a.get("fetes") else 0)
+    refs = [p["cadre"].h for p in pages if p.get("cadre")]
+    hmax = max(refs) if refs else 1
+    e = max(1.0, float(int((ch - 96) / hmax)))
+    for i, p in enumerate(pages):
+        cx0 = x + i * (cw + gap)
+        cy0 = y + 30
+        bord = _a(VERT, 170) if p.get("actuel") else BORD
+        L.append(("rrect", cx0, cy0, cw, ch, 12, (13, 16, 22, 255), bord, 1.5 if p.get("actuel") else 1))
+        Z.append((cx0, cy0, cw, ch, "album:" + p["id"]))
+        pieds = cy0 + ch - 86
+        if p.get("atteint"):
+            L.append(("lueur", cx0 + cw / 2, pieds - 30, cw * 0.45, _a(VERT, 26)))
+        cad = p.get("cadre")
+        if cad:
+            dy = -abs(math.sin(p["salut"] * 9)) * 14 if p.get("salut") is not None else 0
+            L.append(("imgt", cad, cx0 + cw / 2, pieds + dy, e, False, False, 1.0, 1.0, 0.0, 1.0 if p["atteint"] else 0.9))
+        L.append(("texte", cx0 + cw / 2, pieds + 22, p["nom"], 14, TEXTE if p["atteint"] else PALE, True, "c", False))
+        sous = p["date"] + (" · " + p["niv"] if p.get("niv") else "")
+        L.append(("texte", cx0 + cw / 2, pieds + 42, court(sous, cw - 12, 11.5), 11.5, DOUX, False, "c", False))
+        if p.get("souv"):
+            L.append(("texte", cx0 + cw / 2, pieds + 62, court(sans_marques(p["souv"]), cw - 12, 11.5), 11.5,
+                      ORANGE, False, "c", False))
+    if a.get("fetes"):
+        L.append(("texte", x + 4, y + h - 12, t("cr.album.fetes") + " " + "  ".join(a["fetes"]), 12, ROSE, False, "g",
+                  False))
 
 
 def carte(L, Z, m, zone, t_, pied):
@@ -1333,8 +1532,10 @@ def options(L, Z, m, mise, vignettes=None):
     L.append(("texte", cx, yy, t("app.opt.creature").upper(), 12, JAUNE, True, "g", False))
     yy += 18
     bw = bouton(L, Z, cx, yy, t("app.options.bureau"), "opt:bureau")
-    bouton(L, Z, cx + bw + 12, yy, t("app.options.notifs", etat=t("app.on") if o["notifs"] else t("app.off")),
-           "opt:notifs")
+    bw += 12 + bouton(L, Z, cx + bw + 12, yy, t("app.options.notifs", etat=t("app.on") if o["notifs"] else t("app.off")),
+                      "opt:notifs")
+    bouton(L, Z, cx + bw + 12, yy, t("cr.opt.sur_place", etat=t("app.on") if o.get("sur_place") else t("app.off")),
+           "opt:sur_place")
     L.append(("texte", x + w - 30, yy + 17, t("app.options.langue", langue=o["langue"]) + "  (tg langue xx)", 13,
               DOUX, False, "d", False))
     yy += 52
