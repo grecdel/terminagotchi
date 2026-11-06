@@ -210,6 +210,8 @@ ici[0] = str(T / "jourtest")
 for f in ("recette.txt", "pomme.txt", "poire.txt", "vieux.txt"):
     (T / "jourtest" / f).write_text("miel\nfarine\nsel\n")
 (T / "jourtest" / "cabane").mkdir(exist_ok=True)
+# (une commande tapée plus haut dans ce test peut déjà avoir réussi la mission du jour, selon la date : on repart à zéro)
+core.modifier(lambda st: st["apprendre"].update(tampons=[j for j in st["apprendre"]["tampons"] if j != jour]))
 x0 = core.load()["xp"]
 prepa = {"rm": "rm -i poire.txt < /dev/null; true", "less": "less recette.txt < /dev/null"}
 s, c, msg = taper(prepa.get(cmd, ex))

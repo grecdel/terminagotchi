@@ -338,11 +338,15 @@ object Apprendre {
     fun verifierJour(jeu: Jeu, ligne: String, code: Int?, now: Double): String? {
         if (code != null && code != 0) return null
         val a = a(jeu)
-        val (jour, c) = missionDuJour(jeu, now)
+        val (jour, maintenantC) = missionDuJour(jeu, now)
         val tampons = a.getJSONArray("tampons")
         if (jour in lst(tampons)) return null
-        val motif = o("jour").getJSONObject("missions").optString(c).ifEmpty { return null }
-        if (!Regex(motif).containsMatchIn(ligne.trim())) return null
+        // la mission montrée AVANT cette commande compte aussi (taper une commande nouvelle change le tirage du jour)
+        val avant = commandeDuJour(jour, jeu.vus.toSet() - Regles.premierMot(ligne))
+        val c = listOf(maintenantC, avant).distinct().firstOrNull { k ->
+            val motif = o("jour").getJSONObject("missions").optString(k)
+            motif.isNotEmpty() && Regex(motif).containsMatchIn(ligne.trim())
+        } ?: return null
         ajouter(tampons, jour, 62)
         val xp = o("jour").optInt("xp", 8)
         jeu.ajouterXp(xp)

@@ -1,7 +1,8 @@
 #!/bin/bash
 # Les captures de la fiche F-Droid (fastlane/metadata/android/<langue>/images/phoneScreenshots), UNE LANGUE À LA FOIS,
 # sur le téléphone virtuel (workflow .github/workflows/vitrine.yml), puis quelques captures des nouveautés.
-#   MODE=telephone LANGUES="fr en" bash tests/vitrine.sh   → captures/vitrine_<langue>/*.png, captures/nouveautes/*.png
+#   MODE=telephone LANGUES="fr en" bash tests/vitrine.sh   → captures/vitrine_<langue>/*.png
+#   MODE=nouveautes bash tests/vitrine.sh                   → captures/nouveautes/*.png (idées 74 et 76)
 #   MODE=tablette bash tests/vitrine.sh                     → captures/tablette/*.png (idée 75 : deux colonnes en paysage)
 # On choisit ensuite les 4 meilleures de chaque langue (les mêmes écrans dans chaque langue) : voir docs/fdroid.md.
 set -u
@@ -33,7 +34,13 @@ t, h = g("text"), g("hint")
 vide = t == "" or t == h or t.endswith("…")
 print("pret" if g("focused") == "true" and vide else "occupe")'
 }
-attendre_pret() { for i in $(seq 1 "${1:-25}"); do [ "$(saisie)" = pret ] && return 0; sleep 1; done; echo "(saisie pas prête)"; }
+# (au plus quelques secondes : le téléphone virtuel ne dit pas toujours « prêt », et attendre 25 s à chaque commande
+#  faisait durer la vitrine des heures ; la première fois, on garde l'écran lu pour comprendre)
+attendre_pret() {
+  for i in $(seq 1 "${1:-6}"); do [ "$(saisie)" = pret ] && return 0; sleep 1; done
+  [ -f "$D/pas_pret.xml" ] || adb exec-out cat /sdcard/tg_ui.xml > "$D/pas_pret.xml" 2>/dev/null
+  echo "(saisie pas prête)"
+}
 tape() {
   local t="${1// /%s}"
   attendre_pret
@@ -60,7 +67,7 @@ debut() {   # $1 : langue (fr, en…), $2 : « oui » dans cette langue
     tape "Pixel" 6
     [ "$essai" = 1 ] && capture bapteme 1
     tape "$2" 8
-    attendre_pret 40
+    attendre_pret 10
     adb shell uiautomator dump /sdcard/tg_ui.xml >/dev/null 2>&1
     adb exec-out cat /sdcard/tg_ui.xml | grep -o 'text="Pixel[^"]*" resource-id="fr.terminagotchi:id/titre"' | grep -q Pixel && break
     for i in 1 2 3; do tape "" 3; done
@@ -95,6 +102,7 @@ if [ "$MODE" = telephone ]; then
     tape "donjon" 4; capture donjon 1
     tape "plan" 3; capture plan 1
   done
+elif [ "$MODE" = nouveautes ]; then
   # ---- les nouveautés (idées 74 et 76), en français
   D=captures/nouveautes; mkdir -p $D
   debut fr oui

@@ -498,16 +498,23 @@ def verifier_jour(state, ligne, statut, now):
     jour, c = mission_du_jour(state, now)
     if jour in a["tampons"]:
         return None
-    motif = donnees()["jour"]["missions"].get(c)
-    if motif and re.search(motif, (ligne or "").strip()):
-        a["tampons"] = (a["tampons"] + [jour])[-62:]
-        xp = donnees()["jour"]["xp"]
-        core.add_xp(state, xp)
-        msg = "☀ " + t("apr.jour.fait", cmd=c, xp=xp)
-        core.log(state, msg)
-        core.animer(state, "content")
-        return msg
-    return None
+    # la mission montrée AVANT cette commande compte aussi : taper une commande nouvelle l'ajoute aux connues, ce qui
+    # peut changer le tirage du jour (même règle dans Apprendre.kt)
+    mot = ((ligne or "").split() or [""])[0]
+    avant = commande_du_jour(jour, set(state.get("seen", [])) - {mot})
+    for c in dict.fromkeys([c, avant]):
+        motif = donnees()["jour"]["missions"].get(c)
+        if motif and re.search(motif, (ligne or "").strip()):
+            break
+    else:
+        return None
+    a["tampons"] = (a["tampons"] + [jour])[-62:]
+    xp = donnees()["jour"]["xp"]
+    core.add_xp(state, xp)
+    msg = "☀ " + t("apr.jour.fait", cmd=c, xp=xp)
+    core.log(state, msg)
+    core.animer(state, "content")
+    return msg
 
 
 def ecran_jour(state):

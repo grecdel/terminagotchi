@@ -1,8 +1,9 @@
 name: Captures de la fiche F-Droid (téléphone et tablette virtuels)
 
 # Les captures de la fiche F-Droid, une langue à la fois (tests/vitrine.sh), et les nouveautés (nuage de synchro,
-# « Signaler un souci », tablette en paysage). Rien n'est poussé : les images sont dans l'artefact « vitrine-… » ;
-# on choisit les meilleures et on les range dans fastlane/metadata/android/<langue>/images/phoneScreenshots/.
+# « Signaler un souci », tablette en paysage). Les images vont dans l'artefact « vitrine-… » et dans la branche
+# « vitrine » du dépôt (vitrine/<job>/, comme la branche « captures » du test du téléphone) ; on choisit les
+# meilleures et on les range dans fastlane/metadata/android/<langue>/images/phoneScreenshots/.
 on:
   workflow_dispatch:
   push:
@@ -10,7 +11,7 @@ on:
     paths: ["tests/vitrine.sh", ".github/workflows/vitrine.yml"]
 
 permissions:
-  contents: read
+  contents: write
 
 jobs:
   captures:
@@ -19,10 +20,10 @@ jobs:
       fail-fast: false
       matrix:
         include:
-          - mode: telephone
-            profil: pixel_6
-          - mode: tablette
-            profil: pixel_c
+          - { nom: fr, mode: telephone, langues: fr, profil: pixel_6 }
+          - { nom: en, mode: telephone, langues: en, profil: pixel_6 }
+          - { nom: nouveautes, mode: nouveautes, langues: fr, profil: pixel_6 }
+          - { nom: tablette, mode: tablette, langues: fr, profil: pixel_c }
     steps:
       - uses: actions/checkout@v4
 
@@ -52,7 +53,7 @@ jobs:
         uses: reactivecircus/android-emulator-runner@v2
         env:
           MODE: ${{ matrix.mode }}
-          LANGUES: "fr en"
+          LANGUES: ${{ matrix.langues }}
         with:
           api-level: 33
           arch: x86_64
@@ -64,5 +65,20 @@ jobs:
       - uses: actions/upload-artifact@v4
         if: always()
         with:
-          name: vitrine-${{ matrix.mode }}
+          name: vitrine-${{ matrix.nom }}
           path: captures/
+
+      - name: Ranger les captures dans la branche « vitrine »
+        if: always()
+        run: |
+          mkdir -p captures
+          for essai in 1 2 3 4 5; do
+            rm -rf /tmp/v && git clone -q --depth 1 --branch vitrine "https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}" /tmp/v 2>/dev/null \
+              || { rm -rf /tmp/v && mkdir /tmp/v && git -C /tmp/v init -q && git -C /tmp/v checkout -q -b vitrine; }
+            rm -rf /tmp/v/${{ matrix.nom }} && mkdir -p /tmp/v/${{ matrix.nom }} && cp -r captures/. /tmp/v/${{ matrix.nom }}/
+            cd /tmp/v
+            git add -A
+            git -c user.name="test-auto" -c user.email="test@terminagotchi" commit -q -m "Vitrine ${{ matrix.nom }} (run ${{ github.run_number }})" || true
+            git push -q "https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}" HEAD:vitrine && break
+            cd - >/dev/null; sleep $((essai * 7))
+          done
