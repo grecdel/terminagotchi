@@ -128,12 +128,14 @@ elif [ "$MODE" = nouveautes ]; then
   tape "bug" 3
   capture 76_question 1
   adb shell uiautomator dump /sdcard/tg_ui.xml >/dev/null 2>&1
-  Q=$(adb exec-out cat /sdcard/tg_ui.xml | python3 -c '
+  adb exec-out cat /sdcard/tg_ui.xml > $D/76_ecran.xml
+  Q=$(python3 -c '
 import re, sys
 x = sys.stdin.read()
 import html
-m = re.findall(r"(\d+) × (\d+)", html.unescape(x))
-print(int(m[-1][0]) * int(m[-1][1]) if m else 0)')
+m = re.findall(r"(\d+)\s*×\s*(\d+)", html.unescape(x))
+print(int(m[-1][0]) * int(m[-1][1]) if m else 0)' < $D/76_ecran.xml)
+  echo "réponse des grands : $Q"
   tape "$Q" 4
   capture 76_carte 1
   sans_clavier; capture 76_carte_sans_clavier 1

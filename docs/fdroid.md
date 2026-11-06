@@ -13,7 +13,7 @@ la vérifie, puis la propose à tout le monde, gratuitement, avec les mises à j
 | Fichier | Ce que c'est |
 |---|---|
 | `fdroid/fr.terminagotchi.yml` | la **fiche technique** que F-Droid demande (licence, adresse du code, comment construire l'appli) |
-| `fastlane/metadata/android/fr-FR/` et `en-US/` | les **textes de la fiche** (nom, phrase courte, description), l'**icône** 512 px, **4 captures** du téléphone virtuel, le texte des nouveautés de la version 1 |
+| `fastlane/metadata/android/fr-FR/` et `en-US/` | les **textes de la fiche** (nom, phrase courte, description), l'**icône** 512 px, **5 captures** du téléphone virtuel (une langue à la fois), le texte des nouveautés de la version 1 |
 | `app/version.properties` | le **numéro de version F-Droid** (1, « 0.1.0 ») : fixe, pour que deux constructions donnent le même APK |
 | `app/build.gradle.kts` | `gradle assembleRelease -Ppublication=fdroid` : version fixe, **pas de signature** (F-Droid signe avec sa clé), pas de bloc de dépendances chiffré par Google (F-Droid le refuse) |
 | `gradle/wrapper/gradle-wrapper.properties` | dit à F-Droid quelle version de Gradle utiliser (8.9, la même que notre CI) |
@@ -26,7 +26,8 @@ serveur, dont le code est libre (`site/`).
 ## Les étapes pour toi (environ 30 minutes, puis de l'attente)
 
 1. **Relire la fiche** : les textes de `fastlane/metadata/android/fr-FR/` (tu peux les changer librement) et les
-   captures (elles mélangent pour l'instant français et anglais : voir les questions).
+   captures (refaites le 6 novembre, tout en français pour fr-FR, tout en anglais pour en-US : l'œuf mystérieux,
+   l'éclosion, le nid, un monstre sauvage, l'espace de travail ; `tests/vitrine.sh`, workflow `vitrine.yml`).
 2. **Me dire « oui »** : je pose alors l'**étiquette** `fdroid-0.1.0` sur la version choisie (c'est le repère que
    F-Droid construit). Plus tard, chaque nouvelle version F-Droid = un numéro de plus dans `app/version.properties`
    et une nouvelle étiquette `fdroid-…` : F-Droid la voit tout seul (« UpdateCheckMode: Tags »).
@@ -60,7 +61,7 @@ serveur, dont le code est libre (`site/`).
 
 | # | Question | Ma proposition |
 |---|---|---|
-| 1 | Les captures de la fiche : garder les 4 captures actuelles (vraies, mais français et anglais mélangés) ou en refaire 4 en français seulement (et 4 en anglais) avec le téléphone virtuel ? | **Les refaire** (un scénario « vitrine » du téléphone virtuel, une langue à la fois) avant l'envoi. |
+| 1 | ~~Les captures de la fiche~~ : ✅ refaites une langue à la fois (décision du 3 novembre). Les autres langues du jeu (12) n'ont pas encore de fiche F-Droid : les ajouter (textes traduits + captures) ? | **Plus tard**, si F-Droid accepte l'appli (en-US sert de repli). |
 | 2 | Le premier numéro F-Droid : « 0.1.0 » (code 1) ? | **Oui** : simple, et indépendant des numéros automatiques de GitHub. |
 | 3 | La clé de signature de l'APK GitHub est publique : la remplacer par une clé secrète (gardée dans les « secrets » de GitHub) ? Attention : les téléphones qui ont l'ancienne version devront **désinstaller une fois** (la créature se garde avec `sauvegarde exporter`). | **Oui, avant la mise en ligne publique** ; pas maintenant (les essais en cours continuent avec l'ancienne). |
 | 4 | Demande par « RFP » (un bénévole s'en charge, plus lent) ou « merge request » (plus rapide, un peu plus technique) ? | **Merge request**, je te prépare tout le texte. |

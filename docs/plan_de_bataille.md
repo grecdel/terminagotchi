@@ -1176,6 +1176,26 @@ Maquette et captures : `/home/claude/outils/xp/`.
 - Maquettes 74 (nuage de synchro), 75 (tablette en paysage), 76 (signaler un bug) et questions :
   `/home/claude/outils/ameliorations/technique/` (planche.png, proposition.md).
 
+**☁ 74, 75, 76 — codé (maquettes validées le 3 novembre, 04 h 34 : « fais ce que tu as dit »).**
+- **74 Nuage de synchro** : seulement avec un compte, et seulement **hors ligne** (orange barré, « hors ligne · N en
+  attente ») ou **pendant un envoi** (bleu, « envoi… ») ; rien quand tout est à jour (`compte` le dit). PC : à droite du
+  nom sur l'écran de `tg` (recense.nuage_pc) ; téléphone : pilule en pixels au bout du chemin de la fenêtre
+  d'observation (NuageDessin.kt), la toucher l'explique en une ligne. Une synchro qui ne joint pas le site met
+  `compte.hors`, une synchro réussie l'enlève. Vecteurs `donnees/synchro/vecteurs.json`.
+- **75 Tablette en paysage** : PanneauDeux.kt (le panneau du layout) : deux colonnes, 40 % à gauche (créature, bulle,
+  leçon, observation), le grand terminal à droite ; seulement si le petit côté de l'écran fait ≥ 600 dp (tablette 7
+  pouces et plus) et en paysage, hors de l'espace de travail ; un téléphone tourné ne change pas.
+- **76 Signaler un souci** : `tg bug` (PC, pc/tg/signaler.py), `bug` / `tg bug` et la ligne « 🐞 Signaler ce souci »
+  après une vraie panne du jeu (téléphone, Signaler.kt ; un plantage est noté dans files/erreurs.log et annoncé au
+  lancement suivant). D'abord la question des grands (« Tu es un adulte ? » + multiplication), puis le rapport en
+  entier ; l'adulte choisit : la page GitHub « nouveau signalement » pré-remplie (il l'envoie lui-même avec son compte)
+  ou un fichier texte (`~/rapport-terminagotchi.txt`, « Enregistrer sous » d'Android) ou rien. Jamais : nom de la
+  créature, pseudo, dossiers, nom d'utilisateur (nettoyer) ; le jeu n'envoie rien. Vecteurs `donnees/bug/vecteurs.json`.
+- 14 langues (`rec.nuage.*`, `bug.*`). Tests : pc/outils/test_signaler.py, tests/jvm/SignalerSynchro.kt ;
+  téléphone et tablette virtuels : tests/vitrine.sh (workflow vitrine.yml), qui fait aussi les captures de la fiche
+  F-Droid une langue à la fois (fr-FR, en-US). La clé de signature des APK n'est PAS changée (juste avant la mise en
+  ligne publique). Captures : `/home/claude/outils/ameliorations/technique/captures/code/`.
+
 **📄 Autour du jeu — codé (3 novembre, maquettes validées : « Va y lance tout »).** Rien ne change dans le jeu.
 Site : page **Essayer** (`/essayer`, bouton « Essayer sans installer » sur l'accueil et « Essayer » dans le menu) :
 le début du jeu rejoué dans la page (`site/public/js/essayer.js`) sur un faux dossier en mémoire, œuf tiré au hasard
