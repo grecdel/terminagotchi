@@ -284,7 +284,9 @@ for i, cmd in enumerate(["pwd", "ls", "date", "whoami"]):
 verifier(st_["jours"] == 3 and st_["medailles"] == 1, f"le 3e jour bien nourri au total (pas de suite) : la 1re médaille ({st_})")
 verifier(S.palier_serie(3) == 1 and S.palier_serie(30) == 4, "médailles à 3, 7, 14 et 30 jours au total")
 verifier(S.ligne_medailles(12) == "🏅 3 · 🏅 7 · 14 · 30", S.ligne_medailles(12))
-lg = "\n".join(S.lignes(t))
+# (« elle revient tout de suite » s'affiche quand la créature se repose, c'est-à-dire quand la vraie date est loin de ces
+#  journées de test, à partir de début décembre 2026 : ce n'est pas une série, on l'écarte)
+lg = "\n".join(S.lignes(t)).replace("tout de suite", "")
 verifier("suite" not in lg and "record" not in lg, "l'écran ne parle plus de « jours de suite » ni de record")
 vieux = core.new_state("Vieux")
 core.migrate(vieux)

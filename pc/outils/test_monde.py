@@ -208,9 +208,13 @@ verif(esp.niveau_effets() == "tous", "réglage « tous »")
 # la fiche à la place de la liste
 avancer(esp, 2.5)
 L, Z, _ = S.scene(esp.modele(), esp.t)
-cz = next((z for z in Z if z[4].startswith("monde:crea:")), None)
+# (les créatures bougent : une autre peut passer devant le centre de la première ; on touche un point où elle est
+#  bien visible, sinon le test échouait de temps en temps)
+pts = [(z, z[0] + z[2] * fx, z[1] + z[3] * fy) for z in Z if z[4].startswith("monde:crea:")
+       for fx, fy in ((.5, .5), (.3, .3), (.7, .3), (.3, .7), (.7, .7))]
+cz, cx, cy = next(((z, x, y) for z, x, y in pts if esp._zone(Z, x, y) == z[4]), (None, 0, 0))
 verif(cz is not None, "une créature à toucher")
-esp.clic(cz[0] + cz[2] / 2, cz[1] + cz[3] / 2, Z)
+esp.clic(cx, cy, Z)
 verif(v.sel == cz[4].split(":", 2)[2], "clic sur une créature : sa fiche")
 L, Z, _ = S.scene(esp.modele(), esp.t)
 verif(any(z[4] == "monde:liste_retour" for z in Z), "la fiche a « ← Mes créatures » (à la place de la liste)")

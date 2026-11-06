@@ -181,6 +181,9 @@ s = core.load()
 hier = A.jour_de(time.time() - 9 * 86400)
 s["apprendre"]["vus"]["head"] = [hier, 0]
 s["apprendre"]["rev"] = {}
+# (indépendant de la date : si la commande du jour tombe sur pwd, ses +8 XP peuvent ouvrir une leçon, et le jeu
+#  n'invite jamais à réviser en pleine leçon ; on marque la mission du jour comme déjà faite, le § 29 la refait)
+s["apprendre"]["tampons"] = list(dict.fromkeys(s["apprendre"]["tampons"] + [A.jour_de(time.time())]))
 s["bubble"] = None
 s["bulles"] = []
 core.save(s)

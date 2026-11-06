@@ -141,6 +141,10 @@ fun main(args: Array<String>) {
     val a = Apprendre.a(jeuAp)
     a.getJSONObject("vus").put("head", JSONArray().put(Apprendre.jourDe(Apprendre.maintenant() - 9 * 86400)).put(0))
     a.put("rev", JSONObject())
+    // (indépendant de la date : si la commande du jour tombe sur pwd, son bonus ne doit pas se mêler aux révisions ;
+    //  la mission du jour est marquée faite ici, le § 29 la refait)
+    val auj = Apprendre.jourDe(Apprendre.maintenant())
+    a.put("tampons", JSONArray((lstAp(a.optJSONArray("tampons")) + auj).distinct()))
     tapeAp("pwd")
     verifierAp(a.getJSONObject("rev").optString("cmd") == "head", "une invitation (« Tu te souviens de head ? »)")
     File(T, "nid.txt").writeText("a\nb\nc\n")
@@ -156,6 +160,8 @@ fun main(args: Array<String>) {
     for (f in listOf("recette.txt", "pomme.txt", "poire.txt")) File(dj, f).writeText("miel\nsel\n")
     File(dj, "cabane").mkdirs()
     shellAp.dossier = dj
+    // (une commande tapée plus haut peut déjà avoir réussi la mission du jour, selon la date : on repart à zéro)
+    a.put("tampons", JSONArray(lstAp(a.optJSONArray("tampons")).filter { it != jour }))
     tapeAp(mapOf("rm" to "rm -i poire.txt < /dev/null; true", "less" to "less recette.txt < /dev/null").getOrDefault(cmd, ex))
     verifierAp(jour in lstAp(a.getJSONArray("tampons")) && "☀" in tapeAp("jour").first, "réussie : un tampon soleil dans le calendrier")
 
