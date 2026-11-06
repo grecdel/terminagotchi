@@ -644,6 +644,8 @@ class TerminalActivity : Activity() {
         if (!::perduBtn.isInitialized) return
         val dp = resources.displayMetrics.density
         perduBtn.visibility = if (jeu.existe && menuVue == null) View.VISIBLE else View.GONE
+        perduBtn.text = t("ad.perdu.bouton")                // dans la langue choisie (elle peut changer en jeu)
+        if (::indiceBtn.isInitialized) indiceBtn.text = "💡 " + t("ad.ind.bouton")
         val a = AideDouce.a(jeu)
         val vif = jeu.existe && AideDouce.perduVif(a.optInt("erreurs"), AideDouce.depuis(jeu))
         if (vif) {
