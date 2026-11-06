@@ -10,6 +10,7 @@ MODE=${MODE:-telephone}
 LANGUES=${LANGUES:-fr en}
 APK=app/build/outputs/apk/release/app-release.apk
 PAQ=fr.terminagotchi
+NON=non
 mkdir -p captures
 node --no-warnings site/test/serveur.mjs > captures/serveur.log 2>&1 &
 sleep 3
@@ -78,10 +79,11 @@ debut() {   # $1 : langue (fr, en…), $2 : « oui » dans cette langue
 if [ "$MODE" = telephone ]; then
   for L in $LANGUES; do
     D=captures/vitrine_$L; mkdir -p $D
-    OUI=$([ "$L" = fr ] && echo oui || echo yes)
+    OUI=$([ "$L" = fr ] && echo oui || echo yes); NON=$([ "$L" = fr ] && echo non || echo no)
     debut "$L" "$OUI"
     tape "ls" 4
     for c in "pwd" "echo bonjour" "whoami"; do tape "$c" 2; done
+  tape "$NON" 3                                 # « Tu veux m'entendre ? » (le son, à l'éclosion) : non
     capture eclosion 2
     tape "debloquer tout"; tape "$OUI"
     for c in "cd" "mkdir terrain_terminagotchi" "cd terrain_terminagotchi" "mkdir nid" "echo pomme > nid/repas.txt" "cat nid/repas.txt"; do tape "$c"; done
@@ -108,6 +110,7 @@ elif [ "$MODE" = nouveautes ]; then
   debut fr oui
   tape "ls" 4
   for c in "pwd" "echo bonjour" "whoami"; do tape "$c" 2; done
+  tape "$NON" 3                                 # « Tu veux m'entendre ? » (le son, à l'éclosion) : non
   tape "debloquer tout"; tape "oui"
   tape "compte serveur http://10.0.2.2:8787"
   tape "compte creer VitrineCI" 8
@@ -128,7 +131,8 @@ elif [ "$MODE" = nouveautes ]; then
   Q=$(adb exec-out cat /sdcard/tg_ui.xml | python3 -c '
 import re, sys
 x = sys.stdin.read()
-m = re.findall(r"(\d+) × (\d+)", x)
+import html
+m = re.findall(r"(\d+) × (\d+)", html.unescape(x))
 print(int(m[-1][0]) * int(m[-1][1]) if m else 0)')
   tape "$Q" 4
   capture 76_carte 1
@@ -142,6 +146,7 @@ else
   debut fr oui
   tape "ls" 4
   for c in "pwd" "echo bonjour" "whoami"; do tape "$c" 2; done
+  tape "$NON" 3                                 # « Tu veux m'entendre ? » (le son, à l'éclosion) : non
   tape "debloquer tout"; tape "oui"
   for c in "cd" "mkdir terrain_terminagotchi" "cd terrain_terminagotchi" "mkdir nid" "cd nid" "echo pomme > repas.txt" "ls -l" "cat repas.txt"; do tape "$c"; done
   capture tablette_0 3
