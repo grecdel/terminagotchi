@@ -127,16 +127,17 @@ elif [ "$MODE" = nouveautes ]; then
   tape "compte" 3; capture 74_compte 1
   tape "bug" 3
   capture 76_question 1
-  adb shell uiautomator dump /sdcard/tg_ui.xml >/dev/null 2>&1
-  adb exec-out cat /sdcard/tg_ui.xml > $D/76_ecran.xml
-  Q=$(python3 -c '
-import re, sys
-x = sys.stdin.read()
-import html
-m = re.findall(r"(\d+)\s*×\s*(\d+)", html.unescape(x))
-print(int(m[-1][0]) * int(m[-1][1]) if m else 0)' < $D/76_ecran.xml)
-  echo "réponse des grands : $Q"
-  tape "$Q" 4
+  # la réponse des grands n'est pas lisible à l'écran (le texte du terminal n'est pas dans uiautomator), et chaque
+  # `bug` tire une nouvelle multiplication : on répond toujours 182 (13 × 14 ou 14 × 13, une chance sur 28) et l'on
+  # redemande `bug` après chaque mauvaise réponse, jusqu'à ce que la carte s'ouvre
+  carte=non
+  for essai in $(seq 1 120); do
+    tape "182" 3
+    adb shell rm -f /sdcard/tg_ui.xml; adb shell uiautomator dump /sdcard/tg_ui.xml >/dev/null 2>&1
+    if adb exec-out cat /sdcard/tg_ui.xml 2>/dev/null | grep -q "Ouvrir la page"; then carte=oui; echo "carte ouverte (essai $essai)"; break; fi
+    tape "bug" 2
+  done
+  echo "carte du rapport : $carte"
   capture 76_carte 1
   sans_clavier; capture 76_carte_sans_clavier 1
   adb shell am force-stop $PAQ
