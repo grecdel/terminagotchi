@@ -1,0 +1,68 @@
+name: Captures de la fiche F-Droid (téléphone et tablette virtuels)
+
+# Les captures de la fiche F-Droid, une langue à la fois (tests/vitrine.sh), et les nouveautés (nuage de synchro,
+# « Signaler un souci », tablette en paysage). Rien n'est poussé : les images sont dans l'artefact « vitrine-… » ;
+# on choisit les meilleures et on les range dans fastlane/metadata/android/<langue>/images/phoneScreenshots/.
+on:
+  workflow_dispatch:
+  push:
+    branches: [nouveau-bestiaire]
+    paths: ["tests/vitrine.sh", ".github/workflows/vitrine.yml"]
+
+permissions:
+  contents: read
+
+jobs:
+  captures:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - mode: telephone
+            profil: pixel_6
+          - mode: tablette
+            profil: pixel_c
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Activer l'accélération KVM
+        run: |
+          echo 'KERNEL=="kvm", GROUP="kvm", MODE="0666", OPTIONS+="static_node=kvm"' | sudo tee /etc/udev/rules.d/99-kvm4all.rules
+          sudo udevadm control --reload-rules
+          sudo udevadm trigger --name-match=kvm
+
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: "17"
+
+      - uses: gradle/actions/setup-gradle@v4
+        with:
+          gradle-version: "8.9"
+
+      - name: Compiler
+        run: gradle assembleRelease --no-daemon
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+
+      - name: Jouer et prendre les captures
+        uses: reactivecircus/android-emulator-runner@v2
+        env:
+          MODE: ${{ matrix.mode }}
+          LANGUES: "fr en"
+        with:
+          api-level: 33
+          arch: x86_64
+          target: google_apis
+          profile: ${{ matrix.profil }}
+          disable-animations: true
+          script: bash tests/vitrine.sh
+
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: vitrine-${{ matrix.mode }}
+          path: captures/
