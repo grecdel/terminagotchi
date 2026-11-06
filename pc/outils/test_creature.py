@@ -239,6 +239,8 @@ for _ in range(16):
                    spontane=False, defis=False)
 e = CR.envie(st)
 verifier(e is not None and e["id"] in CR.eligibles(st["seen"]), f"après le chapitre 1 et 15 commandes : une envie mystère ({e and e['id']})")
+from tg import apprendre as A  # noqa: E402
+A.a_(st)["tampons"].append(A.mission_du_jour(st)[0])   # la commande du jour déjà faite : son bonus ne compte pas ici
 xp0 = st["xp"]
 r1 = CR.indice(st)
 r2 = CR.indice(st)
