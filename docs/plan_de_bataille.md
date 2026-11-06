@@ -1245,7 +1245,9 @@ fenêtre (`SonsReglages.kt`) : l'interrupteur son oui / non, trois curseurs de 0
 la musique ramenée à 0 s'éteint en gardant son volume, poussée au-dessus de 0 elle s'allume ; un petit son d'essai
 quand on lâche le curseur des cris ou des réussites) et le bouton « 🌙 Ce soir seulement ». Accord corrigé sur PC et
 téléphone : « Musique des biomes : 30 % (éteinte) » (clés `son.allumee` / `son.eteinte`, féminin en fr, es, it, pt,
-ar). Tests : `test_sons.py` et `tests/jvm/Sons.kt` (§ 4, curseurs glissés par les imitations SeekBar / Switch).
+ar). Tests : `test_sons.py` et `tests/jvm/Sons.kt` (§ 4, curseurs glissés par les imitations SeekBar / Switch). `tout.sh all`
+(6 nov., après rebase) : 98 suites vertes sauf `test_apprendre` (défi du jour `ls -a` du 6 novembre : échoue aussi
+sans ce changement, dépend de la date) ; `test_citadelle`, instable sous charge, vert relancé seul.
 
 **🎒 Apprendre en jouant — codé (3 novembre, PC et Android, maquettes validées) : idées 21, 23, 24, 27, 29, 30, 41,
 42, 43, 44, 45, 46, 49, 50.** `pc/tg/apprendre.py` et `Apprendre.kt` / `ApprendreDessin.kt`, données
