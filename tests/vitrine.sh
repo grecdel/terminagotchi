@@ -3,6 +3,7 @@
 # sur le téléphone virtuel (workflow .github/workflows/vitrine.yml), puis quelques captures des nouveautés.
 #   MODE=telephone LANGUES="fr en" bash tests/vitrine.sh   → captures/vitrine_<langue>/*.png
 #   MODE=nouveautes bash tests/vitrine.sh                   → captures/nouveautes/*.png (idées 74 et 76)
+#   MODE=carte bash tests/vitrine.sh                       → captures/carte/*.png (idée 76 seule : la carte ouverte)
 #   MODE=tablette bash tests/vitrine.sh                     → captures/tablette/*.png (idée 75 : deux colonnes en paysage)
 # On choisit ensuite les 4 meilleures de chaque langue (les mêmes écrans dans chaque langue) : voir docs/fdroid.md.
 set -u
@@ -76,6 +77,52 @@ debut() {   # $1 : langue (fr, en…), $2 : « oui » dans cette langue
   tape "langue $1" 2
 }
 
+# idée 76 : `bug`, puis la réponse des grands LUE à l'écran et calculée (pas devinée), puis la carte du rapport.
+# Le texte du terminal (id/sortie) est un TextView ordinaire, mais quand le clavier de l'écran est ouvert, la leçon
+# et le clavier lui prennent toute la place : il est alors invisible et uiautomator ne le donne pas. On range donc
+# le clavier avant de lire la question, puis on le rouvre pour taper la réponse.
+lire_question() {   # $1 : fichier où garder l'écran lu ; écrit le résultat de la multiplication (ou rien)
+  adb shell rm -f /sdcard/tg_ui.xml
+  adb shell uiautomator dump /sdcard/tg_ui.xml >/dev/null 2>&1
+  adb exec-out cat /sdcard/tg_ui.xml > "$1" 2>/dev/null
+  python3 - "$1" <<'PY'
+import re, sys
+import xml.etree.ElementTree as ET
+try:
+    noeuds = [n.get("text", "") for n in ET.parse(sys.argv[1]).iter("node")
+              if n.get("resource-id") == "fr.terminagotchi:id/sortie"]
+except Exception:
+    noeuds = []
+q = re.findall(r"(\d+)\s*×\s*(\d+)", noeuds[-1] if noeuds else "")
+print(int(q[-1][0]) * int(q[-1][1]) if q else "")
+PY
+}
+carte_ouverte() {
+  adb shell rm -f /sdcard/tg_ui.xml; adb shell uiautomator dump /sdcard/tg_ui.xml >/dev/null 2>&1
+  adb exec-out cat /sdcard/tg_ui.xml 2>/dev/null > "$D/76_apres.xml"
+  grep -q "Ouvrir la page" "$D/76_apres.xml"
+}
+ouvrir_carte() {
+  carte=non
+  for essai in 1 2 3 4 5; do
+    tape "bug" 3
+    [ "$essai" = 1 ] && capture 76_question 1
+    Q=$(lire_question "$D/76_ecran_${essai}_clavier.xml")
+    if [ -z "$Q" ]; then
+      sans_clavier
+      [ "$essai" = 1 ] && capture 76_question_sans_clavier 1
+      Q=$(lire_question "$D/76_ecran_${essai}.xml")
+      avec_clavier
+    fi
+    echo "essai $essai : réponse des grands lue à l'écran : « $Q »"
+    tape "${Q:-0}" 4                 # (rien lu : « 0 », pour que la question suivante reparte de zéro)
+    if [ -n "$Q" ] && carte_ouverte; then carte=oui; break; fi
+    sans_clavier; capture "76_rate_$essai" 1; avec_clavier
+  done
+  echo "carte du rapport : $carte"
+  echo "$carte" > "$D/76_carte_ouverte.txt"
+}
+
 if [ "$MODE" = telephone ]; then
   for L in $LANGUES; do
     D=captures/vitrine_$L; mkdir -p $D
@@ -125,19 +172,19 @@ elif [ "$MODE" = nouveautes ]; then
   [ $# -ge 4 ] && adb shell input tap $(( $3 - 60 )) $(( ($2 + $4) / 2 ))     # toucher le nuage : il s'explique
   capture 74_explique 2
   tape "compte" 3; capture 74_compte 1
-  tape "bug" 3
-  capture 76_question 1
-  # la réponse des grands n'est pas lisible à l'écran (le texte du terminal n'est pas dans uiautomator), et chaque
-  # `bug` tire une nouvelle multiplication : on répond toujours 182 (13 × 14 ou 14 × 13, une chance sur 28) et l'on
-  # redemande `bug` après chaque mauvaise réponse, jusqu'à ce que la carte s'ouvre
-  carte=non
-  for essai in $(seq 1 120); do
-    tape "182" 3
-    adb shell rm -f /sdcard/tg_ui.xml; adb shell uiautomator dump /sdcard/tg_ui.xml >/dev/null 2>&1
-    if adb exec-out cat /sdcard/tg_ui.xml 2>/dev/null | grep -q "Ouvrir la page"; then carte=oui; echo "carte ouverte (essai $essai)"; break; fi
-    tape "bug" 2
-  done
-  echo "carte du rapport : $carte"
+  ouvrir_carte
+  capture 76_carte 1
+  sans_clavier; capture 76_carte_sans_clavier 1
+  adb shell am force-stop $PAQ
+elif [ "$MODE" = carte ]; then
+  # ---- seulement la carte « Signaler un souci » (idée 76) : la question des grands lue, la bonne réponse, la carte
+  D=captures/carte; mkdir -p $D
+  debut fr oui
+  tape "ls" 4
+  for c in "pwd" "echo bonjour" "whoami"; do tape "$c" 2; done
+  tape "$NON" 3                                 # « Tu veux m'entendre ? » (le son, à l'éclosion) : non
+  tape "debloquer tout"; tape "oui"
+  ouvrir_carte
   capture 76_carte 1
   sans_clavier; capture 76_carte_sans_clavier 1
   adb shell am force-stop $PAQ

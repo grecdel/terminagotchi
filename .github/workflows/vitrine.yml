@@ -4,8 +4,15 @@ name: Captures de la fiche F-Droid (téléphone et tablette virtuels)
 # « Signaler un souci », tablette en paysage). Les images vont dans l'artefact « vitrine-… » et dans la branche
 # « vitrine » du dépôt (vitrine/<job>/, comme la branche « captures » du test du téléphone) ; on choisit les
 # meilleures et on les range dans fastlane/metadata/android/<langue>/images/phoneScreenshots/.
+# Une seule partie : lancer à la main avec « seulement » (ex. carte), ou mettre [vitrine:carte] dans le message du commit
+# (carte = idée 76 seule : la question des grands lue à l'écran, la bonne réponse, la carte « Signaler un souci »).
 on:
   workflow_dispatch:
+    inputs:
+      seulement:
+        description: "une seule partie (carte), vide = tout"
+        required: false
+        default: ""
   push:
     branches: [nouveau-bestiaire]
     paths: ["tests/vitrine.sh", ".github/workflows/vitrine.yml"]
@@ -19,11 +26,8 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        include:
-          - { nom: fr, mode: telephone, langues: fr, profil: pixel_6 }
-          - { nom: en, mode: telephone, langues: en, profil: pixel_6 }
-          - { nom: nouveautes, mode: nouveautes, langues: fr, profil: pixel_6 }
-          - { nom: tablette, mode: tablette, langues: fr, profil: pixel_c }
+        # fr, en, nouveautes (idées 74 et 76), tablette (idée 75) ; ou seulement « carte » (idée 76)
+        include: ${{ fromJSON((inputs.seulement == 'carte' || contains(github.event.head_commit.message, '[vitrine:carte]')) && '[{"nom":"carte","mode":"carte","langues":"fr","profil":"pixel_6"}]' || '[{"nom":"fr","mode":"telephone","langues":"fr","profil":"pixel_6"},{"nom":"en","mode":"telephone","langues":"en","profil":"pixel_6"},{"nom":"nouveautes","mode":"nouveautes","langues":"fr","profil":"pixel_6"},{"nom":"tablette","mode":"tablette","langues":"fr","profil":"pixel_c"}]') }}
     steps:
       - uses: actions/checkout@v4
 
