@@ -55,6 +55,8 @@ This summary is not the license: only the official text (link above) is legally 
 - `docs/img/` : les images de la présentation ;
 - `site/public/` : les images du site (portraits, animations), **sauf** le dossier `site/public/polices/` et les
   images de la mascotte du site (voir plus bas) ;
+- `site/public/imprimer/` : ce qui s'imprime à la maison ou en classe (le poster A3 et sa version fond blanc, la
+  planche de stickers A4, les coloriages en pixels), en images et en PDF ;
 - les textes de l'histoire (récits, dialogues, descriptions des créatures, des lieux et des mondes), qui se trouvent
   dans les fichiers de langue (`pc/tg/langues/`, `app/src/main/assets/langues/`) et leurs sources
   (`donnees/**/outils/textes_*.py`) ;
