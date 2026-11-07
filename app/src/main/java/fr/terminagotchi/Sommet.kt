@@ -414,6 +414,63 @@ object Sommet {
         return null
     }
 
+    // ---------------------------------------------------------------- les 3 niveaux d'indice (idée 25, AideDouce.kt)
+    val INDICES = listOf("dates", "alertes", "lourd", "ligne", "bug", "arrivee", "drapeau", "boussole", "porte")
+
+    /** L'étape à trou (« ? ») d'une commande de leçon (= sommet.trou_de). */
+    fun trouDe(cmd: String?): String? {
+        val c = (cmd ?: "").trim().split(Regex("\\s+")).filter { it.isNotEmpty() }.joinToString(" ")
+        REPONSES[c]?.let { return it }
+        if (Regex("^(bash|sh) boussole\\.sh -c \\? -p \\?$").matches(c)) return "boussole"
+        if (Regex("^(bash|sh) ctf/porte\\.sh -k \\?$").matches(c)) return "porte"
+        return null
+    }
+
+    /** La réponse complète (3e niveau), telle que l'enfant la taperait (= sommet.reponse_indice). */
+    fun reponseIndice(graine: String, et: String, sh: String = "bash"): String? {
+        val (cap, pas) = mission(graine)
+        return when (et) {
+            "dates" -> "sommet dates ${dates(graine).size}"
+            "alertes" -> "sommet alertes ${alertes(graine).size}"
+            "lourd" -> "sommet lourd ${plusLourde(graine)}"
+            "ligne" -> "sommet ligne ${o("casse").optJSONArray("signale")?.let { it.get(it.length() - 1) } ?: 8}"
+            "bug" -> "sommet bug ${o("boucle").optString("faute")}"
+            "arrivee" -> "sommet arrivee ${lieu(graine, cap, pas)}"
+            "drapeau" -> "sommet drapeau ${drapeau(graine)}"
+            "boussole" -> "$sh boussole.sh -c $cap -p $pas"
+            "porte" -> "$sh ctf/porte.sh -k ${fragments(graine)[0]}"
+            else -> null
+        }
+    }
+
+    /** La commande montrée au 2e niveau (= sommet.commande_indice). */
+    fun commandeIndice(et: String, sh: String = "bash"): String = when (et) {
+        "dates" -> "grep -oE '[0-9]{4}-[0-9]{2}-[0-9]{2}' journal.log | sort -u | wc -l"
+        "alertes" -> "wc -l alertes.txt"
+        "lourd" -> "find eboulis -type f -print0 | xargs -0 wc -c | sort -nr | head -6"
+        "ligne" -> "$sh -n casse.sh"
+        "bug" -> "$sh -x boucle.sh"
+        "arrivee" -> "cat arrivee.txt"
+        "drapeau" -> "sommet drapeau TG{fragment1-fragment2-fragment3}"
+        "boussole" -> "$sh boussole.sh -c CAP -p PAS"
+        else -> "grep -oE 'fragment1=[a-z]+' ctf/registre.log"
+    }
+
+    /** (clé, réponse, « sommet:<étape> ») quand la leçon du Sommet attend une réponse à trou. */
+    fun cibleIndice(jeu: Jeu): Triple<String, String, String>? {
+        val l = Histoire.leconCourante(jeu) ?: return null
+        if (l.id !in IDS || jeu.niveau < l.niveau) return null
+        val et = trouDe(l.etapes.getOrNull(jeu.etape)?.cmd) ?: return null
+        val r = reponseIndice(graine(jeu), et, "sh") ?: return null
+        return Triple("som:${l.id}:${jeu.etape}", r, "sommet:$et")
+    }
+
+    fun texteIndice(et: String, n: Int, reponse: String, sh: String = "sh"): String = when (n) {
+        1 -> t("ad.ind.som.$et.1")
+        2 -> t("ad.ind.som.$et.2", "cmd" to "`${commandeIndice(et, sh)}`")
+        else -> t("ad.ind.n3", "cmd" to "`$reponse`")
+    }
+
     // ---------------------------------------------------------------- les commandes du jeu
     private fun bloc(cle: String, vararg p: Pair<String, Any?>) = t(cle, *p).split("\n").map { "  $it" }
     val MONTAGNE = listOf("      /\\      ⛰", "     /  \\  /\\", " /\\ / ▲▲ \\/  \\", "/  \\/▲▲▲▲ \\   \\")

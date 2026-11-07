@@ -205,7 +205,8 @@ object AideDouce {
     }
 
     // ================================================================ 25. trois niveaux d'indice
-    fun cible(jeu: Jeu): Triple<String, String, String>? {
+    fun cible(jeu: Jeu, ici: java.io.File? = null, numero: Int? = null): Triple<String, String, String>? {
+        if (numero != null) return try { Ctf.cibleIndice(jeu, ici, numero) } catch (e: Exception) { null }   // `indice 2` : la chasse
         try { Dressage.exempleCourant(jeu)?.let { return Triple(it.first, it.second, "dressage") } } catch (e: Exception) { }
         val e = Entrainement.e(jeu)
         if (Entrainement.coursOk(e)) {
@@ -214,6 +215,8 @@ object AideDouce {
             val idees = Entrainement.idees(c.getString("type"), p)
             if (idees.isNotEmpty()) return Triple("ent:${c.optString("g")}:${c.optLong("n")}", idees.joinToString("  "), "exercice")
         }
+        try { Ctf.cibleIndice(jeu, ici)?.let { return it } } catch (e: Exception) { }       // la chasse au trésor (son lieu)
+        try { Sommet.cibleIndice(jeu)?.let { return it } } catch (e: Exception) { }         // le Sommet : une réponse à trou
         val l = Histoire.leconCourante(jeu)
         if (l != null && jeu.niveau >= l.niveau) {
             val st = l.etapes[jeu.etape]
@@ -233,18 +236,20 @@ object AideDouce {
     }
 
     /** `indice` : le niveau suivant (1, 2 puis 3). (n, titre, texte) ou null s'il n'y a rien à chercher. */
-    fun demanderIndice(jeu: Jeu): Triple<Int, String, String>? {
-        val (cle, attendu, quoi) = cible(jeu) ?: return null
+    fun demanderIndice(jeu: Jeu, ici: java.io.File? = null, numero: Int? = null): Triple<Int, String, String>? {
+        val (cle, attendu, quoi) = cible(jeu, ici, numero) ?: return null
         val a = a(jeu)
         val i = a.optJSONObject("indice")
         val n = if (i != null && i.optString("cle") == cle) minOf(3, i.optInt("n") + 1) else 1
         a.put("indice", JSONObject().put("cle", cle).put("n", n))
         if (n == 3) reponseVue(jeu, quoi)
+        if (quoi.startsWith("sommet:")) return Triple(n, t("ad.ind.t$n"), Sommet.texteIndice(quoi.substringAfter(':'), n, attendu))
+        if (quoi.startsWith("ctf:")) return Triple(n, t("ad.ind.t$n"), Ctf.texteIndice(quoi.substringAfter(':'), n))
         return Triple(n, t("ad.ind.t$n"), texteIndice(attendu, n))
     }
 
-    fun texteDemandeIndice(jeu: Jeu): String {
-        val r = demanderIndice(jeu) ?: return "💡 " + t("ad.ind.rien")
+    fun texteDemandeIndice(jeu: Jeu, ici: java.io.File? = null, numero: Int? = null): String {
+        val r = demanderIndice(jeu, ici, numero) ?: return "💡 " + t("ad.ind.rien")
         val (n, titre, texte) = r
         return "💡".repeat(n) + " " + titre + " ($n/3)\n   " + texte + "\n   " +
             (if (n < 3) t("ad.ind.encore", "cmd" to "`indice`") else t("ad.ind.rien_retire"))
@@ -256,5 +261,5 @@ object AideDouce {
         if (l.id in Forge.SANS_INDICE) Forge.indiceVu(jeu, l.id)
     }
 
-    fun fantomePermis(jeu: Jeu): Boolean = try { cible(jeu) == null } catch (e: Exception) { true }
+    fun fantomePermis(jeu: Jeu, ici: java.io.File? = null): Boolean = try { cible(jeu, ici) == null } catch (e: Exception) { true }
 }

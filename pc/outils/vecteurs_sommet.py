@@ -7,7 +7,8 @@ Pour quelques graines de partie : le journal (dans les 14 langues) et ses répon
 l'éboulis (chemins, tailles, la plus lourde, les 5 plus lourdes), la mission de la boussole et son lieu, les fragments
 et le drapeau du CTF, et les TEXTES EXACTS des scripts du jeu (bash sur PC, sh sur le téléphone) dans les 14 langues ;
 le défi du jour (graine, exercices possibles → 3 exercices) ; l'ouverture (mondes au palier 3 pour des parties d'essai) ;
-la cordée de la vue déployée. tests/jvm/Sommet.kt vérifie que l'appli Android donne EXACTEMENT les mêmes résultats.
+la cordée de la vue déployée ; les 3 niveaux d'indice (l'étape à trou, sa réponse, la
+commande du 2e niveau). tests/jvm/Sommet.kt vérifie que l'appli Android donne EXACTEMENT les mêmes résultats.
 """
 import json
 import sys
@@ -36,7 +37,8 @@ def vecteurs():
         cap, pas = S.mission(g)
         p = {"graine": g, "eboulis": {k: list(v) for k, v in S.eboulis(g).items()}, "plus_lourds": S.plus_lourds(g),
              "plus_lourde": S.plus_lourde(g), "total": S.total_eboulis(g), "mission": [cap, pas], "lieu": S.lieu(g, cap, pas),
-             "fragments": list(S.fragments(g)), "drapeau": S.drapeau(g), "langues": {}}
+             "fragments": list(S.fragments(g)), "drapeau": S.drapeau(g), "langues": {},
+             "indices": {et: {sh: S.reponse_indice(g, et, sh) for sh in ("bash", "sh")} for et in S.INDICES}}
         for code in (LANGUES if g == GRAINES[0] else ["fr", "zh"]):      # (toutes les langues pour la 1re partie)
             langue.definir(code)
             p["langues"][code] = {
@@ -54,8 +56,12 @@ def vecteurs():
              for v in ("5a" * 32, "0123456789abcdef" * 4, "f" * 64) for ps in POSSIBLES]
     cordee = [{"ligne": l, "cordees": [{k: x[k] for k in ("seg", "cmd", "outil", "geste", "de", "vers")} for x in deploie.cordees(l)]}
               for l in LIGNES]
+    trous = [{"cmd": c, "et": S.trou_de(c), "commande": {sh: S.commande_indice(S.trou_de(c), sh) for sh in ("bash", "sh")}
+              if S.trou_de(c) else None}
+             for c in [st["cmd"] for les in S.LECONS.values() for st in les["steps"]]
+             + ["sh boussole.sh -c ? -p ?", "sh ctf/porte.sh -k ?", "  sommet   dates  ? ", "sommet dates 4", "bash boussole.sh -c ouest -p 3"]]
     return {"note": "Généré par pc/outils/vecteurs_sommet.py ; vérifié par tests/jvm/Sommet.kt.",
-            "parties": parties, "scripts": scripts, "defis": defis, "cordee": cordee}
+            "parties": parties, "scripts": scripts, "defis": defis, "cordee": cordee, "trous": trous}
 
 
 def main():

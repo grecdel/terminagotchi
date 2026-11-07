@@ -795,6 +795,44 @@
       }
      }
     }
+   },
+   "indices": {
+    "dates": {
+     "bash": "sommet dates 12",
+     "sh": "sommet dates 12"
+    },
+    "alertes": {
+     "bash": "sommet alertes 9",
+     "sh": "sommet alertes 9"
+    },
+    "lourd": {
+     "bash": "sommet lourd schiste",
+     "sh": "sommet lourd schiste"
+    },
+    "ligne": {
+     "bash": "sommet ligne 8",
+     "sh": "sommet ligne 8"
+    },
+    "bug": {
+     "bash": "sommet bug totl",
+     "sh": "sommet bug totl"
+    },
+    "arrivee": {
+     "bash": "sommet arrivee chapelle",
+     "sh": "sommet arrivee chapelle"
+    },
+    "drapeau": {
+     "bash": "sommet drapeau TG{chamois-cordee-glacier}",
+     "sh": "sommet drapeau TG{chamois-cordee-glacier}"
+    },
+    "boussole": {
+     "bash": "bash boussole.sh -c ouest -p 5",
+     "sh": "sh boussole.sh -c ouest -p 5"
+    },
+    "porte": {
+     "bash": "bash ctf/porte.sh -k chamois",
+     "sh": "sh ctf/porte.sh -k chamois"
+    }
    }
   },
   {
@@ -979,6 +1017,44 @@
       }
      }
     }
+   },
+   "indices": {
+    "dates": {
+     "bash": "sommet dates 11",
+     "sh": "sommet dates 11"
+    },
+    "alertes": {
+     "bash": "sommet alertes 10",
+     "sh": "sommet alertes 10"
+    },
+    "lourd": {
+     "bash": "sommet lourd pierre ronde",
+     "sh": "sommet lourd pierre ronde"
+    },
+    "ligne": {
+     "bash": "sommet ligne 8",
+     "sh": "sommet ligne 8"
+    },
+    "bug": {
+     "bash": "sommet bug totl",
+     "sh": "sommet bug totl"
+    },
+    "arrivee": {
+     "bash": "sommet arrivee vieux-refuge",
+     "sh": "sommet arrivee vieux-refuge"
+    },
+    "drapeau": {
+     "bash": "sommet drapeau TG{lagopede-cordee-congere}",
+     "sh": "sommet drapeau TG{lagopede-cordee-congere}"
+    },
+    "boussole": {
+     "bash": "bash boussole.sh -c nord -p 3",
+     "sh": "sh boussole.sh -c nord -p 3"
+    },
+    "porte": {
+     "bash": "bash ctf/porte.sh -k lagopede",
+     "sh": "sh ctf/porte.sh -k lagopede"
+    }
    }
   },
   {
@@ -1160,6 +1236,44 @@
        "ctf/eboulis/vieux sac/notes.txt": "这里什么也没有。找一个 .frag 文件。\n"
       }
      }
+    }
+   },
+   "indices": {
+    "dates": {
+     "bash": "sommet dates 12",
+     "sh": "sommet dates 12"
+    },
+    "alertes": {
+     "bash": "sommet alertes 8",
+     "sh": "sommet alertes 8"
+    },
+    "lourd": {
+     "bash": "sommet lourd basalte",
+     "sh": "sommet lourd basalte"
+    },
+    "ligne": {
+     "bash": "sommet ligne 8",
+     "sh": "sommet ligne 8"
+    },
+    "bug": {
+     "bash": "sommet bug totl",
+     "sh": "sommet bug totl"
+    },
+    "arrivee": {
+     "bash": "sommet arrivee foret-de-pins",
+     "sh": "sommet arrivee foret-de-pins"
+    },
+    "drapeau": {
+     "bash": "sommet drapeau TG{bivouac-gentiane-glacier}",
+     "sh": "sommet drapeau TG{bivouac-gentiane-glacier}"
+    },
+    "boussole": {
+     "bash": "bash boussole.sh -c ouest -p 4",
+     "sh": "sh boussole.sh -c ouest -p 4"
+    },
+    "porte": {
+     "bash": "bash ctf/porte.sh -k bivouac",
+     "sh": "sh ctf/porte.sh -k bivouac"
     }
    }
   },
@@ -1346,6 +1460,44 @@
        "ctf/eboulis/vieux sac/notes.txt": "这里什么也没有。找一个 .frag 文件。\n"
       }
      }
+    }
+   },
+   "indices": {
+    "dates": {
+     "bash": "sommet dates 13",
+     "sh": "sommet dates 13"
+    },
+    "alertes": {
+     "bash": "sommet alertes 9",
+     "sh": "sommet alertes 9"
+    },
+    "lourd": {
+     "bash": "sommet lourd schiste",
+     "sh": "sommet lourd schiste"
+    },
+    "ligne": {
+     "bash": "sommet ligne 8",
+     "sh": "sommet ligne 8"
+    },
+    "bug": {
+     "bash": "sommet bug totl",
+     "sh": "sommet bug totl"
+    },
+    "arrivee": {
+     "bash": "sommet arrivee roc-perce",
+     "sh": "sommet arrivee roc-perce"
+    },
+    "drapeau": {
+     "bash": "sommet drapeau TG{altitude-gentiane-rappel}",
+     "sh": "sommet drapeau TG{altitude-gentiane-rappel}"
+    },
+    "boussole": {
+     "bash": "bash boussole.sh -c ouest -p 6",
+     "sh": "sh boussole.sh -c ouest -p 6"
+    },
+    "porte": {
+     "bash": "bash ctf/porte.sh -k altitude",
+     "sh": "sh ctf/porte.sh -k altitude"
     }
    }
   }
@@ -1831,6 +1983,389 @@
   {
    "ligne": "sh bivouac.sh -n 3",
    "cordees": []
+  }
+ ],
+ "trous": [
+  {
+   "cmd": "cd ~/terrain_terminagotchi/sommet",
+   "et": null,
+   "commande": null
+  },
+  {
+   "cmd": "ls",
+   "et": null,
+   "commande": null
+  },
+  {
+   "cmd": "cat refuge.txt",
+   "et": null,
+   "commande": null
+  },
+  {
+   "cmd": "sommet fragile",
+   "et": null,
+   "commande": null
+  },
+  {
+   "cmd": "cat fragile.sh",
+   "et": null,
+   "commande": null
+  },
+  {
+   "cmd": "bash fragile.sh \"carnet de bord.txt\"",
+   "et": null,
+   "commande": null
+  },
+  {
+   "cmd": "echo $?",
+   "et": null,
+   "commande": null
+  },
+  {
+   "cmd": "sed -i '2i set -euo pipefail' fragile.sh",
+   "et": null,
+   "commande": null
+  },
+  {
+   "cmd": "bash fragile.sh \"carnet de bord.txt\"; echo $?",
+   "et": null,
+   "commande": null
+  },
+  {
+   "cmd": "sed -i 's/cp $carnet/cp \"$carnet\"/' fragile.sh",
+   "et": null,
+   "commande": null
+  },
+  {
+   "cmd": "bash fragile.sh",
+   "et": null,
+   "commande": null
+  },
+  {
+   "cmd": "bash fragile.sh \"carnet de bord.txt\"",
+   "et": null,
+   "commande": null
+  },
+  {
+   "cmd": "sommet bivouac",
+   "et": null,
+   "commande": null
+  },
+  {
+   "cmd": "bash sale.sh",
+   "et": null,
+   "commande": null
+  },
+  {
+   "cmd": "ls brouillon.*",
+   "et": null,
+   "commande": null
+  },
+  {
+   "cmd": "cat bivouac.sh",
+   "et": null,
+   "commande": null
+  },
+  {
+   "cmd": "bash bivouac.sh -n 3",
+   "et": null,
+   "commande": null
+  },
+  {
+   "cmd": "ls brouillon.* | wc -l",
+   "et": null,
+   "commande": null
+  },
+  {
+   "cmd": "bash bivouac.sh -x",
+   "et": null,
+   "commande": null
+  },
+  {
+   "cmd": "rm brouillon.*",
+   "et": null,
+   "commande": null
+  },
+  {
+   "cmd": "sommet journal",
+   "et": null,
+   "commande": null
+  },
+  {
+   "cmd": "head -5 journal.log",
+   "et": null,
+   "commande": null
+  },
+  {
+   "cmd": "grep -E '^[0-9]{4}-[0-9]{2}-[0-9]{2}' journal.log | wc -l",
+   "et": null,
+   "commande": null
+  },
+  {
+   "cmd": "grep -oE '[0-9]{4}-[0-9]{2}-[0-9]{2}' journal.log | sort -u | wc -l",
+   "et": null,
+   "commande": null
+  },
+  {
+   "cmd": "sommet dates ?",
+   "et": "dates",
+   "commande": {
+    "bash": "grep -oE '[0-9]{4}-[0-9]{2}-[0-9]{2}' journal.log | sort -u | wc -l",
+    "sh": "grep -oE '[0-9]{4}-[0-9]{2}-[0-9]{2}' journal.log | sort -u | wc -l"
+   }
+  },
+  {
+   "cmd": "grep -cE 'ALERTE|ERREUR' journal.log",
+   "et": null,
+   "commande": null
+  },
+  {
+   "cmd": "grep -E '^[0-9-]{10} \\[(ALERTE|ERREUR)\\]' journal.log > alertes.txt",
+   "et": null,
+   "commande": null
+  },
+  {
+   "cmd": "sommet alertes ?",
+   "et": "alertes",
+   "commande": {
+    "bash": "wc -l alertes.txt",
+    "sh": "wc -l alertes.txt"
+   }
+  },
+  {
+   "cmd": "sed -E 's/^([0-9]{4})-([0-9]{2})-([0-9]{2})/\\3\\/\\2\\/\\1/' alertes.txt",
+   "et": null,
+   "commande": null
+  },
+  {
+   "cmd": "sommet eboulis",
+   "et": null,
+   "commande": null
+  },
+  {
+   "cmd": "find eboulis -type f",
+   "et": null,
+   "commande": null
+  },
+  {
+   "cmd": "find eboulis -type f | xargs wc -c",
+   "et": null,
+   "commande": null
+  },
+  {
+   "cmd": "find eboulis -type f -print0 | xargs -0 wc -c | sort -nr | head -6",
+   "et": null,
+   "commande": null
+  },
+  {
+   "cmd": "sommet lourd ?",
+   "et": "lourd",
+   "commande": {
+    "bash": "find eboulis -type f -print0 | xargs -0 wc -c | sort -nr | head -6",
+    "sh": "find eboulis -type f -print0 | xargs -0 wc -c | sort -nr | head -6"
+   }
+  },
+  {
+   "cmd": "echo \"pierres : $(find eboulis -type f | wc -l)\"",
+   "et": null,
+   "commande": null
+  },
+  {
+   "cmd": "diff <(ls eboulis/nord) <(ls eboulis/sud)",
+   "et": null,
+   "commande": null
+  },
+  {
+   "cmd": "awk 'FNR==1 {print FILENAME, $1}' eboulis/nord/*.txt",
+   "et": null,
+   "commande": null
+  },
+  {
+   "cmd": "sommet casse",
+   "et": null,
+   "commande": null
+  },
+  {
+   "cmd": "bash -n casse.sh",
+   "et": null,
+   "commande": null
+  },
+  {
+   "cmd": "sommet ligne ?",
+   "et": "ligne",
+   "commande": {
+    "bash": "bash -n casse.sh",
+    "sh": "sh -n casse.sh"
+   }
+  },
+  {
+   "cmd": "sed -i '6s/$/; then/' casse.sh",
+   "et": null,
+   "commande": null
+  },
+  {
+   "cmd": "bash -n casse.sh && bash casse.sh",
+   "et": null,
+   "commande": null
+  },
+  {
+   "cmd": "bash boucle.sh",
+   "et": null,
+   "commande": null
+  },
+  {
+   "cmd": "bash -x boucle.sh",
+   "et": null,
+   "commande": null
+  },
+  {
+   "cmd": "sommet bug ?",
+   "et": "bug",
+   "commande": {
+    "bash": "bash -x boucle.sh",
+    "sh": "sh -x boucle.sh"
+   }
+  },
+  {
+   "cmd": "sed -i 's/totl=/total=/' boucle.sh && bash boucle.sh",
+   "et": null,
+   "commande": null
+  },
+  {
+   "cmd": "shellcheck fragile.sh",
+   "et": null,
+   "commande": null
+  },
+  {
+   "cmd": "sommet strace",
+   "et": null,
+   "commande": null
+  },
+  {
+   "cmd": "sommet boussole",
+   "et": null,
+   "commande": null
+  },
+  {
+   "cmd": "man -f passwd",
+   "et": null,
+   "commande": null
+  },
+  {
+   "cmd": "apropos -s 1 archive",
+   "et": null,
+   "commande": null
+  },
+  {
+   "cmd": "bash boussole.sh --help",
+   "et": null,
+   "commande": null
+  },
+  {
+   "cmd": "bash boussole.sh -c ? -p ?",
+   "et": "boussole",
+   "commande": {
+    "bash": "bash boussole.sh -c CAP -p PAS",
+    "sh": "sh boussole.sh -c CAP -p PAS"
+   }
+  },
+  {
+   "cmd": "sommet arrivee ?",
+   "et": "arrivee",
+   "commande": {
+    "bash": "cat arrivee.txt",
+    "sh": "cat arrivee.txt"
+   }
+  },
+  {
+   "cmd": "grep --help | grep -- '-o,'",
+   "et": null,
+   "commande": null
+  },
+  {
+   "cmd": "sommet ctf",
+   "et": null,
+   "commande": null
+  },
+  {
+   "cmd": "grep -oE 'fragment1=[a-z]+' ctf/registre.log",
+   "et": null,
+   "commande": null
+  },
+  {
+   "cmd": "find ctf -name '*.frag' -print0 | xargs -0 cat",
+   "et": null,
+   "commande": null
+  },
+  {
+   "cmd": "bash ctf/porte.sh --help",
+   "et": null,
+   "commande": null
+  },
+  {
+   "cmd": "bash ctf/porte.sh -k ?",
+   "et": "porte",
+   "commande": {
+    "bash": "grep -oE 'fragment1=[a-z]+' ctf/registre.log",
+    "sh": "grep -oE 'fragment1=[a-z]+' ctf/registre.log"
+   }
+  },
+  {
+   "cmd": "sommet drapeau ?",
+   "et": "drapeau",
+   "commande": {
+    "bash": "sommet drapeau TG{fragment1-fragment2-fragment3}",
+    "sh": "sommet drapeau TG{fragment1-fragment2-fragment3}"
+   }
+  },
+  {
+   "cmd": "sommet defi",
+   "et": null,
+   "commande": null
+  },
+  {
+   "cmd": "tg badges grades",
+   "et": null,
+   "commande": null
+  },
+  {
+   "cmd": "sommet records",
+   "et": null,
+   "commande": null
+  },
+  {
+   "cmd": "sh boussole.sh -c ? -p ?",
+   "et": "boussole",
+   "commande": {
+    "bash": "bash boussole.sh -c CAP -p PAS",
+    "sh": "sh boussole.sh -c CAP -p PAS"
+   }
+  },
+  {
+   "cmd": "sh ctf/porte.sh -k ?",
+   "et": "porte",
+   "commande": {
+    "bash": "grep -oE 'fragment1=[a-z]+' ctf/registre.log",
+    "sh": "grep -oE 'fragment1=[a-z]+' ctf/registre.log"
+   }
+  },
+  {
+   "cmd": "  sommet   dates  ? ",
+   "et": "dates",
+   "commande": {
+    "bash": "grep -oE '[0-9]{4}-[0-9]{2}-[0-9]{2}' journal.log | sort -u | wc -l",
+    "sh": "grep -oE '[0-9]{4}-[0-9]{2}-[0-9]{2}' journal.log | sort -u | wc -l"
+   }
+  },
+  {
+   "cmd": "sommet dates 4",
+   "et": null,
+   "commande": null
+  },
+  {
+   "cmd": "bash boussole.sh -c ouest -p 3",
+   "et": null,
+   "commande": null
   }
  ]
 }

@@ -150,14 +150,37 @@ object Ctf {
         return sb.toString()
     }
 
+    /** `indice 2` (l'ancienne forme, écrite dans les LISEZMOI) : les 3 niveaux d'AideDouce pour l'épreuve 2. */
     fun indice(jeu: Jeu, n: String): String {
         val i = n.toIntOrNull() ?: return t("ctf.indice.exemple")
-        val ep = EPREUVES.getOrNull(i - 1) ?: return t("ctf.indice.hors", "n" to EPREUVES.size)
-        val vus = etat(jeu).optJSONObject("indices") ?: org.json.JSONObject().also { etat(jeu).put("indices", it) }
-        val indices = ep.indices
-        val k = vus.optInt(ep.id).coerceAtMost(indices.size - 1)
-        vus.put(ep.id, k + 1)
-        return t("ctf.indice", "n" to k + 1, "total" to indices.size, "titre" to ep.titre, "texte" to indices[k])
+        if (EPREUVES.getOrNull(i - 1) == null) return t("ctf.indice.hors", "n" to EPREUVES.size)
+        return AideDouce.texteDemandeIndice(jeu, null, i)
+    }
+
+    /**
+     * Idée 25 (les 3 niveaux d'indice, comme partout ailleurs) : l'épreuve cherchée en ce moment. Avec un numéro
+     * (`indice 2`) : cette épreuve ; sinon celle du lieu où l'on est (~/terrain_terminagotchi/ctf/02_meule/…), ou la
+     * première pas encore trouvée quand on est à la racine de la chasse. (clé, "", « ctf:<épreuve> ») ou null.
+     */
+    fun cibleIndice(jeu: Jeu, ici: File?, numero: Int? = null): Triple<String, String, String>? {
+        if (etat(jeu).optJSONObject("empreintes") == null || !dossier(jeu).isDirectory) return null
+        val ep = if (numero != null) EPREUVES.getOrNull(numero - 1) ?: return null else {
+            val racine = try { dossier(jeu).canonicalFile } catch (e: Exception) { return null }
+            val la = try { ici?.canonicalFile } catch (e: Exception) { null } ?: return null
+            val rel = la.relativeToOrNull(racine)?.path ?: return null
+            if (rel.startsWith("..")) return null
+            val premier = rel.split('/', '\\').firstOrNull { it.isNotEmpty() }
+            if (premier == null) EPREUVES.firstOrNull { !estResolu(jeu, it.id) } else EPREUVES.firstOrNull { it.id == premier }
+        } ?: return null
+        if (estResolu(jeu, ep.id)) return null
+        return Triple("ctf:${ep.id}", "", "ctf:${ep.id}")
+    }
+
+    /** Le texte du niveau n : les 3 indices écrits pour l'épreuve (le 3e donne les commandes). */
+    fun texteIndice(id: String, n: Int): String {
+        val ep = EPREUVES.firstOrNull { it.id == id } ?: return ""
+        val l = ep.indices
+        return if (l.isEmpty()) "" else ep.titre + " : " + l[(n - 1).coerceIn(0, l.size - 1)]
     }
 
     fun valider(jeu: Jeu, proposition: String): String {
@@ -168,8 +191,7 @@ object Ctf {
             ?: return "❌ " + t("ctf.drapeau.faux")
         if (estResolu(jeu, ep.id)) return t("ctf.drapeau.deja", "titre" to ep.titre)
         resolus(jeu).put(ep.id)
-        val nbIndices = etat(jeu).optJSONObject("indices")?.optInt(ep.id) ?: 0
-        val gain = (40 - nbIndices * 10).coerceAtLeast(10)
+        val gain = 40                                       // idée 25 : les indices ne retirent rien
         jeu.ajouterXp(gain)
         Envies.plaisir(jeu, "jeu", "ctf")                    // la chasse au trésor
         jeu.stats["Intelligence"] = (jeu.stats["Intelligence"] ?: 0) + 3

@@ -1210,8 +1210,8 @@ par famille au moins, chacun regardé à l'œil), planche de 20 stickers, poster
 minute montée en code (ffmpeg, images du jeu, musique synthétisée, sans voix ni enfant filmé) :
 `/home/claude/outils/ameliorations/autour/video/` (pas dans le dépôt). Tests : `pc/outils/test_autour.py`,
 `site/test/test.mjs` (« Essayer, À imprimer »). **Le site n'est pas redéployé.**
-À faire plus tard : citer `site/public/imprimer/` dans `LICENSE-images.md`, puis relancer
-`donnees/guilde/outils/fiches_guilde.py` (guilde.json embarque ce fichier, `test_guilde.py` vérifie qu'ils sont identiques).
+Fait le 7 novembre : `site/public/imprimer/` est cité dans `LICENSE-images.md`, et `donnees/guilde/outils/fiches_guilde.py`
+relancé (guilde.json embarque ce fichier, `test_guilde.py` vérifie qu'ils sont identiques).
 
 ## ✅ Accueil et aide — codé (3 novembre, maquettes validées) : idées 1, 2, 4, 5, 6, 9, 22, 25, 66, 69, 79
 
@@ -1222,7 +1222,10 @@ Règles communes : `pc/tg/aide_douce.py` = `AideDouce.kt` (vecteurs `donnees/acc
 - **2 Premier ls** : PC, les cases se dessinent dans le terminal (2–3 s, une touche passe) ; téléphone, les puces de
   l'observatoire apparaissent en pixels, puis « Waouh, j'y vois ! ». Plus court (2 s) après le camp qui se rallume.
 - **4 Flèche** : pendant l'œuf, jusqu'à 3 commandes réussies (revient après 1 min sans rien taper) ; PC « ▼ tape ta
-  commande ici », téléphone bulle + ligne de saisie verte + ◀◀.
+  commande ici », téléphone bulle + ligne de saisie verte + ◀◀. (7 nov.) Elle revient PENDANT l'attente, sans attendre
+  la commande suivante : vrai shell, une ligne gardée au-dessus de l'invite et un petit guet (`tg prompt-fleche`, jamais
+  par-dessus `nano` ou `less`, parti dès qu'une commande arrive) ; terminal du jeu (vsh/, Windows) : la saisie attend la
+  minute elle-même ; téléphone : flèche et bouton Perdu revus toutes les 5 s.
 - **5 Rangée** : ↑ ⇥ ^C - / ~ | . > ⋯ sur une ligne, ⋯ = ↓ >> * " ' $ & _ = ; la touche du symbole attendu s'allume ;
   PC : la 1re fois qu'un symbole arrive, où il est (AZERTY en français, QWERTY sinon, `tg clavier azerty|qwerty`).
 - **6 Perdu** : bouton 🧭 (jaune vif après 2 erreurs de suite ou 2 min), carte « Pas de panique » ; PC `perdu` / `tg perdu`.
@@ -1231,7 +1234,11 @@ Règles communes : `pc/tg/aide_douce.py` = `AideDouce.kt` (vecteurs `donnees/acc
 - **22 `ls ?` / `? ls`** : fiche courte (jamais un repas) ; PC : l'erreur de bash est rassurée, ligne « ? est un joker ».
 - **25 Indices** : `indice` / bouton 💡 dans un exercice, une épreuve de dressage ou une leçon « défi sans aide » ; 3
   niveaux tirés de la commande attendue ; rien n'est retiré, seul « forge.sans_indice » n'est pas donné après la réponse.
-  (Sommet et chasse au trésor : leurs indices existants restent.)
+  (7 nov.) Aussi au Sommet (les 9 réponses à trou : `sommet dates ?`… `-c ? -p ?`, `-k ?` : coup de pouce, la
+  commande qui donne la réponse, la réponse ; `sommet.cible_indice` = `Sommet.cibleIndice`, vecteurs « indices » et
+  « trous » de donnees/sommet/vecteurs.json) et dans la chasse au trésor du téléphone (Ctf.kt : ses 3 indices écrits,
+  l'épreuve du lieu où l'on est, `indice 2` marche toujours ; le trésor rapporte +40 XP même avec les indices). Les
+  indices automatiques du Sommet (« Pas tout à fait… ») restent.
 - **66 Fin grisée** : téléphone et terminal du jeu (vsh/), Tab ou → l'accepte ; jamais pendant un exercice ou un défi.
 - **69 Tout au clavier** : téléphone, d'office avec un clavier branché (`clavier on|off`) : rangée effacée, anneau jaune,
   Tab / Entrée / Échap ; bureau : ← → Entrée Échap dans le menu rond, `tg menu` l'ouvre.

@@ -155,6 +155,21 @@ fun main(args: Array<String>) {
     }
     Langue.definir("fr")
     verifierSo(ko == 0, "${parties.length()} parties : journal (14 langues), réponses, éboulis, boussole, CTF, et les ${sc.length()}×2×5 scripts identiques au Python")
+    ko = 0                                               // idée 25 : les 3 niveaux d'indice (l'étape à trou, la réponse)
+    for (i in 0 until parties.length()) {
+        val p = parties.getJSONObject(i)
+        val ind = p.getJSONObject("indices")
+        for (et in Sommet.INDICES) for (sh in listOf("bash", "sh"))
+            if (Sommet.reponseIndice(p.getString("graine"), et, sh) != ind.getJSONObject(et).getString(sh)) { ko++; println("    ${p.getString("graine")} indice $et $sh") }
+    }
+    val trous = v.getJSONArray("trous")
+    for (i in 0 until trous.length()) {
+        val x = trous.getJSONObject(i)
+        val et = Sommet.trouDe(x.getString("cmd"))
+        if (et != (if (x.isNull("et")) null else x.getString("et"))) { ko++; println("    trou ${x.getString("cmd")} : $et") }
+        if (et != null) for (sh in listOf("bash", "sh")) if (Sommet.commandeIndice(et, sh) != x.getJSONObject("commande").getString(sh)) { ko++; println("    commande $et $sh") }
+    }
+    verifierSo(ko == 0, "les 3 niveaux d'indice : ${trous.length()} étapes reconnues, ${Sommet.INDICES.size} réponses × 2 shells identiques au Python")
     ko = 0
     for (x in (0 until v.getJSONArray("defis").length()).map { v.getJSONArray("defis").getJSONObject(it) })
         if (Sommet.defiTypes(x.getString("valeur"), lstSo(x.getJSONArray("possibles"))) != lstSo(x.getJSONArray("types"))) ko++
@@ -225,9 +240,14 @@ fun main(args: Array<String>) {
         { "sommet defi" }, { "badges grades" }, { "sommet records" },
     )
     val vus = mutableListOf<Triple<Pair<String?, Int>, String, Pair<String?, Int>>>()
+    val indices = LinkedHashMap<String, List<String>>()     // idée 25 : les 3 niveaux, à chaque étape à trou
     for (f in parcours) {
         val c = f()
         val a = lecSo()
+        Sommet.cibleIndice(jeuSo)?.let { (_, _, quoi) ->
+            val et = quoi.substringAfter(':')
+            if (et !in indices) indices[et] = (1..4).map { fr.terminagotchi.AideDouce.texteDemandeIndice(jeuSo, shellSo.dossier) }
+        }
         val s = tapeSo(c)
         sorties.putIfAbsent(c, s)
         vus.add(Triple(a, c, lecSo()))
@@ -237,6 +257,12 @@ fun main(args: Array<String>) {
     if (!Histoire.fini(jeuSo, "sommet")) for (x in vus.takeLast(6)) println("      $x")
     verifierSo(Histoire.fini(jeuSo, "sommet"), "le Sommet est gravi jusqu'au bout (som0 → som7) ${lecSo()}")
     verifierSo("Sauvegarde réussie" in (sorties["sh fragile.sh \"carnet de bord.txt\""] ?: ""), "fragile.sh ment d'abord (sh du téléphone)")
+    verifierSo(indices.keys == Sommet.INDICES.toSet(), "💡 indice aux ${indices.size} étapes à trou du Sommet : ${indices.keys}")
+    verifierSo(indices.values.all { l -> "(1/3)" in l[0] && "(2/3)" in l[1] && "(3/3)" in l[2] && "(3/3)" in l[3] &&
+        "Les indices ne retirent rien" in l[2] }, "1, 2 puis 3 niveaux (le 3e reste), « rien n'est retiré »")
+    verifierSo(indices.all { (et, l) -> "`${Sommet.reponseIndice(g, et, "sh")}`" in l[2] && Sommet.reponseIndice(g, et, "sh") in parcours.map { it() } },
+        "le 3e niveau donne la réponse qui fait avancer (sh du téléphone)")
+    verifierSo(Sommet.cibleIndice(jeuSo) == null, "hors d'une étape à trou : rien à deviner")
     val d1 = vus.first { it.second == "sommet dates 1" }
     verifierSo(d1.first == d1.third, "une mauvaise réponse : l'étape attend")
     val ex = Recompenses.etat(jeuSo).getJSONObject("exploits")

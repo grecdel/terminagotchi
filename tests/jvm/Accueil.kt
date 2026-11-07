@@ -181,6 +181,23 @@ fun main(args: Array<String>) {
     val ip = AideDouce.infosPerdu(jeu)
     verifierA(ip.first.isNotEmpty() && ip.second.isNotEmpty(), "« Pas de panique » : où es-tu, ta leçon (${ip.second.take(40)})")
     verifierA(AideDouce.texteDemandeIndice(jeu).startsWith("💡 " + t("ad.ind.rien").take(10)), "rien à deviner hors exercice")
+    // la chasse au trésor (CTF du téléphone) : les mêmes 3 niveaux, rien n'est retiré
+    File(jeu.terrain, "nid").mkdirs()
+    fr.terminagotchi.Ctf.ouvrir(jeu, "nouveau")
+    val ctf = fr.terminagotchi.Ctf.dossier(jeu)
+    verifierA(AideDouce.cible(jeu, ctf)?.first == "ctf:01_cache" && AideDouce.cible(jeu, shell.dossier) == null,
+        "chasse au trésor : à sa racine, la 1re épreuve pas encore trouvée ; ailleurs, rien")
+    val meule = File(ctf, "02_meule")
+    val niv = (1..4).map { AideDouce.texteDemandeIndice(jeu, meule) }
+    val l3 = fr.terminagotchi.Langue.liste("ctf.meule.indices")
+    verifierA((0..2).all { i -> "(${i + 1}/3)" in niv[i] && l3[i] in niv[i] } && "(3/3)" in niv[3] && t("ad.ind.rien_retire") in niv[2],
+        "02_meule : coup de pouce, plus clair, la réponse (`grep TG journal.log`), rien n'est retiré")
+    verifierA(fr.terminagotchi.Ctf.indice(jeu, "5").let { "(1/3)" in it && fr.terminagotchi.Langue.liste("ctf.code.indices")[0] in it } &&
+        fr.terminagotchi.Ctf.indice(jeu, "9") == t("ctf.indice.hors", "n" to 7), "`indice 5` (écrit dans les LISEZMOI) : l'épreuve 5, niveau 1")
+    val drap = Regex("TG\\{[^}]+\\}").find(File(meule, "journal.log").readText())!!.value
+    val gagne = fr.terminagotchi.Ctf.valider(jeu, drap)
+    verifierA("+40 XP" in gagne, "après les 3 indices, le trésor rapporte autant (+40 XP)")
+    verifierA(AideDouce.cible(jeu, meule) == null, "épreuve trouvée : plus d'indice à donner")
     // fermer et revenir
     val h = Histoire.h(jeu)
     for (c in listOf("reveil", "nid", "bibliotheque", "cave")) h.put("ailes", h.optJSONArray("ailes").put(c))

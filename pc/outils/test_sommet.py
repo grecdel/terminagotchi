@@ -319,10 +319,23 @@ PARCOURS = [
     lambda: f"sommet drapeau {S.drapeau(g)}", "sommet defi", "tg badges grades", "sommet records",
 ]
 vus = []
+indices = {}                                     # idée 25 : les 3 niveaux d'indice à chaque étape à trou
+
+
+def _indice_x4(s):
+    from tg import aide_douce
+    return [ANSI.sub("", "\n".join(aide_douce.lignes_indice(s))) for _ in range(4)]
+
+
 for c in PARCOURS:
     if callable(c):
         c = c()
     avant = lecon(st)
+    x_ = S.cible_indice(core.load())
+    if x_ and x_[2].split(":")[1] not in indices:
+        _l = []
+        core.modifier(lambda s_, _l=_l: _l.extend(_indice_x4(s_)))
+        indices[x_[2].split(":")[1]] = _l
     st, s = tape(c)
     sorties.setdefault(c, s)
     vus.append((avant, c, lecon(st), st.get("indice_lecon")))
@@ -334,6 +347,13 @@ if not histoire.fini(st, "sommet"):
     for a_, c, b, ind in vus[-8:]:
         print("     ", a_, c, "→", b, ind)
 verifier(histoire.fini(st, "sommet"), f"le Sommet est gravi jusqu'au bout (som0 → som7) {lecon(st)}")
+verifier(set(indices) == set(S.INDICES), f"`indice` aux {len(indices)} étapes à trou du Sommet : {list(indices)}")
+verifier(all("(1/3)" in l[0] and "(2/3)" in l[1] and "(3/3)" in l[2] and "(3/3)" in l[3] and langue.t("ad.ind.rien_retire") in l[2]
+             for l in indices.values()), "1, 2 puis 3 niveaux (le 3e reste), « rien n'est retiré »")
+_tapes = [c() if callable(c) else c for c in PARCOURS]
+verifier(all(S.reponse_indice(g, et) in l[2] and any(x.startswith(S.reponse_indice(g, et)) for x in _tapes) for et, l in indices.items()),
+         "le 3e niveau donne la réponse qui fait avancer")
+verifier(S.cible_indice(core.load()) is None, "hors d'une étape à trou : rien à deviner")
 etapes = {c: (a_, b, ind) for a_, c, b, ind in vus}
 verifier(etapes["./fragile.sh"][0] == etapes["./fragile.sh"][1], "./fragile.sh (sans droit d'exécution) ne fait pas avancer")
 verifier(etapes["sed '2i set -euo pipefail' fragile.sh"][0] == etapes["sed '2i set -euo pipefail' fragile.sh"][1],

@@ -472,7 +472,7 @@ class TerminalActivity : Activity() {
             layoutParams = LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT).also { it.marginEnd = (4 * dp).toInt() }
             visibility = View.GONE
             isFocusable = false
-            setOnClickListener { ecrire(AideDouce.texteDemandeIndice(jeu), 0xFFFFD75F.toInt()); jeu.sauver(); saisie.requestFocus() }
+            setOnClickListener { ecrire(AideDouce.texteDemandeIndice(jeu, shell.dossier), 0xFFFFD75F.toInt()); jeu.sauver(); saisie.requestFocus() }
         }
         rangee.addView(indiceBtn)
         for (k in AideDouce.RANGEE1.indices) {
@@ -529,7 +529,7 @@ class TerminalActivity : Activity() {
                 b.setTextColor(0xFFE6E6E6.toInt())
             }
         }
-        if (::indiceBtn.isInitialized) indiceBtn.visibility = if (jeu.existe && AideDouce.cible(jeu) != null) View.VISIBLE else View.GONE
+        if (::indiceBtn.isInitialized) indiceBtn.visibility = if (jeu.existe && AideDouce.cible(jeu, shell.dossier) != null) View.VISIBLE else View.GONE
         // idée 69 : avec un clavier branché, la rangée s'efface (le vrai clavier a toutes les touches)
         val rangee = findViewById<LinearLayout>(R.id.touches)
         (rangee.parent as View).visibility = if (clavierBranche && toutAuClavier()) View.GONE else View.VISIBLE
@@ -640,7 +640,7 @@ class TerminalActivity : Activity() {
         if (!::fantomeVue.isInitialized) return
         val texte = saisie.text?.toString() ?: ""
         fantome = if (!jeu.existe || menu.ouvert || texte.isEmpty() || texte.endsWith(" ") || saisie.selectionEnd != texte.length ||
-            !AideDouce.fantomePermis(jeu)) "" else try { candidats(texte).let { (mot, c) -> AideDouce.fantome(mot, c) } } catch (e: Exception) { "" }
+            !AideDouce.fantomePermis(jeu, shell.dossier)) "" else try { candidats(texte).let { (mot, c) -> AideDouce.fantome(mot, c) } } catch (e: Exception) { "" }
         if (fantome.isEmpty()) { fantomeVue.text = ""; return }
         val sb = SpannableStringBuilder(texte + fantome)
         sb.setSpan(ForegroundColorSpan(0x00000000), 0, texte.length, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
@@ -1198,7 +1198,9 @@ class TerminalActivity : Activity() {
         when (Regles.premierMot(ligne)) {
             "perdu" -> { ouvrirPerdu(); return }               // idée 6
             "indice" -> {                                      // idée 25 : 3 niveaux, rien n'est retiré
-                ecrire(AideDouce.texteDemandeIndice(jeu), 0xFFFFD75F.toInt())
+                val num = ligne.trim().split(Regex("\\s+")).getOrNull(1)    // `indice 2` : l'épreuve 2 de la chasse au trésor
+                ecrire(if (num != null && num.toIntOrNull() != null) Ctf.indice(jeu, num) else AideDouce.texteDemandeIndice(jeu, shell.dossier),
+                    0xFFFFD75F.toInt())
                 jeu.sauver()
                 rafraichir()
                 return

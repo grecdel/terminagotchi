@@ -15,7 +15,8 @@ vérifiées par les vecteurs communs donnees/accueil/vecteurs.json (pc/outils/ve
   9. « Fermer et revenir » : à la fin du tronc commun, une fois ; au retour, « Te revoilà ! ». Aucune récompense.
  22. `ls ?` ou `? ls` : la fiche courte de la commande (jamais nourrissante, jamais un reproche).
  25. `indice` (PC) ou le bouton 💡 (téléphone) : 3 niveaux, là où la commande n'est pas donnée (leçon en mode
-     « défi sans aide », exercice de la salle d'entraînement, épreuve de dressage). Rien n'est retiré ; seul un
+     « défi sans aide », exercice de la salle d'entraînement, épreuve de dressage, réponse à trou du Sommet ; sur le
+     téléphone aussi la chasse au trésor, Ctf.kt). Rien n'est retiré ; seul un
      exploit « sans indice » n'est pas donné pour cette fois (la Forge).
  66. La complétion grisée (téléphone, terminal du jeu vsh/) : seulement des noms qui existent, jamais pendant un
      exercice ou un défi sans aide.
@@ -570,6 +571,13 @@ def cible(state):
         idees = entrainement.idees(e["type"], p)
         if idees:
             return f"ent:{e.get('g')}:{e.get('n')}", "  ".join(idees), "exercice"
+    try:                                                # le Sommet : une réponse à trou (sommet dates ?, -k ?…)
+        from . import sommet
+        x = sommet.cible_indice(state)
+        if x:
+            return x
+    except Exception:                                   # noqa: BLE001
+        pass
     les, _ = lecons.lecon_courante(state)
     if les and core.level(state.get("xp", 0)) >= les["niveau"]:
         step = les["steps"][state["step"]]
@@ -601,6 +609,9 @@ def demander_indice(state):
     a["indice"] = {"cle": cle, "n": n}
     if n == 3:
         reponse_vue(state, quoi)
+    if quoi.startswith("sommet:"):                      # le Sommet : ses propres coups de pouce, puis la réponse
+        from . import sommet
+        return n, t(f"ad.ind.t{n}"), sommet.texte_indice(quoi.split(":", 1)[1], n, attendu)
     return n, t(f"ad.ind.t{n}"), textes_indice(attendu, n)
 
 

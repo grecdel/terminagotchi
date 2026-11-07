@@ -696,6 +696,76 @@ def indice(step, tapees):
     return None
 
 
+# ---------------------------------------------------------------- les 3 niveaux d'indice (idée 25, aide_douce.py)
+INDICES = ["dates", "alertes", "lourd", "ligne", "bug", "arrivee", "drapeau", "boussole", "porte"]
+
+
+def trou_de(cmd):
+    """L'étape à trou (« ? ») d'une commande de leçon : dates, alertes, … boussole (-c ? -p ?), porte (-k ?), sinon None."""
+    c = re.sub(r"\s+", " ", (cmd or "").strip())
+    if c in REPONSES:
+        return REPONSES[c]
+    if re.match(r"^(bash|sh) boussole\.sh -c \? -p \?$", c):
+        return "boussole"
+    if re.match(r"^(bash|sh) ctf/porte\.sh -k \?$", c):
+        return "porte"
+    return None
+
+
+def reponse_indice(graine, et, sh="bash"):
+    """La réponse complète d'une étape à trou (le 3e niveau d'indice), telle que l'enfant la taperait."""
+    if et == "dates":
+        return f"sommet dates {len(dates(graine))}"
+    if et == "alertes":
+        return f"sommet alertes {len(alertes(graine))}"
+    if et == "lourd":
+        return f"sommet lourd {plus_lourde(graine)}"
+    if et == "ligne":
+        return f"sommet ligne {donnees()['casse']['signale'][-1]}"
+    if et == "bug":
+        return f"sommet bug {donnees()['boucle']['faute']}"
+    cap, pas = mission(graine)
+    if et == "arrivee":
+        return f"sommet arrivee {lieu(graine, cap, pas)}"
+    if et == "drapeau":
+        return f"sommet drapeau {drapeau(graine)}"
+    if et == "boussole":
+        return f"{sh} boussole.sh -c {cap} -p {pas}"
+    if et == "porte":
+        return f"{sh} ctf/porte.sh -k {fragments(graine)[0]}"
+    return None
+
+
+def commande_indice(et, sh="bash"):
+    """La commande montrée au 2e niveau (celle qui donne la réponse)."""
+    return {"dates": "grep -oE '[0-9]{4}-[0-9]{2}-[0-9]{2}' journal.log | sort -u | wc -l", "alertes": "wc -l alertes.txt",
+            "lourd": "find eboulis -type f -print0 | xargs -0 wc -c | sort -nr | head -6", "ligne": f"{sh} -n casse.sh",
+            "bug": f"{sh} -x boucle.sh", "arrivee": "cat arrivee.txt", "drapeau": "sommet drapeau TG{fragment1-fragment2-fragment3}",
+            "boussole": f"{sh} boussole.sh -c CAP -p PAS", "porte": "grep -oE 'fragment1=[a-z]+' ctf/registre.log"}[et]
+
+
+def cible_indice(state):
+    """(clé, réponse, « sommet:<étape> ») quand la leçon du Sommet attend une réponse à trou, sinon None."""
+    from . import lecons
+    les, _ = lecons.lecon_courante(state)
+    if not les or not str(les.get("id", "")).startswith("som") or core.level(state.get("xp", 0)) < les["niveau"]:
+        return None
+    step = les["steps"][state["step"]]
+    et = trou_de(step.get("cmd"))
+    if not et:
+        return None
+    return f"som:{les['id']}:{state['step']}", reponse_indice(_graine(state), et), "sommet:" + et
+
+
+def texte_indice(et, n, reponse, sh="bash"):
+    """Le texte du niveau n : 1 = petit coup de pouce, 2 = la commande qui donne la réponse, 3 = la réponse."""
+    if n == 1:
+        return t(f"ad.ind.som.{et}.1")
+    if n == 2:
+        return t(f"ad.ind.som.{et}.2", cmd=f"`{commande_indice(et, sh)}`")
+    return t("ad.ind.n3", cmd=f"`{reponse}`")
+
+
 def surveiller(state, lignes):
     """Le Sommet n'a pas de danger à guetter : les scripts du jeu restent dans le terrain."""
     return False
