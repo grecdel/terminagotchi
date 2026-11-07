@@ -1238,7 +1238,8 @@ Règles communes : `pc/tg/aide_douce.py` = `AideDouce.kt` (vecteurs `donnees/acc
   commande qui donne la réponse, la réponse ; `sommet.cible_indice` = `Sommet.cibleIndice`, vecteurs « indices » et
   « trous » de donnees/sommet/vecteurs.json) et dans la chasse au trésor du téléphone (Ctf.kt : ses 3 indices écrits,
   l'épreuve du lieu où l'on est, `indice 2` marche toujours ; le trésor rapporte +40 XP même avec les indices). Les
-  indices automatiques du Sommet (« Pas tout à fait… ») restent.
+  indices automatiques du Sommet (« Pas tout à fait… ») restent. `tout.sh all` relancé le 7 nov. : vert, sauf le test
+  JVM Intro (« whoami : 3e fêlure »), qui échouait déjà avant ces finitions.
 - **66 Fin grisée** : téléphone et terminal du jeu (vsh/), Tab ou → l'accepte ; jamais pendant un exercice ou un défi.
 - **69 Tout au clavier** : téléphone, d'office avec un clavier branché (`clavier on|off`) : rangée effacée, anneau jaune,
   Tab / Entrée / Échap ; bureau : ← → Entrée Échap dans le menu rond, `tg menu` l'ouvre.
