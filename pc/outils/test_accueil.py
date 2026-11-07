@@ -106,6 +106,37 @@ st = core.load()
 verifier(st["aide_douce"]["reussies"] >= 3 and t("ad.fleche.pc").split(",")[0] not in plat(s), "3 commandes réussies : la flèche s'en va")
 st["aide_douce"]["derniere"] = time.time() - 120
 verifier(A.ligne_fleche(st) is not None, "1 minute sans rien taper pendant l'œuf : elle revient")
+# … sans attendre la commande suivante : le petit guet (vrai shell) et le terminal du jeu (vsh/) la remettent
+st["aide_douce"]["derniere"] = time.time()
+verifier(55 <= (A.attente_fleche(st) or 0) <= 60 and A.place_fleche(st), "flèche partie : elle reviendra dans 1 minute")
+verifier(ANSI.sub("", tape()).endswith("\n\n"), "une ligne gardée (vide) au-dessus de l'invite, pour elle")
+core.save(st)
+o = io.StringIO()
+verifier(not A.guet_fleche(os.getpid(), dormir=lambda s: None, flux=o) and o.getvalue() == "",
+         "le guet : rien avant la minute")
+st = core.load()
+st["aide_douce"]["derniere"] = time.time() - 61
+core.save(st)
+o = io.StringIO()
+verifier(A.guet_fleche(os.getpid(), dormir=lambda s: None, flux=o) and t("ad.fleche.pc").split(",")[0] in plat(o.getvalue())
+         and o.getvalue().startswith("\0337\033[1A") and o.getvalue().endswith("\0338"),
+         "le guet : après 1 minute, la flèche revient sur la ligne gardée, le curseur reste où il était")
+vu = []
+st = core.load()
+st["aide_douce"]["derniere"] = time.time() - 30
+core.save(st)
+def _une_commande(s):
+    vu.append(s)
+    x = core.load()
+    x["aide_douce"]["derniere"] = time.time()
+    core.save(x)
+o = io.StringIO()
+verifier(not A.guet_fleche(os.getpid(), dormir=_une_commande, flux=o) and o.getvalue() == "" and len(vu) == 1,
+         "le guet s'en va dès qu'une commande arrive")
+from tg.vsh import terminal as _vsh  # noqa: E402
+_t = _vsh.Terminal.__new__(_vsh.Terminal)
+_t.compagnon = True
+verifier(_t._attente_fleche() is not None and _t._ligne_fleche() is None, "terminal du jeu : il sait quand elle revient")
 s = tape("ls")
 verifier(t("ad.ls.titre") not in plat(s), "le premier ls ne se rejoue jamais")
 

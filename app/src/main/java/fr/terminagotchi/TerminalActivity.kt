@@ -2496,8 +2496,12 @@ class TerminalActivity : Activity() {
                 android.util.Log.e("TG", "vie", e)
             }
         }
+        // idée 4 et 6 : la flèche « tape ici » (1 min sans rien taper pendant l'œuf) et le bouton Perdu jaune vif
+        // (2 min) reviennent pendant l'attente, sans attendre la commande suivante : un coup d'œil toutes les 5 s
+        if (++pasAide >= 40) { pasAide = 0; try { if (::jeu.isInitialized && !enCours) majAideDouce() } catch (e: Exception) { android.util.Log.e("TG", "aide", e) } }
         handler.postDelayed({ pasVie() }, VIE_PAS)
     }
+    private var pasAide = 0
 
     /** Le petit bouton ✨ posé dans le coin de la créature : affiche ou cache son aura (réglage de la partie). */
     private fun creerBoutonAura() {

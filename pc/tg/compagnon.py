@@ -191,6 +191,7 @@ def prompt(etape):
     """Appelé par le shell avant chaque invite."""
     sortie = []
     sortie_ls = []
+    guet = []
 
     def rendre(state):
         from . import aide_douce
@@ -202,6 +203,9 @@ def prompt(etape):
         f = aide_douce.ligne_fleche(state)            # idée 4 : « ▼ tape ta commande ici » (les premières commandes)
         if f:
             s += "\n" + f
+        elif aide_douce.place_fleche(state) and not os.environ.get("TG_DANS_LE_JEU"):
+            s += "\n"                                 # la place de la flèche, si elle revient pendant l'attente
+            guet.append(True)
         v = state.pop("_premier_ls", None)            # idée 2 : la cinématique du premier ls (jouée juste après)
         if v:
             sortie_ls.append((v == "court", {"name": state.get("name", "")}))
@@ -244,6 +248,14 @@ def prompt(etape):
                 pass
         sys.stdout.write(sortie[0] + RESET + "\n")
         sys.stdout.flush()
+        if guet:                                # idée 4 : la flèche revient après 1 minute, sans attendre une commande
+            try:
+                from . import aide_douce
+                st = core.load()
+                if st is not None:
+                    aide_douce.lancer_guet(st)
+            except Exception:                    # noqa: BLE001 (le compagnon ne doit jamais planter)
+                pass
 
 # ================================================================ installation
 

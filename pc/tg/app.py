@@ -1220,6 +1220,13 @@ def _main():
         except Exception:
             sur.noter_trace()
         return
+    if mode == "prompt-fleche":                # le petit guet de la flèche « tape ici » (aide_douce.lancer_guet)
+        try:
+            from . import aide_douce
+            aide_douce.guet_fleche(int(args[1]) if len(args) > 1 and args[1].isdigit() else os.getppid())
+        except Exception:                      # noqa: BLE001 (jamais une trace dans le terminal de l'enfant)
+            pass
+        return
     if mode == "son" and args[1:2] == ["_jouer"]:     # le petit processus qui joue un son puis s'en va (sons.py)
         sons.commande(args[1:])
         return

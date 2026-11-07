@@ -13,6 +13,7 @@ import re
 import shutil
 import subprocess
 import sys
+import time
 
 from ..langue import t
 from ..plateforme import SYS_WIN
@@ -51,6 +52,22 @@ class Clavier:
             import termios
             termios.tcsetattr(sys.stdin.fileno(), termios.TCSADRAIN, self.ancien)
             self.ancien = None
+
+    def attendre(self, secondes):
+        """True si une touche arrive avant `secondes` (sans la lire), False si le temps passe."""
+        if SYS_WIN:
+            import msvcrt
+            fin = time.monotonic() + secondes
+            while time.monotonic() < fin:
+                if msvcrt.kbhit():
+                    return True
+                time.sleep(0.05)
+            return msvcrt.kbhit()
+        import select
+        try:
+            return bool(select.select([sys.stdin.fileno()], [], [], max(0.0, secondes))[0])
+        except (OSError, ValueError):
+            return True
 
     def touche(self):
         """Une touche : un caractère, ou un nom ("haut", "bas", "gauche", "droite", "debut", "fin", "suppr")."""
@@ -179,14 +196,30 @@ class Terminal:
         brouillon = ""
         tab_avant = False
         self.gris = self._gris_permis() and invite != self.invite_suite()
+        guet = self._attente_fleche() if invite != self.invite_suite() else None
+        t_fin = None if guet is None else time.monotonic() + guet
         self.clavier.brut()
         try:
             self.ecrire(invite)
             while True:
+                if t_fin is not None:                    # idée 4 : la flèche revient après 1 minute sans rien taper
+                    try:
+                        vient = self.clavier.attendre(max(0.0, t_fin - time.monotonic()))
+                    except KeyboardInterrupt:
+                        vient = True
+                    if not vient:
+                        t_fin = None
+                        f = self._ligne_fleche()
+                        if f:
+                            self.ecrire("\r\033[K" + f + "\033[0m\r\n")
+                            self._redessiner(invite, tampon, pos)
+                        continue
                 try:
                     k = self.clavier.touche()
                 except KeyboardInterrupt:
                     k = "\x03"
+                if t_fin is not None:                    # l'enfant tape : la minute recommence
+                    t_fin = max(t_fin, time.monotonic() + self._retour_fleche())
                 if k in ("\r", "\n"):
                     self.ecrire("\r\n")
                     return "".join(tampon)
@@ -285,6 +318,30 @@ class Terminal:
         recul = _largeur(texte[pos:]) + _largeur(g)
         self.ecrire("\r" + invite + texte + (f"\033[38;5;240m{g}\033[0m" if g else "") + "\033[K"
                     + (f"\033[{recul}D" if recul else ""))
+
+    def _attente_fleche(self):
+        """Pendant l'œuf, la flèche partie : dans combien de secondes elle revient (aide_douce.attente_fleche)."""
+        if not self.compagnon:
+            return None
+        try:
+            from .. import aide_douce, core
+            st = core.load()
+            return None if st is None else aide_douce.attente_fleche(st)
+        except Exception:                                # noqa: BLE001
+            return None
+
+    def _ligne_fleche(self):
+        try:
+            from .. import aide_douce, core
+            st = core.load()
+            return None if st is None else aide_douce.ligne_fleche(st)
+        except Exception:                                # noqa: BLE001
+            return None
+
+    @staticmethod
+    def _retour_fleche():
+        from ..aide_douce import RETOUR_FLECHE
+        return RETOUR_FLECHE
 
     def _gris_permis(self):
         """Pas de fin grisée pendant un exercice, une épreuve ou un défi sans aide (aide_douce.fantome_permis)."""

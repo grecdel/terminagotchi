@@ -309,6 +309,91 @@ def ligne_fleche(state, maintenant=None):
     return f"        {fg(84)}{BOLD}▼ {RESET}{fg(78)}" + t("ad.fleche.pc") + RESET
 
 
+def attente_fleche(state, maintenant=None):
+    """Pendant l'œuf, quand la flèche est partie (3 commandes réussies) : dans combien de secondes elle revient si
+    l'enfant ne tape plus rien (0 : maintenant). None : pas d'œuf, ou la flèche est déjà là (elle est dans l'invite)."""
+    from . import intro
+    a = a_(state)
+    if not intro.en_cours(state) or a["reussies"] < SEUIL_FLECHE:
+        return None
+    return max(0.0, (a["derniere"] or 0) + RETOUR_FLECHE - (maintenant or time.time()))
+
+
+def place_fleche(state):
+    """La ligne vide gardée au-dessus de l'invite (PC, vrai shell) : la flèche peut y revenir pendant que l'enfant
+    attend devant l'invite, sans attendre la commande suivante (guet_fleche). Seulement pendant l'œuf."""
+    return attente_fleche(state) is not None
+
+
+def lancer_guet(state):
+    """Vrai shell (bash, zsh, fish ; pas Windows ni le terminal du jeu, qui le font eux-mêmes) : un petit processus à
+    part attend la minute sans rien taper, puis remet la flèche à sa place au-dessus de l'invite (tg prompt-fleche).
+    Il s'en va tout seul dès qu'une autre commande arrive."""
+    import os
+    import subprocess
+    import sys
+    if os.name == "nt" or os.environ.get("TG_DANS_LE_JEU") or os.environ.get("TG_SANS_GUET"):
+        return False
+    if attente_fleche(state) is None:
+        return False
+    try:
+        if not sys.stdout.isatty():
+            return False
+        shell = os.getppid()
+        from . import compagnon
+        exe, app = compagnon.commande()
+        subprocess.Popen([exe, app, "prompt-fleche", str(shell)], stdin=subprocess.DEVNULL,
+                         stderr=subprocess.DEVNULL, start_new_session=True)       # stdout : le terminal
+        return True
+    except (OSError, ValueError):
+        return False
+
+
+def guet_fleche(shell_pid, dormir=time.sleep, flux=None):
+    """Le petit processus de lancer_guet : attend que la minute passe ; si aucune commande n'est arrivée (la sauvegarde
+    n'a pas bougé) et que le shell attend bien à l'invite (pas `nano` ou `less` au premier plan), il écrit la flèche sur
+    la ligne gardée juste au-dessus de l'invite, sans toucher à ce que l'enfant est en train de taper."""
+    import os
+    import sys
+    flux = flux or sys.stdout
+    f = core.SAVE_DIR / "save.json"
+    try:
+        avant = f.stat().st_mtime_ns
+    except OSError:
+        return False
+    for _ in range(int(RETOUR_FLECHE / 2) + 5):
+        try:
+            if f.stat().st_mtime_ns != avant:         # une commande (ou une autre invite) : un autre guet a pris le relais
+                return False
+        except OSError:
+            return False
+        st = core.load()
+        if st is None:
+            return False
+        reste = attente_fleche(st)
+        if reste is None:
+            return False
+        if reste <= 0:
+            break
+        dormir(min(2.0, reste))
+    else:
+        return False
+    ligne = ligne_fleche(st)
+    if not ligne:
+        return False
+    try:
+        if flux is sys.stdout:
+            fd = sys.stdout.fileno()
+            if not os.isatty(fd) or os.tcgetpgrp(fd) != os.getpgid(int(shell_pid)):
+                return False                      # un programme plein écran est au premier plan : on ne l'abîme pas
+        # le curseur est sur la ligne de l'invite : on écrit sur la ligne gardée juste au-dessus, puis on revient
+        flux.write("\0337\033[1A\r" + ligne + "\033[K" + RESET + "\0338")
+        flux.flush()
+        return True
+    except (OSError, ValueError):
+        return False
+
+
 def disposition(state):
     d = (state.get("config") or {}).get("clavier")
     if d in CLAVIER:
