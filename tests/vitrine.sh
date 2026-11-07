@@ -78,46 +78,25 @@ debut() {   # $1 : langue (fr, en…), $2 : « oui » dans cette langue
 }
 
 # idée 76 : `bug`, puis la réponse des grands LUE à l'écran et calculée (pas devinée), puis la carte du rapport.
-# Le texte du terminal (id/sortie) est un TextView ordinaire, mais quand le clavier de l'écran est ouvert, la leçon
-# et le clavier lui prennent toute la place : il est alors invisible et uiautomator ne le donne pas. On range donc
-# le clavier avant de lire la question, puis on le rouvre pour taper la réponse.
-lire_question() {   # $1 : fichier où garder l'écran lu ; écrit le résultat de la multiplication (ou rien)
-  adb shell rm -f /sdcard/tg_ui.xml
-  adb shell uiautomator dump /sdcard/tg_ui.xml >/dev/null 2>&1
-  adb exec-out cat /sdcard/tg_ui.xml > "$1" 2>/dev/null
-  python3 - "$1" <<'PY'
-import re, sys
-import xml.etree.ElementTree as ET
-try:
-    noeuds = [n.get("text", "") for n in ET.parse(sys.argv[1]).iter("node")
-              if n.get("resource-id") == "fr.terminagotchi:id/sortie"]
-except Exception:
-    noeuds = []
-q = re.findall(r"(\d+)\s*×\s*(\d+)", noeuds[-1] if noeuds else "")
-print(int(q[-1][0]) * int(q[-1][1]) if q else "")
-PY
-}
-carte_ouverte() {
-  adb shell rm -f /sdcard/tg_ui.xml; adb shell uiautomator dump /sdcard/tg_ui.xml >/dev/null 2>&1
-  adb exec-out cat /sdcard/tg_ui.xml 2>/dev/null > "$D/76_apres.xml"
-  grep -q "Ouvrir la page" "$D/76_apres.xml"
-}
+# uiautomator ne lit pas le terminal (la créature bouge sans arrêt : l'écran n'est jamais « au repos », le dump échoue),
+# et avec le clavier ouvert la question est cachée : on range le clavier, on prend une capture et on la lit (OCR
+# tesseract dans la CI, tests/lire_ecran.py), puis on rouvre le clavier pour taper la réponse.
 ouvrir_carte() {
   carte=non
   for essai in 1 2 3 4 5; do
     tape "bug" 3
-    [ "$essai" = 1 ] && capture 76_question 1
-    Q=$(lire_question "$D/76_ecran_${essai}_clavier.xml")
-    if [ -z "$Q" ]; then
-      sans_clavier
-      [ "$essai" = 1 ] && capture 76_question_sans_clavier 1
-      Q=$(lire_question "$D/76_ecran_${essai}.xml")
-      avec_clavier
-    fi
+    sans_clavier
+    capture "76_question_$essai" 1
+    Q=$(python3 tests/lire_ecran.py question "$D/76_question_$essai.png" "$D/76_question_$essai.txt")
+    avec_clavier
     echo "essai $essai : réponse des grands lue à l'écran : « $Q »"
     tape "${Q:-0}" 4                 # (rien lu : « 0 », pour que la question suivante reparte de zéro)
-    if [ -n "$Q" ] && carte_ouverte; then carte=oui; break; fi
-    sans_clavier; capture "76_rate_$essai" 1; avec_clavier
+    sans_clavier
+    capture "76_apres_$essai" 1
+    if [ -n "$Q" ] && [ "$(python3 tests/lire_ecran.py carte "$D/76_apres_$essai.png" "$D/76_apres_$essai.txt")" = oui ]; then
+      carte=oui; cp "$D/76_apres_$essai.png" "$D/76_carte_ouverte.png"; break
+    fi
+    avec_clavier
   done
   echo "carte du rapport : $carte"
   echo "$carte" > "$D/76_carte_ouverte.txt"
