@@ -1,0 +1,38 @@
+re) e e
+<< Signaler un souci
+(un adulte relit avant d'envoyer)
+Ce qui partira (rien d'autre) :
+[bug] un souci dans le jeu
+Ce que je faisais :
+Version : 0.1.7 + Android
+Appareil : Android 13 - téléphone
+Langue : fr
+“ig Ecran : terminal, onglet 1 sur 1
+(Rapport préparé par Terminagotchi et relu par un
+adulte. Aucune donnée personnelle. )
+Jamais : le nom de ta créature, ton pseudo, tes fichiers, ta position,
+ton nom d'utilisateur (remplacé par ~).
+« Ouvrir la page » : le navigateur montre le rapport rempli ; rien nest
+envoyé tant que l'adulte n'a pas appuyé sur le bouton d'envoi de la page. «
+Enregistrer » : un fichier texte, qui ne part nulle part tout seul.
+> pwc
+@ Pour les grands : pwd (print working directory)
+affiche le chemin absolu du dossier courant, depuis
+la racine /. Pareil dans un vrai terminal Linux ou
+macOS.
+£2 Dans un vrai terminal (Linux, macOS) : pwd
+marche pareil.
+@ camp @
+(dossier vide)
+>_ Terminal 1 +
+petit) oul / non
+> oul
+& Tout est débloqué.
+~ $ bug
+© Signaler un souci (un adulte relit avant
+d‘'envoyer )
+@ Tu es un adulte ? Pour les grands : combien
+font 19 x 18 ? (tape la réponse)
+> 342
+- $| ca
+Se

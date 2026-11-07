@@ -1,0 +1,32 @@
+ca oy awe
+Pixel - Béb...
+Pixel Bebe a Lexique x
+. XP ee
+18/40
+INT 0 AGI 0...
+@ Chapitre 1 - Le réveil - Legon 1/3
+@ Tu connais déja un peu le terminal ? Tape
+placement : un petit test, et tu sautes le début.
+Ou suis-je ? (1/3) - Coucou ! On explore le
+Terminaworld ensemble. Ou est le panneau « tu es
+ici » ?
+> pwd
+@ Pour les grands : pwd (print working directory)
+affiche le chemin absolu du dossier courant, depuis
+la racine /. Pareil dans un vrai terminal Linux ou
+macOS.
+£2 Dans un vrai terminal (Linux, macOS) : pwd
+marche pareil.
+a camp @
+(dossier vide)
+>_ Terminal 1 +
+les tests : le jeu ne se découvrira plus petit a
+petit) oui / non
+> oul
+& Tout est débloqué.
+~ $ bug
+© Signaler un souci (un adulte relit avant
+d‘'envoyer )
+@ Tu es un adulte ? Pour les grands : combien
+font 19 x 18 ? (tape la réponse)
+~ $ rad
