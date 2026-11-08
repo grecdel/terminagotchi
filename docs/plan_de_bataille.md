@@ -1238,8 +1238,12 @@ Règles communes : `pc/tg/aide_douce.py` = `AideDouce.kt` (vecteurs `donnees/acc
   commande qui donne la réponse, la réponse ; `sommet.cible_indice` = `Sommet.cibleIndice`, vecteurs « indices » et
   « trous » de donnees/sommet/vecteurs.json) et dans la chasse au trésor du téléphone (Ctf.kt : ses 3 indices écrits,
   l'épreuve du lieu où l'on est, `indice 2` marche toujours ; le trésor rapporte +40 XP même avec les indices). Les
-  indices automatiques du Sommet (« Pas tout à fait… ») restent. `tout.sh all` relancé le 7 nov. : vert, sauf le test
-  JVM Intro (« whoami : 3e fêlure »), qui échouait déjà avant ces finitions.
+  indices automatiques du Sommet (« Pas tout à fait… ») restent.
+  (8 nov.) Quand il n'y a rien à deviner, la phrase d'aide (`ad.ind.rien`, 14 langues) cite aussi le Sommet, et sur le
+  téléphone la chasse au trésor (texte propre à Android). Le test JVM Intro (« whoami : 3e fêlure ») échouait certains
+  jours : quand whoami était aussi la commande du jour, sa petite fête (« content ») cachait la fêlure, PC comme
+  téléphone. Les réactions de l'œuf passent maintenant avant (`core.PRIORITE_ANIM` = `Jeu.PRIORITE_ANIM`, oeuf_1 à 3 :
+  9) ; vérification sans date dans test_intro.py et tests/jvm/Intro.kt. `tout.sh all` relancé le 8 nov. : tout vert.
 - **66 Fin grisée** : téléphone et terminal du jeu (vsh/), Tab ou → l'accepte ; jamais pendant un exercice ou un défi.
 - **69 Tout au clavier** : téléphone, d'office avec un clavier branché (`clavier on|off`) : rangée effacée, anneau jaune,
   Tab / Entrée / Échap ; bureau : ← → Entrée Échap dans le menu rond, `tg menu` l'ouvre.
