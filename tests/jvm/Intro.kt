@@ -246,6 +246,8 @@ fun main(args: Array<String>) {
     p.tape("whoami")
     verifier(j.anim?.first == "oeuf_3" && Intro.astuce(j) == Langue.t("intro.astuce.3"), "whoami : 3e fêlure ; 4e astuce : Tab complète")
     verifier(Histoire.leconCourante(j)?.id == "t0" && j.niveau < (Histoire.leconCourante(j)?.niveau ?: 0), "la leçon 1 attend l'éclosion")
+    j.animer("content")                  // 8 nov. : le jour où whoami est la commande du jour, sa petite fête arrive juste après
+    verifier(j.anim?.first == "oeuf_3", "la petite fête de la commande du jour (« content ») ne cache pas la fêlure de l'œuf")
 
     println("4. echo bonjour : l'éclosion et l'écran merci")
     p.tape("echo bonjour")

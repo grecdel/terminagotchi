@@ -14,6 +14,7 @@ import os
 import re
 import sys
 import tempfile
+import time
 from contextlib import redirect_stdout
 from pathlib import Path
 
@@ -173,6 +174,9 @@ verifier(langue.t("intro.astuce.2") in plat(app.render(st, 3, True)), "3e astuce
 st = tape("whoami")
 verifier(len(st["intro"]["faits"]) == 3 and st["anim"][0] == "oeuf_3", "whoami : 3e fêlure")
 verifier(langue.t("intro.astuce.3") in plat(app.render(st, 4, True)), "4e astuce : Tab complète")
+_s = {"anim": ["oeuf_3", time.time()]}
+core.animer(_s, "content")
+verifier(_s["anim"][0] == "oeuf_3", "la petite fête de la commande du jour (« content ») ne cache pas la fêlure de l'œuf")
 st = tape("echo")
 verifier(len(st["intro"]["faits"]) == 3, "« echo » sans message ne compte pas")
 

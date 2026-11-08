@@ -226,7 +226,9 @@ def notif(state, texte):
 
 # Courtes animations de la fenêtre principale : un événement daté, rangé dans la sauvegarde
 # (n'importe quel processus — invite, veille, fenêtre — peut le déclencher ; la fenêtre le joue).
-PRIORITE_ANIM = {"eclosion": 10, "oeuf_1": 3, "oeuf_2": 3, "oeuf_3": 3, "evolution": 9, "victoire": 8, "ko": 7, "colere": 6, "attaque": 6, "dort": 6, "content": 5, "confus": 4,
+# 8 nov. : les réactions de l'œuf (oeuf_1 à oeuf_3) passent avant « content » : sinon, le jour où la commande du jour
+# est celle de la liste de l'œuf (whoami…), la petite fête du jour cachait la fêlure (même table dans Jeu.kt).
+PRIORITE_ANIM = {"eclosion": 10, "oeuf_1": 9, "oeuf_2": 9, "oeuf_3": 9, "evolution": 9, "victoire": 8, "ko": 7, "colere": 6, "attaque": 6, "dort": 6, "content": 5, "confus": 4,
                  "mange": 3, "salut": 2, "parle": 1}
 
 
