@@ -9237,7 +9237,7 @@
  "ad.ind.n1_sans": "O comando que faz isso tem {n} letras.",
  "ad.ind.n2": "É {cmd}, seguido do que for preciso.",
  "ad.ind.n3": "Digite: {cmd}",
- "ad.ind.rien": "Nada para adivinhar agora: o comando da lição está escrito em verde. (\"indice\" ajuda num exercício, numa prova ou num desafio sem ajuda.)",
+ "ad.ind.rien": "Nada para adivinhar agora: o comando da lição está escrito em verde. (\"indice\" ajuda num exercício, numa prova, no Cume, na caça ao tesouro ou num desafio sem ajuda.)",
  "ad.ind.encore": "(de novo {cmd} para saber mais · nada é tirado)",
  "ad.ind.rien_retire": "As dicas não tiram nada: nem XP, nem comida.",
  "ad.ind.som.dates.1": "O diário cita datas por todo o lado, às vezes a mesma várias vezes: conta cada data uma só vez.",

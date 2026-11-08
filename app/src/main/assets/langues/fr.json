@@ -9242,7 +9242,7 @@
  "ad.ind.n1_sans": "La commande qui fait ça a {n} lettres.",
  "ad.ind.n2": "C'est {cmd}, suivi de ce qu'il faut.",
  "ad.ind.n3": "Tape : {cmd}",
- "ad.ind.rien": "Rien à deviner pour l'instant : la commande de ta leçon est écrite en vert. (« indice » aide pendant un exercice, une épreuve ou un défi sans aide.)",
+ "ad.ind.rien": "Rien à deviner pour l'instant : la commande de ta leçon est écrite en vert. (« indice » aide pendant un exercice, une épreuve, au Sommet, dans la chasse au trésor ou dans un défi sans aide.)",
  "ad.ind.encore": "(encore {cmd} pour en savoir plus · rien n'est retiré)",
  "ad.ind.rien_retire": "Les indices ne retirent rien : ni XP, ni nourriture.",
  "ad.ind.som.dates.1": "Le journal cite des dates partout, parfois plusieurs fois la même : compte chaque date une seule fois.",

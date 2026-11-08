@@ -9284,7 +9284,7 @@
  "ad.ind.n1_sans": "The command that does this has {n} letters.",
  "ad.ind.n2": "It's {cmd}, followed by what's needed.",
  "ad.ind.n3": "Type: {cmd}",
- "ad.ind.rien": "Nothing to guess right now: your lesson's command is written in green. (\"indice\" helps during an exercise, a trial or a no-help challenge.)",
+ "ad.ind.rien": "Nothing to guess right now: your lesson's command is written in green. (\"indice\" helps during an exercise, a trial, at the Summit or in a no-help challenge.)",
  "ad.ind.encore": "({cmd} again to learn more · nothing is taken away)",
  "ad.ind.rien_retire": "Hints never take anything away: no XP, no food.",
  "ad.ind.som.dates.1": "The log mentions dates everywhere, sometimes the same one several times: count each date only once.",

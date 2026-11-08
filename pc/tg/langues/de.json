@@ -9278,7 +9278,7 @@
  "ad.ind.n1_sans": "Der Befehl dafür hat {n} Buchstaben.",
  "ad.ind.n2": "Es ist {cmd}, gefolgt von dem, was nötig ist.",
  "ad.ind.n3": "Tippe: {cmd}",
- "ad.ind.rien": "Gerade gibt es nichts zu raten: Der Befehl deiner Lektion steht in Grün. („indice“ hilft bei einer Übung, einer Prüfung oder einer Herausforderung ohne Hilfe.)",
+ "ad.ind.rien": "Gerade gibt es nichts zu raten: Der Befehl deiner Lektion steht in Grün. („indice“ hilft bei einer Übung, einer Prüfung, auf dem Gipfel oder bei einer Herausforderung ohne Hilfe.)",
  "ad.ind.encore": "(nochmal {cmd} für mehr · nichts wird abgezogen)",
  "ad.ind.rien_retire": "Tipps nehmen nichts weg: kein XP, kein Futter.",
  "ad.ind.som.dates.1": "Im Tagebuch stehen überall Daten, manchmal dasselbe mehrmals: Zähle jedes Datum nur einmal.",

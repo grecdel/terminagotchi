@@ -9236,7 +9236,7 @@
  "ad.ind.n1_sans": "Il comando che lo fa ha {n} lettere.",
  "ad.ind.n2": "È {cmd}, seguito da quel che serve.",
  "ad.ind.n3": "Scrivi: {cmd}",
- "ad.ind.rien": "Niente da indovinare per ora: il comando della lezione è scritto in verde. («indice» aiuta in un esercizio, una prova o una sfida senza aiuto.)",
+ "ad.ind.rien": "Niente da indovinare per ora: il comando della lezione è scritto in verde. («indice» aiuta in un esercizio, una prova, sulla Vetta, nella caccia al tesoro o in una sfida senza aiuto.)",
  "ad.ind.encore": "(ancora {cmd} per saperne di più · non si toglie niente)",
  "ad.ind.rien_retire": "Gli indizi non tolgono niente: né XP né cibo.",
  "ad.ind.som.dates.1": "Il diario cita date ovunque, a volte la stessa più volte: conta ogni data una sola volta.",
