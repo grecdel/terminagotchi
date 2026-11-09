@@ -73,15 +73,19 @@ object IntroGardiens {
     }
 
     /** La forme du gardien qui dort (sa 1re image « dort », 48×48, assets/anim/<id>/pixels.json) : opaque ?, côté. */
-    fun masque(gid: String): Pair<BooleanArray, Int>? = try {
-        val d = JSONObject(lecteur?.invoke("anim/$gid/pixels.json") ?: return null)
+    fun masque(gid: String): Pair<BooleanArray, Int>? {
+        val texte = lecteur?.invoke("anim/$gid/pixels.json") ?: return null
+        return try { masqueDe(JSONObject(texte)) } catch (e: Exception) { null }
+    }
+
+    private fun masqueDe(d: JSONObject): Pair<BooleanArray, Int> {
         val anims = d.getJSONObject("anims")
         val a = anims.optJSONObject("adulte")?.optJSONObject("dort") ?: anims.getJSONObject(anims.keys().next()).getJSONObject("statique")
         val n = d.optInt("taille", 48)
         val brut = java.util.Base64.getDecoder().decode(a.getJSONArray("images").getString(0))
         val o = if (d.optString("format") == "zlib") Bestiaire.gonfler(brut, n * n) else brut
-        BooleanArray(n * n) { it < o.size && o[it].toInt() != 0 } to n
-    } catch (e: Exception) { null }
+        return BooleanArray(n * n) { it < o.size && o[it].toInt() != 0 } to n
+    }
 
     private val cache = HashMap<String, Carte.Pix>()
 
