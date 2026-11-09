@@ -1,0 +1,107 @@
+11-09 20:16:34.581  1027  2085 E AndroidRuntime: FATAL EXCEPTION: com.google.android.googlequicksearchbox
+11-09 20:16:34.581  1027  2085 E AndroidRuntime: Process: com.google.android.apps.nexuslauncher, PID: 1027
+11-09 20:16:34.581  1027  2085 E AndroidRuntime: java.lang.NullPointerException: Attempt to invoke virtual method 'java.lang.Class java.lang.Object.getClass()' on a null object reference
+11-09 20:16:34.581  1027  2085 E AndroidRuntime: 	at y1.u0.a(Unknown Source:3)
+11-09 20:16:34.581  1027  2085 E AndroidRuntime: 	at B0.I.run(Unknown Source:59)
+11-09 20:16:34.581  1027  2085 E AndroidRuntime: 	at android.os.Handler.handleCallback(Handler.java:942)
+11-09 20:16:34.581  1027  2085 E AndroidRuntime: 	at android.os.Handler.dispatchMessage(Handler.java:99)
+11-09 20:16:34.581  1027  2085 E AndroidRuntime: 	at android.os.Looper.loopOnce(Looper.java:201)
+11-09 20:16:34.581  1027  2085 E AndroidRuntime: 	at android.os.Looper.loop(Looper.java:288)
+11-09 20:16:34.581  1027  2085 E AndroidRuntime: 	at android.os.HandlerThread.run(HandlerThread.java:67)
+11-09 20:16:34.584   351   463 D AudioFlinger: mixer(0x74e1f61389a0) throttle end: throttle time(39)
+11-09 20:16:34.592 10773 10861 E MDD     : DownloadProgressMonitor: Can't find file group for uri: android://com.google.android.apps.messaging/files/datadownload/shared/public/datadownloadfile_1794255369809
+11-09 20:16:34.595 10773 10963 D bqtw    : Starting download: https://c.tenor.com/jiQfWgZB0pcAAAAk/tenor.gif
+11-09 20:16:34.595 10773 10963 V bqtw    : Is http uri, downloading (uri: https://c.tenor.com/jiQfWgZB0pcAAAAk/tenor.gif)
+11-09 20:16:34.608   482 11201 I DropBoxManagerService: add tag=system_app_crash isTagEnabled=true flags=0x2
+11-09 20:16:34.616   482  2021 W ActivityTaskManager:   Not force finishing home activity com.google.android.apps.nexuslauncher/.NexusLauncherActivity
+11-09 20:16:34.616   482  2021 W ActivityTaskManager:   Not force finishing home activity com.google.android.apps.nexuslauncher/.NexusLauncherActivity
+11-09 20:16:34.618  1027  2085 I Process : Sending signal. PID: 1027 SIG: 9
+11-09 20:16:34.619   482   523 W BroadcastQueue: Background execution not allowed: receiving Intent { act=android.intent.action.DROPBOX_ENTRY_ADDED flg=0x10 (has extras) } to com.google.android.gms/.stats.service.DropBoxEntryAddedReceiver
+11-09 20:16:34.620 10773 10964 E MDD     : DownloadProgressMonitor: Can't find file group for uri: android://com.google.android.apps.messaging/files/datadownload/shared/public/datadownloadfile_1794255369810
+11-09 20:16:34.621   482   523 W BroadcastQueue: Background execution not allowed: receiving Intent { act=android.intent.action.DROPBOX_ENTRY_ADDED flg=0x10 (has extras) } to com.google.android.gms/.chimera.GmsIntentOperationService$PersistentTrustedReceiver
+11-09 20:16:34.630 10773 10861 D bqtw    : Starting download: https://c.tenor.com/0Cz0CGB40TkAAAAk/tenor.gif
+11-09 20:16:34.630 10773 10861 V bqtw    : Is http uri, downloading (uri: https://c.tenor.com/0Cz0CGB40TkAAAAk/tenor.gif)
+11-09 20:16:34.644   482  1709 I ActivityManager: Process com.google.android.apps.nexuslauncher (pid 1027) has died: fg  TOP 
+11-09 20:16:34.645   283   283 I Zygote  : Process 1027 exited due to signal 9 (Killed)
+11-09 20:16:34.645   482   760 W InputManager-JNI: Input channel object 'recents_animation_input_consumer (client)' was disposed without first being removed with the input manager!
+--
+11-09 20:16:34.815  1581 11202 E AndroidRuntime: FATAL EXCEPTION: aiai-echo-search-7
+11-09 20:16:34.815  1581 11202 E AndroidRuntime: Process: com.google.android.as, PID: 1581
+11-09 20:16:34.815  1581 11202 E AndroidRuntime: java.lang.IllegalArgumentException: No enum constant fdw.WEB_SUGGEST
+11-09 20:16:34.815  1581 11202 E AndroidRuntime: 	at java.lang.Enum.valueOf(Enum.java:259)
+11-09 20:16:34.815  1581 11202 E AndroidRuntime: 	at fdw.a(Unknown Source:2)
+11-09 20:16:34.815  1581 11202 E AndroidRuntime: 	at fjm.b(PG:10)
+11-09 20:16:34.815  1581 11202 E AndroidRuntime: 	at ocw.e(PG:4)
+11-09 20:16:34.815  1581 11202 E AndroidRuntime: 	at oix.run(PG:8)
+11-09 20:16:34.815  1581 11202 E AndroidRuntime: 	at java.util.concurrent.Executors$RunnableAdapter.call(Executors.java:463)
+11-09 20:16:34.815  1581 11202 E AndroidRuntime: 	at java.util.concurrent.FutureTask.run(FutureTask.java:264)
+11-09 20:16:34.815  1581 11202 E AndroidRuntime: 	at java.util.concurrent.ScheduledThreadPoolExecutor$ScheduledFutureTask.run(ScheduledThreadPoolExecutor.java:307)
+11-09 20:16:34.815  1581 11202 E AndroidRuntime: 	at java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1137)
+11-09 20:16:34.815  1581 11202 E AndroidRuntime: 	at java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:637)
+11-09 20:16:34.815  1581 11202 E AndroidRuntime: 	at dum.run(PG:65)
+11-09 20:16:34.815  1581 11202 E AndroidRuntime: 	at java.lang.Thread.run(Thread.java:1012)
+11-09 20:16:34.817   283   283 D Zygote  : Forked child process 11216
+11-09 20:16:34.818  1501  1501 I AppBase : AppBase.onTrimMemory():497 onTrimMemory(): 5
+11-09 20:16:34.818  1501  1501 I GoogleInputMethodService: GoogleInputMethodService.onTrimMemory():4406 onTrimMemory(): 5
+11-09 20:16:34.826  5032  5032 V SafetyCenterAccessibilityListener: accessibility event occurred, safety center feature not enabled.
+11-09 20:16:34.826  5032  5032 V SafetyCenterAccessibilityListener: accessibility event occurred, safety center feature not enabled.
+11-09 20:16:34.826  5032  5032 V SafetyCenterAccessibilityListener: accessibility event occurred, safety center feature not enabled.
+11-09 20:16:34.826  5032  5032 V SafetyCenterAccessibilityListener: accessibility event occurred, safety center feature not enabled.
+11-09 20:16:34.826  5032  5032 V SafetyCenterAccessibilityListener: accessibility event occurred, safety center feature not enabled.
+11-09 20:16:34.826  5032  5032 V SafetyCenterAccessibilityListener: accessibility event occurred, safety center feature not enabled.
+11-09 20:16:34.826  5032  5032 V SafetyCenterAccessibilityListener: accessibility event occurred, safety center feature not enabled.
+11-09 20:16:34.826  5032  5032 V SafetyCenterAccessibilityListener: accessibility event occurred, safety center feature not enabled.
+--
+11-09 20:17:10.591 11216 11251 E AndroidRuntime: FATAL EXCEPTION: com.google.android.googlequicksearchbox
+11-09 20:17:10.591 11216 11251 E AndroidRuntime: Process: com.google.android.apps.nexuslauncher, PID: 11216
+11-09 20:17:10.591 11216 11251 E AndroidRuntime: java.lang.NullPointerException: Attempt to invoke virtual method 'java.lang.Class java.lang.Object.getClass()' on a null object reference
+11-09 20:17:10.591 11216 11251 E AndroidRuntime: 	at y1.u0.a(Unknown Source:3)
+11-09 20:17:10.591 11216 11251 E AndroidRuntime: 	at B0.I.run(Unknown Source:59)
+11-09 20:17:10.591 11216 11251 E AndroidRuntime: 	at android.os.Handler.handleCallback(Handler.java:942)
+11-09 20:17:10.591 11216 11251 E AndroidRuntime: 	at android.os.Handler.dispatchMessage(Handler.java:99)
+11-09 20:17:10.591 11216 11251 E AndroidRuntime: 	at android.os.Looper.loopOnce(Looper.java:201)
+11-09 20:17:10.591 11216 11251 E AndroidRuntime: 	at android.os.Looper.loop(Looper.java:288)
+11-09 20:17:10.591 11216 11251 E AndroidRuntime: 	at android.os.HandlerThread.run(HandlerThread.java:67)
+11-09 20:17:10.604   351   463 D AudioFlinger: mixer(0x74e1f61389a0) throttle end: throttle time(34)
+11-09 20:17:10.615   482  1497 W ActivityTaskManager:   Not force finishing home activity com.google.android.apps.nexuslauncher/.NexusLauncherActivity
+11-09 20:17:10.615   482  1497 W ActivityTaskManager:   Not force finishing home activity com.google.android.apps.nexuslauncher/.NexusLauncherActivity
+11-09 20:17:10.616   482 11659 I DropBoxManagerService: add tag=system_app_crash isTagEnabled=true flags=0x2
+11-09 20:17:10.620   482   513 I ActivityManager: Showing crash dialog for package com.google.android.apps.nexuslauncher u0
+11-09 20:17:10.691   482   523 W BroadcastQueue: Background execution not allowed: receiving Intent { act=android.intent.action.DROPBOX_ENTRY_ADDED flg=0x10 (has extras) } to com.google.android.gms/.stats.service.DropBoxEntryAddedReceiver
+11-09 20:17:10.695 11256 11657 E AiAi    : AiaiUncaughtExceptionHandler: found uncaught exception.
+11-09 20:17:10.695 11256 11657 E AiAi    : 
+11-09 20:17:10.695 11256 11657 E AiAi    : Detailed stack trace: **************************Thread: FinalizerDaemon; Id: 38**********************
+11-09 20:17:10.695 11256 11657 E AiAi    : java.lang.Object.wait(Native Method)
+11-09 20:17:10.695 11256 11657 E AiAi    : java.lang.Object.wait(Object.java:442)
+11-09 20:17:10.695 11256 11657 E AiAi    : java.lang.ref.ReferenceQueue.remove(ReferenceQueue.java:203)
+11-09 20:17:10.695 11256 11657 E AiAi    : java.lang.ref.ReferenceQueue.remove(ReferenceQueue.java:224)
+11-09 20:17:10.695 11256 11657 E AiAi    : java.lang.Daemons$FinalizerDaemon.runInternal(Daemons.java:300)
+11-09 20:17:10.695 11256 11657 E AiAi    : java.lang.Daemons$Daemon.run(Daemons.java:140)
+11-09 20:17:10.695 11256 11657 E AiAi    : java.lang.Thread.run(Thread.java:1012)
+--
+11-09 20:17:10.701 11256 11657 E AndroidRuntime: FATAL EXCEPTION: aiai-echo-search-2
+11-09 20:17:10.701 11256 11657 E AndroidRuntime: Process: com.google.android.as, PID: 11256
+11-09 20:17:10.701 11256 11657 E AndroidRuntime: java.lang.IllegalArgumentException: No enum constant fdw.WEB_SUGGEST
+11-09 20:17:10.701 11256 11657 E AndroidRuntime: 	at java.lang.Enum.valueOf(Enum.java:259)
+11-09 20:17:10.701 11256 11657 E AndroidRuntime: 	at fdw.a(Unknown Source:2)
+11-09 20:17:10.701 11256 11657 E AndroidRuntime: 	at fjm.b(PG:10)
+11-09 20:17:10.701 11256 11657 E AndroidRuntime: 	at ocw.e(PG:4)
+11-09 20:17:10.701 11256 11657 E AndroidRuntime: 	at oix.run(PG:8)
+11-09 20:17:10.701 11256 11657 E AndroidRuntime: 	at java.util.concurrent.Executors$RunnableAdapter.call(Executors.java:463)
+11-09 20:17:10.701 11256 11657 E AndroidRuntime: 	at java.util.concurrent.FutureTask.run(FutureTask.java:264)
+11-09 20:17:10.701 11256 11657 E AndroidRuntime: 	at java.util.concurrent.ScheduledThreadPoolExecutor$ScheduledFutureTask.run(ScheduledThreadPoolExecutor.java:307)
+11-09 20:17:10.701 11256 11657 E AndroidRuntime: 	at java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1137)
+11-09 20:17:10.701 11256 11657 E AndroidRuntime: 	at java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:637)
+11-09 20:17:10.701 11256 11657 E AndroidRuntime: 	at dum.run(PG:65)
+11-09 20:17:10.701 11256 11657 E AndroidRuntime: 	at java.lang.Thread.run(Thread.java:1012)
+11-09 20:17:10.716   482   513 D CompatibilityChangeReporter: Compat change id reported: 210923482; UID 1000; state: ENABLED
+11-09 20:17:10.718   482   513 D CompatibilityChangeReporter: Compat change id reported: 171228096; UID 1000; state: ENABLED
+11-09 20:17:10.728   482 11661 I DropBoxManagerService: add tag=system_app_crash isTagEnabled=true flags=0x2
+11-09 20:17:10.731   482   523 W BroadcastQueue: Background execution not allowed: receiving Intent { act=android.intent.action.DROPBOX_ENTRY_ADDED flg=0x10 (has extras) } to com.google.android.gms/.stats.service.DropBoxEntryAddedReceiver
+11-09 20:17:10.731   482   523 W BroadcastQueue: Background execution not allowed: receiving Intent { act=android.intent.action.DROPBOX_ENTRY_ADDED flg=0x10 (has extras) } to com.google.android.gms/.chimera.GmsIntentOperationService$PersistentTrustedReceiver
+11-09 20:17:10.746   482 11116 W Parcel  : Expecting binder but got null!
+11-09 20:17:10.751   482   513 D CoreBackPreview: Window{9334704 u0 Application Error: com.google.android.apps.nexuslauncher}: Setting back callback OnBackInvokedCallbackInfo{mCallback=android.window.WindowOnBackInvokedDispatcher$OnBackInvokedCallbackWrapper@c88120f, mPriority=0}
+11-09 20:17:10.751   482   513 I ActivityManager: Showing crash dialog for package com.google.android.as u0
+11-09 20:17:10.755   482 11116 W Parcel  : Expecting binder but got null!
+11-09 20:17:10.757   482   513 D CoreBackPreview: Window{e046c2a u0 Application Error: com.google.android.as}: Setting back callback OnBackInvokedCallbackInfo{mCallback=android.window.WindowOnBackInvokedDispatcher$OnBackInvokedCallbackWrapper@78e2cf7, mPriority=0}
+11-09 20:17:10.779   359   371 W TransactionTracing: Could not find layer handle 0x74a5e48d8e50

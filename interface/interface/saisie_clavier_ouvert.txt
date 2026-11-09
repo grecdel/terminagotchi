@@ -1,0 +1,2 @@
+540 1395
+mInputShown=true
