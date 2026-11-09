@@ -1,2 +1,0 @@
-900 1632
-mInputShown=true
