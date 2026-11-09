@@ -1,0 +1,2 @@
+Physical size: 2560x1800
+Physical density: 320
