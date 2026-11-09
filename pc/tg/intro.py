@@ -253,6 +253,7 @@ def tick(state, lignes):
             trouves.append((c, nom))
         if sans_nom and not trouves:
             core.say(state, t("intro.nom.encore"), 12)
+            core.terminal(state, "🥚 " + t("intro.nom.encore"))   # aussi sous la commande, dans le terminal
             continue
         if not trouves:
             if not core.commande_existe(cmd) and not cmd.startswith(("./", "/")) or core.statut_de(lignes, k):
@@ -278,6 +279,7 @@ def tick(state, lignes):
                 core.say(state, t("intro.nomme", nom=state["name"]), 10)
         if sans_nom:
             core.say(state, t("intro.nom.encore"), 12)
+            core.terminal(state, "🥚 " + t("intro.nom.encore"))
         core.log(state, f"🥚 ✔ {l.strip()}")
     return []
 

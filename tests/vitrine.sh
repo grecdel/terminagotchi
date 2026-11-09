@@ -176,8 +176,7 @@ elif [ "$MODE" = interface ] || [ "$MODE" = interface_tablette ]; then
   fi
   adb shell wm size > $D/taille.txt; adb shell wm density >> $D/taille.txt
   debut fr oui
-  tape "ls" 4
-  for c in "pwd" "echo bonjour" "whoami"; do tape "$c" 2; done
+  tape "pwd" 3; tape "ls" 5; tape "echo Pixel" 3; tape "whoami" 3   # 9 nov. : dans l'ordre, le nom avec echo
   tape "$NON" 3                                 # « Tu veux m'entendre ? » (le son, à l'éclosion) : non
   capture 01_eclosion 2
   tape "" 2
