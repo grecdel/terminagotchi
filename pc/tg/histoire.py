@@ -1013,7 +1013,7 @@ def aide_lecon(state, cwd=None, tel=False):
     from . import intro
     if intro.en_cours(state):                   # I1 : pendant l'œuf, la prochaine commande de sa liste
         p = intro.prochaine(state)
-        out.append("🥚 " + t("intro.liste.titre", n=len(intro.i_(state)["faits"]), total=len(intro.checklist())))
+        out.append("🥚 " + intro.titre_liste(state))
         if p:
             out.append(t("aide.lecon.tape", cmd=f"`{intro.commande_de(p)}`"))
     elif not les or core.level(state.get("xp", 0)) < les["niveau"]:

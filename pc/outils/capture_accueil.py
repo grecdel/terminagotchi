@@ -73,7 +73,7 @@ def main():
     sortie = Path(sys.argv[1] if len(sys.argv) > 1 else ".")
     sortie.mkdir(parents=True, exist_ok=True)
     # 1. le tout premier lancement : « Qui est avec toi ? » (2 : un adulte), puis l'histoire
-    rep = iter(["2", "", "p", "Pixel", ""])
+    rep = iter(["2", "", "p"])
     builtins.input = lambda _i="": next(rep)
     buf = io.StringIO()
     with redirect_stdout(buf):
@@ -91,7 +91,7 @@ def main():
     sauver(l1, sortie, "pc_4_fleche.png")
     l2 = prompt("ls")
     sauver(l2, sortie, "pc_2_premier_ls.png")
-    prompt("echo bonjour")
+    prompt("echo Pixel")
     prompt("whoami")
     st = core.load()
     # 5. un symbole nouveau (le tuyau) dans une leçon

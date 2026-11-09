@@ -5,8 +5,8 @@
   I11. pendant l'œuf, l'invite garde l'astuce du moment (« pas grave », Ctrl+C, ↑, Tab) après la 1re commande ;
   I12. pas de faux « n'est pas une commande » : `pwd; ls` (le ; collé) ; `cd/home/…/vestibule` → « cd /home/… » ;
   I13. un lieu d'habitat a un vrai nom (« Atelier des engrenages »), un dossier inconnu garde son nom, jamais la clé ;
-  I14. « non » à « Ton œuf s'appellera X. C'est bien ça ? » redemande le nom (il ne s'appelle pas « non ») ;
-  I15. le nom tapé sur le dernier écran de l'intro (« Donne-lui d'abord un nom ! ») est proposé, pas ignoré ;
+  I14. « non » reste reconnu dans les 14 langues ; le nom de l'œuf se donne avec echo (echo bonjour n'est pas un nom) ;
+  I15. les écrans du début ne demandent plus de nom (9 nov. : le nom se donne avec `echo <nom>`) ;
   I16. l'épreuve du monstre en cours reste sous l'invite même quand la commande a laissé un message.
 """
 import os
@@ -56,29 +56,21 @@ app.creer_si_besoin()
 _tick = explo.tick
 explo.tick = lambda st, sp, proba=0, jeu=0, lignes=(): _tick(st, sp, proba, 0, lignes)   # pas de monstre au hasard
 
-print("I14. « non » à la confirmation du nom")
-d, q = reponses("Tom le dragon", "non", "Krokmou", "")
-nom = intro.demander_nom(d)
-verifier(nom == "Krokmou", f"Tom le dragon → non → Krokmou → Entrée : {nom!r}")
-verifier(not any("« non »" in x for x in q), "« non » n'est jamais proposé comme nom")
-verifier(sum("appeler ton œuf" in x for x in q) == 2, "après « non », la question du nom revient")
+print("I14. le nom de l'œuf (9 nov. : il se donne avec echo, plus de question ni de confirmation)")
 for r in ("non", "Non", "n", "no", "nein", "いいえ"):
     verifier(intro.non(r), f"« {r} » = non")
 for r in ("Krokmou", "oui", "", "nono"):
     verifier(not intro.non(r), f"« {r} » n'est pas non")
-d, q = reponses("Rex", "oui")
-verifier(intro.demander_nom(d) == "Rex", "oui confirme toujours")
+verifier(intro.nom_echo("echo non") == "Non" and intro.nom_echo("echo Tom le dragon") == "Tom le dragon"
+         and intro.nom_echo("echo bonjour") is None, "echo Tom le dragon : un nom ; echo bonjour : pas un nom")
 
-print("I15. le nom tapé sur le dernier écran")
+print("I15. les écrans du début ne demandent plus de nom")
 n = len(intro.donnees()["ecrans"])
-d, q = reponses(*([""] * (n - 1) + ["Zigzag", ""]))
-verifier(intro.jouer_ecrans(d) == "Zigzag", "le mot tapé sur le dernier écran est le nom proposé (puis confirmé)")
-verifier(any("« Zigzag »" in x for x in q) and not any("appeler ton œuf" in x for x in q),
-         "on ne redemande pas le nom : on le confirme")
-d, q = reponses("jouer", *([""] * (n - 1)), "Pixel", "")
-verifier(intro.jouer_ecrans(d) == "Pixel", "un mot tapé sur un écran du début ne devient toujours pas le nom (P1-6)")
-d, q = reponses("p", "Pixel", "")
-verifier(intro.jouer_ecrans(d) == "Pixel", "« p » passe les écrans puis demande le nom")
+d, q = reponses(*([""] * (n - 1) + ["Zigzag"]))
+verifier(intro.jouer_ecrans(d) is None and not any("appeler ton œuf" in x for x in q),
+         "un mot tapé sur le dernier écran n'est pas un nom ; aucune question de nom")
+d, q = reponses("p")
+verifier(intro.jouer_ecrans(d) is None and len(q) == 1, "« p » passe les écrans")
 
 print("I11. l'astuce de l'œuf reste sous la liste")
 st = core.load()

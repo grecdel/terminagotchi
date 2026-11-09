@@ -198,12 +198,15 @@ def nouvelle(demander, confirmer=True, avec_intro=None):
         avec_intro = sys.stdin.isatty() and sys.stdout.isatty()
     from . import intro
     from .plateforme import clear
-    nom = intro.jouer_ecrans(demander, clear) if avec_intro else None
-    nom = (nom or demander(t("app.nom_creature") + " ")).strip()[:16] or "Pixel"
+    if avec_intro:                    # 9 nov. : le nom viendra plus tard, avec `echo <nom>` (intro.py)
+        intro.jouer_ecrans(demander, clear)
+        nom = t("intro.nom.attente")
+    else:
+        nom = demander(t("app.nom_creature") + " ").strip()[:16] or "Pixel"
     i = parties.nouvelle(nom, langue.courante(), _message_oeuf, intro=avec_intro)
     if not i:
         return t("part.n.echec")
-    return t("part.n.ok", nom=nom)
+    return t("part.n.ok_intro") if avec_intro else t("part.n.ok", nom=nom)
 
 
 def charger(n, choix):

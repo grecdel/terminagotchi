@@ -148,7 +148,7 @@ class MenuParties(
     }
 
     private fun continuer(): String =
-        if (jeu.existe) t("part.continuer", "nom" to jeu.nom) else "🥚 " + t("app.nom_creature")
+        if (jeu.existe) t("part.continuer", "nom" to jeu.nom) else t("part.n.attend")
 
     // ---------------------------------------------------------------- nouvelle partie
     private fun nouvelle(): String {
@@ -168,7 +168,7 @@ class MenuParties(
         if (Parties.nouvelle(act) == null) return t("part.n.echec")
         jeu.recharger()
         apresChangement()
-        return t("part.n.ok.tel")
+        return t("part.n.ok_intro")             // 9 nov. : les écrans du début, puis le camp endormi (pas de nom demandé)
     }
 
     // ---------------------------------------------------------------- charger

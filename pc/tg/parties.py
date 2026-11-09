@@ -220,7 +220,8 @@ def nouvelle(nom, langue_code, message_oeuf, intro=False):
     if isinstance(ancien.get("config"), dict):
         s["config"] = dict(ancien["config"])        # les réglages de l'appareil suivent (notifications, compagnon)
         s["config"].pop("aura", None)               # l'aura de rareté, elle, se règle partie par partie (tg aura)
-    core.log(s, message_oeuf(s))
+    if not intro:                                   # avec l'intro, l'œuf n'apparaît qu'avec `ls` (intro.tick)
+        core.log(s, message_oeuf(s))
     core.animer(s, "salut")
     s["notifs"] = []
     i = _nouvel_id()

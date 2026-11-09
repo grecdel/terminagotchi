@@ -925,10 +925,11 @@ def creer_si_besoin(avec_intro=None):
         langue.definir(code)
         from . import aide_douce, parties
         qui = aide_douce.demander_parent(input) if avec_intro and parties.aucune() else None   # idée 1, une fois
-        name = intro.jouer_ecrans(input, clear) if avec_intro else None
-        if not name:
-            name = input(t("app.nom_creature") + " ")
-        name = name.strip()[:16] or "Pixel"
+        if avec_intro:                            # 9 nov. : le nom viendra plus tard, avec `echo <nom>` (intro.py)
+            intro.jouer_ecrans(input, clear)
+            name = t("intro.nom.attente")
+        else:
+            name = input(t("app.nom_creature") + " ").strip()[:16] or "Pixel"
     except (KeyboardInterrupt, EOFError):
         print("\n" + t("app.a_bientot"))
         raise SystemExit(0)
@@ -941,7 +942,8 @@ def creer_si_besoin(avec_intro=None):
             if qui:
                 aide_douce.a_(state)["parent"] = qui
             core.read_new_lines(state)   # mémorise où on en est, sans manger l'ancien historique
-            core.log(state, t("app.oeuf_apparu", trait=core.nom_trait(state["trait"])))
+            if not avec_intro:           # avec l'intro, l'œuf n'apparaît qu'avec `ls` (intro.tick)
+                core.log(state, t("app.oeuf_apparu", trait=core.nom_trait(state["trait"])))
             core.animer(state, "salut")
             state["notifs"] = []
             core.save(state)

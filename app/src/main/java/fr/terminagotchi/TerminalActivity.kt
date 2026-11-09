@@ -78,8 +78,6 @@ class TerminalActivity : Activity() {
     private var animJouee = System.currentTimeMillis()   // on ne rejoue pas les événements d'avant l'ouverture
     // l'intro (Intro.kt, IntroVue) : l'écran du début montré (0 : aucun), la confirmation de « debloquer tout »
     private var ecranIntro = 0
-    /** le nom proposé pour l'œuf, en attente de confirmation (« Ton œuf s'appellera … ? ») */
-    private var nomPropose: String? = null
     private var introVue: IntroVue? = null
     private var confirmerDeblocage = false
     /** « parent temps 45 » : la phrase d'un adulte est attendue (Apprendre.kt, idée 49) */
@@ -283,8 +281,7 @@ class TerminalActivity : Activity() {
         } else if (lanceur(intent) && !Parties.aucune(this)) {
             ouvrirMenu()                             // lancé depuis l'icône : le menu du jeu (idée 79)
         } else if (!jeu.existe) {
-            ecrire(t("term.oeuf"))
-            ecranIntro = 1                           // les écrans du début (Intro.kt), avant le nom de l'œuf
+            ecranIntro = 1                           // les 3 écrans du début (Intro.kt) ; 9 nov. : plus de nom demandé
             if (Parties.aucune(this)) ecranParent = 1   // idée 1 : « Qui est avec toi ? », la toute première fois
         } else {
             jeu.parlerSiSilencieux()
@@ -1447,10 +1444,6 @@ class TerminalActivity : Activity() {
             fermerPerdu()
             if (ligne.isEmpty()) { if (a == "camp") remplacerSaisie("cd ~"); return }
         }
-        if (!jeu.existe && nomPropose != null && ligne.isEmpty() && !menu.ouvert) {   // Entrée : le nom est confirmé
-            naitre(nomPropose!!)
-            return
-        }
         if (!jeu.existe && ecranIntro > 0 && ligne.isEmpty() && !menu.ouvert) {   // Entrée : l'écran suivant
             actionIntro(introVue?.actionFocus() ?: "suivant")
             return
@@ -1484,24 +1477,9 @@ class TerminalActivity : Activity() {
         if (ligne.isEmpty() || enCours) return
 
         if (!jeu.existe) {
-            // P1-6 : un mot tapé sur les premiers écrans fait passer à la suite (« jouer » n'est pas un nom) ; ensuite
-            // le nom est demandé, puis confirmé (oui / Entrée), ou remplacé par un autre mot
-            val nb = introVue?.nbEcrans() ?: 4
-            if (ecranIntro in 1 until nb && nomPropose == null) { actionIntro("suivant"); return }
-            val p = nomPropose
-            if (p != null && MenuParties.non(ligne)) {          // v3 (I14) : « non » → on redemande le nom
-                nomPropose = null
-                ecrire("> $ligne", 0xFF5FD787.toInt())
-                ecrire(t("intro.nom.tel"), Commandes.ROSE)
-                return
-            }
-            if (p == null || !MenuParties.oui(ligne)) {
-                nomPropose = Intro.nomPropre(ligne).ifEmpty { null }
-                ecrire("> $ligne", 0xFF5FD787.toInt())
-                nomPropose?.let { ecrire(t("intro.nom.confirme.tel", "nom" to it), Commandes.ROSE) } ?: ecrire(t("intro.nom.tel"), Commandes.ROSE)
-                return
-            }
-            naitre(p)
+            // P1-6 : un mot tapé sur les écrans du début fait passer à la suite (ce n'est jamais un nom) ; 9 nov. : le
+            // nom de l'œuf se donne plus tard, avec `echo <nom>`, quand l'œuf est arrivé (Intro.apresCommande)
+            actionIntro("suivant")
             return
         }
 
@@ -1774,18 +1752,16 @@ class TerminalActivity : Activity() {
         if (!enCours) handler.post { lancerAttente() }        // une commande du jeu (immédiate) : la suivante tout de suite
     }
 
-    /** L'œuf a son nom (confirmé) : la partie commence. */
-    private fun naitre(nom: String) {
-        nomPropose = null
+    /** Les 3 écrans du début sont passés : la partie commence au camp endormi. 9 nov. : sans nom (il viendra avec
+     *  `echo <nom>`, Intro.apresCommande) et sans œuf (il arrive avec `ls`). */
+    private fun naitre() {
         saisie.setText("")
-        jeu.nom = nom
+        jeu.nom = ""
         jeu.shiny = false   // le compagnon ne naît jamais shiny (pas de rareté)
-        Intro.nouvellePartie(jeu)              // l'œuf seul, sa liste de commandes ; le jeu s'ouvre petit à petit
+        Intro.nouvellePartie(jeu)              // le camp endormi, la liste de commandes ; le jeu s'ouvre petit à petit
         choixParent?.let { AideDouce.a(jeu).put("parent", it) }     // idée 1 : le choix reste sur l'appareil
         jeu.extra.put("born", System.currentTimeMillis() / 1000)      // la date d'éclosion (carte de visite)
         ecranIntro = 0
-        jeu.log(t("app.oeuf_apparu", "trait" to Regles.nomTrait(jeu.trait)))
-        jeu.dire(t("term.toc_toc"), 10)
         jeu.sauver()
         WidgetCreature.majTous(this)
         ecrire(t("intro.ou.tel") + "\n" + t("intro.astuce.0"), Commandes.ROSE)
@@ -2070,8 +2046,10 @@ class TerminalActivity : Activity() {
     /** Un bouton de l'intro (ou Entrée sur une ligne vide) : suivant, passer, ok. */
     private fun actionIntro(a: String) {
         when (a) {
-            "suivant" -> if (!jeu.existe && ecranIntro > 0) ecranIntro = minOf(ecranIntro + 1, introVue?.nbEcrans() ?: 4)
-            "passer" -> if (!jeu.existe && ecranIntro > 0) ecranIntro = introVue?.nbEcrans() ?: 4
+            "suivant" -> if (!jeu.existe && ecranIntro > 0) {          // le dernier écran lance la partie (9 nov.)
+                if (ecranIntro >= (introVue?.nbEcrans() ?: 3)) naitre() else ecranIntro++
+            }
+            "passer" -> if (!jeu.existe && ecranIntro > 0) naitre()
             "ok" -> if (jeu.existe && Intro.aMontrer(jeu) != null) {
                 if (Intro.aMontrer(jeu) == "fermer") AideDouce.marquerFermer(jeu)    // idée 9 : « Te revoilà ! » au retour
                 Intro.lu(jeu); jeu.sauver()
@@ -2537,7 +2515,8 @@ class TerminalActivity : Activity() {
     // ------------------------------------------------------------ affichage
     private fun rafraichir() {
         // (le nom de la créature n'est jamais coloré par un titre : c'est le PSEUDO qui l'est, voir Entrainement.pseudoColore)
-        titre.text = if (!jeu.existe) t("term.oeuf_mysterieux") else if (jeu.shiny) miseEnForme("§${jeu.titre()}§", null) else jeu.titre()
+        titre.text = if (!jeu.existe || (Intro.enCours(jeu) && Intro.faits(jeu).size < 2)) t("intro.e.titre.1")   // 9 nov. : pas d'œuf avant ls
+            else if (!Intro.nomme(jeu)) t("term.oeuf_mysterieux") else if (jeu.shiny) miseEnForme("§${jeu.titre()}§", null) else jeu.titre()
         // les 6 envies, puis l'état de la satiété et la petite assiette du jour (Satiete.kt)
         faim.text = if (jeu.existe) Envies.compact(jeu) + "  " + Envies.emoji(jeu) + "\n" + Satiete.ligneEtat(jeu) + "  🍽 " + Satiete.assiette(jeu)
             else jeu.texteFaim()
@@ -2550,7 +2529,7 @@ class TerminalActivity : Activity() {
         }
         // P2-5 : « INT AGI FOR END » n'apparaît qu'avec l'équipe (avant, c'est du jargon pour un enfant de 7 ans)
         stats.text = (if (Intro.ouvert(jeu, "equipe")) jeu.texteStats() else "") + if (Explo.captures(jeu).length() > 0 && Intro.ouvert(jeu, "equipe")) Guide.actuel(jeu).let { "  🧭 ${Guide.ICONES[it.type]} ${it.nom}" } else ""
-        invite.text = if (::menu.isInitialized && menu.ouvert) ">" else if (jeu.existe) "${shell.chemin()} $" else t("term.invite_nom")
+        invite.text = if (::menu.isInitialized && menu.ouvert) ">" else if (jeu.existe) "${shell.chemin()} $" else "$"
         val b = jeu.bulleActive()
         bulle.visibility = if (b.isEmpty()) View.GONE else View.VISIBLE
         bulle.text = Vert.rendre(b)

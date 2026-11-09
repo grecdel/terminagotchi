@@ -451,7 +451,7 @@ def infos_perdu(state, cwd=None):
         ou = str(ici).replace(str(Path.home()), "~", 1) if ici else "?"
     if intro.en_cours(state):
         p = intro.prochaine(state)
-        lecon = t("intro.liste.titre", n=len(intro.i_(state)["faits"]), total=len(intro.checklist()))
+        lecon = intro.titre_liste(state)
         tape = f"`{intro.commande_de(p)}`" if p else ""
         return ou, lecon, tape
     les, _ = lecons.lecon_courante(state)

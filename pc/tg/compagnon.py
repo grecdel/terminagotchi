@@ -69,7 +69,7 @@ def ligne(state):
     from . import intro
     if intro.en_cours(state):                      # l'œuf : la prochaine commande de sa liste
         p = intro.prochaine(state)
-        return f"{tete}  {fg(226)}🥚 " + t("intro.liste.titre", n=len(intro.i_(state)["faits"]), total=len(intro.checklist())) \
+        return f"{tete}  {fg(226)}🥚 " + intro.titre_liste(state) \
             + (f" ➜ `{intro.commande_de(p)}`" if p else "") + RESET
     from . import envies
     r = envies.rappel_recent(state)

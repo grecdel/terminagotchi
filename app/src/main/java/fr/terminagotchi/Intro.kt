@@ -6,19 +6,20 @@ import org.json.JSONObject
 /**
  * L'introduction du jeu et le déblocage progressif (portage de pc/tg/intro.py, mêmes règles, mêmes données).
  *
- * Nouvelle partie (le nom tapé dans le terminal de l'appli, TerminalActivity) :
- *  1. quelques écrans dessinés (IntroVue) : le Terminaworld s'est endormi, seules les commandes tapées dans l'invite
- *     de commande peuvent le réveiller ; Suivant ▶ / Passer ⏭ / Entrée, ou taper directement le nom de l'œuf ;
- *  2. l'œuf seul, l'invite et une petite liste de 4 commandes (pwd, ls, echo, whoami) ; chaque bonne commande fait
- *     réagir l'œuf (il remue, brille, se fêle : 3 fêlures) ; un petit tutoriel de l'invite arrive pas à pas
- *     (où taper et Entrée, une erreur n'est pas grave, ↑ rappelle, Tab complète) ;
- *  3. la 4e commande : l'œuf éclot, la créature dit merci, récapitule (le vrai sens des commandes), dit où on est (le
- *     camp de base, ce que pwd a montré) et la suite (le chapitre 1) ;
- *  4. le reste s'ouvre petit à petit (table « deblocages » de intro.json, la même que sur PC) : chaque fonction est
+ * Nouvelle partie, en 8 cases (maquette validée le 9 novembre : outils/ameliorations/allegement/planche_intro.png) :
+ *  1-3. trois écrans dessinés (IntroVue) : le Terminaworld vivant avec le nom des biomes, tout s'endort, les gardiens
+ *     dorment aussi (IntroGardiens : les bébés des biomes, Abyssor en silhouette) ; Suivant ▶ / Passer ⏭ / Entrée.
+ *     Le nom n'est PLUS demandé avant de jouer : la partie commence, elle s'appelle « Œuf » (intro.nom.attente) ;
+ *  4. le camp endormi : `pwd` le rallume (5) ; `ls` : SEULEMENT là, l'œuf arrive dans le nid, pixel par pixel (6) ;
+ *     `echo <nom>` lui donne son nom (Intro.nomEcho ; sinon « Et mon nom ? ») et il se fêle (7) ; `whoami` : il éclot
+ *     (8), la créature dit merci, récapitule (le vrai sens des commandes), dit où on est (le camp de base, ce que pwd
+ *     a montré) et la suite (le chapitre 1). Les 4 commandes se tapent dans l'ordre ; un petit tutoriel de l'invite
+ *     arrive pas à pas (où taper et Entrée, une erreur n'est pas grave, ↑ rappelle, Tab complète) ;
+ *  ensuite, le reste s'ouvre petit à petit (table « deblocages » de intro.json, la même que sur PC) : chaque fonction est
  *     présentée par la créature en un écran au moment où elle s'ouvre ; avant, ses commandes répondent gentiment
  *     « pas encore » et ses éléments d'écran sont cachés.
  * Données : assets/intro.json (copie exacte de donnees/intro.json, comme pc/tg/intro.json).
- * Sauvegarde : jeu.extra « intro » {etat: oeuf | fini, faits, evt, erreur, eveil (l'heure de la 1re commande, ms)} et « debloc » {mode: progressif | ancien | tout,
+ * Sauvegarde : jeu.extra « intro » {etat: oeuf | fini, faits, evt, erreur, eveil (l'heure de la 1re commande, ms), nomme} et « debloc » {mode: progressif | ancien | tout,
  * ouverts, presentes, file}. Une ancienne partie (sans « debloc ») : tout reste ouvert, rien n'est présenté.
  * « debloquer tout » (parents, tests) ouvre tout d'un coup après confirmation. Tests : tests/jvm/Intro.kt.
  * Le dessin passe par un Peintre (comme Carte.kt) : IntroVue sur un Canvas, le test JVM sur une image Java.
@@ -34,6 +35,8 @@ object Intro {
         Apparence.init(ctx)
         if (chargeur != null) return
         val app = ctx.applicationContext ?: ctx
+        if (IntroGardiens.lecteur == null)
+            IntroGardiens.lecteur = { nom -> try { app.assets.open(nom).bufferedReader().use { it.readText() } } catch (e: Exception) { null } }
         chargeur = { try { app.assets.open("intro.json").bufferedReader().use { it.readText() } } catch (e: Exception) { null } }
     }
 
@@ -102,10 +105,37 @@ object Intro {
     }.trim().take(16)
 
     fun nouvellePartie(jeu: Jeu) {
-        jeu.extra.put("intro", JSONObject().put("etat", "oeuf").put("faits", JSONArray()).put("erreur", false))
+        jeu.extra.put("intro", JSONObject().put("etat", "oeuf").put("faits", JSONArray()).put("erreur", false).put("nomme", false))
+        if (jeu.nom.isBlank()) jeu.nom = t("intro.nom.attente")   // 9 nov. : le nom viendra avec `echo <nom>`
         jeu.extra.put("debloc", JSONObject().put("mode", "progressif").put("ouverts", JSONArray()).put("presentes", JSONArray())
             .put("file", JSONArray()))
         Oeufs.choisir(jeu)                      // l'œuf reçoit son type, le compagnon qui en sortira le même
+    }
+
+    /** Vrai quand l'œuf a reçu son nom (echo <nom>), ou pour toute partie qui n'est pas dans l'intro. */
+    fun nomme(jeu: Jeu): Boolean {
+        val i = jeu.extra.optJSONObject("intro") ?: return true
+        return i.optString("etat") != "oeuf" || i.optBoolean("nomme") || (i.optJSONArray("faits")?.length() ?: 0) >= 3
+    }
+
+    private val PONCT = ".,!?¡¿。、！？"
+    private val PAS_DANS_NOM = "$><|&;`*?[]{}()=/\\\"'\n\t"
+
+    /** Le nom donné à l'œuf par `echo Noisette` (la commande entière), ou null si ce n'est pas un nom : `echo` tout
+     *  seul, une redirection ou une variable, une option seule, plus de 3 mots, un salut (`echo bonjour` : intro.json
+     *  « pas_un_nom »), moins de 2 lettres. Guillemets autour enlevés, 1re lettre en majuscule, 16 caractères au plus.
+     *  Même règle que intro.nom_echo sur PC (vecteurs communs : donnees/intro_noms.json). */
+    fun nomEcho(texte: String): String? {
+        val m = Regex("^\\s*(echo|write-output)\\b(.*)$", setOf(RegexOption.IGNORE_CASE, RegexOption.DOT_MATCHES_ALL)).find(texte) ?: return null
+        var reste = m.groupValues[2].trim()
+        if (reste.length >= 2 && reste.first() == reste.last() && reste.first() in "'\"") reste = reste.substring(1, reste.length - 1).trim()
+        if (reste.isEmpty() || reste.any { it in PAS_DANS_NOM }) return null
+        val pasNom = chaines(d().optJSONArray("pas_un_nom")).map { it.lowercase() }.toSet()
+        val mots = reste.split(Regex("\\s+")).filter { it.isNotEmpty() && !it.startsWith("-") && it.lowercase().trim { c -> c in PONCT } !in pasNom }
+        if (mots.isEmpty() || mots.size > 3) return null
+        val nom = nomPropre(mots.joinToString(" "))
+        if (nom.count { it.isLetter() } < 2) return null
+        return nom.take(1).uppercase() + nom.drop(1)
     }
 
     /** Vrai pendant que l'œuf attend ses commandes : il n'éclot pas avant la fin de la liste (l'XP s'arrête à 9). */
@@ -181,22 +211,37 @@ object Intro {
         val f = faits(jeu)
         // G-34 : `pwd; ls` compte pour les deux ; `PWD` (majuscules) ou une commande qui a échoué ne compte pas
         val parts = Verif.couper(ligne.trim(), listOf("&&", ";"))
-        val trouves = mutableListOf<Ligne>()
+        val trouves = mutableListOf<Pair<Ligne, String?>>()          // (ligne de la liste, nom donné)
+        var sansNom = false
         for ((k, p) in parts.withIndex()) {
             val c0 = if (k == parts.size - 1 || code == 0) code else null
             if ((c0 != null && c0 != 0) || !Verif.casseOk(Verif.premier(p.first))) continue
-            liste().firstOrNull { it.id !in f && it !in trouves && it.re.containsMatchIn(p.first.trim()) }?.let { trouves.add(it) }
+            val n0 = f.size + trouves.size                          // 9 nov. : dans l'ordre (pwd, ls, echo <nom>, whoami)
+            if (n0 >= liste().size) break
+            val c = liste()[n0]
+            if (!c.re.containsMatchIn(p.first.trim())) continue
+            var nom: String? = null
+            if (c.id == "echo") {
+                nom = nomEcho(p.first)
+                if (nom == null) { sansNom = true; break }          // `echo` tout seul, `echo bonjour` : « Et mon nom ? »
+            }
+            trouves.add(c to nom)
         }
+        if (sansNom) jeu.dire(t("intro.nom.encore"), 12)
         if (trouves.isEmpty()) return false
-        for (c in trouves) {
+        for ((c, nom) in trouves) {
             f.add(c.id)
             i.put("faits", JSONArray(f))
             val n = f.size
             i.put("evt", JSONArray().put(n).put(System.currentTimeMillis()))
-            if (n == 1 && i.optLong("eveil", 0L) == 0L) i.put("eveil", System.currentTimeMillis())   // le camp se rallume
+            if (n == 1 && i.optLong("eveil", 0L) == 0L) i.put("eveil", System.currentTimeMillis())   // pwd rallume le camp
+            if (nom != null) { jeu.nom = nom; i.put("nomme", true) }  // echo <nom> : l'œuf a son nom
             if (n >= liste().size) { finir(jeu); return true }
             jeu.anim = "oeuf_$n" to System.currentTimeMillis()
-            jeu.dire(t("intro.recoit", "pct" to Scenes.cible(n)), 8)
+            when (n) {
+                2 -> { jeu.log(t("app.oeuf_apparu", "trait" to Regles.nomTrait(jeu.trait))); jeu.dire(t("intro.c6.titre"), 8) }   // ls : l'œuf arrive
+                3 -> jeu.dire(t("intro.nomme", "nom" to jeu.nom), 10)
+            }
         }
         jeu.log("🥚 ✔ ${ligne.trim()}")
         return false
@@ -241,7 +286,8 @@ object Intro {
         return liste().joinToString("\n") { (if (it.id in f) "✔ " else if (it.id == p?.id) "➜ " else "· ") + t("intro.l.${it.id}") }
     }
 
-    fun titreListe(jeu: Jeu) = t("intro.liste.titre", "n" to faits(jeu).size, "total" to liste().size)
+    /** « Réveille le camp : 1/4 » tant que l'œuf n'est pas là (avant ls), puis « Nourris l'œuf : 2/4 ». */
+    fun titreListe(jeu: Jeu) = t(if (faits(jeu).size < 2) "intro.liste.camp" else "intro.liste.titre", "n" to faits(jeu).size, "total" to liste().size)
 
     // ---------------------------------------------------------------- les écrans à présenter (merci, fonctions)
     /** L'écran « Nouveau : … » à montrer, ou null. P2-6 : pas en pleine étape de leçon (il attend qu'elle soit réussie),
@@ -391,9 +437,7 @@ object Intro {
         val hScene = sc.h * e
         val titre = couper(p, t("intro.e.titre.$n"), l - 2 * MARGE, 17f, gras = true)
         val texte = couper(p, t("intro.e.texte.$n"), l - 2 * MARGE, 13.5f)
-        val dernier = n >= total
-        val nom = if (dernier) couper(p, t("intro.nom.tel"), l - 2 * MARGE, 13.5f, gras = true) else emptyList()
-        val h = MARGE + hScene + 16f + titre.size * 22f + 6f + texte.size * 19f + nom.size * 19f + 14f + 12f + 44f + MARGE
+        val h = MARGE + hScene + 16f + titre.size * 22f + 6f + texte.size * 19f + 14f + 12f + 44f + MARGE
         // 2. dessiner
         cadre(p, l, h)
         p.pixels(sc, (l - sc.w * e) / 2, MARGE, e)
@@ -401,16 +445,13 @@ object Intro {
         for (x in titre) { p.texte(x, MARGE, y + 17f, 17f, ROSE, gras = true); y += 22f }
         y += 6f
         for (x in texte) { Carte.texteVert(p, x, MARGE, y + 13.5f, 13.5f, Carte.TEXTE); y += 19f }
-        for (x in nom) { p.texte(x, MARGE, y + 13.5f, 13.5f, Carte.VERT, gras = true); y += 19f }
         y += 14f
-        for (k in 1..total) p.rect(l / 2 - total * 9f + (k - 1) * 18f + 5f, y, 8f, 8f, if (k == n) Carte.VERT else Carte.BORD)
+        for (k in 1..NB_ETAPES) p.rect(l / 2 - NB_ETAPES * 9f + (k - 1) * 18f + 5f, y, 8f, 8f, if (k == n) Carte.VERT else Carte.BORD)
         y += 12f
         val boutons = mutableListOf<Bouton>()
-        if (!dernier) {
-            boutons.add(bouton(p, t("intro.passer"), MARGE, y, false, "passer"))
-            val s = t("intro.suivant")
-            boutons.add(bouton(p, s, l - MARGE - (p.mesure(s, 13f, gras = true) + 26f), y, true, "suivant"))
-        }
+        boutons.add(bouton(p, t("intro.passer"), MARGE, y, false, "passer"))
+        val s = t("intro.suivant")
+        boutons.add(bouton(p, s, l - MARGE - (p.mesure(s, 13f, gras = true) + 26f), y, true, "suivant"))
         return Rendu(l, minOf(h, haut), boutons)
     }
 
@@ -496,7 +537,7 @@ object Intro {
     // absents) : les anciens dessins en pixels (dessinerEcranAncien, dessinerOeufAncien).
     /** La hauteur (dp) que l'intro peut prendre au-dessus de l'invite (TerminalActivity) ; 0 : pas de limite. */
     @Volatile var hauteurMax = 0f
-    const val NB_ETAPES = 5
+    const val NB_ETAPES = 8              // les 8 cases de l'intro (planche du 9 novembre)
     const val BLANC = 0xFFF0F0F5.toInt()
     const val GRIS = 0xFFC8C9D4.toInt()
     const val FOND2 = 0xFF0B0D12.toInt()
@@ -629,36 +670,66 @@ object Intro {
         return y
     }
 
-    /** Un écran du début (n de 1 à total) : l'illustration, les points, le titre, le texte, Passer / Suivant. */
+    /** Une étiquette (texte blanc gras sur un fond sombre) posée en (x, y) : coin haut-gauche, gardée dans la largeur l. */
+    private fun etiquette(p: Peintre, texte: String, x0: Float, y0: Float, l: Float, taille: Float = 10f) {
+        val w = p.mesure(texte, taille, gras = true) + 10f
+        val x = x0.coerceIn(2f, maxOf(2f, l - w - 2f))
+        p.rect(x, y0, w, taille + 7f, 0xC80A0E16.toInt())
+        p.texte(texte, x + 5f, y0 + taille + 2f, taille, BLANC, gras = true)
+    }
+
+    /** Le nom des biomes posé sur l'image du monde (case 1) : (texte, x, y) en fractions de l'image (intro.json). */
+    fun etiquettesMonde(): List<Triple<String, Float, Float>> {
+        val a = d().optJSONObject("illustrations")?.optJSONObject("monde")?.optJSONArray("etiquettes") ?: return emptyList()
+        return (0 until a.length()).map { a.getJSONArray(it) }.map { e ->
+            val ty = e.getString(0)
+            Triple(if (ty == "arbre") t("intro.monde.arbre") else Guide.nomType(ty), e.getDouble(1).toFloat(), e.getDouble(2).toFloat())
+        }
+    }
+
+    /** Un écran du début (n de 1 à 3) : l'illustration (1 : avec le nom des biomes ; 3 : les gardiens, dessinés par
+     *  IntroGardiens), les points des 8 cases, le titre, le texte, Passer / Suivant ▶ (le dernier lance la partie). */
     fun dessinerEcran(p: Peintre, n: Int, total: Int, l: Float): Rendu {
         val ecr = d().optJSONArray("ecrans")?.optJSONObject(n - 1)
         val nomImg = ecr?.optString("image") ?: ""
-        val img = if (nomImg.isNotEmpty()) Scenes.image(nomImg) else null
+        val gardiens = nomImg == "gardiens"
+        val img = if (gardiens) IntroGardiens.pix(384, 216) else if (nomImg.isNotEmpty()) Scenes.image(nomImg) else null
         if (img == null) return dessinerEcranAncien(p, n, total, l)
         val titre = couper(p, t("intro.e.titre.$n"), l - 2 * MARGE, 17f, gras = true)
-        val dernier = n >= total
-        val texte = couper(p, t("intro.e.texte.$n") + if (dernier) " " + t("intro.e.texte.oeuf") else "", l - 2 * MARGE, 13f)
-        val nom = if (dernier) couper(p, t("intro.nom.tel"), l - 2 * MARGE, 13.5f, gras = true) else emptyList()
-        val hTexte = 14f + 6f + 14f + titre.size * 23f + 4f + texte.size * 19f + nom.size * 20f + 14f + (if (dernier) 0f else 46f) + MARGE
-        val hI = hIllu(l, hTexte)
+        val texte = couper(p, t("intro.e.texte.$n"), l - 2 * MARGE, 13f)
+        val hTexte = 14f + 6f + 14f + titre.size * 23f + 4f + texte.size * 19f + 14f + 46f + MARGE
+        val hI = minOf(hIllu(l, hTexte), l * 9f / 16f)     // 9 nov. : l'image entière (16:9), comme la planche
         val h = hI + hTexte
         p.rect(0f, 0f, l, h, FOND2)
         if (hI > 0) {
-            illustration(p, img, l, hI, if (nomImg == "camp_dort") 0.12f else 0.5f)
+            if (gardiens) {                              // de gros pixels nets, centrés (cover)
+                val e = maxOf(l / img.w, hI / img.h)
+                val cw = l / e; val ch = hI / e
+                p.image(img, ((img.w - cw) / 2).toInt(), ((img.h - ch) / 2).toInt(), cw.toInt(), ch.toInt(), 0f, 0f, l, hI, false)
+                val vx = { fx: Float -> (fx * img.w - (img.w - cw) / 2) * e }
+                val vy = { fy: Float -> (fy * img.h - (img.h - ch) / 2) * e }
+                etiquette(p, t("intro.gardiens.coeur"), vx(IntroGardiens.COEUR_X + 0.06f), vy(IntroGardiens.COEUR_Y) - 9f, l)
+                etiquette(p, t("intro.gardiens.abyssor"), vx(0.62f), vy(0.88f), l)
+            } else {
+                val vers = illustration(p, img, l, hI, if (nomImg == "camp_dort") 0.12f else 0.5f)
+                if (nomImg == "monde") {
+                    val (tw, th) = Scenes.taille()
+                    for ((s, fx, fy) in etiquettesMonde()) {
+                        val (X, Y) = vers(fx * tw, fy * th)
+                        etiquette(p, s, X, Y.coerceIn(2f, hI - 19f), l)
+                    }
+                }
+            }
             p.rect(0f, hI, l, 1f, TRAIT)
         }
         var y = hI + 14f
         points(p, n, l, y)
         y = titreTexte(p, titre, texte, y + 20f, true)
-        y += 4f
-        for (x in nom) { p.texte(x, MARGE, y + 13.5f, 13.5f, Carte.VERT, gras = true); y += 20f }
-        y += 10f
+        y += 14f
         val boutons = mutableListOf<Bouton>()
-        if (!dernier) {
-            boutons.add(bouton(p, t("intro.passer"), MARGE, y, false, "passer"))
-            val s = t("intro.suivant")
-            boutons.add(bouton(p, s, l - MARGE - (p.mesure(s, 13f, gras = true) + 26f), y, true, "suivant"))
-        }
+        boutons.add(bouton(p, t("intro.passer"), MARGE, y, false, "passer"))
+        val s = t("intro.suivant")
+        boutons.add(bouton(p, s, l - MARGE - (p.mesure(s, 13f, gras = true) + 26f), y, true, "suivant"))
         return Rendu(l, h, boutons)
     }
 
@@ -670,13 +741,19 @@ object Intro {
         return x.substring(0, m.range.last + 1).trim() to x.substring(m.range.last + 1).trim()
     }
 
-    /** Le titre et le texte de l'étape (3 : le camp, 4 : l'œuf qui arrive, 5 : né) et le numéro de l'étape. */
-    fun etape(jeu: Jeu, m: Scenes.Moment): Triple<Int, String, String> = when (m.phase) {
-        "dort" -> Triple(3, t("intro.e.titre.3"), t("intro.camp.dort"))
-        "eveil" -> Triple(3, t("intro.e.titre.3"), t("intro.eveil"))
-        "ne" -> Triple(5, t("intro.merci.titre", "nom" to jeu.nom), t("intro.merci", "nom" to jeu.nom))
-        "eclot", "fondu" -> Triple(5, titreType(Oeufs.typeDe(jeu)).first, "✓ " + t("intro.eclot", "n" to liste().size, "total" to liste().size))
-        else -> titreType(Oeufs.typeDe(jeu)).let { (a, b) -> Triple(4, a, b + " " + t("intro.nourris")) }
+    /** (case, titre, texte) de l'intro au camp, au moment m : 4 le camp endormi (pwd) ; 5 il se rallume (ls) ; 6 l'œuf
+     *  arrive (echo <nom>) ; 7 il a son nom et se fêle (whoami) ; 8 il éclot, puis « … est né ! » (comme intro.etape). */
+    fun etape(jeu: Jeu, m: Scenes.Moment): Triple<Int, String, String> {
+        val nf = faits(jeu).size
+        return when {
+            m.phase == "dort" -> Triple(4, t("intro.c4.titre"), t("intro.c4.texte"))
+            m.phase == "ne" -> Triple(8, t("intro.merci.titre", "nom" to jeu.nom), t("intro.merci", "nom" to jeu.nom))
+            m.phase == "eclat" || m.phase == "eclot" || m.phase == "fondu" ->
+                Triple(8, titreType(Oeufs.typeDe(jeu)).first, "✓ " + t("intro.eclot", "n" to liste().size, "total" to liste().size))
+            nf <= 1 -> Triple(5, t("intro.c5.titre"), t("intro.c5.texte"))
+            nf == 2 -> Triple(6, t("intro.c6.titre"), t("intro.c6.texte"))
+            else -> Triple(7, t("intro.c7.titre"), t("intro.c7.texte", "nom" to jeu.nom))
+        }
     }
 
     /**
@@ -709,7 +786,7 @@ object Intro {
         p.rect(0f, 0f, l, h, FOND2)
         dessinerCamp(p, jeu, m, l, hI)
         if (hI > 0) {
-            if (m.phase == "telech" || m.phase == "eclat") reception(p, m.pct, l, hI)
+            if (m.phase == "telech" && m.pct > 0f && m.pct < 100f) reception(p, m.pct, l, hI)   // l'œuf arrive (ls)
             p.rect(0f, hI, l, 1f, TRAIT)
         }
         var y = hI + 14f

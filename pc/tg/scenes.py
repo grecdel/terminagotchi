@@ -252,7 +252,11 @@ def moment(state, t):
     pct = a if not depart else min(a, de + max(0.0, t - depart) * vit)
     k = int(t * 12)
     if not fini or pct < 100:
-        return {"phase": "telech", "te": t - depart, "pct": pct, "k": k}
+        m = {"phase": "telech", "te": t - depart, "pct": pct, "k": k}
+        if faits >= 3 and not fini:              # 9 nov. : le nom donné (echo), l'œuf se fêle (la fêlure éclaire)
+            x = t - tv if tv else 99
+            m.update(pct=100, fele=1, fk=int(x * 8) % 4 if 0 <= x < FELE else -1)
+        return m
     t100 = (depart or t) + (100 - de) / vit
     x = t - t100 if depart else 99
     ecl, eco, fon = tl.get("eclat", 0.7), tl.get("eclot", 1.4), tl.get("fondu", 1.6)
@@ -266,6 +270,8 @@ def moment(state, t):
         return {"phase": "fondu", "te": x, "pct": 100, "k": k, "f": x / fon}
     return {"phase": "ne", "te": x - fon, "pct": 100, "k": k}
 
+
+FELE = 1.2          # secondes : l'œuf se fêle quand il reçoit son nom (echo), la fêlure éclaire
 
 # l'éclosion, image par image : il se fêle (une, deux, trois fêlures qui éclairent), tremble, la coquille s'ouvre
 ECLOT = [(1, "craque", 0), (1, "craque", 1), (2, "craque", 0), (2, "craque", 1), (3, "craque", 0), (3, "craque", 1),
@@ -624,6 +630,15 @@ def scene(state, W, H, t, m=None, posx=0.5, pa=1.0):
         cal = g if rgba else [None if q is None else q + (255,) for q in g]
         _poser_ech(px, W, H, cal, gw, gh, cx - d / pa / 2, cy - d * 24.5 / 26, d / pa, d)
 
+    if ph == "telech" and m["pct"] <= 0:           # 9 nov. : pwd a rallumé le camp, l'œuf n'arrive qu'avec ls
+        return px
+    if ph == "telech" and m.get("fele"):            # echo <nom> : il a son nom, il se fêle
+        fk = m.get("fk", -1)
+        img = _oeuf(ty, m["fele"], "craque" if fk >= 0 else "", max(0, fk), D)
+        _lueur(px, W, H, ax, ay - D * 0.45, D * 0.9, (255, 240, 150), 0.3 if fk >= 0 else 0.15, pa)
+        if img:
+            poser_oeuf(img, ax, ay, D)
+        return px
     if ph == "telech":
         img = _oeuf(ty, 0, "", 0, D)
         g, gw, gh, F = img
@@ -672,6 +687,182 @@ def scene(state, W, H, t, m=None, posx=0.5, pa=1.0):
                 X, Y = vers(bb["x"] + dx, bb["bas"] - 60 + dy)
                 _lueur(px, W, H, X, Y, max(1.5, H * 0.022), (255, 247, 160), 1.2, pa)
     return px
+
+
+# ---------------------------------------------------------------- l'écran 3 : les gardiens dorment aussi (9 nov.)
+FOND_GARDIENS = (10, 14, 22)
+
+
+def _dormir(c, sat=0.45, lum=0.75, bleu=(20, 28, 60), m=0.2):
+    """Une couleur endormie (comme le camp endormi, un peu moins sombre)."""
+    gris = 0.299 * c[0] + 0.587 * c[1] + 0.114 * c[2]
+    return tuple(int(((gris + (c[i] - gris) * sat) * lum) * (1 - m) + bleu[i] * m) for i in range(3))
+
+
+def _bebe_espece(eid):
+    """Le bébé d'une espèce du bestiaire, endormi : ([(r, g, b, 255) ou None], w, h), ou None."""
+    from . import bestiaire as B
+    e = B.espece(eid)
+    im = B.image(e, "bebe") if e else None
+    if not im:
+        return None
+    w, h, o, pal = im
+    cal = []
+    for v in o[:w * h]:
+        cal.append(None if not v else _dormir(_hex(pal[v - 1])) + (255,))
+    return cal, w, h
+
+
+def _gardien_masque(gid):
+    """La forme du gardien qui dort (sa 1re image « dort », 48×48, anim/<id>.json) : [vrai si opaque], n."""
+    import base64
+    from . import equipe
+    d = equipe.donnees(gid)
+    if not d:
+        return None
+    a = d["anims"].get("adulte", {}).get("dort") or next(iter(d["anims"].values()))["statique"]
+    n = d.get("taille", 48)
+    brut = base64.b64decode(a["images"][0])
+    o = zlib.decompress(brut) if d.get("format") == "zlib" else brut
+    return [b != 0 for b in o[:n * n]], n
+
+
+def _zz(px, W, H, x, y, e, couleur):
+    """Un petit « z » de sommeil en pixels (4×4 fois e) posé en (x, y)."""
+    for dx, dy in ((0, 0), (1, 0), (2, 0), (3, 0), (2, 1), (1, 2), (0, 3), (1, 3), (2, 3), (3, 3)):
+        for i in range(e):
+            for j in range(e):
+                X, Y = int(x + dx * e + i), int(y + dy * e + j)
+                if 0 <= X < W and 0 <= Y < H:
+                    px[Y * W + X] = couleur
+
+
+def gardiens(W, H, pa=1.0):
+    """L'écran 3 de l'intro, dessiné par le code avec les vrais dessins du jeu : sur un fond de lignes de données,
+    les bébés des 9 biomes endormis (Zz), le cœur du monde, et dessous Abyssor, le gardien, en silhouette sombre qui
+    dort (pas effrayante : pas d'yeux, pas de couleur, juste une lueur violette). intro.json « gardiens »."""
+    from . import intro
+    cle = ("g", W, H, pa)
+    if cle in _CACHE:
+        return list(_CACHE[cle])
+    g = intro.donnees().get("illustrations", {}).get("gardiens", {})
+    px = [FOND_GARDIENS] * (W * H)
+    # les lignes de données (racines à circuits)
+    pas_ = max(4, int(W / 11))
+    for k, x in enumerate(range(pas_ // 2, W, pas_)):
+        for y in range(H):
+            px[y * W + x] = (26, 58, 40)
+        for y in range(int(H * (0.05 + (k * 37 % 80) / 400)), H, max(6, int(H * 0.26))):
+            for dx in (-1, 0, 1):
+                for dy in (-1, 0, 1):
+                    if (dx or dy) and 0 <= x + dx < W and 0 <= y + dy < H:
+                        px[(y + dy) * W + x + dx] = (40, 92, 60)
+    for j in range(int(W * H / 160)):                # une pluie de pixels verts, légère
+        X, Y = int(_h(j, 1, 7) * W), int(_h(j, 2, 7) * H)
+        px[Y * W + X] = (40 + int(60 * _h(j, 3, 7)), 120 + int(80 * _h(j, 4, 7)), 70)
+    # les créatures des biomes qui dorment
+    especes = g.get("especes", [])
+    n = max(1, len(especes))
+    slot = W * pa / (n + 0.6)
+    for k, eid in enumerate(especes):
+        b = _bebe_espece(eid)
+        if not b:
+            continue
+        cal, w, h = b
+        hb = min(H * 0.25, slot * 1.05)
+        if hb >= h:
+            hb = int(hb / h) * h                     # de gros pixels réguliers (un nombre entier de fois)
+        dh = hb
+        dw = w * (hb / h) / pa
+        cx = (slot * (k + 0.8)) / pa
+        bas = H * (0.47 + 0.07 * (k % 2))
+        _poser_ech(px, W, H, cal, w, h, cx - dw / 2, bas - dh, dw, dh)
+        e = max(1, int(H / 70))
+        _zz(px, W, H, cx + dw * 0.35, bas - dh - 5 * e, e, (143, 163, 200))
+    # le cœur du monde, puis Abyssor qui dort dessous
+    cx, cy, r = W / 2, H * 0.62, max(2.0, H * 0.045)
+    for y in range(H):
+        for x in range(W):
+            d = math.hypot((x + 0.5 - cx) * pa, y + 0.5 - cy)
+            if r * 0.75 <= d <= r * 1.15 or d <= r * 0.35:
+                px[y * W + x] = (95, 215, 135)
+    _lueur(px, W, H, cx, cy, r * 2.4, (95, 215, 135), 0.35, pa)
+    mq = _gardien_masque(g.get("gardien", "abyssor"))
+    if mq:
+        m, nn = mq
+        ys = [i // nn for i, v in enumerate(m) if v]
+        xs = [i % nn for i, v in enumerate(m) if v]
+        x0, x1, y0, y1 = min(xs), max(xs) + 1, min(ys), max(ys) + 1
+        cw, ch = x1 - x0, y1 - y0
+        dh = H * 0.30
+        dw = cw * (dh / ch) / pa
+        haut = cy + r * 1.6
+        sil = [(36, 30, 62) if m[(y0 + y) * nn + x0 + x] else None for y in range(ch) for x in range(cw)]
+        bord = [None] * (cw * ch)                    # le contour (une lueur violette, douce)
+        for y in range(ch):
+            for x in range(cw):
+                if sil[y * cw + x] is None and any(0 <= x + dx < cw and 0 <= y + dy < ch and sil[(y + dy) * cw + x + dx]
+                                                   for dx, dy in ((1, 0), (-1, 0), (0, 1), (0, -1))):
+                    bord[y * cw + x] = (120, 90, 200, 110)
+        _lueur(px, W, H, W / 2, haut + dh * 0.55, dh * 0.7, (70, 50, 130), 0.25, pa)
+        _poser_ech(px, W, H, bord, cw, ch, W / 2 - dw / 2, haut, dw, dh)
+        _poser_ech(px, W, H, sil, cw, ch, W / 2 - dw / 2, haut, dw, dh)
+        e = max(1, int(H / 60))
+        _zz(px, W, H, W / 2 + dw * 0.55, haut + dh * 0.15, e, (169, 155, 224))
+        _zz(px, W, H, W / 2 + dw * 0.55 + 5 * e, haut - 2 * e, e + (1 if H > 100 else 0), (169, 155, 224))
+    if len(_CACHE) > 24:
+        _CACHE.clear()
+    _CACHE[cle] = px
+    return list(px)
+
+
+_JETON = None
+
+
+def etiqueter(lignes_, etiquettes, C, decal=0):
+    """Pose de petites étiquettes (texte blanc sur fond sombre) sur une illustration en caractères (demi-blocs,
+    quadrants, sextants : une case = un caractère). etiquettes = [(texte, x, y)] (fractions de l'image, coin haut-gauche).
+    decal : la marge à gauche (en cases). Une vraie image (Kitty, sixel…) ne s'étiquette pas : voir intro.legende_monde."""
+    import re as _re
+    from .langue import largeur as _larg
+    global _JETON
+    _JETON = _JETON or _re.compile(r"\x1b\[[0-9;]*m|.", _re.S)
+    out = list(lignes_)
+    R = len(out)
+    style = "\x1b[0;1;38;2;255;255;255;48;2;10;14;22m"
+    for texte, fx, fy in etiquettes:
+        row = min(R - 1, max(0, int(fy * R)))
+        cells, code = [], ""
+        for tok in _JETON.findall(out[row]):
+            if tok.startswith("\x1b["):
+                code = tok
+            else:
+                cells.append([code, tok])
+        while cells and cells[-1][1] == "" :
+            cells.pop()
+        lab = " " + texte + " "
+        w = sum(max(1, _larg(c)) for c in lab)
+        if w > C:
+            continue
+        col = decal + int(fx * C)
+        col = max(decal, min(col, decal + C - w))
+        k = col
+        for ch in lab:
+            if k >= len(cells):
+                break
+            cw = max(1, _larg(ch))
+            cells[k] = [style, ch]
+            if cw == 2 and k + 1 < len(cells):
+                cells[k + 1] = [style, ""]
+            k += cw
+        s, avant = "", None
+        for c, gl in cells:
+            if c != avant:
+                s += ("\x1b[0m" if not c else c)
+                avant = c
+            s += gl
+        out[row] = s + "\x1b[0m"
+    return out
 
 
 # ---------------------------------------------------------------- les couleurs du terminal
@@ -1080,7 +1271,13 @@ def oeuf_seul(state, m, mode="24", marge=""):
             px = [fond] * (w * H)
             _poser(px, w, H, cal, w, h, 0, H - h)
             return lignes(px, w, H, mode, marge)
-    if ph == "telech":
+    if ph == "telech" and m["pct"] <= 0:
+        return []
+    if ph == "telech" and m.get("fele"):
+        fk = m.get("fk", -1)
+        g, gw, gh = _grille_oeuf(oeufs.image(ty, m["fele"], "craque" if fk >= 0 else "", max(0, fk)), oeufs.palette(ty))
+        cal = [None if p is None else p + (255,) for p in g]
+    elif ph == "telech":
         g, gw, gh = _grille_oeuf(oeufs.image(ty, 0), oeufs.palette(ty))
         cal = telecharge(g, gw, gh, m["pct"], m["k"], 1)
     else:

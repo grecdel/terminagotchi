@@ -1,23 +1,26 @@
 """L'introduction du jeu et le déblocage progressif (même règles sur Android : Intro.kt).
 
-Nouvelle partie (une vraie personne au clavier), en 5 étapes (maquettes docs/maquettes/intro_*.png, images :
-scenes.py) :
-  1. le Terminaworld vivant, 2. le monde endormi, 3. le camp de base endormi (3 écrans illustrés en demi-blocs ;
-     Entrée = suite, p = passer), puis le nom de l'œuf qui va arriver ;
-  3 bis. l'invite et une petite liste de 4 commandes (pwd, ls, echo, whoami) ; la 1re rallume le camp (l'écran de
-     l'ordinateur s'allume, la lumière remonte les câbles et l'arbre, la couleur revient) ;
-  4. l'œuf du type tiré arrive « en téléchargement » dans le nid (réception de l'œuf… 37 %) : chaque commande de la
-     liste en apporte un morceau ; un petit tutoriel de l'invite arrive pas à pas (où taper et Entrée, une erreur
-     n'est pas grave, ↑ rappelle, Tab complète) ;
-  5. la 4e commande : l'œuf est complet (petit éclat), il éclot sur le vrai bébé de l'espèce tirée, la créature dit
-     merci, explique ce qu'on vient de faire (les vraies commandes), où on est (le camp de base, ce que pwd a
-     montré) et la suite (le chapitre 1) ;
-  4. le reste du jeu s'ouvre petit à petit (table « deblocages » de intro.json, la même pour Android) : chaque
+Nouvelle partie (une vraie personne au clavier), en 8 cases (maquette validée le 9 novembre :
+outils/ameliorations/allegement/planche_intro.png ; images : scenes.py) :
+  1. le Terminaworld vivant, avec le nom des biomes ; 2. tout s'endort ; 3. les gardiens dorment aussi (les bébés des
+     biomes, Abyssor en silhouette sous le cœur du monde) : 3 écrans illustrés (Entrée = suite, p = passer). Le nom
+     n'est PLUS demandé avant de jouer ;
+  4. le camp de base endormi : seul l'ordinateur brille ; l'enfant tape `pwd` ;
+  5. `pwd` rallume le camp (l'écran de l'ordinateur s'allume, la lumière remonte les câbles et l'arbre) ; il tape `ls` ;
+  6. `ls` : SEULEMENT là, l'œuf du type tiré arrive dans le nid, pixel par pixel ; on lui donne un nom avec
+     `echo <nom>` (`echo` tout seul, ou un mot qui n'est pas un nom comme `echo bonjour` : « Et mon nom ? ») ;
+  7. le nom donné, l'œuf se fêle ; `whoami` ;
+  8. il éclot sur le vrai bébé de l'espèce tirée, la créature dit merci, explique ce qu'on vient de faire (les vraies
+     commandes), où on est (le camp de base, ce que pwd a montré) et la suite (le chapitre 1).
+  Les 4 commandes se tapent dans l'ordre (une commande de la liste tapée trop tôt est juste une commande) ; un petit
+  tutoriel de l'invite arrive pas à pas (où taper et Entrée, une erreur n'est pas grave, ↑ rappelle, Tab complète).
+  Ensuite, le reste du jeu s'ouvre petit à petit (table « deblocages » de intro.json, la même pour Android) : chaque
      fonction est présentée par la créature en un écran au moment où elle s'ouvre. Avant, ses commandes
      répondent gentiment « pas encore » (jamais une erreur).
 
 Données : intro.json (copie exacte de donnees/intro.json, comme app/src/main/assets/intro.json).
-Sauvegarde : state["intro"] = {etat: "oeuf" | "fini", faits: [ids], evt, erreur, eveil (l'heure de la 1re commande)}, state["debloc"] =
+Sauvegarde : state["intro"] = {etat: "oeuf" | "fini", faits: [ids], evt, erreur, eveil (l'heure de la 1re commande),
+nomme (le nom a été donné avec echo ; avant, la partie s'appelle « Œuf » : intro.nom.attente)}, state["debloc"] =
 {mode: "progressif" | "ancien", ouverts, presentes, file (les écrans à montrer : merci, merci2, puis les fonctions)}.
 Une ancienne partie (sans « debloc ») : tout reste ouvert (mode « ancien »), rien n'est présenté (pas d'écran
 « nouveau » pour ce qu'un joueur connaît déjà) ; ses fonctions sont notées au fur et à mesure.
@@ -88,10 +91,44 @@ def d_(state):
 
 
 def nouvelle_partie(state):
-    """Une nouvelle partie avec l'intro : l'œuf, la liste de commandes, tout le reste fermé."""
-    state["intro"] = {"etat": "oeuf", "faits": [], "evt": None, "erreur": False}
+    """Une nouvelle partie avec l'intro : le camp endormi, la liste de commandes, tout le reste fermé. Le nom viendra
+    avec `echo <nom>` (9 nov.) : en attendant, la partie s'appelle « Œuf » (intro.nom.attente)."""
+    state["intro"] = {"etat": "oeuf", "faits": [], "evt": None, "erreur": False, "nomme": False}
     state["debloc"] = {"mode": "progressif", "ouverts": [], "presentes": [], "file": []}
+    if not (state.get("name") or "").strip():
+        state["name"] = t("intro.nom.attente")
     return state
+
+
+def nomme(state):
+    """Vrai quand l'œuf a reçu son nom (echo <nom>), ou pour toute partie qui n'est pas dans l'intro."""
+    i = state.get("intro")
+    return not isinstance(i, dict) or i.get("etat") != "oeuf" or bool(i.get("nomme")) or len(i.get("faits", [])) >= 3
+
+
+def nom_echo(texte):
+    """Le nom donné à l'œuf par `echo Noisette` (texte : la commande entière), ou None si ce n'est pas un nom :
+    `echo` tout seul, une redirection ou une variable (`echo a > f`, `echo $HOME`), une option seule, plus de 3 mots, un
+    salut (`echo bonjour` : intro.json « pas_un_nom »), rien qui ressemble à des lettres. Les guillemets autour sont
+    enlevés, la 1re lettre mise en majuscule, 16 caractères au plus. Même règle sur Android (Intro.nomEcho), vecteurs
+    communs : donnees/intro_noms.json."""
+    m = re.match(r"^\s*(echo|write-output)\b(.*)$", texte or "", re.I | re.S)
+    if not m:
+        return None
+    reste = m.group(2).strip()
+    if len(reste) >= 2 and reste[0] == reste[-1] and reste[0] in "'\"":
+        reste = reste[1:-1].strip()
+    if not reste or any(c in reste for c in "$><|&;`*?[]{}()=/\\\"'\n\t"):
+        return None
+    pas_nom = {x.lower() for x in donnees().get("pas_un_nom", [])}
+    mots = [x for x in reste.split() if not x.startswith("-")]
+    mots = [x for x in mots if x.lower().strip(".,!?¡¿。、！？") not in pas_nom]
+    if not mots or len(mots) > 3:
+        return None
+    nom = nom_propre(" ".join(mots))
+    if sum(1 for c in nom if c.isalpha()) < 2:
+        return None
+    return nom[:1].upper() + nom[1:]
 
 
 def retient(state):
@@ -196,30 +233,51 @@ def tick(state, lignes):
             continue
         # G-34 : `pwd; ls` compte pour les deux ; `PWD` (majuscules) ou une commande qui a échoué ne compte pas
         from . import verif
-        trouves = []
+        trouves = []                               # [(ligne de la liste, nom donné ou None)]
+        sans_nom = False
         for m in verif.morceaux(l, None, core.statut_de(lignes, k)):
             if m.statut not in (None, 0) or not verif.casse_ok(verif.premier(m.texte)):
                 continue
-            c = next((c for c in checklist() if c["id"] not in i["faits"] and c not in trouves
-                      and re.search(c["re"], m.texte.strip(), re.I)), None)
-            if c is not None:
-                trouves.append(c)
+            n0 = len(i["faits"]) + len(trouves)  # 9 nov. : dans l'ordre (pwd, ls, echo <nom>, whoami)
+            if n0 >= len(checklist()):
+                break
+            c = checklist()[n0]
+            if not re.search(c["re"], m.texte.strip(), re.I):
+                continue
+            nom = None
+            if c["id"] == "echo":
+                nom = nom_echo(m.texte)
+                if nom is None:                    # `echo` tout seul, `echo bonjour` : « Et mon nom ? »
+                    sans_nom = True
+                    break
+            trouves.append((c, nom))
+        if sans_nom and not trouves:
+            core.say(state, t("intro.nom.encore"), 12)
+            continue
         if not trouves:
             if not core.commande_existe(cmd) and not cmd.startswith(("./", "/")) or core.statut_de(lignes, k):
                 i["erreur"] = True                 # une erreur : le petit tutoriel dit que ce n'est pas grave
             continue
-        for c in trouves:
+        for c, nom in trouves:
             i["faits"].append(c["id"])
             n = len(i["faits"])
             i["evt"] = [n, time.time()]
             if n == 1 and not i.get("eveil"):
-                i["eveil"] = i["evt"][1]          # la 1re commande rallume le camp (scenes.py)
+                i["eveil"] = i["evt"][1]          # pwd rallume le camp (scenes.py)
+            if nom:                                # echo <nom> : l'œuf a son nom
+                state["name"] = nom
+                i["nomme"] = True
             if n >= len(checklist()):
                 finir(state)
                 return list(lignes[k + 1:])
             state["anim"] = [f"oeuf_{n}", time.time()]
-            from . import scenes
-            core.say(state, t("intro.recoit", pct=scenes.cible(n)), 8)
+            if n == 2:                             # ls : l'œuf arrive dans le nid
+                core.log(state, t("app.oeuf_apparu", trait=core.nom_trait(state["trait"])))
+                core.say(state, t("intro.c6.titre"), 8)
+            elif n == 3:
+                core.say(state, t("intro.nomme", nom=state["name"]), 10)
+        if sans_nom:
+            core.say(state, t("intro.nom.encore"), 12)
         core.log(state, f"🥚 ✔ {l.strip()}")
     return []
 
@@ -253,6 +311,12 @@ def astuce(state):
     if len(i["faits"]) == 1:                 # C2 : l'invite « > » (une apostrophe pas fermée) se quitte avec Ctrl+C
         return t("intro.astuce.1") + " " + t("intro.astuce.ctrlc")
     return t(f"intro.astuce.{min(len(i['faits']), 3)}")
+
+
+def titre_liste(state):
+    """« Réveille le camp : 1/4 » tant que l'œuf n'est pas là (avant ls), puis « Nourris l'œuf : 2/4 »."""
+    n = len(i_(state)["faits"])
+    return t("intro.liste.camp" if n < 2 else "intro.liste.titre", n=n, total=len(checklist()))
 
 
 def lignes_liste(state, couleur=True):
@@ -386,36 +450,65 @@ def _terminal():
         return 100, 40
 
 
+NB_CASES = 8          # les 8 cases de l'intro (planche du 9 novembre) : 3 écrans, puis 5 au camp
+
+
 def texte_ecran(n):
-    """Le texte d'un écran du début (le dernier annonce l'œuf qui va arriver et demande son nom)."""
-    x = t(f"intro.e.texte.{n}")
-    if n == len(donnees()["ecrans"]):
-        x += " " + t("intro.e.texte.oeuf")
-    return x
+    """Le texte d'un écran du début (le monde, endormi, les gardiens)."""
+    return t(f"intro.e.texte.{n}")
 
 
-def points(n, total=5):
-    """Les 5 étapes de l'intro, comme les points du téléphone : ● l'étape du moment."""
+def points(n, total=NB_CASES):
+    """Les 8 cases de l'intro, comme les points du téléphone : ● la case du moment."""
     return " ".join((fg(84) + "●" if k == n else fg(240) + "•") for k in range(1, total + 1)) + RESET
 
 
+def etiquettes_monde():
+    """Le nom des biomes posé sur l'image du monde (case 1) : [(texte, x, y)] (x, y : fractions de l'image)."""
+    from . import guide
+    out = []
+    for ty, x, y in donnees().get("illustrations", {}).get("monde", {}).get("etiquettes", []):
+        out.append((t("intro.monde.arbre") if ty == "arbre" else guide.nom_type(ty), x, y))
+    return out
+
+
+def legende_monde():
+    """Les noms des biomes sur une ligne (quand l'image ne peut pas porter d'étiquettes : une vraie image, sixel…)."""
+    return " · ".join(x for x, _, _ in etiquettes_monde())
+
+
 def ecran_intro(n, total=None, cols=None, rangs=None):
-    """Un écran de l'intro : l'illustration en demi-blocs (sinon la petite scène en pixels), le titre, le texte (PC)."""
+    """Un écran de l'intro : l'illustration (sinon la petite scène en pixels), le titre, le texte (PC). Écran 1 : le nom
+    des biomes sur l'image ; écran 3 : les gardiens endormis, dessinés par le code (scenes.gardiens)."""
     from . import scenes
     e = donnees()["ecrans"][n - 1]
-    total = total or len(donnees()["ecrans"])
+    total = total or NB_CASES
     c, r = _terminal()
     cols, rangs = cols or c, rangs or r
     larg = max(30, min(cols - 6, 76))
     texte = envelopper(texte_ecran(n), larg)
     dessin = []
+    legende = []
     mode = scenes.mode_couleurs()
-    tl = scenes.taille(cols, rangs, len(texte) + 6)
-    if mode and tl and e.get("image") and scenes.disponible("camp" if e["image"] == "camp_dort" else e["image"]):
-        dessin = scenes.illustration(e["image"], tl[0], tl[1], mode, " ")       # image, sextants… (scenes.rendu)
+    tl = scenes.taille(cols, rangs, len(texte) + 7)
+    img = e.get("image")
+    if mode and tl and img == "gardiens":
+        dessin = scenes.peindre(lambda w, h, pa: scenes.gardiens(w, h, pa), tl[0], tl[1] // 2, None, mode, " ")
+        if scenes.rendu() not in scenes.GRAPHIQUES:
+            dessin = scenes.etiqueter(dessin, [(t("intro.gardiens.coeur"), 0.56, 0.62),
+                                               (t("intro.gardiens.abyssor"), 0.62, 0.9)], tl[0], 1)
+        else:
+            legende = ["   " + DIM + t("intro.gardiens.abyssor") + RESET]
+    elif mode and tl and img and scenes.disponible("camp" if img == "camp_dort" else img):
+        dessin = scenes.illustration(img, tl[0], tl[1], mode, " ")       # image, sextants… (scenes.rendu)
+        if img == "monde":
+            if scenes.rendu() not in scenes.GRAPHIQUES:
+                dessin = scenes.etiqueter(dessin, etiquettes_monde(), tl[0], 1)
+            else:
+                legende = ["   " + DIM + legende_monde() + RESET]
     elif mode:
         dessin = ["   " + l for l in scene(e["scene"])]
-    out = [""] + dessin + [""]
+    out = [""] + dessin + legende + [""]
     out.append(f"   {BOLD}{fg(213)}" + t(f"intro.e.titre.{n}") + RESET + f"   {points(n)}  {DIM}{n}/{total}{RESET}")
     for x in texte:
         out.append("   " + x)
@@ -487,7 +580,7 @@ def liste_courte(state, larg=200):
     deux si elle ne tient pas en larg colonnes). Renvoie une liste de lignes."""
     i = i_(state)
     morceaux = [(fg(78) + "✔ " if c["id"] in i["faits"] else DIM + "○ ") + commande_de(c) + RESET for c in checklist()]
-    titre = DIM + t("intro.liste.titre", n=len(i["faits"]), total=len(checklist())) + RESET
+    titre = DIM + titre_liste(state) + RESET
     une = titre + "   " + "   ".join(morceaux)
     if largeur(une) <= larg:
         return [une]
@@ -504,26 +597,37 @@ def ligne_reception(state, pct, larg=200):
     return barre_reception(pct, max(6, min(30, larg - lab)))
 
 
-def textes_etape(state, m, larg):
-    """Le titre et le texte de l'étape du moment (3 : le camp ; 4 : l'œuf du type tiré qui arrive ; 5 : né)."""
-    from . import guide, oeufs
+def etape(state, m):
+    """(case, titre, texte) de l'intro au camp, au moment m (scenes.moment) : 4 le camp endormi (pwd) ; 5 il se rallume
+    (ls) ; 6 l'œuf arrive (echo <nom>) ; 7 il a son nom et se fêle (whoami) ; 8 il éclot, puis « … est né ! ».
+    Même découpage sur Android (Intro.etape)."""
+    from . import oeufs
     ph = m["phase"]
-    ty = oeufs.type_de(state)
-    if ph in ("dort", "eveil"):
-        out = [f"{BOLD}{fg(213)}" + t("intro.e.titre.3") + f"{RESET}   " + points(3)]
-        coul = fg(78) if ph == "eveil" else ""
-        out += [coul + x + RESET for x in envelopper(t("intro.camp.dort" if ph == "dort" else "intro.eveil"), larg)]
-        return out
-    if ph == "ne":                          # « … est né ! » seulement quand le bébé est là (après le fondu)
-        return [f"{BOLD}{fg(213)}" + t("intro.merci.titre", nom=state.get("name", "")) + f"{RESET}   " + points(5)] + \
-            envelopper(t("intro.merci", nom=state.get("name", "")), larg)
-    titre, reste = titre_type(ty)
-    if ph in ("eclot", "fondu"):
+    nf = len(i_(state)["faits"])
+    nom = state.get("name", "")
+    if ph == "dort":
+        return 4, t("intro.c4.titre"), t("intro.c4.texte")
+    if ph == "ne":                           # « … est né ! » seulement quand le bébé est là (après le fondu)
+        return 8, t("intro.merci.titre", nom=nom), t("intro.merci", nom=nom)
+    if ph in ("eclat", "eclot", "fondu"):
         n = len(checklist())
-        return [f"{BOLD}{fg(213)}{titre}{RESET}   " + points(5), fg(78) + "✓ " + t("intro.eclot", n=n, total=n) + RESET]
-    out = [f"{BOLD}{fg(213)}{titre}{RESET}   " + points(4)]
-    out += envelopper(reste + " " + t("intro.nourris"), larg)
-    out.append(ligne_reception(state, m["pct"], larg))
+        return 8, titre_type(oeufs.type_de(state))[0], "✓ " + t("intro.eclot", n=n, total=n)
+    if nf <= 1:
+        return 5, t("intro.c5.titre"), t("intro.c5.texte")
+    if nf == 2:
+        return 6, t("intro.c6.titre"), t("intro.c6.texte")
+    return 7, t("intro.c7.titre"), t("intro.c7.texte", nom=nom)
+
+
+def textes_etape(state, m, larg):
+    """Le titre (et les points des 8 cases) et le texte de la case du moment ; la barre de réception pendant que
+    l'œuf arrive."""
+    n, titre, texte = etape(state, m)
+    out = [f"{BOLD}{fg(213)}{titre}{RESET}   " + points(n)]
+    coul = fg(78) if m["phase"] in ("eveil", "eclat", "eclot", "fondu") else ""
+    out += [coul + x + RESET for x in envelopper(texte, larg)]
+    if m["phase"] == "telech" and 0 < m["pct"] < 100:
+        out.append(ligne_reception(state, m["pct"], larg))
     return out
 
 
@@ -554,6 +658,8 @@ def duree_anim(nom):
         return scenes.camp().get("duree", 3.4) + scenes.cible(1) / vit + 0.3
     if n >= len(checklist()):
         return (100 - scenes.cible(n - 1)) / vit + tl.get("eclat", 0.7) + tl.get("eclot", 1.4) + tl.get("fondu", 1.6) + 0.8
+    if n == 3:                                   # echo <nom> : l'œuf se fêle (scenes.FELE)
+        return scenes.FELE + 0.3
     return (scenes.cible(n) - scenes.cible(n - 1)) / vit + 0.3
 
 
@@ -611,12 +717,13 @@ def lignes_ecran_oeuf(state, frame=0, image=None, quand=None, cols=None, rangs=N
     larg = max(30, min(74, cols - 6))
     i = i_(state)
     m = scenes.moment(state, quand)
-    tete = f"  {BOLD}{state['name']}{RESET}"
-    if m["phase"] not in ("dort", "eveil"):
-        tete += " · 🥚 " + t("intro.oeuf.titre", type=guide.nom_type(oeufs.type_de(state)))
+    # 9 nov. : pas de nom tant que l'œuf n'en a pas reçu un (echo <nom>), pas d'œuf avant ls
+    tete = f"  {BOLD}" + (state["name"] if nomme(state) else "") + RESET
+    if m["phase"] not in ("dort", "eveil") and len(i["faits"]) >= 2:
+        tete += (" · " if nomme(state) else "") + "🥚 " + t("intro.oeuf.titre", type=guide.nom_type(oeufs.type_de(state)))
     tete += f"  {DIM}" + t("app.caractere", trait=core.nom_trait(state["trait"])) + RESET
     textes = ["  " + x for x in textes_etape(state, m, larg)]
-    titre = t("intro.liste.titre", n=len(i["faits"]), total=len(checklist()))
+    titre = titre_liste(state)
     bas = ["", fg(226) + "── 🥚 " + titre + " " + "─" * max(3, 44 - largeur(titre)) + RESET] + lignes_liste(state) + [""]
     for x in envelopper("💡 " + astuce(state), larg):
         bas.append(f"  {fg(214)}{x}{RESET}")
@@ -628,30 +735,25 @@ def lignes_ecran_oeuf(state, frame=0, image=None, quand=None, cols=None, rangs=N
 
 
 def bloc_prompt(state, quand, cols=None, rangs=None):
-    """Ce que l'invite du shell montre pendant l'intro (comme intro_pc_terminal.png) : le camp en demi-blocs, puis
-    « Le camp de base se réveille… », « réception de l'œuf… 37 % ███░░ », la liste sur une ligne."""
-    from . import guide, oeufs, scenes
+    """Ce que l'invite du shell montre pendant l'intro (comme intro_pc_terminal.png) : le camp en demi-blocs, puis le
+    texte de la case (« Une petite lumière… tape pwd », « Le camp se rallume ! … tape ls », « Quelque chose arrive… »
+    avec la barre de réception de l'œuf, « Il t'écoute… tape whoami »), la liste sur une ligne, l'astuce."""
+    from . import scenes
     c, r = _terminal()
     cols, rangs = cols or c, rangs or r
     larg = max(30, cols - 6)
     m = scenes.moment(state, quand)
     ph = m["phase"]
-    i = i_(state)
-    ty = oeufs.type_de(state)
+    _n, _titre, texte = etape(state, m)
     out = []
-    if ph == "dort":
-        out += [f"  {fg(78)}{x}{RESET}" for x in envelopper(t("intro.camp.dort"), larg)]
-    elif ph == "eveil" or (ph == "telech" and len(i["faits"]) <= 1):
-        out += [f"  {fg(78)}{x}{RESET}" for x in envelopper(t("intro.camp.reveil"), larg)]
-    elif ph == "telech":
-        out += [f"  {fg(214)}{x}{RESET}" for x in envelopper(t("intro.type." + ty), larg)]
-    elif ph in ("eclot", "fondu"):
-        out.append(f"  {fg(78)}✓ " + t("intro.eclot", n=len(checklist()), total=len(checklist())) + RESET)
-    if ph not in ("dort", "eveil", "ne", "eclot", "fondu"):
+    if ph != "ne":
+        coul = fg(78) if ph in ("dort", "eveil", "eclat", "eclot", "fondu") else fg(214)
+        out += [f"  {coul}{x}{RESET}" for x in envelopper(texte, larg)]
+    if ph == "telech" and 0 < m["pct"] < 100:
         out.append("  " + ligne_reception(state, m["pct"], cols - 4))
     if ph != "ne":
         out += ["  " + x for x in liste_courte(state, cols - 4)]
-    if ph not in ("ne", "eclot", "fondu"):
+    if ph not in ("ne", "eclat", "eclot", "fondu"):
         # v3 (I11) : l'astuce du moment reste sous la liste pendant tout l'œuf (« pas grave », Ctrl+C, ↑, Tab),
         # pas seulement avant la première commande
         out += [f"  {fg(214)}{x}{RESET}" for x in envelopper("💡 " + astuce(state), larg)]
@@ -764,20 +866,18 @@ MOTS_PASSER = ("p", "passer", "skip", "q")
 
 
 def jouer_ecrans(demander, effacer=None):
-    """Montre les écrans de l'intro, puis demande le nom de l'œuf (avec confirmation). Un mot tapé sur un écran ne
-    devient JAMAIS le nom (« Je m'appelle jouer », simulation de Tom) : il fait juste passer à l'écran suivant."""
+    """Montre les 3 écrans du début (le monde, tout s'endort, les gardiens) ; Entrée = suite, p = passer. Le nom n'est
+    plus demandé ici (9 nov.) : l'enfant le donnera à l'œuf avec `echo <nom>`, quand l'œuf sera arrivé. Un mot tapé
+    sur un écran fait juste passer au suivant. Renvoie None."""
     n = len(donnees()["ecrans"])
     for k in range(1, n + 1):
         if effacer:
             effacer()
-        print("\n".join(ecran_intro(k, n)))
+        print("\n".join(ecran_intro(k)))
         r = demander(f"   {DIM}" + t("intro.touches.pc2") + f"{RESET} ").strip()
         if r.lower() in MOTS_PASSER:
             break
-        # v3 (I15) : le dernier écran dit « Donne-lui d'abord un nom ! » : un mot tapé là est le nom proposé
-        if k == n and nom_propre(r):
-            return demander_nom(demander, propose=nom_propre(r))
-    return demander_nom(demander)
+    return None
 
 
 def non(reponse):
@@ -792,17 +892,3 @@ def nom_propre(nom):
     """Le nom de l'œuf, sans caractères de contrôle (séquences d'échappement, retournement du texte), 16 au plus."""
     import unicodedata
     return "".join(c for c in (nom or "") if unicodedata.category(c) not in ("Cc", "Cf")).strip()[:16]
-
-
-def demander_nom(demander, propose=""):
-    """« Comment veux-tu appeler ton œuf ? » puis « Ton œuf s'appellera « X ». C'est bien ça ? » (Entrée = oui, un
-    autre mot = ce nom-là à la place, « non » = la question du nom revient)."""
-    from .accueil import oui
-    nom = propose
-    while True:
-        while not nom:
-            nom = nom_propre(demander(f"   {fg(226)}🥚 " + t("intro.nom.question") + f"{RESET} "))
-        r = nom_propre(demander(f"   {fg(213)}" + t("intro.nom.confirme", nom=nom) + f"{RESET} "))
-        if not r or oui(r):
-            return nom
-        nom = "" if non(r) else r          # v3 (I14) : « non » n'est pas un nom d'œuf, on redemande

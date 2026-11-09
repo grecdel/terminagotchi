@@ -1,6 +1,7 @@
 /*
  * Test JVM de l'introduction et du déblocage progressif (Intro.kt, IntroVue) : une NOUVELLE PARTIE comme dans l'appli
- * (le nom tapé : Intro.nouvellePartie), puis les commandes tapées une par une jusqu'à l'éclosion, sans XP offerte ;
+ * (Intro.nouvellePartie, sans nom : il se donne avec `echo <nom>`), puis les commandes tapées une par une, dans l'ordre
+ * (pwd rallume le camp, ls fait arriver l'œuf, echo le nomme, whoami le fait éclore), sans XP offerte ;
  * l'écran « merci » ; la table de déblocage (assets/intro.json = donnees/intro.json, la même que sur PC) dans l'ordre
  * de l'histoire ; « pas encore » ; la migration des anciennes parties ; « debloquer tout » ; les images de l'œuf
  * identiques au PC (python3 pc/tg/intro.py) ; les régions gardées grisées sur la carte ; les 14 langues ; et les
@@ -209,18 +210,25 @@ fun main(args: Array<String>) {
         "chaque fonction a son titre, son texte et ses commandes Android")
     verifier(Intro.liste().map { it.id } == listOf("pwd", "ls", "echo", "whoami"), "la liste de l'œuf : pwd, ls, echo, whoami")
     verifier(Intro.liste().all { it.re.containsMatchIn(Intro.commandeDe(it)) }, "chaque commande montrée est reconnue")
+    val vecteurs = JSONObject(File(depot, "donnees/intro_noms.json").readText()).getJSONArray("cas")
+    val faux = (0 until vecteurs.length()).map { vecteurs.getJSONObject(it) }.filter { v ->
+        Intro.nomEcho(v.getString("ligne")) != (if (v.isNull("nom")) null else v.getString("nom")) }.map { it.getString("ligne") }
+    verifier(vecteurs.length() >= 25 && faux.isEmpty(), "les ${vecteurs.length()} vecteurs communs des noms (donnees/intro_noms.json, comme sur PC)" +
+        if (faux.isEmpty()) "" else " : $faux")
 
-    println("2. Nouvelle partie (comme le menu, puis le nom tapé) : l'œuf seul")
+    println("2. Nouvelle partie (comme le menu, puis les 3 écrans du début) : le camp endormi, sans nom")
     Parties.nouvelle(app)
     val p = PartieI(app)
     p.jeu.changerLangue("fr")
-    p.jeu.nom = "Pixou"
-    Intro.nouvellePartie(p.jeu)          // ce que fait TerminalActivity quand le nom est tapé
+    p.jeu.nom = ""
+    Intro.nouvellePartie(p.jeu)          // ce que fait TerminalActivity après les 3 écrans (9 nov. : plus de nom demandé)
     p.jeu.sauver()
     val j = p.jeu
+    verifier(j.existe && j.nom == Langue.t("intro.nom.attente") && !Intro.nomme(j), "la partie commence sans nom (« Œuf » en attendant)")
     verifier(Intro.enCours(j) && Intro.fonctions().none { Intro.ouvert(j, it.id) }, "l'œuf attend, rien n'est ouvert")
+    verifier(Intro.etape(j, Scenes.moment(j, System.currentTimeMillis())).first == 4, "case 4 : le camp endormi, « Une petite lumière »")
     val liste = Vert0(Intro.texteListe(j))
-    verifier(listOf("pwd", "ls", "echo bonjour", "whoami").all { it in liste } && liste.startsWith("➜"), "la liste : ➜ pwd, · ls, · echo bonjour, · whoami")
+    verifier(listOf("pwd", "ls", "echo Noisette", "whoami").all { it in liste } && liste.startsWith("➜"), "la liste : ➜ pwd, · ls, · echo Noisette, · whoami")
     verifier(Intro.astuce(j) == Langue.t("intro.astuce.0"), "1re astuce : taper la commande en vert, puis Entrée")
     for (c in listOf("carte", "envies", "quetes", "guide", "troupe", "entrainement", "badges", "compte", "donjon", "ctf", "explique", "defi", "notif")) {
         val r = p.commandes.executer(c)?.texte ?: ""
@@ -231,26 +239,40 @@ fun main(args: Array<String>) {
     verifier(p.commandes.executer("caresse") != null && "pas encore" !in (p.commandes.executer("caresse")?.texte ?: ""),
         "les câlins à l'œuf restent possibles")
 
-    println("3. Chaque bonne commande fait réagir l'œuf ; il n'éclot qu'à la fin de la liste")
+    println("3. Dans l'ordre : pwd rallume le camp, ls fait arriver l'œuf, echo <nom> le nomme, whoami le fait éclore")
     p.tape("ls")
-    verifier(Intro.faits(j) == listOf("ls") && j.anim?.first == "oeuf_1", "ls : l'œuf remue et se fêle (oeuf_1)")
+    verifier(Intro.faits(j).isEmpty(), "ls avant pwd : juste une commande (la liste se fait dans l'ordre)")
+    p.tape("pwd")
+    verifier(Intro.faits(j) == listOf("pwd") && j.anim?.first == "oeuf_1", "pwd : le camp se rallume (oeuf_1)")
+    verifier(Intro.etape(j, Scenes.moment(j, System.currentTimeMillis() + 10_000)).first == 5 &&
+        Scenes.oeuf(Oeufs.typeDe(j), Scenes.moment(j, System.currentTimeMillis() + 10_000)) == null, "case 5 : le camp rallumé, pas encore d'œuf")
     verifier(j.stade == 0 && j.xp <= 9, "toujours un œuf (${j.xp} XP)")
     verifier(Intro.astuce(j) == Langue.t("intro.astuce.1"), "2e astuce : une erreur n'est pas grave")
     p.tape("blablabla")
     verifier(Intro.astuce(j) == Langue.t("intro.astuce.erreur"), "une commande inconnue : « ce n'est pas grave »")
-    for (c in listOf("pwd", "date", "uname", "id", "df", "uptime")) p.tape(c)
-    verifier(Intro.faits(j) == listOf("ls", "pwd") && j.xp <= 9 && j.niveau == 1, "plein de commandes : l'œuf garde 9 XP au plus (${j.xp})")
+    p.tape("echo Noisette")
+    verifier(Intro.faits(j).size == 1 && !Intro.nomme(j), "echo avant ls : pas de nom (l'œuf n'est pas encore là)")
+    p.tape("ls")
+    verifier(j.anim?.first == "oeuf_2" && j.journal.any { "œuf est apparu" in it }, "ls : l'œuf arrive dans le nid (oeuf_2), noté au journal")
+    for (c in listOf("date", "uname", "id", "df", "uptime")) p.tape(c)
+    verifier(Intro.faits(j) == listOf("pwd", "ls") && j.xp <= 9 && j.niveau == 1, "plein d'autres commandes : 9 XP au plus (${j.xp})")
+    verifier(Intro.etape(j, Scenes.moment(j, System.currentTimeMillis() + 10_000)).first == 6, "case 6 : « Quelque chose arrive… »")
     verifier(Intro.astuce(j) == Langue.t("intro.astuce.2"), "3e astuce : ↑ rappelle la commande d'avant")
     p.tape("echo")
-    verifier(Intro.faits(j).size == 2, "« echo » sans message ne compte pas")
-    p.tape("whoami")
-    verifier(j.anim?.first == "oeuf_3" && Intro.astuce(j) == Langue.t("intro.astuce.3"), "whoami : 3e fêlure ; 4e astuce : Tab complète")
+    verifier(Intro.faits(j).size == 2 && (j.bulleActive().contains("mon nom") || j.bulles.any { "mon nom" in it.first }), "« echo » sans nom : « Et mon nom ? »")
+    p.tape("echo bonjour")
+    verifier(Intro.faits(j).size == 2 && !Intro.nomme(j), "« echo bonjour » n'est pas un nom")
+    p.tape("echo Pixou")
+    verifier(Intro.faits(j).size == 3 && j.nom == "Pixou" && Intro.nomme(j) && j.anim?.first == "oeuf_3", "echo Pixou : l'œuf s'appelle Pixou et se fêle (oeuf_3)")
+    verifier(Intro.astuce(j) == Langue.t("intro.astuce.3"), "4e astuce : Tab complète")
+    val m7 = Scenes.moment(j, System.currentTimeMillis() + 10_000)
+    verifier(Intro.etape(j, m7).first == 7 && m7.fele == 1 && m7.pct == 100f, "case 7 : « Il t'écoute », l'œuf entier fêlé")
     verifier(Histoire.leconCourante(j)?.id == "t0" && j.niveau < (Histoire.leconCourante(j)?.niveau ?: 0), "la leçon 1 attend l'éclosion")
-    j.animer("content")                  // 8 nov. : le jour où whoami est la commande du jour, sa petite fête arrive juste après
+    j.animer("content")                  // 8 nov. : le jour où la commande du jour est celle de l'œuf, sa petite fête arrive juste après
     verifier(j.anim?.first == "oeuf_3", "la petite fête de la commande du jour (« content ») ne cache pas la fêlure de l'œuf")
 
-    println("4. echo bonjour : l'éclosion et l'écran merci")
-    p.tape("echo bonjour")
+    println("4. whoami : l'éclosion et l'écran merci")
+    p.tape("whoami")
     verifier(Intro.eclos(j) && j.niveau == 2 && j.stade == 1, "l'œuf a éclos : bébé, niveau 2")
     verifier(j.anim?.first == "eclosion", "animation de l'éclosion")
     verifier(Intro.ouvert(j, "histoire") && Intro.aMontrer(j) == "merci", "l'histoire s'ouvre ; l'écran « merci » attend")
@@ -430,23 +452,26 @@ fun main(args: Array<String>) {
     verifier(Scenes.moment(s7, 5000L).phase == "dort", "avant la 1re commande : le camp dort")
     Intro.i(s7).put("faits", JSONArray(listOf("pwd"))).put("evt", JSONArray().put(1).put(1_000_000L)).put("eveil", 1_000_000L)
     val ph = listOf(200L, 2000L, 3300L, 3600L).map { Scenes.moment(s7, 1_000_000L + it).phase }
-    verifier(ph == listOf("eveil", "eveil", "eveil", "telech"), "1re commande : le camp se réveille, puis l'œuf arrive ($ph)")
+    verifier(ph == listOf("eveil", "eveil", "eveil", "telech"), "pwd : le camp se réveille ($ph)")
     val e1 = Scenes.eveil(0.3f)!!.px.copyOf()
     val e2 = Scenes.eveil(2.0f)!!.px.copyOf()
     verifier(sat(e1) < sat(e2) && sat(e2) <= sat(campI.px) * 1.05, "la couleur revient peu à peu derrière la lumière")
     verifier(Scenes.lumieres(1.0f).size >= 3, "des lumières remontent les câbles et l'arbre")
     val pc = listOf(3500L, 4000L, 5000L, 9000L).map { Math.round(Scenes.moment(s7, 1_000_000L + it).pct) }
-    verifier(pc[0] < pc[1] && pc[1] < pc[2] && pc[2] == 37 && pc[3] == 37, "réception : 0 → 37 % après la 1re commande ($pc)")
+    verifier(pc == listOf(0, 0, 0, 0) && Scenes.oeuf(Oeufs.typeDe(s7), Scenes.moment(s7, 1_009_000L)) == null, "après pwd : pas encore d'œuf ($pc)")
+    Intro.i(s7).put("faits", JSONArray(listOf("pwd", "ls"))).put("evt", JSONArray().put(2).put(1_010_000L))
+    val pc2 = listOf(500L, 2000L, 10_000L).map { Math.round(Scenes.moment(s7, 1_010_000L + it).pct) }
+    verifier(pc2[0] in 1..99 && pc2[0] < pc2[1] && pc2[2] == 100, "ls : SEULEMENT là, l'œuf arrive pixel par pixel ($pc2)")
     val gT = IntArray(10 * 20) { 0xFF010101.toInt() }
     val o = IntArray(gT.size)
     Scenes.telecharge(gT, 10, 20, 50f, 3, 1, o)
     verifier((0 until 80).all { o[it] == gT[it] } && (90 until 100).any { o[it] == Scenes.VERT || o[it] == Scenes.VERT_PALE } && (120 until 200).all { (o[it] ushr 24) < 255 },
         "l'œuf à 50 % : le haut reçu, la ligne en cours en vert, le bas en contour")
-    verifier(Oeufs.aDesFins() && Scenes.oeuf(Oeufs.typeDe(s7), Scenes.moment(s7, 1_005_000L))?.second == 4, "l'écran de l'œuf utilise l'œuf fin (104×104)")
+    verifier(Oeufs.aDesFins() && Scenes.oeuf(Oeufs.typeDe(s7), Scenes.moment(s7, 1_012_000L))?.second == 4, "l'écran de l'œuf utilise l'œuf fin (104×104)")
     Intro.i(s7).put("faits", JSONArray(listOf("pwd", "ls", "echo", "whoami"))).put("etat", "fini").put("evt", JSONArray().put(4).put(2_000_000L))
     val fins = listOf(300L, 900L, 1500L, 3000L, 5000L).map { Scenes.moment(s7, 2_000_000L + it).phase }
-    verifier(fins == listOf("telech", "eclat", "eclot", "fondu", "ne"), "4e commande : 100 %, l'éclat, l'œuf se fêle et s'ouvre, le fondu digital, né ($fins)")
-    val ks = (0 until 14).map { Scenes.moment(s7, 2_000_000L + 1250L + it * 100L).k }
+    verifier(fins == listOf("eclat", "eclot", "eclot", "fondu", "ne"), "whoami : l'éclat, l'œuf se fêle et s'ouvre, le fondu digital, né ($fins)")
+    val ks = (0 until 14).map { Scenes.moment(s7, 2_000_000L + 701L + it * 100L).k }
     verifier(ks == ks.sorted() && ks.first() == 0 && ks.last() == Scenes.ECLOT.size - 1, "l'éclosion image par image : fêlures, tremblement, coquille ouverte")
     val bb = Carte.Pix(20, 20, IntArray(400) { 0xFF884422.toInt() })
     val vus = listOf(0.1f, 0.4f, 0.7f, 1f).map { f -> Scenes.fondu(bb, f, 0).px.count { (it ushr 24) == 255 } }
@@ -466,10 +491,13 @@ fun main(args: Array<String>) {
     for (code in Langue.LANGUES.keys) {
         Langue.definir(code)
         val textes = mutableListOf(Intro.texteListe(j), Intro.titreListe(j), Intro.astuce(j), Langue.t("intro.ou.tel"),
-            Langue.t("intro.nom.tel"), Langue.t("intro.suivant"), Langue.t("intro.passer"), Langue.t("intro.ok.tel"),
+            Langue.t("intro.nom.encore"), Langue.t("intro.nomme", "nom" to "Ana"), Langue.t("intro.suivant"), Langue.t("intro.passer"), Langue.t("intro.ok.tel"),
             Intro.bloque(t.jeu.also { Intro.deb(it).put("mode", "progressif").put("ouverts", JSONArray()) }, "carte") ?: "")
         for (n in 1..3) textes += listOf(Langue.t("intro.e.titre.$n"), Langue.t("intro.e.texte.$n"))
-        for (k in listOf("e.texte.oeuf", "camp.dort", "eveil", "nourris")) textes += Langue.t("intro.$k")
+        for (k in listOf("c4.titre", "c4.texte", "c5.titre", "c5.texte", "c6.titre", "c6.texte", "c7.titre", "monde.arbre", "gardiens.coeur", "gardiens.abyssor"))
+            textes += Langue.t("intro.$k")
+        textes += Langue.t("intro.c7.texte", "nom" to "Ana")
+        textes += Intro.etiquettesMonde().map { it.first }
         textes += Langue.t("intro.recoit", "pct" to 37) + Langue.t("intro.eclot", "n" to 4, "total" to 4)
         for (ty in Oeufs.types()) Intro.titreType(ty).let { (a, b) -> verifier(a.isNotEmpty() && b.isNotEmpty() && a != b, "$code : titre « $a »".take(60)) }
         for (c in listOf("merci", "merci2") + ids.drop(1)) Intro.contenu(j, c, "/x").let { textes += it.first; textes += it.second }
@@ -488,51 +516,39 @@ fun main(args: Array<String>) {
         Parties.nouvelle(app)
         val d = PartieI(app)
         d.jeu.changerLangue("fr")
-        d.jeu.nom = "Pixou"
+        d.jeu.nom = ""
         Intro.nouvellePartie(d.jeu)
-        for (n in 1..3) apercu(sortie, "tel_1_intro_$n", d.jeu) { Intro.dessinerEcran(it, n, 3, 360f) }
-        apercu(sortie, "tel_2_oeuf_liste", d.jeu) { Intro.dessinerOeuf(it, d.jeu, 360f) }
-        run {                                    // le déroulé en images, instant par instant (étapes 3 à 5)
-            val q = PartieI(app).jeu.also { it.changerLangue("fr"); it.nom = "Noisette"; Intro.nouvellePartie(it); Oeufs.choisir(it, "plante"); it.extra.put("espece_compagnon", "glandouille") }
+        for (n in 1..3) apercu(sortie, "tel_case_${n}_intro", d.jeu) { Intro.dessinerEcran(it, n, 3, 360f) }
+        run {                                    // le déroulé au camp, instant par instant (cases 4 à 8)
+            val q = PartieI(app).jeu.also { it.changerLangue("fr"); it.nom = ""; Intro.nouvellePartie(it); Oeufs.choisir(it, "plante"); it.extra.put("espece_compagnon", "glandouille") }
             val T = 3_000_000L
-            apercu(sortie, "scene_3_camp_dort", q) { Intro.dessinerOeuf(it, q, 360f, null, T) }
+            apercu(sortie, "tel_case_4_camp_dort", q) { Intro.dessinerOeuf(it, q, 360f, null, T) }
             Intro.i(q).put("faits", JSONArray(listOf("pwd"))).put("evt", JSONArray().put(1).put(T)).put("eveil", T)
-            for (ms in listOf(400L, 1100L, 1800L, 2600L)) apercu(sortie, "scene_3_reveil_%04d".format(ms), q) { Intro.dessinerOeuf(it, q, 360f, null, T + ms) }
-            for (ms in listOf(4200L, 6000L)) apercu(sortie, "scene_4_reception_%04d".format(ms), q) { Intro.dessinerOeuf(it, q, 360f, null, T + ms) }
-            Intro.i(q).put("faits", JSONArray(listOf("pwd", "ls", "echo"))).put("evt", JSONArray().put(3).put(T + 20_000))
-            apercu(sortie, "scene_4_reception_87", q) { Intro.dessinerOeuf(it, q, 360f, null, T + 25_000) }
+            for (ms in listOf(400L, 1800L)) apercu(sortie, "tel_case_5_reveil_%04d".format(ms), q) { Intro.dessinerOeuf(it, q, 360f, null, T + ms) }
+            apercu(sortie, "tel_case_5_camp_rallume", q) { Intro.dessinerOeuf(it, q, 360f, null, T + 8000) }
+            Intro.i(q).put("faits", JSONArray(listOf("pwd", "ls"))).put("evt", JSONArray().put(2).put(T + 10_000))
+            for (ms in listOf(1500L, 3000L)) apercu(sortie, "tel_case_6_oeuf_arrive_%04d".format(ms), q) { Intro.dessinerOeuf(it, q, 360f, null, T + 10_000 + ms) }
+            apercu(sortie, "tel_case_6_oeuf_la", q) { Intro.dessinerOeuf(it, q, 360f, null, T + 18_000) }
+            q.nom = "Noisette"
+            Intro.i(q).put("faits", JSONArray(listOf("pwd", "ls", "echo"))).put("evt", JSONArray().put(3).put(T + 20_000)).put("nomme", true)
+            apercu(sortie, "tel_case_7_fele_crac", q) { Intro.dessinerOeuf(it, q, 360f, null, T + 20_300) }
+            apercu(sortie, "tel_case_7_il_ecoute", q) { Intro.dessinerOeuf(it, q, 360f, null, T + 25_000) }
             Intro.i(q).put("faits", JSONArray(listOf("pwd", "ls", "echo", "whoami"))).put("etat", "fini").put("evt", JSONArray().put(4).put(T + 30_000))
             q.xp = 10
-            for (ms in listOf(1500L, 2250L, 2800L, 3100L, 3400L, 3700L, 4100L, 6000L))
-                apercu(sortie, "scene_5_eclosion_%04d".format(ms), q) { Intro.dessinerCarte(it, q, "merci", 360f, "/home/lea", T + 30_000 + ms) }
-            apercu(sortie, "scene_5_ici", q) { Intro.dessinerCarte(it, q, "merci2", 360f, "/home/lea", T + 40_000) }
+            for (ms in listOf(400L, 1200L, 2600L, 3400L, 6000L))
+                apercu(sortie, "tel_case_8_eclosion_%04d".format(ms), q) { Intro.dessinerCarte(it, q, "merci", 360f, "/home/lea", T + 30_000 + ms) }
+            apercu(sortie, "tel_case_8_ici", q) { Intro.dessinerCarte(it, q, "merci2", 360f, "/home/lea", T + 40_000) }
             Intro.hauteurMax = 430f
-            apercu(sortie, "scene_4_petit_ecran", q.also { Intro.i(it).put("etat", "oeuf").put("faits", JSONArray(listOf("pwd"))) }) { Intro.dessinerOeuf(it, q, 360f, null, T + 6000) }
+            apercu(sortie, "tel_petit_ecran_case_6", q.also { Intro.i(it).put("etat", "oeuf").put("faits", JSONArray(listOf("pwd", "ls"))).put("evt", JSONArray().put(2).put(T)) }) { Intro.dessinerOeuf(it, q, 360f, null, T + 6000) }
             Intro.hauteurMax = 0f
         }
-        for ((k, c) in listOf("ls", "pwd", "whoami").withIndex()) {
-            val avant = Intro.faits(d.jeu).size
-            d.tape(c)
-            val n = Intro.faits(d.jeu).size
-            apercu(sortie, "tel_3_fele_${k + 1}", d.jeu) { Intro.dessinerOeuf(it, d.jeu, 360f) }
-            for ((i, f) in Intro.reaction(n).withIndex())
-                apercu(sortie, "anim_oeuf_${n}_%02d".format(i), d.jeu) { Intro.dessinerOeuf(it, d.jeu, 360f, Intro.pixOeuf(f.first, f.second, f.third)) }
-            verifier(n == avant + 1, "$c : fêlure ${n}")
-        }
-        val reac = Intro.reaction(4)
-        val bebe = Sprites.bitmap(d.jeu.also { it.xp = 10 }, 1).let { b ->
-            val px = IntArray(b.width * b.height); b.getPixels(px, 0, b.width, 0, 0, b.width, b.height); Carte.Pix(b.width, b.height, px)
-        }
-        d.jeu.xp = 9
-        for ((i, f) in reac.withIndex())
-            apercu(sortie, "anim_eclosion_%02d".format(i), d.jeu) { Intro.dessinerOeuf(it, d.jeu, 360f, Intro.pixOeuf(f.first, f.second, f.third) ?: bebe) }
-        d.tape("echo bonjour")
-        apercu(sortie, "tel_4_eclosion", d.jeu) { Intro.dessinerOeuf(it, d.jeu, 360f, bebe) }
+        for (c in listOf("pwd", "ls", "echo Pixou", "whoami")) d.tape(c)
+        verifier(Intro.eclos(d.jeu) && d.jeu.nom == "Pixou", "pwd, ls, echo Pixou, whoami : Pixou est né")
         apercu(sortie, "tel_5_merci", d.jeu) { Intro.dessinerCarte(it, d.jeu, "merci", 360f, d.jeu.home.path) }
         apercu(sortie, "tel_6_ici", d.jeu) { Intro.dessinerCarte(it, d.jeu, "merci2", 360f, d.jeu.home.path) }
         apercu(sortie, "tel_7_nouveau_envies", d.jeu) { Intro.dessinerCarte(it, d.jeu, "envies", 360f) }
-        apercu(sortie, "tel_7_nouveau_equipe", d.jeu) { Intro.dessinerCarte(it, d.jeu, "equipe", 360f) }
         Langue.definir("ja")
+        apercu(sortie, "tel_8_ja_intro_1", d.jeu) { Intro.dessinerEcran(it, 1, 3, 360f) }
         apercu(sortie, "tel_8_ja_intro_3", d.jeu) { Intro.dessinerEcran(it, 3, 3, 360f) }
         Langue.definir("fr")
         verifier(File(sortie, "tel_5_merci.png").isFile, "aperçus écrits")

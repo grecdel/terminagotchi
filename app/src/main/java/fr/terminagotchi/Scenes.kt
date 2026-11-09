@@ -235,7 +235,10 @@ object Scenes {
 
     /** Où en est l'intro : phase dort | eveil | telech | eclat | eclot | ne ; te = secondes depuis le début de la phase ;
      *  pct = l'œuf reçu ; k = numéro d'image (le scintillement). */
-    class Moment(val phase: String, val te: Float, val pct: Float, val k: Int, val f: Float = 1f)
+    class Moment(val phase: String, val te: Float, val pct: Float, val k: Int, val f: Float = 1f, val fele: Int = 0, val fk: Int = -1)
+
+    /** secondes : l'œuf se fêle quand il reçoit son nom (echo), la fêlure éclaire (comme scenes.FELE) */
+    const val FELE = 1.2f
 
     fun moment(jeu: Jeu, t: Long): Moment {
         val i = Intro.i(jeu)
@@ -257,6 +260,10 @@ object Scenes {
         val a = cible(n)
         val pct = if (depart <= 0L) a.toFloat() else minOf(a.toFloat(), de + maxOf(0f, (t - depart) / 1000f) * vit)
         val k = ((t / 83) % 1_000_000L).toInt()
+        if (!fini && faits >= 3) {                   // 9 nov. : le nom donné (echo), l'œuf entier se fêle
+            val x = if (tv > 0) (t - tv) / 1000f else 99f
+            return Moment("telech", (t - depart) / 1000f, 100f, k, fele = 1, fk = if (x in 0f..FELE - 0.0001f) (x * 8).toInt() % 4 else -1)
+        }
         if (!fini || pct < 100f) return Moment("telech", (t - depart) / 1000f, pct, k)
         val eclat = tl.optDouble("eclat", 0.7).toFloat()
         val eclot = tl.optDouble("eclot", 1.4).toFloat()
@@ -419,6 +426,8 @@ object Scenes {
         }
         return when (m.phase) {
             "telech" -> {
+                if (m.pct <= 0f) return null                     // pwd a rallumé le camp : l'œuf n'arrive qu'avec ls
+                if (m.fele > 0) return img(m.fele, if (m.fk >= 0) "craque" else "", maxOf(0, m.fk))?.let { it to F }
                 val src = img(0, "", 0) ?: return null
                 val b = oeufBuf?.takeIf { it.w == src.w && it.h == src.h } ?: Carte.Pix(src.w, src.h, IntArray(src.px.size)).also { oeufBuf = it }
                 telecharge(src.px, src.w, src.h, m.pct, m.k, F, b.px)
@@ -440,7 +449,11 @@ object Scenes {
         val b = c.optDouble("oeuf", 0.5).toFloat()
         return when (m.phase) {
             "dort", "eveil" -> a
-            "telech" -> if (Intro.faits(jeu).size <= 1) { val f = (m.te / 1.2f).coerceIn(0f, 1f); a + (b - a) * f * f * (3 - 2 * f) } else b
+            "telech" -> when (Intro.faits(jeu).size) {   // l'œuf arrive avec ls : le cadre glisse alors vers le nid
+                0, 1 -> a
+                2 -> { val f = (m.te / 1.2f).coerceIn(0f, 1f); a + (b - a) * f * f * (3 - 2 * f) }
+                else -> b
+            }
             else -> b + (c.optDouble("ne", 0.45).toFloat() - b) * (m.te / 0.8f).coerceIn(0f, 1f)
         }
     }

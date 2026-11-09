@@ -3,8 +3,10 @@
   "L'introduction du jeu et le déblocage progressif (PC : pc/tg/intro.py, Android : Intro.kt).",
   "UNE seule source : donnees/intro.json, recopiée telle quelle dans pc/tg/intro.json et app/src/main/assets/intro.json",
   "(les tests pc/outils/test_intro.py et tests/jvm/Intro.kt vérifient que les copies sont identiques).",
-  "ecrans : les écrans de l'intro avant le nom (textes intro.e.titre.N / intro.e.texte.N ; image = l'illustration, scene = le dessin en pixels de secours).",
+  "ecrans : les 3 écrans du début, avant le camp (textes intro.e.titre.N / intro.e.texte.N ; image = l'illustration, scene = le dessin en pixels de secours) : 1 le Terminaworld vivant (étiquettes des biomes), 2 tout s'endort, 3 les gardiens dorment (dessiné par le code : les bébés des biomes, le cœur du monde, Abyssor en silhouette).",
   "illustrations : l'intro en images (PC : pc/tg/scenes.py, Android : Scenes.kt) ; coordonnées en pixels de l'image d'origine (taille).",
+  "  monde.etiquettes = [type ou « arbre », x, y] : le nom des biomes posé sur l'image du monde (x, y : fractions de l'image, coin haut-gauche de l'étiquette) ;",
+  "  gardiens = l'écran 3 : especes (le bébé dessiné pour chaque biome, dans l'ordre des types), gardien (dessiné en silhouette sombre qui dort).",
   "  camp : le camp de base (camp2.png) ; dort = comment le code l'endort (couleur, lumiere, bleu, melange) ; ordi, nid = centres ;",
   "  chemins = la lumière qui remonte les câbles puis l'arbre à la 1re commande (t = départ en s, vitesse en px/s) ; couleur_vitesse ;",
   "  fondu, fin = la couleur qui revient derrière (s) ; oeuf = le cadre 26×26 de l'œuf dans le nid ; bebe = où le bébé apparaît ;",
@@ -12,7 +14,8 @@
   "  cibles[n] = pourcentage reçu après n commandes de la liste, vitesse en %/s ; eclat (l'œuf complet brille), eclot (il",
   "  se fêle, la coquille éclate et s'ouvre) et fondu (la coquille se dissout en pixels verts qui",
   "  s'envolent, le bébé apparaît en fondu digital ; à la fin, seul le bébé reste dans le nid) en secondes.",
-  "checklist : les commandes qui nourrissent l'œuf (textes intro.l.<id> et intro.r.<id>) ; re = l'expression qui la reconnaît.",
+  "checklist : les 4 commandes du camp, DANS L'ORDRE (textes intro.l.<id> et intro.r.<id>) ; re = l'expression qui la reconnaît. pwd rallume le camp, ls fait arriver l'œuf (pixel par pixel), echo <nom> lui donne son nom (et le fêle), whoami le fait éclore.",
+  "pas_un_nom : les mots qui ne sont pas un nom d'œuf (« echo bonjour ») : l'œuf demande alors « Et mon nom ? » (intro.nom.encore).",
   "deblocages : chaque fonction du jeu et ce qui l'ouvre (toutes les conditions de « quand » doivent être vraies) :",
   "  eclos = l'œuf a éclos · niveau = niveau atteint · lecons = leçons finies · chapitres = chapitres finis ·",
   "  ailes = nombre d'ailes (chapitres 3 à 9) finies · captures = bestioles dans l'équipe · apres = fonctions déjà ouvertes.",
@@ -70,7 +73,7 @@
   {
    "n": 3,
    "scene": "invite",
-   "image": "camp_dort"
+   "image": "gardiens"
   }
  ],
  "illustrations": {
@@ -313,15 +316,83 @@
   "telechargement": {
    "cibles": [
     0,
-    37,
-    62,
-    87,
+    0,
+    100,
+    100,
     100
    ],
    "vitesse": 24,
    "eclat": 0.7,
    "eclot": 1.4,
    "fondu": 2.0
+  },
+  "monde": {
+   "etiquettes": [
+    [
+     "feu",
+     0.163,
+     0.271
+    ],
+    [
+     "ciel",
+     0.874,
+     0.271
+    ],
+    [
+     "machine",
+     0.742,
+     0.398
+    ],
+    [
+     "arbre",
+     0.407,
+     0.506
+    ],
+    [
+     "eau",
+     0.091,
+     0.597
+    ],
+    [
+     "ombre",
+     0.833,
+     0.796
+    ],
+    [
+     "glace",
+     0.061,
+     0.832
+    ],
+    [
+     "plante",
+     0.254,
+     0.85
+    ],
+    [
+     "roche",
+     0.528,
+     0.85
+    ],
+    [
+     "poison",
+     0.772,
+     0.868
+    ]
+   ]
+  },
+  "gardiens": {
+   "especes": [
+    "braisillon",
+    "gouttelin",
+    "givrichon",
+    "racinelle",
+    "cailloute",
+    "zapiot",
+    "noctilune",
+    "tiquetac",
+    "sulfurette"
+   ],
+   "gardien": "abyssor"
   }
  },
  "scenes": {
@@ -489,12 +560,54 @@
   },
   {
    "id": "echo",
-   "re": "^(echo|write-output)\\s+\\S"
+   "re": "^(echo|write-output)\\b"
   },
   {
    "id": "whoami",
    "re": "^whoami\\b"
   }
+ ],
+ "pas_un_nom": [
+  "bonjour",
+  "salut",
+  "coucou",
+  "hello",
+  "hi",
+  "hey",
+  "yo",
+  "hola",
+  "buenas",
+  "ciao",
+  "hallo",
+  "servus",
+  "olá",
+  "ola",
+  "oi",
+  "привет",
+  "здравствуйте",
+  "你好",
+  "您好",
+  "こんにちは",
+  "やあ",
+  "नमस्ते",
+  "हैलो",
+  "হ্যালো",
+  "নমস্কার",
+  "مرحبا",
+  "السلام",
+  "اهلا",
+  "halo",
+  "hai",
+  "selamat",
+  "سلام",
+  "ہیلو",
+  "nom",
+  "name",
+  "nombre",
+  "test",
+  "echo",
+  "bonsoir",
+  "merci"
  ],
  "deblocages": [
   {
