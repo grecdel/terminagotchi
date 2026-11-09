@@ -1308,7 +1308,9 @@ les réactions de l'œuf passent toujours avant la fête de la commande du jour.
 (`intro.nom_echo` / `Intro.nomEcho`, vecteurs `donnees/intro_noms.json`). Textes en 14 langues ; les anciennes clés
 `intro.*` restent pour la page « Essayer » du site (`site/src/autour_textes.js` recopié ; le site n'est pas redéployé).
 Tests : `test_intro.py`, `test_simulations_v3.py`, `tests/jvm/Intro.kt` ; scénarios du téléphone virtuel
-(`tests/scenario.sh`, `tests/vitrine.sh`) mis au nouvel ordre. Captures : `outils/ameliorations/allegement/captures_apres/intro/`.
+(`tests/scenario.sh`, `tests/vitrine.sh`) mis au nouvel ordre. Captures : `outils/ameliorations/allegement/captures_apres/intro/`. `tout.sh all`
+relancé le 9 nov. au soir, après rebase sur l'allègement de l'interface : tout vert (le test JVM Mission tapait encore
+`echo bonjour` pour l'œuf : corrigé en `echo Pixel`, relancé seul, vert).
 
 ## ✅ Allègement de l'écran — codé (9 novembre, variante B « terminal + mission » validée)
 Maquettes : outils/ameliorations/allegement/ (planche_interface.png, planche_interface_pc.png), réponses par défaut 4 à 7.

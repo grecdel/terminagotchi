@@ -85,7 +85,7 @@ fun main(args: Array<String>) {
         Tour.apresCommande(jeu, cmd, colle = false, rappel = false, hasard = false, cwd = shell.dossier, code = code)
     }
     verifierM(Mission.ligne(jeu) == null || Intro.enCours(jeu), "pendant l'œuf : pas de ligne 🎯 (l'œuf a sa liste)")
-    for (c in listOf("pwd", "ls", "echo bonjour", "whoami")) tape(c)
+    for (c in listOf("pwd", "ls", "echo Pixel", "whoami")) tape(c)      // 9 nov. : le nom de l'œuf se donne avec echo
     if (Intro.enCours(jeu)) Commandes(app, jeu, { shell.dossier }).executer("debloquer tout")
     val c = Histoire.leconCourante(jeu)
     val m = Mission.ligne(jeu)
