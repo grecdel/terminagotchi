@@ -39,7 +39,8 @@ def render(state, frame, interactif, anim=None, tic=None):
     if cid and not anim:                    # une nouveauté à présenter (merci, puis chaque fonction qui s'ouvre)
         return "\n".join(intro.lignes_ecran(state, cid)) + "\n"
     lvl = core.level(state["xp"])
-    st = core.stage(lvl)
+    if (state.get("config") or {}).get("affichage") == "pur":     # réglage « terminal pur » (variante A)
+        return render_pur(state, interactif)
     if anim:
         w = max(len(_ANSI.sub("", l)) for l in anim)
         sprite = list(anim)
@@ -49,46 +50,19 @@ def render(state, frame, interactif, anim=None, tic=None):
     lg = max(20, w)
     left = ["  " + line + " " * (lg - w) for line in sprite]
 
-    forme = core.forme(state, lvl)
+    # variante B (9 novembre) : le nom, UNE humeur (💭 si une envie devient forte) et UNE barre ; le reste est dans
+    # la fiche de la créature (touche [f]) et la leçon en détail (touche [+])
     lo, hi = 10 * (lvl - 1) ** 2, 10 * lvl ** 2
-    stats = "  ".join(f"{fg(v['color'])}{core.nom_stat(v['stat'], court=True)}{RESET} {BOLD}{state['stats'][v['stat']]}{RESET}"
-                      for v in core.CATEGORIES.values())
-    nb_sk = len(state["skills"])
-    xp_l = t("app.xp")
-    jauges = envies.compact(state)                # les 6 envies, en petit (tg envies : le détail)
-    m = envies.moment(state)
-    right = [
-        (arc_en_ciel(state["name"] + " ✨") if state.get("shiny") else f"{BOLD}{state['name']}{RESET}")
-        + " · " + t("app.forme_niveau", forme=forme, n=lvl)
-        + (" " + entrainement.titre_colore(state) if entrainement.titres(state) else ""),
-        f"{DIM}" + t("app.caractere", trait=core.nom_trait(state["trait"])) + RESET,
-        f"{xp_l} {sprites.bar(state['xp'] - lo, hi - lo)} {state['xp']}/{hi}",
-    ]
+    nom = arc_en_ciel(state["name"] + " ✨") if state.get("shiny") else f"{BOLD}{state['name']}{RESET}"
+    humeur = envies.emoji(state) + (f" {fg(214)}💭{RESET}" if intro.ouvert(state, "envies") and envies.pensee(state) else "")
+    right = [nom + "  " + humeur,
+             f"{DIM}" + t("dress.niv", n=lvl) + f"{RESET} {sprites.bar(state['xp'] - lo, hi - lo)} {DIM}{state['xp']}/{hi}{RESET}"]
     nuage = recense.nuage_pc(state)              # idée 74 : hors ligne / envoi en cours (rien quand tout est à jour)
     if nuage:
-        import shutil
-        place = shutil.get_terminal_size((80, 24)).columns - (lg + 2) - largeur(_ANSI.sub("", right[0])) - 2
-        if largeur(_ANSI.sub("", nuage)) + 3 <= place:
-            right[0] += "   " + nuage
-        else:
-            right.insert(1, nuage)
-    attente = satiete.ligne_attente(state)       # 2 nov. : la barre bloquée (159/160) dit pourquoi, et pour combien de jours
-    if attente:
-        import shutil
-        place = shutil.get_terminal_size((80, 24)).columns - (lg + 2) - largeur(_ANSI.sub("", right[-1])) - 2
-        if largeur(attente) <= place:
-            right[-1] += f"  {fg(114)}{attente}{RESET}"
-        else:
-            right.append(f"{fg(114)}{attente}{RESET}")
-    if intro.ouvert(state, "envies"):             # les jauges des envies arrivent avec leur présentation
-        right += [f"{jauges[0]}  {DIM}{envies.humeur(state)}{RESET}",
-                  jauges[1] + (f"  {fg(214)}💭 {envies.ICONES[m['e']]} {envies.nom(m['e'])}{RESET}" if m else ""),
-                  f"{satiete.ligne_etat(state)}  {DIM}🍽{RESET} {satiete.assiette(state)}"]   # l'assiette du jour
-    if intro.ouvert(state, "equipe"):             # P2-5 : INT AGI FOR END (du jargon à 7 ans) avec l'équipe seulement
-        right += [stats, t("app.competences_bestioles", n=nb_sk, b=sum(state["collection"].values()))]
-    if state.get("captures") and intro.ouvert(state, "equipe"):     # le guide (tg guide) : en tête de l'équipe
-        gm = guide.actuel(state)
-        right.append(f"🧭 {guide.ICONES[gm[2]]} {gm[1]} {DIM}· {t('guide.talent.' + guide.TALENTS[gm[2]])}{RESET}")
+        right.append(nuage)
+    haut = max(len(left), len(right))
+    decal = max(0, (haut - len(right)) // 2)     # le nom et la barre à mi-hauteur du dessin
+    right = [""] * decal + right
     n = max(len(left), len(right))
     left += [" " * (lg + 2)] * (n - len(left))
     right += [""] * (n - len(right))
@@ -96,22 +70,110 @@ def render(state, frame, interactif, anim=None, tic=None):
 
     b = core.bulle_courante(state)
     if b:
-        wrapped = envelopper(b[0], 52)
+        wrapped = envelopper(b[0], 72)
         lines.append(f"  {BOLD}» {wrapped[0]}{RESET}")
         lines += [f"    {BOLD}{x}{RESET}" for x in wrapped[1:]]
     else:
         lines.append("")
+    d = state.get("dressage")
+    if d:                                     # le monstre : une ligne (sa fenêtre à part fait le reste)
+        lines.append(f" {fg(196)}{BOLD}" + t("app.monstre_fenetre", nom=d["espece"]) + f"{RESET} "
+                     f"{DIM}" + t("app.monstre_fenetre.fermee") + RESET)
+    from . import mission
+    mi = mission.ligne(state)
+    if mi:                                    # 🎯 ce que je dois taper maintenant (le détail : [+])
+        lines.append("")
+        for k, x in enumerate(envelopper(mi, 78)):
+            lines.append(f" {fg(226) if k == 0 else ''}{'' if k == 0 else '   '}{BOLD if k == 0 else ''}{x}{RESET}")
+    lines.append(title_line(t("app.journal")))
+    if state["total"] == 0:
+        lines.append(" " + t("app.journal.vide"))
+        if SYS_WIN:
+            lines.append(" " + t("app.journal.terminal"))
+        elif not compagnon.est_installe():
+            lines.append(f" {fg(226)}" + t("app.journal.compagnon") + RESET)
+    lines += [" " + l for l in state["log"][-3:]]
+    if interactif:
+        lines.append(f"{fg(244)} " + touches_b(state) + RESET)
+        lines.append(f"{fg(244)} " + touches(state) + RESET)
+    else:
+        lines.append(f"{DIM} " + t("app.digere_ferme") + RESET)
+    return "\n".join(lines) + "\n"
 
+
+def render_tout(state, frame, interactif, anim=None, tic=None):
+    """Tout ce que la fenêtre `tg` permet de lire : l'écran principal, puis [+] la leçon en détail et [f] la fiche
+    de la créature (les tests vérifient que rien n'a été perdu à l'allègement)."""
+    return "\n".join([render(state, frame, interactif, anim, tic)] + lignes_lecon(state) + lignes_fiche(state)) + "\n"
+
+
+def render_pur(state, interactif):
+    """Réglage « terminal pur » (variante A, pour les grands) : le journal comme un terminal, la créature qui parle en
+    une ligne, la consigne « ➜ … » ; tout le reste derrière les touches."""
+    from . import compagnon as C, mission
+    lines = [title_line("Terminagotchi")]
+    lines += [" " + l for l in state["log"][-8:]]
+    b = core.bulle_courante(state)
+    if b:
+        lines.append(f" {fg(sprites.body_color(state))}{C.visage(state)}{RESET} {BOLD}{state['name']}{RESET} : {b[0]}")
+    mi = mission.ligne(state)
+    if mi:
+        lines.append(f"   {fg(226)}➜ {mi}{RESET}")
+    if interactif:
+        lines.append(f"{fg(244)} " + touches_b(state) + RESET)
+        lines.append(f"{fg(244)} " + touches(state) + RESET)
+    return "\n".join(lines) + "\n"
+
+
+def lignes_fiche(state):
+    """La fiche de la créature (touche [f], et sur le téléphone : toucher la créature) : nom, forme, niveau, caractère,
+    XP (et l'XP mise de côté), les 6 envies, la satiété et l'assiette du jour, les forces, les bestioles, le guide,
+    ce que je digère. Tout ce que l'écran principal montrait avant l'allègement."""
+    lvl = core.level(state["xp"])
+    forme = core.forme(state, lvl)
+    lo, hi = 10 * (lvl - 1) ** 2, 10 * lvl ** 2
+    stats = "  ".join(f"{fg(v['color'])}{core.nom_stat(v['stat'], court=True)}{RESET} {BOLD}{state['stats'][v['stat']]}{RESET}"
+                      for v in core.CATEGORIES.values())
+    lines = [title_line(t("ui.fiche.titre", nom=state["name"]), 213),
+             (arc_en_ciel(state["name"] + " ✨") if state.get("shiny") else f"{BOLD}{state['name']}{RESET}")
+             + " · " + t("app.forme_niveau", forme=forme, n=lvl)
+             + (" " + entrainement.titre_colore(state) if entrainement.titres(state) else ""),
+             f"{DIM}" + t("app.caractere", trait=core.nom_trait(state["trait"])) + RESET,
+             f"{t('app.xp')} {sprites.bar(state['xp'] - lo, hi - lo)} {state['xp']}/{hi}"]
+    attente = satiete.ligne_attente(state)       # 2 nov. : la barre bloquée (159/160) dit pourquoi, et pour combien de jours
+    if attente:
+        lines.append(f"{fg(114)}{attente}{RESET}")
+    if intro.ouvert(state, "envies"):             # les jauges des envies arrivent avec leur présentation
+        m = envies.moment(state)
+        jauges = envies.compact(state)
+        lines += ["", f"{jauges[0]}  {DIM}{envies.humeur(state)}{RESET}",
+                  jauges[1] + (f"  {fg(214)}💭 {envies.ICONES[m['e']]} {envies.nom(m['e'])}{RESET}" if m else ""),
+                  f"{satiete.ligne_etat(state)}  {DIM}🍽{RESET} {satiete.assiette(state)}"]   # l'assiette du jour
+    if intro.ouvert(state, "equipe"):             # P2-5 : INT AGI FOR END (du jargon à 7 ans) avec l'équipe seulement
+        lines += ["", stats, t("app.competences_bestioles", n=len(state["skills"]), b=sum(state["collection"].values()))]
+    if state.get("captures") and intro.ouvert(state, "equipe"):     # le guide (tg guide) : en tête de l'équipe
+        gm = guide.actuel(state)
+        lines.append(f"🧭 {guide.ICONES[gm[2]]} {gm[1]} {DIM}· {t('guide.talent.' + guide.TALENTS[gm[2]])}{RESET}")
+    if intro.ouvert(state, "equipe"):             # « Ce que je digère (Ubuntu) : git, curl » : plus tard (P2-5)
+        lines.append(title_line(t("app.digere", os=DISTRO or OS_NAMES[OSK])))
+        lc = max(largeur(core.nom_stat(v["stat"])) for v in core.CATEGORIES.values()) + 2
+        for k, v in core.CATEGORIES.items():
+            lines.append(f" {fg(v['color'])}{ajuster(core.nom_stat(v['stat']), lc)}{RESET}{core.EXAMPLES[OSK][k]}")
+    lines.append(f"{DIM}" + t("ui.fiche.album_pc") + RESET)
+    return lines
+
+
+def lignes_lecon(state):
+    """La leçon en détail (touche [+], `tg detail`, et sur le téléphone : le + de la ligne 🎯) : le défi, le terrain
+    effacé, le chapitre, le texte, la commande, 🧑 pour les grands, 💻 dans un vrai terminal, 💡 les options, 📁 d'où
+    la taper, l'astuce, l'indice ; sans leçon : le bandeau de l'histoire ; la quête suivie ; et ce que le jeu a dit
+    après la dernière commande (le terminal de l'enfant n'en montre que 2 lignes)."""
+    lvl = core.level(state["xp"])
+    lines = []
     d = state["defi"]
     if d:
         reste = max(0, core.defi_duree(state) - (time.time() - d["start"]))
         lines.append(title_line(t("app.defi", cmd=piege(d["cmd"]), s=f"{reste:.0f}"), 226))
-
-    d = state.get("dressage")
-    if d:
-        lines.append(f" {fg(196)}{BOLD}" + t("app.monstre_fenetre", nom=d["espece"]) + f"{RESET} "
-                     f"{DIM}" + t("app.monstre_fenetre.fermee") + RESET)
-
     perdu = state.get("terrain_perdu")
     if perdu:                                 # le terrain a été effacé : la commande pour le reconstruire
         lines.append(title_line(t("app.terrain.titre"), 196))
@@ -171,26 +233,18 @@ def render(state, frame, interactif, anim=None, tic=None):
     suivie = quetes.ligne_suivie(state) if intro.ouvert(state, "quetes") else None
     if suivie:
         lines.append(f" {fg(214)}{suivie}{RESET}")
+    dit = state.get("annonces_detail") or []
+    if dit:                                   # ce que le terminal de l'enfant n'a pas montré (2 lignes au plus)
+        lines.append(title_line(t("ui.detail.dit")))
+        lines += [" " + x for x in dit]
+    if not lines:
+        lines.append(" " + t("ui.lecon.vide"))
+    return lines
 
-    if intro.ouvert(state, "equipe"):             # « Ce que je digère (Ubuntu) : git, curl » : plus tard (P2-5)
-        lines.append(title_line(t("app.digere", os=DISTRO or OS_NAMES[OSK])))
-        lc = max(largeur(core.nom_stat(v["stat"])) for v in core.CATEGORIES.values()) + 2
-        for k, v in core.CATEGORIES.items():
-            lines.append(f" {fg(v['color'])}{ajuster(core.nom_stat(v['stat']), lc)}{RESET}{core.EXAMPLES[OSK][k]}")
 
-    lines.append(title_line(t("app.journal")))
-    if state["total"] == 0:
-        lines.append(" " + t("app.journal.vide"))
-        if SYS_WIN:
-            lines.append(" " + t("app.journal.terminal"))
-        elif not compagnon.est_installe():
-            lines.append(f" {fg(226)}" + t("app.journal.compagnon") + RESET)
-    lines += [" " + l for l in state["log"][-4:]]
-    if interactif:
-        lines.append(f"{fg(244)} " + touches(state) + RESET)
-    else:
-        lines.append(f"{DIM} " + t("app.digere_ferme") + RESET)
-    return "\n".join(lines) + "\n"
+def touches_b(state):
+    """Les deux touches de la variante B : [+] la leçon en détail, [f] la fiche de la créature."""
+    return t("app.touches.b", nom=state.get("name", ""))
 
 
 # les touches de la fenêtre et la fonction du jeu qu'elles ouvrent (intro.json : avant, « pas encore »)
@@ -563,6 +617,14 @@ def menu_collection(state, clav):
     clav.demander(f"\n {DIM}" + t("app.entree_retour") + RESET)
 
 
+def menu_lignes(lignes, clav):
+    """Un écran de texte (leçon en détail, fiche de la créature), puis Entrée pour revenir."""
+    clear()
+    for l in lignes:
+        print(l)
+    clav.demander(f"\n {DIM}" + t("app.entree_retour") + RESET)
+
+
 def menu_lexique(state, clav):
     clear()
     st = core.load() or state
@@ -635,6 +697,7 @@ def menu_options(state, clav):
               + f" {DIM}({t('conf.police.terminal')}){RESET}")
         print(" 14. " + t("conf.formes") + " : " + onoff(rc["formes"]))
         print(" 15. " + t("conf.calme") + " : " + onoff(rc["calme"]) + f" {DIM}({t('conf.calme.aide')}){RESET}")
+        print(" 16. " + t("ui.reg.pur.pc", etat=onoff(cfg.get("affichage") == "pur")) + f" {DIM}({t('ui.reg.pur.aide')}){RESET}")
         sec("app.opt.grands")
         print(" 11. " + t("app.options.tout", etat=onoff(apparence.a_(st).get("tout"))))
         print(f"     {DIM}" + t("app.opt.tout.aide") + RESET)
@@ -688,6 +751,9 @@ def menu_options(state, clav):
                 ("normale" if rc["police"] == "facile" else "facile") if cle == "police" else not rc[cle]
             core.modifier(lambda s: confort.regler(s, cle, val))
             msg = "✓ " + t("conf.ok")
+        elif r == "16":                   # variante A « terminal pur » (pour les grands), sinon B « terminal + mission »
+            core.modifier(lambda s: s["config"].update(affichage=None if s["config"].get("affichage") == "pur" else "pur"))
+            msg = "✓ " + t("ui.pur.on.pc" if (core.load() or {}).get("config", {}).get("affichage") == "pur" else "ui.pur.off.pc")
 
 
 def apercu_theme(th):
@@ -1050,7 +1116,11 @@ def fenetre(once):
                 if fid and not intro.ouvert(state, fid):
                     state = core.modifier(lambda s: core.say(s, t("deb.pas_encore", cmd=k), 6)) or state
                     continue
-                if k in ("/", "r", "?"):
+                if k == "+":                      # variante B : la leçon en détail (pour les grands, vrai terminal…)
+                    menu_lignes(lignes_lecon(core.load() or state), clav)
+                elif k == "f":                    # variante B : la fiche de la créature (envies, XP, forces…)
+                    menu_lignes(lignes_fiche(core.load() or state), clav)
+                elif k in ("/", "r", "?"):
                     menu_recherche(state, clav)
                 elif k == "a":
                     menu_arbre(state, clav)
@@ -1265,6 +1335,14 @@ def _main():
         core.modifier(lambda s: sortie.extend(aide_douce.lignes_perdu(s, ici) if mode == "perdu"
                                                else aide_douce.lignes_indice(s)))
         print("\n".join(sortie))
+        return
+    if mode in ("detail", "détail", "plus", "fiche"):    # variante B : la leçon en détail / la fiche de la créature
+        st = core.load()
+        if st is None:
+            print(t("cv.pas_de_partie"))
+            return
+        core.migrate(st)
+        print("\n".join(lignes_fiche(st) if mode == "fiche" else lignes_lecon(st)) + RESET)
         return
     if mode == "menu":                         # idée 69 : le menu rond du compagnon de bureau, sans souris
         from . import aide_douce

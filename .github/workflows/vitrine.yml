@@ -5,12 +5,13 @@ name: Captures de la fiche F-Droid (téléphone et tablette virtuels)
 # « vitrine » du dépôt (vitrine/<job>/, comme la branche « captures » du test du téléphone) ; on choisit les
 # meilleures et on les range dans fastlane/metadata/android/<langue>/images/phoneScreenshots/.
 # Une seule partie : lancer à la main avec « seulement » (ex. carte), ou mettre [vitrine:carte] dans le message du commit
-# (carte = idée 76 seule : la question des grands lue à l'écran, la bonne réponse, la carte « Signaler un souci »).
+# (carte = idée 76 seule : la question des grands lue à l'écran, la bonne réponse, la carte « Signaler un souci » ;
+#  interface = l'allègement du 9 novembre, variante B, sur le téléphone et la tablette en paysage).
 on:
   workflow_dispatch:
     inputs:
       seulement:
-        description: "une seule partie (carte), vide = tout"
+        description: "une seule partie (carte, interface), vide = tout"
         required: false
         default: ""
   push:
@@ -27,7 +28,7 @@ jobs:
       fail-fast: false
       matrix:
         # fr, en, nouveautes (idées 74 et 76), tablette (idée 75) ; ou seulement « carte » (idée 76)
-        include: ${{ fromJSON((inputs.seulement == 'carte' || contains(github.event.head_commit.message, '[vitrine:carte]')) && '[{"nom":"carte","mode":"carte","langues":"fr","profil":"pixel_6"}]' || '[{"nom":"fr","mode":"telephone","langues":"fr","profil":"pixel_6"},{"nom":"en","mode":"telephone","langues":"en","profil":"pixel_6"},{"nom":"nouveautes","mode":"nouveautes","langues":"fr","profil":"pixel_6"},{"nom":"tablette","mode":"tablette","langues":"fr","profil":"pixel_c"}]') }}
+        include: ${{ fromJSON((inputs.seulement == 'interface' || contains(github.event.head_commit.message, '[vitrine:interface]')) && '[{"nom":"interface","mode":"interface","langues":"fr","profil":"pixel_6"},{"nom":"interface_tablette","mode":"interface_tablette","langues":"fr","profil":"pixel_c"}]' || (inputs.seulement == 'carte' || contains(github.event.head_commit.message, '[vitrine:carte]')) && '[{"nom":"carte","mode":"carte","langues":"fr","profil":"pixel_6"}]' || '[{"nom":"fr","mode":"telephone","langues":"fr","profil":"pixel_6"},{"nom":"en","mode":"telephone","langues":"en","profil":"pixel_6"},{"nom":"nouveautes","mode":"nouveautes","langues":"fr","profil":"pixel_6"},{"nom":"tablette","mode":"tablette","langues":"fr","profil":"pixel_c"}]') }}
     steps:
       - uses: actions/checkout@v4
 

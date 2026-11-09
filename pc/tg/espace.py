@@ -228,13 +228,22 @@ class Espace(B.Controleur):
         if not self.apres_commande:
             return
         from . import compagnon
-        try:
-            dire = compagnon.annonces(st)
-            ligne = compagnon.ligne(st)
+        try:                                         # variante B : 2 lignes au plus, comme le vrai terminal
+            v = st.pop("_premier_ls", None)
+            pls = None
+            ici = Path(self.mini.dossier) if getattr(self, "mini", None) else None
+            if v:
+                try:
+                    noms = sorted(p.name for p in ici.iterdir() if not p.name.startswith(".")) if ici else []
+                    dossiers = {n for n in noms if (ici / n).is_dir()}
+                    pls = ((sorted(dossiers) + [n for n in noms if n not in dossiers])[:4], dossiers)
+                except OSError:
+                    pls = ([], set())
+            dire = compagnon.compact(st, str(ici) if ici else None, premier_ls=pls, colonnes=110)
         except Exception as e:                       # noqa: BLE001 — l'espace ne plante jamais pour le compagnon
             B.noter(f"espace annonces : {e!r}")
-            dire, ligne = [], ""
-        self.a_dire = list(dire) + ([ligne] if ligne else [])
+            dire = []
+        self.a_dire = list(dire)
         st["prompt_vu"] = st.get("nlog", 0)
 
     # ------------------------------------------------ le temps

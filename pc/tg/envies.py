@@ -444,6 +444,28 @@ def humeur(state):
     return t(humeur_cle(state))
 
 
+EMOJIS = {"humeur.joyeux": "😄", "humeur.repu": "😊", "humeur.creux": "🙂", "humeur.triste": "😢",
+          "humeur.grognon": "😠", "humeur.affame": "😟", "sat.etat.veille": "💤", "humeur.curieux": "🤔",
+          "humeur.fier": "😎", "humeur.calin": "🥰", "humeur.gourmand": "😋", "humeur.enjoue": "😆",
+          "humeur.reveur": "😌", "humeur.surpris": "😮", "humeur.bavard": "😃", "humeur.fete": "🥳"}
+
+
+def emoji(state):
+    """L'humeur en UN emoji (la seule montrée sur l'écran principal, variante B ; même table qu'Envies.emoji)."""
+    return EMOJIS.get(humeur_cle(state), "😵")
+
+
+def pensee(state):
+    """💭 à côté de la créature : une envie est devenue forte (l'envie du moment), ou l'envie mystère attend."""
+    try:
+        from . import creature
+        if creature.envie(state):
+            return True
+    except Exception:                                # noqa: BLE001
+        pass
+    return moment(state) is not None
+
+
 def barre(v, n):
     k = max(0, min(n, int(v / 100 * n + 0.5)))
     return "▰" * k + "▱" * (n - k)

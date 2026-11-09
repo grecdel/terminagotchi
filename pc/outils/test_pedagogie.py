@@ -227,7 +227,7 @@ st = core.load()
 from tg import intro  # noqa: E402
 _ouvert = intro.ouvert
 intro.ouvert = lambda s, f: False if f == "equipe" else _ouvert(s, f)      # l'équipe pas encore présentée
-ecran = propre(app.render(st, 0, False))
+ecran = propre(app.render_tout(st, 0, False))
 intro.ouvert = _ouvert
 verifier("INT " not in ecran and "Ce que je digère" not in ecran, "écran du début : ni « INT AGI FOR END » ni « Ce que je digère »")
 from tg import quetes  # noqa: E402

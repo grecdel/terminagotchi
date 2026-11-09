@@ -146,7 +146,7 @@ for _ in range(900):
         grind[chap] += 1
     else:
         c = a_taper(st, les)
-        ecran = ANSI.sub("", app.render(st, 0, False))
+        ecran = ANSI.sub("", app.render_tout(st, 0, False))
         if "🧑 Pour les grands :" not in ecran:
             sans_grands.append((les["id"], st["step"]))
         if "💻" not in ecran and not les["steps"][st["step"]]["cmd"].startswith(("termux-", "am ", "pm ", "ouvre", "miam")):

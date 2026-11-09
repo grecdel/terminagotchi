@@ -379,7 +379,14 @@ object Envies {
         }
     }
 
-    fun emoji(jeu: Jeu) = when (humeurCle(jeu)) {
+    fun emoji(jeu: Jeu) = emojiDe(humeurCle(jeu))
+
+    /** 💭 à côté de la créature (variante B, 9 novembre) : une envie est devenue forte (l'envie du moment), ou
+     *  l'envie mystère attend (même règle que envies.pensee). */
+    fun pensee(jeu: Jeu): Boolean = try { Creature.envie(jeu) != null || moment(jeu) != null } catch (e: Exception) { false }
+
+    /** L'humeur en UN emoji (même table qu'envies.EMOJIS, vecteurs donnees/mission/vecteurs.json). */
+    fun emojiDe(cle: String) = when (cle) {
         "humeur.joyeux" -> "😄"
         "humeur.repu" -> "😊"
         "humeur.creux" -> "🙂"

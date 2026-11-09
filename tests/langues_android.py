@@ -166,7 +166,7 @@ ESPACES = ("app", "core", "dress", "dressa", "ep", "epa", "aide", "aidea", "lec"
            "exp", "expa", "rec", "reca", "part", "terme", "stat", "skill", "trait", "stade", "forme", "humeur", "branche",
            "rarete", "stade_bestiole", "frequence", "mini", "arbre", "tel", "cre", "defi", "edite", "doom", "notifs", "ctf",
            "donjon", "jeu", "widget", "rappel", "rech", "shell", "term", "hist", "hista", "qu", "qua", "carte", "cartea", "env", "ent",
-           "intro", "deb")
+           "intro", "deb", "mis", "ui")
 
 
 def cles_du_code():

@@ -9970,5 +9970,19 @@
  "cr.dev.echo.i2": "Vier Buchstaben: „e“, „c“, „h“, „o“.",
  "cr.dev.cd_maison.d": "Ein Befehl, der mich auf einen Schlag nach Hause bringt.",
  "cr.dev.cd_maison.i1": "Es ist der Befehl, der den Ordner wechselt.",
- "cr.dev.cd_maison.i2": "Danach kommt eine kleine Schlange: die Tilde „~“."
+ "cr.dev.cd_maison.i2": "Danach kommt eine kleine Schlange: die Tilde „~“.",
+ "mis.tape": "tippe {cmd}",
+ "mis.niveau": "Nächste Lektion ab Level {n}: füttere mich mit {xp} XP mehr",
+ "mis.a_toi": "du bist dran: {cmd}",
+ "mis.plus": "mehr: `tg detail`",
+ "ui.fiche.titre": "{nom} im Detail",
+ "ui.lecon.titre": "Die Lektion im Detail",
+ "ui.lecon.vide": "Gerade keine Lektion. Erkunde, füttere dein Wesen oder tippe `aide`.",
+ "ui.detail.dit": "Was das Spiel nach deinem letzten Befehl gesagt hat",
+ "ui.fiche.album_pc": "Das Album der Stufen: `tg album` · seine Vorlieben: `tg gouts`",
+ "app.touches.b": "[+] die Lektion im Detail  [f] {nom} im Detail",
+ "ui.reg.pur.pc": "Reines Terminal: {etat}",
+ "ui.reg.pur.aide": "für Größere: nur das Terminal, die Aufgabe steht darin",
+ "ui.pur.on.pc": "Reines Terminal: das tg-Fenster zeigt nur noch das Tagebuch und die Aufgabe.",
+ "ui.pur.off.pc": "Terminal + Mission: das Wesen und die 🎯-Zeile sind zurück."
 }

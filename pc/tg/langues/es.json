@@ -9971,5 +9971,19 @@
  "cr.dev.echo.i2": "Cuatro letras: «e», «c», «h», «o».",
  "cr.dev.cd_maison.d": "Un comando que me lleva a casa, de golpe.",
  "cr.dev.cd_maison.i1": "Es el comando que cambia de carpeta.",
- "cr.dev.cd_maison.i2": "Después viene una pequeña serpiente: la tilde «~»."
+ "cr.dev.cd_maison.i2": "Después viene una pequeña serpiente: la tilde «~».",
+ "mis.tape": "escribe {cmd}",
+ "mis.niveau": "Próxima lección en el nivel {n}: dame {xp} XP más",
+ "mis.a_toi": "te toca: {cmd}",
+ "mis.plus": "más: `tg detail`",
+ "ui.fiche.titre": "{nom} en detalle",
+ "ui.lecon.titre": "La lección en detalle",
+ "ui.lecon.vide": "Ahora no hay lección. Explora, alimenta a tu criatura o escribe `aide`.",
+ "ui.detail.dit": "Lo que dijo el juego tras tu último comando",
+ "ui.fiche.album_pc": "El álbum de etapas: `tg album` · sus gustos: `tg gouts`",
+ "app.touches.b": "[+] la lección en detalle  [f] {nom} en detalle",
+ "ui.reg.pur.pc": "Terminal puro: {etat}",
+ "ui.reg.pur.aide": "para los mayores: solo la terminal, la consigna se escribe dentro",
+ "ui.pur.on.pc": "Terminal puro: la ventana tg solo muestra el diario y la consigna.",
+ "ui.pur.off.pc": "Terminal + misión: la criatura y la línea 🎯 han vuelto."
 }

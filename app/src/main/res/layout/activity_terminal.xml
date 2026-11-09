@@ -5,11 +5,13 @@
     android:layout_height="match_parent"
     android:background="#55000000">
 
-    <!-- PanneauDeux : une colonne comme avant ; deux colonnes sur une tablette en paysage (idée 75) -->
+    <!-- PanneauDeux : une colonne comme avant ; deux colonnes sur une tablette en paysage (idée 75).
+         Allègement du 9 novembre (variante B « terminal + mission ») : toute la hauteur au-dessus du clavier ; la ligne
+         🎯, la ligne de saisie et les touches sont mesurées d'abord (PanneauDeux.bas) : elles restent toujours visibles. -->
     <fr.terminagotchi.PanneauDeux
         android:id="@+id/panneau"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="match_parent"
         android:layout_gravity="bottom"
         android:layout_margin="8dp"
         android:background="@drawable/panneau"
@@ -26,8 +28,8 @@
 
             <ImageView
                 android:id="@+id/creature"
-                android:layout_width="84dp"
-                android:layout_height="76dp"
+                android:layout_width="56dp"
+                android:layout_height="50dp"
                 android:contentDescription="@string/app_name"
                 android:scaleType="fitCenter" />
 
@@ -162,7 +164,8 @@
 
         <FrameLayout
             android:layout_width="match_parent"
-            android:layout_height="140dp"
+            android:layout_height="0dp"
+            android:layout_weight="1"
             android:layout_marginTop="8dp">
 
             <ScrollView
@@ -181,7 +184,7 @@
                     android:fontFamily="monospace"
                     android:padding="8dp"
                     android:textColor="#d0d0d0"
-                    android:textSize="12sp" />
+                    android:textSize="13sp" />
             </ScrollView>
 
             <ScrollView
@@ -205,35 +208,27 @@
             </ScrollView>
         </FrameLayout>
 
-        <HorizontalScrollView
-            android:focusable="false"
-            android:descendantFocusability="blocksDescendants"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            android:scrollbars="none">
-
-            <LinearLayout
-                android:id="@+id/touches"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal" />
-        </HorizontalScrollView>
-
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="6dp"
+            android:background="@drawable/saisie_cadre"
             android:gravity="center_vertical"
-            android:orientation="horizontal">
+            android:minHeight="52dp"
+            android:orientation="horizontal"
+            android:paddingStart="10dp"
+            android:paddingEnd="6dp">
 
             <TextView
                 android:id="@+id/invite"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:ellipsize="start"
                 android:fontFamily="monospace"
+                android:maxLines="1"
+                android:maxWidth="150dp"
                 android:textColor="@color/vert"
-                android:textSize="13sp" />
+                android:textSize="15sp" />
 
             <EditText
                 android:id="@+id/saisie"
@@ -248,19 +243,37 @@
                 android:importantForAutofill="no"
                 android:inputType="text|textNoSuggestions|textVisiblePassword"
                 android:maxLines="1"
+                android:paddingTop="10dp"
+                android:paddingBottom="10dp"
                 android:textColor="#ffffff"
-                android:textColorHint="#55557a"
-                android:textSize="13sp" />
+                android:textColorHint="#6a6a90"
+                android:textCursorDrawable="@drawable/curseur"
+                android:textSize="17sp" />
 
             <TextView
                 android:id="@+id/envoyer"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:paddingStart="10dp"
-                android:paddingEnd="4dp"
+                android:layout_width="44dp"
+                android:layout_height="40dp"
+                android:layout_marginStart="6dp"
+                android:gravity="center"
                 android:text="⏎"
                 android:textColor="@color/vert"
-                android:textSize="22sp" />
+                android:textSize="24sp" />
         </LinearLayout>
+        <HorizontalScrollView
+            android:focusable="false"
+            android:descendantFocusability="blocksDescendants"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="6dp"
+            android:scrollbars="none">
+
+            <LinearLayout
+                android:id="@+id/touches"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal" />
+        </HorizontalScrollView>
+
     </fr.terminagotchi.PanneauDeux>
 </FrameLayout>

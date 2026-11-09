@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Allègement du 9 novembre (variante B) : la ligne de saisie, grande, cadre vert allumé -->
+<shape xmlns:android="http://schemas.android.com/apk/res/android" android:shape="rectangle">
+    <solid android:color="#0f1a14" />
+    <stroke android:width="2dp" android:color="@color/vert" />
+    <corners android:radius="12dp" />
+</shape>

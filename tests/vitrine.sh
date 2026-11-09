@@ -5,6 +5,9 @@
 #   MODE=nouveautes bash tests/vitrine.sh                   → captures/nouveautes/*.png (idées 74 et 76)
 #   MODE=carte bash tests/vitrine.sh                       → captures/carte/*.png (idée 76 seule : la carte ouverte)
 #   MODE=tablette bash tests/vitrine.sh                     → captures/tablette/*.png (idée 75 : deux colonnes en paysage)
+#   MODE=interface bash tests/vitrine.sh                    → captures/interface/*.png (allègement du 9 novembre, variante B :
+#                                                             la saisie visible clavier ouvert, ☰, la fiche, le +, terminal pur)
+#   MODE=interface_tablette bash tests/vitrine.sh           → captures/interface_tablette/*.png (la même, tablette en paysage)
 # On choisit ensuite les 4 meilleures de chaque langue (les mêmes écrans dans chaque langue) : voir docs/fdroid.md.
 set -u
 MODE=${MODE:-telephone}
@@ -55,7 +58,11 @@ sans_clavier() {   # Retour range le clavier de l'écran (seulement s'il est ouv
   adb shell dumpsys input_method | grep -q "mInputShown=true" && adb shell input keyevent 4
   sleep 2
 }
-avec_clavier() { adb shell input tap 540 2200 >/dev/null 2>&1; sleep 1; }
+# où est un élément de l'écran : l'appli l'écrit dans le journal d'Android (balise TG_POS, TerminalActivity.suivrePosition)
+pos() { adb logcat -d -s TG_POS:I 2>/dev/null | grep " $1 [0-9]" | tail -1 | grep -o '[0-9]\+ [0-9]\+$'; }
+toucher() { local xy; xy=$(pos "$1"); if [ -n "$xy" ]; then adb shell input tap $xy; else echo "(pas trouvé : $1)"; fi; sleep "${2:-2}"; }
+# rouvrir le clavier : toucher la ligne de saisie là où elle est (variante B : les touches sont dessous)
+avec_clavier() { local xy; xy=$(pos saisie); adb shell input tap ${xy:-540 2200} >/dev/null 2>&1; sleep 1; }
 # Le jeu, du début, dans la langue L (la langue de l'appli, comme si le téléphone était dans cette langue)
 debut() {   # $1 : langue (fr, en…), $2 : « oui » dans cette langue
   adb shell am force-stop $PAQ
@@ -144,12 +151,9 @@ elif [ "$MODE" = nouveautes ]; then
   tape "compte serveur http://10.0.2.2:9"       # plus de site : comme sans Internet
   tape "pwd"; tape "ls"; tape "sync" 12
   capture 74_hors_ligne 1
-  adb shell uiautomator dump /sdcard/tg_ui.xml >/dev/null 2>&1
-  adb exec-out cat /sdcard/tg_ui.xml | grep -o 'resource-id="fr.terminagotchi:id/chemin"[^>]*bounds="[^"]*"' > $D/chemin.txt
-  B=$(grep -o 'bounds="\[[0-9]*,[0-9]*\]\[[0-9]*,[0-9]*\]"' $D/chemin.txt | grep -o '[0-9]\+' | tr '\n' ' ')
-  set -- $B
-  [ $# -ge 4 ] && adb shell input tap $(( $3 - 60 )) $(( ($2 + $4) / 2 ))     # toucher le nuage : il s'explique
-  capture 74_explique 2
+  pos nuage > $D/nuage.txt                       # variante B : le nuage est à côté de l'humeur, en haut
+  toucher nuage 2                                # toucher le nuage : il s'explique
+  capture 74_explique 1
   tape "compte" 3; capture 74_compte 1
   ouvrir_carte
   capture 76_carte 1
@@ -166,6 +170,51 @@ elif [ "$MODE" = carte ]; then
   ouvrir_carte
   capture 76_carte 1
   sans_clavier; capture 76_carte_sans_clavier 1
+  adb shell am force-stop $PAQ
+elif [ "$MODE" = interface ] || [ "$MODE" = interface_tablette ]; then
+  # ---- allègement du 9 novembre (variante B « terminal + mission ») : la ligne de saisie doit rester visible
+  # clavier ouvert ; le menu ☰, la fiche de la créature, le + de la ligne 🎯, le réglage « terminal pur », le monstre
+  D=captures/$MODE; mkdir -p $D
+  if [ "$MODE" = interface_tablette ]; then
+    adb shell settings put system accelerometer_rotation 0
+    adb shell settings put system user_rotation 1      # tablette en paysage (idée 75)
+  fi
+  adb shell wm size > $D/taille.txt; adb shell wm density >> $D/taille.txt
+  debut fr oui
+  tape "ls" 4
+  for c in "pwd" "echo bonjour" "whoami"; do tape "$c" 2; done
+  tape "$NON" 3                                 # « Tu veux m'entendre ? » (le son, à l'éclosion) : non
+  capture 01_eclosion 2
+  tape "" 2
+  tape "date" 3
+  capture 02_ecran_clavier_ouvert 1
+  pos saisie > $D/saisie_clavier_ouvert.txt
+  adb shell dumpsys input_method | grep -o "mInputShown=[a-z]*" | head -1 >> $D/saisie_clavier_ouvert.txt
+  sans_clavier; capture 03_ecran_clavier_range 1
+  pos saisie > $D/saisie_clavier_range.txt
+  python3 tests/lire_ecran.py texte "$D/03_ecran_clavier_range.png" "$D/03_ecran_clavier_range.txt" >/dev/null 2>&1 || true
+  avec_clavier
+  tape "debloquer tout"; tape "oui"
+  for c in "cd" "mkdir terrain_terminagotchi" "cd terrain_terminagotchi" "mkdir nid"; do tape "$c"; done
+  capture 04_lecon_clavier_ouvert 2
+  toucher menu 2; capture 05_menu 1
+  toucher "gros:🐾" 2; capture 06_fiche_creature 1
+  sans_clavier; adb shell input keyevent 4; sleep 1          # Retour : le clavier, puis la fiche (pas le jeu)
+  toucher plus 2; capture 07_lecon_en_detail 1
+  sans_clavier; adb shell input keyevent 4; sleep 1          # Retour : le clavier, puis la fiche (pas le jeu)
+  avec_clavier
+  toucher menu 2; toucher "gros:⚙" 2; capture 08_reglages 1
+  toucher "gros:⌨" 2; avec_clavier; tape "pwd" 3
+  capture 09_terminal_pur 1
+  toucher menu 2; toucher "gros:⚙" 2; toucher "gros:⌨" 2; avec_clavier     # retour à la variante B
+  tape "terminal" 3; capture 10_deux_onglets 1
+  tape "exit" 2
+  adb shell am start -n $PAQ/.TerminalActivity --es essai_dressage abyssor
+  sleep 6; avec_clavier; sleep 1
+  capture 11_monstre_clavier_ouvert 1
+  pos saisie > $D/saisie_monstre.txt
+  tape "dressage abandon"
+  capture 12_apres 1
   adb shell am force-stop $PAQ
 else
   # ---- tablette (idée 75) : portrait (une colonne, comme un téléphone), puis paysage (deux colonnes)

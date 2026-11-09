@@ -9977,5 +9977,19 @@
  "cr.dev.echo.i2": "Quatre lettres : « e », « c », « h », « o ».",
  "cr.dev.cd_maison.d": "Une commande qui me ramène à la maison, d'un coup.",
  "cr.dev.cd_maison.i1": "C'est la commande qui change de dossier.",
- "cr.dev.cd_maison.i2": "Après elle, il y a un petit serpent : le tilde « ~ »."
+ "cr.dev.cd_maison.i2": "Après elle, il y a un petit serpent : le tilde « ~ ».",
+ "mis.tape": "tape {cmd}",
+ "mis.niveau": "Prochaine leçon au niveau {n} : nourris-moi encore {xp} XP",
+ "mis.a_toi": "à toi : {cmd}",
+ "mis.plus": "la suite : `tg detail`",
+ "ui.fiche.titre": "{nom} en détail",
+ "ui.lecon.titre": "La leçon en détail",
+ "ui.lecon.vide": "Pas de leçon en ce moment. Explore, nourris ta créature, ou tape `aide`.",
+ "ui.detail.dit": "Ce que le jeu a dit après ta dernière commande",
+ "ui.fiche.album_pc": "L'album des stades : `tg album` · ses goûts : `tg gouts`",
+ "app.touches.b": "[+] la leçon en détail  [f] {nom} en détail",
+ "ui.reg.pur.pc": "Terminal pur : {etat}",
+ "ui.reg.pur.aide": "pour les grands : rien que le terminal, la consigne s'écrit dedans",
+ "ui.pur.on.pc": "Terminal pur : la fenêtre tg ne montre plus que le journal et la consigne.",
+ "ui.pur.off.pc": "Terminal + mission : la créature et la ligne 🎯 sont revenues."
 }

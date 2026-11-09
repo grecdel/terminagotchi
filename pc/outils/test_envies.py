@@ -323,8 +323,10 @@ st = etape("date")
 verifier(st["name"] == "Pixel" and st["hunger"] > 0, "tout à zéro : elle mange, elle est toujours là")
 
 print("Affichage et aide")
-ecran = "\n".join(app.render(core.load(), 0, False).split("\n")[:8])
-verifier(all(i in ecran for i in E.ICONES.values()), "la fenêtre principale montre les 6 jauges en petit")
+ecran = "\n".join(app.lignes_fiche(core.load()))     # variante B : les 6 jauges sont dans la fiche ([f])
+verifier(all(i in ecran for i in E.ICONES.values()), "la fiche de la créature ([f]) montre les 6 jauges en petit")
+st_ = core.load()
+verifier(E.emoji(st_) in app.render(st_, 0, False), "la fenêtre principale montre UNE humeur (variante B)")
 r = subprocess.run([sys.executable, str(RACINE / "pc"), "envies"], capture_output=True, text=True)
 sortie = langue.sans_marques(r.stdout)
 verifier(all(E.nom(k) in sortie for k in E.ENVIES) and "rm .cache/*.tmp" in sortie and "sleep 10" in sortie

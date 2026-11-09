@@ -9976,5 +9976,19 @@
  "cr.dev.echo.i2": "四个字母：“e”“c”“h”“o”。",
  "cr.dev.cd_maison.d": "一个一下子带我回家的命令。",
  "cr.dev.cd_maison.i1": "就是换文件夹的命令。",
- "cr.dev.cd_maison.i2": "后面跟一条小蛇：波浪号“~”。"
+ "cr.dev.cd_maison.i2": "后面跟一条小蛇：波浪号“~”。",
+ "mis.tape": "输入 {cmd}",
+ "mis.niveau": "下一课在 {n} 级：再喂我 {xp} 点经验",
+ "mis.a_toi": "轮到你：{cmd}",
+ "mis.plus": "更多：`tg detail`",
+ "ui.fiche.titre": "{nom} 详情",
+ "ui.lecon.titre": "课程详情",
+ "ui.lecon.vide": "现在没有课程。去探索、喂你的小生物，或输入 `aide`。",
+ "ui.detail.dit": "你上一条命令之后游戏说的话",
+ "ui.fiche.album_pc": "阶段相册：`tg album` · 口味：`tg gouts`",
+ "app.touches.b": "[+] 课程详情  [f] {nom} 详情",
+ "ui.reg.pur.pc": "纯终端：{etat}",
+ "ui.reg.pur.aide": "给大孩子：只有终端，任务就写在里面",
+ "ui.pur.on.pc": "纯终端：tg 窗口只显示日志和任务。",
+ "ui.pur.off.pc": "终端 + 任务：小生物和 🎯 这一行回来了。"
 }

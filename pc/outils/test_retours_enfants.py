@@ -108,7 +108,7 @@ niveau(4)
 st = tape("echo pome > nid/repas.txt", T)
 verifier(lec(st) == ("nid1", 0), "« pome » : la leçon attend encore la bonne commande")
 verifier("pome" in (st.get("indice_lecon") or "") and "pomme" in st["indice_lecon"], f"indice : {st.get('indice_lecon')}")
-ecran = texte(app.render(dict(st, dressage=None), 0, True))
+ecran = texte(app.render_tout(dict(st, dressage=None), 0, True))
 verifier("💡 Presque" in ecran, "l'indice s'affiche sous la leçon")
 if "💡 Presque" not in ecran:
     print(ecran)
@@ -142,7 +142,7 @@ st = tape("rm -rf ~/terrain_terminagotchi")
 p = st.get("terrain_perdu") or {}
 verifier(p.get("cmd") == "mkdir -p ~/terrain_terminagotchi/nid", f"détecté : la commande proposée est « {p.get('cmd')} »")
 verifier("mkdir -p ~/terrain_terminagotchi/nid" in bulles(st), "une bulle claire donne la commande")
-verifier("➜ mk" in texte(app.render(dict(st, dressage=None), 0, True)) and "~/terrain_terminagotchi/nid" in texte(app.render(dict(st, dressage=None), 0, True)),
+verifier("➜ mk" in texte(app.render_tout(dict(st, dressage=None), 0, True)) and "~/terrain_terminagotchi/nid" in texte(app.render_tout(dict(st, dressage=None), 0, True)),
          "le bandeau (avec la commande) reste sur l'écran principal")
 verifier(not explo.debloque(st), "pas de monstre tant que le nid n'existe pas")
 st = tape("mkdir -p ~/terrain_terminagotchi/nid")

@@ -383,11 +383,11 @@ for c in ("pwd", "ls", "date"):
 core.add_xp(st, 180)
 sans = lambda x: re.sub(r"\033\[[0-9;]*m", "", x)  # noqa: E731
 verifier(st["xp"] == 159 and S.attente(st) == 2, f"1er jour : barre à 159/160, grandit dans 2 jours ({st['xp']}, {S.attente(st)})")
-ecran = sans(app.render(st, 0, False))
+ecran = sans("\n".join(app.lignes_fiche(st)))     # variante B : l'XP mise de côté est dans la fiche ([f])
 ligne = next((x for x in ecran.splitlines() if "159/160" in x), "")
-verifier("🌱 XP de côté · grandit dans 2 jours" in ecran, "tg : le texte est affiché")
+verifier("🌱 XP de côté · grandit dans 2 jours" in ecran, "tg [f] : le texte est affiché")
 verifier("grandit dans 2 jours" in ligne or "grandit dans 2 jours" in ecran.split("159/160", 1)[1].splitlines()[1],
-         f"tg : à côté de la barre (ou juste dessous si l'écran est étroit) : {ligne.strip()!r}")
+         f"tg [f] : sous la barre d'XP : {ligne.strip()!r}")
 for cols in (50, 100):
     mi = object.__new__(mini.Mini)
     mi.state, mi.saut, mi.frame, mi.sortie, mi.tampon = st, 0, 0, [], ""
@@ -405,7 +405,7 @@ ES.direct(L, Z, {"nom": "Pixel", "xp": 99, "attente": S.ligne_attente(st)}, (0, 
 verifier(any(x[0] == "texte" and "XP de côté" in str(x[3]) for x in L), "espace de travail : au-dessus de la barre d'XP")
 S.s_(st)["jours"] = 3
 S.liberer(st)
-verifier(S.ligne_attente(st) == "" and "XP de côté" not in sans(app.render(st, 0, False)),
+verifier(S.ligne_attente(st) == "" and "XP de côté" not in sans(app.render_tout(st, 0, False)),
          "elle a grandi : le texte disparaît")
 
 print(f"\n{ok} réussis, {ko} échoués   (HOME={os.environ['HOME']})")

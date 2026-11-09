@@ -9976,5 +9976,19 @@
  "cr.dev.echo.i2": "Four letters: “e”, “c”, “h”, “o”.",
  "cr.dev.cd_maison.d": "A command that takes me home, in one go.",
  "cr.dev.cd_maison.i1": "It's the command that changes folder.",
- "cr.dev.cd_maison.i2": "After it comes a little snake: the tilde “~”."
+ "cr.dev.cd_maison.i2": "After it comes a little snake: the tilde “~”.",
+ "mis.tape": "type {cmd}",
+ "mis.niveau": "Next lesson at level {n}: feed me {xp} more XP",
+ "mis.a_toi": "your turn: {cmd}",
+ "mis.plus": "more: `tg detail`",
+ "ui.fiche.titre": "{nom} in detail",
+ "ui.lecon.titre": "The lesson in detail",
+ "ui.lecon.vide": "No lesson right now. Explore, feed your creature, or type `aide`.",
+ "ui.detail.dit": "What the game said after your last command",
+ "ui.fiche.album_pc": "The stage album: `tg album` · its tastes: `tg gouts`",
+ "app.touches.b": "[+] the lesson in detail  [f] {nom} in detail",
+ "ui.reg.pur.pc": "Pure terminal: {etat}",
+ "ui.reg.pur.aide": "for older kids: just the terminal, the instruction is written in it",
+ "ui.pur.on.pc": "Pure terminal: the tg window now shows only the log and the instruction.",
+ "ui.pur.off.pc": "Terminal + mission: the creature and the 🎯 line are back."
 }

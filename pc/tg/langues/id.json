@@ -9971,5 +9971,19 @@
  "cr.dev.echo.i2": "Empat huruf: “e”, “c”, “h”, “o”.",
  "cr.dev.cd_maison.d": "Perintah yang membawaku pulang sekaligus.",
  "cr.dev.cd_maison.i1": "Itu perintah yang berpindah folder.",
- "cr.dev.cd_maison.i2": "Setelahnya ada ular kecil: tilde “~”."
+ "cr.dev.cd_maison.i2": "Setelahnya ada ular kecil: tilde “~”.",
+ "mis.tape": "ketik {cmd}",
+ "mis.niveau": "Pelajaran berikutnya di level {n}: beri aku {xp} XP lagi",
+ "mis.a_toi": "giliranmu: {cmd}",
+ "mis.plus": "selengkapnya: `tg detail`",
+ "ui.fiche.titre": "{nom} secara rinci",
+ "ui.lecon.titre": "Pelajaran secara rinci",
+ "ui.lecon.vide": "Belum ada pelajaran sekarang. Jelajahi, beri makan makhlukmu, atau ketik `aide`.",
+ "ui.detail.dit": "Apa kata permainan setelah perintah terakhirmu",
+ "ui.fiche.album_pc": "Album tahap: `tg album` · seleranya: `tg gouts`",
+ "app.touches.b": "[+] pelajaran secara rinci  [f] {nom} secara rinci",
+ "ui.reg.pur.pc": "Terminal saja: {etat}",
+ "ui.reg.pur.aide": "untuk yang lebih besar: hanya terminal, tugasnya ditulis di dalamnya",
+ "ui.pur.on.pc": "Terminal saja: jendela tg hanya menampilkan jurnal dan tugas.",
+ "ui.pur.off.pc": "Terminal + misi: makhluk dan baris 🎯 sudah kembali."
 }

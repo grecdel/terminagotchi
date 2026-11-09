@@ -1,0 +1,106 @@
+{
+ "note": "pc/tg/mission.py et envies.py (= Mission.kt et Envies.kt), en français",
+ "mission": [
+  {
+   "genre": "defi",
+   "v": {
+    "cmd": "ls -a",
+    "s": "12",
+    "calme": false
+   },
+   "ligne": "⚡ DÉFI ÉCLAIR : tape « `ls -a` » — 12 s"
+  },
+  {
+   "genre": "defi",
+   "v": {
+    "cmd": "whoami",
+    "s": "0",
+    "calme": true
+   },
+   "ligne": "⚡ DÉFI : tape « `whoami` » (sans chrono, prends ton temps)"
+  },
+  {
+   "genre": "terrain",
+   "v": {
+    "cmd": "mkdir ~/terrain_terminagotchi"
+   },
+   "ligne": "🏚 La zone d'aventure a disparu : reconstruis-la · tape `mkdir ~/terrain_terminagotchi`"
+  },
+  {
+   "genre": "lecon",
+   "v": {
+    "titre": "Où suis-je ?",
+    "k": 1,
+    "n": 3,
+    "cmd": "`pwd`"
+   },
+   "ligne": "🎯 Où suis-je ? (1/3) · tape `pwd`"
+  },
+  {
+   "genre": "lecon",
+   "v": {
+    "titre": "Le lit",
+    "k": 3,
+    "n": 3,
+    "cmd": "cd ~/terrain_terminagotchi/nid puis `mkdir lit`"
+   },
+   "ligne": "🎯 Le lit (3/3) · tape cd ~/terrain_terminagotchi/nid puis `mkdir lit`"
+  },
+  {
+   "genre": "lecon",
+   "v": {
+    "titre": "Sans aide",
+    "k": 2,
+    "n": 4,
+    "cmd": "🧩 à toi de trouver la commande ! (`aide` la montre)"
+   },
+   "ligne": "🎯 Sans aide (2/4) · 🧩 à toi de trouver la commande ! (`aide` la montre)"
+  },
+  {
+   "genre": "niveau",
+   "v": {
+    "n": 4,
+    "xp": 37
+   },
+   "ligne": "🎯 Prochaine leçon au niveau 4 : nourris-moi encore 37 XP"
+  },
+  {
+   "genre": "bandeau",
+   "v": {
+    "titre": "Choisis ta prochaine aile"
+   },
+   "ligne": "🗺 Choisis ta prochaine aile"
+  },
+  {
+   "genre": "quete",
+   "v": {
+    "ligne": "👣 Quête suivie : visiter la cave"
+   },
+   "ligne": "👣 Quête suivie : visiter la cave"
+  },
+  {
+   "genre": "rien",
+   "v": {},
+   "ligne": ""
+  }
+ ],
+ "emojis": {
+  "humeur.affame": "😟",
+  "humeur.bavard": "😃",
+  "humeur.calin": "🥰",
+  "humeur.creux": "🙂",
+  "humeur.curieux": "🤔",
+  "humeur.enjoue": "😆",
+  "humeur.fete": "🥳",
+  "humeur.fier": "😎",
+  "humeur.gourmand": "😋",
+  "humeur.grognon": "😠",
+  "humeur.joyeux": "😄",
+  "humeur.repu": "😊",
+  "humeur.reveur": "😌",
+  "humeur.surpris": "😮",
+  "humeur.triste": "😢",
+  "sat.etat.veille": "💤"
+ },
+ "inconnu": "😵"
+}

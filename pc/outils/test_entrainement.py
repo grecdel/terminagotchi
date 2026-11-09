@@ -265,7 +265,7 @@ for f in B.FAMILLES:
     regler(f, 30, 1)
 verifier(E.titre_affiche(etat()) == ("Légende de la salle", "arc"), "8 familles en Méga : « Légende de la salle » (arc-en-ciel)")
 import re  # noqa: E402
-verifier("« Légende de la salle »" in re.sub(r"\x1b\[[0-9;]*m", "", app.render(etat(), 0, False)),
+verifier("« Légende de la salle »" in re.sub(r"\x1b\[[0-9;]*m", "", app.render_tout(etat(), 0, False)),
          "le titre est à côté du nom sur l'écran principal")
 
 print("Star de la semaine (gardée une semaine)")

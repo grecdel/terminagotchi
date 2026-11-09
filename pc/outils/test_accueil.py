@@ -98,8 +98,13 @@ verifier(not parties.aucune(), "une partie existe : la question ne sera plus pos
 
 print("4. La flèche « tape ici » (les premières commandes)")
 s = tape("ls")
-verifier(t("ad.fleche.pc").split(",")[0] in plat(s), "▼ « tape ta commande ici » au-dessus de l'invite pendant l'œuf")
-verifier(t("ad.ls.titre") in plat(s) and t("ad.ls.waouh").split("!")[0] in plat(s), "idée 2 : le premier ls, ses cases, « Waouh, j'y vois ! »")
+# allègement du 9 novembre (variante B) : plus de flèche ni de grand dessin dans le terminal de l'enfant ; « ➜ à toi : »
+# donne la commande suivante juste au-dessus de l'invite, et le dessin du premier ls reste dans `tg detail`
+verifier(t("ad.fleche.pc").split(",")[0] not in plat(s) and t("mis.a_toi", cmd="").strip() in plat(s),
+         "variante B : « ➜ à toi : » au-dessus de l'invite pendant l'œuf (plus de flèche ▼)")
+detail = plat(app.lignes_lecon(core.load()))
+verifier(t("ad.ls.waouh").split("!")[0] in plat(s) and t("ad.ls.titre") not in plat(s) and t("ad.ls.titre") in detail,
+         "idée 2 : « Waouh, j'y vois ! » dans le terminal ; le dessin du premier ls, ses cases : dans `tg detail`")
 s = tape("pwd")
 s = tape("echo bonjour")
 st = core.load()
@@ -109,7 +114,8 @@ verifier(A.ligne_fleche(st) is not None, "1 minute sans rien taper pendant l'œu
 # … sans attendre la commande suivante : le petit guet (vrai shell) et le terminal du jeu (vsh/) la remettent
 st["aide_douce"]["derniere"] = time.time()
 verifier(55 <= (A.attente_fleche(st) or 0) <= 60 and A.place_fleche(st), "flèche partie : elle reviendra dans 1 minute")
-verifier(ANSI.sub("", tape()).endswith("\n\n"), "une ligne gardée (vide) au-dessus de l'invite, pour elle")
+_l = [x for x in ANSI.sub("", tape()).split("\n") if x.strip()]
+verifier(len(_l) <= 2 and "➜" in _l[-1], "variante B : 2 lignes du jeu au plus après une commande, « ➜ … » juste au-dessus de l'invite")
 core.save(st)
 o = io.StringIO()
 verifier(not A.guet_fleche(os.getpid(), dormir=lambda s: None, flux=o) and o.getvalue() == "",

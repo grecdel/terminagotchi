@@ -9976,5 +9976,19 @@
  "cr.dev.echo.i2": "4文字：「e」「c」「h」「o」。",
  "cr.dev.cd_maison.d": "いっきにおうちへつれてかえってくれるコマンド。",
  "cr.dev.cd_maison.i1": "フォルダをかえるコマンドだよ。",
- "cr.dev.cd_maison.i2": "そのあとに小さなへび：チルダ「~」。"
+ "cr.dev.cd_maison.i2": "そのあとに小さなへび：チルダ「~」。",
+ "mis.tape": "{cmd} と入力",
+ "mis.niveau": "次のレッスンはレベル {n}：あと {xp} XP ちょうだい",
+ "mis.a_toi": "きみの番：{cmd}",
+ "mis.plus": "続き：`tg detail`",
+ "ui.fiche.titre": "{nom} のくわしいこと",
+ "ui.lecon.titre": "レッスンのくわしいこと",
+ "ui.lecon.vide": "いまはレッスンがないよ。たんけんしたり、ごはんをあげたり、`aide` と入力してね。",
+ "ui.detail.dit": "さいごのコマンドのあとにゲームが言ったこと",
+ "ui.fiche.album_pc": "成長アルバム：`tg album` · 好きなもの：`tg gouts`",
+ "app.touches.b": "[+] レッスンのくわしいこと  [f] {nom} のくわしいこと",
+ "ui.reg.pur.pc": "ターミナルだけ：{etat}",
+ "ui.reg.pur.aide": "大きい子むけ：ターミナルだけ。やることはその中に書かれるよ",
+ "ui.pur.on.pc": "ターミナルだけ：tg のウィンドウには日記とやることだけが出るよ。",
+ "ui.pur.off.pc": "ターミナル＋ミッション：いきものと 🎯 の行がもどったよ。"
 }

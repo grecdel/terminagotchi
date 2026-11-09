@@ -11,9 +11,12 @@ import time
 from pathlib import Path
 
 from . import core, lecons, sprites
-from .langue import t
+import re
+
+from .langue import largeur, raccourcir, t
 from .plateforme import BOLD, DIM, OSK, RESET, SYS_WIN, fg, piege
 
+_ANSI = re.compile(r"\x1b\[[0-9;]*m")
 DEBUT = "# >>> terminagotchi >>>"
 FIN = "# <<< terminagotchi <<<"
 
@@ -120,21 +123,28 @@ def maison_ici(state):
 def annonces(state):
     """Ce que l'enfant doit lire dans SON terminal (G-34) : le bravo, puis la nouvelle étape (son texte, la commande,
     la version des grands, le vrai terminal) quand elle change, et les messages importants (indices, mises en garde,
-    erreurs expliquées). Une seule fois chacun."""
+    erreurs expliquées). Une seule fois chacun. Depuis l'allègement (9 novembre), le terminal n'en montre que
+    2 lignes (compact) ; cette liste complète reste celle de `tg detail` et des simulations."""
+    return [l for _g, l, _b in annonces_tags(state)]
+
+
+def annonces_tags(state):
+    """annonces, avec le genre de chaque ligne et son texte brut : [(genre, ligne colorée, texte)].
+    Genres : fiche (`ls ?`), erreur, terminal, info, rappel, recap, placement, dit, cmd, clavier, grands, vrai."""
     from .langue import sans_marques  # noqa: F401
-    out = list(state.pop("_fiche_q", None) or [])  # idée 22 : `ls ?` → la fiche courte
+    out = [("fiche", x, x) for x in (state.pop("_fiche_q", None) or [])]  # idée 22 : `ls ?` → la fiche courte
     try:
         from . import verif
         e = verif.expliquer(core.DERNIER["ligne"], core.DERNIER["statut"], maison_ici(state))
     except Exception:                                # noqa: BLE001
         e = None
     if e:
-        out.append(f"{fg(214)}{e}{RESET}")
+        out.append(("erreur", f"{fg(214)}{e}{RESET}", e))
     term = state.pop("terminal", []) or []
     for x in term:
-        out.append(f"{fg(214)}{x}{RESET}")
+        out.append(("terminal", f"{fg(214)}{x}{RESET}", x))
     for x in state.pop("terminal_info", []) or []:     # apprendre en jouant : pas des erreurs (énigme, tampon, bac…)
-        out.append(f"{fg(150)}{x}{RESET}")
+        out.append(("info", f"{fg(150)}{x}{RESET}", x))
     erreur = bool(e) or core.DERNIER["statut"] not in (None, 0) or any(not x.startswith("✔") for x in term)
     les, _ = lecons.lecon_courante(state)
     if les and core.level(state["xp"]) >= les["niveau"]:
@@ -142,32 +152,126 @@ def annonces(state):
         if state.get("term_etape") == cle and erreur:
             # v3 : après une erreur, la commande attendue est réaffichée (plus besoin de taper `aide` à chaque fois)
             step = les["steps"][state["step"]]
-            out.append(f"   {fg(226)}➜ " + t("comp.rappel", cmd=commande_montree(state, step)) + RESET)
+            c = commande_montree(state, step)
+            out.append(("rappel", f"   {fg(226)}➜ " + t("comp.rappel", cmd=c) + RESET, c))
         if state.get("term_etape") != cle:
             if state.get("term_etape") and not erreur:      # l'étape d'avant vient d'être réussie
                 try:
                     from . import deploie
-                    out.extend(deploie.recap_lecon(core.DERNIER.get("ligne")))
+                    out.extend(("recap", x, x) for x in deploie.recap_lecon(core.DERNIER.get("ligne")))
                 except Exception:                    # noqa: BLE001
                     pass
             state["term_etape"] = cle
             step = les["steps"][state["step"]]
             from . import placement
             if les["id"] == "t0" and state["step"] == 0 and not placement.p_(state).get("etat"):
-                out.append(f"{DIM}🧩 " + t("plac.propose") + RESET)       # G-13 : « je connais déjà un peu »
-            out.append(f"{fg(213)}📖 {lecons.tx(step['dit'])}{RESET}")
-            out.append(f"   {fg(226)}➜ {commande_montree(state, step)}{RESET}")
+                out.append(("placement", f"{DIM}🧩 " + t("plac.propose") + RESET, t("plac.propose")))   # G-13
+            out.append(("dit", f"{fg(213)}📖 {lecons.tx(step['dit'])}{RESET}", lecons.tx(step["dit"])))
+            c = commande_montree(state, step)
+            out.append(("cmd", f"   {fg(226)}➜ {c}{RESET}", c))
             if not placement.cache(state, step):        # idée 5 : un symbole nouveau ? où il est sur le clavier
                 from . import aide_douce
-                out.extend(aide_douce.astuce_clavier(state, step["cmd"]))
+                out.extend(("clavier", x, x) for x in aide_douce.astuce_clavier(state, step["cmd"]))
             if not placement.cache(state, step):        # I2 : le mode sans aide ne donne pas la commande ici non plus
                 g = lecons.adulte(step)
                 if g:
-                    out.append(f"   {DIM}🧑 {g}{RESET}")
+                    out.append(("grands", f"   {DIM}🧑 {g}{RESET}", g))
                 from . import vrai
                 v = vrai.ligne(step)
                 if v:
-                    out.append(f"   {DIM}{v}{RESET}")
+                    out.append(("vrai", f"   {DIM}{v}{RESET}", v))
+    return out
+
+
+def a_toi(state, cwd=None):
+    """La 2e ligne du terminal (variante B) : « ➜ à toi : » la commande suivante (le défi, la liste de l'œuf, le
+    monstre, la leçon…), ou la mission du moment ; "" s'il n'y a rien à taper de précis."""
+    if state.get("defi"):
+        return t("mis.a_toi", cmd=f"`{piege(state['defi']['cmd'])}`")
+    from . import intro
+    if intro.en_cours(state):                      # l'œuf : la prochaine commande de sa liste
+        p = intro.prochaine(state)
+        return t("mis.a_toi", cmd=f"`{intro.commande_de(p)}`") if p else ""
+    try:                                           # le monstre en cours de dressage
+        from . import dressage
+        m = dressage.ligne_terminal(state)
+    except Exception:                              # noqa: BLE001
+        m = None
+    if m:
+        return m
+    les, _ = lecons.lecon_courante(state)
+    if les and core.level(state["xp"]) >= les["niveau"]:
+        c = commande_montree(state, les["steps"][state["step"]], cwd)
+        return c if c.startswith("🧩") else t("mis.a_toi", cmd=c)
+    try:                                           # I8 : entre deux chapitres, le cd (depuis n'importe où) d'un lieu
+        from . import histoire
+        if histoire.bandeau(state) and histoire.fini(state, "nid") and not histoire.chapitre_courant(state):
+            libre = next((c for c in histoire.AILES if not histoire.fini(state, c)), None)
+            if libre:
+                piece = histoire.PAR_CHAP[libre]["piece"]
+                return t("mis.a_toi", cmd=f"`{piege(f'cd ~/{core.TERRAIN.name}/{piece}')}`")
+    except Exception:                              # noqa: BLE001
+        pass
+    from . import mission
+    return mission.ligne(state, cwd)
+
+
+GARDE_DETAIL = 60     # lignes gardées pour `tg detail` (ce que le terminal n'a pas montré)
+
+
+def compact(state, cwd=None, avant=(), premier_ls=None, colonnes=None, intro_lignes=()):
+    """Variante B (9 novembre) : ce que le jeu écrit dans le terminal de l'enfant après une commande. La fiche
+    demandée (`ls ?`) telle quelle, puis 2 lignes au plus : ce que dit la créature (+ 🥚 n/4 pendant l'œuf), puis
+    « ➜ à toi : » la commande suivante. Tout le reste (texte de la leçon, pour les grands, vrai terminal, astuce du
+    clavier, le dessin du premier ls…) est gardé dans state["annonces_detail"] : `tg detail`, touche [+] de `tg`.
+    avant : des lignes (texte brut) à placer en tête des candidates (« Te revoilà ! ») ;
+    premier_ls : (noms, dossiers) du premier ls (son dessin va dans le détail) ;
+    intro_lignes : ce que l'intro voulait écrire (l'œuf qui réagit, « merci », une nouveauté) : sa 1re ligne peut
+    devenir la phrase, le tout va dans le détail (la fenêtre `tg` montre déjà ces écrans en grand)."""
+    import shutil
+    tags = annonces_tags(state)
+    fiche = [l for g, l, _b in tags if g == "fiche"]
+    reste = [(g, l, b) for g, l, b in tags if g != "fiche"]
+    nouveaux = state.get("nlog", 0) - state.get("prompt_vu", 0)
+    msgs = [m[6:] for m in state["log"][-min(nouveaux, 2):]] if nouveaux > 0 else []
+    ordre = ([b for g, _l, b in reste if g == "erreur"] + [b for g, _l, b in reste if g == "terminal" and not b.startswith("✔")]
+             + ([t("ad.ls.waouh")] if premier_ls else [])
+             + [x for x in (_ANSI.sub("", y).strip() for y in intro_lignes) if x][:1] + list(avant)
+             + [b for g, _l, b in reste if g == "dit"] + [b for g, _l, b in reste if g in ("terminal", "info")]
+             + msgs[-1:])
+    phrase = next((x for x in ordre if x and x.strip()), "")
+    detail = []
+    if premier_ls:
+        try:
+            from . import aide_douce
+            detail += aide_douce.lignes_premier_ls(*premier_ls)
+        except Exception:                            # noqa: BLE001
+            pass
+    detail += [x for x in intro_lignes if _ANSI.sub("", x).strip()]
+    detail += [l for _g, l, _b in reste]
+    detail += [f"{DIM}{x}{RESET}" for x in list(avant) + msgs]
+    if detail:
+        state["annonces_detail"] = detail[-GARDE_DETAIL:]
+    cols = colonnes or shutil.get_terminal_size((100, 24)).columns
+    out = list(fiche)
+    from . import intro
+    oeuf = ""
+    if intro.en_cours(state):
+        oeuf = f"   🥚 {len(intro.i_(state)['faits'])}/{len(intro.checklist())}"
+    if phrase or oeuf:
+        tete = f"{fg(sprites.body_color(state))}{visage(state)}{RESET} {BOLD}{state['name']}{RESET}"
+        place = max(10, cols - largeur(_ANSI.sub("", tete)) - 3 - largeur(oeuf) - 1)
+        phrase = " ".join(phrase.split())               # une seule ligne
+        out.append(tete + (f" : {fg(78)}{raccourcir(phrase, place)}{RESET}" if phrase else "") + oeuf)
+    suite = a_toi(state, cwd)
+    if suite:
+        cache = any(g in ("grands", "vrai", "clavier", "recap", "placement") for g, _l, _b in reste) or \
+            (premier_ls is not None) or largeur(phrase) > (cols - 20)
+        plus = f"  {DIM}· " + t("mis.plus") + RESET if cache else ""
+        ligne2 = f"  {fg(226)}➜ " + raccourcir(" ".join(suite.split()), max(10, cols - 6)) + RESET
+        if cache and largeur(_ANSI.sub("", ligne2 + plus)) <= cols - 1:
+            ligne2 += plus
+        out.append(ligne2)
     return out
 
 
@@ -190,33 +294,33 @@ def coin(state):
 def prompt(etape):
     """Appelé par le shell avant chaque invite."""
     sortie = []
-    sortie_ls = []
-    guet = []
 
     def rendre(state):
         from . import aide_douce
-        s = ligne(state)
-        dire = annonces(state)
         r = aide_douce.retour(state, os.getppid())    # idée 9 : un nouveau terminal après « fermer et revenir »
-        if r:
-            dire = [f"{fg(78)}{r}{RESET}"] + dire
-        f = aide_douce.ligne_fleche(state)            # idée 4 : « ▼ tape ta commande ici » (les premières commandes)
-        if f:
-            s += "\n" + f
-        elif aide_douce.place_fleche(state) and not os.environ.get("TG_DANS_LE_JEU"):
-            s += "\n"                                 # la place de la flèche, si elle revient pendant l'attente
-            guet.append(True)
-        v = state.pop("_premier_ls", None)            # idée 2 : la cinématique du premier ls (jouée juste après)
+        v = state.pop("_premier_ls", None)            # idée 2 : le premier ls (son dessin : dans `tg detail`)
+        pls = None
         if v:
-            sortie_ls.append((v == "court", {"name": state.get("name", "")}))
-        if dire:
-            s = "\n".join(dire) + RESET + "\n" + s
+            try:
+                noms = sorted(n for n in os.listdir(ici or ".") if not n.startswith("."))
+                dossiers = {n for n in noms if os.path.isdir(os.path.join(ici or ".", n))}
+                pls = ((sorted(dossiers) + [n for n in noms if n not in dossiers])[:4], dossiers)
+            except OSError:
+                pls = ([], set())
+        from . import intro
+        i = intro.i_(state)
+        evt = i.get("evt")
+        # le camp, l'œuf, l'éclosion : les images de l'intro restent comme l'intro les veut (intro.py)
+        images = intro.retient(state) or bool(evt and i.get("vu_prompt") != evt[1])
+        avant = intro.pour_prompt(state)          # l'œuf qui réagit, l'écran « merci », une nouveauté (une fois)
+        # variante B (9 novembre) : 2 lignes au plus (la créature, puis « ➜ à toi : »), le reste dans `tg detail` ;
+        # une nouveauté présentée plus tard : sa 1re ligne, le reste dans le détail (et en grand dans la fenêtre)
+        s = "\n".join(compact(state, ici, avant=[r] if r else [], premier_ls=pls,
+                                intro_lignes=() if images else (avant or ())))
+        if images and avant:
+            s = "\n".join(avant) + RESET + "\n" + s
         if state["config"]["compagnon"] == "coin":
             s = coin(state) + s
-        from . import intro
-        avant = intro.pour_prompt(state)          # l'œuf qui réagit, l'écran « merci », une nouveauté (une fois)
-        if avant:
-            s = "\n".join(avant) + RESET + "\n" + s
         sortie.append(s)
         state["prompt_vu"] = state.get("nlog", 0)
 
@@ -240,22 +344,8 @@ def prompt(etape):
     if sortie:
         from . import intro
         intro.jouer_prompt(sys.stdout)          # le camp qui se réveille, l'œuf qui arrive (puis l'image finale)
-        if sortie_ls:
-            try:
-                from . import aide_douce
-                aide_douce.jouer_premier_ls(sys.stdout, sortie_ls[0][1], ici, court=sortie_ls[0][0])
-            except Exception:                    # noqa: BLE001 (le compagnon ne doit jamais planter)
-                pass
         sys.stdout.write(sortie[0] + RESET + "\n")
         sys.stdout.flush()
-        if guet:                                # idée 4 : la flèche revient après 1 minute, sans attendre une commande
-            try:
-                from . import aide_douce
-                st = core.load()
-                if st is not None:
-                    aide_douce.lancer_guet(st)
-            except Exception:                    # noqa: BLE001 (le compagnon ne doit jamais planter)
-                pass
 
 # ================================================================ installation
 

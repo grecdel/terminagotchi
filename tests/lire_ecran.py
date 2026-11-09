@@ -2,6 +2,7 @@
 
   python3 tests/lire_ecran.py question capture.png [texte.txt]  → le résultat de la multiplication des grands (ou rien)
   python3 tests/lire_ecran.py carte capture.png [texte.txt]     → « oui » si la carte « Signaler un souci » est ouverte
+  python3 tests/lire_ecran.py texte capture.png [texte.txt]     → tout le texte lu
 
 uiautomator ne lit pas l'écran du terminal : la créature bouge tout le temps, l'écran n'est jamais « au repos ».
 """
@@ -22,5 +23,7 @@ if quoi == "question":     # « combien font 16 × 17 ? » (Apparence.questionAd
     q = [(int(a), int(b)) for a, b in re.findall(r"font\s*(\d{2})\s*\S{0,2}\s*(\d{2})", texte)
          if 12 <= int(a) <= 19 and 13 <= int(b) <= 19]
     print(q[-1][0] * q[-1][1] if q else "")
+elif quoi == "texte":      # tout le texte lu (allègement du 9 novembre : ce que l'écran montre, rangé dans un .txt)
+    print(texte)
 else:                      # les boutons de la carte : « Ouvrir la page », « Enregistrer », « Annuler »
     print("oui" if re.search(r"Ouvrir|Enregistr|Annuler", texte) else "non")

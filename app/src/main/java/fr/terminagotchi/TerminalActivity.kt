@@ -111,6 +111,9 @@ class TerminalActivity : Activity() {
     /** idée 5 : les touches de la rangée (rangée 1, ou la 2e après ⋯) ; idée 25 : le bouton 💡 Indice */
     private val touchesVues = mutableListOf<TextView>()
     private var deuxiemeRangee = false
+    /** variante B (9 nov.) : 0 = la rangée réduite (💡 ↑ ⇥ ^C ⋯ et la touche que la leçon demande), 1 = tous les symboles
+     *  de la rangée 1, 2 = la rangée 2 ; ⋯ passe de l'une à l'autre */
+    private var rangeeN = 0
     private lateinit var indiceBtn: TextView
     /** idée 79 : le menu du jeu en plein écran */
     private var menuVue: IntroVue? = null
@@ -168,7 +171,7 @@ class TerminalActivity : Activity() {
             requestPermissions(arrayOf("android.permission.POST_NOTIFICATIONS"), 1)
         }
         creature = findViewById(R.id.creature)
-        creature.setOnClickListener { montrerCreature("album") }      // 16 : toucher la créature ouvre son album
+        creature.setOnClickListener { ouvrirFicheCreature() }         // variante B : sa fiche (et l'album dedans)
         creerBoutonAura()
         titre = findViewById(R.id.titre)
         faim = findViewById(R.id.faim)
@@ -194,6 +197,7 @@ class TerminalActivity : Activity() {
         creerTouches()
         creerBarreOnglets()
         creerAideDouce()
+        creerInterfaceB()
         chemin = findViewById(R.id.chemin)
         contenu = findViewById(R.id.contenu)
         chemin.setOnClickListener {               // idée 74 : toucher le nuage l'explique en une ligne
@@ -464,10 +468,10 @@ class TerminalActivity : Activity() {
         rangee.layoutParams = rangee.layoutParams.also { it.width = LinearLayout.LayoutParams.MATCH_PARENT }
         indiceBtn = TextView(this).apply {
             text = "💡 " + t("ad.ind.bouton")
-            textSize = 13f
+            textSize = 14f
             setTextColor(0xFFFFD75F.toInt())
             gravity = Gravity.CENTER
-            setPadding((6 * dp).toInt(), (6 * dp).toInt(), (6 * dp).toInt(), (6 * dp).toInt())
+            setPadding((10 * dp).toInt(), (9 * dp).toInt(), (10 * dp).toInt(), (9 * dp).toInt())
             setBackgroundResource(R.drawable.touche)
             layoutParams = LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT).also { it.marginEnd = (4 * dp).toInt() }
             visibility = View.GONE
@@ -477,12 +481,12 @@ class TerminalActivity : Activity() {
         rangee.addView(indiceBtn)
         for (k in AideDouce.RANGEE1.indices) {
             val b = TextView(this)
-            b.textSize = 15f
+            b.textSize = 16f
             b.typeface = android.graphics.Typeface.MONOSPACE
             b.setTextColor(0xFFE6E6E6.toInt())
             b.gravity = Gravity.CENTER
             b.minWidth = 0
-            b.setPadding(0, (6 * dp).toInt(), 0, (6 * dp).toInt())
+            b.setPadding(0, (9 * dp).toInt(), 0, (9 * dp).toInt())
             b.setBackgroundResource(R.drawable.touche)
             val lp = LinearLayout.LayoutParams(0, LinearLayout.LayoutParams.WRAP_CONTENT, 1f)
             lp.marginEnd = (4 * dp).toInt()
@@ -502,7 +506,7 @@ class TerminalActivity : Activity() {
             "↓" -> { rappeler(1); return }
             "⇥", "⇥ Tab" -> { if (!accepterFantome()) completer(); return }
             "^C" -> { ctrlC(); return }
-            "⋯" -> { deuxiemeRangee = !deuxiemeRangee; majTouches(); return }
+            "⋯" -> { rangeeN = (rangeeN + 1) % 3; deuxiemeRangee = rangeeN == 2; majTouches(); return }
         }
         val debut = saisie.selectionStart.coerceAtLeast(0)
         for (c in t) {               // un caractère à la fois : ce n'est pas un collage
@@ -521,6 +525,8 @@ class TerminalActivity : Activity() {
             b.text = nom
             val vif = allumer != null && (nom == allumer || (nom == "⋯" && allumer == "⋯" && !deuxiemeRangee) ||
                 (deuxiemeRangee && allumer == "⋯" && nom in AideDouce.SYMBOLES2 && commandeAttendue()?.contains(nom) == true))
+            // la rangée réduite : les symboles se cachent, sauf celui que la leçon demande (idée 5)
+            b.visibility = if (rangeeN == 0 && nom in AideDouce.SYMBOLES1 && !(vif && nom == allumer)) View.GONE else View.VISIBLE
             if (vif) {
                 b.background = GradientDrawable().apply { setColor(0xFF1D3B2A.toInt()); setStroke((2 * resources.displayMetrics.density).toInt(), 0xFF5FD787.toInt()); cornerRadius = 8 * resources.displayMetrics.density }
                 b.setTextColor(0xFF5FD787.toInt())
@@ -659,7 +665,7 @@ class TerminalActivity : Activity() {
     private fun majAideDouce() {
         if (!::perduBtn.isInitialized) return
         val dp = resources.displayMetrics.density
-        perduBtn.visibility = if (jeu.existe && menuVue == null) View.VISIBLE else View.GONE
+        perduBtn.visibility = View.GONE                       // variante B : « Je suis perdu » est dans ☰
         perduBtn.text = t("ad.perdu.bouton")                // dans la langue choisie (elle peut changer en jeu)
         if (::indiceBtn.isInitialized) indiceBtn.text = "💡 " + t("ad.ind.bouton")
         val a = AideDouce.a(jeu)
@@ -671,18 +677,327 @@ class TerminalActivity : Activity() {
             perduBtn.setBackgroundResource(R.drawable.touche)
             perduBtn.setTextColor(0xFF9A9AB0.toInt())
         }
+        perduVif = vif
+        majMenuBtn()
         val cmd = AideDouce.flecheMaintenant(jeu)
         val ligne = (saisie.parent as View).parent as LinearLayout
-        if (cmd != null && perduVue == null) {
-            flecheBulle.text = Vert.rendre(if (cmd.isEmpty()) t("ad.fleche.tel0") else t("ad.fleche.tel", "cmd" to "`$cmd`"))
-            flecheBulle.visibility = View.VISIBLE
-            flecheVue.visibility = View.VISIBLE
-            ligne.background = GradientDrawable().apply { setColor(0x00000000); setStroke((2 * dp).toInt(), 0xFF5FD787.toInt()); cornerRadius = 8 * dp }
-        } else {
-            flecheBulle.visibility = View.GONE
-            flecheVue.visibility = View.GONE
-            ligne.background = null
+        // variante B (9 nov.) : la ligne de saisie est TOUJOURS allumée (cadre vert) ; pendant les premières commandes
+        // (ce que montrait la flèche « tape ici », idée 4), son cadre est plus épais et plus clair
+        flecheBulle.text = Vert.rendre(if (cmd.isNullOrEmpty()) t("ad.fleche.tel0") else t("ad.fleche.tel", "cmd" to "`$cmd`"))
+        flecheBulle.visibility = View.GONE
+        flecheVue.visibility = View.GONE
+        val vifSaisie = cmd != null && perduVue == null
+        ligne.background = GradientDrawable().apply {
+            setColor(0xFF0F1A14.toInt())
+            setStroke(((if (vifSaisie) 3 else 2) * dp).toInt(), if (vifSaisie) 0xFF8CF5AE.toInt() else 0xFF5FD787.toInt())
+            cornerRadius = 12 * dp
         }
+    }
+
+    // ------------------------------------------------------------ allègement du 9 novembre : variante B « terminal + mission »
+    /** en haut : UNE humeur (😊, et 💭 si une envie devient forte), le nom, UNE barre (l'XP), ☰ */
+    private lateinit var humeurVue: TextView
+    private lateinit var barreXp: Barre
+    private lateinit var niveauVue: TextView
+    private lateinit var menuBtn: TextView
+    /** juste au-dessus de la saisie : UNE ligne 🎯 « tape … », et + pour la leçon en détail */
+    private lateinit var missionLigne: LinearLayout
+    private lateinit var missionTexte: TextView
+    private lateinit var missionPlus: TextView
+    /** réglage « terminal pur » (variante A) : la créature perchée sur la ligne de saisie */
+    private lateinit var perche: ImageView
+    /** la fiche ouverte par-dessus (menu ☰, créature, leçon en détail, réglages), ou null */
+    private var fiche: Fiche? = null
+    /** la dernière phrase de la créature écrite dans le terminal (elle n'a plus de bulle à elle) */
+    private var derniereBulle = ""
+    /** terminal pur : la dernière consigne écrite dans le terminal (« ➜ … ») */
+    private var derniereConsigne = ""
+    private var perduVif = false
+
+    /** Les vues de la variante B, posées autour de celles d'avant (qui restent : la tablette en paysage s'en sert). */
+    private fun creerInterfaceB() {
+        val dp = resources.displayMetrics.density
+        fun px(v: Float) = (v * dp).toInt()
+        val panneau = findViewById<PanneauDeux>(R.id.panneau)
+        // l'en-tête : le nom et l'humeur sur une ligne, la barre d'XP dessous
+        val col = titre.parent as LinearLayout
+        val i0 = indice(col, titre)
+        col.removeView(titre)
+        val rangNom = LinearLayout(this)
+        rangNom.orientation = LinearLayout.HORIZONTAL
+        rangNom.gravity = Gravity.CENTER_VERTICAL
+        titre.textSize = 17f
+        rangNom.addView(titre, LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT, 0f))
+        humeurVue = TextView(this).apply {
+            textSize = 18f
+            setPadding(px(8f), 0, px(4f), 0)
+            isFocusable = false
+            setOnClickListener {                        // idée 74 : le nuage s'explique ; sinon la fiche de la créature
+                val n = Recensement.phraseNuage(jeu)
+                if (nuageMontre != null && n.isNotEmpty()) ecrire(n, Commandes.BLEU) else ouvrirFicheCreature()
+            }
+        }
+        rangNom.addView(humeurVue)
+        col.addView(rangNom, i0)
+        val rangBarre = LinearLayout(this)
+        rangBarre.orientation = LinearLayout.HORIZONTAL
+        rangBarre.gravity = Gravity.CENTER_VERTICAL
+        barreXp = Barre(this).apply { couleur = 0xFFFFD75F.toInt() }
+        rangBarre.addView(barreXp, LinearLayout.LayoutParams(0, px(8f), 1f))
+        niveauVue = TextView(this).apply { textSize = 12f; setTextColor(0xFF9A9AB0.toInt()); setPadding(px(8f), 0, 0, 0) }
+        rangBarre.addView(niveauVue)
+        col.addView(rangBarre, i0 + 1, LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT).also { it.topMargin = px(5f) })
+        for (v in listOf(rangNom, rangBarre)) v.setOnClickListener { ouvrirFicheCreature() }
+        // ☰ : le menu (7 gros boutons), juste avant ✕
+        val tete = lexiqueBtn.parent as LinearLayout
+        menuBtn = TextView(this).apply {
+            text = "☰"
+            textSize = 24f
+            gravity = Gravity.CENTER
+            setTextColor(0xFFE6E6E6.toInt())
+            setBackgroundResource(R.drawable.touche)
+            contentDescription = t("ui.menu.titre")
+            isFocusable = false
+            setOnClickListener { ouvrirMenuB() }
+        }
+        val fermerV = findViewById<View>(R.id.fermer)
+        tete.addView(menuBtn, indice(tete, fermerV), LinearLayout.LayoutParams(px(48f), px(44f)).also { it.gravity = Gravity.CENTER_VERTICAL; it.marginStart = px(6f) })
+        (fermerV.layoutParams as LinearLayout.LayoutParams).gravity = Gravity.CENTER_VERTICAL
+        // la ligne 🎯 juste au-dessus de la ligne de saisie
+        val ligne = (saisie.parent as View).parent as LinearLayout
+        missionLigne = LinearLayout(this).apply {
+            orientation = LinearLayout.HORIZONTAL
+            gravity = Gravity.CENTER_VERTICAL
+            background = GradientDrawable().apply { setColor(0xFF241D33.toInt()); setStroke(px(1f), 0xFF5A3F6E.toInt()); cornerRadius = 10 * dp }
+            setPadding(px(10f), px(4f), px(4f), px(4f))
+            isFocusable = false
+            setOnClickListener { ouvrirLeconB() }
+        }
+        missionTexte = TextView(this).apply {
+            textSize = 15f
+            setTextColor(0xFFFF87FF.toInt())
+            setMaxLines(2)
+        }
+        missionLigne.addView(missionTexte, LinearLayout.LayoutParams(0, LinearLayout.LayoutParams.WRAP_CONTENT, 1f))
+        missionPlus = TextView(this).apply {
+            text = "+"
+            textSize = 22f
+            gravity = Gravity.CENTER
+            setTypeface(typeface, Typeface.BOLD)
+            setTextColor(0xFFE6E6E6.toInt())
+            background = GradientDrawable().apply { setColor(0xFF2E2E48.toInt()); setStroke(px(1f), 0xFF45456A.toInt()); cornerRadius = 10 * dp }
+            contentDescription = t("ui.lecon.titre")
+            isFocusable = false
+            setOnClickListener { ouvrirLeconB() }
+        }
+        missionLigne.addView(missionPlus, LinearLayout.LayoutParams(px(44f), px(40f)).also { it.marginStart = px(6f) })
+        panneau.addView(missionLigne, indice(panneau, flecheBulle).let { if (it >= 0) it else indice(panneau, ligne) },
+            LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT).also { it.topMargin = px(8f) })
+        // terminal pur : la créature perchée sur la ligne de saisie
+        perche = ImageView(this).apply { scaleType = ImageView.ScaleType.FIT_CENTER; visibility = View.GONE; isFocusable = false; setOnClickListener { ouvrirFicheCreature() } }
+        ligne.addView(perche, indice(ligne, findViewById(R.id.envoyer)), LinearLayout.LayoutParams(px(36f), px(34f)))
+        val env = findViewById<TextView>(R.id.envoyer)
+        env.background = GradientDrawable().apply { setColor(0xFF1D3B2A.toInt()); setStroke(px(1f), 0xFF5FD787.toInt()); cornerRadius = 10 * dp }
+        // le bas (🎯, saisie, touches) toujours visible ; le terminal garde au moins 4 lignes
+        panneau.bas = missionLigne
+        panneau.minExtensible = px(72f)
+        // toucher le terminal ouvre le clavier (la saisie garde le focus)
+        defile.setOnTouchListener { _, ev ->
+            if (ev.action == android.view.MotionEvent.ACTION_UP) montrerClavier()
+            false
+        }
+        // les tests à l'écran (tests/vitrine.sh) touchent ces éléments là où ils sont vraiment
+        suivrePosition(ligne, "saisie")
+        suivrePosition(menuBtn, "menu")
+        suivrePosition(missionPlus, "plus")
+        suivrePosition(creature, "creature")
+    }
+
+    /** Écrit dans le journal d'Android (logcat, balise TG_POS) le centre d'une vue quand il change : les tests sur le
+     *  téléphone virtuel (tests/vitrine.sh) la touchent là où elle est (uiautomator ne lit pas l'écran : il bouge). */
+    private fun suivrePosition(v: View, nom: String) {
+        var avant = ""
+        v.addOnLayoutChangeListener { w, _, _, _, _, _, _, _, _ ->
+            val xy = IntArray(2)
+            w.getLocationOnScreen(xy)
+            val ici = "${xy[0] + w.width / 2} ${xy[1] + w.height / 2}"
+            if (ici != avant && w.width > 0) { avant = ici; android.util.Log.i("TG_POS", "$nom $ici") }
+        }
+    }
+
+    private fun montrerClavier() {
+        saisie.requestFocus()
+        (getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager).showSoftInput(saisie, InputMethodManager.SHOW_IMPLICIT)
+    }
+
+    /** Réglage « terminal pur » (variante A, pour les grands). */
+    private fun pur(): Boolean = jeu.existe && jeu.extra.has("interface") && jeu.module("interface").optBoolean("pur")
+
+    /** La créature de l'en-tête (et, en terminal pur, la petite créature perchée sur la saisie). */
+    private fun poserImage(b: android.graphics.Bitmap) {
+        creature.setImageBitmap(b)
+        if (::perche.isInitialized && perche.visibility == View.VISIBLE) perche.setImageBitmap(b)
+    }
+
+    /** ☰ : jaune vif quand l'enfant semble perdu (idée 6 : « Je suis perdu » est dedans). */
+    private fun majMenuBtn() {
+        if (!::menuBtn.isInitialized) return
+        val dp = resources.displayMetrics.density
+        if (perduVif && jeu.existe) {
+            menuBtn.background = GradientDrawable().apply { setColor(0xFF3A2F12.toInt()); setStroke((2 * dp).toInt(), 0xFFFFD75F.toInt()); cornerRadius = 8 * dp }
+            menuBtn.setTextColor(0xFFFFD75F.toInt())
+        } else {
+            menuBtn.setBackgroundResource(R.drawable.touche)
+            menuBtn.setTextColor(0xFFE6E6E6.toInt())
+        }
+    }
+
+    /** L'en-tête, la ligne 🎯 et la phrase de la créature (appelé par rafraichir). */
+    private fun majInterfaceB(oeuf: Boolean, panneauDressage: Boolean) {
+        if (!::missionLigne.isInitialized) return
+        val dp = resources.displayMetrics.density
+        val large = findViewById<PanneauDeux>(R.id.panneau).deux
+        val pur = pur()
+        val dedans = jeu.existe && !oeuf
+        // le nom, UNE humeur, UNE barre
+        humeurVue.text = if (dedans && Intro.ouvert(jeu, "envies")) Envies.emoji(jeu) + (if (Envies.pensee(jeu)) " 💭" else "")
+            else if (dedans) Envies.emoji(jeu) else ""
+        val lo = 10 * (jeu.niveau - 1) * (jeu.niveau - 1)
+        val hi = 10 * jeu.niveau * jeu.niveau
+        barreXp.part = if (hi > lo) (jeu.xp - lo).toFloat() / (hi - lo) else 0f
+        niveauVue.text = t("cr.album.niveau", "n" to jeu.niveau)
+        (barreXp.parent as View).visibility = if (dedans && !pur) View.VISIBLE else View.GONE
+        if (dedans && !pur && !jeu.shiny) titre.text = jeu.nom
+        else if (dedans && !pur) titre.text = miseEnForme("§${jeu.nom} ✨§", null)
+        if (pur && dedans) titre.text = "Terminagotchi"
+        humeurVue.visibility = if (dedans && !pur) View.VISIBLE else View.GONE
+        (creature.parent as? View)?.visibility = if (dedans && !pur) View.VISIBLE else View.GONE
+        perche.visibility = if (dedans && pur) View.VISIBLE else View.GONE
+        // ☰ seulement une fois la créature née ; ✕ reste (l'intro « Tu peux fermer quand tu veux » le montre)
+        menuBtn.visibility = if (dedans) View.VISIBLE else View.GONE
+        // la tablette en paysage a la place : la fiche (envies, XP, forces) reste sous la créature, comme avant
+        val detailsVis = if (large && dedans && !panneauDressage && !pur) View.VISIBLE else View.GONE
+        faim.visibility = if (detailsVis == View.VISIBLE && Intro.ouvert(jeu, "envies")) View.VISIBLE else View.GONE
+        xp.visibility = detailsVis
+        stats.visibility = if (detailsVis == View.VISIBLE && Intro.ouvert(jeu, "equipe")) View.VISIBLE else View.GONE
+        // la ligne 🎯 (pas pendant l'œuf : il a sa liste ; pas en terminal pur : la consigne s'écrit dans le terminal)
+        val m = if (dedans) Mission.ligne(jeu) else null
+        if (pur) {
+            missionLigne.visibility = View.GONE
+            if (m != null && m != derniereConsigne) { derniereConsigne = m; ecrire("➜ $m", 0xFFFFD75F.toInt()) }
+        } else {
+            missionLigne.visibility = if (m != null) View.VISIBLE else View.GONE
+            missionTexte.text = Vert.rendre(m ?: "")
+            val defi = Defis.actif(jeu) != null
+            missionTexte.setTextColor(if (defi) 0xFFFFD75F.toInt() else 0xFFFF87FF.toInt())
+            missionLigne.background = GradientDrawable().apply {
+                setColor(if (defi) 0xFF3A2F12.toInt() else 0xFF241D33.toInt())
+                setStroke((1 * dp).toInt(), if (defi) 0xFFFFD75F.toInt() else 0xFF5A3F6E.toInt()); cornerRadius = 10 * dp
+            }
+        }
+        // la créature n'a plus de bulle à elle : sa phrase s'écrit dans le terminal, une fois (« (•ᴗ•) Pixel : … »)
+        bulle.visibility = View.GONE
+        val b = jeu.bulleActive()
+        if (b.isNotEmpty() && b != derniereBulle) {
+            derniereBulle = b
+            val dejaDit = sortie.text.toString().takeLast(800).contains(Vert.rendre(b).toString())
+            if (!dejaDit) ecrire("(•ᴗ•) ${jeu.nom} : $b", 0xFFFFAFD7.toInt())
+        }
+        if (::auraBtn.isInitialized && !large) auraBtn.visibility = View.GONE      // ✨ : dans la fiche (place trop petite)
+        majMenuBtn()
+    }
+
+    private fun nouvelleFiche(titre: String): Fiche {
+        fermerFiche()
+        val f = Fiche(this, titre) { ff -> if (fiche === ff) fiche = null; saisie.requestFocus() }
+        findViewById<android.widget.FrameLayout>(R.id.fond).addView(f.racine, android.widget.FrameLayout.LayoutParams(
+            android.widget.FrameLayout.LayoutParams.MATCH_PARENT, android.widget.FrameLayout.LayoutParams.MATCH_PARENT))
+        fiche = f
+        return f
+    }
+
+    private fun fermerFiche() { fiche?.fermer(); fiche = null }
+
+    override fun onBackPressed() {
+        if (fiche != null) { fermerFiche(); return }
+        super.onBackPressed()
+    }
+
+    /** ☰ : 7 gros boutons, seulement ceux déjà débloqués (Intro.ouvert). */
+    private fun ouvrirMenuB() {
+        if (!jeu.existe || Intro.enCours(jeu)) return
+        val f = nouvelleFiche(t("ui.menu.titre"))
+        f.gros("🐾", t("ui.fiche.titre", "nom" to jeu.nom), t("ui.menu.pixel.sous")) { ouvrirFicheCreature() }
+        if (Intro.ouvert(jeu, "carte")) f.gros("🗺", t("ui.menu.carte"), t("ui.menu.carte.sous")) {
+            fermerFiche()
+            if (ouvrirCarte()) ecrire("🗺 " + Carte.titre(jeu), Commandes.ROSE)
+        }
+        f.gros("📖", t("ui.lecon.titre"), t("ui.menu.lecon.sous")) { ouvrirLeconB() }
+        if (Intro.ouvert(jeu, "lexique")) f.gros("📚", t("ui.menu.lexique"), t("ui.menu.lexique.sous")) {
+            fermerFiche()
+            if (lexiqueVue.visibility != View.VISIBLE) basculerLexique()
+        }
+        f.gros("🧭", t("ui.menu.perdu"), t("ui.menu.perdu.sous")) { fermerFiche(); ouvrirPerdu() }
+        f.gros("🗂", t("ui.menu.onglets"), t("ui.menu.onglets.sous")) { fermerFiche(); ouvrirOnglet() }
+        f.gros("⚙", t("ui.menu.reglages"), t("ui.menu.reglages.sous")) { ouvrirReglagesB() }
+    }
+
+    /** Toucher la créature : sa fiche (envies, XP, assiette, forces, l'envie mystère) et son album. */
+    private fun ouvrirFicheCreature() {
+        if (!jeu.existe || Intro.enCours(jeu)) return
+        val f = nouvelleFiche(t("ui.fiche.titre", "nom" to jeu.nom))
+        f.texte(if (jeu.shiny) miseEnForme("§${jeu.titre()}§", null) else jeu.titre(), 15f, gras = true)
+        f.texte(xp.text, 13f, 0xFFD0D0D0.toInt(), mono = true)
+        if (Intro.ouvert(jeu, "envies")) {
+            f.sousTitre(t("ui.fiche.envies") + "  " + Envies.emoji(jeu) + " " + t(Envies.humeurCle(jeu)))
+            val couleurs = mapOf("faim" to 0xFFFFAF5F.toInt(), "jeu" to 0xFFFF87D7.toInt(), "curiosite" to 0xFFFFD75F.toInt(),
+                "explorer" to 0xFF5FD787.toInt(), "sommeil" to 0xFFAF87FF.toInt(), "proprete" to 0xFF5FD7FF.toInt())
+            for (e in Envies.ENVIES) f.barre(Envies.ICONES.getValue(e), Envies.nom(e), Envies.valeur(jeu, e), couleurs[e] ?: 0xFFFFD75F.toInt())
+            Envies.phrase(jeu)?.let { f.texte(Vert.rendre("💭 $it"), 14f, 0xFFFFAF5F.toInt()) }
+            f.texte(Satiete.ligneEtat(jeu) + "   🍽 " + Satiete.assiette(jeu), 14f)
+        }
+        Creature.envie(jeu)?.let { e ->
+            f.sousTitre(t("ui.fiche.devinette"))
+            val k = e.optInt("k")
+            f.texte("« " + Creature.texteDevinette(e.getString("id"), 0) + " »" +
+                (if (k > 0) "\n" + t("cr.direct.indice", "k" to k) + " : " + Creature.texteDevinette(e.getString("id"), k) else ""), 14f)
+            f.boutons(t("cr.envie.bouton.indice") to { ecrire(Creature.indice(jeu), Commandes.ROSE); jeu.sauver(); ouvrirFicheCreature() },
+                t("cr.envie.bouton.plus_tard") to { ecrire(Creature.indice(jeu, "plus-tard"), Commandes.ROSE); jeu.sauver(); fermerFiche(); rafraichir() })
+        }
+        if (Intro.ouvert(jeu, "equipe") && stats.text.isNotEmpty()) {
+            f.sousTitre(t("ui.fiche.forces"))
+            f.texte(stats.text, 13f, 0xFFD0D0D0.toInt(), mono = true)
+        }
+        val bt = mutableListOf<Pair<String, () -> Unit>>(t("ui.fiche.album") to { fermerFiche(); montrerCreature("album") })
+        if (Intro.ouvert(jeu, "equipe")) bt.add(t("ui.fiche.aura") + " " + t(if (Aura.active(jeu)) "app.on" else "app.off") to { basculerAura(); ouvrirFicheCreature() })
+        f.boutons(*bt.toTypedArray())
+    }
+
+    /** Le + de la ligne 🎯 : la leçon en détail (pour les grands, vrai terminal, options, d'où la taper, astuce, indice). */
+    private fun ouvrirLeconB() {
+        if (!jeu.existe) return
+        val f = nouvelleFiche(t("ui.lecon.titre"))
+        f.texte(Vert.rendre(Mission.detail(jeu)), 15f, 0xFFFFC8FF.toInt())
+        if (AideDouce.cible(jeu, shell.dossier) != null) f.boutons("💡 " + t("ad.ind.bouton") to {
+            fermerFiche(); ecrire(AideDouce.texteDemandeIndice(jeu, shell.dossier), 0xFFFFD75F.toInt()); jeu.sauver()
+        })
+    }
+
+    /** ☰ › Réglages : terminal pur (variante A), le son, lecture et confort, la langue. */
+    private fun ouvrirReglagesB() {
+        val f = nouvelleFiche(t("ui.reg.titre"))
+        f.gros("⌨", t("ui.reg.pur", "etat" to t(if (pur()) "ui.reg.oui" else "ui.reg.non")), t("ui.reg.pur.aide")) {
+            val on = !pur()
+            jeu.module("interface").put("pur", on)
+            jeu.sauver()
+            derniereConsigne = ""
+            fermerFiche()
+            ecrire(t(if (on) "ui.pur.on" else "ui.pur.off"), Commandes.ROSE)
+            rafraichir()
+        }
+        f.gros("🔊", t("ui.reg.son").removePrefix("🔊 "), "") { fermerFiche(); reglagesSon() }
+        f.gros("🔤", t("ui.reg.confort").removePrefix("🔤 "), "") { fermerFiche(); ecrire(Confort.commande(jeu, emptyList()), Commandes.ROSE); appliquerConfort() }
+        f.gros("🌍", t("ui.reg.langue").removePrefix("🌍 "), "") { fermerFiche(); ecrire(langue(null), Commandes.ROSE) }
     }
 
     // ------------------------------------------------------------ 79. le menu du jeu
@@ -1828,16 +2143,20 @@ class TerminalActivity : Activity() {
             rangee.addView(View(this), LinearLayout.LayoutParams((8 * dp).toInt(), 1))
             rangee.addView(bouton(t("cr.envie.bouton.plus_tard")) { ecrire(Creature.indice(jeu, "plus-tard"), Commandes.ROSE); jeu.sauver(); rafraichir() })
             b.addView(rangee, LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT).also { it.topMargin = (6 * dp).toInt() })
+            // variante B : un bandeau compact (une ligne) ; la devinette et ses boutons sont dans la fiche de la créature
+            rangee.visibility = View.GONE
+            tx.setMaxLines(1)
+            b.setPadding((10 * dp).toInt(), (5 * dp).toInt(), (10 * dp).toInt(), (5 * dp).toInt())
+            b.isFocusable = false
+            b.setOnClickListener { ouvrirFicheCreature() }
             val pan = bulle.parent as LinearLayout
             var i = 0
             while (i < pan.childCount && pan.getChildAt(i) !== bulle) i++
             pan.addView(b, i + 1, LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT).also { it.topMargin = (6 * dp).toInt() })
             envieBoite = b; envieTexte = tx
         }
-        val k = e.optInt("k")
-        envieTexte?.text = "❓ " + t("cr.envie.titre") + " · " + t("cr.envie.presse") + "\n« " + Creature.texteDevinette(e.getString("id"), 0) + " »" +
-            (if (k > 0) "\n" + t("cr.direct.indice", "k" to k) + " : " + Creature.texteDevinette(e.getString("id"), k) else "")
-        boite.visibility = View.VISIBLE
+        envieTexte?.text = "❓ " + t("cr.envie.titre") + " · " + t("cr.envie.presse") + "  ›"
+        boite.visibility = if (pur()) View.GONE else View.VISIBLE
     }
 
     /** L'espace de travail : la vue graphique (île, onglets, créature en direct, vue déployée, carte, cerveau, équipe)
@@ -1894,13 +2213,13 @@ class TerminalActivity : Activity() {
         (chemin.parent as View).visibility = View.VISIBLE
         val d = resources.displayMetrics.density
         val cadre = defile.parent as View
-        cadre.layoutParams = (cadre.layoutParams as LinearLayout.LayoutParams).also { it.height = (140 * d).toInt(); it.weight = 1f }
+        cadre.layoutParams = (cadre.layoutParams as LinearLayout.LayoutParams).also { it.height = 0; it.weight = 1f }
         panneau.layoutParams = (panneau.layoutParams as android.widget.FrameLayout.LayoutParams).also {
-            it.height = android.widget.FrameLayout.LayoutParams.WRAP_CONTENT; val m = (8 * d).toInt(); it.setMargins(m, m, m, m)
+            it.height = android.widget.FrameLayout.LayoutParams.MATCH_PARENT; val m = (8 * d).toInt(); it.setMargins(m, m, m, m)
         }
         panneau.setBackgroundResource(R.drawable.panneau)
         findViewById<View>(R.id.fond).setBackgroundColor(0x55000000)
-        sortie.textSize = 12f
+        sortie.textSize = tailleTerminal(13f)
         jeu.module("espace").put("ouvert", false)
         jeu.sauver()
         Sons.suivre(jeu, false)
@@ -2235,11 +2554,12 @@ class TerminalActivity : Activity() {
         val b = jeu.bulleActive()
         bulle.visibility = if (b.isEmpty()) View.GONE else View.VISIBLE
         bulle.text = Vert.rendre(b)
-        val defi = Defis.actif(jeu)
         val panneau = Dressage.panneau(jeu, resources, imageCombat)
-        // terrain effacé : le bandeau avec la commande à taper reste au-dessus de la leçon
-        val l: CharSequence? = panneau ?: if (defi != null) (if (Confort.calme(jeu)) t("conf.defi", "cmd" to Regles.piege(defi)) else t("app.defi", "cmd" to Regles.piege(defi), "s" to Defis.resteSecondes(jeu)))
-            else if (jeu.existe && !Intro.enCours(jeu)) listOfNotNull(Terrain.bandeau(jeu), jeu.texteLecon()).joinToString("\n\n").ifEmpty { null } else null
+        // variante B (9 nov.) : le défi éclair et le terrain effacé passent dans la ligne 🎯 (Mission.kt), la leçon
+        // derrière son + ; ici ne reste que le face-à-face du monstre (coupé s'il le faut : la saisie reste visible).
+        // Sur une tablette en paysage, la colonne de gauche a la place : la leçon en détail y reste, comme avant.
+        val large = findViewById<PanneauDeux>(R.id.panneau).deux
+        val l: CharSequence? = panneau ?: if (large && jeu.existe && !Intro.enCours(jeu) && !pur()) Mission.detail(jeu) else null
         lecon.visibility = if (l == null) View.GONE else View.VISIBLE
         lecon.text = Vert.rendre(l ?: "")
         // le panneau du dressage ne doit pas écraser la ligne de saisie (un champ sans hauteur ne peut plus recevoir
@@ -2247,23 +2567,20 @@ class TerminalActivity : Activity() {
         val dp = resources.displayMetrics.density
         val observatoire = chemin.parent as View
         val boiteSortie = defile.parent as View
-        observatoire.visibility = if (panneau != null) View.GONE else View.VISIBLE
-        val hSortie = ((if (panneau != null) 100 else 140) * dp).toInt()
-        if (boiteSortie.layoutParams.height != hSortie) { boiteSortie.layoutParams.height = hSortie; boiteSortie.requestLayout() }
+        // variante B : le panneau du dossier n'est plus à l'écran (`ls` le montre) ; il revient le temps du premier ls
+        observatoire.visibility = if (lsAnim) View.VISIBLE else View.GONE
+        if (boiteSortie.layoutParams.height != 0) { boiteSortie.layoutParams.height = 0; boiteSortie.requestLayout() }
         if (panneau != null) {
             val fondH = findViewById<View>(R.id.fond).height.takeIf { it > 0 } ?: resources.displayMetrics.heightPixels
-            val entete = (titre.parent.parent as View).height
-            val hBulle = if (bulle.visibility == View.VISIBLE) bulle.height + (6 * dp).toInt() else 0
-            val hOnglets = if (::barreOnglets.isInitialized) (barreOnglets.parent as View).height + (8 * dp).toInt() else 0
-            lecon.maxHeight = maxOf((70 * dp).toInt(), fondH - entete - hBulle - hSortie - hOnglets - ((44 + 52 + 40) * dp).toInt())
-        } else lecon.maxHeight = Int.MAX_VALUE
+            lecon.maxHeight = maxOf((70 * dp).toInt(), fondH / 2 - (60 * dp).toInt())
+        } else lecon.maxHeight = if (large) Int.MAX_VALUE else (160 * dp).toInt()
         if (lecon.movementMethod == null) lecon.movementMethod = android.text.method.ScrollingMovementMethod()
         // rien d'autre que la ligne de saisie ne doit pouvoir prendre le focus (sinon ce qu'on tape part dans le vide)
         verrouillerFocus(findViewById(R.id.panneau))
         if (!saisie.hasFocus()) saisie.requestFocus()
         // pendant un dressage, le familier est déjà dans le face-à-face : on allège l'en-tête
         val vis = if (panneau != null) View.GONE else View.VISIBLE
-        creature.visibility = vis; faim.visibility = vis; xp.visibility = vis; stats.visibility = vis
+        creature.visibility = vis
         if (::auraBtn.isInitialized) auraBtn.visibility = vis
         // l'intro : l'œuf seul (dessiné dans IntroVue) ; ensuite, chaque élément arrive avec sa présentation (Intro.kt)
         val oeuf = !jeu.existe || Intro.enCours(jeu)
@@ -2272,15 +2589,18 @@ class TerminalActivity : Activity() {
         if (::auraBtn.isInitialized && (oeuf || !Intro.ouvert(jeu, "equipe"))) auraBtn.visibility = View.GONE
         (creature.parent as? View)?.visibility = if (oeuf) View.GONE else View.VISIBLE
         // les onglets du terminal : pas pendant l'œuf (un seul écran, le temps d'apprendre à taper), sauf s'il y en a déjà plusieurs
-        if (::barreOnglets.isInitialized) (barreOnglets.parent as View).visibility = if (oeuf && onglets.liste.size == 1) View.GONE else View.VISIBLE
-        lexiqueBtn.visibility = if (jeu.existe && !oeuf && Intro.ouvert(jeu, "lexique")) View.VISIBLE else View.GONE
+        // variante B : la rangée des onglets n'apparaît que s'il y en a au moins 2 (☰ › Plusieurs terminaux en ouvre un)
+        if (::barreOnglets.isInitialized) (barreOnglets.parent as View).visibility = if (onglets.liste.size > 1) View.VISIBLE else View.GONE
+        // 📖 Lexique : dans ☰ (sur la tablette en paysage, il reste aussi en haut : il y a la place)
+        lexiqueBtn.visibility = if (large && jeu.existe && !oeuf && Intro.ouvert(jeu, "lexique")) View.VISIBLE else View.GONE
+        majInterfaceB(oeuf, panneau != null)
         majNuage()
         majIntro()
         majAideDouce()
         majTouches()
         majBoutonAura()
         majEnvie()
-        if (lecture == null) creature.setImageBitmap(imageCreature(cligne > 0))
+        if (lecture == null) poserImage(imageCreature(cligne > 0))
     }
 
     // ------------------------------------------------------------ courtes animations de la créature
@@ -2369,7 +2689,7 @@ class TerminalActivity : Activity() {
         lectureFin = n
         lectureEchelle = echelle
         lecturePalier = palier
-        creature.setImageBitmap(avecAura(imgs[0], echelle, palier, 0))
+        poserImage(avecAura(imgs[0], echelle, palier, 0))
         val pause = 1000L / maxOf(1, ips)
         if (!deja) handler.postDelayed({ pasAnimation(pause) }, pause)
     }
@@ -2379,10 +2699,10 @@ class TerminalActivity : Activity() {
         lectureK++
         if (lectureK >= lectureFin) {
             lecture = null
-            creature.setImageBitmap(imageCreature(false))
+            poserImage(imageCreature(false))
             return
         }
-        creature.setImageBitmap(avecAura(imgs[lectureK % imgs.size], lectureEchelle, lecturePalier, lectureK))
+        poserImage(avecAura(imgs[lectureK % imgs.size], lectureEchelle, lecturePalier, lectureK))
         handler.postDelayed({ pasAnimation(pause) }, pause)
     }
 
@@ -2491,7 +2811,7 @@ class TerminalActivity : Activity() {
                 vieCourante()?.let { v ->
                     val tic = (android.os.SystemClock.uptimeMillis() / VIE_PAS).toInt()
                     // glitch : style A au repos, un éclair C de temps en temps (l'horloge murale, comme sur PC)
-                    creature.setImageBitmap(avecAura(AnimAuto.bitmap(v.anim, tic, v.echelle, v.teinte, Glitch.maintenant(v.glitch)),
+                    poserImage(avecAura(AnimAuto.bitmap(v.anim, tic, v.echelle, v.teinte, Glitch.maintenant(v.glitch)),
                         v.echelle, v.palier, tic))
                 }
             } catch (e: Exception) {
@@ -2574,12 +2894,12 @@ class TerminalActivity : Activity() {
             // la vie au repos (pasVie) s'occupe de la créature : clignements, respiration, aura
         } else if (cligne > 0) {
             cligne--
-            if (cligne == 0) creature.setImageBitmap(imageCreature(false))
+            if (cligne == 0) poserImage(imageCreature(false))
         } else if (Random.nextInt(12) == 0) {
             cligne = 1
-            creature.setImageBitmap(imageCreature(true))
+            poserImage(imageCreature(true))
         } else if (auraVisible()) {
-            creature.setImageBitmap(imageCreature(false))      // l'aura respire
+            poserImage(imageCreature(false))      // l'aura respire
         }
         if (frame % 12 == 0 && !enCours) {        // toutes les ~5 s : la faim, le terrain, les bulles, les leçons « fichiers »
             for ((m, c) in Tour.periodique(jeu, shell.dossier)) ecrire(m, c)
@@ -2663,13 +2983,19 @@ class TerminalActivity : Activity() {
         val e = if (jeu.existe) Recensement.nuage(jeu) else null
         if (e?.first == nuageMontre) return
         nuageMontre = e?.first
-        if (e == null) { chemin.setCompoundDrawables(null, null, null, null); return }
+        val cible: TextView = if (::humeurVue.isInitialized) humeurVue else chemin    // variante B : à côté de l'humeur
+        if (e == null) { cible.setCompoundDrawables(null, null, null, null); return }
         val d = resources.displayMetrics.density
         val b = NuageDessin.pilule(e.first, t(if (e.first == "envoi") "rec.nuage.mot.envoi" else "rec.nuage.mot.hors"), d)
         val img = android.graphics.drawable.BitmapDrawable(resources, b)
         img.setBounds(0, 0, b.width, b.height)
-        chemin.setCompoundDrawablePadding((6 * d).toInt())
-        chemin.setCompoundDrawables(null, null, img, null)
+        cible.setCompoundDrawablePadding((6 * d).toInt())
+        cible.setCompoundDrawables(null, null, img, null)
+        cible.post {                                     // tests/vitrine.sh touche le nuage là où il est
+            val xy = IntArray(2)
+            cible.getLocationOnScreen(xy)
+            android.util.Log.i("TG_POS", "nuage ${xy[0] + cible.width - b.width / 2} ${xy[1] + cible.height / 2}")
+        }
     }
 
     // ------------------------------------------------------------ idée 75 : tablette en paysage
@@ -2687,9 +3013,10 @@ class TerminalActivity : Activity() {
         if (p.deux == deux) return
         p.deux = deux
         if (espace == null) p.layoutParams = (p.layoutParams as android.widget.FrameLayout.LayoutParams).also {
-            it.height = if (deux) android.widget.FrameLayout.LayoutParams.MATCH_PARENT else android.widget.FrameLayout.LayoutParams.WRAP_CONTENT
+            it.height = android.widget.FrameLayout.LayoutParams.MATCH_PARENT          // variante B : toute la hauteur
         }
         p.requestLayout()
+        if (::jeu.isInitialized) rafraichir()
     }
 
     // ------------------------------------------------------------ idée 76 : signaler un souci
