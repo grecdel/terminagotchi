@@ -475,12 +475,12 @@ def ponctuation(mot):
 
 
 def mot_de_l_oeuf(mot):
-    """I9 : `bonjour` tout seul → `echo bonjour` quand c'est une commande de la liste de l'œuf (ou None)."""
+    """I9 : `noisette` tout seul → `echo Noisette` quand c'est une commande de la liste de l'œuf (ou None)."""
     try:
         from . import intro
         for c in intro.checklist():
             cmd = intro.commande_de(c)
-            if cmd.split()[0] == "echo" and cmd.split()[1:2] == [mot]:
+            if cmd.split()[0] == "echo" and [x.lower() for x in cmd.split()[1:2]] == [(mot or "").lower()]:
                 return cmd
     except Exception:                                # noqa: BLE001
         pass

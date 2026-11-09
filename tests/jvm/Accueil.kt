@@ -170,12 +170,12 @@ fun main(args: Array<String>) {
     }
     verifierA(AideDouce.flecheMaintenant(jeu) == "pwd", "la flèche montre la première commande de l'œuf (pwd)")
     verifierA(tape("ls") == "premier_ls", "le premier ls réussi : la cinématique")
-    tape("pwd"); tape("echo bonjour")
+    tape("pwd"); tape("echo Pixel")                     // avant ls : une commande réussie, pas encore le nom
     verifierA(AideDouce.flecheMaintenant(jeu) == null, "3 commandes réussies : la flèche s'en va")
     verifierA(tape("ls") != "premier_ls", "le premier ls ne revient jamais")
     tape("nexistepas", 127); tape("nexistepas", 127)
     verifierA(AideDouce.perduVif(AideDouce.a(jeu).optInt("erreurs"), 0.0), "2 erreurs de suite : « Perdu ? » jaune vif")
-    tape("whoami")
+    tape("echo Pixel"); tape("whoami")                  // 9 nov. : l'œuf (arrivé avec ls) reçoit son nom, puis éclot
     val f = AideDouce.ficheCourte("ls")
     verifierA("ls, en mots d'enfant" in f && "ls --help" in f && "explique ls" in f, "`ls ?` : la fiche courte")
     val ip = AideDouce.infosPerdu(jeu)

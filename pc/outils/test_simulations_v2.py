@@ -196,8 +196,8 @@ st["terminal"] = []
 core.feed(st, "pwd,", 127)
 verifier(any("« pwd »" in texte(x) for x in st["terminal"]), f"pwd, → tu voulais dire pwd : {st['terminal']}")
 st["terminal"] = []
-core.feed(st, "bonjour", 127)
-verifier(any("echo bonjour" in texte(x) for x in st["terminal"]), f"bonjour → echo bonjour : {st['terminal']}")
+core.feed(st, "noisette", 127)
+verifier(any("echo Noisette" in texte(x) for x in st["terminal"]), f"noisette → echo Noisette : {st['terminal']}")
 verifier(verif.barre_oubliee("nidrepas.txt", str(T)) == "nid/repas.txt" or not (T / "nid" / "repas.txt").exists(),
          "nidrepas.txt → nid/repas.txt")
 (T / "nid").mkdir(exist_ok=True)

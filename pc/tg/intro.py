@@ -33,7 +33,7 @@ import re
 import time
 
 from . import core
-from .langue import envelopper, largeur, t
+from .langue import envelopper, largeur, rendre, t
 from .plateforme import BOLD, DIM, IS_WIN, RESET, fg
 
 _D = {}
@@ -748,7 +748,8 @@ def bloc_prompt(state, quand, cols=None, rangs=None):
     out = []
     if ph != "ne":
         coul = fg(78) if ph in ("dort", "eveil", "eclat", "eclot", "fondu") else fg(214)
-        out += [f"  {coul}{x}{RESET}" for x in envelopper(texte, larg)]
+        # les commandes du texte en vert (l'invite du shell n'est pas passée par langue.rendre)
+        out += [f"  {coul}" + rendre(x).replace("\x1b[39m", "\x1b[39m" + coul) + RESET for x in envelopper(texte, larg)]
     if ph == "telech" and 0 < m["pct"] < 100:
         out.append("  " + ligne_reception(state, m["pct"], cols - 4))
     if ph != "ne":

@@ -71,16 +71,8 @@ debut() {   # $1 : langue (fr, en…), $2 : « oui » dans cette langue
   adb shell cmd locale set-app-locales $PAQ --user 0 --locales "$1" || true
   adb shell am start -n $PAQ/.TerminalActivity
   capture ecran_0 12
-  for i in 1 2 3 4 5 6; do tape "" 3; capture "ecran_$i" 1; done
-  for essai in 1 2 3; do
-    tape "Pixel" 6
-    [ "$essai" = 1 ] && capture bapteme 1
-    tape "$2" 8
-    attendre_pret 10
-    adb shell uiautomator dump /sdcard/tg_ui.xml >/dev/null 2>&1
-    adb exec-out cat /sdcard/tg_ui.xml | grep -o 'text="Pixel[^"]*" resource-id="fr.terminagotchi:id/titre"' | grep -q Pixel && break
-    for i in 1 2 3; do tape "" 3; done
-  done
+  # « Qui est avec toi ? » puis les 3 écrans du début (9 nov. : plus de nom demandé ; le dernier lance la partie)
+  for i in 1 2 3 4 5; do tape "" 3; capture "ecran_$i" 1; done
   tape "langue $1" 2
 }
 
@@ -114,8 +106,13 @@ if [ "$MODE" = telephone ]; then
     D=captures/vitrine_$L; mkdir -p $D
     OUI=$([ "$L" = fr ] && echo oui || echo yes); NON=$([ "$L" = fr ] && echo non || echo no)
     debut "$L" "$OUI"
-    tape "ls" 4
-    for c in "pwd" "echo bonjour" "whoami"; do tape "$c" 2; done
+    # l'intro au camp (planche du 9 nov.) : une capture par case
+    capture intro_4_camp_dort 1
+    tape "pwd" 5; capture intro_5_camp_rallume 1
+    tape "ls" 6; capture intro_6_oeuf_arrive 1
+    tape "echo" 3; capture intro_6_et_mon_nom 1
+    tape "echo Pixel" 3; capture intro_7_il_ecoute 1
+    tape "whoami" 3
   tape "$NON" 3                                 # « Tu veux m'entendre ? » (le son, à l'éclosion) : non
     capture eclosion 2
     tape "debloquer tout"; tape "$OUI"
@@ -141,8 +138,7 @@ elif [ "$MODE" = nouveautes ]; then
   # ---- les nouveautés (idées 74 et 76), en français
   D=captures/nouveautes; mkdir -p $D
   debut fr oui
-  tape "ls" 4
-  for c in "pwd" "echo bonjour" "whoami"; do tape "$c" 2; done
+  tape "pwd" 3; tape "ls" 5; tape "echo Pixel" 3; tape "whoami" 3   # 9 nov. : dans l'ordre, le nom avec echo
   tape "$NON" 3                                 # « Tu veux m'entendre ? » (le son, à l'éclosion) : non
   tape "debloquer tout"; tape "oui"
   tape "compte serveur http://10.0.2.2:8787"
@@ -163,8 +159,7 @@ elif [ "$MODE" = carte ]; then
   # ---- seulement la carte « Signaler un souci » (idée 76) : la question des grands lue, la bonne réponse, la carte
   D=captures/carte; mkdir -p $D
   debut fr oui
-  tape "ls" 4
-  for c in "pwd" "echo bonjour" "whoami"; do tape "$c" 2; done
+  tape "pwd" 3; tape "ls" 5; tape "echo Pixel" 3; tape "whoami" 3   # 9 nov. : dans l'ordre, le nom avec echo
   tape "$NON" 3                                 # « Tu veux m'entendre ? » (le son, à l'éclosion) : non
   tape "debloquer tout"; tape "oui"
   ouvrir_carte
@@ -222,8 +217,7 @@ else
   adb shell settings put system accelerometer_rotation 0
   adb shell settings put system user_rotation 0
   debut fr oui
-  tape "ls" 4
-  for c in "pwd" "echo bonjour" "whoami"; do tape "$c" 2; done
+  tape "pwd" 3; tape "ls" 5; tape "echo Pixel" 3; tape "whoami" 3   # 9 nov. : dans l'ordre, le nom avec echo
   tape "$NON" 3                                 # « Tu veux m'entendre ? » (le son, à l'éclosion) : non
   tape "debloquer tout"; tape "oui"
   for c in "cd" "mkdir terrain_terminagotchi" "cd terrain_terminagotchi" "mkdir nid" "cd nid" "echo pomme > repas.txt" "ls -l" "cat repas.txt"; do tape "$c"; done

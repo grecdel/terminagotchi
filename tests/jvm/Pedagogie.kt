@@ -98,7 +98,7 @@ fun main(args: Array<String>) {
     verifP(Intro.faits(jeu).isEmpty(), "PWD ne nourrit pas l'œuf")
     tape("pwd; ls")
     verifP(Intro.faits(jeu).size == 2, "pwd; ls : les deux comptent pour l'œuf (${Intro.faits(jeu)})")
-    for (c in listOf("echo bonjour", "whoami")) tape(c)
+    for (c in listOf("echo Pixel", "whoami")) tape(c)      // 9 nov. : le nom de l'œuf se donne avec echo
     Intro.toutDebloquer(jeu)
     jeu.xp = maxOf(jeu.xp, 10)
     verifP(lec() == ("t0" to 0), "leçon 1, étape 1 (${lec()})")

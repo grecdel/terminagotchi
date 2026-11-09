@@ -45,33 +45,30 @@ tape() {   # tape une commande lettre par lettre puis Entrée
 }
 adb shell am start -n fr.terminagotchi/.TerminalActivity
 capture debut 12
-# les écrans du début (intro.json) : Entrée jusqu'au dernier (Entrée de trop : rien), puis le nom et « oui »
+# « Qui est avec toi ? » puis les 3 écrans du début (intro.json) : Entrée à chaque fois ; le dernier lance la partie
+# au camp endormi (9 nov. : plus de nom demandé). Une Entrée de trop dans le jeu ne fait rien.
 tape "" 4
 capture intro_1
-# Entrée de trop sur le dernier écran : rien. On en tape assez pour être sûr d'y être, puis le nom, et l'on vérifie
-# à l'écran (le titre) que la créature s'appelle bien Pixel ; sinon on recommence (le téléphone virtuel perd parfois
-# une Entrée pendant le changement d'écran).
 for i in 1 2 3 4 5; do tape "" 3; done
-for essai in 1 2 3; do
-  tape "Pixel" 6
-  [ "$essai" = 1 ] && capture bapteme
-  tape "oui" 8
-  attendre_pret 40
-  adb shell uiautomator dump /sdcard/tg_ui.xml >/dev/null 2>&1
-  adb exec-out cat /sdcard/tg_ui.xml 2>/dev/null | grep -q 'resource-id="fr.terminagotchi:id/titre"[^>]*' && \
-    adb exec-out cat /sdcard/tg_ui.xml | grep -o 'text="Pixel[^"]*" resource-id="fr.terminagotchi:id/titre"' | grep -q Pixel && break
-  echo "nom pas encore pris (essai $essai) : on recommence"
-  for i in 1 2 3; do tape "" 3; done
-done
 # le jeu en français (le téléphone virtuel est en anglais)
 tape "langue fr" 2
 capture fleche_tape_ici 1      # idée 4 : la flèche « Tape pwd ici, puis Entrée »
-# l'œuf et sa liste (Intro.kt) : 4 commandes, il éclot ; puis tout est ouvert pour la suite du scénario
+# le camp (Intro.kt), dans l'ordre : pwd le rallume, ls fait arriver l'œuf, echo Pixel le nomme, whoami le fait éclore
+tape "pwd" 3
 tape "ls" 0.5
 capture premier_ls 0.8         # idée 2 : la cinématique du premier ls
-sleep 3
+sleep 4
+capture oeuf_arrive
+# le nom : on vérifie à l'écran (le titre) que l'œuf s'appelle bien Pixel ; sinon on recommence (le téléphone
+# virtuel perd parfois une lettre)
+for essai in 1 2 3; do
+  tape "echo Pixel" 4
+  adb shell uiautomator dump /sdcard/tg_ui.xml >/dev/null 2>&1
+  adb exec-out cat /sdcard/tg_ui.xml | grep -o 'text="Pixel[^"]*" resource-id="fr.terminagotchi:id/titre"' | grep -q Pixel && break
+  echo "nom pas encore pris (essai $essai) : on recommence"
+done
 capture oeuf_fele
-for c in "pwd" "echo bonjour" "whoami"; do tape "$c" 2; done
+tape "whoami" 2
 capture eclosion_merci
 tape "debloquer tout"; tape "oui"
 for c in "pwd" "ls" "cd" "mkdir terrain_terminagotchi" "cd terrain_terminagotchi" "mkdir nid"; do tape "$c"; done

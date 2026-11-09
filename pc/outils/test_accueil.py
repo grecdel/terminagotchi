@@ -78,7 +78,7 @@ verifier(A.action_menu("4") == "options" and A.action_menu("5") == "aide" and A.
 
 print("1. Qui est avec toi ? (le tout premier lancement)")
 (HOME / ".bash_history").touch()
-reponses = iter(["2", "", "", "", "", "Pixou", ""])
+reponses = iter(["2", "", "", "", ""])   # 9 nov. : plus de nom demandé (il se donne avec echo, au camp)
 builtins.input = lambda _i="": next(reponses)
 out = io.StringIO()
 with redirect_stdout(out):
@@ -87,7 +87,7 @@ p = plat(out.getvalue())
 st = core.load()
 verifier(t("ad.parent.question") in p and t("ad.parent.adulte") in p, "la question et les deux choix")
 verifier(t("ad.parent.c1.t") in p and t("ad.parent.c4.t") in p and "tg debloquer tout" in p, "avec un adulte : les 4 conseils")
-verifier(st["name"] == "Pixou" and st["aide_douce"]["parent"] == "adulte", "puis l'histoire et le nom ; le choix est gardé")
+verifier(st["name"] == t("intro.nom.attente") and st["aide_douce"]["parent"] == "adulte", "puis l'histoire (sans nom) ; le choix est gardé")
 verifier("parent" not in json.dumps(st.get("compte", {})), "rien n'est envoyé (le choix n'est pas dans le compte)")
 with redirect_stdout(io.StringIO()) as o:
     sys.argv = ["tg", "aide", "parents"]
@@ -106,7 +106,7 @@ detail = plat(app.lignes_lecon(core.load()))
 verifier(t("ad.ls.waouh").split("!")[0] in plat(s) and t("ad.ls.titre") not in plat(s) and t("ad.ls.titre") in detail,
          "idée 2 : « Waouh, j'y vois ! » dans le terminal ; le dessin du premier ls, ses cases : dans `tg detail`")
 s = tape("pwd")
-s = tape("echo bonjour")
+s = tape("echo Pixou")                               # avant ls : une commande réussie, pas encore le nom de l'œuf
 st = core.load()
 verifier(st["aide_douce"]["reussies"] >= 3 and t("ad.fleche.pc").split(",")[0] not in plat(s), "3 commandes réussies : la flèche s'en va")
 st["aide_douce"]["derniere"] = time.time() - 120
@@ -147,6 +147,7 @@ s = tape("ls")
 verifier(t("ad.ls.titre") not in plat(s), "le premier ls ne se rejoue jamais")
 
 print("22. ls ? : la fiche courte, jamais un repas")
+tape("echo Pixou")                                   # l'œuf (arrivé avec ls) s'appelle Pixou
 tape("whoami")                                       # l'œuf éclot
 total = core.load()["total"]
 s = tape("ls ?", statut=2)

@@ -1295,6 +1295,21 @@ programme.json), examen-aventure et diplôme PNG (+ SVG sur PC ; sur le téléph
 « Imprimer », ligne vide pour le prénom, rien d'enregistré). Tests : `pc/outils/test_apprendre.py`,
 `tests/jvm/Apprendre.kt`.
 
+**🌍 Nouvelle intro — codée (9 novembre, planche `outils/ameliorations/allegement/planche_intro.png` validée).**
+Le monde d'abord, l'œuf ensuite, PC et téléphone, 8 cases : 1. le Terminaworld avec le nom des biomes (étiquettes
+posées sur l'image : `intro.json` « illustrations.monde.etiquettes ») ; 2. tout s'endort (l'illustration provisoire
+reste) ; 3. les gardiens dorment aussi (dessiné par le code avec les vrais dessins : les bébés des 9 biomes endormis,
+le cœur du monde, Abyssor en silhouette sombre qui dort — `scenes.gardiens` / `IntroGardiens.kt`) ; 4. le camp
+endormi, `pwd` ; 5. le camp se rallume, `ls` ; 6. SEULEMENT là, l'œuf arrive dans le nid pixel par pixel, `echo <nom>`
+(`echo` seul, `echo bonjour`, une redirection… : « Et mon nom ? ») ; 7. l'œuf a son nom et se fêle, `whoami` ;
+8. éclosion. Plus de nom demandé avant de jouer (ni question, ni « nom ? » sur le téléphone) : en attendant, la partie
+s'appelle « Œuf » (`intro.nom.attente`). Les 4 commandes se tapent dans l'ordre. « Qui est avec toi ? » ne change pas ;
+les réactions de l'œuf passent toujours avant la fête de la commande du jour. Règle du nom commune
+(`intro.nom_echo` / `Intro.nomEcho`, vecteurs `donnees/intro_noms.json`). Textes en 14 langues ; les anciennes clés
+`intro.*` restent pour la page « Essayer » du site (`site/src/autour_textes.js` recopié ; le site n'est pas redéployé).
+Tests : `test_intro.py`, `test_simulations_v3.py`, `tests/jvm/Intro.kt` ; scénarios du téléphone virtuel
+(`tests/scenario.sh`, `tests/vitrine.sh`) mis au nouvel ordre. Captures : `outils/ameliorations/allegement/captures_apres/intro/`.
+
 ## Ce qui attend une décision ou une action du propriétaire
 
 - Tester l'APK d'essai de la phase 1 et donner ses retours.
