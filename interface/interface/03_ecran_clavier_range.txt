@@ -1,0 +1,46 @@
+Gum» niv.2
+Bee Sea gue
+~ $ pwd
+/home/explorateur
+/ pwd -— « ou suls-je ? »
+%@ Commande du jour réussie (pwd) ! +8 XP et
+un tampon dans ton calendrier.
+~ $ 1s
+Y/Y Fait. (Pas de message = tout s'est bien
+passé.)
+Y/Y ls — « gu'y a-t-il ici ? »
+
+» (eve) Euf : Quelque chose arrive...
+
+Waouh, j'y vois ! ls montre ce qu'il y a ici :
+pe des lieux et JB des objets.
+~ $ echo Pixel
+Pixel
+Y/Y echo Noisette — donne un nom a l'euf
+(l'ordinateur répete ce que tu écris)
+(*u*) Pixel : *crac !* Pixel... c'est mol ?
+~ $ whoami
+uO_al/4
+“ whoami — « qui suis-je ? »
+Y/Y 4/4 — l'euf éclot !
+(eu*) Pixel : Bonjour le monde ! .. C'est comme
+¢a qu'on dit, non ?
+(eu*) Pixel : J'ai quelque chose a
+t'apprendre !
+(*u*) Pixel : Regarde, la-haut ! C'est moi, en
+petit : mon etat et bient6t mon equipe.
+@ Le son est éteint.
+(*u*) Pixel : *toc toc*.. Tu m'entends ? Je
+Suis tout petit et j'ai froid. Ce monde, le
+Terminaworld, dort depuis si longtemps... Les
+grands l'appellent « le telephone ». Viens me
+chercher : on va l'explorer ensemble !
+(eu*) Pixel : J'ai cache un fichier quelque
+part. Ou pas.
+(*u*) Pixel : rm -rf ? Jamais de la vie, hihi.
+(*u*) Pixel : Et Si on renommait tous tes
+fichiers ? Je plaisante !
+~ $ date
+Mon Nov) 9 21:31:20 UTC 2026
+@ 0u suis-je ? (1/3) - tape pwd +
+~ §$ tape une commande...
