@@ -2011,7 +2011,8 @@ class TerminalActivity : Activity() {
             if (introVue != null) saisie.setHint(t("term.saisie"))
             introVue?.let { (it.parent as? LinearLayout)?.removeView(it) }
             introVue = null
-            if (carteVue == null) obs.visibility = View.VISIBLE
+            // variante B : le panneau du dossier ne revient que le temps du premier ls
+            if (carteVue == null) obs.visibility = if (lsAnim) View.VISIBLE else View.GONE
             boiteSortie.visibility = if (perduVue != null) View.GONE else View.VISIBLE
             return
         }
@@ -2188,7 +2189,7 @@ class TerminalActivity : Activity() {
         panneau.removeView(v)
         espace = null
         panneau.getChildAt(0).visibility = View.VISIBLE
-        (chemin.parent as View).visibility = View.VISIBLE
+        (chemin.parent as View).visibility = if (lsAnim) View.VISIBLE else View.GONE   // variante B
         val d = resources.displayMetrics.density
         val cadre = defile.parent as View
         cadre.layoutParams = (cadre.layoutParams as LinearLayout.LayoutParams).also { it.height = 0; it.weight = 1f }
@@ -2252,7 +2253,7 @@ class TerminalActivity : Activity() {
     private fun fermerCarte() {
         val v = carteVue ?: return
         (v.parent as? LinearLayout)?.removeView(v)
-        (chemin.parent as View).visibility = View.VISIBLE
+        (chemin.parent as View).visibility = if (lsAnim) View.VISIBLE else View.GONE   // variante B
         carteVue = null
     }
 

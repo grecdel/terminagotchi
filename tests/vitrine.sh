@@ -172,7 +172,10 @@ elif [ "$MODE" = interface ] || [ "$MODE" = interface_tablette ]; then
   D=captures/$MODE; mkdir -p $D
   if [ "$MODE" = interface_tablette ]; then
     adb shell settings put system accelerometer_rotation 0
-    adb shell settings put system user_rotation 1      # tablette en paysage (idée 75)
+    # tablette en paysage (idée 75). Le pixel_c est déjà en paysage à la rotation 0 (2560x1800) : la rotation 1
+    # le mettait en portrait (captures du 9 nov.). On choisit la rotation d'après la taille physique.
+    rot=$(adb shell wm size | tr -d '\r' | awk -F'[ x]' '/Physical/{print ($3 > $4) ? 0 : 1}')
+    adb shell settings put system user_rotation ${rot:-1}
   fi
   adb shell wm size > $D/taille.txt; adb shell wm density >> $D/taille.txt
   debut fr oui

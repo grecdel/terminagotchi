@@ -1338,6 +1338,12 @@ Maquettes : outils/ameliorations/allegement/ (planche_interface.png, planche_int
   « terminal géant » (« Ranger » peut la remettre au centre).
 - Tests : pc/outils/test_mission.py, tests/jvm/Mission.kt ; tests qui lisaient l'écran adaptés (app.render_tout =
   l'écran + [+] + [f]) ; captures sur le téléphone virtuel : `MODE=interface` et `interface_tablette` de tests/vitrine.sh.
+- Captures du téléphone virtuel regardées (9 nov., soir) : la saisie reste bien visible clavier ouvert (téléphone et
+  monstre). Corrigé : le panneau du dossier revenait à l'écran après l'intro, la carte ou l'espace (il ne revient plus
+  que le temps du premier ls) ; la tablette « en paysage » était en portrait (le pixel_c est déjà en paysage à la
+  rotation 0 : vitrine.sh choisit la rotation d'après la taille physique). Captures : `outils/ameliorations/allegement/captures_apres/interface/`.
+- À savoir pour `tout.sh` : avec un dossier temporaire au chemin trop long (TMPDIR dans le scratchpad), test_crypte
+  (socket de gpg), test_carte, test_histoire et test_intro échouent pour rien ; prendre un TMPDIR court.
 
 ## Ce qui attend une décision ou une action du propriétaire
 
