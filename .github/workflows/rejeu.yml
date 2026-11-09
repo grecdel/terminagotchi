@@ -76,6 +76,7 @@ jobs:
           python3 pc/outils/vecteurs_temps.py --verifier
           python3 pc/outils/vecteurs_controle.py --verifier
           python3 pc/outils/vecteurs_accueil.py --verifier
+          python3 pc/outils/vecteurs_mission.py --verifier
           python3 pc/outils/vecteurs_sons.py --verifier
 
       - name: Rejeu des sorties dans un vrai bash (fiches et histoire du PC)

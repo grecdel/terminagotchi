@@ -1310,6 +1310,33 @@ les réactions de l'œuf passent toujours avant la fête de la commande du jour.
 Tests : `test_intro.py`, `test_simulations_v3.py`, `tests/jvm/Intro.kt` ; scénarios du téléphone virtuel
 (`tests/scenario.sh`, `tests/vitrine.sh`) mis au nouvel ordre. Captures : `outils/ameliorations/allegement/captures_apres/intro/`.
 
+## ✅ Allègement de l'écran — codé (9 novembre, variante B « terminal + mission » validée)
+Maquettes : outils/ameliorations/allegement/ (planche_interface.png, planche_interface_pc.png), réponses par défaut 4 à 7.
+- **Téléphone** : en haut seulement la créature, son nom, UNE barre (XP), UNE humeur (😊, 💭 si une envie est forte) et ☰.
+  Au milieu le terminal. Juste au-dessus de la saisie, UNE ligne 🎯 « tape … » (Mission.kt = pc/tg/mission.py, vecteurs
+  communs donnees/mission/vecteurs.json) et son + : la leçon en détail (pour les grands, vrai terminal, options…).
+  La ligne de saisie : grande, cadre vert toujours allumé, gros curseur, gros ⏎ ; elle reste TOUJOURS visible au-dessus
+  du clavier (PanneauDeux.bas : la ligne 🎯, la saisie et les touches sont mesurées d'abord ; le terminal garde au moins
+  4 lignes ; ce qui s'insère plus haut — monstre, fiche « nouveau ! », carte — est coupé, jamais la saisie). Touches
+  réduites : 💡 Indice ↑ ⇥ ^C ⋯ (+ la touche que la leçon demande ; ⋯ montre toutes les autres). Toucher la créature :
+  sa fiche (envies, XP, assiette, forces, envie mystère, album, aura). Le panneau du dossier n'est plus à l'écran (il
+  revient le temps du premier ls). Menu ☰ : 7 gros boutons (seulement ceux déjà débloqués) ; il s'allume en jaune quand
+  l'enfant semble perdu. Défi éclair et terrain effacé : dans la ligne 🎯 ; envie mystère : un bandeau d'une ligne.
+  La phrase de la créature s'écrit dans le terminal (« (•ᴗ•) Pixel : … »). Onglets : la rangée n'apparaît qu'à 2.
+  Tablette en paysage (idée 75) : à droite le terminal, la ligne 🎯 et la saisie ; à gauche la créature, sa fiche et
+  la leçon en détail (il y a la place).
+- **Terminal pur** (variante A, pour les grands) : ☰ › Réglages ; le terminal seul, la consigne s'écrit dedans (➜),
+  la créature perchée sur la saisie. PC : option 16 de `tg` › [o].
+- **PC, terminal de l'enfant** : 2 lignes du jeu au plus après une commande (la créature, puis « ➜ à toi : »), le
+  reste dans `tg detail` (et `tg fiche`). Les images de l'intro (camp, œuf, éclosion) restent comme l'intro les veut.
+- **PC, fenêtre `tg`** : dessin, nom, UNE humeur, UNE barre, la bulle, la ligne 🎯, 3 lignes du journal ; [+] la leçon
+  en détail, [f] la fiche de la créature.
+- **PC, `tg espace`** : au centre le terminal seul avec la ligne 🎯 (+ détail → onglet Leçon) et une grande saisie ;
+  à gauche et à droite les panneaux d'avant ; la vue déployée passe dans l'onglet Tuyaux, `deploie` et la disposition
+  « terminal géant » (« Ranger » peut la remettre au centre).
+- Tests : pc/outils/test_mission.py, tests/jvm/Mission.kt ; tests qui lisaient l'écran adaptés (app.render_tout =
+  l'écran + [+] + [f]) ; captures sur le téléphone virtuel : `MODE=interface` et `interface_tablette` de tests/vitrine.sh.
+
 ## Ce qui attend une décision ou une action du propriétaire
 
 - Tester l'APK d'essai de la phase 1 et donner ses retours.
