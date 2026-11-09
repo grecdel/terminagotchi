@@ -10001,5 +10001,7 @@
  "ui.reg.pur.pc": "Terminal puro: {etat}",
  "ui.reg.pur.aide": "para los mayores: solo la terminal, la consigna se escribe dentro",
  "ui.pur.on.pc": "Terminal puro: la ventana tg solo muestra el diario y la consigna.",
- "ui.pur.off.pc": "Terminal + misión: la criatura y la línea 🎯 han vuelto."
+ "ui.pur.off.pc": "Terminal + misión: la criatura y la línea 🎯 han vuelto.",
+ "esp.detail": "detalle",
+ "esp.tape_ici": "escribe aquí y luego Intro"
 }

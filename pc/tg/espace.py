@@ -709,6 +709,8 @@ class Espace(B.Controleur):
             self.dep["actif"] = int(a.rsplit(":", 1)[1])
             self.dep["t"] = 0.0
             self.dep["auto"] = False
+        elif a == "mission:detail":                # le + de la ligne 🎯 : la leçon en détail (onglet Leçon)
+            self.onglet = "lecon"
         elif a == "dep:lecon":
             lec = self._lecon()
             if lec and lec.get("cmd"):
@@ -1201,6 +1203,12 @@ class Espace(B.Controleur):
         d = self.mini.dossier
         m["cwd"] = "~" + d[len(home):] if d.startswith(home) else d
         m["lecon"] = self._lecon()
+        try:                                         # variante B : la ligne 🎯 au-dessus de la grande saisie
+            from . import mission
+            m["mission"] = sans_marques(mission.ligne(st, self.mini.dossier)) if st else ""
+        except Exception as e:                       # noqa: BLE001
+            B.noter(f"mission : {e!r}")
+            m["mission"] = ""
         m["anime"] = V.animer(self.c)
         b = self.vue.bulle
         m["bulle"] = b[0] if b and self.t < b[1] else self._bulle(st)

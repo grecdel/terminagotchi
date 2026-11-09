@@ -1,5 +1,5 @@
 {
- "_doc": "Apparence de Terminagotchi (PC : pc/tg/apparence.py ; Android : Apparence.kt ; copie exacte dans pc/tg/apparence.json et app/src/main/assets/apparence.json). themes : palettes par rôle (neutres : fond, panneau, panneau2, terminal, pale, doux, texte, encre ; bord : multiplicateur d'opacité des bords fins ; accents : remplacent les 8 couleurs du thème sombre ; teinte : recoloration de la carte du monde). Le nom affiché est la clé de langue app.theme.<id>. panneaux : le calendrier de l'interface évolutive (mêmes conditions que intro.json « deblocages », plus une_lecon : au moins une de ces leçons faite). grille : la grille de l'espace PC (colonnes, rangées) ; dispositions : rectangles en cases [colonne, rangée, largeur, hauteur]. telephone : bandes du téléphone (ordre, tailles P M G) et ordre des onglets.",
+ "_doc": "Apparence de Terminagotchi (PC : pc/tg/apparence.py ; Android : Apparence.kt ; copie exacte dans pc/tg/apparence.json et app/src/main/assets/apparence.json). themes : palettes par rôle (neutres : fond, panneau, panneau2, terminal, pale, doux, texte, encre ; bord : multiplicateur d'opacité des bords fins ; accents : remplacent les 8 couleurs du thème sombre ; teinte : recoloration de la carte du monde). Le nom affiché est la clé de langue app.theme.<id>. panneaux : le calendrier de l'interface évolutive (mêmes conditions que intro.json « deblocages », plus une_lecon : au moins une de ces leçons faite). grille : la grille de l'espace PC (colonnes, rangées) ; dispositions : rectangles en cases [colonne, rangée, largeur, hauteur] ; « classique » suit la variante B de l'allègement du 9 novembre (le terminal seul au centre, la vue déployée dans l'onglet Tuyaux et `deploie`, à remettre au centre avec « Ranger »). telephone : bandes du téléphone (ordre, tailles P M G) et ordre des onglets.",
  "version": 1,
  "ordre": [
   "sombre",
@@ -372,17 +372,11 @@
     4,
     6
    ],
-   "deploie": [
+   "terminal": [
     4,
     0,
     12,
-    7
-   ],
-   "terminal": [
-    4,
-    7,
-    12,
-    13
+    20
    ],
    "direct": [
     16,

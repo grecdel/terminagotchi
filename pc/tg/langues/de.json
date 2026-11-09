@@ -10000,5 +10000,7 @@
  "ui.reg.pur.pc": "Reines Terminal: {etat}",
  "ui.reg.pur.aide": "für Größere: nur das Terminal, die Aufgabe steht darin",
  "ui.pur.on.pc": "Reines Terminal: das tg-Fenster zeigt nur noch das Tagebuch und die Aufgabe.",
- "ui.pur.off.pc": "Terminal + Mission: das Wesen und die 🎯-Zeile sind zurück."
+ "ui.pur.off.pc": "Terminal + Mission: das Wesen und die 🎯-Zeile sind zurück.",
+ "esp.detail": "Details",
+ "esp.tape_ici": "hier tippen, dann Enter"
 }

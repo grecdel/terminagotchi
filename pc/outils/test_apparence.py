@@ -202,7 +202,7 @@ verif(not any(z[4] == "reglages" for z in Z) and any(op[0] == "texte" and op[3] 
       "avant l'éclosion : l'œuf et l'invite seuls, sans barre")
 vis = {"terminal", "direct", "ile", "explorateur", "envies"}
 L, Z, _ = S.scene(modele(visibles=vis, onglets=[], cases=A.preset("classique")))
-verif(sum(1 for op in L if op[0] == "ligne" and op[7] == (6, 8, 0)) >= 12, "les places encore endormies : des pointillés")
+verif(sum(1 for op in L if op[0] == "ligne" and op[7] == (6, 8, 0)) >= 8, "les places encore endormies : des pointillés")
 verif(any(z[4] == "ranger" for z in Z), "le bouton crayon « Ranger mon espace » dans la barre")
 L, Z, _ = S.scene(modele(visibles=vis, onglets=[], cases=A.preset("classique"), rangement=True, caches=["equipe"]))
 acts = {z[4] for z in Z}

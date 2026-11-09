@@ -10007,5 +10007,7 @@
  "ui.reg.pur.pc": "Terminal pur : {etat}",
  "ui.reg.pur.aide": "pour les grands : rien que le terminal, la consigne s'écrit dedans",
  "ui.pur.on.pc": "Terminal pur : la fenêtre tg ne montre plus que le journal et la consigne.",
- "ui.pur.off.pc": "Terminal + mission : la créature et la ligne 🎯 sont revenues."
+ "ui.pur.off.pc": "Terminal + mission : la créature et la ligne 🎯 sont revenues.",
+ "esp.detail": "détail",
+ "esp.tape_ici": "tape ici, puis Entrée"
 }

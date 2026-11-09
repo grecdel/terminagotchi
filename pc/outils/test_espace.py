@@ -189,7 +189,12 @@ def tests_scene():
     for classe in (False, True):
         mise = S.Mise(classe)
         for r in (mise.deploie, mise.terminal, mise.direct, mise.contexte):
+            if r is None:                     # variante B (9 nov.) : la vue déployée n'est plus au centre (classique)
+                continue
             ok(r[0] >= 0 and r[1] >= 0 and r[0] + r[2] <= mise.W and r[1] + r[3] <= mise.H, f"panneau dans l'écran {classe}")
+    mise = S.Mise(False)
+    ok(mise.deploie is None and mise.terminal[3] > 900 and mise.explorateur and mise.envies and mise.equipe and mise.direct
+       and mise.contexte, "variante B : le terminal seul au centre ; à gauche et à droite, les panneaux d'avant")
     m = {"nom": "Noisette", "chapitre": "Chapitre 3", "deploie": None, "lignes": [], "invite": [], "saisie": "",
          "envies": [], "assiette": [], "arbre": [], "lieux": {}, "equipe": [], "equipe_lignes": []}
     bl = D.blocs("cat lianes.txt | grep -i gland")

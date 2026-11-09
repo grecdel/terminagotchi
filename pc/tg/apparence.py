@@ -380,7 +380,9 @@ def disposition(state):
     nom = d.get("nom") or "classique"
     if nom == "classe":
         return {}, "classe"
-    rects = d.get("rects") or preset(nom)
+    # « classique » ne se modifie pas (déplacer une dalle la rend « perso ») : toujours la version du jour (9 novembre :
+    # la variante B, le terminal seul au centre), même pour une partie qui avait gardé l'ancienne copie
+    rects = preset(nom) if nom == "classique" else (d.get("rects") or preset(nom))
     caches = set(d.get("caches") or [])
     return {k: borner(v) for k, v in rects.items() if k not in caches}, nom
 

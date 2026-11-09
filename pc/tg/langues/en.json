@@ -10006,5 +10006,7 @@
  "ui.reg.pur.pc": "Pure terminal: {etat}",
  "ui.reg.pur.aide": "for older kids: just the terminal, the instruction is written in it",
  "ui.pur.on.pc": "Pure terminal: the tg window now shows only the log and the instruction.",
- "ui.pur.off.pc": "Terminal + mission: the creature and the 🎯 line are back."
+ "ui.pur.off.pc": "Terminal + mission: the creature and the 🎯 line are back.",
+ "esp.detail": "details",
+ "esp.tape_ici": "type here, then Enter"
 }

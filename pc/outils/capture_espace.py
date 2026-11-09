@@ -170,8 +170,15 @@ def main():
     for i in range(int(13.0 / 0.1)):
         avancer(esp, 0.1)
         L, Z, (W, H) = S.scene(esp.modele(), esp.t)
-        im = S.vers_pil(L, (W, H)).crop((S.Mise().deploie[0] - 8, 88, S.Mise().deploie[0] + S.Mise().deploie[2] + 8,
-                                         S.Mise().deploie[1] + S.Mise().deploie[3] + 8))
+        # variante B (9 nov.) : la vue déployée n'est plus au centre de la disposition classique ; le GIF la montre
+        # dans la disposition « terminal géant » (elle y reste, en haut)
+        r = S.Mise(cases=__import__("tg.apparence", fromlist=["x"]).preset("terminal_geant")).deploie
+        if i == 0:
+            from tg import apparence as AP
+            core.modifier(lambda s_: AP.choisir_disposition(s_, "terminal_geant"))
+            esp.state = core.load()
+            L, Z, (W, H) = S.scene(esp.modele(), esp.t)
+        im = S.vers_pil(L, (W, H)).crop((r[0] - 8, 88, r[0] + r[2] + 8, r[1] + r[3] + 8))
         images.append(im.convert("RGB").resize((im.width * 3 // 4, im.height * 3 // 4), Image.LANCZOS))
     images[0].save(sortie / "deploie.gif", save_all=True, append_images=images[1:], duration=100, loop=0,
                    optimize=True)

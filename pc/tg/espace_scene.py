@@ -619,6 +619,9 @@ def fichier(L, x, y, w, h, nom, lignes, actif, c, phase, b_act):
 
 # ---------------------------------------------------------------- le terminal
 def terminal(L, Z, m, r, t_):
+    """Le terminal de l'espace. Variante B (allègement du 9 novembre) : la sortie, puis UNE ligne 🎯 « ce que je dois
+    taper » (+ : la leçon en détail, onglet Leçon), puis une GRANDE ligne de saisie au cadre vert allumé, au gros
+    curseur, et le pied (Tab, ↑, Ctrl+C)."""
     x, y, w, h = r
     L.append(("rrect", x, y, w, h, 14, TERM, BORD, 1))
     L.append(("rrect", x + 10, y + 12, lt(t("esp.terminal"), 13) + 36, 28, 8, (255, 255, 255, 12), BORD, 1))
@@ -628,14 +631,18 @@ def terminal(L, Z, m, r, t_):
     L.append(("ligne", x, y + 48, x + w, y + 48, BORD, 1, None))
     taille = m.get("taille_term", 15.5)
     pas = taille * 1.52
-    zone_h = h - 48 - 44
+    grande = taille * 1.25                        # la saisie, en plus gros
+    h_saisie = int(grande * 2.6)
+    mission = m.get("mission") or ""
+    h_mission = 40 if mission else 0
+    bas_sortie = y + h - 44 - 12 - h_saisie - (h_mission + 10 if mission else 0) - 8
+    zone_h = bas_sortie - (y + 48)
     n = int((zone_h - 16) // pas)
     lignes = list(m.get("lignes", []))
     invite = m.get("invite", [])
     saisie = m.get("saisie", "")
-    tout = lignes[-(n - 1):] if n > 1 else []
+    tout = lignes[-n:] if n > 0 else []
     yy = y + 48 + 20
-    largeur_max = w - 40
     for spans in tout:
         xx = x + 20
         for txt, coul, gras in spans:
@@ -645,17 +652,35 @@ def terminal(L, Z, m, r, t_):
             L.append(("texte", xx, yy, reste, taille, coul, gras, "g", True))
             xx += lt(reste, taille, True)
         yy += pas
-    xx = x + 20
+    Z.append((x, y + 48, w, max(0, bas_sortie - (y + 48)), "terminal"))
+    # la ligne 🎯 (et son + qui ouvre la leçon en détail)
+    ys = y + h - 44 - 12 - h_saisie
+    if mission:
+        ym = ys - 10 - h_mission
+        L.append(("rrect", x + 14, ym, w - 28, h_mission, 10, (36, 29, 51, 255), (90, 63, 110, 255), 1))
+        bw = lt("+ " + t("esp.detail"), 12.5) + 22
+        L.append(("texte", x + 28, ym + h_mission / 2, court(mission, w - 28 - 40 - bw, 14), 14, ROSE, True, "g", False))
+        L.append(("rrect", x + w - 22 - bw, ym + 7, bw, h_mission - 14, 8, (255, 255, 255, 14), BORD_FORT, 1))
+        L.append(("texte", x + w - 22 - bw / 2, ym + h_mission / 2, "+ " + t("esp.detail"), 12.5, TEXTE, False, "c", False))
+        Z.append((x + w - 22 - bw, ym + 7, bw, h_mission - 14, "mission:detail"))
+    # la grande ligne de saisie : cadre vert allumé, gros curseur
+    L.append(("rrect", x + 14, ys, w - 28, h_saisie, 12, (15, 26, 20, 255), VERT, 2))
+    yc = ys + h_saisie / 2
+    xx = x + 30
     for txt, coul, gras in invite:
-        L.append(("texte", xx, yy, txt, taille, coul, gras, "g", True))
-        xx += lt(txt, taille, True)
-    vis = saisie if lt(saisie, taille, True) < largeur_max - (xx - x) else "…" + saisie[-int((largeur_max - (xx - x)) /
-                                                                                           (taille * 0.6)) + 2:]
-    L.append(("texte", xx, yy, vis, taille, TEXTE, True, "g", True))
+        L.append(("texte", xx, yc, txt, grande, coul, gras, "g", True))
+        xx += lt(txt, grande, True)
+    largeur_max = w - 28 - 32
+    vis = saisie if lt(saisie, grande, True) < largeur_max - (xx - x) else "…" + saisie[-int((largeur_max - (xx - x)) /
+                                                                                          (grande * 0.6)) + 2:]
+    if saisie:
+        L.append(("texte", xx, yc, vis, grande, TEXTE, True, "g", True))
+    else:                                         # rien de tapé : l'indice gris (comme le téléphone)
+        L.append(("texte", xx + grande * 0.9, yc, t("esp.tape_ici"), grande * 0.85, DOUX, False, "g", False))
     if int(t_ * 2) % 2 == 0 or m.get("tape_recent") or CONF["calme"]:      # mode calme : le curseur ne clignote plus
-        cx = xx + lt(vis, taille, True) + 1
-        L.append(("rect", cx, yy - taille * 0.62, taille * 0.55, taille * 1.24, VERT))
-    Z.append((x, y + 48, w, h - 48, "terminal"))
+        cx = xx + (lt(vis, grande, True) if saisie else 0) + 1
+        L.append(("rect", cx, yc - grande * 0.66, grande * 0.6, grande * 1.32, VERT))
+    Z.append((x + 14, ys, w - 28, h_saisie, "terminal"))
     # le pied : les touches, la leçon en cours
     py = y + h - 22
     L.append(("ligne", x, y + h - 44, x + w, y + h - 44, BORD, 1, None))

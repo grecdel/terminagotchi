@@ -10001,5 +10001,7 @@
  "ui.reg.pur.pc": "Terminal saja: {etat}",
  "ui.reg.pur.aide": "untuk yang lebih besar: hanya terminal, tugasnya ditulis di dalamnya",
  "ui.pur.on.pc": "Terminal saja: jendela tg hanya menampilkan jurnal dan tugas.",
- "ui.pur.off.pc": "Terminal + misi: makhluk dan baris 🎯 sudah kembali."
+ "ui.pur.off.pc": "Terminal + misi: makhluk dan baris 🎯 sudah kembali.",
+ "esp.detail": "rincian",
+ "esp.tape_ici": "ketik di sini, lalu Enter"
 }

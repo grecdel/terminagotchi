@@ -10006,5 +10006,7 @@
  "ui.reg.pur.pc": "纯终端：{etat}",
  "ui.reg.pur.aide": "给大孩子：只有终端，任务就写在里面",
  "ui.pur.on.pc": "纯终端：tg 窗口只显示日志和任务。",
- "ui.pur.off.pc": "终端 + 任务：小生物和 🎯 这一行回来了。"
+ "ui.pur.off.pc": "终端 + 任务：小生物和 🎯 这一行回来了。",
+ "esp.detail": "详情",
+ "esp.tape_ici": "在这里输入，然后按回车"
 }
