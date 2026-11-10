@@ -1,47 +1,46 @@
-; CL
-my 1, Pixel @ _ Clavier branché : la rangée de touches s'efface (« clavier off » pour la remettre).
-! oq niv.2 MK (tet) tw
-
-XP mm 18/40 (tur): Berac 2%
+; V4
+Pixel @ _ Clavier branché : la rangée de touches s'efface (« clavier off » pour la remettre).
+a oq niv.2 = XM (tet) 2 *toc toc*
+XP mmr 18/40 (tur): Berac 2%
 Ou taper ? En bas, sur la ligne qui commence par $ : c'est ton invite de commande.
 @ Chapitre 1 - Le réveil - Legon 1/3 Tape la commande en vert dans l'invite de commande, puis appuie sur Entrée <).
-# Tu connais déja un peu le terminal ? Tape placement : un petit ~ $ langue fr
-test, et tu sautes le début. ae
-OU suis-je ? (1/3) - Coucou ! On explore le Terminaworld ensemble. Ou ed * Frangais
-est le panneau « tu es ici » ?
-> pwd /home/explorateur .
-@ Pour les grands : pwd (print working directory) affiche le chemin ¥ pwd — « ou suis-je ? »—
-absolu du dossier courant, depuis la racine /. Pareil dans un vrai @ Commande du jour réussie (pwd) ! +8 XP et un tampon dans ton calendrier.
-terminal Linux ou macOS. (eve) Guf : *l'euf bouge un peu*
-fa Dans un vrai terminal (Linux, macOS) : pwd marche pareil. ~ $ ls
+# Tu connais déja un peu le terminal ? Tape placement : un petit (ece) Guf : ..
+test, et tu sautes le début. . ; ~ $ langue fr
+Ou suis-je ? (1/3) + Coucou ! On explore le Terminaworld ensemble. Ou Langue choisie : Francais
+est le panneau « tu es ici » ? or +
+> pwd (eve) cur : *l'wuf bouge un peu
+@ Pour les grands : pwd (print working directory) affiche le chemin Tem ox lorateur
+absolu du dossier courant, depuis la racine /. Pareil dans un vrai p . .
+terminal Linux ou macOS. v pwd — « ou suis-je ? »
+fl Dans un vrai terminal (Linux, macOS) : pwd marche pareil. 3% Commande du jour réussie (pwd) ! +8 XP et un tampon dans ton calendrier.
+~ $ ls
 / Fait. (Pas de message = tout s'est bien passé.)
 Y ls — « qgu'y a-t-il ici ? »
-Waouh, j'y vois ! ls montre ce qu'il y a ici : g®@ des lieux et JB des objets.
 (*u*) uf : Quelque chose arrive...
+Waouh, j'y vois ! ls montre ce qu'il y a ici : g@ des lieux et JB des objets.
 ~ $ echo Pixel
 Pixel
-“/ echo Noisette — donne un nom a l'euf (l'ordinateur répéte ce que tu écris)
+“Y echo Noisette — donne un nom a l'euf (l'ordinateur répéte ce que tu écris)
 (*u*) Pixel : *crac !* Pixel... c'est mol ?
-(*u*) Pixel : *toc toc*
 ~ $ whoami
 u0_ai1/74
-“/ whoami — « qui suis-je ? »
+/ whoami — « qui suis-je ? »
 Y 4/4 — L'euf éclot !
 (*u*) Pixel : Bonjour le monde ! .. C'est comme ¢a qu'on dit, non ?
-(*u*) Pixel : J'ai quelque chose a t'apprendre !
+(e*u*) Pixel : J'ai quelque chose a t'apprendre !
 (*u*) Pixel : Regarde, la-haut ! C'est moi, en petit : mon état et bientét mon équipe.
 @ Le son est éteint.
 (*u*) Pixel : *toc toc*.. Tu m'entends ? Je suis tout petit et j'ai froid. Ce monde, le
 Terminaworld, dort depuis si longtemps... Les grands l'appellent « le téléphone ». Viens me
 chercher : on va L'explorer ensemble !
-(*u*) Pixel : J'al un creux de 512 octets.
-(*u*) Pixel : Miam, un « ls » bien frais.
 (*u*) Pixel : Une petite commande, juste une ?
+(*u*) Pixel : Miam, un « ls » bien frais.
 (*u*) Pixel : Les « grep » sont mes préférés, croustillants !
 ~ $ date
-Tue Nov 10 07:25:10 UTC 2026
-(*u*) Pixel : Encore une nouvelle ! Montre-moil encore !
-@ Ou suis-je ? (1/3) - tape pwd +
+Tue Nov 10 08:10:02 UTC 2026
+* Tu as trouvé le godt secret de Pixel : date !
+(*u*) Pixel : Mmm... date, c'est mon godt secret !
+@ 00 suis-je ? (1/3) - tape pwd +
 ~ $ tape une commande...
-a Se + o
+3 f@® gs o
 eee df ‘ei
