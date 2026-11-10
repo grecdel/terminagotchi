@@ -1,87 +1,44 @@
-x Pixel @ = x
-Gum» niv.2
-
-Pree: Cpe eee
-
+gE Pixel @ = x
+Gaz» niv. 2 ~
+~ $ pwd
+/home/explorateur
 / pwd -— « ou suls-je ? »
-
 %@ Commande du jour réussie (pwd) ! +8 XP et
-
 un tampon dans ton calendrier.
-
 ~ $ 1s
-
 Y/Y Fait. (Pas de message = tout s'est bien
-
 passé.)
-
 Y/Y ls — « gu'y a-t-il ici ? »
-
-(eu*) Guf : Quelque chose arrive...
-
-Waouh, j'y vois ! ls montre ce qu'il y a ici :
-» gedes lieux et JB des objets.
-
+B® (eve) Guf : Quelque chose arrive...
+- Waouh, j'y vois ! ls montre ce qu'il y a ici :
+pe des lieux et JB des objets.
 ~ $ echo Pixel
-
 Pixel
-
 Y/Y echo Noisette — donne un nom a l'euf
-
-(l'ordinateur répéte ce que tu écris)
-
+(l'ordinateur répete ce que tu écris)
 (*u*) Pixel : *crac !* Pixel... c'est mol ?
-
 ~ $ whoami
-
 uQ_a1l/74
-
 “ whoami — « qui suis-je ? »
-
 Y/Y 4/4 — l'euf éclot !
-
 (eu*) Pixel : Bonjour le monde ! .. C'est comme
-
 ¢a qu'on dit, non ?
-
 (eu*) Pixel : J'ai quelque chose a
-
 t'apprendre !
-
 (*u*) Pixel : Regarde, la-haut ! C'est moi, en
-
 petit : mon etat et bient6t mon equipe.
-
 @ Le son est éteint.
-
 (*u*) Pixel : *toc toc*.. Tu m'entends ? Je
-
 Suis tout petit et j'ai froid. Ce monde, le
-
 Terminaworld, dort depuis si longtemps... Les
-
 grands l'appellent « le telephone ». Viens me
-
 chercher : on va l'explorer ensemble !
-
-(*u*) Pixel : Sommes-nous tous dans le
-
-sous-dossier de quelqu'un ?
-
-(*u*) Pixel : Le terminal est noir, mais
-
-l'avenir est clair.
-
-(eu*) Pixel : pwd... mais ou suis-je VRAIMENT ?
-
+(*u*) Pixel : J'ai un creux de 512 octets.
 ~ $ date
-
-Tue Nov 10 07:22:34 UTC 2026
-
-(*u*) Pixel : Encore une nouvelle ! Montre-mo1
-
-encore !
-
-@ 0 suis-je ? (1/3) - tape pwd +
-
-~ § ape une commande...
+Tue Nov 10 08:09:14 UTC 2026
+* Tu as trouve le gout secret de Pixel :
+date !
+(eu*) Pixel : Mmm... date, c'est mon gout
+secret !
+@ 0u suis-je ? (1/3) - tape pwd +
+~ §$ ape une commande...
