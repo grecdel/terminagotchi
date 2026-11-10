@@ -104,6 +104,13 @@ object Intro {
         t != Character.CONTROL.toInt() && t != Character.FORMAT.toInt()
     }.trim().take(16)
 
+    /** L'écran du début à montrer (TerminalActivity.ecranIntro, 0 : aucun) pour la partie active. Une partie sans nom
+     *  (pas encore commencée) montre toujours les écrans du début, après « Qui est avec toi ? » (parent > 0) : même
+     *  quand l'appli a d'abord ouvert le menu du jeu (téléphone qui a déjà des parties), sinon « Jouer » laissait un
+     *  écran vide où rien ne répondait (essai-111). Une partie qui a un nom : jamais. */
+    fun ecranDuDebut(existe: Boolean, ecran: Int, parent: Int): Int =
+        if (existe) 0 else if (ecran == 0 && parent == 0) 1 else ecran
+
     fun nouvellePartie(jeu: Jeu) {
         jeu.extra.put("intro", JSONObject().put("etat", "oeuf").put("faits", JSONArray()).put("erreur", false).put("nomme", false))
         if (jeu.nom.isBlank()) jeu.nom = t("intro.nom.attente")   // 9 nov. : le nom viendra avec `echo <nom>`

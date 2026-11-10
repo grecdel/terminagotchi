@@ -299,7 +299,8 @@ class TerminalActivity : Activity() {
         }
         saisie.requestFocus()
         handler.postDelayed({
-            (getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager)
+            // pas par-dessus le menu du jeu (essai-111 : il en cachait le bas) ni par-dessus une fiche
+            if (menuVue == null && fiche == null) (getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager)
                 .showSoftInput(saisie, InputMethodManager.SHOW_IMPLICIT)
         }, 200)
         animer()
@@ -905,12 +906,37 @@ class TerminalActivity : Activity() {
     }
 
     private fun nouvelleFiche(titre: String): Fiche {
-        fermerFiche()
-        val f = Fiche(this, titre) { ff -> if (fiche === ff) fiche = null; saisie.requestFocus() }
+        // essai-111 : le clavier restait ouvert et cachait le bas de la fiche (« Réglages » coupé dans le menu ☰) ;
+        // il se range quand une fiche s'ouvre, et revient quand elle se ferme (s'il était ouvert avant)
+        if (fiche == null) clavierAvantFiche = clavierOuvert()
+        changementDeFiche = true
+        fermerFiche()                                  // la fiche d'avant (☰ › 🐾) : le clavier ne revient pas entre les deux
+        changementDeFiche = false
+        val f = Fiche(this, titre) { ff ->
+            if (fiche === ff) fiche = null
+            saisie.requestFocus()
+            if (!changementDeFiche && fiche == null && clavierAvantFiche) montrerClavier()
+        }
         findViewById<android.widget.FrameLayout>(R.id.fond).addView(f.racine, android.widget.FrameLayout.LayoutParams(
             android.widget.FrameLayout.LayoutParams.MATCH_PARENT, android.widget.FrameLayout.LayoutParams.MATCH_PARENT))
         fiche = f
+        rangerClavier()
         return f
+    }
+
+    /** le clavier de l'écran était ouvert quand la première fiche s'est ouverte (il revient à sa fermeture) */
+    private var clavierAvantFiche = false
+    private var changementDeFiche = false
+
+    /** Le clavier de l'écran est-il ouvert ? (Android 11 et plus le dit ; avant, on suppose que oui.) */
+    private fun clavierOuvert(): Boolean =
+        if (android.os.Build.VERSION.SDK_INT >= 30)
+            window.decorView.rootWindowInsets?.isVisible(android.view.WindowInsets.Type.ime()) ?: true
+        else true
+
+    /** Range le clavier de l'écran ; la ligne de saisie garde le focus (un clavier branché marche toujours). */
+    private fun rangerClavier() {
+        (getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager).hideSoftInputFromWindow(saisie.windowToken, 0)
     }
 
     private fun fermerFiche() { fiche?.fermer(); fiche = null }
@@ -1008,6 +1034,7 @@ class TerminalActivity : Activity() {
             menuVue = nv
         }
         v.clavier = toutAuClavier()
+        rangerClavier()                                // essai-111 : le clavier cachait le bas du menu du jeu
         val h = (fond.height.takeIf { it > 0 } ?: resources.displayMetrics.heightPixels) / resources.displayMetrics.density
         v.montrerMenu(menu.texteQui(), menu.texteCompteCourt(), h)
         fond.post { v.montrerMenu(menu.texteQui(), menu.texteCompteCourt(), fond.height / resources.displayMetrics.density) }
@@ -1015,16 +1042,17 @@ class TerminalActivity : Activity() {
     }
 
     private fun fermerMenuVue() {
+        val ouvert = menuVue != null
         menuVue?.let { (it.parent as? android.view.ViewGroup)?.removeView(it) }
         menuVue = null
         rafraichir()
-        saisie.requestFocus()
+        if (ouvert && !isFinishing) montrerClavier() else saisie.requestFocus()   // le menu refermé : on peut taper
     }
 
     /** Un bouton du menu (ou Entrée) : Jouer, Nouvelle partie, Charger, Options, Aide, Quitter. */
     private fun actionMenu(a: String) {
-        fermerMenuVue()
         if (a == "q") { menu.repondre("q"); finish(); return }
+        fermerMenuVue()
         menu.repondre(a)?.let { if (it.isNotEmpty()) ecrire(it, Commandes.ROSE) }
         rafraichir()
     }
@@ -1993,6 +2021,7 @@ class TerminalActivity : Activity() {
         if (!::contenu.isInitialized) return
         val obs = chemin.parent as View
         val boiteSortie = defile.parent as View
+        ecranIntro = Intro.ecranDuDebut(jeu.existe, ecranIntro, ecranParent)   // une partie sans nom : les écrans du début
         val ecran = !jeu.existe && ecranIntro > 0 && !menu.ouvert
         val carteIntro = if (jeu.existe) Intro.aMontrer(jeu) else null
         // idée 9 : la croix ✕ s'entoure de jaune pendant l'écran « Tu peux fermer quand tu veux »

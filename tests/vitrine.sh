@@ -42,6 +42,7 @@ print("pret" if g("focused") == "true" and vide else "occupe")'
 # (au plus quelques secondes : le téléphone virtuel ne dit pas toujours « prêt », et attendre 25 s à chaque commande
 #  faisait durer la vitrine des heures ; la première fois, on garde l'écran lu pour comprendre)
 attendre_pret() {
+  local i    # (10 nov.) sans « local », la boucle de debut() perdait son i : ecran_1 à ecran_5 s'écrivaient tous dans ecran_6
   for i in $(seq 1 "${1:-6}"); do [ "$(saisie)" = pret ] && return 0; sleep 1; done
   [ -f "$D/pas_pret.xml" ] || adb exec-out cat /sdcard/tg_ui.xml > "$D/pas_pret.xml" 2>/dev/null
   echo "(saisie pas prête)"
@@ -212,6 +213,25 @@ elif [ "$MODE" = interface ] || [ "$MODE" = interface_tablette ]; then
   pos saisie > $D/saisie_monstre.txt
   tape "dressage abandon"
   capture 12_apres 1
+  if [ "$MODE" = interface ]; then
+    # (10 nov., essai-111) « Nouvelle partie » depuis le menu du jeu : les 3 écrans du début ; puis l'appli fermée
+    # pendant l'intro et rouverte depuis l'icône (une partie sans nom, comme celles laissées par les APK d'avant) :
+    # le menu du jeu sans clavier, et « Jouer » montre bien les écrans du début (ils manquaient)
+    icone() { adb shell am start -a android.intent.action.MAIN -c android.intent.category.LAUNCHER -n $PAQ/.TerminalActivity; }
+    icone; sleep 4
+    capture 13_menu_du_jeu 1
+    tape "2" 3; tape "oui" 4
+    capture 14_nouvelle_partie_ecran_1 1
+    tape "" 3; capture 15_nouvelle_partie_ecran_2 1
+    tape "" 3; capture 16_nouvelle_partie_ecran_3 1
+    adb shell am force-stop $PAQ; sleep 2
+    icone; sleep 8
+    capture 17_menu_partie_sans_nom 1
+    tape "1" 4
+    capture 18_jouer_partie_sans_nom_ecran_1 1
+    tape "" 3; tape "" 3; tape "" 4
+    capture 19_camp_endormi 1
+  fi
   adb shell am force-stop $PAQ
 else
   # ---- tablette (idée 75) : portrait (une colonne, comme un téléphone), puis paysage (deux colonnes)

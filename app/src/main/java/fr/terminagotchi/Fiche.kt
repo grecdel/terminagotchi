@@ -16,8 +16,8 @@ import android.widget.TextView
 /**
  * Une fiche par-dessus l'écran du jeu (allègement du 9 novembre, variante B) : le menu ☰ et ses 7 gros boutons, la
  * fiche de la créature (on la touche), la leçon en détail (le + de la ligne 🎯), les réglages. Une carte sombre en haut,
- * qui défile si elle est trop longue ; ✕ ou un toucher à côté la ferment. Le clavier peut rester ouvert : la fiche tient
- * dans la place au-dessus de lui.
+ * qui défile si elle est trop longue ; ✕ ou un toucher à côté la ferment. Le clavier de l'écran se range quand elle
+ * s'ouvre (essai-111 : il cachait le bas du menu ☰) et revient quand elle se ferme (TerminalActivity.nouvelleFiche).
  */
 class Fiche(private val ctx: Context, titre: String, private val surFermer: (Fiche) -> Unit) {
     private val dp = ctx.resources.displayMetrics.density

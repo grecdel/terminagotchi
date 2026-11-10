@@ -416,6 +416,18 @@ fun main(args: Array<String>) {
     val relu = Jeu(app)
     verifier(Intro.ouvert(relu, "biomes") || relu.nom != "Pixou", "la sauvegarde garde le déblocage")
 
+    println("7b. Une partie sans nom (pas encore commencée) : les écrans du début, même si le menu du jeu s'est ouvert avant")
+    // Le téléphone de l'enfant avait déjà des parties (APK d'avant) : l'appli ouverte depuis l'icône montre d'abord le
+    // menu du jeu ; si la partie active n'a pas encore de nom (« Nouvelle partie » commencée, appli fermée pendant
+    // l'intro), « Jouer » dit « lis les écrans du début »… et ils doivent être là (ils manquaient : essai-111).
+    Parties.nouvelle(app)
+    val sansNom = PartieI(app)
+    verifier(!sansNom.jeu.existe, "une partie toute neuve n'a pas encore de nom")
+    verifier(Intro.ecranDuDebut(sansNom.jeu.existe, 0, 0) == 1, "le menu refermé : le 1er écran du début (« Le Terminaworld »)")
+    verifier(Intro.ecranDuDebut(false, 2, 0) == 2, "un écran déjà montré reste le même (Suivant ▶ avance)")
+    verifier(Intro.ecranDuDebut(false, 0, 1) == 0, "« Qui est avec toi ? » d'abord, les écrans ensuite")
+    verifier(Intro.ecranDuDebut(true, 0, 0) == 0, "une partie qui a déjà un nom : jamais les écrans du début")
+
     println("8. « debloquer tout » (parents, tests)")
     Parties.nouvelle(app)
     val t = PartieI(app)

@@ -32,6 +32,7 @@ print("pret" if g("focused") == "true" and vide else "occupe")'
 # attend que la ligne de saisie soit prête (au plus N secondes) : le téléphone virtuel est lent, et taper trop tôt
 # perdait des lettres ou collait deux lignes (« cdmkdir », le nom « pwddebloquer tout », `langue fr` perdu)
 attendre_pret() {
+  local i
   for i in $(seq 1 "${1:-25}"); do [ "$(saisie)" = pret ] && return 0; sleep 1; done
   echo "(la ligne de saisie n'est pas prête après ${1:-25} s)"
 }
