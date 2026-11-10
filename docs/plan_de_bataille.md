@@ -1344,6 +1344,21 @@ Maquettes : outils/ameliorations/allegement/ (planche_interface.png, planche_int
   rotation 0 : vitrine.sh choisit la rotation d'après la taille physique). Captures : `outils/ameliorations/allegement/captures_apres/interface/`.
 - À savoir pour `tout.sh` : avec un dossier temporaire au chemin trop long (TMPDIR dans le scratchpad), test_crypte
   (socket de gpg), test_carte, test_histoire et test_intro échouent pour rien ; prendre un TMPDIR court.
+- **Correctifs après l'essai-111 (10 nov.)** : (1) le clavier de l'écran se range quand une fiche s'ouvre (☰, fiche de
+  la créature, leçon en détail, réglages) et quand le menu du jeu s'ouvre ; il revient à la fermeture (s'il était
+  ouvert avant). (2) Les écrans du début manquaient sur un téléphone qui avait déjà des parties : l'appli ouverte
+  depuis l'icône montre le menu du jeu, et si la partie active n'avait pas encore de nom (« Nouvelle partie »
+  commencée puis appli fermée pendant l'intro, avec cet APK ou un plus ancien), rien ne remettait les écrans :
+  « Jouer » disait « lis les écrans du début » sur un écran vide. Maintenant une partie sans nom montre toujours les
+  écrans (Intro.ecranDuDebut, test JVM Intro § 7b). Une partie qui a déjà un nom ne les remontre pas : pour les
+  revoir : rouvrir l'appli depuis son icône › Nouvelle partie, ou taper `partie nouvelle` (l'ancienne
+  partie est gardée, Charger la ramène). (3) En mode « tout au clavier » (clavier branché, ou téléphone qui en annonce
+  un ; le téléphone virtuel en est un), Entrée sur « Qui est avec toi ? » laissait le choix sur le bouton 0 de
+  l'écran 1… « Passer » : la 2e Entrée sautait les écrans 2 et 3. Le choix part maintenant sur Suivant ▶ à chaque
+  écran (IntroVue.montrerEcran, test JVM Intro § 7b). Aussi : vitrine.sh écrasait
+  ecran_1 à ecran_5 dans ecran_6 (le i de la boucle pris par attendre_pret) ; le mode `interface` capture maintenant
+  Nouvelle partie et la partie sans nom rouverte depuis l'icône. PC : les 3 écrans s'affichent toujours (1er `tg`,
+  `tg partie nouvelle`, et avant la fenêtre `tg espace` d'une première partie).
 
 ## Ce qui attend une décision ou une action du propriétaire
 

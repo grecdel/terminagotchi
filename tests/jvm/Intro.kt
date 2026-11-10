@@ -17,6 +17,7 @@ import fr.terminagotchi.Explo
 import fr.terminagotchi.Guide
 import fr.terminagotchi.Histoire
 import fr.terminagotchi.Intro
+import fr.terminagotchi.IntroVue
 import fr.terminagotchi.Jeu
 import fr.terminagotchi.Langue
 import fr.terminagotchi.Maison
@@ -427,6 +428,21 @@ fun main(args: Array<String>) {
     verifier(Intro.ecranDuDebut(false, 2, 0) == 2, "un écran déjà montré reste le même (Suivant ▶ avance)")
     verifier(Intro.ecranDuDebut(false, 0, 1) == 0, "« Qui est avec toi ? » d'abord, les écrans ensuite")
     verifier(Intro.ecranDuDebut(true, 0, 0) == 0, "une partie qui a déjà un nom : jamais les écrans du début")
+    // « tout au clavier » (un clavier branché, ou un téléphone qui en annonce un) : Entrée sur « Qui est avec toi ? »
+    // choisissait « Je joue seul » (bouton 0) ; le choix restait sur le bouton 0 de l'écran suivant… « Passer » :
+    // la 2e Entrée sautait les écrans 2 et 3 (vu sur le téléphone virtuel, 10 nov.)
+    val vue = IntroVue(app, sansNom.jeu, { null }) { }
+    vue.clavier = true
+    vue.montrerParent(1)
+    verifier(vue.actionFocus() == "seul", "« Qui est avec toi ? » : Entrée = Je joue seul")
+    vue.montrerEcran(1)
+    verifier(vue.actionFocus() == "suivant", "écran 1 au clavier : Entrée = Suivant ▶ (pas Passer)")
+    vue.focusSuivant(-1)
+    verifier(vue.actionFocus() == "passer", "Tab (à l'envers) : Passer")
+    vue.montrerEcran(1)
+    verifier(vue.actionFocus() == "passer", "l'écran redessiné garde le bouton choisi")
+    vue.montrerEcran(2)
+    verifier(vue.actionFocus() == "suivant", "écran 2 : de nouveau Suivant ▶")
 
     println("8. « debloquer tout » (parents, tests)")
     Parties.nouvelle(app)

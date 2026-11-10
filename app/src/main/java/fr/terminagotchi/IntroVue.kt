@@ -166,7 +166,12 @@ class IntroVue(ctx: Context, private val jeu: Jeu, private val creature: () -> B
     fun actionFocus(): String? = if (clavier) rendu.boutons.getOrNull(focus)?.action else null
     fun nbBoutons() = rendu.boutons.size
 
-    fun montrerEcran(n: Int) { mode = "ecran"; page = n; majTaille() }
+    /** Un écran du début. Au clavier, le choix part sur Suivant ▶ (bouton 1) à chaque nouvel écran : il restait sur
+     *  le bouton 0 de « Qui est avec toi ? »… qui est Passer ici, et Entrée sautait les écrans 2 et 3 (10 nov.). */
+    fun montrerEcran(n: Int) {
+        if (mode != "ecran" || page != n) focus = if (clavier) 1 else -1
+        mode = "ecran"; page = n; majTaille()
+    }
     fun montrerOeuf() { if (mode != "oeuf") { mode = "oeuf"; majTaille() } else invalidate() }
     fun montrerCarte(c: String) { if (mode != "carte" || cid != c) { mode = "carte"; cid = c; majTaille() } else invalidate() }
 
