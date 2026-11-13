@@ -1,0 +1,104 @@
+name: Audit des écrans (téléphone virtuel)
+
+# Passages écran par écran sur le téléphone virtuel (tests/audit_ecrans.sh) : plusieurs versions d'Android, sans clavier
+# physique, petits écrans, grande police, paysage, langues, gestes. Les captures (réduites) vont dans la branche
+# « vitrine », dossier audit/<passage>/ ; les captures entières dans l'artefact « audit-<passage> ».
+on:
+  push:
+    branches: [audit-ecrans]
+
+permissions:
+  contents: write
+
+jobs:
+  passage:
+    runs-on: ubuntu-latest
+    timeout-minutes: 70
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - { nom: tel, passage: complet, api: 34, cible: google_apis, profil: pixel_6, clavier: non }
+          - { nom: tel_clavier, passage: complet, api: 33, cible: google_apis, profil: pixel_6, clavier: oui }
+          - { nom: api26, passage: complet, api: 26, cible: default, profil: pixel_2, clavier: non }
+          - { nom: api35, passage: complet, api: 35, cible: google_apis, profil: pixel_6, clavier: non }
+          - { nom: api36, passage: complet, api: 36, cible: google_apis, profil: pixel_6, clavier: non }
+          - { nom: tablette, passage: complet, api: 34, cible: google_apis, profil: pixel_c, clavier: non }
+          - { nom: conditions, passage: conditions, api: 34, cible: google_apis, profil: pixel_6, clavier: non }
+          - { nom: langues, passage: langues, api: 34, cible: google_apis, profil: pixel_6, clavier: non }
+          - { nom: gestes, passage: gestes, api: 34, cible: google_apis, profil: pixel_6, clavier: non }
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Activer l'accélération KVM
+        run: |
+          echo 'KERNEL=="kvm", GROUP="kvm", MODE="0666", OPTIONS+="static_node=kvm"' | sudo tee /etc/udev/rules.d/99-kvm4all.rules
+          sudo udevadm control --reload-rules
+          sudo udevadm trigger --name-match=kvm
+
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: "17"
+
+      - uses: gradle/actions/setup-gradle@v4
+        with:
+          gradle-version: "8.9"
+
+      - name: Compiler
+        run: gradle assembleRelease --no-daemon
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+
+      - name: Lire l'écran (OCR)
+        run: sudo apt-get update -q && sudo apt-get install -y -q tesseract-ocr tesseract-ocr-fra tesseract-ocr-deu tesseract-ocr-jpn tesseract-ocr-ara python3-pil
+
+      - name: Jouer et prendre les captures
+        uses: reactivecircus/android-emulator-runner@v2
+        env:
+          PASSAGE: ${{ matrix.passage }}
+          CLAVIER: ${{ matrix.clavier }}
+          OCR_LANGUES: fra eng
+        with:
+          api-level: ${{ matrix.api }}
+          arch: x86_64
+          target: ${{ matrix.cible }}
+          profile: ${{ matrix.profil }}
+          cores: 3
+          disable-animations: false
+          emulator-boot-timeout: 900
+          pre-emulator-launch-script: ${{ matrix.clavier == 'non' && 'bash tests/audit_ecrans.sh avd' || 'true' }}
+          script: bash tests/audit_ecrans.sh
+
+      - name: Lire et réduire les captures
+        if: always()
+        env:
+          OCR_LANGUES: ${{ matrix.passage == 'langues' && 'eng deu jpn ara fra' || 'fra eng' }}
+        run: |
+          mkdir -p captures
+          python3 tests/audit_lire.py textes captures || true
+          python3 tests/audit_lire.py reduire captures reduit || true
+          ls reduit | wc -l
+
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: audit-${{ matrix.nom }}
+          path: captures/
+
+      - name: Ranger les captures dans la branche « vitrine » (audit/<passage>/)
+        if: always()
+        run: |
+          mkdir -p reduit
+          for essai in 1 2 3 4 5 6 7 8 9 10; do
+            rm -rf /tmp/v && git clone -q --depth 1 --branch vitrine "https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}" /tmp/v 2>/dev/null \
+              || { rm -rf /tmp/v && mkdir /tmp/v && git -C /tmp/v init -q && git -C /tmp/v checkout -q -b vitrine; }
+            rm -rf /tmp/v/audit/${{ matrix.nom }} && mkdir -p /tmp/v/audit/${{ matrix.nom }} && cp -r reduit/. /tmp/v/audit/${{ matrix.nom }}/
+            cd /tmp/v
+            git add -A
+            git -c user.name="test-auto" -c user.email="test@terminagotchi" commit -q -m "Audit ${{ matrix.nom }} (run ${{ github.run_number }})" || true
+            git push -q "https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}" HEAD:vitrine && break
+            cd - >/dev/null; sleep $((essai * 5 + RANDOM % 10))
+          done
