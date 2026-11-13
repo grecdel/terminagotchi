@@ -1,0 +1,74 @@
+/sys/class/input/input0 : Power Button
+/sys/class/input/input1 : AT Translated Set 2 keyboard
+/sys/class/input/input10 : virtio_input_multi_touch_8
+/sys/class/input/input11 : virtio_input_multi_touch_9
+/sys/class/input/input12 : virtio_input_multi_touch_10
+/sys/class/input/input13 : virtio_input_multi_touch_11
+/sys/class/input/input3 : virtio_input_multi_touch_1
+/sys/class/input/input4 : virtio_input_multi_touch_2
+/sys/class/input/input5 : virtio_input_multi_touch_3
+/sys/class/input/input6 : virtio_input_multi_touch_4
+/sys/class/input/input7 : virtio_input_multi_touch_5
+/sys/class/input/input8 : virtio_input_multi_touch_6
+/sys/class/input/input9 : virtio_input_multi_touch_7
+retire : AT Translated Set 2 keyboard (serio0)
+    2: Power Button
+    3: virtio_input_multi_touch_1
+    -1: Virtual
+    5: virtio_input_multi_touch_3
+    6: virtio_input_multi_touch_4
+    7: virtio_input_multi_touch_5
+    8: virtio_input_multi_touch_6
+    9: virtio_input_multi_touch_7
+    11: virtio_input_multi_touch_9
+    12: virtio_input_multi_touch_10
+    13: virtio_input_multi_touch_11
+    10: virtio_input_multi_touch_8
+    4: virtio_input_multi_touch_2
+    Sources: KEYBOARD
+    KeyboardType: 1
+    Sources: KEYBOARD | TOUCHSCREEN | STYLUS
+    KeyboardType: 1
+    Sources: KEYBOARD | TOUCHSCREEN | STYLUS
+    KeyboardType: 1
+    Sources: KEYBOARD | TOUCHSCREEN | STYLUS
+    KeyboardType: 1
+    Sources: KEYBOARD | TOUCHSCREEN | STYLUS
+    KeyboardType: 1
+    Sources: KEYBOARD | TOUCHSCREEN | STYLUS
+    KeyboardType: 1
+    Sources: KEYBOARD | TOUCHSCREEN | STYLUS
+    KeyboardType: 1
+    Sources: KEYBOARD | TOUCHSCREEN | STYLUS
+    KeyboardType: 1
+    Sources: KEYBOARD | TOUCHSCREEN | STYLUS
+    KeyboardType: 1
+    Sources: KEYBOARD | TOUCHSCREEN | STYLUS
+    KeyboardType: 1
+    Sources: KEYBOARD | TOUCHSCREEN | STYLUS
+    KeyboardType: 1
+    Sources: KEYBOARD | TOUCHSCREEN | STYLUS
+    KeyboardType: 1
+    Sources: KEYBOARD | DPAD
+    KeyboardType: 2
+      0: name=7116b7a ScreenDecorOverlayBottom, id=105, displayId=0, inputConfig=NOT_FOCUSABLE | NOT_TOUCHABLE | TRUSTED_OVERLAY | SLIPPERY, alpha=1, frame=[0,2337][1080,2400], globalScale=1, applicationInfo.name=, applicationInfo.token=<null>, touchableRegion=<empty>, ownerPid=949, ownerUid=10181, dispatchingTimeout=5000ms, token=0x75c0077e9690, touchOcclusionMode=USE_OPACITY
+      1: name=2a6430d ScreenDecorOverlay, id=104, displayId=0, inputConfig=NOT_FOCUSABLE | NOT_TOUCHABLE | TRUSTED_OVERLAY | SLIPPERY, alpha=1, frame=[0,0][1080,128], globalScale=1, applicationInfo.name=, applicationInfo.token=<null>, touchableRegion=[492,0][610,128], ownerPid=949, ownerUid=10181, dispatchingTimeout=5000ms, token=0x75c007803090, touchOcclusionMode=USE_OPACITY
+      2: name=stylus-handwriting-event-receiver-0, id=93, displayId=0, inputConfig=NOT_FOCUSABLE | NOT_TOUCHABLE | TRUSTED_OVERLAY | SPY | INTERCEPTS_STYLUS, alpha=1, frame=[0,0][0,0], globalScale=1, applicationInfo.name=stylus-handwriting-event-receiver-0, applicationInfo.token=<null>, touchableRegion=[-10799,-23999][10800,24000], ownerPid=563, ownerUid=1000, dispatchingTimeout=5000ms, token=0x75c0077e6690, touchOcclusionMode=BLOCK_UNTRUSTED
+      3: name=[Gesture Monitor] swipe-up, id=120, displayId=0, inputConfig=NOT_FOCUSABLE | TRUSTED_OVERLAY | SPY, alpha=1, frame=[0,0][0,0], globalScale=1, applicationInfo.name=[Gesture Monitor] swipe-up, applicationInfo.token=<null>, touchableRegion=[-10799,-23999][10800,24000], ownerPid=1236, ownerUid=10179, dispatchingTimeout=5000ms, token=0x75c0077cff10, touchOcclusionMode=BLOCK_UNTRUSTED
+      4: name=[Gesture Monitor] edge-swipe, id=69, displayId=0, inputConfig=NOT_FOCUSABLE | TRUSTED_OVERLAY | SPY, alpha=1, frame=[0,0][0,0], globalScale=1, applicationInfo.name=[Gesture Monitor] edge-swipe, applicationInfo.token=<null>, touchableRegion=[-10799,-23999][10800,24000], ownerPid=949, ownerUid=10181, dispatchingTimeout=5000ms, token=0x75c0077f1490, touchOcclusionMode=BLOCK_UNTRUSTED
+      5: name=837b178 Taskbar, id=99, displayId=0, inputConfig=NOT_FOCUSABLE | TRUSTED_OVERLAY | WATCH_OUTSIDE_TOUCH | SLIPPERY, alpha=1, frame=[0,2337][1080,2400], globalScale=1, applicationInfo.name=, applicationInfo.token=<null>, touchableRegion=<empty>, ownerPid=1236, ownerUid=10179, dispatchingTimeout=5000ms, token=0x75c0077d2450, touchOcclusionMode=USE_OPACITY
+      6: name=bc0a7a4 StatusBar, id=84, displayId=0, inputConfig=NOT_FOCUSABLE | TRUSTED_OVERLAY, alpha=1, frame=[0,0][1080,128], globalScale=1, applicationInfo.name=, applicationInfo.token=<null>, touchableRegion=[0,0][1080,128], ownerPid=949, ownerUid=10181, dispatchingTimeout=5000ms, token=0x75c0077fd310, touchOcclusionMode=USE_OPACITY
+      7: name=d89aab1 com.google.android.apps.nexuslauncher/com.google.android.apps.nexuslauncher.NexusLauncherActivity, id=113, displayId=0, inputConfig=DUPLICATE_TOUCH_TO_WALLPAPER, alpha=1, frame=[0,0][1080,2400], globalScale=1, applicationInfo.name=ActivityRecord{11faafd u0 com.google.android.apps.nexuslauncher/.NexusLauncherActivity t7}, applicationInfo.token=0x75bea773ebf0, touchableRegion=[0,0][1080,2400], ownerPid=1236, ownerUid=10179, dispatchingTimeout=5000ms, token=0x75c0077cbd50, touchOcclusionMode=USE_OPACITY
+      8: name=6c15b54 ActivityRecordInputSink com.google.android.apps.nexuslauncher/.NexusLauncherActivity, id=108, displayId=0, inputConfig=NO_INPUT_CHANNEL | NOT_FOCUSABLE, alpha=1, frame=[0,0][0,0], globalScale=0, applicationInfo.name=, applicationInfo.token=<null>, touchableRegion=[-10799,-23999][10800,24000], ownerPid=563, ownerUid=1000, dispatchingTimeout=0ms, token=0x0, touchOcclusionMode=BLOCK_UNTRUSTED
+      9: name=[Gesture Monitor] minus-one, id=117, displayId=0, inputConfig=NOT_FOCUSABLE | TRUSTED_OVERLAY | SPY, alpha=1, frame=[0,0][0,0], globalScale=1, applicationInfo.name=[Gesture Monitor] minus-one, applicationInfo.token=<null>, touchableRegion=[0,0][1080,2400], ownerPid=1236, ownerUid=10179, dispatchingTimeout=5000ms, token=0x75c0077c5190, touchOcclusionMode=BLOCK_UNTRUSTED
+      10: name=ac2e473 com.android.systemui.wallpapers.ImageWallpaper, id=66, displayId=0, inputConfig=NOT_FOCUSABLE | NOT_TOUCHABLE | PREVENT_SPLITTING | IS_WALLPAPER, alpha=1, frame=[-53,-119][-53,-119], globalScale=1, applicationInfo.name=, applicationInfo.token=<null>, touchableRegion=<empty>, ownerPid=949, ownerUid=10181, dispatchingTimeout=5000ms, token=0x75c0077f6010, touchOcclusionMode=USE_OPACITY
+    0: 'PointerEventDispatcher0 (server)', 
+    520: channelName='[Gesture Monitor] swipe-up (server)', status=NORMAL, monitor=false, responsive=true
+    586: channelName='837b178 Taskbar (server)', status=NORMAL, monitor=false, responsive=true
+    540: channelName='recents_animation_input_consumer (server)', status=NORMAL, monitor=false, responsive=true
+    614: channelName='2af2528 InputMethod (server)', status=NORMAL, monitor=false, responsive=true
+    459: channelName='2a8c91 EdgeBackGestureHandler0 (server)', status=NORMAL, monitor=false, responsive=true
+    274: channelName='[Gesture Monitor] edge-swipe (server)', status=NORMAL, monitor=false, responsive=true
+    507: channelName='7116b7a ScreenDecorOverlayBottom (server)', status=NORMAL, monitor=false, responsive=true
+    487: channelName='bc0a7a4 StatusBar (server)', status=NORMAL, monitor=false, responsive=true
+    511: channelName='ac2e473 com.android.systemui.wallpapers.ImageWallpaper (server)', status=NORMAL, monitor=false, responsive=true
