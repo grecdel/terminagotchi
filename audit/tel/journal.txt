@@ -1,0 +1,151 @@
+21:47:51 passage complet clavier=non langue=fr
+21:48:08 capture 001_a01_qui_est_avec_toi clavier=true devant=fr.terminagotchi.TerminalActivity
+21:48:16 capture 002_a01_qui_clavier_range clavier=false devant=fr.terminagotchi.TerminalActivity
+21:48:23 capture 003_a02_conseils_adulte clavier=true devant=fr.terminagotchi.TerminalActivity
+21:48:30 capture 004_a02_conseils_clavier_range clavier=false devant=fr.terminagotchi.TerminalActivity
+21:48:36 capture 005_a03_ecran_1 clavier=true devant=fr.terminagotchi.TerminalActivity
+21:48:43 capture 006_a03_ecran_1_clavier_range clavier=false devant=fr.terminagotchi.TerminalActivity
+21:48:50 capture 007_a04_ecran_2 clavier=true devant=fr.terminagotchi.TerminalActivity
+21:48:55 capture 008_a05_ecran_3 clavier=true devant=fr.terminagotchi.TerminalActivity
+21:49:04 capture 009_a06_camp_endormi clavier=true devant=fr.terminagotchi.TerminalActivity
+21:49:13 capture 010_a06_camp_clavier_range clavier=false devant=fr.terminagotchi.TerminalActivity
+21:49:30 capture 011_a07_camp_rallume clavier=true devant=fr.terminagotchi.TerminalActivity
+21:49:36 capture 012_a08_premier_ls clavier=true devant=fr.terminagotchi.TerminalActivity
+21:49:44 capture 013_a09_oeuf_arrive clavier=true devant=fr.terminagotchi.TerminalActivity
+21:49:54 capture 014_a10_et_mon_nom clavier=true devant=fr.terminagotchi.TerminalActivity
+21:50:03 capture 015_a11_oeuf_nomme clavier=true devant=fr.terminagotchi.TerminalActivity
+21:50:15 capture 016_a11_oeuf_nomme_clavier_range clavier=false devant=fr.terminagotchi.TerminalActivity
+21:50:22 capture 017_a12_eclosion clavier=true devant=fr.terminagotchi.TerminalActivity
+21:50:27 capture 018_a13_question_son clavier=true devant=fr.terminagotchi.TerminalActivity
+21:50:41 capture 019_a14_pixel_est_ne clavier=true devant=fr.terminagotchi.TerminalActivity
+21:51:01 capture 020_a14_pixel_est_ne_clavier_range clavier=false devant=fr.terminagotchi.TerminalActivity
+21:51:08 capture 021_a15_presentation_1 clavier=true devant=fr.terminagotchi.TerminalActivity
+21:51:14 capture 022_a15_presentation_2 clavier=true devant=fr.terminagotchi.TerminalActivity
+21:51:20 capture 023_a15_presentation_3 clavier=true devant=fr.terminagotchi.TerminalActivity
+21:51:28 capture 024_b01_premiere_lecon clavier=true devant=fr.terminagotchi.TerminalActivity
+21:51:46 capture 025_b01_premiere_lecon_clavier_range clavier=false devant=fr.terminagotchi.TerminalActivity
+21:52:04 capture 026_b02_lecon_en_detail clavier=false devant=fr.terminagotchi.TerminalActivity
+21:52:17 RETOUR sur « leçon en détail » : le jeu reste ouvert
+21:52:23 capture 027_b03_menu_debut clavier=false devant=fr.terminagotchi.TerminalActivity
+21:52:40 capture 028_b04_fiche_creature_debut clavier=false devant=fr.terminagotchi.TerminalActivity
+21:52:53 RETOUR sur « fiche de la créature » : le jeu reste ouvert
+21:52:58 capture 029_b05_fiche_en_touchant_la_creature clavier=false devant=fr.terminagotchi.TerminalActivity
+21:53:00 RETOUR sur « fiche (créature touchée) » : le jeu reste ouvert
+21:53:12 capture 030_b06_lecon_suivante clavier=true devant=fr.terminagotchi.TerminalActivity
+21:53:23 capture 031_c01_tout_debloque clavier=true devant=fr.terminagotchi.TerminalActivity
+21:53:56 capture 032_c02_lecon_nid clavier=true devant=fr.terminagotchi.TerminalActivity
+21:54:13 capture 033_c03_menu clavier=false devant=fr.terminagotchi.TerminalActivity
+21:54:29 capture 034_c04_fiche_creature clavier=false devant=fr.terminagotchi.TerminalActivity
+21:54:45 capture 035_c04_fiche_creature_bas clavier=false devant=fr.terminagotchi.TerminalActivity
+21:56:19 touche « Album » en 212 1190
+21:56:25 capture 036_c05_album clavier=true devant=fr.terminagotchi.TerminalActivity
+21:56:30 RETOUR sur « album » : LE JEU SE FERME
+21:56:37 capture 037_c05_apres_retour_album clavier=true devant=fr.terminagotchi.TerminalActivity
+21:58:11 touche « Aura » en 460 1191
+21:58:16 capture 038_c06_aura_changee clavier=false devant=fr.terminagotchi.TerminalActivity
+21:58:18 RETOUR sur « fiche (aura) » : le jeu reste ouvert
+21:58:26 capture 039_c07_carte clavier=true devant=fr.terminagotchi.TerminalActivity
+21:58:31 capture 040_c07_carte_clavier_range clavier=false devant=fr.terminagotchi.TerminalActivity
+21:58:35 capture 041_c07_carte_glissee clavier=false devant=fr.terminagotchi.TerminalActivity
+21:58:37 RETOUR sur « carte » : LE JEU SE FERME
+21:58:45 capture 042_c07_apres_retour_carte clavier=true devant=fr.terminagotchi.TerminalActivity
+21:58:53 capture 043_c08_lecon_depuis_menu clavier=false devant=fr.terminagotchi.TerminalActivity
+21:58:55 RETOUR sur « leçon (menu) » : le jeu reste ouvert
+21:59:04 capture 044_c09_lexique clavier=true devant=fr.terminagotchi.TerminalActivity
+21:59:20 capture 045_c09_lexique_clavier_range clavier=false devant=fr.terminagotchi.TerminalActivity
+21:59:24 capture 046_c09_lexique_defile clavier=false devant=fr.terminagotchi.TerminalActivity
+21:59:26 RETOUR sur « lexique » : LE JEU SE FERME
+21:59:34 capture 047_c09_apres_retour_lexique clavier=true devant=fr.terminagotchi.TerminalActivity
+21:59:53 capture 048_c10_perdu clavier=true devant=fr.terminagotchi.TerminalActivity
+21:59:57 capture 049_c10_perdu_clavier_range clavier=false devant=fr.terminagotchi.TerminalActivity
+21:59:59 RETOUR sur « je suis perdu » : LE JEU SE FERME
+22:00:07 capture 050_c10_apres_retour_perdu clavier=true devant=fr.terminagotchi.TerminalActivity
+22:00:21 capture 051_c11_deux_terminaux clavier=true devant=fr.terminagotchi.TerminalActivity
+22:00:51 capture 052_c11_beaucoup_de_terminaux clavier=true devant=fr.terminagotchi.TerminalActivity
+22:01:03 capture 053_c11_apres_exit clavier=true devant=fr.terminagotchi.TerminalActivity
+22:01:10 capture 054_c12_reglages clavier=false devant=fr.terminagotchi.TerminalActivity
+22:01:29 capture 055_c13_reglages_son clavier=true devant=fr.terminagotchi.TerminalActivity
+22:03:50 touche « OK » en 895 1688
+22:04:02 capture 056_c14_lecture_confort clavier=true devant=fr.terminagotchi.TerminalActivity
+22:04:13 capture 057_c15_langue clavier=true devant=fr.terminagotchi.TerminalActivity
+22:04:29 capture 058_c16_terminal_pur clavier=true devant=fr.terminagotchi.TerminalActivity
+22:04:35 capture 059_c16_terminal_pur_clavier_range clavier=false devant=fr.terminagotchi.TerminalActivity
+22:04:41 capture 060_c16_menu_en_terminal_pur clavier=false devant=fr.terminagotchi.TerminalActivity
+22:04:56 capture 061_d01_aide clavier=true devant=fr.terminagotchi.TerminalActivity
+22:05:03 capture 062_d02_aide_tout clavier=true devant=fr.terminagotchi.TerminalActivity
+22:05:10 capture 063_d03_etat clavier=true devant=fr.terminagotchi.TerminalActivity
+22:05:19 capture 064_d04_envies clavier=true devant=fr.terminagotchi.TerminalActivity
+22:05:28 capture 065_d05_album_commande clavier=true devant=fr.terminagotchi.TerminalActivity
+22:05:32 RETOUR sur « album (commande) » : LE JEU SE FERME
+22:05:49 capture 066_d06_mini_jeux clavier=true devant=fr.terminagotchi.TerminalActivity
+22:05:57 capture 067_d07_collection clavier=true devant=fr.terminagotchi.TerminalActivity
+22:06:04 capture 068_d08_son_commande clavier=true devant=fr.terminagotchi.TerminalActivity
+22:07:53 touche « OK » en 895 1688
+22:08:10 capture 069_d09_confort_grand clavier=true devant=fr.terminagotchi.TerminalActivity
+22:08:14 capture 070_d09_menu_texte_grand clavier=false devant=fr.terminagotchi.TerminalActivity
+22:08:16 RETOUR sur « menu (texte 150 %) » : le jeu reste ouvert
+22:08:30 capture 071_d10_themes clavier=true devant=fr.terminagotchi.TerminalActivity
+22:08:39 capture 072_e01_monstre clavier=true devant=fr.terminagotchi.TerminalActivity
+22:08:53 capture 073_e01_monstre_clavier_range clavier=false devant=fr.terminagotchi.TerminalActivity
+22:09:07 capture 074_e02_dressage_examine clavier=true devant=fr.terminagotchi.TerminalActivity
+22:09:10 capture 075_e03_menu_pendant_dressage clavier=false devant=fr.terminagotchi.TerminalActivity
+22:09:12 RETOUR sur « menu (dressage) » : le jeu reste ouvert
+22:09:32 capture 076_e04_troupe clavier=true devant=fr.terminagotchi.TerminalActivity
+22:09:40 capture 077_e05_fiche_abyssor clavier=true devant=fr.terminagotchi.TerminalActivity
+22:09:46 capture 078_e06_anime clavier=true devant=fr.terminagotchi.TerminalActivity
+22:09:54 capture 079_e07_fiche_avec_equipe clavier=true devant=fr.terminagotchi.TerminalActivity
+22:10:00 capture 080_e07_fiche_avec_equipe_bas clavier=true devant=fr.terminagotchi.TerminalActivity
+22:10:04 RETOUR sur « fiche (équipe) » : LE JEU SE FERME
+22:10:16 capture 081_e08_donjon clavier=true devant=fr.terminagotchi.TerminalActivity
+22:10:24 capture 082_e09_plan clavier=true devant=fr.terminagotchi.TerminalActivity
+22:10:32 capture 083_e10_combat clavier=true devant=fr.terminagotchi.TerminalActivity
+22:10:46 capture 084_f01_espace clavier=true devant=fr.terminagotchi.TerminalActivity
+22:10:52 capture 085_f01_espace_clavier_range clavier=false devant=fr.terminagotchi.TerminalActivity
+22:10:54 RETOUR sur « espace » : LE JEU SE FERME
+22:11:01 capture 086_f01_apres_retour_espace clavier=true devant=fr.terminagotchi.TerminalActivity
+22:11:15 capture 087_f02_monde clavier=true devant=fr.terminagotchi.TerminalActivity
+22:11:21 capture 088_f02_monde_clavier_range clavier=false devant=fr.terminagotchi.TerminalActivity
+22:11:33 capture 089_f03_cerveau clavier=true devant=fr.terminagotchi.TerminalActivity
+22:11:44 capture 090_f04_carte_dans_espace clavier=true devant=fr.terminagotchi.TerminalActivity
+22:11:55 capture 091_f05_options clavier=true devant=fr.terminagotchi.TerminalActivity
+22:12:05 capture 092_f06_ranger clavier=true devant=fr.terminagotchi.TerminalActivity
+22:12:22 capture 093_f07_deploie clavier=true devant=fr.terminagotchi.TerminalActivity
+22:12:33 capture 094_f08_espace_classe clavier=true devant=fr.terminagotchi.TerminalActivity
+22:12:51 capture 095_f09_espace_ferme clavier=true devant=fr.terminagotchi.TerminalActivity
+22:13:00 capture 096_g01_carte_de_visite clavier=true devant=fr.terminagotchi.TerminalActivity
+22:13:03 RETOUR sur « carte de visite » : LE JEU SE FERME
+22:13:19 capture 097_g02_classe_tableau clavier=true devant=fr.terminagotchi.TerminalActivity
+22:13:23 RETOUR sur « tableau de la classe » : LE JEU SE FERME
+22:13:35 capture 098_g03_classe_aide clavier=true devant=fr.terminagotchi.TerminalActivity
+22:13:44 capture 099_g04_editeur clavier=false devant=fr.terminagotchi.EditeurActivity
+22:13:50 capture 100_g04_editeur_texte clavier=true devant=fr.terminagotchi.EditeurActivity
+22:13:52 capture 101_g04_editeur_un_retour clavier=false devant=fr.terminagotchi.EditeurActivity
+22:13:56 capture 102_g04_apres_editeur clavier=true devant=fr.terminagotchi.TerminalActivity
+22:14:04 capture 103_g04_texte_garde clavier=true devant=fr.terminagotchi.TerminalActivity
+22:15:26 bug : réponse lue « 208 »
+22:15:34 capture 104_g05_signaler_un_souci clavier=true devant=fr.terminagotchi.TerminalActivity
+22:15:50 capture 105_g05_signaler_clavier_range clavier=false devant=fr.terminagotchi.TerminalActivity
+22:15:52 RETOUR sur « signaler un souci » : LE JEU SE FERME
+22:15:58 capture 106_g05_apres_retour_signaler clavier=true devant=fr.terminagotchi.TerminalActivity
+22:16:07 capture 107_g06_compte clavier=true devant=fr.terminagotchi.TerminalActivity
+22:16:28 capture 108_g06_compte_cree clavier=true devant=fr.terminagotchi.TerminalActivity
+22:16:40 capture 109_g06_synchro clavier=true devant=fr.terminagotchi.TerminalActivity
+22:17:05 capture 110_g06_hors_ligne clavier=true devant=fr.terminagotchi.TerminalActivity
+22:17:09 capture 111_g06_nuage_explique clavier=true devant=fr.terminagotchi.TerminalActivity
+22:17:17 capture 112_g07_notif clavier=true devant=fr.terminagotchi.TerminalActivity
+22:17:21 capture 113_g07_volet_notifications clavier=true devant=
+22:17:33 capture 114_g08_bulle clavier=true devant=fr.terminagotchi.TerminalActivity
+22:17:39 capture 115_g08_bulle_sur_accueil clavier=false devant=com.google.android.apps.nexuslauncher.NexusLauncherActivity
+22:17:49 capture 116_g09_menu_du_jeu clavier=true devant=fr.terminagotchi.TerminalActivity
+22:18:09 capture 117_g09_menu_choix_5 clavier=true devant=fr.terminagotchi.TerminalActivity
+22:18:20 capture 118_g09_menu_choix_4 clavier=true devant=fr.terminagotchi.TerminalActivity
+22:18:31 capture 119_g09_menu_choix_3 clavier=true devant=fr.terminagotchi.TerminalActivity
+22:18:42 capture 120_g09_nouvelle_partie_question clavier=true devant=fr.terminagotchi.TerminalActivity
+22:18:50 capture 121_g09_nouvelle_partie_non clavier=true devant=fr.terminagotchi.TerminalActivity
+22:18:59 capture 122_g09_jouer clavier=true devant=fr.terminagotchi.TerminalActivity
+22:19:12 capture 123_g10_doom clavier=false devant=fr.terminagotchi.DoomActivity
+22:19:15 RETOUR sur « doom » : le jeu reste ouvert
+22:19:21 capture 124_g10_apres_doom clavier=true devant=fr.terminagotchi.TerminalActivity
+22:19:40 capture 125_h01_rouvert_depuis_icone clavier=true devant=fr.terminagotchi.TerminalActivity
+22:19:59 capture 126_h01_rouvert_clavier_range clavier=false devant=fr.terminagotchi.TerminalActivity
+22:20:07 capture 127_h02_jouer clavier=true devant=fr.terminagotchi.TerminalActivity
