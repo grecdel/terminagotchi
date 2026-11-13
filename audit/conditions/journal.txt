@@ -1,0 +1,128 @@
+21:47:32 passage conditions clavier=non langue=fr
+21:47:50 capture 001_paysage_qui_est_avec_toi clavier=false devant=
+21:47:55 capture 002_paysage_conseils_adulte clavier=true devant=
+21:48:00 capture 003_paysage_ecran_1 clavier=true devant=
+21:48:05 capture 004_paysage_ecran_2 clavier=true devant=
+21:48:09 capture 005_paysage_ecran_3 clavier=true devant=
+21:48:16 capture 006_paysage_camp clavier=true devant=
+21:48:36 capture 007_paysage_oeuf clavier=true devant=
+21:48:48 capture 008_paysage_question_son clavier=true devant=
+21:48:55 capture 009_paysage_pixel_est_ne clavier=true devant=
+21:49:33 capture 010_paysage_jeu_clavier_ouvert clavier=true devant=
+21:49:49 capture 011_paysage_jeu_clavier_range clavier=false devant=
+21:49:55 capture 012_paysage_menu clavier=false devant=
+21:50:10 capture 013_paysage_fiche_creature clavier=false devant=
+21:50:14 capture 014_paysage_fiche_creature_bas clavier=false devant=
+21:50:16 RETOUR sur « fiche créature (paysage) » : le jeu reste ouvert
+21:50:19 capture 015_paysage_lecon_detail clavier=false devant=
+21:50:21 RETOUR sur « leçon en détail (paysage) » : le jeu reste ouvert
+21:50:28 capture 016_paysage_reglages clavier=false devant=
+21:50:30 RETOUR sur « réglages (paysage) » : le jeu reste ouvert
+21:50:37 capture 017_paysage_carte clavier=true devant=
+21:50:41 capture 018_paysage_carte_clavier_range clavier=false devant=
+21:50:50 capture 019_paysage_lexique clavier=true devant=
+21:50:56 capture 020_paysage_perdu clavier=true devant=
+21:51:09 capture 021_paysage_espace clavier=true devant=
+21:51:14 capture 022_paysage_espace_clavier_range clavier=false devant=
+21:51:31 capture 023_paysage_monstre clavier=true devant=
+21:51:44 capture 024_paysage_menu_du_jeu clavier=false devant=
+21:51:55 capture 025_paysage_editeur clavier=false devant=
+21:52:18 capture 026_police13_qui_est_avec_toi clavier=true devant=
+21:52:22 capture 027_police13_conseils_adulte clavier=true devant=
+21:52:27 capture 028_police13_ecran_1 clavier=true devant=
+21:52:31 capture 029_police13_ecran_2 clavier=true devant=
+21:52:35 capture 030_police13_ecran_3 clavier=true devant=
+21:52:42 capture 031_police13_camp clavier=true devant=
+21:52:58 capture 032_police13_oeuf clavier=true devant=
+21:53:13 capture 033_police13_question_son clavier=true devant=
+21:53:20 capture 034_police13_pixel_est_ne clavier=true devant=
+21:53:58 capture 035_police13_jeu_clavier_ouvert clavier=true devant=
+21:54:14 capture 036_police13_jeu_clavier_range clavier=false devant=
+21:54:19 capture 037_police13_menu clavier=false devant=
+21:54:35 capture 038_police13_fiche_creature clavier=false devant=
+21:54:38 capture 039_police13_fiche_creature_bas clavier=false devant=
+21:54:40 RETOUR sur « fiche créature (police13) » : le jeu reste ouvert
+21:54:44 capture 040_police13_lecon_detail clavier=false devant=
+21:54:46 RETOUR sur « leçon en détail (police13) » : le jeu reste ouvert
+21:54:53 capture 041_police13_reglages clavier=false devant=
+21:54:55 RETOUR sur « réglages (police13) » : le jeu reste ouvert
+21:55:02 capture 042_police13_carte clavier=true devant=
+21:55:06 capture 043_police13_carte_clavier_range clavier=false devant=
+21:55:15 capture 044_police13_lexique clavier=true devant=
+21:55:21 capture 045_police13_perdu clavier=true devant=
+21:55:34 capture 046_police13_espace clavier=true devant=
+21:55:39 capture 047_police13_espace_clavier_range clavier=false devant=
+21:55:55 capture 048_police13_monstre clavier=true devant=
+21:56:09 capture 049_police13_menu_du_jeu clavier=false devant=
+21:56:20 capture 050_police13_editeur clavier=false devant=
+21:56:30 capture 051_police13_reglages_son clavier=true devant=
+22:01:51 touche « OK » en 896 1735
+22:02:13 capture 052_petit720_qui_est_avec_toi clavier=true devant=
+22:02:17 capture 053_petit720_conseils_adulte clavier=true devant=
+22:02:21 capture 054_petit720_ecran_1 clavier=true devant=
+22:02:25 capture 055_petit720_ecran_2 clavier=true devant=
+22:02:29 capture 056_petit720_ecran_3 clavier=true devant=
+22:02:35 capture 057_petit720_camp clavier=true devant=
+22:02:51 capture 058_petit720_oeuf clavier=true devant=
+22:03:02 capture 059_petit720_question_son clavier=true devant=
+22:03:08 capture 060_petit720_pixel_est_ne clavier=true devant=
+22:03:41 capture 061_petit720_jeu_clavier_ouvert clavier=true devant=
+22:03:56 capture 062_petit720_jeu_clavier_range clavier=false devant=
+22:04:01 capture 063_petit720_menu clavier=false devant=
+22:04:16 capture 064_petit720_fiche_creature clavier=false devant=
+22:04:19 capture 065_petit720_fiche_creature_bas clavier=false devant=
+22:04:21 RETOUR sur « fiche créature (petit720) » : le jeu reste ouvert
+22:04:24 capture 066_petit720_lecon_detail clavier=true devant=
+22:04:27 RETOUR sur « leçon en détail (petit720) » : LE JEU SE FERME
+22:04:37 capture 067_petit720_reglages clavier=false devant=
+22:04:39 RETOUR sur « réglages (petit720) » : le jeu reste ouvert
+22:04:45 capture 068_petit720_carte clavier=true devant=
+22:04:48 capture 069_petit720_carte_clavier_range clavier=false devant=
+22:04:56 capture 070_petit720_lexique clavier=true devant=
+22:05:01 capture 071_petit720_perdu clavier=true devant=
+22:05:13 capture 072_petit720_espace clavier=true devant=
+22:05:17 capture 073_petit720_espace_clavier_range clavier=false devant=
+22:05:33 capture 074_petit720_monstre clavier=true devant=
+22:05:44 capture 075_petit720_menu_du_jeu clavier=false devant=
+22:06:05 capture 076_petit480_qui_est_avec_toi clavier=true devant=
+22:06:09 capture 077_petit480_conseils_adulte clavier=true devant=
+22:06:13 capture 078_petit480_ecran_1 clavier=true devant=
+22:06:17 capture 079_petit480_ecran_2 clavier=true devant=
+22:06:21 capture 080_petit480_ecran_3 clavier=true devant=
+22:06:27 capture 081_petit480_camp clavier=true devant=
+22:06:43 capture 082_petit480_oeuf clavier=true devant=
+22:06:53 capture 083_petit480_question_son clavier=true devant=
+22:06:58 capture 084_petit480_pixel_est_ne clavier=true devant=
+22:07:31 capture 085_petit480_jeu_clavier_ouvert clavier=true devant=
+22:07:45 capture 086_petit480_jeu_clavier_range clavier=false devant=
+22:07:50 capture 087_petit480_menu clavier=false devant=
+22:08:05 capture 088_petit480_fiche_creature clavier=false devant=
+22:08:08 capture 089_petit480_fiche_creature_bas clavier=false devant=
+22:08:10 RETOUR sur « fiche créature (petit480) » : le jeu reste ouvert
+22:08:13 capture 090_petit480_lecon_detail clavier=false devant=
+22:08:15 RETOUR sur « leçon en détail (petit480) » : LE JEU SE FERME
+22:08:24 capture 091_petit480_reglages clavier=true devant=
+22:08:27 RETOUR sur « réglages (petit480) » : LE JEU SE FERME
+22:08:36 capture 092_petit480_carte clavier=true devant=
+22:08:39 capture 093_petit480_carte_clavier_range clavier=false devant=
+22:08:46 capture 094_petit480_lexique clavier=true devant=
+22:08:52 capture 095_petit480_perdu clavier=true devant=
+22:09:03 capture 096_petit480_espace clavier=true devant=
+22:09:07 capture 097_petit480_espace_clavier_range clavier=false devant=
+22:09:23 capture 098_petit480_monstre clavier=true devant=
+22:09:33 capture 099_petit480_menu_du_jeu clavier=false devant=
+22:09:47 capture 100_petit480_police13_jeu clavier=true devant=
+22:09:50 capture 101_petit480_police13_menu clavier=true devant=
+22:09:53 RETOUR sur « menu (petit écran, grande police) » : LE JEU SE FERME
+22:10:00 capture 102_petit480_police13_fiche clavier=false devant=
+22:10:02 RETOUR sur « fiche (petit écran, grande police) » : le jeu reste ouvert
+22:10:19 capture 103_theme_yes_jeu clavier=true devant=
+22:10:25 capture 104_theme_yes_reglages_son clavier=true devant=
+22:16:45 touche « OK » en 895 1688
+22:16:56 capture 105_theme_yes_editeur clavier=false devant=
+22:17:04 capture 106_theme_yes_menu_du_jeu clavier=false devant=
+22:17:19 capture 107_theme_no_jeu clavier=true devant=
+22:17:26 capture 108_theme_no_reglages_son clavier=true devant=
+22:23:42 touche « OK » en 895 1688
+22:23:52 capture 109_theme_no_editeur clavier=false devant=
+22:24:00 capture 110_theme_no_menu_du_jeu clavier=false devant=
