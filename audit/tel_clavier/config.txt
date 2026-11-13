@@ -1,0 +1,8 @@
+avant : config: mcc310-mnc260-en-rUS-ldltr-sw411dp-w411dp-h842dp-normal-long-notround-nowidecg-lowdr-port-notnight-420dpi-finger-keysexposed-qwerty-navhidden-nonav-2209x1080-v33
+abi: x86_64
+après : config: mcc310-mnc260-en-rUS-ldltr-sw411dp-w411dp-h842dp-normal-long-notround-nowidecg-lowdr-port-notnight-420dpi-finger-keysexposed-qwerty-navhidden-nonav-2209x1080-v33
+abi: x86_64
+clavier physique encore annoncé : non
+13
+Physical size: 1080x2400
+Physical density: 420
