@@ -1,0 +1,94 @@
+22:32:51 passage gestes clavier=non langue=fr
+22:33:05 capture 001_g01_qui_est_avec_toi clavier=true devant=TerminalActivity
+22:33:09 RETOUR sur « Qui est avec toi ? » : LE JEU SE FERME
+22:33:14 capture 002_g02_apres_retour_qui clavier=true devant=TerminalActivity
+22:33:26 capture 003_g03_tuee_sur_qui_relancee clavier=true devant=TerminalActivity
+22:33:57 touche « adulte » en 463 795
+22:34:01 capture 004_g04_apres_toucher_adulte clavier=true devant=TerminalActivity
+22:34:11 capture 005_g05_tuee_sur_conseils_relancee clavier=true devant=TerminalActivity
+22:34:15 capture 006_g06_ecran_1 clavier=true devant=TerminalActivity
+22:34:21 capture 007_g07_ecran_1_paysage clavier=true devant=TerminalActivity
+22:34:25 capture 008_g07_ecran_1_paysage_clavier_range clavier=false devant=TerminalActivity
+22:34:30 capture 009_g08_ecran_1_retour_portrait clavier=false devant=TerminalActivity
+22:34:39 Suivant en « 902 1191 »
+22:34:42 capture 010_g09_apres_double_appui_suivant clavier=true devant=TerminalActivity
+22:34:45 RETOUR sur « écran du début » : LE JEU SE FERME
+22:34:51 capture 011_g10_apres_retour_ecran clavier=true devant=TerminalActivity
+22:35:01 capture 012_g11_tuee_sur_ecran_relancee clavier=true devant=TerminalActivity
+22:35:19 capture 013_g12_camp clavier=true devant=TerminalActivity
+22:35:28 capture 014_g13_tuee_au_camp_relancee clavier=true devant=TerminalActivity
+22:35:37 capture 015_g14_accueil_du_telephone clavier=false devant=NexusLauncherActivity
+22:35:48 capture 016_g15_retour_par_icone_au_camp clavier=true devant=TerminalActivity
+22:35:55 capture 017_g15_retour_par_icone_clavier_range clavier=false devant=TerminalActivity
+22:36:03 capture 018_g16_apres_jouer clavier=true devant=TerminalActivity
+22:36:18 touche 540 720 (0.5, 0.3)
+22:36:21 capture 019_g17_appui_pendant_ls clavier=true devant=TerminalActivity
+22:36:28 capture 020_g18_apres_ls clavier=true devant=TerminalActivity
+22:36:39 capture 021_g19_tuee_apres_ls_relancee clavier=true devant=TerminalActivity
+22:37:04 capture 022_g20_tuee_apres_le_nom_relancee clavier=true devant=TerminalActivity
+22:37:08 touche 540 720 (0.5, 0.3)
+22:37:10 touche 540 720 (0.5, 0.3)
+22:37:11 capture 023_g21_appuis_pendant_eclosion clavier=true devant=TerminalActivity
+22:37:15 capture 024_g22_question_son clavier=true devant=TerminalActivity
+22:37:25 capture 025_g23_tuee_sur_question_son_relancee clavier=true devant=TerminalActivity
+22:37:41 capture 026_g24_milieu_de_lecon clavier=true devant=TerminalActivity
+22:37:52 capture 027_g25_tuee_en_lecon_relancee clavier=true devant=TerminalActivity
+22:37:57 capture 028_g26_jeu_clavier_range clavier=false devant=TerminalActivity
+22:37:58 RETOUR sur « le jeu, clavier rangé » : LE JEU SE FERME
+22:38:05 capture 029_g27_apres_retour_jeu clavier=true devant=TerminalActivity
+22:38:35 RETOUR sur « menu ☰ » : le jeu reste ouvert
+22:38:38 capture 030_g28_apres_retour_menu clavier=true devant=TerminalActivity
+22:38:42 capture 031_g29_double_appui_menu clavier=false devant=TerminalActivity
+22:38:44 RETOUR sur « menu ☰ (double appui) » : le jeu reste ouvert
+22:38:48 RETOUR sur « menu ☰ (2e fiche ?) » : LE JEU SE FERME
+22:38:57 capture 032_g30_double_appui_plus clavier=true devant=TerminalActivity
+22:39:01 RETOUR sur « leçon (double appui) » : LE JEU SE FERME
+22:39:11 capture 033_g31_menu_ouvert clavier=false devant=TerminalActivity
+22:39:18 capture 034_g31_menu_apres_volet_notifications clavier=false devant=TerminalActivity
+22:39:20 RETOUR sur « menu ☰ après le volet » : le jeu reste ouvert
+22:39:35 capture 035_g32_menu_apres_ecran_eteint clavier=false devant=TerminalActivity
+22:39:37 RETOUR sur « menu ☰ après écran éteint » : le jeu reste ouvert
+22:39:54 capture 036_g33_fiche_puis_accueil_puis_icone clavier=true devant=TerminalActivity
+22:40:01 capture 037_g33_apres_jouer clavier=true devant=TerminalActivity
+22:40:13 capture 038_g34_fiche_paysage clavier=true devant=TerminalActivity
+22:40:19 capture 039_g34_fiche_paysage_defilee clavier=true devant=TerminalActivity
+22:40:26 capture 040_g35_fiche_retour_portrait clavier=true devant=TerminalActivity
+22:40:29 RETOUR sur « fiche après rotation » : LE JEU SE FERME
+22:40:42 capture 041_g36_jeu_paysage_clavier clavier=true devant=TerminalActivity
+22:40:47 capture 042_g36_menu_paysage clavier=false devant=TerminalActivity
+22:40:48 RETOUR sur « menu (paysage) » : le jeu reste ouvert
+22:40:56 capture 043_g37_jeu_retour_portrait clavier=true devant=TerminalActivity
+22:41:17 capture 044_g38_terminal_remonte clavier=true devant=TerminalActivity
+22:41:26 capture 045_g38_terminal_remonte_plus clavier=true devant=TerminalActivity
+22:41:36 capture 046_g39_apres_commande clavier=true devant=TerminalActivity
+22:41:41 capture 047_g40_appui_long_terminal clavier=true devant=TerminalActivity
+22:41:45 RETOUR sur « appui long (terminal) » : LE JEU SE FERME
+22:41:55 capture 048_g41_appui_long_saisie clavier=true devant=TerminalActivity
+22:43:24 MOT PAS LU : « Coller »
+22:45:31 MOT PAS LU : « Paste »
+22:45:34 capture 049_g41_apres_coller clavier=true devant=TerminalActivity
+22:45:42 capture 050_g42_apres_la_croix clavier=false devant=NexusLauncherActivity
+22:45:42 CROIX : le jeu se ferme sans rien demander
+22:45:50 capture 051_g43_apres_toucher_la_marge clavier=false devant=NexusLauncherActivity
+22:45:50 MARGE : le jeu se ferme sans rien demander
+22:46:08 bande au-dessus du clavier : «  »
+22:46:11 capture 052_g43_avant_toucher_la_bande clavier=true devant=TerminalActivity
+22:46:20 RETOUR sur « album » : LE JEU SE FERME
+22:46:33 RETOUR sur « carte » : LE JEU SE FERME
+22:46:48 RETOUR sur « lexique » : LE JEU SE FERME
+22:47:03 RETOUR sur « pas de panique » : LE JEU SE FERME
+22:47:24 RETOUR sur « espace de travail » : LE JEU SE FERME
+22:47:31 capture 053_g44_apres_retour_espace clavier=true devant=TerminalActivity
+22:47:50 RETOUR sur « menu du jeu » : LE JEU SE FERME
+22:47:56 capture 054_g45_apres_retour_menu_du_jeu clavier=true devant=TerminalActivity
+22:48:08 capture 055_g45_reglages_son clavier=true devant=TerminalActivity
+22:48:15 RETOUR sur « réglages du son » : LE JEU SE FERME
+22:48:22 capture 056_g45_apres_retour_son clavier=true devant=TerminalActivity
+22:48:36 capture 057_g46_editeur clavier=true devant=EditeurActivity
+22:48:39 capture 058_g46_editeur_retour_1 clavier=false devant=EditeurActivity
+22:48:43 capture 059_g46_editeur_retour_2 clavier=true devant=TerminalActivity
+22:48:55 capture 060_g47_brouillon_perdu clavier=true devant=TerminalActivity
+22:49:06 capture 061_g48_retour_pendant_commande clavier=true devant=TerminalActivity
+22:49:15 capture 062_g48_commande_finie clavier=true devant=TerminalActivity
+22:49:21 capture 063_g49_recents clavier=false devant=NexusLauncherActivity
+22:49:34 capture 064_g50_commandes_rapides clavier=true devant=TerminalActivity
