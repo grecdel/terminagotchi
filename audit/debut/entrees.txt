@@ -1,0 +1,74 @@
+/sys/class/input/input0 : Power Button
+/sys/class/input/input1 : AT Translated Set 2 keyboard
+/sys/class/input/input10 : virtio_input_multi_touch_8
+/sys/class/input/input11 : virtio_input_multi_touch_9
+/sys/class/input/input12 : virtio_input_multi_touch_10
+/sys/class/input/input13 : virtio_input_multi_touch_11
+/sys/class/input/input3 : virtio_input_multi_touch_1
+/sys/class/input/input4 : virtio_input_multi_touch_2
+/sys/class/input/input5 : virtio_input_multi_touch_3
+/sys/class/input/input6 : virtio_input_multi_touch_4
+/sys/class/input/input7 : virtio_input_multi_touch_5
+/sys/class/input/input8 : virtio_input_multi_touch_6
+/sys/class/input/input9 : virtio_input_multi_touch_7
+retire : AT Translated Set 2 keyboard (serio0)
+    1: virtio_input_multi_touch_11
+    2: virtio_input_multi_touch_10
+    3: virtio_input_multi_touch_9
+    -1: Virtual
+    5: virtio_input_multi_touch_7
+    6: virtio_input_multi_touch_6
+    7: virtio_input_multi_touch_5
+    8: virtio_input_multi_touch_4
+    9: virtio_input_multi_touch_3
+    11: virtio_input_multi_touch_1
+    12: Power Button
+    10: virtio_input_multi_touch_2
+    4: virtio_input_multi_touch_8
+    Sources: KEYBOARD | TOUCHSCREEN | STYLUS
+    KeyboardType: 1
+      KeyboardType: 1
+    Sources: KEYBOARD | TOUCHSCREEN | STYLUS
+    KeyboardType: 1
+      KeyboardType: 1
+    Sources: KEYBOARD | TOUCHSCREEN | STYLUS
+    KeyboardType: 1
+      KeyboardType: 1
+    Sources: KEYBOARD | TOUCHSCREEN | STYLUS
+    KeyboardType: 1
+      KeyboardType: 1
+    Sources: KEYBOARD | TOUCHSCREEN | STYLUS
+    KeyboardType: 1
+      KeyboardType: 1
+    Sources: KEYBOARD | DPAD
+    KeyboardType: 2
+      KeyboardType: 2
+    Sources: KEYBOARD | TOUCHSCREEN | STYLUS
+    KeyboardType: 1
+      KeyboardType: 1
+    Sources: KEYBOARD | TOUCHSCREEN | STYLUS
+    KeyboardType: 1
+      KeyboardType: 1
+    Sources: KEYBOARD | TOUCHSCREEN | STYLUS
+    KeyboardType: 1
+      KeyboardType: 1
+    Sources: KEYBOARD | TOUCHSCREEN | STYLUS
+    KeyboardType: 1
+      KeyboardType: 1
+    Sources: KEYBOARD | TOUCHSCREEN | STYLUS
+    KeyboardType: 1
+      KeyboardType: 1
+    Sources: KEYBOARD
+    KeyboardType: 1
+      KeyboardType: 1
+    Sources: KEYBOARD | TOUCHSCREEN | STYLUS
+    KeyboardType: 1
+      KeyboardType: 1
+      0: name='5f52472 ScreenDecorOverlayBottom', id=120, displayId=0, inputConfig=NOT_FOCUSABLE | NOT_TOUCHABLE | TRUSTED_OVERLAY | SLIPPERY, alpha=1.00, frame=[0,2337][1080,2400], globalScale=1.000000, applicationInfo.name=, applicationInfo.token=<null>, touchableRegion=<empty>, ownerPid=869, ownerUid=10169, dispatchingTimeout=5000ms, hasToken=0x79b80fad0ad0, touchOcclusionMode=USE_OPACITY
+      1: name='7eef9b0 ScreenDecorOverlay', id=119, displayId=0, inputConfig=NOT_FOCUSABLE | NOT_TOUCHABLE | TRUSTED_OVERLAY | SLIPPERY, alpha=1.00, frame=[0,0][1080,128], globalScale=1.000000, applicationInfo.name=, applicationInfo.token=<null>, touchableRegion=[492,0][610,128], ownerPid=869, ownerUid=10169, dispatchingTimeout=5000ms, hasToken=0x79b80fafac50, touchOcclusionMode=USE_OPACITY
+      2: name='[Gesture Monitor] swipe-up', id=82, displayId=0, inputConfig=NOT_FOCUSABLE | TRUSTED_OVERLAY | SPY, alpha=1.00, frame=[0,0][0,0], globalScale=1.000000, applicationInfo.name=[Gesture Monitor] swipe-up, applicationInfo.token=<null>, touchableRegion=[-10799,-23999][10800,24000], ownerPid=1137, ownerUid=10168, dispatchingTimeout=5000ms, hasToken=0x79b80faeea10, touchOcclusionMode=BLOCK_UNTRUSTED
+      3: name='[Gesture Monitor] edge-swipe', id=71, displayId=0, inputConfig=NOT_FOCUSABLE | TRUSTED_OVERLAY | SPY, alpha=1.00, frame=[0,0][0,0], globalScale=1.000000, applicationInfo.name=[Gesture Monitor] edge-swipe, applicationInfo.token=<null>, touchableRegion=[-10799,-23999][10800,24000], ownerPid=869, ownerUid=10169, dispatchingTimeout=5000ms, hasToken=0x79b80fae1b10, touchOcclusionMode=BLOCK_UNTRUSTED
+      4: name='f0fdd19 NavigationBar0', id=90, displayId=0, inputConfig=NOT_FOCUSABLE | TRUSTED_OVERLAY | WATCH_OUTSIDE_TOUCH | SLIPPERY, alpha=1.00, frame=[0,2274][1080,2400], globalScale=1.000000, applicationInfo.name=, applicationInfo.token=<null>, touchableRegion=<empty>, ownerPid=869, ownerUid=10169, dispatchingTimeout=5000ms, hasToken=0x79b80fae1990, touchOcclusionMode=USE_OPACITY
+      5: name='3fb5cb1 StatusBar', id=91, displayId=0, inputConfig=NOT_FOCUSABLE | TRUSTED_OVERLAY, alpha=1.00, frame=[0,0][1080,128], globalScale=1.000000, applicationInfo.name=, applicationInfo.token=<null>, touchableRegion=[0,0][1080,128], ownerPid=869, ownerUid=10169, dispatchingTimeout=5000ms, hasToken=0x79b80faec7d0, touchOcclusionMode=USE_OPACITY
+      6: name='f30f7f0 Application Not Responding: com.google.android.apps.nexuslauncher', id=144, displayId=0, inputConfig=0x0, alpha=1.00, frame=[28,979][1052,1485], globalScale=1.000000, applicationInfo.name=, applicationInfo.token=<null>, touchableRegion=[-1080,-2400][2160,4800], ownerPid=533, ownerUid=1000, dispatchingTimeout=5000ms, hasToken=0x79b80faa6d90, touchOcclusionMode=USE_OPACITY
+      7: name='817a2d5 com.google.android.apps.nexuslauncher/com.google.android.apps.nexuslauncher.NexusLauncherActivity', id=136, displayId=0, inputConfig=NOT_VISIBLE | NOT_FOCUSABLE | NOT_TOUCHABLE | WATCH_OUTSIDE_TOUCH, alpha=0.00, frame=[0,0][1080,2400], globalScale=1.000000, applicationInfo.name=ActivityRecord{be4d07 u0 com.google.android.apps.nexuslauncher/.NexusLauncherActivity t7}, applicationInfo.token=0x79b76fab01f0, touchableRegion=[0,0][1080,2400], ownerPid=1789, ownerUid=10132, dispatchingTimeout=5000ms, hasToken=0x79b80fab2b10, touchOcclusionMode=USE_OPACITY
