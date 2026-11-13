@@ -1,0 +1,47 @@
+22:33:07 passage debut clavier=non langue=fr
+22:33:19 capture 001_p01_tout_premier_lancement clavier=false devant=GrantPermissionsActivity
+22:33:22 devant au premier lancement :   mCurrentFocus=Window{de6cea4 u0 com.google.android.permissioncontroller/com.android.permissioncontroller.permission.ui.GrantPermissionsActivity}
+22:33:29 capture 002_p02_apres_refus_permission clavier=true devant=TerminalActivity
+22:33:31 capture 003_p03_qui_est_avec_toi clavier=true devant=TerminalActivity
+22:35:03 touche « seul » en 259 351
+22:35:08 capture 004_p04_ecran_1 clavier=true devant=TerminalActivity
+22:36:13 Suivant (écran 1) en «  »
+22:36:18 capture 005_p04_ecran_2 clavier=true devant=TerminalActivity
+22:36:24 Suivant (écran 2) en « 585 557 »
+22:36:28 capture 006_p04_ecran_3 clavier=true devant=TerminalActivity
+22:36:35 capture 007_p05_camp clavier=true devant=TerminalActivity
+22:36:41 capture 008_p05_camp_clavier_range clavier=false devant=TerminalActivity
+22:36:47 capture 009_p05_camp_avant_pwd clavier=true devant=TerminalActivity
+22:36:50 capture 010_p05_camp_en_tapant clavier=true devant=TerminalActivity
+22:37:01 capture 011_p06_apres_pwd clavier=true devant=TerminalActivity
+22:37:15 capture 012_p07_apres_ls clavier=true devant=TerminalActivity
+22:37:24 capture 013_p08_apres_echo clavier=true devant=TerminalActivity
+22:37:34 capture 014_p09_apres_whoami clavier=true devant=TerminalActivity
+22:37:43 capture 015_p10_presentation_1 clavier=true devant=TerminalActivity
+22:37:49 capture 016_p10_presentation_2 clavier=true devant=TerminalActivity
+22:37:55 capture 017_p10_presentation_3 clavier=true devant=TerminalActivity
+22:38:07 capture 018_p11_lecon_01 clavier=true devant=TerminalActivity
+22:38:14 capture 019_p11_lecon_02 clavier=true devant=TerminalActivity
+22:38:22 capture 020_p11_lecon_03 clavier=true devant=TerminalActivity
+22:38:32 capture 021_p11_lecon_04 clavier=true devant=TerminalActivity
+22:38:39 capture 022_p11_lecon_05 clavier=true devant=TerminalActivity
+22:38:48 capture 023_p11_lecon_06 clavier=true devant=TerminalActivity
+22:38:55 capture 024_p11_lecon_07 clavier=true devant=TerminalActivity
+22:39:03 capture 025_p11_lecon_08 clavier=true devant=TerminalActivity
+22:39:10 capture 026_p11_lecon_09 clavier=true devant=TerminalActivity
+22:39:18 capture 027_p11_lecon_10 clavier=true devant=TerminalActivity
+22:39:26 capture 028_p11_lecon_11 clavier=true devant=TerminalActivity
+22:39:28 capture 029_p12_ligne_longue clavier=true devant=TerminalActivity
+22:39:46 capture 030_p12_ligne_longue_clavier_range clavier=false devant=TerminalActivity
+22:40:04 capture 031_p12_lecon_en_detail clavier=true devant=TerminalActivity
+22:40:08 RETOUR sur « leçon en détail (ligne longue) » : LE JEU SE FERME
+22:40:28 capture 032_p13_lecon_suivante clavier=true devant=TerminalActivity
+22:40:36 capture 033_p14_suite_12 clavier=true devant=TerminalActivity
+22:40:43 capture 034_p14_suite_13 clavier=true devant=TerminalActivity
+22:40:51 capture 035_p14_suite_14 clavier=true devant=TerminalActivity
+22:41:01 capture 036_p14_suite_15 clavier=true devant=TerminalActivity
+22:41:08 capture 037_p14_suite_16 clavier=true devant=TerminalActivity
+22:41:18 capture 038_p14_suite_17 clavier=true devant=TerminalActivity
+22:47:03 MOT PAS LU : « Indice »
+22:47:05 saisie en y=781 sur 1600
+22:47:08 capture 039_p16_rangee_de_touches clavier=true devant=TerminalActivity
