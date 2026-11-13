@@ -1,0 +1,59 @@
+22:32:42 passage complements clavier=non langue=fr
+22:34:31 capture 001_k01_texte_normal clavier=true devant=TerminalActivity
+22:34:54 capture 002_k01_texte_150 clavier=true devant=TerminalActivity
+22:35:12 capture 003_k01_menu_150 clavier=false devant=TerminalActivity
+22:35:14 RETOUR sur « menu (150 %) » : le jeu reste ouvert
+22:35:19 capture 004_k01_lecon_150 clavier=false devant=TerminalActivity
+22:35:21 RETOUR sur « leçon (150 %) » : le jeu reste ouvert
+22:35:39 capture 005_k01_texte_150_apres_espace clavier=true devant=TerminalActivity
+22:36:01 capture 006_k01_texte_150_apres_relance clavier=true devant=TerminalActivity
+22:36:53 capture 007_k02_carte_espace_clavier_range clavier=false devant=TerminalActivity
+22:36:56 touche 999 652 (0.925, 0.272)
+22:37:01 touche 999 652 (0.925, 0.272)
+22:37:06 capture 008_k02_carte_zoom_plus clavier=false devant=TerminalActivity
+22:37:14 capture 009_k02_carte_glissee clavier=false devant=TerminalActivity
+22:37:16 touche 999 768 (0.925, 0.32)
+22:37:19 touche 999 768 (0.925, 0.32)
+22:37:24 capture 010_k02_carte_zoom_moins clavier=false devant=TerminalActivity
+22:37:26 touche 432 628 (0.40, 0.262)
+22:37:31 capture 011_k02_carte_lieu_touche clavier=false devant=TerminalActivity
+22:37:33 touche 540 693 (0.50, 0.289)
+22:37:38 capture 012_k02_carte_lieu_2 clavier=false devant=TerminalActivity
+22:41:15 touche « aller » en 299 1387
+22:41:20 capture 013_k02_carte_apres_y_aller clavier=true devant=TerminalActivity
+22:43:36 touche « livre » en 915 827
+22:43:42 capture 014_k02_livre_des_gardiens clavier=true devant=TerminalActivity
+22:43:48 capture 015_k02_livre_defile clavier=true devant=TerminalActivity
+22:45:51 MOT PAS LU : « carnet »
+22:45:55 RETOUR sur « carte de l'espace » : LE JEU SE FERME
+22:46:13 capture 016_k03_ranger_clavier_range clavier=false devant=TerminalActivity
+22:46:18 capture 017_k03_ranger_bas clavier=true devant=TerminalActivity
+22:48:22 MOT PAS LU : « Termin »
+22:50:21 MOT PAS LU : « OK »
+22:51:59 MOT PAS LU : « Fermer »
+22:52:02 capture 018_k03_ranger_apres clavier=true devant=TerminalActivity
+22:52:18 capture 019_k04_options_clavier_range clavier=false devant=TerminalActivity
+22:52:25 capture 020_k04_options_bas clavier=true devant=TerminalActivity
+22:52:31 capture 021_k04_options_bas_2 clavier=true devant=TerminalActivity
+22:52:50 capture 022_k05_tableau_clavier_range clavier=false devant=TerminalActivity
+22:52:52 touche 1015 144 (0.94, 0.06)
+22:52:56 capture 023_k05_tableau_apres_toucher_coin clavier=false devant=TerminalActivity
+22:53:08 capture 024_k05_apres_tableau clavier=true devant=TerminalActivity
+22:53:17 capture 025_k06_monstre clavier=true devant=TerminalActivity
+22:53:32 MOT PAS LU : « Indice »
+22:53:34 capture 026_k06_monstre_indice clavier=true devant=TerminalActivity
+22:53:46 capture 027_k06_monstre_etape_2 clavier=true devant=TerminalActivity
+22:53:50 capture 028_k06_monstre_etape_2_clavier_range clavier=false devant=TerminalActivity
+22:54:05 capture 029_k06_monstre_repaire clavier=true devant=TerminalActivity
+22:54:11 capture 030_k06_monstre_indice_commande clavier=true devant=TerminalActivity
+22:54:43 MOT PAS LU : « Mettre »
+22:54:45 capture 031_k07_lexique_mettre clavier=false devant=TerminalActivity
+22:54:59 capture 032_k08_album_clavier_range clavier=false devant=TerminalActivity
+22:55:01 touche 864 1008 (0.8, 0.42)
+22:55:05 capture 033_k08_album_stade_touche clavier=false devant=TerminalActivity
+22:55:06 touche 540 2280 (0.5, 0.95)
+22:55:10 capture 034_k08_album_touche_dehors clavier=false devant=TerminalActivity
+22:55:21 capture 035_k09_theme_clair clavier=true devant=TerminalActivity
+22:55:30 capture 036_k09_theme_clair_espace clavier=true devant=TerminalActivity
+22:55:42 capture 037_k09_theme_clair_menu clavier=true devant=TerminalActivity
+22:55:45 RETOUR sur « menu (thème clair) » : LE JEU SE FERME
