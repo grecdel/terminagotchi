@@ -25,7 +25,7 @@ mkdir -p $D
 journal() { echo "$(date +%H:%M:%S) $*" >> $J; }
 ime() { adb shell dumpsys input_method 2>/dev/null | grep -o "mInputShown=[a-z]*" | head -1 | cut -d= -f2; }
 vivant() { adb shell dumpsys window 2>/dev/null | grep "mCurrentFocus" | grep -q "$PAQ"; }
-activite() { adb shell dumpsys window 2>/dev/null | grep -m1 "mCurrentFocus" | grep -o "[A-Za-z.]*Activity" | tail -1; }
+activite() { adb shell dumpsys activity activities 2>/dev/null | grep -E "topResumedActivity|mResumedActivity" | head -1 | grep -o "[A-Za-z]*Activity" | tail -1; }
 capture() {   # capture nom [délai] [ui] : l'image, et (ui) la liste des éléments de l'écran si Android la donne
   sleep "${2:-2}"
   N=$((N + 1))
@@ -50,8 +50,8 @@ sans_clavier() {   # Retour range le clavier de l'écran (seulement s'il est ouv
   sleep 1.5
 }
 pos() {
-  local r; r=$(grep " $1 [0-9]" $D/tg_pos.log 2>/dev/null | tail -1 | grep -o '[0-9]\+ [0-9]\+ *$')
-  [ -z "$r" ] && r=$(adb logcat -d -s TG_POS:I 2>/dev/null | grep " $1 [0-9]" | tail -1 | grep -o '[0-9]\+ [0-9]\+ *$')
+  local r; r=$(adb logcat -d -s TG_POS:I 2>/dev/null | grep " $1 [0-9]" | tail -1 | grep -o '[0-9]\+ [0-9]\+ *$')
+  [ -z "$r" ] && r=$(grep " $1 [0-9]" $D/tg_pos.log 2>/dev/null | tail -1 | grep -o '[0-9]\+ [0-9]\+ *$')
   echo $r
 }
 toucher() { local xy; xy=$(pos "$1"); if [ -n "$xy" ]; then adb shell input tap $xy; else journal "PAS TROUVÉ : $1"; fi; sleep "${2:-2}"; }
@@ -88,7 +88,10 @@ neuf() {   # l'appli comme juste installée, dans la langue $1 (Android 13 et pl
   adb shell pm grant $PAQ android.permission.POST_NOTIFICATIONS >/dev/null 2>&1 || true
   adb shell cmd locale set-app-locales $PAQ --user 0 --locales "$1" >/dev/null 2>&1 || true
 }
-tourner() { adb shell settings put system accelerometer_rotation 0; adb shell settings put system user_rotation "$1"; sleep "${2:-4}"; }
+tourner() {   # $1 : 1 = paysage, 0 = portrait. Le jeu suit l'écran d'accueil (fenêtre transparente) : on laisse tourner tout le téléphone
+  adb shell cmd window set-ignore-orientation-request $([ "$1" = 1 ] && echo true || echo false) >/dev/null 2>&1
+  adb shell settings put system accelerometer_rotation 0; adb shell settings put system user_rotation "$1"; sleep "${2:-4}"
+}
 config() { adb shell am get-config 2>/dev/null | head -2 | tr -d '\r'; }
 
 # Le téléphone virtuel annonce un clavier physique (le jeu passe alors en « tout au clavier », idée 69) ; un vrai
@@ -113,12 +116,22 @@ RESTE=non; [ "$CLAVIER" = non ] && config | grep -q qwerty && RESTE=oui
 echo "clavier physique encore annoncé : $RESTE" >> $D/config.txt
 sans_mode_clavier() { [ "$RESTE" = oui ] && tape "clavier off" 2; }   # le réglage du jeu, une fois la créature née
 adb shell getprop ro.build.version.release >> $D/config.txt
+# TAILLE=720x1280:320 : un écran plus petit (taille en pixels : densité), comme un téléphone de 360 × 640 dp
+if [ -n "${TAILLE:-}" ]; then adb shell wm size "${TAILLE%%:*}"; adb shell wm density "${TAILLE##*:}"; sleep 5; fi
 adb shell wm size >> $D/config.txt; adb shell wm density >> $D/config.txt
 adb shell settings put global window_animation_scale 0 || true
 adb shell settings put global transition_animation_scale 0 || true
 adb shell settings put global animator_duration_scale 1 || true      # comme un vrai téléphone (0 : le jeu coupe ses animations)
-adb shell settings put secure show_ime_with_hard_keyboard 1 || true
+adb shell settings put secure show_ime_with_hard_keyboard $([ "$CLAVIER" = non ] && echo 0 || echo 1) || true
 adb shell appops set $PAQ SYSTEM_ALERT_WINDOW allow >/dev/null 2>&1 || true
+for essai in 1 2 3 4; do
+  adb shell input keyevent 3; sleep 4
+  if adb shell dumpsys window 2>/dev/null | grep "mCurrentFocus" | grep -qi "not responding"; then
+    echo "boîte « ne répond pas » du téléphone virtuel : Wait (essai $essai)" >> $D/config.txt
+    ecran; xy=$(python3 tests/audit_lire.py mot $D/_ecran.png Wait 1); [ -n "$xy" ] && adb shell input tap $xy
+    sleep 6
+  else break; fi
+done
 adb logcat -c
 adb logcat -v brief -s TG_POS:I > $D/tg_pos.log 2>/dev/null &
 journal "passage $PASSAGE clavier=$CLAVIER langue=$L"
@@ -311,7 +324,7 @@ if [ "$PASSAGE" = complet ]; then
   tape "edite notes.txt" 4; capture g04_editeur 1 ui
   ecris "bonjour le monde" 1; capture g04_editeur_texte 1
   adb shell input keyevent 4; sleep 1; capture g04_editeur_un_retour 1
-  vivant && [ "$(activite)" = "fr.terminagotchi.EditeurActivity" ] && { adb shell input keyevent 4; sleep 1; }
+  vivant && [ "$(activite)" = "EditeurActivity" ] && { adb shell input keyevent 4; sleep 1; }
   capture g04_apres_editeur 1
   vivant || { journal "après l'éditeur : le jeu est fermé"; lancer; sleep 4; }
   tape "cat notes.txt" 3; capture g04_texte_garde 1
@@ -393,7 +406,7 @@ if [ "$PASSAGE" = conditions ]; then
     capture theme_${th}_jeu 1
     tape "son" 3; capture theme_${th}_reglages_son 1; toucher_mot OK 2 || retour "réglages du son (thème $th)"
     tape "edite notes.txt" 4; capture theme_${th}_editeur 1; adb shell input keyevent 4; sleep 1
-    [ "$(activite)" = "fr.terminagotchi.EditeurActivity" ] && { adb shell input keyevent 4; sleep 1; }
+    [ "$(activite)" = "EditeurActivity" ] && { adb shell input keyevent 4; sleep 1; }
     vivant || { lancer; sleep 3; }
     icone; capture theme_${th}_menu_du_jeu 4; tape "" 2
   done
@@ -441,7 +454,7 @@ if [ "$PASSAGE" = langues ]; then
     tape "espace" 5; capture ${L}_espace 2; tape "monde" 4; capture ${L}_monde 2; tape "espace" 3
     tape "album" 4; capture ${L}_album 1; retour "album ($L)"
     tape "edite notes.txt" 4; capture ${L}_editeur 1; adb shell input keyevent 4; sleep 1
-    [ "$(activite)" = "fr.terminagotchi.EditeurActivity" ] && { adb shell input keyevent 4; sleep 1; }
+    [ "$(activite)" = "EditeurActivity" ] && { adb shell input keyevent 4; sleep 1; }
     vivant || { lancer; sleep 3; }
     icone; capture ${L}_menu_du_jeu 5
     tape "" 2
@@ -509,10 +522,26 @@ if [ "$PASSAGE" = gestes ]; then
   retour "menu ☰ (double appui)"; vivant && retour "menu ☰ (2e fiche ?)"
   deux_appuis $(pos plus); capture g30_double_appui_plus 2
   retour "leçon (double appui)"
-  # saisie pendant qu'une fiche est ouverte
-  toucher menu 2; ecris "ls" 1; capture g31_saisie_fiche_ouverte 1
-  adb shell input keyevent 66; capture g32_entree_fiche_ouverte 2
-  retour "menu ☰ après saisie"; capture g33_apres_fiche 1
+  # le menu ☰ ouvert, puis le volet des notifications ouvert et refermé : le clavier revient-il par-dessus ?
+  avec_clavier
+  toucher menu 2; capture g31_menu_ouvert 1
+  adb shell cmd statusbar expand-notifications; sleep 2; adb shell cmd statusbar collapse; sleep 3
+  capture g31_menu_apres_volet_notifications 1
+  retour "menu ☰ après le volet"
+  vivant || { lancer; sleep 4; }
+  # le menu ☰ ouvert, puis l'écran éteint et rallumé
+  avec_clavier
+  toucher menu 2
+  adb shell input keyevent 26; sleep 3; adb shell input keyevent 26; sleep 2; adb shell input keyevent 82; sleep 3
+  capture g32_menu_apres_ecran_eteint 1
+  retour "menu ☰ après écran éteint"
+  vivant || { lancer; sleep 4; }
+  # la fiche de la créature ouverte, bouton Accueil, puis retour par l'icône
+  avec_clavier
+  toucher creature 2; adb shell input keyevent 3; sleep 2; icone; sleep 4
+  capture g33_fiche_puis_accueil_puis_icone 1
+  tape "" 3; capture g33_apres_jouer 1
+  vivant || { lancer; sleep 4; }
   # rotation pendant qu'une fiche est ouverte
   toucher menu 2; toucher "gros:🐾" 2; tourner 1; capture g34_fiche_paysage 1
   glisser 0.5 0.6 0.5 0.15; capture g34_fiche_paysage_defilee 1
@@ -544,6 +573,21 @@ if [ "$PASSAGE" = gestes ]; then
   adb shell input tap 3 $((wh[1] / 2)); sleep 2
   capture g43_apres_toucher_la_marge 1
   vivant && journal "MARGE : le jeu reste ouvert" || { journal "MARGE : le jeu se ferme sans rien demander"; lancer; sleep 4; }
+  # un toucher dans la petite bande entre le bas du panneau et le haut du clavier (là où l'on vise la 1re rangée de touches)
+  avec_clavier
+  timeout 12 adb shell uiautomator dump /sdcard/tg_ui.xml >/dev/null 2>&1
+  bande=$(adb exec-out cat /sdcard/tg_ui.xml 2>/dev/null | python3 -c "
+import re, sys
+x = sys.stdin.read()
+m = re.search(r'resource-id=\"fr.terminagotchi:id/fond\"[^>]*bounds=\"\[(\d+),(\d+)\]\[(\d+),(\d+)\]\"', x)
+print((int(m.group(1)) + int(m.group(3))) // 2, int(m.group(4)) - 8) if m else print('')")
+  journal "bande au-dessus du clavier : « $bande »"
+  capture g43_avant_toucher_la_bande 1
+  if [ -n "$bande" ]; then
+    adb shell input tap $bande; sleep 2
+    capture g43_apres_toucher_la_bande 1
+    vivant && journal "BANDE AU-DESSUS DU CLAVIER : le jeu reste ouvert" || { journal "BANDE AU-DESSUS DU CLAVIER : le jeu se ferme sans rien demander"; lancer; sleep 4; }
+  fi
   # Retour sur les autres écrans
   tape "album" 4; retour "album"
   tape "carte" 3; sans_clavier; retour "carte"; avec_clavier
@@ -557,7 +601,7 @@ if [ "$PASSAGE" = gestes ]; then
   # l'éditeur : du texte tapé puis Retour
   tape "edite brouillon.txt" 4; ecris "texte pas enregistre" 1; capture g46_editeur 1
   adb shell input keyevent 4; sleep 1; capture g46_editeur_retour_1 1
-  [ "$(activite)" = "fr.terminagotchi.EditeurActivity" ] && { adb shell input keyevent 4; sleep 1; capture g46_editeur_retour_2 1; }
+  [ "$(activite)" = "EditeurActivity" ] && { adb shell input keyevent 4; sleep 1; capture g46_editeur_retour_2 1; }
   vivant || { journal "après l'éditeur : le jeu est fermé"; lancer; sleep 4; }
   tape "cat brouillon.txt" 3; capture g47_brouillon_perdu 1
   # bouton Accueil au milieu d'une commande longue, puis retour
@@ -569,6 +613,128 @@ if [ "$PASSAGE" = gestes ]; then
   # double appui sur Entrée, deux commandes très vite
   ecris "pwd" 0.2; adb shell "input keyevent 66; input keyevent 66"; ecris "ls" 0.2; adb shell input keyevent 66
   capture g50_commandes_rapides 3
+fi
+
+# ------------------------------------------------------------------------------------------------ le tout début
+# Le premier lancement comme sur un téléphone neuf (la permission des notifications n'est pas donnée d'avance), puis
+# les premières leçons une à une, clavier ouvert : ce que voit l'enfant pendant ses 20 premières commandes.
+if [ "$PASSAGE" = debut ]; then
+  adb shell am force-stop $PAQ; adb shell pm clear $PAQ >/dev/null
+  adb shell pm revoke $PAQ android.permission.POST_NOTIFICATIONS >/dev/null 2>&1 || true
+  adb shell cmd locale set-app-locales $PAQ --user 0 --locales "$L" >/dev/null 2>&1 || true
+  lancer
+  capture p01_tout_premier_lancement 10 ui
+  journal "devant au premier lancement : $(adb shell dumpsys window 2>/dev/null | grep -m1 mCurrentFocus | tr -d '\r')"
+  vivant || { adb shell input keyevent 4; sleep 2; capture p02_apres_refus_permission 1; }
+  capture p03_qui_est_avec_toi 2 ui
+  # toucher les boutons eux-mêmes (pas la touche Entrée)
+  toucher_mot seul 2 || tape "" 2
+  capture p04_ecran_1 1 ui
+  for i in 2 3; do
+    xy=$(ou_est Suivant 1)
+    if [ -z "$xy" ]; then pp=($(ou_est Passer 1)); wh=($(dims)); [ ${#pp[@]} = 2 ] && xy="$((wh[0] - pp[0])) ${pp[1]}"; fi
+    journal "Suivant (écran $((i - 1))) en « $xy »"
+    if [ -n "$xy" ]; then adb shell input tap $xy; sleep 2; else tape "" 2; fi
+    capture p04_ecran_$i 1
+  done
+  tape "" 4; capture p05_camp 1 ui
+  sans_clavier; capture p05_camp_clavier_range 1; avec_clavier
+  tape "langue $L" 2
+  capture p05_camp_avant_pwd 1
+  ecris "pw" 1; capture p05_camp_en_tapant 1 ui
+  ecris "d" 0.5; adb shell input keyevent 66; sleep 4; capture p06_apres_pwd 1 ui
+  tape "ls" 6; capture p07_apres_ls 1
+  tape "echo Pixel" 4; capture p08_apres_echo 1
+  tape "whoami" 5; capture p09_apres_whoami 1
+  tape "non" 3
+  for i in 1 2 3; do capture p10_presentation_$i 1; tape "" 2; done
+  sans_mode_clavier
+  k=0
+  for c in "pwd" "ls" "cd ~" "cd terrain_terminagotchi" "ls" "cd vestibule" "ls" "cd /" "ls" "pwd" "cd ~"; do
+    k=$((k + 1)); tape "$c" 3; capture "p11_lecon_$(printf %02d $k)" 1
+  done
+  capture p12_ligne_longue 1 ui
+  sans_clavier; capture p12_ligne_longue_clavier_range 1 ui
+  toucher plus 2; capture p12_lecon_en_detail 1
+  retour "leçon en détail (ligne longue)"
+  avec_clavier
+  tape "cd /home/explorateur/terrain_terminagotchi/vestibule" 3; capture p13_lecon_suivante 1
+  for c in "cd .." "mkdir nid" "cd nid" "echo pomme > repas.txt" "ls" "cat repas.txt"; do
+    k=$((k + 1)); tape "$c" 3; capture "p14_suite_$(printf %02d $k)" 1
+  done
+  # les touches de la rangée : ⋯ (les autres symboles), ↑, ⇥
+  toucher_mot Indice 2 && capture p15_indice 1
+  ecran; wh=($(dims)); sy=$(pos saisie | cut -d' ' -f2)
+  journal "saisie en y=$sy sur ${wh[1]}"
+  capture p16_rangee_de_touches 1 ui
+fi
+
+# ------------------------------------------------------------------------------------------------ compléments
+# Ce que le passage complet n'a pas pu toucher : la carte du monde de l'espace (zoom, lieu, livre des gardiens),
+# « Ranger mon espace » et les options clavier rangé, la taille du texte avant et après l'espace, le tableau de la
+# classe, le monstre pas à pas, le lexique (« Mettre dans la ligne »).
+if [ "$PASSAGE" = complements ]; then
+  neuf "$L"; intro_rapide
+  tape "debloquer tout" 2; tape "oui" 3
+  for c in "cd" "mkdir terrain_terminagotchi" "cd terrain_terminagotchi" "mkdir nid" "cd"; do tape "$c" 2; done
+  # ---- la taille du texte : avant, « très grand », puis après un passage par l'espace
+  capture k01_texte_normal 1 ui
+  tape "confort taille 150" 3; capture k01_texte_150 1 ui
+  toucher menu 2; capture k01_menu_150 1; retour "menu (150 %)"
+  toucher plus 2; capture k01_lecon_150 1; retour "leçon (150 %)"
+  tape "espace" 5; tape "espace" 4; capture k01_texte_150_apres_espace 1 ui
+  adb shell am force-stop $PAQ; lancer; sleep 6; capture k01_texte_150_apres_relance 1 ui
+  tape "confort taille 100" 3; tape "espace" 5; tape "espace" 4
+  # ---- la carte du monde de l'espace (positions relevées sur un Pixel 6)
+  tape "espace" 5; tape "carte" 4
+  sans_clavier; capture k02_carte_espace_clavier_range 2
+  tapf 0.925 0.272 1; tapf 0.925 0.272 1; capture k02_carte_zoom_plus 1
+  glisser 0.5 0.30 0.3 0.26; capture k02_carte_glissee 1
+  tapf 0.925 0.32 1; tapf 0.925 0.32 1; capture k02_carte_zoom_moins 1
+  tapf 0.40 0.262 2; capture k02_carte_lieu_touche 1
+  tapf 0.50 0.289 2; capture k02_carte_lieu_2 1
+  toucher_mot aller 2; capture k02_carte_apres_y_aller 1
+  toucher_mot livre 3 && { capture k02_livre_des_gardiens 1; glisser 0.5 0.6 0.5 0.3; capture k02_livre_defile 1; }
+  toucher_mot carnet 3 && capture k02_carnet 1
+  retour "carte de l'espace"; vivant || true
+  avec_clavier
+  # ---- ranger et options, clavier rangé, jusqu'en bas
+  tape "ranger" 4; sans_clavier; capture k03_ranger_clavier_range 1
+  glisser 0.5 0.6 0.5 0.2; capture k03_ranger_bas 1
+  toucher_mot Termin 2 || toucher_mot OK 2 || toucher_mot Fermer 2; capture k03_ranger_apres 1
+  avec_clavier; tape "options" 4; sans_clavier; capture k04_options_clavier_range 1
+  glisser 0.5 0.6 0.5 0.2; capture k04_options_bas 1
+  glisser 0.5 0.6 0.5 0.2; capture k04_options_bas_2 1
+  avec_clavier; tape "espace" 4
+  vivant || { lancer; sleep 4; }
+  # ---- le tableau de la classe sur un téléphone, clavier rangé ; comment en sortir ?
+  tape "classe tableau" 4; sans_clavier; capture k05_tableau_clavier_range 1
+  tapf 0.94 0.06 2; capture k05_tableau_apres_toucher_coin 1
+  vivant || { journal "tableau : le jeu s'est fermé"; lancer; sleep 4; }
+  avec_clavier; tape "" 2; tape "pwd" 3; capture k05_apres_tableau 1
+  # ---- le monstre pas à pas
+  adb shell am start -n $PAQ/.TerminalActivity --es essai_dressage abyssor >/dev/null 2>&1
+  sleep 5; avec_clavier; capture k06_monstre 1 ui
+  toucher_mot Indice 3; capture k06_monstre_indice 1
+  tape "cat ~/terrain_terminagotchi/monstre_abyssor.txt" 4; capture k06_monstre_etape_2 1
+  sans_clavier; capture k06_monstre_etape_2_clavier_range 1; avec_clavier
+  tape "find ~/terrain_terminagotchi -name repaire_abyssor" 4; capture k06_monstre_repaire 1
+  tape "indice" 3; capture k06_monstre_indice_commande 1
+  tape "dressage abandon" 3
+  # ---- le lexique : « Mettre dans la ligne »
+  tape "lexique" 3; sans_clavier
+  toucher_mot Mettre 2; capture k07_lexique_mettre 1
+  tape "" 2
+  # ---- l'album : toucher un stade, puis dehors
+  tape "album" 4; sans_clavier; capture k08_album_clavier_range 1
+  tapf 0.8 0.42 1; capture k08_album_stade_touche 1
+  tapf 0.5 0.95 1; capture k08_album_touche_dehors 1
+  vivant || { journal "album : le jeu s'est fermé"; lancer; sleep 4; }
+  # ---- le thème clair du jeu (commande theme)
+  avec_clavier; tape "theme clair" 3; capture k09_theme_clair 1
+  tape "espace" 5; capture k09_theme_clair_espace 1; tape "espace" 4
+  toucher menu 2; capture k09_theme_clair_menu 1; retour "menu (thème clair)"
+  tape "theme sombre" 3
 fi
 
 # ------------------------------------------------------------------------------------------------ fin

@@ -106,5 +106,7 @@ elif quoi == "reduire":
             if k < 1.0:
                 im = im.resize((int(im.width * k), int(im.height * k)), Image.LANCZOS)
             im.save(os.path.join(sortie, f[:-4] + ".jpg"), quality=78, optimize=True)
+            if any(m in f for m in os.environ.get("ENTIERES", "").split()):      # quelques captures gardées entières
+                shutil.copy(src, os.path.join(sortie, f))
         elif os.path.getsize(src) < 400_000 and re.search(r"\.(txt|xml|log|json)$", f):
             shutil.copy(src, os.path.join(sortie, f))

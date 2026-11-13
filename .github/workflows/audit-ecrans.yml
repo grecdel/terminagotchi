@@ -18,15 +18,11 @@ jobs:
       fail-fast: false
       matrix:
         include:
-          - { nom: tel, passage: complet, api: 34, cible: google_apis, profil: pixel_6, clavier: non }
-          - { nom: tel_clavier, passage: complet, api: 33, cible: google_apis, profil: pixel_6, clavier: oui }
-          - { nom: api26, passage: complet, api: 26, cible: default, profil: pixel_2, clavier: non }
-          - { nom: api35, passage: complet, api: 35, cible: google_apis, profil: pixel_6, clavier: non }
-          - { nom: api36, passage: complet, api: 36, cible: google_apis, profil: pixel_6, clavier: non }
-          - { nom: tablette, passage: complet, api: 34, cible: google_apis, profil: pixel_c, clavier: non }
-          - { nom: conditions, passage: conditions, api: 34, cible: google_apis, profil: pixel_6, clavier: non }
-          - { nom: langues, passage: langues, api: 34, cible: google_apis, profil: pixel_6, clavier: non }
-          - { nom: gestes, passage: gestes, api: 34, cible: google_apis, profil: pixel_6, clavier: non }
+          - { nom: debut, passage: debut, api: 34, cible: google_apis, profil: pixel_6, clavier: non, taille: "" }
+          - { nom: debut_petit, passage: debut, api: 34, cible: google_apis, profil: pixel_6, clavier: non, taille: "720x1280:320" }
+          - { nom: debut_moyen, passage: debut, api: 34, cible: google_apis, profil: pixel_6, clavier: non, taille: "720x1600:320" }
+          - { nom: complements, passage: complements, api: 34, cible: google_apis, profil: pixel_6, clavier: non, taille: "" }
+          - { nom: gestes2, passage: gestes, api: 34, cible: google_apis, profil: pixel_6, clavier: non, taille: "" }
     steps:
       - uses: actions/checkout@v4
 
@@ -61,6 +57,7 @@ jobs:
           PASSAGE: ${{ matrix.passage }}
           CLAVIER: ${{ matrix.clavier }}
           OCR_LANGUES: fra eng
+          TAILLE: ${{ matrix.taille }}
         with:
           api-level: ${{ matrix.api }}
           arch: x86_64
@@ -76,6 +73,7 @@ jobs:
         if: always()
         env:
           OCR_LANGUES: ${{ matrix.passage == 'langues' && 'eng deu jpn ara fra' || 'fra eng' }}
+          ENTIERES: "p12_ligne_longue. k01_texte_150. p11_lecon_11 g24_milieu"
         run: |
           mkdir -p captures
           python3 tests/audit_lire.py textes captures || true
