@@ -1,0 +1,88 @@
+21:47:48 passage gestes clavier=non langue=fr
+21:48:02 capture 001_g01_qui_est_avec_toi clavier=false devant=com.google.android.apps.nexuslauncher.NexusLauncherActivity
+21:48:05 RETOUR sur « Qui est avec toi ? » : LE JEU SE FERME
+21:48:12 capture 002_g02_apres_retour_qui clavier=false devant=com.google.android.apps.nexuslauncher.NexusLauncherActivity
+21:48:24 capture 003_g03_tuee_sur_qui_relancee clavier=false devant=com.google.android.apps.nexuslauncher.NexusLauncherActivity
+21:48:28 MOT PAS LU : « adulte »
+21:48:35 capture 004_g04_apres_toucher_adulte clavier=true devant=com.google.android.apps.nexuslauncher.NexusLauncherActivity
+21:48:45 capture 005_g05_tuee_sur_conseils_relancee clavier=true devant=com.google.android.apps.nexuslauncher.NexusLauncherActivity
+21:48:50 capture 006_g06_ecran_1 clavier=true devant=com.google.android.apps.nexuslauncher.NexusLauncherActivity
+21:48:56 capture 007_g07_ecran_1_paysage clavier=true devant=com.google.android.apps.nexuslauncher.NexusLauncherActivity
+21:49:00 capture 008_g07_ecran_1_paysage_clavier_range clavier=false devant=com.google.android.apps.nexuslauncher.NexusLauncherActivity
+21:49:06 capture 009_g08_ecran_1_retour_portrait clavier=false devant=com.google.android.apps.nexuslauncher.NexusLauncherActivity
+21:49:58 Suivant en « 902 1191 »
+21:50:01 capture 010_g09_apres_double_appui_suivant clavier=true devant=com.google.android.apps.nexuslauncher.NexusLauncherActivity
+21:50:04 RETOUR sur « écran du début » : LE JEU SE FERME
+21:50:10 capture 011_g10_apres_retour_ecran clavier=true devant=com.google.android.apps.nexuslauncher.NexusLauncherActivity
+21:50:20 capture 012_g11_tuee_sur_ecran_relancee clavier=true devant=com.google.android.apps.nexuslauncher.NexusLauncherActivity
+21:50:38 capture 013_g12_camp clavier=true devant=com.google.android.apps.nexuslauncher.NexusLauncherActivity
+21:50:48 capture 014_g13_tuee_au_camp_relancee clavier=true devant=com.google.android.apps.nexuslauncher.NexusLauncherActivity
+21:50:57 capture 015_g14_accueil_du_telephone clavier=false devant=com.google.android.apps.nexuslauncher.NexusLauncherActivity
+21:51:07 capture 016_g15_retour_par_icone_au_camp clavier=true devant=com.google.android.apps.nexuslauncher.NexusLauncherActivity
+21:51:15 capture 017_g15_retour_par_icone_clavier_range clavier=false devant=com.google.android.apps.nexuslauncher.NexusLauncherActivity
+21:51:24 capture 018_g16_apres_jouer clavier=true devant=com.google.android.apps.nexuslauncher.NexusLauncherActivity
+21:51:40 touche 540 720 (0.5, 0.3)
+21:51:44 capture 019_g17_appui_pendant_ls clavier=true devant=com.google.android.apps.nexuslauncher.NexusLauncherActivity
+21:51:52 capture 020_g18_apres_ls clavier=true devant=com.google.android.apps.nexuslauncher.NexusLauncherActivity
+21:52:04 capture 021_g19_tuee_apres_ls_relancee clavier=true devant=com.google.android.apps.nexuslauncher.NexusLauncherActivity
+21:52:30 capture 022_g20_tuee_apres_le_nom_relancee clavier=true devant=com.google.android.apps.nexuslauncher.NexusLauncherActivity
+21:52:33 touche 540 720 (0.5, 0.3)
+21:52:36 touche 540 720 (0.5, 0.3)
+21:52:38 capture 023_g21_appuis_pendant_eclosion clavier=true devant=com.google.android.apps.nexuslauncher.NexusLauncherActivity
+21:52:42 capture 024_g22_question_son clavier=true devant=com.google.android.apps.nexuslauncher.NexusLauncherActivity
+21:52:53 capture 025_g23_tuee_sur_question_son_relancee clavier=true devant=com.google.android.apps.nexuslauncher.NexusLauncherActivity
+21:53:08 capture 026_g24_milieu_de_lecon clavier=true devant=com.google.android.apps.nexuslauncher.NexusLauncherActivity
+21:53:19 capture 027_g25_tuee_en_lecon_relancee clavier=true devant=com.google.android.apps.nexuslauncher.NexusLauncherActivity
+21:53:24 capture 028_g26_jeu_clavier_range clavier=false devant=com.google.android.apps.nexuslauncher.NexusLauncherActivity
+21:53:26 RETOUR sur « le jeu, clavier rangé » : LE JEU SE FERME
+21:53:34 capture 029_g27_apres_retour_jeu clavier=true devant=com.google.android.apps.nexuslauncher.NexusLauncherActivity
+21:54:06 RETOUR sur « menu ☰ » : le jeu reste ouvert
+21:54:09 capture 030_g28_apres_retour_menu clavier=true devant=com.google.android.apps.nexuslauncher.NexusLauncherActivity
+21:54:14 capture 031_g29_double_appui_menu clavier=false devant=com.google.android.apps.nexuslauncher.NexusLauncherActivity
+21:54:16 RETOUR sur « menu ☰ (double appui) » : le jeu reste ouvert
+21:54:20 RETOUR sur « menu ☰ (2e fiche ?) » : LE JEU SE FERME
+21:54:29 capture 032_g30_double_appui_plus clavier=true devant=com.google.android.apps.nexuslauncher.NexusLauncherActivity
+21:54:32 RETOUR sur « leçon (double appui) » : LE JEU SE FERME
+21:54:43 capture 033_g31_saisie_fiche_ouverte clavier=true devant=com.google.android.apps.nexuslauncher.NexusLauncherActivity
+21:54:47 capture 034_g32_entree_fiche_ouverte clavier=true devant=com.google.android.apps.nexuslauncher.NexusLauncherActivity
+21:54:51 RETOUR sur « menu ☰ après saisie » : le jeu reste ouvert
+21:54:54 capture 035_g33_apres_fiche clavier=true devant=com.google.android.apps.nexuslauncher.NexusLauncherActivity
+21:55:05 capture 036_g34_fiche_paysage clavier=false devant=com.google.android.apps.nexuslauncher.NexusLauncherActivity
+21:55:10 capture 037_g34_fiche_paysage_defilee clavier=true devant=com.google.android.apps.nexuslauncher.NexusLauncherActivity
+21:55:17 capture 038_g35_fiche_retour_portrait clavier=true devant=com.google.android.apps.nexuslauncher.NexusLauncherActivity
+21:55:21 RETOUR sur « fiche après rotation » : LE JEU SE FERME
+21:55:33 capture 039_g36_jeu_paysage_clavier clavier=true devant=com.google.android.apps.nexuslauncher.NexusLauncherActivity
+21:55:37 capture 040_g36_menu_paysage clavier=false devant=com.google.android.apps.nexuslauncher.NexusLauncherActivity
+21:55:39 RETOUR sur « menu (paysage) » : le jeu reste ouvert
+21:55:47 capture 041_g37_jeu_retour_portrait clavier=true devant=com.google.android.apps.nexuslauncher.NexusLauncherActivity
+21:56:10 capture 042_g38_terminal_remonte clavier=true devant=com.google.android.apps.nexuslauncher.NexusLauncherActivity
+21:56:19 capture 043_g38_terminal_remonte_plus clavier=true devant=com.google.android.apps.nexuslauncher.NexusLauncherActivity
+21:56:29 capture 044_g39_apres_commande clavier=true devant=com.google.android.apps.nexuslauncher.NexusLauncherActivity
+21:56:37 capture 045_g40_appui_long_terminal clavier=true devant=com.google.android.apps.nexuslauncher.NexusLauncherActivity
+21:56:40 RETOUR sur « appui long (terminal) » : LE JEU SE FERME
+21:56:51 capture 046_g41_appui_long_saisie clavier=true devant=com.google.android.apps.nexuslauncher.NexusLauncherActivity
+21:58:17 MOT PAS LU : « Coller »
+22:00:21 MOT PAS LU : « Paste »
+22:00:24 capture 047_g41_apres_coller clavier=true devant=com.google.android.apps.nexuslauncher.NexusLauncherActivity
+22:00:32 capture 048_g42_apres_la_croix clavier=false devant=com.google.android.apps.nexuslauncher.NexusLauncherActivity
+22:00:32 CROIX : le jeu se ferme sans rien demander
+22:00:40 capture 049_g43_apres_toucher_la_marge clavier=false devant=com.google.android.apps.nexuslauncher.NexusLauncherActivity
+22:00:40 MARGE : le jeu se ferme sans rien demander
+22:00:55 RETOUR sur « album » : LE JEU SE FERME
+22:01:08 RETOUR sur « carte » : LE JEU SE FERME
+22:01:23 RETOUR sur « lexique » : LE JEU SE FERME
+22:01:38 RETOUR sur « pas de panique » : LE JEU SE FERME
+22:01:59 RETOUR sur « espace de travail » : LE JEU SE FERME
+22:02:06 capture 050_g44_apres_retour_espace clavier=true devant=com.google.android.apps.nexuslauncher.NexusLauncherActivity
+22:02:25 RETOUR sur « menu du jeu » : LE JEU SE FERME
+22:02:32 capture 051_g45_apres_retour_menu_du_jeu clavier=true devant=com.google.android.apps.nexuslauncher.NexusLauncherActivity
+22:02:44 capture 052_g45_reglages_son clavier=true devant=com.google.android.apps.nexuslauncher.NexusLauncherActivity
+22:02:51 RETOUR sur « réglages du son » : LE JEU SE FERME
+22:02:58 capture 053_g45_apres_retour_son clavier=true devant=com.google.android.apps.nexuslauncher.NexusLauncherActivity
+22:03:14 capture 054_g46_editeur clavier=true devant=com.google.android.apps.nexuslauncher.NexusLauncherActivity
+22:03:16 capture 055_g46_editeur_retour_1 clavier=false devant=com.google.android.apps.nexuslauncher.NexusLauncherActivity
+22:03:23 capture 056_g47_brouillon_perdu clavier=true devant=com.google.android.apps.nexuslauncher.NexusLauncherActivity
+22:03:32 capture 057_g48_retour_pendant_commande clavier=true devant=com.google.android.apps.nexuslauncher.NexusLauncherActivity
+22:03:41 capture 058_g48_commande_finie clavier=true devant=com.google.android.apps.nexuslauncher.NexusLauncherActivity
+22:03:47 capture 059_g49_recents clavier=false devant=com.google.android.apps.nexuslauncher.NexusLauncherActivity
+22:04:00 capture 060_g50_commandes_rapides clavier=true devant=com.google.android.apps.nexuslauncher.NexusLauncherActivity
