@@ -62,7 +62,7 @@ def _entrees():
             ("tg", "tg compte · tg sync · tg drapeau TG{…} · tg lexique"),
             ("tg site", "ouvre le site (ton profil) · tg site bestiaire · tg site captures"),
             ("tg collection", "tes bestioles capturées (et leurs signes uniques)"),
-            ("tg bestiaire", "la fiche d'une espèce : tg bestiaire Glitchou"),
+            ("tg bestiaire", "la fiche d'une espèce : tg bestiaire Braisillon"),
         ]),
         ("📱 Ton téléphone (appli Android)", TEL, [
             ("ouvre", "lance une appli : ouvre whatsapp"),

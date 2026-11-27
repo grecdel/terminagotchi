@@ -1,5 +1,6 @@
 """integrer.py gauche.png droite.png NNN_id_variante : recolle les deux moitiés capturées et découpe les 5 stades.
-Résultat : donnees/bestiaire2/images/NNN_id_variante_{bebe,enfant,ado,adulte,ancien}.png"""
+Résultat : donnees/bestiaire2/images/NNN_id_variante_{bebe,enfant,ado,adulte,ancien}.png
+Ensuite : python3 donnees/generer_bestiaire.py  (la variante entre dans le jeu, PC, Android et site)."""
 import os, subprocess, sys
 from pathlib import Path
 from PIL import Image

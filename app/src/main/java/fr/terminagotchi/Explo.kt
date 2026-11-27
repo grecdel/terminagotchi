@@ -65,7 +65,10 @@ object Explo {
         val shiny = ind.optBoolean("shiny")
         val nom = e.nom + if (shiny) " ✨" else ""
         val titre = if (shiny || e.rarete == "légendaire") "§$nom§" else nom
-        return "¤${e.id}${if (shiny) "*" else ""}¤ $titre  #%03d · ${e.rarete} · ${e.famille}\n".format(e.numero) +
+        val forme = Bestiaire.nomVariante(ind.optString("variante"))
+        val img = if (e.dessins != null) "¤${e.id}@${ind.optString("variante", "classique").ifEmpty { "classique" }}/${ind.optString("stade", "enfant")}${if (shiny) "*" else ""}¤\n"
+            else "¤${e.id}${if (shiny) "*" else ""}¤ "
+        return img + "$titre  #%03d · ${e.rarete} · ${e.famille}".format(e.numero) + (if (forme.isNotEmpty()) " · forme $forme" else "") + "\n" +
             "   signe particulier : §${ind.optString("marque")}§\n" +
             "   humeur ${ind.optString("humeur")} · ${ind.optDouble("taille")} cm · potentiel ${ind.optInt("potentiel")} %"
     }
@@ -101,7 +104,7 @@ object Explo {
         val coll = collection(jeu)
         if (nom.isBlank()) {
             val vues = Bestiaire.especes.filter { coll.optInt(it.nom) > 0 }
-            if (vues.isEmpty()) return "Tu n'as encore capturé aucune bestiole. Exemple : bestiaire Glitchou"
+            if (vues.isEmpty()) return "Tu n'as encore capturé aucune bestiole. Exemple : bestiaire Braisillon"
             return "Tes espèces : " + vues.joinToString(", ") { "#%03d ${it.nom}".format(it.numero) } + "\nFiche : bestiaire <nom>"
         }
         val e = Bestiaire.espece(nom)
@@ -113,7 +116,7 @@ object Explo {
             return "$entete\nTu ne l'as pas encore dressée.\nHabitat : ${Bestiaire.lieu(e.zone)} (${e.zone})\n" +
                 "Elle se montre ${e.frequence}, attirée par la commande « ${e.attireePar} »."
         }
-        val dessin = if (Animations.dispo(e.id)) "¤${e.id}+¤\n" else "¤${e.id}¤ "     // version détaillée pour la fiche
+        val dessin = if (Animations.dispo(e.id) || e.dessins != null) "¤${e.id}+¤\n" else "¤${e.id}¤ "     // version détaillée pour la fiche
         return "$dessin$entete\n${e.description}\n${e.comportement}\n" +
             "Capacité : ${e.capacite} · stat favorite : ${e.stat}\n" +
             "Taille ~${e.tailleCm} cm · poids ~${e.poidsKo} Ko\n" +

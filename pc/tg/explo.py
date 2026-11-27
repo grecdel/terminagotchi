@@ -1,7 +1,7 @@
 """Exploration : les zones sont de vrais dossiers du terrain de jeu.
 
 Des bestioles sauvages (150 espèces, voir bestiaire.py) s'y cachent en fichiers cachés.
-Chaque famille a son habitat (archives, forêt, grotte…) ; plus elle est rare, plus elle se
+Chaque famille a son habitat (volcan, forêt, crypte…) ; plus elle est rare, plus elle se
 cache profond (recoin → cachette → sanctuaire). Pour l'apprivoiser : la trouver (ls -a),
 la lire (cat), puis réussir son dressage (voir dressage.py). Chaque bestiole est unique.
 """
@@ -22,9 +22,15 @@ def le(nom):
 
 def lieu(zone):
     base = zone.split("/")[0]
-    nom = B.HABITATS.get(base, base)
+    nom = B.nom_lieu(base)
     prof = zone.count("/")
     return nom + ["", " (un recoin)", " (une cachette)", " (le sanctuaire)"][min(prof, 3)]
+
+
+def largeur(sp):
+    """Largeur visible d'un dessin (sans les codes de couleur)."""
+    import re
+    return max((len(re.sub(r"\x1b\[[0-9;]*m", "", l)) for l in sp), default=0)
 
 
 def debloque(state):
@@ -44,7 +50,7 @@ def spawn(state):
     state["explo_n"] += 1
     if state.get("dressage"):
         return
-    s = {"f": dressage.fiche(e["nom"]).name, "e": e["nom"], "zone": zone, "shiny": shiny}
+    s = {"f": dressage.fiche(e["nom"]).name, "e": e["nom"], "zone": zone, "shiny": shiny, "v": B.tirer_variante(e)}
     state["sauvages"].append(s)
     core.log(state, f"⚔ Un {e['nom']} sauvage apparaît !")
     dressage.commencer(state, s)
@@ -89,14 +95,16 @@ def _carte_individu(ind):
     e = B.espece(ind["espece"])
     if e is None:
         return []
-    sp = B.dessin(e, ind.get("shiny"), grand=True)
+    sp = B.dessin_individu(ind)
+    forme = B.nom_variante(e, ind.get("variante"))
     infos = [
-        f"{B.nom_affiche(e, ind.get('shiny'))} {DIM}#{e['numero']:03d} · {e['rarete']} · {e['famille']}{RESET}",
+        f"{B.nom_affiche(e, ind.get('shiny'))} {DIM}#{e['numero']:03d} · {e['rarete']} · {e['famille']}"
+        f"{' · forme ' + forme if forme else ''}{RESET}",
         f"{DIM}signe particulier :{RESET} {ind.get('marque', '?')}",
         f"{DIM}humeur {ind.get('humeur', '?')} · {ind.get('taille', '?')} cm · potentiel {ind.get('potentiel', '?')} %{RESET}",
     ]
     hauteur = max(len(sp), len(infos))
-    w = len(e["sprite"][0])
+    w = largeur(sp)
     lignes = []
     for i in range(hauteur):
         gauche = sp[i] if i < len(sp) else " " * w
@@ -143,7 +151,7 @@ def fiche(state, nom):
         vues = sorted((B.espece(n) for n, k in state["collection"].items() if k and B.espece(n)),
                       key=lambda e: e["numero"])
         if not vues:
-            return [" Tu n'as encore capturé aucune bestiole. Exemple : tg bestiaire Glitchou"]
+            return [" Tu n'as encore capturé aucune bestiole. Exemple : tg bestiaire Braisillon"]
         return [" Tes espèces : " + ", ".join(f"#{e['numero']:03d} {e['nom']}" for e in vues),
                 f" {DIM}Fiche : tg bestiaire <nom>{RESET}"]
     e = B.espece(nom)
@@ -166,7 +174,7 @@ def fiche(state, nom):
              f"Habitat : {lieu(e['zone'])} · attirée par « {e['attiree_par']} »",
              f"Tu en as dressé {state['collection'][e['nom']]}."]
     for i in range(max(len(sp), len(texte))):
-        g = sp[i] if i < len(sp) else " " * len(e["sprite"][0])
+        g = sp[i] if i < len(sp) else " " * largeur(sp)
         d = texte[i] if i < len(texte) else ""
         lignes.append("  " + g + "  " + d)
     return lignes

@@ -60,8 +60,9 @@ commande différent. Elle te guide, t'explique, te félicite, et apprend avec to
 
 - **10 familles** : Démons, Élémentaires, Morts-vivants, Bêtes, Sylvestres, Arthropodes, Abyssaux, Célestes,
   Constructs, Aberrations, de 15 espèces chacune.
-- **Plus de 680 variantes** selon l'habitat (volcan, forêt, glacier, ruines, corail…), chacune dessinée dans ses
-  5 stades. Les créatures sauvages apparaissent au hasard pendant que tu joues.
+- **Plus de 680 variantes** prévues selon l'habitat (volcan, forêt, glacier, ruines, corail…), chacune dessinée
+  dans ses 5 stades : les premières sont déjà dans le jeu, les autres arrivent au fil des versions. Les créatures
+  sauvages apparaissent au hasard pendant que tu joues, et chacune peut naître dans une forme rare.
 - La **rareté** dépend de chaque individu, et se voit à l'aura autour de sa silhouette.
 
 ### 🤝 Le dressage : gagner la confiance d'une créature

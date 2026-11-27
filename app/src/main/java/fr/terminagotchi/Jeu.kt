@@ -190,7 +190,7 @@ object Regles {
             Triple("compte", "recensement en ligne : même créature sur PC et téléphone", w),
             Triple("sync", "synchronise ta créature maintenant", w),
             Triple("site", "ouvre le site : ton profil (site bestiaire, site captures…)", w),
-            Triple("bestiaire", "la fiche d'une espèce : bestiaire Glitchou", j),
+            Triple("bestiaire", "la fiche d'une espèce : bestiaire Braisillon", j),
             Triple("troupe", "ta troupe de bestioles : stades et bestiole active (troupe <nom>)", j),
             Triple("anime", "voir bouger une bestiole : anime abyssor attaque", j),
             Triple("sudo", "agir en administrateur (impossible dans le bac à sable du téléphone)", p),
@@ -342,6 +342,7 @@ class Jeu(ctx: Context) {
             colles = o.optInt("colles")
             shiny = o.optBoolean("shiny")
             extra = o.optJSONObject("extra") ?: JSONObject()
+            Bestiaire.migrer(this)              // ancien bestiaire → nouveau (mêmes numéros)
         } catch (e: Exception) {
             // sauvegarde illisible : on repart de zéro plutôt que de planter
         }
