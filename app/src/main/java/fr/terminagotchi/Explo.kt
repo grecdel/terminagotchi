@@ -160,6 +160,7 @@ object Defis {
             d.put("cmd", "")
             jeu.stats["Agilité"] = (jeu.stats["Agilité"] ?: 0) + 2
             jeu.ajouterXp(10)
+            Envies.defiReussi(jeu)
             val m = "⚡ Défi réussi en ${"%.1f".format(t)} s" + if (nouveau) " — NOUVEAU RECORD !" else ""
             jeu.log(m)
             jeu.dire(m, 8)

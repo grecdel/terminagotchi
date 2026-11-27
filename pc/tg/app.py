@@ -6,7 +6,7 @@ import time
 
 import subprocess
 
-from . import compagnon, core, dressage, equipe, explo, lecons, lexique, notif, recense, registre, sprites
+from . import compagnon, core, dressage, envies, equipe, explo, lecons, lexique, notif, recense, registre, sprites
 from .bestiaire import arc_en_ciel
 
 SYNC_AUTO = False   # synchro en fond, seulement pour les modes qui restent ouverts
@@ -46,6 +46,7 @@ def render(state, frame, interactif):
         f"{DIM}caractère : {state['trait']}{RESET}" + espece_familier(state),
         f"XP   {sprites.bar(state['xp'] - lo, hi - lo)} {state['xp']}/{hi}",
         f"Faim {dressage.jauge(state['hunger'], 100, 10)} {core.mood(state['hunger'])}",
+        *([f"{DIM}Envies{RESET} " + envies.barres(state)] if st > 0 else []),
         stats,
         f"Compétences {nb_sk} · Bestioles {sum(state['collection'].values())}",
     ]
