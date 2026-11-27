@@ -228,6 +228,7 @@ class Jeu(ctx: Context) {
     init {
         Bestiaire.charger(ctx.applicationContext)
         Animations.init(ctx)
+        Langue.init(ctx, File(ctx.filesDir, "sauvegarde.json").exists())
     }
 
     // chemin « canonique » : /data/user/0 et /data/data désignent le même dossier sur Android
@@ -406,12 +407,12 @@ class Jeu(ctx: Context) {
     // ------------------------------------------------------------ vie de la créature
     fun log(msg: String) {
         val heure = SimpleDateFormat("HH:mm", Locale.FRANCE).format(Date())
-        journal.add("$heure $msg")
+        journal.add("$heure ${msg.tr()}")
         while (journal.size > 6) journal.removeAt(0)
     }
 
     fun dire(texte: String, secondes: Int = 8) {
-        bulle = texte
+        bulle = texte.tr()
         bulleFin = System.currentTimeMillis() + secondes * 1000L
     }
 
@@ -613,8 +614,8 @@ class Jeu(ctx: Context) {
 
     fun titre(): String {
         val fo = forme
-        val f = if (stade >= Regles.STADE_FORME && fo != null) " ${Regles.FORMES[fo]}" else ""
-        return "$nom${if (shiny) " ✨" else ""} · ${Regles.STADES[stade]}$f · niv. $niveau"
+        val f = if (stade >= Regles.STADE_FORME && fo != null) " ${(Regles.FORMES[fo] ?: "").tr()}" else ""
+        return "$nom${if (shiny) " ✨" else ""} · ${Regles.STADES[stade].tr()}$f · ${"niv.".tr()} $niveau"
     }
 
     fun texteXp(): String {
@@ -623,7 +624,7 @@ class Jeu(ctx: Context) {
         return "xp   ${Regles.barre((xp - lo).toDouble(), (hi - lo).toDouble(), 8)}  $xp/$hi"
     }
 
-    fun texteFaim() = "faim ${Regles.barre(faim, 100.0, 8)}  ${humeur()}"
+    fun texteFaim() = "${"faim".tr()} ${Regles.barre(faim, 100.0, 8)}  ${humeur().tr()}"
 
     fun texteEnvies() = if (stade == 0) "" else Envies.barres(this)
 
@@ -631,15 +632,15 @@ class Jeu(ctx: Context) {
 
     fun texteLecon(): String? {
         val l = leconCourante() ?: return if (troncFini && brancheActive() == null)
-            "🌳 Choisis ta prochaine branche d'apprentissage : tape  arbre" else null
+            "🌳 Choisis ta prochaine branche d'apprentissage : tape  arbre".tr() else null
         if (niveau < l.niveau) {
             val manque = 10 * (l.niveau - 1) * (l.niveau - 1) - xp
-            return "Prochaine leçon au niveau ${l.niveau} : il me manque $manque XP.\n" +
-                "Nourris-moi avec des commandes jamais goûtées (📖 Lexique) !"
+            return "Prochaine leçon au niveau {n} : il me manque {x} XP.".tr().replace("{n}", "${l.niveau}").replace("{x}", "$manque") + "\n" +
+                "Nourris-moi avec des commandes jamais goûtées (📖 Lexique) !".tr()
         }
         val e = l.etapes[etape]
-        val astuce = if (e.astuce != null) "\n${e.astuce}" else ""
-        return "${l.titre} (${etape + 1}/${l.etapes.size}) · ${e.dit}\n➜ ${Regles.piege(e.cmd)}$astuce"
+        val astuce = if (e.astuce != null) "\n${e.astuce.tr()}" else ""
+        return "${l.titre.tr()} (${etape + 1}/${l.etapes.size}) · ${e.dit.tr()}\n➜ ${Regles.piege(e.cmd)}$astuce"
     }
 
     fun infoWidget(): String {

@@ -6,6 +6,7 @@ import time
 
 import subprocess
 
+from .langue import tr
 from . import compagnon, core, dressage, entrainement, envies, equipe, explo, lecons, lexique, notif, recense, registre, sprites
 from .bestiaire import arc_en_ciel
 
@@ -22,9 +23,9 @@ def espece_familier(state):
     from . import bestiaire as B
     e = B.espece(state.get("familier"))
     if e and core.stage(core.level(state["xp"])) > 0:
-        return f" {DIM}· espèce {e['nom']}{RESET}"
+        return f" {DIM}· {tr('espèce')} {e['nom']}{RESET}"
     o = B.oeuf(state.get("oeuf"))
-    return f" {DIM}· œuf {o['nom']}{RESET}" if o else ""
+    return f" {DIM}· {tr('œuf')} {tr(o['nom'])}{RESET}" if o else ""
 
 
 def render(state, frame, interactif):
@@ -42,13 +43,13 @@ def render(state, frame, interactif):
     stats = "  ".join(f"{fg(v['color'])}{v['short']}{RESET} {BOLD}{state['stats'][v['stat']]}{RESET}" for v in core.CATEGORIES.values())
     nb_sk = len(state["skills"])
     right = [
-        (arc_en_ciel(state["name"] + " ✨") if state.get("shiny") else f"{BOLD}{state['name']}{RESET}") + f" · {forme} · niv. {lvl}",
-        f"{DIM}caractère : {state['trait']}{RESET}" + espece_familier(state),
+        (arc_en_ciel(state["name"] + " ✨") if state.get("shiny") else f"{BOLD}{state['name']}{RESET}") + f" · {forme} · {tr('niv.')} {lvl}",
+        f"{DIM}{tr('caractère')} : {tr(state['trait'])}{RESET}" + espece_familier(state),
         f"XP   {sprites.bar(state['xp'] - lo, hi - lo)} {state['xp']}/{hi}",
-        f"Faim {dressage.jauge(state['hunger'], 100, 10)} {core.mood(state['hunger'])}",
-        *([f"{DIM}Envies{RESET} " + envies.barres(state)] if st > 0 else []),
+        f"{tr('Faim')} {dressage.jauge(state['hunger'], 100, 10)} {tr(core.mood(state['hunger']))}",
+        *([f"{DIM}{tr('Envies')}{RESET} " + envies.barres(state)] if st > 0 else []),
         stats,
-        f"Compétences {nb_sk} · Bestioles {sum(state['collection'].values())}",
+        f"{tr('Compétences')} {nb_sk} · {tr('Bestioles')} {sum(state['collection'].values())}",
     ]
     n = max(len(left), len(right))
     left += [" " * 22] * (n - len(left))
@@ -66,7 +67,7 @@ def render(state, frame, interactif):
     d = state["defi"]
     if d:
         reste = max(0, core.defi_duree(state) - (time.time() - d["start"]))
-        lines.append(title_line(f"⚡ DÉFI ÉCLAIR : tape « {piege(d['cmd'])} » — {reste:.0f} s", 226))
+        lines.append(title_line(tr("⚡ DÉFI ÉCLAIR : tape « {cmd} » — {s} s").format(cmd=piege(d['cmd']), s=f"{reste:.0f}"), 226))
     seance = entrainement.ligne_ecran(state)
     if seance:
         lines.append(title_line(seance, 214))
@@ -78,39 +79,39 @@ def render(state, frame, interactif):
     les, etiquette = lecons.lecon_courante(state)
     if les:
         if lvl < les["niveau"]:
-            lines.append(title_line(f"{etiquette} : niveau {les['niveau']} requis"))
-            lines.append(f" {DIM}Continue à me nourrir, je dois encore grandir…{RESET}")
+            lines.append(title_line(tr("{etiquette} : niveau {n} requis").format(etiquette=tr(etiquette), n=les['niveau'])))
+            lines.append(f" {DIM}{tr('Continue à me nourrir, je dois encore grandir…')}{RESET}")
         else:
             step = les["steps"][state["step"]]
-            lines.append(title_line(f"{etiquette} : {les['titre']} ({state['step'] + 1}/{len(les['steps'])})", 213))
+            lines.append(title_line(f"{tr(etiquette)} : {les['titre']} ({state['step'] + 1}/{len(les['steps'])})", 213))
             lines.append(f" {step['dit']}")
             lines.append(f"   {fg(226)}➜ {piege(step['cmd'])}{RESET}")
             if step.get("astuce"):
                 lines.append(f"   {DIM}{step['astuce']}{RESET}")
     elif all(state["arbre"].get(b, 0) >= len(v["lecons"]) for b, v in lecons.ARBRE.items() if lecons.branche_dispo(b)):
-        lines.append(title_line("Arbre entièrement maîtrisé !", 213))
-        lines.append(f" {DIM}Tu es un vrai maître du terminal. D'autres branches viendront.{RESET}")
+        lines.append(title_line(tr("Arbre entièrement maîtrisé !"), 213))
+        lines.append(f" {DIM}{tr('Tu es un vrai maître du terminal. D’autres branches viendront.')}{RESET}")
     else:
-        lines.append(title_line("Arbre de compétences ouvert", 213))
-        lines.append(" Choisis la branche que je vais t'apprendre : touche [a]")
+        lines.append(title_line(tr("Arbre de compétences ouvert"), 213))
+        lines.append(" " + tr("Choisis la branche que je vais t'apprendre : touche [a]"))
 
-    lines.append(title_line(f"Ce que je digère ({DISTRO or OS_NAMES[OSK]})"))
+    lines.append(title_line(tr("Ce que je digère ({os})").format(os=DISTRO or OS_NAMES[OSK])))
     for k, v in core.CATEGORIES.items():
-        lines.append(f" {fg(v['color'])}{v['stat']:<13}{RESET}{core.EXAMPLES[OSK][k]}")
+        lines.append(f" {fg(v['color'])}{tr(v['stat']):<13}{RESET}{core.EXAMPLES[OSK][k]}")
 
-    lines.append(title_line("Journal"))
+    lines.append(title_line(tr("Journal")))
     if state["total"] == 0:
-        lines.append(" Ouvre un AUTRE terminal et tape des commandes !")
+        lines.append(" " + tr("Ouvre un AUTRE terminal et tape des commandes !"))
         if IS_WIN:
-            lines.append(" (utilise PowerShell : cmd.exe ne garde pas d'historique)")
+            lines.append(" " + tr("(utilise PowerShell : cmd.exe ne garde pas d'historique)"))
         elif not compagnon.est_installe():
-            lines.append(f" {fg(226)}Astuce : appuie sur [o] puis 3 pour que je voie")
-            lines.append(f" tes commandes en direct (sinon, seulement à la fermeture du terminal).{RESET}")
+            lines.append(f" {fg(226)}{tr('Astuce : appuie sur [o] puis 3 pour que je voie')}")
+            lines.append(f" {tr('tes commandes en direct (sinon, seulement à la fermeture du terminal).')}{RESET}")
     lines += [" " + l for l in state["log"][-4:]]
     if interactif:
-        lines.append(f"{fg(244)} [/] chercher [l] lexique [a] arbre [c] collection [o] options [q] quitter{RESET}")
+        lines.append(f"{fg(244)} {tr('[/] chercher [l] lexique [a] arbre [c] collection [o] options [q] quitter')}{RESET}")
     else:
-        lines.append(f"{DIM} il digère même fermé{RESET}")
+        lines.append(f"{DIM} {tr('il digère même fermé')}{RESET}")
     return "\n".join(lines) + "\n"
 
 
@@ -451,6 +452,7 @@ AIDE = """Terminagotchi — utilisation :
   tg dressage                  la fenêtre du face-à-face (s'ouvre toute seule quand un monstre apparaît)
   tg anime <nom> [animation]   la voir bouger : statique, mange, attaque, salut, parle, dort, content,
                                affame, confus, colere, victoire, ko, evolution
+  tg langue [fr|en]            la langue du jeu
   tg classe CODE               rejoindre la classe de ton professeur (mode classe) · tg classe quitter
   tg carte                     la carte du terrain de jeu, qui se dévoile au fil de tes découvertes
   tg entrainement [discipline]  la salle d'entraînement : séances chronométrées, badges Bit → Exa
@@ -470,7 +472,16 @@ def main():
             pass
         return
     if mode in ("aide", "help", "-h"):
-        print(AIDE)
+        print(tr(AIDE))
+        return
+    if mode in ("langue", "language", "lang"):
+        from . import langue
+        if len(args) > 1:
+            code = langue.choisir(args[1])
+            print(tr("Langue : {nom}").format(nom=langue.LANGUES[code]) if code else
+                  "Langues : " + ", ".join(f"{k} ({v})" for k, v in langue.LANGUES.items()))
+        else:
+            print("Langue / language : " + langue.LANGUES[langue.courante()] + "   ·   tg langue " + "|".join(langue.LANGUES))
         return
     if mode == "installer":
         faits = compagnon.installer()

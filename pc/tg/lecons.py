@@ -326,6 +326,12 @@ from .mondes import MONDES  # noqa: E402  (les mondes avancés du Terminaworld)
 
 ARBRE.update(MONDES)
 
+from .langue import traduire_lecons, tr  # noqa: E402
+
+traduire_lecons(TRONC, *(b["lecons"] for b in ARBRE.values()))
+for _b in ARBRE.values():
+    _b["desc"] = tr(_b["desc"])
+
 
 def branche_dispo(b):
     return not ARBRE[b].get("android") or OSK == "android"

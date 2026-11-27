@@ -193,9 +193,9 @@ object Arbre {
     }
 
     fun texte(jeu: Jeu): String {
-        val sb = StringBuilder("🌳 Arbre de compétences\n")
+        val sb = StringBuilder("🌳 Arbre de compétences".tr() + "\n")
         if (!jeu.troncFini) {
-            sb.append("Termine d'abord le tronc commun (${jeu.lecon}/${jeu.lecons.size} leçons).\n")
+            sb.append("Termine d'abord le tronc commun ({x}/{n} leçons).".tr().replace("{x}", "${jeu.lecon}").replace("{n}", "${jeu.lecons.size}") + "\n")
         }
         for (cle in ORDRE) {
             val b = jeu.branches[cle] ?: continue
@@ -205,10 +205,10 @@ object Arbre {
                 jeu.brancheActive() == cle -> "◀ en cours"
                 else -> ""
             }
-            sb.append("\n${b.icone} ${b.nom} ($fait/${b.lecons.size}) $etat\n   ${b.desc} · nourrit ${b.stat}\n")
-            b.lecons.forEachIndexed { i, l -> sb.append("   ${if (i < fait) "■" else "□"} ${l.titre} → ${l.skill}\n") }
+            sb.append("\n${b.icone} ${b.nom.tr()} ($fait/${b.lecons.size}) ${etat.tr()}\n   ${b.desc.tr()} · ${"nourrit".tr()} ${b.stat.tr()}\n")
+            b.lecons.forEachIndexed { i, l -> sb.append("   ${if (i < fait) "■" else "□"} ${l.titre.tr()} → ${l.skill.tr()}\n") }
         }
-        sb.append("\nPour suivre une branche :  arbre ${ORDRE.joinToString(" | ")}")
+        sb.append("\n" + "Pour suivre une branche :".tr() + "  arbre ${ORDRE.joinToString(" | ")}")
         return sb.toString()
     }
 }
