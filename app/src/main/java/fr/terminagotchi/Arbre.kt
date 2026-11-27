@@ -19,7 +19,7 @@ object Arbre {
     fun trouve(jeu: Jeu, nom: String): File? =
         jeu.home.walkTopDown().maxDepth(5).firstOrNull { it.isFile && it.name == nom }
 
-    val ORDRE = listOf("telephone", "systeme", "tuyaux", "scripts", "createur")
+    val ORDRE = listOf("telephone", "systeme", "tuyaux", "port", "scripts", "createur")
 
     fun creer(jeu: Jeu): Map<String, Branche> {
         val dossierJeu = File(jeu.terrain, "jeu")
@@ -92,6 +92,52 @@ object Arbre {
                         "On combine : trier, puis écrire le résultat.", fs = { trouve(it, "triee.txt") != null }),
                     Etape("Vérifie le résultat.", "cat triee.txt", "Bravo, tu enchaînes les outils comme un pro.",
                         re = r("^cat\\b.*triee")),
+                )),
+            )),
+            "port" to Branche("port", "Le Port", "⚓", "Agilité", "les réseaux : adresses, ports, TCP/UDP, routage, box, HTTPS", listOf(
+                Lecon("Les quais", "Capitaine", 1, listOf(
+                    Etape("Sur internet, chaque machine a une adresse (IP) et des quais numérotés : les ports. Regarde l'annuaire des quais.",
+                        "ports", "443 = le web chiffré, 22 = SSH, 53 = le DNS. Un service attend toujours sur le même quai.",
+                        re = r("^(ports|ss|netstat)\\b")),
+                    Etape("Demande à l'annuaire d'internet (le DNS) l'adresse d'un site.", "nslookup example.com",
+                        "Le DNS traduit un nom en adresse IP, comme un annuaire traduit un nom en numéro.",
+                        re = r("^(nslookup|dig|host)\\s+\\S+")),
+                )),
+                Lecon("Le facteur", "Facteur", 1, listOf(
+                    Etape("Frappe à la porte d'un site, sans entrer.", "curl -I https://example.com",
+                        "200 = « entrez ! », 301 = « c'est à côté », 404 = introuvable, 500 = le site est malade.",
+                        re = r("^curl\\b.*-I")),
+                    Etape("Rapporte-moi un colis : la page entière, rangée dans un fichier.", "curl -o colis.html https://example.com",
+                        "-o = « output » : la réponse va dans un fichier au lieu de l'écran.", fs = { trouve(it, "colis.html") != null }),
+                    Etape("Ouvre le colis : les 5 premières lignes.", "head -n 5 colis.html", "Du HTML : le langage des pages web !",
+                        re = r("^(head|cat)\\b.*colis")),
+                )),
+                Lecon("TCP et UDP", "Aiguilleur", 1, listOf(
+                    Etape("Regarde une connexion se faire, en mode bavard.", "curl -v https://example.com",
+                        "« Connected to … port 443 » : TCP fait d'abord une poignée de main (SYN, SYN-ACK, ACK), puis on parle. Fiable, dans l'ordre.",
+                        re = r("^curl\\b.*-v")),
+                    Etape("Le DNS, lui, envoie une simple carte postale (UDP). Demande un autre site.", "nslookup wikipedia.org",
+                        "UDP : pas de poignée de main, plus rapide, mais sans garantie. Parfait pour une petite question.",
+                        re = r("^(nslookup|dig|host)\\s+\\S+")),
+                )),
+                Lecon("Le phare", "Gardien du phare", 1, listOf(
+                    Etape("Par où sortent nos paquets ? Regarde les routes.", "route",
+                        "« default via … » : la passerelle, la sortie vers internet. Chez toi, c'est la box (ou le partage de connexion).",
+                        re = r("^(route|ip\\s+r)")),
+                    Etape("Envoie un signal à la passerelle (l'adresse après « via »).", "ping -c 2 192.168.1.1",
+                        "Si elle répond en 1 ou 2 ms, c'est qu'elle est tout près : c'est le premier relais de chaque paquet.",
+                        re = r("^ping\\b"), astuce = "Remplace 192.168.1.1 par l'adresse vue avec « route »."),
+                )),
+                Lecon("La box et le cadenas", "Coffre-fort", 1, listOf(
+                    Etape("Quelle est ton adresse vue d'internet ?", "curl https://api.ipify.org",
+                        "Elle est différente de ton adresse locale : la box traduit (NAT) toutes les adresses de la maison en une seule.",
+                        re = r("^curl\\b.*(ipify|ifconfig\\.me|icanhazip)")),
+                    Etape("Regarde le cadenas d'un site : son certificat.", "curl -v https://wikipedia.org",
+                        "Le certificat prouve qui est le site ; ensuite tout est chiffré (TLS). C'est le « s » de https.",
+                        re = r("^curl\\b.*-v.*https://")),
+                    Etape("Compare avec un site en http (sans s).", "curl -v http://example.com",
+                        "En http://, tout passe en clair : chaque relais du trajet peut lire. Le cadenas, ça compte !",
+                        re = r("^curl\\b.*http://")),
                 )),
             )),
             "scripts" to Branche("scripts", "Scripts", "🧪", "Intelligence", "automatiser et créer TES commandes", listOf(

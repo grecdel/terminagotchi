@@ -107,6 +107,12 @@ class Commandes(
             "indice" -> Reponse(Ctf.indice(jeu, reste), couleur = VERT)
             "edite" -> edite(reste)
             "doom" -> doom()
+            // ---------------------------------------------------- le Port (réseau)
+            "ports" -> Reponse(Reseau.ports(), couleur = BLEU)
+            "ss", "netstat" -> Reponse(Reseau.ss(), couleur = BLEU)
+            "route" -> Reponse(Reseau.route(act), couleur = BLEU)
+            "curl" -> horsEcran("⏳ curl…") { Reseau.curl(mots.drop(1), dossier()) }
+            "nslookup", "dig", "host" -> horsEcran("⏳ Je demande à l'annuaire…") { Reseau.nslookup(mots.drop(1)) }
             "notifs" -> notifs(reste)
             else -> null
         }
@@ -255,6 +261,15 @@ class Commandes(
                 plusTard(msg, BLEU)
             }
         }.start()
+    }
+
+    /** Une commande qui attend le réseau : la réponse s'affiche quand elle arrive. */
+    private fun horsEcran(attente: String, travail: () -> String): Reponse {
+        Thread {
+            val r = try { travail() } catch (e: Exception) { "Erreur : ${e.message}" }
+            act.runOnUiThread { plusTard(r, BLEU) }
+        }.start()
+        return Reponse(attente, couleur = BLEU)
     }
 
     private fun adresse(): String = Recensement.serveur(Recensement.compte(jeu).optString("serveur"))
