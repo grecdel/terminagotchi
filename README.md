@@ -86,23 +86,23 @@ construire. Les animations montrent ce que font les commandes, elles ne les remp
 elles, les jokers, les droits. Chaque étape est expliquée pour les enfants, pour les grands et « dans un vrai
 terminal », et le jeu vérifie que la commande **a vraiment marché**.
 
-**Puis les mondes avancés**, ouverts selon ce qui t'intéresse (🚧 en construction) :
+**Puis les mondes avancés**, ouverts selon ce qui t'intéresse (✅ = les premières leçons sont jouables : tape `arbre` sur téléphone, `tg` puis [a] sur PC ; chaque monde va encore grandir) :
 
 | Monde | Ce qu'on y apprend |
 |---|---|
 | ⚓ Le Port ✅ | les réseaux : adresses, ports, TCP et UDP, routage, box, HTTPS |
-| 📡 La Tour des Ondes | les ondes radio, le Wi-Fi et le Bluetooth, LoRa et les réseaux maillés (Meshtastic) |
-| 🛡 La Citadelle | la cybersécurité défensive : attaques simulées, et des « boîtes » à percer puis à réparer |
-| 🗝 La Crypte des Codes | la cryptographie (des codes anciens au chiffrement moderne) et la blockchain construite à la main |
-| ⚙ La Salle des Machines | le matériel, le démarrage, le système, les machines virtuelles, les serveurs et le cloud |
-| 🔨 La Forge | la programmation, les scripts, son premier jeu, son site web, le multimédia |
-| 🛠 La Guilde des Bâtisseurs Libres | l'open source, compiler, contribuer (à Terminagotchi lui-même !), l'impression 3D |
-| 🔭 L'Observatoire de l'IA | comment une IA apprend et se trompe, et comment piloter des assistants |
-| 📊 La Salle des Données | trier, compter, chercher, et les bases de données (SQL) |
-| 🎛 Le Poste de Contrôle | administrer un système Linux de A à Z |
-| ⏳ La Bibliothèque du Temps | git : remonter le temps de ses fichiers |
-| 🤖 L'Atelier | Raspberry Pi, robots, électronique embarquée |
-| 🔢 Les Ponts des Nombres | les maths dont tu as besoin, au moment où tu en as besoin |
+| 📡 La Tour des Ondes ✅ | les ondes radio, le Wi-Fi et le Bluetooth, LoRa et les réseaux maillés (Meshtastic) |
+| 🛡 La Citadelle ✅ | la cybersécurité défensive : attaques simulées, et des « boîtes » à percer puis à réparer |
+| 🗝 La Crypte des Codes ✅ | la cryptographie (des codes anciens au chiffrement moderne) et la blockchain construite à la main |
+| ⚙ La Salle des Machines ✅ | le matériel, le démarrage, le système, les machines virtuelles, les serveurs et le cloud |
+| 🔨 La Forge ✅ | la programmation, les scripts, son premier jeu, son site web, le multimédia |
+| 🛠 La Guilde des Bâtisseurs Libres ✅ | l'open source, compiler, contribuer (à Terminagotchi lui-même !), l'impression 3D |
+| 🔭 L'Observatoire de l'IA ✅ | comment une IA apprend et se trompe, et comment piloter des assistants |
+| 📊 La Salle des Données ✅ | trier, compter, chercher, et les bases de données (SQL) |
+| 🎛 Le Poste de Contrôle ✅ | administrer un système Linux de A à Z |
+| ⏳ La Bibliothèque du Temps ✅ | git : remonter le temps de ses fichiers |
+| 🤖 L'Atelier ✅ | Raspberry Pi, robots, électronique embarquée |
+| 🔢 Les Ponts des Nombres ✅ | les maths dont tu as besoin, au moment où tu en as besoin |
 
 Les exploits dans chaque monde font rencontrer de nouvelles créatures et des variantes rares.
 
@@ -110,7 +110,7 @@ Les exploits dans chaque monde font rencontrer de nouvelles créatures et des va
 
 ## Et aussi
 
-- 🏋 **Une salle d'entraînement** avec des exercices chronométrés et des badges qui montent en grade : Bit, Octet,
+- 🏋 **Une salle d'entraînement** ✅ (`entrainement`, ou `tg entrainement` sur PC) avec des exercices chronométrés et des badges qui montent en grade : Bit, Octet,
   Kilo, Méga, Giga, Téra, Péta, Exa, avec galons et étoiles.
 - 🗺 **La carte qui pousse** : ton vrai terrain dessiné en pixel art, qui se dévoile au fil de tes découvertes.
 - 🌍 **14 langues** : français, anglais, espagnol, allemand, italien, portugais, chinois, russe, japonais, hindi,

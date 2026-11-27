@@ -107,6 +107,11 @@ class Commandes(
             "indice" -> Reponse(Ctf.indice(jeu, reste), couleur = VERT)
             "edite" -> edite(reste)
             "doom" -> doom()
+            "entrainement", "entraînement", "salle" -> Reponse(when (reste.trim().lowercase()) {
+                "" -> Entrainement.texte(jeu)
+                "stop" -> Entrainement.arreter(jeu)
+                else -> Entrainement.commencer(jeu, reste.trim().lowercase()) + "\n\n" + Entrainement.texte(jeu)
+            }, couleur = JAUNE)
             // ---------------------------------------------------- le Port (réseau)
             "ports" -> Reponse(Reseau.ports(), couleur = BLEU)
             "ss", "netstat" -> Reponse(Reseau.ss(), couleur = BLEU)
