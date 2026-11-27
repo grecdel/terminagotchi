@@ -295,6 +295,8 @@ def tick(state):
     elif avant > 0 == state["hunger"]:
         notif(state, "😵 Je suis à bout de forces… nourris-moi vite !")
     state["last_tick"] = now
+    from . import envies
+    envies.tick(state, now)
 
 
 def feed(state, line):
@@ -335,6 +337,8 @@ def feed(state, line):
     state["hunger"] = min(100.0, state["hunger"] + 3)
     state["repas_t"] = time.time()
     log(state, msg)
+    from . import envies
+    gain += envies.commande(state, cmd, line)     # jeu, curiosité, exploration, sommeil, propreté
     add_xp(state, gain)
 
 # ================================================================ défis éclair
@@ -368,6 +372,8 @@ def defi_tick(state, lines, spontaneous, proba=1.5 / 300):
             log(state, f"⚡ Défi « {d['cmd']} » réussi en {t:.1f} s{rec}")
             say(state, f"Trop rapide ! {t:.1f} s.{rec}", 8)
             state["stats"]["Agilité"] += 2
+            from . import envies
+            envies.defi_reussi(state)
             state["defi"] = None
             add_xp(state, 10)
             return
@@ -375,6 +381,11 @@ def defi_tick(state, lines, spontaneous, proba=1.5 / 300):
         log(state, f"⚡ Défi « {d['cmd']} » raté…")
         say(state, "Trop lent ! On réessaiera.", 6)
         state["defi"] = None
+
+
+def _envie(state):
+    from . import envies
+    return envies.phrase(state)
 
 
 def idle_talk(state, proba=0.08):
@@ -389,6 +400,8 @@ def idle_talk(state, proba=0.08):
         say(state, random.choice(EGG))
     elif state["hunger"] < 30:
         say(state, random.choice(HUNGRY))
+    elif _envie(state):
+        say(state, _envie(state))
     else:
         say(state, random.choice(TRAITS[state["trait"]]))
 

@@ -76,6 +76,16 @@
                     android:fontFamily="monospace"
                     android:textColor="@color/texte_doux"
                     android:textSize="11sp" />
+
+                <TextView
+                    android:id="@+id/envies"
+                    android:maxLines="1"
+                    android:ellipsize="end"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="monospace"
+                    android:textColor="@color/texte_doux"
+                    android:textSize="11sp" />
             </LinearLayout>
 
             <TextView

@@ -416,6 +416,7 @@ class Jeu(ctx: Context) {
         val rate = if ("Gardien" in skills) 720_000.0 else 360_000.0     // ms par point de faim
         faim = (faim - (now - dernierTick) / rate).coerceAtLeast(0.0)
         dernierTick = now
+        if (existe) Envies.tick(this, now)
     }
 
     fun ajouterXp(n: Int) {
@@ -485,6 +486,7 @@ class Jeu(ctx: Context) {
         faim = (faim + 3).coerceAtMost(100.0)
         module("compte").put("repas", System.currentTimeMillis())
         log(msg)
+        gain += Envies.commande(this, cmd, ligne)     // jeu, curiosité, exploration, sommeil, propreté
         ajouterXp(gain)
         return true
     }
@@ -571,7 +573,7 @@ class Jeu(ctx: Context) {
         when {
             stade == 0 -> dire(Regles.OEUF.random())
             faim < 30 -> dire(Regles.FAIM.random())
-            else -> dire(Regles.TRAITS[trait]?.random() ?: "…")
+            else -> dire(Envies.phrase(this) ?: Regles.TRAITS[trait]?.random() ?: "…")
         }
     }
 
@@ -596,6 +598,8 @@ class Jeu(ctx: Context) {
     }
 
     fun texteFaim() = "faim ${Regles.barre(faim, 100.0, 8)}  ${humeur()}"
+
+    fun texteEnvies() = if (stade == 0) "" else Envies.barres(this)
 
     fun texteStats() = Regles.STATS.joinToString("  ") { "${Regles.COURT[it]} ${stats[it]}" }
 

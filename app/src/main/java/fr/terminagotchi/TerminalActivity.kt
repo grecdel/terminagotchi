@@ -41,6 +41,7 @@ class TerminalActivity : Activity() {
     private lateinit var creature: ImageView
     private lateinit var titre: TextView
     private lateinit var faim: TextView
+    private lateinit var envies: TextView
     private lateinit var xp: TextView
     private lateinit var stats: TextView
     private lateinit var bulle: TextView
@@ -89,6 +90,7 @@ class TerminalActivity : Activity() {
         creature = findViewById(R.id.creature)
         titre = findViewById(R.id.titre)
         faim = findViewById(R.id.faim)
+        envies = findViewById(R.id.envies)
         xp = findViewById(R.id.xp)
         stats = findViewById(R.id.stats)
         bulle = findViewById(R.id.bulle)
@@ -672,6 +674,8 @@ class TerminalActivity : Activity() {
         faim.text = jeu.texteFaim()
         xp.text = jeu.texteXp()
         stats.text = jeu.texteStats()
+        envies.text = jeu.texteEnvies()
+        envies.visibility = if (envies.text.isEmpty() || stats.visibility != View.VISIBLE) View.GONE else View.VISIBLE
         invite.text = if (jeu.existe) "${shell.chemin()} $" else "nom ?"
         val b = jeu.bulleActive()
         bulle.visibility = if (b.isEmpty()) View.GONE else View.VISIBLE
@@ -702,7 +706,7 @@ class TerminalActivity : Activity() {
         if (!saisie.hasFocus()) saisie.requestFocus()
         // pendant un dressage, le familier est déjà dans le face-à-face : on allège l'en-tête
         val vis = if (panneau != null) View.GONE else View.VISIBLE
-        creature.visibility = vis; faim.visibility = vis; xp.visibility = vis; stats.visibility = vis
+        creature.visibility = vis; faim.visibility = vis; xp.visibility = vis; stats.visibility = vis; envies.visibility = if (jeu.texteEnvies().isEmpty()) View.GONE else vis
         creature.setImageBitmap(Sprites.bitmap(jeu, 12, cligne > 0))
     }
 
