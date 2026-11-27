@@ -90,10 +90,13 @@ def lignes(state):
     sortie = []
     total = 0
     goutees = 0
+    from .langue import tr
     for titre, univers, commandes in _entrees():
+        titre = tr(titre)
+        commandes = [(c, tr(d)) for c, d in commandes]
         autre = univers == TEL and OSK != "android"
         sortie.append("")
-        sortie.append(f"{fg(147)}{BOLD}{titre}{RESET}" + (f" {DIM}(pas ici sur {ici}){RESET}" if autre else ""))
+        sortie.append(f"{fg(147)}{BOLD}{titre}{RESET}" + (f" {DIM}{tr('(pas ici sur {ici})').format(ici=ici)}{RESET}" if autre else ""))
         for cmd, desc in commandes:
             mot = cmd.split()[0].lower()
             gout = mot in vus
@@ -106,6 +109,6 @@ def lignes(state):
                 sortie.append(f"  {fg(255)}● {BOLD}{cmd:<15}{RESET}{fg(255)} {desc}{RESET}")
             else:
                 sortie.append(f"  {fg(244)}○ {cmd:<15} {desc}{RESET}")
-    entete = [f" {fg(213)}── 📖 Lexique ({ici}) ── goûtées : {goutees}/{total}{RESET}",
-              f" {DIM}blanc = déjà tapée (sur n'importe quel appareil) · gris = à découvrir · 🔒 = autre univers{RESET}"]
+    entete = [f" {fg(213)}── 📖 {tr('Lexique')} ({ici}) ── {tr('goûtées')} : {goutees}/{total}{RESET}",
+              f" {DIM}{tr('blanc = déjà tapée (sur n’importe quel appareil) · gris = à découvrir · 🔒 = autre univers')}{RESET}"]
     return entete + sortie

@@ -9,6 +9,7 @@ import random
 import re
 import time
 
+from .langue import tr
 from . import core
 from .plateforme import BOLD, DIM, RESET, C, est_colle, fg, piege
 
@@ -68,7 +69,7 @@ def rang(points):
 
 def badge(points, etoiles=0):
     nom, galon, _ = rang(points)
-    return f"{nom} {'▮' * galon}{'▯' * (3 - galon)}" + (f" {'★' * min(etoiles, 5)}{'+' if etoiles > 5 else ''}" if etoiles else "")
+    return f"{tr(nom)} {'▮' * galon}{'▯' * (3 - galon)}" + (f" {'★' * min(etoiles, 5)}{'+' if etoiles > 5 else ''}" if etoiles else "")
 
 
 def commencer(state, disc=None):
@@ -85,12 +86,12 @@ def commencer(state, disc=None):
     now = time.time()
     e["seance"] = {"disc": disc, "cmds": cmds, "i": 0, "debut": now, "t": now, "temps": []}
     core.say(state, f"{icone} Entraînement « {nom} » ! Depuis le terrain de jeu, tape « {piege(cmds[0])} »", 15)
-    return f" {icone} Séance « {nom} » : {len(cmds)} commandes à taper le plus vite possible (depuis ~/terrain_terminagotchi)."
+    return f" {icone} " + tr("Séance « {nom} » : {n} commandes à taper le plus vite possible (depuis ~/terrain_terminagotchi).").format(nom=tr(nom), n=len(cmds))
 
 
 def arreter(state):
     etat(state)["seance"] = None
-    return " Séance arrêtée."
+    return " " + tr("Séance arrêtée.")
 
 
 def courante(state):
@@ -153,22 +154,22 @@ def ligne_ecran(state):
     if not s:
         return None
     nom, icone, _, _ = DISCIPLINES[s["disc"]]
-    return f"{icone} ENTRAÎNEMENT {nom} {s['i'] + 1}/{len(s['cmds'])} : tape « {piege(s['cmds'][s['i']])} »"
+    return f"{icone} " + tr("ENTRAÎNEMENT {nom} {i}/{n} : tape « {c} »").format(nom=tr(nom), i=s['i'] + 1, n=len(s['cmds']), c=piege(s['cmds'][s['i']]))
 
 
 def ecran(state):
     e = etat(state)
-    lignes = [f" {fg(213)}── 🏋 Salle d'entraînement ──{RESET}", "",
-              f" {DIM}5 commandes à taper à la main, le plus vite possible. Badges : "
-              f"{' → '.join(n for _, n in RANGS)}, 3 galons chacun ; ★ = séance éclair (< 3 s par commande).{RESET}", ""]
+    lignes = [f" {fg(213)}── 🏋 {tr('Salle d’entraînement')} ──{RESET}", "",
+              f" {DIM}" + tr("5 commandes à taper à la main, le plus vite possible. Badges : {r}, 3 galons chacun ; ★ = séance éclair (< 3 s par commande).").format(
+                  r=" → ".join(tr(n) for _, n in RANGS)) + RESET, ""]
     for d, (nom, icone, pool, _) in DISCIPLINES.items():
         p = e["points"].get(d, 0)
         _, _, manque = rang(p)
         rec = e["records"].get(d)
-        lignes.append(f" {icone} {BOLD}{nom:<17}{RESET} {fg(220)}{badge(p, e['etoiles'].get(d, 0)):<16}{RESET} "
-                      f"{DIM}{p} pts{f' · encore {manque} pour monter' if manque else ' · rang maximal !'}"
+        lignes.append(f" {icone} {BOLD}{tr(nom):<17}{RESET} {fg(220)}{badge(p, e['etoiles'].get(d, 0)):<16}{RESET} "
+                      f"{DIM}{p} pts{' · ' + tr('encore {m} pour monter').format(m=manque) if manque else ' · ' + tr('rang maximal !')}"
                       f"{f' · record {rec} s' if rec else ''}{RESET}")
     s = e.get("seance")
     lignes += ["", f" {fg(226)}{ligne_ecran(state)}{RESET}" if s else
-               f" {DIM}Commencer : tg entrainement <{'|'.join(DISCIPLINES)}> · arrêter : tg entrainement stop{RESET}"]
+               f" {DIM}" + tr("Commencer : tg entrainement <{d}> · arrêter : tg entrainement stop").format(d="|".join(DISCIPLINES)) + RESET]
     return lignes

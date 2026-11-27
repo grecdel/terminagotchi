@@ -551,7 +551,7 @@ class TerminalActivity : Activity() {
     private fun remplirLexique() {
         val connues = Regles.LEXIQUE.count { it.first in jeu.vus && !it.third.startsWith("💻") }
         val sb = SpannableStringBuilder()
-        val entete = "Goûtées : $connues/${Regles.LEXIQUE.size}  ·  blanc = déjà tapée, gris = à découvrir\n"
+        val entete = "Goûtées : {x}/{n}  ·  blanc = déjà tapée, gris = à découvrir".tr().replace("{x}", "$connues").replace("{n}", "${Regles.LEXIQUE.size}") + "\n"
         sb.append(entete)
         sb.setSpan(ForegroundColorSpan(0xFFFF87FF.toInt()), 0, entete.length, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
         var section = ""
@@ -559,7 +559,7 @@ class TerminalActivity : Activity() {
             if (sec != section) {
                 section = sec
                 val d = sb.length
-                sb.append("\n$sec\n")
+                sb.append("\n${sec.tr()}\n")
                 sb.setSpan(ForegroundColorSpan(0xFFAFAFFF.toInt()), d, sb.length, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
                 sb.setSpan(StyleSpan(Typeface.BOLD), d, sb.length, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
             }
@@ -570,7 +570,7 @@ class TerminalActivity : Activity() {
             val debutCmd = sb.length
             sb.append(cmd)
             sb.setSpan(StyleSpan(Typeface.BOLD), debutCmd, sb.length, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
-            sb.append("  $desc\n")
+            sb.append("  ${desc.tr()}\n")
             val couleur = if (pc) 0xFF45455A.toInt() else if (goutee) 0xFFFFFFFF.toInt() else 0xFF6A6A85.toInt()
             sb.setSpan(ForegroundColorSpan(couleur), debut, sb.length, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
         }
