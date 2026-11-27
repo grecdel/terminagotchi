@@ -374,7 +374,7 @@ object Dressage {
         val d = etat(jeu) ?: return null
         val e = Bestiaire.espece(d.getString("espece")) ?: return null
         val sb = SpannableStringBuilder()
-        sb.texte("⚔ UN MONSTRE SAUVAGE !\n", 0xFFFF5050.toInt(), true, 1.1f)
+        sb.texte("⚔ UN MONSTRE SAUVAGE !".tr() + "\n", 0xFFFF5050.toInt(), true, 1.1f)
         // face-à-face : ton familier à gauche, le monstre à droite
         val px = (72 * res.displayMetrics.density).toInt()
         fun image(b: android.graphics.Bitmap) {
@@ -396,19 +396,19 @@ object Dressage {
         for ((k, v) in jeu.stats) { sb.texte(k.take(3).uppercase(), COUL_FAM[k] ?: -1, true); sb.texte(" $v  ", 0xFFE0E0F0.toInt()) }
         sb.append("\n")
         sb.texte("▶ ${e.nom}", Bestiaire.COULEUR_RARETE[e.rarete] ?: -1, true)
-        sb.texte("  #%03d ${e.rarete}  ".format(e.numero), 0xFF9090A8.toInt())
+        sb.texte("  #%03d ${e.rarete.tr()}  ".format(e.numero), 0xFF9090A8.toInt())
         if (d.optBoolean("examine")) {
             for ((k, v) in e.stats) { sb.texte(k, COUL_STAT[k] ?: -1, true); sb.texte(" $v  ", 0xFFE0E0F0.toInt()) }
             sb.append("\n")
-        } else sb.texte("stats ??? (examine-le)\n", 0xFF808098.toInt())
+        } else sb.texte("stats ??? (examine-le)".tr() + "\n", 0xFF808098.toInt())
         val nTot = d.getJSONArray("taches").length()
         val nFait = d.getJSONArray("faites").length()
         val mef = d.optInt("mefiance", 100) * (1 - nFait.toDouble() / nTot)
-        sb.texte("Méfiance ", 0xFFFF87FF.toInt()).jauge(mef / 100, true).texte(" %.0f %%\n".format(mef), 0xFFE0E0F0.toInt())
+        sb.texte("Méfiance ".tr(), 0xFFFF87FF.toInt()).jauge(mef / 100, true).texte(" %.0f %%\n".format(mef), 0xFFE0E0F0.toInt())
         val r = reste(jeu)
-        if (r == null) sb.texte("Temps    pas de chrono : c'est une leçon\n", 0xFFAFAFFF.toInt())
-        else sb.texte("Temps    ", 0xFFAFD7FF.toInt()).jauge(r.toDouble() / d.optInt("duree"), false).texte(" $r s\n", 0xFFE0E0F0.toInt())
-        sb.texte("Étape ${minOf(nFait + 1, nTot)}/$nTot  ", 0xFF9090A8.toInt())
+        if (r == null) sb.texte("Temps    pas de chrono : c'est une leçon".tr() + "\n", 0xFFAFAFFF.toInt())
+        else sb.texte("Temps    ".tr(), 0xFFAFD7FF.toInt()).jauge(r.toDouble() / d.optInt("duree"), false).texte(" $r s\n", 0xFFE0E0F0.toInt())
+        sb.texte("Étape".tr() + " ${minOf(nFait + 1, nTot)}/$nTot  ", 0xFF9090A8.toInt())
         val cour = courante(d)
         val t = d.getJSONArray("taches")
         for (i in 0 until nTot) {
@@ -419,12 +419,12 @@ object Dressage {
         val ep = cour ?: return sb
         val nom = e.nom
         fun f(s: String) = s.replace("{nom_min}", e.id).replace("{nom}", nom)
-        sb.texte("\nIl veut  ", 0xFFFFFF5F.toInt(), true).texte(f(ep.but) + "\n", 0xFFFFFFFF.toInt(), true)
-        sb.texte("Comment  ", 0xFF87D7FF.toInt(), true).texte(ep.explication + "\n", 0xFFD0D0E0.toInt())
+        sb.texte("\n" + "Il veut  ".tr(), 0xFFFFFF5F.toInt(), true).texte(f(ep.but) + "\n", 0xFFFFFFFF.toInt(), true)
+        sb.texte("Comment  ".tr(), 0xFF87D7FF.toInt(), true).texte(ep.explication + "\n", 0xFFD0D0E0.toInt())
         val duree = d.optInt("duree")
         val montre = r == null || ep.fam == "Rencontre" || r <= duree * (1 - partExemple(jeu))
-        if (montre) sb.texte("Tape     ", 0xFF87FF87.toInt(), true).texte(Regles.piege(f(ep.exemple)) + "\n", 0xFF87FF87.toInt())
-        else sb.texte("Tape     ", 0xFF87FF87.toInt(), true)
+        if (montre) sb.texte("Tape     ".tr(), 0xFF87FF87.toInt(), true).texte(Regles.piege(f(ep.exemple)) + "\n", 0xFF87FF87.toInt())
+        else sb.texte("Tape     ".tr(), 0xFF87FF87.toInt(), true)
             .texte("l'exemple s'affiche dans ${r!! - (duree * (1 - partExemple(jeu))).toInt()} s (cherche d'abord dans le Lexique)\n", 0xFF808098.toInt())
         val ou = when (ep.cle) {
             "Rencontre:examiner" -> "~/terrain_terminagotchi"

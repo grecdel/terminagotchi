@@ -693,6 +693,14 @@
   [
    "^💨 (.*) a perdu patience et s'est enfui…$",
    "💨 \\1 lost patience and ran away…"
+  ],
+  [
+   "^Un (.*) sauvage ! Première rencontre avec la famille (.*) : pas de chrono, je t'explique tout\\.$",
+   "A wild \\1! First encounter with the \\2 family: no timer, I'll explain everything."
+  ],
+  [
+   "^Un (.*) sauvage apparaît ! Gagne sa confiance avant la fin du temps\\.$",
+   "A wild \\1 appears! Win its trust before time runs out."
   ]
  ]
 }
