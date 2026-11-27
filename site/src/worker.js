@@ -77,6 +77,13 @@ function hex(buf) {
   return [...new Uint8Array(buf)].map((b) => b.toString(16).padStart(2, "0")).join("");
 }
 
+function codeAleatoire(n) {
+  const alphabet = "ABCDEFGHJKMNPQRSTUVWXYZ23456789";
+  const b = new Uint8Array(n);
+  crypto.getRandomValues(b);
+  return [...b].map((x) => alphabet[x % alphabet.length]).join("");
+}
+
 function aleatoire(n) {
   const b = new Uint8Array(n);
   crypto.getRandomValues(b);
@@ -258,6 +265,7 @@ function fusionner(etat, envoi, appareil) {
   if (!e.oeuf && OEUFS[v.oeuf]) e.oeuf = v.oeuf;
   if (!e.familier && e.oeuf && OEUFS[e.oeuf].especes.includes(v.familier)) e.familier = v.familier;
   if (!e.forme && STATS.includes(v.forme)) e.forme = v.forme;
+  if (typeof v.classe === "string") e.classe = v.classe;      // "" = quitter la classe (code vérifié avant)
   if ((Number(v.faimDate) || 0) > e.faimDate) {
     e.faim = Math.max(0, Math.min(100, Number(v.faim) || 0));
     e.faimDate = Number(v.faimDate);
@@ -289,6 +297,18 @@ async function api(requete, env, chemin) {
     const cle = await nouvelleCle(env, id, appareil);
     await donnerBadge(env, id, "recense", "Recensé");
     return json({ pseudo, cle, profil: "/joueur/" + pseudo });
+  }
+
+  if (chemin === "/api/classe" && m === "POST") {
+    if (!(await limite(env, "classe:" + ip, 5))) return erreur("Trop de classes créées, réessaie dans une minute.", 429);
+    const b = await corps(requete);
+    const nom = String(b?.nom || "").trim().slice(0, 40);
+    if (nom.length < 2) return erreur("Donne un nom à la classe (2 à 40 caractères).");
+    const code = codeAleatoire(6);
+    const cle = aleatoire(16);
+    await env.DB.prepare("INSERT INTO classes (code, nom, cle_prof, cree) VALUES (?, ?, ?, ?)")
+      .bind(code, nom, await sha256(cle), Date.now()).run();
+    return json({ code, nom, lien: `/classe/${code}?cle=${cle}` });
   }
 
   if (chemin === "/api/lier" && m === "POST") {
@@ -350,6 +370,15 @@ async function api(requete, env, chemin) {
     const b = await corps(requete);
     if (!b) return erreur("Données illisibles.");
     const appareil = APPAREILS.includes(b.appareil) ? b.appareil : "pc";
+    const cl = b.valeurs?.classe;
+    let classeRefusee = false;
+    if (typeof cl === "string" && cl !== "") {               // rejoindre une classe : le code doit exister
+      const ok = /^[A-Z0-9]{6}$/.test(cl) && await env.DB.prepare("SELECT 1 FROM classes WHERE code = ?").bind(cl).first();
+      if (!ok) {
+        classeRefusee = true;                                  // le reste de la synchro passe quand même
+        delete b.valeurs.classe;
+      }
+    }
     const e = fusionner(lireEtat(joueur), b, appareil);
     await env.DB.prepare("UPDATE joueurs SET etat = ?, xp = ?, niveau = ?, maj = ? WHERE id = ?")
       .bind(JSON.stringify(e), e.xp, niveauDe(e.xp), Date.now(), joueur.id).run();
@@ -358,7 +387,7 @@ async function api(requete, env, chemin) {
       const bd = await donnerBadge(env, joueur.id, "multi", "Multi-plateforme : PC + téléphone");
       if (bd) nouveaux.push(bd);
     }
-    return json({ etat: e, badges: nouveaux });
+    return json({ etat: e, badges: nouveaux, ...(classeRefusee && { classe_refusee: true }) });
   }
 
   if (chemin === "/api/drapeau" && m === "POST") {
@@ -573,8 +602,63 @@ function page(titre, contenu, description = "Terminagotchi : la créature qui se
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>${echapper(titre)} · Terminagotchi</title><meta name="description" content="${echapper(description)}">
 <style>${CSS}</style></head><body>
-<header><nav><a class="logo" href="/">▞ Terminagotchi</a><a href="/classement">Classement</a><a href="/bestiaire">Bestiaire</a><a href="/captures">Captures</a><a href="/ctf">CTF web</a><a href="/#telecharger">Télécharger</a></nav></header>
+<header><nav><a class="logo" href="/">▞ Terminagotchi</a><a href="/classement">Classement</a><a href="/bestiaire">Bestiaire</a><a href="/captures">Captures</a><a href="/ctf">CTF web</a><a href="/classe">Classe</a><a href="/#telecharger">Télécharger</a></nav></header>
 <main>${contenu}</main></body></html>`, { status: statut, headers: { "content-type": "text/html; charset=utf-8" } });
+}
+
+const FICHES = "https://github.com/grecdel/terminagotchi/tree/main/docs/fiches";
+
+function pageClasseAccueil() {
+  return page("Mode classe", `<h1>🏫 Mode classe</h1>
+<p>Pour les écoles et les clubs : crée une classe, donne le code aux élèves, et suis leur progression.
+Aucune adresse mail, aucune donnée personnelle : seulement les pseudos choisis par les élèves.</p>
+<div class="carte"><h2 style="margin-top:0">1. Créer la classe</h2>
+<p><input id="nom" placeholder="ex. CM2 B — club info" maxlength="40" style="padding:8px;border-radius:8px;border:1px solid var(--bord);background:#11111b;color:var(--texte);width:min(100%,320px)">
+<button id="creer" class="btn">Créer</button></p>
+<p id="res" class="doux"></p></div>
+<div class="carte" style="margin-top:14px"><h2 style="margin-top:0">2. Les élèves rejoignent la classe</h2>
+<p>Dans le jeu, après avoir créé leur compte (<code>compte creer Pseudo</code>) :<br>
+téléphone : <code>classe CODE</code> · PC : <code>tg classe CODE</code></p></div>
+<div class="carte" style="margin-top:14px"><h2 style="margin-top:0">3. Préparer les séances</h2>
+<p>Les <a href="${FICHES}">fiches de séance</a> détaillent chaque leçon : objectifs, commandes, explications, questions à poser.</p></div>
+<script>
+document.getElementById("creer").onclick = async () => {
+  const res = document.getElementById("res");
+  const r = await fetch("/api/classe", { method: "POST", headers: { "content-type": "application/json" },
+    body: JSON.stringify({ nom: document.getElementById("nom").value }) });
+  const j = await r.json();
+  if (j.erreur) { res.textContent = j.erreur; return; }
+  const lien = location.origin + j.lien;
+  res.innerHTML = "Code de la classe : <b style='font-size:22px;color:var(--jaune)'>" + j.code + "</b><br>" +
+    "Ton tableau de bord (garde ce lien secret, il n'est affiché qu'une fois) :<br><a href='" + j.lien + "'>" + lien + "</a>";
+};
+</script>`, "Le mode classe de Terminagotchi : suivre la progression des élèves.");
+}
+
+async function pageClasse(env, code, cle) {
+  const c = await env.DB.prepare("SELECT * FROM classes WHERE code = ?").bind(code).first();
+  if (!c || !/^[0-9a-f]{32}$/.test(cle) || (await sha256(cle)) !== c.cle_prof) {
+    return page("Classe", `<h1>🏫 Classe</h1><p>Ce tableau est réservé au professeur : il faut le lien complet (avec la clé).</p>
+<p><a href="/classe">Créer une classe</a></p>`, undefined, 403);
+  }
+  const r = await env.DB.prepare("SELECT pseudo, etat, xp, niveau, maj FROM joueurs ORDER BY xp DESC LIMIT 2000").all();
+  const eleves = r.results.map((j) => ({ ...j, e: lireEtat(j) })).filter((j) => j.e.classe === code);
+  const lignes = eleves.map((j) => {
+    const comp = j.e.skills || [];
+    const jours = Math.floor((Date.now() - j.maj) / 86400000);
+    return `<tr><td><a href="/joueur/${encodeURIComponent(j.pseudo)}">${echapper(j.pseudo)}</a></td>
+<td class="num">${j.niveau}</td><td class="num">${j.xp}</td><td class="num">${j.e.total || 0}</td>
+<td class="num">${(j.e.vus || []).length}</td>
+<td>${comp.length} <span class="doux" style="font-size:12px">${echapper(comp.slice(-4).join(", "))}</span></td>
+<td class="doux">${jours === 0 ? "aujourd'hui" : jours === 1 ? "hier" : `il y a ${jours} j`}</td></tr>`;
+  }).join("");
+  return page(c.nom, `<h1>🏫 ${echapper(c.nom)}</h1>
+<p>Code à donner aux élèves : <b style="font-size:22px;color:var(--jaune)">${code}</b> ·
+dans le jeu : <code>classe ${code}</code> (PC : <code>tg classe ${code}</code>)</p>
+<div class="carte"><table><tr><th>Élève</th><th>Niveau</th><th>XP</th><th>Commandes</th><th>Commandes différentes</th><th>Compétences (dernières)</th><th>Vu</th></tr>
+${lignes || `<tr><td colspan="7" class="doux">Aucun élève pour l'instant.</td></tr>`}</table></div>
+<p class="doux">${eleves.length} élève${eleves.length > 1 ? "s" : ""} · les données se mettent à jour à chaque synchronisation des élèves ·
+<a href="${FICHES}">fiches de séance</a></p>`, "Tableau de bord d'une classe Terminagotchi.");
 }
 
 function ligneClassement(j, i) {
@@ -617,7 +701,7 @@ async function pageAccueil(env) {
 <p><a href="/classement">Voir tout le classement →</a></p></div>
 <h2>Des preuves, pas des promesses</h2>
 <div class="carte"><p>Les badges marqués <b>✔ vérifié</b> sont délivrés par le serveur lui-même : par exemple, chaque
-drapeau du <a href="/ctf">CTF web</a> est personnel et contrôlé ici. Chaque badge a sa page publique, que tu peux partager.</p>
+drapeau du <a href="/ctf">CTF web</a><a href="/classe">Classe</a> est personnel et contrôlé ici. Chaque badge a sa page publique, que tu peux partager.</p>
 <p class="doux">Le reste du profil (niveau, compétences…) est déclaré par l'appli et affiché comme tel.</p></div>`);
 }
 
@@ -848,6 +932,9 @@ export default {
       if (chemin === "/ctf") return pageCtf(url.origin);
       if (chemin === "/bestiaire") return pageBestiaire(url);
       if (chemin === "/captures") return await pageCaptures(env, url);
+      if (chemin === "/classe") return pageClasseAccueil();
+      const mc = chemin.match(/^\/classe\/([A-Z0-9]{6})$/);
+      if (mc) return await pageClasse(env, mc[1], url.searchParams.get("cle") || "");
       const mb = chemin.match(/^\/bestiaire\/([a-z0-9]+)$/);
       if (mb) return pageEspece(mb[1]);
       if (chemin === "/robots.txt") {
