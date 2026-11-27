@@ -96,6 +96,7 @@ object Recensement {
                 .put("nom", jeu.nom).put("nomDate", c.optLong("nomDate"))
                 .put("trait", jeu.trait).put("forme", jeu.forme ?: JSONObject.NULL).put("oeuf", jeu.oeuf).put("familier", jeu.familier).put("shiny", jeu.shiny)
                 .put("faim", jeu.faim).put("faimDate", c.optLong("repas")))
+        if (c.has("classe")) charge.getJSONObject("valeurs").put("classe", c.optString("classe"))   // mode classe ("" = quitter)
         enCours = true
         return Preparation(cle, c.optString("serveur"), charge, snap)
     }
@@ -113,6 +114,14 @@ object Recensement {
         val srv = r.optJSONObject("etat") ?: return "⚠ Synchro impossible : ${r.optString("erreur", "erreur inconnue")}"
         val c = compte(jeu)
         if (c.optString("serveur").isEmpty() && url.isNotEmpty()) c.put("serveur", url)
+        var noteClasse = ""
+        if (r.optBoolean("classe_refusee")) {
+            c.remove("classe")
+            noteClasse = "\n⚠ Code de classe inconnu : vérifie-le auprès de ton professeur."
+        } else if (c.has("classe")) {
+            if (c.optString("classe").isEmpty()) { c.remove("classe"); noteClasse = "\n🏫 Tu as quitté la classe." }
+            else noteClasse = "\n🏫 Classe ${c.optString("classe")} : ton professeur voit ta progression (pseudo, niveau, compétences)."
+        }
         val snap = p.snap
         val avant = jeu.xp
         jeu.xp = srv.optInt("xp") + (jeu.xp - snap.optInt("xp"))
@@ -175,7 +184,7 @@ object Recensement {
                 lignes.add("🏅 Nouveau badge vérifié : $t")
             }
         }
-        return lignes.joinToString("\n")
+        return lignes.joinToString("\n") + noteClasse
     }
 
     fun abandonner() {

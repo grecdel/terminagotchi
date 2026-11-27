@@ -108,6 +108,7 @@ class Commandes(
             "indice" -> Reponse(Ctf.indice(jeu, reste), couleur = VERT)
             "edite" -> edite(reste)
             "doom" -> doom()
+            "classe" -> classe(reste)
             "entrainement", "entraînement", "salle" -> Reponse(when (reste.trim().lowercase()) {
                 "" -> Entrainement.texte(jeu)
                 "stop" -> Entrainement.arreter(jeu)
@@ -295,6 +296,17 @@ class Commandes(
             }
         }.start()
         return Reponse(if (silencieux) "" else "⏳ Synchronisation…", couleur = BLEU)
+    }
+
+    /** classe CODE : rejoindre la classe de son professeur (mode classe) · classe quitter */
+    private fun classe(reste: String): Reponse {
+        val c = Recensement.compte(jeu)
+        if (!Recensement.aUnCompte(jeu)) return Reponse("Il faut d'abord un compte : compte creer TonPseudo  (aucune adresse mail demandée)", couleur = BLEU)
+        val mot = reste.trim()
+        if (mot.isEmpty()) return Reponse(if (c.optString("classe").isNotEmpty()) "Tu es dans la classe ${c.optString("classe")}. (classe quitter pour en sortir)"
+            else "Exemple : classe ABC123  (le code est donné par ton professeur)", couleur = BLEU)
+        c.put("classe", if (mot.lowercase() in setOf("quitter", "sortir", "stop")) "" else mot.uppercase())
+        return sync()
     }
 
     private fun compte(reste: String): Reponse {

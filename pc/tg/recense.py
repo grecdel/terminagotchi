@@ -83,6 +83,8 @@ def _charge(state):
                     "oeuf": state.get("oeuf"), "familier": state.get("familier"),
                     "faimDate": int(state.get("repas_t", 0) * 1000)},
     }
+    if c.get("classe") is not None:                        # mode classe ("" = quitter)
+        charge["valeurs"]["classe"] = c["classe"]
     return charge, snap
 
 
@@ -172,10 +174,34 @@ def synchroniser(forcer=False):
         for b in r.get("badges", []):
             core.log(s, f"🏅 Badge vérifié : {b['titre']}")
             core.notif(s, f"🏅 Nouveau badge : {b['titre']}")
-        resultat.append(f"✔ Synchronisé avec le recensement ({cc.get('pseudo', '?')})")
+        if r.get("classe_refusee"):
+            cc.pop("classe", None)
+            resultat.append("⚠ Code de classe inconnu : vérifie-le auprès de ton professeur.")
+            return
+        if cc.get("classe") == "":
+            cc.pop("classe", None)                 # « quitter » a été envoyé : plus besoin de le renvoyer
+        resultat.append(f"✔ Synchronisé avec le recensement ({cc.get('pseudo', '?')})"
+                        + (f" · classe {r['etat']['classe']}" if r["etat"].get("classe") else ""))
 
     core.modifier(finir)
     return resultat[0] if resultat else None
+
+
+def classe(args):
+    """tg classe CODE (rejoindre la classe de ton professeur) · tg classe quitter"""
+    st = core.load()
+    if st is None or not compte(st).get("cle"):
+        return "Il faut d'abord un compte : tg compte creer TonPseudo  (aucune adresse mail demandée)"
+    if not args:
+        actuelle = compte(st).get("classe")
+        return (f"Tu es dans la classe {actuelle}. (tg classe quitter pour en sortir)" if actuelle
+                else "Exemple : tg classe ABC123  (le code est donné par ton professeur)")
+    code = "" if args[0].lower() in ("quitter", "sortir", "stop") else args[0].strip().upper()
+    core.modifier(lambda s: compte(s).update(classe=code))
+    msg = synchroniser(forcer=True) or ""
+    if code and "inconnu" not in msg:
+        return f"🏫 Bienvenue dans la classe {code} ! Ton professeur voit maintenant ta progression (pseudo, niveau, compétences).\n{msg}"
+    return msg if code else f"🏫 Tu as quitté la classe.\n{msg}"
 
 
 def synchroniser_en_fond():
@@ -222,6 +248,8 @@ def commande(args):
     if not url and action in ("creer", "lier", "code", ""):
         return ("Le site du recensement n'est pas encore en ligne (ou pas de connexion).\n"
                 "Réessaie plus tard, ou règle l'adresse : compte serveur https://…")
+    if action == "classe":
+        return classe(args[1:])
     if action == "creer":
         if c.get("cle"):
             return f"Tu as déjà un compte : {c['pseudo']}. (compte oublier pour en changer)"

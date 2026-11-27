@@ -190,5 +190,23 @@ verifier(r.statut === 404, "espèce inconnue : 404");
 r = await appel("GET", "/joueur/Grec");
 verifier(r.t.includes("/bestiaire/runodrake") && r.t.includes("Voir ses captures uniques"), "profil : collection dessinée + lien vers ses captures");
 
+console.log("Mode classe");
+r = await appel("POST", "/api/classe", { corps: { nom: "CM2 B" } });
+verifier(r.statut === 200 && /^[A-Z0-9]{6}$/.test(r.j.code) && r.j.lien.includes("?cle="), "classe créée : code + lien du professeur");
+const classe = r.j;
+r = await appel("POST", "/api/sync", { cle: cleTel, corps: { appareil: "android", valeurs: { classe: "ZZZZZZ" } } });
+verifier(r.statut === 200 && r.j.classe_refusee === true && !r.j.etat.classe, "code de classe inconnu refusé (le reste de la synchro passe)");
+r = await appel("POST", "/api/sync", { cle: cleTel, corps: { appareil: "android", valeurs: { classe: classe.code } } });
+verifier(r.j.etat.classe === classe.code, "l'élève rejoint la classe");
+r = await appel("GET", classe.lien);
+verifier(r.statut === 200 && r.t.includes("CM2 B") && r.t.includes("/joueur/Grec"), "tableau de bord du professeur : l'élève y figure");
+r = await appel("GET", `/classe/${classe.code}`);
+verifier(r.statut === 403 && !r.t.includes("/joueur/Grec"), "sans la clé du professeur : pas de tableau");
+r = await appel("POST", "/api/sync", { cle: cleTel, corps: { appareil: "android", valeurs: { classe: "" } } });
+r = await appel("GET", classe.lien);
+verifier(!r.t.includes("/joueur/Grec"), "l'élève peut quitter la classe");
+r = await appel("GET", "/classe");
+verifier(r.statut === 200 && r.t.includes("fiches de séance"), "page d'accueil du mode classe");
+
 console.log(`\n${ok} réussis, ${ko} échoués`);
 process.exit(ko ? 1 : 0);

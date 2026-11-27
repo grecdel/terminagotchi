@@ -451,6 +451,7 @@ AIDE = """Terminagotchi — utilisation :
   tg dressage                  la fenêtre du face-à-face (s'ouvre toute seule quand un monstre apparaît)
   tg anime <nom> [animation]   la voir bouger : statique, mange, attaque, salut, parle, dort, content,
                                affame, confus, colere, victoire, ko, evolution
+  tg classe CODE               rejoindre la classe de ton professeur (mode classe) · tg classe quitter
   tg carte                     la carte du terrain de jeu, qui se dévoile au fil de tes découvertes
   tg entrainement [discipline]  la salle d'entraînement : séances chronométrées, badges Bit → Exa
                                (reperer, fichiers, lire, tuyaux, systeme · « stop » pour arrêter)
@@ -480,7 +481,7 @@ def main():
         faits = compagnon.desinstaller()
         print("Retiré de :\n  " + "\n  ".join(faits) if faits else "Rien à retirer.")
         return
-    if mode in ("compte", "sync", "drapeau", "lexique", "site", "bestiaire", "collection", "troupe", "anime", "carte"):
+    if mode in ("compte", "sync", "drapeau", "lexique", "site", "bestiaire", "collection", "troupe", "anime", "carte", "classe"):
         creer_si_besoin()
         if mode == "troupe":
             if len(args) > 1:
@@ -494,6 +495,8 @@ def main():
             print(recense.site(args[1:]))
         elif mode == "bestiaire":
             print("\n".join(explo.fiche(core.load(), " ".join(args[1:]))))
+        elif mode == "classe":
+            print(recense.classe(args[1:]))
         elif mode == "carte":
             from . import carte
             st = core.modifier(lambda s: carte.visiter(s, os.getcwd()))

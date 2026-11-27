@@ -48,3 +48,11 @@ CREATE TABLE IF NOT EXISTS config (
   cle TEXT PRIMARY KEY,
   valeur TEXT NOT NULL
 );
+
+-- Classes (mode classe) : le professeur garde un lien secret ; seule l'empreinte de sa clé est stockée.
+CREATE TABLE IF NOT EXISTS classes (
+  code TEXT PRIMARY KEY,
+  nom TEXT NOT NULL,
+  cle_prof TEXT NOT NULL,
+  cree INTEGER NOT NULL
+);
