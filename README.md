@@ -113,7 +113,7 @@ Les exploits dans chaque monde font rencontrer de nouvelles créatures et des va
 - 🏋 **Une salle d'entraînement** ✅ (`entrainement`, ou `tg entrainement` sur PC) avec des exercices chronométrés et des badges qui montent en grade : Bit, Octet,
   Kilo, Méga, Giga, Téra, Péta, Exa, avec galons et étoiles.
 - 🗺 **La carte qui pousse** ✅ (`carte`, ou `tg carte` sur PC) : ton vrai terrain dessiné en carte, qui se dévoile au fil de tes découvertes.
-- 🌍 **14 langues** prévues : français ✅, anglais ✅ pour le jeu (`langue en`, ou `tg langue en` sur PC) et les [fiches de séance](docs/fiches/en/), le site arrive, puis espagnol, allemand, italien, portugais, chinois, russe, japonais, hindi, arabe, bengali, indonésien, ourdou.
+- 🌍 **14 langues** prévues : français ✅, anglais ✅ pour le jeu (`langue en`, ou `tg langue en` sur PC) , les [fiches de séance](docs/fiches/en/) et le site (lien « English » en haut des pages), puis espagnol, allemand, italien, portugais, chinois, russe, japonais, hindi, arabe, bengali, indonésien, ourdou.
 - 📴 **Hors ligne** : le jeu se joue sans internet.
 - 🔒 **Sans risque** : sur téléphone, le jeu ne peut rien abîmer en dehors de son terrain de jeu ; la sauvegarde
   est protégée.

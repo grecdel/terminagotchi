@@ -5,6 +5,7 @@
  */
 
 import BESTIAIRE from "./bestiaire.js";
+import TRADUCTIONS from "./i18n.js";
 
 const DEPOT = "https://github.com/grecdel/terminagotchi-android";
 const STATS = ["Intelligence", "Agilité", "Force", "Endurance"];
@@ -602,7 +603,7 @@ function page(titre, contenu, description = "Terminagotchi : la créature qui se
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>${echapper(titre)} · Terminagotchi</title><meta name="description" content="${echapper(description)}">
 <style>${CSS}</style></head><body>
-<header><nav><a class="logo" href="/">▞ Terminagotchi</a><a href="/classement">Classement</a><a href="/bestiaire">Bestiaire</a><a href="/captures">Captures</a><a href="/ctf">CTF web</a><a href="/classe">Classe</a><a href="/#telecharger">Télécharger</a></nav></header>
+<header><nav><a class="logo" href="/">▞ Terminagotchi</a><a href="/classement">Classement</a><a href="/bestiaire">Bestiaire</a><a href="/captures">Captures</a><a href="/ctf">CTF web</a><a href="/classe">Classe</a><!--LANGUE--><a href="/#telecharger">Télécharger</a></nav></header>
 <main>${contenu}</main></body></html>`, { status: statut, headers: { "content-type": "text/html; charset=utf-8" } });
 }
 
@@ -661,6 +662,91 @@ ${lignes || `<tr><td colspan="7" class="doux">Aucun élève pour l'instant.</td>
 <a href="${FICHES}">fiches de séance</a></p>`, "Tableau de bord d'une classe Terminagotchi.");
 }
 
+// ====================================================================== langues du site
+// La page est fabriquée en français, puis traduite juste avant l'envoi (texte visible seulement, pas les dessins).
+const LANGUES_SITE = { fr: "🇫🇷 Français", en: "🇬🇧 English" };
+const DICO = {};        // texte exact → traduction
+const PAR_MOT = {};     // premier mot → textes qui commencent par ce mot (du plus long au plus court)
+const MOT = /[\p{L}\p{N}]+/uy;
+function premierMot(t, i = 0) {
+  MOT.lastIndex = i;
+  const m = MOT.exec(t);
+  return m ? m[0] : t[i];
+}
+for (const [code, paires] of Object.entries(TRADUCTIONS)) {
+  const d = new Map();
+  for (const [fr, tr] of paires) {
+    d.set(fr, tr);
+    d.set(echapper(fr), echapper(tr));
+  }
+  const index = new Map();
+  for (const k of [...d.keys()].sort((a, b) => b.length - a.length)) {
+    const m = premierMot(k);
+    if (!index.has(m)) index.set(m, []);
+    index.get(m).push(k);
+  }
+  DICO[code] = d;
+  PAR_MOT[code] = index;
+}
+
+function langueDe(requete) {
+  const url = new URL(requete.url);
+  const choix = url.searchParams.get("lang");
+  if (LANGUES_SITE[choix]) return { code: choix, retenir: true };
+  const c = (requete.headers.get("cookie") || "").match(/(?:^|;\s*)lang=(\w+)/);
+  if (c && LANGUES_SITE[c[1]]) return { code: c[1], retenir: false };
+  const a = (requete.headers.get("accept-language") || "").slice(0, 2).toLowerCase();
+  return { code: LANGUES_SITE[a] ? a : "fr", retenir: false };
+}
+
+function traduireTexte(t, code) {
+  const d = DICO[code];
+  if (!d) return t;
+  const brut = t.trim();
+  if (d.has(brut)) return t.replace(brut, d.get(brut));
+  const index = PAR_MOT[code];
+  const lettre = /[\p{L}\p{N}]/u;
+  let out = "";
+  let i = 0;
+  while (i < t.length) {
+    const debutMot = i === 0 || !lettre.test(t[i - 1]) || !lettre.test(t[i]);
+    const mot = premierMot(t, i);
+    let fait = false;
+    if (debutMot) {
+      for (const k of index.get(mot) || []) {
+        if (t.startsWith(k, i) && !(lettre.test(k[k.length - 1]) && lettre.test(t[i + k.length] || ""))) {
+          out += d.get(k);
+          i += k.length;
+          fait = true;
+          break;
+        }
+      }
+    }
+    if (!fait) {
+      out += mot;
+      i += mot.length;
+    }
+  }
+  return out;
+}
+
+async function enLangue(requete, r) {
+  if (!(r.headers.get("content-type") || "").includes("text/html")) return r;
+  const { code, retenir } = langueDe(requete);
+  let html = await r.text();
+  const autre = code === "fr" ? "en" : "fr";
+  html = html.replace("<!--LANGUE-->", `<a href="?lang=${autre}">${LANGUES_SITE[autre]}</a>`);
+  if (code !== "fr") {
+    html = html.replace('<html lang="fr">', `<html lang="${code}">`)
+      .replace(/(<style[^>]*>[\s\S]*?<\/style>)|>([^<]+)</g, (m, st, t) => (st ? st : ">" + traduireTexte(t, code) + "<"))
+      .replace(/(content|placeholder)="([^"]*)"/g, (m, a, t) => `${a}="${traduireTexte(t, code)}"`);
+  }
+  const h = new Headers(r.headers);
+  if (retenir) h.append("set-cookie", `lang=${code}; Path=/; Max-Age=31536000; SameSite=Lax`);
+  h.set("vary", "accept-language, cookie");
+  return new Response(html, { status: r.status, headers: h });
+}
+
 function ligneClassement(j, i) {
   const forme = j.forme ? FORMES[j.forme] : "";
   return `<tr><td>${i + 1}</td><td><a href="/joueur/${encodeURIComponent(j.pseudo)}">${echapper(j.pseudo)}</a></td>
@@ -701,7 +787,7 @@ async function pageAccueil(env) {
 <p><a href="/classement">Voir tout le classement →</a></p></div>
 <h2>Des preuves, pas des promesses</h2>
 <div class="carte"><p>Les badges marqués <b>✔ vérifié</b> sont délivrés par le serveur lui-même : par exemple, chaque
-drapeau du <a href="/ctf">CTF web</a><a href="/classe">Classe</a> est personnel et contrôlé ici. Chaque badge a sa page publique, que tu peux partager.</p>
+drapeau du <a href="/ctf">CTF web</a><a href="/classe">Classe</a><!--LANGUE--> est personnel et contrôlé ici. Chaque badge a sa page publique, que tu peux partager.</p>
 <p class="doux">Le reste du profil (niveau, compétences…) est déclaré par l'appli et affiché comme tel.</p></div>`);
 }
 
@@ -920,6 +1006,11 @@ on n'a pas l'autorisation est illégal : les vrais hackers éthiques ne testent 
 
 export default {
   async fetch(requete, env) {
+    const r = await this.servir(requete, env);
+    return enLangue(requete, r);
+  },
+
+  async servir(requete, env) {
     const url = new URL(requete.url);
     const chemin = url.pathname.replace(/\/+$/, "") || "/";
     try {
