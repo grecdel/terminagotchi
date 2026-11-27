@@ -10,7 +10,8 @@ const DEPOT = "https://github.com/grecdel/terminagotchi-android";
 const STATS = ["Intelligence", "Agilité", "Force", "Endurance"];
 const COURT = { Intelligence: "INT", "Agilité": "AGI", Force: "FOR", Endurance: "END" };
 const COULEUR = { Intelligence: 39, "Agilité": 78, Force: 203, Endurance: 221 };
-const STADES = ["Œuf", "Bébé", "Ado", "Adulte"];
+const STADES = ["Œuf", "Bébé", "Enfant", "Ado", "Adulte", "Ancien"];
+const OEUFS = Object.fromEntries((BESTIAIRE.oeufs || []).map((o) => [o.id, o]));
 const FORMES = { Intelligence: "Hacker", Force: "Titan", "Agilité": "Éclair", Endurance: "Carapace" };
 const ESPECES = BESTIAIRE.especes.map((e) => e.nom);
 const PAR_NOM = Object.fromEntries(BESTIAIRE.especes.map((e) => [e.nom, e]));
@@ -100,7 +101,7 @@ function niveauDe(xp) {
 }
 
 function stadeDe(n) {
-  return n < 2 ? 0 : n < 5 ? 1 : n < 10 ? 2 : 3;
+  return n < 2 ? 0 : n < 3 ? 1 : n < 5 ? 2 : n < 10 ? 3 : n < 20 ? 4 : 5;
 }
 
 async function corps(requete) {
@@ -253,6 +254,9 @@ function fusionner(etat, envoi, appareil) {
     e.nomDate = Number(v.nomDate) || 0;
   }
   if (!e.trait && typeof v.trait === "string") e.trait = v.trait.slice(0, 20);
+  // l'œuf et l'espèce de la créature : le premier appareil qui les envoie les fixe pour tous
+  if (!e.oeuf && OEUFS[v.oeuf]) e.oeuf = v.oeuf;
+  if (!e.familier && e.oeuf && OEUFS[e.oeuf].especes.includes(v.familier)) e.familier = v.familier;
   if (!e.forme && STATS.includes(v.forme)) e.forme = v.forme;
   if ((Number(v.faimDate) || 0) > e.faimDate) {
     e.faim = Math.max(0, Math.min(100, Number(v.faim) || 0));
@@ -390,6 +394,7 @@ async function profilPublic(env, pseudo) {
   return {
     pseudo: j.pseudo, nom: e.nom || j.pseudo, niveau: j.niveau, xp: j.xp, rang,
     stade: STADES[stadeDe(j.niveau)], forme: e.forme || null, trait: e.trait || "",
+    oeuf: e.oeuf || null, familier: e.familier || null,
     stats: Object.fromEntries(STATS.map((s) => [s, e.stats?.[s] || 0])),
     commandes: e.total || 0, gouts: (e.vus || []).length, competences: e.skills || [],
     collection: e.collection || {}, records: e.records || {},
@@ -484,16 +489,25 @@ function x256(n) {
 
 const SHINY_JOUEUR = { 39: 220, 78: 51, 203: 129, 221: 255, 141: 219 };
 
-function svgCreature(niveau, forme, stats, taille = 8, shiny = false) {
+function svgCreature(niveau, forme, stats, taille = 8, shiny = false, oeuf = null, familier = null) {
   const st = stadeDe(niveau);
+  if (st >= 1 && PAR_ID[familier]) return svgBestiole(PAR_ID[familier], shiny, Math.round(taille * 0.9), st >= 4);
+  if (st === 0 && OEUFS[oeuf]) {
+    const pal = { w: OEUFS[oeuf].coquille, s: OEUFS[oeuf].taches };
+    let r = "";
+    SPRITES.oeuf.forEach((l, y) => [...l].forEach((c, x) => {
+      if (pal[c]) r += `<rect x="${x}" y="${y}" width="1.02" height="1.02" fill="${pal[c]}"/>`;
+    }));
+    return `<svg class="creature" viewBox="0 0 12 ${SPRITES.oeuf.length}" width="${12 * taille}" height="${SPRITES.oeuf.length * taille}" shape-rendering="crispEdges" role="img" aria-label="œuf">${r}</svg>`;
+  }
   const dominant = Object.values(stats || {}).some((v) => v > 0)
     ? Object.entries(stats).sort((a, b) => b[1] - a[1])[0][0] : null;
   const f = forme || dominant || "Endurance";
   const over = (base, o) => base.map((r, i) => (o && o[i] ? [...o[i]].map((m, k) => (m === "?" ? r[k] : m)).join("") : r));
-  const rows = st === 0 ? SPRITES.oeuf : st === 1 ? SPRITES.bebe
-    : st === 2 ? [...SPRITES.adoTete[f], ...over(SPRITES.ado, SPRITES.adoCorps[f])]
+  const rows = st === 0 ? SPRITES.oeuf : st <= 2 ? SPRITES.bebe
+    : st === 3 ? [...SPRITES.adoTete[f], ...over(SPRITES.ado, SPRITES.adoCorps[f])]
       : [...SPRITES.adulteTete[f], ...over(SPRITES.adulte, SPRITES.adulteCorps[f])];
-  let corps = st >= 2 && forme ? COULEUR[forme] : dominant ? COULEUR[dominant] : 141;
+  let corps = st >= 3 && forme ? COULEUR[forme] : dominant ? COULEUR[dominant] : 141;
   if (shiny) corps = SHINY_JOUEUR[corps] ?? 219;
   const pal = { b: corps, e: 16, k: 211, m: 52, h: 180, w: 230, s: 180, c: 136, a: 250, l: 51 };
   const w = Math.max(...rows.map((r) => r.length));
@@ -579,7 +593,7 @@ async function pageAccueil(env) {
   }).join("");
   return page("Accueil", `
 <section class="hero">
-  <div>${svgCreature(12, "Agilité", {}, 10)}</div>
+  <div>${svgCreature(12, "Agilité", {}, 10, false, "ciel", "nebuline")}</div>
   <div style="flex:1;min-width:260px">
     <h1>La créature qui mange tes commandes</h1>
     <p>Chaque commande tapée dans le terminal la nourrit. En grandissant, elle t'apprend à naviguer, créer, protéger…
@@ -638,10 +652,10 @@ async function pageJoueur(env, pseudo) {
   const appareils = p.appareils.map((a) => (a === "android" ? "📱 téléphone" : "💻 PC")).join(" + ") || "—";
   return page(p.pseudo, `
 <section class="hero">
-  <div class="carte">${svgCreature(p.niveau, p.forme, p.stats, 10, p.shiny)}</div>
+  <div class="carte">${svgCreature(p.niveau, p.forme, p.stats, 10, p.shiny, p.oeuf, p.familier)}</div>
   <div style="flex:1;min-width:260px">
     <h1>${p.shiny ? `<span class="rgb">${echapper(p.nom)} ✨</span>` : echapper(p.nom)}</h1>
-    <p class="doux">créature de <b>${echapper(p.pseudo)}</b> · ${echapper(p.stade)} ${echapper(forme)} · caractère ${echapper(p.trait || "?")}</p>
+    <p class="doux">créature de <b>${echapper(p.pseudo)}</b> · ${echapper(p.stade)} ${echapper(forme)}${PAR_ID[p.familier] && p.niveau >= 2 ? ` · espèce <a href="/bestiaire/${p.familier}">${echapper(PAR_ID[p.familier].nom)}</a>` : OEUFS[p.oeuf] ? ` · œuf ${echapper(OEUFS[p.oeuf].nom)}` : ""} · caractère ${echapper(p.trait || "?")}</p>
     <p>Niveau <b>${p.niveau}</b> · ${p.xp} XP · <b>#${p.rang}</b> au classement</p>
     <div class="barre"><i style="width:${pct}%"></i></div>
     <div class="grille" style="grid-template-columns:repeat(4,1fr);margin-top:12px">${stats}</div>

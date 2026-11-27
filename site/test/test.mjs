@@ -85,6 +85,10 @@ verifier(e.records.pwd === 3.1 && e.records.ls === 2, "records : meilleur temps"
 verifier(e.nom === "Pixel", "nom : un appareil relié n'écrase pas le nom du compte");
 r = await appel("POST", "/api/sync", { cle: clePc, corps: { appareil: "pc", valeurs: { nom: "Pixou", nomDate: 3000 } } });
 verifier(r.j.etat.nom === "Pixou", "nom : un renommage plus récent gagne");
+r = await appel("POST", "/api/sync", { cle: clePc, corps: { appareil: "pc", valeurs: { oeuf: "ciel", familier: "nebuline" } } });
+verifier(r.j.etat.oeuf === "ciel" && r.j.etat.familier === "nebuline", "œuf et espèce de la créature enregistrés");
+r = await appel("POST", "/api/sync", { cle: cleTel, corps: { appareil: "android", valeurs: { oeuf: "feu", familier: "braisillon" } } });
+verifier(r.j.etat.oeuf === "ciel" && r.j.etat.familier === "nebuline", "œuf et espèce : le premier appareil les fixe pour tous");
 await appel("POST", "/api/sync", { cle: cleTel, corps: { appareil: "android", valeurs: { nom: "Pixel", nomDate: 4000 } } });
 verifier(e.trait === "curieux", "caractère : le premier reste");
 verifier(e.faim === 90, "faim : la valeur la plus récente");

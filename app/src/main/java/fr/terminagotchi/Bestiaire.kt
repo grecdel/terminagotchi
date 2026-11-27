@@ -72,6 +72,14 @@ object Bestiaire {
             version = o.optInt("version", 1)
             o.optJSONObject("lieux")?.let { l -> l.keys().forEach { HABITATS[it] = l.getString(it) } }
             regleRang = o.optJSONObject("rarete_individu") ?: JSONObject()
+            oeufs = o.optJSONArray("oeufs")?.let { a ->
+                (0 until a.length()).map { i ->
+                    val x = a.getJSONObject(i)
+                    Oeuf(x.getString("id"), x.getString("nom"), Color.parseColor(x.getString("coquille")),
+                        Color.parseColor(x.getString("taches")),
+                        x.getJSONArray("especes").let { l -> (0 until l.length()).map { l.getString(it) } })
+                }
+            } ?: emptyList()
             anciens = o.optJSONObject("anciens")?.let { a -> a.keys().asSequence().associateWith { a.getString(it) } } ?: emptyMap()
             val ma = o.getJSONArray("marques")
             marques = (0 until ma.length()).map { ma.getString(it) }
@@ -87,6 +95,7 @@ object Bestiaire {
                 }
                 val st = e.getJSONObject("stats")
                 puissance[e.getString("id")] = e.optInt("puissance", 1)
+                e.optJSONObject("familier")?.let { familiers[e.getString("id")] = it }
                 Espece(
                     e.getString("id"), e.getInt("numero"), e.getString("nom"), e.getString("famille"),
                     e.getString("icone"), e.getString("rarete"), e.getString("stat"), e.getString("description"),
@@ -140,6 +149,40 @@ object Bestiaire {
         val dr = jeu.module("dressage")
         dr.remove("en_cours")
         dr.put("familles", org.json.JSONArray())
+    }
+
+    // ---------------------------------------------------------------- les 9 œufs de la créature du joueur
+    class Oeuf(val id: String, val nom: String, val coquille: Int, val taches: Int, val especes: List<String>)
+    var oeufs: List<Oeuf> = emptyList()
+        private set
+    /** id d'espèce → {stade: {"l", "p"}} : la créature du joueur, de plus en plus grande. */
+    private val familiers = HashMap<String, JSONObject>()
+
+    fun tirerOeuf(): String = oeufs.randomOrNull()?.id ?: ""
+    fun nomOeuf(id: String) = oeufs.firstOrNull { it.id == id }?.nom ?: ""
+    fun oeuf(id: String) = oeufs.firstOrNull { it.id == id }
+    fun tirerFamilier(oeuf: String): String =
+        (oeufs.firstOrNull { it.id == oeuf } ?: oeufs.firstOrNull())?.especes?.randomOrNull() ?: ""
+
+    private val STADE_IMAGE = listOf("", "bebe", "enfant", "ado", "adulte", "ancien")
+
+    /** Lignes + palette (couleurs Android) de la créature du joueur à un stade, ou null. */
+    fun familier(id: String, stade: Int, shiny: Boolean): Pair<List<String>, Map<Char, Int>>? {
+        val x = familiers[id]?.optJSONObject(STADE_IMAGE.getOrNull(stade) ?: "ancien") ?: return null
+        val l = x.getJSONArray("l").let { a -> (0 until a.length()).map { a.getString(it) } }
+        val p = x.getJSONObject("p")
+        val pal = HashMap<Char, Int>()
+        for (k in p.keys()) {
+            var c = Color.parseColor(p.getString(k))
+            if (shiny) {
+                val hsv = FloatArray(3)
+                Color.colorToHSV(c, hsv)
+                hsv[0] = (hsv[0] + 180f) % 360f
+                c = Color.HSVToColor(hsv)
+            }
+            pal[k[0]] = c
+        }
+        return l to pal
     }
 
     /** La forme d'un individu (classique, volcan, lave…), tirée selon les chances des variantes dessinées. */

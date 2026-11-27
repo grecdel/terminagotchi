@@ -17,6 +17,16 @@ def title_line(text, color=244):
     return fg(color) + "── " + text + " " + "─" * max(3, 44 - len(text)) + RESET
 
 
+def espece_familier(state):
+    """« · un Miroeil » une fois éclos, « · œuf Ciel » avant."""
+    from . import bestiaire as B
+    e = B.espece(state.get("familier"))
+    if e and core.stage(core.level(state["xp"])) > 0:
+        return f" {DIM}· espèce {e['nom']}{RESET}"
+    o = B.oeuf(state.get("oeuf"))
+    return f" {DIM}· œuf {o['nom']}{RESET}" if o else ""
+
+
 def render(state, frame, interactif):
     d = state.get("dressage")
     if d and not d.get("fenetre"):          # pas de fenêtre possible (pas d'écran graphique) : on l'affiche ici
@@ -27,13 +37,13 @@ def render(state, frame, interactif):
     sprite = ([" " * w] + sprite) if frame % 2 else (sprite + [" " * w])
     left = ["  " + line + " " * (20 - w) for line in sprite]
 
-    forme = core.STAGES[st] + (f" {core.FORMES[state['branch']]}" if st >= 2 and state.get("branch") else "")
+    forme = core.forme(state)
     lo, hi = 10 * (lvl - 1) ** 2, 10 * lvl ** 2
     stats = "  ".join(f"{fg(v['color'])}{v['short']}{RESET} {BOLD}{state['stats'][v['stat']]}{RESET}" for v in core.CATEGORIES.values())
     nb_sk = len(state["skills"])
     right = [
         (arc_en_ciel(state["name"] + " ✨") if state.get("shiny") else f"{BOLD}{state['name']}{RESET}") + f" · {forme} · niv. {lvl}",
-        f"{DIM}caractère : {state['trait']}{RESET}",
+        f"{DIM}caractère : {state['trait']}{RESET}" + espece_familier(state),
         f"XP   {sprites.bar(state['xp'] - lo, hi - lo)} {state['xp']}/{hi}",
         f"Faim {dressage.jauge(state['hunger'], 100, 10)} {core.mood(state['hunger'])}",
         stats,

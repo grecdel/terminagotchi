@@ -80,6 +80,7 @@ def _charge(state):
         "valeurs": {"nom": state["name"], "nomDate": c.get("nomDate", 0), "trait": state.get("trait", ""),
                     "shiny": bool(state.get("shiny")),
                     "forme": state.get("branch"), "faim": state["hunger"],
+                    "oeuf": state.get("oeuf"), "familier": state.get("familier"),
                     "faimDate": int(state.get("repas_t", 0) * 1000)},
     }
     return charge, snap
@@ -113,6 +114,11 @@ def _appliquer(state, srv, snap):
         state["trait"] = srv["trait"]
     if srv.get("forme"):
         state["branch"] = srv["forme"]
+    from . import bestiaire
+    if bestiaire.oeuf(srv.get("oeuf")):          # même créature sur tous les appareils
+        state["oeuf"] = srv["oeuf"]
+    if bestiaire.espece(srv.get("familier")):
+        state["familier"] = srv["familier"]
     connus = {x.get("id") for x in state.setdefault("captures", [])}
     for ind in srv.get("captures", []):
         if ind.get("id") not in connus:

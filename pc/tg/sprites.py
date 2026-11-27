@@ -91,8 +91,32 @@ def overlay(base, ovl):
     return rows
 
 
-def get_sprite(state):
+STADE_IMAGE = [None, "bebe", "enfant", "ado", "adulte", "ancien"]
+
+
+def _familier(state):
+    """Le dessin de la créature du joueur (lignes, palette hex), ou None pour l'ancien dessin."""
+    from . import bestiaire as B
     st = core.stage(core.level(state["xp"]))
+    if st == 0:
+        o = B.oeuf(state.get("oeuf"))
+        if not o:
+            return None
+        return EGG_SPRITE, {"w": o["coquille"], "s": o["taches"]}
+    e = B.espece(state.get("familier"))
+    if not e or not e.get("familier"):
+        return None
+    x = e["familier"][STADE_IMAGE[min(st, 5)]]
+    pal = B.decaler(x["p"], 0.5) if state.get("shiny") else x["p"]
+    return x["l"], pal
+
+
+def get_sprite(state):
+    f = _familier(state)
+    if f:
+        return f[0]
+    st = core.stage(core.level(state["xp"]))
+    st = {0: 0, 1: 1, 2: 1, 3: 2}.get(st, 3)   # ancien dessin : œuf, bébé, ado, adulte
     if st == 0:
         return EGG_SPRITE
     if st == 1:
@@ -116,11 +140,11 @@ def render_sprite(rows, pal):
             if ca is None and cb is None:
                 s += " "
             elif cb is None:
-                s += fg(ca) + "▀" + RESET
+                s += _fg(ca) + "▀" + RESET
             elif ca is None:
-                s += fg(cb) + "▄" + RESET
+                s += _fg(cb) + "▄" + RESET
             else:
-                s += fg(ca) + bg(cb) + "▀" + RESET
+                s += _fg(ca) + _bg(cb) + "▀" + RESET
         out.append(s)
     return out, w
 
@@ -137,6 +161,9 @@ SHINY = {39: 220, 78: 51, 203: 129, 221: 255, 141: 219}   # couleur normale → 
 
 
 def palette(state, blink=False):
+    f = _familier(state)
+    if f:
+        return f[1]
     body = body_color(state)
     if state.get("shiny"):
         body = SHINY.get(body, 219)
@@ -148,8 +175,24 @@ def creature(state):
     return render_sprite(get_sprite(state), palette(state, random.random() < 0.15))
 
 
+def _fg(c):
+    if isinstance(c, str):
+        from .bestiaire import fg24
+        return fg24(c)
+    return fg(c)
+
+
+def _bg(c):
+    if isinstance(c, str):
+        from .bestiaire import bg24
+        return bg24(c)
+    return bg(c)
+
+
 def x256(n):
-    """Couleur xterm-256 → (r, g, b)."""
+    """Couleur xterm-256 (ou « #rrggbb ») → (r, g, b)."""
+    if isinstance(n, str):
+        return int(n[1:3], 16), int(n[3:5], 16), int(n[5:7], 16)
     base = [(0, 0, 0), (128, 0, 0), (0, 128, 0), (128, 128, 0), (0, 0, 128), (128, 0, 128), (0, 128, 128),
             (192, 192, 192), (128, 128, 128), (255, 0, 0), (0, 255, 0), (255, 255, 0), (0, 0, 255),
             (255, 0, 255), (0, 255, 255), (255, 255, 255)]

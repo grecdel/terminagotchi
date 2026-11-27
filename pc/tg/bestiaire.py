@@ -94,6 +94,28 @@ def migrer(state):
     return state
 
 
+def oeufs():
+    return donnees().get("oeufs", [])
+
+
+def oeuf(oid):
+    return next((o for o in oeufs() if o["id"] == oid), None)
+
+
+def tirer_oeuf(rnd=random):
+    """Un des 9 œufs (Feu, Eau, Glace…), au hasard : personne ne choisit le sien."""
+    o = oeufs()
+    return rnd.choice(o)["id"] if o else None
+
+
+def tirer_familier(oid, rnd=random):
+    """L'espèce qui sort d'un œuf : une de celles dont le lieu de vie correspond à l'œuf."""
+    o = oeuf(oid) or (oeufs()[0] if oeufs() else None)
+    if not o or not o["especes"]:
+        return None
+    return rnd.choice(o["especes"])
+
+
 def tirer_variante(e, rnd=random):
     """Forme de l'individu (classique, volcan, lave…), selon les chances de chaque variante dessinée."""
     v = e.get("variantes") or [{"id": "classique", "chance": 100}]
