@@ -13,6 +13,7 @@ import sys
 import time
 import zlib
 
+from .langue import tr
 from . import bestiaire as B
 from . import core
 from .plateforme import BOLD, DIM, RESET, fg
@@ -132,9 +133,9 @@ def tick(state, lignes):
 def ecran_equipe(state):
     caps = state.get("captures", [])
     if not caps:
-        return [" Ta troupe est vide : dresse ta première bestiole en explorant le terrain de jeu !"]
+        return [" " + tr("Ta troupe est vide : dresse ta première bestiole en explorant le terrain de jeu !")]
     act = active(state)
-    lignes = [f" {fg(213)}── 🐾 Troupe de {state['name']} ──{RESET}", ""]
+    lignes = [f" {fg(213)}── 🐾 {tr('Troupe de {nom}').format(nom=state['name'])} ──{RESET}", ""]
     for c in caps[-12:][::-1]:
         e = B.espece(c["espece"])
         if not e:
@@ -143,9 +144,9 @@ def ecran_equipe(state):
         seuil = SEUILS.get(s)
         barre = f"{c.get('xp', 0)}/{seuil} XP" if seuil else "stade maximal"
         marque = f"{fg(226)}★ active{RESET} " if c is act else "         "
-        lignes.append(f" {marque}{B.nom_affiche(e, c.get('shiny'))} {B.etiquette_rang(c)} {DIM}· {NOM_STADE[s]} · {barre}"
+        lignes.append(f" {marque}{B.nom_affiche(e, c.get('shiny'))} {B.etiquette_rang(c)} {DIM}· {tr(NOM_STADE[s])} · {barre}"
                       f"{' · animé' if anime(e['nom']) else ''}{RESET}")
-    lignes += ["", f" {DIM}Choisir l'active : tg troupe <nom> · la voir bouger : tg anime <nom> [animation]{RESET}"]
+    lignes += ["", f" {DIM}{tr('Choisir l’active : tg troupe <nom> · la voir bouger : tg anime <nom> [animation]')}{RESET}"]
     return lignes
 
 

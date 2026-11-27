@@ -178,5 +178,6 @@
  "Tape     ": "Type     ",
  "📖 Lexique": "📖 Lexicon",
  "tape une commande…": "type a command…",
- "Tronc commun terminé, bravo ! L'arbre de compétences est ouvert : tape « arbre ».": "Core lessons done, well done! The skill tree is open: type « arbre »."
+ "Tronc commun terminé, bravo ! L'arbre de compétences est ouvert : tape « arbre ».": "Core lessons done, well done! The skill tree is open: type « arbre ».",
+ "Goûtées : {x}/{n}  ·  blanc = déjà tapée, gris = à découvrir": "Tasted: {x}/{n}  ·  white = already typed, grey = to discover"
 }

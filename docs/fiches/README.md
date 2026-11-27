@@ -4,6 +4,8 @@ Pour les écoles, les clubs et les familles : une fiche par parcours du jeu, gé
 elles-mêmes (`python3 donnees/generer_fiches.py`). Chaque fiche donne la durée, les objectifs, le déroulé
 étape par étape et des questions à poser. Le suivi des élèves se fait avec le **mode classe** du site.
 
+🇬🇧 [English version](en/)
+
 | Parcours | Leçons | Fiche |
 |---|---|---|
 | 🌱 Tronc commun | 5 | [00-tronc-commun.md](00-tronc-commun.md) |

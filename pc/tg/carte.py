@@ -5,6 +5,7 @@ le brouillard (░ ???). Les monstres sauvages repérés y apparaissent. Même r
 """
 import os
 
+from .langue import tr
 from . import core
 from .plateforme import BOLD, DIM, RESET, fg
 
@@ -76,10 +77,10 @@ def ecran(state):
     vus = set(e["vus"])
     monstres = {s["zone"] for s in state.get("sauvages", [])}
     if not T.is_dir():
-        return [" La carte est vide : le terrain de jeu n'existe pas encore (leçon « Construire mon nid »)."]
-    lignes = [f" {fg(213)}── 🗺 La carte du Terminaworld ──{RESET}", ""]
+        return [" " + tr("La carte est vide : le terrain de jeu n'existe pas encore (leçon « Construire mon nid »).")]
+    lignes = [f" {fg(213)}── 🗺 {tr('La carte du Terminaworld')} ──{RESET}", ""]
     toi = "" in vus and e.get("ici") == ""
-    lignes.append(f" 🌳 {BOLD}terrain_terminagotchi{RESET} {DIM}(la Racine du camp){RESET}" + (f"  {fg(226)}◀ tu es ici{RESET}" if toi else ""))
+    lignes.append(f" 🌳 {BOLD}terrain_terminagotchi{RESET} {DIM}{tr('(la Racine du camp)')}{RESET}" + (f"  {fg(226)}{tr('◀ tu es ici')}{RESET}" if toi else ""))
     connus = 0
 
     def dessiner(d, rel, prefixe, prof):
@@ -92,8 +93,8 @@ def ecran(state):
             if r in vus:
                 connus += 1
                 ico = ICONES.get(c.name, "📁")
-                ici = f"  {fg(226)}◀ tu es ici{RESET}" if e.get("ici") == r else ""
-                m = f"  {fg(196)}⚔ un monstre !{RESET}" if r in monstres else ""
+                ici = f"  {fg(226)}{tr('◀ tu es ici')}{RESET}" if e.get("ici") == r else ""
+                m = f"  {fg(196)}{tr('⚔ un monstre !')}{RESET}" if r in monstres else ""
                 lignes.append(f" {prefixe}{branche}{ico} {c.name}{m}{ici}")
                 if prof < PROFONDEUR:
                     dessiner(c, r, prefixe + ("   " if dernier else "│  "), prof + 1)
@@ -104,6 +105,6 @@ def ecran(state):
         dessiner(T, "", "", 1)
     total = _total()
     pct = round(100 * connus / total) if total else 0
-    lignes += ["", f" Carte dévoilée : {BOLD}{connus}/{total} lieux ({pct} %){RESET}",
-               f" {DIM}Entre dans un lieu (cd) pour le dévoiler. ░░ ??? = un lieu encore dans le brouillard.{RESET}"]
+    lignes += ["", " " + tr("Carte dévoilée : {c}/{t} lieux ({p} %)").format(c=connus, t=total, p=pct),
+               f" {DIM}{tr('Entre dans un lieu (cd) pour le dévoiler. ░░ ??? = un lieu encore dans le brouillard.')}{RESET}"]
     return lignes

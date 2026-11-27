@@ -116,7 +116,7 @@ def _carte_individu(ind):
 
 
 def ecran_collection(state):
-    lignes = [f" {fg(213)}── 🐾 Collection de {state['name']} ──{RESET}", ""]
+    lignes = [f" {fg(213)}── 🐾 {tr('Collection de {nom}').format(nom=state['name'])} ──{RESET}", ""]
     caps = state.get("captures", [])
     especes_vues = {n for n, k in state["collection"].items() if k}
     par_rarete = {}
@@ -124,26 +124,26 @@ def ecran_collection(state):
         r = e["rarete"]
         vu, tot = par_rarete.get(r, (0, 0))
         par_rarete[r] = (vu + (e["nom"] in especes_vues), tot + 1)
-    lignes.append(" Espèces découvertes : " + BOLD + f"{len(especes_vues)}/150" + RESET + "   " + "  ".join(
-        f"{B.fg24(B.COULEUR_RARETE[r])}{r} {v}/{t}{RESET}" for r, (v, t) in par_rarete.items()))
+    lignes.append(" " + tr("Espèces découvertes :") + " " + BOLD + f"{len(especes_vues)}/150" + RESET + "   " + "  ".join(
+        f"{B.fg24(B.COULEUR_RARETE[r])}{tr(r)} {v}/{t}{RESET}" for r, (v, t) in par_rarete.items()))
     shinies = sum(1 for c in caps if c.get("shiny"))
-    lignes.append(f" Bestioles dressées : {len(caps)}" + (f" · dont {B.arc_en_ciel(f'{shinies} shiny')}" if shinies else ""))
+    lignes.append(" " + tr("Bestioles dressées :") + f" {len(caps)}" + (f" · {tr('dont')} {B.arc_en_ciel(f'{shinies} shiny')}" if shinies else ""))
     if state["collection"].get("Abyssor"):
-        lignes.append(" " + B.arc_en_ciel("★ Espèce secrète #151 découverte : Abyssor"))
+        lignes.append(" " + B.arc_en_ciel(tr("★ Espèce secrète #151 découverte : Abyssor")))
     lignes.append("")
     if caps:
-        lignes.append(f" {DIM}Tes dernières captures :{RESET}")
+        lignes.append(f" {DIM}{tr('Tes dernières captures :')}{RESET}")
         for ind in caps[-6:][::-1]:
             lignes += _carte_individu(ind)
             lignes.append("")
     else:
-        lignes.append(f" {DIM}Aucune bestiole dressée pour l'instant.{RESET}")
+        lignes.append(f" {DIM}{tr('Aucune bestiole dressée pour l’instant.')}{RESET}")
     if not state["explo"]:
-        lignes.append(f" {DIM}L'exploration s'ouvre avec la leçon « Construire mon nid ».{RESET}")
+        lignes.append(f" {DIM}{tr('L’exploration s’ouvre avec la leçon « Construire mon nid ».')}{RESET}")
     else:
         zones = sorted({lieu(s["zone"]) for s in state["sauvages"]})
-        lignes.append(" Présences signalées : " + (", ".join(zones) if zones else "aucune pour l'instant"))
-        lignes.append(f" {DIM}Fiche d'une espèce : tg bestiaire <nom> · tout le bestiaire : tg site bestiaire{RESET}")
+        lignes.append(" " + tr("Présences signalées :") + " " + (", ".join(zones) if zones else tr("aucune pour l’instant")))
+        lignes.append(f" {DIM}{tr('Fiche d’une espèce : tg bestiaire <nom> · tout le bestiaire : tg site bestiaire')}{RESET}")
     return lignes
 
 
