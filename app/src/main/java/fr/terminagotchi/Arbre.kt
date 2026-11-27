@@ -19,9 +19,11 @@ object Arbre {
     fun trouve(jeu: Jeu, nom: String): File? =
         jeu.home.walkTopDown().maxDepth(5).firstOrNull { it.isFile && it.name == nom }
 
-    val ORDRE = listOf("telephone", "systeme", "tuyaux", "port", "scripts", "createur")
+    val ORDRE = listOf("telephone", "systeme", "tuyaux", "port", "scripts", "createur") + Mondes.ORDRE
 
-    fun creer(jeu: Jeu): Map<String, Branche> {
+    fun creer(jeu: Jeu): Map<String, Branche> = base(jeu) + Mondes.branches()
+
+    private fun base(jeu: Jeu): Map<String, Branche> {
         val dossierJeu = File(jeu.terrain, "jeu")
         return linkedMapOf(
             "telephone" to Branche("telephone", "Téléphone", "📱", "Agilité", "piloter ton téléphone au clavier", listOf(

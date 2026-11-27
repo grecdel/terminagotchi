@@ -18,7 +18,9 @@ class Etape(
     val astuce: String? = null,
 )
 
-class Lecon(val titre: String, val skill: String, val niveau: Int, val etapes: List<Etape>)
+/** prep : fichiers d'exercice (chemin relatif au terrain → contenu) créés quand la leçon commence. */
+class Lecon(val titre: String, val skill: String, val niveau: Int, val etapes: List<Etape>,
+            val prep: Map<String, String> = emptyMap())
 
 /** Règles communes : catégories, compétences, textes, piège anti copier-coller. */
 object Regles {
@@ -507,6 +509,21 @@ class Jeu(ctx: Context) {
             a.put("active", b)
             etape = 0
         }
+        preparerLecon()
+    }
+
+    /** Crée les fichiers d'exercice de la leçon en cours (sans écraser ce que le joueur a déjà). */
+    fun preparerLecon() {
+        val l = leconCourante() ?: return
+        for ((chemin, contenu) in l.prep) {
+            val f = File(terrain, chemin)
+            if (!f.exists()) try {
+                f.parentFile?.mkdirs()
+                f.writeText(contenu)
+            } catch (e: Exception) {
+                // terrain inaccessible : la leçon le signalera
+            }
+        }
     }
 
     fun leconCourante(): Lecon? {
@@ -555,6 +572,7 @@ class Jeu(ctx: Context) {
                 }
             }
         }
+        preparerLecon()                 // les fichiers de la leçon suivante sont prêts tout de suite
         ajouterXp(20)
         dire(msg, 14)
         return false
@@ -563,6 +581,7 @@ class Jeu(ctx: Context) {
     fun leconTick(ligne: String?, colle: Boolean) {
         val l = leconCourante() ?: return
         if (niveau < l.niveau) return
+        preparerLecon()
         val e = l.etapes[etape]
         if (ligne != null && !colle && !Regles.estColle(ligne) && e.re?.containsMatchIn(ligne.trim()) == true) {
             if (!avancer(l)) return

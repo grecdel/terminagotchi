@@ -187,7 +187,8 @@ ARBRE = {
              "bravo": "Pas de certificat, pas de chiffrement : en http:// chaque relais peut lire. Le cadenas, ça compte !"},
         ]},
     ]},
-    "Git": {"stat": "Intelligence", "icone": "🌿", "desc": "garder l'histoire de ses fichiers (git requis)", "lecons": [
+    "Git": {"stat": "Intelligence", "icone": "⏳",
+            "desc": "la Bibliothèque du Temps : git, remonter le temps de ses fichiers (git requis)", "lecons": [
         {"titre": "Mon premier dépôt", "skill": "Archiviste", "steps": [
             {"dit": "Depuis le terrain, crée un carnet magique qui se souvient de tout.",
              "cmd": "git init carnet", "fs": "carnet",
@@ -321,6 +322,11 @@ ARBRE["Android"] = {"stat": "Agilité", "icone": "📱", "desc": "piloter ton t�
 ]}
 
 
+from .mondes import MONDES  # noqa: E402  (les mondes avancés du Terminaworld)
+
+ARBRE.update(MONDES)
+
+
 def branche_dispo(b):
     return not ARBRE[b].get("android") or OSK == "android"
 
@@ -385,12 +391,42 @@ def avancer(state, les):
     return False
 
 
+def preparer(les):
+    """Crée les fichiers d'exercice d'une leçon dans le terrain (sans écraser ce que le joueur a déjà)."""
+    for chemin, contenu in (les.get("prep") or {}).items():
+        f = T / chemin
+        if not f.exists():
+            try:
+                f.parent.mkdir(parents=True, exist_ok=True)
+                f.write_text(contenu, encoding="utf-8")
+            except OSError:
+                pass
+
+
+def fs_ok(step):
+    """Vérifie l'état du terrain : nom d'une vérification (FS), ou « existe » / « absent » / « contient »."""
+    if "fs" in step:
+        return FS[step["fs"]]()
+    if "existe" in step:
+        return (T / step["existe"]).exists()
+    if "absent" in step:
+        return not (T / step["absent"]).exists()
+    if "contient" in step:
+        chemin, texte = step["contient"]
+        try:
+            return texte in (T / chemin).read_text(encoding="utf-8", errors="replace")
+        except OSError:
+            return False
+    return False
+
+
 def tick(state, lines):
     les, _ = lecon_courante(state)
     if not les or core.level(state["xp"]) < les["niveau"]:
         return
     if state.get("annonce") != les["titre"]:
         state["annonce"] = les["titre"]
+        preparer(les)
         core.say(state, "J'ai quelque chose à t'apprendre !", 10)
     for line in (l for l in lines if not est_colle(l)):
         step = les["steps"][state["step"]]
@@ -398,5 +434,5 @@ def tick(state, lines):
             if not avancer(state, les):
                 return
     step = les["steps"][state["step"]]
-    if "fs" in step and FS[step["fs"]]():
+    if fs_ok(step):
         avancer(state, les)
