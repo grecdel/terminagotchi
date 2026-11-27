@@ -77,6 +77,11 @@ def prompt(etape):
     sortie = []
 
     def rendre(state):
+        from . import carte
+        try:
+            carte.visiter(state, os.getcwd())      # la carte se dévoile là où tu vas
+        except OSError:
+            pass
         s = ligne(state)
         if state["config"]["compagnon"] == "coin":
             s = coin(state) + s

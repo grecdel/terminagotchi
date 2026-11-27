@@ -451,6 +451,7 @@ AIDE = """Terminagotchi — utilisation :
   tg dressage                  la fenêtre du face-à-face (s'ouvre toute seule quand un monstre apparaît)
   tg anime <nom> [animation]   la voir bouger : statique, mange, attaque, salut, parle, dort, content,
                                affame, confus, colere, victoire, ko, evolution
+  tg carte                     la carte du terrain de jeu, qui se dévoile au fil de tes découvertes
   tg entrainement [discipline]  la salle d'entraînement : séances chronométrées, badges Bit → Exa
                                (reperer, fichiers, lire, tuyaux, systeme · « stop » pour arrêter)
   tg compte partage on|off     montrer (ou non) tes captures dans la galerie du site
@@ -479,7 +480,7 @@ def main():
         faits = compagnon.desinstaller()
         print("Retiré de :\n  " + "\n  ".join(faits) if faits else "Rien à retirer.")
         return
-    if mode in ("compte", "sync", "drapeau", "lexique", "site", "bestiaire", "collection", "troupe", "anime"):
+    if mode in ("compte", "sync", "drapeau", "lexique", "site", "bestiaire", "collection", "troupe", "anime", "carte"):
         creer_si_besoin()
         if mode == "troupe":
             if len(args) > 1:
@@ -493,6 +494,10 @@ def main():
             print(recense.site(args[1:]))
         elif mode == "bestiaire":
             print("\n".join(explo.fiche(core.load(), " ".join(args[1:]))))
+        elif mode == "carte":
+            from . import carte
+            st = core.modifier(lambda s: carte.visiter(s, os.getcwd()))
+            print("\n".join(carte.ecran(st)))
         elif mode == "collection":
             print("\n".join(explo.ecran_collection(core.load())))
         elif mode == "compte":

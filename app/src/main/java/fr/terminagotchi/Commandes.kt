@@ -53,7 +53,8 @@ class Commandes(
             "applis" -> applis(reste)
             "ouvre" -> ouvre(reste)
             "web" -> web(reste)
-            "carte" -> lancer(Intent(Intent.ACTION_VIEW, Uri.parse("geo:0,0?q=" + Uri.encode(reste))),
+            "carte" -> if (reste.isBlank()) Reponse(Carte.texte(jeu), couleur = JAUNE)    // la carte du terrain de jeu
+                else lancer(Intent(Intent.ACTION_VIEW, Uri.parse("geo:0,0?q=" + Uri.encode(reste))),
                 "🗺 Je cherche « $reste » dans les cartes.", "carte gare de lyon", reste)
             "appelle" -> lancer(Intent(Intent.ACTION_DIAL, Uri.parse("tel:" + Uri.encode(reste))),
                 "📞 Le numéro est prêt : c'est toi qui appuies sur Appeler.", "appelle 0612345678", reste)
