@@ -443,6 +443,7 @@ class TerminalActivity : Activity() {
         Explo.verifier(jeu)?.let { ecrire(it, 0xFFFF87FF.toInt()) }
         Dressage.verifier(jeu, ligne, etaitColle)?.let { ecrire(it, 0xFFFF87FF.toInt()); saut = 8 }
         Equipe.apresCommande(jeu, etaitColle || etaitRappel)?.let { ecrire(it, 0xFFFFAF00.toInt()) }
+        Carte.visiter(jeu, shell.dossier)?.let { ecrire(it, 0xFFFFD787.toInt()) }
         if (!etaitColle && !etaitRappel && Explo.debloquee(jeu) && !Dressage.actif(jeu) && Random.nextInt(25) == 0) {
             Explo.spawn(jeu)                       // en jouant, un monstre peut surgir
         }
