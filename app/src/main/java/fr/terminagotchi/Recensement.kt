@@ -94,7 +94,7 @@ object Recensement {
             .put("partage", c.optJSONObject("partage") ?: JSONObject().put("actif", false).put("date", 0))
             .put("valeurs", JSONObject()
                 .put("nom", jeu.nom).put("nomDate", c.optLong("nomDate"))
-                .put("trait", jeu.trait).put("forme", jeu.forme ?: JSONObject.NULL).put("shiny", jeu.shiny)
+                .put("trait", jeu.trait).put("forme", jeu.forme ?: JSONObject.NULL).put("oeuf", jeu.oeuf).put("familier", jeu.familier).put("shiny", jeu.shiny)
                 .put("faim", jeu.faim).put("faimDate", c.optLong("repas")))
         enCours = true
         return Preparation(cle, c.optString("serveur"), charge, snap)
@@ -154,7 +154,9 @@ object Recensement {
         }
         srv.optString("trait").takeIf { it.isNotEmpty() }?.let { jeu.trait = it }
         if (!srv.isNull("forme")) srv.optString("forme").takeIf { it in Regles.STATS }?.let { jeu.forme = it }
-        if (jeu.stade >= 2 && jeu.forme == null) jeu.forme = jeu.dominant()
+        srv.optString("oeuf").takeIf { it.isNotEmpty() && Bestiaire.nomOeuf(it).isNotEmpty() }?.let { jeu.oeuf = it }
+        srv.optString("familier").takeIf { Bestiaire.espece(it) != null }?.let { jeu.familier = it }
+        if (jeu.stade >= Regles.STADE_FORME && jeu.forme == null) jeu.forme = jeu.dominant()
         if (srv.optLong("faimDate") > c.optLong("repas")) {
             jeu.faim = srv.optDouble("faim", jeu.faim)
             c.put("repas", srv.optLong("faimDate"))

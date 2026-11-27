@@ -92,17 +92,17 @@ object Sprites {
 
     fun lignes(jeu: Jeu): List<String> = when (jeu.stade) {
         0 -> OEUF
-        1 -> BEBE
+        1, 2 -> BEBE
         else -> {
             val f = jeu.forme ?: jeu.dominant()
-            if (jeu.stade == 2) ADO_TETE.getValue(f) + overlay(ADO, ADO_CORPS[f])
+            if (jeu.stade == 3) ADO_TETE.getValue(f) + overlay(ADO, ADO_CORPS[f])
             else ADULTE_TETE.getValue(f) + overlay(ADULTE, ADULTE_CORPS[f])
         }
     }
 
     fun couleurCorps(jeu: Jeu): Int {
         val f = jeu.forme
-        if (f != null && jeu.stade >= 2) return Regles.COULEUR.getValue(f)
+        if (f != null && jeu.stade >= Regles.STADE_FORME) return Regles.COULEUR.getValue(f)
         if (jeu.stats.values.all { it == 0 }) return 141
         return Regles.COULEUR.getValue(jeu.dominant())
     }
@@ -130,12 +130,22 @@ object Sprites {
         return Color.rgb(g, g, g)
     }
 
-    /** Dessine la créature sur un cadre fixe de 18×16 pixels (pour qu'elle ne « saute » pas en grandissant). */
+    /** Le vrai dessin de la créature (œuf coloré, puis son espèce à chaque stade), ou null : ancien dessin. */
+    private fun dessin(jeu: Jeu): Pair<List<String>, Map<Char, Int>>? {
+        if (jeu.stade == 0) {
+            val o = Bestiaire.oeuf(jeu.oeuf) ?: return null
+            return OEUF to mapOf('w' to o.coquille, 's' to o.taches)
+        }
+        return Bestiaire.familier(jeu.familier, jeu.stade, jeu.shiny)
+    }
+
+    /** Dessine la créature sur un cadre fixe de 22×21 pixels (pour qu'elle ne « saute » pas en grandissant). */
     fun bitmap(jeu: Jeu, echelle: Int, cligne: Boolean = false): Bitmap {
-        val rows = lignes(jeu)
-        val pal = palette(jeu, cligne)
-        val largeur = 18
-        val hauteur = 16
+        val vrai = dessin(jeu)
+        val rows = vrai?.first ?: lignes(jeu)
+        val pal256 = palette(jeu, cligne)
+        val largeur = 22
+        val hauteur = 21
         val bmp = Bitmap.createBitmap(largeur * echelle, hauteur * echelle, Bitmap.Config.ARGB_8888)
         val c = Canvas(bmp)
         val p = Paint()
@@ -147,9 +157,9 @@ object Sprites {
             ((ox + w - 1) * echelle).toFloat(), ((hauteur - 0.4f) * echelle)), p)
         rows.forEachIndexed { j, row ->
             row.forEachIndexed { i, ch ->
-                val code = pal[ch]
+                val code = if (vrai != null) vrai.second[ch] else pal256[ch]?.let { x256(it) }
                 if (code != null) {
-                    p.color = x256(code)
+                    p.color = code
                     c.drawRect(((ox + i) * echelle).toFloat(), ((oy + j) * echelle).toFloat(),
                         ((ox + i + 1) * echelle).toFloat(), ((oy + j + 1) * echelle).toFloat(), p)
                 }

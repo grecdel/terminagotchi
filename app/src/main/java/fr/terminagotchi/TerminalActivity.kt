@@ -578,7 +578,7 @@ class TerminalActivity : Activity() {
     private fun icone(): String = when (jeu.stade) {
         0 -> "🥚"
         1 -> "🐣"
-        2 -> "🐥"
+        2, 3 -> "🐥"
         else -> "🐲"
     }
 

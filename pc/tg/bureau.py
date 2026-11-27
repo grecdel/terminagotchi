@@ -198,7 +198,7 @@ class Bureau:
     def _fiche(self, st):
         lvl = core.level(st["xp"])
         stade = core.stage(lvl)
-        forme = core.STAGES[stade] + (f" {core.FORMES[st['branch']]}" if stade >= 2 and st.get("branch") else "")
+        forme = core.forme(st)
         lignes = [f"{forme} · {st['xp']} XP", f"caractère : {st['trait']}",
                   "  ".join(f"{v['short']} {st['stats'][v['stat']]}" for v in core.CATEGORIES.values()),
                   f"compétences : {len(st['skills'])} · bestioles : {sum(st['collection'].values())}"]

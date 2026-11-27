@@ -195,7 +195,8 @@ def log(state, msg):
 
 # ================================================================ progression
 
-STAGES = ["Œuf", "Bébé", "Ado", "Adulte"]
+STAGES = ["Œuf", "Bébé", "Enfant", "Ado", "Adulte", "Ancien"]
+STAGE_FORME = 3            # la forme (Hacker, Titan, Éclair, Carapace) se décide à l'adolescence
 FORMES = {"Intelligence": "Hacker", "Force": "Titan", "Agilité": "Éclair", "Endurance": "Carapace"}
 
 
@@ -204,7 +205,23 @@ def level(xp):
 
 
 def stage(lvl):
-    return 0 if lvl < 2 else 1 if lvl < 5 else 2 if lvl < 10 else 3
+    """0 œuf · 1 bébé · 2 enfant · 3 ado · 4 adulte · 5 ancien"""
+    return 0 if lvl < 2 else 1 if lvl < 3 else 2 if lvl < 5 else 3 if lvl < 10 else 4 if lvl < 20 else 5
+
+
+def forme(state):
+    """« Ado Carapace », « Bébé »… : le stade et, dès l'adolescence, la forme."""
+    st = stage(level(state["xp"]))
+    f = f" {FORMES[state['branch']]}" if st >= STAGE_FORME and state.get("branch") else ""
+    return STAGES[st] + f
+
+
+def eclore(state):
+    """L'œuf éclot : la créature est tirée au hasard parmi celles que cet œuf peut donner."""
+    from . import bestiaire
+    if not state.get("familier"):
+        state["familier"] = bestiaire.tirer_familier(state.get("oeuf"), random)
+    return state["familier"]
 
 
 def dominant(state):
@@ -216,7 +233,8 @@ def dominant(state):
 
 def new_state(name):
     now = time.time()
-    return {"name": name, "shiny": random.randrange(64) == 0, "born": now, "last_tick": now, "xp": 0, "hunger": 80.0, "total": 0,
+    from . import bestiaire
+    return {"name": name, "shiny": random.randrange(64) == 0, "born": now, "oeuf": bestiaire.tirer_oeuf(random), "last_tick": now, "xp": 0, "hunger": 80.0, "total": 0,
             "stats": {v["stat"]: 0 for v in CATEGORIES.values()}, "seen": [], "log": [],
             "offsets": {}, "version": VERSION}
 
@@ -229,8 +247,13 @@ def migrate(state):
                 "prompt_vu": 0, "config": {}, "compte": {}, "repas_t": 0, "captures": [], "shiny": False}
     for k, v in defaults.items():
         state.setdefault(k, v)
-    if stage(level(state["xp"])) >= 2 and not state.get("branch"):
+    if stage(level(state["xp"])) >= STAGE_FORME and not state.get("branch"):
         state["branch"] = dominant(state)
+    from . import bestiaire
+    if not state.get("oeuf"):                    # sauvegardes d'avant les 9 œufs
+        state["oeuf"] = bestiaire.tirer_oeuf(random.Random(state.get("name", "") + str(state.get("born", 0))))
+    if stage(level(state["xp"])) >= 1 and not state.get("familier"):
+        eclore(state)
     for k, v in {"notifs": True, "permanente": True, "compagnon": "ligne", "bulle": True}.items():
         state["config"].setdefault(k, v)
     from . import bestiaire
@@ -246,13 +269,16 @@ def add_xp(state, n):
     if new <= old:
         return
     if stage(new) > stage(old):
-        if stage(new) == 1:
-            log(state, "✨ L'œuf a éclos !")
+        if stage(old) == 0:
+            from . import bestiaire
+            e = bestiaire.espece(eclore(state))
+            o = bestiaire.oeuf(state.get("oeuf"))
+            log(state, f"✨ L'œuf {o['nom'] if o else ''} a éclos : c'est un {e['nom'] if e else 'bébé'} !")
             say(state, "Bonjour le monde ! … C'est comme ça qu'on dit, non ?", 10)
-        else:
-            if not state.get("branch"):
-                state["branch"] = dominant(state)
-            log(state, f"✨ ÉVOLUTION → {STAGES[stage(new)]} {FORMES[state['branch']]} !")
+        if stage(new) >= STAGE_FORME and not state.get("branch"):
+            state["branch"] = dominant(state)
+        if stage(old) > 0:
+            log(state, f"✨ ÉVOLUTION → {forme(state)} !")
             say(state, "Waouh… je me sens différent !", 10)
     else:
         log(state, f"⬆ Niveau {new} !")

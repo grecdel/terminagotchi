@@ -59,7 +59,9 @@ object Regles {
         "Ingénieur" to setOf("doom", "edite"),
     )
 
-    val STADES = listOf("Œuf", "Bébé", "Ado", "Adulte")
+    val STADES = listOf("Œuf", "Bébé", "Enfant", "Ado", "Adulte", "Ancien")
+    /** La forme (Hacker, Titan, Éclair, Carapace) se décide à l'adolescence. */
+    const val STADE_FORME = 3
     val FORMES = mapOf("Intelligence" to "Hacker", "Force" to "Titan", "Agilité" to "Éclair", "Endurance" to "Carapace")
 
     val TRAITS = mapOf(
@@ -101,11 +103,14 @@ object Regles {
 
     fun estColle(l: String) = l.any { it in PIEGES }
     fun niveau(xp: Int) = sqrt(xp / 10.0).toInt() + 1
+    /** 0 œuf · 1 bébé · 2 enfant · 3 ado · 4 adulte · 5 ancien */
     fun stade(n: Int) = when {
         n < 2 -> 0
-        n < 5 -> 1
-        n < 10 -> 2
-        else -> 3
+        n < 3 -> 1
+        n < 5 -> 2
+        n < 10 -> 3
+        n < 20 -> 4
+        else -> 5
     }
 
     fun premierMot(l: String): String =
@@ -233,6 +238,9 @@ class Jeu(ctx: Context) {
     var lecon = 0
     var etape = 0
     var forme: String? = null
+    /** L'œuf tiré au hasard (feu, eau, glace…) et l'espèce qui en est sortie. */
+    var oeuf: String = ""
+    var familier: String = ""
     var trait = Regles.TRAITS.keys.random()
     var bulle = ""
     var bulleFin = 0L
@@ -301,6 +309,14 @@ class Jeu(ctx: Context) {
 
     init {
         charger()
+        completer()
+    }
+
+    /** Œuf manquant (anciennes sauvegardes) ou créature déjà éclose sans espèce : on les tire au sort. */
+    fun completer() {
+        if (oeuf.isEmpty()) oeuf = Bestiaire.tirerOeuf()
+        if (stade >= 1 && familier.isEmpty()) familier = Bestiaire.tirerFamilier(oeuf)
+        if (stade >= Regles.STADE_FORME && forme == null) forme = dominant()
     }
 
     val existe: Boolean get() = nom.isNotEmpty()
@@ -336,6 +352,8 @@ class Jeu(ctx: Context) {
             lecon = o.optInt("lecon")
             etape = o.optInt("etape")
             forme = if (o.has("forme") && !o.isNull("forme")) o.getString("forme") else null
+            oeuf = o.optString("oeuf")
+            familier = o.optString("familier")
             trait = o.optString("trait", trait)
             bulle = o.optString("bulle")
             bulleFin = o.optLong("bulleFin")
@@ -363,6 +381,8 @@ class Jeu(ctx: Context) {
         o.put("lecon", lecon)
         o.put("etape", etape)
         o.put("forme", forme ?: JSONObject.NULL)
+        o.put("oeuf", oeuf)
+        o.put("familier", familier)
         o.put("trait", trait)
         o.put("bulle", bulle)
         o.put("bulleFin", bulleFin)
@@ -404,12 +424,15 @@ class Jeu(ctx: Context) {
         val apres = niveau
         if (apres <= avant) return
         if (Regles.stade(apres) > Regles.stade(avant)) {
-            if (Regles.stade(apres) == 1) {
-                log("✨ L'œuf a éclos !")
+            if (Regles.stade(avant) == 0) {
+                if (familier.isEmpty()) familier = Bestiaire.tirerFamilier(oeuf)
+                val e = Bestiaire.espece(familier)
+                log("✨ L'œuf ${Bestiaire.nomOeuf(oeuf)} a éclos : c'est un ${e?.nom ?: "bébé"} !")
                 dire("Bonjour le monde ! … C'est comme ça qu'on dit, non ?", 10)
-            } else {
-                if (forme == null) forme = dominant()
-                log("✨ ÉVOLUTION → ${Regles.STADES[Regles.stade(apres)]} ${Regles.FORMES[forme ?: ""] ?: ""} !")
+            }
+            if (Regles.stade(apres) >= Regles.STADE_FORME && forme == null) forme = dominant()
+            if (Regles.stade(avant) > 0) {
+                log("✨ ÉVOLUTION → ${Regles.STADES[Regles.stade(apres)]}${if (Regles.stade(apres) >= Regles.STADE_FORME) " " + (Regles.FORMES[forme ?: ""] ?: "") else ""} !")
                 dire("Waouh… je me sens différent !", 10)
             }
         } else {
@@ -562,7 +585,7 @@ class Jeu(ctx: Context) {
 
     fun titre(): String {
         val fo = forme
-        val f = if (stade >= 2 && fo != null) " ${Regles.FORMES[fo]}" else ""
+        val f = if (stade >= Regles.STADE_FORME && fo != null) " ${Regles.FORMES[fo]}" else ""
         return "$nom${if (shiny) " ✨" else ""} · ${Regles.STADES[stade]}$f · niv. $niveau"
     }
 

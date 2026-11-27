@@ -29,7 +29,7 @@ import json
 import random
 from pathlib import Path
 
-from PIL import Image
+from PIL import Image, ImageEnhance
 
 RACINE = Path(__file__).resolve().parent.parent
 B2 = RACINE / "donnees" / "bestiaire2"
@@ -88,10 +88,16 @@ def _hex(rgb):
     return "#%02x%02x%02x" % tuple(rgb)
 
 
-def pixels(img, taille, couleurs):
-    """Image détourée → lignes de symboles + palette (le point « . » = transparent)."""
+def pixels(img, taille, couleurs, net=1.0):
+    """Image détourée → lignes de symboles + palette (le point « . » = transparent).
+    net > 1 : accentue contours et contrastes (utile pour les toutes petites tailles)."""
     im = img.copy()
     im.thumbnail((taille, taille), Image.LANCZOS)
+    if net != 1.0:
+        a = im.getchannel("A")
+        rgb = ImageEnhance.Contrast(ImageEnhance.Sharpness(im.convert("RGB")).enhance(net)).enhance(1 + (net - 1) / 3)
+        im = rgb.convert("RGBA")
+        im.putalpha(a)
     alpha = im.getchannel("A").point(lambda v: 255 if v > 110 else 0)
     if not alpha.getbbox():
         return [], {}
@@ -327,12 +333,60 @@ def rarete_individu(especes):
     return r
 
 
+# ---------------------------------------------------------------- les 9 œufs de la créature du joueur
+# id, nom, couleur de la coquille, couleur des taches, lieux de vie de la créature qui en sort
+OEUFS = [
+    ("feu", "Feu", "#ff8a3d", "#ffd23f", {"volcan", "lave", "cendres"}),
+    ("eau", "Eau", "#4fa3ff", "#bfe6ff", {"lagon", "abyssal", "corail", "eau pétillante"}),
+    ("glace", "Glace", "#cfefff", "#7fc8ff", {"glace", "toundra"}),
+    ("plante", "Plante", "#5fcf5f", "#e8f59a", {"forêt", "jungle", "prairie", "champignonnière"}),
+    ("roche", "Roche", "#a08a70", "#6b5a48", {"montagne", "canyon", "désert", "sable", "cristal", "ruines"}),
+    ("ciel", "Ciel", "#f4f0ff", "#ffd75f", {"nuage", "orage", "aurore", "soleil", "lune", "cosmique"}),
+    ("ombre", "Ombre", "#4a3a66", "#b48cff", {"ombre", "crypte", "brume", "ossuaire"}),
+    ("machine", "Machine", "#b8bcc8", "#ff9f40", {"mécanique", "rouille", "néon", "arcane"}),
+    ("poison", "Poison", "#9b4fd0", "#9cff57", {"toxique", "marais"}),
+]
+# taille (en pixels) de la créature du joueur à chaque stade : elle grandit vraiment
+TAILLE_FAMILIER = {"bebe": 12, "enfant": 14, "ado": 16, "adulte": 18, "ancien": 20}
+
+
+def oeufs(especes):
+    """Chaque œuf donne une créature (commune ou peu commune) dont le premier lieu de vie lui correspond ;
+    on élargit au deuxième lieu de vie si l'œuf a trop peu de candidates."""
+    out = []
+    for oid, nom, coquille, taches, lieux in OEUFS:
+        ok = lambda e, n: e["rarete"] in ("commune", "peu commune") and set(e.get("lieux_de_vie", [])[:n]) & lieux
+        pool = [e for e in especes if ok(e, 1)]
+        if len(pool) < 6:
+            pool = [e for e in especes if ok(e, 2)]
+        out.append({"id": oid, "nom": nom, "coquille": coquille, "taches": taches,
+                    "especes": [e["id"] for e in pool]})
+    return out
+
+
+def dessins_familier(e):
+    """La créature du joueur à ses 5 stades, de plus en plus grande (classique)."""
+    base = f"{e['numero']:03d}_{e['id']}_classique"
+    out = {}
+    for st, t in TAILLE_FAMILIER.items():
+        if not t:
+            continue
+        l, p = pixels(ouvrir(f"{base}_{st}"), t, 16, net=2.2)
+        out[st] = {"l": l, "p": p}
+    return out
+
+
 def generer():
     liste = json.loads((B2 / "bestiaire.json").read_text(encoding="utf-8"))
     complet = fiches_completes()
     especes = [espece(e, complet[e["id"]]) for e in liste]
     assert len(especes) == 150
     assert len({e["nom"].lower() for e in especes}) == 150, "noms en double"
+    les_oeufs = oeufs(especes)
+    dans_un_oeuf = {i for o in les_oeufs for i in o["especes"]}
+    for e in especes:
+        if e["id"] in dans_un_oeuf:
+            e["familier"] = dessins_familier(e)
     especes += secretes()
     anciens = json.loads((RACINE / "donnees" / "anciens_noms.json").read_text(encoding="utf-8"))
     par_numero = {e["numero"]: e["nom"] for e in especes}
@@ -349,6 +403,7 @@ def generer():
         "humeurs": HUMEURS,
         # ancien nom → nouveau nom (même numéro) : les vieilles sauvegardes gardent leurs bestioles
         "anciens": {vieux: par_numero[n] for vieux, n in anciens.items() if n in par_numero},
+        "oeufs": les_oeufs,
         "especes": especes,
     }
 
@@ -360,7 +415,7 @@ def ecrire(donnees):
     assets = RACINE / "app" / "src" / "main" / "assets"
     assets.mkdir(parents=True, exist_ok=True)
     (assets / "bestiaire.json").write_text(texte, encoding="utf-8")
-    leger = dict(donnees, especes=[{k: v for k, v in e.items() if k != "dessins"} for e in donnees["especes"]])
+    leger = dict(donnees, especes=[{k: v for k, v in e.items() if k not in ("dessins", "familier")} for e in donnees["especes"]])
     (RACINE / "site" / "src" / "bestiaire.js").write_text(
         "// Généré par donnees/generer_bestiaire.py — ne pas modifier à la main.\nexport default "
         + json.dumps(leger, ensure_ascii=False, separators=(",", ":")) + ";\n", encoding="utf-8")

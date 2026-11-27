@@ -89,7 +89,7 @@ def resume(state):
     """Texte de la notification permanente."""
     lvl = core.level(state["xp"])
     st = core.stage(lvl)
-    forme = core.STAGES[st] + (f" {core.FORMES[state['branch']]}" if st >= 2 and state.get("branch") else "")
+    forme = core.forme(state)
     titre = f"{state['name']} · {forme} · niv. {lvl}"
     lignes = [f"Faim {sprites.bar(state['hunger'], 100, 8)}  {core.mood(state['hunger'])}"]
     les, etiq = lecons.lecon_courante(state)
