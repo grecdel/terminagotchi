@@ -10,7 +10,11 @@ import java.util.Locale
  * Le français est la langue d'origine ; un texte sans traduction reste en français.
  */
 object Langue {
-    val LANGUES = linkedMapOf("fr" to "Français", "en" to "English")
+    private val NOMS = linkedMapOf("fr" to "Français", "en" to "English", "es" to "Español", "de" to "Deutsch",
+        "it" to "Italiano", "pt" to "Português", "zh" to "中文", "ru" to "Русский", "ja" to "日本語", "hi" to "हिन्दी",
+        "ar" to "العربية", "bn" to "বাংলা", "id" to "Bahasa Indonesia", "ur" to "اردو")
+    /** Le français + chaque langue dont le catalogue assets/i18n/<code>.json est livré avec l'appli. */
+    val LANGUES = linkedMapOf("fr" to "Français")
     var code = "fr"
         private set
     private var textes: Map<String, String> = emptyMap()
@@ -23,6 +27,8 @@ object Langue {
     fun init(c: Context, partieExistante: Boolean) {
         if (ctx != null) return
         ctx = c.applicationContext
+        val livres = try { c.assets.list("i18n")?.map { it.removeSuffix(".json") } ?: emptyList() } catch (e: Exception) { emptyList() }
+        for ((k, v) in NOMS) if (k in livres) LANGUES[k] = v
         val choisie = try { fichier(c).readText().trim() } catch (e: Exception) { "" }
         val defaut = if (partieExistante) "fr" else Locale.getDefault().language
         charger(choisie.ifEmpty { defaut })

@@ -9,7 +9,25 @@ import os
 import pkgutil
 import re
 
-LANGUES = {"fr": "Français", "en": "English"}
+NOMS = {"fr": "Français", "en": "English", "es": "Español", "de": "Deutsch", "it": "Italiano", "pt": "Português",
+        "zh": "中文", "ru": "Русский", "ja": "日本語", "hi": "हिन्दी", "ar": "العربية", "bn": "বাংলা", "id": "Bahasa Indonesia",
+        "ur": "اردو"}
+
+
+def _disponibles():
+    """Le français, plus chaque langue dont le catalogue i18n/<code>.json est livré avec le jeu."""
+    codes = ["fr"]
+    for c in NOMS:
+        if c != "fr":
+            try:
+                if pkgutil.get_data(__package__, f"i18n/{c}.json"):
+                    codes.append(c)
+            except (OSError, ValueError):
+                pass
+    return {c: NOMS[c] for c in codes}
+
+
+LANGUES = _disponibles()
 _CATALOGUE = None
 _LANGUE = None
 
