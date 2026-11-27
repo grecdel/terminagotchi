@@ -114,17 +114,18 @@ object Explo {
         val connue = e != null && coll.optInt(e.nom) > 0
         if (e == null || (e.secrete && !connue)) return "Aucune espèce ne s'appelle « $nom ». Les 150 sont sur le site : site bestiaire"
         val entete = "#%03d ".format(e.numero) + (if (!connue) "???" else if (e.rarete == "légendaire") "§${e.nom}§" else e.nom) +
-            " · ${e.rarete} · ${e.icone} ${e.famille}"
+            " · ${e.rarete.tr()} · ${e.icone} ${e.famille.tr()}"
         if (!connue) {
-            return "$entete\nTu ne l'as pas encore dressée.\nHabitat : ${Bestiaire.lieu(e.zone)} (${e.zone})\n" +
-                "Elle se montre ${e.frequence}, attirée par la commande « ${e.attireePar} »."
+            return "$entete\n" + "Tu ne l'as pas encore capturée.".tr() + "\n${"Habitat".tr()} : ${Bestiaire.lieu(e.zone)} (${e.zone})\n" +
+                "Elle se montre {f}, attirée par la commande « {c} ».".tr().replace("{f}", e.frequence.tr()).replace("{c}", e.attireePar)
         }
         val dessin = if (Animations.dispo(e.id) || e.dessins != null) "¤${e.id}+¤\n" else "¤${e.id}¤ "     // version détaillée pour la fiche
-        return "$dessin$entete\n${e.description}\n${e.comportement}\n" +
-            "Capacité : ${e.capacite} · stat favorite : ${e.stat}\n" +
-            "Taille ~${e.tailleCm} cm · poids ~${e.poidsKo} Ko\n" +
+        return "$dessin$entete\n${e.description.tr()}\n${e.comportement.tr()}\n" +
+            "${"Capacité".tr()} : ${e.capacite.tr()} · ${"stat favorite".tr()} : ${e.stat.tr()}\n" +
+            "${"Taille".tr()} ~${e.tailleCm} cm · ${"poids".tr()} ~${e.poidsKo} Ko\n" +
             e.stats.entries.joinToString("  ") { "${it.key} ${it.value}" } + "\n" +
-            "Habitat : ${Bestiaire.lieu(e.zone)} · attirée par « ${e.attireePar} »\nTu en as dressé ${coll.optInt(e.nom)}."
+            "${"Habitat".tr()} : ${Bestiaire.lieu(e.zone)} · ${"attirée par".tr()} « ${e.attireePar} »\n" +
+            "Tu en as dressé {n}.".tr().replace("{n}", "${coll.optInt(e.nom)}")
     }
 }
 

@@ -367,6 +367,6 @@ object Bestiaire {
     fun lieu(zone: String): String {
         val base = zone.substringBefore('/')
         val prof = zone.count { it == '/' }.coerceAtMost(3)
-        return (HABITATS[base] ?: base) + listOf("", " (un recoin)", " (une cachette)", " (le sanctuaire)")[prof]
+        return (HABITATS[base] ?: base).tr() + listOf("", " (un recoin)", " (une cachette)", " (le sanctuaire)")[prof].tr()
     }
 }
