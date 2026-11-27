@@ -39,7 +39,8 @@ object Bestiaire {
     )
     val XP = mapOf("commune" to 15, "peu commune" to 25, "rare" to 40, "légendaire" to 100)
     val COULEUR_RARETE = mapOf("commune" to 0xFFB0B0C0.toInt(), "peu commune" to 0xFF5FD787.toInt(),
-        "rare" to 0xFF5FAFFF.toInt(), "légendaire" to 0xFFFFAF00.toInt())
+        "rare" to 0xFF5FAFFF.toInt(), "épique" to 0xFFC77DFF.toInt(), "légendaire" to 0xFFFFAF00.toInt(),
+        "mythique" to 0xFFFF5F87.toInt())
 
     var especes: List<Espece> = emptyList()
         private set
@@ -53,6 +54,9 @@ object Bestiaire {
     private var version = 1
     /** Noms de l'ancien bestiaire → nouveaux noms (même numéro). */
     private var anciens: Map<String, String> = emptyMap()
+    /** Règles de la rareté d'un individu (« rarete_individu » de bestiaire.json). */
+    private var regleRang: JSONObject = JSONObject()
+    private val puissance = HashMap<String, Int>()
     private val images = HashMap<String, Bitmap>()
 
     fun charger(ctx: Context) {
@@ -67,6 +71,7 @@ object Bestiaire {
             chanceShiny = o.optInt("chance_shiny", 100)
             version = o.optInt("version", 1)
             o.optJSONObject("lieux")?.let { l -> l.keys().forEach { HABITATS[it] = l.getString(it) } }
+            regleRang = o.optJSONObject("rarete_individu") ?: JSONObject()
             anciens = o.optJSONObject("anciens")?.let { a -> a.keys().asSequence().associateWith { a.getString(it) } } ?: emptyMap()
             val ma = o.getJSONArray("marques")
             marques = (0 until ma.length()).map { ma.getString(it) }
@@ -81,6 +86,7 @@ object Bestiaire {
                     return p.keys().asSequence().associate { it[0] to Color.parseColor(p.getString(it)) }
                 }
                 val st = e.getJSONObject("stats")
+                puissance[e.getString("id")] = e.optInt("puissance", 1)
                 Espece(
                     e.getString("id"), e.getInt("numero"), e.getString("nom"), e.getString("famille"),
                     e.getString("icone"), e.getString("rarete"), e.getString("stat"), e.getString("description"),
@@ -239,11 +245,66 @@ object Bestiaire {
         return bmp
     }
 
-    /** Le dessin d'un individu de la troupe : son stade, sa forme et sa teinte shiny. */
+    /** Le dessin d'un individu de la troupe : son stade, sa forme, sa teinte shiny et l'aura de sa rareté. */
     fun dessinIndividu(ind: JSONObject, echelle: Int = 4): Bitmap? {
         val e = espece(ind.optString("espece")) ?: return null
         val teinte = if (ind.optBoolean("shiny")) ind.optDouble("teinte", 0.5) else 0.0
-        return dessin(e, ind.optString("variante", "classique"), ind.optString("stade", "enfant"), teinte, echelle)
+        return dessinRang(e, ind.optString("variante", "classique").ifEmpty { "classique" },
+            ind.optString("stade", "enfant"), teinte, rangIndividu(ind), echelle)
+    }
+
+    /** Dessin détaillé entouré de l'aura de sa rareté (rare et plus). */
+    fun dessinRang(e: Espece, variante: String, stade: String, teinte: Double, rang: String, echelle: Int = 4): Bitmap? {
+        val b = dessin(e, variante, stade, teinte, echelle) ?: return null
+        if (rang !in setOf("rare", "épique", "légendaire", "mythique")) return b
+        val cle = "${e.id}-$variante-$stade-$teinte-$echelle-$rang"
+        images[cle]?.let { return it }
+        return aura(b, COULEUR_RARETE[rang] ?: Color.WHITE, echelle).also { images[cle] = it }
+    }
+
+    /** Contour lumineux d'un pixel autour de la silhouette. */
+    private fun aura(b: Bitmap, couleur: Int, echelle: Int): Bitmap {
+        val out = b.copy(Bitmap.Config.ARGB_8888, true)
+        val n = b.width / echelle
+        val plein = Array(n) { y -> BooleanArray(n) { x -> Color.alpha(b.getPixel(x * echelle, y * echelle)) > 0 } }
+        val cv = Canvas(out)
+        val p = Paint().apply { color = couleur }
+        for (y in 0 until n) for (x in 0 until n) {
+            if (plein[y][x]) continue
+            val bord = (x > 0 && plein[y][x - 1]) || (x < n - 1 && plein[y][x + 1]) ||
+                (y > 0 && plein[y - 1][x]) || (y < n - 1 && plein[y + 1][x])
+            if (bord) cv.drawRect((x * echelle).toFloat(), (y * echelle).toFloat(),
+                ((x + 1) * echelle).toFloat(), ((y + 1) * echelle).toFloat(), p)
+        }
+        return out
+    }
+
+    /** Note sur 100 d'un individu : 60 % stats (en centile), 25 % rareté de sa forme, 15 % puissance, +10 shiny. */
+    fun noteIndividu(ind: JSONObject): Int {
+        val e = espece(ind.optString("espece")) ?: return 0
+        val po = regleRang.optJSONObject("poids") ?: JSONObject("""{"stats":60,"variante":25,"puissance":15,"bonus_shiny":10}""")
+        val pot = ind.optInt("potentiel", 50).coerceIn(0, 100)
+        val stats = regleRang.optJSONArray("centiles")?.optDouble(pot) ?: (pot / 100.0)
+        val max = e.variantes.values.maxOrNull() ?: 100.0
+        val ch = e.variantes[ind.optString("variante", "classique")] ?: max
+        var note = po.optDouble("stats") * stats + po.optDouble("variante") * (1 - ch / max) +
+            po.optDouble("puissance") * ((puissance[e.id] ?: 1) - 1) / 14.0
+        if (ind.optBoolean("shiny")) note += po.optDouble("bonus_shiny")
+        return Math.round(minOf(100.0, note)).toInt()
+    }
+
+    /** Rareté propre à un individu : commune, peu commune, rare, épique, légendaire (ou mythique). */
+    fun rangIndividu(ind: JSONObject): String {
+        val e = espece(ind.optString("espece")) ?: return "commune"
+        regleRang.optJSONObject("speciales")?.optString(e.id)?.takeIf { it.isNotEmpty() }?.let { return it }
+        val note = noteIndividu(ind)
+        var rang = "commune"
+        val pa = regleRang.optJSONArray("paliers") ?: return rang
+        for (i in 0 until pa.length()) {
+            val x = pa.getJSONArray(i)
+            if (note >= x.getDouble(0)) rang = x.getString(1)
+        }
+        return rang
     }
 
     fun nomVariante(v: String?) = if (v.isNullOrEmpty() || v == "classique") "" else v.replace('_', ' ')

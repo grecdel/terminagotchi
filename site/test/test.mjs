@@ -162,6 +162,10 @@ r = await appel("POST", "/api/sync", { cle: clePc, corps: { appareil: "pc", part
 verifier(r.j.etat.partage.actif === true, "accord de partage enregistré");
 r = await appel("GET", "/captures");
 verifier(r.t.includes("une étoile sur le front") && r.t.includes("Ricanos") && r.t.includes("class=\"rgb\""), "galerie : captures visibles, écriture RGB");
+r = await appel("GET", "/captures");
+verifier(/\d+\/100/.test(r.t) && r.t.includes("épique"), "galerie : rareté propre à chaque individu (note sur 100)");
+r = await appel("GET", "/captures?rarete=mythique");
+verifier(!r.t.includes("une étoile sur le front"), "galerie : filtre par rareté d'individu");
 r = await appel("GET", "/captures?shiny=1");
 verifier(r.t.includes("Ricanos") && !r.t.includes(">Runodrake<"), "galerie : filtre shiny");
 r = await appel("POST", "/api/sync", { cle: cleTel, corps: { appareil: "android", partage: { actif: false, date: 5 } } });

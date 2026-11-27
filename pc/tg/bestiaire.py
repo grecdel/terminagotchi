@@ -22,7 +22,8 @@ HABITATS = {
     "montagne": "la montagne", "bibliotheque": "la bibliothèque", "coffre": "le coffre-fort",
     "laboratoire": "le laboratoire", "arcade": "la salle d'arcade", "faille": "la faille", "grotte": "la grotte",
 }
-COULEUR_RARETE = {"commune": "#b0b0c0", "peu commune": "#5fd787", "rare": "#5fafff", "légendaire": "#ffaf00"}
+COULEUR_RARETE = {"commune": "#b0b0c0", "peu commune": "#5fd787", "rare": "#5fafff", "épique": "#c77dff",
+                  "légendaire": "#ffaf00", "mythique": "#ff5f87"}
 XP_RARETE = {"commune": 15, "peu commune": 25, "rare": 40, "légendaire": 100}
 
 
@@ -180,11 +181,76 @@ def decaler(palette, dec):
     return out
 
 
+def note_individu(ind):
+    """Note sur 100 d'un individu : 60 % qualité de ses stats (centile), 25 % rareté de sa forme, 15 % puissance de
+    l'espèce, +10 s'il est shiny (règles dans bestiaire.json, « rarete_individu »)."""
+    e = espece(ind.get("espece"))
+    if e is None:
+        return 0
+    r = donnees().get("rarete_individu", {})
+    po = r.get("poids", {"stats": 60, "variante": 25, "puissance": 15, "bonus_shiny": 10})
+    variantes = e.get("variantes") or [{"id": "classique", "chance": 100}]
+    chance_max = max(v["chance"] for v in variantes)
+    ch = next((v["chance"] for v in variantes if v["id"] == ind.get("variante", "classique")), chance_max)
+    cent = r.get("centiles")
+    pot = max(0, min(100, int(ind.get("potentiel", 50))))
+    stats = cent[pot] if cent else pot / 100              # en centile : 0,9 = mieux que 90 % des individus
+    forme = 1 - ch / chance_max
+    puissance = (e.get("puissance", 1) - 1) / 14
+    note = po["stats"] * stats + po["variante"] * forme + po["puissance"] * puissance
+    if ind.get("shiny"):
+        note += po["bonus_shiny"]
+    return round(min(100, note))
+
+
+def rang_individu(ind):
+    """Rareté propre à un individu : commune, peu commune, rare, épique, légendaire (ou mythique)."""
+    e = espece(ind.get("espece"))
+    r = donnees().get("rarete_individu", {})
+    if e and e["id"] in r.get("speciales", {}):
+        return r["speciales"][e["id"]]
+    note = note_individu(ind)
+    rang = "commune"
+    for seuil, nom in r.get("paliers", [[0, "commune"]]):
+        if note >= seuil:
+            rang = nom
+    return rang
+
+
+def aura(rows):
+    """Contour lumineux autour de la silhouette (les individus rares et plus brillent)."""
+    w = max((len(r) for r in rows), default=0) + 2
+    g = ["." * w] + ["." + r.ljust(w - 2, ".") + "." for r in rows] + ["." * w]
+    out = []
+    for y, l in enumerate(g):
+        s = ""
+        for x, c in enumerate(l):
+            if c == "." and any(0 <= y + dy < len(g) and 0 <= x + dx < w and g[y + dy][x + dx] not in ".!"
+                                for dy, dx in ((0, 1), (0, -1), (1, 0), (-1, 0))):
+                s += "!"
+            else:
+                s += c
+        out.append(s)
+    return out
+
+
 def dessin_individu(ind, grand=True):
-    """Une bestiole de la troupe, à son stade et dans sa forme."""
+    """Une bestiole de la troupe, à son stade et dans sa forme, avec l'aura de sa rareté."""
     e = espece(ind["espece"])
+    rang = rang_individu(ind)
+    if grand and e.get("dessins") and rang in ("rare", "épique", "légendaire", "mythique"):
+        ds = e["dessins"].get(ind.get("variante", "classique")) or e["dessins"]["classique"]
+        x = ds.get(ind.get("stade", "enfant")) or ds["adulte"]
+        pal = decaler(x["p"], ind.get("teinte") or 0.5) if ind.get("shiny") else dict(x["p"])
+        pal["!"] = COULEUR_RARETE[rang]
+        return _rendu(aura(x["l"]), pal)
     return dessin(e, ind.get("shiny"), grand, stade=ind.get("stade", "enfant"),
                   variante=ind.get("variante", "classique"), teinte=ind.get("teinte"))
+
+
+def etiquette_rang(ind):
+    rang = rang_individu(ind)
+    return fg24(COULEUR_RARETE.get(rang, "#c0c0c0")) + f"◆ {rang} ({note_individu(ind)}/100)" + RESET
 
 
 def _rendu(rows, pal):
