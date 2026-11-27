@@ -99,12 +99,14 @@ class TerminalActivity : Activity() {
         sortie = findViewById(R.id.sortie)
         invite = findViewById(R.id.invite)
         saisie = findViewById(R.id.saisie)
+        saisie.hint = "tape une commande…".tr()
 
         findViewById<View>(R.id.fond).setOnClickListener { finish() }
         findViewById<View>(R.id.panneau).setOnClickListener { saisie.requestFocus() }
         findViewById<View>(R.id.fermer).setOnClickListener { finish() }
         findViewById<View>(R.id.envoyer).setOnClickListener { valider() }
         lexiqueBtn = findViewById(R.id.lexique_btn)
+        lexiqueBtn.text = "📖 Lexique".tr()
         lexiqueVue = findViewById(R.id.lexique_vue)
         lexiqueTexte = findViewById(R.id.lexique_texte)
         lexiqueBtn.setOnClickListener { basculerLexique() }
@@ -535,7 +537,7 @@ class TerminalActivity : Activity() {
         if (lexiqueVue.visibility == View.VISIBLE) {
             lexiqueVue.visibility = View.GONE
             defile.visibility = View.VISIBLE
-            lexiqueBtn.text = "📖 Lexique"
+            lexiqueBtn.text = "📖 Lexique".tr()
         } else {
             remplirLexique()
             lexiqueVue.visibility = View.VISIBLE
