@@ -97,6 +97,142 @@
   "ruines": "les ruines",
   "faille": "la faille"
  },
+ "rarete_individu": {
+  "poids": {
+   "stats": 60,
+   "variante": 25,
+   "puissance": 15,
+   "bonus_shiny": 10
+  },
+  "paliers": [
+   [
+    0,
+    "commune"
+   ],
+   [
+    37.0,
+    "peu commune"
+   ],
+   [
+    54.6,
+    "rare"
+   ],
+   [
+    62.9,
+    "épique"
+   ],
+   [
+    69.3,
+    "légendaire"
+   ]
+  ],
+  "speciales": {
+   "abyssor": "mythique"
+  },
+  "centiles": [
+   0.0,
+   0.0,
+   0.0,
+   0.0,
+   0.0,
+   0.0,
+   0.0,
+   0.0001,
+   0.0002,
+   0.0003,
+   0.0005,
+   0.0007,
+   0.0011,
+   0.0014,
+   0.0022,
+   0.0027,
+   0.0039,
+   0.0047,
+   0.0065,
+   0.0077,
+   0.0105,
+   0.014,
+   0.0161,
+   0.021,
+   0.0238,
+   0.0304,
+   0.0342,
+   0.0429,
+   0.0478,
+   0.0589,
+   0.0651,
+   0.0788,
+   0.0945,
+   0.1031,
+   0.1218,
+   0.132,
+   0.1539,
+   0.1656,
+   0.1907,
+   0.204,
+   0.2322,
+   0.2622,
+   0.2779,
+   0.3106,
+   0.3275,
+   0.3622,
+   0.38,
+   0.4163,
+   0.4347,
+   0.4719,
+   0.5094,
+   0.5281,
+   0.5653,
+   0.5837,
+   0.62,
+   0.6378,
+   0.6725,
+   0.6894,
+   0.7221,
+   0.7378,
+   0.7678,
+   0.796,
+   0.8093,
+   0.8344,
+   0.8461,
+   0.868,
+   0.8782,
+   0.8969,
+   0.9055,
+   0.9212,
+   0.9283,
+   0.9411,
+   0.9522,
+   0.9571,
+   0.9658,
+   0.9696,
+   0.9762,
+   0.979,
+   0.9839,
+   0.986,
+   0.9895,
+   0.9923,
+   0.9935,
+   0.9953,
+   0.9961,
+   0.9973,
+   0.9978,
+   0.9986,
+   0.9989,
+   0.9993,
+   0.9996,
+   0.9997,
+   0.9998,
+   0.9999,
+   1.0,
+   1.0,
+   1.0,
+   1.0,
+   1.0,
+   1.0,
+   1.0
+  ]
+ },
  "marques": [
   "une tache en forme de @ sur le dos",
   "un œil qui clignote en binaire",
@@ -314,6 +450,7 @@
     "VIT": 31,
     "INT": 36
    },
+   "puissance": 1,
    "posture": "bipède",
    "lieux_de_vie": [
     "volcan",
@@ -1550,6 +1687,7 @@
     "VIT": 24,
     "INT": 26
    },
+   "puissance": 2,
    "posture": "quadrupède",
    "lieux_de_vie": [
     "volcan",
@@ -2814,6 +2952,7 @@
     "VIT": 25,
     "INT": 37
    },
+   "puissance": 3,
    "posture": "volant",
    "lieux_de_vie": [
     "lave",
@@ -4034,6 +4173,7 @@
     "VIT": 26,
     "INT": 34
    },
+   "puissance": 4,
    "posture": "rampant",
    "lieux_de_vie": [
     "cendres",
@@ -4403,6 +4543,7 @@
     "VIT": 32,
     "INT": 33
    },
+   "puissance": 5,
    "posture": "flottant",
    "lieux_de_vie": [
     "ombre",
@@ -4844,6 +4985,7 @@
     "VIT": 29,
     "INT": 34
    },
+   "puissance": 6,
    "posture": "serpentin",
    "lieux_de_vie": [
     "volcan",
@@ -5292,6 +5434,7 @@
     "VIT": 49,
     "INT": 42
    },
+   "puissance": 7,
    "posture": "bipède",
    "lieux_de_vie": [
     "volcan",
@@ -5743,6 +5886,7 @@
     "VIT": 40,
     "INT": 42
    },
+   "puissance": 8,
    "posture": "amorphe",
    "lieux_de_vie": [
     "marais",
@@ -6185,6 +6329,7 @@
     "VIT": 44,
     "INT": 45
    },
+   "puissance": 9,
    "posture": "multipattes",
    "lieux_de_vie": [
     "ruines",
@@ -6556,6 +6701,7 @@
     "VIT": 50,
     "INT": 39
    },
+   "puissance": 10,
    "posture": "volant",
    "lieux_de_vie": [
     "ruines",
@@ -6981,6 +7127,7 @@
     "VIT": 64,
     "INT": 65
    },
+   "puissance": 11,
    "posture": "multipattes",
    "lieux_de_vie": [
     "crypte",
@@ -7413,6 +7560,7 @@
     "VIT": 55,
     "INT": 64
    },
+   "puissance": 12,
    "posture": "volant",
    "lieux_de_vie": [
     "volcan",
@@ -7842,6 +7990,7 @@
     "VIT": 58,
     "INT": 54
    },
+   "puissance": 13,
    "posture": "quadrupède",
    "lieux_de_vie": [
     "brume",
@@ -8288,6 +8437,7 @@
     "VIT": 64,
     "INT": 65
    },
+   "puissance": 14,
    "posture": "bipède",
    "lieux_de_vie": [
     "lave",
@@ -8743,6 +8893,7 @@
     "VIT": 82,
     "INT": 80
    },
+   "puissance": 15,
    "posture": "bipède",
    "lieux_de_vie": [
     "lave",
@@ -9188,6 +9339,7 @@
     "VIT": 29,
     "INT": 27
    },
+   "puissance": 1,
    "posture": "rampant",
    "lieux_de_vie": [
     "cendres",
@@ -9549,6 +9701,7 @@
     "VIT": 31,
     "INT": 26
    },
+   "puissance": 2,
    "posture": "quadrupède",
    "lieux_de_vie": [
     "glace",
@@ -9976,6 +10129,7 @@
     "VIT": 29,
     "INT": 25
    },
+   "puissance": 3,
    "posture": "amorphe",
    "lieux_de_vie": [
     "eau pétillante",
@@ -10419,6 +10573,7 @@
     "VIT": 26,
     "INT": 35
    },
+   "puissance": 4,
    "posture": "flottant",
    "lieux_de_vie": [
     "orage",
@@ -10859,6 +11014,7 @@
     "VIT": 37,
     "INT": 31
    },
+   "puissance": 5,
    "posture": "bipède",
    "lieux_de_vie": [
     "montagne",
@@ -11305,6 +11461,7 @@
     "VIT": 26,
     "INT": 37
    },
+   "puissance": 6,
    "posture": "volant",
    "lieux_de_vie": [
     "prairie",
@@ -11733,6 +11890,7 @@
     "VIT": 47,
     "INT": 43
    },
+   "puissance": 7,
    "posture": "serpentin",
    "lieux_de_vie": [
     "volcan",
@@ -12176,6 +12334,7 @@
     "VIT": 44,
     "INT": 43
    },
+   "puissance": 8,
    "posture": "quadrupède",
    "lieux_de_vie": [
     "lagon",
@@ -12623,6 +12782,7 @@
     "VIT": 47,
     "INT": 40
    },
+   "puissance": 9,
    "posture": "multipattes",
    "lieux_de_vie": [
     "canyon",
@@ -12976,6 +13136,7 @@
     "VIT": 42,
     "INT": 41
    },
+   "puissance": 10,
    "posture": "bipède",
    "lieux_de_vie": [
     "glace",
@@ -13427,6 +13588,7 @@
     "VIT": 64,
     "INT": 57
    },
+   "puissance": 11,
    "posture": "quadrupède",
    "lieux_de_vie": [
     "orage",
@@ -13861,6 +14023,7 @@
     "VIT": 60,
     "INT": 54
    },
+   "puissance": 12,
    "posture": "flottant",
    "lieux_de_vie": [
     "nuage",
@@ -14303,6 +14466,7 @@
     "VIT": 65,
     "INT": 66
    },
+   "puissance": 13,
    "posture": "quadrupède",
    "lieux_de_vie": [
     "volcan",
@@ -14747,6 +14911,7 @@
     "VIT": 55,
     "INT": 62
    },
+   "puissance": 14,
    "posture": "serpentin",
    "lieux_de_vie": [
     "abyssal",
@@ -15184,6 +15349,7 @@
     "VIT": 86,
     "INT": 84
    },
+   "puissance": 15,
    "posture": "bipède",
    "lieux_de_vie": [
     "montagne",
@@ -15630,6 +15796,7 @@
     "VIT": 27,
     "INT": 34
    },
+   "puissance": 1,
    "posture": "quadrupède",
    "lieux_de_vie": [
     "ossuaire",
@@ -16066,6 +16233,7 @@
     "VIT": 25,
     "INT": 33
    },
+   "puissance": 2,
    "posture": "flottant",
    "lieux_de_vie": [
     "ruines",
@@ -16512,6 +16680,7 @@
     "VIT": 26,
     "INT": 32
    },
+   "puissance": 3,
    "posture": "bipède",
    "lieux_de_vie": [
     "marais",
@@ -16963,6 +17132,7 @@
     "VIT": 34,
     "INT": 40
    },
+   "puissance": 4,
    "posture": "rampant",
    "lieux_de_vie": [
     "ossuaire",
@@ -17397,6 +17567,7 @@
     "VIT": 36,
     "INT": 37
    },
+   "puissance": 5,
    "posture": "flottant",
    "lieux_de_vie": [
     "marais",
@@ -17845,6 +18016,7 @@
     "VIT": 31,
     "INT": 35
    },
+   "puissance": 6,
    "posture": "serpentin",
    "lieux_de_vie": [
     "désert",
@@ -18296,6 +18468,7 @@
     "VIT": 46,
     "INT": 48
    },
+   "puissance": 7,
    "posture": "quadrupède",
    "lieux_de_vie": [
     "désert",
@@ -18743,6 +18916,7 @@
     "VIT": 42,
     "INT": 55
    },
+   "puissance": 8,
    "posture": "volant",
    "lieux_de_vie": [
     "crypte",
@@ -19173,6 +19347,7 @@
     "VIT": 46,
     "INT": 56
    },
+   "puissance": 9,
    "posture": "bipède",
    "lieux_de_vie": [
     "ruines",
@@ -19614,6 +19789,7 @@
     "VIT": 51,
     "INT": 52
    },
+   "puissance": 10,
    "posture": "multipattes",
    "lieux_de_vie": [
     "ossuaire",
@@ -20035,6 +20211,7 @@
     "VIT": 59,
     "INT": 62
    },
+   "puissance": 11,
    "posture": "flottant",
    "lieux_de_vie": [
     "toundra",
@@ -20488,6 +20665,7 @@
     "VIT": 56,
     "INT": 65
    },
+   "puissance": 12,
    "posture": "flottant",
    "lieux_de_vie": [
     "brume",
@@ -20861,6 +21039,7 @@
     "VIT": 66,
     "INT": 62
    },
+   "puissance": 13,
    "posture": "amorphe",
    "lieux_de_vie": [
     "crypte",
@@ -21313,6 +21492,7 @@
     "VIT": 65,
     "INT": 70
    },
+   "puissance": 14,
    "posture": "volant",
    "lieux_de_vie": [
     "montagne",
@@ -21736,6 +21916,7 @@
     "VIT": 79,
     "INT": 82
    },
+   "puissance": 15,
    "posture": "bipède",
    "lieux_de_vie": [
     "crypte",
@@ -22179,6 +22360,7 @@
     "VIT": 24,
     "INT": 28
    },
+   "puissance": 1,
    "posture": "quadrupède",
    "lieux_de_vie": [
     "forêt",
@@ -22593,6 +22775,7 @@
     "VIT": 36,
     "INT": 25
    },
+   "puissance": 2,
    "posture": "volant",
    "lieux_de_vie": [
     "canyon",
@@ -22999,6 +23182,7 @@
     "VIT": 28,
     "INT": 28
    },
+   "puissance": 3,
    "posture": "rampant",
    "lieux_de_vie": [
     "désert",
@@ -23366,6 +23550,7 @@
     "VIT": 26,
     "INT": 25
    },
+   "puissance": 4,
    "posture": "quadrupède",
    "lieux_de_vie": [
     "toundra",
@@ -23793,6 +23978,7 @@
     "VIT": 25,
     "INT": 25
    },
+   "puissance": 5,
    "posture": "quadrupède",
    "lieux_de_vie": [
     "désert",
@@ -24244,6 +24430,7 @@
     "VIT": 31,
     "INT": 33
    },
+   "puissance": 6,
    "posture": "serpentin",
    "lieux_de_vie": [
     "jungle",
@@ -24650,6 +24837,7 @@
     "VIT": 44,
     "INT": 42
    },
+   "puissance": 7,
    "posture": "quadrupède",
    "lieux_de_vie": [
     "canyon",
@@ -25106,6 +25294,7 @@
     "VIT": 41,
     "INT": 39
    },
+   "puissance": 8,
    "posture": "multipattes",
    "lieux_de_vie": [
     "forêt",
@@ -25504,6 +25693,7 @@
     "VIT": 41,
     "INT": 48
    },
+   "puissance": 9,
    "posture": "bipède",
    "lieux_de_vie": [
     "jungle",
@@ -25953,6 +26143,7 @@
     "VIT": 42,
     "INT": 45
    },
+   "puissance": 10,
    "posture": "quadrupède",
    "lieux_de_vie": [
     "désert",
@@ -26328,6 +26519,7 @@
     "VIT": 64,
     "INT": 54
    },
+   "puissance": 11,
    "posture": "volant",
    "lieux_de_vie": [
     "forêt",
@@ -26774,6 +26966,7 @@
     "VIT": 64,
     "INT": 66
    },
+   "puissance": 12,
    "posture": "bipède",
    "lieux_de_vie": [
     "montagne",
@@ -27220,6 +27413,7 @@
     "VIT": 65,
     "INT": 58
    },
+   "puissance": 13,
    "posture": "quadrupède",
    "lieux_de_vie": [
     "ruines",
@@ -27655,6 +27849,7 @@
     "VIT": 57,
     "INT": 66
    },
+   "puissance": 14,
    "posture": "quadrupède",
    "lieux_de_vie": [
     "toundra",
@@ -28090,6 +28285,7 @@
     "VIT": 75,
     "INT": 79
    },
+   "puissance": 15,
    "posture": "quadrupède",
    "lieux_de_vie": [
     "montagne",
@@ -28533,6 +28729,7 @@
     "VIT": 24,
     "INT": 26
    },
+   "puissance": 1,
    "posture": "bipède",
    "lieux_de_vie": [
     "forêt",
@@ -28984,6 +29181,7 @@
     "VIT": 31,
     "INT": 34
    },
+   "puissance": 2,
    "posture": "bipède",
    "lieux_de_vie": [
     "champignonnière",
@@ -29427,6 +29625,7 @@
     "VIT": 36,
     "INT": 30
    },
+   "puissance": 3,
    "posture": "volant",
    "lieux_de_vie": [
     "prairie",
@@ -29870,6 +30069,7 @@
     "VIT": 32,
     "INT": 34
    },
+   "puissance": 4,
    "posture": "amorphe",
    "lieux_de_vie": [
     "forêt",
@@ -30302,6 +30502,7 @@
     "VIT": 31,
     "INT": 31
    },
+   "puissance": 5,
    "posture": "quadrupède",
    "lieux_de_vie": [
     "forêt",
@@ -30721,6 +30922,7 @@
     "VIT": 36,
     "INT": 32
    },
+   "puissance": 6,
    "posture": "flottant",
    "lieux_de_vie": [
     "forêt",
@@ -31168,6 +31370,7 @@
     "VIT": 43,
     "INT": 42
    },
+   "puissance": 7,
    "posture": "rampant",
    "lieux_de_vie": [
     "marais",
@@ -31584,6 +31787,7 @@
     "VIT": 39,
     "INT": 49
    },
+   "puissance": 8,
    "posture": "flottant",
    "lieux_de_vie": [
     "champignonnière",
@@ -32021,6 +32225,7 @@
     "VIT": 50,
     "INT": 50
    },
+   "puissance": 9,
    "posture": "serpentin",
    "lieux_de_vie": [
     "jungle",
@@ -32463,6 +32668,7 @@
     "VIT": 48,
     "INT": 47
    },
+   "puissance": 10,
    "posture": "quadrupède",
    "lieux_de_vie": [
     "forêt",
@@ -32910,6 +33116,7 @@
     "VIT": 58,
     "INT": 63
    },
+   "puissance": 11,
    "posture": "quadrupède",
    "lieux_de_vie": [
     "marais",
@@ -33341,6 +33548,7 @@
     "VIT": 66,
     "INT": 63
    },
+   "puissance": 12,
    "posture": "volant",
    "lieux_de_vie": [
     "forêt",
@@ -33780,6 +33988,7 @@
     "VIT": 56,
     "INT": 65
    },
+   "puissance": 13,
    "posture": "multipattes",
    "lieux_de_vie": [
     "champignonnière",
@@ -34133,6 +34342,7 @@
     "VIT": 54,
     "INT": 56
    },
+   "puissance": 14,
    "posture": "bipède",
    "lieux_de_vie": [
     "forêt",
@@ -34585,6 +34795,7 @@
     "VIT": 74,
     "INT": 83
    },
+   "puissance": 15,
    "posture": "bipède",
    "lieux_de_vie": [
     "forêt",
@@ -35030,6 +35241,7 @@
     "VIT": 39,
     "INT": 25
    },
+   "puissance": 1,
    "posture": "quadrupède",
    "lieux_de_vie": [
     "prairie",
@@ -35465,6 +35677,7 @@
     "VIT": 41,
     "INT": 26
    },
+   "puissance": 2,
    "posture": "rampant",
    "lieux_de_vie": [
     "prairie",
@@ -35915,6 +36128,7 @@
     "VIT": 43,
     "INT": 33
    },
+   "puissance": 3,
    "posture": "bipède",
    "lieux_de_vie": [
     "canyon",
@@ -36365,6 +36579,7 @@
     "VIT": 40,
     "INT": 26
    },
+   "puissance": 4,
    "posture": "volant",
    "lieux_de_vie": [
     "brume",
@@ -36786,6 +37001,7 @@
     "VIT": 42,
     "INT": 30
    },
+   "puissance": 5,
    "posture": "multipattes",
    "lieux_de_vie": [
     "ruines",
@@ -37156,6 +37372,7 @@
     "VIT": 41,
     "INT": 27
    },
+   "puissance": 6,
    "posture": "flottant",
    "lieux_de_vie": [
     "marais",
@@ -37605,6 +37822,7 @@
     "VIT": 51,
     "INT": 38
    },
+   "puissance": 7,
    "posture": "multipattes",
    "lieux_de_vie": [
     "crypte",
@@ -38009,6 +38227,7 @@
     "VIT": 56,
     "INT": 44
    },
+   "puissance": 8,
    "posture": "bipède",
    "lieux_de_vie": [
     "jungle",
@@ -38446,6 +38665,7 @@
     "VIT": 53,
     "INT": 46
    },
+   "puissance": 9,
    "posture": "multipattes",
    "lieux_de_vie": [
     "désert",
@@ -38893,6 +39113,7 @@
     "VIT": 51,
     "INT": 43
    },
+   "puissance": 10,
    "posture": "serpentin",
    "lieux_de_vie": [
     "champignonnière",
@@ -39338,6 +39559,7 @@
     "VIT": 67,
     "INT": 54
    },
+   "puissance": 11,
    "posture": "volant",
    "lieux_de_vie": [
     "prairie",
@@ -39778,6 +40000,7 @@
     "VIT": 70,
     "INT": 66
    },
+   "puissance": 12,
    "posture": "volant",
    "lieux_de_vie": [
     "lagon",
@@ -40188,6 +40411,7 @@
     "VIT": 63,
     "INT": 54
    },
+   "puissance": 13,
    "posture": "quadrupède",
    "lieux_de_vie": [
     "volcan",
@@ -40588,6 +40812,7 @@
     "VIT": 69,
     "INT": 55
    },
+   "puissance": 14,
    "posture": "amorphe",
    "lieux_de_vie": [
     "cristal",
@@ -41031,6 +41256,7 @@
     "VIT": 88,
     "INT": 77
    },
+   "puissance": 15,
    "posture": "quadrupède",
    "lieux_de_vie": [
     "ruines",
@@ -41462,6 +41688,7 @@
     "VIT": 36,
     "INT": 25
    },
+   "puissance": 1,
    "posture": "flottant",
    "lieux_de_vie": [
     "lagon",
@@ -41873,6 +42100,7 @@
     "VIT": 25,
     "INT": 26
    },
+   "puissance": 2,
    "posture": "bipède",
    "lieux_de_vie": [
     "lagon",
@@ -42320,6 +42548,7 @@
     "VIT": 30,
     "INT": 35
    },
+   "puissance": 3,
    "posture": "multipattes",
    "lieux_de_vie": [
     "abyssal",
@@ -42726,6 +42955,7 @@
     "VIT": 27,
     "INT": 36
    },
+   "puissance": 4,
    "posture": "serpentin",
    "lieux_de_vie": [
     "abyssal",
@@ -43151,6 +43381,7 @@
     "VIT": 37,
     "INT": 27
    },
+   "puissance": 5,
    "posture": "multipattes",
    "lieux_de_vie": [
     "sable",
@@ -43530,6 +43761,7 @@
     "VIT": 30,
     "INT": 28
    },
+   "puissance": 6,
    "posture": "rampant",
    "lieux_de_vie": [
     "corail",
@@ -43976,6 +44208,7 @@
     "VIT": 45,
     "INT": 49
    },
+   "puissance": 7,
    "posture": "flottant",
    "lieux_de_vie": [
     "abyssal",
@@ -44385,6 +44618,7 @@
     "VIT": 38,
     "INT": 43
    },
+   "puissance": 8,
    "posture": "amorphe",
    "lieux_de_vie": [
     "corail",
@@ -44821,6 +45055,7 @@
     "VIT": 41,
     "INT": 50
    },
+   "puissance": 9,
    "posture": "flottant",
    "lieux_de_vie": [
     "abyssal",
@@ -45264,6 +45499,7 @@
     "VIT": 39,
     "INT": 44
    },
+   "puissance": 10,
    "posture": "volant",
    "lieux_de_vie": [
     "lagon",
@@ -45668,6 +45904,7 @@
     "VIT": 60,
     "INT": 62
    },
+   "puissance": 11,
    "posture": "bipède",
    "lieux_de_vie": [
     "ruines",
@@ -46114,6 +46351,7 @@
     "VIT": 65,
     "INT": 55
    },
+   "puissance": 12,
    "posture": "flottant",
    "lieux_de_vie": [
     "abyssal",
@@ -46560,6 +46798,7 @@
     "VIT": 55,
     "INT": 60
    },
+   "puissance": 13,
    "posture": "quadrupède",
    "lieux_de_vie": [
     "corail",
@@ -46983,6 +47222,7 @@
     "VIT": 62,
     "INT": 57
    },
+   "puissance": 14,
    "posture": "serpentin",
    "lieux_de_vie": [
     "abyssal",
@@ -47426,6 +47666,7 @@
     "VIT": 81,
     "INT": 75
    },
+   "puissance": 15,
    "posture": "flottant",
    "lieux_de_vie": [
     "abyssal",
@@ -47864,6 +48105,7 @@
     "VIT": 33,
     "INT": 28
    },
+   "puissance": 1,
    "posture": "flottant",
    "lieux_de_vie": [
     "soleil",
@@ -48305,6 +48547,7 @@
     "VIT": 31,
     "INT": 31
    },
+   "puissance": 2,
    "posture": "quadrupède",
    "lieux_de_vie": [
     "prairie",
@@ -48749,6 +48992,7 @@
     "VIT": 36,
     "INT": 25
    },
+   "puissance": 3,
    "posture": "volant",
    "lieux_de_vie": [
     "nuage",
@@ -49192,6 +49436,7 @@
     "VIT": 34,
     "INT": 27
    },
+   "puissance": 4,
    "posture": "amorphe",
    "lieux_de_vie": [
     "cosmique",
@@ -49634,6 +49879,7 @@
     "VIT": 41,
     "INT": 31
    },
+   "puissance": 5,
    "posture": "serpentin",
    "lieux_de_vie": [
     "cosmique",
@@ -50070,6 +50316,7 @@
     "VIT": 44,
     "INT": 34
    },
+   "puissance": 6,
    "posture": "bipède",
    "lieux_de_vie": [
     "montagne",
@@ -50517,6 +50764,7 @@
     "VIT": 56,
     "INT": 44
    },
+   "puissance": 7,
    "posture": "quadrupède",
    "lieux_de_vie": [
     "montagne",
@@ -50968,6 +51216,7 @@
     "VIT": 52,
     "INT": 38
    },
+   "puissance": 8,
    "posture": "multipattes",
    "lieux_de_vie": [
     "cristal",
@@ -51314,6 +51563,7 @@
     "VIT": 56,
     "INT": 44
    },
+   "puissance": 9,
    "posture": "volant",
    "lieux_de_vie": [
     "nuage",
@@ -51755,6 +52005,7 @@
     "VIT": 53,
     "INT": 49
    },
+   "puissance": 10,
    "posture": "flottant",
    "lieux_de_vie": [
     "soleil",
@@ -52190,6 +52441,7 @@
     "VIT": 61,
     "INT": 57
    },
+   "puissance": 11,
    "posture": "quadrupède",
    "lieux_de_vie": [
     "désert",
@@ -52635,6 +52887,7 @@
     "VIT": 62,
     "INT": 55
    },
+   "puissance": 12,
    "posture": "bipède",
    "lieux_de_vie": [
     "nuage",
@@ -53075,6 +53328,7 @@
     "VIT": 64,
     "INT": 56
    },
+   "puissance": 13,
    "posture": "serpentin",
    "lieux_de_vie": [
     "aurore",
@@ -53522,6 +53776,7 @@
     "VIT": 64,
     "INT": 63
    },
+   "puissance": 14,
    "posture": "rampant",
    "lieux_de_vie": [
     "cosmique",
@@ -53928,6 +54183,7 @@
     "VIT": 84,
     "INT": 81
    },
+   "puissance": 15,
    "posture": "volant",
    "lieux_de_vie": [
     "cosmique",
@@ -54367,6 +54623,7 @@
     "VIT": 26,
     "INT": 42
    },
+   "puissance": 1,
    "posture": "bipède",
    "lieux_de_vie": [
     "mécanique",
@@ -54815,6 +55072,7 @@
     "VIT": 28,
     "INT": 35
    },
+   "puissance": 2,
    "posture": "quadrupède",
    "lieux_de_vie": [
     "rouille",
@@ -55236,6 +55494,7 @@
     "VIT": 29,
     "INT": 33
    },
+   "puissance": 3,
    "posture": "bipède",
    "lieux_de_vie": [
     "ruines",
@@ -55653,6 +55912,7 @@
     "VIT": 36,
     "INT": 31
    },
+   "puissance": 4,
    "posture": "serpentin",
    "lieux_de_vie": [
     "canyon",
@@ -56106,6 +56366,7 @@
     "VIT": 33,
     "INT": 36
    },
+   "puissance": 5,
    "posture": "quadrupède",
    "lieux_de_vie": [
     "ruines",
@@ -56530,6 +56791,7 @@
     "VIT": 32,
     "INT": 39
    },
+   "puissance": 6,
    "posture": "flottant",
    "lieux_de_vie": [
     "ombre",
@@ -56979,6 +57241,7 @@
     "VIT": 46,
     "INT": 44
    },
+   "puissance": 7,
    "posture": "multipattes",
    "lieux_de_vie": [
     "mécanique",
@@ -57350,6 +57613,7 @@
     "VIT": 38,
     "INT": 50
    },
+   "puissance": 8,
    "posture": "bipède",
    "lieux_de_vie": [
     "ruines",
@@ -57799,6 +58063,7 @@
     "VIT": 40,
     "INT": 51
    },
+   "puissance": 9,
    "posture": "volant",
    "lieux_de_vie": [
     "montagne",
@@ -58231,6 +58496,7 @@
     "VIT": 41,
     "INT": 46
    },
+   "puissance": 10,
    "posture": "amorphe",
    "lieux_de_vie": [
     "lave",
@@ -58654,6 +58920,7 @@
     "VIT": 60,
     "INT": 65
    },
+   "puissance": 11,
    "posture": "volant",
    "lieux_de_vie": [
     "arcane",
@@ -59067,6 +59334,7 @@
     "VIT": 61,
     "INT": 62
    },
+   "puissance": 12,
    "posture": "bipède",
    "lieux_de_vie": [
     "montagne",
@@ -59506,6 +59774,7 @@
     "VIT": 57,
     "INT": 68
    },
+   "puissance": 13,
    "posture": "quadrupède",
    "lieux_de_vie": [
     "volcan",
@@ -59962,6 +60231,7 @@
     "VIT": 65,
     "INT": 71
    },
+   "puissance": 14,
    "posture": "flottant",
    "lieux_de_vie": [
     "ombre",
@@ -60409,6 +60679,7 @@
     "VIT": 75,
     "INT": 82
    },
+   "puissance": 15,
    "posture": "bipède",
    "lieux_de_vie": [
     "volcan",
@@ -60853,6 +61124,7 @@
     "VIT": 36,
     "INT": 40
    },
+   "puissance": 1,
    "posture": "flottant",
    "lieux_de_vie": [
     "brume",
@@ -61283,6 +61555,7 @@
     "VIT": 26,
     "INT": 32
    },
+   "puissance": 2,
    "posture": "amorphe",
    "lieux_de_vie": [
     "marais",
@@ -61708,6 +61981,7 @@
     "VIT": 36,
     "INT": 39
    },
+   "puissance": 3,
    "posture": "rampant",
    "lieux_de_vie": [
     "marais",
@@ -62116,6 +62390,7 @@
     "VIT": 32,
     "INT": 35
    },
+   "puissance": 4,
    "posture": "quadrupède",
    "lieux_de_vie": [
     "rouille",
@@ -62565,6 +62840,7 @@
     "VIT": 28,
     "INT": 33
    },
+   "puissance": 5,
    "posture": "multipattes",
    "lieux_de_vie": [
     "cristal",
@@ -62971,6 +63247,7 @@
     "VIT": 36,
     "INT": 35
    },
+   "puissance": 6,
    "posture": "rampant",
    "lieux_de_vie": [
     "forêt",
@@ -63382,6 +63659,7 @@
     "VIT": 46,
     "INT": 50
    },
+   "puissance": 7,
    "posture": "bipède",
    "lieux_de_vie": [
     "ruines",
@@ -63832,6 +64110,7 @@
     "VIT": 39,
     "INT": 56
    },
+   "puissance": 8,
    "posture": "serpentin",
    "lieux_de_vie": [
     "eau pétillante",
@@ -64270,6 +64549,7 @@
     "VIT": 49,
     "INT": 50
    },
+   "puissance": 9,
    "posture": "volant",
    "lieux_de_vie": [
     "aurore",
@@ -64707,6 +64987,7 @@
     "VIT": 49,
     "INT": 45
    },
+   "puissance": 10,
    "posture": "quadrupède",
    "lieux_de_vie": [
     "ruines",
@@ -65150,6 +65431,7 @@
     "VIT": 65,
     "INT": 70
    },
+   "puissance": 11,
    "posture": "flottant",
    "lieux_de_vie": [
     "arcane",
@@ -65577,6 +65859,7 @@
     "VIT": 65,
     "INT": 60
    },
+   "puissance": 12,
    "posture": "volant",
    "lieux_de_vie": [
     "orage",
@@ -65999,6 +66282,7 @@
     "VIT": 63,
     "INT": 61
    },
+   "puissance": 13,
    "posture": "multipattes",
    "lieux_de_vie": [
     "cristal",
@@ -66437,6 +66721,7 @@
     "VIT": 64,
     "INT": 63
    },
+   "puissance": 14,
    "posture": "serpentin",
    "lieux_de_vie": [
     "cosmique",
@@ -66845,6 +67130,7 @@
     "VIT": 85,
     "INT": 83
    },
+   "puissance": 15,
    "posture": "amorphe",
    "lieux_de_vie": [
     "cosmique",
@@ -67480,6 +67766,7 @@
     "adulte",
     "forme finale"
    ],
+   "puissance": 15,
    "epreuves": [
     "Système",
     "Sécurité"

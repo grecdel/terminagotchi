@@ -26,7 +26,31 @@ const STADES_B = ["enfant", "ado", "adulte", "finale"];
 const NOM_STADE = { enfant: "enfant", ado: "ado", adulte: "adulte", finale: "forme finale" };   // les espèces secrètes ne figurent pas au bestiaire
 const MARQUES = new Set(BESTIAIRE.marques);
 const HUMEURS = new Set(BESTIAIRE.humeurs);
-const COULEUR_RARETE = { commune: "#b0b0c0", "peu commune": "#5fd787", rare: "#5fafff", "légendaire": "#ffaf00" };
+const COULEUR_RARETE = { commune: "#b0b0c0", "peu commune": "#5fd787", rare: "#5fafff", "épique": "#c77dff", "légendaire": "#ffaf00", mythique: "#ff5f87" };
+// rareté d'un INDIVIDU : 60 % stats (en centile) + 25 % rareté de sa forme + 15 % puissance de l'espèce, +10 shiny
+const REGLE_RANG = BESTIAIRE.rarete_individu || { poids: { stats: 60, variante: 25, puissance: 15, bonus_shiny: 10 }, paliers: [[0, "commune"]], speciales: {} };
+const RANGS = [...REGLE_RANG.paliers.map((p) => p[1]), ...new Set(Object.values(REGLE_RANG.speciales || {}))];
+function noteIndividu(c) {
+  const e = PAR_NOM[c.espece];
+  if (!e) return 0;
+  const po = REGLE_RANG.poids;
+  const pot = Math.max(0, Math.min(100, Math.round(Number(c.potentiel) || 0)));
+  const stats = REGLE_RANG.centiles ? REGLE_RANG.centiles[pot] : pot / 100;
+  const vs = e.variantes || [{ id: "classique", chance: 100 }];
+  const max = Math.max(...vs.map((v) => v.chance));
+  const ch = (vs.find((v) => v.id === (c.variante || "classique")) || { chance: max }).chance;
+  let note = po.stats * stats + po.variante * (1 - ch / max) + po.puissance * ((e.puissance || 1) - 1) / 14;
+  if (c.shiny) note += po.bonus_shiny;
+  return Math.round(Math.min(100, note));
+}
+function rangIndividu(c) {
+  const e = PAR_NOM[c.espece];
+  if (e && REGLE_RANG.speciales?.[e.id]) return REGLE_RANG.speciales[e.id];
+  const n = noteIndividu(c);
+  let r = "commune";
+  for (const [seuil, nom] of REGLE_RANG.paliers) if (n >= seuil) r = nom;
+  return r;
+}
 const APPAREILS = ["android", "pc"];
 
 // ====================================================================== outils
@@ -744,7 +768,7 @@ async function pageCaptures(env, url) {
     joueurs++;
     for (const c of e.captures || []) caps.push({ ...c, pseudo: j.pseudo });
   }
-  caps = caps.filter((c) => PAR_NOM[c.espece] && (!shinySeul || c.shiny) && (!rarete || PAR_NOM[c.espece].rarete === rarete));
+  caps = caps.filter((c) => PAR_NOM[c.espece] && (!shinySeul || c.shiny) && (!rarete || rangIndividu(c) === rarete));
   caps.sort((a, b) => (b.shiny - a.shiny) || (b.date - a.date));
   const total = caps.length;
   caps = caps.slice(0, 120);
@@ -756,7 +780,7 @@ async function pageCaptures(env, url) {
       <div style="text-align:center;display:flex;justify-content:center">${visuel(e, c)}</div>
       ${ANIMEES.has(e.id) ? `<div class="doux" style="font-size:12px">${NOM_STADE[c.stade] || "enfant"}</div>` : ""}
       <div>${nom} <span class="num">#${String(e.numero).padStart(3, "0")}</span></div>
-      ${etiquetteRarete(e.rarete)}
+      ${etiquetteRarete(rangIndividu(c))} <span class="doux" style="font-size:12px">${noteIndividu(c)}/100</span>
       <div class="marque">« <span class="rgb">${echapper(c.marque)}</span> »</div>
       <div class="doux" style="font-size:13px">humeur ${echapper(c.humeur)} · ${c.taille} cm<br>potentiel <b style="color:var(--vert)">${c.potentiel} %</b></div>
       <div class="doux" style="font-size:12px;margin-top:6px">par <a href="/joueur/${encodeURIComponent(c.pseudo)}">${echapper(c.pseudo)}</a> · ${date}</div>
@@ -765,8 +789,9 @@ async function pageCaptures(env, url) {
   const lienR = (v, t) => `<a href="/captures?${new URLSearchParams({ ...(filtre && { joueur: filtre }), ...(shinySeul && { shiny: "1" }), ...(v && { rarete: v }) })}">${t}</a>`;
   return page("Captures", `<h1>✨ Les captures</h1>
 <p>Chaque bestiole capturée est <b>unique</b> : sa marque, son humeur, sa taille et son potentiel sont tirés au sort au moment de la capture.
+Sa rareté vient de ses stats, de sa forme et de la puissance de son espèce.
 ${filtre ? `Captures de <b>${echapper(filtre)}</b>. <a href="/captures">Voir tout le monde</a>` : ""}</p>
-<div class="carte filtres">${lienR("", "toutes")} ${BESTIAIRE.raretes.map((x) => lienR(x, x)).join(" ")}
+<div class="carte filtres">${lienR("", "toutes")} ${RANGS.map((x) => lienR(x, x)).join(" ")}
  · <a href="/captures?${new URLSearchParams({ ...(filtre && { joueur: filtre }), ...(!shinySeul && { shiny: "1" }) })}">${shinySeul ? "toutes (pas que les shiny)" : "<span class=\"rgb\">shiny seulement</span>"}</a></div>
 <p class="doux">${total} capture${total > 1 ? "s" : ""} partagée${total > 1 ? "s" : ""} par ${joueurs} joueur${joueurs > 1 ? "s" : ""}${total > 120 ? " (les 120 plus récentes)" : ""}.</p>
 ${cartes ? `<div class="grille-b" style="grid-template-columns:repeat(auto-fill,minmax(220px,1fr))">${cartes}</div>`

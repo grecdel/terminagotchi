@@ -64,7 +64,7 @@ object Equipe {
             val seuil = SEUILS[s]
             val titre = if (c.optBoolean("shiny") || e.rarete == "légendaire") "§${e.nom}§" else e.nom
             sb.append(if (c.optString("id") == act?.optString("id")) "★ " else "   ")
-                .append("¤${e.id}${if (c.optBoolean("shiny")) "*" else ""}¤ $titre · ${nomStade(s)} · ")
+                .append("¤${e.id}${if (c.optBoolean("shiny")) "*" else ""}¤ $titre · ◆ ${Bestiaire.rangIndividu(c)} · ${nomStade(s)} · ")
                 .append(if (seuil != null) "${c.optInt("xp")}/$seuil XP" else "stade maximal")
                 .append(if (Animations.dispo(e.id)) " · animé" else "").append("\n")
         }

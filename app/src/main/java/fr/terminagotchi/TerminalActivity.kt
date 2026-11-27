@@ -458,12 +458,12 @@ class TerminalActivity : Activity() {
 
     /**
      * Mise en forme spéciale : ¤id¤ / ¤id*¤ = dessin d'une bestiole (normale / shiny), ¤id+¤ = version détaillée,
-     * ¤id@variante/stade¤ (ou …*¤) = un individu de la troupe à son stade et dans sa forme,
+     * ¤id@variante/stade/rang¤ (ou …*¤) = un individu de la troupe à son stade, dans sa forme, avec son aura,
      * §texte§ = écriture arc-en-ciel (RGB).
      */
     private fun miseEnForme(texte: String, couleur: Int?): SpannableStringBuilder {
         val sb = SpannableStringBuilder()
-        val motif = Regex("¤([a-z0-9]+)(?:@([\\p{L}0-9_]+)/([a-z]+))?([*+]?)¤|§([^§]*)§")
+        val motif = Regex("¤([a-z0-9]+)(?:@([\\p{L}0-9_]+)/([a-z]+)(?:/([\\p{L}_]+))?)?([*+]?)¤|§([^§]*)§")
         var i = 0
         for (m in motif.findAll(texte)) {
             sb.append(texte, i, m.range.first)
@@ -472,10 +472,11 @@ class TerminalActivity : Activity() {
                 if (e != null) {
                     val debut = sb.length
                     sb.append("\uFFFC")
-                    val mode = m.groupValues[4]
+                    val mode = m.groupValues[5]
                     val detail = when {
                         m.groupValues[2].isNotEmpty() ->
-                            Bestiaire.dessin(e, m.groupValues[2], m.groupValues[3], if (mode == "*") 0.5 else 0.0)
+                            Bestiaire.dessinRang(e, m.groupValues[2], m.groupValues[3], if (mode == "*") 0.5 else 0.0,
+                                m.groupValues[4].replace('_', ' '))
                         mode == "+" -> Animations.detaille(e.id) ?: Bestiaire.dessin(e)
                         else -> null
                     }
@@ -486,7 +487,7 @@ class TerminalActivity : Activity() {
                         debut, debut + 1, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
                 }
             } else {
-                arcEnCiel(sb, m.groupValues[5])
+                arcEnCiel(sb, m.groupValues[6])
             }
             i = m.range.last + 1
         }

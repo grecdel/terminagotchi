@@ -66,9 +66,12 @@ object Explo {
         val nom = e.nom + if (shiny) " ✨" else ""
         val titre = if (shiny || e.rarete == "légendaire") "§$nom§" else nom
         val forme = Bestiaire.nomVariante(ind.optString("variante"))
-        val img = if (e.dessins != null) "¤${e.id}@${ind.optString("variante", "classique").ifEmpty { "classique" }}/${ind.optString("stade", "enfant")}${if (shiny) "*" else ""}¤\n"
+        val img = if (e.dessins != null) "¤${e.id}@${ind.optString("variante", "classique").ifEmpty { "classique" }}/${ind.optString("stade", "enfant")}/${Bestiaire.rangIndividu(ind).replace(" ", "_")}${if (shiny) "*" else ""}¤\n"
             else "¤${e.id}${if (shiny) "*" else ""}¤ "
-        return img + "$titre  #%03d · ${e.rarete} · ${e.famille}".format(e.numero) + (if (forme.isNotEmpty()) " · forme $forme" else "") + "\n" +
+        val rang = Bestiaire.rangIndividu(ind)
+        val etiquette = "◆ $rang (${Bestiaire.noteIndividu(ind)}/100)"
+        return img + "$titre  #%03d · ${e.famille}".format(e.numero) + (if (forme.isNotEmpty()) " · forme $forme" else "") + "\n" +
+            "   " + (if (rang in setOf("légendaire", "mythique")) "§$etiquette§" else etiquette) + "\n" +
             "   signe particulier : §${ind.optString("marque")}§\n" +
             "   humeur ${ind.optString("humeur")} · ${ind.optDouble("taille")} cm · potentiel ${ind.optInt("potentiel")} %"
     }

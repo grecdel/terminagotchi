@@ -244,6 +244,7 @@ def espece(e, complet):
         "taille_cm": taille,
         "poids_ko": int(taille * r.uniform(3, 9) * (1 + RARETES.index(rarete))),
         "stats": stats,
+        "puissance": e["puissance"],
         "posture": e["posture"],
         "lieux_de_vie": complet.get("habitats", []),
         "epreuves": e["epreuves"],
@@ -267,11 +268,63 @@ def secretes():
     out = json.loads(f.read_text(encoding="utf-8"))
     for e in out:
         if e["id"] == "abyssor":                 # le démon des abysses vit au fond des abysses
-            e.update({"famille": "Démons", "icone": FAM["Démons"][1], "rarete": "légendaire",
+            e.update({"famille": "Démons", "icone": FAM["Démons"][1], "rarete": "légendaire", "puissance": 15,
                       "habitat": "abysses", "zone": "abysses/gouffre/fosse/sanctuaire", "epreuves": ["Système", "Sécurité"]})
         e.setdefault("epreuves", ["Système"])
         e.setdefault("variantes", [{"id": "classique", "nom": "classique", "chance": 100.0}])
     return out
+
+
+# Part visée de chaque rareté d'individu parmi les bestioles qui apparaissent (le reste : commune)
+CIBLE_RANGS = [("peu commune", 0.30), ("rare", 0.13), ("épique", 0.045), ("légendaire", 0.01)]
+POIDS_APPARITION = {"commune": 60, "peu commune": 28, "rare": 10, "légendaire": 2}
+
+
+def centiles():
+    """Pour chaque potentiel (0-100) : la part des individus qui ont moins (somme de 5 tirages de 0 à 31)."""
+    loi = [1]
+    for _ in range(5):
+        n = [0] * (len(loi) + 31)
+        for i, v in enumerate(loi):
+            for k in range(32):
+                n[i + k] += v
+        loi = n
+    tot = sum(loi)
+    out = []
+    for p in range(101):
+        s = round(p * 155 / 100)
+        out.append(round((sum(loi[:s]) + loi[s] / 2) / tot, 4))
+    return out
+
+
+def rarete_individu(especes):
+    """Règles de la rareté d'un individu (bestiaire2/rarete.json) : note = 60 % stats (en centile) + 25 % rareté
+    de sa forme + 15 % puissance de l'espèce, +10 si shiny. Les paliers sont recalculés pour que les raretés
+    gardent la même part quel que soit le nombre de variantes déjà dessinées."""
+    r = json.loads((B2 / "rarete.json").read_text(encoding="utf-8"))
+    po, cent = r["poids"], centiles()
+    rnd = random.Random(1515)
+    publiques = [e for e in especes if not e.get("secrete")]
+    poids = [POIDS_APPARITION[e["rarete"]] / sum(1 for x in publiques if x["rarete"] == e["rarete"]) for e in publiques]
+    notes = []
+    for _ in range(200000):
+        e = rnd.choices(publiques, poids)[0]
+        vs = e["variantes"]
+        m = max(v["chance"] for v in vs)
+        v = rnd.choices(vs, [x["chance"] for x in vs])[0]
+        pot = round(100 * sum(rnd.randint(0, 31) for _ in range(5)) / 155)
+        n = po["stats"] * cent[pot] + po["variante"] * (1 - v["chance"] / m) + po["puissance"] * (e["puissance"] - 1) / 14
+        if rnd.randrange(100) == 0:
+            n += po["bonus_shiny"]
+        notes.append(min(100.0, n))
+    notes.sort(reverse=True)
+    paliers, cumul = [], 0.0
+    for nom, part in reversed(CIBLE_RANGS):
+        cumul += part
+        paliers.append([round(notes[int(cumul * len(notes))], 1), nom])
+    r["paliers"] = [[0, "commune"]] + paliers[::-1]
+    r["centiles"] = cent
+    return r
 
 
 def generer():
@@ -290,6 +343,8 @@ def generer():
         "chance_shiny": 100,
         "familles": [{"nom": f[0], "icone": f[1], "stat": f[2], "habitat": f[3], "attiree_par": f[5]} for f in FAMILLES],
         "lieux": {f[3]: f[4] for f in FAMILLES},
+        # rareté d'un INDIVIDU (stats + forme + puissance de l'espèce, + shiny) : voir rarete_individu()
+        "rarete_individu": rarete_individu(especes),
         "marques": MARQUES,
         "humeurs": HUMEURS,
         # ancien nom → nouveau nom (même numéro) : les vieilles sauvegardes gardent leurs bestioles

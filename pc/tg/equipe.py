@@ -143,7 +143,7 @@ def ecran_equipe(state):
         seuil = SEUILS.get(s)
         barre = f"{c.get('xp', 0)}/{seuil} XP" if seuil else "stade maximal"
         marque = f"{fg(226)}★ active{RESET} " if c is act else "         "
-        lignes.append(f" {marque}{B.nom_affiche(e, c.get('shiny'))} {DIM}· {NOM_STADE[s]} · {barre}"
+        lignes.append(f" {marque}{B.nom_affiche(e, c.get('shiny'))} {B.etiquette_rang(c)} {DIM}· {NOM_STADE[s]} · {barre}"
                       f"{' · animé' if anime(e['nom']) else ''}{RESET}")
     lignes += ["", f" {DIM}Choisir l'active : tg troupe <nom> · la voir bouger : tg anime <nom> [animation]{RESET}"]
     return lignes

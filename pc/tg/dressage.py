@@ -564,6 +564,7 @@ def reussir(state):
     titre = e["nom"] + (" ✨ SHINY" if d["shiny"] else "")
     core.log(state, f"🎓 {titre} dressé en {ind['dresse']} s ! ({e['rarete']})")
     core.say(state, f"{e['nom']}{' ✨' if d['shiny'] else ''} te fait confiance et rejoint ta troupe ! "
+                    f"C'est un individu {B.rang_individu(ind)} ({B.note_individu(ind)}/100). "
                     f"Signe particulier : {ind['marque']}. ([c] pour ta collection)", 14)
     core.notif(state, f"🎓 {titre} a rejoint ta troupe !")
     st = e.get("stat")

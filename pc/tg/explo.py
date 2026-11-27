@@ -98,8 +98,9 @@ def _carte_individu(ind):
     sp = B.dessin_individu(ind)
     forme = B.nom_variante(e, ind.get("variante"))
     infos = [
-        f"{B.nom_affiche(e, ind.get('shiny'))} {DIM}#{e['numero']:03d} · {e['rarete']} · {e['famille']}"
+        f"{B.nom_affiche(e, ind.get('shiny'))} {DIM}#{e['numero']:03d} · {e['famille']}"
         f"{' · forme ' + forme if forme else ''}{RESET}",
+        B.etiquette_rang(ind),
         f"{DIM}signe particulier :{RESET} {ind.get('marque', '?')}",
         f"{DIM}humeur {ind.get('humeur', '?')} · {ind.get('taille', '?')} cm · potentiel {ind.get('potentiel', '?')} %{RESET}",
     ]
