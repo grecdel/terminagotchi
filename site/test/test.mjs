@@ -208,5 +208,16 @@ verifier(!r.t.includes("/joueur/Grec"), "l'élève peut quitter la classe");
 r = await appel("GET", "/classe");
 verifier(r.statut === 200 && r.t.includes("fiches de séance"), "page d'accueil du mode classe");
 
+console.log("Langues du site");
+r = await appel("GET", "/bestiaire/braisillon?lang=en");
+verifier(r.t.includes('<html lang="en">') && r.t.includes("A little imp born from a fallen ember") && r.t.includes("Bestiary")
+  && (r.h.get("set-cookie") || "").includes("lang=en"), "site en anglais (?lang=en), choix retenu dans un cookie");
+r = await appel("GET", "/bestiaire/braisillon", { entetes: { cookie: "lang=en" } });
+verifier(r.t.includes("Bestiary") && r.t.includes("?lang=fr"), "le cookie garde l'anglais, lien pour revenir au français");
+r = await appel("GET", "/bestiaire/braisillon");
+verifier(r.t.includes("Petit diablotin") && r.t.includes("?lang=en"), "sans choix : français, avec un lien vers l'anglais");
+r = await appel("GET", "/api/classement", { entetes: { cookie: "lang=en" } });
+verifier(r.statut === 200 && r.j !== null, "l'API (JSON) n'est pas touchée par la traduction");
+
 console.log(`\n${ok} réussis, ${ko} échoués`);
 process.exit(ko ? 1 : 0);
