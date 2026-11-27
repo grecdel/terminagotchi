@@ -18,6 +18,7 @@ import textwrap
 import time
 from datetime import date
 
+from .langue import tr
 from . import bestiaire as B
 from . import core
 from .plateforme import IS_WIN
@@ -663,42 +664,42 @@ def lignes_ecran(state, largeur=62):
     lvl = C.level(state["xp"])
     st_f = "  ".join(f"{fg(v['color'])}{v['short']}{RESET} {BOLD}{state['stats'][v['stat']]}{RESET}" for v in C.CATEGORIES.values())
     nom_f = B.arc_en_ciel(state["name"]) if state.get("shiny") else f"{BOLD}{state['name']}{RESET}"
-    gauche_txt = [f"{nom_f} {DIM}· niv. {lvl}{RESET}", st_f,
-                  f"{fg(250)}Faim{RESET}     {jauge(state['hunger'], 100, 12)}"]
+    gauche_txt = [f"{nom_f} {DIM}· {tr('niv.')} {lvl}{RESET}", st_f,
+                  f"{fg(250)}{tr('Faim'):<9}{RESET}{jauge(state['hunger'], 100, 12)}"]
     # ---- le monstre
     sp_m = petit_dessin(e, d["shiny"], d.get("variante"))
     if d.get("examine"):
         st_m = "  ".join(f"{fg(COUL_STAT.get(k, 250))}{k}{RESET} {BOLD}{v}{RESET}" for k, v in e["stats"].items())
     else:
-        st_m = f"{DIM}stats : ??? (examine-le){RESET}"
+        st_m = f"{DIM}{tr('stats : ??? (examine-le)')}{RESET}"
     droite_txt = [f"{BOLD}{B.nom_affiche(e, d['shiny'])}{RESET} {DIM}#{e['numero']:03d}{RESET} "
-                  f"{B.fg24(B.COULEUR_RARETE[e['rarete']])}{e['rarete']}{RESET}", st_m,
-                  f"{fg(213)}Méfiance{RESET} {jauge(mef, 100, 12, inverse=True)} {mef:3.0f} %"]
-    out = ["", f" {fg(196)}{BOLD}⚔ UN MONSTRE SAUVAGE !{RESET}", ""]
+                  f"{B.fg24(B.COULEUR_RARETE[e['rarete']])}{tr(e['rarete'])}{RESET}", st_m,
+                  f"{fg(213)}{tr('Méfiance')}{RESET} {jauge(mef, 100, 12, inverse=True)} {mef:3.0f} %"]
+    out = ["", f" {fg(196)}{BOLD}{tr('⚔ UN MONSTRE SAUVAGE !')}{RESET}", ""]
     out += _cote_a_cote(sp_f, sp_m, LG, milieu=f"{fg(196)}{BOLD}  VS  {RESET}")
     out += _cote_a_cote(gauche_txt, droite_txt, LG, milieu="      ")
     out.append("")
-    chrono = (f"{fg(153)}Temps{RESET} {jauge(r, d['duree'], 30)} {r:3.0f} s" if r is not None
-              else f"{fg(153)}Temps{RESET} {fg(147)}pas de chrono : c'est une leçon{RESET}")
+    chrono = (f"{fg(153)}{tr('Temps')}{RESET} {jauge(r, d['duree'], 30)} {r:3.0f} s" if r is not None
+              else f"{fg(153)}{tr('Temps')}{RESET} {fg(147)}{tr('pas de chrono : c’est une leçon'.replace('’', chr(39)))}{RESET}")
     pastilles = " ".join(f"{fg(120)}●{RESET}" if f in d["faites"] else f"{fg(226)}◉{RESET}" if _par_id(f) is tache_courante(state)
                          else f"{fg(240)}○{RESET}" for f in d["taches"])
-    out.append(f"  {chrono}    {DIM}Étape {min(n_fait + 1, n_total)}/{n_total}{RESET} {pastilles}")
+    out.append(f"  {chrono}    {DIM}{tr('Étape')} {min(n_fait + 1, n_total)}/{n_total}{RESET} {pastilles}")
     x = tache_courante(state)
     if x is None:
         return out
     fid = next(f for f in d["taches"] if _par_id(f) is x)
-    but = x["but"].format(nom_min=d["espece"].lower(), nom=d["espece"])
+    but = tr(x["but"]).format(nom_min=d["espece"].lower(), nom=d["espece"])
     expl, ex = aide(fid, d["espece"])
-    out += ["", f" {fg(226)}{BOLD}Il veut   {RESET}{BOLD}{but}{RESET}"]
+    out += ["", f" {fg(226)}{BOLD}{tr('Il veut   ')}{RESET}{BOLD}{but}{RESET}"]
     if expl:
         for k, l in enumerate(textwrap.wrap(expl, largeur)):
-            out.append(f" {fg(117)}{'Comment  ' if k == 0 else '         '}{RESET} {l}")
+            out.append(f" {fg(117)}{tr('Comment  ') if k == 0 else '         '}{RESET} {l}")
     if ex:
         seuil = d["duree"] * (1 - bonus(state)["exemple"]) if d["duree"] else None
         if r is None or fid.startswith("Rencontre:") or r <= d["duree"] - seuil:
-            out.append(f" {fg(120)}{BOLD}Tape     {RESET} {fg(120)}{piege(ex)}{RESET}")
+            out.append(f" {fg(120)}{BOLD}{tr('Tape     ')}{RESET} {fg(120)}{piege(ex)}{RESET}")
         else:
-            out.append(f" {fg(120)}Tape     {RESET} {DIM}l'exemple s'affiche dans {r - (d['duree'] - seuil):.0f} s "
+            out.append(f" {fg(120)}{tr('Tape     ')}{RESET} {DIM}l'exemple s'affiche dans {r - (d['duree'] - seuil):.0f} s "
                        f"(cherche d'abord dans le lexique : touche l){RESET}")
     if fid.startswith("Rencontre:examiner"):
         ou = "~/terrain_terminagotchi"
@@ -706,7 +707,7 @@ def lignes_ecran(state, largeur=62):
         ou = "n'importe où"
     else:
         ou = f"~/{T.name}/{d['zone']}/{repaire(d['espece'])}"
-    out.append(f" {fg(246)}Où       {RESET} {DIM}{ou}{RESET}")
+    out.append(f" {fg(246)}{tr('Où       ')}{RESET} {DIM}{ou}{RESET}")
     return out
 
 
@@ -829,4 +830,4 @@ def aide(fid, nom):
     expl, ex, ex_win = a
     ex = ex_win if IS_WIN and ex_win else ex
     f = {"nom": nom, "nom_min": nom.lower()}
-    return expl.format(**f), ex.format(**f)
+    return tr(expl).format(**f), ex.format(**f)
