@@ -233,6 +233,8 @@ def migrate(state):
         state["branch"] = dominant(state)
     for k, v in {"notifs": True, "permanente": True, "compagnon": "ligne", "bulle": True}.items():
         state["config"].setdefault(k, v)
+    from . import bestiaire
+    bestiaire.migrer(state)               # ancien bestiaire → nouveau (mêmes numéros)
     state["version"] = VERSION
     return state
 

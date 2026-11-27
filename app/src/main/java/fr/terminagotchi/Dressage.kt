@@ -235,14 +235,15 @@ object Dressage {
         val m = jeu.module("dressage")
         val faites = m.optJSONArray("familles") ?: JSONArray().also { m.put("familles", it) }
         val premiere = (0 until faites.length()).none { faites.getString(it) == e.famille }
-        val pool = EPREUVES.filter { it.fam == e.famille && it.niveau <= (NIV[e.rarete] ?: 1) }.sortedBy { it.niveau }
+        val fams = e.epreuves.ifEmpty { listOf(e.famille) }      // les commandes liées à cette espèce
+        val pool = EPREUVES.filter { it.fam in fams && it.niveau <= (NIV[e.rarete] ?: 1) }.sortedBy { it.niveau }
         val n = NB[e.rarete] ?: 2
         val choix = if (e.rarete == "légendaire") {
-            EPREUVES.filter { it.fam == e.famille }.sortedBy { it.niveau }.takeLast(3) +
-                EPREUVES.filter { it.fam != e.famille && it.fam != "Rencontre" && it.niveau >= 2 }.shuffled().take(3)
+            EPREUVES.filter { it.fam in fams }.sortedBy { it.niveau }.takeLast(3) +
+                EPREUVES.filter { it.fam !in fams && it.fam != "Rencontre" && it.niveau >= 2 }.shuffled().take(3)
         } else if (premiere) pool.take(n) else pool.shuffled().take(n).sortedBy { it.niveau }
         val taches = EPREUVES.filter { it.fam == "Rencontre" } + choix.distinctBy { it.cle }
-        val d = JSONObject().put("espece", e.nom).put("shiny", shiny).put("zone", e.zone)
+        val d = JSONObject().put("espece", e.nom).put("shiny", shiny).put("zone", e.zone).put("variante", Bestiaire.tirerVariante(e))
             .put("taches", JSONArray(taches.map { it.cle })).put("faites", JSONArray()).put("lignes", JSONArray())
             .put("debut", System.currentTimeMillis()).put("x", JSONObject())
             .put("duree", if (premiere) 0 else (DUREE[e.rarete] ?: 90) + bonusTemps(jeu))
@@ -313,7 +314,7 @@ object Dressage {
         val e = Bestiaire.espece(d.getString("espece"))!!
         fiche(jeu, e.nom).delete()
         val shiny = d.optBoolean("shiny")
-        val ind = Bestiaire.individu(e, shiny, d.getString("zone"))
+        val ind = Bestiaire.individu(e, shiny, d.getString("zone"), d.optString("variante", "classique"))
             .put("dresse", (System.currentTimeMillis() - d.optLong("debut")) / 1000).put("stade", "enfant").put("xp", 0)
         if (shiny) ind.put("teinte", Math.round(Random.nextDouble(0.15, 0.85) * 1000) / 1000.0)
         Explo.captures(jeu).put(ind)
@@ -385,7 +386,9 @@ object Dressage {
         }
         image(Sprites.bitmap(jeu, 6, false))
         sb.texte("   VS   ", 0xFFFF5050.toInt(), true, 1.3f)
-        image(Animations.pixels(e.id, "adulte", "statique", 3)?.firstOrNull() ?: Bestiaire.bitmap(e, d.optBoolean("shiny"), 5))
+        image(Animations.pixels(e.id, "adulte", "statique", 3)?.firstOrNull()
+            ?: Bestiaire.dessin(e, d.optString("variante", "classique"), "adulte", if (d.optBoolean("shiny")) 0.5 else 0.0)
+            ?: Bestiaire.bitmap(e, d.optBoolean("shiny"), 5))
         sb.append("\n")
         val COUL_FAM = mapOf("Intelligence" to 0xFF00AFFF.toInt(), "Agilité" to 0xFF5FD787.toInt(),
             "Force" to 0xFFFF5F5F.toInt(), "Endurance" to 0xFFFFD75F.toInt())

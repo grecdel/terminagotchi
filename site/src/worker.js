@@ -14,6 +14,10 @@ const STADES = ["Œuf", "Bébé", "Ado", "Adulte"];
 const FORMES = { Intelligence: "Hacker", Force: "Titan", "Agilité": "Éclair", Endurance: "Carapace" };
 const ESPECES = BESTIAIRE.especes.map((e) => e.nom);
 const PAR_NOM = Object.fromEntries(BESTIAIRE.especes.map((e) => [e.nom, e]));
+// noms de l'ancien bestiaire → nouveaux noms (même numéro) : les vieux profils et les vieilles versions du jeu suivent
+const ANCIENS = BESTIAIRE.anciens || {};
+const nomActuel = (n) => (typeof n === "string" && ANCIENS[n]) || n;
+const VARIANTES = Object.fromEntries(BESTIAIRE.especes.map((e) => [e.nom, new Set((e.variantes || []).map((v) => v.id))]));
 const PAR_ID = Object.fromEntries(BESTIAIRE.especes.map((e) => [e.id, e]));
 const PUBLIQUES = BESTIAIRE.especes.filter((e) => !e.secrete);
 // espèces qui ont un dessin complet animé (bandes d'images dans public/anim/<id>/<stade>/<animation>.webp)
@@ -153,6 +157,15 @@ function fusionner(etat, envoi, appareil) {
     collection: {}, records: {}, faim: 80, faimDate: 0, appareils: {}, ...etat,
   };
   const entier = (x, max) => Math.max(0, Math.min(max, Math.floor(Number(x) || 0)));
+  const renommer = (coll) => {
+    const out = {};
+    for (const [k, v] of Object.entries(coll || {})) out[nomActuel(k)] = Math.max(out[nomActuel(k)] || 0, Number(v) || 0);
+    return out;
+  };
+  e.collection = renommer(e.collection);
+  envoi = { ...envoi, collection: renommer(envoi.collection) };
+  if (Array.isArray(e.captures)) for (const c of e.captures) c.espece = nomActuel(c.espece);
+  if (Array.isArray(envoi.captures)) envoi.captures = envoi.captures.map((c) => (c && typeof c === "object" ? { ...c, espece: nomActuel(c.espece) } : c));
   const d = envoi.deltas || {};
   e.xp += entier(d.xp, 20000);
   e.total += entier(d.total, 20000);
@@ -195,6 +208,7 @@ function fusionner(etat, envoi, appareil) {
       stats: st, zone: typeof c.zone === "string" && /^[a-z/]{0,60}$/.test(c.zone) ? c.zone : "",
       stade: STADES_B.includes(c.stade) ? c.stade : "enfant",
       teinte: Math.max(0, Math.min(1, Number(c.teinte) || 0)),
+      variante: VARIANTES[c.espece]?.has(c.variante) ? c.variante : "classique",
     });
     connues.add(c.id);
   }
@@ -641,10 +655,11 @@ function visuel(e, c = {}, taille = 6, anim = "statique") {
     style="width:${px}px;height:${px}px;background-image:url(/anim/${e.id}/${stade}/${anim}.webp);--px:${px}px;${filtre}"></div>`;
 }
 
-function svgBestiole(e, shiny = false, taille = 6) {
-  const rows = shiny ? e.sprite_shiny : e.sprite;
-  const pal = shiny ? e.palette_shiny : e.palette;
-  const n = 16;
+function svgBestiole(e, shiny = false, taille = 6, grand = false) {
+  grand = grand && e.sprite_grand && e.sprite_grand.length <= 32;
+  const rows = grand ? e.sprite_grand : shiny ? e.sprite_shiny : e.sprite;
+  const pal = grand ? (shiny ? e.palette_grand_shiny : e.palette_grand) : shiny ? e.palette_shiny : e.palette;
+  const n = grand ? 32 : 16;
   const ox = (n - rows[0].length) / 2;
   const oy = (n - rows.length) / 2;
   let r = "";
@@ -675,8 +690,8 @@ function pageBestiaire(url) {
     <div class="num">#${String(e.numero).padStart(3, "0")} · ${e.icone} ${echapper(e.famille)}</div>
     <div><b>${echapper(e.nom)}</b></div>${etiquetteRarete(e.rarete)}</a>`).join("");
   return page("Bestiaire", `<h1>📖 Bestiaire</h1>
-<p>Les 150 espèces de bestioles qui se cachent dans le terrain de jeu : 75 communes, 45 peu communes, 20 rares et 10 légendaires,
-réparties en 15 familles. Plus une bestiole est rare, plus elle se cache profond (recoin → cachette → sanctuaire).</p>
+<p>Les 150 espèces de bestioles qui se cachent dans le terrain de jeu : 60 communes, 40 peu communes, 40 rares et 10 légendaires,
+réparties en 10 familles de 15. Chacune grandit en 5 stades, et certaines ont des formes rares selon leur habitat. Plus une bestiole est rare, plus elle se cache profond (recoin → cachette → sanctuaire).</p>
 <div class="carte filtres"><div><span class="doux">Famille :</span> ${filtresF}</div><div style="margin-top:6px"><span class="doux">Rareté :</span> ${filtresR}</div></div>
 <p class="doux">${liste.length} espèce${liste.length > 1 ? "s" : ""}</p>
 <div class="grille-b">${cartes}</div>`, "Le bestiaire des 150 bestioles de Terminagotchi.");
@@ -691,7 +706,7 @@ function pageEspece(id) {
   const stats = Object.entries(e.stats).map(([k, v]) => `<div><div class="doux" style="font-size:12px">${k}</div><b>${v}</b></div>`).join("");
   return page(e.nom, `<p><a href="/bestiaire">← Bestiaire</a></p>
 <section class="hero">
-  <div class="carte">${svgBestiole(e, false, 14)}</div>
+  <div class="carte">${svgBestiole(e, false, 7, true)}</div>
   <div style="flex:1;min-width:260px">
     <p class="doux">#${String(e.numero).padStart(3, "0")} · ${e.icone} famille ${echapper(e.famille)}</p>
     <h1>${e.rarete === "légendaire" ? `<span class="rgb">${echapper(e.nom)}</span>` : echapper(e.nom)}</h1>

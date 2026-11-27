@@ -65,14 +65,14 @@ console.log("Synchro et fusion");
 r = await appel("POST", "/api/sync", { cle: cleTel, corps: {
   appareil: "android",
   deltas: { xp: 120, total: 30, stats: { Endurance: 12, "Agilité": 4 } },
-  vus: ["ls", "cd", "pwd"], skills: ["Boussole"], collection: { Glitchou: 1 }, records: { pwd: 4.2 },
+  vus: ["ls", "cd", "pwd"], skills: ["Boussole"], collection: { Runodrake: 1 }, records: { pwd: 4.2 },
   valeurs: { nom: "Pixel", nomDate: 1000, trait: "curieux", faim: 70, faimDate: 1000 },
 } });
 verifier(r.j.etat.xp === 120 && r.j.etat.nom === "Pixel", "1re synchro du téléphone");
 r = await appel("POST", "/api/sync", { cle: clePc, corps: {
   appareil: "pc",
   deltas: { xp: 80, total: 20, stats: { Intelligence: 9 } },
-  vus: ["git", "ls"], skills: ["Archiviste"], collection: { Glitchou: 0, Octobit: 2 }, records: { pwd: 3.1, ls: 2 },
+  vus: ["git", "ls"], skills: ["Archiviste"], collection: { Runodrake: 0, Osselet: 2 }, records: { pwd: 3.1, ls: 2 },
   valeurs: { nom: "AutreNom", nomDate: 500, trait: "farceur", faim: 90, faimDate: 2000 },
 } });
 const e = r.j.etat;
@@ -80,7 +80,7 @@ const badgesPc = r.j.badges;
 verifier(e.xp === 200, "XP additionnée des deux appareils (200)");
 verifier(e.stats.Endurance === 12 && e.stats.Intelligence === 9, "stats additionnées");
 verifier(["ls", "cd", "pwd", "git"].every((x) => e.vus.includes(x)) && e.vus.length === 4, "commandes goûtées : union");
-verifier(e.collection.Glitchou === 1 && e.collection.Octobit === 2, "collection : maximum par espèce");
+verifier(e.collection.Runodrake === 1 && e.collection.Osselet === 2, "collection : maximum par espèce");
 verifier(e.records.pwd === 3.1 && e.records.ls === 2, "records : meilleur temps");
 verifier(e.nom === "Pixel", "nom : un appareil relié n'écrase pas le nom du compte");
 r = await appel("POST", "/api/sync", { cle: clePc, corps: { appareil: "pc", valeurs: { nom: "Pixou", nomDate: 3000 } } });
@@ -149,10 +149,10 @@ r = await appel("GET", "/joueur/Grec");
 verifier(!r.t.includes("<img src=x") && r.t.includes("&lt;img"), "le nom est échappé (pas d'injection HTML)");
 
 console.log("Bestiaire et galerie des captures");
-const capt = (id, extra = {}) => ({ id, espece: "Glitchou", shiny: false, date: 1700000000000, marque: "une étoile sur le front",
+const capt = (id, extra = {}) => ({ id, espece: "Runodrake", shiny: false, date: 1700000000000, marque: "une étoile sur le front",
   humeur: "joyeuse", taille: 7.5, potentiel: 77, stats: { PV: 40, ATK: 41, DEF: 30, VIT: 35, INT: 33 }, zone: "faille", ...extra });
 r = await appel("POST", "/api/sync", { cle: cleTel, corps: { appareil: "android", captures: [
-  capt("aaaaaa0001"), capt("aaaaaa0002", { shiny: true, espece: "Rootkitsune" }), capt("aaaaaa0001"),
+  capt("aaaaaa0001"), capt("aaaaaa0002", { shiny: true, espece: "Ricanos" }), capt("aaaaaa0001"),
   capt("bbbbbb0001", { marque: "<script>alert(1)</script>" }), capt("bbbbbb0002", { espece: "Inconnu" }),
 ], partage: { actif: false, date: 10 } } });
 verifier(r.j.etat.captures.length === 2, "captures : doublons et captures invalides refusés (2 gardées)");
@@ -161,9 +161,9 @@ verifier(r.statut === 200 && !r.t.includes("une étoile sur le front"), "galerie
 r = await appel("POST", "/api/sync", { cle: clePc, corps: { appareil: "pc", partage: { actif: true, date: 20 } } });
 verifier(r.j.etat.partage.actif === true, "accord de partage enregistré");
 r = await appel("GET", "/captures");
-verifier(r.t.includes("une étoile sur le front") && r.t.includes("Rootkitsune") && r.t.includes("class=\"rgb\""), "galerie : captures visibles, écriture RGB");
+verifier(r.t.includes("une étoile sur le front") && r.t.includes("Ricanos") && r.t.includes("class=\"rgb\""), "galerie : captures visibles, écriture RGB");
 r = await appel("GET", "/captures?shiny=1");
-verifier(r.t.includes("Rootkitsune") && !r.t.includes(">Glitchou<"), "galerie : filtre shiny");
+verifier(r.t.includes("Ricanos") && !r.t.includes(">Runodrake<"), "galerie : filtre shiny");
 r = await appel("POST", "/api/sync", { cle: cleTel, corps: { appareil: "android", partage: { actif: false, date: 5 } } });
 verifier(r.j.etat.partage.actif === true, "un vieux réglage de partage n'écrase pas le plus récent");
 r = await appel("GET", "/bestiaire");
@@ -171,12 +171,16 @@ verifier(r.statut === 200 && (r.t.match(/class="bestiole"/g) || []).length === 1
 verifier(!r.t.includes("✨"), "glossaire classique : aucune variante shiny");
 r = await appel("GET", "/bestiaire?rarete=l%C3%A9gendaire");
 verifier((r.t.match(/class="bestiole"/g) || []).length === 10, "glossaire : filtre des 10 légendaires");
-r = await appel("GET", "/bestiaire/glitchou");
-verifier(r.statut === 200 && r.t.includes("Glitchou") && r.t.includes("terrain_terminagotchi/faille"), "fiche d'espèce");
+r = await appel("GET", "/bestiaire/runodrake");
+verifier(r.statut === 200 && r.t.includes("Runodrake") && r.t.includes("terrain_terminagotchi/ruines"), "fiche d'espèce");
+r = await appel("POST", "/api/sync", { cle: cleTel, corps: { appareil: "android", collection: { Papyrou: 3 },
+  captures: [capt("cccccc0001", { espece: "Glitchou" })] } });
+verifier(r.j.etat.collection.Braisillon === 3 && r.j.etat.captures.some((c) => c.id === "cccccc0001" && c.espece === "Runodrake"),
+  "ancien bestiaire : les vieux noms sont convertis");
 r = await appel("GET", "/bestiaire/zzz");
 verifier(r.statut === 404, "espèce inconnue : 404");
 r = await appel("GET", "/joueur/Grec");
-verifier(r.t.includes("/bestiaire/glitchou") && r.t.includes("Voir ses captures uniques"), "profil : collection dessinée + lien vers ses captures");
+verifier(r.t.includes("/bestiaire/runodrake") && r.t.includes("Voir ses captures uniques"), "profil : collection dessinée + lien vers ses captures");
 
 console.log(`\n${ok} réussis, ${ko} échoués`);
 process.exit(ko ? 1 : 0);

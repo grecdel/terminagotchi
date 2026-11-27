@@ -457,12 +457,13 @@ class TerminalActivity : Activity() {
     }
 
     /**
-     * Mise en forme spéciale : ¤id¤ / ¤id*¤ = dessin d'une bestiole (normale / shiny),
+     * Mise en forme spéciale : ¤id¤ / ¤id*¤ = dessin d'une bestiole (normale / shiny), ¤id+¤ = version détaillée,
+     * ¤id@variante/stade¤ (ou …*¤) = un individu de la troupe à son stade et dans sa forme,
      * §texte§ = écriture arc-en-ciel (RGB).
      */
     private fun miseEnForme(texte: String, couleur: Int?): SpannableStringBuilder {
         val sb = SpannableStringBuilder()
-        val motif = Regex("¤([a-z0-9]+)([*+]?)¤|§([^§]*)§")
+        val motif = Regex("¤([a-z0-9]+)(?:@([\\p{L}0-9_]+)/([a-z]+))?([*+]?)¤|§([^§]*)§")
         var i = 0
         for (m in motif.findAll(texte)) {
             sb.append(texte, i, m.range.first)
@@ -471,15 +472,21 @@ class TerminalActivity : Activity() {
                 if (e != null) {
                     val debut = sb.length
                     sb.append("\uFFFC")
-                    val detail = if (m.groupValues[2] == "+") Animations.detaille(e.id) else null
-                    val d = android.graphics.drawable.BitmapDrawable(resources, detail ?: Bestiaire.bitmap(e, m.groupValues[2] == "*", 4))
-                    val px = ((if (detail != null) 160 else 40) * resources.displayMetrics.density).toInt()
+                    val mode = m.groupValues[4]
+                    val detail = when {
+                        m.groupValues[2].isNotEmpty() ->
+                            Bestiaire.dessin(e, m.groupValues[2], m.groupValues[3], if (mode == "*") 0.5 else 0.0)
+                        mode == "+" -> Animations.detaille(e.id) ?: Bestiaire.dessin(e)
+                        else -> null
+                    }
+                    val d = android.graphics.drawable.BitmapDrawable(resources, detail ?: Bestiaire.bitmap(e, mode == "*", 4))
+                    val px = ((if (detail == null) 40 else if (mode == "+") 160 else 96) * resources.displayMetrics.density).toInt()
                     d.setBounds(0, 0, px, px)
                     sb.setSpan(android.text.style.ImageSpan(d, android.text.style.DynamicDrawableSpan.ALIGN_BOTTOM),
                         debut, debut + 1, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
                 }
             } else {
-                arcEnCiel(sb, m.groupValues[3])
+                arcEnCiel(sb, m.groupValues[5])
             }
             i = m.range.last + 1
         }

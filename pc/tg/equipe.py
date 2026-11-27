@@ -2,8 +2,8 @@
 leur nom, et s'animent dans le terminal.
 
 La bestiole « active » (tg troupe <nom>) gagne de l'expérience à chaque commande que tu tapes.
-Les animations détaillées existent pour les espèces qui ont un dessin complet (Abyssor pour
-l'instant) ; les autres gardent leur petit sprite.
+Les animations détaillées existent pour les espèces qui ont un dessin animé (Abyssor pour
+l'instant) ; les autres montrent leur dessin à chaque stade (et l'évolution avant → après).
 """
 import base64
 import colorsys
@@ -182,8 +182,21 @@ def jouer(state, args):
     r = images(ind["espece"], s, quoi, teinte)
     if r is None:
         if not anime(ind["espece"]):
-            print("\n".join(B.dessin(B.espece(ind["espece"]), ind.get("shiny"))))
-            print(f" {DIM}{ind['espece']} n'a pas encore d'animation détaillée.{RESET}")
+            if quoi == "evolution":                # avant → après, côte à côte
+                avant = B.dessin_individu(dict(ind, stade=s))
+                apres = B.dessin_individu(ind)
+                h = max(len(avant), len(apres))
+                avant = [""] * (h - len(avant)) + avant
+                apres = [""] * (h - len(apres)) + apres
+                from .explo import largeur
+                w = largeur(avant)
+                for k in range(h):
+                    fleche = "  ➜  " if k == h // 2 else "     "
+                    print("  " + avant[k] + " " * (w - largeur([avant[k]])) + fleche + apres[k])
+                print(f" {BOLD}{NOM_STADE[s]} ➜ {NOM_STADE[stade(ind)]}{RESET}")
+            else:
+                print("\n".join("  " + l for l in B.dessin_individu(ind)))
+                print(f" {DIM}{ind['espece']} · {NOM_STADE[stade(ind)]} (pas encore d'animation détaillée pour cette espèce){RESET}")
         else:
             print(f" Animations : {', '.join(a for a in ANIMS)}")
         return

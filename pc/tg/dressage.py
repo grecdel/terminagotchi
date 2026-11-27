@@ -405,12 +405,12 @@ def choisir_epreuves(e, premiere):
 
 
 def _epreuves_famille(e, premiere):
-    fam = e["famille"]
-    pool = [x for x in EPREUVES.get(fam, []) if not (x["posix"] and IS_WIN)]
+    fams = [f for f in (e.get("epreuves") or [e["famille"]]) if f in EPREUVES]   # commandes liées à l'espèce
+    pool = [x for f in fams for x in EPREUVES[f] if not (x["posix"] and IS_WIN)]
     nmax = NIVEAU_MAX[e["rarete"]]
     n = NB_TACHES[e["rarete"]]
     if e["rarete"] == "légendaire":           # l'épreuve ultime : sa famille + des épreuves d'ailleurs
-        autres = [x for f, v in EPREUVES.items() if f not in (fam, "Rencontre") for x in v
+        autres = [x for f, v in EPREUVES.items() if f not in fams and f != "Rencontre" for x in v
                   if not (x["posix"] and IS_WIN) and x["niveau"] >= 2]
         random.shuffle(autres)
         choix = sorted(pool, key=lambda x: x["niveau"])[-3:] + autres[:3]
@@ -451,6 +451,7 @@ def commencer(state, sauvage):
     fam_de = {id(x): f for f, v in EPREUVES.items() for x in v}
     state["dressage"] = {
         "sauvage": sauvage["f"], "espece": e["nom"], "shiny": sauvage.get("shiny", False), "zone": sauvage["zone"],
+        "variante": sauvage.get("v") or B.tirer_variante(e),
         "taches": [f"{fam_de[id(x)]}:{x['id']}" for x in taches], "faites": [], "lignes": [],
         "debut": time.time(), "duree": None if premiere else DUREE[e["rarete"]] + bo["temps"], "x": {}, "lecon": premiere,
         "mefiance": 100 - bo["mefiance"], "seconde": bo["seconde_chance"], "examine": False,
@@ -549,7 +550,7 @@ def reussir(state):
         fiche(d["espece"]).unlink()
     except OSError:
         pass
-    ind = B.individu(e, d["shiny"], d["zone"])
+    ind = B.individu(e, d["shiny"], d["zone"], d.get("variante"))
     ind["dresse"] = round(time.time() - d["debut"])
     ind["stade"], ind["xp"] = "enfant", 0               # il grandira en gardant son nom
     if d["shiny"]:
@@ -607,8 +608,10 @@ def jauge(valeur, maxi, largeur, inverse=False):
     return f"{fg(coul)}{'█' * n}{fg(238)}{'░' * (largeur - n)}{RESET}"
 
 
-def petit_dessin(e, shiny):
-    """Le monstre en 24 px (12 lignes) : version détaillée réduite si elle existe."""
+def petit_dessin(e, shiny, variante=None):
+    """Le monstre adulte en 32 px au plus (16 lignes) : version détaillée, réduite si elle est plus grande."""
+    if e.get("dessins"):
+        return B.dessin(e, shiny, grand=True, stade="adulte", variante=variante or "classique")
     if e.get("sprite_grand"):
         g = dict(e)
         g["sprite_grand"] = [r[::2] for r in e["sprite_grand"][::2]]
@@ -662,7 +665,7 @@ def lignes_ecran(state, largeur=62):
     gauche_txt = [f"{nom_f} {DIM}· niv. {lvl}{RESET}", st_f,
                   f"{fg(250)}Faim{RESET}     {jauge(state['hunger'], 100, 12)}"]
     # ---- le monstre
-    sp_m = petit_dessin(e, d["shiny"])
+    sp_m = petit_dessin(e, d["shiny"], d.get("variante"))
     if d.get("examine"):
         st_m = "  ".join(f"{fg(COUL_STAT.get(k, 250))}{k}{RESET} {BOLD}{v}{RESET}" for k, v in e["stats"].items())
     else:

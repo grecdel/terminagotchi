@@ -17,7 +17,7 @@ import org.json.JSONObject
 /**
  * L'équipe : les bestioles dressées grandissent (enfant → ado → adulte → forme finale) en gardant leur nom.
  * La bestiole active gagne de l'expérience à chaque commande tapée à la main.
- * Les espèces qui ont un dessin complet (Abyssor pour l'instant) s'animent en haute qualité.
+ * Les espèces qui ont un dessin animé (Abyssor pour l'instant) s'animent ; les autres montrent leur dessin à chaque stade.
  */
 object Equipe {
     val STADES = listOf("enfant", "ado", "adulte", "finale")
@@ -149,7 +149,7 @@ object Animations {
     /** anime <nom> [animation] : une petite fenêtre qui joue l'animation. */
     fun jouer(act: Activity, ind: JSONObject, animDemandee: String): String {
         val e = Bestiaire.espece(ind.optString("espece")) ?: return "Espèce inconnue."
-        if (!dispo(e.id)) return "${e.nom} n'a pas encore d'animation détaillée."
+        if (!dispo(e.id) && e.dessins == null) return "${e.nom} n'a pas encore d'animation détaillée."
         var stade = ind.optString("stade", "enfant")
         val anim = animDemandee.lowercase().replace("é", "e").replace("è", "e").ifEmpty { "statique" }
         if (anim !in Equipe.ANIMS) return "Animations : " + Equipe.ANIMS.joinToString(", ")
@@ -158,7 +158,16 @@ object Animations {
             if (i <= 0) return "${e.nom} est encore enfant : il n'a pas encore évolué."
             stade = Equipe.STADES[i - 1]
         }
-        val imgs = pixels(e.id, stade, anim) ?: return "Pas d'image pour $anim."
+        val variante = ind.optString("variante", "classique").ifEmpty { "classique" }
+        val imgs = if (dispo(e.id)) pixels(e.id, stade, anim) ?: return "Pas d'image pour $anim."
+        else {
+            // pas d'animation dessinée : son dessin au stade actuel, ou l'évolution avant ↔ après
+            val apres = Bestiaire.dessin(e, variante, ind.optString("stade", "enfant"), 0.0, 6) ?: return "Pas d'image."
+            if (anim == "evolution") {
+                val avant = Bestiaire.dessin(e, variante, stade, 0.0, 6) ?: apres
+                listOf(avant, avant, avant, avant, apres, avant, apres, avant, apres, apres, apres, apres, apres, apres, apres)
+            } else listOf(apres)
+        }
         val dp = act.resources.displayMetrics.density
         val vue = ImageView(act).apply {
             layoutParams = LinearLayout.LayoutParams((260 * dp).toInt(), (260 * dp).toInt())
@@ -185,7 +194,7 @@ object Animations {
                 k++
                 if (k >= imgs.size * tours) { if (anim != "evolution") k = 0 else return }
                 vue.setImageBitmap(imgs[k % imgs.size])
-                h.postDelayed(this, 100)
+                h.postDelayed(this, if (dispo(e.id)) 100L else 250L)
             }
         }
         dlg.setOnShowListener { h.postDelayed(pas, 100) }
