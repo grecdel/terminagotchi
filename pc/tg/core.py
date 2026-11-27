@@ -176,7 +176,8 @@ COLLE = ["Hé ! Tu as copié-collé… tape-la toi-même, sinon ça ne rentre pa
 
 
 def say(state, text, secs=8):
-    state["bubble"] = [text, time.time() + secs]
+    from .langue import tr
+    state["bubble"] = [tr(text), time.time() + secs]
 
 
 NOTIF_PREFIX = ("✨", "⬆", "🎓", "🌳", "🎯", "🐾", "💨", "🌲", "⚡")
@@ -184,10 +185,13 @@ NOTIF_PREFIX = ("✨", "⬆", "🎓", "🌳", "🎯", "🐾", "💨", "🌲", "�
 
 def notif(state, texte):
     """Met un événement en file pour les notifications du système."""
-    state["notifs"] = (state.get("notifs", []) + [texte])[-5:]
+    from .langue import tr
+    state["notifs"] = (state.get("notifs", []) + [tr(texte)])[-5:]
 
 
 def log(state, msg):
+    from .langue import tr
+    msg = tr(msg)
     state["log"] = (state["log"] + [time.strftime("%H:%M ") + msg])[-6:]
     state["nlog"] = state.get("nlog", 0) + 1
     if msg.startswith(NOTIF_PREFIX):
@@ -212,8 +216,9 @@ def stage(lvl):
 def forme(state):
     """« Ado Carapace », « Bébé »… : le stade et, dès l'adolescence, la forme."""
     st = stage(level(state["xp"]))
-    f = f" {FORMES[state['branch']]}" if st >= STAGE_FORME and state.get("branch") else ""
-    return STAGES[st] + f
+    from .langue import tr
+    f = f" {tr(FORMES[state['branch']])}" if st >= STAGE_FORME and state.get("branch") else ""
+    return tr(STAGES[st]) + f
 
 
 def eclore(state):
@@ -273,7 +278,8 @@ def add_xp(state, n):
             from . import bestiaire
             e = bestiaire.espece(eclore(state))
             o = bestiaire.oeuf(state.get("oeuf"))
-            log(state, f"✨ L'œuf {o['nom'] if o else ''} a éclos : c'est un {e['nom'] if e else 'bébé'} !")
+            from .langue import tr
+            log(state, f"✨ L'œuf {tr(o['nom']) if o else ''} a éclos : c'est un {e['nom'] if e else 'bébé'} !")
             say(state, "Bonjour le monde ! … C'est comme ça qu'on dit, non ?", 10)
         if stage(new) >= STAGE_FORME and not state.get("branch"):
             state["branch"] = dominant(state)

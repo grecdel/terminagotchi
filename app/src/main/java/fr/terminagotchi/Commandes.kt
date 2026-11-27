@@ -109,6 +109,9 @@ class Commandes(
             "edite" -> edite(reste)
             "doom" -> doom()
             "classe" -> classe(reste)
+            "langue", "language", "lang" -> Reponse(if (reste.isBlank()) "Langue / language : ${Langue.LANGUES[Langue.code]}   ·   langue ${Langue.LANGUES.keys.joinToString("|")}"
+                else if (Langue.choisir(reste)) "Langue : {nom}".tr().replace("{nom}", Langue.LANGUES[Langue.code] ?: "")
+                else "Langues : " + Langue.LANGUES.entries.joinToString(", ") { "${it.key} (${it.value})" }, couleur = JAUNE)
             "entrainement", "entraînement", "salle" -> Reponse(when (reste.trim().lowercase()) {
                 "" -> Entrainement.texte(jeu)
                 "stop" -> Entrainement.arreter(jeu)
