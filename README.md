@@ -90,7 +90,7 @@ terminal », et le jeu vérifie que la commande **a vraiment marché**.
 
 | Monde | Ce qu'on y apprend |
 |---|---|
-| ⚓ Le Port | les réseaux : adresses, ports, TCP et UDP, routage, box, HTTPS |
+| ⚓ Le Port ✅ | les réseaux : adresses, ports, TCP et UDP, routage, box, HTTPS |
 | 📡 La Tour des Ondes | les ondes radio, le Wi-Fi et le Bluetooth, LoRa et les réseaux maillés (Meshtastic) |
 | 🛡 La Citadelle | la cybersécurité défensive : attaques simulées, et des « boîtes » à percer puis à réparer |
 | 🗝 La Crypte des Codes | la cryptographie (des codes anciens au chiffrement moderne) et la blockchain construite à la main |
