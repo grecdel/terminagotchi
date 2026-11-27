@@ -419,8 +419,8 @@ object Dressage {
         val ep = cour ?: return sb
         val nom = e.nom
         fun f(s: String) = s.replace("{nom_min}", e.id).replace("{nom}", nom)
-        sb.texte("\n" + "Il veut  ".tr(), 0xFFFFFF5F.toInt(), true).texte(f(ep.but) + "\n", 0xFFFFFFFF.toInt(), true)
-        sb.texte("Comment  ".tr(), 0xFF87D7FF.toInt(), true).texte(ep.explication + "\n", 0xFFD0D0E0.toInt())
+        sb.texte("\n" + "Il veut  ".tr(), 0xFFFFFF5F.toInt(), true).texte(f(ep.but.tr()) + "\n", 0xFFFFFFFF.toInt(), true)
+        sb.texte("Comment  ".tr(), 0xFF87D7FF.toInt(), true).texte(ep.explication.tr() + "\n", 0xFFD0D0E0.toInt())
         val duree = d.optInt("duree")
         val montre = r == null || ep.fam == "Rencontre" || r <= duree * (1 - partExemple(jeu))
         if (montre) sb.texte("Tape     ".tr(), 0xFF87FF87.toInt(), true).texte(Regles.piege(f(ep.exemple)) + "\n", 0xFF87FF87.toInt())

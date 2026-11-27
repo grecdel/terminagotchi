@@ -7,6 +7,7 @@ la lire (cat), puis réussir son dressage (voir dressage.py). Chaque bestiole es
 """
 import random
 
+from .langue import tr
 from . import bestiaire as B
 from . import core
 from . import dressage
@@ -22,9 +23,9 @@ def le(nom):
 
 def lieu(zone):
     base = zone.split("/")[0]
-    nom = B.nom_lieu(base)
+    nom = tr(B.nom_lieu(base))
     prof = zone.count("/")
-    return nom + ["", " (un recoin)", " (une cachette)", " (le sanctuaire)"][min(prof, 3)]
+    return nom + tr(["", " (un recoin)", " (une cachette)", " (le sanctuaire)"][min(prof, 3)])
 
 
 def largeur(sp):
@@ -98,10 +99,10 @@ def _carte_individu(ind):
     sp = B.dessin_individu(ind)
     forme = B.nom_variante(e, ind.get("variante"))
     infos = [
-        f"{B.nom_affiche(e, ind.get('shiny'))} {DIM}#{e['numero']:03d} · {e['famille']}"
-        f"{' · forme ' + forme if forme else ''}{RESET}",
+        f"{B.nom_affiche(e, ind.get('shiny'))} {DIM}#{e['numero']:03d} · {tr(e['famille'])}"
+        f"{' · ' + tr('forme') + ' ' + forme if forme else ''}{RESET}",
         B.etiquette_rang(ind),
-        f"{DIM}signe particulier :{RESET} {ind.get('marque', '?')}",
+        f"{DIM}{tr('signe particulier :')}{RESET} {ind.get('marque', '?')}",
         f"{DIM}humeur {ind.get('humeur', '?')} · {ind.get('taille', '?')} cm · potentiel {ind.get('potentiel', '?')} %{RESET}",
     ]
     hauteur = max(len(sp), len(infos))
@@ -160,20 +161,20 @@ def fiche(state, nom):
     if e is None or (e.get("secrete") and not connue):
         return [f" Aucune espèce ne s'appelle « {nom} ». Les 150 sont sur le site : tg site bestiaire"]
     entete = f" {BOLD}#{e['numero']:03d}{RESET} {B.nom_affiche(e) if connue else '???'}  " \
-             f"{B.fg24(B.COULEUR_RARETE[e['rarete']])}{e['rarete']}{RESET} · {e['icone']} {e['famille']}"
+             f"{B.fg24(B.COULEUR_RARETE[e['rarete']])}{tr(e['rarete'])}{RESET} · {e['icone']} {tr(e['famille'])}"
     lignes = [entete, ""]
     if not connue:
-        lignes += [f"  {DIM}Tu ne l'as pas encore capturée.{RESET}",
-                   f"  Habitat : {lieu(e['zone'])}  ({e['zone']})",
-                   f"  Elle se montre {e['frequence']}, attirée par la commande « {e['attiree_par']} »."]
+        lignes += [f"  {DIM}{tr('Tu ne l’as pas encore capturée.'.replace('’', chr(39)))}{RESET}",
+                   f"  {tr('Habitat')} : {lieu(e['zone'])}  ({e['zone']})",
+                   "  " + tr("Elle se montre {f}, attirée par la commande « {c} ».").format(f=tr(e['frequence']), c=e['attiree_par'])]
         return lignes
     sp = B.dessin(e, grand=True)
-    texte = [e["description"], e["comportement"],
-             f"Capacité : {e['capacite']} · stat favorite : {e['stat']}",
-             f"Taille ~{e['taille_cm']} cm · poids ~{e['poids_ko']} Ko",
+    texte = [tr(e["description"]), tr(e["comportement"]),
+             f"{tr('Capacité')} : {tr(e['capacite'])} · {tr('stat favorite')} : {tr(e['stat'])}",
+             f"{tr('Taille')} ~{e['taille_cm']} cm · {tr('poids')} ~{e['poids_ko']} Ko",
              "  ".join(f"{k} {v}" for k, v in e["stats"].items()),
-             f"Habitat : {lieu(e['zone'])} · attirée par « {e['attiree_par']} »",
-             f"Tu en as dressé {state['collection'][e['nom']]}."]
+             f"{tr('Habitat')} : {lieu(e['zone'])} · {tr('attirée par')} « {e['attiree_par']} »",
+             tr("Tu en as dressé {n}.").format(n=state['collection'][e['nom']])]
     for i in range(max(len(sp), len(texte))):
         g = sp[i] if i < len(sp) else " " * largeur(sp)
         d = texte[i] if i < len(texte) else ""
