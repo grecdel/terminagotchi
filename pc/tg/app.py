@@ -6,7 +6,7 @@ import time
 
 import subprocess
 
-from . import compagnon, core, dressage, envies, equipe, explo, lecons, lexique, notif, recense, registre, sprites
+from . import compagnon, core, dressage, entrainement, envies, equipe, explo, lecons, lexique, notif, recense, registre, sprites
 from .bestiaire import arc_en_ciel
 
 SYNC_AUTO = False   # synchro en fond, seulement pour les modes qui restent ouverts
@@ -67,6 +67,9 @@ def render(state, frame, interactif):
     if d:
         reste = max(0, core.defi_duree(state) - (time.time() - d["start"]))
         lines.append(title_line(f"⚡ DÉFI ÉCLAIR : tape « {piege(d['cmd'])} » — {reste:.0f} s", 226))
+    seance = entrainement.ligne_ecran(state)
+    if seance:
+        lines.append(title_line(seance, 214))
 
     if d:
         lines.append(f" {fg(196)}{BOLD}⚔ Un {d['espece']} sauvage est apparu dans sa propre fenêtre !{RESET} "
@@ -162,6 +165,7 @@ def boucle_jeu(state, lines, spontane=True, rythme=1.5, defis=True):
     core.tick(state)
     for line in lines:
         core.feed(state, line)
+    entrainement.tick(state, lines)
     lecons.tick(state, lines)
     dressage.tick(state, lines)
     equipe.tick(state, lines)
@@ -447,6 +451,8 @@ AIDE = """Terminagotchi — utilisation :
   tg dressage                  la fenêtre du face-à-face (s'ouvre toute seule quand un monstre apparaît)
   tg anime <nom> [animation]   la voir bouger : statique, mange, attaque, salut, parle, dort, content,
                                affame, confus, colere, victoire, ko, evolution
+  tg entrainement [discipline]  la salle d'entraînement : séances chronométrées, badges Bit → Exa
+                               (reperer, fichiers, lire, tuyaux, systeme · « stop » pour arrêter)
   tg compte partage on|off     montrer (ou non) tes captures dans la galerie du site
   tg drapeau TG{…}             valide un drapeau du CTF web
   Options : --une-fois (affiche et quitte) · --defi (défi immédiat)"""
@@ -497,6 +503,21 @@ def main():
             print(recense.drapeau(" ".join(args[1:])) if len(args) > 1 else "Exemple : tg drapeau TG{abc123}")
         else:
             print("\n".join(lexique.lignes(core.load())))
+        return
+    if mode in ("entrainement", "entraînement", "salle"):
+        creer_si_besoin()
+        quoi = args[1].lower() if len(args) > 1 else ""
+        sortie = []
+
+        def agir(st):
+            if quoi == "stop":
+                sortie.append(entrainement.arreter(st))
+            elif quoi:
+                sortie.append(entrainement.commencer(st, quoi))
+            sortie.extend(entrainement.ecran(st))
+
+        core.modifier(agir)
+        print("\n".join(sortie))
         return
     global SYNC_AUTO
     SYNC_AUTO = True

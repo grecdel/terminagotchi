@@ -46,6 +46,10 @@ def ligne(state):
         return f"{tete}  {' · '.join(msgs)}"
     if state["defi"]:
         return f"{tete}  {fg(226)}⚡ tape « {piege(state['defi']['cmd'])} » vite !{RESET}"
+    from . import entrainement
+    cmd = entrainement.courante(state)
+    if cmd:
+        return f"{tete}  {fg(214)}🏋 tape « {piege(cmd)} »{RESET}"
     les, _ = lecons.lecon_courante(state)
     if les and lvl >= les["niveau"]:
         return f"{tete}  {DIM}leçon ➜ {piege(les['steps'][state['step']]['cmd'])}{RESET}"

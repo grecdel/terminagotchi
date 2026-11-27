@@ -439,6 +439,7 @@ class TerminalActivity : Activity() {
         val mange = jeu.manger(ligne, etaitColle, etaitRappel)
         jeu.leconTick(ligne, etaitColle)
         if (!etaitColle && !etaitRappel) Defis.verifier(jeu, ligne)?.let { ecrire(it, 0xFFFFD75F.toInt()); saut = 8 }
+        if (!etaitRappel) Entrainement.verifier(jeu, ligne, etaitColle)?.let { ecrire(it, 0xFFFFAF00.toInt()); saut = 6 }
         Explo.verifier(jeu)?.let { ecrire(it, 0xFFFF87FF.toInt()) }
         Dressage.verifier(jeu, ligne, etaitColle)?.let { ecrire(it, 0xFFFF87FF.toInt()); saut = 8 }
         Equipe.apresCommande(jeu, etaitColle || etaitRappel)?.let { ecrire(it, 0xFFFFAF00.toInt()) }
@@ -683,6 +684,7 @@ class TerminalActivity : Activity() {
         val defi = Defis.actif(jeu)
         val panneau = Dressage.panneau(jeu, resources)
         val l: CharSequence? = panneau ?: if (defi != null) "⚡ DÉFI ÉCLAIR : tape « ${Regles.piege(defi)} » — ${Defis.resteSecondes(jeu)} s"
+            else if (Entrainement.active(jeu)) Entrainement.ligneEcran(jeu)
             else if (jeu.existe) jeu.texteLecon() else null
         lecon.visibility = if (l == null) View.GONE else View.VISIBLE
         lecon.text = l ?: ""

@@ -157,6 +157,7 @@ object Regles {
             Triple("du", "taille d'un dossier (du -sh dossier)", y),
             Triple("ps", "programmes en cours", y),
             Triple("ping", "teste la connexion (ping -c 3 example.com)", y),
+            Triple("entrainement", "🏋 la salle d'entraînement : séances chronométrées, badges Bit → Exa", c),
             Triple("curl", "⚓ parle à un site web : curl -I (en-têtes), -v (bavard), -o fichier (télécharger)", y),
             Triple("nslookup", "⚓ demande au DNS l'adresse IP d'un nom (nslookup example.com)", y),
             Triple("route", "⚓ montre la passerelle (ta box) et les routes du téléphone", y),
