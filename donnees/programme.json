@@ -2552,7 +2552,8 @@
     },
     {
      "cmd": "uptime | grep -c 'load average'",
-     "sortie": "1"
+     "sortie": "1",
+     "outil": "uptime"
     }
    ],
    "limite_image": "ma.f.demarrage.limite",
@@ -5728,7 +5729,8 @@
   },
   "sm4.1": {
    "motif": "load average",
-   "pourquoi": "hist.sm4.1.adulte : la charge moyenne"
+   "pourquoi": "hist.sm4.1.adulte : la charge moyenne",
+   "outil": "uptime"
   },
   "sm5.0": {
    "motif": "^Linux \\S+ \\S+",

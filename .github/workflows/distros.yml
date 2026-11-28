@@ -58,11 +58,11 @@ jobs:
                     plus="python3 iproute2 ca-certificates locales iputils-ping iputils-tracepath openssh-client dnsutils bsdextrautils openssl xxd gnupg qemu-utils pciutils usbutils iw rfkill sqlite3 imagemagick ffmpeg libimage-exiftool-perl cron procps hostname" ;;
             dnf)    inst() { dnf install -y -q "$@"; }
                     plus="python3 which iproute iputils openssh-clients bind-utils util-linux openssl vim-common gnupg2 qemu-img pciutils usbutils iw sqlite ImageMagick ffmpeg-free perl-Image-ExifTool cronie procps-ng hostname glibc-langpack-en" ;;
-            pacman) pacman -Sy --noconfirm >/dev/null
+            pacman) pacman -Syu --noconfirm >/dev/null   # (jamais -Sy seul : une mise à jour partielle casse des bibliothèques)
                     inst() { pacman -S --noconfirm --needed "$@" >/dev/null; }
                     plus="python which iproute2 iputils openssh bind util-linux openssl vim gnupg qemu-img pciutils usbutils iw sqlite imagemagick ffmpeg perl-image-exiftool cronie procps-ng inetutils" ;;
             zypper) inst() { zypper -n -q install --no-recommends "$@"; }
-                    plus="python3 which iproute2 iputils openssh-clients bind-utils util-linux openssl vim gpg2 qemu-tools pciutils usbutils iw sqlite3 ImageMagick ffmpeg-7 exiftool cronie procps hostname" ;;
+                    plus="python3 which iproute2 iputils openssh-clients bind-utils util-linux openssl vim gpg2 qemu-tools pciutils usbutils iw sqlite3 ImageMagick ffmpeg-7 exiftool cronie procps procps4 hostname" ;;
           esac
           if ! inst $base $plus; then
             for p in $base $plus; do inst "$p" || echo "::warning::paquet absent sur ${{ matrix.nom }} : $p"; done
