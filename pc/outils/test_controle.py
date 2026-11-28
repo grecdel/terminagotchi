@@ -222,7 +222,7 @@ PARCOURS = [
         reversed(K.un_ordre(K.construire_colis(gr)))), lambda: "controle construire " + " ".join(K.un_ordre(K.construire_colis(gr))),
     K._CC["depots"] if histoire._outil(K._CC["outil"]) else "true", "controle depots", "controle formats",
     "flatpak list --app" if histoire._outil("flatpak") else "true", "controle conteneurs", "cat Containerfile",
-    "podman images" if shutil.which("podman") else ("docker images" if shutil.which("docker") else "true"),
+    K._IMAGES[0] if histoire._outil(K._IMAGES[1]) else "true",
     "controle rayons", "controle rayons p p p p p", lambda: "controle rayons " + " ".join(r_ for _n, _i, r_ in K.rayons_cartes(gr)),
     "controle tableau", "controle alerte", "ps aux | grep fictif", kill_veilleur, "controle tableau", "controle alerte",
     "ps aux | grep fictif", kill_suspects, "controle tableau",

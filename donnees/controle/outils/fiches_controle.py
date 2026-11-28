@@ -207,7 +207,8 @@ FICHES = dict([
     fiche("conteneurs", r"(Containerfile|Dockerfile|^(podman|docker)\s+(images|ps|image\s+ls)\b|^(tg\s+)?controle\s+conteneurs?\b)", [
         {"prepare": "printf 'FROM docker.io/library/alpine:3.20\\nRUN apk add --no-cache figlet\\nCMD [\"figlet\", \"Bonjour\"]\\n' > Containerfile",
          "cmd": "grep -c '^FROM ' Containerfile", "sortie": "1"},
-        {"cmd": "podman images --format '{{.Repository}}' >/dev/null 2>&1; echo lu", "sortie": "lu", "outil": "podman"}],
+        {"cmd": "podman images --format '{{.Repository}}' >/dev/null 2>&1; echo lu", "sortie": "lu", "outil": "podman",
+         "si": "test -d ~/.local/share/containers/storage"}],
         ["Open Container Initiative, Image Format Specification : https://github.com/opencontainers/image-spec",
          "Podman, podman-images(1) et Containerfile(5) : https://docs.podman.io/",
          "Docker, Dockerfile reference : https://docs.docker.com/reference/dockerfile/"]),

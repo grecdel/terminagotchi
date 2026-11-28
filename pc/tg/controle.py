@@ -928,6 +928,23 @@ def C_(unix, win):
 _CC = colis_cmds()
 
 
+# ct8.13 : lire les images. `podman images` CRÉE son stockage (~/.local/share/containers) la première fois : l'étape
+# ne vient que si Podman sert déjà sur cette machine (le jeu n'écrit jamais hors du terrain) ; `docker images` ne fait que
+# demander au service docker. Sinon l'étape est cachée.
+_STOCKAGE_PODMAN = os.path.join(os.path.expanduser("~"), ".local", "share", "containers", "storage")
+
+
+def _images():
+    if shutil.which("podman") and os.path.isdir(_STOCKAGE_PODMAN):
+        return "podman images", "podman+" + _STOCKAGE_PODMAN
+    if shutil.which("docker"):
+        return "docker images", "docker"
+    return "podman images", "podman+" + _STOCKAGE_PODMAN
+
+
+_IMAGES = _images()
+
+
 LECONS = {
     # la porte du Poste
     "ct0": {"titre": "hist.ct0.titre", "skill": None, "steps": [
@@ -1045,8 +1062,8 @@ LECONS = {
         _n("ct8", 10, cmd="flatpak list --app", re=r"^flatpak\s+(list|ls)\b", outil="flatpak", win=False, tout_code=True),
         _n("ct8", 11, cmd="controle conteneurs", re=CT + r"conteneurs?\b"),
         _n("ct8", 12, cmd=C_("cat Containerfile", "type Containerfile"), re=LIRE + r".*containerfile", ou="controle"),
-        _n("ct8", 13, cmd="podman images" if shutil.which("podman") else "docker images",
-           re=r"^(podman|docker)\s+(images|image\s+(ls|list))\b", outil="podman|docker", win=False, tout_code=True),
+        _n("ct8", 13, cmd=_IMAGES[0], re=r"^(podman|docker)\s+(images|image\s+(ls|list))\b", outil=_IMAGES[1], win=False,
+           tout_code=True),
         _n("ct8", 14, cmd="controle rayons ? ? ? ? ?", fs="ct_rayons"),
     ]},
     # l'alerte : la vague de processus suspects (le veilleur, lui, est un habitant honnête)

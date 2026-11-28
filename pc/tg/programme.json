@@ -5076,7 +5076,8 @@
     {
      "cmd": "podman images --format '{{.Repository}}' >/dev/null 2>&1; echo lu",
      "sortie": "lu",
-     "outil": "podman"
+     "outil": "podman",
+     "si": "test -d ~/.local/share/containers/storage"
     }
    ],
    "limite_image": "ct.f.conteneurs.limite",
