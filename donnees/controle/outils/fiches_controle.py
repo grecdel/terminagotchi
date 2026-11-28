@@ -58,7 +58,8 @@ def donnees_controle():
         "tableau": {"regles": [
             {"motif": r"^(sudo\s+)?(dnf|yum|apt|apt-get|zypper|pacman|brew)\s+(install|remove|upgrade|update|-S)",
              "jauge": "magasin", "sens": "change"},
-            {"motif": r"^(rpm\s+-q|dpkg(-query)?\s+-l|apt\s+(list|search|show)|dnf\s+(list|search|info)|pacman\s+-Q)",
+            {"motif": r"^(rpm\s+-q|dpkg(-query)?\s+-[lLsS]|apt\s+(list|search|show)|dnf\s+(list|search|info)|pacman\s+-Q|"
+                      r"flatpak\s+list|(podman|docker)\s+images)",
              "jauge": "magasin", "sens": "lit"},
             {"motif": r"^(sudo\s+)?systemctl\s+(--user\s+)?(start|stop|restart|reload|enable|disable)\b",
              "jauge": "services", "sens": "change"},
@@ -76,6 +77,27 @@ def donnees_controle():
             {"motif": r"^crontab\b", "jauge": "reveil", "sens": "change"},
             {"motif": r"^(sudo\s+)?(useradd|userdel|usermod|adduser|passwd)\b", "jauge": "equipage", "sens": "change"},
             {"motif": r"^(id|whoami|groups)\b|/etc/passwd", "jauge": "equipage", "sens": "lit"}]},
+        # ct8 le magasin et ses dépôts : le colis d'exemple, l'arbre des dépendances, le défi (4 colis imaginaires, tout
+        # ordre où chacun vient après ses besoins est juste), le Containerfile à lire, le quiz des rayons
+        "colis": {"nom": "cowsay", "version": "3.04-3",
+                  "fichiers": ["/usr/games/cowsay", "/usr/share/cowsay/cows/default.cow", "/usr/share/man/man6/cowsay.6.gz"],
+                  "besoins": ["perl"]},
+        "arbre": ["ls", "└─▶ coreutils", "    ├─▶ libc (glibc)", "    └─▶ libacl, libattr, libselinux…"],
+        "construire": [
+            [{"nom": "cabane", "besoins": ["planches", "clous"]}, {"nom": "planches", "besoins": ["bois"]},
+             {"nom": "clous", "besoins": []}, {"nom": "bois", "besoins": []}],
+            [{"nom": "gateau", "besoins": ["farine", "oeufs"]}, {"nom": "farine", "besoins": ["ble"]},
+             {"nom": "oeufs", "besoins": []}, {"nom": "ble", "besoins": []}],
+            [{"nom": "fusee", "besoins": ["moteur", "carburant"]}, {"nom": "moteur", "besoins": ["vis"]},
+             {"nom": "carburant", "besoins": []}, {"nom": "vis", "besoins": []}],
+            [{"nom": "jardin", "besoins": ["graines", "arrosoir"]}, {"nom": "arrosoir", "besoins": ["eau"]},
+             {"nom": "graines", "besoins": []}, {"nom": "eau", "besoins": []}],
+            [{"nom": "robot", "besoins": ["batterie", "puce"]}, {"nom": "puce", "besoins": ["silicium"]},
+             {"nom": "batterie", "besoins": ["silicium"]}, {"nom": "silicium", "besoins": []}]],
+        "containerfile": ["FROM docker.io/library/alpine:3.20", "RUN apk add --no-cache figlet", 'CMD ["figlet", "Bonjour"]'],
+        "rayons": {"lettres": "pbdic", "cartes": [{"id": "paquet", "rep": "p"}, {"id": "dependance", "rep": "b"},
+                                                   {"id": "depot", "rep": "d"}, {"id": "image", "rep": "i"},
+                                                   {"id": "conteneur", "rep": "c"}]},
         "couleurs": {"habitants": 141, "memoire": 78, "entrepot": 179, "charge": 203, "sac": 215, "carnet": 229,
                      "reveil": 215, "magasin": 117, "services": 141, "equipage": 117},
     }
@@ -147,6 +169,48 @@ FICHES = dict([
         ["DNF, Command Reference : https://dnf.readthedocs.io/en/latest/command_ref.html ; rpm(8) : https://rpm.org/",
          "Debian, APT et dpkg (Debian Reference, chapitre 2) : https://www.debian.org/doc/manuals/debian-reference/ch02.fr.html",
          "Arch Wiki, pacman : https://wiki.archlinux.org/title/Pacman"]),
+    fiche("colis", r"(^dpkg(-query)?\s+-[SLs]\b|^rpm\s+-q[a-z]*\b|^pacman\s+-Q[a-z]*\b|^(tg\s+)?controle\s+(colis|rayons)\b)", [
+        {"cmd": "dpkg -S '*bin/ls' | grep -c coreutils", "motif": r"^[1-9]", "outil": "dpkg", "si": "test -f /var/lib/dpkg/status"},
+        {"cmd": "dpkg -s bash | grep -c '^Version: '", "sortie": "1", "outil": "dpkg", "si": "test -f /var/lib/dpkg/status"},
+        {"cmd": "rpm -qf /usr/bin/ls", "motif": "coreutils", "outil": "rpm", "si": "test -d /usr/lib/sysimage/rpm"},
+        {"cmd": "rpm -q bash | grep -c '^bash-[0-9]'", "sortie": "1", "outil": "rpm", "si": "test -d /usr/lib/sysimage/rpm"},
+        {"cmd": "pacman -Qo /usr/bin/ls", "motif": "coreutils", "outil": "pacman", "si": "test -d /var/lib/pacman/local"},
+        {"cmd": "pacman -Q bash | grep -c '^bash [0-9]'", "sortie": "1", "outil": "pacman", "si": "test -d /var/lib/pacman/local"}],
+        ["dpkg-query(1), Debian (-S, -L, -s) : https://manpages.debian.org/dpkg-query",
+         "rpm(8), rpm.org (requêtes -qf, -ql) : https://rpm.org/docs/",
+         "Arch Wiki, pacman (requêtes -Qo, -Ql, -Qi) : https://wiki.archlinux.org/title/Pacman#Querying_package_databases",
+         "Debian Reference, chapitre 2 (Debian package management) : https://www.debian.org/doc/manuals/debian-reference/ch02.en.html"]),
+    fiche("dependances", r"(Depends|^rpm\s+-qR\b|^pacman\s+-Qi\b|^(tg\s+)?controle\s+(dependances|construire)\b)", [
+        {"cmd": "dpkg -s bash | grep -c 'Depends: '", "motif": r"^[1-9]", "outil": "dpkg", "si": "test -f /var/lib/dpkg/status"},
+        {"cmd": "rpm -qR bash | grep -c .", "motif": r"^[1-9]", "outil": "rpm", "si": "test -d /usr/lib/sysimage/rpm"},
+        {"cmd": "pacman -Qi bash | grep -c '^Depends On'", "sortie": "1", "outil": "pacman", "si": "test -d /var/lib/pacman/local"}],
+        ["Debian Policy, chapitre 7 (Declaring relationships between packages) : https://www.debian.org/doc/debian-policy/ch-relationships.html",
+         "RPM, Dependencies (Requires, Provides) : https://rpm-software-management.github.io/rpm/manual/dependencies.html",
+         "POSIX.1-2024, tsort (le tri topologique) : https://pubs.opengroup.org/onlinepubs/9799919799/utilities/tsort.html"]),
+    fiche("depots", r"(sources\.list|yum\.repos\.d|pacman\.conf|zypp/repos\.d|^(tg\s+)?controle\s+d[eé]p[oô]ts?\b)", [
+        {"cmd": "ls /etc/apt/sources.list /etc/apt/sources.list.d/ 2>/dev/null | grep -c .", "motif": r"^[1-9]",
+         "outil": "dpkg", "si": "test -d /etc/apt"},
+        {"cmd": "ls /etc/yum.repos.d/ | grep -c '\\.repo$'", "motif": r"^[1-9]", "outil": "rpm", "si": "test -d /etc/yum.repos.d"},
+        {"cmd": "grep -c '^\\[core\\]' /etc/pacman.conf", "sortie": "1", "outil": "pacman", "si": "test -f /etc/pacman.conf"},
+        {"cmd": "ls /etc/zypp/repos.d/ | grep -c '\\.repo$'", "motif": r"^[0-9]", "outil": "rpm", "si": "test -d /etc/zypp/repos.d"}],
+        ["sources.list(5), Debian : https://manpages.debian.org/sources.list",
+         "DNF, Configuration Reference (les fichiers .repo) : https://dnf.readthedocs.io/en/latest/conf_ref.html",
+         "pacman.conf(5), Arch Linux : https://man.archlinux.org/man/pacman.conf.5",
+         "Debian Wiki, SecureApt (les signatures des dépôts) : https://wiki.debian.org/SecureApt"]),
+    fiche("formats", r"(flatpak|\bsnap\b|appimage|^(tg\s+)?controle\s+formats?\b)", [
+        {"cmd": "flatpak --version", "motif": r"^Flatpak \d", "outil": "flatpak"},
+        {"cmd": "snap version | head -1", "motif": r"^snap\s", "outil": "snap"},
+        {"prepare": "printf '#!/bin/sh\\necho appli\\n' > a.AppImage", "cmd": "chmod +x a.AppImage && ./a.AppImage", "sortie": "appli"}],
+        ["Flatpak, documentation : https://docs.flatpak.org/",
+         "Snapcraft, documentation : https://snapcraft.io/docs",
+         "AppImage, documentation : https://docs.appimage.org/"]),
+    fiche("conteneurs", r"(Containerfile|Dockerfile|^(podman|docker)\s+(images|ps|image\s+ls)\b|^(tg\s+)?controle\s+conteneurs?\b)", [
+        {"prepare": "printf 'FROM docker.io/library/alpine:3.20\\nRUN apk add --no-cache figlet\\nCMD [\"figlet\", \"Bonjour\"]\\n' > Containerfile",
+         "cmd": "grep -c '^FROM ' Containerfile", "sortie": "1"},
+        {"cmd": "podman images --format '{{.Repository}}' >/dev/null 2>&1; echo lu", "sortie": "lu", "outil": "podman"}],
+        ["Open Container Initiative, Image Format Specification : https://github.com/opencontainers/image-spec",
+         "Podman, podman-images(1) et Containerfile(5) : https://docs.podman.io/",
+         "Docker, Dockerfile reference : https://docs.docker.com/reference/dockerfile/"]),
     fiche("services", r"(^systemctl\b|get-service|^(tg\s+)?controle\s+services?\b)", [
         {"cmd": "systemctl --version | head -1", "motif": r"^systemd \d+", "outil": "systemctl"}],
         ["systemctl(1), systemd : https://www.freedesktop.org/software/systemd/man/latest/systemctl.html",
@@ -170,7 +234,7 @@ FICHES = dict([
 ])
 
 CONTROLE = {"id": "controle", "types": ["machine", "roche"], "requis": ["n0", "n1", "n2", "n3", "n4", "n5", "n6"],
-            "paliers": [f"ct{i}" for i in range(8)], "chapitre": "controle",
+            "paliers": [f"ct{i}" for i in range(7)] + ["ct8", "ct7"], "chapitre": "controle",
             "attirance": {"cmds": ["ps", "kill", "free", "df", "jobs", "crontab", "systemctl", "journalctl"],
                           "familles": ["Constructs"]},
             "ponts": {"os_release": ["machines"], "ps_kill": ["citadelle"], "bashrc": ["forge"], "export": ["observatoire"],
@@ -212,6 +276,11 @@ def rejeu():
         "ct6.6": {"egal_jeu": "paquets", "outil": "/var/lib/dpkg/status", "pourquoi": "hist.ct6.6.bravo : le jeu compte pareil"},
         "ct6.10": {"motif": r"^root$", "outil": "/etc/passwd", "pourquoi": "hist.ct6.10.bravo : root, le premier"},
         "ct6.12": {"motif": r":1001:1001::/home/", "pourquoi": "hist.ct6.12.bravo : le nouveau membre, UID 1001"},
+        "ct8.1": {"motif": "coreutils", "outil": "/etc/os-release", "pourquoi": "hist.ct8.1.bravo : ls vient de coreutils"},
+        "ct8.2": {"motif": r"/", "outil": "/etc/os-release", "pourquoi": "hist.ct8.2.bravo : des fichiers et leur place"},
+        "ct8.3": {"motif": r"\d+\.\d+", "outil": "/etc/os-release", "pourquoi": "hist.ct8.3.bravo : un numéro de version"},
+        "ct8.4": {"motif": r"\S", "outil": "/etc/os-release", "pourquoi": "hist.ct8.4.bravo : les besoins de bash"},
+        "ct8.12": {"motif": r"^FROM ", "pourquoi": "hist.ct8.12.bravo : FROM, RUN, CMD"},
         "ct7.1": {"egal_jeu": "suspects", "pourquoi": "hist.ct7.1.bravo : les suspects et le veilleur"},
     }
 

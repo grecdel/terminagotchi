@@ -168,6 +168,51 @@ object Controle {
 
     // ---------------------------------------------------------------- Linux de A à Z
     class Carte(val n: Int, val id: String, val rep: String)
+    // ---------------------------------------------------------------- ct8 le magasin et ses dépôts (mêmes règles que le PC)
+    /** Les 4 colis imaginaires du défi (un jeu tiré par la graine), mélangés : (nom, besoins). */
+    fun construireColis(graine: String): List<Pair<String, List<String>>> {
+        val jeux = donnees().optJSONArray("construire") ?: return emptyList()
+        if (jeux.length() == 0) return emptyList()
+        val jeu = jeux.getJSONArray(tire(graine, "construire", jeux.length()))
+        val l = (0 until jeu.length()).map { jeu.getJSONObject(it) }
+        return melange(graine, "construire", l).map { it.optString("nom") to liste(it, "besoins") }
+    }
+
+    /** ("ok", null, null), ("forme", null, null) ou ("ordre", nom, besoin) : tout tri topologique est juste. */
+    fun ordreConstruire(colis: List<Pair<String, List<String>>>, rep: List<String>): Triple<String, String?, String?> {
+        val noms = rep.map { asciiBas(it).trim() }
+        if (noms.sorted() != colis.map { it.first }.sorted()) return Triple("forme", null, null)
+        val besoins = colis.toMap()
+        val poses = mutableSetOf<String>()
+        for (n in noms) {
+            for (b in besoins[n] ?: emptyList()) if (b !in poses) return Triple("ordre", n, b)
+            poses.add(n)
+        }
+        return Triple("ok", null, null)
+    }
+
+    /** Un ordre juste (pour les tests) : chaque fois le premier colis dont les besoins sont posés. */
+    fun unOrdre(colis: List<Pair<String, List<String>>>): List<String> {
+        val besoins = colis.toMap()
+        val reste = colis.map { it.first }.toMutableList()
+        val out = mutableListOf<String>()
+        while (reste.isNotEmpty()) {
+            val n = reste.firstOrNull { x -> (besoins[x] ?: emptyList()).all { it in out } } ?: break
+            out.add(n); reste.remove(n)
+        }
+        return out
+    }
+
+    fun rayonsCartes(graine: String): List<Carte> =
+        melange(graine, "rayons", objets(o("rayons"), "cartes")).mapIndexed { i, x -> Carte(i + 1, x.optString("id"), x.optString("rep")) }
+
+    /** La recette d'une petite image (ct8), à LIRE : on ne la construit pas dans le jeu. */
+    fun containerfileTexte(): String {
+        val c = liste(donnees(), "containerfile")
+        return listOf("# " + t("ct.containerfile.c1"), "", "# " + t("ct.containerfile.c2"), c.getOrElse(0) { "" }, "",
+            "# " + t("ct.containerfile.c3"), c.getOrElse(1) { "" }, "", "# " + t("ct.containerfile.c4"), c.getOrElse(2) { "" }).joinToString("\n") + "\n"
+    }
+
     fun famillesCartes(graine: String): List<Carte> =
         melange(graine, "familles", objets(o("familles"), "distributions")).mapIndexed { i, x -> Carte(i + 1, x.optString("id"), x.optString("rep")) }
 
@@ -267,7 +312,8 @@ object Controle {
         val g = Histoire.graine(jeu)
         val m = linkedMapOf<String, Any>("controle/consignes_du_poste.txt" to t("ct.meuble.consignes", "nom" to jeu.nom) + "\n",
             "controle/$REGISTRE" to t("ct.meuble.registre") + "\n", "controle/sac_a_dos.sh" to sacADos(),
-            "controle/reveils.crontab" to reveilsTexte(), "controle/equipage.txt" to equipageTexte())
+            "controle/reveils.crontab" to reveilsTexte(), "controle/equipage.txt" to equipageTexte(),
+            "controle/Containerfile" to containerfileTexte())
         for ((nom, _k) in caisses(g)) m["controle/entrepot/$nom.bin"] = caisseOctets(g, nom)
         return m
     }
@@ -317,7 +363,7 @@ object Controle {
                   reseau: Boolean = false, toutCode: Boolean = false) =
         Etape("hist.$lid.$i.dit", cmd, "hist.$lid.$i.bravo", re?.let { r(it) }, fs, null, null, ou, reseau = reseau, toutCode = toutCode)
 
-    val IDS = (0..7).map { "ct$it" }
+    val IDS = (0..6).map { "ct$it" } + listOf("ct8", "ct7")
 
     private fun fsReveil(j: Jeu): Boolean {
         val ex = liste(o("cron"), "exemples").map { it.split(Regex("\\s+")).joinToString(" ") }.toSet()
@@ -387,6 +433,17 @@ object Controle {
                 n("ct6", 11, "controle useradd ?", fs = { j -> nouveauxMembres(lire(j, "equipage.txt")).isNotEmpty() }),
                 n("ct6", 12, "tail -2 equipage.txt", re = "$LIRE.*equipage", ou = O_),
             )),
+            // le magasin et ses dépôts : sur le téléphone, les commandes du jeu racontent (pas de dpkg, rpm, pacman, flatpak, podman)
+            "ct8" to Lecon("hist.ct8.titre", null, 1, listOf(
+                n("ct8", 0, "controle colis", re = "${CT}colis\\b", ou = O_),
+                n("ct8", 5, "controle dependances", re = "${CT}d[eé]pendances?\\b"),
+                n("ct8", 6, "controle construire ? ? ? ?", fs = regOk("construire")),
+                n("ct8", 8, "controle depots", re = "${CT}d[eé]p[oô]ts?\\b"),
+                n("ct8", 9, "controle formats", re = "${CT}formats?\\b"),
+                n("ct8", 11, "controle conteneurs", re = "${CT}conteneurs?\\b"),
+                n("ct8", 12, "cat Containerfile", re = "$LIRE.*containerfile", ou = O_),
+                n("ct8", 14, "controle rayons ? ? ? ? ?", fs = regOk("rayons")),
+            )),
             "ct7" to Lecon("hist.ct7.titre", null, 1, listOf(
                 n("ct7", 0, "controle alerte", re = "${CT}alerte\\b", ou = O_),
                 n("ct7", "t1", "controle ps", re = "${CT}ps\\b"),
@@ -432,7 +489,7 @@ object Controle {
     // ---------------------------------------------------------------- les indices
     private val REPONSES = mapOf("controle entrepot ?" to "entrepot", "controle path ?" to "path", "controle alertes ?" to "alertes",
         "controle cron \"? ? ? ? ?\"" to "cron", "controle distribution ?" to "distribution", "controle familles ? ? ? ? ?" to "familles",
-        "controle useradd ?" to "useradd")
+        "controle useradd ?" to "useradd", "controle construire ? ? ? ?" to "construire", "controle rayons ? ? ? ? ?" to "rayons")
     private val TROU = Regex("(^|\\s|\")(\\?|…|<[^>]*>)(\\s|$|\")")
     val SUDO = Regex("(^|[;&|]\\s*)sudo\\b")
     val CHANGE = Regex("(^|[;&|]\\s*)(sudo\\s+)?((dnf|yum|apt|apt-get|zypper|pacman|snap|flatpak|brew|pm)\\s+(install|uninstall|remove|erase|" +
@@ -540,6 +597,40 @@ object Controle {
         }
         noter(jeu, "cron", "${arg.take(40)} (faux)")
         return listOf("✖ " + t("ct.indice.rep.cron")) + (if (cron(arg.replace('"', ' ').replace('\'', ' ')) == null) listOf("  " + t("ct.cron.cinq")) else emptyList())
+    }
+
+    fun lignesColis(jeu: Jeu): List<String> {
+        val d = o("colis")
+        noter(jeu, "colis", "lu (ok)")
+        return listOf("📦 " + t("ct.colis.titre"), "", "  🏷  " + t("ct.colis.etiquette", "nom" to d.optString("nom"), "version" to d.optString("version")),
+            "  📄 " + t("ct.colis.fichiers")) + liste(d, "fichiers").map { "       $it" } +
+            listOf("  🔗 " + t("ct.colis.besoins", "liste" to liste(d, "besoins").joinToString(", ")), "  🔏 " + t("ct.colis.signature"), "") + bloc("ct.colis.texte")
+    }
+
+    fun lignesConstruire(jeu: Jeu, rep: List<String>): List<String> {
+        val colis = construireColis(Histoire.graine(jeu))
+        if (rep.isEmpty()) return listOf("🏗 " + t("ct.construire.titre"), "") +
+            colis.map { (n, b) -> "  📦 " + (if (b.isNotEmpty()) t("ct.construire.besoin", "nom" to n, "liste" to b.joinToString(", ")) else t("ct.construire.rien", "nom" to n)) } +
+            listOf("", "  " + t("ct.construire.aide"))
+        val (etat, nom, besoin) = ordreConstruire(colis, rep)
+        return when (etat) {
+            "forme" -> listOf(t("ct.construire.forme", "liste" to colis.joinToString(", ") { it.first }), t("ct.construire.aide"))
+            "ordre" -> { noter(jeu, "construire", rep.joinToString(" ") + " (faux)"); listOf("✖ " + t("ct.construire.ordre", "nom" to nom, "besoin" to besoin)) }
+            else -> { noter(jeu, "construire", rep.joinToString(" ") + " (ok)"); listOf("✔ " + t("ct.construire.ok"), "  " + rep.joinToString(" → ") { asciiBas(it) }) }
+        }
+    }
+
+    fun lignesRayons(jeu: Jeu, rep: List<String>): List<String> {
+        val c = rayonsCartes(Histoire.graine(jeu))
+        if (rep.isEmpty()) return listOf("🏪 " + t("ct.rayons.titre"), "") + t("ct.rayons.lettres").split("\n").map { "  $it" } + listOf("") +
+            c.map { "  ${it.n}. " + t("ct.rayons.def.${it.id}") } + listOf("", "  " + t("ct.rayons.aide"))
+        val (bon, justes) = quizJustes(c, rep, o("rayons").optString("lettres", "pbdic"))
+        if (!bon) return listOf(t("ct.rayons.aide"))
+        val out = mutableListOf<String>()
+        if (justes.size == c.size) { noter(jeu, "rayons", rep.joinToString(" ") + " (ok)"); out += listOf("✔ " + t("ct.rayons.ok"), "  " + t("ct.rayons.morale")) }
+        else { noter(jeu, "rayons", rep.joinToString(" ") + " (faux)"); out.add("✖ " + t("ct.quiz.faux", "n" to justes.size, "total" to c.size)) }
+        justes.forEach { out.add("  ✔ ${it.n}. " + t("ct.rayons.def.${it.id}") + " : " + t("ct.rayon.${it.rep}")) }
+        return out
     }
 
     fun lignesFamilles(jeu: Jeu, rep: List<String>): List<String> {
@@ -659,6 +750,15 @@ object Controle {
                 reponse(jeu, "distribution", distributionOk(arg, mapOf("ID" to "android", "NAME" to "Android")), "android", arg,
                     "ct.distribution.ok", "nom" to "Android", morale = "ct.distribution.morale")
             "familles", "famille" -> lignesFamilles(jeu, a)
+            "colis", "paquet" -> lignesColis(jeu)
+            "dependances", "dependance", "besoins" -> { noter(jeu, "dependances", "lu (ok)")
+                listOf("🌳 " + t("ct.dependances.titre"), "") + liste(donnees(), "arbre").map { "   $it" } + listOf("", "  " + t("ct.dependances.recette")) + bloc("ct.dependances.texte") }
+            "construire", "construis", "ordre" -> lignesConstruire(jeu, a)
+            "depots", "depot" -> { noter(jeu, "depots", "lu (ok)"); listOf("🏬 " + t("ct.depots.titre"), "") + bloc("ct.depots.texte") }
+            "formats", "format", "flatpak", "snap", "appimage" -> { noter(jeu, "formats", "lu (ok)"); listOf("🧳 " + t("ct.formats.titre"), "") + bloc("ct.formats.texte") }
+            "conteneurs", "conteneur", "images", "docker", "podman" -> { noter(jeu, "conteneurs", "lu (ok)")
+                listOf("🐳 " + t("ct.conteneurs.titre"), "") + bloc("ct.conteneurs.texte") + listOf("", "  " + t("ct.conteneurs.aucun")) }
+            "rayons", "rayon" -> lignesRayons(jeu, a)
             "installer", "installation", "install" -> { noter(jeu, "installer", "lu (ok)"); listOf("💿 " + t("ct.installer.titre"), "") + bloc("ct.installer.texte") }
             "magasin", "paquets" -> { noter(jeu, "magasin", "raconte (ok)"); listOf("🏪 " + t("ct.magasin.titre"), "") + Distro.lignesMagasin(jeu) + listOf("") + bloc("ct.magasin.texte") }
             "services", "service" -> { noter(jeu, "services", "lus (ok)"); listOf("🛡 " + t("ct.services.titre"), "", "  " + t("ct.services.raconte"), "") + bloc("ct.services.texte") }
@@ -668,7 +768,7 @@ object Controle {
             "ps" -> lignesPs(jeu)
             "arrete", "arreter", "kill" -> lignesArrete(jeu, arg)
             "tableau" -> lignesTableau(jeu)
-            else -> POSTE_DESSIN + listOf("📟 " + t("ct.aide.titre")) + t("ct.aide.liste").split("\n").map { "  $it" }
+            else -> POSTE_DESSIN + listOf("📟 " + t("ct.aide.titre")) + t("ct.aide.liste").split("\n").map { "  $it" } + listOf("  " + t("ct.aide.liste_magasin"))
         }
         return l.joinToString("\n")
     }

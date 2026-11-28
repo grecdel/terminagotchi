@@ -4900,6 +4900,196 @@
    ],
    "relu_par": null
   },
+  "colis": {
+   "motif": "(^dpkg(-query)?\\s+-[SLs]\\b|^rpm\\s+-q[a-z]*\\b|^pacman\\s+-Q[a-z]*\\b|^(tg\\s+)?controle\\s+(colis|rayons)\\b)",
+   "enfant": "ct.f.colis.enfant",
+   "grands": "ct.f.colis.grands",
+   "vrai_terminal": [
+    {
+     "cmd": "dpkg -S '*bin/ls' | grep -c coreutils",
+     "motif": "^[1-9]",
+     "outil": "dpkg",
+     "si": "test -f /var/lib/dpkg/status"
+    },
+    {
+     "cmd": "dpkg -s bash | grep -c '^Version: '",
+     "sortie": "1",
+     "outil": "dpkg",
+     "si": "test -f /var/lib/dpkg/status"
+    },
+    {
+     "cmd": "rpm -qf /usr/bin/ls",
+     "motif": "coreutils",
+     "outil": "rpm",
+     "si": "test -d /usr/lib/sysimage/rpm"
+    },
+    {
+     "cmd": "rpm -q bash | grep -c '^bash-[0-9]'",
+     "sortie": "1",
+     "outil": "rpm",
+     "si": "test -d /usr/lib/sysimage/rpm"
+    },
+    {
+     "cmd": "pacman -Qo /usr/bin/ls",
+     "motif": "coreutils",
+     "outil": "pacman",
+     "si": "test -d /var/lib/pacman/local"
+    },
+    {
+     "cmd": "pacman -Q bash | grep -c '^bash [0-9]'",
+     "sortie": "1",
+     "outil": "pacman",
+     "si": "test -d /var/lib/pacman/local"
+    }
+   ],
+   "limite_image": "ct.f.colis.limite",
+   "idees_fausses": [
+    "ct.f.colis.idee"
+   ],
+   "sources": [
+    "dpkg-query(1), Debian (-S, -L, -s) : https://manpages.debian.org/dpkg-query",
+    "rpm(8), rpm.org (requêtes -qf, -ql) : https://rpm.org/docs/",
+    "Arch Wiki, pacman (requêtes -Qo, -Ql, -Qi) : https://wiki.archlinux.org/title/Pacman#Querying_package_databases",
+    "Debian Reference, chapitre 2 (Debian package management) : https://www.debian.org/doc/manuals/debian-reference/ch02.en.html"
+   ],
+   "relu_par": null
+  },
+  "dependances": {
+   "motif": "(Depends|^rpm\\s+-qR\\b|^pacman\\s+-Qi\\b|^(tg\\s+)?controle\\s+(dependances|construire)\\b)",
+   "enfant": "ct.f.dependances.enfant",
+   "grands": "ct.f.dependances.grands",
+   "vrai_terminal": [
+    {
+     "cmd": "dpkg -s bash | grep -c 'Depends: '",
+     "motif": "^[1-9]",
+     "outil": "dpkg",
+     "si": "test -f /var/lib/dpkg/status"
+    },
+    {
+     "cmd": "rpm -qR bash | grep -c .",
+     "motif": "^[1-9]",
+     "outil": "rpm",
+     "si": "test -d /usr/lib/sysimage/rpm"
+    },
+    {
+     "cmd": "pacman -Qi bash | grep -c '^Depends On'",
+     "sortie": "1",
+     "outil": "pacman",
+     "si": "test -d /var/lib/pacman/local"
+    }
+   ],
+   "limite_image": "ct.f.dependances.limite",
+   "idees_fausses": [
+    "ct.f.dependances.idee"
+   ],
+   "sources": [
+    "Debian Policy, chapitre 7 (Declaring relationships between packages) : https://www.debian.org/doc/debian-policy/ch-relationships.html",
+    "RPM, Dependencies (Requires, Provides) : https://rpm-software-management.github.io/rpm/manual/dependencies.html",
+    "POSIX.1-2024, tsort (le tri topologique) : https://pubs.opengroup.org/onlinepubs/9799919799/utilities/tsort.html"
+   ],
+   "relu_par": null
+  },
+  "depots": {
+   "motif": "(sources\\.list|yum\\.repos\\.d|pacman\\.conf|zypp/repos\\.d|^(tg\\s+)?controle\\s+d[eé]p[oô]ts?\\b)",
+   "enfant": "ct.f.depots.enfant",
+   "grands": "ct.f.depots.grands",
+   "vrai_terminal": [
+    {
+     "cmd": "ls /etc/apt/sources.list /etc/apt/sources.list.d/ 2>/dev/null | grep -c .",
+     "motif": "^[1-9]",
+     "outil": "dpkg",
+     "si": "test -d /etc/apt"
+    },
+    {
+     "cmd": "ls /etc/yum.repos.d/ | grep -c '\\.repo$'",
+     "motif": "^[1-9]",
+     "outil": "rpm",
+     "si": "test -d /etc/yum.repos.d"
+    },
+    {
+     "cmd": "grep -c '^\\[core\\]' /etc/pacman.conf",
+     "sortie": "1",
+     "outil": "pacman",
+     "si": "test -f /etc/pacman.conf"
+    },
+    {
+     "cmd": "ls /etc/zypp/repos.d/ | grep -c '\\.repo$'",
+     "motif": "^[0-9]",
+     "outil": "rpm",
+     "si": "test -d /etc/zypp/repos.d"
+    }
+   ],
+   "limite_image": "ct.f.depots.limite",
+   "idees_fausses": [
+    "ct.f.depots.idee"
+   ],
+   "sources": [
+    "sources.list(5), Debian : https://manpages.debian.org/sources.list",
+    "DNF, Configuration Reference (les fichiers .repo) : https://dnf.readthedocs.io/en/latest/conf_ref.html",
+    "pacman.conf(5), Arch Linux : https://man.archlinux.org/man/pacman.conf.5",
+    "Debian Wiki, SecureApt (les signatures des dépôts) : https://wiki.debian.org/SecureApt"
+   ],
+   "relu_par": null
+  },
+  "formats": {
+   "motif": "(flatpak|\\bsnap\\b|appimage|^(tg\\s+)?controle\\s+formats?\\b)",
+   "enfant": "ct.f.formats.enfant",
+   "grands": "ct.f.formats.grands",
+   "vrai_terminal": [
+    {
+     "cmd": "flatpak --version",
+     "motif": "^Flatpak \\d",
+     "outil": "flatpak"
+    },
+    {
+     "cmd": "snap version | head -1",
+     "motif": "^snap\\s",
+     "outil": "snap"
+    },
+    {
+     "prepare": "printf '#!/bin/sh\\necho appli\\n' > a.AppImage",
+     "cmd": "chmod +x a.AppImage && ./a.AppImage",
+     "sortie": "appli"
+    }
+   ],
+   "limite_image": "ct.f.formats.limite",
+   "idees_fausses": [
+    "ct.f.formats.idee"
+   ],
+   "sources": [
+    "Flatpak, documentation : https://docs.flatpak.org/",
+    "Snapcraft, documentation : https://snapcraft.io/docs",
+    "AppImage, documentation : https://docs.appimage.org/"
+   ],
+   "relu_par": null
+  },
+  "conteneurs": {
+   "motif": "(Containerfile|Dockerfile|^(podman|docker)\\s+(images|ps|image\\s+ls)\\b|^(tg\\s+)?controle\\s+conteneurs?\\b)",
+   "enfant": "ct.f.conteneurs.enfant",
+   "grands": "ct.f.conteneurs.grands",
+   "vrai_terminal": [
+    {
+     "prepare": "printf 'FROM docker.io/library/alpine:3.20\\nRUN apk add --no-cache figlet\\nCMD [\"figlet\", \"Bonjour\"]\\n' > Containerfile",
+     "cmd": "grep -c '^FROM ' Containerfile",
+     "sortie": "1"
+    },
+    {
+     "cmd": "podman images --format '{{.Repository}}' >/dev/null 2>&1; echo lu",
+     "sortie": "lu",
+     "outil": "podman"
+    }
+   ],
+   "limite_image": "ct.f.conteneurs.limite",
+   "idees_fausses": [
+    "ct.f.conteneurs.idee"
+   ],
+   "sources": [
+    "Open Container Initiative, Image Format Specification : https://github.com/opencontainers/image-spec",
+    "Podman, podman-images(1) et Containerfile(5) : https://docs.podman.io/",
+    "Docker, Dockerfile reference : https://docs.docker.com/reference/dockerfile/"
+   ],
+   "relu_par": null
+  },
   "services": {
    "motif": "(^systemctl\\b|get-service|^(tg\\s+)?controle\\s+services?\\b)",
    "enfant": "ct.f.services.enfant",
@@ -6550,6 +6740,30 @@
    "motif": ":1001:1001::/home/",
    "pourquoi": "hist.ct6.12.bravo : le nouveau membre, UID 1001"
   },
+  "ct8.1": {
+   "motif": "coreutils",
+   "outil": "/etc/os-release",
+   "pourquoi": "hist.ct8.1.bravo : ls vient de coreutils"
+  },
+  "ct8.2": {
+   "motif": "/",
+   "outil": "/etc/os-release",
+   "pourquoi": "hist.ct8.2.bravo : des fichiers et leur place"
+  },
+  "ct8.3": {
+   "motif": "\\d+\\.\\d+",
+   "outil": "/etc/os-release",
+   "pourquoi": "hist.ct8.3.bravo : un numéro de version"
+  },
+  "ct8.4": {
+   "motif": "\\S",
+   "outil": "/etc/os-release",
+   "pourquoi": "hist.ct8.4.bravo : les besoins de bash"
+  },
+  "ct8.12": {
+   "motif": "^FROM ",
+   "pourquoi": "hist.ct8.12.bravo : FROM, RUN, CMD"
+  },
   "ct7.1": {
    "egal_jeu": "suspects",
    "pourquoi": "hist.ct7.1.bravo : les suspects et le veilleur"
@@ -8036,6 +8250,7 @@
     "ct4",
     "ct5",
     "ct6",
+    "ct8",
     "ct7"
    ],
    "chapitre": "controle",

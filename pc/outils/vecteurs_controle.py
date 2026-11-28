@@ -33,6 +33,8 @@ def vecteurs():
                         "sha_lourde": hashlib.sha256(K.caisse_octets(g, K.caisse_lourde(g))).hexdigest(),
                         "journal": K.journal_lignes(g), "alertes": K.nb_alertes(g),
                         "cron": K.cron_situation(g)["id"], "familles": [[n, i, r] for n, i, r in K.familles_cartes(g)],
+                        "colis": [[n, b] for n, b in K.construire_colis(g)], "un_ordre": K.un_ordre(K.construire_colis(g)),
+                        "rayons": [[n, i, r] for n, i, r in K.rayons_cartes(g)],
                         "vagues": [{"n": n, "suspects": K.vague_suspects(g, n), "pids": K.pids_simules(g, n)} for n in (1, 2, 3)]})
     caisse_rep = []
     for g in graines[:3]:
@@ -75,6 +77,16 @@ def vecteurs():
         for rep in (bon, list(reversed(bon)), ["d"] * 5, ["DNF", "apt", "Pacman", "a", "a"], ["x"] * 5, bon[:4], []):
             ok, justes = K.quiz_justes(c, rep, "dap")
             quiz.append({"graine": g, "rep": rep, "ok": ok, "justes": [[n, i] for n, i in justes]})
+    ordres, quiz_rayons = [], []
+    for g in graines[:4]:
+        c = K.construire_colis(g)
+        bon = K.un_ordre(c)
+        for rep in (bon, list(reversed(bon)), [x.upper() for x in bon], bon[:3], bon + bon[:1], ["x"] * 4, []):
+            ordres.append({"graine": g, "rep": rep, "etat": list(K.ordre_construire(c, rep))})
+        cr = K.rayons_cartes(g)
+        for rep in ([r for _n, _i, r in cr], ["p"] * 5, ["Paquet", "besoin", "Depot", "image", "conteneur"], ["z"] * 5):
+            ok, justes = K.quiz_justes(cr, rep, "pbdic")
+            quiz_rayons.append({"graine": g, "rep": rep, "ok": ok, "justes": [[n, i] for n, i in justes]})
     osr_textes = ['NAME="Fedora Linux"\nVERSION="43 (Workstation Edition)"\nID=fedora\nVERSION_ID=43\n',
                   'PRETTY_NAME="Ubuntu 24.04.1 LTS"\nNAME="Ubuntu"\nID=ubuntu\nID_LIKE=debian\n',
                   'NAME="Linux Mint"\nID=linuxmint\nID_LIKE="ubuntu debian"\n', "# rien\n", "",
@@ -104,7 +116,7 @@ def vecteurs():
                 "deploie": [[x["seg"], x["cmd"], x["jauge"], x["sens"]] for x in deploie.tableaux(c)]} for c in cmds]
     return {"note": "Généré par pc/outils/vecteurs_controle.py ; vérifié par tests/jvm/Controle.kt",
             "parties": parties, "caisse_rep": caisse_rep, "pourcents": pourcents, "paths": paths, "crons": crons,
-            "prochaines": prochaines, "pareils": pareils, "cron_rep": cron_rep, "quiz": quiz, "distrib": distrib,
+            "prochaines": prochaines, "pareils": pareils, "cron_rep": cron_rep, "quiz": quiz, "ordres": ordres, "quiz_rayons": quiz_rayons, "distrib": distrib,
             "equipage": equipage, "bilans": bilans, "crontabs": crontabs, "tableau": tableau}
 
 

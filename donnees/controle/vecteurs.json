@@ -78,6 +78,62 @@
      "p"
     ]
    ],
+   "colis": [
+    [
+     "bois",
+     []
+    ],
+    [
+     "cabane",
+     [
+      "planches",
+      "clous"
+     ]
+    ],
+    [
+     "planches",
+     [
+      "bois"
+     ]
+    ],
+    [
+     "clous",
+     []
+    ]
+   ],
+   "un_ordre": [
+    "bois",
+    "planches",
+    "clous",
+    "cabane"
+   ],
+   "rayons": [
+    [
+     1,
+     "paquet",
+     "p"
+    ],
+    [
+     2,
+     "conteneur",
+     "c"
+    ],
+    [
+     3,
+     "depot",
+     "d"
+    ],
+    [
+     4,
+     "dependance",
+     "b"
+    ],
+    [
+     5,
+     "image",
+     "i"
+    ]
+   ],
    "vagues": [
     {
      "n": 1,
@@ -198,6 +254,62 @@
      5,
      "almalinux",
      "d"
+    ]
+   ],
+   "colis": [
+    [
+     "cabane",
+     [
+      "planches",
+      "clous"
+     ]
+    ],
+    [
+     "bois",
+     []
+    ],
+    [
+     "planches",
+     [
+      "bois"
+     ]
+    ],
+    [
+     "clous",
+     []
+    ]
+   ],
+   "un_ordre": [
+    "bois",
+    "planches",
+    "clous",
+    "cabane"
+   ],
+   "rayons": [
+    [
+     1,
+     "dependance",
+     "b"
+    ],
+    [
+     2,
+     "depot",
+     "d"
+    ],
+    [
+     3,
+     "image",
+     "i"
+    ],
+    [
+     4,
+     "conteneur",
+     "c"
+    ],
+    [
+     5,
+     "paquet",
+     "p"
     ]
    ],
    "vagues": [
@@ -322,6 +434,62 @@
      "d"
     ]
    ],
+   "colis": [
+    [
+     "bois",
+     []
+    ],
+    [
+     "clous",
+     []
+    ],
+    [
+     "cabane",
+     [
+      "planches",
+      "clous"
+     ]
+    ],
+    [
+     "planches",
+     [
+      "bois"
+     ]
+    ]
+   ],
+   "un_ordre": [
+    "bois",
+    "clous",
+    "planches",
+    "cabane"
+   ],
+   "rayons": [
+    [
+     1,
+     "depot",
+     "d"
+    ],
+    [
+     2,
+     "paquet",
+     "p"
+    ],
+    [
+     3,
+     "image",
+     "i"
+    ],
+    [
+     4,
+     "conteneur",
+     "c"
+    ],
+    [
+     5,
+     "dependance",
+     "b"
+    ]
+   ],
    "vagues": [
     {
      "n": 1,
@@ -441,6 +609,62 @@
     [
      5,
      "fedora",
+     "d"
+    ]
+   ],
+   "colis": [
+    [
+     "planches",
+     [
+      "bois"
+     ]
+    ],
+    [
+     "clous",
+     []
+    ],
+    [
+     "cabane",
+     [
+      "planches",
+      "clous"
+     ]
+    ],
+    [
+     "bois",
+     []
+    ]
+   ],
+   "un_ordre": [
+    "clous",
+    "bois",
+    "planches",
+    "cabane"
+   ],
+   "rayons": [
+    [
+     1,
+     "conteneur",
+     "c"
+    ],
+    [
+     2,
+     "image",
+     "i"
+    ],
+    [
+     3,
+     "paquet",
+     "p"
+    ],
+    [
+     4,
+     "dependance",
+     "b"
+    ],
+    [
+     5,
+     "depot",
      "d"
     ]
    ],
@@ -566,6 +790,62 @@
      "d"
     ]
    ],
+   "colis": [
+    [
+     "bois",
+     []
+    ],
+    [
+     "planches",
+     [
+      "bois"
+     ]
+    ],
+    [
+     "clous",
+     []
+    ],
+    [
+     "cabane",
+     [
+      "planches",
+      "clous"
+     ]
+    ]
+   ],
+   "un_ordre": [
+    "bois",
+    "planches",
+    "clous",
+    "cabane"
+   ],
+   "rayons": [
+    [
+     1,
+     "image",
+     "i"
+    ],
+    [
+     2,
+     "depot",
+     "d"
+    ],
+    [
+     3,
+     "conteneur",
+     "c"
+    ],
+    [
+     4,
+     "paquet",
+     "p"
+    ],
+    [
+     5,
+     "dependance",
+     "b"
+    ]
+   ],
    "vagues": [
     {
      "n": 1,
@@ -686,6 +966,64 @@
      5,
      "arch",
      "p"
+    ]
+   ],
+   "colis": [
+    [
+     "batterie",
+     [
+      "silicium"
+     ]
+    ],
+    [
+     "robot",
+     [
+      "batterie",
+      "puce"
+     ]
+    ],
+    [
+     "puce",
+     [
+      "silicium"
+     ]
+    ],
+    [
+     "silicium",
+     []
+    ]
+   ],
+   "un_ordre": [
+    "silicium",
+    "batterie",
+    "puce",
+    "robot"
+   ],
+   "rayons": [
+    [
+     1,
+     "conteneur",
+     "c"
+    ],
+    [
+     2,
+     "image",
+     "i"
+    ],
+    [
+     3,
+     "dependance",
+     "b"
+    ],
+    [
+     4,
+     "paquet",
+     "p"
+    ],
+    [
+     5,
+     "depot",
+     "d"
     ]
    ],
    "vagues": [
@@ -810,6 +1148,62 @@
      "a"
     ]
    ],
+   "colis": [
+    [
+     "eau",
+     []
+    ],
+    [
+     "graines",
+     []
+    ],
+    [
+     "jardin",
+     [
+      "graines",
+      "arrosoir"
+     ]
+    ],
+    [
+     "arrosoir",
+     [
+      "eau"
+     ]
+    ]
+   ],
+   "un_ordre": [
+    "eau",
+    "graines",
+    "arrosoir",
+    "jardin"
+   ],
+   "rayons": [
+    [
+     1,
+     "conteneur",
+     "c"
+    ],
+    [
+     2,
+     "paquet",
+     "p"
+    ],
+    [
+     3,
+     "image",
+     "i"
+    ],
+    [
+     4,
+     "depot",
+     "d"
+    ],
+    [
+     5,
+     "dependance",
+     "b"
+    ]
+   ],
    "vagues": [
     {
      "n": 1,
@@ -930,6 +1324,62 @@
      5,
      "fedora",
      "d"
+    ]
+   ],
+   "colis": [
+    [
+     "farine",
+     [
+      "ble"
+     ]
+    ],
+    [
+     "gateau",
+     [
+      "farine",
+      "oeufs"
+     ]
+    ],
+    [
+     "oeufs",
+     []
+    ],
+    [
+     "ble",
+     []
+    ]
+   ],
+   "un_ordre": [
+    "oeufs",
+    "ble",
+    "farine",
+    "gateau"
+   ],
+   "rayons": [
+    [
+     1,
+     "dependance",
+     "b"
+    ],
+    [
+     2,
+     "image",
+     "i"
+    ],
+    [
+     3,
+     "depot",
+     "d"
+    ],
+    [
+     4,
+     "conteneur",
+     "c"
+    ],
+    [
+     5,
+     "paquet",
+     "p"
     ]
    ],
    "vagues": [
@@ -2943,6 +3393,687 @@
   {
    "graine": "7:42",
    "rep": [],
+   "ok": false,
+   "justes": []
+  }
+ ],
+ "ordres": [
+  {
+   "graine": "1:0",
+   "rep": [
+    "bois",
+    "planches",
+    "clous",
+    "cabane"
+   ],
+   "etat": [
+    "ok",
+    null,
+    null
+   ]
+  },
+  {
+   "graine": "1:0",
+   "rep": [
+    "cabane",
+    "clous",
+    "planches",
+    "bois"
+   ],
+   "etat": [
+    "ordre",
+    "cabane",
+    "planches"
+   ]
+  },
+  {
+   "graine": "1:0",
+   "rep": [
+    "BOIS",
+    "PLANCHES",
+    "CLOUS",
+    "CABANE"
+   ],
+   "etat": [
+    "ok",
+    null,
+    null
+   ]
+  },
+  {
+   "graine": "1:0",
+   "rep": [
+    "bois",
+    "planches",
+    "clous"
+   ],
+   "etat": [
+    "forme",
+    null,
+    null
+   ]
+  },
+  {
+   "graine": "1:0",
+   "rep": [
+    "bois",
+    "planches",
+    "clous",
+    "cabane",
+    "bois"
+   ],
+   "etat": [
+    "forme",
+    null,
+    null
+   ]
+  },
+  {
+   "graine": "1:0",
+   "rep": [
+    "x",
+    "x",
+    "x",
+    "x"
+   ],
+   "etat": [
+    "forme",
+    null,
+    null
+   ]
+  },
+  {
+   "graine": "1:0",
+   "rep": [],
+   "etat": [
+    "forme",
+    null,
+    null
+   ]
+  },
+  {
+   "graine": "2:1730000000",
+   "rep": [
+    "bois",
+    "planches",
+    "clous",
+    "cabane"
+   ],
+   "etat": [
+    "ok",
+    null,
+    null
+   ]
+  },
+  {
+   "graine": "2:1730000000",
+   "rep": [
+    "cabane",
+    "clous",
+    "planches",
+    "bois"
+   ],
+   "etat": [
+    "ordre",
+    "cabane",
+    "planches"
+   ]
+  },
+  {
+   "graine": "2:1730000000",
+   "rep": [
+    "BOIS",
+    "PLANCHES",
+    "CLOUS",
+    "CABANE"
+   ],
+   "etat": [
+    "ok",
+    null,
+    null
+   ]
+  },
+  {
+   "graine": "2:1730000000",
+   "rep": [
+    "bois",
+    "planches",
+    "clous"
+   ],
+   "etat": [
+    "forme",
+    null,
+    null
+   ]
+  },
+  {
+   "graine": "2:1730000000",
+   "rep": [
+    "bois",
+    "planches",
+    "clous",
+    "cabane",
+    "bois"
+   ],
+   "etat": [
+    "forme",
+    null,
+    null
+   ]
+  },
+  {
+   "graine": "2:1730000000",
+   "rep": [
+    "x",
+    "x",
+    "x",
+    "x"
+   ],
+   "etat": [
+    "forme",
+    null,
+    null
+   ]
+  },
+  {
+   "graine": "2:1730000000",
+   "rep": [],
+   "etat": [
+    "forme",
+    null,
+    null
+   ]
+  },
+  {
+   "graine": "7:42",
+   "rep": [
+    "bois",
+    "clous",
+    "planches",
+    "cabane"
+   ],
+   "etat": [
+    "ok",
+    null,
+    null
+   ]
+  },
+  {
+   "graine": "7:42",
+   "rep": [
+    "cabane",
+    "planches",
+    "clous",
+    "bois"
+   ],
+   "etat": [
+    "ordre",
+    "cabane",
+    "planches"
+   ]
+  },
+  {
+   "graine": "7:42",
+   "rep": [
+    "BOIS",
+    "CLOUS",
+    "PLANCHES",
+    "CABANE"
+   ],
+   "etat": [
+    "ok",
+    null,
+    null
+   ]
+  },
+  {
+   "graine": "7:42",
+   "rep": [
+    "bois",
+    "clous",
+    "planches"
+   ],
+   "etat": [
+    "forme",
+    null,
+    null
+   ]
+  },
+  {
+   "graine": "7:42",
+   "rep": [
+    "bois",
+    "clous",
+    "planches",
+    "cabane",
+    "bois"
+   ],
+   "etat": [
+    "forme",
+    null,
+    null
+   ]
+  },
+  {
+   "graine": "7:42",
+   "rep": [
+    "x",
+    "x",
+    "x",
+    "x"
+   ],
+   "etat": [
+    "forme",
+    null,
+    null
+   ]
+  },
+  {
+   "graine": "7:42",
+   "rep": [],
+   "etat": [
+    "forme",
+    null,
+    null
+   ]
+  },
+  {
+   "graine": "partie:3",
+   "rep": [
+    "clous",
+    "bois",
+    "planches",
+    "cabane"
+   ],
+   "etat": [
+    "ok",
+    null,
+    null
+   ]
+  },
+  {
+   "graine": "partie:3",
+   "rep": [
+    "cabane",
+    "planches",
+    "bois",
+    "clous"
+   ],
+   "etat": [
+    "ordre",
+    "cabane",
+    "planches"
+   ]
+  },
+  {
+   "graine": "partie:3",
+   "rep": [
+    "CLOUS",
+    "BOIS",
+    "PLANCHES",
+    "CABANE"
+   ],
+   "etat": [
+    "ok",
+    null,
+    null
+   ]
+  },
+  {
+   "graine": "partie:3",
+   "rep": [
+    "clous",
+    "bois",
+    "planches"
+   ],
+   "etat": [
+    "forme",
+    null,
+    null
+   ]
+  },
+  {
+   "graine": "partie:3",
+   "rep": [
+    "clous",
+    "bois",
+    "planches",
+    "cabane",
+    "clous"
+   ],
+   "etat": [
+    "forme",
+    null,
+    null
+   ]
+  },
+  {
+   "graine": "partie:3",
+   "rep": [
+    "x",
+    "x",
+    "x",
+    "x"
+   ],
+   "etat": [
+    "forme",
+    null,
+    null
+   ]
+  },
+  {
+   "graine": "partie:3",
+   "rep": [],
+   "etat": [
+    "forme",
+    null,
+    null
+   ]
+  }
+ ],
+ "quiz_rayons": [
+  {
+   "graine": "1:0",
+   "rep": [
+    "p",
+    "c",
+    "d",
+    "b",
+    "i"
+   ],
+   "ok": true,
+   "justes": [
+    [
+     1,
+     "paquet"
+    ],
+    [
+     2,
+     "conteneur"
+    ],
+    [
+     3,
+     "depot"
+    ],
+    [
+     4,
+     "dependance"
+    ],
+    [
+     5,
+     "image"
+    ]
+   ]
+  },
+  {
+   "graine": "1:0",
+   "rep": [
+    "p",
+    "p",
+    "p",
+    "p",
+    "p"
+   ],
+   "ok": true,
+   "justes": [
+    [
+     1,
+     "paquet"
+    ]
+   ]
+  },
+  {
+   "graine": "1:0",
+   "rep": [
+    "Paquet",
+    "besoin",
+    "Depot",
+    "image",
+    "conteneur"
+   ],
+   "ok": true,
+   "justes": [
+    [
+     1,
+     "paquet"
+    ],
+    [
+     3,
+     "depot"
+    ]
+   ]
+  },
+  {
+   "graine": "1:0",
+   "rep": [
+    "z",
+    "z",
+    "z",
+    "z",
+    "z"
+   ],
+   "ok": false,
+   "justes": []
+  },
+  {
+   "graine": "2:1730000000",
+   "rep": [
+    "b",
+    "d",
+    "i",
+    "c",
+    "p"
+   ],
+   "ok": true,
+   "justes": [
+    [
+     1,
+     "dependance"
+    ],
+    [
+     2,
+     "depot"
+    ],
+    [
+     3,
+     "image"
+    ],
+    [
+     4,
+     "conteneur"
+    ],
+    [
+     5,
+     "paquet"
+    ]
+   ]
+  },
+  {
+   "graine": "2:1730000000",
+   "rep": [
+    "p",
+    "p",
+    "p",
+    "p",
+    "p"
+   ],
+   "ok": true,
+   "justes": [
+    [
+     5,
+     "paquet"
+    ]
+   ]
+  },
+  {
+   "graine": "2:1730000000",
+   "rep": [
+    "Paquet",
+    "besoin",
+    "Depot",
+    "image",
+    "conteneur"
+   ],
+   "ok": true,
+   "justes": []
+  },
+  {
+   "graine": "2:1730000000",
+   "rep": [
+    "z",
+    "z",
+    "z",
+    "z",
+    "z"
+   ],
+   "ok": false,
+   "justes": []
+  },
+  {
+   "graine": "7:42",
+   "rep": [
+    "d",
+    "p",
+    "i",
+    "c",
+    "b"
+   ],
+   "ok": true,
+   "justes": [
+    [
+     1,
+     "depot"
+    ],
+    [
+     2,
+     "paquet"
+    ],
+    [
+     3,
+     "image"
+    ],
+    [
+     4,
+     "conteneur"
+    ],
+    [
+     5,
+     "dependance"
+    ]
+   ]
+  },
+  {
+   "graine": "7:42",
+   "rep": [
+    "p",
+    "p",
+    "p",
+    "p",
+    "p"
+   ],
+   "ok": true,
+   "justes": [
+    [
+     2,
+     "paquet"
+    ]
+   ]
+  },
+  {
+   "graine": "7:42",
+   "rep": [
+    "Paquet",
+    "besoin",
+    "Depot",
+    "image",
+    "conteneur"
+   ],
+   "ok": true,
+   "justes": []
+  },
+  {
+   "graine": "7:42",
+   "rep": [
+    "z",
+    "z",
+    "z",
+    "z",
+    "z"
+   ],
+   "ok": false,
+   "justes": []
+  },
+  {
+   "graine": "partie:3",
+   "rep": [
+    "c",
+    "i",
+    "p",
+    "b",
+    "d"
+   ],
+   "ok": true,
+   "justes": [
+    [
+     1,
+     "conteneur"
+    ],
+    [
+     2,
+     "image"
+    ],
+    [
+     3,
+     "paquet"
+    ],
+    [
+     4,
+     "dependance"
+    ],
+    [
+     5,
+     "depot"
+    ]
+   ]
+  },
+  {
+   "graine": "partie:3",
+   "rep": [
+    "p",
+    "p",
+    "p",
+    "p",
+    "p"
+   ],
+   "ok": true,
+   "justes": [
+    [
+     3,
+     "paquet"
+    ]
+   ]
+  },
+  {
+   "graine": "partie:3",
+   "rep": [
+    "Paquet",
+    "besoin",
+    "Depot",
+    "image",
+    "conteneur"
+   ],
+   "ok": true,
+   "justes": []
+  },
+  {
+   "graine": "partie:3",
+   "rep": [
+    "z",
+    "z",
+    "z",
+    "z",
+    "z"
+   ],
    "ok": false,
    "justes": []
   }

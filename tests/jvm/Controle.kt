@@ -128,6 +128,10 @@ fun main(args: Array<String>) {
         if (Controle.cronSituation(g).optString("id") != x.getString("cron")) { ko++; println("    cron $g") }
         val fa = (0 until x.getJSONArray("familles").length()).map { lstCt(x.getJSONArray("familles").getJSONArray(it)) }
         if (Controle.famillesCartes(g).map { listOf("${it.n}", it.id, it.rep) } != fa) { ko++; println("    familles $g → ${Controle.famillesCartes(g).map { it.id }}") }
+        val co = (0 until x.getJSONArray("colis").length()).map { x.getJSONArray("colis").getJSONArray(it).let { c -> c.getString(0) to lstCt(c.getJSONArray(1)) } }
+        if (Controle.construireColis(g) != co || Controle.unOrdre(co) != lstCt(x.getJSONArray("un_ordre"))) { ko++; println("    colis $g → ${Controle.construireColis(g)}") }
+        val ra = (0 until x.getJSONArray("rayons").length()).map { lstCt(x.getJSONArray("rayons").getJSONArray(it)) }
+        if (Controle.rayonsCartes(g).map { listOf("${it.n}", it.id, it.rep) } != ra) { ko++; println("    rayons $g → ${Controle.rayonsCartes(g).map { it.id }}") }
         for (vg in objetsCt(x.getJSONArray("vagues"))) {
             val n = vg.getInt("n")
             val p = vg.getJSONObject("pids"); val pa = p.keys().asSequence().associateWith { p.getInt(it) }
@@ -168,6 +172,17 @@ fun main(args: Array<String>) {
         val (bon, justes) = Controle.quizJustes(Controle.famillesCartes(g), lstCt(x.getJSONArray("rep")), "dap")
         val att = (0 until x.getJSONArray("justes").length()).map { lstCt(x.getJSONArray("justes").getJSONArray(it)) }
         if (bon != x.getBoolean("ok") || justes.map { listOf("${it.n}", it.id) } != att) { ko++; println("    quiz $x") }
+    }
+    for (x in objetsCt(v.getJSONArray("ordres"))) {
+        val e = Controle.ordreConstruire(Controle.construireColis(x.getString("graine")), lstCt(x.getJSONArray("rep")))
+        val att = lstCt(x.getJSONArray("etat"))
+        if (listOf(e.first, e.second ?: "null", e.third ?: "null") != att.map { it }) { ko++; println("    ordre $x → $e") }
+    }
+    for (x in objetsCt(v.getJSONArray("quiz_rayons"))) {
+        val g = x.getString("graine")
+        val (bon, justes) = Controle.quizJustes(Controle.rayonsCartes(g), lstCt(x.getJSONArray("rep")), "pbdic")
+        val att = (0 until x.getJSONArray("justes").length()).map { lstCt(x.getJSONArray("justes").getJSONArray(it)) }
+        if (bon != x.getBoolean("ok") || justes.map { listOf("${it.n}", it.id) } != att) { ko++; println("    rayons $x") }
     }
     for (x in objetsCt(v.getJSONArray("distrib"))) {
         val o = x.getJSONObject("osr"); val osr = o.keys().asSequence().associateWith { o.getString(it) }
@@ -229,6 +244,11 @@ fun main(args: Array<String>) {
         { "getprop ro.build.version.release" }, { "controle distribution fedora" }, { "controle distribution android" }, { "controle familles" },
         { "controle familles " + Controle.famillesCartes(gr).joinToString(" ") { it.rep } }, { "controle installer" }, { "controle magasin" },
         { "controle services" }, { "controle useradd Lea" }, { "controle useradd lea" }, { "tail -2 equipage.txt" },
+        { "controle colis" }, { "controle dependances" }, { "controle construire" }, { "controle construire bois" },
+        { "controle construire " + Controle.unOrdre(Controle.construireColis(gr)).reversed().joinToString(" ") },
+        { "controle construire " + Controle.unOrdre(Controle.construireColis(gr)).joinToString(" ") }, { "controle depots" },
+        { "controle formats" }, { "controle conteneurs" }, { "cat Containerfile" }, { "controle rayons" }, { "controle rayons p p p p p" },
+        { "controle rayons " + Controle.rayonsCartes(gr).joinToString(" ") { it.rep } },
         { "controle alerte" }, { "controle ps" },
         { "kill " + Controle.vivants(jeuCt).first { it.second == Controle.VEILLEUR }.first }, { "controle tableau" }, { "controle alerte" },
         { "kill " + Controle.suspectsVivants(jeuCt).joinToString(" ") { "${it.first}" } }, { "controle tableau" },
@@ -242,7 +262,7 @@ fun main(args: Array<String>) {
         if (System.getenv("TG_DEBUG") != null) println("    · $c : $avant → ${lecCt()} ${s.take(80).replace("\n", " ⏎ ")}")
         if (Histoire.fini(jeuCt, "controle")) break
     }
-    verifierCt(Histoire.fini(jeuCt, "controle"), "le Poste est traversé jusqu'au bout (ct0 → ct7) : ${lecCt()}")
+    verifierCt(Histoire.fini(jeuCt, "controle"), "le Poste est traversé jusqu'au bout (ct0 → ct6, ct8, ct7) : ${lecCt()}")
     verifierCt("✖" in (sorties["controle entrepot cartes_du_ciel"] ?: "✖") || Controle.caisseLourde(gr) == "cartes_du_ciel", "une caisse plus légère refusée")
     verifierCt("✖" in (sorties["controle distribution fedora"] ?: "") && "Android" in (sorties["controle distribution android"] ?: ""),
         "la distribution du téléphone : Android")
