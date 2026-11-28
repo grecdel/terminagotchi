@@ -1320,7 +1320,16 @@ def lignes_magasin():
         out += ["", f"  {DIM}" + t("ct.magasin.compter") + RESET, f"    {_c(117)}{m['compte']}{RESET}"]
         out += ["", "  " + t("ct.magasin.adulte"), f"    {DIM}{m['installer']}{RESET}", f"    {DIM}{m['maj']}{RESET}"]
     else:
-        out.append("  " + t("ct.magasin.raconte"))
+        from . import distro                    # 28 nov. : la distribution choisie dans les réglages (ou détectée)
+        cle, _mode = distro.courante(core.load())
+        d = distro.magasin(cle)
+        if d:
+            out.append("  " + t("ct.magasin.le_tien", magasin=d["id"]) + f" {DIM}({distro.nom(cle)}){RESET}")
+            out += ["", f"  {DIM}" + t("ct.magasin.compter") + RESET, f"    {_c(117)}{d['compte']}{RESET}"]
+            out += ["", "  " + t("ct.magasin.adulte"), f"    {DIM}{d['installer'].format(p='cowsay')}{RESET}",
+                    f"    {DIM}{d['maj']}{RESET}"]
+        else:
+            out.append("  " + t("ct.magasin.raconte"))
     out += [""] + bloc("ct.magasin.texte")
     noter("magasin", (m["id"] if m else "raconte") + " (ok)")
     return out

@@ -77,7 +77,7 @@ jobs:
 
       - uses: actions/checkout@v4
 
-      - name: Un élève (pas root : les leçons sur les droits doivent pouvoir dire « Permission denied »)
+      - name: "Un élève, pas root (les leçons sur les droits doivent pouvoir dire « Permission denied »)"
         run: |
           useradd -m eleve 2>/dev/null || adduser -D eleve
           chown -R eleve "$GITHUB_WORKSPACE"

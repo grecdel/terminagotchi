@@ -10016,5 +10016,17 @@
  "ui.assistance.on": "🤝 大人のサポートをオンにしました。",
  "ui.assistance.off": "🤝 大人のサポートをオフにしました：子どもがひとりで遊びます。",
  "ui.assistance.cmd": "オン：{cmd} · オフ：{cmd2}（または ⚙ 設定）",
- "part.o.assistance": "大人のサポート：{cmd} または {cmd2}"
+ "part.o.assistance": "大人のサポート：{cmd} または {cmd2}",
+ "dist.titre": "練習する Linux ディストリビューション：{nom}",
+ "dist.aucune": "なし",
+ "dist.auto": "（自動：このコンピューターで検出）",
+ "dist.auto_nom": "自動（{nom}）",
+ "dist.detectee": "このコンピューターで検出：{nom}",
+ "dist.magasin": "パッケージストア：{magasin}（インストール：{cmd}）",
+ "dist.aide": "選ぶ：{cmd}（{liste}）· 自動検出に戻す：{cmd2}",
+ "dist.choisie": "練習するディストリビューション：{nom}。",
+ "dist.inconnue": "知らないディストリビューション：{nom}。選べるもの：{liste}。",
+ "dist.installer": "{distro} では：{cmd}",
+ "ui.reg.distro": "Linux ディストリビューション：{etat}",
+ "ui.reg.distro.aide": "ヒントとパッケージストア（apt、dnf、pacman、zypper）に使うもの。タップで変更"
 }

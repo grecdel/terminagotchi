@@ -10013,5 +10013,15 @@
  "part.o.assistance": "مساعدة الكبار: {cmd} أو {cmd2}",
  "ui.reg.oui": "نعم",
  "ui.reg.non": "لا",
- "part.n.attend": "🌙 لعبة جديدة تنتظرك بالفعل: اقرأ الشاشات الأولى (التالي ▶)."
+ "part.n.attend": "🌙 لعبة جديدة تنتظرك بالفعل: اقرأ الشاشات الأولى (التالي ▶).",
+ "dist.titre": "توزيعة لينكس المستخدمة في التدريب: {nom}",
+ "dist.aucune": "لا شيء",
+ "dist.auto": "(تلقائي: تم اكتشافها على هذا الحاسوب)",
+ "dist.auto_nom": "تلقائي ({nom})",
+ "dist.detectee": "تم اكتشافها على هذا الحاسوب: {nom}",
+ "dist.magasin": "متجر الحزم: {magasin} (التثبيت: {cmd})",
+ "dist.aide": "اختر: {cmd} ({liste}) · العودة إلى الاكتشاف: {cmd2}",
+ "dist.choisie": "التوزيعة المستخدمة: {nom}.",
+ "dist.inconnue": "توزيعة غير معروفة: {nom}. يمكنك الاختيار من: {liste}.",
+ "dist.installer": "على {distro}: {cmd}"
 }

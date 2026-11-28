@@ -10011,5 +10011,17 @@
  "ui.assistance.on": "🤝 Ayuda del adulto activada.",
  "ui.assistance.off": "🤝 Ayuda del adulto desactivada: el niño juega solo.",
  "ui.assistance.cmd": "Activar: {cmd} · desactivar: {cmd2} (o ⚙ Ajustes)",
- "part.o.assistance": "Ayuda del adulto: {cmd} o {cmd2}"
+ "part.o.assistance": "Ayuda del adulto: {cmd} o {cmd2}",
+ "dist.titre": "Distribución Linux practicada: {nom}",
+ "dist.aucune": "ninguna",
+ "dist.auto": "(automática: detectada en este ordenador)",
+ "dist.auto_nom": "automática ({nom})",
+ "dist.detectee": "Detectada en este ordenador: {nom}",
+ "dist.magasin": "Tienda de paquetes: {magasin} (instalar: {cmd})",
+ "dist.aide": "Elegir: {cmd} ({liste}) · volver a la detección: {cmd2}",
+ "dist.choisie": "Distribución practicada: {nom}.",
+ "dist.inconnue": "Distribución desconocida: {nom}. Puedes elegir: {liste}.",
+ "dist.installer": "En {distro}: {cmd}",
+ "ui.reg.distro": "Distribución Linux: {etat}",
+ "ui.reg.distro.aide": "la de los consejos y la tienda de paquetes (apt, dnf, pacman, zypper); toca para cambiar"
 }

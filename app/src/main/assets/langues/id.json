@@ -10011,5 +10011,17 @@
  "ui.assistance.on": "🤝 Bantuan orang dewasa aktif.",
  "ui.assistance.off": "🤝 Bantuan orang dewasa nonaktif: anak bermain sendiri.",
  "ui.assistance.cmd": "Aktifkan: {cmd} · matikan: {cmd2} (atau ⚙ Pengaturan)",
- "part.o.assistance": "Bantuan orang dewasa: {cmd} atau {cmd2}"
+ "part.o.assistance": "Bantuan orang dewasa: {cmd} atau {cmd2}",
+ "dist.titre": "Distribusi Linux yang dipraktikkan: {nom}",
+ "dist.aucune": "tidak ada",
+ "dist.auto": "(otomatis: terdeteksi di komputer ini)",
+ "dist.auto_nom": "otomatis ({nom})",
+ "dist.detectee": "Terdeteksi di komputer ini: {nom}",
+ "dist.magasin": "Toko paket: {magasin} (pasang: {cmd})",
+ "dist.aide": "Pilih: {cmd} ({liste}) · kembali ke deteksi: {cmd2}",
+ "dist.choisie": "Distribusi yang dipraktikkan: {nom}.",
+ "dist.inconnue": "Distribusi tidak dikenal: {nom}. Pilihan: {liste}.",
+ "dist.installer": "Di {distro}: {cmd}",
+ "ui.reg.distro": "Distribusi Linux: {etat}",
+ "ui.reg.distro.aide": "untuk saran dan toko paket (apt, dnf, pacman, zypper); ketuk untuk mengganti"
 }

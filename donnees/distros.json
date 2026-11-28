@@ -1,0 +1,23 @@
+{
+ "note": "Les distributions Linux que le jeu sait adapter (pc/tg/distro.py, app/.../Distro.kt). « auto » : détectée par /etc/os-release (ID, puis ID_LIKE) ; sinon choisie dans les réglages (tg distro <id>, ⚙ Réglages › 🐧). Sur un vrai ordinateur, les commandes RÉELLES des leçons suivent toujours ce qui est installé ; le choix change les conseils (installer, mettre à jour, compter les paquets) et le Linux virtuel du jeu.",
+ "ordre": ["ubuntu", "debian", "mint", "fedora", "arch", "opensuse"],
+ "distros": {
+  "ubuntu": {"nom": "Ubuntu", "magasin": "apt", "ids": ["ubuntu", "pop", "elementary", "zorin", "kubuntu"], "cles": "/media/$USER/<nom>"},
+  "debian": {"nom": "Debian", "magasin": "apt", "ids": ["debian", "raspbian", "kali"], "cles": "/media/$USER/<nom>"},
+  "mint": {"nom": "Linux Mint", "magasin": "apt", "ids": ["linuxmint", "lmde"], "cles": "/media/$USER/<nom>"},
+  "fedora": {"nom": "Fedora", "magasin": "dnf", "ids": ["fedora", "rhel", "centos", "almalinux", "rocky", "nobara"], "cles": "/run/media/$USER/<nom>"},
+  "arch": {"nom": "Arch Linux", "magasin": "pacman", "ids": ["arch", "manjaro", "endeavouros", "garuda", "cachyos", "steamos"], "cles": "/run/media/$USER/<nom>"},
+  "opensuse": {"nom": "openSUSE", "magasin": "zypper", "ids": ["opensuse", "opensuse-tumbleweed", "opensuse-leap", "suse", "sles"], "cles": "/run/media/$USER/<nom>"}
+ },
+ "like": {"ubuntu": "ubuntu", "debian": "debian", "fedora": "fedora", "rhel": "fedora", "arch": "arch", "suse": "opensuse", "opensuse": "opensuse"},
+ "magasins": {
+  "apt": {"installer": "sudo apt install {p}", "maj": "sudo apt update && sudo apt upgrade", "compte": "dpkg -l | grep -c '^ii'",
+          "paquets": {"compiler": "build-essential"}},
+  "dnf": {"installer": "sudo dnf install {p}", "maj": "sudo dnf upgrade", "compte": "rpm -qa | wc -l",
+          "paquets": {"compiler": "gcc make"}},
+  "pacman": {"installer": "sudo pacman -S {p}", "maj": "sudo pacman -Syu", "compte": "pacman -Q | wc -l",
+             "paquets": {"compiler": "base-devel"}},
+  "zypper": {"installer": "sudo zypper install {p}", "maj": "sudo zypper update", "compte": "rpm -qa | wc -l",
+             "paquets": {"compiler": "gcc make"}}
+ }
+}

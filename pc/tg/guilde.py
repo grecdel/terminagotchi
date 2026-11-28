@@ -1168,6 +1168,10 @@ def lignes_gcc():
         out += [f"  {_c(78)}✔{RESET} {v}", "  " + t("gu.gcc.present")]
     else:
         out += [f"  {DIM}✖ gcc{RESET}", ""] + ["  " + l for l in t("gu.gcc.absent").split("\n")]
+        from . import distro                    # 28 nov. : la commande de la distribution pratiquée (détectée ou choisie)
+        conseil = distro.ligne_installer(core.load(), "compiler")
+        if conseil:
+            out.append(f"  {_c(117)}{conseil}{RESET}")
     noter("gcc", ("present" if la else "raconte") + " (ok)")
     return out
 

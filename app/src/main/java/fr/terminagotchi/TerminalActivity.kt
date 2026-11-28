@@ -1027,6 +1027,12 @@ class TerminalActivity : Activity() {
             ecrire(basculerAssistance(!assistance()), Commandes.ROSE)
             rafraichir()
         }
+        f.gros("🐧", t("ui.reg.distro", "etat" to Distro.etat(jeu)), t("ui.reg.distro.aide")) {
+            fermerFiche()
+            ecrire(Distro.suivante(jeu) + "\n" + Distro.ecran(jeu).joinToString("\n"), Commandes.ROSE)
+            jeu.sauver()
+            rafraichir()
+        }
         f.gros("🔊", t("ui.reg.son").removePrefix("🔊 "), "") { fermerFiche(); reglagesSon() }
         f.gros("🔤", t("ui.reg.confort").removePrefix("🔤 "), "") { fermerFiche(); ecrire(Confort.commande(jeu, emptyList()), Commandes.ROSE); appliquerConfort() }
         f.gros("🌍", t("ui.reg.langue").removePrefix("🌍 "), "") { fermerFiche(); ecrire(langue(null), Commandes.ROSE) }
@@ -1680,6 +1686,13 @@ class TerminalActivity : Activity() {
                 val mots = ligne.trim().split(Regex("\\s+"))
                 ecrire(Placement.commande(jeu, if (mots[0].lowercase() == "sansaide") mots.drop(1).ifEmpty { listOf("on") } else emptyList()),
                     Commandes.ROSE)
+                jeu.sauver()
+                rafraichir()
+                return
+            }
+            "distro" -> {                                // 28 nov. : la distribution Linux pratiquée (aussi dans ⚙ Réglages)
+                val mot2 = ligne.trim().split(Regex("\\s+")).getOrNull(1)
+                ecrire(if (mot2 == null) Distro.ecran(jeu).joinToString("\n") else Distro.changer(jeu, mot2), Commandes.ROSE)
                 jeu.sauver()
                 rafraichir()
                 return

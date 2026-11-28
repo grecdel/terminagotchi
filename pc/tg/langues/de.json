@@ -10009,5 +10009,15 @@
  "part.o.assistance": "Hilfe für Erwachsene: {cmd} oder {cmd2}",
  "ui.reg.oui": "an",
  "ui.reg.non": "aus",
- "part.n.attend": "🌙 Ein neues Spiel wartet schon auf dich: lies die ersten Bildschirme (Weiter ▶)."
+ "part.n.attend": "🌙 Ein neues Spiel wartet schon auf dich: lies die ersten Bildschirme (Weiter ▶).",
+ "dist.titre": "Geübte Linux-Distribution: {nom}",
+ "dist.aucune": "keine",
+ "dist.auto": "(automatisch: auf diesem Computer erkannt)",
+ "dist.auto_nom": "automatisch ({nom})",
+ "dist.detectee": "Auf diesem Computer erkannt: {nom}",
+ "dist.magasin": "Paketladen: {magasin} (installieren: {cmd})",
+ "dist.aide": "Auswählen: {cmd} ({liste}) · zurück zur Erkennung: {cmd2}",
+ "dist.choisie": "Geübte Distribution: {nom}.",
+ "dist.inconnue": "Unbekannte Distribution: {nom}. Zur Auswahl: {liste}.",
+ "dist.installer": "Auf {distro}: {cmd}"
 }

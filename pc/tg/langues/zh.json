@@ -10015,5 +10015,15 @@
  "part.o.assistance": "成人协助：{cmd} 或 {cmd2}",
  "ui.reg.oui": "开",
  "ui.reg.non": "关",
- "part.n.attend": "🌙 新游戏已经在等你了：先看看开头的几页（下一步 ▶）。"
+ "part.n.attend": "🌙 新游戏已经在等你了：先看看开头的几页（下一步 ▶）。",
+ "dist.titre": "练习的 Linux 发行版：{nom}",
+ "dist.aucune": "无",
+ "dist.auto": "（自动：在这台电脑上检测到）",
+ "dist.auto_nom": "自动（{nom}）",
+ "dist.detectee": "在这台电脑上检测到：{nom}",
+ "dist.magasin": "软件包商店：{magasin}（安装：{cmd}）",
+ "dist.aide": "选择：{cmd}（{liste}）· 恢复自动检测：{cmd2}",
+ "dist.choisie": "练习的发行版：{nom}。",
+ "dist.inconnue": "未知的发行版：{nom}。可选：{liste}。",
+ "dist.installer": "在 {distro} 上：{cmd}"
 }

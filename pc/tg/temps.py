@@ -745,7 +745,11 @@ def aide():
 
 
 def _sans_git():
-    return [] if git_present() else ["", f"  {DIM}✖ git{RESET}  " + t("tp.sans_git")]
+    if git_present():
+        return []
+    from . import distro                        # 28 nov. : la commande de la distribution pratiquée (détectée ou choisie)
+    conseil = distro.ligne_installer(core.load(), "git")
+    return ["", f"  {DIM}✖ git{RESET}  " + t("tp.sans_git")] + ([f"  {conseil}"] if conseil else [])
 
 
 def _bloc(cle, **p):

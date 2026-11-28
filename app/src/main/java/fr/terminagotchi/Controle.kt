@@ -660,7 +660,7 @@ object Controle {
                     "ct.distribution.ok", "nom" to "Android", morale = "ct.distribution.morale")
             "familles", "famille" -> lignesFamilles(jeu, a)
             "installer", "installation", "install" -> { noter(jeu, "installer", "lu (ok)"); listOf("💿 " + t("ct.installer.titre"), "") + bloc("ct.installer.texte") }
-            "magasin", "paquets" -> { noter(jeu, "magasin", "raconte (ok)"); listOf("🏪 " + t("ct.magasin.titre"), "", "  " + t("ct.magasin.raconte"), "") + bloc("ct.magasin.texte") }
+            "magasin", "paquets" -> { noter(jeu, "magasin", "raconte (ok)"); listOf("🏪 " + t("ct.magasin.titre"), "") + Distro.lignesMagasin(jeu) + listOf("") + bloc("ct.magasin.texte") }
             "services", "service" -> { noter(jeu, "services", "lus (ok)"); listOf("🛡 " + t("ct.services.titre"), "", "  " + t("ct.services.raconte"), "") + bloc("ct.services.texte") }
             "useradd" -> lignesUseradd(jeu, arg)
             "equipage" -> listOf("🧑‍🚀 equipage.txt") + (lire(jeu, "equipage.txt") ?: "").lines().filter { it.isNotBlank() }.map { "  $it" }

@@ -1315,6 +1315,19 @@ def _main():
         ok, msg = compagnon.nouvelle_fenetre()
         print(msg)
         return
+    if mode == "distro":                       # 28 nov. : la distribution Linux pratiquée (auto ou choisie)
+        from . import distro
+        with core.verrou():
+            st = core.load()
+            if st is None:
+                print(t("part.n.attend"))
+                return
+            if len(args) > 1:
+                print(distro.changer(st, args[1]))
+                core.save(st)
+            else:
+                print("\n".join(distro.ecran(st)))
+        return
     if mode == "assistance":                   # 28 nov. : l'assistance de l'adulte (les conseils pour l'adulte à côté)
         from . import aide_douce
         with core.verrou():
