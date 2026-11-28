@@ -10008,5 +10008,12 @@
  "ui.pur.on.pc": "Pure terminal: the tg window now shows only the log and the instruction.",
  "ui.pur.off.pc": "Terminal + mission: the creature and the 🎯 line are back.",
  "esp.detail": "details",
- "esp.tape_ici": "type here, then Enter"
+ "esp.tape_ici": "type here, then Enter",
+ "ui.reg.assistance": "Adult assistance: {etat}",
+ "ui.assistance.on": "🤝 Adult assistance on.",
+ "ui.assistance.off": "🤝 Adult assistance off: the child plays alone.",
+ "part.o.assistance": "Adult assistance: {cmd} or {cmd2}",
+ "ui.reg.oui": "on",
+ "ui.reg.non": "off",
+ "part.n.attend": "🌙 A new game is already waiting for you: read the first screens (Next ▶)."
 }

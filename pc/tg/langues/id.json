@@ -10003,5 +10003,12 @@
  "ui.pur.on.pc": "Terminal saja: jendela tg hanya menampilkan jurnal dan tugas.",
  "ui.pur.off.pc": "Terminal + misi: makhluk dan baris 🎯 sudah kembali.",
  "esp.detail": "rincian",
- "esp.tape_ici": "ketik di sini, lalu Enter"
+ "esp.tape_ici": "ketik di sini, lalu Enter",
+ "ui.reg.assistance": "Bantuan orang dewasa: {etat}",
+ "ui.assistance.on": "🤝 Bantuan orang dewasa aktif.",
+ "ui.assistance.off": "🤝 Bantuan orang dewasa nonaktif: anak bermain sendiri.",
+ "part.o.assistance": "Bantuan orang dewasa: {cmd} atau {cmd2}",
+ "ui.reg.oui": "ya",
+ "ui.reg.non": "tidak",
+ "part.n.attend": "🌙 Permainan baru sudah menunggumu: baca layar-layar pembuka (Lanjut ▶)."
 }

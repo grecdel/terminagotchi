@@ -277,6 +277,9 @@ def histoire():
             cible = "coeur" if not reste and H.ouvert(st, "coeur") else (reste[0] if reste else None)
             if not cible:
                 break
+            if not VIRTUEL:                         # un nouveau monde, comme un terminal neuf : plus de tâches de fond
+                # (bash 5.3 garde les tâches finies d'un shell non interactif : « kill %1 » visait une vieille tâche)
+                shell.lancer("kill $(jobs -p) 2>/dev/null; wait 2>/dev/null; jobs >/dev/null; true")
             st = tape(f"cd ~/terrain_terminagotchi/{H.PAR_CHAP[cible]['piece']}")
             if H.lecon_courante(st)[0] is None:
                 break

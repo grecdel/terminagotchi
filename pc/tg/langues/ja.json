@@ -10008,5 +10008,12 @@
  "ui.pur.on.pc": "ターミナルだけ：tg のウィンドウには日記とやることだけが出るよ。",
  "ui.pur.off.pc": "ターミナル＋ミッション：いきものと 🎯 の行がもどったよ。",
  "esp.detail": "くわしく",
- "esp.tape_ici": "ここに入力して Enter"
+ "esp.tape_ici": "ここに入力して Enter",
+ "ui.reg.assistance": "大人のサポート：{etat}",
+ "ui.assistance.on": "🤝 大人のサポートをオンにしました。",
+ "ui.assistance.off": "🤝 大人のサポートをオフにしました：子どもがひとりで遊びます。",
+ "part.o.assistance": "大人のサポート：{cmd} または {cmd2}",
+ "ui.reg.oui": "オン",
+ "ui.reg.non": "オフ",
+ "part.n.attend": "🌙 あたらしい ゲームが もう まっているよ：さいしょの がめんを よんでね（つぎへ ▶）。"
 }

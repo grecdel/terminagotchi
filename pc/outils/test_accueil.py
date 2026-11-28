@@ -76,25 +76,36 @@ verifier(A.parties_indice("grep -c pomme liste.txt") == {"cmd": "grep", "debut":
 verifier(A.action_menu("4") == "options" and A.action_menu("5") == "aide" and A.action_menu("q") == "quitter",
          "le menu : 4 Options, 5 Aide, q Quitter")
 
-print("1. Qui est avec toi ? (le tout premier lancement)")
+print("1. Le tout premier lancement : l'intro directement (28 nov. : plus de « Qui est avec toi ? »)")
 (HOME / ".bash_history").touch()
-reponses = iter(["2", "", "", "", ""])   # 9 nov. : plus de nom demandé (il se donne avec echo, au camp)
+reponses = iter(["", "", "", "", ""])   # 9 nov. : plus de nom demandé (il se donne avec echo, au camp)
 builtins.input = lambda _i="": next(reponses)
 out = io.StringIO()
 with redirect_stdout(out):
     app.creer_si_besoin(avec_intro=True)
 p = plat(out.getvalue())
 st = core.load()
-verifier(t("ad.parent.question") in p and t("ad.parent.adulte") in p, "la question et les deux choix")
-verifier(t("ad.parent.c1.t") in p and t("ad.parent.c4.t") in p and "tg debloquer tout" in p, "avec un adulte : les 4 conseils")
-verifier(st["name"] == t("intro.nom.attente") and st["aide_douce"]["parent"] == "adulte", "puis l'histoire (sans nom) ; le choix est gardé")
+verifier(t("ad.parent.question") not in p, "pas de question au démarrage (c'est un adulte qui ouvre le jeu la première fois)")
+verifier(st["name"] == t("intro.nom.attente"), "l'histoire commence (sans nom)")
+with redirect_stdout(io.StringIO()) as o:
+    sys.argv = ["tg", "assistance", "on"]
+    app._main()
+p = plat(o.getvalue())
+verifier(t("ui.assistance.on") in p and t("ad.parent.c1.t") in p and "tg debloquer tout" in p,
+         "`tg assistance on` : l'assistance de l'adulte et ses 4 conseils")
+st = core.load()
+verifier(st["aide_douce"]["parent"] == "adulte", "le choix est gardé dans la sauvegarde")
 verifier("parent" not in json.dumps(st.get("compte", {})), "rien n'est envoyé (le choix n'est pas dans le compte)")
+with redirect_stdout(io.StringIO()) as o:
+    sys.argv = ["tg", "assistance", "off"]
+    app._main()
+verifier(t("ui.assistance.off") in plat(o.getvalue()) and core.load()["aide_douce"]["parent"] == "seul", "`tg assistance off`")
 with redirect_stdout(io.StringIO()) as o:
     sys.argv = ["tg", "aide", "parents"]
     app._main()
 verifier(t("ad.parent.c2.t") in plat(o.getvalue()), "`tg aide parents` : les conseils à relire")
 from tg import parties  # noqa: E402
-verifier(not parties.aucune(), "une partie existe : la question ne sera plus posée (seulement la première fois)")
+verifier(not parties.aucune(), "une partie existe")
 
 print("4. La flèche « tape ici » (les premières commandes)")
 s = tape("ls")

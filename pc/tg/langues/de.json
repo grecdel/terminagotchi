@@ -10002,5 +10002,12 @@
  "ui.pur.on.pc": "Reines Terminal: das tg-Fenster zeigt nur noch das Tagebuch und die Aufgabe.",
  "ui.pur.off.pc": "Terminal + Mission: das Wesen und die 🎯-Zeile sind zurück.",
  "esp.detail": "Details",
- "esp.tape_ici": "hier tippen, dann Enter"
+ "esp.tape_ici": "hier tippen, dann Enter",
+ "ui.reg.assistance": "Hilfe für Erwachsene: {etat}",
+ "ui.assistance.on": "🤝 Hilfe für Erwachsene an.",
+ "ui.assistance.off": "🤝 Hilfe für Erwachsene aus: das Kind spielt allein.",
+ "part.o.assistance": "Hilfe für Erwachsene: {cmd} oder {cmd2}",
+ "ui.reg.oui": "an",
+ "ui.reg.non": "aus",
+ "part.n.attend": "🌙 Ein neues Spiel wartet schon auf dich: lies die ersten Bildschirme (Weiter ▶)."
 }

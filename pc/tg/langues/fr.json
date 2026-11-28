@@ -10009,5 +10009,12 @@
  "ui.pur.on.pc": "Terminal pur : la fenêtre tg ne montre plus que le journal et la consigne.",
  "ui.pur.off.pc": "Terminal + mission : la créature et la ligne 🎯 sont revenues.",
  "esp.detail": "détail",
- "esp.tape_ici": "tape ici, puis Entrée"
+ "esp.tape_ici": "tape ici, puis Entrée",
+ "ui.reg.assistance": "Assistance de l'adulte : {etat}",
+ "ui.assistance.on": "🤝 Assistance de l'adulte activée.",
+ "ui.assistance.off": "🤝 Assistance de l'adulte désactivée : l'enfant joue seul.",
+ "part.o.assistance": "Assistance de l'adulte : {cmd} ou {cmd2}",
+ "ui.reg.oui": "oui",
+ "ui.reg.non": "non",
+ "part.n.attend": "🌙 Une nouvelle partie t'attend déjà : lis les écrans du début (Suivant ▶)."
 }

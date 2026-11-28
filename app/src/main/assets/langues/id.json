@@ -10005,5 +10005,11 @@
  "ui.reg.confort": "🔤 Membaca dan kenyamanan",
  "ui.reg.langue": "🌍 Bahasa",
  "ui.pur.on": "Terminal saja: tugasnya ditulis di dalamnya (➜); ☰ di atas untuk yang lainnya.",
- "ui.pur.off": "Terminal + misi: baris 🎯 kembali di atas baris ketik."
+ "ui.pur.off": "Terminal + misi: baris 🎯 kembali di atas baris ketik.",
+ "ui.reg.assistance": "Bantuan orang dewasa: {etat}",
+ "ui.reg.assistance.aide": "saran untuk orang dewasa yang duduk di samping (misalnya pertama kali)",
+ "ui.assistance.on": "🤝 Bantuan orang dewasa aktif.",
+ "ui.assistance.off": "🤝 Bantuan orang dewasa nonaktif: anak bermain sendiri.",
+ "ui.assistance.cmd": "Aktifkan: {cmd} · matikan: {cmd2} (atau ⚙ Pengaturan)",
+ "part.o.assistance": "Bantuan orang dewasa: {cmd} atau {cmd2}"
 }

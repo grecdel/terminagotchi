@@ -10004,5 +10004,12 @@
  "ui.pur.on.pc": "Terminal puro: a janela tg mostra só o diário e a instrução.",
  "ui.pur.off.pc": "Terminal + missão: a criatura e a linha 🎯 voltaram.",
  "esp.detail": "detalhe",
- "esp.tape_ici": "escreve aqui e depois Enter"
+ "esp.tape_ici": "escreve aqui e depois Enter",
+ "ui.reg.assistance": "Assistência do adulto: {etat}",
+ "ui.assistance.on": "🤝 Assistência do adulto ativada.",
+ "ui.assistance.off": "🤝 Assistência do adulto desativada: a criança joga sozinha.",
+ "part.o.assistance": "Assistência do adulto: {cmd} ou {cmd2}",
+ "ui.reg.oui": "sim",
+ "ui.reg.non": "não",
+ "part.n.attend": "🌙 Já tens um jogo novo à tua espera: lê os ecrãs do início (Seguinte ▶)."
 }
