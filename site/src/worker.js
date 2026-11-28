@@ -664,7 +664,8 @@ ${lignes || `<tr><td colspan="7" class="doux">Aucun élève pour l'instant.</td>
 
 // ====================================================================== langues du site
 // La page est fabriquée en français, puis traduite juste avant l'envoi (texte visible seulement, pas les dessins).
-const LANGUES_SITE = { fr: "🇫🇷 Français", en: "🇬🇧 English" };
+const NOMS_LANGUES = { fr: "🇫🇷 Français", en: "🇬🇧 English", es: "🇪🇸 Español", de: "🇩🇪 Deutsch", it: "🇮🇹 Italiano", pt: "🇧🇷 Português" };
+const LANGUES_SITE = Object.fromEntries(Object.entries(NOMS_LANGUES).filter(([k]) => k === "fr" || TRADUCTIONS[k]));
 const DICO = {};        // texte exact → traduction
 const PAR_MOT = {};     // premier mot → textes qui commencent par ce mot (du plus long au plus court)
 const MOT = /[\p{L}\p{N}]+/uy;
@@ -734,8 +735,9 @@ async function enLangue(requete, r) {
   if (!(r.headers.get("content-type") || "").includes("text/html")) return r;
   const { code, retenir } = langueDe(requete);
   let html = await r.text();
-  const autre = code === "fr" ? "en" : "fr";
-  html = html.replace("<!--LANGUE-->", `<a href="?lang=${autre}">${LANGUES_SITE[autre]}</a>`);
+  const liens = Object.entries(LANGUES_SITE).filter(([k]) => k !== code)
+    .map(([k, nom]) => `<a href="?lang=${k}" title="${nom}">${nom.split(" ")[0]}</a>`).join(" ");
+  html = html.replace("<!--LANGUE-->", `<span class="langues">${liens}</span>`);
   if (code !== "fr") {
     html = html.replace('<html lang="fr">', `<html lang="${code}">`)
       .replace(/(<style[^>]*>[\s\S]*?<\/style>)|>([^<]+)</g, (m, st, t) => (st ? st : ">" + traduireTexte(t, code) + "<"))
