@@ -217,6 +217,13 @@ PARCOURS = [
     "dpkg -l | grep -c '^ii'" if histoire._outil("dpkg+/var/lib/dpkg/status") else "true",
     "controle magasin", "systemctl list-units --type=service --state=running --no-pager | head -5", "controle services",
     "cut -d: -f1 /etc/passwd | head -3", "controle useradd Élève", "controle useradd mousse", "tail -2 equipage.txt",
+    "controle colis", *[K._CC[k_] if histoire._outil(K._CC["outil"]) else "true" for k_ in ("proprio", "fichiers", "version", "besoins")],
+    "controle dependances", "controle construire", "controle construire bois", lambda: "controle construire " + " ".join(
+        reversed(K.un_ordre(K.construire_colis(gr)))), lambda: "controle construire " + " ".join(K.un_ordre(K.construire_colis(gr))),
+    K._CC["depots"] if histoire._outil(K._CC["outil"]) else "true", "controle depots", "controle formats",
+    "flatpak list --app" if histoire._outil("flatpak") else "true", "controle conteneurs", "cat Containerfile",
+    K._IMAGES[0] if histoire._outil(K._IMAGES[1]) else "true",
+    "controle rayons", "controle rayons p p p p p", lambda: "controle rayons " + " ".join(r_ for _n, _i, r_ in K.rayons_cartes(gr)),
     "controle tableau", "controle alerte", "ps aux | grep fictif", kill_veilleur, "controle tableau", "controle alerte",
     "ps aux | grep fictif", kill_suspects, "controle tableau",
 ]
@@ -235,7 +242,7 @@ for c in PARCOURS:
 if not histoire.fini(st, "controle"):
     for a, c, b in vus[-10:]:
         print("     ", a, c, "→", b)
-verifier(histoire.fini(st, "controle"), f"le Poste est traversé jusqu'au bout (ct0 → ct7) {lecon(st)}")
+verifier(histoire.fini(st, "controle"), f"le Poste est traversé jusqu'au bout (ct0 → ct6, ct8, ct7) {lecon(st)}")
 etape = {c: (a, b) for a, c, b in vus}
 verifier(etape["sleep 2"][0] != etape["sleep 2"][1] and etape["sleep 60 &"][1][0] == "ct1" and etape["kill %1"][1][1] == 9,
          "K1 : sleep 2 au premier plan (un autre nombre que 5 compte aussi), sleep 60 & en arrière-plan, jobs, kill %1")
@@ -271,6 +278,12 @@ verifier(not any(recompenses.reservee(st, {"id": v.split(":")[0]}, v.split(":")[
 verifier("pupitre" in st["quetes"]["objets"] and st["quetes"]["titre"] == "admin_du_poste",
          "récompenses : le pupitre à voyants et le titre d'Admin du Poste")
 verifier(K.veilleur_vivant(), "le veilleur fait toujours sa ronde")
+o = ANSI.sub("", [s_ for c_, s_ in sorties.items() if c_.startswith("controle construire ") and c_ != "controle construire bois"][0])
+verifier("✖" in o, f"le défi du magasin : un colis avant ses besoins est refusé {o[:80]!r}")
+verifier(langue.t("ct.construire.forme", liste="").split(":")[0] in ANSI.sub("", sorties.get("controle construire bois", "")),
+         "le défi : il faut les 4 colis")
+verifier(K.dans_registre("construire") and K.dans_registre("rayons") and (D / "Containerfile").is_file()
+         and "FROM " in (D / "Containerfile").read_text(), "ct8 : l'ordre juste, le quiz des rayons, le Containerfile lu (jamais construit)")
 
 print("4. Les indices et la garde")
 pas = {s_["cmd"]: s_ for l_ in K.LECONS.values() for s_ in l_["steps"]}

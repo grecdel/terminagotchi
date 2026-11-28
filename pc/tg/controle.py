@@ -23,7 +23,7 @@ RÈGLES (affichées à l'entrée, consignes_du_poste.txt) :
     (reveils.crontab) que le jeu lit sans jamais le lancer, et l'équipage un fichier du terrain (equipage.txt).
   - Tout ce qui s'écrit reste dans le terrain (terrain_terminagotchi/controle).
 
-LES PALIERS (ct0 à ct7) : la porte ; K1 les habitants (ps, $$, le lieu magique /proc, avant-plan et arrière-plan,
+LES PALIERS (ct0 à ct6, ct8 le magasin et ses dépôts, puis ct7 l'alerte) : la porte ; K1 les habitants (ps, $$, le lieu magique /proc, avant-plan et arrière-plan,
 jobs, kill %1, top) ; K2 les jauges (free, df, du dans l'entrepôt, uptime, nproc, le tableau des jauges) ; K3 le sac à
 dos (echo $HOME, PATH, which, export, bash -c, alias, source d'un fichier du terrain) ; K4 le carnet de bord (tail,
 grep -c, tail -f, journalctl --user, dmesg) ; K5 les réveils (crontab -l, les 5 champs, un réveil ajouté au fichier du
@@ -285,6 +285,45 @@ def quiz_justes(cartes, rep, lettres):
     return True, [(n, i) for (n, i, rr), x in zip(cartes, r) if x == rr]
 
 
+# ---------------------------------------------------------------- ct8 le magasin et ses dépôts
+def construire_colis(graine):
+    """Les 4 colis imaginaires du défi (un jeu tiré par la graine), mélangés : [(nom, [besoins])]."""
+    jeux = donnees()["construire"]
+    jeu = jeux[_tire(graine, "construire", len(jeux))]
+    return [(x["nom"], list(x["besoins"])) for x in melange(graine, "construire", jeu)]
+
+
+def ordre_construire(colis, rep):
+    """Un ordre d'installation : ('ok', None, None), ('forme', None, None) (pas les 4 noms, chacun une fois) ou
+    ('ordre', nom, besoin) (le premier colis qui arrive avant un de ses besoins). Tout tri topologique est juste."""
+    noms = [ascii_bas(x).strip() for x in rep]
+    if sorted(noms) != sorted(n for n, _b in colis):
+        return "forme", None, None
+    besoins = dict(colis)
+    poses = set()
+    for n in noms:
+        for b in besoins[n]:
+            if b not in poses:
+                return "ordre", n, b
+        poses.add(n)
+    return "ok", None, None
+
+
+def un_ordre(colis):
+    """Un ordre juste (pour les robots qui jouent l'enfant) : chaque fois le premier colis dont les besoins sont posés."""
+    besoins, reste, out = dict(colis), [n for n, _b in colis], []
+    while reste:
+        n = next(x for x in reste if all(b in out for b in besoins[x]))
+        out.append(n)
+        reste.remove(n)
+    return out
+
+
+def rayons_cartes(graine):
+    """Les définitions du quiz des rayons (p paquet, b besoin, d dépôt, i image, c conteneur), mélangées : [(n°, id, lettre)]."""
+    return [(i + 1, x["id"], x["rep"]) for i, x in enumerate(melange(graine, "rayons", donnees()["rayons"]["cartes"]))]
+
+
 def os_release_de(texte):
     d = {}
     for l in (texte or "").splitlines():
@@ -464,6 +503,13 @@ def reveils_texte():
     return "\n".join(f"# {l}" for l in t("ct.reveils.entete").split("\n")) + "\n" + "\n".join(c["exemples"]) + "\n"
 
 
+def containerfile_texte():
+    """La recette d'une petite image (ct8), à LIRE : on ne la construit pas dans le jeu."""
+    c = donnees()["containerfile"]
+    return "\n".join([f"# {t('ct.containerfile.c1')}", "", f"# {t('ct.containerfile.c2')}", c[0], "",
+                      f"# {t('ct.containerfile.c3')}", c[1], "", f"# {t('ct.containerfile.c4')}", c[2]]) + "\n"
+
+
 def equipage_texte():
     return "\n".join(donnees()["equipage"]["base"]) + "\n"
 
@@ -475,14 +521,15 @@ def meubles(state):
          f"controle/{REGISTRE}": t("ct.meuble.registre") + "\n",
          "controle/sac_a_dos.sh": sac_a_dos(),
          "controle/reveils.crontab": reveils_texte(),
-         "controle/equipage.txt": equipage_texte()}
+         "controle/equipage.txt": equipage_texte(),
+         "controle/Containerfile": containerfile_texte()}
     for nom, _k in caisses(gr):
         m[f"controle/entrepot/{nom}.bin"] = caisse_octets(gr, nom)
     return m
 
 
 BESOINS = {"ct0": ["consignes_du_poste.txt"], "ct3": ["sac_a_dos.sh"], "ct5": ["reveils.crontab"],
-           "ct6": ["equipage.txt"]}
+           "ct6": ["equipage.txt"], "ct8": ["Containerfile"]}
 
 
 def meubler(state, lid, step):
@@ -624,6 +671,39 @@ def compter_paquets(m):
     except (OSError, subprocess.SubprocessError):
         return None
     return None
+
+
+# ct8 : les commandes de lecture des colis, selon le magasin de la machine (la distribution DÉTECTÉE : on ne peut pas
+# lancer dnf sur une Ubuntu) ; « outil » cache l'étape quand il manque (le terminal du jeu, une distribution inconnue)
+COLIS_CMDS = {
+    "apt": {"proprio": "dpkg -S '*bin/ls'", "fichiers": "dpkg -L bash | head -5", "version": "dpkg -s bash | grep Version",
+            "besoins": "dpkg -s bash | grep Depends", "depots": "ls /etc/apt/sources.list.d/", "outil": "dpkg+/var/lib/dpkg/status"},
+    "dnf": {"proprio": "rpm -qf /usr/bin/ls", "fichiers": "rpm -ql bash | head -5", "version": "rpm -q bash",
+            "besoins": "rpm -qR bash | head -5", "depots": "dnf repolist", "outil": "rpm+/usr/lib/sysimage/rpm"},
+    # (dnf repolist : les dépôts peuvent être dans /etc/yum.repos.d ou, depuis dnf5, dans /usr/share/dnf5/repos.d)
+    "zypper": {"proprio": "rpm -qf /usr/bin/ls", "fichiers": "rpm -ql bash | head -5", "version": "rpm -q bash",
+               "besoins": "rpm -qR bash | head -5", "depots": "ls /etc/zypp/repos.d/", "outil": "rpm+/usr/lib/sysimage/rpm"},
+    "pacman": {"proprio": "pacman -Qo /usr/bin/ls", "fichiers": "pacman -Ql bash | head -5", "version": "pacman -Q bash",
+               "besoins": "pacman -Qi bash | grep Depends", "depots": "grep '^\\[' /etc/pacman.conf",
+               "outil": "pacman+/var/lib/pacman/local"},
+}
+
+
+def famille_locale():
+    """apt, dnf, pacman ou zypper : le magasin de CETTE machine (la distribution détectée, sinon la base de paquets
+    présente) ; None dans le terminal du jeu ou sur une machine inconnue."""
+    if LINUX_VIRTUEL or IS_WIN:
+        return None
+    from . import distro
+    m = distro.magasin(distro.detecter())
+    if m and m["id"] in COLIS_CMDS:
+        return m["id"]
+    m2, _n = magasin()
+    return m2["id"] if m2 and m2["id"] in COLIS_CMDS else None
+
+
+def colis_cmds():
+    return COLIS_CMDS.get(famille_locale() or "apt")
 
 
 def services_actifs():
@@ -829,6 +909,8 @@ FS = {
     "ct_equipage": _fs_equipage,
     "ct_arretes": lambda: dans_registre("vague", "lancee") and not suspects_vivants(),
     "ct_tableau": lambda: dans_registre("tableau", "gagne"),
+    "ct_construire": lambda: dans_registre("construire"),
+    "ct_rayons": lambda: dans_registre("rayons"),
 }
 CREE = {}
 
@@ -841,6 +923,26 @@ def _n(lid, i, **k):
 
 def C_(unix, win):
     return win if IS_WIN else unix
+
+
+_CC = colis_cmds()
+
+
+# ct8.13 : lire les images. `podman images` CRÉE son stockage (~/.local/share/containers) la première fois : l'étape
+# ne vient que si Podman sert déjà sur cette machine (le jeu n'écrit jamais hors du terrain) ; `docker images` ne fait que
+# demander au service docker. Sinon l'étape est cachée.
+_STOCKAGE_PODMAN = os.path.join(os.path.expanduser("~"), ".local", "share", "containers", "storage")
+
+
+def _images():
+    if shutil.which("podman") and os.path.isdir(_STOCKAGE_PODMAN):
+        return "podman images", "podman+" + _STOCKAGE_PODMAN
+    if shutil.which("docker"):
+        return "docker images", "docker"
+    return "podman images", "podman+" + _STOCKAGE_PODMAN
+
+
+_IMAGES = _images()
 
 
 LECONS = {
@@ -941,6 +1043,29 @@ LECONS = {
         _n("ct6", 12, cmd=C_("tail -2 equipage.txt", "Get-Content equipage.txt -Tail 2"),
            re=LIRE + r".*equipage", ou="controle"),
     ]},
+    # le magasin et ses dépôts : le colis (un paquet), ses fichiers, sa version, ses besoins ; l'ordre d'installation ;
+    # les dépôts et leurs signatures ; Flatpak, Snap, AppImage ; les conteneurs (image, recette, registre). Lecture seule.
+    "ct8": {"titre": "hist.ct8.titre", "skill": None, "steps": [
+        _n("ct8", 0, cmd="controle colis", re=CT + r"colis\b", ou="controle"),
+        _n("ct8", 1, cmd=_CC["proprio"], re=r"^(dpkg(-query)?\s+-S|rpm\s+-q\w*f|pacman\s+-Qo)\b", outil=_CC["outil"], win=False),
+        _n("ct8", 2, cmd=_CC["fichiers"], re=r"^(dpkg(-query)?\s+-L|rpm\s+-q\w*l|pacman\s+-Ql)\b", outil=_CC["outil"], win=False),
+        _n("ct8", 3, cmd=_CC["version"], re=r"^(dpkg(-query)?\s+(-s|-W)|rpm\s+-q\s+\w|pacman\s+-Qi?\s+\w|apt(-cache)?\s+(show|policy)\b|"
+                                            r"dnf\s+info\b)", outil=_CC["outil"], win=False),
+        _n("ct8", 4, cmd=_CC["besoins"], re=r"(depends|^rpm\s+-q\w*R|^pacman\s+-Qi\b|^dnf\s+repoquery\b)", outil=_CC["outil"],
+           win=False),
+        _n("ct8", 5, cmd="controle dependances", re=CT + r"d[eé]pendances?\b"),
+        _n("ct8", 6, cmd="controle construire ? ? ? ?", fs="ct_construire"),
+        _n("ct8", 7, cmd=_CC["depots"], re=r"(sources\.list|yum\.repos\.d|pacman\.conf|zypp/repos\.d|^zypper\s+(lr|repos)\b|"
+                                           r"^dnf\s+repolist\b|^apt-cache\s+policy\b)", outil=_CC["outil"], win=False, tout_code=True),
+        _n("ct8", 8, cmd="controle depots", re=CT + r"d[eé]p[oô]ts?\b"),
+        _n("ct8", 9, cmd="controle formats", re=CT + r"formats?\b"),
+        _n("ct8", 10, cmd="flatpak list --app", re=r"^flatpak\s+(list|ls)\b", outil="flatpak", win=False, tout_code=True),
+        _n("ct8", 11, cmd="controle conteneurs", re=CT + r"conteneurs?\b"),
+        _n("ct8", 12, cmd=C_("cat Containerfile", "type Containerfile"), re=LIRE + r".*containerfile", ou="controle"),
+        _n("ct8", 13, cmd=_IMAGES[0], re=r"^(podman|docker)\s+(images|image\s+(ls|list))\b", outil=_IMAGES[1], win=False,
+           tout_code=True),
+        _n("ct8", 14, cmd="controle rayons ? ? ? ? ?", fs="ct_rayons"),
+    ]},
     # l'alerte : la vague de processus suspects (le veilleur, lui, est un habitant honnête)
     "ct7": {"titre": "hist.ct7.titre", "skill": None, "steps": [
         _n("ct7", 0, cmd="controle alerte", re=CT + r"alerte\b", ou="controle"),
@@ -951,7 +1076,7 @@ LECONS = {
     ]},
 }
 CHAPITRE = {"id": "controle", "n": 22, "piece": "controle", "famille": "Constructs", "monde": True,
-            "lecons": [f"ct{i}" for i in range(8)], "objet": "pupitre", "titre": "admin_du_poste"}
+            "lecons": [f"ct{i}" for i in range(7)] + ["ct8", "ct7"], "objet": "pupitre", "titre": "admin_du_poste"}
 
 
 # ================================================================ l'arbre du Carrefour : quand le Poste s'ouvre
@@ -1007,7 +1132,8 @@ def annonce(state):
 TROU = re.compile(r"(^|\s|\")(\?|…|<[^>]*>)(\s|$|\")")
 REPONSES = {"controle entrepot ?": "entrepot", "controle path ?": "path", "controle alertes ?": "alertes",
             'controle cron "? ? ? ? ?"': "cron", "controle distribution ?": "distribution",
-            "controle familles ? ? ? ? ?": "familles", "controle useradd ?": "useradd"}
+            "controle familles ? ? ? ? ?": "familles", "controle useradd ?": "useradd",
+            "controle construire ? ? ? ?": "construire", "controle rayons ? ? ? ? ?": "rayons"}
 SUDO = re.compile(r"(^|[;&|]\s*)sudo\b")
 CHANGE = re.compile(r"(^|[;&|]\s*)(sudo\s+)?((dnf|yum|apt|apt-get|zypper|pacman|snap|flatpak|brew)\s+(install|remove|erase|"
                     r"upgrade|update|dist-upgrade|-S\w*|-R\w*|-U\w*)\b|systemctl\s+(--user\s+)?(start|stop|restart|reload|"
@@ -1127,7 +1253,8 @@ def banniere(largeur=None):
 
 
 def aide():
-    return banniere() + [f" {_c(117)}{BOLD}📟 " + t("ct.aide.titre") + RESET] + ["  " + l for l in t("ct.aide.liste").split("\n")]
+    return banniere() + [f" {_c(117)}{BOLD}📟 " + t("ct.aide.titre") + RESET] + ["  " + l for l in t("ct.aide.liste").split("\n")] + \
+        ["  " + t("ct.aide.liste_magasin")]
 
 
 def bloc(cle, **k):
@@ -1335,6 +1462,94 @@ def lignes_magasin():
     return out
 
 
+def lignes_colis():
+    d = donnees()["colis"]
+    out = [f" {_c(215)}{BOLD}📦 " + t("ct.colis.titre") + RESET, "",
+           f"  🏷  " + t("ct.colis.etiquette", nom=d["nom"], version=d["version"]), "  📄 " + t("ct.colis.fichiers")]
+    out += [f"       {_c(117)}{x}{RESET}" for x in d["fichiers"]]
+    out += ["  🔗 " + t("ct.colis.besoins", liste=", ".join(d["besoins"])), "  🔏 " + t("ct.colis.signature"), ""]
+    out += bloc("ct.colis.texte")
+    fam = famille_locale()
+    if fam:
+        cc = COLIS_CMDS[fam]
+        out += ["", "  " + t("ct.colis.vrai", magasin=fam)] + [f"    {_c(117)}{cc[k]}{RESET}" for k in ("proprio", "fichiers", "version", "besoins")]
+    noter("colis", "lu (ok)")
+    return out
+
+
+def lignes_dependances():
+    out = [f" {_c(78)}{BOLD}🌳 " + t("ct.dependances.titre") + RESET, ""]
+    out += [f"   {_c(117)}{x}{RESET}" for x in donnees()["arbre"]]
+    out += ["", "  " + t("ct.dependances.recette")] + bloc("ct.dependances.texte")
+    noter("dependances", "lu (ok)")
+    return out
+
+
+def lignes_construire(state, rep):
+    colis = construire_colis(_graine(state))
+    if not rep:
+        out = [f" {_c(229)}{BOLD}🏗 " + t("ct.construire.titre") + RESET, ""]
+        for n, b in colis:
+            out.append("  📦 " + (t("ct.construire.besoin", nom=n, liste=", ".join(b)) if b else t("ct.construire.rien", nom=n)))
+        return out + ["", "  " + t("ct.construire.aide")]
+    etat, nom, besoin = ordre_construire(colis, rep)
+    if etat == "forme":
+        return [t("ct.construire.forme", liste=", ".join(n for n, _b in colis)), t("ct.construire.aide")]
+    if etat == "ordre":
+        noter("construire", " ".join(rep) + " (faux)")
+        return [f" {_c(203)}✖ " + t("ct.construire.ordre", nom=nom, besoin=besoin) + RESET]
+    noter("construire", " ".join(rep) + " (ok)")
+    return [f" {_c(78)}✔ " + t("ct.construire.ok") + RESET, f"  {_c(117)}" + " → ".join(ascii_bas(x) for x in rep) + RESET]
+
+
+def lignes_depots():
+    out = [f" {_c(117)}{BOLD}🏬 " + t("ct.depots.titre") + RESET, ""] + bloc("ct.depots.texte")
+    fam = famille_locale()
+    if fam:
+        out += ["", "  " + t("ct.depots.les_tiens", magasin=fam), f"    {_c(117)}{COLIS_CMDS[fam]['depots']}{RESET}"]
+    noter("depots", "lu (ok)")
+    return out
+
+
+def lignes_formats():
+    out = [f" {_c(141)}{BOLD}🧳 " + t("ct.formats.titre") + RESET, ""] + bloc("ct.formats.texte")
+    la = [x for x in ("flatpak", "snap") if not LINUX_VIRTUEL and shutil.which(x)]
+    if la:
+        out += ["", "  " + t("ct.formats.la", liste=", ".join(la))]
+    noter("formats", "lu (ok)")
+    return out
+
+
+def lignes_conteneurs():
+    out = [f" {_c(78)}{BOLD}🐳 " + t("ct.conteneurs.titre") + RESET, ""] + bloc("ct.conteneurs.texte") + [""]
+    la = [x for x in ("podman", "docker") if not LINUX_VIRTUEL and shutil.which(x)]
+    out.append("  " + (t("ct.conteneurs.la", liste=", ".join(la)) if la else t("ct.conteneurs.aucun")))
+    noter("conteneurs", "lu (ok)")
+    return out
+
+
+def lignes_rayons(state, rep):
+    c = rayons_cartes(_graine(state))
+    if not rep:
+        out = [f" {_c(229)}{BOLD}🏪 " + t("ct.rayons.titre") + RESET, ""]
+        out += ["  " + l for l in t("ct.rayons.lettres").split("\n")] + [""]
+        out += [f"  {n}. " + t("ct.rayons.def." + i) for n, i, _r in c]
+        return out + ["", "  " + t("ct.rayons.aide")]
+    bon, justes = quiz_justes(c, rep, donnees()["rayons"]["lettres"])
+    if not bon:
+        return [t("ct.rayons.aide")]
+    out = []
+    if len(justes) == len(c):
+        noter("rayons", " ".join(rep) + " (ok)")
+        out += [f" {_c(78)}✔ " + t("ct.rayons.ok") + RESET, "  " + t("ct.rayons.morale")]
+    else:
+        noter("rayons", " ".join(rep) + " (faux)")
+        out.append(f" {_c(203)}✖ " + t("ct.quiz.faux", n=len(justes), total=len(c)) + RESET)
+    for n, i in justes:
+        out.append(f"  {_c(78)}✔{RESET} {n}. " + t("ct.rayons.def." + i) + " : " + t("ct.rayon." + next(r for _n, i2, r in c if i2 == i)))
+    return out
+
+
 def lignes_services():
     n = services_actifs()
     out = [f" {_c(141)}{BOLD}🛡 " + t("ct.services.titre") + RESET, ""]
@@ -1493,6 +1708,20 @@ def commande(args, sortie=None):
             lignes.extend(lignes_magasin())
         elif sous in ("services", "service"):
             lignes.extend(lignes_services())
+        elif sous in ("colis", "paquet"):
+            lignes.extend(lignes_colis())
+        elif sous in ("dependances", "dependance", "besoins"):
+            lignes.extend(lignes_dependances())
+        elif sous in ("construire", "construis", "ordre"):
+            lignes.extend(lignes_construire(st, reste))
+        elif sous in ("depots", "depot"):
+            lignes.extend(lignes_depots())
+        elif sous in ("formats", "format", "flatpak", "snap", "appimage"):
+            lignes.extend(lignes_formats())
+        elif sous in ("conteneurs", "conteneur", "images", "docker", "podman"):
+            lignes.extend(lignes_conteneurs())
+        elif sous in ("rayons", "rayon"):
+            lignes.extend(lignes_rayons(st, reste))
         elif sous == "useradd":
             lignes.extend(lignes_useradd(arg))
         elif sous == "equipage":

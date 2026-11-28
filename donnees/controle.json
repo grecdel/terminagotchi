@@ -176,7 +176,7 @@
     "sens": "change"
    },
    {
-    "motif": "^(rpm\\s+-q|dpkg(-query)?\\s+-l|apt\\s+(list|search|show)|dnf\\s+(list|search|info)|pacman\\s+-Q)",
+    "motif": "^(rpm\\s+-q|dpkg(-query)?\\s+-[lLsS]|apt\\s+(list|search|show)|dnf\\s+(list|search|info)|pacman\\s+-Q|flatpak\\s+list|(podman|docker)\\s+images)",
     "jauge": "magasin",
     "sens": "lit"
    },
@@ -249,6 +249,173 @@
     "motif": "^(id|whoami|groups)\\b|/etc/passwd",
     "jauge": "equipage",
     "sens": "lit"
+   }
+  ]
+ },
+ "colis": {
+  "nom": "cowsay",
+  "version": "3.04-3",
+  "fichiers": [
+   "/usr/games/cowsay",
+   "/usr/share/cowsay/cows/default.cow",
+   "/usr/share/man/man6/cowsay.6.gz"
+  ],
+  "besoins": [
+   "perl"
+  ]
+ },
+ "arbre": [
+  "ls",
+  "└─▶ coreutils",
+  "    ├─▶ libc (glibc)",
+  "    └─▶ libacl, libattr, libselinux…"
+ ],
+ "construire": [
+  [
+   {
+    "nom": "cabane",
+    "besoins": [
+     "planches",
+     "clous"
+    ]
+   },
+   {
+    "nom": "planches",
+    "besoins": [
+     "bois"
+    ]
+   },
+   {
+    "nom": "clous",
+    "besoins": []
+   },
+   {
+    "nom": "bois",
+    "besoins": []
+   }
+  ],
+  [
+   {
+    "nom": "gateau",
+    "besoins": [
+     "farine",
+     "oeufs"
+    ]
+   },
+   {
+    "nom": "farine",
+    "besoins": [
+     "ble"
+    ]
+   },
+   {
+    "nom": "oeufs",
+    "besoins": []
+   },
+   {
+    "nom": "ble",
+    "besoins": []
+   }
+  ],
+  [
+   {
+    "nom": "fusee",
+    "besoins": [
+     "moteur",
+     "carburant"
+    ]
+   },
+   {
+    "nom": "moteur",
+    "besoins": [
+     "vis"
+    ]
+   },
+   {
+    "nom": "carburant",
+    "besoins": []
+   },
+   {
+    "nom": "vis",
+    "besoins": []
+   }
+  ],
+  [
+   {
+    "nom": "jardin",
+    "besoins": [
+     "graines",
+     "arrosoir"
+    ]
+   },
+   {
+    "nom": "arrosoir",
+    "besoins": [
+     "eau"
+    ]
+   },
+   {
+    "nom": "graines",
+    "besoins": []
+   },
+   {
+    "nom": "eau",
+    "besoins": []
+   }
+  ],
+  [
+   {
+    "nom": "robot",
+    "besoins": [
+     "batterie",
+     "puce"
+    ]
+   },
+   {
+    "nom": "puce",
+    "besoins": [
+     "silicium"
+    ]
+   },
+   {
+    "nom": "batterie",
+    "besoins": [
+     "silicium"
+    ]
+   },
+   {
+    "nom": "silicium",
+    "besoins": []
+   }
+  ]
+ ],
+ "containerfile": [
+  "FROM docker.io/library/alpine:3.20",
+  "RUN apk add --no-cache figlet",
+  "CMD [\"figlet\", \"Bonjour\"]"
+ ],
+ "rayons": {
+  "lettres": "pbdic",
+  "cartes": [
+   {
+    "id": "paquet",
+    "rep": "p"
+   },
+   {
+    "id": "dependance",
+    "rep": "b"
+   },
+   {
+    "id": "depot",
+    "rep": "d"
+   },
+   {
+    "id": "image",
+    "rep": "i"
+   },
+   {
+    "id": "conteneur",
+    "rep": "c"
    }
   ]
  },

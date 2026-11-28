@@ -157,6 +157,9 @@ def lu(prefixe):
 SITUATIONS = {"du lundi au vendredi à 7 h 30": "30 7 * * 1-5", "tous les jours à midi": "0 12 * * *",
               "tous les quarts d'heure": "*/15 * * * *", "le dimanche à 20 h": "0 20 * * 0",
               "le 1er de chaque mois à 9 h": "0 9 1 * *", "le lundi à 8 h": "0 8 * * 1"}
+RAYONS = {"un outil emballé et signé, avec son étiquette et ses fichiers": "p", "un autre paquet qui doit être là avant": "b",
+          "l'entrepôt sur Internet où le magasin cherche les paquets": "d", "le colis d'un petit système entier, prêt à lancer": "i",
+          "une image qui tourne dans sa boîte": "c"}
 FAMILLES = {"Fedora": "d", "AlmaLinux": "d", "Debian": "a", "Ubuntu": "a", "Arch Linux": "p"}
 
 
@@ -193,6 +196,24 @@ def resoudre(cmd, st):
             st = tape("controle familles")
         noms = re.findall(r"^\s+\d\. (.+)$", memoire["controle familles"], re.M)
         return st, "controle familles " + " ".join(FAMILLES.get(n.strip(), "a") for n in noms)
+    if cmd == "controle construire ? ? ? ?":          # l'enfant lit qui a besoin de qui, et pose d'abord ce qui n'a besoin de rien
+        st = tape("controle construire")
+        besoins = {}
+        for l in propre(etat["sortie"]).splitlines():
+            m = re.match(r"^\s*📦 (\w+) (a besoin de : (.+)|n'a besoin de rien)$", l)
+            if m:
+                besoins[m.group(1)] = [x.strip() for x in (m.group(3) or "").split(",") if x.strip()]
+        ordre = []
+        while len(ordre) < len(besoins):
+            n = next((x for x in besoins if x not in ordre and all(b in ordre for b in besoins[x])), None)
+            if n is None:
+                break
+            ordre.append(n)
+        return st, "controle construire " + " ".join(ordre)
+    if cmd == "controle rayons ? ? ? ? ?":
+        st = tape("controle rayons")
+        defs = re.findall(r"^\s+\d\. (.+)$", propre(etat["sortie"]), re.M)
+        return st, "controle rayons " + " ".join(RAYONS.get(d.strip(), "p") for d in defs)
     if cmd == "controle useradd ?":
         return st, "controle useradd " + {"hugo": "hugo-15", "lea": "lea", "ines": "ines"}[QUI]
     if cmd in ("kill ?", "controle arrete ?"):
@@ -214,7 +235,9 @@ def faute(cmd):
               "controle alertes ?": "controle alertes 24", 'controle cron "? ? ? ? ?"': "controle cron 0 7 * * *",
               'echo "*/15 * * * * echo RONDE >> ronde.log" >> reveils.crontab': 'echo "*/15 * * * * echo RONDE"',
               "controle distribution ?": "controle distribution linux", "controle familles ? ? ? ? ?": "controle familles d d d d d",
-              "controle useradd ?": "controle useradd Lea", "kill ?": "kill 1"}
+              "controle useradd ?": "controle useradd Lea", "kill ?": "kill 1",
+              "controle construire ? ? ? ?": "controle construire cabane bois planches clous",
+              "controle rayons ? ? ? ? ?": "controle rayons p p p p p"}
     if cmd in fautes:
         return fautes[cmd]
     if re.match(r"^(cat|ls|ps)\b", cmd):
@@ -328,7 +351,7 @@ for _ in range(500):
         print(f"    · bloqué sur {avant} : {derniere!r} → {propre(etat['sortie'])[:200]!r} {etat['terminal']}")
         break
 
-verifier(histoire.fini(st, "controle"), f"le Poste traversé, ct0 → ct7 ({len(journal)} lignes tapées)")
+verifier(histoire.fini(st, "controle"), f"le Poste traversé, ct0 → ct8 → ct7 ({len(journal)} lignes tapées)")
 ex = (st.get("recompenses") or {}).get("exploits") or {}
 verifier("controle.vague" in ex, "l'exploit « la vague » : tous les suspects arrêtés, le veilleur épargné")
 verifier(not fausses, f"aucune étape validée par une commande qui a échoué {fausses[:4]}")

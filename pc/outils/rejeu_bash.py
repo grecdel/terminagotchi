@@ -466,6 +466,8 @@ def histoire():
                  'controle cron "? ? ? ? ?"': f'controle cron "{CT_.cron_situation(gc_)["rep"]}"',
                  "controle distribution ?": f"controle distribution {CT_.os_release().get('ID', 'linux')}",
                  "controle familles ? ? ? ? ?": "controle familles " + " ".join(r_ for _n, _i, r_ in CT_.familles_cartes(gc_)),
+                 "controle construire ? ? ? ?": "controle construire " + " ".join(CT_.un_ordre(CT_.construire_colis(gc_))),
+                 "controle rayons ? ? ? ? ?": "controle rayons " + " ".join(r_ for _n, _i, r_ in CT_.rayons_cartes(gc_)),
                  "controle useradd ?": "controle useradd mousse",
                  "kill ?": "kill " + " ".join(str(p) for p, _n in CT_.suspects_vivants()),
                  "top": "top -bn1 | head -5",                  # (pas de terminal ici : top écrit une fois)
@@ -606,7 +608,7 @@ def histoire():
     verifier(H.fini(st, "forge"), "la Forge, neuvième monde, est allée jusqu'au bout (fo0 → fo7)")
     verifier(H.fini(st, "robots"), "l'Atelier, dixième monde, est allé jusqu'au bout (at0 → at7)")
     verifier(H.fini(st, "temps") or not shutil.which("git"), "la Bibliothèque du Temps, onzième monde, est allée jusqu'au bout (tp0 → tp5)")
-    verifier(H.fini(st, "controle"), "le Poste de Contrôle, douzième monde, est allé jusqu'au bout (ct0 → ct7)")
+    verifier(H.fini(st, "controle"), "le Poste de Contrôle, douzième monde, est allé jusqu'au bout (ct0 → ct6, ct8, ct7)")
     verifier(H.fini(st, "sommet"), "le Sommet (Expert++), ouvert par 3 mondes au palier 3, est gravi jusqu'au bout (som0 → som7)")
     CT_.arreter_tout()
     P_.eteindre_phare()
