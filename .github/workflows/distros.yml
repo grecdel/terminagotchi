@@ -60,7 +60,7 @@ jobs:
                     plus="python3 which iproute iputils openssh-clients bind-utils util-linux openssl vim-common gnupg2 qemu-img pciutils usbutils iw sqlite ImageMagick ffmpeg-free perl-Image-ExifTool cronie procps-ng hostname glibc-langpack-en" ;;
             pacman) pacman -Syu --noconfirm >/dev/null   # (jamais -Sy seul : une mise à jour partielle casse des bibliothèques)
                     inst() { pacman -S --noconfirm --needed "$@" >/dev/null; }
-                    plus="python which iproute2 iputils openssh bind util-linux openssl vim gnupg qemu-img pciutils usbutils iw sqlite imagemagick ffmpeg perl-image-exiftool cronie procps-ng inetutils" ;;
+                    plus="python which iproute2 libebur128 iputils openssh bind util-linux openssl vim gnupg qemu-img pciutils usbutils iw sqlite imagemagick ffmpeg perl-image-exiftool cronie procps-ng inetutils" ;;
             zypper) inst() { zypper -n -q install --no-recommends "$@"; }
                     plus="python3 which iproute2 iputils openssh-clients bind-utils util-linux openssl vim gpg2 qemu-tools pciutils usbutils iw sqlite3 ImageMagick ffmpeg-7 exiftool cronie procps procps4 hostname" ;;
           esac
