@@ -1,0 +1,87 @@
+name: Les leçons sur chaque distribution Linux
+
+# Les fiches et toute l'histoire du PC, rejouées dans un vrai bash (pc/outils/rejeu_bash.py) sur les
+# distributions les plus courantes : la dernière Ubuntu, Ubuntu LTS, Debian, Fedora, Arch Linux, openSUSE.
+# Chaque distribution a ses propres outils (coreutils GNU ou en Rust, curl, bash, gestionnaire de paquets) :
+# une sortie que le jeu montre ou attend et qui change sur l'une d'elles fait échouer sa colonne.
+on:
+  push:
+    branches: [main]
+    paths: ["pc/**", "donnees/programme.json", ".github/workflows/distros.yml"]
+  pull_request:
+    paths: ["pc/**", "donnees/programme.json", ".github/workflows/distros.yml"]
+  workflow_dispatch:
+  schedule:
+    - cron: "17 4 * * 1"          # chaque lundi : une nouvelle version d'un outil se voit tout de suite
+
+permissions:
+  contents: read
+
+jobs:
+  rejeu:
+    name: ${{ matrix.nom }}
+    runs-on: ubuntu-latest
+    container:
+      image: ${{ matrix.image }}
+      options: --security-opt seccomp=unconfined   # (openSUSE : ps n'affiche plus « get_mempolicy: Operation not permitted »)
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - nom: Ubuntu (dernière version)
+            image: ubuntu:latest
+            famille: apt
+          - nom: Ubuntu 24.04 LTS
+            image: ubuntu:24.04
+            famille: apt
+          - nom: Debian (stable)
+            image: debian:stable
+            famille: apt
+          - nom: Fedora
+            image: fedora:latest
+            famille: dnf
+          - nom: Arch Linux
+            image: archlinux:latest
+            famille: pacman
+          - nom: openSUSE Tumbleweed
+            image: opensuse/tumbleweed:latest
+            famille: zypper
+    steps:
+      - name: Les outils des fiches (avec le gestionnaire de paquets de la distribution)
+        shell: sh
+        run: |
+          # tous d'un coup ; si un nom manque dans cette distribution (toute l'installation est alors refusée), un par un
+          base="git curl sudo tree bc zsh gcc make file gawk busybox sox mksh diffutils findutils less tar gzip"
+          case "${{ matrix.famille }}" in
+            apt)    export DEBIAN_FRONTEND=noninteractive; apt-get update -qq
+                    inst() { apt-get install -y -qq "$@" >/dev/null; }
+                    plus="python3 iproute2 ca-certificates locales iputils-ping iputils-tracepath openssh-client dnsutils bsdextrautils openssl xxd gnupg qemu-utils pciutils usbutils iw rfkill sqlite3 imagemagick ffmpeg libimage-exiftool-perl cron procps hostname" ;;
+            dnf)    inst() { dnf install -y -q "$@"; }
+                    plus="python3 which iproute iputils openssh-clients bind-utils util-linux openssl vim-common gnupg2 qemu-img pciutils usbutils iw sqlite ImageMagick ffmpeg-free perl-Image-ExifTool cronie procps-ng hostname glibc-langpack-en" ;;
+            pacman) pacman -Syu --noconfirm >/dev/null   # (jamais -Sy seul : une mise à jour partielle casse des bibliothèques)
+                    inst() { pacman -S --noconfirm --needed "$@" >/dev/null; }
+                    plus="python which iproute2 libebur128 iputils openssh bind util-linux openssl vim gnupg qemu-img pciutils usbutils iw sqlite imagemagick ffmpeg perl-image-exiftool cronie procps-ng inetutils" ;;
+            zypper) inst() { zypper -n -q install --no-recommends "$@"; }
+                    plus="python3 which iproute2 iputils openssh-clients bind-utils util-linux openssl vim gpg2 qemu-tools pciutils usbutils iw sqlite3 ImageMagick ffmpeg-7 exiftool cronie procps procps4 hostname" ;;
+          esac
+          if ! inst $base $plus; then
+            for p in $base $plus; do inst "$p" || echo "::warning::paquet absent sur ${{ matrix.nom }} : $p"; done
+          fi
+          . /etc/os-release && echo "$PRETTY_NAME"
+          bash --version | head -n 1
+          ls --version 2>&1 | head -n 1
+          curl --version | head -n 1
+          python3 --version
+
+      - uses: actions/checkout@v4
+
+      - name: "Un élève, pas root (les leçons sur les droits doivent pouvoir dire « Permission denied »)"
+        run: |
+          useradd -m eleve 2>/dev/null || adduser -D eleve
+          chown -R eleve "$GITHUB_WORKSPACE"
+
+      - name: Les fiches et l'histoire du PC, dans un vrai bash
+        run: |
+          su eleve -c "cd '$GITHUB_WORKSPACE' && git config --global user.name eleve && git config --global user.email eleve@example.invalid \
+            && LC_ALL=C.UTF-8 python3 pc/outils/rejeu_bash.py" 2>&1 | tee /tmp/rejeu.out
+          grep -q " 0 écarts" /tmp/rejeu.out || { grep -E "ÉCART|✖" /tmp/rejeu.out | head -40 | sed 's/^/::error::/'; exit 1; }

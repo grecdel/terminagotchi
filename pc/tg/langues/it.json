@@ -10009,5 +10009,15 @@
  "part.o.assistance": "Assistenza dell'adulto: {cmd} o {cmd2}",
  "ui.reg.oui": "sì",
  "ui.reg.non": "no",
- "part.n.attend": "🌙 Una nuova partita ti aspetta già: leggi le schermate iniziali (Avanti ▶)."
+ "part.n.attend": "🌙 Una nuova partita ti aspetta già: leggi le schermate iniziali (Avanti ▶).",
+ "dist.titre": "Distribuzione Linux praticata: {nom}",
+ "dist.aucune": "nessuna",
+ "dist.auto": "(automatica: rilevata su questo computer)",
+ "dist.auto_nom": "automatica ({nom})",
+ "dist.detectee": "Rilevata su questo computer: {nom}",
+ "dist.magasin": "Negozio di pacchetti: {magasin} (installare: {cmd})",
+ "dist.aide": "Scegli: {cmd} ({liste}) · torna al rilevamento: {cmd2}",
+ "dist.choisie": "Distribuzione praticata: {nom}.",
+ "dist.inconnue": "Distribuzione sconosciuta: {nom}. A scelta: {liste}.",
+ "dist.installer": "Su {distro}: {cmd}"
 }

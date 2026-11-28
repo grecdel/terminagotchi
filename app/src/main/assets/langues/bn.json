@@ -10015,5 +10015,17 @@
  "ui.assistance.on": "🤝 বড়দের সহায়তা চালু।",
  "ui.assistance.off": "🤝 বড়দের সহায়তা বন্ধ: শিশু একা খেলে।",
  "ui.assistance.cmd": "চালু: {cmd} · বন্ধ: {cmd2} (বা ⚙ সেটিংস)",
- "part.o.assistance": "বড়দের সহায়তা: {cmd} বা {cmd2}"
+ "part.o.assistance": "বড়দের সহায়তা: {cmd} বা {cmd2}",
+ "dist.titre": "অনুশীলনের লিনাক্স ডিস্ট্রিবিউশন: {nom}",
+ "dist.aucune": "কোনোটি নয়",
+ "dist.auto": "(স্বয়ংক্রিয়: এই কম্পিউটারে শনাক্ত)",
+ "dist.auto_nom": "স্বয়ংক্রিয় ({nom})",
+ "dist.detectee": "এই কম্পিউটারে শনাক্ত: {nom}",
+ "dist.magasin": "প্যাকেজ স্টোর: {magasin} (ইনস্টল: {cmd})",
+ "dist.aide": "বেছে নাও: {cmd} ({liste}) · শনাক্তকরণে ফিরে যাও: {cmd2}",
+ "dist.choisie": "অনুশীলনের ডিস্ট্রিবিউশন: {nom}।",
+ "dist.inconnue": "অজানা ডিস্ট্রিবিউশন: {nom}। বেছে নাও: {liste}।",
+ "dist.installer": "{distro}-এ: {cmd}",
+ "ui.reg.distro": "লিনাক্স ডিস্ট্রিবিউশন: {etat}",
+ "ui.reg.distro.aide": "পরামর্শ ও প্যাকেজ স্টোরের জন্য (apt, dnf, pacman, zypper); বদলাতে ছোঁও"
 }

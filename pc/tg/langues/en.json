@@ -10015,5 +10015,15 @@
  "part.o.assistance": "Adult assistance: {cmd} or {cmd2}",
  "ui.reg.oui": "on",
  "ui.reg.non": "off",
- "part.n.attend": "🌙 A new game is already waiting for you: read the first screens (Next ▶)."
+ "part.n.attend": "🌙 A new game is already waiting for you: read the first screens (Next ▶).",
+ "dist.titre": "Linux distribution practised: {nom}",
+ "dist.aucune": "none",
+ "dist.auto": "(automatic: detected on this computer)",
+ "dist.auto_nom": "automatic ({nom})",
+ "dist.detectee": "Detected on this computer: {nom}",
+ "dist.magasin": "Package store: {magasin} (install: {cmd})",
+ "dist.aide": "Choose: {cmd} ({liste}) · back to detection: {cmd2}",
+ "dist.choisie": "Distribution practised: {nom}.",
+ "dist.inconnue": "Unknown distribution: {nom}. Choose from: {liste}.",
+ "dist.installer": "On {distro}: {cmd}"
 }

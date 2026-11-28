@@ -10016,5 +10016,17 @@
  "ui.assistance.on": "🤝 بڑوں کی مدد آن۔",
  "ui.assistance.off": "🤝 بڑوں کی مدد آف: بچہ اکیلا کھیلتا ہے۔",
  "ui.assistance.cmd": "آن: {cmd} · آف: {cmd2} (یا ⚙ ترتیبات)",
- "part.o.assistance": "بڑوں کی مدد: {cmd} یا {cmd2}"
+ "part.o.assistance": "بڑوں کی مدد: {cmd} یا {cmd2}",
+ "dist.titre": "مشق کی لینکس ڈسٹری بیوشن: {nom}",
+ "dist.aucune": "کوئی نہیں",
+ "dist.auto": "(خودکار: اس کمپیوٹر پر پہچانی گئی)",
+ "dist.auto_nom": "خودکار ({nom})",
+ "dist.detectee": "اس کمپیوٹر پر پہچانی گئی: {nom}",
+ "dist.magasin": "پیکج اسٹور: {magasin} (انسٹال: {cmd})",
+ "dist.aide": "چنیں: {cmd} ({liste}) · خودکار پہچان پر واپس: {cmd2}",
+ "dist.choisie": "مشق کی ڈسٹری بیوشن: {nom}۔",
+ "dist.inconnue": "نامعلوم ڈسٹری بیوشن: {nom}۔ ان میں سے چنیں: {liste}۔",
+ "dist.installer": "{distro} پر: {cmd}",
+ "ui.reg.distro": "لینکس ڈسٹری بیوشن: {etat}",
+ "ui.reg.distro.aide": "مشوروں اور پیکج اسٹور (apt، dnf، pacman، zypper) کے لیے؛ بدلنے کے لیے چھوئیں"
 }

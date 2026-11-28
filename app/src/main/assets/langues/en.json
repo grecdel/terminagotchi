@@ -10016,5 +10016,17 @@
  "ui.assistance.on": "🤝 Adult assistance on.",
  "ui.assistance.off": "🤝 Adult assistance off: the child plays alone.",
  "ui.assistance.cmd": "Turn on: {cmd} · turn off: {cmd2} (or ⚙ Settings)",
- "part.o.assistance": "Adult assistance: {cmd} or {cmd2}"
+ "part.o.assistance": "Adult assistance: {cmd} or {cmd2}",
+ "dist.titre": "Linux distribution practised: {nom}",
+ "dist.aucune": "none",
+ "dist.auto": "(automatic: detected on this computer)",
+ "dist.auto_nom": "automatic ({nom})",
+ "dist.detectee": "Detected on this computer: {nom}",
+ "dist.magasin": "Package store: {magasin} (install: {cmd})",
+ "dist.aide": "Choose: {cmd} ({liste}) · back to detection: {cmd2}",
+ "dist.choisie": "Distribution practised: {nom}.",
+ "dist.inconnue": "Unknown distribution: {nom}. Choose from: {liste}.",
+ "dist.installer": "On {distro}: {cmd}",
+ "ui.reg.distro": "Linux distribution: {etat}",
+ "ui.reg.distro.aide": "the one used for tips and the package store (apt, dnf, pacman, zypper); tap to change"
 }

@@ -10010,5 +10010,17 @@
  "ui.assistance.on": "🤝 Hilfe für Erwachsene an.",
  "ui.assistance.off": "🤝 Hilfe für Erwachsene aus: das Kind spielt allein.",
  "ui.assistance.cmd": "Einschalten: {cmd} · ausschalten: {cmd2} (oder ⚙ Einstellungen)",
- "part.o.assistance": "Hilfe für Erwachsene: {cmd} oder {cmd2}"
+ "part.o.assistance": "Hilfe für Erwachsene: {cmd} oder {cmd2}",
+ "dist.titre": "Geübte Linux-Distribution: {nom}",
+ "dist.aucune": "keine",
+ "dist.auto": "(automatisch: auf diesem Computer erkannt)",
+ "dist.auto_nom": "automatisch ({nom})",
+ "dist.detectee": "Auf diesem Computer erkannt: {nom}",
+ "dist.magasin": "Paketladen: {magasin} (installieren: {cmd})",
+ "dist.aide": "Auswählen: {cmd} ({liste}) · zurück zur Erkennung: {cmd2}",
+ "dist.choisie": "Geübte Distribution: {nom}.",
+ "dist.inconnue": "Unbekannte Distribution: {nom}. Zur Auswahl: {liste}.",
+ "dist.installer": "Auf {distro}: {cmd}",
+ "ui.reg.distro": "Linux-Distribution: {etat}",
+ "ui.reg.distro.aide": "die für Tipps und den Paketladen (apt, dnf, pacman, zypper); tippen zum Ändern"
 }

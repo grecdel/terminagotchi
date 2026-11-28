@@ -10018,5 +10018,17 @@
  "ui.assistance.on": "🤝 बड़ों की सहायता चालू।",
  "ui.assistance.off": "🤝 बड़ों की सहायता बंद: बच्चा अकेले खेलता है।",
  "ui.assistance.cmd": "चालू करें: {cmd} · बंद करें: {cmd2} (या ⚙ सेटिंग्स)",
- "part.o.assistance": "बड़ों की सहायता: {cmd} या {cmd2}"
+ "part.o.assistance": "बड़ों की सहायता: {cmd} या {cmd2}",
+ "dist.titre": "अभ्यास का लिनक्स डिस्ट्रीब्यूशन: {nom}",
+ "dist.aucune": "कोई नहीं",
+ "dist.auto": "(अपने-आप: इस कंप्यूटर पर पहचाना गया)",
+ "dist.auto_nom": "अपने-आप ({nom})",
+ "dist.detectee": "इस कंप्यूटर पर पहचाना गया: {nom}",
+ "dist.magasin": "पैकेज स्टोर: {magasin} (इंस्टॉल: {cmd})",
+ "dist.aide": "चुनें: {cmd} ({liste}) · पहचान पर लौटें: {cmd2}",
+ "dist.choisie": "अभ्यास का डिस्ट्रीब्यूशन: {nom}।",
+ "dist.inconnue": "अनजान डिस्ट्रीब्यूशन: {nom}। इनमें से चुनें: {liste}।",
+ "dist.installer": "{distro} पर: {cmd}",
+ "ui.reg.distro": "लिनक्स डिस्ट्रीब्यूशन: {etat}",
+ "ui.reg.distro.aide": "सुझावों और पैकेज स्टोर (apt, dnf, pacman, zypper) के लिए; बदलने के लिए छुएँ"
 }

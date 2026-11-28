@@ -10010,5 +10010,17 @@
  "ui.assistance.on": "🤝 Помощь взрослого включена.",
  "ui.assistance.off": "🤝 Помощь взрослого выключена: ребёнок играет сам.",
  "ui.assistance.cmd": "Включить: {cmd} · выключить: {cmd2} (или ⚙ Настройки)",
- "part.o.assistance": "Помощь взрослого: {cmd} или {cmd2}"
+ "part.o.assistance": "Помощь взрослого: {cmd} или {cmd2}",
+ "dist.titre": "Изучаемый дистрибутив Linux: {nom}",
+ "dist.aucune": "нет",
+ "dist.auto": "(автоматически: определён на этом компьютере)",
+ "dist.auto_nom": "автоматически ({nom})",
+ "dist.detectee": "Определён на этом компьютере: {nom}",
+ "dist.magasin": "Магазин пакетов: {magasin} (установка: {cmd})",
+ "dist.aide": "Выбрать: {cmd} ({liste}) · вернуть автоопределение: {cmd2}",
+ "dist.choisie": "Изучаемый дистрибутив: {nom}.",
+ "dist.inconnue": "Неизвестный дистрибутив: {nom}. Можно выбрать: {liste}.",
+ "dist.installer": "В {distro}: {cmd}",
+ "ui.reg.distro": "Дистрибутив Linux: {etat}",
+ "ui.reg.distro.aide": "для советов и магазина пакетов (apt, dnf, pacman, zypper); нажми, чтобы сменить"
 }
