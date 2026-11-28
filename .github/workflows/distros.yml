@@ -21,7 +21,9 @@ jobs:
   rejeu:
     name: ${{ matrix.nom }}
     runs-on: ubuntu-latest
-    container: ${{ matrix.image }}
+    container:
+      image: ${{ matrix.image }}
+      options: --security-opt seccomp=unconfined   # (openSUSE : ps n'affiche plus « get_mempolicy: Operation not permitted »)
     strategy:
       fail-fast: false
       matrix:
@@ -46,29 +48,25 @@ jobs:
             famille: zypper
     steps:
       - name: Les outils des fiches (avec le gestionnaire de paquets de la distribution)
+        shell: sh
         run: |
+          # tous d'un coup ; si un nom manque dans cette distribution (toute l'installation est alors refusée), un par un
+          base="git curl sudo tree bc zsh gcc make file gawk busybox sox mksh diffutils findutils less tar gzip"
           case "${{ matrix.famille }}" in
-            apt)
-              export DEBIAN_FRONTEND=noninteractive
-              apt-get update -qq
-              apt-get install -y -qq python3 git curl ca-certificates locales sudo tree iproute2 iputils-ping \
-                iputils-tracepath openssh-client dnsutils bsdextrautils openssl xxd gnupg qemu-utils pciutils usbutils \
-                bc iw rfkill zsh gcc make file sqlite3 gawk busybox imagemagick ffmpeg sox libimage-exiftool-perl \
-                mksh cron procps hostname less >/dev/null || true ;;
-            dnf)
-              dnf install -y -q python3 git curl sudo tree iproute iputils openssh-clients bind-utils util-linux \
-                openssl vim-common gnupg2 qemu-img pciutils usbutils bc iw zsh gcc make file sqlite gawk busybox \
-                ImageMagick ffmpeg-free sox perl-Image-ExifTool mksh cronie procps-ng hostname diffutils findutils \
-                which less glibc-langpack-en || true ;;
-            pacman)
-              pacman -Syu --noconfirm --needed python git curl sudo tree iproute2 iputils openssh bind util-linux \
-                openssl vim gnupg qemu-img pciutils usbutils bc iw zsh gcc make file sqlite gawk busybox imagemagick \
-                ffmpeg sox perl-image-exiftool mksh cronie procps-ng inetutils diffutils findutils which less || true ;;
-            zypper)
-              zypper -n -q install python3 git curl sudo tree iproute2 iputils openssh-clients bind-utils util-linux \
-                openssl vim gpg2 qemu-tools pciutils usbutils bc iw zsh gcc make file sqlite3 gawk busybox ImageMagick \
-                ffmpeg sox exiftool mksh cronie procps hostname diffutils findutils which less tar gzip || true ;;
+            apt)    export DEBIAN_FRONTEND=noninteractive; apt-get update -qq
+                    inst() { apt-get install -y -qq "$@" >/dev/null; }
+                    plus="python3 iproute2 ca-certificates locales iputils-ping iputils-tracepath openssh-client dnsutils bsdextrautils openssl xxd gnupg qemu-utils pciutils usbutils iw rfkill sqlite3 imagemagick ffmpeg libimage-exiftool-perl cron procps hostname" ;;
+            dnf)    inst() { dnf install -y -q "$@"; }
+                    plus="python3 which iproute iputils openssh-clients bind-utils util-linux openssl vim-common gnupg2 qemu-img pciutils usbutils iw sqlite ImageMagick ffmpeg-free perl-Image-ExifTool cronie procps-ng hostname glibc-langpack-en" ;;
+            pacman) pacman -Sy --noconfirm >/dev/null
+                    inst() { pacman -S --noconfirm --needed "$@" >/dev/null; }
+                    plus="python which iproute2 iputils openssh bind util-linux openssl vim gnupg qemu-img pciutils usbutils iw sqlite imagemagick ffmpeg perl-image-exiftool cronie procps-ng inetutils" ;;
+            zypper) inst() { zypper -n -q install --no-recommends "$@"; }
+                    plus="python3 which iproute2 iputils openssh-clients bind-utils util-linux openssl vim gpg2 qemu-tools pciutils usbutils iw sqlite3 ImageMagick ffmpeg-7 exiftool cronie procps hostname" ;;
           esac
+          if ! inst $base $plus; then
+            for p in $base $plus; do inst "$p" || echo "::warning::paquet absent sur ${{ matrix.nom }} : $p"; done
+          fi
           . /etc/os-release && echo "$PRETTY_NAME"
           bash --version | head -n 1
           ls --version 2>&1 | head -n 1

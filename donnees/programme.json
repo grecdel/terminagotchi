@@ -2582,7 +2582,7 @@
     },
     {
      "cmd": "command -v ls",
-     "motif": "^/(usr/)?bin/ls$"
+     "motif": "^/(usr/)?s?bin/ls$"
     },
     {
      "cmd": "ps -p 1 -o pid= | tr -d ' '",
@@ -3735,8 +3735,8 @@
     {
      "prepare": "sqlite3 b.db \"CREATE TABLE c (nom TEXT); CREATE TABLE e (nom TEXT);\"",
      "cmd": "sqlite3 b.db .tables",
-     "sortie": "c  e",
-     "outil": "sqlite3"
+     "outil": "sqlite3",
+     "motif": "^c\\s+e\\s*$"
     }
    ],
    "limite_image": "dn.f.sql.limite",
@@ -3970,14 +3970,14 @@
     {
      "prepare": "convert -size 4x4 xc:red a.png && convert -size 4x4 xc:blue b.png",
      "cmd": "convert -delay 20 -loop 0 a.png b.png anim.gif && identify anim.gif | wc -l",
-     "sortie": "2",
-     "outil": "convert"
+     "outil": "convert",
+     "motif": "^2$"
     },
     {
      "prepare": "convert -size 4x4 xc:red a.png && convert -size 4x4 xc:blue b.png",
      "cmd": "convert -delay 20 -loop 0 a.png b.png anim.gif && head -c 6 anim.gif",
-     "sortie": "GIF89a",
-     "outil": "convert"
+     "outil": "convert",
+     "motif": "^GIF89a$"
     },
     {
      "cmd": "sox -n la.wav synth 0.5 sine 440 && soxi -D la.wav",
@@ -5735,7 +5735,7 @@
    "pourquoi": "hist.sm5.0.bravo : le nom du noyau, sa version, le processeur"
   },
   "sm5.3": {
-   "motif": "^/(usr/)?bin/ls$",
+   "motif": "^/(usr/)?s?bin/ls$",
    "pourquoi": "hist.sm5.3.bravo : souvent /usr/bin"
   },
   "sm7.6": {
@@ -6007,9 +6007,12 @@
    "pourquoi": "hist.dn5.4.bravo : tee montre ET écrit"
   },
   "dn6.1": {
-   "sortie": "creatures  especes  ",
    "outil": "sqlite3",
-   "pourquoi": "hist.dn6.1.bravo : deux tables"
+   "pourquoi": "hist.dn6.1.bravo : deux tables",
+   "contient": [
+    "creatures",
+    "especes"
+   ]
   },
   "dn6.2": {
    "egal_jeu": "schema",
