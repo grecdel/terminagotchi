@@ -46,7 +46,8 @@ tape() {   # tape une commande lettre par lettre puis Entrée
 }
 adb shell am start -n fr.terminagotchi/.TerminalActivity
 capture debut 12
-# « Qui est avec toi ? » puis les 3 écrans du début (intro.json) : Entrée à chaque fois ; le dernier lance la partie
+# les 3 écrans du début (intro.json ; 28 nov. : plus de « Qui est avec toi ? ») : Entrée à chaque fois ; le dernier
+# lance la partie et ouvre le menu du jeu (une Entrée le referme)
 # au camp endormi (9 nov. : plus de nom demandé). Une Entrée de trop dans le jeu ne fait rien.
 tape "" 4
 capture intro_1

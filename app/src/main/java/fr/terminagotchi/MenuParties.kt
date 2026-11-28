@@ -100,6 +100,7 @@ class MenuParties(
     fun texteOptions(): String = listOf("⚙ " + t("part.o.titre"), texteCompte(),
         t("part.o.langue", "langue" to (Langue.LANGUES[Langue.courante] ?: ""), "cmd" to "`langue en`"),
         t("part.o.clavier.tel", "cmd" to "`clavier on`", "cmd2" to "`clavier off`"),
+        t("part.o.assistance", "cmd" to "`assistance on`", "cmd2" to "`assistance off`"),
         t("part.o.autres", "notifs" to "`notif off`", "theme" to "`theme`")).joinToString("\n")
 
     /** Aide (idée 79) : les conseils pour les parents, fermer et revenir, la liste des commandes. */

@@ -10006,5 +10006,11 @@
  "ui.reg.confort": "🔤 Leitura e conforto",
  "ui.reg.langue": "🌍 Língua",
  "ui.pur.on": "Terminal puro: só o terminal. A instrução aparece lá dentro (➜); ☰ em cima para tudo o resto.",
- "ui.pur.off": "Terminal + missão: a linha 🎯 voltou para cima da linha de escrita."
+ "ui.pur.off": "Terminal + missão: a linha 🎯 voltou para cima da linha de escrita.",
+ "ui.reg.assistance": "Assistência do adulto: {etat}",
+ "ui.reg.assistance.aide": "dicas para o adulto sentado ao lado (na primeira vez, por exemplo)",
+ "ui.assistance.on": "🤝 Assistência do adulto ativada.",
+ "ui.assistance.off": "🤝 Assistência do adulto desativada: a criança joga sozinha.",
+ "ui.assistance.cmd": "Ativar: {cmd} · desativar: {cmd2} (ou ⚙ Definições)",
+ "part.o.assistance": "Assistência do adulto: {cmd} ou {cmd2}"
 }

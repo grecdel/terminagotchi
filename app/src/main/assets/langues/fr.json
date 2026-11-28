@@ -10011,5 +10011,11 @@
  "ui.reg.confort": "🔤 Lecture et confort",
  "ui.reg.langue": "🌍 Langue",
  "ui.pur.on": "Terminal pur : rien que le terminal. La consigne s'écrit dedans (➜) ; ☰ en haut pour tout le reste.",
- "ui.pur.off": "Terminal + mission : la ligne 🎯 est revenue au-dessus de la saisie."
+ "ui.pur.off": "Terminal + mission : la ligne 🎯 est revenue au-dessus de la saisie.",
+ "ui.reg.assistance": "Assistance de l'adulte : {etat}",
+ "ui.reg.assistance.aide": "les conseils pour l'adulte assis à côté (la première fois, par exemple)",
+ "ui.assistance.on": "🤝 Assistance de l'adulte activée.",
+ "ui.assistance.off": "🤝 Assistance de l'adulte désactivée : l'enfant joue seul.",
+ "ui.assistance.cmd": "Activer : {cmd} · désactiver : {cmd2} (ou ⚙ Réglages)",
+ "part.o.assistance": "Assistance de l'adulte : {cmd} ou {cmd2}"
 }

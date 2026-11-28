@@ -10010,5 +10010,11 @@
  "ui.reg.confort": "🔤 Reading and comfort",
  "ui.reg.langue": "🌍 Language",
  "ui.pur.on": "Pure terminal: just the terminal. The instruction is written in it (➜); ☰ at the top for everything else.",
- "ui.pur.off": "Terminal + mission: the 🎯 line is back above the input line."
+ "ui.pur.off": "Terminal + mission: the 🎯 line is back above the input line.",
+ "ui.reg.assistance": "Adult assistance: {etat}",
+ "ui.reg.assistance.aide": "tips for the adult sitting next to the child (the first time, for example)",
+ "ui.assistance.on": "🤝 Adult assistance on.",
+ "ui.assistance.off": "🤝 Adult assistance off: the child plays alone.",
+ "ui.assistance.cmd": "Turn on: {cmd} · turn off: {cmd2} (or ⚙ Settings)",
+ "part.o.assistance": "Adult assistance: {cmd} or {cmd2}"
 }

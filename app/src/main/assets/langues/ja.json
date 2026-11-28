@@ -10010,5 +10010,11 @@
  "ui.reg.confort": "🔤 よみやすさ",
  "ui.reg.langue": "🌍 ことば",
  "ui.pur.on": "ターミナルだけ：やることは中に書かれるよ（➜）。ほかのことは上の ☰ にあるよ。",
- "ui.pur.off": "ターミナル＋ミッション：🎯 の行が入力の上にもどったよ。"
+ "ui.pur.off": "ターミナル＋ミッション：🎯 の行が入力の上にもどったよ。",
+ "ui.reg.assistance": "大人のサポート：{etat}",
+ "ui.reg.assistance.aide": "となりに座る大人へのアドバイス（たとえば最初のとき）",
+ "ui.assistance.on": "🤝 大人のサポートをオンにしました。",
+ "ui.assistance.off": "🤝 大人のサポートをオフにしました：子どもがひとりで遊びます。",
+ "ui.assistance.cmd": "オン：{cmd} · オフ：{cmd2}（または ⚙ 設定）",
+ "part.o.assistance": "大人のサポート：{cmd} または {cmd2}"
 }

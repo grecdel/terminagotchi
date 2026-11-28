@@ -277,6 +277,9 @@ def histoire():
             cible = "coeur" if not reste and H.ouvert(st, "coeur") else (reste[0] if reste else None)
             if not cible:
                 break
+            if not VIRTUEL:                         # un nouveau monde, comme un terminal neuf : plus de tâches de fond
+                # (bash 5.3 garde les tâches finies d'un shell non interactif : « kill %1 » visait une vieille tâche)
+                shell.lancer("kill $(jobs -p) 2>/dev/null; wait 2>/dev/null; jobs >/dev/null; true")
             st = tape(f"cd ~/terrain_terminagotchi/{H.PAR_CHAP[cible]['piece']}")
             if H.lecon_courante(st)[0] is None:
                 break
@@ -435,7 +438,8 @@ def histoire():
         if c == "sh mon_jeu/devinette.sh":          # (le robot joue à la place de l'enfant)
             c = "seq 1 10 | sh mon_jeu/devinette.sh"
         if c == "fg" and les["id"] == "fo6" and not (VIRTUEL and _usage_raconte(FO_.SERVEUR)):
-            c = "kill %1"                            # fg puis Ctrl+C : ici, sans terminal, kill %1
+            c = "kill %%"                            # fg puis Ctrl+C : ici, sans terminal, kill %% (la dernière
+            # tâche de fond : bash 5.3 garde parfois d'anciennes tâches finies sous %1)
             # (le terminal du jeu raconte la lanterne, python3 -m http.server : l'enfant tape fg, raconté aussi)
         ga = AT_._graine(st)                         # l'Atelier : l'enfant lit la grille, le capteur, la table, le réflexe
         if c == "atelier ou ?":

@@ -924,7 +924,9 @@ def creer_si_besoin(avec_intro=None):
         code = langue.detecter()                  # premier lancement : la langue du système
         langue.definir(code)
         from . import aide_douce, parties
-        qui = aide_douce.demander_parent(input) if avec_intro and parties.aucune() else None   # idée 1, une fois
+        # 28 nov. : plus de « Qui est avec toi ? » au premier lancement (c'est un adulte qui ouvre le jeu la première
+        # fois) : l'assistance de l'adulte se règle avec `tg assistance on|off` (et ⚙ Réglages dans l'appli)
+        qui = None
         if avec_intro:                            # 9 nov. : le nom viendra plus tard, avec `echo <nom>` (intro.py)
             intro.jouer_ecrans(input, clear)
             name = t("intro.nom.attente")
@@ -1312,6 +1314,25 @@ def _main():
     if mode == "terminal":                     # tg terminal : une fenêtre de plus avec le terminal du jeu
         ok, msg = compagnon.nouvelle_fenetre()
         print(msg)
+        return
+    if mode == "assistance":                   # 28 nov. : l'assistance de l'adulte (les conseils pour l'adulte à côté)
+        from . import aide_douce
+        with core.verrou():
+            st = core.load()
+            if st is None:
+                print(t("part.n.attend"))
+                return
+            choix = (args[1:2] or [""])[0].lower()
+            if choix in ("on", "oui", "off", "non"):
+                aide_douce.a_(st)["parent"] = "adulte" if choix in ("on", "oui") else "seul"
+                core.save(st)
+                print(t("ui.assistance.on") if choix in ("on", "oui") else t("ui.assistance.off"))
+                if choix in ("on", "oui"):
+                    print("\n".join(aide_douce.conseils_parents()))
+            else:
+                etat = t("ui.reg.oui") if aide_douce.a_(st).get("parent") == "adulte" else t("ui.reg.non")
+                print(t("ui.reg.assistance", etat=etat))
+                print(t("part.o.assistance", cmd="`tg assistance on`", cmd2="`tg assistance off`"))
         return
     if mode in ("aide", "help", "-h") and len(args) > 1 and args[1].lower() in ("parents", "parent", "adulte"):
         from . import aide_douce                # idée 1 : les conseils pour l'adulte à côté (à relire)

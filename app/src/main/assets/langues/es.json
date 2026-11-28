@@ -10005,5 +10005,11 @@
  "ui.reg.confort": "🔤 Lectura y comodidad",
  "ui.reg.langue": "🌍 Idioma",
  "ui.pur.on": "Terminal puro: solo la terminal. La consigna se escribe dentro (➜); ☰ arriba para todo lo demás.",
- "ui.pur.off": "Terminal + misión: la línea 🎯 ha vuelto encima de la línea para escribir."
+ "ui.pur.off": "Terminal + misión: la línea 🎯 ha vuelto encima de la línea para escribir.",
+ "ui.reg.assistance": "Ayuda del adulto: {etat}",
+ "ui.reg.assistance.aide": "consejos para el adulto sentado al lado (la primera vez, por ejemplo)",
+ "ui.assistance.on": "🤝 Ayuda del adulto activada.",
+ "ui.assistance.off": "🤝 Ayuda del adulto desactivada: el niño juega solo.",
+ "ui.assistance.cmd": "Activar: {cmd} · desactivar: {cmd2} (o ⚙ Ajustes)",
+ "part.o.assistance": "Ayuda del adulto: {cmd} o {cmd2}"
 }

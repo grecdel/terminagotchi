@@ -10004,5 +10004,11 @@
  "ui.reg.confort": "🔤 Lesen und Komfort",
  "ui.reg.langue": "🌍 Sprache",
  "ui.pur.on": "Reines Terminal: nur das Terminal. Die Aufgabe steht darin (➜); ☰ oben für alles andere.",
- "ui.pur.off": "Terminal + Mission: die 🎯-Zeile ist wieder über der Eingabezeile."
+ "ui.pur.off": "Terminal + Mission: die 🎯-Zeile ist wieder über der Eingabezeile.",
+ "ui.reg.assistance": "Hilfe für Erwachsene: {etat}",
+ "ui.reg.assistance.aide": "Tipps für den Erwachsenen daneben (zum Beispiel beim ersten Mal)",
+ "ui.assistance.on": "🤝 Hilfe für Erwachsene an.",
+ "ui.assistance.off": "🤝 Hilfe für Erwachsene aus: das Kind spielt allein.",
+ "ui.assistance.cmd": "Einschalten: {cmd} · ausschalten: {cmd2} (oder ⚙ Einstellungen)",
+ "part.o.assistance": "Hilfe für Erwachsene: {cmd} oder {cmd2}"
 }

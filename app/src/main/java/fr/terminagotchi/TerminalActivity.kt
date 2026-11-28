@@ -97,6 +97,8 @@ class TerminalActivity : Activity() {
     /** idée 1 : 1 = « Qui est avec toi ? », 2 = les conseils pour l'adulte, 0 = rien (avant les écrans de l'histoire) */
     private var ecranParent = 0
     private var choixParent: String? = null
+    /** la toute première partie de l'appareil : à la fin de l'intro, le menu du jeu s'ouvre (puis l'initiation) */
+    private var menuApresIntro = false
     /** idée 6 : la carte « Pas de panique » (à la place de l'écran du terminal) */
     private var perduVue: IntroVue? = null
     private lateinit var perduBtn: TextView
@@ -282,7 +284,9 @@ class TerminalActivity : Activity() {
             ouvrirMenu()                             // lancé depuis l'icône : le menu du jeu (idée 79)
         } else if (!jeu.existe) {
             ecranIntro = 1                           // les 3 écrans du début (Intro.kt) ; 9 nov. : plus de nom demandé
-            if (Parties.aucune(this)) ecranParent = 1   // idée 1 : « Qui est avec toi ? », la toute première fois
+            // 28 nov. : plus de « Qui est avec toi ? » au démarrage (c'est un adulte qui ouvre le jeu la première fois) :
+            // l'intro, puis le menu du jeu, puis l'initiation pas à pas. L'assistance se règle dans ⚙ Réglages.
+            if (Parties.aucune(this)) menuApresIntro = true
         } else {
             jeu.parlerSiSilencieux()
             ecrire(t("mini.accueil1") + "\n" + t("term.aide_pour_aide"))
@@ -1018,9 +1022,24 @@ class TerminalActivity : Activity() {
             ecrire(t(if (on) "ui.pur.on" else "ui.pur.off"), Commandes.ROSE)
             rafraichir()
         }
+        f.gros("🤝", t("ui.reg.assistance", "etat" to t(if (assistance()) "ui.reg.oui" else "ui.reg.non")), t("ui.reg.assistance.aide")) {
+            fermerFiche()
+            ecrire(basculerAssistance(!assistance()), Commandes.ROSE)
+            rafraichir()
+        }
         f.gros("🔊", t("ui.reg.son").removePrefix("🔊 "), "") { fermerFiche(); reglagesSon() }
         f.gros("🔤", t("ui.reg.confort").removePrefix("🔤 "), "") { fermerFiche(); ecrire(Confort.commande(jeu, emptyList()), Commandes.ROSE); appliquerConfort() }
         f.gros("🌍", t("ui.reg.langue").removePrefix("🌍 "), "") { fermerFiche(); ecrire(langue(null), Commandes.ROSE) }
+    }
+
+    /** L'assistance de l'adulte (idée 1, réglable depuis le 28 nov.) : les conseils pour l'adulte à côté. */
+    private fun assistance(): Boolean = jeu.existe && AideDouce.a(jeu).optString("parent") == "adulte"
+
+    private fun basculerAssistance(on: Boolean): String {
+        if (!jeu.existe) return t("part.n.attend")
+        AideDouce.a(jeu).put("parent", if (on) "adulte" else "seul")
+        jeu.sauver()
+        return if (on) t("ui.assistance.on") + "\n" + AideDouce.conseilsParents() else t("ui.assistance.off")
     }
 
     // ------------------------------------------------------------ 79. le menu du jeu
@@ -1665,6 +1684,16 @@ class TerminalActivity : Activity() {
                 rafraichir()
                 return
             }
+            "assistance" -> {                            // 28 nov. : l'assistance de l'adulte, aussi dans ⚙ Réglages
+                val mot2 = ligne.trim().split(Regex("\\s+")).getOrNull(1)?.lowercase()
+                ecrire(when (mot2) {
+                    "on", "oui" -> basculerAssistance(true)
+                    "off", "non" -> basculerAssistance(false)
+                    else -> t("ui.reg.assistance", "etat" to t(if (assistance()) "ui.reg.oui" else "ui.reg.non")) + "\n" + t("ui.assistance.cmd", "cmd" to "`assistance on`", "cmd2" to "`assistance off`")
+                }, Commandes.ROSE)
+                rafraichir()
+                return
+            }
             "aide" -> {
                 // P2-7 : coincé ? d'abord la leçon en cours, où la taper, la commande exacte et pourquoi (« aide tout » : la liste)
                 val mot2 = ligne.trim().split(Regex("\\s+")).getOrNull(1)?.lowercase()
@@ -1794,6 +1823,10 @@ class TerminalActivity : Activity() {
         WidgetCreature.majTous(this)
         ecrire(t("intro.ou.tel") + "\n" + t("intro.astuce.0"), Commandes.ROSE)
         rafraichir()
+        if (menuApresIntro) {                  // 28 nov. : intro → menu du jeu → initiation pas à pas
+            menuApresIntro = false
+            handler.post { ouvrirMenu() }
+        }
     }
 
     private fun verrouillerFocus(v: View) {
