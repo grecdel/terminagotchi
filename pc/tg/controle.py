@@ -679,7 +679,8 @@ COLIS_CMDS = {
     "apt": {"proprio": "dpkg -S '*bin/ls'", "fichiers": "dpkg -L bash | head -5", "version": "dpkg -s bash | grep Version",
             "besoins": "dpkg -s bash | grep Depends", "depots": "ls /etc/apt/sources.list.d/", "outil": "dpkg+/var/lib/dpkg/status"},
     "dnf": {"proprio": "rpm -qf /usr/bin/ls", "fichiers": "rpm -ql bash | head -5", "version": "rpm -q bash",
-            "besoins": "rpm -qR bash | head -5", "depots": "ls /etc/yum.repos.d/", "outil": "rpm+/usr/lib/sysimage/rpm"},
+            "besoins": "rpm -qR bash | head -5", "depots": "dnf repolist", "outil": "rpm+/usr/lib/sysimage/rpm"},
+    # (dnf repolist : les dépôts peuvent être dans /etc/yum.repos.d ou, depuis dnf5, dans /usr/share/dnf5/repos.d)
     "zypper": {"proprio": "rpm -qf /usr/bin/ls", "fichiers": "rpm -ql bash | head -5", "version": "rpm -q bash",
                "besoins": "rpm -qR bash | head -5", "depots": "ls /etc/zypp/repos.d/", "outil": "rpm+/usr/lib/sysimage/rpm"},
     "pacman": {"proprio": "pacman -Qo /usr/bin/ls", "fichiers": "pacman -Ql bash | head -5", "version": "pacman -Q bash",

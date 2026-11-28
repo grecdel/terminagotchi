@@ -187,10 +187,10 @@ FICHES = dict([
         ["Debian Policy, chapitre 7 (Declaring relationships between packages) : https://www.debian.org/doc/debian-policy/ch-relationships.html",
          "RPM, Dependencies (Requires, Provides) : https://rpm-software-management.github.io/rpm/manual/dependencies.html",
          "POSIX.1-2024, tsort (le tri topologique) : https://pubs.opengroup.org/onlinepubs/9799919799/utilities/tsort.html"]),
-    fiche("depots", r"(sources\.list|yum\.repos\.d|pacman\.conf|zypp/repos\.d|^(tg\s+)?controle\s+d[eé]p[oô]ts?\b)", [
+    fiche("depots", r"(sources\.list|yum\.repos\.d|^dnf\s+repolist\b|pacman\.conf|zypp/repos\.d|^(tg\s+)?controle\s+d[eé]p[oô]ts?\b)", [
         {"cmd": "ls /etc/apt/sources.list /etc/apt/sources.list.d/ 2>/dev/null | grep -c .", "motif": r"^[1-9]",
          "outil": "dpkg", "si": "test -d /etc/apt"},
-        {"cmd": "ls /etc/yum.repos.d/ | grep -c '\\.repo$'", "motif": r"^[1-9]", "outil": "rpm", "si": "test -d /etc/yum.repos.d"},
+        {"cmd": "dnf repolist 2>/dev/null | grep -ci fedora", "motif": r"^[1-9]", "outil": "dnf", "si": "test -d /usr/lib/sysimage/rpm"},
         {"cmd": "grep -c '^\\[core\\]' /etc/pacman.conf", "sortie": "1", "outil": "pacman", "si": "test -f /etc/pacman.conf"},
         {"cmd": "ls /etc/zypp/repos.d/ | grep -c '\\.repo$'", "motif": r"^[0-9]", "outil": "rpm", "si": "test -d /etc/zypp/repos.d"}],
         ["sources.list(5), Debian : https://manpages.debian.org/sources.list",

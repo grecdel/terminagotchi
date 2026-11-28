@@ -4990,7 +4990,7 @@
    "relu_par": null
   },
   "depots": {
-   "motif": "(sources\\.list|yum\\.repos\\.d|pacman\\.conf|zypp/repos\\.d|^(tg\\s+)?controle\\s+d[eé]p[oô]ts?\\b)",
+   "motif": "(sources\\.list|yum\\.repos\\.d|^dnf\\s+repolist\\b|pacman\\.conf|zypp/repos\\.d|^(tg\\s+)?controle\\s+d[eé]p[oô]ts?\\b)",
    "enfant": "ct.f.depots.enfant",
    "grands": "ct.f.depots.grands",
    "vrai_terminal": [
@@ -5001,10 +5001,10 @@
      "si": "test -d /etc/apt"
     },
     {
-     "cmd": "ls /etc/yum.repos.d/ | grep -c '\\.repo$'",
+     "cmd": "dnf repolist 2>/dev/null | grep -ci fedora",
      "motif": "^[1-9]",
-     "outil": "rpm",
-     "si": "test -d /etc/yum.repos.d"
+     "outil": "dnf",
+     "si": "test -d /usr/lib/sysimage/rpm"
     },
     {
      "cmd": "grep -c '^\\[core\\]' /etc/pacman.conf",
