@@ -1,0 +1,12 @@
+onglets : 
+dossier : 0
+orientation : mCurrentRotation=ROTATION_0 Physical size: 1080x2400
+onglets : 
+dossier : 0
+orientation : mCurrentRotation=ROTATION_0 Physical size: 1080x2400
+onglets : 
+dossier : 0
+orientation : mCurrentRotation=ROTATION_0 Physical size: 1080x2400
+onglets : 
+dossier : 0
+orientation : mCurrentRotation=ROTATION_0 Physical size: 1080x2400

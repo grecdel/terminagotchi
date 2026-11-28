@@ -1,0 +1,2 @@
+inscription depuis le téléphone : ÉCHEC None None
+liaison + synchro PC <-> téléphone : ÉCHEC 500 ['pc'] CreaturePC

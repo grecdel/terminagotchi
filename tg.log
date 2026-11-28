@@ -1,0 +1,36 @@
+--------- beginning of main
+11-28 05:22:12.972  3604  3604 I TG      : commande : pwd
+11-28 05:23:59.586  3604  3604 I TG      : commande : ls
+11-28 05:25:53.272  3604  3604 I TG      : commande : echo Pixel
+11-28 05:27:45.322  3604  3604 I TG      : commande : whoami
+11-28 05:34:36.423  3604  3604 I TG      : commande : oui
+11-28 05:40:02.746  3604  3604 I TG      : commande : pwd
+11-28 05:45:25.872  3604  3604 I TG      : commande : ls
+11-28 05:50:50.474  3604  3604 I TG      : commande : cd
+11-28 05:56:16.445  3604  3604 I TG      : commande : mkdir terrain_terminagotchi
+11-28 06:01:41.070  3604  3604 I TG      : commande : cd terrain_terminagotchi
+11-28 06:07:04.731  3604  3604 I TG      : commande : mkdir nid
+11-28 06:12:36.425  3604  3604 I TG      : commande : echo pomme > nid/repas.txt
+11-28 06:18:03.459  3604  3604 I TG      : commande : cat nid/repas.txt
+11-28 06:23:29.210  3604  3604 I TG      : commande : grep pomme nid/repas.txt
+11-28 06:28:55.555  3604  3604 I TG      : commande : ls -l nid
+11-28 06:34:22.873  3604  3604 I TG      : commande : chmod 444 nid/repas.txt
+11-28 06:39:51.528  3604  3604 I TG      : commande : echo poire >> nid/repas.txt
+11-28 06:45:16.963  3604  3604 I TG      : commande : cp nid/repas.txt nid/secours.txt
+11-28 06:50:45.346  3604  3604 I TG      : commande : mv nid/secours.txt reserve.txt
+11-28 06:56:12.673  3604  3604 I TG      : commande : rm reserve.txt
+11-28 07:07:13.105  3604  3604 I TG      : commande : cd terrain_terminagotchi/nid
+11-28 07:12:39.537  3604  3604 I TG      : commande : pwd
+11-28 07:18:04.969  3604  3604 I TG      : commande : ls
+11-28 07:24:04.256  3604  3604 I TG      : commande : pwd
+11-28 07:29:50.402  3604  3604 I TG      : commande : pwd
+11-28 07:40:57.740  3604  3604 I TG      : commande : sleep 6
+11-28 07:46:20.735  3604  3604 I TG      : commande : ls
+11-28 07:51:55.466  3604  3604 I TG      : commande : sleep 15
+11-28 07:57:18.463  3604  3604 I TG      : commande : pwd
+11-28 08:08:14.200  3604  3604 I TG      : commande : cd nid/
+11-28 09:02:34.704  3604  3604 I TG      : commande : fichier_inexistant
+11-28 09:24:28.849  3604  3604 I TG      : commande : cat ~/terrain_terminagotchi/monstre_abyssor.txt
+11-28 09:29:56.558  3604  3604 I TG      : commande : find ~/terrain_terminagotchi -name repaire_abyssor
+11-28 09:39:19.191  3604  3604 I TG      : commande : cd 01_cache
+11-28 09:39:29.259  3604  3604 I TG      : commande : ls -a
