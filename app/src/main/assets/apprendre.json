@@ -1,0 +1,719 @@
+{
+ "note": "Apprendre en jouant (idées cochées du 3 novembre) : réglages et contenus communs au PC (apprendre.py) et à Android (Apprendre.kt). Les deux copies (pc/tg et app/src/main/assets) restent égales (test_apprendre.py).",
+ "cmds": [
+  "pwd",
+  "ls",
+  "cd",
+  "mkdir",
+  "touch",
+  "cp",
+  "mv",
+  "rm",
+  "cat",
+  "less",
+  "head",
+  "grep",
+  "find",
+  "wc",
+  "sort",
+  "tree",
+  "rev",
+  "whoami",
+  "date",
+  "chmod"
+ ],
+ "revision": {
+  "intervalles": [
+   1,
+   3,
+   7,
+   14,
+   30
+  ],
+  "xp": 4
+ },
+ "maitrise": {
+  "reussites": 5,
+  "titre": 10
+ },
+ "jour": {
+  "xp": 8,
+  "missions": {
+   "pwd": "^pwd\\b",
+   "ls": "^ls\\s+-\\w*a",
+   "cd": "^cd\\s+/\\s*$",
+   "mkdir": "^mkdir\\s+-p\\s+\\S+/\\S+",
+   "touch": "^touch\\s+\\S+\\s+\\S+",
+   "cp": "^cp\\s+-\\w*r",
+   "mv": "^mv\\s+\\S+\\s+\\S+",
+   "rm": "^rm\\s+-\\w*i",
+   "cat": "^cat\\s+-\\w*n",
+   "less": "^less\\s+\\S+",
+   "head": "^head\\s+(-n\\s*3|-3)\\b",
+   "grep": "^grep\\s+-\\w*i",
+   "find": "^find\\s.*-name\\s",
+   "wc": "^wc\\s+-\\w*l",
+   "sort": "^sort\\s+-\\w*r",
+   "tree": "^tree\\s+-L\\s*\\d",
+   "rev": "^rev\\s+\\S+",
+   "whoami": "^whoami\\b",
+   "date": "^date\\s+\\+",
+   "chmod": "^chmod\\s+[0-7]{3}\\s"
+  },
+  "exemples": {
+   "pwd": "pwd",
+   "ls": "ls -a",
+   "cd": "cd /",
+   "mkdir": "mkdir -p cabane/grenier/coffre",
+   "touch": "touch pomme.txt poire.txt",
+   "cp": "cp -r cabane cabane_copie",
+   "mv": "mv pomme.txt panier.txt",
+   "rm": "rm -i poire.txt",
+   "cat": "cat -n recette.txt",
+   "less": "less recette.txt",
+   "head": "head -n 3 recette.txt",
+   "grep": "grep -i miel recette.txt",
+   "find": "find . -name \"*.txt\"",
+   "wc": "wc -l recette.txt",
+   "sort": "sort -r recette.txt",
+   "tree": "tree -L 2",
+   "rev": "rev recette.txt",
+   "whoami": "whoami",
+   "date": "date +%Y",
+   "chmod": "chmod 600 pomme.txt"
+  }
+ },
+ "enigmes": {
+  "xp": 15,
+  "garder": 4,
+  "mots": [
+   "marmotte",
+   "lanterne",
+   "boussole",
+   "comete",
+   "racine",
+   "nuage",
+   "pixel",
+   "luciole",
+   "galet",
+   "plume",
+   "orage",
+   "noisette"
+  ],
+  "modeles": [
+   {
+    "id": "phare",
+    "besoin": "grep"
+   },
+   {
+    "id": "cache",
+    "besoin": "ls"
+   },
+   {
+    "id": "profond",
+    "besoin": "find"
+   },
+   {
+    "id": "ordre",
+    "besoin": "sort"
+   },
+   {
+    "id": "compte",
+    "besoin": "ls"
+   }
+  ]
+ },
+ "erreurs": {
+  "xp": 3,
+  "delai": 600
+ },
+ "jeux": {
+  "xp": 5,
+  "plafond": 3,
+  "ordre": [
+   "labyrinthe",
+   "taupes",
+   "peche",
+   "facteur"
+  ]
+ },
+ "temps": {
+  "pause": 60,
+  "baille": 5,
+  "trou": 300,
+  "reveil": 7
+ },
+ "bac": {
+  "dossier": "bac_a_sable",
+  "jouets": {
+   "chateau/donjon.txt": "apr.bac.jouet.donjon",
+   "chateau/tour/drapeau.txt": "apr.bac.jouet.drapeau",
+   "coffre.txt": "apr.bac.jouet.coffre",
+   "recette.txt": "apr.bac.jouet.recette",
+   "lettres/a.txt": "apr.bac.jouet.a",
+   "lettres/b.txt": "apr.bac.jouet.b",
+   "tunnel/": "",
+   "lis-moi.txt": "apr.bac.jouet.lisme"
+  }
+ },
+ "sentier": {
+  "xp": 5,
+  "exploit": "sommet.sentier",
+  "etapes": [
+   {
+    "id": "s1",
+    "motif": "^echo\\s+[\"'].+[\"']",
+    "cmd": "echo \"Bonjour le sommet\""
+   },
+   {
+    "id": "s2",
+    "fs": "bivouac/",
+    "cmd": "mkdir bivouac"
+   },
+   {
+    "id": "s3",
+    "motif": "^grep\\s+(-\\w+\\s+)*marmotte\\s+inscriptions\\.txt",
+    "cmd": "grep marmotte inscriptions.txt"
+   },
+   {
+    "id": "s4",
+    "motif": "^find\\s.*-name\\s",
+    "cmd": "find . -name \"*.caillou\""
+   },
+   {
+    "id": "s5",
+    "motif": "^ls\\s+-\\w*l",
+    "cmd": "ls -l"
+   },
+   {
+    "id": "s6",
+    "motif": "\\s--help\\b",
+    "cmd": "ls --help"
+   },
+   {
+    "id": "s7",
+    "motif": "^cat\\s+sommet\\.txt",
+    "cmd": "cat sommet.txt"
+   }
+  ]
+ },
+ "examens": {
+  "essais": 2,
+  "xp": 20,
+  "chapitres": {
+   "reveil": [
+    "pwd",
+    "ls",
+    "cd",
+    "cat",
+    "mkdir"
+   ],
+   "nid": [
+    "ls_a",
+    "cat",
+    "touch",
+    "mkdir",
+    "cd"
+   ],
+   "grenier": [
+    "tree",
+    "mv",
+    "cp",
+    "rm",
+    "ls"
+   ],
+   "cave": [
+    "chmod",
+    "ls_l",
+    "cat",
+    "cd",
+    "pwd"
+   ],
+   "bibliotheque": [
+    "head",
+    "grep",
+    "wc",
+    "sort",
+    "find"
+   ]
+  },
+  "salles": {
+   "pwd": {
+    "motif": "^pwd\\b",
+    "cmd": "pwd"
+   },
+   "ls": {
+    "motif": "^ls\\b",
+    "cmd": "ls"
+   },
+   "ls_a": {
+    "motif": "^ls\\s+-\\w*a",
+    "cmd": "ls -a"
+   },
+   "ls_l": {
+    "motif": "^ls\\s+-\\w*l",
+    "cmd": "ls -l"
+   },
+   "cd": {
+    "cwd": "passage",
+    "cmd": "cd passage"
+   },
+   "cat": {
+    "motif": "^cat\\s+parchemin\\.txt",
+    "cmd": "cat parchemin.txt"
+   },
+   "mkdir": {
+    "fs": "tente/",
+    "cmd": "mkdir tente"
+   },
+   "touch": {
+    "fs": "drapeau.txt",
+    "cmd": "touch drapeau.txt"
+   },
+   "tree": {
+    "motif": "^(tree|ls\\s+-\\w*R)",
+    "cmd": "tree"
+   },
+   "mv": {
+    "fs": "coffre/ours.txt",
+    "absent": "ours.txt",
+    "cmd": "mv ours.txt coffre/"
+   },
+   "cp": {
+    "fs": "carte_copie.txt",
+    "cmd": "cp carte.txt carte_copie.txt"
+   },
+   "rm": {
+    "absent": "caillou.txt",
+    "cmd": "rm caillou.txt"
+   },
+   "chmod": {
+    "motif": "^chmod\\s+\\S+\\s+secret\\.txt",
+    "cmd": "chmod 600 secret.txt"
+   },
+   "head": {
+    "motif": "^head\\b.*livre\\.txt",
+    "cmd": "head -n 3 livre.txt"
+   },
+   "grep": {
+    "motif": "^grep\\s+.*livre\\.txt",
+    "cmd": "grep etoile livre.txt"
+   },
+   "wc": {
+    "motif": "^wc\\b.*livre\\.txt",
+    "cmd": "wc -l livre.txt"
+   },
+   "sort": {
+    "motif": "^sort\\b.*livre\\.txt",
+    "cmd": "sort livre.txt"
+   },
+   "find": {
+    "motif": "^find\\s.*-name\\s",
+    "cmd": "find . -name \"*.cle\""
+   }
+  }
+ },
+ "pictos": {
+  "palette": {
+   "k": "#141826",
+   "g": "#3ddc84",
+   "G": "#1f8a4c",
+   "y": "#ffd75f",
+   "o": "#ff9f43",
+   "b": "#5fafff",
+   "B": "#2f5f9f",
+   "w": "#e8e8f0",
+   "s": "#9a9ab0",
+   "S": "#4a4a5e",
+   "r": "#ff5f5f",
+   "p": "#ff87ff",
+   "n": "#b07a42",
+   "N": "#6a4526",
+   "v": "#b284ff"
+  },
+  "ordre": [
+   "pwd",
+   "ls",
+   "cd",
+   "mkdir",
+   "touch",
+   "cp",
+   "mv",
+   "rm",
+   "cat",
+   "less",
+   "head",
+   "grep",
+   "find",
+   "wc",
+   "sort",
+   "tree",
+   "rev",
+   "whoami",
+   "date",
+   "chmod"
+  ],
+  "images": {
+   "pwd": [
+    "................",
+    "..kkkkkkkkkkkk..",
+    ".kyyyyyyyyyyyyk.",
+    ".kyrrryyyyyyyyk.",
+    ".kyrwryykkkkyyk.",
+    ".kyrrryyyyyyyyk.",
+    ".kyyryykkkkkkyk.",
+    ".kyyyyyyyyyyyyk.",
+    "..kkkkkkkkkkkk..",
+    ".......kk.......",
+    ".......nn.......",
+    ".......nn.......",
+    ".......nn.......",
+    ".......NN.......",
+    "..gggggggggggg..",
+    "................"
+   ],
+   "ls": [
+    "................",
+    ".......kk.......",
+    "......k..k......",
+    ".....kkkkkk.....",
+    "....kSSSSSSk....",
+    "....kSyyyySk....",
+    "...kSyywwyySk...",
+    "...kSyywwyySk...",
+    "...kSyyyyyySk...",
+    "...kSyyoyyySk...",
+    "...kSyyyyyySk...",
+    "....kSyyyySk....",
+    "....kSSSSSSk....",
+    ".y...kkkkkk...y.",
+    "...y........y...",
+    "................"
+   ],
+   "cd": [
+    "................",
+    ".....kkkkkk.....",
+    "....kggggggk....",
+    "...kgnnnnnngk...",
+    "...kgnNNNNngk...",
+    "...kgnNnnNngk...",
+    "...kgnNnnNngk...",
+    "...kgnNNNNngk...",
+    "...kgnnnnyngk...",
+    "...kgnNnnNngk...",
+    "...kgnNnnNngk...",
+    "...kgnNNNNngk...",
+    "...kgnnnnnngk...",
+    ".g.kggggggggk.g.",
+    ".gggkkkkkkkkggg.",
+    "................"
+   ],
+   "mkdir": [
+    "................",
+    ".......kk.......",
+    "......krrk......",
+    ".....krrrrk.....",
+    "....krrrrrrk....",
+    "...krrrrrrrrk...",
+    "..kkkkkkkkkkkk..",
+    "...knNnnnnNnk...",
+    "...knNnbbnNnk...",
+    "...knnnbbnnnk...",
+    "...knNnnnnNnk...",
+    "...knnnNNnnnk...",
+    "...knnnNNnnnk...",
+    "...kkkkNNkkkk...",
+    ".gggggggggggggg.",
+    "................"
+   ],
+   "touch": [
+    "................",
+    "............y...",
+    "...........yyy..",
+    "............y...",
+    "...kkkkkkkk.....",
+    "...kwwwwwwk.....",
+    "...kwsssswk..y..",
+    "...kwwwwwwk.....",
+    "...kwssswwk.....",
+    "...kwwwwwwk.....",
+    "...kwsssswk.....",
+    "...kwwwwwwk.....",
+    "...kkkkkkkk.....",
+    "................",
+    "..gggggggggggg..",
+    "................"
+   ],
+   "cp": [
+    "................",
+    ".kkkkkkk........",
+    ".kwwwwwk........",
+    ".kwsssswk.......",
+    ".kwwwwwwk.......",
+    ".kwsssbbbbbbb...",
+    ".kwwwwbwwwwwbk..",
+    ".kkkkkbwssswbk..",
+    "......bwwwwwbk..",
+    "..p...bwssswbk..",
+    ".ppp..bwwwwwbk..",
+    "..p...bwsswwbk..",
+    "......bbbbbbbk..",
+    ".......kkkkkkk..",
+    "..gggggggggggg..",
+    "................"
+   ],
+   "mv": [
+    "................",
+    "................",
+    "....kkkkkk......",
+    "....knnnnk......",
+    "....kNNNNk..y...",
+    "....knnnnk..yy..",
+    "....kkkkkk..yyy.",
+    "..kkkkkkkkkkyy..",
+    "..ksssssssskyk..",
+    "..ksssssssssk...",
+    "..kkkkkkkkkkk...",
+    "...kSk...kSk....",
+    "...kkk...kkk....",
+    "................",
+    ".gggggggggggggg.",
+    "................"
+   ],
+   "rm": [
+    "................",
+    "....kkkkkkkk....",
+    "....kwwwwwwk....",
+    "....kwsssswk....",
+    "..kkkkkkkkkkkk..",
+    "..kSSSSSSSSSSk..",
+    "..kSrSSSSSSrSk..",
+    "..kSSSSSSSSSSk..",
+    "..kkkkkkkkkkkk..",
+    "...w.s.w.s.w....",
+    "....s.w..w.s....",
+    "...w...s....w...",
+    ".....w....s.....",
+    "...s.....w......",
+    "..g..g..g..g..g.",
+    "................"
+   ],
+   "cat": [
+    "................",
+    "..kkkkkkkkkkk...",
+    ".kynnnnnnnnnyk..",
+    "..kkyyyyyyyyk...",
+    "...kykkkkkyyk...",
+    "...kyyyyyyyyk...",
+    "...kykkkkkkyk...",
+    "...kyyyyyyyyk...",
+    "...kykkkkyyyk...",
+    "...kyyyyyyyyk...",
+    "...kykkkkkkyk...",
+    "..kkyyyyyyyyk...",
+    ".kynnnnnnnnnyk..",
+    "..kkkkkkkkkkk...",
+    "..gggggggggggg..",
+    "................"
+   ],
+   "less": [
+    "................",
+    "................",
+    "..kkkkkk.kkkkkk.",
+    ".kbwwwwwkwwwwwbk",
+    ".kbwsssskssswwbk",
+    ".kbwwwwwkwwwwwbk",
+    ".kbwssswkssssbbk",
+    ".kbwwwwwkwwwwwbk",
+    ".kbwsssskssswwbk",
+    ".kbwwwwwkwwwwwbk",
+    ".kbbbbbbkbbbbbbk",
+    "..kkkkkkkkkkkkk.",
+    "........y.......",
+    ".......yyy......",
+    "..gggggggggggg..",
+    "................"
+   ],
+   "head": [
+    "................",
+    "..kkkkkkkkkkk...",
+    ".kynnnnnnnnnyk..",
+    "..kkyyyyyyyyk...",
+    "...kykkkkkyyk...",
+    "...kyyyyyyyyk...",
+    "...kykkkkkkyk...",
+    "...kyyyyyyyyk...",
+    "...kkkkkkkkkk...",
+    "...s.s.s.s.s....",
+    "................",
+    "...s.s.s.s.s....",
+    "................",
+    "................",
+    "..gggggggggggg..",
+    "................"
+   ],
+   "grep": [
+    "................",
+    "....kkkkk.......",
+    "...kbbbbbk......",
+    "..kbwwbbbbk.....",
+    "..kbwbbbbbk.....",
+    "..kbbbbbbbk.....",
+    "..kbbbbbbbk.....",
+    "..kbbbbbbbk.....",
+    "...kbbbbbk......",
+    "....kkkkkNk.....",
+    ".........kNk....",
+    "..........kNk...",
+    "...........kNk..",
+    "............kk..",
+    "..gggggggggggg..",
+    "................"
+   ],
+   "find": [
+    "................",
+    ".....kkkkkk.....",
+    "....kyyyyyyk....",
+    "...kyywwwwyyk...",
+    "..kyywwrwwwyyk..",
+    "..kywwwrrwwwyk..",
+    "..kywwwrrwwwyk..",
+    "..kywwwkkwwwyk..",
+    "..kywwwbbwwwyk..",
+    "..kywwwbwwwwyk..",
+    "..kyywwwwwwyyk..",
+    "...kyyyyyyyyk...",
+    "....kkkkkkkk....",
+    "................",
+    "..gggggggggggg..",
+    "................"
+   ],
+   "wc": [
+    "................",
+    "..kkkkkkkkkkkk..",
+    "..kSSSSSSSSSSk..",
+    "..kSkkkSkkkSSk..",
+    "..kSkgkSkgkSSk..",
+    "..kSkgkSkgkSSk..",
+    "..kSkkkSkkkSSk..",
+    "..kSSSSSSSSSSk..",
+    "..kkkkkkkkkkkk..",
+    "................",
+    "...sys.sys.sy...",
+    "................",
+    "................",
+    "................",
+    "..gggggggggggg..",
+    "................"
+   ],
+   "sort": [
+    "................",
+    "...kk...........",
+    "...kyk..........",
+    "...kk...........",
+    "...kkkk.........",
+    "...kooook.......",
+    "...kkkkk........",
+    "...kkkkkkk......",
+    "...kbbbbbbk.....",
+    "...kkkkkkkk.....",
+    "...kkkkkkkkkk...",
+    "...kppppppppppk.",
+    "...kkkkkkkkkkkk.",
+    "................",
+    "..gggggggggggg..",
+    "................"
+   ],
+   "tree": [
+    "................",
+    ".......kk.......",
+    "......kggk......",
+    ".......kk.......",
+    ".......g........",
+    "...ggggggggg....",
+    "...g...g...g....",
+    "..kk..kk..kk....",
+    ".kbbk.kyk.kok...",
+    "..kk..kk..kk....",
+    "...g.......g....",
+    "...ggg.....ggg..",
+    "....kk......kk..",
+    "...kpk.....kvk..",
+    "....kk......kk..",
+    "................"
+   ],
+   "rev": [
+    "................",
+    ".....kkkkkk.....",
+    "....kbbbbbbk....",
+    "...kbwbbbbbbk...",
+    "...kbwwbbbbbk...",
+    "...kbbwbbbbbk...",
+    "...kbbbbbbbbk...",
+    "...kbbbbbbwbk...",
+    "...kbbbbbwwbk...",
+    "....kbbbbbbk....",
+    ".....kkkkkk.....",
+    ".......kk.......",
+    "..y...kNNk...y..",
+    ".yy..kNNNNk..yy.",
+    "..y..kkkkkk..y..",
+    "................"
+   ],
+   "whoami": [
+    "................",
+    ".....kkkkkk.....",
+    "....kppppppk....",
+    "....kpkppkpk....",
+    "....kppppppk....",
+    "....kpkkkkpk....",
+    ".....kppppk.....",
+    "......kkkk......",
+    "...kkkkkkkkkk...",
+    "...kwwwwwwwwk...",
+    "...kwssssssswk..",
+    "...kwwwwwwwwk...",
+    "...kkkkkkkkkk...",
+    "................",
+    "..gggggggggggg..",
+    "................"
+   ],
+   "date": [
+    "................",
+    ".....kkkkkk.....",
+    "....kwwwwwwk....",
+    "...kwwwkwwwwk...",
+    "..kwwwwkwwwwwk..",
+    "..kwwwwkwwwwwk..",
+    "..kwwwwkkkkwwk..",
+    "..kwwwwwwwwwwk..",
+    "..kwwwwwwwwwwk..",
+    "...kwwwwwwwwk...",
+    "....kwwwwwwk....",
+    ".....kkkkkk.....",
+    "....kk....kk....",
+    "................",
+    "..gggggggggggg..",
+    "................"
+   ],
+   "chmod": [
+    "................",
+    "......kkkk......",
+    ".....kSSSSk.....",
+    "....kSk..kSk....",
+    "....kSk..kSk....",
+    "...kkkkkkkkkk...",
+    "...kyyyyyyyyk...",
+    "...kyyykkyyyk...",
+    "...kyyykkyyyk...",
+    "...kyyyykyyyk...",
+    "...kyyyyyyyyk...",
+    "...kkkkkkkkkk...",
+    "................",
+    "................",
+    "..gggggggggggg..",
+    "................"
+   ]
+  }
+ }
+}

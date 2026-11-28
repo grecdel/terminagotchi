@@ -1,0 +1,132 @@
+{
+ "_doc": [
+  "Les noms donnés à l'œuf avec echo (intro.nom_echo sur PC, Intro.nomEcho sur Android) : ligne tapée → nom (null : pas un nom, l'œuf demande « Et mon nom ? »).",
+  "Vecteurs communs : pc/outils/test_intro.py et tests/jvm/Intro.kt les vérifient tous les deux."
+ ],
+ "cas": [
+  {
+   "ligne": "echo Noisette",
+   "nom": "Noisette"
+  },
+  {
+   "ligne": "echo noisette",
+   "nom": "Noisette"
+  },
+  {
+   "ligne": "echo",
+   "nom": null
+  },
+  {
+   "ligne": "echo   ",
+   "nom": null
+  },
+  {
+   "ligne": "echo bonjour",
+   "nom": null
+  },
+  {
+   "ligne": "Echo Bonjour",
+   "nom": null
+  },
+  {
+   "ligne": "echo Bonjour Pixel",
+   "nom": "Pixel"
+  },
+  {
+   "ligne": "echo \"Pixou\"",
+   "nom": "Pixou"
+  },
+  {
+   "ligne": "echo 'Mon œuf'",
+   "nom": "Mon œuf"
+  },
+  {
+   "ligne": "echo $HOME",
+   "nom": null
+  },
+  {
+   "ligne": "echo Zoé > nom.txt",
+   "nom": null
+  },
+  {
+   "ligne": "echo -n",
+   "nom": null
+  },
+  {
+   "ligne": "echo -n Plume",
+   "nom": "Plume"
+  },
+  {
+   "ligne": "echo un deux trois quatre",
+   "nom": null
+  },
+  {
+   "ligne": "Write-Output Zoé",
+   "nom": "Zoé"
+  },
+  {
+   "ligne": "write-output",
+   "nom": null
+  },
+  {
+   "ligne": "echo 42",
+   "nom": null
+  },
+  {
+   "ligne": "echo a",
+   "nom": null
+  },
+  {
+   "ligne": "echo noisette!",
+   "nom": "Noisette!"
+  },
+  {
+   "ligne": "echo Hello",
+   "nom": null
+  },
+  {
+   "ligne": "echo привет",
+   "nom": null
+  },
+  {
+   "ligne": "echo Пушок",
+   "nom": "Пушок"
+  },
+  {
+   "ligne": "echo 小龙",
+   "nom": "小龙"
+  },
+  {
+   "ligne": "echo こんにちは",
+   "nom": null
+  },
+  {
+   "ligne": "echo émeraude",
+   "nom": "Émeraude"
+  },
+  {
+   "ligne": "echo Un-Deux",
+   "nom": "Un-Deux"
+  },
+  {
+   "ligne": "echo Abracadabrantesquement",
+   "nom": "Abracadabrantesq"
+  },
+  {
+   "ligne": "echo nom",
+   "nom": null
+  },
+  {
+   "ligne": "echo bonjour !",
+   "nom": null
+  },
+  {
+   "ligne": "echo hola amigo",
+   "nom": "Amigo"
+  },
+  {
+   "ligne": "echo ls",
+   "nom": "Ls"
+  }
+ ]
+}

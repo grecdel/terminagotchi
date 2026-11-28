@@ -1,0 +1,306 @@
+{
+ "commentaire": "Séances guidées d'une heure (idée 54, docs/classe/seances_guidees.md) : le déroulé que lisent `tg classe seance N` et l'écran projecteur `tg classe tableau`. Textes : clés seance.N.* des langues (14 langues). Phases : [genre, minutes, commande montrée au tableau (facultatif), clé du nom (facultatif)]. Copié dans pc/tg/ et app/src/main/assets/ (pc/outils/test_classe.py vérifie les copies).",
+ "genres": [
+  "lancement",
+  "jeu",
+  "commun",
+  "trace",
+  "bilan"
+ ],
+ "seances": [
+  {
+   "n": 1,
+   "code": "01-GS-B",
+   "phases": [
+    [
+     "lancement",
+     5
+    ],
+    [
+     "jeu",
+     10,
+     "pwd",
+     "seance.1.p2"
+    ],
+    [
+     "jeu",
+     15,
+     "cd ..",
+     "seance.1.p3"
+    ],
+    [
+     "jeu",
+     5,
+     "cd /",
+     "seance.1.p4"
+    ],
+    [
+     "commun",
+     12
+    ],
+    [
+     "trace",
+     5
+    ],
+    [
+     "bilan",
+     3
+    ]
+   ]
+  },
+  {
+   "n": 2,
+   "code": "02-GS-D",
+   "phases": [
+    [
+     "lancement",
+     5
+    ],
+    [
+     "jeu",
+     15,
+     "mkdir nid",
+     "seance.2.p2"
+    ],
+    [
+     "jeu",
+     15,
+     "ls -a",
+     "seance.2.p3"
+    ],
+    [
+     "commun",
+     12
+    ],
+    [
+     "trace",
+     5
+    ],
+    [
+     "bilan",
+     3
+    ]
+   ]
+  },
+  {
+   "n": 3,
+   "code": "03-GS-F",
+   "phases": [
+    [
+     "lancement",
+     5
+    ],
+    [
+     "jeu",
+     30,
+     "ls -R"
+    ],
+    [
+     "commun",
+     12
+    ],
+    [
+     "trace",
+     5
+    ],
+    [
+     "bilan",
+     3
+    ]
+   ]
+  },
+  {
+   "n": 4,
+   "code": "04-GS-H",
+   "phases": [
+    [
+     "lancement",
+     5
+    ],
+    [
+     "jeu",
+     30,
+     "ls -l"
+    ],
+    [
+     "commun",
+     12
+    ],
+    [
+     "trace",
+     5
+    ],
+    [
+     "bilan",
+     3
+    ]
+   ]
+  },
+  {
+   "n": 5,
+   "code": "05-GS-K",
+   "phases": [
+    [
+     "lancement",
+     5
+    ],
+    [
+     "jeu",
+     12,
+     "find . -name \"*livre*\"",
+     "seance.5.p2"
+    ],
+    [
+     "jeu",
+     18,
+     "cat livre.txt | grep Abyssor",
+     "seance.5.p3"
+    ],
+    [
+     "commun",
+     12
+    ],
+    [
+     "trace",
+     5
+    ],
+    [
+     "bilan",
+     3
+    ]
+   ]
+  },
+  {
+   "n": 6,
+   "code": "06-GS-N",
+   "phases": [
+    [
+     "lancement",
+     5
+    ],
+    [
+     "jeu",
+     30,
+     "du -sh *"
+    ],
+    [
+     "commun",
+     12
+    ],
+    [
+     "trace",
+     5
+    ],
+    [
+     "bilan",
+     3
+    ]
+   ]
+  },
+  {
+   "n": 7,
+   "code": "07-GS-Q",
+   "phases": [
+    [
+     "lancement",
+     5
+    ],
+    [
+     "jeu",
+     30,
+     "sleep 300 &"
+    ],
+    [
+     "commun",
+     12
+    ],
+    [
+     "trace",
+     5
+    ],
+    [
+     "bilan",
+     3
+    ]
+   ]
+  },
+  {
+   "n": 8,
+   "code": "08-GS-S",
+   "phases": [
+    [
+     "lancement",
+     5
+    ],
+    [
+     "jeu",
+     30,
+     "sh recette.sh"
+    ],
+    [
+     "commun",
+     12
+    ],
+    [
+     "trace",
+     5
+    ],
+    [
+     "bilan",
+     3
+    ]
+   ]
+  },
+  {
+   "n": 9,
+   "code": "09-GS-U",
+   "phases": [
+    [
+     "lancement",
+     5
+    ],
+    [
+     "jeu",
+     30,
+     "ping -c 3 example.com"
+    ],
+    [
+     "commun",
+     12
+    ],
+    [
+     "trace",
+     5
+    ],
+    [
+     "bilan",
+     3
+    ]
+   ]
+  },
+  {
+   "n": 10,
+   "code": "10-AGS-E",
+   "phases": [
+    [
+     "lancement",
+     5
+    ],
+    [
+     "jeu",
+     35,
+     "",
+     "seance.10.p2"
+    ],
+    [
+     "commun",
+     10
+    ],
+    [
+     "bilan",
+     5
+    ]
+   ]
+  }
+ ]
+}

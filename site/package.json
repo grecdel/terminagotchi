@@ -1,1 +1,1 @@
-{"name":"terminagotchi-site","private":true,"type":"module","scripts":{"test":"node --no-warnings test/test.mjs"}}
+{"name":"terminagotchi-site","private":true,"type":"module","scripts":{"test":"node --no-warnings test/tirage.mjs && node --no-warnings test/test.mjs"}}

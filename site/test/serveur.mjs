@@ -23,7 +23,7 @@ const demo = [["Grec", "Pixel", 1250, "Agilité"], ["Lina", "Octave", 640, "Inte
 for (const [pseudo, nom, xp, forme] of demo) {
   const { cle } = await appel("POST", "/api/inscription", { pseudo, appareil: "android" });
   await appel("POST", "/api/sync", { appareil: "android", deltas: { xp, total: Math.round(xp / 3), stats: { [forme || "Endurance"]: Math.round(xp / 20), Endurance: 8 } },
-    vus: ["ls", "cd", "pwd", "mkdir"], skills: ["Boussole", "Bâtisseur", "Inspecteur"], collection: { Runodrake: 2, Torsillon: 1 },
+    vus: ["ls", "cd", "pwd", "mkdir"], skills: ["Boussole", "Bâtisseur", "Inspecteur"], collection: { Glitchou: 2, Kernelou: 1 },
     valeurs: { nom, nomDate: 1, trait: "curieux", forme } }, cle);
   {
     const B = (await import("../src/bestiaire.js")).default;

@@ -1,0 +1,63 @@
+name: Windows (le jeu démarre)
+
+on:
+  push:
+    branches: [nouveau-bestiaire]
+    paths: ["pc/**", ".github/workflows/windows.yml"]
+  workflow_dispatch:
+
+jobs:
+  windows:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Tous les modules du jeu s'importent sous Windows
+        shell: pwsh
+        run: |
+          $env:PYTHONUTF8 = "1"
+          python -c "import pkgutil, importlib, sys; sys.path.insert(0, 'pc'); import tg; [importlib.import_module('tg.' + m.name) for m in pkgutil.iter_modules(tg.__path__) if m.name != '__main__']; print('ok')"
+      - name: L'écran d'introduction se dessine (sans termios)
+        shell: pwsh
+        run: |
+          $env:PYTHONUTF8 = "1"
+          python -c "import sys; sys.path.insert(0, 'pc'); from tg import scenes; print(scenes.interroger()); print(scenes.capacites())"
+      - name: Le terminal du jeu (plus de PowerShell), le filet des cmdlets
+        shell: pwsh
+        run: |
+          $env:PYTHONUTF8 = "1"
+          python pc/outils/test_windows.py
+      - name: Les sons sous Windows (mêmes échantillons qu'ailleurs, winmm par ctypes ou le silence, jamais d'erreur)
+        shell: pwsh
+        run: |
+          $env:PYTHONUTF8 = "1"
+          python pc/outils/test_sons.py
+      - name: Le Linux virtuel du terminal du jeu sur les vrais fichiers de Windows, son petit git contre le vrai git, les garde-fous de python3 et curl
+        shell: pwsh
+        run: |
+          $env:PYTHONUTF8 = "1"
+          python pc/outils/test_terminal.py --windows --git --garde
+
+  # Décision du 2 novembre : sous Windows, le jeu ouvre son propre terminal Linux (pc/tg/vsh/, un petit shell POSIX
+  # écrit en Python, sans aucun programme extérieur). Ici, sur une VRAIE machine Windows, l'histoire entière est jouée
+  # comme par un enfant dans ce terminal (pc/outils/rejeu_bash.py --terminal-du-jeu) : le tronc commun (pwd, ls, cd,
+  # mkdir, chmod 444, ./miam.sh, alias, git du carnet…), puis chaque monde (la Citadelle et ses fichiers, la Crypte,
+  # l'Atelier et son défi `for i in $(seq 20); do sh cerveau.sh; atelier pas; done`, le Sommet…), les étapes dont
+  # l'outil manque (réseau, gcc, gpg…) étant racontées. Le jeu juge chaque étape et la créature mange chaque commande ;
+  # à la fin, rien n'a été écrit hors du terrain.
+  histoire-terminal-du-jeu:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: L'histoire jouée dans le terminal du jeu (Windows)
+        shell: pwsh
+        run: |
+          $env:PYTHONUTF8 = "1"
+          $env:LANG = "fr_FR.UTF-8"
+          $env:TG_REJEU_BAVARD = "1"
+          python pc/outils/rejeu_bash.py --terminal-du-jeu

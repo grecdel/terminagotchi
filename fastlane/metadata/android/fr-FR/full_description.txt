@@ -1,0 +1,13 @@
+<p><b>Terminagotchi</b> est un petit compagnon qui se nourrit de <b>vraies commandes de terminal</b>. Chaque commande tapée (<i>ls</i>, <i>cd</i>, <i>mkdir</i>, <i>grep</i>, les tubes <i>|</i>…) le nourrit, le fait grandir et ouvre de nouveaux mondes.</p>
+<p>Pour les enfants <b>dès 7 ans</b>, et pour les grands qui veulent enfin comprendre la ligne de commande.</p>
+<ul>
+<li>Un vrai terminal dans l'appli, sur un terrain de jeu à part : rien ne sort de ce dossier.</li>
+<li>Des leçons guidées, des mondes à explorer, une collection de créatures en pixel art.</li>
+<li>Jamais punitif : pas de série à perdre, pas de minuteur imposé.</li>
+<li>Aucun achat, aucune publicité, aucun traqueur.</li>
+<li>14 langues.</li>
+<li>Le même jeu existe sur PC (Linux, macOS, Windows).</li>
+</ul>
+<p><b>Internet</b> ne sert que si un adulte crée un compte du jeu, pour retrouver la même créature sur le PC et le téléphone (seul un pseudo est envoyé, au serveur libre du projet). Sans compte, tout reste sur le téléphone.</p>
+<p><b>Autorisations</b> : notifications (la créature a faim), affichage par-dessus les autres applis (seulement si l'on demande la « bulle »), vibration.</p>
+<p>Code libre (GPL-3.0 ou plus récente), dessins et textes sous CC BY-NC-SA 4.0.</p>

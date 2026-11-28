@@ -18,6 +18,7 @@ object Doom {
         ################
     """.trimIndent() + "\n"
 
+    // les noms des réglages et des couleurs sont du code (comme des commandes) : ils restent en français
     val REGLAGES_DEFAUT = """
         # Réglages du jeu : change une valeur, enregistre, puis relance « doom ».
         # Ce sont des VARIABLES : un nom = une valeur.
@@ -31,7 +32,7 @@ object Doom {
         # couleurs possibles : rouge, orange, jaune, vert, bleu, violet, rose, gris, noir, blanc, brique, pierre
     """.trimIndent() + "\n"
 
-    val LEGENDE = "# = mur · C = départ · B = bestiole · X = sortie · . = vide"
+    fun legende() = t("doom.legende")
 
     fun dossier(jeu: Jeu) = File(jeu.terrain, "jeu")
 
@@ -43,8 +44,8 @@ object Doom {
         val reg = File(d, "reglages.txt")
         if (!reg.exists()) reg.writeText(REGLAGES_DEFAUT)
         val lis = File(d, "LISEZMOI.txt")
-        if (!lis.exists()) lis.writeText("🎮 L'atelier du jeu\n$LEGENDE\n" +
-            "Modifier le niveau :  edite carte.txt\nModifier les réglages :  edite reglages.txt\nJouer :  doom\n")
+        if (!lis.exists()) lis.writeText(t("doom.lisezmoi",
+            "legende" to legende()) + "\n")
         return d
     }
 

@@ -3,6 +3,7 @@
 import { DatabaseSync } from "node:sqlite";
 import { readFileSync } from "node:fs";
 import worker from "../src/worker.js";
+import { glitchDe, GARDIENS } from "../src/tirage.js";
 
 function faireD1() {
   const db = new DatabaseSync(":memory:");
@@ -20,7 +21,9 @@ function faireD1() {
   return { prepare: preparer };
 }
 
-const env = { DB: faireD1() };
+// valeur FACTICE : le vrai secret se règle avec `wrangler secret put SECRET_GRAINES`, jamais dans le dépôt
+const SECRET_FACTICE = "secret-factice-des-tests";
+const env = { DB: faireD1(), SECRET_GRAINES: SECRET_FACTICE };
 const ORIGINE = "https://terminagotchi.exemple.workers.dev";
 let ok = 0;
 let ko = 0;
@@ -65,14 +68,14 @@ console.log("Synchro et fusion");
 r = await appel("POST", "/api/sync", { cle: cleTel, corps: {
   appareil: "android",
   deltas: { xp: 120, total: 30, stats: { Endurance: 12, "Agilité": 4 } },
-  vus: ["ls", "cd", "pwd"], skills: ["Boussole"], collection: { Runodrake: 1 }, records: { pwd: 4.2 },
+  vus: ["ls", "cd", "pwd"], skills: ["Boussole"], collection: { Glitchou: 1 }, records: { pwd: 4.2 },
   valeurs: { nom: "Pixel", nomDate: 1000, trait: "curieux", faim: 70, faimDate: 1000 },
 } });
 verifier(r.j.etat.xp === 120 && r.j.etat.nom === "Pixel", "1re synchro du téléphone");
 r = await appel("POST", "/api/sync", { cle: clePc, corps: {
   appareil: "pc",
   deltas: { xp: 80, total: 20, stats: { Intelligence: 9 } },
-  vus: ["git", "ls"], skills: ["Archiviste"], collection: { Runodrake: 0, Osselet: 2 }, records: { pwd: 3.1, ls: 2 },
+  vus: ["git", "ls"], skills: ["Archiviste"], collection: { Glitchou: 0, Octobit: 2 }, records: { pwd: 3.1, ls: 2 },
   valeurs: { nom: "AutreNom", nomDate: 500, trait: "farceur", faim: 90, faimDate: 2000 },
 } });
 const e = r.j.etat;
@@ -80,15 +83,11 @@ const badgesPc = r.j.badges;
 verifier(e.xp === 200, "XP additionnée des deux appareils (200)");
 verifier(e.stats.Endurance === 12 && e.stats.Intelligence === 9, "stats additionnées");
 verifier(["ls", "cd", "pwd", "git"].every((x) => e.vus.includes(x)) && e.vus.length === 4, "commandes goûtées : union");
-verifier(e.collection.Runodrake === 1 && e.collection.Osselet === 2, "collection : maximum par espèce");
+verifier(e.collection.Glitchou === 1 && e.collection.Octobit === 2, "collection : maximum par espèce");
 verifier(e.records.pwd === 3.1 && e.records.ls === 2, "records : meilleur temps");
 verifier(e.nom === "Pixel", "nom : un appareil relié n'écrase pas le nom du compte");
 r = await appel("POST", "/api/sync", { cle: clePc, corps: { appareil: "pc", valeurs: { nom: "Pixou", nomDate: 3000 } } });
 verifier(r.j.etat.nom === "Pixou", "nom : un renommage plus récent gagne");
-r = await appel("POST", "/api/sync", { cle: clePc, corps: { appareil: "pc", valeurs: { oeuf: "ciel", familier: "nebuline" } } });
-verifier(r.j.etat.oeuf === "ciel" && r.j.etat.familier === "nebuline", "œuf et espèce de la créature enregistrés");
-r = await appel("POST", "/api/sync", { cle: cleTel, corps: { appareil: "android", valeurs: { oeuf: "feu", familier: "braisillon" } } });
-verifier(r.j.etat.oeuf === "ciel" && r.j.etat.familier === "nebuline", "œuf et espèce : le premier appareil les fixe pour tous");
 await appel("POST", "/api/sync", { cle: cleTel, corps: { appareil: "android", valeurs: { nom: "Pixel", nomDate: 4000 } } });
 verifier(e.trait === "curieux", "caractère : le premier reste");
 verifier(e.faim === 90, "faim : la valeur la plus récente");
@@ -153,10 +152,10 @@ r = await appel("GET", "/joueur/Grec");
 verifier(!r.t.includes("<img src=x") && r.t.includes("&lt;img"), "le nom est échappé (pas d'injection HTML)");
 
 console.log("Bestiaire et galerie des captures");
-const capt = (id, extra = {}) => ({ id, espece: "Runodrake", shiny: false, date: 1700000000000, marque: "une étoile sur le front",
+const capt = (id, extra = {}) => ({ id, espece: "Glitchou", shiny: false, date: 1700000000000, marque: "une étoile sur le front",
   humeur: "joyeuse", taille: 7.5, potentiel: 77, stats: { PV: 40, ATK: 41, DEF: 30, VIT: 35, INT: 33 }, zone: "faille", ...extra });
 r = await appel("POST", "/api/sync", { cle: cleTel, corps: { appareil: "android", captures: [
-  capt("aaaaaa0001"), capt("aaaaaa0002", { shiny: true, espece: "Ricanos" }), capt("aaaaaa0001"),
+  capt("aaaaaa0001"), capt("aaaaaa0002", { shiny: true, espece: "Rootkitsune" }), capt("aaaaaa0001"),
   capt("bbbbbb0001", { marque: "<script>alert(1)</script>" }), capt("bbbbbb0002", { espece: "Inconnu" }),
 ], partage: { actif: false, date: 10 } } });
 verifier(r.j.etat.captures.length === 2, "captures : doublons et captures invalides refusés (2 gardées)");
@@ -166,58 +165,625 @@ r = await appel("POST", "/api/sync", { cle: clePc, corps: { appareil: "pc", part
 verifier(r.j.etat.partage.actif === true, "accord de partage enregistré");
 r = await appel("GET", "/captures");
 verifier(r.t.includes("une étoile sur le front") && r.t.includes("Ricanos") && r.t.includes("class=\"rgb\""), "galerie : captures visibles, écriture RGB");
-r = await appel("GET", "/captures");
-verifier(/\d+\/100/.test(r.t) && r.t.includes("épique"), "galerie : rareté propre à chaque individu (note sur 100)");
-r = await appel("GET", "/captures?rarete=mythique");
-verifier(!r.t.includes("une étoile sur le front"), "galerie : filtre par rareté d'individu");
+verifier(r.t.includes("/portraits/runodrake/classique_enfant.webp"), "galerie : une ancienne capture (Glitchou) devient la nouvelle espèce de même numéro (Runodrake), en portrait");
 r = await appel("GET", "/captures?shiny=1");
-verifier(r.t.includes("Ricanos") && !r.t.includes(">Runodrake<"), "galerie : filtre shiny");
+verifier(r.t.includes("Ricanos") && !r.t.includes("Runodrake"), "galerie : filtre shiny");
 r = await appel("POST", "/api/sync", { cle: cleTel, corps: { appareil: "android", partage: { actif: false, date: 5 } } });
 verifier(r.j.etat.partage.actif === true, "un vieux réglage de partage n'écrase pas le plus récent");
 r = await appel("GET", "/bestiaire");
 verifier(r.statut === 200 && (r.t.match(/class="bestiole"/g) || []).length === 150, "glossaire : 150 espèces");
-verifier(!r.t.includes("✨"), "glossaire classique : aucune variante shiny");
+verifier(!r.t.includes("hue-rotate") && (r.t.match(/_adulte\.webp/g) || []).length === 150, "glossaire : 150 portraits classiques adultes, aucune variante shiny");
 r = await appel("GET", "/bestiaire?rarete=l%C3%A9gendaire");
 verifier((r.t.match(/class="bestiole"/g) || []).length === 10, "glossaire : filtre des 10 légendaires");
-r = await appel("GET", "/bestiaire/runodrake");
-verifier(r.statut === 200 && r.t.includes("Runodrake") && r.t.includes("terrain_terminagotchi/ruines"), "fiche d'espèce");
-r = await appel("POST", "/api/sync", { cle: cleTel, corps: { appareil: "android", collection: { Papyrou: 3 },
-  captures: [capt("cccccc0001", { espece: "Glitchou" })] } });
-verifier(r.j.etat.collection.Braisillon === 3 && r.j.etat.captures.some((c) => c.id === "cccccc0001" && c.espece === "Runodrake"),
-  "ancien bestiaire : les vieux noms sont convertis");
+r = await appel("GET", "/bestiaire/braisillon");
+verifier(r.statut === 200 && r.t.includes("Braisillon") && r.t.includes("terrain_terminagotchi/volcan"), "fiche d'espèce");
+verifier(["bebe", "enfant", "ado", "adulte", "ancien"].every((s) => r.t.includes(`/portraits/braisillon/classique_${s}.webp`)), "fiche : les 5 stades en portrait");
+verifier(r.t.includes("/portraits/braisillon/lave_adulte.webp") && r.t.includes("Démons") && r.t.includes("environ 1 apparition sur"), "fiche : variantes dessinées, famille, fréquence");
+r = await appel("GET", "/bestiaire/gargouflamme");
+// toutes les variantes sont dessinées depuis le 30 octobre : la fiche les montre toutes, sans mention « pas encore dessinée »
+verifier(!r.t.includes("pas encore dessinée") && r.t.includes("/portraits/gargouflamme/montagne_"), "fiche : toutes les variantes sont dessinées");
 r = await appel("GET", "/bestiaire/zzz");
 verifier(r.statut === 404, "espèce inconnue : 404");
 r = await appel("GET", "/joueur/Grec");
 verifier(r.t.includes("/bestiaire/runodrake") && r.t.includes("Voir ses captures uniques"), "profil : collection dessinée + lien vers ses captures");
 
-console.log("Mode classe");
-r = await appel("POST", "/api/classe", { corps: { nom: "CM2 B" } });
-verifier(r.statut === 200 && /^[A-Z0-9]{6}$/.test(r.j.code) && r.j.lien.includes("?cle="), "classe créée : code + lien du professeur");
-const classe = r.j;
-r = await appel("POST", "/api/sync", { cle: cleTel, corps: { appareil: "android", valeurs: { classe: "ZZZZZZ" } } });
-verifier(r.statut === 200 && r.j.classe_refusee === true && !r.j.etat.classe, "code de classe inconnu refusé (le reste de la synchro passe)");
-r = await appel("POST", "/api/sync", { cle: cleTel, corps: { appareil: "android", valeurs: { classe: classe.code } } });
-verifier(r.j.etat.classe === classe.code, "l'élève rejoint la classe");
-r = await appel("GET", classe.lien);
-verifier(r.statut === 200 && r.t.includes("CM2 B") && r.t.includes("/joueur/Grec"), "tableau de bord du professeur : l'élève y figure");
-r = await appel("GET", `/classe/${classe.code}`);
-verifier(r.statut === 403 && !r.t.includes("/joueur/Grec"), "sans la clé du professeur : pas de tableau");
-r = await appel("POST", "/api/sync", { cle: cleTel, corps: { appareil: "android", valeurs: { classe: "" } } });
-r = await appel("GET", classe.lien);
-verifier(!r.t.includes("/joueur/Grec"), "l'élève peut quitter la classe");
-r = await appel("GET", "/classe");
-verifier(r.statut === 200 && r.t.includes("fiches de séance"), "page d'accueil du mode classe");
-
-console.log("Langues du site");
+console.log("Langues de l'interface");
+const { LANGUES, NOMS_LANGUES, DICTIONNAIRES, depuisAcceptLanguage } = await import("../src/i18n.js");
+verifier(LANGUES.length === 14, "14 langues : " + LANGUES.join(" "));
+const langDe = (t) => t.match(/<html lang="([a-z]+)" dir="(ltr|rtl)">/)?.slice(1).join("/");
+r = await appel("GET", "/");
+verifier(langDe(r.t) === "fr/ltr" && !r.h.get("set-cookie"), "par défaut : français, sans cookie");
+verifier(r.h.get("content-type") === "text/html; charset=utf-8" && r.t.includes('<meta charset="utf-8">'), "UTF-8 annoncé (en-tête + meta)");
+r = await appel("GET", "/?lang=en");
+verifier(langDe(r.t) === "en/ltr" && r.t.includes("Leaderboard"), "?lang=en : page en anglais");
+verifier(/^lang=en; Path=\/;/.test(r.h.get("set-cookie") || ""), "?lang=en pose le cookie lang=en");
+r = await appel("GET", "/classement", { entetes: { cookie: "lang=de" } });
+verifier(langDe(r.t) === "de/ltr" && r.t.includes("Rangliste"), "cookie lang=de : allemand");
+r = await appel("GET", "/classement", { entetes: { "accept-language": "pt-BR,pt;q=0.9,en;q=0.8" } });
+verifier(langDe(r.t) === "pt/ltr", "Accept-Language pt-BR : portugais");
+r = await appel("GET", "/?lang=it", { entetes: { cookie: "lang=de", "accept-language": "es" } });
+verifier(langDe(r.t) === "it/ltr", "priorité : ?lang avant cookie avant Accept-Language");
+r = await appel("GET", "/", { entetes: { cookie: "lang=ja", "accept-language": "es" } });
+verifier(langDe(r.t) === "ja/ltr", "priorité : cookie avant Accept-Language");
+r = await appel("GET", "/?lang=zz", { entetes: { "accept-language": "xx,ru;q=0.5" } });
+verifier(langDe(r.t) === "ru/ltr" && !r.h.get("set-cookie"), "langue inconnue ignorée, puis Accept-Language");
+verifier(depuisAcceptLanguage("en;q=0,de;q=0.3") === "de" && depuisAcceptLanguage("") === null && depuisAcceptLanguage("zh-CN") === "zh",
+  "lecture d'Accept-Language (q=0 ignoré, région ignorée)");
+r = await appel("GET", "/?lang=ar");
+verifier(langDe(r.t) === "ar/rtl" && r.t.includes("الترتيب"), "arabe : dir=rtl");
+r = await appel("GET", "/?lang=ur");
+verifier(langDe(r.t) === "ur/rtl", "ourdou : dir=rtl");
+verifier(LANGUES.every((l) => r.t.includes(`<option value="${l}"`) && r.t.includes(NOMS_LANGUES[l])) && ["中文", "Русский", "日本語", "العربية", "हिन्दी", "বাংলা", "اردو"].every((n) => r.t.includes(n)),
+  "sélecteur : les 14 langues, chacune écrite dans sa langue");
 r = await appel("GET", "/bestiaire/braisillon?lang=en");
-verifier(r.t.includes('<html lang="en">') && r.t.includes("A little imp born from a fallen ember") && r.t.includes("Bestiary")
-  && (r.h.get("set-cookie") || "").includes("lang=en"), "site en anglais (?lang=en), choix retenu dans un cookie");
-r = await appel("GET", "/bestiaire/braisillon", { entetes: { cookie: "lang=en" } });
-verifier(r.t.includes("Bestiary") && r.t.includes("?lang=fr"), "le cookie garde l'anglais, lien pour revenir au français");
-r = await appel("GET", "/bestiaire/braisillon");
-verifier(r.t.includes("Petit diablotin") && r.t.includes("?lang=en"), "sans choix : français, avec un lien vers l'anglais");
-r = await appel("GET", "/api/classement", { entetes: { cookie: "lang=en" } });
-verifier(r.statut === 200 && r.j !== null, "l'API (JSON) n'est pas touchée par la traduction");
+verifier(r.t.includes("Braisillon") && r.t.includes("terrain_terminagotchi/volcan") && r.t.includes("Bestiary") && r.t.includes("volcano") && r.t.includes("Demons family"),
+  "fiche en anglais : interface traduite, habitat traduit, chemin inchangé");
+const braisillon = (await import("../src/bestiaire.js")).default.especes.find((e) => e.id === "braisillon");
+verifier(r.t.includes(braisillon.description.replace(/'/g, "&#39;")), "les descriptions des bestioles restent en français");
+r = await appel("GET", "/bestiaire?rarete=l%C3%A9gendaire&lang=es");
+verifier((r.t.match(/class="bestiole"/g) || []).length === 10 && r.t.includes("legendaria"), "filtres : valeurs françaises dans l'URL, libellés traduits");
+r = await appel("GET", "/joueur/Grec?lang=en");
+verifier(r.t.includes("Web hacker (full CTF)") && r.t.includes("Leaderboard"), "badges : titre traduit selon leur type");
+r = await appel("GET", "/ctf/Grec/1?lang=en");
+verifier(r.t.includes("Challenge 1") && !r.t.includes(r.h.get("x-drapeau")), "CTF en texte : traduit, drapeau toujours caché dans l'en-tête");
+r = await appel("POST", "/api/inscription", { corps: { pseudo: "x" }, entetes: { "accept-language": "en" } });
+verifier(r.j?.erreur?.startsWith("Le pseudo"), "l'API reste en français (lue par l'appli)");
+
+// cohérence des dictionnaires : mêmes clés, mêmes paramètres, mêmes balises HTML qu'en français
+const fr = DICTIONNAIRES.fr;
+const problemes = [];
+const balises = (s) => (s.match(/<\/?(code|b|a)(\s[^>]*)?>/g) || []).length;
+const comparer = (a, b, ch, l) => {
+  for (const [k, x] of Object.entries(a)) {
+    const y = b?.[k];
+    if (y === undefined) { if (!["fleches"].includes(k) && x !== null && !(typeof x === "object" && !Object.keys(x).length)) problemes.push(`${l} ${ch}${k} manque`); continue; }
+    if (typeof x === "function") { if (typeof y !== "function" || y.length !== x.length) problemes.push(`${l} ${ch}${k} paramètres`); }
+    else if (Array.isArray(x)) { if (!Array.isArray(y) || y.length !== x.length) problemes.push(`${l} ${ch}${k} longueur`); }
+    else if (x && typeof x === "object") comparer(x, y, ch + k + ".", l);
+    else if (typeof x === "string" && balises(x) !== balises(y)) problemes.push(`${l} ${ch}${k} balises`);
+  }
+};
+for (const l of LANGUES) if (l !== "fr") comparer(fr, DICTIONNAIRES[l], "", l);
+for (const l of LANGUES) if (l !== "fr") {
+  for (const t of ["stats", "statsB", "raretes", "familles", "habitats", "frequences", "humeurs", "formes", "stadesB", "court"]) {
+    for (const k of Object.keys(DICTIONNAIRES.en[t])) if (!DICTIONNAIRES[l][t]?.[k]) problemes.push(`${l} ${t}.${k} manque`);
+  }
+}
+verifier(problemes.length === 0, "dictionnaires cohérents" + (problemes.length ? " : " + problemes.slice(0, 5).join(", ") : ""));
+
+console.log("Anti-triche : graines et captures vérifiées");
+{
+  const { tirer } = await import("../src/tirage.js");
+  r = await appel("POST", "/api/sync", { cle: cleTel, corps: { appareil: "android" } });
+  const gr = r.j.graines || [];
+  verifier(gr.length === 8 && gr.every((g) => /^\d{4}-\d{2}-\d{2}\.[0-9a-f]{12}$/.test(g.id) && /^[0-9a-f]{64}$/.test(g.valeur)),
+    "la synchro donne 8 graines signées (hier → dans 6 jours)");
+  verifier(!r.t.includes(SECRET_FACTICE), "le secret n'apparaît jamais dans la réponse");
+  const auj = new Date().toISOString().slice(0, 10);
+  const g = gr.find((x) => x.id.startsWith(auj));
+  const r2 = await appel("POST", "/api/sync", { cle: clePc, corps: { appareil: "pc" } });
+  const gPc = r2.j.graines.find((x) => x.id.startsWith(auj));
+  verifier(gPc.id !== g.id && gPc.valeur !== g.valeur, "chaque appareil a sa propre graine");
+  const autre = await appel("POST", "/api/inscription", { corps: { pseudo: "Voisin", appareil: "pc" }, entetes: { "cf-connecting-ip": "10.9.8.7" } });
+  const gAutre = (await appel("POST", "/api/sync", { cle: autre.j.cle, corps: { appareil: "pc" } })).j.graines.find((x) => x.id.startsWith(auj));
+  const maintenant = Date.now();
+  const capt2 = (id, n, extra = {}, graine = g) => {
+    const t = tirer(graine.valeur, n).champs;
+    return { id, ...t, stats: { ...t.stats }, graine: graine.id, n, date: maintenant, zone: "volcan", ...extra };
+  };
+  const honnete = capt2("dddddd0001", 0);
+  const triche = capt2("dddddd0002", 1);
+  triche.stats.ATK += 9; triche.shiny = true; triche.rarete = "légendaire";
+  const ancienne = (() => { const t = tirer(g.valeur, 5).champs; return { id: "dddddd0003", ...t, date: maintenant, zone: "volcan" }; })();
+  r = await appel("POST", "/api/sync", { cle: cleTel, corps: { appareil: "android", captures: [
+    honnete, triche, capt2("dddddd0004", 0), capt2("dddddd0005", 999), capt2("dddddd0006", 2, {}, gAutre), ancienne,
+    capt2("dddddd0007", 3, { stade: "ancien" }), capt2("dddddd0008", 4, { stade: "ancien", date: maintenant - 3 * 3600_000 }),
+  ] } });
+  const par = Object.fromEntries(r.j.etat.captures.map((c) => [c.id, c]));
+  verifier(par.dddddd0001?.verifie === true && par.dddddd0001.stats.ATK === honnete.stats.ATK, "capture honnête : vérifiée");
+  verifier(par.dddddd0002?.verifie === false && par.dddddd0002.raison === "ne correspond pas au tirage", "stats gonflées / faux shiny : non vérifiée");
+  verifier(par.dddddd0004?.verifie === false && par.dddddd0004.raison === "graine déjà utilisée", "même (graine, compteur) une 2e fois : non vérifiée");
+  verifier(par.dddddd0005?.verifie === false && par.dddddd0005.raison === "graine ou compteur invalide", `compteur ≥ ${200} : non vérifiée`);
+  verifier(par.dddddd0006?.verifie === false && par.dddddd0006.raison === "graine d'un autre joueur", "graine d'un autre joueur : non vérifiée");
+  verifier(par.dddddd0003?.verifie === false && !par.dddddd0003.raison, "capture sans graine (ancienne sauvegarde) : gardée, non vérifiée");
+  const s7 = tirer(g.valeur, 3).champs.stade;
+  verifier(par.dddddd0007?.verifie === true && par.dddddd0007.stade === s7, `évolution instantanée refusée (reste ${s7})`);
+  verifier(par.dddddd0008?.stade === "ancien", "évolution en 3 h : acceptée");
+  r = await appel("POST", "/api/sync", { cle: cleTel, corps: { appareil: "android", captures: [{ ...honnete, stade: "ancien", stats: { ...honnete.stats, PV: 999 } }] } });
+  const h2 = r.j.etat.captures.find((c) => c.id === "dddddd0001");
+  verifier(h2.stats.PV === honnete.stats.PV && h2.stade === honnete.stade, "une capture vérifiée ne change ni de stats ni de stade trop vite");
+  // attirance : la commande d'une famille, tapée par l'enfant, rend cette famille plus probable
+  const captA = (id, n, attire) => {
+    const t = tirer(g.valeur, n, false, attire).champs;
+    return { id, ...t, stats: { ...t.stats }, graine: g.id, n, date: maintenant, zone: "volcan", attire };
+  };
+  let nFaux = 13;
+  while (tirer(g.valeur, nFaux).champs.espece === tirer(g.valeur, nFaux, false, "Constructs").champs.espece) nFaux++;
+  const menteur = { ...capt2("dddddd0013", nFaux), attire: "Constructs" };
+  r = await appel("POST", "/api/sync", { cle: cleTel, corps: { appareil: "android", captures: [
+    captA("dddddd0010", 10, "Constructs"), captA("dddddd0011", 11, "Démons"), menteur,
+  ] } });
+  let parA = Object.fromEntries(r.j.etat.captures.map((c) => [c.id, c]));
+  verifier(parA.dddddd0010?.verifie === true && parA.dddddd0010.attire === "Constructs", "attirance par git (déjà tapée) : vérifiée");
+  verifier(parA.dddddd0011?.verifie === false && parA.dddddd0011.raison === "attirance impossible", "attirance par chmod jamais tapée : non vérifiée");
+  verifier(parA.dddddd0013?.verifie === false && parA.dddddd0013.raison === "ne correspond pas au tirage", "attirance annoncée après coup : non vérifiée");
+  r = await appel("POST", "/api/sync", { cle: cleTel, corps: { appareil: "android", vus: ["chmod"], captures: [captA("dddddd0012", 12, "Démons")] } });
+  parA = Object.fromEntries(r.j.etat.captures.map((c) => [c.id, c]));
+  verifier(parA.dddddd0012?.verifie === true, "chmod envoyé avec la capture : attirance des Démons vérifiée");
+  r = await appel("GET", "/api/profil/Grec");
+  verifier(r.j.capturesVerifiees === 5, "profil : 5 captures vérifiées comptées à part");
+  r = await appel("GET", "/captures");
+  verifier(r.t.includes("✔ vérifiée") && r.t.includes("non vérifiée") && r.t.includes("/portraits/"), "galerie : vérifiées (✔) et non vérifiées affichées");
+  // le glitch (tirage 13, à part) : le serveur le refait ; « gardien » n'est accepté que pour l'espèce gardienne d'une boîte codée
+  const libres = [];
+  for (let n = 20; n < 200; n++) libres.push(n);
+  const nFauxG = libres.find((n) => !glitchDe(g.valeur, n));
+  const fauxGlitch = { ...capt2("dddddd0020", nFauxG), glitch: true };
+  const nG = libres.find((n) => n !== nFauxG && tirer(g.valeur, n).champs.espece !== "Ricanombre");
+  const fauxGardien = { ...capt2("dddddd0021", nG), gardien: "enumeration" };
+  const nR = libres.find((n) => tirer(g.valeur, n).champs.espece === GARDIENS.enumeration && n !== nFauxG && n !== nG);
+  const vraiGardien = nR !== undefined ? { ...capt2("dddddd0022", nR), gardien: "enumeration", ...(glitchDe(g.valeur, nR, true) && { glitch: true }) } : null;
+  const nV = libres.find((n) => ![nFauxG, nG, nR].includes(n) && glitchDe(g.valeur, n));
+  const vraiGlitch = nV !== undefined ? { ...capt2("dddddd0023", nV), glitch: true } : null;
+  const brut = { ...capt2("dddddd0024", 0), id: "dddddd0024", graine: undefined, n: undefined, glitch: true };
+  r = await appel("POST", "/api/sync", { cle: cleTel, corps: { appareil: "android", collection: { [brut.espece]: 1 }, captures: [fauxGlitch, fauxGardien, brut,
+    ...(vraiGardien ? [vraiGardien] : []), ...(vraiGlitch ? [vraiGlitch] : [])] } });
+  const parG = Object.fromEntries(r.j.etat.captures.map((c) => [c.id, c]));
+  verifier(parG.dddddd0020?.verifie === false && parG.dddddd0020.raison === "ne correspond pas au tirage", "faux glitch : non vérifié");
+  verifier(parG.dddddd0021?.verifie === false && parG.dddddd0021.raison === "gardien impossible", "« gardien » d'une autre espèce : non vérifié");
+  if (vraiGardien) verifier(parG.dddddd0022?.verifie === true && parG.dddddd0022.gardien === "enumeration" && (parG.dddddd0022.glitch === true) === (vraiGardien.glitch === true),
+    `le gardien Ricanombre (#${nR}) : vérifié, glitch ${vraiGardien.glitch === true} comme le serveur le refait`);
+  if (vraiGlitch) verifier(parG.dddddd0023?.verifie === true && parG.dddddd0023.glitch === true, `un vrai glitch (#${nV}) : vérifié`);
+  verifier(parG.dddddd0024?.verifie === false && parG.dddddd0024.glitch === true, "sans graine : gardé glitch, non vérifié");
+  r = await appel("GET", "/captures");
+  verifier(r.t.includes('data-glitch="dddddd0024"') && r.t.includes("<script>(()=>{") && r.t.includes("glitchnom") && r.t.includes(" ▚"),
+    "galerie : la bestiole glitch est redessinée par le script de l'effet, son nom porte ▚");
+  r = await appel("GET", "/joueur/Grec");
+  verifier(r.t.includes("data-glitch=") && r.t.includes("glitchnom"), "profil : l'espèce dont le joueur a un glitch est montrée glitch");
+  const sansSecret = { DB: env.DB };
+  const rs = await worker.fetch(new Request(ORIGINE + "/api/sync", { method: "POST", headers: { authorization: "Bearer " + cleTel },
+    body: JSON.stringify({ appareil: "android", captures: [capt2("dddddd0009", 7)] }) }), sansSecret);
+  const js = await rs.json();
+  verifier(js.graines.length === 0 && js.etat.captures.find((c) => c.id === "dddddd0009")?.verifie === false,
+    "sans SECRET_GRAINES : aucune graine, rien n'est vérifié");
+}
+
+console.log("Salle d'entraînement : exercices vérifiés, records, badges, Star de la semaine");
+{
+  const E = await import("../src/entrainement.js");
+  const auj = new Date().toISOString().slice(0, 10);
+  let r = await appel("POST", "/api/sync", { cle: cleTel, corps: { appareil: "android", vus: ["mkdir", "rm", "rmdir"] } });
+  const g = r.j.graines.find((x) => x.id.startsWith(auj));
+  // un enfant fait ses exercices l'un après l'autre (deux exercices vérifiés ne se chevauchent jamais)
+  const jour0 = Date.parse(auj + "T00:00:00Z");
+  let horloge = Math.max(jour0 + 60_000, Date.now() - 3 * 3_600_000);
+  const run = (id, type, n, t, extra = {}) => ({ id, type, g: g.id, n, t, d: (horloge += 90_000), e: E.empreinte(type, E.generer(type, g.valeur, n)), ...extra });
+  const runs = [
+    run("e00000000001", "bat_pieces", 0, 9.4),                                  // honnête (diamant : ≤ 15 s)
+    run("e00000000002", "bat_pieces", 1, 12, { e: "bat_pieces|pieces=cave,salon" }),   // empreinte inventée
+    run("e00000000003", "net_rm", 0, 30),                                       // même (graine, n) qu'un autre
+    run("e00000000004", "bat_pieces", 2, 0.5),                                  // trop rapide pour un enfant
+    run("e00000000005", "plo_tuyau", 3, 40),                                    // commandes jamais tapées (grep, wc)
+    { id: "e00000000006", type: "net_rmdir", g: "", n: 0, t: 18, d: Date.now(), e: "x" },   // sans graine (hors ligne)
+    run("e00000000007", "net_rmr", 4, 14),
+    run("e00000000008", "bat_pieces", 5, 11), run("e00000000009", "bat_pieces", 6, 13), run("e0000000000b", "bat_pieces", 7, 16),
+  ];
+  r = await appel("POST", "/api/sync", { cle: cleTel, corps: { appareil: "android", entrainement: {
+    deltas: { batisseur: { n: 4, diamant: 1, or: 1, bronze: 2 }, nettoyeur: { n: 3, argent: 3 } },
+    runs, records: { bat_pieces: { t: 9.4, g: g.id, n: 0 }, net_rmdir: { t: 18, g: "", n: 0 }, exp_cle: { t: 0.2 } },
+  } } });
+  const v = r.j.entrainement?.verdicts || {};
+  verifier(v.e00000000001 === true && v.e00000000007 === true, "exercices honnêtes : vérifiés");
+  verifier(v.e00000000002 === false, "empreinte inventée : non vérifié");
+  verifier(v.e00000000003 === false, "(graine, compteur) déjà utilisé : non vérifié");
+  verifier(v.e00000000004 === false, "temps impossible (0,5 s) : non vérifié");
+  verifier(v.e00000000005 === false, "commandes jamais tapées : non vérifié");
+  verifier(v.e00000000006 === false, "sans graine : gardé, non vérifié");
+  const ent = r.j.etat.entrainement;
+  verifier(ent.familles.batisseur.n === 4 && ent.familles.nettoyeur.n === 3, "les compteurs s'additionnent (badges de la partie)");
+  verifier(ent.records.bat_pieces.v === true && ent.records.bat_pieces.t === 9.4, "record vérifié par le tirage refait");
+  verifier(ent.records.net_rmdir.v === false && !ent.records.exp_cle, "record sans graine : « non vérifié » ; record impossible : refusé");
+  r = await appel("POST", "/api/sync", { cle: cleTel, corps: { appareil: "android", entrainement: { runs: [runs[0]], deltas: {} } } });
+  verifier(r.j.entrainement.verdicts.e00000000001 === true && r.j.etat.entrainement.familles.batisseur.n === 4,
+    "un exercice renvoyé deux fois n'est pas compté deux fois");
+  // anti-triche (la réponse se calcule depuis la graine : le serveur juge le temps, la date, le rythme)
+  const bots = [
+    run("e0000000000c", "exp_chemin", 8, 3.5),                                  // 3,5 s : passait avant (minimum 3 s), plus maintenant
+    run("e0000000000d", "lec_cat", 9, E.tempsMinimum("lec_cat")),               // pile le minimum plausible : vérifié
+    { ...run("e0000000000e", "dem_mv", 10, 12), d: horloge - 87_000 },         // commencé avant la fin du précédent
+    { ...run("e0000000000f", "dem_cp", 11, 12), d: jour0 - 3 * 86_400_000 },   // daté 3 jours avant sa graine
+    { ...run("e000000000a0", "net_rm", 12, 12), d: Date.now() + 86_400_000 },  // daté demain
+  ];
+  r = await appel("POST", "/api/sync", { cle: cleTel, corps: { appareil: "android", vus: ["mkdir", "rm", "rmdir", "cd", "cat", "mv", "cp"],
+    entrainement: { runs: bots, deltas: { explorateur: { n: 500, diamant: 500 } } } } });
+  const vb = r.j.entrainement?.verdicts || {};
+  const grs = r.j.graines;
+  verifier(vb.e0000000000c === false && E.tempsMinimum("exp_chemin") >= 5, `temps sous le minimum plausible du type (${E.tempsMinimum("exp_chemin")} s) : non vérifié`);
+  verifier(vb.e0000000000d === true, "au minimum plausible : vérifié");
+  verifier(vb.e0000000000e === false, "deux exercices en même temps : le second n'est pas vérifié");
+  verifier(vb.e0000000000f === false && vb.e000000000a0 === false, "date hors du jour de la graine (avant, ou dans le futur) : non vérifié");
+  verifier(r.j.etat.entrainement.verifies?.explorateur?.n === 0 && r.j.etat.entrainement.familles.explorateur.n === 500,
+    "compteurs envoyés par le jeu (500 💎) : gardés pour le jeu, jamais comptés comme vérifiés");
+  r = await appel("GET", "/api/profil/Grec");
+  verifier(!r.j.entrainement?.familles?.explorateur?.echelon && r.j.entrainement.familles.explorateur.nonVerifies === 500,
+    "profil : pas de grade Explorateur avec des compteurs non vérifiés (500 « non vérifiés » affichés à part)");
+  r = await appel("GET", "/joueur/Grec");
+  verifier(r.t.includes("pas encore vérifié"), "profil HTML : les exercices non vérifiés sont signalés");
+  const jj = await env.DB.prepare("SELECT id FROM joueurs WHERE pseudo = 'Grec'").first();
+  const demain = jour0 + 86_400_000 + 3_600_000;
+  for (let i = 0; i < E.MAX_VERIFIES_JOUR; i++) {
+    await env.DB.prepare("INSERT INTO exercices (id, joueur, partie, famille, type, temps, medaille, date, semaine, graine, n, verifie) VALUES (?, ?, '9', 'lecteur', 'lec_cat', 10, 'diamant', ?, ?, NULL, NULL, 1)")
+      .bind("f" + String(i).padStart(11, "0"), jj.id, demain + i * 20_000, E.semaine(demain)).run();
+  }
+  const gd = grs.find((x) => x.id.startsWith(new Date(demain).toISOString().slice(0, 10)));
+  const trop = { id: "e000000000a1", type: "lec_cat", g: gd.id, n: 0, t: 10, d: demain + 3_600_000, e: E.empreinte("lec_cat", E.generer("lec_cat", gd.valeur, 0)) };
+  const sauveNow = Date.now;
+  Date.now = () => demain + 3_700_000;
+  try {
+    r = await appel("POST", "/api/sync", { cle: cleTel, corps: { appareil: "android", entrainement: { runs: [trop] } } });
+  } finally {
+    Date.now = sauveNow;
+  }
+  // L'horloge avancée d'un jour a pu passer à la semaine suivante (le dimanche) : le site a alors attribué en avance
+  // les Stars de la semaine en cours. En vrai le temps ne recule jamais ; on efface ce que ce saut a laissé.
+  await env.DB.prepare("DELETE FROM titres_hebdo WHERE semaine = ?").bind(E.semaine()).run();
+  await env.DB.prepare("DELETE FROM config WHERE cle = 'hebdo'").run();
+  verifier(r.j.entrainement?.verdicts?.e000000000a1 === false, `plus de ${E.MAX_VERIFIES_JOUR} exercices vérifiés le même jour : non vérifié`);
+  await env.DB.prepare("DELETE FROM exercices WHERE partie = '9'").run();
+  // la semaine dernière : une Star par famille (calculée une fois, la semaine suivante)
+  const j = await env.DB.prepare("SELECT id FROM joueurs WHERE pseudo = 'Grec'").first();
+  const avant = Date.now() - 7 * 86_400_000;
+  await env.DB.prepare("INSERT INTO exercices (id, joueur, partie, famille, type, temps, medaille, date, semaine, graine, n, verifie) VALUES ('e0000000000a', ?, '1', 'lecteur', 'lec_cat', 11, 'diamant', ?, ?, NULL, NULL, 1)")
+    .bind(j.id, avant, E.semaine(avant)).run();
+  await env.DB.prepare("DELETE FROM config WHERE cle = 'hebdo'").run();
+  r = await appel("POST", "/api/sync", { cle: cleTel, corps: { appareil: "android" } });
+  verifier(r.j.entrainement.hebdo.semaine === E.semainePrecedente() && r.j.entrainement.hebdo.familles.includes("lecteur"),
+    "Star de la semaine (Lecteur) : portée cette semaine");
+  verifier(r.j.entrainement.compte.lecteur === 1, "le site compte combien de fois on l'a eue");
+  r = await appel("GET", "/records");
+  verifier(r.statut === 200 && r.t.includes("Records de la salle") && r.t.includes(">Grec<") && r.t.includes("9.4 s") && r.t.includes("💎"),
+    "/records : les temps vérifiés, avec leur médaille");
+  verifier(!r.t.includes("18.0 s") && r.t.includes("🏆") && r.t.includes("<svg class=\"badge-px\""), "/records : rien de non vérifié, Stars et badges en pixels");
+  r = await appel("GET", "/api/records");
+  verifier(r.j.records.bat_pieces?.[0]?.pseudo === "Grec" && r.j.stars.lecteur?.pseudo === "Grec", "/api/records (JSON)");
+  r = await appel("GET", "/joueur/Grec");
+  verifier(r.t.includes("Badges de la salle d&#39;entraînement") && r.t.includes("Bâtisseur") && r.t.includes("non vérifié") && r.t.includes("Star de la semaine en Lecteur : 1 fois"),
+    "profil : badges, records (vérifiés ou non) et Stars");
+  r = await appel("GET", "/api/profil/Grec");
+  verifier(r.j.entrainement?.familles?.batisseur?.echelon === "bit" && r.j.entrainement.familles.batisseur.etoiles === 3
+    && r.j.entrainement.stars.lecteur === 1, "profil JSON : grades, étoiles et Stars (4 réussites : Bit ★★★)");
+  r = await appel("GET", "/joueur/Grec");
+  verifier(r.t.includes("Bit ★★★") && r.t.includes('viewBox="0 0 18 28"'), "profil : le badge complet (galons, étoiles) et son grade");
+  r = await appel("GET", "/records");
+  verifier(["Bit", "Octet", "Kilo", "Méga", "Giga", "Téra", "Péta", "Exa", "8 × Bit", "Exa 400"].every((x) => r.t.includes(x)) && r.t.split('viewBox="0 0 18 28"').length - 1 === 8,
+    "/records : les 8 grades, leurs galons et ce qu'ils veulent dire");
+  r = await appel("GET", "/records?lang=ja");
+  verifier(r.t.includes("トレーニングルーム"), "/records traduit (japonais)");
+}
+
+// chaque page dans chaque langue
+const pages = ["/", "/classement", "/records", "/bestiaire", "/bestiaire/braisillon", "/captures", "/captures?shiny=1", "/joueur/Grec", "/joueur/Personne", lienBadge, "/badge/0123456789abcdef", "/ctf", "/nimporte", "/compte", "/connexion?t=0",
+  "/parents", "/enseignants", "/soutenir", "/confidentialite", "/mentions-legales", "/essayer", "/imprimer", "/bestiaire/gouttelin"];
+let rendues = 0;
+const rates = [];
+for (const l of LANGUES) {
+  for (const p of pages) {
+    r = await appel("GET", p + (p.includes("?") ? "&" : "?") + "lang=" + l);
+    const bon = r.t.startsWith("<!doctype html>") && langDe(r.t) === `${l}/${["ar", "ur"].includes(l) ? "rtl" : "ltr"}`
+      && !/undefined|\[object |NaN|function \(|=>/.test(r.t.replace(/<style>[\s\S]*?<\/style>/, "").replace(/<script>[\s\S]*?<\/script>/g, ""));
+    if (bon) rendues++; else rates.push(l + p);
+  }
+}
+verifier(rates.length === 0, `${rendues} pages rendues sans trou (${LANGUES.length} langues × ${pages.length} pages)` + (rates.length ? " ; ratées : " + rates.slice(0, 5).join(", ") : ""));
+
+console.log("Plusieurs parties, jetons TG-…, code de secours, connexion au site");
+{
+  const ip = { "cf-connecting-ip": "10.7.7.7" };
+  r = await appel("POST", "/api/inscription", { corps: { pseudo: "Parties", appareil: "pc" }, entetes: ip });
+  const cle = r.j.cle;
+  const secours = r.j.secours;
+  verifier(/^TG-[A-Z2-9]{4}-[A-Z2-9]{4}-[A-Z2-9]{4}$/.test(secours || ""), "inscription : code de secours donné une fois (" + secours + ")");
+  // ancienne appli : /api/sync sans identifiant = partie 1
+  await appel("POST", "/api/sync", { cle, corps: { appareil: "pc", deltas: { xp: 100 }, valeurs: { nom: "Pixel" } } });
+  r = await appel("POST", "/api/sync/a1b2c3d4", { cle, corps: { appareil: "pc", partie: "a1b2c3d4", deltas: { xp: 30 }, valeurs: { nom: "Bidule" } } });
+  verifier(r.j?.partie === "a1b2c3d4" && r.j.etat.xp === 30 && r.j.etat.nom === "Bidule", "une 2e partie ne se mélange pas à la 1re");
+  r = await appel("POST", "/api/sync", { cle, corps: { appareil: "android", deltas: { xp: 5 } } });
+  verifier(r.j?.partie === "1" && r.j.etat.xp === 105 && r.j.etat.nom === "Pixel", "sync sans identifiant = partie 1 (compatibilité)");
+  r = await appel("GET", "/api/parties", { cle });
+  verifier(r.j?.parties?.length === 2 && r.j.parties.map((p) => p.nom).join() === "Pixel,Bidule", "/api/parties liste les 2 créatures");
+  r = await appel("GET", "/api/profil/Parties");
+  verifier(r.j?.xp === 105 && r.j.nom === "Pixel", "le profil montre la meilleure créature");
+  r = await appel("POST", "/api/sync/x%20y", { cle, corps: {} });
+  verifier(r.statut === 400, "identifiant de partie invalide refusé");
+  // migration douce : un compte d'avant (créature dans joueurs.etat, aucune ligne parties)
+  const vieux = await appel("POST", "/api/inscription", { corps: { pseudo: "Ancien", appareil: "pc" }, entetes: ip });
+  await env.DB.prepare("UPDATE joueurs SET etat = ?, xp = 400, niveau = 7 WHERE pseudo = 'Ancien'").bind(JSON.stringify({ nom: "Vieux", xp: 400 })).run();
+  r = await appel("GET", "/api/parties", { cle: vieux.j.cle });
+  verifier(r.j?.parties?.length === 1 && r.j.parties[0].partie === "1" && r.j.parties[0].nom === "Vieux", "migration : la créature existante devient la partie 1");
+  r = await appel("POST", "/api/sync", { cle: vieux.j.cle, corps: { appareil: "pc", deltas: { xp: 1 } } });
+  verifier(r.j?.etat?.xp === 401, "… et la synchro de la partie 1 continue dessus");
+  // jeton TG-XXXX-XX
+  r = await appel("POST", "/api/code", { cle });
+  verifier(/^TG-[A-Z2-9]{4}-[A-Z2-9]{2}$/.test(r.j?.jeton || ""), "jeton lisible : " + r.j?.jeton);
+  r = await appel("POST", "/api/lier", { corps: { code: r.j.jeton.toLowerCase(), appareil: "android" }, entetes: ip });
+  verifier(r.j?.pseudo === "Parties" && /^[0-9a-f]{64}$/.test(r.j.cle), "compte lier TG-… relie l'appareil");
+  const cleTel2 = r.j.cle;
+  // code de secours
+  r = await appel("POST", "/api/secours/recuperer", { corps: { code: "TG-AAAA-AAAA-AAAA" }, entetes: ip });
+  verifier(r.statut === 404, "faux code de secours refusé");
+  r = await appel("POST", "/api/secours/recuperer", { corps: { code: secours.toLowerCase().replaceAll("-", " "), appareil: "pc" }, entetes: ip });
+  verifier(r.j?.pseudo === "Parties" && /^[0-9a-f]{64}$/.test(r.j.cle), "le code de secours rend le compte");
+  const enClair = await env.DB.prepare("SELECT COUNT(*) AS n FROM secours WHERE empreinte LIKE ?").bind("%" + secours.replaceAll("-", "").slice(2) + "%").first();
+  verifier(enClair.n === 0, "le code de secours n'est pas stocké en clair");
+  r = await appel("POST", "/api/secours", { cle });
+  const secours2 = r.j?.secours;
+  r = await appel("POST", "/api/secours/recuperer", { corps: { code: secours }, entetes: { "cf-connecting-ip": "10.7.7.8" } });
+  verifier(secours2 && r.statut === 404, "un nouveau code de secours remplace l'ancien");
+  // déconnexion d'un appareil
+  r = await appel("POST", "/api/deconnexion", { cle: cleTel2 });
+  r = await appel("GET", "/api/parties", { cle: cleTel2 });
+  verifier(r.statut === 401, "après déconnexion, la clé de l'appareil ne marche plus");
+  // lien à usage unique vers le site
+  r = await appel("POST", "/api/lien-site", { cle });
+  const lien = r.j?.lien || "";
+  verifier(/^\/connexion\?t=[0-9a-f]{32}$/.test(lien), "compte site : lien à usage unique");
+  r = await appel("GET", lien);
+  const cookie = (r.h.get("set-cookie") || "").match(/tg_session=[0-9a-f]{64}/)?.[0];
+  verifier(r.statut === 303 && r.h.get("location") === "/compte" && cookie && /HttpOnly/.test(r.h.get("set-cookie")), "le lien ouvre une session (cookie HttpOnly)");
+  r = await appel("GET", lien);
+  verifier(r.statut === 404, "le lien ne marche qu'une fois");
+  r = await appel("GET", "/compte", { entetes: { cookie } });
+  verifier(r.t.includes("Parties") && r.t.includes("Bidule") && r.t.includes("/compte/jeton"), "page Mon compte : pseudo, créatures, bouton « lier un appareil »");
+  r = await appel("POST", "/compte/jeton", { entetes: { cookie } });
+  const jeton = r.t.match(/TG-[A-Z2-9]{4}-[A-Z2-9]{2}/)?.[0];
+  verifier(!!jeton, "le site affiche un jeton TG-… : " + jeton);
+  r = await appel("POST", "/api/lier", { corps: { code: jeton, appareil: "pc" }, entetes: ip });
+  verifier(r.j?.pseudo === "Parties", "… qui relie un appareil depuis le terminal");
+  r = await appel("GET", "/compte");
+  verifier(r.t.includes("compte site") && !r.t.includes("Bidule"), "sans session : la page explique « compte site »");
+  r = await appel("POST", "/compte/sortir", { entetes: { cookie } });
+  r = await appel("GET", "/compte", { entetes: { cookie } });
+  verifier(!r.t.includes("Bidule"), "se déconnecter du site ferme la session");
+}
+
+console.log("Mini-terminal du site (ls, cd, cat…)");
+{
+  r = await appel("GET", "/api/plan?lang=de");
+  const pl = r.j;
+  verifier(r.statut === 200 && /max-age/.test(r.h.get("cache-control") || ""), "/api/plan répond (et se met en cache)");
+  verifier(pl?.r?.some(([n, t, u]) => n === "bestiaire" && t === "d" && u === "/bestiaire") && pl.r.some(([n, t]) => n === "mentions-legales" && t === "f")
+    && pl.r.some(([n, , u, l]) => n === "joueurs" && u === "" && l === "Spieler"), "plan : dossiers et fichiers de la racine, libellés traduits");
+  verifier(pl?.e?.length === 150 && pl.e.some(([id, nom, f]) => id === "braisillon" && nom === "Braisillon" && f === "demons"), "plan : les 150 bestioles publiques et leur famille");
+  verifier(pl?.f?.length === 10 && pl.f.some(([s, , , u]) => s === "betes-monstrueuses" && u === "/bestiaire?famille=B%C3%AAtes+monstrueuses"), "plan : les familles en dossiers tapables");
+  const chemins = { "/": "", "/bestiaire": "bestiaire", "/bestiaire?famille=D%C3%A9mons": "bestiaire/demons", "/bestiaire/braisillon": "bestiaire/braisillon",
+    "/joueur/Grec": "joueurs/Grec", "/captures?shiny=1": "captures/shiny", "/mentions-legales": "mentions-legales" };
+  const rates = [];
+  for (const [p, c] of Object.entries(chemins)) {
+    r = await appel("GET", p);
+    const m = r.t.match(/<script type="application\/json" id="tg-d">([\s\S]*?)<\/script>/);
+    const d = m && JSON.parse(m[1]);
+    if (d?.c !== c) rates.push(p + " → " + d?.c);
+  }
+  verifier(rates.length === 0, "chaque page sait où elle est (~/bestiaire/demons…)" + (rates.length ? " : " + rates.join(", ") : ""));
+  r = await appel("GET", "/bestiaire/braisillon?lang=ar");
+  const d = JSON.parse(r.t.match(/id="tg-d">([\s\S]*?)<\/script>/)[1]);
+  verifier(d.fi === 1 && d.l === "ar" && d.s.ouvrir === "افتح الطرفية" && d.ls.length === 14, "barre : fichier repéré, textes dans la langue de la page");
+  verifier(/<div id="tg" class="tg" dir="ltr" hidden>/.test(r.t) && r.t.includes('aria-controls="tg-panneau"') && r.t.includes('id="tg-saisie"'),
+    "barre : cachée sans JavaScript, bouton et champ accessibles");
+  verifier(/<div id="tg-panneau" class="tg-panneau" hidden>/.test(r.t) && r.t.includes('aria-label="التنقّل بلوحة المفاتيح"'), "barre : fermée par défaut, bouton « naviguer au clavier » traduit");
+  verifier(!/<script[^>]+src=/.test(r.t), "aucun script externe");
+}
+
+console.log("Pied de page, pages pour les adultes, polices locales");
+{
+  r = await appel("GET", "/classement");
+  verifier(["/parents", "/soutenir", "/confidentialite", "/mentions-legales", "mailto:contact@terminagotchi.com", "github.com/grecdel/terminagotchi"]
+    .every((x) => r.t.includes(`href="${x.startsWith("/") || x.startsWith("mailto") ? x : "https://" + x}"`)), "pied de page : code, contact, soutenir, parents, mentions, confidentialité");
+  verifier(!/googleapis|gstatic/.test(r.t) && r.t.includes("/polices/vt323-latin-400-normal.woff2") && r.t.includes("@font-face"),
+    "polices hébergées sur le site : aucun appel à Google Fonts");
+  r = await appel("GET", "/soutenir");
+  verifier(r.t.includes("parents") && r.t.includes("D'autres manières d'aider") && !/Faire un don|liberapay|ko-fi|sponsors/i.test(r.t),
+    "soutenir : pour les adultes, plus de partie « Faire un don », « d'autres manières d'aider » gardé");
+  {
+    let sansDon = 0;
+    for (const l of LANGUES) {
+      const t = (await appel("GET", "/soutenir?lang=" + l)).t;
+      if (!/class="dons"|liberapay|ko-fi/i.test(t) && (t.match(/<h2>/g) || []).length === 2) sansDon++;
+    }
+    verifier(sansDon === LANGUES.length, `soutenir : aucune partie dons dans les ${LANGUES.length} langues (${sansDon})`);
+  }
+  r = await appel("GET", "/parents?lang=en");
+  verifier(r.t.includes("For parents") && r.t.includes("~/terrain_terminagotchi") && r.t.includes("~/.terminagotchi"), "parents (anglais) : ce que fait le jeu sur l'ordinateur");
+  {
+    // la page des enseignants : le mode classe 100 % local (pc/tg/classe.py), mêmes codes de séance que le jeu
+    const { codeSeance, LETTRES } = await import("../src/enseignants_fr.js");
+    const V = JSON.parse(readFileSync(new URL("../../donnees/classe/vecteurs.json", import.meta.url), "utf8"));
+    verifier(LETTRES === V.lettres && V.codes.every((v) => codeSeance(v.n, v.options) === v.code) && V.codes.length === 192,
+      "codes de séance : les 192 vecteurs du jeu (chapitres 0 à 23, donnees/classe/vecteurs.json) refaits à l'identique");
+    r = await appel("GET", "/enseignants");
+    const codes = [...r.t.matchAll(/<code>(\d\d-[AGS]+-[A-Z])<\/code>/g)].map((m) => m[1]);
+    verifier(r.t.includes("Pour les enseignants et les parents") && new Set(codes).size === 69 && codes.every((c) => V.codes.some((v) => v.code === c))
+      && r.t.includes("05-GS-K") && r.t.includes("Rien n'est envoyé") && r.t.includes("Reporté") && r.t.includes("avis CNIL")
+      && r.t.includes("fiches_enseignant.pdf") && r.t.includes('href="/parents"'),
+      "enseignants : 23 chapitres et mondes × 3 codes justes, rien n'est envoyé, tableau de bord en ligne reporté, fiches PDF, lien parents");
+    const contenu = r.t.slice(r.t.indexOf('<div class="texte-long">'), r.t.indexOf("</section>"));
+    verifier(contenu.length > 5000 && !/<form|<script|<input|fetch\(|\/api\//.test(contenu),
+      "enseignants : le contenu n'a ni formulaire, ni champ, ni script, ni appel à l'API (rien à envoyer)");
+    r = await appel("GET", "/enseignants?lang=ar");
+    verifier(r.t.includes("للمعلّمين والأولياء") && r.t.includes('<section lang="fr" dir="ltr">') && r.t.includes("05-GS-K"),
+      "enseignants (arabe) : résumé traduit, texte complet en français isolé (ltr)");
+    r = await appel("GET", "/");
+    verifier(r.t.includes('href="/enseignants"'), "pied de page : lien vers la page des enseignants");
+  }
+  r = await appel("GET", "/confidentialite");
+  verifier(r.t.includes("pour les enfants") && r.t.includes("Data Privacy Framework") && r.t.includes("CNIL") && r.t.includes("tg_session")
+    && r.t.includes("Adresse IP") && r.t.includes("au plus 24 heures") && r.t.includes("après 3 ans"), "confidentialité : enfants, IP, cookies, durées, CNIL");
+  r = await appel("GET", "/confidentialite?lang=ar");
+  verifier(/<html lang="ar" dir="rtl">/.test(r.t) && r.t.includes('<section lang="fr" dir="ltr">') && r.t.includes("الخصوصية"), "confidentialité en arabe : résumé traduit + texte français qui fait foi (ltr)");
+  r = await appel("GET", "/mentions-legales");
+  verifier(r.t.includes("101 Townsend Street") && r.t.includes("non professionnel") && r.t.includes("Modèle à faire vérifier")
+    && r.t.includes("SIL Open Font License") && r.t.includes("Aucune licence"), "mentions légales : hébergeur, éditeur, modèle à vérifier, crédits, licence");
+}
+
+console.log("Suppression d'un compte et durées de conservation");
+{
+  const ip = { "cf-connecting-ip": "10.6.6.6" };
+  r = await appel("POST", "/api/inscription", { corps: { pseudo: "Efface", appareil: "pc" }, entetes: ip });
+  const cle = r.j.cle;
+  await appel("POST", "/api/sync", { cle, corps: { appareil: "pc", deltas: { xp: 50 }, valeurs: { nom: "Gomme" } } });
+  await appel("POST", "/api/code", { cle });
+  r = await appel("DELETE", "/api/compte", { cle, corps: { confirmer: "pas-moi" } });
+  verifier(r.statut === 400, "suppression refusée sans recopier le pseudo");
+  r = await appel("DELETE", "/api/compte", { cle, corps: { confirmer: "efface" } });
+  verifier(r.j?.ok === true && r.j.supprime === "Efface", "DELETE /api/compte avec la clé : compte supprimé");
+  const restes = [];
+  for (const t of ["cles", "codes", "badges", "apparitions", "parties", "secours", "sessions", "pseudos_guilde"]) {
+    const n = (await env.DB.prepare(`SELECT COUNT(*) AS n FROM ${t} WHERE joueur NOT IN (SELECT id FROM joueurs)`).first()).n;
+    if (n) restes.push(t);
+  }
+  verifier(restes.length === 0, "aucune donnée orpheline après la suppression" + (restes.length ? " : " + restes.join(", ") : ""));
+  r = await appel("GET", "/api/profil/Efface");
+  verifier(r.statut === 404, "le profil public a disparu");
+  r = await appel("GET", "/api/moi", { cle });
+  verifier(r.statut === 401, "la clé ne marche plus");
+  r = await appel("OPTIONS", "/api/compte");
+  verifier(/DELETE/.test(r.h.get("access-control-allow-methods")), "CORS : DELETE autorisé");
+  // purge : un compte inactif depuis plus longtemps que CONSERVATION.inactifMois, des compteurs d'IP anciens
+  r = await appel("POST", "/api/inscription", { corps: { pseudo: "Endormi", appareil: "pc" }, entetes: ip });
+  const { purger, CONSERVATION } = await import("../src/worker.js");
+  const vieux = Date.now() - (CONSERVATION.inactifMois + 1) * 31 * 86_400_000;
+  await env.DB.prepare("UPDATE joueurs SET maj = ? WHERE pseudo = 'Endormi'").bind(vieux).run();
+  await env.DB.prepare("INSERT INTO essais (sujet, minute, n) VALUES ('inscription:10.1.1.1', ?, 1)").bind(Math.floor(Date.now() / 60000) - CONSERVATION.ipHeures * 60 - 5).run();
+  const n = await purger(env);
+  const ipRestante = await env.DB.prepare("SELECT 1 AS x FROM essais WHERE sujet = 'inscription:10.1.1.1'").first();
+  verifier(n === 1 && (await appel("GET", "/api/profil/Endormi")).statut === 404 && (await appel("GET", "/api/profil/Grec")).statut === 200,
+    `purge : compte inactif depuis plus de ${CONSERVATION.inactifMois} mois effacé, les autres gardés`);
+  verifier(!ipRestante, `purge : adresses IP de plus de ${CONSERVATION.ipHeures} h effacées`);
+}
+
+console.log("Pseudo coloré par les badges de la Guilde (Artisan : progression synchronisée ; Contributeur : crédits du dépôt)");
+{
+  const G = await import("../src/guilde.js");
+  const ipG = { "cf-connecting-ip": "10.7.7.7" };
+  const donnees = JSON.parse(readFileSync(new URL("../../donnees/guilde.json", import.meta.url), "utf8"));
+  const DG = (await import("../src/guilde_donnees.js")).default;
+  verifier(JSON.stringify(DG.badges) === JSON.stringify(donnees.badges) && JSON.stringify(DG.credits) === JSON.stringify(donnees.credits.contributeurs),
+    "guilde_donnees.js = donnees/guilde.json (paliers, couleurs, crédits) : relancer fiches_guilde.py sinon");
+  // lisibilité : les deux couleurs sur les fonds sombres du site (le site n'a qu'un thème, sombre)
+  const lum = (h) => { const c = [1, 3, 5].map((i) => parseInt(h.slice(i, i + 2), 16) / 255).map((v) => (v <= 0.03928 ? v / 12.92 : ((v + 0.055) / 1.055) ** 2.4)); return 0.2126 * c[0] + 0.7152 * c[1] + 0.0722 * c[2]; };
+  const contraste = (a, b) => { const [x, y] = [lum(a), lum(b)].sort((u, v) => v - u); return (x + 0.05) / (y + 0.05); };
+  const fonds = ["#08100c", "#0f1a14", "#050b08", "#123322"];
+  verifier(Object.values(G.COULEUR).every((c) => fonds.every((f) => contraste(c, f) >= 4.5)),
+    "couleurs Artisan et Contributeur lisibles sur tous les fonds du site (contraste ≥ 4,5)");
+  verifier(G.palierArtisan(1, false) === 0 && G.palierArtisan(5, false) === 1 && G.palierArtisan(5, true) === 2 && G.palierArtisan(7, true) === 3,
+    "paliers Artisan identiques au jeu (Bit 1 leçon, Octet 3, Kilo 5 + contribution, Méga 7 + contribution)");
+  let r2 = await appel("POST", "/api/inscription", { corps: { pseudo: "Artisane", appareil: "pc" }, entetes: ipG });
+  const cleA = r2.j.cle;
+  // le jeu déclare un grade et un titre Contributeur qu'il n'a pas : ignorés
+  await appel("POST", "/api/sync", { cle: cleA, corps: { appareil: "pc", deltas: { xp: 50 }, valeurs: { nom: "Marteau", nomDate: 1, titre: "contributeur:giga" },
+    guilde: { lecons: ["gu0", "gu1", "gu2", "gu3", "gu4", "faux"], contribution: true, echelon: "exa" } } });
+  r2 = await appel("GET", "/api/profil/Artisane");
+  verifier(r2.j.guilde?.artisan === "kilo" && r2.j.guilde.contributeur === null && r2.j.guilde.titre === null,
+    "Artisan recalculé par le serveur (5 leçons + contribution = Kilo) ; « Contributeur » déclaré par le jeu sans crédits : refusé, pseudo pas coloré");
+  let html = (await appel("GET", "/joueur/Artisane")).t;
+  verifier(!html.includes('class="pseudo-g') && html.includes("badge-px") && /🛠/.test(html), "profil : badge Artisan dessiné, pseudo sans couleur (titre non vérifié)");
+  await appel("POST", "/api/sync", { cle: cleA, corps: { appareil: "pc", valeurs: { titre: "artisan:kilo" }, guilde: { lecons: [] } } });
+  r2 = await appel("GET", "/api/profil/Artisane");
+  verifier(r2.j.guilde?.artisan === "kilo" && r2.j.guilde.titre?.badge === "artisan" && r2.j.guilde.titre.couleur === G.COULEUR.artisan,
+    "titre « Artisan » choisi : les leçons déjà synchronisées restent, le pseudo prend l'orange de forge");
+  html = (await appel("GET", "/joueur/Artisane")).t;
+  verifier(/class="pseudo-g pseudo-artisan" title="Artisan Kilo">Artisane</.test(html), "profil : le pseudo est coloré (orange), pas le nom de la créature");
+  verifier(!/pseudo-artisan[^>]*>Marteau/.test(html), "le nom de la créature n'est jamais coloré");
+  verifier(/pseudo-artisan[^>]*>Artisane/.test((await appel("GET", "/classement")).t), "classement : pseudo coloré");
+  {
+    const B = (await import("../src/bestiaire.js")).default;
+    const e = B.especes[3];
+    await appel("POST", "/api/sync", { cle: cleA, corps: { appareil: "pc", partage: { actif: true, date: 5 }, captures: [{ id: "a7a7a7a7a7", espece: e.nom,
+      date: Date.now() - 1000, marque: B.marques[0], humeur: B.humeurs[0], taille: 7, potentiel: 50, stats: e.stats, zone: "" }] } });
+    verifier(/par <a href="\/joueur\/Artisane"><bdi class="pseudo-g pseudo-artisan"|pseudo-artisan[^>]*>Artisane<\/bdi><\/a>/.test((await appel("GET", "/captures?joueur=Artisane")).t),
+      "galerie : « par … » avec le pseudo coloré");
+  }
+  verifier(/pseudo-artisan[^>]*>Artisane/.test((await appel("GET", "/")).t) || (await env.DB.prepare("SELECT COUNT(*) AS n FROM joueurs").first()).n > 10,
+    "accueil (top 10) : pseudo coloré");
+  // le badge Contributeur ne vient QUE des crédits du dépôt
+  await appel("POST", "/api/sync", { cle: cleA, corps: { appareil: "pc", valeurs: { titre: "contributeur:bit" } } });
+  verifier((await appel("GET", "/api/profil/Artisane")).j.guilde.titre === null, "titre « Contributeur » sans être dans les crédits : pas de couleur");
+  G.CREDITS.push({ pseudo: "artisane", contributions: 3 });
+  r2 = await appel("GET", "/api/profil/Artisane");
+  verifier(r2.j.guilde.contributeur === "octet" && r2.j.guilde.titre?.badge === "contributeur" && r2.j.guilde.titre.couleur === G.COULEUR.contributeur,
+    "dans les crédits (3 contributions, sans tenir compte des majuscules) : badge Contributeur Octet, pseudo vert");
+  html = (await appel("GET", "/joueur/Artisane")).t;
+  verifier(/pseudo-g pseudo-contributeur[^>]*>Artisane/.test(html) && (html.match(/class="badge-px"/g) || []).length >= 2, "profil : pseudo vert et les deux badges de la Guilde dessinés");
+  G.CREDITS.length = 0;
+  verifier((await appel("GET", "/api/profil/Artisane")).j.guilde.titre === null, "retiré des crédits : plus de badge Contributeur ni de couleur");
+  await appel("POST", "/api/sync", { cle: cleA, corps: { appareil: "pc", valeurs: { titre: "artisan:mega" } } });
+  verifier((await appel("GET", "/api/profil/Artisane")).j.guilde.artisan === "kilo", "un grade annoncé dans le titre (« artisan:mega ») ne change pas le grade vérifié");
+  verifier((await appel("GET", "/records")).statut === 200 && (await appel("GET", "/captures")).statut === 200, "records et galerie s'affichent");
+}
+
+// ---- le monde des biomes (/monde) : même génération et mêmes effets que le jeu (vecteurs communs Python = Kotlin = JS)
+{
+  const G = await import("../public/js/monde_gen.js");
+  const E = await import("../public/js/effets.js");
+  const VM = JSON.parse(readFileSync(new URL("../../donnees/monde/vecteurs.json", import.meta.url), "utf8"));
+  const VE = JSON.parse(readFileSync(new URL("../../donnees/effets/vecteurs.json", import.meta.url), "utf8"));
+  const tri = (o) => Array.isArray(o) ? o.map(tri) : (o && typeof o === "object") ? Object.fromEntries(Object.keys(o).sort().map((k) => [k, tri(o[k])])) : o;
+  const egal = (a, b) => JSON.stringify(tri(JSON.parse(JSON.stringify(a)))) === JSON.stringify(tri(b));
+  verifier(VM.hachage.every(([s, h]) => G.hachage(s) === h), "monde : hachage FNV-1a comme Python et Kotlin");
+  const r = G.hasard(42);
+  verifier(VM.hasard.every((x) => r() === x), "monde : hasard mulberry32 comme Python et Kotlin");
+  verifier(VM.deco.every(([n, t, d]) => egal(G.deco(n, t), d)), "monde : chaque fichier donne le même objet du décor");
+  for (const [i, m] of VM.mondes.entries()) {
+    const w = G.construire(m.terrain), res = G.resume(w);
+    verifier(egal(res, m.monde), `monde ${i} : mêmes hexagones, mêmes cordes, mêmes objets qu'en Python`);
+    const pc = G.placeCreatures(w, ["plante", "feu", "feu", "feu", "eau", "glace", "ombre"].map((t, j) => ["c" + j, t]));
+    verifier(egal(pc.maison, m.maison) && egal(pc.refuge, m.refuge), `monde ${i} : une créature par parcelle, les autres au refuge`);
+  }
+  let okE = 0;
+  for (const v of VE) if (egal(E.evenements(v.ligne, v.avant, v.apres, v.code, v.sortie), v.attendu) && egal(E.evenements(v.ligne, v.avant, v.apres, v.code, v.sortie).map(E.cleDit), v.dit)) okE++;
+  verifier(okE === VE.length, `effets : ${okE}/${VE.length} commandes donnent les mêmes effets qu'en Python et Kotlin`);
+  const page = await appel("GET", "/monde");
+  verifier(page.statut === 200 && page.t.includes("/js/monde_page.js") && page.t.includes("TG_MONDE"), "/monde : la page du monde des biomes s'affiche");
+  const T = (await import("../src/monde_textes.js")).default;
+  verifier(Object.keys(T).length === 14 && Object.values(T).every((x) => Object.keys(x).length === Object.keys(T.fr).length), "/monde : textes dans les 14 langues");
+  const pageEn = await worker.fetch(new Request("http://localhost/monde?lang=en"), env);
+  verifier((await pageEn.text()).includes("The biome world"), "/monde en anglais");
+  verifier(!readFileSync(new URL("../public/js/monde_page.js", import.meta.url), "utf8").match(/mascotte\w*\.png|icone\.png|favicon/), "/monde : la mascotte du site n'apparaît pas dans le monde");
+}
+
+// ---- autour du jeu : la page « Essayer » et les fichiers « À imprimer »
+console.log("Essayer, À imprimer");
+{
+  const { existsSync } = await import("node:fs");
+  const A = (await import("../src/autour_textes.js")).default;
+  verifier(Object.keys(A).length === 14 && Object.values(A).every((x) => Object.keys(x).length === Object.keys(A.fr).length), "autour : textes dans les 14 langues");
+  let p = await appel("GET", "/essayer");
+  verifier(p.statut === 200 && p.t.includes("/js/essayer.js") && p.t.includes("TG_ESSAYER") && p.t.includes("Essayer en 2 minutes"), "/essayer : la page s'affiche");
+  const data = JSON.parse(p.t.match(/window\.TG_ESSAYER=(.*?)<\/script>/)[1]);
+  verifier(Object.keys(data.depart).length === 9 && Object.values(data.depart).flat().every((id) => existsSync(new URL(`../public/portraits/${id}/classique_bebe.webp`, import.meta.url))),
+    "/essayer : 9 types d'œufs, chaque bébé possible a son portrait");
+  verifier(Object.keys(data.depart).every((t) => ["intact", "fissure", "eclosion"].every((e) => existsSync(new URL(`../public/essayer/oeuf_${t}_${e}.png`, import.meta.url)))), "/essayer : les images des œufs");
+  verifier(data.t["site.nom_defaut"] === "Noisette" && data.t["intro.camp.dort"], "/essayer : nom proposé Noisette, textes de l'intro du jeu");
+  const js = readFileSync(new URL("../public/js/essayer.js", import.meta.url), "utf8").replace(/\/\/.*$/gm, "");
+  verifier(!/fetch\(|XMLHttpRequest|sendBeacon|document\.cookie|localStorage|sessionStorage|indexedDB|WebSocket|mascotte|icone\.png/.test(js), "/essayer : rien n'est envoyé ni enregistré, pas de mascotte");
+  verifier(!p.h.get("set-cookie"), "/essayer : aucun cookie");
+  p = await appel("GET", "/essayer?lang=ja");
+  verifier(p.t.includes("2ふんで"), "/essayer en japonais");
+  p = await appel("GET", "/");
+  verifier(p.t.includes('href="/essayer"') && p.t.includes("Essayer sans installer"), "accueil : bouton « Essayer sans installer » et lien dans le menu");
+  p = await appel("GET", "/bestiaire/gouttelin");
+  verifier(p.t.includes("À imprimer") && p.t.includes('href="/imprimer/coloriages/coloriage_018_gouttelin.pdf"') && p.t.includes('href="/imprimer/stickers_A4.pdf"')
+    && p.t.includes('href="/imprimer/poster_A3.pdf"') && p.t.includes('href="/imprimer/poster_A3_fond_blanc.pdf"'), "fiche validée : partie « À imprimer » (coloriage, stickers, poster et fond blanc)");
+  p = await appel("GET", "/bestiaire/braisillon?lang=en");
+  verifier(p.t.includes("To print") && p.t.includes("in French"), "fiche validée en anglais : « To print » et les PDF annoncés en français");
+  p = await appel("GET", "/bestiaire/zapiot");
+  verifier(!p.t.includes("À imprimer"), "fiche sans coloriage validé : pas de partie « À imprimer »");
+  p = await appel("GET", "/imprimer");
+  const liens = [...p.t.matchAll(/href="(\/imprimer\/[^"]+\.pdf)"/g)].map((m) => m[1]);
+  verifier(liens.length === 15 && liens.every((l) => existsSync(new URL("../public" + l, import.meta.url))), `/imprimer : 12 coloriages + stickers + 2 posters, tous présents (${liens.length})`);
+  p = await appel("GET", "/enseignants");
+  verifier(p.t.includes('href="/imprimer"'), "enseignants : lien « Coloriages et posters pour la classe »");
+}
 
 console.log(`\n${ok} réussis, ${ko} échoués`);
 process.exit(ko ? 1 : 0);

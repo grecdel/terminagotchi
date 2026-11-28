@@ -1,0 +1,6575 @@
+{
+ "note": "Généré par pc/outils/vecteurs_phase4.py",
+ "exercices": [
+  {
+   "type": "comptage",
+   "graine": 0,
+   "k": 0,
+   "params": {
+    "etoiles": "★★★★★★★★★★★"
+   },
+   "reponse": "11",
+   "verif": "seq 11 | wc -l"
+  },
+  {
+   "type": "comptage",
+   "graine": 0,
+   "k": 1,
+   "params": {
+    "etoiles": "★★★★★★★★★"
+   },
+   "reponse": "9",
+   "verif": "seq 9 | wc -l"
+  },
+  {
+   "type": "comptage",
+   "graine": 0,
+   "k": 2,
+   "params": {
+    "etoiles": "★★★★★★★"
+   },
+   "reponse": "7",
+   "verif": "seq 7 | wc -l"
+  },
+  {
+   "type": "comptage",
+   "graine": 0,
+   "k": 3,
+   "params": {
+    "etoiles": "★★★★★★"
+   },
+   "reponse": "6",
+   "verif": "seq 6 | wc -l"
+  },
+  {
+   "type": "comptage",
+   "graine": 0,
+   "k": 4,
+   "params": {
+    "etoiles": "★★★★★★★★"
+   },
+   "reponse": "8",
+   "verif": "seq 8 | wc -l"
+  },
+  {
+   "type": "comptage",
+   "graine": 0,
+   "k": 5,
+   "params": {
+    "etoiles": "★★★"
+   },
+   "reponse": "3",
+   "verif": "seq 3 | wc -l"
+  },
+  {
+   "type": "comptage",
+   "graine": 0,
+   "k": 6,
+   "params": {
+    "etoiles": "★★★★★★★"
+   },
+   "reponse": "7",
+   "verif": "seq 7 | wc -l"
+  },
+  {
+   "type": "comptage",
+   "graine": 0,
+   "k": 7,
+   "params": {
+    "etoiles": "★★★★★"
+   },
+   "reponse": "5",
+   "verif": "seq 5 | wc -l"
+  },
+  {
+   "type": "comptage",
+   "graine": 1761955200,
+   "k": 0,
+   "params": {
+    "etoiles": "★★★★"
+   },
+   "reponse": "4",
+   "verif": "seq 4 | wc -l"
+  },
+  {
+   "type": "comptage",
+   "graine": 1761955200,
+   "k": 1,
+   "params": {
+    "etoiles": "★★★★★★★★"
+   },
+   "reponse": "8",
+   "verif": "seq 8 | wc -l"
+  },
+  {
+   "type": "comptage",
+   "graine": 1761955200,
+   "k": 2,
+   "params": {
+    "etoiles": "★★★★★★★"
+   },
+   "reponse": "7",
+   "verif": "seq 7 | wc -l"
+  },
+  {
+   "type": "comptage",
+   "graine": 1761955200,
+   "k": 3,
+   "params": {
+    "etoiles": "★★★★★"
+   },
+   "reponse": "5",
+   "verif": "seq 5 | wc -l"
+  },
+  {
+   "type": "comptage",
+   "graine": 1761955200,
+   "k": 4,
+   "params": {
+    "etoiles": "★★★★"
+   },
+   "reponse": "4",
+   "verif": "seq 4 | wc -l"
+  },
+  {
+   "type": "comptage",
+   "graine": 1761955200,
+   "k": 5,
+   "params": {
+    "etoiles": "★★★★"
+   },
+   "reponse": "4",
+   "verif": "seq 4 | wc -l"
+  },
+  {
+   "type": "comptage",
+   "graine": 1761955200,
+   "k": 6,
+   "params": {
+    "etoiles": "★★★"
+   },
+   "reponse": "3",
+   "verif": "seq 3 | wc -l"
+  },
+  {
+   "type": "comptage",
+   "graine": 1761955200,
+   "k": 7,
+   "params": {
+    "etoiles": "★★★★★"
+   },
+   "reponse": "5",
+   "verif": "seq 5 | wc -l"
+  },
+  {
+   "type": "comptage",
+   "graine": 1099511627783,
+   "k": 0,
+   "params": {
+    "etoiles": "★★★★★★"
+   },
+   "reponse": "6",
+   "verif": "seq 6 | wc -l"
+  },
+  {
+   "type": "comptage",
+   "graine": 1099511627783,
+   "k": 1,
+   "params": {
+    "etoiles": "★★★★★★★★★"
+   },
+   "reponse": "9",
+   "verif": "seq 9 | wc -l"
+  },
+  {
+   "type": "comptage",
+   "graine": 1099511627783,
+   "k": 2,
+   "params": {
+    "etoiles": "★★★★★★★★"
+   },
+   "reponse": "8",
+   "verif": "seq 8 | wc -l"
+  },
+  {
+   "type": "comptage",
+   "graine": 1099511627783,
+   "k": 3,
+   "params": {
+    "etoiles": "★★★"
+   },
+   "reponse": "3",
+   "verif": "seq 3 | wc -l"
+  },
+  {
+   "type": "comptage",
+   "graine": 1099511627783,
+   "k": 4,
+   "params": {
+    "etoiles": "★★★"
+   },
+   "reponse": "3",
+   "verif": "seq 3 | wc -l"
+  },
+  {
+   "type": "comptage",
+   "graine": 1099511627783,
+   "k": 5,
+   "params": {
+    "etoiles": "★★★★"
+   },
+   "reponse": "4",
+   "verif": "seq 4 | wc -l"
+  },
+  {
+   "type": "comptage",
+   "graine": 1099511627783,
+   "k": 6,
+   "params": {
+    "etoiles": "★★★★★★"
+   },
+   "reponse": "6",
+   "verif": "seq 6 | wc -l"
+  },
+  {
+   "type": "comptage",
+   "graine": 1099511627783,
+   "k": 7,
+   "params": {
+    "etoiles": "★★★★"
+   },
+   "reponse": "4",
+   "verif": "seq 4 | wc -l"
+  },
+  {
+   "type": "addition",
+   "graine": 0,
+   "k": 0,
+   "params": {
+    "a": "10",
+    "b": "4"
+   },
+   "reponse": "14",
+   "verif": "echo $((10 + 4))"
+  },
+  {
+   "type": "addition",
+   "graine": 0,
+   "k": 1,
+   "params": {
+    "a": "9",
+    "b": "18"
+   },
+   "reponse": "27",
+   "verif": "echo $((9 + 18))"
+  },
+  {
+   "type": "addition",
+   "graine": 0,
+   "k": 2,
+   "params": {
+    "a": "5",
+    "b": "19"
+   },
+   "reponse": "24",
+   "verif": "echo $((5 + 19))"
+  },
+  {
+   "type": "addition",
+   "graine": 0,
+   "k": 3,
+   "params": {
+    "a": "2",
+    "b": "8"
+   },
+   "reponse": "10",
+   "verif": "echo $((2 + 8))"
+  },
+  {
+   "type": "addition",
+   "graine": 0,
+   "k": 4,
+   "params": {
+    "a": "2",
+    "b": "17"
+   },
+   "reponse": "19",
+   "verif": "echo $((2 + 17))"
+  },
+  {
+   "type": "addition",
+   "graine": 0,
+   "k": 5,
+   "params": {
+    "a": "15",
+    "b": "7"
+   },
+   "reponse": "22",
+   "verif": "echo $((15 + 7))"
+  },
+  {
+   "type": "addition",
+   "graine": 0,
+   "k": 6,
+   "params": {
+    "a": "6",
+    "b": "6"
+   },
+   "reponse": "12",
+   "verif": "echo $((6 + 6))"
+  },
+  {
+   "type": "addition",
+   "graine": 0,
+   "k": 7,
+   "params": {
+    "a": "11",
+    "b": "5"
+   },
+   "reponse": "16",
+   "verif": "echo $((11 + 5))"
+  },
+  {
+   "type": "addition",
+   "graine": 1761955200,
+   "k": 0,
+   "params": {
+    "a": "10",
+    "b": "20"
+   },
+   "reponse": "30",
+   "verif": "echo $((10 + 20))"
+  },
+  {
+   "type": "addition",
+   "graine": 1761955200,
+   "k": 1,
+   "params": {
+    "a": "2",
+    "b": "10"
+   },
+   "reponse": "12",
+   "verif": "echo $((2 + 10))"
+  },
+  {
+   "type": "addition",
+   "graine": 1761955200,
+   "k": 2,
+   "params": {
+    "a": "17",
+    "b": "15"
+   },
+   "reponse": "32",
+   "verif": "echo $((17 + 15))"
+  },
+  {
+   "type": "addition",
+   "graine": 1761955200,
+   "k": 3,
+   "params": {
+    "a": "13",
+    "b": "17"
+   },
+   "reponse": "30",
+   "verif": "echo $((13 + 17))"
+  },
+  {
+   "type": "addition",
+   "graine": 1761955200,
+   "k": 4,
+   "params": {
+    "a": "5",
+    "b": "17"
+   },
+   "reponse": "22",
+   "verif": "echo $((5 + 17))"
+  },
+  {
+   "type": "addition",
+   "graine": 1761955200,
+   "k": 5,
+   "params": {
+    "a": "20",
+    "b": "12"
+   },
+   "reponse": "32",
+   "verif": "echo $((20 + 12))"
+  },
+  {
+   "type": "addition",
+   "graine": 1761955200,
+   "k": 6,
+   "params": {
+    "a": "20",
+    "b": "8"
+   },
+   "reponse": "28",
+   "verif": "echo $((20 + 8))"
+  },
+  {
+   "type": "addition",
+   "graine": 1761955200,
+   "k": 7,
+   "params": {
+    "a": "13",
+    "b": "15"
+   },
+   "reponse": "28",
+   "verif": "echo $((13 + 15))"
+  },
+  {
+   "type": "addition",
+   "graine": 1099511627783,
+   "k": 0,
+   "params": {
+    "a": "5",
+    "b": "18"
+   },
+   "reponse": "23",
+   "verif": "echo $((5 + 18))"
+  },
+  {
+   "type": "addition",
+   "graine": 1099511627783,
+   "k": 1,
+   "params": {
+    "a": "14",
+    "b": "12"
+   },
+   "reponse": "26",
+   "verif": "echo $((14 + 12))"
+  },
+  {
+   "type": "addition",
+   "graine": 1099511627783,
+   "k": 2,
+   "params": {
+    "a": "12",
+    "b": "12"
+   },
+   "reponse": "24",
+   "verif": "echo $((12 + 12))"
+  },
+  {
+   "type": "addition",
+   "graine": 1099511627783,
+   "k": 3,
+   "params": {
+    "a": "11",
+    "b": "8"
+   },
+   "reponse": "19",
+   "verif": "echo $((11 + 8))"
+  },
+  {
+   "type": "addition",
+   "graine": 1099511627783,
+   "k": 4,
+   "params": {
+    "a": "7",
+    "b": "6"
+   },
+   "reponse": "13",
+   "verif": "echo $((7 + 6))"
+  },
+  {
+   "type": "addition",
+   "graine": 1099511627783,
+   "k": 5,
+   "params": {
+    "a": "5",
+    "b": "3"
+   },
+   "reponse": "8",
+   "verif": "echo $((5 + 3))"
+  },
+  {
+   "type": "addition",
+   "graine": 1099511627783,
+   "k": 6,
+   "params": {
+    "a": "11",
+    "b": "15"
+   },
+   "reponse": "26",
+   "verif": "echo $((11 + 15))"
+  },
+  {
+   "type": "addition",
+   "graine": 1099511627783,
+   "k": 7,
+   "params": {
+    "a": "7",
+    "b": "4"
+   },
+   "reponse": "11",
+   "verif": "echo $((7 + 4))"
+  },
+  {
+   "type": "soustraction",
+   "graine": 0,
+   "k": 0,
+   "params": {
+    "a": "7",
+    "b": "3"
+   },
+   "reponse": "4",
+   "verif": "echo $((7 - 3))"
+  },
+  {
+   "type": "soustraction",
+   "graine": 0,
+   "k": 1,
+   "params": {
+    "a": "9",
+    "b": "5"
+   },
+   "reponse": "4",
+   "verif": "echo $((9 - 5))"
+  },
+  {
+   "type": "soustraction",
+   "graine": 0,
+   "k": 2,
+   "params": {
+    "a": "17",
+    "b": "2"
+   },
+   "reponse": "15",
+   "verif": "echo $((17 - 2))"
+  },
+  {
+   "type": "soustraction",
+   "graine": 0,
+   "k": 3,
+   "params": {
+    "a": "14",
+    "b": "5"
+   },
+   "reponse": "9",
+   "verif": "echo $((14 - 5))"
+  },
+  {
+   "type": "soustraction",
+   "graine": 0,
+   "k": 4,
+   "params": {
+    "a": "18",
+    "b": "13"
+   },
+   "reponse": "5",
+   "verif": "echo $((18 - 13))"
+  },
+  {
+   "type": "soustraction",
+   "graine": 0,
+   "k": 5,
+   "params": {
+    "a": "5",
+    "b": "3"
+   },
+   "reponse": "2",
+   "verif": "echo $((5 - 3))"
+  },
+  {
+   "type": "soustraction",
+   "graine": 0,
+   "k": 6,
+   "params": {
+    "a": "7",
+    "b": "4"
+   },
+   "reponse": "3",
+   "verif": "echo $((7 - 4))"
+  },
+  {
+   "type": "soustraction",
+   "graine": 0,
+   "k": 7,
+   "params": {
+    "a": "11",
+    "b": "7"
+   },
+   "reponse": "4",
+   "verif": "echo $((11 - 7))"
+  },
+  {
+   "type": "soustraction",
+   "graine": 1761955200,
+   "k": 0,
+   "params": {
+    "a": "16",
+    "b": "10"
+   },
+   "reponse": "6",
+   "verif": "echo $((16 - 10))"
+  },
+  {
+   "type": "soustraction",
+   "graine": 1761955200,
+   "k": 1,
+   "params": {
+    "a": "16",
+    "b": "1"
+   },
+   "reponse": "15",
+   "verif": "echo $((16 - 1))"
+  },
+  {
+   "type": "soustraction",
+   "graine": 1761955200,
+   "k": 2,
+   "params": {
+    "a": "9",
+    "b": "3"
+   },
+   "reponse": "6",
+   "verif": "echo $((9 - 3))"
+  },
+  {
+   "type": "soustraction",
+   "graine": 1761955200,
+   "k": 3,
+   "params": {
+    "a": "17",
+    "b": "14"
+   },
+   "reponse": "3",
+   "verif": "echo $((17 - 14))"
+  },
+  {
+   "type": "soustraction",
+   "graine": 1761955200,
+   "k": 4,
+   "params": {
+    "a": "20",
+    "b": "16"
+   },
+   "reponse": "4",
+   "verif": "echo $((20 - 16))"
+  },
+  {
+   "type": "soustraction",
+   "graine": 1761955200,
+   "k": 5,
+   "params": {
+    "a": "8",
+    "b": "7"
+   },
+   "reponse": "1",
+   "verif": "echo $((8 - 7))"
+  },
+  {
+   "type": "soustraction",
+   "graine": 1761955200,
+   "k": 6,
+   "params": {
+    "a": "17",
+    "b": "14"
+   },
+   "reponse": "3",
+   "verif": "echo $((17 - 14))"
+  },
+  {
+   "type": "soustraction",
+   "graine": 1761955200,
+   "k": 7,
+   "params": {
+    "a": "15",
+    "b": "8"
+   },
+   "reponse": "7",
+   "verif": "echo $((15 - 8))"
+  },
+  {
+   "type": "soustraction",
+   "graine": 1099511627783,
+   "k": 0,
+   "params": {
+    "a": "18",
+    "b": "7"
+   },
+   "reponse": "11",
+   "verif": "echo $((18 - 7))"
+  },
+  {
+   "type": "soustraction",
+   "graine": 1099511627783,
+   "k": 1,
+   "params": {
+    "a": "9",
+    "b": "3"
+   },
+   "reponse": "6",
+   "verif": "echo $((9 - 3))"
+  },
+  {
+   "type": "soustraction",
+   "graine": 1099511627783,
+   "k": 2,
+   "params": {
+    "a": "8",
+    "b": "4"
+   },
+   "reponse": "4",
+   "verif": "echo $((8 - 4))"
+  },
+  {
+   "type": "soustraction",
+   "graine": 1099511627783,
+   "k": 3,
+   "params": {
+    "a": "9",
+    "b": "6"
+   },
+   "reponse": "3",
+   "verif": "echo $((9 - 6))"
+  },
+  {
+   "type": "soustraction",
+   "graine": 1099511627783,
+   "k": 4,
+   "params": {
+    "a": "7",
+    "b": "1"
+   },
+   "reponse": "6",
+   "verif": "echo $((7 - 1))"
+  },
+  {
+   "type": "soustraction",
+   "graine": 1099511627783,
+   "k": 5,
+   "params": {
+    "a": "20",
+    "b": "2"
+   },
+   "reponse": "18",
+   "verif": "echo $((20 - 2))"
+  },
+  {
+   "type": "soustraction",
+   "graine": 1099511627783,
+   "k": 6,
+   "params": {
+    "a": "14",
+    "b": "8"
+   },
+   "reponse": "6",
+   "verif": "echo $((14 - 8))"
+  },
+  {
+   "type": "soustraction",
+   "graine": 1099511627783,
+   "k": 7,
+   "params": {
+    "a": "12",
+    "b": "8"
+   },
+   "reponse": "4",
+   "verif": "echo $((12 - 8))"
+  },
+  {
+   "type": "multiplication",
+   "graine": 0,
+   "k": 0,
+   "params": {
+    "a": "10",
+    "b": "10"
+   },
+   "reponse": "100",
+   "verif": "echo $((10 * 10))"
+  },
+  {
+   "type": "multiplication",
+   "graine": 0,
+   "k": 1,
+   "params": {
+    "a": "5",
+    "b": "9"
+   },
+   "reponse": "45",
+   "verif": "echo $((5 * 9))"
+  },
+  {
+   "type": "multiplication",
+   "graine": 0,
+   "k": 2,
+   "params": {
+    "a": "2",
+    "b": "8"
+   },
+   "reponse": "16",
+   "verif": "echo $((2 * 8))"
+  },
+  {
+   "type": "multiplication",
+   "graine": 0,
+   "k": 3,
+   "params": {
+    "a": "10",
+    "b": "5"
+   },
+   "reponse": "50",
+   "verif": "echo $((10 * 5))"
+  },
+  {
+   "type": "multiplication",
+   "graine": 0,
+   "k": 4,
+   "params": {
+    "a": "3",
+    "b": "9"
+   },
+   "reponse": "27",
+   "verif": "echo $((3 * 9))"
+  },
+  {
+   "type": "multiplication",
+   "graine": 0,
+   "k": 5,
+   "params": {
+    "a": "8",
+    "b": "4"
+   },
+   "reponse": "32",
+   "verif": "echo $((8 * 4))"
+  },
+  {
+   "type": "multiplication",
+   "graine": 0,
+   "k": 6,
+   "params": {
+    "a": "6",
+    "b": "8"
+   },
+   "reponse": "48",
+   "verif": "echo $((6 * 8))"
+  },
+  {
+   "type": "multiplication",
+   "graine": 0,
+   "k": 7,
+   "params": {
+    "a": "9",
+    "b": "8"
+   },
+   "reponse": "72",
+   "verif": "echo $((9 * 8))"
+  },
+  {
+   "type": "multiplication",
+   "graine": 1761955200,
+   "k": 0,
+   "params": {
+    "a": "8",
+    "b": "2"
+   },
+   "reponse": "16",
+   "verif": "echo $((8 * 2))"
+  },
+  {
+   "type": "multiplication",
+   "graine": 1761955200,
+   "k": 1,
+   "params": {
+    "a": "4",
+    "b": "5"
+   },
+   "reponse": "20",
+   "verif": "echo $((4 * 5))"
+  },
+  {
+   "type": "multiplication",
+   "graine": 1761955200,
+   "k": 2,
+   "params": {
+    "a": "6",
+    "b": "6"
+   },
+   "reponse": "36",
+   "verif": "echo $((6 * 6))"
+  },
+  {
+   "type": "multiplication",
+   "graine": 1761955200,
+   "k": 3,
+   "params": {
+    "a": "3",
+    "b": "6"
+   },
+   "reponse": "18",
+   "verif": "echo $((3 * 6))"
+  },
+  {
+   "type": "multiplication",
+   "graine": 1761955200,
+   "k": 4,
+   "params": {
+    "a": "5",
+    "b": "6"
+   },
+   "reponse": "30",
+   "verif": "echo $((5 * 6))"
+  },
+  {
+   "type": "multiplication",
+   "graine": 1761955200,
+   "k": 5,
+   "params": {
+    "a": "3",
+    "b": "6"
+   },
+   "reponse": "18",
+   "verif": "echo $((3 * 6))"
+  },
+  {
+   "type": "multiplication",
+   "graine": 1761955200,
+   "k": 6,
+   "params": {
+    "a": "9",
+    "b": "8"
+   },
+   "reponse": "72",
+   "verif": "echo $((9 * 8))"
+  },
+  {
+   "type": "multiplication",
+   "graine": 1761955200,
+   "k": 7,
+   "params": {
+    "a": "8",
+    "b": "10"
+   },
+   "reponse": "80",
+   "verif": "echo $((8 * 10))"
+  },
+  {
+   "type": "multiplication",
+   "graine": 1099511627783,
+   "k": 0,
+   "params": {
+    "a": "4",
+    "b": "6"
+   },
+   "reponse": "24",
+   "verif": "echo $((4 * 6))"
+  },
+  {
+   "type": "multiplication",
+   "graine": 1099511627783,
+   "k": 1,
+   "params": {
+    "a": "3",
+    "b": "7"
+   },
+   "reponse": "21",
+   "verif": "echo $((3 * 7))"
+  },
+  {
+   "type": "multiplication",
+   "graine": 1099511627783,
+   "k": 2,
+   "params": {
+    "a": "4",
+    "b": "2"
+   },
+   "reponse": "8",
+   "verif": "echo $((4 * 2))"
+  },
+  {
+   "type": "multiplication",
+   "graine": 1099511627783,
+   "k": 3,
+   "params": {
+    "a": "6",
+    "b": "5"
+   },
+   "reponse": "30",
+   "verif": "echo $((6 * 5))"
+  },
+  {
+   "type": "multiplication",
+   "graine": 1099511627783,
+   "k": 4,
+   "params": {
+    "a": "9",
+    "b": "8"
+   },
+   "reponse": "72",
+   "verif": "echo $((9 * 8))"
+  },
+  {
+   "type": "multiplication",
+   "graine": 1099511627783,
+   "k": 5,
+   "params": {
+    "a": "10",
+    "b": "2"
+   },
+   "reponse": "20",
+   "verif": "echo $((10 * 2))"
+  },
+  {
+   "type": "multiplication",
+   "graine": 1099511627783,
+   "k": 6,
+   "params": {
+    "a": "8",
+    "b": "8"
+   },
+   "reponse": "64",
+   "verif": "echo $((8 * 8))"
+  },
+  {
+   "type": "multiplication",
+   "graine": 1099511627783,
+   "k": 7,
+   "params": {
+    "a": "2",
+    "b": "7"
+   },
+   "reponse": "14",
+   "verif": "echo $((2 * 7))"
+  },
+  {
+   "type": "division",
+   "graine": 0,
+   "k": 0,
+   "params": {
+    "a": "39",
+    "b": "4"
+   },
+   "reponse": "9",
+   "verif": "echo $((39 / 4))"
+  },
+  {
+   "type": "division",
+   "graine": 0,
+   "k": 1,
+   "params": {
+    "a": "49",
+    "b": "6"
+   },
+   "reponse": "8",
+   "verif": "echo $((49 / 6))"
+  },
+  {
+   "type": "division",
+   "graine": 0,
+   "k": 2,
+   "params": {
+    "a": "45",
+    "b": "6"
+   },
+   "reponse": "7",
+   "verif": "echo $((45 / 6))"
+  },
+  {
+   "type": "division",
+   "graine": 0,
+   "k": 3,
+   "params": {
+    "a": "12",
+    "b": "3"
+   },
+   "reponse": "4",
+   "verif": "echo $((12 / 3))"
+  },
+  {
+   "type": "division",
+   "graine": 0,
+   "k": 4,
+   "params": {
+    "a": "60",
+    "b": "7"
+   },
+   "reponse": "8",
+   "verif": "echo $((60 / 7))"
+  },
+  {
+   "type": "division",
+   "graine": 0,
+   "k": 5,
+   "params": {
+    "a": "7",
+    "b": "2"
+   },
+   "reponse": "3",
+   "verif": "echo $((7 / 2))"
+  },
+  {
+   "type": "division",
+   "graine": 0,
+   "k": 6,
+   "params": {
+    "a": "30",
+    "b": "4"
+   },
+   "reponse": "7",
+   "verif": "echo $((30 / 4))"
+  },
+  {
+   "type": "division",
+   "graine": 0,
+   "k": 7,
+   "params": {
+    "a": "58",
+    "b": "8"
+   },
+   "reponse": "7",
+   "verif": "echo $((58 / 8))"
+  },
+  {
+   "type": "division",
+   "graine": 1761955200,
+   "k": 0,
+   "params": {
+    "a": "5",
+    "b": "5"
+   },
+   "reponse": "1",
+   "verif": "echo $((5 / 5))"
+  },
+  {
+   "type": "division",
+   "graine": 1761955200,
+   "k": 1,
+   "params": {
+    "a": "23",
+    "b": "5"
+   },
+   "reponse": "4",
+   "verif": "echo $((23 / 5))"
+  },
+  {
+   "type": "division",
+   "graine": 1761955200,
+   "k": 2,
+   "params": {
+    "a": "35",
+    "b": "6"
+   },
+   "reponse": "5",
+   "verif": "echo $((35 / 6))"
+  },
+  {
+   "type": "division",
+   "graine": 1761955200,
+   "k": 3,
+   "params": {
+    "a": "30",
+    "b": "6"
+   },
+   "reponse": "5",
+   "verif": "echo $((30 / 6))"
+  },
+  {
+   "type": "division",
+   "graine": 1761955200,
+   "k": 4,
+   "params": {
+    "a": "46",
+    "b": "9"
+   },
+   "reponse": "5",
+   "verif": "echo $((46 / 9))"
+  },
+  {
+   "type": "division",
+   "graine": 1761955200,
+   "k": 5,
+   "params": {
+    "a": "25",
+    "b": "5"
+   },
+   "reponse": "5",
+   "verif": "echo $((25 / 5))"
+  },
+  {
+   "type": "division",
+   "graine": 1761955200,
+   "k": 6,
+   "params": {
+    "a": "44",
+    "b": "6"
+   },
+   "reponse": "7",
+   "verif": "echo $((44 / 6))"
+  },
+  {
+   "type": "division",
+   "graine": 1761955200,
+   "k": 7,
+   "params": {
+    "a": "39",
+    "b": "4"
+   },
+   "reponse": "9",
+   "verif": "echo $((39 / 4))"
+  },
+  {
+   "type": "division",
+   "graine": 1099511627783,
+   "k": 0,
+   "params": {
+    "a": "38",
+    "b": "7"
+   },
+   "reponse": "5",
+   "verif": "echo $((38 / 7))"
+  },
+  {
+   "type": "division",
+   "graine": 1099511627783,
+   "k": 1,
+   "params": {
+    "a": "37",
+    "b": "6"
+   },
+   "reponse": "6",
+   "verif": "echo $((37 / 6))"
+  },
+  {
+   "type": "division",
+   "graine": 1099511627783,
+   "k": 2,
+   "params": {
+    "a": "9",
+    "b": "5"
+   },
+   "reponse": "1",
+   "verif": "echo $((9 / 5))"
+  },
+  {
+   "type": "division",
+   "graine": 1099511627783,
+   "k": 3,
+   "params": {
+    "a": "28",
+    "b": "6"
+   },
+   "reponse": "4",
+   "verif": "echo $((28 / 6))"
+  },
+  {
+   "type": "division",
+   "graine": 1099511627783,
+   "k": 4,
+   "params": {
+    "a": "31",
+    "b": "4"
+   },
+   "reponse": "7",
+   "verif": "echo $((31 / 4))"
+  },
+  {
+   "type": "division",
+   "graine": 1099511627783,
+   "k": 5,
+   "params": {
+    "a": "14",
+    "b": "9"
+   },
+   "reponse": "1",
+   "verif": "echo $((14 / 9))"
+  },
+  {
+   "type": "division",
+   "graine": 1099511627783,
+   "k": 6,
+   "params": {
+    "a": "23",
+    "b": "3"
+   },
+   "reponse": "7",
+   "verif": "echo $((23 / 3))"
+  },
+  {
+   "type": "division",
+   "graine": 1099511627783,
+   "k": 7,
+   "params": {
+    "a": "61",
+    "b": "9"
+   },
+   "reponse": "6",
+   "verif": "echo $((61 / 9))"
+  },
+  {
+   "type": "modulo",
+   "graine": 0,
+   "k": 0,
+   "params": {
+    "a": "39",
+    "b": "4"
+   },
+   "reponse": "3",
+   "verif": "echo $((39 % 4))"
+  },
+  {
+   "type": "modulo",
+   "graine": 0,
+   "k": 1,
+   "params": {
+    "a": "49",
+    "b": "6"
+   },
+   "reponse": "1",
+   "verif": "echo $((49 % 6))"
+  },
+  {
+   "type": "modulo",
+   "graine": 0,
+   "k": 2,
+   "params": {
+    "a": "45",
+    "b": "6"
+   },
+   "reponse": "3",
+   "verif": "echo $((45 % 6))"
+  },
+  {
+   "type": "modulo",
+   "graine": 0,
+   "k": 3,
+   "params": {
+    "a": "12",
+    "b": "3"
+   },
+   "reponse": "0",
+   "verif": "echo $((12 % 3))"
+  },
+  {
+   "type": "modulo",
+   "graine": 0,
+   "k": 4,
+   "params": {
+    "a": "60",
+    "b": "7"
+   },
+   "reponse": "4",
+   "verif": "echo $((60 % 7))"
+  },
+  {
+   "type": "modulo",
+   "graine": 0,
+   "k": 5,
+   "params": {
+    "a": "7",
+    "b": "2"
+   },
+   "reponse": "1",
+   "verif": "echo $((7 % 2))"
+  },
+  {
+   "type": "modulo",
+   "graine": 0,
+   "k": 6,
+   "params": {
+    "a": "30",
+    "b": "4"
+   },
+   "reponse": "2",
+   "verif": "echo $((30 % 4))"
+  },
+  {
+   "type": "modulo",
+   "graine": 0,
+   "k": 7,
+   "params": {
+    "a": "58",
+    "b": "8"
+   },
+   "reponse": "2",
+   "verif": "echo $((58 % 8))"
+  },
+  {
+   "type": "modulo",
+   "graine": 1761955200,
+   "k": 0,
+   "params": {
+    "a": "5",
+    "b": "5"
+   },
+   "reponse": "0",
+   "verif": "echo $((5 % 5))"
+  },
+  {
+   "type": "modulo",
+   "graine": 1761955200,
+   "k": 1,
+   "params": {
+    "a": "23",
+    "b": "5"
+   },
+   "reponse": "3",
+   "verif": "echo $((23 % 5))"
+  },
+  {
+   "type": "modulo",
+   "graine": 1761955200,
+   "k": 2,
+   "params": {
+    "a": "35",
+    "b": "6"
+   },
+   "reponse": "5",
+   "verif": "echo $((35 % 6))"
+  },
+  {
+   "type": "modulo",
+   "graine": 1761955200,
+   "k": 3,
+   "params": {
+    "a": "30",
+    "b": "6"
+   },
+   "reponse": "0",
+   "verif": "echo $((30 % 6))"
+  },
+  {
+   "type": "modulo",
+   "graine": 1761955200,
+   "k": 4,
+   "params": {
+    "a": "46",
+    "b": "9"
+   },
+   "reponse": "1",
+   "verif": "echo $((46 % 9))"
+  },
+  {
+   "type": "modulo",
+   "graine": 1761955200,
+   "k": 5,
+   "params": {
+    "a": "25",
+    "b": "5"
+   },
+   "reponse": "0",
+   "verif": "echo $((25 % 5))"
+  },
+  {
+   "type": "modulo",
+   "graine": 1761955200,
+   "k": 6,
+   "params": {
+    "a": "44",
+    "b": "6"
+   },
+   "reponse": "2",
+   "verif": "echo $((44 % 6))"
+  },
+  {
+   "type": "modulo",
+   "graine": 1761955200,
+   "k": 7,
+   "params": {
+    "a": "39",
+    "b": "4"
+   },
+   "reponse": "3",
+   "verif": "echo $((39 % 4))"
+  },
+  {
+   "type": "modulo",
+   "graine": 1099511627783,
+   "k": 0,
+   "params": {
+    "a": "38",
+    "b": "7"
+   },
+   "reponse": "3",
+   "verif": "echo $((38 % 7))"
+  },
+  {
+   "type": "modulo",
+   "graine": 1099511627783,
+   "k": 1,
+   "params": {
+    "a": "37",
+    "b": "6"
+   },
+   "reponse": "1",
+   "verif": "echo $((37 % 6))"
+  },
+  {
+   "type": "modulo",
+   "graine": 1099511627783,
+   "k": 2,
+   "params": {
+    "a": "9",
+    "b": "5"
+   },
+   "reponse": "4",
+   "verif": "echo $((9 % 5))"
+  },
+  {
+   "type": "modulo",
+   "graine": 1099511627783,
+   "k": 3,
+   "params": {
+    "a": "28",
+    "b": "6"
+   },
+   "reponse": "4",
+   "verif": "echo $((28 % 6))"
+  },
+  {
+   "type": "modulo",
+   "graine": 1099511627783,
+   "k": 4,
+   "params": {
+    "a": "31",
+    "b": "4"
+   },
+   "reponse": "3",
+   "verif": "echo $((31 % 4))"
+  },
+  {
+   "type": "modulo",
+   "graine": 1099511627783,
+   "k": 5,
+   "params": {
+    "a": "14",
+    "b": "9"
+   },
+   "reponse": "5",
+   "verif": "echo $((14 % 9))"
+  },
+  {
+   "type": "modulo",
+   "graine": 1099511627783,
+   "k": 6,
+   "params": {
+    "a": "23",
+    "b": "3"
+   },
+   "reponse": "2",
+   "verif": "echo $((23 % 3))"
+  },
+  {
+   "type": "modulo",
+   "graine": 1099511627783,
+   "k": 7,
+   "params": {
+    "a": "61",
+    "b": "9"
+   },
+   "reponse": "7",
+   "verif": "echo $((61 % 9))"
+  },
+  {
+   "type": "puissances",
+   "graine": 0,
+   "k": 0,
+   "params": {
+    "a": "4",
+    "b": "4",
+    "calcul": "4 × 4 × 4 × 4"
+   },
+   "reponse": "256",
+   "verif": "echo $((4 * 4 * 4 * 4))"
+  },
+  {
+   "type": "puissances",
+   "graine": 0,
+   "k": 1,
+   "params": {
+    "a": "2",
+    "b": "3",
+    "calcul": "2 × 2 × 2"
+   },
+   "reponse": "8",
+   "verif": "echo $((2 * 2 * 2))"
+  },
+  {
+   "type": "puissances",
+   "graine": 0,
+   "k": 2,
+   "params": {
+    "a": "2",
+    "b": "2",
+    "calcul": "2 × 2"
+   },
+   "reponse": "4",
+   "verif": "echo $((2 * 2))"
+  },
+  {
+   "type": "puissances",
+   "graine": 0,
+   "k": 3,
+   "params": {
+    "a": "3",
+    "b": "2",
+    "calcul": "3 × 3"
+   },
+   "reponse": "9",
+   "verif": "echo $((3 * 3))"
+  },
+  {
+   "type": "puissances",
+   "graine": 0,
+   "k": 4,
+   "params": {
+    "a": "3",
+    "b": "3",
+    "calcul": "3 × 3 × 3"
+   },
+   "reponse": "27",
+   "verif": "echo $((3 * 3 * 3))"
+  },
+  {
+   "type": "puissances",
+   "graine": 0,
+   "k": 5,
+   "params": {
+    "a": "2",
+    "b": "4",
+    "calcul": "2 × 2 × 2 × 2"
+   },
+   "reponse": "16",
+   "verif": "echo $((2 * 2 * 2 * 2))"
+  },
+  {
+   "type": "puissances",
+   "graine": 0,
+   "k": 6,
+   "params": {
+    "a": "4",
+    "b": "2",
+    "calcul": "4 × 4"
+   },
+   "reponse": "16",
+   "verif": "echo $((4 * 4))"
+  },
+  {
+   "type": "puissances",
+   "graine": 0,
+   "k": 7,
+   "params": {
+    "a": "4",
+    "b": "2",
+    "calcul": "4 × 4"
+   },
+   "reponse": "16",
+   "verif": "echo $((4 * 4))"
+  },
+  {
+   "type": "puissances",
+   "graine": 1761955200,
+   "k": 0,
+   "params": {
+    "a": "5",
+    "b": "2",
+    "calcul": "5 × 5"
+   },
+   "reponse": "25",
+   "verif": "echo $((5 * 5))"
+  },
+  {
+   "type": "puissances",
+   "graine": 1761955200,
+   "k": 1,
+   "params": {
+    "a": "5",
+    "b": "2",
+    "calcul": "5 × 5"
+   },
+   "reponse": "25",
+   "verif": "echo $((5 * 5))"
+  },
+  {
+   "type": "puissances",
+   "graine": 1761955200,
+   "k": 2,
+   "params": {
+    "a": "2",
+    "b": "3",
+    "calcul": "2 × 2 × 2"
+   },
+   "reponse": "8",
+   "verif": "echo $((2 * 2 * 2))"
+  },
+  {
+   "type": "puissances",
+   "graine": 1761955200,
+   "k": 3,
+   "params": {
+    "a": "2",
+    "b": "3",
+    "calcul": "2 × 2 × 2"
+   },
+   "reponse": "8",
+   "verif": "echo $((2 * 2 * 2))"
+  },
+  {
+   "type": "puissances",
+   "graine": 1761955200,
+   "k": 4,
+   "params": {
+    "a": "5",
+    "b": "3",
+    "calcul": "5 × 5 × 5"
+   },
+   "reponse": "125",
+   "verif": "echo $((5 * 5 * 5))"
+  },
+  {
+   "type": "puissances",
+   "graine": 1761955200,
+   "k": 5,
+   "params": {
+    "a": "5",
+    "b": "3",
+    "calcul": "5 × 5 × 5"
+   },
+   "reponse": "125",
+   "verif": "echo $((5 * 5 * 5))"
+  },
+  {
+   "type": "puissances",
+   "graine": 1761955200,
+   "k": 6,
+   "params": {
+    "a": "2",
+    "b": "2",
+    "calcul": "2 × 2"
+   },
+   "reponse": "4",
+   "verif": "echo $((2 * 2))"
+  },
+  {
+   "type": "puissances",
+   "graine": 1761955200,
+   "k": 7,
+   "params": {
+    "a": "4",
+    "b": "4",
+    "calcul": "4 × 4 × 4 × 4"
+   },
+   "reponse": "256",
+   "verif": "echo $((4 * 4 * 4 * 4))"
+  },
+  {
+   "type": "puissances",
+   "graine": 1099511627783,
+   "k": 0,
+   "params": {
+    "a": "3",
+    "b": "3",
+    "calcul": "3 × 3 × 3"
+   },
+   "reponse": "27",
+   "verif": "echo $((3 * 3 * 3))"
+  },
+  {
+   "type": "puissances",
+   "graine": 1099511627783,
+   "k": 1,
+   "params": {
+    "a": "2",
+    "b": "4",
+    "calcul": "2 × 2 × 2 × 2"
+   },
+   "reponse": "16",
+   "verif": "echo $((2 * 2 * 2 * 2))"
+  },
+  {
+   "type": "puissances",
+   "graine": 1099511627783,
+   "k": 2,
+   "params": {
+    "a": "5",
+    "b": "2",
+    "calcul": "5 × 5"
+   },
+   "reponse": "25",
+   "verif": "echo $((5 * 5))"
+  },
+  {
+   "type": "puissances",
+   "graine": 1099511627783,
+   "k": 3,
+   "params": {
+    "a": "2",
+    "b": "2",
+    "calcul": "2 × 2"
+   },
+   "reponse": "4",
+   "verif": "echo $((2 * 2))"
+  },
+  {
+   "type": "puissances",
+   "graine": 1099511627783,
+   "k": 4,
+   "params": {
+    "a": "4",
+    "b": "2",
+    "calcul": "4 × 4"
+   },
+   "reponse": "16",
+   "verif": "echo $((4 * 4))"
+  },
+  {
+   "type": "puissances",
+   "graine": 1099511627783,
+   "k": 5,
+   "params": {
+    "a": "5",
+    "b": "2",
+    "calcul": "5 × 5"
+   },
+   "reponse": "25",
+   "verif": "echo $((5 * 5))"
+  },
+  {
+   "type": "puissances",
+   "graine": 1099511627783,
+   "k": 6,
+   "params": {
+    "a": "3",
+    "b": "2",
+    "calcul": "3 × 3"
+   },
+   "reponse": "9",
+   "verif": "echo $((3 * 3))"
+  },
+  {
+   "type": "puissances",
+   "graine": 1099511627783,
+   "k": 7,
+   "params": {
+    "a": "5",
+    "b": "4",
+    "calcul": "5 × 5 × 5 × 5"
+   },
+   "reponse": "625",
+   "verif": "echo $((5 * 5 * 5 * 5))"
+  },
+  {
+   "type": "binaire",
+   "graine": 0,
+   "k": 0,
+   "params": {
+    "bits": "111"
+   },
+   "reponse": "7",
+   "verif": "echo $((2#111))"
+  },
+  {
+   "type": "binaire",
+   "graine": 0,
+   "k": 1,
+   "params": {
+    "bits": "11011"
+   },
+   "reponse": "27",
+   "verif": "echo $((2#11011))"
+  },
+  {
+   "type": "binaire",
+   "graine": 0,
+   "k": 2,
+   "params": {
+    "bits": "11000"
+   },
+   "reponse": "24",
+   "verif": "echo $((2#11000))"
+  },
+  {
+   "type": "binaire",
+   "graine": 0,
+   "k": 3,
+   "params": {
+    "bits": "10000"
+   },
+   "reponse": "16",
+   "verif": "echo $((2#10000))"
+  },
+  {
+   "type": "binaire",
+   "graine": 0,
+   "k": 4,
+   "params": {
+    "bits": "10011"
+   },
+   "reponse": "19",
+   "verif": "echo $((2#10011))"
+  },
+  {
+   "type": "binaire",
+   "graine": 0,
+   "k": 5,
+   "params": {
+    "bits": "1010"
+   },
+   "reponse": "10",
+   "verif": "echo $((2#1010))"
+  },
+  {
+   "type": "binaire",
+   "graine": 0,
+   "k": 6,
+   "params": {
+    "bits": "10010"
+   },
+   "reponse": "18",
+   "verif": "echo $((2#10010))"
+  },
+  {
+   "type": "binaire",
+   "graine": 0,
+   "k": 7,
+   "params": {
+    "bits": "10"
+   },
+   "reponse": "2",
+   "verif": "echo $((2#10))"
+  },
+  {
+   "type": "binaire",
+   "graine": 1761955200,
+   "k": 0,
+   "params": {
+    "bits": "111"
+   },
+   "reponse": "7",
+   "verif": "echo $((2#111))"
+  },
+  {
+   "type": "binaire",
+   "graine": 1761955200,
+   "k": 1,
+   "params": {
+    "bits": "10011"
+   },
+   "reponse": "19",
+   "verif": "echo $((2#10011))"
+  },
+  {
+   "type": "binaire",
+   "graine": 1761955200,
+   "k": 2,
+   "params": {
+    "bits": "11001"
+   },
+   "reponse": "25",
+   "verif": "echo $((2#11001))"
+  },
+  {
+   "type": "binaire",
+   "graine": 1761955200,
+   "k": 3,
+   "params": {
+    "bits": "10100"
+   },
+   "reponse": "20",
+   "verif": "echo $((2#10100))"
+  },
+  {
+   "type": "binaire",
+   "graine": 1761955200,
+   "k": 4,
+   "params": {
+    "bits": "1111"
+   },
+   "reponse": "15",
+   "verif": "echo $((2#1111))"
+  },
+  {
+   "type": "binaire",
+   "graine": 1761955200,
+   "k": 5,
+   "params": {
+    "bits": "11110"
+   },
+   "reponse": "30",
+   "verif": "echo $((2#11110))"
+  },
+  {
+   "type": "binaire",
+   "graine": 1761955200,
+   "k": 6,
+   "params": {
+    "bits": "1000"
+   },
+   "reponse": "8",
+   "verif": "echo $((2#1000))"
+  },
+  {
+   "type": "binaire",
+   "graine": 1761955200,
+   "k": 7,
+   "params": {
+    "bits": "110"
+   },
+   "reponse": "6",
+   "verif": "echo $((2#110))"
+  },
+  {
+   "type": "binaire",
+   "graine": 1099511627783,
+   "k": 0,
+   "params": {
+    "bits": "11011"
+   },
+   "reponse": "27",
+   "verif": "echo $((2#11011))"
+  },
+  {
+   "type": "binaire",
+   "graine": 1099511627783,
+   "k": 1,
+   "params": {
+    "bits": "11000"
+   },
+   "reponse": "24",
+   "verif": "echo $((2#11000))"
+  },
+  {
+   "type": "binaire",
+   "graine": 1099511627783,
+   "k": 2,
+   "params": {
+    "bits": "10011"
+   },
+   "reponse": "19",
+   "verif": "echo $((2#10011))"
+  },
+  {
+   "type": "binaire",
+   "graine": 1099511627783,
+   "k": 3,
+   "params": {
+    "bits": "1010"
+   },
+   "reponse": "10",
+   "verif": "echo $((2#1010))"
+  },
+  {
+   "type": "binaire",
+   "graine": 1099511627783,
+   "k": 4,
+   "params": {
+    "bits": "1000"
+   },
+   "reponse": "8",
+   "verif": "echo $((2#1000))"
+  },
+  {
+   "type": "binaire",
+   "graine": 1099511627783,
+   "k": 5,
+   "params": {
+    "bits": "11"
+   },
+   "reponse": "3",
+   "verif": "echo $((2#11))"
+  },
+  {
+   "type": "binaire",
+   "graine": 1099511627783,
+   "k": 6,
+   "params": {
+    "bits": "10011"
+   },
+   "reponse": "19",
+   "verif": "echo $((2#10011))"
+  },
+  {
+   "type": "binaire",
+   "graine": 1099511627783,
+   "k": 7,
+   "params": {
+    "bits": "1010"
+   },
+   "reponse": "10",
+   "verif": "echo $((2#1010))"
+  },
+  {
+   "type": "pourcentages",
+   "graine": 0,
+   "k": 0,
+   "params": {
+    "n": "2",
+    "total": "2"
+   },
+   "reponse": "100",
+   "verif": "echo $((2 * 100 / 2))"
+  },
+  {
+   "type": "pourcentages",
+   "graine": 0,
+   "k": 1,
+   "params": {
+    "n": "1",
+    "total": "4"
+   },
+   "reponse": "25",
+   "verif": "echo $((1 * 100 / 4))"
+  },
+  {
+   "type": "pourcentages",
+   "graine": 0,
+   "k": 2,
+   "params": {
+    "n": "45",
+    "total": "50"
+   },
+   "reponse": "90",
+   "verif": "echo $((45 * 100 / 50))"
+  },
+  {
+   "type": "pourcentages",
+   "graine": 0,
+   "k": 3,
+   "params": {
+    "n": "0",
+    "total": "4"
+   },
+   "reponse": "0",
+   "verif": "echo $((0 * 100 / 4))"
+  },
+  {
+   "type": "pourcentages",
+   "graine": 0,
+   "k": 4,
+   "params": {
+    "n": "8",
+    "total": "10"
+   },
+   "reponse": "80",
+   "verif": "echo $((8 * 100 / 10))"
+  },
+  {
+   "type": "pourcentages",
+   "graine": 0,
+   "k": 5,
+   "params": {
+    "n": "20",
+    "total": "20"
+   },
+   "reponse": "100",
+   "verif": "echo $((20 * 100 / 20))"
+  },
+  {
+   "type": "pourcentages",
+   "graine": 0,
+   "k": 6,
+   "params": {
+    "n": "4",
+    "total": "4"
+   },
+   "reponse": "100",
+   "verif": "echo $((4 * 100 / 4))"
+  },
+  {
+   "type": "pourcentages",
+   "graine": 0,
+   "k": 7,
+   "params": {
+    "n": "45",
+    "total": "50"
+   },
+   "reponse": "90",
+   "verif": "echo $((45 * 100 / 50))"
+  },
+  {
+   "type": "pourcentages",
+   "graine": 1761955200,
+   "k": 0,
+   "params": {
+    "n": "6",
+    "total": "20"
+   },
+   "reponse": "30",
+   "verif": "echo $((6 * 100 / 20))"
+  },
+  {
+   "type": "pourcentages",
+   "graine": 1761955200,
+   "k": 1,
+   "params": {
+    "n": "10",
+    "total": "25"
+   },
+   "reponse": "40",
+   "verif": "echo $((10 * 100 / 25))"
+  },
+  {
+   "type": "pourcentages",
+   "graine": 1761955200,
+   "k": 2,
+   "params": {
+    "n": "4",
+    "total": "25"
+   },
+   "reponse": "16",
+   "verif": "echo $((4 * 100 / 25))"
+  },
+  {
+   "type": "pourcentages",
+   "graine": 1761955200,
+   "k": 3,
+   "params": {
+    "n": "1",
+    "total": "5"
+   },
+   "reponse": "20",
+   "verif": "echo $((1 * 100 / 5))"
+  },
+  {
+   "type": "pourcentages",
+   "graine": 1761955200,
+   "k": 4,
+   "params": {
+    "n": "1",
+    "total": "2"
+   },
+   "reponse": "50",
+   "verif": "echo $((1 * 100 / 2))"
+  },
+  {
+   "type": "pourcentages",
+   "graine": 1761955200,
+   "k": 5,
+   "params": {
+    "n": "7",
+    "total": "10"
+   },
+   "reponse": "70",
+   "verif": "echo $((7 * 100 / 10))"
+  },
+  {
+   "type": "pourcentages",
+   "graine": 1761955200,
+   "k": 6,
+   "params": {
+    "n": "2",
+    "total": "4"
+   },
+   "reponse": "50",
+   "verif": "echo $((2 * 100 / 4))"
+  },
+  {
+   "type": "pourcentages",
+   "graine": 1761955200,
+   "k": 7,
+   "params": {
+    "n": "2",
+    "total": "4"
+   },
+   "reponse": "50",
+   "verif": "echo $((2 * 100 / 4))"
+  },
+  {
+   "type": "pourcentages",
+   "graine": 1099511627783,
+   "k": 0,
+   "params": {
+    "n": "3",
+    "total": "25"
+   },
+   "reponse": "12",
+   "verif": "echo $((3 * 100 / 25))"
+  },
+  {
+   "type": "pourcentages",
+   "graine": 1099511627783,
+   "k": 1,
+   "params": {
+    "n": "4",
+    "total": "10"
+   },
+   "reponse": "40",
+   "verif": "echo $((4 * 100 / 10))"
+  },
+  {
+   "type": "pourcentages",
+   "graine": 1099511627783,
+   "k": 2,
+   "params": {
+    "n": "3",
+    "total": "10"
+   },
+   "reponse": "30",
+   "verif": "echo $((3 * 100 / 10))"
+  },
+  {
+   "type": "pourcentages",
+   "graine": 1099511627783,
+   "k": 3,
+   "params": {
+    "n": "1",
+    "total": "4"
+   },
+   "reponse": "25",
+   "verif": "echo $((1 * 100 / 4))"
+  },
+  {
+   "type": "pourcentages",
+   "graine": 1099511627783,
+   "k": 4,
+   "params": {
+    "n": "0",
+    "total": "5"
+   },
+   "reponse": "0",
+   "verif": "echo $((0 * 100 / 5))"
+  },
+  {
+   "type": "pourcentages",
+   "graine": 1099511627783,
+   "k": 5,
+   "params": {
+    "n": "0",
+    "total": "20"
+   },
+   "reponse": "0",
+   "verif": "echo $((0 * 100 / 20))"
+  },
+  {
+   "type": "pourcentages",
+   "graine": 1099511627783,
+   "k": 6,
+   "params": {
+    "n": "0",
+    "total": "2"
+   },
+   "reponse": "0",
+   "verif": "echo $((0 * 100 / 2))"
+  },
+  {
+   "type": "pourcentages",
+   "graine": 1099511627783,
+   "k": 7,
+   "params": {
+    "n": "21",
+    "total": "25"
+   },
+   "reponse": "84",
+   "verif": "echo $((21 * 100 / 25))"
+  },
+  {
+   "type": "moyenne",
+   "graine": 0,
+   "k": 0,
+   "params": {
+    "a": "26",
+    "b": "31",
+    "c": "27"
+   },
+   "reponse": "28",
+   "verif": "echo $(( (26 + 31 + 27) / 3 ))"
+  },
+  {
+   "type": "moyenne",
+   "graine": 0,
+   "k": 1,
+   "params": {
+    "a": "22",
+    "b": "27",
+    "c": "29"
+   },
+   "reponse": "26",
+   "verif": "echo $(( (22 + 27 + 29) / 3 ))"
+  },
+  {
+   "type": "moyenne",
+   "graine": 0,
+   "k": 2,
+   "params": {
+    "a": "11",
+    "b": "17",
+    "c": "14"
+   },
+   "reponse": "14",
+   "verif": "echo $(( (11 + 17 + 14) / 3 ))"
+  },
+  {
+   "type": "moyenne",
+   "graine": 0,
+   "k": 3,
+   "params": {
+    "a": "23",
+    "b": "23",
+    "c": "23"
+   },
+   "reponse": "23",
+   "verif": "echo $(( (23 + 23 + 23) / 3 ))"
+  },
+  {
+   "type": "moyenne",
+   "graine": 0,
+   "k": 4,
+   "params": {
+    "a": "14",
+    "b": "20",
+    "c": "11"
+   },
+   "reponse": "15",
+   "verif": "echo $(( (14 + 20 + 11) / 3 ))"
+  },
+  {
+   "type": "moyenne",
+   "graine": 0,
+   "k": 5,
+   "params": {
+    "a": "8",
+    "b": "11",
+    "c": "11"
+   },
+   "reponse": "10",
+   "verif": "echo $(( (8 + 11 + 11) / 3 ))"
+  },
+  {
+   "type": "moyenne",
+   "graine": 0,
+   "k": 6,
+   "params": {
+    "a": "21",
+    "b": "26",
+    "c": "25"
+   },
+   "reponse": "24",
+   "verif": "echo $(( (21 + 26 + 25) / 3 ))"
+  },
+  {
+   "type": "moyenne",
+   "graine": 0,
+   "k": 7,
+   "params": {
+    "a": "12",
+    "b": "16",
+    "c": "8"
+   },
+   "reponse": "12",
+   "verif": "echo $(( (12 + 16 + 8) / 3 ))"
+  },
+  {
+   "type": "moyenne",
+   "graine": 1761955200,
+   "k": 0,
+   "params": {
+    "a": "18",
+    "b": "22",
+    "c": "23"
+   },
+   "reponse": "21",
+   "verif": "echo $(( (18 + 22 + 23) / 3 ))"
+  },
+  {
+   "type": "moyenne",
+   "graine": 1761955200,
+   "k": 1,
+   "params": {
+    "a": "25",
+    "b": "25",
+    "c": "25"
+   },
+   "reponse": "25",
+   "verif": "echo $(( (25 + 25 + 25) / 3 ))"
+  },
+  {
+   "type": "moyenne",
+   "graine": 1761955200,
+   "k": 2,
+   "params": {
+    "a": "10",
+    "b": "19",
+    "c": "13"
+   },
+   "reponse": "14",
+   "verif": "echo $(( (10 + 19 + 13) / 3 ))"
+  },
+  {
+   "type": "moyenne",
+   "graine": 1761955200,
+   "k": 3,
+   "params": {
+    "a": "21",
+    "b": "22",
+    "c": "23"
+   },
+   "reponse": "22",
+   "verif": "echo $(( (21 + 22 + 23) / 3 ))"
+  },
+  {
+   "type": "moyenne",
+   "graine": 1761955200,
+   "k": 4,
+   "params": {
+    "a": "20",
+    "b": "25",
+    "c": "18"
+   },
+   "reponse": "21",
+   "verif": "echo $(( (20 + 25 + 18) / 3 ))"
+  },
+  {
+   "type": "moyenne",
+   "graine": 1761955200,
+   "k": 5,
+   "params": {
+    "a": "17",
+    "b": "21",
+    "c": "25"
+   },
+   "reponse": "21",
+   "verif": "echo $(( (17 + 21 + 25) / 3 ))"
+  },
+  {
+   "type": "moyenne",
+   "graine": 1761955200,
+   "k": 6,
+   "params": {
+    "a": "7",
+    "b": "12",
+    "c": "11"
+   },
+   "reponse": "10",
+   "verif": "echo $(( (7 + 12 + 11) / 3 ))"
+  },
+  {
+   "type": "moyenne",
+   "graine": 1761955200,
+   "k": 7,
+   "params": {
+    "a": "7",
+    "b": "17",
+    "c": "12"
+   },
+   "reponse": "12",
+   "verif": "echo $(( (7 + 17 + 12) / 3 ))"
+  },
+  {
+   "type": "moyenne",
+   "graine": 1099511627783,
+   "k": 0,
+   "params": {
+    "a": "22",
+    "b": "26",
+    "c": "21"
+   },
+   "reponse": "23",
+   "verif": "echo $(( (22 + 26 + 21) / 3 ))"
+  },
+  {
+   "type": "moyenne",
+   "graine": 1099511627783,
+   "k": 1,
+   "params": {
+    "a": "24",
+    "b": "27",
+    "c": "27"
+   },
+   "reponse": "26",
+   "verif": "echo $(( (24 + 27 + 27) / 3 ))"
+  },
+  {
+   "type": "moyenne",
+   "graine": 1099511627783,
+   "k": 2,
+   "params": {
+    "a": "22",
+    "b": "27",
+    "c": "26"
+   },
+   "reponse": "25",
+   "verif": "echo $(( (22 + 27 + 26) / 3 ))"
+  },
+  {
+   "type": "moyenne",
+   "graine": 1099511627783,
+   "k": 3,
+   "params": {
+    "a": "7",
+    "b": "14",
+    "c": "9"
+   },
+   "reponse": "10",
+   "verif": "echo $(( (7 + 14 + 9) / 3 ))"
+  },
+  {
+   "type": "moyenne",
+   "graine": 1099511627783,
+   "k": 4,
+   "params": {
+    "a": "20",
+    "b": "23",
+    "c": "17"
+   },
+   "reponse": "20",
+   "verif": "echo $(( (20 + 23 + 17) / 3 ))"
+  },
+  {
+   "type": "moyenne",
+   "graine": 1099511627783,
+   "k": 5,
+   "params": {
+    "a": "18",
+    "b": "23",
+    "c": "22"
+   },
+   "reponse": "21",
+   "verif": "echo $(( (18 + 23 + 22) / 3 ))"
+  },
+  {
+   "type": "moyenne",
+   "graine": 1099511627783,
+   "k": 6,
+   "params": {
+    "a": "20",
+    "b": "28",
+    "c": "21"
+   },
+   "reponse": "23",
+   "verif": "echo $(( (20 + 28 + 21) / 3 ))"
+  },
+  {
+   "type": "moyenne",
+   "graine": 1099511627783,
+   "k": 7,
+   "params": {
+    "a": "16",
+    "b": "25",
+    "c": "22"
+   },
+   "reponse": "21",
+   "verif": "echo $(( (16 + 25 + 22) / 3 ))"
+  },
+  {
+   "type": "probabilites",
+   "graine": 0,
+   "k": 0,
+   "params": {
+    "a": "1",
+    "b": "1"
+   },
+   "reponse": "50",
+   "verif": "echo $((1 * 100 / 2))"
+  },
+  {
+   "type": "probabilites",
+   "graine": 0,
+   "k": 1,
+   "params": {
+    "a": "2",
+    "b": "2"
+   },
+   "reponse": "50",
+   "verif": "echo $((2 * 100 / 4))"
+  },
+  {
+   "type": "probabilites",
+   "graine": 0,
+   "k": 2,
+   "params": {
+    "a": "7",
+    "b": "43"
+   },
+   "reponse": "14",
+   "verif": "echo $((7 * 100 / 50))"
+  },
+  {
+   "type": "probabilites",
+   "graine": 0,
+   "k": 3,
+   "params": {
+    "a": "1",
+    "b": "3"
+   },
+   "reponse": "25",
+   "verif": "echo $((1 * 100 / 4))"
+  },
+  {
+   "type": "probabilites",
+   "graine": 0,
+   "k": 4,
+   "params": {
+    "a": "8",
+    "b": "2"
+   },
+   "reponse": "80",
+   "verif": "echo $((8 * 100 / 10))"
+  },
+  {
+   "type": "probabilites",
+   "graine": 0,
+   "k": 5,
+   "params": {
+    "a": "6",
+    "b": "14"
+   },
+   "reponse": "30",
+   "verif": "echo $((6 * 100 / 20))"
+  },
+  {
+   "type": "probabilites",
+   "graine": 0,
+   "k": 6,
+   "params": {
+    "a": "1",
+    "b": "3"
+   },
+   "reponse": "25",
+   "verif": "echo $((1 * 100 / 4))"
+  },
+  {
+   "type": "probabilites",
+   "graine": 0,
+   "k": 7,
+   "params": {
+    "a": "24",
+    "b": "26"
+   },
+   "reponse": "48",
+   "verif": "echo $((24 * 100 / 50))"
+  },
+  {
+   "type": "probabilites",
+   "graine": 1761955200,
+   "k": 0,
+   "params": {
+    "a": "19",
+    "b": "1"
+   },
+   "reponse": "95",
+   "verif": "echo $((19 * 100 / 20))"
+  },
+  {
+   "type": "probabilites",
+   "graine": 1761955200,
+   "k": 1,
+   "params": {
+    "a": "7",
+    "b": "18"
+   },
+   "reponse": "28",
+   "verif": "echo $((7 * 100 / 25))"
+  },
+  {
+   "type": "probabilites",
+   "graine": 1761955200,
+   "k": 2,
+   "params": {
+    "a": "11",
+    "b": "14"
+   },
+   "reponse": "44",
+   "verif": "echo $((11 * 100 / 25))"
+  },
+  {
+   "type": "probabilites",
+   "graine": 1761955200,
+   "k": 3,
+   "params": {
+    "a": "2",
+    "b": "3"
+   },
+   "reponse": "40",
+   "verif": "echo $((2 * 100 / 5))"
+  },
+  {
+   "type": "probabilites",
+   "graine": 1761955200,
+   "k": 4,
+   "params": {
+    "a": "1",
+    "b": "1"
+   },
+   "reponse": "50",
+   "verif": "echo $((1 * 100 / 2))"
+  },
+  {
+   "type": "probabilites",
+   "graine": 1761955200,
+   "k": 5,
+   "params": {
+    "a": "5",
+    "b": "5"
+   },
+   "reponse": "50",
+   "verif": "echo $((5 * 100 / 10))"
+  },
+  {
+   "type": "probabilites",
+   "graine": 1761955200,
+   "k": 6,
+   "params": {
+    "a": "1",
+    "b": "3"
+   },
+   "reponse": "25",
+   "verif": "echo $((1 * 100 / 4))"
+  },
+  {
+   "type": "probabilites",
+   "graine": 1761955200,
+   "k": 7,
+   "params": {
+    "a": "3",
+    "b": "1"
+   },
+   "reponse": "75",
+   "verif": "echo $((3 * 100 / 4))"
+  },
+  {
+   "type": "probabilites",
+   "graine": 1099511627783,
+   "k": 0,
+   "params": {
+    "a": "2",
+    "b": "23"
+   },
+   "reponse": "8",
+   "verif": "echo $((2 * 100 / 25))"
+  },
+  {
+   "type": "probabilites",
+   "graine": 1099511627783,
+   "k": 1,
+   "params": {
+    "a": "6",
+    "b": "4"
+   },
+   "reponse": "60",
+   "verif": "echo $((6 * 100 / 10))"
+  },
+  {
+   "type": "probabilites",
+   "graine": 1099511627783,
+   "k": 2,
+   "params": {
+    "a": "1",
+    "b": "9"
+   },
+   "reponse": "10",
+   "verif": "echo $((1 * 100 / 10))"
+  },
+  {
+   "type": "probabilites",
+   "graine": 1099511627783,
+   "k": 3,
+   "params": {
+    "a": "1",
+    "b": "3"
+   },
+   "reponse": "25",
+   "verif": "echo $((1 * 100 / 4))"
+  },
+  {
+   "type": "probabilites",
+   "graine": 1099511627783,
+   "k": 4,
+   "params": {
+    "a": "1",
+    "b": "4"
+   },
+   "reponse": "20",
+   "verif": "echo $((1 * 100 / 5))"
+  },
+  {
+   "type": "probabilites",
+   "graine": 1099511627783,
+   "k": 5,
+   "params": {
+    "a": "2",
+    "b": "18"
+   },
+   "reponse": "10",
+   "verif": "echo $((2 * 100 / 20))"
+  },
+  {
+   "type": "probabilites",
+   "graine": 1099511627783,
+   "k": 6,
+   "params": {
+    "a": "1",
+    "b": "1"
+   },
+   "reponse": "50",
+   "verif": "echo $((1 * 100 / 2))"
+  },
+  {
+   "type": "probabilites",
+   "graine": 1099511627783,
+   "k": 7,
+   "params": {
+    "a": "12",
+    "b": "13"
+   },
+   "reponse": "48",
+   "verif": "echo $((12 * 100 / 25))"
+  },
+  {
+   "type": "logique",
+   "graine": 0,
+   "k": 0,
+   "params": {
+    "a": "0",
+    "b": "0"
+   },
+   "reponse": "0",
+   "verif": "echo $(( 0 && 0 ))"
+  },
+  {
+   "type": "logique",
+   "graine": 0,
+   "k": 1,
+   "params": {
+    "a": "0",
+    "b": "0"
+   },
+   "reponse": "0",
+   "verif": "echo $(( 0 && 0 ))"
+  },
+  {
+   "type": "logique",
+   "graine": 0,
+   "k": 2,
+   "params": {
+    "a": "0",
+    "b": "1"
+   },
+   "reponse": "0",
+   "verif": "echo $(( 0 && 1 ))"
+  },
+  {
+   "type": "logique",
+   "graine": 0,
+   "k": 3,
+   "params": {
+    "a": "1",
+    "b": "0"
+   },
+   "reponse": "0",
+   "verif": "echo $(( 1 && 0 ))"
+  },
+  {
+   "type": "logique",
+   "graine": 0,
+   "k": 4,
+   "params": {
+    "a": "1",
+    "b": "1"
+   },
+   "reponse": "1",
+   "verif": "echo $(( 1 && 1 ))"
+  },
+  {
+   "type": "logique",
+   "graine": 0,
+   "k": 5,
+   "params": {
+    "a": "0",
+    "b": "0"
+   },
+   "reponse": "0",
+   "verif": "echo $(( 0 && 0 ))"
+  },
+  {
+   "type": "logique",
+   "graine": 0,
+   "k": 6,
+   "params": {
+    "a": "0",
+    "b": "1"
+   },
+   "reponse": "0",
+   "verif": "echo $(( 0 && 1 ))"
+  },
+  {
+   "type": "logique",
+   "graine": 0,
+   "k": 7,
+   "params": {
+    "a": "0",
+    "b": "0"
+   },
+   "reponse": "0",
+   "verif": "echo $(( 0 && 0 ))"
+  },
+  {
+   "type": "logique",
+   "graine": 1761955200,
+   "k": 0,
+   "params": {
+    "a": "1",
+    "b": "1"
+   },
+   "reponse": "1",
+   "verif": "echo $(( 1 && 1 ))"
+  },
+  {
+   "type": "logique",
+   "graine": 1761955200,
+   "k": 1,
+   "params": {
+    "a": "1",
+    "b": "0"
+   },
+   "reponse": "0",
+   "verif": "echo $(( 1 && 0 ))"
+  },
+  {
+   "type": "logique",
+   "graine": 1761955200,
+   "k": 2,
+   "params": {
+    "a": "0",
+    "b": "0"
+   },
+   "reponse": "0",
+   "verif": "echo $(( 0 && 0 ))"
+  },
+  {
+   "type": "logique",
+   "graine": 1761955200,
+   "k": 3,
+   "params": {
+    "a": "0",
+    "b": "1"
+   },
+   "reponse": "0",
+   "verif": "echo $(( 0 && 1 ))"
+  },
+  {
+   "type": "logique",
+   "graine": 1761955200,
+   "k": 4,
+   "params": {
+    "a": "1",
+    "b": "1"
+   },
+   "reponse": "1",
+   "verif": "echo $(( 1 && 1 ))"
+  },
+  {
+   "type": "logique",
+   "graine": 1761955200,
+   "k": 5,
+   "params": {
+    "a": "1",
+    "b": "0"
+   },
+   "reponse": "0",
+   "verif": "echo $(( 1 && 0 ))"
+  },
+  {
+   "type": "logique",
+   "graine": 1761955200,
+   "k": 6,
+   "params": {
+    "a": "0",
+    "b": "1"
+   },
+   "reponse": "0",
+   "verif": "echo $(( 0 && 1 ))"
+  },
+  {
+   "type": "logique",
+   "graine": 1761955200,
+   "k": 7,
+   "params": {
+    "a": "0",
+    "b": "1"
+   },
+   "reponse": "0",
+   "verif": "echo $(( 0 && 1 ))"
+  },
+  {
+   "type": "logique",
+   "graine": 1099511627783,
+   "k": 0,
+   "params": {
+    "a": "1",
+    "b": "1"
+   },
+   "reponse": "1",
+   "verif": "echo $(( 1 && 1 ))"
+  },
+  {
+   "type": "logique",
+   "graine": 1099511627783,
+   "k": 1,
+   "params": {
+    "a": "0",
+    "b": "0"
+   },
+   "reponse": "0",
+   "verif": "echo $(( 0 && 0 ))"
+  },
+  {
+   "type": "logique",
+   "graine": 1099511627783,
+   "k": 2,
+   "params": {
+    "a": "1",
+    "b": "1"
+   },
+   "reponse": "1",
+   "verif": "echo $(( 1 && 1 ))"
+  },
+  {
+   "type": "logique",
+   "graine": 1099511627783,
+   "k": 3,
+   "params": {
+    "a": "0",
+    "b": "1"
+   },
+   "reponse": "0",
+   "verif": "echo $(( 0 && 1 ))"
+  },
+  {
+   "type": "logique",
+   "graine": 1099511627783,
+   "k": 4,
+   "params": {
+    "a": "0",
+    "b": "0"
+   },
+   "reponse": "0",
+   "verif": "echo $(( 0 && 0 ))"
+  },
+  {
+   "type": "logique",
+   "graine": 1099511627783,
+   "k": 5,
+   "params": {
+    "a": "1",
+    "b": "1"
+   },
+   "reponse": "1",
+   "verif": "echo $(( 1 && 1 ))"
+  },
+  {
+   "type": "logique",
+   "graine": 1099511627783,
+   "k": 6,
+   "params": {
+    "a": "1",
+    "b": "1"
+   },
+   "reponse": "1",
+   "verif": "echo $(( 1 && 1 ))"
+  },
+  {
+   "type": "logique",
+   "graine": 1099511627783,
+   "k": 7,
+   "params": {
+    "a": "1",
+    "b": "1"
+   },
+   "reponse": "1",
+   "verif": "echo $(( 1 && 1 ))"
+  },
+  {
+   "type": "frequence",
+   "graine": 0,
+   "k": 0,
+   "params": {
+    "n": "50",
+    "s": "5"
+   },
+   "reponse": "10",
+   "verif": "echo $((50 / 5))"
+  },
+  {
+   "type": "frequence",
+   "graine": 0,
+   "k": 1,
+   "params": {
+    "n": "27",
+    "s": "3"
+   },
+   "reponse": "9",
+   "verif": "echo $((27 / 3))"
+  },
+  {
+   "type": "frequence",
+   "graine": 0,
+   "k": 2,
+   "params": {
+    "n": "48",
+    "s": "6"
+   },
+   "reponse": "8",
+   "verif": "echo $((48 / 6))"
+  },
+  {
+   "type": "frequence",
+   "graine": 0,
+   "k": 3,
+   "params": {
+    "n": "25",
+    "s": "5"
+   },
+   "reponse": "5",
+   "verif": "echo $((25 / 5))"
+  },
+  {
+   "type": "frequence",
+   "graine": 0,
+   "k": 4,
+   "params": {
+    "n": "18",
+    "s": "2"
+   },
+   "reponse": "9",
+   "verif": "echo $((18 / 2))"
+  },
+  {
+   "type": "frequence",
+   "graine": 0,
+   "k": 5,
+   "params": {
+    "n": "8",
+    "s": "2"
+   },
+   "reponse": "4",
+   "verif": "echo $((8 / 2))"
+  },
+  {
+   "type": "frequence",
+   "graine": 0,
+   "k": 6,
+   "params": {
+    "n": "48",
+    "s": "6"
+   },
+   "reponse": "8",
+   "verif": "echo $((48 / 6))"
+  },
+  {
+   "type": "frequence",
+   "graine": 0,
+   "k": 7,
+   "params": {
+    "n": "32",
+    "s": "4"
+   },
+   "reponse": "8",
+   "verif": "echo $((32 / 4))"
+  },
+  {
+   "type": "frequence",
+   "graine": 1761955200,
+   "k": 0,
+   "params": {
+    "n": "6",
+    "s": "3"
+   },
+   "reponse": "2",
+   "verif": "echo $((6 / 3))"
+  },
+  {
+   "type": "frequence",
+   "graine": 1761955200,
+   "k": 1,
+   "params": {
+    "n": "10",
+    "s": "2"
+   },
+   "reponse": "5",
+   "verif": "echo $((10 / 2))"
+  },
+  {
+   "type": "frequence",
+   "graine": 1761955200,
+   "k": 2,
+   "params": {
+    "n": "36",
+    "s": "6"
+   },
+   "reponse": "6",
+   "verif": "echo $((36 / 6))"
+  },
+  {
+   "type": "frequence",
+   "graine": 1761955200,
+   "k": 3,
+   "params": {
+    "n": "24",
+    "s": "4"
+   },
+   "reponse": "6",
+   "verif": "echo $((24 / 4))"
+  },
+  {
+   "type": "frequence",
+   "graine": 1761955200,
+   "k": 4,
+   "params": {
+    "n": "18",
+    "s": "3"
+   },
+   "reponse": "6",
+   "verif": "echo $((18 / 3))"
+  },
+  {
+   "type": "frequence",
+   "graine": 1761955200,
+   "k": 5,
+   "params": {
+    "n": "18",
+    "s": "3"
+   },
+   "reponse": "6",
+   "verif": "echo $((18 / 3))"
+  },
+  {
+   "type": "frequence",
+   "graine": 1761955200,
+   "k": 6,
+   "params": {
+    "n": "16",
+    "s": "2"
+   },
+   "reponse": "8",
+   "verif": "echo $((16 / 2))"
+  },
+  {
+   "type": "frequence",
+   "graine": 1761955200,
+   "k": 7,
+   "params": {
+    "n": "40",
+    "s": "4"
+   },
+   "reponse": "10",
+   "verif": "echo $((40 / 4))"
+  },
+  {
+   "type": "frequence",
+   "graine": 1099511627783,
+   "k": 0,
+   "params": {
+    "n": "30",
+    "s": "5"
+   },
+   "reponse": "6",
+   "verif": "echo $((30 / 5))"
+  },
+  {
+   "type": "frequence",
+   "graine": 1099511627783,
+   "k": 1,
+   "params": {
+    "n": "21",
+    "s": "3"
+   },
+   "reponse": "7",
+   "verif": "echo $((21 / 3))"
+  },
+  {
+   "type": "frequence",
+   "graine": 1099511627783,
+   "k": 2,
+   "params": {
+    "n": "4",
+    "s": "2"
+   },
+   "reponse": "2",
+   "verif": "echo $((4 / 2))"
+  },
+  {
+   "type": "frequence",
+   "graine": 1099511627783,
+   "k": 3,
+   "params": {
+    "n": "10",
+    "s": "2"
+   },
+   "reponse": "5",
+   "verif": "echo $((10 / 2))"
+  },
+  {
+   "type": "frequence",
+   "graine": 1099511627783,
+   "k": 4,
+   "params": {
+    "n": "16",
+    "s": "2"
+   },
+   "reponse": "8",
+   "verif": "echo $((16 / 2))"
+  },
+  {
+   "type": "frequence",
+   "graine": 1099511627783,
+   "k": 5,
+   "params": {
+    "n": "6",
+    "s": "3"
+   },
+   "reponse": "2",
+   "verif": "echo $((6 / 3))"
+  },
+  {
+   "type": "frequence",
+   "graine": 1099511627783,
+   "k": 6,
+   "params": {
+    "n": "40",
+    "s": "5"
+   },
+   "reponse": "8",
+   "verif": "echo $((40 / 5))"
+  },
+  {
+   "type": "frequence",
+   "graine": 1099511627783,
+   "k": 7,
+   "params": {
+    "n": "21",
+    "s": "3"
+   },
+   "reponse": "7",
+   "verif": "echo $((21 / 3))"
+  },
+  {
+   "type": "puissances_10",
+   "graine": 0,
+   "k": 0,
+   "params": {
+    "a": "4"
+   },
+   "reponse": "10000",
+   "verif": "echo $((10**4))"
+  },
+  {
+   "type": "puissances_10",
+   "graine": 0,
+   "k": 1,
+   "params": {
+    "a": "6"
+   },
+   "reponse": "1000000",
+   "verif": "echo $((10**6))"
+  },
+  {
+   "type": "puissances_10",
+   "graine": 0,
+   "k": 2,
+   "params": {
+    "a": "6"
+   },
+   "reponse": "1000000",
+   "verif": "echo $((10**6))"
+  },
+  {
+   "type": "puissances_10",
+   "graine": 0,
+   "k": 3,
+   "params": {
+    "a": "3"
+   },
+   "reponse": "1000",
+   "verif": "echo $((10**3))"
+  },
+  {
+   "type": "puissances_10",
+   "graine": 0,
+   "k": 4,
+   "params": {
+    "a": "7"
+   },
+   "reponse": "10000000",
+   "verif": "echo $((10**7))"
+  },
+  {
+   "type": "puissances_10",
+   "graine": 0,
+   "k": 5,
+   "params": {
+    "a": "2"
+   },
+   "reponse": "100",
+   "verif": "echo $((10**2))"
+  },
+  {
+   "type": "puissances_10",
+   "graine": 0,
+   "k": 6,
+   "params": {
+    "a": "4"
+   },
+   "reponse": "10000",
+   "verif": "echo $((10**4))"
+  },
+  {
+   "type": "puissances_10",
+   "graine": 0,
+   "k": 7,
+   "params": {
+    "a": "8"
+   },
+   "reponse": "100000000",
+   "verif": "echo $((10**8))"
+  },
+  {
+   "type": "puissances_10",
+   "graine": 1761955200,
+   "k": 0,
+   "params": {
+    "a": "5"
+   },
+   "reponse": "100000",
+   "verif": "echo $((10**5))"
+  },
+  {
+   "type": "puissances_10",
+   "graine": 1761955200,
+   "k": 1,
+   "params": {
+    "a": "5"
+   },
+   "reponse": "100000",
+   "verif": "echo $((10**5))"
+  },
+  {
+   "type": "puissances_10",
+   "graine": 1761955200,
+   "k": 2,
+   "params": {
+    "a": "6"
+   },
+   "reponse": "1000000",
+   "verif": "echo $((10**6))"
+  },
+  {
+   "type": "puissances_10",
+   "graine": 1761955200,
+   "k": 3,
+   "params": {
+    "a": "6"
+   },
+   "reponse": "1000000",
+   "verif": "echo $((10**6))"
+  },
+  {
+   "type": "puissances_10",
+   "graine": 1761955200,
+   "k": 4,
+   "params": {
+    "a": "9"
+   },
+   "reponse": "1000000000",
+   "verif": "echo $((10**9))"
+  },
+  {
+   "type": "puissances_10",
+   "graine": 1761955200,
+   "k": 5,
+   "params": {
+    "a": "5"
+   },
+   "reponse": "100000",
+   "verif": "echo $((10**5))"
+  },
+  {
+   "type": "puissances_10",
+   "graine": 1761955200,
+   "k": 6,
+   "params": {
+    "a": "6"
+   },
+   "reponse": "1000000",
+   "verif": "echo $((10**6))"
+  },
+  {
+   "type": "puissances_10",
+   "graine": 1761955200,
+   "k": 7,
+   "params": {
+    "a": "4"
+   },
+   "reponse": "10000",
+   "verif": "echo $((10**4))"
+  },
+  {
+   "type": "puissances_10",
+   "graine": 1099511627783,
+   "k": 0,
+   "params": {
+    "a": "7"
+   },
+   "reponse": "10000000",
+   "verif": "echo $((10**7))"
+  },
+  {
+   "type": "puissances_10",
+   "graine": 1099511627783,
+   "k": 1,
+   "params": {
+    "a": "6"
+   },
+   "reponse": "1000000",
+   "verif": "echo $((10**6))"
+  },
+  {
+   "type": "puissances_10",
+   "graine": 1099511627783,
+   "k": 2,
+   "params": {
+    "a": "5"
+   },
+   "reponse": "100000",
+   "verif": "echo $((10**5))"
+  },
+  {
+   "type": "puissances_10",
+   "graine": 1099511627783,
+   "k": 3,
+   "params": {
+    "a": "6"
+   },
+   "reponse": "1000000",
+   "verif": "echo $((10**6))"
+  },
+  {
+   "type": "puissances_10",
+   "graine": 1099511627783,
+   "k": 4,
+   "params": {
+    "a": "4"
+   },
+   "reponse": "10000",
+   "verif": "echo $((10**4))"
+  },
+  {
+   "type": "puissances_10",
+   "graine": 1099511627783,
+   "k": 5,
+   "params": {
+    "a": "9"
+   },
+   "reponse": "1000000000",
+   "verif": "echo $((10**9))"
+  },
+  {
+   "type": "puissances_10",
+   "graine": 1099511627783,
+   "k": 6,
+   "params": {
+    "a": "3"
+   },
+   "reponse": "1000",
+   "verif": "echo $((10**3))"
+  },
+  {
+   "type": "puissances_10",
+   "graine": 1099511627783,
+   "k": 7,
+   "params": {
+    "a": "9"
+   },
+   "reponse": "1000000000",
+   "verif": "echo $((10**9))"
+  },
+  {
+   "type": "longueur_onde",
+   "graine": 0,
+   "k": 0,
+   "params": {
+    "f": "15"
+   },
+   "reponse": "20",
+   "verif": "echo $((300000000 / 15000000))"
+  },
+  {
+   "type": "longueur_onde",
+   "graine": 0,
+   "k": 1,
+   "params": {
+    "f": "50"
+   },
+   "reponse": "6",
+   "verif": "echo $((300000000 / 50000000))"
+  },
+  {
+   "type": "longueur_onde",
+   "graine": 0,
+   "k": 2,
+   "params": {
+    "f": "1"
+   },
+   "reponse": "300",
+   "verif": "echo $((300000000 / 1000000))"
+  },
+  {
+   "type": "longueur_onde",
+   "graine": 0,
+   "k": 3,
+   "params": {
+    "f": "300"
+   },
+   "reponse": "1",
+   "verif": "echo $((300000000 / 300000000))"
+  },
+  {
+   "type": "longueur_onde",
+   "graine": 0,
+   "k": 4,
+   "params": {
+    "f": "2"
+   },
+   "reponse": "150",
+   "verif": "echo $((300000000 / 2000000))"
+  },
+  {
+   "type": "longueur_onde",
+   "graine": 0,
+   "k": 5,
+   "params": {
+    "f": "10"
+   },
+   "reponse": "30",
+   "verif": "echo $((300000000 / 10000000))"
+  },
+  {
+   "type": "longueur_onde",
+   "graine": 0,
+   "k": 6,
+   "params": {
+    "f": "5"
+   },
+   "reponse": "60",
+   "verif": "echo $((300000000 / 5000000))"
+  },
+  {
+   "type": "longueur_onde",
+   "graine": 0,
+   "k": 7,
+   "params": {
+    "f": "150"
+   },
+   "reponse": "2",
+   "verif": "echo $((300000000 / 150000000))"
+  },
+  {
+   "type": "longueur_onde",
+   "graine": 1761955200,
+   "k": 0,
+   "params": {
+    "f": "100"
+   },
+   "reponse": "3",
+   "verif": "echo $((300000000 / 100000000))"
+  },
+  {
+   "type": "longueur_onde",
+   "graine": 1761955200,
+   "k": 1,
+   "params": {
+    "f": "30"
+   },
+   "reponse": "10",
+   "verif": "echo $((300000000 / 30000000))"
+  },
+  {
+   "type": "longueur_onde",
+   "graine": 1761955200,
+   "k": 2,
+   "params": {
+    "f": "5"
+   },
+   "reponse": "60",
+   "verif": "echo $((300000000 / 5000000))"
+  },
+  {
+   "type": "longueur_onde",
+   "graine": 1761955200,
+   "k": 3,
+   "params": {
+    "f": "25"
+   },
+   "reponse": "12",
+   "verif": "echo $((300000000 / 25000000))"
+  },
+  {
+   "type": "longueur_onde",
+   "graine": 1761955200,
+   "k": 4,
+   "params": {
+    "f": "4"
+   },
+   "reponse": "75",
+   "verif": "echo $((300000000 / 4000000))"
+  },
+  {
+   "type": "longueur_onde",
+   "graine": 1761955200,
+   "k": 5,
+   "params": {
+    "f": "2"
+   },
+   "reponse": "150",
+   "verif": "echo $((300000000 / 2000000))"
+  },
+  {
+   "type": "longueur_onde",
+   "graine": 1761955200,
+   "k": 6,
+   "params": {
+    "f": "150"
+   },
+   "reponse": "2",
+   "verif": "echo $((300000000 / 150000000))"
+  },
+  {
+   "type": "longueur_onde",
+   "graine": 1761955200,
+   "k": 7,
+   "params": {
+    "f": "10"
+   },
+   "reponse": "30",
+   "verif": "echo $((300000000 / 10000000))"
+  },
+  {
+   "type": "longueur_onde",
+   "graine": 1099511627783,
+   "k": 0,
+   "params": {
+    "f": "30"
+   },
+   "reponse": "10",
+   "verif": "echo $((300000000 / 30000000))"
+  },
+  {
+   "type": "longueur_onde",
+   "graine": 1099511627783,
+   "k": 1,
+   "params": {
+    "f": "25"
+   },
+   "reponse": "12",
+   "verif": "echo $((300000000 / 25000000))"
+  },
+  {
+   "type": "longueur_onde",
+   "graine": 1099511627783,
+   "k": 2,
+   "params": {
+    "f": "30"
+   },
+   "reponse": "10",
+   "verif": "echo $((300000000 / 30000000))"
+  },
+  {
+   "type": "longueur_onde",
+   "graine": 1099511627783,
+   "k": 3,
+   "params": {
+    "f": "5"
+   },
+   "reponse": "60",
+   "verif": "echo $((300000000 / 5000000))"
+  },
+  {
+   "type": "longueur_onde",
+   "graine": 1099511627783,
+   "k": 4,
+   "params": {
+    "f": "150"
+   },
+   "reponse": "2",
+   "verif": "echo $((300000000 / 150000000))"
+  },
+  {
+   "type": "longueur_onde",
+   "graine": 1099511627783,
+   "k": 5,
+   "params": {
+    "f": "300"
+   },
+   "reponse": "1",
+   "verif": "echo $((300000000 / 300000000))"
+  },
+  {
+   "type": "longueur_onde",
+   "graine": 1099511627783,
+   "k": 6,
+   "params": {
+    "f": "100"
+   },
+   "reponse": "3",
+   "verif": "echo $((300000000 / 100000000))"
+  },
+  {
+   "type": "longueur_onde",
+   "graine": 1099511627783,
+   "k": 7,
+   "params": {
+    "f": "20"
+   },
+   "reponse": "15",
+   "verif": "echo $((300000000 / 20000000))"
+  },
+  {
+   "type": "temps_emission",
+   "graine": 0,
+   "k": 0,
+   "params": {
+    "n": "16",
+    "t": "4"
+   },
+   "reponse": "64",
+   "verif": "echo $((16 * 4))"
+  },
+  {
+   "type": "temps_emission",
+   "graine": 0,
+   "k": 1,
+   "params": {
+    "n": "36",
+    "t": "16"
+   },
+   "reponse": "576",
+   "verif": "echo $((36 * 16))"
+  },
+  {
+   "type": "temps_emission",
+   "graine": 0,
+   "k": 2,
+   "params": {
+    "n": "33",
+    "t": "8"
+   },
+   "reponse": "264",
+   "verif": "echo $((33 * 8))"
+  },
+  {
+   "type": "temps_emission",
+   "graine": 0,
+   "k": 3,
+   "params": {
+    "n": "25",
+    "t": "1"
+   },
+   "reponse": "25",
+   "verif": "echo $((25 * 1))"
+  },
+  {
+   "type": "temps_emission",
+   "graine": 0,
+   "k": 4,
+   "params": {
+    "n": "28",
+    "t": "2"
+   },
+   "reponse": "56",
+   "verif": "echo $((28 * 2))"
+  },
+  {
+   "type": "temps_emission",
+   "graine": 0,
+   "k": 5,
+   "params": {
+    "n": "19",
+    "t": "4"
+   },
+   "reponse": "76",
+   "verif": "echo $((19 * 4))"
+  },
+  {
+   "type": "temps_emission",
+   "graine": 0,
+   "k": 6,
+   "params": {
+    "n": "27",
+    "t": "8"
+   },
+   "reponse": "216",
+   "verif": "echo $((27 * 8))"
+  },
+  {
+   "type": "temps_emission",
+   "graine": 0,
+   "k": 7,
+   "params": {
+    "n": "11",
+    "t": "1"
+   },
+   "reponse": "11",
+   "verif": "echo $((11 * 1))"
+  },
+  {
+   "type": "temps_emission",
+   "graine": 1761955200,
+   "k": 0,
+   "params": {
+    "n": "16",
+    "t": "8"
+   },
+   "reponse": "128",
+   "verif": "echo $((16 * 8))"
+  },
+  {
+   "type": "temps_emission",
+   "graine": 1761955200,
+   "k": 1,
+   "params": {
+    "n": "28",
+    "t": "1"
+   },
+   "reponse": "28",
+   "verif": "echo $((28 * 1))"
+  },
+  {
+   "type": "temps_emission",
+   "graine": 1761955200,
+   "k": 2,
+   "params": {
+    "n": "34",
+    "t": "16"
+   },
+   "reponse": "544",
+   "verif": "echo $((34 * 16))"
+  },
+  {
+   "type": "temps_emission",
+   "graine": 1761955200,
+   "k": 3,
+   "params": {
+    "n": "29",
+    "t": "2"
+   },
+   "reponse": "58",
+   "verif": "echo $((29 * 2))"
+  },
+  {
+   "type": "temps_emission",
+   "graine": 1761955200,
+   "k": 4,
+   "params": {
+    "n": "24",
+    "t": "2"
+   },
+   "reponse": "48",
+   "verif": "echo $((24 * 2))"
+  },
+  {
+   "type": "temps_emission",
+   "graine": 1761955200,
+   "k": 5,
+   "params": {
+    "n": "39",
+    "t": "16"
+   },
+   "reponse": "624",
+   "verif": "echo $((39 * 16))"
+  },
+  {
+   "type": "temps_emission",
+   "graine": 1761955200,
+   "k": 6,
+   "params": {
+    "n": "17",
+    "t": "8"
+   },
+   "reponse": "136",
+   "verif": "echo $((17 * 8))"
+  },
+  {
+   "type": "temps_emission",
+   "graine": 1761955200,
+   "k": 7,
+   "params": {
+    "n": "15",
+    "t": "32"
+   },
+   "reponse": "480",
+   "verif": "echo $((15 * 32))"
+  },
+  {
+   "type": "temps_emission",
+   "graine": 1099511627783,
+   "k": 0,
+   "params": {
+    "n": "36",
+    "t": "2"
+   },
+   "reponse": "72",
+   "verif": "echo $((36 * 2))"
+  },
+  {
+   "type": "temps_emission",
+   "graine": 1099511627783,
+   "k": 1,
+   "params": {
+    "n": "33",
+    "t": "4"
+   },
+   "reponse": "132",
+   "verif": "echo $((33 * 4))"
+  },
+  {
+   "type": "temps_emission",
+   "graine": 1099511627783,
+   "k": 2,
+   "params": {
+    "n": "28",
+    "t": "8"
+   },
+   "reponse": "224",
+   "verif": "echo $((28 * 8))"
+  },
+  {
+   "type": "temps_emission",
+   "graine": 1099511627783,
+   "k": 3,
+   "params": {
+    "n": "19",
+    "t": "8"
+   },
+   "reponse": "152",
+   "verif": "echo $((19 * 8))"
+  },
+  {
+   "type": "temps_emission",
+   "graine": 1099511627783,
+   "k": 4,
+   "params": {
+    "n": "17",
+    "t": "1"
+   },
+   "reponse": "17",
+   "verif": "echo $((17 * 1))"
+  },
+  {
+   "type": "temps_emission",
+   "graine": 1099511627783,
+   "k": 5,
+   "params": {
+    "n": "12",
+    "t": "8"
+   },
+   "reponse": "96",
+   "verif": "echo $((12 * 8))"
+  },
+  {
+   "type": "temps_emission",
+   "graine": 1099511627783,
+   "k": 6,
+   "params": {
+    "n": "28",
+    "t": "8"
+   },
+   "reponse": "224",
+   "verif": "echo $((28 * 8))"
+  },
+  {
+   "type": "temps_emission",
+   "graine": 1099511627783,
+   "k": 7,
+   "params": {
+    "n": "19",
+    "t": "32"
+   },
+   "reponse": "608",
+   "verif": "echo $((19 * 32))"
+  },
+  {
+   "type": "coordonnees",
+   "graine": 0,
+   "k": 0,
+   "params": {
+    "a": "9",
+    "b": "12",
+    "y": "5"
+   },
+   "reponse": "3",
+   "verif": "echo $((12 - 9))"
+  },
+  {
+   "type": "coordonnees",
+   "graine": 0,
+   "k": 1,
+   "params": {
+    "a": "4",
+    "b": "9",
+    "y": "3"
+   },
+   "reponse": "5",
+   "verif": "echo $((9 - 4))"
+  },
+  {
+   "type": "coordonnees",
+   "graine": 0,
+   "k": 2,
+   "params": {
+    "a": "1",
+    "b": "11",
+    "y": "3"
+   },
+   "reponse": "10",
+   "verif": "echo $((11 - 1))"
+  },
+  {
+   "type": "coordonnees",
+   "graine": 0,
+   "k": 3,
+   "params": {
+    "a": "9",
+    "b": "16",
+    "y": "8"
+   },
+   "reponse": "7",
+   "verif": "echo $((16 - 9))"
+  },
+  {
+   "type": "coordonnees",
+   "graine": 0,
+   "k": 4,
+   "params": {
+    "a": "2",
+    "b": "10",
+    "y": "5"
+   },
+   "reponse": "8",
+   "verif": "echo $((10 - 2))"
+  },
+  {
+   "type": "coordonnees",
+   "graine": 0,
+   "k": 5,
+   "params": {
+    "a": "7",
+    "b": "10",
+    "y": "5"
+   },
+   "reponse": "3",
+   "verif": "echo $((10 - 7))"
+  },
+  {
+   "type": "coordonnees",
+   "graine": 0,
+   "k": 6,
+   "params": {
+    "a": "5",
+    "b": "9",
+    "y": "4"
+   },
+   "reponse": "4",
+   "verif": "echo $((9 - 5))"
+  },
+  {
+   "type": "coordonnees",
+   "graine": 0,
+   "k": 7,
+   "params": {
+    "a": "8",
+    "b": "15",
+    "y": "4"
+   },
+   "reponse": "7",
+   "verif": "echo $((15 - 8))"
+  },
+  {
+   "type": "coordonnees",
+   "graine": 1761955200,
+   "k": 0,
+   "params": {
+    "a": "7",
+    "b": "17",
+    "y": "5"
+   },
+   "reponse": "10",
+   "verif": "echo $((17 - 7))"
+  },
+  {
+   "type": "coordonnees",
+   "graine": 1761955200,
+   "k": 1,
+   "params": {
+    "a": "3",
+    "b": "10",
+    "y": "8"
+   },
+   "reponse": "7",
+   "verif": "echo $((10 - 3))"
+  },
+  {
+   "type": "coordonnees",
+   "graine": 1761955200,
+   "k": 2,
+   "params": {
+    "a": "5",
+    "b": "16",
+    "y": "7"
+   },
+   "reponse": "11",
+   "verif": "echo $((16 - 5))"
+  },
+  {
+   "type": "coordonnees",
+   "graine": 1761955200,
+   "k": 3,
+   "params": {
+    "a": "2",
+    "b": "4",
+    "y": "2"
+   },
+   "reponse": "2",
+   "verif": "echo $((4 - 2))"
+  },
+  {
+   "type": "coordonnees",
+   "graine": 1761955200,
+   "k": 4,
+   "params": {
+    "a": "4",
+    "b": "12",
+    "y": "0"
+   },
+   "reponse": "8",
+   "verif": "echo $((12 - 4))"
+  },
+  {
+   "type": "coordonnees",
+   "graine": 1761955200,
+   "k": 5,
+   "params": {
+    "a": "2",
+    "b": "13",
+    "y": "0"
+   },
+   "reponse": "11",
+   "verif": "echo $((13 - 2))"
+  },
+  {
+   "type": "coordonnees",
+   "graine": 1761955200,
+   "k": 6,
+   "params": {
+    "a": "8",
+    "b": "18",
+    "y": "6"
+   },
+   "reponse": "10",
+   "verif": "echo $((18 - 8))"
+  },
+  {
+   "type": "coordonnees",
+   "graine": 1761955200,
+   "k": 7,
+   "params": {
+    "a": "7",
+    "b": "19",
+    "y": "5"
+   },
+   "reponse": "12",
+   "verif": "echo $((19 - 7))"
+  },
+  {
+   "type": "coordonnees",
+   "graine": 1099511627783,
+   "k": 0,
+   "params": {
+    "a": "3",
+    "b": "5",
+    "y": "9"
+   },
+   "reponse": "2",
+   "verif": "echo $((5 - 3))"
+  },
+  {
+   "type": "coordonnees",
+   "graine": 1099511627783,
+   "k": 1,
+   "params": {
+    "a": "2",
+    "b": "5",
+    "y": "9"
+   },
+   "reponse": "3",
+   "verif": "echo $((5 - 2))"
+  },
+  {
+   "type": "coordonnees",
+   "graine": 1099511627783,
+   "k": 2,
+   "params": {
+    "a": "3",
+    "b": "7",
+    "y": "4"
+   },
+   "reponse": "4",
+   "verif": "echo $((7 - 3))"
+  },
+  {
+   "type": "coordonnees",
+   "graine": 1099511627783,
+   "k": 3,
+   "params": {
+    "a": "5",
+    "b": "15",
+    "y": "0"
+   },
+   "reponse": "10",
+   "verif": "echo $((15 - 5))"
+  },
+  {
+   "type": "coordonnees",
+   "graine": 1099511627783,
+   "k": 4,
+   "params": {
+    "a": "8",
+    "b": "9",
+    "y": "3"
+   },
+   "reponse": "1",
+   "verif": "echo $((9 - 8))"
+  },
+  {
+   "type": "coordonnees",
+   "graine": 1099511627783,
+   "k": 5,
+   "params": {
+    "a": "9",
+    "b": "13",
+    "y": "0"
+   },
+   "reponse": "4",
+   "verif": "echo $((13 - 9))"
+  },
+  {
+   "type": "coordonnees",
+   "graine": 1099511627783,
+   "k": 6,
+   "params": {
+    "a": "7",
+    "b": "17",
+    "y": "3"
+   },
+   "reponse": "10",
+   "verif": "echo $((17 - 7))"
+  },
+  {
+   "type": "coordonnees",
+   "graine": 1099511627783,
+   "k": 7,
+   "params": {
+    "a": "1",
+    "b": "13",
+    "y": "4"
+   },
+   "reponse": "12",
+   "verif": "echo $((13 - 1))"
+  },
+  {
+   "type": "volume",
+   "graine": 0,
+   "k": 0,
+   "params": {
+    "a": "5",
+    "b": "5",
+    "c": "4"
+   },
+   "reponse": "100",
+   "verif": "echo $((5 * 5 * 4))"
+  },
+  {
+   "type": "volume",
+   "graine": 0,
+   "k": 1,
+   "params": {
+    "a": "3",
+    "b": "3",
+    "c": "2"
+   },
+   "reponse": "18",
+   "verif": "echo $((3 * 3 * 2))"
+  },
+  {
+   "type": "volume",
+   "graine": 0,
+   "k": 2,
+   "params": {
+    "a": "6",
+    "b": "2",
+    "c": "4"
+   },
+   "reponse": "48",
+   "verif": "echo $((6 * 2 * 4))"
+  },
+  {
+   "type": "volume",
+   "graine": 0,
+   "k": 3,
+   "params": {
+    "a": "5",
+    "b": "2",
+    "c": "1"
+   },
+   "reponse": "10",
+   "verif": "echo $((5 * 2 * 1))"
+  },
+  {
+   "type": "volume",
+   "graine": 0,
+   "k": 4,
+   "params": {
+    "a": "2",
+    "b": "4",
+    "c": "4"
+   },
+   "reponse": "32",
+   "verif": "echo $((2 * 4 * 4))"
+  },
+  {
+   "type": "volume",
+   "graine": 0,
+   "k": 5,
+   "params": {
+    "a": "2",
+    "b": "5",
+    "c": "2"
+   },
+   "reponse": "20",
+   "verif": "echo $((2 * 5 * 2))"
+  },
+  {
+   "type": "volume",
+   "graine": 0,
+   "k": 6,
+   "params": {
+    "a": "6",
+    "b": "6",
+    "c": "3"
+   },
+   "reponse": "108",
+   "verif": "echo $((6 * 6 * 3))"
+  },
+  {
+   "type": "volume",
+   "graine": 0,
+   "k": 7,
+   "params": {
+    "a": "4",
+    "b": "3",
+    "c": "3"
+   },
+   "reponse": "36",
+   "verif": "echo $((4 * 3 * 3))"
+  },
+  {
+   "type": "volume",
+   "graine": 1761955200,
+   "k": 0,
+   "params": {
+    "a": "3",
+    "b": "6",
+    "c": "2"
+   },
+   "reponse": "36",
+   "verif": "echo $((3 * 6 * 2))"
+  },
+  {
+   "type": "volume",
+   "graine": 1761955200,
+   "k": 1,
+   "params": {
+    "a": "2",
+    "b": "2",
+    "c": "1"
+   },
+   "reponse": "4",
+   "verif": "echo $((2 * 2 * 1))"
+  },
+  {
+   "type": "volume",
+   "graine": 1761955200,
+   "k": 2,
+   "params": {
+    "a": "6",
+    "b": "6",
+    "c": "4"
+   },
+   "reponse": "144",
+   "verif": "echo $((6 * 6 * 4))"
+  },
+  {
+   "type": "volume",
+   "graine": 1761955200,
+   "k": 3,
+   "params": {
+    "a": "4",
+    "b": "4",
+    "c": "3"
+   },
+   "reponse": "48",
+   "verif": "echo $((4 * 4 * 3))"
+  },
+  {
+   "type": "volume",
+   "graine": 1761955200,
+   "k": 4,
+   "params": {
+    "a": "3",
+    "b": "4",
+    "c": "3"
+   },
+   "reponse": "36",
+   "verif": "echo $((3 * 4 * 3))"
+  },
+  {
+   "type": "volume",
+   "graine": 1761955200,
+   "k": 5,
+   "params": {
+    "a": "3",
+    "b": "6",
+    "c": "1"
+   },
+   "reponse": "18",
+   "verif": "echo $((3 * 6 * 1))"
+  },
+  {
+   "type": "volume",
+   "graine": 1761955200,
+   "k": 6,
+   "params": {
+    "a": "2",
+    "b": "4",
+    "c": "1"
+   },
+   "reponse": "8",
+   "verif": "echo $((2 * 4 * 1))"
+  },
+  {
+   "type": "volume",
+   "graine": 1761955200,
+   "k": 7,
+   "params": {
+    "a": "4",
+    "b": "4",
+    "c": "4"
+   },
+   "reponse": "64",
+   "verif": "echo $((4 * 4 * 4))"
+  },
+  {
+   "type": "volume",
+   "graine": 1099511627783,
+   "k": 0,
+   "params": {
+    "a": "5",
+    "b": "5",
+    "c": "2"
+   },
+   "reponse": "50",
+   "verif": "echo $((5 * 5 * 2))"
+  },
+  {
+   "type": "volume",
+   "graine": 1099511627783,
+   "k": 1,
+   "params": {
+    "a": "3",
+    "b": "5",
+    "c": "2"
+   },
+   "reponse": "30",
+   "verif": "echo $((3 * 5 * 2))"
+  },
+  {
+   "type": "volume",
+   "graine": 1099511627783,
+   "k": 2,
+   "params": {
+    "a": "2",
+    "b": "4",
+    "c": "3"
+   },
+   "reponse": "24",
+   "verif": "echo $((2 * 4 * 3))"
+  },
+  {
+   "type": "volume",
+   "graine": 1099511627783,
+   "k": 3,
+   "params": {
+    "a": "2",
+    "b": "3",
+    "c": "3"
+   },
+   "reponse": "18",
+   "verif": "echo $((2 * 3 * 3))"
+  },
+  {
+   "type": "volume",
+   "graine": 1099511627783,
+   "k": 4,
+   "params": {
+    "a": "2",
+    "b": "3",
+    "c": "4"
+   },
+   "reponse": "24",
+   "verif": "echo $((2 * 3 * 4))"
+  },
+  {
+   "type": "volume",
+   "graine": 1099511627783,
+   "k": 5,
+   "params": {
+    "a": "3",
+    "b": "5",
+    "c": "1"
+   },
+   "reponse": "15",
+   "verif": "echo $((3 * 5 * 1))"
+  },
+  {
+   "type": "volume",
+   "graine": 1099511627783,
+   "k": 6,
+   "params": {
+    "a": "5",
+    "b": "2",
+    "c": "2"
+   },
+   "reponse": "20",
+   "verif": "echo $((5 * 2 * 2))"
+  },
+  {
+   "type": "volume",
+   "graine": 1099511627783,
+   "k": 7,
+   "params": {
+    "a": "3",
+    "b": "4",
+    "c": "3"
+   },
+   "reponse": "36",
+   "verif": "echo $((3 * 4 * 3))"
+  },
+  {
+   "type": "effectifs",
+   "graine": 0,
+   "k": 0,
+   "params": {
+    "liste": "🔥 💧 🔥 🔥 💧 💧"
+   },
+   "reponse": "3",
+   "verif": "printf '%s\\n' Feu Eau Feu Feu Eau Eau | grep -c Feu"
+  },
+  {
+   "type": "effectifs",
+   "graine": 0,
+   "k": 1,
+   "params": {
+    "liste": "🔥 💧 🔥 💧 🔥 💧 🔥"
+   },
+   "reponse": "4",
+   "verif": "printf '%s\\n' Feu Eau Feu Eau Feu Eau Feu | grep -c Feu"
+  },
+  {
+   "type": "effectifs",
+   "graine": 0,
+   "k": 2,
+   "params": {
+    "liste": "💧 💧 💧 💧 🔥 🔥 💧 💧 🔥 💧 💧 🔥"
+   },
+   "reponse": "4",
+   "verif": "printf '%s\\n' Eau Eau Eau Eau Feu Feu Eau Eau Feu Eau Eau Feu | grep -c Feu"
+  },
+  {
+   "type": "effectifs",
+   "graine": 0,
+   "k": 3,
+   "params": {
+    "liste": "🔥 🔥 💧 🔥 🔥 🔥 🔥"
+   },
+   "reponse": "6",
+   "verif": "printf '%s\\n' Feu Feu Eau Feu Feu Feu Feu | grep -c Feu"
+  },
+  {
+   "type": "effectifs",
+   "graine": 0,
+   "k": 4,
+   "params": {
+    "liste": "💧 💧 🔥 🔥 💧 💧 💧 🔥 💧"
+   },
+   "reponse": "3",
+   "verif": "printf '%s\\n' Eau Eau Feu Feu Eau Eau Eau Feu Eau | grep -c Feu"
+  },
+  {
+   "type": "effectifs",
+   "graine": 0,
+   "k": 5,
+   "params": {
+    "liste": "🔥 💧 💧 💧 🔥 🔥 💧 💧 💧 💧"
+   },
+   "reponse": "3",
+   "verif": "printf '%s\\n' Feu Eau Eau Eau Feu Feu Eau Eau Eau Eau | grep -c Feu"
+  },
+  {
+   "type": "effectifs",
+   "graine": 0,
+   "k": 6,
+   "params": {
+    "liste": "💧 🔥 💧 🔥 💧 🔥 🔥"
+   },
+   "reponse": "4",
+   "verif": "printf '%s\\n' Eau Feu Eau Feu Eau Feu Feu | grep -c Feu"
+  },
+  {
+   "type": "effectifs",
+   "graine": 0,
+   "k": 7,
+   "params": {
+    "liste": "🔥 🔥 💧 🔥 💧 💧 🔥 💧 🔥 💧 🔥 💧"
+   },
+   "reponse": "6",
+   "verif": "printf '%s\\n' Feu Feu Eau Feu Eau Eau Feu Eau Feu Eau Feu Eau | grep -c Feu"
+  },
+  {
+   "type": "effectifs",
+   "graine": 1761955200,
+   "k": 0,
+   "params": {
+    "liste": "💧 💧 💧 🔥 🔥 💧 💧 💧 🔥 🔥"
+   },
+   "reponse": "4",
+   "verif": "printf '%s\\n' Eau Eau Eau Feu Feu Eau Eau Eau Feu Feu | grep -c Feu"
+  },
+  {
+   "type": "effectifs",
+   "graine": 1761955200,
+   "k": 1,
+   "params": {
+    "liste": "🔥 🔥 💧 💧 🔥 💧 💧 🔥 💧 🔥 🔥"
+   },
+   "reponse": "6",
+   "verif": "printf '%s\\n' Feu Feu Eau Eau Feu Eau Eau Feu Eau Feu Feu | grep -c Feu"
+  },
+  {
+   "type": "effectifs",
+   "graine": 1761955200,
+   "k": 2,
+   "params": {
+    "liste": "🔥 💧 🔥 💧 💧 💧 💧 🔥 🔥 💧 💧"
+   },
+   "reponse": "4",
+   "verif": "printf '%s\\n' Feu Eau Feu Eau Eau Eau Eau Feu Feu Eau Eau | grep -c Feu"
+  },
+  {
+   "type": "effectifs",
+   "graine": 1761955200,
+   "k": 3,
+   "params": {
+    "liste": "💧 🔥 🔥 🔥 🔥 🔥 💧 🔥"
+   },
+   "reponse": "6",
+   "verif": "printf '%s\\n' Eau Feu Feu Feu Feu Feu Eau Feu | grep -c Feu"
+  },
+  {
+   "type": "effectifs",
+   "graine": 1761955200,
+   "k": 4,
+   "params": {
+    "liste": "💧 🔥 🔥 💧 💧 🔥"
+   },
+   "reponse": "3",
+   "verif": "printf '%s\\n' Eau Feu Feu Eau Eau Feu | grep -c Feu"
+  },
+  {
+   "type": "effectifs",
+   "graine": 1761955200,
+   "k": 5,
+   "params": {
+    "liste": "🔥 🔥 💧 🔥 💧 🔥 💧 🔥 🔥"
+   },
+   "reponse": "6",
+   "verif": "printf '%s\\n' Feu Feu Eau Feu Eau Feu Eau Feu Feu | grep -c Feu"
+  },
+  {
+   "type": "effectifs",
+   "graine": 1761955200,
+   "k": 6,
+   "params": {
+    "liste": "💧 🔥 💧 🔥 💧 🔥 💧"
+   },
+   "reponse": "3",
+   "verif": "printf '%s\\n' Eau Feu Eau Feu Eau Feu Eau | grep -c Feu"
+  },
+  {
+   "type": "effectifs",
+   "graine": 1761955200,
+   "k": 7,
+   "params": {
+    "liste": "💧 💧 🔥 🔥 💧 💧 🔥"
+   },
+   "reponse": "3",
+   "verif": "printf '%s\\n' Eau Eau Feu Feu Eau Eau Feu | grep -c Feu"
+  },
+  {
+   "type": "effectifs",
+   "graine": 1099511627783,
+   "k": 0,
+   "params": {
+    "liste": "💧 💧 🔥 💧 💧 💧 🔥 🔥 💧 🔥 💧"
+   },
+   "reponse": "4",
+   "verif": "printf '%s\\n' Eau Eau Feu Eau Eau Eau Feu Feu Eau Feu Eau | grep -c Feu"
+  },
+  {
+   "type": "effectifs",
+   "graine": 1099511627783,
+   "k": 1,
+   "params": {
+    "liste": "🔥 💧 💧 💧 🔥 💧 💧 🔥 🔥"
+   },
+   "reponse": "4",
+   "verif": "printf '%s\\n' Feu Eau Eau Eau Feu Eau Eau Feu Feu | grep -c Feu"
+  },
+  {
+   "type": "effectifs",
+   "graine": 1099511627783,
+   "k": 2,
+   "params": {
+    "liste": "💧 🔥 🔥 💧 🔥 💧 💧 🔥 💧"
+   },
+   "reponse": "4",
+   "verif": "printf '%s\\n' Eau Feu Feu Eau Feu Eau Eau Feu Eau | grep -c Feu"
+  },
+  {
+   "type": "effectifs",
+   "graine": 1099511627783,
+   "k": 3,
+   "params": {
+    "liste": "💧 🔥 💧 💧 🔥 🔥 💧"
+   },
+   "reponse": "3",
+   "verif": "printf '%s\\n' Eau Feu Eau Eau Feu Feu Eau | grep -c Feu"
+  },
+  {
+   "type": "effectifs",
+   "graine": 1099511627783,
+   "k": 4,
+   "params": {
+    "liste": "🔥 💧 🔥 💧 🔥 🔥 🔥 💧"
+   },
+   "reponse": "5",
+   "verif": "printf '%s\\n' Feu Eau Feu Eau Feu Feu Feu Eau | grep -c Feu"
+  },
+  {
+   "type": "effectifs",
+   "graine": 1099511627783,
+   "k": 5,
+   "params": {
+    "liste": "💧 🔥 🔥 💧 🔥 🔥 🔥 💧 💧 🔥"
+   },
+   "reponse": "6",
+   "verif": "printf '%s\\n' Eau Feu Feu Eau Feu Feu Feu Eau Eau Feu | grep -c Feu"
+  },
+  {
+   "type": "effectifs",
+   "graine": 1099511627783,
+   "k": 6,
+   "params": {
+    "liste": "💧 💧 💧 🔥 🔥 🔥"
+   },
+   "reponse": "3",
+   "verif": "printf '%s\\n' Eau Eau Eau Feu Feu Feu | grep -c Feu"
+  },
+  {
+   "type": "effectifs",
+   "graine": 1099511627783,
+   "k": 7,
+   "params": {
+    "liste": "💧 🔥 💧 🔥 🔥 🔥 💧 💧 💧 💧 🔥"
+   },
+   "reponse": "5",
+   "verif": "printf '%s\\n' Eau Feu Eau Feu Feu Feu Eau Eau Eau Eau Feu | grep -c Feu"
+  },
+  {
+   "type": "frequences",
+   "graine": 0,
+   "k": 0,
+   "params": {
+    "n": "2",
+    "total": "2"
+   },
+   "reponse": "100",
+   "verif": "echo $((2 * 100 / 2))"
+  },
+  {
+   "type": "frequences",
+   "graine": 0,
+   "k": 1,
+   "params": {
+    "n": "1",
+    "total": "4"
+   },
+   "reponse": "25",
+   "verif": "echo $((1 * 100 / 4))"
+  },
+  {
+   "type": "frequences",
+   "graine": 0,
+   "k": 2,
+   "params": {
+    "n": "45",
+    "total": "50"
+   },
+   "reponse": "90",
+   "verif": "echo $((45 * 100 / 50))"
+  },
+  {
+   "type": "frequences",
+   "graine": 0,
+   "k": 3,
+   "params": {
+    "n": "0",
+    "total": "4"
+   },
+   "reponse": "0",
+   "verif": "echo $((0 * 100 / 4))"
+  },
+  {
+   "type": "frequences",
+   "graine": 0,
+   "k": 4,
+   "params": {
+    "n": "8",
+    "total": "10"
+   },
+   "reponse": "80",
+   "verif": "echo $((8 * 100 / 10))"
+  },
+  {
+   "type": "frequences",
+   "graine": 0,
+   "k": 5,
+   "params": {
+    "n": "20",
+    "total": "20"
+   },
+   "reponse": "100",
+   "verif": "echo $((20 * 100 / 20))"
+  },
+  {
+   "type": "frequences",
+   "graine": 0,
+   "k": 6,
+   "params": {
+    "n": "4",
+    "total": "4"
+   },
+   "reponse": "100",
+   "verif": "echo $((4 * 100 / 4))"
+  },
+  {
+   "type": "frequences",
+   "graine": 0,
+   "k": 7,
+   "params": {
+    "n": "45",
+    "total": "50"
+   },
+   "reponse": "90",
+   "verif": "echo $((45 * 100 / 50))"
+  },
+  {
+   "type": "frequences",
+   "graine": 1761955200,
+   "k": 0,
+   "params": {
+    "n": "6",
+    "total": "20"
+   },
+   "reponse": "30",
+   "verif": "echo $((6 * 100 / 20))"
+  },
+  {
+   "type": "frequences",
+   "graine": 1761955200,
+   "k": 1,
+   "params": {
+    "n": "10",
+    "total": "25"
+   },
+   "reponse": "40",
+   "verif": "echo $((10 * 100 / 25))"
+  },
+  {
+   "type": "frequences",
+   "graine": 1761955200,
+   "k": 2,
+   "params": {
+    "n": "4",
+    "total": "25"
+   },
+   "reponse": "16",
+   "verif": "echo $((4 * 100 / 25))"
+  },
+  {
+   "type": "frequences",
+   "graine": 1761955200,
+   "k": 3,
+   "params": {
+    "n": "1",
+    "total": "5"
+   },
+   "reponse": "20",
+   "verif": "echo $((1 * 100 / 5))"
+  },
+  {
+   "type": "frequences",
+   "graine": 1761955200,
+   "k": 4,
+   "params": {
+    "n": "1",
+    "total": "2"
+   },
+   "reponse": "50",
+   "verif": "echo $((1 * 100 / 2))"
+  },
+  {
+   "type": "frequences",
+   "graine": 1761955200,
+   "k": 5,
+   "params": {
+    "n": "7",
+    "total": "10"
+   },
+   "reponse": "70",
+   "verif": "echo $((7 * 100 / 10))"
+  },
+  {
+   "type": "frequences",
+   "graine": 1761955200,
+   "k": 6,
+   "params": {
+    "n": "2",
+    "total": "4"
+   },
+   "reponse": "50",
+   "verif": "echo $((2 * 100 / 4))"
+  },
+  {
+   "type": "frequences",
+   "graine": 1761955200,
+   "k": 7,
+   "params": {
+    "n": "2",
+    "total": "4"
+   },
+   "reponse": "50",
+   "verif": "echo $((2 * 100 / 4))"
+  },
+  {
+   "type": "frequences",
+   "graine": 1099511627783,
+   "k": 0,
+   "params": {
+    "n": "3",
+    "total": "25"
+   },
+   "reponse": "12",
+   "verif": "echo $((3 * 100 / 25))"
+  },
+  {
+   "type": "frequences",
+   "graine": 1099511627783,
+   "k": 1,
+   "params": {
+    "n": "4",
+    "total": "10"
+   },
+   "reponse": "40",
+   "verif": "echo $((4 * 100 / 10))"
+  },
+  {
+   "type": "frequences",
+   "graine": 1099511627783,
+   "k": 2,
+   "params": {
+    "n": "3",
+    "total": "10"
+   },
+   "reponse": "30",
+   "verif": "echo $((3 * 100 / 10))"
+  },
+  {
+   "type": "frequences",
+   "graine": 1099511627783,
+   "k": 3,
+   "params": {
+    "n": "1",
+    "total": "4"
+   },
+   "reponse": "25",
+   "verif": "echo $((1 * 100 / 4))"
+  },
+  {
+   "type": "frequences",
+   "graine": 1099511627783,
+   "k": 4,
+   "params": {
+    "n": "0",
+    "total": "5"
+   },
+   "reponse": "0",
+   "verif": "echo $((0 * 100 / 5))"
+  },
+  {
+   "type": "frequences",
+   "graine": 1099511627783,
+   "k": 5,
+   "params": {
+    "n": "0",
+    "total": "20"
+   },
+   "reponse": "0",
+   "verif": "echo $((0 * 100 / 20))"
+  },
+  {
+   "type": "frequences",
+   "graine": 1099511627783,
+   "k": 6,
+   "params": {
+    "n": "0",
+    "total": "2"
+   },
+   "reponse": "0",
+   "verif": "echo $((0 * 100 / 2))"
+  },
+  {
+   "type": "frequences",
+   "graine": 1099511627783,
+   "k": 7,
+   "params": {
+    "n": "21",
+    "total": "25"
+   },
+   "reponse": "84",
+   "verif": "echo $((21 * 100 / 25))"
+  },
+  {
+   "type": "mediane",
+   "graine": 0,
+   "k": 0,
+   "params": {
+    "liste": "28, 28, 25, 44, 24"
+   },
+   "reponse": "28",
+   "verif": "printf '%s\\n' 28 28 25 44 24 | sort -n | sed -n '3p'"
+  },
+  {
+   "type": "mediane",
+   "graine": 0,
+   "k": 1,
+   "params": {
+    "liste": "46, 46, 43, 46, 43"
+   },
+   "reponse": "46",
+   "verif": "printf '%s\\n' 46 46 43 46 43 | sort -n | sed -n '3p'"
+  },
+  {
+   "type": "mediane",
+   "graine": 0,
+   "k": 2,
+   "params": {
+    "liste": "14, 35, 13, 37, 13"
+   },
+   "reponse": "14",
+   "verif": "printf '%s\\n' 14 35 13 37 13 | sort -n | sed -n '3p'"
+  },
+  {
+   "type": "mediane",
+   "graine": 0,
+   "k": 3,
+   "params": {
+    "liste": "43, 20, 18, 23, 20"
+   },
+   "reponse": "20",
+   "verif": "printf '%s\\n' 43 20 18 23 20 | sort -n | sed -n '3p'"
+  },
+  {
+   "type": "mediane",
+   "graine": 0,
+   "k": 4,
+   "params": {
+    "liste": "15, 17, 45, 48, 44"
+   },
+   "reponse": "44",
+   "verif": "printf '%s\\n' 15 17 45 48 44 | sort -n | sed -n '3p'"
+  },
+  {
+   "type": "mediane",
+   "graine": 0,
+   "k": 5,
+   "params": {
+    "liste": "10, 28, 35, 39, 27"
+   },
+   "reponse": "28",
+   "verif": "printf '%s\\n' 10 28 35 39 27 | sort -n | sed -n '3p'"
+  },
+  {
+   "type": "mediane",
+   "graine": 0,
+   "k": 6,
+   "params": {
+    "liste": "44, 49, 44, 29, 26"
+   },
+   "reponse": "44",
+   "verif": "printf '%s\\n' 44 49 44 29 26 | sort -n | sed -n '3p'"
+  },
+  {
+   "type": "mediane",
+   "graine": 0,
+   "k": 7,
+   "params": {
+    "liste": "32, 36, 44, 21, 16"
+   },
+   "reponse": "32",
+   "verif": "printf '%s\\n' 32 36 44 21 16 | sort -n | sed -n '3p'"
+  },
+  {
+   "type": "mediane",
+   "graine": 1761955200,
+   "k": 0,
+   "params": {
+    "liste": "21, 39, 35, 49, 28"
+   },
+   "reponse": "35",
+   "verif": "printf '%s\\n' 21 39 35 49 28 | sort -n | sed -n '3p'"
+  },
+  {
+   "type": "mediane",
+   "graine": 1761955200,
+   "k": 1,
+   "params": {
+    "liste": "45, 40, 18, 49, 15"
+   },
+   "reponse": "40",
+   "verif": "printf '%s\\n' 45 40 18 49 15 | sort -n | sed -n '3p'"
+  },
+  {
+   "type": "mediane",
+   "graine": 1761955200,
+   "k": 2,
+   "params": {
+    "liste": "14, 44, 37, 10, 29"
+   },
+   "reponse": "29",
+   "verif": "printf '%s\\n' 14 44 37 10 29 | sort -n | sed -n '3p'"
+  },
+  {
+   "type": "mediane",
+   "graine": 1761955200,
+   "k": 3,
+   "params": {
+    "liste": "22, 47, 32, 18, 26"
+   },
+   "reponse": "26",
+   "verif": "printf '%s\\n' 22 47 32 18 26 | sort -n | sed -n '3p'"
+  },
+  {
+   "type": "mediane",
+   "graine": 1761955200,
+   "k": 4,
+   "params": {
+    "liste": "41, 37, 20, 18, 13"
+   },
+   "reponse": "20",
+   "verif": "printf '%s\\n' 41 37 20 18 13 | sort -n | sed -n '3p'"
+  },
+  {
+   "type": "mediane",
+   "graine": 1761955200,
+   "k": 5,
+   "params": {
+    "liste": "21, 44, 10, 33, 44"
+   },
+   "reponse": "33",
+   "verif": "printf '%s\\n' 21 44 10 33 44 | sort -n | sed -n '3p'"
+  },
+  {
+   "type": "mediane",
+   "graine": 1761955200,
+   "k": 6,
+   "params": {
+    "liste": "30, 47, 26, 33, 12"
+   },
+   "reponse": "30",
+   "verif": "printf '%s\\n' 30 47 26 33 12 | sort -n | sed -n '3p'"
+  },
+  {
+   "type": "mediane",
+   "graine": 1761955200,
+   "k": 7,
+   "params": {
+    "liste": "12, 17, 45, 16, 18"
+   },
+   "reponse": "17",
+   "verif": "printf '%s\\n' 12 17 45 16 18 | sort -n | sed -n '3p'"
+  },
+  {
+   "type": "mediane",
+   "graine": 1099511627783,
+   "k": 0,
+   "params": {
+    "liste": "23, 43, 19, 36, 17"
+   },
+   "reponse": "23",
+   "verif": "printf '%s\\n' 23 43 19 36 17 | sort -n | sed -n '3p'"
+  },
+  {
+   "type": "mediane",
+   "graine": 1099511627783,
+   "k": 1,
+   "params": {
+    "liste": "46, 28, 39, 41, 35"
+   },
+   "reponse": "39",
+   "verif": "printf '%s\\n' 46 28 39 41 35 | sort -n | sed -n '3p'"
+  },
+  {
+   "type": "mediane",
+   "graine": 1099511627783,
+   "k": 2,
+   "params": {
+    "liste": "45, 37, 24, 22, 29"
+   },
+   "reponse": "29",
+   "verif": "printf '%s\\n' 45 37 24 22 29 | sort -n | sed -n '3p'"
+  },
+  {
+   "type": "mediane",
+   "graine": 1099511627783,
+   "k": 3,
+   "params": {
+    "liste": "30, 31, 40, 47, 45"
+   },
+   "reponse": "40",
+   "verif": "printf '%s\\n' 30 31 40 47 45 | sort -n | sed -n '3p'"
+  },
+  {
+   "type": "mediane",
+   "graine": 1099511627783,
+   "k": 4,
+   "params": {
+    "liste": "20, 26, 13, 18, 43"
+   },
+   "reponse": "20",
+   "verif": "printf '%s\\n' 20 26 13 18 43 | sort -n | sed -n '3p'"
+  },
+  {
+   "type": "mediane",
+   "graine": 1099511627783,
+   "k": 5,
+   "params": {
+    "liste": "41, 13, 30, 26, 27"
+   },
+   "reponse": "27",
+   "verif": "printf '%s\\n' 41 13 30 26 27 | sort -n | sed -n '3p'"
+  },
+  {
+   "type": "mediane",
+   "graine": 1099511627783,
+   "k": 6,
+   "params": {
+    "liste": "43, 35, 23, 11, 12"
+   },
+   "reponse": "23",
+   "verif": "printf '%s\\n' 43 35 23 11 12 | sort -n | sed -n '3p'"
+  },
+  {
+   "type": "mediane",
+   "graine": 1099511627783,
+   "k": 7,
+   "params": {
+    "liste": "41, 37, 24, 25, 22"
+   },
+   "reponse": "25",
+   "verif": "printf '%s\\n' 41 37 24 25 22 | sort -n | sed -n '3p'"
+  },
+  {
+   "type": "etendue",
+   "graine": 0,
+   "k": 0,
+   "params": {
+    "liste": "28, 28, 25, 44"
+   },
+   "reponse": "19",
+   "verif": "echo $((44 - 25))"
+  },
+  {
+   "type": "etendue",
+   "graine": 0,
+   "k": 1,
+   "params": {
+    "liste": "46, 46, 43, 46"
+   },
+   "reponse": "3",
+   "verif": "echo $((46 - 43))"
+  },
+  {
+   "type": "etendue",
+   "graine": 0,
+   "k": 2,
+   "params": {
+    "liste": "14, 35, 13, 37"
+   },
+   "reponse": "24",
+   "verif": "echo $((37 - 13))"
+  },
+  {
+   "type": "etendue",
+   "graine": 0,
+   "k": 3,
+   "params": {
+    "liste": "43, 20, 18, 23"
+   },
+   "reponse": "25",
+   "verif": "echo $((43 - 18))"
+  },
+  {
+   "type": "etendue",
+   "graine": 0,
+   "k": 4,
+   "params": {
+    "liste": "15, 17, 45, 48"
+   },
+   "reponse": "33",
+   "verif": "echo $((48 - 15))"
+  },
+  {
+   "type": "etendue",
+   "graine": 0,
+   "k": 5,
+   "params": {
+    "liste": "10, 28, 35, 39"
+   },
+   "reponse": "29",
+   "verif": "echo $((39 - 10))"
+  },
+  {
+   "type": "etendue",
+   "graine": 0,
+   "k": 6,
+   "params": {
+    "liste": "44, 49, 44, 29"
+   },
+   "reponse": "20",
+   "verif": "echo $((49 - 29))"
+  },
+  {
+   "type": "etendue",
+   "graine": 0,
+   "k": 7,
+   "params": {
+    "liste": "32, 36, 44, 21"
+   },
+   "reponse": "23",
+   "verif": "echo $((44 - 21))"
+  },
+  {
+   "type": "etendue",
+   "graine": 1761955200,
+   "k": 0,
+   "params": {
+    "liste": "21, 39, 35, 49"
+   },
+   "reponse": "28",
+   "verif": "echo $((49 - 21))"
+  },
+  {
+   "type": "etendue",
+   "graine": 1761955200,
+   "k": 1,
+   "params": {
+    "liste": "45, 40, 18, 49"
+   },
+   "reponse": "31",
+   "verif": "echo $((49 - 18))"
+  },
+  {
+   "type": "etendue",
+   "graine": 1761955200,
+   "k": 2,
+   "params": {
+    "liste": "14, 44, 37, 10"
+   },
+   "reponse": "34",
+   "verif": "echo $((44 - 10))"
+  },
+  {
+   "type": "etendue",
+   "graine": 1761955200,
+   "k": 3,
+   "params": {
+    "liste": "22, 47, 32, 18"
+   },
+   "reponse": "29",
+   "verif": "echo $((47 - 18))"
+  },
+  {
+   "type": "etendue",
+   "graine": 1761955200,
+   "k": 4,
+   "params": {
+    "liste": "41, 37, 20, 18"
+   },
+   "reponse": "23",
+   "verif": "echo $((41 - 18))"
+  },
+  {
+   "type": "etendue",
+   "graine": 1761955200,
+   "k": 5,
+   "params": {
+    "liste": "21, 44, 10, 33"
+   },
+   "reponse": "34",
+   "verif": "echo $((44 - 10))"
+  },
+  {
+   "type": "etendue",
+   "graine": 1761955200,
+   "k": 6,
+   "params": {
+    "liste": "30, 47, 26, 33"
+   },
+   "reponse": "21",
+   "verif": "echo $((47 - 26))"
+  },
+  {
+   "type": "etendue",
+   "graine": 1761955200,
+   "k": 7,
+   "params": {
+    "liste": "12, 17, 45, 16"
+   },
+   "reponse": "33",
+   "verif": "echo $((45 - 12))"
+  },
+  {
+   "type": "etendue",
+   "graine": 1099511627783,
+   "k": 0,
+   "params": {
+    "liste": "23, 43, 19, 36"
+   },
+   "reponse": "24",
+   "verif": "echo $((43 - 19))"
+  },
+  {
+   "type": "etendue",
+   "graine": 1099511627783,
+   "k": 1,
+   "params": {
+    "liste": "46, 28, 39, 41"
+   },
+   "reponse": "18",
+   "verif": "echo $((46 - 28))"
+  },
+  {
+   "type": "etendue",
+   "graine": 1099511627783,
+   "k": 2,
+   "params": {
+    "liste": "45, 37, 24, 22"
+   },
+   "reponse": "23",
+   "verif": "echo $((45 - 22))"
+  },
+  {
+   "type": "etendue",
+   "graine": 1099511627783,
+   "k": 3,
+   "params": {
+    "liste": "30, 31, 40, 47"
+   },
+   "reponse": "17",
+   "verif": "echo $((47 - 30))"
+  },
+  {
+   "type": "etendue",
+   "graine": 1099511627783,
+   "k": 4,
+   "params": {
+    "liste": "20, 26, 13, 18"
+   },
+   "reponse": "13",
+   "verif": "echo $((26 - 13))"
+  },
+  {
+   "type": "etendue",
+   "graine": 1099511627783,
+   "k": 5,
+   "params": {
+    "liste": "41, 13, 30, 26"
+   },
+   "reponse": "28",
+   "verif": "echo $((41 - 13))"
+  },
+  {
+   "type": "etendue",
+   "graine": 1099511627783,
+   "k": 6,
+   "params": {
+    "liste": "43, 35, 23, 11"
+   },
+   "reponse": "32",
+   "verif": "echo $((43 - 11))"
+  },
+  {
+   "type": "etendue",
+   "graine": 1099511627783,
+   "k": 7,
+   "params": {
+    "liste": "41, 37, 24, 25"
+   },
+   "reponse": "17",
+   "verif": "echo $((41 - 24))"
+  },
+  {
+   "type": "boucles",
+   "graine": 0,
+   "k": 0,
+   "params": {
+    "a": "4",
+    "z": "8"
+   },
+   "reponse": "5",
+   "verif": "seq 4 8 | wc -l"
+  },
+  {
+   "type": "boucles",
+   "graine": 0,
+   "k": 1,
+   "params": {
+    "a": "2",
+    "z": "8"
+   },
+   "reponse": "7",
+   "verif": "seq 2 8 | wc -l"
+  },
+  {
+   "type": "boucles",
+   "graine": 0,
+   "k": 2,
+   "params": {
+    "a": "5",
+    "z": "8"
+   },
+   "reponse": "4",
+   "verif": "seq 5 8 | wc -l"
+  },
+  {
+   "type": "boucles",
+   "graine": 0,
+   "k": 3,
+   "params": {
+    "a": "4",
+    "z": "8"
+   },
+   "reponse": "5",
+   "verif": "seq 4 8 | wc -l"
+  },
+  {
+   "type": "boucles",
+   "graine": 0,
+   "k": 4,
+   "params": {
+    "a": "1",
+    "z": "10"
+   },
+   "reponse": "10",
+   "verif": "seq 1 10 | wc -l"
+  },
+  {
+   "type": "boucles",
+   "graine": 0,
+   "k": 5,
+   "params": {
+    "a": "1",
+    "z": "5"
+   },
+   "reponse": "5",
+   "verif": "seq 1 5 | wc -l"
+  },
+  {
+   "type": "boucles",
+   "graine": 0,
+   "k": 6,
+   "params": {
+    "a": "5",
+    "z": "14"
+   },
+   "reponse": "10",
+   "verif": "seq 5 14 | wc -l"
+  },
+  {
+   "type": "boucles",
+   "graine": 0,
+   "k": 7,
+   "params": {
+    "a": "3",
+    "z": "7"
+   },
+   "reponse": "5",
+   "verif": "seq 3 7 | wc -l"
+  },
+  {
+   "type": "boucles",
+   "graine": 1761955200,
+   "k": 0,
+   "params": {
+    "a": "2",
+    "z": "9"
+   },
+   "reponse": "8",
+   "verif": "seq 2 9 | wc -l"
+  },
+  {
+   "type": "boucles",
+   "graine": 1761955200,
+   "k": 1,
+   "params": {
+    "a": "1",
+    "z": "9"
+   },
+   "reponse": "9",
+   "verif": "seq 1 9 | wc -l"
+  },
+  {
+   "type": "boucles",
+   "graine": 1761955200,
+   "k": 2,
+   "params": {
+    "a": "5",
+    "z": "9"
+   },
+   "reponse": "5",
+   "verif": "seq 5 9 | wc -l"
+  },
+  {
+   "type": "boucles",
+   "graine": 1761955200,
+   "k": 3,
+   "params": {
+    "a": "3",
+    "z": "10"
+   },
+   "reponse": "8",
+   "verif": "seq 3 10 | wc -l"
+  },
+  {
+   "type": "boucles",
+   "graine": 1761955200,
+   "k": 4,
+   "params": {
+    "a": "2",
+    "z": "7"
+   },
+   "reponse": "6",
+   "verif": "seq 2 7 | wc -l"
+  },
+  {
+   "type": "boucles",
+   "graine": 1761955200,
+   "k": 5,
+   "params": {
+    "a": "2",
+    "z": "6"
+   },
+   "reponse": "5",
+   "verif": "seq 2 6 | wc -l"
+  },
+  {
+   "type": "boucles",
+   "graine": 1761955200,
+   "k": 6,
+   "params": {
+    "a": "1",
+    "z": "8"
+   },
+   "reponse": "8",
+   "verif": "seq 1 8 | wc -l"
+  },
+  {
+   "type": "boucles",
+   "graine": 1761955200,
+   "k": 7,
+   "params": {
+    "a": "3",
+    "z": "12"
+   },
+   "reponse": "10",
+   "verif": "seq 3 12 | wc -l"
+  },
+  {
+   "type": "boucles",
+   "graine": 1099511627783,
+   "k": 0,
+   "params": {
+    "a": "4",
+    "z": "7"
+   },
+   "reponse": "4",
+   "verif": "seq 4 7 | wc -l"
+  },
+  {
+   "type": "boucles",
+   "graine": 1099511627783,
+   "k": 1,
+   "params": {
+    "a": "2",
+    "z": "6"
+   },
+   "reponse": "5",
+   "verif": "seq 2 6 | wc -l"
+  },
+  {
+   "type": "boucles",
+   "graine": 1099511627783,
+   "k": 2,
+   "params": {
+    "a": "1",
+    "z": "6"
+   },
+   "reponse": "6",
+   "verif": "seq 1 6 | wc -l"
+  },
+  {
+   "type": "boucles",
+   "graine": 1099511627783,
+   "k": 3,
+   "params": {
+    "a": "1",
+    "z": "8"
+   },
+   "reponse": "8",
+   "verif": "seq 1 8 | wc -l"
+  },
+  {
+   "type": "boucles",
+   "graine": 1099511627783,
+   "k": 4,
+   "params": {
+    "a": "1",
+    "z": "3"
+   },
+   "reponse": "3",
+   "verif": "seq 1 3 | wc -l"
+  },
+  {
+   "type": "boucles",
+   "graine": 1099511627783,
+   "k": 5,
+   "params": {
+    "a": "2",
+    "z": "7"
+   },
+   "reponse": "6",
+   "verif": "seq 2 7 | wc -l"
+  },
+  {
+   "type": "boucles",
+   "graine": 1099511627783,
+   "k": 6,
+   "params": {
+    "a": "4",
+    "z": "7"
+   },
+   "reponse": "4",
+   "verif": "seq 4 7 | wc -l"
+  },
+  {
+   "type": "boucles",
+   "graine": 1099511627783,
+   "k": 7,
+   "params": {
+    "a": "2",
+    "z": "7"
+   },
+   "reponse": "6",
+   "verif": "seq 2 7 | wc -l"
+  },
+  {
+   "type": "priorites",
+   "graine": 0,
+   "k": 0,
+   "params": {
+    "a": "4",
+    "b": "5",
+    "c": "2"
+   },
+   "reponse": "14",
+   "verif": "echo $((4 + 5 * 2))"
+  },
+  {
+   "type": "priorites",
+   "graine": 0,
+   "k": 1,
+   "params": {
+    "a": "6",
+    "b": "3",
+    "c": "5"
+   },
+   "reponse": "21",
+   "verif": "echo $((6 + 3 * 5))"
+  },
+  {
+   "type": "priorites",
+   "graine": 0,
+   "k": 2,
+   "params": {
+    "a": "6",
+    "b": "2",
+    "c": "5"
+   },
+   "reponse": "16",
+   "verif": "echo $((6 + 2 * 5))"
+  },
+  {
+   "type": "priorites",
+   "graine": 0,
+   "k": 3,
+   "params": {
+    "a": "3",
+    "b": "2",
+    "c": "5"
+   },
+   "reponse": "13",
+   "verif": "echo $((3 + 2 * 5))"
+  },
+  {
+   "type": "priorites",
+   "graine": 0,
+   "k": 4,
+   "params": {
+    "a": "7",
+    "b": "4",
+    "c": "2"
+   },
+   "reponse": "15",
+   "verif": "echo $((7 + 4 * 2))"
+  },
+  {
+   "type": "priorites",
+   "graine": 0,
+   "k": 5,
+   "params": {
+    "a": "2",
+    "b": "5",
+    "c": "2"
+   },
+   "reponse": "12",
+   "verif": "echo $((2 + 5 * 2))"
+  },
+  {
+   "type": "priorites",
+   "graine": 0,
+   "k": 6,
+   "params": {
+    "a": "4",
+    "b": "6",
+    "c": "6"
+   },
+   "reponse": "40",
+   "verif": "echo $((4 + 6 * 6))"
+  },
+  {
+   "type": "priorites",
+   "graine": 0,
+   "k": 7,
+   "params": {
+    "a": "8",
+    "b": "3",
+    "c": "6"
+   },
+   "reponse": "26",
+   "verif": "echo $((8 + 3 * 6))"
+  },
+  {
+   "type": "priorites",
+   "graine": 1761955200,
+   "k": 0,
+   "params": {
+    "a": "5",
+    "b": "6",
+    "c": "2"
+   },
+   "reponse": "17",
+   "verif": "echo $((5 + 6 * 2))"
+  },
+  {
+   "type": "priorites",
+   "graine": 1761955200,
+   "k": 1,
+   "params": {
+    "a": "5",
+    "b": "2",
+    "c": "5"
+   },
+   "reponse": "15",
+   "verif": "echo $((5 + 2 * 5))"
+  },
+  {
+   "type": "priorites",
+   "graine": 1761955200,
+   "k": 2,
+   "params": {
+    "a": "6",
+    "b": "6",
+    "c": "4"
+   },
+   "reponse": "30",
+   "verif": "echo $((6 + 6 * 4))"
+  },
+  {
+   "type": "priorites",
+   "graine": 1761955200,
+   "k": 3,
+   "params": {
+    "a": "6",
+    "b": "4",
+    "c": "4"
+   },
+   "reponse": "22",
+   "verif": "echo $((6 + 4 * 4))"
+  },
+  {
+   "type": "priorites",
+   "graine": 1761955200,
+   "k": 4,
+   "params": {
+    "a": "9",
+    "b": "4",
+    "c": "2"
+   },
+   "reponse": "17",
+   "verif": "echo $((9 + 4 * 2))"
+  },
+  {
+   "type": "priorites",
+   "graine": 1761955200,
+   "k": 5,
+   "params": {
+    "a": "5",
+    "b": "6",
+    "c": "2"
+   },
+   "reponse": "17",
+   "verif": "echo $((5 + 6 * 2))"
+  },
+  {
+   "type": "priorites",
+   "graine": 1761955200,
+   "k": 6,
+   "params": {
+    "a": "6",
+    "b": "4",
+    "c": "3"
+   },
+   "reponse": "18",
+   "verif": "echo $((6 + 4 * 3))"
+  },
+  {
+   "type": "priorites",
+   "graine": 1761955200,
+   "k": 7,
+   "params": {
+    "a": "4",
+    "b": "4",
+    "c": "2"
+   },
+   "reponse": "12",
+   "verif": "echo $((4 + 4 * 2))"
+  },
+  {
+   "type": "priorites",
+   "graine": 1099511627783,
+   "k": 0,
+   "params": {
+    "a": "7",
+    "b": "5",
+    "c": "6"
+   },
+   "reponse": "37",
+   "verif": "echo $((7 + 5 * 6))"
+  },
+  {
+   "type": "priorites",
+   "graine": 1099511627783,
+   "k": 1,
+   "params": {
+    "a": "6",
+    "b": "5",
+    "c": "6"
+   },
+   "reponse": "36",
+   "verif": "echo $((6 + 5 * 6))"
+  },
+  {
+   "type": "priorites",
+   "graine": 1099511627783,
+   "k": 2,
+   "params": {
+    "a": "5",
+    "b": "4",
+    "c": "6"
+   },
+   "reponse": "29",
+   "verif": "echo $((5 + 4 * 6))"
+  },
+  {
+   "type": "priorites",
+   "graine": 1099511627783,
+   "k": 3,
+   "params": {
+    "a": "6",
+    "b": "3",
+    "c": "2"
+   },
+   "reponse": "12",
+   "verif": "echo $((6 + 3 * 2))"
+  },
+  {
+   "type": "priorites",
+   "graine": 1099511627783,
+   "k": 4,
+   "params": {
+    "a": "4",
+    "b": "3",
+    "c": "5"
+   },
+   "reponse": "19",
+   "verif": "echo $((4 + 3 * 5))"
+  },
+  {
+   "type": "priorites",
+   "graine": 1099511627783,
+   "k": 5,
+   "params": {
+    "a": "9",
+    "b": "5",
+    "c": "2"
+   },
+   "reponse": "19",
+   "verif": "echo $((9 + 5 * 2))"
+  },
+  {
+   "type": "priorites",
+   "graine": 1099511627783,
+   "k": 6,
+   "params": {
+    "a": "3",
+    "b": "2",
+    "c": "5"
+   },
+   "reponse": "13",
+   "verif": "echo $((3 + 2 * 5))"
+  },
+  {
+   "type": "priorites",
+   "graine": 1099511627783,
+   "k": 7,
+   "params": {
+    "a": "9",
+    "b": "4",
+    "c": "6"
+   },
+   "reponse": "33",
+   "verif": "echo $((9 + 4 * 6))"
+  }
+ ],
+ "recherches": [
+  {
+   "langue": "fr",
+   "question": "partager des bonbons",
+   "attendu": "division"
+  },
+  {
+   "langue": "fr",
+   "question": "pourquoi on met un exposant",
+   "attendu": "puissances"
+  },
+  {
+   "langue": "fr",
+   "question": "le reste d'une division",
+   "attendu": "modulo"
+  },
+  {
+   "langue": "fr",
+   "question": "les 0 et les 1",
+   "attendu": "binaire"
+  },
+  {
+   "langue": "fr",
+   "question": "compter les étoiles",
+   "attendu": "effectifs"
+  },
+  {
+   "langue": "fr",
+   "question": "combien font 3 fois 4",
+   "attendu": "effectifs"
+  },
+  {
+   "langue": "fr",
+   "question": "enlever des billes",
+   "attendu": "soustraction"
+  },
+  {
+   "langue": "fr",
+   "question": "horloge",
+   "attendu": "modulo"
+  },
+  {
+   "langue": "fr",
+   "question": "ajouter",
+   "attendu": "addition"
+  },
+  {
+   "langue": "fr",
+   "question": "binaire",
+   "attendu": "binaire"
+  },
+  {
+   "langue": "fr",
+   "question": "modulo",
+   "attendu": "modulo"
+  },
+  {
+   "langue": "fr",
+   "question": "hexadécimal",
+   "attendu": "hexadecimal"
+  },
+  {
+   "langue": "fr",
+   "question": "moyenne",
+   "attendu": "moyenne"
+  },
+  {
+   "langue": "fr",
+   "question": "pourcentage",
+   "attendu": "pourcentages"
+  },
+  {
+   "langue": "fr",
+   "question": "nombres premiers",
+   "attendu": "nombres_premiers"
+  },
+  {
+   "langue": "fr",
+   "question": "puissance",
+   "attendu": "puissances"
+  },
+  {
+   "langue": "en",
+   "question": "share sweets",
+   "attendu": "division"
+  },
+  {
+   "langue": "en",
+   "question": "remainder",
+   "attendu": "modulo"
+  },
+  {
+   "langue": "en",
+   "question": "power",
+   "attendu": "puissances_10"
+  },
+  {
+   "langue": "en",
+   "question": "binary",
+   "attendu": "binaire"
+  },
+  {
+   "langue": "en",
+   "question": "multiply",
+   "attendu": "multiplication"
+  },
+  {
+   "langue": "en",
+   "question": "count",
+   "attendu": "effectifs"
+  }
+ ],
+ "tous_prerequis": {
+  "comptage": [],
+  "addition": [
+   "comptage"
+  ],
+  "soustraction": [
+   "comptage",
+   "addition"
+  ],
+  "multiplication": [
+   "comptage",
+   "addition"
+  ],
+  "division": [
+   "comptage",
+   "addition",
+   "multiplication",
+   "soustraction"
+  ],
+  "modulo": [
+   "comptage",
+   "addition",
+   "multiplication",
+   "soustraction",
+   "division"
+  ],
+  "puissances": [
+   "comptage",
+   "addition",
+   "multiplication"
+  ],
+  "binaire": [
+   "comptage",
+   "addition",
+   "multiplication",
+   "puissances"
+  ],
+  "hexadecimal": [
+   "comptage",
+   "addition",
+   "multiplication",
+   "puissances",
+   "binaire",
+   "soustraction",
+   "division"
+  ],
+  "pourcentages": [
+   "comptage",
+   "addition",
+   "multiplication",
+   "soustraction",
+   "division"
+  ],
+  "moyenne": [
+   "comptage",
+   "addition",
+   "multiplication",
+   "soustraction",
+   "division"
+  ],
+  "nombres_premiers": [
+   "comptage",
+   "addition",
+   "multiplication",
+   "soustraction",
+   "division"
+  ],
+  "pgcd": [
+   "comptage",
+   "addition",
+   "multiplication",
+   "soustraction",
+   "division",
+   "modulo"
+  ],
+  "puissance_modulo": [
+   "comptage",
+   "addition",
+   "multiplication",
+   "soustraction",
+   "division",
+   "modulo",
+   "puissances"
+  ],
+  "probabilites": [
+   "comptage",
+   "effectifs",
+   "addition",
+   "multiplication",
+   "soustraction",
+   "division",
+   "frequences"
+  ],
+  "logarithme": [
+   "comptage",
+   "addition",
+   "multiplication",
+   "puissances"
+  ],
+  "logique": [],
+  "frequence": [
+   "comptage",
+   "addition",
+   "multiplication",
+   "soustraction",
+   "division"
+  ],
+  "puissances_10": [
+   "comptage",
+   "addition",
+   "multiplication",
+   "puissances"
+  ],
+  "longueur_onde": [
+   "comptage",
+   "addition",
+   "multiplication",
+   "soustraction",
+   "division",
+   "frequence",
+   "puissances",
+   "puissances_10"
+  ],
+  "temps_emission": [
+   "comptage",
+   "addition",
+   "multiplication",
+   "soustraction",
+   "division"
+  ],
+  "coordonnees": [
+   "comptage",
+   "addition",
+   "soustraction"
+  ],
+  "volume": [
+   "comptage",
+   "addition",
+   "multiplication"
+  ],
+  "effectifs": [
+   "comptage"
+  ],
+  "frequences": [
+   "comptage",
+   "effectifs",
+   "addition",
+   "multiplication",
+   "soustraction",
+   "division"
+  ],
+  "mediane": [
+   "comptage"
+  ],
+  "etendue": [
+   "comptage",
+   "addition",
+   "soustraction"
+  ],
+  "boucles": [
+   "comptage",
+   "addition",
+   "soustraction"
+  ],
+  "priorites": [
+   "comptage",
+   "addition",
+   "multiplication"
+  ]
+ }
+}

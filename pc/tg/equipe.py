@@ -2,8 +2,8 @@
 leur nom, et s'animent dans le terminal.
 
 La bestiole « active » (tg troupe <nom>) gagne de l'expérience à chaque commande que tu tapes.
-Les animations détaillées existent pour les espèces qui ont un dessin animé (Abyssor pour
-l'instant) ; les autres montrent leur dessin à chaque stade (et l'évolution avant → après).
+Toutes les espèces jouent les 13 animations (moteur anim_auto, à leur stade, dans leur variante,
+avec leur teinte shiny) ; Abyssor garde ses animations faites main (dossier anim/).
 """
 import base64
 import colorsys
@@ -13,16 +13,18 @@ import sys
 import time
 import zlib
 
-from .langue import tr
+from . import anim_auto
 from . import bestiaire as B
 from . import core
+from .langue import largeur, t
 from .plateforme import BOLD, DIM, RESET, fg
 
-STADES = ["enfant", "ado", "adulte", "finale"]
-NOM_STADE = {"enfant": "enfant", "ado": "ado", "adulte": "adulte", "finale": "forme finale"}
-SEUILS = {"enfant": 150, "ado": 500, "adulte": 1500}          # XP pour passer au stade suivant
-ANIMS = ["statique", "mange", "attaque", "salut", "parle", "dort", "content", "affame", "confus", "colere",
-         "victoire", "ko", "evolution"]
+STADES = ["bebe", "enfant", "ado", "adulte", "ancien"]
+
+SEUILS = {"bebe": 100, "enfant": 250, "ado": 600, "adulte": 1500}  # XP pour passer au stade suivant
+# Abyssor (animations détaillées faites à la main) garde ses noms de stades d'origine
+STADES_ABYSSOR = {"bebe": "enfant", "enfant": "enfant", "ado": "ado", "adulte": "adulte", "ancien": "finale"}
+ANIMS = anim_auto.ANIMS
 _CACHE = {}
 
 
@@ -80,7 +82,7 @@ def images(espece, stade, nom, teinte=0.0):
     d = donnees(espece)
     if not d:
         return None
-    a = d["anims"].get(stade, {}).get(nom)
+    a = d["anims"].get(STADES_ABYSSOR.get(stade, stade), {}).get(nom) or d["anims"].get(stade, {}).get(nom)
     if not a:
         return None
     pal = _palette(a["palette"], teinte)
@@ -93,7 +95,8 @@ def images(espece, stade, nom, teinte=0.0):
 
 # ---------------------------------------------------------------- l'équipe
 def stade(ind):
-    return ind.get("stade", "enfant")
+    s = ind.get("stade", "bebe")
+    return "ancien" if s == "finale" else s
 
 
 def active(state):
@@ -112,10 +115,11 @@ def gagner(state, ind, xp):
         ind["stade"] = STADES[STADES.index(s) + 1]
         ind["xp"] = 0
         ind["evolue"] = time.time()
-        core.log(state, f"🌟 {ind['espece']} évolue : {NOM_STADE[ind['stade']]} !")
-        core.notif(state, f"🌟 {ind['espece']} évolue en {NOM_STADE[ind['stade']]} ! (tg anime {ind['espece']} evolution)")
-        core.say(state, f"Oh ! {ind['espece']} brille… il évolue en {NOM_STADE[ind['stade']]} ! "
-                        f"Regarde : tg anime {ind['espece'].lower()} evolution", 14)
+        from . import creature                  # 3 nov. : la date de ce stade dans son album
+        creature.equipe_evolue(ind)
+        core.log(state, t("eq.evolue.log", nom=ind["espece"], stade=B.nom_stade(ind["stade"])))
+        core.notif(state, t("eq.evolue.notif", nom=ind["espece"], stade=B.nom_stade(ind["stade"]), nom_min=ind["espece"].lower()))
+        core.say(state, t("eq.evolue.dit", nom=ind["espece"], stade=B.nom_stade(ind["stade"]), nom_min=ind["espece"].lower()), 14)
         return ind["stade"]
     return None
 
@@ -133,20 +137,30 @@ def tick(state, lignes):
 def ecran_equipe(state):
     caps = state.get("captures", [])
     if not caps:
-        return [" " + tr("Ta troupe est vide : dresse ta première bestiole en explorant le terrain de jeu !")]
+        return [" " + t("eq.vide")]
     act = active(state)
-    lignes = [f" {fg(213)}── 🐾 {tr('Troupe de {nom}').format(nom=state['name'])} ──{RESET}", ""]
+    from . import guide
+    lignes = [f" {fg(213)}── 🐾 " + t("eq.titre", nom=state["name"]) + f" ──{RESET}", " " + guide.ligne_equipe(state), ""]
+    sortir = {m[0] for m in guide.membres(state) if guide.envie_de_sortir(state, m)}
     for c in caps[-12:][::-1]:
         e = B.espece(c["espece"])
         if not e:
             continue
         s = stade(c)
         seuil = SEUILS.get(s)
-        barre = f"{c.get('xp', 0)}/{seuil} XP" if seuil else "stade maximal"
-        marque = f"{fg(226)}★ active{RESET} " if c is act else "         "
-        lignes.append(f" {marque}{B.nom_affiche(e, c.get('shiny'))} {B.etiquette_rang(c)} {DIM}· {tr(NOM_STADE[s])} · {barre}"
-                      f"{' · animé' if anime(e['nom']) else ''}{RESET}")
-    lignes += ["", f" {DIM}{tr('Choisir l’active : tg troupe <nom> · la voir bouger : tg anime <nom> [animation]')}{RESET}"]
+        barre = f"{c.get('xp', 0)}/{seuil} XP" if seuil else t("eq.stade_max")
+        mot = t("eq.active")
+        lm = largeur(mot) + 3
+        marque = f"{fg(226)}★ {mot}{RESET} " if c is act else " " * lm
+        var = c.get("variante", "classique")
+        dort = c.get("repos", 0) > time.time()            # KO au combat : elle se repose (voir combat.py)
+        repos = f" {fg(117)}" + t("eq.repos", min=max(1, round((c["repos"] - time.time()) / 60))) + RESET if dort else ""
+        ty = guide.type_ind(c)
+        envie = " " + t("guide.ecran.sortir") if c.get("id") in sortir else ""
+        lignes.append(f" {marque}{B.nom_affiche(e, c.get('shiny'), B.rarete_de(c), c.get('glitch'))} {DIM}· {guide.ICONES[ty]} {guide.nom_type(ty)}"
+                      f" · {B.nom_stade(s)}{' · ' + var if var != 'classique' else ''} · {B.nom_rarete(B.rarete_de(c))} · {barre}{RESET}"
+                      f"{repos}{envie}")
+    lignes += ["", f" {DIM}" + t("eq.pied") + RESET]
     return lignes
 
 
@@ -154,60 +168,50 @@ def choisir(state, nom):
     e = B.espece(nom)
     caps = [c for c in state.get("captures", []) if e and c["espece"] == e["nom"]]
     if not caps:
-        return f" Tu n'as pas encore dressé de « {nom} »."
+        return " " + t("eq.pas_dans_troupe", nom=nom)
     state["active"] = caps[-1]["id"]
-    return f" ★ {caps[-1]['espece']} est maintenant ta bestiole active : elle grandit à chaque commande que tu tapes."
+    from . import guide
+    guide.suivre_choix_equipe(state, caps[-1])     # en tête de l'équipe : elle devient aussi le guide
+    return " " + t("eq.choisie", nom=caps[-1]["espece"])
 
 
 # ---------------------------------------------------------------- tg anime
-def jouer(state, args):
-    nom = args[0] if args else None
-    ind = None
-    if nom:
-        e = B.espece(nom)
-        ind = next((c for c in reversed(state.get("captures", [])) if e and c["espece"] == e["nom"]), None)
-    else:
-        ind = active(state)
-    if not ind:
-        print(" Aucune bestiole de ce nom dans ton équipe. (tg troupe pour la liste)")
-        return
-    quoi = (args[1] if len(args) > 1 else "statique").lower().replace("é", "e").replace("è", "e")
+def animation(ind, quoi, aura=False, fin=False, eclat=None):
+    """(images, ips) d'une bestiole de la troupe : à son stade, dans sa variante, avec sa teinte shiny.
+    Abyssor garde ses animations faites main ; toutes les autres espèces passent par anim_auto.
+    aura=True : son aura de rareté respire autour d'elle (aura.py) ; fin : rendu le plus fin du terminal
+    (rendu_fin.py) ; eclat : l'éclat de l'aura selon le soin (aura.eclat)."""
     s = stade(ind)
-    if quoi == "evolution":                  # on rejoue l'évolution qui a mené au stade actuel
-        i = STADES.index(s)
-        if i == 0:
-            print(f" {ind['espece']} est encore enfant : il n'a pas encore évolué.")
-            return
-        s = STADES[i - 1]
-    teinte = ind.get("teinte", 0.5) if ind.get("shiny") else 0.0
-    r = images(ind["espece"], s, quoi, teinte)
-    if r is None:
-        if not anime(ind["espece"]):
-            if quoi == "evolution":                # avant → après, côte à côte
-                avant = B.dessin_individu(dict(ind, stade=s))
-                apres = B.dessin_individu(ind)
-                h = max(len(avant), len(apres))
-                avant = [""] * (h - len(avant)) + avant
-                apres = [""] * (h - len(apres)) + apres
-                from .explo import largeur
-                w = largeur(avant)
-                for k in range(h):
-                    fleche = "  ➜  " if k == h // 2 else "     "
-                    print("  " + avant[k] + " " * (w - largeur([avant[k]])) + fleche + apres[k])
-                print(f" {BOLD}{NOM_STADE[s]} ➜ {NOM_STADE[stade(ind)]}{RESET}")
-            else:
-                print("\n".join("  " + l for l in B.dessin_individu(ind)))
-                print(f" {DIM}{ind['espece']} · {NOM_STADE[stade(ind)]} (pas encore d'animation détaillée pour cette espèce){RESET}")
-        else:
-            print(f" Animations : {', '.join(a for a in ANIMS)}")
-        return
-    frames, ips = r
-    tours = 1 if quoi == "evolution" else 3
-    titre = f" {B.nom_affiche(B.espece(ind['espece']), ind.get('shiny'))} {DIM}· {NOM_STADE[stade(ind)]} · {quoi}{RESET}"
+    if anime(ind["espece"]):
+        avant = s
+        if quoi == "evolution":              # le fichier fait main range l'évolution au stade de départ
+            i = STADES.index(s)
+            avant = STADES[i - 1] if i else s
+        r = images(ind["espece"], avant, quoi, ind.get("teinte", 0.5) if ind.get("shiny") else 0.0)
+        if r:
+            return r
+    e = B.espece(ind["espece"])
+    if not e:
+        return None
+    teinte = ind.get("teinte", 0.5) if ind.get("shiny") else None
+    from . import aura as A
+    from . import glitch as G
+    return anim_auto.lignes(e, s, ind.get("variante", "classique"), quoi, teinte, A.palier_ind(ind) if aura else None,
+                            fin, eclat, G.de(ind))
+
+
+def _eclat(state):
+    from . import aura as A
+    return A.eclat(state)
+
+
+def derouler(frames, ips, tours, titre=None):
+    """Joue les images sur place (le curseur remonte à chaque image)."""
     sys.stdout.write("\033[?25l")
     try:
         h = len(frames[0])
-        print(titre)
+        if titre:
+            print(titre)
         for t in range(tours * len(frames)):
             if t:
                 sys.stdout.write(f"\033[{h}F")
@@ -218,5 +222,39 @@ def jouer(state, args):
         pass
     finally:
         sys.stdout.write("\033[?25h")
+
+
+def jouer(state, args, tours=None):
+    nom = args[0] if args else None
+    ind = None
+    if nom:
+        e = B.espece(nom)
+        ind = next((c for c in reversed(state.get("captures", [])) if e and c["espece"] == e["nom"]), None)
+    else:
+        ind = active(state)
+    if not ind:
+        print(" " + t("eq.aucune"))
+        return
+    quoi = (args[1] if len(args) > 1 else "statique").lower().replace("é", "e").replace("è", "e")
+    if quoi not in ANIMS:
+        print(" " + t("eq.animations", liste=", ".join(ANIMS)))
+        return
+    if quoi == "evolution" and stade(ind) == "bebe":
+        print(" " + t("eq.encore_bebe", nom=ind["espece"]))
+        return
+    r = animation(ind, quoi, aura=True, fin=True, eclat=_eclat(state))
+    if r is None:
+        from . import aura as A
+        from . import glitch as G
+        print("\n".join(B.dessin(B.espece(ind["espece"]), ind.get("shiny"), stade=stade(ind),
+                                 vid=ind.get("variante", "classique"), teinte=ind.get("teinte", 0.5),
+                                 aura=A.palier_ind(ind), glitch=G.de(ind))))
+        print(f" {DIM}" + t("eq.pas_d_image", nom=ind["espece"]) + RESET)
+        return
+    frames, ips = r
+    if tours is None:
+        tours = 1 if quoi == "evolution" else 3
+    titre = f" {B.nom_affiche(B.espece(ind['espece']), ind.get('shiny'), B.rarete_de(ind), ind.get('glitch'))} {DIM}· {B.nom_stade(stade(ind))} · {quoi}{RESET}"
+    derouler(frames, ips, tours, titre)
     if quoi == "evolution":
-        print(f" {BOLD}{ind['espece']} est devenu {NOM_STADE[stade(ind)]} !{RESET}")
+        print(f" {BOLD}" + t("eq.nouvelle_forme", nom=ind["espece"], stade=B.nom_stade(stade(ind))) + RESET)

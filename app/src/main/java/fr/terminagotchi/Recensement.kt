@@ -11,16 +11,41 @@ import java.net.URL
  * et renvoie la créature commune. Les appels réseau ne se font jamais sur l'écran (fil séparé).
  */
 object Recensement {
-    private const val INFO = "https://raw.githubusercontent.com/grecdel/terminagotchi-android/site-info/url.txt"
+    private const val INFO = "https://raw.githubusercontent.com/grecdel/terminagotchi/site-info/url.txt"
     const val APPAREIL = "android"
     private const val INTERVALLE = 60_000L
 
     @Volatile
     private var enCours = false
+    /** la dernière synchro a apporté du nouveau (XP venue d'un autre appareil, badge) : on l'annonce */
+    @Volatile var nouveau = false
 
     class Preparation(val cle: String, val serveurConnu: String, val charge: JSONObject, val snap: JSONObject)
 
     fun compte(jeu: Jeu): JSONObject = jeu.module("compte")
+
+    // ---------------------------------------------------------------- le petit nuage (idée 74)
+    /** Une synchro est en route (le nuage bleu « envoi… »). */
+    val envoiEnCours: Boolean get() = enCours
+
+    /** Ce que montre le nuage : null (pas de compte, ou tout est à jour : rien à l'écran), « envoi » pendant un envoi,
+     *  « hors » quand la dernière synchro n'a pas pu joindre le site (+ les commandes gardées ici, pas encore envoyées).
+     *  Mêmes vecteurs que recense.etat_nuage (donnees/synchro/vecteurs.json). */
+    fun etatNuage(c: JSONObject, total: Int, envoi: Boolean): Pair<String, Int>? {
+        if (c.optString("cle").isEmpty()) return null
+        if (envoi) return "envoi" to 0
+        if (c.optBoolean("hors")) return "hors" to maxOf(0, total - (c.optJSONObject("base")?.optInt("total") ?: 0))
+        return null
+    }
+
+    fun nuage(jeu: Jeu): Pair<String, Int>? = etatNuage(compte(jeu), jeu.total, enCours)
+
+    /** La phrase qui explique le nuage (le toucher, ou `compte`), ou "". */
+    fun phraseNuage(jeu: Jeu): String = when (nuage(jeu)?.first) {
+        "envoi" -> t("rec.nuage.dit.envoi")
+        "hors" -> t("rec.nuage.dit.hors", "n" to nuage(jeu)!!.second)
+        else -> ""
+    }
 
     fun aUnCompte(jeu: Jeu) = compte(jeu).optString("cle").isNotEmpty()
 
@@ -43,10 +68,10 @@ object Recensement {
             try {
                 JSONObject(texte.ifEmpty { "{}" })
             } catch (e: Exception) {
-                JSONObject().put("erreur", "réponse illisible (${c.responseCode})")
+                JSONObject().put("erreur", t("reca.err.illisible", "code" to c.responseCode))
             }
         } catch (e: Exception) {
-            JSONObject().put("erreur", "pas de connexion au recensement")
+            JSONObject().put("erreur", t("reca.err.connexion"))
         }
     }
 
@@ -85,6 +110,7 @@ object Recensement {
             .put("stats", JSONObject(Regles.STATS.associateWith { maxOf(0, (jeu.stats[it] ?: 0) - baseStats.optInt(it)) }))
         val charge = JSONObject()
             .put("appareil", APPAREIL)
+            .put("partie", jeu.partie)
             .put("deltas", deltas)
             .put("vus", JSONArray(jeu.vus.toList().takeLast(3000)))
             .put("skills", JSONArray(jeu.skills))
@@ -94,9 +120,18 @@ object Recensement {
             .put("partage", c.optJSONObject("partage") ?: JSONObject().put("actif", false).put("date", 0))
             .put("valeurs", JSONObject()
                 .put("nom", jeu.nom).put("nomDate", c.optLong("nomDate"))
-                .put("trait", jeu.trait).put("forme", jeu.forme ?: JSONObject.NULL).put("oeuf", jeu.oeuf).put("familier", jeu.familier).put("shiny", jeu.shiny)
-                .put("faim", jeu.faim).put("faimDate", c.optLong("repas")))
-        if (c.has("classe")) charge.getJSONObject("valeurs").put("classe", c.optString("classe"))   // mode classe ("" = quitter)
+                .put("trait", jeu.trait).put("forme", jeu.forme ?: JSONObject.NULL).put("shiny", jeu.shiny)
+                .put("faim", jeu.faim).put("faimDate", c.optLong("repas"))
+                .put("theme", Apparence.cleTheme(jeu)).put("themeDate", Apparence.a(jeu).optLong("theme_date"))
+                .put("confort", Confort.pourRecensement(jeu).first).put("confortDate", Confort.pourRecensement(jeu).second)
+                // le titre montré : le site colore le pseudo si c'est un badge de la Guilde QU'IL a vérifié lui-même
+                .put("titre", try { Entrainement.titreAffiche(jeu)?.id ?: "" } catch (e: Exception) { "" }))
+            // leçons de la Guilde et contribution : le site en recalcule le badge « Artisan » (jamais le grade envoyé)
+            .put("guilde", try { Guilde.chargeSite(jeu) } catch (e: Exception) { JSONObject() })
+        // salle d'entraînement : compteurs gagnés ici, exercices à vérifier, records (Entrainement.kt)
+        val (ent, snapEnt) = Entrainement.charge(jeu, base.optJSONObject("ent"))
+        charge.put("entrainement", ent)
+        snap.put("ent", snapEnt)
         enCours = true
         return Preparation(cle, c.optString("serveur"), charge, snap)
     }
@@ -104,24 +139,25 @@ object Recensement {
     /** Fait l'appel réseau (à lancer hors de l'écran). Renvoie la réponse + l'adresse utilisée. */
     fun envoyer(p: Preparation): Pair<JSONObject, String> {
         val url = serveur(p.serveurConnu)
-        if (url.isEmpty()) return JSONObject().put("erreur", "le site n'est pas encore en ligne") to ""
-        return requete("$url/api/sync", "POST", p.charge, p.cle) to url
+        if (url.isEmpty()) return JSONObject().put("erreur", t("reca.err.pas_en_ligne")) to ""
+        // partie 1 (celle d'avant les parties multiples) : l'adresse d'origine ; les autres ont la leur,
+        // qu'un site pas encore mis à jour refuse (au lieu de mélanger deux créatures)
+        val partie = p.charge.optString("partie", "1")
+        val route = if (partie == "1") "/api/sync" else "/api/sync/$partie"
+        return requete("$url$route", "POST", p.charge, p.cle) to url
     }
 
     /** Recopie la créature commune, en gardant ce qui a été gagné ici PENDANT la synchro. */
     fun appliquer(jeu: Jeu, p: Preparation, r: JSONObject, url: String): String {
         enCours = false
-        val srv = r.optJSONObject("etat") ?: return "⚠ Synchro impossible : ${r.optString("erreur", "erreur inconnue")}"
+        nouveau = false
         val c = compte(jeu)
-        if (c.optString("serveur").isEmpty() && url.isNotEmpty()) c.put("serveur", url)
-        var noteClasse = ""
-        if (r.optBoolean("classe_refusee")) {
-            c.remove("classe")
-            noteClasse = "\n⚠ Code de classe inconnu : vérifie-le auprès de ton professeur."
-        } else if (c.has("classe")) {
-            if (c.optString("classe").isEmpty()) { c.remove("classe"); noteClasse = "\n🏫 Tu as quitté la classe." }
-            else noteClasse = "\n🏫 Classe ${c.optString("classe")} : ton professeur voit ta progression (pseudo, niveau, compétences)."
+        val srv = r.optJSONObject("etat") ?: run {
+            c.put("hors", true)                     // le nuage orange : on joue normalement, l'envoi attendra
+            return t("rec.sync.impossible", "erreur" to r.optString("erreur", t("rec.err.inconnue")))
         }
+        c.put("hors", false)
+        if (c.optString("serveur").isEmpty() && url.isNotEmpty()) c.put("serveur", url)
         val snap = p.snap
         val avant = jeu.xp
         jeu.xp = srv.optInt("xp") + (jeu.xp - snap.optInt("xp"))
@@ -132,6 +168,11 @@ object Recensement {
         for (s in Regles.STATS) jeu.stats[s] = srvStats.optInt(s) + ((jeu.stats[s] ?: 0) - snapStats.optInt(s))
         c.put("base", JSONObject().put("xp", srv.optInt("xp")).put("total", srv.optInt("total"))
             .put("colles", srv.optInt("colles")).put("stats", srvStats))
+        srv.optJSONObject("entrainement")?.let { se ->      // (un site pas encore à jour n'en renvoie pas)
+            val ent = p.charge.optJSONObject("entrainement")
+            c.getJSONObject("base").put("ent", Entrainement.appliquer(jeu, se, snap.optJSONObject("ent") ?: JSONObject(),
+                ent?.optJSONArray("runs") ?: JSONArray(), r.optJSONObject("entrainement")))
+        }
         srv.optJSONArray("vus")?.let { a -> for (i in 0 until a.length()) jeu.vus.add(a.getString(i)) }
         srv.optJSONArray("skills")?.let { a ->
             for (i in 0 until a.length()) if (a.getString(i) !in jeu.skills) jeu.skills.add(a.getString(i))
@@ -146,16 +187,27 @@ object Recensement {
         }
         val caps = Explo.captures(jeu)
         val connus = (0 until caps.length()).map { caps.getJSONObject(it).optString("id") }.toMutableSet()
+        val parId = (0 until caps.length()).associateBy { caps.getJSONObject(it).optString("id") }
         srv.optJSONArray("captures")?.let { a ->
             for (i in 0 until a.length()) {
                 val ind = a.getJSONObject(i)
-                if (connus.add(ind.optString("id"))) caps.put(ind)
+                val ici = parId[ind.optString("id")]?.let { caps.getJSONObject(it) }
+                if (ici != null) {                      // anti-triche : le verdict du serveur
+                    if (ind.has("verifie")) ici.put("verifie", ind.optBoolean("verifie"))
+                } else if (connus.add(ind.optString("id"))) caps.put(ind)
             }
         }
+        Tirage.rangerGraines(jeu, r.optJSONArray("graines"))   // graines des prochains jours (jeu hors ligne)
+        Bestiaire.migrer(jeu.extra)      // des captures d'avant le nouveau bestiaire ont pu revenir du serveur
         srv.optJSONObject("partage")?.let { pa ->
             if (pa.optLong("date") >= (c.optJSONObject("partage")?.optLong("date") ?: 0L)) c.put("partage", pa)
         }
         if (srv.has("shiny")) jeu.shiny = srv.optBoolean("shiny")
+        if (srv.optLong("themeDate") > Apparence.a(jeu).optLong("theme_date")) {   // le thème le plus récent gagne
+            val th = srv.optString("theme")
+            if (Apparence.choisirTheme(jeu, th)) Apparence.a(jeu).put("theme_date", srv.optLong("themeDate"))
+        }
+        if (srv.optLong("confortDate") > 0) Confort.depuisRecensement(jeu, srv.optString("confort"), srv.optLong("confortDate"))
         val nom = srv.optString("nom")
         if (nom.isNotEmpty()) {
             jeu.nom = nom
@@ -163,28 +215,28 @@ object Recensement {
         }
         srv.optString("trait").takeIf { it.isNotEmpty() }?.let { jeu.trait = it }
         if (!srv.isNull("forme")) srv.optString("forme").takeIf { it in Regles.STATS }?.let { jeu.forme = it }
-        srv.optString("oeuf").takeIf { it.isNotEmpty() && Bestiaire.nomOeuf(it).isNotEmpty() }?.let { jeu.oeuf = it }
-        srv.optString("familier").takeIf { Bestiaire.espece(it) != null }?.let { jeu.familier = it }
-        if (jeu.stade >= Regles.STADE_FORME && jeu.forme == null) jeu.forme = jeu.dominant()
+        if (jeu.stade >= 2 && jeu.forme == null) jeu.forme = jeu.dominant()
         if (srv.optLong("faimDate") > c.optLong("repas")) {
             jeu.faim = srv.optDouble("faim", jeu.faim)
             c.put("repas", srv.optLong("faimDate"))
             jeu.dernierTick = System.currentTimeMillis()
         }
-        val lignes = mutableListOf("🔄 Synchronisé avec le recensement (${c.optString("pseudo")})")
+        val lignes = mutableListOf(t("reca.sync.ok", "pseudo" to c.optString("pseudo")))
         val gagne = jeu.xp - avant
         if (gagne > 0) {
-            jeu.log("🔄 +$gagne XP venus de ton autre appareil")
-            lignes.add("   +$gagne XP venus de ton autre appareil !")
+            nouveau = true
+            jeu.log(t("rec.sync.xp", "n" to gagne))
+            lignes.add("   " + t("reca.sync.xp", "n" to gagne))
         }
         r.optJSONArray("badges")?.let { a ->
             for (i in 0 until a.length()) {
-                val t = a.getJSONObject(i).optString("titre")
-                jeu.log("🏅 Badge vérifié : $t")
-                lignes.add("🏅 Nouveau badge vérifié : $t")
+                val titre = a.getJSONObject(i).optString("titre")
+                nouveau = true
+                jeu.log(t("rec.badge.log", "titre" to titre))
+                lignes.add(t("reca.badge.nouveau", "titre" to titre))
             }
         }
-        return lignes.joinToString("\n") + noteClasse
+        return lignes.joinToString("\n")
     }
 
     fun abandonner() {
@@ -202,6 +254,6 @@ object Recensement {
         val c = compte(jeu)
         c.put("cle", cle).put("pseudo", pseudo).put("serveur", url).put("dernier", 0)
         c.put("base", JSONObject().put("xp", 0).put("total", 0).put("colles", 0).put("stats", JSONObject()))
-        jeu.log("🌍 Recensé sous le pseudo $pseudo !")
+        jeu.log(t("rec.recense.log", "pseudo" to pseudo))
     }
 }

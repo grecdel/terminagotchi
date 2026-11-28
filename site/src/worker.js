@@ -5,54 +5,57 @@
  */
 
 import BESTIAIRE from "./bestiaire.js";
-import TRADUCTIONS from "./i18n.js";
+import { tirer, differences, stadePlausible, attirancePlausible, MAX_APPARITIONS, PAR_NOM_T, TIRAGE, glitchDe, gardienPlausible } from "./tirage.js";
+import { SCRIPT_GLITCH, REPERE as REPERE_GLITCH } from "./glitch.js";
+import { LANGUES, NOMS_LANGUES, LOCALES, RTL, choisirLangue, cookieLangue, textes, libelle } from "./i18n.js";
+import { confidentialiteFr, mentionsFr } from "./legal_fr.js";
+import { enseignantsFr } from "./enseignants_fr.js";
+import * as ENT from "./entrainement.js";
+import * as GUILDE from "./guilde.js";
+import { barreTerminal, planSite, CSS_TERMINAL } from "./terminal.js";
+import MONDE_TEXTES from "./monde_textes.js";
+import AUTOUR from "./autour_textes.js";
 
-const DEPOT = "https://github.com/grecdel/terminagotchi-android";
+// ====================================================================== réglages à remplir
+
+const DEPOT = "https://github.com/grecdel/terminagotchi";
+const CONTACT = "contact@terminagotchi.com";
+/**
+ * Éditeur du site (page /mentions-legales). Particulier non professionnel :
+ *  - anonyme: true  → nom et adresse NON publiés (il faut les avoir donnés à l'hébergeur, Cloudflare) ;
+ *  - anonyme: false → remplir nom (et adresse si on veut la publier).
+ * directeur : directeur de la publication (vide = l'éditeur lui-même).
+ */
+const EDITEUR = { anonyme: true, nom: "", adresse: "", directeur: "" };
+/** Licence du code source (ex. « GPL-3.0-or-later », « MIT ») : vide tant que le dépôt n'a pas de fichier LICENSE. */
+const LICENCE = "";
+/**
+ * Durées de conservation, annoncées sur /confidentialite ET appliquées par la purge quotidienne (scheduled) :
+ * compte effacé après `inactifMois` sans synchronisation ; adresses IP et compteurs anti-abus après `ipHeures`.
+ */
+const CONSERVATION = { inactifMois: 36, ipHeures: 24, sessionJours: 30 };
+/** Les bestioles qui ont un coloriage validé (docs/imprimer/fabriquer/choix.py ; PDF dans public/imprimer/coloriages/). */
+const COLORIAGES = ["braisillon", "gouttelin", "drapouille", "felicorne", "glandouille", "sporichon", "pucerise", "clopinou", "poulpiot", "rugisoleil", "lanternix", "gloupi"];
+/** Ce qui peut sortir de l'œuf, selon son type (copie de donnees/oeufs/depart.json, vérifiée par pc/outils/test_autour.py). */
+const DEPART = {"feu":["braisillon","flamouche","fondelin"],"eau":["gouttelin","plouftin","poulpiot"],"glace":["givrichon","givrarde","lunacorne"],"plante":["glandouille","sporichon","petalouette"],"roche":["cailloute","momiaou","simiosse"],"ciel":["zapiot","lumignon","plumange"],"ombre":["drapouille","follanterne","zyeuton"],"machine":["boulonnet","lanternix","engrenaille"],"poison":["gloupi","tentaclou","bavouille"]};
 const STATS = ["Intelligence", "Agilité", "Force", "Endurance"];
-const COURT = { Intelligence: "INT", "Agilité": "AGI", Force: "FOR", Endurance: "END" };
 const COULEUR = { Intelligence: 39, "Agilité": 78, Force: 203, Endurance: 221 };
-const STADES = ["Œuf", "Bébé", "Enfant", "Ado", "Adulte", "Ancien"];
-const OEUFS = Object.fromEntries((BESTIAIRE.oeufs || []).map((o) => [o.id, o]));
-const FORMES = { Intelligence: "Hacker", Force: "Titan", "Agilité": "Éclair", Endurance: "Carapace" };
-const ESPECES = BESTIAIRE.especes.map((e) => e.nom);
+const STADES = ["Œuf", "Bébé", "Ado", "Adulte"];
 const PAR_NOM = Object.fromEntries(BESTIAIRE.especes.map((e) => [e.nom, e]));
-// noms de l'ancien bestiaire → nouveaux noms (même numéro) : les vieux profils et les vieilles versions du jeu suivent
-const ANCIENS = BESTIAIRE.anciens || {};
-const nomActuel = (n) => (typeof n === "string" && ANCIENS[n]) || n;
-const VARIANTES = Object.fromEntries(BESTIAIRE.especes.map((e) => [e.nom, new Set((e.variantes || []).map((v) => v.id))]));
 const PAR_ID = Object.fromEntries(BESTIAIRE.especes.map((e) => [e.id, e]));
-const PUBLIQUES = BESTIAIRE.especes.filter((e) => !e.secrete);
+// anciennes espèces (bestiaire v1) : leur nom mène à la nouvelle espèce de même numéro (vieilles captures, collections)
+const ANCIENS = Object.fromEntries(Object.entries(BESTIAIRE.anciens || {}).map(([nom, id]) => [nom, PAR_ID[id]]).filter(([, e]) => e));
+/** L'espèce d'un nom envoyé par le jeu : nom du nouveau bestiaire d'abord, sinon ancien nom. */
+const especeDe = (nom) => PAR_NOM[nom] || ANCIENS[nom] || null;
+const ESPECES = [...new Set([...Object.keys(PAR_NOM), ...Object.keys(ANCIENS)])];
+const PUBLIQUES = BESTIAIRE.especes.filter((e) => !e.secrete).sort((a, b) => a.numero - b.numero);
 // espèces qui ont un dessin complet animé (bandes d'images dans public/anim/<id>/<stade>/<animation>.webp)
 const ANIMEES = new Set(["abyssor"]);
 const STADES_B = ["enfant", "ado", "adulte", "finale"];
-const NOM_STADE = { enfant: "enfant", ado: "ado", adulte: "adulte", finale: "forme finale" };   // les espèces secrètes ne figurent pas au bestiaire
 const MARQUES = new Set(BESTIAIRE.marques);
 const HUMEURS = new Set(BESTIAIRE.humeurs);
-const COULEUR_RARETE = { commune: "#b0b0c0", "peu commune": "#5fd787", rare: "#5fafff", "épique": "#c77dff", "légendaire": "#ffaf00", mythique: "#ff5f87" };
-// rareté d'un INDIVIDU : 60 % stats (en centile) + 25 % rareté de sa forme + 15 % puissance de l'espèce, +10 shiny
-const REGLE_RANG = BESTIAIRE.rarete_individu || { poids: { stats: 60, variante: 25, puissance: 15, bonus_shiny: 10 }, paliers: [[0, "commune"]], speciales: {} };
-const RANGS = [...REGLE_RANG.paliers.map((p) => p[1]), ...new Set(Object.values(REGLE_RANG.speciales || {}))];
-function noteIndividu(c) {
-  const e = PAR_NOM[c.espece];
-  if (!e) return 0;
-  const po = REGLE_RANG.poids;
-  const pot = Math.max(0, Math.min(100, Math.round(Number(c.potentiel) || 0)));
-  const stats = REGLE_RANG.centiles ? REGLE_RANG.centiles[pot] : pot / 100;
-  const vs = e.variantes || [{ id: "classique", chance: 100 }];
-  const max = Math.max(...vs.map((v) => v.chance));
-  const ch = (vs.find((v) => v.id === (c.variante || "classique")) || { chance: max }).chance;
-  let note = po.stats * stats + po.variante * (1 - ch / max) + po.puissance * ((e.puissance || 1) - 1) / 14;
-  if (c.shiny) note += po.bonus_shiny;
-  return Math.round(Math.min(100, note));
-}
-function rangIndividu(c) {
-  const e = PAR_NOM[c.espece];
-  if (e && REGLE_RANG.speciales?.[e.id]) return REGLE_RANG.speciales[e.id];
-  const n = noteIndividu(c);
-  let r = "commune";
-  for (const [seuil, nom] of REGLE_RANG.paliers) if (n >= seuil) r = nom;
-  return r;
-}
+const COULEUR_RARETE = { commune: "#b9c7be", "peu commune": "#5cff95", rare: "#5cb8ff", "épique": "#c58cff", "légendaire": "#ffb84d",
+  mythique: "#ff7aa8" };
 const APPAREILS = ["android", "pc"];
 
 // ====================================================================== outils
@@ -76,13 +79,6 @@ function texte(t, statut = 200, entetes = {}) {
 
 function hex(buf) {
   return [...new Uint8Array(buf)].map((b) => b.toString(16).padStart(2, "0")).join("");
-}
-
-function codeAleatoire(n) {
-  const alphabet = "ABCDEFGHJKMNPQRSTUVWXYZ23456789";
-  const b = new Uint8Array(n);
-  crypto.getRandomValues(b);
-  return [...b].map((x) => alphabet[x % alphabet.length]).join("");
 }
 
 function aleatoire(n) {
@@ -109,7 +105,7 @@ function niveauDe(xp) {
 }
 
 function stadeDe(n) {
-  return n < 2 ? 0 : n < 3 ? 1 : n < 5 ? 2 : n < 10 ? 3 : n < 20 ? 4 : 5;
+  return n < 2 ? 0 : n < 5 ? 1 : n < 10 ? 2 : 3;
 }
 
 async function corps(requete) {
@@ -148,7 +144,7 @@ async function authentifier(requete, env) {
   if (!/^[0-9a-f]{64}$/.test(cle)) return null;
   const empreinte = await sha256(cle);
   return env.DB.prepare(
-    "SELECT j.* FROM cles c JOIN joueurs j ON j.id = c.joueur WHERE c.empreinte = ?",
+    "SELECT j.*, c.empreinte AS empreinte_cle FROM cles c JOIN joueurs j ON j.id = c.joueur WHERE c.empreinte = ?",
   ).bind(empreinte).first();
 }
 
@@ -175,6 +171,233 @@ async function donnerBadge(env, joueur, type, titre) {
   return (r.meta?.changes ?? 0) > 0 ? { id, type, titre } : null;
 }
 
+// ====================================================================== anti-triche : graines
+
+/*
+ * Chaque appareil (chaque clé) reçoit une graine par jour, signée avec le secret SECRET_GRAINES
+ * (wrangler secret put SECRET_GRAINES — jamais écrit dans le dépôt ni renvoyé tel quel).
+ * Le jeu tire ses apparitions de (graine, compteur) ; le serveur refait le tirage pour vérifier.
+ * Identifiant d'une graine : « AAAA-MM-JJ.poste » (poste = 12 premiers caractères de l'empreinte de la clé).
+ */
+const JOURS_AVANT = 1;
+const JOURS_APRES = 6;
+const JOUR_MS = 86_400_000;
+
+function jourUTC(t) {
+  return new Date(t).toISOString().slice(0, 10);
+}
+
+async function valeurGraine(env, joueurId, poste, jour) {
+  return hmac(env.SECRET_GRAINES, `graine|${joueurId}|${poste}|${jour}`);
+}
+
+/** Les graines de cet appareil, d'hier à dans 6 jours (le jeu les garde pour jouer hors ligne). */
+async function graines(env, joueur) {
+  if (!env.SECRET_GRAINES || !joueur.empreinte_cle) return [];
+  const poste = joueur.empreinte_cle.slice(0, 12);
+  const out = [];
+  for (let d = -JOURS_AVANT; d <= JOURS_APRES; d++) {
+    const jour = jourUTC(Date.now() + d * JOUR_MS);
+    out.push({ id: `${jour}.${poste}`, valeur: await valeurGraine(env, joueur.id, poste, jour) });
+  }
+  return out;
+}
+
+/**
+ * Vérifie les NOUVELLES captures qui annoncent une graine : refait le tirage, compare, contrôle que
+ * (graine, compteur) ne sert qu'une fois et que le stade est plausible. Renvoie Map(id → verdict).
+ * Attirance (champ « attire ») : le tirage est refait avec la famille déclarée, acceptée seulement si
+ * le joueur a déjà tapé la commande de cette famille (commandes « vus » connues ou envoyées).
+ */
+async function verifierCaptures(env, joueur, etat, envoyees, vusEnvoyes = []) {
+  const verdicts = new Map();
+  const vus = new Set([...(Array.isArray(etat.vus) ? etat.vus : []), ...(Array.isArray(vusEnvoyes) ? vusEnvoyes : [])]);
+  const connues = new Set((etat.captures || []).map((c) => c.id));
+  const postes = new Map();
+  const maintenant = Date.now();
+  for (const c of Array.isArray(envoyees) ? envoyees : []) {
+    if (!c || typeof c.id !== "string" || connues.has(c.id) || verdicts.has(c.id)) continue;
+    if (c.graine === undefined && c.n === undefined) continue;          // ancienne capture : non vérifiée
+    const non = (raison) => verdicts.set(c.id, { verifie: false, raison });
+    const m = typeof c.graine === "string" && c.graine.match(/^(\d{4}-\d{2}-\d{2})\.([0-9a-f]{12})$/);
+    const n = c.n;
+    if (!env.SECRET_GRAINES) { non("vérification indisponible"); continue; }
+    if (!m || !Number.isInteger(n) || n < 0 || n >= MAX_APPARITIONS) { non("graine ou compteur invalide"); continue; }
+    const [, jour, poste] = m;
+    const debutJour = Date.parse(jour + "T00:00:00Z");
+    if (!Number.isFinite(debutJour) || debutJour > maintenant + JOUR_MS) { non("graine d'un jour futur"); continue; }
+    if (!postes.has(poste)) {
+      const r = await env.DB.prepare("SELECT 1 AS ok FROM cles WHERE joueur = ? AND substr(empreinte, 1, 12) = ?")
+        .bind(joueur.id, poste).first();
+      postes.set(poste, !!r);
+    }
+    if (!postes.get(poste)) { non("graine d'un autre joueur"); continue; }
+    const attire = attirancePlausible(c.attire, vus);
+    if (attire === undefined) { non("attirance impossible"); continue; }
+    const gardien = gardienPlausible(c.gardien, c.espece);
+    if (gardien === undefined) { non("gardien impossible"); continue; }
+    const valeur = await valeurGraine(env, joueur.id, poste, jour);
+    const { champs } = tirer(valeur, n, c.espece === "Abyssor", attire);
+    champs.glitch = glitchDe(valeur, n, gardien);
+    if (differences(c, champs).length) { non("ne correspond pas au tirage"); continue; }
+    const i0 = TIRAGE.stades.indexOf(champs.stade);
+    const voulu = TIRAGE.stades.includes(c.stade) ? c.stade : champs.stade;
+    if (TIRAGE.stades.indexOf(voulu) < i0) { non("stade impossible"); continue; }
+    // l'évolution : bornée par le temps écoulé depuis l'apparition (au plus tôt la veille du jour de la graine)
+    const depuis = Math.min(maintenant, Math.max(Number(c.date) || 0, debutJour - JOUR_MS));
+    const stade = stadePlausible(champs.stade, voulu, (maintenant - depuis) / 1000);
+    const r = await env.DB.prepare(
+      "INSERT OR IGNORE INTO apparitions (graine, n, joueur, capture, date) VALUES (?, ?, ?, ?, ?)",
+    ).bind(c.graine, n, joueur.id, c.id, maintenant).run();
+    if ((r.meta?.changes ?? 0) === 0) { non("graine déjà utilisée"); continue; }
+    verdicts.set(c.id, { verifie: true, champs, stade, depuis });
+  }
+  return verdicts;
+}
+
+// ====================================================================== salle d'entraînement
+
+/*
+ * Le jeu envoie (etat.entrainement côté jeu, voir pc/tg/entrainement.py) :
+ *   deltas  : les compteurs gagnés depuis la dernière synchro, par famille (n, bronze, argent, or, diamant) ;
+ *   runs    : les exercices réussis à vérifier { id, type, g (graine), n (compteur), t (secondes), d (date), e (empreinte) } ;
+ *   records : son meilleur temps par exercice { t, g, n, d }.
+ * Un exercice est vérifié si la graine est bien celle d'un appareil du joueur, si (graine, n) n'a jamais servi, si
+ * l'enfant avait déjà tapé ses commandes, si l'empreinte est celle du tirage refait ici, si le temps est plausible
+ * (ENT.tempsMinimum, par type), si sa date tombe le jour de sa graine, s'il ne chevauche aucun autre exercice
+ * vérifié et s'il en reste moins de ENT.MAX_VERIFIES_JOUR ce jour-là. La réponse d'un exercice se calcule depuis
+ * la graine (il le faut pour jouer hors ligne) : ces contrôles jugent donc le rythme, pas la réponse.
+ * Les deltas ne servent qu'au jeu (sa progression locale) : grades, titres, badges du profil, records publics et
+ * Star de la semaine ne comptent que les exercices vérifiés (verifiesDe, recomptés ici).
+ * Un record est « vérifié » quand il correspond à un exercice vérifié ; sinon il est gardé, marqué non vérifié.
+ */
+async function posteDuJoueur(env, joueur, poste, cache) {
+  if (!cache.has(poste)) {
+    const r = await env.DB.prepare("SELECT 1 AS ok FROM cles WHERE joueur = ? AND substr(empreinte, 1, 12) = ?").bind(joueur.id, poste).first();
+    cache.set(poste, !!r);
+  }
+  return cache.get(poste);
+}
+
+async function synchroEntrainement(env, joueur, partie, avant, envoi, vus) {
+  const e = { ...ENT.etatVide(), ...(avant && typeof avant === "object" ? avant : {}) };
+  e.familles = { ...(e.familles || {}) };
+  e.records = { ...(e.records || {}) };
+  const verdicts = {};
+  for (const f of ENT.FAMILLES) ENT.fam(e, f);
+  if (!envoi || typeof envoi !== "object") return { etat: e, verdicts };
+  const entier = (x, max) => Math.max(0, Math.min(max, Math.floor(Number(x) || 0)));
+  for (const f of ENT.FAMILLES) {
+    const x = ENT.fam(e, f);
+    for (const k of ["n", ...ENT.MEDAILLES]) x[k] += entier(envoi.deltas?.[f]?.[k], 500);
+  }
+  const garder = (typ, cand) => {
+    const a = e.records[typ];
+    if (!a || (cand.v && !a.v) || (cand.v === !!a.v && cand.t < a.t)) e.records[typ] = cand;
+  };
+  const vusSet = new Set(vus);
+  const maintenant = Date.now();
+  const postes = new Map();
+  for (const run of (Array.isArray(envoi.runs) ? envoi.runs : []).slice(-200)) {
+    if (!run || typeof run.id !== "string" || !/^[0-9a-f]{6,24}$/.test(run.id) || !Object.hasOwn(ENT.TYPES, run.type)) continue;
+    const t = Math.round(Number(run.t) * 10) / 10;
+    if (!(t > 0 && t < 3600)) continue;
+    const deja = await env.DB.prepare("SELECT verifie FROM exercices WHERE id = ?").bind(run.id).first();
+    if (deja) { verdicts[run.id] = deja.verifie === 1; continue; }
+    const m = typeof run.g === "string" && run.g.match(/^(\d{4}-\d{2}-\d{2})\.([0-9a-f]{12})$/);
+    let raison = null;
+    if (!run.g) raison = "sans graine";
+    else if (!env.SECRET_GRAINES) raison = "vérification indisponible";
+    else if (!m || !Number.isInteger(run.n) || run.n < 0 || run.n >= ENT.MAX_PAR_GRAINE) raison = "graine ou compteur invalide";
+    else if (!(Date.parse(m[1] + "T00:00:00Z") <= maintenant + JOUR_MS)) raison = "graine d'un jour futur";
+    else if (!(await posteDuJoueur(env, joueur, m[2], postes))) raison = "graine d'un autre joueur";
+    else if (!ENT.commandesConnues(run.type, vusSet)) raison = "commandes pas encore tapées";
+    else if (ENT.empreinte(run.type, ENT.generer(run.type, await valeurGraine(env, joueur.id, m[2], m[1]), run.n)) !== run.e) raison = "ne correspond pas au tirage";
+    else if (t < ENT.tempsMinimum(run.type)) raison = "temps impossible";
+    const date = Math.min(maintenant, Math.max(Number(run.d) || 0, maintenant - 8 * JOUR_MS));
+    if (!raison) {
+      // la date annoncée doit tomber le jour de la graine (fuseaux horaires compris), jamais dans le futur
+      const jourG = Date.parse(m[1] + "T00:00:00Z");
+      const d = Number(run.d);
+      if (!(d >= jourG - 14 * 3_600_000 && d <= jourG + JOUR_MS + 14 * 3_600_000 && d <= maintenant + 60_000)) raison = "date hors du jour de la graine";
+    }
+    if (!raison) {
+      // un enfant fait un exercice à la fois : pas de chevauchement avec un autre exercice vérifié (0,5 s de marge)
+      const chev = await env.DB.prepare("SELECT 1 AS ok FROM exercices WHERE joueur = ? AND verifie = 1 AND date > ? AND date - temps * 1000 < ?")
+        .bind(joueur.id, date - t * 1000 + 500, date - 500).first();
+      if (chev) raison = "en même temps qu'un autre exercice";
+    }
+    if (!raison) {
+      const j0 = Math.floor(date / JOUR_MS) * JOUR_MS;
+      const nb = await env.DB.prepare("SELECT COUNT(*) AS c FROM exercices WHERE joueur = ? AND verifie = 1 AND date >= ? AND date < ?")
+        .bind(joueur.id, j0, j0 + JOUR_MS).first();
+      if ((nb?.c ?? 0) >= ENT.MAX_VERIFIES_JOUR) raison = "trop d'exercices ce jour-là";
+    }
+    const ligne = [run.id, joueur.id, partie, ENT.TYPES[run.type][0], run.type, t, ENT.medaille(run.type, t), date, ENT.semaine(date)];
+    const sql = "INSERT OR IGNORE INTO exercices (id, joueur, partie, famille, type, temps, medaille, date, semaine, graine, n, verifie) "
+      + "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+    if (!raison) {
+      const r = await env.DB.prepare(sql).bind(...ligne, run.g, run.n, 1).run();
+      if ((r.meta?.changes ?? 0) === 0) raison = "graine déjà utilisée";
+    }
+    if (raison) await env.DB.prepare(sql).bind(...ligne, null, null, 0).run();
+    verdicts[run.id] = !raison;
+    if (!raison) garder(run.type, { t, v: true, d: date });
+  }
+  for (const [typ, r] of Object.entries(envoi.records && typeof envoi.records === "object" ? envoi.records : {})) {
+    if (!Object.hasOwn(ENT.TYPES, typ) || !r || typeof r !== "object") continue;
+    const t = Math.round(Number(r.t) * 10) / 10;
+    if (!(t >= 1 && t < 3600)) continue;
+    const v = typeof r.g === "string" && r.g && Number.isInteger(r.n)
+      ? !!(await env.DB.prepare("SELECT 1 AS ok FROM exercices WHERE joueur = ? AND graine = ? AND n = ? AND verifie = 1 AND ABS(temps - ?) < 0.05")
+        .bind(joueur.id, r.g, r.n, t).first())
+      : false;
+    garder(typ, { t, v, d: entier(r.d, 4e12) });
+  }
+  // les grades, titres et badges publics ne comptent QUE les exercices vérifiés (recomptés ici, jamais envoyés par le
+  // jeu) ; e.familles garde les compteurs du jeu (sa progression locale, sur tous ses appareils), « non vérifiés »
+  e.verifies = await verifiesDe(env, joueur.id, partie);
+  return { etat: e, verdicts };
+}
+
+/** Les compteurs (réussites, médailles) des seuls exercices vérifiés d'une partie, par famille. */
+async function verifiesDe(env, joueurId, partie) {
+  const v = Object.fromEntries(ENT.FAMILLES.map((f) => [f, Object.fromEntries(["n", ...ENT.MEDAILLES].map((k) => [k, 0]))]));
+  const r = await env.DB.prepare("SELECT famille, medaille, COUNT(*) AS c FROM exercices WHERE joueur = ? AND partie = ? AND verifie = 1 "
+    + "GROUP BY famille, medaille").bind(joueurId, partie).all();
+  for (const x of r.results) {
+    if (!v[x.famille]) continue;
+    v[x.famille].n += x.c;
+    if (Object.hasOwn(v[x.famille], x.medaille)) v[x.famille][x.medaille] += x.c;
+  }
+  return v;
+}
+
+/** Donne la « Star de la semaine » de la semaine passée dans chaque famille (une fois par semaine). Renvoie cette semaine-là. */
+async function semainesAttribuees(env, maintenant = Date.now()) {
+  const s = ENT.semainePrecedente(maintenant);
+  const fait = await env.DB.prepare("SELECT valeur FROM config WHERE cle = 'hebdo'").first();
+  if (fait?.valeur === s) return s;
+  for (const f of ENT.FAMILLES) {
+    await env.DB.prepare(
+      "INSERT OR IGNORE INTO titres_hebdo (semaine, famille, joueur, partie, n) SELECT ?, famille, joueur, partie, COUNT(*) AS c "
+      + "FROM exercices WHERE semaine = ? AND famille = ? AND verifie = 1 GROUP BY joueur, partie ORDER BY c DESC, SUM(temps) ASC, MIN(date) ASC LIMIT 1",
+    ).bind(s, s, f).run();
+  }
+  await env.DB.prepare("INSERT INTO config (cle, valeur) VALUES ('hebdo', ?) ON CONFLICT (cle) DO UPDATE SET valeur = excluded.valeur").bind(s).run();
+  return s;
+}
+
+/** Les Stars de la semaine d'un joueur : celles qu'il porte cette semaine (par partie) et combien de fois en tout. */
+async function starsDe(env, joueurId, partie = null) {
+  const s = await semainesAttribuees(env);
+  const ici = partie === null ? "" : " AND partie = ?";
+  const lier = (q, ...p) => env.DB.prepare(q).bind(...p, ...(partie === null ? [] : [partie]));
+  const maintenant = await lier("SELECT famille FROM titres_hebdo WHERE semaine = ? AND joueur = ?" + ici, s, joueurId).all();
+  const compte = await lier("SELECT famille, COUNT(*) AS n FROM titres_hebdo WHERE joueur = ?" + ici + " GROUP BY famille", joueurId).all();
+  return { semaine: s, familles: maintenant.results.map((x) => x.famille), compte: Object.fromEntries(compte.results.map((x) => [x.famille, x.n])) };
+}
+
 // ====================================================================== synchro
 
 /**
@@ -184,21 +407,12 @@ async function donnerBadge(env, joueur, type, titre) {
  *  - collection : maximum par espèce · records : meilleur temps
  *  - nom, faim : la valeur la plus récente gagne · caractère, forme : la première gagne
  */
-function fusionner(etat, envoi, appareil) {
+function fusionner(etat, envoi, appareil, verdicts = new Map()) {
   const e = {
     nom: "", nomDate: 0, trait: "", forme: null, xp: 0, total: 0, colles: 0, stats: {}, vus: [], skills: [],
     collection: {}, records: {}, faim: 80, faimDate: 0, appareils: {}, ...etat,
   };
   const entier = (x, max) => Math.max(0, Math.min(max, Math.floor(Number(x) || 0)));
-  const renommer = (coll) => {
-    const out = {};
-    for (const [k, v] of Object.entries(coll || {})) out[nomActuel(k)] = Math.max(out[nomActuel(k)] || 0, Number(v) || 0);
-    return out;
-  };
-  e.collection = renommer(e.collection);
-  envoi = { ...envoi, collection: renommer(envoi.collection) };
-  if (Array.isArray(e.captures)) for (const c of e.captures) c.espece = nomActuel(c.espece);
-  if (Array.isArray(envoi.captures)) envoi.captures = envoi.captures.map((c) => (c && typeof c === "object" ? { ...c, espece: nomActuel(c.espece) } : c));
   const d = envoi.deltas || {};
   e.xp += entier(d.xp, 20000);
   e.total += entier(d.total, 20000);
@@ -231,17 +445,32 @@ function fusionner(etat, envoi, appareil) {
   for (const c of Array.isArray(envoi.captures) ? envoi.captures : []) {
     if (e.captures.length >= 3000) break;
     const ok = c && typeof c.id === "string" && /^[0-9a-f]{6,20}$/.test(c.id) && !connues.has(c.id)
-      && PAR_NOM[c.espece] && MARQUES.has(c.marque) && HUMEURS.has(c.humeur);
+      && (especeDe(c.espece) || PAR_NOM_T[c.espece]) && MARQUES.has(c.marque) && HUMEURS.has(c.humeur);
     if (!ok) continue;
+    const zone = typeof c.zone === "string" && /^[a-z/_]{0,60}$/.test(c.zone) ? c.zone : "";
+    const v = verdicts.get(c.id);
+    if (v?.verifie) {
+      // tirage refait par le serveur : ce sont SES valeurs qui sont gardées
+      const t = v.champs;
+      e.captures.push({
+        id: c.id, espece: t.espece, variante: t.variante, shiny: t.shiny, date: entier(c.date, 4e12), marque: t.marque,
+        humeur: t.humeur, taille: t.taille, qualite: t.qualite, potentiel: t.potentiel, stats: t.stats, note: t.note,
+        rarete: t.rarete, zone, stade: v.stade, stade0: t.stade, depuis: v.depuis, teinte: t.teinte ?? 0,
+        graine: c.graine, n: c.n, verifie: true, ...(typeof c.attire === "string" && { attire: c.attire }),
+        ...(c.glitch === true && t.glitch && { glitch: true }), ...(typeof c.gardien === "string" && { gardien: c.gardien }),
+      });
+      connues.add(c.id);
+      continue;
+    }
     const st = {};
     for (const k of ["PV", "ATK", "DEF", "VIT", "INT"]) st[k] = entier(c.stats?.[k], 200);
     e.captures.push({
       id: c.id, espece: c.espece, shiny: c.shiny === true, date: entier(c.date, 4e12), marque: c.marque,
       humeur: c.humeur, taille: Math.max(0, Math.min(1000, Number(c.taille) || 0)), potentiel: entier(c.potentiel, 100),
-      stats: st, zone: typeof c.zone === "string" && /^[a-z/]{0,60}$/.test(c.zone) ? c.zone : "",
-      stade: STADES_B.includes(c.stade) ? c.stade : "enfant",
-      teinte: Math.max(0, Math.min(1, Number(c.teinte) || 0)),
-      variante: VARIANTES[c.espece]?.has(c.variante) ? c.variante : "classique",
+      stats: st, zone,
+      stade: STADES_B.includes(c.stade) || TIRAGE.stades.includes(c.stade) ? c.stade : "enfant",
+      teinte: Math.max(0, Math.min(1, Number(c.teinte) || 0)), ...(c.glitch === true && { glitch: true }),
+      verifie: false, ...(v?.raison && { raison: v.raison }),
     });
     connues.add(c.id);
   }
@@ -249,7 +478,13 @@ function fusionner(etat, envoi, appareil) {
   const parId = Object.fromEntries(e.captures.map((c) => [c.id, c]));
   for (const c of Array.isArray(envoi.captures) ? envoi.captures : []) {
     const ancienne = c && parId[c.id];
-    if (ancienne && STADES_B.indexOf(c.stade) > STADES_B.indexOf(ancienne.stade || "enfant")) ancienne.stade = c.stade;
+    if (!ancienne) continue;
+    if (ancienne.verifie === true) {
+      // bestiole vérifiée : elle ne grandit pas plus vite que le temps écoulé ne le permet
+      const s = stadePlausible(ancienne.stade0, c.stade, (Date.now() - ancienne.depuis) / 1000);
+      if (TIRAGE.stades.indexOf(s) > TIRAGE.stades.indexOf(ancienne.stade)) ancienne.stade = s;
+    } else if (STADES_B.includes(c.stade) && STADES_B.indexOf(c.stade) > STADES_B.indexOf(ancienne.stade || "enfant")) ancienne.stade = c.stade;
+    else if (TIRAGE.stades.indexOf(c.stade) > TIRAGE.stades.indexOf(ancienne.stade)) ancienne.stade = c.stade;
   }
   if (envoi.partage && typeof envoi.partage === "object" && (Number(envoi.partage.date) || 0) >= (e.partage?.date || 0)) {
     e.partage = { actif: envoi.partage.actif === true, date: Number(envoi.partage.date) || 0 };
@@ -258,21 +493,171 @@ function fusionner(etat, envoi, appareil) {
   if (e.shiny === undefined && typeof v.shiny === "boolean") e.shiny = v.shiny;
   // le nom : celui du compte reste, sauf renommage plus récent (un appareil fraîchement relié ne l'écrase pas)
   if (typeof v.nom === "string" && v.nom.trim() && (!e.nom || (Number(v.nomDate) || 0) > e.nomDate)) {
-    e.nom = v.nom.trim().slice(0, 16);
+    // sans caractères de contrôle ni de mise en forme (ESC, NUL, RLO…) : le nom est montré à d'autres joueurs
+    e.nom = v.nom.replace(/[\p{Cc}\p{Cf}]/gu, "").trim().slice(0, 16) || e.nom || "?";
     e.nomDate = Number(v.nomDate) || 0;
   }
   if (!e.trait && typeof v.trait === "string") e.trait = v.trait.slice(0, 20);
-  // l'œuf et l'espèce de la créature : le premier appareil qui les envoie les fixe pour tous
-  if (!e.oeuf && OEUFS[v.oeuf]) e.oeuf = v.oeuf;
-  if (!e.familier && e.oeuf && OEUFS[e.oeuf].especes.includes(v.familier)) e.familier = v.familier;
   if (!e.forme && STATS.includes(v.forme)) e.forme = v.forme;
-  if (typeof v.classe === "string") e.classe = v.classe;      // "" = quitter la classe (code vérifié avant)
+  // le thème (apparence) : le plus récent gagne, un nom court en minuscules seulement
+  if (typeof v.theme === "string" && /^[a-z]{2,12}$/.test(v.theme) && (Number(v.themeDate) || 0) > (e.themeDate || 0)) {
+    e.theme = v.theme;
+    e.themeDate = Number(v.themeDate) || 0;
+  }
+  // lecture et confort (police, formes, calme) : le plus récent gagne, seulement des mots connus
+  if (typeof v.confort === "string" && /^((facile|formes[01]|calme[01])(,|$)){0,3}$/.test(v.confort)
+      && (Number(v.confortDate) || 0) > (e.confortDate || 0)) {
+    e.confort = v.confort;
+    e.confortDate = Number(v.confortDate) || 0;
+  }
   if ((Number(v.faimDate) || 0) > e.faimDate) {
     e.faim = Math.max(0, Math.min(100, Number(v.faim) || 0));
     e.faimDate = Number(v.faimDate);
   }
+  // la Guilde : leçons réussies et contribution prête (le site en recalcule lui-même le badge « Artisan ») ; le titre
+  // montré par le jeu, réduit au nom du badge de la Guilde (« artisan:kilo » → « artisan ») : le dernier envoyé gagne
+  if (envoi.guilde && typeof envoi.guilde === "object") e.guilde = GUILDE.fusionner(e.guilde, envoi.guilde);
+  if (typeof v.titre === "string") e.titreGuilde = GUILDE.badgeDuTitre(v.titre);
   if (APPAREILS.includes(appareil)) e.appareils[appareil] = Date.now();
   return e;
+}
+
+// ====================================================================== comptes : parties, jetons, code de secours
+
+/*
+ * Plusieurs parties par compte (table `parties`) : une partie = une créature. L'identifiant « 1 »
+ * est la créature d'avant les parties multiples (les anciennes appli synchronisent sur /api/sync
+ * sans identifiant = partie 1) ; les autres ont des identifiants au hasard, sur /api/sync/<id>.
+ * La ligne `joueurs` garde une copie de la MEILLEURE partie (plus d'XP) : profil, classement, galerie.
+ *
+ * Connexion sans mot de passe (des enfants) : un jeton court TG-XXXX-XX (10 minutes, une fois) relie
+ * un appareil ; `compte site` donne un lien à usage unique qui ouvre une session sur le site ;
+ * un code de secours TG-XXXX-XXXX-XXXX, montré UNE fois, rend le compte si l'appareil est perdu
+ * (seule son empreinte HMAC est stockée).
+ */
+const ALPHABET = "ABCDEFGHJKMNPQRSTUVWXYZ23456789";
+const RE_PARTIE = /^[A-Za-z0-9_-]{1,24}$/;
+const SESSION_JOURS = CONSERVATION.sessionJours;
+
+function tirerCode(n) {
+  const b = new Uint8Array(n);
+  crypto.getRandomValues(b);
+  return [...b].map((x) => ALPHABET[x % ALPHABET.length]).join("");
+}
+
+/** « tg-7kq2 m9 » → « 7KQ2M9 » (le préfixe TG- et les tirets sont facultatifs). */
+function normaliserJeton(t, longueur) {
+  const c = String(t || "").toUpperCase().replace(/[^A-Z0-9]/g, "");
+  return c.length === longueur + 2 && c.startsWith("TG") ? c.slice(2) : c;
+}
+
+const jetonLisible = (c) => `TG-${c.slice(0, 4)}-${c.slice(4)}`;
+const secoursLisible = (c) => `TG-${c.slice(0, 4)}-${c.slice(4, 8)}-${c.slice(8)}`;
+
+async function nouveauJeton(env, joueurId) {
+  const code = tirerCode(6);
+  await env.DB.prepare("DELETE FROM codes WHERE expire < ?").bind(Date.now()).run();
+  await env.DB.prepare("INSERT INTO codes (code, joueur, expire) VALUES (?, ?, ?)")
+    .bind(code, joueurId, Date.now() + 10 * 60_000).run();
+  return code;
+}
+
+/** Un nouveau code de secours (remplace l'ancien). Renvoyé UNE fois, jamais stocké en clair. */
+async function nouveauSecours(env, joueurId) {
+  const code = tirerCode(12);
+  const empreinte = await hmac(await secretServeur(env), "secours|" + code);
+  await env.DB.prepare("DELETE FROM secours WHERE joueur = ?").bind(joueurId).run();
+  await env.DB.prepare("INSERT INTO secours (empreinte, joueur, cree) VALUES (?, ?, ?)").bind(empreinte, joueurId, Date.now()).run();
+  return secoursLisible(code);
+}
+
+/** Migration douce : un compte sans ligne `parties` voit sa créature d'avant devenir la partie 1. */
+async function migrerParties(env, joueur) {
+  await env.DB.prepare(
+    "INSERT OR IGNORE INTO parties (joueur, partie, etat, xp, niveau, cree, maj) SELECT id, '1', etat, xp, niveau, cree, maj "
+    + "FROM joueurs WHERE id = ? AND etat <> '{}' AND NOT EXISTS (SELECT 1 FROM parties p WHERE p.joueur = joueurs.id)",
+  ).bind(joueur.id).run();
+}
+
+async function synchroniser(env, joueur, b, partie) {
+  await migrerParties(env, joueur);
+  const appareil = APPAREILS.includes(b.appareil) ? b.appareil : "pc";
+  const ligne = await env.DB.prepare("SELECT etat FROM parties WHERE joueur = ? AND partie = ?").bind(joueur.id, partie).first();
+  const avant = ligne ? lireEtat(ligne) : {};
+  const e = fusionner(avant, b, appareil, await verifierCaptures(env, joueur, avant, b.captures, b.vus));
+  const ent = await synchroEntrainement(env, joueur, partie, avant.entrainement, b.entrainement, e.vus);
+  e.entrainement = ent.etat;
+  const maintenant = Date.now();
+  await env.DB.prepare(
+    "INSERT INTO parties (joueur, partie, etat, xp, niveau, cree, maj) VALUES (?, ?, ?, ?, ?, ?, ?) "
+    + "ON CONFLICT (joueur, partie) DO UPDATE SET etat = excluded.etat, xp = excluded.xp, niveau = excluded.niveau, maj = excluded.maj",
+  ).bind(joueur.id, partie, JSON.stringify(e), e.xp, niveauDe(e.xp), maintenant, maintenant).run();
+  // la vitrine du joueur (profil, classement, galerie) montre sa meilleure créature
+  const meilleure = await env.DB.prepare("SELECT etat, xp, niveau FROM parties WHERE joueur = ? ORDER BY xp DESC, maj DESC LIMIT 1")
+    .bind(joueur.id).first();
+  await env.DB.prepare("UPDATE joueurs SET etat = ?, xp = ?, niveau = ?, maj = ? WHERE id = ?")
+    .bind(meilleure.etat, meilleure.xp, meilleure.niveau, maintenant, joueur.id).run();
+  await majPseudoGuilde(env, joueur.id, lireEtat(meilleure));
+  const nouveaux = [];
+  if (Object.keys(e.appareils).length >= 2) {
+    const bd = await donnerBadge(env, joueur.id, "multi", "Multi-plateforme : PC + téléphone");
+    if (bd) nouveaux.push(bd);
+  }
+  const st = await starsDe(env, joueur.id, partie);
+  return json({ etat: e, partie, badges: nouveaux, graines: await graines(env, joueur),
+    entrainement: { hebdo: { semaine: st.semaine, familles: st.familles }, compte: st.compte, verdicts: ent.verdicts } });
+}
+
+/**
+ * Le pseudo coloré (badges de la Guilde) : la table `pseudos_guilde` garde, pour la vitrine du joueur (sa meilleure
+ * partie), le badge choisi comme titre et l'échelon « Artisan » RECALCULÉ ici ; l'échelon « Contributeur » n'est
+ * jamais stocké : il vient des crédits du dépôt (guilde_donnees.js) à chaque affichage.
+ */
+async function majPseudoGuilde(env, joueurId, e) {
+  await env.DB.prepare("INSERT INTO pseudos_guilde (joueur, titre, artisan, maj) VALUES (?, ?, ?, ?) "
+    + "ON CONFLICT (joueur) DO UPDATE SET titre = excluded.titre, artisan = excluded.artisan, maj = excluded.maj")
+    .bind(joueurId, GUILDE.badgeDuTitre(e.titreGuilde), GUILDE.echelonArtisan(e.guilde), Date.now()).run();
+}
+
+/** Les vitrines de la Guilde de quelques pseudos : Map(pseudo en minuscules → GUILDE.vitrine). */
+async function vitrinesGuilde(env, pseudos) {
+  const uniques = [...new Set(pseudos.filter((x) => typeof x === "string" && x))];
+  const out = new Map(uniques.map((p) => [p.toLowerCase(), GUILDE.vitrine(p, "", null)]));
+  for (let i = 0; i < uniques.length; i += 90) {
+    const lot = uniques.slice(i, i + 90);
+    const r = await env.DB.prepare(`SELECT j.pseudo, g.titre, g.artisan FROM joueurs j JOIN pseudos_guilde g ON g.joueur = j.id `
+      + `WHERE j.pseudo IN (${lot.map(() => "?").join(",")})`).bind(...lot).all();
+    for (const x of r.results) out.set(x.pseudo.toLowerCase(), GUILDE.vitrine(x.pseudo, x.titre, x.artisan));
+  }
+  return out;
+}
+
+/** Un pseudo pour une page : dans la couleur de son badge de la Guilde (et en gras) quand c'est son titre. */
+function pseudoHtml(L, pseudo, vitrines) {
+  const v = vitrines?.get(String(pseudo).toLowerCase());
+  if (!v?.titre) return bdi(pseudo);
+  const T = GUILDE.textes(L.lang);
+  const nom = `${T[v.titre.badge]} ${L.t.ent.echelonsNoms[v.titre.echelon] || ""}`.trim();
+  return `<bdi class="pseudo-g pseudo-${v.titre.badge}" title="${echapper(nom)}">${echapper(pseudo)}</bdi>`;
+}
+
+const lienJoueur = (L, pseudo, vitrines) => `<a href="/joueur/${encodeURIComponent(pseudo)}">${pseudoHtml(L, pseudo, vitrines)}</a>`;
+
+async function listeParties(env, joueur) {
+  await migrerParties(env, joueur);
+  const r = await env.DB.prepare("SELECT partie, etat, xp, niveau, maj FROM parties WHERE joueur = ? ORDER BY cree").bind(joueur.id).all();
+  return r.results.map((p) => {
+    const e = lireEtat(p);
+    return { partie: p.partie, nom: e.nom || "", forme: e.forme || null, niveau: p.niveau, xp: p.xp, shiny: !!e.shiny, maj: p.maj };
+  });
+}
+
+/** Le joueur connecté au site (cookie de session), ou null. */
+async function joueurSession(requete, env) {
+  const m = String(requete.headers.get("cookie") || "").match(/(?:^|;\s*)tg_session=([0-9a-f]{64})/);
+  if (!m) return null;
+  return env.DB.prepare("SELECT j.* FROM sessions s JOIN joueurs j ON j.id = s.joueur WHERE s.empreinte = ? AND s.expire > ?")
+    .bind(await sha256(m[1]), Date.now()).first();
 }
 
 // ====================================================================== API
@@ -297,32 +682,34 @@ async function api(requete, env, chemin) {
       .bind(id, pseudo, maintenant, maintenant).run();
     const cle = await nouvelleCle(env, id, appareil);
     await donnerBadge(env, id, "recense", "Recensé");
-    return json({ pseudo, cle, profil: "/joueur/" + pseudo });
-  }
-
-  if (chemin === "/api/classe" && m === "POST") {
-    if (!(await limite(env, "classe:" + ip, 5))) return erreur("Trop de classes créées, réessaie dans une minute.", 429);
-    const b = await corps(requete);
-    const nom = String(b?.nom || "").trim().slice(0, 40);
-    if (nom.length < 2) return erreur("Donne un nom à la classe (2 à 40 caractères).");
-    const code = codeAleatoire(6);
-    const cle = aleatoire(16);
-    await env.DB.prepare("INSERT INTO classes (code, nom, cle_prof, cree) VALUES (?, ?, ?, ?)")
-      .bind(code, nom, await sha256(cle), Date.now()).run();
-    return json({ code, nom, lien: `/classe/${code}?cle=${cle}` });
+    // code de secours : donné UNE seule fois, ici
+    return json({ pseudo, cle, profil: "/joueur/" + pseudo, secours: await nouveauSecours(env, id) });
   }
 
   if (chemin === "/api/lier" && m === "POST") {
     if (!(await limite(env, "lier:" + ip, 10))) return erreur("Trop d'essais, réessaie dans une minute.", 429);
     const b = await corps(requete);
-    const code = String(b?.code || "").trim().toUpperCase();
+    const code = normaliserJeton(b?.code, 6);       // TG-7KQ2-M9, 7KQ2M9…
     const appareil = APPAREILS.includes(b?.appareil) ? b.appareil : "pc";
-    const c = await env.DB.prepare("SELECT * FROM codes WHERE code = ?").bind(code).first();
+    const c = code.length === 6 ? await env.DB.prepare("SELECT * FROM codes WHERE code = ?").bind(code).first() : null;
     if (!c || c.expire < Date.now()) return erreur("Code invalide ou expiré (il dure 10 minutes).", 404);
     await env.DB.prepare("DELETE FROM codes WHERE code = ?").bind(code).run();
     const j = await env.DB.prepare("SELECT pseudo FROM joueurs WHERE id = ?").bind(c.joueur).first();
     const cle = await nouvelleCle(env, c.joueur, appareil);
     return json({ pseudo: j.pseudo, cle });
+  }
+
+  if (chemin === "/api/secours/recuperer" && m === "POST") {
+    if (!(await limite(env, "secours:" + ip, 5))) return erreur("Trop d'essais, réessaie dans une minute.", 429);
+    const b = await corps(requete);
+    const code = normaliserJeton(b?.code, 12);
+    const appareil = APPAREILS.includes(b?.appareil) ? b.appareil : "pc";
+    const s = code.length === 12
+      ? await env.DB.prepare("SELECT joueur FROM secours WHERE empreinte = ?").bind(await hmac(await secretServeur(env), "secours|" + code)).first()
+      : null;
+    if (!s) return erreur("Code de secours inconnu : vérifie chaque caractère.", 404);
+    const j = await env.DB.prepare("SELECT pseudo FROM joueurs WHERE id = ?").bind(s.joueur).first();
+    return json({ pseudo: j.pseudo, cle: await nouvelleCle(env, s.joueur, appareil) });
   }
 
   if (chemin === "/api/classement" && m === "GET") {
@@ -331,6 +718,15 @@ async function api(requete, env, chemin) {
       const e = lireEtat(j);
       return { pseudo: j.pseudo, nom: e.nom || j.pseudo, niveau: j.niveau, xp: j.xp, forme: e.forme || null };
     }));
+  }
+
+  // le plan du site pour le mini-terminal des pages (ls, cd, Tab…) : ne change qu'avec une nouvelle version
+  if (chemin === "/api/plan" && m === "GET") {
+    return json(planSite(new URL(requete.url).searchParams.get("lang")), 200, { "cache-control": "public, max-age=3600" });
+  }
+
+  if (chemin === "/api/records" && m === "GET") {
+    return json(await donneesRecords(env));
   }
 
   if (chemin.startsWith("/api/profil/") && m === "GET") {
@@ -356,39 +752,54 @@ async function api(requete, env, chemin) {
   }
 
   if (chemin === "/api/code" && m === "POST") {
-    const alphabet = "ABCDEFGHJKMNPQRSTUVWXYZ23456789";
-    const b = new Uint8Array(6);
-    crypto.getRandomValues(b);
-    const code = [...b].map((x) => alphabet[x % alphabet.length]).join("");
-    await env.DB.prepare("DELETE FROM codes WHERE expire < ?").bind(Date.now()).run();
-    await env.DB.prepare("INSERT INTO codes (code, joueur, expire) VALUES (?, ?, ?)")
-      .bind(code, joueur.id, Date.now() + 10 * 60_000).run();
-    return json({ code, expire: 600 });
+    const code = await nouveauJeton(env, joueur.id);
+    return json({ code, jeton: jetonLisible(code), expire: 600 });
   }
 
-  if (chemin === "/api/sync" && m === "POST") {
+  if (chemin === "/api/secours" && m === "POST") {
+    if (!(await limite(env, "nouveau-secours:" + joueur.id, 5))) return erreur("Trop d'essais, réessaie dans une minute.", 429);
+    return json({ secours: await nouveauSecours(env, joueur.id) });
+  }
+
+  if (chemin === "/api/lien-site" && m === "POST") {
+    // lien à usage unique (10 minutes) qui ouvre une session sur le site ; seule son empreinte est gardée
+    const t = aleatoire(16);
+    await env.DB.prepare("DELETE FROM codes WHERE expire < ?").bind(Date.now()).run();
+    await env.DB.prepare("INSERT INTO codes (code, joueur, expire) VALUES (?, ?, ?)")
+      .bind("W" + (await sha256(t)), joueur.id, Date.now() + 10 * 60_000).run();
+    return json({ lien: "/connexion?t=" + t, expire: 600 });
+  }
+
+  if (chemin === "/api/compte" && m === "DELETE") {
+    // suppression définitive du compte et de TOUTES ses données ; le pseudo doit être recopié (pas de suppression par erreur)
+    const b = await corps(requete);
+    if (String(b?.confirmer || "").trim().toLowerCase() !== joueur.pseudo.toLowerCase()) {
+      return erreur("Pour supprimer le compte, recopie le pseudo dans « confirmer ».", 400);
+    }
+    await supprimerCompte(env, joueur.id);
+    return json({ ok: true, supprime: joueur.pseudo });
+  }
+
+  if (chemin === "/api/deconnexion" && m === "POST") {
+    await env.DB.prepare("DELETE FROM cles WHERE empreinte = ?").bind(joueur.empreinte_cle).run();
+    return json({ ok: true });
+  }
+
+  if (chemin === "/api/parties" && m === "GET") {
+    return json({ parties: await listeParties(env, joueur) });
+  }
+
+  const ms = chemin.match(/^\/api\/sync(?:\/([^/]+))?$/);
+  if (ms && m === "POST") {
     if (!(await limite(env, "sync:" + joueur.id, 30))) return erreur("Trop de synchros, doucement !", 429);
     const b = await corps(requete);
     if (!b) return erreur("Données illisibles.");
-    const appareil = APPAREILS.includes(b.appareil) ? b.appareil : "pc";
-    const cl = b.valeurs?.classe;
-    let classeRefusee = false;
-    if (typeof cl === "string" && cl !== "") {               // rejoindre une classe : le code doit exister
-      const ok = /^[A-Z0-9]{6}$/.test(cl) && await env.DB.prepare("SELECT 1 FROM classes WHERE code = ?").bind(cl).first();
-      if (!ok) {
-        classeRefusee = true;                                  // le reste de la synchro passe quand même
-        delete b.valeurs.classe;
-      }
-    }
-    const e = fusionner(lireEtat(joueur), b, appareil);
-    await env.DB.prepare("UPDATE joueurs SET etat = ?, xp = ?, niveau = ?, maj = ? WHERE id = ?")
-      .bind(JSON.stringify(e), e.xp, niveauDe(e.xp), Date.now(), joueur.id).run();
-    const nouveaux = [];
-    if (Object.keys(e.appareils).length >= 2) {
-      const bd = await donnerBadge(env, joueur.id, "multi", "Multi-plateforme : PC + téléphone");
-      if (bd) nouveaux.push(bd);
-    }
-    return json({ etat: e, badges: nouveaux, ...(classeRefusee && { classe_refusee: true }) });
+    // sans identifiant (anciennes versions de l'appli) : la partie 1
+    const partie = ms[1] ? decodeURIComponent(ms[1]) : "1";
+    if (!RE_PARTIE.test(partie)) return erreur("Identifiant de partie invalide.");
+    const n = await env.DB.prepare("SELECT COUNT(*) AS n FROM parties WHERE joueur = ? AND partie <> ?").bind(joueur.id, partie).first();
+    if (n.n >= 30) return erreur("Trop de parties sur ce compte.", 409);
+    return synchroniser(env, joueur, b, partie);
   }
 
   if (chemin === "/api/drapeau" && m === "POST") {
@@ -415,6 +826,33 @@ async function api(requete, env, chemin) {
   return erreur("Route inconnue.", 404);
 }
 
+// ====================================================================== suppression et durées de conservation
+
+/** Efface un compte et tout ce qui s'y rattache (toutes les tables qui ont une colonne « joueur »). */
+async function supprimerCompte(env, id) {
+  for (const table of ["cles", "codes", "badges", "apparitions", "parties", "secours", "sessions", "exercices", "titres_hebdo", "pseudos_guilde"]) {
+    await env.DB.prepare(`DELETE FROM ${table} WHERE joueur = ?`).bind(id).run();
+  }
+  // compteurs anti-abus par compte (« sync:<id> », « drapeau:<id> »…)
+  await env.DB.prepare("DELETE FROM essais WHERE sujet LIKE ?").bind("%:" + id).run();
+  await env.DB.prepare("DELETE FROM joueurs WHERE id = ?").bind(id).run();
+}
+
+/**
+ * Applique les durées annoncées sur /confidentialite (lancée chaque jour par le déclencheur « crons » de wrangler.toml) :
+ * comptes sans synchronisation depuis CONSERVATION.inactifMois, compteurs anti-abus (adresses IP) de plus de
+ * CONSERVATION.ipHeures, jetons et sessions expirés. Renvoie le nombre de comptes effacés.
+ */
+async function purger(env, maintenant = Date.now()) {
+  await env.DB.prepare("DELETE FROM essais WHERE minute < ?").bind(Math.floor(maintenant / 60000) - CONSERVATION.ipHeures * 60).run();
+  await env.DB.prepare("DELETE FROM codes WHERE expire < ?").bind(maintenant).run();
+  await env.DB.prepare("DELETE FROM sessions WHERE expire < ?").bind(maintenant).run();
+  const limite = maintenant - CONSERVATION.inactifMois * 30.44 * 86_400_000;
+  const vieux = await env.DB.prepare("SELECT id FROM joueurs WHERE maj < ? LIMIT 200").bind(Math.round(limite)).all();
+  for (const j of vieux.results) await supprimerCompte(env, j.id);
+  return vieux.results.length;
+}
+
 async function profilPublic(env, pseudo) {
   const j = await env.DB.prepare("SELECT * FROM joueurs WHERE pseudo = ?").bind(pseudo).first();
   if (!j) return null;
@@ -424,14 +862,69 @@ async function profilPublic(env, pseudo) {
   return {
     pseudo: j.pseudo, nom: e.nom || j.pseudo, niveau: j.niveau, xp: j.xp, rang,
     stade: STADES[stadeDe(j.niveau)], forme: e.forme || null, trait: e.trait || "",
-    oeuf: e.oeuf || null, familier: e.familier || null,
     stats: Object.fromEntries(STATS.map((s) => [s, e.stats?.[s] || 0])),
     commandes: e.total || 0, gouts: (e.vus || []).length, competences: e.skills || [],
     collection: e.collection || {}, records: e.records || {},
     appareils: Object.keys(e.appareils || {}), inscrit: new Date(j.cree).toISOString(),
-    shiny: e.shiny === true, captures: (e.captures || []).length, partage: e.partage?.actif === true,
+    shiny: e.shiny === true, captures: (e.captures || []).length,
+    capturesVerifiees: (e.captures || []).filter((c) => c.verifie === true).length, partage: e.partage?.actif === true,
+    // les bestioles glitch (très rares), montrées sur le profil seulement si le joueur partage ses captures
+    glitchs: e.partage?.actif === true ? (e.captures || []).filter((c) => c.glitch === true).slice(0, 24)
+      .map((c) => ({ id: c.id, espece: c.espece, stade: c.stade, variante: c.variante, shiny: c.shiny === true, teinte: c.teinte })) : [],
     badges: b.results.map((x) => ({ ...x, lien: "/badge/" + x.id })),
+    entrainement: await entrainementPublic(env, j.id, e.entrainement),
+    // badges de la Guilde vérifiés par le serveur (Artisan : progression synchronisée ; Contributeur : crédits du
+    // dépôt) et, si l'un d'eux est le titre choisi dans le jeu, la couleur du pseudo
+    guilde: (await vitrinesGuilde(env, [j.pseudo])).get(j.pseudo.toLowerCase()),
   };
+}
+
+/** Badges, titre, records et Stars de la semaine d'un joueur (sa meilleure partie, ses Stars sur toutes ses parties). */
+async function entrainementPublic(env, joueurId, ent) {
+  const brut = { ...ENT.etatVide(), ...(ent && typeof ent === "object" ? ent : {}) };
+  const st = await starsDe(env, joueurId);
+  // grades et titres : seulement les exercices vérifiés (e.verifies, recomptés par le serveur) et les records vérifiés
+  const recordsTous = Object.entries(brut.records || {}).filter(([typ, r]) => Object.hasOwn(ENT.TYPES, typ) && r && Number(r.t) > 0);
+  const e = { familles: { ...(brut.verifies && typeof brut.verifies === "object" ? brut.verifies : {}) },
+    records: Object.fromEntries(recordsTous.filter(([, r]) => r.v === true)) };
+  const local = { familles: { ...(brut.familles || {}) } };
+  const familles = Object.fromEntries(ENT.FAMILLES.map((f) => {
+    const x = ENT.fam(e, f);
+    const k = ENT.echelon(e, f);
+    return [f, { n: x.n, or: x.or + x.diamant, echelon: k >= 0 ? ENT.ECHELONS[k] : null, etoiles: ENT.etoilesDe(x.n, k),
+      nonVerifies: Math.max(0, ENT.fam(local, f).n - x.n) }];
+  }));
+  const records = Object.fromEntries(recordsTous.map(([typ, r]) => [typ, { t: Number(r.t), v: r.v === true }]));
+  return { familles, titre: ENT.titres(e, st.familles)[0] || null, records, stars: st.compte };
+}
+
+/** Les records vérifiés (10 meilleurs joueurs par exercice), les Stars de la semaine, la tête de la semaine en cours. */
+async function donneesRecords(env) {
+  const semaine = await semainesAttribuees(env);
+  const cette = ENT.semaine();
+  const tops = await env.DB.prepare(
+    "SELECT e.type, j.pseudo, MIN(e.temps) AS t FROM exercices e JOIN joueurs j ON j.id = e.joueur WHERE e.verifie = 1 "
+    + "GROUP BY e.type, e.joueur ORDER BY e.type, t ASC, MIN(e.date) ASC",
+  ).all();
+  const records = {};
+  for (const r of tops.results) {
+    const l = (records[r.type] ??= []);
+    if (l.length < 10) l.push({ pseudo: r.pseudo, t: r.t, medaille: ENT.medaille(r.type, r.t) });
+  }
+  const stars = (await env.DB.prepare(
+    "SELECT h.famille, h.n, j.pseudo FROM titres_hebdo h JOIN joueurs j ON j.id = h.joueur WHERE h.semaine = ?",
+  ).bind(semaine).all()).results;
+  const enTete = {};
+  const t = (await env.DB.prepare(
+    "SELECT x.famille, j.pseudo, x.c FROM (SELECT famille, joueur, COUNT(*) AS c, SUM(temps) AS st FROM exercices "
+    + "WHERE semaine = ? AND verifie = 1 GROUP BY famille, joueur) x JOIN joueurs j ON j.id = x.joueur ORDER BY x.famille, x.c DESC, x.st ASC",
+  ).bind(cette).all()).results;
+  for (const r of t) enTete[r.famille] ??= { pseudo: r.pseudo, n: r.c };
+  const palmares = (await env.DB.prepare(
+    "SELECT j.pseudo, COUNT(*) AS n FROM titres_hebdo h JOIN joueurs j ON j.id = h.joueur GROUP BY h.joueur ORDER BY n DESC, MIN(h.semaine) ASC LIMIT 10",
+  ).all()).results;
+  return { semaine, cetteSemaine: cette, records, stars: Object.fromEntries(stars.map((x) => [x.famille, { pseudo: x.pseudo, n: x.n }])),
+    enTete, palmares };
 }
 
 // ====================================================================== CTF en ligne
@@ -449,42 +942,41 @@ async function drapeauDe(secret, joueurId, n) {
   return "TG{" + (await hmac(secret, joueurId + ":ctf:" + n)).slice(0, 14) + "}";
 }
 
-async function ctf(requete, env, pseudo, n, suite) {
+async function ctf(requete, env, pseudo, n, suite, L) {
+  const T = L.t.ctfTexte;
   const j = await env.DB.prepare("SELECT id, pseudo FROM joueurs WHERE pseudo = ?").bind(pseudo).first();
-  if (!j) return texte("Joueur inconnu. Inscris-toi d'abord depuis l'appli ou le jeu PC (commande : compte creer).\n", 404);
+  if (!j) return texte(T.inconnu, 404);
   const secret = await secretServeur(env);
   const f = await drapeauDe(secret, j.id, n);
   const base = `/ctf/${j.pseudo}`;
-  const valider = `\nQuand tu l'as : drapeau ${"TG{…}"}  (dans le jeu, sur PC ou téléphone)\n`;
+  const titre = (k) => T.epreuve(k, L.t.ctf.epreuves[k - 1]) + "\n";
   switch (n) {
     case 1:
-      return texte(`🚩 Épreuve 1 : L'en-tête caché\nLe drapeau n'est PAS dans cette page.\nUne réponse web contient aussi des « en-têtes » invisibles…\nIndice : curl -I <adresse de cette page>\n${valider}`,
-        200, { "x-drapeau": f });
+      return texte(titre(1) + T.e1 + T.valider, 200, { "x-drapeau": f });
     case 2:
-      if (suite === "cachette") return texte(`Bien joué, petit robot ! Ton drapeau : ${f}\n`);
-      return texte(`🚩 Épreuve 2 : Le fichier des robots\nLes sites disent aux robots où ils n'ont PAS le droit d'aller.\nCe fichier s'appelle toujours robots.txt, à la racine du site.\nIndice : curl <adresse du site>/robots.txt\n${valider}`);
+      if (suite === "cachette") return texte(T.e2ok(f));
+      return texte(titre(2) + T.e2 + T.valider);
     case 3:
       if (requete.method === "POST") {
         const t = await requete.text();
         const mot = new URLSearchParams(t).get("mot");
-        if (mot && mot.toLowerCase() === "terminal") return texte(`Le guichet s'ouvre ! Ton drapeau : ${f}\n`);
-        return texte("Le guichet reste fermé : mauvais mot.\n", 403);
+        if (mot && mot.toLowerCase() === "terminal") return texte(T.e3ok(f));
+        return texte(T.e3non, 403);
       }
-      return texte(`🚩 Épreuve 3 : Le guichet\nCe guichet n'accepte pas les visites : il faut lui ENVOYER (POST) le bon mot.\nLe mot est écrit à l'envers : lanimret\nIndice : curl -d "mot=..." <adresse de cette page>\n${valider}`);
+      return texte(titre(3) + T.e3 + T.valider);
     case 4: {
       const cookie = requete.headers.get("cookie") || "";
-      if (/(^|;\s*)role=admin(\s*;|$)/.test(cookie)) return texte(`Bienvenue, « admin »… (le serveur t'a cru !) Ton drapeau : ${f}\n`);
-      return texte(`🚩 Épreuve 4 : Le cookie de confiance\nTu es un simple « visiteur » : regarde le cookie que je t'envoie (curl -i).\nSeuls les « admin » voient le drapeau…\nIndice : curl -b "role=..." <adresse de cette page>\n${valider}`,
-        200, { "set-cookie": "role=visiteur; Path=" + base + "/4" });
+      if (/(^|;\s*)role=admin(\s*;|$)/.test(cookie)) return texte(T.e4ok(f));
+      return texte(titre(4) + T.e4 + T.valider, 200, { "set-cookie": "role=visiteur; Path=" + base + "/4" });
     }
     case 5:
       return json({
-        epreuve: "5 : La boîte JSON",
-        aide: "Le drapeau est rangé quelque part là-dedans. Astuce sur PC : curl <adresse> | python3 -m json.tool",
+        epreuve: T.epreuve(5, L.t.ctf.epreuves[4]),
+        aide: T.e5,
         tiroirs: { haut: { vide: true }, milieu: { chaussettes: 12, boite: { couvercle: "rouge", contenu: { secret: f } } }, bas: [] },
       });
     default:
-      return texte("Il n'y a que 5 épreuves.\n", 404);
+      return texte(T.cinq, 404);
   }
 }
 
@@ -519,25 +1011,16 @@ function x256(n) {
 
 const SHINY_JOUEUR = { 39: 220, 78: 51, 203: 129, 221: 255, 141: 219 };
 
-function svgCreature(niveau, forme, stats, taille = 8, shiny = false, oeuf = null, familier = null) {
+function svgCreature(niveau, forme, stats, taille = 8, shiny = false, etiquette = "créature") {
   const st = stadeDe(niveau);
-  if (st >= 1 && PAR_ID[familier]) return svgBestiole(PAR_ID[familier], shiny, Math.round(taille * 0.9), st >= 4);
-  if (st === 0 && OEUFS[oeuf]) {
-    const pal = { w: OEUFS[oeuf].coquille, s: OEUFS[oeuf].taches };
-    let r = "";
-    SPRITES.oeuf.forEach((l, y) => [...l].forEach((c, x) => {
-      if (pal[c]) r += `<rect x="${x}" y="${y}" width="1.02" height="1.02" fill="${pal[c]}"/>`;
-    }));
-    return `<svg class="creature" viewBox="0 0 12 ${SPRITES.oeuf.length}" width="${12 * taille}" height="${SPRITES.oeuf.length * taille}" shape-rendering="crispEdges" role="img" aria-label="œuf">${r}</svg>`;
-  }
   const dominant = Object.values(stats || {}).some((v) => v > 0)
     ? Object.entries(stats).sort((a, b) => b[1] - a[1])[0][0] : null;
   const f = forme || dominant || "Endurance";
   const over = (base, o) => base.map((r, i) => (o && o[i] ? [...o[i]].map((m, k) => (m === "?" ? r[k] : m)).join("") : r));
-  const rows = st === 0 ? SPRITES.oeuf : st <= 2 ? SPRITES.bebe
-    : st === 3 ? [...SPRITES.adoTete[f], ...over(SPRITES.ado, SPRITES.adoCorps[f])]
+  const rows = st === 0 ? SPRITES.oeuf : st === 1 ? SPRITES.bebe
+    : st === 2 ? [...SPRITES.adoTete[f], ...over(SPRITES.ado, SPRITES.adoCorps[f])]
       : [...SPRITES.adulteTete[f], ...over(SPRITES.adulte, SPRITES.adulteCorps[f])];
-  let corps = st >= 3 && forme ? COULEUR[forme] : dominant ? COULEUR[dominant] : 141;
+  let corps = st >= 2 && forme ? COULEUR[forme] : dominant ? COULEUR[dominant] : 141;
   if (shiny) corps = SHINY_JOUEUR[corps] ?? 219;
   const pal = { b: corps, e: 16, k: 211, m: 52, h: 180, w: 230, s: 180, c: 136, a: 250, l: 51 };
   const w = Math.max(...rows.map((r) => r.length));
@@ -545,331 +1028,630 @@ function svgCreature(niveau, forme, stats, taille = 8, shiny = false, oeuf = nul
   rows.forEach((r, y) => [...r].forEach((c, x) => {
     if (pal[c] !== undefined) rects += `<rect x="${x}" y="${y}" width="1.02" height="1.02" fill="${x256(pal[c])}"/>`;
   }));
-  return `<svg class="creature" viewBox="0 0 ${w} ${rows.length}" width="${w * taille}" height="${rows.length * taille}" shape-rendering="crispEdges" role="img" aria-label="créature">${rects}</svg>`;
+  return `<svg class="creature" viewBox="0 0 ${w} ${rows.length}" width="${w * taille}" height="${rows.length * taille}" shape-rendering="crispEdges" role="img" aria-label="${echapper(etiquette)}">${rects}</svg>`;
 }
+
+// polices : la police à chasse fixe d'abord, puis une police de repli par écriture (CJK, devanagari, bengali, arabe, nastaliq)
+const MONO = `ui-monospace,SFMono-Regular,Menlo,Consolas,"Liberation Mono","DejaVu Sans Mono"`;
+const POLICES = {
+  zh: `${MONO},"Noto Sans Mono CJK SC","Noto Sans CJK SC","Source Han Sans SC","PingFang SC","Microsoft YaHei","WenQuanYi Micro Hei",sans-serif`,
+  ja: `${MONO},"Noto Sans Mono CJK JP","Noto Sans CJK JP","Source Han Sans JP","Hiragino Sans","Hiragino Kaku Gothic ProN","Yu Gothic","Meiryo",sans-serif`,
+  // hindi, bengali, arabe, ourdou : la police de l'écriture d'abord (en chasse fixe, ces écritures sont peu lisibles
+  // et les espaces trop larges) ; le code et les commandes gardent la chasse fixe (règle code,pre)
+  hi: `"Noto Sans Devanagari","Nirmala UI","Mangal","Lohit Devanagari","Kohinoor Devanagari",${MONO},sans-serif`,
+  bn: `"Noto Sans Bengali","Nirmala UI","Vrinda","Lohit Bengali","Kohinoor Bangla",${MONO},sans-serif`,
+  ar: `"Noto Sans Arabic","Noto Naskh Arabic","Segoe UI","Tahoma","Geeza Pro","DejaVu Sans",${MONO},sans-serif`,
+  ur: `"Noto Nastaliq Urdu","Jameel Noori Nastaliq","Urdu Typesetting","Noto Naskh Arabic","Noto Sans Arabic","Segoe UI","Tahoma",${MONO},sans-serif`,
+};
+// polices pixel, hébergées ici (public/polices, fichiers woff2 du projet Fontsource, licence SIL OFL 1.1) :
+// aucune requête vers Google Fonts, donc aucune adresse IP envoyée à Google.
+// « Press Start 2P » pour les titres et les boutons, « VT323 » pour le texte.
+// Elles ne couvrent que l'alphabet latin (et le cyrillique pour Press Start 2P) : les autres écritures gardent
+// leurs polices lisibles, en taille normale (VT323 est petite, la même taille rendrait le reste énorme).
+const UNICODE = {
+  latin: "U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD",
+  "latin-ext": "U+0100-02BA,U+02BD-02C5,U+02C7-02CC,U+02CE-02D7,U+02DD-02FF,U+0304,U+0308,U+0329,U+1D00-1DBF,U+1E00-1E9F,U+1EF2-1EFF,U+2020,U+20A0-20AB,U+20AD-20C0,U+2113,U+2C60-2C7F,U+A720-A7FF",
+  cyrillic: "U+0301,U+0400-045F,U+0490-0491,U+04B0-04B1,U+2116",
+  "cyrillic-ext": "U+0460-052F,U+1C80-1C8A,U+20B4,U+2DE0-2DFF,U+A640-A69F,U+FE2E-FE2F",
+};
+const FONTES = [["Press Start 2P", "press-start-2p", ["latin", "latin-ext", "cyrillic", "cyrillic-ext"]], ["VT323", "vt323", ["latin", "latin-ext"]]]
+  .flatMap(([famille, fichier, sousEnsembles]) => sousEnsembles.map((u) => `@font-face{font-family:"${famille}";font-style:normal;font-weight:400;font-display:swap;`
+    + `src:url(/polices/${fichier}-${u}-400-normal.woff2) format("woff2");unicode-range:${UNICODE[u]}}`)).join("\n");
+const PIXEL = `"Press Start 2P",${MONO},monospace`;
+const VT = `"VT323",${MONO},monospace`;
+
+// un cadre en escalier (coins crantés) : quatre ombres décalées, sans image
+const cran = (c, p = 4) => `0 -${p}px 0 ${c},0 ${p}px 0 ${c},-${p}px 0 0 ${c},${p}px 0 0 ${c}`;
 
 const CSS = `
-:root{--fond:#14141f;--carte:#1e1e2e;--bord:#3a3a55;--texte:#e6e6e6;--doux:#9a9ab0;--vert:#5fd787;--rose:#ff87ff;--jaune:#ffd75f;--bleu:#87afff}
+${FONTES}
+:root{--fond:#08100c;--panneau:#0f1a14;--ecran:#050b08;--bord:#2b4d38;--bord-vif:#4c8c63;--texte:#dcf7e6;--doux:#9cc4aa;
+--vert:#5cff95;--vert-fonce:#139a4c;--ambre:#ffb84d;--ambre-fonce:#a86400;--encre:#04170b;
+--pixel:${PIXEL};--police:${VT};--titre:${PIXEL};--corps:22px;--interligne:1.3;--petit:19px;--mini:11px;--bouton:13px;--graisse:400;--h1:28px;--h2:16px}
+html:lang(ru){--police:${MONO},monospace;--corps:17px;--interligne:1.55;--petit:15px}
+${["zh", "ja", "hi", "bn", "ar", "ur"].map((l) => `html:lang(${l}){--police:${POLICES[l]};--titre:${POLICES[l]};--corps:17px;--petit:15px;--mini:13px;--bouton:17px;--graisse:700;--h1:30px;--h2:21px;--interligne:1.65}`).join("\n")}
+html:lang(ar){--interligne:1.85}html:lang(ur){--interligne:2.15}
 *{box-sizing:border-box}
-body{margin:0;background:var(--fond);color:var(--texte);font:16px/1.5 ui-monospace,SFMono-Regular,Menlo,Consolas,"Liberation Mono",monospace}
-a{color:var(--bleu)}
-header{border-bottom:1px solid var(--bord);background:#181826}
-nav{max-width:960px;margin:0 auto;padding:12px 16px;display:flex;gap:18px;align-items:center;flex-wrap:wrap}
-nav .logo{color:var(--rose);font-weight:bold;text-decoration:none;font-size:18px}
-nav a{text-decoration:none}
-main{max-width:960px;margin:0 auto;padding:24px 16px 64px}
-h1{font-size:28px;margin:8px 0 4px}h2{font-size:20px;margin:32px 0 12px;color:var(--jaune)}
+html{background:var(--fond)}
+body{margin:0;min-height:100vh;color:var(--texte);font:var(--corps)/var(--interligne) var(--police);
+ background:radial-gradient(ellipse 120% 60% at 50% -10%,#123322 0,rgba(8,16,12,0) 60%),var(--fond)}
+body::after{content:"";position:fixed;inset:0;pointer-events:none;z-index:50;
+ background:repeating-linear-gradient(to bottom,rgba(0,0,0,0) 0 2px,rgba(0,0,0,.13) 2px 3px)}
+@media (prefers-reduced-motion:reduce){body::after{display:none}}
+a{color:var(--vert);text-underline-offset:3px}
+a:hover{color:var(--ambre)}
+:focus-visible{outline:3px solid var(--ambre);outline-offset:6px}
+h1,h2,h3{font-family:var(--titre);font-weight:var(--graisse)}
+h1{font-size:var(--h1);line-height:1.45;margin:10px 0 14px;color:var(--vert);text-shadow:0 0 14px rgba(92,255,149,.35)}
+h2{font-size:var(--h2);line-height:1.5;margin:44px 0 18px;color:var(--ambre)}
+h2 .petit{display:block;margin-top:6px;font:var(--petit)/1.3 var(--police)}
+h2::before{content:"";display:inline-block;vertical-align:.1em;margin-inline-end:12px;width:10px;height:10px;background:var(--ambre);box-shadow:${cran("var(--ambre-fonce)", 2)}}
+p{margin:0 0 14px}
 .doux{color:var(--doux)}
-.carte{background:var(--carte);border:1px solid var(--bord);border-radius:16px;padding:18px}
-.grille{display:grid;gap:14px;grid-template-columns:repeat(auto-fit,minmax(240px,1fr))}
-.hero{display:flex;gap:24px;align-items:center;flex-wrap:wrap}
-.btn{display:inline-block;background:#5f5fd7;color:#fff;text-decoration:none;padding:10px 16px;border-radius:12px;margin:6px 8px 6px 0}
-.btn.vert{background:#2f7d50}
+.petit{font-size:var(--petit)}
+.pixel{font-family:var(--pixel)}
+/* ---- en-tête : une fenêtre de terminal */
+.entete{max-width:1040px;margin:18px auto 0;padding:0 16px}
+.barre{display:flex;align-items:center;gap:14px;flex-wrap:wrap;background:var(--bord);padding:8px 14px;box-shadow:${cran("var(--bord)")};margin:4px 4px 0}
+.points{display:flex;gap:8px}.points i{width:12px;height:12px;background:#ff6b6b}.points i+i{background:var(--ambre)}.points i+i+i{background:var(--vert)}
+.logo{display:flex;align-items:center;gap:10px;color:var(--texte);text-decoration:none;font:13px/1 var(--pixel);letter-spacing:1px}
+.logo img{image-rendering:pixelated}
+.menu{display:flex;flex-wrap:wrap;gap:4px 22px;align-items:center;background:var(--panneau);padding:10px 18px;margin:0 4px;box-shadow:${cran("var(--bord)")}}
+.menu a{color:var(--texte);text-decoration:none;font-family:var(--police);white-space:nowrap;padding:2px 0}
+.menu a .invite{color:var(--vert);margin-inline-end:6px}
+.menu a:hover{color:var(--vert)}
+.menu a[aria-current]{color:var(--ambre)}.menu a[aria-current] .invite{color:var(--ambre)}
+.curseur{color:var(--vert);animation:clignote 1.1s steps(1) infinite}
+.menu .curseur{color:var(--ambre);margin-inline-start:4px}
+@keyframes clignote{50%{opacity:0}}
+.langues{margin-inline-start:auto;display:flex;gap:6px;align-items:center}
+.langues select{background:var(--ecran);color:var(--texte);border:0;box-shadow:${cran("var(--bord-vif)", 2)};padding:4px 8px;font:16px ${MONO};max-width:11em}
+.langues button{font-size:11px;padding:6px 10px;margin:0}
+main{max-width:1040px;margin:0 auto;padding:30px 20px 80px}
+/* ---- panneaux et fenêtres */
+.carte{background:var(--panneau);padding:18px 20px;margin:4px;box-shadow:${cran("var(--bord)")}}
+.fenetre{background:var(--panneau);margin:4px;box-shadow:${cran("var(--bord)")}}
+.fenetre>.titre-fen{display:flex;align-items:center;gap:12px;background:var(--bord);padding:6px 14px;color:var(--texte);font:18px/1.2 ${VT}}
+.fenetre>.titre-fen .points i{width:10px;height:10px}
+.fenetre>.contenu{padding:16px 20px}
+.grille{display:grid;gap:24px;grid-template-columns:repeat(auto-fit,minmax(250px,1fr))}
+.ecran{background-color:var(--ecran);background-image:linear-gradient(rgba(92,255,149,.06) 1px,transparent 1px),linear-gradient(90deg,rgba(92,255,149,.06) 1px,transparent 1px);
+ background-size:8px 8px;box-shadow:inset 0 0 0 2px #000,inset 0 0 24px rgba(92,255,149,.08)}
+/* ---- boutons pixel */
+.btn,button{display:inline-flex;align-items:center;justify-content:center;gap:10px;font:var(--bouton)/1.6 var(--titre);font-weight:var(--graisse);color:var(--encre);
+ background:var(--vert);border:0;padding:12px 18px;margin-block:10px;margin-inline:4px 14px;text-decoration:none;cursor:pointer;
+ box-shadow:inset 0 -5px 0 var(--vert-fonce),${cran("var(--vert)")}}
+.btn:hover,button:hover{color:var(--encre);filter:brightness(1.08)}
+.btn:active,button:active{transform:translateY(2px);box-shadow:inset 0 -2px 0 var(--vert-fonce),${cran("var(--vert)")}}
+.btn.ambre{background:var(--ambre);box-shadow:inset 0 -5px 0 var(--ambre-fonce),${cran("var(--ambre)")}}
+.btn.grand{font-size:calc(var(--bouton) + 3px);padding:18px 24px}
+.btn .fichier{font:12px/1.6 var(--pixel)}
+.btn.large{display:flex;width:calc(100% - 8px);margin-inline:4px;padding:16px 10px}
+.fleche{flex:none}
+/* ---- accueil */
+.hero{display:grid;grid-template-columns:minmax(0,1.25fr) minmax(0,.75fr);gap:32px;align-items:center}
+.invite-ligne{font:20px ${VT};color:var(--doux);margin:0}
+.invite-ligne b{color:var(--vert);font-weight:normal}
+.hero h1{font-size:calc(var(--h1) + 4px)}
+.scene{display:grid;place-items:center;padding:30px 10px 18px;margin:4px;box-shadow:${cran("var(--bord)")}}
+.mascotte{width:min(250px,100%);height:auto;image-rendering:pixelated;animation:flotte 2.6s steps(6) infinite alternate;filter:drop-shadow(0 0 18px rgba(92,255,149,.25))}
+.sol{width:46%;height:10px;margin-top:10px;background:rgba(92,255,149,.18);animation:sol 2.6s steps(6) infinite alternate}
+@keyframes flotte{to{transform:translateY(-14px)}}
+@keyframes sol{to{transform:scaleX(.8);opacity:.6}}
+.mascotte.mange{aspect-ratio:240/400;background:url(/mascotte_mange.png) 0 0/900% 100% no-repeat;cursor:pointer}
+.mascotte.croque{animation:flotte 2.6s steps(6) infinite alternate,croque 4.51s step-end 1}
+@keyframes croque{0.0%{background-position-x:0.0%}15.5%{background-position-x:12.5%}19.3%{background-position-x:25.0%}23.7%{background-position-x:37.5%}27.5%{background-position-x:50.0%}30.8%{background-position-x:37.5%}33.9%{background-position-x:62.5%}37.3%{background-position-x:50.0%}40.6%{background-position-x:37.5%}43.7%{background-position-x:62.5%}47.0%{background-position-x:37.5%}51.0%{background-position-x:75.0%}56.8%{background-position-x:87.5%}70.1%{background-position-x:100.0%}80.0%{background-position-x:0.0%}100%{background-position-x:0}}
+@media (prefers-reduced-motion:reduce){.mascotte,.sol,.curseur{animation:none}}
+.apercu{display:grid;gap:14px;grid-template-columns:repeat(auto-fill,minmax(96px,1fr));margin:18px 0}
+.apercu a{display:grid;place-items:center;aspect-ratio:1;margin:2px;position:relative}
+/* ---- tableaux */
 table{width:100%;border-collapse:collapse}
-td,th{padding:8px 6px;border-bottom:1px solid var(--bord);text-align:left}
-th{color:var(--doux);font-weight:normal;font-size:13px}
-td.num{text-align:right}
-.badge{display:inline-flex;gap:8px;align-items:center;background:#26263a;border:1px solid var(--bord);border-radius:999px;padding:6px 12px;margin:4px 6px 4px 0;text-decoration:none;color:var(--texte)}
-.badge.verifie{border-color:#2f7d50}
-.barre{height:8px;background:#33334a;border-radius:4px;overflow:hidden}.barre>i{display:block;height:100%;background:var(--vert)}
-code,pre{background:#11111b;border-radius:8px}
-code{padding:2px 6px}
-pre{padding:12px;overflow-x:auto}
+td,th{padding:8px 6px;border-bottom:2px dashed var(--bord);text-align:start}
+tr:last-child td{border-bottom:0}
+th{color:var(--doux);font-weight:normal;font-size:var(--petit)}
+td.num{text-align:end;white-space:nowrap}
+td.rang{font:12px var(--pixel);color:var(--ambre);width:3em}
+/* ---- badges, puces, jauges */
+.badge{display:inline-flex;gap:8px;align-items:center;background:var(--ecran);padding:4px 12px;margin-block:8px;margin-inline:4px 12px;text-decoration:none;color:var(--texte);box-shadow:${cran("var(--bord)", 3)}}
+.badge.verifie{box-shadow:${cran("var(--vert-fonce)", 3)}}
+.pseudo-g{font-weight:bold}.pseudo-artisan{color:${GUILDE.COULEUR.artisan}}.pseudo-contributeur{color:${GUILDE.COULEUR.contributeur}}
+.barre-xp{height:16px;background:var(--ecran);margin:10px 3px;box-shadow:${cran("var(--bord)", 3)}}
+.barre-xp>i,.jauge>i{display:block;height:100%;background:repeating-linear-gradient(90deg,var(--vert) 0 8px,transparent 8px 10px)}
+code,pre{background:var(--ecran);font-family:${MONO},monospace;font-size:.82em;direction:ltr;unicode-bidi:isolate;color:var(--vert)}
+code{padding:2px 6px;line-height:1.5;overflow-wrap:anywhere}
+pre{padding:12px;overflow-x:auto;text-align:left}
+.ltr{direction:ltr;unicode-bidi:isolate}
 .creature{image-rendering:pixelated;max-width:100%;height:auto}
-.rgb{background:linear-gradient(90deg,#ff5f5f,#ffd75f,#5fd787,#5fd7ff,#af87ff,#ff87ff,#ff5f5f);background-size:200% auto;
- -webkit-background-clip:text;background-clip:text;color:transparent;animation:rgb 4s linear infinite;font-weight:bold}
+.glitchnom{color:#ff2878;text-shadow:1px 0 #28e6ff,-1px 0 rgba(255,40,120,.6)}
+.rgb{background:linear-gradient(90deg,#ff6b6b,#ffd75f,#5cff95,#5fd7ff,#c58cff,#ff7aa8,#ff6b6b);background-size:200% auto;
+ -webkit-background-clip:text;background-clip:text;color:transparent;animation:rgb 4s linear infinite}
 @keyframes rgb{to{background-position:200% center}}
 @media (prefers-reduced-motion:reduce){.rgb{animation:none}}
-.grille-b{display:grid;gap:10px;grid-template-columns:repeat(auto-fill,minmax(150px,1fr))}
-.bestiole{background:var(--carte);border:1px solid var(--bord);border-radius:14px;padding:10px;text-align:center;text-decoration:none;color:var(--texte);display:block}
-.bestiole:hover{border-color:#5f5fd7}
-.bestiole svg{width:96px;height:96px}
-.bestiole .num{color:var(--doux);font-size:12px}
-.rar{font-size:12px;border-radius:999px;padding:1px 8px;border:1px solid currentColor;display:inline-block;margin-top:4px}
-.capture{text-align:left}
-.capture.shiny{border-color:#ffd75f;box-shadow:0 0 18px #ffd75f44}
-.anime{background-size:auto 100%;background-repeat:no-repeat;image-rendering:pixelated;animation:anime 1.2s steps(12) infinite}
+/* ---- rareté */
+.rar{display:inline-block;font:var(--mini)/1.5 var(--titre);font-weight:var(--graisse);color:var(--encre);background:var(--r);padding:4px 8px;margin:4px 3px;box-shadow:${cran("var(--r)", 2)};white-space:nowrap}
+.legende{display:flex;flex-wrap:wrap;gap:6px 8px;margin:6px 0 12px}
+.pastille{display:inline-block;width:12px;height:12px;background:var(--r);box-shadow:${cran("var(--r)", 2)};margin:0 4px}
+/* ---- filtres */
+.filtres{display:flex;flex-wrap:wrap;align-items:center;gap:8px 4px}
+.filtres+.filtres{margin-top:10px}
+.filtres .etiquette{color:var(--doux);margin-inline-end:8px}
+.puce{display:inline-flex;align-items:center;gap:6px;background:var(--ecran);color:var(--texte);text-decoration:none;padding:3px 10px;margin:3px 5px;box-shadow:${cran("var(--bord)", 2)}}
+.puce:hover{color:var(--vert)}
+.puce[aria-current]{background:var(--ambre);color:var(--encre);box-shadow:${cran("var(--ambre)", 2)}}
+/* ---- cartes de bestioles (façon Pokédex) */
+.grille-b{display:grid;gap:22px;grid-template-columns:repeat(auto-fill,minmax(172px,1fr))}
+.bestiole{display:flex;flex-direction:column;align-items:center;gap:8px;padding:10px 12px 14px;margin:4px;background:var(--panneau);color:var(--texte);text-decoration:none;
+ box-shadow:inset 0 4px 0 var(--r,var(--bord)),${cran("var(--bord)")}}
+a.bestiole:hover{color:var(--texte);box-shadow:inset 0 4px 0 var(--r,var(--bord)),${cran("var(--bord-vif)")}}
+.bestiole .haut{display:flex;justify-content:space-between;align-items:center;width:100%;font:10px/1 var(--pixel);color:var(--doux)}
+.bestiole .haut .fam{font:22px/1 sans-serif}
+.bestiole .ecran{width:100%;aspect-ratio:1;display:grid;place-items:center;position:relative}
+.bestiole .ecran img,.portrait img,.apercu img{position:absolute;inset:8%;width:84%;height:84%;object-fit:contain;image-rendering:pixelated}
+.bestiole code{display:block;font-size:13px;text-align:center;overflow-wrap:anywhere;padding:2px 4px;width:100%}
+.bestiole .ecran svg{width:70%;height:auto}
+.nom-b{font:11px/1.5 var(--pixel);text-align:center;overflow-wrap:anywhere}
+.nom-v{font:var(--mini)/1.5 var(--titre);font-weight:var(--graisse)}
+.capture{align-items:stretch;text-align:start}
+.capture .nom-b,.capture .rar-l{text-align:center}
+.capture.shiny{box-shadow:inset 0 4px 0 var(--r,var(--bord)),${cran("#ffd75f")},0 0 22px rgba(255,215,95,.25)}
+.capture .marque{font-size:var(--petit);margin:2px 0}
+.capture .infos{font-size:var(--petit);color:var(--doux);line-height:1.25}
+.anime{direction:ltr;background-size:auto 100%;background-repeat:no-repeat;image-rendering:pixelated;animation:anime 1.2s steps(12) infinite}
 @keyframes anime{from{background-position:0 0}to{background-position:calc(var(--px) * -12) 0}}
 @media (prefers-reduced-motion:reduce){.anime{animation:none}}
-.capture .marque{font-size:14px;margin:6px 0}
-.filtres a{margin-right:10px;font-size:14px}
-.stats-b{display:grid;grid-template-columns:repeat(5,1fr);gap:6px;text-align:center}
-.stats-b div{background:#26263a;border-radius:8px;padding:6px 0}
-@media (max-width:600px){h1{font-size:22px}td,th{padding:6px 3px;font-size:14px}}
-`;
+/* ---- fiche d'espèce */
+.fiche{display:grid;grid-template-columns:minmax(0,.9fr) minmax(0,1.1fr);gap:32px;align-items:start}
+.portrait{aspect-ratio:1;display:grid;place-items:center;position:relative;margin:4px;box-shadow:inset 0 6px 0 var(--r),${cran("var(--bord)")}}
+.portrait svg{width:70%;height:auto}
+.numero{font:14px var(--pixel);color:var(--doux)}
+.stats-b{display:grid;gap:8px;margin-top:16px}
+.stat{display:grid;grid-template-columns:5.5em 1fr 2.4em;gap:12px;align-items:center}
+.stat b{font:12px var(--pixel);text-align:end}
+.jauge{height:14px;background:var(--ecran);box-shadow:${cran("var(--bord)", 2)}}
+.stades{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:16px;align-items:end}
+.stades figure{margin:0;text-align:center}
+.stades .ecran{aspect-ratio:1;display:flex;align-items:flex-end;justify-content:center;padding-bottom:6%;margin:3px;box-shadow:inset 0 0 0 2px #000,${cran("var(--bord)", 3)}}
+.stades img{object-fit:contain;image-rendering:pixelated;height:var(--h);width:auto;max-width:94%}
+.stades figcaption{margin-top:10px;font-size:var(--petit);color:var(--doux)}
+.variante.pas-dessinee .ecran img{filter:grayscale(1) brightness(.55)}
+.voisins{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap;margin-top:36px}
+/* ---- salle d'entraînement (badges en pixels, records, Stars de la semaine) */
+.badge-px{image-rendering:pixelated;flex:none}
+.echelle{display:flex;flex-wrap:wrap;gap:18px 26px;align-items:flex-end;margin:10px 4px 14px}
+.ech{margin:0;text-align:center;font-size:var(--petit);max-width:9em}
+.ech figcaption{margin-top:6px}
+.stars .star{display:flex;gap:14px;align-items:center}
+h2.avec-badge{display:flex;align-items:center;gap:12px}
+h2.avec-badge::before{display:none}
+/* ---- pied de page */
+.pied{max-width:1040px;margin:0 auto;padding:22px 20px 36px;border-top:2px dashed var(--bord);color:var(--doux);font-size:var(--petit);text-align:center}
+.pied .liens{display:flex;flex-wrap:wrap;justify-content:center;gap:4px 26px}
+.pied a{color:var(--doux);text-decoration:none;white-space:nowrap;padding:2px 0}
+.pied a:hover{color:var(--vert)}
+.pied p{margin:10px 0 0;font-size:calc(var(--petit) - 2px);opacity:.8}
+/* ---- pages pour les adultes (parents, soutenir, textes légaux) */
+.texte-long{max-width:780px}
+.texte-long ul{padding-inline-start:26px;margin:0 0 14px}
+.texte-long li{margin:0 0 8px}
+.texte-long li::marker{color:var(--ambre)}
+.bandeau{display:flex;gap:14px;align-items:flex-start;background:var(--ecran);padding:14px 18px;margin:4px 4px 22px;box-shadow:${cran("var(--ambre-fonce)")}}
+.bandeau .icone{font:20px/1 var(--pixel);color:var(--ambre);flex:none}
+.bandeau p{margin:0}
+.enfants{box-shadow:inset 0 4px 0 var(--vert),${cran("var(--bord)")}}
+.enfants li{margin-bottom:10px}
+.avertissement{box-shadow:${cran("var(--ambre-fonce)")}}
+.avertissement p:last-child,.carte>p:last-child{margin-bottom:0}
+html:not([lang="fr"]) section[lang="fr"]{border-top:2px dashed var(--bord);margin-top:36px;padding-top:6px}
+.defile{overflow-x:auto;margin:0 0 14px}
+.tableau-legal{font-size:var(--petit);min-width:640px}
+.tableau-legal td{vertical-align:top}
+.tableau-legal td:first-child{width:38%}
+@media (max-width:760px){
+ .pied{padding:20px 16px 30px}
+ .tableau-legal{min-width:0}
+ .tableau-legal,.tableau-legal tbody,.tableau-legal tr,.tableau-legal td{display:block;width:auto}
+ .tableau-legal .entetes{display:none}
+ .tableau-legal tr{padding:12px 0;border-bottom:2px dashed var(--bord)}
+ .tableau-legal td,.tableau-legal td:first-child{width:auto;border:0;padding:3px 0}
+ .tableau-legal td[data-t]::before{content:attr(data-t) " : ";color:var(--ambre)}
+ .bandeau{padding:12px 14px}
+ .hero,.fiche{grid-template-columns:1fr;gap:18px}
+ .hero .scene{order:-1}
+ .mascotte{width:min(170px,46vw)}
+ .scene{padding:18px 10px 12px}
+ :root{--h1:20px;--h2:14px;--corps:21px}
+ ${["zh", "ja", "hi", "bn", "ar", "ur"].map((l) => `html:lang(${l})`).join(",")}{--h1:24px;--h2:19px;--corps:16px}
+ html:lang(ru){--corps:16px}
+ .hero h1{font-size:calc(var(--h1) + 2px)}
+ main{padding:22px 16px 64px}
+ .entete{padding:0 12px;margin-top:12px}
+ .menu{gap:2px 16px;padding:8px 14px}
+ .langues{margin-inline-start:0}
+ .grille-b{grid-template-columns:repeat(2,minmax(0,1fr));gap:16px}
+ .nom-b{font-size:10px}
+ .stades{grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}
+ .stades .ecran{margin:2px}
+ td,th{padding:6px 3px}
+ .btn.grand{padding:16px 18px}
+}
+/* ---- à imprimer (fiches, /imprimer) et page Essayer */
+.imprimer{display:grid;grid-template-columns:repeat(auto-fill,minmax(170px,1fr));gap:16px;margin:8px 0 14px}
+.imp{display:flex;flex-direction:column;gap:6px;align-items:center;text-align:center;background:var(--panneau);padding:12px;margin:4px;box-shadow:${cran("var(--bord)")}}
+.imp>a:first-child{display:flex;flex-direction:column;align-items:center;gap:8px;text-decoration:none}
+.imp img{width:100%;max-width:150px;height:150px;object-fit:contain}
+.imp b{font:12px/1.5 var(--pixel);color:var(--vert)}
+.btn.essayer{background:var(--panneau);color:var(--vert);box-shadow:inset 0 -5px 0 var(--bord),${cran("var(--vert)")}}
+.es-etape{font:12px/1.4 var(--pixel);color:var(--ambre);margin:14px 0 8px;min-height:1.4em}
+.es-demo{display:grid;grid-template-columns:minmax(0,1.25fr) minmax(0,1fr);gap:18px;align-items:stretch}
+.es-cadre{position:relative;align-self:start;min-width:0}
+.es-scene{position:relative;aspect-ratio:16/9;background:#050a06 center/cover no-repeat;overflow:hidden;margin:4px;box-shadow:${cran("var(--bord)")};transition:background-image .6s}
+.es-scene img{position:absolute;left:50%;image-rendering:pixelated;transform:translate(-50%,-100%)}
+.es-oeuf{top:70%;width:15%}.es-bebe{top:74%;width:17%}
+.es-bulle{position:absolute;left:4%;right:4%;top:5%;background:rgba(4,12,8,.86);border:2px solid var(--bord);padding:8px 12px;font:20px/1.25 "VT323",monospace;color:var(--texte)}
+.es-bulle:empty{display:none}
+.es-prog{height:10px;background:#0a2014;margin-top:6px}.es-prog i{display:block;height:100%;background:var(--vert);transition:width .4s}
+.es-term{background:#050a06;border:3px solid #1f3a28;border-radius:10px;display:flex;flex-direction:column;min-height:320px}
+.es-out{flex:1;overflow-y:auto;max-height:340px;padding:10px 12px;font:20px/1.3 "VT323",monospace;color:#cfeedd;white-space:pre-wrap;word-break:break-word}
+.es-out .p{color:var(--vert)}.es-out .g{color:#7fae90}.es-out .j{color:var(--ambre)}.es-out .ok{color:var(--vert)}.es-out .d{color:#6cb4ff}
+.es-out code{color:var(--vert);background:none;padding:0}
+.es-form{display:flex;gap:6px;align-items:center;padding:6px 10px;border-top:1px solid #1f3a28}
+.es-invite{color:#2b9c52;font:18px/1 "VT323",monospace;white-space:nowrap}
+#es-cmd{flex:1;min-width:0;background:transparent;border:0;outline:0;color:#3dff7c;font:20px/1.3 "VT323",monospace}
+.es-form button{min-height:34px;padding:0 12px}
+.es-essais{display:flex;flex-wrap:wrap;gap:8px;padding:0 10px 10px}
+.es-essais button{font:19px/1.3 "VT323",monospace;background:#0c1d12;color:var(--vert);border:2px solid #23603a;box-shadow:none;padding:2px 10px;min-height:0}
+.es-fin[hidden],.es-scene img[hidden]{display:none}
+.es-fin{display:flex;flex-wrap:wrap;gap:12px;align-items:center;margin:22px 0 6px}
+@media (max-width:760px){.es-demo{grid-template-columns:minmax(0,1fr)}.es-bulle{position:static;margin:8px 4px 0;font-size:18px}.es-out{max-height:260px}.es-term{min-height:260px}}
+${CSS_TERMINAL}`;
 
-function page(titre, contenu, description = "Terminagotchi : la créature qui se nourrit de tes commandes et t'apprend le terminal.", statut = 200) {
-  return new Response(`<!doctype html><html lang="fr"><head><meta charset="utf-8">
+/** Le contexte de langue d'une requête : langue, textes, sens d'écriture, format des dates. */
+function contexteLangue(requete, url) {
+  const { lang, demandee } = choisirLangue(requete, url);
+  return { lang, demandee, t: textes(lang), url, dir: RTL.has(lang) ? "rtl" : "ltr", locale: LOCALES[lang] };
+}
+
+/** Un nom venu des données ou d'un joueur (bestiole, pseudo…) : isolé pour ne pas se mélanger au sens d'écriture. */
+const bdi = (s) => `<bdi>${echapper(s)}</bdi>`;
+const numero = (e) => `<bdi>#${String(e.numero).padStart(3, "0")}</bdi>`;
+const lib = (L, table, cle) => libelle(L.t[table], cle);
+/** Une flèche « télécharger » en gros pixels (les polices pixel n'ont pas de flèche). */
+const FLECHE = `<svg class="fleche" viewBox="0 0 7 8" width="14" height="16" aria-hidden="true" shape-rendering="crispEdges"><path fill="currentColor" d="M2 0h3v4h2v1H6v1H5v1H4v1H3V7H2V6H1V5H0V4h2z"/></svg>`;
+const points = `<span class="points" aria-hidden="true"><i></i><i></i><i></i></span>`;
+/** Une fenêtre de terminal : barre de titre (3 points + chemin) et contenu. */
+const fenetre = (titre, contenu) => `<div class="fenetre"><div class="titre-fen">${points}<bdi class="ltr">${titre}</bdi></div><div class="contenu">${contenu}</div></div>`;
+
+function selecteurLangue(L) {
+  const caches = [...L.url.searchParams].filter(([k]) => k !== "lang")
+    .map(([k, v]) => `<input type="hidden" name="${echapper(k)}" value="${echapper(v)}">`).join("");
+  const options = LANGUES.map((l) => `<option value="${l}" lang="${l}" dir="${RTL.has(l) ? "rtl" : "ltr"}"${l === L.lang ? " selected" : ""}>${NOMS_LANGUES[l]}</option>`).join("");
+  return `<form class="langues" method="get" action="${echapper(L.url.pathname)}">${caches}<span aria-hidden="true">🌐</span>`
+    + `<select name="lang" aria-label="${echapper(L.t.nav.langue)}" onchange="this.form.submit()">${options}</select>`
+    + `<noscript><button type="submit">OK</button></noscript></form>`;
+}
+
+// le lien « Monde » du menu (la petite démo du monde des biomes, /monde), dans les 14 langues
+const NAV_MONDE = { fr: "Monde", en: "World", es: "Mundo", de: "Welt", it: "Mondo", pt: "Mundo", ru: "Мир", ja: "せかい",
+  zh: "世界", ar: "العالم", hi: "दुनिया", bn: "জগৎ", ur: "دنیا", id: "Dunia" };
+
+/** Un texte de la page Essayer / « À imprimer » (site/src/autour_textes.js), échappé, avec ses trous {x} remplis. */
+function at(L, cle, p = {}) {
+  const T = AUTOUR[L.lang] || AUTOUR.fr;
+  return echapper(String(T[cle] ?? AUTOUR.fr[cle] ?? cle)).replace(/\{(\w+)\}/g, (_, x) => (x in p ? p[x] : `{${x}}`));
+}
+
+function menu(L) {
+  const n = L.t.nav;
+  const ici = L.url.pathname.replace(/\/+$/, "") || "/";
+  const liens = [["/classement", n.classement], ["/records", L.t.navRecords], ["/bestiaire", n.bestiaire], ["/captures", n.captures],
+    ["/monde", NAV_MONDE[L.lang] || NAV_MONDE.fr], ["/essayer", at(L, "site.nav")], ["/ctf", n.ctf],
+    ["/#telecharger", n.telecharger], ["/compte", n.compte]];
+  return liens.map(([href, t]) => {
+    const actif = href !== "/#telecharger" && (ici === href || ici.startsWith(href + "/"));
+    return `<a href="${href}"${actif ? ' aria-current="page"' : ""}><span class="invite" aria-hidden="true">&gt;</span>${t}${actif ? '<span class="curseur" aria-hidden="true">█</span>' : ""}</a>`;
+  }).join("");
+}
+
+/** Le pied de page : liens discrets vers le code, le contact et les pages pour les adultes. */
+function piedDePage(L) {
+  const P = L.t.pied;
+  const liens = [[DEPOT, P.source], [`mailto:${CONTACT}`, P.contact], ["/soutenir", P.soutenir], ["/parents", P.parents], ["/enseignants", P.enseignants],
+    ["/mentions-legales", P.mentions], ["/confidentialite", P.confidentialite]];
+  return `<footer class="pied"><div class="liens">`
+    + liens.map(([href, t]) => `<a href="${echapper(href)}">${echapper(t)}</a>`).join("")
+    + `</div><p>Terminagotchi · <bdi>terminagotchi.com</bdi></p></footer>`;
+}
+
+function page(L, titre, contenu, description = L.t.description, statut = 200) {
+  return new Response(`<!doctype html><html lang="${L.lang}" dir="${L.dir}"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>${echapper(titre)} · Terminagotchi</title><meta name="description" content="${echapper(description)}">
+<meta name="theme-color" content="#08100c">
+<link rel="icon" type="image/png" href="/favicon.png"><link rel="apple-touch-icon" href="/icone.png">
+<link rel="preload" href="/polices/press-start-2p-latin-400-normal.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="/polices/vt323-latin-400-normal.woff2" as="font" type="font/woff2" crossorigin>
 <style>${CSS}</style></head><body>
-<header><nav><a class="logo" href="/">▞ Terminagotchi</a><a href="/classement">Classement</a><a href="/bestiaire">Bestiaire</a><a href="/captures">Captures</a><a href="/ctf">CTF web</a><a href="/classe">Classe</a><!--LANGUE--><a href="/#telecharger">Télécharger</a></nav></header>
-<main>${contenu}</main></body></html>`, { status: statut, headers: { "content-type": "text/html; charset=utf-8" } });
+<header class="entete"><div class="barre">${points}<a class="logo" href="/"><img src="/icone.png" alt="" width="28" height="28"><bdi>TERMINAGOTCHI</bdi></a>${selecteurLangue(L)}</div>
+<nav class="menu">${menu(L)}</nav></header>
+<main>${contenu}</main>
+${piedDePage(L)}
+${barreTerminal(L)}</body></html>`, {
+    status: statut,
+    headers: { "content-type": "text/html; charset=utf-8", "content-language": L.lang, vary: "Accept-Language, Cookie" },
+  });
 }
 
-const FICHES = "https://github.com/grecdel/terminagotchi/tree/main/docs/fiches";
-
-function pageClasseAccueil() {
-  return page("Mode classe", `<h1>🏫 Mode classe</h1>
-<p>Pour les écoles et les clubs : crée une classe, donne le code aux élèves, et suis leur progression.
-Aucune adresse mail, aucune donnée personnelle : seulement les pseudos choisis par les élèves.</p>
-<div class="carte"><h2 style="margin-top:0">1. Créer la classe</h2>
-<p><input id="nom" placeholder="ex. CM2 B — club info" maxlength="40" style="padding:8px;border-radius:8px;border:1px solid var(--bord);background:#11111b;color:var(--texte);width:min(100%,320px)">
-<button id="creer" class="btn">Créer</button></p>
-<p id="res" class="doux"></p></div>
-<div class="carte" style="margin-top:14px"><h2 style="margin-top:0">2. Les élèves rejoignent la classe</h2>
-<p>Dans le jeu, après avoir créé leur compte (<code>compte creer Pseudo</code>) :<br>
-téléphone : <code>classe CODE</code> · PC : <code>tg classe CODE</code></p></div>
-<div class="carte" style="margin-top:14px"><h2 style="margin-top:0">3. Préparer les séances</h2>
-<p>Les <a href="${FICHES}">fiches de séance</a> détaillent chaque leçon : objectifs, commandes, explications, questions à poser.</p></div>
-<script>
-document.getElementById("creer").onclick = async () => {
-  const res = document.getElementById("res");
-  const r = await fetch("/api/classe", { method: "POST", headers: { "content-type": "application/json" },
-    body: JSON.stringify({ nom: document.getElementById("nom").value }) });
-  const j = await r.json();
-  if (j.erreur) { res.textContent = j.erreur; return; }
-  const lien = location.origin + j.lien;
-  res.innerHTML = "Code de la classe : <b style='font-size:22px;color:var(--jaune)'>" + j.code + "</b><br>" +
-    "Ton tableau de bord (garde ce lien secret, il n'est affiché qu'une fois) :<br><a href='" + j.lien + "'>" + lien + "</a>";
-};
-</script>`, "Le mode classe de Terminagotchi : suivre la progression des élèves.");
+/** Titre d'un badge dans la langue choisie (le serveur l'enregistre en français). */
+function titreBadge(L, b) {
+  const T = L.t.badges;
+  if (!T) return b.titre;
+  if (b.type === "recense") return T.recense;
+  if (b.type === "multi") return T.multi;
+  if (b.type === "ctf_web_tout") return T.ctfTout;
+  const m = /^ctf_web_(\d)$/.exec(b.type || "");
+  const ep = m && L.t.ctf.epreuves[Number(m[1]) - 1];
+  return ep ? T.ctf(ep) : b.titre;
 }
 
-async function pageClasse(env, code, cle) {
-  const c = await env.DB.prepare("SELECT * FROM classes WHERE code = ?").bind(code).first();
-  if (!c || !/^[0-9a-f]{32}$/.test(cle) || (await sha256(cle)) !== c.cle_prof) {
-    return page("Classe", `<h1>🏫 Classe</h1><p>Ce tableau est réservé au professeur : il faut le lien complet (avec la clé).</p>
-<p><a href="/classe">Créer une classe</a></p>`, undefined, 403);
-  }
-  const r = await env.DB.prepare("SELECT pseudo, etat, xp, niveau, maj FROM joueurs ORDER BY xp DESC LIMIT 2000").all();
-  const eleves = r.results.map((j) => ({ ...j, e: lireEtat(j) })).filter((j) => j.e.classe === code);
-  const lignes = eleves.map((j) => {
-    const comp = j.e.skills || [];
-    const jours = Math.floor((Date.now() - j.maj) / 86400000);
-    return `<tr><td><a href="/joueur/${encodeURIComponent(j.pseudo)}">${echapper(j.pseudo)}</a></td>
-<td class="num">${j.niveau}</td><td class="num">${j.xp}</td><td class="num">${j.e.total || 0}</td>
-<td class="num">${(j.e.vus || []).length}</td>
-<td>${comp.length} <span class="doux" style="font-size:12px">${echapper(comp.slice(-4).join(", "))}</span></td>
-<td class="doux">${jours === 0 ? "aujourd'hui" : jours === 1 ? "hier" : `il y a ${jours} j`}</td></tr>`;
-  }).join("");
-  return page(c.nom, `<h1>🏫 ${echapper(c.nom)}</h1>
-<p>Code à donner aux élèves : <b style="font-size:22px;color:var(--jaune)">${code}</b> ·
-dans le jeu : <code>classe ${code}</code> (PC : <code>tg classe ${code}</code>)</p>
-<div class="carte"><table><tr><th>Élève</th><th>Niveau</th><th>XP</th><th>Commandes</th><th>Commandes différentes</th><th>Compétences (dernières)</th><th>Vu</th></tr>
-${lignes || `<tr><td colspan="7" class="doux">Aucun élève pour l'instant.</td></tr>`}</table></div>
-<p class="doux">${eleves.length} élève${eleves.length > 1 ? "s" : ""} · les données se mettent à jour à chaque synchronisation des élèves ·
-<a href="${FICHES}">fiches de séance</a></p>`, "Tableau de bord d'une classe Terminagotchi.");
+function ligneClassement(L, j, i, vitrines) {
+  const forme = j.forme ? lib(L, "formes", j.forme) : "";
+  return `<tr><td class="rang"><bdi>${i + 1}</bdi></td><td>${lienJoueur(L, j.pseudo, vitrines)}</td>
+<td>${bdi(j.nom)} <span class="doux">${echapper(L.t.stades[stadeDe(j.niveau)])} ${echapper(forme)}</span></td>
+<td class="num">${echapper(L.t.niv(j.niveau))}</td><td class="num"><bdi>${j.xp} XP</bdi></td></tr>`;
 }
 
-// ====================================================================== langues du site
-// La page est fabriquée en français, puis traduite juste avant l'envoi (texte visible seulement, pas les dessins).
-const NOMS_LANGUES = { fr: "🇫🇷 Français", en: "🇬🇧 English", es: "🇪🇸 Español", de: "🇩🇪 Deutsch", it: "🇮🇹 Italiano", pt: "🇧🇷 Português" };
-const LANGUES_SITE = Object.fromEntries(Object.entries(NOMS_LANGUES).filter(([k]) => k === "fr" || TRADUCTIONS[k]));
-const DICO = {};        // texte exact → traduction
-const PAR_MOT = {};     // premier mot → textes qui commencent par ce mot (du plus long au plus court)
-const MOT = /[\p{L}\p{N}]+/uy;
-function premierMot(t, i = 0) {
-  MOT.lastIndex = i;
-  const m = MOT.exec(t);
-  return m ? m[0] : t[i];
-}
-for (const [code, paires] of Object.entries(TRADUCTIONS)) {
-  const d = new Map();
-  for (const [fr, tr] of paires) {
-    d.set(fr, tr);
-    d.set(echapper(fr), echapper(tr));
-  }
-  const index = new Map();
-  for (const k of [...d.keys()].sort((a, b) => b.length - a.length)) {
-    const m = premierMot(k);
-    if (!index.has(m)) index.set(m, []);
-    index.get(m).push(k);
-  }
-  DICO[code] = d;
-  PAR_MOT[code] = index;
+function tableClassement(L, lignes) {
+  return `<table><tr><th>#</th><th>${L.t.thJoueur}</th><th>${L.t.thCreature}</th><th></th><th></th></tr>${lignes}</table>`;
 }
 
-function langueDe(requete) {
-  const url = new URL(requete.url);
-  const choix = url.searchParams.get("lang");
-  if (LANGUES_SITE[choix]) return { code: choix, retenir: true };
-  const c = (requete.headers.get("cookie") || "").match(/(?:^|;\s*)lang=(\w+)/);
-  if (c && LANGUES_SITE[c[1]]) return { code: c[1], retenir: false };
-  const a = (requete.headers.get("accept-language") || "").slice(0, 2).toLowerCase();
-  return { code: LANGUES_SITE[a] ? a : "fr", retenir: false };
-}
-
-function traduireTexte(t, code) {
-  const d = DICO[code];
-  if (!d) return t;
-  const brut = t.trim();
-  if (d.has(brut)) return t.replace(brut, d.get(brut));
-  const index = PAR_MOT[code];
-  const lettre = /[\p{L}\p{N}]/u;
-  let out = "";
-  let i = 0;
-  while (i < t.length) {
-    const debutMot = i === 0 || !lettre.test(t[i - 1]) || !lettre.test(t[i]);
-    const mot = premierMot(t, i);
-    let fait = false;
-    if (debutMot) {
-      for (const k of index.get(mot) || []) {
-        if (t.startsWith(k, i) && !(lettre.test(k[k.length - 1]) && lettre.test(t[i + k.length] || ""))) {
-          out += d.get(k);
-          i += k.length;
-          fait = true;
-          break;
-        }
-      }
-    }
-    if (!fait) {
-      out += mot;
-      i += mot.length;
-    }
-  }
-  return out;
-}
-
-async function enLangue(requete, r) {
-  if (!(r.headers.get("content-type") || "").includes("text/html")) return r;
-  const { code, retenir } = langueDe(requete);
-  let html = await r.text();
-  const liens = Object.entries(LANGUES_SITE).filter(([k]) => k !== code)
-    .map(([k, nom]) => `<a href="?lang=${k}" title="${nom}">${nom.split(" ")[0]}</a>`).join(" ");
-  html = html.replace("<!--LANGUE-->", `<span class="langues">${liens}</span>`);
-  if (code !== "fr") {
-    html = html.replace('<html lang="fr">', `<html lang="${code}">`)
-      .replace(/(<style[^>]*>[\s\S]*?<\/style>)|>([^<]+)</g, (m, st, t) => (st ? st : ">" + traduireTexte(t, code) + "<"))
-      .replace(/(content|placeholder)="([^"]*)"/g, (m, a, t) => `${a}="${traduireTexte(t, code)}"`);
-  }
-  const h = new Headers(r.headers);
-  if (retenir) h.append("set-cookie", `lang=${code}; Path=/; Max-Age=31536000; SameSite=Lax`);
-  h.set("vary", "accept-language, cookie");
-  return new Response(html, { status: r.status, headers: h });
-}
-
-function ligneClassement(j, i) {
-  const forme = j.forme ? FORMES[j.forme] : "";
-  return `<tr><td>${i + 1}</td><td><a href="/joueur/${encodeURIComponent(j.pseudo)}">${echapper(j.pseudo)}</a></td>
-<td>${echapper(j.nom)} <span class="doux">${echapper(STADES[stadeDe(j.niveau)])} ${echapper(forme)}</span></td>
-<td class="num">niv. ${j.niveau}</td><td class="num">${j.xp} XP</td></tr>`;
-}
-
-async function pageAccueil(env) {
+async function pageAccueil(env, L) {
+  const A = L.t.accueil;
   const top = await env.DB.prepare("SELECT pseudo, etat, xp, niveau FROM joueurs ORDER BY xp DESC, cree ASC LIMIT 10").all();
   const n = (await env.DB.prepare("SELECT COUNT(*) AS n FROM joueurs").first()).n;
+  const vit = await vitrinesGuilde(env, top.results.map((j) => j.pseudo));
   const lignes = top.results.map((j, i) => {
     const e = lireEtat(j);
-    return ligneClassement({ pseudo: j.pseudo, nom: e.nom || j.pseudo, niveau: j.niveau, xp: j.xp, forme: e.forme }, i);
+    return ligneClassement(L, { pseudo: j.pseudo, nom: e.nom || j.pseudo, niveau: j.niveau, xp: j.xp, forme: e.forme }, i, vit);
   }).join("");
-  return page("Accueil", `
+  // la première espèce de chaque famille, en portrait
+  const apercu = BESTIAIRE.familles.map((f) => PUBLIQUES.find((e) => e.famille === f.nom && e.portrait)).filter(Boolean)
+    .map((e) => `<a class="ecran" href="/bestiaire/${e.id}" title="${echapper(e.nom)}">${imgPortrait(e, "classique", "adulte", e.nom)}</a>`).join("");
+  return page(L, A.titre, `
 <section class="hero">
-  <div>${svgCreature(12, "Agilité", {}, 10, false, "ciel", "nebuline")}</div>
-  <div style="flex:1;min-width:260px">
-    <h1>La créature qui mange tes commandes</h1>
-    <p>Chaque commande tapée dans le terminal la nourrit. En grandissant, elle t'apprend à naviguer, créer, protéger…
-    puis à explorer des donjons, jouer au hacker et coder ton propre jeu.</p>
-    <p class="doux">${n} créature${n > 1 ? "s" : ""} recensée${n > 1 ? "s" : ""}.</p>
+  <div>
+    <p class="invite-ligne ltr" aria-hidden="true"><b>~$</b> ./terminagotchi<span class="curseur">█</span></p>
+    <h1>${A.heroTitre}</h1>
+    <p>${A.heroTexte}</p>
+    <p><a class="btn grand" href="#telecharger">${FLECHE}${A.telecharger}</a><a class="btn ambre" href="/bestiaire">${A.voirBestiaire}</a></p>
+    <p><a class="btn essayer" href="/essayer"><span aria-hidden="true">&gt;_</span> ${at(L, "site.bouton")}</a></p>
+    <p class="doux petit">${A.recensees(n)}</p>
   </div>
+  <div class="scene ecran"><div class="mascotte mange" role="img" aria-label="Terminagotchi"></div><div class="sol" aria-hidden="true"></div></div><script>(function(){var m=document.querySelector(".mascotte.mange");if(!m||matchMedia("(prefers-reduced-motion:reduce)").matches)return;function c(){m.classList.remove("croque");void m.offsetWidth;m.classList.add("croque")}m.addEventListener("animationend",function(e){if(e.animationName==="croque")m.classList.remove("croque")});m.addEventListener("click",c);function t(){setTimeout(function(){c();t()},12000+Math.random()*18000)}setTimeout(c,2500);t()})()</script>
 </section>
-<h2 id="telecharger">Télécharger</h2>
+<h2 id="telecharger">${A.telecharger}</h2>
 <div class="grille">
-  <div class="carte"><b>📱 Android</b><p class="doux">Widget + terminal intégré, donjon, CTF, Doom-like.</p>
-    <a class="btn vert" href="${DEPOT}/releases/latest/download/terminagotchi.apk">terminagotchi.apk</a></div>
-  <div class="carte"><b>💻 PC (Linux, Mac, Windows)</b><p class="doux">Vit dans ton vrai terminal. Il faut Python 3.</p>
-    <a class="btn" href="${DEPOT}/releases/latest/download/terminagotchi.pyz">terminagotchi.pyz</a>
-    <p class="doux">Puis : <code>python3 terminagotchi.pyz</code></p></div>
-  <div class="carte"><b>🔗 La même créature partout</b><p class="doux">Dans le jeu : <code>compte creer TonPseudo</code>,
-    puis <code>compte code</code> pour obtenir un code, et sur l'autre appareil <code>compte lier CODE</code>.</p></div>
+  <div class="carte"><b>📱 Android</b><p class="doux">${A.android}</p>
+    <a class="btn large" href="${DEPOT}/releases/latest/download/terminagotchi.apk">${FLECHE}<bdi class="fichier">terminagotchi.apk</bdi></a></div>
+  <div class="carte"><b>💻 ${A.pcTitre}</b><p class="doux">${A.pc}</p>
+    <a class="btn large ambre" href="${DEPOT}/releases/latest/download/terminagotchi.pyz">${FLECHE}<bdi class="fichier">terminagotchi.pyz</bdi></a>
+    <p class="doux">${A.puis} <code>python3 terminagotchi.pyz</code></p></div>
+  <div class="carte"><b>🔗 ${A.partoutTitre}</b><p class="doux">${A.partout}</p></div>
 </div>
-<h2>Classement</h2>
-<div class="carte">${lignes ? `<table><tr><th>#</th><th>Joueur</th><th>Créature</th><th></th><th></th></tr>${lignes}</table>`
-    : `<p class="doux">Personne pour l'instant… sois la première créature recensée !</p>`}
-<p><a href="/classement">Voir tout le classement →</a></p></div>
-<h2>Des preuves, pas des promesses</h2>
-<div class="carte"><p>Les badges marqués <b>✔ vérifié</b> sont délivrés par le serveur lui-même : par exemple, chaque
-drapeau du <a href="/ctf">CTF web</a><a href="/classe">Classe</a><!--LANGUE--> est personnel et contrôlé ici. Chaque badge a sa page publique, que tu peux partager.</p>
-<p class="doux">Le reste du profil (niveau, compétences…) est déclaré par l'appli et affiché comme tel.</p></div>`);
+<h2>${A.bestioles}</h2>
+<p>${A.bestiolesTexte}</p>
+<div class="apercu">${apercu}</div>
+<h2>${A.classement}</h2>
+${fenetre("~/classement", `${lignes ? tableClassement(L, lignes) : `<p class="doux">${A.personne}</p>`}
+<p style="margin:12px 0 0"><a href="/classement">${A.voirTout}</a></p>`)}
+<h2>${A.preuvesTitre}</h2>
+<div class="carte"><p>${A.preuves}</p>
+<p class="doux">${A.preuvesDoux}</p></div>`);
 }
 
-async function pageClassement(env) {
+async function pageClassement(env, L) {
+  const C = L.t.classement;
   const r = await env.DB.prepare("SELECT pseudo, etat, xp, niveau FROM joueurs ORDER BY xp DESC, cree ASC LIMIT 100").all();
+  const vit = await vitrinesGuilde(env, r.results.map((j) => j.pseudo));
   const lignes = r.results.map((j, i) => {
     const e = lireEtat(j);
-    return ligneClassement({ pseudo: j.pseudo, nom: e.nom || j.pseudo, niveau: j.niveau, xp: j.xp, forme: e.forme }, i);
+    return ligneClassement(L, { pseudo: j.pseudo, nom: e.nom || j.pseudo, niveau: j.niveau, xp: j.xp, forme: e.forme }, i, vit);
   }).join("");
-  return page("Classement", `<h1>🏆 Classement</h1><p class="doux">Les 100 créatures les plus expérimentées.</p>
-<div class="carte">${lignes ? `<table><tr><th>#</th><th>Joueur</th><th>Créature</th><th></th><th></th></tr>${lignes}</table>`
-    : `<p class="doux">Personne pour l'instant.</p>`}</div>`);
+  return page(L, C.titre, `<h1>${C.h1}</h1><p class="doux">${C.sous}</p>
+${fenetre("~/classement --top 100", lignes ? tableClassement(L, lignes) : `<p class="doux">${C.personne}</p>`)}`);
 }
 
-async function pageJoueur(env, pseudo) {
+async function pageJoueur(env, L, pseudo) {
+  const J = L.t.joueur;
   const p = await profilPublic(env, pseudo);
-  if (!p) return page("Inconnu", `<h1>Joueur inconnu</h1><p><a href="/classement">Retour au classement</a></p>`);
+  if (!p) return page(L, J.inconnuTitre, `<h1>${J.inconnu}</h1><p><a href="/classement">${J.retour}</a></p>`);
   const lo = 10 * (p.niveau - 1) ** 2;
   const hi = 10 * p.niveau ** 2;
   const pct = Math.round((100 * (p.xp - lo)) / Math.max(1, hi - lo));
-  const stats = STATS.map((s) => `<div>${COURT[s]} <b>${p.stats[s]}</b></div>`).join("");
-  const badges = p.badges.map((b) => `<a class="badge verifie" href="${b.lien}">✔ ${echapper(b.titre)}</a>`).join("")
-    || `<span class="doux">Aucun badge vérifié pour l'instant.</span>`;
-  const coll = BESTIAIRE.especes.filter((e) => p.collection[e.nom]).map((e) =>
-    `<a class="bestiole" href="${e.secrete ? `/captures?joueur=${encodeURIComponent(p.pseudo)}` : `/bestiaire/${e.id}`}"><div style="display:flex;justify-content:center">${visuel(e)}</div><div class="num">#${String(e.numero).padStart(3, "0")}</div>
-     <div>${echapper(e.nom)} ×${p.collection[e.nom]}</div></a>`).join("");
-  const collHtml = coll ? `<p class="doux">${Object.keys(p.collection).filter((k) => p.collection[k]).length}/150 espèces</p><div class="grille-b">${coll}</div>`
-    : `<span class="doux">Aucune bestiole capturée.</span>`;
-  const comp = p.competences.map((c) => `<span class="badge">◇ ${echapper(c)}</span>`).join("")
-    || `<span class="doux">Aucune.</span>`;
-  const forme = p.forme && p.niveau >= 5 ? FORMES[p.forme] : "";
-  const appareils = p.appareils.map((a) => (a === "android" ? "📱 téléphone" : "💻 PC")).join(" + ") || "—";
-  return page(p.pseudo, `
+  const stats = STATS.map((s) => `<span class="badge" title="${echapper(lib(L, "stats", s))}">${echapper(L.t.court[s])} <b class="pixel" style="font-size:12px">${p.stats[s]}</b></span>`).join("");
+  const badges = p.badges.map((b) => `<a class="badge verifie" href="${b.lien}">✔ ${echapper(titreBadge(L, b))}</a>`).join("")
+    || `<span class="doux">${J.aucunBadge}</span>`;
+  // collection : les anciens noms (bestiaire v1) comptent pour la nouvelle espèce de même numéro
+  const parEspece = new Map();
+  for (const [nom, n] of Object.entries(p.collection)) {
+    const e = especeDe(nom);
+    if (e && n) parEspece.set(e, (parEspece.get(e) || 0) + n);
+  }
+  // une espèce dont le joueur a une bestiole glitch : elle est montrée glitch (son portrait, son stade)
+  const glitchsParEspece = new Map();
+  for (const c of p.glitchs || []) {
+    const e = especeDe(c.espece);
+    if (e && e.portrait && !glitchsParEspece.has(e)) glitchsParEspece.set(e, { ...c, glitch: true, stade: stadePortrait(c.stade), variante: varianteDessinee(e, c.variante) });
+  }
+  const coll = [...parEspece].sort((a, b) => a[0].numero - b[0].numero).map(([e, n]) =>
+    `<a class="bestiole" style="--r:${COULEUR_RARETE[e.rarete]}" href="${e.secrete ? `/captures?joueur=${encodeURIComponent(p.pseudo)}` : `/bestiaire/${e.id}`}">
+     <div class="haut"><span>${numero(e)}</span><span class="fam" title="${echapper(lib(L, "familles", e.famille))}">${e.icone}</span></div>
+     <div class="ecran">${visuel(L, e, glitchsParEspece.get(e))}</div><div class="nom-b">${glitchsParEspece.has(e) ? nomGlitch(bdi(e.nom)) : bdi(e.nom)} <bdi>×${n}</bdi></div></a>`).join("");
+  const collHtml = coll ? `<p class="doux">${J.nbEspeces(parEspece.size)}</p><div class="grille-b">${coll}</div>`
+    : `<span class="doux">${J.aucuneBestiole}</span>`;
+  const comp = p.competences.map((c) => `<span class="badge">◇ ${bdi(c)}</span>`).join("")
+    || `<span class="doux">${J.aucune}</span>`;
+  const forme = p.forme && p.niveau >= 5 ? lib(L, "formes", p.forme) : "";
+  const appareils = p.appareils.map((a) => (a === "android" ? J.telephone : J.pc)).join(" + ") || "—";
+  const stade = L.t.stades[stadeDe(p.niveau)];
+  return page(L, p.pseudo, `
 <section class="hero">
-  <div class="carte">${svgCreature(p.niveau, p.forme, p.stats, 10, p.shiny, p.oeuf, p.familier)}</div>
-  <div style="flex:1;min-width:260px">
-    <h1>${p.shiny ? `<span class="rgb">${echapper(p.nom)} ✨</span>` : echapper(p.nom)}</h1>
-    <p class="doux">créature de <b>${echapper(p.pseudo)}</b> · ${echapper(p.stade)} ${echapper(forme)}${PAR_ID[p.familier] && p.niveau >= 2 ? ` · espèce <a href="/bestiaire/${p.familier}">${echapper(PAR_ID[p.familier].nom)}</a>` : OEUFS[p.oeuf] ? ` · œuf ${echapper(OEUFS[p.oeuf].nom)}` : ""} · caractère ${echapper(p.trait || "?")}</p>
-    <p>Niveau <b>${p.niveau}</b> · ${p.xp} XP · <b>#${p.rang}</b> au classement</p>
-    <div class="barre"><i style="width:${pct}%"></i></div>
-    <div class="grille" style="grid-template-columns:repeat(4,1fr);margin-top:12px">${stats}</div>
-    <p class="doux">${p.commandes} commandes mangées · ${p.gouts} goûts découverts · joue sur ${appareils}</p>
+  <div>
+    <h1>${p.shiny ? `<span class="rgb">${bdi(p.nom)} ✨</span>` : bdi(p.nom)}</h1>
+    <p class="doux">${J.ligneCreature(pseudoHtml(L, p.pseudo, new Map([[p.pseudo.toLowerCase(), p.guilde]])), echapper(stade), echapper(forme), bdi(p.trait || "?"))}</p>
+    <p>${J.ligneNiveau(p.niveau, p.xp, p.rang)}</p>
+    <div class="barre-xp"><i style="width:${pct}%"></i></div>
+    <div style="margin-top:10px">${stats}</div>
+    <p class="doux">${J.ligneActivite(p.commandes, p.gouts, appareils)}</p>
   </div>
+  <div class="scene ecran">${svgCreature(p.niveau, p.forme, p.stats, 12, p.shiny, L.t.creature)}</div>
 </section>
-<h2>Badges vérifiés par le serveur</h2><div>${badges}</div>
-<h2>Compétences <span class="doux" style="font-size:14px">(déclarées par l'appli)</span></h2><div>${comp}</div>
-<h2>Collection</h2>${collHtml}
-${p.partage ? `<p><a href="/captures?joueur=${encodeURIComponent(p.pseudo)}">Voir ses captures uniques →</a></p>` : ""}
-<p class="doux" style="margin-top:32px">Inscrit le ${new Date(p.inscrit).toLocaleDateString("fr-FR")} ·
-<a href="/api/profil/${encodeURIComponent(p.pseudo)}">données publiques (JSON)</a></p>`, `La créature ${p.nom} de ${p.pseudo}, niveau ${p.niveau}.`);
+<h2>${J.badges}</h2><div>${badges}</div>
+${sectionEntrainement(L, p.entrainement)}
+${sectionGuilde(L, p.guilde)}
+<h2>${J.competences} <span class="doux petit">${J.declarees}</span></h2><div>${comp}</div>
+<h2>${J.collection}</h2>${collHtml}${scriptGlitch(collHtml)}
+${p.partage ? `<p style="margin-top:20px"><a href="/captures?joueur=${encodeURIComponent(p.pseudo)}">${J.voirCaptures}</a></p>` : ""}
+<p class="doux petit" style="margin-top:32px">${J.inscrit(new Date(p.inscrit).toLocaleDateString(L.locale))} ·
+<a href="/api/profil/${encodeURIComponent(p.pseudo)}">${J.json}</a></p>`, J.description(p.nom, p.pseudo, p.niveau));
 }
 
-async function pageBadge(env, id) {
+/** Le texte d'un titre de la salle d'entraînement, dans sa couleur (arc-en-ciel pour la Légende). */
+function titreEnt(L, x) {
+  if (!x) return "";
+  const E = L.t.ent;
+  const texte = x.id === "legende" ? E.titreLegende : x.id === "touche" ? E.titreTouche : x.id === "apprenti" ? E.titreApprenti
+    : x.id === "star" ? E.titreStar(E.familles[x.famille]) : E.titreFamille(E.familles[x.famille], E.echelonsNoms[x.echelon]);
+  return x.couleur === "arc" ? `<span class="rgb">« ${echapper(texte)} »</span>` : `<span style="color:${x.couleur}">« ${echapper(texte)} »</span>`;
+}
+
+const MEDAILLE_ICONE = ENT.ICONE_MEDAILLE;
+
+async function pageRecords(env, L) {
+  const E = L.t.ent;
+  const d = await donneesRecords(env);
+  const vit = await vitrinesGuilde(env, [...Object.values(d.records).flat(), ...Object.values(d.stars), ...Object.values(d.enTete), ...d.palmares]
+    .map((x) => x.pseudo));
+  const lienJ = (p) => lienJoueur(L, p, vit);
+  const echelle = ENT.ECHELONS.map((e, k) => `<figure class="ech">${ENT.svgBadge("explorateur", e, 3, E.echelonsNoms[e], 0)}<figcaption><b>${echapper(E.echelonsNoms[e])}</b> · <bdi>${ENT.SEUILS[k]}</bdi><br><span class="doux">${echapper(E.gradesSens[e])}</span></figcaption></figure>`).join("");
+  const stars = ENT.FAMILLES.map((f) => {
+    const s = d.stars[f];
+    const t = d.enTete[f];
+    return `<div class="carte star">${ENT.svgBadge(f, s ? "giga" : null, 3, E.familles[f])}<div><b>${echapper(E.familles[f])}</b>
+<div>${s ? `🏆 ${lienJ(s.pseudo)} <span class="doux">${echapper(E.reussis(s.n))}</span>` : `<span class="doux">—</span>`}</div>
+<div class="doux petit">${echapper(E.enTete)} : ${t ? `${lienJ(t.pseudo)} (${echapper(E.reussis(t.n))})` : "—"}</div></div></div>`;
+  }).join("");
+  const palmares = d.palmares.map((x, i) => `<tr><td class="rang"><bdi>${i + 1}</bdi></td><td>${lienJ(x.pseudo)}</td><td class="num">${echapper(E.fois(x.n))}</td></tr>`).join("");
+  let familles = "";
+  for (const f of ENT.FAMILLES) {
+    const types = Object.keys(ENT.TYPES).filter((typ) => ENT.TYPES[typ][0] === f && d.records[typ]?.length);
+    if (!types.length) continue;
+    familles += `<h2 class="avec-badge">${ENT.svgBadge(f, "giga", 2)}${echapper(E.familles[f])}</h2><div class="grille">`
+      + types.map((typ) => fenetre(`~/records/${typ}`, `<p><b>${echapper(E.types[typ])}</b></p><table><tr><th>#</th><th>${L.t.thJoueur}</th><th>${echapper(E.thTemps)}</th></tr>`
+        + d.records[typ].map((r, i) => `<tr><td class="rang"><bdi>${i + 1}</bdi></td><td>${lienJ(r.pseudo)}</td><td class="num"><bdi>${r.t.toFixed(1)} s</bdi> ${MEDAILLE_ICONE[r.medaille]}</td></tr>`).join("")
+        + "</table>")).join("") + "</div>";
+  }
+  return page(L, E.titre, `<h1>${E.h1}</h1><p>${E.intro}</p>
+<h2>${echapper(E.echelons)}</h2><p>${echapper(E.gradesIntro)}</p><div class="echelle">${echelle}</div><p class="doux petit">${echapper(E.echelle)}</p>
+<h2>${echapper(E.stars)}</h2><p class="doux">${echapper(E.starsSous)}</p>
+${Object.keys(d.stars).length || Object.keys(d.enTete).length ? `<div class="grille stars">${stars}</div>` : `<p class="doux">${echapper(E.aucuneStar)}</p>`}
+${palmares ? `<h2>${echapper(E.palmares)}</h2>${fenetre("~/stars", `<table>${palmares}</table>`)}` : ""}
+${familles || `<h2>${echapper(E.records)}</h2><p class="doux">${echapper(E.aucun)}</p>`}`, E.description);
+}
+
+/** La partie « salle d'entraînement » du profil : badges, titre, Stars, records. */
+function sectionEntrainement(L, ent) {
+  const E = L.t.ent;
+  if (!ent) return "";
+  const badges = ENT.FAMILLES.filter((f) => ent.familles[f]?.echelon).map((f) => {
+    const x = ent.familles[f];
+    const et = "★".repeat(x.etoiles || 0) + "☆".repeat(3 - (x.etoiles || 0));
+    const nom = `${E.familles[f]} · ${E.echelonsNoms[x.echelon]} ${et}`;
+    return `<figure class="ech" title="${echapper(nom)}">${ENT.svgBadge(f, x.echelon, 3, nom, x.etoiles || 0)}<figcaption>${echapper(E.familles[f])}<br><span class="doux">${echapper(E.echelonsNoms[x.echelon])} ${et} · ${echapper(E.reussis(x.n))}</span></figcaption></figure>`;
+  }).join("");
+  const nonV = ENT.FAMILLES.reduce((a, f) => a + (ent.familles[f]?.nonVerifies || 0), 0);
+  const stars = Object.entries(ent.stars || {}).filter(([f]) => E.familles[f])
+    .map(([f, n]) => `<span class="badge" style="color:#ffaf00">${echapper(E.starCompte(E.familles[f], n))}</span>`).join("");
+  const recs = Object.keys(ENT.TYPES).filter((typ) => ent.records[typ]).map((typ) => {
+    const r = ent.records[typ];
+    return `<tr><td>${echapper(E.types[typ])}</td><td class="num"><bdi>${r.t.toFixed(1)} s</bdi> ${MEDAILLE_ICONE[ENT.medaille(typ, r.t)]}</td>
+<td>${r.v ? `<span style="color:var(--vert)">${echapper(E.verifie)}</span>` : `<span class="doux">${echapper(E.nonVerifie)}</span>`}</td></tr>`;
+  }).join("");
+  return `<h2>${echapper(E.profil)}</h2>
+${ent.titre ? `<p>${E.titreLigne(titreEnt(L, ent.titre))}</p>` : ""}
+${badges ? `<div class="echelle">${badges}</div>` : `<p class="doux">${echapper(E.aucunBadge)}</p>`}
+${nonV ? `<p class="doux">${echapper(E.nonVerifies(nonV))}</p>` : ""}
+${stars ? `<div>${stars}</div>` : ""}
+${recs ? `<h2>${echapper(E.records)} <a class="petit" href="/records">/records</a></h2>${fenetre("~/records", `<table>${recs}</table>`)}` : ""}`;
+}
+
+/** Les badges de la Guilde sur le profil (dessinés comme ceux de la salle d'entraînement), s'il en a. */
+function sectionGuilde(L, g) {
+  if (!g || !(g.artisan || g.contributeur)) return "";
+  const T = GUILDE.textes(L.lang);
+  const E = L.t.ent;
+  const figs = GUILDE.BADGES.filter((b) => g[b]).map((b) => {
+    const nom = `${T[b]} · ${E.echelonsNoms[g[b]]}`;
+    return `<figure class="ech" title="${echapper(nom)}">${ENT.svgBadge(b, g[b], 3, nom, 0)}<figcaption><span class="pseudo-${b}">${echapper(T[b])}</span><br><span class="doux">${echapper(E.echelonsNoms[g[b]])}</span></figcaption></figure>`;
+  }).join("");
+  return `<h2>🛠 ${echapper(T.titre)}</h2><div class="echelle">${figs}</div>`;
+}
+
+async function pageBadge(env, L, id) {
+  const B = L.t.badge;
   const b = await env.DB.prepare("SELECT b.*, j.pseudo FROM badges b JOIN joueurs j ON j.id = b.joueur WHERE b.id = ?").bind(id).first();
-  if (!b) return page("Badge inconnu", `<h1>Badge inconnu</h1><p class="doux">Ce badge n'existe pas : il est peut-être faux.</p>`);
-  const date = new Date(b.date).toLocaleString("fr-FR", { timeZone: "Europe/Paris" });
-  return page(b.titre, `<div class="carte" style="max-width:560px;margin:24px auto;text-align:center">
-<div style="font-size:56px">🏅</div><h1>${echapper(b.titre)}</h1>
-<p>délivré à <a href="/joueur/${encodeURIComponent(b.pseudo)}"><b>${echapper(b.pseudo)}</b></a> le ${echapper(date)}</p>
-<p style="color:var(--vert)">✔ Vérifié : ce badge est enregistré par le serveur du recensement Terminagotchi.</p>
-<p class="doux">Identifiant : <code>${echapper(b.id)}</code> · <a href="/api/badge/${echapper(b.id)}">preuve (JSON)</a></p></div>`,
-  `Badge « ${b.titre} » de ${b.pseudo}.`);
+  if (!b) return page(L, B.inconnuTitre, `<h1>${B.inconnuTitre}</h1><p class="doux">${B.faux}</p>`);
+  const date = new Date(b.date).toLocaleString(L.locale, { timeZone: "Europe/Paris" });
+  const titre = titreBadge(L, b);
+  return page(L, titre, `<div class="carte" style="max-width:600px;margin:24px auto;text-align:center">
+<div style="font-size:56px">🏅</div><h1>${echapper(titre)}</h1>
+<p>${B.delivre(`<b>${lienJoueur(L, b.pseudo, await vitrinesGuilde(env, [b.pseudo]))}</b>`, `<bdi>${echapper(date)}</bdi>`)}</p>
+<p style="color:var(--vert)">${B.verifie}</p>
+<p class="doux">${B.identifiant} : <code>${echapper(b.id)}</code> · <a href="/api/badge/${echapper(b.id)}">${B.preuve}</a></p></div>`,
+  B.description(titre, b.pseudo));
 }
 
 // ---------------------------------------------------------------- bestioles
-/** Le dessin d'une bestiole : animé (stade, teinte shiny) si son espèce a un dessin complet, sinon le petit sprite. */
-function visuel(e, c = {}, taille = 6, anim = "statique") {
-  if (!ANIMEES.has(e.id)) return svgBestiole(e, c.shiny, taille);
-  const stade = STADES_B.includes(c.stade) ? c.stade : "adulte";
-  const px = 16 * taille;
-  const filtre = c.shiny ? `filter:hue-rotate(${Math.round((c.teinte || 0.5) * 360)}deg);` : "";
-  return `<div class="anime" role="img" aria-label="${echapper(e.nom)} (${NOM_STADE[stade]})"
-    style="width:${px}px;height:${px}px;background-image:url(/anim/${e.id}/${stade}/${anim}.webp);--px:${px}px;${filtre}"></div>`;
+/** Un portrait (public/portraits/<id>/<variante>_<stade>.webp). */
+function imgPortrait(e, vid, stade, alt, extra = "") {
+  return `<img src="/portraits/${e.id}/${encodeURIComponent(vid)}_${stade}.webp" alt="${echapper(alt)}" loading="lazy" decoding="async"${extra}>`;
 }
 
-function svgBestiole(e, shiny = false, taille = 6, grand = false) {
-  grand = grand && e.sprite_grand && e.sprite_grand.length <= 32;
-  const rows = grand ? e.sprite_grand : shiny ? e.sprite_shiny : e.sprite;
-  const pal = grand ? (shiny ? e.palette_grand_shiny : e.palette_grand) : shiny ? e.palette_shiny : e.palette;
-  const n = grand ? 32 : 16;
+/** La variante dessinée la plus proche (sinon la forme classique). */
+const varianteDessinee = (e, vid) => (e.variantes.some((v) => v.id === vid && v.dessinee) ? vid : "classique");
+/** Le stade d'une capture : nouveaux stades, ou anciens (enfant…finale) ramenés aux nouveaux. */
+const stadePortrait = (s) => (TIRAGE.stades.includes(s) ? s : s === "finale" ? "ancien" : STADES_B.includes(s) ? s : "adulte");
+
+/** Le nom d'une bestiole glitch : lettres rose et cyan, et le repère ▚ (comme ✨ pour un shiny). */
+function nomGlitch(html) {
+  return `<span class="glitchnom">${html} ${REPERE_GLITCH}</span>`;
+}
+
+/** Le script de l'effet glitch, à poser une fois dans une page qui montre une bestiole glitch. */
+const scriptGlitch = (html) => (html.includes("data-glitch=") ? `<script>${SCRIPT_GLITCH}</script>` : "");
+
+/** Le dessin d'une bestiole : son portrait (variante, stade, teinte shiny), l'animation d'Abyssor, sinon le petit sprite.
+ *  Une bestiole glitch (c.glitch) : son portrait est redessiné par le script de l'effet (glitch.js, SCRIPT_GLITCH). */
+function visuel(L, e, c = {}, anim = "statique") {
+  c = c || {};
+  const filtre = c.shiny ? ` style="filter:hue-rotate(${Math.round((c.teinte || 0.5) * 360)}deg)"` : "";
+  if (e.portrait) {
+    const stade = stadePortrait(c.stade);
+    const g = c.glitch === true && typeof c.id === "string"
+      ? ` data-glitch="${echapper(c.id)}"${c.shiny ? ` data-teinte="${Math.round((c.teinte || 0.5) * 360)}"` : ""}` : "";
+    return imgPortrait(e, varianteDessinee(e, c.variante), stade, `${e.nom} (${lib(L, "stadesB", stade)})`, filtre + g);
+  }
+  if (!ANIMEES.has(e.id)) return svgBestiole(e, c.shiny, 6);
+  const stade = STADES_B.includes(c.stade) ? c.stade : "adulte";
+  const px = 112;
+  const teinte = c.shiny ? `filter:hue-rotate(${Math.round((c.teinte || 0.5) * 360)}deg);` : "";
+  return `<div class="anime" role="img" aria-label="${echapper(e.nom)} (${echapper(lib(L, "stadesB", stade))})"
+    style="width:${px}px;height:${px}px;background-image:url(/anim/${e.id}/${stade}/${anim}.webp);--px:${px}px;${teinte}"></div>`;
+}
+
+function svgBestiole(e, shiny = false, taille = 6) {
+  const rows = shiny ? e.sprite_shiny : e.sprite;
+  const pal = shiny ? e.palette_shiny : e.palette;
+  const n = 16;
   const ox = (n - rows[0].length) / 2;
   const oy = (n - rows.length) / 2;
   let r = "";
@@ -879,12 +1661,21 @@ function svgBestiole(e, shiny = false, taille = 6, grand = false) {
   return `<svg viewBox="0 0 ${n} ${n}" width="${n * taille}" height="${n * taille}" shape-rendering="crispEdges" role="img" aria-label="${echapper(e.nom)}">${r}</svg>`;
 }
 
-function etiquetteRarete(r) {
-  return `<span class="rar" style="color:${COULEUR_RARETE[r]}">${echapper(r)}</span>`;
+function etiquetteRarete(L, r) {
+  return `<span class="rar" style="--r:${COULEUR_RARETE[r]}">${echapper(lib(L, "raretes", r))}</span>`;
 }
 
-/** Le glossaire classique des 150 espèces (apparence normale, sans variantes ni shiny). */
-function pageBestiaire(url) {
+/** Une carte façon Pokédex : numéro, icône de famille, grand portrait, nom, rareté. */
+function carteEspece(L, e) {
+  return `<a class="bestiole" style="--r:${COULEUR_RARETE[e.rarete]}" href="/bestiaire/${e.id}">
+  <div class="haut"><span>${numero(e)}</span><span class="fam" title="${echapper(lib(L, "familles", e.famille))}" aria-label="${echapper(lib(L, "familles", e.famille))}">${e.icone}</span></div>
+  <div class="ecran">${e.portrait ? imgPortrait(e, "classique", "adulte", e.nom) : svgBestiole(e)}</div>
+  <div class="nom-b">${bdi(e.nom)}</div>${etiquetteRarete(L, e.rarete)}</a>`;
+}
+
+/** Le bestiaire : les 150 espèces dans leur forme classique, adulte. */
+function pageBestiaire(L, url) {
+  const B = L.t.bestiaire;
   const famille = url.searchParams.get("famille") || "";
   const rarete = url.searchParams.get("rarete") || "";
   const liste = PUBLIQUES.filter((e) => (!famille || e.famille === famille) && (!rarete || e.rarete === rarete));
@@ -892,55 +1683,139 @@ function pageBestiaire(url) {
     const p = new URLSearchParams({ famille, rarete, [k]: v });
     for (const [a, b] of [...p]) if (!b) p.delete(a);
     const actif = (k === "famille" ? famille : rarete) === v;
-    return `<a href="/bestiaire${p.toString() ? "?" + p : ""}"${actif ? ' style="color:var(--jaune)"' : ""}>${t}</a>`;
+    return `<a class="puce" href="/bestiaire${p.toString() ? "?" + p : ""}"${actif ? ' aria-current="true"' : ""}>${t}</a>`;
   };
-  const filtresF = [lien("famille", "", "toutes"), ...BESTIAIRE.familles.map((f) => lien("famille", f.nom, f.icone + " " + f.nom))].join(" ");
-  const filtresR = [lien("rarete", "", "toutes"), ...BESTIAIRE.raretes.map((r) => lien("rarete", r, r))].join(" ");
-  const cartes = liste.map((e) => `<a class="bestiole" href="/bestiaire/${e.id}">${svgBestiole(e)}
-    <div class="num">#${String(e.numero).padStart(3, "0")} · ${e.icone} ${echapper(e.famille)}</div>
-    <div><b>${echapper(e.nom)}</b></div>${etiquetteRarete(e.rarete)}</a>`).join("");
-  return page("Bestiaire", `<h1>📖 Bestiaire</h1>
-<p>Les 150 espèces de bestioles qui se cachent dans le terrain de jeu : 60 communes, 40 peu communes, 40 rares et 10 légendaires,
-réparties en 10 familles de 15. Chacune grandit en 5 stades, et certaines ont des formes rares selon leur habitat. Plus une bestiole est rare, plus elle se cache profond (recoin → cachette → sanctuaire).</p>
-<div class="carte filtres"><div><span class="doux">Famille :</span> ${filtresF}</div><div style="margin-top:6px"><span class="doux">Rareté :</span> ${filtresR}</div></div>
-<p class="doux">${liste.length} espèce${liste.length > 1 ? "s" : ""}</p>
-<div class="grille-b">${cartes}</div>`, "Le bestiaire des 150 bestioles de Terminagotchi.");
+  const raretes = BESTIAIRE.raretes.filter((r) => PUBLIQUES.some((e) => e.rarete === r));
+  const filtresF = [lien("famille", "", B.toutes), ...BESTIAIRE.familles.map((f) => lien("famille", f.nom, `<span aria-hidden="true">${f.icone}</span> ${echapper(lib(L, "familles", f.nom))}`))].join("");
+  const filtresR = [lien("rarete", "", B.toutes), ...raretes.map((r) => lien("rarete", r, `<i class="pastille" style="--r:${COULEUR_RARETE[r]}"></i> ${echapper(lib(L, "raretes", r))}`))].join("");
+  return page(L, B.titre, `<h1>${B.h1}</h1>
+<p>${B.intro}</p>
+<div class="carte"><div class="filtres"><span class="etiquette">${B.famille}</span>${filtresF}</div>
+<div class="filtres"><span class="etiquette">${B.rarete}</span>${filtresR}</div></div>
+<h2>${B.raretesTitre}</h2>
+<div class="legende">${BESTIAIRE.raretes.map((r) => etiquetteRarete(L, r)).join("")}</div>
+<p class="doux">${B.raretesTexte}</p>
+<p class="doux" style="margin-top:28px">${B.nb(liste.length)}</p>
+<div class="grille-b">${liste.map((e) => carteEspece(L, e)).join("")}</div>`, B.description);
 }
 
-function pageEspece(id) {
+// la plus haute stat de base, pour la longueur des jauges
+const STAT_MAX = Math.max(...PUBLIQUES.flatMap((e) => Object.values(e.stats)));
+// hauteur des portraits selon le stade : on la voit grandir
+const HAUTEUR_STADE = { bebe: 46, enfant: 60, ado: 72, adulte: 86, ancien: 96 };
+
+function pageEspece(L, id) {
+  const E = L.t.espece;
   const e = PAR_ID[id];
-  if (!e || e.secrete) return page("Inconnue", `<h1>Espèce inconnue</h1><p><a href="/bestiaire">Retour au bestiaire</a></p>`, undefined, 404);
-  const i = e.numero - 1;
-  const prec = PUBLIQUES[(i + 149) % 150];
-  const suiv = PUBLIQUES[(i + 1) % 150];
-  const stats = Object.entries(e.stats).map(([k, v]) => `<div><div class="doux" style="font-size:12px">${k}</div><b>${v}</b></div>`).join("");
-  return page(e.nom, `<p><a href="/bestiaire">← Bestiaire</a></p>
-<section class="hero">
-  <div class="carte">${svgBestiole(e, false, 7, true)}</div>
-  <div style="flex:1;min-width:260px">
-    <p class="doux">#${String(e.numero).padStart(3, "0")} · ${e.icone} famille ${echapper(e.famille)}</p>
-    <h1>${e.rarete === "légendaire" ? `<span class="rgb">${echapper(e.nom)}</span>` : echapper(e.nom)}</h1>
-    ${etiquetteRarete(e.rarete)}
-    <p>${echapper(e.description)}</p>
-    <p class="doux">${echapper(e.comportement)}</p>
-    <div class="stats-b">${stats}</div>
+  if (!e || e.secrete) return page(L, E.inconnueTitre, `<h1>${E.inconnue}</h1><p><a href="/bestiaire">${E.retour}</a></p>`, undefined, 404);
+  const i = PUBLIQUES.indexOf(e);
+  const prec = PUBLIQUES[(i + PUBLIQUES.length - 1) % PUBLIQUES.length];
+  const suiv = PUBLIQUES[(i + 1) % PUBLIQUES.length];
+  const [fp, fs] = L.t.fleches;
+  const stats = Object.entries(e.stats).map(([k, v]) => `<div class="stat"><span class="doux">${echapper(lib(L, "statsB", k))}</span>`
+    + `<span class="jauge" aria-hidden="true"><i style="width:${Math.round((100 * v) / STAT_MAX)}%"></i></span><b>${v}</b></div>`).join("");
+  const fam = lib(L, "familles", e.famille);
+  const rar = lib(L, "raretes", e.rarete);
+  const couleur = COULEUR_RARETE[e.rarete];
+  const stades = BESTIAIRE.stades.map((s) => `<figure><div class="ecran">${e.portrait ? imgPortrait(e, "classique", s, `${e.nom} (${lib(L, "stadesB", s)})`, ` style="--h:${HAUTEUR_STADE[s]}%"`) : svgBestiole(e)}</div>
+    <figcaption>${echapper(lib(L, "stadesB", s))}</figcaption></figure>`).join("");
+  const variantes = e.variantes.map((v) => {
+    const nom = v.id === "classique" ? E.classique : lib(L, "habitats", v.zone);
+    return `<div class="bestiole variante${v.dessinee ? "" : " pas-dessinee"}" style="--r:${couleur}">
+    <div class="ecran">${e.portrait ? imgPortrait(e, v.dessinee ? v.id : "classique", "adulte", `${e.nom} (${nom})`) : svgBestiole(e)}</div>
+    <div class="nom-b nom-v">${echapper(nom)}</div>
+    <div class="doux petit" style="text-align:center">${echapper(E.chance(v.chance))}</div>
+    ${v.dessinee ? "" : `<div class="doux petit" style="text-align:center">${E.pasDessinee}</div>`}
+    <code>~/terrain_terminagotchi/${echapper(v.zone)}</code></div>`;
+  }).join("");
+  return page(L, e.nom, `<p><a href="/bestiaire">${E.retourCourt}</a></p>
+<section class="fiche">
+  <div class="portrait ecran" style="--r:${couleur}">${e.portrait ? imgPortrait(e, "classique", "adulte", e.nom) : svgBestiole(e, false, 14)}</div>
+  <div>
+    <p class="numero">${numero(e)}</p>
+    <h1>${e.rarete === "légendaire" ? `<span class="rgb">${bdi(e.nom)}</span>` : bdi(e.nom)}</h1>
+    <p><span class="puce"><span aria-hidden="true">${e.icone}</span> ${echapper(E.famille(fam))}</span> ${etiquetteRarete(L, e.rarete)}</p>
+    <p lang="fr" dir="ltr">${echapper(e.description)}</p>
+    <p class="doux" lang="fr" dir="ltr">${echapper(e.comportement)}</p>
+    <div class="stats-b" aria-label="${echapper(E.statsTitre)}">${stats}</div>
   </div>
 </section>
-<h2>Fiche</h2>
-<div class="carte"><table>
-<tr><td class="doux">Capacité</td><td>${echapper(e.capacite)}</td></tr>
-<tr><td class="doux">Stat favorite</td><td>${echapper(e.stat)}</td></tr>
-<tr><td class="doux">Taille / poids</td><td>~${e.taille_cm} cm · ~${e.poids_ko} Ko</td></tr>
-<tr><td class="doux">Habitat</td><td><code>~/terrain_terminagotchi/${echapper(e.zone)}</code></td></tr>
-<tr><td class="doux">Apparition</td><td>${echapper(e.frequence)} · attirée par la commande <code>${echapper(e.attiree_par)}</code></td></tr>
-</table></div>
-<p style="margin-top:24px"><a href="/bestiaire/${prec.id}">← #${String(prec.numero).padStart(3, "0")} ${echapper(prec.nom)}</a>
- · <a href="/bestiaire/${suiv.id}">#${String(suiv.numero).padStart(3, "0")} ${echapper(suiv.nom)} →</a></p>`,
-  `${e.nom}, bestiole ${e.rarete} de la famille ${e.famille}.`);
+<h2>${E.stades}</h2>
+<div class="stades">${stades}</div>
+<h2>${E.fiche}</h2>
+${fenetre(`~/bestiaire/${e.id}`, `<table>
+<tr><td class="doux">${E.frequence}</td><td>${etiquetteRarete(L, e.rarete)} ${echapper(lib(L, "frequences", e.frequence))} · ${echapper(E.unSur(e.un_sur))}</td></tr>
+<tr><td class="doux">${E.apparition}</td><td>${E.attiree(`<code>${echapper(e.attiree_par)}</code>`)}</td></tr>
+<tr><td class="doux">${E.habitat}</td><td>${echapper(lib(L, "habitats", e.habitat))} · <code>~/terrain_terminagotchi/${echapper(e.zone)}</code></td></tr>
+<tr><td class="doux">${E.capacite}</td><td><bdi lang="fr">${echapper(e.capacite)}</bdi></td></tr>
+<tr><td class="doux">${E.statFavorite}</td><td>${echapper(lib(L, "stats", e.stat))}</td></tr>
+<tr><td class="doux">${E.taillePoids}</td><td><bdi>~${e.taille_cm} cm · ~${e.poids_ko} ${E.ko}</bdi></td></tr>
+</table>`)}
+<h2>${E.variantes}</h2>
+<p class="doux">${E.variantesTexte}</p>
+<div class="grille-b">${variantes}</div>
+${COLORIAGES.includes(e.id) ? partieImprimer(L, e) : ""}
+<nav class="voisins"><a class="puce" href="/bestiaire/${prec.id}">${fp} ${numero(prec)} ${bdi(prec.nom)}</a>
+<a class="puce" href="/bestiaire/${suiv.id}">${numero(suiv)} ${bdi(suiv.nom)} ${fs}</a></nav>`,
+  E.description(e.nom, rar, fam));
+}
+
+const fichierColoriage = (e) => `/imprimer/coloriages/coloriage_${String(e.numero).padStart(3, "0")}_${e.id}`;
+/** Une carte « à imprimer » : petit aperçu, titre, détail, lien vers le PDF. */
+const carteImprimer = (lien, apercu, titre, doux, extra = "") => `<div class="imp"><a href="${lien}.pdf" download><img src="${apercu}" alt="" loading="lazy" decoding="async">
+<b>${titre}</b></a><span class="doux petit">${doux}</span>${extra}</div>`;
+const carteStickers = (L) => carteImprimer("/imprimer/stickers_A4", "/imprimer/stickers_A4.jpg", at(L, "site.imp.stickers"), at(L, "site.imp.stickers_doux"));
+const cartePoster = (L) => carteImprimer("/imprimer/poster_A3", "/imprimer/poster_A3.jpg", at(L, "site.imp.poster"), at(L, "site.imp.poster_doux"),
+  `<a class="petit" href="/imprimer/poster_A3_fond_blanc.pdf" download>${at(L, "site.imp.blanc")}</a>`);
+const noteFr = (L) => (L.lang === "fr" ? "" : `<p class="doux petit">${at(L, "site.imp.fr")}</p>`);
+
+/** En bas de la fiche d'une bestiole qui a un coloriage validé : son coloriage, les stickers et le poster (gratuits). */
+function partieImprimer(L, e) {
+  return `<h2>${at(L, "site.imp.titre")}</h2>
+<p class="doux">${at(L, "site.imp.intro")}</p>${noteFr(L)}
+<div class="imprimer">${carteImprimer(fichierColoriage(e), fichierColoriage(e) + ".png", at(L, "site.imp.coloriage"), at(L, "site.imp.coloriage_doux"))}
+${carteStickers(L)}${cartePoster(L)}</div>
+<p><a href="/imprimer">${at(L, "site.imp.tous")} ▸</a></p>`;
+}
+
+/** Tous les fichiers à imprimer : les 12 coloriages, la planche de stickers, le poster (sombre et fond blanc). */
+function pageImprimer(L) {
+  const cartes = COLORIAGES.map((id) => PAR_ID[id]).filter(Boolean)
+    .map((e) => carteImprimer(fichierColoriage(e), fichierColoriage(e) + ".png", `${numero(e)} ${bdi(e.nom)}`, at(L, "site.imp.coloriage_doux"))).join("");
+  return page(L, at(L, "site.imp.page"), `<h1>${at(L, "site.imp.page")}</h1>
+<p>${at(L, "site.imp.page_intro")}</p>${noteFr(L)}
+<h2>${at(L, "site.imp.coloriage")}</h2>
+<div class="imprimer">${cartes}</div>
+<h2>${at(L, "site.imp.stickers")} · ${at(L, "site.imp.poster")}</h2>
+<div class="imprimer">${carteStickers(L)}${cartePoster(L)}</div>`, at(L, "site.imp.page_intro"));
+}
+
+/** « Essayer en 2 minutes » : le début du jeu rejoué dans la page (public/js/essayer.js), sur un faux dossier en
+ *  mémoire. Rien n'est envoyé ni enregistré ; l'œuf est tiré au hasard (comme dans le jeu), le nom proposé est Noisette. */
+function pageEssayer(L) {
+  const T = AUTOUR[L.lang] || AUTOUR.fr;
+  const noms = Object.fromEntries(Object.values(DEPART).flat().map((id) => [id, PAR_ID[id]?.nom || id]));
+  return page(L, at(L, "site.titre"), `<h1>${at(L, "site.titre")}</h1>
+<p>${at(L, "site.intro")}</p>
+<p class="es-etape" id="es-etape" aria-live="polite"></p>
+<div class="es-demo">
+  <div class="es-cadre"><div class="es-scene" id="es-scene"><img class="es-oeuf" id="es-oeuf" alt="" hidden><img class="es-bebe" id="es-bebe" alt="" hidden></div>
+    <div class="es-bulle" id="es-bulle" aria-live="polite"></div></div>
+  <section class="es-term" aria-label="${at(L, "site.placeholder")}"><div id="es-out" class="es-out" aria-live="polite"></div>
+    <form id="es-form" class="es-form" autocomplete="off"><label class="es-invite" id="es-invite" for="es-cmd"></label>
+    <input id="es-cmd" spellcheck="false" autocapitalize="off" autocorrect="off" enterkeyhint="send" placeholder="${at(L, "site.placeholder")}"><button type="submit" aria-label="OK">⏎</button></form>
+    <div class="es-essais" id="es-essais"></div></section>
+</div>
+<div id="es-fin" class="es-fin" hidden><a class="btn grand" href="/#telecharger">${FLECHE}${at(L, "site.telecharger")}</a>
+<a class="btn ambre" href="/bestiaire">${at(L, "site.bestiaire")}</a><button type="button" class="puce" id="es-encore">↺ ${at(L, "site.recommencer")}</button></div>
+<p class="doux petit">${at(L, "site.prive")}</p>
+<script>window.TG_ESSAYER=${JSON.stringify({ t: T, depart: DEPART, noms }).replace(/</g, "\\u003c")}</script><script type="module" src="/js/essayer.js"></script>`,
+  at(L, "site.intro"));
 }
 
 /** La galerie des captures : seulement les joueurs qui ont dit oui (compte partage on). */
-async function pageCaptures(env, url) {
+async function pageCaptures(env, L, url) {
+  const K = L.t.captures;
   const filtre = url.searchParams.get("joueur") || "";
   const shinySeul = url.searchParams.get("shiny") === "1";
   const rarete = url.searchParams.get("rarete") || "";
@@ -954,98 +1829,288 @@ async function pageCaptures(env, url) {
     joueurs++;
     for (const c of e.captures || []) caps.push({ ...c, pseudo: j.pseudo });
   }
-  caps = caps.filter((c) => PAR_NOM[c.espece] && (!shinySeul || c.shiny) && (!rarete || rangIndividu(c) === rarete));
-  caps.sort((a, b) => (b.shiny - a.shiny) || (b.date - a.date));
+  // l'espèce d'une capture : tirage vérifié, nouveau nom, ou ancien nom (bestiaire v1)
+  const especeCapture = (c) => (c.verifie === true && PAR_NOM_T[c.espece] ? PAR_ID[PAR_NOM_T[c.espece].id] : null) || especeDe(c.espece);
+  caps = caps.filter((c) => especeCapture(c) && (!shinySeul || c.shiny) && (!rarete || c.rarete === rarete));
+  caps.sort((a, b) => ((b.glitch === true) - (a.glitch === true)) || (b.shiny - a.shiny)
+    || ((b.verifie === true) - (a.verifie === true)) || (b.date - a.date));
   const total = caps.length;
   caps = caps.slice(0, 120);
+  const vit = await vitrinesGuilde(env, caps.map((c) => c.pseudo));
   const cartes = caps.map((c) => {
-    const e = PAR_NOM[c.espece];
-    const date = new Date(c.date).toLocaleDateString("fr-FR");
-    const nom = c.shiny || e.rarete === "légendaire" ? `<span class="rgb">${echapper(e.nom)}${c.shiny ? " ✨" : ""}</span>` : `<b>${echapper(e.nom)}</b>`;
-    return `<div class="bestiole capture${c.shiny ? " shiny" : ""}">
-      <div style="text-align:center;display:flex;justify-content:center">${visuel(e, c)}</div>
-      ${ANIMEES.has(e.id) ? `<div class="doux" style="font-size:12px">${NOM_STADE[c.stade] || "enfant"}</div>` : ""}
-      <div>${nom} <span class="num">#${String(e.numero).padStart(3, "0")}</span></div>
-      ${etiquetteRarete(rangIndividu(c))} <span class="doux" style="font-size:12px">${noteIndividu(c)}/100</span>
-      <div class="marque">« <span class="rgb">${echapper(c.marque)}</span> »</div>
-      <div class="doux" style="font-size:13px">humeur ${echapper(c.humeur)} · ${c.taille} cm<br>potentiel <b style="color:var(--vert)">${c.potentiel} %</b></div>
-      <div class="doux" style="font-size:12px;margin-top:6px">par <a href="/joueur/${encodeURIComponent(c.pseudo)}">${echapper(c.pseudo)}</a> · ${date}</div>
+    const e = especeCapture(c);
+    const date = new Date(c.date).toLocaleDateString(L.locale);
+    // anti-triche : seules les bestioles dont le serveur a refait le tirage sont « vérifiées »
+    const verif = `<div class="petit">${c.verifie === true ? `<span style="color:var(--vert)">✔ ${K.verifiee}</span>` : `<span class="doux">${K.nonVerifiee}</span>`}</div>`;
+    // rareté : celle de l'individu (nouveau bestiaire) ; les anciennes captures n'en ont pas
+    const rar = COULEUR_RARETE[c.rarete] ? c.rarete : null;
+    const brille = c.shiny || ["légendaire", "mythique"].includes(rar);
+    const nom0 = brille ? `<span class="rgb">${bdi(e.nom)}${c.shiny ? " ✨" : ""}</span>` : bdi(e.nom);
+    const nom = c.glitch === true ? nomGlitch(nom0) : nom0;
+    const stade = e.portrait ? stadePortrait(c.stade) : STADES_B.includes(c.stade) ? c.stade : "adulte";
+    const vid = e.portrait ? varianteDessinee(e, c.variante) : "classique";
+    const variante = c.variante && c.variante !== "classique" ? e.variantes.find((v) => v.id === c.variante) : null;
+    return `<div class="bestiole capture${c.shiny ? " shiny" : ""}"${rar ? ` style="--r:${COULEUR_RARETE[rar]}"` : ""}>
+      <div class="haut"><span>${numero(e)}</span><span class="fam" title="${echapper(lib(L, "familles", e.famille))}">${e.icone}</span></div>
+      <div class="ecran">${visuel(L, e, { ...c, stade, variante: vid })}</div>
+      <div class="nom-b">${nom}</div>
+      ${rar ? `<div class="rar-l">${etiquetteRarete(L, rar)}</div>` : ""}
+      <div class="infos">${echapper(lib(L, "stadesB", stade))}${variante ? ` · ${echapper(lib(L, "habitats", variante.zone))}` : ""}</div>
+      <div class="marque" lang="fr" dir="ltr">« <span class="rgb">${echapper(c.marque)}</span> »</div>
+      <div class="infos">${echapper(K.humeur(lib(L, "humeurs", c.humeur)))} · <bdi>${c.taille} cm</bdi><br>${K.potentiel} <b style="color:var(--vert)"><bdi>${c.potentiel} %</bdi></b></div>
+      ${verif}
+      <div class="infos">${K.par(lienJoueur(L, c.pseudo, vit), `<bdi>${echapper(date)}</bdi>`)}</div>
     </div>`;
   }).join("");
-  const lienR = (v, t) => `<a href="/captures?${new URLSearchParams({ ...(filtre && { joueur: filtre }), ...(shinySeul && { shiny: "1" }), ...(v && { rarete: v }) })}">${t}</a>`;
-  return page("Captures", `<h1>✨ Les captures</h1>
-<p>Chaque bestiole capturée est <b>unique</b> : sa marque, son humeur, sa taille et son potentiel sont tirés au sort au moment de la capture.
-Sa rareté vient de ses stats, de sa forme et de la puissance de son espèce.
-${filtre ? `Captures de <b>${echapper(filtre)}</b>. <a href="/captures">Voir tout le monde</a>` : ""}</p>
-<div class="carte filtres">${lienR("", "toutes")} ${RANGS.map((x) => lienR(x, x)).join(" ")}
- · <a href="/captures?${new URLSearchParams({ ...(filtre && { joueur: filtre }), ...(!shinySeul && { shiny: "1" }) })}">${shinySeul ? "toutes (pas que les shiny)" : "<span class=\"rgb\">shiny seulement</span>"}</a></div>
-<p class="doux">${total} capture${total > 1 ? "s" : ""} partagée${total > 1 ? "s" : ""} par ${joueurs} joueur${joueurs > 1 ? "s" : ""}${total > 120 ? " (les 120 plus récentes)" : ""}.</p>
-${cartes ? `<div class="grille-b" style="grid-template-columns:repeat(auto-fill,minmax(220px,1fr))">${cartes}</div>`
-    : `<div class="carte"><p class="doux">Aucune capture partagée pour l'instant.</p></div>`}
-<h2>Apparaître dans la galerie</h2>
-<div class="carte"><p>La galerie ne montre que les joueurs qui l'ont <b>accepté</b>. Pour y montrer tes bestioles, tape dans le jeu :
-<code>compte partage on</code> (sur PC : <code>tg compte partage on</code>). Pour les retirer : <code>compte partage off</code>.</p>
-<p class="doux">Les captures sont déclarées par l'appli ; seuls les badges marqués ✔ sont vérifiés par le serveur.</p></div>`,
-  "La galerie des bestioles capturées par les joueurs de Terminagotchi.");
+  const lienR = (v, t) => `<a class="puce" href="/captures?${new URLSearchParams({ ...(filtre && { joueur: filtre }), ...(shinySeul && { shiny: "1" }), ...(v && { rarete: v }) })}"${rarete === v ? ' aria-current="true"' : ""}>${t}</a>`;
+  return page(L, K.titre, `<h1>${K.h1}</h1>
+<p>${K.intro}
+${filtre ? `${K.de(pseudoHtml(L, filtre, vit))} <a href="/captures">${K.voirTous}</a>` : ""}</p>
+<div class="carte"><div class="filtres">${lienR("", K.toutes)}${BESTIAIRE.raretes.map((x) => lienR(x, `<i class="pastille" style="--r:${COULEUR_RARETE[x]}"></i> ${echapper(lib(L, "raretes", x))}`)).join("")}
+<a class="puce" href="/captures?${new URLSearchParams({ ...(filtre && { joueur: filtre }), ...(!shinySeul && { shiny: "1" }) })}"${shinySeul ? ' aria-current="true"' : ""}>${shinySeul ? K.pasQueShiny : `<span class="rgb">${K.shinySeul}</span>`}</a></div></div>
+<p class="doux">${K.resume(total, joueurs, total > 120)}</p>
+${cartes ? `<div class="grille-b" style="grid-template-columns:repeat(auto-fill,minmax(210px,1fr))">${cartes}</div>`
+    : `<div class="carte"><p class="doux">${K.aucune}</p></div>`}
+<h2>${K.apparaitre}</h2>
+<div class="carte"><p>${K.apparaitreTexte}</p>
+<p class="doux">${K.declarees}</p></div>${scriptGlitch(cartes)}`,
+  K.description);
 }
 
-function pageCtf(origine) {
-  const liste = EPREUVES.map((e) => `<li><b>${e.n}. ${echapper(e.titre)}</b> — <code>curl ${origine}/ctf/TonPseudo/${e.n}</code></li>`).join("");
-  return page("CTF web", `<h1>🚩 Capture the flag — édition web</h1>
-<p>5 épreuves qui apprennent comment fonctionne le web, avec la commande <code>curl</code>.
-Chaque drapeau est <b>personnel</b> : remplace <code>TonPseudo</code> par ton pseudo de recensement.</p>
-<div class="carte"><ol style="padding-left:20px">${liste}</ol></div>
-<h2>Comment valider</h2>
-<div class="carte"><p>Dans le jeu (PC ou téléphone) : <code>drapeau TG{…}</code>. Le serveur vérifie et te délivre un badge vérifié.</p>
-<p class="doux">Sur PC, <code>curl</code> est déjà installé (Linux, Mac, Windows 10+). Sur Android, utilise Termux
-(<code>pkg install curl</code>).</p></div>
-<h2>Pourquoi c'est légal et éthique</h2>
-<div class="carte"><p class="doux">Ces épreuves sont faites pour être « attaquées ». S'entraîner sur des systèmes dont
-on n'a pas l'autorisation est illégal : les vrais hackers éthiques ne testent que ce qu'on leur permet de tester.</p></div>`);
+function pageCtf(L, origine) {
+  const C = L.t.ctf;
+  const liste = EPREUVES.map((e) => `<li><b>${e.n}. ${echapper(C.epreuves[e.n - 1])}</b> — <code>curl ${origine}/ctf/${C.pseudo}/${e.n}</code></li>`).join("");
+  return page(L, C.titre, `<h1>${C.h1}</h1>
+<p>${C.intro(C.pseudo)}</p>
+${fenetre("~/ctf", `<ol style="padding-inline-start:24px;margin:0">${liste}</ol>`)}
+<h2>${C.valider}</h2>
+<div class="carte"><p>${C.validerTexte}</p>
+<p class="doux">${C.curl}</p></div>
+<h2>${C.pourquoi}</h2>
+<div class="carte"><p class="doux">${C.pourquoiTexte}</p></div>`);
+}
+
+// ====================================================================== pages pour les adultes
+
+const lienMail = `<a href="mailto:${CONTACT}">${CONTACT}</a>`;
+const liste = (items) => `<ul>${items.map((x) => `<li>${x}</li>`).join("")}</ul>`;
+/** Soutenir : pas de dons (décision du 3 novembre) ; seulement « d'autres manières d'aider ». */
+function pageSoutenir(L) {
+  const S = L.t.soutenir;
+  return page(L, S.titre, `<div class="texte-long">
+<h1>${S.h1}</h1>
+<div class="bandeau"><span class="icone" aria-hidden="true">!</span><p>${S.pourQui}</p></div>
+<h2>${S.gratuitTitre}</h2>
+<p>${S.gratuit}</p>
+<h2>${S.autresTitre}</h2>
+${liste(S.autres.map((x, i) => (i === 1 ? `${x} <a href="${DEPOT}/issues">GitHub</a>` : x)))}
+<p>${S.ecrire(lienMail)}</p>
+<p class="pixel" style="color:var(--vert);font-size:14px;margin-top:28px">${S.merci}</p>
+</div>`, S.gratuit);
+}
+
+function pageParents(L) {
+  const P = L.t.parents;
+  return page(L, P.titre, `<div class="texte-long">
+<h1>${P.h1}</h1>
+<p>${P.intro}</p>
+<h2>${P.apprendTitre}</h2>
+<p>${P.apprend}</p>
+<p>${P.histoire}</p>
+<h2>${P.sansTitre}</h2>
+<div class="carte">${liste(P.sans)}</div>
+<h2>${P.horsLigneTitre}</h2>
+<p>${P.horsLigne}</p>
+<p class="doux">${P.public}</p>
+<h2>${P.ordiTitre}</h2>
+${liste(P.ordi)}
+<h2>${P.supprimerTitre}</h2>
+<p>${P.supprimer(lienMail)}</p>
+<p><a href="/confidentialite">${P.plus}</a></p>
+<p><a class="btn ambre" href="/soutenir">${P.soutenir}</a></p>
+</div>`, P.intro);
+}
+
+/** Le texte complet en français (qui fait foi), isolé pour garder sa langue et son sens d'écriture. */
+const texteFr = (L, html, note = L.t.confidentialite.versionFr) => `${L.lang === "fr" || !note ? "" : `<p class="doux">${note}</p>`}<section lang="fr" dir="ltr">${html}</section>`;
+
+function pageConfidentialite(L) {
+  const C = L.t.confidentialite;
+  const complet = confidentialiteFr({ contact: CONTACT, depot: DEPOT, conservation: CONSERVATION });
+  return page(L, C.titre, `<div class="texte-long">
+<h1>${C.h1}</h1>
+<div class="carte enfants"><h2 style="margin-top:6px">${C.enfantsTitre}</h2>${liste(C.enfants)}</div>
+<h2>${C.resumeTitre}</h2>
+${liste([...C.resume, C.duree(Math.round(CONSERVATION.inactifMois / 12)), C.droits(lienMail)])}
+${L.lang === "fr" ? "" : `<div class="bandeau"><span class="icone" aria-hidden="true">!</span><p>${C.modele}</p></div>`}
+<h2>${C.complete}</h2>
+${texteFr(L, complet)}
+</div>`, C.enfants[0]);
+}
+
+/** Pour les enseignants et les parents : le mode classe 100 % local (pc/tg/classe.py), texte complet en français. */
+function pageEnseignants(L) {
+  const E = L.t.enseignants;
+  return page(L, E.titre, `<div class="texte-long">
+<h1>${E.h1}</h1>
+${L.lang === "fr" ? "" : `<p>${E.resume}</p><p class="doux">${E.versionFr}</p>`}
+<p><a class="btn ambre" href="/imprimer">${at(L, "site.imp.classe")}</a></p>
+<section lang="fr" dir="ltr">${enseignantsFr({ depot: DEPOT })}</section>
+</div>`, E.resume);
+}
+
+function pageMentions(L) {
+  const M = L.t.mentions;
+  const complet = mentionsFr({ contact: CONTACT, depot: DEPOT, editeur: EDITEUR, licence: LICENCE });
+  return page(L, M.titre, `<div class="texte-long">
+<h1>${M.h1}</h1>
+${L.lang === "fr" ? "" : `<div class="bandeau"><span class="icone" aria-hidden="true">!</span><p>${M.enFrancais} ${L.t.confidentialite.modele}</p></div>`}
+${texteFr(L, complet, "")}
+</div>`, M.titre);
 }
 
 // ====================================================================== aiguillage
 
+// ====================================================================== pages du compte (session par cookie)
+
+function cookieSession(valeur, maxAge) {
+  return `tg_session=${valeur}; Path=/; Max-Age=${maxAge}; HttpOnly; Secure; SameSite=Lax`;
+}
+
+async function pageConnexion(env, L, url) {
+  const t = String(url.searchParams.get("t") || "");
+  const cle = /^[0-9a-f]{32}$/.test(t) ? "W" + (await sha256(t)) : "";
+  const c = cle ? await env.DB.prepare("SELECT * FROM codes WHERE code = ?").bind(cle).first() : null;
+  if (!c || c.expire < Date.now()) {
+    return page(L, L.t.compte.titre, `<h1>${L.t.compte.titre}</h1><p>${L.t.compte.perime}</p>`, undefined, 404);
+  }
+  await env.DB.prepare("DELETE FROM codes WHERE code = ?").bind(cle).run();        // une seule fois
+  const s = aleatoire(32);
+  await env.DB.prepare("DELETE FROM sessions WHERE expire < ?").bind(Date.now()).run();
+  await env.DB.prepare("INSERT INTO sessions (empreinte, joueur, expire) VALUES (?, ?, ?)")
+    .bind(await sha256(s), c.joueur, Date.now() + SESSION_JOURS * 86_400_000).run();
+  return new Response(null, { status: 303, headers: { location: "/compte", "set-cookie": cookieSession(s, SESSION_JOURS * 86400) } });
+}
+
+async function pageCompte(requete, env, L, chemin) {
+  const C = L.t.compte;
+  const j = await joueurSession(requete, env);
+  if (!j) return page(L, C.titre, `<h1>${C.titre}</h1><p>${C.invite}</p>`);
+  if (chemin === "/compte/sortir" && requete.method === "POST") {
+    const m = String(requete.headers.get("cookie") || "").match(/tg_session=([0-9a-f]{64})/);
+    if (m) await env.DB.prepare("DELETE FROM sessions WHERE empreinte = ?").bind(await sha256(m[1])).run();
+    return new Response(null, { status: 303, headers: { location: "/", "set-cookie": cookieSession("", 0) } });
+  }
+  let jeton = "";
+  if (chemin === "/compte/jeton" && requete.method === "POST") {
+    jeton = `<div class="carte"><p>${C.jeton(jetonLisible(await nouveauJeton(env, j.id)))}</p><p class="doux">${C.jetonAide}</p></div>`;
+  }
+  const parties = (await listeParties(env, j)).map((p) => `<li>${bdi(p.nom || "?")} · ${echapper(lib(L, "formes", p.forme) || "")} ${echapper(L.t.niv(p.niveau))}</li>`).join("");
+  return page(L, C.titre, `<h1>${C.bonjour(bdi(j.pseudo))}</h1>
+<p><a href="/joueur/${encodeURIComponent(j.pseudo)}">${C.profil}</a></p>
+<h2>${C.lier}</h2>${jeton}<form method="post" action="/compte/jeton"><button>${C.jetonBouton}</button></form>
+<h2>${C.parties}</h2>${parties ? `<ul>${parties}</ul>` : `<p class="doux">${C.aucunePartie}</p>`}
+<form method="post" action="/compte/sortir"><button>${C.sortir}</button></form>`);
+}
+
+/** Le monde des biomes (même génération et mêmes effets que le jeu : public/js/monde_gen.js, effets.js), sur un petit
+ *  terrain d'essai en mémoire dans la page : rien n'est envoyé ni enregistré. La fiche d'une créature s'affiche À LA
+ *  PLACE de la liste ; sur un téléphone, le panneau monte du bas. */
+function pageMonde(L) {
+  const T = MONDE_TEXTES[L.lang] || MONDE_TEXTES.fr;
+  const e = (k) => echapper(T[k] || k);
+  const essais = ["mkdir feu/parcelle_3", "touch plante/parcelle_2/sapin.arbre", "cd plante/parcelle_1", "ls -a", "rm rose.fleur", "echo Salut >> mot.txt", "cat mot.txt", "mv chene.arbre ../parcelle_2/", "chmod a-w ../parcelle_2", "cd ../.. && find . -name \"*.arbre\""];
+  return page(L, T["monde.titre"], `<style>
+.mo{display:grid;grid-template-columns:minmax(0,1fr);gap:14px}
+@media(min-width:960px){.mo{grid-template-columns:minmax(0,1fr) 340px}.mo>#panel{grid-column:2;grid-row:1/span 2;position:sticky;top:12px;align-self:start}}
+.mo .carte-m{background:#131c24;border:2px solid #26384a;border-radius:10px;overflow:hidden}
+.mo .barre-m{display:flex;gap:6px;align-items:center;padding:6px 8px;border-bottom:2px solid #26384a}
+.mo .barre-m button,.mo #panel button{font:inherit;color:inherit;background:#10171d;border:2px solid #26384a;border-radius:6px;min-height:34px;padding:0 8px;cursor:pointer}
+.mo #cwrap{position:relative;background:#0b1a26}.mo #scene{display:block;width:100%;touch-action:none;image-rendering:pixelated;cursor:grab}
+.mo #panel{background:#131c24;border:2px solid #26384a;border-radius:10px;padding:10px;color:#d9f2df}
+.mo #panel h2{font-size:14px;color:#ffd866;margin:0 0 8px}.mo .roster{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:6px}
+.mo .roster button{display:flex;flex-direction:column;align-items:center;padding:4px 2px}.mo .roster img{width:42px;height:42px;object-fit:contain;image-rendering:pixelated}
+.mo .roster button span{font-size:13px;max-width:100%;overflow:hidden;text-overflow:ellipsis}.mo .roster .wait{opacity:.6;border-style:dashed}
+.mo .tchip{border-radius:999px;background:color-mix(in srgb,var(--tc) 25%,#10171d);border-color:var(--tc)}
+.mo .grp h4{display:flex;justify-content:space-between;align-items:center;margin:10px 0 6px;font-weight:normal}
+.mo .refuge{border:2px dashed #a88c3c;border-radius:8px;padding:6px;margin-bottom:8px}.mo .refuge h4{margin:0 0 4px;color:#ffd866}
+.mo .rrow{display:flex;gap:6px;align-items:center}.mo .rrow img{width:30px;height:30px;image-rendering:pixelated}.mo code{color:#3dff7c;background:#050a06;padding:0 4px;border-radius:3px}
+.mo .who{display:flex;gap:10px;align-items:center;margin:8px 0}.mo .bigimg img{width:90px;height:90px;object-fit:contain;image-rendering:pixelated;background:#10171d;border:2px solid #26384a;border-radius:10px}
+.mo .hab{background:#10171d;border:2px solid #26384a;border-radius:8px;padding:6px 8px}.mo .note{color:#8aa596;font-size:15px}
+.mo .retour{color:#3dff7c!important;border-color:#3dff7c!important}.mo .who h3{font-size:15px;margin:0 0 6px;word-break:break-word}
+.mo form button{min-height:30px!important;padding:0 10px!important}.mo #cmd{text-align:start}
+@media(max-width:959px){.mo #panel{position:fixed;left:0;right:0;bottom:0;z-index:20;max-height:70vh;overflow:auto;border-radius:14px 14px 0 0;transform:translateY(105%);transition:transform .28s}.mo #panel.open{transform:none}}
+.mo .term{background:#050a06;border:3px solid #1f3a28;border-radius:10px}.mo #out{height:200px;overflow-y:auto;padding:8px;color:#c9f7d6;font-family:monospace;font-size:14px;white-space:pre-wrap}
+.mo #out .cmd{color:#3dff7c}.mo #out .err{color:#ff8a7a}.mo form{display:flex;gap:6px;padding:6px;border-top:1px solid #1f3a28}.mo #prompt{color:#2b9c52;font-family:monospace;font-size:13px}
+.mo #cmd{flex:1;min-width:0;background:transparent;border:0;outline:0;color:#3dff7c;font-family:monospace;font-size:15px}.mo .essais button{font-family:monospace;font-size:13px;margin:2px;background:#0c1d12;color:#c9f7d6;border:1px solid #23603a;border-radius:6px;padding:2px 6px;cursor:pointer}
+</style>
+<h1>${e("monde.titre")}</h1><p>${e("site.intro")}</p>
+<div class="mo"><section class="carte-m"><div class="barre-m"><button id="rosterBtn">🐾</button><span style="flex:1"></span><button id="moins">−</button><button id="plus">+</button><button id="voir">⌖</button></div>
+<div id="cwrap"><canvas id="scene" aria-label="${e("monde.aide")}"></canvas></div><p class="note" style="margin:6px 10px">${e("monde.aide")}</p></section>
+<aside id="panel" aria-label="${e("monde.mes_creatures").replace(/\s*\(\{n\}\)/, "")}"></aside>
+<section class="term"><div class="barre-m" style="border-color:#1f3a28;color:#2b9c52">${e("site.terminal")}</div><div id="out" aria-live="polite"></div>
+<form id="form" autocomplete="off"><span id="prompt"></span><input id="cmd" spellcheck="false" autocapitalize="off" placeholder="${e("site.placeholder")}" aria-label="${e("site.placeholder")}"><button type="submit">⏎</button></form>
+<div class="essais" style="padding:6px">${e("site.essaie")} ${essais.map((c) => `<button type="button" data-essai="${echapper(c)}">${echapper(c)}</button>`).join("")}</div></section></div>
+<script>window.TG_MONDE=${JSON.stringify({ t: T }).replace(/</g, "\\u003c")}</script><script type="module" src="/js/monde_page.js"></script>`);
+}
+
+async function aiguiller(requete, env, url, chemin, L) {
+  if (chemin === "/") return pageAccueil(env, L);
+  if (chemin === "/connexion") return pageConnexion(env, L, url);
+  if (chemin === "/compte" || chemin === "/compte/jeton" || chemin === "/compte/sortir") return pageCompte(requete, env, L, chemin);
+  if (chemin === "/classement") return pageClassement(env, L);
+  if (chemin === "/records") return pageRecords(env, L);
+  if (chemin === "/ctf") return pageCtf(L, url.origin);
+  if (chemin === "/bestiaire") return pageBestiaire(L, url);
+  if (chemin === "/monde") return pageMonde(L);
+  if (chemin === "/essayer") return pageEssayer(L);
+  if (chemin === "/imprimer") return pageImprimer(L);
+  if (chemin === "/captures") return pageCaptures(env, L, url);
+  if (chemin === "/soutenir") return pageSoutenir(L);
+  if (chemin === "/parents") return pageParents(L);
+  if (chemin === "/enseignants") return pageEnseignants(L);
+  if (chemin === "/confidentialite") return pageConfidentialite(L);
+  if (chemin === "/mentions-legales") return pageMentions(L);
+  const mb = chemin.match(/^\/bestiaire\/([a-z0-9]+)$/);
+  if (mb) return pageEspece(L, mb[1]);
+  if (chemin === "/robots.txt") {
+    return texte("User-agent: *\n# Les robots ne doivent pas fouiller les cachettes du CTF…\nDisallow: /ctf/*/2/cachette\n");
+  }
+  let m = chemin.match(/^\/joueur\/([^/]+)$/);
+  if (m) return pageJoueur(env, L, decodeURIComponent(m[1]));
+  m = chemin.match(/^\/badge\/([0-9a-f]{16})$/);
+  if (m) return pageBadge(env, L, m[1]);
+  m = chemin.match(/^\/ctf\/([^/]+)\/(\d)(?:\/(\w+))?$/);
+  if (m) return ctf(requete, env, decodeURIComponent(m[1]), Number(m[2]), m[3], L);
+  return page(L, L.t.introuvable.titre, `<h1>404</h1><p>${L.t.introuvable.texte}</p>`, undefined, 404);
+}
+
 export default {
   async fetch(requete, env) {
-    const r = await this.servir(requete, env);
-    return enLangue(requete, r);
-  },
-
-  async servir(requete, env) {
     const url = new URL(requete.url);
     const chemin = url.pathname.replace(/\/+$/, "") || "/";
     try {
       if (requete.method === "OPTIONS") {
-        return new Response(null, { headers: { "access-control-allow-origin": "*", "access-control-allow-headers": "authorization, content-type", "access-control-allow-methods": "GET, POST" } });
+        return new Response(null, { headers: { "access-control-allow-origin": "*", "access-control-allow-headers": "authorization, content-type", "access-control-allow-methods": "GET, POST, DELETE" } });
       }
+      // l'API reste en français : c'est l'appli et le jeu PC qui la lisent
       if (chemin.startsWith("/api/")) return await api(requete, env, chemin);
-      if (chemin === "/") return await pageAccueil(env);
-      if (chemin === "/classement") return await pageClassement(env);
-      if (chemin === "/ctf") return pageCtf(url.origin);
-      if (chemin === "/bestiaire") return pageBestiaire(url);
-      if (chemin === "/captures") return await pageCaptures(env, url);
-      if (chemin === "/classe") return pageClasseAccueil();
-      const mc = chemin.match(/^\/classe\/([A-Z0-9]{6})$/);
-      if (mc) return await pageClasse(env, mc[1], url.searchParams.get("cle") || "");
-      const mb = chemin.match(/^\/bestiaire\/([a-z0-9]+)$/);
-      if (mb) return pageEspece(mb[1]);
-      if (chemin === "/robots.txt") {
-        return texte("User-agent: *\n# Les robots ne doivent pas fouiller les cachettes du CTF…\nDisallow: /ctf/*/2/cachette\n");
-      }
-      let m = chemin.match(/^\/joueur\/([^/]+)$/);
-      if (m) return await pageJoueur(env, decodeURIComponent(m[1]));
-      m = chemin.match(/^\/badge\/([0-9a-f]{16})$/);
-      if (m) return await pageBadge(env, m[1]);
-      m = chemin.match(/^\/ctf\/([^/]+)\/(\d)(?:\/(\w+))?$/);
-      if (m) return await ctf(requete, env, decodeURIComponent(m[1]), Number(m[2]), m[3]);
-      return page("Introuvable", `<h1>404</h1><p>Cette page n'existe pas. <a href="/">Retour à l'accueil</a></p>`, undefined, 404);
+      const L = contexteLangue(requete, url);
+      const r = await aiguiller(requete, env, url, chemin, L);
+      // ?lang=xx : on retient le choix dans un cookie pour les pages suivantes
+      if (L.demandee) r.headers.append("set-cookie", cookieLangue(L.demandee));
+      if (!r.headers.has("vary")) r.headers.set("vary", "Accept-Language, Cookie");
+      return r;
     } catch (e) {
       console.error(e);
       return chemin.startsWith("/api/") ? erreur("Erreur du serveur : " + e.message, 500) : texte("Erreur du serveur.\n", 500);
     }
   },
+  // chaque jour (wrangler.toml, [triggers]) : on efface ce qui a dépassé sa durée de conservation
+  async scheduled(evenement, env, ctx) {
+    ctx.waitUntil(purger(env).then(() => semainesAttribuees(env)));
+  },
 };
 
 // pour les tests
-export { fusionner, niveauDe, drapeauDe, EPREUVES };
+export { fusionner, niveauDe, drapeauDe, EPREUVES, normaliserJeton, purger, CONSERVATION };

@@ -1,0 +1,31 @@
+{
+  "_": "Vérification au démarrage (pc/tg/sante.py, Sante.kt) : la liste des parties réparée. index : l'index lu (null : absent ; \"abime\" : illisible) ; sauvegarde : l'id de la partie active rangée dans la sauvegarde (null : pas de sauvegarde) ; rangees : les partie_<id>.json présents, du plus ancien au plus récent. Python et Kotlin doivent donner exactement attendu et repare.",
+  "index": [
+    {"nom": "tout va bien", "index": {"active": "1", "ordre": ["1", "a1b2c3d4"]}, "sauvegarde": "1", "rangees": ["a1b2c3d4"],
+     "attendu": {"active": "1", "ordre": ["1", "a1b2c3d4"]}, "repare": false},
+    {"nom": "index illisible : refait à partir des fichiers", "index": "abime", "sauvegarde": "a1b2c3d4", "rangees": ["1", "ffff0000"],
+     "attendu": {"active": "a1b2c3d4", "ordre": ["a1b2c3d4", "1", "ffff0000"]}, "repare": true},
+    {"nom": "index illisible, pas de sauvegarde ni de partie rangée", "index": "abime", "sauvegarde": null, "rangees": [],
+     "attendu": {"active": "1", "ordre": []}, "repare": true},
+    {"nom": "index absent mais des parties rangées", "index": null, "sauvegarde": "1", "rangees": ["0badcafe"],
+     "attendu": {"active": "1", "ordre": ["1", "0badcafe"]}, "repare": true},
+    {"nom": "rien du tout (premier lancement)", "index": null, "sauvegarde": null, "rangees": [],
+     "attendu": {"active": "1", "ordre": []}, "repare": false},
+    {"nom": "une partie rangée oubliée par l'index", "index": {"active": "1", "ordre": ["1"]}, "sauvegarde": "1", "rangees": ["a1b2c3d4", "0badcafe"],
+     "attendu": {"active": "1", "ordre": ["1", "a1b2c3d4", "0badcafe"]}, "repare": true},
+    {"nom": "doublons dans l'ordre", "index": {"active": "1", "ordre": ["1", "a1b2c3d4", "1"]}, "sauvegarde": "1", "rangees": ["a1b2c3d4"],
+     "attendu": {"active": "1", "ordre": ["1", "a1b2c3d4"]}, "repare": true},
+    {"nom": "l'index nomme une autre partie que la sauvegarde", "index": {"active": "a1b2c3d4", "ordre": ["1", "a1b2c3d4"]}, "sauvegarde": "1", "rangees": [],
+     "attendu": {"active": "1", "ordre": ["1", "a1b2c3d4"]}, "repare": true},
+    {"nom": "la partie de la sauvegarde est aussi rangée : on ne devine pas", "index": {"active": "a1b2c3d4", "ordre": ["1", "a1b2c3d4"]}, "sauvegarde": "1", "rangees": ["1"],
+     "attendu": {"active": "a1b2c3d4", "ordre": ["1", "a1b2c3d4"]}, "repare": false},
+    {"nom": "la partie active absente de l'ordre : normal (la liste l'ajoute), rien à réparer", "index": {"active": "1", "ordre": []}, "sauvegarde": "1", "rangees": [],
+     "attendu": {"active": "1", "ordre": []}, "repare": false},
+    {"nom": "un œuf sans nom (pas de sauvegarde nommée) : l'ordre ne bouge pas", "index": {"active": "9e9e9e9e", "ordre": ["1"]}, "sauvegarde": null, "rangees": ["1"],
+     "attendu": {"active": "9e9e9e9e", "ordre": ["1"]}, "repare": false},
+    {"nom": "index de travers (pas un objet)", "index": ["1"], "sauvegarde": "1", "rangees": [],
+     "attendu": {"active": "1", "ordre": ["1"]}, "repare": true},
+    {"nom": "ordre de travers (pas une liste de textes)", "index": {"active": "1", "ordre": [1, 2]}, "sauvegarde": "1", "rangees": ["a1b2c3d4"],
+     "attendu": {"active": "1", "ordre": ["1", "a1b2c3d4"]}, "repare": true}
+  ]
+}

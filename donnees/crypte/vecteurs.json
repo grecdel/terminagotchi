@@ -1,0 +1,726 @@
+{
+ "note": "généré par pc/outils/vecteurs_crypte.py ; vérifié par tests/jvm/Crypte.kt",
+ "cesar": [
+  {
+   "texte": "bonjour",
+   "k": 1,
+   "code": "cpokpvs",
+   "ascii": "bonjour"
+  },
+  {
+   "texte": "bonjour",
+   "k": 3,
+   "code": "erqmrxu",
+   "ascii": "bonjour"
+  },
+  {
+   "texte": "bonjour",
+   "k": 13,
+   "code": "obawbhe",
+   "ascii": "bonjour"
+  },
+  {
+   "texte": "bonjour",
+   "k": 25,
+   "code": "anmintq",
+   "ascii": "bonjour"
+  },
+  {
+   "texte": "le sphinx de givre, 2026 !",
+   "k": 1,
+   "code": "mf tqijoy ef hjwsf, 2026 !",
+   "ascii": "le sphinx de givre, 2026 !"
+  },
+  {
+   "texte": "le sphinx de givre, 2026 !",
+   "k": 3,
+   "code": "oh vsklqa gh jlyuh, 2026 !",
+   "ascii": "le sphinx de givre, 2026 !"
+  },
+  {
+   "texte": "le sphinx de givre, 2026 !",
+   "k": 13,
+   "code": "yr fcuvak qr tvier, 2026 !",
+   "ascii": "le sphinx de givre, 2026 !"
+  },
+  {
+   "texte": "le sphinx de givre, 2026 !",
+   "k": 25,
+   "code": "kd roghmw cd fhuqd, 2026 !",
+   "ascii": "le sphinx de givre, 2026 !"
+  },
+  {
+   "texte": "Zèbre & œuf",
+   "k": 1,
+   "code": "afcsf & pfvg",
+   "ascii": "zebre & oeuf"
+  },
+  {
+   "texte": "Zèbre & œuf",
+   "k": 3,
+   "code": "cheuh & rhxi",
+   "ascii": "zebre & oeuf"
+  },
+  {
+   "texte": "Zèbre & œuf",
+   "k": 13,
+   "code": "mroer & brhs",
+   "ascii": "zebre & oeuf"
+  },
+  {
+   "texte": "Zèbre & œuf",
+   "k": 25,
+   "code": "ydaqd & ndte",
+   "ascii": "zebre & oeuf"
+  },
+  {
+   "texte": "abcdefghijklmnopqrstuvwxyz",
+   "k": 1,
+   "code": "bcdefghijklmnopqrstuvwxyza",
+   "ascii": "abcdefghijklmnopqrstuvwxyz"
+  },
+  {
+   "texte": "abcdefghijklmnopqrstuvwxyz",
+   "k": 3,
+   "code": "defghijklmnopqrstuvwxyzabc",
+   "ascii": "abcdefghijklmnopqrstuvwxyz"
+  },
+  {
+   "texte": "abcdefghijklmnopqrstuvwxyz",
+   "k": 13,
+   "code": "nopqrstuvwxyzabcdefghijklm",
+   "ascii": "abcdefghijklmnopqrstuvwxyz"
+  },
+  {
+   "texte": "abcdefghijklmnopqrstuvwxyz",
+   "k": 25,
+   "code": "zabcdefghijklmnopqrstuvwxy",
+   "ascii": "abcdefghijklmnopqrstuvwxyz"
+  }
+ ],
+ "rotation": [
+  {
+   "de": "a-z",
+   "vers": "d-za-c",
+   "k": 3
+  },
+  {
+   "de": "d-za-c",
+   "vers": "a-z",
+   "k": 23
+  },
+  {
+   "de": "a-z",
+   "vers": "n-za-m",
+   "k": 13
+  },
+  {
+   "de": "a-zA-Z",
+   "vers": "n-za-mN-ZA-M",
+   "k": 13
+  },
+  {
+   "de": "'a-z'",
+   "vers": "'b-za'",
+   "k": 1
+  },
+  {
+   "de": "a-z",
+   "vers": "A-Z",
+   "k": null
+  },
+  {
+   "de": "abc",
+   "vers": "def",
+   "k": null
+  },
+  {
+   "de": "a-z",
+   "vers": "z-a",
+   "k": null
+  },
+  {
+   "de": "0-9",
+   "vers": "1-90",
+   "k": null
+  },
+  {
+   "de": "a-y",
+   "vers": "b-z",
+   "k": null
+  }
+ ],
+ "frequences": [
+  {
+   "texte": "eeeab",
+   "f": [
+    [
+     3,
+     "e"
+    ],
+    [
+     1,
+     "b"
+    ],
+    [
+     1,
+     "a"
+    ]
+   ]
+  },
+  {
+   "texte": "le sphinx garde la crypte",
+   "f": [
+    [
+     3,
+     "e"
+    ],
+    [
+     2,
+     "r"
+    ],
+    [
+     2,
+     "p"
+    ],
+    [
+     2,
+     "l"
+    ],
+    [
+     2,
+     "a"
+    ],
+    [
+     1,
+     "y"
+    ],
+    [
+     1,
+     "x"
+    ],
+    [
+     1,
+     "t"
+    ],
+    [
+     1,
+     "s"
+    ],
+    [
+     1,
+     "n"
+    ],
+    [
+     1,
+     "i"
+    ],
+    [
+     1,
+     "h"
+    ],
+    [
+     1,
+     "g"
+    ],
+    [
+     1,
+     "d"
+    ],
+    [
+     1,
+     "c"
+    ]
+   ]
+  },
+  {
+   "texte": "zzyyx",
+   "f": [
+    [
+     2,
+     "z"
+    ],
+    [
+     2,
+     "y"
+    ],
+    [
+     1,
+     "x"
+    ]
+   ]
+  }
+ ],
+ "graines": [
+  {
+   "graine": "1:0",
+   "k": 16,
+   "tricheur": "ombre",
+   "de": [
+    3,
+    2,
+    5,
+    4,
+    7,
+    6
+   ],
+   "quiz": [
+    [
+     1,
+     "aes",
+     "v"
+    ],
+    [
+     2,
+     "deja",
+     "f"
+    ],
+    [
+     3,
+     "date",
+     "s"
+    ],
+    [
+     4,
+     "shor",
+     "v"
+    ],
+    [
+     5,
+     "meta",
+     "f"
+    ],
+    [
+     6,
+     "normes",
+     "v"
+    ]
+   ]
+  },
+  {
+   "graine": "2:1730000000",
+   "k": 20,
+   "tricheur": "ombre",
+   "de": [
+    1,
+    0,
+    3,
+    2,
+    5,
+    4
+   ],
+   "quiz": [
+    [
+     1,
+     "date",
+     "s"
+    ],
+    [
+     2,
+     "normes",
+     "v"
+    ],
+    [
+     3,
+     "aes",
+     "v"
+    ],
+    [
+     4,
+     "shor",
+     "v"
+    ],
+    [
+     5,
+     "deja",
+     "f"
+    ],
+    [
+     6,
+     "meta",
+     "f"
+    ]
+   ]
+  },
+  {
+   "graine": "7:42",
+   "k": 25,
+   "tricheur": "eau",
+   "de": [
+    1,
+    0,
+    3,
+    2,
+    5,
+    4
+   ],
+   "quiz": [
+    [
+     1,
+     "meta",
+     "f"
+    ],
+    [
+     2,
+     "normes",
+     "v"
+    ],
+    [
+     3,
+     "deja",
+     "f"
+    ],
+    [
+     4,
+     "date",
+     "s"
+    ],
+    [
+     5,
+     "shor",
+     "v"
+    ],
+    [
+     6,
+     "aes",
+     "v"
+    ]
+   ]
+  },
+  {
+   "graine": "partie:3",
+   "k": 6,
+   "tricheur": "plante",
+   "de": [
+    6,
+    1,
+    0,
+    3,
+    2,
+    5
+   ],
+   "quiz": [
+    [
+     1,
+     "meta",
+     "f"
+    ],
+    [
+     2,
+     "deja",
+     "f"
+    ],
+    [
+     3,
+     "normes",
+     "v"
+    ],
+    [
+     4,
+     "aes",
+     "v"
+    ],
+    [
+     5,
+     "shor",
+     "v"
+    ],
+    [
+     6,
+     "date",
+     "s"
+    ]
+   ]
+  },
+  {
+   "graine": "9:1761900000",
+   "k": 25,
+   "tricheur": "poison",
+   "de": [
+    3,
+    2,
+    5,
+    4,
+    7,
+    6
+   ],
+   "quiz": [
+    [
+     1,
+     "shor",
+     "v"
+    ],
+    [
+     2,
+     "normes",
+     "v"
+    ],
+    [
+     3,
+     "deja",
+     "f"
+    ],
+    [
+     4,
+     "aes",
+     "v"
+    ],
+    [
+     5,
+     "date",
+     "s"
+    ],
+    [
+     6,
+     "meta",
+     "f"
+    ]
+   ]
+  }
+ ],
+ "messages": [
+  {
+   "n": 1,
+   "texte": "Le mot de passe du coffre est dragon-exemple. Chut, c'est secret !",
+   "code": "TGUgbW90IGRlIHBhc3NlIGR1IGNvZmZyZSBlc3QgZHJhZ29uLWV4ZW1wbGUuIENodXQsIGMnZXN0IHNlY3JldCAh\n"
+  },
+  {
+   "n": 2,
+   "texte": "Rendez-vous sous la Racine à minuit.",
+   "code": "52656e64657a2d766f757320736f7573206c6120526163696e6520c3a0206d696e7569742e\n"
+  },
+  {
+   "n": 3,
+   "texte": "Le sphinx adore les énigmes.",
+   "code": "TGUgc3BoaW54IGFkb3JlIGxlcyDDqW5pZ21lcy4=\n"
+  },
+  {
+   "n": 4,
+   "texte": "Le trésor est derrière la troisième pierre.",
+   "code": "yr gerfbe rfg qreevrer yn gebvfvrzr cvreer.\n"
+  },
+  {
+   "n": 5,
+   "texte": "Base64 n'est pas un cadenas.",
+   "code": "426173653634206e276573742070617320756e20636164656e61732e\n"
+  }
+ ],
+ "avalanche": [
+  {
+   "a": "chat",
+   "b": "chas",
+   "lettres": 61,
+   "bits": 130
+  },
+  {
+   "a": "a",
+   "b": "b",
+   "lettres": 62,
+   "bits": 126
+  },
+  {
+   "a": "bonjour",
+   "b": "Bonjour",
+   "lettres": 62,
+   "bits": 134
+  }
+ ],
+ "base": [
+  "lune:e93e24c1b877a15df5e4a8cbb20f351b891b750779cf5e8fb99119a7142d89cf",
+  "noisette:8d969eef6ecad3c29a3a629280e686cf0c3f5d5a86aff3ca12020c923adc6c92",
+  "pixel:4d0b2b722ee70934df8d98a66fb600b36374ecf32bbefc9c1f4ff47729b8d382",
+  "gardien:42178e037c3c7f36c83da898fa620d9435efd21be21ed2019293ea3a9019a1c2",
+  "sphinx:7984a1e3c57e56965c7f94a0c8248581665e104759e5e815311c5ced119a24d1"
+ ],
+ "dico": [
+  [
+   "noisette",
+   "123456"
+  ],
+  [
+   "lune",
+   "soleil"
+  ],
+  [
+   "pixel",
+   "licorne"
+  ]
+ ],
+ "peintures": {
+  "p": 23,
+  "g": 5,
+  "a": 6,
+  "b": 15,
+  "A": 8,
+  "B": 19,
+  "s1": 2,
+  "s2": 2
+ },
+ "chaine": {
+  "lignes": [
+   "début",
+   "Pixel donne 3 glands à Noisette",
+   "Noisette donne 1 plume à Lune"
+  ],
+  "blocs": [
+   "bloc: 0\nprecedent: 0000000000000000000000000000000000000000000000000000000000000000\ndonnees: début\n",
+   "bloc: 1\nprecedent: 88fd4a53b94c1cda84d71e39786c04f4a5ba74cf36ce4b504c0086f9643f9ee9\ndonnees: Pixel donne 3 glands à Noisette\n",
+   "bloc: 2\nprecedent: b137e792e0dbfee8990cc753529738e0767217447b1fa83d64e5bc84529a2d0b\ndonnees: Noisette donne 1 plume à Lune\n"
+  ]
+ },
+ "verifier": [
+  {
+   "blocs": [
+    "bloc: 0\nprecedent: 0000000000000000000000000000000000000000000000000000000000000000\ndonnees: début\n",
+    "bloc: 1\nprecedent: 88fd4a53b94c1cda84d71e39786c04f4a5ba74cf36ce4b504c0086f9643f9ee9\ndonnees: Pixel donne 3 glands à Noisette\n",
+    "bloc: 2\nprecedent: b137e792e0dbfee8990cc753529738e0767217447b1fa83d64e5bc84529a2d0b\ndonnees: Noisette donne 1 plume à Lune\n"
+   ],
+   "etats": [
+    [
+     0,
+     "ok"
+    ],
+    [
+     1,
+     "ok"
+    ]
+   ]
+  },
+  {
+   "blocs": [
+    "bloc: 0\nprecedent: 0000000000000000000000000000000000000000000000000000000000000000\ndonnees: début\nx\n",
+    "bloc: 1\nprecedent: 88fd4a53b94c1cda84d71e39786c04f4a5ba74cf36ce4b504c0086f9643f9ee9\ndonnees: Pixel donne 3 glands à Noisette\n",
+    "bloc: 2\nprecedent: b137e792e0dbfee8990cc753529738e0767217447b1fa83d64e5bc84529a2d0b\ndonnees: Noisette donne 1 plume à Lune\n"
+   ],
+   "etats": [
+    [
+     0,
+     "casse"
+    ],
+    [
+     1,
+     "douteux"
+    ]
+   ]
+  },
+  {
+   "blocs": [
+    "bloc: 0\nprecedent: 0000000000000000000000000000000000000000000000000000000000000000\ndonnees: début\n",
+    "bloc: 2\nprecedent: b137e792e0dbfee8990cc753529738e0767217447b1fa83d64e5bc84529a2d0b\ndonnees: Noisette donne 1 plume à Lune\n"
+   ],
+   "etats": [
+    [
+     0,
+     "casse"
+    ]
+   ]
+  }
+ ],
+ "mine": [
+  {
+   "donnees": "bloc5",
+   "zeros": 1,
+   "nonce": 20
+  },
+  {
+   "donnees": "bloc5",
+   "zeros": 2,
+   "nonce": 139
+  },
+  {
+   "donnees": "bloc5",
+   "zeros": 3,
+   "nonce": 2615
+  },
+  {
+   "donnees": "crypte-bloc-5",
+   "zeros": 1,
+   "nonce": 52
+  },
+  {
+   "donnees": "crypte-bloc-5",
+   "zeros": 2,
+   "nonce": 191
+  },
+  {
+   "donnees": "crypte-bloc-5",
+   "zeros": 3,
+   "nonce": 948
+  }
+ ],
+ "sha512crypt": [
+  {
+   "mot": "licorne",
+   "sel": "abcdefgh",
+   "hache": "$6$abcdefgh$LBfJchvsjtkLn7O11D7NsWSuRtEB44nhzqe/jwDYwsdvaAAIzZl6ZZfTbPRWrK.ZADurJUQYLPM4n5EnWbpwa/"
+  },
+  {
+   "mot": "soleil",
+   "sel": "sel2026",
+   "hache": "$6$sel2026$nOcTvOjB1Ehhqc63OWWX3EdigamPPDz9suZ/BRJodXDPaqiM56IhbVJygq/As9.DWwzM6.Gs4Hcf08X51J7M6."
+  },
+  {
+   "mot": "plumange-braisillon-givrarde-empyria",
+   "sel": "0123456789abcdefXYZ",
+   "hache": "$6$0123456789abcdef$mgTwGEMQ4HzxrdjceXbU/SbmOQRGUZRGJfmEZYlJ5F5ZU6Tc1rzC.NUx8fc7YGxnpiWLPiQmmXmbvCaVMCE.20"
+  },
+  {
+   "mot": "",
+   "sel": "x",
+   "hache": "$6$x$QSmr1Bx2g4O6BzKvdkgOcyU6H91X6I/XBv5pSalMhSPkwdH6Beo3F455xZJg0v//bxVK5F4OE5k1.0xuR26MK0"
+  }
+ ],
+ "roue_deploie": [
+  {
+   "ligne": "echo bonjour | tr 'a-z' 'd-za-c'",
+   "roues": [
+    {
+     "seg": 1,
+     "de": "a-z",
+     "vers": "d-za-c",
+     "decalage": 3
+    }
+   ]
+  },
+  {
+   "ligne": "tr 'd-za-c' 'a-z' < grimoire/cesar.txt",
+   "roues": [
+    {
+     "seg": 0,
+     "de": "d-za-c",
+     "vers": "a-z",
+     "decalage": 23
+    }
+   ]
+  },
+  {
+   "ligne": "tr a-z n-za-m < x | tr n-za-m a-z",
+   "roues": [
+    {
+     "seg": 0,
+     "de": "a-z",
+     "vers": "n-za-m",
+     "decalage": 13
+    },
+    {
+     "seg": 1,
+     "de": "n-za-m",
+     "vers": "a-z",
+     "decalage": 13
+    }
+   ]
+  },
+  {
+   "ligne": "tr 'a-z' 'A-Z'",
+   "roues": []
+  },
+  {
+   "ligne": "cat f | tr -d x",
+   "roues": []
+  },
+  {
+   "ligne": "ls",
+   "roues": []
+  }
+ ]
+}

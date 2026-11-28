@@ -1,0 +1,15 @@
+{
+ "_doc": "Les espèces de départ : ce qui peut sortir de l'œuf, selon son type. À chaque nouvelle partie, le jeu tire le type de l'œuf, puis une espèce de cette liste (au hasard). Le compagnon EST cette espèce, au stade bébé, et il grandit ensuite normalement. Chaque espèce doit avoir ce type dans sa forme classique (vérifié par pc/outils/test_intro.py). Fichier recopié à l'identique dans pc/tg/depart.json et app/src/main/assets/depart.json.",
+ "version": 1,
+ "depart": {
+  "feu": ["braisillon", "flamouche", "fondelin"],
+  "eau": ["gouttelin", "plouftin", "poulpiot"],
+  "glace": ["givrichon", "givrarde", "lunacorne"],
+  "plante": ["glandouille", "sporichon", "petalouette"],
+  "roche": ["cailloute", "momiaou", "simiosse"],
+  "ciel": ["zapiot", "lumignon", "plumange"],
+  "ombre": ["drapouille", "follanterne", "zyeuton"],
+  "machine": ["boulonnet", "lanternix", "engrenaille"],
+  "poison": ["gloupi", "tentaclou", "bavouille"]
+ }
+}

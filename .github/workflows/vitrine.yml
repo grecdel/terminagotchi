@@ -1,0 +1,92 @@
+name: Captures de la fiche F-Droid (téléphone et tablette virtuels)
+
+# Les captures de la fiche F-Droid, une langue à la fois (tests/vitrine.sh), et les nouveautés (nuage de synchro,
+# « Signaler un souci », tablette en paysage). Les images vont dans l'artefact « vitrine-… » et dans la branche
+# « vitrine » du dépôt (vitrine/<job>/, comme la branche « captures » du test du téléphone) ; on choisit les
+# meilleures et on les range dans fastlane/metadata/android/<langue>/images/phoneScreenshots/.
+# Une seule partie : lancer à la main avec « seulement » (ex. carte), ou mettre [vitrine:carte] dans le message du commit
+# (carte = idée 76 seule : la question des grands lue à l'écran, la bonne réponse, la carte « Signaler un souci » ;
+#  interface = l'allègement du 9 novembre, variante B, sur le téléphone et la tablette en paysage).
+on:
+  workflow_dispatch:
+    inputs:
+      seulement:
+        description: "une seule partie (carte, interface), vide = tout"
+        required: false
+        default: ""
+  push:
+    branches: [nouveau-bestiaire]
+    paths: ["tests/vitrine.sh", ".github/workflows/vitrine.yml"]
+
+permissions:
+  contents: write
+
+jobs:
+  captures:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        # fr, en, nouveautes (idées 74 et 76), tablette (idée 75) ; ou seulement « carte » (idée 76)
+        include: ${{ fromJSON((inputs.seulement == 'interface' || contains(github.event.head_commit.message, '[vitrine:interface]')) && '[{"nom":"interface","mode":"interface","langues":"fr","profil":"pixel_6"},{"nom":"interface_tablette","mode":"interface_tablette","langues":"fr","profil":"pixel_c"}]' || (inputs.seulement == 'carte' || contains(github.event.head_commit.message, '[vitrine:carte]')) && '[{"nom":"carte","mode":"carte","langues":"fr","profil":"pixel_6"}]' || '[{"nom":"fr","mode":"telephone","langues":"fr","profil":"pixel_6"},{"nom":"en","mode":"telephone","langues":"en","profil":"pixel_6"},{"nom":"nouveautes","mode":"nouveautes","langues":"fr","profil":"pixel_6"},{"nom":"tablette","mode":"tablette","langues":"fr","profil":"pixel_c"}]') }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Activer l'accélération KVM
+        run: |
+          echo 'KERNEL=="kvm", GROUP="kvm", MODE="0666", OPTIONS+="static_node=kvm"' | sudo tee /etc/udev/rules.d/99-kvm4all.rules
+          sudo udevadm control --reload-rules
+          sudo udevadm trigger --name-match=kvm
+
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: "17"
+
+      - uses: gradle/actions/setup-gradle@v4
+        with:
+          gradle-version: "8.9"
+
+      - name: Compiler
+        run: gradle assembleRelease --no-daemon
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+
+      - name: Lire l'écran (OCR, pour la question des grands de « bug »)
+        run: sudo apt-get update -q && sudo apt-get install -y -q tesseract-ocr python3-pil
+
+      - name: Jouer et prendre les captures
+        uses: reactivecircus/android-emulator-runner@v2
+        env:
+          MODE: ${{ matrix.mode }}
+          LANGUES: ${{ matrix.langues }}
+        with:
+          api-level: 33
+          arch: x86_64
+          target: google_apis
+          profile: ${{ matrix.profil }}
+          disable-animations: true
+          script: bash tests/vitrine.sh
+
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: vitrine-${{ matrix.nom }}
+          path: captures/
+
+      - name: Ranger les captures dans la branche « vitrine »
+        if: always()
+        run: |
+          mkdir -p captures
+          for essai in 1 2 3 4 5; do
+            rm -rf /tmp/v && git clone -q --depth 1 --branch vitrine "https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}" /tmp/v 2>/dev/null \
+              || { rm -rf /tmp/v && mkdir /tmp/v && git -C /tmp/v init -q && git -C /tmp/v checkout -q -b vitrine; }
+            rm -rf /tmp/v/${{ matrix.nom }} && mkdir -p /tmp/v/${{ matrix.nom }} && cp -r captures/. /tmp/v/${{ matrix.nom }}/
+            cd /tmp/v
+            git add -A
+            git -c user.name="test-auto" -c user.email="test@terminagotchi" commit -q -m "Vitrine ${{ matrix.nom }} (run ${{ github.run_number }})" || true
+            git push -q "https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}" HEAD:vitrine && break
+            cd - >/dev/null; sleep $((essai * 7))
+          done

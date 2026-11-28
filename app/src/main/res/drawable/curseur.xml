@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- le gros curseur de la ligne de saisie (variante B) -->
+<shape xmlns:android="http://schemas.android.com/apk/res/android" android:shape="rectangle">
+    <size android:width="3dp" />
+    <solid android:color="@color/vert" />
+</shape>

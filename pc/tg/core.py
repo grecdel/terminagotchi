@@ -2,11 +2,19 @@
 import json
 import os
 import random
+import re
 import time
 from contextlib import contextmanager
 from pathlib import Path
 
-from .plateforme import GEST, IS_WIN, est_colle, piege
+from .langue import au_hasard, t
+from .langue import t as tr
+from .plateforme import GEST, IS_WIN, SYS_WIN, est_colle, piege
+from . import droits as _droits
+from . import sur as _sur
+
+_sur.installer()        # le jeu n'écrit jamais à travers un lien symbolique (sur.py)
+_droits.installer()     # Windows : les droits Linux (chmod) du terrain gardés à côté (droits.py)
 
 VERSION = "0.4"
 SAVE_DIR = Path.home() / ".terminagotchi"
@@ -40,45 +48,49 @@ CATEGORIES = {
 STAT_COLOR = {v["stat"]: v["color"] for v in CATEGORIES.values()}
 
 EXAMPLES = {
-    "linux":   {"fichiers": "ls  cd  cp  grep", "reseau": "ping  curl  ssh",
-                "code": "git  python3  nano", "systeme": f"htop  sudo {GEST or 'apt'}  df"},
-    "mac":     {"fichiers": "ls  cd  cp  grep", "reseau": "ping  curl  ssh",
-                "code": "git  python3  nano", "systeme": "top  brew  df"},
+    # (que des commandes qui rendent la main tout de suite : pas d'éditeur ni de mot de passe)
+    "linux":   {"fichiers": "ls  cd  cp  grep", "reseau": "ping -c 3  hostname  curl",
+                "code": "git  echo  which", "systeme": "date  whoami  df"},
+    "mac":     {"fichiers": "ls  cd  cp  grep", "reseau": "ping -c 3  hostname  curl",
+                "code": "git  echo  which", "systeme": "date  whoami  df"},
     "windows": {"fichiers": "dir  cd  copy  Get-ChildItem", "reseau": "ping  ipconfig  Test-Connection",
                 "code": "git  python  notepad", "systeme": "tasklist  winget  Get-Process"},
-    "android": {"fichiers": "ls  cd  cp  grep", "reseau": "ping  curl  ssh",
-                "code": "git  python  nano", "systeme": "top  pkg  df"},
+    "android": {"fichiers": "ls  cd  cp  grep", "reseau": "ping -c 3  hostname  curl",
+                "code": "git  echo  which", "systeme": "date  whoami  df"},
 }
 
 # Compétences : chacune double l'XP de ses commandes (sauf effets spéciaux)
 SKILLS = {
     # tronc commun
-    "Boussole":    {"desc": "navigation ×2", "cmds": {"cd", "ls", "dir", "pwd", "gci", "get-childitem", "set-location", "tree"}},
-    "Bâtisseur":   {"desc": "création ×2 · ouvre l'exploration", "cmds": {"mkdir", "touch", "new-item", "echo"}},
-    "Inspecteur":  {"desc": "lecture/recherche ×2", "cmds": {"cat", "type", "less", "more", "head", "tail", "grep", "find", "select-string", "get-content"}},
-    "Gardien":     {"desc": "2× moins faim", "cmds": {"chmod", "chown", "attrib", "icacls"}},
-    "Nettoyeur":   {"desc": "copie/déplacement ×2", "cmds": {"cp", "mv", "rm", "copy", "move", "del", "copy-item", "move-item", "remove-item"}},
+    "Boussole":    {"cmds": {"cd", "ls", "dir", "pwd", "gci", "get-childitem", "set-location", "tree"}},
+    "Bâtisseur":   {"cmds": {"mkdir", "touch", "new-item", "echo"}},
+    "Inspecteur":  {"cmds": {"cat", "type", "less", "more", "head", "tail", "grep", "find", "select-string", "get-content"}},
+    "Gardien":     {"cmds": {"chmod", "chown", "attrib", "icacls"}},
+    "Nettoyeur":   {"cmds": {"cp", "mv", "rm", "copy", "move", "del", "copy-item", "move-item", "remove-item"}},
+    # l'histoire « La Maison endormie » (histoire.py)
+    "Explorateur": {"cmds": {"tree", "find"}},
+    "Héros":       {"cmds": {"rev", "wc", "sort", "uniq"}},
     # branche Réseau
-    "Radar":       {"desc": "ping/ip ×2", "cmds": {"ping", "ip", "ifconfig", "ipconfig", "test-connection"}},
-    "Facteur":     {"desc": "curl/wget ×2", "cmds": {"curl", "curl.exe", "wget", "invoke-webrequest", "iwr"}},
-    "Cartographe": {"desc": "dns/traceroute ×2", "cmds": {"nslookup", "dig", "traceroute", "tracert", "tracepath", "mtr"}},
+    "Radar":       {"cmds": {"ping", "ip", "ifconfig", "ipconfig", "test-connection"}},
+    "Facteur":     {"cmds": {"curl", "curl.exe", "wget", "invoke-webrequest", "iwr"}},
+    "Cartographe": {"cmds": {"nslookup", "dig", "traceroute", "tracert", "tracepath", "mtr"}},
     # branche Git
-    "Archiviste":  {"desc": "git ×2", "cmds": {"git"}},
-    "Mémoire":     {"desc": "+1 XP par commande git", "cmds": set()},
-    "Chronomancien": {"desc": "défis éclair +50% de temps", "cmds": set()},
+    "Archiviste":  {"cmds": {"git"}},
+    "Mémoire":     {"cmds": set()},
+    "Chronomancien": {"cmds": set()},
     # branche Scripts
-    "Cuistot":     {"desc": "scripts ×2", "cmds": {"sh", "bash", "zsh", "powershell", "pwsh"}},
-    "Inventeur":   {"desc": "alias/function ×2", "cmds": {"alias", "function"}},
-    "Créateur":    {"desc": "TES commandes inventées ×3", "cmds": set()},
+    "Cuistot":     {"cmds": {"sh", "bash", "zsh", "powershell", "pwsh"}},
+    "Inventeur":   {"cmds": {"alias", "function"}},
+    "Créateur":    {"cmds": set()},
     # branche Système
-    "Vigie":       {"desc": "processus ×2", "cmds": {"ps", "top", "htop", "get-process", "tasklist", "whoami"}},
-    "Intendant":   {"desc": "espace disque ×2", "cmds": {"df", "du", "free", "get-psdrive"}},
-    "Chasseur":    {"desc": "kill/jobs ×2", "cmds": {"kill", "killall", "jobs", "stop-process", "taskkill", "start-process"}},
+    "Vigie":       {"cmds": {"ps", "top", "htop", "get-process", "tasklist", "whoami"}},
+    "Intendant":   {"cmds": {"df", "du", "free", "get-psdrive"}},
+    "Chasseur":    {"cmds": {"kill", "killall", "jobs", "stop-process", "taskkill", "start-process"}},
     # branche Android
-    "Télécommande": {"desc": "toast/vibreur/lampe ×2", "cmds": {"termux-toast", "termux-vibrate", "termux-torch"}},
-    "Portier":     {"desc": "ouvrir sites et liens ×2", "cmds": {"termux-open-url", "termux-open", "am"}},
-    "Lanceur":     {"desc": "lancer des applis ×2", "cmds": {"am", "pm", "ouvre"}},
-    "Majordome":   {"desc": "outils du quotidien ×2", "cmds": {"termux-battery-status", "termux-tts-speak",
+    "Télécommande": {"cmds": {"termux-toast", "termux-vibrate", "termux-torch"}},
+    "Portier":     {"cmds": {"termux-open-url", "termux-open", "am"}},
+    "Lanceur":     {"cmds": {"am", "pm", "ouvre"}},
+    "Majordome":   {"cmds": {"termux-battery-status", "termux-tts-speak",
                     "termux-clipboard-get", "termux-clipboard-set", "termux-volume", "termux-brightness"}},
 }
 
@@ -91,7 +103,8 @@ def history_files():
     files = [h / ".bash_history", h / ".zsh_history", h / ".local/share/fish/fish_history"]
     if os.environ.get("HISTFILE"):
         files.append(Path(os.environ["HISTFILE"]))
-    if IS_WIN:
+    files.append(SAVE_DIR / "historique_terminal")     # le terminal du jeu (vsh/ : Windows, `tg sh`)
+    if SYS_WIN:
         files.append(Path(os.environ.get("APPDATA", "")) /
                      "Microsoft/Windows/PowerShell/PSReadLine/ConsoleHost_history.txt")
     else:
@@ -116,19 +129,39 @@ def parse_line(line):
     return line.strip() or None
 
 
+# le code de sortie de la DERNIÈRE commande lue, quand le crochet d'invite le donne (`tg prompt --statut=$?`) :
+# {"ligne": texte, "statut": n}. Les autres lignes ont un code inconnu (None). Voir verif.py.
+DERNIER = {"ligne": None, "statut": None}
+
+
+def statut_de(lignes, i):
+    """Le code de sortie de lignes[i] (0 = réussi), ou None s'il est inconnu."""
+    if i == len(lignes) - 1 and DERNIER["ligne"] is not None and lignes[i] == DERNIER["ligne"]:
+        return DERNIER["statut"]
+    return None
+
+
 def first_word(line):
-    words = line.split()
+    words = line.lstrip("( ").split()                 # `(umask 077; touch f)` : la commande de la petite bulle
     if not words:
         return None
-    w = words[0].lower()
+    # v3 (I12) : `pwd; ls`, `ls|wc` : le premier mot s'arrête au séparateur du shell collé (pas « pwd; »)
+    w = (re.split(r"[;&|<>]", words[0])[0] or words[0]).lower()
     if w.startswith(("./", ".\\")):
         return w
-    return os.path.basename(w).removesuffix(".exe") if w != "curl.exe" else "curl.exe"
+    w = os.path.basename(w).removesuffix(".exe") if w != "curl.exe" else "curl.exe"
+    return ps_equivalent(w)        # Windows : Get-Location nourrit comme pwd
+
+
+# Windows : les lignes lues dans l'historique d'un PowerShell à part (pas dans le terminal du jeu) : le filet de sécurité
+# les reconnaît (Get-Location nourrit comme pwd) et la créature invite gentiment à utiliser le terminal du jeu.
+LIGNES_PS = set()
 
 
 def read_new_lines(state):
     offsets = state["offsets"]
     lines = []
+    LIGNES_PS.clear()
     for f in history_files():
         key = str(f)
         try:
@@ -148,36 +181,39 @@ def read_new_lines(state):
         if last_nl == -1:
             continue
         offsets[key] += last_nl + 1
+        ps = f.name == "ConsoleHost_history.txt"
         for raw in data[:last_nl].decode("utf-8", "replace").splitlines():
             c = parse_line(raw)
             if c:
                 lines.append(c)
+                if ps:
+                    LIGNES_PS.add(c)
     return lines
 
 # ================================================================ caractère
 
-TRAITS = {
-    "curieux": ["Qu'est-ce qu'il y a dans ce dossier ?", "Apprends-moi une nouvelle commande !",
-                "Je me demande ce que fait « sudo »…", "Et si on explorait la grotte ?"],
-    "farceur": ["Et si on renommait tous tes fichiers ? Je plaisante !", "rm -rf ? Jamais de la vie, hihi.",
-                "Tu tapes vite… pour un humain.", "J'ai caché un fichier quelque part. Ou pas."],
-    "gourmand": ["Une petite commande, juste une ?", "Les « git » sont mes préférés, croustillants !",
-                 "J'ai un creux de 512 octets.", "Miam, un « ls » bien frais."],
-    "philosophe": ["Sommes-nous tous dans le sous-dossier de quelqu'un ?",
-                   "Un fichier supprimé existe-t-il encore dans nos cœurs ?",
-                   "pwd… mais où suis-je VRAIMENT ?", "Le terminal est noir, mais l'avenir est clair."],
-}
-HUNGRY = ["J'ai faim… tape quelque chose !", "Mon ventre fait « segmentation fault ».",
-          "Même un petit « pwd » me ferait du bien…"]
-EGG = ["…", "*toc toc*", "*l'œuf bouge un peu*", "*crac ?*"]
-COLLE = ["Hé ! Tu as copié-collé… tape-la toi-même, sinon ça ne rentre pas dans ma tête !",
-         "Copier-coller détecté : ça n'a aucun goût. Avec tes doigts, s'il te plaît !",
-         "Bien essayé ! Mais je ne mange que les commandes tapées à la main."]
+TRAITS = ("curieux", "farceur", "gourmand", "philosophe")   # phrases : langues/xx.json, « trait.<nom>.phrases »
 
 
 def say(state, text, secs=8):
-    from .langue import tr
-    state["bubble"] = [tr(text), time.time() + secs]
+    """La créature parle. Si elle parle déjà, la phrase attend son tour (rien n'est écrasé)."""
+    b = state.get("bubble")
+    if b and time.time() < b[1] and b[0] != text:
+        file = state.setdefault("bulles", [])
+        if text not in (x[0] for x in file):
+            file.append([text, secs])
+            del file[:-4]
+        return
+    state["bubble"] = [text, time.time() + secs]
+
+
+def bulle_courante(state):
+    """La phrase à afficher maintenant (passe à la suivante de la file quand la précédente est lue)."""
+    b = state.get("bubble")
+    if (not b or time.time() >= b[1]) and state.get("bulles"):
+        texte, secs = state["bulles"].pop(0)
+        state["bubble"] = b = [texte, time.time() + secs]
+    return b if b and time.time() < b[1] else None
 
 
 NOTIF_PREFIX = ("✨", "⬆", "🎓", "🌳", "🎯", "🐾", "💨", "🌲", "⚡")
@@ -185,13 +221,33 @@ NOTIF_PREFIX = ("✨", "⬆", "🎓", "🌳", "🎯", "🐾", "💨", "🌲", "�
 
 def notif(state, texte):
     """Met un événement en file pour les notifications du système."""
-    from .langue import tr
-    state["notifs"] = (state.get("notifs", []) + [tr(texte)])[-5:]
+    state["notifs"] = (state.get("notifs", []) + [texte])[-5:]
+
+
+# Courtes animations de la fenêtre principale : un événement daté, rangé dans la sauvegarde
+# (n'importe quel processus — invite, veille, fenêtre — peut le déclencher ; la fenêtre le joue).
+# 8 nov. : les réactions de l'œuf (oeuf_1 à oeuf_3) passent avant « content » : sinon, le jour où la commande du jour
+# est celle de la liste de l'œuf (whoami…), la petite fête du jour cachait la fêlure (même table dans Jeu.kt).
+PRIORITE_ANIM = {"eclosion": 10, "oeuf_1": 9, "oeuf_2": 9, "oeuf_3": 9, "evolution": 9, "victoire": 8, "ko": 7, "colere": 6, "attaque": 6, "dort": 6, "content": 5, "confus": 4,
+                 "mange": 3, "salut": 2, "parle": 1}
+
+
+def animer(state, nom):
+    """Demande une courte animation de la créature (la plus importante gagne si plusieurs arrivent ensemble)."""
+    now = time.time()
+    a = state.get("anim")
+    if a and now - a[1] < 2 and PRIORITE_ANIM.get(a[0], 0) > PRIORITE_ANIM.get(nom, 0):
+        return
+    state["anim"] = [nom, now]
+
+
+def _marquer(state, nom):
+    """Le son de retour d'une commande qui a buté (sons.py ; joué seulement si les réglages le permettent)."""
+    from . import sons
+    sons.marquer(state, nom)
 
 
 def log(state, msg):
-    from .langue import tr
-    msg = tr(msg)
     state["log"] = (state["log"] + [time.strftime("%H:%M ") + msg])[-6:]
     state["nlog"] = state.get("nlog", 0) + 1
     if msg.startswith(NOTIF_PREFIX):
@@ -199,9 +255,47 @@ def log(state, msg):
 
 # ================================================================ progression
 
-STAGES = ["Œuf", "Bébé", "Enfant", "Ado", "Adulte", "Ancien"]
-STAGE_FORME = 3            # la forme (Hacker, Titan, Éclair, Carapace) se décide à l'adolescence
+STAGES = ["Œuf", "Bébé", "Ado", "Adulte"]                  # noms internes (affichés : « stade.0 » à « stade.3 »)
 FORMES = {"Intelligence": "Hacker", "Force": "Titan", "Agilité": "Éclair", "Endurance": "Carapace"}
+
+
+def nom_stat(stat, court=False):
+    """Intelligence/Force… (ou INT/FOR…) dans la langue choisie."""
+    return t(("stat.court." if court else "stat.") + stat)
+
+
+def nom_skill(skill):
+    return t("skill." + skill)
+
+
+def nom_trait(trait):
+    return t("trait." + trait)
+
+
+def forme(state, lvl=None):
+    """« Bébé », « Ado Hacker »… : le stade et la forme de la créature, traduits."""
+    lvl = level(state["xp"]) if lvl is None else lvl
+    st = stage(lvl)
+    nom = t(f"stade.{st}")
+    if st >= 1 and state.get("espece_compagnon"):        # une espèce du bestiaire : « Bébé Gouttelin »
+        from . import bestiaire as B
+        e = B.espece(state["espece_compagnon"])
+        if e:
+            return t("forme.stade", stade=nom, forme=e["nom"])
+    if st >= 2 and state.get("branch"):
+        nom = t("forme.stade", stade=nom, forme=t("forme." + state["branch"]))
+    return nom
+
+
+REPAS_FACILES = ["date", "whoami", "pwd", "ls", "echo coucou", "cal", "uptime", "hostname", "uname", "id", "df", "which ls"]
+
+
+def faim_d_apprendre(state, niveau):
+    """« J'ai encore faim » + 4 commandes sûres pas encore goûtées + combien il en faut environ."""
+    manque = max(0, 10 * (niveau - 1) ** 2 - state["xp"])
+    vues = set(state.get("seen", []))
+    idees = [c for c in REPAS_FACILES if c.split()[0] not in vues][:4] or REPAS_FACILES[:4]
+    return idees, max(1, -(-manque // 6))
 
 
 def level(xp):
@@ -209,24 +303,7 @@ def level(xp):
 
 
 def stage(lvl):
-    """0 œuf · 1 bébé · 2 enfant · 3 ado · 4 adulte · 5 ancien"""
-    return 0 if lvl < 2 else 1 if lvl < 3 else 2 if lvl < 5 else 3 if lvl < 10 else 4 if lvl < 20 else 5
-
-
-def forme(state):
-    """« Ado Carapace », « Bébé »… : le stade et, dès l'adolescence, la forme."""
-    st = stage(level(state["xp"]))
-    from .langue import tr
-    f = f" {tr(FORMES[state['branch']])}" if st >= STAGE_FORME and state.get("branch") else ""
-    return tr(STAGES[st]) + f
-
-
-def eclore(state):
-    """L'œuf éclot : la créature est tirée au hasard parmi celles que cet œuf peut donner."""
-    from . import bestiaire
-    if not state.get("familier"):
-        state["familier"] = bestiaire.tirer_familier(state.get("oeuf"), random)
-    return state["familier"]
+    return 0 if lvl < 2 else 1 if lvl < 5 else 2 if lvl < 10 else 3
 
 
 def dominant(state):
@@ -236,101 +313,305 @@ def dominant(state):
     return max(st, key=st.get)
 
 
-def new_state(name):
+def new_state(name, langue_code="fr"):
     now = time.time()
-    from . import bestiaire
-    return {"name": name, "shiny": random.randrange(64) == 0, "born": now, "oeuf": bestiaire.tirer_oeuf(random), "last_tick": now, "xp": 0, "hunger": 80.0, "total": 0,
+    from . import oeufs
+    ty = random.choice(oeufs.types())             # le type de l'œuf et du compagnon, puis son espèce (oeufs.py)
+    return {"name": name, "langue": langue_code, "shiny": False, "born": now, "last_tick": now, "xp": 0, "hunger": 80.0, "total": 0,
             "stats": {v["stat"]: 0 for v in CATEGORIES.values()}, "seen": [], "log": [],
-            "offsets": {}, "version": VERSION}
+            "offsets": {}, "version": VERSION,
+            "oeuf_type": ty, "espece_compagnon": oeufs.espece_depart(ty)}   # l'œuf : son type, l'espèce qui en sort
+
+
+def nom_propre(nom):
+    """Le nom de la créature sans caractères de contrôle ni de mise en forme (ESC, NUL, RLO…) : ils iraient tels quels
+    au terminal (effacer l'écran, retourner le texte) et sur le site, où d'autres joueurs le voient."""
+    import unicodedata
+    return "".join(c for c in str(nom or "") if unicodedata.category(c) not in ("Cc", "Cf", "Cs")).strip()[:16]
 
 
 def migrate(state):
-    defaults = {"trait": random.choice(list(TRAITS)), "skills": [], "lesson": 0, "step": 0,
+    if isinstance(state.get("name"), str) and nom_propre(state["name"]) != state["name"].strip()[:16]:
+        state["name"] = nom_propre(state["name"]) or "Pixel"
+    defaults = {"trait": random.choice(TRAITS), "langue": "fr", "skills": [], "lesson": 0, "step": 0,
                 "bubble": None, "defi": None, "records": {}, "offsets": {}, "arbre": {},
                 "branche": None, "cherche": {}, "sauvages": [], "collection": {}, "explo": False, "dressage": None,
                 "explo_n": 0, "annonce": None, "colles": 0, "notifs": [], "nlog": 0,
                 "prompt_vu": 0, "config": {}, "compte": {}, "repas_t": 0, "captures": [], "shiny": False}
     for k, v in defaults.items():
         state.setdefault(k, v)
-    if stage(level(state["xp"])) >= STAGE_FORME and not state.get("branch"):
+    if stage(level(state["xp"])) >= 2 and not state.get("branch"):
         state["branch"] = dominant(state)
-    from . import bestiaire
-    if not state.get("oeuf"):                    # sauvegardes d'avant les 9 œufs
-        state["oeuf"] = bestiaire.tirer_oeuf(random.Random(state.get("name", "") + str(state.get("born", 0))))
-    if stage(level(state["xp"])) >= 1 and not state.get("familier"):
-        eclore(state)
+    from . import envies
+    envies.e_(state)                       # les 6 envies (une ancienne partie reçoit des valeurs moyennes)
+    from . import guide
+    guide.g_(state)                        # le guide (une ancienne partie : le compagnon est le guide)
+    from . import intro
+    intro.i_(state)                        # l'intro et le déblocage (une ancienne partie : tout reste ouvert)
+    intro.d_(state)
+    from . import satiete
+    satiete.s_(state)                      # la satiété (une ancienne partie : 3 jours soignés offerts, en forme)
     for k, v in {"notifs": True, "permanente": True, "compagnon": "ligne", "bulle": True}.items():
         state["config"].setdefault(k, v)
-    from . import bestiaire
-    bestiaire.migrer(state)               # ancien bestiaire → nouveau (mêmes numéros)
     state["version"] = VERSION
     return state
 
 
 def add_xp(state, n):
+    xp_avant = state["xp"]
     old = level(state["xp"])
     state["xp"] += n
+    if isinstance(state.get("intro"), dict) and state["intro"].get("etat") == "oeuf":
+        state["xp"] = min(state["xp"], 9)    # l'œuf n'éclot qu'à la fin de sa liste de commandes (intro.py)
+    from . import satiete
+    satiete.retenir(state, xp_avant)   # grandir demande aussi des jours soignés (l'XP en trop est gardée)
     new = level(state["xp"])
     if new <= old:
         return
+    animer(state, "evolution" if stage(new) > stage(old) else "content")
     if stage(new) > stage(old):
-        if stage(old) == 0:
-            from . import bestiaire
-            e = bestiaire.espece(eclore(state))
-            o = bestiaire.oeuf(state.get("oeuf"))
-            from .langue import tr
-            log(state, f"✨ L'œuf {tr(o['nom']) if o else ''} a éclos : c'est un {e['nom'] if e else 'bébé'} !")
-            say(state, "Bonjour le monde ! … C'est comme ça qu'on dit, non ?", 10)
-        if stage(new) >= STAGE_FORME and not state.get("branch"):
-            state["branch"] = dominant(state)
-        if stage(old) > 0:
-            log(state, f"✨ ÉVOLUTION → {forme(state)} !")
-            say(state, "Waouh… je me sens différent !", 10)
+        from . import creature                  # 3 nov. : la page de l'album, le moment d'évolution
+        creature.stade_change(state, stage(old), stage(new))
+        if stage(new) == 1:
+            log(state, t("core.eclot.log"))
+            say(state, t("core.eclot.dit"), 10)
+        else:
+            if not state.get("branch"):
+                state["branch"] = dominant(state)
+            log(state, t("core.evolution.log", forme=forme(state, new)))
+            say(state, t("core.evolution.dit"), 10)
     else:
-        log(state, f"⬆ Niveau {new} !")
+        log(state, t("core.niveau.log", n=new))
 
 
 def tick(state):
-    now = time.time()
-    rate = 720 if "Gardien" in state["skills"] else 360   # secondes par point de faim
-    rate *= 1 + min(1.0, state["stats"].get("Endurance", 0) / 100)   # l'Endurance fait durer le repas
-    avant = state["hunger"]
-    state["hunger"] = max(0.0, state["hunger"] - (now - state["last_tick"]) / rate)
-    if avant >= 30 > state["hunger"]:
-        notif(state, "🍽 J'ai faim… tape quelques commandes pour me nourrir !")
-    elif avant > 0 == state["hunger"]:
-        notif(state, "😵 Je suis à bout de forces… nourris-moi vite !")
-    state["last_tick"] = now
-    from . import envies
-    envies.tick(state, now)
+    """La faim baisse avec le temps : seulement de 7 h à 21 h, 3 fois plus lentement qu'avant, rien en vacances
+    (satiete.py : les 4 états, la veille, les jours soignés)."""
+    from . import satiete
+    satiete.tick(state)
 
 
-def feed(state, line):
+BUILTINS = {"cd", "echo", "export", "alias", "history", "type", "source", ".", "exit", "for", "if", "while",
+            "set", "unset", "read", "test", "[", "pushd", "popd", "jobs", "fg", "bg", "kill", "umask", "ulimit",
+            "true", "false", "printf", "wait", "trap", "exec", "eval", "help", "tg", "clear",
+            "carte", "quetes", "explique",          # carte, quetes : les raccourcis du jeu (tg carte, tg quetes)
+            "entrainement", "exercice", "badges",   # la salle d'entraînement (tg entrainement, tg badges)
+            "guide", "types", "equipe",             # le guide (tg guide, tg types, tg equipe)
+            "aide",                                 # I1 : alias aide='tg aide' (installé avec le compagnon)
+            "perdu", "indice",                      # idées 6 et 25 : alias perdu='tg perdu', indice='tg indice'
+            # les alias du jeu posés par tg installer (le compagnon) : ce sont des commandes, pas des fautes
+            "deploie", "espace", "cerveau", "port", "citadelle", "crypte", "machines",
+            "ondes", "mesh-envoie", "mesh-coupe", "mesh-route", "guilde",
+            "observatoire", "assistant", "agent", "devine-type", "devine-mot", "donnees", "forge", "atelier", "sommet", "temps", "controle",
+            # les mots-clés du shell (time sh mineur.sh 3 : « time » n'est pas un programme, mais il existe)
+            "time", "case", "until", "function", "select", "command", "builtin", "local", "declare", "times"}
+
+
+# PowerShell (Windows) : ses commandes internes (cmdlets) et leurs alias ne sont pas des programmes, shutil.which ne les
+# trouve pas. Les cmdlets courants, avec leur équivalent Linux (pour la nourriture et les leçons).
+PS_CMDLETS = {
+    "get-location": "pwd", "set-location": "cd", "push-location": "pushd", "pop-location": "popd",
+    "get-childitem": "ls", "get-content": "cat", "set-content": "echo", "add-content": "echo", "out-file": "tee",
+    "copy-item": "cp", "move-item": "mv", "remove-item": "rm", "rename-item": "mv", "new-item": "touch",
+    "write-output": "echo", "write-host": "echo", "select-string": "grep", "clear-host": "clear",
+    "get-process": "ps", "stop-process": "kill", "get-command": "which", "get-help": "man", "get-date": "date",
+    "sort-object": "sort", "measure-object": "wc", "select-object": "head", "get-unique": "uniq",
+    "invoke-webrequest": "curl", "invoke-restmethod": "curl", "test-connection": "ping", "resolve-dnsname": "nslookup",
+    "get-filehash": "sha256sum", "compare-object": "diff", "start-sleep": "sleep", "get-history": "history",
+    "get-alias": "alias", "set-alias": "alias", "start-process": "start", "invoke-item": "ii", "tee-object": "tee",
+    "get-member": "gm", "where-object": "where", "foreach-object": "foreach", "get-computerinfo": "uname",
+    "get-netipaddress": "ip", "get-psdrive": "df", "get-volume": "df", "get-acl": "ls", "set-acl": "chmod",
+}
+PS_ALIAS = {"pwd", "ls", "dir", "cd", "chdir", "cat", "type", "gc", "cp", "copy", "cpi", "mv", "move", "mi", "rm",
+            "del", "erase", "rd", "rmdir", "ri", "md", "mkdir", "ni", "echo", "write", "cls", "clear", "ps", "gps",
+            "kill", "spps", "sort", "sleep", "man", "help", "history", "h", "ghy", "gl", "sl", "gci", "where", "?",
+            "foreach", "%", "select", "measure", "diff", "compare", "tee", "ii", "start", "saps", "iwr", "irm",
+            "curl", "wget", "pushd", "popd", "gcm", "gal", "sal", "gm", "ren", "rni", "set", "gv", "sv", "lp", "r",
+            "ft", "fl", "gu", "ac", "sc", "ise", "mount", "ndr", "gdr", "irm", "dir", "notepad", "explorer"}
+
+
+def ps_equivalent(cmd):
+    """Windows : le nom Linux d'un cmdlet PowerShell (Get-Location → pwd), sinon la commande telle quelle (le filet de
+    sécurité : un enfant qui tape dans un PowerShell à part)."""
+    return PS_CMDLETS.get(cmd, cmd) if (IS_WIN or SYS_WIN) else cmd
+
+
+def commande_existe(cmd):
+    import shutil
+    if (IS_WIN or SYS_WIN) and (cmd in PS_CMDLETS or re.fullmatch(r"[a-z]+-[a-z]+", cmd or "")):
+        return True        # cmdlets (Verbe-Nom) de PowerShell : de vraies commandes, sans programme
+    if IS_WIN and cmd in PS_ALIAS:
+        return True
+    from .plateforme import terminal_virtuel
+    if terminal_virtuel():  # Windows : les commandes du terminal du jeu (vsh/)
+        from . import vsh
+        return cmd in BUILTINS or vsh.existe(cmd)
+    return cmd in BUILTINS or shutil.which(cmd) is not None
+
+
+def commande_proche(cmd):
+    import difflib
+    if cmd.startswith("cd") and len(cmd) > 2:                      # cd~ → cd ~
+        return "cd " + cmd[2:]
+    for c in ("ls", "cd", "pwd", "cat", "cp", "mv", "rm", "free", "grep", "mkdir", "touch"):
+        if sorted(cmd) == sorted(c):                                # lettres inversées : sl → ls, pdw → pwd
+            return c
+    connues = sorted(BUILTINS | {c for v in CATEGORIES.values() for c in v["cmds"]})
+    m = difflib.get_close_matches(cmd, connues, n=1, cutoff=0.65)
+    return m[0] if m else None
+
+
+FENETRE_REPAS = 10      # une commande répétée dans les 10 dernières ne donne plus d'XP (anti-remplissage)
+
+
+def terminal(state, texte):
+    """Un message à montrer AUSSI dans le terminal de l'enfant, sous sa commande (le compagnon de l'invite l'affiche
+    une fois, puis l'oublie) : indices, mises en garde, erreurs expliquées (G-34, comme sur Android)."""
+    file = state.setdefault("terminal", [])
+    if texte and texte not in file:
+        file.append(texte)
+        del file[:-6]
+
+
+ECHO_PS = re.compile(r"^\s*(echo|write-output|write-host|write)\s", re.I)
+
+
+def apostrophe_ouverte(ligne):
+    """PowerShell : une phrase avec une apostrophe dans `echo` (echo j'aime les chats). L'apostrophe y OUVRE un texte :
+    PowerShell attend la suite (>>), puis colle et coupe la phrase. Vrai si, hors des "…", une apostrophe reste seule
+    (nombre impair) ou est collée entre deux lettres (j'aime)."""
+    if not ECHO_PS.match(ligne or ""):
+        return False
+    hors = re.sub(r'"[^"]*"', " ", ligne)
+    if "'" not in hors:
+        return False
+    return hors.count("'") % 2 == 1 or re.search(r"\w'\w", hors) is not None
+
+
+def feed(state, line, statut=None):
+    ps = IS_WIN or (SYS_WIN and line in LIGNES_PS)
+    if ps and apostrophe_ouverte(line):          # PowerShell : l'apostrophe ouvre un texte (echo "j'aime les chats")
+        msg = t("core.win.apostrophe")
+        say(state, msg, 10)
+        terminal(state, msg)
+    if SYS_WIN and line in LIGNES_PS and not state.get("ps_invite"):
+        state["ps_invite"] = True                # une fois : le jeu a son propre terminal (Linux), plus simple
+        msg = t("core.win.terminal_du_jeu")
+        say(state, msg, 14)
+        terminal(state, msg)
     if est_colle(line):
         state["colles"] += 1
-        log(state, "✖ copier-coller détecté : pas de nourriture")
-        say(state, random.choice(COLLE), 10)
+        log(state, t("core.colle.log"))
+        say(state, au_hasard("core.colle"), 10)
+        terminal(state, t("core.colle.doigts"))     # P2-8 : dans le terminal, ce qu'il faut faire (taper au clavier)
+        animer(state, "colere")
         return
+    if not line.split():
+        return
+    if not line.lstrip("( ").split():
+        return
+    tete = re.split(r"[;&|<>]", line.lstrip("( ").split()[0])[0] or line.lstrip("( ").split()[0]
+    if "/" in tete and not tete.startswith(("/", ".", "~")) and not commande_existe(tete):
+        # v3 (I12) : `cd/home/lea/…/vestibule`, `ls/etc` : l'espace oubliée (et pas « vestibule n'est pas une commande »)
+        from . import verif
+        proche = verif.collee(tete)
+        if proche:
+            msg = t("core.inconnue.proche", cmd=tete, proche=proche)
+            say(state, msg, 8)
+            terminal(state, msg)
+            log(state, t("core.inconnue.log", cmd=tete))
+            animer(state, "confus")
+            _marquer(state, "erreur_presque")
+            return
     cmd = first_word(line)
-    if not cmd:
+    if not cmd or cmd in ("exit", "logout"):       # I5 : quitter le terminal n'est pas un repas
+        return
+    brut = os.path.basename(tete)
+    if not IS_WIN and brut != brut.lower() and commande_existe(cmd) and not commande_existe(brut):
+        msg = t("core.inconnue.casse", cmd=brut, proche=cmd)        # PWD, Ls : les commandes s'écrivent en minuscules
+        say(state, msg, 8)
+        terminal(state, msg)
+        log(state, t("core.inconnue.log", cmd=brut))
+        animer(state, "confus")
+        _marquer(state, "erreur_presque")
+        return
+    # I6 : un alias ou une fonction créés par l'enfant (alias miam=…, miam() {…}) sont de vraies commandes
+    persos = state.setdefault("alias_shell", [])
+    for nom in re.findall(r"(?:^|[;&|]\s*)(?:alias\s+([\w.:-]+)=|function\s+([\w.:-]+)|([\w.:-]+)\s*\(\)\s*\{)", line):
+        nom = next((x for x in nom if x), None)
+        if nom and nom not in persos:
+            persos.append(nom)
+            del persos[:-30]
+    if re.match(r"^[A-Za-z_]\w*=", tete):          # nom=Pixel, n=3; while … : une boîte qu'on remplit (la Forge)
+        return
+    m_egal = re.match(r"^([A-Za-z_]\w*)\s+=", line.strip())
+    if m_egal and not commande_existe(m_egal.group(1)):     # nom = Pixel : des espaces autour du =
+        msg = t("core.inconnue.egal", cmd=m_egal.group(1))
+        say(state, msg, 8)
+        terminal(state, msg)
+        animer(state, "confus")
+        _marquer(state, "erreur_presque")
+        return
+    cat = next((k for k, v in CATEGORIES.items() if cmd in v["cmds"]), None)
+    if not cat and not cmd.startswith(("termux-", "./", "/")) and not commande_existe(cmd) and cmd not in persos:
+        from . import verif
+        proche = verif.collee(brut) or verif.ponctuation(brut) or verif.mot_de_l_oeuf(cmd) or commande_proche(cmd)
+        # cdvestibule → cd vestibule, ls-a → ls -a, pwd, → pwd (I9), bonjour → echo bonjour (la liste de l'œuf, I9)
+        # (2 nov., vérification finale) on montre ce que l'enfant a tapé (« ls-R », pas « ls-r »), comme sur Android
+        tape_ = brut if brut.lower() == cmd else cmd
+        msg = (t("core.inconnue.proche", cmd=tape_, proche=proche) if proche else t("core.inconnue", cmd=tape_))
+        say(state, msg, 8)
+        terminal(state, msg)
+        log(state, t("core.inconnue.log", cmd=cmd))
+        animer(state, "confus")
+        _marquer(state, "erreur_presque" if proche else "erreur_douce")
+        return
+    from . import satiete
+    if cmd == "tg" or cmd in BUILTINS:          # v3 : une fonction du jeu « pas encore » ouverte ne nourrit pas
+        from . import intro
+        mots = line.split()
+        sous = mots[1].lower() if cmd == "tg" and len(mots) > 1 else cmd
+        if intro.bloque(state, sous):
+            return
+    if statut not in (None, 0):                 # la commande a échoué : elle nourrit à peine, sans XP ni nouveau goût
+        satiete.repas(state, cmd, ratee=True)
+        log(state, t("core.rate.log", cmd=cmd))
+        animer(state, "confus")
+        _marquer(state, "refus_doux")              # la commande existe mais a buté (dossier pas vide, cadenas…)
         return
     state["total"] += 1
-    gain, msg = 1, f"a mangé « {cmd} »"
-    cat = next((k for k, v in CATEGORIES.items() if cmd in v["cmds"]), None)
+    # anti-remplissage (G-04) : une commande déjà goûtée parmi les FENETRE_REPAS dernières nourrit, mais ne donne
+    # ni XP ni stat (les niveaux viennent des leçons, des chapitres, des exercices et des commandes nouvelles)
+    derniers = state.setdefault("derniers", [])
+    repetee = cmd in derniers and cmd in state["seen"]
+    state["derniers"] = (derniers + [cmd])[-FENETRE_REPAS:]
+    if repetee:
+        satiete.repas(state, cmd, repetee=True)    # la même commande de suite : elle nourrit à peine
+        state["repas_t"] = time.time()
+        log(state, t("core.mange", cmd=cmd))
+        animer(state, "mange")
+        return
+    gain, msg = 1, t("core.mange", cmd=cmd)
     if not cat and cmd.startswith("termux-"):
         cat = "reseau"
     if cat:
         state["stats"][CATEGORIES[cat]["stat"]] += 1
         gain += 1
-        msg += f" +{CATEGORIES[cat]['short']}"
-    if cmd not in state["seen"]:
+        from .mots import palier
+        if palier(state) >= 1:                   # « +END » : du jargon pour un enfant qui débute (P2-5)
+            msg += " +" + nom_stat(CATEGORIES[cat]["stat"], court=True)
+    nouvelle = cmd not in state["seen"]
+    g = state.setdefault("gouts", {})                # combien de fois chaque goût (la carte de visite : idée 58)
+    if cmd in g or len(g) < 300:
+        g[cmd] = g.get(cmd, 0) + 1
+    if nouvelle:
         state["seen"].append(cmd)
         gain += 5
-        msg += " ★ nouveau goût"
-    t = state["cherche"].pop(cmd, None)
-    if t and time.time() - t < 900:
+        msg += t("core.mange.nouveau")
+    vu_t = state["cherche"].pop(cmd, None)
+    if vu_t and time.time() - vu_t < 900:
         gain += 5
-        msg += " ★ bien retenu"
+        msg += t("core.mange.retenu")
     if cmd == "git" and "Mémoire" in state["skills"]:
         gain += 1
     if any(cmd in SKILLS[s]["cmds"] for s in state["skills"] if s in SKILLS):
@@ -339,13 +620,14 @@ def feed(state, line):
     elif ("Créateur" in state["skills"] and not cat and cmd not in NOMS_CONNUS
           and not cmd.startswith(("./", ".\\"))):
         gain *= 3
-        msg += " ×3 création"
-    state["hunger"] = min(100.0, state["hunger"] + 3)
+        msg += t("core.mange.creation")
+    gain_f = satiete.repas(state, cmd, nouvelle=nouvelle)  # l'aliment de sa famille (nouveau goût, assiette, veille)
+    from . import creature                      # 3 nov. : le plat préféré ou le goût secret compte double (sans XP)
+    msg += creature.apres_repas(state, cmd, gain_f)
     state["repas_t"] = time.time()
     log(state, msg)
-    from . import envies
-    gain += envies.commande(state, cmd, line)     # jeu, curiosité, exploration, sommeil, propreté
-    add_xp(state, gain)
+    animer(state, "mange")
+    satiete.gagner_xp(state, gain)              # +20 % rassasiée, −20 % affamée (satiete.py)
 
 # ================================================================ défis éclair
 
@@ -356,42 +638,52 @@ def defi_duree(state):
     return 30 if "Chronomancien" in state["skills"] else 20
 
 
+def _calme(state):
+    try:
+        from . import confort
+        return confort.calme(state)
+    except Exception:                               # noqa: BLE001
+        return False
+
+
 def defi_start(state):
     cmd = random.choice(DEFI_POOL)
     state["defi"] = {"cmd": cmd, "start": time.time()}
-    say(state, f"DÉFI ÉCLAIR ! Tape « {piege(cmd)} » vite !", defi_duree(state))
-    notif(state, f"⚡ Défi éclair ! Tape « {piege(cmd)} » dans les {defi_duree(state)} s !")
+    say(state, t("core.defi.dit", cmd=piege(cmd)), defi_duree(state))
+    notif(state, t("conf.defi.dit", cmd=piege(cmd)) if _calme(state) else t("core.defi.notif", cmd=piege(cmd), s=defi_duree(state)))
+    from . import guide
+    guide.annonce_defi(state)                       # l'épreuve du jour annonce un type (guide.py)
 
 
 def defi_tick(state, lines, spontaneous, proba=1.5 / 300):
     d = state["defi"]
     if not d:
         if spontaneous and stage(level(state["xp"])) >= 1 and random.random() < proba:
-            defi_start(state)
+            from . import histoire, intro
+            # les défis éclair arrivent avec les monstres (intro.json), jamais en pleine étape de leçon (P2-3)
+            if intro.ouvert(state, "combats") and not histoire.en_pleine_etape(state):
+                defi_start(state)
         return
     for line in lines:
         if not est_colle(line) and first_word(line) == d["cmd"]:
-            t = time.time() - d["start"]
+            dt = time.time() - d["start"]        # (pas « t » : ce nom cache la traduction t() plus bas)
             best = state["records"].get(d["cmd"])
-            state["records"][d["cmd"]] = t if best is None else min(best, t)
-            rec = " NOUVEAU RECORD !" if best is None or t < best else ""
-            log(state, f"⚡ Défi « {d['cmd']} » réussi en {t:.1f} s{rec}")
-            say(state, f"Trop rapide ! {t:.1f} s.{rec}", 8)
+            state["records"][d["cmd"]] = dt if best is None else min(best, dt)
+            rec = tr("core.defi.record") if best is None or dt < best else ""
+            log(state, tr("core.defi.reussi.log", cmd=d["cmd"], s=f"{dt:.1f}", record=rec))
+            say(state, tr("core.defi.reussi.dit", s=f"{dt:.1f}", record=rec), 8)
             state["stats"]["Agilité"] += 2
-            from . import envies
-            envies.defi_reussi(state)
             state["defi"] = None
+            animer(state, "victoire")
             add_xp(state, 10)
+            from . import envies, guide
+            envies.plaisir(state, "jeu", "defi")
+            guide.apres_defi(state)                 # guide fort contre le type du jour : +5 XP
             return
-    if time.time() - d["start"] > defi_duree(state):
-        log(state, f"⚡ Défi « {d['cmd']} » raté…")
-        say(state, "Trop lent ! On réessaiera.", 6)
+    if time.time() - d["start"] > defi_duree(state) and not _calme(state):   # mode calme : le défi reste, sans chrono
+        log(state, t("core.defi.rate.log", cmd=d["cmd"]))
+        say(state, t("core.defi.rate.dit"), 6)     # (3 nov.) une phrase douce et l'animation normale : rien de raté
         state["defi"] = None
-
-
-def _envie(state):
-    from . import envies
-    return envies.phrase(state)
 
 
 def idle_talk(state, proba=0.08):
@@ -403,45 +695,54 @@ def idle_talk(state, proba=0.08):
         return
     st = stage(level(state["xp"]))
     if st == 0:
-        say(state, random.choice(EGG))
-    elif state["hunger"] < 30:
-        say(state, random.choice(HUNGRY))
-    elif _envie(state):
-        say(state, _envie(state))
-    else:
-        say(state, random.choice(TRAITS[state["trait"]]))
+        say(state, au_hasard("core.oeuf"))
+    else:                      # la faim et les autres envies passent par envies.py (rappels espacés)
+        from . import satiete
+        if satiete.lien(state) >= satiete.LIEN_PHRASES and random.random() < 0.3:
+            say(state, au_hasard("sat.lien.phrases", nom=state["name"]))     # le lien : ses phrases à elle
+            return
+        say(state, au_hasard("trait." + state["trait"] + ".phrases"))
 
 
 def mood(h):
     if h >= 60:
-        return "repu"
+        return t("humeur.repu")
     if h >= 30:
-        return "petit creux"
+        return t("humeur.creux")
     if h > 0:
-        return "affamé !"
-    return "NOURRIS-MOI…"
+        return t("humeur.affame")
+    return t("humeur.vide")
 
 # ================================================================ sauvegarde
 
 @contextmanager
 def verrou(delai=3.0):
-    """Empêche deux processus (fenêtre, invite, bureau, veille) d'écrire en même temps."""
-    SAVE_DIR.mkdir(parents=True, exist_ok=True)
+    """Empêche deux processus (fenêtre, invite, bureau, veille) d'écrire en même temps.
+    Si le verrou ne peut pas être posé (droits retirés, disque plein), on continue sans : l'écriture dira pourquoi."""
     t0, fd = time.time(), None
-    while True:
+    try:
+        SAVE_DIR.mkdir(parents=True, exist_ok=True)
+    except OSError:
+        t0 = None
+    while t0 is not None:
         try:
-            fd = os.open(LOCK_FILE, os.O_CREAT | os.O_EXCL | os.O_WRONLY)
+            fd = os.open(LOCK_FILE, os.O_CREAT | os.O_EXCL | os.O_WRONLY | getattr(os, "O_NOFOLLOW", 0))
             break
         except FileExistsError:
-            try:
-                if time.time() - LOCK_FILE.stat().st_mtime > 10:   # verrou abandonné
-                    LOCK_FILE.unlink()
-                    continue
-            except OSError:
+            pass
+        except OSError:
+            break                                         # droits retirés, disque plein : pas de verrou possible
+        try:
+            if time.time() - LOCK_FILE.lstat().st_mtime > 10:   # verrou abandonné
+                LOCK_FILE.unlink()
                 continue
-            if time.time() - t0 > delai:
-                break
-            time.sleep(0.03)
+        except FileNotFoundError:
+            continue
+        except OSError:
+            break
+        if time.time() - t0 > delai:
+            break
+        time.sleep(0.03)
     try:
         yield
     finally:
@@ -465,15 +766,136 @@ def modifier(fn):
     return state
 
 
-def load():
+# copies de secours de la sauvegarde (la plus récente d'abord) : save.json.bak, .bak2, .bak3
+SECOURS = [SAVE_DIR / "save.json.bak", SAVE_DIR / "save.json.bak2", SAVE_DIR / "save.json.bak3"]
+SECOURS_DELAI = 300       # secondes entre deux rotations des copies de secours
+
+
+class Probleme(Exception):
+    """Un souci que l'on explique à l'enfant (et à l'adulte) au lieu d'une trace Python."""
+
+
+def _secours():
+    return [SAVE_DIR / f.name for f in SECOURS]
+
+
+def _lire_etat(f):
+    """L'état rangé dans f (un dict), ou None s'il est illisible ; OSError si le fichier ne peut pas être ouvert."""
     try:
-        return json.loads(SAVE_FILE.read_text(encoding="utf-8"))
-    except (OSError, ValueError):
+        o = json.loads(f.read_text(encoding="utf-8"))
+    except ValueError:
         return None
+    return o if isinstance(o, dict) and "xp" in o and "name" in o else None
+
+
+def etat_sauvegarde():
+    """« absente », « ok », « inaccessible » (droits) ou « abimee » (illisible, aucune copie de secours bonne)."""
+    f = SAVE_DIR / "save.json"
+    try:
+        if not f.exists() and not f.is_symlink():
+            return "absente"
+        if _lire_etat(f) is not None:
+            return "ok"
+    except OSError:
+        return "inaccessible"
+    for b in _secours():
+        try:
+            if _lire_etat(b) is not None:
+                return "ok"
+        except OSError:
+            pass
+    return "abimee"
+
+
+def _restaurer():
+    """save.json est illisible : la plus récente copie de secours bonne le remplace ; le fichier abîmé est gardé à
+    côté (save.json.casse-<date>), jamais effacé. Renvoie l'état restauré (avec la note pour la créature) ou None."""
+    f = SAVE_DIR / "save.json"
+    for b in _secours():
+        try:
+            st = _lire_etat(b)
+        except OSError:
+            continue
+        if st is None:
+            continue
+        casse = SAVE_DIR / ("save.json.casse-" + time.strftime("%Y%m%d-%H%M%S"))
+        try:
+            if f.exists() or f.is_symlink():
+                os.replace(f, casse)
+            st["_restaure"] = {"de": b.name, "casse": casse.name}
+            _ecrire_sauvegarde(st)
+        except OSError:
+            pass                              # lecture seule : on joue quand même avec la copie
+        return st
+    return None
+
+
+def load():
+    """L'état du jeu, ou None s'il n'y a pas (encore) de sauvegarde, ou si elle est abîmée sans copie de secours
+    (etat_sauvegarde() dit lequel). OSError (droits retirés…) : remonte, l'appelant l'explique."""
+    f = SAVE_DIR / "save.json"
+    try:
+        state = _lire_etat(f)
+    except FileNotFoundError:
+        return None
+    if state is None:
+        state = _restaurer()
+        if state is None:
+            return None
+    if isinstance(state.get("name"), str) and nom_propre(state["name"]) != state["name"].strip()[:16]:
+        state["name"] = nom_propre(state["name"]) or "Pixel"          # ESC, RLO, NUL : jamais jusqu'au terminal
+    from . import bestiaire, langue
+    langue.appliquer(state)                 # la langue choisie est rangée dans la sauvegarde
+    try:
+        from . import apparence
+        apparence.activer(state)            # le thème : les couleurs du texte dans le terminal
+    except Exception:                       # noqa: BLE001 — une apparence abîmée ne bloque jamais le jeu
+        pass
+    return bestiaire.migrer(state)
+
+
+def _ecrire_sauvegarde(state, avec_secours=False):
+    from . import sur
+    SAVE_DIR.mkdir(parents=True, exist_ok=True)
+    f = SAVE_DIR / "save.json"
+    tmp = f.with_suffix(".tmp")
+    data = json.dumps(state, ensure_ascii=False).encode("utf-8")
+    try:
+        if tmp.is_symlink():
+            tmp.unlink()
+        fd = sur.ouvrir_nofollow(tmp)
+        with os.fdopen(fd, "wb") as fh:
+            fh.write(data)
+    except OSError:
+        try:
+            tmp.unlink()
+        except OSError:
+            pass
+        raise
+    if avec_secours:
+        _tourner_secours(f)
+    os.replace(tmp, f)                       # atomique : la sauvegarde n'est jamais à moitié écrite
+
+
+def _tourner_secours(f):
+    """La sauvegarde actuelle (si elle est bonne) devient save.json.bak ; les anciennes reculent d'un cran.
+    Au plus une fois toutes les SECOURS_DELAI secondes (pas à chaque tour de jeu)."""
+    sec = _secours()
+    try:
+        if sec[0].exists() and time.time() - sec[0].stat().st_mtime < SECOURS_DELAI:
+            return
+        if _lire_etat(f) is None:
+            return                           # jamais une copie abîmée dans les secours
+        for a, b in zip(reversed(sec[:-1]), reversed(sec[1:])):
+            if a.exists() and not a.is_symlink():
+                os.replace(a, b)
+        from . import sur
+        fd = sur.ouvrir_nofollow(sec[0])
+        with os.fdopen(fd, "wb") as fh:
+            fh.write(f.read_bytes())
+    except OSError:
+        pass                                 # les secours sont un bonus : jamais bloquants
 
 
 def save(state):
-    SAVE_DIR.mkdir(parents=True, exist_ok=True)
-    tmp = SAVE_FILE.with_suffix(".tmp")
-    tmp.write_text(json.dumps(state, ensure_ascii=False), encoding="utf-8")
-    tmp.replace(SAVE_FILE)
+    _ecrire_sauvegarde(state, avec_secours=True)

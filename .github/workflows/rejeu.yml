@@ -1,0 +1,316 @@
+name: Charte de rigueur (rejeu des sorties réelles)
+
+# docs/programme.md § 7.1, règle 2 : ce que le jeu montre ou affirme d'une commande est rejoué sur une vraie machine
+# Linux, dans un terrain jetable. Si une sortie change (nouvelle version d'un outil), le test casse et la fiche est revue.
+on:
+  push:
+    branches: [nouveau-bestiaire, main]
+    paths: ["donnees/programme.json", "donnees/maths/**", "donnees/recompenses/**", "donnees/port/**", "donnees/port.json",
+            "donnees/citadelle/**", "donnees/citadelle.json", "app/src/main/java/fr/terminagotchi/Citadelle.kt",
+            "donnees/crypte/**", "donnees/crypte.json", "app/src/main/java/fr/terminagotchi/Crypte.kt",
+            "app/src/main/java/fr/terminagotchi/CryptePgp.kt",
+            "donnees/machines/**", "donnees/machines.json", "app/src/main/java/fr/terminagotchi/Machines.kt",
+            "app/src/main/java/fr/terminagotchi/MachinesDessin.kt",
+            "donnees/ondes/**", "donnees/ondes.json", "app/src/main/java/fr/terminagotchi/Ondes.kt",
+            "app/src/main/java/fr/terminagotchi/OndesDessin.kt",
+            "donnees/guilde/**", "donnees/guilde.json", "app/src/main/java/fr/terminagotchi/Guilde.kt",
+            "app/src/main/java/fr/terminagotchi/GuildeDessin.kt",
+            "donnees/observatoire/**", "donnees/observatoire.json", "app/src/main/java/fr/terminagotchi/Observatoire.kt",
+            "app/src/main/java/fr/terminagotchi/ObservatoireDessin.kt",
+            "donnees/donnees/**", "donnees/donnees.json", "app/src/main/java/fr/terminagotchi/Donnees.kt",
+            "app/src/main/java/fr/terminagotchi/DonneesAwk.kt", "app/src/main/java/fr/terminagotchi/DonneesSql.kt",
+            "donnees/forge/**", "donnees/forge.json", "app/src/main/java/fr/terminagotchi/Forge.kt",
+            "app/src/main/java/fr/terminagotchi/ForgeDessin.kt",
+            "donnees/atelier/**", "donnees/atelier.json", "app/src/main/java/fr/terminagotchi/Atelier.kt",
+            "app/src/main/java/fr/terminagotchi/AtelierDessin.kt",
+            "donnees/sommet/**", "donnees/sommet.json", "app/src/main/java/fr/terminagotchi/Sommet.kt",
+            "app/src/main/java/fr/terminagotchi/SommetDessin.kt",
+            "donnees/temps/**", "donnees/temps.json", "app/src/main/java/fr/terminagotchi/Temps.kt",
+            "app/src/main/java/fr/terminagotchi/PetitGit.kt", "app/src/main/java/fr/terminagotchi/TempsDessin.kt",
+            "donnees/monde/**", "donnees/effets/**", "app/src/main/java/fr/terminagotchi/Effets.kt",
+            "donnees/controle/**", "donnees/controle.json", "app/src/main/java/fr/terminagotchi/Controle.kt",
+            "app/src/main/java/fr/terminagotchi/ControleDessin.kt",
+            "pc/**", "app/src/main/assets/langues/**", "app/src/main/java/fr/terminagotchi/Port.kt",
+            "app/src/main/java/fr/terminagotchi/Histoire.kt", "app/src/main/java/fr/terminagotchi/Jeu.kt",
+            ".github/workflows/rejeu.yml"]
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  rejeu:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Les outils des fiches (les commandes rejouées)
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq tree iproute2 iputils-ping iputils-tracepath openssh-client dnsutils bsdextrautils openssl xxd gnupg qemu-utils pciutils usbutils bc iw rfkill zsh gcc make file openscad sqlite3 gawk busybox imagemagick ffmpeg sox libimage-exiftool-perl mksh cron procps >/dev/null || true
+          bash --version | head -n 1
+
+      - name: Vérificateur de la charte (fiches, étapes, orphelines, 14 langues)
+        run: python3 pc/outils/verifier_programme.py
+
+      - name: Vecteurs communs à jour (Python, Kotlin, serveur)
+        run: |
+          python3 pc/outils/vecteurs_phase4.py --verifier
+          python3 pc/outils/vecteurs_port.py --verifier
+          python3 pc/outils/vecteurs_citadelle.py --verifier
+          python3 pc/outils/vecteurs_crypte.py --verifier
+          python3 pc/outils/vecteurs_machines.py --verifier
+          python3 pc/outils/vecteurs_ondes.py --verifier
+          python3 pc/outils/vecteurs_guilde.py --verifier
+          python3 pc/outils/vecteurs_observatoire.py --verifier
+          python3 pc/outils/vecteurs_donnees.py --verifier
+          python3 pc/outils/vecteurs_classe.py --verifier
+          python3 pc/outils/vecteurs_forge.py --verifier
+          python3 pc/outils/vecteurs_atelier.py --verifier
+          python3 pc/outils/vecteurs_sommet.py --verifier
+          python3 pc/outils/vecteurs_temps.py --verifier
+          python3 pc/outils/vecteurs_controle.py --verifier
+          python3 pc/outils/vecteurs_accueil.py --verifier
+          python3 pc/outils/vecteurs_mission.py --verifier
+          python3 pc/outils/vecteurs_sons.py --verifier
+
+      - name: Rejeu des sorties dans un vrai bash (fiches et histoire du PC)
+        run: LC_ALL=C.UTF-8 python3 pc/outils/rejeu_bash.py
+
+      - name: Le terminal du jeu (Windows) comparé au vrai bash (fiches, syntaxe, petit git, Linux virtuel)
+        run: LC_ALL=C.UTF-8 python3 pc/outils/test_terminal.py
+
+      - name: L'histoire entière jouée dans le terminal du jeu (comme sous Windows)
+        run: LC_ALL=C.UTF-8 python3 pc/outils/rejeu_bash.py --terminal-du-jeu
+
+      - name: La même histoire dans le Linux virtuel de Windows (simulé ici, joué pour de vrai dans windows.yml)
+        run: TG_VSH_MODE=windows LC_ALL=C.UTF-8 python3 pc/outils/rejeu_bash.py --terminal-du-jeu
+
+      - name: Le mode classe (100 % local, aucun envoi, bilan, fiches)
+        run: |
+          set -o pipefail
+          LC_ALL=C.UTF-8 python3 pc/outils/test_classe.py 2>&1 | tee /tmp/classe.out || {
+            grep -E "✖|Error|Traceback|line [0-9]" /tmp/classe.out | head -20 | sed 's/^/::error::/'; exit 1; }
+
+      - name: L'accueil et l'aide (qui est avec toi, flèche, perdu, ls ?, indices, fin grisée, menus)
+        run: |
+          set -o pipefail
+          LC_ALL=C.UTF-8 python3 pc/outils/test_accueil.py 2>&1 | tee /tmp/accueil.out || {
+            grep -E "✖|Error|Traceback|line [0-9]" /tmp/accueil.out | head -20 | sed 's/^/::error::/'; exit 1; }
+      - name: Les sons (fabriqués en Python pur, mêmes échantillons que Kotlin, lecteur du système par l'entrée standard)
+        run: |
+          set -o pipefail
+          LC_ALL=C.UTF-8 python3 pc/outils/test_sons.py 2>&1 | tee /tmp/sons.out || {
+            grep -E "✖|Error|Traceback|line [0-9]" /tmp/sons.out | head -20 | sed 's/^/::error::/'; exit 1; }
+
+      - name: Ponts des Nombres et récompenses
+        run: python3 pc/outils/test_programme.py
+
+      - name: Le Port (réseau simulé, phare sur 127.0.0.1, traversée P0 → P11)
+        run: |
+          set -o pipefail
+          LC_ALL=C.UTF-8 python3 pc/outils/test_port.py 2>&1 | tee /tmp/port.out || {
+            grep -E "✖|Error|Traceback|line [0-9]" /tmp/port.out | head -20 | sed 's/^/::error::/'; exit 1; }
+
+      - name: Trois enfants traversent le Port (docs/simulations/rapport_port.md)
+        run: |
+          set -o pipefail
+          LC_ALL=C.UTF-8 python3 pc/outils/sim_port.py 2>&1 | tee /tmp/sim.out || {
+            grep -E "✖|Error|Traceback|line [0-9]" /tmp/sim.out | head -20 | sed 's/^/::error::/'; exit 1; }
+
+      - name: La Citadelle (cadenas, journaux, boîtes, vague ; tout reste dans le terrain)
+        run: |
+          set -o pipefail
+          LC_ALL=C.UTF-8 python3 pc/outils/test_citadelle.py 2>&1 | tee /tmp/cit.out || {
+            grep -E "✖|Error|Traceback|line [0-9]" /tmp/cit.out | head -20 | sed 's/^/::error::/'; exit 1; }
+
+      - name: Trois enfants défendent la Citadelle (docs/simulations/rapport_citadelle.md)
+        run: |
+          set -o pipefail
+          LC_ALL=C.UTF-8 python3 pc/outils/sim_citadelle.py 2>&1 | tee /tmp/simc.out || {
+            grep -E "✖|Error|Traceback|line [0-9]" /tmp/simc.out | head -20 | sed 's/^/::error::/'; exit 1; }
+
+      - name: La Crypte des Codes (codes, empreintes, coffres, gpg dans le terrain, chaîne de blocs)
+        run: |
+          set -o pipefail
+          LC_ALL=C.UTF-8 python3 pc/outils/test_crypte.py 2>&1 | tee /tmp/cry.out || {
+            grep -E "✖|Error|Traceback|line [0-9]" /tmp/cry.out | head -20 | sed 's/^/::error::/'; exit 1; }
+
+      - name: Trois enfants descendent dans la Crypte (docs/simulations/rapport_crypte.md)
+        run: |
+          set -o pipefail
+          LC_ALL=C.UTF-8 python3 pc/outils/sim_crypte.py 2>&1 | tee /tmp/simk.out || {
+            grep -E "✖|Error|Traceback|line [0-9]" /tmp/simk.out | head -20 | sed 's/^/::error::/'; exit 1; }
+
+      - name: La Salle des Machines (lecture seule, rien hors du terrain, aucune donnée personnelle)
+        run: |
+          set -o pipefail
+          LC_ALL=C.UTF-8 python3 pc/outils/test_machines.py 2>&1 | tee /tmp/mac.out || {
+            grep -E "✖|Error|Traceback|line [0-9]" /tmp/mac.out | head -20 | sed 's/^/::error::/'; exit 1; }
+
+      - name: Trois enfants visitent la Salle des Machines (docs/simulations/rapport_machines.md)
+        run: |
+          set -o pipefail
+          LC_ALL=C.UTF-8 python3 pc/outils/sim_machines.py 2>&1 | tee /tmp/simm.out || {
+            grep -E "✖|Error|Traceback|line [0-9]" /tmp/simm.out | head -20 | sed 's/^/::error::/'; exit 1; }
+
+      - name: La Tour des Ondes (lecture seule, le jeu n'émet jamais, aucun nom de réseau des voisins gardé)
+        run: |
+          set -o pipefail
+          LC_ALL=C.UTF-8 python3 pc/outils/test_ondes.py 2>&1 | tee /tmp/ond.out || {
+            grep -E "✖|Error|Traceback|line [0-9]" /tmp/ond.out | head -20 | sed 's/^/::error::/'; exit 1; }
+
+      - name: Trois enfants visitent la Tour des Ondes (docs/simulations/rapport_ondes.md)
+        run: |
+          set -o pipefail
+          LC_ALL=C.UTF-8 python3 pc/outils/sim_ondes.py 2>&1 | tee /tmp/simo.out || {
+            grep -E "✖|Error|Traceback|line [0-9]" /tmp/simo.out | head -20 | sed 's/^/::error::/'; exit 1; }
+
+      - name: La Guilde des Bâtisseurs Libres (tout reste dans le terrain, jamais de /dev, rien n'est poussé ni installé)
+        run: |
+          set -o pipefail
+          LC_ALL=C.UTF-8 python3 pc/outils/test_guilde.py 2>&1 | tee /tmp/gui.out || {
+            grep -E "✖|Error|Traceback|line [0-9]" /tmp/gui.out | head -20 | sed 's/^/::error::/'; exit 1; }
+
+      - name: Trois enfants visitent la Guilde des Bâtisseurs Libres (docs/simulations/rapport_guilde.md)
+        run: |
+          set -o pipefail
+          LC_ALL=C.UTF-8 python3 pc/outils/sim_guilde.py 2>&1 | tee /tmp/simg.out || {
+            grep -E "✖|Error|Traceback|line [0-9]" /tmp/simg.out | head -20 | sed 's/^/::error::/'; exit 1; }
+
+      - name: L'Observatoire de l'IA (aucune vraie IA, aucun réseau, rien hors du terrain, le danger n'est jamais lancé)
+        run: |
+          set -o pipefail
+          LC_ALL=C.UTF-8 python3 pc/outils/test_observatoire.py 2>&1 | tee /tmp/obs.out || {
+            grep -E "✖|Error|Traceback|line [0-9]" /tmp/obs.out | head -20 | sed 's/^/::error::/'; exit 1; }
+
+      - name: Trois enfants visitent l'Observatoire de l'IA (docs/simulations/rapport_observatoire.md)
+        run: |
+          set -o pipefail
+          LC_ALL=C.UTF-8 python3 pc/outils/sim_observatoire.py 2>&1 | tee /tmp/simob.out || {
+            grep -E "✖|Error|Traceback|line [0-9]" /tmp/simob.out | head -20 | sed 's/^/::error::/'; exit 1; }
+
+      - name: La Salle des Données (sa propre collection, awk et sqlite3 comparés aux vrais, rien hors du terrain)
+        run: |
+          set -o pipefail
+          LC_ALL=C.UTF-8 python3 pc/outils/test_donnees.py 2>&1 | tee /tmp/don.out || {
+            grep -E "✖|Error|Traceback|line [0-9]" /tmp/don.out | head -20 | sed 's/^/::error::/'; exit 1; }
+
+      - name: toybox (les outils du téléphone), compilé depuis ses sources
+        run: |
+          git clone -q --depth 1 --branch 0.8.11 https://github.com/landley/toybox /tmp/toybox
+          make -C /tmp/toybox defconfig >/dev/null
+          # comme sur Android : tr (encore « pending » dans la configuration par défaut) ; diff est intégré à l'appli
+          sed -i 's/^# CONFIG_TR is not set/CONFIG_TR=y/' /tmp/toybox/.config
+          make -C /tmp/toybox -j4 toybox >/dev/null
+          mkdir -p "$HOME/.local/bin" && cp /tmp/toybox/toybox "$HOME/.local/bin/"
+          echo "$HOME/.local/bin" >> "$GITHUB_PATH"
+
+      - name: Les commandes de la Salle des Données avec toybox (téléphone) et busybox, comparées aux outils GNU
+        run: |
+          set -o pipefail
+          LC_ALL=C.UTF-8 python3 pc/outils/test_donnees_outils.py --exiger toybox,busybox 2>&1 | tee /tmp/dnout.out || {
+            grep -E "✖|Error|Traceback|line [0-9]" /tmp/dnout.out | head -20 | sed 's/^/::error::/'; exit 1; }
+
+      - name: La Forge (recettes, Python, jeu, site sur 127.0.0.1, multimédia ; rien hors du terrain)
+        run: |
+          set -o pipefail
+          LC_ALL=C.UTF-8 python3 pc/outils/test_forge.py 2>&1 | tee /tmp/forge.out || {
+            grep -E "✖|Error|Traceback|line [0-9]" /tmp/forge.out | head -20 | sed 's/^/::error::/'; exit 1; }
+
+      - name: Les commandes de la Forge avec mksh et toybox (téléphone) et busybox, comparées aux outils GNU
+        run: |
+          set -o pipefail
+          LC_ALL=C.UTF-8 python3 pc/outils/test_forge_outils.py --exiger toybox,mksh 2>&1 | tee /tmp/foout.out || {
+            grep -E "✖|Error|Traceback|line [0-9]" /tmp/foout.out | head -20 | sed 's/^/::error::/'; exit 1; }
+
+      - name: Trois enfants visitent la Forge (docs/simulations/rapport_forge.md)
+        run: |
+          set -o pipefail
+          LC_ALL=C.UTF-8 python3 pc/outils/sim_forge.py 2>&1 | tee /tmp/simfo.out || {
+            grep -E "✖|Error|Traceback|line [0-9]" /tmp/simfo.out | head -20 | sed 's/^/::error::/'; exit 1; }
+
+      - name: Trois enfants visitent la Salle des Données (docs/simulations/rapport_donnees.md)
+        run: |
+          set -o pipefail
+          LC_ALL=C.UTF-8 python3 pc/outils/sim_donnees.py 2>&1 | tee /tmp/simdn.out || {
+            grep -E "✖|Error|Traceback|line [0-9]" /tmp/simdn.out | head -20 | sed 's/^/::error::/'; exit 1; }
+
+      - name: L'Atelier (le robot simulé, la vraie boucle et le vrai cerveau.sh, aucun matériel, toybox / busybox / dash)
+        run: |
+          set -o pipefail
+          LC_ALL=C.UTF-8 python3 pc/outils/test_atelier.py 2>&1 | tee /tmp/ate.out || {
+            grep -E "✖|Error|Traceback|line [0-9]" /tmp/ate.out | head -20 | sed 's/^/::error::/'; exit 1; }
+
+      - name: Trois enfants visitent l'Atelier (docs/simulations/rapport_atelier.md)
+        run: |
+          set -o pipefail
+          LC_ALL=C.UTF-8 python3 pc/outils/sim_atelier.py 2>&1 | tee /tmp/simat.out || {
+            grep -E "✖|Error|Traceback|line [0-9]" /tmp/simat.out | head -20 | sed 's/^/::error::/'; exit 1; }
+
+      - name: Le Sommet (scripts du jeu dans bash et busybox sh, regex, one-liners, CTF ; rien hors du terrain)
+        run: |
+          set -o pipefail
+          LC_ALL=C.UTF-8 python3 pc/outils/test_sommet.py 2>&1 | tee /tmp/som.out || {
+            grep -E "✖|Error|Traceback|line [0-9]" /tmp/som.out | head -20 | sed 's/^/::error::/'; exit 1; }
+
+      - name: Les commandes du Sommet avec toybox (téléphone) et busybox, comparées aux outils GNU
+        run: |
+          set -o pipefail
+          LC_ALL=C.UTF-8 python3 pc/outils/test_sommet_outils.py --exiger toybox,busybox 2>&1 | tee /tmp/somout.out || {
+            grep -E "✖|Error|Traceback|line [0-9]" /tmp/somout.out | head -20 | sed 's/^/::error::/'; exit 1; }
+
+      - name: Trois enfants gravissent le Sommet (docs/simulations/rapport_sommet.md)
+        run: |
+          set -o pipefail
+          LC_ALL=C.UTF-8 python3 pc/outils/sim_sommet.py 2>&1 | tee /tmp/simsom.out || {
+            grep -E "✖|Error|Traceback|line [0-9]" /tmp/simsom.out | head -20 | sed 's/^/::error::/'; exit 1; }
+      - name: La Bibliothèque du Temps (vrai git, dépôts dans le terrain, identité d'exemple locale, jamais de --global ni de push)
+        run: |
+          set -o pipefail
+          git --version
+          LC_ALL=C.UTF-8 python3 pc/outils/test_temps.py 2>&1 | tee /tmp/tmp.out || {
+            grep -E "✖|Error|Traceback|line [0-9]" /tmp/tmp.out | head -20 | sed 's/^/::error::/'; exit 1; }
+
+      - name: Trois enfants visitent la Bibliothèque du Temps (docs/simulations/rapport_temps.md)
+        run: |
+          set -o pipefail
+          LC_ALL=C.UTF-8 python3 pc/outils/sim_temps.py 2>&1 | tee /tmp/simtp.out || {
+            grep -E "✖|Error|Traceback|line [0-9]" /tmp/simtp.out | head -20 | sed 's/^/::error::/'; exit 1; }
+
+      - name: Les deux commandes délicates de la Bibliothèque avec toybox (téléphone) - printf \0 et sed \{7\}
+        run: |
+          a=$(toybox printf 'blob 6\0temps\n' | toybox sha1sum | cut -d' ' -f1)
+          b=$(printf 'temps\n' | git hash-object --stdin)
+          echo "toybox : $a   git : $b"
+          [ "$a" = "$b" ] || { echo "::error::toybox printf 'blob 6\\0temps\\n' | sha1sum ne donne pas l'empreinte de git"; exit 1; }
+          printf 'Jour 1\n<<<<<<< HEAD\nJour 2 : balade\n=======\nJour 2 : reve\n>>>>>>> reve\n' > /tmp/chronique.txt
+          toybox sed -i '/^[<=>]\{7\}/d' /tmp/chronique.txt
+          cat /tmp/chronique.txt
+          [ "$(cat /tmp/chronique.txt)" = "$(printf 'Jour 1\nJour 2 : balade\nJour 2 : reve')" ] || {
+            echo "::error::toybox sed -i '/^[<=>]\\{7\\}/d' n'enlève pas exactement les 3 bornes"; exit 1; }
+
+      - name: Le monde des biomes et les effets des commandes (vecteurs Python = Kotlin = JS, vrai terrain, bash)
+        run: |
+          set -o pipefail
+          LC_ALL=C.UTF-8 python3 pc/outils/test_effets.py 2>&1 | tee /tmp/efx.out || {
+            grep -E "✗|Error|Traceback|line [0-9]" /tmp/efx.out | head -20 | sed 's/^/::error::/'; exit 1; }
+          LC_ALL=C.UTF-8 python3 pc/outils/test_monde.py 2>&1 | tee /tmp/monde.out || {
+            grep -E "✗|Error|Traceback|line [0-9]" /tmp/monde.out | head -20 | sed 's/^/::error::/'; exit 1; }
+
+      - name: Le Poste de Contrôle (lecture seule sur la vraie machine, seuls les processus du jeu sont arrêtés, rien hors du terrain)
+        run: |
+          set -o pipefail
+          LC_ALL=C.UTF-8 python3 pc/outils/test_controle.py 2>&1 | tee /tmp/ctl.out || {
+            grep -E "✖|Error|Traceback|line [0-9]" /tmp/ctl.out | head -20 | sed 's/^/::error::/'; exit 1; }
+
+      - name: Trois enfants visitent le Poste de Contrôle (docs/simulations/rapport_controle.md)
+        run: |
+          set -o pipefail
+          LC_ALL=C.UTF-8 python3 pc/outils/sim_controle.py 2>&1 | tee /tmp/simct.out || {
+            grep -E "✖|Error|Traceback|line [0-9]" /tmp/simct.out | head -20 | sed 's/^/::error::/'; exit 1; }

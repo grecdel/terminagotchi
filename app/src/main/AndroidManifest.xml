@@ -2,9 +2,12 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android">
 
     <uses-permission android:name="android.permission.INTERNET" />
-    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.VIBRATE" />
     <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
+    <!-- la bulle : la créature se promène par-dessus les autres applis (demandé avec une explication, commande `bulle`) -->
+    <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW" />
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE_SPECIAL_USE" />
 
     <!-- Pour que « ouvre » et « applis » voient les applis installées (Android 11+) -->
     <queries>
@@ -25,12 +28,16 @@
         android:networkSecurityConfig="@xml/network_security_config"
         android:theme="@style/Theme.Terminal">
 
+        <!-- configChanges : tourner le téléphone (ou brancher un clavier) ne recrée pas l'écran, les onglets du terminal,
+             la commande qui tourne et le texte affiché restent tels quels ; les autres recréations sont rattrapées par
+             onSaveInstanceState (Onglets.etat) -->
         <activity
             android:name=".TerminalActivity"
             android:exported="true"
             android:excludeFromRecents="true"
             android:launchMode="singleTask"
             android:taskAffinity=""
+            android:configChanges="orientation|screenSize|screenLayout|smallestScreenSize|keyboardHidden|keyboard|navigation"
             android:theme="@style/Theme.Terminal"
             android:windowSoftInputMode="adjustResize|stateAlwaysVisible">
             <intent-filter>
@@ -55,6 +62,11 @@
             android:name=".Rappels"
             android:exported="false" />
 
+        <!-- les boutons de la notification en direct (Nourrir, Caresser) -->
+        <receiver
+            android:name=".NotifVie"
+            android:exported="false" />
+
         <receiver
             android:name=".WidgetCreature"
             android:exported="true">
@@ -65,5 +77,15 @@
                 android:name="android.appwidget.provider"
                 android:resource="@xml/widget_info" />
         </receiver>
+
+        <!-- la bulle et l'île (BulleService.kt) : au premier plan, avec sa notification « La ranger » -->
+        <service
+            android:name=".BulleService"
+            android:exported="false"
+            android:foregroundServiceType="specialUse">
+            <property
+                android:name="android.app.PROPERTY_SPECIAL_USE_FGS_SUBTYPE"
+                android:value="Compagnon virtuel (tamagotchi) affiché par-dessus les autres applications, à la demande de la personne qui joue" />
+        </service>
     </application>
 </manifest>

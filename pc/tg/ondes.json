@@ -1,0 +1,410 @@
+{
+ "version": 1,
+ "note": "La Tour des Ondes (la radio, LoRa et les réseaux maillés, docs/programme.md § 7.11). Lu par pc/tg/ondes.py et app/…/Ondes.kt (copies pc/tg/ondes.json et app/src/main/assets/ondes.json, identiques). RÈGLE : écouter est libre, émettre est réglementé ; le jeu n'émet JAMAIS lui-même. Sur la vraie machine, on LIT seulement (nmcli radio, rfkill list, iw dev, nmcli … --rescan no) : jamais de sudo, aucune modification de la configuration radio (ni rfkill block, ni connexion, ni appairage). Les réseaux et appareils des voisins (noms, adresses MAC) ne sont JAMAIS enregistrés, envoyés ni réaffichés par le jeu : il ne garde que des grandeurs anonymes (canal, bande, force du signal, nombre de réseaux), le temps d'un calcul. W5 (Meshtastic) et W6 (radio logicielle, réception seulement) sont facultatifs, avec un adulte, jamais exigés : sans matériel, ils se racontent. Aucune marque, aucun prix, aucun lien d'achat. Le maillage du Terminaworld reprend les machines du Port (port.json) : c'est une simulation locale, rien ne passe sur une vraie radio.",
+ "vitesse": 300000000,
+ "onde": {
+  "note": "les fréquences proposées par « ondes onde » (en Hz) ; le mur : affaiblissement indicatif en dB par mur selon la matière et la fréquence (ordre de grandeur, la vraie valeur dépend du mur)",
+  "frequences": {
+   "fm": 100000000,
+   "lora": 868000000,
+   "gps": 1575420000,
+   "wifi24": 2400000000,
+   "cinqg": 3500000000,
+   "wifi5": 5000000000
+  },
+  "murs": {
+   "bois": {
+    "wifi24": 3,
+    "wifi5": 5,
+    "lora": 2
+   },
+   "brique": {
+    "wifi24": 6,
+    "wifi5": 10,
+    "lora": 4
+   },
+   "beton": {
+    "wifi24": 12,
+    "wifi5": 20,
+    "lora": 8
+   }
+  }
+ },
+ "spectre": {
+  "note": "la règle du spectre (fréquences centrales en Hz, de la plus basse à la plus haute) ; « regle » : les six à ranger ; « libre » : bande libre (l, sans licence individuelle, avec des limites) ou réservée (r)",
+  "techs": [
+   {
+    "id": "fm",
+    "hz": 100000000,
+    "bande": "87,5 – 108 MHz",
+    "libre": "r"
+   },
+   {
+    "id": "lora",
+    "hz": 868000000,
+    "bande": "863 – 870 MHz",
+    "libre": "l"
+   },
+   {
+    "id": "quatreg",
+    "hz": 1800000000,
+    "bande": "700 MHz – 2,6 GHz",
+    "libre": "r"
+   },
+   {
+    "id": "gps",
+    "hz": 1575420000,
+    "bande": "1575,42 MHz",
+    "libre": "r"
+   },
+   {
+    "id": "bluetooth",
+    "hz": 2440000000,
+    "bande": "2,400 – 2,4835 GHz",
+    "libre": "l"
+   },
+   {
+    "id": "wifi24",
+    "hz": 2440000000,
+    "bande": "2,400 – 2,4835 GHz",
+    "libre": "l"
+   },
+   {
+    "id": "cinqg",
+    "hz": 3500000000,
+    "bande": "3,4 – 3,8 GHz",
+    "libre": "r"
+   },
+   {
+    "id": "wifi5",
+    "hz": 5500000000,
+    "bande": "5,15 – 5,85 GHz",
+    "libre": "l"
+   },
+   {
+    "id": "wifi6",
+    "hz": 6400000000,
+    "bande": "5,945 – 6,425 GHz",
+    "libre": "l"
+   }
+  ],
+  "regle": [
+   "fm",
+   "lora",
+   "gps",
+   "bluetooth",
+   "cinqg",
+   "wifi5"
+  ],
+  "libre": [
+   "wifi24",
+   "bluetooth",
+   "lora",
+   "fm",
+   "gps",
+   "quatreg"
+  ]
+ },
+ "lora": {
+  "note": "temps d'émission d'un message LoRa (Semtech, AN1200.13) : largeur de bande 125 kHz, codage 4/5, préambule de 8 symboles, en-tête explicite, CRC ; « optimisation bas débit » à partir de SF11. Portées INDICATIVES (en vue directe, collines) : la vraie portée dépend du relief, des antennes et de la météo.",
+  "bw": 125000,
+  "cr": 1,
+  "preambule": 8,
+  "octets": 10,
+  "facteurs": [
+   7,
+   8,
+   9,
+   10,
+   11,
+   12
+  ],
+  "portee_m": {
+   "7": 2000,
+   "8": 3000,
+   "9": 4500,
+   "10": 6000,
+   "11": 8000,
+   "12": 11000
+  },
+  "vallees_m": [
+   3500,
+   5000,
+   7000,
+   9500
+  ],
+  "cycle_pour_mille": 10,
+  "heure_s": 3600,
+  "puissance_mw": 25
+ },
+ "choix": {
+  "note": "LoRaWAN (p : passerelle) ou maillage direct (m) ?",
+  "situations": [
+   {
+    "id": "ville",
+    "rep": "p"
+   },
+   {
+    "id": "randonnee",
+    "rep": "m"
+   },
+   {
+    "id": "tempete",
+    "rep": "m"
+   },
+   {
+    "id": "compteur",
+    "rep": "p"
+   }
+  ]
+ },
+ "maillage": {
+  "note": "le réseau simulé du Terminaworld en mode maillé : les machines du Port (port.json) deviennent des nœuds radio ; un lien = deux nœuds à portée l'un de l'autre (les liens du Port + ceux des voisins proches sur la carte). Le message est répété par chaque nœud qui l'entend (inondation gérée, comme Meshtastic) : le premier arrivé gagne, c'est le chemin le plus court en sauts. On ne peut couper ni le camp ni la cible.",
+  "liens_radio": [
+   [
+    "eau",
+    "roche"
+   ],
+   [
+    "glace",
+    "plante"
+   ],
+   [
+    "glace",
+    "ombre"
+   ],
+   [
+    "glace",
+    "poison"
+   ]
+  ],
+  "sauts_max": 7,
+  "sauts_defaut": 3,
+  "cibles": [
+   "ombre",
+   "machine",
+   "feu",
+   "poison"
+  ],
+  "coupes_defi": 3
+ },
+ "ciel": {
+  "note": "W6 : des avions et des capteurs FICTIFS (aucune immatriculation, aucun indicatif, aucun identifiant de capteur gardé) ; positions sur la carte du Terminaworld (0-1), altitude en mètres, vitesse en km/h",
+  "avions": [
+   {
+    "x": 0.12,
+    "y": 0.2,
+    "cap": 80,
+    "altitude": 10600,
+    "vitesse": 830
+   },
+   {
+    "x": 0.7,
+    "y": 0.62,
+    "cap": 250,
+    "altitude": 3200,
+    "vitesse": 420
+   },
+   {
+    "x": 0.48,
+    "y": 0.9,
+    "cap": 15,
+    "altitude": 11300,
+    "vitesse": 870
+   }
+  ],
+  "capteurs": [
+   {
+    "time": "2026-11-01 08:00:02",
+    "model": "Exemple-Thermo",
+    "id": 4021,
+    "channel": 1,
+    "battery_ok": 1,
+    "temperature_C": 7.4,
+    "humidity": 81
+   },
+   {
+    "time": "2026-11-01 08:00:31",
+    "model": "Exemple-Thermo",
+    "id": 777,
+    "channel": 2,
+    "battery_ok": 1,
+    "temperature_C": 19.8,
+    "humidity": 52
+   },
+   {
+    "time": "2026-11-01 08:01:05",
+    "model": "Exemple-Pluie",
+    "id": 1312,
+    "channel": 1,
+    "battery_ok": 0,
+    "rain_mm": 12.5
+   },
+   {
+    "time": "2026-11-01 08:01:40",
+    "model": "Exemple-Thermo",
+    "id": 4021,
+    "channel": 1,
+    "battery_ok": 1,
+    "temperature_C": 7.6,
+    "humidity": 80
+   }
+  ]
+ },
+ "radios": {
+  "note": "les types de /sys/class/rfkill/*/type (noyau Linux) et ce qu'ils sont",
+  "types": [
+   "wlan",
+   "bluetooth",
+   "wwan",
+   "gps",
+   "fm",
+   "nfc",
+   "uwb",
+   "wimax",
+   "wigig"
+  ]
+ },
+ "antennes": {
+  "note": "les commandes qui touchent une radio (vue déployée, surveillance) : la radio, et le sens — lit : lecture seule ; cherche : un balayage actif (la carte radio envoie des appels) ; change : modifie la radio (jamais dans le jeu) ; ecoute : réception seule (SDR) ; emet : émission (avec un adulte, W5) ; simule : le maillage du jeu (rien sur une vraie radio). La première règle qui correspond gagne.",
+  "regles": [
+   {
+    "motif": "^rfkill\\s+(block|unblock|toggle)\\b",
+    "radio": "toutes",
+    "sens": "change"
+   },
+   {
+    "motif": "^nmcli\\b.*\\b(connect|disconnect|off|on|delete|modify|up|down|hotspot|add)\\b",
+    "radio": "wifi",
+    "sens": "change"
+   },
+   {
+    "motif": "^bluetoothctl\\b.*\\b(pair|connect|trust|power|discoverable|pairable|remove)\\b",
+    "radio": "bluetooth",
+    "sens": "change"
+   },
+   {
+    "motif": "^nmcli\\b.*\\brescan\\b(?!\\s+no\\b)",
+    "radio": "wifi",
+    "sens": "cherche"
+   },
+   {
+    "motif": "^iw\\b.*\\bscan\\b",
+    "radio": "wifi",
+    "sens": "cherche"
+   },
+   {
+    "motif": "^bluetoothctl\\b.*\\bscan\\b",
+    "radio": "bluetooth",
+    "sens": "cherche"
+   },
+   {
+    "motif": "^nmcli\\b.*\\bwifi\\b.*\\blist\\b(?!.*--rescan\\s+no\\b)",
+    "radio": "wifi",
+    "sens": "cherche"
+   },
+   {
+    "motif": "^nmcli\\b",
+    "radio": "wifi",
+    "sens": "lit"
+   },
+   {
+    "motif": "^(iw|iwconfig)\\b",
+    "radio": "wifi",
+    "sens": "lit"
+   },
+   {
+    "motif": "^rfkill\\b",
+    "radio": "toutes",
+    "sens": "lit"
+   },
+   {
+    "motif": "^bluetoothctl\\b",
+    "radio": "bluetooth",
+    "sens": "lit"
+   },
+   {
+    "motif": "^(tg\\s+)?(ondes\\s+)?mesh-(envoie|coupe|route)\\b",
+    "radio": "lora",
+    "sens": "simule"
+   },
+   {
+    "motif": "^meshtastic\\b.*--(sendtext|set|setchan|reboot|factory-reset)\\b",
+    "radio": "lora",
+    "sens": "emet"
+   },
+   {
+    "motif": "^meshtastic\\b",
+    "radio": "lora",
+    "sens": "lit"
+   },
+   {
+    "motif": "^(rtl_test|rtl_fm|rtl_433|rtl_sdr|dump1090)\\b",
+    "radio": "sdr",
+    "sens": "ecoute"
+   }
+  ]
+ },
+ "couleurs": {
+  "fm": 213,
+  "lora": 141,
+  "quatreg": 117,
+  "gps": 229,
+  "bluetooth": 75,
+  "wifi24": 78,
+  "cinqg": 81,
+  "wifi5": 215,
+  "wifi6": 203,
+  "wifi": 78,
+  "toutes": 250,
+  "sdr": 229
+ },
+ "carte": {
+  "note": "positions des lieux de la Tour sur son plan (0-1), PC et Android",
+  "porte": [
+   0.5,
+   0.92
+  ],
+  "antennes": [
+   0.5,
+   0.12
+  ],
+  "spectre": [
+   0.2,
+   0.35
+  ],
+  "vallee": [
+   0.8,
+   0.35
+  ],
+  "maillage": [
+   0.5,
+   0.55
+  ],
+  "ciel": [
+   0.8,
+   0.75
+  ],
+  "atelier": [
+   0.2,
+   0.75
+  ]
+ },
+ "exemple_canaux": [
+  2412,
+  2437,
+  2437,
+  2462,
+  2412,
+  2462,
+  2437,
+  2442,
+  2412,
+  5180,
+  5220,
+  5500,
+  5745,
+  2437
+ ],
+ "note_exemple_canaux": "« ondes canaux » sans nmcli (téléphone, machine sans Wi-Fi) : un quartier d'EXEMPLE, fictif (des fréquences en MHz, rien d'autre)"
+}

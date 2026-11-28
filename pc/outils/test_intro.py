@@ -1,0 +1,614 @@
+"""Test de l'introduction et du déblocage progressif (PC) : écrans du début, l'œuf et sa liste de commandes, ses
+réactions et l'éclosion, l'écran « merci », la table de déblocage (intro.json), « pas encore », la migration des
+anciennes parties, `tg debloquer tout`, l'invite du shell, le guide à l'écran principal, les régions gardées sur la
+carte, et les 14 langues.
+
+    python3 pc/outils/test_intro.py          (crée son propre HOME temporaire)
+
+Les mêmes règles sont testées sur Android par tests/jvm/Intro.kt.
+"""
+import builtins
+import io
+import json
+import os
+import re
+import sys
+import tempfile
+import time
+from contextlib import redirect_stdout
+from pathlib import Path
+
+os.environ["HOME"] = tempfile.mkdtemp(prefix="tg_intro_")
+os.environ["LANG"] = "fr_FR.UTF-8"
+os.environ["TG_COULEURS"] = "24"            # les images en couleurs vraies, quel que soit le terminal des tests
+os.environ["TG_SANS_ANIM"] = "1"
+os.environ.pop("HISTFILE", None)
+RACINE = Path(__file__).resolve().parents[2]
+sys.path.insert(0, str(RACINE / "pc"))
+
+from tg.langue import largeur  # noqa: E402
+from tg import (accueil, app, bestiaire as B, compagnon, core, guide as G, histoire, intro, langue, maison,  # noqa: E402
+                parties)
+
+HOME = Path.home()
+ANSI = re.compile(r"\x1b\[[0-9;?]*[A-Za-z]")
+ok = ko = 0
+
+
+def verifier(cond, msg):
+    global ok, ko
+    ok, ko = (ok + 1, ko) if cond else (ok, ko + 1)
+    print(("  ✔ " if cond else "  ✖ ") + msg)
+
+
+def propre(x):
+    x = "\n".join(x) if isinstance(x, list) else str(x)
+    return langue.sans_marques(ANSI.sub("", x))
+
+
+def plat(x):
+    """Le texte sur une seule ligne (les phrases sont coupées à l'écran)."""
+    return re.sub(r"\s+", " ", propre(x))
+
+
+def tape(*cmds):
+    """L'enfant tape des commandes dans son terminal (l'historique du shell), puis une étape de jeu."""
+    with open(HOME / ".bash_history", "a", encoding="utf-8") as f:
+        for c in cmds:
+            f.write(c + "\n")
+    return app.etape(spontane=False, defis=False)
+
+
+def lancer(*argv):
+    """`tg …` : ce que la commande affiche."""
+    vieux = sys.argv
+    sys.argv = ["tg", *argv]
+    buf = io.StringIO()
+    try:
+        with redirect_stdout(buf):
+            app.main()
+    finally:
+        sys.argv = vieux
+    return buf.getvalue()
+
+
+FR = langue._charger("fr")
+
+
+def cles_affichees(texte):
+    return [k for k in re.findall(r"\b[a-z_]+(?:\.[\w-]+)+\b", propre(texte)) if k in FR]
+
+
+print("1. Les données : une seule source (donnees/intro.json), recopiée à l'identique")
+src = (RACINE / "donnees" / "intro.json").read_text(encoding="utf-8")
+verifier((RACINE / "pc" / "tg" / "intro.json").read_text(encoding="utf-8") == src, "pc/tg/intro.json = donnees/intro.json")
+verifier((RACINE / "app" / "src" / "main" / "assets" / "intro.json").read_text(encoding="utf-8") == src,
+         "app/src/main/assets/intro.json = donnees/intro.json")
+D = json.loads(src)
+ids = [f["id"] for f in D["deblocages"]]
+verifier(len(ids) == len(set(ids)) and ids[0] == "histoire", f"{len(ids)} fonctions, l'histoire d'abord : {', '.join(ids)}")
+attendues = {"histoire", "envies", "carte", "lexique", "quetes", "combats", "extras", "equipe", "entrainement", "compte",
+             "biomes", "donjon"}
+verifier(attendues <= set(ids), "toutes les fonctions du jeu sont dans la table (envies, carte, lexique, quêtes, équipe…)")
+toutes = [c for f in D["deblocages"] for c in f["commandes"]]
+verifier(len(toutes) == len(set(toutes)), "chaque commande appartient à une seule fonction")
+verifier(all(f["quand"].get("eclos") for f in D["deblocages"]), "rien ne s'ouvre avant l'éclosion")
+connues = {"eclos", "niveau", "lecons", "chapitres", "ailes", "captures", "apres"}
+verifier(all(set(f["quand"]) <= connues for f in D["deblocages"]), "les conditions sont toutes connues : " + ", ".join(sorted(connues)))
+lecons_hist = {l for c in histoire.CHAPITRES for l in c["lecons"]}
+verifier(all(l in lecons_hist for f in D["deblocages"] for l in f["quand"].get("lecons", [])),
+         "les leçons de la table existent dans l'histoire")
+verifier(all(c in histoire.PAR_CHAP for f in D["deblocages"] for c in f["quand"].get("chapitres", [])),
+         "les chapitres de la table existent")
+verifier(all(f["id"] == "histoire" or (f"deb.{f['id']}.titre" in FR and f"deb.{f['id']}.texte" in FR and f["cmd_pc"] and f["cmd_tel"])
+             for f in D["deblocages"]), "chaque fonction a son titre, son texte et ses commandes PC / Android")
+verifier(len(D["checklist"]) == 4 and [c["id"] for c in D["checklist"]] == ["pwd", "ls", "echo", "whoami"],
+         "la liste de l'œuf : pwd, ls, echo, whoami (des commandes que tous les shells connaissent)")
+for c in D["checklist"]:
+    verifier(re.search(c["re"], intro.commande_de(c), re.I) is not None, f"« {intro.commande_de(c)} » est reconnue par sa règle")
+verifier(intro.nom_echo("echo") is None and intro.nom_echo("echo bonjour") is None and intro.nom_echo("echo Noisette") == "Noisette",
+         "« echo » tout seul ou « echo bonjour » ne donnent pas de nom ; « echo Noisette » oui")
+V = json.loads((RACINE / "donnees" / "intro_noms.json").read_text(encoding="utf-8"))["cas"]
+mauvais = [c for c in V if intro.nom_echo(c["ligne"]) != c["nom"]]
+verifier(len(V) >= 25 and not mauvais, f"les {len(V)} vecteurs communs des noms (donnees/intro_noms.json, aussi tests/jvm/Intro.kt)"
+         + (f" : {mauvais[:2]}" if mauvais else ""))
+
+print("2. Les 3 écrans du début : le monde (biomes nommés), tout s'endort, les gardiens ; Entrée = suite, p = passer")
+reponses = iter(["", "", ""])
+invites = []
+with redirect_stdout(io.StringIO()) as buf:
+    nom = intro.jouer_ecrans(lambda _invite="": (invites.append(_invite), next(reponses))[1])
+ecrans = buf.getvalue()
+verifier(nom is None and len(invites) == 3, "3 fois Entrée : les 3 écrans, et le nom n'est PLUS demandé avant de jouer")
+p = propre(ecrans)
+for k in (1, 2, 3):
+    verifier(langue.t(f"intro.e.titre.{k}") in p, f"écran {k} : « {langue.t(f'intro.e.titre.{k}')} »")
+verifier(all(x in p for x in ("Feu", "Eau", "Glace", "Plante", "Roche", langue.t("intro.monde.arbre"))),
+         "écran 1 : le nom des biomes est posé sur l'image du monde (Feu, Eau, Glace… l'Arbre-Racine)")
+verifier("Abyssor" in plat(ecrans) and langue.t("intro.gardiens.coeur") in p, "écran 3 : les gardiens dorment, Abyssor sous le cœur du monde")
+verifier(ecrans.count("▀") > 3 * 1500, "chaque écran a son illustration en demi-blocs (le monde, endormi, les gardiens)")
+verifier("1/8" in p and "3/8" in p, "les 8 cases de l'intro : 1/8, 2/8, 3/8 (puis 5 cases au camp)")
+verifier(not any(x in p for x in ("Donne-lui", "appeler ton œuf", "nom ?")), "aucun écran ne parle encore de l'œuf ni de son nom")
+from tg import scenes as SC0  # noqa: E402
+g0 = SC0.gardiens(96, 54)
+sombres = sum(1 for q in g0 if q == (36, 30, 62))
+verifier(len(g0) == 96 * 54 and sombres > 60 and not any(q[0] > 200 and q[1] < 80 for q in g0),
+         f"les gardiens : les vrais dessins (bébés des biomes endormis, Abyssor en silhouette sombre : {sombres} pixels), rien de rouge")
+with redirect_stdout(io.StringIO()):
+    r = iter(["p"])
+    verifier(intro.jouer_ecrans(lambda _i="": next(r)) is None, "p : passer l'intro (aucun nom demandé)")
+    # simulation de Tom (P1-6) : un mot tapé sur un écran fait juste passer au suivant
+    r = iter(["jouer", "Pixou", "oui"])
+    verifier(intro.jouer_ecrans(lambda _i="": next(r)) is None, "un mot tapé sur un écran n'est jamais un nom")
+
+print("3. Nouvelle partie : l'œuf seul, l'invite et la liste")
+(HOME / ".bash_history").touch()
+reponses = iter(["1", "", "", ""])   # 1 : « je joue seul » (idée 1, « Qui est avec toi ? »), puis les 3 écrans
+builtins.input = lambda _invite="": next(reponses)
+with redirect_stdout(io.StringIO()):
+    app.creer_si_besoin(avec_intro=True)
+st = core.load()
+core.migrate(st)
+verifier(st["name"] == langue.t("intro.nom.attente") and not intro.nomme(st), "pas encore de nom : la partie s'appelle « Œuf »")
+verifier(not any("œuf est apparu" in l for l in st["log"]), "pas encore d'œuf (il arrive avec ls)")
+verifier(intro.en_cours(st) and st["debloc"]["mode"] == "progressif" and not st["debloc"]["ouverts"],
+         "l'intro est en cours, rien n'est encore ouvert")
+ecran = app.render(st, 0, True)
+pe = plat(ecran)
+verifier(all(intro.commande_de(c) in pe for c in D["checklist"]), "l'écran montre la liste : pwd, ls, echo Noisette, whoami")
+verifier("0/4" in pe and langue.t("intro.astuce.0") in pe, "0/4 et la première astuce (taper la commande en vert, Entrée)")
+verifier(langue.t("intro.c4.titre") in pe and "4/8" not in pe and "Œuf" not in pe.split(langue.t("intro.c4.titre"))[0],
+         "case 4 : « Une petite lumière » (tape pwd), sans nom ni œuf au-dessus")
+verifier(langue.t("intro.ou.pc") in pe, "où taper (l'invite de commande, après le $)")
+verifier(langue.t("app.digere", os="x").split("(")[0].strip() not in pe and "INT" not in pe,
+         "rien d'autre : ni les statistiques, ni ce que la créature digère")
+verifier("`" not in ANSI.sub("", langue.rendre(ecran)), "les commandes sont en vert (plus aucun ` à l'écran)")
+for cmd in ("carte", "quetes", "envies", "guide", "entrainement", "compte", "lexique", "defi"):
+    sortie = propre(lancer(cmd))
+    verifier(f"🔒 {cmd} : pas encore" in sortie and "Traceback" not in sortie, f"`tg {cmd}` : « pas encore » (jamais une erreur)")
+verifier("[m]" not in propre(app.touches(st)) and "[o]" in propre(app.touches(st)),
+         "le pied de la fenêtre cache les touches des fonctions fermées ([m] carte…), garde [o] options")
+
+print("4. Dans l'ordre : pwd rallume le camp, ls fait arriver l'œuf, echo <nom> le nomme, whoami le fait éclore")
+st = tape("ls")
+verifier(st["intro"]["faits"] == [] and intro.en_cours(st), "ls avant pwd : juste une commande (la liste se fait dans l'ordre)")
+st = tape("pwd")
+verifier(st["intro"]["faits"] == ["pwd"] and st["anim"][0] == "oeuf_1" and st["intro"].get("eveil"), "pwd : le camp se rallume (oeuf_1)")
+verifier(core.stage(core.level(st["xp"])) == 0, "il ne grandit pas encore")
+e5 = plat(app.render(st, 1, True))
+verifier(langue.t("intro.astuce.1") in e5, "2e astuce : une erreur, ce n'est pas grave")
+verifier(langue.t("intro.c5.titre") in plat(intro.lignes_ecran_oeuf(st, quand=time.time() + 10)), "case 5 : « Le camp se rallume ! » (tape ls)")
+st = tape("blablabla")
+verifier(st["intro"]["erreur"] and langue.t("intro.astuce.erreur") in plat(app.render(st, 2, True)),
+         "une commande inconnue : l'astuce dit que ce n'est pas grave")
+st = tape("echo Noisette")
+verifier(st["intro"]["faits"] == ["pwd"] and not intro.nomme(st), "echo avant ls : pas de nom (l'œuf n'est pas encore là)")
+st = tape("ls", "date", "uname", "hostname", "id", "df", "cal")
+verifier(st["intro"]["faits"] == ["pwd", "ls"] and st["xp"] <= 9 and core.level(st["xp"]) == 1,
+         f"ls : l'œuf arrive ; plein d'autres commandes : il garde ses 9 XP au plus ({st['xp']})")
+verifier(st["anim"][0] == "oeuf_2" and any("œuf est apparu" in l for l in st["log"]), "ls : l'œuf arrive dans le nid (oeuf_2), noté au journal")
+verifier(langue.t("intro.astuce.2") in plat(app.render(st, 3, True)), "3e astuce : ↑ rappelle la commande d'avant")
+verifier(langue.t("intro.c6.titre") in plat(intro.lignes_ecran_oeuf(st, quand=time.time() + 10)), "case 6 : « Quelque chose arrive… » (tape echo et son nom)")
+st = tape("echo")
+verifier(len(st["intro"]["faits"]) == 2 and langue.t("intro.nom.encore") in str(st.get("bubble")) + str(st.get("bulles")),
+         "« echo » sans nom : ne compte pas, l'œuf demande « Et mon nom ? »")
+st = tape("echo bonjour")
+verifier(len(st["intro"]["faits"]) == 2 and not intro.nomme(st), "« echo bonjour » : ce n'est pas un nom, « Et mon nom ? »")
+st = tape("echo Pixou")
+verifier(len(st["intro"]["faits"]) == 3 and st["anim"][0] == "oeuf_3" and st["name"] == "Pixou" and intro.nomme(st),
+         "echo Pixou : l'œuf s'appelle Pixou, il se fêle (oeuf_3)")
+verifier(langue.t("intro.nomme", nom="Pixou") in str(st.get("bubble")) + str(st.get("bulles")), "« *crac !* Pixou… c'est moi ? »")
+verifier(langue.t("intro.astuce.3") in plat(app.render(st, 4, True)), "4e astuce : Tab complète")
+verifier(plat(langue.t("intro.c7.texte", nom="Pixou")) in plat(intro.lignes_ecran_oeuf(st, quand=time.time() + 10)), "case 7 : « Il t'écoute » (tape whoami)")
+_s = {"anim": ["oeuf_3", time.time()]}
+core.animer(_s, "content")
+verifier(_s["anim"][0] == "oeuf_3", "la petite fête de la commande du jour (« content ») ne cache pas la fêlure de l'œuf")
+
+print("5. Les fêlures et l'animation de l'œuf (mêmes images qu'Android)")
+fel = [sum(r.count("f") for r in intro.image_oeuf(n)) for n in range(4)]
+imgs = [intro.image_oeuf(n) for n in range(4)]
+verifier(fel[0] == 0 < fel[1] < fel[3] and len({tuple(x) for x in imgs}) == 4,
+         f"3 stades de fêlure : intact, une fêlure qui luit, le dessin fissuré, une grande fêlure ({fel} pixels qui luisent)")
+from tg import oeufs as O
+src = (RACINE / "donnees" / "oeufs" / "oeufs.json").read_text(encoding="utf-8")
+verifier((RACINE / "pc" / "tg" / "oeufs.json").read_text(encoding="utf-8") == src
+         and (RACINE / "app" / "src" / "main" / "assets" / "oeufs.json").read_text(encoding="utf-8") == src,
+         "oeufs.json : une seule source (donnees/oeufs/), recopiée à l'identique pour PC et Android")
+verifier(O.types() == list(G.TYPES) and all((RACINE / "donnees" / "oeufs" / f"oeuf_{ty}_{e}.png").is_file()
+                                            for ty in G.TYPES for e in O.donnees()["etats"]),
+         "un œuf par type de biome (9), chacun dessiné en 3 états (intact, fissure, eclosion)")
+W0, H0 = O.taille()
+ok = True
+for ty in O.types():
+    x = O.donnees()["types"][ty]
+    pal = O.palette(ty)
+    for taille in ("grand", "petit"):
+        w, h = O.taille(taille)
+        for e, rows in x[taille].items():
+            ok &= len(rows) == h and all(len(r) == w for r in rows) and all(c == "." or c in pal for r in rows for c in r)
+            ok &= sum(c != "." for r in rows for c in r) > w * h // 6
+    ok &= len(x["palette"]) <= 36 and len(x["feles"][0]) >= 6 and len(x["feles"][1]) >= 8
+    ok &= intro.image_oeuf(0, "", 0, ty) != intro.image_oeuf(0, "", 0, "feu" if ty != "feu" else "eau")
+verifier(ok and (W0, H0) == (intro.W_OEUF, intro.H_OEUF), f"les 9 œufs : {W0}×{H0} pixels (petit {O.taille('petit')}), palette limitée, contour net")
+verifier(intro.image_oeuf(1, "remue", 1) != intro.image_oeuf(1, "remue", 3), "il remue (penche à gauche, à droite)")
+verifier(any("h" in r for r in intro.image_oeuf(1, "brille", 0)) and any("y" in r for r in intro.image_oeuf(1, "brille", 0)),
+         "il brille (étincelles)")
+verifier(intro.image_oeuf(3, "eclot", 7) is None, "à la fin de l'éclosion : la créature prend la place")
+neuf = core.migrate(core.new_state("Zoé"))
+intro.nouvelle_partie(neuf)
+verifier(neuf["oeuf_type"] in G.TYPES and G.g_(neuf)["type_c"] == neuf["oeuf_type"] == O.type_de(neuf),
+         f"nouvelle partie : un œuf {neuf['oeuf_type']}, et le compagnon qui en sort est du même type")
+verifier(len({core.new_state("Zoé")["oeuf_type"] for _ in range(300)}) == 9, "le type de l'œuf est tiré au hasard parmi les 9")
+vieux = core.migrate(core.new_state("Vieux"))
+vieux.pop("oeuf_type")
+vieux["guide"]["type_c"] = "roche"
+from tg import sprites as SP
+verifier(O.type_de(core.migrate(vieux)) == "roche" and G.g_(vieux)["type_c"] == "roche"
+         and SP.get_sprite(vieux, 0) == O.petit("roche") and SP.palette(vieux)["A"] == O.palette("roche")["A"],
+         "une ancienne partie garde le type de son compagnon ; son œuf (écran principal) est l'œuf de ce type")
+verifier(intro.image_oeuf(2, "", 0, "glace") == [r for r in O.donnees()["types"]["glace"]["grand"]["fissure"]]
+         and intro.image_oeuf(3, "eclot", 4, "glace") != intro.image_oeuf(3, "eclot", 1, "glace"),
+         "2 fêlures : le dessin fissuré ; l'éclosion : le dessin éclos")
+for nom in ("oeuf_1", "oeuf_2", "oeuf_3", "eclosion"):
+    f, ips = intro.animation(nom, st)
+    verifier(len(f) >= 8 and ips > 0, f"animation {nom} : {len(f)} images")
+
+print("5b. Le bébé qui sort de l'œuf : une vraie espèce de départ, du type de l'œuf")
+src = (RACINE / "donnees" / "oeufs" / "depart.json").read_text(encoding="utf-8")
+verifier((RACINE / "pc" / "tg" / "depart.json").read_text(encoding="utf-8") == src
+         and (RACINE / "app" / "src" / "main" / "assets" / "depart.json").read_text(encoding="utf-8") == src,
+         "depart.json : une seule source (donnees/oeufs/), recopiée à l'identique pour PC et Android")
+dep = O.departs()
+bons = all(len(dep.get(ty, [])) >= 2 and all(B.espece(i) and B.espece(i)["id"] == i and G.type_de(i) == ty
+                                              and B.image(B.espece(i), "bebe") for i in dep[ty]) for ty in G.TYPES)
+verifier(bons, "chaque type a 2 ou 3 espèces de départ, de ce type dans leur forme classique, avec un dessin de bébé")
+verifier(not any(B.espece(i).get("secrete") for l in dep.values() for i in l), "aucune espèce secrète au départ")
+parties_ = [core.new_state("Zoé") for _ in range(300)]
+verifier(all(p_["espece_compagnon"] in dep[p_["oeuf_type"]] for p_ in parties_)
+         and len({p_["espece_compagnon"] for p_ in parties_}) >= 20,
+         "nouvelle partie : l'espèce est tirée au hasard dans la liste du type de l'œuf")
+s6 = core.migrate(core.new_state("Lilou"))
+intro.nouvelle_partie(s6)
+s6["espece_compagnon"] = "gouttelin"
+e6 = B.espece("gouttelin")
+w, h, o, pal = B.image(e6, "bebe")
+SP._CACHE_ESPECE.clear()
+s6["xp"] = 10
+rows = SP.get_sprite(s6)
+verifier(len(rows) == h and all(len(r) == w for r in rows)
+         and [SP.palette(s6).get(c) for r in rows for c in r] == [pal[v - 1] if v else None for v in o[:w * h]],
+         f"au stade bébé, le compagnon EST un {e6['nom']} bébé (le dessin du bestiaire, pixel par pixel)")
+verifier(core.forme(s6) == "Bébé Gouttelin" and s6["name"] == "Lilou", "il s'appelle toujours Lilou ; son espèce : Bébé Gouttelin")
+s6["xp"] = 0
+fin = intro.lignes_oeuf(3, "eclot", 7, s6)
+attendu = SP.render_sprite(SP.get_sprite(s6, 1), SP.palette(s6, st=1))[0]
+verifier(fin == attendu and "\x1b[38;2;" in "".join(fin), "fin de l'éclosion : le Gouttelin bébé, avec ses couleurs (plus le rond générique)")
+for xp, stade_ in ((160, "ado"), (810, "adulte")):
+    s6["xp"] = xp
+    w, h, _, _ = B.image(e6, stade_)
+    r_ = SP.get_sprite(s6)
+    verifier(len(r_) == h and max(len(x) for x in r_) == w, f"il évolue normalement : niveau {core.level(xp)}, {core.forme(s6)}")
+s6["xp"] = 10
+f, ips = SP.animation(s6, "evolution")
+verifier(len(f) > 4, "l'animation d'éclosion/évolution marche avec l'espèce")
+vieux2 = core.migrate(core.new_state("Ancien"))
+vieux2.pop("espece_compagnon")
+vieux2["xp"] = 10
+verifier(SP.get_sprite(vieux2) == SP.BABY and core.forme(vieux2) == "Bébé",
+         "une partie d'avant (sans espèce) garde sa créature d'origine")
+r6 = parties._resume(dict(s6, xp=10), "9", False, HOME)
+verifier(r6["espece"] == "Bébé Gouttelin", "la liste des parties montre l'espèce")
+s6["intro"] = {"etat": "oeuf", "faits": [], "evt": None, "erreur": False}
+s6["oeuf_type"] = "glace"
+s6.get("guide", {}).pop("type_c", None)
+s6["intro"]["faits"] = ["pwd", "ls"]
+s6["intro"]["evt"] = [2, 1000.0]
+s6["intro"]["eveil"] = 1000.0
+texte = plat(intro.lignes_ecran_oeuf(s6))
+verifier("mystérieux" not in texte and "œuf Glace" in texte, "écran de l'œuf : « œuf Glace » en tête (plus « un œuf mystérieux »)")
+
+print("5c. L'intro en images (scenes.py) : le camp endormi, le réveil, l'œuf « en téléchargement », l'éclosion")
+from tg import scenes as SC  # noqa: E402
+verifier(SC.disponible("monde") and SC.disponible("dort") and SC.disponible("camp"),
+         "illustrations.bin : le monde vivant, endormi, le camp de base (240×135)")
+verifier(all((RACINE / "app/src/main/assets/intro" / f"{n}.jpg").stat().st_size < 400_000 for n in ("monde", "dort", "camp")),
+         "Android : les trois illustrations réduites (JPEG de moins de 400 Ko)")
+s7 = core.migrate(core.new_state("Noisette"))
+intro.nouvelle_partie(s7)
+verifier(SC.moment(s7, 5000)["phase"] == "dort", "avant la 1re commande : le camp dort")
+camp_ = SC.reduire("camp", 60, 34)
+dort_ = SC.endormir(camp_)
+sat = lambda px: sum(max(p) - min(p) for p in px) / len(px)  # noqa: E731
+verifier(sat(dort_) < sat(camp_) * 0.3 and sum(map(sum, dort_)) < sum(map(sum, camp_)) * 0.6,
+         "le camp endormi : la même image, calculée par le code (désaturée et assombrie)")
+s7["intro"].update(faits=["pwd"], evt=[1, 1000.0], eveil=1000.0)
+ph = [SC.moment(s7, 1000 + x)["phase"] for x in (0.2, 2.0, 3.3, 3.6)]
+verifier(ph[:3] == ["eveil"] * 3 and ph[3] == "telech", f"pwd : le camp se réveille ({ph})")
+tm = SC.carte_eveil(60, 34)
+ox, oy = SC._vers(60, 34)(*SC.camp()["ordi"])
+verifier(tm[int(oy) * 60 + int(ox)] < 0.5 and max(tm) <= SC.camp()["fin"] and tm[5 * 60 + 58] > 1.5,
+         "la couleur revient d'abord à l'ordinateur, puis remonte l'arbre ; tout est revenu à la fin")
+e1 = SC.scene(s7, 60, 34, 1000.3)
+e2 = SC.scene(s7, 60, 34, 1002.0)
+verifier(sat(e1) < sat(e2) < sat(camp_) * 1.2, "pendant le réveil, la couleur revient peu à peu")
+pcts = [round(SC.moment(s7, 1000 + x)["pct"]) for x in (3.5, 4.0, 5.0, 9.0)]
+verifier(pcts == [0, 0, 0, 0] and SC.scene(s7, 60, 34, 1009.0) == SC.reduire("camp", 60, 34),
+         f"après pwd : le camp est rallumé, mais pas encore d'œuf dans le nid ({pcts})")
+s7["intro"].update(faits=["pwd", "ls"], evt=[2, 1010.0])
+verifier(0 < round(SC.moment(s7, 1010.5)["pct"]) < 100 and SC.moment(s7, 1020)["pct"] == 100,
+         "ls : SEULEMENT là, l'œuf arrive, pixel par pixel, jusqu'à 100 %")
+verifier(SC.scene(s7, 60, 34, 1020.0) != SC.reduire("camp", 60, 34), "… et il est dans le nid")
+s7["intro"].update(faits=["pwd", "ls", "echo"], evt=[3, 1030.0], nomme=True)
+m3 = [SC.moment(s7, 1030 + x) for x in (0.3, 5.0)]
+verifier(all(m["phase"] == "telech" and m["pct"] == 100 and m["fele"] == 1 for m in m3) and m3[0]["fk"] >= 0 > m3[1]["fk"],
+         "echo <nom> : l'œuf entier se fêle (la fêlure éclaire, puis reste)")
+s7["intro"].update(faits=["pwd", "ls"], evt=[2, 1010.0], nomme=False)
+g = [(1, 1, 1)] * (10 * 20)
+cal = SC.telecharge(g, 10, 20, 50, 3)
+verifier(all(c is not None and c[3] == 255 for c in cal[:8 * 10]) and any(c and c[:3] in (SC.VERT, SC.VERT_PALE) for c in cal[9 * 10:10 * 10])
+         and all(c is None or c[3] < 255 for c in cal[12 * 10:]),
+         "l'œuf à 50 % : le haut est reçu, la ligne en cours scintille en vert, le bas n'est qu'un contour")
+verifier(SC.telecharge(g, 10, 20, 50, 3) == cal and SC.telecharge(g, 10, 20, 50, 4) != cal, "le scintillement change d'une image à l'autre")
+p_ = plat(intro.bloc_prompt(s7, 1011.0, 120, 50))
+verifier("24 %" in p_ and "█" in p_ and "✔ pwd" in p_ and "○ echo Noisette" in p_, "l'invite : « réception de l'œuf… 24 % ███░░ » et la liste")
+d_ = intro.bloc_prompt(s7, 1011.0, 120, 50)
+verifier(sum(1 for l in d_ if l.count("▀") >= 100) >= 30, "dans un terminal de 120 colonnes : la scène en demi-blocs, 120 × 68 pixels")
+petit = intro.bloc_prompt(s7, 1011.0, 50, 30)
+verifier(any("▀" in l for l in petit) and max(largeur(propre(l)) for l in petit) <= 50, "petit terminal (50 × 30) : l'œuf seul, sans déborder")
+mini = intro.bloc_prompt(s7, 1011.0, 30, 10)
+verifier(not any("▀" in l for l in mini) and "24 %" in plat(mini), "minuscule terminal : le texte seul")
+os.environ["TG_COULEURS"] = "256"
+verifier("\x1b[38;5;" in "".join(intro.bloc_prompt(s7, 1011.0, 120, 50)) and "38;2;" not in "".join(intro.dessin_scene(s7, 1011.0, 120, 50, 6)),
+         "sans couleurs 24 bits : la scène en 256 couleurs")
+os.environ["TG_COULEURS"] = "0"
+verifier(not any("▀" in l for l in intro.bloc_prompt(s7, 1011.0, 120, 50)), "sans couleurs (NO_COLOR, TERM=dumb) : pas d'image")
+os.environ["TG_COULEURS"] = "24"
+s7["intro"].update(faits=["pwd", "ls", "echo", "whoami"], etat="fini", evt=[4, 1030.0])
+fins = [SC.moment(s7, 1030 + x)["phase"] for x in (0.3, 0.9, 1.5, 3.0, 5.5)]
+verifier(fins == ["eclat", "eclot", "eclot", "fondu", "ne"],
+         f"whoami : petit éclat, l'œuf se fêle et s'ouvre, le bébé en fondu digital, puis né ({fins})")
+ks = [SC.moment(s7, 1030 + 0.701 + x * 0.1)["k"] for x in range(14)]
+verifier(ks == sorted(ks) and ks[0] == 0 and ks[-1] == len(SC.ECLOT) - 1 and SC.ECLOT[0][1] == "craque" and SC.ECLOT[-1] == (3, "eclot", 5),
+         "l'éclosion : les fêlures qui éclairent, l'œuf qui tremble, la coquille qui s'ouvre, image par image")
+b_ = SC._bebe(s7)
+vus = [sum(1 for q in SC.fondu(b_[0], b_[1], b_[2], f, 0) if q is not None and q[3] == 255) for f in (0.1, 0.4, 0.7, 1.0)]
+tot = sum(1 for q in b_[0] if q is not None)
+verifier(vus[0] < vus[1] < vus[2] <= vus[3] == tot, f"le bébé apparaît pixel par pixel ({vus} sur {tot})")
+f4 = SC.fondu(b_[0], b_[1], b_[2], 0.4, 0)
+verifier(any(q is not None and q[1] > 200 and q[0] < 200 for q in f4), "les pixels qui arrivent brillent en vert « matrix »")
+coq_ = [(10, 120, 10, 255)] * (8 * 10)
+d0, d5, d1 = (SC.dissoudre(coq_, 8, 10, x, 0) for x in (0.0, 0.5, 1.0))
+visibles = lambda d: sum(1 for q in d[0] if q is not None)  # noqa: E731
+verifier(visibles(d0) == 80 and visibles(d1) == 0 and 0 < visibles(d5) < 80
+         and any(q is not None and q[3] < 255 and q[1] > 200 for q in d5[0][:d5[3] * 8]),
+         "la coquille se dissout en pixels verts qui s'envolent (au-dessus d'elle) et s'éteignent ; à la fin, plus rien")
+verifier(SC.moment(s7, 1036.0)["phase"] == "ne" and SC.FIN_COQUILLE < 1, "après le fondu : seul le bébé reste dans le nid (plus de coquille)")
+nais = langue.t("intro.merci.titre", nom="Noisette")
+verifier(nais not in plat(intro.lignes_ecran_oeuf(s7, quand=1033.0, cols=120, rangs=60))
+         and nais in plat(intro.lignes_ecran_oeuf(s7, quand=1036.0, cols=120, rangs=60)),
+         "« Noisette est né ! » arrive après l'apparition du bébé, pas avant")
+print("5d. Plus de détail dans le terminal : sextants, quadrants, vraies images (Kitty, iTerm2, sixel)")
+verifier(SC.sextant(1) == "\U0001FB00" and SC.sextant(62) == "\U0001FB3B" and SC.sextant(21) == "▌" and SC.sextant(63) == "█"
+         and len({SC.sextant(p_) for p_ in range(64)}) == 64, "les 64 sextants (U+1FB00…U+1FB3B, ▌ ▐ █ et l'espace)")
+verifier(SC.deux_couleurs([(0, 0, 0)] * 3 + [(250, 250, 250)] * 3)[0] == 0b111000, "chaque case : ses deux couleurs, au bon endroit")
+for r_ in ("sextants", "quadrants", "demi"):
+    os.environ["TG_IMAGES"] = r_
+    l_ = intro.dessin_scene(s7, 1036.0, 120, 50, 6)
+    verifier(len(l_) >= 30 and max(largeur(propre(x)) for x in l_) <= 121, f"{r_} : la scène sur {len(l_)} lignes de 120 colonnes")
+os.environ["TG_IMAGES"] = "sextants"
+verifier(any(0x1FB00 <= ord(ch) <= 0x1FB3B for x in intro.dessin_scene(s7, 1036.0, 120, 50, 6) for ch in x), "sextants : 2×3 pixels par case")
+import base64 as B64, zlib as Z  # noqa: E401,E402
+os.environ["TG_IMAGES"] = "kitty"
+l_ = intro.dessin_scene(s7, 1036.0, 120, 50, 6)
+m_ = re.search(r"\x1b_Ga=T,f=100,q=2,C=1,i=4242,p=1,c=(\d+),r=(\d+)", l_[0])
+donnees_ = "".join(re.findall(r"\x1b_G[^;]*;([^\x1b]*)\x1b\\", l_[0]))
+png_ = B64.b64decode(donnees_)
+verifier(m_ and int(m_.group(2)) == len(l_) and png_[:8] == b"\x89PNG\r\n\x1a\n" and png_[16:24] == bytes([0, 0, 1, 128, 0, 0, 0, 216]),
+         "Kitty : une vraie image PNG 384×216, posée sur les cases de la scène, sans réponse du terminal (q=2)")
+verifier(l_[0].count("\x1b7") == 1 and l_[0].endswith("\x1b8") and all(x == "" for x in l_[1:]),
+         "l'image ne déplace pas le curseur : le texte vient juste dessous")
+os.environ["TG_IMAGES"] = "iterm"
+verifier("\x1b]1337;File=inline=1;" in intro.dessin_scene(s7, 1036.0, 120, 50, 6)[0], "iTerm2 : l'image en ligne")
+os.environ["TG_IMAGES"] = "sixel"
+l_ = intro.dessin_scene(s7, 1036.0, 120, 50, 6)
+six = l_[0][l_[0].index("\x1bP"):]
+verifier(six.startswith("\x1bP0;1;0q\"1;1;640;360") and six.count("-") >= 59 and "\x1b\\" in six and len(l_) == 18,
+         "sixel : l'image 640×360, 255 couleurs au plus, sur 18 lignes (cases de 10×20)")
+os.environ.pop("TG_IMAGES")
+verifier((RACINE / "pc/tg/oeufs_fins.json").read_bytes() == (RACINE / "app/src/main/assets/oeufs_fins.json").read_bytes()
+         and SC.oeuf_fin("plante", 0)[1:] == (104, 104),
+         "pc/tg/oeufs_fins.json = la copie d'Android (à recopier si generer_oeufs.py change) ; l'œuf fin pour les vraies images")
+verifier(SC.capacites()["graphique"] is None, "hors d'un vrai terminal (tests, fichier) : jamais de vraie image, pas de question au terminal")
+
+f_, _ = intro.animation("eclosion", s7)
+verifier(all(isinstance(x, intro.Ecran) for x in f_) and "▀" in "".join(f_[-1]), "l'animation de la fenêtre : l'écran entier, image par image")
+
+print("6. whoami : l'éclosion, la créature dit merci")
+st = tape("whoami")
+verifier(intro.eclos(st) and core.stage(core.level(st["xp"])) == 1 and core.level(st["xp"]) == 2,
+         "l'œuf a éclos : bébé, niveau 2")
+verifier(st["anim"][0] == "eclosion", "animation de l'éclosion")
+verifier(st["debloc"]["file"][:2] == ["merci", "merci2"] and intro.ouvert(st, "histoire"),
+         "l'histoire s'ouvre, l'écran « merci » attend")
+merci = plat(app.render(st, 5, True))
+verifier("Pixou" in merci and langue.t("intro.recap") in merci, "merci : la créature remercie et récapitule")
+verifier(all(c in merci for c in ("pwd", "ls", "echo", "whoami")) and "print working directory" in merci,
+         "le vrai sens des commandes (print working directory…)")
+st = core.modifier(intro.lu)
+ici = plat(app.render(st, 6, True))
+verifier(str(HOME) in ici and "camp de base" in ici and "pwd" in ici, "où on est : le camp de base (ce que pwd a montré)")
+verifier(langue.t("hist.reveil.titre") in ici, "et la suite : le chapitre 1 « Le réveil »")
+st = core.modifier(intro.lu)
+ecran = propre(app.render(st, 7, True))
+verifier(langue.t("lec.t0.titre") in ecran and "(1/3)" in ecran,
+         "après l'écran merci : la leçon 1 du chapitre 1, à son début (les commandes de l'œuf ne la valident pas)")
+verifier(not intro.ouvert(st, "envies") and "🍎" not in ecran, "les envies ne sont pas encore ouvertes (pas de jauges)")
+
+print("7. La table de déblocage, dans l'ordre de l'histoire")
+
+
+def apres(fn, attendu, msg):
+    s = core.modifier(lambda x: (fn(x), intro.verifier(x)))
+    nouveaux = [x for x in s["debloc"]["file"] if x not in ("merci", "merci2")]
+    verifier(all(intro.ouvert(s, a) for a in attendu) and set(attendu) <= set(nouveaux), msg + f" → {', '.join(attendu)}")
+    core.modifier(lambda x: x["debloc"].__setitem__("file", []))
+    return s
+
+
+st = apres(lambda s: histoire.h_(s)["faits"].append("t0"), ["envies"], "leçon t0 finie")
+verifier(any("✨" in l and langue.t("deb.envies.titre") in l for l in st["log"]), "une ligne ✨ Nouveau dans le journal")
+verifier("🔒" not in propre(lancer("envies")), "`tg envies` répond maintenant")
+st = apres(lambda s: (histoire.h_(s)["faits"].append("reveil1"), histoire.h_(s)["ailes"].append("reveil")), ["carte"],
+           "chapitre 1 fini")
+verifier("[m]" in propre(app.touches(st)), "la touche [m] carte apparaît")
+st = apres(lambda s: histoire.h_(s)["faits"].extend(["nid0", "debarras"]), ["lexique"], "leçon debarras finie")
+st = apres(lambda s: histoire.h_(s)["faits"].append("nid1"), ["quetes"], "leçon nid1 finie")
+st = apres(lambda s: histoire.h_(s)["ailes"].append("nid"), ["combats"], "chapitre 2 fini")
+st = apres(lambda s: s.__setitem__("xp", 10 * 3 ** 2), ["extras"], "niveau 4")
+e = next(x for x in B.publiques() if G.type_de(x, "classique") == "feu")
+st = apres(lambda s: s["captures"].append(dict(B.individu(e, False, e["zone"], "classique", qualite=0.5), stade="enfant", xp=0)),
+           ["equipe"], "une première bestiole dressée")
+st = apres(lambda s: s.__setitem__("xp", 10 * 5 ** 2), ["entrainement"], "niveau 6")
+st = apres(lambda s: histoire.h_(s)["ailes"].append("grenier"), ["compte"], "une aile réveillée")
+st = apres(lambda s: histoire.h_(s)["ailes"].append("cave"), ["biomes"], "deux ailes (et l'équipe déjà là)")
+st = apres(lambda s: histoire.h_(s)["ailes"].append("bibliotheque"), ["donjon"], "trois ailes")
+verifier(all(intro.ouvert(st, f) for f in ids), "tout est ouvert à la fin")
+verifier(len(st["debloc"]["presentes"]) == len(set(st["debloc"]["presentes"])) == len(ids), "chaque fonction présentée une seule fois")
+carte_eq = plat(intro.lignes_ecran(st, "equipe"))
+verifier("tg equipe" in carte_eq and "tg guide <nom>" in carte_eq, "l'écran de l'équipe donne les commandes PC")
+
+print("8. L'invite du shell : la liste au début, l'œuf qui réagit, puis les écrans une fois")
+s2 = core.new_state("Zou")
+core.migrate(s2)
+intro.nouvelle_partie(s2)
+p1 = propre(intro.pour_prompt(s2))
+verifier(all(intro.commande_de(c) in p1 for c in D["checklist"]), "la première invite montre la liste")
+verifier(intro.pour_prompt(s2) == [], "… une seule fois")
+s2["intro"]["faits"] = ["pwd"]
+s2["intro"]["evt"] = [1, 123.0]
+verifier("✔" in propre(intro.pour_prompt(s2)), "après une bonne commande : l'œuf et la liste (✔ pwd)")
+verifier("➜ ls" in propre(compagnon.ligne(s2)) and "1/4" in propre(compagnon.ligne(s2)),
+         "la ligne du compagnon dit la prochaine commande de la liste")
+intro.finir(s2)
+p2 = propre(intro.pour_prompt(s2))
+verifier("Zou" in p2 and s2["debloc"]["file"] == ["merci2"], "après l'éclosion : l'écran « merci » dans le shell, une fois")
+
+print("9. Anciennes parties : rien ne se ferme (migration)")
+v = core.migrate(core.new_state("Vieux"))
+verifier(v["debloc"]["mode"] == "ancien" and all(intro.ouvert(v, f) for f in ids) and intro.eclos(v),
+         "une partie d'avant (sans « debloc ») : tout est ouvert, pas d'œuf qui attend")
+verifier(v["debloc"]["file"] == [] and "histoire" in v["debloc"]["presentes"], "rien à présenter de ce qui est déjà atteint")
+v2 = core.new_state("Avancé")
+v2["xp"] = 10 * 6 ** 2
+v2["histoire"] = {"chap": None, "faits": ["t0", "reveil1", "nid0", "debarras", "nid1", "secrets"], "ailes": ["reveil", "nid", "grenier"],
+                  "pas": {}, "ouverts": [], "v": 9}
+core.migrate(v2)
+deja = set(v2["debloc"]["presentes"])
+verifier({"envies", "carte", "lexique", "quetes", "combats", "extras", "entrainement", "compte"} <= deja,
+         "ce qu'elle avait déjà atteint est noté comme présenté (pas d'écran en trop)")
+verifier("equipe" not in deja and intro.ouvert(v2, "equipe"), "l'équipe (pas encore de bestiole) reste ouverte")
+intro.verifier(v2)
+verifier(v2["debloc"]["file"] == [], "pas de vague d'écrans à l'ouverture d'une vieille partie")
+v2["captures"].append(dict(B.individu(e, False, e["zone"], "classique", qualite=0.5), stade="enfant", xp=0))
+intro.verifier(v2)
+verifier(v2["debloc"]["file"] == [] and "equipe" in v2["debloc"]["presentes"],
+         "plus tard non plus : un ancien joueur n'a pas d'écran « nouveau » pour ce qu'il connaît déjà")
+verifier(intro.bloque(v2, "troupe") is None, "aucune commande ne répond « pas encore » à un ancien joueur")
+
+print("10. `tg debloquer tout` (parents, tests) : avec confirmation")
+s3 = core.load()
+core.modifier(lambda s: (s.update(intro={"etat": "oeuf", "faits": [], "evt": None, "erreur": False}),
+                         s.update(debloc={"mode": "progressif", "ouverts": [], "presentes": [], "file": []}), s.update(xp=0)))
+builtins.input = lambda _i="": "non"
+verifier("Rien n'a changé" in propre(lancer("debloquer", "tout")) and intro.en_cours(core.load()), "« non » : rien ne change")
+builtins.input = lambda _i="": "oui"
+verifier("débloqué" in propre(lancer("debloquer", "tout")), "« oui » : tout est débloqué")
+s3 = core.load()
+verifier(intro.eclos(s3) and all(intro.ouvert(s3, f) for f in ids) and core.level(s3["xp"]) >= 2, "l'œuf a éclos, tout est ouvert")
+verifier("🔒 carte" not in propre(lancer("carte")) and "Terminaworld" in propre(lancer("carte")), "`tg carte` répond")
+
+print("11. L'écran principal montre le GUIDE actuel (sprite, stade, aura)")
+compagnon_seul = propre(app.dessin_guide(core.load(), 0)[0])
+core.modifier(lambda s: G.choisir(s, e["nom"]))
+st = core.load()
+dessin, w = app.dessin_guide(st, 0)
+verifier(G.actuel(st)[3] is not None and propre(dessin) != compagnon_seul and w > 0,
+         f"le guide {e['nom']} est dessiné à la place du compagnon")
+ecran = app.render(st, 1, True)
+verifier(dessin[0].split("\x1b")[0] in ecran or "▀" in ecran, "et il est bien dans l'écran principal")
+core.modifier(lambda s: G.choisir(s, s["name"]))
+verifier(propre(app.dessin_guide(core.load(), 0)[0]) == compagnon_seul, "redevenu le compagnon : le compagnon est dessiné")
+
+print("12. La carte grise les régions gardées (guide.region_ouverte / guide.peut_agrandir)")
+T = core.TERRAIN
+st = core.load()
+core.migrate(st)
+x = next(ty for ty in G.TYPES if ty not in G.types_equipe(st))       # un type absent de l'équipe
+(T / "biome" / x / "parcelle_1").mkdir(parents=True, exist_ok=True)
+(T / "biome" / "feu").mkdir(parents=True, exist_ok=True)
+core.modifier(lambda s: maison.m_(s)["visites"].extend(["biome", f"biome/{x}", "biome/feu"]))
+st = core.load()
+core.migrate(st)
+ns = {n["rel"]: n for n in maison.noeuds(st)}
+verifier(ns[f"biome/{x}"]["garde"] == "fermee" and ns[f"biome/{x}/parcelle_1"]["garde"] == "fermee",
+         f"biome/{x} : aucune bestiole {x} dans l'équipe → fermée (et ses parcelles)")
+verifier(G.type_compagnon_initial(st) == "feu" or ns["biome/feu"]["garde"] == "visite",
+         "biome/feu : une bestiole feu dans l'équipe, mais pas guide → visite")
+verifier(maison.sol(ns[f"biome/{x}"]) == maison.SOLS["brume"], "la région fermée est grise sur le dessin")
+texte = propre(maison.carte(st, "texte"))
+verifier("🔒" in texte and langue.t("carte.garde.fermee", type=G.etiquette(x)) in texte, "la carte en texte dit 🔒 fermée")
+core.modifier(lambda s: G.choisir(s, e["nom"]))
+st = core.load()
+ns = {n["rel"]: n for n in maison.noeuds(st)}
+verifier(ns["biome/feu"]["garde"] == "", "le guide est de type feu : la région feu est normale (on peut l'agrandir)")
+verifier(propre(maison.carte(st, "colonnes")) and len(maison.verifier_largeur(maison.carte(st, "colonnes"))) == 1,
+         "la carte en colonnes reste alignée")
+
+print("13. Une nouvelle partie depuis le menu (parties.nouvelle) peut commencer par l'intro")
+reponses = iter(["oui", "", "", ""])
+with redirect_stdout(io.StringIO()):
+    msg = accueil.nouvelle(lambda _i="": next(reponses), avec_intro=True)
+st = core.load()
+core.migrate(st)
+verifier(st["name"] == langue.t("intro.nom.attente") and intro.en_cours(st) and parties.liste() and "pwd" in msg,
+         "menu → nouvelle partie : les 3 écrans, puis le camp endormi (pas de nom demandé)")
+s4 = core.migrate(core.new_state("Robot"))
+verifier(not intro.en_cours(s4), "sans personne au clavier (scripts) : pas d'intro, tout est ouvert")
+
+print("14. Les 14 langues : aucun texte manquant à l'écran")
+for code in langue.LANGUES:
+    langue.definir(code)
+    s5 = core.migrate(core.new_state("Ana"))
+    intro.nouvelle_partie(s5)
+    textes = [intro.ecran_intro(k) for k in (1, 2, 3)] + [intro.lignes_ecran_oeuf(s5)] + [intro.bloc_prompt(s5, 0)]
+    s5["intro"]["faits"] = ["pwd"]
+    s5["intro"]["evt"] = [1, 990.0]
+    s5["intro"]["eveil"] = 990.0
+    textes.append(intro.lignes_ecran_oeuf(s5, quand=992.0))
+    textes.append(intro.bloc_prompt(s5, 999.0))
+    s5["intro"]["faits"] = ["pwd", "ls"]
+    s5["intro"]["erreur"] = True
+    s5["intro"]["evt"] = [2, 1000.0]
+    textes.append(intro.lignes_ecran_oeuf(s5))
+    textes.append(intro.bloc_prompt(s5, 1000.5))
+    s5["intro"]["faits"] = ["pwd", "ls", "echo"]
+    s5["intro"]["evt"] = [3, 1010.0]
+    textes += [intro.lignes_ecran_oeuf(s5, quand=1011.0), intro.bloc_prompt(s5, 1011.0), langue.t("intro.nom.encore"),
+               langue.t("intro.nomme", nom="Ana")]
+    noms = [x for x, _, _ in intro.etiquettes_monde()]
+    verifier(len(noms) == 10 and all(noms) and len(set(noms)) == 10, f"{code} : les 10 étiquettes du monde ({', '.join(noms[:3])}…)")
+    from tg import oeufs as O_
+    titres = [intro.titre_type(ty) for ty in O_.types()]
+    verifier(all(a and b and a != b for a, b in titres), f"{code} : « Un œuf Plante ! » + sa description, pour les 9 types")
+    intro.finir(s5)
+    textes += [intro.lignes_ecran(s5, c) for c in ["merci", "merci2"] + ids[1:]]
+    textes.append(intro.bloque(core.migrate(dict(s5, debloc={"mode": "progressif", "ouverts": [], "presentes": [], "file": []})),
+                               "carte") or "")
+    bruts = [k for x in textes for k in cles_affichees(x)]
+    verifier(not bruts, f"{code} : intro, œuf, merci et 11 écrans de nouveautés traduits" + (f" (clés : {bruts[:3]})" if bruts else ""))
+    impairs = [x for x in textes for l in (x if isinstance(x, list) else [x]) if ANSI.sub("", l).count("`") % 2]
+    verifier(not impairs, f"{code} : commandes en vert bien fermées")
+langue.definir("fr")
+
+print(f"\n{ok} vérifications réussies, {ko} échouée(s)")
+sys.exit(1 if ko else 0)

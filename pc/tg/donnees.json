@@ -1,0 +1,363 @@
+{
+ "note": "Généré par donnees/donnees/outils/fiches_donnees.py ; lu par pc/tg/donnees.py et Donnees.kt. La collection de l'enfant, exportée en CSV dans le terrain : aucune donnée personnelle, rien d'envoyé.",
+ "colonnes": [
+  "nom",
+  "type",
+  "famille",
+  "attaque",
+  "defense",
+  "vitesse",
+  "pv",
+  "intelligence",
+  "rarete",
+  "shiny",
+  "variante",
+  "date"
+ ],
+ "stats": {
+  "attaque": "ATK",
+  "defense": "DEF",
+  "vitesse": "VIT",
+  "pv": "PV",
+  "intelligence": "INT"
+ },
+ "familles": {
+  "Démons": "demons",
+  "Élémentaires": "elementaires",
+  "Constructs": "constructs",
+  "Arthropodes": "arthropodes",
+  "Abyssaux": "abyssaux",
+  "Sylvestres": "sylvestres",
+  "Célestes": "celestes",
+  "Morts-vivants": "morts_vivants",
+  "Aberrations": "aberrations"
+ },
+ "minimum": {
+  "dn1": 3,
+  "dn4": 5,
+  "dn6": 5
+ },
+ "collection_test": [
+  {
+   "id": "test00",
+   "espece": "Gloupi",
+   "variante": "classique",
+   "shiny": false,
+   "date": 1790856000000,
+   "marque": "un reflet arc-en-ciel sur le pelage",
+   "humeur": "timide",
+   "taille": 109.3,
+   "qualite": 0.42,
+   "potentiel": 46,
+   "stats": {
+    "PV": 48,
+    "ATK": 26,
+    "DEF": 36,
+    "VIT": 18,
+    "INT": 30
+   },
+   "note": 26.3,
+   "rarete": "commune",
+   "zone": "collection_test"
+  },
+  {
+   "id": "test01",
+   "espece": "Braisillon",
+   "variante": "volcan",
+   "shiny": false,
+   "date": 1790942400000,
+   "marque": "des yeux de deux couleurs",
+   "humeur": "gourmande",
+   "taille": 29.1,
+   "qualite": 0.55,
+   "potentiel": 48,
+   "stats": {
+    "PV": 32,
+    "ATK": 33,
+    "DEF": 33,
+    "VIT": 29,
+    "INT": 32
+   },
+   "note": 45.5,
+   "rarete": "commune",
+   "zone": "collection_test"
+  },
+  {
+   "id": "test02",
+   "espece": "Plumange",
+   "variante": "classique",
+   "shiny": false,
+   "date": 1791028800000,
+   "marque": "des empreintes en forme de 0 et de 1",
+   "humeur": "bavarde",
+   "taille": 32.4,
+   "qualite": 0.61,
+   "potentiel": 55,
+   "stats": {
+    "PV": 30,
+    "ATK": 35,
+    "DEF": 30,
+    "VIT": 48,
+    "INT": 39
+   },
+   "note": 38.7,
+   "rarete": "commune",
+   "zone": "collection_test"
+  },
+  {
+   "id": "test03",
+   "espece": "Gloupi",
+   "variante": "marais",
+   "shiny": false,
+   "date": 1791115200000,
+   "marque": "des oreilles légèrement pixelisées",
+   "humeur": "paresseuse",
+   "taille": 85.1,
+   "qualite": 0.3,
+   "potentiel": 26,
+   "stats": {
+    "PV": 46,
+    "ATK": 24,
+    "DEF": 34,
+    "VIT": 16,
+    "INT": 28
+   },
+   "note": 31.6,
+   "rarete": "commune",
+   "zone": "collection_test"
+  },
+  {
+   "id": "test04",
+   "espece": "Cailloute",
+   "variante": "montagne",
+   "shiny": false,
+   "date": 1791201600000,
+   "marque": "des rayures comme un code-barres",
+   "humeur": "rêveuse",
+   "taille": 92.2,
+   "qualite": 0.38,
+   "potentiel": 40,
+   "stats": {
+    "PV": 36,
+    "ATK": 37,
+    "DEF": 40,
+    "VIT": 37,
+    "INT": 34
+   },
+   "note": 39.6,
+   "rarete": "commune",
+   "zone": "collection_test"
+  },
+  {
+   "id": "test05",
+   "espece": "Krillou",
+   "variante": "glace",
+   "shiny": false,
+   "date": 1791288000000,
+   "marque": "des pattes de longueur différente",
+   "humeur": "calme",
+   "taille": 26.4,
+   "qualite": 0.5,
+   "potentiel": 46,
+   "stats": {
+    "PV": 31,
+    "ATK": 39,
+    "DEF": 41,
+    "VIT": 43,
+    "INT": 24
+   },
+   "note": 51.5,
+   "rarete": "peu commune",
+   "zone": "collection_test"
+  },
+  {
+   "id": "test06",
+   "espece": "Tritonnet",
+   "variante": "lagon",
+   "shiny": false,
+   "date": 1791374400000,
+   "marque": "une crête en forme d'accolade {",
+   "humeur": "joyeuse",
+   "taille": 37.4,
+   "qualite": 0.7,
+   "potentiel": 80,
+   "stats": {
+    "PV": 33,
+    "ATK": 41,
+    "DEF": 35,
+    "VIT": 34,
+    "INT": 40
+   },
+   "note": 55.6,
+   "rarete": "peu commune",
+   "zone": "collection_test"
+  },
+  {
+   "id": "test07",
+   "espece": "Mousselin",
+   "variante": "classique",
+   "shiny": false,
+   "date": 1791460800000,
+   "marque": "un ventre qui affiche l'heure",
+   "humeur": "joyeuse",
+   "taille": 110.9,
+   "qualite": 0.33,
+   "potentiel": 30,
+   "stats": {
+    "PV": 49,
+    "ATK": 28,
+    "DEF": 40,
+    "VIT": 17,
+    "INT": 36
+   },
+   "note": 23.0,
+   "rarete": "commune",
+   "zone": "collection_test"
+  },
+  {
+   "id": "test08",
+   "espece": "Flamouche",
+   "variante": "lave",
+   "shiny": false,
+   "date": 1791547200000,
+   "marque": "une antenne qui capte la radio",
+   "humeur": "gourmande",
+   "taille": 36.2,
+   "qualite": 0.64,
+   "potentiel": 61,
+   "stats": {
+    "PV": 34,
+    "ATK": 35,
+    "DEF": 32,
+    "VIT": 52,
+    "INT": 35
+   },
+   "note": 53.0,
+   "rarete": "peu commune",
+   "zone": "collection_test"
+  },
+  {
+   "id": "test09",
+   "espece": "Pucerise",
+   "variante": "prairie",
+   "shiny": true,
+   "date": 1791633600000,
+   "marque": "un reflet arc-en-ciel sur le pelage",
+   "humeur": "gourmande",
+   "taille": 31.0,
+   "qualite": 0.52,
+   "potentiel": 52,
+   "stats": {
+    "PV": 42,
+    "ATK": 27,
+    "DEF": 38,
+    "VIT": 24,
+    "INT": 38
+   },
+   "note": 54.8,
+   "rarete": "peu commune",
+   "zone": "collection_test"
+  }
+ ],
+ "schema": {
+  "creatures": "CREATE TABLE creatures (nom TEXT, type TEXT, famille TEXT, attaque INTEGER, defense INTEGER, vitesse INTEGER, pv INTEGER, intelligence INTEGER, rarete TEXT, shiny INTEGER, variante TEXT, date TEXT)",
+  "especes": "CREATE TABLE especes (nom TEXT PRIMARY KEY, numero INTEGER, habitat TEXT, puissance INTEGER)"
+ },
+ "labo": {
+  "regles": [
+   {
+    "motif": "^(tg\\s+)?(donnees\\s+)?sqlite3\\b",
+    "outil": "sqlite3",
+    "instrument": "bibliotheque",
+    "de": "base",
+    "vers": "reponse"
+   },
+   {
+    "motif": "^(tg\\s+)?collection\\b.*--csv",
+    "outil": "collection --csv",
+    "instrument": "export",
+    "de": "collection",
+    "vers": "tableau"
+   },
+   {
+    "motif": "^sed\\b",
+    "outil": "sed",
+    "instrument": "copiste",
+    "de": "texte",
+    "vers": "texte_corrige"
+   },
+   {
+    "motif": "^awk\\b",
+    "outil": "awk",
+    "instrument": "calculatrice",
+    "de": "colonnes",
+    "vers": "calcul"
+   },
+   {
+    "motif": "^cut\\b",
+    "outil": "cut",
+    "instrument": "ciseaux",
+    "de": "tableau",
+    "vers": "colonne"
+   },
+   {
+    "motif": "^tr\\b",
+    "outil": "tr",
+    "instrument": "traducteur",
+    "de": "lettres",
+    "vers": "lettres_changees"
+   },
+   {
+    "motif": "^paste\\b",
+    "outil": "paste",
+    "instrument": "colle",
+    "de": "colonnes",
+    "vers": "tableau"
+   },
+   {
+    "motif": "^sort\\b",
+    "outil": "sort",
+    "instrument": "moulin",
+    "de": "lignes",
+    "vers": "lignes_rangees"
+   },
+   {
+    "motif": "^tee\\b",
+    "outil": "tee",
+    "instrument": "aiguillage",
+    "de": "lignes",
+    "vers": "ecran_et_fichier"
+   },
+   {
+    "motif": "^xargs\\b",
+    "outil": "xargs",
+    "instrument": "distributeur",
+    "de": "lignes",
+    "vers": "arguments"
+   },
+   {
+    "motif": "^grep\\b(?!.*\\s-\\w*c)",
+    "outil": "grep",
+    "instrument": "tamis",
+    "de": "lignes",
+    "vers": "lignes_gardees"
+   }
+  ]
+ },
+ "couleurs": {
+  "bibliotheque": 179,
+  "export": 117,
+  "copiste": 141,
+  "calculatrice": 215,
+  "ciseaux": 203,
+  "traducteur": 78,
+  "colle": 186,
+  "moulin": 229,
+  "aiguillage": 39,
+  "distributeur": 75,
+  "tamis": 110
+ },
+ "chaine": {
+  "rapport_lignes": 3
+ }
+}

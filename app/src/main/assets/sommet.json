@@ -1,0 +1,222 @@
+{
+ "note": "Généré par donnees/sommet/outils/fiches_sommet.py ; lu par pc/tg/sommet.py et Sommet.kt. Les scripts du Sommet sont fournis par le jeu dans le terrain ; aucun ne sort du dossier où on le lance.",
+ "ouverture": {
+  "mondes": 3,
+  "palier": 3
+ },
+ "scripts": {
+  "fragile": [
+   "#!/usr/bin/env bash",
+   "# ##som.sc.fragile.role##",
+   "carnet=$1",
+   "cp $carnet coffre/",
+   "echo @@som.sc.fragile.ok@@ \"$carnet\""
+  ],
+  "sale": [
+   "#!/usr/bin/env bash",
+   "# ##som.sc.sale.role##",
+   "brouillon=$(mktemp ./brouillon.XXXXXX)",
+   "echo @@som.sc.ration@@ 1 >> \"$brouillon\"",
+   "echo @@som.sc.sale.panne@@ >&2",
+   "exit 1"
+  ],
+  "bivouac": [
+   "#!/usr/bin/env bash",
+   "# ##som.sc.bivouac.role##",
+   "set -euo pipefail",
+   "n=2",
+   "usage() { echo @@som.sc.bivouac.usage@@ >&2; }",
+   "while getopts \"n:h\" opt; do",
+   "  case $opt in",
+   "    n) n=$OPTARG ;;",
+   "    h) usage; exit 0 ;;",
+   "    *) usage; exit 2 ;;",
+   "  esac",
+   "done",
+   "brouillon=$(mktemp ./brouillon.XXXXXX)",
+   "trap 'rm -f \"$brouillon\"' EXIT",
+   "i=1",
+   "while [ \"$i\" -le \"$n\" ]; do",
+   "  echo @@som.sc.ration@@ \"$i\" >> \"$brouillon\"",
+   "  i=$((i + 1))",
+   "done",
+   "cp \"$brouillon\" sac.txt",
+   "echo @@som.sc.bivouac.ok@@ \"$n\""
+  ],
+  "casse": [
+   "#!/usr/bin/env bash",
+   "# ##som.sc.casse.role##",
+   "marches=0",
+   "for etage in 1 2 3 4; do",
+   "  marches=$((marches + etage * 10))",
+   "  if [ \"$marches\" -gt 50 ]",
+   "    echo @@som.sc.casse.plus@@ \"$etage\"",
+   "  fi",
+   "done",
+   "echo @@som.sc.total@@ \"$marches\""
+  ],
+  "boucle": [
+   "#!/usr/bin/env bash",
+   "# ##som.sc.boucle.role##",
+   "total=0",
+   "for alt in 1200 1850 2400; do",
+   "  totl=$((total + alt))",
+   "done",
+   "echo @@som.sc.boucle.cumul@@ \"$total\""
+  ]
+ },
+ "casse": {
+  "ligne": 6,
+  "signale": [
+   6,
+   7,
+   8
+  ]
+ },
+ "boucle": {
+  "juste": 5450,
+  "faute": "totl"
+ },
+ "lieux": [
+  "lac-gele",
+  "col-du-vent",
+  "grotte-bleue",
+  "pic-noir",
+  "source-chaude",
+  "pont-de-glace",
+  "vieux-refuge",
+  "crete-rouge",
+  "cascade",
+  "foret-de-pins",
+  "moraine",
+  "glacier-blanc",
+  "belvedere",
+  "chapelle",
+  "combe-verte",
+  "roc-perce"
+ ],
+ "caps": [
+  "nord",
+  "sud",
+  "est",
+  "ouest"
+ ],
+ "pierres": [
+  "quartz",
+  "granit",
+  "ardoise",
+  "silex bleu",
+  "pierre ronde",
+  "gneiss",
+  "basalte",
+  "mica",
+  "cristal geant",
+  "galet plat",
+  "schiste",
+  "obsidienne"
+ ],
+ "mots": [
+  "edelweiss",
+  "marmotte",
+  "chamois",
+  "bouquetin",
+  "gentiane",
+  "lagopede",
+  "crampon",
+  "piolet",
+  "cordee",
+  "bivouac",
+  "serac",
+  "moraine",
+  "congere",
+  "cairn",
+  "refuge",
+  "rappel",
+  "baudrier",
+  "mousqueton",
+  "glacier",
+  "altitude",
+  "corniche",
+  "brocard",
+  "myrtille",
+  "chocard"
+ ],
+ "journal": {
+  "debut": "2026-07-01",
+  "jours": 12,
+  "lignes": 28,
+  "messages": {
+   "INFO": [
+    "som.log.info.depart",
+    "som.log.info.pause",
+    "som.log.info.meteo",
+    "som.log.info.cairn"
+   ],
+   "ALERTE": [
+    "som.log.alerte.vent",
+    "som.log.alerte.orage"
+   ],
+   "ERREUR": [
+    "som.log.erreur.corde",
+    "som.log.erreur.carte"
+   ]
+  },
+  "suite": [
+   "som.log.suite.releve",
+   "som.log.suite.fausse"
+  ]
+ },
+ "defi": {
+  "n": 3,
+  "base": 2000000,
+  "medailles": [
+   "or",
+   "diamant"
+  ]
+ },
+ "cordee": {
+  "regles": [
+   {
+    "motif": "^(bash|sh)\\s+-n\\b",
+    "outil": "bash -n",
+    "geste": "relire",
+    "de": "script",
+    "vers": "syntaxe"
+   },
+   {
+    "motif": "^(bash|sh)\\s+-x\\b",
+    "outil": "bash -x",
+    "geste": "eclairer",
+    "de": "script",
+    "vers": "trace"
+   },
+   {
+    "motif": "^shellcheck\\b",
+    "outil": "shellcheck",
+    "geste": "relire",
+    "de": "script",
+    "vers": "conseils"
+   },
+   {
+    "motif": "^find\\b.*-print0\\b",
+    "outil": "find -print0",
+    "geste": "chercher",
+    "de": "arbre",
+    "vers": "noms_zero"
+   },
+   {
+    "motif": "^(bash|sh)\\s+\\S+\\.sh\\b",
+    "outil": "bash",
+    "geste": "grimper",
+    "de": "script",
+    "vers": "resultat"
+   }
+  ]
+ },
+ "couleurs": {
+  "relire": 141,
+  "eclairer": 229,
+  "chercher": 78,
+  "grimper": 203
+ }
+}

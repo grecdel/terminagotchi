@@ -1,0 +1,7066 @@
+{
+"exercices": [
+{
+"type": "exp_chemin",
+"valeur": "9f5fa6f22fde5166619939c9b145d8ac6e9574663974ecb59510a9c9dff04f99",
+"k": 0,
+"empreinte": "exp_chemin|coins=creux,panier|i=0|j=1|pieces=foret,jungle,plage",
+"reponse": null
+},
+{
+"type": "exp_chemin",
+"valeur": "9f5fa6f22fde5166619939c9b145d8ac6e9574663974ecb59510a9c9dff04f99",
+"k": 1,
+"empreinte": "exp_chemin|coins=rocher,creux|i=1|j=0|pieces=foret,marais,prairie",
+"reponse": null
+},
+{
+"type": "exp_chemin",
+"valeur": "9f5fa6f22fde5166619939c9b145d8ac6e9574663974ecb59510a9c9dff04f99",
+"k": 3,
+"empreinte": "exp_chemin|coins=rocher,cabane|i=2|j=1|pieces=grotte,prairie,canyon",
+"reponse": null
+},
+{
+"type": "exp_chemin",
+"valeur": "9f5fa6f22fde5166619939c9b145d8ac6e9574663974ecb59510a9c9dff04f99",
+"k": 99,
+"empreinte": "exp_chemin|coins=tente,coffre|i=2|j=0|pieces=jungle,foret,glacier",
+"reponse": null
+},
+{
+"type": "exp_cle",
+"valeur": "9f5fa6f22fde5166619939c9b145d8ac6e9574663974ecb59510a9c9dff04f99",
+"k": 0,
+"empreinte": "exp_cle|coins=creux,panier|i=0|j=1|pieces=foret,jungle,plage",
+"reponse": null
+},
+{
+"type": "exp_cle",
+"valeur": "9f5fa6f22fde5166619939c9b145d8ac6e9574663974ecb59510a9c9dff04f99",
+"k": 1,
+"empreinte": "exp_cle|coins=rocher,creux|i=1|j=0|pieces=foret,marais,prairie",
+"reponse": null
+},
+{
+"type": "exp_cle",
+"valeur": "9f5fa6f22fde5166619939c9b145d8ac6e9574663974ecb59510a9c9dff04f99",
+"k": 3,
+"empreinte": "exp_cle|coins=rocher,cabane|i=2|j=1|pieces=grotte,prairie,canyon",
+"reponse": null
+},
+{
+"type": "exp_cle",
+"valeur": "9f5fa6f22fde5166619939c9b145d8ac6e9574663974ecb59510a9c9dff04f99",
+"k": 99,
+"empreinte": "exp_cle|coins=tente,coffre|i=2|j=0|pieces=jungle,foret,glacier",
+"reponse": null
+},
+{
+"type": "bat_pieces",
+"valeur": "9f5fa6f22fde5166619939c9b145d8ac6e9574663974ecb59510a9c9dff04f99",
+"k": 0,
+"empreinte": "bat_pieces|pieces=foret,jungle",
+"reponse": null
+},
+{
+"type": "bat_pieces",
+"valeur": "9f5fa6f22fde5166619939c9b145d8ac6e9574663974ecb59510a9c9dff04f99",
+"k": 1,
+"empreinte": "bat_pieces|pieces=foret,marais",
+"reponse": null
+},
+{
+"type": "bat_pieces",
+"valeur": "9f5fa6f22fde5166619939c9b145d8ac6e9574663974ecb59510a9c9dff04f99",
+"k": 3,
+"empreinte": "bat_pieces|pieces=grotte,prairie",
+"reponse": null
+},
+{
+"type": "bat_pieces",
+"valeur": "9f5fa6f22fde5166619939c9b145d8ac6e9574663974ecb59510a9c9dff04f99",
+"k": 99,
+"empreinte": "bat_pieces|pieces=jungle,foret",
+"reponse": null
+},
+{
+"type": "bat_objets",
+"valeur": "9f5fa6f22fde5166619939c9b145d8ac6e9574663974ecb59510a9c9dff04f99",
+"k": 0,
+"empreinte": "bat_objets|objets=bille,crayon|pieces=foret",
+"reponse": null
+},
+{
+"type": "bat_objets",
+"valeur": "9f5fa6f22fde5166619939c9b145d8ac6e9574663974ecb59510a9c9dff04f99",
+"k": 1,
+"empreinte": "bat_objets|objets=crayon,gomme|pieces=foret",
+"reponse": null
+},
+{
+"type": "bat_objets",
+"valeur": "9f5fa6f22fde5166619939c9b145d8ac6e9574663974ecb59510a9c9dff04f99",
+"k": 3,
+"empreinte": "bat_objets|objets=livre,pomme|pieces=grotte",
+"reponse": null
+},
+{
+"type": "bat_objets",
+"valeur": "9f5fa6f22fde5166619939c9b145d8ac6e9574663974ecb59510a9c9dff04f99",
+"k": 99,
+"empreinte": "bat_objets|objets=tambour,carte|pieces=jungle",
+"reponse": null
+},
+{
+"type": "dem_mv",
+"valeur": "9f5fa6f22fde5166619939c9b145d8ac6e9574663974ecb59510a9c9dff04f99",
+"k": 0,
+"empreinte": "dem_mv|objets=plume|pieces=foret,jungle",
+"reponse": null
+},
+{
+"type": "dem_mv",
+"valeur": "9f5fa6f22fde5166619939c9b145d8ac6e9574663974ecb59510a9c9dff04f99",
+"k": 1,
+"empreinte": "dem_mv|objets=crayon|pieces=foret,marais",
+"reponse": null
+},
+{
+"type": "dem_mv",
+"valeur": "9f5fa6f22fde5166619939c9b145d8ac6e9574663974ecb59510a9c9dff04f99",
+"k": 3,
+"empreinte": "dem_mv|objets=bille|pieces=grotte,prairie",
+"reponse": null
+},
+{
+"type": "dem_mv",
+"valeur": "9f5fa6f22fde5166619939c9b145d8ac6e9574663974ecb59510a9c9dff04f99",
+"k": 99,
+"empreinte": "dem_mv|objets=plume|pieces=jungle,foret",
+"reponse": null
+},
+{
+"type": "dem_cp",
+"valeur": "9f5fa6f22fde5166619939c9b145d8ac6e9574663974ecb59510a9c9dff04f99",
+"k": 0,
+"empreinte": "dem_cp|objets=plume|pieces=foret,jungle",
+"reponse": null
+},
+{
+"type": "dem_cp",
+"valeur": "9f5fa6f22fde5166619939c9b145d8ac6e9574663974ecb59510a9c9dff04f99",
+"k": 1,
+"empreinte": "dem_cp|objets=crayon|pieces=foret,marais",
+"reponse": null
+},
+{
+"type": "dem_cp",
+"valeur": "9f5fa6f22fde5166619939c9b145d8ac6e9574663974ecb59510a9c9dff04f99",
+"k": 3,
+"empreinte": "dem_cp|objets=bille|pieces=grotte,prairie",
+"reponse": null
+},
+{
+"type": "dem_cp",
+"valeur": "9f5fa6f22fde5166619939c9b145d8ac6e9574663974ecb59510a9c9dff04f99",
+"k": 99,
+"empreinte": "dem_cp|objets=plume|pieces=jungle,foret",
+"reponse": null
+},
+{
+"type": "net_rm",
+"valeur": "9f5fa6f22fde5166619939c9b145d8ac6e9574663974ecb59510a9c9dff04f99",
+"k": 0,
+"empreinte": "net_rm|n=3|objets=bille|pieces=foret",
+"reponse": null
+},
+{
+"type": "net_rm",
+"valeur": "9f5fa6f22fde5166619939c9b145d8ac6e9574663974ecb59510a9c9dff04f99",
+"k": 1,
+"empreinte": "net_rm|n=2|objets=crayon|pieces=foret",
+"reponse": null
+},
+{
+"type": "net_rm",
+"valeur": "9f5fa6f22fde5166619939c9b145d8ac6e9574663974ecb59510a9c9dff04f99",
+"k": 3,
+"empreinte": "net_rm|n=2|objets=livre|pieces=grotte",
+"reponse": null
+},
+{
+"type": "net_rm",
+"valeur": "9f5fa6f22fde5166619939c9b145d8ac6e9574663974ecb59510a9c9dff04f99",
+"k": 99,
+"empreinte": "net_rm|n=3|objets=tambour|pieces=jungle",
+"reponse": null
+},
+{
+"type": "net_rmdir",
+"valeur": "9f5fa6f22fde5166619939c9b145d8ac6e9574663974ecb59510a9c9dff04f99",
+"k": 0,
+"empreinte": "net_rmdir|objets=tambour|pieces=foret,jungle,plage",
+"reponse": null
+},
+{
+"type": "net_rmdir",
+"valeur": "9f5fa6f22fde5166619939c9b145d8ac6e9574663974ecb59510a9c9dff04f99",
+"k": 1,
+"empreinte": "net_rmdir|objets=carte|pieces=foret,marais,prairie",
+"reponse": null
+},
+{
+"type": "net_rmdir",
+"valeur": "9f5fa6f22fde5166619939c9b145d8ac6e9574663974ecb59510a9c9dff04f99",
+"k": 3,
+"empreinte": "net_rmdir|objets=gomme|pieces=grotte,prairie,canyon",
+"reponse": null
+},
+{
+"type": "net_rmdir",
+"valeur": "9f5fa6f22fde5166619939c9b145d8ac6e9574663974ecb59510a9c9dff04f99",
+"k": 99,
+"empreinte": "net_rmdir|objets=lampe|pieces=jungle,foret,glacier",
+"reponse": null
+},
+{
+"type": "net_rmr",
+"valeur": "9f5fa6f22fde5166619939c9b145d8ac6e9574663974ecb59510a9c9dff04f99",
+"k": 0,
+"empreinte": "net_rmr|objets=plume,coquillage,bougie|pieces=foret,jungle",
+"reponse": null
+},
+{
+"type": "net_rmr",
+"valeur": "9f5fa6f22fde5166619939c9b145d8ac6e9574663974ecb59510a9c9dff04f99",
+"k": 1,
+"empreinte": "net_rmr|objets=crayon,lampe,tambour|pieces=foret,marais",
+"reponse": null
+},
+{
+"type": "net_rmr",
+"valeur": "9f5fa6f22fde5166619939c9b145d8ac6e9574663974ecb59510a9c9dff04f99",
+"k": 3,
+"empreinte": "net_rmr|objets=bille,balle,carte|pieces=grotte,prairie",
+"reponse": null
+},
+{
+"type": "net_rmr",
+"valeur": "9f5fa6f22fde5166619939c9b145d8ac6e9574663974ecb59510a9c9dff04f99",
+"k": 99,
+"empreinte": "net_rmr|objets=plume,lampe,livre|pieces=jungle,foret",
+"reponse": null
+},
+{
+"type": "lec_cat",
+"valeur": "9f5fa6f22fde5166619939c9b145d8ac6e9574663974ecb59510a9c9dff04f99",
+"k": 0,
+"empreinte": "lec_cat|mots=dragon|n=1",
+"reponse": "dragon"
+},
+{
+"type": "lec_cat",
+"valeur": "9f5fa6f22fde5166619939c9b145d8ac6e9574663974ecb59510a9c9dff04f99",
+"k": 1,
+"empreinte": "lec_cat|mots=dragon|n=3",
+"reponse": "dragon"
+},
+{
+"type": "lec_cat",
+"valeur": "9f5fa6f22fde5166619939c9b145d8ac6e9574663974ecb59510a9c9dff04f99",
+"k": 3,
+"empreinte": "lec_cat|mots=licorne|n=3",
+"reponse": "licorne"
+},
+{
+"type": "lec_cat",
+"valeur": "9f5fa6f22fde5166619939c9b145d8ac6e9574663974ecb59510a9c9dff04f99",
+"k": 99,
+"empreinte": "lec_cat|mots=sirene|n=2",
+"reponse": "sirene"
+},
+{
+"type": "lec_head",
+"valeur": "9f5fa6f22fde5166619939c9b145d8ac6e9574663974ecb59510a9c9dff04f99",
+"k": 0,
+"empreinte": "lec_head|mots=dragon,sirene,nuage,robot,licorne,comete,biscuit,fusee|n=4",
+"reponse": "robot"
+},
+{
+"type": "lec_head",
+"valeur": "9f5fa6f22fde5166619939c9b145d8ac6e9574663974ecb59510a9c9dff04f99",
+"k": 1,
+"empreinte": "lec_head|mots=dragon,tortue,pirate,robot,fusee,cactus,nuage,comete|n=4",
+"reponse": "robot"
+},
+{
+"type": "lec_head",
+"valeur": "9f5fa6f22fde5166619939c9b145d8ac6e9574663974ecb59510a9c9dff04f99",
+"k": 3,
+"empreinte": "lec_head|mots=licorne,pirate,robot,comete,biscuit,tortue,fusee,dragon|n=3",
+"reponse": "robot"
+},
+{
+"type": "lec_head",
+"valeur": "9f5fa6f22fde5166619939c9b145d8ac6e9574663974ecb59510a9c9dff04f99",
+"k": 99,
+"empreinte": "lec_head|mots=sirene,dragon,comete,licorne,pirate,fusee,nuage,cactus|n=4",
+"reponse": "licorne"
+},
+{
+"type": "lec_tail",
+"valeur": "9f5fa6f22fde5166619939c9b145d8ac6e9574663974ecb59510a9c9dff04f99",
+"k": 0,
+"empreinte": "lec_tail|mots=dragon,sirene,nuage,robot,licorne,comete,biscuit,fusee|n=4",
+"reponse": "fusee"
+},
+{
+"type": "lec_tail",
+"valeur": "9f5fa6f22fde5166619939c9b145d8ac6e9574663974ecb59510a9c9dff04f99",
+"k": 1,
+"empreinte": "lec_tail|mots=dragon,tortue,pirate,robot,fusee,cactus,nuage,comete|n=4",
+"reponse": "comete"
+},
+{
+"type": "lec_tail",
+"valeur": "9f5fa6f22fde5166619939c9b145d8ac6e9574663974ecb59510a9c9dff04f99",
+"k": 3,
+"empreinte": "lec_tail|mots=licorne,pirate,robot,comete,biscuit,tortue,fusee,dragon|n=3",
+"reponse": "dragon"
+},
+{
+"type": "lec_tail",
+"valeur": "9f5fa6f22fde5166619939c9b145d8ac6e9574663974ecb59510a9c9dff04f99",
+"k": 99,
+"empreinte": "lec_tail|mots=sirene,dragon,comete,licorne,pirate,fusee,nuage,cactus|n=4",
+"reponse": "cactus"
+},
+{
+"type": "det_grep",
+"valeur": "9f5fa6f22fde5166619939c9b145d8ac6e9574663974ecb59510a9c9dff04f99",
+"k": 0,
+"empreinte": "det_grep|i=1|mots=licorne,sirene,nuage,robot,tortue,volcan|objets=balle,gomme,cle,carte,etoile",
+"reponse": "gomme"
+},
+{
+"type": "det_grep",
+"valeur": "9f5fa6f22fde5166619939c9b145d8ac6e9574663974ecb59510a9c9dff04f99",
+"k": 1,
+"empreinte": "det_grep|i=3|mots=pirate,biscuit,robot,cactus,volcan,tortue|objets=gomme,plume,balle,lampe,boussole",
+"reponse": "lampe"
+},
+{
+"type": "det_grep",
+"valeur": "9f5fa6f22fde5166619939c9b145d8ac6e9574663974ecb59510a9c9dff04f99",
+"k": 3,
+"empreinte": "det_grep|i=3|mots=robot,biscuit,dragon,nuage,licorne,cactus|objets=livre,bille,flute,plume,carte",
+"reponse": "plume"
+},
+{
+"type": "det_grep",
+"valeur": "9f5fa6f22fde5166619939c9b145d8ac6e9574663974ecb59510a9c9dff04f99",
+"k": 99,
+"empreinte": "det_grep|i=4|mots=robot,nuage,cactus,sirene,pirate,comete|objets=lampe,etoile,cle,boussole,livre",
+"reponse": "livre"
+},
+{
+"type": "det_find",
+"valeur": "9f5fa6f22fde5166619939c9b145d8ac6e9574663974ecb59510a9c9dff04f99",
+"k": 0,
+"empreinte": "det_find|coins=creux,panier|i=0|j=1|objet=pomme|pieces=foret,jungle,plage",
+"reponse": "foret"
+},
+{
+"type": "det_find",
+"valeur": "9f5fa6f22fde5166619939c9b145d8ac6e9574663974ecb59510a9c9dff04f99",
+"k": 1,
+"empreinte": "det_find|coins=rocher,creux|i=1|j=0|objet=carte|pieces=foret,marais,prairie",
+"reponse": "marais"
+},
+{
+"type": "det_find",
+"valeur": "9f5fa6f22fde5166619939c9b145d8ac6e9574663974ecb59510a9c9dff04f99",
+"k": 3,
+"empreinte": "det_find|coins=rocher,cabane|i=2|j=1|objet=balle|pieces=grotte,prairie,canyon",
+"reponse": "canyon"
+},
+{
+"type": "det_find",
+"valeur": "9f5fa6f22fde5166619939c9b145d8ac6e9574663974ecb59510a9c9dff04f99",
+"k": 99,
+"empreinte": "det_find|coins=tente,coffre|i=2|j=0|objet=livre|pieces=jungle,foret,glacier",
+"reponse": "glacier"
+},
+{
+"type": "plo_ecrit",
+"valeur": "9f5fa6f22fde5166619939c9b145d8ac6e9574663974ecb59510a9c9dff04f99",
+"k": 0,
+"empreinte": "plo_ecrit|mots=dragon",
+"reponse": null
+},
+{
+"type": "plo_ecrit",
+"valeur": "9f5fa6f22fde5166619939c9b145d8ac6e9574663974ecb59510a9c9dff04f99",
+"k": 1,
+"empreinte": "plo_ecrit|mots=dragon",
+"reponse": null
+},
+{
+"type": "plo_ecrit",
+"valeur": "9f5fa6f22fde5166619939c9b145d8ac6e9574663974ecb59510a9c9dff04f99",
+"k": 3,
+"empreinte": "plo_ecrit|mots=licorne",
+"reponse": null
+},
+{
+"type": "plo_ecrit",
+"valeur": "9f5fa6f22fde5166619939c9b145d8ac6e9574663974ecb59510a9c9dff04f99",
+"k": 99,
+"empreinte": "plo_ecrit|mots=sirene",
+"reponse": null
+},
+{
+"type": "plo_ajout",
+"valeur": "9f5fa6f22fde5166619939c9b145d8ac6e9574663974ecb59510a9c9dff04f99",
+"k": 0,
+"empreinte": "plo_ajout|mots=dragon,sirene,nuage,robot",
+"reponse": null
+},
+{
+"type": "plo_ajout",
+"valeur": "9f5fa6f22fde5166619939c9b145d8ac6e9574663974ecb59510a9c9dff04f99",
+"k": 1,
+"empreinte": "plo_ajout|mots=dragon,tortue,pirate,robot",
+"reponse": null
+},
+{
+"type": "plo_ajout",
+"valeur": "9f5fa6f22fde5166619939c9b145d8ac6e9574663974ecb59510a9c9dff04f99",
+"k": 3,
+"empreinte": "plo_ajout|mots=licorne,pirate,robot,comete",
+"reponse": null
+},
+{
+"type": "plo_ajout",
+"valeur": "9f5fa6f22fde5166619939c9b145d8ac6e9574663974ecb59510a9c9dff04f99",
+"k": 99,
+"empreinte": "plo_ajout|mots=sirene,dragon,comete,licorne",
+"reponse": null
+},
+{
+"type": "plo_tuyau",
+"valeur": "9f5fa6f22fde5166619939c9b145d8ac6e9574663974ecb59510a9c9dff04f99",
+"k": 0,
+"empreinte": "plo_tuyau|lignes=0,3,0,3,3,0,3,3,0,0,3|objets=balle,gomme,cle,carte",
+"reponse": "5"
+},
+{
+"type": "plo_tuyau",
+"valeur": "9f5fa6f22fde5166619939c9b145d8ac6e9574663974ecb59510a9c9dff04f99",
+"k": 1,
+"empreinte": "plo_tuyau|lignes=0,0,1,1,0,1,3,0,0,3|objets=gomme,plume,balle,lampe",
+"reponse": "5"
+},
+{
+"type": "plo_tuyau",
+"valeur": "9f5fa6f22fde5166619939c9b145d8ac6e9574663974ecb59510a9c9dff04f99",
+"k": 3,
+"empreinte": "plo_tuyau|lignes=1,1,1,2,1,1,2,1,3,0|objets=livre,bille,flute,plume",
+"reponse": "1"
+},
+{
+"type": "plo_tuyau",
+"valeur": "9f5fa6f22fde5166619939c9b145d8ac6e9574663974ecb59510a9c9dff04f99",
+"k": 99,
+"empreinte": "plo_tuyau|lignes=1,2,0,2,0,2,0,1,0|objets=lampe,etoile,cle,boussole",
+"reponse": "4"
+},
+{
+"type": "cui_lancer",
+"valeur": "9f5fa6f22fde5166619939c9b145d8ac6e9574663974ecb59510a9c9dff04f99",
+"k": 0,
+"empreinte": "cui_lancer|mots=dragon",
+"reponse": "dragon"
+},
+{
+"type": "cui_lancer",
+"valeur": "9f5fa6f22fde5166619939c9b145d8ac6e9574663974ecb59510a9c9dff04f99",
+"k": 1,
+"empreinte": "cui_lancer|mots=dragon",
+"reponse": "dragon"
+},
+{
+"type": "cui_lancer",
+"valeur": "9f5fa6f22fde5166619939c9b145d8ac6e9574663974ecb59510a9c9dff04f99",
+"k": 3,
+"empreinte": "cui_lancer|mots=licorne",
+"reponse": "licorne"
+},
+{
+"type": "cui_lancer",
+"valeur": "9f5fa6f22fde5166619939c9b145d8ac6e9574663974ecb59510a9c9dff04f99",
+"k": 99,
+"empreinte": "cui_lancer|mots=sirene",
+"reponse": "sirene"
+},
+{
+"type": "cui_ecrire",
+"valeur": "9f5fa6f22fde5166619939c9b145d8ac6e9574663974ecb59510a9c9dff04f99",
+"k": 0,
+"empreinte": "cui_ecrire|mots=dragon",
+"reponse": null
+},
+{
+"type": "cui_ecrire",
+"valeur": "9f5fa6f22fde5166619939c9b145d8ac6e9574663974ecb59510a9c9dff04f99",
+"k": 1,
+"empreinte": "cui_ecrire|mots=dragon",
+"reponse": null
+},
+{
+"type": "cui_ecrire",
+"valeur": "9f5fa6f22fde5166619939c9b145d8ac6e9574663974ecb59510a9c9dff04f99",
+"k": 3,
+"empreinte": "cui_ecrire|mots=licorne",
+"reponse": null
+},
+{
+"type": "cui_ecrire",
+"valeur": "9f5fa6f22fde5166619939c9b145d8ac6e9574663974ecb59510a9c9dff04f99",
+"k": 99,
+"empreinte": "cui_ecrire|mots=sirene",
+"reponse": null
+},
+{
+"type": "exp_chemin",
+"valeur": "f5ba7feb881a8dfc4181a5396eb1de041852624d420ba9697c76f4202461ea55",
+"k": 0,
+"empreinte": "exp_chemin|coins=tente,boite|i=2|j=1|pieces=foret,jungle,canyon",
+"reponse": null
+},
+{
+"type": "exp_chemin",
+"valeur": "f5ba7feb881a8dfc4181a5396eb1de041852624d420ba9697c76f4202461ea55",
+"k": 1,
+"empreinte": "exp_chemin|coins=coffre,tente|i=2|j=0|pieces=desert,canyon,grotte",
+"reponse": null
+},
+{
+"type": "exp_chemin",
+"valeur": "f5ba7feb881a8dfc4181a5396eb1de041852624d420ba9697c76f4202461ea55",
+"k": 10,
+"empreinte": "exp_chemin|coins=terrier,rocher|i=0|j=1|pieces=clairiere,grotte,lagon",
+"reponse": null
+},
+{
+"type": "exp_chemin",
+"valeur": "f5ba7feb881a8dfc4181a5396eb1de041852624d420ba9697c76f4202461ea55",
+"k": 99,
+"empreinte": "exp_chemin|coins=tente,boite|i=2|j=0|pieces=canyon,glacier,clairiere",
+"reponse": null
+},
+{
+"type": "exp_cle",
+"valeur": "f5ba7feb881a8dfc4181a5396eb1de041852624d420ba9697c76f4202461ea55",
+"k": 0,
+"empreinte": "exp_cle|coins=tente,boite|i=2|j=1|pieces=foret,jungle,canyon",
+"reponse": null
+},
+{
+"type": "exp_cle",
+"valeur": "f5ba7feb881a8dfc4181a5396eb1de041852624d420ba9697c76f4202461ea55",
+"k": 1,
+"empreinte": "exp_cle|coins=coffre,tente|i=2|j=0|pieces=desert,canyon,grotte",
+"reponse": null
+},
+{
+"type": "exp_cle",
+"valeur": "f5ba7feb881a8dfc4181a5396eb1de041852624d420ba9697c76f4202461ea55",
+"k": 10,
+"empreinte": "exp_cle|coins=terrier,rocher|i=0|j=1|pieces=clairiere,grotte,lagon",
+"reponse": null
+},
+{
+"type": "exp_cle",
+"valeur": "f5ba7feb881a8dfc4181a5396eb1de041852624d420ba9697c76f4202461ea55",
+"k": 99,
+"empreinte": "exp_cle|coins=tente,boite|i=2|j=0|pieces=canyon,glacier,clairiere",
+"reponse": null
+},
+{
+"type": "bat_pieces",
+"valeur": "f5ba7feb881a8dfc4181a5396eb1de041852624d420ba9697c76f4202461ea55",
+"k": 0,
+"empreinte": "bat_pieces|pieces=foret,jungle",
+"reponse": null
+},
+{
+"type": "bat_pieces",
+"valeur": "f5ba7feb881a8dfc4181a5396eb1de041852624d420ba9697c76f4202461ea55",
+"k": 1,
+"empreinte": "bat_pieces|pieces=desert,canyon",
+"reponse": null
+},
+{
+"type": "bat_pieces",
+"valeur": "f5ba7feb881a8dfc4181a5396eb1de041852624d420ba9697c76f4202461ea55",
+"k": 10,
+"empreinte": "bat_pieces|pieces=clairiere,grotte",
+"reponse": null
+},
+{
+"type": "bat_pieces",
+"valeur": "f5ba7feb881a8dfc4181a5396eb1de041852624d420ba9697c76f4202461ea55",
+"k": 99,
+"empreinte": "bat_pieces|pieces=canyon,glacier",
+"reponse": null
+},
+{
+"type": "bat_objets",
+"valeur": "f5ba7feb881a8dfc4181a5396eb1de041852624d420ba9697c76f4202461ea55",
+"k": 0,
+"empreinte": "bat_objets|objets=bougie,crayon|pieces=foret",
+"reponse": null
+},
+{
+"type": "bat_objets",
+"valeur": "f5ba7feb881a8dfc4181a5396eb1de041852624d420ba9697c76f4202461ea55",
+"k": 1,
+"empreinte": "bat_objets|objets=gomme,coquillage|pieces=desert",
+"reponse": null
+},
+{
+"type": "bat_objets",
+"valeur": "f5ba7feb881a8dfc4181a5396eb1de041852624d420ba9697c76f4202461ea55",
+"k": 10,
+"empreinte": "bat_objets|objets=cle,etoile|pieces=clairiere",
+"reponse": null
+},
+{
+"type": "bat_objets",
+"valeur": "f5ba7feb881a8dfc4181a5396eb1de041852624d420ba9697c76f4202461ea55",
+"k": 99,
+"empreinte": "bat_objets|objets=cle,bougie|pieces=canyon",
+"reponse": null
+},
+{
+"type": "dem_mv",
+"valeur": "f5ba7feb881a8dfc4181a5396eb1de041852624d420ba9697c76f4202461ea55",
+"k": 0,
+"empreinte": "dem_mv|objets=gomme|pieces=foret,jungle",
+"reponse": null
+},
+{
+"type": "dem_mv",
+"valeur": "f5ba7feb881a8dfc4181a5396eb1de041852624d420ba9697c76f4202461ea55",
+"k": 1,
+"empreinte": "dem_mv|objets=gomme|pieces=desert,canyon",
+"reponse": null
+},
+{
+"type": "dem_mv",
+"valeur": "f5ba7feb881a8dfc4181a5396eb1de041852624d420ba9697c76f4202461ea55",
+"k": 10,
+"empreinte": "dem_mv|objets=boussole|pieces=clairiere,grotte",
+"reponse": null
+},
+{
+"type": "dem_mv",
+"valeur": "f5ba7feb881a8dfc4181a5396eb1de041852624d420ba9697c76f4202461ea55",
+"k": 99,
+"empreinte": "dem_mv|objets=coquillage|pieces=canyon,glacier",
+"reponse": null
+},
+{
+"type": "dem_cp",
+"valeur": "f5ba7feb881a8dfc4181a5396eb1de041852624d420ba9697c76f4202461ea55",
+"k": 0,
+"empreinte": "dem_cp|objets=gomme|pieces=foret,jungle",
+"reponse": null
+},
+{
+"type": "dem_cp",
+"valeur": "f5ba7feb881a8dfc4181a5396eb1de041852624d420ba9697c76f4202461ea55",
+"k": 1,
+"empreinte": "dem_cp|objets=gomme|pieces=desert,canyon",
+"reponse": null
+},
+{
+"type": "dem_cp",
+"valeur": "f5ba7feb881a8dfc4181a5396eb1de041852624d420ba9697c76f4202461ea55",
+"k": 10,
+"empreinte": "dem_cp|objets=boussole|pieces=clairiere,grotte",
+"reponse": null
+},
+{
+"type": "dem_cp",
+"valeur": "f5ba7feb881a8dfc4181a5396eb1de041852624d420ba9697c76f4202461ea55",
+"k": 99,
+"empreinte": "dem_cp|objets=coquillage|pieces=canyon,glacier",
+"reponse": null
+},
+{
+"type": "net_rm",
+"valeur": "f5ba7feb881a8dfc4181a5396eb1de041852624d420ba9697c76f4202461ea55",
+"k": 0,
+"empreinte": "net_rm|n=3|objets=bougie|pieces=foret",
+"reponse": null
+},
+{
+"type": "net_rm",
+"valeur": "f5ba7feb881a8dfc4181a5396eb1de041852624d420ba9697c76f4202461ea55",
+"k": 1,
+"empreinte": "net_rm|n=4|objets=gomme|pieces=desert",
+"reponse": null
+},
+{
+"type": "net_rm",
+"valeur": "f5ba7feb881a8dfc4181a5396eb1de041852624d420ba9697c76f4202461ea55",
+"k": 10,
+"empreinte": "net_rm|n=3|objets=cle|pieces=clairiere",
+"reponse": null
+},
+{
+"type": "net_rm",
+"valeur": "f5ba7feb881a8dfc4181a5396eb1de041852624d420ba9697c76f4202461ea55",
+"k": 99,
+"empreinte": "net_rm|n=2|objets=cle|pieces=canyon",
+"reponse": null
+},
+{
+"type": "net_rmdir",
+"valeur": "f5ba7feb881a8dfc4181a5396eb1de041852624d420ba9697c76f4202461ea55",
+"k": 0,
+"empreinte": "net_rmdir|objets=lampe|pieces=foret,jungle,canyon",
+"reponse": null
+},
+{
+"type": "net_rmdir",
+"valeur": "f5ba7feb881a8dfc4181a5396eb1de041852624d420ba9697c76f4202461ea55",
+"k": 1,
+"empreinte": "net_rmdir|objets=pomme|pieces=desert,canyon,grotte",
+"reponse": null
+},
+{
+"type": "net_rmdir",
+"valeur": "f5ba7feb881a8dfc4181a5396eb1de041852624d420ba9697c76f4202461ea55",
+"k": 10,
+"empreinte": "net_rmdir|objets=balle|pieces=clairiere,grotte,lagon",
+"reponse": null
+},
+{
+"type": "net_rmdir",
+"valeur": "f5ba7feb881a8dfc4181a5396eb1de041852624d420ba9697c76f4202461ea55",
+"k": 99,
+"empreinte": "net_rmdir|objets=lampe|pieces=canyon,glacier,clairiere",
+"reponse": null
+},
+{
+"type": "net_rmr",
+"valeur": "f5ba7feb881a8dfc4181a5396eb1de041852624d420ba9697c76f4202461ea55",
+"k": 0,
+"empreinte": "net_rmr|objets=gomme,flute,boussole|pieces=foret,jungle",
+"reponse": null
+},
+{
+"type": "net_rmr",
+"valeur": "f5ba7feb881a8dfc4181a5396eb1de041852624d420ba9697c76f4202461ea55",
+"k": 1,
+"empreinte": "net_rmr|objets=gomme,balle,etoile|pieces=desert,canyon",
+"reponse": null
+},
+{
+"type": "net_rmr",
+"valeur": "f5ba7feb881a8dfc4181a5396eb1de041852624d420ba9697c76f4202461ea55",
+"k": 10,
+"empreinte": "net_rmr|objets=boussole,bougie,gomme|pieces=clairiere,grotte",
+"reponse": null
+},
+{
+"type": "net_rmr",
+"valeur": "f5ba7feb881a8dfc4181a5396eb1de041852624d420ba9697c76f4202461ea55",
+"k": 99,
+"empreinte": "net_rmr|objets=coquillage,cle,bille|pieces=canyon,glacier",
+"reponse": null
+},
+{
+"type": "lec_cat",
+"valeur": "f5ba7feb881a8dfc4181a5396eb1de041852624d420ba9697c76f4202461ea55",
+"k": 0,
+"empreinte": "lec_cat|mots=dragon|n=1",
+"reponse": "dragon"
+},
+{
+"type": "lec_cat",
+"valeur": "f5ba7feb881a8dfc4181a5396eb1de041852624d420ba9697c76f4202461ea55",
+"k": 1,
+"empreinte": "lec_cat|mots=volcan|n=3",
+"reponse": "volcan"
+},
+{
+"type": "lec_cat",
+"valeur": "f5ba7feb881a8dfc4181a5396eb1de041852624d420ba9697c76f4202461ea55",
+"k": 10,
+"empreinte": "lec_cat|mots=cactus|n=2",
+"reponse": "cactus"
+},
+{
+"type": "lec_cat",
+"valeur": "f5ba7feb881a8dfc4181a5396eb1de041852624d420ba9697c76f4202461ea55",
+"k": 99,
+"empreinte": "lec_cat|mots=robot|n=1",
+"reponse": "robot"
+},
+{
+"type": "lec_head",
+"valeur": "f5ba7feb881a8dfc4181a5396eb1de041852624d420ba9697c76f4202461ea55",
+"k": 0,
+"empreinte": "lec_head|mots=dragon,sirene,robot,fusee,cactus,nuage,biscuit,pirate|n=2",
+"reponse": "sirene"
+},
+{
+"type": "lec_head",
+"valeur": "f5ba7feb881a8dfc4181a5396eb1de041852624d420ba9697c76f4202461ea55",
+"k": 1,
+"empreinte": "lec_head|mots=volcan,robot,licorne,biscuit,sirene,cactus,nuage,fusee|n=4",
+"reponse": "biscuit"
+},
+{
+"type": "lec_head",
+"valeur": "f5ba7feb881a8dfc4181a5396eb1de041852624d420ba9697c76f4202461ea55",
+"k": 10,
+"empreinte": "lec_head|mots=cactus,licorne,fusee,comete,tortue,volcan,pirate,nuage|n=3",
+"reponse": "fusee"
+},
+{
+"type": "lec_head",
+"valeur": "f5ba7feb881a8dfc4181a5396eb1de041852624d420ba9697c76f4202461ea55",
+"k": 99,
+"empreinte": "lec_head|mots=robot,comete,cactus,tortue,licorne,pirate,dragon,biscuit|n=3",
+"reponse": "cactus"
+},
+{
+"type": "lec_tail",
+"valeur": "f5ba7feb881a8dfc4181a5396eb1de041852624d420ba9697c76f4202461ea55",
+"k": 0,
+"empreinte": "lec_tail|mots=dragon,sirene,robot,fusee,cactus,nuage,biscuit,pirate|n=2",
+"reponse": "pirate"
+},
+{
+"type": "lec_tail",
+"valeur": "f5ba7feb881a8dfc4181a5396eb1de041852624d420ba9697c76f4202461ea55",
+"k": 1,
+"empreinte": "lec_tail|mots=volcan,robot,licorne,biscuit,sirene,cactus,nuage,fusee|n=4",
+"reponse": "fusee"
+},
+{
+"type": "lec_tail",
+"valeur": "f5ba7feb881a8dfc4181a5396eb1de041852624d420ba9697c76f4202461ea55",
+"k": 10,
+"empreinte": "lec_tail|mots=cactus,licorne,fusee,comete,tortue,volcan,pirate,nuage|n=3",
+"reponse": "nuage"
+},
+{
+"type": "lec_tail",
+"valeur": "f5ba7feb881a8dfc4181a5396eb1de041852624d420ba9697c76f4202461ea55",
+"k": 99,
+"empreinte": "lec_tail|mots=robot,comete,cactus,tortue,licorne,pirate,dragon,biscuit|n=3",
+"reponse": "biscuit"
+},
+{
+"type": "det_grep",
+"valeur": "f5ba7feb881a8dfc4181a5396eb1de041852624d420ba9697c76f4202461ea55",
+"k": 0,
+"empreinte": "det_grep|i=3|mots=fusee,biscuit,volcan,licorne,comete,cactus|objets=balle,bougie,gomme,tambour,boussole",
+"reponse": "tambour"
+},
+{
+"type": "det_grep",
+"valeur": "f5ba7feb881a8dfc4181a5396eb1de041852624d420ba9697c76f4202461ea55",
+"k": 1,
+"empreinte": "det_grep|i=0|mots=fusee,pirate,biscuit,cactus,tortue,sirene|objets=lampe,pomme,bougie,boussole,etoile",
+"reponse": "lampe"
+},
+{
+"type": "det_grep",
+"valeur": "f5ba7feb881a8dfc4181a5396eb1de041852624d420ba9697c76f4202461ea55",
+"k": 10,
+"empreinte": "det_grep|i=3|mots=licorne,volcan,robot,pirate,sirene,fusee|objets=coquillage,cle,plume,balle,etoile",
+"reponse": "balle"
+},
+{
+"type": "det_grep",
+"valeur": "f5ba7feb881a8dfc4181a5396eb1de041852624d420ba9697c76f4202461ea55",
+"k": 99,
+"empreinte": "det_grep|i=3|mots=robot,sirene,pirate,fusee,dragon,tortue|objets=flute,bougie,coquillage,tambour,carte",
+"reponse": "tambour"
+},
+{
+"type": "det_find",
+"valeur": "f5ba7feb881a8dfc4181a5396eb1de041852624d420ba9697c76f4202461ea55",
+"k": 0,
+"empreinte": "det_find|coins=tente,boite|i=2|j=1|objet=lampe|pieces=foret,jungle,canyon",
+"reponse": "canyon"
+},
+{
+"type": "det_find",
+"valeur": "f5ba7feb881a8dfc4181a5396eb1de041852624d420ba9697c76f4202461ea55",
+"k": 1,
+"empreinte": "det_find|coins=coffre,tente|i=2|j=0|objet=carte|pieces=desert,canyon,grotte",
+"reponse": "grotte"
+},
+{
+"type": "det_find",
+"valeur": "f5ba7feb881a8dfc4181a5396eb1de041852624d420ba9697c76f4202461ea55",
+"k": 10,
+"empreinte": "det_find|coins=terrier,rocher|i=0|j=1|objet=balle|pieces=clairiere,grotte,lagon",
+"reponse": "clairiere"
+},
+{
+"type": "det_find",
+"valeur": "f5ba7feb881a8dfc4181a5396eb1de041852624d420ba9697c76f4202461ea55",
+"k": 99,
+"empreinte": "det_find|coins=tente,boite|i=2|j=0|objet=tambour|pieces=canyon,glacier,clairiere",
+"reponse": "clairiere"
+},
+{
+"type": "plo_ecrit",
+"valeur": "f5ba7feb881a8dfc4181a5396eb1de041852624d420ba9697c76f4202461ea55",
+"k": 0,
+"empreinte": "plo_ecrit|mots=dragon",
+"reponse": null
+},
+{
+"type": "plo_ecrit",
+"valeur": "f5ba7feb881a8dfc4181a5396eb1de041852624d420ba9697c76f4202461ea55",
+"k": 1,
+"empreinte": "plo_ecrit|mots=volcan",
+"reponse": null
+},
+{
+"type": "plo_ecrit",
+"valeur": "f5ba7feb881a8dfc4181a5396eb1de041852624d420ba9697c76f4202461ea55",
+"k": 10,
+"empreinte": "plo_ecrit|mots=cactus",
+"reponse": null
+},
+{
+"type": "plo_ecrit",
+"valeur": "f5ba7feb881a8dfc4181a5396eb1de041852624d420ba9697c76f4202461ea55",
+"k": 99,
+"empreinte": "plo_ecrit|mots=robot",
+"reponse": null
+},
+{
+"type": "plo_ajout",
+"valeur": "f5ba7feb881a8dfc4181a5396eb1de041852624d420ba9697c76f4202461ea55",
+"k": 0,
+"empreinte": "plo_ajout|mots=dragon,sirene,robot,fusee",
+"reponse": null
+},
+{
+"type": "plo_ajout",
+"valeur": "f5ba7feb881a8dfc4181a5396eb1de041852624d420ba9697c76f4202461ea55",
+"k": 1,
+"empreinte": "plo_ajout|mots=volcan,robot,licorne,biscuit",
+"reponse": null
+},
+{
+"type": "plo_ajout",
+"valeur": "f5ba7feb881a8dfc4181a5396eb1de041852624d420ba9697c76f4202461ea55",
+"k": 10,
+"empreinte": "plo_ajout|mots=cactus,licorne,fusee,comete",
+"reponse": null
+},
+{
+"type": "plo_ajout",
+"valeur": "f5ba7feb881a8dfc4181a5396eb1de041852624d420ba9697c76f4202461ea55",
+"k": 99,
+"empreinte": "plo_ajout|mots=robot,comete,cactus,tortue",
+"reponse": null
+},
+{
+"type": "plo_tuyau",
+"valeur": "f5ba7feb881a8dfc4181a5396eb1de041852624d420ba9697c76f4202461ea55",
+"k": 0,
+"empreinte": "plo_tuyau|lignes=2,3,3,2,2,2,3,2,2,0|objets=balle,bougie,gomme,tambour",
+"reponse": "1"
+},
+{
+"type": "plo_tuyau",
+"valeur": "f5ba7feb881a8dfc4181a5396eb1de041852624d420ba9697c76f4202461ea55",
+"k": 1,
+"empreinte": "plo_tuyau|lignes=2,0,1,0,3,1,3,0,0|objets=lampe,pomme,bougie,boussole",
+"reponse": "4"
+},
+{
+"type": "plo_tuyau",
+"valeur": "f5ba7feb881a8dfc4181a5396eb1de041852624d420ba9697c76f4202461ea55",
+"k": 10,
+"empreinte": "plo_tuyau|lignes=0,3,1,2,3,3,3,0,2,0|objets=coquillage,cle,plume,balle",
+"reponse": "3"
+},
+{
+"type": "plo_tuyau",
+"valeur": "f5ba7feb881a8dfc4181a5396eb1de041852624d420ba9697c76f4202461ea55",
+"k": 99,
+"empreinte": "plo_tuyau|lignes=1,0,2,2,3,3,0,0,3,2|objets=flute,bougie,coquillage,tambour",
+"reponse": "3"
+},
+{
+"type": "cui_lancer",
+"valeur": "f5ba7feb881a8dfc4181a5396eb1de041852624d420ba9697c76f4202461ea55",
+"k": 0,
+"empreinte": "cui_lancer|mots=dragon",
+"reponse": "dragon"
+},
+{
+"type": "cui_lancer",
+"valeur": "f5ba7feb881a8dfc4181a5396eb1de041852624d420ba9697c76f4202461ea55",
+"k": 1,
+"empreinte": "cui_lancer|mots=volcan",
+"reponse": "volcan"
+},
+{
+"type": "cui_lancer",
+"valeur": "f5ba7feb881a8dfc4181a5396eb1de041852624d420ba9697c76f4202461ea55",
+"k": 10,
+"empreinte": "cui_lancer|mots=cactus",
+"reponse": "cactus"
+},
+{
+"type": "cui_lancer",
+"valeur": "f5ba7feb881a8dfc4181a5396eb1de041852624d420ba9697c76f4202461ea55",
+"k": 99,
+"empreinte": "cui_lancer|mots=robot",
+"reponse": "robot"
+},
+{
+"type": "cui_ecrire",
+"valeur": "f5ba7feb881a8dfc4181a5396eb1de041852624d420ba9697c76f4202461ea55",
+"k": 0,
+"empreinte": "cui_ecrire|mots=dragon",
+"reponse": null
+},
+{
+"type": "cui_ecrire",
+"valeur": "f5ba7feb881a8dfc4181a5396eb1de041852624d420ba9697c76f4202461ea55",
+"k": 1,
+"empreinte": "cui_ecrire|mots=volcan",
+"reponse": null
+},
+{
+"type": "cui_ecrire",
+"valeur": "f5ba7feb881a8dfc4181a5396eb1de041852624d420ba9697c76f4202461ea55",
+"k": 10,
+"empreinte": "cui_ecrire|mots=cactus",
+"reponse": null
+},
+{
+"type": "cui_ecrire",
+"valeur": "f5ba7feb881a8dfc4181a5396eb1de041852624d420ba9697c76f4202461ea55",
+"k": 99,
+"empreinte": "cui_ecrire|mots=robot",
+"reponse": null
+},
+{
+"type": "exp_chemin",
+"valeur": "359aa7560cab0dfca88ac934c57f9bc072259995704143484e52f2664be47b92",
+"k": 0,
+"empreinte": "exp_chemin|coins=panier,terrier|i=1|j=0|pieces=marais,desert,clairiere",
+"reponse": null
+},
+{
+"type": "exp_chemin",
+"valeur": "359aa7560cab0dfca88ac934c57f9bc072259995704143484e52f2664be47b92",
+"k": 1,
+"empreinte": "exp_chemin|coins=tente,coffre|i=2|j=0|pieces=grotte,desert,marais",
+"reponse": null
+},
+{
+"type": "exp_chemin",
+"valeur": "359aa7560cab0dfca88ac934c57f9bc072259995704143484e52f2664be47b92",
+"k": 17,
+"empreinte": "exp_chemin|coins=panier,coffre|i=2|j=1|pieces=clairiere,prairie,glacier",
+"reponse": null
+},
+{
+"type": "exp_chemin",
+"valeur": "359aa7560cab0dfca88ac934c57f9bc072259995704143484e52f2664be47b92",
+"k": 99,
+"empreinte": "exp_chemin|coins=terrier,coffre|i=0|j=0|pieces=plage,foret,grotte",
+"reponse": null
+},
+{
+"type": "exp_cle",
+"valeur": "359aa7560cab0dfca88ac934c57f9bc072259995704143484e52f2664be47b92",
+"k": 0,
+"empreinte": "exp_cle|coins=panier,terrier|i=1|j=0|pieces=marais,desert,clairiere",
+"reponse": null
+},
+{
+"type": "exp_cle",
+"valeur": "359aa7560cab0dfca88ac934c57f9bc072259995704143484e52f2664be47b92",
+"k": 1,
+"empreinte": "exp_cle|coins=tente,coffre|i=2|j=0|pieces=grotte,desert,marais",
+"reponse": null
+},
+{
+"type": "exp_cle",
+"valeur": "359aa7560cab0dfca88ac934c57f9bc072259995704143484e52f2664be47b92",
+"k": 17,
+"empreinte": "exp_cle|coins=panier,coffre|i=2|j=1|pieces=clairiere,prairie,glacier",
+"reponse": null
+},
+{
+"type": "exp_cle",
+"valeur": "359aa7560cab0dfca88ac934c57f9bc072259995704143484e52f2664be47b92",
+"k": 99,
+"empreinte": "exp_cle|coins=terrier,coffre|i=0|j=0|pieces=plage,foret,grotte",
+"reponse": null
+},
+{
+"type": "bat_pieces",
+"valeur": "359aa7560cab0dfca88ac934c57f9bc072259995704143484e52f2664be47b92",
+"k": 0,
+"empreinte": "bat_pieces|pieces=marais,desert",
+"reponse": null
+},
+{
+"type": "bat_pieces",
+"valeur": "359aa7560cab0dfca88ac934c57f9bc072259995704143484e52f2664be47b92",
+"k": 1,
+"empreinte": "bat_pieces|pieces=grotte,desert",
+"reponse": null
+},
+{
+"type": "bat_pieces",
+"valeur": "359aa7560cab0dfca88ac934c57f9bc072259995704143484e52f2664be47b92",
+"k": 17,
+"empreinte": "bat_pieces|pieces=clairiere,prairie",
+"reponse": null
+},
+{
+"type": "bat_pieces",
+"valeur": "359aa7560cab0dfca88ac934c57f9bc072259995704143484e52f2664be47b92",
+"k": 99,
+"empreinte": "bat_pieces|pieces=plage,foret",
+"reponse": null
+},
+{
+"type": "bat_objets",
+"valeur": "359aa7560cab0dfca88ac934c57f9bc072259995704143484e52f2664be47b92",
+"k": 0,
+"empreinte": "bat_objets|objets=plume,coquillage|pieces=marais",
+"reponse": null
+},
+{
+"type": "bat_objets",
+"valeur": "359aa7560cab0dfca88ac934c57f9bc072259995704143484e52f2664be47b92",
+"k": 1,
+"empreinte": "bat_objets|objets=lampe,plume|pieces=grotte",
+"reponse": null
+},
+{
+"type": "bat_objets",
+"valeur": "359aa7560cab0dfca88ac934c57f9bc072259995704143484e52f2664be47b92",
+"k": 17,
+"empreinte": "bat_objets|objets=coquillage,tambour|pieces=clairiere",
+"reponse": null
+},
+{
+"type": "bat_objets",
+"valeur": "359aa7560cab0dfca88ac934c57f9bc072259995704143484e52f2664be47b92",
+"k": 99,
+"empreinte": "bat_objets|objets=tambour,crayon|pieces=plage",
+"reponse": null
+},
+{
+"type": "dem_mv",
+"valeur": "359aa7560cab0dfca88ac934c57f9bc072259995704143484e52f2664be47b92",
+"k": 0,
+"empreinte": "dem_mv|objets=tambour|pieces=marais,desert",
+"reponse": null
+},
+{
+"type": "dem_mv",
+"valeur": "359aa7560cab0dfca88ac934c57f9bc072259995704143484e52f2664be47b92",
+"k": 1,
+"empreinte": "dem_mv|objets=carte|pieces=grotte,desert",
+"reponse": null
+},
+{
+"type": "dem_mv",
+"valeur": "359aa7560cab0dfca88ac934c57f9bc072259995704143484e52f2664be47b92",
+"k": 17,
+"empreinte": "dem_mv|objets=plume|pieces=clairiere,prairie",
+"reponse": null
+},
+{
+"type": "dem_mv",
+"valeur": "359aa7560cab0dfca88ac934c57f9bc072259995704143484e52f2664be47b92",
+"k": 99,
+"empreinte": "dem_mv|objets=plume|pieces=plage,foret",
+"reponse": null
+},
+{
+"type": "dem_cp",
+"valeur": "359aa7560cab0dfca88ac934c57f9bc072259995704143484e52f2664be47b92",
+"k": 0,
+"empreinte": "dem_cp|objets=tambour|pieces=marais,desert",
+"reponse": null
+},
+{
+"type": "dem_cp",
+"valeur": "359aa7560cab0dfca88ac934c57f9bc072259995704143484e52f2664be47b92",
+"k": 1,
+"empreinte": "dem_cp|objets=carte|pieces=grotte,desert",
+"reponse": null
+},
+{
+"type": "dem_cp",
+"valeur": "359aa7560cab0dfca88ac934c57f9bc072259995704143484e52f2664be47b92",
+"k": 17,
+"empreinte": "dem_cp|objets=plume|pieces=clairiere,prairie",
+"reponse": null
+},
+{
+"type": "dem_cp",
+"valeur": "359aa7560cab0dfca88ac934c57f9bc072259995704143484e52f2664be47b92",
+"k": 99,
+"empreinte": "dem_cp|objets=plume|pieces=plage,foret",
+"reponse": null
+},
+{
+"type": "net_rm",
+"valeur": "359aa7560cab0dfca88ac934c57f9bc072259995704143484e52f2664be47b92",
+"k": 0,
+"empreinte": "net_rm|n=4|objets=plume|pieces=marais",
+"reponse": null
+},
+{
+"type": "net_rm",
+"valeur": "359aa7560cab0dfca88ac934c57f9bc072259995704143484e52f2664be47b92",
+"k": 1,
+"empreinte": "net_rm|n=4|objets=lampe|pieces=grotte",
+"reponse": null
+},
+{
+"type": "net_rm",
+"valeur": "359aa7560cab0dfca88ac934c57f9bc072259995704143484e52f2664be47b92",
+"k": 17,
+"empreinte": "net_rm|n=2|objets=coquillage|pieces=clairiere",
+"reponse": null
+},
+{
+"type": "net_rm",
+"valeur": "359aa7560cab0dfca88ac934c57f9bc072259995704143484e52f2664be47b92",
+"k": 99,
+"empreinte": "net_rm|n=3|objets=tambour|pieces=plage",
+"reponse": null
+},
+{
+"type": "net_rmdir",
+"valeur": "359aa7560cab0dfca88ac934c57f9bc072259995704143484e52f2664be47b92",
+"k": 0,
+"empreinte": "net_rmdir|objets=plume|pieces=marais,desert,clairiere",
+"reponse": null
+},
+{
+"type": "net_rmdir",
+"valeur": "359aa7560cab0dfca88ac934c57f9bc072259995704143484e52f2664be47b92",
+"k": 1,
+"empreinte": "net_rmdir|objets=etoile|pieces=grotte,desert,marais",
+"reponse": null
+},
+{
+"type": "net_rmdir",
+"valeur": "359aa7560cab0dfca88ac934c57f9bc072259995704143484e52f2664be47b92",
+"k": 17,
+"empreinte": "net_rmdir|objets=crayon|pieces=clairiere,prairie,glacier",
+"reponse": null
+},
+{
+"type": "net_rmdir",
+"valeur": "359aa7560cab0dfca88ac934c57f9bc072259995704143484e52f2664be47b92",
+"k": 99,
+"empreinte": "net_rmdir|objets=balle|pieces=plage,foret,grotte",
+"reponse": null
+},
+{
+"type": "net_rmr",
+"valeur": "359aa7560cab0dfca88ac934c57f9bc072259995704143484e52f2664be47b92",
+"k": 0,
+"empreinte": "net_rmr|objets=tambour,balle,flute|pieces=marais,desert",
+"reponse": null
+},
+{
+"type": "net_rmr",
+"valeur": "359aa7560cab0dfca88ac934c57f9bc072259995704143484e52f2664be47b92",
+"k": 1,
+"empreinte": "net_rmr|objets=carte,coquillage,livre|pieces=grotte,desert",
+"reponse": null
+},
+{
+"type": "net_rmr",
+"valeur": "359aa7560cab0dfca88ac934c57f9bc072259995704143484e52f2664be47b92",
+"k": 17,
+"empreinte": "net_rmr|objets=plume,tambour,bougie|pieces=clairiere,prairie",
+"reponse": null
+},
+{
+"type": "net_rmr",
+"valeur": "359aa7560cab0dfca88ac934c57f9bc072259995704143484e52f2664be47b92",
+"k": 99,
+"empreinte": "net_rmr|objets=plume,flute,balle|pieces=plage,foret",
+"reponse": null
+},
+{
+"type": "lec_cat",
+"valeur": "359aa7560cab0dfca88ac934c57f9bc072259995704143484e52f2664be47b92",
+"k": 0,
+"empreinte": "lec_cat|mots=tortue|n=3",
+"reponse": "tortue"
+},
+{
+"type": "lec_cat",
+"valeur": "359aa7560cab0dfca88ac934c57f9bc072259995704143484e52f2664be47b92",
+"k": 1,
+"empreinte": "lec_cat|mots=licorne|n=1",
+"reponse": "licorne"
+},
+{
+"type": "lec_cat",
+"valeur": "359aa7560cab0dfca88ac934c57f9bc072259995704143484e52f2664be47b92",
+"k": 17,
+"empreinte": "lec_cat|mots=cactus|n=2",
+"reponse": "cactus"
+},
+{
+"type": "lec_cat",
+"valeur": "359aa7560cab0dfca88ac934c57f9bc072259995704143484e52f2664be47b92",
+"k": 99,
+"empreinte": "lec_cat|mots=nuage|n=3",
+"reponse": "nuage"
+},
+{
+"type": "lec_head",
+"valeur": "359aa7560cab0dfca88ac934c57f9bc072259995704143484e52f2664be47b92",
+"k": 0,
+"empreinte": "lec_head|mots=tortue,volcan,cactus,dragon,sirene,robot,comete,pirate|n=2",
+"reponse": "volcan"
+},
+{
+"type": "lec_head",
+"valeur": "359aa7560cab0dfca88ac934c57f9bc072259995704143484e52f2664be47b92",
+"k": 1,
+"empreinte": "lec_head|mots=licorne,volcan,tortue,robot,nuage,comete,dragon,cactus|n=4",
+"reponse": "robot"
+},
+{
+"type": "lec_head",
+"valeur": "359aa7560cab0dfca88ac934c57f9bc072259995704143484e52f2664be47b92",
+"k": 17,
+"empreinte": "lec_head|mots=cactus,pirate,comete,volcan,biscuit,nuage,dragon,tortue|n=2",
+"reponse": "pirate"
+},
+{
+"type": "lec_head",
+"valeur": "359aa7560cab0dfca88ac934c57f9bc072259995704143484e52f2664be47b92",
+"k": 99,
+"empreinte": "lec_head|mots=nuage,dragon,licorne,sirene,tortue,cactus,fusee,biscuit|n=4",
+"reponse": "sirene"
+},
+{
+"type": "lec_tail",
+"valeur": "359aa7560cab0dfca88ac934c57f9bc072259995704143484e52f2664be47b92",
+"k": 0,
+"empreinte": "lec_tail|mots=tortue,volcan,cactus,dragon,sirene,robot,comete,pirate|n=2",
+"reponse": "pirate"
+},
+{
+"type": "lec_tail",
+"valeur": "359aa7560cab0dfca88ac934c57f9bc072259995704143484e52f2664be47b92",
+"k": 1,
+"empreinte": "lec_tail|mots=licorne,volcan,tortue,robot,nuage,comete,dragon,cactus|n=4",
+"reponse": "cactus"
+},
+{
+"type": "lec_tail",
+"valeur": "359aa7560cab0dfca88ac934c57f9bc072259995704143484e52f2664be47b92",
+"k": 17,
+"empreinte": "lec_tail|mots=cactus,pirate,comete,volcan,biscuit,nuage,dragon,tortue|n=2",
+"reponse": "tortue"
+},
+{
+"type": "lec_tail",
+"valeur": "359aa7560cab0dfca88ac934c57f9bc072259995704143484e52f2664be47b92",
+"k": 99,
+"empreinte": "lec_tail|mots=nuage,dragon,licorne,sirene,tortue,cactus,fusee,biscuit|n=4",
+"reponse": "biscuit"
+},
+{
+"type": "det_grep",
+"valeur": "359aa7560cab0dfca88ac934c57f9bc072259995704143484e52f2664be47b92",
+"k": 0,
+"empreinte": "det_grep|i=4|mots=pirate,nuage,sirene,volcan,dragon,tortue|objets=bougie,bille,coquillage,pomme,balle",
+"reponse": "balle"
+},
+{
+"type": "det_grep",
+"valeur": "359aa7560cab0dfca88ac934c57f9bc072259995704143484e52f2664be47b92",
+"k": 1,
+"empreinte": "det_grep|i=4|mots=robot,nuage,cactus,licorne,comete,volcan|objets=coquillage,bougie,etoile,balle,crayon",
+"reponse": "crayon"
+},
+{
+"type": "det_grep",
+"valeur": "359aa7560cab0dfca88ac934c57f9bc072259995704143484e52f2664be47b92",
+"k": 17,
+"empreinte": "det_grep|i=0|mots=robot,nuage,fusee,biscuit,cactus,pirate|objets=pomme,carte,cle,flute,gomme",
+"reponse": "pomme"
+},
+{
+"type": "det_grep",
+"valeur": "359aa7560cab0dfca88ac934c57f9bc072259995704143484e52f2664be47b92",
+"k": 99,
+"empreinte": "det_grep|i=0|mots=licorne,cactus,pirate,robot,fusee,dragon|objets=plume,pomme,tambour,livre,bille",
+"reponse": "plume"
+},
+{
+"type": "det_find",
+"valeur": "359aa7560cab0dfca88ac934c57f9bc072259995704143484e52f2664be47b92",
+"k": 0,
+"empreinte": "det_find|coins=panier,terrier|i=1|j=0|objet=balle|pieces=marais,desert,clairiere",
+"reponse": "desert"
+},
+{
+"type": "det_find",
+"valeur": "359aa7560cab0dfca88ac934c57f9bc072259995704143484e52f2664be47b92",
+"k": 1,
+"empreinte": "det_find|coins=tente,coffre|i=2|j=0|objet=pomme|pieces=grotte,desert,marais",
+"reponse": "marais"
+},
+{
+"type": "det_find",
+"valeur": "359aa7560cab0dfca88ac934c57f9bc072259995704143484e52f2664be47b92",
+"k": 17,
+"empreinte": "det_find|coins=panier,coffre|i=2|j=1|objet=pomme|pieces=clairiere,prairie,glacier",
+"reponse": "glacier"
+},
+{
+"type": "det_find",
+"valeur": "359aa7560cab0dfca88ac934c57f9bc072259995704143484e52f2664be47b92",
+"k": 99,
+"empreinte": "det_find|coins=terrier,coffre|i=0|j=0|objet=tambour|pieces=plage,foret,grotte",
+"reponse": "plage"
+},
+{
+"type": "plo_ecrit",
+"valeur": "359aa7560cab0dfca88ac934c57f9bc072259995704143484e52f2664be47b92",
+"k": 0,
+"empreinte": "plo_ecrit|mots=tortue",
+"reponse": null
+},
+{
+"type": "plo_ecrit",
+"valeur": "359aa7560cab0dfca88ac934c57f9bc072259995704143484e52f2664be47b92",
+"k": 1,
+"empreinte": "plo_ecrit|mots=licorne",
+"reponse": null
+},
+{
+"type": "plo_ecrit",
+"valeur": "359aa7560cab0dfca88ac934c57f9bc072259995704143484e52f2664be47b92",
+"k": 17,
+"empreinte": "plo_ecrit|mots=cactus",
+"reponse": null
+},
+{
+"type": "plo_ecrit",
+"valeur": "359aa7560cab0dfca88ac934c57f9bc072259995704143484e52f2664be47b92",
+"k": 99,
+"empreinte": "plo_ecrit|mots=nuage",
+"reponse": null
+},
+{
+"type": "plo_ajout",
+"valeur": "359aa7560cab0dfca88ac934c57f9bc072259995704143484e52f2664be47b92",
+"k": 0,
+"empreinte": "plo_ajout|mots=tortue,volcan,cactus,dragon",
+"reponse": null
+},
+{
+"type": "plo_ajout",
+"valeur": "359aa7560cab0dfca88ac934c57f9bc072259995704143484e52f2664be47b92",
+"k": 1,
+"empreinte": "plo_ajout|mots=licorne,volcan,tortue,robot",
+"reponse": null
+},
+{
+"type": "plo_ajout",
+"valeur": "359aa7560cab0dfca88ac934c57f9bc072259995704143484e52f2664be47b92",
+"k": 17,
+"empreinte": "plo_ajout|mots=cactus,pirate,comete,volcan",
+"reponse": null
+},
+{
+"type": "plo_ajout",
+"valeur": "359aa7560cab0dfca88ac934c57f9bc072259995704143484e52f2664be47b92",
+"k": 99,
+"empreinte": "plo_ajout|mots=nuage,dragon,licorne,sirene",
+"reponse": null
+},
+{
+"type": "plo_tuyau",
+"valeur": "359aa7560cab0dfca88ac934c57f9bc072259995704143484e52f2664be47b92",
+"k": 0,
+"empreinte": "plo_tuyau|lignes=0,2,1,1,2,1,3,3,2,1,3|objets=bougie,bille,coquillage,pomme",
+"reponse": "1"
+},
+{
+"type": "plo_tuyau",
+"valeur": "359aa7560cab0dfca88ac934c57f9bc072259995704143484e52f2664be47b92",
+"k": 1,
+"empreinte": "plo_tuyau|lignes=1,2,0,3,2,2,3,3,2,2,0,2|objets=coquillage,bougie,etoile,balle",
+"reponse": "2"
+},
+{
+"type": "plo_tuyau",
+"valeur": "359aa7560cab0dfca88ac934c57f9bc072259995704143484e52f2664be47b92",
+"k": 17,
+"empreinte": "plo_tuyau|lignes=1,3,0,0,0,0,3,3,1,3,2|objets=pomme,carte,cle,flute",
+"reponse": "4"
+},
+{
+"type": "plo_tuyau",
+"valeur": "359aa7560cab0dfca88ac934c57f9bc072259995704143484e52f2664be47b92",
+"k": 99,
+"empreinte": "plo_tuyau|lignes=0,0,2,1,0,0,0,2,2|objets=plume,pomme,tambour,livre",
+"reponse": "5"
+},
+{
+"type": "cui_lancer",
+"valeur": "359aa7560cab0dfca88ac934c57f9bc072259995704143484e52f2664be47b92",
+"k": 0,
+"empreinte": "cui_lancer|mots=tortue",
+"reponse": "tortue"
+},
+{
+"type": "cui_lancer",
+"valeur": "359aa7560cab0dfca88ac934c57f9bc072259995704143484e52f2664be47b92",
+"k": 1,
+"empreinte": "cui_lancer|mots=licorne",
+"reponse": "licorne"
+},
+{
+"type": "cui_lancer",
+"valeur": "359aa7560cab0dfca88ac934c57f9bc072259995704143484e52f2664be47b92",
+"k": 17,
+"empreinte": "cui_lancer|mots=cactus",
+"reponse": "cactus"
+},
+{
+"type": "cui_lancer",
+"valeur": "359aa7560cab0dfca88ac934c57f9bc072259995704143484e52f2664be47b92",
+"k": 99,
+"empreinte": "cui_lancer|mots=nuage",
+"reponse": "nuage"
+},
+{
+"type": "cui_ecrire",
+"valeur": "359aa7560cab0dfca88ac934c57f9bc072259995704143484e52f2664be47b92",
+"k": 0,
+"empreinte": "cui_ecrire|mots=tortue",
+"reponse": null
+},
+{
+"type": "cui_ecrire",
+"valeur": "359aa7560cab0dfca88ac934c57f9bc072259995704143484e52f2664be47b92",
+"k": 1,
+"empreinte": "cui_ecrire|mots=licorne",
+"reponse": null
+},
+{
+"type": "cui_ecrire",
+"valeur": "359aa7560cab0dfca88ac934c57f9bc072259995704143484e52f2664be47b92",
+"k": 17,
+"empreinte": "cui_ecrire|mots=cactus",
+"reponse": null
+},
+{
+"type": "cui_ecrire",
+"valeur": "359aa7560cab0dfca88ac934c57f9bc072259995704143484e52f2664be47b92",
+"k": 99,
+"empreinte": "cui_ecrire|mots=nuage",
+"reponse": null
+},
+{
+"type": "exp_chemin",
+"valeur": "0fbaba32c573a4b4b66e8e3bcb84303fe1959db0cb4be10578d04c2d2cc6f079",
+"k": 0,
+"empreinte": "exp_chemin|coins=boite,terrier|i=1|j=1|pieces=jungle,glacier,plage",
+"reponse": null
+},
+{
+"type": "exp_chemin",
+"valeur": "0fbaba32c573a4b4b66e8e3bcb84303fe1959db0cb4be10578d04c2d2cc6f079",
+"k": 1,
+"empreinte": "exp_chemin|coins=creux,cabane|i=2|j=0|pieces=plage,marais,jungle",
+"reponse": null
+},
+{
+"type": "exp_chemin",
+"valeur": "0fbaba32c573a4b4b66e8e3bcb84303fe1959db0cb4be10578d04c2d2cc6f079",
+"k": 24,
+"empreinte": "exp_chemin|coins=coffre,terrier|i=0|j=1|pieces=lagon,foret,glacier",
+"reponse": null
+},
+{
+"type": "exp_chemin",
+"valeur": "0fbaba32c573a4b4b66e8e3bcb84303fe1959db0cb4be10578d04c2d2cc6f079",
+"k": 99,
+"empreinte": "exp_chemin|coins=rocher,panier|i=1|j=0|pieces=desert,marais,canyon",
+"reponse": null
+},
+{
+"type": "exp_cle",
+"valeur": "0fbaba32c573a4b4b66e8e3bcb84303fe1959db0cb4be10578d04c2d2cc6f079",
+"k": 0,
+"empreinte": "exp_cle|coins=boite,terrier|i=1|j=1|pieces=jungle,glacier,plage",
+"reponse": null
+},
+{
+"type": "exp_cle",
+"valeur": "0fbaba32c573a4b4b66e8e3bcb84303fe1959db0cb4be10578d04c2d2cc6f079",
+"k": 1,
+"empreinte": "exp_cle|coins=creux,cabane|i=2|j=0|pieces=plage,marais,jungle",
+"reponse": null
+},
+{
+"type": "exp_cle",
+"valeur": "0fbaba32c573a4b4b66e8e3bcb84303fe1959db0cb4be10578d04c2d2cc6f079",
+"k": 24,
+"empreinte": "exp_cle|coins=coffre,terrier|i=0|j=1|pieces=lagon,foret,glacier",
+"reponse": null
+},
+{
+"type": "exp_cle",
+"valeur": "0fbaba32c573a4b4b66e8e3bcb84303fe1959db0cb4be10578d04c2d2cc6f079",
+"k": 99,
+"empreinte": "exp_cle|coins=rocher,panier|i=1|j=0|pieces=desert,marais,canyon",
+"reponse": null
+},
+{
+"type": "bat_pieces",
+"valeur": "0fbaba32c573a4b4b66e8e3bcb84303fe1959db0cb4be10578d04c2d2cc6f079",
+"k": 0,
+"empreinte": "bat_pieces|pieces=jungle,glacier",
+"reponse": null
+},
+{
+"type": "bat_pieces",
+"valeur": "0fbaba32c573a4b4b66e8e3bcb84303fe1959db0cb4be10578d04c2d2cc6f079",
+"k": 1,
+"empreinte": "bat_pieces|pieces=plage,marais",
+"reponse": null
+},
+{
+"type": "bat_pieces",
+"valeur": "0fbaba32c573a4b4b66e8e3bcb84303fe1959db0cb4be10578d04c2d2cc6f079",
+"k": 24,
+"empreinte": "bat_pieces|pieces=lagon,foret",
+"reponse": null
+},
+{
+"type": "bat_pieces",
+"valeur": "0fbaba32c573a4b4b66e8e3bcb84303fe1959db0cb4be10578d04c2d2cc6f079",
+"k": 99,
+"empreinte": "bat_pieces|pieces=desert,marais",
+"reponse": null
+},
+{
+"type": "bat_objets",
+"valeur": "0fbaba32c573a4b4b66e8e3bcb84303fe1959db0cb4be10578d04c2d2cc6f079",
+"k": 0,
+"empreinte": "bat_objets|objets=boussole,livre|pieces=jungle",
+"reponse": null
+},
+{
+"type": "bat_objets",
+"valeur": "0fbaba32c573a4b4b66e8e3bcb84303fe1959db0cb4be10578d04c2d2cc6f079",
+"k": 1,
+"empreinte": "bat_objets|objets=balle,tambour|pieces=plage",
+"reponse": null
+},
+{
+"type": "bat_objets",
+"valeur": "0fbaba32c573a4b4b66e8e3bcb84303fe1959db0cb4be10578d04c2d2cc6f079",
+"k": 24,
+"empreinte": "bat_objets|objets=tambour,pomme|pieces=lagon",
+"reponse": null
+},
+{
+"type": "bat_objets",
+"valeur": "0fbaba32c573a4b4b66e8e3bcb84303fe1959db0cb4be10578d04c2d2cc6f079",
+"k": 99,
+"empreinte": "bat_objets|objets=etoile,crayon|pieces=desert",
+"reponse": null
+},
+{
+"type": "dem_mv",
+"valeur": "0fbaba32c573a4b4b66e8e3bcb84303fe1959db0cb4be10578d04c2d2cc6f079",
+"k": 0,
+"empreinte": "dem_mv|objets=boussole|pieces=jungle,glacier",
+"reponse": null
+},
+{
+"type": "dem_mv",
+"valeur": "0fbaba32c573a4b4b66e8e3bcb84303fe1959db0cb4be10578d04c2d2cc6f079",
+"k": 1,
+"empreinte": "dem_mv|objets=bougie|pieces=plage,marais",
+"reponse": null
+},
+{
+"type": "dem_mv",
+"valeur": "0fbaba32c573a4b4b66e8e3bcb84303fe1959db0cb4be10578d04c2d2cc6f079",
+"k": 24,
+"empreinte": "dem_mv|objets=crayon|pieces=lagon,foret",
+"reponse": null
+},
+{
+"type": "dem_mv",
+"valeur": "0fbaba32c573a4b4b66e8e3bcb84303fe1959db0cb4be10578d04c2d2cc6f079",
+"k": 99,
+"empreinte": "dem_mv|objets=bille|pieces=desert,marais",
+"reponse": null
+},
+{
+"type": "dem_cp",
+"valeur": "0fbaba32c573a4b4b66e8e3bcb84303fe1959db0cb4be10578d04c2d2cc6f079",
+"k": 0,
+"empreinte": "dem_cp|objets=boussole|pieces=jungle,glacier",
+"reponse": null
+},
+{
+"type": "dem_cp",
+"valeur": "0fbaba32c573a4b4b66e8e3bcb84303fe1959db0cb4be10578d04c2d2cc6f079",
+"k": 1,
+"empreinte": "dem_cp|objets=bougie|pieces=plage,marais",
+"reponse": null
+},
+{
+"type": "dem_cp",
+"valeur": "0fbaba32c573a4b4b66e8e3bcb84303fe1959db0cb4be10578d04c2d2cc6f079",
+"k": 24,
+"empreinte": "dem_cp|objets=crayon|pieces=lagon,foret",
+"reponse": null
+},
+{
+"type": "dem_cp",
+"valeur": "0fbaba32c573a4b4b66e8e3bcb84303fe1959db0cb4be10578d04c2d2cc6f079",
+"k": 99,
+"empreinte": "dem_cp|objets=bille|pieces=desert,marais",
+"reponse": null
+},
+{
+"type": "net_rm",
+"valeur": "0fbaba32c573a4b4b66e8e3bcb84303fe1959db0cb4be10578d04c2d2cc6f079",
+"k": 0,
+"empreinte": "net_rm|n=2|objets=boussole|pieces=jungle",
+"reponse": null
+},
+{
+"type": "net_rm",
+"valeur": "0fbaba32c573a4b4b66e8e3bcb84303fe1959db0cb4be10578d04c2d2cc6f079",
+"k": 1,
+"empreinte": "net_rm|n=2|objets=balle|pieces=plage",
+"reponse": null
+},
+{
+"type": "net_rm",
+"valeur": "0fbaba32c573a4b4b66e8e3bcb84303fe1959db0cb4be10578d04c2d2cc6f079",
+"k": 24,
+"empreinte": "net_rm|n=2|objets=tambour|pieces=lagon",
+"reponse": null
+},
+{
+"type": "net_rm",
+"valeur": "0fbaba32c573a4b4b66e8e3bcb84303fe1959db0cb4be10578d04c2d2cc6f079",
+"k": 99,
+"empreinte": "net_rm|n=3|objets=etoile|pieces=desert",
+"reponse": null
+},
+{
+"type": "net_rmdir",
+"valeur": "0fbaba32c573a4b4b66e8e3bcb84303fe1959db0cb4be10578d04c2d2cc6f079",
+"k": 0,
+"empreinte": "net_rmdir|objets=bougie|pieces=jungle,glacier,plage",
+"reponse": null
+},
+{
+"type": "net_rmdir",
+"valeur": "0fbaba32c573a4b4b66e8e3bcb84303fe1959db0cb4be10578d04c2d2cc6f079",
+"k": 1,
+"empreinte": "net_rmdir|objets=tambour|pieces=plage,marais,jungle",
+"reponse": null
+},
+{
+"type": "net_rmdir",
+"valeur": "0fbaba32c573a4b4b66e8e3bcb84303fe1959db0cb4be10578d04c2d2cc6f079",
+"k": 24,
+"empreinte": "net_rmdir|objets=boussole|pieces=lagon,foret,glacier",
+"reponse": null
+},
+{
+"type": "net_rmdir",
+"valeur": "0fbaba32c573a4b4b66e8e3bcb84303fe1959db0cb4be10578d04c2d2cc6f079",
+"k": 99,
+"empreinte": "net_rmdir|objets=carte|pieces=desert,marais,canyon",
+"reponse": null
+},
+{
+"type": "net_rmr",
+"valeur": "0fbaba32c573a4b4b66e8e3bcb84303fe1959db0cb4be10578d04c2d2cc6f079",
+"k": 0,
+"empreinte": "net_rmr|objets=boussole,coquillage,cle|pieces=jungle,glacier",
+"reponse": null
+},
+{
+"type": "net_rmr",
+"valeur": "0fbaba32c573a4b4b66e8e3bcb84303fe1959db0cb4be10578d04c2d2cc6f079",
+"k": 1,
+"empreinte": "net_rmr|objets=bougie,pomme,coquillage|pieces=plage,marais",
+"reponse": null
+},
+{
+"type": "net_rmr",
+"valeur": "0fbaba32c573a4b4b66e8e3bcb84303fe1959db0cb4be10578d04c2d2cc6f079",
+"k": 24,
+"empreinte": "net_rmr|objets=crayon,boussole,cle|pieces=lagon,foret",
+"reponse": null
+},
+{
+"type": "net_rmr",
+"valeur": "0fbaba32c573a4b4b66e8e3bcb84303fe1959db0cb4be10578d04c2d2cc6f079",
+"k": 99,
+"empreinte": "net_rmr|objets=bille,livre,bougie|pieces=desert,marais",
+"reponse": null
+},
+{
+"type": "lec_cat",
+"valeur": "0fbaba32c573a4b4b66e8e3bcb84303fe1959db0cb4be10578d04c2d2cc6f079",
+"k": 0,
+"empreinte": "lec_cat|mots=sirene|n=2",
+"reponse": "sirene"
+},
+{
+"type": "lec_cat",
+"valeur": "0fbaba32c573a4b4b66e8e3bcb84303fe1959db0cb4be10578d04c2d2cc6f079",
+"k": 1,
+"empreinte": "lec_cat|mots=nuage|n=1",
+"reponse": "nuage"
+},
+{
+"type": "lec_cat",
+"valeur": "0fbaba32c573a4b4b66e8e3bcb84303fe1959db0cb4be10578d04c2d2cc6f079",
+"k": 24,
+"empreinte": "lec_cat|mots=fusee|n=3",
+"reponse": "fusee"
+},
+{
+"type": "lec_cat",
+"valeur": "0fbaba32c573a4b4b66e8e3bcb84303fe1959db0cb4be10578d04c2d2cc6f079",
+"k": 99,
+"empreinte": "lec_cat|mots=volcan|n=3",
+"reponse": "volcan"
+},
+{
+"type": "lec_head",
+"valeur": "0fbaba32c573a4b4b66e8e3bcb84303fe1959db0cb4be10578d04c2d2cc6f079",
+"k": 0,
+"empreinte": "lec_head|mots=sirene,comete,nuage,cactus,fusee,biscuit,licorne,volcan|n=3",
+"reponse": "nuage"
+},
+{
+"type": "lec_head",
+"valeur": "0fbaba32c573a4b4b66e8e3bcb84303fe1959db0cb4be10578d04c2d2cc6f079",
+"k": 1,
+"empreinte": "lec_head|mots=nuage,tortue,sirene,biscuit,cactus,fusee,licorne,pirate|n=4",
+"reponse": "biscuit"
+},
+{
+"type": "lec_head",
+"valeur": "0fbaba32c573a4b4b66e8e3bcb84303fe1959db0cb4be10578d04c2d2cc6f079",
+"k": 24,
+"empreinte": "lec_head|mots=fusee,dragon,comete,pirate,volcan,nuage,tortue,robot|n=3",
+"reponse": "comete"
+},
+{
+"type": "lec_head",
+"valeur": "0fbaba32c573a4b4b66e8e3bcb84303fe1959db0cb4be10578d04c2d2cc6f079",
+"k": 99,
+"empreinte": "lec_head|mots=volcan,tortue,robot,licorne,biscuit,cactus,comete,dragon|n=4",
+"reponse": "licorne"
+},
+{
+"type": "lec_tail",
+"valeur": "0fbaba32c573a4b4b66e8e3bcb84303fe1959db0cb4be10578d04c2d2cc6f079",
+"k": 0,
+"empreinte": "lec_tail|mots=sirene,comete,nuage,cactus,fusee,biscuit,licorne,volcan|n=3",
+"reponse": "volcan"
+},
+{
+"type": "lec_tail",
+"valeur": "0fbaba32c573a4b4b66e8e3bcb84303fe1959db0cb4be10578d04c2d2cc6f079",
+"k": 1,
+"empreinte": "lec_tail|mots=nuage,tortue,sirene,biscuit,cactus,fusee,licorne,pirate|n=4",
+"reponse": "pirate"
+},
+{
+"type": "lec_tail",
+"valeur": "0fbaba32c573a4b4b66e8e3bcb84303fe1959db0cb4be10578d04c2d2cc6f079",
+"k": 24,
+"empreinte": "lec_tail|mots=fusee,dragon,comete,pirate,volcan,nuage,tortue,robot|n=3",
+"reponse": "robot"
+},
+{
+"type": "lec_tail",
+"valeur": "0fbaba32c573a4b4b66e8e3bcb84303fe1959db0cb4be10578d04c2d2cc6f079",
+"k": 99,
+"empreinte": "lec_tail|mots=volcan,tortue,robot,licorne,biscuit,cactus,comete,dragon|n=4",
+"reponse": "dragon"
+},
+{
+"type": "det_grep",
+"valeur": "0fbaba32c573a4b4b66e8e3bcb84303fe1959db0cb4be10578d04c2d2cc6f079",
+"k": 0,
+"empreinte": "det_grep|i=3|mots=pirate,sirene,volcan,licorne,dragon,nuage|objets=bougie,etoile,crayon,balle,plume",
+"reponse": "balle"
+},
+{
+"type": "det_grep",
+"valeur": "0fbaba32c573a4b4b66e8e3bcb84303fe1959db0cb4be10578d04c2d2cc6f079",
+"k": 1,
+"empreinte": "det_grep|i=0|mots=cactus,fusee,licorne,dragon,sirene,volcan|objets=cle,balle,carte,pomme,coquillage",
+"reponse": "cle"
+},
+{
+"type": "det_grep",
+"valeur": "0fbaba32c573a4b4b66e8e3bcb84303fe1959db0cb4be10578d04c2d2cc6f079",
+"k": 24,
+"empreinte": "det_grep|i=4|mots=volcan,tortue,robot,dragon,biscuit,pirate|objets=plume,flute,livre,balle,coquillage",
+"reponse": "coquillage"
+},
+{
+"type": "det_grep",
+"valeur": "0fbaba32c573a4b4b66e8e3bcb84303fe1959db0cb4be10578d04c2d2cc6f079",
+"k": 99,
+"empreinte": "det_grep|i=1|mots=pirate,volcan,fusee,sirene,licorne,comete|objets=etoile,coquillage,flute,tambour,carte",
+"reponse": "coquillage"
+},
+{
+"type": "det_find",
+"valeur": "0fbaba32c573a4b4b66e8e3bcb84303fe1959db0cb4be10578d04c2d2cc6f079",
+"k": 0,
+"empreinte": "det_find|coins=boite,terrier|i=1|j=1|objet=etoile|pieces=jungle,glacier,plage",
+"reponse": "glacier"
+},
+{
+"type": "det_find",
+"valeur": "0fbaba32c573a4b4b66e8e3bcb84303fe1959db0cb4be10578d04c2d2cc6f079",
+"k": 1,
+"empreinte": "det_find|coins=creux,cabane|i=2|j=0|objet=cle|pieces=plage,marais,jungle",
+"reponse": "jungle"
+},
+{
+"type": "det_find",
+"valeur": "0fbaba32c573a4b4b66e8e3bcb84303fe1959db0cb4be10578d04c2d2cc6f079",
+"k": 24,
+"empreinte": "det_find|coins=coffre,terrier|i=0|j=1|objet=etoile|pieces=lagon,foret,glacier",
+"reponse": "lagon"
+},
+{
+"type": "det_find",
+"valeur": "0fbaba32c573a4b4b66e8e3bcb84303fe1959db0cb4be10578d04c2d2cc6f079",
+"k": 99,
+"empreinte": "det_find|coins=rocher,panier|i=1|j=0|objet=cle|pieces=desert,marais,canyon",
+"reponse": "marais"
+},
+{
+"type": "plo_ecrit",
+"valeur": "0fbaba32c573a4b4b66e8e3bcb84303fe1959db0cb4be10578d04c2d2cc6f079",
+"k": 0,
+"empreinte": "plo_ecrit|mots=sirene",
+"reponse": null
+},
+{
+"type": "plo_ecrit",
+"valeur": "0fbaba32c573a4b4b66e8e3bcb84303fe1959db0cb4be10578d04c2d2cc6f079",
+"k": 1,
+"empreinte": "plo_ecrit|mots=nuage",
+"reponse": null
+},
+{
+"type": "plo_ecrit",
+"valeur": "0fbaba32c573a4b4b66e8e3bcb84303fe1959db0cb4be10578d04c2d2cc6f079",
+"k": 24,
+"empreinte": "plo_ecrit|mots=fusee",
+"reponse": null
+},
+{
+"type": "plo_ecrit",
+"valeur": "0fbaba32c573a4b4b66e8e3bcb84303fe1959db0cb4be10578d04c2d2cc6f079",
+"k": 99,
+"empreinte": "plo_ecrit|mots=volcan",
+"reponse": null
+},
+{
+"type": "plo_ajout",
+"valeur": "0fbaba32c573a4b4b66e8e3bcb84303fe1959db0cb4be10578d04c2d2cc6f079",
+"k": 0,
+"empreinte": "plo_ajout|mots=sirene,comete,nuage,cactus",
+"reponse": null
+},
+{
+"type": "plo_ajout",
+"valeur": "0fbaba32c573a4b4b66e8e3bcb84303fe1959db0cb4be10578d04c2d2cc6f079",
+"k": 1,
+"empreinte": "plo_ajout|mots=nuage,tortue,sirene,biscuit",
+"reponse": null
+},
+{
+"type": "plo_ajout",
+"valeur": "0fbaba32c573a4b4b66e8e3bcb84303fe1959db0cb4be10578d04c2d2cc6f079",
+"k": 24,
+"empreinte": "plo_ajout|mots=fusee,dragon,comete,pirate",
+"reponse": null
+},
+{
+"type": "plo_ajout",
+"valeur": "0fbaba32c573a4b4b66e8e3bcb84303fe1959db0cb4be10578d04c2d2cc6f079",
+"k": 99,
+"empreinte": "plo_ajout|mots=volcan,tortue,robot,licorne",
+"reponse": null
+},
+{
+"type": "plo_tuyau",
+"valeur": "0fbaba32c573a4b4b66e8e3bcb84303fe1959db0cb4be10578d04c2d2cc6f079",
+"k": 0,
+"empreinte": "plo_tuyau|lignes=0,3,3,2,3,3,0,3,1,3|objets=bougie,etoile,crayon,balle",
+"reponse": "2"
+},
+{
+"type": "plo_tuyau",
+"valeur": "0fbaba32c573a4b4b66e8e3bcb84303fe1959db0cb4be10578d04c2d2cc6f079",
+"k": 1,
+"empreinte": "plo_tuyau|lignes=0,2,2,3,3,2,2,0,3,0,1|objets=cle,balle,carte,pomme",
+"reponse": "3"
+},
+{
+"type": "plo_tuyau",
+"valeur": "0fbaba32c573a4b4b66e8e3bcb84303fe1959db0cb4be10578d04c2d2cc6f079",
+"k": 24,
+"empreinte": "plo_tuyau|lignes=3,1,3,0,1,1,0,3,3,2,3|objets=plume,flute,livre,balle",
+"reponse": "2"
+},
+{
+"type": "plo_tuyau",
+"valeur": "0fbaba32c573a4b4b66e8e3bcb84303fe1959db0cb4be10578d04c2d2cc6f079",
+"k": 99,
+"empreinte": "plo_tuyau|lignes=0,2,2,0,0,3,3,1,0,0,2|objets=etoile,coquillage,flute,tambour",
+"reponse": "5"
+},
+{
+"type": "cui_lancer",
+"valeur": "0fbaba32c573a4b4b66e8e3bcb84303fe1959db0cb4be10578d04c2d2cc6f079",
+"k": 0,
+"empreinte": "cui_lancer|mots=sirene",
+"reponse": "sirene"
+},
+{
+"type": "cui_lancer",
+"valeur": "0fbaba32c573a4b4b66e8e3bcb84303fe1959db0cb4be10578d04c2d2cc6f079",
+"k": 1,
+"empreinte": "cui_lancer|mots=nuage",
+"reponse": "nuage"
+},
+{
+"type": "cui_lancer",
+"valeur": "0fbaba32c573a4b4b66e8e3bcb84303fe1959db0cb4be10578d04c2d2cc6f079",
+"k": 24,
+"empreinte": "cui_lancer|mots=fusee",
+"reponse": "fusee"
+},
+{
+"type": "cui_lancer",
+"valeur": "0fbaba32c573a4b4b66e8e3bcb84303fe1959db0cb4be10578d04c2d2cc6f079",
+"k": 99,
+"empreinte": "cui_lancer|mots=volcan",
+"reponse": "volcan"
+},
+{
+"type": "cui_ecrire",
+"valeur": "0fbaba32c573a4b4b66e8e3bcb84303fe1959db0cb4be10578d04c2d2cc6f079",
+"k": 0,
+"empreinte": "cui_ecrire|mots=sirene",
+"reponse": null
+},
+{
+"type": "cui_ecrire",
+"valeur": "0fbaba32c573a4b4b66e8e3bcb84303fe1959db0cb4be10578d04c2d2cc6f079",
+"k": 1,
+"empreinte": "cui_ecrire|mots=nuage",
+"reponse": null
+},
+{
+"type": "cui_ecrire",
+"valeur": "0fbaba32c573a4b4b66e8e3bcb84303fe1959db0cb4be10578d04c2d2cc6f079",
+"k": 24,
+"empreinte": "cui_ecrire|mots=fusee",
+"reponse": null
+},
+{
+"type": "cui_ecrire",
+"valeur": "0fbaba32c573a4b4b66e8e3bcb84303fe1959db0cb4be10578d04c2d2cc6f079",
+"k": 99,
+"empreinte": "cui_ecrire|mots=volcan",
+"reponse": null
+},
+{
+"type": "exp_chemin",
+"valeur": "4e6fb5902cdc9e0637ac6d0ac4f6cef2a173024fff5667f98498a2df9427a6f7",
+"k": 0,
+"empreinte": "exp_chemin|coins=rocher,coffre|i=2|j=0|pieces=grotte,colline,canyon",
+"reponse": null
+},
+{
+"type": "exp_chemin",
+"valeur": "4e6fb5902cdc9e0637ac6d0ac4f6cef2a173024fff5667f98498a2df9427a6f7",
+"k": 1,
+"empreinte": "exp_chemin|coins=cabane,terrier|i=2|j=0|pieces=desert,jungle,prairie",
+"reponse": null
+},
+{
+"type": "exp_chemin",
+"valeur": "4e6fb5902cdc9e0637ac6d0ac4f6cef2a173024fff5667f98498a2df9427a6f7",
+"k": 31,
+"empreinte": "exp_chemin|coins=terrier,rocher|i=1|j=1|pieces=jungle,glacier,desert",
+"reponse": null
+},
+{
+"type": "exp_chemin",
+"valeur": "4e6fb5902cdc9e0637ac6d0ac4f6cef2a173024fff5667f98498a2df9427a6f7",
+"k": 99,
+"empreinte": "exp_chemin|coins=cabane,creux|i=0|j=1|pieces=glacier,marais,clairiere",
+"reponse": null
+},
+{
+"type": "exp_cle",
+"valeur": "4e6fb5902cdc9e0637ac6d0ac4f6cef2a173024fff5667f98498a2df9427a6f7",
+"k": 0,
+"empreinte": "exp_cle|coins=rocher,coffre|i=2|j=0|pieces=grotte,colline,canyon",
+"reponse": null
+},
+{
+"type": "exp_cle",
+"valeur": "4e6fb5902cdc9e0637ac6d0ac4f6cef2a173024fff5667f98498a2df9427a6f7",
+"k": 1,
+"empreinte": "exp_cle|coins=cabane,terrier|i=2|j=0|pieces=desert,jungle,prairie",
+"reponse": null
+},
+{
+"type": "exp_cle",
+"valeur": "4e6fb5902cdc9e0637ac6d0ac4f6cef2a173024fff5667f98498a2df9427a6f7",
+"k": 31,
+"empreinte": "exp_cle|coins=terrier,rocher|i=1|j=1|pieces=jungle,glacier,desert",
+"reponse": null
+},
+{
+"type": "exp_cle",
+"valeur": "4e6fb5902cdc9e0637ac6d0ac4f6cef2a173024fff5667f98498a2df9427a6f7",
+"k": 99,
+"empreinte": "exp_cle|coins=cabane,creux|i=0|j=1|pieces=glacier,marais,clairiere",
+"reponse": null
+},
+{
+"type": "bat_pieces",
+"valeur": "4e6fb5902cdc9e0637ac6d0ac4f6cef2a173024fff5667f98498a2df9427a6f7",
+"k": 0,
+"empreinte": "bat_pieces|pieces=grotte,colline",
+"reponse": null
+},
+{
+"type": "bat_pieces",
+"valeur": "4e6fb5902cdc9e0637ac6d0ac4f6cef2a173024fff5667f98498a2df9427a6f7",
+"k": 1,
+"empreinte": "bat_pieces|pieces=desert,jungle",
+"reponse": null
+},
+{
+"type": "bat_pieces",
+"valeur": "4e6fb5902cdc9e0637ac6d0ac4f6cef2a173024fff5667f98498a2df9427a6f7",
+"k": 31,
+"empreinte": "bat_pieces|pieces=jungle,glacier",
+"reponse": null
+},
+{
+"type": "bat_pieces",
+"valeur": "4e6fb5902cdc9e0637ac6d0ac4f6cef2a173024fff5667f98498a2df9427a6f7",
+"k": 99,
+"empreinte": "bat_pieces|pieces=glacier,marais",
+"reponse": null
+},
+{
+"type": "bat_objets",
+"valeur": "4e6fb5902cdc9e0637ac6d0ac4f6cef2a173024fff5667f98498a2df9427a6f7",
+"k": 0,
+"empreinte": "bat_objets|objets=carte,flute|pieces=grotte",
+"reponse": null
+},
+{
+"type": "bat_objets",
+"valeur": "4e6fb5902cdc9e0637ac6d0ac4f6cef2a173024fff5667f98498a2df9427a6f7",
+"k": 1,
+"empreinte": "bat_objets|objets=etoile,lampe|pieces=desert",
+"reponse": null
+},
+{
+"type": "bat_objets",
+"valeur": "4e6fb5902cdc9e0637ac6d0ac4f6cef2a173024fff5667f98498a2df9427a6f7",
+"k": 31,
+"empreinte": "bat_objets|objets=bougie,cle|pieces=jungle",
+"reponse": null
+},
+{
+"type": "bat_objets",
+"valeur": "4e6fb5902cdc9e0637ac6d0ac4f6cef2a173024fff5667f98498a2df9427a6f7",
+"k": 99,
+"empreinte": "bat_objets|objets=bille,cle|pieces=glacier",
+"reponse": null
+},
+{
+"type": "dem_mv",
+"valeur": "4e6fb5902cdc9e0637ac6d0ac4f6cef2a173024fff5667f98498a2df9427a6f7",
+"k": 0,
+"empreinte": "dem_mv|objets=flute|pieces=grotte,colline",
+"reponse": null
+},
+{
+"type": "dem_mv",
+"valeur": "4e6fb5902cdc9e0637ac6d0ac4f6cef2a173024fff5667f98498a2df9427a6f7",
+"k": 1,
+"empreinte": "dem_mv|objets=pomme|pieces=desert,jungle",
+"reponse": null
+},
+{
+"type": "dem_mv",
+"valeur": "4e6fb5902cdc9e0637ac6d0ac4f6cef2a173024fff5667f98498a2df9427a6f7",
+"k": 31,
+"empreinte": "dem_mv|objets=carte|pieces=jungle,glacier",
+"reponse": null
+},
+{
+"type": "dem_mv",
+"valeur": "4e6fb5902cdc9e0637ac6d0ac4f6cef2a173024fff5667f98498a2df9427a6f7",
+"k": 99,
+"empreinte": "dem_mv|objets=boussole|pieces=glacier,marais",
+"reponse": null
+},
+{
+"type": "dem_cp",
+"valeur": "4e6fb5902cdc9e0637ac6d0ac4f6cef2a173024fff5667f98498a2df9427a6f7",
+"k": 0,
+"empreinte": "dem_cp|objets=flute|pieces=grotte,colline",
+"reponse": null
+},
+{
+"type": "dem_cp",
+"valeur": "4e6fb5902cdc9e0637ac6d0ac4f6cef2a173024fff5667f98498a2df9427a6f7",
+"k": 1,
+"empreinte": "dem_cp|objets=pomme|pieces=desert,jungle",
+"reponse": null
+},
+{
+"type": "dem_cp",
+"valeur": "4e6fb5902cdc9e0637ac6d0ac4f6cef2a173024fff5667f98498a2df9427a6f7",
+"k": 31,
+"empreinte": "dem_cp|objets=carte|pieces=jungle,glacier",
+"reponse": null
+},
+{
+"type": "dem_cp",
+"valeur": "4e6fb5902cdc9e0637ac6d0ac4f6cef2a173024fff5667f98498a2df9427a6f7",
+"k": 99,
+"empreinte": "dem_cp|objets=boussole|pieces=glacier,marais",
+"reponse": null
+},
+{
+"type": "net_rm",
+"valeur": "4e6fb5902cdc9e0637ac6d0ac4f6cef2a173024fff5667f98498a2df9427a6f7",
+"k": 0,
+"empreinte": "net_rm|n=4|objets=carte|pieces=grotte",
+"reponse": null
+},
+{
+"type": "net_rm",
+"valeur": "4e6fb5902cdc9e0637ac6d0ac4f6cef2a173024fff5667f98498a2df9427a6f7",
+"k": 1,
+"empreinte": "net_rm|n=4|objets=etoile|pieces=desert",
+"reponse": null
+},
+{
+"type": "net_rm",
+"valeur": "4e6fb5902cdc9e0637ac6d0ac4f6cef2a173024fff5667f98498a2df9427a6f7",
+"k": 31,
+"empreinte": "net_rm|n=3|objets=bougie|pieces=jungle",
+"reponse": null
+},
+{
+"type": "net_rm",
+"valeur": "4e6fb5902cdc9e0637ac6d0ac4f6cef2a173024fff5667f98498a2df9427a6f7",
+"k": 99,
+"empreinte": "net_rm|n=3|objets=bille|pieces=glacier",
+"reponse": null
+},
+{
+"type": "net_rmdir",
+"valeur": "4e6fb5902cdc9e0637ac6d0ac4f6cef2a173024fff5667f98498a2df9427a6f7",
+"k": 0,
+"empreinte": "net_rmdir|objets=gomme|pieces=grotte,colline,canyon",
+"reponse": null
+},
+{
+"type": "net_rmdir",
+"valeur": "4e6fb5902cdc9e0637ac6d0ac4f6cef2a173024fff5667f98498a2df9427a6f7",
+"k": 1,
+"empreinte": "net_rmdir|objets=livre|pieces=desert,jungle,prairie",
+"reponse": null
+},
+{
+"type": "net_rmdir",
+"valeur": "4e6fb5902cdc9e0637ac6d0ac4f6cef2a173024fff5667f98498a2df9427a6f7",
+"k": 31,
+"empreinte": "net_rmdir|objets=balle|pieces=jungle,glacier,desert",
+"reponse": null
+},
+{
+"type": "net_rmdir",
+"valeur": "4e6fb5902cdc9e0637ac6d0ac4f6cef2a173024fff5667f98498a2df9427a6f7",
+"k": 99,
+"empreinte": "net_rmdir|objets=coquillage|pieces=glacier,marais,clairiere",
+"reponse": null
+},
+{
+"type": "net_rmr",
+"valeur": "4e6fb5902cdc9e0637ac6d0ac4f6cef2a173024fff5667f98498a2df9427a6f7",
+"k": 0,
+"empreinte": "net_rmr|objets=flute,balle,plume|pieces=grotte,colline",
+"reponse": null
+},
+{
+"type": "net_rmr",
+"valeur": "4e6fb5902cdc9e0637ac6d0ac4f6cef2a173024fff5667f98498a2df9427a6f7",
+"k": 1,
+"empreinte": "net_rmr|objets=pomme,coquillage,cle|pieces=desert,jungle",
+"reponse": null
+},
+{
+"type": "net_rmr",
+"valeur": "4e6fb5902cdc9e0637ac6d0ac4f6cef2a173024fff5667f98498a2df9427a6f7",
+"k": 31,
+"empreinte": "net_rmr|objets=carte,gomme,plume|pieces=jungle,glacier",
+"reponse": null
+},
+{
+"type": "net_rmr",
+"valeur": "4e6fb5902cdc9e0637ac6d0ac4f6cef2a173024fff5667f98498a2df9427a6f7",
+"k": 99,
+"empreinte": "net_rmr|objets=boussole,coquillage,tambour|pieces=glacier,marais",
+"reponse": null
+},
+{
+"type": "lec_cat",
+"valeur": "4e6fb5902cdc9e0637ac6d0ac4f6cef2a173024fff5667f98498a2df9427a6f7",
+"k": 0,
+"empreinte": "lec_cat|mots=licorne|n=2",
+"reponse": "licorne"
+},
+{
+"type": "lec_cat",
+"valeur": "4e6fb5902cdc9e0637ac6d0ac4f6cef2a173024fff5667f98498a2df9427a6f7",
+"k": 1,
+"empreinte": "lec_cat|mots=volcan|n=1",
+"reponse": "volcan"
+},
+{
+"type": "lec_cat",
+"valeur": "4e6fb5902cdc9e0637ac6d0ac4f6cef2a173024fff5667f98498a2df9427a6f7",
+"k": 31,
+"empreinte": "lec_cat|mots=sirene|n=3",
+"reponse": "sirene"
+},
+{
+"type": "lec_cat",
+"valeur": "4e6fb5902cdc9e0637ac6d0ac4f6cef2a173024fff5667f98498a2df9427a6f7",
+"k": 99,
+"empreinte": "lec_cat|mots=comete|n=1",
+"reponse": "comete"
+},
+{
+"type": "lec_head",
+"valeur": "4e6fb5902cdc9e0637ac6d0ac4f6cef2a173024fff5667f98498a2df9427a6f7",
+"k": 0,
+"empreinte": "lec_head|mots=licorne,biscuit,robot,dragon,comete,sirene,cactus,nuage|n=4",
+"reponse": "dragon"
+},
+{
+"type": "lec_head",
+"valeur": "4e6fb5902cdc9e0637ac6d0ac4f6cef2a173024fff5667f98498a2df9427a6f7",
+"k": 1,
+"empreinte": "lec_head|mots=volcan,sirene,pirate,dragon,comete,biscuit,fusee,tortue|n=4",
+"reponse": "dragon"
+},
+{
+"type": "lec_head",
+"valeur": "4e6fb5902cdc9e0637ac6d0ac4f6cef2a173024fff5667f98498a2df9427a6f7",
+"k": 31,
+"empreinte": "lec_head|mots=sirene,comete,volcan,biscuit,pirate,licorne,robot,dragon|n=2",
+"reponse": "comete"
+},
+{
+"type": "lec_head",
+"valeur": "4e6fb5902cdc9e0637ac6d0ac4f6cef2a173024fff5667f98498a2df9427a6f7",
+"k": 99,
+"empreinte": "lec_head|mots=comete,tortue,cactus,fusee,nuage,volcan,biscuit,robot|n=3",
+"reponse": "cactus"
+},
+{
+"type": "lec_tail",
+"valeur": "4e6fb5902cdc9e0637ac6d0ac4f6cef2a173024fff5667f98498a2df9427a6f7",
+"k": 0,
+"empreinte": "lec_tail|mots=licorne,biscuit,robot,dragon,comete,sirene,cactus,nuage|n=4",
+"reponse": "nuage"
+},
+{
+"type": "lec_tail",
+"valeur": "4e6fb5902cdc9e0637ac6d0ac4f6cef2a173024fff5667f98498a2df9427a6f7",
+"k": 1,
+"empreinte": "lec_tail|mots=volcan,sirene,pirate,dragon,comete,biscuit,fusee,tortue|n=4",
+"reponse": "tortue"
+},
+{
+"type": "lec_tail",
+"valeur": "4e6fb5902cdc9e0637ac6d0ac4f6cef2a173024fff5667f98498a2df9427a6f7",
+"k": 31,
+"empreinte": "lec_tail|mots=sirene,comete,volcan,biscuit,pirate,licorne,robot,dragon|n=2",
+"reponse": "dragon"
+},
+{
+"type": "lec_tail",
+"valeur": "4e6fb5902cdc9e0637ac6d0ac4f6cef2a173024fff5667f98498a2df9427a6f7",
+"k": 99,
+"empreinte": "lec_tail|mots=comete,tortue,cactus,fusee,nuage,volcan,biscuit,robot|n=3",
+"reponse": "robot"
+},
+{
+"type": "det_grep",
+"valeur": "4e6fb5902cdc9e0637ac6d0ac4f6cef2a173024fff5667f98498a2df9427a6f7",
+"k": 0,
+"empreinte": "det_grep|i=4|mots=robot,nuage,licorne,cactus,comete,tortue|objets=coquillage,carte,balle,plume,lampe",
+"reponse": "lampe"
+},
+{
+"type": "det_grep",
+"valeur": "4e6fb5902cdc9e0637ac6d0ac4f6cef2a173024fff5667f98498a2df9427a6f7",
+"k": 1,
+"empreinte": "det_grep|i=2|mots=cactus,sirene,tortue,dragon,nuage,biscuit|objets=bougie,balle,tambour,pomme,cle",
+"reponse": "tambour"
+},
+{
+"type": "det_grep",
+"valeur": "4e6fb5902cdc9e0637ac6d0ac4f6cef2a173024fff5667f98498a2df9427a6f7",
+"k": 31,
+"empreinte": "det_grep|i=4|mots=nuage,licorne,comete,fusee,robot,pirate|objets=bille,plume,flute,lampe,livre",
+"reponse": "livre"
+},
+{
+"type": "det_grep",
+"valeur": "4e6fb5902cdc9e0637ac6d0ac4f6cef2a173024fff5667f98498a2df9427a6f7",
+"k": 99,
+"empreinte": "det_grep|i=3|mots=comete,pirate,volcan,tortue,sirene,nuage|objets=crayon,livre,tambour,coquillage,plume",
+"reponse": "coquillage"
+},
+{
+"type": "det_find",
+"valeur": "4e6fb5902cdc9e0637ac6d0ac4f6cef2a173024fff5667f98498a2df9427a6f7",
+"k": 0,
+"empreinte": "det_find|coins=rocher,coffre|i=2|j=0|objet=balle|pieces=grotte,colline,canyon",
+"reponse": "canyon"
+},
+{
+"type": "det_find",
+"valeur": "4e6fb5902cdc9e0637ac6d0ac4f6cef2a173024fff5667f98498a2df9427a6f7",
+"k": 1,
+"empreinte": "det_find|coins=cabane,terrier|i=2|j=0|objet=lampe|pieces=desert,jungle,prairie",
+"reponse": "prairie"
+},
+{
+"type": "det_find",
+"valeur": "4e6fb5902cdc9e0637ac6d0ac4f6cef2a173024fff5667f98498a2df9427a6f7",
+"k": 31,
+"empreinte": "det_find|coins=terrier,rocher|i=1|j=1|objet=livre|pieces=jungle,glacier,desert",
+"reponse": "glacier"
+},
+{
+"type": "det_find",
+"valeur": "4e6fb5902cdc9e0637ac6d0ac4f6cef2a173024fff5667f98498a2df9427a6f7",
+"k": 99,
+"empreinte": "det_find|coins=cabane,creux|i=0|j=1|objet=balle|pieces=glacier,marais,clairiere",
+"reponse": "glacier"
+},
+{
+"type": "plo_ecrit",
+"valeur": "4e6fb5902cdc9e0637ac6d0ac4f6cef2a173024fff5667f98498a2df9427a6f7",
+"k": 0,
+"empreinte": "plo_ecrit|mots=licorne",
+"reponse": null
+},
+{
+"type": "plo_ecrit",
+"valeur": "4e6fb5902cdc9e0637ac6d0ac4f6cef2a173024fff5667f98498a2df9427a6f7",
+"k": 1,
+"empreinte": "plo_ecrit|mots=volcan",
+"reponse": null
+},
+{
+"type": "plo_ecrit",
+"valeur": "4e6fb5902cdc9e0637ac6d0ac4f6cef2a173024fff5667f98498a2df9427a6f7",
+"k": 31,
+"empreinte": "plo_ecrit|mots=sirene",
+"reponse": null
+},
+{
+"type": "plo_ecrit",
+"valeur": "4e6fb5902cdc9e0637ac6d0ac4f6cef2a173024fff5667f98498a2df9427a6f7",
+"k": 99,
+"empreinte": "plo_ecrit|mots=comete",
+"reponse": null
+},
+{
+"type": "plo_ajout",
+"valeur": "4e6fb5902cdc9e0637ac6d0ac4f6cef2a173024fff5667f98498a2df9427a6f7",
+"k": 0,
+"empreinte": "plo_ajout|mots=licorne,biscuit,robot,dragon",
+"reponse": null
+},
+{
+"type": "plo_ajout",
+"valeur": "4e6fb5902cdc9e0637ac6d0ac4f6cef2a173024fff5667f98498a2df9427a6f7",
+"k": 1,
+"empreinte": "plo_ajout|mots=volcan,sirene,pirate,dragon",
+"reponse": null
+},
+{
+"type": "plo_ajout",
+"valeur": "4e6fb5902cdc9e0637ac6d0ac4f6cef2a173024fff5667f98498a2df9427a6f7",
+"k": 31,
+"empreinte": "plo_ajout|mots=sirene,comete,volcan,biscuit",
+"reponse": null
+},
+{
+"type": "plo_ajout",
+"valeur": "4e6fb5902cdc9e0637ac6d0ac4f6cef2a173024fff5667f98498a2df9427a6f7",
+"k": 99,
+"empreinte": "plo_ajout|mots=comete,tortue,cactus,fusee",
+"reponse": null
+},
+{
+"type": "plo_tuyau",
+"valeur": "4e6fb5902cdc9e0637ac6d0ac4f6cef2a173024fff5667f98498a2df9427a6f7",
+"k": 0,
+"empreinte": "plo_tuyau|lignes=1,0,1,3,2,2,1,2,0,2,0,2|objets=coquillage,carte,balle,plume",
+"reponse": "3"
+},
+{
+"type": "plo_tuyau",
+"valeur": "4e6fb5902cdc9e0637ac6d0ac4f6cef2a173024fff5667f98498a2df9427a6f7",
+"k": 1,
+"empreinte": "plo_tuyau|lignes=0,0,3,1,2,0,0,2,2|objets=bougie,balle,tambour,pomme",
+"reponse": "4"
+},
+{
+"type": "plo_tuyau",
+"valeur": "4e6fb5902cdc9e0637ac6d0ac4f6cef2a173024fff5667f98498a2df9427a6f7",
+"k": 31,
+"empreinte": "plo_tuyau|lignes=2,3,0,2,1,3,1,2,0|objets=bille,plume,flute,lampe",
+"reponse": "2"
+},
+{
+"type": "plo_tuyau",
+"valeur": "4e6fb5902cdc9e0637ac6d0ac4f6cef2a173024fff5667f98498a2df9427a6f7",
+"k": 99,
+"empreinte": "plo_tuyau|lignes=2,1,1,3,3,1,2,1,0,2|objets=crayon,livre,tambour,coquillage",
+"reponse": "1"
+},
+{
+"type": "cui_lancer",
+"valeur": "4e6fb5902cdc9e0637ac6d0ac4f6cef2a173024fff5667f98498a2df9427a6f7",
+"k": 0,
+"empreinte": "cui_lancer|mots=licorne",
+"reponse": "licorne"
+},
+{
+"type": "cui_lancer",
+"valeur": "4e6fb5902cdc9e0637ac6d0ac4f6cef2a173024fff5667f98498a2df9427a6f7",
+"k": 1,
+"empreinte": "cui_lancer|mots=volcan",
+"reponse": "volcan"
+},
+{
+"type": "cui_lancer",
+"valeur": "4e6fb5902cdc9e0637ac6d0ac4f6cef2a173024fff5667f98498a2df9427a6f7",
+"k": 31,
+"empreinte": "cui_lancer|mots=sirene",
+"reponse": "sirene"
+},
+{
+"type": "cui_lancer",
+"valeur": "4e6fb5902cdc9e0637ac6d0ac4f6cef2a173024fff5667f98498a2df9427a6f7",
+"k": 99,
+"empreinte": "cui_lancer|mots=comete",
+"reponse": "comete"
+},
+{
+"type": "cui_ecrire",
+"valeur": "4e6fb5902cdc9e0637ac6d0ac4f6cef2a173024fff5667f98498a2df9427a6f7",
+"k": 0,
+"empreinte": "cui_ecrire|mots=licorne",
+"reponse": null
+},
+{
+"type": "cui_ecrire",
+"valeur": "4e6fb5902cdc9e0637ac6d0ac4f6cef2a173024fff5667f98498a2df9427a6f7",
+"k": 1,
+"empreinte": "cui_ecrire|mots=volcan",
+"reponse": null
+},
+{
+"type": "cui_ecrire",
+"valeur": "4e6fb5902cdc9e0637ac6d0ac4f6cef2a173024fff5667f98498a2df9427a6f7",
+"k": 31,
+"empreinte": "cui_ecrire|mots=sirene",
+"reponse": null
+},
+{
+"type": "cui_ecrire",
+"valeur": "4e6fb5902cdc9e0637ac6d0ac4f6cef2a173024fff5667f98498a2df9427a6f7",
+"k": 99,
+"empreinte": "cui_ecrire|mots=comete",
+"reponse": null
+},
+{
+"type": "exp_chemin",
+"valeur": "b66c7a282c92118b020943a18efa92114a18263f784e47153af3a103838363b1",
+"k": 0,
+"empreinte": "exp_chemin|coins=coffre,terrier|i=0|j=0|pieces=foret,marais,canyon",
+"reponse": null
+},
+{
+"type": "exp_chemin",
+"valeur": "b66c7a282c92118b020943a18efa92114a18263f784e47153af3a103838363b1",
+"k": 1,
+"empreinte": "exp_chemin|coins=terrier,panier|i=2|j=0|pieces=prairie,desert,foret",
+"reponse": null
+},
+{
+"type": "exp_chemin",
+"valeur": "b66c7a282c92118b020943a18efa92114a18263f784e47153af3a103838363b1",
+"k": 38,
+"empreinte": "exp_chemin|coins=coffre,creux|i=2|j=1|pieces=desert,clairiere,colline",
+"reponse": null
+},
+{
+"type": "exp_chemin",
+"valeur": "b66c7a282c92118b020943a18efa92114a18263f784e47153af3a103838363b1",
+"k": 99,
+"empreinte": "exp_chemin|coins=tente,panier|i=0|j=0|pieces=canyon,grotte,colline",
+"reponse": null
+},
+{
+"type": "exp_cle",
+"valeur": "b66c7a282c92118b020943a18efa92114a18263f784e47153af3a103838363b1",
+"k": 0,
+"empreinte": "exp_cle|coins=coffre,terrier|i=0|j=0|pieces=foret,marais,canyon",
+"reponse": null
+},
+{
+"type": "exp_cle",
+"valeur": "b66c7a282c92118b020943a18efa92114a18263f784e47153af3a103838363b1",
+"k": 1,
+"empreinte": "exp_cle|coins=terrier,panier|i=2|j=0|pieces=prairie,desert,foret",
+"reponse": null
+},
+{
+"type": "exp_cle",
+"valeur": "b66c7a282c92118b020943a18efa92114a18263f784e47153af3a103838363b1",
+"k": 38,
+"empreinte": "exp_cle|coins=coffre,creux|i=2|j=1|pieces=desert,clairiere,colline",
+"reponse": null
+},
+{
+"type": "exp_cle",
+"valeur": "b66c7a282c92118b020943a18efa92114a18263f784e47153af3a103838363b1",
+"k": 99,
+"empreinte": "exp_cle|coins=tente,panier|i=0|j=0|pieces=canyon,grotte,colline",
+"reponse": null
+},
+{
+"type": "bat_pieces",
+"valeur": "b66c7a282c92118b020943a18efa92114a18263f784e47153af3a103838363b1",
+"k": 0,
+"empreinte": "bat_pieces|pieces=foret,marais",
+"reponse": null
+},
+{
+"type": "bat_pieces",
+"valeur": "b66c7a282c92118b020943a18efa92114a18263f784e47153af3a103838363b1",
+"k": 1,
+"empreinte": "bat_pieces|pieces=prairie,desert",
+"reponse": null
+},
+{
+"type": "bat_pieces",
+"valeur": "b66c7a282c92118b020943a18efa92114a18263f784e47153af3a103838363b1",
+"k": 38,
+"empreinte": "bat_pieces|pieces=desert,clairiere",
+"reponse": null
+},
+{
+"type": "bat_pieces",
+"valeur": "b66c7a282c92118b020943a18efa92114a18263f784e47153af3a103838363b1",
+"k": 99,
+"empreinte": "bat_pieces|pieces=canyon,grotte",
+"reponse": null
+},
+{
+"type": "bat_objets",
+"valeur": "b66c7a282c92118b020943a18efa92114a18263f784e47153af3a103838363b1",
+"k": 0,
+"empreinte": "bat_objets|objets=crayon,livre|pieces=foret",
+"reponse": null
+},
+{
+"type": "bat_objets",
+"valeur": "b66c7a282c92118b020943a18efa92114a18263f784e47153af3a103838363b1",
+"k": 1,
+"empreinte": "bat_objets|objets=cle,bougie|pieces=prairie",
+"reponse": null
+},
+{
+"type": "bat_objets",
+"valeur": "b66c7a282c92118b020943a18efa92114a18263f784e47153af3a103838363b1",
+"k": 38,
+"empreinte": "bat_objets|objets=lampe,gomme|pieces=desert",
+"reponse": null
+},
+{
+"type": "bat_objets",
+"valeur": "b66c7a282c92118b020943a18efa92114a18263f784e47153af3a103838363b1",
+"k": 99,
+"empreinte": "bat_objets|objets=carte,gomme|pieces=canyon",
+"reponse": null
+},
+{
+"type": "dem_mv",
+"valeur": "b66c7a282c92118b020943a18efa92114a18263f784e47153af3a103838363b1",
+"k": 0,
+"empreinte": "dem_mv|objets=gomme|pieces=foret,marais",
+"reponse": null
+},
+{
+"type": "dem_mv",
+"valeur": "b66c7a282c92118b020943a18efa92114a18263f784e47153af3a103838363b1",
+"k": 1,
+"empreinte": "dem_mv|objets=lampe|pieces=prairie,desert",
+"reponse": null
+},
+{
+"type": "dem_mv",
+"valeur": "b66c7a282c92118b020943a18efa92114a18263f784e47153af3a103838363b1",
+"k": 38,
+"empreinte": "dem_mv|objets=flute|pieces=desert,clairiere",
+"reponse": null
+},
+{
+"type": "dem_mv",
+"valeur": "b66c7a282c92118b020943a18efa92114a18263f784e47153af3a103838363b1",
+"k": 99,
+"empreinte": "dem_mv|objets=flute|pieces=canyon,grotte",
+"reponse": null
+},
+{
+"type": "dem_cp",
+"valeur": "b66c7a282c92118b020943a18efa92114a18263f784e47153af3a103838363b1",
+"k": 0,
+"empreinte": "dem_cp|objets=gomme|pieces=foret,marais",
+"reponse": null
+},
+{
+"type": "dem_cp",
+"valeur": "b66c7a282c92118b020943a18efa92114a18263f784e47153af3a103838363b1",
+"k": 1,
+"empreinte": "dem_cp|objets=lampe|pieces=prairie,desert",
+"reponse": null
+},
+{
+"type": "dem_cp",
+"valeur": "b66c7a282c92118b020943a18efa92114a18263f784e47153af3a103838363b1",
+"k": 38,
+"empreinte": "dem_cp|objets=flute|pieces=desert,clairiere",
+"reponse": null
+},
+{
+"type": "dem_cp",
+"valeur": "b66c7a282c92118b020943a18efa92114a18263f784e47153af3a103838363b1",
+"k": 99,
+"empreinte": "dem_cp|objets=flute|pieces=canyon,grotte",
+"reponse": null
+},
+{
+"type": "net_rm",
+"valeur": "b66c7a282c92118b020943a18efa92114a18263f784e47153af3a103838363b1",
+"k": 0,
+"empreinte": "net_rm|n=2|objets=crayon|pieces=foret",
+"reponse": null
+},
+{
+"type": "net_rm",
+"valeur": "b66c7a282c92118b020943a18efa92114a18263f784e47153af3a103838363b1",
+"k": 1,
+"empreinte": "net_rm|n=2|objets=cle|pieces=prairie",
+"reponse": null
+},
+{
+"type": "net_rm",
+"valeur": "b66c7a282c92118b020943a18efa92114a18263f784e47153af3a103838363b1",
+"k": 38,
+"empreinte": "net_rm|n=2|objets=lampe|pieces=desert",
+"reponse": null
+},
+{
+"type": "net_rm",
+"valeur": "b66c7a282c92118b020943a18efa92114a18263f784e47153af3a103838363b1",
+"k": 99,
+"empreinte": "net_rm|n=2|objets=carte|pieces=canyon",
+"reponse": null
+},
+{
+"type": "net_rmdir",
+"valeur": "b66c7a282c92118b020943a18efa92114a18263f784e47153af3a103838363b1",
+"k": 0,
+"empreinte": "net_rmdir|objets=boussole|pieces=foret,marais,canyon",
+"reponse": null
+},
+{
+"type": "net_rmdir",
+"valeur": "b66c7a282c92118b020943a18efa92114a18263f784e47153af3a103838363b1",
+"k": 1,
+"empreinte": "net_rmdir|objets=balle|pieces=prairie,desert,foret",
+"reponse": null
+},
+{
+"type": "net_rmdir",
+"valeur": "b66c7a282c92118b020943a18efa92114a18263f784e47153af3a103838363b1",
+"k": 38,
+"empreinte": "net_rmdir|objets=boussole|pieces=desert,clairiere,colline",
+"reponse": null
+},
+{
+"type": "net_rmdir",
+"valeur": "b66c7a282c92118b020943a18efa92114a18263f784e47153af3a103838363b1",
+"k": 99,
+"empreinte": "net_rmdir|objets=lampe|pieces=canyon,grotte,colline",
+"reponse": null
+},
+{
+"type": "net_rmr",
+"valeur": "b66c7a282c92118b020943a18efa92114a18263f784e47153af3a103838363b1",
+"k": 0,
+"empreinte": "net_rmr|objets=gomme,coquillage,cle|pieces=foret,marais",
+"reponse": null
+},
+{
+"type": "net_rmr",
+"valeur": "b66c7a282c92118b020943a18efa92114a18263f784e47153af3a103838363b1",
+"k": 1,
+"empreinte": "net_rmr|objets=lampe,boussole,bougie|pieces=prairie,desert",
+"reponse": null
+},
+{
+"type": "net_rmr",
+"valeur": "b66c7a282c92118b020943a18efa92114a18263f784e47153af3a103838363b1",
+"k": 38,
+"empreinte": "net_rmr|objets=flute,lampe,balle|pieces=desert,clairiere",
+"reponse": null
+},
+{
+"type": "net_rmr",
+"valeur": "b66c7a282c92118b020943a18efa92114a18263f784e47153af3a103838363b1",
+"k": 99,
+"empreinte": "net_rmr|objets=flute,bougie,balle|pieces=canyon,grotte",
+"reponse": null
+},
+{
+"type": "lec_cat",
+"valeur": "b66c7a282c92118b020943a18efa92114a18263f784e47153af3a103838363b1",
+"k": 0,
+"empreinte": "lec_cat|mots=dragon|n=1",
+"reponse": "dragon"
+},
+{
+"type": "lec_cat",
+"valeur": "b66c7a282c92118b020943a18efa92114a18263f784e47153af3a103838363b1",
+"k": 1,
+"empreinte": "lec_cat|mots=pirate|n=1",
+"reponse": "pirate"
+},
+{
+"type": "lec_cat",
+"valeur": "b66c7a282c92118b020943a18efa92114a18263f784e47153af3a103838363b1",
+"k": 38,
+"empreinte": "lec_cat|mots=volcan|n=2",
+"reponse": "volcan"
+},
+{
+"type": "lec_cat",
+"valeur": "b66c7a282c92118b020943a18efa92114a18263f784e47153af3a103838363b1",
+"k": 99,
+"empreinte": "lec_cat|mots=robot|n=3",
+"reponse": "robot"
+},
+{
+"type": "lec_head",
+"valeur": "b66c7a282c92118b020943a18efa92114a18263f784e47153af3a103838363b1",
+"k": 0,
+"empreinte": "lec_head|mots=dragon,tortue,robot,fusee,comete,biscuit,cactus,pirate|n=4",
+"reponse": "fusee"
+},
+{
+"type": "lec_head",
+"valeur": "b66c7a282c92118b020943a18efa92114a18263f784e47153af3a103838363b1",
+"k": 1,
+"empreinte": "lec_head|mots=pirate,volcan,dragon,nuage,sirene,tortue,comete,cactus|n=4",
+"reponse": "nuage"
+},
+{
+"type": "lec_head",
+"valeur": "b66c7a282c92118b020943a18efa92114a18263f784e47153af3a103838363b1",
+"k": 38,
+"empreinte": "lec_head|mots=volcan,cactus,biscuit,dragon,fusee,sirene,pirate,nuage|n=3",
+"reponse": "biscuit"
+},
+{
+"type": "lec_head",
+"valeur": "b66c7a282c92118b020943a18efa92114a18263f784e47153af3a103838363b1",
+"k": 99,
+"empreinte": "lec_head|mots=robot,licorne,biscuit,comete,tortue,cactus,dragon,pirate|n=3",
+"reponse": "biscuit"
+},
+{
+"type": "lec_tail",
+"valeur": "b66c7a282c92118b020943a18efa92114a18263f784e47153af3a103838363b1",
+"k": 0,
+"empreinte": "lec_tail|mots=dragon,tortue,robot,fusee,comete,biscuit,cactus,pirate|n=4",
+"reponse": "pirate"
+},
+{
+"type": "lec_tail",
+"valeur": "b66c7a282c92118b020943a18efa92114a18263f784e47153af3a103838363b1",
+"k": 1,
+"empreinte": "lec_tail|mots=pirate,volcan,dragon,nuage,sirene,tortue,comete,cactus|n=4",
+"reponse": "cactus"
+},
+{
+"type": "lec_tail",
+"valeur": "b66c7a282c92118b020943a18efa92114a18263f784e47153af3a103838363b1",
+"k": 38,
+"empreinte": "lec_tail|mots=volcan,cactus,biscuit,dragon,fusee,sirene,pirate,nuage|n=3",
+"reponse": "nuage"
+},
+{
+"type": "lec_tail",
+"valeur": "b66c7a282c92118b020943a18efa92114a18263f784e47153af3a103838363b1",
+"k": 99,
+"empreinte": "lec_tail|mots=robot,licorne,biscuit,comete,tortue,cactus,dragon,pirate|n=3",
+"reponse": "pirate"
+},
+{
+"type": "det_grep",
+"valeur": "b66c7a282c92118b020943a18efa92114a18263f784e47153af3a103838363b1",
+"k": 0,
+"empreinte": "det_grep|i=2|mots=licorne,cactus,dragon,robot,biscuit,fusee|objets=gomme,pomme,bille,tambour,lampe",
+"reponse": "bille"
+},
+{
+"type": "det_grep",
+"valeur": "b66c7a282c92118b020943a18efa92114a18263f784e47153af3a103838363b1",
+"k": 1,
+"empreinte": "det_grep|i=4|mots=fusee,robot,cactus,licorne,pirate,nuage|objets=boussole,bougie,carte,pomme,bille",
+"reponse": "bille"
+},
+{
+"type": "det_grep",
+"valeur": "b66c7a282c92118b020943a18efa92114a18263f784e47153af3a103838363b1",
+"k": 38,
+"empreinte": "det_grep|i=0|mots=sirene,dragon,robot,tortue,biscuit,pirate|objets=bille,boussole,carte,bougie,gomme",
+"reponse": "bille"
+},
+{
+"type": "det_grep",
+"valeur": "b66c7a282c92118b020943a18efa92114a18263f784e47153af3a103838363b1",
+"k": 99,
+"empreinte": "det_grep|i=2|mots=licorne,biscuit,tortue,pirate,cactus,robot|objets=gomme,bille,carte,flute,etoile",
+"reponse": "carte"
+},
+{
+"type": "det_find",
+"valeur": "b66c7a282c92118b020943a18efa92114a18263f784e47153af3a103838363b1",
+"k": 0,
+"empreinte": "det_find|coins=coffre,terrier|i=0|j=0|objet=cle|pieces=foret,marais,canyon",
+"reponse": "foret"
+},
+{
+"type": "det_find",
+"valeur": "b66c7a282c92118b020943a18efa92114a18263f784e47153af3a103838363b1",
+"k": 1,
+"empreinte": "det_find|coins=terrier,panier|i=2|j=0|objet=boussole|pieces=prairie,desert,foret",
+"reponse": "foret"
+},
+{
+"type": "det_find",
+"valeur": "b66c7a282c92118b020943a18efa92114a18263f784e47153af3a103838363b1",
+"k": 38,
+"empreinte": "det_find|coins=coffre,creux|i=2|j=1|objet=gomme|pieces=desert,clairiere,colline",
+"reponse": "colline"
+},
+{
+"type": "det_find",
+"valeur": "b66c7a282c92118b020943a18efa92114a18263f784e47153af3a103838363b1",
+"k": 99,
+"empreinte": "det_find|coins=tente,panier|i=0|j=0|objet=etoile|pieces=canyon,grotte,colline",
+"reponse": "canyon"
+},
+{
+"type": "plo_ecrit",
+"valeur": "b66c7a282c92118b020943a18efa92114a18263f784e47153af3a103838363b1",
+"k": 0,
+"empreinte": "plo_ecrit|mots=dragon",
+"reponse": null
+},
+{
+"type": "plo_ecrit",
+"valeur": "b66c7a282c92118b020943a18efa92114a18263f784e47153af3a103838363b1",
+"k": 1,
+"empreinte": "plo_ecrit|mots=pirate",
+"reponse": null
+},
+{
+"type": "plo_ecrit",
+"valeur": "b66c7a282c92118b020943a18efa92114a18263f784e47153af3a103838363b1",
+"k": 38,
+"empreinte": "plo_ecrit|mots=volcan",
+"reponse": null
+},
+{
+"type": "plo_ecrit",
+"valeur": "b66c7a282c92118b020943a18efa92114a18263f784e47153af3a103838363b1",
+"k": 99,
+"empreinte": "plo_ecrit|mots=robot",
+"reponse": null
+},
+{
+"type": "plo_ajout",
+"valeur": "b66c7a282c92118b020943a18efa92114a18263f784e47153af3a103838363b1",
+"k": 0,
+"empreinte": "plo_ajout|mots=dragon,tortue,robot,fusee",
+"reponse": null
+},
+{
+"type": "plo_ajout",
+"valeur": "b66c7a282c92118b020943a18efa92114a18263f784e47153af3a103838363b1",
+"k": 1,
+"empreinte": "plo_ajout|mots=pirate,volcan,dragon,nuage",
+"reponse": null
+},
+{
+"type": "plo_ajout",
+"valeur": "b66c7a282c92118b020943a18efa92114a18263f784e47153af3a103838363b1",
+"k": 38,
+"empreinte": "plo_ajout|mots=volcan,cactus,biscuit,dragon",
+"reponse": null
+},
+{
+"type": "plo_ajout",
+"valeur": "b66c7a282c92118b020943a18efa92114a18263f784e47153af3a103838363b1",
+"k": 99,
+"empreinte": "plo_ajout|mots=robot,licorne,biscuit,comete",
+"reponse": null
+},
+{
+"type": "plo_tuyau",
+"valeur": "b66c7a282c92118b020943a18efa92114a18263f784e47153af3a103838363b1",
+"k": 0,
+"empreinte": "plo_tuyau|lignes=0,2,2,0,1,2,3,3,2,1,2|objets=gomme,pomme,bille,tambour",
+"reponse": "2"
+},
+{
+"type": "plo_tuyau",
+"valeur": "b66c7a282c92118b020943a18efa92114a18263f784e47153af3a103838363b1",
+"k": 1,
+"empreinte": "plo_tuyau|lignes=2,0,0,2,0,1,0,3,1|objets=boussole,bougie,carte,pomme",
+"reponse": "4"
+},
+{
+"type": "plo_tuyau",
+"valeur": "b66c7a282c92118b020943a18efa92114a18263f784e47153af3a103838363b1",
+"k": 38,
+"empreinte": "plo_tuyau|lignes=3,1,1,3,1,3,0,3,1|objets=bille,boussole,carte,bougie",
+"reponse": "1"
+},
+{
+"type": "plo_tuyau",
+"valeur": "b66c7a282c92118b020943a18efa92114a18263f784e47153af3a103838363b1",
+"k": 99,
+"empreinte": "plo_tuyau|lignes=0,2,3,0,0,1,2,3,3|objets=gomme,bille,carte,flute",
+"reponse": "3"
+},
+{
+"type": "cui_lancer",
+"valeur": "b66c7a282c92118b020943a18efa92114a18263f784e47153af3a103838363b1",
+"k": 0,
+"empreinte": "cui_lancer|mots=dragon",
+"reponse": "dragon"
+},
+{
+"type": "cui_lancer",
+"valeur": "b66c7a282c92118b020943a18efa92114a18263f784e47153af3a103838363b1",
+"k": 1,
+"empreinte": "cui_lancer|mots=pirate",
+"reponse": "pirate"
+},
+{
+"type": "cui_lancer",
+"valeur": "b66c7a282c92118b020943a18efa92114a18263f784e47153af3a103838363b1",
+"k": 38,
+"empreinte": "cui_lancer|mots=volcan",
+"reponse": "volcan"
+},
+{
+"type": "cui_lancer",
+"valeur": "b66c7a282c92118b020943a18efa92114a18263f784e47153af3a103838363b1",
+"k": 99,
+"empreinte": "cui_lancer|mots=robot",
+"reponse": "robot"
+},
+{
+"type": "cui_ecrire",
+"valeur": "b66c7a282c92118b020943a18efa92114a18263f784e47153af3a103838363b1",
+"k": 0,
+"empreinte": "cui_ecrire|mots=dragon",
+"reponse": null
+},
+{
+"type": "cui_ecrire",
+"valeur": "b66c7a282c92118b020943a18efa92114a18263f784e47153af3a103838363b1",
+"k": 1,
+"empreinte": "cui_ecrire|mots=pirate",
+"reponse": null
+},
+{
+"type": "cui_ecrire",
+"valeur": "b66c7a282c92118b020943a18efa92114a18263f784e47153af3a103838363b1",
+"k": 38,
+"empreinte": "cui_ecrire|mots=volcan",
+"reponse": null
+},
+{
+"type": "cui_ecrire",
+"valeur": "b66c7a282c92118b020943a18efa92114a18263f784e47153af3a103838363b1",
+"k": 99,
+"empreinte": "cui_ecrire|mots=robot",
+"reponse": null
+}
+],
+"medailles": [
+{
+"type": "exp_chemin",
+"t": 0.5,
+"medaille": "diamant"
+},
+{
+"type": "exp_chemin",
+"t": 15,
+"medaille": "diamant"
+},
+{
+"type": "exp_chemin",
+"t": 15.1,
+"medaille": "or"
+},
+{
+"type": "exp_chemin",
+"t": 30,
+"medaille": "or"
+},
+{
+"type": "exp_chemin",
+"t": 30.1,
+"medaille": "argent"
+},
+{
+"type": "exp_chemin",
+"t": 60,
+"medaille": "argent"
+},
+{
+"type": "exp_chemin",
+"t": 60.1,
+"medaille": "bronze"
+},
+{
+"type": "exp_chemin",
+"t": 900,
+"medaille": "bronze"
+},
+{
+"type": "exp_cle",
+"t": 0.5,
+"medaille": "diamant"
+},
+{
+"type": "exp_cle",
+"t": 30,
+"medaille": "diamant"
+},
+{
+"type": "exp_cle",
+"t": 30.1,
+"medaille": "or"
+},
+{
+"type": "exp_cle",
+"t": 60,
+"medaille": "or"
+},
+{
+"type": "exp_cle",
+"t": 60.1,
+"medaille": "argent"
+},
+{
+"type": "exp_cle",
+"t": 120,
+"medaille": "argent"
+},
+{
+"type": "exp_cle",
+"t": 120.1,
+"medaille": "bronze"
+},
+{
+"type": "exp_cle",
+"t": 900,
+"medaille": "bronze"
+},
+{
+"type": "bat_pieces",
+"t": 0.5,
+"medaille": "diamant"
+},
+{
+"type": "bat_pieces",
+"t": 15,
+"medaille": "diamant"
+},
+{
+"type": "bat_pieces",
+"t": 15.1,
+"medaille": "or"
+},
+{
+"type": "bat_pieces",
+"t": 30,
+"medaille": "or"
+},
+{
+"type": "bat_pieces",
+"t": 30.1,
+"medaille": "argent"
+},
+{
+"type": "bat_pieces",
+"t": 60,
+"medaille": "argent"
+},
+{
+"type": "bat_pieces",
+"t": 60.1,
+"medaille": "bronze"
+},
+{
+"type": "bat_pieces",
+"t": 900,
+"medaille": "bronze"
+},
+{
+"type": "bat_objets",
+"t": 0.5,
+"medaille": "diamant"
+},
+{
+"type": "bat_objets",
+"t": 25,
+"medaille": "diamant"
+},
+{
+"type": "bat_objets",
+"t": 25.1,
+"medaille": "or"
+},
+{
+"type": "bat_objets",
+"t": 50,
+"medaille": "or"
+},
+{
+"type": "bat_objets",
+"t": 50.1,
+"medaille": "argent"
+},
+{
+"type": "bat_objets",
+"t": 100,
+"medaille": "argent"
+},
+{
+"type": "bat_objets",
+"t": 100.1,
+"medaille": "bronze"
+},
+{
+"type": "bat_objets",
+"t": 900,
+"medaille": "bronze"
+},
+{
+"type": "dem_mv",
+"t": 0.5,
+"medaille": "diamant"
+},
+{
+"type": "dem_mv",
+"t": 20,
+"medaille": "diamant"
+},
+{
+"type": "dem_mv",
+"t": 20.1,
+"medaille": "or"
+},
+{
+"type": "dem_mv",
+"t": 40,
+"medaille": "or"
+},
+{
+"type": "dem_mv",
+"t": 40.1,
+"medaille": "argent"
+},
+{
+"type": "dem_mv",
+"t": 80,
+"medaille": "argent"
+},
+{
+"type": "dem_mv",
+"t": 80.1,
+"medaille": "bronze"
+},
+{
+"type": "dem_mv",
+"t": 900,
+"medaille": "bronze"
+},
+{
+"type": "dem_cp",
+"t": 0.5,
+"medaille": "diamant"
+},
+{
+"type": "dem_cp",
+"t": 20,
+"medaille": "diamant"
+},
+{
+"type": "dem_cp",
+"t": 20.1,
+"medaille": "or"
+},
+{
+"type": "dem_cp",
+"t": 40,
+"medaille": "or"
+},
+{
+"type": "dem_cp",
+"t": 40.1,
+"medaille": "argent"
+},
+{
+"type": "dem_cp",
+"t": 80,
+"medaille": "argent"
+},
+{
+"type": "dem_cp",
+"t": 80.1,
+"medaille": "bronze"
+},
+{
+"type": "dem_cp",
+"t": 900,
+"medaille": "bronze"
+},
+{
+"type": "net_rm",
+"t": 0.5,
+"medaille": "diamant"
+},
+{
+"type": "net_rm",
+"t": 20,
+"medaille": "diamant"
+},
+{
+"type": "net_rm",
+"t": 20.1,
+"medaille": "or"
+},
+{
+"type": "net_rm",
+"t": 40,
+"medaille": "or"
+},
+{
+"type": "net_rm",
+"t": 40.1,
+"medaille": "argent"
+},
+{
+"type": "net_rm",
+"t": 80,
+"medaille": "argent"
+},
+{
+"type": "net_rm",
+"t": 80.1,
+"medaille": "bronze"
+},
+{
+"type": "net_rm",
+"t": 900,
+"medaille": "bronze"
+},
+{
+"type": "net_rmdir",
+"t": 0.5,
+"medaille": "diamant"
+},
+{
+"type": "net_rmdir",
+"t": 20,
+"medaille": "diamant"
+},
+{
+"type": "net_rmdir",
+"t": 20.1,
+"medaille": "or"
+},
+{
+"type": "net_rmdir",
+"t": 40,
+"medaille": "or"
+},
+{
+"type": "net_rmdir",
+"t": 40.1,
+"medaille": "argent"
+},
+{
+"type": "net_rmdir",
+"t": 80,
+"medaille": "argent"
+},
+{
+"type": "net_rmdir",
+"t": 80.1,
+"medaille": "bronze"
+},
+{
+"type": "net_rmdir",
+"t": 900,
+"medaille": "bronze"
+},
+{
+"type": "net_rmr",
+"t": 0.5,
+"medaille": "diamant"
+},
+{
+"type": "net_rmr",
+"t": 15,
+"medaille": "diamant"
+},
+{
+"type": "net_rmr",
+"t": 15.1,
+"medaille": "or"
+},
+{
+"type": "net_rmr",
+"t": 30,
+"medaille": "or"
+},
+{
+"type": "net_rmr",
+"t": 30.1,
+"medaille": "argent"
+},
+{
+"type": "net_rmr",
+"t": 60,
+"medaille": "argent"
+},
+{
+"type": "net_rmr",
+"t": 60.1,
+"medaille": "bronze"
+},
+{
+"type": "net_rmr",
+"t": 900,
+"medaille": "bronze"
+},
+{
+"type": "lec_cat",
+"t": 0.5,
+"medaille": "diamant"
+},
+{
+"type": "lec_cat",
+"t": 20,
+"medaille": "diamant"
+},
+{
+"type": "lec_cat",
+"t": 20.1,
+"medaille": "or"
+},
+{
+"type": "lec_cat",
+"t": 40,
+"medaille": "or"
+},
+{
+"type": "lec_cat",
+"t": 40.1,
+"medaille": "argent"
+},
+{
+"type": "lec_cat",
+"t": 80,
+"medaille": "argent"
+},
+{
+"type": "lec_cat",
+"t": 80.1,
+"medaille": "bronze"
+},
+{
+"type": "lec_cat",
+"t": 900,
+"medaille": "bronze"
+},
+{
+"type": "lec_head",
+"t": 0.5,
+"medaille": "diamant"
+},
+{
+"type": "lec_head",
+"t": 20,
+"medaille": "diamant"
+},
+{
+"type": "lec_head",
+"t": 20.1,
+"medaille": "or"
+},
+{
+"type": "lec_head",
+"t": 40,
+"medaille": "or"
+},
+{
+"type": "lec_head",
+"t": 40.1,
+"medaille": "argent"
+},
+{
+"type": "lec_head",
+"t": 80,
+"medaille": "argent"
+},
+{
+"type": "lec_head",
+"t": 80.1,
+"medaille": "bronze"
+},
+{
+"type": "lec_head",
+"t": 900,
+"medaille": "bronze"
+},
+{
+"type": "lec_tail",
+"t": 0.5,
+"medaille": "diamant"
+},
+{
+"type": "lec_tail",
+"t": 20,
+"medaille": "diamant"
+},
+{
+"type": "lec_tail",
+"t": 20.1,
+"medaille": "or"
+},
+{
+"type": "lec_tail",
+"t": 40,
+"medaille": "or"
+},
+{
+"type": "lec_tail",
+"t": 40.1,
+"medaille": "argent"
+},
+{
+"type": "lec_tail",
+"t": 80,
+"medaille": "argent"
+},
+{
+"type": "lec_tail",
+"t": 80.1,
+"medaille": "bronze"
+},
+{
+"type": "lec_tail",
+"t": 900,
+"medaille": "bronze"
+},
+{
+"type": "det_grep",
+"t": 0.5,
+"medaille": "diamant"
+},
+{
+"type": "det_grep",
+"t": 25,
+"medaille": "diamant"
+},
+{
+"type": "det_grep",
+"t": 25.1,
+"medaille": "or"
+},
+{
+"type": "det_grep",
+"t": 50,
+"medaille": "or"
+},
+{
+"type": "det_grep",
+"t": 50.1,
+"medaille": "argent"
+},
+{
+"type": "det_grep",
+"t": 100,
+"medaille": "argent"
+},
+{
+"type": "det_grep",
+"t": 100.1,
+"medaille": "bronze"
+},
+{
+"type": "det_grep",
+"t": 900,
+"medaille": "bronze"
+},
+{
+"type": "det_find",
+"t": 0.5,
+"medaille": "diamant"
+},
+{
+"type": "det_find",
+"t": 25,
+"medaille": "diamant"
+},
+{
+"type": "det_find",
+"t": 25.1,
+"medaille": "or"
+},
+{
+"type": "det_find",
+"t": 50,
+"medaille": "or"
+},
+{
+"type": "det_find",
+"t": 50.1,
+"medaille": "argent"
+},
+{
+"type": "det_find",
+"t": 100,
+"medaille": "argent"
+},
+{
+"type": "det_find",
+"t": 100.1,
+"medaille": "bronze"
+},
+{
+"type": "det_find",
+"t": 900,
+"medaille": "bronze"
+},
+{
+"type": "plo_ecrit",
+"t": 0.5,
+"medaille": "diamant"
+},
+{
+"type": "plo_ecrit",
+"t": 20,
+"medaille": "diamant"
+},
+{
+"type": "plo_ecrit",
+"t": 20.1,
+"medaille": "or"
+},
+{
+"type": "plo_ecrit",
+"t": 40,
+"medaille": "or"
+},
+{
+"type": "plo_ecrit",
+"t": 40.1,
+"medaille": "argent"
+},
+{
+"type": "plo_ecrit",
+"t": 80,
+"medaille": "argent"
+},
+{
+"type": "plo_ecrit",
+"t": 80.1,
+"medaille": "bronze"
+},
+{
+"type": "plo_ecrit",
+"t": 900,
+"medaille": "bronze"
+},
+{
+"type": "plo_ajout",
+"t": 0.5,
+"medaille": "diamant"
+},
+{
+"type": "plo_ajout",
+"t": 20,
+"medaille": "diamant"
+},
+{
+"type": "plo_ajout",
+"t": 20.1,
+"medaille": "or"
+},
+{
+"type": "plo_ajout",
+"t": 40,
+"medaille": "or"
+},
+{
+"type": "plo_ajout",
+"t": 40.1,
+"medaille": "argent"
+},
+{
+"type": "plo_ajout",
+"t": 80,
+"medaille": "argent"
+},
+{
+"type": "plo_ajout",
+"t": 80.1,
+"medaille": "bronze"
+},
+{
+"type": "plo_ajout",
+"t": 900,
+"medaille": "bronze"
+},
+{
+"type": "plo_tuyau",
+"t": 0.5,
+"medaille": "diamant"
+},
+{
+"type": "plo_tuyau",
+"t": 30,
+"medaille": "diamant"
+},
+{
+"type": "plo_tuyau",
+"t": 30.1,
+"medaille": "or"
+},
+{
+"type": "plo_tuyau",
+"t": 60,
+"medaille": "or"
+},
+{
+"type": "plo_tuyau",
+"t": 60.1,
+"medaille": "argent"
+},
+{
+"type": "plo_tuyau",
+"t": 120,
+"medaille": "argent"
+},
+{
+"type": "plo_tuyau",
+"t": 120.1,
+"medaille": "bronze"
+},
+{
+"type": "plo_tuyau",
+"t": 900,
+"medaille": "bronze"
+},
+{
+"type": "cui_lancer",
+"t": 0.5,
+"medaille": "diamant"
+},
+{
+"type": "cui_lancer",
+"t": 20,
+"medaille": "diamant"
+},
+{
+"type": "cui_lancer",
+"t": 20.1,
+"medaille": "or"
+},
+{
+"type": "cui_lancer",
+"t": 40,
+"medaille": "or"
+},
+{
+"type": "cui_lancer",
+"t": 40.1,
+"medaille": "argent"
+},
+{
+"type": "cui_lancer",
+"t": 80,
+"medaille": "argent"
+},
+{
+"type": "cui_lancer",
+"t": 80.1,
+"medaille": "bronze"
+},
+{
+"type": "cui_lancer",
+"t": 900,
+"medaille": "bronze"
+},
+{
+"type": "cui_ecrire",
+"t": 0.5,
+"medaille": "diamant"
+},
+{
+"type": "cui_ecrire",
+"t": 40,
+"medaille": "diamant"
+},
+{
+"type": "cui_ecrire",
+"t": 40.1,
+"medaille": "or"
+},
+{
+"type": "cui_ecrire",
+"t": 80,
+"medaille": "or"
+},
+{
+"type": "cui_ecrire",
+"t": 80.1,
+"medaille": "argent"
+},
+{
+"type": "cui_ecrire",
+"t": 160,
+"medaille": "argent"
+},
+{
+"type": "cui_ecrire",
+"t": 160.1,
+"medaille": "bronze"
+},
+{
+"type": "cui_ecrire",
+"t": 900,
+"medaille": "bronze"
+}
+],
+"echelons": [
+{
+"n": 0,
+"or": 0,
+"diamant": 0,
+"tous": false,
+"echelon": -1,
+"etoiles": 0
+},
+{
+"n": 0,
+"or": 1,
+"diamant": 0,
+"tous": false,
+"echelon": -1,
+"etoiles": 0
+},
+{
+"n": 0,
+"or": 3,
+"diamant": 2,
+"tous": false,
+"echelon": -1,
+"etoiles": 0
+},
+{
+"n": 0,
+"or": 3,
+"diamant": 3,
+"tous": false,
+"echelon": -1,
+"etoiles": 0
+},
+{
+"n": 0,
+"or": 6,
+"diamant": 6,
+"tous": false,
+"echelon": -1,
+"etoiles": 0
+},
+{
+"n": 0,
+"or": 10,
+"diamant": 9,
+"tous": true,
+"echelon": -1,
+"etoiles": 0
+},
+{
+"n": 0,
+"or": 10,
+"diamant": 10,
+"tous": false,
+"echelon": -1,
+"etoiles": 0
+},
+{
+"n": 0,
+"or": 10,
+"diamant": 10,
+"tous": true,
+"echelon": -1,
+"etoiles": 0
+},
+{
+"n": 1,
+"or": 0,
+"diamant": 0,
+"tous": false,
+"echelon": 0,
+"etoiles": 0
+},
+{
+"n": 1,
+"or": 1,
+"diamant": 0,
+"tous": false,
+"echelon": 0,
+"etoiles": 0
+},
+{
+"n": 1,
+"or": 3,
+"diamant": 2,
+"tous": false,
+"echelon": 0,
+"etoiles": 0
+},
+{
+"n": 1,
+"or": 3,
+"diamant": 3,
+"tous": false,
+"echelon": 0,
+"etoiles": 0
+},
+{
+"n": 1,
+"or": 6,
+"diamant": 6,
+"tous": false,
+"echelon": 0,
+"etoiles": 0
+},
+{
+"n": 1,
+"or": 10,
+"diamant": 9,
+"tous": true,
+"echelon": 0,
+"etoiles": 0
+},
+{
+"n": 1,
+"or": 10,
+"diamant": 10,
+"tous": false,
+"echelon": 0,
+"etoiles": 0
+},
+{
+"n": 1,
+"or": 10,
+"diamant": 10,
+"tous": true,
+"echelon": 0,
+"etoiles": 0
+},
+{
+"n": 2,
+"or": 0,
+"diamant": 0,
+"tous": false,
+"echelon": 0,
+"etoiles": 1
+},
+{
+"n": 2,
+"or": 1,
+"diamant": 0,
+"tous": false,
+"echelon": 0,
+"etoiles": 1
+},
+{
+"n": 2,
+"or": 3,
+"diamant": 2,
+"tous": false,
+"echelon": 0,
+"etoiles": 1
+},
+{
+"n": 2,
+"or": 3,
+"diamant": 3,
+"tous": false,
+"echelon": 0,
+"etoiles": 1
+},
+{
+"n": 2,
+"or": 6,
+"diamant": 6,
+"tous": false,
+"echelon": 0,
+"etoiles": 1
+},
+{
+"n": 2,
+"or": 10,
+"diamant": 9,
+"tous": true,
+"echelon": 0,
+"etoiles": 1
+},
+{
+"n": 2,
+"or": 10,
+"diamant": 10,
+"tous": false,
+"echelon": 0,
+"etoiles": 1
+},
+{
+"n": 2,
+"or": 10,
+"diamant": 10,
+"tous": true,
+"echelon": 0,
+"etoiles": 1
+},
+{
+"n": 3,
+"or": 0,
+"diamant": 0,
+"tous": false,
+"echelon": 0,
+"etoiles": 2
+},
+{
+"n": 3,
+"or": 1,
+"diamant": 0,
+"tous": false,
+"echelon": 0,
+"etoiles": 2
+},
+{
+"n": 3,
+"or": 3,
+"diamant": 2,
+"tous": false,
+"echelon": 0,
+"etoiles": 2
+},
+{
+"n": 3,
+"or": 3,
+"diamant": 3,
+"tous": false,
+"echelon": 0,
+"etoiles": 2
+},
+{
+"n": 3,
+"or": 6,
+"diamant": 6,
+"tous": false,
+"echelon": 0,
+"etoiles": 2
+},
+{
+"n": 3,
+"or": 10,
+"diamant": 9,
+"tous": true,
+"echelon": 0,
+"etoiles": 2
+},
+{
+"n": 3,
+"or": 10,
+"diamant": 10,
+"tous": false,
+"echelon": 0,
+"etoiles": 2
+},
+{
+"n": 3,
+"or": 10,
+"diamant": 10,
+"tous": true,
+"echelon": 0,
+"etoiles": 2
+},
+{
+"n": 4,
+"or": 0,
+"diamant": 0,
+"tous": false,
+"echelon": 0,
+"etoiles": 3
+},
+{
+"n": 4,
+"or": 1,
+"diamant": 0,
+"tous": false,
+"echelon": 0,
+"etoiles": 3
+},
+{
+"n": 4,
+"or": 3,
+"diamant": 2,
+"tous": false,
+"echelon": 0,
+"etoiles": 3
+},
+{
+"n": 4,
+"or": 3,
+"diamant": 3,
+"tous": false,
+"echelon": 0,
+"etoiles": 3
+},
+{
+"n": 4,
+"or": 6,
+"diamant": 6,
+"tous": false,
+"echelon": 0,
+"etoiles": 3
+},
+{
+"n": 4,
+"or": 10,
+"diamant": 9,
+"tous": true,
+"echelon": 0,
+"etoiles": 3
+},
+{
+"n": 4,
+"or": 10,
+"diamant": 10,
+"tous": false,
+"echelon": 0,
+"etoiles": 3
+},
+{
+"n": 4,
+"or": 10,
+"diamant": 10,
+"tous": true,
+"echelon": 0,
+"etoiles": 3
+},
+{
+"n": 5,
+"or": 0,
+"diamant": 0,
+"tous": false,
+"echelon": 1,
+"etoiles": 0
+},
+{
+"n": 5,
+"or": 1,
+"diamant": 0,
+"tous": false,
+"echelon": 1,
+"etoiles": 0
+},
+{
+"n": 5,
+"or": 3,
+"diamant": 2,
+"tous": false,
+"echelon": 1,
+"etoiles": 0
+},
+{
+"n": 5,
+"or": 3,
+"diamant": 3,
+"tous": false,
+"echelon": 1,
+"etoiles": 0
+},
+{
+"n": 5,
+"or": 6,
+"diamant": 6,
+"tous": false,
+"echelon": 1,
+"etoiles": 0
+},
+{
+"n": 5,
+"or": 10,
+"diamant": 9,
+"tous": true,
+"echelon": 1,
+"etoiles": 0
+},
+{
+"n": 5,
+"or": 10,
+"diamant": 10,
+"tous": false,
+"echelon": 1,
+"etoiles": 0
+},
+{
+"n": 5,
+"or": 10,
+"diamant": 10,
+"tous": true,
+"echelon": 1,
+"etoiles": 0
+},
+{
+"n": 8,
+"or": 0,
+"diamant": 0,
+"tous": false,
+"echelon": 1,
+"etoiles": 1
+},
+{
+"n": 8,
+"or": 1,
+"diamant": 0,
+"tous": false,
+"echelon": 1,
+"etoiles": 1
+},
+{
+"n": 8,
+"or": 3,
+"diamant": 2,
+"tous": false,
+"echelon": 1,
+"etoiles": 1
+},
+{
+"n": 8,
+"or": 3,
+"diamant": 3,
+"tous": false,
+"echelon": 1,
+"etoiles": 1
+},
+{
+"n": 8,
+"or": 6,
+"diamant": 6,
+"tous": false,
+"echelon": 1,
+"etoiles": 1
+},
+{
+"n": 8,
+"or": 10,
+"diamant": 9,
+"tous": true,
+"echelon": 1,
+"etoiles": 1
+},
+{
+"n": 8,
+"or": 10,
+"diamant": 10,
+"tous": false,
+"echelon": 1,
+"etoiles": 1
+},
+{
+"n": 8,
+"or": 10,
+"diamant": 10,
+"tous": true,
+"echelon": 1,
+"etoiles": 1
+},
+{
+"n": 12,
+"or": 0,
+"diamant": 0,
+"tous": false,
+"echelon": 1,
+"etoiles": 2
+},
+{
+"n": 12,
+"or": 1,
+"diamant": 0,
+"tous": false,
+"echelon": 1,
+"etoiles": 2
+},
+{
+"n": 12,
+"or": 3,
+"diamant": 2,
+"tous": false,
+"echelon": 1,
+"etoiles": 2
+},
+{
+"n": 12,
+"or": 3,
+"diamant": 3,
+"tous": false,
+"echelon": 1,
+"etoiles": 2
+},
+{
+"n": 12,
+"or": 6,
+"diamant": 6,
+"tous": false,
+"echelon": 1,
+"etoiles": 2
+},
+{
+"n": 12,
+"or": 10,
+"diamant": 9,
+"tous": true,
+"echelon": 1,
+"etoiles": 2
+},
+{
+"n": 12,
+"or": 10,
+"diamant": 10,
+"tous": false,
+"echelon": 1,
+"etoiles": 2
+},
+{
+"n": 12,
+"or": 10,
+"diamant": 10,
+"tous": true,
+"echelon": 1,
+"etoiles": 2
+},
+{
+"n": 13,
+"or": 0,
+"diamant": 0,
+"tous": false,
+"echelon": 1,
+"etoiles": 3
+},
+{
+"n": 13,
+"or": 1,
+"diamant": 0,
+"tous": false,
+"echelon": 1,
+"etoiles": 3
+},
+{
+"n": 13,
+"or": 3,
+"diamant": 2,
+"tous": false,
+"echelon": 1,
+"etoiles": 3
+},
+{
+"n": 13,
+"or": 3,
+"diamant": 3,
+"tous": false,
+"echelon": 1,
+"etoiles": 3
+},
+{
+"n": 13,
+"or": 6,
+"diamant": 6,
+"tous": false,
+"echelon": 1,
+"etoiles": 3
+},
+{
+"n": 13,
+"or": 10,
+"diamant": 9,
+"tous": true,
+"echelon": 1,
+"etoiles": 3
+},
+{
+"n": 13,
+"or": 10,
+"diamant": 10,
+"tous": false,
+"echelon": 1,
+"etoiles": 3
+},
+{
+"n": 13,
+"or": 10,
+"diamant": 10,
+"tous": true,
+"echelon": 1,
+"etoiles": 3
+},
+{
+"n": 14,
+"or": 0,
+"diamant": 0,
+"tous": false,
+"echelon": 1,
+"etoiles": 3
+},
+{
+"n": 14,
+"or": 1,
+"diamant": 0,
+"tous": false,
+"echelon": 1,
+"etoiles": 3
+},
+{
+"n": 14,
+"or": 3,
+"diamant": 2,
+"tous": false,
+"echelon": 1,
+"etoiles": 3
+},
+{
+"n": 14,
+"or": 3,
+"diamant": 3,
+"tous": false,
+"echelon": 1,
+"etoiles": 3
+},
+{
+"n": 14,
+"or": 6,
+"diamant": 6,
+"tous": false,
+"echelon": 1,
+"etoiles": 3
+},
+{
+"n": 14,
+"or": 10,
+"diamant": 9,
+"tous": true,
+"echelon": 1,
+"etoiles": 3
+},
+{
+"n": 14,
+"or": 10,
+"diamant": 10,
+"tous": false,
+"echelon": 1,
+"etoiles": 3
+},
+{
+"n": 14,
+"or": 10,
+"diamant": 10,
+"tous": true,
+"echelon": 1,
+"etoiles": 3
+},
+{
+"n": 15,
+"or": 0,
+"diamant": 0,
+"tous": false,
+"echelon": 2,
+"etoiles": 0
+},
+{
+"n": 15,
+"or": 1,
+"diamant": 0,
+"tous": false,
+"echelon": 2,
+"etoiles": 0
+},
+{
+"n": 15,
+"or": 3,
+"diamant": 2,
+"tous": false,
+"echelon": 2,
+"etoiles": 0
+},
+{
+"n": 15,
+"or": 3,
+"diamant": 3,
+"tous": false,
+"echelon": 2,
+"etoiles": 0
+},
+{
+"n": 15,
+"or": 6,
+"diamant": 6,
+"tous": false,
+"echelon": 2,
+"etoiles": 0
+},
+{
+"n": 15,
+"or": 10,
+"diamant": 9,
+"tous": true,
+"echelon": 2,
+"etoiles": 0
+},
+{
+"n": 15,
+"or": 10,
+"diamant": 10,
+"tous": false,
+"echelon": 2,
+"etoiles": 0
+},
+{
+"n": 15,
+"or": 10,
+"diamant": 10,
+"tous": true,
+"echelon": 2,
+"etoiles": 0
+},
+{
+"n": 19,
+"or": 0,
+"diamant": 0,
+"tous": false,
+"echelon": 2,
+"etoiles": 1
+},
+{
+"n": 19,
+"or": 1,
+"diamant": 0,
+"tous": false,
+"echelon": 2,
+"etoiles": 1
+},
+{
+"n": 19,
+"or": 3,
+"diamant": 2,
+"tous": false,
+"echelon": 2,
+"etoiles": 1
+},
+{
+"n": 19,
+"or": 3,
+"diamant": 3,
+"tous": false,
+"echelon": 2,
+"etoiles": 1
+},
+{
+"n": 19,
+"or": 6,
+"diamant": 6,
+"tous": false,
+"echelon": 2,
+"etoiles": 1
+},
+{
+"n": 19,
+"or": 10,
+"diamant": 9,
+"tous": true,
+"echelon": 2,
+"etoiles": 1
+},
+{
+"n": 19,
+"or": 10,
+"diamant": 10,
+"tous": false,
+"echelon": 2,
+"etoiles": 1
+},
+{
+"n": 19,
+"or": 10,
+"diamant": 10,
+"tous": true,
+"echelon": 2,
+"etoiles": 1
+},
+{
+"n": 23,
+"or": 0,
+"diamant": 0,
+"tous": false,
+"echelon": 2,
+"etoiles": 2
+},
+{
+"n": 23,
+"or": 1,
+"diamant": 0,
+"tous": false,
+"echelon": 2,
+"etoiles": 2
+},
+{
+"n": 23,
+"or": 3,
+"diamant": 2,
+"tous": false,
+"echelon": 2,
+"etoiles": 2
+},
+{
+"n": 23,
+"or": 3,
+"diamant": 3,
+"tous": false,
+"echelon": 2,
+"etoiles": 2
+},
+{
+"n": 23,
+"or": 6,
+"diamant": 6,
+"tous": false,
+"echelon": 2,
+"etoiles": 2
+},
+{
+"n": 23,
+"or": 10,
+"diamant": 9,
+"tous": true,
+"echelon": 2,
+"etoiles": 2
+},
+{
+"n": 23,
+"or": 10,
+"diamant": 10,
+"tous": false,
+"echelon": 2,
+"etoiles": 2
+},
+{
+"n": 23,
+"or": 10,
+"diamant": 10,
+"tous": true,
+"echelon": 2,
+"etoiles": 2
+},
+{
+"n": 27,
+"or": 0,
+"diamant": 0,
+"tous": false,
+"echelon": 2,
+"etoiles": 3
+},
+{
+"n": 27,
+"or": 1,
+"diamant": 0,
+"tous": false,
+"echelon": 2,
+"etoiles": 3
+},
+{
+"n": 27,
+"or": 3,
+"diamant": 2,
+"tous": false,
+"echelon": 2,
+"etoiles": 3
+},
+{
+"n": 27,
+"or": 3,
+"diamant": 3,
+"tous": false,
+"echelon": 2,
+"etoiles": 3
+},
+{
+"n": 27,
+"or": 6,
+"diamant": 6,
+"tous": false,
+"echelon": 2,
+"etoiles": 3
+},
+{
+"n": 27,
+"or": 10,
+"diamant": 9,
+"tous": true,
+"echelon": 2,
+"etoiles": 3
+},
+{
+"n": 27,
+"or": 10,
+"diamant": 10,
+"tous": false,
+"echelon": 2,
+"etoiles": 3
+},
+{
+"n": 27,
+"or": 10,
+"diamant": 10,
+"tous": true,
+"echelon": 2,
+"etoiles": 3
+},
+{
+"n": 29,
+"or": 0,
+"diamant": 0,
+"tous": false,
+"echelon": 2,
+"etoiles": 3
+},
+{
+"n": 29,
+"or": 1,
+"diamant": 0,
+"tous": false,
+"echelon": 2,
+"etoiles": 3
+},
+{
+"n": 29,
+"or": 3,
+"diamant": 2,
+"tous": false,
+"echelon": 2,
+"etoiles": 3
+},
+{
+"n": 29,
+"or": 3,
+"diamant": 3,
+"tous": false,
+"echelon": 2,
+"etoiles": 3
+},
+{
+"n": 29,
+"or": 6,
+"diamant": 6,
+"tous": false,
+"echelon": 2,
+"etoiles": 3
+},
+{
+"n": 29,
+"or": 10,
+"diamant": 9,
+"tous": true,
+"echelon": 2,
+"etoiles": 3
+},
+{
+"n": 29,
+"or": 10,
+"diamant": 10,
+"tous": false,
+"echelon": 2,
+"etoiles": 3
+},
+{
+"n": 29,
+"or": 10,
+"diamant": 10,
+"tous": true,
+"echelon": 2,
+"etoiles": 3
+},
+{
+"n": 30,
+"or": 0,
+"diamant": 0,
+"tous": false,
+"echelon": 3,
+"etoiles": 0
+},
+{
+"n": 30,
+"or": 1,
+"diamant": 0,
+"tous": false,
+"echelon": 3,
+"etoiles": 0
+},
+{
+"n": 30,
+"or": 3,
+"diamant": 2,
+"tous": false,
+"echelon": 3,
+"etoiles": 0
+},
+{
+"n": 30,
+"or": 3,
+"diamant": 3,
+"tous": false,
+"echelon": 3,
+"etoiles": 0
+},
+{
+"n": 30,
+"or": 6,
+"diamant": 6,
+"tous": false,
+"echelon": 3,
+"etoiles": 0
+},
+{
+"n": 30,
+"or": 10,
+"diamant": 9,
+"tous": true,
+"echelon": 3,
+"etoiles": 0
+},
+{
+"n": 30,
+"or": 10,
+"diamant": 10,
+"tous": false,
+"echelon": 3,
+"etoiles": 0
+},
+{
+"n": 30,
+"or": 10,
+"diamant": 10,
+"tous": true,
+"echelon": 3,
+"etoiles": 0
+},
+{
+"n": 35,
+"or": 0,
+"diamant": 0,
+"tous": false,
+"echelon": 3,
+"etoiles": 1
+},
+{
+"n": 35,
+"or": 1,
+"diamant": 0,
+"tous": false,
+"echelon": 3,
+"etoiles": 1
+},
+{
+"n": 35,
+"or": 3,
+"diamant": 2,
+"tous": false,
+"echelon": 3,
+"etoiles": 1
+},
+{
+"n": 35,
+"or": 3,
+"diamant": 3,
+"tous": false,
+"echelon": 3,
+"etoiles": 1
+},
+{
+"n": 35,
+"or": 6,
+"diamant": 6,
+"tous": false,
+"echelon": 3,
+"etoiles": 1
+},
+{
+"n": 35,
+"or": 10,
+"diamant": 9,
+"tous": true,
+"echelon": 3,
+"etoiles": 1
+},
+{
+"n": 35,
+"or": 10,
+"diamant": 10,
+"tous": false,
+"echelon": 3,
+"etoiles": 1
+},
+{
+"n": 35,
+"or": 10,
+"diamant": 10,
+"tous": true,
+"echelon": 3,
+"etoiles": 1
+},
+{
+"n": 45,
+"or": 0,
+"diamant": 0,
+"tous": false,
+"echelon": 3,
+"etoiles": 3
+},
+{
+"n": 45,
+"or": 1,
+"diamant": 0,
+"tous": false,
+"echelon": 3,
+"etoiles": 3
+},
+{
+"n": 45,
+"or": 3,
+"diamant": 2,
+"tous": false,
+"echelon": 3,
+"etoiles": 3
+},
+{
+"n": 45,
+"or": 3,
+"diamant": 3,
+"tous": false,
+"echelon": 3,
+"etoiles": 3
+},
+{
+"n": 45,
+"or": 6,
+"diamant": 6,
+"tous": false,
+"echelon": 3,
+"etoiles": 3
+},
+{
+"n": 45,
+"or": 10,
+"diamant": 9,
+"tous": true,
+"echelon": 3,
+"etoiles": 3
+},
+{
+"n": 45,
+"or": 10,
+"diamant": 10,
+"tous": false,
+"echelon": 3,
+"etoiles": 3
+},
+{
+"n": 45,
+"or": 10,
+"diamant": 10,
+"tous": true,
+"echelon": 3,
+"etoiles": 3
+},
+{
+"n": 49,
+"or": 0,
+"diamant": 0,
+"tous": false,
+"echelon": 3,
+"etoiles": 3
+},
+{
+"n": 49,
+"or": 1,
+"diamant": 0,
+"tous": false,
+"echelon": 3,
+"etoiles": 3
+},
+{
+"n": 49,
+"or": 3,
+"diamant": 2,
+"tous": false,
+"echelon": 3,
+"etoiles": 3
+},
+{
+"n": 49,
+"or": 3,
+"diamant": 3,
+"tous": false,
+"echelon": 3,
+"etoiles": 3
+},
+{
+"n": 49,
+"or": 6,
+"diamant": 6,
+"tous": false,
+"echelon": 3,
+"etoiles": 3
+},
+{
+"n": 49,
+"or": 10,
+"diamant": 9,
+"tous": true,
+"echelon": 3,
+"etoiles": 3
+},
+{
+"n": 49,
+"or": 10,
+"diamant": 10,
+"tous": false,
+"echelon": 3,
+"etoiles": 3
+},
+{
+"n": 49,
+"or": 10,
+"diamant": 10,
+"tous": true,
+"echelon": 3,
+"etoiles": 3
+},
+{
+"n": 50,
+"or": 0,
+"diamant": 0,
+"tous": false,
+"echelon": 3,
+"etoiles": 3
+},
+{
+"n": 50,
+"or": 1,
+"diamant": 0,
+"tous": false,
+"echelon": 4,
+"etoiles": 0
+},
+{
+"n": 50,
+"or": 3,
+"diamant": 2,
+"tous": false,
+"echelon": 4,
+"etoiles": 0
+},
+{
+"n": 50,
+"or": 3,
+"diamant": 3,
+"tous": false,
+"echelon": 4,
+"etoiles": 0
+},
+{
+"n": 50,
+"or": 6,
+"diamant": 6,
+"tous": false,
+"echelon": 4,
+"etoiles": 0
+},
+{
+"n": 50,
+"or": 10,
+"diamant": 9,
+"tous": true,
+"echelon": 4,
+"etoiles": 0
+},
+{
+"n": 50,
+"or": 10,
+"diamant": 10,
+"tous": false,
+"echelon": 4,
+"etoiles": 0
+},
+{
+"n": 50,
+"or": 10,
+"diamant": 10,
+"tous": true,
+"echelon": 4,
+"etoiles": 0
+},
+{
+"n": 62,
+"or": 0,
+"diamant": 0,
+"tous": false,
+"echelon": 3,
+"etoiles": 3
+},
+{
+"n": 62,
+"or": 1,
+"diamant": 0,
+"tous": false,
+"echelon": 4,
+"etoiles": 0
+},
+{
+"n": 62,
+"or": 3,
+"diamant": 2,
+"tous": false,
+"echelon": 4,
+"etoiles": 0
+},
+{
+"n": 62,
+"or": 3,
+"diamant": 3,
+"tous": false,
+"echelon": 4,
+"etoiles": 0
+},
+{
+"n": 62,
+"or": 6,
+"diamant": 6,
+"tous": false,
+"echelon": 4,
+"etoiles": 0
+},
+{
+"n": 62,
+"or": 10,
+"diamant": 9,
+"tous": true,
+"echelon": 4,
+"etoiles": 0
+},
+{
+"n": 62,
+"or": 10,
+"diamant": 10,
+"tous": false,
+"echelon": 4,
+"etoiles": 0
+},
+{
+"n": 62,
+"or": 10,
+"diamant": 10,
+"tous": true,
+"echelon": 4,
+"etoiles": 0
+},
+{
+"n": 63,
+"or": 0,
+"diamant": 0,
+"tous": false,
+"echelon": 3,
+"etoiles": 3
+},
+{
+"n": 63,
+"or": 1,
+"diamant": 0,
+"tous": false,
+"echelon": 4,
+"etoiles": 1
+},
+{
+"n": 63,
+"or": 3,
+"diamant": 2,
+"tous": false,
+"echelon": 4,
+"etoiles": 1
+},
+{
+"n": 63,
+"or": 3,
+"diamant": 3,
+"tous": false,
+"echelon": 4,
+"etoiles": 1
+},
+{
+"n": 63,
+"or": 6,
+"diamant": 6,
+"tous": false,
+"echelon": 4,
+"etoiles": 1
+},
+{
+"n": 63,
+"or": 10,
+"diamant": 9,
+"tous": true,
+"echelon": 4,
+"etoiles": 1
+},
+{
+"n": 63,
+"or": 10,
+"diamant": 10,
+"tous": false,
+"echelon": 4,
+"etoiles": 1
+},
+{
+"n": 63,
+"or": 10,
+"diamant": 10,
+"tous": true,
+"echelon": 4,
+"etoiles": 1
+},
+{
+"n": 75,
+"or": 0,
+"diamant": 0,
+"tous": false,
+"echelon": 3,
+"etoiles": 3
+},
+{
+"n": 75,
+"or": 1,
+"diamant": 0,
+"tous": false,
+"echelon": 4,
+"etoiles": 2
+},
+{
+"n": 75,
+"or": 3,
+"diamant": 2,
+"tous": false,
+"echelon": 4,
+"etoiles": 2
+},
+{
+"n": 75,
+"or": 3,
+"diamant": 3,
+"tous": false,
+"echelon": 4,
+"etoiles": 2
+},
+{
+"n": 75,
+"or": 6,
+"diamant": 6,
+"tous": false,
+"echelon": 4,
+"etoiles": 2
+},
+{
+"n": 75,
+"or": 10,
+"diamant": 9,
+"tous": true,
+"echelon": 4,
+"etoiles": 2
+},
+{
+"n": 75,
+"or": 10,
+"diamant": 10,
+"tous": false,
+"echelon": 4,
+"etoiles": 2
+},
+{
+"n": 75,
+"or": 10,
+"diamant": 10,
+"tous": true,
+"echelon": 4,
+"etoiles": 2
+},
+{
+"n": 88,
+"or": 0,
+"diamant": 0,
+"tous": false,
+"echelon": 3,
+"etoiles": 3
+},
+{
+"n": 88,
+"or": 1,
+"diamant": 0,
+"tous": false,
+"echelon": 4,
+"etoiles": 3
+},
+{
+"n": 88,
+"or": 3,
+"diamant": 2,
+"tous": false,
+"echelon": 4,
+"etoiles": 3
+},
+{
+"n": 88,
+"or": 3,
+"diamant": 3,
+"tous": false,
+"echelon": 4,
+"etoiles": 3
+},
+{
+"n": 88,
+"or": 6,
+"diamant": 6,
+"tous": false,
+"echelon": 4,
+"etoiles": 3
+},
+{
+"n": 88,
+"or": 10,
+"diamant": 9,
+"tous": true,
+"echelon": 4,
+"etoiles": 3
+},
+{
+"n": 88,
+"or": 10,
+"diamant": 10,
+"tous": false,
+"echelon": 4,
+"etoiles": 3
+},
+{
+"n": 88,
+"or": 10,
+"diamant": 10,
+"tous": true,
+"echelon": 4,
+"etoiles": 3
+},
+{
+"n": 99,
+"or": 0,
+"diamant": 0,
+"tous": false,
+"echelon": 3,
+"etoiles": 3
+},
+{
+"n": 99,
+"or": 1,
+"diamant": 0,
+"tous": false,
+"echelon": 4,
+"etoiles": 3
+},
+{
+"n": 99,
+"or": 3,
+"diamant": 2,
+"tous": false,
+"echelon": 4,
+"etoiles": 3
+},
+{
+"n": 99,
+"or": 3,
+"diamant": 3,
+"tous": false,
+"echelon": 4,
+"etoiles": 3
+},
+{
+"n": 99,
+"or": 6,
+"diamant": 6,
+"tous": false,
+"echelon": 4,
+"etoiles": 3
+},
+{
+"n": 99,
+"or": 10,
+"diamant": 9,
+"tous": true,
+"echelon": 4,
+"etoiles": 3
+},
+{
+"n": 99,
+"or": 10,
+"diamant": 10,
+"tous": false,
+"echelon": 4,
+"etoiles": 3
+},
+{
+"n": 99,
+"or": 10,
+"diamant": 10,
+"tous": true,
+"echelon": 4,
+"etoiles": 3
+},
+{
+"n": 100,
+"or": 0,
+"diamant": 0,
+"tous": false,
+"echelon": 3,
+"etoiles": 3
+},
+{
+"n": 100,
+"or": 1,
+"diamant": 0,
+"tous": false,
+"echelon": 4,
+"etoiles": 3
+},
+{
+"n": 100,
+"or": 3,
+"diamant": 2,
+"tous": false,
+"echelon": 4,
+"etoiles": 3
+},
+{
+"n": 100,
+"or": 3,
+"diamant": 3,
+"tous": false,
+"echelon": 5,
+"etoiles": 0
+},
+{
+"n": 100,
+"or": 6,
+"diamant": 6,
+"tous": false,
+"echelon": 5,
+"etoiles": 0
+},
+{
+"n": 100,
+"or": 10,
+"diamant": 9,
+"tous": true,
+"echelon": 5,
+"etoiles": 0
+},
+{
+"n": 100,
+"or": 10,
+"diamant": 10,
+"tous": false,
+"echelon": 5,
+"etoiles": 0
+},
+{
+"n": 100,
+"or": 10,
+"diamant": 10,
+"tous": true,
+"echelon": 5,
+"etoiles": 0
+},
+{
+"n": 124,
+"or": 0,
+"diamant": 0,
+"tous": false,
+"echelon": 3,
+"etoiles": 3
+},
+{
+"n": 124,
+"or": 1,
+"diamant": 0,
+"tous": false,
+"echelon": 4,
+"etoiles": 3
+},
+{
+"n": 124,
+"or": 3,
+"diamant": 2,
+"tous": false,
+"echelon": 4,
+"etoiles": 3
+},
+{
+"n": 124,
+"or": 3,
+"diamant": 3,
+"tous": false,
+"echelon": 5,
+"etoiles": 0
+},
+{
+"n": 124,
+"or": 6,
+"diamant": 6,
+"tous": false,
+"echelon": 5,
+"etoiles": 0
+},
+{
+"n": 124,
+"or": 10,
+"diamant": 9,
+"tous": true,
+"echelon": 5,
+"etoiles": 0
+},
+{
+"n": 124,
+"or": 10,
+"diamant": 10,
+"tous": false,
+"echelon": 5,
+"etoiles": 0
+},
+{
+"n": 124,
+"or": 10,
+"diamant": 10,
+"tous": true,
+"echelon": 5,
+"etoiles": 0
+},
+{
+"n": 125,
+"or": 0,
+"diamant": 0,
+"tous": false,
+"echelon": 3,
+"etoiles": 3
+},
+{
+"n": 125,
+"or": 1,
+"diamant": 0,
+"tous": false,
+"echelon": 4,
+"etoiles": 3
+},
+{
+"n": 125,
+"or": 3,
+"diamant": 2,
+"tous": false,
+"echelon": 4,
+"etoiles": 3
+},
+{
+"n": 125,
+"or": 3,
+"diamant": 3,
+"tous": false,
+"echelon": 5,
+"etoiles": 1
+},
+{
+"n": 125,
+"or": 6,
+"diamant": 6,
+"tous": false,
+"echelon": 5,
+"etoiles": 1
+},
+{
+"n": 125,
+"or": 10,
+"diamant": 9,
+"tous": true,
+"echelon": 5,
+"etoiles": 1
+},
+{
+"n": 125,
+"or": 10,
+"diamant": 10,
+"tous": false,
+"echelon": 5,
+"etoiles": 1
+},
+{
+"n": 125,
+"or": 10,
+"diamant": 10,
+"tous": true,
+"echelon": 5,
+"etoiles": 1
+},
+{
+"n": 150,
+"or": 0,
+"diamant": 0,
+"tous": false,
+"echelon": 3,
+"etoiles": 3
+},
+{
+"n": 150,
+"or": 1,
+"diamant": 0,
+"tous": false,
+"echelon": 4,
+"etoiles": 3
+},
+{
+"n": 150,
+"or": 3,
+"diamant": 2,
+"tous": false,
+"echelon": 4,
+"etoiles": 3
+},
+{
+"n": 150,
+"or": 3,
+"diamant": 3,
+"tous": false,
+"echelon": 5,
+"etoiles": 2
+},
+{
+"n": 150,
+"or": 6,
+"diamant": 6,
+"tous": false,
+"echelon": 5,
+"etoiles": 2
+},
+{
+"n": 150,
+"or": 10,
+"diamant": 9,
+"tous": true,
+"echelon": 5,
+"etoiles": 2
+},
+{
+"n": 150,
+"or": 10,
+"diamant": 10,
+"tous": false,
+"echelon": 5,
+"etoiles": 2
+},
+{
+"n": 150,
+"or": 10,
+"diamant": 10,
+"tous": true,
+"echelon": 5,
+"etoiles": 2
+},
+{
+"n": 175,
+"or": 0,
+"diamant": 0,
+"tous": false,
+"echelon": 3,
+"etoiles": 3
+},
+{
+"n": 175,
+"or": 1,
+"diamant": 0,
+"tous": false,
+"echelon": 4,
+"etoiles": 3
+},
+{
+"n": 175,
+"or": 3,
+"diamant": 2,
+"tous": false,
+"echelon": 4,
+"etoiles": 3
+},
+{
+"n": 175,
+"or": 3,
+"diamant": 3,
+"tous": false,
+"echelon": 5,
+"etoiles": 3
+},
+{
+"n": 175,
+"or": 6,
+"diamant": 6,
+"tous": false,
+"echelon": 5,
+"etoiles": 3
+},
+{
+"n": 175,
+"or": 10,
+"diamant": 9,
+"tous": true,
+"echelon": 5,
+"etoiles": 3
+},
+{
+"n": 175,
+"or": 10,
+"diamant": 10,
+"tous": false,
+"echelon": 5,
+"etoiles": 3
+},
+{
+"n": 175,
+"or": 10,
+"diamant": 10,
+"tous": true,
+"echelon": 5,
+"etoiles": 3
+},
+{
+"n": 199,
+"or": 0,
+"diamant": 0,
+"tous": false,
+"echelon": 3,
+"etoiles": 3
+},
+{
+"n": 199,
+"or": 1,
+"diamant": 0,
+"tous": false,
+"echelon": 4,
+"etoiles": 3
+},
+{
+"n": 199,
+"or": 3,
+"diamant": 2,
+"tous": false,
+"echelon": 4,
+"etoiles": 3
+},
+{
+"n": 199,
+"or": 3,
+"diamant": 3,
+"tous": false,
+"echelon": 5,
+"etoiles": 3
+},
+{
+"n": 199,
+"or": 6,
+"diamant": 6,
+"tous": false,
+"echelon": 5,
+"etoiles": 3
+},
+{
+"n": 199,
+"or": 10,
+"diamant": 9,
+"tous": true,
+"echelon": 5,
+"etoiles": 3
+},
+{
+"n": 199,
+"or": 10,
+"diamant": 10,
+"tous": false,
+"echelon": 5,
+"etoiles": 3
+},
+{
+"n": 199,
+"or": 10,
+"diamant": 10,
+"tous": true,
+"echelon": 5,
+"etoiles": 3
+},
+{
+"n": 200,
+"or": 0,
+"diamant": 0,
+"tous": false,
+"echelon": 3,
+"etoiles": 3
+},
+{
+"n": 200,
+"or": 1,
+"diamant": 0,
+"tous": false,
+"echelon": 4,
+"etoiles": 3
+},
+{
+"n": 200,
+"or": 3,
+"diamant": 2,
+"tous": false,
+"echelon": 4,
+"etoiles": 3
+},
+{
+"n": 200,
+"or": 3,
+"diamant": 3,
+"tous": false,
+"echelon": 5,
+"etoiles": 3
+},
+{
+"n": 200,
+"or": 6,
+"diamant": 6,
+"tous": false,
+"echelon": 6,
+"etoiles": 0
+},
+{
+"n": 200,
+"or": 10,
+"diamant": 9,
+"tous": true,
+"echelon": 6,
+"etoiles": 0
+},
+{
+"n": 200,
+"or": 10,
+"diamant": 10,
+"tous": false,
+"echelon": 6,
+"etoiles": 0
+},
+{
+"n": 200,
+"or": 10,
+"diamant": 10,
+"tous": true,
+"echelon": 6,
+"etoiles": 0
+},
+{
+"n": 250,
+"or": 0,
+"diamant": 0,
+"tous": false,
+"echelon": 3,
+"etoiles": 3
+},
+{
+"n": 250,
+"or": 1,
+"diamant": 0,
+"tous": false,
+"echelon": 4,
+"etoiles": 3
+},
+{
+"n": 250,
+"or": 3,
+"diamant": 2,
+"tous": false,
+"echelon": 4,
+"etoiles": 3
+},
+{
+"n": 250,
+"or": 3,
+"diamant": 3,
+"tous": false,
+"echelon": 5,
+"etoiles": 3
+},
+{
+"n": 250,
+"or": 6,
+"diamant": 6,
+"tous": false,
+"echelon": 6,
+"etoiles": 1
+},
+{
+"n": 250,
+"or": 10,
+"diamant": 9,
+"tous": true,
+"echelon": 6,
+"etoiles": 1
+},
+{
+"n": 250,
+"or": 10,
+"diamant": 10,
+"tous": false,
+"echelon": 6,
+"etoiles": 1
+},
+{
+"n": 250,
+"or": 10,
+"diamant": 10,
+"tous": true,
+"echelon": 6,
+"etoiles": 1
+},
+{
+"n": 300,
+"or": 0,
+"diamant": 0,
+"tous": false,
+"echelon": 3,
+"etoiles": 3
+},
+{
+"n": 300,
+"or": 1,
+"diamant": 0,
+"tous": false,
+"echelon": 4,
+"etoiles": 3
+},
+{
+"n": 300,
+"or": 3,
+"diamant": 2,
+"tous": false,
+"echelon": 4,
+"etoiles": 3
+},
+{
+"n": 300,
+"or": 3,
+"diamant": 3,
+"tous": false,
+"echelon": 5,
+"etoiles": 3
+},
+{
+"n": 300,
+"or": 6,
+"diamant": 6,
+"tous": false,
+"echelon": 6,
+"etoiles": 2
+},
+{
+"n": 300,
+"or": 10,
+"diamant": 9,
+"tous": true,
+"echelon": 6,
+"etoiles": 2
+},
+{
+"n": 300,
+"or": 10,
+"diamant": 10,
+"tous": false,
+"echelon": 6,
+"etoiles": 2
+},
+{
+"n": 300,
+"or": 10,
+"diamant": 10,
+"tous": true,
+"echelon": 6,
+"etoiles": 2
+},
+{
+"n": 350,
+"or": 0,
+"diamant": 0,
+"tous": false,
+"echelon": 3,
+"etoiles": 3
+},
+{
+"n": 350,
+"or": 1,
+"diamant": 0,
+"tous": false,
+"echelon": 4,
+"etoiles": 3
+},
+{
+"n": 350,
+"or": 3,
+"diamant": 2,
+"tous": false,
+"echelon": 4,
+"etoiles": 3
+},
+{
+"n": 350,
+"or": 3,
+"diamant": 3,
+"tous": false,
+"echelon": 5,
+"etoiles": 3
+},
+{
+"n": 350,
+"or": 6,
+"diamant": 6,
+"tous": false,
+"echelon": 6,
+"etoiles": 3
+},
+{
+"n": 350,
+"or": 10,
+"diamant": 9,
+"tous": true,
+"echelon": 6,
+"etoiles": 3
+},
+{
+"n": 350,
+"or": 10,
+"diamant": 10,
+"tous": false,
+"echelon": 6,
+"etoiles": 3
+},
+{
+"n": 350,
+"or": 10,
+"diamant": 10,
+"tous": true,
+"echelon": 6,
+"etoiles": 3
+},
+{
+"n": 399,
+"or": 0,
+"diamant": 0,
+"tous": false,
+"echelon": 3,
+"etoiles": 3
+},
+{
+"n": 399,
+"or": 1,
+"diamant": 0,
+"tous": false,
+"echelon": 4,
+"etoiles": 3
+},
+{
+"n": 399,
+"or": 3,
+"diamant": 2,
+"tous": false,
+"echelon": 4,
+"etoiles": 3
+},
+{
+"n": 399,
+"or": 3,
+"diamant": 3,
+"tous": false,
+"echelon": 5,
+"etoiles": 3
+},
+{
+"n": 399,
+"or": 6,
+"diamant": 6,
+"tous": false,
+"echelon": 6,
+"etoiles": 3
+},
+{
+"n": 399,
+"or": 10,
+"diamant": 9,
+"tous": true,
+"echelon": 6,
+"etoiles": 3
+},
+{
+"n": 399,
+"or": 10,
+"diamant": 10,
+"tous": false,
+"echelon": 6,
+"etoiles": 3
+},
+{
+"n": 399,
+"or": 10,
+"diamant": 10,
+"tous": true,
+"echelon": 6,
+"etoiles": 3
+},
+{
+"n": 400,
+"or": 0,
+"diamant": 0,
+"tous": false,
+"echelon": 3,
+"etoiles": 3
+},
+{
+"n": 400,
+"or": 1,
+"diamant": 0,
+"tous": false,
+"echelon": 4,
+"etoiles": 3
+},
+{
+"n": 400,
+"or": 3,
+"diamant": 2,
+"tous": false,
+"echelon": 4,
+"etoiles": 3
+},
+{
+"n": 400,
+"or": 3,
+"diamant": 3,
+"tous": false,
+"echelon": 5,
+"etoiles": 3
+},
+{
+"n": 400,
+"or": 6,
+"diamant": 6,
+"tous": false,
+"echelon": 6,
+"etoiles": 3
+},
+{
+"n": 400,
+"or": 10,
+"diamant": 9,
+"tous": true,
+"echelon": 6,
+"etoiles": 3
+},
+{
+"n": 400,
+"or": 10,
+"diamant": 10,
+"tous": false,
+"echelon": 6,
+"etoiles": 3
+},
+{
+"n": 400,
+"or": 10,
+"diamant": 10,
+"tous": true,
+"echelon": 7,
+"etoiles": 0
+},
+{
+"n": 599,
+"or": 0,
+"diamant": 0,
+"tous": false,
+"echelon": 3,
+"etoiles": 3
+},
+{
+"n": 599,
+"or": 1,
+"diamant": 0,
+"tous": false,
+"echelon": 4,
+"etoiles": 3
+},
+{
+"n": 599,
+"or": 3,
+"diamant": 2,
+"tous": false,
+"echelon": 4,
+"etoiles": 3
+},
+{
+"n": 599,
+"or": 3,
+"diamant": 3,
+"tous": false,
+"echelon": 5,
+"etoiles": 3
+},
+{
+"n": 599,
+"or": 6,
+"diamant": 6,
+"tous": false,
+"echelon": 6,
+"etoiles": 3
+},
+{
+"n": 599,
+"or": 10,
+"diamant": 9,
+"tous": true,
+"echelon": 6,
+"etoiles": 3
+},
+{
+"n": 599,
+"or": 10,
+"diamant": 10,
+"tous": false,
+"echelon": 6,
+"etoiles": 3
+},
+{
+"n": 599,
+"or": 10,
+"diamant": 10,
+"tous": true,
+"echelon": 7,
+"etoiles": 0
+},
+{
+"n": 600,
+"or": 0,
+"diamant": 0,
+"tous": false,
+"echelon": 3,
+"etoiles": 3
+},
+{
+"n": 600,
+"or": 1,
+"diamant": 0,
+"tous": false,
+"echelon": 4,
+"etoiles": 3
+},
+{
+"n": 600,
+"or": 3,
+"diamant": 2,
+"tous": false,
+"echelon": 4,
+"etoiles": 3
+},
+{
+"n": 600,
+"or": 3,
+"diamant": 3,
+"tous": false,
+"echelon": 5,
+"etoiles": 3
+},
+{
+"n": 600,
+"or": 6,
+"diamant": 6,
+"tous": false,
+"echelon": 6,
+"etoiles": 3
+},
+{
+"n": 600,
+"or": 10,
+"diamant": 9,
+"tous": true,
+"echelon": 6,
+"etoiles": 3
+},
+{
+"n": 600,
+"or": 10,
+"diamant": 10,
+"tous": false,
+"echelon": 6,
+"etoiles": 3
+},
+{
+"n": 600,
+"or": 10,
+"diamant": 10,
+"tous": true,
+"echelon": 7,
+"etoiles": 1
+},
+{
+"n": 800,
+"or": 0,
+"diamant": 0,
+"tous": false,
+"echelon": 3,
+"etoiles": 3
+},
+{
+"n": 800,
+"or": 1,
+"diamant": 0,
+"tous": false,
+"echelon": 4,
+"etoiles": 3
+},
+{
+"n": 800,
+"or": 3,
+"diamant": 2,
+"tous": false,
+"echelon": 4,
+"etoiles": 3
+},
+{
+"n": 800,
+"or": 3,
+"diamant": 3,
+"tous": false,
+"echelon": 5,
+"etoiles": 3
+},
+{
+"n": 800,
+"or": 6,
+"diamant": 6,
+"tous": false,
+"echelon": 6,
+"etoiles": 3
+},
+{
+"n": 800,
+"or": 10,
+"diamant": 9,
+"tous": true,
+"echelon": 6,
+"etoiles": 3
+},
+{
+"n": 800,
+"or": 10,
+"diamant": 10,
+"tous": false,
+"echelon": 6,
+"etoiles": 3
+},
+{
+"n": 800,
+"or": 10,
+"diamant": 10,
+"tous": true,
+"echelon": 7,
+"etoiles": 2
+},
+{
+"n": 1000,
+"or": 0,
+"diamant": 0,
+"tous": false,
+"echelon": 3,
+"etoiles": 3
+},
+{
+"n": 1000,
+"or": 1,
+"diamant": 0,
+"tous": false,
+"echelon": 4,
+"etoiles": 3
+},
+{
+"n": 1000,
+"or": 3,
+"diamant": 2,
+"tous": false,
+"echelon": 4,
+"etoiles": 3
+},
+{
+"n": 1000,
+"or": 3,
+"diamant": 3,
+"tous": false,
+"echelon": 5,
+"etoiles": 3
+},
+{
+"n": 1000,
+"or": 6,
+"diamant": 6,
+"tous": false,
+"echelon": 6,
+"etoiles": 3
+},
+{
+"n": 1000,
+"or": 10,
+"diamant": 9,
+"tous": true,
+"echelon": 6,
+"etoiles": 3
+},
+{
+"n": 1000,
+"or": 10,
+"diamant": 10,
+"tous": false,
+"echelon": 6,
+"etoiles": 3
+},
+{
+"n": 1000,
+"or": 10,
+"diamant": 10,
+"tous": true,
+"echelon": 7,
+"etoiles": 3
+},
+{
+"n": 5000,
+"or": 0,
+"diamant": 0,
+"tous": false,
+"echelon": 3,
+"etoiles": 3
+},
+{
+"n": 5000,
+"or": 1,
+"diamant": 0,
+"tous": false,
+"echelon": 4,
+"etoiles": 3
+},
+{
+"n": 5000,
+"or": 3,
+"diamant": 2,
+"tous": false,
+"echelon": 4,
+"etoiles": 3
+},
+{
+"n": 5000,
+"or": 3,
+"diamant": 3,
+"tous": false,
+"echelon": 5,
+"etoiles": 3
+},
+{
+"n": 5000,
+"or": 6,
+"diamant": 6,
+"tous": false,
+"echelon": 6,
+"etoiles": 3
+},
+{
+"n": 5000,
+"or": 10,
+"diamant": 9,
+"tous": true,
+"echelon": 6,
+"etoiles": 3
+},
+{
+"n": 5000,
+"or": 10,
+"diamant": 10,
+"tous": false,
+"echelon": 6,
+"etoiles": 3
+},
+{
+"n": 5000,
+"or": 10,
+"diamant": 10,
+"tous": true,
+"echelon": 7,
+"etoiles": 3
+}
+],
+"semaines": [
+{
+"t": 0,
+"semaine": "1970-W01"
+},
+{
+"t": 1704067200,
+"semaine": "2024-W01"
+},
+{
+"t": 1735603200,
+"semaine": "2025-W01"
+},
+{
+"t": 1767139200,
+"semaine": "2026-W01"
+},
+{
+"t": 1793000000,
+"semaine": "2026-W44"
+},
+{
+"t": 1798675200,
+"semaine": "2026-W53"
+}
+],
+"ecussons": [
+{
+"famille": "explorateur",
+"echelon": "bit",
+"etoiles": 3,
+"empreinte": "3cb4c0f1910fd520af4137bb838a85fd1cc660f7735ff53ce5ef006e42eb45c2"
+},
+{
+"famille": "explorateur",
+"echelon": "octet",
+"etoiles": 1,
+"empreinte": "8459ec8959365c555536ec04ce648fd7b6da372f196ccad34ea1e8eef78c8e37"
+},
+{
+"famille": "explorateur",
+"echelon": "kilo",
+"etoiles": 0,
+"empreinte": "1a30848e724df899c3a774d62a5b81f13811185fd27fee220d813d193b2be9b2"
+},
+{
+"famille": "explorateur",
+"echelon": "mega",
+"etoiles": 0,
+"empreinte": "cd083351a89c7df5bf29fba9c5c7ea0e4694fb493085026e7599cebd412f9929"
+},
+{
+"famille": "explorateur",
+"echelon": "giga",
+"etoiles": 0,
+"empreinte": "53c742222ba30af2b96e5781eba8a8fde8945ce3610570d42f610bc042ad7670"
+},
+{
+"famille": "explorateur",
+"echelon": "tera",
+"etoiles": 0,
+"empreinte": "9eaeb85da1f9449b9c621980acc7795afcb2d632f795b3276c790d35980d4308"
+},
+{
+"famille": "explorateur",
+"echelon": "peta",
+"etoiles": 0,
+"empreinte": "b4477cc470f5def2d6a1f28f5ea6b9c568bb6897542383098aba4b2705d0f5af"
+},
+{
+"famille": "explorateur",
+"echelon": "exa",
+"etoiles": 3,
+"empreinte": "d948872ad9b41a60babebcfe31f5460cf7554c0a11ea811381a6068c5c3ce88e"
+},
+{
+"famille": "batisseur",
+"echelon": "bit",
+"etoiles": 0,
+"empreinte": "211df57d1c90070677c062b1eccd019a1057ee014d596778ad45fcb9e812f31b"
+},
+{
+"famille": "batisseur",
+"echelon": "octet",
+"etoiles": 2,
+"empreinte": "55e4e10297e09c3857aefeeb78ca4a83d92391fb1ec479346a1d19f276c1f364"
+},
+{
+"famille": "batisseur",
+"echelon": "kilo",
+"etoiles": 1,
+"empreinte": "427313a0fc9f42649ae4585ef2542669bba06e1ca9f1612b11007c140f55fef3"
+},
+{
+"famille": "batisseur",
+"echelon": "mega",
+"etoiles": 1,
+"empreinte": "1d35fcae8bccc1d5b925a89fe45a360b10ecd052ee3deb70b6c120d62883f6e5"
+},
+{
+"famille": "batisseur",
+"echelon": "giga",
+"etoiles": 1,
+"empreinte": "6faaf251ef96a3ef5e196527f75322b504db784e13054c89a52d3f749d082402"
+},
+{
+"famille": "batisseur",
+"echelon": "tera",
+"etoiles": 1,
+"empreinte": "29c754e6c56216c9e4692ece1dddc4403cdf7f4f55b12a33a2a7c731812f9e9e"
+},
+{
+"famille": "batisseur",
+"echelon": "peta",
+"etoiles": 1,
+"empreinte": "73ca91bfd31439fed3293a9357fbe24c88cb2c360516e22ee1e63e9b278a21b4"
+},
+{
+"famille": "batisseur",
+"echelon": "exa",
+"etoiles": 0,
+"empreinte": "8635bc6d5d23817a08f9a640b18b8d45a981407db1a9cbf3a7ed0db79cf34e73"
+},
+{
+"famille": "demenageur",
+"echelon": "bit",
+"etoiles": 1,
+"empreinte": "bbae90467cf8605832992f03db1eb146d23cf11098ee837269cc9d0e63e53903"
+},
+{
+"famille": "demenageur",
+"echelon": "octet",
+"etoiles": 3,
+"empreinte": "c8e901d0eca590513a85cf0e5ea2481b06f366d88dab4600d91ee0268b0e1254"
+},
+{
+"famille": "demenageur",
+"echelon": "kilo",
+"etoiles": 2,
+"empreinte": "e4e13c7b2b9aace267488ab5b19b5b5b96f97d365d39c71c9268100ef0030134"
+},
+{
+"famille": "demenageur",
+"echelon": "mega",
+"etoiles": 2,
+"empreinte": "25ce788f7d3b0cbd4b0e4daf3d53fe610e58cd06f95f5f78dbfcbfa0c3b70551"
+},
+{
+"famille": "demenageur",
+"echelon": "giga",
+"etoiles": 2,
+"empreinte": "581ac66643a63e9f3cb1b1533dd522baa2d2090c07b6e8b9e6d2a6cec92ee71f"
+},
+{
+"famille": "demenageur",
+"echelon": "tera",
+"etoiles": 2,
+"empreinte": "c19c369e11f9a8cbc31075c59d5c854e574f004ccf9e2cb415d930d1b7218013"
+},
+{
+"famille": "demenageur",
+"echelon": "peta",
+"etoiles": 2,
+"empreinte": "f180474975cdb1be87c37973257c20e2872f7d3b2b4df105c5b8d1a7b457830a"
+},
+{
+"famille": "demenageur",
+"echelon": "exa",
+"etoiles": 1,
+"empreinte": "da55dc055e54425be16809aefdc3b07efd828045d7e2f58c2cc5a2f80c0e50d7"
+},
+{
+"famille": "nettoyeur",
+"echelon": "bit",
+"etoiles": 2,
+"empreinte": "dde5e930962be23ef20b6fe28f10dbca580e9570d86acd8e8841ea4719916809"
+},
+{
+"famille": "nettoyeur",
+"echelon": "octet",
+"etoiles": 0,
+"empreinte": "bf406275ea08f5b843bb9655b70f697b1496801c97289690fc28509ccb66a4bc"
+},
+{
+"famille": "nettoyeur",
+"echelon": "kilo",
+"etoiles": 3,
+"empreinte": "e909e2acc79b59af092d4811cc435555db221236e561c005227ec4f444af494c"
+},
+{
+"famille": "nettoyeur",
+"echelon": "mega",
+"etoiles": 3,
+"empreinte": "3772f9f8af54d7a5c39eb0acb39891ae113be718230e9e3c817962e04d20bdc9"
+},
+{
+"famille": "nettoyeur",
+"echelon": "giga",
+"etoiles": 3,
+"empreinte": "b0ac322de85c65ae89cffacf73c37a37ab990e2cf889728339cff7bcf653031d"
+},
+{
+"famille": "nettoyeur",
+"echelon": "tera",
+"etoiles": 3,
+"empreinte": "73d0e8d6363d0a372bb95377b1afe6d17f6ebaf691b37f3842ada117ddbb8ccd"
+},
+{
+"famille": "nettoyeur",
+"echelon": "peta",
+"etoiles": 3,
+"empreinte": "ee1ead8df644a06bf938e7419a04aa30c1a2c14dd0bb0692e5e71ad6e69c787f"
+},
+{
+"famille": "nettoyeur",
+"echelon": "exa",
+"etoiles": 2,
+"empreinte": "24049627ec1a30e33586e0e8a9d88eb654088397b5ef2bef8a1043c30359c207"
+},
+{
+"famille": "lecteur",
+"echelon": "bit",
+"etoiles": 3,
+"empreinte": "b35ca402a9616a4727138cc87997e4e6abd1461444089aa1da702ec42f5f8bda"
+},
+{
+"famille": "lecteur",
+"echelon": "octet",
+"etoiles": 1,
+"empreinte": "9277365257f44e51d33319991598fe76d34f13ee7e336409db1bc23624e8b27d"
+},
+{
+"famille": "lecteur",
+"echelon": "kilo",
+"etoiles": 0,
+"empreinte": "e2fed5b2b993a9bcb2a90b8b465e0ccfa3b22a6c65a79ef03b539cb227e6e404"
+},
+{
+"famille": "lecteur",
+"echelon": "mega",
+"etoiles": 0,
+"empreinte": "9d39e1746882c6ea9423920984e39b712d53dcbd05936af051acfb41761d2110"
+},
+{
+"famille": "lecteur",
+"echelon": "giga",
+"etoiles": 0,
+"empreinte": "95dabdc0474fcb1339b28c5593b8cf2905057d77dc813d340b46314402a5b19e"
+},
+{
+"famille": "lecteur",
+"echelon": "tera",
+"etoiles": 0,
+"empreinte": "ac2f0d8047e229bf9144e8148b0cb585a26581d64cb2979bc4197d3fc5ce880e"
+},
+{
+"famille": "lecteur",
+"echelon": "peta",
+"etoiles": 0,
+"empreinte": "ae177bfdd2021ceae6a6862ef3d3aeb4ff740883b37e2ad2a121d4d30dfee41b"
+},
+{
+"famille": "lecteur",
+"echelon": "exa",
+"etoiles": 3,
+"empreinte": "fa5dc2ece071b1fa94974063985762fa78182512eed88ea555789de5883e62b3"
+},
+{
+"famille": "detective",
+"echelon": "bit",
+"etoiles": 0,
+"empreinte": "37f936533963d53ef61700a6edaa1e4e8108674d17d02b9bbe63f60d5ebdc62b"
+},
+{
+"famille": "detective",
+"echelon": "octet",
+"etoiles": 2,
+"empreinte": "67f99ff083aa75a440806759f444a844fab1337bfcc0dc5db628c187186693a5"
+},
+{
+"famille": "detective",
+"echelon": "kilo",
+"etoiles": 1,
+"empreinte": "7bbefa2619a990a475dbb11b569f2130e1b71c6aab68614dff81c039ec093d96"
+},
+{
+"famille": "detective",
+"echelon": "mega",
+"etoiles": 1,
+"empreinte": "9004d34b7c1bceeb20e8bbe7ccdf0c97eff29294353968246c40966554238690"
+},
+{
+"famille": "detective",
+"echelon": "giga",
+"etoiles": 1,
+"empreinte": "68a840ea58ecaa73a4d5636db01b9e97041bf208c85dd049bd029bb0063efc68"
+},
+{
+"famille": "detective",
+"echelon": "tera",
+"etoiles": 1,
+"empreinte": "ad5693ee91803fdf8d357613fc5a4627c4bb5e53cd50251390dd335b7b03744d"
+},
+{
+"famille": "detective",
+"echelon": "peta",
+"etoiles": 1,
+"empreinte": "67717480e22f9d44ada768606422e9c08480f2bb7efc7f97737919de4269d869"
+},
+{
+"famille": "detective",
+"echelon": "exa",
+"etoiles": 0,
+"empreinte": "7d4c2ab3b18123bcd2b0d63d459cd81d337afda275b3f57059f55d5fc4b85cc5"
+},
+{
+"famille": "plombier",
+"echelon": "bit",
+"etoiles": 1,
+"empreinte": "cb73813030dde98ebc4388b84ddc8762cdc38a2cdd24cd769cfb8e5fa9ec8cd0"
+},
+{
+"famille": "plombier",
+"echelon": "octet",
+"etoiles": 3,
+"empreinte": "b7b8d6f81f3eb476ff457952fd953c50b17502718980dbedced4c20e89b62c27"
+},
+{
+"famille": "plombier",
+"echelon": "kilo",
+"etoiles": 2,
+"empreinte": "3f38db0531373e0eef394d52af7cc3bdee5831366422ec5d88eb25db6bb06638"
+},
+{
+"famille": "plombier",
+"echelon": "mega",
+"etoiles": 2,
+"empreinte": "2f1d0f18aece5bf71a52a4a0619026848c25e79b5c766d96cdfa558567c508b5"
+},
+{
+"famille": "plombier",
+"echelon": "giga",
+"etoiles": 2,
+"empreinte": "f0d99ab5660e406b4c16aa48969d0de406f0a6309d2a1e7348dec4e576ae5440"
+},
+{
+"famille": "plombier",
+"echelon": "tera",
+"etoiles": 2,
+"empreinte": "1cc22eba6d77aa17efadd633addd11ee00558c65ab8598100c69bf17b79da300"
+},
+{
+"famille": "plombier",
+"echelon": "peta",
+"etoiles": 2,
+"empreinte": "96f4347b3e2bf995a7e56586e0a86c43a7eb00562e689da81ca6519c46a67b93"
+},
+{
+"famille": "plombier",
+"echelon": "exa",
+"etoiles": 1,
+"empreinte": "16538256568d3e2a48d4d9f4bb187fd1db68abcdfe01529dfa9598f12b949482"
+},
+{
+"famille": "cuisinier",
+"echelon": "bit",
+"etoiles": 2,
+"empreinte": "eb3c07ed6c32360e4d2e2da3ad22c4292756d1dbb8f40e2d3337fb233b074ec9"
+},
+{
+"famille": "cuisinier",
+"echelon": "octet",
+"etoiles": 0,
+"empreinte": "b535460939b5f890eb93181c44edf22549c9f1c466855a94f7fd314a8611ecd0"
+},
+{
+"famille": "cuisinier",
+"echelon": "kilo",
+"etoiles": 3,
+"empreinte": "9f2d1e6db0763ce78c7f816a0d5b85128c4d6b414e97cb116fecce2611093d02"
+},
+{
+"famille": "cuisinier",
+"echelon": "mega",
+"etoiles": 3,
+"empreinte": "1710fd7b8386d470162bbf3691a10be3857d93381e00c93158cb2bfd4de0d10f"
+},
+{
+"famille": "cuisinier",
+"echelon": "giga",
+"etoiles": 3,
+"empreinte": "6275c5ba843f33531c3522dd1330e06d2197ad04e8f8b3185eccb8effbec8123"
+},
+{
+"famille": "cuisinier",
+"echelon": "tera",
+"etoiles": 3,
+"empreinte": "5dfc148893779c1a3db432a2cf724f0fd60cd0a543573bd18c67ff2915e77e68"
+},
+{
+"famille": "cuisinier",
+"echelon": "peta",
+"etoiles": 3,
+"empreinte": "ca5aacbe61e87fd674413eca37fffd43b54178f9f1c1ab0833b8e15e3ae33e19"
+},
+{
+"famille": "cuisinier",
+"echelon": "exa",
+"etoiles": 2,
+"empreinte": "c255aca1bbc076825d3f9d1934aeb46772d357527ccddfa4733eca9eca69a12f"
+},
+{
+"famille": null,
+"echelon": null,
+"etoiles": 0,
+"empreinte": "cd1c5579d21e792d9ce2bbf2a2beea11f30c81eded36f90a2947ecf602ba6d3f"
+}
+]
+}

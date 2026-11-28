@@ -12,8 +12,8 @@ import android.os.SystemClock
 import android.app.Notification
 
 /**
- * Toutes les 30 minutes environ (même appli fermée) : la faim baisse, le widget se met à jour,
- * et la créature envoie une notification si elle a faim.
+ * Toutes les 30 minutes environ (même appli fermée) : la faim baisse, le widget et la notification en direct
+ * (NotifVie, via WidgetCreature.majTous) se mettent à jour, et la créature envoie une notification si elle a faim.
  */
 class Rappels : BroadcastReceiver() {
     override fun onReceive(context: Context, intent: Intent) {
@@ -33,9 +33,10 @@ class Rappels : BroadcastReceiver() {
                     }
                     val n = jeu.module("notifs")
                     val maintenant = System.currentTimeMillis()
-                    if (n.optBoolean("actives", true) && jeu.faim < 30 && maintenant - n.optLong("faim", 0) > 3 * 3600_000L) {
+                    if (Intro.ouvert(jeu, "extras") && n.optBoolean("actives", true) && Satiete.affamee(jeu) && !Satiete.absente(jeu) && maintenant - n.optLong("faim", 0) > 3 * 3600_000L) {
                         n.put("faim", maintenant)
-                        notifier(context, "${jeu.nom} a faim !", Regles.FAIM.random() + " (touche pour ouvrir le terminal)")
+                        notifier(context, t("rappel.faim.titre", "nom" to jeu.nom),
+                            Regles.auHasard(Regles.FAIM) + " " + t("rappel.toucher"))
                     }
                     jeu.sauver()
                     WidgetCreature.majTous(context)
@@ -60,7 +61,7 @@ class Rappels : BroadcastReceiver() {
         fun notifier(ctx: Context, titre: String, texte: String) {
             val nm = ctx.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
             if (Build.VERSION.SDK_INT >= 26 && nm.getNotificationChannel(CANAL) == null) {
-                nm.createNotificationChannel(NotificationChannel(CANAL, "Ta créature", NotificationManager.IMPORTANCE_DEFAULT))
+                nm.createNotificationChannel(NotificationChannel(CANAL, t("rappel.canal"), NotificationManager.IMPORTANCE_DEFAULT))
             }
             val ouvrir = PendingIntent.getActivity(ctx, 2,
                 Intent(ctx, TerminalActivity::class.java).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK),
@@ -68,8 +69,8 @@ class Rappels : BroadcastReceiver() {
             val notif = Notification.Builder(ctx, CANAL)
                 .setSmallIcon(R.drawable.ic_notif)
                 .setContentTitle(titre)
-                .setContentText(texte)
-                .setStyle(Notification.BigTextStyle().bigText(texte))
+                .setContentText(Vert.rendre(texte))
+                .setStyle(Notification.BigTextStyle().bigText(Vert.rendre(texte)))
                 .setContentIntent(ouvrir)
                 .setAutoCancel(true)
                 .build()

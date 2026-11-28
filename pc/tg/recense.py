@@ -14,8 +14,10 @@ import urllib.error
 import urllib.request
 
 from . import core
+from . import tirage
+from .langue import t
 
-INFO = "https://raw.githubusercontent.com/grecdel/terminagotchi-android/site-info/url.txt"
+INFO = "https://raw.githubusercontent.com/grecdel/terminagotchi/site-info/url.txt"
 APPAREIL = "pc"
 INTERVALLE = 60          # secondes minimum entre deux synchros automatiques
 COMPTEURS = ("xp", "total", "colles")
@@ -28,6 +30,9 @@ def compte(state):
 
 
 def requete(url, methode="GET", corps=None, cle=None, delai=10):
+    from . import classe
+    if classe.actif_sur_disque():              # mode classe : rien ne part de cet ordinateur
+        return {"erreur": t("classe.hors_ligne")}
     data = json.dumps(corps).encode("utf-8") if corps is not None else None
     req = urllib.request.Request(url, data=data, method=methode,
                                  headers={"content-type": "application/json", "user-agent": "terminagotchi-pc"})
@@ -40,14 +45,17 @@ def requete(url, methode="GET", corps=None, cle=None, delai=10):
         try:
             return json.loads(e.read().decode("utf-8"))
         except (ValueError, OSError):
-            return {"erreur": f"le serveur répond {e.code}"}
+            return {"erreur": t("rec.err.serveur", code=e.code)}
     except (OSError, ValueError) as e:
-        return {"erreur": f"pas de connexion au recensement ({str(e)[:70]})"}
+        return {"erreur": t("rec.err.connexion", detail=str(e)[:70])}
 
 
 def serveur(state):
     """Adresse du site : réglée à la main, sinon publiée par le déploiement automatique."""
     c = compte(state)
+    from . import classe
+    if classe.actif(state):                    # mode classe : pas même l'adresse du site
+        return ""
     if c.get("serveur"):
         return c["serveur"].rstrip("/")
     try:
@@ -56,6 +64,49 @@ def serveur(state):
     except OSError:
         url = ""
     return url.rstrip("/") if url.startswith(("https://", "http://")) else ""
+
+
+# ================================================================ le petit nuage (idée 74)
+ENVOI_MAX = 30           # secondes : au-delà, une synchro « en cours » est considérée finie (fil coupé)
+
+
+def etat_nuage(c, total, envoi):
+    """Ce que montre le nuage : None (pas de compte, ou tout est à jour : rien à l'écran), ("envoi", 0) pendant
+    un envoi, ("hors", n) quand la dernière synchro n'a pas pu joindre le site (n : commandes gardées ici, pas
+    encore envoyées). Mêmes vecteurs que Recensement.etatNuage (donnees/synchro/vecteurs.json)."""
+    if not isinstance(c, dict) or not c.get("cle"):
+        return None
+    if envoi:
+        return ("envoi", 0)
+    if c.get("hors"):
+        base = c.get("base") if isinstance(c.get("base"), dict) else {}
+        return ("hors", max(0, int(total or 0) - int(base.get("total", 0) or 0)))
+    return None
+
+
+def nuage(state, maintenant=None):
+    c = state.get("compte") or {}
+    envoi = (c.get("en_cours") or 0) > (maintenant or time.time()) - ENVOI_MAX
+    return etat_nuage(c, state.get("total", 0), envoi)
+
+
+def nuage_pc(state):
+    """Le nuage à droite du nom, sur l'écran de tg (texte coloré), ou "" quand il n'y a rien à montrer."""
+    from .plateforme import RESET, fg
+    e = nuage(state)
+    if not e:
+        return ""
+    if e[0] == "envoi":
+        return f"{fg(111)}☁ {t('rec.nuage.mot.envoi')}{RESET}"
+    return f"{fg(215)}📴 {t('rec.nuage.mot.hors')}" + (f" · {t('rec.nuage.attente', n=e[1])}" if e[1] else "") + RESET
+
+
+def phrase_nuage(state):
+    """La phrase qui explique le nuage (`compte`, ou le toucher sur le téléphone), ou ""."""
+    e = nuage(state)
+    if not e:
+        return ""
+    return t("rec.nuage.dit.envoi") if e[0] == "envoi" else t("rec.nuage.dit.hors", n=e[1])
 
 
 # ================================================================ fusion
@@ -72,20 +123,44 @@ def _charge(state):
     deltas = {k: max(0, snap[k] - base.get(k, 0)) for k in COMPTEURS}
     deltas["stats"] = {s: max(0, v - base.get("stats", {}).get(s, 0)) for s, v in snap["stats"].items()}
     charge = {
-        "appareil": APPAREIL, "deltas": deltas,
+        "appareil": APPAREIL, "partie": str(state.get("partie") or "1"), "deltas": deltas,
         "vus": list(state["seen"])[-3000:], "skills": list(state["skills"]),
         "collection": state.get("collection", {}), "records": state.get("records", {}),
         "captures": state.get("captures", [])[-3000:],
         "partage": c.get("partage", {"actif": False, "date": 0}),
         "valeurs": {"nom": state["name"], "nomDate": c.get("nomDate", 0), "trait": state.get("trait", ""),
+                    "titre": _titre(state),
                     "shiny": bool(state.get("shiny")),
                     "forme": state.get("branch"), "faim": state["hunger"],
-                    "oeuf": state.get("oeuf"), "familier": state.get("familier"),
-                    "faimDate": int(state.get("repas_t", 0) * 1000)},
+                    "faimDate": int(state.get("repas_t", 0) * 1000),
+                    "theme": state.get("config", {}).get("theme") or "sombre",
+                    "themeDate": int(state.get("config", {}).get("theme_date") or 0),
+                    # lecture et confort (police, formes, calme ; la taille reste propre à l'appareil)
+                    "confort": _confort(state)[0], "confortDate": _confort(state)[1]},
     }
-    if c.get("classe") is not None:                        # mode classe ("" = quitter)
-        charge["valeurs"]["classe"] = c["classe"]
+    from . import entrainement, guilde
+    charge["guilde"] = guilde.charge_site(state)    # leçons de la Guilde et contribution : le site en tire le badge Artisan
+    charge["entrainement"], snap["ent"] = entrainement.charge(state, base.get("ent"))
     return charge, snap
+
+
+def _confort(state):
+    from . import confort
+    return confort.pour_recensement(state)
+
+
+def _titre(state):
+    """Le titre montré (« artisan:kilo »…) : le site colore le pseudo si c'est un badge de la Guilde QU'IL a vérifié."""
+    from . import entrainement
+    try:
+        return entrainement.titre_affiche_id(state) or ""
+    except (KeyError, TypeError, ValueError):
+        return ""
+
+
+def _colore(st, pseudo):
+    from . import entrainement
+    return entrainement.pseudo_colore(st, pseudo) if st else pseudo
 
 
 def _appliquer(state, srv, snap):
@@ -116,19 +191,26 @@ def _appliquer(state, srv, snap):
         state["trait"] = srv["trait"]
     if srv.get("forme"):
         state["branch"] = srv["forme"]
-    from . import bestiaire
-    if bestiaire.oeuf(srv.get("oeuf")):          # même créature sur tous les appareils
-        state["oeuf"] = srv["oeuf"]
-    if bestiaire.espece(srv.get("familier")):
-        state["familier"] = srv["familier"]
-    connus = {x.get("id") for x in state.setdefault("captures", [])}
+    ici = {x.get("id"): x for x in state.setdefault("captures", [])}
     for ind in srv.get("captures", []):
-        if ind.get("id") not in connus:
+        if ind.get("id") in ici:
+            if "verifie" in ind:                    # anti-triche : le verdict du serveur
+                ici[ind["id"]]["verifie"] = bool(ind["verifie"])
+        else:
             state["captures"].append(ind)
+            ici[ind.get("id")] = ind
     if "partage" in srv and srv["partage"].get("date", 0) >= c.get("partage", {}).get("date", 0):
         c["partage"] = srv["partage"]
     if "shiny" in srv:
         state["shiny"] = bool(srv["shiny"])
+    if int(srv.get("themeDate") or 0) > int(state.get("config", {}).get("theme_date") or 0):   # le plus récent gagne
+        from . import apparence
+        if srv.get("theme") in apparence.donnees()["themes"]:
+            state.setdefault("config", {})["theme"] = srv["theme"]
+            state["config"]["theme_date"] = int(srv["themeDate"])
+    if srv.get("confortDate"):                       # lecture et confort : le plus récent gagne (mots connus seulement)
+        from . import confort
+        confort.depuis_recensement(state, srv.get("confort"), srv.get("confortDate"))
     if srv.get("faimDate", 0) > state.get("repas_t", 0) * 1000:
         state["hunger"] = float(srv.get("faim", state["hunger"]))
         state["repas_t"] = srv["faimDate"] / 1000
@@ -140,11 +222,14 @@ def synchroniser(forcer=False):
     with core.verrou():
         st = core.load()
         if st is None:
-            return "Pas encore de créature : lance d'abord le jeu."
+            return t("rec.pas_de_creature")
         core.migrate(st)
+        from . import classe
+        if classe.actif(st):                   # mode classe : pas de synchronisation
+            return t("classe.hors_ligne") if forcer else None
         c = compte(st)
         if not c.get("cle"):
-            return None if not forcer else "Pas de compte : tape  compte creer TonPseudo"
+            return None if not forcer else t("rec.pas_de_compte")
         maintenant = time.time()
         if c.get("en_cours", 0) > maintenant - 30:
             return None
@@ -155,53 +240,41 @@ def synchroniser(forcer=False):
         charge, snap = _charge(st)
         core.save(st)
     url = serveur(st)
-    r = requete(url + "/api/sync", "POST", charge, c["cle"]) if url else {"erreur": "adresse du site inconnue"}
+    # partie 1 (celle d'avant les parties multiples) : l'adresse d'origine ; les autres ont la leur,
+    # qu'un site pas encore à jour refuse au lieu de mélanger deux créatures
+    route = "/api/sync" if charge["partie"] == "1" else "/api/sync/" + charge["partie"]
+    r = requete(url + route, "POST", charge, c["cle"]) if url else {"erreur": t("rec.err.adresse")}
     resultat = []
 
     def finir(s):
         cc = compte(s)
         cc["en_cours"] = 0
+        if str(s.get("partie") or "1") != charge["partie"]:
+            return                                 # on a changé de partie pendant la synchro
         if "etat" not in r:
-            resultat.append("⚠ Synchro impossible : " + r.get("erreur", "erreur inconnue"))
+            cc["hors"] = True                      # le nuage orange : on joue normalement, l'envoi attendra
+            resultat.append(t("rec.sync.impossible", erreur=r.get("erreur", t("rec.err.inconnue"))))
             return
+        cc["hors"] = False
         if url and not cc.get("serveur"):
             cc["serveur"] = url
         avant = s["xp"]
         _appliquer(s, r["etat"], snap)
+        from . import entrainement             # salle d'entraînement : compteurs, records vérifiés, Star de la semaine
+        if isinstance(r["etat"].get("entrainement"), dict):     # (un site pas encore à jour n'en renvoie pas)
+            compte(s)["base"]["ent"] = entrainement.appliquer(s, r["etat"].get("entrainement"), snap["ent"],
+                                                              charge["entrainement"]["runs"], r.get("entrainement"))
+        tirage.ranger_graines(s, r.get("graines"))   # graines des prochains jours (jeu hors ligne)
         gagne = s["xp"] - avant
         if gagne > 0:
-            core.log(s, f"🔄 Synchro : +{gagne} XP venus de ton autre appareil")
+            core.log(s, t("rec.sync.xp", n=gagne))
         for b in r.get("badges", []):
-            core.log(s, f"🏅 Badge vérifié : {b['titre']}")
-            core.notif(s, f"🏅 Nouveau badge : {b['titre']}")
-        if r.get("classe_refusee"):
-            cc.pop("classe", None)
-            resultat.append("⚠ Code de classe inconnu : vérifie-le auprès de ton professeur.")
-            return
-        if cc.get("classe") == "":
-            cc.pop("classe", None)                 # « quitter » a été envoyé : plus besoin de le renvoyer
-        resultat.append(f"✔ Synchronisé avec le recensement ({cc.get('pseudo', '?')})"
-                        + (f" · classe {r['etat']['classe']}" if r["etat"].get("classe") else ""))
+            core.log(s, t("rec.badge.log", titre=b["titre"]))
+            core.notif(s, t("rec.badge.notif", titre=b["titre"]))
+        resultat.append(t("rec.sync.ok", pseudo=cc.get("pseudo", "?")))
 
     core.modifier(finir)
     return resultat[0] if resultat else None
-
-
-def classe(args):
-    """tg classe CODE (rejoindre la classe de ton professeur) · tg classe quitter"""
-    st = core.load()
-    if st is None or not compte(st).get("cle"):
-        return "Il faut d'abord un compte : tg compte creer TonPseudo  (aucune adresse mail demandée)"
-    if not args:
-        actuelle = compte(st).get("classe")
-        return (f"Tu es dans la classe {actuelle}. (tg classe quitter pour en sortir)" if actuelle
-                else "Exemple : tg classe ABC123  (le code est donné par ton professeur)")
-    code = "" if args[0].lower() in ("quitter", "sortir", "stop") else args[0].strip().upper()
-    core.modifier(lambda s: compte(s).update(classe=code))
-    msg = synchroniser(forcer=True) or ""
-    if code and "inconnu" not in msg:
-        return f"🏫 Bienvenue dans la classe {code} ! Ton professeur voit maintenant ta progression (pseudo, niveau, compétences).\n{msg}"
-    return msg if code else f"🏫 Tu as quitté la classe.\n{msg}"
 
 
 def synchroniser_en_fond():
@@ -225,85 +298,92 @@ def _sans_erreur(f):
 def _enregistrer(pseudo, cle, url):
     def f(s):
         c = compte(s)
+        base = c.get("base")
+        meme = (c.get("base_de") or (c.get("pseudo") if base else "")) == pseudo and base
         c.update(cle=cle, pseudo=pseudo, serveur=url, base={"xp": 0, "total": 0, "colles": 0, "stats": {}},
-                 dernier=0, en_cours=0)
-        core.log(s, f"🌍 Recensé sous le pseudo {pseudo} !")
+                 dernier=0, en_cours=0, base_de=pseudo)
+        if meme:
+            c["base"] = base                       # cette partie connaît déjà ce compte : pas de double envoi
+        core.log(s, t("rec.recense.log", pseudo=pseudo))
     core.modifier(f)
 
 
 def commande(args):
-    """tg compte [creer P | lier CODE | code | serveur URL | oublier]"""
+    """tg compte [creer P | lier TG-XXXX-XX | secours TG-… | code | site | serveur URL | oublier]"""
     st = core.load()
     if st is None:
-        return "Pas encore de créature : lance d'abord le jeu."
+        return t("rec.pas_de_creature")
     core.migrate(st)
     c = compte(st)
     action = args[0].lower() if args else ""
     if action == "serveur":
         if len(args) < 2:
-            return f"Adresse actuelle : {serveur(st) or '(inconnue)'}"
+            return t("rec.adresse", url=serveur(st) or t("rec.inconnue"))
         core.modifier(lambda s: compte(s).update(serveur=args[1].rstrip("/")))
-        return f"Adresse du recensement réglée sur {args[1]}"
+        return t("rec.adresse.reglee", url=args[1])
     url = serveur(st)
-    if not url and action in ("creer", "lier", "code", ""):
-        return ("Le site du recensement n'est pas encore en ligne (ou pas de connexion).\n"
-                "Réessaie plus tard, ou règle l'adresse : compte serveur https://…")
-    if action == "classe":
-        return classe(args[1:])
+    if not url and action in ("creer", "lier", "secours", "code", "site", ""):
+        return t("rec.hors_ligne")
     if action == "creer":
         if c.get("cle"):
-            return f"Tu as déjà un compte : {c['pseudo']}. (compte oublier pour en changer)"
+            return t("rec.deja_compte", pseudo=_colore(st, c["pseudo"]))
         if len(args) < 2:
-            return "Exemple : compte creer TonPseudo  (3 à 20 lettres sans accent, chiffres, - ou _)"
+            return t("rec.creer.exemple")
         r = requete(url + "/api/inscription", "POST", {"pseudo": args[1], "appareil": APPAREIL})
         if "cle" not in r:
-            return "⚠ " + r.get("erreur", "inscription impossible")
+            return "⚠ " + r.get("erreur", t("rec.err.inscription"))
         _enregistrer(r["pseudo"], r["cle"], url)
         msg = synchroniser(forcer=True) or ""
-        return (f"🌍 Bienvenue au recensement, {r['pseudo']} !\n{msg}\n"
-                f"Ton profil public : {url}/joueur/{r['pseudo']}\n"
-                f"Pour avoir la même créature sur ton téléphone : compte code")
-    if action == "lier":
+        secours = ("\n\n" + t("rec.secours.donne", code=r["secours"])) if r.get("secours") else ""
+        return t("rec.bienvenue", pseudo=_colore(core.load(), r["pseudo"]), msg=msg, url=f"{url}/joueur/{r['pseudo']}") + secours
+    if action in ("lier", "secours"):
         if len(args) < 2:
-            return "Exemple : compte lier AB3K9Z  (le code s'obtient sur l'autre appareil avec : compte code)"
-        r = requete(url + "/api/lier", "POST", {"code": args[1], "appareil": APPAREIL})
+            return t("rec.lier.exemple" if action == "lier" else "rec.secours.exemple")
+        route = "/api/lier" if action == "lier" else "/api/secours/recuperer"
+        r = requete(url + route, "POST", {"code": args[1], "appareil": APPAREIL})
         if "cle" not in r:
-            return "⚠ " + r.get("erreur", "liaison impossible")
+            return "⚠ " + r.get("erreur", t("rec.err.liaison"))
         _enregistrer(r["pseudo"], r["cle"], url)
         msg = synchroniser(forcer=True) or ""
-        return (f"🔗 Ce PC est relié au compte {r['pseudo']} !\n{msg}\n"
-                "Ta progression d'ici s'ajoute à celle de ton autre appareil.")
+        return t("rec.relie", pseudo=_colore(core.load(), r["pseudo"]), msg=msg)
     if not c.get("cle"):
-        return ("Tu n'as pas encore de compte.\n"
-                "  compte creer TonPseudo   → créer ton compte\n"
-                "  compte lier CODE         → rejoindre le compte de ton téléphone")
+        return t("rec.sans_compte")
     if action == "code":
         r = requete(url + "/api/code", "POST", {}, c["cle"])
         if "code" not in r:
-            return "⚠ " + r.get("erreur", "impossible d'obtenir un code")
-        return (f"🔑 Code de liaison : {r['code']}  (valable 10 minutes)\n"
-                f"Sur ton téléphone, dans le terminal de l'appli : compte lier {r['code']}")
+            return "⚠ " + r.get("erreur", t("rec.err.code"))
+        return t("rec.code", code=r.get("jeton") or r["code"])
+    if action == "site":
+        r = requete(url + "/api/lien-site", "POST", {}, c["cle"])
+        if not r.get("lien"):
+            return "⚠ " + r.get("erreur", t("rec.err.code"))
+        lien = url + r["lien"]
+        try:
+            import webbrowser
+            webbrowser.open(lien)
+        except Exception:
+            pass
+        return t("rec.lien_site", lien=lien)
     if action == "partage":
         choix = (args[1].lower() if len(args) > 1 else "")
         if choix not in ("on", "off"):
-            etat = "activé" if c.get("partage", {}).get("actif") else "désactivé"
-            return (f"Partage de tes captures dans la galerie publique : {etat}.\n"
-                    "  compte partage on   → tes bestioles apparaissent sur le site (avec ton pseudo)\n"
-                    "  compte partage off  → elles restent privées")
+            etat = t("rec.active") if c.get("partage", {}).get("actif") else t("rec.desactive")
+            return t("rec.partage.etat", etat=etat)
         actif = choix == "on"
         core.modifier(lambda s: compte(s).update(partage={"actif": actif, "date": int(time.time() * 1000)}))
         msg = synchroniser(forcer=True) or ""
-        return ("✔ Tes captures seront visibles dans la galerie : " + f"{url}/captures" if actif
-                else "✔ Tes captures ne sont plus visibles dans la galerie.") + ("\n" + msg if msg else "")
-    if action == "oublier":
-        core.modifier(lambda s: s.__setitem__("compte", {k: v for k, v in compte(s).items() if k == "serveur"}))
-        return "Ce PC n'est plus relié au compte (le compte, lui, existe toujours)."
+        return (t("rec.partage.on", url=f"{url}/captures") if actif
+                else t("rec.partage.off")) + ("\n" + msg if msg else "")
+    if action in ("oublier", "deconnexion", "sortir"):
+        requete(url + "/api/deconnexion", "POST", {}, c["cle"], delai=4)   # le site oublie la clé de ce PC (si en ligne)
+        from . import parties
+        parties.oublier_compte()              # dans toutes les parties ; le point de synchro de chacune reste
+        return t("rec.oublie")
     dernier = c.get("dernier", 0)
-    quand = time.strftime("%H:%M", time.localtime(dernier)) if dernier else "jamais"
-    return (f"🌍 Compte : {c['pseudo']} · dernière synchro : {quand}\n"
-            f"Profil public : {url}/joueur/{c['pseudo']}\n"
-            f"CTF web (badges vérifiés) : {url}/ctf\n"
-            "  compte code   → relier un autre appareil\n  sync          → synchroniser maintenant")
+    quand = time.strftime("%H:%M", time.localtime(dernier)) if dernier else t("rec.jamais")
+    dit = phrase_nuage(st)                     # idée 74 : hors ligne → combien de choses attendent l'envoi
+    return t("rec.resume", pseudo=_colore(st, c["pseudo"]), quand=quand, profil=f"{url}/joueur/{c['pseudo']}",
+             ctf=f"{url}/ctf") + ("\n" + dit if dit else "")
 
 
 def site(args):
@@ -312,7 +392,7 @@ def site(args):
     c = compte(st) if st else {}
     url = serveur(st) if st else ""
     if not url:
-        return "Le site du recensement n'est pas joignable pour l'instant."
+        return t("rec.site.injoignable")
     page = (args[0].lower() if args else "")
     chemins = {"bestiaire": "/bestiaire", "captures": "/captures", "classement": "/classement", "ctf": "/ctf"}
     if page in chemins:
@@ -326,17 +406,17 @@ def site(args):
         ouvert = webbrowser.open(lien)
     except Exception:
         ouvert = False
-    return f"🌍 {lien}" + ("  (ouvert dans ton navigateur)" if ouvert else "")
+    return f"🌍 {lien}" + ("  " + t("rec.site.ouvert") if ouvert else "")
 
 
 def drapeau(proposition):
     st = core.load()
     if st is None:
-        return "Pas encore de créature."
+        return t("rec.drapeau.pas_de_creature")
     core.migrate(st)
     c = compte(st)
     if not c.get("cle"):
-        return "Il faut un compte pour valider un drapeau du CTF web : compte creer TonPseudo"
+        return t("rec.drapeau.compte")
     url = serveur(st)
     r = requete(url + "/api/drapeau", "POST", {"drapeau": proposition.strip()}, c["cle"])
     if r.get("ok"):
@@ -344,13 +424,14 @@ def drapeau(proposition):
             if r.get("nouveau"):
                 s["stats"]["Intelligence"] += 3
                 core.add_xp(s, 40)
-                core.log(s, f"🚩 Drapeau web validé : {r['titre']} !")
+                core.log(s, t("rec.drapeau.log", titre=r["titre"]))
         core.modifier(f)
-        lignes = [f"🚩 Drapeau validé : {r['titre']} ({r['score']}/{r['sur']})" + ("" if r.get("nouveau") else " — déjà validé"),
+        lignes = [t("rec.drapeau.ok", titre=r["titre"], score=r["score"], sur=r["sur"])
+                  + ("" if r.get("nouveau") else t("rec.drapeau.deja")),
                   f"📐 {r['lecon']}"]
         if r.get("badge"):
-            lignes.append(f"🏅 Badge vérifié : {url}{r['badge']}")
+            lignes.append(t("rec.badge.log", titre=f"{url}{r['badge']}"))
         if r.get("badgeFinal"):
-            lignes.append(f"🏆 TOUS LES DRAPEAUX ! Badge final : {url}{r['badgeFinal']}")
+            lignes.append(t("rec.drapeau.final", url=f"{url}{r['badgeFinal']}"))
         return "\n".join(lignes)
-    return "❌ " + r.get("message", r.get("erreur", "drapeau refusé"))
+    return "❌ " + r.get("message", r.get("erreur", t("rec.drapeau.refuse")))

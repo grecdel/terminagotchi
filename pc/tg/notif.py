@@ -4,7 +4,8 @@ import shutil
 import subprocess
 
 from . import core, lecons, sprites
-from .plateforme import IS_WIN, OSK
+from .langue import sans_marques, t
+from .plateforme import SYS_WIN, OSK
 
 IMAGE = core.SAVE_DIR / "creature.png"
 CACHE_PERM = core.SAVE_DIR / "permanente.txt"
@@ -16,7 +17,7 @@ def systeme():
     """Nom du moteur de notification disponible, ou None."""
     if shutil.which("termux-notification"):
         return "android"
-    if IS_WIN:
+    if SYS_WIN:
         return "windows"
     if OSK == "mac" and shutil.which("osascript"):
         return "mac"
@@ -27,9 +28,10 @@ def systeme():
 
 def _lancer(args):
     """Lance sans attendre ni afficher quoi que ce soit."""
+    args = [sans_marques(a) for a in args]     # pas de backticks dans les notifications (voir langue.rendre)
     try:
         kw = {"stdout": subprocess.DEVNULL, "stderr": subprocess.DEVNULL, "stdin": subprocess.DEVNULL}
-        if IS_WIN:
+        if SYS_WIN:
             kw["creationflags"] = 0x08000000   # CREATE_NO_WINDOW
         subprocess.Popen(args, **kw)
         return True
@@ -89,14 +91,17 @@ def resume(state):
     """Texte de la notification permanente."""
     lvl = core.level(state["xp"])
     st = core.stage(lvl)
-    forme = core.forme(state)
-    titre = f"{state['name']} · {forme} · niv. {lvl}"
-    lignes = [f"Faim {sprites.bar(state['hunger'], 100, 8)}  {core.mood(state['hunger'])}"]
+    titre = f"{state['name']} · " + t("app.forme_niveau", forme=core.forme(state, lvl), n=lvl)
+    from . import envies
+    m = envies.moment(state)
+    lignes = [" ".join(envies.compact(state, 4, 6)) + f"  {envies.humeur(state)}"]
+    if m:
+        lignes.append(f"💭 {envies.ICONES[m['e']]} {envies.nom(m['e'])} → {m['cmd']}")
     les, etiq = lecons.lecon_courante(state)
     if les and lvl >= les["niveau"]:
-        lignes.append(f"Leçon : {les['titre']}")
+        lignes.append(t("notif.lecon", titre=lecons.tx(les["titre"])))
     if state["sauvages"]:
-        lignes.append(f"🐾 {len(state['sauvages'])} bestiole(s) sauvage(s) dans le terrain")
+        lignes.append(t("notif.sauvages", n=len(state["sauvages"])))
     if state["log"]:
         lignes.append(state["log"][-1][6:])
     return titre, "\n".join(lignes)

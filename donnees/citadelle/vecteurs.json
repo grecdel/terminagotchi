@@ -1,0 +1,2762 @@
+{
+ "note": "généré par pc/outils/vecteurs_citadelle.py ; vérifié par tests/jvm/Citadelle.kt",
+ "journal": [
+  "2026-10-31 06:00:00 OK 198.51.100.7 porte-nord sentinelle",
+  "2026-10-31 06:00:41 OK 198.51.100.12 porte-sud gardien",
+  "2026-10-31 06:01:22 OK 198.51.100.23 poterne forgeron",
+  "2026-10-31 06:02:03 OK 198.51.100.7 porte-nord sentinelle",
+  "2026-10-31 06:02:44 OK 198.51.100.12 porte-sud gardien",
+  "2026-10-31 06:03:25 ECHEC 198.51.100.23 poterne forgeron",
+  "2026-10-31 06:04:06 OK 198.51.100.7 porte-nord sentinelle",
+  "2026-10-31 06:04:47 OK 198.51.100.12 porte-sud gardien",
+  "2026-10-31 06:05:28 OK 198.51.100.23 poterne forgeron",
+  "2026-10-31 06:06:09 OK 198.51.100.7 porte-nord sentinelle",
+  "2026-10-31 06:06:50 OK 198.51.100.12 porte-sud gardien",
+  "2026-10-31 06:07:31 OK 198.51.100.23 poterne forgeron",
+  "2026-10-31 06:08:12 OK 198.51.100.7 porte-nord sentinelle",
+  "2026-10-31 06:08:53 OK 198.51.100.12 porte-sud gardien",
+  "2026-10-31 06:09:34 OK 198.51.100.23 poterne forgeron",
+  "2026-10-31 06:10:15 OK 198.51.100.7 porte-nord sentinelle",
+  "2026-10-31 06:10:56 OK 198.51.100.12 porte-sud gardien",
+  "2026-10-31 06:11:37 OK 198.51.100.23 poterne forgeron",
+  "2026-10-31 06:12:18 OK 198.51.100.7 porte-nord sentinelle",
+  "2026-10-31 06:12:59 OK 198.51.100.12 porte-sud gardien",
+  "2026-10-31 06:13:40 ECHEC 203.0.113.66 poterne admin",
+  "2026-10-31 06:14:21 ECHEC 203.0.113.66 poterne root",
+  "2026-10-31 06:15:02 ECHEC 203.0.113.66 poterne gardien",
+  "2026-10-31 06:15:43 ECHEC 203.0.113.66 poterne test",
+  "2026-10-31 06:16:24 ECHEC 203.0.113.66 poterne invite",
+  "2026-10-31 06:17:05 ECHEC 203.0.113.66 poterne admin",
+  "2026-10-31 06:17:46 ECHEC 203.0.113.66 poterne root",
+  "2026-10-31 06:18:27 ECHEC 203.0.113.66 poterne gardien",
+  "2026-10-31 06:19:08 ECHEC 203.0.113.66 poterne test",
+  "2026-10-31 06:19:49 ECHEC 203.0.113.66 poterne invite",
+  "2026-10-31 06:20:30 ECHEC 203.0.113.66 poterne admin",
+  "2026-10-31 06:21:11 ECHEC 203.0.113.66 poterne root",
+  "2026-10-31 06:21:52 ECHEC 203.0.113.66 poterne gardien",
+  "2026-10-31 06:22:33 ECHEC 203.0.113.66 poterne test",
+  "2026-10-31 06:23:14 ECHEC 203.0.113.66 poterne invite",
+  "2026-10-31 06:23:55 ECHEC 203.0.113.66 poterne admin",
+  "2026-10-31 06:24:36 ECHEC 203.0.113.66 poterne root",
+  "2026-10-31 06:25:17 ECHEC 203.0.113.66 poterne gardien",
+  "2026-10-31 06:25:58 ECHEC 203.0.113.66 poterne test",
+  "2026-10-31 06:26:39 ECHEC 203.0.113.66 poterne invite",
+  "2026-10-31 06:27:20 ECHEC 203.0.113.66 poterne admin",
+  "2026-10-31 06:28:01 ECHEC 203.0.113.66 poterne root",
+  "2026-10-31 06:28:42 ECHEC 203.0.113.66 poterne gardien",
+  "2026-10-31 06:29:23 ECHEC 203.0.113.66 poterne test",
+  "2026-10-31 06:30:04 ECHEC 203.0.113.66 poterne invite",
+  "2026-10-31 06:30:45 ECHEC 203.0.113.66 poterne admin",
+  "2026-10-31 06:31:26 ECHEC 203.0.113.66 poterne root",
+  "2026-10-31 06:32:07 ECHEC 203.0.113.66 poterne gardien",
+  "2026-10-31 06:32:48 ECHEC 203.0.113.66 poterne test",
+  "2026-10-31 06:33:29 ECHEC 203.0.113.66 poterne invite",
+  "2026-10-31 06:34:10 ECHEC 203.0.113.66 poterne admin",
+  "2026-10-31 06:34:51 ECHEC 203.0.113.66 poterne root",
+  "2026-10-31 06:35:32 ECHEC 203.0.113.66 poterne gardien",
+  "2026-10-31 06:36:13 ECHEC 203.0.113.66 poterne test",
+  "2026-10-31 06:36:54 ECHEC 203.0.113.66 poterne invite",
+  "2026-10-31 06:37:35 ECHEC 203.0.113.66 poterne admin",
+  "2026-10-31 06:38:16 ECHEC 203.0.113.66 poterne root",
+  "2026-10-31 06:38:57 ECHEC 203.0.113.66 poterne gardien",
+  "2026-10-31 06:39:38 ECHEC 203.0.113.66 poterne test",
+  "2026-10-31 06:40:19 ECHEC 203.0.113.66 poterne invite",
+  "2026-10-31 06:41:00 ECHEC 203.0.113.66 poterne admin",
+  "2026-10-31 06:41:41 ECHEC 203.0.113.66 poterne root",
+  "2026-10-31 06:42:22 ECHEC 203.0.113.66 poterne gardien",
+  "2026-10-31 06:43:03 ECHEC 203.0.113.66 poterne test",
+  "2026-10-31 06:43:44 ECHEC 203.0.113.66 poterne invite",
+  "2026-10-31 06:44:25 ECHEC 203.0.113.66 poterne admin",
+  "2026-10-31 06:45:06 ECHEC 203.0.113.66 poterne root",
+  "2026-10-31 06:45:47 ECHEC 203.0.113.66 poterne gardien",
+  "2026-10-31 06:46:28 ECHEC 203.0.113.66 poterne test",
+  "2026-10-31 06:47:09 ECHEC 203.0.113.66 poterne invite",
+  "2026-10-31 06:47:50 OK 203.0.113.66 poterne invite",
+  "2026-10-31 06:48:31 OK 198.51.100.23 poterne forgeron",
+  "2026-10-31 06:49:12 OK 198.51.100.7 porte-nord sentinelle",
+  "2026-10-31 06:49:53 OK 198.51.100.12 porte-sud gardien",
+  "2026-10-31 06:50:34 OK 198.51.100.23 poterne forgeron",
+  "2026-10-31 06:51:15 OK 198.51.100.7 porte-nord sentinelle",
+  "2026-10-31 06:51:56 OK 198.51.100.12 porte-sud gardien",
+  "2026-10-31 06:52:37 ECHEC 198.51.100.23 poterne forgeron",
+  "2026-10-31 06:53:18 OK 198.51.100.7 porte-nord sentinelle",
+  "2026-10-31 06:53:59 OK 198.51.100.12 porte-sud gardien",
+  "2026-10-31 06:54:40 OK 198.51.100.23 poterne forgeron",
+  "2026-10-31 06:55:21 OK 198.51.100.7 porte-nord sentinelle",
+  "2026-10-31 06:56:02 OK 198.51.100.12 porte-sud gardien",
+  "2026-10-31 06:56:43 OK 198.51.100.23 poterne forgeron",
+  "2026-10-31 06:57:24 OK 198.51.100.7 porte-nord sentinelle",
+  "2026-10-31 06:58:05 OK 198.51.100.12 porte-sud gardien",
+  "2026-10-31 06:58:46 OK 198.51.100.23 poterne forgeron",
+  "2026-10-31 06:59:27 OK 198.51.100.7 porte-nord sentinelle",
+  "2026-10-31 07:00:08 OK 198.51.100.12 porte-sud gardien",
+  "2026-10-31 07:00:49 OK 198.51.100.23 poterne forgeron"
+ ],
+ "echecs": {
+  "198.51.100.23": 2,
+  "203.0.113.66": 50
+ },
+ "chmod": [
+  {
+   "spec": "600",
+   "depart": 420,
+   "masque": 18,
+   "mode": 384
+  },
+  {
+   "spec": "600",
+   "depart": 420,
+   "masque": 63,
+   "mode": 384
+  },
+  {
+   "spec": "600",
+   "depart": 493,
+   "masque": 18,
+   "mode": 384
+  },
+  {
+   "spec": "600",
+   "depart": 493,
+   "masque": 63,
+   "mode": 384
+  },
+  {
+   "spec": "600",
+   "depart": 384,
+   "masque": 18,
+   "mode": 384
+  },
+  {
+   "spec": "600",
+   "depart": 384,
+   "masque": 63,
+   "mode": 384
+  },
+  {
+   "spec": "600",
+   "depart": 511,
+   "masque": 18,
+   "mode": 384
+  },
+  {
+   "spec": "600",
+   "depart": 511,
+   "masque": 63,
+   "mode": 384
+  },
+  {
+   "spec": "600",
+   "depart": 0,
+   "masque": 18,
+   "mode": 384
+  },
+  {
+   "spec": "600",
+   "depart": 0,
+   "masque": 63,
+   "mode": 384
+  },
+  {
+   "spec": "755",
+   "depart": 420,
+   "masque": 18,
+   "mode": 493
+  },
+  {
+   "spec": "755",
+   "depart": 420,
+   "masque": 63,
+   "mode": 493
+  },
+  {
+   "spec": "755",
+   "depart": 493,
+   "masque": 18,
+   "mode": 493
+  },
+  {
+   "spec": "755",
+   "depart": 493,
+   "masque": 63,
+   "mode": 493
+  },
+  {
+   "spec": "755",
+   "depart": 384,
+   "masque": 18,
+   "mode": 493
+  },
+  {
+   "spec": "755",
+   "depart": 384,
+   "masque": 63,
+   "mode": 493
+  },
+  {
+   "spec": "755",
+   "depart": 511,
+   "masque": 18,
+   "mode": 493
+  },
+  {
+   "spec": "755",
+   "depart": 511,
+   "masque": 63,
+   "mode": 493
+  },
+  {
+   "spec": "755",
+   "depart": 0,
+   "masque": 18,
+   "mode": 493
+  },
+  {
+   "spec": "755",
+   "depart": 0,
+   "masque": 63,
+   "mode": 493
+  },
+  {
+   "spec": "0644",
+   "depart": 420,
+   "masque": 18,
+   "mode": 420
+  },
+  {
+   "spec": "0644",
+   "depart": 420,
+   "masque": 63,
+   "mode": 420
+  },
+  {
+   "spec": "0644",
+   "depart": 493,
+   "masque": 18,
+   "mode": 420
+  },
+  {
+   "spec": "0644",
+   "depart": 493,
+   "masque": 63,
+   "mode": 420
+  },
+  {
+   "spec": "0644",
+   "depart": 384,
+   "masque": 18,
+   "mode": 420
+  },
+  {
+   "spec": "0644",
+   "depart": 384,
+   "masque": 63,
+   "mode": 420
+  },
+  {
+   "spec": "0644",
+   "depart": 511,
+   "masque": 18,
+   "mode": 420
+  },
+  {
+   "spec": "0644",
+   "depart": 511,
+   "masque": 63,
+   "mode": 420
+  },
+  {
+   "spec": "0644",
+   "depart": 0,
+   "masque": 18,
+   "mode": 420
+  },
+  {
+   "spec": "0644",
+   "depart": 0,
+   "masque": 63,
+   "mode": 420
+  },
+  {
+   "spec": "7",
+   "depart": 420,
+   "masque": 18,
+   "mode": 7
+  },
+  {
+   "spec": "7",
+   "depart": 420,
+   "masque": 63,
+   "mode": 7
+  },
+  {
+   "spec": "7",
+   "depart": 493,
+   "masque": 18,
+   "mode": 7
+  },
+  {
+   "spec": "7",
+   "depart": 493,
+   "masque": 63,
+   "mode": 7
+  },
+  {
+   "spec": "7",
+   "depart": 384,
+   "masque": 18,
+   "mode": 7
+  },
+  {
+   "spec": "7",
+   "depart": 384,
+   "masque": 63,
+   "mode": 7
+  },
+  {
+   "spec": "7",
+   "depart": 511,
+   "masque": 18,
+   "mode": 7
+  },
+  {
+   "spec": "7",
+   "depart": 511,
+   "masque": 63,
+   "mode": 7
+  },
+  {
+   "spec": "7",
+   "depart": 0,
+   "masque": 18,
+   "mode": 7
+  },
+  {
+   "spec": "7",
+   "depart": 0,
+   "masque": 63,
+   "mode": 7
+  },
+  {
+   "spec": "u+x",
+   "depart": 420,
+   "masque": 18,
+   "mode": 484
+  },
+  {
+   "spec": "u+x",
+   "depart": 420,
+   "masque": 63,
+   "mode": 484
+  },
+  {
+   "spec": "u+x",
+   "depart": 493,
+   "masque": 18,
+   "mode": 493
+  },
+  {
+   "spec": "u+x",
+   "depart": 493,
+   "masque": 63,
+   "mode": 493
+  },
+  {
+   "spec": "u+x",
+   "depart": 384,
+   "masque": 18,
+   "mode": 448
+  },
+  {
+   "spec": "u+x",
+   "depart": 384,
+   "masque": 63,
+   "mode": 448
+  },
+  {
+   "spec": "u+x",
+   "depart": 511,
+   "masque": 18,
+   "mode": 511
+  },
+  {
+   "spec": "u+x",
+   "depart": 511,
+   "masque": 63,
+   "mode": 511
+  },
+  {
+   "spec": "u+x",
+   "depart": 0,
+   "masque": 18,
+   "mode": 64
+  },
+  {
+   "spec": "u+x",
+   "depart": 0,
+   "masque": 63,
+   "mode": 64
+  },
+  {
+   "spec": "go-r",
+   "depart": 420,
+   "masque": 18,
+   "mode": 384
+  },
+  {
+   "spec": "go-r",
+   "depart": 420,
+   "masque": 63,
+   "mode": 384
+  },
+  {
+   "spec": "go-r",
+   "depart": 493,
+   "masque": 18,
+   "mode": 457
+  },
+  {
+   "spec": "go-r",
+   "depart": 493,
+   "masque": 63,
+   "mode": 457
+  },
+  {
+   "spec": "go-r",
+   "depart": 384,
+   "masque": 18,
+   "mode": 384
+  },
+  {
+   "spec": "go-r",
+   "depart": 384,
+   "masque": 63,
+   "mode": 384
+  },
+  {
+   "spec": "go-r",
+   "depart": 511,
+   "masque": 18,
+   "mode": 475
+  },
+  {
+   "spec": "go-r",
+   "depart": 511,
+   "masque": 63,
+   "mode": 475
+  },
+  {
+   "spec": "go-r",
+   "depart": 0,
+   "masque": 18,
+   "mode": 0
+  },
+  {
+   "spec": "go-r",
+   "depart": 0,
+   "masque": 63,
+   "mode": 0
+  },
+  {
+   "spec": "o-rwx",
+   "depart": 420,
+   "masque": 18,
+   "mode": 416
+  },
+  {
+   "spec": "o-rwx",
+   "depart": 420,
+   "masque": 63,
+   "mode": 416
+  },
+  {
+   "spec": "o-rwx",
+   "depart": 493,
+   "masque": 18,
+   "mode": 488
+  },
+  {
+   "spec": "o-rwx",
+   "depart": 493,
+   "masque": 63,
+   "mode": 488
+  },
+  {
+   "spec": "o-rwx",
+   "depart": 384,
+   "masque": 18,
+   "mode": 384
+  },
+  {
+   "spec": "o-rwx",
+   "depart": 384,
+   "masque": 63,
+   "mode": 384
+  },
+  {
+   "spec": "o-rwx",
+   "depart": 511,
+   "masque": 18,
+   "mode": 504
+  },
+  {
+   "spec": "o-rwx",
+   "depart": 511,
+   "masque": 63,
+   "mode": 504
+  },
+  {
+   "spec": "o-rwx",
+   "depart": 0,
+   "masque": 18,
+   "mode": 0
+  },
+  {
+   "spec": "o-rwx",
+   "depart": 0,
+   "masque": 63,
+   "mode": 0
+  },
+  {
+   "spec": "a=r",
+   "depart": 420,
+   "masque": 18,
+   "mode": 292
+  },
+  {
+   "spec": "a=r",
+   "depart": 420,
+   "masque": 63,
+   "mode": 292
+  },
+  {
+   "spec": "a=r",
+   "depart": 493,
+   "masque": 18,
+   "mode": 292
+  },
+  {
+   "spec": "a=r",
+   "depart": 493,
+   "masque": 63,
+   "mode": 292
+  },
+  {
+   "spec": "a=r",
+   "depart": 384,
+   "masque": 18,
+   "mode": 292
+  },
+  {
+   "spec": "a=r",
+   "depart": 384,
+   "masque": 63,
+   "mode": 292
+  },
+  {
+   "spec": "a=r",
+   "depart": 511,
+   "masque": 18,
+   "mode": 292
+  },
+  {
+   "spec": "a=r",
+   "depart": 511,
+   "masque": 63,
+   "mode": 292
+  },
+  {
+   "spec": "a=r",
+   "depart": 0,
+   "masque": 18,
+   "mode": 292
+  },
+  {
+   "spec": "a=r",
+   "depart": 0,
+   "masque": 63,
+   "mode": 292
+  },
+  {
+   "spec": "u+x,g-w",
+   "depart": 420,
+   "masque": 18,
+   "mode": 484
+  },
+  {
+   "spec": "u+x,g-w",
+   "depart": 420,
+   "masque": 63,
+   "mode": 484
+  },
+  {
+   "spec": "u+x,g-w",
+   "depart": 493,
+   "masque": 18,
+   "mode": 493
+  },
+  {
+   "spec": "u+x,g-w",
+   "depart": 493,
+   "masque": 63,
+   "mode": 493
+  },
+  {
+   "spec": "u+x,g-w",
+   "depart": 384,
+   "masque": 18,
+   "mode": 448
+  },
+  {
+   "spec": "u+x,g-w",
+   "depart": 384,
+   "masque": 63,
+   "mode": 448
+  },
+  {
+   "spec": "u+x,g-w",
+   "depart": 511,
+   "masque": 18,
+   "mode": 495
+  },
+  {
+   "spec": "u+x,g-w",
+   "depart": 511,
+   "masque": 63,
+   "mode": 495
+  },
+  {
+   "spec": "u+x,g-w",
+   "depart": 0,
+   "masque": 18,
+   "mode": 64
+  },
+  {
+   "spec": "u+x,g-w",
+   "depart": 0,
+   "masque": 63,
+   "mode": 64
+  },
+  {
+   "spec": "+x",
+   "depart": 420,
+   "masque": 18,
+   "mode": 493
+  },
+  {
+   "spec": "+x",
+   "depart": 420,
+   "masque": 63,
+   "mode": 484
+  },
+  {
+   "spec": "+x",
+   "depart": 493,
+   "masque": 18,
+   "mode": 493
+  },
+  {
+   "spec": "+x",
+   "depart": 493,
+   "masque": 63,
+   "mode": 493
+  },
+  {
+   "spec": "+x",
+   "depart": 384,
+   "masque": 18,
+   "mode": 457
+  },
+  {
+   "spec": "+x",
+   "depart": 384,
+   "masque": 63,
+   "mode": 448
+  },
+  {
+   "spec": "+x",
+   "depart": 511,
+   "masque": 18,
+   "mode": 511
+  },
+  {
+   "spec": "+x",
+   "depart": 511,
+   "masque": 63,
+   "mode": 511
+  },
+  {
+   "spec": "+x",
+   "depart": 0,
+   "masque": 18,
+   "mode": 73
+  },
+  {
+   "spec": "+x",
+   "depart": 0,
+   "masque": 63,
+   "mode": 64
+  },
+  {
+   "spec": "-x",
+   "depart": 420,
+   "masque": 18,
+   "mode": 420
+  },
+  {
+   "spec": "-x",
+   "depart": 420,
+   "masque": 63,
+   "mode": 420
+  },
+  {
+   "spec": "-x",
+   "depart": 493,
+   "masque": 18,
+   "mode": 420
+  },
+  {
+   "spec": "-x",
+   "depart": 493,
+   "masque": 63,
+   "mode": 429
+  },
+  {
+   "spec": "-x",
+   "depart": 384,
+   "masque": 18,
+   "mode": 384
+  },
+  {
+   "spec": "-x",
+   "depart": 384,
+   "masque": 63,
+   "mode": 384
+  },
+  {
+   "spec": "-x",
+   "depart": 511,
+   "masque": 18,
+   "mode": 438
+  },
+  {
+   "spec": "-x",
+   "depart": 511,
+   "masque": 63,
+   "mode": 447
+  },
+  {
+   "spec": "-x",
+   "depart": 0,
+   "masque": 18,
+   "mode": 0
+  },
+  {
+   "spec": "-x",
+   "depart": 0,
+   "masque": 63,
+   "mode": 0
+  },
+  {
+   "spec": "+w",
+   "depart": 420,
+   "masque": 18,
+   "mode": 420
+  },
+  {
+   "spec": "+w",
+   "depart": 420,
+   "masque": 63,
+   "mode": 420
+  },
+  {
+   "spec": "+w",
+   "depart": 493,
+   "masque": 18,
+   "mode": 493
+  },
+  {
+   "spec": "+w",
+   "depart": 493,
+   "masque": 63,
+   "mode": 493
+  },
+  {
+   "spec": "+w",
+   "depart": 384,
+   "masque": 18,
+   "mode": 384
+  },
+  {
+   "spec": "+w",
+   "depart": 384,
+   "masque": 63,
+   "mode": 384
+  },
+  {
+   "spec": "+w",
+   "depart": 511,
+   "masque": 18,
+   "mode": 511
+  },
+  {
+   "spec": "+w",
+   "depart": 511,
+   "masque": 63,
+   "mode": 511
+  },
+  {
+   "spec": "+w",
+   "depart": 0,
+   "masque": 18,
+   "mode": 128
+  },
+  {
+   "spec": "+w",
+   "depart": 0,
+   "masque": 63,
+   "mode": 128
+  },
+  {
+   "spec": "g=rw",
+   "depart": 420,
+   "masque": 18,
+   "mode": 436
+  },
+  {
+   "spec": "g=rw",
+   "depart": 420,
+   "masque": 63,
+   "mode": 436
+  },
+  {
+   "spec": "g=rw",
+   "depart": 493,
+   "masque": 18,
+   "mode": 501
+  },
+  {
+   "spec": "g=rw",
+   "depart": 493,
+   "masque": 63,
+   "mode": 501
+  },
+  {
+   "spec": "g=rw",
+   "depart": 384,
+   "masque": 18,
+   "mode": 432
+  },
+  {
+   "spec": "g=rw",
+   "depart": 384,
+   "masque": 63,
+   "mode": 432
+  },
+  {
+   "spec": "g=rw",
+   "depart": 511,
+   "masque": 18,
+   "mode": 503
+  },
+  {
+   "spec": "g=rw",
+   "depart": 511,
+   "masque": 63,
+   "mode": 503
+  },
+  {
+   "spec": "g=rw",
+   "depart": 0,
+   "masque": 18,
+   "mode": 48
+  },
+  {
+   "spec": "g=rw",
+   "depart": 0,
+   "masque": 63,
+   "mode": 48
+  },
+  {
+   "spec": "a+w",
+   "depart": 420,
+   "masque": 18,
+   "mode": 438
+  },
+  {
+   "spec": "a+w",
+   "depart": 420,
+   "masque": 63,
+   "mode": 438
+  },
+  {
+   "spec": "a+w",
+   "depart": 493,
+   "masque": 18,
+   "mode": 511
+  },
+  {
+   "spec": "a+w",
+   "depart": 493,
+   "masque": 63,
+   "mode": 511
+  },
+  {
+   "spec": "a+w",
+   "depart": 384,
+   "masque": 18,
+   "mode": 402
+  },
+  {
+   "spec": "a+w",
+   "depart": 384,
+   "masque": 63,
+   "mode": 402
+  },
+  {
+   "spec": "a+w",
+   "depart": 511,
+   "masque": 18,
+   "mode": 511
+  },
+  {
+   "spec": "a+w",
+   "depart": 511,
+   "masque": 63,
+   "mode": 511
+  },
+  {
+   "spec": "a+w",
+   "depart": 0,
+   "masque": 18,
+   "mode": 146
+  },
+  {
+   "spec": "a+w",
+   "depart": 0,
+   "masque": 63,
+   "mode": 146
+  },
+  {
+   "spec": "o-w",
+   "depart": 420,
+   "masque": 18,
+   "mode": 420
+  },
+  {
+   "spec": "o-w",
+   "depart": 420,
+   "masque": 63,
+   "mode": 420
+  },
+  {
+   "spec": "o-w",
+   "depart": 493,
+   "masque": 18,
+   "mode": 493
+  },
+  {
+   "spec": "o-w",
+   "depart": 493,
+   "masque": 63,
+   "mode": 493
+  },
+  {
+   "spec": "o-w",
+   "depart": 384,
+   "masque": 18,
+   "mode": 384
+  },
+  {
+   "spec": "o-w",
+   "depart": 384,
+   "masque": 63,
+   "mode": 384
+  },
+  {
+   "spec": "o-w",
+   "depart": 511,
+   "masque": 18,
+   "mode": 509
+  },
+  {
+   "spec": "o-w",
+   "depart": 511,
+   "masque": 63,
+   "mode": 509
+  },
+  {
+   "spec": "o-w",
+   "depart": 0,
+   "masque": 18,
+   "mode": 0
+  },
+  {
+   "spec": "o-w",
+   "depart": 0,
+   "masque": 63,
+   "mode": 0
+  },
+  {
+   "spec": "ug+rw",
+   "depart": 420,
+   "masque": 18,
+   "mode": 436
+  },
+  {
+   "spec": "ug+rw",
+   "depart": 420,
+   "masque": 63,
+   "mode": 436
+  },
+  {
+   "spec": "ug+rw",
+   "depart": 493,
+   "masque": 18,
+   "mode": 509
+  },
+  {
+   "spec": "ug+rw",
+   "depart": 493,
+   "masque": 63,
+   "mode": 509
+  },
+  {
+   "spec": "ug+rw",
+   "depart": 384,
+   "masque": 18,
+   "mode": 432
+  },
+  {
+   "spec": "ug+rw",
+   "depart": 384,
+   "masque": 63,
+   "mode": 432
+  },
+  {
+   "spec": "ug+rw",
+   "depart": 511,
+   "masque": 18,
+   "mode": 511
+  },
+  {
+   "spec": "ug+rw",
+   "depart": 511,
+   "masque": 63,
+   "mode": 511
+  },
+  {
+   "spec": "ug+rw",
+   "depart": 0,
+   "masque": 18,
+   "mode": 432
+  },
+  {
+   "spec": "ug+rw",
+   "depart": 0,
+   "masque": 63,
+   "mode": 432
+  },
+  {
+   "spec": "u=rwx,go=",
+   "depart": 420,
+   "masque": 18,
+   "mode": 448
+  },
+  {
+   "spec": "u=rwx,go=",
+   "depart": 420,
+   "masque": 63,
+   "mode": 448
+  },
+  {
+   "spec": "u=rwx,go=",
+   "depart": 493,
+   "masque": 18,
+   "mode": 448
+  },
+  {
+   "spec": "u=rwx,go=",
+   "depart": 493,
+   "masque": 63,
+   "mode": 448
+  },
+  {
+   "spec": "u=rwx,go=",
+   "depart": 384,
+   "masque": 18,
+   "mode": 448
+  },
+  {
+   "spec": "u=rwx,go=",
+   "depart": 384,
+   "masque": 63,
+   "mode": 448
+  },
+  {
+   "spec": "u=rwx,go=",
+   "depart": 511,
+   "masque": 18,
+   "mode": 448
+  },
+  {
+   "spec": "u=rwx,go=",
+   "depart": 511,
+   "masque": 63,
+   "mode": 448
+  },
+  {
+   "spec": "u=rwx,go=",
+   "depart": 0,
+   "masque": 18,
+   "mode": 448
+  },
+  {
+   "spec": "u=rwx,go=",
+   "depart": 0,
+   "masque": 63,
+   "mode": 448
+  },
+  {
+   "spec": "=r",
+   "depart": 420,
+   "masque": 18,
+   "mode": 292
+  },
+  {
+   "spec": "=r",
+   "depart": 420,
+   "masque": 63,
+   "mode": 292
+  },
+  {
+   "spec": "=r",
+   "depart": 493,
+   "masque": 18,
+   "mode": 292
+  },
+  {
+   "spec": "=r",
+   "depart": 493,
+   "masque": 63,
+   "mode": 301
+  },
+  {
+   "spec": "=r",
+   "depart": 384,
+   "masque": 18,
+   "mode": 292
+  },
+  {
+   "spec": "=r",
+   "depart": 384,
+   "masque": 63,
+   "mode": 256
+  },
+  {
+   "spec": "=r",
+   "depart": 511,
+   "masque": 18,
+   "mode": 310
+  },
+  {
+   "spec": "=r",
+   "depart": 511,
+   "masque": 63,
+   "mode": 319
+  },
+  {
+   "spec": "=r",
+   "depart": 0,
+   "masque": 18,
+   "mode": 292
+  },
+  {
+   "spec": "=r",
+   "depart": 0,
+   "masque": 63,
+   "mode": 256
+  },
+  {
+   "spec": "u+s",
+   "depart": 420,
+   "masque": 18,
+   "mode": null
+  },
+  {
+   "spec": "u+s",
+   "depart": 420,
+   "masque": 63,
+   "mode": null
+  },
+  {
+   "spec": "u+s",
+   "depart": 493,
+   "masque": 18,
+   "mode": null
+  },
+  {
+   "spec": "u+s",
+   "depart": 493,
+   "masque": 63,
+   "mode": null
+  },
+  {
+   "spec": "u+s",
+   "depart": 384,
+   "masque": 18,
+   "mode": null
+  },
+  {
+   "spec": "u+s",
+   "depart": 384,
+   "masque": 63,
+   "mode": null
+  },
+  {
+   "spec": "u+s",
+   "depart": 511,
+   "masque": 18,
+   "mode": null
+  },
+  {
+   "spec": "u+s",
+   "depart": 511,
+   "masque": 63,
+   "mode": null
+  },
+  {
+   "spec": "u+s",
+   "depart": 0,
+   "masque": 18,
+   "mode": null
+  },
+  {
+   "spec": "u+s",
+   "depart": 0,
+   "masque": 63,
+   "mode": null
+  },
+  {
+   "spec": "abc",
+   "depart": 420,
+   "masque": 18,
+   "mode": null
+  },
+  {
+   "spec": "abc",
+   "depart": 420,
+   "masque": 63,
+   "mode": null
+  },
+  {
+   "spec": "abc",
+   "depart": 493,
+   "masque": 18,
+   "mode": null
+  },
+  {
+   "spec": "abc",
+   "depart": 493,
+   "masque": 63,
+   "mode": null
+  },
+  {
+   "spec": "abc",
+   "depart": 384,
+   "masque": 18,
+   "mode": null
+  },
+  {
+   "spec": "abc",
+   "depart": 384,
+   "masque": 63,
+   "mode": null
+  },
+  {
+   "spec": "abc",
+   "depart": 511,
+   "masque": 18,
+   "mode": null
+  },
+  {
+   "spec": "abc",
+   "depart": 511,
+   "masque": 63,
+   "mode": null
+  },
+  {
+   "spec": "abc",
+   "depart": 0,
+   "masque": 18,
+   "mode": null
+  },
+  {
+   "spec": "abc",
+   "depart": 0,
+   "masque": 63,
+   "mode": null
+  }
+ ],
+ "umask": [
+  {
+   "masque": 0,
+   "fichier": 438,
+   "dossier": 511
+  },
+  {
+   "masque": 2,
+   "fichier": 436,
+   "dossier": 509
+  },
+  {
+   "masque": 18,
+   "fichier": 420,
+   "dossier": 493
+  },
+  {
+   "masque": 23,
+   "fichier": 416,
+   "dossier": 488
+  },
+  {
+   "masque": 63,
+   "fichier": 384,
+   "dossier": 448
+  },
+  {
+   "masque": 511,
+   "fichier": 0,
+   "dossier": 0
+  }
+ ],
+ "drapeaux": [
+  {
+   "graine": "1:0",
+   "boite": "enumeration",
+   "genre": "entree",
+   "drapeau": "TG{enumeration-entree-f7400e52}"
+  },
+  {
+   "graine": "1:0",
+   "boite": "enumeration",
+   "genre": "donjon",
+   "drapeau": "TG{enumeration-donjon-7cbdf5fd}"
+  },
+  {
+   "graine": "1:0",
+   "boite": "droits",
+   "genre": "entree",
+   "drapeau": "TG{droits-entree-b2d41205}"
+  },
+  {
+   "graine": "1:0",
+   "boite": "droits",
+   "genre": "donjon",
+   "drapeau": "TG{droits-donjon-a00e6884}"
+  },
+  {
+   "graine": "1:0",
+   "boite": "secrets",
+   "genre": "entree",
+   "drapeau": "TG{secrets-entree-56aad323}"
+  },
+  {
+   "graine": "1:0",
+   "boite": "secrets",
+   "genre": "donjon",
+   "drapeau": "TG{secrets-donjon-1e7d6d24}"
+  },
+  {
+   "graine": "2:1730000000",
+   "boite": "enumeration",
+   "genre": "entree",
+   "drapeau": "TG{enumeration-entree-1e9636cd}"
+  },
+  {
+   "graine": "2:1730000000",
+   "boite": "enumeration",
+   "genre": "donjon",
+   "drapeau": "TG{enumeration-donjon-23d70759}"
+  },
+  {
+   "graine": "2:1730000000",
+   "boite": "droits",
+   "genre": "entree",
+   "drapeau": "TG{droits-entree-cad91b67}"
+  },
+  {
+   "graine": "2:1730000000",
+   "boite": "droits",
+   "genre": "donjon",
+   "drapeau": "TG{droits-donjon-a39f31e5}"
+  },
+  {
+   "graine": "2:1730000000",
+   "boite": "secrets",
+   "genre": "entree",
+   "drapeau": "TG{secrets-entree-a62ff456}"
+  },
+  {
+   "graine": "2:1730000000",
+   "boite": "secrets",
+   "genre": "donjon",
+   "drapeau": "TG{secrets-donjon-f377dc13}"
+  },
+  {
+   "graine": "7:42",
+   "boite": "enumeration",
+   "genre": "entree",
+   "drapeau": "TG{enumeration-entree-5f0328f5}"
+  },
+  {
+   "graine": "7:42",
+   "boite": "enumeration",
+   "genre": "donjon",
+   "drapeau": "TG{enumeration-donjon-2f8ddb32}"
+  },
+  {
+   "graine": "7:42",
+   "boite": "droits",
+   "genre": "entree",
+   "drapeau": "TG{droits-entree-e11b1114}"
+  },
+  {
+   "graine": "7:42",
+   "boite": "droits",
+   "genre": "donjon",
+   "drapeau": "TG{droits-donjon-6a96622e}"
+  },
+  {
+   "graine": "7:42",
+   "boite": "secrets",
+   "genre": "entree",
+   "drapeau": "TG{secrets-entree-24d105dc}"
+  },
+  {
+   "graine": "7:42",
+   "boite": "secrets",
+   "genre": "donjon",
+   "drapeau": "TG{secrets-donjon-c09c784f}"
+  },
+  {
+   "graine": "partie:3",
+   "boite": "enumeration",
+   "genre": "entree",
+   "drapeau": "TG{enumeration-entree-9b5af241}"
+  },
+  {
+   "graine": "partie:3",
+   "boite": "enumeration",
+   "genre": "donjon",
+   "drapeau": "TG{enumeration-donjon-8ba657d3}"
+  },
+  {
+   "graine": "partie:3",
+   "boite": "droits",
+   "genre": "entree",
+   "drapeau": "TG{droits-entree-b04759a4}"
+  },
+  {
+   "graine": "partie:3",
+   "boite": "droits",
+   "genre": "donjon",
+   "drapeau": "TG{droits-donjon-98f2a039}"
+  },
+  {
+   "graine": "partie:3",
+   "boite": "secrets",
+   "genre": "entree",
+   "drapeau": "TG{secrets-entree-f1244c08}"
+  },
+  {
+   "graine": "partie:3",
+   "boite": "secrets",
+   "genre": "donjon",
+   "drapeau": "TG{secrets-donjon-59b0caf5}"
+  }
+ ],
+ "facteur": [
+  {
+   "graine": "1:0",
+   "ordre": [
+    [
+     1,
+     "longue",
+     false
+    ],
+    [
+     2,
+     "urgence",
+     true
+    ],
+    [
+     3,
+     "secret",
+     true
+    ],
+    [
+     4,
+     "heure",
+     false
+    ],
+    [
+     5,
+     "papier",
+     false
+    ],
+    [
+     6,
+     "adresse",
+     true
+    ]
+   ],
+   "bons": [
+    2,
+    3,
+    6
+   ]
+  },
+  {
+   "graine": "2:1730000000",
+   "ordre": [
+    [
+     1,
+     "heure",
+     false
+    ],
+    [
+     2,
+     "secret",
+     true
+    ],
+    [
+     3,
+     "urgence",
+     true
+    ],
+    [
+     4,
+     "adresse",
+     true
+    ],
+    [
+     5,
+     "papier",
+     false
+    ],
+    [
+     6,
+     "longue",
+     false
+    ]
+   ],
+   "bons": [
+    2,
+    3,
+    4
+   ]
+  },
+  {
+   "graine": "7:42",
+   "ordre": [
+    [
+     1,
+     "papier",
+     false
+    ],
+    [
+     2,
+     "secret",
+     true
+    ],
+    [
+     3,
+     "heure",
+     false
+    ],
+    [
+     4,
+     "longue",
+     false
+    ],
+    [
+     5,
+     "adresse",
+     true
+    ],
+    [
+     6,
+     "urgence",
+     true
+    ]
+   ],
+   "bons": [
+    2,
+    5,
+    6
+   ]
+  },
+  {
+   "graine": "partie:3",
+   "ordre": [
+    [
+     1,
+     "adresse",
+     true
+    ],
+    [
+     2,
+     "heure",
+     false
+    ],
+    [
+     3,
+     "longue",
+     false
+    ],
+    [
+     4,
+     "secret",
+     true
+    ],
+    [
+     5,
+     "urgence",
+     true
+    ],
+    [
+     6,
+     "papier",
+     false
+    ]
+   ],
+   "bons": [
+    1,
+    4,
+    5
+   ]
+  }
+ ],
+ "force": [
+  {
+   "id": "court",
+   "bits": 20.0,
+   "duree": 0.000524288
+  },
+  {
+   "id": "mots4",
+   "bits": 28.0,
+   "duree": 0.134217728
+  },
+  {
+   "id": "mots6",
+   "bits": 42.0,
+   "duree": 2199.023255552
+  },
+  {
+   "id": "des6",
+   "bits": 77.548875,
+   "duree": 110536959860366.72
+  }
+ ],
+ "inspecteur": [
+  {
+   "boite": "enumeration",
+   "modes": {
+    ".cave_oubliee": 420
+   },
+   "rotation": false,
+   "regles": [
+    [
+     "droits:.cave_oubliee",
+     false
+    ]
+   ]
+  },
+  {
+   "boite": "enumeration",
+   "modes": {
+    ".cave_oubliee": 420
+   },
+   "rotation": true,
+   "regles": [
+    [
+     "droits:.cave_oubliee",
+     false
+    ]
+   ]
+  },
+  {
+   "boite": "enumeration",
+   "modes": {
+    ".cave_oubliee": 416
+   },
+   "rotation": false,
+   "regles": [
+    [
+     "droits:.cave_oubliee",
+     true
+    ]
+   ]
+  },
+  {
+   "boite": "enumeration",
+   "modes": {
+    ".cave_oubliee": 416
+   },
+   "rotation": true,
+   "regles": [
+    [
+     "droits:.cave_oubliee",
+     true
+    ]
+   ]
+  },
+  {
+   "boite": "enumeration",
+   "modes": {
+    ".cave_oubliee": 384
+   },
+   "rotation": false,
+   "regles": [
+    [
+     "droits:.cave_oubliee",
+     true
+    ]
+   ]
+  },
+  {
+   "boite": "enumeration",
+   "modes": {
+    ".cave_oubliee": 384
+   },
+   "rotation": true,
+   "regles": [
+    [
+     "droits:.cave_oubliee",
+     true
+    ]
+   ]
+  },
+  {
+   "boite": "enumeration",
+   "modes": {
+    ".cave_oubliee": 495
+   },
+   "rotation": false,
+   "regles": [
+    [
+     "droits:.cave_oubliee",
+     false
+    ]
+   ]
+  },
+  {
+   "boite": "enumeration",
+   "modes": {
+    ".cave_oubliee": 495
+   },
+   "rotation": true,
+   "regles": [
+    [
+     "droits:.cave_oubliee",
+     false
+    ]
+   ]
+  },
+  {
+   "boite": "enumeration",
+   "modes": {
+    ".cave_oubliee": null
+   },
+   "rotation": false,
+   "regles": [
+    [
+     "droits:.cave_oubliee",
+     true
+    ]
+   ]
+  },
+  {
+   "boite": "enumeration",
+   "modes": {
+    ".cave_oubliee": null
+   },
+   "rotation": true,
+   "regles": [
+    [
+     "droits:.cave_oubliee",
+     true
+    ]
+   ]
+  },
+  {
+   "boite": "enumeration",
+   "modes": {
+    ".cave_oubliee": 488
+   },
+   "rotation": false,
+   "regles": [
+    [
+     "droits:.cave_oubliee",
+     true
+    ]
+   ]
+  },
+  {
+   "boite": "enumeration",
+   "modes": {
+    ".cave_oubliee": 488
+   },
+   "rotation": true,
+   "regles": [
+    [
+     "droits:.cave_oubliee",
+     true
+    ]
+   ]
+  },
+  {
+   "boite": "droits",
+   "modes": {
+    "journal_secret.txt": 420,
+    "ronde.sh": 420
+   },
+   "rotation": false,
+   "regles": [
+    [
+     "droits:journal_secret.txt",
+     false
+    ],
+    [
+     "droits:ronde.sh",
+     true
+    ]
+   ]
+  },
+  {
+   "boite": "droits",
+   "modes": {
+    "journal_secret.txt": 420,
+    "ronde.sh": 420
+   },
+   "rotation": true,
+   "regles": [
+    [
+     "droits:journal_secret.txt",
+     false
+    ],
+    [
+     "droits:ronde.sh",
+     true
+    ]
+   ]
+  },
+  {
+   "boite": "droits",
+   "modes": {
+    "journal_secret.txt": 416,
+    "ronde.sh": 416
+   },
+   "rotation": false,
+   "regles": [
+    [
+     "droits:journal_secret.txt",
+     true
+    ],
+    [
+     "droits:ronde.sh",
+     true
+    ]
+   ]
+  },
+  {
+   "boite": "droits",
+   "modes": {
+    "journal_secret.txt": 416,
+    "ronde.sh": 416
+   },
+   "rotation": true,
+   "regles": [
+    [
+     "droits:journal_secret.txt",
+     true
+    ],
+    [
+     "droits:ronde.sh",
+     true
+    ]
+   ]
+  },
+  {
+   "boite": "droits",
+   "modes": {
+    "journal_secret.txt": 384,
+    "ronde.sh": 384
+   },
+   "rotation": false,
+   "regles": [
+    [
+     "droits:journal_secret.txt",
+     true
+    ],
+    [
+     "droits:ronde.sh",
+     true
+    ]
+   ]
+  },
+  {
+   "boite": "droits",
+   "modes": {
+    "journal_secret.txt": 384,
+    "ronde.sh": 384
+   },
+   "rotation": true,
+   "regles": [
+    [
+     "droits:journal_secret.txt",
+     true
+    ],
+    [
+     "droits:ronde.sh",
+     true
+    ]
+   ]
+  },
+  {
+   "boite": "droits",
+   "modes": {
+    "journal_secret.txt": 495,
+    "ronde.sh": 495
+   },
+   "rotation": false,
+   "regles": [
+    [
+     "droits:journal_secret.txt",
+     false
+    ],
+    [
+     "droits:ronde.sh",
+     false
+    ]
+   ]
+  },
+  {
+   "boite": "droits",
+   "modes": {
+    "journal_secret.txt": 495,
+    "ronde.sh": 495
+   },
+   "rotation": true,
+   "regles": [
+    [
+     "droits:journal_secret.txt",
+     false
+    ],
+    [
+     "droits:ronde.sh",
+     false
+    ]
+   ]
+  },
+  {
+   "boite": "droits",
+   "modes": {
+    "journal_secret.txt": null,
+    "ronde.sh": null
+   },
+   "rotation": false,
+   "regles": [
+    [
+     "droits:journal_secret.txt",
+     true
+    ],
+    [
+     "droits:ronde.sh",
+     true
+    ]
+   ]
+  },
+  {
+   "boite": "droits",
+   "modes": {
+    "journal_secret.txt": null,
+    "ronde.sh": null
+   },
+   "rotation": true,
+   "regles": [
+    [
+     "droits:journal_secret.txt",
+     true
+    ],
+    [
+     "droits:ronde.sh",
+     true
+    ]
+   ]
+  },
+  {
+   "boite": "droits",
+   "modes": {
+    "journal_secret.txt": 488,
+    "ronde.sh": 488
+   },
+   "rotation": false,
+   "regles": [
+    [
+     "droits:journal_secret.txt",
+     true
+    ],
+    [
+     "droits:ronde.sh",
+     true
+    ]
+   ]
+  },
+  {
+   "boite": "droits",
+   "modes": {
+    "journal_secret.txt": 488,
+    "ronde.sh": 488
+   },
+   "rotation": true,
+   "regles": [
+    [
+     "droits:journal_secret.txt",
+     true
+    ],
+    [
+     "droits:ronde.sh",
+     true
+    ]
+   ]
+  },
+  {
+   "boite": "secrets",
+   "modes": {
+    ".historique_fictif": 420,
+    "config.ini": 420
+   },
+   "rotation": false,
+   "regles": [
+    [
+     "absent:.historique_fictif",
+     false
+    ],
+    [
+     "droits:config.ini",
+     false
+    ],
+    [
+     "rotation",
+     false
+    ]
+   ]
+  },
+  {
+   "boite": "secrets",
+   "modes": {
+    ".historique_fictif": 420,
+    "config.ini": 420
+   },
+   "rotation": true,
+   "regles": [
+    [
+     "absent:.historique_fictif",
+     false
+    ],
+    [
+     "droits:config.ini",
+     false
+    ],
+    [
+     "rotation",
+     true
+    ]
+   ]
+  },
+  {
+   "boite": "secrets",
+   "modes": {
+    ".historique_fictif": 416,
+    "config.ini": 416
+   },
+   "rotation": false,
+   "regles": [
+    [
+     "absent:.historique_fictif",
+     false
+    ],
+    [
+     "droits:config.ini",
+     true
+    ],
+    [
+     "rotation",
+     false
+    ]
+   ]
+  },
+  {
+   "boite": "secrets",
+   "modes": {
+    ".historique_fictif": 416,
+    "config.ini": 416
+   },
+   "rotation": true,
+   "regles": [
+    [
+     "absent:.historique_fictif",
+     false
+    ],
+    [
+     "droits:config.ini",
+     true
+    ],
+    [
+     "rotation",
+     true
+    ]
+   ]
+  },
+  {
+   "boite": "secrets",
+   "modes": {
+    ".historique_fictif": 384,
+    "config.ini": 384
+   },
+   "rotation": false,
+   "regles": [
+    [
+     "absent:.historique_fictif",
+     false
+    ],
+    [
+     "droits:config.ini",
+     true
+    ],
+    [
+     "rotation",
+     false
+    ]
+   ]
+  },
+  {
+   "boite": "secrets",
+   "modes": {
+    ".historique_fictif": 384,
+    "config.ini": 384
+   },
+   "rotation": true,
+   "regles": [
+    [
+     "absent:.historique_fictif",
+     false
+    ],
+    [
+     "droits:config.ini",
+     true
+    ],
+    [
+     "rotation",
+     true
+    ]
+   ]
+  },
+  {
+   "boite": "secrets",
+   "modes": {
+    ".historique_fictif": 495,
+    "config.ini": 495
+   },
+   "rotation": false,
+   "regles": [
+    [
+     "absent:.historique_fictif",
+     false
+    ],
+    [
+     "droits:config.ini",
+     false
+    ],
+    [
+     "rotation",
+     false
+    ]
+   ]
+  },
+  {
+   "boite": "secrets",
+   "modes": {
+    ".historique_fictif": 495,
+    "config.ini": 495
+   },
+   "rotation": true,
+   "regles": [
+    [
+     "absent:.historique_fictif",
+     false
+    ],
+    [
+     "droits:config.ini",
+     false
+    ],
+    [
+     "rotation",
+     true
+    ]
+   ]
+  },
+  {
+   "boite": "secrets",
+   "modes": {
+    ".historique_fictif": null,
+    "config.ini": null
+   },
+   "rotation": false,
+   "regles": [
+    [
+     "absent:.historique_fictif",
+     true
+    ],
+    [
+     "droits:config.ini",
+     true
+    ],
+    [
+     "rotation",
+     false
+    ]
+   ]
+  },
+  {
+   "boite": "secrets",
+   "modes": {
+    ".historique_fictif": null,
+    "config.ini": null
+   },
+   "rotation": true,
+   "regles": [
+    [
+     "absent:.historique_fictif",
+     true
+    ],
+    [
+     "droits:config.ini",
+     true
+    ],
+    [
+     "rotation",
+     true
+    ]
+   ]
+  },
+  {
+   "boite": "secrets",
+   "modes": {
+    ".historique_fictif": 488,
+    "config.ini": 488
+   },
+   "rotation": false,
+   "regles": [
+    [
+     "absent:.historique_fictif",
+     false
+    ],
+    [
+     "droits:config.ini",
+     true
+    ],
+    [
+     "rotation",
+     false
+    ]
+   ]
+  },
+  {
+   "boite": "secrets",
+   "modes": {
+    ".historique_fictif": 488,
+    "config.ini": 488
+   },
+   "rotation": true,
+   "regles": [
+    [
+     "absent:.historique_fictif",
+     false
+    ],
+    [
+     "droits:config.ini",
+     true
+    ],
+    [
+     "rotation",
+     true
+    ]
+   ]
+  }
+ ],
+ "droits": [
+  {
+   "ligne": "chmod 600 coffre.txt",
+   "droits": [
+    {
+     "seg": 0,
+     "cmd": "chmod",
+     "mode": "600",
+     "fichier": "coffre.txt",
+     "avant": "rw-r--r--",
+     "apres": "rw-------",
+     "octal": "600",
+     "suppose": true
+    }
+   ]
+  },
+  {
+   "ligne": "chmod u+x ronde.sh",
+   "droits": [
+    {
+     "seg": 0,
+     "cmd": "chmod",
+     "mode": "u+x",
+     "fichier": "ronde.sh",
+     "avant": "rw-r--r--",
+     "apres": "rwxr--r--",
+     "octal": "744",
+     "suppose": true
+    }
+   ]
+  },
+  {
+   "ligne": "chmod -x cadeau.sh",
+   "droits": [
+    {
+     "seg": 0,
+     "cmd": "chmod",
+     "mode": "-x",
+     "fichier": "cadeau.sh",
+     "avant": "rw-r--r--",
+     "apres": "rw-r--r--",
+     "octal": "644",
+     "suppose": true
+    }
+   ]
+  },
+  {
+   "ligne": "chmod o-rwx boites/droits/*",
+   "droits": [
+    {
+     "seg": 0,
+     "cmd": "chmod",
+     "mode": "o-rwx",
+     "fichier": "boites/droits/*",
+     "avant": "rw-r--r--",
+     "apres": "rw-r-----",
+     "octal": "640",
+     "suppose": true
+    }
+   ]
+  },
+  {
+   "ligne": "(umask 077; touch carnet_secret.txt)",
+   "droits": [
+    {
+     "seg": 0,
+     "cmd": "umask",
+     "mode": "077",
+     "fichier": "",
+     "avant": "rw-rw-rw-",
+     "apres": "rw-------",
+     "octal": "600",
+     "suppose": false
+    }
+   ]
+  },
+  {
+   "ligne": "umask 022",
+   "droits": [
+    {
+     "seg": 0,
+     "cmd": "umask",
+     "mode": "022",
+     "fichier": "",
+     "avant": "rw-rw-rw-",
+     "apres": "rw-r--r--",
+     "octal": "644",
+     "suppose": false
+    }
+   ]
+  },
+  {
+   "ligne": "chmod -R u+x,g-w a b",
+   "droits": [
+    {
+     "seg": 0,
+     "cmd": "chmod",
+     "mode": "u+x,g-w",
+     "fichier": "a",
+     "avant": "rw-r--r--",
+     "apres": "rwxr--r--",
+     "octal": "744",
+     "suppose": true
+    }
+   ]
+  },
+  {
+   "ligne": "chmod 755",
+   "droits": []
+  },
+  {
+   "ligne": "ls -l",
+   "droits": []
+  },
+  {
+   "ligne": "ls -l | grep x && chmod go-r f",
+   "droits": [
+    {
+     "seg": 2,
+     "cmd": "chmod",
+     "mode": "go-r",
+     "fichier": "f",
+     "avant": "rw-r--r--",
+     "apres": "rw-------",
+     "octal": "600",
+     "suppose": true
+    }
+   ]
+  },
+  {
+   "ligne": "chmod --verbose a=r x.txt",
+   "droits": [
+    {
+     "seg": 0,
+     "cmd": "chmod",
+     "mode": "a=r",
+     "fichier": "x.txt",
+     "avant": "rw-r--r--",
+     "apres": "r--r--r--",
+     "octal": "444",
+     "suppose": true
+    }
+   ]
+  },
+  {
+   "ligne": "chmod u+s f",
+   "droits": []
+  },
+  {
+   "ligne": "umask",
+   "droits": []
+  }
+ ],
+ "tableau": [
+  {
+   "g": 0,
+   "p": 0,
+   "s": 0,
+   "t": [
+    [
+     "glitchs",
+     0,
+     true
+    ],
+    [
+     "processus",
+     0,
+     true
+    ],
+    [
+     "secrets",
+     0,
+     true
+    ]
+   ]
+  },
+  {
+   "g": 0,
+   "p": 0,
+   "s": 1,
+   "t": [
+    [
+     "glitchs",
+     0,
+     true
+    ],
+    [
+     "processus",
+     0,
+     true
+    ],
+    [
+     "secrets",
+     1,
+     false
+    ]
+   ]
+  },
+  {
+   "g": 0,
+   "p": 1,
+   "s": 0,
+   "t": [
+    [
+     "glitchs",
+     0,
+     true
+    ],
+    [
+     "processus",
+     1,
+     false
+    ],
+    [
+     "secrets",
+     0,
+     true
+    ]
+   ]
+  },
+  {
+   "g": 0,
+   "p": 1,
+   "s": 1,
+   "t": [
+    [
+     "glitchs",
+     0,
+     true
+    ],
+    [
+     "processus",
+     1,
+     false
+    ],
+    [
+     "secrets",
+     1,
+     false
+    ]
+   ]
+  },
+  {
+   "g": 2,
+   "p": 0,
+   "s": 0,
+   "t": [
+    [
+     "glitchs",
+     2,
+     false
+    ],
+    [
+     "processus",
+     0,
+     true
+    ],
+    [
+     "secrets",
+     0,
+     true
+    ]
+   ]
+  },
+  {
+   "g": 2,
+   "p": 0,
+   "s": 1,
+   "t": [
+    [
+     "glitchs",
+     2,
+     false
+    ],
+    [
+     "processus",
+     0,
+     true
+    ],
+    [
+     "secrets",
+     1,
+     false
+    ]
+   ]
+  },
+  {
+   "g": 2,
+   "p": 1,
+   "s": 0,
+   "t": [
+    [
+     "glitchs",
+     2,
+     false
+    ],
+    [
+     "processus",
+     1,
+     false
+    ],
+    [
+     "secrets",
+     0,
+     true
+    ]
+   ]
+  },
+  {
+   "g": 2,
+   "p": 1,
+   "s": 1,
+   "t": [
+    [
+     "glitchs",
+     2,
+     false
+    ],
+    [
+     "processus",
+     1,
+     false
+    ],
+    [
+     "secrets",
+     1,
+     false
+    ]
+   ]
+  }
+ ],
+ "mots": [
+  "abyssor",
+  "ambrelune",
+  "anguillon",
+  "araignoir",
+  "astralame",
+  "aureolin",
+  "bavonge",
+  "bavouille",
+  "boulonnet",
+  "bourdonjon",
+  "bourrasquet",
+  "braisillon",
+  "brumaleine",
+  "cailloute",
+  "calmaree",
+  "cauchemarre",
+  "cendrouille",
+  "chaosmere",
+  "chaudrogre",
+  "chaudronne",
+  "chauvecroc",
+  "cheneroc",
+  "cigalarme",
+  "ciliacle",
+  "clopinou",
+  "cocondor",
+  "corbouh",
+  "cornichaud",
+  "crabouille",
+  "cranard",
+  "croquefleur",
+  "cyclonaute",
+  "drakosse",
+  "drapouille",
+  "eclipsard",
+  "ecorcerf",
+  "ectoplouf",
+  "ecumane",
+  "empyria",
+  "engrenaille",
+  "essaimpereur",
+  "etincelot",
+  "etoilapin",
+  "felicorne",
+  "filcomete",
+  "flamouche",
+  "follanterne",
+  "fondelin",
+  "forgerain",
+  "fouinroc",
+  "fourmidable",
+  "fractalis",
+  "fulgurox",
+  "fumerole",
+  "galetard",
+  "gargouflamme",
+  "givrarde",
+  "givrichon",
+  "glandouille",
+  "gloupi",
+  "golemmur",
+  "goulichon",
+  "gouttelin",
+  "greffon",
+  "groinfer",
+  "heaumbre",
+  "heaumeur",
+  "hibourreau",
+  "homardeur",
+  "horlogrif",
+  "hurlombre",
+  "infernaille",
+  "infernarque",
+  "krillou",
+  "lampignon",
+  "lampiotte",
+  "lanternix",
+  "lianaconda",
+  "libellance",
+  "lichonarque",
+  "louvacier",
+  "lumignon",
+  "lunacorne",
+  "magmastodonte",
+  "mammouroc",
+  "mantelame",
+  "marionnoire",
+  "milgriffe",
+  "millepince",
+  "miroeil",
+  "mixtrouille",
+  "momiaou",
+  "mousselin",
+  "mutaloupe",
+  "mycelix",
+  "nautiloque",
+  "nebuline",
+  "nenuphage",
+  "noctilune",
+  "ombrachne",
+  "ondulame",
+  "osselet",
+  "oursomont",
+  "pantinou",
+  "papillombre",
+  "parasouris",
+  "pavegarde",
+  "petalouette",
+  "plouftin",
+  "plumange",
+  "poulpiot",
+  "pucerise",
+  "pupillarque",
+  "pyrodrac",
+  "racinelle",
+  "raiyon",
+  "recifort",
+  "ressortine",
+  "ricanombre",
+  "ricanos",
+  "ronceau",
+  "rouillot",
+  "rugisoleil",
+  "rugissire",
+  "runodrake",
+  "scarabouille",
+  "scintipede",
+  "scorpiquant"
+ ]
+}

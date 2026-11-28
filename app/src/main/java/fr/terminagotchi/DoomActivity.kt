@@ -113,7 +113,7 @@ class DoomVue(ctx: Context, private val jeu: Jeu, carteTexte: String, reglages: 
     var arriere = false
     private var flash = 0
     private var touche = 0
-    private var message = "Trouve la sortie verte !"
+    private var message = t("doom.but")
     private var messageFin = 0L
     private var fini = false
     private var tues = 0
@@ -186,7 +186,7 @@ class DoomVue(ctx: Context, private val jeu: Jeu, carteTexte: String, reglages: 
             cible.pv--
             if (cible.pv <= 0) {
                 tues++
-                dire("Bestiole neutralisée ! ($tues)")
+                dire(t("doom.neutralisee", "n" to tues))
             }
         }
     }
@@ -226,7 +226,7 @@ class DoomVue(ctx: Context, private val jeu: Jeu, carteTexte: String, reglages: 
                 dernierCoup = maintenant
                 vie--
                 touche = 6
-                dire("Aïe ! Il reste $vie vie(s)")
+                dire(t("doom.aie", "n" to vie))
                 if (vie <= 0) terminer(false)
             }
         }
@@ -241,11 +241,11 @@ class DoomVue(ctx: Context, private val jeu: Jeu, carteTexte: String, reglages: 
             j.ajouterXp(gain)
             val m = j.module("doom")
             m.put("victoires", m.optInt("victoires") + 1)
-            j.log("🎮 Niveau terminé ! +$gain XP")
-            message = "🏆 VICTOIRE ! +$gain XP · touche 🔥 pour revenir"
+            j.log(t("doom.fini.log", "xp" to gain))
+            message = t("doom.victoire", "xp" to gain)
         } else {
-            j.log("🎮 Défaite au Doom…")
-            message = "💀 Perdu… règle la vie dans reglages.txt ! (🔥 pour revenir)"
+            j.log(t("doom.defaite.log"))
+            message = t("doom.defaite")
         }
         messageFin = Long.MAX_VALUE
         j.sauver()

@@ -2,45 +2,46 @@ package fr.terminagotchi
 
 import android.content.Context
 import android.graphics.Bitmap
+import android.graphics.BitmapFactory
 import android.graphics.Canvas
-import android.graphics.Color
+import android.graphics.ColorMatrix
+import android.graphics.ColorMatrixColorFilter
 import android.graphics.Paint
+import org.json.JSONArray
 import org.json.JSONObject
+import java.math.BigDecimal
+import java.math.RoundingMode
 import java.security.SecureRandom
 import java.text.Normalizer
-import kotlin.random.Random
+import java.util.zip.Inflater
 
 /**
- * Le bestiaire commun (150 espèces en 10 familles), lu depuis assets/bestiaire.json (le même que le PC et le site).
- * Chaque espèce est dessinée à chaque stade (enfant, ado, adulte, finale) et parfois dans des variantes d'habitat.
+ * Le bestiaire commun (150 espèces + Abyssor), lu depuis assets/bestiaire.json (le même que le PC et le site).
+ * Portage de pc/tg/bestiaire.py : tirage d'une apparition (espèce, variante, shiny), note et rareté de
+ * L'INDIVIDU (stats, variante, puissance de l'espèce), images par stade (assets/sprites.bin), migration.
  */
 object Bestiaire {
+    class Variante(val id: String, val nom: String, val chance: Double, val score: Double, val zone: String, val habitat: String)
+
     class Espece(
         val id: String, val numero: Int, val nom: String, val famille: String, val icone: String,
+        /** rareté « de base » de l'espèce (indicative) : la vraie rareté est celle de chaque individu */
         val rarete: String, val stat: String, val description: String, val comportement: String,
-        val capacite: String, val zone: String, val attireePar: String, val frequence: String,
-        val tailleCm: Double, val poidsKo: Int, val stats: LinkedHashMap<String, Int>,
+        val capacite: String, val habitat: String, val zone: String, val attireePar: String, val frequence: String,
+        val puissance: Int, val tailleCm: Double, val poidsKo: Int, val stats: LinkedHashMap<String, Int>,
+        val variantes: List<Variante>, val epreuves: List<String>,
+        /** ancien dessin 16×16 (seulement Abyssor, qui garde ses animations faites main) */
         val sprite: List<String>, val spriteShiny: List<String>,
         val palette: Map<Char, Int>, val paletteShiny: Map<Char, Int>,
         val secrete: Boolean = false,
-        val epreuves: List<String> = emptyList(),
-        /** id de variante → chance d'apparition (%) ; « classique » toujours présente. */
-        val variantes: LinkedHashMap<String, Double> = linkedMapOf("classique" to 100.0),
-        /** {variante: {stade: {"l": lignes, "p": palette}}} : les dessins détaillés (32 px). */
-        val dessins: JSONObject? = null,
     )
 
-    /** Lieux de l'ancien bestiaire (vieilles sauvegardes) + ceux de bestiaire.json (« lieux »). */
-    val HABITATS = mutableMapOf(
-        "archives" to "les archives", "marais" to "le marais", "usine" to "l'usine", "grenier" to "le grenier",
-        "forteresse" to "la forteresse", "atelier" to "l'atelier", "forge" to "la forge", "foret" to "la forêt",
-        "montagne" to "la montagne", "bibliotheque" to "la bibliothèque", "coffre" to "le coffre-fort",
-        "laboratoire" to "le laboratoire", "arcade" to "la salle d'arcade", "faille" to "la faille", "grotte" to "la grotte",
-    )
-    val XP = mapOf("commune" to 15, "peu commune" to 25, "rare" to 40, "légendaire" to 100)
+    val RARETES = listOf("commune", "peu commune", "rare", "épique", "légendaire", "mythique")
     val COULEUR_RARETE = mapOf("commune" to 0xFFB0B0C0.toInt(), "peu commune" to 0xFF5FD787.toInt(),
         "rare" to 0xFF5FAFFF.toInt(), "épique" to 0xFFC77DFF.toInt(), "légendaire" to 0xFFFFAF00.toInt(),
         "mythique" to 0xFFFF5F87.toInt())
+    val XP = mapOf("commune" to 15, "peu commune" to 25, "rare" to 40, "épique" to 65, "légendaire" to 100, "mythique" to 200)
+    val STADES = listOf("bebe", "enfant", "ado", "adulte", "ancien")
 
     var especes: List<Espece> = emptyList()
         private set
@@ -48,186 +49,372 @@ object Bestiaire {
         private set
     var humeurs: List<String> = emptyList()
         private set
-    private var raretes: List<String> = emptyList()
-    private var poids: Map<String, Int> = emptyMap()
-    private var chanceShiny = 100
-    private var version = 1
-    /** Noms de l'ancien bestiaire → nouveaux noms (même numéro). */
-    private var anciens: Map<String, String> = emptyMap()
-    /** Règles de la rareté d'un individu (« rarete_individu » de bestiaire.json). */
-    private var regleRang: JSONObject = JSONObject()
-    private val puissance = HashMap<String, Int>()
+    var habitats: Map<String, String> = emptyMap()
+        private set
+    var chanceShiny = 100
+        private set
+    var poidsFrequence: Map<String, Double> = emptyMap()
+        private set
+    var poidsNote: Map<String, Double> = emptyMap()
+        private set
+    var paliers: List<Pair<Double, String>> = emptyList()
+        private set
+    var speciales: Map<String, String> = emptyMap()
+        private set
+    private var anciens: Map<String, Int> = emptyMap()
+
+    private var ctxApp: Context? = null
+    private var sourceSprites: (() -> ByteArray?)? = null
+    private var jeuxSprites: JSONObject? = null
+    private val decodes = HashMap<String, AnimAuto.Sprite?>()
     private val images = HashMap<String, Bitmap>()
+    private val portraits = HashMap<String, Bitmap?>()
 
     fun charger(ctx: Context) {
         if (especes.isNotEmpty()) return
         synchronized(this) {
             if (especes.isNotEmpty()) return
-            val o = JSONObject(ctx.assets.open("bestiaire.json").bufferedReader().use { it.readText() })
-            val ra = o.getJSONArray("raretes")
-            raretes = (0 until ra.length()).map { ra.getString(it) }
-            val po = o.getJSONObject("poids")
-            poids = raretes.associateWith { po.optInt(it) }
-            chanceShiny = o.optInt("chance_shiny", 100)
-            version = o.optInt("version", 1)
-            o.optJSONObject("lieux")?.let { l -> l.keys().forEach { HABITATS[it] = l.getString(it) } }
-            regleRang = o.optJSONObject("rarete_individu") ?: JSONObject()
-            oeufs = o.optJSONArray("oeufs")?.let { a ->
-                (0 until a.length()).map { i ->
-                    val x = a.getJSONObject(i)
-                    Oeuf(x.getString("id"), x.getString("nom"), Color.parseColor(x.getString("coquille")),
-                        Color.parseColor(x.getString("taches")),
-                        x.getJSONArray("especes").let { l -> (0 until l.length()).map { l.getString(it) } })
-                }
-            } ?: emptyList()
-            anciens = o.optJSONObject("anciens")?.let { a -> a.keys().asSequence().associateWith { a.getString(it) } } ?: emptyMap()
-            val ma = o.getJSONArray("marques")
-            marques = (0 until ma.length()).map { ma.getString(it) }
-            val hu = o.getJSONArray("humeurs")
-            humeurs = (0 until hu.length()).map { hu.getString(it) }
-            val es = o.getJSONArray("especes")
-            especes = (0 until es.length()).map { i ->
-                val e = es.getJSONObject(i)
-                fun lignes(k: String) = e.getJSONArray(k).let { a -> (0 until a.length()).map { a.getString(it) } }
-                fun pal(k: String): Map<Char, Int> {
-                    val p = e.getJSONObject(k)
-                    return p.keys().asSequence().associate { it[0] to Color.parseColor(p.getString(it)) }
-                }
-                val st = e.getJSONObject("stats")
-                puissance[e.getString("id")] = e.optInt("puissance", 1)
-                e.optJSONObject("familier")?.let { familiers[e.getString("id")] = it }
-                Espece(
-                    e.getString("id"), e.getInt("numero"), e.getString("nom"), e.getString("famille"),
-                    e.getString("icone"), e.getString("rarete"), e.getString("stat"), e.getString("description"),
-                    e.getString("comportement"), e.getString("capacite"), e.getString("zone"),
-                    e.getString("attiree_par"), e.getString("frequence"), e.getDouble("taille_cm"), e.getInt("poids_ko"),
-                    LinkedHashMap(st.keys().asSequence().associateWith { st.getInt(it) }),
-                    lignes("sprite"), lignes("sprite_shiny"), pal("palette"), pal("palette_shiny"),
-                    e.optBoolean("secrete"),
-                    e.optJSONArray("epreuves")?.let { a -> (0 until a.length()).map { a.getString(it) } } ?: listOf(e.getString("famille")),
-                    e.optJSONArray("variantes")?.let { a ->
-                        LinkedHashMap((0 until a.length()).associate { a.getJSONObject(it).getString("id") to a.getJSONObject(it).optDouble("chance", 1.0) })
-                    }?.takeIf { it.isNotEmpty() } ?: linkedMapOf("classique" to 100.0),
-                    e.optJSONObject("dessins"),
-                )
-            }
+            ctxApp = ctx.applicationContext
+            val texte = ctx.assets.open("bestiaire.json").bufferedReader().use { it.readText() }
+            val app = ctx.applicationContext
+            chargerDonnees(texte) { try { app.assets.open("sprites.bin").use { it.readBytes() } } catch (e: Exception) { null } }
         }
     }
 
-    private fun simple(t: String) =
+    /** Lecture des données (séparée de l'appli : sert aussi aux tests sur ordinateur). */
+    fun chargerDonnees(texte: String, sprites: () -> ByteArray?) {
+        val o = JSONObject(texte)
+        sourceSprites = sprites
+        jeuxSprites = null
+        decodes.clear()
+        chanceShiny = o.optInt("chance_shiny", 100)
+        val pf = o.getJSONObject("poids_frequence")
+        poidsFrequence = pf.keys().asSequence().associateWith { pf.getDouble(it) }
+        val r = o.getJSONObject("rarete")
+        val po = r.getJSONObject("poids")
+        poidsNote = po.keys().asSequence().associateWith { po.getDouble(it) }
+        val pa = r.getJSONArray("paliers")
+        paliers = (0 until pa.length()).map { pa.getJSONArray(it).let { p -> p.getDouble(0) to p.getString(1) } }
+        val sp = r.optJSONObject("speciales") ?: JSONObject()
+        speciales = sp.keys().asSequence().associateWith { sp.getString(it) }
+        val an = o.optJSONObject("anciens") ?: JSONObject()
+        anciens = an.keys().asSequence().associateWith { an.getInt(it) }
+        val ha = o.getJSONObject("habitats")
+        habitats = ha.keys().asSequence().associateWith { ha.getString(it) }
+        marques = chaines(o.getJSONArray("marques"))
+        humeurs = chaines(o.getJSONArray("humeurs"))
+        val es = o.getJSONArray("especes")
+        especes = (0 until es.length()).map { i ->
+            val e = es.getJSONObject(i)
+            fun lignes(k: String) = e.optJSONArray(k)?.let { chaines(it) } ?: emptyList()
+            fun pal(k: String): Map<Char, Int> {
+                val p = e.optJSONObject(k) ?: return emptyMap()
+                return p.keys().asSequence().associate { it[0] to (hexa(p.getString(it)) or 0xFF000000.toInt()) }
+            }
+            val st = e.getJSONObject("stats")
+            val va = e.optJSONArray("variantes") ?: JSONArray()
+            val variantes = (0 until va.length()).map { k ->
+                val v = va.getJSONObject(k)
+                Variante(v.getString("id"), v.optString("nom", v.getString("id")), v.optDouble("chance", 1.0),
+                    v.optDouble("score", 0.0), v.optString("zone", e.getString("zone")), v.optString("habitat", ""))
+            }.ifEmpty { listOf(Variante("classique", "classique", 1.0, 0.0, e.getString("zone"), e.optString("habitat"))) }
+            Espece(
+                e.getString("id"), e.getInt("numero"), e.getString("nom"), e.getString("famille"),
+                e.optString("icone"), e.optString("rarete", "commune"), e.optString("stat"), e.optString("description"),
+                e.optString("comportement"), e.optString("capacite"), e.optString("habitat"), e.getString("zone"),
+                e.optString("attiree_par"), e.optString("frequence"), e.optInt("puissance", 1),
+                e.optDouble("taille_cm", 30.0), e.optInt("poids_ko"),
+                LinkedHashMap(st.keys().asSequence().associateWith { st.getInt(it) }),
+                variantes, e.optJSONArray("epreuves")?.let { chaines(it) } ?: emptyList(),
+                lignes("sprite"), lignes("sprite_shiny"), pal("palette"), pal("palette_shiny"),
+                e.optBoolean("secrete"),
+            )
+        }
+    }
+
+    private fun chaines(a: JSONArray) = (0 until a.length()).map { a.getString(it) }
+
+    /** "#rrggbb" → 0xRRGGBB */
+    fun hexa(h: String): Int = h.trim().removePrefix("#").toInt(16)
+
+    fun publiques() = especes.filter { !it.secrete }
+
+    fun simple(t: String) =
         Normalizer.normalize(t.lowercase().trim(), Normalizer.Form.NFD).replace(Regex("\\p{Mn}+"), "")
 
+    /** Retrouve une espèce par son nom (sans majuscules ni accents), son identifiant ou son numéro. */
     fun espece(nom: String?): Espece? {
         if (nom.isNullOrBlank()) return null
         val n = simple(nom).trimStart('#')
         return especes.firstOrNull { simple(it.nom) == n || it.id == n || it.numero.toString() == n.trimStart('0') }
             ?: especes.firstOrNull { n.length >= 3 && simple(it.nom).startsWith(n) }
-            ?: anciens.entries.firstOrNull { simple(it.key) == n }?.let { a -> especes.firstOrNull { it.nom == a.value } }
     }
 
-    /**
-     * Vieilles sauvegardes : les bestioles de l'ancien bestiaire prennent le nom de leur remplaçante (même numéro).
-     * Le monstre sauvage en cours est oublié (il vivait dans un ancien lieu).
-     */
-    fun migrer(jeu: Jeu) {
-        val ex = jeu.module("explo")
-        if (anciens.isEmpty() || ex.optInt("bestiaire_v", 1) >= version) return
-        val caps = ex.optJSONArray("captures")
-        if (caps != null) for (i in 0 until caps.length()) {
-            val c = caps.getJSONObject(i)
-            anciens[c.optString("espece")]?.let { c.put("espece", it) }
-        }
-        ex.optJSONObject("collection")?.let { col ->
-            val neuve = JSONObject()
-            for (k in col.keys().asSequence().toList()) {
-                val n = anciens[k] ?: k
-                neuve.put(n, neuve.optInt(n) + col.optInt(k))
-            }
-            ex.put("collection", neuve)
-        }
-        ex.put("bestiaire_v", version)
-        val dr = jeu.module("dressage")
-        dr.remove("en_cours")
-        dr.put("familles", org.json.JSONArray())
+    // ---------------------------------------------------------------- hasard « à la Python »
+    /** random.choices(population, poids) : un seul tirage pondéré. */
+    fun <T> choisir(liste: List<T>, poids: List<Double>, rnd: kotlin.random.Random = kotlin.random.Random): T {
+        var total = 0.0
+        val cumul = poids.map { total += it; total }
+        val x = rnd.nextDouble() * total
+        var i = cumul.indexOfFirst { it > x }
+        if (i < 0) i = liste.size - 1
+        return liste[i]
     }
 
-    // ---------------------------------------------------------------- les 9 œufs de la créature du joueur
-    class Oeuf(val id: String, val nom: String, val coquille: Int, val taches: Int, val especes: List<String>)
-    var oeufs: List<Oeuf> = emptyList()
-        private set
-    /** id d'espèce → {stade: {"l", "p"}} : la créature du joueur, de plus en plus grande. */
-    private val familiers = HashMap<String, JSONObject>()
+    /** round(x, n) de Python (arrondi exact au plus proche, à égalité vers le pair). */
+    fun arrondi(x: Double, n: Int): Double = BigDecimal(x).setScale(n, RoundingMode.HALF_EVEN).toDouble()
 
-    fun tirerOeuf(): String = oeufs.randomOrNull()?.id ?: ""
-    fun nomOeuf(id: String) = oeufs.firstOrNull { it.id == id }?.nom ?: ""
-    fun oeuf(id: String) = oeufs.firstOrNull { it.id == id }
-    fun tirerFamilier(oeuf: String): String =
-        (oeufs.firstOrNull { it.id == oeuf } ?: oeufs.firstOrNull())?.especes?.randomOrNull() ?: ""
+    // ---------------------------------------------------------------- apparition, note, rareté
+    class Tirage(val espece: Espece, val shiny: Boolean, val variante: String)
 
-    private val STADE_IMAGE = listOf("", "bebe", "enfant", "ado", "adulte", "ancien")
-
-    /** Lignes + palette (couleurs Android) de la créature du joueur à un stade, ou null. */
-    fun familier(id: String, stade: Int, shiny: Boolean): Pair<List<String>, Map<Char, Int>>? {
-        val x = familiers[id]?.optJSONObject(STADE_IMAGE.getOrNull(stade) ?: "ancien") ?: return null
-        val l = x.getJSONArray("l").let { a -> (0 until a.length()).map { a.getString(it) } }
-        val p = x.getJSONObject("p")
-        val pal = HashMap<Char, Int>()
-        for (k in p.keys()) {
-            var c = Color.parseColor(p.getString(k))
-            if (shiny) {
-                val hsv = FloatArray(3)
-                Color.colorToHSV(c, hsv)
-                hsv[0] = (hsv[0] + 180f) % 360f
-                c = Color.HSVToColor(hsv)
-            }
-            pal[k[0]] = c
-        }
-        return l to pal
+    /** {famille: commande qui l'attire} (une commande par famille, champ « attiree_par »), comme B.familles() sur PC. */
+    fun familles(): Map<String, String> {
+        val out = LinkedHashMap<String, String>()
+        for (e in publiques()) if (e.famille !in out) out[e.famille] = e.attireePar
+        return out
     }
 
-    /** La forme d'un individu (classique, volcan, lave…), tirée selon les chances des variantes dessinées. */
-    fun tirerVariante(e: Espece): String {
-        var t = Random.nextDouble(e.variantes.values.sum().coerceAtLeast(0.001))
-        for ((id, c) in e.variantes) { t -= c; if (t < 0) return id }
-        return "classique"
+    /** Une apparition : l'espèce (selon sa fréquence, et la famille attirée), sa variante (selon son habitat),
+     *  shiny ou pas. Sans graine (non vérifiable) ; même pondération que Tirage.poidsEspeces. */
+    fun tirer(rnd: kotlin.random.Random = kotlin.random.Random, attire: String? = null): Tirage {
+        val pub = publiques()
+        val e = choisir(pub, fr.terminagotchi.Tirage.poidsEspeces(pub, attire).map { it.toDouble() }, rnd)
+        val v = choisir(e.variantes, e.variantes.map { it.chance }, rnd)
+        val shiny = rnd.nextInt(chanceShiny) == 0
+        return Tirage(e, shiny, v.id)
     }
 
-    fun tirer(): Pair<Espece, Boolean> {
-        val total = poids.values.sum().coerceAtLeast(1)
-        var t = Random.nextInt(total)
-        var rarete = raretes.first()
-        for (r in raretes) {
-            t -= poids[r] ?: 0
-            if (t < 0) { rarete = r; break }
-        }
-        val e = especes.filter { it.rarete == rarete && !it.secrete }.random()
-        return e to (Random.nextInt(chanceShiny) == 0)
+    fun variante(e: Espece, vid: String?): Variante = e.variantes.firstOrNull { it.id == vid } ?: e.variantes.first()
+
+    /** Note sur 100 : 60 % qualité des stats, 25 % variante, 15 % puissance de l'espèce, +10 shiny. */
+    fun note(e: Espece, vid: String?, qualite: Double, shiny: Boolean): Double {
+        val p = poidsNote
+        val n = (p["stats"] ?: 60.0) * qualite + (p["variante"] ?: 25.0) * variante(e, vid).score +
+            (p["puissance"] ?: 15.0) * (e.puissance - 1) / 14 + (if (shiny) p["bonus_shiny"] ?: 10.0 else 0.0)
+        return arrondi(minOf(100.0, n), 1)
     }
 
-    /** Une bestiole capturée : un individu unique, avec sa marque et son potentiel. */
-    fun individu(e: Espece, shiny: Boolean, zone: String, variante: String? = null): JSONObject {
+    /** La rareté d'un individu (et plus de l'espèce) ; Abyssor est toujours mythique. */
+    fun rarete(e: Espece, vid: String?, qualite: Double, shiny: Boolean): String {
+        speciales[e.id]?.let { return it }
+        val n = note(e, vid, qualite, shiny)
+        var nom = "commune"
+        for ((seuil, palier) in paliers) if (n >= seuil) nom = palier
+        return nom
+    }
+
+    /** Rareté d'une bestiole de la troupe (les anciennes captures n'en ont pas : on la recalcule). */
+    fun rareteDe(ind: JSONObject): String {
+        ind.optString("rarete").takeIf { it.isNotEmpty() }?.let { return it }
+        val e = espece(ind.optString("espece")) ?: return "commune"
+        return rarete(e, ind.optString("variante", "classique"), ind.optDouble("potentiel", 50.0) / 100, ind.optBoolean("shiny"))
+    }
+
+    /** Une bestiole : unique, avec sa marque, ses stats tirées et sa rareté. */
+    fun individu(e: Espece, shiny: Boolean, zone: String, vid: String = "classique", qualite: Double? = null,
+                 rnd: java.util.Random = java.util.Random()): JSONObject {
+        val q = qualite ?: rnd.nextDouble()
+        val iv = LinkedHashMap<String, Int>()
+        for (k in e.stats.keys) iv[k] = Math.rint(31 * (q + rnd.nextGaussian() * 0.08)).toInt().coerceIn(0, 31)
+        val st = JSONObject()
+        for ((k, v) in e.stats) st.put(k, v + (iv[k] ?: 0) / 2)
         val b = ByteArray(5)
         SecureRandom().nextBytes(b)
-        val iv = e.stats.keys.associateWith { Random.nextInt(32) }
-        val st = JSONObject()
-        for ((k, v) in e.stats) st.put(k, v + (iv[k] ?: 0) / 4)
         return JSONObject()
             .put("id", b.joinToString("") { "%02x".format(it) })
-            .put("espece", e.nom).put("shiny", shiny).put("date", System.currentTimeMillis())
-            .put("marque", marques.random()).put("humeur", humeurs.random())
-            .put("taille", Math.round(e.tailleCm * Random.nextDouble(0.8, 1.25) * 10) / 10.0)
-            .put("potentiel", Math.round(100.0 * iv.values.sum() / (31 * iv.size)).toInt())
-            .put("stats", st).put("zone", zone).put("variante", variante ?: tirerVariante(e))
+            .put("espece", e.nom).put("variante", vid).put("shiny", shiny)
+            .put("date", System.currentTimeMillis())
+            .put("marque", marques[rnd.nextInt(marques.size)]).put("humeur", humeurs[rnd.nextInt(humeurs.size)])
+            .put("taille", arrondi(e.tailleCm * (0.8 + rnd.nextDouble() * 0.45), 1))
+            .put("qualite", arrondi(q, 3))
+            .put("potentiel", Math.rint(100.0 * iv.values.sum() / (31 * iv.size)).toInt())
+            .put("stats", st)
+            .put("note", note(e, vid, q, shiny))
+            .put("rarete", rarete(e, vid, q, shiny))
+            .put("zone", zone)
     }
 
-    /** Dessin de la bestiole sur un cadre de 16×16 pixels. */
-    fun bitmap(e: Espece, shiny: Boolean = false, echelle: Int = 5): Bitmap {
-        val cle = "${e.id}-$shiny-$echelle"
+    // ---------------------------------------------------------------- migration des anciennes sauvegardes
+    /**
+     * Sauvegardes d'avant le nouveau bestiaire : chaque ancienne espèce devient la nouvelle de même numéro,
+     * et le stade « finale » devient « ancien ». extra = les modules de la sauvegarde Android. Renvoie true si
+     * quelque chose a changé.
+     */
+    fun migrer(extra: JSONObject): Boolean {
+        if (anciens.isEmpty()) return false
+        var change = false
+        fun nouveau(nom: String?): String? {
+            if (nom == null || espece(nom) != null) return nom
+            val n = anciens[nom] ?: return nom
+            val e = especes.firstOrNull { it.numero == n } ?: return nom
+            change = true
+            return e.nom
+        }
+        val explo = extra.optJSONObject("explo")
+        explo?.optJSONArray("captures")?.let { caps ->
+            for (i in 0 until caps.length()) {
+                val c = caps.optJSONObject(i) ?: continue
+                c.put("espece", nouveau(c.optString("espece")))
+                if (c.optString("stade") == "finale") { c.put("stade", "ancien"); change = true }
+            }
+        }
+        explo?.optJSONObject("collection")?.let { col ->
+            val neuf = JSONObject()
+            for (k in col.keys().asSequence().toList()) {
+                val n = nouveau(k) ?: k
+                neuf.put(n, neuf.optInt(n) + col.optInt(k))
+            }
+            explo.put("collection", neuf)
+        }
+        explo?.optJSONArray("sauvages")?.let { s ->
+            for (i in 0 until s.length()) s.optJSONObject(i)?.let { it.put("e", nouveau(it.optString("e"))) }
+        }
+        extra.optJSONObject("dressage")?.optJSONObject("en_cours")?.let { d ->
+            d.put("espece", nouveau(d.optString("espece")))
+            d.optJSONObject("ind")?.let { it.put("espece", nouveau(it.optString("espece"))) }
+        }
+        return change
+    }
+
+    // ---------------------------------------------------------------- images par stade (sprites.bin)
+    private fun jeux(): JSONObject {
+        jeuxSprites?.let { return it }
+        synchronized(this) {
+            jeuxSprites?.let { return it }
+            val o = try {
+                val brut = sourceSprites?.invoke()
+                if (brut == null) JSONObject() else JSONObject(String(gonfler(brut), Charsets.UTF_8))
+            } catch (e: Exception) { JSONObject() }
+            jeuxSprites = o
+            return o
+        }
+    }
+
+    /** zlib.decompress */
+    fun gonfler(brut: ByteArray, taille: Int = 0): ByteArray {
+        val inf = Inflater()
+        inf.setInput(brut)
+        val out = java.io.ByteArrayOutputStream(if (taille > 0) taille else brut.size * 4)
+        val buf = ByteArray(65536)
+        while (!inf.finished()) {
+            val n = inf.inflate(buf)
+            if (n == 0 && (inf.needsInput() || inf.needsDictionary())) break
+            out.write(buf, 0, n)
+        }
+        inf.end()
+        return out.toByteArray()
+    }
+
+    /** L'image d'un stade (indices + palette) ; la forme classique si la variante n'est pas dessinée. */
+    fun image(e: Espece, stade: String = "adulte", vid: String = "classique"): AnimAuto.Sprite? {
+        val cle = "${e.id}/$vid/$stade"
+        synchronized(decodes) { if (decodes.containsKey(cle)) return decodes[cle] }
+        val s = jeux()
+        val jeu = s.optJSONObject("${e.id}/$vid") ?: s.optJSONObject("${e.id}/classique")
+        val img = jeu?.let {
+            val st = it.getJSONObject("stades")
+            val a = st.optJSONArray(stade) ?: st.optJSONArray("adulte") ?: return@let null
+            val w = a.getInt(0); val h = a.getInt(1)
+            val octets = gonfler(java.util.Base64.getDecoder().decode(a.getString(2)), w * h)
+            val p = it.getJSONArray("palette")
+            AnimAuto.Sprite(w, h, octets, IntArray(p.length()) { k -> hexa(p.getString(k)) })
+        }
+        synchronized(decodes) { decodes[cle] = img }
+        return img
+    }
+
+    // ---------------------------------------------------------------- couleurs (shiny)
+    private const val UN_TIERS = 1.0 / 3.0
+    private const val UN_SIXIEME = 1.0 / 6.0
+    private const val DEUX_TIERS = 2.0 / 3.0
+
+    /** x % 1.0 de Python (toujours positif) */
+    private fun mod1(x: Double): Double { val m = x % 1.0; return if (m != 0.0 && m < 0) m + 1.0 else m }
+
+    private fun v(m1: Double, m2: Double, teinte: Double): Double {
+        val h = mod1(teinte)
+        if (h < UN_SIXIEME) return m1 + (m2 - m1) * h * 6.0
+        if (h < 0.5) return m2
+        if (h < DEUX_TIERS) return m1 + (m2 - m1) * (DEUX_TIERS - h) * 6.0
+        return m1
+    }
+
+    /** Décale la teinte d'une couleur 0xRRGGBB (shiny : chaque individu a la sienne). Comme colorsys en Python. */
+    fun decaler(rgb: Int, teinte: Double): Int {
+        val r = ((rgb shr 16) and 0xFF) / 255.0; val g = ((rgb shr 8) and 0xFF) / 255.0; val b = (rgb and 0xFF) / 255.0
+        val maxc = maxOf(r, g, b); val minc = minOf(r, g, b)
+        val sumc = maxc + minc; val rangec = maxc - minc
+        val l = sumc / 2.0
+        var h = 0.0; var s = 0.0
+        if (minc != maxc) {
+            s = if (l <= 0.5) rangec / sumc else rangec / (2.0 - maxc - minc)
+            val rc = (maxc - r) / rangec; val gc = (maxc - g) / rangec; val bc = (maxc - b) / rangec
+            h = if (r == maxc) bc - gc else if (g == maxc) 2.0 + rc - bc else 4.0 + gc - rc
+            h = mod1(h / 6.0)
+        }
+        h = mod1(h + teinte)
+        s = minOf(1.0, s * 1.1)
+        val (r2, g2, b2) = if (s == 0.0) Triple(l, l, l) else {
+            val m2 = if (l <= 0.5) l * (1.0 + s) else l + s - (l * s)
+            val m1 = 2.0 * l - m2
+            Triple(v(m1, m2, h + UN_TIERS), v(m1, m2, h), v(m1, m2, h - UN_TIERS))
+        }
+        return ((r2 * 255).toInt() shl 16) or ((g2 * 255).toInt() shl 8) or (b2 * 255).toInt()
+    }
+
+    /** Palette d'un individu (décalée s'il est shiny), en ARGB. */
+    fun paletteDe(img: AnimAuto.Sprite, shiny: Boolean, teinte: Double): IntArray =
+        IntArray(img.palette.size) { (if (shiny) decaler(img.palette[it], teinte) else img.palette[it] and 0xFFFFFF) or 0xFF000000.toInt() }
+
+    /** Décalage de teinte d'une vraie image (portraits, animations faites main) : filtre de couleur. */
+    fun filtreTeinte(tours: Double): ColorMatrixColorFilter {
+        val a = Math.toRadians(tours * 360.0)
+        val c = Math.cos(a).toFloat(); val s = Math.sin(a).toFloat()
+        val lr = 0.213f; val lg = 0.715f; val lb = 0.072f
+        val m = floatArrayOf(
+            lr + c * (1 - lr) + s * (-lr), lg + c * (-lg) + s * (-lg), lb + c * (-lb) + s * (1 - lb), 0f, 0f,
+            lr + c * (-lr) + s * 0.143f, lg + c * (1 - lg) + s * 0.140f, lb + c * (-lb) + s * (-0.283f), 0f, 0f,
+            lr + c * (-lr) + s * (-(1 - lr)), lg + c * (-lg) + s * lg, lb + c * (1 - lb) + s * lb, 0f, 0f,
+            0f, 0f, 0f, 1f, 0f)
+        return ColorMatrixColorFilter(ColorMatrix(m))
+    }
+
+    // ---------------------------------------------------------------- dessins
+    /**
+     * La bestiole en gros pixels, posée pieds au sol sur un cadre carré (pour ne pas être déformée).
+     * Son vrai stade et sa variante ; shiny = palette décalée de « teinte ». Abyssor garde son ancien dessin.
+     */
+    fun bitmap(e: Espece, shiny: Boolean = false, echelle: Int = 5, stade: String = "adulte",
+               vid: String = "classique", teinte: Double = 0.5, glitch: Glitch.Spec? = null): Bitmap {
+        val cle = "${e.id}-$vid-$stade-$shiny-$teinte-$echelle" + (glitch?.let { "-g${it.graine}${it.style}${it.phase}" } ?: "")
         images[cle]?.let { return it }
-        val rows = if (shiny) e.spriteShiny else e.sprite
-        val pal = if (shiny) e.paletteShiny else e.palette
+        val img = image(e, stade, vid)
+        val bmp = if (img == null) bitmapAncien(e, shiny, echelle) else {
+            val pal = paletteDe(img, shiny, teinte)
+            val n = maxOf(img.w, img.h)
+            val ox = (n - img.w) / 2
+            val oy = n - img.h
+            var px = IntArray(n * n)
+            for (y in 0 until img.h) for (x in 0 until img.w) {
+                val k = img.octets[y * img.w + x].toInt() and 0xFF
+                if (k != 0) px[(y + oy) * n + x + ox] = pal[k - 1]
+            }
+            px = Glitch.sur(n, n, px, glitch)                 // le glitch par-dessus la teinte shiny
+            val b = Bitmap.createBitmap(px, n, n, Bitmap.Config.ARGB_8888)
+            Bitmap.createScaledBitmap(b, n * echelle, n * echelle, false)
+        }
+        if (images.size > 200) images.clear()
+        images[cle] = bmp
+        return bmp
+    }
+
+    /** L'ancien dessin 16×16 (Abyssor). */
+    private fun bitmapAncien(e: Espece, shiny: Boolean, echelle: Int): Bitmap {
+        val rows = if (shiny && e.spriteShiny.isNotEmpty()) e.spriteShiny else e.sprite
+        val pal = if (shiny && e.paletteShiny.isNotEmpty()) e.paletteShiny else e.palette
         val n = 16
         val bmp = Bitmap.createBitmap(n * echelle, n * echelle, Bitmap.Config.ARGB_8888)
+        if (rows.isEmpty()) return bmp
         val c = Canvas(bmp)
         val p = Paint()
         val ox = (n - rows[0].length) / 2
@@ -240,133 +427,80 @@ object Bestiaire {
                     ((x + ox + 1) * echelle).toFloat(), ((y + oy + 1) * echelle).toFloat(), p)
             }
         }
-        images[cle] = bmp
         return bmp
     }
 
-    /**
-     * Dessin détaillé (32 px) d'une bestiole à un stade et dans une forme donnés ; teinte = décalage shiny
-     * (0 = couleurs normales). Renvoie null pour les espèces sans dessins détaillés.
-     */
-    fun dessin(e: Espece, variante: String = "classique", stade: String = "adulte", teinte: Double = 0.0, echelle: Int = 4): Bitmap? {
-        val ds = e.dessins ?: return null
-        val v = ds.optJSONObject(variante) ?: ds.optJSONObject("classique") ?: return null
-        val x = v.optJSONObject(stade) ?: v.optJSONObject("adulte") ?: return null
-        val cle = "${e.id}-$variante-$stade-$teinte-$echelle"
-        images[cle]?.let { return it }
-        val l = x.getJSONArray("l")
-        val p = x.getJSONObject("p")
-        val pal = HashMap<Char, Int>()
-        for (k in p.keys()) {
-            var c = Color.parseColor(p.getString(k))
-            if (teinte != 0.0) {
-                val hsv = FloatArray(3)
-                Color.colorToHSV(c, hsv)
-                hsv[0] = ((hsv[0] + teinte * 360) % 360).toFloat()
-                c = Color.HSVToColor(hsv)
-            }
-            pal[k[0]] = c
-        }
-        val n = 32
-        val bmp = Bitmap.createBitmap(n * echelle, n * echelle, Bitmap.Config.ARGB_8888)
-        val cv = Canvas(bmp)
-        val paint = Paint()
-        val h = l.length()
-        val w = (0 until h).maxOfOrNull { l.getString(it).length } ?: 0
-        val ox = (n - w) / 2
-        val oy = n - h                                  // posé en bas du cadre, comme sur le sol
-        for (y in 0 until h) {
-            val ligne = l.getString(y)
-            for (xx in ligne.indices) {
-                val col = pal[ligne[xx]] ?: continue
-                paint.color = col
-                cv.drawRect(((xx + ox) * echelle).toFloat(), ((y + oy) * echelle).toFloat(),
-                    ((xx + ox + 1) * echelle).toFloat(), ((y + oy + 1) * echelle).toFloat(), paint)
-            }
-        }
-        images[cle] = bmp
-        return bmp
+    /** Le grand portrait peint (assets/portraits/<id>/<variante>_<stade>.webp), ou null. */
+    fun portrait(e: Espece, vid: String = "classique", stade: String = "adulte"): Bitmap? {
+        val cle = "${e.id}/$vid/$stade"
+        if (portraits.containsKey(cle)) return portraits[cle]
+        val ctx = ctxApp ?: return null
+        fun lire(v: String, s: String) = try {
+            ctx.assets.open("portraits/${e.id}/${v}_$s.webp").use { BitmapFactory.decodeStream(it) }
+        } catch (x: Exception) { null }
+        val b = lire(vid, stade) ?: lire("classique", stade) ?: lire("classique", "adulte")
+        if (portraits.size > 40) portraits.clear()
+        portraits[cle] = b
+        return b
     }
-
-    /** Le dessin d'un individu de la troupe : son stade, sa forme, sa teinte shiny et l'aura de sa rareté. */
-    fun dessinIndividu(ind: JSONObject, echelle: Int = 4): Bitmap? {
-        val e = espece(ind.optString("espece")) ?: return null
-        val teinte = if (ind.optBoolean("shiny")) ind.optDouble("teinte", 0.5) else 0.0
-        return dessinRang(e, ind.optString("variante", "classique").ifEmpty { "classique" },
-            ind.optString("stade", "enfant"), teinte, rangIndividu(ind), echelle)
-    }
-
-    /** Dessin détaillé entouré de l'aura de sa rareté (rare et plus). */
-    fun dessinRang(e: Espece, variante: String, stade: String, teinte: Double, rang: String, echelle: Int = 4): Bitmap? {
-        val b = dessin(e, variante, stade, teinte, echelle) ?: return null
-        if (rang !in setOf("rare", "épique", "légendaire", "mythique")) return b
-        val cle = "${e.id}-$variante-$stade-$teinte-$echelle-$rang"
-        images[cle]?.let { return it }
-        return aura(b, COULEUR_RARETE[rang] ?: Color.WHITE, echelle).also { images[cle] = it }
-    }
-
-    /** Contour lumineux d'un pixel autour de la silhouette. */
-    private fun aura(b: Bitmap, couleur: Int, echelle: Int): Bitmap {
-        val out = b.copy(Bitmap.Config.ARGB_8888, true)
-        val n = b.width / echelle
-        val plein = Array(n) { y -> BooleanArray(n) { x -> Color.alpha(b.getPixel(x * echelle, y * echelle)) > 0 } }
-        val cv = Canvas(out)
-        val p = Paint().apply { color = couleur }
-        for (y in 0 until n) for (x in 0 until n) {
-            if (plein[y][x]) continue
-            val bord = (x > 0 && plein[y][x - 1]) || (x < n - 1 && plein[y][x + 1]) ||
-                (y > 0 && plein[y - 1][x]) || (y < n - 1 && plein[y + 1][x])
-            if (bord) cv.drawRect((x * echelle).toFloat(), (y * echelle).toFloat(),
-                ((x + 1) * echelle).toFloat(), ((y + 1) * echelle).toFloat(), p)
-        }
-        return out
-    }
-
-    /** Note sur 100 d'un individu : 60 % stats (en centile), 25 % rareté de sa forme, 15 % puissance, +10 shiny. */
-    fun noteIndividu(ind: JSONObject): Int {
-        val e = espece(ind.optString("espece")) ?: return 0
-        val po = regleRang.optJSONObject("poids") ?: JSONObject("""{"stats":60,"variante":25,"puissance":15,"bonus_shiny":10}""")
-        val pot = ind.optInt("potentiel", 50).coerceIn(0, 100)
-        val stats = regleRang.optJSONArray("centiles")?.optDouble(pot) ?: (pot / 100.0)
-        val max = e.variantes.values.maxOrNull() ?: 100.0
-        val ch = e.variantes[ind.optString("variante", "classique")] ?: max
-        var note = po.optDouble("stats") * stats + po.optDouble("variante") * (1 - ch / max) +
-            po.optDouble("puissance") * ((puissance[e.id] ?: 1) - 1) / 14.0
-        if (ind.optBoolean("shiny")) note += po.optDouble("bonus_shiny")
-        return Math.round(minOf(100.0, note)).toInt()
-    }
-
-    /** Rareté propre à un individu : commune, peu commune, rare, épique, légendaire (ou mythique). */
-    fun rangIndividu(ind: JSONObject): String {
-        val e = espece(ind.optString("espece")) ?: return "commune"
-        regleRang.optJSONObject("speciales")?.optString(e.id)?.takeIf { it.isNotEmpty() }?.let { return it }
-        val note = noteIndividu(ind)
-        var rang = "commune"
-        val pa = regleRang.optJSONArray("paliers") ?: return rang
-        for (i in 0 until pa.length()) {
-            val x = pa.getJSONArray(i)
-            if (note >= x.getDouble(0)) rang = x.getString(1)
-        }
-        return rang
-    }
-
-    fun nomVariante(v: String?) = if (v.isNullOrEmpty() || v == "classique") "" else v.replace('_', ' ')
 
     /** Couleur d'un pixel (u, v entre 0 et 1) : sert au Doom pour dessiner les bestioles en 3D. */
     fun pixel(e: Espece, u: Double, v: Double): Int {
-        val n = 16
-        val rows = e.sprite
-        val ox = (n - rows[0].length) / 2
-        val oy = (n - rows.size) / 2
-        val x = (u * n).toInt() - ox
-        val y = (v * n).toInt() - oy
-        if (y < 0 || y >= rows.size || x < 0 || x >= rows[y].length) return 0
-        return e.palette[rows[y][x]] ?: 0
+        val img = image(e, "adulte", "classique")
+        if (img == null) {
+            val n = 16
+            val rows = e.sprite
+            if (rows.isEmpty()) return 0
+            val ox = (n - rows[0].length) / 2
+            val oy = (n - rows.size) / 2
+            val x = (u * n).toInt() - ox
+            val y = (v * n).toInt() - oy
+            if (y < 0 || y >= rows.size || x < 0 || x >= rows[y].length) return 0
+            return e.palette[rows[y][x]] ?: 0
+        }
+        val n = maxOf(img.w, img.h)
+        val x = (u * n).toInt() - (n - img.w) / 2
+        val y = (v * n).toInt() - (n - img.h)
+        if (y < 0 || y >= img.h || x < 0 || x >= img.w) return 0
+        val k = img.octets[y * img.w + x].toInt() and 0xFF
+        return if (k == 0) 0 else img.palette[k - 1] or 0xFF000000.toInt()
     }
 
+    // ---------------------------------------------------------------- textes
     fun lieu(zone: String): String {
         val base = zone.substringBefore('/')
         val prof = zone.count { it == '/' }.coerceAtMost(3)
-        return (HABITATS[base] ?: base).tr() + listOf("", " (un recoin)", " (une cachette)", " (le sanctuaire)")[prof].tr()
+        // v3 : le vrai nom du lieu dans la langue choisie (« Atelier des engrenages »), sinon celui du bestiaire
+        return Langue.ou("carte.piece.$base", habitats[base] ?: base) + listOf("", " " + t("exp.recoin"), " " + t("exp.cachette"),
+            " " + t("exp.sanctuaire"))[prof]
+    }
+
+    /** Le nom d'une rareté, d'une fréquence, dans la langue choisie (identifiants en français dans les données). */
+    fun nomRarete(r: String) = Langue.ou("rarete.$r", r)
+    fun nomFrequence(f: String) = Langue.ou("frequence.$f", f)
+
+    /**
+     * Balise de dessin pour le terminal de l'appli : ¤id:variante:stade*teinte+~n¤
+     * (* = shiny, avec sa teinte ; + = grand portrait ; ~n = aura de rareté, palier n de Aura.ORDRE ;
+     * !graine = glitch, la graine de l'individu en hexadécimal). Remplacée par l'image à l'affichage.
+     */
+    fun balise(e: Espece, vid: String = "classique", stade: String = "adulte", shiny: Boolean = false,
+               teinte: Double = 0.5, grand: Boolean = false, aura: String? = null, glitch: String? = null): String =
+        "¤${e.id}:$vid:$stade" + (if (shiny) "*$teinte" else "") + (if (grand) "+" else "") +
+            (if (aura != null) "~${Aura.code(aura)}" else "") +
+            (if (glitch != null && glitch.matches(Regex("[0-9a-f]{1,20}"))) "!$glitch" else "") + "¤"
+
+    /** Une bestiole de la troupe, avec son aura de rareté (aura = false pour la dessiner sans). */
+    fun balise(ind: JSONObject, grand: Boolean = false, aura: Boolean = true): String {
+        val e = espece(ind.optString("espece")) ?: return ""
+        return balise(e, ind.optString("variante", "classique"), Equipe.stade(ind), ind.optBoolean("shiny"),
+            ind.optDouble("teinte", 0.5), grand, if (aura) Aura.palierInd(ind) else null, Glitch.de(ind))
+    }
+
+    /** Nom à afficher : §arc-en-ciel§ pour les shiny, les légendaires et les mythiques ; glitch : le repère ▚. */
+    fun nomAffiche(e: Espece, shiny: Boolean = false, rareteInd: String? = null, glitch: Boolean = false): String {
+        val nom = e.nom + (if (shiny) " ✨" else "") + (if (glitch) " " + Glitch.REPERE else "")
+        val r = rareteInd ?: if (e.rarete == "mythique") "mythique" else null
+        return if (shiny || r == "légendaire" || r == "mythique") "§$nom§" else nom
     }
 }

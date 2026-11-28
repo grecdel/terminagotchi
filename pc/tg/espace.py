@@ -1,0 +1,2207 @@
+"""L'espace de travail de Terminagotchi : `tg espace` (fenêtre dédiée), `tg espace classe` (grand écran),
+`tg espace texte` (dans le terminal, quand il est assez grand).
+
+Tout ce qui vit vient de la créature du bureau (bureau.Controleur : le jeu toutes les 1,5 s, l'album des poses, la
+vie, l'île et son mini-terminal qui lance de vraies commandes comptées par le jeu). L'espace y ajoute :
+    - un terminal complet au centre (historique, ↑, Tab, Ctrl+C), avec les messages du compagnon comme dans le vrai
+      terminal (annonces de leçon, ligne de la créature) ;
+    - la vue déployée de la dernière commande (deploie.py), toute seule ou pas à pas ;
+    - le cerveau de la créature (cerveau.py) qui choisit sa pose dans le panneau « en direct » ;
+    - le panneau du moment : Carte, Cerveau, Tuyaux, Leçon (un clic sur un onglet, ou les commandes `carte`,
+      `cerveau`, `tuyaux`, `lecon` tapées dans le terminal de l'espace).
+Fenêtres : GTK 4 d'abord, tkinter en repli (comme la créature du bureau) ; TG_ESPACE=gtk|tk|texte force un choix.
+Le dessin est dans espace_scene.py (testé sans écran, captures avec PIL).
+"""
+import os
+import re
+import shlex
+import sys
+import time
+from pathlib import Path
+
+from . import apparence as A
+from . import bureau as B
+from . import bureau_vie as V
+from . import cerveau as CV
+from . import confort
+from . import core, sons
+from . import deploie as D
+from . import effets as E
+from . import espace_scene as S
+from . import langue
+from . import monde as MO
+from .langue import sans_marques, t
+
+IPS = 20
+LIGNES_MAX = 400
+# les commandes de l'espace lui-même (pas lancées dans le shell)
+PANNEAUX = {"carte": "carte", "map": "carte", "cerveau": "cerveau", "brain": "cerveau", "tuyaux": "tuyaux",
+            "lecon": "lecon", "leçon": "lecon", "album": "album"}
+MONDE = {"monde", "world"}             # le monde des biomes en grand (et « monde effets tous|essentiels|aucun »)
+# les commandes du jeu (alias du compagnon) : lancées par tg
+DU_JEU = {"aide", "perdu", "indice", "quetes", "explique", "entrainement", "exercice", "badges", "guide", "types", "equipe", "envies",
+          "satiete", "vacances", "lexique", "collection", "bestiaire", "histoire", "journal", "gouts"}
+
+# ---------------------------------------------------------------- couleurs ANSI → (r, g, b, a)
+_BASE16 = [(0, 0, 0), (205, 49, 49), (13, 188, 121), (229, 229, 16), (36, 114, 200), (188, 63, 188), (17, 168, 205),
+           (229, 229, 229), (102, 102, 102), (241, 76, 76), (35, 209, 139), (245, 245, 67), (59, 142, 234),
+           (214, 112, 214), (41, 184, 219), (255, 255, 255)]
+
+
+def couleur_256(n):
+    if n < 16:
+        return _BASE16[n]
+    if n < 232:
+        n -= 16
+        v = [0, 95, 135, 175, 215, 255]
+        return v[n // 36], v[(n // 6) % 6], v[n % 6]
+    g = 8 + 10 * (n - 232)
+    return g, g, g
+
+
+_SGR = re.compile(r"\033\[([0-9;]*)m")
+_AUTRES = re.compile(r"\033\[[0-9;?]*[A-Za-ln-z]|\033[78]|\033\][^\007]*\007|\033_[^\033]*\033\\")
+
+
+def spans(ligne, defaut=S.TEXTE):
+    """Une ligne avec des couleurs ANSI → [(texte, (r, g, b, a), gras)]."""
+    from .langue import rendre
+    ligne = _AUTRES.sub("", rendre(str(ligne), couleur=True).replace("\t", "    "))
+    out = []
+    coul, gras, dim = defaut, False, False
+    pos = 0
+    for m in _SGR.finditer(ligne):
+        if m.start() > pos:
+            out.append((ligne[pos:m.start()], S._a(coul, 150) if dim else coul, gras))
+        pos = m.end()
+        codes = [int(c) if c.isdigit() else 0 for c in m.group(1).split(";")] if m.group(1) else [0]
+        i = 0
+        while i < len(codes):
+            c = codes[i]
+            if c == 0:
+                coul, gras, dim = defaut, False, False
+            elif c == 1:
+                gras = True
+            elif c == 2:
+                dim = True
+            elif c == 22:
+                gras = dim = False
+            elif c == 38 and i + 2 < len(codes) and codes[i + 1] == 5:
+                coul = couleur_256(codes[i + 2]) + (255,)
+                i += 2
+            elif c == 38 and i + 4 < len(codes) and codes[i + 1] == 2:
+                coul = (codes[i + 2], codes[i + 3], codes[i + 4], 255)
+                i += 4
+            elif 30 <= c <= 37:
+                coul = _BASE16[c - 30] + (255,)
+            elif 90 <= c <= 97:
+                coul = _BASE16[c - 90 + 8] + (255,)
+            elif c == 39:
+                coul = defaut
+            i += 1
+    if pos < len(ligne):
+        out.append((ligne[pos:], S._a(coul, 150) if dim else coul, gras))
+    return [s for s in out if s[0]]
+
+
+# ================================================================ ce qui se passe (commun à toutes les fenêtres)
+class Espace(B.Controleur):
+    def __init__(self, etape, classe=False):
+        self.classe = classe
+        self.lignes = []                  # le terminal : [[(texte, couleur, gras)]]
+        self.onglet = "carte"
+        self.dep = None
+        self.cv = CV.Cerveau()
+        self.cv_dernier = -1e9
+        self.historique_pos = None
+        self.ile_ouverte = False
+        self.mots = []                    # les derniers mots tapés (ils flottent autour de la créature)
+        self.apres_commande = False
+        self.a_dire = []
+        self.tape_t = 0.0
+        self.son = False
+        self.rangement = False            # le mode « ranger mon espace »
+        self.glisse = None                # (dalle, « dalle » | « coin », case de départ, (x0, y0) du clic)
+        self.options = False              # le panneau des options (roue dentée)
+        self.question = None              # (question, réponse) pour les grands, avant « Tout afficher »
+        self.arrivees = {}                # panneau → heure de son apparition (animation d'arrivée)
+        self.monde = MO.Vue()             # le monde des biomes (onglet « Monde », commande `monde` en grand)
+        self.monde_grand = False
+        self.monde_glisse = None          # (x, y du clic, x, y d'avant, bougé ?) : on fait glisser le monde
+        self.albums = {}
+        self.tk = False                   # la fenêtre de repli (tkinter) garde la carte : le monde y serait trop lent
+        self.place = None                 # la place de la classe (place.Vue), ouverte par `place` pendant une séance V
+        self.place_vus = 0                # les gestes reçus déjà dits par la créature
+        # 3 nov. : la carte du réveil (reveil.py, carte_scene.py) : survol, fiche, livre, carnet, animations, météo
+        self.rv = {"survol": None, "fiche": None, "livre": False, "livre_page": None, "carnet": False, "file": [],
+                   "anim": None, "cmds": [], "meteo": None, "albums": {}, "cache": None, "evt_dit": None}
+        self.evo = None                   # 3 nov. : le moment d'évolution en cours {"t0", "de", "vers"}
+        self.evo_vu = time.time()         # (les évolutions d'avant l'ouverture ne sont pas rejouées)
+        self.evo_cache = {}
+        self.humeur_vue = None
+        self.album_salut = None           # (stade touché dans l'album, heure) : il salue
+        self.cadres_album = {}
+        super().__init__(etape, 600, 400)
+        self.c.regl = dict(self.regl, sur_place=self._sur_place())
+        self.c.changer("assis", 4)
+        if self.state:
+            self.cv.lire_jeu(self.state)
+        self.lignes.append(spans("\033[38;5;245m" + t("esp.bienvenue") + "\033[0m"))
+
+    def dessin(self, m, t_):
+        """La liste de dessin de la fenêtre (l'écran projecteur du mode classe a la sienne : tableau.py)."""
+        return S.scene(m, t_)
+
+    # ------------------------------------------------ le jeu
+    def jeu(self):
+        super().jeu()
+        self.c.regl = dict(self.regl, sur_place=self._sur_place())
+        self._annonces()
+        sons.suivre(self.state, vue=not self.classe)    # la musique du biome (ou des gardiens) si elle est allumée
+        self._creature()
+
+    def _sur_place(self):
+        """85 : elle se promène dans la fenêtre « en direct », sauf avec le réglage « rester sur place »."""
+        return bool(((self.state or {}).get("config") or {}).get("direct_sur_place"))
+
+    def _creature(self):
+        """84 : une évolution vient d'arriver (le moment se joue ici) ; 11 : une humeur du moment (elle réagit)."""
+        from . import creature as CR
+        st = self.state or {}
+        c = st.get("creature") if isinstance(st.get("creature"), dict) else {}
+        ev = c.get("evolution")
+        if isinstance(ev, dict) and ev.get("t", 0) > self.evo_vu and time.time() - ev["t"] < 120:
+            self.evo_vu = ev["t"]
+            self.evo = {"t0": self.t, "de": ev.get("de"), "vers": ev.get("vers")}
+            # le son « evolution » : déjà joué par le moteur de sons (sons.apres_tour) quand le stade change
+        h = CR.humeur(st)
+        ht = (c.get("humeur") or {}).get("t")
+        if h and ht != self.humeur_vue:
+            self.humeur_vue = ht
+            self.c.reagir(CR.donnees()["humeurs"][h]["reaction"])
+
+    def passer_evolution(self):
+        """Entrée ou un clic : on passe le moment d'évolution (au bout de 2 s)."""
+        from . import creature as CR
+        if self.evo and CR.peut_passer(self.t - self.evo["t0"]):
+            self.evo = None
+            return True
+        return bool(self.evo)
+
+    def _theme(self, L):
+        return L                                     # l'île ouverte dans l'espace : recolorée avec toute la scène
+
+    def _annonces(self):
+        """Les panneaux qui viennent d'apparaître : l'animation d'arrivée et la phrase de la créature."""
+        st = self.state
+        if not st:
+            return
+        try:
+            a = A.a_(st)
+        except Exception:                            # noqa: BLE001
+            return
+        neufs = list(a.get("annonces") or [])
+        if not neufs:
+            return
+        for n in neufs:
+            self.arrivees[n] = self.t
+        self.vue.dire(t(f"app.pan.{neufs[-1]}.dit"), self.t, 6.0)
+        if "carte" in neufs:
+            self.onglet = "carte"
+        for o in ("tuyaux", "cerveau"):
+            if o in neufs:
+                self.onglet = o
+        self.c.reagir("salut")
+        self._modifier(lambda s_: A.a_(s_).__setitem__("annonces", []))
+
+    def _modifier(self, f):
+        try:
+            st = core.modifier(f)
+            if st:
+                self.state = st
+                A.activer(st)
+        except (core.Probleme, OSError) as e:
+            B.noter(f"apparence : {e!r}")
+
+    def _avant_save(self, st):
+        super()._avant_save(st)
+        if not self.apres_commande:
+            return
+        from . import compagnon
+        try:                                         # variante B : 2 lignes au plus, comme le vrai terminal
+            v = st.pop("_premier_ls", None)
+            pls = None
+            ici = Path(self.mini.dossier) if getattr(self, "mini", None) else None
+            if v:
+                try:
+                    noms = sorted(p.name for p in ici.iterdir() if not p.name.startswith(".")) if ici else []
+                    dossiers = {n for n in noms if (ici / n).is_dir()}
+                    pls = ((sorted(dossiers) + [n for n in noms if n not in dossiers])[:4], dossiers)
+                except OSError:
+                    pls = ([], set())
+            dire = compagnon.compact(st, str(ici) if ici else None, premier_ls=pls, colonnes=110)
+        except Exception as e:                       # noqa: BLE001 — l'espace ne plante jamais pour le compagnon
+            B.noter(f"espace annonces : {e!r}")
+            dire = []
+        self.a_dire = list(dire)
+        st["prompt_vu"] = st.get("nlog", 0)
+
+    # ------------------------------------------------ le temps
+    def tick(self):
+        now = V.maintenant()
+        dt = now - self.t
+        self.t = now
+        self.c.tick(dt, {})                          # dans l'espace, c'est son cerveau qui décide de dormir
+        self.vue.tick(dt)
+        self.ile.tick(dt, now)
+        if now - self.cv_dernier >= self.cv.PAS:
+            self.cv.tour(self.cv.lire_jeu(self.state), now)
+            self.cv_dernier = now
+            if self.cv.trace.dit and self.cv.trace.de == "confus":
+                self.vue.dire(self.cv.trace.dit, now, 4.0)
+        self._poser()
+        self._place_tick()
+        if self.evo and not self.evo.get("fete_vue"):
+            from . import creature as CR
+            if CR.phase_evolution(self.t - self.evo["t0"])[0] == "fete":
+                self.evo["fete_vue"] = True
+                self.c.reagir("sursaut")             # la nouvelle forme saute de joie
+        if self.dep:
+            self._avancer_deploie(dt)
+        self.monde.tick(dt)
+        if self.monde_grand or self.onglet == "monde":
+            self._monde_relire()
+        self._reveil_tick(now)
+
+    # ------------------------------------------------ le monde des biomes
+    def niveau_effets(self):
+        n = ((self.state or {}).get("effets") or {}).get("niveau", "tous")
+        if n == "tous" and self.state and confort.calme(self.state):   # mode calme : les effets essentiels, sans pluie
+            return "essentiels"
+        return n
+
+    def confort(self):
+        try:
+            return confort.reglages(self.state)
+        except Exception as e:                       # noqa: BLE001 — le confort ne casse jamais l'espace
+            B.noter(f"confort : {e!r}")
+            return confort.resoudre({})
+
+    def regler_confort(self, cle, valeur):
+        self._modifier(lambda s_: confort.regler(s_, cle, valeur))
+        self.c.calme = self.confort()["calme"]
+
+    def zoomer(self, sens):
+        """Ctrl + / Ctrl − : la taille du texte d'à côté (100, 125, 150 %)."""
+        if self.state:
+            self.regler_confort("taille", confort.taille_suivante(self.confort()["taille"], sens))
+
+    def _monde_relire(self, forcer=False):
+        st = self.state
+        if not st or self.tk:
+            return
+        try:
+            self.monde.relire(core.TERRAIN, self._equipe_monde(st), E.relatif(core.TERRAIN, self.mini.dossier), forcer)
+        except Exception as e:                       # noqa: BLE001 — le monde ne casse jamais l'espace
+            B.noter(f"monde : {e!r}")
+
+    def _equipe_monde(self, st):
+        """L'équipe dans le monde : le guide d'abord, puis le compagnon, puis les bestioles (les plus récentes)."""
+        from . import bestiaire as Bs
+        from . import guide as Gd
+        out = []
+        gid = Gd.g_(st)["id"]
+        for i, nom, ty, ind in Gd.membres(st)[:60]:
+            if ind is None:
+                out.append({"id": "compagnon", "nom": nom, "type": ty, "album": self.album, "stade": "enfant",
+                            "guide": gid == "compagnon", "sous": self._espece_stade(st), "fiche": t("monde.compagnon"),
+                            "rarete": None})
+                continue
+            e = Bs.espece(ind.get("espece"))
+            if not e:
+                continue
+            stade = ind.get("stade", "bebe")
+            al = self._album_ind(ind, e, stade)
+            try:
+                rar = Bs.rarete_de(ind)
+            except Exception:                        # noqa: BLE001
+                rar = None
+            out.append({"id": i, "nom": ind.get("nom") or e["nom"], "type": ty, "album": al, "stade": stade,
+                        "guide": gid == i, "sous": e["nom"] + " · " + Bs.nom_stade(stade), "fiche": e.get("description", ""),
+                        "rarete": None if rar == "commune" else rar, "shiny": bool(ind.get("shiny")),
+                        "volant": e.get("posture") == "volant"})
+        out.sort(key=lambda x: not x["guide"])
+        return out
+
+    def _album_ind(self, ind, e, stade):
+        """L'album d'une bestiole, calculé une seule fois (il était recalculé à chaque image : 0,2 s par image avec
+        4 bestioles ; le glitch reste posé par l'album lui-même)."""
+        from . import glitch as Gl
+        cle = (ind.get("id"), e["id"], stade, bool(ind.get("shiny")), ind.get("variante"), repr(Gl.de(ind)))
+        if cle not in self.albums:
+            try:
+                from . import poses
+                self.albums[cle] = poses.album_espece(e["id"], "ancien" if stade == "finale" else stade,
+                                                      ind.get("shiny"), Gl.de(ind))
+            except Exception:                        # noqa: BLE001
+                self.albums[cle] = None
+        return self.albums[cle]
+
+    def _effets(self, ligne, avant, code, sortie, niveau):
+        """Les effets de la commande dans le monde : ce qui a VRAIMENT changé (photo avant / après)."""
+        apres = E.photo(core.TERRAIN, self.mini.dossier)
+        evs = E.filtrer(E.evenements(ligne, avant, apres, code, "\n".join(str(x) for x in sortie)), niveau)
+        for e in evs:
+            if e["type"] == "lire":                 # le parchemin montre les vraies premières lignes du fichier
+                try:
+                    with open(os.path.join(str(core.TERRAIN), e["chemin"]), encoding="utf-8", errors="replace") as f:
+                        e["lignes"] = [x.rstrip("\n") for x in f.read(2000).split("\n")[:3]]
+                except OSError:
+                    e["lignes"] = []
+        if not evs:
+            return
+        self.monde.preparer(evs)
+        self._monde_relire(forcer=True)
+        self.monde.lancer(evs)
+        st = self.state or {}
+        dits = dict((st.get("effets") or {}).get("dits") or {})
+        k = E.a_dire(dits, evs)
+        if not k:
+            return
+        texte = t(k)
+        if self.monde_grand or self.onglet == "monde":
+            self.monde.dire(texte, 5.0)
+        else:
+            self.vue.dire(texte, self.t, 5.0)
+
+        def compter(s_):
+            ef = s_.setdefault("effets", {})
+            d = ef.setdefault("dits", {})
+            d[k] = d.get(k, 0) + 1
+        self._modifier(compter)
+
+    def regler_effets(self, niveau):
+        if niveau in E.NIVEAUX:
+            self._modifier(lambda s_: s_.setdefault("effets", {}).__setitem__("niveau", niveau))
+
+    def _poser(self):
+        """La pose de la créature suit son cerveau (les autres moments : elle vit, respire, cligne, s'étire)."""
+        voulu = self.cv.pose()
+        c = self.c
+        if voulu == "dort":
+            if c.etat != "dort":
+                c.dormir()
+            return
+        if c.etat == "dort":
+            c.force_dodo = False
+            c.changer("etire")
+            return
+        if voulu != "assis" and c.etat != voulu and (c.etat in ("assis", "marche") or c.t_etat > c.duree):
+            c.changer(voulu, self.cv.PAS)
+
+    # ------------------------------------------------ la vue déployée
+    def deployer(self, ligne, dossier=None, auto=True):
+        dossier = dossier or self.mini.dossier
+        bl = D.blocs(ligne, D.existe_dans(dossier))
+        if not bl:
+            return
+        try:
+            sorties = D.flux(ligne, D.lanceur(dossier), D.existe_dans(dossier))
+        except Exception as e:                       # noqa: BLE001
+            B.noter(f"flux : {e!r}")
+            sorties = None
+        lieu = None
+        for b in bl:
+            if b["g"] == "chemin":
+                lie = D.lieu(b, dossier)
+                if lie:
+                    rel = lie[0]
+                    lieu = (os.path.basename(rel) or rel, (os.path.dirname(rel) or rel.split("/")[0]) + "/",
+                            rel.split("/")[0])
+                    break
+        if self.state and confort.calme(self.state):
+            auto = False                             # mode calme : la vue déployée avance avec Entrée ou un clic
+        self.dep = {"ligne": ligne, "blocs": bl, "chaines": D.chaines(bl), "sorties": sorties, "actif": 1,
+                    "phase": 0.0, "auto": auto if self.dep is None else self.dep["auto"] and auto, "t": 0.0,
+                    "lieu": lieu[:2] if lieu else None, "lieu_piece": lieu[2] if lieu else None}
+        vus = set()
+        mots = []
+        for m in [(b["t"], S.rgb(D.COULEURS[b["g"]])) for b in bl if b["g"] in ("commande", "tuyau")] + self.mots:
+            if m[0] not in vus:
+                vus.add(m[0])
+                mots.append(m)
+        self.mots = mots[:4]
+
+    def _avancer_deploie(self, dt):
+        d = self.dep
+        d["t"] += dt
+        b = d["blocs"][d["actif"] - 1]
+        duree = 2.4 if b["g"] in ("tuyau", "redirection") else 1.2
+        d["phase"] = (d["t"] / duree) if b["g"] in ("tuyau", "redirection", "chemin") else min(1.0, d["t"] / duree)
+        if d["auto"] and d["t"] >= duree and d["actif"] < len(d["blocs"]):
+            d["actif"] += 1
+            d["t"] = 0.0
+
+    def pas_suivant(self):
+        if not self.dep:
+            return
+        d = self.dep
+        d["actif"] = d["actif"] + 1 if d["actif"] < len(d["blocs"]) else 1
+        d["t"] = 0.0
+
+    # ------------------------------------------------ le terminal
+    def invite(self):
+        return [(self.mini.invite()[:-1], S.BLEU, False), ("$ ", S.TEXTE, False)]
+
+    def ecrire(self, texte, couleur=S.TEXTE):
+        for l in str(texte).split("\n"):
+            self.lignes.append(spans(l, couleur))
+        del self.lignes[:-LIGNES_MAX]
+
+    def taper(self, texte):
+        self.mini.taper(texte)
+        self.tape_t = self.t
+        self.historique_pos = None
+
+    def effacer(self):
+        self.mini.effacer()
+
+    def rappeler(self, sens):
+        h = self.mini.historique
+        if not h:
+            return
+        p = len(h) if self.historique_pos is None else self.historique_pos
+        p = max(0, min(len(h), p + sens))
+        self.historique_pos = p
+        self.mini.saisie = h[p] if p < len(h) else ""
+
+    def completer(self):
+        """Tab : complète le dernier mot avec un nom du dossier courant (le plus long début commun)."""
+        s = self.mini.saisie
+        mot = s.split(" ")[-1]
+        base, debut = os.path.split(mot)
+        try:
+            noms = [n for n in os.listdir(os.path.join(self.mini.dossier, os.path.expanduser(base) or "."))
+                    if n.startswith(debut) and (debut.startswith(".") or not n.startswith("."))]
+        except OSError:
+            return
+        if not noms:
+            return
+        commun = os.path.commonprefix(noms)
+        if len(noms) == 1 and os.path.isdir(os.path.join(self.mini.dossier, base, noms[0])):
+            commun += "/"
+        elif len(noms) == 1:
+            commun += " "
+        self.mini.saisie = s[:len(s) - len(debut)] + commun if commun else s
+        if len(noms) > 1 and commun == debut:
+            self.ecrire("  ".join(sorted(noms)[:20]), S.DOUX)
+
+    def arreter(self):
+        self.lignes.append(self.invite() + [(self.mini.saisie + "^C", S.TEXTE, True)])
+        self.mini.saisie = ""
+
+    def entree(self):
+        """Entrée dans le terminal de l'espace."""
+        ligne = self.mini.saisie.strip()
+        if self.evo and not ligne:                  # 84 : Entrée pour continuer (au bout de 2 s)
+            self.passer_evolution()
+            return
+        if not ligne:
+            if self.dep and not self.dep["auto"]:
+                self.pas_suivant()                  # pas à pas : Entrée sur une ligne vide = le bloc suivant
+            self.lignes.append(self.invite())
+            return
+        self.lignes.append(self.invite() + [(ligne, S.TEXTE, True)])
+        self.historique_pos = None
+        self.rv["cmds"] = (self.rv["cmds"] + [(ligne, time.time())])[-10:]      # la météo de la carte (idée 88)
+        if self.question:
+            self.mini.saisie = ""
+            self.repondre_question(ligne)
+            return
+        try:
+            mots = shlex.split(ligne)
+        except ValueError:
+            mots = ligne.split()
+        premier = mots[0].lower() if mots else ""
+        if premier in ("clear", "effacer"):
+            self.lignes = []
+            self.mini.saisie = ""
+            self.mini.historique.append(ligne)
+            return
+        if premier in ("deploie", "déploie"):
+            self.mini.saisie = ""
+            self.mini.historique.append(ligne)
+            reste = ligne.split(None, 1)[1] if len(ligne.split(None, 1)) > 1 else ""
+            pas = reste.startswith("--pas")
+            reste = reste.replace("--pas", "", 1).strip()
+            if not reste and self.dep:
+                reste = self.dep["ligne"]
+            if reste:
+                self.deployer(reste, auto=not pas)
+                if pas:
+                    self.dep["auto"] = False
+                self.ecrire("▸ " + t("esp.deploie_ok"), S._a(S.VIOLET, 255))
+            else:
+                self.ecrire(t("dep.aide"), S.DOUX)
+            return
+        if premier in PANNEAUX:
+            self.mini.saisie = ""
+            self.mini.historique.append(ligne)
+            self.onglet = PANNEAUX[premier]
+            if self.onglet == "cerveau" and len(mots) > 1 and mots[1] in CV.ETATS:
+                self.cv.forcer(mots[1])
+            if premier in ("carte", "map"):           # la carte est aussi une vraie commande du jeu (tg carte)
+                self._jeu_tg(["carte"], ligne)
+            return
+        if premier in MONDE:
+            self.mini.saisie = ""
+            self.mini.historique.append(ligne)
+            if len(mots) > 2 and mots[1] == "effets" and mots[2] in E.NIVEAUX:
+                self.regler_effets(mots[2])
+                self.ecrire("✨ " + t("efx.regle", niveau=t("efx.niveau." + mots[2])), S.VERT)
+            elif self.tk:
+                self.ecrire(t("monde.tk"), S.ORANGE)
+            else:
+                self.monde_grand = True
+                self._monde_relire(forcer=True)
+                self.ecrire("🗺 " + t("monde.ouvert"), S.VERT)
+            return
+        if premier in ("theme", "thème", "ranger", "options"):
+            self.mini.saisie = ""
+            self.mini.historique.append(ligne)
+            if premier == "ranger":
+                self.clic_rangement("ranger")
+            elif premier == "options":
+                self.options = True
+            elif len(mots) > 1 and mots[1] in A.ordre():
+                self._modifier(lambda s_: A.choisir_theme(s_, mots[1]))
+                self.ecrire("🎨 " + t("app.theme.ok", nom=t("app.theme." + mots[1])), S.VERT)
+            else:
+                self.ecrire(t("app.theme.liste", liste=" ".join(A.ordre())), S.DOUX)
+            return
+        if premier == "place" or (premier == "classe" and len(mots) > 1 and mots[1].lower() == "place"):
+            self.mini.saisie = ""
+            self.mini.historique.append(ligne)
+            self.ouvrir_place()
+            return
+        if premier in ("confort", "taille", "police", "formes", "calme"):
+            self.mini.saisie = ""
+            self.mini.historique.append(ligne)
+            args = mots[1:] if premier == "confort" else mots
+            out = []
+            self._modifier(lambda s_: out.extend(confort.commande(s_, args)))
+            self.c.calme = self.confort()["calme"]
+            for l in out:
+                self.ecrire(l, S.VERT if l.startswith("✓") else S.DOUX)
+            return
+        if premier == "classe" and len(mots) == 1:
+            self.mini.saisie = ""
+            self.classe = not self.classe
+            return
+        if premier == "terminal" or ligne.strip() == "tg terminal":
+            # une fenêtre de plus avec le terminal du jeu (Windows : le Linux virtuel ; ailleurs : bash/zsh et le
+            # compagnon) ; le jeu lit son historique : la créature mange aussi ce qui s'y tape
+            from . import compagnon
+            self.mini.saisie = ""
+            self.mini.historique.append(ligne)
+            ok, msg = compagnon.nouvelle_fenetre()
+            self.ecrire(("▸ " if ok else "") + msg, S.VERT if ok else S.ORANGE)
+            return
+        if premier in DU_JEU:
+            self.mini.saisie = ""
+            self.mini.historique.append(ligne)
+            self._jeu_tg(mots, ligne)
+            return
+        self.apres_commande = True
+        niveau = self.niveau_effets()
+        try:
+            avant = E.photo(core.TERRAIN, self.mini.dossier) if niveau != "aucun" and not self.tk else None
+        except OSError:
+            avant = None
+        try:
+            code, sortie = self.mini.lancer(ligne)
+        finally:
+            self.apres_commande = False
+        if avant is not None and code is not None:
+            try:
+                self._effets(ligne, avant, code, sortie, niveau)
+            except Exception as e:                   # noqa: BLE001 — un effet ne casse jamais le jeu
+                B.noter(f"effets : {e!r}")
+        for l in [x for l0 in sortie for x in str(l0).split("\n")]:
+            if l == "@vrai_terminal":
+                self.ecrire(t("bur.ile.vrai_terminal"), S.ORANGE)
+            elif l == "@trop_long":
+                self.ecrire(t("bur.ile.trop_long"), S.ORANGE)
+            else:
+                self.lignes.append(spans(l))
+        if code is not None:
+            self.deployer(ligne)
+            self.mots = self.mots[:4]
+            if code != 0:
+                self.cv.var["repas"] = 0
+        for l in self.a_dire:
+            for x in str(l).split("\n"):
+                self.lignes.append(spans(x))
+        self.a_dire = []
+        del self.lignes[:-LIGNES_MAX]
+
+    def _jeu_tg(self, mots, ligne):
+        """Une commande du jeu (alias du compagnon : aide, quetes, carte…) : lancée par tg, sa sortie ici."""
+        from . import compagnon
+        exe, app = compagnon.commande()
+        code, sortie = V.executer([exe, app] + list(mots), self.mini.dossier, 10.0)
+        for l in sortie[-60:]:
+            if not l.startswith("@"):
+                self.lignes.append(spans(l))
+        self.mini.historique.append(ligne)
+
+    # ------------------------------------------------ clics
+    def clic(self, x, y, zones):
+        a = self._zone(zones, x, y)
+        if self.options:
+            self.clic_options(a)
+            return
+        if self.place is not None:
+            if a and a.startswith("place:geste:"):
+                _, _, poste, g = a.split(":")
+                self.place.geste(int(poste), int(g))
+            elif a != "place:panneau":
+                self.fermer_place()
+            return
+        if a == "monde:fermer":
+            self.monde_grand = False
+            return
+        if a and a.startswith("monde:"):
+            self.monde.clic(None if a == "monde:cadre" else a, x, y)
+            return
+        if a and (a.startswith("rg:") or a == "ranger"):
+            self.clic_rangement(a)
+            return
+        if a == "reglages":
+            self.options = True
+            return
+        if self.evo and a in (None, "creature", "direct"):
+            self.passer_evolution()
+            return
+        if not a:
+            return
+        if self.ile_ouverte and a.startswith(("ile:", "menu:")):
+            self.clic_ile(x - (S.Mise(self.classe).W / 2 - 450), y - 70,
+                          [(zx - (S.Mise(self.classe).W / 2 - 450), zy - 70, zw, zh, za) for zx, zy, zw, zh, za in
+                           zones])
+            if a == "ile:fermer":
+                self.ile_ouverte = False
+            return
+        if a == "ile":
+            self.ile_ouverte = not self.ile_ouverte
+            self.ile.etat = "ouverte" if self.ile_ouverte else "repos"
+            self.ile.ouverture = 1.0 if self.ile_ouverte else 0.0
+        elif a.startswith("onglet:"):
+            self.onglet = a.split(":", 1)[1]
+        elif a.startswith("forcer:"):
+            e = a.split(":", 1)[1]
+            self.cv.forcer(None if self.cv.force == e else e)
+            self.cv_dernier = -1e9
+        elif a == "dep:pas":
+            if self.dep:
+                self.dep["auto"] = not self.dep["auto"]
+        elif a.startswith("dep:bloc:") and self.dep:
+            self.dep["actif"] = int(a.rsplit(":", 1)[1])
+            self.dep["t"] = 0.0
+            self.dep["auto"] = False
+        elif a == "mission:detail":                # le + de la ligne 🎯 : la leçon en détail (onglet Leçon)
+            self.onglet = "lecon"
+        elif a == "dep:lecon":
+            lec = self._lecon()
+            if lec and lec.get("cmd"):
+                self.deployer(lec["cmd"])
+        elif a == "creature":
+            if self.evo:
+                self.passer_evolution()
+            else:
+                self.c.reagir("coeur")
+                self.cri()
+        elif a.startswith("album:"):
+            self.album_salut = (a.split(":", 1)[1], self.t)
+        elif a == "son":                           # ♪ : la musique des biomes (et le son du jeu avec elle)
+            def basculer(s):
+                rs = sons.reglages(s)
+                on = not (rs["on"] and rs["musique"])
+                rs["musique"] = on
+                rs["on"] = rs["on"] or on
+                rs["demande"] = True
+            st = core.modifier(basculer)
+            if st:
+                self.state = st
+            self.son = bool(st and sons.reglages(st)["on"] and sons.reglages(st)["musique"])
+            sons.suivre(self.state, vue=not self.classe)
+        elif a.startswith("lieu:"):
+            self.onglet = "carte"
+        elif a.startswith("rv:"):
+            self.clic_reveil(a)
+
+
+    # ------------------------------------------------ la carte du réveil (idées 31 à 39, 88)
+    def _reveil(self, st, m):
+        """Le modèle de la carte (carte_scene.py), recalculé quand la partie change (toutes les 1,5 s au plus)."""
+        if not st:
+            return None
+        from . import reveil as RV
+        try:
+            cle = (id(st), self.mini.dossier, langue.courante() if hasattr(langue, "courante") else "", m.get("photo"))
+            c = self.rv["cache"]
+            if not c or c[0] != cle:
+                c = (cle, self._reveil_calcul(st, m))
+                self.rv["cache"] = c
+            base = c[1]
+        except Exception as e:                       # noqa: BLE001 — la carte ne casse jamais l'espace
+            B.noter(f"carte du réveil : {e!r}")
+            return None
+        rv = dict(base)
+        rv.update(survol=self.rv["survol"], fiche=self.rv["fiche"], livre=self.rv["livre"],
+                  livre_page=self.rv["livre_page"], carnet=self.rv["carnet"],
+                  meteo=(self.rv["meteo"] or ("calme", 0))[0])
+        an = self.rv["anim"]
+        if an:
+            rv["anim"] = dict(an, p=min(1.0, (self.t - an["t0"]) / an["duree"]))
+            rv["photo"] = an["apres"]
+        return rv
+
+    def _reveil_photo(self, sig, quand, sais, m):
+        th = (m.get("photo") or "monde").partition(":")[2]
+        return f"reveil:{sig}:{quand}:{sais}" + (":" + th if th else "")
+
+    def _reveil_calcul(self, st, m):
+        import datetime
+        from . import bestiaire as Bs
+        from . import histoire, maison, poses
+        from . import quetes as Q
+        from . import reveil as RV
+        e = RV.etat(st)
+        sig = RV.signature(e)
+        now = datetime.datetime.now()
+        quand, sais = RV.moment(now.hour), RV.saison(now.month)
+        W, H = RV.zones()["taille"]
+        ici = RV.ici_rel(st)
+        lx = RV.lieux_carte(st, e, ici)
+        habs = RV.habitants_carte(st)
+        for hb in habs:
+            esp = Bs.espece(hb["espece"]) or {}
+            hb["nom"] = esp.get("nom", hb["espece"])
+            hb["texte"] = Q.texte(st, hb["id"])
+            if hb["espece"] not in self.rv["albums"]:
+                try:
+                    self.rv["albums"][hb["espece"]] = poses.album_espece(hb["espece"], "enfant", False, None)
+                except Exception:                    # noqa: BLE001
+                    self.rv["albums"][hb["espece"]] = None
+            hb["album"] = self.rv["albums"][hb["espece"]]
+        gard = RV.zones()["gardiens"]
+        for _b, esp in gard:
+            if esp not in self.rv["albums"]:
+                try:
+                    self.rv["albums"][esp] = poses.album_espece(esp, "enfant", False, None)
+                except Exception:                    # noqa: BLE001
+                    self.rv["albums"][esp] = None
+        p = maison.piece_de(st)
+        ici_lieu = RV.lieu_de_piece(p) if p else None
+        pieces = RV.zones()["pieces"]
+        ici_piece = (pieces[p][0] / W, pieces[p][1] / H) if p in pieces else None
+        en_cours = None
+        cc = histoire.chapitre_courant(st)
+        if cc and cc.get("piece") in pieces and cc.get("piece") != p:
+            q = pieces[cc["piece"]]
+            en_cours = (histoire.nom_chapitre(cc["id"]), (q[0] / W, q[1] / H))
+        r = RV.r_(st)
+        ev = RV.evenement(st)
+        out = {"sig": sig, "etat": e, "photo": self._reveil_photo(sig, quand, sais, m), "moment": quand, "saison": sais,
+               "taille": (W, H), "lieux": lx, "lieux_pos": {x["id"]: (x["x"], x["y"]) for x in lx},
+               "chemins": RV.chemins_carte(e), "secrets": RV.secrets_carte(st), "habitants": habs, "evt": ev,
+               "ici_lieu": ici_lieu, "ici_piece": ici_piece if not ici_lieu else None, "en_cours": en_cours,
+               "livre_donnees": {"ouverts": RV.livre_ouverts(st), "gardiens": gard,
+                                 "albums": {esp: self.rv["albums"].get(esp) for _b, esp in gard},
+                                 "fichier": (lambda n: "~/terrain_terminagotchi/" + RV.fichier_gardien(n))
+                                 if histoire.ouvert(st, "temps") or histoire.fini(st, "temps") else None},
+               "carnet_donnees": (RV.zones()["evenements"], list(r["evts"])), "vu": r.get("carte"), "quand": quand, "sais": sais}
+        self._reveil_nouveautes(st, out, m)
+        return out
+
+    def _reveil_nouveautes(self, st, base, m):
+        """Ce qui a changé depuis la dernière carte vue : la file des animations (une à la fois) ; l'événement rare."""
+        from . import reveil as RV
+        sig, vu = base["sig"], base["vu"]
+        if base["evt"] and self.rv["evt_dit"] != base["evt"][0]:
+            eid = base["evt"][0]
+            self.rv["evt_dit"] = eid
+            self._modifier(lambda s_: RV.noter_evenement(s_, eid))
+            self.vue.dire(t("reveil.evt.annonce", nom=t("reveil.evt." + eid)) + " " + t(f"reveil.evt.{eid}.dit"), self.t, 8.0)
+        if self.rv["anim"] or self.rv["file"] or vu == sig:
+            return
+        if self.niveau_effets() == "aucun":
+            self._modifier(lambda s_: RV.noter_carte(s_, sig))
+            return
+        e = base["etat"]
+        avant = RV.depuis_signature(vu) if vu else {"biomes": [], "lieux": {l: (RV.ALLUME if l == "camp" else RV.FERME)
+                                                                             for l in RV.lieux()}, "etoiles": []}
+        W, H = base["taille"]
+        file = []
+        nouveaux = [b for b in e["biomes"] if b not in avant["biomes"]]
+        if vu is None and not nouveaux:              # une nouvelle partie : rien à montrer
+            self._modifier(lambda s_: RV.noter_carte(s_, sig))
+            return
+        cur = {"biomes": list(avant["biomes"]), "lieux": dict(avant["lieux"]), "etoiles": []}
+        photo = lambda et: self._reveil_photo(RV.signature(et), base["quand"], base["sais"], m)  # noqa: E731
+        if vu is None or len(nouveaux) > 2:          # une partie déjà avancée : UNE animation résumée
+            c = RV.zones()["biomes"]["racine"]["coeur"]
+            file.append({"type": "resume", "avant": photo(cur), "apres": base["photo"], "c": (c[0] / W, c[1] / H),
+                         "texte": t("reveil.anim.resume"), "duree": 3.0})
+        else:
+            for b in nouveaux:
+                av = photo(cur)
+                cur["biomes"].append(b)
+                c = RV.zones()["biomes"][b]["coeur"]
+                file.append({"type": "biome", "avant": av, "apres": photo(cur), "c": (c[0] / W, c[1] / H),
+                             "texte": t("reveil.racine.anim") if b == "racine" else
+                             t("reveil.biome.anim", biome=RV.nom_biome(b), n=sum(1 for x in cur["biomes"] if x != "racine"),
+                               total=RV.NB_BIOMES), "duree": 2.6})
+            for l, v in e["lieux"].items():
+                if v <= cur["lieux"].get(l, RV.FERME):
+                    continue
+                av = photo(cur)
+                cur["lieux"][l] = v
+                d = RV.zones()["lieux"][l]
+                c = d["ellipse"]
+                file.append({"type": "lieu", "avant": av, "apres": photo(cur), "c": (c[0] / W, c[1] / H),
+                             "texte": t("reveil.lieu.dit", lieu=RV.nom_lieu(l)), "duree": 1.2})
+                if v == RV.LANTERNE and l in RV.zones()["chemins"]:
+                    pts = [(a / W, b_ / H) for a, b_ in RV.zones()["chemins"][l]]
+                    file.append({"type": "chemin", "avant": photo(cur), "apres": photo(cur), "lieu": l, "pts": pts,
+                                 "c": pts[0], "texte": t("reveil.chemin.dit", lieu=RV.nom_lieu(l)), "duree": 2.0})
+        if file:
+            self.rv["file"] = file
+            self.rv["fin_sig"] = sig
+            if any(a["type"] in ("biome", "resume") for a in file):
+                self.onglet = "carte"
+        else:
+            self._modifier(lambda s_: RV.noter_carte(s_, sig))
+
+    def _reveil_tick(self, now):
+        from . import reveil as RV
+        rv = self.rv
+        rv["meteo"] = RV.meteo(rv["cmds"], time.time(), rv["meteo"])
+        an = rv["anim"]
+        if an and self.t - an["t0"] >= an["duree"]:
+            rv["anim"] = an = None
+        if not an and rv["file"] and self.onglet == "carte":
+            rv["anim"] = dict(rv["file"].pop(0), t0=self.t)
+        elif not an and not rv["file"] and rv.get("fin_sig"):
+            sig = rv.pop("fin_sig")
+            self._modifier(lambda s_: RV.noter_carte(s_, sig))
+            rv["cache"] = None
+
+    def clic_reveil(self, a):
+        rv = self.rv
+        if a == "rv:passer":
+            rv["anim"], rv["file"] = None, []
+            return
+        if a == "rv:rien":
+            return
+        if a == "rv:fermer":
+            rv["fiche"], rv["livre"], rv["carnet"], rv["livre_page"] = None, False, False, None
+        elif a == "rv:livre":
+            rv["fiche"], rv["carnet"], rv["livre"], rv["livre_page"] = None, False, True, None
+        elif a.startswith("rv:livre:"):
+            n = int(a.rsplit(":", 1)[1])
+            rv["livre"], rv["livre_page"] = True, (n or None)
+        elif a == "rv:carnet":
+            rv["fiche"], rv["livre"], rv["carnet"] = None, False, True
+        elif a.startswith("rv:hab:"):
+            rv["fiche"], rv["livre"], rv["carnet"] = "hab:" + a[7:], False, False
+        elif a.startswith(("rv:lieu:", "rv:aller:")):
+            lid = a.rsplit(":", 1)[1]
+            x = next((l for l in ((rv["cache"] or (None, {}))[1].get("lieux") or []) if l["id"] == lid), None)
+            if x and x["cmd"]:
+                self.aller(x["cmd"])
+                rv["fiche"] = None
+            elif x:
+                rv["fiche"] = lid
+            elif a.startswith("rv:lieu:"):
+                rv["fiche"] = lid
+
+    def aller(self, cmd):
+        """« Y aller » : la vraie commande est ÉCRITE dans le terminal, l'enfant appuie lui-même sur Entrée."""
+        self.mini.saisie = cmd
+        self.lignes.append(spans("\033[38;5;221m" + t("reveil.ecrite") + "\033[0m"))
+
+    def clic_droit(self, x, y, zones):
+        """Clic droit sur un lieu : la fiche « En savoir plus »."""
+        a = self._zone(zones, x, y)
+        if a and a.startswith("rv:lieu:"):
+            self.rv["fiche"] = a.rsplit(":", 1)[1]
+            self.rv["livre"] = self.rv["carnet"] = False
+
+    def survol(self, x, y, zones):
+        a = self._zone(zones, x, y)
+        self.rv["survol"] = a.rsplit(":", 1)[1] if a and a.startswith("rv:lieu:") else None
+
+    # ------------------------------------------------ ranger son espace
+    def clic_rangement(self, a):
+        st = self.state
+        if a == "ranger":
+            self.rangement = not self.rangement
+            self.options = False
+            if self.rangement and st and A.disposition(st)[1] == "classe":
+                self._modifier(lambda s_: A.choisir_disposition(s_, "classique"))
+            return
+        if not st:
+            return
+        if a == "rg:fini":
+            self.rangement = False
+        elif a == "rg:origine":
+            self._modifier(A.origine)
+        elif a == "rg:mienne":
+            self._modifier(A.enregistrer_mienne)
+            self.vue.dire(t("esp.rg.enregistree"), self.t, 4.0)
+        elif a.startswith("rg:cacher:"):
+            k = a.rsplit(":", 1)[1]
+            self._modifier(lambda s_: A.modifier(s_, k, cacher=True))
+        elif a.startswith("rg:remettre:"):
+            k = a.rsplit(":", 1)[1]
+            self._modifier(lambda s_: A.modifier(s_, k, cacher=False))
+
+    def appui(self, x, y, zones):
+        """Le bouton de la souris s'enfonce : en mode rangement, sur une poignée ou un coin, la dalle est prise ;
+        sur le monde des biomes, on le fait glisser."""
+        if not self.rangement and not self.options and self._zone(zones, x, y) in ("monde:vue", "monde:objet") or \
+                (not self.rangement and str(self._zone(zones, x, y)).startswith("monde:objet:")):
+            self.monde_glisse = (x, y, x, y, False)
+            return True
+        if not self.rangement or not self.state:
+            return False
+        a = self._zone(zones, x, y)
+        if a and a.startswith(("rg:dalle:", "rg:coin:")):
+            k = a.rsplit(":", 1)[1]
+            cases, _nom = A.disposition(self.state)
+            if k in cases:
+                self.glisse = (k, "dalle" if a.startswith("rg:dalle:") else "coin", list(cases[k]), (x, y), (x, y))
+                return True
+        return False
+
+    def bouger(self, x, y):
+        if self.monde_glisse:
+            x0, y0, xp, yp, bouge = self.monde_glisse
+            bouge = bouge or abs(x - x0) + abs(y - y0) > 6
+            if bouge:
+                self.monde.glisser(x - xp, y - yp)
+            self.monde_glisse = (x0, y0, x, y, bouge)
+            return
+        if self.glisse:
+            self.glisse = self.glisse[:4] + ((x, y),)
+
+    def molette(self, x, y, sens, zones):
+        """La molette sur le monde : zoomer là où est la souris."""
+        if str(self._zone(zones, x, y)).startswith("monde:"):
+            self.monde.zoomer(sens, x, y)
+
+    def ouvrir_place(self):
+        """La place de la classe (idée 56) : seulement pendant une séance dont le code a la lettre V."""
+        from . import place
+        if not self.state or place._seance_eleve(self.state) is None:
+            self.ecrire(t("classe.place.pas_ouverte"), S.ORANGE)
+            return
+        self.place = place.Vue(self.state)
+        self.place_vus = 0
+
+    def fermer_place(self):
+        if self.place is not None:
+            cl = self.place.client
+            if cl.jeton:                             # le numéro de poste, pour revenir sans changer de numéro
+                from . import place
+                self._modifier(lambda s_: (place._seance_eleve(s_) or {}).__setitem__("place", place.memo_de(cl)))
+            self.place.fermer()
+        self.place = None
+
+    def _modele_place(self):
+        from . import place
+        cl = self.place.client
+        postes = []
+        bulles = {}
+        maintenant = time.time()
+        for g, de, quand in cl.recus:
+            if maintenant - quand < 8:
+                bulles[cl.poste] = place.SYMBOLES[g] + " " + t("classe.geste." + place.GESTES[g]) + " !"
+        for p in cl.postes:
+            cle = ("place", p["espece"], p["stade"])
+            if cle not in self.albums:
+                try:
+                    from . import poses
+                    self.albums[cle] = None if p["stade"] == "oeuf" else poses.album_espece(p["espece"], p["stade"])
+                except Exception:                    # noqa: BLE001
+                    self.albums[cle] = None
+            postes.append({"poste": p["poste"], "album": self.albums[cle], "bulle": bulles.get(p["poste"]),
+                           "nom": place.nom_espece(p["espece"]) + " · " + place.nom_stade(p["stade"])})
+        msg = {"attends": t("classe.place.attends"), "ok": ""}.get(self.place.message, "")
+        return {"etat": cl.etat, "poste": cl.poste, "postes": postes, "message": msg}
+
+    def _place_tick(self):
+        if self.place is None:
+            return
+        cl = self.place.client
+        if len(cl.recus) and cl.recus[-1][2] > self.place_vus:
+            from . import place
+            g, de, quand = cl.recus[-1]
+            self.place_vus = quand
+            self.vue.dire(place.SYMBOLES[g] + " " + t("classe.place.recu", geste=t("classe.geste." + place.GESTES[g]),
+                                                       n=de), self.t, 5.0)
+            self.c.reagir("coeur")
+
+    def echap(self):
+        """Échap : la fiche se referme (la liste revient), puis la région isolée, puis le monde en grand, puis l'île."""
+        if self.place is not None:
+            self.fermer_place()
+            return
+        if (self.monde_grand or self.onglet == "monde") and self.monde.echap():
+            return
+        if self.monde_grand:
+            self.monde_grand = False
+            return
+        self.ile_ouverte = False
+
+    def lacher(self, x, y, zones):
+        """La dalle est lâchée : elle s'aimante sur la grille (déplacée ou agrandie par crans)."""
+        if self.monde_glisse:
+            bouge = self.monde_glisse[4]
+            self.monde_glisse = None
+            if not bouge:
+                self.clic(x, y, zones)
+            return
+        if not self.glisse:
+            self.clic(x, y, zones)
+            return
+        self.bouger(x, y)
+        k, case = self.glisse[0], self._case_visee()
+        if abs(x - self.glisse[3][0]) + abs(y - self.glisse[3][1]) < 4:
+            self.glisse = None
+            self.clic(x, y, zones)
+            return
+        self.glisse = None
+        self._modifier(lambda s_: A.modifier(s_, k, case=case))
+
+    # ------------------------------------------------ les options (roue dentée)
+    def clic_options(self, a):
+        st = self.state
+        if a in (None, "opt:fermer"):
+            self.options = False
+            return
+        if a == "opt:panneau" or not st:
+            return
+        if a.startswith("opt:theme:"):
+            cle = a.rsplit(":", 1)[1]
+            self._modifier(lambda s_: A.choisir_theme(s_, cle))
+        elif a.startswith("opt:dispo:"):
+            nom = a.rsplit(":", 1)[1]
+            self._modifier(lambda s_: A.choisir_disposition(s_, nom))
+        elif a == "opt:ranger":
+            self.options = False
+            self.clic_rangement("ranger")
+        elif a == "opt:tout":
+            if A.a_(st).get("tout"):
+                self._modifier(lambda s_: A.tout_afficher(s_, False))
+            else:
+                q, rep = A.question_adulte()
+                self.question = (q, rep)
+                self.options = False
+                self.ecrire("🔒 " + t("app.tout.question", q=q), S.JAUNE)
+        elif a.startswith("opt:effets:"):
+            self.regler_effets(a.rsplit(":", 1)[1])
+        elif a == "opt:notifs":
+            self._modifier(lambda s_: s_["config"].__setitem__("notifs", not s_["config"].get("notifs", True)))
+        elif a == "opt:sur_place":                    # 85 : « rester sur place » dans la fenêtre en direct
+            self._modifier(lambda s_: s_["config"].__setitem__("direct_sur_place",
+                                                              not s_["config"].get("direct_sur_place", False)))
+            self.c.regl = dict(self.regl, sur_place=self._sur_place())
+            if self._sur_place() and self.c.etat == "marche":
+                self.c.changer("assis", 3)
+        elif a == "opt:bureau":
+            from .app import lancer_detache
+            lancer_detache("bureau")
+        elif a.startswith("opt:conf:"):
+            p = a.split(":")
+            r = self.confort()
+            if p[2] == "taille":
+                self.regler_confort("taille", int(p[3]))
+            elif p[2] == "police":
+                self.regler_confort("police", p[3])
+            elif p[2] in ("formes", "calme"):
+                self.regler_confort(p[2], not r[p[2]])
+
+    def repondre_question(self, ligne):
+        """La réponse des grands à la question de « Tout afficher » (tapée dans le terminal de l'espace)."""
+        q, rep = self.question
+        self.question = None
+        if ligne.strip() == rep:
+            self._modifier(lambda s_: A.tout_afficher(s_, True))
+            self.ecrire("🔓 " + t("app.tout.ok"), S.VERT)
+        else:
+            self.ecrire(t("app.tout.non"), S.DOUX)
+
+    # ------------------------------------------------ ce qu'on dessine
+    def _lecon(self):
+        st = self.state or {}
+        try:
+            from . import compagnon, lecons
+            les, _ = lecons.lecon_courante(st)
+            if not les or core.level(st.get("xp", 0)) < les["niveau"]:
+                return None
+            k = st.get("step", 0)
+            step = les["steps"][k]
+            return {"titre": sans_marques(lecons.tx(les["titre"])),
+                    "k": k + 1, "n": len(les["steps"]), "dit": lecons.tx(step["dit"]),
+                    "cmd": compagnon.commande_montree(st, step, self.mini.dossier).strip("`"),
+                    "grand": lecons.adulte(step)}
+        except Exception as e:                       # noqa: BLE001
+            B.noter(f"leçon : {e!r}")
+            return None
+
+    def modele(self):
+        st = self.state or {}
+        son_ = sons.reglages(dict(st))
+        m = {"classe": self.classe, "t": self.t, "son": bool(son_["on"] and son_["musique"]), "onglet": self.onglet}
+        m["nom"] = st.get("name", "")
+        m["album"] = self.album
+        m["mini"] = V.mini_vie(self.c, self.t)
+        try:
+            from . import histoire
+            c = histoire.chapitre_courant(st)
+            m["chapitre"] = t("esp.chapitre", n=c["n"], titre=histoire.nom_chapitre(c["id"])) if c else ""
+        except Exception:                            # noqa: BLE001
+            m["chapitre"] = ""
+        m["espece_stade"] = self._espece_stade(st)
+        e = self.cv.etat
+        m["etat_nom"] = CV.nom_etat(e)
+        m["etat_couleur"] = S.rgb(CV.COULEURS[e]) if e != "content" else S.VERT
+        m["gains"] = self._gains(st)
+        m["niveau"] = core.level(st.get("xp", 0)) if st else 1
+        lvl = m["niveau"]
+        lo, hi = 10 * (lvl - 1) ** 2, 10 * lvl ** 2
+        m["xp"] = int(100 * (st.get("xp", 0) - lo) / max(1, hi - lo)) if st else 0
+        from . import satiete
+        m["attente"] = satiete.ligne_attente(st) if st else ""     # 2 nov. : la barre d'XP bloquée dit pourquoi
+        m["type_nom"] = self._type(st)
+        m["equipe"], m["equipe_lignes"] = self._equipe(st)
+        m["monstre"] = self._monstre(st)
+        if self.ile.etat == "evenement" and self.ile.evenement:
+            m["evenement"] = self.ile.evenement
+        m["arbre"], m["lieux"], m["ici_piece"], m["ici_nom"] = self._monde(st)
+        m["reveil"] = self._reveil(st, m)
+        m["envies"], m["assiette"], m["satiete"] = self._envies(st)
+        m["deploie"] = self.dep
+        m["lignes"] = self.lignes
+        m["invite"] = self.invite()
+        m["saisie"] = self.mini.saisie
+        m["tape_recent"] = self.t - self.tape_t < 0.6
+        home = os.path.expanduser("~")
+        d = self.mini.dossier
+        m["cwd"] = "~" + d[len(home):] if d.startswith(home) else d
+        m["lecon"] = self._lecon()
+        try:                                         # variante B : la ligne 🎯 au-dessus de la grande saisie
+            from . import mission
+            m["mission"] = sans_marques(mission.ligne(st, self.mini.dossier)) if st else ""
+        except Exception as e:                       # noqa: BLE001
+            B.noter(f"mission : {e!r}")
+            m["mission"] = ""
+        m["anime"] = V.animer(self.c)
+        b = self.vue.bulle
+        m["bulle"] = b[0] if b and self.t < b[1] else self._bulle(st)
+        m["mots"] = self.mots
+        k, genre = self.cv.ligne_en_cours(self.t)
+        m["cerveau"] = {"code": CV.texte_programme(m["nom"]), "ligne": (k, genre),
+                        "faites": {i for i, _g in self.cv.trace.lignes}, "etat": self.cv.etat,
+                        "de": self.cv.trace.de, "vers": self.cv.trace.vers, "force": self.cv.force,
+                        "vars": [(CV.ident(x), self.cv.var.get(x, 0)) for x in ("faim", "jeu", "sommeil", "repas")]}
+        if self.ile_ouverte and self.album:
+            self.ile.ouverture = 1.0
+            self.ile.etat = "ouverte"
+            m["ile_ouverte"] = self.scene_ile()
+        self._modele_apparence(m, st)
+        m["confort"] = self.confort()
+        self.c.calme = m["confort"]["calme"]
+        if self.place is not None:
+            m["place"] = self._modele_place()
+        self._modele_creature(m, st)
+        if not self.tk:
+            m["monde_vue"] = self.monde
+            m["monde_grand"] = self.monde_grand
+        elif m.get("onglets"):
+            m["onglets"] = [o for o in m["onglets"] if o != "monde"]
+        return m
+
+    def _modele_creature(self, m, st):
+        """Le thème « créature » (3 nov.) : humeur du moment, fête, envie mystère, promenade, évolution, album."""
+        from . import creature as CR
+        if not st or not CR.stade_compagnon(st):
+            return
+        try:
+            now = time.time()
+            h = CR.humeur(st, now)
+            e = CR.envie(st)
+            if h:
+                m["etat_nom"], m["etat_couleur"] = t("humeur." + h), S.rgb(CR.couleur(h))
+                m["glyphe"] = CR.donnees()["humeurs"][h]["glyphe"]
+            elif e:
+                m["etat_nom"], m["etat_couleur"] = t("cr.direct.envie"), S.JAUNE
+            elif self.c.etat == "marche":
+                m["etat_nom"], m["etat_couleur"] = t("cr.direct.promene"), S.VERT
+            if CR.fete_active(st, now):
+                m["fete"] = True
+            if e:
+                m["envie"] = {"texte": CR.texte_devinette(e["id"], 0), "k": int(e.get("k", 0))}
+                b = self.vue.bulle
+                if not (b and self.t < b[1]) and not (st.get("bubble") and now < st["bubble"][1]):
+                    m["bulle"] = t("cr.envie.annonce", texte=m["envie"]["texte"])
+            if not self._sur_place():
+                m["promenade"] = {"x": max(0.0, min(1.0, self.c.x / max(1.0, self.c.largeur))),
+                                  "sol": CR.type_espece(st) or "plante"}
+            if self.evo:
+                m["evolution"] = self._modele_evolution(st)
+                fete_evo = m["evolution"]["phase"] == "fete"
+                m["etat_nom"] = t("humeur.fier") if fete_evo else t("cr.direct.evolue")
+                m["etat_couleur"] = S.rgb(CR.couleur("fier")) if fete_evo else S.VERT
+                m.pop("glyphe", None)
+            if self.onglet == "album" or m.get("onglet") == "album":
+                m["album_pages"] = self._pages_album(st)
+            if m.get("onglets") is not None and "carte" in m["onglets"] and "album" not in m["onglets"]:
+                m["onglets"] = list(m["onglets"]) + ["album"]
+        except Exception as x:                       # noqa: BLE001 — la créature ne casse jamais l'espace
+            B.noter(f"creature : {x!r}")
+
+    def _cadres_evolution(self, st, de, vers):
+        """(album d'avant, images de l'animation d'évolution du jeu, hauteur de référence) — calculés une fois."""
+        cle = (st.get("espece_compagnon"), de, vers, bool(st.get("shiny")))
+        if cle not in self.evo_cache:
+            from . import anim_auto, poses, sprites
+            e = sprites.espece_compagnon(st)
+            r = None
+            if e and vers:
+                teinte = 0.5 if st.get("shiny") else None
+                try:
+                    t3 = anim_auto.toiles(e, vers, "classique", "evolution", teinte)
+                    av = poses.album_espece(e["id"], de or "bebe", st.get("shiny"))
+                    img = anim_auto.B.image(e, vers, "classique")
+                    if t3:
+                        W, H, fr, pal = t3
+                        r = (av, poses._cadres_toile(W, H, fr, pal, f"evo/{e['id']}/{vers}/{teinte}"),
+                             img[1] if img else H)
+                except Exception as x:               # noqa: BLE001
+                    B.noter(f"evolution : {x!r}")
+            self.evo_cache[cle] = r
+        return self.evo_cache[cle]
+
+    def _modele_evolution(self, st):
+        from . import creature as CR
+        tt = self.t - self.evo["t0"]
+        phase, p = CR.phase_evolution(tt)
+        r = self._cadres_evolution(st, self.evo["de"], self.evo["vers"])
+        return {"phase": phase, "p": p, "t": tt, "passer": CR.peut_passer(tt), "nom": st.get("name", ""),
+                "forme": sans_marques(core.forme(st)), "avant": r[0] if r else None, "cadres": r[1] if r else None,
+                "ref": r[2] if r else None}
+
+    def _pages_album(self, st):
+        """Les cartes de l'album : (nom du stade, date, souvenir, image ou silhouette, atteint, salut)."""
+        from . import bestiaire as Bs
+        from . import creature as CR
+        from . import poses, sprites
+        c = CR.c_(st)
+        e = sprites.espece_compagnon(st)
+        stades = CR.donnees()["album_stades_compagnon"]
+        actuel = CR.stade_compagnon(st)
+        out = []
+        for k, s_ in enumerate(stades):
+            atteint = k <= stades.index(actuel)
+            cle = (e["id"] if e else None, s_, atteint, bool(st.get("shiny")))
+            if cle not in self.cadres_album:
+                cad = None
+                if e:
+                    img = Bs.image(e, s_, "classique")
+                    if img:
+                        w, h, o, pal = img
+                        if st.get("shiny"):
+                            pal = [Bs.decaler(x, 0.5) for x in pal]
+                        rg = poses.rgba_depuis_index(w, h, o, pal)
+                        if not atteint:                      # la silhouette grise des stades à venir
+                            rg = bytes(b for i in range(0, len(rg), 4) for b in
+                                       ((58, 62, 74, 255) if rg[i + 3] else (0, 0, 0, 0)))
+                        cad = poses.Cadre(w, h, rg, w // 2, h, f"album/{cle}")
+                self.cadres_album[cle] = cad
+            p = c["album"].get(s_) or {"avant": True}
+            sal = self.album_salut and self.album_salut[0] == s_ and self.t - self.album_salut[1] < 1.6
+            out.append({"nom": Bs.nom_stade(s_).capitalize(), "atteint": atteint, "cadre": self.cadres_album[cle],
+                        "date": CR._date_ou(p) if atteint else t("cr.album.bientot"),
+                        "niv": t("cr.album.niveau", n=p["niv"]) if atteint and p.get("niv") else "",
+                        "souv": CR.souvenir(p) if atteint else "", "id": s_, "actuel": s_ == actuel,
+                        "salut": (self.t - self.album_salut[1]) if sal else None})
+        fetes = [f"★ {CR.duree(x['m'])}" for x in c["pages"][-4:]]
+        return {"titre": t("cr.album.titre", nom=st.get("name", "")), "pages": out, "fetes": fetes,
+                "eclos": t("cr.album.eclos", date=CR.date_texte(c["eclosion"])) if c.get("eclosion") else ""}
+
+    def _modele_apparence(self, m, st):
+        """Le thème, les panneaux déjà apparus, la disposition, le mode rangement et les options."""
+        try:
+            th = A.theme(st) if st else A.Theme("sombre")
+            vis = A.visibles(st) if st else None
+            cases, nom = A.disposition(st) if st else (A.preset("classique"), "classique")
+        except Exception as e:                       # noqa: BLE001 — l'apparence ne casse jamais l'espace
+            B.noter(f"apparence : {e!r}")
+            th, vis, cases, nom = A.Theme("sombre"), None, A.preset("classique"), "classique"
+        m["theme"] = th
+        m["photo"] = "monde:" + th.cle if th.carte else "monde"
+        if vis is not None:
+            m["visibles"] = vis
+            m["onglets"] = A.onglets(st)
+            m["assiette_visible"] = "assiette" in vis
+            if "equipe" not in vis:
+                m["equipe"], m["monstre"] = [], None
+        if nom == "classe":
+            m["classe"] = True
+        else:
+            m["cases"] = cases
+        m["caches"] = A.caches(st) if st else []
+        m["rangement"] = self.rangement
+        m["arrivees"] = {k: self.t - v for k, v in self.arrivees.items() if self.t - v < S.ARRIVEE}
+        if self.glisse and self.glisse[4]:
+            k, mode, case0, p0, (x, y) = self.glisse
+            r0 = A.rect_de(case0)
+            r = (r0[0] + x - p0[0], r0[1] + y - p0[1], r0[2], r0[3]) if mode == "dalle" else \
+                (r0[0], r0[1], max(120, r0[2] + x - p0[0]), max(120, r0[3] + y - p0[1]))
+            m["glisse"] = (k, mode, r, self._case_visee())
+        m["options"] = self._options_modele(st, th, nom) if self.options else None
+
+    def _case_visee(self):
+        k, mode, case0, p0, (x, y) = self.glisse
+        g = A.grille()
+        sx = (g["w"] + g["ecart"]) / g["colonnes"]
+        sy = (g["h"] + g["ecart"]) / g["rangees"]
+        c, r, w, h = case0
+        if mode == "dalle":
+            c, r = c + round((x - p0[0]) / sx), r + round((y - p0[1]) / sy)
+        else:
+            w, h = w + round((x - p0[0]) / sx), h + round((y - p0[1]) / sy)
+        return A.borner([c, r, w, h])
+
+    def _options_modele(self, st, th, nom):
+        cfg = (st or {}).get("config", {})
+        return {"theme": th.cle, "dispo": nom, "tout": bool(A.a_(st).get("tout")) if st else False,
+                "effets": ((st or {}).get("effets") or {}).get("niveau", "tous"),
+                "sur_place": bool(((st or {}).get("config") or {}).get("direct_sur_place")),
+                "notifs": bool(cfg.get("notifs", True)), "question": self.question[0] if self.question else None,
+                "confort": self.confort(),
+                "langue": langue.LANGUES.get(langue.courante(), "")}
+
+    def _bulle(self, st):
+        bub = st.get("bubble")
+        if bub and time.time() < bub[1]:
+            return bub[0]
+        if self.dep and self.dep["blocs"]:
+            cmds = [b["t"] for b in self.dep["blocs"] if b["g"] == "commande"]
+            if cmds:
+                return t("esp.bulle.miam", cmd=cmds[-1])
+        return None
+
+    def _espece_stade(self, st):
+        try:
+            return sans_marques(core.forme(st)) if st else ""
+        except Exception:                            # noqa: BLE001
+            return ""
+
+    def _type(self, st):
+        try:
+            from . import bestiaire
+            e = bestiaire.espece(st.get("espece_compagnon"))
+            return e["famille"] if e else ""          # les familles du bestiaire gardent leur nom (comme le jeu)
+        except Exception:                            # noqa: BLE001
+            return ""
+
+    def _gains(self, st):
+        """« faim +2 · curiosité +8 » : ce que la dernière commande a donné (envies du jeu)."""
+        try:
+            from . import envies
+            vals = envies.valeurs(st)
+        except Exception:                            # noqa: BLE001
+            return ""
+        avant = getattr(self, "_vals_avant", None)
+        if avant is None or st.get("total") != getattr(self, "_total_avant", None):
+            self._gains_txt = ""
+            if avant is not None:
+                d = sorted(((vals[k] - avant.get(k, vals[k]), k) for k in vals), reverse=True)
+                self._gains_txt = " · ".join(f"{envies.nom(k).lower()} +{int(round(v))}" for v, k in d[:2] if v >= 0.5)
+            self._vals_avant = vals
+            self._total_avant = st.get("total")
+        return self._gains_txt
+
+    def _equipe(self, st):
+        """Les pastilles de l'île [(album, statut, actif)] et les lignes du panneau Équipe."""
+        pastilles, lignes = [], []
+        if not st:
+            return pastilles, lignes
+        from . import bestiaire as Bs
+        from . import poses
+        statut = {"mange": "mange", "dort": "dort"}.get(self.cv.etat, "faim" if self.cv.etat == "faim" else "pret")
+        pastilles.append((self.album, statut, True))
+        lignes.append((self.album, st.get("name", ""), self._espece_stade(st) + (" · " + self._type(st) if
+                                                                                  self._type(st) else ""),
+                       statut, t("esp.statut." + statut), True))
+        for ind in list(st.get("captures", []))[-4:]:
+            e = Bs.espece(ind.get("espece", ""))
+            if not e:
+                continue
+            stade = ind.get("stade", "bebe")
+            al = self._album_ind(ind, e, stade)
+            s = "dort" if V.maintenant() % 60 < 20 and ind is st.get("captures", [])[0] else "pret"
+            pastilles.append((al, s, False))
+            lignes.append((al, ind.get("nom") or e["nom"], e["nom"] + " · " + Bs.nom_stade(stade), s,
+                           t("esp.statut." + s), False))
+        return pastilles[:4], lignes
+
+    def _monstre(self, st):
+        try:
+            sauv = st.get("sauvages") or []
+            if not sauv:
+                return ""
+            from . import maison
+            p = maison.piece_de(st)
+            return t("esp.monstres", n=len(sauv))
+        except Exception:                            # noqa: BLE001
+            return ""
+
+    def _monde(self, st):
+        """L'Explorateur (les lignes de l'arbre avec leurs marques), les lieux de la carte, et où l'on est."""
+        arbre, lieux = [], {}
+        ici_piece, ici_nom = None, ""
+        if not st:
+            return arbre, lieux, ici_piece, ici_nom
+        from . import histoire, maison
+        try:
+            nds = maison.noeuds(st)
+        except Exception as e:                       # noqa: BLE001
+            B.noter(f"explorateur : {e!r}")
+            nds = []
+        actif = (self.dep or {}).get("lieu")
+        ici_rel = maison.rel(maison.ici(st)) if maison.ici(st) else None
+        piece_ici = ici_rel.split("/")[0] if ici_rel else None
+        for n in nds:
+            if n.get("suite"):
+                continue
+            if n["prof"] >= 2 and not (piece_ici and (n["rel"] + "/").startswith(piece_ici + "/")):
+                continue                          # l'intérieur des autres lieux reste replié (comme la maquette)
+            nom = n["nom"] + ("/" if n["dossier"] and n["prof"] else "")
+            if n["prof"] == 0:
+                nom = core.TERRAIN.name
+            ligne = {"nom": nom, "prof": n["prof"], "dossier": n["dossier"], "ici": n.get("ici"),
+                     "brume": n.get("brume"), "rel": n["rel"]}
+            mq = None
+            if n["prof"] == 0:
+                mq = (t("esp.camp"), S.PALE)
+            elif n["nom"].startswith("."):
+                mq = (t("esp.secret"), S.PALE)
+            elif n["prof"] == 1 and n["dossier"] and n["nom"] in maison.PIECES:
+                p = n["nom"]
+                marques = maison.marques(st, p)
+                court_ = t("esp.biome." + p)
+                if "✓" in marques:
+                    mq = ("✓ " + court_, S.VERT)
+                    lieux[p] = (court_, "reveille")
+                elif "▶" in marques:
+                    mq = ("▶ " + court_, S.VERT)
+                    lieux[p] = (court_, "en_cours")
+                else:
+                    mq = (t("esp.endormi"), S.PALE)
+                    lieux[p] = (court_, "brume")
+            if actif and n["rel"] and actif[1].rstrip("/") == n["rel"]:
+                ligne["chemin_actif"] = True
+            ligne["marque"] = mq
+            arbre.append(ligne)
+        # le camp de base, au-dessus du terrain
+        arbre.insert(0, {"nom": "~", "prof": 0, "dossier": True, "ici": False, "brume": False, "rel": "~",
+                         "marque": (t("esp.camp"), S.PALE)})
+        for l in arbre[1:]:
+            l["prof"] += 1
+        if arbre[1:] and arbre[1]["marque"] and arbre[1]["marque"][0] == t("esp.camp"):
+            arbre[1]["marque"] = None
+        p = maison.piece_de(st)
+        if p in S.LIEUX_CARTE:
+            ici_piece = p
+            ici_nom = t("esp.biome_long." + p) if p else ""
+        return arbre, lieux, ici_piece, ici_nom
+
+    def _envies(self, st):
+        lignes, assiette, sat = [], [], ("", S.DOUX)
+        if not st:
+            return lignes, assiette, sat
+        try:
+            from . import envies, satiete
+            vals = envies.valeurs(st)
+            avant = getattr(self, "_vals_envies", {})
+            for k in envies.ENVIES:
+                v = vals.get(k, 0)
+                lignes.append((envies.nom(k), k, v, v - avant.get(k, v) > 0.4))
+            if st.get("total") != getattr(self, "_total_envies", None):
+                self._vals_envies = vals
+                self._total_envies = st.get("total")
+            mangees = set(satiete.s_(st).get("assiette", []))
+            couleurs = [S.ORANGE, S.JAUNE, S.CYAN, S.VIOLET, S.ROSE, S.BLEU]
+            for f, c in zip(satiete.FAMILLES, couleurs):
+                assiette.append((t("sat.famille." + f), f in mangees, c))
+            e = satiete.etat(st)
+            sat = (satiete.nom_etat(e), {"rassasiee": S.VERT, "forme": S.VERT, "affamee": S.ORANGE}.get(e, S.ROUGE))
+        except Exception as e:                       # noqa: BLE001
+            B.noter(f"envies : {e!r}")
+        return lignes, assiette, sat
+
+
+# ================================================================ GTK 4
+class FenetreGtk:
+    _surface = B.FenetresGtk._surface            # les images des créatures : le même cache que le bureau
+
+    def __init__(self, ctl):
+        import gi
+        gi.require_version("Gtk", "4.0")
+        gi.require_version("PangoCairo", "1.0")
+        from gi.repository import Gdk, GLib, Gtk, Pango, PangoCairo
+        import cairo
+        self.Gdk = Gdk
+        self.Gtk, self.GLib, self.Pango, self.PangoCairo, self.cairo = Gtk, GLib, Pango, PangoCairo, cairo
+        self.ctl = ctl
+        self.zones = []
+        self.echelle = (1.0, 0.0, 0.0)
+        self.surfaces = {}
+        self.photos = {}
+        self.app = Gtk.Application(application_id="fr.terminagotchi.espace")
+        self.app.connect("activate", self._activer)
+
+    def lancer(self):
+        self.app.run([])
+
+    def _activer(self, app):
+        Gtk = self.Gtk
+        win = Gtk.ApplicationWindow(application=app)
+        win.set_title(t("esp.titre_fenetre"))
+        win.set_default_size(1600, 900)
+        da = Gtk.DrawingArea()
+        da.set_draw_func(self._dessiner)
+        da.set_focusable(True)
+        win.set_child(da)
+        glisser = Gtk.GestureDrag()              # un clic, ou un glisser-déposer (mode rangement)
+        glisser.connect("drag-begin", lambda g, x, y: self._appui(x, y))
+        glisser.connect("drag-update", lambda g, dx, dy: self._bouger(dx, dy))
+        glisser.connect("drag-end", lambda g, dx, dy: self._lacher(dx, dy))
+        da.add_controller(glisser)
+        clav = Gtk.EventControllerKey()
+        clav.connect("key-pressed", self._touche)
+        win.add_controller(clav)
+        mol = Gtk.EventControllerScroll.new(Gtk.EventControllerScrollFlags.VERTICAL)   # zoomer dans le monde
+        mol.connect("scroll", self._molette)
+        mouv = Gtk.EventControllerMotion()
+        mouv.connect("motion", self._mouvement)
+        droit = Gtk.GestureClick()               # clic droit sur un lieu de la carte : « En savoir plus »
+        droit.set_button(3)
+        droit.connect("pressed", lambda g, n, x, y: self.ctl.clic_droit(*self._logique(x, y), self.zones))
+        da.add_controller(droit)
+        da.add_controller(mol)
+        da.add_controller(mouv)
+        self.souris = (0, 0)
+        self.da = da
+        win.present()
+        da.grab_focus()
+        self.GLib.timeout_add(int(1000 / IPS), self._image)
+        self.GLib.timeout_add(1500, lambda: (self.ctl.jeu(), True)[1])
+        self.GLib.timeout_add(5000, lambda: (self.ctl.releve(), True)[1])
+
+    def _image(self):
+        try:
+            self.ctl.tick()
+            self.da.queue_draw()
+        except Exception as e:                       # noqa: BLE001
+            B.noter(f"espace image : {e!r}")
+        return True
+
+    def _clic(self, x, y):
+        e, ox, oy = self.echelle
+        self.ctl.clic((x - ox) / e, (y - oy) / e, self.zones)
+
+    def _logique(self, x, y):
+        e, ox, oy = self.echelle
+        return (x - ox) / e, (y - oy) / e
+
+    def _appui(self, x, y):
+        self.depart = (x, y)
+        self.ctl.appui(*self._logique(x, y), self.zones)
+
+    def _mouvement(self, c, x, y):
+        self.souris = (x, y)
+        try:
+            self.ctl.survol(*self._logique(x, y), self.zones)
+        except Exception:                            # noqa: BLE001
+            pass
+
+    def _molette(self, ctrl, dx, dy):
+        self.ctl.molette(*self._logique(*self.souris), -1 if dy > 0 else 1, self.zones)
+        return True
+
+    def _bouger(self, dx, dy):
+        self.ctl.bouger(*self._logique(self.depart[0] + dx, self.depart[1] + dy))
+
+    def _lacher(self, dx, dy):
+        self.ctl.lacher(*self._logique(self.depart[0] + dx, self.depart[1] + dy), self.zones)
+
+    def _touche(self, ctrl, keyval, keycode, etat):
+        Gdk = self.Gdk
+        nom = Gdk.keyval_name(keyval) or ""
+        ctrl_on = bool(etat & Gdk.ModifierType.CONTROL_MASK)
+        c = self.ctl
+        if ctrl_on and nom.lower() == "c":
+            c.arreter()
+        elif ctrl_on and nom.lower() == "l":
+            c.lignes = []
+        elif ctrl_on and nom in ("plus", "equal", "KP_Add"):
+            c.zoomer(1)
+        elif ctrl_on and nom in ("minus", "KP_Subtract", "underscore"):
+            c.zoomer(-1)
+        elif nom in ("Return", "KP_Enter"):
+            c.entree()
+        elif nom == "BackSpace":
+            c.effacer()
+        elif nom == "Up":
+            c.rappeler(-1)
+        elif nom == "Down":
+            c.rappeler(1)
+        elif nom == "Tab":
+            c.completer()
+        elif nom == "F11":
+            c.classe = not c.classe
+        elif nom == "Escape":
+            c.echap()
+        else:
+            u = Gdk.keyval_to_unicode(keyval)
+            if u and chr(u).isprintable():
+                c.taper(chr(u))
+        return True
+
+    def _dessiner(self, da, cr, w, h):
+        L, Z, (W, H) = self.ctl.dessin(self.ctl.modele(), self.ctl.t)
+        e = min(w / W, h / H)
+        ox, oy = (w - W * e) / 2, (h - H * e) / 2
+        self.echelle = (e, ox, oy)
+        self.zones = Z
+        f0 = L[0][5] if L and L[0][0] == "rect" else (9, 11, 16)
+        cr.set_source_rgb(f0[0] / 255, f0[1] / 255, f0[2] / 255)
+        cr.paint()
+        peindre_cairo(self, cr, S.a_l_echelle(L, e, ox, oy))
+
+
+def peindre_cairo(f, cr, liste):
+    """Dessine une liste avec cairo (fenêtre GTK 4). f : l'objet qui garde cairo, Pango, PangoCairo et les caches."""
+    import io
+    import math as m_
+    import pkgutil
+    cairo = f.cairo
+
+    def coul(c):
+        cr.set_source_rgba(c[0] / 255, c[1] / 255, c[2] / 255, c[3] / 255)
+
+    def rrect(x, y, w, h, r):
+        r = max(0, min(r, w / 2, h / 2))
+        cr.new_sub_path()
+        cr.arc(x + w - r, y + r, r, -m_.pi / 2, 0)
+        cr.arc(x + w - r, y + h - r, r, 0, m_.pi / 2)
+        cr.arc(x + r, y + h - r, r, m_.pi / 2, m_.pi)
+        cr.arc(x + r, y + r, r, m_.pi, 3 * m_.pi / 2)
+        cr.close_path()
+
+    base = []
+    for op in liste:
+        k = op[0]
+        if k in ("img", "imgt", "arc"):
+            base.append(op)
+            continue
+        if base:
+            B.FenetresGtk._peindre_liste(f, cr, base)
+            base = []
+        if k == "calque":                            # une zone découpée : le monde des biomes
+            _, x, y, w, h, sous = op
+            cr.save()
+            cr.rectangle(x, y, w, h)
+            cr.clip()
+            peindre_cairo(f, cr, sous)
+            cr.restore()
+        elif k == "rect":
+            _, x, y, w, h, c = op
+            coul(c)
+            cr.rectangle(x, y, w, h)
+            cr.fill()
+        elif k == "rrect":
+            _, x, y, w, h, r, fo, bo, ep = op
+            rrect(x, y, w, h, r)
+            if fo:
+                coul(fo)
+                cr.fill_preserve()
+            if bo and ep:
+                coul(bo)
+                cr.set_line_width(ep)
+                cr.stroke()
+            else:
+                cr.new_path()
+        elif k == "ellipse":
+            _, cx, cy, rx, ry, fo = op
+            cr.save()
+            cr.translate(cx, cy)
+            cr.scale(max(0.1, rx), max(0.1, ry))
+            cr.arc(0, 0, 1, 0, 2 * m_.pi)
+            cr.restore()
+            coul(fo)
+            cr.fill()
+        elif k == "cercle":
+            _, cx, cy, r, c, ep = op
+            cr.arc(cx, cy, r, 0, 2 * m_.pi)
+            coul(c)
+            cr.set_line_width(ep)
+            cr.stroke()
+        elif k == "lueur":
+            _, cx, cy, r, c = op
+            g = cairo.RadialGradient(cx, cy, 0, cx, cy, r)
+            g.add_color_stop_rgba(0, c[0] / 255, c[1] / 255, c[2] / 255, c[3] / 255)
+            g.add_color_stop_rgba(1, c[0] / 255, c[1] / 255, c[2] / 255, 0)
+            cr.set_source(g)
+            cr.arc(cx, cy, r, 0, 2 * m_.pi)
+            cr.fill()
+        elif k == "ligne":
+            _, x1, y1, x2, y2, c, ep, ti = op
+            coul(c)
+            cr.set_line_width(ep)
+            if ti:
+                cr.set_dash([ti[0], ti[1]], ti[2])
+            cr.move_to(x1, y1)
+            cr.line_to(x2, y2)
+            cr.stroke()
+            cr.set_dash([])
+        elif k == "poly":
+            _, pts, c = op
+            cr.move_to(*pts[0])
+            for p in pts[1:]:
+                cr.line_to(*p)
+            cr.close_path()
+            coul(c)
+            cr.fill()
+        elif k in ("photo", "photoc"):
+            _, nom, x, y, w, h = op[:6]
+            s = f.photos.get(nom)
+            if s is None and nom not in f.photos:
+                if nom.startswith("reveil:"):         # la carte du réveil change avec la partie : on n'en garde que 4
+                    for vieux in [n for n in f.photos if n.startswith("reveil:")][:-3]:
+                        del f.photos[vieux]
+                data = S.photo_png(nom)
+                s = f.photos[nom] = cairo.ImageSurface.create_from_png(io.BytesIO(data)) if data else None
+            if s is None:
+                continue
+            sw, sh = s.get_width(), s.get_height()
+            r_ = max(w / sw, h / sh)
+            cr.save()
+            rrect(x, y, w, h, 9)
+            cr.clip()
+            if k == "photoc":
+                cr.new_path()
+                cr.arc(op[6], op[7], max(0.1, op[8]), 0, 2 * m_.pi)
+                cr.clip()
+            cr.translate(x + (w - sw * r_) / 2, y + (h - sh * r_) / 2)
+            cr.scale(r_, r_)
+            cr.set_source_surface(s, 0, 0)
+            cr.paint()
+            cr.restore()
+        elif k == "texte":
+            _, x, y, s, sz, c, gras, ancre, mono = op
+            lay = f.PangoCairo.create_layout(cr)
+            facile = S.CONF["facile"] and not mono          # « Lecture facile » : Andika (livrée, voir confort)
+            if facile:
+                confort.enregistrer_police()
+            fd = f.Pango.FontDescription.from_string(("DejaVu Sans Mono, monospace" if mono else
+                                                      "Andika, Inter, Cantarell, sans-serif" if facile else
+                                                      "Inter, Cantarell, sans-serif") + (" Bold" if gras else ""))
+            if facile:
+                sz *= confort.FACILE_TAILLE
+                at = f.Pango.AttrList()
+                at.insert(f.Pango.attr_letter_spacing_new(int(sz * confort.FACILE_ESPACE * f.Pango.SCALE)))
+                lay.set_attributes(at)
+            fd.set_absolute_size(sz * f.Pango.SCALE)
+            lay.set_font_description(fd)
+            lay.set_text(s, -1)
+            tw, th = lay.get_pixel_size()
+            dx = {"g": 0, "c": -tw / 2, "d": -tw}[ancre]
+            cr.move_to(x + dx, y - th / 2)
+            coul(c)
+            f.PangoCairo.show_layout(cr, lay)
+    if base:
+        B.FenetresGtk._peindre_liste(f, cr, base)
+
+
+# ================================================================ tkinter (repli)
+class FenetreTk:
+    def __init__(self, ctl, tk):
+        self.tk = tk
+        self.ctl = ctl
+        ctl.tk = True                    # le repli garde la carte (le monde des biomes y serait trop lent)
+        self.zones = []
+        self.echelle = (1.0, 0.0, 0.0)
+        self.racine = tk.Tk()
+        self.racine.title(t("esp.titre_fenetre"))
+        self.racine.geometry("1440x810")
+        self.racine.configure(bg="#090b10")
+        self.can = tk.Canvas(self.racine, bg="#090b10", highlightthickness=0)
+        self.can.pack(fill="both", expand=True)
+        self.can.bind("<Button-1>", lambda e: self.ctl.appui(*self._logique(e.x, e.y), self.zones))
+        self.can.bind("<B1-Motion>", lambda e: self.ctl.bouger(*self._logique(e.x, e.y)))
+        self.can.bind("<ButtonRelease-1>", lambda e: self.ctl.lacher(*self._logique(e.x, e.y), self.zones))
+        self.can.bind("<Button-3>", lambda e: self.ctl.clic_droit(*self._logique(e.x, e.y), self.zones))
+        self.can.bind("<Motion>", lambda e: self.ctl.survol(*self._logique(e.x, e.y), self.zones))
+        self.racine.bind("<Key>", self._touche)
+        self.photos = {}
+        self.images = {}
+
+    def lancer(self):
+        self._image()
+        self.racine.after(1500, self._jeu)
+        self.racine.mainloop()
+
+    def _jeu(self):
+        self.ctl.jeu()
+        self.racine.after(1500, self._jeu)
+
+    def _clic(self, x, y):
+        e, ox, oy = self.echelle
+        self.ctl.clic((x - ox) / e, (y - oy) / e, self.zones)
+
+    def _logique(self, x, y):
+        e, ox, oy = self.echelle
+        return (x - ox) / e, (y - oy) / e
+
+    def _touche(self, ev):
+        c = self.ctl
+        ks = ev.keysym
+        if ev.state & 0x4 and ks.lower() == "c":
+            c.arreter()
+        elif ev.state & 0x4 and ks in ("plus", "equal", "KP_Add"):
+            c.zoomer(1)
+        elif ev.state & 0x4 and ks in ("minus", "KP_Subtract"):
+            c.zoomer(-1)
+        elif ks == "Return":
+            c.entree()
+        elif ks == "BackSpace":
+            c.effacer()
+        elif ks == "Up":
+            c.rappeler(-1)
+        elif ks == "Down":
+            c.rappeler(1)
+        elif ks == "Tab":
+            c.completer()
+            return "break"
+        elif ks == "F11":
+            c.classe = not c.classe
+        elif ev.char and ev.char.isprintable():
+            c.taper(ev.char)
+
+    def _image(self):
+        try:
+            self.ctl.tick()
+            self._dessiner()
+        except Exception as e:                       # noqa: BLE001
+            B.noter(f"espace tk : {e!r}")
+        self.racine.after(int(1000 / 12), self._image)
+
+    def _hex(self, c, fond=None):
+        fond = fond or getattr(self, "mix", (15, 17, 24))   # tkinter n'a pas de transparence : mêlée au panneau
+        a = c[3] / 255 if len(c) > 3 else 1
+        r, g, b = (int(c[i] * a + fond[i] * (1 - a)) for i in range(3))
+        return f"#{r:02x}{g:02x}{b:02x}"
+
+    def _dessiner(self):
+        can = self.can
+        w, h = max(200, can.winfo_width()), max(200, can.winfo_height())
+        L, Z, (W, H) = self.ctl.dessin(self.ctl.modele(), self.ctl.t)
+        e = min(w / W, h / H)
+        ox, oy = (w - W * e) / 2, (h - H * e) / 2
+        self.echelle, self.zones = (e, ox, oy), Z
+        th = A.theme(self.ctl.state) if self.ctl.state else A.Theme("sombre")
+        self.mix = th.r["panneau"]
+        can.configure(bg="#%02x%02x%02x" % th.r["fond"])
+        can.delete("all")
+        self.images = {}
+
+        def plat(liste):                         # tkinter ne découpe pas : les calques sont dessinés tels quels
+            for o in liste:
+                if o[0] == "calque":
+                    yield from plat(o[5])
+                elif o[0] == "photoc":
+                    continue
+                else:
+                    yield o
+        for op in plat(S.a_l_echelle(L, e, ox, oy)):
+            k = op[0]
+            if k == "rect":
+                _, x, y, ww, hh, c = op
+                can.create_rectangle(x, y, x + ww, y + hh, fill=self._hex(c), width=0)
+            elif k == "rrect":
+                _, x, y, ww, hh, r, fo, bo, ep = op
+                can.create_rectangle(x, y, x + ww, y + hh, fill=self._hex(fo) if fo else "",
+                                     outline=self._hex(bo) if bo and ep else "", width=max(1, int(ep)) if bo else 0)
+            elif k == "ellipse":
+                _, cx, cy, rx, ry, c = op
+                can.create_oval(cx - rx, cy - ry, cx + rx, cy + ry, fill=self._hex(c), width=0)
+            elif k == "cercle":
+                _, cx, cy, r, c, ep = op
+                can.create_oval(cx - r, cy - r, cx + r, cy + r, outline=self._hex(c), width=max(1, int(ep)))
+            elif k == "ligne":
+                _, x1, y1, x2, y2, c, ep, ti = op
+                can.create_line(x1, y1, x2, y2, fill=self._hex(c), width=max(1, int(ep)),
+                                dash=(int(ti[0]), int(ti[1])) if ti else None)
+            elif k == "poly":
+                _, pts, c = op
+                can.create_polygon(*[v for p in pts for v in p], fill=self._hex(c), outline="")
+            elif k == "texte":
+                _, x, y, s, sz, c, gras, ancre, mono = op
+                can.create_text(x, y, text=s, fill=self._hex(c), anchor={"g": "w", "c": "center", "d": "e"}[ancre],
+                                font=("DejaVu Sans Mono" if mono else "DejaVu Sans", -max(6, int(sz)),
+                                      "bold" if gras else "normal"))
+            elif k == "photo":
+                _, nom, x, y, ww, hh = op
+                ph = self._photo(nom, int(ww), int(hh))
+                if ph:
+                    can.create_image(x, y, image=ph, anchor="nw")
+            elif k in ("img", "imgt"):
+                ph, x, y = self._sprite(op)
+                if ph:
+                    can.create_image(x, y, image=ph, anchor="nw")
+
+    def _photo(self, nom, w, h):
+        cle = (nom, w // 8, h // 8)
+        if cle in self.photos:
+            return self.photos[cle]
+        ph = None
+        try:
+            from PIL import ImageTk
+            im = S.photo_pil(nom)
+            if im:
+                r_ = max(w / im.width, h / im.height)
+                im = im.resize((int(im.width * r_) + 1, int(im.height * r_) + 1))
+                im = im.crop(((im.width - w) // 2, (im.height - h) // 2, (im.width - w) // 2 + w,
+                              (im.height - h) // 2 + h))
+                ph = ImageTk.PhotoImage(im)
+        except Exception:                            # noqa: BLE001 — sans PIL : pas de carte dessinée
+            ph = None
+        self.photos = {k: v for k, v in self.photos.items() if k[0] != nom}
+        self.photos[cle] = ph
+        return ph
+
+    def _sprite(self, op):
+        """Une image de créature (tkinter : agrandie au plus proche, sans déformation fine)."""
+        import base64
+        if op[0] == "img":
+            _, cad, x, y, e, miroir, lisse = op
+        else:
+            _, cad, ax, ay, e, miroir, lisse, sx, sy, rot, alpha = op
+            x, y = ax - cad.ax * e, ay - cad.ay * e
+        n = max(1, int(round(e)))
+        cle = (cad.cle, id(cad), n, miroir)
+        ph = self.images.get(cle)
+        if ph is None:
+            png = B._png_base64(cad, n, miroir)
+            ph = self.tk.PhotoImage(data=png)
+            self.images[cle] = ph
+        return ph, x, y
+
+
+# ================================================================ dans le terminal (texte)
+def assez_grand():
+    try:
+        import shutil
+        c, l = shutil.get_terminal_size((80, 24))
+    except OSError:
+        return False
+    return c >= 150 and l >= 40
+
+
+def ecran_texte(ctl, cols, rangs):
+    """L'espace de travail en couleurs ANSI : à gauche l'Explorateur et les envies, au centre la vue déployée et le
+    terminal, à droite la créature (et son cerveau ou la carte en texte)."""
+    from .plateforme import BOLD, DIM, RESET, fg
+    from .langue import largeur, ajuster
+    m = ctl.modele()
+    g_w, d_w = 30, 46
+    c_w = cols - g_w - d_w - 4
+    gauche = [f"{fg(245)}{BOLD}" + t("esp.explorateur").upper() + RESET]
+    for n in m["arbre"][: max(5, rangs // 2 - 3)]:
+        coul = 78 if n.get("ici") else (250 if not n.get("brume") else 244)
+        mq = n.get("marque")
+        s = "  " * min(n["prof"], 4) + n["nom"]
+        gauche.append(f"{fg(coul)}{ajuster(s, g_w - 10)}{RESET}" + (f"{DIM}{ajuster(mq[0], 9)}{RESET}" if mq else ""))
+    gauche.append("")
+    gauche.append(f"{fg(245)}{BOLD}" + t("esp.envies", nom=m["nom"]).upper() + RESET)
+    cols_env = {"faim": 215, "jeu": 211, "curiosite": 221, "explorer": 78, "sommeil": 141, "proprete": 80}
+    for nom_, cle, v, monte in m["envies"]:
+        n = int(max(0, min(100, v)) / 100 * 12)
+        gauche.append(f"{ajuster(nom_, 11)} {fg(cols_env.get(cle, 78))}{'█' * n}{fg(238)}{'░' * (12 - n)}{RESET} "
+                      f"{int(v):>3}{'↑' if monte else ''}")
+    gauche.append(t("esp.assiette") + " " + " ".join((f"{fg(78)}●{RESET}" if mangee else f"{fg(240)}○{RESET}")
+                                                     for _f, mangee, _c in m["assiette"]) + f" {DIM}{m['satiete'][0]}{RESET}")
+    gauche.append("")
+    gauche.append(f"{fg(245)}{BOLD}" + t("esp.equipe").upper() + RESET)
+    for _a, nom_, sous, statut, ns, actif in m["equipe_lignes"][:5]:
+        gauche.append(f"{BOLD if actif else ''}{ajuster(nom_, 14)}{RESET} {DIM}{ns}{RESET}")
+    # le centre : la vue déployée, puis le terminal
+    centre = []
+    dp = ctl.dep
+    if dp:
+        centre += D.ecran(dp["ligne"], dp["blocs"], dp["actif"], dp["sorties"], dp["phase"] % 1.0, c_w,
+                          ctl.mini.dossier)[:14]
+    else:
+        centre += [f" {fg(213)}{BOLD}" + t("dep.titre") + RESET, "", f"  {DIM}" + t("esp.deploie_vide") + RESET]
+    centre.append(f"{fg(238)}" + "─" * c_w + RESET)
+    place = rangs - len(centre) - 3
+    for spans_ in ctl.lignes[-max(1, place):]:
+        centre.append("".join(f"\033[38;2;{c[0]};{c[1]};{c[2]}m" + ("\033[1m" if g else "") + s + RESET
+                              for s, c, g in spans_))
+    centre.append(f"{fg(75)}{ctl.mini.invite()}{RESET} {BOLD}{ctl.mini.saisie}{RESET}{fg(78)}█{RESET}")
+    # la droite : la créature (texte), son état, puis le cerveau
+    droite = [f"{fg(245)}{BOLD}" + t("esp.en_direct", nom=m["nom"]).upper() + RESET +
+              f"  {fg(CV.ANSI[ctl.cv.etat])}● {m['etat_nom']}{RESET}"]
+    try:
+        from . import sprites
+        sp, _w = sprites.creature(ctl.state)
+        droite += sp
+    except Exception:                                # noqa: BLE001
+        pass
+    if m.get("bulle"):
+        droite.append(f"{fg(255)}💬 {sans_marques(m['bulle'])[:d_w - 4]}{RESET}")
+    droite.append("")
+    code = CV.texte_programme(m["nom"])
+    k, genre = ctl.cv.ligne_en_cours(ctl.t)
+    droite.append(f"{fg(245)}{BOLD}" + t("esp.onglet.cerveau").upper() + f"{RESET} {DIM}cerveau.sh{RESET}")
+    debut = max(0, min(len(code) - 12, (k or 0) - 5))
+    for i in range(debut, min(len(code), debut + 12)):
+        l = code[i][:d_w - 4]
+        droite.append((f"{fg(78)}▌\033[48;5;236m{BOLD}{l}{RESET}" if i == k else f" {DIM}{l}{RESET}"))
+    droite.append("  " + "  ".join((f"{fg(CV.ANSI[e])}\033[7m{CV.nom_etat(e)}{RESET}" if e == ctl.cv.etat else
+                                    f"{fg(CV.ANSI[e])}{CV.nom_etat(e)}{RESET}") for e in CV.ETATS))
+    out = [f"{fg(78)}{BOLD}>_ Terminagotchi{RESET}  {DIM}{m.get('chapitre', '')}{RESET}   "
+           f"{BOLD}{m['nom']}{RESET} {DIM}{m['espece_stade']}{RESET}  {fg(78)}● {m['etat_nom']}{RESET} {DIM}"
+           f"{m['gains']}{RESET}   {fg(221)}{t('esp.niveau', n=m['niveau'])}{RESET}", ""]
+    if m.get("attente"):                          # 2 nov. : l'XP mise de côté, à côté du niveau si la place le permet
+        from .langue import largeur
+        if largeur(re.sub(r"\033\[[0-9;]*m", "", out[0])) + 2 + largeur(m["attente"]) <= cols:
+            out[0] += f"  {fg(114)}{m['attente']}{RESET}"
+    for i in range(rangs - 3):
+        g = gauche[i] if i < len(gauche) else ""
+        c = centre[i] if i < len(centre) else ""
+        d = droite[i] if i < len(droite) else ""
+        out.append(_case(g, g_w) + f"{fg(238)}│{RESET}" + _case(c, c_w) + f"{fg(238)}│{RESET}" + _case(d, d_w))
+    out.append(f"{DIM}" + t("esp.texte.touches") + RESET)
+    return out
+
+
+def _case(s, n):
+    """s coupé ou complété à n colonnes visibles (les couleurs ne comptent pas)."""
+    from .langue import largeur
+    vis = re.sub(r"\033\[[0-9;]*m", "", s)
+    if largeur(vis) <= n:
+        return s + " " * (n - largeur(vis))
+    out, w, i = "", 0, 0
+    while i < len(s) and w < n - 1:
+        m = re.match(r"\033\[[0-9;]*m", s[i:])
+        if m:
+            out += m.group(0)
+            i += len(m.group(0))
+            continue
+        cw = largeur(s[i])
+        if w + cw > n - 1:
+            break
+        out += s[i]
+        w += cw
+        i += 1
+    return out + "…" + " " * max(0, n - w - 1) + "\033[0m"
+
+
+def mode_texte(etape, classe=False):
+    """L'espace de travail dans le terminal (raw : les touches arrivent une par une)."""
+    import shutil
+    from .app import Clavier
+    ctl = Espace(etape, classe)
+    clav = Clavier()
+    dernier_jeu = 0.0
+    with clav:
+        sys.stdout.write("\033[?1049h\033[H\033[2J")
+        try:
+            while True:
+                now = time.monotonic()
+                if now - dernier_jeu > 1.5:
+                    ctl.jeu()
+                    dernier_jeu = now
+                ctl.tick()
+                c, l = shutil.get_terminal_size((160, 45))
+                sys.stdout.write("\033[H" + "\n".join(x + "\033[K" for x in ecran_texte(ctl, c, l)[:l]) + "\033[J")
+                sys.stdout.flush()
+                k = clav.touche(1 / 10)
+                if not k:
+                    continue
+                if k in ("\x03",):
+                    if not ctl.mini.saisie:
+                        break
+                    ctl.arreter()
+                elif k == "\x04" or k == "\x1b":
+                    break
+                elif k in ("\r", "\n"):
+                    ctl.entree()
+                elif k in ("\x7f", "\b"):
+                    ctl.effacer()
+                elif k == "\t":
+                    ctl.completer()
+                elif k in ("\x1b[A", "UP"):
+                    ctl.rappeler(-1)
+                elif k in ("\x1b[B", "DOWN"):
+                    ctl.rappeler(1)
+                elif len(k) == 1 and k.isprintable():
+                    ctl.taper(k)
+        finally:
+            sys.stdout.write("\033[?1049l")
+            sys.stdout.flush()
+
+
+# ================================================================ lancer
+def lancer(etape, args=()):
+    """tg espace [classe] [texte] : la fenêtre dédiée (GTK 4, sinon tkinter), ou le mode texte."""
+    args = [a.lower() for a in args]
+    classe = "classe" in args or "class" in args
+    grand = "monde" in args or "world" in args          # tg espace monde : le monde des biomes en grand
+    sons.LONG = True                                    # une fenêtre qui dure : les sons passent par son mélangeur
+    sons.CLASSE = classe                                # le grand écran de la classe : aucun son
+    force = os.environ.get("TG_ESPACE", "")
+    texte = "texte" in args or "text" in args or force == "texte"
+    ecran_dispo = bool(os.environ.get("DISPLAY") or os.environ.get("WAYLAND_DISPLAY")) or os.name == "nt" or \
+        sys.platform == "darwin"
+    if not texte and ecran_dispo:
+        if force != "tk":
+            try:
+                ctl = Espace(etape, classe)
+                ctl.monde_grand = grand
+                FenetreGtk(ctl).lancer()
+                return
+            except (ImportError, ValueError) as e:
+                B.noter(f"espace gtk : {e!r}")
+            except Exception as e:                   # noqa: BLE001
+                B.noter(f"espace gtk : {e!r}")
+        try:
+            import tkinter
+            ctl = Espace(etape, classe)
+            FenetreTk(ctl, tkinter).lancer()
+            return
+        except Exception as e:                       # noqa: BLE001
+            B.noter(f"espace tk : {e!r}")
+    if sys.stdout.isatty() and assez_grand():
+        mode_texte(etape, classe)
+        return
+    print(t("esp.trop_petit"))

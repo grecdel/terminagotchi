@@ -1,0 +1,1934 @@
+{
+ "note": "Le réveil du Terminaworld (idée 31) et le monde de la carte (idées 32 à 39, 88). Coordonnées en pixels de donnees/illustrations/monde.png (1672×941). Lu par pc/tg/reveil.py et Reveil.kt (copies : pc/tg/reveil.json, app/src/main/assets/reveil.json). Masques fabriqués par donnees/illustrations/generer_intro.py.",
+ "taille": [
+  1672,
+  941
+ ],
+ "biomes": {
+  "racine": {
+   "coeur": [
+    835,
+    300
+   ],
+   "graines": [
+    [
+     600,
+     60
+    ],
+    [
+     700,
+     100
+    ],
+    [
+     850,
+     150
+    ],
+    [
+     1000,
+     120
+    ],
+    [
+     1100,
+     90
+    ],
+    [
+     560,
+     200
+    ],
+    [
+     750,
+     250
+    ],
+    [
+     900,
+     300
+    ],
+    [
+     1050,
+     250
+    ],
+    [
+     660,
+     340
+    ],
+    [
+     830,
+     460
+    ],
+    [
+     960,
+     470
+    ],
+    [
+     720,
+     470
+    ],
+    [
+     1080,
+     380
+    ],
+    [
+     860,
+     540
+    ]
+   ]
+  },
+  "feu": {
+   "coeur": [
+    230,
+    110
+   ],
+   "graines": [
+    [
+     60,
+     80
+    ],
+    [
+     200,
+     80
+    ],
+    [
+     300,
+     40
+    ],
+    [
+     400,
+     140
+    ],
+    [
+     150,
+     150
+    ],
+    [
+     30,
+     170
+    ],
+    [
+     450,
+     40
+    ]
+   ]
+  },
+  "eau": {
+   "coeur": [
+    250,
+    330
+   ],
+   "graines": [
+    [
+     60,
+     280
+    ],
+    [
+     200,
+     250
+    ],
+    [
+     300,
+     330
+    ],
+    [
+     100,
+     400
+    ],
+    [
+     400,
+     380
+    ],
+    [
+     250,
+     410
+    ],
+    [
+     500,
+     330
+    ],
+    [
+     480,
+     250
+    ]
+   ]
+  },
+  "glace": {
+   "coeur": [
+    190,
+    520
+   ],
+   "graines": [
+    [
+     60,
+     500
+    ],
+    [
+     200,
+     500
+    ],
+    [
+     320,
+     480
+    ],
+    [
+     60,
+     650
+    ],
+    [
+     100,
+     800
+    ],
+    [
+     380,
+     560
+    ],
+    [
+     30,
+     900
+    ],
+    [
+     230,
+     600
+    ]
+   ]
+  },
+  "plante": {
+   "coeur": [
+    420,
+    700
+   ],
+   "graines": [
+    [
+     250,
+     690
+    ],
+    [
+     450,
+     650
+    ],
+    [
+     400,
+     800
+    ],
+    [
+     560,
+     700
+    ],
+    [
+     300,
+     880
+    ],
+    [
+     600,
+     830
+    ],
+    [
+     640,
+     600
+    ],
+    [
+     180,
+     760
+    ]
+   ]
+  },
+  "roche": {
+   "coeur": [
+    940,
+    700
+   ],
+   "graines": [
+    [
+     780,
+     700
+    ],
+    [
+     900,
+     650
+    ],
+    [
+     1000,
+     700
+    ],
+    [
+     850,
+     850
+    ],
+    [
+     1050,
+     820
+    ],
+    [
+     760,
+     900
+    ],
+    [
+     950,
+     900
+    ],
+    [
+     1100,
+     700
+    ]
+   ]
+  },
+  "poison": {
+   "coeur": [
+    1380,
+    760
+   ],
+   "graines": [
+    [
+     1220,
+     720
+    ],
+    [
+     1350,
+     750
+    ],
+    [
+     1500,
+     750
+    ],
+    [
+     1600,
+     850
+    ],
+    [
+     1300,
+     880
+    ],
+    [
+     1180,
+     860
+    ],
+    [
+     1650,
+     680
+    ],
+    [
+     1450,
+     880
+    ]
+   ]
+  },
+  "ombre": {
+   "coeur": [
+    1460,
+    520
+   ],
+   "graines": [
+    [
+     1200,
+     500
+    ],
+    [
+     1350,
+     500
+    ],
+    [
+     1500,
+     500
+    ],
+    [
+     1620,
+     520
+    ],
+    [
+     1550,
+     600
+    ],
+    [
+     1300,
+     600
+    ],
+    [
+     1170,
+     590
+    ]
+   ]
+  },
+  "machine": {
+   "coeur": [
+    1420,
+    320
+   ],
+   "graines": [
+    [
+     1250,
+     320
+    ],
+    [
+     1400,
+     300
+    ],
+    [
+     1550,
+     320
+    ],
+    [
+     1650,
+     380
+    ],
+    [
+     1200,
+     400
+    ],
+    [
+     1500,
+     400
+    ],
+    [
+     1180,
+     280
+    ]
+   ]
+  },
+  "ciel": {
+   "coeur": [
+    1400,
+    110
+   ],
+   "graines": [
+    [
+     1200,
+     80
+    ],
+    [
+     1350,
+     60
+    ],
+    [
+     1500,
+     60
+    ],
+    [
+     1650,
+     100
+    ],
+    [
+     1220,
+     190
+    ],
+    [
+     1450,
+     170
+    ],
+    [
+     1650,
+     220
+    ],
+    [
+     1150,
+     30
+    ]
+   ]
+  }
+ },
+ "chapitres": {
+  "reveil": "racine",
+  "nid": "oeuf",
+  "grenier": "plante",
+  "cave": "ombre",
+  "bibliotheque": "eau",
+  "machines": "feu",
+  "dortoir": "poison",
+  "atelier": "machine",
+  "tour": "ciel",
+  "coeur": "tout"
+ },
+ "remplacants": [
+  "glace",
+  "roche"
+ ],
+ "lueur": [
+  640,
+  330
+ ],
+ "lieux": {
+  "camp": {
+   "biome": "racine",
+   "ellipse": [
+    640,
+    325,
+    95,
+    75
+   ]
+  },
+  "carrefour": {
+   "biome": "racine",
+   "ellipse": [
+    830,
+    458,
+    200,
+    72
+   ]
+  },
+  "temps": {
+   "biome": "racine",
+   "ellipse": [
+    905,
+    210,
+    44,
+    44
+   ],
+   "monde": "temps",
+   "piece": "temps",
+   "chapitre": "temps"
+  },
+  "observatoire": {
+   "biome": "racine",
+   "ellipse": [
+    860,
+    58,
+    88,
+    62
+   ],
+   "monde": "observatoire",
+   "piece": "observatoire",
+   "chapitre": "observatoire"
+  },
+  "machines": {
+   "biome": "racine",
+   "ellipse": [
+    596,
+    428,
+    46,
+    40
+   ],
+   "monde": "machines",
+   "piece": "machines",
+   "chapitre": "machinerie"
+  },
+  "crypte": {
+   "biome": "racine",
+   "ellipse": [
+    1025,
+    348,
+    46,
+    56
+   ],
+   "monde": "crypte",
+   "piece": "crypte",
+   "chapitre": "crypte"
+  },
+  "forge": {
+   "biome": "feu",
+   "ellipse": [
+    420,
+    150,
+    98,
+    78
+   ],
+   "monde": "forge",
+   "piece": "forge",
+   "chapitre": "forge"
+  },
+  "port": {
+   "biome": "eau",
+   "ellipse": [
+    360,
+    350,
+    205,
+    88
+   ],
+   "monde": "port",
+   "piece": "port",
+   "chapitre": "port"
+  },
+  "donnees": {
+   "biome": "glace",
+   "ellipse": [
+    195,
+    500,
+    122,
+    72
+   ],
+   "monde": "donnees",
+   "piece": "donnees",
+   "chapitre": "donnees"
+  },
+  "guilde": {
+   "biome": "plante",
+   "ellipse": [
+    430,
+    682,
+    212,
+    98
+   ],
+   "monde": "guilde",
+   "piece": "guilde",
+   "chapitre": "guilde"
+  },
+  "sommet": {
+   "biome": "roche",
+   "ellipse": [
+    950,
+    640,
+    100,
+    78
+   ],
+   "monde": "sommet",
+   "piece": "sommet",
+   "chapitre": "sommet"
+  },
+  "citadelle": {
+   "biome": "ombre",
+   "ellipse": [
+    1200,
+    515,
+    128,
+    82
+   ],
+   "monde": "citadelle",
+   "piece": "citadelle",
+   "chapitre": "citadelle"
+  },
+  "controle": {
+   "biome": "machine",
+   "ellipse": [
+    1412,
+    300,
+    98,
+    72
+   ],
+   "monde": "controle",
+   "piece": "controle",
+   "chapitre": "controle"
+  },
+  "atelier": {
+   "biome": "machine",
+   "ellipse": [
+    1580,
+    335,
+    82,
+    56
+   ],
+   "monde": "atelier",
+   "piece": "robots",
+   "chapitre": "robots"
+  },
+  "ondes": {
+   "biome": "ciel",
+   "ellipse": [
+    1320,
+    88,
+    72,
+    92
+   ],
+   "monde": "ondes",
+   "piece": "ondes",
+   "chapitre": "ondes"
+  }
+ },
+ "chemins": {
+  "camp": [
+   [
+    830,
+    458
+   ],
+   [
+    760,
+    446
+   ],
+   [
+    700,
+    420
+   ],
+   [
+    660,
+    370
+   ],
+   [
+    640,
+    330
+   ]
+  ],
+  "forge": [
+   [
+    640,
+    330
+   ],
+   [
+    610,
+    285
+   ],
+   [
+    560,
+    240
+   ],
+   [
+    500,
+    205
+   ],
+   [
+    440,
+    175
+   ]
+  ],
+  "port": [
+   [
+    640,
+    330
+   ],
+   [
+    560,
+    318
+   ],
+   [
+    480,
+    318
+   ],
+   [
+    410,
+    335
+   ],
+   [
+    350,
+    352
+   ]
+  ],
+  "donnees": [
+   [
+    830,
+    458
+   ],
+   [
+    700,
+    468
+   ],
+   [
+    580,
+    470
+   ],
+   [
+    470,
+    462
+   ],
+   [
+    410,
+    455
+   ],
+   [
+    330,
+    482
+   ],
+   [
+    230,
+    505
+   ]
+  ],
+  "guilde": [
+   [
+    580,
+    470
+   ],
+   [
+    600,
+    540
+   ],
+   [
+    580,
+    610
+   ],
+   [
+    520,
+    655
+   ],
+   [
+    450,
+    675
+   ]
+  ],
+  "sommet": [
+   [
+    830,
+    500
+   ],
+   [
+    815,
+    560
+   ],
+   [
+    845,
+    615
+   ],
+   [
+    900,
+    640
+   ],
+   [
+    945,
+    630
+   ]
+  ],
+  "citadelle": [
+   [
+    830,
+    458
+   ],
+   [
+    950,
+    466
+   ],
+   [
+    1040,
+    474
+   ],
+   [
+    1110,
+    492
+   ],
+   [
+    1180,
+    512
+   ]
+  ],
+  "crypte": [
+   [
+    900,
+    450
+   ],
+   [
+    960,
+    410
+   ],
+   [
+    1020,
+    365
+   ]
+  ],
+  "machines": [
+   [
+    760,
+    446
+   ],
+   [
+    680,
+    438
+   ],
+   [
+    605,
+    430
+   ]
+  ],
+  "temps": [
+   [
+    830,
+    420
+   ],
+   [
+    850,
+    340
+   ],
+   [
+    880,
+    270
+   ],
+   [
+    905,
+    215
+   ]
+  ],
+  "observatoire": [
+   [
+    905,
+    215
+   ],
+   [
+    880,
+    150
+   ],
+   [
+    865,
+    85
+   ]
+  ],
+  "controle": [
+   [
+    1000,
+    300
+   ],
+   [
+    1060,
+    270
+   ],
+   [
+    1120,
+    250
+   ],
+   [
+    1190,
+    280
+   ],
+   [
+    1290,
+    305
+   ],
+   [
+    1405,
+    300
+   ]
+  ],
+  "atelier": [
+   [
+    1405,
+    300
+   ],
+   [
+    1500,
+    318
+   ],
+   [
+    1575,
+    335
+   ]
+  ],
+  "ondes": [
+   [
+    1120,
+    250
+   ],
+   [
+    1180,
+    205
+   ],
+   [
+    1250,
+    160
+   ],
+   [
+    1310,
+    105
+   ]
+  ]
+ },
+ "pieces": {
+  "vestibule": [
+   830,
+   458
+  ],
+  "nid": [
+   640,
+   325
+  ],
+  "coeur": [
+   835,
+   300
+  ],
+  "grenier": [
+   250,
+   820
+  ],
+  "cave": [
+   1500,
+   560
+  ],
+  "bibliotheque": [
+   150,
+   300
+  ],
+  "salle_des_machines": [
+   200,
+   90
+  ],
+  "dortoir": [
+   1400,
+   800
+  ],
+  "atelier": [
+   1300,
+   400
+  ],
+  "tour": [
+   1550,
+   150
+  ]
+ },
+ "quetes": [
+  {
+   "id": "m01",
+   "piece": "forge",
+   "sorte": "cachette",
+   "fichier": ".coulisse_de_lave",
+   "but": [],
+   "xp": 10,
+   "pos": [
+    330,
+    120
+   ]
+  },
+  {
+   "id": "m02",
+   "piece": "port",
+   "sorte": "cachette",
+   "fichier": ".epave",
+   "but": [],
+   "xp": 10,
+   "pos": [
+    150,
+    395
+   ]
+  },
+  {
+   "id": "m03",
+   "piece": "donnees",
+   "sorte": "cachette",
+   "fichier": ".grotte_de_givre",
+   "but": [],
+   "xp": 10,
+   "pos": [
+    90,
+    560
+   ]
+  },
+  {
+   "id": "m04",
+   "piece": "guilde",
+   "sorte": "cachette",
+   "fichier": ".grotte_de_la_cascade",
+   "but": [],
+   "xp": 10,
+   "pos": [
+    520,
+    800
+   ]
+  },
+  {
+   "id": "m05",
+   "piece": "sommet",
+   "sorte": "cachette",
+   "fichier": ".refuge_du_pic",
+   "but": [],
+   "xp": 10,
+   "pos": [
+    1040,
+    600
+   ]
+  },
+  {
+   "id": "m06",
+   "piece": "citadelle",
+   "sorte": "cachette",
+   "fichier": ".passage_des_remparts",
+   "but": [],
+   "xp": 10,
+   "pos": [
+    1290,
+    560
+   ]
+  },
+  {
+   "id": "m07",
+   "piece": "controle",
+   "sorte": "cachette",
+   "fichier": ".salle_des_fusibles",
+   "but": [],
+   "xp": 10,
+   "pos": [
+    1350,
+    380
+   ]
+  },
+  {
+   "id": "m08",
+   "piece": "robots",
+   "sorte": "cachette",
+   "fichier": ".placard_a_pieces",
+   "but": [],
+   "xp": 10,
+   "pos": [
+    1640,
+    300
+   ]
+  },
+  {
+   "id": "m09",
+   "piece": "ondes",
+   "sorte": "cachette",
+   "fichier": ".nid_des_ondes",
+   "but": [],
+   "xp": 10,
+   "pos": [
+    1250,
+    40
+   ]
+  },
+  {
+   "id": "m10",
+   "piece": "temps",
+   "sorte": "cachette",
+   "fichier": ".terrier_du_tronc",
+   "but": [],
+   "xp": 10,
+   "pos": [
+    735,
+    300
+   ]
+  },
+  {
+   "id": "m11",
+   "piece": "observatoire",
+   "sorte": "cachette",
+   "fichier": ".lunette_cachee",
+   "but": [],
+   "xp": 10,
+   "pos": [
+    960,
+    40
+   ]
+  },
+  {
+   "id": "m12",
+   "piece": "machines",
+   "sorte": "cachette",
+   "fichier": ".engrenage_secret",
+   "but": [],
+   "xp": 10,
+   "pos": [
+    560,
+    470
+   ]
+  },
+  {
+   "id": "m13",
+   "piece": "crypte",
+   "sorte": "cachette",
+   "fichier": ".caveau_oublie",
+   "but": [],
+   "xp": 10,
+   "pos": [
+    1080,
+    410
+   ]
+  },
+  {
+   "id": "m14",
+   "piece": "guilde",
+   "sorte": "tresor",
+   "fichier": ".grotte_de_la_cascade/fond/carte.secret",
+   "but": [],
+   "xp": 15,
+   "pos": [
+    470,
+    880
+   ]
+  },
+  {
+   "id": "m15",
+   "piece": "temps",
+   "sorte": "tresor",
+   "fichier": ".terrier_du_tronc/racines/cle.secret",
+   "but": [],
+   "xp": 15,
+   "pos": [
+    760,
+    380
+   ]
+  },
+  {
+   "id": "m16",
+   "piece": "forge",
+   "sorte": "habitant",
+   "fichier": "habitant_braisillon.txt",
+   "but": [
+    [
+     "dossier",
+     "forge/enclume"
+    ]
+   ],
+   "xp": 15,
+   "pos": [
+    500,
+    230
+   ],
+   "espece": "braisillon"
+  },
+  {
+   "id": "m17",
+   "piece": "forge",
+   "sorte": "habitant",
+   "fichier": "habitant_fondelin.txt",
+   "but": [
+    [
+     "nb",
+     "forge/enclume",
+     "lingot_.*",
+     3
+    ]
+   ],
+   "xp": 20,
+   "pos": [
+    360,
+    200
+   ],
+   "espece": "fondelin",
+   "apres": "fo2"
+  },
+  {
+   "id": "m18",
+   "piece": "port",
+   "sorte": "habitant",
+   "fichier": "habitant_plouftin.txt",
+   "but": [
+    [
+     "nb",
+     "port/filet",
+     "bouteille_.*",
+     3
+    ]
+   ],
+   "xp": 25,
+   "pos": [
+    300,
+    395
+   ],
+   "espece": "plouftin",
+   "pose": {
+    "port/plage/bouteille_1.txt": "🍾 1",
+    "port/plage/rochers/bouteille_2.txt": "🍾 2",
+    "port/.epave/bouteille_3.txt": "🍾 3"
+   }
+  },
+  {
+   "id": "m19",
+   "piece": "port",
+   "sorte": "habitant",
+   "fichier": "habitant_tritonnet.txt",
+   "but": [
+    [
+     "plein",
+     "port/message.txt"
+    ]
+   ],
+   "xp": 15,
+   "pos": [
+    420,
+    420
+   ],
+   "espece": "tritonnet",
+   "apres": "port2"
+  },
+  {
+   "id": "m20",
+   "piece": "donnees",
+   "sorte": "habitant",
+   "fichier": "habitant_givrichon.txt",
+   "but": [
+    [
+     "trie",
+     "donnees/flocons_ranges.txt",
+     "donnees/flocons.txt"
+    ]
+   ],
+   "xp": 20,
+   "pos": [
+    240,
+    560
+   ],
+   "espece": "givrichon",
+   "pose": {
+    "donnees/flocons.txt": "flocon_g\nflocon_b\nflocon_e\nflocon_a\nflocon_f\nflocon_c\nflocon_d"
+   }
+  },
+  {
+   "id": "m21",
+   "piece": "donnees",
+   "sorte": "habitant",
+   "fichier": "habitant_givrarde.txt",
+   "but": [
+    [
+     "reponse",
+     "donnees/reponse_glacons.txt",
+     {
+      "lignes": "donnees/glacons.txt"
+     }
+    ]
+   ],
+   "xp": 20,
+   "pos": [
+    130,
+    470
+   ],
+   "espece": "givrarde",
+   "apres": "dn2",
+   "pose": {
+    "donnees/glacons.txt": "🧊\n🧊\n🧊\n🧊\n🧊\n🧊\n🧊\n🧊"
+   }
+  },
+  {
+   "id": "m22",
+   "piece": "guilde",
+   "sorte": "habitant",
+   "fichier": "habitant_racinelle.txt",
+   "but": [
+    [
+     "dossier",
+     "guilde/cabane/toit"
+    ]
+   ],
+   "xp": 15,
+   "pos": [
+    330,
+    640
+   ],
+   "espece": "racinelle"
+  },
+  {
+   "id": "m23",
+   "piece": "guilde",
+   "sorte": "habitant",
+   "fichier": "habitant_petalouette.txt",
+   "but": [
+    [
+     "nb",
+     "guilde/jardin",
+     "graine_.*",
+     4
+    ]
+   ],
+   "xp": 20,
+   "pos": [
+    530,
+    640
+   ],
+   "espece": "petalouette",
+   "apres": "gu2",
+   "pose": {
+    "guilde/graines/graine_1.txt": "🌱",
+    "guilde/graines/graine_2.txt": "🌱",
+    "guilde/graines/graine_3.txt": "🌱",
+    "guilde/graines/graine_4.txt": "🌱"
+   }
+  },
+  {
+   "id": "m24",
+   "piece": "sommet",
+   "sorte": "habitant",
+   "fichier": "habitant_cailloute.txt",
+   "but": [
+    [
+     "plein",
+     "sommet/registre.txt"
+    ]
+   ],
+   "xp": 15,
+   "pos": [
+    880,
+    700
+   ],
+   "espece": "cailloute"
+  },
+  {
+   "id": "m25",
+   "piece": "sommet",
+   "sorte": "habitant",
+   "fichier": "habitant_aureolin.txt",
+   "but": [
+    [
+     "reponse",
+     "sommet/reponse_cailloux.txt",
+     {
+      "compte": [
+       "sommet/tas",
+       "caillou_.*"
+      ]
+     }
+    ]
+   ],
+   "xp": 20,
+   "pos": [
+    1010,
+    690
+   ],
+   "espece": "aureolin",
+   "apres": "som2",
+   "pose": {
+    "sommet/tas/caillou_1.txt": "🪨",
+    "sommet/tas/caillou_2.txt": "🪨",
+    "sommet/tas/caillou_3.txt": "🪨",
+    "sommet/tas/caillou_4.txt": "🪨",
+    "sommet/tas/caillou_5.txt": "🪨",
+    "sommet/tas/caillou_6.txt": "🪨",
+    "sommet/tas/caillou_7.txt": "🪨"
+   }
+  },
+  {
+   "id": "m26",
+   "piece": "citadelle",
+   "sorte": "habitant",
+   "fichier": "habitant_lanternix.txt",
+   "but": [
+    [
+     "protege",
+     "citadelle/journal_de_lanternix.txt"
+    ]
+   ],
+   "xp": 25,
+   "pos": [
+    1150,
+    590
+   ],
+   "espece": "lanternix",
+   "pose": {
+    "citadelle/journal_de_lanternix.txt": "🏮 ✨ 🏮"
+   }
+  },
+  {
+   "id": "m27",
+   "piece": "citadelle",
+   "sorte": "habitant",
+   "fichier": "habitant_papillombre.txt",
+   "but": [
+    [
+     "cmd",
+     "^(find|gci|get-childitem|ls|dir)\\b.*aile"
+    ]
+   ],
+   "xp": 15,
+   "pos": [
+    1260,
+    470
+   ],
+   "espece": "papillombre",
+   "apres": "cit2",
+   "pose": {
+    "citadelle/jardin_de_nuit/aile_1.aile": "🦋",
+    "citadelle/jardin_de_nuit/fleurs/aile_2.aile": "🦋"
+   }
+  },
+  {
+   "id": "m28",
+   "piece": "controle",
+   "sorte": "habitant",
+   "fichier": "habitant_boulonnet.txt",
+   "but": [
+    [
+     "cmd",
+     "^(date|get-date)\\b"
+    ]
+   ],
+   "xp": 15,
+   "pos": [
+    1360,
+    250
+   ],
+   "espece": "boulonnet"
+  },
+  {
+   "id": "m29",
+   "piece": "controle",
+   "sorte": "habitant",
+   "fichier": "habitant_engrenaille.txt",
+   "but": [
+    [
+     "plein",
+     "controle/inventaire.txt"
+    ]
+   ],
+   "xp": 15,
+   "pos": [
+    1460,
+    360
+   ],
+   "espece": "engrenaille",
+   "apres": "ct2"
+  },
+  {
+   "id": "m30",
+   "piece": "robots",
+   "sorte": "habitant",
+   "fichier": "habitant_rouillot.txt",
+   "but": [
+    [
+     "plein",
+     "robots/robot.txt"
+    ]
+   ],
+   "xp": 15,
+   "pos": [
+    1530,
+    380
+   ],
+   "espece": "rouillot"
+  },
+  {
+   "id": "m31",
+   "piece": "robots",
+   "sorte": "habitant",
+   "fichier": "habitant_parasouris.txt",
+   "but": [
+    [
+     "nb",
+     "robots/boite",
+     "vis_.*",
+     5
+    ]
+   ],
+   "xp": 20,
+   "pos": [
+    1620,
+    380
+   ],
+   "espece": "parasouris",
+   "apres": "at2",
+   "pose": {
+    "robots/pieces/vis_1.txt": "🔩",
+    "robots/pieces/vis_2.txt": "🔩",
+    "robots/pieces/vis_3.txt": "🔩",
+    "robots/pieces/vis_4.txt": "🔩",
+    "robots/pieces/vis_5.txt": "🔩"
+   }
+  },
+  {
+   "id": "m32",
+   "piece": "ondes",
+   "sorte": "habitant",
+   "fichier": "habitant_zapiot.txt",
+   "but": [
+    [
+     "cmd",
+     "^(ping|test-connection)\\b"
+    ]
+   ],
+   "xp": 15,
+   "pos": [
+    1260,
+    140
+   ],
+   "espece": "zapiot"
+  },
+  {
+   "id": "m33",
+   "piece": "ondes",
+   "sorte": "habitant",
+   "fichier": "habitant_plumange.txt",
+   "but": [
+    [
+     "plein",
+     "ondes/ciel.txt"
+    ]
+   ],
+   "xp": 15,
+   "pos": [
+    1380,
+    150
+   ],
+   "espece": "plumange",
+   "apres": "on2"
+  },
+  {
+   "id": "m34",
+   "piece": "temps",
+   "sorte": "habitant",
+   "fichier": "habitant_horlogrif.txt",
+   "but": [
+    [
+     "dossier",
+     "temps/horloges"
+    ]
+   ],
+   "xp": 15,
+   "pos": [
+    960,
+    230
+   ],
+   "espece": "horlogrif"
+  },
+  {
+   "id": "m35",
+   "piece": "temps",
+   "sorte": "habitant",
+   "fichier": "habitant_lunacorne.txt",
+   "but": [
+    [
+     "plein",
+     "temps/jour.txt"
+    ]
+   ],
+   "xp": 15,
+   "pos": [
+    850,
+    210
+   ],
+   "espece": "lunacorne",
+   "apres": "tp2"
+  },
+  {
+   "id": "m36",
+   "piece": "observatoire",
+   "sorte": "habitant",
+   "fichier": "habitant_miroeil.txt",
+   "but": [
+    [
+     "cmd",
+     "^(cat|type|gc|get-content|less|more|head|tail|bat|nl)\\b.*carte_du_ciel"
+    ]
+   ],
+   "xp": 15,
+   "pos": [
+    790,
+    70
+   ],
+   "espece": "miroeil",
+   "pose": {
+    "observatoire/carte_du_ciel.txt": "✦ · ✧ · ★\n · ✦ · ✧\n★ · ✦ ·"
+   }
+  },
+  {
+   "id": "m37",
+   "piece": "observatoire",
+   "sorte": "habitant",
+   "fichier": "habitant_nebuline.txt",
+   "but": [
+    [
+     "reponse",
+     "observatoire/reponse_etoiles.txt",
+     {
+      "lignes": "observatoire/etoiles.txt"
+     }
+    ]
+   ],
+   "xp": 20,
+   "pos": [
+    930,
+    90
+   ],
+   "espece": "nebuline",
+   "apres": "ob2",
+   "pose": {
+    "observatoire/etoiles.txt": "★\n★\n★\n★\n★\n★\n★\n★\n★"
+   }
+  },
+  {
+   "id": "m38",
+   "piece": "machines",
+   "sorte": "habitant",
+   "fichier": "habitant_ressortine.txt",
+   "but": [
+    [
+     "fichier",
+     "machines/roue.txt"
+    ]
+   ],
+   "xp": 15,
+   "pos": [
+    620,
+    470
+   ],
+   "espece": "ressortine"
+  },
+  {
+   "id": "m39",
+   "piece": "machines",
+   "sorte": "habitant",
+   "fichier": "habitant_scintipede.txt",
+   "but": [
+    [
+     "reponse",
+     "machines/reponse_dents.txt",
+     {
+      "compte": [
+       "machines/engrenages",
+       "dent_.*"
+      ]
+     }
+    ]
+   ],
+   "xp": 20,
+   "pos": [
+    560,
+    410
+   ],
+   "espece": "scintipede",
+   "apres": "sm2",
+   "pose": {
+    "machines/engrenages/dent_1.txt": "⚙",
+    "machines/engrenages/dent_2.txt": "⚙",
+    "machines/engrenages/dent_3.txt": "⚙",
+    "machines/engrenages/dent_4.txt": "⚙",
+    "machines/engrenages/dent_5.txt": "⚙",
+    "machines/engrenages/dent_6.txt": "⚙"
+   }
+  },
+  {
+   "id": "m40",
+   "piece": "crypte",
+   "sorte": "habitant",
+   "fichier": "habitant_corbouh.txt",
+   "but": [
+    [
+     "cmd",
+     "^(head|gc|get-content|select-object|cat|type)\\b.*parchemin_de_corbouh"
+    ]
+   ],
+   "xp": 15,
+   "pos": [
+    1000,
+    420
+   ],
+   "espece": "corbouh",
+   "pose": {
+    "crypte/parchemin_de_corbouh.txt": "☾ CORBOUH ☽\n✦ ✦ ✦\n…\n…\n…\n…"
+   }
+  },
+  {
+   "id": "m41",
+   "piece": "crypte",
+   "sorte": "habitant",
+   "fichier": "habitant_araignoir.txt",
+   "but": [
+    [
+     "contient",
+     "crypte/mot_de_la_toile.txt",
+     "ARAIGNEE"
+    ]
+   ],
+   "xp": 20,
+   "pos": [
+    1070,
+    300
+   ],
+   "espece": "araignoir",
+   "apres": "cr2",
+   "pose": {
+    "crypte/toile.txt": "~ ~ ~ ~ ~\n~ ~ ~ ~ ~\n~ ~ ~ ~ ~\n~ ~ ~ ~ ~\n~ ~ ~ ~ ~\nMOTSECRET : ARAIGNEE\n~ ~ ~ ~ ~\n~ ~ ~ ~ ~\n~ ~ ~ ~ ~\n~ ~ ~ ~ ~\n~ ~ ~ ~ ~\n~ ~ ~ ~ ~"
+   }
+  }
+ ],
+ "evenements": [
+  {
+   "id": "aurore",
+   "biome": "glace",
+   "effet": "aurore",
+   "x": 195,
+   "y": 430
+  },
+  {
+   "id": "baleine",
+   "biome": "eau",
+   "effet": "baleine",
+   "x": 170,
+   "y": 380
+  },
+  {
+   "id": "etincelles",
+   "biome": "feu",
+   "effet": "monte",
+   "x": 230,
+   "y": 90,
+   "couleur": [
+    255,
+    159,
+    67
+   ]
+  },
+  {
+   "id": "floraison",
+   "biome": "plante",
+   "effet": "monte",
+   "x": 400,
+   "y": 760,
+   "couleur": [
+    255,
+    170,
+    210
+   ]
+  },
+  {
+   "id": "cristaux",
+   "biome": "roche",
+   "effet": "scintille",
+   "x": 950,
+   "y": 700,
+   "couleur": [
+    150,
+    230,
+    255
+   ]
+  },
+  {
+   "id": "feux_follets",
+   "biome": "poison",
+   "effet": "flotte",
+   "x": 1400,
+   "y": 790,
+   "couleur": [
+    200,
+    255,
+    90
+   ]
+  },
+  {
+   "id": "lucioles_violettes",
+   "biome": "ombre",
+   "effet": "flotte",
+   "x": 1470,
+   "y": 560,
+   "couleur": [
+    200,
+    150,
+    255
+   ]
+  },
+  {
+   "id": "montgolfiere",
+   "biome": "machine",
+   "effet": "ballon",
+   "x": 1450,
+   "y": 230,
+   "couleur": [
+    255,
+    213,
+    79
+   ]
+  },
+  {
+   "id": "vol_de_plumes",
+   "biome": "ciel",
+   "effet": "descend",
+   "x": 1420,
+   "y": 90,
+   "couleur": [
+    240,
+    245,
+    255
+   ]
+  },
+  {
+   "id": "etoile_filante",
+   "biome": "racine",
+   "effet": "trainee",
+   "x": 760,
+   "y": 40,
+   "x2": 520,
+   "y2": 170,
+   "couleur": [
+    200,
+    255,
+    220
+   ]
+  },
+  {
+   "id": "comete",
+   "biome": "racine",
+   "effet": "trainee",
+   "x": 1080,
+   "y": 30,
+   "x2": 1300,
+   "y2": 120,
+   "couleur": [
+    120,
+    255,
+    170
+   ]
+  },
+  {
+   "id": "lucioles",
+   "biome": "racine",
+   "effet": "flotte",
+   "x": 835,
+   "y": 250,
+   "couleur": [
+    61,
+    220,
+    132
+   ]
+  }
+ ],
+ "gardiens": [
+  [
+   "enumeration",
+   "ricanombre"
+  ],
+  [
+   "droits",
+   "heaumbre"
+  ],
+  [
+   "secrets",
+   "cranard"
+  ],
+  [
+   "hangar",
+   "ombrachne"
+  ],
+  [
+   "scripts",
+   "marionnoire"
+  ],
+  [
+   "codes",
+   "torsillon"
+  ],
+  [
+   "forensique",
+   "osselet"
+  ],
+  [
+   "social",
+   "drapouille"
+  ]
+ ],
+ "moments": {
+  "matin": [
+   7,
+   9
+  ],
+  "jour": [
+   9,
+   18
+  ],
+  "soir": [
+   18,
+   21
+  ],
+  "nuit": [
+   21,
+   7
+  ]
+ },
+ "saisons": {
+  "printemps": [
+   3,
+   4,
+   5
+  ],
+  "ete": [
+   6,
+   7,
+   8
+  ],
+  "automne": [
+   9,
+   10,
+   11
+  ],
+  "hiver": [
+   12,
+   1,
+   2
+  ]
+ },
+ "meteo": {
+  "pause_s": 120,
+  "fenetre_s": 120,
+  "pluie_n": 5,
+  "garde_s": 60,
+  "reseau": [
+   "ping",
+   "curl",
+   "wget",
+   "ssh",
+   "nc",
+   "traceroute",
+   "tracert",
+   "nslookup",
+   "dig",
+   "host",
+   "test-connection",
+   "invoke-webrequest",
+   "iwr",
+   "resolve-dnsname"
+  ]
+ },
+ "evenement_chance": 3,
+ "evenement_duree_s": 300
+}

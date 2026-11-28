@@ -1,7 +1,6 @@
 """Le bestiaire commun (150 espèces), partagé avec l'appli Android et le site.
 
-Les données viennent de bestiaire.json (généré par donnees/generer_bestiaire.py à partir des dessins
-de donnees/bestiaire2) : 10 familles × 15 espèces, chacune dessinée à chaque stade, plus des variantes.
+Les données viennent de bestiaire.json (généré par donnees/generer_bestiaire.py).
 """
 import colorsys
 import json
@@ -10,21 +9,27 @@ import random
 import secrets
 import time
 import unicodedata
+import base64
+import zlib
 
 from .plateforme import RESET
 
 _DONNEES = None
 
-# Lieux de l'ancien bestiaire (vieilles sauvegardes) ; les nouveaux viennent de bestiaire.json (« lieux »).
-HABITATS = {
-    "archives": "les archives", "marais": "le marais", "usine": "l'usine", "grenier": "le grenier",
-    "forteresse": "la forteresse", "atelier": "l'atelier", "forge": "la forge", "foret": "la forêt",
-    "montagne": "la montagne", "bibliotheque": "la bibliothèque", "coffre": "le coffre-fort",
-    "laboratoire": "le laboratoire", "arcade": "la salle d'arcade", "faille": "la faille", "grotte": "la grotte",
-}
 COULEUR_RARETE = {"commune": "#b0b0c0", "peu commune": "#5fd787", "rare": "#5fafff", "épique": "#c77dff",
                   "légendaire": "#ffaf00", "mythique": "#ff5f87"}
-XP_RARETE = {"commune": 15, "peu commune": 25, "rare": 40, "légendaire": 100}
+XP_RARETE = {"commune": 15, "peu commune": 25, "rare": 40, "épique": 65, "légendaire": 100, "mythique": 200}
+STADES = ["bebe", "enfant", "ado", "adulte", "ancien"]
+_SPRITES = None
+
+
+class _Habitats(dict):
+    """Nom des lieux (« le volcan ») à partir du dossier de zone (« volcan »)."""
+    def get(self, k, defaut=None):
+        return donnees().get("habitats", {}).get(k, defaut)
+
+
+HABITATS = _Habitats()
 
 
 def donnees():
@@ -32,13 +37,7 @@ def donnees():
     if _DONNEES is None:
         brut = pkgutil.get_data(__package__, "bestiaire.json")
         _DONNEES = json.loads(brut.decode("utf-8"))
-        HABITATS.update(_DONNEES.get("lieux", {}))
     return _DONNEES
-
-
-def nom_lieu(base):
-    donnees()
-    return HABITATS.get(base, base)
 
 
 def especes():
@@ -66,94 +65,163 @@ def espece(nom):
     for e in especes():
         if _simple(e["nom"]).startswith(n) and len(n) >= 3:
             return e
-    for vieux, nouveau in donnees().get("anciens", {}).items():   # nom de l'ancien bestiaire
-        if _simple(vieux) == n:
-            return espece(nouveau)
     return None
 
 
+def familles():
+    """{famille: commande qui l'attire} (une commande par famille, champ « attiree_par »)."""
+    out = {}
+    for e in publiques():
+        out.setdefault(e["famille"], e["attiree_par"])
+    return out
+
+
 def migrer(state):
-    """Vieilles sauvegardes : les bestioles de l'ancien bestiaire prennent le nom de leur remplaçante
-    (même numéro). Les monstres sauvages en cours sont oubliés (ils vivaient dans d'anciens lieux)."""
+    """Sauvegardes d'avant le nouveau bestiaire : chaque ancienne espèce devient la nouvelle de même numéro."""
     anciens = donnees().get("anciens", {})
-    if not anciens or state.get("bestiaire_v", 1) >= donnees().get("version", 1):
+    if not state or not anciens:
         return state
+
+    def nouveau(nom):
+        if nom is None or espece(nom):
+            return nom
+        n = anciens.get(nom)
+        e = next((x for x in especes() if x["numero"] == n), None)
+        return e["nom"] if e else nom
     for c in state.get("captures", []):
-        c["espece"] = anciens.get(c.get("espece"), c.get("espece"))
-    coll = {}
+        c["espece"] = nouveau(c.get("espece"))
+        if c.get("stade") == "finale":
+            c["stade"] = "ancien"
+    col = {}
     for n, k in state.get("collection", {}).items():
-        n = anciens.get(n, n)
-        coll[n] = coll.get(n, 0) + k
-    state["collection"] = coll
-    if state.get("dressage_essais"):
-        state["dressage_essais"] = {anciens.get(n, n): j for n, j in state["dressage_essais"].items()}
-    state["sauvages"] = []
-    state["dressage"] = None
-    state["dressage_familles"] = []
-    state["bestiaire_v"] = donnees().get("version", 1)
+        col[nouveau(n)] = col.get(nouveau(n), 0) + k
+    if "collection" in state:
+        state["collection"] = col
+    for s_ in state.get("sauvages", []):
+        s_["e"] = nouveau(s_.get("e"))
+    if state.get("dressage"):
+        state["dressage"]["espece"] = nouveau(state["dressage"].get("espece"))
     return state
 
 
-def oeufs():
-    return donnees().get("oeufs", [])
-
-
-def oeuf(oid):
-    return next((o for o in oeufs() if o["id"] == oid), None)
-
-
-def tirer_oeuf(rnd=random):
-    """Un des 9 œufs (Feu, Eau, Glace…), au hasard : personne ne choisit le sien."""
-    o = oeufs()
-    return rnd.choice(o)["id"] if o else None
-
-
-def tirer_familier(oid, rnd=random):
-    """L'espèce qui sort d'un œuf : une de celles dont le lieu de vie correspond à l'œuf."""
-    o = oeuf(oid) or (oeufs()[0] if oeufs() else None)
-    if not o or not o["especes"]:
-        return None
-    return rnd.choice(o["especes"])
-
-
-def tirer_variante(e, rnd=random):
-    """Forme de l'individu (classique, volcan, lave…), selon les chances de chaque variante dessinée."""
-    v = e.get("variantes") or [{"id": "classique", "chance": 100}]
-    return rnd.choices([x["id"] for x in v], [x["chance"] for x in v])[0]
-
-
-def nom_variante(e, variante):
-    if not variante or variante == "classique":
-        return ""
-    return next((v["nom"] for v in e.get("variantes", []) if v["id"] == variante), variante)
-
-
-def tirer(rnd=random):
+def tirer(rnd=random, attire=None):
+    """Une apparition : l'espèce (selon sa fréquence, et la famille attirée), sa variante (selon son
+    habitat), shiny ou pas. Sans graine (non vérifiable) ; même pondération que tirage.poids_especes."""
+    from .tirage import poids_especes
     d = donnees()
-    raretes = d["raretes"]
-    rarete = rnd.choices(raretes, [d["poids"][r] for r in raretes])[0]
-    e = rnd.choice([x for x in publiques() if x["rarete"] == rarete])
+    pub = publiques()
+    e = rnd.choices(pub, poids_especes(pub, attire))[0]
+    v = rnd.choices(e["variantes"], [x["chance"] for x in e["variantes"]])[0]
     shiny = rnd.randrange(d["chance_shiny"]) == 0
-    return e, shiny
+    return e, shiny, v["id"]
 
 
-def individu(e, shiny, zone="", variante=None):
-    """Une bestiole capturée : unique, avec sa marque, sa forme et son potentiel."""
+def variante(e, vid):
+    return next((v for v in e.get("variantes", []) if v["id"] == vid), (e.get("variantes") or [{}])[0])
+
+
+def note(e, vid, qualite, shiny):
+    """Note sur 100 : 60 % qualité des stats, 25 % variante, 15 % puissance de l'espèce, +10 shiny."""
+    p = donnees()["rarete"]["poids"]
+    n = (p["stats"] * qualite + p["variante"] * variante(e, vid).get("score", 0)
+         + p["puissance"] * (e.get("puissance", 1) - 1) / 14 + (p["bonus_shiny"] if shiny else 0))
+    return round(min(100.0, n), 1)
+
+
+def rarete(e, vid, qualite, shiny):
+    """La rareté d'un individu (et plus de l'espèce) ; Abyssor est toujours mythique."""
+    r = donnees()["rarete"]
+    if e["id"] in r.get("speciales", {}):
+        return r["speciales"][e["id"]]
+    n = note(e, vid, qualite, shiny)
+    nom = "commune"
+    for seuil, palier in r["paliers"]:
+        if n >= seuil:
+            nom = palier
+    return nom
+
+
+def rarete_de(ind):
+    """Rareté d'une bestiole de la troupe (les anciennes captures n'en ont pas : on la recalcule)."""
+    if ind.get("rarete"):
+        return ind["rarete"]
+    e = espece(ind.get("espece"))
+    if not e:
+        return "commune"
+    return rarete(e, ind.get("variante", "classique"), ind.get("potentiel", 50) / 100, ind.get("shiny"))
+
+
+def individu(e, shiny, zone="", vid="classique", qualite=None):
+    """Une bestiole dressée : unique, avec sa marque, ses stats tirées et sa rareté."""
     d = donnees()
-    iv = {k: random.randint(0, 31) for k in e["stats"]}
+    q = random.random() if qualite is None else qualite
+    iv = {k: max(0, min(31, round(31 * (q + random.gauss(0, 0.08))))) for k in e["stats"]}
     return {
         "id": secrets.token_hex(5),
         "espece": e["nom"],
+        "variante": vid,
         "shiny": bool(shiny),
         "date": int(time.time() * 1000),
         "marque": random.choice(d["marques"]),
         "humeur": random.choice(d["humeurs"]),
         "taille": round(e["taille_cm"] * random.uniform(0.8, 1.25), 1),
+        "qualite": round(q, 3),
         "potentiel": round(100 * sum(iv.values()) / (31 * len(iv))),
-        "stats": {k: v + iv[k] // 4 for k, v in e["stats"].items()},
+        "stats": {k: v + iv[k] // 2 for k, v in e["stats"].items()},
+        "note": note(e, vid, q, shiny),
+        "rarete": rarete(e, vid, q, shiny),
         "zone": zone,
-        "variante": variante or tirer_variante(e),
     }
+
+
+# ---------------------------------------------------------------- images en gros pixels (5 stades)
+def sprites():
+    global _SPRITES
+    if _SPRITES is None:
+        try:
+            _SPRITES = json.loads(zlib.decompress(pkgutil.get_data(__package__, "sprites.bin")))
+        except (OSError, TypeError, ValueError, zlib.error):
+            _SPRITES = {}
+    return _SPRITES
+
+
+def image(e, stade="adulte", vid="classique"):
+    """(largeur, hauteur, octets, palette) d'un stade ; la forme classique si la variante n'est pas dessinée."""
+    s = sprites()
+    jeu = s.get(f"{e['id']}/{vid}") or s.get(f"{e['id']}/classique")
+    if not jeu:
+        return None
+    st = jeu["stades"].get(stade) or jeu["stades"]["adulte"]
+    return st[0], st[1], zlib.decompress(base64.b64decode(st[2])), jeu["palette"]
+
+
+def decaler(hexa, teinte):
+    """Décale la teinte d'une couleur (shiny : chaque individu a la sienne)."""
+    r, g, b = _rgb(hexa)
+    h, l, s_ = colorsys.rgb_to_hls(r / 255, g / 255, b / 255)
+    r, g, b = colorsys.hls_to_rgb((h + teinte) % 1, l, min(1, s_ * 1.1))
+    return "#%02x%02x%02x" % (int(r * 255), int(g * 255), int(b * 255))
+
+
+def lignes_image(w, h, octets, pal):
+    """Octets indexés → lignes de demi-blocs colorés (2 pixels par caractère)."""
+    out = []
+    for y in range(0, h, 2):
+        s = ""
+        for x in range(w):
+            a = octets[y * w + x]
+            b = octets[(y + 1) * w + x] if y + 1 < h else 0
+            ca, cb = (pal[a - 1] if a else None), (pal[b - 1] if b else None)
+            if ca is None and cb is None:
+                s += " "
+            elif cb is None:
+                s += fg24(ca) + "▀" + RESET
+            elif ca is None:
+                s += fg24(cb) + "▄" + RESET
+            else:
+                s += fg24(ca) + bg24(cb) + "▀" + RESET
+        out.append(s)
+    return out
 
 
 # ---------------------------------------------------------------- couleurs « vraies » (24 bits)
@@ -172,111 +240,65 @@ def bg24(h):
     return f"\033[48;2;{r};{g};{b}m"
 
 
-def dessin(e, shiny=False, grand=False, stade=None, variante=None, teinte=None):
+def dessin(e, shiny=False, grand=False, stade="adulte", vid="classique", teinte=0.5, aura=None, phase=None, glitch=None):
     """La bestiole en pixel art pour le terminal (2 pixels verticaux par caractère).
-    grand=True : version détaillée (32 px) ; stade (enfant, ado, adulte, finale) et variante choisissent
-    le dessin exact quand il existe ; teinte : couleur shiny propre à un individu."""
-    ds = (e.get("dessins") or {}).get(variante or "classique") or (e.get("dessins") or {}).get("classique")
-    if ds and (stade or variante) and (ds.get(stade or "adulte") if grand else ds.get("petit")):
-        x = ds[stade or "adulte"] if grand else ds["petit"]
-        pal = x["p"]
+    Les espèces du nouveau bestiaire ont une image par stade et par variante ; Abyssor garde son dessin.
+    aura : palier d'aura de rareté (voir aura.py) à dessiner autour de la silhouette, ou None.
+    glitch : la graine d'un individu glitch (style A, au repos) ou (graine, style, phase) : glitch.py, après le shiny."""
+    if aura:
+        from . import aura as A
+        w, h, couleurs = pixels(e, shiny, grand, stade, vid, teinte, glitch)
+        return A.lignes(w, h, couleurs, aura, A.PHASE_FIXE if phase is None else phase)
+    if glitch:
+        from . import aura as A
+        w, h, couleurs = pixels(e, shiny, grand, stade, vid, teinte, glitch)
+        return A.lignes_brutes(w, h, couleurs)
+    img = image(e, stade, vid)
+    if img:
+        w, h, octets, pal = img
         if shiny:
-            pal = decaler(pal, teinte if teinte is not None else 0.5)
-        return _rendu(x["l"], pal)
+            pal = [decaler(c, teinte) for c in pal]
+        return lignes_image(w, h, octets, pal)
+    return _dessin_ancien(e, shiny, grand)
+
+
+def pixels(e, shiny=False, grand=False, stade="adulte", vid="classique", teinte=0.5, glitch=None):
+    """(largeur, hauteur, couleurs "#rrggbb" ou None) : l'image d'une bestiole pixel par pixel (pour l'aura) ;
+    glitch : l'effet glitch par-dessus (graine, ou (graine, style, phase))."""
+    w, h, c = _pixels(e, shiny, grand, stade, vid, teinte)
+    if glitch:
+        from . import glitch as G
+        c = G.hexa(w, h, c, glitch)
+    return w, h, c
+
+
+def _pixels(e, shiny=False, grand=False, stade="adulte", vid="classique", teinte=0.5):
+    img = image(e, stade, vid)
+    if img:
+        w, h, octets, pal = img
+        if shiny:
+            pal = [decaler(c, teinte) for c in pal]
+        return w, h, [pal[o - 1] if o else None for o in octets[:w * h]]
+    if grand and e.get("sprite_grand"):
+        rows = e["sprite_grand"]
+        pal = e["palette_grand_shiny"] if shiny else e["palette_grand"]
+    else:
+        rows = e.get("sprite_shiny" if shiny else "sprite") or []
+        pal = e.get("palette_shiny" if shiny else "palette") or {}
+    w = max((len(r) for r in rows), default=0)
+    return w, len(rows), [pal.get(ch) for r in rows for ch in r.ljust(w, ".")]
+
+
+def _dessin_ancien(e, shiny=False, grand=False):
+    """La bestiole en pixel art pour le terminal (2 pixels verticaux par caractère).
+    grand=True : version détaillée (48 px) pour les espèces qui en ont une."""
     if grand and e.get("sprite_grand"):
         rows = e["sprite_grand"]
         pal = e["palette_grand_shiny"] if shiny else e["palette_grand"]
     else:
         rows = e["sprite_shiny"] if shiny else e["sprite"]
         pal = e["palette_shiny"] if shiny else e["palette"]
-    return _rendu(rows, pal)
-
-
-def decaler(palette, dec):
-    """Tourne la teinte d'une palette (shiny)."""
-    out = {}
-    for k, h in palette.items():
-        r, g, b = (v / 255 for v in _rgb(h))
-        hh, l, s = colorsys.rgb_to_hls(r, g, b)
-        r, g, b = colorsys.hls_to_rgb((hh + dec) % 1, l, s)
-        out[k] = "#%02x%02x%02x" % (int(r * 255), int(g * 255), int(b * 255))
-    return out
-
-
-def note_individu(ind):
-    """Note sur 100 d'un individu : 60 % qualité de ses stats (centile), 25 % rareté de sa forme, 15 % puissance de
-    l'espèce, +10 s'il est shiny (règles dans bestiaire.json, « rarete_individu »)."""
-    e = espece(ind.get("espece"))
-    if e is None:
-        return 0
-    r = donnees().get("rarete_individu", {})
-    po = r.get("poids", {"stats": 60, "variante": 25, "puissance": 15, "bonus_shiny": 10})
-    variantes = e.get("variantes") or [{"id": "classique", "chance": 100}]
-    chance_max = max(v["chance"] for v in variantes)
-    ch = next((v["chance"] for v in variantes if v["id"] == ind.get("variante", "classique")), chance_max)
-    cent = r.get("centiles")
-    pot = max(0, min(100, int(ind.get("potentiel", 50))))
-    stats = cent[pot] if cent else pot / 100              # en centile : 0,9 = mieux que 90 % des individus
-    forme = 1 - ch / chance_max
-    puissance = (e.get("puissance", 1) - 1) / 14
-    note = po["stats"] * stats + po["variante"] * forme + po["puissance"] * puissance
-    if ind.get("shiny"):
-        note += po["bonus_shiny"]
-    return round(min(100, note))
-
-
-def rang_individu(ind):
-    """Rareté propre à un individu : commune, peu commune, rare, épique, légendaire (ou mythique)."""
-    e = espece(ind.get("espece"))
-    r = donnees().get("rarete_individu", {})
-    if e and e["id"] in r.get("speciales", {}):
-        return r["speciales"][e["id"]]
-    note = note_individu(ind)
-    rang = "commune"
-    for seuil, nom in r.get("paliers", [[0, "commune"]]):
-        if note >= seuil:
-            rang = nom
-    return rang
-
-
-def aura(rows):
-    """Contour lumineux autour de la silhouette (les individus rares et plus brillent)."""
-    w = max((len(r) for r in rows), default=0) + 2
-    g = ["." * w] + ["." + r.ljust(w - 2, ".") + "." for r in rows] + ["." * w]
-    out = []
-    for y, l in enumerate(g):
-        s = ""
-        for x, c in enumerate(l):
-            if c == "." and any(0 <= y + dy < len(g) and 0 <= x + dx < w and g[y + dy][x + dx] not in ".!"
-                                for dy, dx in ((0, 1), (0, -1), (1, 0), (-1, 0))):
-                s += "!"
-            else:
-                s += c
-        out.append(s)
-    return out
-
-
-def dessin_individu(ind, grand=True):
-    """Une bestiole de la troupe, à son stade et dans sa forme, avec l'aura de sa rareté."""
-    e = espece(ind["espece"])
-    rang = rang_individu(ind)
-    if grand and e.get("dessins") and rang in ("rare", "épique", "légendaire", "mythique"):
-        ds = e["dessins"].get(ind.get("variante", "classique")) or e["dessins"]["classique"]
-        x = ds.get(ind.get("stade", "enfant")) or ds["adulte"]
-        pal = decaler(x["p"], ind.get("teinte") or 0.5) if ind.get("shiny") else dict(x["p"])
-        pal["!"] = COULEUR_RARETE[rang]
-        return _rendu(aura(x["l"]), pal)
-    return dessin(e, ind.get("shiny"), grand, stade=ind.get("stade", "enfant"),
-                  variante=ind.get("variante", "classique"), teinte=ind.get("teinte"))
-
-
-def etiquette_rang(ind):
-    rang = rang_individu(ind)
-    return fg24(COULEUR_RARETE.get(rang, "#c0c0c0")) + f"◆ {rang} ({note_individu(ind)}/100)" + RESET
-
-
-def _rendu(rows, pal):
-    w = max((len(r) for r in rows), default=0)
+    w = max(len(r) for r in rows)
     rows = [r.ljust(w, ".") for r in rows]
     if len(rows) % 2:
         rows.append("." * w)
@@ -307,23 +329,57 @@ def arc_en_ciel(texte, decalage=0.0):
     return out + RESET
 
 
-def nom_affiche(e, shiny=False):
-    """Nom coloré : arc-en-ciel pour les shiny et les légendaires."""
-    nom = e["nom"] + (" ✨" if shiny else "")
-    if shiny or e["rarete"] == "légendaire":
+def nom_glitch(texte):
+    """Écriture glitch : les lettres en rose et cyan, comme le liseré de l'image."""
+    return "".join(f"\033[38;2;{255 if k % 2 == 0 else 40};{40 if k % 2 == 0 else 230};{120 if k % 2 == 0 else 255}m{c}"
+                   for k, c in enumerate(texte)) + RESET
+
+
+def nom_affiche(e, shiny=False, rarete_ind=None, glitch=False):
+    """Nom coloré : arc-en-ciel pour les shiny, les légendaires et les mythiques ; couleur de rareté sinon.
+    glitch : le repère ▚ (glitch.REPERE) et, sauf shiny, les lettres rose et cyan."""
+    nom = e["nom"] + (" ✨" if shiny else "") + (" ▚" if glitch else "")
+    r = rarete_ind or ("mythique" if e.get("rarete") == "mythique" else None)
+    if glitch and not shiny:
+        return nom_glitch(nom)
+    if shiny or r in ("légendaire", "mythique"):
         return arc_en_ciel(nom)
-    return fg24(couleur(e)) + nom + RESET
+    if r:
+        return fg24(COULEUR_RARETE[r]) + nom + RESET
+    if "palette" in e:
+        return fg24(e["palette"]["a"]) + nom + RESET
+    img = image(e)
+    return (fg24(img[3][len(img[3]) // 2]) if img else "") + nom + RESET
 
 
-def couleur(e):
-    """Couleur dominante (la plus claire des couleurs fréquentes du petit dessin)."""
-    pal, rows = e["palette"], e["sprite"]
-    compte = {}
-    for r in rows:
-        for ch in r:
-            if ch in pal:
-                compte[ch] = compte.get(ch, 0) + 1
-    freq = sorted(compte, key=compte.get, reverse=True)[:4] or list(pal)
-    if not freq:
-        return "#c0c0c0"
-    return pal[max(freq, key=lambda k: sum(_rgb(pal[k])))]
+CLES_STAT = {"PV": "pv", "ATK": "atk", "DEF": "def", "VIT": "vit", "INT": "int"}
+
+
+def nom_stat(k, p=0):
+    """PV/ATK/DEF… affichés selon le palier de vocabulaire : cœurs → cœurs (PV) → PV."""
+    from .mots import terme
+    return terme(CLES_STAT[k], p) if k in CLES_STAT else k
+
+
+def texte_stats(stats, p=0):
+    return "  ".join(f"{nom_stat(k, p)} {v}" for k, v in stats.items())
+
+
+def nom_rarete(r):
+    """« commune », « légendaire »… dans la langue choisie (la clé interne reste en français)."""
+    from .langue import t
+    return t("rarete." + r) if r in COULEUR_RARETE else r
+
+
+def nom_stade(s):
+    from .langue import t
+    return t("stade_bestiole." + ("ancien" if s == "finale" else s))
+
+
+def nom_frequence(f):
+    from .langue import t
+    return t("frequence." + f)
+
+
+def libelle_rarete(r):
+    return fg24(COULEUR_RARETE.get(r, "#ffffff")) + nom_rarete(r) + RESET

@@ -20,7 +20,7 @@ du tout premier `ls` jusqu'aux réseaux, à la cybersécurité, à la cryptograp
 | 🧒 **Les enfants, dès 7 ans** | Une créature à nourrir, un monde magique à explorer, des créatures à rencontrer. On joue… et sans s'en rendre compte, on tape de vraies commandes. |
 | 🧑‍💻 **Les ados et les adultes qui débutent** | Le terminal fait peur ? Ici, chaque commande est expliquée en trois niveaux : l'image simple, l'explication exacte et ce que fait un vrai terminal. Un test de placement saute ce que tu sais déjà. |
 | 🛠 **Les curieux et les passionnés** | Réseaux et protocoles, ondes radio et LoRa, matériel et machines virtuelles, cybersécurité en « boîtes » simulées, cryptographie, blockchain expliquée de l'intérieur, IA, open source : on va loin, et toujours en pratique. |
-| 🏫 **Les écoles et les clubs** | Un parcours structuré, rigoureux et vérifié, qui marche hors ligne, sans compte et sans données personnelles. Un **mode classe** (suivi des élèves sur le site, sans données personnelles) et des [fiches de séance](docs/fiches/) ✅. |
+| 🏫 **Les écoles et les clubs** | Un parcours structuré, rigoureux et vérifié, qui marche hors ligne, sans compte et sans données personnelles. Un mode classe 100 % local (`tg classe`) : un code de séance, un pseudonyme, un bilan qui reste sur l'ordinateur ; rien n'est envoyé. [Fiches enseignant](docs/classe/fiches_enseignant.pdf). |
 
 ---
 
@@ -60,9 +60,8 @@ commande différent. Elle te guide, t'explique, te félicite, et apprend avec to
 
 - **10 familles** : Démons, Élémentaires, Morts-vivants, Bêtes, Sylvestres, Arthropodes, Abyssaux, Célestes,
   Constructs, Aberrations, de 15 espèces chacune.
-- **Plus de 680 variantes** prévues selon l'habitat (volcan, forêt, glacier, ruines, corail…), chacune dessinée
-  dans ses 5 stades : les premières sont déjà dans le jeu, les autres arrivent au fil des versions. Les créatures
-  sauvages apparaissent au hasard pendant que tu joues, et chacune peut naître dans une forme rare.
+- **Plus de 800 variantes** selon l'habitat (volcan, forêt, glacier, ruines, corail…), chacune dessinée dans ses
+  5 stades. Les créatures sauvages apparaissent au hasard pendant que tu joues.
 - La **rareté** dépend de chaque individu, et se voit à l'aura autour de sa silhouette.
 
 ### 🤝 Le dressage : gagner la confiance d'une créature
@@ -86,23 +85,24 @@ construire. Les animations montrent ce que font les commandes, elles ne les remp
 elles, les jokers, les droits. Chaque étape est expliquée pour les enfants, pour les grands et « dans un vrai
 terminal », et le jeu vérifie que la commande **a vraiment marché**.
 
-**Puis les mondes avancés**, ouverts selon ce qui t'intéresse (✅ = les premières leçons sont jouables : tape `arbre` sur téléphone, `tg` puis [a] sur PC ; chaque monde va encore grandir) :
+**Puis les mondes avancés**, ouverts selon ce qui t'intéresse (✅ jouables sur PC et Android, encore en relecture) :
 
 | Monde | Ce qu'on y apprend |
 |---|---|
-| ⚓ Le Port ✅ | les réseaux : adresses, ports, TCP et UDP, routage, box, HTTPS |
-| 📡 La Tour des Ondes ✅ | les ondes radio, le Wi-Fi et le Bluetooth, LoRa et les réseaux maillés (Meshtastic) |
-| 🛡 La Citadelle ✅ | la cybersécurité défensive : attaques simulées, et des « boîtes » à percer puis à réparer |
-| 🗝 La Crypte des Codes ✅ | la cryptographie (des codes anciens au chiffrement moderne) et la blockchain construite à la main |
-| ⚙ La Salle des Machines ✅ | le matériel, le démarrage, le système, les machines virtuelles, les serveurs et le cloud |
-| 🔨 La Forge ✅ | la programmation, les scripts, son premier jeu, son site web, le multimédia |
-| 🛠 La Guilde des Bâtisseurs Libres ✅ | l'open source, compiler, contribuer (à Terminagotchi lui-même !), l'impression 3D |
-| 🔭 L'Observatoire de l'IA ✅ | comment une IA apprend et se trompe, et comment piloter des assistants |
-| 📊 La Salle des Données ✅ | trier, compter, chercher, et les bases de données (SQL) |
-| 🎛 Le Poste de Contrôle ✅ | administrer un système Linux de A à Z |
-| ⏳ La Bibliothèque du Temps ✅ | git : remonter le temps de ses fichiers |
-| 🤖 L'Atelier ✅ | Raspberry Pi, robots, électronique embarquée |
-| 🔢 Les Ponts des Nombres ✅ | les maths dont tu as besoin, au moment où tu en as besoin |
+| ⚓ Le Port | les réseaux : adresses, ports, TCP et UDP, routage, box, HTTPS |
+| 📡 La Tour des Ondes | les ondes radio, le Wi-Fi et le Bluetooth, LoRa et les réseaux maillés (Meshtastic) |
+| 🛡 La Citadelle | la cybersécurité défensive : attaques simulées, et des « boîtes » à percer puis à réparer |
+| 🗝 La Crypte des Codes | la cryptographie (des codes anciens au chiffrement moderne) et la blockchain construite à la main |
+| ⚙ La Salle des Rouages | le matériel, le démarrage, le système, les machines virtuelles, les serveurs et le cloud |
+| 🔨 La Forge | la programmation, les scripts, son premier jeu, son site web, le multimédia |
+| 🛠 La Guilde des Bâtisseurs Libres | l'open source, compiler, contribuer (à Terminagotchi lui-même !), l'impression 3D |
+| 🔭 L'Observatoire de l'IA | comment une IA apprend et se trompe, et comment piloter des assistants |
+| 📊 La Salle des Données | trier, compter, chercher, et les bases de données (SQL) |
+| 🎛 Le Poste de Contrôle | administrer un système Linux de A à Z |
+| ⏳ La Bibliothèque du Temps | git : remonter le temps de ses fichiers |
+| 🤖 L'Atelier | Raspberry Pi, robots, électronique embarquée |
+| ⛰ Le Sommet (Expert++) | les scripts solides, les regex avancées, le débogage, la documentation et un CTF (ouvert après trois mondes) |
+| 🔢 Les Ponts des Nombres | les maths dont tu as besoin, au moment où tu en as besoin |
 
 Les exploits dans chaque monde font rencontrer de nouvelles créatures et des variantes rares.
 
@@ -110,10 +110,11 @@ Les exploits dans chaque monde font rencontrer de nouvelles créatures et des va
 
 ## Et aussi
 
-- 🏋 **Une salle d'entraînement** ✅ (`entrainement`, ou `tg entrainement` sur PC) avec des exercices chronométrés et des badges qui montent en grade : Bit, Octet,
+- 🏋 **Une salle d'entraînement** avec des exercices chronométrés et des badges qui montent en grade : Bit, Octet,
   Kilo, Méga, Giga, Téra, Péta, Exa, avec galons et étoiles.
-- 🗺 **La carte qui pousse** ✅ (`carte`, ou `tg carte` sur PC) : ton vrai terrain dessiné en carte, qui se dévoile au fil de tes découvertes.
-- 🌍 **14 langues** prévues. ✅ Disponibles : français, anglais, espagnol, allemand, italien, portugais — dans le jeu (`langue es`, ou `tg langue es` sur PC) et sur le site (drapeaux en haut des pages) ; [fiches de séance](docs/fiches/en/) aussi en anglais. À venir : chinois, russe, japonais, hindi, arabe, bengali, indonésien, ourdou. Les traductions n'ont pas encore été relues par des locuteurs natifs : signale toute erreur dans les *Issues* !
+- 🗺 **La carte qui pousse** : ton vrai terrain dessiné en pixel art, qui se dévoile au fil de tes découvertes.
+- 🌍 **14 langues** : français, anglais, espagnol, allemand, italien, portugais, chinois, russe, japonais, hindi,
+  arabe, bengali, indonésien, ourdou.
 - 📴 **Hors ligne** : le jeu se joue sans internet.
 - 🔒 **Sans risque** : sur téléphone, le jeu ne peut rien abîmer en dehors de son terrain de jeu ; la sauvegarde
   est protégée.
@@ -121,19 +122,22 @@ Les exploits dans chaque monde font rencontrer de nouvelles créatures et des va
 
 ### 🌐 Le site du recensement (facultatif)
 
-Adresse actuelle : **https://terminagotchi.grecdel.workers.dev** (bientôt **terminagotchi.com**). Pour ceux qui le
+Adresse : **https://terminagotchi.com**. Pour ceux qui le
 veulent : un profil créé en une commande (sans adresse mail), la même créature sur PC et téléphone, le bestiaire
 complet, la galerie des dressages (si tu l'acceptes), les records et la « Star de la semaine », une chasse au
 trésor façon CTF, et une navigation au clavier comme dans le jeu. Les résultats sont vérifiés par le serveur.
 
 ---
 
+## Aussi dans le jeu
+
+- 🖥 **L'espace de travail** (`tg espace`) : terminal, carte, créature en direct et « cerveau » de la créature
+  (`tg cerveau` : son code qui s'allume pendant qu'elle vit) dans une seule fenêtre.
+- 🔍 **La vue déployée** (`tg deploie <commande>`) : chaque commande se décompose, chaque morceau s'allume à son tour.
+- 🐾 **Ta créature sur ton bureau** (`tg bureau` sur PC, bulle flottante sur Android).
+
 ## Bientôt
 
-- 🖥 **L'espace de travail** : terminal, carte, créature en direct et « cerveau » de la créature (son code qui
-  s'allume pendant qu'elle vit) dans une seule fenêtre.
-- 🔍 **La vue déployée** : chaque commande se décompose, chaque morceau s'allume à son tour, les tuyaux s'animent.
-- 🐾 **Ta créature sur ton bureau** et dans une petite île en haut de l'écran, avec son menu (PC et Android).
 - 🥚 **L'œuf physique** : un projet open source pour transférer ta créature dans un vrai œuf imprimé en 3D, avec
   un petit écran.
 
@@ -163,7 +167,32 @@ Il faut seulement **Python 3** (déjà installé sur Linux et macOS).
 3. La créature propose de s'installer dans ton terminal. Ensuite, `tg` suffit : `tg aide` montre tout ce qu'on peut
    faire.
 
+**Sous Windows, en un clic** : télécharge **`terminagotchi-installeur.exe`** depuis la page **Releases** et ouvre-le.
+Il installe le jeu **pour toi seulement** (pas besoin d'être administrateur), avec son propre Python : rien d'autre à
+installer. Ensuite : menu Démarrer → **Terminagotchi**. L'installeur n'a pas de signature payante, alors Windows se
+méfie la première fois :
+- le navigateur peut dire « *n'est pas téléchargé fréquemment* » : **⋯** → **Conserver** → **Afficher plus** →
+  **Conserver quand même** ;
+- un écran bleu « **Windows a protégé votre ordinateur** » apparaît : clique sur **Informations complémentaires**, puis
+  sur **Exécuter quand même** (l'éditeur est marqué « inconnu » : c'est normal, le fichier est fabriqué par GitHub à
+  partir du code public de ce dépôt).
+Désinstaller (Paramètres → Applications) n'efface jamais la créature ; relancer l'installeur répare le jeu.
+
+**Sous Windows, sans installeur** : installe Python 3 (python.org ou le Microsoft Store), puis dans une fenêtre de commande lance
+`python terminagotchi-essai.pyz` (ou double-clique le fichier). Tu ne tapes pas dans PowerShell : le jeu ouvre
+**son propre terminal**, un petit Linux écrit en Python (rien d'autre à installer). Entrée dans la fenêtre du jeu
+l'ouvre, `tg terminal` ou la touche `[t]` en ouvre une fenêtre de plus, et `exit` ramène au jeu. Les leçons y sont
+les mêmes que sous Linux, sur les vrais fichiers de `terrain_terminagotchi` (et nulle part ailleurs). `python3` y
+lance le Python qui fait déjà tourner le jeu (seulement dans le terrain), la « lanterne » `python3 -m http.server
+… --bind 127.0.0.1` sert une page de ton terrain, et `curl` parle au phare du Port (le petit serveur du jeu,
+`http://localhost:8042/`) et à tes lanternes : pas d'Internet dans ce terminal.
+
 Depuis le code source : `git clone` ce dépôt, puis `python3 pc` dans le dossier.
+
+**Garder une copie de sa créature** : `tg sauvegarde exporter` (PC) ou `sauvegarde exporter` (téléphone) fabrique un
+fichier `.tgsauve` à copier où l'on veut (clé USB, autre ordinateur) ; `importer` la fait revenir comme une partie de
+plus, sans rien remplacer. Le jeu vérifie aussi ses fichiers à chaque lancement et répare doucement ce qui peut
+l'être (`tg verifier` pour le faire tout de suite).
 
 **Bon à savoir** : au début, seuls l'œuf et quelques commandes sont visibles, le reste se débloque petit à petit.
 Pour tout ouvrir d'un coup : `debloquer tout` (téléphone) ou `tg debloquer tout` (PC). Les commandes copiées-collées
@@ -175,3 +204,27 @@ ne rapportent rien : il faut les taper.
 
 Le code est public. Idées, retours de joueurs de tous âges, corrections de traduction et relectures par des
 enseignants ou des spécialistes sont les bienvenus dans les *Issues*.
+
+Comment aider, les règles du jeu à respecter (rien à acheter, jamais punitif, aucune donnée personnelle…) et les
+licences : tout est expliqué simplement dans [`CONTRIBUTING.md`](CONTRIBUTING.md).
+
+---
+
+## Licences
+
+Terminagotchi est un logiciel libre, fait par **les contributeurs de Terminagotchi**.
+
+- 🧩 **Le code** (Python, Kotlin, JavaScript…) est sous licence **GNU GPL version 3 ou toute version ultérieure**
+  (GPL-3.0-or-later) : tu peux l'utiliser, l'étudier, le partager et l'améliorer, à condition que tes versions
+  restent libres elles aussi. Le texte complet est dans le fichier [`LICENSE`](LICENSE).
+- 🎨 **Les images, les dessins, les textes de l'histoire et les sons** sont sous licence
+  **Creative Commons BY-NC-SA 4.0** : tu peux les partager et les modifier en citant les contributeurs de
+  Terminagotchi, sans usage commercial, et sous la même licence. Les détails et la liste des dossiers concernés
+  sont dans [`LICENSE-images.md`](LICENSE-images.md).
+- 🥚 **Sauf la mascotte du site** (le petit personnage vert dans son œuf-circuit : `site/public/mascotte.png`,
+  `mascotte_mange.png`, les icônes `favicon.png` et `icone.png`, et l'icône de l'appli `ic_launcher.png`) :
+  **tous droits réservés, les contributeurs de Terminagotchi** (elle n'est pas libre ; détails dans
+  [`LICENSE-images.md`](LICENSE-images.md)).
+- 🔤 Les polices du site (`site/public/polices/`) gardent leur propre licence (SIL Open Font License).
+
+Dans le jeu, la Guilde des Bâtisseurs Libres explique ces licences, et `tg aide` les rappelle.

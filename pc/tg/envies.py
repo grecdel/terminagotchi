@@ -1,109 +1,537 @@
-"""Les 6 envies de la créature. Chacune baisse avec le temps et se comble avec un type de commande différent :
+"""Les 6 envies de la créature (les mêmes règles que Envies.kt sur Android).
 
-  🍖 faim        n'importe quelle commande tapée à la main (voir core.feed)
-  🎲 jeu         echo, rev, figlet, les défis éclair, les jeux…
-  🔎 curiosité   lire et chercher : cat, less, grep, find, man, --help…
-  🧭 exploration se déplacer et regarder : cd, ls, tree, pwd…
-  💤 sommeil     baisse un peu à chaque commande ; remonte quand on la laisse tranquille, ou avec « sleep »
-  🧼 propreté    faire le ménage : rm, rmdir, mv, clear…
+  🍎 faim       n'importe quelle commande la nourrit (core.feed) ; elle descend 2 fois moins vite qu'avant
+  🎮 jeu        un défi éclair (tg defi), un combat, un dressage réussi
+  📚 curiosité  une étape de leçon, une quête finie, une commande jamais goûtée, tg explique, man, --help
+  🧭 explorer   entrer dans une pièce jamais visitée, une pièce secrète (quête « cachette »), ls -a ou find
+                dans la maison du jeu
+  😴 sommeil    elle fatigue en jouant (plus vite le soir) ; `sleep 10` = une vraie sieste (animation « dort ») ;
+                elle se repose aussi toute seule quand on ne joue pas
+  🧹 propreté   de la « poussière » (poussiere_1.tmp…) tombe avec le temps dans un placard caché du terrain de
+                la partie active : ~/terrain_terminagotchi/.cache/ ; la jauge se calcule d'après les VRAIS
+                fichiers .tmp présents. On nettoie avec rm .cache/*.tmp (ou rm -r .cache : le jeu recrée le
+                placard vide). Rien n'est jamais créé ni supprimé hors du terrain, et rien n'est créé tant
+                que le terrain n'existe pas (la leçon 1 le construit).
 
-Les mêmes règles existent dans l'appli Android (Envies.kt).
+Chaque jauge va de 0 à 100. Pas de mort ni de punition : une envie à zéro rend la créature triste
+(une) ou grognon (plusieurs) ; c'est tout. La faim reste la plus importante : sous FAIM_URGENTE, c'est
+toujours elle l'envie du moment.
+
+Seuils choisis (documentés aussi dans `tg envies` et testés par pc/outils/test_envies.py) :
+  - usure par commande tapée : jeu 0.7, curiosité 0.6, exploration 0.6, sommeil 0.4 (1.2 le soir, 20 h - 7 h) ;
+  - usure avec le temps : jeu 2/h, curiosité et exploration 1.5/h, jamais en dessous de 25 par le temps seul
+    (en ton absence, elle ne devient pas triste) ;
+  - repos tout seul : après 10 min sans commande, sommeil +25/h ;
+  - sieste : sleep N → sommeil +5 par seconde, au plus +50 (sleep 10) ;
+  - poussière : un fichier toutes les 45 min de temps réel, au plus 8 (propreté = 100 - 12.5 par fichier) ;
+  - envie du moment : la plus basse sous SEUIL (40), tirée au hasard parmi celles à moins de 10 points d'elle ;
+    elle reste la même jusqu'à être satisfaite (≥ 60) ou 15 minutes ;
+  - rappel dans la bulle : au plus un toutes les 12 commandes ET 5 minutes ; le soir, un bâillement au plus
+    toutes les 40 minutes ;
+  - récompense : satisfaire une envie basse (< 60) donne +2 XP (+3 de plus si c'était l'envie du moment), au plus
+    une fois toutes les 2 minutes par envie ; l'envie du moment qui gagne 15 points ou repasse au-dessus de 60 :
+    un merci et l'animation « content ».
+
+Sauvegarde : state["envies"] = {"v": {envie: valeur}, "t": dernier calcul, "cmd_t": dernière commande,
+"moment": {"e", "cmd", "t"} | None, "rappel_t", "rappel_n", "soir_t", "vu": {compteurs}, "xp_t": {},
+"poussiere_t", "premiere_poussiere"}. Les anciennes sauvegardes reçoivent des valeurs moyennes (MIGRATION).
+Tout est local (aucun champ envoyé au serveur : l'anti-triche n'est pas concerné).
 """
 import random
+import re
 import time
 
-# id, icône, ce qu'elle veut faire, commandes qui la comblent, minutes pour perdre 1 point
-ENVIES = [
-    ("jeu", "🎲", "jouer", {"echo", "rev", "figlet", "toilet", "cowsay", "fortune", "sl", "cmatrix", "banner", "yes",
-                           "lolcat", "doom", "jeu", "defi", "caresse", "danse", "parle", "joue", "devine"}, 8),
-    ("curiosite", "🔎", "apprendre", {"man", "help", "info", "tldr", "whatis", "apropos", "cat", "less", "more", "head",
-                                     "tail", "grep", "find", "which", "type", "file", "stat", "wc", "lexique",
-                                     "get-help", "get-content", "select-string"}, 10),
-    ("exploration", "🧭", "explorer", {"cd", "ls", "tree", "pwd", "dir", "du", "df", "get-childitem",
-                                      "set-location", "get-location", "carte", "plan"}, 10),
-    ("sommeil", "💤", "dormir", {"sleep", "start-sleep"}, 0),
-    ("proprete", "🧼", "faire le ménage", {"rm", "rmdir", "mv", "clear", "cls", "trash", "trash-put", "gzip", "zip",
-                                         "tar", "remove-item", "move-item", "clear-host"}, 12),
-]
-PAR_ID = {e[0]: e for e in ENVIES}
-GAIN = 8                    # points regagnés par commande qui comble l'envie
-FATIGUE = 0.4               # sommeil perdu à chaque commande
-REPOS = 120                 # secondes de calme pour regagner 1 point de sommeil
+from . import core
+from .langue import au_hasard, liste, t
+from .plateforme import C, IS_WIN
+
+ENVIES = ("faim", "jeu", "curiosite", "explorer", "sommeil", "proprete")
+ICONES = {"faim": "🍎", "jeu": "🎮", "curiosite": "📚", "explorer": "🧭", "sommeil": "😴", "proprete": "🧹"}
+DEPART = {"jeu": 70.0, "curiosite": 70.0, "explorer": 70.0, "sommeil": 90.0}
+MIGRATION = 60.0                     # les anciennes parties : des valeurs moyennes
+PAR_COMMANDE = {"jeu": 0.7, "curiosite": 0.6, "explorer": 0.6, "sommeil": 0.4}
+SOMMEIL_SOIR = 1.2                   # usure du sommeil par commande, le soir
+PAR_HEURE = {"jeu": 2.0, "curiosite": 1.5, "explorer": 1.5}
+PLANCHER_TEMPS = 25.0                # le temps seul ne descend jamais une envie sous ce plancher
+PAUSE = 600                          # secondes sans commande : elle se repose toute seule
+REPOS_HEURE = 25.0
+SIESTE_PAR_SECONDE = 5.0
+SIESTE_MAX = 50.0
+SIESTE_CONSEIL = 10                  # sleep 10
+SOIR, MATIN = 20, 7
+POUSSIERE_INTERVALLE = 45 * 60
+POUSSIERE_MAX = 8
+SEUIL = 40.0
+FAIM_URGENTE = 40.0                  # = « affamée » (satiete.FORME)
+SATISFAITE = 60.0
+MERCI = 15.0                         # un plaisir d'au moins 15 points sur l'envie du moment : merci (elle repart)
+PROCHES = 10.0
+MOMENT_DUREE = 15 * 60
+RAPPEL_COMMANDES = 12
+RAPPEL_MINUTES = 5
+SOIR_MINUTES = 40
+XP_BAS = 2
+XP_MOMENT = 3
+XP_DELAI = 120
+GAINS = {"nouvelle": 10.0, "explique": 20.0, "lecon": 15.0, "quete": 25.0, "lieu": 15.0, "secret": 40.0,
+         "regarde": 8.0, "defi": 35.0, "combat": 30.0, "dressage": 40.0}
+
+CACHE = ".cache"
+_SLEEP = re.compile(r"^\s*(sleep|start-sleep)\s+(?:-s(?:econds)?\s+)?(\d+(?:\.\d+)?)s?\s*$", re.I)
+_CURIEUX = re.compile(r"^\s*(?:tg\s+)?(explique|man|help|get-help)\b|\s--help\b|^\s*tg\s+(aide|lexique)\b", re.I)
+_REGARDE = re.compile(r"^\s*(ls\s+-\w*a|dir\s+-force|gci\s+-force|get-childitem\b.*-force|find\b|tree\b)", re.I)
 
 
-def etat(state):
-    env = state.setdefault("envies", {})
-    for i, *_ in ENVIES:
-        env.setdefault(i, 80.0)
-    return env
+def terrain():
+    return core.TERRAIN
 
 
-def tick(state, maintenant=None):
-    """Le temps passe : les envies baissent, le sommeil remonte pendant le calme."""
-    now = maintenant or time.time()
-    env = etat(state)
-    dernier = state.get("envies_t", now)
-    dt = max(0.0, now - dernier)
-    for i, _, _, _, minutes in ENVIES:
-        if minutes:
-            env[i] = max(0.0, env[i] - dt / (60 * minutes))
-    calme = now - state.get("derniere_cmd", now)
-    if calme > REPOS:
-        env["sommeil"] = min(100.0, env["sommeil"] + min(dt, calme - REPOS) / REPOS)
-    state["envies_t"] = now
+def placard():
+    return terrain() / CACHE
 
 
-def commande(state, cmd, ligne=""):
-    """Une commande tapée à la main : comble les envies qui lui correspondent. Renvoie le bonus d'XP."""
-    env = etat(state)
-    state["derniere_cmd"] = time.time()
-    env["sommeil"] = max(0.0, env["sommeil"] - FATIGUE)
-    bonus = 0
-    for i, icone, verbe, cmds, _ in ENVIES:
-        ok = cmd in cmds or (i == "curiosite" and "--help" in ligne)
-        if not ok:
-            continue
-        gain = GAIN
-        if i == "sommeil":                         # sleep 5 : se reposer 5 secondes, ça compte !
-            try:
-                gain = 4 + min(30, int(float(ligne.split()[1])) * 2)
-            except (IndexError, ValueError):
-                gain = 4
-        avant = env[i]
-        env[i] = min(100.0, env[i] + gain)
-        if avant < 40:                             # elle en avait vraiment besoin
-            bonus += 2
-            from . import core
-            core.log(state, f"{icone} merci, j'avais envie de {verbe} !")
-    return bonus
+def e_(state):
+    """L'état des envies, créé (ou complété) à la demande. Une partie neuve part de DEPART, une ancienne de MIGRATION."""
+    e = state.get("envies")
+    if not isinstance(e, dict):
+        neuve = not state.get("total") and not state.get("xp")
+        e = state["envies"] = {"v": {k: (v if neuve else MIGRATION) for k, v in DEPART.items()}}
+    now = time.time()
+    v = e.setdefault("v", {})
+    for k in DEPART:
+        if not isinstance(v.get(k), (int, float)):
+            v[k] = MIGRATION
+    for k, d in {"t": now, "cmd_t": 0, "moment": None, "rappel_t": 0, "rappel_n": 0, "soir_t": 0, "vu": None,
+                 "xp_t": {}, "poussiere_t": now, "premiere_poussiere": False}.items():
+        e.setdefault(k, d)
+    return e
 
 
-def defi_reussi(state):
-    env = etat(state)
-    env["jeu"] = min(100.0, env["jeu"] + 15)
+def soir(heure=None):
+    h = time.localtime().tm_hour if heure is None else heure
+    return h >= SOIR or h < MATIN
 
 
-def la_plus_basse(state):
-    env = etat(state)
-    i = min(env, key=env.get)
-    return PAR_ID[i], env[i]
+# ---------------------------------------------------------------- la poussière (seulement dans le terrain)
+def poussieres():
+    """Les vrais fichiers de poussière présents (*.tmp du placard caché du terrain)."""
+    try:
+        return sorted(p for p in placard().iterdir() if p.is_file() and p.suffix.lower() == ".tmp")
+    except OSError:
+        return []
 
 
-def phrase(state):
-    """Ce que la créature réclame quand une envie est basse, ou None."""
-    (i, icone, verbe, cmds, _), v = la_plus_basse(state)
-    if v >= 30:
+def proprete():
+    if not terrain().is_dir():
+        return 100.0
+    return max(0.0, 100.0 - 100.0 * len(poussieres()) / POUSSIERE_MAX)
+
+
+def _poser_poussiere():
+    """Un fichier de poussière de plus, dans le placard du terrain (jamais ailleurs). Renvoie True si posé."""
+    T = terrain()
+    if not T.is_dir():
+        return False
+    d = placard()
+    try:
+        d.mkdir(exist_ok=True)
+        if d.resolve().parent != T.resolve():
+            return False                                     # placard remplacé par un lien : on ne touche à rien
+        noms = {p.name for p in poussieres()}
+        if len(noms) >= POUSSIERE_MAX:
+            return False
+        i = next(i for i in range(1, 1000) if f"poussiere_{i}.tmp" not in noms)
+        (d / f"poussiere_{i}.tmp").write_text(t("env.poussiere.contenu") + "\n", encoding="utf-8")
+        return True
+    except (OSError, StopIteration):
+        return False
+
+
+def _poussiere(state, e, now):
+    """Le temps qui passe fait tomber de la poussière ; un placard effacé (rm -r .cache) est recréé vide."""
+    T = terrain()
+    if not T.is_dir():
+        e["poussiere_t"] = now
+        return
+    if not placard().exists():
+        try:
+            placard().mkdir()
+        except OSError:
+            pass
+    n = int((now - e["poussiere_t"]) // POUSSIERE_INTERVALLE)
+    if n <= 0:
+        return
+    e["poussiere_t"] += n * POUSSIERE_INTERVALLE
+    posees = sum(1 for _ in range(min(n, POUSSIERE_MAX)) if _poser_poussiere())
+    if posees and not e["premiere_poussiere"]:
+        e["premiere_poussiere"] = True
+        core.say(state, t("env.poussiere.premiere", cmd=commande_envies()), 12)
+
+
+# ---------------------------------------------------------------- ce qui fait plaisir
+def commande_envies():
+    return "tg envies"
+
+
+def compteurs(state):
+    """Ce qui se voit dans la sauvegarde : commandes goûtées, leçons, quêtes, pièces visitées."""
+    from . import histoire, maison, quetes
+    h = histoire.h_(state)
+    q = quetes.q_(state)
+    secrets = [x for x in q["finies"] if quetes.PAR_ID.get(x, {}).get("sorte") == "cachette"]
+    lieux = {v for v in maison.m_(state)["visites"] if v.count("/") <= 1 and not v.startswith(CACHE)}
+    return {"seen": len(state.get("seen", [])), "lecon": len(h["faits"]) * 50 + int(state.get("step", 0)),
+            "quetes": len(q["finies"]) - len(secrets), "secrets": len(secrets), "lieux": len(lieux)}
+
+
+def valeur(state, nom):
+    if nom == "faim":
+        return float(state.get("hunger", 0))
+    if nom == "proprete":
+        return proprete()
+    return float(e_(state)["v"][nom])
+
+
+def valeurs(state):
+    return {k: valeur(state, k) for k in ENVIES}
+
+
+def gagner(state, nom, n):
+    """Satisfait une envie (n points). La récompense : un peu d'XP, et un merci si c'était l'envie du moment."""
+    e = e_(state)
+    if nom == "faim":
+        avant = float(state.get("hunger", 0))
+        state["hunger"] = min(100.0, avant + n)
+    elif nom == "proprete":
+        avant = 0.0                                          # la propreté se lit dans les fichiers : déjà à jour
+    else:
+        avant = e["v"][nom]
+        e["v"][nom] = min(100.0, avant + n)
+    m = e.get("moment") or {}
+    du_moment = m.get("e") == nom
+    now = time.time()
+    if avant < SATISFAITE and n >= 8 and now - e["xp_t"].get(nom, 0) >= XP_DELAI:
+        e["xp_t"][nom] = now
+        core.add_xp(state, XP_BAS + (XP_MOMENT if du_moment else 0))
+    if du_moment and (valeur(state, nom) >= SATISFAITE or n >= MERCI):
+        e["moment"] = None
+        core.say(state, au_hasard("env.merci." + nom), 8)
+        core.animer(state, "content")
+
+
+def plaisir(state, nom, cle):
+    """Appelé par les jeux (défi, combat, dressage) : l'envie de jouer est satisfaite."""
+    gagner(state, nom, GAINS[cle])
+
+
+def sieste(state, secondes):
+    """sleep N : une vraie sieste (déjà faite par le shell). Renvoie les points de sommeil gagnés."""
+    n = min(SIESTE_MAX, max(0.0, secondes) * SIESTE_PAR_SECONDE)
+    if n <= 0:
+        return 0
+    core.log(state, t("env.sieste.log", s=f"{secondes:g}", n=int(n)))
+    core.animer(state, "dort")
+    gagner(state, "sommeil", n)
+    return n
+
+
+def _salle(state):
+    """Le dossier courant s'il est la grande salle du terrain (là où « rm .cache/*.tmp » vise le bon placard), sinon None."""
+    from . import maison
+    ici = maison.ici(state)
+    return ici if ici and maison.rel(ici) == "" else None
+
+
+def _dans_terrain(state):
+    from . import maison
+    cwd = maison.ici(state)
+    return cwd is not None and maison.rel(cwd) is not None
+
+
+# ---------------------------------------------------------------- le temps qui passe
+def _temps(e, now):
+    v = e["v"]
+    dt = max(0.0, min(now - e["t"], 7 * 24 * 3600))
+    if dt <= 0:
+        return
+    for k, par_h in PAR_HEURE.items():
+        if v[k] > PLANCHER_TEMPS:
+            v[k] = max(PLANCHER_TEMPS, v[k] - par_h * dt / 3600)
+    debut_repos = max(e["t"], e["cmd_t"] + PAUSE)        # le repos commence 10 min après la dernière commande
+    if now > debut_repos:
+        v["sommeil"] = min(100.0, v["sommeil"] + REPOS_HEURE * (now - debut_repos) / 3600)
+    e["t"] = now
+
+
+# ---------------------------------------------------------------- l'envie du moment et la bulle
+def suggestion(state, nom):
+    """La commande à proposer pour cette envie (sans danger, depuis là où est l'enfant)."""
+    from . import histoire, lecons, maison
+    T = f"~/{terrain().name}"
+    if nom == "faim":
+        idees, _ = core.faim_d_apprendre(state, core.level(state["xp"]) + 1)
+        return random.choice(idees[:2])
+    if nom == "jeu":
+        return "tg defi"
+    if nom == "curiosite":
+        les, _ = lecons.lecon_courante(state)
+        if les and core.level(state["xp"]) >= les["niveau"] and random.random() < 0.5:
+            return les["steps"][state["step"]]["cmd"]
+        return random.choice(["tg explique " + c for c in ("cp", "mv", "ls", "grep", "rm", "find")] +
+                             ([] if IS_WIN else ["man ls", "ls --help"]))
+    if nom == "explorer":
+        if terrain().is_dir():
+            neuves = [p for p in maison.PIECES if histoire.piece_ouverte(state, p) and (terrain() / p).is_dir()
+                      and not maison.visitee(state, p)]
+            if neuves:
+                return f"cd {T}/{random.choice(neuves)}"
+            if _dans_terrain(state):
+                return C("ls -a", "dir -Force")
+        return "tg carte"
+    if nom == "sommeil":
+        return C(f"sleep {SIESTE_CONSEIL}", f"Start-Sleep {SIESTE_CONSEIL}")
+    # propreté : seulement depuis la grande salle du terrain (rm .cache/*.tmp ailleurs viserait un autre placard !)
+    if _salle(state):
+        return random.choice([C("ls -a", "dir -Force"), "ls .cache", "rm .cache/*.tmp"]) \
+            if len(poussieres()) else "ls .cache"
+    return f"cd {T}"
+
+
+def choisir(state, vals=None):
+    """L'envie à mettre en avant (ou None si tout va bien) : la faim d'abord si elle est urgente,
+    sinon la plus basse sous SEUIL, avec un peu de hasard entre les envies proches."""
+    vals = vals or valeurs(state)
+    if not terrain().is_dir():
+        vals["proprete"] = 100.0
+    if vals["faim"] < FAIM_URGENTE:
+        return "faim"
+    basses = {k: v for k, v in vals.items() if v < SEUIL and k != "faim"}
+    if not basses:
         return None
-    exemples = {"jeu": "echo, rev…", "curiosite": "cat, grep, man…", "exploration": "cd, ls, tree…",
-                "sommeil": "laisse-moi tranquille un peu, ou tape « sleep 5 »", "proprete": "rm, mv, clear…"}[i]
-    return random.choice([f"{icone} J'ai envie de {verbe}… ({exemples})", f"{icone} Et si on allait {verbe} ? ({exemples})"])
+    mini = min(basses.values())
+    return random.choice(sorted(k for k, v in basses.items() if v <= mini + PROCHES))
 
 
-def barres(state, largeur=4):
-    """Une ligne compacte : 🎲▰▰▰▱ 🔎▰▰▱▱ …"""
-    env = etat(state)
-    out = []
-    for i, icone, *_ in ENVIES:
-        n = max(0, min(largeur, round(largeur * env[i] / 100)))
-        out.append(icone + "▰" * n + "▱" * (largeur - n))
-    return " ".join(out)
+def moment(state):
+    """L'envie du moment, gardée stable (même commande) jusqu'à être satisfaite ou MOMENT_DUREE."""
+    e = e_(state)
+    m = e.get("moment")
+    now = time.time()
+    if m and m.get("e") in ENVIES and valeur(state, m["e"]) < SATISFAITE and now - m.get("t", 0) < MOMENT_DUREE:
+        if not (m["e"] != "faim" and valeur(state, "faim") < FAIM_URGENTE):
+            if m["e"] == "proprete" and m["cmd"].startswith("cd ") != (_salle(state) is None):
+                m["cmd"] = suggestion(state, "proprete")      # l'enfant est arrivé (ou reparti) : la commande suit
+            return m
+    nom = choisir(state)
+    e["moment"] = {"e": nom, "cmd": suggestion(state, nom), "t": now} if nom else None
+    return e["moment"]
+
+
+def phrase(state, m=None):
+    m = m or moment(state)
+    if not m:
+        return None
+    return au_hasard("env.dit." + m["e"], cmd=m["cmd"])
+
+
+def _rappeler(state, e, tapees, now):
+    e["rappel_n"] += tapees
+    m = moment(state)
+    from . import creature
+    if creature.envie(state):                      # 3 nov. : une envie mystère passe à la place de l'envie habituelle
+        m = None
+    if m and e["rappel_n"] >= RAPPEL_COMMANDES and now - e["rappel_t"] >= RAPPEL_MINUTES * 60:
+        e["rappel_n"] = 0
+        e["rappel_t"] = now
+        e["rappel_texte"] = phrase(state, m)
+        core.say(state, e["rappel_texte"], 12)
+        core.animer(state, "dort" if m["e"] == "sommeil" else "parle")
+        return
+    if tapees and soir() and now - e["soir_t"] >= SOIR_MINUTES * 60 and e["v"]["sommeil"] < 70:
+        e["soir_t"] = now
+        core.say(state, au_hasard("env.soir"), 12)
+        core.animer(state, "dort")
+
+
+def rappel_recent(state, secondes=120):
+    """La dernière bulle d'envie si elle vient d'être dite (pour la ligne du compagnon)."""
+    e = e_(state)
+    return e.get("rappel_texte") if time.time() - e.get("rappel_t", 0) < secondes else None
+
+
+# ---------------------------------------------------------------- le tour de jeu
+def tick(state, lignes):
+    """À la fin de chaque étape de jeu (app.boucle_jeu), après les leçons, les quêtes et les combats."""
+    e = e_(state)
+    now = time.time()
+    _temps(e, now)
+    tapees = [l for l in lignes if not core.est_colle(l) and core.first_word(l)]
+    v = e["v"]
+    for l in tapees:
+        e["cmd_t"] = now
+        for k, n in PAR_COMMANDE.items():
+            if k == "sommeil" and soir():
+                n = SOMMEIL_SOIR
+            v[k] = max(0.0, v[k] - n)
+        m = _SLEEP.match(l)
+        if m:
+            sieste(state, float(m.group(2)))
+        elif _CURIEUX.search(l):
+            gagner(state, "curiosite", GAINS["explique"])
+        if _REGARDE.match(l) and _dans_terrain(state):
+            gagner(state, "explorer", GAINS["regarde"])
+    vu, c = e.get("vu"), compteurs(state)
+    if isinstance(vu, dict):
+        if c["seen"] > vu.get("seen", 0):
+            gagner(state, "curiosite", min(2, c["seen"] - vu.get("seen", 0)) * GAINS["nouvelle"])
+        if c["lecon"] > vu.get("lecon", 0):
+            gagner(state, "curiosite", GAINS["lecon"])
+        if c["quetes"] > vu.get("quetes", 0):
+            gagner(state, "curiosite", GAINS["quete"])
+        if c["secrets"] > vu.get("secrets", 0):
+            gagner(state, "explorer", GAINS["secret"])
+        if c["lieux"] > vu.get("lieux", 0):
+            gagner(state, "explorer", min(2, c["lieux"] - vu.get("lieux", 0)) * GAINS["lieu"])
+    e["vu"] = c
+    m = e.get("moment") or {}
+    if m.get("e") == "faim" and valeur(state, "faim") >= SATISFAITE:      # elle a bien mangé (core.feed)
+        e["moment"] = None
+        core.say(state, au_hasard("env.merci.faim"), 8)
+        core.animer(state, "content")
+    avant = e.get("propre_n")
+    from . import intro
+    ouvert = intro.ouvert(state, "envies")          # avant leur présentation : pas de poussière ni de rappel
+    if ouvert:
+        _poussiere(state, e, now)
+    n = len(poussieres())
+    if avant is not None and n < avant and tapees:
+        m = e.get("moment") or {}
+        if n == 0 or m.get("e") == "proprete":
+            gagner(state, "proprete", 100)
+            if m.get("e") != "proprete":
+                core.say(state, au_hasard("env.merci.proprete"), 8)
+                core.animer(state, "content")
+    e["propre_n"] = n
+    if ouvert:
+        _rappeler(state, e, len(tapees), now)
+
+
+# ---------------------------------------------------------------- humeur et affichage
+def humeur_cle(state):
+    """L'humeur combine les envies : la faim d'abord (la santé), puis les envies à zéro, puis la moyenne."""
+    vals = valeurs(state)
+    from . import satiete
+    e = satiete.etat(state)
+    if e == "veille":
+        return "sat.etat.veille"                       # en veille (jamais de mort) : un repas complet la réveille
+    if e == "affamee":
+        return "humeur.affame"
+    from . import creature
+    h = creature.humeur(state)                     # 3 nov. : une humeur du moment (gentille) passe devant le reste
+    if h:
+        return "humeur." + h
+    zeros = sum(1 for k, x in vals.items() if k != "faim" and x < 1)
+    if zeros >= 2:
+        return "humeur.grognon"
+    if zeros == 1:
+        return "humeur.triste"
+    if sum(vals.values()) / len(vals) >= 70:
+        return "humeur.joyeux"
+    return "humeur.repu" if vals["faim"] >= 60 else "humeur.creux"
+
+
+def humeur(state):
+    return t(humeur_cle(state))
+
+
+EMOJIS = {"humeur.joyeux": "😄", "humeur.repu": "😊", "humeur.creux": "🙂", "humeur.triste": "😢",
+          "humeur.grognon": "😠", "humeur.affame": "😟", "sat.etat.veille": "💤", "humeur.curieux": "🤔",
+          "humeur.fier": "😎", "humeur.calin": "🥰", "humeur.gourmand": "😋", "humeur.enjoue": "😆",
+          "humeur.reveur": "😌", "humeur.surpris": "😮", "humeur.bavard": "😃", "humeur.fete": "🥳"}
+
+
+def emoji(state):
+    """L'humeur en UN emoji (la seule montrée sur l'écran principal, variante B ; même table qu'Envies.emoji)."""
+    return EMOJIS.get(humeur_cle(state), "😵")
+
+
+def pensee(state):
+    """💭 à côté de la créature : une envie est devenue forte (l'envie du moment), ou l'envie mystère attend."""
+    try:
+        from . import creature
+        if creature.envie(state):
+            return True
+    except Exception:                                # noqa: BLE001
+        pass
+    return moment(state) is not None
+
+
+def barre(v, n):
+    k = max(0, min(n, int(v / 100 * n + 0.5)))
+    return "▰" * k + "▱" * (n - k)
+
+
+def compact(state, n=4, par_ligne=3):
+    """Les 6 jauges en petit : « 🍎▰▰▰▱ 🎮▰▰▱▱ 📚▰▰▰▰ » (2 lignes de 3)."""
+    vals = valeurs(state)
+    morceaux = [ICONES[k] + barre(vals[k], n) for k in ENVIES]
+    return [" ".join(morceaux[i:i + par_ligne]) for i in range(0, len(morceaux), par_ligne)]
+
+
+def nom(envie):
+    return t("env.nom." + envie)
+
+
+def comment(state, envie):
+    T = f"~/{terrain().name}"
+    p = {"faim": {"cmds": "`date`, `ls`, `whoami`"},
+         "jeu": {"cmds": "`tg defi`"},
+         "curiosite": {"cmds": "`tg explique cp`" + ("" if IS_WIN else ", `man ls`, `ls --help`")},
+         "explorer": {"cmds": "`tg carte`", "lsa": "`" + C("ls -a", "dir -Force") + "`"},
+         "sommeil": {"cmd": f"`{C('sleep 10', 'Start-Sleep 10')}`"},
+         "proprete": {"aller": f"`cd {T}`", "voir": "`" + C("ls -a", "dir -Force") + "`, `ls .cache`"
+                      + ("" if IS_WIN else ", `find . -name \"*.tmp\"`"), "nettoyer": "`rm .cache/*.tmp`"}}[envie]
+    return t("env.comment." + envie, **p)
+
+
+def ecran(state):
+    """tg envies : l'état détaillé, et pour chaque envie comment la satisfaire."""
+    from .langue import ajuster, envelopper, largeur
+    from .plateforme import BOLD, DIM, RESET, fg
+    vals = valeurs(state)
+    lg = max(largeur(nom(k)) for k in ENVIES)
+    out = [f" {fg(213)}{BOLD}" + t("env.ecran.titre", nom=state["name"]) + RESET, ""]
+    for k in ENVIES:
+        x = vals[k]
+        c = 78 if x >= 60 else 221 if x >= SEUIL else 203
+        out.append(f" {ICONES[k]} {ajuster(nom(k), lg)} {fg(c)}{barre(x, 10)}{RESET} {int(x):>3}")
+        for l in envelopper(comment(state, k), 72):
+            out.append(f"      {DIM}{l}{RESET}")
+    out.append("")
+    m = moment(state)
+    out.append(" " + (t("env.ecran.moment", icone=ICONES[m["e"]], envie=nom(m["e"]), cmd=m["cmd"]) if m
+                      else t("env.ecran.aucune", nom=state["name"])))
+    out.append(" " + t("env.ecran.humeur", humeur=humeur(state)))
+    from . import creature
+    me = creature.ligne_envie(state)               # 3 nov. : l'envie mystère en cours (tg indice)
+    if me:
+        out.append(" " + me)
+    out.append("")
+    from . import satiete
+    out.append(f" {fg(213)}{BOLD}" + t("sat.ecran.titre") + RESET)      # la satiété : état, assiette, série, vacances
+    for x in satiete.lignes(state):
+        for l in envelopper(x, 76):
+            out.append(f"  {l}")
+    out.append("")
+    for cle in ("env.cache.enfant", "env.cache.grands"):
+        for l in envelopper(t(cle, lsa="`" + C("ls -a", "dir -Force") + "`"), 76):
+            out.append(f" {DIM}{l}{RESET}")
+    out.append("")
+    for l in envelopper(t("env.ecran.pied", nom=state["name"]), 76):
+        out.append(f" {DIM}{l}{RESET}")
+    return out
+
+
+def tout_lister():
+    """(pour les tests) les clés de phrases de chaque envie."""
+    return {k: liste("env.dit." + k) for k in ENVIES}
