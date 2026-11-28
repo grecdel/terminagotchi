@@ -1,0 +1,91 @@
+
+ ⛅️ wrangler 3.114.17 (update available 4.169.0)
+------------------------------------------------
+
+[33m▲ [43;33m[[43;30mWARNING[43;33m][0m [1mThe version of Wrangler you are using is now out-of-date.[0m
+
+  Please update to the latest version to prevent critical errors.
+  Run `npm install --save-dev wrangler@4` to update to the latest version.
+  After installation, run Wrangler with `npx wrangler`.
+
+
+🌀 Building list of assets...
+🌀 Starting asset upload...
+🌀 Found 62 new or modified static assets to upload. Proceeding with upload...
++ /js/essayer.js
++ /imprimer/coloriages/coloriage_080_clopinou.png
++ /imprimer/coloriages/coloriage_052_felicorne.png
++ /imprimer/coloriages/coloriage_061_glandouille.png
++ /imprimer/coloriages/coloriage_096_poulpiot.png
++ /essayer/oeuf_plante_intact.png
++ /essayer/oeuf_feu_fissure.png
++ /essayer/oeuf_ombre_intact.png
++ /essayer/oeuf_plante_fissure.png
++ /essayer/oeuf_roche_fissure.png
++ /essayer/oeuf_poison_fissure.png
++ /imprimer/poster_A3.jpg
++ /essayer/oeuf_plante_eclosion.png
++ /essayer/oeuf_roche_eclosion.png
++ /essayer/oeuf_ombre_eclosion.png
++ /imprimer/coloriages/coloriage_001_braisillon.pdf
++ /imprimer/coloriages/coloriage_116_rugisoleil.pdf
++ /imprimer/coloriages/coloriage_126_lanternix.pdf
++ /imprimer/coloriages/coloriage_018_gouttelin.pdf
++ /imprimer/coloriages/coloriage_080_clopinou.pdf
++ /imprimer/poster_A3_fond_blanc.pdf
++ /imprimer/coloriages/coloriage_001_braisillon.png
++ /imprimer/coloriages/coloriage_018_gouttelin.png
++ /imprimer/coloriages/coloriage_062_sporichon.png
++ /imprimer/coloriages/coloriage_137_gloupi.png
++ /essayer/oeuf_feu_intact.png
++ /essayer/oeuf_glace_intact.png
++ /essayer/oeuf_roche_intact.png
++ /essayer/oeuf_ciel_intact.png
++ /essayer/oeuf_glace_fissure.png
++ /essayer/oeuf_ombre_fissure.png
++ /essayer/oeuf_feu_eclosion.png
++ /imprimer/poster_A3_fond_blanc.jpg
++ /essayer/oeuf_eau_eclosion.png
++ /essayer/oeuf_ciel_eclosion.png
++ /essayer/oeuf_machine_eclosion.png
++ /imprimer/coloriages/coloriage_077_pucerise.pdf
++ /imprimer/coloriages/coloriage_032_drapouille.pdf
++ /imprimer/coloriages/coloriage_052_felicorne.pdf
++ /imprimer/coloriages/coloriage_137_gloupi.pdf
++ /essayer/camp.jpg
++ /imprimer/poster_A3.pdf
++ /imprimer/coloriages/coloriage_077_pucerise.png
++ /imprimer/coloriages/coloriage_116_rugisoleil.png
++ /imprimer/coloriages/coloriage_126_lanternix.png
++ /imprimer/coloriages/coloriage_032_drapouille.png
++ /imprimer/stickers_A4.jpg
++ /essayer/oeuf_eau_intact.png
++ /essayer/oeuf_poison_intact.png
++ /essayer/oeuf_eau_fissure.png
++ /essayer/oeuf_machine_intact.png
++ /js/effets.js
++ /essayer/oeuf_ciel_fissure.png
++ /essayer/oeuf_machine_fissure.png
++ /essayer/oeuf_glace_eclosion.png
++ /essayer/oeuf_poison_eclosion.png
++ /js/monde_page.js
++ /essayer/camp_dort.jpg
++ /imprimer/coloriages/coloriage_062_sporichon.pdf
++ /imprimer/coloriages/coloriage_061_glandouille.pdf
++ /imprimer/coloriages/coloriage_096_poulpiot.pdf
++ /imprimer/stickers_A4.pdf
+Uploaded 20 of 62 assets
+Uploaded 41 of 62 assets
+Uploaded 62 of 62 assets
+✨ Success! Uploaded 62 files (4225 already uploaded) (1.78 sec)
+
+Total Upload: 1564.86 KiB / gzip: 329.68 KiB
+Worker Startup Time: 3 ms
+Your worker has access to the following bindings:
+- D1 Databases:
+  - DB: terminagotchi (f47f5b1f-9f4c-4b2f-9df2-1c5b26cf9be6)
+Uploaded terminagotchi (5.68 sec)
+Deployed terminagotchi triggers (0.46 sec)
+  schedule: 17 3 * * *
+Current Version ID: 0cd51e16-f7f2-45ec-a766-237e227703c7
+terminagotchi.com répond : 200
