@@ -41,7 +41,7 @@ permissions:
 
 jobs:
   rejeu:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04   # la machine de référence que le terminal du jeu imite (coreutils GNU, curl 8.5, bash 5.2) : ubuntu-latest est passé à 26.04
     steps:
       - uses: actions/checkout@v4
 
